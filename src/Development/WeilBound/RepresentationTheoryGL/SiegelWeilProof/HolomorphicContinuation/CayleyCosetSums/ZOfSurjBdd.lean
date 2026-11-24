@@ -1,6 +1,52 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.CayleyCosetSums.HolTBase
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LowerRankDatum
+public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.CayleyInverseConjTransposeMulApply
+public import Mathlib.Analysis.Matrix.Spectrum
+public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AnalyticDeterminants.HermRealSmul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -34,7 +80,7 @@ theorem zOf_nm {X a b : Matrix (Fin n) (Fin n) ℂ} (hX : X.IsHermitian) (hab : 
   have hinv : (bᴴ)⁻¹ = aᴴ := Matrix.inv_eq_right_inv hbh
   simp only [zOf, mR_mkGR, u1, nU, mab, fromBlocks_multiply, toBlocks_fromBlocks₁₁, toBlocks_fromBlocks₁₂,
     toBlocks_fromBlocks₂₁, toBlocks_fromBlocks₂₂, Matrix.one_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add,
-    Matrix.mul_one, smul_zero]
+    smul_zero]
   rw [hinv, Matrix.add_mul, Matrix.mul_assoc, hbh, Matrix.mul_one, Matrix.smul_mul, add_comm]
 
 theorem posdef_factor {Y : Matrix (Fin n) (Fin n) ℂ} (hY : Y.PosDef) :
@@ -81,7 +127,7 @@ theorem zOf_surj' {W : Fin n → Fin n → ℂ} (hW : W ∈ Dom n) : ∃ y : GR 
   set X : Matrix (Fin n) (Fin n) ℂ := (1 / 2 : ℂ) • (Matrix.of W + (Matrix.of W)ᴴ) with hXdef
   have hX : X.IsHermitian := by
     simp only [IsHermitian, hXdef, conjTranspose_smul, conjTranspose_add, conjTranspose_conjTranspose]
-    rw [add_comm]; congr 1; simp [Complex.ext_iff]
+    rw [add_comm]; congr 1; simp
   refine ⟨mkGR (nU X * mab _ _) (inG_nm hX hba), ?_⟩
   rw [zOf_nm hX hab hba, haa, hXdef]
   ext i j
@@ -129,7 +175,7 @@ theorem posdef_margin {Y : Matrix (Fin n) (Fin n) ℂ} (hY : Y.PosDef) :
       rw [mem_sphere_zero_iff_norm]
       apply le_antisymm
       · refine (pi_norm_le_iff_of_nonneg zero_le_one).2 fun i => ?_
-        by_cases h : i = i₀ <;> simp [h, Pi.single_apply]
+        by_cases h : i = i₀ <;> simp [h]
       · simpa using norm_le_pi_norm (Pi.single i₀ (1 : ℂ) : Fin n → ℂ) i₀
     have hcont : Continuous fun v : Fin n → ℂ => (star v ⬝ᵥ (Y *ᵥ v)).re :=
       Complex.continuous_re.comp ((continuous_id.star).dotProduct (continuous_const.matrix_mulVec continuous_id))

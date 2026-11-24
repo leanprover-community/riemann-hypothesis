@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
+public import Mathlib.NumberTheory.ModularForms.LevelOne.GradedRing
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEisInt
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 
@@ -77,14 +78,14 @@ private theorem dZ_eq_tZ_add_s3Z_sq_add_s3Z_cube_sub_s5Z_sq : dZ = tZ + PowerSer
 
 theorem dZ_coeff_zero : PowerSeries.coeff 0 dZ = 0 := by
   rw [dZ_eq_tZ_add_s3Z_sq_add_s3Z_cube_sub_s5Z_sq]
-  simp only [map_sub, map_add (f := _), PowerSeries.coeff_C_mul, pow_succ, pow_zero, one_mul,
+  simp only [map_sub, map_add (f := _), pow_succ, pow_zero, one_mul,
     PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Finset.sum_range_succ,
     Finset.sum_range_zero, tZ, s3Z, s5Z, PowerSeries.coeff_mk, ArithmeticFunction.sigma_apply]
   norm_num
 
 theorem dZ_coeff_one : PowerSeries.coeff 1 dZ = 1 := by
   rw [dZ_eq_tZ_add_s3Z_sq_add_s3Z_cube_sub_s5Z_sq]
-  simp only [map_sub, map_add (f := _), PowerSeries.coeff_C_mul, pow_succ, pow_zero, one_mul,
+  simp only [map_sub, map_add (f := _), pow_succ, pow_zero, one_mul,
     PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Finset.sum_range_succ,
     Finset.sum_range_zero, tZ, s3Z, s5Z, PowerSeries.coeff_mk, ArithmeticFunction.sigma_apply]
   norm_num

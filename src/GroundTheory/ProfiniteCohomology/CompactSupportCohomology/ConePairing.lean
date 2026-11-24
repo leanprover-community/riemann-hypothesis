@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.Pairing
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ShiftNegOneHomologyIsoSymmHom
+import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 @[expose] public section
 

@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 
 @[expose] public section
 

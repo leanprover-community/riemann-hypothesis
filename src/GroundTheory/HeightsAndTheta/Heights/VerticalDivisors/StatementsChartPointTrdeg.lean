@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChowNorm
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 
 @[expose] public section
 

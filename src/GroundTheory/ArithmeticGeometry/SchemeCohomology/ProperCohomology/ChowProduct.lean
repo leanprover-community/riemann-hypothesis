@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheafCore
+public import Mathlib.AlgebraicGeometry.Morphisms.Proper
+import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheafCore
+import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

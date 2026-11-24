@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSheetLift
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheetA
 
 @[expose] public section
 

@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFibreSectionsCovering
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.Basic
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 @[expose] public section
 

@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.LineModel
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 
 @[expose] public section
 

@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurveBranchOrder
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurvePointDVR
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StUniformiserBranchSimpleZero
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PointLocalRingOrder
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelOpenMapping
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PointLocalRingOrder
 
 @[expose] public section
 

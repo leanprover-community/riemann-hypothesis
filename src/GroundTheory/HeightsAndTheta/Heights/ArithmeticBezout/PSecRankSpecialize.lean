@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSecRankSpecialize
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecAlgFieldChange
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -85,8 +88,8 @@ theorem SecRankSpecialize.proof : SecRankSpecialize.Statement := by
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [hb, ← hr i, algebraMap_smul]
     have hz : ρ (x - ∑ i, r i • b i) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, map_sum]
+
+      rw [map_sub, map_sum]
       simp only [map_smul]
       rw [hsum, sub_self]
     have hm := mem_maximalIdeal_smul_of_secMap_eq_zero κ hsurj Q y _ hz

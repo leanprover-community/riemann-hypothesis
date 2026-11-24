@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StConeAvoidsExists
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLeadIdealDim
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLinearFormCut

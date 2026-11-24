@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.Divisibility.TwistedPlaceEtaSumLeExtended
+public import Formalism.LocalToGlobal.Divisibility.DivisionCompatibleToSub2Indef2
+public import Formalism.LocalToGlobal.Divisibility.LinkDefN
+public import Formalism.SharpRestriction.GlobalTheoremInputs
+import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
+import Formalism.SharpRestriction.AdmissibleParameterJoins.SumLogPrimeFactorsLe
 
 @[expose] public section
 
@@ -59,7 +64,7 @@ theorem sum_le_etaSum_num (L : SizeData₂ D) (A : FamIn D.what₂.LL G Pl0 T m)
     exact Finset.mem_filter.2 (hTw y hy)
   · intro w _ _
     rw [hg]
-    exact mul_nonneg (mul_nonneg (zero_le_logWeight w) (Nat.cast_nonneg _)) (by exact_mod_cast D.what₂.etaJ_nonneg _ w)
+    exact mul_nonneg (mul_nonneg (_root_.Formalism.MainNotions.J.logWeight_nonneg w) (Nat.cast_nonneg _)) (by exact_mod_cast D.what₂.etaJ_nonneg _ w)
 
 theorem inEta_num (L : SizeData₂ D) (A : FamIn D.what₂.LL G Pl0 T m) {P0 : Subgroup G} {ψ0 : P0 →* D.what₂.LLˣ}
     {Zs : DefSub A.fam.amb} {S0 : IndefData (A.side P0 ψ0 Zs)} {tup : T → D.what₂.Tup} (Ce : ℝ)

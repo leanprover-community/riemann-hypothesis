@@ -1,8 +1,44 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwoChartAtlas.TwoChartSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -87,21 +123,14 @@ end Val
 section Jet
 variable {R : Type} [CommRing R] {κ : Type}
 
-theorem jetTruncR_surjective (m : ℕ) : Function.Surjective (jetTruncR R κ m) := by
-  intro y
-  obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective y
-  exact ⟨Ideal.Quotient.mk _ a, rfl⟩
+theorem jetTruncR_surjective (m : ℕ) : Function.Surjective (jetTruncR R κ m) :=
+  jetTruncate_surjective (R := R) κ (Nat.le_succ m)
 
 theorem isNilpotent_of_mem_ker_jetTruncR (m : ℕ) (a : JetR R κ (m + 1))
     (ha : a ∈ RingHom.ker (jetTruncR R κ m).toRingHom) : IsNilpotent a := by
-  have e : (jetAug R κ m).comp (jetTruncR R κ m) = jetAug R κ (m + 1) :=
-    jet_ext fun j => (jetAug_zR m j).trans (jetAug_zR (m + 1) j).symm
-  have ha' : jetTruncR R κ m a = 0 := ha
-  have h1 : a ∈ RingHom.ker (jetAug R κ (m + 1)) := by
-    rw [RingHom.mem_ker, ← e, AlgHom.comp_apply, ha', map_zero]
-  refine ⟨m + 1 + 1, ?_⟩
-  have := Ideal.pow_mem_pow h1 (m + 1 + 1)
-  rwa [ker_jetAug_pow, Ideal.mem_bot] at this
+  refine ⟨2, ?_⟩
+  have h : a ^ 2 ∈ (RingHom.ker (jetTruncR R κ m)) ^ 2 := Ideal.pow_mem_pow ha 2
+  rwa [ker_jetTruncR_sq (R := R) κ m, Ideal.mem_bot] at h
 
 theorem top_le_preimage_jet {X : Scheme.{0}} (p : ∀ m : ℕ, Spec (CommRingCat.of (JetR R κ m)) ⟶ X)
     (hp : ∀ m, (spMap (jetTruncR R κ m)).left ≫ p (m + 1) = p m) (U : X.Opens) (h : ⊤ ≤ p 0 ⁻¹ᵁ U) (m : ℕ) :

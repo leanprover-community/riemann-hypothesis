@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StValCentreZ
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.KerIsMultiHomogIdeal
+import GroundTheory.HeightsAndTheta.Heights.Intersections.NotMemOfNonZeroDivisor
+import Mathlib.Algebra.MvPolynomial.Nilpotent
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsFunFieldMulEq
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.FunFieldLeLocRing
 
 @[expose] public section
 

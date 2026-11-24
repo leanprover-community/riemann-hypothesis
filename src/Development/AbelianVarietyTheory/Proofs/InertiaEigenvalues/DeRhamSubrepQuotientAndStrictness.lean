@@ -1,11 +1,59 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfForallMemFilV
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAdaptedOfSurjective
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinBasisSubsetOfIsField
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdemNotMemFilVOne
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -40,8 +88,8 @@ theorem mem_of_invariant {G K B M ι : Type} [Field K] [CommRing B] [Algebra K B
     refine (E a).sum_mem fun i hi => ?_
     obtain ⟨c, hc⟩ := hinv (b i) fun g => sub_eq_zero.1 (hB (fun j => σ g (b j) - b j) (by
       have := hy g
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, hρ, hei] at this
+
+      simp only [map_sum, hρ, hei] at this
       simp only [sub_smul, Finset.sum_sub_distrib, this, sub_self]) i hi)
     by_cases hc0 : c = 0
     · rw [← hc, hc0, map_zero, zero_smul]
@@ -103,8 +151,8 @@ theorem spans_of_surjective (hs : Function.Surjective f) (h : Spans PD ρ) : Spa
   obtain ⟨x, -, rfl⟩ := exists_ext_mem_FilV PD f hs ha
   obtain ⟨m, b, d, hd, rfl⟩ := h x
   exact ⟨m, b, fun i => ext Qp F f (d i), fun i => ext_mem_DdR PD ρ ρ' f hf (hd i), by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, ext_mulR]⟩
+
+    simp only [map_sum, ext_mulR]⟩
 
 theorem spans_of_injective [FiniteDimensional Qp LL] [FiniteDimensional Qp K] [CharZero Qp]
     [FiniteDimensional LL V] [FiniteDimensional LL V'] (hF : IsField F)
@@ -122,7 +170,7 @@ theorem strict_of_surjective (hF : IsField F) (hs : Function.Surjective f) (h : 
   let φ : F →+* Module.End LL (V' ⊗[Qp] F) :=
     { toFun := fun b => mulR Qp F LL V' b
       map_one' := by ext; simp
-      map_mul' := fun x y => by ext; simp [mul_assoc]
+      map_mul' := fun x y => by ext; simp
       map_zero' := by ext; simp
       map_add' := fun x y => by ext; simp [add_mul, tmul_add] }
   letI : Module F (V' ⊗[Qp] F) := Module.compHom _ φ
@@ -132,8 +180,8 @@ theorem strict_of_surjective (hF : IsField F) (hs : Function.Surjective f) (h : 
   obtain ⟨x, hx, rfl⟩ := exists_ext_mem_FilV PD f hs hy.2
   obtain ⟨m, k, b, d, hd, rfl⟩ := h a x hx
   have hsum : ext Qp F f (∑ i, mulR Qp F LL V (b i) (d i)) = ∑ i, b i • ext Qp F f (d i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, ext_mulR, hsm]
+
+    simp only [map_sum, ext_mulR, hsm]
   have hinv := (mem_DdR PD _ _).1 hy.1
   rw [hsum] at hinv ⊢
   exact mem_of_invariant (K := K) hF (fun g b => PD.actdR g b) (fun g => (actVdR PD ρ' g).toAddMonoidHom)

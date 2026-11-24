@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsCoordArithOfFnField
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

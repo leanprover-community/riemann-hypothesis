@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Mathlib.Analysis.InnerProductSpace.Spectrum
 
 @[expose] public section
 

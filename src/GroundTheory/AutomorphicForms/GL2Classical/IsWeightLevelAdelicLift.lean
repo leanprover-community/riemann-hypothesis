@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2Classical.Adelic
 public import GroundTheory.AutomorphicForms.GL2Classical.Iwasawa
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.HasModerateGrowthZero
+import Mathlib.NumberTheory.ModularForms.SlashActions
 
 @[expose] public section
 

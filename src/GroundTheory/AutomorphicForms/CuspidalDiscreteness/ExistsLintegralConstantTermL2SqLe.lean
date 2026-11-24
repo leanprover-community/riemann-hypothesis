@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.IsHilbertSchmidtOfAeEqDual
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
+public import GroundTheory.AutomorphicForms.Reduction
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Unimodular
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.TorusDifference
+import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharStd
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IntegrableOnOfPeriodic
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumLemmas
 
 @[expose] public section
 
@@ -52,8 +53,8 @@ theorem symplO_ratW_ratW (e γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
     symplO S T (ratW T S e) (ratW T S γ) = algebraMap D.host.F (AF D.host.F) (betaO S T e γ) := by
   have h : hO S T (ratW T S e) (ratW T S γ) = incA D (hE S T e γ) := by
     unfold hO hE
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, ratW, Matrix.map_apply, Brg.cA_inc]
+
+    simp only [map_sum, map_mul, ratW, Matrix.map_apply, Brg.cA_inc]
   unfold symplO betaO
   rw [h, ← map_mul, trace_incA]
 

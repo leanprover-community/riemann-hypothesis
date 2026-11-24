@@ -1,7 +1,7 @@
 module
 
 public import ReciprocityTheory.GeometryOfNumbers.AsymptoticSequences.DefectSt
-public import Mathlib
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

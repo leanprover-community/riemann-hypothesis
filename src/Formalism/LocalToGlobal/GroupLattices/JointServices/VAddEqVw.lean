@@ -1,7 +1,10 @@
 module
 
 public import Formalism.LocalRingCardinality.DataArith
-public import Formalism.LocalToGlobal.ExponentGrids.ExponentGridsProofs.NormaliserValuationBound
+public import Formalism.QuotientMetricDivisors.Statement
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

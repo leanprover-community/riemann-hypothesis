@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib.RingTheory.Finiteness.Defs
+public import Mathlib.RingTheory.Localization.FractionRing
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 
 @[expose] public section
 

@@ -1,11 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness
-public import GroundTheory.AutomorphicForms.SupercuspidalCoefficients
-public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
-public import GroundTheory.GlobalFields.LocalFieldAtPlace
-public import GroundTheory.AutomorphicForms.RealIwasawaIntegration
+public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
+public import GroundTheory.AutomorphicForms.ReductionMahler
+public import GroundTheory.AutomorphicForms.ReductionMeasure
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
+public import Mathlib.Data.ENat.Basic
+public import Mathlib.Algebra.Order.AddGroupWithTop
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section
 

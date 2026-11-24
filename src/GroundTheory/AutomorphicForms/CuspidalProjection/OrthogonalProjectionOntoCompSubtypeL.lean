@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalProjection.Global
-public import GroundTheory.AutomorphicForms.TraceClass
 public import GroundTheory.AutomorphicForms.TraceFormulaConvolution
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspCompact
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

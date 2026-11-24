@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.FormalGroup.Basic
 public import GroundTheory.LocalFields.FormalGroups.Truncation
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -79,7 +84,7 @@ private lemma invStep_contract (f g : MvPowerSeries Unit R) (n : ℕ)
         simpa using h
 
 private lemma existsUnique_invStep : ∃! g, invStep F g = g :=
-  existsUnique_fixedPoint _ (invStep_contract F)
+  _root_.UpperTheory.Reformulated.B.Ydb5.existsUnique_fixedPoint _ (invStep_contract F)
 
 @[no_expose]
 noncomputable def inv : PowerSeries R :=

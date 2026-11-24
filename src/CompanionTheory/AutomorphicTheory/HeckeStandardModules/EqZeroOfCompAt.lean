@@ -1,9 +1,15 @@
 module
 
-public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegerUnitSplitPlaceConjugatePrime
+public import Formalism.SatakeDualWeyl.Statement
+public import ReciprocityTheory.Automorphisms.Unitary
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmFieldAdeleSplitPlaceSupportIntegral
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegerUnitSplitPlaceConjugatePrime
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
 
 @[expose] public section
 

@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.AdjoinRoot
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,9 +1,56 @@
 module
 
-public import Mathlib
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageInverse
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockPointNorm
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionPointValue
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLocalRep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -86,38 +133,10 @@ theorem pn_prod {J : Type} (s : Finset J) (f : J → MRing ι) (d : J → K → 
     rw [Finset.prod_insert hj, Finset.sum_insert hj]
     exact pn_mul (h j (Finset.mem_insert_self _ _)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-theorem pn_aeval_smul {S : Type*} [CommRing S] [Algebra ℤ S] {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a)
-    (c : K → S) (v : (Σ k, ι k) → S) : aeval (fun p => c p.1 * v p) f = (∏ k, c k ^ a k) * aeval v f := by
-  rw [aeval_def, aeval_def, eval₂_eq', eval₂_eq', Finset.mul_sum]
-  refine Finset.sum_congr rfl fun d hd => ?_
-  have hprod : ∏ p, (c p.1 * v p) ^ d p = (∏ k, c k ^ a k) * ∏ p, v p ^ d p := by
-    simp_rw [mul_pow, Finset.prod_mul_distrib]
-    congr 1
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i, c k ^ d ⟨k, i⟩ = c k ^ a k
-    rw [Finset.prod_pow_eq_pow_sum, hf d hd k]
-  rw [hprod]
-  ring
-
 theorem pn_aeval_congr_block [DecidableEq K] {S : Type*} [CommRing S] [Algebra ℤ S] {h : MRing ι} {k₀ : K} {n : ℕ}
     (hh : IsMultiHomog h (blockDeg k₀ n)) {v w : (Σ k, ι k) → S} (hvw : ∀ i, v ⟨k₀, i⟩ = w ⟨k₀, i⟩) :
     aeval v h = aeval w h := by
-  rw [aeval_def, aeval_def, eval₂_eq', eval₂_eq']
-  refine Finset.sum_congr rfl fun d hd => congrArg _ (Finset.prod_congr rfl fun p _ => ?_)
-  obtain ⟨k, i⟩ := p
-  by_cases hk : k = k₀
-  · subst hk
-    rw [hvw]
-  · have h0 : d ⟨k, i⟩ = 0 := by
-      have := hh d hd k
-      simp only [blockDeg, if_neg hk] at this
-      exact (Finset.sum_eq_zero_iff.mp this) i (Finset.mem_univ _)
-    rw [h0, pow_zero, pow_zero]
-
-theorem pn_eval_map_int {σ : Type*} (z : σ → ℂ) (f : MvPolynomial σ ℤ) :
-    eval z (map (Int.castRingHom ℂ) f) = aeval z f := by
-  rw [eval_map, aeval_def, algebraMap_int_eq]
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.aeval_congr_block <;> assumption
 
 theorem pn_aeval_mem {S : Type*} [CommRing S] (T : Subalgebra ℤ S) {σ : Type*} (u : σ → S)
     (hu : ∀ p, u p ∈ T) (f : MvPolynomial σ ℤ) : aeval u f ∈ T := by
@@ -143,7 +162,7 @@ theorem pn_mConeMap_homog (y : (Σ k, ι k) → Ω) {f : MRing ι} {a : K → �
   have h1 : mConeMap y f = aeval (fun p => (X p.1 : MvPolynomial K Ω) * C (y p)) f := by
     rw [mConeMap]
     exact congrArg (fun φ => aeval φ f) (funext fun p => mul_comm _ _)
-  rw [h1, pn_aeval_smul hf (fun k => (X k : MvPolynomial K Ω)) (fun p => C (y p))]
+  rw [h1, GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.aeval_smul hf (fun k => (X k : MvPolynomial K Ω)) (fun p => C (y p))]
   have h2 : aeval (fun p => (C (y p) : MvPolynomial K Ω)) f = C (aeval y f) := aeval_C_comp_left y f
   rw [h2]
 
@@ -166,14 +185,14 @@ def newScale {S : Type*} [Zero S] (c : S) : Option K → S
 theorem aeval_scale_new {S : Type*} [CommRing S] [Algebra ℤ S] {N q : ℕ} {F : MRing (addIdx ι N)}
     (hF : IsMultiHomog F (blockDeg (none : Option K) q)) (z u : (Σ k, addIdx ι N k) → S) (c : S)
     (h : ∀ j, z ⟨none, j⟩ = c * u ⟨none, j⟩) : aeval z F = c ^ q * aeval u F := by
-  rw [pn_aeval_congr_block hF (w := fun p => newScale c p.1 * u p) h, pn_aeval_smul hF, Fintype.prod_option]
+  rw [pn_aeval_congr_block hF (w := fun p => newScale c p.1 * u p) h, GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.aeval_smul hF, Fintype.prod_option]
   simp [newScale, blockDeg]
 
 theorem homog_bind_new {N q : ℕ} {e : K → ℕ} (G : Fin N → MRing ι) (hG : ∀ j, IsMultiHomog (G j) e)
     {F : MRing (addIdx ι N)} (hF : IsMultiHomog F (blockDeg (none : Option K) q)) :
     IsMultiHomog (bind₁ (newSubst G) F) (q • e) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [F.as_sum, map_sum]
+
+  rw [F.as_sum, map_sum]
   refine pn_sum _ fun μ hμ => ?_
   rw [bind₁_monomial]
   have hfac : ∀ p ∈ μ.support, IsMultiHomog (newSubst G p ^ μ p) (μ p • e) := by
@@ -220,8 +239,8 @@ theorem pn_oldPart_mem {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {z
     (hz : z ∈ mcPts (mCoordIdeal (addBlock y v))) : basePart₂ z ∈ mcPts (mCoordIdeal y) := by
   refine ⟨fun k => hz.1 (some k), fun f hf => ?_⟩
   have := hz.2 _ (pn_rename_mem v hf)
-  rw [pn_eval_map_int, pn_aeval_rename_old] at this
-  rw [pn_eval_map_int]
+  rw [GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int, pn_aeval_rename_old] at this
+  rw [GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int]
   exact this
 
 theorem new_cross {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {e : K → ℕ} {G : Fin N → MRing ι}
@@ -239,7 +258,7 @@ theorem new_cross {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {e : K 
     simp only [map_mul, rename_C]
     linear_combination (X none * rename some (∏ k, (X k : MvPolynomial K Ω) ^ e k)) * hC
   have := hz.2 _ hmem
-  rw [pn_eval_map_int] at this
+  rw [GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int] at this
   simp only [map_sub, map_mul, aeval_X, pn_aeval_rename_old, sub_eq_zero] at this
   exact this
 
@@ -287,12 +306,11 @@ theorem common_rep {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n N : ℕ} {v : Fi
       ← Finset.mul_prod_erase Finset.univ (fun i => aeval y (h i)) (Finset.mem_univ j)]
     ring
   · rw [map_prod]
-    exact Finset.prod_ne_zero_iff.mpr fun i _ => by rw [← pn_eval_map_int]; exact hhx i
+    exact Finset.prod_ne_zero_iff.mpr fun i _ => by rw [← GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int]; exact hhx i
 
 end Block
 
 end PowerBlockPointNorm
-
 
 open PowerBlockPointNorm in
 theorem PowerBlockPointNorm.proof (h1 : SectionPointValue.Statement) (h2 : LocalRep.Statement) :
@@ -319,7 +337,7 @@ theorem PowerBlockPointNorm.proof (h1 : SectionPointValue.Statement) (h2 : Local
   set W : Fin N → ℂ := fun j => w m ⟨v j, hv j⟩ x with hWdef
   have hval : ∀ j, aeval x (G j) = W j * aeval x H * (A.h x : ℂ) ^ m := fun j => by
     have := hwv m ⟨v j, hv j⟩ e e' (G j) H x (hG j) hH he (hGy j) hx
-    simpa only [pn_eval_map_int] using this
+    simpa only [GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int] using this
   have hnorm : ∀ j, ‖W j‖ * B.h z = ‖z ⟨none, j⟩‖ := fun j => by
     rw [← hmet z hz j]
     exact congrArg (· * B.h z) (hwn m ⟨v j, hv j⟩ x hx).symm
@@ -365,14 +383,14 @@ theorem PowerBlockPointNorm.proof (h1 : SectionPointValue.Statement) (h2 : Local
     ring
   have hvF := hwv (m * q) ⟨_, hFv⟩ (q • e) (q • e') (bind₁ (newSubst G) F) (H ^ q) x
     (homog_bind_new G hG hF) (pn_pow hH q) hdeg (by rw [hB]; ring) hx
-  rw [pn_eval_map_int, pn_eval_map_int, hC, map_pow, pow_mul] at hvF
+  rw [GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int, GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int, hC, map_pow, pow_mul] at hvF
   have hwF : w (m * q) ⟨_, hFv⟩ x = aeval (newSubst W) F := by
     apply mul_left_cancel₀ (pow_ne_zero q hT)
     linear_combination -hvF
   have hsec : secNormAt y A (m * q) (aeval (addBlock y v) F) x = ‖w (m * q) ⟨_, hFv⟩ x‖ :=
     hwn (m * q) ⟨_, hFv⟩ x hx
   have hBpos : 0 < B.h z := B.pos z hz.1
-  rw [hsec, hwF, pn_eval_map_int, hD, norm_mul, norm_pow, hlamn,
+  rw [hsec, hwF, GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.eval_map_int, hD, norm_mul, norm_pow, hlamn,
     mul_div_cancel_left₀ _ (pow_ne_zero q hBpos.ne')]
 
 end

@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementKer
-public import Formalism.GaussJetBounds.Statement
+public import Formalism.LocalToGlobal.AlgebraicTheory.StatementD
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

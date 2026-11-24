@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupLocal
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSFull
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSLocal
 
 @[expose] public section
 

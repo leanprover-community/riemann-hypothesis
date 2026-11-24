@@ -1,7 +1,61 @@
 module
 
-public import Mathlib
-public import Formalism.HermitianLattices.StatementTheta
+public import Mathlib.Algebra.Module.Lattice.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
+public import Mathlib.LinearAlgebra.Matrix.PosDef
 
 @[expose] public section
 
@@ -93,8 +147,8 @@ lemma thetaSummable_shift (h : V →ₗ⋆[K] V →ₗ[K] K)
 lemma thetaSummable_expand (h : V →ₗ⋆[K] V →ₗ[K] K) {ι : Type*} [Fintype ι] (e : ι → V) (c : ι → ℤ) :
     Algebra.trace ℚ K (h (∑ i, c i • e i) (∑ i, c i • e i)) =
       ∑ i, ∑ j, (c i : ℚ) * (c j : ℚ) * Algebra.trace ℚ K (h (e i) (e j)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_zsmul, LinearMap.sum_apply, LinearMap.smul_apply]
+
+  simp only [map_sum, map_zsmul, LinearMap.sum_apply, LinearMap.smul_apply]
   simp only [zsmul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
@@ -144,7 +198,6 @@ lemma thetaSummable_coercive (G : Matrix ι ι ℚ)
   have hcont : Continuous fun v : ι → ℝ => v ⬝ᵥ (M *ᵥ v) := by
     first
     | fun_prop
-    | exact continuous_id.dotProduct (continuous_const.matrix_mulVec continuous_id)
   have hGnn : ∀ w : ι → ℚ, 0 ≤ w ⬝ᵥ (G *ᵥ w) := by
     intro w
     by_cases hw : w = 0
@@ -322,7 +375,6 @@ lemma thetaSummable_main (h : V →ₗ⋆[K] V →ₗ[K] K)
   haveI : IsAddTorsionFree L := isAddTorsionFree_ringOfIntegers_submodule L
   haveI : Module.IsTorsionFree ℤ L := by
     first
-    | infer_instance
     | (constructor
        intro r hr a b hab
        have hr0 : r ≠ 0 := hr.ne_zero

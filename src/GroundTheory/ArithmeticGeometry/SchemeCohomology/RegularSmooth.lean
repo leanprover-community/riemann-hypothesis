@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularLocalDomain
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.RegularLocalRing.Polynomial
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Unramified.LocalRing
 
 @[expose] public section
 

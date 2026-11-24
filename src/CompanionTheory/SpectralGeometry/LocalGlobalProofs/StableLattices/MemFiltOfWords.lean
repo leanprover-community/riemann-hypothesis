@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.CapelliDeterminantBlockProduct
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

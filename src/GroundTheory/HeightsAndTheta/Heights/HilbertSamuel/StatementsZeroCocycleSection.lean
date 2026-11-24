@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecCochReduce
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenOnFibres
 
 @[expose] public section
 

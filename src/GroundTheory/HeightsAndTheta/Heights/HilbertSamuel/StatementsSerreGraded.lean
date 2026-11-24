@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Field.Defs
+public import Mathlib.Algebra.Group.Subgroup.Lattice
+public import Mathlib.Data.Fintype.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

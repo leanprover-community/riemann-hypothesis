@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartSection
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LelongChartLimit
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StokesObjects
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
 
 @[expose] public section
 

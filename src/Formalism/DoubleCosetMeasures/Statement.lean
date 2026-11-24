@@ -1,6 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -116,62 +163,45 @@ variable (K : Type) [CommRing K]
 theorem isLowUni_mul {n : ℕ} {x y : Matrix (Fin n) (Fin n) K} (hx : IsLowUni x)
     (hy : IsLowUni y) : IsLowUni (x * y) := by
   refine ⟨hx.1.mul hy.1, fun a => ?_⟩
-  rw [Matrix.mul_apply, Finset.sum_eq_single a]
+  rw [Matrix.mul_apply, Finset.sum_eq_single_of_mem a (Finset.mem_univ a)]
   · rw [hx.2, hy.2, mul_one]
   · intro b _ hb
     rcases lt_or_gt_of_ne hb with h | h
     · exact mul_eq_zero_of_right _ (hy.1 (OrderDual.toDual_lt_toDual.2 h))
     · exact mul_eq_zero_of_left (hx.1 (OrderDual.toDual_lt_toDual.2 h)) _
-  · intro h; exact absurd (Finset.mem_univ a) h
 
 theorem isUpUni_mul {n : ℕ} {x y : Matrix (Fin n) (Fin n) K} (hx : IsUpUni x)
     (hy : IsUpUni y) : IsUpUni (x * y) := by
-  refine ⟨hx.1.mul hy.1, fun a => ?_⟩
-  rw [Matrix.mul_apply, Finset.sum_eq_single a]
-  · rw [hx.2, hy.2, mul_one]
-  · intro b _ hb
-    rcases lt_or_gt_of_ne hb with h | h
-    · exact mul_eq_zero_of_left (hx.1 h) _
-    · exact mul_eq_zero_of_right _ (hy.1 h)
-  · intro h; exact absurd (Finset.mem_univ a) h
+  have h : IsLowUni (x * y)ᵀ := by
+    rw [Matrix.transpose_mul]
+    exact isLowUni_mul K ⟨hy.1.transpose, hy.2⟩ ⟨hx.1.transpose, hx.2⟩
+  exact ⟨by simpa using (Matrix.blockTriangular_transpose_iff.mp h.1), h.2⟩
 
 theorem isLowUni_det {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsLowUni x) : x.det = 1 := by
-  rw [Matrix.det_of_lowerTriangular x hx.1]
-  simp [hx.2]
+  simpa [hx.2] using Matrix.det_of_lowerTriangular x hx.1
 
 theorem isUpUni_det {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsUpUni x) : x.det = 1 := by
-  rw [Matrix.det_of_upperTriangular hx.1]
-  simp [hx.2]
+  simpa [hx.2] using Matrix.det_of_upperTriangular hx.1
 
 theorem isLowUni_inv {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsLowUni x) :
     IsLowUni x⁻¹ := by
   have hu : IsUnit x.det := by rw [isLowUni_det K hx]; exact isUnit_one
   letI := Matrix.invertibleOfIsUnitDet x hu
-  have hT : x⁻¹.IsLowerTriangular := Matrix.blockTriangular_inv_of_blockTriangular hx.1
-  refine ⟨hT, fun a => ?_⟩
+  refine ⟨Matrix.blockTriangular_inv_of_blockTriangular hx.1, fun a => ?_⟩
   have h := congrFun (congrFun (Matrix.nonsing_inv_mul x hu) a) a
-  rw [Matrix.mul_apply, Finset.sum_eq_single a, hx.2, mul_one, Matrix.one_apply_eq] at h
+  rw [Matrix.mul_apply, Finset.sum_eq_single_of_mem a (Finset.mem_univ a), hx.2, mul_one, Matrix.one_apply_eq] at h
   · exact h
   · intro b _ hb
     rcases lt_or_gt_of_ne hb with h' | h'
     · exact mul_eq_zero_of_right _ (hx.1 (OrderDual.toDual_lt_toDual.2 h'))
-    · exact mul_eq_zero_of_left (hT (OrderDual.toDual_lt_toDual.2 h')) _
-  · intro h'; exact absurd (Finset.mem_univ a) h'
+    · exact mul_eq_zero_of_left ((Matrix.blockTriangular_inv_of_blockTriangular hx.1) (OrderDual.toDual_lt_toDual.2 h')) _
 
 theorem isUpUni_inv {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsUpUni x) :
     IsUpUni x⁻¹ := by
-  have hu : IsUnit x.det := by rw [isUpUni_det K hx]; exact isUnit_one
-  letI := Matrix.invertibleOfIsUnitDet x hu
-  have hT : x⁻¹.IsUpperTriangular := Matrix.blockTriangular_inv_of_blockTriangular hx.1
-  refine ⟨hT, fun a => ?_⟩
-  have h := congrFun (congrFun (Matrix.nonsing_inv_mul x hu) a) a
-  rw [Matrix.mul_apply, Finset.sum_eq_single a, hx.2, mul_one, Matrix.one_apply_eq] at h
-  · exact h
-  · intro b _ hb
-    rcases lt_or_gt_of_ne hb with h' | h'
-    · exact mul_eq_zero_of_left (hT h') _
-    · exact mul_eq_zero_of_right _ (hx.1 h')
-  · intro h'; exact absurd (Finset.mem_univ a) h'
+  have h : IsLowUni (x⁻¹)ᵀ := by
+    rw [Matrix.transpose_nonsing_inv]
+    exact isLowUni_inv K ⟨hx.1.transpose, hx.2⟩
+  exact ⟨by simpa using (Matrix.blockTriangular_transpose_iff.mp h.1), h.2⟩
 
 theorem isLowUni_one {n : ℕ} : IsLowUni (1 : Matrix (Fin n) (Fin n) K) := ⟨Matrix.blockTriangular_one, fun a => Matrix.one_apply_eq a⟩
 

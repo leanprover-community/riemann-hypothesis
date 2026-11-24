@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Relrank
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 
 @[expose] public section
 

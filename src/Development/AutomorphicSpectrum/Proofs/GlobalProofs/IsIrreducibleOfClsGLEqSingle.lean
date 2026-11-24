@@ -1,15 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.TotallyDisjointProductIrreducible
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BernsteinUnitaryProductIrreducible
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SupercuspidalSupportUniqueGL
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCuspidalSupportIrreducibleSmoothGL
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HasSupportOfIsSubquotientProdIrr
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasSupportOfIsSubquotientProdIrr
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMonomialOfCountZero
-public import CompanionTheory.AutomorphicTheory.HeckeStandardModules.EqZeroOfCompAt
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCovBySubmodule
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSubAddQuot
+public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HasSupportOfIsSubquotientProdIrr
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -134,8 +175,8 @@ private theorem exists_hasSupport_of_symm_sum_ne_zero (hS : IsSegmentClass k Z) 
     (hX : ∀ Δ, Ψ (Finsupp.single ⟨Δ.len * Δ.d, Z Δ⟩ 1) = MvPolynomial.X Δ)
     (F : Finset (Segment k →₀ ℕ)) (c : (Segment k →₀ ℕ) → ℤ) (u : IrrGL (k := k))
     (h : (Ψ.symm (∑ n ∈ F, monomial n (c n))) u ≠ 0) : ∃ n ∈ F, HasSupport u.rep (msum n) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finsupp.finsetSum_apply] at h
+
+  rw [map_sum, Finsupp.finsetSum_apply] at h
   obtain ⟨n, hn, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero h
   refine ⟨n, hn, hasSupport_of_symm_monomial_ne_zero hS hΨ hX u n ?_⟩
   intro h0
@@ -309,7 +350,7 @@ theorem eq_pair (hx : x.IsCusp) (hy : y.IsCusp) (hl : ∀ j : ℤ, |j| ≤ 1 →
 end Monomials
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem prod₂_cls {A : Type 1} [CommRing A] {Ψ : GrothGL k ≃+ A} (hΨ : IsProductIso k Ψ) (x y : IrrGL (k := k)) :
     ∃ h : HasFiniteLength (prod₂ x.rep y.rep), Ψ (clsGL (prod₂ x.rep y.rep) h) = bas Ψ x * bas Ψ y := by
   have hx := hasFiniteLength_of_isIrreducible x.snd.rep.irr
@@ -436,7 +477,7 @@ theorem isIrreducible_of_cls_eq_mul (hG : GeometricLemma) (hBZ : BernsteinZelevi
 end Main
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem isIrreducible_prod₂_of_polynomialRing (hG : GeometricLemma) (hBZ : BernsteinZelevinskyFiniteness)
     (hZ : ZelevinskyPolynomialRing) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (x y : IrrGL (k := k)) (hx : x.IsCusp) (hy : y.IsCusp)

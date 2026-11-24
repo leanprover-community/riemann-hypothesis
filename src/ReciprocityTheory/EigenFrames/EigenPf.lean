@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.EigenFrames.EigenSt
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.Algebra.Algebra.Hom.Rat
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.RingTheory.Valuation.Integral
 
 @[expose] public section
 
@@ -11,29 +14,17 @@ open NumberField
 
 namespace ReciprocityTheory.EigenFramesTheory
 
+private theorem norm_le_one_of_integral {p : ℕ} [Fact p.Prime] {y : ℂ_[p]}
+    (hy : IsIntegral ℤ y) : ‖y‖ ≤ 1 := by
+  let val : Valuation ℂ_[p] NNReal := NormedField.valuation
+  have hval : IsIntegral val.integer y := hy.tower_top
+  exact NNReal.coe_le_coe.2 ((Valuation.integer.integers val).isIntegral_iff_v_le_one.1 hval)
+
 theorem norm_le_one_of_monic {p : ℕ} [Fact p.Prime] {f : Polynomial ℤ} (hf : f.Monic) {y : ℂ_[p]}
     (h : Polynomial.eval₂ (Int.castRingHom ℂ_[p]) y f = 0) : ‖y‖ ≤ 1 := by
-  by_contra hy
-  rw [not_le] at hy
-  set n := f.natDegree
-  have hn : n ≠ 0 := by
-    intro h0
-    have hf1 : f = 1 := Polynomial.eq_one_of_monic_natDegree_zero hf h0
-    rw [hf1, Polynomial.eval₂_one] at h
-    exact one_ne_zero h
-  rw [Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ, hf.coeff_natDegree, map_one, one_mul] at h
-  set S := ∑ i ∈ Finset.range n, Int.castRingHom ℂ_[p] (f.coeff i) * y ^ i
-  have hS : ‖S‖ ≤ ‖y‖ ^ (n - 1) := by
-    refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun i hi => ?_
-    rw [norm_mul, norm_pow]
-    have hi' : i ≤ n - 1 := by have := Finset.mem_range.1 hi; omega
-    refine (mul_le_of_le_one_left (by positivity) ?_).trans (pow_le_pow_right₀ hy.le hi')
-    rw [eq_intCast]
-    exact IsUltrametricDist.norm_intCast_le_one _ _
-  have hyn : y ^ n = -S := by rw [eq_neg_iff_add_eq_zero, add_comm]; exact h
-  have h2 : ‖y‖ ^ n ≤ ‖y‖ ^ (n - 1) := by rw [← norm_pow, hyn, norm_neg]; exact hS
-  have h3 : ‖y‖ ^ (n - 1) < ‖y‖ ^ n := pow_lt_pow_right₀ hy (by omega)
-  linarith
+  refine norm_le_one_of_integral ⟨f, hf, ?_⟩
+  rw [RingHom.ext_int (algebraMap ℤ ℂ_[p]) (Int.castRingHom ℂ_[p])]
+  exact h
 
 theorem eig_norm_det_le_one {p : ℕ} [Fact p.Prime] {κ : Type*} [Fintype κ] [DecidableEq κ]
     (M : Matrix κ κ ℂ_[p]) (hM : ∀ i j, ‖M i j‖ ≤ 1) : ‖M.det‖ ≤ 1 := by
@@ -80,14 +71,10 @@ theorem eigenFrameDual : EigenFrameDual.{u, v} := by
     exact zero_ne_one hM1
   have hint : ∀ i j, ‖M i j‖ ≤ 1 := by
     intro i j
-    obtain ⟨f, hmon, hf⟩ := (NumberField.RingOfIntegers.isIntegral_coe (b i) : IsIntegral ℤ ((b i : 𝓞 E) : E))
-    refine norm_le_one_of_monic hmon ?_
-    let g : E →+* ℂ_[p] := (ι : ℂ →+* ℂ_[p]).comp (e j : E →+* ℂ)
-    have h := congrArg g hf
-    rw [map_zero, Polynomial.hom_eval₂] at h
-    rw [RingHom.ext_int (g.comp (algebraMap ℤ E)) (Int.castRingHom ℂ_[p])] at h
     rw [hMa]
-    exact h
+    let g : E →+* ℂ_[p] := (ι : ℂ →+* ℂ_[p]).comp (e j : E →+* ℂ)
+    exact norm_le_one_of_integral (IsIntegral.map_of_comp_eq (RingHom.id ℤ) g
+      (RingHom.ext_int _ _) (NumberField.RingOfIntegers.isIntegral_coe (b i)))
   let j₀ : κ := e.symm τ₀.toRatAlgHom
   refine ⟨fun i => (M.det)⁻¹ * M.adjugate j₀ i, fun i => ?_, fun φ => ?_⟩
   · rw [norm_mul, norm_inv, hM1, inv_one, one_mul, Matrix.adjugate_apply]

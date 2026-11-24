@@ -1,8 +1,55 @@
 module
 
-public import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantFinprodSchwartzBruhatFiniteAdel
+public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCompactSupportFinprodSchwartzBruhatFiniteAdel
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantFinprodSchwartzBruhatFiniteAdel
+public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
+public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
+public import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -64,14 +111,14 @@ theorem form_eq (a b : V) : B a b = formL d a b := rfl
 include d in
 theorem form_sum_left {ι : Type} (s : Finset ι) (t : ι → R) (v : ι → V) (b : V) :
     B (∑ j ∈ s, t j • v j) b = ∑ j ∈ s, t j * B (v j) b := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [form_eq d, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
+
+  simp only [form_eq d, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
 
 include d in
 theorem form_sum_right {ι : Type} (s : Finset ι) (t : ι → R) (v : ι → V) (b : V) :
     B b (∑ j ∈ s, t j • v j) = ∑ j ∈ s, t j * B b (v j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [form_eq d, map_sum, map_smul, smul_eq_mul]
+
+  simp only [form_eq d, map_sum, map_smul, smul_eq_mul]
 
 end Gen
 
@@ -154,11 +201,11 @@ theorem rat_surj {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
 theorem schr_mem {κ : Type} [Fintype κ] {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (w) {Φ} (hΦ : Φ ∈ schA F κ) :
-    schr ψ w Φ ∈ schA F κ := (GlobalTheory.T.theta_distribution_heisenberg_invariant F κ ψ h.1 (std_ne_one h) h.2.1).1 w Φ hΦ
+    schr ψ w Φ ∈ schA F κ := (_root_.GlobalTheory.CompanionTheory.AdelicHeis.schr_mem_and_thetaSum F κ ψ h.1 (std_ne_one h) h.2.1).1 w Φ hΦ
 
 theorem theta_schr_rat {κ : Type} [Fintype κ] {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (y z : κ → F) (Φ) :
     thetaSum F (schr ψ (fun i => algebraMap F (AF F) (y i), fun i => algebraMap F (AF F) (z i)) Φ) = thetaSum F Φ :=
-  (GlobalTheory.T.theta_distribution_heisenberg_invariant F κ ψ h.1 (std_ne_one h) h.2.1).2 (y, z) Φ
+  (_root_.GlobalTheory.CompanionTheory.AdelicHeis.schr_mem_and_thetaSum F κ ψ h.1 (std_ne_one h) h.2.1).2 (y, z) Φ
 
 variable {n d n₁ d₁ m : ℕ} {B : Base F E} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
   {M : Model σ X W} {M₁ : Model σ X₁ W₁} {ι : Matrix (Fin n) (Fin n₁) E} {ι' : Matrix (Fin d) (Fin d₁) E}
@@ -243,8 +290,8 @@ theorem incM_lin (a : Fin m → F) : incM F (∑ j, a j • u j) = lin u fun j =
   let j : Matrix (Fin n) (Fin d) E →ₗ[F] Ten F E n d :=
     (Algebra.TensorProduct.includeRight : E →ₐ[F] AF F ⊗[F] E).toLinearMap.mapMatrix
   show j _ = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, lin]
+
+  rw [map_sum, lin]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, algebraMap_smul]
   rfl

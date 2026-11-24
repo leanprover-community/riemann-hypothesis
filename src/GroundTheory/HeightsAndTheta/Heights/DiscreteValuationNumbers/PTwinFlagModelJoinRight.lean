@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ExSubAlt
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsTerTail
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsBisTail

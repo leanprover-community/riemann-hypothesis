@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperDiffPolySt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperDevissageSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperHyperplaneSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperSectionSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

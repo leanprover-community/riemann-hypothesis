@@ -1,7 +1,7 @@
 module
 
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverThm
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverLen
 
 @[expose] public section
 

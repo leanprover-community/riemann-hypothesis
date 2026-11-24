@@ -1,6 +1,50 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FormPos
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,18 +93,9 @@ def sW (S : C.HidaSetting E Wp Wq) (j : ℕ) (l : ℂ) : ℂ :=
 def dW (S : C.HidaSetting E Wp Wq) (v : Fin S.f) (j : ℕ) (w : List C.Letter) (h h' : C.LPt) : ℝ :=
   √(nnS S h) * √(nnS S h') / (bS S h * bS S h' * ΓS S j) / S.sizeAt v w
 
-private theorem tsize_lemma (r : ℕ) (g : ℝ) (P : C.LPt) :
-    ∀ x : ℕ, D.ptSize (D.toStd r g x P) = D.ptSize P := by
-  induction P with
-  | nil => intro x; simp only [D.toStd]
-  | cons a l ih =>
-    intro x
-    simp only [D.toStd, D.ptSize, List.map_cons, List.sum_cons] at ih ⊢
-    rw [ih]
-
 theorem stdS_size (S : C.HidaSetting E Wp Wq) (P : C.LPt) : D.ptSize (stdS S P) = D.ptSize P := by
   unfold stdS
-  exact tsize_lemma _ _ P 1
+  exact _root_.Formalism.FourierDecayAlt.P.PBD.toStd_size' _ _ P 1
 
 theorem sizeAt_nonneg (S : C.HidaSetting E Wp Wq) (v : Fin S.f) (w : List C.Letter) : 0 ≤ S.sizeAt v w := by
   unfold C.HidaSetting.sizeAt
@@ -132,8 +167,6 @@ theorem lamS_pos (S : C.HidaSetting E Wp Wq) (hg : (0 : ℝ) < S.g) (j : ℕ) : 
   unfold lamS
   first
     | exact zpow_pos (div_pos hg (by positivity)) _
-    | exact pow_pos (div_pos hg (by positivity)) _
-    | exact zpow_pos_of_pos (div_pos hg (by positivity)) _
 
 theorem psiL_eq_fsv (S : C.HidaSetting E Wp Wq) (hg : (0 : ℝ) < S.g) (j : ℕ) (l c : ℂ) :
     KB.psiL S l c = P5.fsv (sW S j l) ((lamS S j : ℂ) * c) := by
@@ -187,7 +220,7 @@ theorem stdS_app (S : C.HidaSetting E Wp Wq) (j : ℕ) (H : C.LPt) (c : ℂ) (hH
     stdS S (H ++ [(1, c)]) = stdS S H ++ [(1, (lamS S j : ℂ) * c)] := by
   unfold stdS
   rw [tapp_lemma, hH]
-  simp only [D.toStd, Nat.sub_self, pow_zero, mul_one, List.append_nil]
+  simp only [D.toStd, Nat.sub_self, pow_zero, mul_one]
   unfold lamS
   rw [Nat.add_comm 1 j]
 
@@ -346,7 +379,6 @@ theorem kc_scal {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, KB.Pl (D.p
     have hΓ1 : ΓS S (j + 1) =
         D.GamLev S.G.k S.G.r (D.kapG (S.g : ℝ) (S6.rd E)) (D.deG (S.g : ℝ) (S6.rd E)) (j + 1) := rfl
     rw [← hΓ1, zpow_neg]
-    have hκX := zpow_pos hκ (4 * ((S.G.r : ℤ) + 1 - ((j + 1 : ℕ) : ℤ)) * (C.Mlev S.G.k S.G.r (j + 1) - 1))
     field_simp
   have hdl : 0 < KB.dlB S (j + 1) 1 := by unfold KB.dlB; exact div_pos (zpow_pos hrd _) hδ
   have e3 : Kc S v j w h h' * |(lamS S j ^ 2)⁻¹| = (K * |(lamS S j ^ 2)⁻¹|) / S.sizeAt v w := by

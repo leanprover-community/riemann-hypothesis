@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GlESymmApply
+public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.LatSOfLocBasis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GlESymmApply
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemLocLatOverLat
 
 @[expose] public section
 
@@ -17,9 +62,9 @@ open Formalism.L2.G.RelativeIndexFlags
 
 theorem hform_mulVec_left {A : Type} [CommRing A] {n : ℕ} (τ : A →+* A) (J B : Matrix (Fin n) (Fin n) A)
     (t x : Fin n → A) : hform τ J (B *ᵥ t) x = ∑ a, τ (t a) * ((cT τ B * J) *ᵥ x) a := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, cT, Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
-    map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
+
+  simp only [hform, cT, Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
+  map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -39,21 +84,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem mem_dualL (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E)
     (Λ : Submodule (𝓞 E) (Fin n → E)) (y : Fin n → E) :
     y ∈ dualL σ J Λ ↔ y ∈ dualSet σ J Λ := by
-  refine ⟨fun hy => ?_, fun hy => Submodule.subset_span hy⟩
-  induction hy using Submodule.span_induction with
-  | mem y hy => exact hy
-  | zero => intro x _; simp [hform]
-  | add y z _ _ hy hz =>
-    intro x hx
-    have : hform σ J x (y + z) = hform σ J x y + hform σ J x z := by
-      simp [hform, mul_add, Finset.sum_add_distrib]
-    rw [this]; exact add_mem (hy x hx) (hz x hx)
-  | smul a y _ hy =>
-    intro x hx
-    have : hform σ J x (a • y) = algebraMap (𝓞 E) E a * hform σ J x y := by
-      simp only [hform, Finset.mul_sum, Pi.smul_apply, Algebra.smul_def]
-      exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-    rw [this]; exact mul_mem ⟨a, rfl⟩ (hy x hx)
+  apply _root_.GlobalTheory.OverLat.mem_span_dualSet
 
 theorem exists_common_den {p : ℕ} (hp : p.Prime) (M : Submodule (𝓞 E) (Fin n → E)) (hM : M.FG) (B : GL (Fin n) E)
     (hB : IsLocBasis p (M : Set (Fin n → E)) B) :

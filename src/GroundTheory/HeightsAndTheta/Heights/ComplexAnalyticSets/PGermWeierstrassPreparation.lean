@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermWeierstrassPreparation
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParametricCircleIntegralAnalytic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCircleArgumentPrinciple
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPowerSumsEsymmAnalytic
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+public import Mathlib.Analysis.Complex.CauchyIntegral
+public import Mathlib.RingTheory.Polynomial.Vieta
 
 @[expose] public section
 

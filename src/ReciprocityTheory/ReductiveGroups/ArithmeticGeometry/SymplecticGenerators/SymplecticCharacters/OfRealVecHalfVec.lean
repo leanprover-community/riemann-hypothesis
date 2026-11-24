@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.SubConjTransposeOfSymm
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.GenBase
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.InversionStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.SpGenStatement
+public import ReciprocityTheory.ThetaQuasiPeriods.Change
+public import ReciprocityTheory.ThetaQuasiPeriods.Transl
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 

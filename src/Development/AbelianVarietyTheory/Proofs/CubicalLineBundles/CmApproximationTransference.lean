@@ -1,10 +1,62 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CoveringRadiusStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Transference
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.BabaiCovering
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ConjugateConjugate
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Transference
 
 @[expose] public section
 
@@ -36,8 +88,8 @@ theorem exists_short_family {V : Type*} [NormedAddCommGroup V] [InnerProductSpac
     intro x hx hx0
     obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun ℤ).1 hx
     have hw : (∑ i, c i • B' i) = φ (∑ i, c i • bd (e.symm i)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [hB', map_sum, map_zsmul]
+
+      simp [hB', map_sum, map_zsmul]
     have hwmem : (∑ i, c i • bd (e.symm i)) ∈ span ℤ (Set.range bd) :=
       sum_mem fun i _ => zsmul_mem (subset_span (Set.mem_range_self _)) _
     rw [hw, LinearIsometryEquiv.norm_map]
@@ -352,16 +404,16 @@ theorem cmApproximation_transference : ReciprocityTheory.ChartRestriction.G.FD.C
     obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun ℤ).1 hx
     refine ⟨∑ i, c i • b i, (hb _).2
       (sum_mem fun i _ => zsmul_mem (subset_span (Set.mem_range_self i)) _), ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_zsmul, hB]
+
+    simp only [map_sum, map_zsmul, hB]
   have hlam : 0 < 2 * la / d := by positivity
   have hmin' : ∀ x ∈ span ℤ (Set.range fun j => embDual p σ Q (b' j)), x ≠ 0 →
       2 * la / d ≤ ‖x‖ := by
     intro x hx hx0
     obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun ℤ).1 hx
     have hw : ∑ i, c i • embDual p σ Q (b' i) = embDual p σ Q (∑ i, c i • b' i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_zsmul]
+
+      simp only [map_sum, map_zsmul]
     rw [hw] at hx0 ⊢
     have h1 := hdual (∑ i, c i • b' i) (fun h => hx0 (by rw [h, map_zero])) (by
       intro y hy
@@ -369,8 +421,8 @@ theorem cmApproximation_transference : ReciprocityTheory.ChartRestriction.G.FD.C
       refine ⟨∑ i, c i * e i, ?_⟩
       have hbb : ∀ i j, traceForm S (b' i) (b j) = if j = i then 1 else 0 :=
         LinearMap.BilinForm.apply_dualBasis_left hnd b
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_zsmul, LinearMap.sum_apply, LinearMap.smul_apply, hbb]
+
+      simp only [map_sum, map_zsmul, LinearMap.sum_apply, LinearMap.smul_apply, hbb]
       simp [mul_comm])
     refine (pow_le_pow_iff_left₀ hlam.le (norm_nonneg _) two_ne_zero).1 ?_
     rw [norm_embDual_sq, div_pow, div_le_iff₀ (by positivity)]

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.NonzeroLeviEigenvectorExists
 
 @[expose] public section

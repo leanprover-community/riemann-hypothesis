@@ -1,9 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsAdaptedEmpty
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LeviEqISupParts
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsUnitOfComm
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -54,8 +92,7 @@ theorem comm_onPart {Q G t : Matrix (Fin n) (Fin n) A} (htQ : t * Q = Q) (hQt : 
 
 theorem mul_onPart_inv {Q G H : Matrix (Fin n) (Fin n) A} (hQ : Q * Q = Q) (hGH : G * H = 1) :
     G * onPart Q H * Q = Q := by
-  simp only [onPart, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.one_mul,
-    Matrix.mul_assoc, hQ, sub_self, zero_add]
+  simp only [onPart, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_assoc, hQ, sub_self, zero_add]
   rw [← Matrix.mul_assoc, hGH, Matrix.one_mul]
 
 end Abstract
@@ -76,12 +113,12 @@ theorem proj_eq_frameProj (I : Set (Fin r)) : P σ J X Y I = GlobalTheory.Compan
 
 theorem P_sq (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) (I : Set (Fin r)) :
     P σ J X Y I * P σ J X Y I = P σ J X Y I := by
-  rw [P, GlobalTheory.CompanionTheory.LeviGen.prj_mul_prj hW.xx hW.yy hW.xy (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.Comm.yJx hCM hJ hW),
+  rw [P, GlobalTheory.CompanionTheory.LeviGen.prj_mul_prj hW.xx hW.yy hW.xy (_root_.GlobalTheory.StdPar.yx hCM hJ hW),
     GlobalTheory.CompanionTheory.LeviGen.ind_mul_self]
 
 theorem proj_mul_X (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) (I : Set (Fin r)) :
     P σ J X Y I * X = X * diagonal (ind I : Fin r → E) := by
-  rw [P, prj, Matrix.add_mul, GlobalTheory.CompanionTheory.LeviGen.prX_mul_X (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.Comm.yJx hCM hJ hW),
+  rw [P, prj, Matrix.add_mul, GlobalTheory.CompanionTheory.LeviGen.prX_mul_X (_root_.GlobalTheory.StdPar.yx hCM hJ hW),
     GlobalTheory.CompanionTheory.LeviGen.prY_mul_X hW.xx, add_zero]
 
 theorem proj_mul_Y (hW : IsWittFrame σ J X Y) (I : Set (Fin r)) :
@@ -192,7 +229,7 @@ theorem comm_Q (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ 
     rw [Matrix.map_add _ (map_add (inclR (F := F) (E := E) (AF F)))]
     simp only [Matrix.map_mul]
     try rfl
-  have h1 := GlobalTheory.CompanionTheory.LeviGen.comm_of_frame (frame_one (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.Comm.yJx hCM hJ hW) k)
+  have h1 := GlobalTheory.CompanionTheory.LeviGen.comm_of_frame (frame_one (_root_.GlobalTheory.StdPar.yx hCM hJ hW) k)
     (matHom_unitary g) (matHom_mul_inv g) (matHom_inv_mul g) hB hC
   have h2 := GlobalTheory.CompanionTheory.LeviGen.comm_of_frame (frame_one hW.xy k)
     (matHom_unitary g) (matHom_mul_inv g) (matHom_inv_mul g) hC hB

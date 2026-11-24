@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.SubspaceCounting.Statement
-public import Formalism.PolynomialDimension.WeylDim
+public import Mathlib.Analysis.Complex.Exponential
 
 @[expose] public section
 

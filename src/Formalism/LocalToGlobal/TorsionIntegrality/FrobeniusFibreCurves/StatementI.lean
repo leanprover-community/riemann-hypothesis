@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.FirstLevelFromUniversal
-public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementT
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.IsFibreCurve
+public import Formalism.FormalGroupLog.Statement
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LawDifferenceThree
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.IsotropicVanish
+public import Mathlib.NumberTheory.Padics.PadicIntegers
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementJ
 
 @[expose] public section
 

@@ -1,6 +1,54 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Group.ModularCharacter
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Function.Floor
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.ProperAction.Basic
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -62,9 +110,6 @@ theorem measurable_modChar :
   have hpos : μ K ≠ 0 := by
     first
     | exact (Measure.measure_pos_of_mem_nhds μ hK1).ne'
-    | exact (MeasureTheory.measure_pos_of_mem_nhds μ hK1).ne'
-    | exact ((isOpen_interior.measure_pos μ ⟨1, mem_interior_iff_mem_nhds.2 hK1⟩).trans_le
-        (measure_mono interior_subset)).ne'
   have hfin : μ K ≠ ∞ := hK.measure_lt_top.ne
   have key : (fun g : G => (Measure.modularCharacterFun g : ℝ≥0∞)) =
       fun g => (∫⁻ x, K.indicator 1 (x * g) ∂μ) / μ K := by
@@ -86,8 +131,6 @@ theorem modChar_eq_one (H : Subgroup G) (ν : Measure H) [ν.IsMulLeftInvariant]
   haveI : MeasurableMul H := by
     first
     | infer_instance
-    | exact ⟨fun c => ((measurable_const_mul (c : G)).comp measurable_subtype_coe).subtype_mk,
-        fun c => ((measurable_mul_const (c : G)).comp measurable_subtype_coe).subtype_mk⟩
   obtain ⟨D, hD⟩ : ∃ D : H → ℝ, ∀ h, D h = (Measure.modularCharacterFun (h : G) : ℝ) :=
     ⟨_, fun _ => rfl⟩
   have hDm : Measurable D := by
@@ -186,8 +229,6 @@ theorem avg_mul_mem (H : Subgroup G) (ν : Measure H) [ν.IsMulLeftInvariant] (f
   haveI : MeasurableMul H := by
     first
     | infer_instance
-    | exact ⟨fun c => ((measurable_const_mul (c : G)).comp measurable_subtype_coe).subtype_mk,
-        fun c => ((measurable_mul_const (c : G)).comp measurable_subtype_coe).subtype_mk⟩
   have e := lintegral_mul_left_eq_self (μ := ν) (fun h : H => f (g * (h : G))) k
   simpa [mul_assoc] using e
 
@@ -275,10 +316,6 @@ theorem unfold_stab (x0 : X) (hc : Continuous fun g : G => g • x0) (μ : Measu
   have hmk : Measurable (QuotientGroup.mk : G → G ⧸ MulAction.stabilizer G x0) := by
     first
     | exact measurable_quotient_mk''
-    | exact measurable_quotient_mk'
-    | exact (QuotientGroup.continuous_mk).measurable
-    | exact continuous_quot_mk.measurable
-    | fun_prop
   have hmap : μ.map (fun g => g • x0) =
       (μ.map (QuotientGroup.mk : G → G ⧸ MulAction.stabilizer G x0)).map
         (fun q : G ⧸ MulAction.stabilizer G x0 => q.out • x0) := by

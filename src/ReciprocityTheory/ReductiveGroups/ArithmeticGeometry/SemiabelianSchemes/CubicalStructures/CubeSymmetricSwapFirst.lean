@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.Pullbacks
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

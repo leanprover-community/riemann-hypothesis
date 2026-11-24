@@ -1,8 +1,54 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QQMemAdjAlgCpt
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
+public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -117,7 +163,7 @@ theorem norm_perp_le {b u v : Fin (2 * r + k + 1) → ℂ} (hb : inWb k r b) (hb
   have k4 := key (-Complex.I) (by simp [Complex.star_def])
   simp only [Complex.star_def, map_one, map_neg, Complex.conj_I, one_mul, neg_mul, neg_neg, Complex.add_re,
     Complex.neg_re, Complex.mul_re, Complex.I_re, Complex.I_im, Complex.conj_re, Complex.conj_im, zero_mul,
-    one_mul, sub_zero, zero_sub, mul_neg, neg_zero] at k1 k2 k3 k4
+    one_mul, zero_sub, mul_neg] at k1 k2 k3 k4
   have hre : |X.re| ≤ ((herm H u u).re + (herm H v v).re) / 2 := by
     rw [abs_le]; constructor <;> linarith
   have him : |X.im| ≤ ((herm H u u).re + (herm H v v).re) / 2 := by
@@ -208,11 +254,11 @@ theorem hpk_outer (y : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) (h
     (Hpk k r *ᵥ y) ⟨2 * r + k - i.val, by omega⟩ = y i := by
   simp only [Matrix.mulVec, dotProduct]
   rw [Finset.sum_eq_single i]
-  · simp only [Hpk, Fin.val_mk]
+  · simp only [Hpk]
     split_ifs <;> first | (exfalso; omega) | simp
   · intro j _ hj
     have hj' : j.val ≠ i.val := fun h => hj (Fin.ext h)
-    simp only [Hpk, Fin.val_mk, Fin.ext_iff]
+    simp only [Hpk, Fin.ext_iff]
     split_ifs <;> first | (exfalso; omega) | simp
   · simp
 
@@ -248,7 +294,7 @@ theorem glev_wb {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r)) {v : Fin (2 * r 
   have hp := hpk_outer (g *ᵥ v) i hi
   have hp' := hpk_outer v i hi
   have hout : (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1)).val < r ∨
-      r + k < (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1)).val := by simp only [Fin.val_mk]; omega
+      r + k < (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1)).val := by simp only; omega
   rw [← hp, ← gn_herm_bvec_right, ← glev_fix hg _ hout, hb_UH _ hg.1, gn_herm_bvec_right, hp', hv i hi]
 
 theorem bvec_wb (q : Fin (2 * r + k + 1)) (hq : r ≤ q.val ∧ q.val ≤ r + k) : inWb k r (bvec q) := by
@@ -256,7 +302,7 @@ theorem bvec_wb (q : Fin (2 * r + k + 1)) (hq : r ≤ q.val ∧ q.val ≤ r + k)
   have hne : i ≠ q := by
     rintro rfl
     omega
-  simp [bvec, Pi.single_apply, hne]
+  simp [bvec, hne]
 
 theorem entry_eq (g : Mx k r) (p q : Fin (2 * r + k + 1)) : g p q = (g *ᵥ bvec q) p := by
   simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
@@ -313,7 +359,7 @@ theorem norm_entry_le (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) 
   · rw [glev_fix hg q hq]
     by_cases hpq : p = q
     · subst hpq; simp [bvec]; linarith
-    · simp [bvec, Pi.single_apply, hpq]; linarith
+    · simp [bvec, hpq]; linarith
   have hq' : r ≤ q.val ∧ q.val ≤ r + k := by omega
   by_cases hp : p.val < r ∨ r + k < p.val
   · rw [glev_wb hg (bvec_wb q hq') p hp, norm_zero]; linarith

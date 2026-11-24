@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
 
 @[expose] public section
@@ -42,8 +41,8 @@ theorem cone_eq (y : (Σ k, ι k) → Ω) (g : MRing ι) (a : K → ℕ) (hg : I
     mConeMap y g = C (aeval y g) * monomial (Finsupp.equivFunOnFinite.symm a) 1 := by
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl fun m hm => cone_monomial y m _ a (hg m hm)
 
 end MultiHomogMemCoordinate

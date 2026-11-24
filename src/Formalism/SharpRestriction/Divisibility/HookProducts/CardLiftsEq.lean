@@ -1,11 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.SlopeExcess.ConstRankBaseLePolyFourth
-public import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
+public import Formalism.SharpRestriction.GrowthBounds.CornerGLContinuity
+public import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
 public import Formalism.SharpRestriction.GrowthBounds.JointsLit
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.NotSingularOfCentral
-public import Formalism.SharpRestriction.GrowthBounds.AdmissibleIntegers.FirstTermSizeBound
-public import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
+public import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
 
 @[expose] public section
 
@@ -33,13 +71,6 @@ theorem gB_nonneg (L : SizeData₂ D) (p : ℕ) : 0 ≤ gB L p := by
     exact mul_nonneg hm (div_nonneg (mul_nonneg (mul_nonneg (by norm_num) hT) ha) hp)
   · exact le_refl 0
 
-theorem card_lifts_eq (D : D7) : ((SizeData₂.lifts D).card : ℝ) = D.R.m := by
-  simp [SizeData₂.lifts]
-
-theorem logWeight_nonneg (w : D.what₂.places.Pl) : 0 ≤ SizeData₂.lwP w := by
-  simp only [SizeData₂.lwP, lw]
-  exact div_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _)
-
 theorem gainD_sum_le (P : ParameterChoice' D L) (X : Inst D L) (K : Consts) (hK : K.Nonneg)
     (hF : ∀ w, ParametersFill X K w) (w : D.what₂.places.Pl) :
     ∑ j ∈ SizeData₂.lifts D, L.gainD j w ≤ gB L (D.what₂.places.resChar w) := by
@@ -62,7 +93,7 @@ theorem gainD_sum_le (P : ParameterChoice' D L) (X : Inst D L) (K : Consts) (hK 
       rw [(hF w).2.2.2.1 hs hin j hj]
       exact (Formalism.MainNotions.AuxBlock8.Pf.gain_bounds P X K hK _ _ (Formalism.MainNotions.AuxBlock8.Pf.inWin_sizeData L) _ hp j hj).2
     refine le_trans (Finset.sum_le_sum hS) ?_
-    rw [Finset.sum_const, nsmul_eq_mul, card_lifts_eq]
+    rw [Finset.sum_const, nsmul_eq_mul, _root_.Formalism.MainNotions.AuxBlock8.Pf.card_lifts]
   · have hz : ∀ j ∈ SizeData₂.lifts D, L.gainD j w = 0 := by
       intro j hj
       unfold SizeData₂.gainD
@@ -91,7 +122,7 @@ theorem ga_le_at (P : ParameterChoice' D L) (X : Inst D L) (K : Consts) (hK : K.
       exact Formalism.MainNotions.G.TopChoiceBounds.tauP_nonneg X K _ _ _
     have hg := gainD_sum_le P X K hK hF w
     have hc : 0 ≤ 2 * SizeData₂.lwP w * (D.what₂.places.ramIdx w : ℝ) :=
-      mul_nonneg (mul_nonneg zero_le_two (logWeight_nonneg w)) (Nat.cast_nonneg _)
+      mul_nonneg (mul_nonneg zero_le_two (_root_.Formalism.MainNotions.WeightDegreeSizes.logWeight_nonneg w)) (Nat.cast_nonneg _)
     calc 2 * SizeData₂.lwP w * ((D.what₂.places.ramIdx w : ℝ) * ((∑ j ∈ SizeData₂.lifts D, L.gainD j w) - L.tau w))
         = (2 * SizeData₂.lwP w * (D.what₂.places.ramIdx w : ℝ)) * ((∑ j ∈ SizeData₂.lifts D, L.gainD j w) - L.tau w) := by ring
       _ ≤ (2 * SizeData₂.lwP w * (D.what₂.places.ramIdx w : ℝ)) * gB L (D.what₂.places.resChar w) :=
@@ -150,7 +181,6 @@ theorem logX_le (hN : SizeN L) (hK : SizeK L) :
   have hXeq : L.sc.X'' D.R.n = L.sc.x * D.R.n * L.sc.X' := by
     simp only [Scale.X'', Scale.w'', Scale.b']
     field_simp [ha.ne', hX'0.ne', hx0.ne', hnpos.ne']
-    try ring
   have hbound : L.sc.X'' D.R.n + 1 ≤ (L.sc.x + 1) * ((D.R.n : ℝ) + 1) * L.sc.X' := by
     rw [hXeq]
     nlinarith [mul_nonneg (add_nonneg (add_nonneg hx0.le hnpos.le) zero_le_one) (sub_nonneg.mpr hX'1)]

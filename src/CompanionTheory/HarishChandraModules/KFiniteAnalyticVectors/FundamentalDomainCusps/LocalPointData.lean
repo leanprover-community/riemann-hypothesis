@@ -1,8 +1,14 @@
 module
 
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.ShortIsot
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.LogNormEstimates
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictGen
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.BlockGramReduction.EmbeddingLinearIndependent
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.BlockGramReduction.MemIntegersOfMemIntAd
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictGen
+public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.Imports
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
 
 @[expose] public section
 
@@ -17,8 +23,8 @@ open Formalism.MainNotions.S Formalism.MainNotions.LeviCoordinates Formalism.L2.
 
 theorem atV_sum (I : AutInst) (v : InfinitePlace I.F) {d : ℕ} (a : Fin d → I.E) (w : Fin d → Fin I.n → I.E) :
     atV I v (∑ i, a i • w i) = ∑ i, I.φ v (a i) • atV I v (w i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [atV, ← mulVec_smul, ← mulVec_sum]; congr 1; funext i; simp [map_sum]
+
+  simp only [atV, ← mulVec_smul, ← mulVec_sum]; congr 1; funext i; simp [map_sum]
 
 theorem exists_near (I : AutInst) : ∃ C : ℝ, 0 < C ∧ ∀ β : InfinitePlace I.F → ℂ,
     ∃ a : I.E, IsIntegral ℤ a ∧ ∀ v, ‖β v - I.φ v a‖ ≤ C := by
@@ -28,9 +34,9 @@ theorem exists_near (I : AutInst) : ∃ C : ℝ, 0 < C ∧ ∀ β : InfinitePlac
   · rw [integralBasis_apply]; exact RingOfIntegers.isIntegral_coe _
   · have e : β v - I.φ v (∑ k, (⌊b.repr β k⌋ : I.E) * integralBasis I.E k) =
         ∑ k, ((Int.fract (b.repr β k) : ℝ) : ℂ) * b k v := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [show β v = (∑ k, b.repr β k • b k) v by rw [b.sum_repr β], map_sum, Finset.sum_apply,
-        ← Finset.sum_sub_distrib]
+
+      rw [show β v = (∑ k, b.repr β k • b k) v by rw [b.sum_repr β], map_sum, Finset.sum_apply,
+      ← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [Int.fract, map_mul, map_intCast, Pi.smul_apply, Complex.real_smul]
       simp only [b, embeddingBasis_apply]
@@ -99,8 +105,8 @@ theorem exists_sandwich (I : AutInst) : ∃ c : ℕ, 1 ≤ c ∧ (∀ l ∈ I.L,
 theorem iv_mulVec (I : AutInst) (A : Matrix (Fin I.n) (Fin I.n) I.E) (l : Fin I.n → I.E) :
     A.map (Formalism.UG.inclE (F := I.F) (Af I.F)) *ᵥ iv I l = iv I (A *ᵥ l) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [iv, mulVec, dotProduct, map_sum]
+
+  simp [iv, mulVec, dotProduct, map_sum]
 
 theorem cong_Lf (I : AutInst) {c g : ℕ} (h1 : ∀ l ∈ I.L, (c : I.E) • l ∈ IntV I) (h2 : ∀ u ∈ IntV I, (c : I.E) • u ∈ I.L)
     {A : Matrix (Fin I.n) (Fin I.n) I.E} (hA : Cong I (g * c * c) A) : ∀ y ∈ I.Lf, ∃ z ∈ I.Lf,
@@ -136,7 +142,7 @@ theorem congruence_subgroup_compact_open : CongK := by
   refine ⟨g * c * c, Nat.mul_pos (Nat.mul_pos hg hc) hc, ?_⟩
   rintro x ⟨γ, hγ, hx⟩
   have hf : Formalism.UG.bc (Formalism.UG.inclE (F := I.F) (Af I.F)) γ ∈ Formalism.UG.UPts I.cm.sig I.J (Af I.F) :=
-    Formalism.UG.Final.RatPtsLe I.F I.E (Fin I.n) I.cm.sig I.J (Af I.F) (Subgroup.mem_map_of_mem _ hγ.1)
+    _root_.Formalism.UG.P.rational_points_le_holds I.F I.E (Fin I.n) I.cm.sig I.J (Af I.F) (Subgroup.mem_map_of_mem _ hγ.1)
   have st : ∀ {A : Matrix (Fin I.n) (Fin I.n) I.E}, Cong I (g * c * c) A → ∀ y ∈ I.Lf,
       A.map (Formalism.UG.inclE (F := I.F) (Af I.F)) *ᵥ y ∈ I.Lf := fun hA y hy => by
     obtain ⟨z, hz, e⟩ := cong_Lf I h1 h2 hA y hy

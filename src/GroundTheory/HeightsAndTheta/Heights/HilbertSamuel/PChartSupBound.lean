@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartSup
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPolydiscSubmean
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChartTaylorCover
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPolydiscSubmean
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Separation.CompletelyRegular
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
 
 @[expose] public section
 

@@ -1,9 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ImportsFurther
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
 public import GroundTheory.ArithmeticGeometry.ToricVarieties.Dimension
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Adjoin.Polynomial.Transcendental
 
 @[expose] public section
 
@@ -92,10 +99,10 @@ theorem OneBlockPointDeg.proof : OneBlockPointDeg.Statement := by
       Polynomial.monomial i ⟨aeval r (homogeneousComponent i f), hmem _⟩
     have hP : Polynomial.aeval (w ⟨k₀, c k₀⟩) P = 0 := by
       have h0 := RingHom.mem_ker.mp hf
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← sum_homogeneousComponent f, map_sum] at h0
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← h0, map_sum]
+
+      rw [← sum_homogeneousComponent f, map_sum] at h0
+
+      rw [← h0, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Polynomial.aeval_monomial, ← aeval_homog hK hc (homogeneousComponent_isHomogeneous i f)]
       rfl

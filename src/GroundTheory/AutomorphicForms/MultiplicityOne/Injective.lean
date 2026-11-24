@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.FourierWhittaker
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

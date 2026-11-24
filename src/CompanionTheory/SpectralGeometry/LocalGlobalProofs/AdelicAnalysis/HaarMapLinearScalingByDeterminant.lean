@@ -1,6 +1,12 @@
 module
 
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Compactness.Paracompact
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+import Formalism.UnipotentAdelicQuotients.SWXSDefs
 
 @[expose] public section
 

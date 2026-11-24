@@ -1,6 +1,46 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -19,21 +59,14 @@ theorem orbit_map_add_natCast (D : D7) (p : ℕ) (z : Pl D) (s : ZMod (nP D p)) 
   unfold orbMap
   rw [posPl_add, ← posPl_mod D p z (s.val + e), ZMod.val_add, ZMod.val_natCast, Nat.add_mod_mod]
 
-theorem base_shift_add_nsmul (X : Inst D L) (h t : HH D) (m : ℕ) : X.bs h (t + m • h) = X.bs h t := by
-  induction m with
-  | zero => simp
-  | succ k ih => rw [succ_nsmul, ← add_assoc, X.bs_step, ih]
+alias base_shift_add_nsmul := _root_.Formalism.MainNotions.OrbitPlaces.bs_iter
 
-theorem base_shift_idempotent (X : Inst D L) (h t : HH D) : X.bs h (X.bs h t) = X.bs h t := by
-  obtain ⟨i, hi⟩ := X.bs_orb h t
-  calc X.bs h (X.bs h t) = X.bs h (X.bs h t + i • h) := (base_shift_add_nsmul X h (X.bs h t) i).symm
-    _ = X.bs h t := by rw [hi]
+alias base_shift_idempotent := _root_.Formalism.MainNotions.OrbitPlaces.bs_idem
 
 theorem posPl_false_eq_odd_add_nsmul {p : ℕ} (hsg : IsSg D p) (t0 : HH D) (n : ℕ) :
     posPl D p (false, t0) n = (decide (Odd n), t0 + n • hP D p) := by
   first
     | (simp [posPl, Formalism.MainNotions.G.partner]; try exact fun _ => hsg)
-    | (simp [posPl, Formalism.BasicNotions.partner]; try exact fun _ => hsg)
 
 theorem sum_tops_on_orbit (X : Inst D L) {p : ℕ} (hsg : IsSg D p) {t0 : HH D} (ht0 : t0 ∈ reps X p)
     (TT : Finset (ZMod (nP D p))) (hTT : ∀ s, s ∈ TT ↔ IsTopPl D (orbMap D p (false, t0) s))
@@ -88,7 +121,6 @@ theorem tsum_le_tsum_of_nonneg_le {f g : ℕ → ℝ} (hf0 : ∀ e, 0 ≤ f e) (
   have hfs : Summable f := Summable.of_nonneg_of_le hf0 hle hg
   first
     | exact Summable.tsum_le_tsum hle hfs hg
-    | exact tsum_le_tsum hle hfs hg
 
 theorem orbit_local_term_nonneg (Lc : Formalism.MainNotions.product_zeroth_first_parts.Loc) (s : ZMod Lc.d) : 0 ≤ Lc.baseTerm s := by
   apply tsum_nonneg
@@ -102,7 +134,6 @@ theorem mem_top_orbit_set_iff (E : Ent D) (p : ℕ) [Fact p.Prime] (h : OrbOK D 
     s ∈ (orbLoc E p h u i z Th).TT ↔ IsTopPl D (orbMap D p z s) := by
   first
     | exact Finset.mem_filter.trans (and_iff_right (Finset.mem_univ _))
-    | simp [orbLoc]
 
 theorem orbit_local_capacity_eq (E : Ent D) (p : ℕ) [Fact p.Prime] (h : OrbOK D p) (u : D.what₂.Word) (i : ℕ) (z : Pl D)
     (Th : MvPowerSeries (ZMod (nP D p) × Fin (D.R.N i) × Fin (D.R.N (i + 1))) ℂ_[p]) (s : ZMod (nP D p)) :
@@ -112,7 +143,6 @@ theorem orbit_local_capacity_eq (E : Ent D) (p : ℕ) [Fact p.Prime] (h : OrbOK 
   split_ifs <;> first
     | (simp [Ent.row, orbLoc]; done)
     | tauto
-    | simp_all
 
 theorem summable_truncated_geometric (x l : ℝ) (hl : 1 < l) (c : ℕ → ℝ) (hc : ∀ e, 0 ≤ c e) (P : ℕ → Prop) [DecidablePred P] :
     Summable fun e : ℕ => if P e then max (x / l ^ e - c e) 0 else 0 := by
@@ -131,8 +161,6 @@ theorem summable_truncated_geometric (x l : ℝ) (hl : 1 < l) (c : ℕ → ℝ) 
       rw [one_div_pow, ← div_eq_mul_one_div]
       first
         | exact div_le_div_of_nonneg_right (le_abs_self x) hpow.le
-        | exact (div_le_div_iff_of_pos_right hpow).2 (le_abs_self x)
-        | exact (div_le_div_right hpow).2 (le_abs_self x)
     split_ifs
     · exact max_le (by linarith [hc e]) h2
     · exact h2

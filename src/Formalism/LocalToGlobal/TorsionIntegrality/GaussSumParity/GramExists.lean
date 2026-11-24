@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementC
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.IsLawOfLog
 
 @[expose] public section
 

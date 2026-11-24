@@ -1,6 +1,43 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CoeffSumMonomialLinear
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ColSums
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.SubYGenCoefHom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -85,7 +122,7 @@ theorem psiB_map (ψ : MvPolynomial σ K →ₐ[K] MvPolynomial σ K) (G : MvPol
 theorem lcoef_C_mul_map (L : B →ₗ[K] K) (b : B) (G : MvPolynomial σ K) :
     lcoef L (C b * map (algebraMap K B) G) = L b • G := by
   ext u
-  rw [coeff_lcoef, coeff_C_mul, coeff_map, coeff_smul, smul_eq_mul, mul_comm b, ← Algebra.smul_def, map_smul,
+  rw [coeff_lcoef, coeff_C_mul, coeff_map, MvPolynomial.coeff_smul, smul_eq_mul, mul_comm b, ← Algebra.smul_def, map_smul,
     smul_eq_mul, mul_comm]
 
 theorem lcoef_comm (ψ : MvPolynomial σ K →ₐ[K] MvPolynomial σ K) (L : B →ₗ[K] K) (h : MvPolynomial σ B) :
@@ -169,7 +206,7 @@ theorem scCol_coeff {k : ℕ} (t0 : Fin k) (c : K) (f : MvPolynomial (Fin k × F
 theorem scCol_of_hom {k : ℕ} (t0 : Fin k) (c : K) (f : MvPolynomial (Fin k × Fin k) K) (ν : Fin k → ℕ)
     (hf : IsWeightedHomogeneous (colW k k) f ν) : scCol K k t0 c f = c ^ ν t0 • f := by
   ext m
-  rw [scCol_coeff, coeff_smul, smul_eq_mul, mul_comm]
+  rw [scCol_coeff, MvPolynomial.coeff_smul, smul_eq_mul, mul_comm]
   by_cases h : AddMonoidAlgebra.coeff f m = 0
   · rw [h, mul_zero, mul_zero]
   · rw [hf h]
@@ -180,7 +217,7 @@ theorem wt_of_scale [Infinite K] {k : ℕ} (t0 : Fin k) (n : ℕ) (f : MvPolynom
   apply pow_exp_inj (K := K)
   intro c hc
   have := congrArg (AddMonoidAlgebra.coeff · m) (h c hc)
-  rw [scCol_coeff, coeff_smul, smul_eq_mul, mul_comm] at this
+  rw [scCol_coeff, MvPolynomial.coeff_smul, smul_eq_mul, mul_comm] at this
   exact mul_right_cancel₀ hm this
 
 theorem colAdd_trivial {k : ℕ} (l j : Fin k) (c : K) (f : MvPolynomial (Fin k × Fin k) K)
@@ -188,8 +225,8 @@ theorem colAdd_trivial {k : ℕ} (l j : Fin k) (c : K) (f : MvPolynomial (Fin k 
   classical
   have e : colAdd K l j c f = ∑ m ∈ f.support, colAdd K l j c (monomial m (AddMonoidAlgebra.coeff f m)) := by
     conv_lhs => rw [f.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
   rw [e]
   conv_rhs => rw [f.as_sum]
   refine Finset.sum_congr rfl fun m hm => ?_

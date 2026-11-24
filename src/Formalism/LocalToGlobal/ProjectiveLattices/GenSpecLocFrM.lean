@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.Projective
+public import Mathlib.RingTheory.Finiteness.Defs
+public import Mathlib.RingTheory.LocalRing.Defs
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Module.FinitePresentation
+public import Mathlib.RingTheory.LocalRing.Module
 
 @[expose] public section
 

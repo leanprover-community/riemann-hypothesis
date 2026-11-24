@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.Prod
+public import Mathlib.Algebra.Module.Submodule.Range
+public import Mathlib.LinearAlgebra.Quotient.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Module.Submodule.Equiv
+public import Mathlib.LinearAlgebra.Quotient.Basic
 
 @[expose] public section
 

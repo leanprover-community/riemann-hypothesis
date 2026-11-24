@@ -1,10 +1,55 @@
 module
 
 public import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.Complementary
-public import Mathlib
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.ColMatMulGlEmbMat
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicTwistedKernelDerivativeZero
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictionMirabolicTwistedKernel
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedJacquetPhiMinusEquiv
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicTwistedKernelDerivativeZeroStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictionMirabolicTwistedKernelStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -82,7 +127,7 @@ theorem ker_Q (ψ : AddChar k Circle) {n : ℕ} : ∀ (j : ℕ) (τ : MRep k (n 
   | 0, τ => by
     show LinearMap.ker (twKer τ.ρ (MirUin k n) 1).mkQ = _
     rw [Submodule.ker_mkQ]
-    exact GlobalTheory.T.mirabolic_twisted_kernel_derivative_zero k ψ n τ.V τ.ρ
+    exact _root_.GlobalTheory.CompanionTheory.BZMir.twKer_MirUin_eq_derUnipM k ψ n τ.V τ.ρ
   | j + 1, τ => by
     have hnm : n ≤ n + j := Nat.le_add_right n j
     have H := comap_twKer τ.ρ (MirUin k (n + j + 1)) (mirChar k ψ (n + j)) (phiMinus k ψ τ.ρ)
@@ -118,10 +163,10 @@ theorem E_val_zero {n : ℕ} (g : GL (Fin n) k) (i l : Fin (n + 1)) :
   | last =>
     induction l using Fin.lastCases with
     | last => simp [glEmbMat]
-    | cast l => simp [glEmbMat, Matrix.one_apply, (Fin.castSucc_ne_last l).symm]
+    | cast l => simp [glEmbMat, (Fin.castSucc_ne_last l).symm]
   | cast i =>
     induction l using Fin.lastCases with
-    | last => simp [glEmbMat, Matrix.one_apply, Fin.castSucc_ne_last]
+    | last => simp [glEmbMat, Fin.castSucc_ne_last]
     | cast l => simp [glEmbMat]
 
 theorem E_val_succ {n j : ℕ} (g : GL (Fin n) k)
@@ -138,12 +183,12 @@ theorem E_val_succ {n j : ℕ} (g : GL (Fin n) k)
     have : ¬ ((n + j + 1 : ℕ) < n) := by omega
     induction l using Fin.lastCases with
     | last => simp [glEmbMat, this]
-    | cast l => simp [glEmbMat, Matrix.one_apply, (Fin.castSucc_ne_last l).symm, this]
+    | cast l => simp [glEmbMat, (Fin.castSucc_ne_last l).symm, this]
   | cast i =>
     induction l using Fin.lastCases with
     | last =>
       have : ¬ ((n + j + 1 : ℕ) < n) := by omega
-      simp [glEmbMat, Matrix.one_apply, Fin.castSucc_ne_last, this]
+      simp [glEmbMat, Fin.castSucc_ne_last, this]
     | cast l =>
       simp only [glEmbMat, Fin.lastCases_castSucc]
       rw [ih i l]
@@ -167,7 +212,7 @@ theorem stdSum_inj {n t N : ℕ} (h : n + t = N) {a b : Fin n ⊕ Fin t} : stdSu
 
 theorem one_std {n t N : ℕ} (h : n + t = N) (a b : Fin n ⊕ Fin t) :
     (1 : Matrix (Fin N) (Fin N) k) (stdSum h a) (stdSum h b) = (1 : Matrix (Fin n ⊕ Fin t) (Fin n ⊕ Fin t) k) a b := by
-  simp [Matrix.one_apply, stdSum_inj]
+  simp [Matrix.one_apply]
 
 theorem E_eq {n j : ℕ} (g : GL (Fin n) k) :
     ((E k j g : Mir k (n + j)) : GL (Fin (n + j + 1)) k) =
@@ -311,7 +356,7 @@ theorem ker_Q' (ψ : AddChar k Circle) {n t N : ℕ} (h : n + t = N) {V : Type} 
         · rfl
         · rfl
         · simp only [fromBlocks_apply₂₂]
-          exact hw1 a b (by rw [Fin.lt_iff_val_lt_val] at hli ⊢; simp at hli; omega)
+          exact hw1 a b (by rw [Fin.lt_def] at hli ⊢; simp at hli; omega)
       · obtain ⟨a, rfl⟩ := (stdSum h).surjective i
         rw [hent]
         rcases a with a | a
@@ -360,10 +405,10 @@ theorem ker_Q' (ψ : AddChar k Circle) {n t N : ℕ} (h : n + t = N) {V : Type} 
     let D : Matrix (Fin t) (Fin t) k := fun x y =>
       ((u : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) (stdSum h (Sum.inr x)) (stdSum h (Sum.inr y))
     have hDl : ∀ x y, y < x → D x y = 0 := fun x y hxy =>
-      hu1 _ _ (by rw [Fin.lt_iff_val_lt_val]; simp; exact hxy)
+      hu1 _ _ (by rw [Fin.lt_def]; simp; exact hxy)
     have hDd : ∀ x, D x x = 1 := fun x => hu2 _
     have hdet : D.det = 1 := by
-      rw [Matrix.det_of_upperTriangular (fun x y hxy => hDl x y hxy)]
+      rw [Matrix.det_of_isUpperTriangular (fun x y hxy => hDl x y hxy)]
       simp [hDd]
     have hD : IsUnit D := (Matrix.isUnit_iff_isUnit_det D).2 (by rw [hdet]; exact isUnit_one)
     let Dg : GL (Fin t) k := hD.unit
@@ -403,7 +448,7 @@ end CompanionTheory.RgGu.NR.DerEq
 namespace CompanionTheory.RgGu.NR
 
 open DerEq in
-set_option maxHeartbeats 2000000 in
+
 theorem derEquiv (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] :
     DerEquiv k := by
   intro ψ n j V _ _ π
@@ -414,7 +459,7 @@ theorem derEquiv (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsN
   have hBs : Function.Surjective B := Q'_surj ψ hh π
   have hA : LinearMap.ker A = LinearMap.ker B := by
     have e1 : LinearMap.ker A = twKer π (derUnip k (n + j + 1) n) (derChar k ψ (n + j + 1) n) :=
-      (ker_Q ψ j (resM k π)).trans (GlobalTheory.T.restriction_mirabolic_twisted_kernel k ψ (n + j) n V π)
+      (ker_Q ψ j (resM k π)).trans (_root_.GlobalTheory.CompanionTheory.BZMirDer.twKer_resM_derUnipM k ψ (n + j) n V π)
     rw [e1, ker_Q']
   let L := ((LinearMap.quotKerEquivOfSurjective A hAs).symm.trans (Submodule.quotEquivOfEq _ _ hA)).trans
     (LinearMap.quotKerEquivOfSurjective B hBs)

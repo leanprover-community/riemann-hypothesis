@@ -1,7 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiagMod
+public import Mathlib.FieldTheory.Galois.Basic
+public import Mathlib.RingTheory.Valuation.ValuationSubring
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Invariant.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiagMod
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 
@@ -232,12 +283,12 @@ private lemma mem_of_mem_of_inv_core_mem [FiniteDimensional F L] (W₁ W₂ U U'
   have hsS : s ∈ _root_.GlobalTheory.ValConj.core F W₁ W₂ := by
     intro σ
     have hσs : σ s = ∑ j ∈ Finset.range k, algebraMap F L (a j) * σ x ^ j / σ x ^ k := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [hs, map_sum, map_div₀, map_mul, map_pow, AlgEquiv.commutes]
+
+      simp [hs, map_sum, map_div₀, map_mul, map_pow, AlgEquiv.commutes]
     have hσrel : ∑ j ∈ Finset.range (n + 1), algebraMap F L (a j) * σ x ^ j = 0 := by
       have := congrArg σ hrel
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa [map_sum, map_mul, map_pow, AlgEquiv.commutes] using this
+
+      simpa [map_sum, map_mul, map_pow, AlgEquiv.commutes] using this
     have hσx : σ x ≠ 0 := by simpa using hx0
     rw [hσs]
     exact ⟨sum_lower_div_pow_mem_of_normalized_relation W₁ n k _ (σ x) hσx hk (fun j => hUW₁ _ (ha j)) (by simp [hak]) hσrel,

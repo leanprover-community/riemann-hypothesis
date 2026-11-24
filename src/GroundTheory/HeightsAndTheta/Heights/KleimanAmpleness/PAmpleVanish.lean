@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsSnapper
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsTildeVanish
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleCechSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

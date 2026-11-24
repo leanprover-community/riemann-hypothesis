@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.InnerProductSpace.Orthogonal
+public import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 
 @[expose] public section
 

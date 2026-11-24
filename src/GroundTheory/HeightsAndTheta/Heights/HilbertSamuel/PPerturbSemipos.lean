@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturbSemipos
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineLevi
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineSmooth
+import Mathlib.Algebra.Ring.IsFormallyReal
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
 @[expose] public section
 

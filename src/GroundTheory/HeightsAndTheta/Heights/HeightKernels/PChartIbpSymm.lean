@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartIbpSymm
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartIbpSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ChartCutoffParts
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

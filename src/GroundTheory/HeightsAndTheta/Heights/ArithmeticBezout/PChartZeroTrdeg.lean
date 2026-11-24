@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartZeroTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsAlt
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -25,8 +27,8 @@ theorem aeval_homogAt {L : Type} [Field L] [Algebra F L] (p : MvPolynomial (Fin 
     (N : ℕ) (hN : p.totalDegree ≤ N) (z : Fin n → L) (hz : z j ≠ 0) :
     aeval z (homogAt p j N) = z j ^ N * aeval (fun m => z m * (z j)⁻¹) p := by
   conv_rhs => rw [p.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [homogAt, map_sum, map_sum, Finset.mul_sum]
+
+  rw [homogAt, map_sum, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun α hα => ?_
   have hk := (le_totalDegree hα).trans hN
   simp only [map_mul, aeval_monomial, map_pow, aeval_X, mul_pow, Finsupp.prod_mul]

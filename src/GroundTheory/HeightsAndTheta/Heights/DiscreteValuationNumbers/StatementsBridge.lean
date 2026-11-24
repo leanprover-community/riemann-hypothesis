@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsCN
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 
 @[expose] public section
 

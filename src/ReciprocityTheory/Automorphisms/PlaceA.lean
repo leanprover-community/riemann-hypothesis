@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

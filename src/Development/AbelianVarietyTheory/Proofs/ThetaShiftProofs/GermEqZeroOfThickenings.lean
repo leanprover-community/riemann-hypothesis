@@ -1,18 +1,58 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniqueJet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ToStkAInjective
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.WeightIndep
-public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.PGAppEqZeroIff
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsUniqueFactorCompletedStalkOfMap
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtOfSucc
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtSub
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.PGAppEqZeroIff
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ValueAtUnitSection
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsUniqueFactorCompletedStalkOfMap
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.WeightIndep
 
 @[expose] public section
 
@@ -364,8 +404,8 @@ theorem expandsAt_value {e k : ℕ} {σ : H0 U.LG.L k} {f : ∀ α : D.toPre.X, 
       ((congrArg (fun q => q (cpt T) ∈ U.LG.L.U jL) hx.1).mpr (top_le_comp hL _ trivial))
     rw [show xe ≫ pGl U e = spMap ρ ≫ basePt g from hx.2.1, show xe ≫ fGl I G e = spMap ρ ≫ x from hx.1, eM] at H
     apply toStkA_injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_mul, map_pow, hx.toStkA_wVal hL hM, map_sum, map_sum]
+
+    rw [map_mul, map_pow, hx.toStkA_wVal hL hM, map_sum, map_sum]
     refine (congrArg₂ (· * ·) (Units.val_pow_eq_pow_val _ _).symm
       (toStkA_map_valR ρ x _ _ (top_le_secChart hL) _)).trans (H.trans (Finset.sum_congr rfl fun α hα => ?_))
     have hv := hx.val_eq α (𝟙 _) hJ
@@ -379,29 +419,7 @@ theorem expandsAt_value {e k : ℕ} {σ : H0 U.LG.L k} {f : ∀ α : D.toPre.X, 
 theorem exists_limit (J : Ideal S) [IsPrecomplete J S] (v : ∀ e : ℕ, S ⧸ J ^ (e + 1))
     (hv : ∀ e, Ideal.Quotient.factor (Ideal.pow_le_pow_right (Nat.le_succ (e + 1))) (v (e + 1)) = v e) :
     ∃ a : S, ∀ e, Ideal.Quotient.mk (J ^ (e + 1)) a = v e := by
-  choose c hc using fun e => Ideal.Quotient.mk_surjective (v e)
-  have h₁ : ∀ e, c (e + 1) - c e ∈ J ^ (e + 1) := fun e => by
-    rw [← Ideal.Quotient.eq, hc e, ← hv e, ← hc (e + 1), Ideal.Quotient.factor_mk]
-  have h₀ : ∀ m d, c m - c (m + d) ∈ J ^ m := fun m d => by
-    induction d with
-    | zero => simp
-    | succ d ih =>
-      have h₂ : c (m + d + 1) - c (m + d) ∈ J ^ m := Ideal.pow_le_pow_right (by omega) (h₁ (m + d))
-      have e : c m - c (m + (d + 1)) = (c m - c (m + d)) - (c (m + d + 1) - c (m + d)) := by
-        rw [← _root_.add_assoc]; ring
-      rw [e]
-      exact (J ^ m).sub_mem ih h₂
-  obtain ⟨a, ha⟩ := IsPrecomplete.prec' (I := J) c fun {m n} hmn => by
-    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hmn
-    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top]
-    exact h₀ m d
-  refine ⟨a, fun e => ?_⟩
-  have h₂ := ha (e + 1)
-  rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top] at h₂
-  rw [← hc e, Ideal.Quotient.eq]
-  have e' : a - c e = (c (e + 1) - c e) - (c (e + 1) - a) := by ring
-  rw [e']
-  exact (J ^ (e + 1)).sub_mem (h₁ e) h₂
+  apply GlobalTheory.SeriesValue.exists_lim <;> assumption
 
 theorem eq_of_forall_mk_eq (J : Ideal S) [IsHausdorff J S] {a b : S}
     (h : ∀ e, Ideal.Quotient.mk (J ^ (e + 1)) a = Ideal.Quotient.mk _ b) : a = b := by
@@ -616,7 +634,7 @@ theorem exists_isZero (P : DegPre R) (T : Over (Sp R)) : ∃ g : GtPt P T, g.IsZ
     rw [val_one] at H
     refine Eq.trans ?_ H
     refine Eq.trans ?_ (val_cub P.cub (lift (P.cT T χ) (P.cT T χ')) hJ (x2 P.P.A 0) (x2 P.P.A 1) (pzero P.P.A _)).symm
-    congr 1 <;> simp [x2, pzero, Hom.one_def, DegPre.zeroT]
+    congr 1 <;> simp [x2, pzero, DegPre.zeroT]
   exact congrArg₂ (· * ·) ((v _ y J hJ).trans (v _ y J hJ).symm)
     (c.trans (face.trans (v _ y J hJ).symm))
 
@@ -667,8 +685,8 @@ theorem map_secVal_eq {e k : ℕ} {σ : H0 U.LG.L k} {f : ∀ α : D.toPre.X, D.
   refine ⟨h₀, fun F' jL jM jf jt hFF hL hM hc => ?_⟩
   have e₁ : ρ (∑ α ∈ F', famVal g (f α) (jf α) * coordVal g α (jt α)) =
       ρ (∑ α ∈ F, famVal g (f α) (jf α) * coordVal g α (jt α)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
     refine (Finset.sum_subset hFF fun α hα hα' => ?_).symm
     rw [map_mul, h₀ α hα' _ (hc α hα).1, zero_mul]
   rw [map_mul, e₁, ← h₁ jL jM jf jt hL hM fun α hα => hc α (hFF hα), map_pow, ← _root_.mul_assoc, ← mul_pow,

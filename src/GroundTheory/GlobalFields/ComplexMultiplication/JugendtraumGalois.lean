@@ -1,10 +1,16 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.ClassFieldConsequences.HilbertClassField
+public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticUniformization
+public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupActionLattice
+public import GroundTheory.GlobalFields.GlobalArtinMap.ArtinMap
+public import GroundTheory.GlobalFields.ComplexMultiplication.AutCFixed
+public import GroundTheory.GlobalFields.ComplexMultiplication.HilbertClassField
 public import GroundTheory.GlobalFields.ComplexMultiplication.JugendtraumUniformization
 public import GroundTheory.GlobalFields.ComplexMultiplication.MainTheoremIdeles
-public import GroundTheory.GlobalFields.ComplexMultiplication.HilbertClassField
-public import GroundTheory.GlobalFields.ComplexMultiplication.AutCFixed
+public import GroundTheory.GlobalFields.GlobalArtinMap.Kernel
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupAction
 
 @[expose] public section
 

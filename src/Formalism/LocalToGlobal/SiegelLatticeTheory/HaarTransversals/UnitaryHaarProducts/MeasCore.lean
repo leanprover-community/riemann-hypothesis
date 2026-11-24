@@ -1,8 +1,5 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measures
 
 @[expose] public section

@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFrameJacobianSum
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrass
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCauchyBinet
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 

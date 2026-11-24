@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.ReductionMeasure
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalHaar
-public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteAdelicDistribution
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

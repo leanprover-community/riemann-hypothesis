@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsRootOfIsAlgClosed
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerUnitClassModPrimePowProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsRootOfIsAlgClosed
+import Development.AbelianVarietyTheory.Definitions.Foundations.OpLDOneSubMemTriv
 
 @[expose] public section
 
@@ -51,8 +97,8 @@ theorem hilbert_ninety : ∀ (Ω K Γ : Type) [Field Ω] [Field K] [Algebra Ω K
     rw [QuotientGroup.eq] at h
     have e : g' = g * (g⁻¹ * g') := by group
     rw [e, cm, c1 _ h, map_one, one_mul, map_mul, AlgEquiv.mul_apply, h _ x.2]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.mul_sum]
+
+  rw [map_sum, Finset.mul_sum]
   refine Fintype.sum_equiv (MulAction.toPerm γ) _ _ fun q => ?_
   rw [MulAction.toPerm_apply, F (γ * q.out) (γ • q).out
     (by rw [QuotientGroup.out_eq']; exact MulAction.Quotient.coe_smul_out D γ q), cm, map_mul, map_mul,
@@ -231,11 +277,6 @@ theorem exists_uniform_level : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε :
     fun γ hγ => ⟨hh (X.sl (ofSL γ) f), fun ρ hρ => hL _ ρ (gamma_le_of_dvd ?_ hρ), ht _ (hH γ hγ)⟩⟩
   exact (Finset.dvd_prod_of_mem L (hfin.mem_toFinset.2 ⟨γ, rfl⟩)).mul_left _
 
-theorem toGQ_coe_eq (γ : SL(2, ℤ)) : toGQ (γ : Matrix (Fin 2) (Fin 2) ℤ) = ofSL γ := by
-  have h : (0 : ℤ) < (γ : Matrix (Fin 2) (Fin 2) ℤ).det := by simp
-  ext i j
-  simp [toGQ, h, ofSL]
-
 theorem cls_eq_of_mem_Gam : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (N l w n : ℕ) [Fact l.Prime]
     (b : X.Fn l), b ∈ X.B N l w → ∀ (f : X.Kˣ), AdicCompletion.eval (idl l) (X.Kl l) n (b ![1, 0]) = X.cls l n f →
     ∀ γ ∈ Gam N l, ∀ s : ℤ, ((en γ 0 0 : ℤ) : ZMod (l ^ n)) = s → ((en γ 1 0 : ℤ) : ZMod (l ^ n)) = 0 →
@@ -261,12 +302,12 @@ theorem cls_eq_of_mem_Gam : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω
     | mem b hb =>
       refine ⟨hb.2 γ hγ, ?_⟩
       obtain ⟨c, -, hc⟩ := hb.1
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hc, hc, map_sum, map_sum, Finset.smul_sum]
+
+      rw [hc, hc, map_sum, map_sum, Finset.smul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_smul, map_smul, smul_smul]
       apply hsm
-      simp only [map_mul, map_pow, u0, u1, map_intCast, Matrix.cons_val_zero, Matrix.cons_val_one, map_one, map_zero,
+      simp only [map_mul, map_pow, u0, u1, map_intCast, Matrix.cons_val_zero, Matrix.cons_val_one, map_zero,
         one_pow, one_mul]
       rcases Nat.eq_zero_or_pos (w - (i : ℕ)) with h | h
       · have : (i : ℕ) = w := by have := i.2; omega
@@ -277,7 +318,7 @@ theorem cls_eq_of_mem_Gam : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω
     | smul a x _ hx => exact ⟨by rw [map_smul, hx.1], by simp only [Pi.smul_apply, map_smul, hx.2, smul_comm a]⟩
   have e1 : X.kmap l (X.sl (ofSL γ)).toRingEquiv (b u) = b ![1, 0] := by
     have := congrFun key.1 ![1, 0]
-    rw [← toGQ_coe_eq]
+    rw [← _root_.GlobalTheory.KZ.Betti.toGQ_sl]
     exact this
   rw [← hf, ← e1]
   refine (GlobalTheory.KZ.H3.cls_props Ω ε X l n).2.2.2.2.2.1 _ _ _ ?_

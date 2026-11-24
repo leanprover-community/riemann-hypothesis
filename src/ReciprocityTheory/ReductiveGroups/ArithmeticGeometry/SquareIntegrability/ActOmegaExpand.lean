@@ -1,5 +1,9 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.NormProjectionSq
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ExistsMinNorm
 
 @[expose] public section
@@ -19,19 +23,16 @@ lemma act_omega_expand {dim : (E →+* ℂ) → ℕ} (ω : Fin (Module.finrank �
     by
       first
       | exact hω.span_eq_top_of_card_eq_finrank' (Fintype.card_fin _)
-      | (haveI : Nonempty (Fin (Module.finrank ℚ E)) := ⟨⟨0, Module.finrank_pos⟩⟩
-         exact hω.span_eq_top_of_card_eq_finrank (Fintype.card_fin _))
   have hα : (α : E) ∈ Submodule.span ℚ (Set.range fun j => (ω j : E)) := by
     rw [hsp]; exact Submodule.mem_top
   obtain ⟨c, hc⟩ : ∃ c : Fin (Module.finrank ℚ E) → ℚ, ∑ j, c j • (ω j : E) = α := by
     first
     | exact (Submodule.mem_span_range_iff_exists_fun ℚ).1 hα
-    | exact Submodule.mem_span_range_iff_exists_fun.1 hα
   have key : act α y = ∑ j, ((c j : ℝ)) • act (ω j) y := by
     ext i
     simp only [act, ← hc]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, Rat.smul_def, map_mul, map_ratCast, Finset.sum_mul, Complex.real_smul, mul_assoc]
+
+    simp [map_sum, Rat.smul_def, map_mul, map_ratCast, Finset.sum_mul, Complex.real_smul, mul_assoc]
   rw [key]
   exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
 
@@ -66,8 +67,8 @@ lemma rank_bound {dim : (E →+* ℂ) → ℕ} (L I : Submodule ℤ (Vsp dim))
     intro m hm
     have h1 : ∑ s : b, (∑ j, ((m (j, s) : ℂ) * σ (ω j : E))) • (s : Vsp dim) = 0 := by
       have := congrArg (prj σ) hm
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero] at this
+
+      rw [map_sum, map_zero] at this
       rw [← this, Fintype.sum_prod_type, Finset.sum_comm]
       refine Finset.sum_congr rfl fun s _ => ?_
       rw [Finset.sum_smul]
@@ -78,8 +79,8 @@ lemma rank_bound {dim : (E →+* ℂ) → ℕ} (L I : Submodule ℤ (Vsp dim))
     have h2 := Fintype.linearIndependent_iff.mp hli
       (fun s => ∑ j, ((m (j, s) : ℂ) * σ (ω j : E))) h1 s
     have h3 : σ (∑ j, ((m (j, s) : E)) * (ω j : E)) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]; simpa [map_mul, map_intCast] using h2
+
+      rw [map_sum]; simpa [map_mul, map_intCast] using h2
     have h4 : ∑ j, ((m (j, s) : ℚ)) • (ω j : E) = 0 := by
       have h5 := (map_eq_zero_iff σ σ.injective).mp h3
       simpa [Rat.smul_def] using h5

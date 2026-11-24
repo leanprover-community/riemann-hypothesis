@@ -1,6 +1,57 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Perfect
+public import Mathlib.RingTheory.Unramified.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Unramified.Pi
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Etale.Basic
+public import Mathlib.RingTheory.Etale.Kaehler
+public import Mathlib.RingTheory.Unramified.Field
 
 @[expose] public section
 
@@ -78,17 +129,17 @@ theorem exists_separability_element (O : Type) [CommRing O] [Module.Free ℤ O] 
         exact hsq x hx)
   rw [Polynomial.aeval_algebraMap_apply] at h0
   refine ⟨N ^ p.natDegree, Polynomial.aeval (N : O ⊗[ℤ] O) p, pow_pos hN _, ?_, fun c => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · have hz : ∑ k ∈ Finset.range p.natDegree,
-          Algebra.TensorProduct.lmul' ℤ (p.coeff k • (N : O ⊗[ℤ] O) ^ k) = 0 := by
-        apply Finset.sum_eq_zero
-        intro k hk
-        have : p.coeff k ∈ I :=
-          Ideal.pow_le_self (Nat.sub_ne_zero_of_lt (Finset.mem_range.1 hk)) (hc k)
-        have h : Algebra.TensorProduct.lmul' ℤ (p.coeff k) = 0 := this
-        rw [smul_eq_mul, map_mul, h, zero_mul]
-      rw [Polynomial.aeval_eq_sum_range, Finset.sum_range_succ, map_add (f := _),
-        hp.coeff_natDegree, one_smul, map_sum, hz, zero_add, map_pow, map_natCast, Nat.cast_pow]
+
+  · have hz : ∑ k ∈ Finset.range p.natDegree,
+        Algebra.TensorProduct.lmul' ℤ (p.coeff k • (N : O ⊗[ℤ] O) ^ k) = 0 := by
+      apply Finset.sum_eq_zero
+      intro k hk
+      have : p.coeff k ∈ I :=
+        Ideal.pow_le_self (Nat.sub_ne_zero_of_lt (Finset.mem_range.1 hk)) (hc k)
+      have h : Algebra.TensorProduct.lmul' ℤ (p.coeff k) = 0 := this
+      rw [smul_eq_mul, map_mul, h, zero_mul]
+    rw [Polynomial.aeval_eq_sum_range, Finset.sum_range_succ, map_add (f := _),
+      hp.coeff_natDegree, one_smul, map_sum, hz, zero_add, map_pow, map_natCast, Nat.cast_pow]
   · have hm := KaehlerDifferential.one_smul_sub_smul_one_mem_ideal ℤ c
     have := congrArg Subtype.val (LinearMap.congr_fun h0 ⟨_, hm⟩)
     have h : Polynomial.aeval (N : O ⊗[ℤ] O) p * ((1 : O) ⊗ₜ[ℤ] c - c ⊗ₜ[ℤ] (1 : O)) = 0 := this

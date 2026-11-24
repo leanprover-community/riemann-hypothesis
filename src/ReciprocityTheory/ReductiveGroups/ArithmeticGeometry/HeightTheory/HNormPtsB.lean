@@ -3,6 +3,9 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormDefs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.CastAddNeNatAdd
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.SacSuccAbove
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 
@@ -82,8 +85,8 @@ theorem fib (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (sg : K →+* ℂ) (t : Fin d.
     refine h1.trans (Finset.prod_congr rfl fun σ _ => ?_)
     have hσ : (σ : OmS (Ω c) d.D d.N →+* ℂ).comp (d.KTtoS h c) = tauPev sg _ hpt :=
       RingHom.ext fun x => σ.commutes x
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [rationalBaseRow, map_sum, map_mul]
+
+    simp only [rationalBaseRow, map_sum, map_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     have he := d.emb_sH (h := h) (c := c) (sg := sg)
       (pt := NPB.gpt (fun q => t q.1 q.2) y) (hpt := hpt) (σ : OmS (Ω c) d.D d.N →+* ℂ) hσ
@@ -137,8 +140,8 @@ theorem norm_at_sg_B (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (sg : K →+* ℂ) :
         ∑ j, y (Fin.castAdd d.D j) * P (ratio (Ω := Ω c) (d.w j c) (d.w (d.jc c) c)) := by
       intro y
       rw [finprod_mem_eq_finite_toFinset_prod _ hfin]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [cX, map_prod, map_sum, map_mul, eval_X, eval_C]
+
+      simp only [cX, map_prod, map_sum, map_mul, eval_X, eval_C]
     have hQ : NPB.psi sg (fun q => d.tOf z q.1 q.2) a - cX * NPB.psi sg (fun q => d.tOf z q.1 q.2) b = 0 := by
       by_contra hQ
       obtain ⟨y, hy, hpt⟩ := NPB.exists_gen sg _ hG _ hQ

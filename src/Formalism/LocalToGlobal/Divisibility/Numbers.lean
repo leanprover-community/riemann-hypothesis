@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.DataParams₂
 public import Formalism.LogFactorialIndices.StatementSize
-public import Formalism.QuotientMetricDivisors.TheoremDivIneqRowsShift
 public import Formalism.MirabolicMackeyTheory.StatementT
 
 @[expose] public section

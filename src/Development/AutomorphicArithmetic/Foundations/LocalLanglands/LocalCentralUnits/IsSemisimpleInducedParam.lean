@@ -1,6 +1,55 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.RecTTransport
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -141,7 +190,6 @@ private theorem det_shift {n : ℕ} (hn : 0 < n) {b : ℂ} (hb : b ≠ 0) (S : M
       rw [hl, finRotate_last]
       simp only [wt, if_true]
       rw [← h4, ← h3]
-      congr 1
       simp
     · have hlt : (i : ℕ) < m := by omega
       have h5 : finRotate (m + 1) i = ⟨(i : ℕ) + 1, by omega⟩ := finRotate_of_lt hlt
@@ -322,7 +370,7 @@ theorem UpperTheory.Zero.LLC.indEx :
   obtain ⟨b, hbdef⟩ : ∃ b, b = (-1 : ℂ) ^ (n - 1) * c := ⟨_, rfl⟩
   rw [← hbdef] at hb
   let e := perEquiv n hn hb
-  haveI : FiniteDimensional ℂ (per n b) := Module.Finite.equiv e.symm
+  have : FiniteDimensional ℂ (per n b) := Module.Finite.equiv e.symm
   have hsm := isSmooth_inducedParam (b := b) hφ h1 h2 hn h0
   let a0 : WDRep h (per n b) :=
     { ρ := rho0 hφ b h1 h2
@@ -345,7 +393,7 @@ theorem UpperTheory.Zero.LLC.indEx :
     show (rho0 hφ b h1 h2 (φ ^ m) (e.symm g)).1 ((i : ℕ) : ℤ) = _
     rw [rho_zpow]
   refine ⟨WD.mk a, ⟨n, a, rfl, ?_⟩, by simp, ?_, fun t => ?_, fun hw => ⟨n, a, rfl, fun σ hσ => ?_⟩⟩
-  · haveI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  · have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
     have : Nontrivial (Subrepresentation a.ρ) := ⟨⊥, ⊤, fun h' => by
       have := congrArg Subrepresentation.toSubmodule h'
       exact bot_ne_top (α := Submodule ℂ (Fin n → ℂ)) this⟩
@@ -358,7 +406,7 @@ theorem UpperTheory.Zero.LLC.indEx :
       let χ : Fin n → Ine (F := E) A → ℂ := fun i t => ((η ((i : ℕ) : ℤ) t : ℂˣ) : ℂ)
       have hχ : ∀ i i', i ≠ i' → ∃ t, χ i t ≠ χ i' t := fun i i' hne => by
         by_contra hall
-        push_neg at hall
+        push Not at hall
         have e1 : η ((i : ℕ) : ℤ) = η ((i' : ℕ) : ℤ) := MonoidHom.ext fun t => Units.ext (hall t)
         have e2 := (h2 _ _).1 e1
         have e3 := Int.eq_zero_of_abs_lt_dvd e2 (abs_lt.2 ⟨by omega, by omega⟩)

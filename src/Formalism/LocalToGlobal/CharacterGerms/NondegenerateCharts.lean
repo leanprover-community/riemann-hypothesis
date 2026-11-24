@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieTop
+public import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
 
 @[expose] public section
 

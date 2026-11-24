@@ -1,17 +1,49 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.AllLeaves
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UfamConst
-public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.CommonEigenvectors.KillPoly
-public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.DiagonalInfinityValues.InfGLValDiag
-public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.NormalisedExistence.ExistsNormed
-public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.CasimirOnParabolicInduction
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieOneLMemZalg
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsStableBdSub
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliLeviFactorizationSum
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapS
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShiftedCapelliDeterminantSubleadingCoeffTrace
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteSpectrumOfResidual
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CommuteCapOfCommuteEop
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliLeviFactorizationSum
+import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UfamConst
+import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.GapAbsOf
 
 @[expose] public section
 
@@ -35,8 +67,8 @@ theorem coeff_mem_of_values {A : Type} [AddCommGroup A] [Module ℂ A] (W : Subm
     have h0 : (Submodule.Quotient.mk (∑ i ∈ Finset.range n, u ^ i • c i) : A ⧸ W) = 0 :=
       (Submodule.Quotient.mk_eq_zero W).2 (h u)
     have h1 := congrArg f h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Submodule.mkQ_apply, map_sum, map_sum, map_zero] at h1
+
+    rw [← Submodule.mkQ_apply, map_sum, map_sum, map_zero] at h1
     simp only [p, Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,
       Polynomial.eval_X, Polynomial.eval_zero]
     rw [← h1]
@@ -126,7 +158,7 @@ theorem capR_mul_capS (r s : ℕ) (τ τ' : E →+* ℂ) (u v : ℂ) :
   · subst h
     exact (GlobalTheory.CompanionTheory.CTFin.CapFactor.capR_commute_capS r s τ u v).eq
   · unfold GlobalTheory.CompanionTheory.CTFin.capR GlobalTheory.CompanionTheory.CTFin.capS
-    exact qdet_commute_of _ _ (fun i j k l => Eop_comm h _ _ _ _) _ _
+    exact qdet_commute_of (A := Module.End ℂ (Sm E (r + s))) _ _ (fun i j k l => Eop_comm h _ _ _ _) _ _
 
 theorem capR_mul_capR (r s : ℕ) (τ τ' : E →+* ℂ) (u v : ℂ) :
     GlobalTheory.CompanionTheory.CTFin.capR r s τ u * GlobalTheory.CompanionTheory.CTFin.capR r s τ' v =
@@ -135,7 +167,7 @@ theorem capR_mul_capR (r s : ℕ) (τ τ' : E →+* ℂ) (u v : ℂ) :
   by_cases h : τ = τ'
   · subst h
     exact qdet_commute_self _ (glRel_comp (glRel_Eop τ) (Fin.castAdd_injective r s)) _ _
-  · exact qdet_commute_of _ _ (fun i j k l => Eop_comm h _ _ _ _) _ _
+  · exact qdet_commute_of (A := Module.End ℂ (Sm E (r + s))) _ _ (fun i j k l => Eop_comm h _ _ _ _) _ _
 
 theorem capS_mul_capS (r s : ℕ) (τ τ' : E →+* ℂ) (u v : ℂ) :
     GlobalTheory.CompanionTheory.CTFin.capS r s τ u * GlobalTheory.CompanionTheory.CTFin.capS r s τ' v =
@@ -144,7 +176,7 @@ theorem capS_mul_capS (r s : ℕ) (τ τ' : E →+* ℂ) (u v : ℂ) :
   by_cases h : τ = τ'
   · subst h
     exact qdet_commute_self _ (glRel_comp (glRel_Eop τ) (Fin.natAdd_injective s r)) _ _
-  · exact qdet_commute_of _ _ (fun i j k l => Eop_comm h _ _ _ _) _ _
+  · exact qdet_commute_of (A := Module.End ℂ (Sm E (r + s))) _ _ (fun i j k l => Eop_comm h _ _ _ _) _ _
 
 theorem gens_comm (r s : ℕ) : ∀ a ∈ gens E r s, ∀ b ∈ gens E r s, a * b = b * a := by
   rintro a (⟨⟨τ, u⟩, rfl⟩ | ⟨⟨τ, u⟩, rfl⟩) b (⟨⟨τ', v⟩, rfl⟩ | ⟨⟨τ', v⟩, rfl⟩)

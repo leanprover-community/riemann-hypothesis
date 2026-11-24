@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

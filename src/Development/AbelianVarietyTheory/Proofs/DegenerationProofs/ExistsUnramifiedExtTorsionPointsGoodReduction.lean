@@ -1,20 +1,65 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TwistBCPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsDiscreteValuationRingOfMaximalIdealEqSpa
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ValuationRingOfFlatOfFormallyUnramified
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsUnitNatCastSections
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMulEquivOfIsGrpPullback
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CardTorsionPointsAbelianVarietyStatement
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMulEquivOfIsGrpPullback
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FormallyUnramifiedMulN
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsUnitNatCastSections
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -25,9 +70,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorsionUnram
 
-theorem spMap_comp' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B)
-    (g : B →+* C) : spMap (g.comp f) = spMap g ≫ spMap f := by
-  rw [← Spec.map_comp]; rfl
+alias spMap_comp' := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
 
 theorem exists_local_of_etale {T W Ω F : Type} [CommRing T] [IsDomain T] [IsDiscreteValuationRing T]
     [CommRing W] [Algebra T W] [Algebra.Etale T W] [Field Ω] [Field F] [IsAlgClosed F]
@@ -62,7 +105,7 @@ theorem exists_local_of_etale {T W Ω F : Type} [CommRing T] [IsDomain T] [IsDis
   obtain ⟨_, _⟩ := exists_isDiscreteValuationRing_of_unramified T B
   have halg := isAlgebraic_of_flat_of_formallyUnramified T B
   have hff := Module.FaithfullyFlat.of_flat_of_isLocalHom (A := T) (B := B)
-  letI := j.toAlgebra
+  let := j.toAlgebra
   have : Module.IsTorsionFree T F := Module.isTorsionFree_iff_algebraMap_injective.2 hj
   let j' : B →ₐ[T] F := (by
     refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
@@ -121,8 +164,8 @@ theorem exists_lift_one {X S : Scheme.{0}} (f : X ⟶ S) [Etale f] {T Ω F : Typ
     ← Spec.map_comp_assoc, cancel_mono, Spec.map_inj] at w
   have het := f.etale_appLE hU hV hVU
   algebraize [(f.appLE U V hVU).hom]
-  letI : Algebra Γ(S, U) T := α.hom.toAlgebra
-  letI : Algebra Γ(S, U) Ω := (ρ.comp α.hom).toAlgebra
+  let : Algebra Γ(S, U) T := α.hom.toAlgebra
+  let : Algebra Γ(S, U) Ω := (ρ.comp α.hom).toAlgebra
   let ε : T ⊗[Γ(S, U)] Γ(X, V) →ₐ[Γ(S, U)] Ω :=
     Algebra.TensorProduct.productMap ⟨ρ, fun _ => rfl⟩ ⟨φ.hom, fun r ↦ congr($w r)⟩
   have hε₁ : ε.toRingHom.comp (algebraMap T _) = ρ := by
@@ -195,7 +238,7 @@ theorem exists_subalgebra_of_card {T Ω F : Type} [CommRing T] [IsDomain T]
       (spMap j') congr(($hab).left)
     exact Over.OverMorphism.ext ((hl a).symm.trans (e ▸ hl b))
   have hΦ' := (hΦ.bijective_of_nat_card_le hc).2
-  letI := σ.toAlgebra
+  let := σ.toAlgebra
   let j₁ : T₁ →ₐ[T] F := ⟨j', fun t => congr($h4 t)⟩
   let e : T₁ ≃ₐ[T] j₁.range := AlgEquiv.ofInjective j₁ h3
   refine ⟨j₁.range, IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing e,

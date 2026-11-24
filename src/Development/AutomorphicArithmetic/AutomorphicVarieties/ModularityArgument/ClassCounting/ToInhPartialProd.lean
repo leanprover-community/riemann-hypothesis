@@ -1,6 +1,51 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.HasVal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -41,9 +86,9 @@ theorem hbd_cone (a : G) (n : ℕ) (y : Ch A G (n + 1)) :
     hbd A G (n + 1) (cone A a (n + 1) y) = y - cone A a n (hbd A G n y) := by
   refine ch_ext A (f := (hbd A G (n + 1)).comp (cone A a (n + 1)))
     (g := LinearMap.id - (cone A a n).comp (hbd A G n)) (fun x => ?_) y
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.comp_apply, LinearMap.sub_apply, LinearMap.id_apply, cone_single, hbd_single, one_smul, map_sum,
-    map_smul]
+
+  simp only [LinearMap.comp_apply, LinearMap.sub_apply, LinearMap.id_apply, cone_single, hbd_single, one_smul, map_sum,
+  map_smul]
   rw [Fin.sum_univ_succ, sub_eq_add_neg, ← Finset.sum_neg_distrib]
   congr 1
   · simp
@@ -63,8 +108,8 @@ theorem hbd_cone_zero (a : G) (y : Ch A G 0) : hbd A G 0 (cone A a 0 y) = y := b
 theorem hbd_hmap {H : Type} (f : G → H) (n : ℕ) (y : Ch A G (n + 1)) :
     hbd A H n (hmap A f (n + 1) y) = hmap A f n (hbd A G n y) := by
   refine ch_ext A (f := (hbd A H n).comp (hmap A f (n + 1))) (g := (hmap A f n).comp (hbd A G n)) (fun x => ?_) y
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.comp_apply, hmap_single, hbd_single, one_smul, map_sum, map_smul]
+
+  simp only [LinearMap.comp_apply, hmap_single, hbd_single, one_smul, map_sum, map_smul]
 
 theorem hmap_cone {H : Type} (f : G → H) (a : G) (n : ℕ) (y : Ch A G n) :
     hmap A f (n + 1) (cone A a n y) = cone A (f a) n (hmap A f n y) := by
@@ -94,9 +139,9 @@ theorem hprism_cone (f : G → G) (a : G) (n : ℕ) (y : Ch A G n) :
   refine ch_ext A (f := (hprism A f (n + 1)).comp (cone A a n))
     (g := (cone A a (n + 1)).comp ((cone A (f a) n).comp (hmap A f n)) - (cone A a (n + 1)).comp (hprism A f n))
     (fun x => ?_) y
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.comp_apply, LinearMap.sub_apply, cone_single, hmap_single, hprism_single, one_smul, map_sum,
-    map_smul]
+
+  simp only [LinearMap.comp_apply, LinearMap.sub_apply, cone_single, hmap_single, hprism_single, one_smul, map_sum,
+  map_smul]
   rw [Fin.sum_univ_succ, sub_eq_add_neg, ← Finset.sum_neg_distrib]
   congr 1
   · simp only [Fin.val_zero, pow_zero, one_smul]
@@ -159,9 +204,9 @@ theorem toInh_surjective (n : ℕ) : Function.Surjective (toInh A G n) := fun z 
 
 theorem bd_toInh (n : ℕ) (y : Ch A G (n + 2)) : bd A G n (toInh A G (n + 1) y) = toInh A G n (hbd A G (n + 1) y) := by
   refine ch_ext A (f := (bd A G n).comp (toInh A G (n + 1))) (g := (toInh A G n).comp (hbd A G (n + 1))) (fun x => ?_) y
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.comp_apply, toInh_single, hbd_single, one_smul, map_sum, map_smul, bd,
-    Finsupp.linearCombination_single]
+
+  simp only [LinearMap.comp_apply, toInh_single, hbd_single, one_smul, map_sum, map_smul, bd,
+  Finsupp.linearCombination_single]
   rw [Fin.sum_univ_succ (n := n + 1)]
   congr 1
   · simp only [Fin.val_zero, pow_zero, one_smul, Fin.succAbove_zero, Fin.succ_castSucc]
@@ -183,9 +228,9 @@ theorem prism_toInh (k : G) (n : ℕ) (y : Ch A G (n + 1)) :
     prism A k n (toInh A G n y) = toInh A G (n + 1) (hprism A (· * k) (n + 1) y) := by
   refine ch_ext A (f := (prism A k n).comp (toInh A G n))
     (g := (toInh A G (n + 1)).comp (hprism A (· * k) (n + 1))) (fun x => ?_) y
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.comp_apply, toInh_single, hprism_single, one_smul, map_sum, map_smul, prism,
-    Finsupp.linearCombination_single]
+
+  simp only [LinearMap.comp_apply, toInh_single, hprism_single, one_smul, map_sum, map_smul, prism,
+  Finsupp.linearCombination_single]
   refine Finset.sum_congr rfl fun i _ => ?_
   congr 2
   funext j

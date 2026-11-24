@@ -1,13 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
+public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 public import Formalism.LocalToGlobal.Columns.LocWLemmas
-public import Formalism.LocalToGlobal.Columns.AtTLemmas
-public import Formalism.LocalToGlobal.Columns.DiamondPreservesRamified
-public import Formalism.LocalToGlobal.Columns.AtTRank
-public import Formalism.LogVandermondeBounds.FinrankFiberSumZero
-public import Formalism.LogVandermondeBounds.GaussOperatorProductFormula
+import Formalism.LogVandermondeBounds.FinrankFiberSumZero
 
 @[expose] public section
 

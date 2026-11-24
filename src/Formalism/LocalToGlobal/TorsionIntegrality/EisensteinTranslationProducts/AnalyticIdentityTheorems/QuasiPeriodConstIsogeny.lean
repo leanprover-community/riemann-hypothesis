@@ -1,6 +1,56 @@
 module
 
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.CMQuasiPeriodConst
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.Legendre
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.QuasiPeriodConstUnique
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SigmaLogDeriv2
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Module.Connected
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -31,11 +81,9 @@ lemma isPreconnected_dom (L : PeriodPair) (α : ℂ) (hα : α ≠ 0) : IsPrecon
     first
       | (rw [Complex.rank_real_complex]; exact one_lt_two)
       | (rw [Complex.rank_real_complex]; norm_num)
-      | simp [Complex.rank_real_complex]
   have hconn : IsConnected ((fun z => α * z) ⁻¹' (L.lattice : Set ℂ))ᶜ := by
     first
       | exact Set.Countable.isConnected_compl_of_one_lt_rank hrank hc'
-      | exact (Set.Countable.isPathConnected_compl_of_one_lt_rank hrank hc').isConnected
   exact hconn.isPreconnected
 
 lemma notMem_of_dom {L : PeriodPair} {α z : ℂ} (hst : MulStable L α) (hz : α * z ∉ L.lattice) :
@@ -66,9 +114,6 @@ lemma hasDerivAt_psi (hP : IsogenyP) (hd : ZetaHasDeriv) (L : PeriodPair) (α : 
       exact (hd L (z + P) hPz).comp_add_const z P
     first
       | exact HasDerivAt.fun_sum hC'
-      | (have h5 := HasDerivAt.sum hC'
-         rw [Finset.sum_fn] at h5
-         exact h5)
   have hD : HasDerivAt (fun w => (∑ P ∈ S, L.weierstrassP P) * w) ((∑ P ∈ S, L.weierstrassP P) * 1) z :=
     (hasDerivAt_id' z).const_mul _
   have hall := ((hA.sub hB).sub hC).sub hD
@@ -78,8 +123,6 @@ lemma hasDerivAt_psi (hP : IsogenyP) (hd : ZetaHasDeriv) (L : PeriodPair) (α : 
   first
     | (refine hall.congr_deriv ?_
        linear_combination -hiso)
-    | (convert hall using 1
-       linear_combination hiso)
 
 lemma psi_const (hP : IsogenyP) (hd : ZetaHasDeriv) (L : PeriodPair) (α : ℂ) (S : Finset ℂ)
     (hα : α ≠ 0) (hst : MulStable L α) (hS : IsKerReps L α S) {x y : ℂ}

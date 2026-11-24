@@ -1,18 +1,57 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DataRigidSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DvrLem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThetaVV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullUUnitsCompatGeneric
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFrameRatio
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SumFCalculus
-public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpansionValueZero
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ProdSumReindex
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpansionValueZero
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SumFCalculus
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.GenCalc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullGenPf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullUUnitsCompatGeneric
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.LevelFrameOfLaws
 
 @[expose] public section
 
@@ -60,8 +99,8 @@ theorem sumI_map {R : Type} [CommRing R] (I : Ideal R) {E Ix : Type} [AddCommGro
   refine ⟨Submodule.map φ ⊤, (Module.Finite.fg_top).map φ, ⟨x, trivial, rfl⟩, fun i => ⟨a i, trivial, rfl⟩, fun n => ?_⟩
   obtain ⟨S, hS⟩ := h n
   refine ⟨S, fun T hT => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, ← map_sub, ← Submodule.map_smul'']
+
+  rw [← map_sum, ← map_sub, ← Submodule.map_smul'']
   refine Submodule.mem_map_of_mem ?_
   simpa using Submodule.smul_mem_smul (Ideal.pow_le_pow_right (Nat.le_succ n) (hS T hT)) (Submodule.mem_top (x := (1 : R)))
 
@@ -197,9 +236,9 @@ theorem coef_comb {D : DegPre R} {k n : ℕ} (s : Fam D F k) (c : Fin n → F) (
       (jFK (R := R) F ≫ jK R) ≫ eSec D.P.A := GC.zF_prB D F
   have e₃ : (lift (𝟙 (TF (R := R) F)) (1 : _ ⟶ D.P.A)).left ≫ (fst (TF (R := R) F) D.P.A).left = 𝟙 _ := by
     rw [← Over.comp_left, lift_fst]; rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hw.2 z J hJ, hv α z J hJ, e₁, secLin_val hs _ z hJ, e₂, Units.val_one, _root_.mul_one, _root_.mul_one, cst_eq,
-    map_sum, Finset.sum_mul]
+
+  rw [hw.2 z J hJ, hv α z J hJ, e₁, secLin_val hs _ z hJ, e₂, Units.val_one, _root_.mul_one, _root_.mul_one, cst_eq,
+  map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   have b : gs (lift (𝟙 (TF (R := R) F)) (1 : _ ⟶ D.P.A)).left z ⊤ (scal (fst (TF (R := R) F) D.P.A).left (c i)) =
       cstH z (c i) := ((gs_pull _ _ z ⊤ trivial _).trans (by rw [e₃]; rfl)).trans (cst_eq z _)
@@ -261,8 +300,8 @@ theorem value_comb {w₀ : W0 U} {ρ : LB.Gen (A.L.pull (eSec A.A))} (h : NormW 
     exact (congrArg₂ (· * ·) (((gs_pull _ _ z ⊤ trivial _).trans (by rw [e₄]; rfl)).trans (cst_eq (R := R) z _))
       (hx i _ _ z JG hG)).trans (_root_.mul_assoc _ _ _).symm
   apply cstH_inj (R := R) z
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, ← cst_eq]
+
+  rw [map_sum, ← cst_eq]
   erw [e₅, e₆] at a₁
   exact alg_value a₁ a₂ a₃ a₄ a₅
 

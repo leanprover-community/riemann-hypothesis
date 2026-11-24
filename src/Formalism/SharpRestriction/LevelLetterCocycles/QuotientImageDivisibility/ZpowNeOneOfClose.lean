@@ -1,6 +1,56 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Nat.Prime.Defs
+public import Mathlib.RingTheory.Valuation.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+public import Mathlib.Algebra.Ring.GeomSum
+public import Mathlib.Data.Nat.Prime.Basic
 
 @[expose] public section
 
@@ -20,16 +70,10 @@ theorem v_natCast_nonneg (m : ℕ) : 0 ≤ v (m : LL) := by
 private theorem withTop_zero_lt_one : (0 : WithTop ℚ) < 1 := by
   first
   | exact WithTop.coe_lt_coe.2 zero_lt_one
-  | (rw [← WithTop.coe_zero, ← WithTop.coe_one, WithTop.coe_lt_coe]; norm_num)
-  | norm_num
-  | simp
 
 private theorem withTop_rat_not_one_add_one_le_one : ¬ ((1 : WithTop ℚ) + 1 ≤ 1) := by
   first
   | (rw [← WithTop.coe_one, ← WithTop.coe_add, WithTop.coe_le_coe]; norm_num)
-  | exact_mod_cast (by norm_num : ¬ ((1 : ℚ) + 1 ≤ 1))
-  | norm_num
-  | simp
 
 private theorem le_v_sum_range_of_forall (f : ℕ → LL) (g : WithTop ℚ) (hf : ∀ i, g ≤ v (f i)) (m : ℕ) :
     g ≤ v (∑ i ∈ Finset.range m, f i) := by
@@ -43,11 +87,8 @@ theorem v_intCast_nonneg (z : ℤ) : 0 ≤ v (z : LL) := by
   obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg z
   · first
     | (rw [Int.cast_natCast]; exact v_natCast_nonneg v n)
-    | (simp only [Int.cast_natCast]; exact v_natCast_nonneg v n)
-    | (push_cast; exact v_natCast_nonneg v n)
   · first
     | (rw [Int.cast_neg, Int.cast_natCast, v.map_neg]; exact v_natCast_nonneg v n)
-    | (push_cast; rw [v.map_neg]; exact v_natCast_nonneg v n)
 
 variable {p : ℕ} (hp : p.Prime) (hv : v (p : LL) = 1)
 include hp hv
@@ -61,8 +102,6 @@ theorem v_natCast_eq_zero (m : ℕ) (hm : ¬ p ∣ m) : v (m : LL) = 0 := by
   have hL : (p : LL) * (Nat.gcdA p m : LL) + (m : LL) * (Nat.gcdB p m : LL) = 1 := by
     first
     | (have h := congrArg (fun z : ℤ => (z : LL)) hb; push_cast at h; exact h.symm)
-    | (have h := congrArg (Int.cast : ℤ → LL) hb; simp only [Int.cast_add, Int.cast_mul,
-        Int.cast_natCast, Int.cast_one] at h; exact h.symm)
   have h1 : 0 < v ((p : LL) * (Nat.gcdA p m : LL)) := by
     rw [v.map_mul, hv]
     exact lt_of_lt_of_le withTop_zero_lt_one (le_add_of_nonneg_right (v_intCast_nonneg v _))
@@ -109,7 +148,6 @@ theorem v_geom_sub {ξ : LL} (h1 : (1 : WithTop ℚ) ≤ v (ξ - 1)) (m : ℕ) :
   have e : (∑ i ∈ Finset.range m, ξ ^ i) - (m : LL) = ∑ i ∈ Finset.range m, (ξ ^ i - 1) := by
     first
     | (rw [Finset.sum_sub_distrib]; simp)
-    | simp [Finset.sum_sub_distrib]
   rw [e]
   exact le_v_sum_range_of_forall v (fun i => ξ ^ i - 1) _ (fun i => v_pow_sub_one v h1 i) m
 
@@ -128,14 +166,12 @@ theorem pow_p_ne_one {ξ : LL} (hp3 : 3 ≤ p) (h1 : (1 : WithTop ℚ) ≤ v (ξ
     simp only [geom_sum_mul]
     first
     | (rw [Finset.sum_sub_distrib]; simp)
-    | simp [Finset.sum_sub_distrib]
   have hT : 1 ≤ v (∑ i ∈ Finset.range p, ∑ j ∈ Finset.range i, ξ ^ j) := by
     have e2 : (∑ i ∈ Finset.range p, ∑ j ∈ Finset.range i, ξ ^ j) =
         (∑ i ∈ Finset.range p, ((∑ j ∈ Finset.range i, ξ ^ j) - (i : LL))) +
           (((∑ i ∈ Finset.range p, i : ℕ)) : LL) := by
       first
       | (rw [Finset.sum_sub_distrib, Nat.cast_sum]; ring)
-      | (push_cast; rw [Finset.sum_sub_distrib]; ring)
     rw [e2]
     apply v.map_le_add
     · exact le_v_sum_range_of_forall v _ _ (fun i => le_trans h1 (v_geom_sub v h1 i)) p

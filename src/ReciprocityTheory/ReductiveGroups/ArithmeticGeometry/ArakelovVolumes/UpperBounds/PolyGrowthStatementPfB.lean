@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 
 @[expose] public section
 

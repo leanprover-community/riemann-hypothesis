@@ -1,12 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.StatementsGluing
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PGeoNumCut
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogIdealChain
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
+import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 @[expose] public section
 

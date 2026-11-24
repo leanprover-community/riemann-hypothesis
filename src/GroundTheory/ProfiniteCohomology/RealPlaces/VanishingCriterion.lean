@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.ConeMap
+public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalCohomologyIsoHomologyMapNormCochains
 
 @[expose] public section
 

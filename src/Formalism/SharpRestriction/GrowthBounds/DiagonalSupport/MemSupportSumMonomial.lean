@@ -1,6 +1,52 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDefs
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ValLamOfSubset
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -31,7 +77,7 @@ theorem multideg_single (v : ι × Fin n) (b : ℕ) (i : ι) :
   by_cases h : vi = i
   · subst h
     simp [Finsupp.single_apply]
-  · simp [Finsupp.single_apply, h]
+  · simp [h]
 
 theorem IsMH.congr {P : MvPolynomial (ι × Fin n) A} {δ δ' : ι → ℕ} (h : IsMH P δ) (hd : ∀ i, δ i = δ' i) : IsMH P δ' :=
   fun m hm i => (h m hm i).trans (hd i)
@@ -115,14 +161,14 @@ theorem twistSub_monomial_MH (u : ι × Fin n →₀ ℕ) :
 
 theorem twistSub_support (F : MvPolynomial (ι × Fin n) R) (m : ι × Fin n →₀ ℕ)
     (hm : m ∈ (twistSub LL S j F).support) : ∃ u ∈ F.support, ∀ i, multideg m i = multideg u i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [F.as_sum, map_sum] at hm
+
+  rw [F.as_sum, map_sum] at hm
   obtain ⟨u, hu, hmu⟩ := Finset.mem_biUnion.mp (MvPolynomial.support_sum hm)
   exact ⟨u, hu, twistSub_monomial_MH LL S j u _ m hmu⟩
 
 theorem twistSub_monomial_off (M : ι × Fin n →₀ ℕ) (h : ∀ v ∈ M.support, v.1 ∉ S) :
     twistSub (R := R) LL S j (MvPolynomial.monomial M 1) = MvPolynomial.monomial M 1 := by
-  simp only [twistSub, MvPolynomial.coe_eval₂Hom, MvPolynomial.eval₂_monomial, RingHom.comp_apply, map_one,
+  simp only [twistSub, MvPolynomial.coe_eval₂Hom, MvPolynomial.eval₂_monomial, map_one,
     one_mul]
   rw [MvPolynomial.monomial_eq, MvPolynomial.C_1, one_mul]
   apply Finsupp.prod_congr
@@ -147,7 +193,6 @@ theorem valComp : ValComp := by
     simp only [MvPolynomial.coeff_monomial]
     first
       | rw [Finset.sum_ite_eq']
-      | rw [Finset.sum_ite_eq]
     simp only [Finset.mem_filter, MvPolynomial.mem_support_iff]
     by_cases h : ∀ i, multideg u i = δ i <;> by_cases h2 : F.coeff u = 0 <;> simp [h, h2]
   have hsplit : ∀ (j : Fin n) m, (twistSub LL S j (homComp δ F)).coeff m =
@@ -182,6 +227,5 @@ theorem valComp : ValComp := by
   · exact hk m
   · first
       | simp
-      | rfl
 
 end Formalism.MainNotions.Proposition5Numerics

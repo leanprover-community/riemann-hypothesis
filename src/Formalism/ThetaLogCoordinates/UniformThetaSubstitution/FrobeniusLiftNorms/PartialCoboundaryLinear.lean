@@ -1,11 +1,50 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FirstDeriv
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
+public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LocalComponentGL
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
-public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -40,8 +79,6 @@ theorem subst_psubst {ι κ : Type} {b : ι → MvPowerSeries κ K} (hb : MvPowe
       PowerSeries.subst (MvPowerSeries.subst b a) f := by
   first
     | exact MvPowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.const ha) hb f
-    | exact MvPowerSeries.subst_comp_subst_apply ha hb f
-    | exact MvPowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.const_coeff ha) hb f
 
 theorem subst_single_var {ι κ : Type} {b : ι → MvPowerSeries κ K} (hb : MvPowerSeries.HasSubst b)
     (x : ι) (f : PowerSeries K) :
@@ -67,9 +104,7 @@ theorem constantCoeff_frobVar {ι : Type} {p : ℕ} (hp : p ≠ 0) (f : MvPowerS
     MvPowerSeries.constantCoeff (frobVar p f) = MvPowerSeries.constantCoeff f := by
   have e : frobVar p f = MvPowerSeries.expand p hp f := by
     first
-      | rfl
       | (unfold frobVar; simp [MvPowerSeries.expand])
-      | (unfold frobVar; rw [MvPowerSeries.expand_apply])
   rw [e, MvPowerSeries.constantCoeff_expand]
 
 theorem frobVar_psubst {ι : Type} {p : ℕ} (hp : p ≠ 0) {a : MvPowerSeries ι K}
@@ -129,13 +164,13 @@ theorem subst_pow_g_zero {ι : Type} {p : ℕ} (hp : 2 ≤ p) (hpK : (p : K) ≠
 
 theorem map_lgF (σ : K →+* K) (p : ℕ) : PowerSeries.map σ (lgF K p) = lgF K p := by
   ext n
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [lgF, map_sum, apply_ite]
+
+  simp [lgF, map_sum, apply_ite]
 
 theorem map_g0F (σ : K →+* K) (p : ℕ) : PowerSeries.map σ (g0F K p) = g0F K p := by
   ext n
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [g0F, map_sum, apply_ite]
+
+  simp [g0F, map_sum, apply_ite]
 
 theorem map_derivative (σ : K →+* K) (f : PowerSeries K) :
     PowerSeries.map σ (PowerSeries.derivative (R := K) f) =
@@ -160,7 +195,6 @@ theorem pderiv_single_self {ι : Type} [Finite ι] (x : ι) (f : PowerSeries K) 
   rw [Formalism.G.LogCR.pderiv_psubst (MvPowerSeries.constantCoeff_X x) f x]
   first
     | rw [MvPowerSeries.pderiv_X_self, mul_one]
-    | simp [MvPowerSeries.pderiv_X]
 
 theorem pderiv_single_ne {ι : Type} [Finite ι] {x y : ι} (h : y ≠ x) (f : PowerSeries K) :
     MvPowerSeries.pderiv (R := K) x (at1 y f) = 0 := by
@@ -168,17 +202,15 @@ theorem pderiv_single_ne {ι : Type} [Finite ι] {x y : ι} (h : y ≠ x) (f : P
   rw [Formalism.G.LogCR.pderiv_psubst (MvPowerSeries.constantCoeff_X y) f x]
   first
     | rw [MvPowerSeries.pderiv_X_of_ne h, mul_zero]
-    | simp [MvPowerSeries.pderiv_X, h]
 
 theorem pderiv_prod (k : K) (f g : PowerSeries K) :
     MvPowerSeries.pderiv (R := K) (0 : Fin 2) (MvPowerSeries.C k * (at1 0 f * at1 1 g)) =
       MvPowerSeries.C k * (at1 0 (PowerSeries.derivative (R := K) f) * at1 1 g) := by
   have hC : MvPowerSeries.pderiv (R := K) (0 : Fin 2) (MvPowerSeries.C k) = 0 := by
     ext n
-    simp [MvPowerSeries.coeff_pderiv, MvPowerSeries.coeff_C]
+    simp
   have h10 : (1 : Fin 2) ≠ 0 := by decide
-  simp only [Derivation.leibniz, hC, pderiv_single_self, pderiv_single_ne h10, smul_zero, add_zero, zero_add,
-    smul_eq_mul]
+  simp only [Derivation.leibniz, hC, pderiv_single_self, pderiv_single_ne h10, smul_eq_mul]
   ring
 
 theorem partial_coboundary_linear {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constantCoeff F = 0) (k q : K)
@@ -195,8 +227,6 @@ theorem partial_coboundary_linear {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSe
       ψ (MvPowerSeries.C a) = MvPowerSeries.C a := fun ψ a => by
     first
       | exact ψ.commutes a
-      | (have h := ψ.commutes a; rwa [MvPowerSeries.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply] at h)
-      | simp
   unfold d1
   rw [← MvPowerSeries.coe_substAlgHom h1, ← MvPowerSeries.coe_substAlgHom h2,
     ← MvPowerSeries.coe_substAlgHom h3]
@@ -228,8 +258,14 @@ end Norm
 end FrobeniusSubstitution
 
 open FrobeniusSubstitution in
-theorem StepII_of (hW : DworkMv) (hD : DivDeriv) (hDe : DeIntegral) (hL : LawSymm) : StepII := by
-  intro K _ _ _ p σ hU F hF G c _ hS hc hDer
+theorem frobenius_coboundary_error_bound (hD : DivDeriv) (hDe : DeIntegral) (hL : LawSymm)
+    {K : Type} [NormedField K] [IsUltrametricDist K] [CharZero K] {p : ℕ}
+    {σ : K →+* K} (hU : UnrOK K p σ)
+    {F G : MvPowerSeries (Fin 2) K} (hF : IsLawOfLog p F) {c : K}
+    (hc : ‖c‖ ≤ 1) (hDer : DerivIs p G c) :
+    Bd (p : ℝ)⁻¹ (MvPowerSeries.C (p : K) *
+      (d1 F (DeS p σ G) - MvPowerSeries.C (σ c) * (in3 (cob F (g0F K p)) * at1 2 (lgF K p))) -
+      (frobVar p (MvPowerSeries.map σ (d1 F G)) - MvPowerSeries.C (p : K) * d1 F G)) := by
   obtain ⟨hp, -, hnp, -, hσ⟩ := hU
   have hσF : MvPowerSeries.map σ F = F := (hL K p hp hnp F hF).1 σ
   have hδi : Integral (cob F (g0F K p)) := hDe K p σ hp hnp hσ F hF
@@ -328,12 +364,6 @@ theorem StepII_of (hW : DworkMv) (hD : DivDeriv) (hDe : DeIntegral) (hL : LawSym
       frobVar_pair hp0 h1, frobVar_pair hp0 h2, frobVar_pair hp0 h3, frobVar_X hp0, frobVar_X hp0,
       frobVar_X hp0]
 
-  have hE2 : Bd (p : ℝ)⁻¹ (frobVar p (MvPowerSeries.map σ (d1 F G)) -
-      MvPowerSeries.C (p : K) * d1 F G) := by
-    obtain ⟨hS0, hS1⟩ := hS
-    rw [sub_zero] at hS0 hS1
-    exact (hW K (Fin 3) p σ hp hnp hσ (d1 F G) hS0).1 hS1
-
   set Φ : MvPowerSeries (Fin 2) K :=
     Gs - MvPowerSeries.C (σ c) * (at1 0 (lgF K p) * at1 1 (g0F K p)) with hΦ
   have hΦi : Integral (MvPowerSeries.pderiv (R := K) 0 Φ) := by
@@ -415,8 +445,33 @@ theorem StepII_of (hW : DworkMv) (hD : DivDeriv) (hDe : DeIntegral) (hL : LawSym
     rw [partial_coboundary_linear hF0, hd1P, hd1s, hSΦ _ _ (hasSubst_pair hfA0 (hXp0 2)),
       hSΦ _ _ (hasSubst_pair hAp0 (hXp0 2)), hgb, hδ]
     ring
-  rw [key]
-  exact bd_sub (hscale _ (bd_sub hE2 hE1))
+  have htail := bd_mul (inv_nonneg.mpr hppos.le) zero_le_one
+    (bd_C (ι := Fin 3) (inv_nonneg.mpr hppos.le) hnp.le)
     (int_mul (bd_C zero_le_one (norm_sigma_le hσ hp.one_le hc)) (int_mul hδ3i (integral_X 2)))
+  rw [mul_one] at htail
+  rw [key, mul_sub, ← mul_assoc, hCC, one_mul]
+  have hsum := bd_add hE1 htail
+  convert bd_neg hsum using 1
+  ring
+
+open FrobeniusSubstitution in
+theorem StepII_of (hW : DworkMv) (hD : DivDeriv) (hDe : DeIntegral) (hL : LawSymm) : StepII := by
+  intro K _ _ _ p σ hU F hF G c _ hS hc hDer
+  have herror := frobenius_coboundary_error_bound hD hDe hL hU hF hc hDer
+  obtain ⟨hp, -, hnp, -, hσ⟩ := hU
+  have hE2 : Bd (p : ℝ)⁻¹ (frobVar p (MvPowerSeries.map σ (d1 F G)) -
+      MvPowerSeries.C (p : K) * d1 F G) := by
+    obtain ⟨hS0, hS1⟩ := hS
+    rw [sub_zero] at hS0 hS1
+    exact (hW K (Fin 3) p σ hp hnp hσ (d1 F G) hS0).1 hS1
+
+  have hb := bd_add herror hE2
+  rw [sub_add_cancel] at hb
+  intro n
+  have hn := hb n
+  rw [MvPowerSeries.coeff_C_mul, norm_mul, hnp] at hn
+  have hp_pos : 0 < (p : ℝ) := by exact_mod_cast hp.pos
+  apply (mul_le_mul_iff_of_pos_left (inv_pos.mpr hp_pos)).mp
+  simpa only [mul_one] using hn
 
 end Formalism.InvariantFactorPaths.G7

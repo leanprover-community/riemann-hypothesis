@@ -1,10 +1,61 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsFinWeil
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EventuallyFinEqOne
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIntegralSplitIdempotentOverTwo
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NotMemSpanOfCommute
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmVacuumEqSplitFacSmulSum
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexNeZeroOfFinite
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InertPlaceStabilizersFixWeilLatticeVacuum
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaInnerProductHermitian
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilOperatorLatticeStabiliserFixesVacuumNonsplit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle
+import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
 
 @[expose] public section
 
@@ -60,8 +111,8 @@ theorem map_eq_zero_of_local_vacuum {N : Type} [AddCommGroup N] [Module ℂ N] (
         have hsum : (1 - z) • ∑ i ∈ s, W (x i) (e i) = ∑ i ∈ s.erase j, W (x i) ((γ (P a) (x i) - z) • e i) := by
           rw [Finset.sum_erase s (by simp [hzdef]), sub_smul, one_smul]
           have h4 : ∑ i ∈ s, W (x i) (e i) = ∑ i ∈ s, γ (P a) (x i) • W (x i) (e i) := by
-            set_option synthInstance.maxHeartbeats 100000 in
-              rw [← hfix a ha, map_sum]
+
+            rw [← hfix a ha, map_sum]
             exact Finset.sum_congr rfl fun i _ => hact i
           calc _ = ∑ i ∈ s, γ (P a) (x i) • W (x i) (e i) - ∑ i ∈ s, z • W (x i) (e i) := by
                 rw [← h4, Finset.smul_sum]
@@ -100,8 +151,8 @@ theorem intertwiner_eq_sum (h : IsHeis σ w γ W) (A : Submodule R X) (hA : Self
     have h2 : γ y (b i) = 1 := by rw [← hb i, ← hP, hPy, h.zero_left]
     rw [h.comm, h2, one_smul]
   have h3 : T (W y e) = Q (W y e) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hT, hy, hφ, ← hy, hTe e he, hQ, map_smul, map_sum]
+
+    rw [hT, hy, hφ, ← hy, hTe e he, hQ, map_smul, map_sum]
     congr 1
     exact Finset.sum_congr rfl fun i _ => hcomm i
   rw [h1, map_smul, map_smul] at h3
@@ -136,8 +187,8 @@ theorem coef_of_local_vacuum (h : IsHeis σ w γ W) (lam : ℕ →* ℂ) (A : Su
       rwa [sub_sub_sub_cancel_right] at h1
   have hTe' : ∀ e, Fixes W A e → T e = (lam (idx A (A.map φ)))⁻¹ • ∑ i, W (b i) e := fun e he => by
     rw [hTe e he, normOp, ((sumOp_transversal h A _ hB).1 e he (Fin n) b hbB hbu).1]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [intertwiner_eq_sum h A hA hspan φ T hT P hP hPA hPP hφ _ b hb hTe' m hm, map_smul, map_sum, smul_eq_mul]
+
+  rw [intertwiner_eq_sum h A hA hspan φ T hT P hP hPA hPP hφ _ b hb hTe' m hm, map_smul, map_sum, smul_eq_mul]
   congr 1
   obtain ⟨i₀, hi₀, hu₀⟩ := hbu 0 (Submodule.zero_mem _)
   have hbA : b i₀ ∈ A := by simpa using A.neg_mem hi₀

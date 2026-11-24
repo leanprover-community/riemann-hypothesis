@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.XtLamGvSCongr
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+public import Formalism.LocalToGlobal.Columns.ChainInst
+import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 
@@ -106,8 +108,8 @@ theorem xtLocal {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : 
     conv_lhs => rw [show y' = ∑ j, y' j • (Pi.single j (1 : E) : Sp E n') by
       ext i
       simp [Finset.sum_apply, Pi.single_apply]]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, map_smul, smul_eq_mul]
+
+    simp [map_sum, map_smul, smul_eq_mul]
   by_cases hall : ∀ j : Fin n', ∀ i, IntAt P (zA (Pi.single j 1) i)
   · have hB := fun j => (H j).1.1 (hall j)
     have hl := fun j => ((hsplit _).1 (hall j)).2
@@ -133,7 +135,6 @@ theorem xtLocal {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : 
       have e : y' j * (lastN ∘ₗ zA) (Pi.single j 1) - y' j * ηB (Pi.single j 1) =
           ((q : E) * y' j) * (((lastN ∘ₗ zA) (Pi.single j 1) - ηB (Pi.single j 1)) / (q : E)) := by
         field_simp
-        try ring
       rw [e]
       exact (hy j).mul (diff _ _ (hB j).2 (hl j) (hres j).2)
     have hqη : IntAt P ((q : E) * ηB y') := by

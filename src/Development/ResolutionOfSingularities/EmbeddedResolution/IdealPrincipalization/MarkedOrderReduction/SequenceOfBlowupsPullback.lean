@@ -1,16 +1,51 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.BlowupSequenceFlatBaseChange
-public import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.BlowupSequenceData
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.Append
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceOfBlowups
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.BlowupSequenceFlatBaseChange
+import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -1060,30 +1095,6 @@ private theorem mem_toSequenceOfBlowups_center_support {Y : Scheme.{u}} (d : Blo
   rw [BlowupSequenceData.toSequenceOfBlowups_center]
   exact hw
 
-private theorem eqToHom_comp_projectionToBase_length_add_zero {Y : Scheme.{u}} (s : BlowupSequenceData Y)
-    (t : BlowupSequenceData (s.obj s.length))
-    (h1 : (s.append t).obj (s.length + 0) = s.obj (s.length + 0))
-    (h2 : (s.append t).obj (s.length + 0) = s.obj s.length) :
-    eqToHom h1 ≫ s.projectionToBase (s.length + 0) = eqToHom h2 ≫ s.projectionToBase s.length := rfl
-
-private theorem projectionToBase_append_length_add {Y : Scheme.{u}} (s : BlowupSequenceData Y)
-    (t : BlowupSequenceData (s.obj s.length)) (n : ℕ) :
-    (s.append t).projectionToBase (s.length + n) =
-      (BlowupSequenceData.concatObjAddIso s t n).hom ≫ t.projectionToBase n ≫ s.projectionToBase s.length := by
-  induction n with
-  | zero =>
-      have hA : (BlowupSequenceData.concatObjAddIso s t 0).hom ≫ t.projectionToBase 0 ≫ s.projectionToBase s.length =
-          eqToHom (BlowupSequenceData.append_schemeAt_length_add_zero s t) ≫ s.projectionToBase s.length := by
-        rw [concatObjAddIso_zero_hom, BlowupSequenceData.projectionToBase_zero, Category.assoc, Iso.inv_hom_id_assoc]
-      exact ((BlowupSequenceData.projectionToBase_append_of_le_length s t (le_of_eq (Nat.add_zero s.length))).trans
-        (eqToHom_comp_projectionToBase_length_add_zero s t _ _)).trans hA.symm
-  | succ n ih =>
-      have hs : (s.append t).projectionToBase (s.length + (n + 1)) =
-          (s.append t).map (s.length + n) ≫ (s.append t).projectionToBase (s.length + n) :=
-        BlowupSequenceData.projectionToBase_succ (s.append t) (s.length + n)
-      rw [hs, ih, BlowupSequenceData.append_blowupMorphism_comp_concatObjAddIso_assoc, ← Category.assoc (t.map n),
-        ← BlowupSequenceData.projectionToBase_succ]
-
 private theorem append_projectionToBase_ne_of_forall_concatIndex_ne (s : BlowupSequenceData X) (t : BlowupSequenceData (s.obj s.length))
     (s' : BlowupSequenceData X') (t' : BlowupSequenceData (s'.obj s'.length))
     (c : SequenceOfBlowupsPullback φ s'.toSequenceOfBlowups s.toSequenceOfBlowups)
@@ -1126,7 +1137,7 @@ private theorem append_projectionToBase_ne_of_forall_concatIndex_ne (s : BlowupS
     have heq2 : φ.base x' =
         (s.projectionToBase s.length).base ((t.projectionToBase n).base (((BlowupSequenceData.concatObjAddIso s t n).hom).base z)) :=
       (heqp.trans (congrArg (fun m : (s.append t).obj (s.length + n) ⟶ X => m.base z)
-          (projectionToBase_append_length_add s t n))).trans rfl
+          (_root_.FunctorialResolution.EmbeddedResolution.SequenceOfBlowupsPullback.append_projectionToBase_length_add s t n))).trans rfl
     have hsm : (s.toSequenceOfBlowups.projectionToBase s.toSequenceOfBlowups.length).base
         ((t.projectionToBase n).base (((BlowupSequenceData.concatObjAddIso s t n).hom).base z)) = φ.base x' :=
       (congrArg (fun m : s.obj s.length ⟶ X =>

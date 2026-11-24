@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLeadIdealDim
+public import Mathlib.RingTheory.AlgebraicIndependent.Basic
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

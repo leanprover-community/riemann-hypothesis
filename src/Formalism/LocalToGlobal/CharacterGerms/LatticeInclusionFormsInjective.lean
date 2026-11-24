@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.Interface
 public import Formalism.FrobeniusBaseCase.Statement
+public import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 
 @[expose] public section
 

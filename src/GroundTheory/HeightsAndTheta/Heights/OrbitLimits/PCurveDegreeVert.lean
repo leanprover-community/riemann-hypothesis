@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveDegreeVert
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsIsSheetFinZero
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

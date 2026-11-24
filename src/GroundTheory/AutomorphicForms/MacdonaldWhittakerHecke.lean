@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.MacdonaldWhittaker
+public import GroundTheory.AutomorphicForms.MacdonaldFormula
+import GroundTheory.AutomorphicForms.SatakeTriangular
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -108,7 +113,7 @@ def eigenSubalgebra (z : Fin n → ℂˣ) (f : GL (Fin n) F → ℂ)
     evalAt z (satakeTransform μ h) * f g}
   mul_mem' {h₁ h₂} hh₁ hh₂ g := integral_mul_mul_eigen z hf hh₁ hh₂ g
   one_mem' g := by
-    simp only [Set.mem_setOf_eq, map_one, one_mul]
+    simp only [map_one, one_mul]
     exact integral_one_mul hf g
   add_mem' {h₁ h₂} hh₁ hh₂ g := by
     simp only [HeckeAlgebraLevel.val_add, HeckeAlgebra.coe_add, Pi.add_apply, add_mul]
@@ -124,8 +129,8 @@ def eigenSubalgebra (z : Fin n → ℂˣ) (f : GL (Fin n) F → ℂ)
 
 omit [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)] in
 theorem polyEmb_esymm (k : ℕ) : polyEmb (n := n) (MvPolynomial.esymm (Fin n) ℂ k) = esymmL n k := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPolynomial.esymm, map_sum, esymmL]
+
+  rw [MvPolynomial.esymm, map_sum, esymmL]
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [map_prod]
   simp only [polyEmb_X, monomial]

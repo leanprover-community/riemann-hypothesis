@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartConeComponent
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 
 @[expose] public section
 

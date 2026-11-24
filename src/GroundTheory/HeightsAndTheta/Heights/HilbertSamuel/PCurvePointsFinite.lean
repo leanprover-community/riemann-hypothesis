@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsCurvePointsFinite
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveDegree
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveAlgebraic
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+import Mathlib.Algebra.MvPolynomial.Nilpotent
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.EqSumMultihomogeneousComponents
 
 @[expose] public section

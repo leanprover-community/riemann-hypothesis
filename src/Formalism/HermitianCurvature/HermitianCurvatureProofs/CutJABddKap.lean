@@ -1,9 +1,52 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJABddSSn
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaCutoffLimit
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAFFStableAdjCont
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
 
 @[expose] public section
 
@@ -244,7 +287,7 @@ theorem datumCoef_adj (Φ Φa : FMap S v) (hΦ : FibreMapOK S T v Φ Φa) (x : B
 
 theorem kap_gpos_sgs {p : B.SS S.G.k S.G.r} (hp : (T v).base.inSS p) {g : B.Mat S.G.k S.G.r}
     (hg : g ∈ B.GV S.G.k S.G.r) : B.sgs p g ∈ B.GPos (T v).base ↔ g ∈ B.GPos (T v).base := by
-  have e := Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC.gf_sgs (T v).base hp g
+  have e := _root_.Formalism.FourierDecayAlt.P.JCx1.needs.gf_sgs (T v).base hp g
   constructor
   · intro h; exact ⟨hg, e ▸ h.2⟩
   · intro h; exact ⟨Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC.sgs_mem (T v).base hp hg, e.symm ▸ h.2⟩
@@ -364,13 +407,6 @@ theorem kap_hsInner_sum_right {ι : Type*} (s : Finset ι) (A : Wq →L[ℂ] Wp)
     B.hsInner A (∑ i ∈ s, B' i) = ∑ i ∈ s, B.hsInner A (B' i) := by
   unfold B.hsInner; rw [kap_hsVec_sum, sum_inner]
 
-theorem kap_hsInner_smul_left (c : ℂ) (A B' : Wq →L[ℂ] Wp) : B.hsInner (c • A) B' = c * B.hsInner A B' := by
-  unfold B.hsInner; rw [Formalism.FourierDecayAlt.P.JCTx2.hsVec_smul', inner_smul_right]
-
-theorem kap_hsInner_smul_right (c : ℂ) (A B' : Wq →L[ℂ] Wp) :
-    B.hsInner A (c • B') = (starRingEnd ℂ) c * B.hsInner A B' := by
-  unfold B.hsInner; rw [Formalism.FourierDecayAlt.P.JCTx2.hsVec_smul', inner_smul_left]
-
 end tp
 
 theorem kapRep_of_typeProj (h : TypeProj) : KapRep := by
@@ -391,17 +427,17 @@ theorem kapRep_of_typeProj (h : TypeProj) : KapRep := by
     simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply]
     rw [kap_hsInner_sum_left, kap_hsInner_sum_right]
     refine Finset.sum_congr rfl fun σ _ => ?_
-    rw [kap_hsInner_smul_left, kap_hsInner_smul_right, hadj, Complex.conj_conj]
+    rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right, hadj, Complex.conj_conj]
   · intro h hh h' hh' a a' ι X
     constructor
     · simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, heq _ h hh h' hh']
       ext w
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum, map_smul]
+
+      simp [map_sum, map_smul]
     · simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, heq _ h hh h' hh']
       ext w
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum, map_smul]
+
+      simp [map_sum, map_smul]
   · intro x hx ρ A
     simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply]
     rw [kap_hsVec_sum, inner_sum, Finset.sum_eq_single ρ]

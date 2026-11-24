@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.KerTheta
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.Perfectoid.BDeRham
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.RingTheory.AdicCompletion.LocalRing
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.AdicCompletion.Completeness
 
 @[expose] public section
 

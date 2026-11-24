@@ -1,11 +1,59 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
-public import ReciprocityTheory.ThetaQuasiPeriods.Transl
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
-public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
+public import Mathlib.Tactic.ENatToNat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
+public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.FDeriv.Add
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 
@@ -51,8 +99,8 @@ theorem ofIntVec_single' {g : ℕ} (i : Fin g) : ofIntVec (Pi.single i 1 : Fin g
 theorem linForm_eq_dotProduct {g : ℕ} (lam : (Fin g → ℂ) →ₗ[ℂ] ℂ) (z : Fin g → ℂ) :
     lam z = (fun i => lam (Pi.single i 1)) ⬝ᵥ z := by
   conv_lhs => rw [← Finset.univ_sum_single z]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [dotProduct]
   refine Finset.sum_congr rfl fun i _ => ?_
   have hs : (Pi.single i (z i) : Fin g → ℂ) = z i • Pi.single i 1 := by
@@ -61,9 +109,6 @@ theorem linForm_eq_dotProduct {g : ℕ} (lam : (Fin g → ℂ) →ₗ[ℂ] ℂ) 
     · simp
     · simp [h]
   rw [hs, map_smul, smul_eq_mul, mul_comm]
-
-theorem two_pi_I_ne_zero' : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
-  simp [Real.pi_ne_zero, Complex.I_ne_zero]
 
 theorem mem_periodLattice_of_exp_thetaLinForm {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ.IsSymm)
     (w : Fin g → ℂ) (lam : (Fin g → ℂ) →ₗ[ℂ] ℂ)
@@ -97,7 +142,7 @@ theorem mem_periodLattice_of_exp_thetaLinForm {g : ℕ} {τ : Matrix (Fin g) (Fi
   refine ⟨-k, -m, funext fun i => ?_⟩
   rw [ofIntVec_neg, ofIntVec_neg, mulVec_neg]
   show w i = -(τ *ᵥ ofIntVec k) i + -((m i : ℤ) : ℂ)
-  apply mul_left_cancel₀ two_pi_I_ne_zero'
+  apply mul_left_cancel₀ Complex.two_pi_I_ne_zero
   linear_combination (-1 : ℂ) * hm i
 
 theorem eq_zero_of_thetaLinForm {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
@@ -113,7 +158,7 @@ theorem eq_zero_of_thetaLinForm {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
   have hi := h (Pi.single i 1) 0
   rw [thetaLinForm_apply, ofIntVec_single', single_dotProduct, _root_.one_mul, ofIntVec_zero, add_zero,
     linForm_eq_dotProduct lam, hlam, zero_dotProduct] at hi
-  exact (mul_eq_zero.mp hi).resolve_left (neg_ne_zero.mpr two_pi_I_ne_zero')
+  exact (mul_eq_zero.mp hi).resolve_left (neg_ne_zero.mpr Complex.two_pi_I_ne_zero)
 
 theorem fderiv_eq_mul_of_ratio {E κ : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (θ : κ → E → ℂ)
     (hθ : ∀ c, Differentiable ℂ (θ c)) (c : κ) (z w : E) (hc : θ c z ≠ 0) (v : κ → E → ℂ)

@@ -1,6 +1,8 @@
 module
 
-public import Formalism.SharpRestriction.GlobalSchurBounds.FrameCodeOfAdditive
+public import Formalism.SharpRestriction.Divisibility.LocalQuadraticParts
+public import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
+public import Formalism.SizeWindowBrackets.WindowSettingSatisfiable
 
 @[expose] public section
 

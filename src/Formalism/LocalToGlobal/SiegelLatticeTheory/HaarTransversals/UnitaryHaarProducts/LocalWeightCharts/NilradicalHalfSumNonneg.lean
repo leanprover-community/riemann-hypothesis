@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.WavePacketL1L2
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

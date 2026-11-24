@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.GlueLocalOfFam
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapIntCastSmul
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.InPOfMemPow
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -43,8 +47,8 @@ theorem linearIndependent_orth {m : ℕ} (h : V →ₗ⋆[K] V →ₗ[K] K) (w :
   rw [Fintype.linearIndependent_iff]
   intro g hg k
   have h1 := congrArg (h (w k)) hg
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_zero] at h1
+
+  rw [map_sum, map_zero] at h1
   simp only [map_smul, smul_eq_mul] at h1
   rw [Finset.sum_eq_single k (fun j _ hj => by rw [hwo k j (Ne.symm hj), mul_zero])
     (by simp)] at h1

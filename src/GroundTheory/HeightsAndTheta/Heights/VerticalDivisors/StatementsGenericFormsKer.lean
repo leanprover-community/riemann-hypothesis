@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChowNorm
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 
 @[expose] public section
 

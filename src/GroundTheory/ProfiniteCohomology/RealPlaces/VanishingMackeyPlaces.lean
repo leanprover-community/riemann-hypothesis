@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingMackey
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
 
 @[expose] public section
 

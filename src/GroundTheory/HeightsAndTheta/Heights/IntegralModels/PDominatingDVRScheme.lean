@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
+public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PBlowUpChart
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PDominatingDVR
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PKrullAkizuki
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PKrullAkizukiQuotientLength
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PTorsionFreeQuotientLength
-public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PBlowUpChart
 
 @[expose] public section
 

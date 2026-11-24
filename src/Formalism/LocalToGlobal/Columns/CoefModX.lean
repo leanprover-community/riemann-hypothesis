@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+public import Aesop.BuiltinRules
+public import Formalism.LocalToGlobal.Divisibility.CoefMod
+import Formalism.LocalRingCardinality.Params
 
 @[expose] public section
 

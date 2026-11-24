@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.Residue
 public import GroundTheory.GlobalFields.ComplexMultiplication.RectangleIntegral
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

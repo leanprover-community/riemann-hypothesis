@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.RecLevel
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+public import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.LevelSubgroupFiniteAdelicStandard
 
 @[expose] public section
 
@@ -408,12 +409,12 @@ theorem mirabolicLevel_maps_baseLattice {k : GL (Fin n) (E ⊗[F] Formalism.L2.H
     rw [AddSubmonoidClass.coe_finsetSum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [← hu j]; rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum, Finset.sum_eq_single (lastIdx n)]
-      · rw [map_mul, huP P hP, mul_zero]
-      · intro j _ hj
-        rw [map_mul, ← hr P, hm P hP j, if_neg hj, zero_mul]
-      · intro h; exact absurd (Finset.mem_univ _) h
+
+  · rw [map_sum, Finset.sum_eq_single (lastIdx n)]
+    · rw [map_mul, huP P hP, mul_zero]
+    · intro j _ hj
+      rw [map_mul, ← hr P, hm P hP j, if_neg hj, zero_mul]
+    · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem mirabolicLevel_le_stabilizer_base : J0 hc n ST ≤ stabGL (Formalism.L2.Herm.hatL (F := F) (baseLb E n ST)) := fun k hk =>
   rll_stab_of_maps _ k (mirabolicLevel_maps_baseLattice hc n ST hk) (mirabolicLevel_maps_baseLattice hc n ST (Subgroup.inv_mem _ hk))

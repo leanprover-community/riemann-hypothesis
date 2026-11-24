@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.ModularForms.Derivative
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

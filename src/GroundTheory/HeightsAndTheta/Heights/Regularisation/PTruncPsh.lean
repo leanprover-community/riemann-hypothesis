@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StatementsTruncPsh
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExt
 
 @[expose] public section
 

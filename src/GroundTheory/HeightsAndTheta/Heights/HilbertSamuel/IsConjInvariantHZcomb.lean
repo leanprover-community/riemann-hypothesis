@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMonomialShift
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturbMonomial
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsUpperNormalisation
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmAExpand
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

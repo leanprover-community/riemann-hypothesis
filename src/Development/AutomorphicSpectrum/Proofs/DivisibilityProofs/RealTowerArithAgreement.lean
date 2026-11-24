@@ -1,13 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ArithmeticIntersectionMultilinearPolarStatement
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FunctionalProductLinearFormsStatement
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.MonomialLinesPermutationStatement
+public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Birational
+public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.MonomialLinesPermutation
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ArithmeticIntersectionMultilinearPolar
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PResAboveCover
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -108,7 +154,7 @@ theorem sum_coef_rootC (M : RootModel Ψ N) (lam : Wt Ψ N) (s : ℝ) (b : Optio
   | some q =>
     simp only [rootC, RootModel.coef, Int.cast_zero, mul_zero, zero_add]
     rw [Fintype.sum_prod_type, Finset.sum_eq_single q.1]
-    · simp only [if_true, mul_comm, neg_mul]
+    · simp only [if_true, neg_mul]
       have := sum_mul_rc (fun i => lam q.1 i) q.2
       simp only [PB.gapS, Option.elim, PB.gap, PB.gapX]
       rw [Finset.sum_neg_distrib, this]
@@ -183,7 +229,7 @@ theorem word_eq (hL : ReciprocityTheory.ChartRestriction.G.AI.I2.MetricLocalStat
     II M.K M.ι M.P (dimFl Ψ N + 1) (fun r => M.line t (w r)) =
       PB.polar (dimFl Ψ N + 1) (fun v => II M.K M.ι M.P (dimFl Ψ N + 1) fun r => R.Re.line (v r) t)
         (fun r a => (rootC (w r) a : ℝ)) := by
-  have hc := GlobalTheory.T.arithmetic_intersection_multilinear_polar hL II hII M.K M.ι (Option (Ψ × Fin N)) M.P (dimFl Ψ N + 1)
+  have hc := _root_.GlobalTheory.CompanionTheory.Ar.PB.combLine_intersection hL II hII M.K M.ι (Option (Ψ × Fin N)) M.P (dimFl Ψ N + 1)
     (fun a => R.Re.line a t) (fun r => rootC (w r)) R.Re.arith (fun a => R.Re.line_smooth a t ht0 ht)
   rw [← hc.2]
   exact hL M.K M.ι (II M.K M.ι) (hII.1 M.K M.ι) M.P _ _ _ R.Re.arith (fun j => smooth_line M t _) hc.1
@@ -193,8 +239,8 @@ end Lines
 
 theorem eval_formPoly {σ : Type} [Fintype σ] (d : ℕ) (a : (Fin d → σ) → ℝ) (c : σ → ℝ) :
     eval c (PB.formPoly d a) = ∑ w, a w * ∏ j, c (w j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [PB.formPoly, map_sum, map_prod]
+
+  simp [PB.formPoly, map_sum, map_prod]
 
 theorem polar_swap {J : Type} [Fintype J] [DecidableEq J] {d : ℕ} (c : J → ℝ) (nn : J → J → ℝ)
     (I : (Fin d → J) → ℝ) :
@@ -211,8 +257,8 @@ def cS (lam : Wt Ψ N) (s : ℝ) : Option (Ψ × Fin N) → ℝ := fun o => o.el
 
 theorem linA_eq (lam : Wt Ψ N) (s : ℝ) : linA lam s = ∑ j, C (cS lam s j) * X j := by
   rw [Fintype.sum_option]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [linA, toA, linRoot, cS, map_sum, add_comm]
+
+  simp [linA, toA, linRoot, cS, map_sum, add_comm]
 
 variable (M : RootModel Ψ N) (II : IntersectionSystem)
 
@@ -251,7 +297,7 @@ theorem arFun_lin (hII : IsFullIntersectionSystem II) (lam : Wt Ψ N) (s t : ℝ
     (fun _ => cS lam s)
   rw [h1, Finset.sum_div]
   refine Finset.sum_congr rfl fun w _ => ?_
-  obtain ⟨hdeg, σ, -, hii⟩ := GlobalTheory.T.monomial_lines_permutation II hII.1 M.K M.ι M.P (dimFl Ψ N + 1)
+  obtain ⟨hdeg, σ, -, hii⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.monoLines_monomial_word II hII.1 M.K M.ι M.P (dimFl Ψ N + 1)
     (Option (Ψ × Fin N)) (M.line t) w M.arith (smooth_line M t)
   rw [arFun_monomial, RootModel.arMono, if_pos hdeg, hii, prod_cS M lam s w]
   have hp : ((M.kA : ℝ) ^ ((∑ k, Finsupp.single (w k) 1 : Option (Ψ × Fin N) →₀ ℕ) none)) ≠ 0 :=

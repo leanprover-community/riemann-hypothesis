@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.OrdReadOf
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -29,7 +69,7 @@ private theorem tangent_of_form {κ B : Type} [Field κ] [CommRing B] [Algebra �
     have hz := h2 _ hm
     have e : x * y = (x - algebraMap κ B (ε x)) * (y - algebraMap κ B (ε y)) + ε y • x
         + ε x • y - (ε x * ε y) • (1 : B) := by
-      simp only [Algebra.smul_def, map_mul, mul_one]
+      simp only [Algebra.smul_def, map_mul]
       ring
     rw [e, map_sub, map_add (f := _), map_add (f := _), hz, map_smul, map_smul, map_smul, h1]
     simp only [smul_eq_mul]
@@ -38,7 +78,7 @@ private theorem tangent_of_form {κ B : Type} [Field κ] [CommRing B] [Algebra �
     { toFun := fun x => TrivSqZeroExt.inl (ε x) + TrivSqZeroExt.inr (d x)
       map_add' := by
         intro x y
-        ext <;> simp <;> ring
+        ext <;> simp
       map_smul' := by
         intro a x
         ext <;> simp }
@@ -48,7 +88,7 @@ private theorem tangent_of_form {κ B : Type} [Field κ] [CommRing B] [Algebra �
     ext <;> simp [h1]
   · intro x y
     rw [hf, hf, hf]
-    ext <;> simp [key] <;> ring
+    ext <;> simp [key]; ring
   · ext x
     simp [hf]
   · intro x
@@ -115,7 +155,7 @@ theorem UpperTheory.Gal.crystallineComparison.Mod.cotanOne_of :
     refine Ideal.add_mem _ (Ideal.mem_sup_left ?_) (Ideal.mem_sup_right h2)
     rw [Algebra.smul_def]
     exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self t)
-  · push_neg at hex
+  · push Not at hex
     refine ⟨0, m.zero_mem, ?_⟩
     intro x hx
     exact Ideal.mem_sup_right (hkill x hx (hex x hx))

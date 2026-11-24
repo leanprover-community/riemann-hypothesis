@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperQuotIsoSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PMulQuotEq
 

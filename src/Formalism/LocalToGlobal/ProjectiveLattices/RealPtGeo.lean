@@ -1,12 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntFrames
-public import Formalism.LocalToGlobal.ProjectiveLattices.ExtPtUnique
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
+public import Formalism.LocalToGlobal.ProjectiveLattices.ExtPtUnique
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 

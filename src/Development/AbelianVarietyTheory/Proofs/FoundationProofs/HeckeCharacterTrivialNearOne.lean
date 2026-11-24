@@ -1,13 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Formalism.PairingDivisors.StatementH
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Formalism.LocalRingCardinality.ConjSqrtMinusD
-public import Formalism.LocalToGlobal.ProjectiveLattices.HostRank
 public import Formalism.LocalToGlobal.ProjectiveLattices.LevelPb
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Principal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
+import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
+import Mathlib.Algebra.Azumaya.Basic
 
 @[expose] public section
 
@@ -89,8 +127,8 @@ theorem trace_conj (y : D.host.E) :
     Algebra.trace D.host.K D.host.E (D.host.conj y) =
       conjK D (Algebra.trace D.host.K D.host.E y) := by
   apply Subtype.ext
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coe_conjK, coe_trace, coe_trace, map_sum]
+
+  rw [coe_conjK, coe_trace, coe_trace, map_sum]
   exact Finset.sum_congr rfl fun τ _ => (conj_comm D τ y).symm
 
 theorem trace_pos (y : D.host.E) (hy : y ≠ 0) :
@@ -104,8 +142,8 @@ theorem trace_pos (y : D.host.E) (hy : y ≠ 0) :
   rw [hb, add_zero] at hab
   refine ⟨a, ?_, Subtype.ext (by rw [hab]; simp)⟩
   have h1 := congrArg D.host.φ₀ hab
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coe_trace, map_sum, map_ratCast] at h1
+
+  rw [coe_trace, map_sum, map_ratCast] at h1
   have h2 : ∀ τ : D.host.E ≃ₐ[D.host.K] D.host.E,
       D.host.φ₀ (τ (y * D.host.conj y)) = ((Complex.normSq (D.host.φ₀ (τ y)) : ℝ) : ℂ) := by
     intro τ
@@ -139,6 +177,6 @@ theorem quadratic_subfield : ∀ D : D7, Module.finrank D.host.K D.host.E = fF D
     exact ⟨a, b, Subtype.ext (by simpa using h)⟩
   · have h := (Formalism.L2.Pj.LPb.w0K D).2
     convert h using 1
-    first | rfl | (apply Subtype.ext; simp [Formalism.L2.Pj.LPb.w0K])
+    first | rfl
 
 end GlobalTheory.QuadSubfield

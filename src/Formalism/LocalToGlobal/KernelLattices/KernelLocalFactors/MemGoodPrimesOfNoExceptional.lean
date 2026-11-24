@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ColInst
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
-public import Formalism.LocalToGlobal.Columns.ChainInstY
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivFr
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivGen
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+public import Formalism.LocalToGlobal.Columns.ChainInst
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 
 @[expose] public section
 
@@ -34,7 +31,7 @@ theorem prod_mul_eq_of_forall_cross_mul_eq {ι K : Type} [Fintype ι] [CommRing 
 theorem piChar_apply_coe' {K : Type} [Field K] {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] (H : ∀ i, Subgroup (G i))
     (lam : ∀ i, ↥(H i) →* Kˣ) (x : ↥(Subgroup.pi Set.univ H)) :
     ((piChar H lam x : Kˣ) : K) = ∏ i, ((lam i ⟨x.1 i, x.2 i (Set.mem_univ i)⟩ : Kˣ) : K) := by
-  simp [piChar, piProj, map_prod]
+  simp [piChar, piProj]
 
 theorem levFam_chr_apply_coe {E K : Type} [Field E] [NumberField E] [Field K] {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
     (Λ : LevFam E K n SG) (x : ↥Λ.grp) :
@@ -61,8 +58,8 @@ theorem intAt_linear_form_on_std {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (η 
   have hv' : v = ∑ i, v i • (Pi.single i 1 : Sp E n) := by
     ext j
     simp [Finset.sum_apply, Pi.single_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hv', map_sum]
+
+  rw [hv', map_sum]
   refine Finset.sum_induction _ (IntAt P) (fun a b ha hb => IntAt.add ha hb) (by simpa using IntAt.coe P 0) ?_
   intro i _
   rw [map_smul, smul_eq_mul]

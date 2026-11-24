@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsOpenSubgroupMemFixedModule
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

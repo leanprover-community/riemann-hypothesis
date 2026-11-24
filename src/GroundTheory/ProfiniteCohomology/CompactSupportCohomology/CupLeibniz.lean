@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.Pairing
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomologyMapPiLiftPiHomologyIsoHom
 public import GroundTheory.ProfiniteCohomology.CupProducts.Pairing
-public import GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
+import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 @[expose] public section
 

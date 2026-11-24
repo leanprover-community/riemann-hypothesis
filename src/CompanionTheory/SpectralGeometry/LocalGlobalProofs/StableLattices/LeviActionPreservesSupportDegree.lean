@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.Bdy
+public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
 
 @[expose] public section
 

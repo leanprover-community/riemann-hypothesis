@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.RatVMemSpan
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -30,9 +70,7 @@ theorem projD_add {m : ℕ} (Y D : Fin m → Fin n → E) (s : Set (Fin m)) (x y
   unfold projD
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
-  split_ifs
-  · rw [dotProduct_add, add_smul]
-  · rw [zero_smul, add_zero]
+  split_ifs <;> simp [dotProduct_add, add_smul]
 
 theorem projD_smul {m : ℕ} (Y D : Fin m → Fin n → E) (s : Set (Fin m)) (c : R ⊗[F] E)
     (y : Fin n → R ⊗[F] E) :
@@ -40,17 +78,11 @@ theorem projD_smul {m : ℕ} (Y D : Fin m → Fin n → E) (s : Set (Fin m)) (c 
   unfold projD
   rw [Finset.smul_sum]
   refine Finset.sum_congr rfl fun a _ => ?_
-  split_ifs
-  · rw [dotProduct_smul, smul_eq_mul, mul_smul]
-  · rw [zero_smul, smul_zero]
+  split_ifs <;> simp [dotProduct_smul, smul_eq_mul, mul_smul]
 
 theorem projD_zero {m : ℕ} (Y D : Fin m → Fin n → E) (s : Set (Fin m)) :
     projD R σ J Y D s 0 = 0 := by
-  unfold projD
-  refine Finset.sum_eq_zero fun a _ => ?_
-  split_ifs
-  · rw [dotProduct_zero, zero_smul]
-  · rw [zero_smul]
+  simp [projD, dotProduct_zero]
 
 theorem mem_spanR_iff {m : ℕ} (Y D : Fin m → Fin n → E)
     (hD : ∀ a a', hE σ J (D a') (Y a) = if a = a' then 1 else 0) (s : Set (Fin m))
@@ -146,11 +178,8 @@ theorem isClosed_spanR {m : ℕ} (Y D : Fin m → Fin n → E)
 
 theorem continuous_lin (v : Fin n → Af F ⊗[F] E) :
     Continuous (fun g : HA (Af F) σ J => lin (Af F) σ J g v) := by
-  have hv : Continuous (fun g : HA (Af F) σ J =>
-      ((HA.mat (Af F) σ J g : GL (Fin n) (Af F ⊗[F] E)) : Matrix (Fin n) (Fin n) (Af F ⊗[F] E))) :=
-    Units.continuous_val.comp continuous_subtype_val
   simp only [lin, Matrix.mulVecLin_apply]
-  exact hv.matrix_mulVec continuous_const
+  exact (Units.continuous_val.comp continuous_subtype_val).matrix_mulVec continuous_const
 
 theorem isClosed_uniFlag {m : ℕ} (Y D : Fin m → Fin n → E)
     (hD : ∀ a a', hE σ J (D a') (Y a) = if a = a' then 1 else 0) :

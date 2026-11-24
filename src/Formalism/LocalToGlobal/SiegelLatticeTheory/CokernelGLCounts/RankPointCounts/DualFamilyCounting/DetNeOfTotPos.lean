@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.GramComb
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.StepsR
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.ExistsDualGen
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.GoodRDet
 
 @[expose] public section
 
@@ -58,7 +61,7 @@ theorem gam'_last (N' : ℕ) (Z : MatZ D) :
     Gam' N' Z (Fin.last D.R.rS) (Fin.last D.R.rS) =
       -(N' : D.host.E) * (star (Z⁻¹ (Fin.last D.R.rS) (Fin.last D.R.rS)) * Z⁻¹ (Fin.last D.R.rS) (Fin.last D.R.rS)) := by
   simp only [Gam', Gam, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply, ite_and]
-  simp [Finset.sum_ite_eq', Finset.sum_ite_eq, mul_ite, ite_mul]
+  simp [Finset.sum_ite_eq', mul_ite, ite_mul]
   ring
 
 theorem tv_star (N N' : ℕ) (Z : MatZ D) : star (tv N N' Z) = tv N N' Z := by
@@ -119,9 +122,9 @@ theorem ratPair_of (hD : TotPosAll) : RatPair := by
   have hpp : ∀ a a', (VS D).hT (p a) (p a') = Gam' (D.mem u').A.T Z a a' := hpv_pv hy hN hw0 hwt
   have hzh : ∀ a b, (VS D).hT (F0.fvec a) (f' b) = Z a b := by
     intro a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hf', map_sum, map_smul, smul_eq_mul, hfp, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+
+    simp only [hf', map_sum, map_smul, smul_eq_mul, hfp, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
+    Finset.mem_univ, if_true]
   have hgr : ∀ b c, (VS D).hT (f' b) (f' c) = Gam D.host.E D.R.rS (D.mem u').A.T b c := by
     intro b c
     rw [hf', gram_comb' p Z b c]
@@ -139,8 +142,8 @@ theorem ratPair_of (hD : TotPosAll) : RatPair := by
     have hv : Z.mulVec (Fin.snoc (α := fun _ => D.host.E) c 0) = 0 := by
       funext a
       have h1 := congrArg ((VS D).hT (F0.fvec a)) hc
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero] at h1
+
+      rw [map_sum, map_zero] at h1
       simp only [map_smul, smul_eq_mul, hzh] at h1
       simp only [Matrix.mulVec, dotProduct, Pi.zero_apply]
       rw [Fin.sum_univ_castSucc]

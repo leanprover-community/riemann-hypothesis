@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
 
 @[expose] public section
 

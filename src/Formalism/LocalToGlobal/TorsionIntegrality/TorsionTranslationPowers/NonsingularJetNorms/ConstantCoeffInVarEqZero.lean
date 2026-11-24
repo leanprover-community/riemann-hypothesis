@@ -1,7 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementP
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.CoeffPowEqZeroOfCc
 public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.ConstantCoeffVecConsPairEqZero
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.DegreeLeOfMemAntidiagonal
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.Points
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
 
 @[expose] public section
@@ -32,8 +35,8 @@ theorem intMv_C {a : K} (ha : a ∈ R) : IntMv R (MvPowerSeries.C a : MvPowerSer
 theorem intMv_sum {κ : Type} (s : Finset κ) {F : κ → MvPowerSeries σ K}
     (hF : ∀ k ∈ s, IntMv R (F k)) : IntMv R (∑ k ∈ s, F k) := by
   intro n
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact R.sum_mem fun k hk => hF k hk n
 
 theorem isPt_X (s : σ) : IsPt R (MvPowerSeries.X s : MvPowerSeries σ K) :=
@@ -53,8 +56,8 @@ theorem constantCoeff_inVar_eq_zero (i : σ) {f : PowerSeries K} (hf : PowerSeri
 theorem cc_phSum [Fintype σ] {ph : PowerSeries K} (hf : PowerSeries.constantCoeff ph = 0) :
     MvPowerSeries.constantCoeff (phSum ph : MvPowerSeries σ K) = 0 := by
   unfold phSum
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_eq_zero fun i _ => constantCoeff_inVar_eq_zero i hf
 
 theorem intMv_thetaProd {κ : Type} [Fintype κ] [Fintype σ] {r : κ → K} {V : κ → σ → PowerSeries K}
@@ -67,8 +70,8 @@ theorem subst_phSum {τ : Type} [Fintype σ] (ph : PowerSeries K) {φ : σ → M
     MvPowerSeries.subst φ (phSum ph) = ∑ i, PowerSeries.subst (φ i) ph := by
   have h := MvPowerSeries.hasSubst_of_constantCoeff_zero hφ
   unfold phSum
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom h, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom h, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [MvPowerSeries.coe_substAlgHom h]
   unfold at1

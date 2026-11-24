@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHodgeFlag
 
 @[expose] public section

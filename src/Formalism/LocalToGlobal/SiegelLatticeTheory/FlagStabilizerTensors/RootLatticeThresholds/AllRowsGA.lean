@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MonoidAlgebra.Defs
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.Algebra.Star.BigOperators
+public import Mathlib.Basic.Complex.BigOperators
 
 @[expose] public section
 

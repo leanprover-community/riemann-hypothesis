@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.SameOrbitOneSpecZ
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

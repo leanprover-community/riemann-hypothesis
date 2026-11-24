@@ -1,12 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.ValuedUnif
-public import Formalism.LocalToGlobal.ProjectiveLattices.RealPtGeo
-public import Formalism.LocalToGlobal.ProjectiveLattices.PtOfSInst
-public import Formalism.LocalToGlobal.ProjectiveLattices.ComplPf
-public import Formalism.LocalToGlobal.ProjectiveLattices.CoreProofs
-public import Formalism.LocalToGlobal.ProjectiveLattices.ValSetAlgSubset
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
+public import Formalism.LocalToGlobal.ProjectiveLattices.SecPtOrd
+public import Formalism.LocalToGlobal.ProjectiveLattices.SecPtRed
 
 @[expose] public section
 

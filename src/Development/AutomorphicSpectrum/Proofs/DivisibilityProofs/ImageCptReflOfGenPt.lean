@@ -1,16 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.CmpPair
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.CmpSt
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.PadicIntegersHenselianFiniteResidue
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeComparisonCompatibility
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Proportional
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SabMapId
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MapDomainRelationLiftCommutingSquare
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.HodgeComponentFactorPointStatement
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GenericPointFieldIsoStatement
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.RootOnFund
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GenericPointFieldIso
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
+public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.HodgeComponentFactorPoint
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -40,8 +72,8 @@ theorem pp_toA_eq_of_tendsto (M M' : Top.RootModel Ψ N) (II : IntersectionSyste
       M'.arMono II t (m.mapDomain some)) (𝓝[>] (0:ℝ)) (𝓝 0)) (F : Top.RP Ψ N) :
     M.PP II (Top.toA F) = M'.PP II (Top.toA F) := by
   rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Top.toA, map_sum, rename_monomial, pp_monomial]
+
+  simp only [Top.toA, map_sum, rename_monomial, pp_monomial]
   refine Finset.sum_congr rfl fun m _ => ?_
   congr 1
   obtain ⟨L, hL⟩ := hconv (m.mapDomain some)
@@ -75,9 +107,9 @@ theorem cst_of_factor {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Ho
 
 theorem imageCpt_refl_of_genPt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω Ω' : Type) [Field Ω] [Field Ω'] (K K' : Type) [Fintype K] [Fintype K'] (J : K → Type) (J' : K' → Type) (y : (Σ k, J k) → Ω) (y' : (Σ k, J' k) → Ω') (A : HodgeCpt Y S y) (A' : HodgeCpt Y S y'), Mono (spMap β) → genPt A.ξ₀ = genPt A'.ξ₀ → IsImageCpt (Iso.refl Xo.X) A A' := by
   intro E _ _ _ H D l Xo c O _ β Y S Ω Ω' _ _ K K' _ _ J J' y y' A A' hβ hgen
-  obtain ⟨x, hx⟩ := GlobalTheory.T.hodge_component_factor_point E H D l Xo c O β Y S Ω K J y A hβ
-  obtain ⟨x', hx'⟩ := GlobalTheory.T.hodge_component_factor_point E H D l Xo c O β Y S Ω' K' J' y' A' hβ
-  obtain ⟨ψ, hψ⟩ := GlobalTheory.T.generic_point_field_iso Y.X A.Ω₀ A'.Ω₀ A.ξ₀ A'.ξ₀ A.gen₀ A'.gen₀ hgen
+  obtain ⟨x, hx⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GenOpen.gen_open E H D l Xo c O β Y S Ω K J y A hβ
+  obtain ⟨x', hx'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GenOpen.gen_open E H D l Xo c O β Y S Ω' K' J' y' A' hβ
+  obtain ⟨ψ, hψ⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GenIso.exists_iso_of_genPt_eq Y.X A.Ω₀ A'.Ω₀ A.ξ₀ A'.ξ₀ A.gen₀ A'.gen₀ hgen
   haveI : Mono Y.j := by
     haveI := hβ
     haveI := Y.jQ_open

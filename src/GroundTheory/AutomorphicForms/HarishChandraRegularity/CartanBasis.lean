@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GKModules.Casimir
 public import GroundTheory.AutomorphicForms.RealGroupsLie
+public import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

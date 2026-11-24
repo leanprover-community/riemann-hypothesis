@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
+public import Formalism.LocalToGlobal.InertKernelTheory.K2OfAgreements
+import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
 
 @[expose] public section
 

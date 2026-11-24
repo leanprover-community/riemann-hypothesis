@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsSchur
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PartnerCountLoc
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SupportDatum.DeterminantFormIdentity
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PartnerCount
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocModelKS
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PartnerCountLoc
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportLoc
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SupportDatum.DeterminantFormIdentity
+import Mathlib.Tactic.TypeStar
+import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 
@@ -88,12 +92,11 @@ theorem sameBlock_iff {E' : Type} [CommRing E'] (bs : List (E'ˣ × ℕ+)) (cs :
       rw [hs]
       by_cases ha' : a < s' <;> by_cases hb' : b < s'
       · simp [ha', hb']
-      · simp only [ha', hb', if_true, if_false]; simp [ha', hb']; omega
-      · simp only [ha', hb', if_true, if_false]; simp [ha', hb']; omega
+      · simp only [ha', hb', if_true, if_false]; simp; omega
+      · simp only [ha', hb', if_true, if_false]; simp; omega
       · simp only [ha', hb', if_false]
         have hx := ih cs hrest (a - s') (b - s') (by omega) (by omega)
-        simp only [not_lt.1 ha', not_lt.1 hb', and_self, decide_true, Bool.true_and, decide_false, Bool.false_or,
-          and_false, Bool.false_and, true_and]
+        simp only [not_lt.1 ha', not_lt.1 hb', and_self, decide_true, Bool.true_and, decide_false, Bool.false_or]
         rw [hx]
         constructor <;> intro h <;> omega
 

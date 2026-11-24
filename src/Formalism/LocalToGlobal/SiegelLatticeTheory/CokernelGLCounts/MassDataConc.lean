@@ -1,13 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataInst
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.SupportG
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
@@ -295,9 +291,7 @@ def ttC : Prop :=
 
 theorem ttC_of_split (h : GSplitX X) : ttC X hb hK FdN FdN' u u' X0 ψ T sd C Th vR Q M δ i0 i0' νq := by
   unfold ttC Formalism.FourierDecayAlt.S3.MassData.tt
-  refine Finset.prod_congr rfl (fun p _ => ?_)
-  rw [(h p).1]
-  rfl
+  exact Finset.prod_congr rfl (fun p _ => by rw [(h p).1]; rfl)
 
 def EnergyLinkC (jn : ℝ) : Prop := (bCF X hb hK FdN FdN' u u' X0 ψ T sd C Th vR Q M δ i0 i0' νq).IntN = jn
 

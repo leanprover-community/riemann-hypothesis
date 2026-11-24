@@ -1,12 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalResKill
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ResLocal
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolUnramified
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolNorm
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolReal
 public import GroundTheory.LocalFields.MainTheorem
+import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolUnramified
+public import GroundTheory.LocalFields.LocalArtinTransport
 
 @[expose] public section
 

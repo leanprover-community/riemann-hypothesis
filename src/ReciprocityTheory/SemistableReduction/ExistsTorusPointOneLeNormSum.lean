@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
+public import Mathlib.Topology.Algebra.Valued.NormedValued
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -137,8 +143,8 @@ theorem exists_torus_point_one_le_norm_sum {K : Type*} [NormedField K] [IsUltram
     exact zero_ne_one h6
   have hval : ((eval σ P : unitBallRing K) : K) =
       ∑ χ ∈ F, a χ * ∏ i, (σ i : K) ^ (χ i + N).toNat := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [P, map_sum, eval_monomial]
+
+    simp only [P, map_sum, eval_monomial]
     rw [AddSubmonoidClass.coe_finsetSum]
     refine Finset.sum_congr rfl fun χ _ => ?_
     rw [Finsupp.prod_fintype _ _ (fun i => pow_zero _)]

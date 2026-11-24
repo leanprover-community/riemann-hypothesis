@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Field.ZMod
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RingTheory.MvPowerSeries.Inverse
+public import Mathlib.RingTheory.PowerSeries.Substitution
 
 @[expose] public section
 

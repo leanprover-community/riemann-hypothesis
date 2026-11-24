@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
+public import Formalism.GradedWeylDivisibility.StatementD
+public import Formalism.GradedWeylDivisibility.StatementE
 
 @[expose] public section
 

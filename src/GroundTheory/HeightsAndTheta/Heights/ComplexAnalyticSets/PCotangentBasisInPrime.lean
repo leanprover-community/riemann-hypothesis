@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCotangentBasisInPrime
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Ideal.BigOperators
+public import Mathlib.RingTheory.Ideal.Cotangent
 
 @[expose] public section
 
@@ -42,8 +46,8 @@ theorem CotangentBasisInPrime.proof : CotangentBasisInPrime.Statement := by
   have hsum : ∀ c : Fin (Nat.card κ) → Localization.AtPrime P,
       (maximalIdeal _).toCotangent (∑ i, c i • G i) = ∑ i, residue _ (c i) • w i := by
     intro c
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, ← ResidueField.algebraMap_eq, algebraMap_smul]
     rfl

@@ -1,11 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsAdditiveOfUniversal
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsChernExistsUniqueAndIso
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationCrystalFormAdjointConjAction
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolarizationCrystalFormPerfectSelfAnnihila
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolarizationFormIsotropicFiltration
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsChernExistsUniqueAndIso
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizationCrystalFormAdjointConjAction
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 
 @[expose] public section
@@ -117,8 +156,8 @@ theorem IsCorrForm.pull {P : LB (A ⊗ B).left} {φ : Crys κ t A →ₗ[R] Crys
     ⟨N, _, _, (isChern_existsUnique_and_iso R' _ κ' _ _).2 _ _ (LB.isLB_pull hP h) hP' e _ ?_,
       tensorForm_apply _ _ _ _ _ _⟩, fun x x' y y' hx hy ↦ ?_⟩
   · have := isChern_pull k.isMor hc
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     convert this using 2 with i
     rw [IsMor.pullCohomologyTwo_cup]
     congr 1
@@ -131,8 +170,8 @@ theorem IsCorrForm.pull {P : LB (A ⊗ B).left} {φ : Crys κ t A →ₗ[R] Crys
         ⟨n.dp, by rw [Category.assoc, n.isMor.w, ← Category.assoc, ← Category.assoc, Over.w]⟩
       exact (IsMor.pullback1_comp _ _ ng (fun _ ↦ rfl) rfl _).trans
         (IsMor.pullback1_comp _ _ _ (fun _ ↦ rfl) h₂ _).symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [tensorForm_apply, hφ, map_sum, map_mul, hx _, hy _]
+
+  · simp only [tensorForm_apply, hφ, map_sum, map_mul, hx _, hy _]
 
 theorem IsCorrForm.unique (C : CupSquare κ t (A ⊗ B)) {P : LB (A ⊗ B).left} (hP : P.IsLB)
     {φ φ' : Crys κ t A →ₗ[R] Crys κ t B →ₗ[R] R} (H : IsCorrForm κ t A B P φ) (H' : IsCorrForm κ t A B P φ') :
@@ -151,8 +190,8 @@ theorem IsCorrForm.unique (C : CupSquare κ t (A ⊗ B)) {P : LB (A ⊗ B).left}
   obtain ⟨n, a, b, hc, hφ⟩ := H
   obtain ⟨n', a', b', hc', hφ'⟩ := H'
   have e := congrArg Λ (((isChern_existsUnique_and_iso R _ κ _ _).1 _ hP).unique hc hc')
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa only [map_sum, key, ← hφ, ← hφ'] using e
+
+  simpa only [map_sum, key, ← hφ, ← hφ'] using e
 
 theorem eq_zero_of_triv {X : Scheme.{0}} {s : X ⟶ Sp R} {L : LB X} (hL : L.IsLB) (h : Triv L) {z : Cris.H2 κ s}
     (hz : IsChern κ s L z) : z = 0 :=
@@ -164,8 +203,8 @@ theorem crystallinePull2_sum_cup {X Y : Over S} (f : Y ⟶ X)
     (m : IsMor κ (X.hom ≫ t) κ (Y.hom ≫ t) (RingHom.id R) f.left) {n : ℕ}
     (a b : Fin n → Cris.H1 κ (X.hom ≫ t)) :
     m.pull2 (∑ k, cup _ (a k) (b k)) = ∑ k, cup _ (pullOver κ t f (a k)) (pullOver κ t f (b k)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun k _ ↦ IsMor.pullCohomologyTwo_cup _ _ _
 
 theorem exists_isCorrForm (C : CupSquare κ t (A ⊗ B)) {P : LB (A ⊗ B).left} (hP : P.IsLB)

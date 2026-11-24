@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LeviMul
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ChiNCut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.DualCoords
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LeviMul
 
 @[expose] public section
 
@@ -29,9 +31,9 @@ theorem hform_mulVec' {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableE
     rw [Finset.sum_comm]
   have hσ : (fun i => σ ((M *ᵥ x) i)) = (fun i => σ (x i)) ᵥ* (Formalism.UG.cT σ M) := by
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, Matrix.vecMul, dotProduct, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply,
-      map_sum, map_mul]
+
+    simp only [Matrix.mulVec, Matrix.vecMul, dotProduct, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply,
+    map_sum, map_mul]
     exact Finset.sum_congr rfl (fun k _ => mul_comm _ _)
   rw [key, key, Matrix.dotProduct_mulVec, hσ, Matrix.vecMul_vecMul, Matrix.vecMul_vecMul, ← Matrix.mul_assoc, hM]
 
@@ -108,9 +110,6 @@ theorem par_one : Par X 1 := by
   refine ⟨?_, fun a => ?_, fun j => ?_⟩
   · first
     | exact (Formalism.UG.stabGL X.B.I.Lf).one_mem
-    | exact one_mem (Formalism.UG.stabGL X.B.I.Lf)
-    | (show ((1 : X.B.I.Gf) : GL (Fin X.B.I.n) (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) ∈ Formalism.UG.stabGL X.B.I.Lf
-       exact one_mem _)
   · rw [show X.B.I.fmat 1 = 1 from rfl, Matrix.one_mulVec]
     exact Submodule.mem_sup_left (Submodule.subset_span ⟨a, rfl⟩)
   · rw [show X.B.I.fmat 1 = 1 from rfl, Matrix.one_mulVec]

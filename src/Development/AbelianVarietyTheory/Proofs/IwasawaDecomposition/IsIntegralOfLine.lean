@@ -1,16 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.JoinEquivEqAtReference
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BrgStdR
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EventuallyCongOne
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LamRdefEqSgTrue
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReadsDeco
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfPerpPerp
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ClassPresBasic
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinCongMemLevEnv
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMemHatSwap
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
-public import Formalism.LocalToGlobal.Columns.RowFormsGood
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemClosureUnitary
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
+import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -29,8 +62,8 @@ omit [NumberField K] in
 theorem repr_map_mem {V V' ι ι' : Type} [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K V'] [Fintype ι]
     (b : Basis ι K V) (b' : Basis ι' K V') (f : V →ₗ[K] V') (hf : ∀ i j, b'.repr (f (b i)) j ∈ cmMax K) {x : V}
     (hx : ∀ i, b.repr x i ∈ cmMax K) (j : ι') : b'.repr (f x) j ∈ cmMax K := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← b.sum_repr x, map_sum, map_sum, Finsupp.finsetSum_apply]
+
+  rw [← b.sum_repr x, map_sum, map_sum, Finsupp.finsetSum_apply]
   refine sum_mem fun i _ => ?_
   rw [map_smul, map_smul, Finsupp.smul_apply, smul_eq_mul]
   exact mul_mem (hx i) (hf i j)
@@ -69,8 +102,8 @@ theorem exists_inv_rat {V ι Γ : Type} [AddCommGroup V] [Module K V] [Fintype �
       simp only [← map_mul]
       rw [Fintype.sum_bijective (g * ·) (Group.mulLeft_bijective g) _ (fun g => ρ g) fun _ => rfl]
     refine hi ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.sum_apply, map_sum, Finsupp.finsetSum_apply]
+
+    rw [LinearMap.sum_apply, map_sum, Finsupp.finsetSum_apply]
     exact sum_mem fun g _ => hρ g i j
   have h1 := LinearMap.congr_fun h0 v
   rw [LinearMap.sum_apply] at h1
@@ -83,8 +116,8 @@ omit [NumberField K] [StarRing K] in
 theorem repr_of_smul {V' W ι' : Type} [AddCommGroup V'] [Module K V'] [AddCommGroup W] [Module ℂ W] [Fintype ι'] (σ : K →+* ℂ)
     (b' : Basis ι' K V') (c0 : V' →ₛₗ[σ] W) (hli : LinearIndependent ℂ fun i => c0 (b' i)) {x y : V'} {μ : ℂ}
     (h : c0 x = μ • c0 y) (j : ι') : σ (b'.repr x j) = μ * σ (b'.repr y j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← b'.sum_repr x, ← b'.sum_repr y, map_sum, map_sum, Finset.smul_sum] at h
+
+  rw [← b'.sum_repr x, ← b'.sum_repr y, map_sum, map_sum, Finset.smul_sum] at h
   simp only [map_smulₛₗ, smul_smul] at h
   exact Fintype.linearIndependent_iffₛ.1 hli _ _ h j
 

@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CardCells
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.IdxRatioMap
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocOrbSumPf
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ToCellSurj
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.IsUpUniMul
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ProdEGen
 
 @[expose] public section
 
@@ -25,9 +25,9 @@ def UP : Subgroup (GG p) where
     rintro x y ⟨hx1, hx2⟩ ⟨hy1, hy2⟩
     refine ⟨?_, ?_⟩
     · show IsLoUni ((x.1 * y.1 : GLp p) : MP p)
-      rw [Units.val_mul]; exact ZsVolGrp.isLoUni_mul hx1 hy1
+      rw [Units.val_mul]; exact _root_.PI.TermAttrConst.UnitaryGroupMassFormula.isLoUni_mul hx1 hy1
     · show IsUpUni (((x.2 * y.2).unop : GLp p) : MP p)
-      rw [MulOpposite.unop_mul, Units.val_mul]; exact ZsVolGrp.isUpUni_mul hy2 hx2
+      rw [MulOpposite.unop_mul, Units.val_mul]; exact _root_.GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul hy2 hx2
   inv_mem' := by
     rintro x ⟨hx1, hx2⟩
     refine ⟨?_, ?_⟩

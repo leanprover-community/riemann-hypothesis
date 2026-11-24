@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.TensorSpan
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.RingTheory.Valuation.Integers
 
 @[expose] public section
 
@@ -47,9 +49,9 @@ theorem mem_dualLat_spanCols_iff (B : Matrix X X C) (u : X → C) :
     choose r hr using h
     choose s hs using hw
     refine ⟨∑ j, r j * s j, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, hr, hs, Matrix.vecMul, dotProduct, Matrix.mulVec,
-      Finset.mul_sum, Finset.sum_mul]
+
+    simp only [map_sum, map_mul, hr, hs, Matrix.vecMul, dotProduct, Matrix.mulVec,
+    Finset.mul_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun j _ => ?_
     ring

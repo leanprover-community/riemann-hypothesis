@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Statements
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
+public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 @[expose] public section
 

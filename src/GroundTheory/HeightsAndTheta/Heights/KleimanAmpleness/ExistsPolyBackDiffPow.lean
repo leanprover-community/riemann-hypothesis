@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestBis
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.NumberTheory.BernoulliPolynomials
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import Mathlib.Algebra.Polynomial.Eval.SMul
 
 @[expose] public section
 

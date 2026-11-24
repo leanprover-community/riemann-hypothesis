@@ -1,7 +1,7 @@
 module
 
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.L2Embedding
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -19,8 +19,8 @@ variable {n : ℕ}
 def baseCoef {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H))
     (D : Submodule ℂ H) (ξ : H) : D →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ) where
   toFun u := fun g => ⟪ξ, σ g u⟫_ℂ
-  map_add' u v := by funext g; simp [inner_add_right]
-  map_smul' c u := by funext g; simp [inner_smul_right]
+  map_add' u v := by funext g; simp
+  map_smul' c u := by funext g; simp
 
 def tensCoef0 {V : Type} [AddCommGroup V] [Module ℂ V] (c : V →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ)) (j : Fin n) :
     (Fin n → V) →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ) where

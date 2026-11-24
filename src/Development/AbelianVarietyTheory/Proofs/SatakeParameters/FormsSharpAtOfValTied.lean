@@ -1,12 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaDistributionUnfolded
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SharpPoly
 public import Formalism.LocalToGlobal.InertKernelTheory.K2OfAgreements
-public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SharpPoly
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,11 +51,6 @@ noncomputable section
 namespace GlobalTheory.FormsSharpTie
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Forms Formalism.L2.KerInert.K2
-
-theorem natW_antitone {n : ℕ} (l : DomWeight n) : Antitone l.natW := by
-  intro a b h
-  simp only [DomWeight.natW]
-  exact Int.toNat_le_toNat (by have := l.anti h; omega)
 
 theorem ratSpan_le_wtPol (D : D7) {n : ℕ} (lam : D.what₂.Tau → DomWeight n) :
     ∀ P ∈ RatSpan D lam, P ∈ WtPol ℂ (fun τ r => (lam τ).natW r) := by
@@ -30,14 +61,14 @@ theorem ratSpan_le_wtPol (D : D7) {n : ℕ} (lam : D.what₂.Tau → DomWeight n
     rintro p ⟨r, f, hf, rfl⟩
     show _ ∈ WtPol ℂ _
     apply Submodule.smul_mem
-    apply GlobalTheory.KerWt.VV_le_WtPol lam
+    apply _root_.Formalism.L2.Ker.VV_le_WtPol lam
     unfold Formalism.L2.DIV.VV Formalism.GradedWeylDivisibility.tensorLat
     apply Submodule.subset_span
     refine ⟨fun τ => MvPolynomial.map (Int.castRingHom ℂ) (f τ), fun τ => ?_, rfl⟩
     have h1 : MvPolynomial.map (Int.castRingHom ℂ) (f τ) ∈ delSq ℂ n (lam τ) := by
       rw [← GlobalTheory.Published.span_map_delSq ℤ ℂ (Int.castRingHom ℂ) n (lam τ)]
       exact Submodule.subset_span ⟨f τ, hf τ, rfl⟩
-    exact Formalism.GradedWeylDivisibility.weylLeDual ℂ n n le_rfl _ (natW_antitone (lam τ)) h1
+    exact Formalism.GradedWeylDivisibility.weylLeDual ℂ n n le_rfl _ (_root_.Formalism.L2.Col.natW_anti (lam τ)) h1
   exact hle hP
 
 theorem eval_colSub {ι : Type} [Fintype ι] {a : ℕ} (β x : ι → Matrix (Fin a) (Fin a) ℂ) (p : Formalism.L2.DIV.Pol ℂ ι a) :
@@ -47,10 +78,10 @@ theorem eval_colSub {ι : Type} [Fintype ι] {a : ℕ} (β x : ι → Matrix (Fi
   | C c => simp [colSub]
   | add p q hp hq => simp only [map_add (f := _), hp, hq]
   | mul_X p v hp =>
-    simp only [map_mul, hp, colSub, MvPolynomial.aeval_X, MvPolynomial.eval_X, Matrix.mul_apply]
+    simp only [map_mul, colSub, MvPolynomial.aeval_X, MvPolynomial.eval_X, Matrix.mul_apply]
     congr 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     simp [mul_comm]
 
@@ -80,8 +111,8 @@ theorem isVLam_of_wtPol {ι : Type} [Fintype ι] {a : ℕ} {Y : Type} (fr g : Y 
       | C c => simp [sub]
       | add p q hp hq => simp only [map_add (f := _), hp, hq]
       | mul_X p v hp =>
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_mul, hp, sub, MvPolynomial.aeval_X, MvPolynomial.eval_X, hg', Matrix.mul_apply, map_sum]
+
+        simp only [map_mul, hp, sub, MvPolynomial.aeval_X, MvPolynomial.eval_X, hg', Matrix.mul_apply, map_sum]
         simp
     have hdet : ∀ y τ, MvPolynomial.eval (fun k : ι × Fin a × Fin a => g y k.1 k.2.1 k.2.2) (frDet ℂ a τ) = (g y τ).det := by
       intro y τ
@@ -130,7 +161,7 @@ theorem sharpWt_rat (D : D7) (Tw : TwForms D) (u : D.what₂.Word) (μ : D.what�
     (τ : D.what₂.Tau) (r : Fin (D.R.N j)) :
     ((((nuT D u j τ r : ℤ) - (D.chTw u μ).sSharp j τ : ℤ)) : ℚ) =
         ((((Tw.fm u μ).lam j τ).w r : ℤ) : ℚ) - (j : ℚ) * ((D.R.t : ℚ) + 1) / 2 := by
-  have h1 := (GlobalTheory.KerWt.nu_t_identity D u j hj τ r).1
+  have h1 := (_root_.Formalism.L2.Ker.nu_t_identity D u j hj τ r).1
   have h2 := (D.chTw u μ).sSharp_eq j hj τ
   have h3 := (Tw.fm u μ).lam_eq j hj.le τ r
   have h2' : (((D.chTw u μ).sSharp j τ : ℤ) : ℝ) =

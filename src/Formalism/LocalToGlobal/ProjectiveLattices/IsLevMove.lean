@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
-public import Formalism.LocalToGlobal.ProjectiveLattices.RhoWApply
 
 @[expose] public section
 

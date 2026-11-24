@@ -1,11 +1,21 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
-public import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.ComplSmulMapE
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+public import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
 public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.AdeleIntA
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LocalComponentGL
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LogarithmEquivalence
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -70,16 +80,16 @@ theorem jetLin_sum {κ : Type} (s : Finset κ) (J : κ → (DVar ι a b →₀ �
     jetLin (fun m => ∑ i ∈ s, J i m) = ∑ i ∈ s, jetLin (J i) := by
   refine (basisMonomials ((ι × Fin b × Fin b) ⊕ DVar ι a b) K).ext fun m => ?_
   unfold jetLin
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.sum_apply, Module.Basis.constr_basis, map_sum]
+
+  simp only [LinearMap.sum_apply, Module.Basis.constr_basis, map_sum]
 
 theorem jetOp_sum {κ : Type} (s : Finset κ) (lam : ι → DomWeight a) (lam' : ι → DomWeight b) (J : κ → (DVar ι a b →₀ ℕ) → K)
     (n : ι → ℕ) : jetOp lam lam' (fun m => ∑ i ∈ s, J i m) n = ∑ i ∈ s, jetOp lam lam' (J i) n := by
   unfold jetOp jetMap
   rw [jetLin_sum]
   refine LinearMap.ext fun P => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.sum_apply, LinearMap.comp_apply, map_sum]
+
+  simp only [LinearMap.sum_apply, LinearMap.comp_apply, map_sum]
 
 end Jet
 
@@ -344,17 +354,6 @@ theorem jetLin_mixed (J : (DVar ι a b →₀ ℕ) → K) (p : (ι × Fin b × F
 
 end Tests
 
-section Tests2
-
-variable {X : Fields} (A : Amb X) {a b : ℕ} (S : Finset (HeightOneSpectrum (𝓞 X.E)))
-  (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b))
-
-theorem opU_smul {V : Type} [AddCommGroup V] [Module ℂ V] (H : Sesq V) (x : V) (k : ℂ) (F : V → ℂ) (z : V) :
-    opU H x (fun w => k * F w) z = k * opU H x F z := by
-  unfold opU; ring
-
-end Tests2
-
 section Smooth
 
 variable {ι : Type} [Fintype ι] {a b : ℕ}
@@ -473,8 +472,8 @@ theorem atZero_monomial (G : VCx ι a b → ℂ) (α : DVar ι a b →₀ ℕ) (
 theorem atZero_eq_sum (G : VCx ι a b → ℂ) (P : MvPolynomial (DVar ι a b) ℂ) :
     atZero G P = ∑ α ∈ P.support, AddMonoidAlgebra.coeff P α * derivAt0 G α := by
   conv_lhs => rw [P.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [atZero_monomial]
 
 def evY (cD : ι → ℂ) (y' : ι × Fin b × Fin b → ℂ) : MvPolynomial ((ι × Fin b × Fin b) ⊕ DVar ι a b) ℂ →ₐ[ℂ] MvPolynomial (DVar ι a b) ℂ :=
@@ -486,10 +485,10 @@ theorem evY_subD (cD : ι → ℂ) (y' : ι × Fin b × Fin b → ℂ) : (evY cD
   unfold subD polDx
   rw [aeval_X, aeval_X]
   split_ifs with h
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sum, map_mul, evY, aeval_X, Sum.elim_inl, Sum.elim_inr]
-      refine Finset.sum_congr rfl fun β _ => ?_
-      ring
+
+  · simp only [map_sum, map_mul, evY, aeval_X, Sum.elim_inl, Sum.elim_inr]
+    refine Finset.sum_congr rfl fun β _ => ?_
+    ring
   · simp
 
 theorem split_mono (m : ((ι × Fin b × Fin b) ⊕ DVar ι a b) →₀ ℕ) :

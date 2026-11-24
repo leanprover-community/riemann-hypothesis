@@ -1,12 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBound
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogSmul
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeFormCompare
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PlaneIdealTwoOne
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanProjective
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeFormCompare
+import Mathlib.Algebra.Order.Star.Real
+import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
+import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 
 @[expose] public section
 

@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

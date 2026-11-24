@@ -1,34 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.CMLattices.IntegralOf
-public import Development.AbelianVarietyTheory.Statements.PrincipalLattices.ExistsPrincipalLattice
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
 public import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms
-public import Formalism.LocalToGlobal.ProjectiveLattices.NonnegIffOfLiesTotal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.NonemptyUnitAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.NonvanishingNearMaximum
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCoefficientSplitting
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.OneLeAbsNormOfLeOne
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.ProdMulLeDetIdeal
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.ValuationLeOfEqAlgebraMap
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.AbsNormSpanGalois
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.DetValuationLeOne
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.ExistsEvalNeZeroOfTotalDegreeLt
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.ExistsMonicIrreducibleCardGt
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.FiniteDetAddSmulOneEqZero
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.LargeResidueExtensionLemma
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.HermitianFormGramBlockBasis
-public import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkFD
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.SupAtUnit
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.PointwiseNormSectionEqFlagDomainNorm
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LowerTriIsUnitDet
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlgebraicLawsChartWeightIntegrality
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LawsFieldsSeparately
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricDataUniqueStatement
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricChangeOfFrameStatement
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UnifMetricScalarStatement
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsOrthonormalFrameBorelChangeComplexFramedPoStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCoefficientSplitting
+public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsOrthonormalFrameBorelChangeComplexFramedPo
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricChangeOfFrame
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricDataUnique
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UnifMetricScalar
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.PointwiseNormSectionEqFlagDomainNorm
+public import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkFD
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlgebraicLawsChartWeightIntegrality
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LowerTriIsUnitDet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.SupAtUnit
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -72,7 +93,7 @@ theorem cabs_evR_le_supC : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   intro E _ _ _ H Dw l Xo c r U ξ hU hξ hpq a n hd F hF σ hσ y N hN
   have hB : Out.SecBaseChangeSt := GlobalTheory.lawsFieldsSeparately.2.1
   obtain ⟨-, -, -, -, -, -, hwt⟩ := GlobalTheory.Frames.algebraic_laws hB E H Dw l Xo c
-  obtain ⟨k, x, t, hx, ht⟩ := GlobalTheory.T.exists_orthonormalFrame_borelChange_complexFramedPoint E H Dw l Xo c σ r (U σ) (hU σ hσ) y
+  obtain ⟨k, x, t, hx, ht⟩ := _root_.GlobalTheory.LamT.exists_ortho_frBor E H Dw l Xo c σ r (U σ) (hU σ hσ) y
   obtain ⟨g, hg0, hgd, hchg⟩ :=
     ((GlobalTheory.Frames.frBor_calculus E H Dw l Xo c (CAt σ) ((U σ).un k x) y y).1 t).1 ht
   have hξ0 : 0 < ξ := by
@@ -80,11 +101,11 @@ theorem cabs_evR_le_supC : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     rw [← hξ σ hσ k τ]
     exact norm_pos_iff.2 ((map_ne_zero τ).2 ((U σ).X k).ξ0_ne)
   have hκ : 0 < 2 * Real.pi * ξ := by positivity
-  have hm0 := GlobalTheory.T.unif_metric_scalar E H Dw l Xo c σ r (U σ) ξ hσ (hU σ hσ) hpq k x (hξ σ hσ k) hx
-  have hm1 := GlobalTheory.T.metric_change_of_frame E H Dw l Xo c σ ((U σ).un k x) y 1 _
+  have hm0 := _root_.GlobalTheory.OrthoMetric.isMetric_of_isOrtho E H Dw l Xo c σ r (U σ) ξ hσ (hU σ hσ) hpq k x (hξ σ hσ k) hx
+  have hm1 := _root_.GlobalTheory.MetricChange.isMetric_frChg E H Dw l Xo c σ ((U σ).un k x) y 1 _
     (fun b => Matrix.transpose (show Matrix (Fin (Dw.mult b)) (Fin (Dw.mult b)) ℂ from g b))
     (show ℂ from (t none : CAt σ)) (Units.ne_zero (M₀ := ℂ) (t none)) hchg hm0
-  obtain ⟨hNN, hG⟩ := GlobalTheory.T.metric_data_unique E H Dw l Xo c σ y _ _ _ _ hN hm1
+  obtain ⟨hNN, hG⟩ := _root_.GlobalTheory.LamT.MetUniq.isMetric_unique E H Dw l Xo c σ y _ _ _ _ hN hm1
   have hnone : cabs (t none : CAt σ) = Real.sqrt N := by
     rw [hNN, _root_.mul_one, Real.sqrt_sq (norm_nonneg _)]; rfl
   have hsome : ∀ p : Σ τ : E →+* ℂ, Fin (Dw.mult τ),

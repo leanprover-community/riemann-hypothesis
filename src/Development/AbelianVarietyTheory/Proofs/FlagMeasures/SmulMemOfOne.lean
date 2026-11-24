@@ -1,12 +1,64 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AdaptSelf
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIntegerAddStarEqOneOfIsCMUnram
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagFramesSameGradedDefinitePartLatticeEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.Module.FinitePresentation
+public import Mathlib.RingTheory.Flat.EquationalCriterion
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 
@@ -48,7 +100,7 @@ theorem exists_proj (L : Submodule (𝓞 K) V) (hfg : L.FG) (hsp : Submodule.spa
     exact ⟨d, nonZeroDivisors.coe_ne_zero d, hd⟩
   have hunit : ∀ x : nonZeroDivisors (𝓞 K), IsUnit (algebraMap (𝓞 K) (Module.End (𝓞 K) V) x) :=
     (isLocalizedModule_id (nonZeroDivisors (𝓞 K)) V K).map_units
-  haveI hloc : IsLocalizedModule (nonZeroDivisors (𝓞 K)) L.subtype := by
+  have hloc : IsLocalizedModule (nonZeroDivisors (𝓞 K)) L.subtype := by
     refine ⟨hunit, fun v => ?_, fun {x y} h => ⟨1, by simpa using Subtype.ext h⟩⟩
     obtain ⟨d, hd, hv⟩ := hden v
     exact ⟨(⟨d • v, hv⟩, ⟨d, mem_nonZeroDivisors_of_ne_zero hd⟩), rfl⟩
@@ -119,8 +171,8 @@ theorem Hyp.pair {e y : Fin r → V} (h : Hyp H e y) (s t s' t' : Fin r → K) {
       ∑ a, s a * star (t' a) + ∑ a, t a * star (s' a) + H.B n n' := by
   have h3' := fun a => swap_zero (h3 a)
   have h4' := fun a => swap_zero (h4 a)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_add (f := _), map_sum, LinearMap.add_apply, LinearMap.sum_apply, h.1, h.2.1, h.2.2, h.ye, h1, h2, h3', h4', mul_comm]
+
+  simp [map_add (f := _), map_sum, LinearMap.add_apply, LinearMap.sum_apply, h.1, h.2.1, h.2.2, h.ye, h1, h2, h3', h4', mul_comm]
   exact add_comm _ _
 
 noncomputable def mid (H : HermSpace K V) (e y : Fin r → V) : V →ₗ[K] V :=
@@ -160,8 +212,8 @@ theorem move_isom {e y e' y' : Fin r → V} (h : Hyp H e y) (h' : Hyp H e' y')
   have hp' : ∀ u a, H.B (e' a) (mid H e y u) = 0 := fun u a => swap_zero (hp u a)
   have hm : H.B (mid H e' y' (mid H e y v)) (mid H e' y' (mid H e y w)) = H.B (mid H e y v) (mid H e y w) := by
     rw [mid_apply e' y' (mid H e y w)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, LinearMap.map_smulₛₗ, h'.mid_e, h'.mid_y, smul_zero, Finset.sum_const_zero, sub_zero]
+
+    simp only [map_sub, map_sum, LinearMap.map_smulₛₗ, h'.mid_e, h'.mid_y, smul_zero, Finset.sum_const_zero, sub_zero]
     rw [mid_apply e' y' (mid H e y v)]
     simp [hp, hp']
   rw [move_apply, move_apply, h'.pair _ _ _ _ (h'.mid_e _) (h'.mid_y _) (h'.mid_e _) (h'.mid_y _), hm]

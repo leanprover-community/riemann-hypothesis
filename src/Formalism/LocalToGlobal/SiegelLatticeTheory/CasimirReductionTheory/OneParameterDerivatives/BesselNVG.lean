@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.GgExistsAddCharNeOne
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 
 @[expose] public section
 

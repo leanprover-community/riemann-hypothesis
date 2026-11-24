@@ -1,8 +1,43 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
-public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -89,24 +124,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-theorem gram_det_ne (V : HSp D) : V.gram.det ≠ 0 := by
-  intro h
-  obtain ⟨v, hv, h0⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h
-  have hx : ∀ y, V.hT y (∑ j, v j • V.frame j) = 0 := by
-    intro y
-    rw [← V.frame.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, RingHom.id_apply, smul_eq_mul]
-    simp only [Finset.mul_sum]
-    rw [Finset.sum_comm]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    have := congrFun h0 i
-    simp only [mulVec, dotProduct, Formalism.BasicNotions.HSpace.gram, Pi.zero_apply] at this
-    calc _ = (starRingEnd _) (V.frame.repr y i) * ∑ j, V.hT (V.frame i) (V.frame j) * v j := by
-          rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun j _ => by ring
-      _ = 0 := by rw [this, mul_zero]
-  have := V.nondeg.2 _ hx
-  exact hv (funext (Fintype.linearIndependent_iff.1 V.frame.linearIndependent v this))
+alias gram_det_ne := _root_.Formalism.L2.Theta.gram_det_ne
 
 theorem inv_mul_gram (V : HSp D) : (V.gram⁻¹).map (incA D) * V.gram.map (incA D) = 1 := by
   rw [← Matrix.map_mul, nonsing_inv_mul _ (isUnit_iff_ne_zero.2 (gram_det_ne V)), Matrix.map_one _ (map_zero _) (map_one _)]
@@ -158,8 +176,8 @@ theorem trace_second (hc : ∀ z, c (c z) = z) (ξ : A) (hξ : c ξ = -ξ) (g : 
   have e2 : (-pi) * (-(Z' * pᵀ))ᵀ * g * (-(Z.map c * p)) = -((pi * p) * (Z'ᵀ * g * Z.map c * p)) := by
     simp only [transpose_neg, transpose_mul, transpose_transpose, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.mul_assoc]
   have ct : ∀ {k : ℕ} (M : Matrix (Fin k) (Fin k) A), c M.trace = (M.map c).trace := fun M => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Matrix.trace, map_sum]
+
+    simp [Matrix.trace, map_sum]
   rw [e2, hpi, Matrix.one_mul, trace_neg, mul_neg, map_neg, map_mul, hξ, ct, Matrix.map_mul, Matrix.map_mul,
     Matrix.map_mul, transpose_map, cc, hg', hp', neg_mul, neg_neg]
   congr 1
@@ -184,7 +202,7 @@ theorem incM_neg_one_smul {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) :
     incM ((-1 : D.host.E) • M) = -incM M := by
   rw [incM_smul, map_neg, map_one, neg_one_smul]
 
-set_option maxHeartbeats 1000000 in
+
 theorem symp_eq (t : T) (e : Num G i j) (Γ : Geo G i j) (hW₁ : Γ.V'.J = (-1 : D.host.E) • (spW₁ G i j).gram)
     (hWW : Γ.W.J = skewGram (spV G i j) (spV₁ G i j) e)
     (x x' : Matrix (Fin (spW₁ G i j).rank) (Fin ((spW G i j).rank + (spW₁ G i j).rank)) (AE D)) :

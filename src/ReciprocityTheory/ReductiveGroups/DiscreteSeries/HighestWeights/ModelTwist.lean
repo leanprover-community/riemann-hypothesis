@@ -1,7 +1,13 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.InhabA
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.ZPow
+public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 @[expose] public section
 

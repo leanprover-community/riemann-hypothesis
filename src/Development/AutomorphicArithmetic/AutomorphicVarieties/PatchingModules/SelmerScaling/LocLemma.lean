@@ -1,20 +1,101 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.EpC
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagTriangular
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.Algebra.Algebra.Operations
+public import Mathlib.Algebra.Algebra.Subalgebra.Basic
+public import Mathlib.Data.Matrix.Basic
+public import Mathlib.RingTheory.Ideal.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagMap
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagTriangular
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.OrdExt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.TriProdZero
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TriDiag
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.EqLagIff
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TriDiag, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.LocLemma
+
+-- ===== clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TriDiag =====
+-- clump-header: {"m": "Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TriDiag", "h": "module\n\npublic import Mathlib.LinearAlgebra.Matrix.Block\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+theorem UpperTheory.Reformulated.B.Qk9.tri_diag :
+    ∀ {R : Type} [inst : CommRing R] {n : ℕ}
+    (A B : Matrix (Fin n) (Fin n) R),
+    A.BlockTriangular id → B.BlockTriangular id → ∀ (i : Fin n), (A * B) i i = A i i * B i i := by
+  intro R _ n A B hA hB i
+  rw [Matrix.mul_apply]
+  refine Finset.sum_eq_single i ?_ ?_
+  · intro j _ hji
+    rcases lt_or_gt_of_ne hji with h | h
+    · rw [hA (show id j < id i from h), zero_mul]
+    · rw [hB (show id i < id j from h), mul_zero]
+  · intro h
+    exact absurd (Finset.mem_univ i) h
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TriDiag =====
+
+-- ===== clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.LocLemma =====
+-- clump-header: {"m": "Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.LocLemma", "h": "module\n\npublic import Mathlib.Algebra.Algebra.Operations\npublic import Mathlib.Algebra.Algebra.Subalgebra.Basic\npublic import Mathlib.Data.Matrix.Basic\npublic import Mathlib.RingTheory.Ideal.Defs\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagMap\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagTriangular\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.OrdExt\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.TriProdZero\nimport Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective\npublic import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TriDiag\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.AdicCompletion.Noetherian\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.HopfAlgebra.Basic\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.EqLagIff\nimport Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace\nimport Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg\npublic import Mathlib.LinearAlgebra.Dual.Lemmas\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
-
-private theorem tri_diag {R : Type} [CommRing R] {n : ℕ} (A B : Matrix (Fin n) (Fin n) R)
-    (hA : A.BlockTriangular id) (hB : B.BlockTriangular id) (i : Fin n) :
-    (A * B) i i = A i i * B i i :=
-  _root_.UpperTheory.Reformulated.B.Qk9.tri_diag A B hA hB i
 
 private theorem tri_of_idem {R : Type} [CommRing R] {n : ℕ} (f : Fin n → Matrix (Fin n) (Fin n) R)
     (hf : OrthogonalIdempotents f) (ht : ∀ i, (f i).BlockTriangular id) (hd : ∀ i, f i i i = 1)
@@ -62,7 +143,7 @@ private theorem tri_of_idem {R : Type} [CommRing R] {n : ℕ} (f : Fin n → Mat
   have h2 : M * V = V * (V⁻¹ * M * V) := by
     rw [← mul_assoc, ← mul_assoc, hr, one_mul]
   have h3 := congrFun (congrFun h2 i) i
-  rw [tri_diag _ _ hMt hV, tri_diag _ _ hV hT, hVd, mul_one, one_mul, e3, h1, mul_smul_comm,
+  rw [_root_.UpperTheory.Reformulated.B.Qk9.tri_diag _ _ hMt hV, _root_.UpperTheory.Reformulated.B.Qk9.tri_diag _ _ hV hT, hVd, mul_one, one_mul, e3, h1, mul_smul_comm,
     smul_mul_assoc, mul_assoc, e1, ← mul_assoc, hl] at h3
   simpa using h3
 
@@ -83,7 +164,7 @@ private theorem lag_tri {R : Type} [CommRing R] {n : ℕ} (a : Fin n → R) (Q :
       rw [Finset.prod_insert hk, Finset.prod_insert hk, map_mul, map_sub, Polynomial.aeval_X,
         Polynomial.aeval_C]
       refine ⟨hb.mul ih.1, ?_⟩
-      rw [tri_diag _ _ hb ih.1, ih.2, Matrix.sub_apply, hd, Matrix.algebraMap_matrix_apply]
+      rw [_root_.UpperTheory.Reformulated.B.Qk9.tri_diag _ _ hb ih.1, ih.2, Matrix.sub_apply, hd, Matrix.algebraMap_matrix_apply]
       simp
   obtain ⟨k1, k2⟩ := key (Finset.univ.erase i)
   unfold lag
@@ -147,8 +228,8 @@ private theorem move_idem {A B ι : Type} [Ring A] [Ring B] [Fintype ι] (π : A
   have h0 : π Y = 0 := by
     have : ∑ i, π (f' i * f i) = ∑ i, π (f i) :=
       Finset.sum_congr rfl fun i _ => by rw [map_mul, hπ, ← map_mul, (hf.idem i).eq]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hY, map_sub, map_sum, this, ← map_sum, hf.complete, sub_self]
+
+    rw [hY, map_sub, map_sum, this, ← map_sum, hf.complete, sub_self]
   have hYY : Y * Y = 0 := hsq _ _ h0 h0
   have hU : 1 - Y = ∑ i, f' i * f i := by rw [hY, sub_sub_cancel]
   have h1 : ∀ a, (1 - Y) * f a = f' a * (1 - Y) := by
@@ -178,7 +259,7 @@ private theorem move_idem {A B ι : Type} [Ring A] [Ring B] [Fintype ι] (π : A
   rw [e4, ← h2 a, ← h2 b]
   calc _ = (1 + Y) * f' a * ((1 - Y) * (1 + Y)) * r₁ * ((1 - Y) * (1 + Y)) * f' b * (1 - Y) := by
         simp only [mul_assoc]
-    _ = _ := by rw [hr]; simp only [mul_assoc, one_mul, mul_one]
+    _ = _ := by rw [hr]; simp only [mul_assoc, mul_one]
 
 private theorem sep_good {F R H : Type} [Field F] [Infinite F] [CommRing R] [Algebra F R] [Monoid H]
     {n : ℕ} (e : R →ₐ[F] F) (ψ : Fin n → H →* R)
@@ -358,5 +439,8 @@ theorem UpperTheory.V.Pa.locLemma :
   rw [hβ]
   have hb := p1.sub (htri1 g)
   refine ⟨fun i j h => (hb.mul (htri1 g⁻¹)) h, fun i => ?_⟩
-  rw [tri_diag _ _ hb (htri1 _), Matrix.sub_apply, p2, htri2, htri2, mul_assoc, ← map_mul,
+  rw [_root_.UpperTheory.Reformulated.B.Qk9.tri_diag _ _ hb (htri1 _), Matrix.sub_apply, p2, htri2, htri2, mul_assoc, ← map_mul,
     inv_mul_cancel, map_one, mul_one]
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.LocLemma =====

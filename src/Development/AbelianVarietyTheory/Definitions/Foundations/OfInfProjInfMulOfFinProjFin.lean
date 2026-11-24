@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -142,7 +186,7 @@ theorem continuous_singleFin (v : HeightOneSpectrum (𝓞 F)) : Continuous (sing
   let f : Fv F v → RestrictedProduct (fun u : HeightOneSpectrum (𝓞 F) => u.adicCompletion F)
       (fun u => (u.adicCompletionIntegers F : Set (u.adicCompletion F))) (Filter.principal {v}ᶜ) :=
     fun a => ⟨Pi.single v a, fun u hu => by
-      rw [Set.mem_setOf_eq, Pi.single_eq_of_ne hu]; exact zero_mem _⟩
+      rw [Set.mem_ofPred_eq, Pi.single_eq_of_ne hu]; exact zero_mem _⟩
   have hf : Continuous f := RestrictedProduct.continuous_rng_of_principal.2 (continuous_single v)
   exact (RestrictedProduct.continuous_inclusion hS).comp hf
 
@@ -414,7 +458,7 @@ theorem range_ofInf : (ofInf σ J).range = infPts σ J := by
 @[simp] theorem awayPts_empty : awayPts σ J ∅ = ⊤ := by simp [awayPts]
 
 def projAt (S : Finset (HeightOneSpectrum (𝓞 F))) : GAd σ J →* ∀ v : S, GLoc σ J v :=
-  Pi.monoidHom fun v => proj σ J v
+  MonoidHom.pi fun v => proj σ J v
 
 @[simp] theorem projAt_apply (S : Finset (HeightOneSpectrum (𝓞 F))) (g : GAd σ J) (v : S) :
     projAt σ J S g v = proj σ J v g := rfl
@@ -579,11 +623,11 @@ theorem infEmb_bijective (h : IsCMExt F E σ) (τ : EmbOver E w) : Function.Bije
     apply Complex.ext
     · simp only [mul_one, Complex.add_re, Complex.ofReal_re, Complex.re_ofReal_mul]; ring
     · simp only [mul_one, Complex.add_im, Complex.ofReal_im, Complex.im_ofReal_mul]; field_simp; ring
-  letI : Algebra w.Completion ℂ := (InfinitePlace.Completion.extensionEmbedding w).toAlgebra
+  let : Algebra w.Completion ℂ := (InfinitePlace.Completion.extensionEmbedding w).toAlgebra
   have hC : Module.finrank w.Completion ℂ = 2 := by
     rw [← Complex.finrank_real_complex]
     exact Algebra.finrank_eq_of_equiv_equiv e (RingEquiv.refl ℂ) (by ext a; exact (he a).symm)
-  haveI : Module.Finite w.Completion ℂ := Module.finite_of_finrank_pos (by rw [hC]; norm_num)
+  have : Module.Finite w.Completion ℂ := Module.finite_of_finrank_pos (by rw [hC]; norm_num)
   let L : w.Completion ⊗[F] E →ₗ[w.Completion] ℂ :=
     { toFun := infEmb τ
       map_add' := map_add _
@@ -615,9 +659,6 @@ def archEquiv (h : IsCMExt F E σ) (τ : EmbOver E w) : GArch σ J w ≃* UJ (st
         simp)
     left_inv := fun g => HA_ext σ J fun r s => e.symm_apply_apply _
     right_inv := fun g => Subtype.ext (Units.ext (Matrix.ext fun r s => e.apply_symm_apply _)) }
-
-theorem archEquiv_val (h : IsCMExt F E σ) (τ : EmbOver E w) (g : GArch σ J w) :
-    (archEquiv J h τ g).1.1 = (matHom _ σ J g).1.map (infEmb τ) := rfl
 
 def infProj (τ : EmbOver E w) : Ainf F ⊗[F] E →+* ℂ :=
   (infEmb τ).comp (Algebra.TensorProduct.map (evW w) (AlgHom.id F E)).toRingHom

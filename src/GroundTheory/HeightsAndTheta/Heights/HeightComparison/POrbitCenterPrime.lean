@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterPrime
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterMemIff
+public import Mathlib.RingTheory.GradedAlgebra.Radical
 
 @[expose] public section
 

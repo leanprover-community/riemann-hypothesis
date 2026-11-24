@@ -1,10 +1,16 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.LeviVA
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.LogNormSq
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDerivNonposOfIsLocalMax
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
+public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
+public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDerivNonposOfIsLocalMax
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 
@@ -20,9 +26,6 @@ variable {n : ℕ}
 theorem two_le_inf : (2 : WithTop ℕ∞) ≤ ∞ := by
   first
   | exact WithTop.coe_le_coe.mpr le_top
-  | simp
-  | decide
-  | exact le_top
 
 theorem levi_logNormSq_zero_at (g : V n → ℂ) (v0 : V n) (hg : ContDiffAt ℂ 2 g v0)
     (hne : g v0 ≠ 0) (ξ : Fin n → ℂ) :

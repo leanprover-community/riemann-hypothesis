@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 
 @[expose] public section
 

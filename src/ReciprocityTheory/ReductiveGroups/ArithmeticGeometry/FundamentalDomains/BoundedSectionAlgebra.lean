@@ -1,7 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivity
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TransvectionPeriodicity
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -63,15 +65,15 @@ private lemma hermC_emb_self_eq_zero_of_herm_self_eq_zero {ξ : Fin r → E} (h�
   have h := congrArg τ.1 hξ
   rw [map_zero] at h
   rw [← h]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hermC, herm, map_sum, map_mul]
+
+  simp only [hermC, herm, map_sum, map_mul]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [cc, NumberField.IsCMField.complexEmbedding_complexConj (K := E)]
 
 private lemma hermC_eq_conj_hermC_swap' (τ : X.Ψ) (u v : Fin r → ℂ) :
     hermC τ.1 X.Gm u v = starRingEnd ℂ (hermC τ.1 X.Gm v u) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hermC, map_sum, map_mul, Complex.conj_conj]
+
+  simp only [hermC, map_sum, map_mul, Complex.conj_conj]
   conv_lhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   have hG : τ.1 (X.Gm b a) = starRingEnd ℂ (τ.1 (X.Gm a b)) := by

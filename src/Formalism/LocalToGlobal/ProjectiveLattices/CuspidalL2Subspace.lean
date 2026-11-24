@@ -2,8 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.NonnegIffOfLiesTotal
 public import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms
-public import Formalism.LocalToGlobal.ProjectiveLattices.RdOrbIntOfLatZ
-public import Formalism.LocalToGlobal.ProjectiveLattices.SpanRatSmulMem
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntegrableOnIntegrand
 
 @[expose] public section
 

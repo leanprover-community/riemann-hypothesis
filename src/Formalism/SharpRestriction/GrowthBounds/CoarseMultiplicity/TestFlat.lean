@@ -1,6 +1,47 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.LaTwInvT
+public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.RestBlockForm
+import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
+import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.ProdBlockEmbMonomial
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.MulMatQOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -114,16 +155,18 @@ theorem pairing (hS : HidaSetting p n' W Qq O Kf ι σ jO w) (φ : WF p n' ≃+*
   have hP : Θ F = thK P := Subtype.ext (by rw [hΘ, hthK]; rfl)
   have hQ : Θ' F' = thK Q := Subtype.ext (by rw [hΘ', hthK]; rfl)
   have hk := congrArg (kapR hS) hy
-  rw [map_mul, kapR_alg, kapR_zTen, fock_eq_fockR, ← fockR_map,
+  simp_rw [map_mul, kapR_alg, kapR_zTen, fock_eq_fockR, ← FockPairing.pair_map,
     lift_one hS φ hφ m TT aT bT b hb F.1 F.2, lift_one hS φ hφ m TT aT bT _ hb' F'.1 F'.2,
-    tsact_smul_left, tsact_smul_right] at hk
+    FockPairing.pair_smul_left, FockPairing.pair_smul_right] at hk
   have hdual : ∀ x : TT × Bool,
       Aa x.2 (la_tw ι σ x.1.val.val ((b⁻¹).transpose * dE (m + 1) 1 ((p : ℕ) : Qq)) * lb_D (m + 1) 1 c) *
         (Aa x.2 (la_tw ι σ x.1.val.val b * lb_D (m + 1) 1 c)).transpose = 1 := by
     intro x
     rw [hc, dualM hS x.1.val.val 1 b hb]
     exact Aa_dual' x.2 _ (by rw [Matrix.det_mul]; exact (la_tw_det _ _ _ _ hb).mul (lb_D_det _ _ _ hw))
-  rw [fockR_Lin_dual _ _ hdual] at hk
+  have hadjoint := fockR_Lin_dual _ _ hdual
+  simp only [fockR] at hadjoint
+  rw [hadjoint] at hk
   unfold beHH
   rw [hP, hQ, map_smul, XiH_apply, smul_eq_mul, ← hk]
   have hpA : (p : Kf) ^ AHH TT aT bT = c ^ Avec (vecH TT) (hhDegs TT aT bT) * c ^ Avec (vecH TT) (hhDegs TT aT bT) := by

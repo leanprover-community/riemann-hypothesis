@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+public import Mathlib.Algebra.MvPolynomial.Cardinal
+public import Mathlib.FieldTheory.IsAlgClosed.Classification
+public import Mathlib.RingTheory.Algebraic.Cardinality
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Localization.Cardinality
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

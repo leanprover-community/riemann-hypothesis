@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLelongWeightLimit
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongRegularise
 
 @[expose] public section
 

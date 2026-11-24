@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnitaryOrbits.UnitChoice
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnitaryOrbits.QuadFiniteDimensional
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -92,8 +138,8 @@ theorem core {R S : Type} [CommRing R] [CommRing S] (ι : R →+* S) (s : S →+
   have hE1 : ∑ i, ι (e i) = 1 := by rw [← map_sum, hsum1, map_one]
   have hsl : s (∑ i, ι (e i) * (ι (p i) + ι (q i) * Θ)) =
       ∑ i, ι (e i) * (ι (p i) - ι (q i) * Θ) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, map_add (f := _), map_mul, hsι, hsι, hsι, hsΘ]
     ring
@@ -115,15 +161,15 @@ theorem core {R S : Type} [CommRing R] [CommRing S] (ι : R →+* S) (s : S →+
     rw [hz]
     have hsz : s (∑ i, ι (e i) * (ι Bt - (ι (p i) - ι (q i) * Θ) * w)) =
         ∑ i, ι (e i) * (ι Bt - (ι (p i) + ι (q i) * Θ) * (ι a - ι b * Θ)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       simp only [hw, map_mul, map_sub, map_add (f := _), hsι, hsΘ]
       ring
     have hprod : (∑ i, ι (e i) * (ι Bt - (ι (p i) - ι (q i) * Θ) * w)) *
         s (∑ i, ι (e i) * (ι Bt - (ι (p i) - ι (q i) * Θ) * w)) = ι (∑ i, e i * f i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hsz, glue_mul _ hidS horS, map_sum]
+
+      rw [hsz, glue_mul _ hidS horS, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [hw, norm_id _ _ _ _ _ _ _ hΘ, hf i, map_mul]
       simp only [map_sub, map_add (f := _), map_mul, map_pow]
@@ -241,7 +287,7 @@ theorem quadGen : QuadGen := by
     refine ⟨Bs.repr x 0, Bs.repr x 1, ?_⟩
     nth_rewrite 1 [← Bs.sum_repr x]
     rw [Fin.sum_univ_two, hBs]
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Algebra.smul_def, mul_one]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Algebra.smul_def, mul_one]
   obtain ⟨v, u, hsq⟩ := hspan (e ^ 2)
   have hse : σ e ≠ e := fun h => he ((hfix e).mp h)
   have hσsq : σ e ^ 2 = algebraMap F E v + algebraMap F E u * σ e := by

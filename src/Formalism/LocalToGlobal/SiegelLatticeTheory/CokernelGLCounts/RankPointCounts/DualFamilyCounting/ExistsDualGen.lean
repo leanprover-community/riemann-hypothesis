@@ -1,8 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SemidefG
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLandSt
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsVecOfHermRep
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLand
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -28,8 +34,8 @@ theorem surj_pairing {m : ℕ} (f : Fin m → S.V) (hf : LinearIndependent E f) 
   have hφx : ∀ x : Fin m → E, φ x = ∑ a, x a * c a := by
     intro x
     conv_lhs => rw [pi_eq_sum_univ x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, map_smul, hc]
+
+    simp [map_sum, map_smul, hc]
   have hv : ∀ v : S.V, S.hT (∑ a, star (c a) • f a) v = 0 := by
     intro v
     have h1 : φ ((LinearMap.pi (fun a => S.hT (f a)) : S.V →ₗ[E] (Fin m → E)) v) = 0 := by
@@ -38,8 +44,8 @@ theorem surj_pairing {m : ℕ} (f : Fin m → S.V) (hf : LinearIndependent E f) 
       have h2 := Submodule.mem_map_of_mem (f := φ) this
       exact (Submodule.eq_bot_iff _).1 hφ _ h2
     rw [hφx] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, LinearMap.sum_apply]
+
+    rw [map_sum, LinearMap.sum_apply]
     simp only [LinearMap.map_smulₛₗ, starRingEnd_apply, star_star, LinearMap.smul_apply, smul_eq_mul]
     rw [← h1]
     refine Finset.sum_congr rfl fun a _ => ?_
@@ -61,7 +67,7 @@ theorem exists_dual_gen (e : Fin r → S.V) (z : S.V) (N : ℕ) (hN : 0 < N) (hi
     (he : ∀ a b, S.hT (e a) (e b) = 0) (hez : ∀ a, S.hT (e a) z = 0) (hzz : S.hT z z = -(N : E)) :
     ∃ y : Fin r → S.V, Dual e y z N := by
   let f : Fin (r + 1) → S.V := Fin.snoc (α := fun _ => S.V) e z
-  have hze : ∀ a, S.hT z (e a) = 0 := fun a => hsw0 S (hez a)
+  have hze : ∀ a, S.hT z (e a) = 0 := fun a => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hez a)
   have hzz0 : S.hT z z ≠ 0 := by rw [hzz, neg_ne_zero]; exact_mod_cast hN.ne'
   have hf : LinearIndependent E f := by
     rw [Fintype.linearIndependent_iff]
@@ -70,8 +76,8 @@ theorem exists_dual_gen (e : Fin r → S.V) (z : S.V) (N : ℕ) (hN : 0 < N) (hi
     simp only [f, Fin.snoc_castSucc, Fin.snoc_last] at hc
     have hl : c (Fin.last r) = 0 := by
       have h1 := congrArg (S.hT z) hc
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_add (f := _), map_sum, map_zero] at h1
+
+      rw [map_add (f := _), map_sum, map_zero] at h1
       simp only [map_smul, smul_eq_mul, hze, mul_zero, Finset.sum_const_zero, zero_add] at h1
       exact (mul_eq_zero.1 h1).resolve_right hzz0
     rw [hl, zero_smul, add_zero] at hc
@@ -96,13 +102,13 @@ theorem exists_dual_gen (e : Fin r → S.V) (z : S.V) (N : ℕ) (hN : 0 < N) (hi
     intro a d; rw [hsw, hey0]; split_ifs <;> simp
   have hL : ∀ (c : Fin r → E) (v : S.V), S.hT (∑ d, c d • e d) v = ∑ d, star (c d) * S.hT (e d) v := by
     intro c v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, LinearMap.sum_apply]
+
+    rw [map_sum, LinearMap.sum_apply]
     simp only [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
   have hR : ∀ (c : Fin r → E) (v : S.V), S.hT v (∑ d, c d • e d) = ∑ d, c d * S.hT v (e d) := by
     intro c v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul]
+
+    simp only [map_sum, map_smul, smul_eq_mul]
   set c : Fin r → Fin r → E := fun a d => S.hT (y0 d) (y0 a) / 2 with hc
   set y : Fin r → S.V := fun a => y0 a - ∑ d, c a d • e d with hy
   have hst : ∀ a b, star (S.hT (y0 b) (y0 a)) = S.hT (y0 a) (y0 b) := fun a b => (hsw S _ _).symm

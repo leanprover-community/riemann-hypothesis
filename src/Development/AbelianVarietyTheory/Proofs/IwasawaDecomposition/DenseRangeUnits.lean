@@ -1,11 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsForallAbvSubLt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdUnifMulUnitIdl
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdeleCharacterTrivialOnLocalUnits
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdUnifMulUnitIdl
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
+import GroundTheory.GlobalFields.Adele.WeakApprox
 
 @[expose] public section
 
@@ -29,17 +71,8 @@ theorem abv_isNontrivial (S : Finset (HeightOneSpectrum (𝓞 E))) (i : S ⊕ In
   · exact InfinitePlace.isNontrivial _
 
 theorem abv_not_isEquiv (S : Finset (HeightOneSpectrum (𝓞 E))) (v : S) (w : InfinitePlace E) :
-    ¬ (abv S (Sum.inl v)).IsEquiv (abv S (Sum.inr w)) := by
-  intro h
-  have h1 : abv S (Sum.inl v) ((2 : ℕ) : E) ≤ 1 :=
-    NumberField.HeightOneSpectrum.adicAbv_natCast_le_one E v.1 2
-  rw [h.le_one_iff] at h1
-  have h2 : abv S (Sum.inr w) ((2 : ℕ) : E) = 2 := by
-    show w ((2 : ℕ) : E) = 2
-    rw [← w.norm_embedding_eq, map_natCast]
-    simp
-  rw [h2] at h1
-  norm_num at h1
+    ¬ (abv S (Sum.inl v)).IsEquiv (abv S (Sum.inr w)) :=
+  GroundTheory.Global.not_isEquiv_adicAbv_infinitePlace v.1 w
 
 theorem abv_pairwise (S : Finset (HeightOneSpectrum (𝓞 E))) :
     Pairwise fun i j ↦ ¬(abv S i).IsEquiv (abv S j) := by
@@ -71,29 +104,14 @@ theorem norm_inf (w : InfinitePlace E) (x : E) : ‖algebraMap E w.Completion x�
 
 theorem denseRange_proj (S : Finset (HeightOneSpectrum (𝓞 E))) :
     DenseRange fun x : E => proj S (algebraMap E (AdeleRing (𝓞 E) E) x) := by
-  refine Metric.denseRange_iff.2 fun y ε hε => ?_
-  have hε2 : 0 < ε / 2 := half_pos hε
-  choose a ha using fun v : S =>
-    Metric.denseRange_iff.1 (HeightOneSpectrum.denseRange_algebraMap E v.1) (y.2 v) _ hε2
-  choose b hb using fun w : InfinitePlace E =>
-    Metric.denseRange_iff.1 (denseRange_inf w) (y.1 w) _ hε2
-  obtain ⟨x, hx⟩ := GlobalTheory.LocalQuad.Approx.exists_forall_abv_sub_lt (abv_isNontrivial S) (abv_pairwise S)
-    (Sum.elim a b) hε2
-  refine ⟨x, ?_⟩
-  rw [Prod.dist_eq, max_lt_iff, dist_pi_lt_iff hε, dist_pi_lt_iff hε]
-  refine ⟨fun w => ?_, fun v => ?_⟩
-  · have h1 : w (b w - x) < ε / 2 := hx (Sum.inr w)
-    rw [← norm_inf, map_sub, ← dist_eq_norm] at h1
-    have h2 := dist_triangle (y.1 w) (algebraMap E _ (b w)) (algebraMap E _ x)
-    have h3 := hb w
-    change dist (y.1 w) (algebraMap E _ x) < ε
-    linarith
-  · have h1 : GlobalTheory.LocalQuad.Approx.abv S (Sum.inl v) (a v - x) < ε / 2 := hx (Sum.inl v)
-    rw [GlobalTheory.LocalQuad.Approx.abv_inl, map_sub, ← dist_eq_norm] at h1
-    have h2 := dist_triangle (y.2 v) (algebraMap E _ (a v)) (algebraMap E _ x)
-    have h3 := ha v
-    change dist (y.2 v) (algebraMap E _ x) < ε
-    linarith
+  classical
+  let arch := (Finset.univ : Finset (InfinitePlace E))
+  let reindex (y : ((v : S) → v.1.adicCompletion E) × ((w : arch) → w.1.Completion)) : Loc S :=
+    ((fun w : InfinitePlace E ↦ y.2 ⟨w, Finset.mem_univ _⟩), y.1)
+  have hs : Function.Surjective reindex := fun y ↦ ⟨(y.2, fun w ↦ y.1 w.1), rfl⟩
+  exact hs.denseRange.comp (GroundTheory.Global.denseRange_algebraMap_prod_pi S arch)
+    ((continuous_pi fun w ↦ (continuous_apply (⟨w, Finset.mem_univ _⟩ : arch)).comp continuous_snd).prodMk
+      continuous_fst)
 
 theorem denseRange_units (S : Finset (HeightOneSpectrum (𝓞 E))) :
     DenseRange fun k : Eˣ => Units.map (proj S) (diagUnits E k) := by

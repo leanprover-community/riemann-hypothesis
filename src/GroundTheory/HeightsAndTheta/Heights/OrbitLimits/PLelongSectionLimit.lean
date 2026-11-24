@@ -1,16 +1,16 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDeLeSemiPos
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegrePartition
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LogRegLineTensor
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LelongSectionLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LelongChartLimit
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDeLeSemiPos
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LogRegLineTensor
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegrePartition
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.IsMultiHomogPlaneCoordinate
 
 @[expose] public section
 

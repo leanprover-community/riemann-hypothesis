@@ -1,11 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicArithmetic.PrimeDiscriminants.ExistsPrimitiveRootTorsionOrder
-public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.CyclotomicTotient.NuBasic
-public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.CyclotomicTotient.TotientLeOfCycPowEqOne
+public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.CyclotomicTotient.NuInf
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.CyclotomicTotient.NuSumApprox
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.HostApprox
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,8 +60,8 @@ private theorem nuQD_unit (N M l : ℕ) [Fact l.Prime] (hN : N = M * l) (hM : M 
         ((u ^ 2 : ℤ_[l]ˣ) : ℤ_[l]) - ((((v ^ 2 : (ZMod N)ˣ) : ZMod N).val : ℕ) : ℤ_[l]) := by
   subst hN
   have hl : l.Prime := Fact.out
-  haveI : NeZero M := ⟨hM⟩
-  haveI : NeZero (M * l) := ⟨mul_ne_zero hM hl.ne_zero⟩
+  have : NeZero M := ⟨hM⟩
+  have : NeZero (M * l) := ⟨mul_ne_zero hM hl.ne_zero⟩
   let e := ZMod.chineseRemainder hc
   let w : (ZMod M × ZMod l)ˣ := MulEquiv.prodUnits.symm (1, Units.map (PadicInt.toZMod : ℤ_[l] →+* ZMod l).toMonoidHom u)
   let v : (ZMod (M * l))ˣ := Units.map e.symm.toRingHom.toMonoidHom w
@@ -74,8 +116,8 @@ theorem UpperTheory.Mu.nuQD :
   · obtain ⟨v, hv1, hv⟩ := nuQD_unit H.condN (H.QS * H.q) H.d hN
       (mul_ne_zero H.QS_ne_zero H.q_prime.ne_zero) H.coprime_QSq_d u
     have ha : H.art (v ^ 2) = 1 := by
-      haveI : NeZero (H.QS * H.q) := ⟨mul_ne_zero H.QS_ne_zero H.q_prime.ne_zero⟩
-      haveI : NeZero H.condN := ⟨H.condN_ne_zero⟩
+      have : NeZero (H.QS * H.q) := ⟨mul_ne_zero H.QS_ne_zero H.q_prime.ne_zero⟩
+      have : NeZero H.condN := ⟨H.condN_ne_zero⟩
       have hdvd : H.QS * H.q ∣ H.condN := ⟨H.d, hN⟩
       have hv2 : ((v ^ 2 : (ZMod H.condN)ˣ) : ZMod H.condN).val ≡ 1 [MOD H.QS * H.q] := by
         have h1 := (ZMod.natCast_eq_natCast_iff _ _ _).mpr hv1

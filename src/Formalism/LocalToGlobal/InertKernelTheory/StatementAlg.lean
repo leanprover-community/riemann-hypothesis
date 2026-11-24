@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.TaylorMvLinear
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EndoZInstance
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 
 @[expose] public section
 

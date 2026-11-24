@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.CMTraceOnto
 
 @[expose] public section

@@ -1,7 +1,46 @@
 module
 
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.LocalDef
+public import Development.WeilBound.CoreStatements.LocalThetaKernels.LocrepAd
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
 
 @[expose] public section
 
@@ -283,8 +322,8 @@ theorem in_locW (w : (κ → AF F) × (κ → AF F)) :
     rw [atPlace_mul_right, one_mul]
 
 theorem ev_dot (a b : κ → AF F) : evFin F v (a ⬝ᵥ b) = evA κ v a ⬝ᵥ evA κ v b := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, map_sum, map_mul]; rfl
+
+  simp only [dotProduct, map_sum, map_mul]; rfl
 
 variable {JA : Matrix α α (AE F E)} {JB : Matrix β β (AE F E)} {JAv : Matrix α α (Ev E v)} {JBv : Matrix β β (Ev E v)}
 
@@ -299,8 +338,8 @@ theorem ev_symp (hA : JA.map (compFin F E v) = JAv) (hB : JB.map (compFin F E v)
   subst hA hB
   rw [symp, symp, ← trace_map']
   change _ = Algebra.trace _ _ (compFin F E v _)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hTens, map_mul, map_sum, map_neg, map_one, comp_cA, Matrix.map_apply]
+
+  simp only [hTens, map_mul, map_sum, map_neg, map_one, comp_cA, Matrix.map_apply]
 
 omit [DecidableEq α] [DecidableEq β] in
 theorem exists_locD (hA : JA.map (compFin F E v) = JAv) (hB : JB.map (compFin F E v) = JBv)

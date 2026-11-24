@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
+public import Mathlib.AlgebraicGeometry.Sites.BigZariski
+public import Mathlib.Tactic.ENatToNat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+public import Mathlib.AlgebraicGeometry.Sites.Representability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 
 @[expose] public section
 
@@ -80,23 +120,23 @@ theorem exists_torus (S : Scheme.{0}) (κ : Type) :
         ∀ k, g.appTop.hom (t k).val = (v k).val) ∧
       ∀ (Z : Scheme.{0}) (g g' : Z ⟶ T), g ≫ p = g' ≫ p →
         (∀ k, g.appTop.hom (t k).val = g'.appTop.hom (t k).val) → g = g' := by
-  refine ⟨(splitTorus S (FreeAbelianGroup κ)).left, (splitTorus S (FreeAbelianGroup κ)).hom,
-    fun k => charUnit S _ (FreeAbelianGroup.of k), fun Z c v => ?_, fun Z g g' h hk => ?_⟩
-  · let φ : FreeAbelianGroup κ →+ Additive Γ(Z, ⊤)ˣ :=
-      FreeAbelianGroup.lift fun k => Additive.ofMul (v k)
-    obtain ⟨g, hg⟩ := (splitTorusPointsEquiv S (FreeAbelianGroup κ) (Over.mk c)).surjective
+  refine ⟨(splitTorus S (FreeAddCommGroup κ)).left, (splitTorus S (FreeAddCommGroup κ)).hom,
+    fun k => charUnit S _ (FreeAddCommGroup.of k), fun Z c v => ?_, fun Z g g' h hk => ?_⟩
+  · let φ : FreeAddCommGroup κ →+ Additive Γ(Z, ⊤)ˣ :=
+      FreeAddCommGroup.lift fun k => Additive.ofMul (v k)
+    obtain ⟨g, hg⟩ := (splitTorusPointsEquiv S (FreeAddCommGroup κ) (Over.mk c)).surjective
       (AddMonoidHom.toMultiplicativeLeft φ)
     refine ⟨g.left, Over.w g, fun k => ?_⟩
     refine (splitTorusPointsEquiv_val S _ (Over.mk c) g _).symm.trans ?_
     rw [hg]
     simp [φ]
-  · let Z' : Over S := Over.mk (g' ≫ (splitTorus S (FreeAbelianGroup κ)).hom)
-    let a : Z' ⟶ splitTorus S (FreeAbelianGroup κ) := Over.homMk g h
-    let a' : Z' ⟶ splitTorus S (FreeAbelianGroup κ) := Over.homMk g' rfl
+  · let Z' : Over S := Over.mk (g' ≫ (splitTorus S (FreeAddCommGroup κ)).hom)
+    let a : Z' ⟶ splitTorus S (FreeAddCommGroup κ) := Over.homMk g h
+    let a' : Z' ⟶ splitTorus S (FreeAddCommGroup κ) := Over.homMk g' rfl
     have : a = a' := by
-      apply (splitTorusPointsEquiv S (FreeAbelianGroup κ) Z').injective
+      apply (splitTorusPointsEquiv S (FreeAddCommGroup κ) Z').injective
       apply AddMonoidHom.toMultiplicativeLeft.symm.injective
-      refine FreeAbelianGroup.lift_ext _ _ fun k => ?_
+      refine FreeAddCommGroup.lift_ext _ _ fun k => ?_
       apply Additive.toMul.injective
       apply Units.ext
       exact ((splitTorusPointsEquiv_val S _ Z' a _).trans (hk k)).trans

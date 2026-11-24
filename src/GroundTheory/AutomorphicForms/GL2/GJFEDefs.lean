@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJFERat
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixLocal
-public import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
-public import GroundTheory.AutomorphicForms.LeviStagesProduct
+public import GroundTheory.AutomorphicForms.GL2.GJLeviZeta
+public import GroundTheory.AutomorphicForms.GL2.GJParabolicFubini
+public import GroundTheory.AutomorphicForms.InductionParabolic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

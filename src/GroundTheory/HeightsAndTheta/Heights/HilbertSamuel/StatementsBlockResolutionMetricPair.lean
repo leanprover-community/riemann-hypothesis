@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BlockResolutionMetricObjects
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergman
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockDefectMetricChange
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
 
 @[expose] public section
 

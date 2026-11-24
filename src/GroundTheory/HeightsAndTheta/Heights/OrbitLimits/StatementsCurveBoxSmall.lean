@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveBoxCount
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

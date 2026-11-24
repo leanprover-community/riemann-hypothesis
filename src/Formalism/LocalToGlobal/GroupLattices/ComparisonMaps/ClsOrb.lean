@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmApply
-public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.PtGComp
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
 
 @[expose] public section
 

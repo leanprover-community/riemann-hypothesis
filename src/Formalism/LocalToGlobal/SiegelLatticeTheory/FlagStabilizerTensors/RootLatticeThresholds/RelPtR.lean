@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.BDataOfR
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LoopTermLem
 
 @[expose] public section
 

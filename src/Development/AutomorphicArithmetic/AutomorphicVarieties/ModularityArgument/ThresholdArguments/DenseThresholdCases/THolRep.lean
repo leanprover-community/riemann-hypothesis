@@ -1,16 +1,65 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.DiscreteSeriesCoefficientsCuspidal
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.HolRep
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AfDesc
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutomorphicFormHyp
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.WeightChange
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFixedOfMemISup
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RDual2
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.DcSumEqOfMk
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.HolCap
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.UopSum
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.TLocCompR
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.TSatLoc
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RChar2
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 
 @[expose] public section
 
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 200000
+
+
 
 section
 noncomputable section
@@ -65,11 +114,11 @@ private theorem lie_eq_sum (X : Matrix (Fin a) (Fin a) (TR.Rinf F)) :
   let L : Matrix (Fin a) (Fin a) (TR.Rinf F) →ₗ[ℝ] Module.End ℂ (TR.Sm F a) := TR.lie F a
   have e : X = ∑ v, ∑ i, ∑ j, X i j v • Matrix.single i j (Pi.single v 1 : TR.Rinf F) := by
     ext i j v
-    simp [Matrix.sum_apply, Matrix.single_apply, ite_and, Pi.single_apply, ite_apply]
+    simp [Matrix.sum_apply, Matrix.single_apply, ite_and, Pi.single_apply]
   change L X = _
   conv_lhs => rw [e]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul]
+
+  simp only [map_sum, map_smul]
   rfl
 private theorem rt_Eop (y : GL (Fin a) (TR.Rinf F)) (v : InfinitePlace F) (i j : Fin a) :
     TR.rt F a (TR.infGL F a y) * TR.Eop v i j =
@@ -89,12 +138,12 @@ private theorem cap_act (v : InfinitePlace F) (u : ℂ) (o : TR.Op F a) : TR.act
     have h := GlobalTheory.CapAdInv.qdet_semiconj _ _ _ (rt_Eop y v) (u + ((a : ℂ) - 1) / 2)
     have hQP : ((y⁻¹).val.map f) * (y.val.map f) = 1 := by
       rw [← Matrix.map_mul, Units.inv_mul]; simp
-    exact h.trans (congrArg (· * _) (GlobalTheory.CapAdInv.qdet_ad _ (TR.glRel_Eop v) _ _ hQP (u + ((a : ℂ) - 1) / 2)))
+    exact h.trans (congrArg (· * _) (_root_.GlobalTheory.QuantumMinorAdjacentSwap.qdet_conj _ (TR.glRel_Eop v) _ _ hQP (u + ((a : ℂ) - 1) / 2)))
   | lie X =>
     have h : ∀ v' i j, Commute (TR.Eop (a := a) v' i j) (TR.cap v u) := fun v' i j => by
       by_cases e : v' = v
       · subst e; exact (TR.cap_comm _ _ _ _).symm
-      · exact GlobalTheory.CapAdInv.qdet_semiconj _ _ _ (fun k l => TR.Eop_comm e _ _ _ _) _
+      · exact GlobalTheory.CapAdInv.qdet_semiconj (TR.Eop (a := a) v) (TR.Eop (a := a) v) (TR.Eop (a := a) v' i j) (fun k l => TR.Eop_comm e i j k l) _
     change Commute (TR.lie F a (TR.toL (Matrix.of X))) _
     rw [lie_eq_sum]
     exact Commute.sum_left _ _ _ fun v' _ => Commute.sum_left _ _ _ fun i _ => Commute.sum_left _ _ _ fun j _ =>
@@ -203,8 +252,8 @@ private theorem uop_map {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGro
     rw [e]
   have hd : ∀ u, GeneralLinearGroup.det (aff (atFin w (unif w)) u) = atFin w (unif w) := fun u =>
     Units.ext (by simp [aff, Matrix.det_fin_two])
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [(uopSum F w V ρ c x hx).2 _ hS, (uopSum F w W ρ' c _ hx').2 _ hS, map_add (f := _), map_sum, smul_add, Finset.smul_sum]
+
+  rw [(uopSum F w V ρ c x hx).2 _ hS, (uopSum F w W ρ' c _ hx').2 _ hS, map_add (f := _), map_sum, smul_add, Finset.smul_sum]
   simp only [hf, hd]
   congr 1
   split_ifs
@@ -444,7 +493,7 @@ theorem UpperTheory.V.Sd.holRep_alt :
           rw [Nat.cast_sub (by omega)]; push_cast; ring, Real.rpow_natCast]
       simp
     have h9 : algSat 2 (normV w) {α, β} = {r * α, r * β} := by
-      simp only [algSat, hr, Multiset.insert_eq_cons, Multiset.map_cons, Multiset.map_singleton]
+      simp only [algSat, hr, Multiset.insert_eq_cons]
       norm_num
     rw [h9, h6, ← h8, show (ω.val w : ℂˣ) * (r * r * (((ν.val w : ℂˣ) : ℂ) * (ν.val w : ℂˣ))) = r * α * (r * β) by
       linear_combination (-(r * r)) * h7]

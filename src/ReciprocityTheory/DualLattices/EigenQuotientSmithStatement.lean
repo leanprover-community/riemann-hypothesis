@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.DualLattices.RestrictedHopfOrderApproximationStatement
+public import ReciprocityTheory.DualLattices.CokernelLengthComparisonOf
 
 @[expose] public section
 

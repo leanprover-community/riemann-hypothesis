@@ -1,6 +1,12 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeIntA
+public import Mathlib.Order.CompletePartialOrder
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -193,12 +199,12 @@ theorem dI_sum_ind_le (E : ℕ → Set X) (hd : Pairwise (Function.onFun Disjoin
     · simp only [Set.indicator_of_mem hxm0, le_refl]
     · intro m _ hm
       have hxm : x ∉ E m := fun h' => Set.disjoint_left.mp (hd hm) h' hxm0
-      simp [Set.indicator_apply, hxm]
+      simp [hxm]
     · intro h'
       exact absurd hm0 h'
   · push_neg at hx
     refine le_trans (le_of_eq (Finset.sum_eq_zero fun m hm => ?_)) (abs_nonneg _)
-    simp [Set.indicator_apply, hx m hm]
+    simp [hx m hm]
 
 end
 

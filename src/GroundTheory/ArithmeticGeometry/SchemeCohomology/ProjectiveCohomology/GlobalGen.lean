@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheafAlt
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.IsQuasicoherentTensorOfInvertible
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheafCore
+public import Mathlib.Tactic.ENatToNat
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.Generation
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheafAlt
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -23,15 +26,10 @@ section Res
 
 variable {X : Scheme.{u}}
 
-private lemma resF_refl (F : X.Modules) {U : X.Opens} (h : U ≤ U) (m : Γ(F, U)) : resF F h m = m := by
-  change (F.presheaf.map (homOfLE h).op).hom m = m
-  rw [show (homOfLE h).op = 𝟙 (op U) from rfl, F.presheaf.map_id]
-  rfl
-
 private lemma resF_injective_of_le (F : X.Modules) {U V : X.Opens} (h : V ≤ U) (h' : U ≤ V) :
     Function.Injective (resF F h) := fun a b hab => by
   have := congrArg (resF F h') hab
-  rwa [resF_resF, resF_resF, resF_refl, resF_refl] at this
+  rwa [resF_resF, resF_resF, _root_.GroundTheory.Arith.SchemeCoh.resF_self, _root_.GroundTheory.Arith.SchemeCoh.resF_self] at this
 
 end Res
 
@@ -226,8 +224,15 @@ def twistLinear (G : (projectiveSpace A n).Modules) (j : Fin (n + 1)) (q : ℤ) 
   map_smul' r m := tensorBasisMap_smul _ r m
 
 lemma twistLinear_surjective (G : (projectiveSpace A n).Modules) (j : Fin (n + 1)) (q : ℤ) :
-    Function.Surjective (twistLinear G j q) :=
-  (tensorBasisMap_bijective (ProjTwist.isBasisOn_upow (grading A n) (X_mem j) q) le_rfl).2
+    Function.Surjective (twistLinear G j q) := by
+  have hb : IsBasisOn ((preMod (projectiveSpace A n)).obj (twistingSheaf (grading A n) q))
+      (stdOpen A n j) (upowS j q) :=
+    ProjTwist.isBasisOn_upow (grading A n) (X_mem j) q
+  intro t
+  change ∃ s : Γ(G, stdOpen A n j),
+    tensorBasisMap G (twistingSheaf (grading A n) q) (upowS j q)
+      (le_rfl : stdOpen A n j ≤ stdOpen A n j) s = t
+  exact (tensorBasisMap_bijective (M := G) hb (le_rfl : stdOpen A n j ≤ stdOpen A n j)).2 t
 
 theorem exists_generatingSections_twist (G : (projectiveSpace A n).Modules) (hG : IsCoherent G) :
     ∃ q₀ : ℕ, ∀ q : ℕ, q₀ ≤ q → ∃ σ : (twist G q).GeneratingSections, σ.IsFiniteType := by

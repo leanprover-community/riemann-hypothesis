@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfSt
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.GlobalThetaOrthogonality
 
 @[expose] public section
 

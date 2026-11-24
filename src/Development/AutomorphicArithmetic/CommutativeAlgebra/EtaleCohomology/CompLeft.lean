@@ -1,7 +1,45 @@
 module
 
-public import Mathlib
 public import Development.EtaleCohomology.EtaleSheaves.LeafRepCut
+public import Mathlib.Algebra.Homology.HomotopyCategory.KInjective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -82,20 +120,20 @@ theorem comp_left' {U V W : B.Etale} (a : U ⟶ V) (b : V ⟶ W) : (a ≫ b).lef
 def gY {Y : Scheme.{0}} (p : Y ⟶ B) : B.Etale ⥤ Scheme.{0} where
   obj U := YU p U
   map a := resY p a
-  map_id U := by apply pullback.hom_ext <;> simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
-  map_comp a b := by apply pullback.hom_ext <;> simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
+  map_id U := by apply pullback.hom_ext <;> simp [resY, pullback.map, id_left']
+  map_comp a b := by apply pullback.hom_ext <;> simp [resY, pullback.map, comp_left']
 
 def gYW {Y W : Scheme.{0}} (p : Y ⟶ B) (ι : W ⟶ B) : B.Etale ⥤ Scheme.{0} where
   obj U := pullback (pullback.snd p U.hom ≫ U.hom) ι
   map a := resYW p ι a
   map_id U := by
     apply pullback.hom_ext
-    · apply pullback.hom_ext <;> simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
-    · simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
+    · apply pullback.hom_ext <;> simp [resY, resYW, pullback.map, id_left']
+    · simp [resY, resYW, pullback.map, id_left']
   map_comp a b := by
     apply pullback.hom_ext
-    · apply pullback.hom_ext <;> simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
-    · simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
+    · apply pullback.hom_ext <;> simp [resY, resYW, pullback.map, comp_left']
+    · simp [resY, resYW, pullback.map, comp_left']
 
 def gB (B : Scheme.{0}) : B.Etale ⥤ Scheme.{0} where
   obj U := U.left
@@ -104,8 +142,8 @@ def gB (B : Scheme.{0}) : B.Etale ⥤ Scheme.{0} where
 def gBW {W : Scheme.{0}} (ι : W ⟶ B) : B.Etale ⥤ Scheme.{0} where
   obj U := pullback U.hom ι
   map a := resBW ι a
-  map_id U := by apply pullback.hom_ext <;> simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
-  map_comp a b := by apply pullback.hom_ext <;> simp [resY, resYW, resBW, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, id_left', comp_left']
+  map_id U := by apply pullback.hom_ext <;> simp [resBW, pullback.map, id_left']
+  map_comp a b := by apply pullback.hom_ext <;> simp [resBW, pullback.map, comp_left']
 
 def fY {Y W : Scheme.{0}} (p : Y ⟶ B) (ι : W ⟶ B) : gYW p ι ⟶ gY p where
   app U := prU p ι U

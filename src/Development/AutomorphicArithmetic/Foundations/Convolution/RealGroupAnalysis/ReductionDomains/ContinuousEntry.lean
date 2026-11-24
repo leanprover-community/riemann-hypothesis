@@ -1,10 +1,47 @@
 module
 
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.Smooth
-public import GroundTheory.AutomorphicForms.ReductionCore
-public import GroundTheory.AutomorphicForms.ReductionMeasure
-public import GroundTheory.AutomorphicForms.HaarSK
-public import GroundTheory.HeightsAndTheta.Theta.FundDomain
+public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
+public import GroundTheory.AutomorphicForms.ReductionIwasawa
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -58,7 +95,7 @@ theorem mD_mul_nU (a : (A F)ˣ) (b : A F) : mD a * nU b = nU ((a : A F) ^ 2 * b)
     simp [mD, nU, Matrix.mul_apply, Fin.sum_univ_two, pow_two, mul_assoc, mul_comm b]
 theorem gl_cD (t : (A F)ˣ) (g : G1 F) : gl (cD t g) * dM t = dM t * gl g := by
   refine Units.ext ?_; rw [Units.val_mul, Units.val_mul, val_gl, val_gl]; ext i j; fin_cases i <;> fin_cases j <;>
-    simp [cD, dM, Matrix.mul_apply, Fin.sum_univ_two, mul_assoc, mul_comm]
+    simp [cD, dM, Matrix.mul_apply, Fin.sum_univ_two, mul_comm]
 theorem gl_inj : Function.Injective (gl : G1 F → GL (Fin 2) (A F)) := Matrix.SpecialLinearGroup.toGL_injective
 theorem gl_cD' (t : (A F)ˣ) (g : G1 F) : gl (cD t g) = dM t * gl g * (dM t)⁻¹ := by
   rw [← gl_cD, mul_inv_cancel_right]

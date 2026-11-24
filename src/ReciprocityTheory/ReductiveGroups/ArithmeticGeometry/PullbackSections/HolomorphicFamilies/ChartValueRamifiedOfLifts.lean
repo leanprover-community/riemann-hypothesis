@@ -1,12 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
-public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
-public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.GermSC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ChartValJ
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.BiextChangeSecondFactor
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.IntegralValueOfChartValues
+public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

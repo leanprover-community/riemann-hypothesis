@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithRes
+public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.HSClosing
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

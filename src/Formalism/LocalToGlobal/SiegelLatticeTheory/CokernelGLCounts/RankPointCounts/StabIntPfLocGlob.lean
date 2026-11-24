@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfSk
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.GlobalConditionOfLocalAgreement
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.RingTheory.Valuation.Integral
 
 @[expose] public section
 

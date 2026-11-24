@@ -1,11 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.NsmulEqZeroOfNonemptyAddEquiv
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.DeltaPairing
-public import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
+public import GroundTheory.ProfiniteCohomology.CartierDualDefs
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
+public import GroundTheory.ProfiniteCohomology.CyclicCup
+public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCochainsFHomApply
+public import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
+public import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 

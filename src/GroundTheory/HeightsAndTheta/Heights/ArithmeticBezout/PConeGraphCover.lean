@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeGraphCover
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFiniteFibreDim
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentDim
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeSmoothLocalGraph
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

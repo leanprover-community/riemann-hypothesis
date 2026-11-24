@@ -1,6 +1,8 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MultivariableReproducingFormula
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.MeasureTheory.Integral.Prod
 
 @[expose] public section
 

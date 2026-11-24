@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

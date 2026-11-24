@@ -1,22 +1,68 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.FineJacquetModules.SegDefs
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SegmentRepresentation
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentTermInjective
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrrParIffCuspidalProduct
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitarisableSegmentTwistPrecedesAddOneLe
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSubquotient
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InstAddCommGroupTwo
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IrreducibleSubquotientCuspidalPermutation
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicityCuspidalProductStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicitySubquotientLe
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IrreducibleSubquotientCuspidalPermutationStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleFiniteLength
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicityPos
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSubquotient
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSubAddQuot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitarisableSegmentTwistPrecedesAddOneLe
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrrParIffCuspidalProduct
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InstAddCommGroupTwo
-public import CompanionTheory.AutomorphicTheory.HeckeStandardModules.EqZeroOfCompAt
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentTermInjective
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSubAddQuot
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicityPos
+import GroundTheory.LocalFields.PadicLogSeries
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -64,16 +110,7 @@ theorem two_le_jhMult_of_map {s N : ℕ} {d : Fin s → ℕ} (e : (Σ a, Fin (d 
   have h6 := ENat.one_le_iff_ne_zero.2 h4
   exact (by norm_num : (2 : ℕ∞) = 1 + 1).le.trans (add_le_add h5 h6)
 
-theorem piTensor_eq_smul {α : Type} [Fintype α] {Γ X : α → Type} [∀ a, Group (Γ a)] [∀ a, AddCommGroup (X a)]
-    [∀ a, Module ℂ (X a)] (ρ : ∀ a, Representation ℂ (Γ a) (X a)) (g : ∀ a, Γ a) (c : α → ℂ)
-    (h : ∀ a v, ρ a (g a) v = c a • v) (t : ⨂[ℂ] a, X a) : piTensor ρ g t = (∏ a, c a) • t := by
-  classical
-  have : piTensor ρ g = (∏ a, c a) • LinearMap.id := by
-    refine PiTensorProduct.ext (MultilinearMap.ext fun v => ?_)
-    simp only [LinearMap.compMultilinearMap_apply, piTensor_tprod, h, LinearMap.smul_apply, LinearMap.id_apply]
-    exact MultilinearMap.map_smul_univ _ _ _
-  rw [this]
-  rfl
+alias piTensor_eq_smul := _root_.GlobalTheory.BoundaryMaps.piTensor_scalar
 
 theorem smul_eq_of_isSubquotient {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
     [Nontrivial W] {σ : Representation ℂ G W} {τ : Representation ℂ G V} (h : IsSubquotient σ τ) (g : G) (a b : ℂ)
@@ -181,7 +218,7 @@ theorem exists_sub (hZ : GlobalTheory.Published.SegmentRepresentation) (Δ : Seg
 theorem jm_perm_prod (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) (σ : Equiv.Perm (Fin Δ.len)) {N : ℕ}
     (hy : ∑ a, (Δ.term (σ a)).1 = N) (hd : ∑ a, (Δ.term a).1 = N) :
     jm (fun a => Δ.term (σ a)) hy (prodIrr Δ.term hd) = 1 := by
-  rw [GlobalTheory.T.jacquet_multiplicity_cuspidal_product hA Δ.term _ hd hy Δ.isCusp_term fun a => Δ.isCusp_term _]
+  rw [_root_.GlobalTheory.CompanionTheory.CuspJm.main hA Δ.term _ hd hy Δ.isCusp_term fun a => Δ.isCusp_term _]
   have hinj := GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ
   have : {e : Fin Δ.len ≃ Fin Δ.len | ∀ a, Δ.term (σ a) = Δ.term (e a)} = {σ} := by
     ext e
@@ -265,7 +302,7 @@ theorem fine_jacquet_length_two_segment (hA : GlobalTheory.Published.Irreducible
   have hmono : ∀ {c : ℕ} (y : Fin c → IrrGL (k := k)) (hy : ∑ a, (y a).1 = N), jm y hy π ≤ jm y hy (prodIrr (seg2 ρ hρ).term hd) :=
     fun y hy => GlobalTheory.CompanionTheory.JmMono.jm_le_of_isSubquotient y hy π _ hsm hsq
   have hdec : ∃ hy : ∑ a, (dec (seg2 ρ hρ) a).1 = N, 1 ≤ jm (dec (seg2 ρ hρ)) hy π := by
-    obtain ⟨e, he, h1⟩ := GlobalTheory.T.irreducible_subquotient_cuspidal_permutation hA (seg2 ρ hρ).term hd (seg2 ρ hρ).isCusp_term π hπs hc.1 hsq
+    obtain ⟨e, he, h1⟩ := _root_.GlobalTheory.CompanionTheory.SegNcjm.exists_perm_one_le_jm hA (seg2 ρ hρ).term hd (seg2 ρ hρ).isCusp_term π hπs hc.1 hsq
     rcases perm_two e with rfl | rfl
     · have h2 : 1 ≤ jm (seg2 ρ hρ).term hd π := h1
       rw [hz] at h2
@@ -275,7 +312,7 @@ theorem fine_jacquet_length_two_segment (hA : GlobalTheory.Published.Irreducible
   · obtain ⟨_, h1⟩ := hdec
     refine le_antisymm ((hmono _ hy).trans_eq (jm_perm_prod hA (seg2 ρ hρ) Fin.revPerm hy hd)) h1
   · have h2 := h1.trans (hmono y hy)
-    rw [GlobalTheory.T.jacquet_multiplicity_cuspidal_product hA (seg2 ρ hρ).term y hd hy (seg2 ρ hρ).isCusp_term hyc] at h2
+    rw [_root_.GlobalTheory.CompanionTheory.CuspJm.main hA (seg2 ρ hρ).term y hd hy (seg2 ρ hρ).isCusp_term hyc] at h2
     have hne : {e : Fin c ≃ Fin (seg2 ρ hρ).len | ∀ a, y a = (seg2 ρ hρ).term (e a)}.Nonempty := by
       by_contra hn
       rw [Set.not_nonempty_iff_eq_empty] at hn

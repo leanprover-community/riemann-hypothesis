@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAmbOfIsArithVar
 public import Development.AbelianVarietyTheory.Counterexamples.ModuliSurvey.IsQProjOverOfIsProjOver
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPointClosureDimBasicProjArithAmbientStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PointClosureDimLeAndResidueDegreeNeZeroIffStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoheightOneIffPointClosureDimProjArithStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoheightOneIffPointClosureDimProjArith
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PointClosureDimLeAndResidueDegreeNeZeroIff
+public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallyExistsFiniteSubsetNonzeroLocus
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPointClosureDimBasicProjArithAmbient
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.SetTheory.ZFC.PSet
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -69,14 +109,14 @@ theorem isFinite_restrict_of_le {X Y : Scheme.{0}} (g : Y ⟶ X) {U V : X.Opens}
 
 theorem finite_near_coheight_one : ∀ (k : Type) [CommRing k] (X Y : Scheme.{0}) [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y] (p : X ⟶ Sp k) (q : Y ⟶ Sp k), IsAmb p → IsAmb q → ∀ (g : Y ⟶ X) (hg : g ≫ p = q) (hη : g (genericPoint Y) = genericPoint X), g.residueDegree (genericPoint Y) ≠ 0 → ∀ z : X, Order.coheight z = 1 → (g ⁻¹' {z}).Finite ∧ (∀ w : Y, g w = z → Order.coheight w = 1) ∧ ∃ V : X.Opens, IsAffineOpen V ∧ z ∈ V ∧ IsFinite (g ∣_ V) := by
   intro k _ X Y _ _ _ _ p q hp hq g hg hη hd z hz
-  obtain ⟨hbX1, -, hbX3, -, -, hbX6⟩ := GlobalTheory.T.hasPointClosureDim_basic_projArithAmbient k X p hp
-  obtain ⟨hbY1, -, -, -, -, hbY6⟩ := GlobalTheory.T.hasPointClosureDim_basic_projArithAmbient k Y q hq
+  obtain ⟨hbX1, -, hbX3, -, -, hbX6⟩ := _root_.GlobalTheory.MixHt.hasDim_basic k X p hp
+  obtain ⟨hbY1, -, -, -, -, hbY6⟩ := _root_.GlobalTheory.MixHt.hasDim_basic k Y q hq
   obtain ⟨mX, hmX⟩ := hbX1
   obtain ⟨mY, hmY⟩ := hbY1
   obtain ⟨n, -, hnY⟩ := hmY (genericPoint Y)
   obtain ⟨nX, -, hnX⟩ := hmX (genericPoint X)
   have hnn : n = nX :=
-    ((GlobalTheory.T.pointClosureDim_le_and_residueDegree_ne_zero_iff k X Y p q hp hq g hg (genericPoint Y) n nX hnY (hη ▸ hnX)).2).1 hd
+    ((_root_.GlobalTheory.DimDeg.dim_le_and_residueDegree_ne_zero_iff k X Y p q hp hq g hg (genericPoint Y) n nX hnY (hη ▸ hnX)).2).1 hd
   subst hnn
   have hzne : z ≠ genericPoint X := by
     rintro rfl
@@ -93,14 +133,14 @@ theorem finite_near_coheight_one : ∀ (k : Type) [CommRing k] (X Y : Scheme.{0}
     · exact ⟨e, rfl⟩
   have hXd : topologicalKrullDim X = ((e + 1 : ℕ) : WithBot ℕ∞) := (hbX6 X (e + 1)).1 hnX
   have hYd : topologicalKrullDim Y = ((e + 1 : ℕ) : WithBot ℕ∞) := (hbY6 Y (e + 1)).1 hnY
-  obtain ⟨hoX, -⟩ := GlobalTheory.T.coheight_one_iff_pointClosure_dim_projArith k X p hp e hXd
-  obtain ⟨hoY, -⟩ := GlobalTheory.T.coheight_one_iff_pointClosure_dim_projArith k Y q hq e hYd
+  obtain ⟨hoX, -⟩ := _root_.GlobalTheory.MixHt.dimOne k X p hp e hXd
+  obtain ⟨hoY, -⟩ := _root_.GlobalTheory.MixHt.dimOne k Y q hq e hYd
   have hze : HasDim z e := (hoX z).1 hz
   have hw : ∀ w : Y, g w = z → Order.coheight w = 1 := by
     intro w hwz
     rw [hoY]
     obtain ⟨dw, -, hdw⟩ := hmY w
-    have h1 : e ≤ dw := (GlobalTheory.T.pointClosureDim_le_and_residueDegree_ne_zero_iff k X Y p q hp hq g hg w dw e hdw (hwz ▸ hze)).1
+    have h1 : e ≤ dw := (_root_.GlobalTheory.DimDeg.dim_le_and_residueDegree_ne_zero_iff k X Y p q hp hq g hg w dw e hdw (hwz ▸ hze)).1
     have hwne : w ≠ genericPoint Y := by
       rintro rfl
       exact hzne (hwz.symm.trans hη)

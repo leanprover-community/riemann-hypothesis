@@ -1,7 +1,45 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfA
+public import Formalism.SharpRestriction.LevelLetterCocycles.LamPS
+public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,14 +59,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     (W : LocWach PD LL O v n)
-
-theorem gradNPf_cc_γ₀ (g : W.Gam) (a : PowerSeries O) :
-    PowerSeries.constantCoeff (W.γ₀ g a) = PowerSeries.constantCoeff a := by
-  exact Formalism.MainNotions.LiftingTheory.constantCoeff_gamma W g a
-
-theorem gradNPf_γA_comm (g h : W.Gam) (a : LetA O n) :
-    W.γA g (W.γA h a) = W.γA h (W.γA g a) := by
-  exact Formalism.MainNotions.LiftingTheory.frame_γA_comm W g h a
 
 theorem gradNPf_cc_f (s' : ℕ) (w : (LetA O n)ˣ) (π' f : LetA O n)
     (hw : π' = (w : LetA O n) * letπ ^ s') (hf : W.γA W.gam π' = π' * f) (i : ZMod n) :
@@ -50,7 +80,7 @@ theorem gradNPf_cc_f (s' : ℕ) (w : (LetA O n)ˣ) (π' f : LetA O n)
       PowerSeries.X ^ s' * ((w : LetA O n) i * f i) := by
     linear_combination hi
   have h3 := congrArg PowerSeries.constantCoeff (PowerSeries.X_pow_mul_cancel h2)
-  rw [map_mul, map_mul, map_pow, hh, gradNPf_cc_γ₀] at h3
+  rw [map_mul, map_mul, map_pow, hh, _root_.Formalism.MainNotions.LiftingTheory.constantCoeff_gamma] at h3
   have hwu : IsUnit (PowerSeries.constantCoeff ((w : LetA O n) i)) :=
     (w.isUnit.map (Pi.evalRingHom (fun _ : ZMod n => PowerSeries O) i)).map PowerSeries.constantCoeff
   exact (hwu.mul_left_cancel h3).symm
@@ -65,7 +95,7 @@ theorem gradNPf_fΔ (s' : ℕ) (w : (LetA O n)ˣ) (π' f : LetA O n)
     exact (w.isUnit.map _).mul (hl.pow _)
   apply Formalism.MainNotions.LiftingTheory.lifta_reg W π' _ _ hu
   have h1 : W.γA δ (W.γA W.gam π') = W.γA W.gam π' := by
-    rw [Formalism.MainNotions.LiftingTheory.frame_γA_comm, hπΔ δ hδ]
+    rw [_root_.Formalism.MainNotions.LiftingTheory.gammaA_comm, hπΔ δ hδ]
   rw [hf, map_mul, hπΔ δ hδ] at h1
   exact h1
 
@@ -134,7 +164,7 @@ theorem exists_gam_pi_factor (T : LocLat G Qp LL O) (e s' : ℕ) (hs : 1 ≤ s')
 end Local
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem gradNPf_hyps (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (h1 : adm1 D HW F Cm) (l : ℕ) [hpf : Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL) (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))

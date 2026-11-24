@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 
 @[expose] public section
 

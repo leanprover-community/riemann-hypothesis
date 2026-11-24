@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InjectiveOfSmulMemRange
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FontaineAinfLocalDomainXiAdicOrder
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemRange
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -23,8 +66,8 @@ theorem equivFun_semilinear {R S X Y n m : Type*} [CommRing R] [CommRing S] [Add
     (f : X →ₛₗ[σ] Y) (bx : Module.Basis n R X) (bz : Module.Basis m S Y) (x : X) :
     bz.equivFun (f x) = (Matrix.of fun i j => bz.repr (f (bx j)) i) *ᵥ (σ ∘ bx.equivFun x) := by
   have h1 : f x = ∑ j, σ (bx.repr x j) • f (bx j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [← bx.sum_repr x, map_sum]
+
+    conv_lhs => rw [← bx.sum_repr x, map_sum]
     simp only [map_smulₛₗ]
   funext i
   rw [h1]
@@ -46,8 +89,8 @@ theorem exists_basis_reduction {A O M D n : Type*} [CommRing A] [CommRing O] [Ad
   have sp : ⊤ ≤ Submodule.span O (Set.range fun i => r (b i)) := by
     intro y _
     obtain ⟨m, rfl⟩ := hr y
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← b.sum_repr m, map_sum]
+
+    rw [← b.sum_repr m, map_sum]
     exact Submodule.sum_mem _ fun i _ => by
       rw [map_smulₛₗ]; exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
   refine ⟨Module.Basis.mk li sp, fun m => ?_⟩
@@ -118,15 +161,15 @@ theorem exists_dual_basis [IsDomain O] {ε : PreTilt O p} (hε : IsPrimitiveSyst
   refine ⟨χ, h1, fun χ' => hG.1 (LinearMap.ext fun t => ?_)⟩
   have ht : t = ∑ i, e t i • e.symm (Pi.single i 1) := by
     apply e.injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     ext j
     simp [Finset.sum_apply, Pi.single_apply]
   change pairing G O t χ' = pairing G O t _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [ht, map_sum, LinearMap.sum_apply]
+
+  rw [map_sum]
+
+  conv_lhs => rw [ht, map_sum, LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, map_smul, h1, LinearMap.smul_apply, ← epsPairing_smul hε, smul_comm]
 
@@ -192,8 +235,8 @@ theorem sandwichAt_of_covariant {C : Type} [Field C] [IsAlgClosed C] [CharZero C
     Matrix.of fun i k => ofPadic p O ↑u⁻¹ * e₁ (M.map (charHom G (χ i)) (b k))
   have hG : ∀ m i, (Gm *ᵥ b.equivFun m) i =
       ofPadic p O ↑u⁻¹ * e₁ (M.map (charHom G (χ i)) m) := fun m i => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_rhs => rw [← b.sum_repr m, map_sum, map_sum, Finset.mul_sum]
+
+    conv_rhs => rw [← b.sum_repr m, map_sum, map_sum, Finset.mul_sum]
     simp only [Gm, Matrix.mulVec, dotProduct, Matrix.of_apply, map_smul, smul_eq_mul,
       Module.Basis.equivFun_apply]
     exact Finset.sum_congr rfl fun k _ => by ring
@@ -230,7 +273,7 @@ theorem sandwichAt_of_covariant {C : Type} [Field C] [IsAlgClosed C] [CharZero C
         refine (hGF (tb j) i).trans ?_
         by_cases hij : i = j
         · simp [e, hij]
-        · simp [e, hij, Finsupp.single_apply, Ne.symm hij]
+        · simp [e, hij, Ne.symm hij]
       F_eq := by
         ext1 i j
         refine Eq.trans ?_ (congrFun (hΨ (Φ (tb j))) i).symm
@@ -276,9 +319,9 @@ theorem sandwichAt_of_covariant {C : Type} [Field C] [IsAlgClosed C] [CharZero C
     have hr' : ∀ x, π G (c.equivFun.symm (D.al x)) = 0 := fun x => by
       have hx : x = ∑ j, x j • toO e (tb j) := by
         funext i
-        simp [toO, e, Finset.sum_apply, Finsupp.single_apply, apply_ite (padicToO p O)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hx, map_sum, map_sum, map_sum]
+        simp [toO, e, Finset.sum_apply, apply_ite (padicToO p O)]
+
+      rw [hx, map_sum, map_sum, map_sum]
       refine Finset.sum_eq_zero fun j _ => ?_
       rw [map_smul, hal, map_smul, map_smul, map_smul, map_smul, LinearEquiv.symm_apply_apply,
         (hex G).2.1.apply_apply_eq_zero, smul_zero, smul_zero]
@@ -315,8 +358,8 @@ theorem sandwichAt_of_covariant {C : Type} [Field C] [IsAlgClosed C] [CharZero C
   · obtain ⟨y, rfl⟩ := (hex G).2.2 x
     rw [← dlog_eq_omegaMap]
     conv_lhs => rw [← hlie, LinearEquiv.symm_apply_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_rhs => rw [hχ' χ', map_sum, map_sum, Finset.mul_sum]
+
+    conv_rhs => rw [hχ' χ', map_sum, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [dlog_smul (padicToO p O), map_smul, smul_eq_mul]
     have : bQuot D (D.Fil.mkQ (c.equivFun y)) i = _ := hbb y i

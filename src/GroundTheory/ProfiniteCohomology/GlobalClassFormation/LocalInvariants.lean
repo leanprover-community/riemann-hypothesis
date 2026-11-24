@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfRange
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolReal
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolSep
-public import GroundTheory.GlobalFields.InfiniteNormIndex.LocalSymbol
+import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+import GroundTheory.GlobalFields.CyclotomicCharacters.Character
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfRange
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

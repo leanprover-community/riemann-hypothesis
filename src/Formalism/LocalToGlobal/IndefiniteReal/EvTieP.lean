@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
+import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 
 @[expose] public section
 
@@ -19,11 +20,11 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
 
 theorem dot_eq (S : CSD K) (u w : Fin S.dim → K) :
     S.csum (S.I u) (S.I w) = star u ⬝ᵥ S.H *ᵥ w := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [CSD.csum, CSD.I, CSD.H, LinearMap.comp_apply, LinearEquiv.coe_coe, Module.Basis.equivFun_symm_apply,
-    Submodule.subtype_apply, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply, Pi.smul_apply, map_sum,
-    map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, dotProduct, mulVec, Matrix.of_apply, Finset.mul_sum,
-    Finset.sum_mul, smul_eq_mul, starRingEnd_apply, RingHom.id_apply]
+
+  simp only [CSD.csum, CSD.I, CSD.H, LinearMap.comp_apply, LinearEquiv.coe_coe, Module.Basis.equivFun_symm_apply,
+  Submodule.subtype_apply, Finset.sum_apply, Pi.smul_apply, map_sum,
+  map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, dotProduct, mulVec, Matrix.of_apply, Finset.mul_sum,
+  Finset.sum_mul, smul_eq_mul, starRingEnd_apply, RingHom.id_apply]
   conv_lhs => rw [Finset.sum_comm]; enter [2, j]; rw [Finset.sum_comm]
   conv_lhs => rw [Finset.sum_comm]
   refine Fintype.sum_congr _ _ fun i => Fintype.sum_congr _ _ fun j => Fintype.sum_congr _ _ fun c => ?_

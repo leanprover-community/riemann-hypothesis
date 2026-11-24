@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 
@@ -40,7 +40,7 @@ theorem FlagAltCoeffInjective.proof (h1 : FlagCoeffBlockPermute.Statement) :
         · rw [Equiv.swap_apply_of_ne_of_ne hki hkj]
     · simp [w, Function.update_of_ne hσ]
   have key := h1 f N w P α
-  rw [hα, hP w, hsign, coeff_smul] at key
+  rw [hα, hP w, hsign, MvPolynomial.coeff_smul] at key
   have : AddMonoidAlgebra.coeff P α = 0 := by
     have h2 : (2 : ℚ) * AddMonoidAlgebra.coeff P α = 0 := by
       rw [smul_eq_mul] at key

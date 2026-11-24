@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GodementSectionSplit
-public import GroundTheory.GlobalFields.TateThesis.EulerFactorsFinite
-public import GroundTheory.AutomorphicForms.GL2.GodementSectionLocal
+public import GroundTheory.GlobalFields.LocalFieldAtPlace
+public import GroundTheory.GlobalFields.TateThesis.HeckeLFunction
+public import GroundTheory.LocalFields.LocalFourierHaar
+public import GroundTheory.GlobalFields.Adele.Approximation
 public import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
-public import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.GL2.SummableNormIffAndTsumEqCoset2
 
 @[expose] public section
 

@@ -1,10 +1,48 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.StepIn
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevelsOfChChartsCover
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CompFintype
+public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
+public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOne
+public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.CmpGlMemMIff
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOneRec
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePsi
+public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtRec
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -32,7 +70,7 @@ variable {D : D7} {X : Formalism.L2.Herm.Herm0 D} {u : D.what₂.Word} {w : D.wh
   (B : GL (Fin (D.sp.X (i + 1)).rank) D.host.E)
 
 
-set_option maxHeartbeats 1000000 in
+
 def locJ : LocAt D.host.F D.host.E (D.R.N (i + 1)) (gatCh (gatJ Lv (i + 1)) em) where
   rk := t.rk.trans (rankN D (i + 1) hi)
   pl := (X.g u w hg).pl
@@ -54,7 +92,7 @@ theorem locJ_UJ (c : cmp) (γ : ((gatCh (gatJ Lv (i + 1)) em).lev c).Γ) :
   reGL_mem_UJ (rankN D (i + 1) hi) _ (D.sp.X (i + 1)).gram _ (gramN_apply D (i + 1) hi) _ (t.gamI c γ).2
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem locJ_actB (hB : FrRatJ t B) : (locJ hi t B).ActB := by
   refine LocAt.actB_of (locJ hi t B) (rankN D (i + 1) hi) B (fun c γ => (t.gamI c γ).1) rfl (fun _ _ => rfl) ?_
   intro c v γ a b a' b' ha hb
@@ -63,7 +101,7 @@ theorem locJ_actB (hB : FrRatJ t B) : (locJ hi t B).ActB := by
   exact h1
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem locGood_locJ : LocGood (sigD D) (gramN D (i + 1) hi) (locJ hi t B) := by
   refine {
     herm := isHerm_re (rankN D (i + 1) hi) _ (D.sp.X (i + 1)).gram _ (gramN_apply D (i + 1) hi) (gram_herm D.sp.cm (D.sp.X (i + 1)))

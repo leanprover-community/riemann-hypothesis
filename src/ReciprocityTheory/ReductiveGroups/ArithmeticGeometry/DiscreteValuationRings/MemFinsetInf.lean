@@ -1,7 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullExp
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBCorr
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegOUnif
+import Mathlib.Tactic.Lemma
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 
 @[expose] public section
 
@@ -28,9 +29,6 @@ lemma fstG_act {R : Type} [CommRing R] [IsDomain R] (I : Ideal R) (e : ℕ) {G :
     ((Over.pullback (thick R I e)).map f).left ≫ (fstG I e G).left = (fstG I e G).left ≫ f.left := by
   simp only [fstG]
   simp
-  all_goals first
-    | exact pullback.lift_fst _ _ _
-    | erw [pullback.lift_fst]
 
 lemma pG_act {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I}
     {A : PolAV (Spec (CommRingCat.of (FractionRing R)))} {G : Over (Spec (CommRingCat.of R))}
@@ -47,8 +45,6 @@ lemma pG_act {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I
   congr 1
   first
     | exact fstG_act I e (ιD.onB.act a)
-    | (unfold DegPre.prBe; simp; done)
-    | (unfold DegPre.prBe; simp; exact pullback.lift_fst _ _ _)
 
 
 end ReciprocityTheory.ChartRestriction.G.DVR

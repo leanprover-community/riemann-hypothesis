@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsStab
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsMain
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.RepTie
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsGat
 
 @[expose] public section
 
@@ -48,7 +51,7 @@ theorem trivStab1 (hT : TrivStabU L) (i : compL L p) (y : GL (Fin R.k) (E ⊗[F]
   exact Subtype.ext (hT _ _ h1)
 
 
-set_option maxHeartbeats 2000000 in
+
 include hH in
 theorem clsR_iff (i i' : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).comp)
     (Lt Lt' : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).P.Tup)
@@ -69,7 +72,7 @@ theorem clsR_surj (c : C.cls 0) :
   exact ⟨i, Lt, h1, congrArg (clsOf L) h2⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 include hH in
 theorem stab_card (i : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).comp)
     (Lt : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).P.Tup)
@@ -79,7 +82,7 @@ theorem stab_card (i : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).comp)
   stab_card1 hS r lam0 dom hk I ψ hdet hH i _ rfl Lt h
 
 
-set_option maxHeartbeats 2000000 in
+
 include hH hdet in
 theorem trivStab (hT : TrivStabU L) : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).TrivStab :=
   fun i γ Lt h hfix => trivStab1 hS r lam0 dom hk I ψ hdet hH hT i _ rfl γ Lt h hfix

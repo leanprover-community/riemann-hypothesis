@@ -1,6 +1,48 @@
 module
 
+import Mathlib.Analysis.SumIntegralComparisons
 public import Formalism.ZeroFreeRegion.SmallHeightLogDeriv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,31 +60,16 @@ lemma summable_shift {p : ℝ} (hp : p < -1) : Summable (fun n : ℕ => ((n : �
 
 lemma rpow_le_integral {x σ : ℝ} (hx : 0 < x) (hσ : 0 < σ) :
     (x + 1) ^ (-σ - 1) ≤ (x ^ (-σ) - (x + 1) ^ (-σ)) / σ := by
-  have ha : 0 < x + 1 := by linarith
-  have hy : 0 < x / (x + 1) := div_pos hx ha
-  have hlog : Real.log (x / (x + 1)) ≤ x / (x + 1) - 1 := Real.log_le_sub_one_of_pos hy
-  have hexp : 1 + σ / (x + 1) ≤ (x / (x + 1)) ^ (-σ) := by
-    rw [Real.rpow_def_of_pos hy]
-    have h1 := Real.add_one_le_exp (Real.log (x / (x + 1)) * (-σ))
-    have h2 : σ / (x + 1) ≤ Real.log (x / (x + 1)) * (-σ) := by
-      have e : σ / (x + 1) = (x / (x + 1) - 1) * (-σ) := by
-        field_simp
-        ring
-      rw [e]
-      exact mul_le_mul_of_nonpos_right hlog (by linarith)
-    linarith
-  have hA := Real.rpow_pos_of_pos ha (-σ)
-  have hsplit : x ^ (-σ) = (x + 1) ^ (-σ) * (x / (x + 1)) ^ (-σ) := by
-    rw [Real.div_rpow hx.le ha.le]
-    field_simp
-  have hm1 : (x + 1) ^ (-σ - 1) = (x + 1) ^ (-σ) / (x + 1) := by
-    rw [Real.rpow_sub ha, Real.rpow_one]
-  rw [le_div_iff₀ hσ, hm1, hsplit]
-  have hmul : (x + 1) ^ (-σ) * (σ / (x + 1)) ≤ (x + 1) ^ (-σ) * ((x / (x + 1)) ^ (-σ) - 1) :=
-    mul_le_mul_of_nonneg_left (by linarith) hA.le
-  calc (x + 1) ^ (-σ) / (x + 1) * σ = (x + 1) ^ (-σ) * (σ / (x + 1)) := by ring
-    _ ≤ (x + 1) ^ (-σ) * ((x / (x + 1)) ^ (-σ) - 1) := hmul
-    _ = (x + 1) ^ (-σ) * (x / (x + 1)) ^ (-σ) - (x + 1) ^ (-σ) := by ring
+  have hanti : AntitoneOn (fun t : ℝ => t ^ (-σ - 1)) (Set.Icc x (x + (1 : ℕ))) := by
+    intro u hu v hv huv
+    exact Real.rpow_le_rpow_of_nonpos (hx.trans_le hu.1) huv (by linarith)
+  calc (x + 1) ^ (-σ - 1) ≤ ∫ t in x..x + 1, t ^ (-σ - 1) := by
+        simpa using hanti.sum_le_integral
+    _ = (x ^ (-σ) - (x + 1) ^ (-σ)) / σ := by
+      rw [integral_rpow (Or.inr ⟨by linarith, ?_⟩), sub_add_cancel]
+      · ring
+      · rw [Set.uIcc_of_le (by linarith)]
+        exact fun h => (not_le_of_gt hx) h.1
 
 lemma tsum_rpow_le {σ : ℝ} (hσ : 0 < σ) :
     ∑' n : ℕ, ((n : ℝ) + 1) ^ (-σ - 1) ≤ 1 + 1 / σ := by

@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDefectMetricChange
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsBergDensity
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithRes
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

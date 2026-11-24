@@ -1,15 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStdBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.SingleMemDualLatticeStandard
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLineSemipositive
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineSmooth
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
 
 @[expose] public section
 

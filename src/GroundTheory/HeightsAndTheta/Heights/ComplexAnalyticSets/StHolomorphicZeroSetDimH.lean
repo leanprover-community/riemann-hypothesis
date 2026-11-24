@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.MetricSpace.HausdorffDimension
 
 @[expose] public section
 

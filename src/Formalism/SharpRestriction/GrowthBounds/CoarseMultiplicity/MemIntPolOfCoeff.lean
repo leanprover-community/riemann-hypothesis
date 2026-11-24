@@ -1,8 +1,47 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BFDefs
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinrankTensor
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ExtendedStatementOfParts
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -333,8 +372,8 @@ theorem blockFormAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc H : ℝ} (hCm : 17 ≤
         (u.coeff μ * u'.coeff μ * (expFact μ : KK O))) = algebraMap O (KK O) κ * algebraMap O (KK O) a := by
       rw [← Finset.mul_sum, ← Finset.mul_sum, ← ha]
       rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hf, ← map_sum, ← map_mul, ← map_add (f := _)]
+
+    rw [hf, ← map_sum, ← map_mul, ← map_add (f := _)]
     congr 1
     simp only [Finset.mul_sum, mul_add]
     congr 1

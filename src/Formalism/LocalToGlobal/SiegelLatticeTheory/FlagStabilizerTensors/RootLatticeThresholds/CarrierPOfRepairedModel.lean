@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierInputExistsBuilt
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBJoint
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TopPSD
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.TheoremSClosedP
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.SpectralTiesReal
 
 @[expose] public section
 

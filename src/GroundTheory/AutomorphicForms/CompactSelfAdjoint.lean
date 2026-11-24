@@ -1,6 +1,16 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.InnerProductSpace.Adjoint
+public import Mathlib.Analysis.InnerProductSpace.l2Space
+public import Mathlib.Analysis.Normed.Operator.Compact.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.InnerProductSpace.Spectrum
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

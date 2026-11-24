@@ -1,10 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DegWBlattnerLeOfBlattnerCone
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestKTypesJointShapeBlockUnitary
+public import Formalism.LocalRingCardinality.DataTheta
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestTypeNotJointShapeSmallerPairs
+public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MinFirst
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NoIntertwinerSmallerFockToDiscreteSeries
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsSubOfDisjoint
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MinFirstStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsSubOfDisjoint
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,9 +90,9 @@ theorem tensNo_first (X : ProvA) (hD : DiscreteSeriesBlattner X) (h5 : admQ5 X)
       exact zero_ne_one hone
     obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hnb
     exact ⟨v, hv0, hv⟩
-  have hflow := GlobalTheory.T.degW_blattner_le_of_blattnerCone p q (X.ds p q lam).HK lam (cPair r s) θ hcone hsign
+  have hflow := _root_.GlobalTheory.FlowLemma.degW_blattner_le p q (X.ds p q lam).HK lam (cPair r s) θ hcone hsign
   obtain ⟨⟨μ, P, hPJ, hP1, hP2, -⟩, -⟩ :=
-    GlobalTheory.T.exists_jointHarm_highestWeight_and_map_mem_genSub p q r s (X.ds p q lam).HK MM f hirr hadm hf hne (blattner lam) hex hflow
+    _root_.GlobalTheory.FockAlg.min_first p q r s (X.ds p q lam).HK MM f hirr hadm hf hne (blattner lam) hex hflow
   have hbot := ((GlobalTheory.JointHarm.fock_polynomials X p q r s).2.2.2.2.1 (blattner lam) μ).2 (hno μ)
   have hmem : P ∈ hwSub (X.fock p q r s).act1 (blattner lam) ⊓ hwSub (X.fock p q r s).act2 μ ⊓
       Submodule.span ℂ (X.fock p q r s).J :=
@@ -94,8 +135,8 @@ theorem no_map_lower : ∀ (X : ProvA), DiscreteSeriesBlattner X → admQ5 X →
   have ht : 1 ≤ t := hA.1
   have hn : 1 ≤ al.length + be.length + ga.length + de.length := hA.2.1
   have ht0 : (0 : ℚ) ≤ t := Nat.cast_nonneg t
-  obtain ⟨-, hpar, hpar', hsign, hsign'⟩ := GlobalTheory.T.lowest_kTypes_jointShape_block_unitary t al be ga de hA
-  obtain ⟨hno, -, hno'⟩ := GlobalTheory.T.lowestType_not_jointShape_smaller_pairs t al be ga de hA i hi
+  obtain ⟨-, hpar, hpar', hsign, hsign'⟩ := _root_.GlobalTheory.LowestTypes.lowest_types t al be ga de hA
+  obtain ⟨hno, -, hno'⟩ := _root_.GlobalTheory.LowestTypeDrop.lowestType_not_jointShape t al be ga de hA i hi
   refine ⟨fun hr hs => ?_, fun hbig hp hq => ?_⟩
   · refine tensNo_first X hD h5 (by omega) _ hpar 0 ?_ (hno hr hs)
     rw [cPair_sub hr hs]

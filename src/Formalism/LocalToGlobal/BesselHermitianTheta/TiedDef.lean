@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedType
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
 
 @[expose] public section
 

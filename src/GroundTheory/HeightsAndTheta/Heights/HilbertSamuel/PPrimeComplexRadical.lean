@@ -1,7 +1,18 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPrimeComplexRadical
+public import Mathlib.FieldTheory.Perfect
+public import Mathlib.RingTheory.Etale.Basic
+import Mathlib.Algebra.Lie.OfAssociative
+public import Mathlib.FieldTheory.SeparablyGenerated
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
+public import Mathlib.RingTheory.Etale.Field
 
 @[expose] public section
 

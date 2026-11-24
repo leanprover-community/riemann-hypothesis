@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
+public import Mathlib.RepresentationTheory.Irreducible
+public import Mathlib.Analysis.Normed.Module.HahnBanach
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -72,7 +77,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 noncomputable def toRepresentation (π : BanachRep K' E) : Representation ℂ K' E where
   toFun k := (π k : E →ₗ[ℂ] E)
   map_one' := by ext v; simp
-  map_mul' k k' := by ext v; simp [map_mul_apply]
+  map_mul' k k' := by ext v; simp
 
 noncomputable def restrict (π : BanachRep K' E) (K : Subgroup K') : BanachRep K E where
   toHom := π.toHom.comp K.subtype
@@ -173,8 +178,8 @@ theorem isKFinite_derivOp {v : E} (hv : h.IsSmoothVector π v) (hK : π.IsKFinit
     have e : h.derivEnd π Y = ∑ i, b.repr Y i • h.derivEnd π (b i) := by
       conv_lhs => rw [← b.sum_repr Y]
       show h.derivEndL π (∑ i, b.repr Y i • b i) = _
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [map_smul]
       rfl
     rw [e, LinearMap.sum_apply]
@@ -219,7 +224,7 @@ noncomputable def kRepGK : Representation ℂ K (h.gkVectors π K) where
       map_add' := fun v w => by ext; simp
       map_smul' := fun c v => by ext; simp }
   map_one' := by ext v; simp
-  map_mul' k k' := by ext v; simp [BanachRep.map_mul_apply]
+  map_mul' k k' := by ext v; simp
 
 theorem exists_strongDual_eq [CompleteSpace E] (φ : Module.Dual ℂ (h.gkVectors π K))
     (v : h.gkVectors π K) :

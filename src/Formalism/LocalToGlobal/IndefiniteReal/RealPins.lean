@@ -5,6 +5,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.OneMapT
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowLevelMatch
 public import Formalism.LocalToGlobal.IndefiniteReal.BridgeSeed
 public import Formalism.LocalToGlobal.IndefiniteReal.IsFDiagIffDiagonal
+public import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
 
 @[expose] public section
 

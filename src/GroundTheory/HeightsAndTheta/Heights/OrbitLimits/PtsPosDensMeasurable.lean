@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosDensIntegrable
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsSumMeasurableA
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NoCommonComponentCoordinatesPlane
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosPartProjIndep
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StokesObjects
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsSumMeasurableA
+import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 
 @[expose] public section
 

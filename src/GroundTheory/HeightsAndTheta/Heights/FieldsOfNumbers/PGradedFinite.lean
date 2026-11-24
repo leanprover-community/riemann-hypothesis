@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

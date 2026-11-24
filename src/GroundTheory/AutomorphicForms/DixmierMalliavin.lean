@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.DixmierMalliavinSeries
 public import GroundTheory.AutomorphicForms.DixmierMalliavinProducts
-public import GroundTheory.AutomorphicForms.DixmierMalliavinLine
-public import GroundTheory.AutomorphicForms.DixmierMalliavinHaarDensity
 public import GroundTheory.AutomorphicForms.HeckeAlgebra
+public import GroundTheory.AutomorphicForms.DixmierMalliavinHaarDensity
+public import GroundTheory.AutomorphicForms.DixmierMalliavinLine
+public import GroundTheory.AutomorphicForms.DixmierMalliavinSeries
+import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

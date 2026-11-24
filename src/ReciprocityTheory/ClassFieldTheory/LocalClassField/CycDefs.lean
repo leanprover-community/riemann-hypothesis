@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.RecPairDefs
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.Order.CompletePartialOrder
+import ReciprocityTheory.NeutralLocalFields.Reciprocity
 
 @[expose] public section
 

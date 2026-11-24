@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalRestriction
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.LocalMaps
 
 @[expose] public section
 

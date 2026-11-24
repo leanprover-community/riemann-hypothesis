@@ -2,6 +2,44 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.ReadProofs
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -28,7 +66,7 @@ theorem quotSupp_of (V : HSp D) (hV : FinVol V) (hP : ∃ p : Measure (GA D V) �
     QuotSupp V := by
   intro φ hφc hφinv hae g0
   by_contra hg0
-  haveI : Countable (GQ V) := by
+  have : Countable (GQ V) := by
     unfold GQ
     exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.countableGamma _ _
   have hvp : IsVolPair D V (volPair V).1 (volPair V).2 := by
@@ -37,17 +75,15 @@ theorem quotSupp_of (V : HSp D) (hV : FinVol V) (hP : ∃ p : Measure (GA D V) �
       rw [dite_eq_left hP]
     rw [e]
     exact hP.choose_spec
-  haveI : (volPair V).1.IsHaarMeasure := hvp.1.1
-  haveI : BorelSpace (GA D V) := by
+  have : (volPair V).1.IsHaarMeasure := hvp.1.1
+  have : BorelSpace (GA D V) := by
     first
-    | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.borelHA
     | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.borelHA _ _
-  haveI : MeasurableMul (GA D V) := by
+  have : MeasurableMul (GA D V) := by
     first
-    | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.measurableMulHA
     | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.measurableMulHA _ _
-  haveI : MeasurableConstSMul (GQ V) (GA D V) := ⟨fun c => measurable_const_mul (c : GA D V)⟩
-  haveI : SMulInvariantMeasure (GQ V) (GA D V) (volPair V).1 :=
+  have : MeasurableConstSMul (GQ V) (GA D V) := ⟨fun c => measurable_const_mul (c : GA D V)⟩
+  have : SMulInvariantMeasure (GQ V) (GA D V) (volPair V).1 :=
     ⟨fun c s _ => measure_preimage_mul (volPair V).1 (c : GA D V) s⟩
   let O : Set (GA D V) := {g | φ g ≠ 0}
   have hO : IsOpen O := isOpen_ne_fun hφc continuous_const
@@ -82,7 +118,6 @@ theorem quotSupp_of (V : HSp D) (hV : FinVol V) (hP : ∃ p : Measure (GA D V) �
   have hmeas : AEMeasurable (autMk V) ((volPair V).1.restrict (volPair V).2) := by
     have hm : Measurable (autMk V) := by
       first
-      | exact measurable_quotient_mk'
       | exact fun _ hs => hs
     exact hm.aemeasurable
   have hpre : autMk V ⁻¹' S = O := by

@@ -1,7 +1,58 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGHead
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
+public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AAvCongr
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainFirstIdentity
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstPeelingMinorMemIdeal
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGHead
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThirdPolynomialExpansion
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SignPermutationIdentity
 
 @[expose] public section
 
@@ -76,7 +127,7 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
       congr 2
       ext a l
       simp only [Matrix.of_apply, Matrix.submatrix_apply]
-      rw [hxi' _ _ (by simp <;> omega), dite_eq_left (by simp [xR, eI] <;> omega)]
+      rw [hxi' _ _ (by simp), dite_eq_left (by simp [xR, eI] <;> omega)]
       congr 1
     · intro a p ha hp
       rw [hxi' a p (by omega), dite_eq_right (by omega)]
@@ -89,8 +140,8 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
         Tm E (u - ((m + 1 : ℕ) : ℂ)) (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨m + 1, by omega⟩)) -
       La (qminor E (a ∘ (Fin.castSucc (Fin.last m) : Fin (m + 2)).succAbove) (a ∘ Fin.castSucc) u) := by
     have hexp := Formalism.FourierDecayAlt.P.expansion_last_column A _ (m + 1) E a a u
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hexp, map_sum, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
+
+    rw [hexp, map_sum, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
     have hzero : ∀ l : Fin m, La ((((-1 : ℤ) ^ (m + 1 + ((Fin.castSucc (Fin.castSucc l) : Fin (m + 2)) : ℕ)) : ℤ) : A) *
         (qminor E (a ∘ (Fin.castSucc (Fin.castSucc l)).succAbove) (a ∘ Fin.castSucc) u *
           Tm E (u - ((m + 1 : ℕ) : ℂ)) (a (Fin.castSucc (Fin.castSucc l))) (a (Fin.last (m + 1))))) = 0 := by
@@ -98,7 +149,7 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
       rw [la_intmul]
       have hne : a (Fin.castSucc (Fin.castSucc l)) ≠ a (Fin.last (m + 1)) := by
         intro h'; have := congrArg Fin.val h'; rw [hav, hav] at this; simp at this; omega
-      rw [tm_offdiag _ _ hne, hR _ _ _ (by rw [hav, hav]; simp <;> omega) (by rw [hav]; simp <;> omega),
+      rw [tm_offdiag _ _ hne, hR _ _ _ (by rw [hav, hav]; simp) (by rw [hav]; simp <;> omega),
         if_neg (by rw [hav, hav]; simp <;> omega), zero_smul, smul_zero]
     rw [Finset.sum_eq_zero (fun l _ => hzero l), zero_add]
     have hlast : La ((((-1 : ℤ) ^ (m + 1 + ((Fin.last (m + 1) : Fin (m + 2)) : ℕ)) : ℤ) : A) *
@@ -148,8 +199,8 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
       ∑ l : Fin (m + 1), ((-1 : ℂ) ^ (m + (l : ℕ)) * (c' * Z⁻¹ l (Fin.last m))) •
         La (qminor E (xR k r m (by omega)) (xR k r (m + 1) (by omega) ∘ l.succAbove) u) := by
     rw [hrows, Formalism.REAL.quantumMinorRowSkew_holds A _ (m + 1) E rowsP _ (finRotate (m + 1)) u, la_intmul, sign_finRotate]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Formalism.FourierDecayAlt.P.expansion_first_line A _ m E hG rowsP _ u, map_sum, Finset.smul_sum]
+
+    rw [Formalism.FourierDecayAlt.P.expansion_first_line A _ m E hG rowsP _ u, map_sum, Finset.smul_sum]
     apply Finset.sum_congr rfl
     intro l _
     rw [la_intmul]
@@ -163,13 +214,12 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
     congr 1
     push_cast
     rw [pow_add]
-    try ring
   have hT : Tm E (u - ((m + 1 : ℕ) : ℂ)) (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨m + 1, by omega⟩) =
       algebraMap ℂ A (u - ((m + 1 : ℕ) : ℂ)) + E (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨m + 1, by omega⟩) := by
     simp [Tm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hA2, hA1, hA0, map_smul, smul_smul, inv_mul_cancel₀ (mul_ne_zero hZ hc), one_smul, smul_mul_assoc, map_smul,
-    smul_smul, inv_mul_cancel₀ hZ, one_smul, map_sum, hmain, hQ, hT, Finset.smul_sum]
+
+  rw [hA2, hA1, hA0, map_smul, smul_smul, inv_mul_cancel₀ (mul_ne_zero hZ hc), one_smul, smul_mul_assoc, map_smul,
+  smul_smul, inv_mul_cancel₀ hZ, one_smul, map_sum, hmain, hQ, hT, Finset.smul_sum]
   congr 1
   apply Finset.sum_congr rfl
   intro l _
@@ -378,8 +428,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.head_algebra_relations_vector : HeadA
   have hZ : Z''.det ≠ 0 := by rw [hZdet]; exact mul_ne_zero hW hεne
   have hZinv : ∀ b, Z''⁻¹ b (Fin.last m) = εv b * W⁻¹ b (Fin.last m) := by
     intro b
-    have hWu : IsUnit W.det := isUnit_iff_ne_zero.2 hW
-    have hDu : IsUnit (Matrix.diagonal εv).det := isUnit_iff_ne_zero.2 (by rw [hDdet]; exact hεne)
     rw [hZdef, Matrix.mul_inv_rev, hDinv, Matrix.diagonal_mul]
   set c : ℂ := (-1 : ℂ) ^ (m + 1) * d with hcdef
   set c' : ℂ := -((-1 : ℂ) ^ (m + 1) * d) with hc'def
@@ -475,7 +523,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.head_algebra_relations_vector : HeadA
   set P0 := ∏ l : Fin m, (-1 : ℂ) ^ (l : ℕ) with hP0
   set e := (-1 : ℂ) ^ m with he
   have hP0sq : P0 * P0 = 1 := prod_neg_one_sq m
-  have hesq : e * e = 1 := by rw [he, ← mul_pow]; norm_num
   have hP0ne : P0 ≠ 0 := fun h => by rw [h, zero_mul] at hP0sq; exact zero_ne_one hP0sq
   have hene : e ≠ 0 := pow_ne_zero _ (by norm_num)
   have hm1 : (-1 : ℂ) ^ (m + 1) = -e := by rw [pow_succ, he]; ring

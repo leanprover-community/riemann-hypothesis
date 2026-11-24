@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.SlopeBoundSingleLiftOfDefinitions
+import Formalism.HarderNarasimhan.Statement
 
 @[expose] public section
 

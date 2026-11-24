@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceS
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 

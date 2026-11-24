@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTangentGraphLowerDensity
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarietyLelongMono
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.CategoryTheory.Countable
 
 @[expose] public section
 

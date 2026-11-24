@@ -1,15 +1,48 @@
 module
 
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFrobeniusHolds
+public import Formalism.FlagUnipotentLattices.AlgebraicIdentityHigherDegree
+public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 public import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BranchingAndRankConstants
-public import Formalism.FormalDegreeBessel.FinalG
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CfgTopFalseIff
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.LatticeSumBounds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.ParabolicSumAdmissibleOfParabolic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -79,7 +112,7 @@ theorem cell_mem_blockEnds (D : D7) {z z' : Fin (2 * D.R.rS + D.R.k + 1) → ℂ
   by_contra hcon
   apply h2
   rw [e]
-  apply Formalism.HermitianLatticeCounting.Final.ExpansionTerms.e4aVanish ℂ _ _ _ l hl
+  apply _root_.Formalism.HermitianLatticeCounting.P.leading_minor_vanishes_off_block_ends ℂ _ _ _ l hl
   intro q hq
   exact hcon (mem_blockEnds_of_take p q l h1 hq)
 
@@ -121,7 +154,7 @@ theorem leadMinor_blockEnd_ne {i : ℕ} (p : Point ℂ i) (l : ℕ) (h : l ∈ p
         ((Formalism.MainNotions.BesselShellMomentBounds.toComp p).sizeUpTo q) := by
     rw [← Formalism.MainNotions.BesselShellMomentBounds.ptMat_eq]
     exact Formalism.MainNotions.BesselShellMomentBounds.leadMinorK_eq _ _ _
-  rw [e, Formalism.HermitianLatticeCounting.Final.ExpansionTerms.e4aValue]
+  rw [e, _root_.Formalism.HermitianLatticeCounting.P.leading_minor_at_block_end]
   refine Finset.prod_ne_zero_iff.2 (fun a _ => mul_ne_zero (pow_ne_zero _ (by norm_num)) (pow_ne_zero _ ?_))
   exact Formalism.MainNotions.BesselShellMomentBounds.toT_ne p a
 

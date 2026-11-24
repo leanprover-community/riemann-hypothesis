@@ -1,6 +1,68 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.Idempotents
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Algebra.Hom.Rat
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
+public import Mathlib.RingTheory.LocalRing.Module
 
 @[expose] public section
 
@@ -97,8 +159,8 @@ theorem IsSplitting.map [Finite ι] {σ : ι → O →+* R} (h : IsSplitting σ)
     rcases eq_or_ne j i with rfl | hj
     · simp
     · simp [hj]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [← map_sum, (completeOrthogonalIdempotents_idem h).complete, map_one]
+
+  · rw [← map_sum, (completeOrthogonalIdempotents_idem h).complete, map_one]
   · have : ((1 : R') ⊗ₜ[ℤ] a) = F (1 ⊗ₜ a) := by simp [F]
     rw [this, ← map_mul, one_tmul_mul_idem, hF']
     rfl
@@ -258,9 +320,9 @@ noncomputable def eigenEquiv [Fintype ι] : N ≃ₗ[R] (∀ i, eigenSub ρ (σ 
     (∑ i, (eigenSub ρ (σ i)).subtype ∘ₗ LinearMap.proj i)
     (by
       refine LinearMap.ext fun v => funext fun i => Subtype.ext ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [LinearMap.comp_apply, LinearMap.pi_apply, coe_projTo, LinearMap.sum_apply,
-        map_sum, LinearMap.id_apply, Submodule.coe_sum]
+
+      simp only [LinearMap.comp_apply, LinearMap.pi_apply, coe_projTo, LinearMap.sum_apply,
+      map_sum, LinearMap.id_apply, Submodule.coe_sum]
       rw [Finset.sum_eq_single i]
       · exact proj_of_mem h (v i).2
       · intro j _ hj; exact proj_of_mem_ne h hj (v j).2
@@ -375,8 +437,8 @@ theorem map_proj_algebraMap [Finite ι] [DecidableEq ι] (h : IsSplitting σ)
     (hf : ∀ a x, f (ρ a x) = ρ' a (f x)) (i : ι) (x : N) :
     f (proj h ρ i x) = proj (h.map (algebraMap R R')) ρ' i (f x) := by
   have := Fintype.ofFinite ι
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_rhs => rw [← sum_proj h ρ x, map_sum, map_sum]
+
+  conv_rhs => rw [← sum_proj h ρ x, map_sum, map_sum]
   rw [Finset.sum_eq_single i]
   · exact (proj_of_mem (h.map (algebraMap R R'))
       (map_mem_eigenSub_algebraMap hf (proj_mem h ρ i x))).symm

@@ -2,6 +2,49 @@ module
 
 public import Development.WeilBound.ThetaLifts.SmallCones.KerGeo
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MCSpan
+import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneAd
+public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
+import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+import Development.WeilBound.ThetaLifts.CTKernel
+import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
 
 @[expose] public section
 
@@ -162,8 +205,8 @@ variable {T : Type} [AddCommGroup T] [Module E T] [Module F T] [IsScalarTower F 
 theorem lin_basis (b : Module.Basis (Fin m) F T) (t : T) :
     lin (fun j => U (b j)) (fun j => algebraMap F (AF F) (b.equivFun t j)) = incM F (U t) := by
   rw [← incM_lin]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← LinearMap.map_smul_of_tower, ← map_sum, b.sum_equivFun]
+
+  simp only [← LinearMap.map_smul_of_tower, ← map_sum, b.sum_equivFun]
 
 theorem PolT.exp (hP : PolT σ X W X₁ W₁ ι ι' I U) (hE : ThetaExp) (hB : B.IsGood σ) (hM : M.IsGood B.ψ) (hM₁ : M₁.IsGood B.ψ)
     (he : IsEv B M M₁ ι ι' I e) : ∃ C : ℂ, C ≠ 0 ∧ ∀ Φ ∈ schA F _,
@@ -236,8 +279,8 @@ theorem isEv_comp {n₂ d₂ : ℕ} {X₂ : Spc F E n₂} {W₂ : Spc F E d₂} 
       simp only [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure]
       rw [mul_left_comm]
       rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h1, map_sum]
+
+    rw [h1, map_sum]
     refine Finset.sum_eq_zero fun k _ => ?_
     rw [map_smul, key f (φ k) (a k) (((b k).and hM.std).mono fun v h => by rw [h.1, h.2]), h0]
     funext x

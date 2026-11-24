@@ -1,8 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ReframeSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.PUnit
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.BooleanRing
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 
 @[expose] public section
 
@@ -63,7 +110,7 @@ theorem exists_ringHom_lift {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonO
 theorem valSt (hL : Laws) (hFam : BrFamSt) (hEx : FibExSt) (hGrp : FibGrpSt) (hCube : FibCubeSt) (hSym : FibSymSt)
     (hRos : FibRosSt) (hPrim : FibPrimSt) (hSec : FibSecSt) (hLie : FibLieSt) : ValSt := by
   intro E _ _ _ H D R _ _ _ A
-  letI := H.starRing
+  let := H.starRing
   obtain ⟨g, Λ, Hm, χ, Ef, ex, fr, hf, hEf, hbij⟩ := hEx R A.D₀.P A.ν.J A.ν.good
   obtain ⟨hdisc, hfull, hherm, hpos, hnorm, hχ, hadd, hsurj, hker, hfr, hlift⟩ := hGrp R A.D₀ _ g Λ Hm χ ex fr hf
   have hcube := hCube R A.D₀ _ g Λ Hm χ ex fr hf
@@ -74,11 +121,11 @@ theorem valSt (hL : Laws) (hFam : BrFamSt) (hEx : FibExSt) (hGrp : FibGrpSt) (hC
   have hlie := hLie R A.D₀ _ g Λ Hm χ ex fr hf
   obtain ⟨F, hF⟩ := exists_ringHom_lift A.oa.onB.toRingAct ex hadd hlift
   have hmem : ∀ a, ∀ l ∈ Λ, F a l ∈ Λ := fun a l hl => by
-    haveI := A.oa.onB.hom a
+    have := A.oa.onB.hom a
     rw [← hker, hF, (hker l).2 hl, MonObj.one_comp]
   have hadj : ∀ a z w, hermForm Hm (F a z) w = hermForm Hm z (F (star a) w) := fun a => by
-    haveI := A.oa.onB.hom a
-    haveI := A.oa.onB.hom (star a)
+    have := A.oa.onB.hom a
+    have := A.oa.onB.hom (star a)
     obtain ⟨r, hr⟩ := exists_ros hL.globalFns A.D₀.P.isAb A.D₀.P.isLB _ _ (A.oa.onB.rosati a)
     exact (hros _ _ (A.oa.onB.hom a) (A.oa.onB.hom (star a)) _ _ (hF a) (hF (star a)) r hr).1
   let B : An H :=
@@ -127,7 +174,7 @@ theorem valSt (hL : Laws) (hFam : BrFamSt) (hEx : FibExSt) (hGrp : FibGrpSt) (hC
     rw [← e₂, B.H_zero_left, mul_zero, Complex.exp_zero]
     ring
   · intro hz
-    haveI := A.closed
+    have := A.closed
     obtain ⟨-, -, -, ⟨s, f, hs, hf0⟩, hv, -⟩ := hFam R A.D₀ A.even A.bimult ℂ A.N A.ν 1 le_rfl
     obtain ⟨c, rfl⟩ := hv s f hs
     refine hf0 (funext fun α => funext fun x => ?_)

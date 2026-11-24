@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointQuot
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointPf
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

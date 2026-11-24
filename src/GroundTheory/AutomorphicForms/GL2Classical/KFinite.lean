@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2Classical.ConstantTerm
-public import GroundTheory.AutomorphicForms.GL2Classical.Growth
-public import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.HasModerateGrowthZero
+public import GroundTheory.AutomorphicForms.GL2Classical.Adelic
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 
 @[expose] public section
 

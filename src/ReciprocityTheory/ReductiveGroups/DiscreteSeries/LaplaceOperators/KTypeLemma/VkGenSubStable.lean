@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.QuotientHighestWeightTensorStandard
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -51,8 +52,8 @@ theorem vk_eeV_comm (E : Fin n → Fin n → Module.End ℂ M) (hE : IsGlRep E) 
     · subst h; simp
     · simp [h]
   rw [Finset.sum_congr rfl fun c _ => h1 c]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [vk_tensV_apply, vk_eeV_apply, map_sum]
+
+  simp only [vk_tensV_apply, vk_eeV_apply, map_sum]
   by_cases hda : d = a
   · subst hda; simp [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_ite_eq']
   · simp [hda, Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_ite_eq']
@@ -69,8 +70,8 @@ theorem vk_eeVd_comm (E : Fin n → Fin n → Module.End ℂ M) (hE : IsGlRep E)
     · subst h; simp
     · simp [h]
   rw [Finset.sum_congr rfl fun c _ => h1 c]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [vk_tensVd_apply, vk_eeVd_apply, map_sum, map_neg]
+
+  simp only [vk_tensVd_apply, vk_eeVd_apply, map_sum, map_neg]
   by_cases hdb : d = b
   · subst hdb
     simp [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq']

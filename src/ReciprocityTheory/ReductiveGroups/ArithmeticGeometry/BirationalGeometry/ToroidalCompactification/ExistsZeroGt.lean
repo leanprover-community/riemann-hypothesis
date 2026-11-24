@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -32,9 +35,6 @@ theorem cPoint_zero (T : Over (Spec (CommRingCat.of R))) : cP D T 0 = 1 := by
   rw [h0]
   first
   | simp
-  | (rw [Hom.one_def, Hom.one_def, ← Category.assoc]
-     congr 1
-     exact toUnit_unique _ _)
 
 theorem val_cubAt {y : (TF (R := R) F).left} {J} (hJ : Good D.P.L y J) (x x' w : TF (R := R) F ⟶ D.P.A) :
     val (DegPre.cubAt D F x x' w) (𝟙 _) y J = th D y J x x' w := by
@@ -114,10 +114,6 @@ theorem exists_zero_gt : ∃ g : GtPtF D F, g.IsZero := by
     intro i j
     first
     | exact (_root_.one_mul _).symm
-    | (simp only [LB.oneGen, LB.LinComb, Finset.univ_eq_empty, Finset.prod_empty]
-       exact (_root_.one_mul _).symm)
-    | (simp [LB.oneGen, LB.LinComb]
-       rw [_root_.one_mul])
   obtain ⟨g, hb, hg⟩ := exists_gt (D := D) (F := F) (1 : TF (R := R) F ⟶ D.P.A) (K := PEmpty)
     (φ := fun _ => PEmpty.elim) (ε := PEmpty.elim) (fun _ => LB.oneGen D.P.L) (fun _ => hgen)
     (fun χ => by

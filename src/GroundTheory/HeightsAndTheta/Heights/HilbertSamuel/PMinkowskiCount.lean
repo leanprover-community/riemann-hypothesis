@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLattice
+import Mathlib.Dynamics.Ergodic.Action.Regular
 
 @[expose] public section
 

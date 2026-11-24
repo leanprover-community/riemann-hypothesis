@@ -1,7 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.CoeffLMulCvFrob
 public import Formalism.LocalToGlobal.CharacterGerms.FirstVanishingAt
+public import Formalism.LocalToGlobal.CharacterGerms.CoeffLMulCvFrob
+import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroDoubleMultiplicationPair
+import Formalism.LocalToGlobal.CharacterGerms.GermEvalOneStandardPointSelf
+import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
+import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

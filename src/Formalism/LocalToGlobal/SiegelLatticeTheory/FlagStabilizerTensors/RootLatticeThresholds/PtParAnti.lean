@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.MonoZhMulVec
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointQuotRel
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LastDiagMulVec
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.HermitianZZEqNeg
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHDef
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SCompact
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointQuot
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointQuotStVGeo
 
 @[expose] public section
 
@@ -62,9 +67,6 @@ theorem hfz_v (v : InfinitePlace X.B.I.F) (w : D.what₂.Word) (a : Fin D.R.rS) 
   rw [(X.zu_orth w a).2] at key
   simpa [HidaSetting.fR, HidaSetting.zR] using key
 
-theorem hJs_r {n : ℕ} (ε : Fin n → Bool) (x y : Fin n → ℂ) (c : ℂ) : hJ ε x (c • y) = c * hJ ε x y := by
-  simp only [hJ, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
-
 theorem hJs_l {n : ℕ} (ε : Fin n → Bool) (x y : Fin n → ℂ) (c : ℂ) :
     hJ ε (c • x) y = starRingEnd ℂ c * hJ ε x y := by
   simp only [hJ, star_smul, smul_dotProduct, smul_eq_mul, starRingEnd_apply]
@@ -81,7 +83,7 @@ theorem gram_frm (v : InfinitePlace X.B.I.F) (w : D.what₂.Word) (sc : ℝ) (a 
       induction j using Fin.lastCases with
       | last =>
         simp only [fam, Fin.snoc_last, lastDiag, Matrix.of_apply]
-        try simp only [and_self, ite_true, if_true]
+        try simp only [and_self, ite_true]
         exact Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hermitian_z_z_eq_neg (X := X) v w
       | cast j =>
         simp only [fam, Fin.snoc_last, Fin.snoc_castSucc, lastDiag, Matrix.of_apply]
@@ -95,7 +97,7 @@ theorem gram_frm (v : InfinitePlace X.B.I.F) (w : D.what₂.Word) (sc : ℝ) (a 
       | cast j =>
         simp only [fam, Fin.snoc_castSucc, lastDiag, Matrix.of_apply]
         rw [if_neg (fun h => (Fin.castSucc_lt_last i).ne h.1), hee_v X v i j]
-  simp only [frm, famSc, hJs_l, hJs_r, h0]
+  simp only [frm, famSc, hJs_l, _root_.Formalism.L2.SG.Pf.Carrier.JointQuot.hJ_smul_r, h0]
   by_cases ha : a = Fin.last _
   · by_cases hb : b = Fin.last _
     · subst ha

@@ -1,14 +1,20 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleHaarPiRestrictedProductStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleHaarEqProductLocalMeasuresStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalGramFiberRankOneSetFormulaStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjectionsStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRingStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountableStatement
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountable
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjections
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleHaarEqProductLocalMeasures
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleHaarPiRestrictedProduct
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalGramFiberRankOneSetFormula
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 
@@ -182,8 +188,8 @@ theorem map_gram (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
     (X : Fin n → Fin M → R ⊗[F] E) (a c : Fin n) :
     Algebra.TensorProduct.map φ (AlgHom.id F E) (gramR R σ J X a c) =
       gramR R' σ J (fun a i => Algebra.TensorProduct.map φ (AlgHom.id F E) (X a i)) a c := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gramR, hR, hform, map_sum, map_mul, map_sigR, JR, Matrix.map_apply]
+
+  simp only [gramR, hR, hform, map_sum, map_mul, map_sigR, JR, Matrix.map_apply]
   simp [inclR]
 
 def qF (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
@@ -209,8 +215,8 @@ theorem sig_expand {d : ℕ} (b : Module.Basis (Fin d) F E) (σ : E →ₐ[F] E)
       = sigR R σ (∑ k, ((Algebra.TensorProduct.basis R b).repr p k) ⊗ₜ[F] b k) * inclR R e *
           (∑ l, ((Algebra.TensorProduct.basis R b).repr q l) ⊗ₜ[F] b l) := by rw [hX, hX]
     _ = _ := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_mul, Finset.sum_mul]
+
+      rw [map_sum, Finset.sum_mul, Finset.sum_mul]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun l _ => ?_
@@ -221,9 +227,9 @@ theorem q_expand [FiniteDimensional F E] {d M : ℕ} (b : Module.Basis (Fin d) F
     qF R σ J X = ∑ i, ∑ j, ∑ k, ∑ l, (Algebra.TensorProduct.basis R b).repr (X 0 i) k *
       (Algebra.TensorProduct.basis R b).repr (X 0 j) l *
         algebraMap F R (1 / 2 * Algebra.trace F E (σ (b k) * J i j * b l)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [qF, gramR, hR, hform, JR, Matrix.map_apply, sig_expand b, map_sum, Finset.mul_sum,
-    trace_tmul', map_mul]
+
+  simp only [qF, gramR, hR, hform, JR, Matrix.map_apply, sig_expand b, map_sum, Finset.mul_sum,
+  trace_tmul', map_mul]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
     Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
   ring
@@ -286,12 +292,12 @@ section Main
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 local instance instLCv (v : HeightOneSpectrum (𝓞 F)) : LocallyCompactSpace (Fv F v) := by
-  have h := GlobalTheory.T.completion_is_local_ring F v
+  have h := _root_.GlobalTheory.CompanionTheory.SW.LocFv.isLocR_Fv F v
   unfold IsLocR at h
   exact h.2.1
 
 local instance instSCv (v : HeightOneSpectrum (𝓞 F)) : SecondCountableTopology (Fv F v) := by
-  have h := GlobalTheory.T.completion_is_local_ring F v
+  have h := _root_.GlobalTheory.CompanionTheory.SW.LocFv.isLocR_Fv F v
   unfold IsLocR at h
   exact h.2.2.1
 
@@ -299,9 +305,9 @@ local instance instBorv (v : HeightOneSpectrum (𝓞 F)) : BorelSpace (Fv F v) :
 
 local instance instBorf : BorelSpace (Af F) := ⟨rfl⟩
 
-local instance instLCf : LocallyCompactSpace (Af F) := (GlobalTheory.T.adeles_locally_compact_second_countable F).2.1
+local instance instLCf : LocallyCompactSpace (Af F) := (_root_.GlobalTheory.CompanionTheory.AdeleTop.adele_top F).2.1
 
-local instance instSCf : SecondCountableTopology (Af F) := (GlobalTheory.T.adeles_locally_compact_second_countable F).2.2.1
+local instance instSCf : SecondCountableTopology (Af F) := (_root_.GlobalTheory.CompanionTheory.AdeleTop.adele_top F).2.2.1
 
 theorem nice_nbhd {v : HeightOneSpectrum (𝓞 F)} {lam : Measure (Fv F v)} (h : IsStdV v lam)
     {s : Fv F v} {n : Set (Fv F v)} (hn : n ∈ 𝓝 s) :
@@ -315,9 +321,9 @@ theorem nice_nbhd {v : HeightOneSpectrum (𝓞 F)} {lam : Measure (Fv F v)} (h :
 theorem sA_cpt_open (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {d M : ℕ}
     (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) {a : ℕ} (ha : 0 < a) :
     IsCompact (sA (M := M) b v a) ∧ IsOpen (sA (M := M) b v a) := by
-  obtain ⟨hTR, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hcm (Fv F v)
+  obtain ⟨hTR, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hcm (Fv F v)
   haveI := hTR
-  have hlat := (GlobalTheory.T.adelic_tuple_projections F E σ hcm d b 1 M).2.2.2.1 v
+  have hlat := (_root_.GlobalTheory.CompanionTheory.SW.MeasProj.proj_props F E σ hcm d b 1 M).2.2.2.1 v
   have hcont : ∀ c : Fv F v ⊗[F] E, Continuous
       (fun (X : Fin 1 → Fin M → Fv F v ⊗[F] E) (p : Fin 1) (i : Fin M) => c * X p i) := fun c =>
     continuous_pi fun p => continuous_pi fun i =>
@@ -350,7 +356,7 @@ theorem sA_cpt_open (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {d M : ℕ}
 theorem qF_cont (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
     (v : HeightOneSpectrum (𝓞 F)) :
     Continuous (qF (Fv F v) σ J : (Fin 1 → Fin M → Fv F v ⊗[F] E) → Fv F v) := by
-  obtain ⟨-, -, -, -, -, htr, -, -, -, hgram⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hcm (Fv F v)
+  obtain ⟨-, -, -, -, -, htr, -, -, -, hgram⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hcm (Fv F v)
   have h1 := hgram 1 M J
   exact continuous_const.mul (htr.comp ((continuous_apply 0).comp ((continuous_apply 0).comp h1)))
 
@@ -377,7 +383,7 @@ theorem box_meas (lam : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fv F v))
     (S : Finset (HeightOneSpectrum (𝓞 F)))
     (V : ∀ v : HeightOneSpectrum (𝓞 F), Set (Fv F v)) (hV : ∀ v, IsOpen (V v)) :
     lf (box S V) = ∏ v ∈ S, lam v (V v) := by
-  have key := GlobalTheory.T.finite_adele_haar_pi_restricted_product F lam hlam lf hlf hlf1 Unit S
+  have key := _root_.GlobalTheory.CompanionTheory.SW.AfBox.pi_box F lam hlam lf hlf hlf1 Unit S
     (fun v => (fun f : Unit → Fv F v => f ()) ⁻¹' V v)
     (fun v => (measurable_pi_apply ()) (hV v).measurableSet)
   have e1 : {x : Unit → Af F | (∀ v ∈ S, (fun i => evalV F v (x i)) ∈
@@ -412,10 +418,10 @@ theorem box_tuple (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {M : ℕ} (J : Mat
   have hq : ∀ (X : Fin 1 → Fin M → Af F ⊗[F] E) v, (qF (Af F) σ J X) v = qF (Fv F v) σ J (projV v X) :=
     fun X v => map_qF σ J (evalV F v) X
   have hmeas : ∀ v, MeasurableSet (sA (M := M) b v a ∩ {X | qF (Fv F v) σ J X ∈ V v}) := fun v => by
-    obtain ⟨-, -, -, -, -, -, -, hB, -, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hcm (Fv F v)
+    obtain ⟨-, -, -, -, -, -, -, hB, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hcm (Fv F v)
     haveI := hB 1 M
     exact ((sA_cpt_open σ hcm b v ha).2.inter ((hV v).preimage (qF_cont σ hcm J v))).measurableSet
-  rw [← GlobalTheory.T.finite_adele_haar_eq_product_local_measures F E σ hcm d b lam hlam lf hlf hlf1 1 M S _ hmeas]
+  rw [← _root_.GlobalTheory.CompanionTheory.SW.WBox.coordW_box F E σ hcm d b lam hlam lf hlf hlf1 1 M S _ hmeas]
   congr 1
   ext X
   constructor
@@ -460,7 +466,7 @@ theorem hasProd_fibre_mass : ∀ (F E : Type) [Field F] [NumberField F] [Field E
     (fun v => (m v (hermScal (Fv F v) σ (algebraMap F _ β)) (sA b v a)).toReal) hε3
   have hne : ∀ v : HeightOneSpectrum (𝓞 F), algebraMap F (Fv F v) β ≠ 0 := fun v =>
     (map_ne_zero (algebraMap F (Fv F v))).2 hβ
-  have hloc := fun v => GlobalTheory.T.local_gram_fiber_rank_one_set_formula F E σ hcm M J hJ d b v (lam v) (hlam v) (m v) (hm v)
+  have hloc := fun v => _root_.GlobalTheory.CompanionTheory.SW.fibre_mass_ratio F E σ hcm M J hJ d b v (lam v) (hlam v) (m v) (hm v)
     (sA b v a) (sA_cpt_open σ hcm b v ha).1 (sA_cpt_open σ hcm b v ha).2
     (algebraMap F (Fv F v) β) (hne v) δ hδ
   choose Uv hUv hUv' using hloc

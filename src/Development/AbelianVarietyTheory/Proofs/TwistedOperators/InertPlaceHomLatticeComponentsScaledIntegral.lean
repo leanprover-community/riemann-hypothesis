@@ -1,8 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemIntMat
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHomLatticeIffIntegralMatrixSplitChart
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsHeckeOpFullDualLab
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -113,11 +165,11 @@ theorem map_compW_sum (S T : HSp D) {v : HeightOneSpectrum (𝓞 D.host.F)} {w :
     algebraMap D.host.E (w.adicCompletion D.host.E) a₀ •
       (A * Y * (Formalism.UG.cT c A' * S.gram.map (algebraMap D.host.E (w.adicCompletion D.host.E)))) := by
   refine Matrix.ext fun p q => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.map_apply, Matrix.sum_apply, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.sum_apply, map_sum, Matrix.smul_apply, smul_eq_mul, map_mul, compW_liftFin, compAt_singleAt,
-    GlobalTheory.SplitHomLattice.rk, Matrix.of_apply, compAt_sigR hv hc, compAt_one_tmul]
+
+  rw [Matrix.map_apply, Matrix.sum_apply, map_sum]
+
+  simp only [Matrix.sum_apply, map_sum, Matrix.smul_apply, smul_eq_mul, map_mul, compW_liftFin, compAt_singleAt,
+  GlobalTheory.SplitHomLattice.rk, Matrix.of_apply, compAt_sigR hv hc, compAt_one_tmul]
   simp only [Matrix.mul_apply, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -204,8 +256,8 @@ theorem mem_map_latF_iff : ∀ (D : D7) (S T : HSp D) (v : HeightOneSpectrum (�
           lam * π (a1 * t i * ∑ k, star (s k) * S.gram k j) := compAt_tmul w α _
       rw [Matrix.map_apply, Matrix.of_apply, e1, Matrix.smul_apply, smul_eq_mul, Matrix.vecMulVec_apply]
       have hconj : ∀ y, c (π y) = π (star y) := fun y => InertChart.conj_algebraMap hc y
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_mul, map_sum, Matrix.vecMul, dotProduct, hG, Matrix.map_apply, hconj]
+
+      simp only [map_mul, map_sum, Matrix.vecMul, dotProduct, hG, Matrix.map_apply, hconj]
       ring_nf
     have hy : ∀ p, ((a⁻¹ : GL (Fin T.rank) (w.adicCompletion D.host.E)).1 *ᵥ fun i => π (t i)) p ∈ Formalism.UG.Ov D.host.E w := by
       refine (ha _).2 ?_

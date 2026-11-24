@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermForm
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionRationalPointsAndApproximation
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermForm
 
 @[expose] public section
 
@@ -71,8 +116,6 @@ theorem _root_.GlobalTheory.UnRep.Nakayama.valuation_natCast_lt_one (N : ℕ) (v
   convert h using 2
   first
   | simp
-  | norm_cast
-  | (push_cast; rfl)
 
 variable {E : Type} [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -137,7 +180,7 @@ theorem _root_.GlobalTheory.UnRep.exists_inverse_one_add_preserving_hat : ∀ (F
     have h := integral_tmul_smul_mem_hat (F := F) c.2 hz
     convert h using 1
     funext i
-    simp [Subring.smul_def, Algebra.smul_def] <;> rfl
+    simp [Algebra.smul_def] <;> rfl
   let ΛA : Submodule A (Fin n → _root_.GlobalTheory.AdLat.RA F E) :=
     { Λ with smul_mem' := fun c z hz ↦ hsmulA c hz }
   have hmemA : ∀ z, z ∈ ΛA ↔ z ∈ Λ := fun z ↦ Iff.rfl
@@ -170,7 +213,7 @@ theorem _root_.GlobalTheory.UnRep.exists_inverse_one_add_preserving_hat : ∀ (F
         | mem y hy =>
           have h1 : (fun i ↦ b ⊗ₜ[F] y i) = (⟨b, hb⟩ : A) • g y := by
             funext i
-            simp [hg, Subring.smul_def, Algebra.smul_def, Algebra.TensorProduct.tmul_mul_tmul]
+            simp [hg, Algebra.smul_def, Algebra.TensorProduct.tmul_mul_tmul]
             rfl
           rw [h1]
           exact Submodule.smul_mem _ _ (Submodule.subset_span (by simp; exact ⟨y, hy, rfl⟩))
@@ -296,7 +339,7 @@ theorem _root_.GlobalTheory.UnRep.exists_inverse_one_add_preserving_hat : ∀ (F
       by_cases hj : j = i
       · subst hj
         simp [Algebra.TensorProduct.one_def]
-      · simp [Pi.single_apply, hj]
+      · simp [hj]
     rw [← h1]
     exact hi
   choose w hw using hsingle

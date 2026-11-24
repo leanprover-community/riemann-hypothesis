@@ -1,16 +1,17 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LogRegLineTensor
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LelongChartLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegral
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartDim
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartSection
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLelongPolyLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisor
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LogRegLineTensor
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.IsMultiHomogPlaneCoordinate
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 
 @[expose] public section
 

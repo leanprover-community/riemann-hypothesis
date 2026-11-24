@@ -1,6 +1,12 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
 
 @[expose] public section
 
@@ -81,9 +87,6 @@ theorem lemmaH_holds : LemmaHStatement := by
     simp [← hkb t]
   have hmain := P_ite_mul_eq_prod_triChar_mul p a P hP k b hkdet hbdet hbt Finset.univ
   rw [← hxk] at hmain
-  have hC0 : 0 ≤ C := by
-    have h1 := hC (fun s => 1) (fun s => one_mem _)
-    exact (norm_nonneg _).trans h1
   have hbR : ∀ s i, ‖b s i i‖ ≤ R := by
     intro s i
     have h1 := (hdiag s i).trans (hcol s i)

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurveBranchOrder
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.RingTheory.KrullDimension.Basic
 
 @[expose] public section
 

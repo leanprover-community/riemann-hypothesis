@@ -1,12 +1,68 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.Distinct
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.WdDefs
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CharAbove
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WdParameterMonodromyZeroIffPotentiallyCrystallin
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalFilDR
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
+import Formalism.ConjugateSelfDual.Statement
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 
@@ -55,8 +111,8 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
     refine (hfin.preimage (Function.Injective.injOn (fun a b h => Units.ext h))).subset ?_
     rintro x ⟨s, rfl⟩
     exact ⟨s, rfl⟩
-  haveI : Finite U.range := hfinU.to_subtype
-  letI : Fintype U.range := Fintype.ofFinite _
+  have : Finite U.range := hfinU.to_subtype
+  let : Fintype U.range := Fintype.ofFinite _
   have hpre0 : ∀ h : U.range, ∃ s, U s = h := fun h => h.2
   choose pre hpre using hpre0
   have hpreval : ∀ h : U.range, (((h : (Module.End ℂ W)ˣ)) : Module.End ℂ W) = ρ (i (pre h)) := by
@@ -138,8 +194,8 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
           exact Equiv.sum_comp (Equiv.mulLeft g) F
   have htrP : ∀ k, LinearMap.trace ℂ W (P k) = (Fintype.card U.range : ℂ) := by
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [P, map_sum, map_smul, hpreval, htr, smul_eq_mul, Finset.mul_sum]
+
+    simp only [P, map_sum, map_smul, hpreval, htr, smul_eq_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
     have h1 : ∀ m, ∑ h : U.range, (((ψ k)⁻¹ h : ℂˣ) : ℂ) * (μ m (i (pre h)) : ℂ) =
         if m = k then (Fintype.card U.range : ℂ) else 0 := by
@@ -151,7 +207,7 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
   have hPne : ∀ k, ∃ w, P k w ≠ 0 := by
     intro k
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have h1 : P k = 0 := LinearMap.ext hcon
     have h2 := htrP k
     rw [h1, map_zero] at h2
@@ -169,8 +225,8 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
     rw [Fintype.linearIndependent_iff]
     intro g hg j
     have h1 := congrArg (P j) hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero] at h1
+
+    rw [map_sum, map_zero] at h1
     simp only [map_smul, hPE', smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h1
     rw [smul_smul] at h1
     have h2 := (smul_eq_zero.mp h1).resolve_right (hw j)
@@ -186,8 +242,8 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
     have hzero : ∀ m, m ≠ k → b.repr y m = 0 := by
       intro m hm
       have h1 := congrArg (P m) hsum
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at h1
+
+      rw [map_sum] at h1
       simp only [map_smul, hb, hPE', smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ,
         if_true] at h1
       rw [hPE k y hy m, if_neg hm, smul_smul] at h1
@@ -247,8 +303,8 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
     have htr1 : LinearMap.trace ℂ W (ρ σ * P j) = c * (Fintype.card U.range : ℂ) := by
       rw [hσP, map_smul, htrP, smul_eq_mul]
     have htr2 : LinearMap.trace ℂ W (ρ σ * P j) = (μ j σ : ℂ) * (Fintype.card U.range : ℂ) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [P, Finset.mul_sum, mul_smul_comm, map_sum, map_smul, htrσ, smul_eq_mul, Finset.mul_sum]
+
+      simp only [P, Finset.mul_sum, mul_smul_comm, map_sum, map_smul, htrσ, smul_eq_mul, Finset.mul_sum]
       rw [Finset.sum_comm]
       have h1 : ∀ m, ∑ h : U.range, (((ψ j)⁻¹ h : ℂˣ) : ℂ) * ((μ m σ : ℂ) * (μ m (i (pre h)) : ℂ)) =
           (μ m σ : ℂ) * (if m = j then (Fintype.card U.range : ℂ) else 0) := by

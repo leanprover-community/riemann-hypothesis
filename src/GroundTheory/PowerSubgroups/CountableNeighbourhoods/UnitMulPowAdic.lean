@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.AdicCompletion.Algebra
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.AdicCompletion.LocalRing
 
 @[expose] public section
 

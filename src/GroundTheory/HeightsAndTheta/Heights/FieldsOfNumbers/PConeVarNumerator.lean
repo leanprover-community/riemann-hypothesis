@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarNumerator
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocQuot
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 

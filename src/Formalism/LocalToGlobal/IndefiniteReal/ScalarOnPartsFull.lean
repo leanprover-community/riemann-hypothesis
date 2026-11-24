@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
 public import Formalism.LocalToGlobal.HeckeThetaElements.DefsWt
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedType
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 
 @[expose] public section
 

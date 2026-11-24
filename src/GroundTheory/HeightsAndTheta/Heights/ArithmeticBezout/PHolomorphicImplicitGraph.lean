@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsHolomorphicImplicitGraph
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -59,8 +63,8 @@ theorem exists_coordSplitting {n m : ℕ} (L : EuclideanSpace ℂ (Fin n) →ₗ
     hv j (eM ⟨j, hj⟩) (by simp [e, Equiv.Set.sumCompl_symm_apply_of_notMem hj])
   have hv' : L v = ∑ j, v j • w j := by
     conv_lhs => rw [← (EuclideanSpace.basisFun (Fin n) ℂ).sum_repr v]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [w, map_sum, map_smul]
+
+    simp [w, map_sum, map_smul]
   have hsum : ∑ c, v (a c) • w (a c) = 0 := by
     rw [Fintype.sum_of_injective a ha (fun c => v (a c) • w (a c)) (fun j => v j • w j)
       (fun j hj => by rw [hout j hj, zero_smul]) (fun c => rfl), ← hv', hLv]

@@ -1,6 +1,11 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofComm
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ConstantCoeffAddFirstSecond
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.FirstDerivativeShiftIntegral
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeBilinearTermEqNegDoubleSum
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.IntegralFamilyFirstZeroSecond
 
 @[expose] public section
 
@@ -34,9 +39,9 @@ theorem coeff_act_add (B : FB R d O) (a b : O) (i j : Fin d) :
   show coeff _ (ev (n := 1) ![B.A.act a, B.A.act b] (B.G.F i)) = _
   have hab : CZ (![B.A.act a, B.A.act b] : Fin 2 → Pt R 1 d) := CZ.cons (B.A.const a) (CZ.cons (B.A.const b) CZ.nil)
   rw [← cc_pderiv', ← cc_pderiv' (B.A.act a i), ← cc_pderiv' (B.A.act b i), d2 hab]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_add (f := _), map_sum, map_mul, cc_ev' hab, cc_pderiv', coeff_single_zero_F_eq_ite, coeff_F_y, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+  simp only [map_add (f := _), map_sum, map_mul, cc_ev' hab, cc_pderiv', coeff_single_zero_F_eq_ite, coeff_F_y, ite_mul, one_mul, zero_mul,
+  Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
 variable {k : Type} [CommRing k] [Algebra ℚ k] [Algebra R k]
 

@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsTangentJacComp
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 
@@ -13,8 +19,8 @@ noncomputable section
 
 theorem TangentJacComp.real_inner_eq_re {d : ℕ} (x y : EuclideanSpace ℂ (Fin d)) :
     @inner ℝ _ _ x y = RCLike.re (@inner ℂ _ _ x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [PiLp.inner_apply, Complex.inner, map_sum]
+
+  simp [PiLp.inner_apply, Complex.inner, map_sum]
 
 theorem TangentJacComp.adjoint_restrictScalars {d n : ℕ}
     (L : EuclideanSpace ℂ (Fin d) →ₗ[ℂ] EuclideanSpace ℂ (Fin n)) :

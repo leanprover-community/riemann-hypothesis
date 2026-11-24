@@ -1,6 +1,12 @@
 module
 
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.Deriv.Shift
 
 @[expose] public section
 

@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IopIso
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.DetIdealsKernelNormOne
 
 @[expose] public section
 

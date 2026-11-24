@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LowerIndex
-public import GroundTheory.LocalFields.IntermediateField
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.RamificationLowerIndex
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.GeneralBFactAlt
+public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.RamificationLowerIndex
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -49,13 +49,6 @@ section
 variable (M : IntermediateField K L)
 
 variable [IsGalois K L]
-
-theorem ramificationIndex_mul_lowerIndex_restrictNormalHom [Normal K M] (σ : L ≃ₐ[K] L) :
-    ((_root_.Ideal.ramificationIdx (_root_.IsLocalRing.maximalIdeal (_root_.Valuation.integer (_root_.ValuativeRel.valuation L))) (_root_.Valuation.integer (_root_.ValuativeRel.valuation M))) : ℕ∞) * lowerIndex K M (AlgEquiv.restrictNormalHom M σ) =
-      ∑ τ : L ≃ₐ[M] L, lowerIndex K L (σ * τ.restrictScalars K) :=
-  by apply _root_.UpperTheory.Reformulated.B.RamificationLowerIndex.ramificationIndex_mul_lowerIndex_restrictNormalHom <;> assumption
-
-
 
 omit [IsGalois K L] in
 theorem exists_lowerIndex_mul_eq_min (σ : L ≃ₐ[K] L) :

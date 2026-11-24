@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalCohomologyIsoHomologyMapNormCochains
 
 @[expose] public section

@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.DedekindZeta
+public import Mathlib.NumberTheory.NumberField.DirichletDensity
+public import Mathlib.Algebra.BigOperators.Ring.Nat
+public import Mathlib.Algebra.Order.Field.GeomSum
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 

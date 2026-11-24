@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SegreJoin
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsFieldSubalgebraSelf
 
 @[expose] public section
 

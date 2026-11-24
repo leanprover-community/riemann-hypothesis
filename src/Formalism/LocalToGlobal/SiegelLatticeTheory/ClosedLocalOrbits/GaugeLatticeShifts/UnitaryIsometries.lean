@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
+import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -19,20 +21,16 @@ section Form
 variable {n : ℕ} (ε : Fin n → Bool)
 
 theorem hJ_add_right (x y y' : Fin n → ℂ) : hJ ε x (y + y') = hJ ε x y + hJ ε x y' := by
-  unfold hJ
-  rw [Matrix.mulVec_add, dotProduct_add]
+  simp only [hJ, Matrix.mulVec_add, dotProduct_add]
 
 theorem hJ_smul_right (a : ℂ) (x y : Fin n → ℂ) : hJ ε x (a • y) = a * hJ ε x y := by
-  unfold hJ
-  rw [Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
+  simp only [hJ, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
 
 theorem hJ_sub_right (x y y' : Fin n → ℂ) : hJ ε x (y - y') = hJ ε x y - hJ ε x y' := by
-  unfold hJ
-  rw [Matrix.mulVec_sub, dotProduct_sub]
+  simp only [hJ, Matrix.mulVec_sub, dotProduct_sub]
 
 theorem hJ_neg_right (x y : Fin n → ℂ) : hJ ε x (-y) = -hJ ε x y := by
-  unfold hJ
-  rw [Matrix.mulVec_neg, dotProduct_neg]
+  simp only [hJ, Matrix.mulVec_neg, dotProduct_neg]
 
 theorem hJ_sum_right {ι : Type*} (s : Finset ι) (x : Fin n → ℂ) (c : ι → ℂ) (y : ι → Fin n → ℂ) :
     hJ ε x (∑ i ∈ s, c i • y i) = ∑ i ∈ s, c i * hJ ε x (y i) := by
@@ -44,8 +42,8 @@ theorem hJ_sum_right {ι : Type*} (s : Finset ι) (x : Fin n → ℂ) (c : ι �
 
 theorem hJ_conj (x y : Fin n → ℂ) : hJ ε x y = conj (hJ ε y x) := by
   unfold hJ Formalism.REAL.Jm
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec_diagonal, dotProduct, Pi.star_apply, map_sum, map_mul]
+
+  simp only [Matrix.mulVec_diagonal, dotProduct, Pi.star_apply, map_sum, map_mul]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   split_ifs <;> simp <;> ring
 
@@ -60,8 +58,8 @@ theorem hJ_sub_left (x x' y : Fin n → ℂ) : hJ ε (x - x') y = hJ ε x y - hJ
 
 theorem hJ_sum_left {ι : Type*} (s : Finset ι) (c : ι → ℂ) (x : ι → Fin n → ℂ) (y : Fin n → ℂ) :
     hJ ε (∑ i ∈ s, c i • x i) y = ∑ i ∈ s, conj (c i) * hJ ε (x i) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hJ_conj, hJ_sum_right, map_sum]
+
+  rw [hJ_conj, hJ_sum_right, map_sum]
   simp only [map_mul, ← hJ_conj]
 
 theorem hJ_self_conj (x : Fin n → ℂ) : conj (hJ ε x x) = hJ ε x x := (hJ_conj ε x x).symm
@@ -88,18 +86,14 @@ theorem matrix_eq_of_form {A B : Matrix (Fin n) (Fin n) ℂ}
   ext i j
   have h1 := h (Pi.single i 1) (Pi.single j 1)
   have hs : star (Pi.single i (1 : ℂ) : Fin n → ℂ) = Pi.single i 1 := by
-    funext k
-    by_cases hk : k = i
-    · subst hk
-      simp
-    · simp [hk]
+    ext k
+    simp [Pi.single_apply]
   rw [hs] at h1
   simpa [Matrix.mulVec, dotProduct, Pi.single_apply] using h1
 
 theorem inUJ_of_isIsom {g : Matrix (Fin n) (Fin n) ℂ} (hg : IsIsom ε g) : Formalism.REAL.inUJ ε g := by
   unfold Formalism.REAL.inUJ
-  apply matrix_eq_of_form
-  intro x y
+  refine matrix_eq_of_form fun x y => ?_
   rw [← hJ_mulVec, hg x y]
   rfl
 
@@ -247,8 +241,7 @@ theorem gram_isHermitian {m : ℕ} (x : Fin m → Fin n → ℂ) : (gram ε x).I
   unfold Matrix.IsHermitian
   ext i j
   simp only [Matrix.conjTranspose_apply, gram, Matrix.of_apply]
-  rw [hJ_conj ε (x i) (x j)]
-  rfl
+  exact (hJ_conj ε (x i) (x j)).symm
 
 theorem gram_comb {m : ℕ} (x : Fin m → Fin n → ℂ) (A : Matrix (Fin m) (Fin m) ℂ) (k l : Fin m) :
     hJ ε (∑ i, A i k • x i) (∑ j, A j l • x j) = (star A * gram ε x * A) k l := by
@@ -269,8 +262,7 @@ theorem recon {m : ℕ} (x : Fin m → Fin n → ℂ) (A : Matrix (Fin m) (Fin m
     have h3 := congrFun (congrFun hA j) i
     rw [Matrix.mul_apply, Matrix.one_apply] at h3
     rw [← h3]
-    refine Finset.sum_congr rfl (fun k _ => ?_)
-    rw [Matrix.star_apply, mul_comm]
+    exact Finset.sum_congr rfl (fun k _ => by rw [Matrix.star_apply, mul_comm])
   simp only [← Finset.sum_smul, h2]
   simp
 
@@ -282,12 +274,10 @@ theorem witt_of_gram {m : ℕ} (x y : Fin m → Fin n → ℂ) (hG : ∀ i j, hJ
     by
       first
         | exact Unitary.mul_star_self_of_mem hH.eigenvectorUnitary.2
-        | exact Matrix.mem_unitaryGroup_iff.1 hH.eigenvectorUnitary.2
   have hU2 : star (hH.eigenvectorUnitary : Matrix (Fin m) (Fin m) ℂ) * (hH.eigenvectorUnitary : Matrix (Fin m) (Fin m) ℂ) = 1 :=
     by
       first
         | exact Unitary.star_mul_self_of_mem hH.eigenvectorUnitary.2
-        | exact Matrix.mem_unitaryGroup_iff'.1 hH.eigenvectorUnitary.2
   have hs := hH.spectral_theorem
   have hΛ : star (hH.eigenvectorUnitary : Matrix (Fin m) (Fin m) ℂ) * gram ε x * (hH.eigenvectorUnitary : Matrix (Fin m) (Fin m) ℂ) =
       Matrix.diagonal (RCLike.ofReal ∘ hH.eigenvalues) := by

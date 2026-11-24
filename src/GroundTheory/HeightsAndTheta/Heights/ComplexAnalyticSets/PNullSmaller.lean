@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PZeroLocusDimH
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

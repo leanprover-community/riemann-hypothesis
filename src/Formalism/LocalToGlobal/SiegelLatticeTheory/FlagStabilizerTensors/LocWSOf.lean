@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
-public import Formalism.SharpRestriction.CuspSpanNormBounds.NormalizedLocalScale
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ConcreteSettingExists
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 
 @[expose] public section
 
@@ -60,7 +60,6 @@ theorem isTransp_iff {D : D7} (X : HidaSetting D) (v : InfinitePlace X.B.I.F) (g
       IsTranspC X v (-(Complex.I * (g : ℂ)) / (2 * (Real.pi : ℂ))) k r Q Qi := by
   first
   | exact Iff.rfl
-  | (unfold Formalism.L2.SG.RealObj.IsTransp IsTranspC; exact Iff.rfl)
 
 def frS (D : D7) : ℂ := ((D.host.ka / (2 * Real.pi) : ℝ) : ℂ)
 

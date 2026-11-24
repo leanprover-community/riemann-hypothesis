@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.Columns.Adelic
+public import Formalism.LocalToGlobal.Columns.ColForms
 public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
-public import Formalism.LocalToGlobal.Columns.AdelicLemmas
 
 @[expose] public section
 

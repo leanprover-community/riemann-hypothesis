@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.SemilocalAlgebras.NormTrace
-public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import GroundTheory.GlobalFields.SemilocalAlgebras.ContinuousCompletionMap
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

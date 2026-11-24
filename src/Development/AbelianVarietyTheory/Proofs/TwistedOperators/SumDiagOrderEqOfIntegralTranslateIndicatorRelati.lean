@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSymmetricElementaryDivisorsUnitary
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalThetaInertPlace
+import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
+import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
+import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 
 @[expose] public section
 
@@ -94,19 +136,6 @@ theorem IsIntUnit.glT {g : GL (Fin m) L} (hg : IsIntUnit g) : IsIntUnit (glT g) 
   unfold IsIntUnit at hg ⊢
   exact ⟨int_transpose.2 hg.1, int_transpose.2 hg.2⟩
 
-theorem ordL_congr {x y : L} (h : Valued.v x = Valued.v y) : ordL x = ordL y := by
-  simp only [ordL, h]
-
-theorem diag_mul {A B : Matrix (Fin m) (Fin m) L} (hA : A.BlockTriangular id) (hB : B.BlockTriangular id)
-    (r : Fin m) : (A * B) r r = A r r * B r r := by
-  rw [Matrix.mul_apply, Finset.sum_eq_single r]
-  · intro k _ hk
-    rcases lt_or_gt_of_ne hk with h | h
-    · rw [hA (show id k < id r from h), zero_mul]
-    · rw [hB (show id r < id k from h), mul_zero]
-  · intro h
-    exact absurd (Finset.mem_univ r) h
-
 private lemma valued_v_le_one_of_mem_intL {x : L} (h : x ∈ intL L) : Valued.v x ≤ 1 := h
 
 theorem v_diag_le {A B : GL (Fin m) L} (hA : A.1.BlockTriangular id) (hB : B.1.BlockTriangular id)
@@ -115,9 +144,9 @@ theorem v_diag_le {A B : GL (Fin m) L} (hA : A.1.BlockTriangular id) (hB : B.1.B
     rw [Matrix.coe_units_inv]
     exact Matrix.blockTriangular_inv_of_blockTriangular hA
   have h1 : (A⁻¹).1 r r * A.1 r r = 1 := by
-    rw [← diag_mul hAi hA r, Units.inv_mul, Matrix.one_apply_eq]
+    rw [← _root_.Formalism.UG.P.fSatake_diag_mul hAi hA r, Units.inv_mul, Matrix.one_apply_eq]
   have h2 : Valued.v ((A⁻¹).1 r r * B.1 r r) ≤ 1 := by
-    rw [← diag_mul hAi hB r]
+    rw [← _root_.Formalism.UG.P.fSatake_diag_mul hAi hB r]
     exact valued_v_le_one_of_mem_intL ((mem_int.1 h) r r)
   have h3 : Valued.v ((A⁻¹).1 r r) * Valued.v (A.1 r r) = 1 := by
     rw [← map_mul, h1, map_one]
@@ -129,7 +158,7 @@ theorem v_diag_le {A B : GL (Fin m) L} (hA : A.1.BlockTriangular id) (hB : B.1.B
 theorem ordL_diag_eq {A B : GL (Fin m) L} (hA : A.1.BlockTriangular id) (hB : B.1.BlockTriangular id)
     (h1 : (A⁻¹).1 * B.1 ∈ intMat L (Fin m) (Fin m)) (h2 : (B⁻¹).1 * A.1 ∈ intMat L (Fin m) (Fin m)) (r : Fin m) :
     ordL (A.1 r r) = ordL (B.1 r r) := by
-  apply ordL_congr
+  apply _root_.Formalism.UG.P.fSatake_ord_of_v
   exact le_antisymm (v_diag_le hB hA h2 r) (v_diag_le hA hB h1 r)
 
 end GlobalTheory.SphTheta.IntTranslate

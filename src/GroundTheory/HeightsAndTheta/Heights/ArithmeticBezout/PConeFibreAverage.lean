@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentAverage
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPointLine
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.MetricSpace.HausdorffDimension
 
 @[expose] public section
 

@@ -1,7 +1,53 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContDiffBumpG
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GaXiSplit
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Imports
+public import Formalism.HermitianCurvature.StatementJF
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightCosetActionMeasurePreserving
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -205,16 +251,6 @@ section split
 variable {k p ρ : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-theorem gpsi_add (β a b : ℂ) : G.psi β (a + b) = G.psi β a * G.psi β b := by
-  unfold G.psi
-  rw [← Complex.exp_add, mul_add, Complex.add_re, Complex.ofReal_add, mul_add]
-
-theorem cornerA_zero {p : ℕ} (a : Fin 0 → Fin p → ℂ) : U.cornerA a = 0 := by
-  unfold U.cornerA; rw [dite_eq_right (fun h => absurd h.1 (lt_irrefl 0))]
-
-theorem cornerB_zero {p : ℕ} (b : Fin p → Fin 0 → ℂ) : U.cornerB b = 0 := by
-  unfold U.cornerB; rw [dite_eq_right (fun h => absurd h.1 (lt_irrefl 0))]
-
 theorem of_levMt (x : Mt k ρ) : (Matrix.of (Formalism.FourierDecayAlt.P.PBM.levMt p ρ rfl x) : B.Mat k (p + ρ)) =
     U.embG k p ρ (Matrix.of x) := by
   unfold Formalism.FourierDecayAlt.P.PBM.levMt
@@ -259,7 +295,7 @@ theorem fl_split (hGS : GaXiSplit) (hPR : PsiRight) (hPA : PsiRnAct) (hPM : PsiM
         star (psi k (p + ρ) (liftVec k p ρ Bj.z') cStd (U.Rn k p ρ y.2.1)) *
         (G.psi U.betaU (U.subS (lhOf σ x.2.2.2)) * G.psi U.betaU (U.supS (G.upper y.2.2))) := by
     simp only [U.psiStar, U.psiH, splitE, MeasurableEquiv.symm_mk, MeasurableEquiv.coe_mk, Equiv.coe_fn_symm_mk,
-      cornerA_zero, cornerB_zero, add_zero, gpsi_add]
+      _root_.Formalism.FourierDecayAlt.P.Dx2.SL.cornerA_zero, _root_.Formalism.FourierDecayAlt.P.Dx2.SL.cornerB_zero, add_zero, _root_.Formalism.FourierDecayAlt.P.Dx2.SL.psi_add]
     rfl
   unfold FL ellL KrI
   rw [hpt, hpi, hS, hN]

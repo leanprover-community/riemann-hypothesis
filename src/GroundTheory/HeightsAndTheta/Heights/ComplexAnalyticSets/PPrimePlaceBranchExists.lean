@@ -1,12 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimePlaceBranchExists
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelPointOfPlace
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelDisc
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelProjectionLocallyInjective
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelExists
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurveBranchOrder
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLocalDimDomain
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelExists
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

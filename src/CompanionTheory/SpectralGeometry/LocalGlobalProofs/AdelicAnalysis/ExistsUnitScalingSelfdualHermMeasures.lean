@@ -1,13 +1,18 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasure
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsUnipotentInvariantCompactlySupportedWeightStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SelfdualMeasureTransportEquivStatement
+public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsUnipotentInvariantCompactlySupportedWeight
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SelfdualMeasureTransportEquiv
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
+import Mathlib.CategoryTheory.Countable
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -85,13 +90,13 @@ theorem gramB_det [FiniteDimensional F E] [Algebra.IsSeparable F E] {σ : E →�
       intro k
       have := congrFun hv0 k
       simp only [Matrix.mulVec, dotProduct, gramB, Pi.zero_apply] at this
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hw, map_sum, Finset.mul_sum, map_sum, ← this]
+
+      rw [hw, map_sum, Finset.mul_sum, map_sum, ← this]
       refine Finset.sum_congr rfl fun l _ => ?_
       rw [map_smul, mul_smul_comm, map_smul, smul_eq_mul, mul_comm]
     have hx := b.sum_repr x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hx, Finset.sum_mul, map_sum]
+
+    rw [← hx, Finset.sum_mul, map_sum]
     refine Finset.sum_eq_zero fun k _ => ?_
     rw [smul_mul_assoc, map_smul, hk, smul_zero]
   have hs : σ w = 0 := (traceForm_nondegenerate F E).2 _ fun x => by
@@ -175,18 +180,18 @@ theorem off_diag [FiniteDimensional F E] [CharZero F] {σ : E →ₐ[F] E} (hinv
     simp [hC, Algebra.TensorProduct.basis_apply]
   have hy : sigR R σ y = ∑ l, C.repr y l • ((1 : R) ⊗ₜ[F] σ (b l)) := by
     conv_lhs => rw [← C.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [hC, Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul', TensorProduct.smul_tmul',
       HaarCoord.sigR_tmul]
   rw [hy]
   conv_lhs => rw [hx]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_mul, map_sum]
+
+  rw [Finset.sum_mul, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [smul_mul_assoc, map_smul, smul_eq_mul, Finset.mul_sum, map_sum]
+
+  rw [smul_mul_assoc, map_smul, smul_eq_mul, Finset.mul_sum, map_sum]
   congr 1
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [mul_smul_comm, map_smul, Algebra.TensorProduct.tmul_mul_tmul, one_mul, trace_tmul, one_mul,
@@ -203,8 +208,8 @@ theorem pair_eq [FiniteDimensional F E] [CharZero F] {σ : E →ₐ[F] E} (hinv 
   have hT : ∀ a c, (T : Matrix (Fin n) (Fin n) (R ⊗[F] E)) c a =
       sigR R σ ((T : Matrix (Fin n) (Fin n) (R ⊗[F] E)) a c) := fun a c => (T.2 c a).symm
   unfold pairHerm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [sum_square, map_add (f := _), mul_add, map_sum, map_sum, Finset.mul_sum, Finset.mul_sum]
+
+  rw [sum_square, map_add (f := _), mul_add, map_sum, map_sum, Finset.mul_sum, Finset.mul_sum]
   simp only [dotProduct, Fintype.sum_sum_type, Fintype.sum_prod_type, formB_mulVec_inl,
     formB_mulVec_inr]
   congr 1
@@ -352,7 +357,7 @@ theorem sd_core {d : ℕ} (b : Module.Basis (Fin d) F E) (n : ℕ) (lam : Measur
     { AddEquiv.mk' hh.toEquiv (hermVec_add R b n) with
       continuous_toFun := hh.continuous
       continuous_invFun := hh.symm.continuous }
-  have hT := GlobalTheory.T.selfdual_measure_transport_equiv (HermR R σ n) (Idx n d → R) e ν
+  have hT := _root_.GlobalTheory.CompanionTheory.SW.selfDual_transport (HermR R σ n) (Idx n d → R) e ν
     (fun x y => ψR (x ⬝ᵥ ((formB σ b n).map (algebraMap F R) *ᵥ y)))
   have hp : (fun S T : HermR R σ n => ψR (pairHerm R σ n S T)) =
       fun S T => ψR (e S ⬝ᵥ ((formB σ b n).map (algebraMap F R) *ᵥ e T)) := by
@@ -381,7 +386,7 @@ theorem sdHerm_eq_coord : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
   intro F E _ _ _ _ _ σ hcm d b laminf lam hinf hv ψ hψ n
   obtain ⟨hinv, -⟩ := HaarCoord.conj_facts hcm
   haveI : FiniteDimensional F E := Module.finite_of_finrank_pos (by rw [hcm.2.2.1]; omega)
-  obtain ⟨cinf, c, hu, h1, h2⟩ := GlobalTheory.T.exists_unipotentInvariant_compactlySupported_weight F hcm.1 laminf lam hinf hv ψ hψ
+  obtain ⟨cinf, c, hu, h1, h2⟩ := _root_.GlobalTheory.CompanionTheory.SW.SdCoord.selfDual_coord F hcm.1 laminf lam hinf hv ψ hψ
     (HermSd.Idx n d) (HermSd.formB σ b n) (HermSd.formB_isSymm hinv b n)
     (HermSd.formB_det hinv b n)
   refine ⟨cinf, c, hu, ?_, fun v => ?_⟩

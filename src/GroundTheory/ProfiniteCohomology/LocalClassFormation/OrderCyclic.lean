@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Brauer
-public import GroundTheory.TateCohomology.Herbrand
 public import GroundTheory.TateCohomology.TateLow
+public import GroundTheory.LocalFields.CompleteTrivial
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.FieldTheory.Galois.Basic
+public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.LocalFields.HerbrandLocal
+public import GroundTheory.TateCohomology.Herbrand
 
 @[expose] public section
 

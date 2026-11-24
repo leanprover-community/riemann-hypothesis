@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CasChainA
 
 @[expose] public section
@@ -57,17 +101,17 @@ theorem ofCoords_inl (k : Fin g) : ofCoords (Pi.single (.inl k) 1) = Pi.single k
   funext j
   by_cases h : j = k
   · subst h; simp [ofCoords]
-  · simp [ofCoords, Pi.single_apply, h]
+  · simp [ofCoords, h]
 
 theorem ofCoords_inr (k : Fin g) : ofCoords (Pi.single (.inr k) 1) = Pi.single k Complex.I := by
   funext j
   by_cases h : j = k
   · subst h; simp [ofCoords]
-  · simp [ofCoords, Pi.single_apply, h]
+  · simp [ofCoords, h]
 
 theorem form_single (H : Matrix (Fin g) (Fin g) ℂ) (c : ℂ) (k l : Fin g) :
     (Pi.single k c : Fin g → ℂ) ⬝ᵥ H *ᵥ star (Pi.single l 1 : Fin g → ℂ) = c * H k l := by
-  simp [mulVec, dotProduct, Pi.single_apply, Finset.sum_ite_eq]
+  simp [mulVec, dotProduct, Pi.single_apply]
 
 def coordForm (p : Fin g ⊕ Fin g → Fin g → ℂ) (Em : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℝ) :
     Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℝ :=
@@ -197,8 +241,8 @@ theorem exists_basis {n a : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeri
     have h1 : L.E (c i) (b j) = b.coord i (b j) := by rw [hc]
     have h2 : c i = ∑ k, b.repr (c i) k • b k := (b.sum_repr (c i)).symm
     rw [h2] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul] at h1
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul] at h1
     simp only [Matrix.mul_apply, C, M, Matrix.of_apply]
     rw [h1]
     simp [Matrix.one_apply, Finsupp.single_apply, eq_comm]

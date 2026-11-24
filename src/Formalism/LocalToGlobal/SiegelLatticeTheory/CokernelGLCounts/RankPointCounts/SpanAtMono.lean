@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SchurCoreA
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHDef
 
@@ -94,12 +93,12 @@ theorem cplx_comb {ι : Type} [Fintype ι] (g : ι → (VS D).V) (U : Submodule 
       rw [← hc p hp]; refine Finset.sum_congr rfl fun i _ => ?_
       rw [Algebra.smul_def, RingHom.algebraMap_toAlgebra, mul_comm]
     have h2 := congrArg (fun z => b.repr z j) h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
-      smul_eq_mul, map_zero, Finsupp.coe_zero, Pi.zero_apply] at h2
+
+    simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
+    smul_eq_mul, map_zero, Finsupp.coe_zero, Pi.zero_apply] at h2
     show (VS D).hT p (w j) = 0
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [w, map_sum, map_smul, smul_eq_mul]
+
+    simp only [w, map_sum, map_smul, smul_eq_mul]
     rw [← h2]; refine Finset.sum_congr rfl fun i _ => ?_; simp only [s]; ring
   have hc' : ∀ i, c i = ∑ j ∈ J, embS D (X.pl v) (s j i) * b j := by
     intro i

@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
+public import Formalism.LocalToGlobal.ProjectiveLattices.AlgebraMapCAt
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.NumberTheory.NumberField.CMField
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 
 @[expose] public section
 

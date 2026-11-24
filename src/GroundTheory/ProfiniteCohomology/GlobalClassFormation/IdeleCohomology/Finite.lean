@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Places
 public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrand
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.IsDiscreteRepCoindStabRep
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.ExistsSIdelesCohomologyEqZero
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.Coinduced
+public import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 

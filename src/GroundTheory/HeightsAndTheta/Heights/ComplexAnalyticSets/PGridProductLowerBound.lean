@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGridProductLowerBound
+public import Mathlib.Combinatorics.Nullstellensatz
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib.Algebra.MvPolynomial.Degrees
+public import Mathlib.Topology.Order.Lattice
 
 @[expose] public section
 

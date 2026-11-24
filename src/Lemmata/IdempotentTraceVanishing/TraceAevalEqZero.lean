@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+import Mathlib.Algebra.Polynomial.FieldDivision
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemisimpleTraceForm.TraceNilStep
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+public import Mathlib.LinearAlgebra.Trace
 
 @[expose] public section
 
@@ -19,13 +22,13 @@ private lemma trace_aeval_eq_zero {K : Type} [Field K] {a : ℕ} (M : Matrix (Fi
 
 private lemma idem_eq_zero {K : Type} [Field K] [CharZero K] {a : ℕ}
     (E : Matrix (Fin a) (Fin a) K) (hE : E * E = E) (ht : Matrix.trace E = 0) : E = 0 := by
-  have hf : IsIdempotentElem (Matrix.toLin' E) := by
-    show Matrix.toLin' E * Matrix.toLin' E = Matrix.toLin' E
-    rw [Module.End.mul_eq_comp, ← Matrix.toLin'_mul, hE]
-  have htf : LinearMap.trace K _ (Matrix.toLin' E) = 0 := by
-    rw [Matrix.trace_toLin'_eq, ht]
-  have h0 := LinearMap.IsIdempotentElem.eq_zero_of_trace_eq_zero hf htf
-  exact Matrix.toLin'.injective (by rw [h0, map_zero])
+  let e := Matrix.toLinAlgEquiv' (R := K) (n := Fin a)
+  have he : IsIdempotentElem (e E) := (show IsIdempotentElem E from hE).map e
+  have ht' : LinearMap.trace K _ (e E) = 0 := by
+    change LinearMap.trace K _ (Matrix.toLin' E) = 0
+    rwa [Matrix.trace_toLin'_eq]
+  apply e.injective
+  simpa only [map_zero] using LinearMap.IsIdempotentElem.eq_zero_of_trace_eq_zero he ht'
 
 private lemma key {K : Type} [Field K] [CharZero K] {a : ℕ} (M : Matrix (Fin a) (Fin a) K)
     (h : ∀ m : ℕ, 0 < m → Matrix.trace (M ^ m) = 0) : IsNilpotent M := by

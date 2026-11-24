@@ -1,7 +1,58 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
+public import Mathlib.LinearAlgebra.Vandermonde
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Topology.MetricSpace.Pseudo.Pi
 
 @[expose] public section
 
@@ -50,7 +101,7 @@ lemma dvd_of_vanish (u v : σ) (P : MvPolynomial σ ℝ)
     intro x
     rw [eval_rename, map_zero]
     apply h
-    simp only [Function.comp, collapse, if_pos rfl]
+    simp only [Function.comp, collapse]
     split_ifs <;> rfl
   have := sub_rename_collapse_mem u v P
   rw [h0, sub_zero] at this
@@ -125,7 +176,7 @@ lemma vanish_of_open [Fintype σ] (u v : σ) (P : MvPolynomial σ ℝ) (O : Set 
       apply h
       refine ⟨hball hy, ?_⟩
       show (y ∘ collapse u v) u = (y ∘ collapse u v) v
-      simp only [Function.comp, collapse, if_pos rfl]
+      simp only [Function.comp, collapse]
       split_ifs <;> rfl
   intro x hx
   have := congrArg (eval x) hQ
@@ -158,8 +209,8 @@ lemma homogeneousComponent_mul_of_isHomogeneous {Δ : MvPolynomial σ ℝ} {D : 
     (hΔ : Δ.IsHomogeneous D) (l : MvPolynomial σ ℝ) (n : ℕ) :
     homogeneousComponent (D + n) (Δ * l) = Δ * homogeneousComponent n l := by
   conv_lhs => rw [← sum_homogeneousComponent l]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.mul_sum, map_sum]
+
+  rw [Finset.mul_sum, map_sum]
   have key : ∀ m, homogeneousComponent (D + n) (Δ * homogeneousComponent m l) =
       if n = m then Δ * homogeneousComponent n l else 0 := by
     intro m
@@ -340,24 +391,24 @@ theorem AntisymDivisible.proof : AntisymDivisible.Statement := by
       AddMonoidAlgebra.coeff (∑ w, c w • (X (g w) : MvPolynomial (T × Fin N) ℝ)) (Finsupp.single u 1) =
         ∑ w, if g w = u then c w else 0 := by
     intro g u
-    simp only [coeff_sum, coeff_smul, coeff_X, Finsupp.single_left_inj one_ne_zero, smul_eq_mul,
+    simp only [coeff_sum, MvPolynomial.coeff_smul, coeff_X, Finsupp.single_left_inj one_ne_zero, smul_eq_mul,
       mul_ite, mul_one, mul_zero]
   have const : ∀ (τ : T) (a b : Fin N), a.val < b.val → (b.val < j ∨ j ≤ a.val) →
       c (τ, a) = c (τ, b) := by
     intro τ a b hab hbl
     have h := congrArg (AddMonoidAlgebra.coeff · (Finsupp.single (τ, a) 1)) (inv τ a b hab hbl)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hc, map_sum] at h
+
+    rw [← hc, map_sum] at h
     simp only [map_smul, rename_X] at h
     rw [coeff_lin, coeff_lin] at h
     simp only [Equiv.swap_apply_eq_iff, Equiv.swap_apply_left, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, id] at h
+      Finset.mem_univ, if_true] at h
     exact h.symm
   refine ⟨l₁, ⟨?_, ?_⟩, hP1⟩
   · exact homogeneousComponent_isHomogeneous 1 l
   · intro g hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hc, map_sum]
+
+    rw [← hc, map_sum]
     simp only [map_smul, rename_X]
     have hcg : ∀ w, c (g w) = c w := by
       rintro ⟨τ, a⟩

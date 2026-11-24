@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.RealRec
-public import Formalism.LocalRingCardinality.Lemmas
-public import Formalism.LocalToGlobal.Divisibility.TupUsed
+public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
+public import Formalism.LocalToGlobal.ClassRec
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.STiesR
 
 @[expose] public section
 

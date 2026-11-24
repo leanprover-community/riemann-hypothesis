@@ -2,6 +2,7 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.BernsteinExponentBounds.IsInvForm
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.GenericIrreducibility.NormEqOneOfIsUnitarisableU
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GenericUnlinkedGL
 
 @[expose] public section
 
@@ -20,7 +21,7 @@ def GenUnitCC : Prop :=
       ∃ hd : ∑ j, ((δ j).nu (s j)).1 = N, Nonempty (π.Equiv (prodIrr (fun j => (δ j).nu (s j)) hd))
 
 def GenUnitCCOf : Prop :=
-  (∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], PositivityTheory.RgUd.ExpBound k) →
-    GlobalTheory.Published.GenericUnlinkedGL → GenUnitCC
+  (∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k],
+    PositivityTheory.RgUd.ExpBound k) → GlobalTheory.Published.GenericUnlinkedGL → GenUnitCC
 
 end PositivityTheory.RgUd.Exp

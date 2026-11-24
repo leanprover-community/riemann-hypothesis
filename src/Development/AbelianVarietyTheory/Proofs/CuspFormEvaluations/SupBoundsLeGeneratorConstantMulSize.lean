@@ -1,12 +1,45 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.ThetaValues.SWEqSOf
-public import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.AdmissibleModuleIffLatticeQuotients
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.TheoremZeroOfReducedInputs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SupBoundPageRows
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LatOfLamSt
+public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
+import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.QuotientParamNonneg
 
 @[expose] public section
 
@@ -22,20 +55,20 @@ theorem gc_arith (f r L A n s lam lp a b M : ℝ) (hf : 2 ≤ f) (hr : 6 ≤ r) 
       (1009 * (f * r * L) + (3 * L + 2 * M) + 2 * f * r * (lam + 2 * lp) + 31 * (f * r * L)) * s) ∧
     ((lam + 2 * lp) * s + (400 * (f * r * L) * s + 3 * f * r * n * L + 5 * a + b + 2) ≤
       (1009 * (f * r * L) + (3 * L + 2 * M) + 2 * f * r * (lam + 2 * lp) + 31 * (f * r * L)) * s) := by
-  have hfr : 12 ≤ f * r := by nlinarith
-  have hrf : r ≤ f * r := by nlinarith
+  have hfr : 12 ≤ f * r := by linarith [mul_le_mul hf hr (by norm_num) (by linarith)]
+  have hrf : r ≤ f * r := le_mul_of_one_le_left (by linarith) (by linarith)
   obtain ⟨F, hF⟩ : ∃ F, F = f * r := ⟨_, rfl⟩
   rw [← hF] at hfr hrf hs
-  have hFn : F ≤ F * n := by nlinarith
-  have hnF : n ≤ F * n := by nlinarith
+  have hFn : F ≤ F * n := le_mul_of_one_le_right (by linarith) hn
+  have hnF : n ≤ F * n := le_mul_of_one_le_left (by linarith) (by linarith)
   have hs3 : 13 ≤ s := by linarith
   have hAs : A ≤ s := by linarith
   have hns : n ≤ s := by linarith
   have hFns : F * n ≤ s := by linarith
-  have hZ : 24 ≤ F * L := by nlinarith
-  have hLZ : L ≤ F * L := by nlinarith
-  have hrL : r * L ≤ F * L := by nlinarith
-  have hZs : 24 ≤ F * L * s := by nlinarith
+  have hZ : 24 ≤ F * L := by linarith [mul_le_mul hfr hL (by norm_num) (by linarith)]
+  have hLZ : L ≤ F * L := le_mul_of_one_le_left (by linarith) (by linarith)
+  have hrL : r * L ≤ F * L := mul_le_mul_of_nonneg_right hrf (by linarith)
+  have hZs : 24 ≤ F * L * s := by linarith [mul_le_mul hZ hs3 (by norm_num) (by linarith)]
   have h1 : r * L * A ≤ F * L * s := mul_le_mul hrL hAs hA (by linarith)
   have h2 : L * A ≤ F * L * s := mul_le_mul hLZ hAs hA (by linarith)
   have h3 : F * L * n ≤ F * L * s := mul_le_mul_of_nonneg_left hns (by linarith)

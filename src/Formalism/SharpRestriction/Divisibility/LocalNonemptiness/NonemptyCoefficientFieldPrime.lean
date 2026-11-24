@@ -1,6 +1,42 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -50,21 +86,18 @@ theorem resc_complete [CompleteSpace K] : CompleteSpace (WithAbs (rescAbs K s hs
     intro ε hε
     obtain ⟨N, hN⟩ := hu (ε ^ s) (Real.rpow_pos_of_pos hε s)
     refine ⟨N, fun m hm n hn => ?_⟩
-    have := hN m hm n hn
-    rw [resc_dist] at this
     rw [dist_eq_norm]
-    exact (Real.rpow_lt_rpow_iff (norm_nonneg _) hε.le hs).1 this
+    exact (Real.rpow_lt_rpow_iff (norm_nonneg _) hε.le hs).1 (by
+      simpa [resc_dist] using hN m hm n hn)
   obtain ⟨a, ha⟩ := cauchySeq_tendsto_of_complete hc
   refine ⟨WithAbs.toAbs _ a, ?_⟩
   rw [Metric.tendsto_atTop] at ha ⊢
   intro ε hε
   obtain ⟨N, hN⟩ := ha (ε ^ (1 / s)) (Real.rpow_pos_of_pos hε _)
   refine ⟨N, fun n hn => ?_⟩
-  have := hN n hn
-  rw [dist_eq_norm] at this
   rw [resc_dist]
-  have h2 := Real.rpow_lt_rpow (norm_nonneg _) this hs
-  rwa [← Real.rpow_mul hε.le, one_div, inv_mul_cancel₀ hs.ne', Real.rpow_one] at h2
+  have h2 := Real.rpow_lt_rpow (norm_nonneg _) (by simpa [dist_eq_norm] using hN n hn) hs
+  rwa [← Real.rpow_mul hε.le, inv_mul_cancel₀ hs.ne', Real.rpow_one] at h2
 
 end Resc
 
@@ -83,15 +116,11 @@ theorem cf_of_norm_lt_one (K : Type) [NormedField K] [IsUltrametricDist K] [IsAl
     rw [resc_norm, e, Real.rpow_def_of_pos ht, ← Real.exp_log (inv_pos.2 (by linarith : (0 : ℝ) < p)),
       Real.log_inv, hsdef]
     congr 1
-    have hne : Real.log ‖(p : K)‖ ≠ 0 := hlt.ne
-    field_simp
+    field_simp [hlt.ne]
   let iN : NontriviallyNormedField (WithAbs (rescAbs K s hs)) :=
     NontriviallyNormedField.ofNormNeOne ⟨((p : ℕ) : WithAbs (rescAbs K s hs)), by
       intro h
-      have : ((p : ℕ) : WithAbs (rescAbs K s hs)).ofAbs = (p : K) :=
-        map_natCast (WithAbs.equiv (rescAbs K s hs)) p
-      rw [h] at this
-      exact hp0 this.symm, by
+      exact hp0 (by simpa [h] using (map_natCast (WithAbs.equiv (rescAbs K s hs)) p).symm), by
       rw [hnp]
       intro h
       have : (p : ℝ) = 1 := by

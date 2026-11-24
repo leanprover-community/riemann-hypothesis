@@ -1,14 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GradedSeriesContinuationDominatedStatement
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumHeckeEigenvalueGeneratingSeriesGLStatement
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSatakeParamTrivialBoundUnitaryGLStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalHeckeValuesSameParameters
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeVectorHeckeEigenvalueStatement
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GradedSeriesContinuationDominated
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumCardCosetsDiagonalDoubleCosetGLStatement
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeVectorHeckeEigenvalueStatement
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Uniformizable
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
 
 @[expose] public section
 
@@ -40,7 +86,7 @@ theorem cartan_existsUnique (E : Type) [Field E] [NumberField E] (w : HeightOneS
       _ = _ := by rw [← e']; group
   have e3 := congrArg Units.val e2
   rw [Units.val_mul, Units.val_mul, hT, hT] at e3
-  exact Subtype.ext (Formalism.UG.Final.CartanUnique E w r ϖ hm hϖ a a' ha ha' _ (mul_mem (inv_mem hk₁') hk₁) _
+  exact Subtype.ext (_root_.Formalism.UG.P.cartan_decomposition_unique_holds E w r ϖ hm hϖ a a' ha ha' _ (mul_mem (inv_mem hk₁') hk₁) _
     (mul_mem hk₂ (inv_mem hk₂')) e3.symm).symm
 
 theorem differentiable_eulerPoly (B : Multiset ℂˣ) (a : ℂ) : Differentiable ℂ fun X : ℂ => eulerPoly B (a * X) := by
@@ -150,8 +196,8 @@ theorem zeta_sum_GL : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : T
   have hC0 : 0 ≤ Cℓ := (norm_nonneg _).trans (hC 1)
   have hab : ∀ d, ‖a d‖ ≤ Cℓ * b d := fun d => by
     have e1 : c d.1 * ℓ x = ∑ y : S d.1, ℓ (ρ (y : GL (Fin r) (w.adicCompletion E) ⧸ KGL w (n := r)).out x) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum, hsumF, map_smul, smul_eq_mul]
+
+      rw [← map_sum, hsumF, map_smul, smul_eq_mul]
     have hz' : ‖(z : ℂ) ^ (∑ i, d.1 i)‖ = 1 := by rw [norm_zpow, hz, _root_.one_zpow]
     simp only [a, b]
     rw [mul_assoc, norm_mul, hz', one_mul, e1]
@@ -189,7 +235,7 @@ theorem zeta_sum_GL : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : T
           simp only [a, deg]; ring]
       exact h1,
     hs₂ X hX (lt_of_lt_of_le h (min_le_right _ _))⟩
-  obtain ⟨hA, hBs⟩ := GlobalTheory.T.hasSum_and_summable_on_ball_of_hasSum_on_interval deg hdeg a b Cℓ (min δ₁ δ₂) ρ₀ P P' (lt_min hδ₁ hδ₂) (fun d => Nat.cast_nonneg _)
+  obtain ⟨hA, hBs⟩ := _root_.GlobalTheory.gradedSeries_continuation_dominated deg hdeg a b Cℓ (min δ₁ δ₂) ρ₀ P P' (lt_min hδ₁ hδ₂) (fun d => Nat.cast_nonneg _)
     hab hP hP' hser (X₀ : ℂ) (by rw [Complex.norm_real, Real.norm_of_nonneg hX₀pos.le]; exact hX₀ρ)
 
   have hφv : ∀ a : GL (Fin r) (w.adicCompletion E) ⧸ KGL w (n := r),
@@ -236,8 +282,8 @@ theorem zeta_sum_GL : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : T
         rw [hφv, hDu d y.1 y.2]
         rfl
     have h3 : ∑ y : S d.1, (f ∘ e.symm) ⟨d, y⟩ = a d * (X₀ : ℂ) ^ deg d := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Finset.sum_congr rfl fun y _ => h2 y, ← Finset.mul_sum, ← map_sum, hsumF, map_smul, smul_eq_mul]
+
+      rw [Finset.sum_congr rfl fun y _ => h2 y, ← Finset.mul_sum, ← map_sum, hsumF, map_smul, smul_eq_mul]
       simp only [a]
       ring
     exact h3 ▸ hasSum_fintype _
@@ -259,11 +305,11 @@ theorem zeta_sum_GL : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : T
     have hqC : (qV E w : ℂ) ≠ 0 := by exact_mod_cast qV_ne_zero w
     refine Finset.prod_nbij' (fun i => r + t - i) (fun j => r + t - j) (fun i hi => ?_) (fun j hj => ?_)
       (fun i hi => ?_) (fun j hj => ?_) (fun i hi => ?_)
-    · simp only [Finset.mem_range, Finset.mem_Ioc, Finset.mem_coe] at hi ⊢; omega
-    · simp only [Finset.mem_range, Finset.mem_Ioc, Finset.mem_coe] at hj ⊢; omega
-    · simp only [Finset.mem_range, Finset.mem_coe] at hi; omega
-    · simp only [Finset.mem_Ioc, Finset.mem_coe] at hj; omega
-    · simp only [Finset.mem_range, Finset.mem_coe] at hi
+    · simp only [Finset.mem_range, Finset.mem_Ioc] at hi ⊢; omega
+    · simp only [Finset.mem_range, Finset.mem_Ioc] at hj ⊢; omega
+    · simp only [Finset.mem_range] at hi; omega
+    · simp only [Finset.mem_Ioc] at hj; omega
+    · simp only [Finset.mem_range] at hi
       have hp : (qV E w : ℂ) ^ (r + t) = (qV E w : ℂ) ^ (r + t - i) * (qV E w : ℂ) ^ i := by
         rw [← pow_add]; congr 1; omega
       rw [hX2, hp]

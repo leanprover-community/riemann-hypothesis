@@ -1,9 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TwDefs
-public import Formalism.LocalRingCardinality.DataNChoice
 public import Formalism.LocalRingCardinality.DataIdx
-public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedGal
+public import Formalism.SharpRestriction.Divisibility.AbsolutelyIrreducibleSpan
+public import Mathlib.LinearAlgebra.Charpoly.Basic
 public import Formalism.LocalToGlobal.UnitaryNorms.LeastSplitAuxiliaryPrimeThetaChainSpec
 
 @[expose] public section
@@ -16,7 +16,7 @@ open scoped TensorProduct NNReal
 namespace Formalism.L2
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure TwFrame (D : D7) where
 
   K0 : ∀ i, Loc.FinExt (D.ntw.l i)
@@ -34,7 +34,7 @@ structure TwFrame (D : D7) where
   S0x : D.ntw.Tw → Finset (HeightOneSpectrum (𝓞 D.host.E))
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure NTwTied (D : D7) (F : TwFrame D) : Prop where
 
   pl_emb : ∀ i, ∃ w : HeightOneSpectrum (𝓞 ↥D.LL0), ((D.ntw.l i : ℕ) : 𝓞 ↥D.LL0) ∈ w.asIdeal ∧

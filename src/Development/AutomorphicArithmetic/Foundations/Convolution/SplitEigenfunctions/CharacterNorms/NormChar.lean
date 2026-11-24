@@ -1,10 +1,61 @@
 module
 
-public import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.ConjInv
+public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
+public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIdempotentIsUnitOneAddOrSubAdele
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.Hilbert90AdeleRingTensorQuadratic
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
 public import GroundTheory.GlobalFields.HasseNorm
-public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.Hilbert90AdeleRingTensorQuadratic
+public import Mathlib.Topology.Algebra.Group.OpenMapping
+import GroundTheory.GlobalFields.Adele.Approximation
+import GroundTheory.GlobalFields.Adele.Topology
+import GroundTheory.GlobalFields.TateThesis.IdeleMeasureQuotient
+import Mathlib.Algebra.Category.Grp.EpiMono
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.Quiver.ReflQuiver
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Algebra.ProperAction.Basic
+import Mathlib.Topology.Baire.LocallyCompactRegular
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -97,7 +148,7 @@ theorem exists_galois_quotient_of_ideleNorm_eq_one_quadratic (hE : Module.finran
     simpa [coe_smul_idele, hσd] using h2.symm
   obtain ⟨a, ha⟩ := AdeleBaseChange.exists_adeleMap_eq_sum_smul (K := ℚ) (L := E) (z : 𝔸[E])
   rw [huniv, Finset.sum_pair hc1.symm, one_smul] at ha
-  obtain ⟨e, he, hun⟩ := GlobalTheory.T.exists_idempotent_isUnit_one_add_or_sub_adele ℚ (algebraMap ℚ 𝔸[ℚ] (1 / 2) * a)
+  obtain ⟨e, he, hun⟩ := _root_.GlobalTheory.AdIdem.exists_idem_isUnit ℚ (algebraMap ℚ 𝔸[ℚ] (1 / 2) * a)
   obtain ⟨y, hy⟩ : ∃ y : E, c y ≠ y := by
     by_contra h
     push Not at h

@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalRingCardinality.DataLevel
+public import Formalism.LocalRingCardinality.DataCoeff
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

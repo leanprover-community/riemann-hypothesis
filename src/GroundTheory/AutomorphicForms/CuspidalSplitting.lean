@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.CuspidalSplittingCoeff
 public import GroundTheory.AutomorphicForms.CuspidalSplittingIsotypic
-public import GroundTheory.AutomorphicForms.LeviStagesProduct
-public import GroundTheory.AutomorphicForms.LeviStagesExact
+import GroundTheory.AutomorphicForms.CuspidalSplittingProjective
+import GroundTheory.AutomorphicForms.SmoothRepSchur
+import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

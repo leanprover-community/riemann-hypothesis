@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.PoincarePairs.Natural
-public import GroundTheory.ProfiniteCohomology.PoincarePairs
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.CompactCupEqCompactCupRight
+public import GroundTheory.ProfiniteCohomology.PoincarePairs
 
 @[expose] public section
 

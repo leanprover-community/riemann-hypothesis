@@ -1,8 +1,17 @@
 module
 
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.OrbitDerivatives.EtaleClosedPointLiftsSimpleRootsMonic
+public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.IntegralMemOfIsClosed
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.OrbitDerivatives.HasDerivAtMatrixExpZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeries₂.Poulsen
+public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.SchurH
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.CapelliEigenvalues.BetaAtInfinityZero
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.CapelliEigenvalues.CoefEigOfInfChar
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.PoulsenSmoothVectorsDense
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.OrbitDerivatives.EtaleClosedPointLiftsSimpleRootsMonic
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.HpkMulMulHpkApply
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
@@ -56,8 +65,8 @@ theorem ent_bdd {X Y : Obj k r} {f : M X →ₗ[ℂ] M Y} (hf : IsHom X Y f) (e 
 
 theorem apply_eq_ent {X Y : Obj k r} (f : M X →ₗ[ℂ] M Y) (x : M X) (e : Y.1.ι) :
     (f x e : Y.2.R.H) = ∑ c, ent f e c (x c) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [← Finset.univ_sum_single x, map_sum, Finset.sum_apply, Submodule.coe_sum]
+
+  conv_lhs => rw [← Finset.univ_sum_single x, map_sum, Finset.sum_apply, Submodule.coe_sum]
   exact Finset.sum_congr rfl fun c _ => (ent_coe f e c (x c)).symm
 
 theorem hasDerivAt_rho {F : FRep k r} (hF : F.OK) {Z : Mx k r} (hZ : InLieHpk k r Z) (c d : F.ι) :
@@ -89,8 +98,8 @@ theorem hasDerivAt_lin {X : Obj k r} (hX : X.1.OK) {H' : Type} [NormedAddCommGro
       refine Subtype.ext ?_
       simp only [act_coe X (hLie Z hZ t), Submodule.coe_sum, Submodule.coe_smul, URep.sig_coe _ (hLie Z hZ t)]
     show Tl _ = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum]
+
+    rw [this, map_sum]
     refine Finset.sum_congr rfl fun d _ => ?_
     rw [map_smul, ← URep.sig_coe _ (hLie Z hZ t)]
     rfl
@@ -103,8 +112,8 @@ theorem hasDerivAt_lin {X : Obj k r} (hX : X.1.OK) {H' : Type} [NormedAddCommGro
     rw [LR_coe X hZ, Submodule.coe_add, URep.dsig_coe _ hZ, Submodule.coe_sum]
     rfl
   show Tl _ = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [this, map_add (f := _), map_sum]
+
+  rw [this, map_add (f := _), map_sum]
   simp only [ex_zero, hX.one, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_add_distrib,
     Finset.sum_ite_eq, Finset.mem_univ, if_true, X.2.repOn.map_one, map_smul]
   congr 1

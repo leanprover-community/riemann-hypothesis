@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsPairConeLinesIndep
+public import Mathlib.Data.Matrix.Mul
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.LinearAlgebra.Dual.Basis
+public import Mathlib.LinearAlgebra.LinearIndependent.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.RingTheory.AlgebraicIndependent.Basic
+public import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
 
 @[expose] public section
 
@@ -33,12 +41,12 @@ theorem PairConeLinesIndep.linearChange_indep {Ω Φ : Type} [Field Ω] [Field �
   let g : Fin N → MvPolynomial (Fin N) Ω := fun j => ∑ k, X k * C (P⁻¹ j k)
   have hgf : (fun i => aeval g (f i)) = X := by
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [f, g, map_sum, map_mul, aeval_X, aeval_C, MvPolynomial.algebraMap_eq]
+
+    simp only [f, g, map_sum, map_mul, aeval_X, aeval_C, MvPolynomial.algebraMap_eq]
     calc ∑ j, (∑ k, X k * C (P⁻¹ j k)) * C (P i j)
         = ∑ k, X k * C ((P * P⁻¹) i k) := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp_rw [Finset.sum_mul, Matrix.mul_apply, map_sum, Finset.mul_sum]
+
+          simp_rw [Finset.sum_mul, Matrix.mul_apply, map_sum, Finset.mul_sum]
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => ?_
           rw [map_mul]
@@ -53,8 +61,8 @@ theorem PairConeLinesIndep.linearChange_indep {Ω Φ : Type} [Field Ω] [Field �
   have h := ht.aeval_of_algebraicIndependent hf
   convert h using 1
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [f, map_sum, aeval_X]
+
+  simp [f, map_sum, aeval_X]
 
 theorem PairConeLinesIndep.proof : PairConeLinesIndep.Statement := by
   intro Ω _ Φ _ _ K N E _ _ e ψ hψ t ht g hg

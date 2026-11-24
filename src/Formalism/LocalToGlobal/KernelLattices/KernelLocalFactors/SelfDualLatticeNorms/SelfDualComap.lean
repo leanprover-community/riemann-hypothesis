@@ -1,9 +1,15 @@
 module
 
 public import Formalism.LocalToGlobal.KernelLattices.KerStd
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.LinkThetaStatementFamily
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.ZeroInjectionMemFourthPower
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstUniqueOf
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.FinitelyGeneratedModPow
+import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatticeExists
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
@@ -128,8 +134,8 @@ theorem matH_hSc (sc : ℝ) (a b : ℕ) (x y : DVar X.Tau a b → ℂ) :
 
 theorem herm_hSc (sc : ℝ) (a b : ℕ) : IsHerm (matH (hSc X.Tau a b sc)) := by
   intro x y
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [matH_hSc, matH_hSc, map_mul, Complex.conj_ofReal, map_sum]
+
+  rw [matH_hSc, matH_hSc, map_mul, Complex.conj_ofReal, map_sum]
   congr 1
   exact Finset.sum_congr rfl fun k _ => by rw [map_mul, Complex.conj_conj, mul_comm]
 

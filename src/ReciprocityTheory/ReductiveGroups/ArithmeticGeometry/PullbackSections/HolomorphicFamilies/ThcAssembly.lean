@@ -1,12 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.FullExists
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.WeightAssemblyClause
+public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Mathlib.Topology.Sheaves.Presheaf
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 

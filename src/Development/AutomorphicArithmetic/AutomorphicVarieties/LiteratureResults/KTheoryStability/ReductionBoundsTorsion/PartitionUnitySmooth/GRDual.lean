@@ -1,6 +1,51 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PartitionUnitySmooth.Smoothing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -120,7 +165,7 @@ private theorem fin_num {A s m G P X Q : ℝ} (hA0 : 0 < A) (hsp : 0 < s) (hmp :
 
 attribute [local irreducible] lam ret term
 
-set_option maxHeartbeats 600000 in
+
 theorem pf_GRDual : GRDual := by
   classical
   intro hB hTr hE hTL L _ _ hC N hN μ hμ
@@ -244,14 +289,14 @@ theorem pf_GRDual : GRDual := by
     exact hk1.le
   have hsum : evR z (∑ᶠ k : ℤ, rho ((4 : ℝ) ^ k * μ h) • term ((4 : ℝ) ^ k) h) ≤ 32 * s / m := by
     by_cases hfin : (Function.support fun k : ℤ => rho ((4 : ℝ) ^ k * μ h) • term ((4 : ℝ) ^ k) h).Finite
-    set_option synthInstance.maxHeartbeats 100000 in
-      · rw [finsum_eq_sum _ hfin, map_sum]
-        refine (Finset.sum_le_sum fun k _ => hterm k).trans ?_
-        rw [← Finset.mul_sum]
-        calc _ ≤ 4 * s * (2 * (4 / m)) :=
-              mul_le_mul_of_nonneg_left ((geo _ k0).trans (mul_le_mul_of_nonneg_left hinv (by norm_num)))
-                (mul_nonneg (by norm_num) hs0)
-          _ = _ := by ring
+
+    · rw [finsum_eq_sum _ hfin, map_sum]
+      refine (Finset.sum_le_sum fun k _ => hterm k).trans ?_
+      rw [← Finset.mul_sum]
+      calc _ ≤ 4 * s * (2 * (4 / m)) :=
+            mul_le_mul_of_nonneg_left ((geo _ k0).trans (mul_le_mul_of_nonneg_left hinv (by norm_num)))
+              (mul_nonneg (by norm_num) hs0)
+        _ = _ := by ring
     · rw [finsum_of_infinite_support hfin, map_zero]; exact div_nonneg (mul_nonneg (by norm_num) hs0) hm0
   have hμm : μ h * m ≤ 12 * C1 * |C2| := by
     have b1 : μ h ≤ |C2| * lamD h := (hcmp h hh).2.trans (mul_le_mul_of_nonneg_right (le_abs_self _) hD.le)

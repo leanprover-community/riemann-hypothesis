@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsSchur
+public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section
 

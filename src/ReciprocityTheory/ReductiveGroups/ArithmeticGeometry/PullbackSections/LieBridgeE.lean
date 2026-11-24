@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeD
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeC
 
 @[expose] public section
 
@@ -21,10 +22,6 @@ theorem tvOf_tv {x : Sp S ⟶ Xo.X} (n : TanM x Xo.univ.t.G) :
   apply tanM_ext
   first
     | rfl
-    | exact Over.OverMorphism.ext rfl
-    | (ext; rfl)
-    | (ext1; simp [tvOf, tv, mkT])
-    | simp [tvOf, tv, mkT]
 
 theorem eig_coords (y : FrPt Xo c S) (τ : E →+* ℂ) (n : TanM y.x Xo.univ.t.G)
     (hn : IsEigV (actR (x0 := y.x) (S := S) Xo.univ.t.act) (embK c τ) n) :
@@ -43,8 +40,8 @@ theorem eig_comb {x : Sp S ⟶ Xo.X} (τ : E →+* ℂ) {m : ℕ} (v : Fin m →
     (hv : ∀ i, IsEigV (actR (x0 := x) (S := S) Xo.univ.t.act) (embK c τ) (v i)) (a : Fin m → S) :
     IsEigV (actR (x0 := x) (S := S) Xo.univ.t.act) (embK c τ) (∑ i, a i • v i) := by
   intro b
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine (Finset.sum_congr rfl fun i _ => ?_).trans Finset.smul_sum.symm
   rw [map_smul, hv i b]
   exact smul_comm _ _ _

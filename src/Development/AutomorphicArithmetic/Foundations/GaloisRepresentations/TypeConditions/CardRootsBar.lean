@@ -2,17 +2,52 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TypeConditions.AutomorphicGaloisAdmissible
 public import Formalism.SharpRestriction.LevelLetterCocycles.PairedCharacterCondition
-public import Development.DiscreteGroups.GlobalIrreducibility.DzBigDef
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EigenvalueCoprimeConjugation
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdmissibleBranchingIffIsBranching
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepthZeroLabelsOfLabelLaws
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitPlOfNotIsConjPl
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypeLocalGlobal
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.StepJumpDirect
-public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
-public import Formalism.LocalRingCardinality.SpanPowerMembership.NZTypeE
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AwayRepIsoLoc
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisRepUniqueBaseChange
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemZpowersOfTameGen
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdmissibleBranchingIffIsBranching
+public import Development.DiscreteGroups.GlobalIrreducibility.DzBigDef
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -71,10 +106,6 @@ theorem om_pow {D : D7} (P : PairedCharacterCondition.Pend D) (k : Fin 2) (w : P
     | succ m ih => rw [pow_succ, pow_succ, P.tameInertiaChar_mul_root k w _ _ (pow_ne_zero _ hx) hx γ hγ, ih]
   rw [← h2, h, h1]
 
-theorem card_rootsBar {p : ℕ} [Fact p.Prime] (a : (ZMod p)[X]) : Multiset.card (Formalism.CyclotomicNorms.rootsBar a) = a.natDegree := by
-  unfold Formalism.CyclotomicNorms.rootsBar
-  rw [← (IsAlgClosed.splits _).natDegree_eq_card_roots, natDegree_map]
-
 theorem nc_of_roots {D : D7} (P : PairedCharacterCondition.Pend D) (k : Fin 2) (w : PlE D.host) (hw : w ∈ placesOver D.host.E (D.host.g k))
     (y : D.naut.LP w) (hm : D.naut.mono0 y) (hdeg : (D.naut.items₂ k w y).natDegree = D.naut.lpDim y)
     (hle : D.naut.lpDim y ≤ D.R.nV)
@@ -88,7 +119,7 @@ theorem nc_of_roots {D : D7} (P : PairedCharacterCondition.Pend D) (k : Fin 2) (
   refine ⟨fun σ hσ hwild => ?_, hm, fun γ hγ z hz => ?_⟩
   · rw [P.inertiaCharpoly_eigenvalues k w hw _ hdeg σ hσ,
       Multiset.map_congr rfl (fun x hx => by rw [P.om_wild k w hw x (hnz x hx) σ hwild, C_1]),
-      Multiset.map_const', Multiset.prod_replicate, card_rootsBar, hdeg]
+      Multiset.map_const', Multiset.prod_replicate, _root_.GlobalTheory.TameLabels.card_rootsBar, hdeg]
   · rw [P.inertiaCharpoly_eigenvalues k w hw _ hdeg γ hγ.1, thr_split (D.host.g_prime k) hw (D.nd.g_split k) (DiscreteGroups.sglob.DzType.big_of_le_nV D k hle)] at hz
     set M := Formalism.CyclotomicNorms.rootsBar (D.naut.items₂ k w y) with hM
     have e : (M.map fun x => X - C (P.om k w x γ)).prod = ((M.map fun x => P.om k w x γ).map fun c => X - C c).prod := by

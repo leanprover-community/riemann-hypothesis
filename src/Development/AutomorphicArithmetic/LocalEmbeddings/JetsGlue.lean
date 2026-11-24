@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.LocalEmbeddings.JetsChain
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFinClAndGamOrd
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqFinClSumAvg
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqVolMulSum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
+import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 
 @[expose] public section
 
@@ -112,8 +152,8 @@ theorem sum_last {A : ℕ → Type} (o : ∀ n, A n → GfC (V n)) (w : ∀ n, A
   rw [finsum_snoc n hA]
   refine finsum_congr fun a => ?_
   letI : ∀ j : Fin n, Fintype (A j) := fun j => @Fintype.ofFinite _ (hA j (by omega))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [sumV_eq comp v o w n fun j hj => hA j (by omega), finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, Finset.mul_sum]
+
+  rw [sumV_eq comp v o w n fun j hj => hA j (by omega), finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   have e1 : ext (P := fun j => GfC (V j)) (n + 1)
       (fun j => o j (Fin.snoc (α := fun j : Fin (n + 1) => A j) c a j)) n = o n a := by
@@ -252,8 +292,8 @@ theorem one_term (μ : ∀ n, Measure (GA D (V n))) (fd : ∀ n, Set (GA D (V n)
           exact a4 _))
       haveI := Fintype.ofFinite (FinCl (V n) (K n))
       simp only [liftC, sumV]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hU, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, map_sum]
+
+      rw [hU, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, map_sum]
       refine Finset.sum_congr rfl fun c _ => ?_
       simp only [isFinReal_apply a3 ih]
       rw [a8 κ hκH hκP, map_smul, map_smul, smul_eq_mul, wgt, div_eq_mul_inv]
@@ -284,8 +324,8 @@ theorem one_term (μ : ∀ n, Measure (GA D (V n))) (fd : ∀ n, Set (GA D (V n)
           exact a4 _))
       haveI := Fintype.ofFinite (FinCl (V' n) (K' n))
       simp only [liftC, sumV]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hU, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, map_sum]
+
+      rw [hU, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, map_sum]
       refine Finset.sum_congr rfl fun c _ => ?_
       simp only [isFinReal_apply a3 ih]
       rw [a8 κ hκH hκP, map_smul, map_smul, smul_eq_mul, wgt, div_eq_mul_inv]
@@ -306,8 +346,8 @@ theorem one_term (μ : ∀ n, Measure (GA D (V n))) (fd : ∀ n, Set (GA D (V n)
   letI : ∀ j : Fin (N + 1), Fintype (FinCl (V' j) (K' j)) := fun j => @Fintype.ofFinite _ (fA' j j.2)
   rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, Fintype.sum_prod_type_right]
   refine Finset.sum_congr rfl fun b _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [sumV_eq comp v _ _ N fA, finsum_eq_sum_of_fintype, map_sum, LinearMap.sum_apply, Finset.mul_sum]
+
+  rw [sumV_eq comp v _ _ N fA, finsum_eq_sum_of_fintype, map_sum, LinearMap.sum_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun a _ => ?_
   have e1 : ptV comp v (ptX N e (fun j => Quotient.out (a j)) (fun i => Quotient.out (b i))) N =
       ptV comp v (ext N fun j => Quotient.out (a j)) N := ptV_congr comp v N fun j hj => Function.update_of_ne hj.ne _ _

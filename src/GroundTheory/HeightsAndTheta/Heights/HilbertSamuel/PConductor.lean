@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.TargetSt
-public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PFiniteIntegralClosure
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNmSectionsRational
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecEq
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNmSectionsRational
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
+public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PFiniteIntegralClosure
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

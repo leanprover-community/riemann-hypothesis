@@ -1,7 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementA
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.PairedSquareJets.Several
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.PairedSquareJets.CurveJetsUnramifiedHolds
+import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.PairedSquareJets.Hurwitz
+import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.PairedSquareJets.HurwitzB
 
 @[expose] public section
 
@@ -36,11 +39,11 @@ theorem linSub_linSub {n m p : Type} [Fintype n] [Fintype m] [Fintype p] (A : n 
   have e : ∀ i : n, linSub B (∑ j, MvPowerSeries.C (A i j) * MvPowerSeries.X j) =
       ∑ x, MvPowerSeries.C (∑ j, A i j * B j x) * MvPowerSeries.X x := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← linSubHom_apply, map_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_mul, linSubHom_apply, linSub_C, linSub_X, map_sum, Finset.mul_sum,
-      Finset.sum_mul]
+
+    rw [← linSubHom_apply, map_sum]
+
+    simp only [map_mul, linSubHom_apply, linSub_C, linSub_X, map_sum, Finset.mul_sum,
+    Finset.sum_mul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun j _ => ?_
     rw [mul_assoc]
@@ -74,9 +77,9 @@ theorem linSub_inBlock {n ν : Type} [Fintype n] [Fintype ν] (M : n → ν → 
     MvPowerSeries.subst_comp_subst_apply (hasSubst_lin M) (hasSubst_block k)]
   congr 1
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPowerSeries.subst_X (hasSubst_lin (four M)), four_form,
-    ← MvPowerSeries.coe_substAlgHom (hasSubst_block k), map_sum]
+
+  rw [MvPowerSeries.subst_X (hasSubst_lin (four M)), four_form,
+  ← MvPowerSeries.coe_substAlgHom (hasSubst_block k), map_sum]
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [map_mul, MvPowerSeries.coe_substAlgHom, MvPowerSeries.subst_C,
     MvPowerSeries.subst_X (hasSubst_block k)]

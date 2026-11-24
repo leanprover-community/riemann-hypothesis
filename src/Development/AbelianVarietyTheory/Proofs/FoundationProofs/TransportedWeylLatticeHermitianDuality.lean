@@ -1,19 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSelfDualE
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.HarderNarasimhan.ShiftInvariance
-public import Formalism.QuotientMetricDivisors.ReductionLemmaZero
-public import Formalism.QuotientMetricDivisors.ProdFormula
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.MeanMaxLeaf.LeafMMFree
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeHasBasisAtEveryFinitePlace
+import Formalism.LocalToGlobal.SubmoduleMembership
+public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+public import Formalism.QuotientMetricDivisors.Statement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DualLatticeIsLatticeAndHermitianDual
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedLatticeLocalizationFreeLeCoefficientSStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StdWeylLatticesFgAndSpanCoeffSpace
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StandardWeylLatticesFockDualStatement
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeHasBasisAtEveryFinitePlace
+public import Formalism.LocalToGlobal.Divisibility.CoefMod
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StandardWeylLatticesFockDual
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedLatticeLocalizationFreeLeCoefficientS
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StdWeylLatticesFgAndSpanCoeffSpace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.MeanMaxLeaf.LeafMMFree
 
 @[expose] public section
 
@@ -32,20 +67,7 @@ variable {K : Type} [Field K] [NumberField K]
 
 theorem mem_of_forall_locP {V : Type} [AddCommGroup V] [Module (𝓞 K) V] (A : Submodule (𝓞 K) V) (x : V)
     (hx : ∀ w : HeightOneSpectrum (𝓞 K), x ∈ localization₂ w.asIdeal A) : x ∈ A := by
-  by_contra hxA
-  let I : Ideal (𝓞 K) := Submodule.comap (LinearMap.toSpanSingleton (𝓞 K) V x) A
-  have hmem : ∀ r : 𝓞 K, r ∈ I ↔ r • x ∈ A := by
-    intro r
-    simp [I]
-  have hI : I ≠ ⊤ := by
-    intro h
-    apply hxA
-    have h1 : (1 : 𝓞 K) ∈ I := h ▸ Submodule.mem_top
-    simpa using (hmem 1).mp h1
-  obtain ⟨p, hp, hIp⟩ := Ideal.exists_le_maximal I hI
-  have hp0 : p ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hp (RingOfIntegers.not_isField K)
-  obtain ⟨s, hs, hsx⟩ := hx ⟨p, hp.isPrime, hp0⟩
-  exact hs (hIp ((hmem s).mpr hsx))
+  exact Submodule.mem_of_forall_heightOne_exists_smul_mem (NumberField.RingOfIntegers.not_isField K) A x hx
 
 theorem mem_localization_of_mem {V : Type} [AddCommGroup V] [Module (𝓞 K) V] (w : HeightOneSpectrum (𝓞 K))
     {A : Submodule (𝓞 K) V} {x : V} (hx : x ∈ A) : x ∈ localization₂ w.asIdeal A :=
@@ -293,23 +315,23 @@ theorem nabDelDual : NabDelDual := by
     choose B' hB' using fun τ => exists_dual_frame (G τ) (hG τ) (B τ)
     exact ⟨B, B', hB', hB, fun τ =>
       isBasisAt_hdual (G τ) (M τ) (hM τ).fg w (B τ) (B' τ) (hB τ) (hB' τ)⟩
-  have hnab : ∀ F ∈ nabP lam M, F ∈ VV K lam := GlobalTheory.T.transportedLattice_localization_free_le_coefficientSpace.2.2 K ι n lam M hM
+  have hnab : ∀ F ∈ nabP lam M, F ∈ VV K lam := _root_.GlobalTheory.TransLoc.nabDelLoc_free_leVV.2.2 K ι n lam M hM
   have hdel : ∀ F ∈ delP lam M, F ∈ VV K lam := fun F hF =>
     hnab F (transLat_mono lam (delStd_le_nabStd K lam) M hF)
   constructor
   · refine dual_of_local lam G (nabStd K lam) (delStd K lam) _ _ (GlobalTheory.StdLatSpan.std_fg_span K ι n lam).1 ?_ hnab ?_
     · intro x hx
-      rw [← (GlobalTheory.T.standard_weyl_lattices_fock_dual K ι n lam x hx).2]
+      rw [← (_root_.GlobalTheory.StdDual.std_dual K ι n lam x hx).2]
       simp only [hone]
     · intro w
       obtain ⟨B, B', h1, h2, h3⟩ := hfr w
-      exact ⟨B, B', h1, (GlobalTheory.T.transportedLattice_localization_free_le_coefficientSpace.1 K ι n lam M hM _ B h2).1, (GlobalTheory.T.transportedLattice_localization_free_le_coefficientSpace.1 K ι n lam _ hM' _ B' h3).2⟩
+      exact ⟨B, B', h1, (_root_.GlobalTheory.TransLoc.nabDelLoc_free_leVV.1 K ι n lam M hM _ B h2).1, (_root_.GlobalTheory.TransLoc.nabDelLoc_free_leVV.1 K ι n lam _ hM' _ B' h3).2⟩
   · refine dual_of_local lam G (delStd K lam) (nabStd K lam) _ _ (GlobalTheory.StdLatSpan.std_fg_span K ι n lam).2.1 ?_ hdel ?_
     · intro x hx
-      rw [← (GlobalTheory.T.standard_weyl_lattices_fock_dual K ι n lam x hx).1]
+      rw [← (_root_.GlobalTheory.StdDual.std_dual K ι n lam x hx).1]
       simp only [hone]
     · intro w
       obtain ⟨B, B', h1, h2, h3⟩ := hfr w
-      exact ⟨B, B', h1, (GlobalTheory.T.transportedLattice_localization_free_le_coefficientSpace.1 K ι n lam M hM _ B h2).2, (GlobalTheory.T.transportedLattice_localization_free_le_coefficientSpace.1 K ι n lam _ hM' _ B' h3).1⟩
+      exact ⟨B, B', h1, (_root_.GlobalTheory.TransLoc.nabDelLoc_free_leVV.1 K ι n lam M hM _ B h2).2, (_root_.GlobalTheory.TransLoc.nabDelLoc_free_leVV.1 K ι n lam _ hM' _ B' h3).1⟩
 
 end GlobalTheory.TransDual

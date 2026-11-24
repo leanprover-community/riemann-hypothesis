@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Ideal.Height
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

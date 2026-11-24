@@ -1,9 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.LevelInertiaLeLevelDec
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LengthCyclotomicBlockCocyclesLeSha
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.InfUnram
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.InfUnram
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -64,44 +102,7 @@ theorem UpperTheory.V.LDataCardLeFinrank.shaInfl :
     obtain ⟨m, hm⟩ := hv0 v hv A hA
     rw [hm _ hτ, htriv _ h4, sub_self]
 
-  have infUnram :
-      Formalism.GaloisCohomology.InfUnram := by
-    intro F Ω _ _ _ _ S R _ M _ _ _ _ _ _ rhoS _
-    refine ⟨?_, fun x => ⟨?_, ?_⟩⟩
-    · rw [injective_iff_map_eq_zero]
-      intro c hc
-      obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ c
-      obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.mk_eq_zero _).1 hc)
-      refine (Submodule.Quotient.mk_eq_zero _).2 ((mem_coboundaries1 _ _).2 ⟨m, fun g => ?_⟩)
-      obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective g
-      exact hm g
-    · rintro ⟨c, rfl⟩ v hv A hA
-      obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ c
-      refine (Submodule.Quotient.mk_eq_zero _).2 ((mem_coboundaries1 _ _).2 ⟨0, fun g => ?_⟩)
-      have h1 : z.1 1 = 0 := by
-        have := z.2.2 1 1
-        rw [one_mul, map_one] at this
-        exact left_eq_add.1 this
-      have h2 : toGS Ω S g.1 = 1 := (QuotientGroup.eq_one_iff g.1).2 (ine_le_NS hv hA g.2)
-      rw [map_zero, sub_zero]
-      change z.1 (toGS Ω S g.1) = 0
-      rw [h2, h1]
-    · intro hc
-      obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-      have hv0 : ∀ v ∉ S, ∀ A : ValuationSubring Ω, IsPlaceOver A v →
-          ∃ m, ∀ g ∈ Ine (F := F) A, z.1 g = rhoS (toGS Ω S g) m - m := by
-        intro v hv A hA
-        obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.mk_eq_zero _).1 (hc v hv A hA))
-        exact ⟨m, fun g hg => hm ⟨g, hg⟩⟩
-      let f' : GS Ω S → M := Quotient.lift z.1 fun a b hab => by
-        have h1 := vanishAll rhoS z.2 hv0 _ (QuotientGroup.leftRel_apply.1 hab)
-        have h2 := z.2.2 a (a⁻¹ * b)
-        rw [mul_inv_cancel_left, h1, map_zero, add_zero] at h2
-        exact h2.symm
-      refine ⟨Submodule.Quotient.mk ⟨f', z.2.1.quotient_lift _, fun a b => ?_⟩, rfl⟩
-      obtain ⟨a, rfl⟩ := QuotientGroup.mk_surjective a
-      obtain ⟨b, rfl⟩ := QuotientGroup.mk_surjective b
-      exact z.2.2 a b
+  have infUnram := @UpperTheory.V.LDataCardLeFinrank.infUnram
   have hI := (infUnram F Ω (S : Set (HeightOneSpectrum (𝓞 F))) R M ρ hρ).2
   have key : ∀ z : Z1 ρ, (Submodule.Quotient.mk z : H1 ρ) ∈ Sha1 ρ (locFam S A) (continuous_locFam S A) ↔
       ∀ v : S, ∃ m, ∀ g ∈ Dec (F := F) (A v), z.1 (toGS Ω _ g) = ρ (toGS Ω _ g) m - m := by

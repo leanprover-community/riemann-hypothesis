@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StMaximalCountUnbranched
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRiemannExtensionAnalytic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.OsgoodSeparate
+public import Mathlib.Analysis.Calculus.FDeriv.Pi
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

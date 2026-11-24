@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeAutomorphismApprox.LinDefs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,17 +60,14 @@ variable {K : Type} [Field K] {n : ℕ} (P : Matrix (Fin n) (Fin n) K)
 theorem pr_add_left (β β' x : Fin n → K) : pr P (β + β') x = pr P β x + pr P β' x := by
   first
   | simp [pr]
-  | simp [pr, dotProduct, Finset.sum_add_distrib, add_mul]
 
 theorem pr_sub_left (β β' x : Fin n → K) : pr P (β - β') x = pr P β x - pr P β' x := by
   first
   | simp [pr]
-  | simp [pr, dotProduct, Finset.sum_sub_distrib, sub_mul]
 
 theorem pr_smul_left (c : K) (β x : Fin n → K) : pr P (c • β) x = c * pr P β x := by
   first
   | simp [pr]
-  | simp [pr, dotProduct, Finset.mul_sum, mul_assoc]
 
 theorem pr_add_right (β x y : Fin n → K) : pr P β (x + y) = pr P β x + pr P β y := by
   unfold pr
@@ -61,8 +100,6 @@ theorem pr_sum_right {ι : Type} (s : Finset ι) (β : Fin n → K) (x : ι → 
 theorem pr_eq_vecMul (β x : Fin n → K) : pr P β x = (β ᵥ* P) ⬝ᵥ x := by
   first
   | exact dotProduct_mulVec β P x
-  | exact Matrix.dotProduct_mulVec β P x
-  | simp [pr, dotProduct_mulVec]
 
 end Pr
 
@@ -81,8 +118,6 @@ theorem one_add_smul_vecMulVec_mul (p q : Fin n → R) (c d : R) :
   simp only [add_mul, mul_add, one_mul, mul_one, Matrix.smul_mul, Matrix.mul_smul, key, smul_smul]
   first
   | (module; done)
-  | (rw [add_smul, add_smul, show c * d * (q ⬝ᵥ p) = d * (c * (q ⬝ᵥ p)) by ring]; abel; done)
-  | (rw [add_smul, add_smul, show c * d * (q ⬝ᵥ p) = c * (d * (q ⬝ᵥ p)) by ring]; abel; done)
 
 def rankOneUnitGL (p q : Fin n → R) (c d : R) (h : c + d + c * d * (q ⬝ᵥ p) = 0) : GL (Fin n) R :=
   ⟨1 + c • vecMulVec p q, 1 + d • vecMulVec p q, by rw [one_add_smul_vecMulVec_mul, h, zero_smul, add_zero],
@@ -121,8 +156,6 @@ theorem smem {M : Submodule O (Fin n → K)} {c : K} (hc : c ∈ O) {x : Fin n �
     c • x ∈ M := by
   first
   | exact M.smul_mem (⟨c, hc⟩ : O) hx
-  | (have h := M.smul_mem (⟨c, hc⟩ : O) hx
-     simpa [Algebra.smul_def] using h)
 
 def Good (T : GL (Fin n) K) : Prop :=
   (∀ x ∈ Λ1, (T : Matrix (Fin n) (Fin n) K) *ᵥ x ∈ Λ1 ∧
@@ -176,8 +209,6 @@ theorem isAdmissible_rankOneGL (hP : ∀ β ∈ Λ2, ∀ x ∈ Λ1, pr P β x �
     intro u v hu hv
     first
     | exact mul_mem hu hv
-    | exact O.mul_mem _ _ hu hv
-    | exact O.toSubring.mul_mem hu hv
   have hO : ∀ x ∈ Λ1, (γ ᵥ* P) ⬝ᵥ x ∈ O := fun x hx => by
     rw [← pr_eq_vecMul]
     exact hP γ hγ x hx

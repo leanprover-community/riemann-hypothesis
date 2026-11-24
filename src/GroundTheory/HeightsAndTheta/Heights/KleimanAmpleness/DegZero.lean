@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 
 @[expose] public section
 

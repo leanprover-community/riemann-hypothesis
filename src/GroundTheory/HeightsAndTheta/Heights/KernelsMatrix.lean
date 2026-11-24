@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Log.PosLog
+public import Mathlib.LinearAlgebra.SymplecticGroup
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

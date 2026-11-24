@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
+public import Mathlib.NumberTheory.NumberField.AdeleRing
 
 @[expose] public section
 

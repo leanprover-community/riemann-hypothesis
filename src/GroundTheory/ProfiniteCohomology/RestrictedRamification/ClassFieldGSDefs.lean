@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ClassFieldConsequences.CongruenceSubgroupLeStandardOpenSubgroup
-public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SPicDefs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

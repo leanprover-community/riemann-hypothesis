@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDuality
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalInvariants
+public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityDefs
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.InjectiveCohomologyMapKummerSeqOpenFTwo
+import Mathlib.Algebra.Order.Star.Real
+import GroundTheory.ProfiniteCohomology.RealPlaces.InvolutionDuality
+import GroundTheory.ProfiniteCohomology.RealPlaces.OrderTwo
 
 @[expose] public section
 

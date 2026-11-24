@@ -1,8 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TrPApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormIteratedFDerivRemCompLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Calculus.ContDiff.Bounds
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Normed.Operator.Prod
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 
 @[expose] public section
 
@@ -223,8 +267,8 @@ theorem exists_hadamard [FiniteDimensional ℝ Y] (P : Submodule ℝ Y) (f : �
       ext
       · simp [B₁, Prod.fst_sum, h4]
       · simp [B₁, Prod.snd_sum, h4]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_neg, h3, map_sum]
+
+    rw [← map_neg, h3, map_sum]
     exact Finset.sum_congr rfl fun j _ => by rw [map_smul, hK, Complex.real_smul]
   have hcK : ∀ j, Continuous fun s : ℝ => K j ((B₀ + s • B₁) x) := fun j => by
     refine (K j).continuous.comp ?_
@@ -254,7 +298,7 @@ theorem apply_linear_mul (T : 𝓢(Y, ℂ) →L[ℂ] ℂ) (L : Y →L[ℝ] ℝ)
     simp only [u, SchwartzMap.sub_apply, SchwartzMap.smul_apply, hft, hg, rem, smul_eq_mul]
     ring
   have hTu : ∀ t : ℝ, T (u t) = -I * T g := fun t => by
-    simp only [u, map_sub, map_smul, hTft, sub_self, smul_zero, smul_eq_mul, zero_sub]
+    simp only [u, map_sub, map_smul, hTft, sub_self, smul_eq_mul]
     ring
   have hlim : Tendsto u (nhdsWithin 0 {0}ᶜ) (nhds 0) := by
     rw [(schwartz_withSeminorms ℂ Y ℂ).tendsto_nhds u 0]
@@ -300,8 +344,8 @@ theorem eq_of_eqOn : ∀ {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [
     ext x
     rw [hu, SchwartzMap.sum_apply]
     exact Finset.sum_congr rfl fun j _ => (hv j x).symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sub_eq_zero, ← map_sub, e, map_sum]
+
+  rw [← sub_eq_zero, ← map_sub, e, map_sum]
   refine Finset.sum_eq_zero fun j _ => apply_linear_mul ℓ (L j) (fun t a b hab => ?_) (u j) (v j) (hv j)
   refine h ((-t / (2 * Real.pi)) • (L j : Y →ₗ[ℝ] ℝ)) (fun p hp => by simp [hL j p hp]) a b (funext fun x => ?_)
   rw [hab, ech]

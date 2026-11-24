@@ -1,5 +1,7 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcAdd
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ExpLaw
 
 @[expose] public section
@@ -82,7 +84,7 @@ theorem hom_at {d : ℕ} {O : Type} [CommRing O] (G : FGLaw k d) (A : OAct O G) 
       funext j' l'
       fin_cases j'
       exact (ev_X _ huv 0 l').symm
-    · simp only [comp1, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_zero, Fin.mk_one, Fin.isValue]
+    · simp only [comp1, Matrix.cons_val_one, Matrix.cons_val_zero, Fin.mk_one, Fin.isValue]
       rw [ev_ev _ _ hp1 huv]
       congr 1
       funext j' l'
@@ -164,8 +166,8 @@ theorem action_linear : ActLinSt := by
   have hdf : dLin (comp1 ℓ (comp1 (B.A.act a) ε)) = dLin (B.A.act a) := by
     rw [dLin_comp1 ℓ _ hAε, dLin_comp1 _ ε hε0, hℓ1, hdε, one_mul, mul_one]
   ext n
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [MvPowerSeries.coeff_C_mul, MvPowerSeries.coeff_X]
   by_cases hn : n.degree = 1
   · obtain ⟨p, rfl⟩ := single_of_degree n hn

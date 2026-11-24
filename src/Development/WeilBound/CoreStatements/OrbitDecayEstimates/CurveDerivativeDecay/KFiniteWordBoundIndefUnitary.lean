@@ -1,9 +1,56 @@
 module
 
 public import Development.WeilBound.CoreStatements.BranchingTraces.HeBranching
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EquivSigLamOfIsDS
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsLowK
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Smooth
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Bridge
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeExpK
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeHW
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFCoreA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EquivSigLamOfIsDS
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SmoothA
 
 @[expose] public section
 
@@ -33,8 +80,8 @@ theorem re_term (hU : IsInfUnitary ε E) (a b : Fin n) (x : M) :
 theorem sum_sq_eq (hU : IsInfUnitary ε E) (x : M) :
     ∑ a, ∑ b, ‖E b a x‖ ^ 2 =
       2 * RCLike.re (inner ℂ (casimirK ε E x) x) - RCLike.re (inner ℂ (casimir E x) x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [casimir, casimirK, LinearMap.sum_apply, sum_inner, map_sum]
+
+  simp only [casimir, casimirK, LinearMap.sum_apply, sum_inner, map_sum]
   simp only [Finset.sum_filter, Finset.mul_sum, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [re_term hU a b x]
@@ -68,10 +115,6 @@ theorem nsq_le {u : Fin n → ℝ} {c : ℝ} (h : ∀ a, |u a| ≤ c) : nsq u �
         have h2 := abs_nonneg (u a)
         nlinarith [abs_mul_abs_self (u a)]
     _ = n * c ^ 2 := by simp
-
-theorem nsq_nonneg' (u : Fin n → ℝ) : 0 ≤ nsq u := by
-  unfold nsq dot
-  exact Finset.sum_nonneg fun a _ => mul_self_nonneg _
 
 theorem abs_rhoN_le' (a : Fin n) : |rhoN ε a| ≤ n / 2 := by
   have key : ∀ s t : Finset (Fin n), |(((s.card : ℕ) : ℝ) - ((t.card : ℕ) : ℝ)) / 2| ≤ n / 2 := by
@@ -131,8 +174,8 @@ theorem layer_bound {lam : Fin n → ℝ} {B : ℝ} (hE : IsGlRep E) (hU : IsInf
           Real.sqrt_le_sqrt (by rw [mul_pow, hs2]; exact hN)
       _ = s * (B + n / 2) := Real.sqrt_sq (mul_nonneg (Real.sqrt_nonneg _) (by linarith))
   have hrho := nsq_le (fun a => abs_rho_le (n := n) a)
-  have hl0 := nsq_nonneg' lam
-  have hrc0 := nsq_nonneg' (rhoC ε)
+  have hl0 := _root_.ReciprocityTheory.ChartRestriction.DS.nsq_nonneg' lam
+  have hrc0 := _root_.ReciprocityTheory.ChartRestriction.DS.nsq_nonneg' (rhoC ε)
   have hsq2 : Real.sqrt 2 ≤ 2 := by
     calc Real.sqrt 2 ≤ Real.sqrt (2 ^ 2) := Real.sqrt_le_sqrt (by norm_num)
       _ = 2 := Real.sqrt_sq (by norm_num)

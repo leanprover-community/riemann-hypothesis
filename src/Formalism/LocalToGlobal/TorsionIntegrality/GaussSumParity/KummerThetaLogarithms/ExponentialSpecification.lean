@@ -1,8 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.LetterShift
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
 
 @[expose] public section
 

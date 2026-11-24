@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ProfiniteInteger
+import Mathlib.Tactic.PNatToNat
 
 @[expose] public section
 

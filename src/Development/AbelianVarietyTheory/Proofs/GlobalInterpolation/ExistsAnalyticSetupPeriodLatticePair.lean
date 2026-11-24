@@ -1,15 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
 public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.CokernelIndexFactors.StatementB
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThU
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfTrace
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CmBaseFieldIntegersAndCurveIdealFacts
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
+public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
 
 @[expose] public section
 
@@ -111,8 +154,8 @@ theorem embV_comb {r : ℕ} (k : Fin r → D.host.K) (b : Fin r → Matrix (Fin 
     δ • embV D (tor0 D cc δ) (∑ i, ((k i : D.host.K) : D.host.E) • b i)
       = ∑ i, D.host.φ₀ ((k i : D.host.K) : D.host.E) • (δ • embV D (tor0 D cc δ) (b i)) := by
   funext τ i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [embV, tor0, embT_Kc, Finset.sum_apply, Matrix.sum_apply, map_sum, Finset.mul_sum]
+
+  simp [embV, tor0, embT_Kc, Finset.sum_apply, Matrix.sum_apply, map_sum, Finset.mul_sum]
   exact Finset.sum_congr rfl fun l _ => by ring
 
 theorem embV_injective [Nonempty D.what₂.Tau] :
@@ -292,15 +335,15 @@ theorem periodSetup : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : 
         rw [← hAe, ContinuousLinearEquiv.apply_symm_apply]
       have e2 : (s : ℂ) • (δ • embV D (tor0 D cc δ) A) = δ • embV D (tor0 D cc δ) ((s : D.host.E) • A) := by
         rw [embV_natsmul, smul_comm]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [e1, ← map_smul, e2, hc, embV_comb, map_sum]
+
+      rw [e1, ← map_smul, e2, hc, embV_comb, map_sum]
       exact Finset.sum_congr rfl fun i _ => by rw [map_smul]
     · intro c hc hsum i
       choose k hk using fun i => (hOK (c i)).1 (hc i)
       have e1 : ∑ i, c i • coord D N N' (δ • embV D (tor0 D cc δ) (b i))
           = coord D N N' (δ • embV D (tor0 D cc δ) (∑ i, (((k i : 𝓞 D.host.K) : D.host.K) : D.host.E) • b i)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [embV_comb, map_sum]
+
+        rw [embV_comb, map_sum]
         exact Finset.sum_congr rfl fun i _ => by rw [hk]; exact ((coord D N N').map_smul _ _).symm
       have hsum' : coord D N N' (δ • embV D (tor0 D cc δ) (∑ i, (((k i : 𝓞 D.host.K) : D.host.K) : D.host.E) • b i)) = 0 := by
         rw [← e1]; exact hsum

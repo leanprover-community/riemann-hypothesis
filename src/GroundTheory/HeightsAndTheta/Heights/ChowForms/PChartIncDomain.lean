@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsBis
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -64,8 +64,8 @@ theorem ker_aeval_eta (I : Ideal (MvPolynomial (Fin n) F)) (t : Fin n → F) (hI
       ∑ d ∈ Finset.range (g.totalDegree + 1), τ⁻¹ ^ d * aeval ξ (homogeneousComponent d g) := by
     intro g
     conv_lhs => rw [← sum_homogeneousComponent g]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun d _ => hhom _ _ (homogeneousComponent_isHomogeneous d g)
   apply le_antisymm
   · intro g hg
@@ -73,8 +73,8 @@ theorem ker_aeval_eta (I : Ideal (MvPolynomial (Fin n) F)) (t : Fin n → F) (hI
     set D := g.totalDegree
     set G := ∑ d ∈ Finset.range (D + 1), homogeneousComponent d g * linForm t ^ (D - d)
     have hGξ : aeval ξ G = τ ^ D * aeval (τ⁻¹ • ξ) g := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hcomp, Finset.mul_sum, map_sum]
+
+      rw [hcomp, Finset.mul_sum, map_sum]
       refine Finset.sum_congr rfl fun d hd => ?_
       have hdD : d ≤ D := Nat.lt_succ_iff.mp (Finset.mem_range.mp hd)
       rw [map_mul, map_pow, ← mul_assoc, mul_comm (aeval ξ _)]
@@ -93,10 +93,10 @@ theorem ker_aeval_eta (I : Ideal (MvPolynomial (Fin n) F)) (t : Fin n → F) (hI
       rw [← sub_eq_zero, ← map_one (Ideal.Quotient.mk J), ← map_sub, Ideal.Quotient.eq_zero_iff_mem]
       exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self _)
     have hG : Ideal.Quotient.mk J G = Ideal.Quotient.mk J g := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [G, map_sum, map_mul, map_pow, h1, one_pow, mul_one]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum, sum_homogeneousComponent]
+
+      simp only [G, map_sum, map_mul, map_pow, h1, one_pow, mul_one]
+
+      rw [← map_sum, sum_homogeneousComponent]
     rw [← Ideal.Quotient.eq_zero_iff_mem, ← hG, Ideal.Quotient.eq_zero_iff_mem]
     exact Ideal.mem_sup_left hGI
   · refine sup_le ?_ ?_

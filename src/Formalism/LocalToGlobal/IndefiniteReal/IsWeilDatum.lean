@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

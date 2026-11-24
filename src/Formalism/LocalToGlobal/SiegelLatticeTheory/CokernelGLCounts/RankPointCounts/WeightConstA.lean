@@ -2,8 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportProposition
+import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 public import Formalism.SharpRestriction.CuspSpanNormBounds.OscillatoryIntegralBounds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 
 @[expose] public section
 

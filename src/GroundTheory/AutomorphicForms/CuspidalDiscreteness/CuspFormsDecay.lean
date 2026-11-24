@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspCompact
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Translation
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

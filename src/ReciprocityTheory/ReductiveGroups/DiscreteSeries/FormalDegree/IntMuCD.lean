@@ -1,8 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
+import Mathlib.Analysis.Matrix.MeasurableSpace
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarBasic
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 
 @[expose] public section
 
@@ -41,7 +43,7 @@ theorem intMuCD_polar_int (ε : Fin n → Bool) (F : (Fin n → Fin n → ℂ) �
       ∫⁻ k, ∫⁻ z, F (polarM (k, z)) * ENNReal.ofReal (Jac z) ∂volume ∂(dk ε) := by
   have hpm := intMuCD_measurable_pM ε
   have hJ : Measurable (fun z : PCoord ε → ℂ => ENNReal.ofReal (Jac z)) :=
-    ENNReal.measurable_ofReal.comp (jac_continuous ε).measurable
+    ENNReal.measurable_ofReal.comp (_root_.ReciprocityTheory.ChartRestriction.DS.pb_jac_continuous ε).measurable
   rw [intMuCD_muPolarMat_eq, lintegral_map hF hpm, intMuCD_P]
   refine (lintegral_prod (F ∘ intMuCD_pM ε) (hF.comp hpm).aemeasurable).trans ?_
   refine lintegral_congr (fun k => ?_)

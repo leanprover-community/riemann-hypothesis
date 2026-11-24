@@ -1,9 +1,15 @@
 module
 
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 public import Formalism.LocalRingCardinality.DataLevel
+public import Formalism.SatakeDualWeyl.DefsCS
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlobApprox
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
+import Mathlib.RingTheory.PiTensorProduct
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 
 @[expose] public section
 

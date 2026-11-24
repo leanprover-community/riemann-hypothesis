@@ -4,6 +4,8 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.TwoSplitIdem
 public import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.ConjPurelyImaginaryGenerator
 public import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.RealPlaceImaginaryGeneratorReEqZero
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousSplitInv
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

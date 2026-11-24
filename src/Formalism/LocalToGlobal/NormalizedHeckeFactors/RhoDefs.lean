@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.GaloisLevelStructure.NGalTied
 public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 
 @[expose] public section

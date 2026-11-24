@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.Legendre
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+import Mathlib.Tactic.Lemma
+public import Mathlib.Analysis.Calculus.Deriv.Pow
 
 @[expose] public section
 
@@ -19,7 +24,7 @@ lemma norm_factor_sub_one_le (w : ℂ) (hw : ‖w‖ ≤ 1 / 2) :
     intro x
     have h1 : HasDerivAt (fun x : ℂ => x + x ^ 2 / 2) (1 + x) x := by
       have h0 := (hasDerivAt_id x).add ((hasDerivAt_pow 2 x).div_const 2)
-      exact h0.congr_deriv (by first | (norm_num; done) | (norm_num; ring) | ring)
+      exact h0.congr_deriv (by first | (norm_num; done))
     have h2 := ((hasDerivAt_id x).const_sub (1 : ℂ)).mul h1.cexp
     exact h2.congr_deriv (by simp only [id]; ring)
   have hbound : ∀ x ∈ Metric.closedBall (0 : ℂ) ‖w‖,

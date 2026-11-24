@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.UnimodGenus
-public import Formalism.PeriodIntegrals.UnitaryApproxFin
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitaryApproxFin
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntWeak
+public import Formalism.PeriodIntegrals.UnitaryApprox
+public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitaryApproxFin
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 

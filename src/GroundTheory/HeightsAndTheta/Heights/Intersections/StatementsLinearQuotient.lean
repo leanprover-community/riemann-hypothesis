@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 @[expose] public section
 

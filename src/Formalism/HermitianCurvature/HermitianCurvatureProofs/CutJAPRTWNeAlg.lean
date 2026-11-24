@@ -1,8 +1,59 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRTWNeAlgSt
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IrreducibleCapelliModules
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BorderedDeterminants
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliAbstractCharacter
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommonEigenvectors
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreKLExistsOfAlg
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HighestWeightPolynomials
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IrreducibleCapelliModules
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -78,8 +129,8 @@ theorem z_main (n : ℕ) (E : Fin (n + 1) → Fin (n + 1) → Module.End ℂ V) 
   have hqy : ∀ x, qdet (subA E) (-p i) (yK E x v) =
       cpol (Function.update p i (p i - 1)) (-p i) • Φ i x := by
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hsum x, map_sum, Finset.sum_congr rfl (fun j _ => hΦq j x), Finset.sum_ite_eq']
+
+    rw [← hsum x, map_sum, Finset.sum_congr rfl (fun j _ => hΦq j x), Finset.sum_ite_eq']
     simp
   refine ⟨fun x => ?_, ?_⟩
   · rw [hqy x]
@@ -89,8 +140,8 @@ theorem z_main (n : ℕ) (E : Fin (n + 1) → Fin (n + 1) → Module.End ℂ V) 
         qminor (subA E) (skip1 w) (skip1 x) (-p i - 1) (yK E x v) = P • Φ i w := by
       intro w
       have e1 : ∀ x, yK E x v = ∑ j, Φ j x := fun x => (hsum x).symm
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [e1, map_sum, Finset.smul_sum]
+
+      simp only [e1, map_sum, Finset.smul_sum]
       rw [Finset.sum_comm]
       simp only [hrelΦ]
       rw [Finset.sum_eq_single i]
@@ -106,8 +157,8 @@ theorem z_main (n : ℕ) (E : Fin (n + 1) → Fin (n + 1) → Module.End ℂ V) 
         Module.End.mul_apply]
       rw [Finset.smul_sum]
       refine Finset.sum_congr rfl fun w _ => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_smul (etaK E w) P (Φ i w), ← hpart w, map_sum]
+
+      rw [← map_smul (etaK E w) P (Φ i w), ← hpart w, map_sum]
       simp only [map_smul]
 
     have hBF := congrArg (fun T : Module.End ℂ V => T v)

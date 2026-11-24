@@ -1,36 +1,58 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.UnitriangularFrameLift
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdScal
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdUnit
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdRoot
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLift
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeIndexAndWeightTheory
 public import Formalism.FlagUnipotentLattices.AutBoundOfMinkowskiBound
-public import Mathlib
-public import Formalism.HyperbolicPlaceProducts.Statement
-public import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
-public import Formalism.HyperbolicPlaceProducts.SecondLevelArithmeticNorm
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.ParabolicSumAdmissibleOfParabolic
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NormAdditiveCharacterTypePrimeEqOne
-public import Formalism.SharpRestriction.CuspSpanNormBounds.NonGenericAndKTwoTheorems
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilySeparationBound
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.SharpRestriction.CuspSpanNormBounds.MassAndBranchingHypotheses
-public import Formalism.SharpRestriction.CuspSpanNormBounds.ThresholdCubicInequalitySignPattern
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.MinkowskiDividesFactorialOfBound
-public import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
+import Formalism.FlagUnipotentLattices.SignaturePreservingEntryNorms
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.Minkowski
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyPacketOfEquivalentStatement
-public import Formalism.FlagUnipotentLattices.IdealCountLeWAsm
-public import Formalism.FlagUnipotentLattices.OmSumLong
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ColonCountWeighted
-public import Formalism.FlagUnipotentLattices.ValuationProductBound
-public import Formalism.FlagUnipotentLattices.PairingOrthogonalComplement
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellGeo
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilySeparationBound
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NormAdditiveCharacterTypePrimeEqOne
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SplittingAdmissibleOfTermData
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -527,10 +549,7 @@ theorem pf_norm (x : D.host.E) : ((|Algebra.norm ℚ x| : ℚ) : ℝ) = ∏ τ :
   rw [h, sq]
   rfl
 
-theorem pf_rd_pos : 0 < D.host.rdE := by
-  unfold Host.rdE
-  have h : (NumberField.discr D.host.E : ℝ) ≠ 0 := by exact_mod_cast NumberField.discr_ne_zero D.host.E
-  positivity
+alias pf_rd_pos := _root_.Formalism.MainNotions.S.rdE_pos
 
 theorem PFHost_of_discr (hd : NumberField.discr D.host.E = NumberField.discr D.host.F ^ 2) : PFHost D := by
   intro l x
@@ -736,7 +755,7 @@ end Sizes
 
 section Close
 
-def k2C0 (C : ℝ) : ℝ := if h : 1 ≤ C then (Formalism.HermitianLatticeCounting.Final.S6.finalSum C h).choose else 0
+def k2C0 (C : ℝ) : ℝ := if h : 1 ≤ C then (_root_.Formalism.HermitianLatticeCounting.P.final_sum_bound C h).choose else 0
 
 def k2A (D : D7) (large₂ : SizeData₂ D) (C : ℝ) (j : ℕ) : ℝ :=
   Real.exp (C * (D.R.m : ℝ) ^ 6 * D.R.f * large₂.sc.L) * (C / D.R.k) ^ (j * (D.R.k - 1 - j) * D.R.f)
@@ -746,7 +765,7 @@ def k2B (D : D7) (large₂ : SizeData₂ D) (C : ℝ) : ℝ := (∑ j ∈ Finset
 theorem final_bound_closes (D : D7) (large₂ : SizeData₂ D) (C : ℝ) (hC : 1 ≤ C) (d : ℝ) (hd : 0 ≤ d)
     (hk : k2C0 C * (D.R.m : ℝ) ^ 6 * large₂.sc.L ≤ (D.R.k : ℝ) * Real.log D.R.k) :
     2 * d * k2B D large₂ C ≤ d * Real.exp (-((D.R.k : ℝ) * D.R.f * Real.log D.R.k)) := by
-  have h := (Formalism.HermitianLatticeCounting.Final.S6.finalSum C hC).choose_spec.2 D.R.k D.R.rS D.R.f large₂.sc.b d (two_le_scale_b D large₂)
+  have h := (_root_.Formalism.HermitianLatticeCounting.P.final_sum_bound C hC).choose_spec.2 D.R.k D.R.rS D.R.f large₂.sc.b d (two_le_scale_b D large₂)
     (one_le_degree_f D) hd
   rw [two_rank_add_two_eq_m D, log_scale_eq_L D large₂] at h
   unfold k2C0 at hk
@@ -1418,7 +1437,7 @@ theorem ng_gram_base (P : FPair H r) : (H.gram (Sum.elim P.A.f P.B.f)).det = (-1
         by_cases ha : a = Fin.last r
         · exact P.B.h_iso b a (Or.inl (fun h => hab (by rw [ha, h])))
         · exact P.B.h_iso b a (Or.inr ha)
-  rw [hG, Formalism.HermitianLatticeCounting.Final.LocalIntegralStructure.gramDetGen E r (Zh.transpose.map c) Zh]
+  rw [hG, _root_.Formalism.HermitianLatticeCounting.P.gram_determinant_general E r (Zh.transpose.map c) Zh]
   have d1 : (Zh.transpose.map c).det = M.L.cj Zh.det := by
     rw [← hcx, RingHom.map_det, ← Matrix.det_transpose]
     rfl
@@ -1657,8 +1676,8 @@ theorem ng_frame_back (Fr : FrameD H r) {g : V ≃ₗ[E] V} (hg : g ∈ Fr.NSet)
   obtain ⟨row, -, -, h⟩ := N_row Fr (NSet_inv Fr hg) a
   refine ⟨row, ?_⟩
   have h1 : g ((g⁻¹ : V ≃ₗ[E] V) (Fr.f a)) = Fr.f a := LinearEquiv.apply_symm_apply g _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h1, h, map_sum]
+
+  rw [← h1, h, map_sum]
   exact Finset.sum_congr rfl (fun b _ => by rw [map_smul])
 
 theorem ng_orth_back (Fr : FrameD H r) {g : V ≃ₗ[E] V} (hg : g ∈ Fr.NSet) {k : V}

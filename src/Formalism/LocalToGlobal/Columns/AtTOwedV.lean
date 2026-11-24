@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.AtTOwedU
+public import Formalism.LocalToGlobal.Columns.DecoFin
+public import Formalism.LocalToGlobal.Columns.CoefCol
+public import Formalism.LocalToGlobal.Columns.ColForms
 
 @[expose] public section
 

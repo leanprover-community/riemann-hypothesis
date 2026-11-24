@@ -1,13 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
+public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftCuspFormSpaceThetaMapEqDataStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanRangeMulVec
-public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
-public import Formalism.LocalToGlobal.IndefiniteReal.PackageFromPrimitiveStatements
-public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
-public import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanRangeMulVec
+import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
+import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -96,16 +130,16 @@ theorem orth_ker_inf_range {n d e : ℕ} (J : (Fin n → K) →ₛₗ[σ] M)
     have hz : y = ∑ l, y l • (Pi.single l 1 : Fin e → K) := by
       ext i; simp [Pi.single_apply]
     conv_lhs => rw [hz]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smulₛₗ]
+
+    simp only [map_sum, map_smulₛₗ]
   have hSk : ∀ a ∈ S, θ' a = 0 → a = 0 := by
     intro a ha h0
     rw [hS, GlobalTheory.Mem.LiftForms.span_range_mulVec, ← Fintype.range_linearCombination] at ha
     obtain ⟨c, rfl⟩ := ha
     have hcomp : θ' (Fintype.linearCombination ℂ (fun k => J (Zm *ᵥ Pi.single k 1)) c) =
         ∑ l, ((Θ.map σ) *ᵥ c) l • jW (Pi.single l 1) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Fintype.linearCombination_apply, map_sum, map_smul, hθ, Matrix.mulVec_mulVec, hP.1, Matrix.one_mulVec]
+
+      simp only [Fintype.linearCombination_apply, map_sum, map_smul, hθ, Matrix.mulVec_mulVec, hP.1, Matrix.one_mulVec]
       simp only [hexp (Θ *ᵥ _), Finset.smul_sum, smul_smul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun l _ => ?_
@@ -154,7 +188,7 @@ theorem divisionRows_rationalLift : ∀ (D : D7) (G : Type) [Group G] [Fintype G
       (lPrj D A3.A F.P0 F.ψ0 (A3.fam3.toSub2 (zsOf R F)) i t) := BlockDat.lf_l_proj hB
   have he : ∀ z, lE D A3.A F.P0 F.ψ0 i t *ᵥ (lZ0 D A3.A F.P0 F.ψ0 (A3.fam3.toSub2 (zsOf R F)) i t *ᵥ z) =
       lZ0 D A3.A F.P0 F.ψ0 (A3.fam3.toSub2 (zsOf R F)) i t *ᵥ z := fun z => GlobalTheory.Mem.LiftForms.lvlOp_lE hB z
-  obtain ⟨hTh, hθ⟩ := GlobalTheory.T.liftCuspFormSpace_thetaMap_eq_data D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH
+  obtain ⟨hTh, hθ⟩ := _root_.GlobalTheory.Mem.ThRead.thDef3_thTheta D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH
   have hf := Y.formsL i t
   exact orth_ker_inf_range ((D.what₂.jMt (Y.tup t) ((i : ℕ) + 1)).comp (Y.eMt i t).toLinearMap) hf.span
     (lH D A3.A F.P0 F.ψ0 i t) hf.inner (D.what₂.eMt (Y.tup t) ((i : ℕ) + 1)) (lE D A3.A F.P0 F.ψ0 i t) hf.op_eq

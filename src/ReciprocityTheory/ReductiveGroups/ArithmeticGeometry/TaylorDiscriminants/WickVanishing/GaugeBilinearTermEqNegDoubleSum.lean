@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -164,7 +166,7 @@ theorem gaugeBilinearTerm_eq_neg_double_sum (h : PS k 2 d) (i j : Fin d) :
   rw [map_neg, coeff_ev_zero_right, Finsupp.embDomain_single, coeff_pderiv]
   have he : eXv d ((0 : Fin 1), j) = ((0 : Fin 2), j) := rfl
   rw [he]
-  simp [Finsupp.single_apply]
+  simp
 
 theorem swE_swE (t : Fin 2 × Fin d) : swE d (swE d t) = t := by
   obtain ⟨a, b⟩ := t

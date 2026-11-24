@@ -1,9 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
+import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.TensorDecompositionParameters
+public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeries₂.Poulsen
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -18,61 +61,14 @@ theorem common_bound {ι α β : Type} [DecidableEq ι] (P : α → Prop) (S : S
     (s : Finset ι) :
     ∃ (C : ℝ) (L : List α), 0 ≤ C ∧ (∀ a ∈ L, P a) ∧
       ∀ c ∈ s, ∀ v ∈ S, f c v ≤ C * (L.map fun a => n a v).sum := by
-  have hs : ∀ (L : List α) v, 0 ≤ (L.map fun a => n a v).sum := by
-    intro L v
-    apply List.sum_nonneg
-    intro x hx
-    obtain ⟨a, -, rfl⟩ := List.mem_map.1 hx
-    exact hn a v
-  induction s using Finset.induction_on with
-  | empty => exact ⟨0, [], le_rfl, by simp, by simp⟩
-  | insert c s _ ih =>
-    obtain ⟨C, L, hC, hL, hb⟩ := ih
-    obtain ⟨C', L', hL', hb'⟩ := h c
-    refine ⟨C + |C'|, L ++ L', by positivity, ?_, ?_⟩
-    · intro a ha
-      rcases List.mem_append.1 ha with ha | ha
-      · exact hL a ha
-      · exact hL' a ha
-    · intro d hd v hv
-      rw [List.map_append, List.sum_append]
-      have h1 := hs L v
-      have h2 := hs L' v
-      have h3 := abs_nonneg C'
-      have h4 := le_abs_self C'
-      rcases Finset.mem_insert.1 hd with rfl | hd
-      · have := hb' v hv
-        nlinarith [mul_nonneg hC h1, mul_nonneg hC h2, mul_nonneg h3 h1,
-          mul_le_mul_of_nonneg_right h4 h2]
-      · have := hb d hd v hv
-        nlinarith [mul_nonneg hC h2, mul_nonneg h3 h1, mul_nonneg h3 h2]
+  apply Gp91.GlobalTheory.TensForm.common_bound <;> assumption
 
 variable {k r : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
 
 theorem hh_act (ρ : Mx k r → Matrix ι ι ℂ) (Γ : Matrix ι ι ℂ) (R : Rep k r) (g : Mx k r)
     (hρ : (ρ g)ᴴ * Γ * ρ g = Γ) (hσ : ∀ v, ‖R.σ g v‖ = ‖v‖) (x y : ι → R.H) :
     hh Γ R (act ρ R g x) (act ρ R g y) = hh Γ R x y := by
-  have hiso : ∀ a b, ⟪R.σ g a, R.σ g b⟫_ℂ = ⟪a, b⟫_ℂ :=
-    (LinearMap.norm_map_iff_inner_map_map ((R.σ g : R.H →L[ℂ] R.H) : R.H →ₗ[ℂ] R.H)).1 hσ
-  conv_rhs => rw [← hρ]
-  simp only [hh, act, sum_inner, inner_sum, inner_smul_left, inner_smul_right, hiso, Matrix.mul_apply,
-    Matrix.conjTranspose_apply, Finset.mul_sum, Finset.sum_mul]
-  calc _ = ∑ j, ∑ i, ∑ b, ∑ a, Γ i j * (ρ g j b * ((starRingEnd ℂ) (ρ g i a) * ⟪y a, x b⟫_ℂ)) :=
-        Finset.sum_comm
-    _ = ∑ j, ∑ b, ∑ a, ∑ i, Γ i j * (ρ g j b * ((starRingEnd ℂ) (ρ g i a) * ⟪y a, x b⟫_ℂ)) := by
-        refine Finset.sum_congr rfl fun j _ => ?_
-        rw [Finset.sum_comm]
-        exact Finset.sum_congr rfl fun b _ => Finset.sum_comm
-    _ = ∑ b, ∑ a, ∑ j, ∑ i, Γ i j * (ρ g j b * ((starRingEnd ℂ) (ρ g i a) * ⟪y a, x b⟫_ℂ)) := by
-        rw [Finset.sum_comm]
-        exact Finset.sum_congr rfl fun b _ => Finset.sum_comm
-    _ = ∑ a, ∑ b, ∑ j, ∑ i, Γ i j * (ρ g j b * ((starRingEnd ℂ) (ρ g i a) * ⟪y a, x b⟫_ℂ)) :=
-        Finset.sum_comm
-    _ = _ := by
-        refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ =>
-          Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
-        rw [RCLike.star_def]
-        ring
+  apply Gp91.GlobalTheory.TensForm.hh_act <;> assumption
 
 
 omit [DecidableEq ι] in

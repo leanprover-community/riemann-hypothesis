@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KernelsMatrix
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

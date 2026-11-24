@@ -1,10 +1,54 @@
 module
 
-public import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.CongruenceLiftOfBasis
 public import Formalism.LocalRingCardinality.DataLevel
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ClosureUpperUni
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OneAddPowOfMulSelfEqZero
+public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ClosureUpperUni
 public import Lemmata.GeneralBFactLeftTail.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -80,9 +124,6 @@ theorem unip_pow (I : Ideal R) (g : ℕ) (hg : g.Prime) (hgI : (g : R) ∈ I) (A
   have h2 := congrFun (congrFun this i) j
   exact Ideal.Quotient.eq_zero_iff_mem.1 h2
 
-theorem one_add_pow_of_sq {S : Type} [Ring S] (X : S) (h : X * X = 0) (N : ℕ) : (1 + X) ^ N = 1 + (N : S) * X := by
-  first | exact GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero .. | (apply GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero <;> assumption) | (intros; apply GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero <;> assumption) | (apply @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero <;> assumption) | (intros; apply @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero <;> assumption) | (apply @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero <;> first | assumption | infer_instance) | exact @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero S ‹_› X h N | exact @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero S ‹_› X h | exact @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero S ‹_› X | exact @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero S ‹_› | exact @GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero S
-
 theorem cong_coprime (I : Ideal R) (hinf : (⨅ m : ℕ, I ^ m) = ⊥) (B : Matrix (Fin k) (Fin k) R)
     (hB : ∀ i j, (B - 1) i j ∈ I) (N : ℕ) (hN : IsUnit (N : R)) (hBN : B ^ N = 1) : B = 1 := by
   obtain ⟨c, hc⟩ := hN.exists_left_inv
@@ -104,7 +145,7 @@ theorem cong_coprime (I : Ideal R) (hinf : (⨅ m : ℕ, I ^ m) = ⊥) (B : Matr
       have h2 : (1 + φ (B - 1)) ^ N = 1 := by
         have : 1 + φ (B - 1) = φ B := by rw [map_sub, map_one]; abel
         rw [this, ← map_pow, hBN, map_one]
-      rw [one_add_pow_of_sq _ hXX] at h2
+      rw [_root_.GlobalTheory.OneAddPowSquareZero.one_add_pow_of_mul_self_eq_zero _ hXX] at h2
       have h3 : ((N : ℕ) : Matrix (Fin k) (Fin k) (R ⧸ I ^ (m + 1 + 1))) * φ (B - 1) = 0 := by
         simpa using h2
       intro i j
@@ -141,7 +182,7 @@ theorem unip_coprime (I : Ideal R) (hinf : (⨅ m : ℕ, I ^ m) = ⊥) (g : ℕ)
 
 theorem closure_upperUni (A : Type) [CommRing A] (x : GL (Fin k) A) (hx : x ∈ Subgroup.closure (upperUni k A)) :
     x ∈ upperUni k A := by
-  first | exact UpperTheory.Reformulated.B.Qe27.closure_upperUni .. | (apply UpperTheory.Reformulated.B.Qe27.closure_upperUni <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qe27.closure_upperUni <;> assumption) | (apply @UpperTheory.Reformulated.B.Qe27.closure_upperUni <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qe27.closure_upperUni <;> assumption) | (apply @UpperTheory.Reformulated.B.Qe27.closure_upperUni <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qe27.closure_upperUni k A ‹_› x hx | exact @UpperTheory.Reformulated.B.Qe27.closure_upperUni k A ‹_› x | exact @UpperTheory.Reformulated.B.Qe27.closure_upperUni k A ‹_› | exact @UpperTheory.Reformulated.B.Qe27.closure_upperUni k A | exact @UpperTheory.Reformulated.B.Qe27.closure_upperUni k
+  first | (apply UpperTheory.Reformulated.B.Qe27.closure_upperUni <;> assumption)
 
 end Ring
 
@@ -151,28 +192,7 @@ variable {F : Type} [Field F] [NumberField F] {k : ℕ}
 
 theorem natCast_mem_max (v : HeightOneSpectrum (𝓞 F)) (g : ℕ) (hg : (g : 𝓞 F) ∈ v.asIdeal) :
     (g : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
-  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-  intro hu
-  obtain ⟨u, hu⟩ := hu.exists_right_inv
-  have h1 : Valued.v ((g : v.adicCompletion F)) * Valued.v (u : v.adicCompletion F) = 1 := by
-    rw [← map_mul]
-    have := congrArg (fun z : v.adicCompletionIntegers F => (z : v.adicCompletion F)) hu
-    simp only [MulMemClass.coe_mul, OneMemClass.coe_one] at this
-    have e : (((g : v.adicCompletionIntegers F)) : v.adicCompletion F) = (g : v.adicCompletion F) := by simp
-    rw [e] at this
-    rw [this, map_one]
-  have h2 : Valued.v ((g : v.adicCompletion F)) < 1 := by
-    have e : (g : v.adicCompletion F) = ((algebraMap (𝓞 F) F (g : 𝓞 F) : F) : v.adicCompletion F) := by
-      rw [map_natCast]
-      exact (map_natCast (algebraMap F (v.adicCompletion F)) g).symm
-    rw [e, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', HeightOneSpectrum.valuation_lt_one_iff_mem]
-    exact hg
-  have h3 : Valued.v (u : v.adicCompletion F) ≤ 1 :=
-    (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).1 u.2
-  have h4 : Valued.v ((g : v.adicCompletion F)) * Valued.v (u : v.adicCompletion F) < 1 :=
-    lt_of_le_of_lt (mul_le_of_le_one_right' h3) h2
-  rw [h1] at h4
-  exact lt_irrefl _ h4
+  apply PI.LocMassTypL.natCast_mem_max <;> assumption
 
 theorem iwU_coprime (v : HeightOneSpectrum (𝓞 F)) (g : ℕ) (hg : g.Prime) (hgv : (g : 𝓞 F) ∈ v.asIdeal)
     (δ : GL (Fin k) (v.adicCompletion F)) (hδ : δ ∈ iwU F k v) (N : ℕ) (hc : Nat.Coprime N g) (hN : δ ^ N = 1) : δ = 1 := by
@@ -216,8 +236,7 @@ theorem iwU_coprime (v : HeightOneSpectrum (𝓞 F)) (g : ℕ) (hg : g.Prime) (h
   have : a = 1 := Units.ext h1
   rw [this, map_one]
 
-theorem exists_place (g : ℕ) (hg : g.Prime) : ∃ v : HeightOneSpectrum (𝓞 F), (g : 𝓞 F) ∈ v.asIdeal := by
-  first | exact Bl.general_b_fact_left_tail.goal1 .. | (apply Bl.general_b_fact_left_tail.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_left_tail.goal1 <;> assumption) | (apply @Bl.general_b_fact_left_tail.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_left_tail.goal1 <;> assumption) | (apply @Bl.general_b_fact_left_tail.goal1 <;> first | assumption | infer_instance) | exact @Bl.general_b_fact_left_tail.goal1 F ‹_› ‹_› g hg | exact @Bl.general_b_fact_left_tail.goal1 F ‹_› ‹_› g | exact @Bl.general_b_fact_left_tail.goal1 F ‹_› ‹_› | exact @Bl.general_b_fact_left_tail.goal1 F ‹_› | exact @Bl.general_b_fact_left_tail.goal1 F
+alias exists_place := _root_.Bl.general_b_fact_left_tail.goal1
 
 end Place
 

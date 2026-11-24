@@ -1,6 +1,46 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -53,8 +93,8 @@ theorem md_sDegs_comp [Fintype ι] (LL : Letters ι) (S : Set ι) (jj : Fin n) (
   obtain ⟨m', hm', hz'⟩ := hz
   have hWH : IsWeightedHomogeneous letterWeight (twistSub LL S jj (multidegreeComponent d G)) d := by
     unfold multidegreeComponent
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     apply IsWeightedHomogeneous.sum
     intro m hm
     have h := twist_substitution_weighted_homog LL S jj m (G.coeff m)
@@ -67,8 +107,8 @@ theorem md_sDegs_comp [Fintype ι] (LL : Letters ι) (S : Set ι) (jj : Fin n) (
     exact G.support_sum_monomial_coeff.symm
   have key : (twistSub LL S jj (multidegreeComponent d G)).coeff m' = (twistSub LL S jj G).coeff m' := by
     conv_rhs => rw [hsplit]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), MvPolynomial.coeff_add, map_sum, coeff_sum, Finset.sum_eq_zero, add_zero]
+
+    rw [map_add (f := _), MvPolynomial.coeff_add, map_sum, coeff_sum, Finset.sum_eq_zero, add_zero]
     intro m hm
     apply (twist_substitution_weighted_homog LL S jj m (G.coeff m)).coeff_eq_zero
     intro h
@@ -91,8 +131,8 @@ theorem md_weight_mapDomain {σ τ M : Type*} [AddCommMonoid M] (f : σ → τ) 
 
 theorem md_wh_rename {σ τ M : Type*} [AddCommMonoid M] (f : σ → τ) (w : τ → M) {P : MvPolynomial σ R} {d : M}
     (h : IsWeightedHomogeneous (w ∘ f) P d) : IsWeightedHomogeneous w (rename f P) d := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [P.as_sum, map_sum]
+
+  rw [P.as_sum, map_sum]
   apply IsWeightedHomogeneous.sum
   intro m hm
   rw [rename_monomial]
@@ -104,15 +144,7 @@ theorem md_pol_iff [Fintype ι] (P : MvPolynomial (ι × Fin n) R) (d : ι → �
     P ∈ Pol R n d ↔ IsWeightedHomogeneous letterWeight P d := by
   unfold Pol
   rw [mem_restrictSupport_iff]
-  constructor
-  · intro h m hm
-    rw [weight_eq_multidegree_fun]
-    funext i
-    exact h (Finset.mem_coe.2 (mem_support_iff.2 hm)) i
-  · intro h m hm i
-    have := h (mem_support_iff.1 (Finset.mem_coe.1 hm))
-    rw [weight_eq_multidegree_fun] at this
-    exact congrFun this i
+  simp [IsWeightedHomogeneous, weight_eq_multidegree_fun, Set.subset_def, funext_iff]
 
 end Transport
 
@@ -165,13 +197,12 @@ theorem md_geR_mono {v v' : WithTop ℤ} (h : v ≤ v') {t : ℝ} (hv : geR v t)
   intro z hz
   subst hz
   cases hv' : v with
-  | top => rw [hv'] at h; simp at h
+  | top => simp [hv'] at h
   | coe z' =>
     rw [hv'] at h
     have h1 : z' ≤ z := by exact_mod_cast h
-    have h2 := hv z' hv'
-    have h3 : (z' : ℝ) ≤ z := by exact_mod_cast h1
-    linarith
+    have h2 : (z' : ℝ) ≤ z := by exact_mod_cast h1
+    linarith [hv z' hv']
 
 theorem md_comp_gen (m : ℤ) (th : ℤ → ℝ) (D : Fin (Mj F j) → ℕ) {ζ : MvPolynomial (Fin (Mj F j) × Fin (r + K)) O}
     (hζ : ζ ∈ Submodule.span O (GenM (O := O) (K := K) F j m th)) :
@@ -187,13 +218,13 @@ theorem md_comp_gen (m : ℤ) (th : ℤ → ℝ) (D : Fin (Mj F j) → ℕ) {ζ 
     have e : rename (plVar (K := K)) A * rename (tanVar (r := r)) G =
         ∑ d' ∈ IA, ∑ d'' ∈ IG,
             rename (plVar (K := K)) (multidegreeComponent d' A) * rename (tanVar (r := r)) (multidegreeComponent d'' G) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Finset.sum_mul_sum, ← map_sum, ← map_sum, ← hIA, ← hIG]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum]
+
+      rw [← Finset.sum_mul_sum, ← map_sum, ← map_sum, ← hIA, ← hIG]
+
+    rw [e, map_sum]
     refine Submodule.sum_mem _ fun d' _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Submodule.sum_mem _ fun d'' hd'' => ?_
     have h1 : IsWeightedHomogeneous letterWeight (rename (plVar (K := K)) (multidegreeComponent d' A)) d' :=
       md_wh_rename (plVar (K := K)) letterWeight ((md_pol_iff _ _).1 (homogeneous_component_mem d' A))

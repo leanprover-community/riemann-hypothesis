@@ -1,16 +1,20 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalDefs
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalRestriction
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees
-public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+public import GroundTheory.GlobalFields.NormResidueSymbol.CyclotomicCompositum
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ResLocal
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDefs
+import GroundTheory.ProfiniteCohomology.GaloisCohomology.BrauerInflation
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.CupDecompositionGlobal
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
 public import GroundTheory.ProfiniteCohomology.InflationRestriction
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplitLayers
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.NumberTheory.NumberField.Cyclotomic.Embeddings
+public import GroundTheory.GlobalFields.CyclotomicCharacters.PadicUnitsLog
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees.Layers
 
 @[expose] public section
 
@@ -127,7 +131,7 @@ theorem gsRestrict_comp_galToFixing :
     (AlgEquiv.restrictNormal_commutes σ (maxUnramifiedOutside K.1 ℚ̄ S) y).symm
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem gsBrauerInfl_injective : Function.Injective (gsBrauerInfl K S 2).hom := by
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
   intro x hx
@@ -177,7 +181,7 @@ theorem gsBrauerInfl_comp_unitsLocalRes (n : ℕ) :
 end Local
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem brauerLocal_gsBrauerInfl_inr (ιs : LocalEmbeddings K) (v : HeightOneSpectrum (𝓞 K.1))
     (x : cohomology (uliftIntToIntRep (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S))) 2) :
     brauerLocal ιs ((gsBrauerInfl K S 2).hom x) (.inr v) = (gsLocalRes S (ιs.fin v) 2).hom x := by

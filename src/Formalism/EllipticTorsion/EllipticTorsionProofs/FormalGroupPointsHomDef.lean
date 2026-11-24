@@ -1,11 +1,66 @@
 module
 
 public import Formalism.EllipticTorsion.FormalGroupPointsParametrisation
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.ExistsUnitFactor
+public import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
+public import Formalism.EllipticTorsion.EllipticTorsionProofs.WChord
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.WPoint
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.WSubst
-public import Formalism.EllipticTorsion.EllipticTorsionProofs.WChord
-public import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.InfiniteSum.Nonarchimedean
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -390,7 +445,6 @@ theorem chord_x_id {z1 z2 w1 w2 c v : E} (hw1 : w1 ≠ 0) (hw2 : w2 ≠ 0)
   rw [chord_slope hw1 hw2 hN, WeierstrassCurve.Affine.addX, chordPX]
   generalize z1 * w2 - z2 * w1 = N at *
   field_simp
-  try ring
 
 theorem chord_y_id {z1 z2 w1 w2 c v : E} (hw1 : w1 ≠ 0) (hw2 : w2 ≠ 0)
     (hN : z1 * w2 - z2 * w1 ≠ 0) (hv : v ≠ 0) :
@@ -496,7 +550,7 @@ theorem map_chordPX (a1 a2 z1 z2 w1 w2 c v : R) :
 
 theorem map_chordPY (a1 a3 z1 z2 w1 w2 c v : R) :
     f (chordPY a1 a3 z1 z2 w1 w2 c v) = chordPY (f a1) (f a3) (f z1) (f z2) (f w1) (f w2) (f c) (f v) := by
-  simp only [chordPY, map_sub, map_add (f := _), map_mul, map_pow]
+  simp only [chordPY, map_sub, map_add (f := _), map_mul]
 
 theorem map_tanPX (a1 a2 a3 a4 z w c v : R) :
     f (tanPX a1 a2 a3 a4 z w c v) = tanPX (f a1) (f a2) (f a3) (f a4) (f z) (f w) (f c) (f v) := by
@@ -1045,7 +1099,7 @@ theorem case_tan (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) {W : Weierstrass
     have hw0' := jne nw0
     simp only [← hj] at h
     field_simp at h
-    first | linear_combination h | linear_combination -h
+    first | linear_combination h
   obtain ⟨nD, hxD, hyD⟩ := dbl_formal hU hS hw F hch hyF
   have nwD : w.subst D ≠ 0 := WeierstrassSubstitution.ne_zero_of_weq (hU K W w hw (Fin 2) D cD).1 nD
   unfold xOf yOf at hxD hyD
@@ -1130,7 +1184,6 @@ theorem case_inv (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) {W : Weierstrass
     have : -(-1 / evalPS w a) - W.toAffine.a₁ * (a / evalPS w a) - W.toAffine.a₃ =
         (1 - W.a₁ * a - W.a₃ * evalPS w a) / evalPS w a := by
       field_simp
-      try ring
     rw [this]
     field_simp
 
@@ -1194,7 +1247,7 @@ theorem e1hom_main (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) (hPar : Formal
           apply hy
           rw [hxa, hya, WeierstrassCurve.Affine.negY]
           field_simp
-          first | linear_combination hM0 | linear_combination -hM0
+          first | linear_combination hM0
         rw [hxa, hya]
         exact case_tan hU hS hW hw F hFi hch ha hwa hM
     · rw [WeierstrassCurve.Affine.Point.add_of_X_ne hx]
@@ -1206,7 +1259,7 @@ theorem e1hom_main (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) (hPar : Formal
         apply hx
         rw [hxa, hxb]
         field_simp
-        first | linear_combination h0 | linear_combination -h0
+        first | linear_combination h0
       rw [hxa, hxb, hya, hyb]
       exact case_chord hU hW hw F hFi hch ha hb hwa hwb hN
 

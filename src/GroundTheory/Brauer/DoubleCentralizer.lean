@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.Brauer.TensorSimple
 public import GroundTheory.Brauer.SkolemNoether
+public import Mathlib.RingTheory.SimpleModule.Basic
+import GroundTheory.Brauer.TensorSimple
+public import Mathlib.LinearAlgebra.Basis.MulOpposite
+import Mathlib.RingTheory.TensorProduct.Finite
 
 @[expose] public section
 
@@ -30,14 +32,9 @@ theorem exists_linearEquiv_pi_simple :
     ∃ (S : Submodule R (R × M)) (r m : ℕ), IsSimpleModule R S ∧ 0 < r ∧
       Nonempty (R ≃ₗ[R] (Fin r → S)) ∧ Nonempty (M ≃ₗ[R] (Fin m → S)) := by
   have : IsArtinianRing R := IsArtinianRing.of_finite K R
-  have : Module.Finite R (R × M) := Module.Finite.of_restrictScalars_finite K R _
-  obtain ⟨k, _, S, hS, -⟩ := (IsSimpleRing.isIsotypic R (R × M)).linearEquiv_fun
-  have hT : IsIsotypicOfType R (R × M) S := IsSimpleRing.isIsotypic R (R × M) S
   have : Module.Finite R M := Module.Finite.of_restrictScalars_finite K R _
-  obtain ⟨r, ⟨eR⟩⟩ :=
-    (hT.of_injective (LinearMap.inl R R M) LinearMap.inl_injective).linearEquiv_fun
-  obtain ⟨m, ⟨eM⟩⟩ :=
-    (hT.of_injective (LinearMap.inr R R M) LinearMap.inr_injective).linearEquiv_fun
+  obtain ⟨S, r, m, hS, ⟨eR⟩, ⟨eM⟩⟩ :=
+    exists_linearEquiv_pi_simple_of_nontrivial_prod R R M
   refine ⟨S, r, m, hS, Nat.pos_of_ne_zero ?_, ⟨eR⟩, ⟨eM⟩⟩
   rintro rfl
   exact not_subsingleton R eR.subsingleton
@@ -142,6 +139,8 @@ variable [Algebra.IsCentral K A] [IsSimpleRing A] [FiniteDimensional K A] [IsSim
 
 theorem finrank_mul_finrank_centralizer :
     finrank K B * finrank K (Subalgebra.centralizer K (B : Set A)) = finrank K A := by
+  let _ : FiniteDimensional K B :=
+    FiniteDimensional.of_injective B.val.toLinearMap Subtype.val_injective
   have h := finrank_mul_finrank_end K (A ⊗[K] Bᵐᵒᵖ) (Twist B.val)
   rw [(endAlgEquiv B).toLinearEquiv.finrank_eq, MulOpposite.finrank, Module.finrank_tensorProduct,
     MulOpposite.finrank] at h

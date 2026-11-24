@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalGeneratorsClearDenominators
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsTerRest
 

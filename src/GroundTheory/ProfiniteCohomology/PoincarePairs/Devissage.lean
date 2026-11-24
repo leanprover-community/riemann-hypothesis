@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.Natural
+public import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
+public import GroundTheory.ProfiniteCohomology.PoincareDuality.TensorHomZmodDualIsoZmodMulPairing
+public import GroundTheory.ProfiniteCohomology.PoincareDuality.Devissage
+import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

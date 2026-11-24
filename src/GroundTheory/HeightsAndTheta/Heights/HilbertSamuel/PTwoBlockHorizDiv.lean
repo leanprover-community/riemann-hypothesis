@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockCoeffCycle
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockHorizDiv
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfLattice
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockCoeffCycle
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

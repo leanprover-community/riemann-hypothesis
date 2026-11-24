@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 
 @[expose] public section
 

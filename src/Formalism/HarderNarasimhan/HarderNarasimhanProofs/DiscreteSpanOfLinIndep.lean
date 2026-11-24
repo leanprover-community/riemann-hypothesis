@@ -1,9 +1,58 @@
 module
 
 public import Formalism.HarderNarasimhan.StatementPl
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
 public import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -59,8 +108,8 @@ theorem sum_embedding_eq_zero {t : Free.ChooseBasisIndex ℤ (𝓞 K) → ℝ}
     rcases InfinitePlace.embedding_mk_eq φ with hφ | hφ
     · simpa [hφ] using h (InfinitePlace.mk φ)
     · have h2 := congrArg (starRingEnd ℂ) (h (InfinitePlace.mk φ))
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa [hφ, map_sum, map_mul, Complex.conj_ofReal] using h2
+
+      simpa [hφ, map_sum, map_mul, Complex.conj_ofReal] using h2
   have hli := (canonicalEmbedding.latticeBasis K).linearIndependent
   rw [Fintype.linearIndependent_iff] at hli
   have hz := hli (fun k => (t k : ℂ)) (by
@@ -121,8 +170,7 @@ theorem linIndep_real (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι �
     intro v
     have h1 := congrFun (hV v) p.2
     simp only [smul_smul, vecAt_smul_basis, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply,
-      Fintype.sum_prod_type, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true, map_mul] at h1
+      Fintype.sum_prod_type, Pi.single_apply, mul_ite, mul_zero, map_mul] at h1
     have hc' : v.embedding c ≠ 0 := by simpa using hc
     have h2 : (∑ k, (t (k, p.2) : ℂ) * v.embedding (integralBasis K k)) * v.embedding c = 0 := by
       rw [Finset.sum_mul]
@@ -146,7 +194,7 @@ theorem discrete_span_of_linIndep {E : Type*} [NormedAddCommGroup E] [InnerProdu
       exact hψW ⟨f i, Submodule.subset_span ⟨i, rfl⟩⟩
     rw [h]
     ext j
-    simp [Basis.equivFun_self, Finsupp.single_apply, Pi.single_apply, eq_comm]
+    simp [Finsupp.single_apply, Pi.single_apply, eq_comm]
   have hmem : ∀ x ∈ Submodule.span ℤ (Set.range f),
       ψ x ∈ Submodule.span ℤ (Set.range (Pi.basisFun ℝ ι')) := by
     intro x hx

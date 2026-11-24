@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.ColumnsProofs.HFSLin
+public import Formalism.LocalToGlobal.Columns.HeckeSp
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -26,7 +31,6 @@ theorem hfs_exists_poly [FiniteDimensional K V] (op : I → Module.End K V) : �
   have hbfin : b.Finite := by
     first
     | exact hbli.setFinite
-    | exact @Set.toFinite _ b hbli.finite
   obtain ⟨s, -, hs⟩ := Finset.subset_set_image_iff.1
     (show (↑hbfin.toFinset : Set (Module.End K V)) ⊆ op '' Set.univ by
       rw [Set.image_univ, Set.Finite.coe_toFinset]; exact hbsub)

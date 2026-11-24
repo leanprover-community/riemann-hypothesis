@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.ReductionMahler
+public import GroundTheory.AutomorphicForms.ReductionSiegel
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

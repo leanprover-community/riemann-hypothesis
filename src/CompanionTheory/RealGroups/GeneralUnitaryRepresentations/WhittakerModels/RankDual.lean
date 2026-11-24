@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.CuspGenericWhittaker.CuspGeneric
 public import GroundTheory.AutomorphicForms.WhittakerCriterion
+public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

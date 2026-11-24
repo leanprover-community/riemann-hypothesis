@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.ProjLineChartsNotSubsetBall
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 
 @[expose] public section
 

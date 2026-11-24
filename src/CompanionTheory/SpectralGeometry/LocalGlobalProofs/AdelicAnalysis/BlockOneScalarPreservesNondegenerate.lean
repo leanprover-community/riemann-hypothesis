@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StageData
+public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StageData
 
 @[expose] public section
 

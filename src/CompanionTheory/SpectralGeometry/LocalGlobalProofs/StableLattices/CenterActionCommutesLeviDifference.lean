@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.Bdy
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
+public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 @[expose] public section
 

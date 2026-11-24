@@ -1,14 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocIsoRefl
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrientedHermitianFormQuadSumEqTrace
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AtWAtPlSelf
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartAlgebraMapLiftV
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridLocalTensorPlacesSplitIdempotentSum
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinPartIdemMulMemIff
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartAlgebraMapLiftV
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrientedHermitianFormQuadSumEqTrace
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianActionColumnBase
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
+import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MemLevelFunOfIsAutFun
 
 @[expose] public section
 
@@ -22,8 +58,8 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlipMatch
 
-set_option maxHeartbeats 1000000
-set_option synthInstance.maxHeartbeats 200000
+
+
 
 namespace GlobalTheory.FlipMatch.ChartOpp
 
@@ -201,8 +237,8 @@ theorem mixCoS_inl (a : Fin (spW₁ G i j).rank) (k : Fin (spV G i j).rank) :
   have hx : (mulG (spW₁ G i j) (colV e u)ᵀ).map (fun a => cpt w (toEAf D a)) =
       ((u.map fun a => cpt w (toEAf D a)).submatrix id fun k => e (.inl k))ᵀ * (spW₁ G i j).gram.map κ := by
     ext a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [mulG, Matrix.mul_apply, map_sum, map_mul, colV, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM, hinc]
+
+    simp [mulG, Matrix.mul_apply, map_sum, map_mul, colV, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM, hinc]
   have key : ∀ {n p : ℕ} (b : Matrix (Fin p) (Fin p) (Kw w)) (U : Matrix (Fin n) (Fin p) (Kw w))
       (g c : Matrix (Fin n) (Fin n) (Kw w)) (a : Fin n) (k : Fin p), (b * (Uᵀ * g) * c) k a = (cᵀ * gᵀ * U * bᵀ) a k :=
     fun b U g c a k => by
@@ -219,8 +255,8 @@ theorem mixCoS_inr (a : Fin (spW₁ G i j).rank) (k : Fin (spV₁ G i j).rank) :
   have hx : (adjV₁ e u).map (fun a => cpt w (toEAf D a)) =
       -(((u.map fun a => cpt w (toEAf D (cA D a))).submatrix id fun k => e (.inr k)) * (spV₁ G i j).gram.map κ) := by
     ext a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [adjV₁, mulG, Matrix.mul_apply, map_sum, map_mul, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM, hinc]
+
+    simp [adjV₁, mulG, Matrix.mul_apply, map_sum, map_mul, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM, hinc]
   have key : ∀ {n p : ℕ} (b : Matrix (Fin n) (Fin n) (Kw w)) (U : Matrix (Fin n) (Fin p) (Kw w))
       (g c : Matrix (Fin p) (Fin p) (Kw w)), b * -(U * g) * c = b * U * -(g * c) := fun b U g c => by
     simp only [Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc]
@@ -235,7 +271,8 @@ namespace GlobalTheory.FlipMatch
 
 open ChartOpp
 
-theorem chartOpp_isMixChart : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E)
+/-- The opposite chart satisfies the mixed chart identities and has explicit coordinates. -/
+theorem chartOpp_isMixChart_coordinates : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E)
     (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E), IsTripleOf W M t i j e Bs Γ X →
     ∀ (v : Bs.P) (w : Pl D.host.E), splitPrime (Bs.τ v) = w → ∀ jj : Fv D.host.F v ≃+* Kw w, IsPlaceIso (Bs.τ v) w jj →
     ∀ cc : GL (Fin ((spW G i j).rank + (spW₁ G i j).rank)) (Kw w), (Γ.W.bas v).val.map jj * cc.val = basCols B e w →
@@ -245,8 +282,15 @@ theorem chartOpp_isMixChart : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Cons
           (coY D.sp.cm.sig Γ.V' Γ.W (Bs.τ v) (Γ.V'.bas v) (Γ.W.bas v) u))
         (fun u => (xiAt w)⁻¹ • chart jj (finCongr (rankW₁ G t i j w)) (colsEq t e w) (invT g) (invT cc)
           (coX (Bs.τ v) (Γ.V'.bas v) (Γ.W.bas v) u))
-        (Assignment.one.block _ _) := by
-  intro D T L sc G μ₀ hL W B t i j M e Bs Γ X h v w hw jj hjj cc hcc
+        (Assignment.one.block _ _) ∧
+      ∀ u, chart jj (finCongr (rankW₁ G t i j w)) (colsEq t e w) g cc
+      (coY D.sp.cm.sig Γ.V' Γ.W (Bs.τ v) (Γ.V'.bas v) (Γ.W.bas v) u) =
+      reindex (finCongr (rankW₁ G t i j w)) (colsEq t e w) (((loc w (B.β i j))⁻¹).val *
+        u.map (fun a => cpt w (toEAf D (cA D a))) *
+        GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.blk e
+          ((spV G i j).gram.map (algebraMap D.host.E (Kw w)) * (loc w (B.β i (j + 1))).val)
+          (-((spV₁ G i j).gram.map (algebraMap D.host.E (Kw w)) * (loc w (B.β (i + 1) j)).val))) := by
+  intro D T L sc G W B t i j M e Bs Γ X h v w hw jj hjj cc hcc
   classical
 
   have hε : atPl w 1 = GlobalTheory.EmbChart.idem (Bs.τ v) :=
@@ -289,7 +333,6 @@ theorem chartOpp_isMixChart : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Cons
     rw [hC]; exact hcc
   obtain ⟨g, hg⟩ := chart_algebra e Bp C cc _ hG₁ (loc w (B.β i j)) (loc w (B.β i (j + 1))) (loc w (B.β (i + 1) j))
     ((spV G i j).gram.map κ) ((spV₁ G i j).gram.map κ) (xiAt w) hξ hCc
-  refine ⟨g, ?_⟩
 
   have hκm : ∀ {a b : Type} (Z : Matrix a b D.host.E), (Z.map (Bs.τ v)).map jj = Z.map κ := fun Z =>
     Matrix.ext fun _ _ => by rw [hκ]; exact hE _
@@ -360,6 +403,7 @@ theorem chartOpp_isMixChart : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Cons
     rcases z with k | k
     · exact congrFun₂ k1 a k
     · exact congrFun₂ k2 a k
+  refine ⟨g, ?_, by simpa only [hκ] using htr⟩
   unfold IsMixChart
   simp only [htr, hmu]
   refine ⟨fun u hu => ?_, fun u hu => ?_⟩
@@ -381,5 +425,20 @@ theorem chartOpp_isMixChart : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Cons
     have hU : ((u.map fun a => cpt w (toEAf D a)).submatrix id fun k => e (.inl k)) = 0 :=
       Matrix.ext fun a k => z₂ _ (h1 a k)
     exact ⟨hat u _ _ hb₂ hb₁ h1 h2, zero_inr e _ _ _ hPl _ _ _ _ hZ, zero_inl e _ _ _ hPr _ _ _ _ hU⟩
+
+theorem chartOpp_isMixChart : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G) (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E)
+    (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E), IsTripleOf W M t i j e Bs Γ X →
+    ∀ (v : Bs.P) (w : Pl D.host.E), splitPrime (Bs.τ v) = w → ∀ jj : Fv D.host.F v ≃+* Kw w, IsPlaceIso (Bs.τ v) w jj →
+    ∀ cc : GL (Fin ((spW G i j).rank + (spW₁ G i j).rank)) (Kw w), (Γ.W.bas v).val.map jj * cc.val = basCols B e w →
+    ∃ g : GL (Fin (spW₁ G i j).rank) (Kw w),
+      IsMixChart v.1 (mixHalfS e (atPl w 1)) (mixHalfS e (cA D (atPl w 1))) (mixCoS B t e w)
+        (fun u => chart jj (finCongr (rankW₁ G t i j w)) (colsEq t e w) g cc
+          (coY D.sp.cm.sig Γ.V' Γ.W (Bs.τ v) (Γ.V'.bas v) (Γ.W.bas v) u))
+        (fun u => (xiAt w)⁻¹ • chart jj (finCongr (rankW₁ G t i j w)) (colsEq t e w) (invT g) (invT cc)
+          (coX (Bs.τ v) (Γ.V'.bas v) (Γ.W.bas v) u))
+        (Assignment.one.block _ _) := by
+  intro D T L sc G μ₀ hL W B t i j M e Bs Γ X h v w hw jj hjj cc hcc
+  obtain ⟨g, hg, _⟩ := chartOpp_isMixChart_coordinates W B t i j M e Bs Γ X h v w hw jj hjj cc hcc
+  exact ⟨g, hg⟩
 
 end GlobalTheory.FlipMatch

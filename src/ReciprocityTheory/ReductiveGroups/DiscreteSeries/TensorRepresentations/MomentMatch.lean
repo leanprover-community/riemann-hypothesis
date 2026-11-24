@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Polynomial.Eval.Degree
 
 @[expose] public section
 

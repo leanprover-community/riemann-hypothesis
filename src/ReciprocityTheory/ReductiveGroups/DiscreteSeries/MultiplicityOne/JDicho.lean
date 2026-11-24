@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.TransposeUnitary
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JDichoA
 
 @[expose] public section

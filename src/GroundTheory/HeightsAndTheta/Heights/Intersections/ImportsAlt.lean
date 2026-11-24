@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalSpanTwo
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImageVarIdBotTwo
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiProjPrimeImageZ
+import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
+import Mathlib.Order.CompletePartialOrder
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogIdealChain
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
 
 @[expose] public section
 

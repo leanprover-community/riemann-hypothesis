@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Order.Filter.AtTopBot.Defs
 
 @[expose] public section
 

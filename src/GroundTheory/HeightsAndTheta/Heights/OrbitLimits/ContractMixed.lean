@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFIntZero
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFVert
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherTail
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogFirstCoordinate
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
+import Mathlib.Order.CompletePartialOrder
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
+import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 
 @[expose] public section
 

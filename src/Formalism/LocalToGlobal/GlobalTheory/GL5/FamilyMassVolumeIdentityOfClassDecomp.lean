@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.TheoremThreeAllUnitary
+public import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
+public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -147,30 +149,27 @@ open scoped TensorProduct
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
 
-theorem isModTop : IsModuleTopology (AF F) (AF F ⊗[F] E) := by first | exact ⟨rfl⟩ | infer_instance
+theorem isModTop : IsModuleTopology (AF F) (AF F ⊗[F] E) := by first | exact ⟨rfl⟩
 
 theorem isTopRing : IsTopologicalRing (AF F ⊗[F] E) := by
   haveI := isModTop (F := F) (E := E)
   first
     | exact IsModuleTopology.isTopologicalRing (AF F) _
-    | exact IsModuleTopology.topologicalRing (AF F) _
 
 theorem topGroupHA : IsTopologicalGroup (HA (AF F) σ J) := by
   haveI := isTopRing (F := F) (E := E)
   haveI h1 : IsTopologicalGroup (Matrix (Fin M) (Fin M) (AF F ⊗[F] E))ˣ := inferInstance
   haveI h2 : IsTopologicalGroup (GL (Fin M) (AF F ⊗[F] E)) := h1
   first
-    | exact Subgroup.isTopologicalGroup _
-    | exact @Subgroup.isTopologicalGroup _ _ _ h2 _
     | (unfold HA; infer_instance)
     | exact inferInstanceAs (IsTopologicalGroup ↥(HR (AF F) σ J))
 
-theorem borelHA : BorelSpace (HA (AF F) σ J) := by first | exact ⟨rfl⟩ | infer_instance | (unfold HA; infer_instance)
+theorem borelHA : BorelSpace (HA (AF F) σ J) := by first | exact ⟨rfl⟩
 
 theorem measurableMulHA : MeasurableMul (HA (AF F) σ J) := by
   haveI := topGroupHA σ J
   haveI := borelHA σ J
-  first | infer_instance | (unfold HA; infer_instance)
+  first | infer_instance
 
 theorem countableE : Countable E := (Module.finBasis ℚ E).equivFun.injective.countable
 
@@ -213,8 +212,8 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem mapAlg_mul {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
     (φ : A →ₐ[R] B) {n : ℕ} (X Y : Matrix (Fin n) (Fin n) A) : (X * Y).map φ = X.map φ * Y.map φ := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Matrix.map_apply, Matrix.mul_apply, map_sum, map_mul]
+
+  simp [Matrix.map_apply, Matrix.mul_apply, map_sum, map_mul]
 
 theorem mapAlg_one {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
     (φ : A →ₐ[R] B) {n : ℕ} : (1 : Matrix (Fin n) (Fin n) A).map φ = 1 := Matrix.map_one _ (map_zero φ) (map_one φ)
@@ -231,24 +230,20 @@ theorem HA_mat_one : HA.mat (AF F) σ J 1 = 1 := rfl
 
 theorem finMat_mul (h h' : HA (AF F) σ J) : finMat σ J (h * h') = finMat σ J h * finMat σ J h' := by
   first
-    | simp [finMat, HA_mat_mul, Units.val_mul, mapAlg_mul, Matrix.map_mul]
-    | (unfold finMat; rw [HA_mat_mul]; done)
+    | simp [finMat, HA_mat_mul, Units.val_mul, Matrix.map_mul]
 
 theorem finMat_one : finMat σ J (1 : HA (AF F) σ J) = 1 := by
   first
-    | simp [finMat, HA_mat_one, mapAlg_one, Matrix.map_one]
-    | (unfold finMat; rw [HA_mat_one]; done)
+    | simp [finMat, HA_mat_one, Matrix.map_one]
 
 theorem infMat_mul (θ : Ainf F ⊗[F] E →+* ℂ) (h h' : HA (AF F) σ J) :
     infMat σ J θ (h * h') = infMat σ J θ h * infMat σ J θ h' := by
   first
-    | simp [infMat, HA_mat_mul, Units.val_mul, mapAlg_mul, Matrix.map_mul]
-    | (unfold infMat; rw [HA_mat_mul]; done)
+    | simp [infMat, HA_mat_mul, Units.val_mul, Matrix.map_mul]
 
 theorem infMat_one (θ : Ainf F ⊗[F] E →+* ℂ) : infMat σ J θ (1 : HA (AF F) σ J) = 1 := by
   first
-    | simp [infMat, HA_mat_one, mapAlg_one, Matrix.map_one]
-    | (unfold infMat; rw [HA_mat_one]; done)
+    | simp [infMat, HA_mat_one, Matrix.map_one]
 
 end Mats
 
@@ -372,9 +367,5 @@ theorem mass_volume_identity_of_class_decomp (D : D7) (hT : VolTie D) (hG : Genu
   rw [hvm]
   first
     | exact hG W hW hdef
-    | exact hG W hW
-    | exact hG W
-    | exact (hG W hW hdef).symm
-    | (clear hT hall hvol hμ𝓕 hθall key e2 hpos hmpos; unfold GenusMassStd at hG; done)
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes

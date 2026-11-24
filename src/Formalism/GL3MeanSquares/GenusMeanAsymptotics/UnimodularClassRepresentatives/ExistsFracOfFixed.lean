@@ -1,7 +1,55 @@
 module
 
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsNormRepresentation
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.IsUnimodularAtIffVd
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapNeZeroOfMemHcompl
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.LocalDensityRatio
+import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -24,16 +72,14 @@ private theorem algebraMap_int_F_to_K_eq_algebraMap_coe (t : 𝓞 F) :
 theorem mem_hcompl_of_notMem (hF : IsFixF K F) {P : Ideal (𝓞 K)} (hP : P.IsPrime) {t : 𝓞 F}
     (ht : t ∉ P.comap (algebraMap (𝓞 F) (𝓞 K))) :
     algebraMap (𝓞 F) (𝓞 K) t ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P := by
-  apply Submonoid.subset_closure
-  refine ⟨ht, fun u hu => ?_⟩
+  refine Submonoid.subset_closure ⟨ht, fun u hu => ?_⟩
   have hfix : star (algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t)) =
       algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t) := by
     rw [algebraMap_int_F_to_K_eq_algebraMap_coe]
     exact (hF _).2 ⟨(t : F), rfl⟩
   rw [hfix] at hu
   have hu' : u = algebraMap (𝓞 F) (𝓞 K) t := IsFractionRing.injective (𝓞 K) K hu
-  rw [hu']
-  exact ht
+  rwa [hu']
 
 theorem div_mem_locRing {P : Ideal (𝓞 K)} (hP : P.IsPrime) (r : 𝓞 K) {s : 𝓞 K}
     (hs : s ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P) :
@@ -56,7 +102,7 @@ private theorem exists_int_preimage_of_star_fixed (hF : IsFixF K F) (x : 𝓞 K)
 theorem exists_frac_of_fixed (hF : IsFixF K F) {P : Ideal (𝓞 K)} (hP : P.IsPrime) {a : K}
     (ha : a ∈ locRing P) (hfix : star a = a) :
     ∃ t s : 𝓞 F, s ∉ P.comap (algebraMap (𝓞 F) (𝓞 K)) ∧ a = toK K t / toK K s := by
-  haveI := hP
+  have := hP
   obtain ⟨r, s, hs, rfl⟩ := (WA.mem_locR_iff hP _).1 ha
   have hs1 : s ∉ P := Formalism.HermitianLatticesTheory.locBasic_hcompl_not_mem P s hs
   have hs2 : conjO K s ∉ P := Formalism.HermitianLatticesTheory.locBasic_hcompl_not_mem P _ (WA.conjO_mem_hcompl hs)
@@ -88,7 +134,7 @@ theorem exists_isUnif (hF : IsFixF K F) {P : Ideal (𝓞 K)}
       ∀ z : 𝓞 K, Dv (locRing P) π (algebraMap (𝓞 K) K z * π⁻¹) →
         z ∈ extP K (P.comap (algebraMap (𝓞 F) (𝓞 K))) ^ 2 := by
   have hPp : P.IsPrime := hP.isPrime
-  haveI := hPp
+  have := hPp
   have hPne : P ≠ ⊥ := (Ideal.bot_lt_of_maximal P (NumberField.RingOfIntegers.not_isField K)).ne'
   obtain ⟨x, hxP, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hPne
   have hcx : algebraMap (𝓞 K) K (conjO K x) = star (algebraMap (𝓞 K) K x) := rfl

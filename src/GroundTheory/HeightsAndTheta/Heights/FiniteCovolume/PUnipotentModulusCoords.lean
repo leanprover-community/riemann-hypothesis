@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsStabilizerLevi
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentModulusMatrix
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PGramAtData
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

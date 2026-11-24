@@ -1,10 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTransl
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ComparisonMemCechHodgeFiltration
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemRangeCompIffOfIsClosedImmersion
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -160,13 +197,9 @@ section Transl
 
 variable {K : Type} [Field K] {A : Over (Sp K)} [GrpObj A]
 
-theorem dualMap_comp_algebraMap {B B' : Type} [CommRing B] [CommRing B'] (φ : B →+* B') :
-    (dualMap φ).comp (algebraMap B (DualNumber B)) = (algebraMap B' (DualNumber B')).comp φ := by
-  ext b <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl']
+alias dualMap_comp_algebraMap := _root_.Formalism.L2.Pj.dualMap_alg
 
-theorem dualMap_comp_dualMap {B B' B'' : Type} [CommRing B] [CommRing B'] [CommRing B''] (φ : B →+* B')
-    (ψ : B' →+* B'') : (dualMap ψ).comp (dualMap φ) = dualMap (ψ.comp φ) := by
-  ext c <;> simp [dualMap]
+alias dualMap_comp_dualMap := _root_.GlobalTheory.Frames.Glue.dual_comp
 
 theorem exists_isTransl {B : Type} [CommRing B] (φ : K →+* B) (x : Sp B ⟶ A.left) (hx : x ≫ A.hom = spMap φ)
     (v : epsR K ⟶ A) : ∃ w, IsTransl φ x v w := by
@@ -209,9 +242,6 @@ theorem IsTransl.map {B B' : Type} [CommRing B] [CommRing B'] {φ : K →+* B} {
   · have e : g ≫ x' * g ≫ v' = g ≫ (x' * v') := by
       first
         | exact (comp_mul g x' v').symm
-        | exact (Hom.comp_mul g x' v').symm
-        | exact (MonObj.comp_mul g x' v').symm
-        | simp
     rw [e]
     rfl
 
@@ -222,7 +252,7 @@ theorem IsTransl.red {B : Type} [CommRing B] {φ : K →+* B} {x : Sp B ⟶ A.le
   have eg : spMap (TrivSqZeroExt.fstHom B B B).toRingHom ≫ spMap ((algebraMap B (DualNumber B)).comp φ) =
       spMap φ := by
     rw [← Cris.spMap_comp]
-    congr 1 <;> (ext b; simp [TrivSqZeroExt.algebraMap_eq_inl'])
+    congr 1
   let g : Over.mk (spMap φ) ⟶ Over.mk (spMap ((algebraMap B (DualNumber B)).comp φ)) := Over.homMk _ eg
   have e1 : g ≫ v' = 1 := by
     apply Over.OverMorphism.ext
@@ -233,19 +263,12 @@ theorem IsTransl.red {B : Type} [CommRing B] {φ : K →+* B} {x : Sp B ⟶ A.le
       exact RingHom.ext fun c ↦ by simp [dualMap]
     rw [e3, Cris.spMap_comp, Category.assoc, hv]
     congr 1
-    all_goals first
-      | exact (Over.toUnit_left _).symm
-      | exact (Over.w (toUnit (Over.mk (spMap φ)))).symm.trans (Category.comp_id _)
-      | (have h1 := Over.w (toUnit (Over.mk (spMap φ))); simpa using h1.symm)
   have e : g ≫ x' * g ≫ v' = g ≫ (x' * v') := by
     first
           | exact (comp_mul g x' v').symm
-          | exact (Hom.comp_mul g x' v').symm
-          | exact (MonObj.comp_mul g x' v').symm
-          | simp
   have e4 : (TrivSqZeroExt.fstHom B B B).toRingHom.comp (algebraMap B (DualNumber B)) = RingHom.id B := by
     ext b
-    simp [TrivSqZeroExt.algebraMap_eq_inl']
+    simp
   calc spMap (TrivSqZeroExt.fstHom B B B).toRingHom ≫ (x' * v').left = (g ≫ (x' * v')).left := rfl
     _ = (g ≫ x' * g ≫ v').left := by rw [e]
     _ = (g ≫ x').left := by rw [e1, _root_.mul_one]
@@ -303,10 +326,6 @@ theorem Pt.In.tr {P : GPt A} {U : A.left.Opens} (h : P.In U) {v : epsR K ⟶ A} 
     rw [← Cris.spMap_comp]
     first
       | exact key y
-      | (simp only [spMap]; exact key y)
-      | (simp only [spMap, Scheme.Spec_map_base]; exact key y)
-      | (simp [spMap]; exact key y)
-      | (simp only [spMap]; done)
   have h1 : (spMap (TrivSqZeroExt.fstHom P.B P.B P.B).toRingHom ≫ P.trx v).base
       ((spMap (algebraMap P.B (DualNumber P.B))).base y) ∈ U := by
     rw [(P.isTransl_trx v).red hv]
@@ -345,7 +364,7 @@ variable {K : Type} [Field K] {A : Over (Sp K)} [GrpObj A] {A' : Over (Sp (DualN
 
 theorem fibMor (h : IsGrpPullback A A' (DeRham.epsRed K) i) : GrpMor (dp0 (DualNumber K)) (𝟙 _) A' (dp0 K) (𝟙 _) A
     (TrivSqZeroExt.fstHom K K K).toRingHom (DeRham.epsRed K) i := GrpMor.of_isGrpPullback (isDPMorphism_of_eq_bot _ rfl _ _)
-  (by rw [Category.comp_id, Category.id_comp] <;> rfl) h
+  (by rw [Category.comp_id, Category.id_comp]) h
 
 
 omit [GrpObj A] in

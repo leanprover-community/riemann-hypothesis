@@ -1,11 +1,13 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.InvForm
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.TwoSplitIdem
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceS
+import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 100000
+
 
 noncomputable section
 

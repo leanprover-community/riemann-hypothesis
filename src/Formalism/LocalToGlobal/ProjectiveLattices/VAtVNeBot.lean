@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 

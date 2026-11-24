@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanDefs
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 
@@ -25,9 +28,9 @@ theorem bNormSq_eq (μ : Measure X) {r : ℕ} (s : Fin r → X → ℂ) (w : X �
   have hpt : ∀ x, ((‖∑ i, c i * s i x‖ ^ 2 * w x : ℝ) : ℂ) =
       ∑ i, ∑ j, starRingEnd ℂ (c i) * c j * (starRingEnd ℂ (s i x) * s j x * (w x : ℂ)) := by
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Complex.ofReal_mul, Complex.sq_norm, Complex.normSq_eq_conj_mul_self, map_sum,
-      Finset.sum_mul_sum, Finset.sum_mul]
+
+    rw [Complex.ofReal_mul, Complex.sq_norm, Complex.normSq_eq_conj_mul_self, map_sum,
+    Finset.sum_mul_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.sum_mul]
     refine Finset.sum_congr rfl fun j _ => ?_

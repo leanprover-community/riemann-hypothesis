@@ -1,6 +1,50 @@
 module
 
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFundCycleBaseChange
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -22,8 +66,8 @@ theorem cone_of_homog {d : ℕ} {g : MvPolynomial (Fin m) R} (hg : g.IsHomogeneo
     cone c t g = Polynomial.X ^ d * Polynomial.C (eval₂Hom c t g) := by
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [cone, map_sum, eval₂Hom_monomial, Finset.mul_sum, map_mul]
+
+  simp only [cone, map_sum, eval₂Hom_monomial, Finset.mul_sum, map_mul]
   refine Finset.sum_congr rfl fun a ha => ?_
   have : a.degree = d := by rw [Finsupp.degree_eq_weight_one]; exact hg (mem_support_iff.1 ha)
   simp only [Finsupp.prod, mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, map_prod, map_pow]
@@ -31,8 +75,8 @@ theorem cone_of_homog {d : ℕ} {g : MvPolynomial (Fin m) R} (hg : g.IsHomogeneo
 
 theorem coeff_cone (g : MvPolynomial (Fin m) R) (d : ℕ) :
     (cone c t g).coeff d = eval₂Hom c t (homogeneousComponent d g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [← g.sum_homogeneousComponent, map_sum]
+
+  conv_lhs => rw [← g.sum_homogeneousComponent, map_sum]
   simp only [cone_of_homog c t (homogeneousComponent_isHomogeneous _ g), Polynomial.finsetSum_coeff,
     Polynomial.X_pow_mul_C, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, mul_ite, mul_one, mul_zero,
     Finset.sum_ite_eq, Finset.mem_range]
@@ -95,8 +139,8 @@ theorem exists_homog (hk : t k = 1) (g : MvPolynomial (Fin m) R) {N : ℕ} (hN :
     have hd' := Finset.mem_range.1 hd
     rwa [one_mul, show d + (N - d) = N by omega] at h
   · conv_rhs => rw [← g.sum_homogeneousComponent]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow, eval₂Hom_X', hk, one_pow, mul_one]
+
+    simp only [map_sum, map_mul, map_pow, eval₂Hom_X', hk, one_pow, mul_one]
 
 theorem exists_homog' (hs : Function.Surjective (eval₂Hom c t)) (hk : t k = 1) (a : A) :
     ∃ (N : ℕ) (G : MvPolynomial (Fin m) R), G.IsHomogeneous N ∧ eval₂Hom c t G = a := by

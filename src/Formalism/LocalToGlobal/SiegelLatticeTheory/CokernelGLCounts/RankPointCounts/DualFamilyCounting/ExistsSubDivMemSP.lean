@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SameGenusFix
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.SpanPowMulLe
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsLocalData
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MemSmulOfMemSmulLocF
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FiniteDimensionalOfOrtho
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MemSmulOfMemSmulLocF
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -122,7 +123,6 @@ theorem exists_sub_div_mem_SP {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {
 
 theorem star_jK (w : 𝓞 K) : ∃ w' : 𝓞 K, jK w' = star (jK w) := StandardSymmetricSums.star_int w
 
-theorem star_jK_ι (hF : IsFixF K F) (t : 𝓞 F) : star (jK (ι t)) = jK (ι t) :=
-  (hF _).2 ⟨(t : F), rfl⟩
+alias star_jK_ι := _root_.Formalism.HermitianLattices.Ext.L3.localizedQuotients.star_ι
 
 end Formalism.L2.SG.Pf.G2

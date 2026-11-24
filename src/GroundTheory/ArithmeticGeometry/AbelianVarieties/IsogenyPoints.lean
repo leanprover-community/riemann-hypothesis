@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilFixedField
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilTranslate
+import Mathlib.FieldTheory.Relrank
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

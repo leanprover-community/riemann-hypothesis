@@ -1,6 +1,55 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.CharP.Algebra
+public import Mathlib.Algebra.CharP.Lemmas
+public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 
 @[expose] public section
 
@@ -41,7 +90,6 @@ theorem Zp_monic : (Zp (O := O) p m).Monic := by
   rw [Polynomial.degree_one, Polynomial.degree_eq_natDegree h2.ne_zero, pow_natDegree']
   first
   | exact_mod_cast hpm
-  | exact WithBot.coe_lt_coe.mpr hpm
 
 private theorem algHom_coe_polynomial_eq_of_X_eq {A B : Type} [CommRing A] [CommRing B] [Algebra A B]
     (φ ψ : PowerSeries A →ₐ[A] B) (h : φ PowerSeries.X = ψ PowerSeries.X) (r : Polynomial A) :
@@ -50,18 +98,6 @@ private theorem algHom_coe_polynomial_eq_of_X_eq {A B : Type} [CommRing A] [Comm
   | (have e := Polynomial.algHom_ext (f := φ.comp (Polynomial.coeToPowerSeries.algHom A))
         (g := ψ.comp (Polynomial.coeToPowerSeries.algHom A)) (by simpa using h)
      simpa using AlgHom.congr_fun e r)
-  | (have hC : ∀ a : A, φ ((Polynomial.C a : Polynomial A) : PowerSeries A) =
-          ψ ((Polynomial.C a : Polynomial A) : PowerSeries A) := by
-        intro a
-        have e : ((Polynomial.C a : Polynomial A) : PowerSeries A) = algebraMap A (PowerSeries A) a := by
-          first
-          | rw [Polynomial.coe_C, PowerSeries.algebraMap_eq]
-          | simp [PowerSeries.algebraMap_eq]
-        rw [e, AlgHom.commutes, AlgHom.commutes]
-     refine Polynomial.induction_on r (fun a => hC a) (fun p q hp hq => ?_) (fun n a _ => ?_)
-     · rw [Polynomial.coe_add, map_add (f := _), map_add (f := _), hp, hq]
-     · rw [Polynomial.coe_mul, Polynomial.coe_pow, Polynomial.coe_X, map_mul, map_mul, map_pow,
-         map_pow, h, hC])
 
 theorem Zp_natDegree : (Zp (O := O) p m).natDegree = p ^ m := by
   have hpm : 0 < p ^ m := pow_pos (Fact.out : p.Prime).pos m
@@ -80,19 +116,12 @@ theorem Zs_res : PowerSeries.map (IsLocalRing.residue O) (Zs p m) = PowerSeries.
   haveI hk : CharP (IsLocalRing.ResidueField O) p := by
     first
     | exact (CharP.charP_iff_prime_eq_zero hpp).mpr hp
-    | exact CharP.charP_of_prime_eq_zero hpp hp
-    | (have h1 : ringChar (IsLocalRing.ResidueField O) ∣ p := ringChar.dvd hp
-       rcases (Nat.dvd_prime hpp).mp h1 with h2 | h2
-       · exact absurd h2 CharP.ringChar_ne_one
-       · exact ringChar.of_eq h2)
   haveI : CharP (PowerSeries (IsLocalRing.ResidueField O)) p := by
     first
-    | infer_instance
     | exact charP_of_injective_algebraMap' (IsLocalRing.ResidueField O) p
   simp only [Zs, map_sub, map_pow, map_add (f := _), map_one, PowerSeries.map_X]
   first
   | (rw [add_pow_char_pow]; simp)
-  | (rw [add_pow_expChar_pow]; simp)
 
 theorem Zs_res_ne : PowerSeries.map (IsLocalRing.residue O) (Zs p m) ≠ 0 := by
   rw [Zs_res p m hlm]; exact pow_ne_zero _ PowerSeries.X_ne_zero
@@ -102,7 +131,6 @@ theorem Zs_order : (PowerSeries.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal
   have h : (PowerSeries.map (IsLocalRing.residue O) (Zs p m)).order.toNat = p ^ m := by
     first
     | rw [Zs_res p m hlm, PowerSeries.order_X_pow, ENat.toNat_coe]
-    | simp [Zs_res p m hlm]
   exact h
 
 variable {F : Type} [CommRing F] [Algebra O F]
@@ -121,7 +149,6 @@ theorem evalWeierstrassMod_eq_aeval_of_eq {x : F} (hx : Polynomial.aeval x (Zp (
   have hord : (PowerSeries.map (IsLocalRing.residue O) (Zs p m)).order.toNat = p ^ m := by
     first
     | rw [Zs_res p m hlm, PowerSeries.order_X_pow, ENat.toNat_coe]
-    | simp [Zs_res p m hlm]
   rw [evalWeierstrassMod_def]
   generalize hq0 : f /ʷ Zs p m = q0 at hW
   generalize hr0 : f %ʷ Zs p m = r0 at hW ⊢
@@ -131,9 +158,7 @@ theorem evalWeierstrassMod_eq_aeval_of_eq {x : F} (hx : Polynomial.aeval x (Zp (
   have hdiv : (((r0 - r) %ₘ Zp p m + Zp p m * ((r0 - r) /ₘ Zp p m) : Polynomial O) :
       PowerSeries O) = ((r0 - r : Polynomial O) : PowerSeries O) := by
     first
-    | rw [Polynomial.modByMonic_add_div _ _ hP]
     | rw [Polynomial.modByMonic_add_div (r0 - r) (Zp p m)]
-    | rw [Polynomial.modByMonic_add_div (r0 - r) hP]
   rw [Polynomial.coe_add, Polynomial.coe_mul, Zs_coe] at hdiv
   have H1 : PowerSeries.IsWeierstrassDivision (((r0 - r) %ₘ Zp p m : Polynomial O) : PowerSeries O)
       (Zs p m) (q - q0 - (((r0 - r) /ₘ Zp p m : Polynomial O) : PowerSeries O)) 0 := by
@@ -145,7 +170,6 @@ theorem evalWeierstrassMod_eq_aeval_of_eq {x : F} (hx : Polynomial.aeval x (Zp (
     refine ⟨?_, ?_⟩
     · first
       | rw [Zs_order p m hlm]
-      | rw [hord]
       calc ((r0 - r) %ₘ Zp p m).degree < (Zp (O := O) p m).degree :=
             Polynomial.degree_modByMonic_lt _ hP
         _ = ((p ^ m : ℕ) : WithBot ℕ) := by
@@ -154,8 +178,6 @@ theorem evalWeierstrassMod_eq_aeval_of_eq {x : F} (hx : Polynomial.aeval x (Zp (
   have hb : (r0 - r) %ₘ Zp p m = 0 := by
     first
     | exact (PowerSeries.IsWeierstrassDivision.elim hne H1 H2).2.symm
-    | exact (H1.elim hne H2).2.symm
-    | exact (H2.eq_weierstrassDiv_weierstrassMod hne).2.trans (H1.eq_weierstrassDiv_weierstrassMod hne).2.symm
   have hdvd : Zp p m ∣ r0 - r := (Polynomial.modByMonic_eq_zero_iff_dvd hP).mp hb
   have h3 := Polynomial.aeval_eq_zero_of_dvd_aeval_eq_zero hdvd hx
   rw [map_sub, sub_eq_zero] at h3
@@ -219,12 +241,10 @@ theorem evR_subst {x y : F} (hx : Polynomial.aeval x (Zp (O := O) p m) = 0)
   have hu' : PowerSeries.HasSubst u := by
     first
     | exact PowerSeries.HasSubst.of_constantCoeff_zero' hu
-    | exact PowerSeries.HasSubst.of_constantCoeff_zero hu
   obtain ⟨ψ, hψ⟩ : ∃ ψ : PowerSeries O →ₐ[O] F,
       ∀ g, evR p m hlm hx (PowerSeries.subst u g) = ψ g :=
     ⟨(evR p m hlm hx).comp (PowerSeries.substAlgHom hu'), fun g => by
       first
-      | rfl
       | rw [AlgHom.comp_apply, PowerSeries.coe_substAlgHom]
       | simp [PowerSeries.coe_substAlgHom]⟩
   have hX : ψ PowerSeries.X = evR p m hlm hy PowerSeries.X := by

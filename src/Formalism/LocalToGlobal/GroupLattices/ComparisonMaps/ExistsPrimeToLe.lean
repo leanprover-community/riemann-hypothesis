@@ -1,8 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemMIff
-public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ExtWRec
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsDenominatorThird
+public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ExtWRec
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -52,9 +53,7 @@ end CRT
 
 variable {D : D7}
 
-theorem exists_den (u : D.what₂.Word) (x : ((D.fm u).lat 0).V) :
-    ∃ d : 𝓞 D.what₂.LL, d ≠ 0 ∧ d • x ∈ ((D.fm u).lat 0).L :=
-  _root_.UpperTheory.Reformulated.B.ExistsDenominatorThird.exists_den u x
+alias exists_den := _root_.UpperTheory.Reformulated.B.ExistsDenominatorThird.exists_den
 
 theorem locWBack_proved (T : ∀ u : D.what₂.Word, Forms0 D u) : LocWBack T := by
   intro u w x hx

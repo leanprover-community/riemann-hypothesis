@@ -1,7 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SupRatioLeOfPhaseZero
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitSt
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -19,7 +21,7 @@ def uMap {dim : (E →+* ℂ) → ℕ} (I : Submodule ℤ (Vsp dim)) : Vsp dim �
 
 theorem tof_re_inner_negI {ι : Type} [Fintype ι] (a x : EuclideanSpace ℂ ι) :
     inner ℝ a ((-Complex.I) • x) = (Hf x a).im := by
-  simp only [real_inner_eq_re_inner ℂ, PiLp.inner_apply, Hf, Complex.re_sum, Complex.im_sum,
+  simp only [real_inner_eq_re_inner ℂ, PiLp.inner_apply, Hf, Complex.im_sum,
     PiLp.smul_apply, smul_eq_mul, RCLike.inner_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp [Complex.mul_re, Complex.mul_im]
@@ -118,8 +120,8 @@ theorem tof_span_condition [IsCMField E] {X : PT E} (I : Submodule ℤ (Vsp X.di
     rw [hxe]
     simp_rw [e1]
     rw [Finset.sum_add_distrib, Nat.cast_smul_eq_nsmul ℂ]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, map_nsmul, hz, Finset.sum_const_zero, zero_add, smul_add, Finset.smul_sum]
+
+    simp only [map_add (f := _), map_sum, map_nsmul, hz, Finset.sum_const_zero, zero_add, smul_add, Finset.smul_sum]
     abel)
   have hLT : ∀ x ∈ X.L, x ∈ T := fun x hx => hf0inv x (by
     have h : f x ∈ X.L.map f := ⟨x, hx, rfl⟩

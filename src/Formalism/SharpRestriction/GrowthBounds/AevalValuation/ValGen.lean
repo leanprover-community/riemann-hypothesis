@@ -1,8 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.AevalValuation.PlDefs
-public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.TwistedMonomialFiltration.TwistSubXMemSupported
-public import Formalism.SharpRestriction.GrowthBounds.PolynomialLevels.LowestWeightNonposOffSet
+public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDefs
+public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.TwistedMonomialFiltration.TMemLaurentFiltration
+public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
+import Formalism.SharpRestriction.GrowthBounds.PolynomialLevels.TlNonempty
 
 @[expose] public section
 
@@ -51,8 +92,8 @@ private theorem ringHom_eq_of_mem_supported_of_eqOn {σ R T : Type} [CommRing R]
 private theorem homComp_eq_polComp {R ι : Type} [CommRing R] {n : ℕ} (d : ι → ℕ)
     (F : MvPolynomial (ι × Fin n) R) : homComp d F = Joints.StandardMonomialSpace.polComp R n d F := by
   conv_rhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [Joints.StandardMonomialSpace.polComp, Joints.StandardMonomialSpace.suppProj_monomial, Set.mem_setOf_eq]
   rw [homComp, Finset.sum_filter]
 
@@ -63,8 +104,8 @@ theorem valS_sum_ge {R : Type} [CommRing R] {ι : Type} {n : ℕ} [NeZero n] (LL
   intro m k hk
   have hs : Joints.StandardMonomialSpace.SuppIn {k : ℤ | a ≤ (k : WithTop ℤ)}
       (AddMonoidAlgebra.coeff (twistSub LL S (lastIdx n) (∑ i ∈ s, f i)) m) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, coeff_sum]
+
+    rw [map_sum, coeff_sum]
     apply Joints.StandardMonomialSpace.SuppIn.sum
     intro i hi k' hk'
     exact (le_valS_iff_forall_coeff_ne_zero LL S (f i) a).mp (h i hi) m k' hk'

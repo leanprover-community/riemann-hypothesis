@@ -1,7 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.LGDefs
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.RingInverseMulEquiv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
 
 @[expose] public section
 
@@ -17,19 +58,12 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem star_coeF (D : Formalism.BasicNotions.D7) (t : D.host.F) : star (t : D.host.E) = t := by
   haveI := D.host.isCMField_hostE
   first
-  | exact (NumberField.IsCMField.complexConj_eq_self_iff _).mpr t.2
   | exact (NumberField.IsCMField.complexConj_eq_self_iff (K := D.host.E) (t : D.host.E)).mpr t.2
-  | exact NumberField.IsCMField.complexConj_apply_of_mem_maximalRealSubfield t.2
-  | exact NumberField.IsCMField.complexConj_apply_eq_self_of_mem t.2
-  | exact (NumberField.IsCMField.star_eq_self_iff _).mpr t.2
-  | exact (NumberField.IsCMField.mem_maximalRealSubfield_iff_star_eq _).mp t.2
-  | exact (NumberField.IsCMField.complexConj D.host.E).commutes t
 
 theorem resChar_mem' (D : Formalism.BasicNotions.D7) (p : PlF D) : ((Loc.resChar p : ℕ) : 𝓞 D.host.F) ∈ p.asIdeal := by
   rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
   first
   | exact ringChar.Nat.cast_ringChar
-  | (unfold Loc.resChar; exact ringChar.Nat.cast_ringChar)
 
 theorem val_resChar_lt (D : Formalism.BasicNotions.D7) (p : PlF D) :
     valuation (D.s.atP p).Fp (((Loc.resChar p : ℕ) : (D.s.atP p).Fp)) < 1 := by
@@ -47,11 +81,6 @@ theorem val_resChar_lt (D : Formalism.BasicNotions.D7) (p : PlF D) :
   rw [← not_le, ← map_one (valuation (D.s.atP p).Fp)]
   first
   | exact fun h => hnot ((Valuation.Compatible.vle_iff_le (v := valuation (D.s.atP p).Fp) _ _).mpr h)
-  | exact fun h => hnot ((Valuation.Compatible.rel_iff_le (v := valuation (D.s.atP p).Fp) _ _).mpr h)
-  | exact fun h => hnot (ValuativeRel.valuation_le_valuation.mp h)
-  | exact fun h => hnot ((ValuativeRel.valuation_le_valuation_iff _ _).mp h)
-  | simpa using hnot
-  | simpa [ValuativeRel.valuation_le_valuation] using hnot
 
 theorem locDiff_of (hT : TrDual) (hA : DualApprox) (hS : PowSmall) : LocDiff := by
   intro D δ M hag p
@@ -91,17 +120,14 @@ theorem unitAt_mul_natCast (D : Formalism.BasicNotions.D7) (p : PlF D) : ∃ n :
     push_cast
     first
     | (field_simp; done)
-    | (field_simp; ring)
   · refine ⟨D.host.g 0, ?_⟩
     push_cast
     first
     | (field_simp; done)
-    | (field_simp; ring)
   · refine ⟨D.host.g 0 * D.host.g 1, ?_⟩
     push_cast
     first
     | (field_simp; done)
-    | (field_simp; ring)
 
 theorem algMap_mem_O (D : Formalism.BasicNotions.D7) (p : PlF D) (c : (D.s.atP p).Fp) (hc : c ∈ 𝒪[(D.s.atP p).Fp]) :
     algebraMap (D.s.atP p).Fp (D.s.atP p).Ep c ∈ (D.s.atP p).O := by

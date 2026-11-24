@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.CapelliDeterminantBlockProduct
 public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 
@@ -117,8 +116,8 @@ theorem deg_bd {j : ℕ} (E : Fin n → Fin n → Module.End ℂ V) {x : Ch ε V
 theorem lift_bd (φ : V →ₗ[ℂ] W) (E : Fin n → Fin n → Module.End ℂ V) (F : Fin n → Fin n → Module.End ℂ W)
     (h : ∀ a b x, φ (E a b x) = F a b (φ x)) (x : Ch ε V) : lift ε φ (bd ε E x) = bd ε F (lift ε φ x) := by
   funext A
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lift_apply, bd_apply, bd_apply, map_sum]
+
+  rw [lift_apply, bd_apply, bd_apply, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [h]
   split_ifs <;> simp
@@ -137,8 +136,8 @@ theorem lift_zeta (hG : GFacts) (φ : V →ₗ[ℂ] W) (E : Fin n → Fin n → 
   obtain ⟨g, hg, -⟩ := hG n ε
   refine (pres_graph (lift ε φ) _ _).1 (pres_zeta ε _ _ (fun c d _ => (pres_graph _ _ _).2 fun x => ?_) u) x
   funext A
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Fop, hg, h, map_sum]
+
+  simp [Fop, hg, h, map_sum]
 
 theorem deg_Fop (hG : GFacts) {j : ℕ} (E : Fin n → Fin n → Module.End ℂ V) (c d : Fin n) {x : Ch ε V}
     (hx : Deg j x) : Deg j (Fop ε E c d x) := by

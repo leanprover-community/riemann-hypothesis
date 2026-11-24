@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
+public import Mathlib.Algebra.MvPolynomial.Monad
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
+
+attribute [local simp] MvPolynomial.bind₁
 
 set_option maxSynthPendingDepth 1
 
@@ -192,8 +195,8 @@ theorem low_dPoly (b : K → ℤ) (p : MvPolynomial K ℚ) : Low (dPoly b p) p.t
   have hsum : dPoly b p = ∑ s ∈ p.support, dPoly b (monomial s (AddMonoidAlgebra.coeff p s)) := by
     simp only [dPoly]
     conv_lhs => rw [p.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, ← Finset.sum_sub_distrib]
+
+    rw [map_sum, ← Finset.sum_sub_distrib]
   rw [hsum]
   refine Finset.sum_induction _ (fun A => Low A p.totalDegree) (fun _ _ => low_add)
     (Or.inl rfl) (fun s hs => low_mono (low_dPoly_monomial b s _) ?_)

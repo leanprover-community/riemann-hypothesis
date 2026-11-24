@@ -1,6 +1,9 @@
 module
 
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
+public import ReciprocityTheory.NeutralLocalFields.Reciprocity
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

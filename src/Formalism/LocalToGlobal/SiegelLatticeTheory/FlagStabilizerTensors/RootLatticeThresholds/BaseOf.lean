@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.BaseOfCore
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierInOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.BuiltPf
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.Choice
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.UnitaryWeylCompact
+import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
+import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.TopsChoicePartA
 
 @[expose] public section
 
@@ -48,7 +52,6 @@ theorem transpC (v : InfinitePlace X.B.I.F) : IsTranspC X v (cfS D) D.R.k D.R.rS
     rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
     congr 1
     funext i
-    beta_reduce
     split_ifs
     · rw [← mul_pow, inv_mul_cancel₀ hμ, one_pow]
     · rw [← mul_inv, ← star_mul', ← mul_pow, inv_mul_cancel₀ hμ, one_pow, star_one, inv_one]
@@ -58,7 +61,6 @@ theorem transpC (v : InfinitePlace X.B.I.F) : IsTranspC X v (cfS D) D.R.k D.R.rS
     rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
     congr 1
     funext i
-    beta_reduce
     split_ifs
     · rw [← mul_pow, mul_inv_cancel₀ hμ, one_pow]
     · rw [← mul_inv, ← star_mul', ← mul_pow, mul_inv_cancel₀ hμ, one_pow, star_one, inv_one]
@@ -77,7 +79,7 @@ theorem transpC (v : InfinitePlace X.B.I.F) : IsTranspC X v (cfS D) D.R.k D.R.rS
          rw [e, mul_one, mul_inv_cancel₀ (star_ne_zero.mpr (hμm _))])
       | (have e : 2 * D.R.rS + D.R.k - (i : ℕ) = j := by omega
          rw [e, mul_one]
-         first | rw [star_inv₀] | rw [star_inv']
+         first | rw [star_inv₀]
          rw [star_star, inv_mul_cancel₀ (hμm _)])
       | (have e : 2 * D.R.rS + D.R.k - (j : ℕ) = i := by omega
          rw [e]; simp [hμm, hsm]; done)
@@ -227,7 +229,7 @@ def towersOf (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃ D.what₂.T
 
 theorem towersOf_base (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃ D.what₂.Tau) (j : Fin (nfE D)) :
     (towersOf X C u u' e j).base = baseOf X C u u' (tauE X e j) :=
-  (Formalism.FourierDecayAlt.P.exists_level_tower _ _ _ _ (baseOf X C u u' (tauE X e j)) (baseOf_μW1 X C u u' _)
+  (_root_.Formalism.FourierDecayAlt.P.Dx2.Tower.towerExists _ _ _ _ (baseOf X C u u' (tauE X e j)) (baseOf_μW1 X C u u' _)
     (baseOf_μW'1 X C u u' _) rfl).choose_spec.1
 
 theorem Tz_towersOf_base_eq_T (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃ D.what₂.Tau) (j : Fin (nfE D)) :

@@ -1,6 +1,49 @@
 module
 
 public import Formalism.HermitianCurvature.StatementJ
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -36,9 +79,7 @@ theorem psd_sum {ι : Type} {F : Finset α} (s : Finset ι) (k : ι → α → �
   classical
   induction s using Finset.induction_on with
   | empty => simpa using psd_zero F
-  | insert i s hi ih =>
-    have := psd_add (h i (mem_insert_self i s)) (ih fun j hj => h j (mem_insert_of_mem hj))
-    exact psd_congr this fun x _ y _ => by rw [sum_insert hi]
+  | insert i s hi ih => simpa [sum_insert hi] using psd_add (h i (mem_insert_self i s)) (ih fun j hj => h j (mem_insert_of_mem hj))
 
 theorem pull [DecidableEq X] (η : α → X) (F : Finset α) (k : X → X → ℂ) (h : A5.IsPSD (F.image η) k) :
     A5.IsPSD F (fun x y => k (η x) (η y)) := by
@@ -49,8 +90,8 @@ theorem pull [DecidableEq X] (η : α → X) (F : Finset α) (k : X → X → �
     intro c x'
     apply Finset.sum_image'
     intro i _
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hb, map_sum, mul_sum, sum_mul]
+
+    simp only [hb, map_sum, mul_sum, sum_mul]
     exact sum_congr rfl fun j hj => by rw [(mem_filter.1 hj).2]
   have key : ∑ x' ∈ F.image η, ∑ y' ∈ F.image η, b x' * conj (b y') * k x' y' =
       ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y) := by
@@ -126,9 +167,8 @@ theorem finClasses {X K : Type} [CommRing K] [TopologicalSpace K] [IsTopological
 theorem tb_congr {α : Type} {F : Finset α} {k k' : α → α → ℂ} (h : ∀ x ∈ F, ∀ y ∈ F, k x y = k' x y)
     (hk : TB.PSDOn F k) : TB.PSDOn F k' := by
   unfold TB.PSDOn at *
-  have : (Matrix.of fun x y : F => k' x y) = Matrix.of fun x y : F => k x y := by
-    ext x y; exact (h x x.2 y y.2).symm
-  rw [this]; exact hk
+  rwa [show Matrix.of (fun x y : F => k' x y) = Matrix.of (fun x y : F => k x y) by
+    ext x y; exact (h x x.2 y y.2).symm]
 
 theorem tb_zero {α : Type} {F : Finset α} : TB.PSDOn F (fun _ _ : α => (0 : ℂ)) := by
   unfold TB.PSDOn; exact Matrix.PosSemidef.zero

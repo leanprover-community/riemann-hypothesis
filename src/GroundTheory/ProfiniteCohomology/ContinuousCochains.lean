@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.DiscreteModules
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
+public import Mathlib.Topology.Algebra.Group.Defs
+public import Mathlib.Topology.LocallyConstant.Basic
 public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
 
 @[expose] public section

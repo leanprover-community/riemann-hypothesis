@@ -1,6 +1,50 @@
 module
 
-public import Mathlib
+public import Mathlib.GroupTheory.Index
+public import Mathlib.RepresentationTheory.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -48,9 +92,9 @@ theorem transfer_cocycle_formula :
     show ∑ q : G ⧸ H, ρ ((a * b) • q).out (f (((a * b) • q).out⁻¹ * (a * b) * q.out))
       = ∑ q : G ⧸ H, ρ (a • q).out (f ((a • q).out⁻¹ * a * q.out))
         + ρ a (∑ q : G ⧸ H, ρ (b • q).out (f ((b • q).out⁻¹ * b * q.out)))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.sum_congr rfl (fun q _ => key q), Finset.sum_add_distrib, map_sum,
-      reidx b (fun q => ρ (a • q).out (f ((a • q).out⁻¹ * a * q.out)))]
+
+    rw [Finset.sum_congr rfl (fun q _ => key q), Finset.sum_add_distrib, map_sum,
+    reidx b (fun q => ρ (a • q).out (f ((a • q).out⁻¹ * a * q.out)))]
   · intro f x hf g
     have key : ∀ q : G ⧸ H, ρ (g • q).out (f ((g • q).out⁻¹ * g * q.out))
         = ρ g (ρ q.out x) - ρ (g • q).out x := by
@@ -59,9 +103,9 @@ theorem transfer_cocycle_formula :
       congr 2
       group
     show ∑ q : G ⧸ H, ρ (g • q).out (f ((g • q).out⁻¹ * g * q.out)) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.sum_congr rfl (fun q _ => key q), Finset.sum_sub_distrib, map_sum,
-      reidx g (fun q => ρ q.out x)]
+
+    rw [Finset.sum_congr rfl (fun q _ => key q), Finset.sum_sub_distrib, map_sum,
+    reidx g (fun q => ρ q.out x)]
   · intro f hf g
     have f1 : f 1 = 0 := by
       have := hf 1 1
@@ -78,10 +122,10 @@ theorem transfer_cocycle_formula :
       rw [mul_assoc, hf, map_add (f := _), finv, rmul, mul_inv_cancel, map_one, one_apply_eq_self, hf]
       abel
     show ∑ q : G ⧸ H, ρ (g • q).out (f ((g • q).out⁻¹ * g * q.out)) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.sum_congr rfl (fun q _ => key q), Finset.sum_sub_distrib, Finset.sum_add_distrib,
-      map_sum, reidx g (fun q => f q.out), Finset.sum_const, Finset.card_univ,
-      Subgroup.index_eq_card, Nat.card_eq_fintype_card]
+
+    rw [Finset.sum_congr rfl (fun q _ => key q), Finset.sum_sub_distrib, Finset.sum_add_distrib,
+    map_sum, reidx g (fun q => f q.out), Finset.sum_const, Finset.card_univ,
+    Subgroup.index_eq_card, Nat.card_eq_fintype_card]
     abel
 
 end GlobalTheory

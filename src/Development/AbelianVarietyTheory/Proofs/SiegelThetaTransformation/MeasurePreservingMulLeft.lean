@@ -1,10 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralTransportHermitianFrameChartMeasure
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatMulVec
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ProdCastLESucc
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -65,7 +117,7 @@ theorem _root_.GlobalTheory.SW.Slab.exists_bound_upper {r : ℕ} (d : Fin r → 
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, not_lt] at hj
       exact hzero j (lt_of_le_of_ne hj (Ne.symm hjk))
     have hfk : ‖f k‖ = ‖b k k‖ * ‖b k c‖ := by
-      simp [f, norm_mul, hd]
+      simp [f, hd]
     have hsum : ‖∑ j ∈ Finset.univ.filter (· < k), f j‖ ≤ r * C ^ 2 := by
       calc ‖∑ j ∈ Finset.univ.filter (· < k), f j‖
           ≤ ∑ j ∈ Finset.univ.filter (· < k), ‖f j‖ := norm_sum_le _ _
@@ -203,12 +255,6 @@ private theorem sign_re_pos_and_norm_bounds_of_near_sign {z : ℂ} {s : ℝ} (hs
 
 open Matrix Complex NumberField MeasureTheory in
 open scoped ComplexConjugate ComplexOrder Real Classical in
-private theorem lminor_last_eq_det {r : ℕ} (G : Matrix (Fin r) (Fin r) ℂ) :
-    _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor G (Fin.last r) = G.det := by
-  unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor; rfl
-
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private theorem mem_Bor_iff_det_ne_zero_and_lower_eq_zero {E : Type} [Field E] {Ψ : Finset (E →+* ℂ)} {r : ℕ}
     {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor Ψ r ↔
       ∀ τ : Ψ, (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat b τ).det ≠ 0 ∧ ∀ a c : Fin r, c < a → b τ a c = 0 := Iff.rfl
@@ -301,7 +347,7 @@ theorem _root_.GlobalTheory.SW.thin_slab : ∀ (E : Type) [Field E] [NumberField
     have hdg := _root_.GlobalTheory.SW.Slab.det_gram X τ.1 (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ)
     have hzero : _root_.ReciprocityTheory.ChartRestriction.G.FD.dmin X.Gm x τ (Fin.last r) = 0 := by
       show _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor (_root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ)) (Fin.last r) = 0
-      rw [lminor_last_eq_det, hdg, h0]
+      rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.lminor_last, hdg, h0]
       simp
     rw [hzero] at hlast
     simp at hlast

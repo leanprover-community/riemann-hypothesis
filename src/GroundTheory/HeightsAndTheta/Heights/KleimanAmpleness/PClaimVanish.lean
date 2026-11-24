@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsClaimSeq
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PClaimVanishCech
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

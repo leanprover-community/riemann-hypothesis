@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.FibreStA
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Analysis.Calculus.ImplicitContDiff
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -26,7 +31,7 @@ theorem deh_eval₂_rename {S : Type*} [Field S] (v : ι → S) (e : Fin (D + 1)
   congr 1
   apply MvPolynomial.ringHom_ext
   · intro r
-    simp [deh_apply]
+    simp
   · intro i
     simp [deh_apply]
 
@@ -43,10 +48,8 @@ private theorem eval₂_deh_eq_zero_of_good_of_root (hw : G.Good w) {ρ : ℂ} (
   have hsplit : H %ₘ G.P + G.P * (H /ₘ G.P) = H := by
     first
     | exact Polynomial.modByMonic_add_div H G.P
-    | exact Polynomial.modByMonic_add_div H G.monic
   have hdeg : (H %ₘ G.P).natDegree < G.P.natDegree := by
     first
-    | exact Polynomial.natDegree_modByMonic_lt H G.monic hP1
     | exact Polynomial.natDegree_modByMonic_lt H G.monic hP1
   have hrx : (H %ₘ G.P).eval₂ (deh (x ∘ e) 0) (deh x (e 0) G.Θ) = 0 := by
     have h2 := congrArg (fun p => p.eval₂ (deh (x ∘ e) 0) (deh x (e 0) G.Θ)) hsplit
@@ -74,7 +77,6 @@ theorem Gen.zOf_e (hw : G.Good w) {ρ : ℂ} (hρ : G.P.eval₂ (deh w 0) ρ = 0
   rw [hH]
   first
   | (field_simp; done)
-  | (field_simp; ring)
 
 theorem Gen.deh_zOf (hw : G.Good w) {ρ : ℂ} (hρ : G.P.eval₂ (deh w 0) ρ = 0)
     (F : MvPolynomial ι ℤ) :
@@ -96,7 +98,6 @@ private theorem map_eval₂_X_mul_C_eq {K : Type*} [Field K] (φ : MvPolynomial 
     (Int.castRingHom _) (fun i => Polynomial.X * Polynomial.C (G.Q i)) f
   first
   | rw [Polynomial.coe_mapRingHom] at hk
-  | skip
   rw [hk]
   congr 1
   · exact RingHom.ext_int _ _
@@ -120,8 +121,7 @@ theorem Gen.zOf_mem (hx0 : x (e 0) ≠ 0) (hw : G.Good w) {ρ : ℂ}
     congr 1
     · exact RingHom.ext_int _ _
     · funext i
-      simp only [Function.comp_apply, Polynomial.coe_compRingHom_apply, Polynomial.mul_comp,
-        Polynomial.C_comp, Polynomial.X_comp, ← G.hQ i, deh_X, div_eq_mul_inv, map_mul]
+      simp only [Function.comp_apply, Polynomial.coe_compRingHom_apply, Polynomial.C_comp, Polynomial.X_comp, ← G.hQ i, deh_X, div_eq_mul_inv, map_mul]
       ring
   have h2 := map_eval₂_X_mul_C_eq G (deh (x ∘ e) 0) (deh x (e 0) G.Θ) f
   rw [hrel, hcone, Polynomial.zero_comp] at h2
@@ -160,8 +160,6 @@ private theorem sum_coeff_homogenize_eq_pow_mul_eval₂ {S : Type*} [Field S] (F
     Nat.add_sub_cancel_left, pow_add]
   first
   | (field_simp; done)
-  | (field_simp; ring)
-  | ring
 
 private theorem map_homogenized_sub_dd_pow_X_eq {S : Type*} [Field S] (φ : MvPolynomial (Fin (D + 1)) ℤ →+* S) (t : S)
     (hd : φ G.dd ≠ 0) :
@@ -187,7 +185,6 @@ theorem Gen.deh_zOf_Θ (hw : G.Good w) {ρ : ℂ} (hρ : G.P.eval₂ (deh w 0) �
     rw [← G.hQ i, deh_X]
     first
     | exact mul_div_cancel_left₀ _ G.dd_ne
-    | field_simp [G.dd_ne]
   rw [hQx, sub_self, mul_zero] at hx
   have hw' := eval₂_deh_eq_zero_of_good_of_root G hw hρ _ hx
   rw [map_homogenized_sub_dd_pow_X_eq G (deh w 0) ρ hw.dd] at hw'
@@ -202,8 +199,8 @@ private theorem deh_eq_zero_of_mem_pts_of_deh_eq_zero (hx0 : x (e 0) ≠ 0) (F :
   have hmem : (∑ m ∈ F.support, MvPolynomial.C (AddMonoidAlgebra.coeff F m) *
       X (e 0) ^ (F.totalDegree - ∑ i ∈ m.support, m i) * ∏ i ∈ m.support, X i ^ m i) ∈ coordIdeal ℤ x := by
     show _ ∈ RingHom.ker (coneMap ℤ x)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [RingHom.mem_ker, coneMap, map_sum]
+
+    rw [RingHom.mem_ker, coneMap, map_sum]
     have h1 : ∀ m ∈ F.support, (aeval fun i => Polynomial.C (x i) * Polynomial.X)
         (MvPolynomial.C (AddMonoidAlgebra.coeff F m) * X (e 0) ^ (F.totalDegree - ∑ i ∈ m.support, m i) *
           ∏ i ∈ m.support, X i ^ m i) =
@@ -213,13 +210,13 @@ private theorem deh_eq_zero_of_mem_pts_of_deh_eq_zero (hx0 : x (e 0) ≠ 0) (F :
       have hs : ∑ i ∈ m.support, m i ≤ F.totalDegree := MvPolynomial.le_totalDegree hm
       obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hs
       rw [hk, Nat.add_sub_cancel_left]
-      simp only [map_mul, map_pow, map_prod, MvPolynomial.aeval_C, MvPolynomial.aeval_X, mul_pow,
-        Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, algebraMap_int_eq, eq_intCast, map_intCast]
+      simp only [map_mul, map_pow, map_prod, MvPolynomial.aeval_X, mul_pow,
+        Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, eq_intCast, map_intCast]
       ring
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.sum_congr rfl h1, ← Finset.sum_mul, ← map_sum Polynomial.C,
-      sum_coeff_homogenize_eq_pow_mul_eval₂ F (fun i => x i / x (e 0)) x (x (e 0)) (fun i => rfl) hx0 _ le_rfl, ← deh_apply, hF,
-      mul_zero, map_zero, zero_mul]
+
+    rw [Finset.sum_congr rfl h1, ← Finset.sum_mul, ← map_sum Polynomial.C,
+    sum_coeff_homogenize_eq_pow_mul_eval₂ F (fun i => x i / x (e 0)) x (x (e 0)) (fun i => rfl) hx0 _ le_rfl, ← deh_apply, hF,
+    mul_zero, map_zero, zero_mul]
   have h2 := hz'.2 _ hmem
   rw [MvPolynomial.eval_map] at h2
   simp only [MvPolynomial.eval₂_sum, MvPolynomial.eval₂_mul, MvPolynomial.eval₂_C, MvPolynomial.eval₂_pow,
@@ -257,7 +254,6 @@ theorem Gen.of_mem (hx0 : x (e 0) ≠ 0) (hw : G.Good w) {z : ι → ℂ}
     rw [h, hze 0]
     first
     | (field_simp; done)
-    | (field_simp; ring)
 
 theorem Gen.sep (hw : G.Good w) : (G.P.map (deh w 0)).Separable := by
   have h0 : (G.U * G.P + G.V * Polynomial.derivative G.P - Polynomial.C G.cc).map (deh w 0) = 0 := by
@@ -283,13 +279,9 @@ theorem Gen.card_roots : (G.P.map (deh w 0)).roots.card = G.P.natDegree := by
   have hd : (G.P.map (deh w 0)).natDegree = G.P.natDegree := by
     first
     | exact G.monic.natDegree_map _
-    | exact Polynomial.natDegree_map_of_monic G.monic _
   rw [← hd]
   first
   | exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits _)
-  | exact IsAlgClosed.card_roots_eq_natDegree
-  | exact (Polynomial.natDegree_eq_card_roots' (IsAlgClosed.splits _)).symm
-  | simp
 
 abbrev fib (x : ι → Ω) (e : Fin (D + 1) → ι) (w : Fin (D + 1) → ℂ) : Set (ι → ℂ) :=
   {z | z ∈ pts (coordIdeal ℤ x) ∧ ∀ k, z (e k) = w k}
@@ -349,9 +341,6 @@ theorem exists_implicit_section {E : Type*} [NormedAddCommGroup E] [NormedSpace 
   have hi : HasFDerivAt (fun t : ℂ => (u.1, t)) (ContinuousLinearMap.inr ℂ E ℂ) u.2 := by
     first
     | exact hasFDerivAt_prodMk_right u.1 u.2
-    | exact hasFDerivAt_prod_mk_right u.1 u.2
-    | exact (hasFDerivAt_const u.1 u.2).prodMk (hasFDerivAt_id u.2)
-    | exact (hasFDerivAt_const u.1 u.2).prod (hasFDerivAt_id u.2)
   have hcomp : HasFDerivAt (fun t : ℂ => f (u.1, t))
       ((fderiv ℂ f u).comp (ContinuousLinearMap.inr ℂ E ℂ)) u.2 := by
     have hfd' : HasFDerivAt f (fderiv ℂ f u) (u.1, u.2) := hfd
@@ -363,7 +352,6 @@ theorem exists_implicit_section {E : Type*} [NormedAddCommGroup E] [NormedSpace 
     refine ⟨ContinuousLinearEquiv.unitsEquivAut ℂ (Units.mk0 c hc), ?_⟩
     first
     | (ext; simp)
-    | (ext x; simp [mul_comm])
   have ev := ContDiffAt.eventually_apply_implicitFunction hf one_ne_zero hinv
   have cd := ContDiffAt.contDiffAt_implicitFunction hf one_ne_zero hinv
   have ev2 := ContDiffAt.eventually_apply_eq_iff_implicitFunction hf one_ne_zero hinv
@@ -371,8 +359,6 @@ theorem exists_implicit_section {E : Type*} [NormedAddCommGroup E] [NormedSpace 
   have ecd : ∀ᶠ y in 𝓝 u.1, ContDiffAt ℂ 1 (hf.implicitFunction one_ne_zero hinv) y := by
     first
     | exact cd.eventually (by simp)
-    | exact cd.eventually (by decide)
-    | exact cd.eventually ENat.one_ne_top
   obtain ⟨U, hUsub, hUo, hUmem⟩ := eventually_nhds_iff.mp (ev.and ecd)
   exact ⟨U, hf.implicitFunction one_ne_zero hinv, hUo, hUmem,
     fun y hy => ((hUsub y hy).2.differentiableAt one_ne_zero).differentiableWithinAt, hval,
@@ -433,9 +419,6 @@ theorem Gen.exists_section (hx0 : x (e 0) ≠ 0) {W : Set (Fin (D + 1) → ℂ)}
     intro i
     first
     | fun_prop
-    | exact ((contDiff_apply ℂ (fun _ => ℂ) i).comp contDiff_fst).contDiffAt
-    | exact ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (D + 1) => ℂ) i).comp
-        (ContinuousLinearMap.fst ℂ (Fin (D + 1) → ℂ) ℂ)).contDiff.contDiffAt
   have hcd : ContDiffAt ℂ 1 (fun p : (Fin (D + 1) → ℂ) × ℂ => G.P.eval₂ (deh p.1 0) p.2) (w, ρ) :=
     contDiffAt_eval₂_deh (fun p : (Fin (D + 1) → ℂ) × ℂ => p.1) (fun p => p.2) (w, ρ) 0 hp1
       contDiffAt_snd hgw.w0 G.P
@@ -458,8 +441,6 @@ theorem Gen.exists_section (hx0 : x (e 0) ≠ 0) {W : Set (Fin (D + 1) → ℂ)}
     intro v j
     first
     | fun_prop
-    | exact (contDiff_apply ℂ (fun _ => ℂ) j).contDiffAt
-    | exact (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (D + 1) => ℂ) j).contDiff.contDiffAt
   refine ⟨U' ∩ W, fun w' => G.zOf w' (τ w'), hU'o.inter hWo, ⟨hwU', hw⟩, ?_, ?_, ?_⟩
   · intro w' hw'
     have hg' := hgood w' hw'.2

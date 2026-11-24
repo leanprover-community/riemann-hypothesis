@@ -1,9 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPtsMonoSemipos
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PIntegralAgainstPositive
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+import Mathlib.Algebra.Order.Star.Real
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ADensStA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 
 @[expose] public section
 

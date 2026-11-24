@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpOverLocFiniteCut
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsPowReductionCut
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

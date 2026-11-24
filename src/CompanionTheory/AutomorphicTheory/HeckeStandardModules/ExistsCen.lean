@@ -1,6 +1,17 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Valuation.RamificationGroup
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Invariant.Profinite
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Valuation.LocalSubring
+public import Mathlib.FieldTheory.Galois.Infinite
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
+public import Mathlib.RingTheory.Invariant.Defs
 
 @[expose] public section
 

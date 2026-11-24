@@ -1,16 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJGlobal
-public import GroundTheory.AutomorphicForms.GL2.GJStandardLUnramified
-public import GroundTheory.AutomorphicForms.GL2.GJLocalFEGamma
-public import GroundTheory.AutomorphicForms.GL2.GJFEInduced
-public import GroundTheory.AutomorphicForms.GL2.GJFELevi
 public import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
-public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
+public import GroundTheory.AutomorphicForms.AdelicGLn
+public import GroundTheory.AutomorphicForms.GL2.GJLocalZeta
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixCoord
+public import GroundTheory.GlobalFields.Adele.IntegersLattice
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import GroundTheory.AutomorphicForms.GL2.GJFEInducedLevi
-public import GroundTheory.AutomorphicForms.RestrictedHaarProduct
-public import GroundTheory.GlobalFields.LocalFieldAtPlace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

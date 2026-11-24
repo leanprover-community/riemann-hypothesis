@@ -1,6 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
+public import Mathlib.Topology.Algebra.Valued.ValuativeRel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,14 +72,14 @@ def vIdeal (σ : E →+* K) : Ideal (𝓞 E) where
   carrier := {o | valuation K (σ (o : E)) < 1}
   add_mem' := by
     intro x y hx hy
-    simp only [Set.mem_ofPred_eq, AddMemClass.coe_add, map_add (f := _)] at hx hy ⊢
+    simp only [Set.mem_ofPred_eq, map_add (f := _)] at hx hy ⊢
     exact Valuation.map_add_lt _ hx hy
   zero_mem' := by
-    simp only [Set.mem_ofPred_eq, ZeroMemClass.coe_zero, map_zero, Valuation.map_zero]
+    simp only [Set.mem_ofPred_eq, map_zero]
     exact zero_lt_one
   smul_mem' := by
     intro c x hx
-    simp only [Set.mem_ofPred_eq, smul_eq_mul, MulMemClass.coe_mul, map_mul, Valuation.map_mul] at hx ⊢
+    simp only [Set.mem_ofPred_eq, smul_eq_mul, map_mul] at hx ⊢
     exact mul_lt_of_le_one_of_lt (sig_le_one σ c) hx
 
 theorem mem_vIdeal (σ : E →+* K) (o : 𝓞 E) : o ∈ vIdeal σ ↔ valuation K (σ (o : E)) < 1 := Iff.rfl
@@ -48,7 +95,7 @@ theorem vIdeal_prime (σ : E →+* K) : (vIdeal σ).IsPrime := by
     push Not at hc
     have hx : valuation K (σ (x : E)) = 1 := le_antisymm (sig_le_one σ x) hc.1
     have hy : valuation K (σ (y : E)) = 1 := le_antisymm (sig_le_one σ y) hc.2
-    simp only [MulMemClass.coe_mul, map_mul, Valuation.map_mul, hx, hy, mul_one] at hxy
+    simp only [map_mul, hx, hy, mul_one] at hxy
     exact lt_irrefl _ hxy
 
 def vPrime (σ : E →+* K) (l : ℕ) (hl0 : l ≠ 0) (hl : valuation K (l : K) < 1) : HeightOneSpectrum (𝓞 E) where

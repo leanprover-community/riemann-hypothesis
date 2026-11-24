@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertIndex
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertRIndexSteps
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

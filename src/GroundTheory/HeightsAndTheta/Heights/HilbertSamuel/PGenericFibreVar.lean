@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenericFibreVar
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PGenericFibreDim
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat

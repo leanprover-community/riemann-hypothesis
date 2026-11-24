@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ProcyclicDefs
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
-public import GroundTheory.ProfiniteCohomology.CoinducedModules.CohomologyCoindCokernelIsoHom
-public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.PrimaryComponentCohomologyEqBotOfScdpLt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

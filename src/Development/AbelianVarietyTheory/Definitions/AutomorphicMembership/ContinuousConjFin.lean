@@ -1,14 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicArithmetic.IntegralCasts.Imports
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwConj
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfValuedEq
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsOpenKerFinIdele
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
+public import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
+public import Formalism.RealPlaceAnalysis.StatementE
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfValuedEq
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
+public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
@@ -163,8 +205,8 @@ def Zalg : Subalgebra ℂ (Module.End ℂ (Sm E a)) := Algebra.adjoin ℂ {z | �
 
 theorem map_qdet {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (f : A →ₐ[ℂ] B) (X : Fin a → Fin a → A)
     (u : ℂ) : f (Formalism.REAL.qdet X u) = Formalism.REAL.qdet (fun i j => f (X i j)) u := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Formalism.REAL.qdet, Formalism.REAL.qminor, map_sum, map_mul, map_intCast, map_list_prod, List.map_ofFn]
+
+  simp only [Formalism.REAL.qdet, Formalism.REAL.qminor, map_sum, map_mul, map_intCast, map_list_prod, List.map_ofFn]
   refine Finset.sum_congr rfl fun σ _ => ?_
   congr 3
   funext k
@@ -276,10 +318,10 @@ variable (a) in
 def mulChi (χ : HChar E) : Sm E a ≃ₗ[ℂ] Sm E a where
   toFun φ := ⟨fun x => φ.1 x * (chiDet a χ x : ℂˣ), mul_chi_mem_Sm χ φ.2⟩
   invFun φ := ⟨fun x => φ.1 x * (chiDet a χ⁻¹ x : ℂˣ), mul_chi_mem_Sm χ⁻¹ φ.2⟩
-  map_add' φ ψ := Subtype.ext <| funext fun x => add_mul _ _ _
-  map_smul' c φ := Subtype.ext <| funext fun x => mul_assoc _ _ _
-  left_inv φ := Subtype.ext <| funext fun x => Units.mul_inv_cancel_right _ _
-  right_inv φ := Subtype.ext <| funext fun x => Units.inv_mul_cancel_right _ _
+  map_add' φ ψ := Subtype.ext <| funext fun _x => add_mul _ _ _
+  map_smul' c φ := Subtype.ext <| funext fun _x => mul_assoc _ _ _
+  left_inv φ := Subtype.ext <| funext fun _x => Units.mul_inv_cancel_right _ _
+  right_inv φ := Subtype.ext <| funext fun _x => Units.inv_mul_cancel_right _ _
 
 @[simp] theorem mulChi_apply (χ : HChar E) (φ : Sm E a) (g : GA E a) :
     (mulChi a χ φ).1 g = φ.1 g * (chiDet a χ g : ℂˣ) := rfl
@@ -312,7 +354,7 @@ theorem fderiv_det_one (X : Lie E a) :
     simp only [Polynomial.eval_eq_sum_range]
     fun_prop
   have h2 := ((hr.const_mul (Matrix.of X).trace).const_add 1).add (hP.hasDerivAt.mul (hr.mul hr))
-  simp only [mul_one, zero_smul, Pi.mul_apply, mul_zero, zero_mul, add_zero] at h2
+  simp only [mul_one, zero_smul, Pi.mul_apply, mul_zero, add_zero] at h2
   refine h2.congr_of_eventuallyEq (Filter.Eventually.of_forall fun t => ?_)
   have e : Matrix.of (oneL E a + t • X) = 1 + (t • (1 : Cinf E)) • Matrix.of X := by
     rw [smul_assoc, one_smul]; rfl
@@ -335,7 +377,7 @@ theorem lie_mulChi (χ : HChar E) (X : Lie E a) (φ : Sm E a) :
   change fderiv ℝ (chart (fun x => φ.1 x * (chiDet a χ x : ℂˣ)) g) _ X = (lieD X φ.1 g + _ * φ.1 g) * _
   rw [chart_mul_chi]
   refine (congrArg (fun L : Lie E a →L[ℝ] ℂ => L X) h2).trans ?_
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.comp_apply,
+  simp only [_root_.add_apply, _root_.smul_apply, ContinuousLinearMap.comp_apply,
     fderiv_det_one, h1, h3, h4, smul_eq_mul, lieD]
   ring
 

@@ -1,13 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Saturated
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.EFSymmCont
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PackageTie
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataConc
+public import Formalism.LocalRingCardinality.DataParamsS
 
 @[expose] public section
 
@@ -114,8 +110,8 @@ theorem finiteDimensional_colT : FiniteDimensional ℂ (ColT hinj) := by
   intro T _
   rw [← shInv_shT hb T, ← b.sum_repr (shT hinj T)]
   show shInvAdd hb _ ∈ _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Submodule.sum_mem _ fun i _ => ?_
   show shInv hb _ ∈ _
   rw [shInv_smul]
@@ -374,11 +370,8 @@ theorem packageTieConc (D : D7) (L : SizeData₂ D) : ParametersTermRelations D 
   have h1 : L.hsSq u u' = ‖(Y.tO u u').K0‖ ^ 2 := by
     rw [hNT hDu hDu' hKE hAC hId hdeg]
     exact hIso D.s (sOf hF) hI u u'
-  rw [h1]
+  rw [h1, Real.rpow_neg hb, show (6 : ℝ) = ((6 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
   rw [hDs, hdu, hdu'] at hK0
-  have hbpow : L.sc.b ^ (-(6 : ℝ)) = (L.sc.b ^ 6)⁻¹ := by
-    rw [Real.rpow_neg hb, show (6 : ℝ) = ((6 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
-  rw [hbpow]
   exact hK0.trans_eq (by ring)
 
 end Link

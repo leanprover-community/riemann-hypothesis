@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.CoefficientMapHeightBound
+import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
@@ -110,7 +111,7 @@ theorem blkE_of_hom {F : MvPolynomial (ι × Fin n × Fin n) ℂ} {d : ι → �
   classical
   ext m
   unfold blkE
-  rw [coeff_sum, coeff_smul, smul_eq_mul]
+  rw [coeff_sum, MvPolynomial.coeff_smul, smul_eq_mul]
   simp only [coeff_sum, coeff_X_mul_pderiv_columns]
   simp only [← Finset.sum_mul]
   by_cases h0 : AddMonoidAlgebra.coeff F m = 0
@@ -123,8 +124,8 @@ theorem blkE_blockAct (U : ι → Matrix (Fin n) (Fin n) ℂ) (τ : ι) (F : MvP
     blkE τ (Formalism.GradedWeylDivisibility.blockAct ℂ U F) = Formalism.GradedWeylDivisibility.blockAct ℂ U (blkE τ F) := by
   classical
   unfold blkE
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, blockAct_X, pderiv_blockAct, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [map_sum, map_mul, blockAct_X, pderiv_blockAct, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun t _ => ?_
@@ -140,8 +141,8 @@ theorem fockN_euler (τ : ι) (G : MvPolynomial (ι × Fin n × Fin n) ℂ) (c :
     simp only [← fockL_self, fockL_pderiv_X]
     have e : ∑ a, ∑ t, fockL G (X (τ, a, t) * pderiv (τ, a, t) G) = fockL G (blkE τ G) := by
       unfold blkE
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum]
+
+      simp only [map_sum]
     rw [e, hE, map_smul, smul_eq_mul]
   exact_mod_cast this
 

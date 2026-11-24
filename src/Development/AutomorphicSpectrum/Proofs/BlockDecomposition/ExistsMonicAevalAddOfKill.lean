@@ -1,21 +1,58 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineGLForms.CuspInvariantsFinite.CuspInvFin
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspRapidDecaySiegelGL
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.DecayUniform
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmMemArchSmooth
-public import Development.AutomorphicSpectrum.Proofs.HermitianForms.CasOfCapelliVec
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaOpCommLiB
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchLieDerivativeExists
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactSpanFiniteDimStable
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaOperatorEqCasimirSum
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CasimirMemCenterEnveloping
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMonicAevalMemOfLeSup
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AveragePreservesKFiniteness
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicGLHomeomorphInfiniteFinite
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AveragePreservesKFiniteness
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchLieDerivativeExists
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CasimirMemCenterEnveloping
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactSpanFiniteDimStable
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMonicAevalMemOfLeSup
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaOperatorEqCasimirSum
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStructure
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -245,8 +282,8 @@ theorem exists_monic_compact_part {W : Type} [AddCommGroup W] [Module ℂ W] [Fi
     intro g m
     apply Subtype.ext
     change evK g (T m.1) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hTe, map_sum]
+
+    rw [hTe, map_sum]
     simp only [T', LinearMap.sum_apply, LinearMap.smul_apply, Module.End.mul_apply,
       Submodule.coe_sum, Submodule.coe_smul_of_tower, map_smul]
     refine Finset.sum_congr rfl fun i _ => ?_

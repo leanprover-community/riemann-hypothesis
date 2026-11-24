@@ -1,6 +1,50 @@
 module
 
 public import Formalism.HermitianCurvature.StatementU
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -50,7 +94,7 @@ theorem block3_mul
   simp only [blk3, Matrix.reindex_apply, Matrix.submatrix_mul_equiv]
   congr 1
   ext ((a | a) | a) ((b | b) | b) <;>
-    simp [Matrix.mul_apply, Fintype.sum_sum_type, Matrix.add_apply] <;> ring
+    simp [Matrix.mul_apply, Fintype.sum_sum_type, Matrix.add_apply]
 
 theorem block3_one : (1 : B.Mat k (j + ρ)) = blk3 (k := k) (j := j) (ρ := ρ) 1 0 0 0 1 0 0 0 1 := by
   apply ext_eB
@@ -118,7 +162,7 @@ theorem wMat_mul_self (d : ℕ) : G.wMat d * G.wMat d = 1 := by
     · subst h
       simp [Fin.rev_rev]
     · have h' : b ≠ a.rev.rev := by rw [Fin.rev_rev]; exact Ne.symm h
-      simp [h, h', Ne.symm h]
+      simp [h, Ne.symm h]
   · intro c _ hc
     simp [hc]
   · intro h
@@ -143,7 +187,6 @@ theorem hpk_conjTranspose (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
   · subst hab
     split_ifs <;> simp
   · have hba : b ≠ a := Ne.symm hab
-    have hv : a.val ≠ b.val := fun h => hab (Fin.ext h)
     simp only [hab, hba, and_false, if_false]
     split_ifs <;> first | (exfalso; omega) | simp
 
@@ -183,8 +226,8 @@ theorem Rn_mul_RnInv (x : RC k j ρ) : Rn k j ρ x * RnInv x = 1 := by
   rw [Rn, RnInv, block3_mul, block3_one]
   congr 1 <;>
     simp only [Matrix.mul_assoc, Matrix.mul_add, Matrix.mul_sub, Matrix.mul_neg, Matrix.neg_mul,
-      Matrix.mul_smul, Matrix.smul_mul, Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul,
-      Matrix.mul_zero, add_zero, zero_add, neg_neg, smul_zero, sub_zero, neg_zero, zero_sub] <;> abel
+      Matrix.mul_smul, Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul,
+      Matrix.mul_zero, add_zero, zero_add, neg_neg, smul_zero, sub_zero, neg_zero] <;> abel
 
 theorem Rn_inv_eq (x : RC k j ρ) : (Rn k j ρ x)⁻¹ = RnInv x := Matrix.inv_eq_right_inv (Rn_mul_RnInv x)
 
@@ -268,8 +311,6 @@ theorem slice_z_coordinates : Formalism.FourierDecayAlt.U.SliceZ := by
   rw [hZ, ← mMap_mul_muP]
   simp only [Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (Rn k (p + s) ρ ξ.1.2) (Rn k (p + s) ρ ξ.1.2)⁻¹, Rn_mul_inv, Matrix.one_mul]
-
-theorem level_z_affine : Formalism.FourierDecayAlt.U.ZjAffine := ux_zjAffine
 
 end Formalism.FourierDecayAlt.P
 

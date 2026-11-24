@@ -1,8 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LogAbsVpOfNormalised
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.IdemDen
+public import Mathlib.LinearAlgebra.Basis.Flag
+public import Mathlib.RingTheory.DedekindDomain.Different
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -202,9 +254,9 @@ theorem repr_eq_trace (a : 𝓞 E) (k) :
     (((RingOfIntegers.basis E).repr a k : ℤ) : ℚ) = Algebra.trace ℚ E (dualInt E k * (a : E)) := by
   classical
   conv_rhs => rw [← (RingOfIntegers.basis E).sum_repr a]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, RingOfIntegers.coe_eq_algebraMap, Finset.mul_sum, map_zsmul, mul_smul_comm,
-    ← integralBasis_apply, trace_dualInt]
+
+  simp only [map_sum, Finset.mul_sum, map_zsmul, mul_smul_comm,
+  ← integralBasis_apply, trace_dualInt]
   simp
 
 theorem eigProj_mem (ρ : 𝓞 E →+* Module.End K V) (σ : E →+* K) (x : V) :
@@ -218,22 +270,22 @@ theorem eigProj_mem (ρ : 𝓞 E →+* Module.End K V) (σ : E →+* K) (x : V) 
       ∑ j, σ ((Algebra.trace ℚ E (dualInt E j * (a : E) * integralBasis E k) : ℚ) : E) •
         ρ (b j) x := by
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Module.End.mul_apply, ← map_mul, ← b.sum_repr (a * b k), map_sum, LinearMap.sum_apply]
+
+    rw [← Module.End.mul_apply, ← map_mul, ← b.sum_repr (a * b k), map_sum, LinearMap.sum_apply]
     refine Finset.sum_congr rfl fun j _ => ?_
     have := repr_eq_trace (a * b k) j
     rw [map_zsmul, mul_assoc, integralBasis_apply]
     rw [RingOfIntegers.coe_eq_algebraMap, map_mul (algebraMap (𝓞 E) E)] at this
     rw [RingOfIntegers.coe_eq_algebraMap, ← this]
     simp [Int.cast_smul_eq_zsmul, b]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [eigProj, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
+
+  simp only [eigProj, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
   change ∑ k, σ (dualInt E k) • ρ a (ρ (b k) x) = _
   simp only [e1, Finset.smul_sum, smul_smul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Finset.sum_smul, ← map_mul, mul_comm (a : E), expand_dual (dualInt E j * (a : E)), map_sum]
+
+  rw [← Finset.sum_smul, ← map_mul, mul_comm (a : E), expand_dual (dualInt E j * (a : E)), map_sum]
   congr 1
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [← expand_dual, ← map_mul, Rat.smul_def, mul_comm]
@@ -243,15 +295,15 @@ theorem sum_dualInt_mul : ∑ k, dualInt E k * integralBasis E k = 1 := by
   rw [← sub_eq_zero]
   apply (traceForm_nondegenerate ℚ E).1
   intro y
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Algebra.traceForm_apply, sub_mul, one_mul, map_sub, sub_eq_zero, Finset.sum_mul, map_sum,
-    Algebra.trace_eq_matrix_trace (integralBasis E) y, Matrix.trace]
+
+  rw [Algebra.traceForm_apply, sub_mul, one_mul, map_sub, sub_eq_zero, Finset.sum_mul, map_sum,
+  Algebra.trace_eq_matrix_trace (integralBasis E) y, Matrix.trace]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Matrix.diag_apply, Algebra.leftMulMatrix_eq_repr_mul, mul_assoc, mul_comm _ y]
   generalize y * integralBasis E k = z
   conv_lhs => rw [← (integralBasis E).sum_repr z]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.mul_sum, map_sum, mul_smul_comm, map_smul, trace_dualInt]
+
+  simp only [Finset.mul_sum, map_sum, mul_smul_comm, map_smul, trace_dualInt]
   simp
 
 theorem eigProj_of_mem {ρ : 𝓞 E →+* Module.End K V} {σ : E →+* K} {x : V} (hx : x ∈ eigSp ρ σ) :
@@ -260,8 +312,8 @@ theorem eigProj_of_mem {ρ : 𝓞 E →+* Module.End K V} {σ : E →+* K} {x : 
   simp only [eigProj, LinearMap.sum_apply, LinearMap.smul_apply, hx, smul_smul]
   rw [← Finset.sum_smul]
   have : ∑ k, σ (dualInt E k) * σ ((RingOfIntegers.basis E k : 𝓞 E) : E) = 1 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_one σ, ← sum_dualInt_mul, map_sum]
+
+    rw [← map_one σ, ← sum_dualInt_mul, map_sum]
     simp
   rw [this, one_smul]
 

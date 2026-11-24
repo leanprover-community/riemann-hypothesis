@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffDominated
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntPoly
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntPoly
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

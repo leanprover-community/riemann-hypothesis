@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureNormOne
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

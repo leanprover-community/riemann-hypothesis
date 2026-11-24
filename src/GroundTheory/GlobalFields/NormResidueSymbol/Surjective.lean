@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
+public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
 public import GroundTheory.GlobalFields.FirstInequality
+import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
+public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
+import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

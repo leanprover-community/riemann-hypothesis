@@ -1,7 +1,7 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ICIntCp
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

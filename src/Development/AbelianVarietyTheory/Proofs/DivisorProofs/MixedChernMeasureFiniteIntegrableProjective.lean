@@ -1,37 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DensConst
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ContinuousBcPt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAmbOfIsArithVar
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalSectionDivisorPullbackGeneric
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLogResolutionProjectiveOfPrincipalisation
+public import Development.AbelianVarietyTheory.Definitions.Divisors.AnalyticOnNhdFinChartIff
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernIntegralEqMongeAmpereIntegralCompact
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedIntegralPullbackGenericallyFinite
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShift
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.GreenSt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Measure
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernIntegralEqMongeAmpereIntegralCompactStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedIntegralPullbackGenericallyFiniteStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLogResolutionProjectiveOfPrincipalisationStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -51,7 +63,7 @@ theorem finite_and_intg : GlobalTheory.Published.Principalisation → ∀ (F : T
   intro hP F _ X _ _ p σ D hX hdim L
   haveI : CharZero F := RingHom.charZero σ
   obtain ⟨Y, hY, π, hsm, hproj, -, hgen, hdeg, -⟩ :=
-    GlobalTheory.T.exists_logResolution_projective_of_principalisation hP F X p D hX hdim ⊥ (fun h => by rwa [← SetLike.mem_coe, Closeds.coe_bot] at h)
+    _root_.GlobalTheory.LogResProj.exists_logResolution hP F X p D hX hdim ⊥ (fun h => by rwa [← SetLike.mem_coe, Closeds.coe_bot] at h)
   haveI := hY
   haveI : SmoothOfRelativeDimension D (π ≫ p) := hsm
   haveI := CxPts.compactSpace (p := π ≫ p) σ hproj
@@ -61,11 +73,11 @@ theorem finite_and_intg : GlobalTheory.Published.Principalisation → ∀ (F : T
   have key : ∀ f : CxPts p σ → ℝ, Continuous f → Intg L f := by
     intro f hf
     have hf' : Continuous (fun y => f (ptMap π rfl σ y)) := hf.comp (PtsOver.continuous_map _ _ _)
-    have h1 := (GlobalTheory.T.mixedChernIntegral_eq_mongeAmpereIntegral_compact F Y (π ≫ p) σ D R.finAtlas R.isAlgAtlas_finAtlas
+    have h1 := (_root_.GlobalTheory.Mix.int_eq_mInt F Y (π ≫ p) σ D R.finAtlas R.isAlgAtlas_finAtlas
       (fun i => (L i).pull π rfl) _ hf'.measurable).1
     have hI := h1.2 (mIntegrableCont _ _ (fun i => Weight.isPotential_locPot
       ((Weight.isCInf_iff_isSmooth R).1 ((L i).pull π rfl).cInf)) _ hf')
-    exact ((GlobalTheory.T.mixedIntegral_pullback_genericallyFinite F X Y p (π ≫ p) σ D hX hdim hproj π rfl hgen
+    exact ((_root_.GlobalTheory.PushInt.mixInt_pull F X Y p (π ≫ p) σ D hX hdim hproj π rfl hgen
       (by rw [hdeg]; exact one_ne_zero) L f hf.measurable).1).1 hI
   refine ⟨fun ε => ?_, key⟩
   have h := key (fun _ => (1 : ℝ)) continuous_const

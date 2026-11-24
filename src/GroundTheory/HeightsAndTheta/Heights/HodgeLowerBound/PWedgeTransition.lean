@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.DataHodge
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
+public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

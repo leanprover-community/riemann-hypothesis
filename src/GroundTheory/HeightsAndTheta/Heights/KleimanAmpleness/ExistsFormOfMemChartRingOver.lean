@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideMore
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

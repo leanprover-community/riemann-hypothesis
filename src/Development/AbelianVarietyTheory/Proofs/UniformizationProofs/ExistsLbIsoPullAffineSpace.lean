@@ -1,16 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.IsScalarTowerOfAlgebraMapEq
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UniqueFactorizationMonoidAddMonoidAlgebraOfFree
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BijectiveAlgebraMapIntegralClosureOfBirational
+public import Mathlib.RingTheory.PicardGroup
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsLocalizedModuleResBasicOpenOfQcqs
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BijectiveAlgebraMapIntegralClosureOfBirational
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UniqueFactorizationMonoidAddMonoidAlgebraOfFree
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 
 @[expose] public section
 
@@ -45,7 +82,7 @@ theorem exists_generator_away {A B M σ : Type} [CommRing A] [IsDomain A] [IsInt
     [CommRing B] (E : MvPolynomial σ A ≃+* B) [AddCommGroup M] [Module B M] [Module.Invertible B M]
     (P : Ideal A) (hP : P ≠ ⊤) :
     ∃ (s : M) (a : A), a ∉ P ∧ ∀ m : M, ∃ r : B, E (MvPolynomial.C a) • m = r • s := by
-  letI : Algebra A B := ((E : MvPolynomial σ A →+* B).comp (algebraMap A _)).toAlgebra
+  let : Algebra A B := ((E : MvPolynomial σ A →+* B).comp (algebraMap A _)).toAlgebra
   obtain ⟨M₀, hM₀⟩ := (pic_mapAlgebra_mvPolynomial_bijective A σ).2
     (CommRing.Pic.mapRingHom (E.symm : B →+* MvPolynomial σ A) (CommRing.Pic.mk B M))
   have h : CommRing.Pic.mapAlgebra A B M₀ = CommRing.Pic.mk B M := by
@@ -153,7 +190,7 @@ theorem exists_local_generator (p : Y ⟶ X) {N : LB Y} (hN : N.IsLB) {V : X.Ope
     ∃ U : X.Opens, x ∈ U ∧ ∃ s : ∀ i, Γ(Y, p ⁻¹ᵁ U ⊓ N.U i)ˣ,
       ∀ (Z : Scheme.{0}) (f : Z ⟶ Y) (z : Z) (i j : N.ι), p (f z) ∈ U → f z ∈ N.U i → f z ∈ N.U j →
         gm f z _ (s i) = gm f z _ (N.g i j) * gm f z _ (s j) := by
-  haveI := SecOn.invertible hN hV
+  have := SecOn.invertible hN hV
   obtain ⟨s, a, ha, hs⟩ := exists_generator_away (M := SecOn N (p ⁻¹ᵁ V)) E
     ((IsLocalRing.maximalIdeal (X.presheaf.stalk x)).comap (X.presheaf.germ V x hx).hom)
     (Ideal.comap_ne_top _ (IsLocalRing.maximalIdeal.isMaximal _).ne_top)
@@ -201,8 +238,8 @@ theorem exists_ringEquiv_mvPolynomial {K σ : Type} [CommRing K] {f : X ⟶ Spec
     (H : IsPullback p f' f (Spec.map (CommRingCat.ofHom (algebraMap K (MvPolynomial σ K)))))
     {V : X.Opens} (hV : IsAffineOpen V) :
     ∃ E : MvPolynomial σ Γ(X, V) ≃+* Γ(Y, p ⁻¹ᵁ V), ∀ a, E (MvPolynomial.C a) = (p.app V).hom a := by
-  letI := cstAlgebra f V
-  letI : Algebra (MvPolynomial σ K) (MvPolynomial σ Γ(X, V)) := MvPolynomial.algebraMvPolynomial
+  let := cstAlgebra f V
+  let : Algebra (MvPolynomial σ K) (MvPolynomial σ Γ(X, V)) := MvPolynomial.algebraMvPolynomial
   have h₁ := isPushout_cst H hV (V' := p ⁻¹ᵁ V) rfl
   have h₂ := CommRingCat.isPushout_iff_isPushout.mpr
     (inferInstance : Algebra.IsPushout K (MvPolynomial σ K) Γ(X, V) (MvPolynomial σ Γ(X, V)))
@@ -237,8 +274,8 @@ theorem exists_lbIso_pull_affineSpace : ∀ (K : Type) [Field K] (X : Over (Spec
     exact ((E.apply_symm_apply _).symm.trans (congrArg E h)).trans (hE r)
   · obtain ⟨_, ⟨V, hV, rfl⟩, hx, -⟩ :=
       X.left.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ x) isOpen_univ
-    haveI : Nonempty V := ⟨⟨x, hx⟩⟩
-    haveI := isIntegrallyClosed_sections_of_stalks (Y := X.left)
+    have : Nonempty V := ⟨⟨x, hx⟩⟩
+    have := isIntegrallyClosed_sections_of_stalks (Y := X.left)
       (fun y => haveI := hX y; inferInstance) hV
     obtain ⟨E, hE⟩ := exists_ringEquiv_mvPolynomial H hV
     exact exists_local_generator _ hN (isAffineOpen_preimage_of_isPullback H hV) E hE hx

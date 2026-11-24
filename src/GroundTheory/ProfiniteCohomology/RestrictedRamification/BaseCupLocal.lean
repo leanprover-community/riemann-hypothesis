@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummerDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSLocal
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalVal
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.Bockstein
-public import GroundTheory.ProfiniteCohomology.CyclicCupProf
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -151,8 +189,15 @@ theorem localInvU_cohomologyMapAlong_gsUnitsLocalMor (v : S)
   refine congrArg (brauerInvZOfIsSepClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)
     (AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))) ?_
   refine (AddMonoidHom.comp_apply _ _ _).trans ?_
-  exact cohomologyMap_uliftInt_cohomologyMapAlong_of (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
+  have hres : cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom
+      (continuous_toMonoidHom _) (embUnitsMorZ S (ιs v)) 2 = gsLocalRes S (ιs v) 2 := by
+    unfold gsLocalRes gsFinFamily
+    rfl
+  have h := cohomologyMap_uliftInt_cohomologyMapAlong_of
+    (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
     (gsUnitsLocalMor S ιs v) (galUnitsToZ _ _) (embUnitsMorZ S (ιs v)) (fun _ => rfl) 2 x
+  refine h.trans ?_
+  exact congrArg (fun m => m.hom (cohomologyULiftIntAddEquiv _ 2 x)) hres
 
 theorem localInvU_cohomologyMapAlong_gsSUnitsLocalMor (v : S)
     (y : cohomology (galSUnitsMax K.1 ℚ̄ S) 2) :

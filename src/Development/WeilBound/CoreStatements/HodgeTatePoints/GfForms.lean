@@ -1,10 +1,55 @@
 module
 
-public import Mathlib
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionsSeparated
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreClosureModel
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDivisor
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -93,23 +138,7 @@ theorem mon_not_mem {W : Ideal (MRing J)} (hW : W.IsPrime) {s : ∀ k, J k}
 
 theorem mem_mCoordIdeal {y : (Σ k, J k) → Ω} {g : MRing J} {d : K → ℕ} (hg : IsMultiHomog g d)
     (h : aeval y g = 0) : g ∈ mCoordIdeal y := by
-  classical
-  have key : mConeMap y g = C (aeval y g) * ∏ k, X k ^ d k := by
-    conv_lhs => rw [g.as_sum]
-    conv_rhs => rw [g.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, map_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun m hm => ?_
-    rw [mConeMap, aeval_monomial, aeval_monomial, Finsupp.prod_fintype _ _ (by simp),
-      Finsupp.prod_fintype _ _ (by simp)]
-    simp only [mul_pow, Finset.prod_mul_distrib, map_mul, map_prod, map_pow, mul_assoc]
-    congr 1
-    congr 1
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    simp only [Finset.prod_pow_eq_pow_sum, hg m hm k]
-  rw [mCoordIdeal, RingHom.mem_ker]
-  rw [key, h, map_zero, zero_mul]
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionsSeparated.mem_mCoordIdeal_of_homog <;> assumption
 
 omit [∀ k, Fintype (J k)] in
 theorem mseg_ne_zero {y : (Σ k, J k) → Ω} {W : Ideal (MRing J)} (hle : mCoordIdeal y ≤ W) {s : ∀ k, J k}
@@ -172,8 +201,8 @@ theorem exists_rep [CharZero Ω] {y : (Σ k, J k) → Ω} {p : ℕ} [hp : Fact p
   suffices H : ∃ (n : ℕ) (g : MRing J), ¬ p ∣ n ∧ IsMultiHomog g (fun _ => d) ∧ n * aeval z U = aeval y g by
     obtain ⟨n, g, h1, h2, h3⟩ := H
     exact ⟨n, d, g, h1, h2, by rw [mul_assoc, ← e, h3]⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [U.as_sum, map_sum]
+
+  rw [U.as_sum, map_sum]
   refine Finset.sum_induction _
     (fun u : Ω => ∃ (n : ℕ) (g : MRing J), ¬ p ∣ n ∧ IsMultiHomog g (fun _ => d) ∧ n * u = aeval y g) ?_ ?_ ?_
   · rintro u v ⟨n, g, h1, h2, h3⟩ ⟨n', g', h1', h2', h3'⟩

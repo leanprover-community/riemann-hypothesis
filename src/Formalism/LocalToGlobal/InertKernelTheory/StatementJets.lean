@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.StatementInt
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 
 @[expose] public section
 

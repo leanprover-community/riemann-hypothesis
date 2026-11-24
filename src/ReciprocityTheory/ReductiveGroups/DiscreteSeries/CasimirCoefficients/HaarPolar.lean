@@ -1,10 +1,13 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
+import Mathlib.CategoryTheory.Countable
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.IntMuCD
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.JacBound
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KinstSecondCountable
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarHaar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarHaarA
 
 @[expose] public section
 
@@ -163,7 +166,7 @@ theorem haar_polar_le (ε : Fin n → Bool) (hq : 1 ≤ q0 ε) (ν : Measure (UJ
     rw [Measure.map_apply hφ hS]
     exact fdph_apply ε hS
   have hJm : Measurable (fun z : PCoord ε → ℂ => ENNReal.ofReal (Jac z)) :=
-    ENNReal.measurable_ofReal.comp (jac_continuous ε).measurable
+    ENNReal.measurable_ofReal.comp (_root_.ReciprocityTheory.ChartRestriction.DS.pb_jac_continuous ε).measurable
   have hmeas : AEMeasurable (Function.uncurry fun (k : KG ε) (z : PCoord ε → ℂ) =>
       G (k, z) * ENNReal.ofReal (Jac z)) ((dk ε).prod volume) :=
     (hG.mul (hJm.comp measurable_snd)).aemeasurable

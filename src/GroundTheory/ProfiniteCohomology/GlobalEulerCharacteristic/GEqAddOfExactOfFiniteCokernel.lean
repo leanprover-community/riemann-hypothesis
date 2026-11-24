@@ -1,9 +1,58 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.UnitsDefs
-public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ModNEquivOfSurjectiveApplyModNRep
+public import GroundTheory.GlobalFields.HerbrandQuotients.UnitsHerbrand
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
+import GroundTheory.GlobalFields.HerbrandQuotients.Lattice
 public import GroundTheory.GlobalFields.HerbrandQuotients.SUnits
+import GroundTheory.GlobalFields.HerbrandQuotients.UnitsHerbrandValue
+import GroundTheory.GlobalFields.SUnits
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Additive
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ModNEquivOfSurjectiveApplyModNRep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,15 +69,6 @@ open scoped TensorProduct
 section Finiteness
 
 variable {A : Type*} [AddCommGroup A] [Module.Finite ℤ A] (n : ℕ) [NeZero n]
-
-theorem finite_modN_of_moduleFinite : Finite (ModN A n) := by
-  apply Module.finite_of_fg_torsion
-  intro y
-  refine ⟨⟨(n : ℤ), mem_nonZeroDivisors_of_ne_zero (by exact_mod_cast NeZero.ne n)⟩, ?_⟩
-  obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-  change (n : ℤ) • (Submodule.Quotient.mk a : ModN A n) = 0
-  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero]
-  exact ⟨a, rfl⟩
 
 theorem finite_torsN_of_moduleFinite : Finite (TorsN A n) := by
   have : Module.Finite ℤ (TorsN A n) :=
@@ -60,9 +100,9 @@ theorem g_eq_add_of_exact_of_finite_cokernel {A B C : Type u} [AddCommGroup A] [
   let _ := subgroupDistribMulAction p.range hR
   have : Module.Finite ℤ p.range :=
     Module.Finite.of_injective p.range.subtype.toIntLinearMap Subtype.val_injective
-  have := finite_modN_of_moduleFinite (A := A) l
+  have := (inferInstance : Finite (ModN A l))
   have := finite_torsN_of_moduleFinite (A := A) l
-  have := finite_modN_of_moduleFinite (A := p.range) l
+  have := (inferInstance : Finite (ModN ↥p.range l))
   have := finite_torsN_of_moduleFinite (A := p.range) l
   have : Finite (C ⧸ p.range.subtype.range) := by
     rw [AddSubgroup.range_subtype]
@@ -82,7 +122,7 @@ theorem g_eq_of_surjective_of_finite_ker {B C : Type u} [AddCommGroup B] [AddCom
     rw [AddMonoidHom.mem_ker] at hb ⊢
     rw [hpγ, hb, smul_zero]
   let _ := subgroupDistribMulAction p.ker hK
-  have := finite_modN_of_moduleFinite (A := C) l
+  have := (inferInstance : Finite (ModN C l))
   have := finite_torsN_of_moduleFinite (A := C) l
   rw [d.g_add p.ker.subtype p (fun _ _ ↦ rfl) hpγ p.ker.subtype_injective
       (fun y ↦ by simp) hp, d.g_eq_zero_of_finite p.ker, zero_add]
@@ -124,7 +164,7 @@ theorem g_funPermRep (X : Type u) [MulAction Γ X] [Finite X] :
       simp
   have hφ : ∀ (γ : Γ) (a : X → ℤ), φ (γ • a) = funPermRep (ZMod l) Γ X γ (φ a) :=
     fun _ _ ↦ rfl
-  have := finite_modN_of_moduleFinite (A := X → ℤ) l
+  have := (inferInstance : Finite (ModN (X → ℤ) l))
   rw [d.g_eq_of_torsion_trivial _ ht]
   exact d.toFun_congr _ _ (modNEquivOfSurjective φ hs hker)
     (modNEquivOfSurjective_apply_modNRep _ φ hs hker hφ)
@@ -233,9 +273,9 @@ theorem g_logLattice_add_one :
     finite_quotient_of_smul_mem _ hn fun y ↦ by
       obtain ⟨x, hx⟩ := hφn y
       exact ⟨(x.1, ULift.up x.2), hx⟩
-  have := finite_modN_of_moduleFinite (A := InfinitePlace L → ℤ) l
+  have := (inferInstance : Finite (ModN (InfinitePlace L → ℤ) l))
   have := finite_torsN_of_moduleFinite (A := InfinitePlace L → ℤ) l
-  have := finite_modN_of_moduleFinite (A := logLattice L) l
+  have := (inferInstance : Finite (ModN (logLattice L) l))
   have := finite_torsN_of_moduleFinite (A := logLattice L) l
   have := finite_modN_uliftInt.{u} l
   have := finite_torsN_uliftInt.{u} l

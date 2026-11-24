@@ -1,10 +1,13 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.CharacterFiniteLevelZeroOfForms
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedLatticePropsOfModel
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.SecondBranchInclLengthOfLengths
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.CongruenceNoKernelOfHeckeRamified
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwDecomp
+public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 
@@ -120,8 +123,8 @@ open Formalism.MainNotions.product_first_zeroth_parts Formalism.L2.Forms Classic
 open scoped Matrix
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem bwL_lcInt0 (D : D7) (u : D.what₂.Word) (Tt : Forms0 D u) (i : ℕ) (hi : i ≤ D.R.m) (h0 : i = 0)
     (c : (D.mem u).C.cls i) : clsCrd D u i hi c ≤ Ld D u i hi c := by
   intro x hx
@@ -345,7 +348,6 @@ namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 
 variable {D : Formalism.BasicNotions.D7} {u : D.what₂.Word}
 
-theorem second_branch_incl_length_level_zero' (T : Formalism.L2.Forms.Forms0 D u) (hL : SeenPlaceLatticeLengthFormula D u) : SecondBranchInclusionLength D u :=
-  S0.second_branch_incl_length_level_zero T hL
+alias second_branch_incl_length_level_zero' := _root_.Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0.second_branch_incl_length_level_zero
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

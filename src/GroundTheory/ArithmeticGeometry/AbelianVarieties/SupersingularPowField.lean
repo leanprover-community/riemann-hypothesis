@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Supersingular
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Isogeny
 
 @[expose] public section
 

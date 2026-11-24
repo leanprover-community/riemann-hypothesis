@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVanishNearPoint
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteMapOpen
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+public import Mathlib.RingTheory.NoetherNormalization
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.RingTheory.Ideal.GoingUp
 
 @[expose] public section
 

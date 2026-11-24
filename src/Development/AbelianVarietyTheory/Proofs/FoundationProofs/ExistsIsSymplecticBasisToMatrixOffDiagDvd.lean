@@ -1,7 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DualRestrictSurjectiveOfIsTorsionFreeQuotient
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.LinearAlgebra.Determinant
 
 @[expose] public section
 
@@ -440,6 +492,7 @@ theorem exists_mul_mul_eq_one_of_card_le_rank {K : Type*} [Field K] (G : Matrix 
 omit [DecidableEq n] in
 theorem matrix_rank_sub_le {K : Type*} [Field K] (A B : Matrix n n K) :
     (A - B).rank ≤ A.rank + B.rank := by
+  simp only [← Matrix.finrank_range_mulVecLin]
   refine le_trans (Submodule.finrank_mono ?_) (Submodule.finrank_add_le_finrank_add_finrank
     (LinearMap.range A.mulVecLin) (LinearMap.range B.mulVecLin))
   rintro _ ⟨x, rfl⟩
@@ -508,9 +561,9 @@ theorem IsSymplecticBasis.isSymplecticFamily_iff_toMatrix_mem {b : Basis (l ⊕ 
     ext i j
     rw [← hb.toMatrix_eq hB, of_apply]
     conv_lhs => rw [← b.sum_toMatrix_smul_self v i, ← b.sum_toMatrix_smul_self v j]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
-      Matrix.mul_apply, transpose_apply, LinearMap.BilinForm.toMatrix_apply]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+    Matrix.mul_apply, transpose_apply, LinearMap.BilinForm.toMatrix_apply]
     exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
   rw [isSymplecticFamily_iff_gram hB, h, SymplecticGroup.mem_iff', Matrix.mul_neg, Matrix.neg_mul,
     neg_inj]
@@ -587,9 +640,9 @@ theorem IsSymplecticBasis.exists_adapted [Finite (MaximalSpectrum R)] {b : Basis
   have hy : ∀ i, y i ∈ Q := fun i => Q.sum_mem fun k _ => Q.smul_mem _ (hq k)
   have hxy : ∀ i j, B (x i) (y j) = (1 : Matrix l l R) i j := fun i j => by
     rw [← hUV]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [x, y, G, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
-      Matrix.mul_apply, of_apply]
+
+    simp only [x, y, G, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+    Matrix.mul_apply, of_apply]
     exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
   obtain ⟨c, hc, hcv⟩ := hb.exists_basis_of_toMatrix_mem hB
     ((hb.isSymplecticFamily_iff_toMatrix_mem hB (Sum.elim x y)).1
@@ -610,8 +663,8 @@ theorem repr_semilinear_of_map_basis {ι : Type*} [Fintype ι] (φ : Λ →ₛ�
     {c : Basis ι R M} (h : ∀ i, φ (b i) = c i) (x : Λ) (i : ι) :
     c.repr (φ x) i = f (b.repr x i) := by
   conv_lhs => rw [← b.sum_repr x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum φ, φ.map_smulₛₗ, h, c.repr_sum_self]
+
+  simp only [map_sum φ, φ.map_smulₛₗ, h, c.repr_sum_self]
 
 theorem IsSymplecticBasis.exists_lift (hf : Surjective f) (hB : B.IsAlt) (hB' : B'.IsAlt)
     (φ : Λ →ₛₗ[f] M) {b : Basis (l ⊕ l) S Λ} {b' : Basis (l ⊕ l) R M}
@@ -626,8 +679,8 @@ theorem IsSymplecticBasis.exists_lift (hf : Surjective f) (hB : B.IsAlt) (hB' : 
   obtain ⟨c, hc, hcv⟩ := hb.exists_basis_of_toMatrix_mem hB (hv.symm ▸ hT)
   refine ⟨c, hc, fun j => ?_⟩
   rw [hcv, ← b'.sum_toMatrix_smul_self c' j, ← hT']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum φ, φ.map_smulₛₗ, h, map_apply]
+
+  simp only [map_sum φ, φ.map_smulₛₗ, h, map_apply]
 
 theorem IsSymplecticBasis.exists_lift_adapted (hf : Surjective f) (hB : B.IsAlt) (hB' : B'.IsAlt)
     (φ : Λ →ₛₗ[f] M) {b : Basis (l ⊕ l) S Λ} {b' : Basis (l ⊕ l) R M}

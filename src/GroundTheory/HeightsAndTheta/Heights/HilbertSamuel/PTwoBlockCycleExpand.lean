@@ -1,17 +1,19 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockCycleExpand
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockFnField
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMixedNumberPolynomial
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMixedNumberPolynomial
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockFnField
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PGeoNumCut
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRed
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStB
 
 @[expose] public section
 

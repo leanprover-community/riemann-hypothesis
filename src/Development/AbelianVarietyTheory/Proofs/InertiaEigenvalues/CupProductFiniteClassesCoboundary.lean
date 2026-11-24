@@ -1,13 +1,52 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+public import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContCoreTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineCoboundaryLift
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorFundamentalExactSequenceCrystalline
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContCoreTied
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -72,7 +111,7 @@ theorem actVB_mul (ρ : Representation LL G V) (g h : G) (x : V ⊗[Qp] B) :
   induction x using TensorProduct.induction_on with
   | zero => simp
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  | tmul v b => simp [actVB_tmul, map_mul, Module.End.mul_apply]
+  | tmul v b => simp [actVB_tmul, map_mul]
 
 theorem pairT_actVB (ρ : Representation LL G V) (ρ' : Representation LL G V')
     (P : V →ₗ[LL] V' →ₗ[LL] LL)
@@ -193,7 +232,7 @@ def charGRep (χ : G →* LLˣ) (hχ : Continuous fun g => ((χ g : LLˣ) : LL))
 end Char
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem cob_of_cont (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (hT : LocTied l P AI)
     (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL] [TopologicalSpace LL]
     (O : Type) [CommRing O] [Algebra O LL] (hO : GoodO (Qp := ℚ_[l]) LL O)
@@ -279,8 +318,8 @@ theorem cob_of_cont (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P)
       rw [TensorProduct.smul_tmul']
       rfl
     rw [← hf g]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [F, eb, map_sum, pairT_smul_right, map_neg]
+
+    simp only [F, eb, map_sum, pairT_smul_right, map_neg]
     abel
   have hcont : Continuous f :=
     GlobalTheory.FundCont.contCore_tied l P AI hT K LL O hO

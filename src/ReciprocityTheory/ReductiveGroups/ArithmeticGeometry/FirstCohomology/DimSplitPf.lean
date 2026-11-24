@@ -1,9 +1,16 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCHyp
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
+import Mathlib.CategoryTheory.Limits.Shapes.Connected
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-public import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
-public import Mathlib.RingTheory.Smooth.StandardSmoothOfFree
+public import Mathlib.CategoryTheory.MorphismProperty.Descent
 
 @[expose] public section
 

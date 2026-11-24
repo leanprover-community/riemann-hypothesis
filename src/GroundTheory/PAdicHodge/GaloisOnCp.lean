@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.NumberTheory.Padics.Complex
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 

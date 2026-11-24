@@ -1,6 +1,43 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.PFrameEx
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -23,7 +60,7 @@ private theorem tens_inj (p : ℕ) [Fact p.Prime] {O : Type} [Ring O] [Module.Fr
   have h3 := congrArg (TensorProduct.rid ℤ O) h2
   simpa using h3
 
-private theorem comm_of_split (p : ℕ) [Fact p.Prime] {O : Type} [Ring O] [Module.Free ℤ O] {R : Type} [CommRing R]
+theorem mul_comm_of_padic_split (p : ℕ) [Fact p.Prime] {O : Type} [Ring O] [Module.Free ℤ O] {R : Type} [CommRing R]
     {m : ℕ} (hm : m = 1) (f : (O ⊗[ℤ] ℤ_[p]) ≃+* Matrix (Fin m) (Fin m) R) (x y : O) : x * y = y * x := by
   subst hm
   apply tens_inj p
@@ -38,7 +75,7 @@ private theorem comm_of_split (p : ℕ) [Fact p.Prime] {O : Type} [Ring O] [Modu
   have h2 := f.injective this
   simpa using h2
 
-private theorem a_inj {F : Type} [Field F] [NumberField F] {O : Type} [Ring O] [Algebra (𝓞 F) O] [Nontrivial O]
+theorem algebraMap_injective_of_free {F : Type} [Field F] [NumberField F] {O : Type} [Ring O] [Algebra (𝓞 F) O] [Nontrivial O]
     [Module.Free ℤ O] : Function.Injective (algebraMap (𝓞 F) O) := by
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
   intro c hc
@@ -59,7 +96,7 @@ private theorem a_inj {F : Type} [Field F] [NumberField F] {O : Type} [Ring O] [
   · exact hN0 (by exact_mod_cast h)
   · exact one_ne_zero h
 
-private theorem a_onto {F : Type} [Field F] [NumberField F] {O : Type} [Ring O] [Algebra (𝓞 F) O] [Nontrivial O]
+theorem algebraMap_surjective_of_exists_zsmul {F : Type} [Field F] [NumberField F] {O : Type} [Ring O] [Algebra (𝓞 F) O] [Nontrivial O]
     [Module.Free ℤ O] [Module.Finite ℤ O] (hcomm : ∀ x y : O, x * y = y * x)
     (hc : ∀ x : O, ∃ c : 𝓞 F, ∃ e : ℤ, e ≠ 0 ∧ e • x = algebraMap (𝓞 F) O c) :
     Function.Surjective (algebraMap (𝓞 F) O) := by
@@ -72,7 +109,7 @@ private theorem a_onto {F : Type} [Field F] [NumberField F] {O : Type} [Ring O] 
   have hex : algebraMap ℤ O e * x = algebraMap (𝓞 F) O c := by
     rw [← hx]; simp [zsmul_eq_mul]
   have hQ2 : Polynomial.eval₂ (algebraMap ℤ (𝓞 F)) c (P.scaleRoots e) = 0 := by
-    apply a_inj (O := O)
+    apply algebraMap_injective_of_free (O := O)
     rw [map_zero, Polynomial.hom_eval₂, ← hex, ← hQ]
     congr 1
     exact RingHom.ext_int _ _
@@ -109,7 +146,7 @@ theorem oOnto_of : OOnto := by
     rw [D.rankO, hm]
     simpa using hd
   obtain ⟨f⟩ := D.splitP
-  have hcomm : ∀ x y : D.O, x * y = y * x := comm_of_split p hm f.toRingEquiv
-  exact a_onto hcomm fun x => D.central x (hcomm x)
+  have hcomm : ∀ x y : D.O, x * y = y * x := mul_comm_of_padic_split p hm f.toRingEquiv
+  exact algebraMap_surjective_of_exists_zsmul hcomm fun x => D.central x (hcomm x)
 
 end UpperTheory.Gal.W2

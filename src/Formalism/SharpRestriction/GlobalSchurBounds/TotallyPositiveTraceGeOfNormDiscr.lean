@@ -1,25 +1,54 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.SlopeMaxOpenOfHookTwoLeV
+public import Formalism.PeriodIntegrals.Transference
+public import Mathlib.Algebra.AffineMonoid.Basic
 public import Formalism.LocalRingCardinality.PosOfIsomEmb
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.UpperSlopeOfMaximalConstant
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
-public import Formalism.PeriodIntegrals.Transference
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceCover
-public import Formalism.LocalToGlobal.GlobalTheory.GL4.PCoordH
-public import Formalism.LocalToGlobal.GlobalTheory.GL4.BranchingNormalisedOfAdjoint
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQRowDivAdj
-public import Formalism.LocalToGlobal.HermitianColumns.ColsHerm
-public import Formalism.LocalToGlobal.HermitianForms.FormsTied
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.SuccessiveMinima.StatementMink
-public import Formalism.SharpRestriction.GlobalSchurBounds.IntegrableOfContinuousCircleMeasure
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQRowAct
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ClosedEqNabla
-public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -56,8 +85,8 @@ variable {V : Type*} [AddCommGroup V] [Module ℚ V] {d : ℕ}
 
 theorem bilinear_sum_smul_expand (B : V →ₗ[ℚ] V →ₗ[ℚ] ℚ) (b : Fin d → V) (c c' : Fin d → ℚ) :
     B (∑ i, c i • b i) (∑ j, c' j • b j) = ∑ i, ∑ j, c i * c' j * B (b i) (b j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
+
+  simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
@@ -174,8 +203,8 @@ theorem rational_transference_short_basis (hT : PI.TransferenceMinima) (hd : 0 <
       rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.mpr hdetq), Matrix.one_mulVec]
     have h2 := congrFun h1 j
     rw [← h2]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul]
+
+    simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul]
     conv_rhs => rw [Matrix.mulVec, dotProduct]
     refine Finset.sum_congr rfl fun i _ => by
       rw [hsymm (b i) (b j)]
@@ -680,32 +709,11 @@ theorem exists_short_basis_dual (hT : PI.TransferenceMinima) (S : HSpace E)
 
 end LemT2
 
-section LemTi
-
-open Module NumberField Formalism.BasicNotions
-open scoped nonZeroDivisors
-
-variable {E : Type} [Field E] [NumberField E]
-
-variable [StarRing E]
-
-end LemTi
-
-section LemTiP
-
-open Module NumberField Formalism.BasicNotions
-
-end LemTiP
-
 section Rec
 
 open Module NumberField Formalism.BasicNotions
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-theorem finrank_cmField_eq_two_mul (D : D7) : Module.finrank ℚ D.host.E = 2 * D.R.f := by
-  rw [D.host.finrank_cmField, Ranks.f, Ranks.n]
-  ring
 
 open scoped nonZeroDivisors in
 theorem shortDual_holds (D : D7) : ShortDual D := by
@@ -758,7 +766,7 @@ theorem shortDual_holds (D : D7) : ShortDual D := by
   refine ⟨y ∘ Fin.cast hr.symm, fun a => hy1 _, hy2.comp _ (Fin.cast_injective _), fun a => ?_⟩
   have h1 := hy3 (Fin.cast hr.symm a)
   have hf : (0 : ℝ) < 2 * (D.R.f : ℝ) := by
-    have := finrank_cmField_eq_two_mul D
+    have := _root_.Formalism.MainNotions.flipTwoThree.b_finrank_host D
     have h0 : 0 < Module.finrank ℚ D.host.E := Module.finrank_pos
     have : 0 < 2 * D.R.f := by omega
     exact_mod_cast this
@@ -766,7 +774,7 @@ theorem shortDual_holds (D : D7) : ShortDual D := by
     unfold Host.v Host.rdE
     ring
   have hrk : (((D.sp.X 0).rank : ℕ) : ℝ) = (D.R.k : ℝ) := by rw [hr, Ranks.N_zero]
-  rw [← hv, hrk, finrank_cmField_eq_two_mul] at h1
+  rw [← hv, hrk, _root_.Formalism.MainNotions.flipTwoThree.b_finrank_host] at h1
   push_cast at h1
   rw [div_le_iff₀ hf]
   calc _ ≤ _ := h1
@@ -810,18 +818,6 @@ structure ColHyp {LL : Type} [Field LL] [NumberField LL] (Pl : Rows.Places LL)
 
 end ColAbs
 
-section Polar
-
-open Module NumberField Formalism.BasicNotions IsDedekindDomain
-
-end Polar
-
-section F7
-
-open Module NumberField Formalism.BasicNotions IsDedekindDomain
-
-end F7
-
 section ColRec
 
 open Module NumberField Formalism.BasicNotions IsDedekindDomain
@@ -834,7 +830,7 @@ theorem columnHypotheses (D : D7) (u : D.what₂.Word) :
     tc := inferInstance
     tcE := D.sp.cm.cmUnram.1
     pl := ⟨D.plEq, D.val_eq⟩
-    deg := finrank_cmField_eq_two_mul D
+    deg := _root_.Formalism.MainNotions.flipTwoThree.b_finrank_host D
     rank := D.sp.X_rank 0 (Nat.zero_le _)
     npos := rank_zero_pos D
     Tpos := by exact_mod_cast b_Tu_pos D u
@@ -844,11 +840,5 @@ theorem columnHypotheses (D : D7) (u : D.what₂.Word) :
   }
 
 end ColRec
-
-section Fin23
-
-open Formalism.BasicNotions
-
-end Fin23
 
 end Formalism.MainNotions.flipTwoThree

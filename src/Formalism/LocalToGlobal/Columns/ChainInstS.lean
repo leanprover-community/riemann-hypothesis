@@ -3,7 +3,7 @@ module
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
-public import Formalism.LocalToGlobal.HermitianForms.DefsSym
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 @[expose] public section
 

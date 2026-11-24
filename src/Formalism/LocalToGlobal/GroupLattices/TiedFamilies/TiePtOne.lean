@@ -1,8 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsLat
 public import Formalism.LocalToGlobal.HermitianForms.RankEqFirstLevel
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.NatActRVtupR
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsLat
+public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 
 @[expose] public section
 

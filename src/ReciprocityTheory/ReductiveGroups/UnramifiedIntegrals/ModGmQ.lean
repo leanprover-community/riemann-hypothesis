@@ -1,13 +1,14 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.CoeffRescaleExpandOfNotDvd
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalSer
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalMF
+import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalSer
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModFacSer
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGmForm
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 

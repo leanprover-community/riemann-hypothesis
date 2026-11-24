@@ -1,6 +1,12 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitC
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.NumberTheory.NumberField.EquivReindex
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -33,8 +39,8 @@ theorem so_norm_ge (w : E) (hw0 : w ≠ 0)
     have e : w * (b i * b j) = b i * (w * b j) := by ring
     rw [show ((B i * B j : 𝓞 E) : E) = b i * b j by rw [hb, hb]; push_cast; ring, e]
     conv_rhs => rw [← b.sum_repr (w * b j)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.mul_sum, map_sum]
+
+    rw [Finset.mul_sum, map_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [mul_smul_comm, map_smul, smul_eq_mul, mul_comm]
   have hdet := congrArg Matrix.det hTA

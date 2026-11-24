@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ArchimedeanSignatureMatchingOfTrivialBranchingSymm
+import Formalism.LocalToGlobal.HermitianForms.Interlace
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrCl
+import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
 
 @[expose] public section
 

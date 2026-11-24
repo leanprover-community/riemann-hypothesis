@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FrameEntry
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfLocGlob
 
 @[expose] public section
 

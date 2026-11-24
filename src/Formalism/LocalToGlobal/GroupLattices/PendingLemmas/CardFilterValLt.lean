@@ -2,6 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.DetYtMatNeZero
 public import Formalism.GradedWeylDivisibility.FinalC
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

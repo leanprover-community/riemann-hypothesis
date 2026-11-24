@@ -1,6 +1,46 @@
 module
 
+import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.ConjProd
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.Complementary
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -88,19 +128,7 @@ theorem conjEquiv_piTensor {α : Type} [Fintype α] {Γ X Y : α → Type} [∀ 
     [∀ a, AddCommGroup (X a)] [∀ a, Module ℂ (X a)] [∀ a, AddCommGroup (Y a)] [∀ a, Module ℂ (Y a)]
     (π : ∀ a, Representation ℂ (Γ a) (X a)) (σ : ∀ a, Representation ℂ (Γ a) (Y a))
     (h : ∀ a, ConjEquiv (π a) (σ a)) : ConjEquiv (piTensor π) (piTensor σ) := by
-  choose φ hφ heq using h
-  refine ⟨tmap φ, ⟨fun s t hst => ?_, fun t => ⟨tmap (fun a => semiInv (φ a) (hφ a)) t, ?_⟩⟩, fun g t => ?_⟩
-  · have := congrArg (tmap (fun a => semiInv (φ a) (hφ a))) hst
-    rwa [tmap_comp _ _ (fun a x => semiInv_apply' (φ a) (hφ a) x),
-      tmap_comp _ _ (fun a x => semiInv_apply' (φ a) (hφ a) x)] at this
-  · exact tmap_comp (fun a => semiInv (φ a) (hφ a)) φ (fun a y => semiInv_apply (φ a) (hφ a) y) t
-  · induction t using PiTensorProduct.induction_on with
-    | smul_tprod r x =>
-      rw [map_smul, map_smulₛₗ, map_smulₛₗ, map_smul, piTensor_tprod, tmap_tprod, tmap_tprod, piTensor_tprod]
-      congr 2
-      funext a
-      exact heq a (g a) (x a)
-    | add s t hs ht => rw [map_add (f := _), map_add (f := _), hs, ht, map_add (f := _), map_add (f := _)]
+  apply CompanionTheory.RgGu.NR.ConjProd.conjEquiv_piTensor <;> assumption
 
 section Ind
 
@@ -142,20 +170,7 @@ theorem indMap_apply (e : (Σ a, m a) ≃ n) {ρ : Representation ℂ (Levi k m)
 
 theorem conjEquiv_parInd (e : (Σ a, m a) ≃ n) (ρ : Representation ℂ (Levi k m) V)
     (τ : Representation ℂ (Levi k m) W) (h : ConjEquiv ρ τ) : ConjEquiv (parInd e ρ) (parInd e τ) := by
-  obtain ⟨φ, hφ, heq⟩ := h
-  have hinv : ∀ g w, semiInv φ hφ (τ g w) = ρ g (semiInv φ hφ w) := fun g w => by
-    apply hφ.1
-    rw [semiInv_apply, heq, semiInv_apply]
-  refine ⟨indMap e φ heq, ⟨fun f f' hff => ?_, fun f => ⟨indMap e (semiInv φ hφ) hinv f, ?_⟩⟩, fun g f => ?_⟩
-  · apply Subtype.ext; apply Subtype.ext; funext x
-    apply hφ.1
-    have := congrArg (fun F : IndSp e τ => F.1.1 x) hff
-    simpa only [indMap_apply] using this
-  · apply Subtype.ext; apply Subtype.ext; funext x
-    show φ (semiInv φ hφ (f.1.1 x)) = f.1.1 x
-    exact semiInv_apply φ hφ _
-  · apply Subtype.ext; apply Subtype.ext; funext x
-    rfl
+  apply CompanionTheory.RgGu.NR.ConjProd.conjEquiv_parInd <;> assumption
 
 end Ind
 

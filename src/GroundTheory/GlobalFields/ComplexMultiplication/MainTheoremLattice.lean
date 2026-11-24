@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.FrobeniusAtPrimes
-public import GroundTheory.GlobalFields.ComplexMultiplication.DegreeOneAutomorphismPoints
+public import GroundTheory.GlobalFields.ComplexMultiplication.AlgebraicityHom
+public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupAction
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.TateCharpoly
+public import GroundTheory.GlobalFields.ComplexMultiplication.DegreeOneAutomorphismPoints
+public import GroundTheory.GlobalFields.ComplexMultiplication.FrobeniusAtPrimes
+import GroundTheory.GlobalFields.ComplexMultiplication.FrobeniusAtPrimesIsogeny
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

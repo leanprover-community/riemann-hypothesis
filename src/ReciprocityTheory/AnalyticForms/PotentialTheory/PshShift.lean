@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftB
 
 @[expose] public section
@@ -13,7 +12,7 @@ open scoped ContDiff
 
 noncomputable section
 
-theorem pshShift : PshShiftStatement := plurisubharmonicShift_proof
+alias pshShift := _root_.ReciprocityTheory.AnForm.M.plurisubharmonicShift_proof
 
 end
 

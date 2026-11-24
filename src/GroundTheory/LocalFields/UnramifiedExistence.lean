@@ -1,13 +1,18 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.Interface
+public import Mathlib.RingTheory.RamificationInertia.Ramification
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.LocalFields.FiniteExtension
-public import GroundTheory.LocalFields.Uniqueness
-public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.UnitsPowers
-public import GroundTheory.LocalFields.UnramifiedRootsOfUnity
 public import GroundTheory.LocalFields.UnramifiedGalois
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.LocalFields.Integers
+public import GroundTheory.LocalFields.Uniqueness
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 
 @[expose] public section
 

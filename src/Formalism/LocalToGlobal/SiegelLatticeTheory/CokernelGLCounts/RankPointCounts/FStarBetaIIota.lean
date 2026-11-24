@@ -1,7 +1,18 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBetaIC
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.AdmissibleLocalPartner
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.DensFrame
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.EmbeddingIntegerAlgebraMap
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBetaIA
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBetaIIotaA
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBetaIIotaB
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNC
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNF
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNG
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarNMove
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FrameActOne
 
 @[expose] public section
 
@@ -83,7 +94,7 @@ abbrev t2 (p : PlF D) (γ : TermDef.Term D u u' F0 what₂) (F'₂ : LFlag (D.sp
   ⟨lattice₂ D Zd.M p Λ₂, (tLoc Zd p γ).f, locF' Zd p F'₂, (tLoc Zd p γ).T, (tLoc Zd p γ).T'⟩
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem fwd_typed (p : PlF D) (g : Loc.SplitG (Zd.M p).L) (hsp : (Zd.M p).split = some g)
     (γ : TermDef.Term D u u' F0 what₂) (F'₂ : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E))
     (Λ₂ : Submodule (𝓞 D.host.E) (VS D).V)
@@ -145,7 +156,7 @@ theorem fwd_typed (p : PlF D) (g : Loc.SplitG (Zd.M p).L) (hsp : (Zd.M p).split 
   exact add_mem hfin (Submodule.subset_span ⟨_, hβξ, rfl⟩)
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem bwd_typed (p : PlF D) (g : Loc.SplitG (Zd.M p).L) (hsp : (Zd.M p).split = some g)
     (γ : TermDef.Term D u u' F0 what₂) (F'₂ : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E))
     (Λ₂ : Submodule (𝓞 D.host.E) (VS D).V)
@@ -205,7 +216,7 @@ theorem bwd_typed (p : PlF D) (g : Loc.SplitG (Zd.M p).L) (hsp : (Zd.M p).split 
 end IotaBP
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
   intro γ Z F'₂ φ φ' Λ₂ hB β₀ hiso hfr hW hO v hv hvf hvX hgm
   have hB0 := hB
@@ -232,9 +243,9 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
     simp only [XLam, Submodule.mem_inf]
     constructor
     · rintro ⟨h1, h2⟩; refine ⟨?_, h2⟩
-      first | exact memX Zd γ hpr2 hpr1 hΛfull hu h2 h1 | exact memX Zd γ hpr2 hpr1 hΛfull.toIsLattice hu h2 h1
+      first | exact memX Zd γ hpr2 hpr1 hΛfull hu h2 h1
     · rintro ⟨h1, h2⟩; refine ⟨?_, h2⟩
-      first | exact memX Zd γ hpr1 hpr2 hΛ₂full hu h2 h1 | exact memX Zd γ hpr1 hpr2 hΛ₂full.toIsLattice hu h2 h1
+      first | exact memX Zd γ hpr1 hpr2 hΛ₂full hu h2 h1
 
   have hXmap : (Xsp (repF γ)).map (β₀ : (VS D).V →ₗ[D.host.E] (VS D).V) = Xsp (liftF F'₂) :=
     BwdBetaCut.Xsp_of_frame β₀ _ _ hfr
@@ -295,7 +306,6 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
     obtain ⟨μ, hμ, ξ, hξ, ξ', hξ', heq⟩ := NgX_dec hmem
     first
     | refine mem_of_bcP Zd (IotaBP.isLattice_NgX hΛ₂full _ _) fun p => ?_
-    | refine mem_of_bcP Zd (IotaBP.isLattice_NgX_aux hΛ₂full _ _) fun p => ?_
     rcases hsp : (Zd.M p).split with _ | g
     · exact untyped_mem Zd p hsp _ _ (BwdNP.baseChange_mem_localLattice Zd (sub_mem hl₂Λ (hβΛ _ hx'Λ)) p)
     · exact IotaBP.fwd_typed Zd p g hsp γ F'₂ Λ₂ (φ' p) (hRp p g hsp) β₀ (v * β₀)
@@ -305,7 +315,6 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
     obtain ⟨μ, hμ, ξ, hξ, ξ', hξ', heq⟩ := NgX_dec hmem
     first
     | refine mem_of_bcP Zd (IotaBP.isLattice_NgX hΛfull _ _) fun p => ?_
-    | refine mem_of_bcP Zd (IotaBP.isLattice_NgX_aux hΛfull.toIsLattice _ _) fun p => ?_
     rcases hsp : (Zd.M p).split with _ | g
     · exact untyped_mem Zd p hsp _ _ (BwdNP.baseChange_mem_localLattice Zd (sub_mem hlΛ hx'Λ) p)
     · exact IotaBP.bwd_typed Zd p g hsp γ F'₂ Λ₂ (φ' p) (hRp p g hsp) β₀ (v * β₀)

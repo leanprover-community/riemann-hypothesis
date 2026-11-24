@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalisationLadders.CriterionTruncation
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalisationLadders.TruncationHomExt
+public import Mathlib.Algebra.Exact.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -41,7 +87,7 @@ def sh {M : Type} [AddCommMonoid M] : (ℕ →₀ M) →+ (ℕ →₀ M) where
 @[simp] theorem sh_apply {M : Type} [AddCommMonoid M] (c : ℕ →₀ M) (k : ℕ) : sh c k = c (k + 1) := rfl
 
 theorem sh_single_zero {M : Type} [AddCommMonoid M] (y : M) : sh (Finsupp.single 0 y) = 0 := by
-  ext k; simp [Finsupp.single_apply]
+  ext k; simp
 
 theorem sh_single_succ {M : Type} [AddCommMonoid M] (n : ℕ) (y : M) :
     sh (Finsupp.single (n + 1) y) = Finsupp.single n y := by
@@ -72,8 +118,8 @@ theorem sh_tr {T T' : C} (φ : T ⟶ T') (t : Φ.A.obj T') (c : ℕ →₀ Φ.A.
       rw [sh_single_zero, tr_single, map_zero, Finset.Nat.antidiagonal_zero, Finset.sum_singleton]
       exact sh_single_zero _
     | succ n =>
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [sh_single_succ, tr_single, tr_single, map_sum, Finset.Nat.sum_antidiagonal_succ, sh_single_zero, zero_add]
+
+      rw [sh_single_succ, tr_single, tr_single, map_sum, Finset.Nat.sum_antidiagonal_succ, sh_single_zero, zero_add]
       exact Finset.sum_congr rfl fun p _ => sh_single_succ _ _
 
 theorem ev_tr (Q : Poly Φ) {T T' : C} (φ : T ⟶ T') (ψ : Q.P T ⟶ Q.P T') (t : Φ.A.obj T')
@@ -87,9 +133,9 @@ theorem ev_tr (Q : Poly Φ) {T T' : C} (φ : T ⟶ T') (ψ : Q.P T ⟶ Q.P T') (
     have hy : (Φ.A.map ψ).hom ((Φ.A.map (Q.j T)).hom y) = (Φ.A.map (Q.j T')).hom ((Φ.A.map φ).hom y) := by
       rw [← Cut.mapA_comp, ← Cut.mapA_comp, hj]
     have hjt : (Φ.A.map (Q.j T')).hom t ∈ Φ.J.S (Q.P T') := Φ.J.map_mem _ ht
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [ev_single, map_mul, hy, Φ.dp_map ψ n (Q.X_mem T), hX, Φ.dp_add n (Q.X_mem T') hjt, tr_single, map_sum,
-      Finset.mul_sum]
+
+    rw [ev_single, map_mul, hy, Φ.dp_map ψ n (Q.X_mem T), hX, Φ.dp_add n (Q.X_mem T') hjt, tr_single, map_sum,
+    Finset.mul_sum]
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [ev_single, map_mul, Φ.dp_map (Q.j T') p.2 ht]
     ring

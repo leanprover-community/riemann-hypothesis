@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
+public import Mathlib.RingTheory.PowerSeries.Expand
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 

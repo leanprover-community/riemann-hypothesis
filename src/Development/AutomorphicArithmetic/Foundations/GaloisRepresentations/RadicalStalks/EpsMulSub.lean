@@ -1,9 +1,50 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RadicalStalks.IsConst
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrystallinePull2SumCup
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeFirstDeRhamStructure
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorLieConditionModHodgeFiltration
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorRhoPartLieDeRhamQuotient
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieConditionHodgeSubspaceLeHodgeFiltration
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -107,7 +148,7 @@ theorem UpperTheory.Gal.Ord.lie :
   set τ : 𝓞 D.F →+* k := β.comp (b.t i) with hτ
   have hhom_mul : ∀ (c d : 𝓞 D.F) (h : HdR o.A), hom o (c * d) h = hom o c (hom o d h) := by
     intro c d h
-    simp [UpperTheory.Gal.Ord.hom, map_mul, Module.End.mul_apply]
+    simp [UpperTheory.Gal.Ord.hom, map_mul]
   have hhom_add : ∀ (c d : 𝓞 D.F) (h : HdR o.A), hom o (c + d) h = hom o c h + hom o d h := by
     intro c d h
     simp [UpperTheory.Gal.Ord.hom, map_add (f := _), LinearMap.add_apply]
@@ -215,9 +256,9 @@ theorem UpperTheory.Gal.Ord.lie :
         have ht := hw j c
         rw [← HL.ker_toLie (OActN.toF D o.act), LinearMap.mem_ker, map_sub, map_smul, hLc', sub_eq_zero] at ht
         exact ht
-      set_option synthInstance.maxHeartbeats 100000 in
-        · rw [← HL.ker_toLie (OActN.toF D o.act), LinearMap.mem_ker, map_sub, map_sum, sub_eq_zero] at hs
-          exact hs
+
+      · rw [← HL.ker_toLie (OActN.toF D o.act), LinearMap.mem_ker, map_sub, map_sum, sub_eq_zero] at hs
+        exact hs
     obtain ⟨w, hw, hs⟩ := lie_rho_decomp _ hvr
     refine ⟨-(e • (D.ω • v - ρ • v)), ?_, w, hw, ?_⟩
     · rw [smul_neg, smul_comm D.ω e, smul_sub, smul_comm D.ω ρ]
@@ -247,12 +288,12 @@ theorem UpperTheory.Gal.Ord.lie :
         rw [sub_smul, ← e4, ← e5, sub_self]
       exact (smul_eq_zero.mp e6).resolve_left (GlobalTheory.HTLieRho.two_rho_sub_ne_zero b β)
     have hsum : HL.toLie (OActN.toF D o.act) h = HL.toLie (OActN.toF D o.act) (hu' + ∑ j, hs j) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hdec, map_add (f := _), map_sum]
+
+      rw [hdec, map_add (f := _), map_sum]
       simp only [hhs]
     have hLε : HL.toLie (OActN.toF D o.act) (hom o π.ε h) = wv i := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hLc, hsum, ← hLc, map_add (f := _), map_sum, map_add (f := _), map_sum, hu0, zero_add]
+
+      rw [hLc, hsum, ← hLc, map_add (f := _), map_sum, map_add (f := _), map_sum, hu0, zero_add]
       have e9 : ∀ j, HL.toLie (OActN.toF D o.act) (hom o π.ε (hs j)) = β (b.t j π.ε) • wv j := by
         intro j
         rw [hLc, hhs j]

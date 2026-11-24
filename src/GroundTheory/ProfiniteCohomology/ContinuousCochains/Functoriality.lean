@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 @[expose] public section
 
@@ -33,8 +34,8 @@ noncomputable def cochainsMap (f : A ⟶ B) : cochainsComplex A ⟶ cochainsComp
     funext g
     change (inhomogeneousCochains.d B n).hom (fun x => f.hom (c.1 x)) g =
       f.hom ((inhomogeneousCochains.d A n).hom c.1 g)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [inhomogeneousCochains.d_hom_apply, Rep.hom_comm_apply, map_add (f := _), map_sum, map_smul]
+
+    simp [inhomogeneousCochains.d_hom_apply, Rep.hom_comm_apply, map_add (f := _), map_sum, map_smul]
 
 @[simp]
 theorem cochainsMap_id : cochainsMap (𝟙 A) = 𝟙 (cochainsComplex A) := by

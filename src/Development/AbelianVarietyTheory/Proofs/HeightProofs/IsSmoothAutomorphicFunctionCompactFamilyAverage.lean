@@ -1,14 +1,54 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormDwLeSobNorm
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionTranslateAtRealPlace
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ConjAtFixedIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RderMemAutFormsCuspForms
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GrowthSizeRWordNeTopOfLe
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CompactAverageSmoothFamilyClosedUnderDerivativesStatement
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.NormInfSubmultiplicativeLeAdelicHeightStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GrowthSizeRWordNeTopOfLe
+import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq
 
 @[expose] public section
 
@@ -274,7 +314,7 @@ theorem isAutFunSm_average : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F
   have h𝒟 : ∀ ψ ∈ 𝒟, IsAutFunSm θ V ψ := fun _ h => h
   have hR : ∀ ψ ∈ 𝒟, ∀ τ' X, X ∈ lieAt V τ' → Rder θ V τ' X ψ ∈ 𝒟 :=
     fun _ h _ _ hX => GlobalTheory.CuspLie.isAutFunSm_Rder hθ hX h
-  have FAM := fun ψ (h : IsAutFunSm θ V ψ) => GlobalTheory.T.compactAverage_smoothFamily_closedUnderDerivatives D θ hθ V K μ (famSpan θ V τ κ 𝒟)
+  have FAM := fun ψ (h : IsAutFunSm θ V ψ) => _root_.GlobalTheory.AvgFam.avg_closed D θ hθ V K μ (famSpan θ V τ κ 𝒟)
     (famSpan_cont hθ hκ hU h𝒟) (famSpan_sm hθ hU h𝒟) (famSpan_Rder hθ hκ hU h𝒟 hR)
     (fun k x => e k * ψ (x * atTau θ V τ (κ k))) (Submodule.subset_span ⟨e, he, ψ, h, rfl⟩)
   have F0 := FAM φ hφ
@@ -329,7 +369,7 @@ theorem isAutFunSm_average : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F
     have hRN := growN_Rder (V := V) hθ N
     have hF0 : (fun k x => e k * φ (x * atTau θ V τ (κ k))) ∈ famSpan θ V τ κ (growN θ V N) :=
       Submodule.subset_span ⟨e, he, φ, ⟨hφ, hN⟩, rfl⟩
-    have FN := GlobalTheory.T.compactAverage_smoothFamily_closedUnderDerivatives D θ hθ V K μ (famSpan θ V τ κ (growN θ V N))
+    have FN := _root_.GlobalTheory.AvgFam.avg_closed D θ hθ V K μ (famSpan θ V τ κ (growN θ V N))
       (famSpan_cont hθ hκ hU h𝒟N) (famSpan_sm hθ hU h𝒟N) (famSpan_Rder hθ hκ hU h𝒟N hRN) _ hF0
     refine ⟨N, fun l hl x => ?_⟩
     rw [FN.2.2.1 l hl]

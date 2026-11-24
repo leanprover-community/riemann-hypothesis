@@ -1,7 +1,9 @@
 module
 
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd
+public import Formalism.SharpRestriction.LevelLetterCocycles.LocsCoverTw
+public import Formalism.SharpRestriction.ParConsts
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverThm
-public import Formalism.SharpRestriction.LevelLetterCocycles.ThetaScalarFamilyOfEigenvalue
 
 @[expose] public section
 

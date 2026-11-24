@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealDefs
+import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 public import GroundTheory.ProfiniteCohomology.PoitouTate.Abstract
+public import GroundTheory.ProfiniteCohomology.RealPlaces.DevissageNatural
+import GroundTheory.ProfiniteCohomology.TorsionDualFinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -211,15 +214,15 @@ theorem surjective_ptTLocalDualMap_two (hM : ∀ m : M, n • m = 0) :
         ∑ w, AddMonoidHom.inr _ _
           (Pi.single w (Submodule.Quotient.mk (p := normClasses (Rep.res (ψ w).toMonoidHom (dualRep D M)))
             (ptRes ψ (dualRep D M) w 0 y))) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [ptTGlobalToLocalHat_apply, ptTGlobalToLocal_apply, ptTHatMk_apply, ← map_sum, ← map_sum]
+
+    rw [ptTGlobalToLocalHat_apply, ptTGlobalToLocal_apply, ptTHatMk_apply, ← map_sum, ← map_sum]
     refine Prod.ext ?_ ?_
     · simp only [Prod.fst_add, AddMonoidHom.inl_apply, AddMonoidHom.inr_apply, add_zero]
       exact (Finset.univ_sum_single _).symm
     · simp only [Prod.snd_add, AddMonoidHom.inl_apply, AddMonoidHom.inr_apply, zero_add]
       exact (Finset.univ_sum_single _).symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ptTLocalDualMap_apply, ← hg, AddMonoidHom.comp_apply, hdec, map_add (f := _), map_sum, map_sum]
+
+  rw [ptTLocalDualMap_apply, ← hg, AddMonoidHom.comp_apply, hdec, map_add (f := _), map_sum, map_sum]
   congr 1
   · refine Finset.sum_congr rfl fun v _ => ?_
     rw [hξ₁]

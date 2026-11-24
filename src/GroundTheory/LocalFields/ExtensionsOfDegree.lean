@@ -1,16 +1,21 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.FiniteExtension
-public import GroundTheory.LocalFields.Eisenstein
-public import GroundTheory.LocalFields.SeparableClosure
-public import GroundTheory.LocalFields.UnramifiedExistence
-public import GroundTheory.LocalFields.MaximalUnramified
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.FieldTheory.Separable
+public import Mathlib.Topology.MetricSpace.Ultra.Basic
+public import Mathlib.Analysis.Normed.Field.Krasner
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Normed.Algebra.Ultra
+public import Mathlib.NumberTheory.LocalField.Basic
 
 @[expose] public section
 
-set_option maxHeartbeats 4000000
-set_option synthInstance.maxHeartbeats 400000
+
+
 
 noncomputable section
 

@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.ImaginaryGeneratorMulDenominator
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.GenericUnipotentCharacter
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingHomOfBaseOrderToFraction
+import Formalism.LocalToGlobal.Columns.GenericUnipotentCharacter
 
 @[expose] public section
 
@@ -95,8 +94,8 @@ section ChrG
 theorem supSum_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {r : ℕ} (A : Matrix (Fin r) (Fin r) R) :
     Formalism.L2.NX.supSum r (A.map f) = f (Formalism.L2.NX.supSum r A) := by
   unfold Formalism.L2.NX.supSum
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Matrix.map_apply]
+
+  simp only [map_sum, Matrix.map_apply]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
   split_ifs <;> simp
 

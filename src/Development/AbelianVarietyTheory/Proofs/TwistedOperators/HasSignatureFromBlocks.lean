@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ChainMatrices
-public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.PosIndexMapEqCardOfCongrDiagonal
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
+public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.PosIndexMapEqCardOfCongrDiagonal
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Upqcpt
 
 @[expose] public section
 
@@ -13,11 +56,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FrameComplement
-
-private theorem cT_sig_eq_conjTranspose {m k : Type} (M : Matrix m k ℂ) :
-    Formalism.UG.cT (starRingEnd ℂ) M = Mᴴ := by
-  ext i j
-  simp [Formalism.UG.cT, Matrix.conjTranspose_apply]
 
 private theorem conjTranspose_submatrix_mul_mul_submatrix {R k l m : Type} [CommRing R] [StarRing R] [Fintype k]
     (B : Matrix k l R) (M : Matrix k k R) (f : m → l) :
@@ -51,7 +89,7 @@ theorem hasSignature_of_frame {n : Type} [Fintype n] [DecidableEq n] {J : Matrix
   have hu : IsUnit (Q.submatrix e.symm id) :=
     (Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr hdet)
   refine ⟨e, hu.unit, ?_⟩
-  rw [IsUnit.unit_spec, cT_sig_eq_conjTranspose]
+  rw [IsUnit.unit_spec, _root_.Formalism.UG.P.cT_conj_eq]
   exact hP
 
 private theorem card_eq_add_and_exists_conj_eq_Jpq_of_hasSignature {n : Type} [Fintype n] [DecidableEq n] {J : Matrix n n ℂ} {p q : ℕ}
@@ -59,17 +97,9 @@ private theorem card_eq_add_and_exists_conj_eq_Jpq_of_hasSignature {n : Type} [F
     Fintype.card n = p + q ∧ ∃ Q : Matrix n (Fin p ⊕ Fin q) ℂ, Qᴴ * J * Q = Formalism.UG.Jpq p q := by
   obtain ⟨e, P, hP⟩ := h
   refine ⟨by simpa using Fintype.card_congr e, (P : Matrix _ _ ℂ).submatrix e id, ?_⟩
-  rw [cT_sig_eq_conjTranspose] at hP
+  rw [_root_.Formalism.UG.P.cT_conj_eq] at hP
   rw [← hP, ← conjTranspose_submatrix_mul_reindex_mul_submatrix e ((P : Matrix _ _ ℂ).submatrix e id) J]
   simp
-
-private theorem Jpq_eq_diagonal_elim_one_neg_one (p q : ℕ) :
-    Formalism.UG.Jpq p q = Matrix.diagonal (Sum.elim (fun _ => (1 : ℂ)) (fun _ => -1)) := by
-  ext (i|i) (j|j)
-  · by_cases h : i = j <;> simp [Formalism.UG.Jpq, Matrix.diagonal_apply, Matrix.one_apply, h]
-  · simp [Formalism.UG.Jpq]
-  · simp [Formalism.UG.Jpq]
-  · by_cases h : i = j <;> simp [Formalism.UG.Jpq, Matrix.diagonal_apply, Matrix.one_apply, h]
 
 theorem hasSignature_fromBlocks {n m : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
     {G : Matrix n n ℂ} {H : Matrix m m ℂ} {p q p' q' : ℕ}
@@ -86,7 +116,7 @@ theorem hasSignature_fromBlocks {n m : Type} [Fintype n] [DecidableEq n] [Fintyp
   rw [conjTranspose_submatrix_mul_mul_submatrix, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply,
     Matrix.fromBlocks_multiply]
   simp only [Matrix.conjTranspose_zero, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add, hQ1, hQ2]
-  rw [Jpq_eq_diagonal_elim_one_neg_one, Jpq_eq_diagonal_elim_one_neg_one, Jpq_eq_diagonal_elim_one_neg_one, Matrix.fromBlocks_diagonal,
+  rw [_root_.Formalism.UG.P.Jpq_eq_diagonal, _root_.Formalism.UG.P.Jpq_eq_diagonal, _root_.Formalism.UG.P.Jpq_eq_diagonal, Matrix.fromBlocks_diagonal,
     Matrix.submatrix_diagonal_equiv]
   congr 1
   funext x
@@ -105,14 +135,14 @@ theorem gram_det_ne (S : Formalism.BasicNotions.HSpace E) : S.gram.det ≠ 0 := 
     intro i
     have h2 := congrFun hc i
     simp only [Matrix.mulVec, dotProduct, Pi.zero_apply, Formalism.BasicNotions.HSpace.gram] at h2
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h2, map_sum]
+
+    rw [← h2, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul, smul_eq_mul, mul_comm]
   have hy : ∀ x, S.hT x (∑ j, c j • S.frame j) = 0 := by
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← S.frame.sum_repr x, map_sum S.hT, LinearMap.sum_apply]
+
+    rw [← S.frame.sum_repr x, map_sum S.hT, LinearMap.sum_apply]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [map_smulₛₗ, LinearMap.smul_apply, h1, smul_zero]
   have hy0 := S.nondeg.2 _ hy
@@ -129,8 +159,8 @@ theorem exists_basis (X Y : Formalism.BasicNotions.HSpace E) (ι : X.V →ₗ[E]
     have h1 : ∀ i, Y.hT (ι (X.frame i)) y = 0 := fun i => by
       have := congrFun (LinearMap.mem_ker.mp hy) i
       simpa [φ] using this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← X.frame.sum_repr x, map_sum ι, map_sum Y.hT, LinearMap.sum_apply]
+
+    rw [← X.frame.sum_repr x, map_sum ι, map_sum Y.hT, LinearMap.sum_apply]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [map_smul, map_smulₛₗ, LinearMap.smul_apply, h1, smul_zero]
   have hinj : ∀ x, (∀ x', Y.hT (ι x') (ι x) = 0) → x = 0 := fun x h =>
@@ -210,7 +240,7 @@ private theorem posIndex_negIndex_of_hasSignature {n : Type} [Fintype n] [Decida
     (h : Formalism.UG.HasSignature J p q) :
     GlobalTheory.Inertia.posIndex J = p ∧ GlobalTheory.Inertia.negIndex J = q := by
   obtain ⟨e, P, hP⟩ := h
-  rw [cT_sig_eq_conjTranspose] at hP
+  rw [_root_.Formalism.UG.P.cT_conj_eq] at hP
   have hR : ((P : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ).map (starRingEnd ℂ)).det ≠ 0 := by
     have h1 : ((P : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ).map (starRingEnd ℂ)).det =
         starRingEnd ℂ (P : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ).det := by

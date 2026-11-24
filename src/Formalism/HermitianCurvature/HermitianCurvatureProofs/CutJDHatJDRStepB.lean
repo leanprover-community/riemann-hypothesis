@@ -1,8 +1,58 @@
 module
 
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpPRad
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RootVectorActionCutoff
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpPTop
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDRStepBRules
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialRaisingTopOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtNormPow
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QminorZero
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialRaisingTopOfParts
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellMulVecBasis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -126,9 +176,9 @@ theorem stepB_pt (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : i
   have hLv : LeftEq k r z 0 D (v₀ : Mx k r → E) := leftEq_cut z hN hLf
   set Λ := La hD v₀ x0 with hΛ
   set tt := r - l - 2 + k with htt
-  have hT : tt + 2 = r - (⟨l, by omega⟩ : Fin (r + 1)).val + k := by simp only [Fin.val_mk]; omega
-  have hT1 : tt + 1 = r - (⟨l + 1, by omega⟩ : Fin (r + 1)).val + k := by simp only [Fin.val_mk]; omega
-  have hT2 : tt = r - (⟨l + 2, by omega⟩ : Fin (r + 1)).val + k := by simp only [Fin.val_mk]; omega
+  have hT : tt + 2 = r - (⟨l, by omega⟩ : Fin (r + 1)).val + k := by simp only; omega
+  have hT1 : tt + 1 = r - (⟨l + 1, by omega⟩ : Fin (r + 1)).val + k := by simp only; omega
+  have hT2 : tt = r - (⟨l + 2, by omega⟩ : Fin (r + 1)).val + k := by simp only; omega
   set a := rowsN k r ⟨l, by omega⟩ s ∘ Fin.cast hT with ha
   set b := rowsN k r ⟨l, by omega⟩ t ∘ Fin.cast hT with hb
   have hav : ∀ m : Fin (tt + 2), (a m).val = if m.val < r - l + s.val then l + m.val else l + m.val + 1 := by
@@ -182,10 +232,10 @@ theorem stepB_pt (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : i
   have hne : eI k r ⟨l, by omega⟩ ≠ eI k r ⟨l + 1, by omega⟩ := by simp [eI, Fin.ext_iff]
   have hring := stepB_ring (EA (E := E) hD) (EA_gl hD) Λ (eI k r ⟨l, by omega⟩) (eI k r ⟨l + 1, by omega⟩) hne
     (c ⟨l + 1, by omega⟩ / c ⟨l, by omega⟩) a b
-    (Fin.ext (by rw [hav]; simp [eI]; first | omega | (split_ifs <;> omega)))
-    (Fin.ext (by rw [hav]; simp [eI]; first | omega | (split_ifs <;> omega)))
-    (Fin.ext (by rw [hbv]; simp [eI]; first | omega | (split_ifs <;> omega)))
-    (Fin.ext (by rw [hbv]; simp [eI]; first | omega | (split_ifs <;> omega)))
+    (Fin.ext (by rw [hav]; simp [eI]; first | omega))
+    (Fin.ext (by rw [hav]; simp [eI]; first | omega))
+    (Fin.ext (by rw [hbv]; simp [eI]; first | omega))
+    (Fin.ext (by rw [hbv]; simp [eI]; first | omega))
     (fun m hm h => by have := congrArg Fin.val h; rw [hav] at this; simp [eI] at this; split_ifs at this <;> omega)
     (fun m hm h => by have := congrArg Fin.val h; rw [hbv] at this; simp [eI] at this; split_ifs at this <;> omega)
     (fun m hm X => hLmid (a m) (by rw [hav]; split_ifs <;> omega) (hab_le m).1 X) hL1
@@ -252,7 +302,7 @@ variable {k r : ℕ}
 
 theorem uC_step (l : ℕ) (hl : l + 1 ≤ r) (Y : ℂ) :
     Q.uC k r ⟨l + 1, by omega⟩ Y = Q.uC k r ⟨l, by omega⟩ Y - 1 := by
-  simp only [Q.uC, Q.mdim, Fin.val_mk]
+  simp only [Q.uC, Q.mdim]
   have e : r - l = r - (l + 1) + 1 := by omega
   rw [e]
   push_cast
@@ -260,7 +310,7 @@ theorem uC_step (l : ℕ) (hl : l + 1 ≤ r) (Y : ℂ) :
 
 theorem uC_gauge (l : ℕ) (hl : l < r) (Y : ℂ) :
     Q.uC k r ⟨l, by omega⟩ Y = Y + ((Mdim k r ⟨l, hl⟩ - 1 : ℕ) : ℂ) / 2 := by
-  simp only [Q.uC, Q.mdim, Mdim, Fin.val_mk]
+  simp only [Q.uC, Q.mdim, Mdim]
   have e : 2 * (r - l) + k + 1 - 1 = 2 * (r - l) + k := by omega
   rw [e]
   push_cast

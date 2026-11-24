@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Constructions.Pi
+public import Mathlib.Topology.Instances.Matrix
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

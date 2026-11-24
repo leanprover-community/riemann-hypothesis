@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsBisExtra
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsFieldSubalgebraSelf
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
 
 @[expose] public section
 

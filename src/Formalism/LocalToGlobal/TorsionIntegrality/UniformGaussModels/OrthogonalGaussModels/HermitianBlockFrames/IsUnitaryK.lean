@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Field.ZMod
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.NumberTheory.Padics.Complex
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

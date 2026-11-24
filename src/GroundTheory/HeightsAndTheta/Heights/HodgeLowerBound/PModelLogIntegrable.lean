@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsModelLogIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsModelPtsIntegrable
+import Aesop.Main
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntPoly
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

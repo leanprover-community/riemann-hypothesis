@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksW
 public import Formalism.LocalToGlobal.IndefiniteReal.WeilFull
 public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage

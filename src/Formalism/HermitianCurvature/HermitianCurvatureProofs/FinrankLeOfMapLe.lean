@@ -1,6 +1,55 @@
 module
 
 public import Formalism.HermitianCurvature.PrimeToDifferent
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.GroupTheory.IndexNSmul
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -129,13 +178,10 @@ theorem mem_eig (A : FI E) (s : ℕ) (t : E) :
   rw [this]; rfl
 
 theorem mul_mem_FI (A : FI E) (z : 𝓞 E) (t : E) (ht : t ∈ A) : (z : E) * t ∈ A := by
-  have := (A : Submodule (𝓞 E) E).smul_mem z ht
-  rw [Algebra.smul_def] at this
-  exact this
+  simpa [Algebra.smul_def] using (A : Submodule (𝓞 E) E).smul_mem z ht
 
 theorem sign_mem (A : FI E) (s : ℕ) (t : E) (ht : t ∈ A) : (-1) ^ s * t ∈ A := by
-  have := mul_mem_FI E A ((-1) ^ s) t ht
-  simpa using this
+  simpa using mul_mem_FI E A ((-1 : 𝓞 E) ^ s) t ht
 
 theorem sign_sq (s : ℕ) : ((-1 : E) ^ s) * (-1) ^ s = 1 := by
   rw [← mul_pow]; simp
@@ -147,8 +193,7 @@ theorem mem_gA (A : FI E) (g : ℕ) (x : E) :
 theorem gA_le (A : FI E) (g : ℕ) (x : E)
     (hx : x ∈ A * FractionalIdeal.spanSingleton (𝓞 E)⁰ (g : E)) : x ∈ A := by
   obtain ⟨a, ha, rfl⟩ := (mem_gA E A g x).mp hx
-  have := mul_mem_FI E A (g : 𝓞 E) a ha
-  simpa using this
+  simpa using mul_mem_FI E A (g : 𝓞 E) a ha
 
 theorem tw_eq (A : FI E) (g s : ℕ) (hA : ConjStable E A) (hg : 0 < g) (hU : UnramAbove E g) :
     twLat E A (A * FractionalIdeal.spanSingleton _ (g : E)) s
@@ -227,9 +272,7 @@ theorem finrank_sup (N₁ N₂ : Submodule ℤ E) [Module.Finite ℤ N₁] [Modu
     · simp
     · simpa using h
   have := LinearMap.finrank_range_of_inj hinj
-  rw [LinearMap.range_coprod, Submodule.range_subtype, Submodule.range_subtype,
-    Module.finrank_prod] at this
-  exact this
+  rwa [LinearMap.range_coprod, Submodule.range_subtype, Submodule.range_subtype, Module.finrank_prod] at this
 
 theorem exists_delta : ∃ δ : 𝓞 E, (δ : E) ≠ 0 ∧ complexConj E δ = -(δ : E) := by
   by_contra h

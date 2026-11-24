@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.UnitaryConstant
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

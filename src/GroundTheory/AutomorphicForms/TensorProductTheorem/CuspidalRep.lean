@@ -1,14 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCusp
+public import GroundTheory.AutomorphicForms.TensorProductTheorem.NonemptyAdelicDecomposition
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCuspSplit
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible
-public import GroundTheory.AutomorphicForms.GL2Classical.EigenformTranslates
-public import GroundTheory.AutomorphicForms.GL2Classical.Smooth
-public import GroundTheory.AutomorphicForms.HarishChandraCentre
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.SmoothKZ
-public import GroundTheory.AutomorphicForms.GL2Classical.KFinite
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -2,6 +2,51 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudDefs
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.ResidueClassCountOfTensorBasisInclusion
+import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.EdgeLatRS
+import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LatticeCountPrimeMonoLevel
+public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TensorBoundOfOrderBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -119,18 +164,11 @@ theorem cc_flat_add {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (al be al' be' :
   funext s i
   simp only [Pi.add_apply]
   unfold flatW
-  split_ifs
-  · push_cast; ring
-  · push_cast; ring
-  · simp
-  · simp
+  split_ifs <;> push_cast <;> ring
 
 theorem cc_dualWt_anti {m : ℕ} (mu : Fin (m + 1) → ℤ) (h : Antitone mu) : Antitone (dualWt mu) := by
   intro i j hij
-  unfold dualWt
-  have : j.rev ≤ i.rev := Fin.rev_le_rev.2 hij
-  have := h this
-  linarith
+  simpa [dualWt] using neg_le_neg (h (Fin.rev_le_rev.2 hij))
 
 theorem cc_lo {n' mm : ℕ} (TT : Finset (Fin n')) (ccl : ℕ) (aw bw : Fin n' → ℤ)
     (lam0 : Fin n' → Fin (mm + 1 + 1) → ℤ) (A B : TT → ℕ) (hBase : IsBaseWeight TT aw bw ccl lam0)
@@ -141,12 +179,10 @@ theorem cc_lo {n' mm : ℕ} (TT : Finset (Fin n')) (ccl : ℕ) (aw bw : Fin n' �
   · intro s hs
     obtain ⟨h1, h2, -⟩ := (hBase s).1 hs
     obtain ⟨h3, h4⟩ := hAB ⟨s, hs⟩
-    simp only [Pi.sub_apply]
-    rw [cc_flat_zero _ _ _ s hs, cc_flat_last _ _ _ s hs, h1, h2, h3, h4]
+    simp only [Pi.sub_apply, cc_flat_zero _ _ _ s hs, cc_flat_last _ _ _ s hs, h1, h2, h3, h4]
     constructor <;> ring
   · intro s hs
-    show lam0 s - flatW (mm + 1) A B s = 0
-    rw [hzero s hs, cc_flat_off _ _ _ s hs, sub_zero]
+    simp [Pi.sub_apply, hzero s hs, cc_flat_off _ _ _ s hs]
 
 theorem cc_lo_dom {n' mm : ℕ} (TT : Finset (Fin n')) (ccl : ℕ) (aw bw : Fin n' → ℤ)
     (lam0 : Fin n' → Fin (mm + 1 + 1) → ℤ) (A B : TT → ℕ) (hBase : IsBaseWeight TT aw bw ccl lam0)
@@ -198,14 +234,10 @@ theorem cc_dualW {n' m : ℕ} (TT : Finset (Fin n')) (X : Fin n' → Fin (m + 1)
   constructor
   · intro s hs
     obtain ⟨h1, h2⟩ := h s hs
-    unfold dualW dualWt
-    rw [Fin.rev_zero, Fin.rev_last, h1, h2]
-    simp
+    simp [dualW, dualWt, Fin.rev_zero, Fin.rev_last, h1, h2]
   · intro s hs
     funext i
-    unfold dualW dualWt
-    rw [h0 s hs]
-    simp
+    simp [dualW, dualWt, h0 s hs]
 
 theorem cc_D_one {K : Type*} [Field K] (k : ℕ) : lb_D k 1 (1 : K) = 1 := by
   unfold lb_D

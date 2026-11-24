@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CupProducts.Pairing
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCochainsFHomApply
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

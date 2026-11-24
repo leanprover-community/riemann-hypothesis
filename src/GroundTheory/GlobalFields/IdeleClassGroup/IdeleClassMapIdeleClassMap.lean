@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.CyclotomicCharacters.Character
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,9 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustStatementPfB
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
+import Mathlib.Analysis.Calculus.ContDiff.WithLp
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustStatementPfB
 
 @[expose] public section
 
@@ -23,7 +24,6 @@ theorem cd_nmat (τ : X.Ψ) (a b : Fin r) : ContDiff ℂ ∞ fun z : V (nd X) =>
   · simp only [dif_pos h]
     first
     | fun_prop
-    | exact (EuclideanSpace.proj (𝕜 := ℂ) _).contDiff
   · simp only [dif_neg h]
     exact contDiff_const
 

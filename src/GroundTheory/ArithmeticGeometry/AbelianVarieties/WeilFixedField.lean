@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilTranslate
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
 
 @[expose] public section
 

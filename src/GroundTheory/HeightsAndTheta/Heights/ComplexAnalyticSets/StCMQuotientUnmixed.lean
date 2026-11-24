@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceCMUnmixed
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTransverseObjects
 
 @[expose] public section
 

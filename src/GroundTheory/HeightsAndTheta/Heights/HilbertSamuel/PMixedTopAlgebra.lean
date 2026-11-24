@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMixedTopAlgebra
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPolyNonnegAtZero
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 @[expose] public section
 

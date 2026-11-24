@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPowerSumsEsymmAnalytic
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+public import Mathlib.Analysis.Analytic.Constructions
+public import Mathlib.Data.Multiset.Fintype
 
 @[expose] public section
 
@@ -17,10 +19,10 @@ theorem multiset_mul_esymm_eq_sum (s : Multiset ℂ) (k : ℕ) :
   classical
   have h := congrArg (MvPolynomial.aeval (R := ℂ) (fun x : s => (x : ℂ)))
     (MvPolynomial.mul_esymm_eq_sum s ℂ k)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_mul, map_natCast, map_pow, map_neg, map_one, map_sum,
-    MvPolynomial.aeval_esymm_eq_multiset_esymm, Multiset.map_univ_coe, MvPolynomial.psum,
-    MvPolynomial.aeval_X] at h
+
+  simp only [map_mul, map_natCast, map_pow, map_neg, map_one, map_sum,
+  MvPolynomial.aeval_esymm_eq_multiset_esymm, Multiset.map_univ_coe, MvPolynomial.psum,
+  MvPolynomial.aeval_X] at h
   convert h using 4 with a _
   rw [Finset.sum_eq_multiset_sum]
   conv_lhs => rw [← Multiset.map_univ_coe s]

@@ -1,8 +1,56 @@
 module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.LogNormEstimates
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.HarishChandraThirdIndefiniteUnitary
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.Clause1
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.AdmissibleVectors
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.BoundedOperators
+public import Development.WeilBound.HeckeVectors.SmoothVectors.SobolevApproximation.PCDense
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.DjCurveA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.SopNegComm
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -39,13 +87,13 @@ theorem graphD [CompleteSpace H₁] [CompleteSpace H₂] (h₁ : IsURepOn (UJset
     show ofP (E₁ a b (κ₁ w), E₂ a b (κ₂ w)) = ofP (κ₁ (F a b w), κ₂ (F a b w))
     rw [e₁, e₂]
   have c₁ : ∀ w, casimir E₁ (κ₁ w) = κ₁ (casimir F w) := fun w => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [casimir, LinearMap.sum_apply, Module.End.mul_apply, map_sum, e₁]
+
+    simp only [casimir, LinearMap.sum_apply, Module.End.mul_apply, map_sum, e₁]
   have cF : ∀ w, casimir F w = (c : ℂ) • w := fun w => hi (by rw [← c₁, hc, map_smul])
   have cκ : ∀ w, casimir (sE E₁ E₂) (κ w) = (c : ℂ) • κ w := fun w => by
     rw [← map_smul, ← cF]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [casimir, LinearMap.sum_apply, Module.End.mul_apply, map_sum, hκ]
+
+    simp only [casimir, LinearMap.sum_apply, Module.End.mul_apply, map_sum, hκ]
   let Γ : Submodule ℂ (WithLp 2 (H₁ × H₂)) :=
     { carrier := {x | U (ofLp x).1 = (ofLp x).2}
       add_mem' := fun {a b} ha hb => by
@@ -97,7 +145,7 @@ theorem twD_rep (m : ℕ) (h : Formalism.MainNotions.S.IsURepOn (Formalism.MainN
   refine ⟨⟨by simp [twD, h.1.1], fun a ha b hb => ?_⟩, fun g hg v => ?_, fun v => ?_⟩
   · simp only [twD]
     rw [h.1.2 a ha b hb, det_mul, mul_pow, ContinuousLinearMap.smul_comp, ContinuousLinearMap.comp_smul, smul_smul]
-  · simp only [twD, ContinuousLinearMap.smul_apply, norm_smul, norm_pow, norm_detD hg, one_pow, one_mul, h.2.1 g hg]
+  · simp only [twD, _root_.smul_apply, norm_smul, norm_pow, norm_detD hg, one_pow, one_mul, h.2.1 g hg]
   · exact ((continuous_id.matrix_det).pow m).continuousOn.smul (h.2.2 v)
 
 theorem twD_irr (m : ℕ) (h : Formalism.MainNotions.S.IsIrredOn (Formalism.MainNotions.S.UJset ε) σ) :
@@ -117,7 +165,7 @@ variable {p q : ℕ} {T : GrpData p q} {πU : URep T} {M : GKMod p q} {io : M.V 
 
 theorem skewD (h : IsHCMod πU M io) : SkewD M io := fun Y hY v w => by
   have h1 := (h.2.2 Y hY v).inner ℂ (h.2.2 Y hY w)
-  simp only [inner_piC, zero_smul, T.expt_zero, map_one, ContinuousLinearMap.one_apply] at h1
+  simp only [inner_piC, zero_smul, T.expt_zero, map_one, one_apply_eq_self] at h1
   have h2 := h1.unique (hasDerivAt_const _ _)
   linear_combination h2
 
@@ -142,7 +190,7 @@ theorem eigD (h : IsHCMod πU M io) {X : Mat p q} (hX : X ∈ upq p q) {v : M.V}
       zero_smul]
   have h2 := is_const_of_deriv_eq_zero (fun s => (hg s).differentiableAt) (fun s => (hg s).deriv) t 0
   simp only [Complex.ofReal_zero, mul_zero, neg_zero, Complex.exp_zero, zero_smul, T.expt_zero, map_one,
-    ContinuousLinearMap.one_apply, one_smul] at h2
+    one_apply_eq_self, one_smul] at h2
   conv_rhs => rw [← h2]
   rw [smul_smul, ← Complex.exp_add, add_neg_cancel, Complex.exp_zero, one_smul]
 
@@ -180,7 +228,7 @@ theorem signD (h : IsHCMod πU M io) {j : ℕ} {σ : Matrix (Fin (p + q)) (Fin (
     Complex.exp (Complex.I * c * (2 * Real.pi : ℝ)) = (-1) ^ j := by
   have e := eigD h (iE_memD a) (v := v) (c := Complex.I * c)
     (by rw [map_smul, LinearMap.smul_apply, hv, smul_smul]) (2 * Real.pi)
-  rw [(hex _ (iE_memD a)).2, exp_twoPiD, h1, ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply] at e
+  rw [(hex _ (iE_memD a)).2, exp_twoPiD, h1, _root_.smul_apply, one_apply_eq_self] at e
   have hne : io v ≠ 0 := fun h0 => hv0 (h.1 (h0.trans (map_zero io).symm))
   rw [← smul_left_injective ℂ hne e, ← Complex.exp_pi_mul_I, ← Complex.exp_nat_mul, trace_smul, Eab,
     trace_single_eq_same]
@@ -208,18 +256,18 @@ theorem dictD (hS : KFSm) (h : IsHCMod πU M io) {j : ℕ} (m : ℕ)
     intro Y hY v
     refine Subtype.ext ((hder.deriv _ (hex Y hY).1 (κ v)).unique ?_)
     have d1 : HasDerivAt (fun t : ℝ => (NormedSpace.exp (t • rx Y)).det) (rx Y).trace 0 :=
-      PI.UnitaryCorollaryDerivatives.DjC.hasDerivAt_det_of_one _ _ (by simp) fun a b => PI.UnitaryCorollaryDerivatives.DjC.hasDerivAt_exp_entry (rx Y) a b
+      _root_.Bl.b110.goal1 _ _ (by simp) fun a b => PI.UnitaryCorollaryDerivatives.DjC.hasDerivAt_exp_entry (rx Y) a b
     have d2 := ((((hasDerivAt_id (0 : ℝ)).ofReal_comp.mul_const Y.trace).div_const 2).const_mul (j : ℂ)).fun_neg.cexp
     have d3 := ((d1.fun_pow m).fun_mul d2).fun_smul (h.2.2 Y hY v)
     convert (preTransparency := .reducible) d3 using 1
     · funext t
-      rw [(hex Y hY).2, ContinuousLinearMap.smul_apply, smul_smul, mul_assoc, ← Complex.exp_add]
-      simp only [id, neg_add_cancel, Complex.exp_zero, mul_one, twD, ContinuousLinearMap.smul_apply, Complex.coe_smul]
+      rw [(hex Y hY).2, _root_.smul_apply, smul_smul, mul_assoc, ← Complex.exp_add]
+      simp only [id, neg_add_cancel, Complex.exp_zero, mul_one, twD, _root_.smul_apply, Complex.coe_smul]
       rfl
     · show io _ = _
       simp only [map_add (f := _), map_smul, id, zero_smul, NormedSpace.exp_zero, det_one, one_pow, Complex.ofReal_zero, zero_mul,
         zero_div, mul_zero, neg_zero, Complex.exp_zero, mul_one, one_mul, one_smul, T.expt_zero, map_one,
-        ContinuousLinearMap.one_apply, trace_rxC, Complex.ofReal_one]
+        one_apply_eq_self, trace_rxC, Complex.ofReal_one]
       congr 2
       ring
   intro Z v
@@ -312,11 +360,11 @@ theorem clause2_of (h1 : Clause1) (hS : KFSm) (hC : CasScal) (hDe : Descend) : C
   rintro _ ⟨w, rfl⟩
   have h0 : ((T.sq x : ℂˣ) : ℂ) ^ j₂ ≠ 0 := pow_ne_zero _ (Units.ne_zero _)
   have h := main _ (mem_UJC T x) w
-  simp only [twD, ContinuousLinearMap.smul_apply, det_rxC, ← sq_sqC, ← pow_mul] at h
+  simp only [twD, _root_.smul_apply, det_rxC, ← sq_sqC, ← pow_mul] at h
   refine smul_right_injective _ h0 ?_
   beta_reduce
   rw [← map_smul U, hπ₁, hπ₂]
-  simp only [ContinuousLinearMap.smul_apply, smul_smul, ← pow_add]
+  simp only [_root_.smul_apply, smul_smul, ← pow_add]
   rw [show j₂ + j₁ = 2 * m by omega, show j₂ + j₂ = 2 * j₂ by omega]
   exact h
 

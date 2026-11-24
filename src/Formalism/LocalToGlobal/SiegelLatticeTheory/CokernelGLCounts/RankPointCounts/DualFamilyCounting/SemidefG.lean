@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.MemInvCoeIdeal
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.WeightPositive
+public import Formalism.LocalRingCardinality.DataSpaces
+public import Formalism.LocalRingCardinality.DataHost
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountPositivity.CardLeOfNegFamily
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -19,8 +22,6 @@ section Gen
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E) {r : ℕ}
 
 theorem hsw (x y : S.V) : S.hT y x = star (S.hT x y) := (S.herm.eq x y).symm
-
-theorem hsw0 {x y : S.V} (h : S.hT x y = 0) : S.hT y x = 0 := by rw [hsw, h, star_zero]
 
 variable {S}
 variable (e y : Fin r → S.V) (z : S.V) (N : ℕ)
@@ -69,12 +70,12 @@ theorem semidefG (h : Dual e y z N) (hN : 0 < N) (τ : E →+* ℂ) (hτ : ∀ a
       · simp only [wv, Sum.elim_inl, Sum.elim_inr, if_true, map_sub, LinearMap.sub_apply, hE, hF, sub_zero]
     · cases b
       · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, if_false, map_sub,
-          hsw0 S (h.ez a'), hsw0 S (h.yz a'), sub_zero]
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, if_true, map_sub, hsw0 S (hE a'), hsw0 S (hF a'), sub_zero]
+          _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.ez a'), _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.yz a'), sub_zero]
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, if_true, map_sub, _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hE a'), _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hF a'), sub_zero]
     · cases b <;> cases b'
       · exact absurd rfl hij
       · simpa [wv] using hz
-      · simpa [wv] using hsw0 S hz
+      · simpa [wv] using _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S hz
       · exact absurd rfl hij
   have hdiag : ∀ i, τ (S.hT (wv i) (wv i)) = (d i : ℂ) := by
     intro i
@@ -141,25 +142,25 @@ theorem isoZeroG (h : Dual e y z N) (hN : 0 < N) (τ : E →+* ℂ) (hτ : ∀ a
   apply S.nondeg.1 w
   intro x
   set xW : S.V := x - ∑ a, (S.hT (y a) x • e a + S.hT (e a) x • y a) - (S.hT z x / S.hT z z) • z with hxW
-  have hzE : ∀ a, S.hT z (e a) = 0 := fun a => hsw0 S (h.ez a)
-  have hzF : ∀ a, S.hT z (y a) = 0 := fun a => hsw0 S (h.yz a)
+  have hzE : ∀ a, S.hT z (e a) = 0 := fun a => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.ez a)
+  have hzF : ∀ a, S.hT z (y a) = 0 := fun a => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.yz a)
   have hWE : ∀ b, S.hT (e b) xW = 0 := by
     intro b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, h.ee, h.ey, h.ez]
+
+    simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, h.ee, h.ey, h.ez]
   have hWF : ∀ b, S.hT (y b) xW = 0 := by
     intro b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, h.yy, h.ye, h.yz]
+
+    simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, h.yy, h.ye, h.yz]
   have hWz : S.hT z xW = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, hzE, hzF, hzz]
+
+    simp [hxW, map_sub, map_sum, map_add (f := _), map_smul, hzE, hzF, hzz]
   have h1 := orthW xW ⟨hWE, hWF, hWz⟩
-  have hwE : ∀ a, S.hT w (e a) = 0 := fun a => hsw0 S (hE a)
-  have hwF : ∀ a, S.hT w (y a) = 0 := fun a => hsw0 S (hF a)
-  have hwz : S.hT w z = 0 := hsw0 S hz
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa [hxW, map_sub, map_sum, map_add (f := _), map_smul, hwE, hwF, hwz] using h1
+  have hwE : ∀ a, S.hT w (e a) = 0 := fun a => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hE a)
+  have hwF : ∀ a, S.hT w (y a) = 0 := fun a => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hF a)
+  have hwz : S.hT w z = 0 := _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S hz
+
+  simpa [hxW, map_sub, map_sum, map_add (f := _), map_smul, hwE, hwF, hwz] using h1
 
 end Gen
 

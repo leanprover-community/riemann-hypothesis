@@ -1,13 +1,46 @@
 module
 
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.ParConsts
-public import Formalism.SharpRestriction.GrowthBounds.ObjPol
-public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Formalism.SharpRestriction.GrowthBounds.SegRing
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
-public import Formalism.SharpRestriction.GrowthBounds.ConclusionA2
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -209,17 +242,15 @@ theorem twistSub_rename {R : Type} [CommRing R] {ι κ : Type} (f : ι → κ) {
     (j : Fin n) (A : MvPolynomial (ι × Fin n) R) :
     twistSub LL S j (rename (fun v : ι × Fin n => (f v.1, v.2)) A) =
       rename (fun v : ι × Fin n => (f v.1, v.2)) (twistSub (⟨fun i => LL.vec (f i)⟩ : Letters ι) (f ⁻¹' S) j A) := by
-  have h : (twistSub (R := R) LL S j).comp (rename (fun v : ι × Fin n => (f v.1, v.2))).toRingHom =
-      (rename (fun v : ι × Fin n => (f v.1, v.2))).toRingHom.comp
-        (twistSub (R := R) (⟨fun i => LL.vec (f i)⟩ : Letters ι) (f ⁻¹' S) j) := by
-    apply MvPolynomial.ringHom_ext
-    · intro c
-      simp [twistSub]
-    · intro v
-      simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, rename_X, twistSub,
-        eval₂Hom_X', Set.mem_preimage]
-      split_ifs <;> simp_all [map_sum, rename_X]
-  exact RingHom.congr_fun h A
+  change ((twistSub (R := R) LL S j).comp (rename (fun v : ι × Fin n => (f v.1, v.2))).toRingHom) A = ((rename (fun v : ι × Fin n => (f v.1, v.2))).toRingHom.comp (twistSub (R := R) (⟨fun i => LL.vec (f i)⟩ : Letters ι) (f ⁻¹' S) j)) A
+  refine RingHom.congr_fun ?_ A
+  apply MvPolynomial.ringHom_ext
+  · intro c
+    simp [twistSub]
+  · intro v
+    simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, rename_X, twistSub,
+      eval₂Hom_X', Set.mem_preimage]
+    split_ifs <;> simp_all [map_sum, rename_X]
 
 theorem sDegs_rename {R : Type} [CommRing R] {ι κ : Type} (f : ι → κ) (hf : Function.Injective f) {n : ℕ}
     (LL : Letters κ) (S : Set κ) (j : Fin n) (A : MvPolynomial (ι × Fin n) R) :
@@ -227,12 +258,10 @@ theorem sDegs_rename {R : Type} [CommRing R] {ι κ : Type} (f : ι → κ) (hf 
       sDegs (⟨fun i => LL.vec (f i)⟩ : Letters ι) (f ⁻¹' S) j A := by
   classical
   unfold sDegs
-  rw [twistSub_rename f LL S j A]
-  have hg : Function.Injective (fun v : ι × Fin n => (f v.1, v.2)) := by
-    intro a b h
-    simp only [Prod.mk.injEq] at h
-    exact Prod.ext (hf h.1) h.2
-  rw [MvPolynomial.support_rename_of_injective hg, Finset.image_biUnion]
+  have hg : Function.Injective (fun v : ι × Fin n => (f v.1, v.2)) :=
+    fun a b h => Prod.ext (hf (Prod.ext_iff.mp h).1) (Prod.ext_iff.mp h).2
+  rw [twistSub_rename f LL S j A, MvPolynomial.support_rename_of_injective hg,
+    Finset.image_biUnion]
   apply Finset.biUnion_congr rfl
   intro m _
   rw [MvPolynomial.coeff_rename_mapDomain _ hg]
@@ -243,11 +272,7 @@ theorem valuation_lowest_degree_rename (R : Type) [CommRing R] (ι κ : Type) (f
         valS (⟨fun i => LL.vec (f i)⟩ : Letters ι) (f ⁻¹' S) A ∧
       lam1S LL S (rename (fun v : ι × Fin n => (f v.1, v.2)) A) =
         lam1S (⟨fun i => LL.vec (f i)⟩ : Letters ι) (f ⁻¹' S) A := by
-  refine ⟨?_, ?_⟩
-  · unfold valS
-    rw [sDegs_rename f hf]
-  · unfold lam1S
-    rw [sDegs_rename f hf]
+  constructor <;> simp [valS, lam1S, sDegs_rename f hf]
 
 theorem space_criterion_clause (O : Type) [CommRing O] (n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K]
     (F : Frames n' r) (j : ℤ) (m : ℤ → ℤ) (th o : ℤ → ℝ)
@@ -263,11 +288,8 @@ theorem space_criterion_clause (O : Type) [CommRing O] (n' r K : ℕ) [NeZero n'
     (ho : ∀ mm ∈ (plEmb O r K A * nmEmb O r K G).support, ∀ x ∈ F.letters j, ¬ F.IsW j x → (ordDeg mm x : ℝ) ≤ o x) :
     plEmb O r K A * nmEmb O r K G ∈ XX' O r K F j m th o := by
   unfold XX'
-  rw [Submodule.mem_inf]
-  refine ⟨Submodule.subset_span ⟨A, G, M, hA, hG, hc, rfl⟩, ?_⟩
-  rw [MvPolynomial.mem_restrictSupport_iff]
-  intro mm hmm
-  exact ho mm hmm
+  rw [Submodule.mem_inf, MvPolynomial.mem_restrictSupport_iff]
+  exact ⟨Submodule.subset_span ⟨A, G, M, hA, hG, hc, rfl⟩, ho⟩
 
 def AdmB (D : Formalism.BasicNotions.D7) : Prop :=
   PathPairCorrespondence D ∧ admB2 D ∧ admB3 D ∧ ColumnFamilyLowerSet D ∧ GenericProjectionCriterion D ∧ ColumnFamilyClosure D ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧

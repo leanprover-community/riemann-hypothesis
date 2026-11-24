@@ -1,6 +1,59 @@
 module
 
 public import Formalism.CharacterColumnKernels.StatementN
+public import Mathlib.Data.Finsupp.Interval
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 
 @[expose] public section
 
@@ -22,11 +75,8 @@ def Fr (T' : Subalgebra O (X' → O)) : Subring (X' → FractionRing O) :=
 lemma mem_Fr {T' : Subalgebra O (X' → O)} {φ : X' → FractionRing O} :
     φ ∈ Fr T' ↔ ∃ f ∈ T', ∀ x', algebraMap O (FractionRing O) (f x') = φ x' := by
   simp only [Fr, Subring.mem_map, Subalgebra.mem_toSubring]
-  constructor
-  · rintro ⟨f, hf, rfl⟩
-    exact ⟨f, hf, fun x' => rfl⟩
-  · rintro ⟨f, hf, h⟩
-    exact ⟨f, hf, funext h⟩
+  exact ⟨fun ⟨f, hf, hφ⟩ => ⟨f, hf, fun x' => congrFun hφ x'⟩,
+    fun ⟨f, hf, h⟩ => ⟨f, hf, funext h⟩⟩
 
 def goodS (T' : Subalgebra O (X' → O)) : Subring (PowerSeries (X' → FractionRing O)) where
   carrier := {φ | ∀ n, PowerSeries.coeff n φ ∈ Fr T'}
@@ -57,9 +107,9 @@ def coefMat (n : ℕ) (a : Matrix d d (PowerSeries (X' → FractionRing O))) :
 lemma coefMat_mul (n : ℕ) (a b : Matrix d d (PowerSeries (X' → FractionRing O))) :
     coefMat n (a * b) = ∑ p ∈ antidiagonal n, coefMat p.1 a * coefMat p.2 b := by
   ext x' i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [coefMat, Matrix.mul_apply, map_sum, PowerSeries.coeff_mul, Finset.sum_apply, Matrix.sum_apply,
-    Pi.mul_apply]
+
+  simp only [coefMat, Matrix.mul_apply, map_sum, PowerSeries.coeff_mul, Finset.sum_apply, Matrix.sum_apply,
+  Pi.mul_apply]
   exact Finset.sum_comm
 
 lemma coefMat_add (n : ℕ) (a b : Matrix d d (PowerSeries (X' → FractionRing O))) :
@@ -121,8 +171,7 @@ lemma coeff_det_congr {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ)
       Ideal.Quotient.mk (Ideal.span {(PowerSeries.X : PowerSeries K) ^ (m + 1)}) V.det := by
     rw [RingHom.map_det, RingHom.map_det, hUV]
   have hd := Ideal.mem_span_singleton.1 (Ideal.Quotient.eq.1 hdet)
-  have h0 := PowerSeries.X_pow_dvd_iff.1 hd m (by omega)
-  rwa [map_sub, sub_eq_zero] at h0
+  simpa [map_sub, sub_eq_zero] using PowerSeries.X_pow_dvd_iff.1 hd m (by omega)
 
 def wt {m : ℕ} (e : Fin m →₀ ℕ) : ℕ := ∑ j, (j.1 + 1) * e j
 
@@ -154,8 +203,8 @@ lemma coeff_psi (m : ℕ) (P : MvPolynomial (Fin m) K) :
     rw [Finset.prod_pow_eq_pow_sum]
     rfl
   conv_lhs => rw [P.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum]
+
+  rw [map_sum, map_sum]
   simp only [hpsi, PowerSeries.coeff_C_mul_X_pow]
   have h1 : ∑ e ∈ P.support, (if m = wt e then AddMonoidAlgebra.coeff P e else 0) =
       ∑ e ∈ P.support ∪ Finset.Iic (bnd m), (if m = wt e then AddMonoidAlgebra.coeff P e else 0) :=
@@ -200,9 +249,9 @@ lemma coeff_det_eq (R' : Subalgebra O (X' → Matrix d d (FractionRing O)))
       (PowerSeries.X : PowerSeries (FractionRing O)) • ∑ j : Fin (n + Fintype.card d),
         (PowerSeries.X : PowerSeries (FractionRing O)) ^ j.1 • (coefMat j.1 a x').map PowerSeries.C := by
     ext i k
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul,
-      map_sum, map_mul, psi, MvPolynomial.eval₂Hom_X', MvPolynomial.eval₂Hom_C, Finset.mul_sum]
+
+    simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul,
+    map_sum, map_mul, psi, MvPolynomial.eval₂Hom_X', MvPolynomial.eval₂Hom_C, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [pow_succ]
     ring
@@ -212,9 +261,9 @@ lemma coeff_det_eq (R' : Subalgebra O (X' → Matrix d d (FractionRing O)))
   apply coeff_det_congr
   intro i j k hk
   have hd0 : 0 < Fintype.card d := Fintype.card_pos_iff.2 ⟨i⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, map_sum,
-    RingHom.mapMatrix_apply, PowerSeries.coeff_map]
+
+  simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, map_sum,
+  RingHom.mapMatrix_apply, PowerSeries.coeff_map]
   rw [Finset.sum_eq_single ⟨k, by omega⟩]
   · rw [mul_comm, PowerSeries.coeff_C_mul_X_pow, if_pos rfl]
     rfl
@@ -255,8 +304,7 @@ variable {d : Type} [Fintype d] [DecidableEq d]
 lemma isUnit_det_of_const {ι : Type} [Fintype ι] [DecidableEq ι]
     (A : Matrix ι ι (PowerSeries (X' → FractionRing O)))
     (hA : (PowerSeries.constantCoeff).mapMatrix A = 1) : IsUnit A.det := by
-  rw [PowerSeries.isUnit_iff_constantCoeff, RingHom.map_det, hA, Matrix.det_one]
-  exact isUnit_one
+  simpa only [PowerSeries.isUnit_iff_constantCoeff, RingHom.map_det, hA, Matrix.det_one] using isUnit_one
 
 lemma invGood (R' : Subalgebra O (X' → Matrix d d (FractionRing O)))
     {A : Matrix d d (PowerSeries (X' → FractionRing O))} (hA : A ∈ goodM R')
@@ -399,7 +447,7 @@ lemma phiMat_block (R' : Subalgebra O (X' → Matrix d d (FractionRing O))) {g :
   simp only [coefMat, phiMat, Matrix.of_apply, Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, map_sub, hX,
     Matrix.one_apply, Prod.mk.injEq]
   by_cases hn0 : n = 0 <;> by_cases hn1 : n = 1 <;> by_cases hpq : p = q <;> by_cases hij : i = j <;>
-    simp [hn0, hn1, hpq, hij, PowerSeries.coeff_one, Matrix.one_apply] <;> omega
+    simp [hn0, hn1, hpq, hij, PowerSeries.coeff_one]
 
 lemma phiMat_good (R' : Subalgebra O (X' → Matrix d d (FractionRing O))) {g : Type} [Fintype g]
     [DecidableEq g] (Θ : Matrix g g R') (p q : g) :
@@ -438,7 +486,7 @@ lemma phiMat_eval [IsDomain O] (R' : Subalgebra O (X' → Matrix d d (FractionRi
           (bigMat (fun r : R' => (r : X' → Matrix d d (FractionRing O)) x') Θ).map Polynomial.C) := by
     ext P Q
     by_cases hPQ : P = Q <;>
-      simp [phiMat, bigMat, Matrix.one_apply, hPQ, Polynomial.coe_X, Polynomial.coe_C] <;> ring
+      simp [phiMat, bigMat, hPQ, Polynomial.coe_X, Polynomial.coe_C] <;> ring
   rw [hL, hM, ← RingHom.map_det]
   rw [show (Polynomial.coeToPowerSeries.ringHom : Polynomial (FractionRing O) →+* PowerSeries (FractionRing O))
       (Matrix.det (1 - (Polynomial.X : Polynomial (FractionRing O)) •

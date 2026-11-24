@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrictionBundle
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrictionPowers
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

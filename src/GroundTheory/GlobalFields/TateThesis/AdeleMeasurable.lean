@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

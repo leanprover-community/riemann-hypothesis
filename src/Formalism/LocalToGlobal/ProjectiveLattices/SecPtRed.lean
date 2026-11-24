@@ -2,6 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormalizedValuationMul
 public import Formalism.LocalToGlobal.ProjectiveLattices.SecPtOrd
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

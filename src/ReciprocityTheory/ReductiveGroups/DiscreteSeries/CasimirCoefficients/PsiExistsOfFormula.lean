@@ -2,6 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.GelfandSeries
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -2,8 +2,58 @@ module
 
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Complex.RealDeriv
+public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 @[expose] public section
 
@@ -32,7 +82,7 @@ lemma mul_hpk_apply (A : Mx k r) (i j : Fin (2 * r + k + 1)) :
   · congr 1
     have := j.isLt
     simp only [Hpk, WeylGroupFacts.tau, WeylGroupFacts.sgn, Fin.ext_iff, Fin.val_mk]
-    split_ifs <;> first | rfl | (exfalso; omega) | norm_num
+    split_ifs <;> first | rfl | (exfalso; omega)
   · intro b _ hb
     have hb' : b.val ≠ (WeylGroupFacts.tau k r j).val := fun e => hb (Fin.ext e)
     have := j.isLt
@@ -51,7 +101,7 @@ private lemma hpk_mul_lemma (A : Mx k r) (i j : Fin (2 * r + k + 1)) :
   · congr 1
     have := i.isLt
     simp only [Hpk, WeylGroupFacts.tau, WeylGroupFacts.sgn, Fin.ext_iff, Fin.val_mk]
-    split_ifs <;> first | rfl | (exfalso; omega) | norm_num
+    split_ifs <;> first | rfl | (exfalso; omega)
   · intro b _ hb
     have hb' : b.val ≠ (WeylGroupFacts.tau k r i).val := fun e => hb (Fin.ext e)
     have := i.isLt
@@ -184,7 +234,7 @@ lemma dag_dag (A : Mx k r) : dag k r (dag k r A) = A := by
     Matrix.mul_one]
 
 lemma star_half : star (1 / 2 : ℂ) = 1 / 2 := by
-  first | simp | (rw [Complex.star_def]; simp)
+  first | simp
 
 lemma star_inv2I : star (1 / (2 * Complex.I) : ℂ) = -(1 / (2 * Complex.I)) := by
   rw [Complex.star_def, map_div₀, map_one, map_mul, Complex.conj_I, map_ofNat]
@@ -343,7 +393,6 @@ theorem lam {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (z : Fin (2 *
   have hI : Complex.I * (1 / (2 * Complex.I)) = 1 / 2 := by
     have := Complex.I_ne_zero
     field_simp
-    try ring
   have hZ1 : Z = hpart1 (Hpk k r) Z + Complex.I • hpart2 (Hpk k r) Z := by
     unfold hpart1 hpart2
     rw [smul_smul, hI]

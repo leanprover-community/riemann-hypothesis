@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSpecMax
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChartDomain
+public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsSecIdealOfPrime
+public import Mathlib.Order.CompletePartialOrder
+public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSpecMax
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -153,8 +155,8 @@ theorem secB_secForm (i : Fin e) :
   have h : Ideal.Quotient.mk (secIdeal (modelR e I v) (parY e n v)) (secForm (parY e n v) i) = 0 :=
     Ideal.Quotient.eq_zero_iff_mem.mpr
       (Ideal.mem_sup_left (Ideal.mem_sup_right (Ideal.subset_span ⟨i, rfl⟩)))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h, secForm, linForm, map_sum]
+
+  rw [← h, secForm, linForm, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [map_mul]
   congr 1
@@ -165,8 +167,8 @@ theorem secB_chartForm :
   have h : Ideal.Quotient.mk (secIdeal (modelR e I v) (parY e n v)) (chartForm (parY e n v)) = 1 := by
     rw [← sub_eq_zero, ← map_one (Ideal.Quotient.mk _), ← map_sub, Ideal.Quotient.eq_zero_iff_mem]
     exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self _)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h, chartForm, linForm, map_sum]
+
+  rw [← h, chartForm, linForm, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [map_mul]
   congr 1

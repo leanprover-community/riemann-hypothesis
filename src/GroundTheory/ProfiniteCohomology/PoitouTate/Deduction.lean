@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.PoincareDuality.NsmulEqZeroOfNonemptyAddEquiv
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Dimension
+public import GroundTheory.ProfiniteCohomology.PoincarePairs.IsDiscreteRepResHomCoindRes
 public import GroundTheory.ProfiniteCohomology.PoitouTate.ZmodToQZCompactCohomologyResMapOfLocalInv
 
 @[expose] public section

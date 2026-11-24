@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.ThinScalesBound
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumA
 
 @[expose] public section
 
@@ -28,8 +26,8 @@ def hL (y : V) : V →ₗ[E] E where
 theorem h_sum_smul_left {ι : Type} [Fintype ι] (c : ι → E) (v : ι → V) (y : V) :
     H.h (∑ i, c i • v i) y = ∑ i, c i * H.h (v i) y := by
   show hL H y (∑ i, c i • v i) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_smul, smul_eq_mul]
   rfl
 
@@ -37,8 +35,8 @@ theorem h_sub_left (x x' y : V) : H.h (x - x') y = H.h x y - H.h x' y := (hL H y
 
 theorem h_sum_smul_right {ι : Type} [Fintype ι] (c : ι → E) (v : ι → V) (w : V) :
     H.h w (∑ i, c i • v i) = ∑ i, M.L.cj (c i) * H.h w (v i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [H.h_herm (∑ i, c i • v i) w, h_sum_smul_left, map_sum]
+
+  rw [H.h_herm (∑ i, c i • v i) w, h_sum_smul_left, map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [map_mul, H.h_herm (v i) w]
 
@@ -137,7 +135,7 @@ private theorem det_sub_cornerM (N : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (t : 
   rw [Matrix.det_succ_row (N - cornerM t) (Fin.last r), Matrix.det_succ_row N (Fin.last r),
     Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
   simp only [hsub, hrow, hP]
-  simp only [Matrix.sub_apply, cornerM, Matrix.of_apply, eq_self_iff_true, and_self, ite_true,
+  simp only [Matrix.sub_apply, cornerM, Matrix.of_apply, and_self, ite_true,
     Fin.succAbove_last]
   ring
 

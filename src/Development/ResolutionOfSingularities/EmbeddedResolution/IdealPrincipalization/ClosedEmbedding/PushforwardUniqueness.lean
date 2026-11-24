@@ -1,14 +1,46 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.ClopenRestriction
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceRelations
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.StrictTransformClosedImmersion
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+public import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -28,12 +60,12 @@ structure SequenceOfBlowupsPushforward {S X : Scheme.{u}} (j : S ⟶ X) (BS : Se
   square : ∀ (i : ℕ) (hi : i < B.length),
     σ (i + 1) hi ≫ B.transitionMapSucc i = BS.transitionMapSucc i ≫ σ i hi.le
   center : ∀ (i : ℕ) (hi : i < B.length),
-    B.center i = imageIdealSheaf (σ i hi.le) (BS.center i)
+    B.center i = _root_.FunctorialResolution.Blowup.schemeImageIdeal (σ i hi.le) (BS.center i)
 
 private theorem comap_imageIdealSheaf_of_isIso {A B : Scheme.{u}} (f : A ⟶ B) [IsIso f]
     (J : A.IdealSheafData) :
-    (imageIdealSheaf f J).comap f = J := by
-  rw [show imageIdealSheaf f J = J.map f from map_eq_imageIdealSheaf ..]
+    (_root_.FunctorialResolution.Blowup.schemeImageIdeal f J).comap f = J := by
+  rw [show _root_.FunctorialResolution.Blowup.schemeImageIdeal f J = J.map f from map_eq_imageIdealSheaf ..]
   exact Blowup.comap_map_of_isClosedImmersion f J
 
 private theorem exists_iso_succ_comp_blowupMorphism {X : Scheme.{u}} (B B' : SequenceOfBlowups X) (i : ℕ)
@@ -149,7 +181,7 @@ theorem isomorphic {S X : Scheme.{u}} {j : S ⟶ X} [IsClosedImmersion j]
               Category.id_comp, Category.comp_id]
             have hBcen : (B'.center n).comap (d'.σ n hnB'.le) = BS.center n := by
               have := d'.isClosedImmersion n hnB'.le
-              rw [d'.center n hnB', show imageIdealSheaf (d'.σ n hnB'.le) (BS.center n)
+              rw [d'.center n hnB', show _root_.FunctorialResolution.Blowup.schemeImageIdeal (d'.σ n hnB'.le) (BS.center n)
                   = (BS.center n).map (d'.σ n hnB'.le) from map_eq_imageIdealSheaf ..,
                 Blowup.comap_map_of_isClosedImmersion]
             have hcart : Blowup.IsLocallyGeneratedByNonZeroDivisor

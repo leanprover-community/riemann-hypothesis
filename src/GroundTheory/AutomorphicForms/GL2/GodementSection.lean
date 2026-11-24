@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.AdelicFourier2TensorCosetIndicatorAlgebraMap
 public import GroundTheory.GlobalFields.TateThesis.GlobalZeta
+public import GroundTheory.AutomorphicForms.ReductionIwasawa
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.GL2.SummableNormIffAndTsumEqCoset2
 
 @[expose] public section
 

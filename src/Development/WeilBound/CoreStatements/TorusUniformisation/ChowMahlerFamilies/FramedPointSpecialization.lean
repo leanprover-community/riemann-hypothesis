@@ -1,10 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsConstMul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFrameFieldExtension
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFrameIffEigenspaceBasis
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
+public import Mathlib.Algebra.MvPolynomial.Cardinal
+public import Mathlib.FieldTheory.IsAlgClosed.Classification
+import Development.WeilBound.CoreStatements.PluriharmonicCharts.FderivValueZero
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
+import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModelBaseChange
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -14,40 +63,7 @@ namespace PositivityTheory.Xgn.FramedPointSpecialization
 
 theorem exists_embedding (K k : Type) [Field K] [Field k] [Countable K] [Countable k] (β : K →+* k) (s : K →+* ℂ) :
     ∃ j : k →+* ℂ, j.comp β = s := by
-  letI := β.toAlgebra
-  letI := s.toAlgebra
-  obtain ⟨ι, x, hx⟩ := exists_isTranscendenceBasis' K k
-  obtain ⟨κ, z, hz⟩ := exists_isTranscendenceBasis' K ℂ
-  have hι : Countable ι := hx.1.injective.countable
-  have hκ : Cardinal.mk ℂ = Cardinal.mk κ := by
-    have := IsAlgClosed.cardinal_eq_cardinal_transcendence_basis_of_aleph0_lt' z hz
-      (Cardinal.mk_le_aleph0_iff.2 inferInstance) (by rw [Cardinal.mk_complex]; exact Cardinal.aleph0_lt_continuum)
-    exact this
-  have hle : Cardinal.mk ι ≤ Cardinal.mk κ := by
-    rw [← hκ, Cardinal.mk_complex]
-    exact (Cardinal.mk_le_aleph0_iff.2 hι).trans Cardinal.aleph0_le_continuum
-  obtain ⟨e⟩ := hle
-  have hz' : AlgebraicIndependent K (z ∘ e) := hz.1.comp e e.injective
-  letI : Algebra (MvPolynomial ι K) k := (MvPolynomial.aeval x : MvPolynomial ι K →ₐ[K] k).toRingHom.toAlgebra
-  letI : Algebra (MvPolynomial ι K) ℂ := (MvPolynomial.aeval (z ∘ e) : MvPolynomial ι K →ₐ[K] ℂ).toRingHom.toAlgebra
-  haveI : FaithfulSMul (MvPolynomial ι K) k := (faithfulSMul_iff_algebraMap_injective _ _).2 hx.1
-  haveI : FaithfulSMul (MvPolynomial ι K) ℂ := (faithfulSMul_iff_algebraMap_injective _ _).2 hz'
-  haveI : Algebra.IsAlgebraic (MvPolynomial ι K) k := by
-    haveI := hx.isAlgebraic
-    exact Algebra.IsAlgebraic.of_ringHom_of_comp_eq (S := Algebra.adjoin K (Set.range x)) (B := k) hx.1.aevalEquiv
-      (RingHom.id k) hx.1.aevalEquiv.surjective Function.injective_id
-      (RingHom.ext fun p => hx.1.algebraMap_aevalEquiv p)
-  let j : k →ₐ[MvPolynomial ι K] ℂ := (by
-    refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
-    solve_by_elim* (maxDepth := 2) only [*,
-      @_root_.DivisionSemiring.to_moduleIsTorsionFree,
-      @_root_.Algebra.IsIntegral.isAlgebraic, @_root_.inferInstance])
-  refine ⟨j.toRingHom, RingHom.ext fun a => ?_⟩
-  have h := j.commutes (MvPolynomial.C a)
-  have h1 : algebraMap (MvPolynomial ι K) k (MvPolynomial.C a) = β a := MvPolynomial.aeval_C x a
-  have h2 : algebraMap (MvPolynomial ι K) ℂ (MvPolynomial.C a) = s a := MvPolynomial.aeval_C (z ∘ e) a
-  rw [h1, h2] at h
-  exact h
+  apply PositivityTheory.Xgp.c_bm_exists_period.exists_embedding
 
 theorem exists_countable_field {X : Scheme.{0}} {K F : Type} [CommRing K] [Countable K] [Field F] (s : X ⟶ Sp K)
     [LocallyOfFiniteType s] (y : Sp F ⟶ X) :
@@ -116,7 +132,7 @@ theorem frame_up_down {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] 
   letI := f.toAlgebra
   subst hx
   obtain ⟨V, _, _, ⟨M⟩⟩ := lieModel_exists S G F x
-  obtain ⟨T, _, _, _, _, M', j, hl, hj⟩ := GlobalTheory.T.exists_lie_model_base_change S G F F' x V M
+  obtain ⟨T, _, _, _, _, M', j, hl, hj⟩ := _root_.GlobalTheory.CompanionTheory.Ar.FlagFib.lieModel_liftBaseChange S G F F' x V M
   obtain ⟨ρ, hρ, -⟩ := lieModel_exists_unique_act S G F x V M P act.act act.hom act.one act.mul act.add
   obtain ⟨ρ', hρ', -⟩ := lieModel_exists_unique_act S G F' _ T M' P act.act act.hom act.one act.mul act.add
   have hl' : ∀ e, (M'.pt (j e)).left = spMap (dualMap (algebraMap F F')) ≫ (M.pt e).left := fun e => by

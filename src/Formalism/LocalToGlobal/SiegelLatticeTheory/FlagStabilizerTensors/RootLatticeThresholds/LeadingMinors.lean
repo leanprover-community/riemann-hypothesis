@@ -1,8 +1,15 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.TermTieOf
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellBru
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellFin
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellGeo
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellInv
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellMono
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellPt
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SplittingAdmissibleOfTermData
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -28,7 +35,7 @@ theorem leading_minor_ne_zero {D : D7} {T T' : ℕ} (hT : 0 < T) (F : LFlag (D.s
 theorem atSomeAll_holds : Formalism.L2.SG.TermTieOf.AtSomeAll := by
   intro D X Y u u' t hG hrel
   obtain ⟨F', ⟨hP, hmk⟩, hR⟩ := hrel
-  have hf := Formalism.L2.SG.Closed.TermFun_holds D u u' (X.Fu u) _ ((Y.rowsOK u).1 t.lam t.mem)
+  have hf := _root_.term_function_const D u u' (X.Fu u) _ ((Y.rowsOK u).1 t.lam t.mem)
   have hGv : Gval (lf D (X.Fu u)) F' ≠ 0 := by
     have e := Formalism.L2.SG.TermDef.Gt_mk hf.1 ⟨F', hP⟩
     rw [hmk] at e
@@ -49,7 +56,6 @@ theorem atSomeAll_holds : Formalism.L2.SG.TermTieOf.AtSomeAll := by
   funext a b
   first
   | rfl
-  | (simp [ZhatOM, ZhatL, Matrix.submatrix_apply]; rfl)
 
 end Formalism.L2.SG.LeadingMinorsNonvanishing
 

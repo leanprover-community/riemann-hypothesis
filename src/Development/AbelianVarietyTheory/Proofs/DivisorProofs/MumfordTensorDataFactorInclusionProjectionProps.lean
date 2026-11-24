@@ -1,7 +1,43 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvTranspose
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -12,10 +48,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Mum
 
-theorem degPre_c_zero {R : Type} [CommRing R] [IsDomain R] (D : DegPre R) : D.c 0 = 1 := by
-  have h := D.c_add 0 0
-  rw [add_zero, padd, ← Hom.mul_def] at h
-  exact mul_left_cancel (h.symm.trans (_root_.mul_one _).symm)
+alias degPre_c_zero := _root_.GlobalTheory.IndivisibleSection.c_zero_eq_one
 
 theorem tens_inc_pr_facts (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R) {r : ℕ}
     (W : Matrix (Fin r) (Fin r) ℤ) (T : Tens D D' W) (i₀ : Fin r) :
@@ -49,15 +82,15 @@ theorem tens_inc_pr_facts (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R)
     by_cases h : i = i₀
     · subst h
       rw [if_pos rfl, Category.comp_id, Finset.prod_eq_single i]
-      · simp [Matrix.single_apply]
+      · simp
       · intro j _ hj
-        simp [Matrix.single_apply, Ne.symm hj]
+        simp [Ne.symm hj]
       · simp
     · rw [if_neg h, comp_one]
       symm
       apply Finset.prod_eq_one
       intro j _
-      simp [Matrix.single_apply, Ne.symm h]
+      simp [Ne.symm h]
   · intro y
     apply Fan.IsLimit.hom_ext T.lim
     intro i
@@ -67,6 +100,6 @@ theorem tens_inc_pr_facts (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R)
     · subst h
       simp [Tens.xi]
     · rw [if_neg h, comp_one]
-      simp [Tens.xi, Pi.single_apply, h, degPre_c_zero]
+      simp [Tens.xi, h, degPre_c_zero]
 
 end GlobalTheory.Mum

@@ -1,12 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NGAnalytic
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.FlagExtensionRegularity
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NinfGClosed
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.WeilIndicatorMeasures.MeasurableUnitMulIndicator
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.WeilIndicatorMeasures.MeasurableUnitMulIndicator
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.FlagExtensionRegularity
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -29,10 +71,10 @@ def haarOn (H : Subgroup G) (hH : IsClosed (H : Set G)) : Measure G :=
 theorem haarOn_spec (H : Subgroup G) (hH : IsClosed (H : Set G)) :
     SigmaFinite (haarOn H hH) ∧ haarOn H hH ≠ 0 ∧ haarOn H hH (H : Set G)ᶜ = 0 ∧
       ∀ s ∈ H, (haarOn H hH).map (fun x => s * x) = haarOn H hH := by
-  haveI : LocallyCompactSpace H := hH.isClosedEmbedding_subtypeVal.locallyCompactSpace
+  have : LocallyCompactSpace H := hH.isClosedEmbedding_subtypeVal.locallyCompactSpace
   have hm : Measurable (Subtype.val : H → G) := measurable_subtype_coe
   refine ⟨?_, ?_, ?_, ?_⟩
-  · haveI : IsFiniteMeasureOnCompacts (haarOn H hH) := by
+  · have : IsFiniteMeasureOnCompacts (haarOn H hH) := by
       constructor
       intro K hK
       simp only [haarOn]
@@ -71,7 +113,7 @@ theorem quot_exists_gen (H : Subgroup G) (hH : IsClosed (H : Set G)) (μG μS : 
     exact hScon
   set κ : Measure H := μS.comap e with hκ
   have hκmap : κ.map e = μS := by rw [hκ, he.map_comap, Measure.restrict_eq_self_of_ae_mem hae]
-  haveI : SigmaFinite κ := SigmaFinite.of_map κ he.measurable.aemeasurable (by rw [hκmap]; exact hSsf)
+  have : SigmaFinite κ := SigmaFinite.of_map κ he.measurable.aemeasurable (by rw [hκmap]; exact hSsf)
   have hκinv : ∀ g : H, κ.map (g * ·) = κ := by
     intro g
     have hcomm : e ∘ (g * ·) = (fun x => (g : G) * x) ∘ e := by
@@ -79,7 +121,7 @@ theorem quot_exists_gen (H : Subgroup G) (hH : IsClosed (H : Set G)) (μG μS : 
       rfl
     rw [← he.comap_map (κ.map (g * ·)), Measure.map_map he.measurable (measurable_const_mul g), hcomm,
       ← Measure.map_map (measurable_const_mul _) he.measurable, hκmap, hSinv _ g.2, hκ]
-  haveI : κ.IsMulLeftInvariant := ⟨fun g => hκinv g⟩
+  have : κ.IsMulLeftInvariant := ⟨fun g => hκinv g⟩
   set lam : Measure H := Measure.haar with hlam
   obtain ⟨K, hKc, hK1⟩ := exists_compact_mem_nhds (1 : H)
   have hK0 : lam K ≠ 0 := (Measure.measure_pos_of_mem_nhds lam hK1).ne'
@@ -374,7 +416,7 @@ private theorem pi_pi_univ_lemma_2 {ι κ : Type*} [Fintype ι] [Fintype κ] (k 
       · left; exact zero_pow hn.ne'
       · right; left; exact one_pow n
       · right; right; exact ENNReal.pow_eq_top_iff.2 ⟨rfl, hn.ne'⟩
-  haveI : SigmaFinite (k • (volume : Measure ℂ)) := sf_smul_lemma _ hk
+  have : SigmaFinite (k • (volume : Measure ℂ)) := sf_smul_lemma _ hk
   have hvol : (volume : Measure ℂ) Set.univ = ⊤ := measure_univ_of_isAddLeftInvariant _
   simp only [Measure.pi_univ, Measure.smul_apply, smul_eq_mul, hvol, Finset.prod_const, Finset.card_univ]
   apply key
@@ -392,7 +434,7 @@ theorem pin_reg (hP : PinHaarEx) {w : Point D.host.E (D.R.rS + 1)} (hw : ∃ γ,
     (hreg : RegX X u u' (gamW X u u' w)) :
     (Measure.dirac (1 : X.B.I.Ginf)).map (stCoord X u' w (gamW X u u' w)) = muStab X w := by
   obtain ⟨μ, c, ⟨hsf, hne, hcon, _⟩, hc0, hct, hmap⟩ := hP D X u u' w hw
-  haveI := hsf
+  have := hsf
   rw [stInf_reg X u u' _ hreg] at hcon
   have hμ := eq_smul_dirac_of_conc μ 1 hcon
   have ha0 : μ {1} ≠ 0 := by
@@ -432,7 +474,7 @@ theorem muInf_map (h : X.B.I.Ginf) :
 theorem quot_St (γ : X.B.I.Ginf) (μR : Measure X.B.I.Ginf) (hR : IsHaarOnSet X.B.I (StInf X u u' γ) μR) :
     ∃ ν, IsQuotMeasS X.B.I μR ν := by
   obtain ⟨hsf, hne, hcon, hinv⟩ := hR
-  haveI := hsf
+  have := hsf
   exact quot_exists_gen (StG X u u' γ) (isClosed_StG X u u' γ) (Formalism.L2.SG.ProjRows.muInf X.B.I) μR
     (fun h _ => muInf_map X h) hne hcon hinv
 
@@ -443,7 +485,7 @@ theorem pinned_at (hP : PinHaarEx) {w : Point D.host.E (D.R.rS + 1)} (hw : ∃ �
     ∃ μR, IsHaarOnSet X.B.I (StInf X u u' (gamW X u u' w)) μR ∧
       μR.map (stCoord X u' w (gamW X u u' w)) = muStab X w := by
   obtain ⟨μ, c, ⟨hsf, hne, hcon, hinv⟩, hc0, hct, hmap⟩ := hP D X u u' w hw
-  haveI := hsf
+  have := hsf
   refine ⟨c⁻¹ • μ, ⟨sf_smul_lemma μ (ENNReal.inv_ne_top.2 hc0), ?_, ?_, ?_⟩, ?_⟩
   · intro h0
     apply hne
@@ -538,8 +580,7 @@ theorem pi_smul {ι : Type*} [Fintype ι] {α : ι → Type*} [∀ i, Measurable
   rw [Measure.smul_apply, Measure.pi_pi, smul_eq_mul, ← Finset.prod_mul_distrib]
   simp only [Measure.smul_apply, smul_eq_mul]
 
-theorem sf_smul {α : Type*} [MeasurableSpace α] (μ : Measure α) [SigmaFinite μ] {c : ℝ≥0∞} (hc : c ≠ ⊤) :
-    SigmaFinite (c • μ) := sf_smul_lemma μ hc
+alias sf_smul := _root_.Formalism.L2.SG.NGPin.sf_smul_lemma
 
 theorem muStab_eq (w : Point D.host.E (D.R.rS + 1)) :
     ∃ K : ℝ≥0∞, K ≠ 0 ∧ K ≠ ⊤ ∧ muStab X w =
@@ -556,13 +597,13 @@ theorem muStab_eq (w : Point D.host.E (D.R.rS + 1)) :
       exact_mod_cast Nat.mul_pos h0 h1
     unfold Formalism.BasicNotions.Host.ka Formalism.BasicNotions.Host.v
     positivity
-  haveI : SigmaFinite (k • (volume : Measure ℂ)) := sf_smul _ hkt
+  have : SigmaFinite (k • (volume : Measure ℂ)) := sf_smul _ hkt
   have hin : Measure.pi (fun _ : FreeE w => k • (volume : Measure ℂ)) =
       (∏ _ : FreeE w, k) • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ)) := pi_smul _ _
   set K1 := ∏ _ : FreeE w, k with hK1
   have hK1t : K1 ≠ ⊤ := ENNReal.prod_ne_top fun _ _ => hkt
   have hK10 : K1 ≠ 0 := Finset.prod_ne_zero_iff.2 fun _ _ => hk0
-  haveI : SigmaFinite (K1 • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) := sf_smul _ hK1t
+  have : SigmaFinite (K1 • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) := sf_smul _ hK1t
   refine ⟨∏ _ : InfinitePlace X.B.I.F, K1, Finset.prod_ne_zero_iff.2 fun _ _ => hK10,
     ENNReal.prod_ne_top fun _ _ => hK1t, ?_⟩
   unfold muStab
@@ -594,7 +635,7 @@ theorem pinHaarEx_of_place (hP : PlaceHaar) : PinHaarEx := by
   have hae : ∀ v, AEMeasurable (stCoordV X u' w γ v) (μv v) :=
     fun v => (measurable_stCoordV X u' w γ v).aemeasurable
   obtain ⟨K, hK0, hKt, hK⟩ := muStab_eq X w
-  haveI hsf2 : ∀ v, SigmaFinite (cv v • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) :=
+  have hsf2 : ∀ v, SigmaFinite (cv v • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) :=
     fun v => sf_smul _ (hct v)
   have e1 : (Measure.pi μv).map (stCoord X u' w γ) =
       Measure.pi (fun v => cv v • Measure.pi (fun _ : FreeE w => (volume : Measure ℂ))) :=

@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFlatDimFormula
+public import Mathlib.RingTheory.Regular.RegularSequence
 
 @[expose] public section
 

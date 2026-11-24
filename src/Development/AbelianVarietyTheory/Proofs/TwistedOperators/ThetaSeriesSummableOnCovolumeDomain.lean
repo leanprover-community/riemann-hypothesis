@@ -1,18 +1,69 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.AdjointIsotropicDecomposition
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaRestrictIsotropicQuotientWittTowerPropertieStatement
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalSymplecticPointsSelfAnnihilator
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfCoefficientsSeparatingCharactersEqZero
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InfPartOneSubEInfSmul
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StdCharFinitePartRationalEqExpTrace
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SymplecticAdelicFormBiadditiveAlternatingRationa
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StdCharFinitePartRationalEqExpTrace
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSumHeisenbergTranslatesDistinctChars
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSumHeisenbergTranslatesDistinctChars
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfHeisenbergLevelAndSmooth
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfCoefficientsSeparatingCharactersEqZero
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalSymplecticPointsSelfAnnihilator
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsInvariantForm
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InfPartOneSubEInfSmul
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaRestrictIsotropicQuotientWittTowerPropertieStatement
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 
@@ -296,16 +347,10 @@ section Coords
 
 variable {D : D7} {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ AE D} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
-theorem symplO_eq_add (w v : WO S T) : symplO S T w v = symplOH S T w v + symplOH S T w v := by
-  have h2 : algebraMap D.host.F (AF D.host.F) (1 / 2) * 2 = 1 := by
-    rw [← map_ofNat (algebraMap D.host.F (AF D.host.F)) 2, ← map_mul]; norm_num
-  unfold symplOH
-  rw [← add_mul, ← two_mul, mul_comm 2, h2, one_mul]
-
 theorem psi_symplO (h : Chart θ σ) (hψ : IsStdChar D ψ (-1)) (w : WO S T) (x : RW T S) :
     ψ (symplO S T w (iotaW σ T S x)) =
       Complex.exp (-(2 * Real.pi * Complex.I) * (omO S T (piW θ T S w) x : ℝ)) := by
-  rw [symplO_eq_add, ψ.map_add_eq_mul, psi_symplOH h hψ, ← Complex.exp_add]
+  rw [_root_.GlobalTheory.ThetaCoefficient.symplO_eq, ψ.map_add_eq_mul, psi_symplOH h hψ, ← Complex.exp_add]
   congr 1
   ring
 
@@ -327,7 +372,7 @@ theorem psi_realLine (h : Chart θ σ) (hψ : IsStdChar D ψ (-1)) (w : WO S T) 
   ring
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem omO_rat (h : Chart θ σ) (x y : WO S T) (q : D.host.F)
     (hq : symplO S T x y = algebraMap D.host.F (AF D.host.F) q) :
     omO S T (piW θ T S x) (piW θ T S y) = (Algebra.trace ℚ D.host.F q : ℚ) := by
@@ -445,11 +490,6 @@ section Iso
 
 variable {D : D7}
 
-theorem cT_mul_rect {A : Type} [CommRing A] (s : A →+* A) {a b c : Type} [Fintype b] (M : Matrix a b A) (N : Matrix b c A) :
-    Formalism.UG.cT s (M * N) = Formalism.UG.cT s N * Formalism.UG.cT s M := by
-  unfold Formalism.UG.cT
-  rw [Matrix.map_mul, Matrix.transpose_mul]
-
 theorem trace_rearr {A : Type} [CommRing A] {v w r : ℕ} (X : Matrix (Fin v) (Fin v) A) (Y Z : Matrix (Fin v) (Fin r) A)
     (c : Matrix (Fin r) (Fin w) A) (g : Matrix (Fin w) (Fin w) A) (a : Matrix (Fin w) (Fin r) A)
     (P : Matrix (Fin r) (Fin v) A) (h : X * Y = Z) :
@@ -467,7 +507,7 @@ theorem adj_mul_gram (V : HSp D) {r : ℕ} (C : Matrix (Fin V.rank) (Fin r) D.ho
   have h1 : adj D V.gram = V.gram := Matrix.ext fun i j => GlobalTheory.DualPairCheck.gram_star V j i
   have h2 : adj D (adj D C) = C := Matrix.ext fun i j => star_star _
   unfold adj at h1 h2 ⊢
-  rw [cT_mul_rect, h1, h2]
+  rw [_root_.Formalism.UG.cT_mul, h1, h2]
 
 theorem hO_isoPart (V W : HSp D) {r : ℕ} (C₁ C₂ : Matrix (Fin V.rank) (Fin r) D.host.E) (a b : Mx D W.rank r) :
     hO V W (isoPart V W C₁ a) (isoPart V W C₂ b) =
@@ -475,7 +515,7 @@ theorem hO_isoPart (V W : HSp D) {r : ℕ} (C₁ C₂ : Matrix (Fin V.rank) (Fin
   rw [GlobalTheory.SplitHecke.hO_trace]
   show Matrix.trace ((V.gram⁻¹).map (incA D) * Formalism.UG.cT (cA D) (b * (adj D C₂ * V.gram).map (incA D)) *
     W.gram.map (incA D) * (a * (adj D C₁ * V.gram).map (incA D))) = _
-  rw [cT_mul_rect, cT_map_incA, adj_mul_gram]
+  rw [_root_.Formalism.UG.cT_mul, cT_map_incA, adj_mul_gram]
   rw [Matrix.map_mul (L := adj D C₁ * V.gram) (M := C₂)]
   refine trace_rearr _ _ (C₂.map (incA D)) _ _ _ _ ?_
   rw [← Matrix.map_mul, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ (GlobalTheory.LatVac.gram_det_isUnit V), Matrix.one_mul]
@@ -504,7 +544,7 @@ section Main
 variable {D : D7}
 
 theorem symplOH_sub (V W : HSp D) (a b : WO V W) : symplOH V W a b - symplOH V W b a = symplO V W a b := by
-  have e := symplO_eq_add a b
+  have e := _root_.GlobalTheory.ThetaCoefficient.symplO_eq a b
   have e2 : symplOH V W b a = -symplOH V W a b := by
     unfold symplOH
     rw [symplO_skew a b, mul_neg]
@@ -512,7 +552,7 @@ theorem symplOH_sub (V W : HSp D) (a b : WO V W) : symplOH V W a b - symplOH V W
 
 theorem continuous_symplO_left (S T : HSp D) (w : WO S T) : Continuous fun a : WO S T => symplO S T a w := by
   have h : Continuous fun a : WO S T => symplOH S T a w := continuous_symplOH continuous_id continuous_const
-  exact (h.add h).congr fun a => (symplO_eq_add a w).symm
+  exact (h.add h).congr fun a => (_root_.GlobalTheory.ThetaCoefficient.symplO_eq a w).symm
 
 theorem isoPart_map_eq_zero {B : Type} [CommRing B] (φ : AE D →+* B) (V W : HSp D) {r : ℕ}
     (C : Matrix (Fin V.rank) (Fin r) D.host.E) {a : Mx D W.rank r} (h : a.map φ = 0) :

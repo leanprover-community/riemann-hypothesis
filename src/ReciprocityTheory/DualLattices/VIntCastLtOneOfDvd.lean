@@ -1,6 +1,18 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Field.ZMod
+public import Mathlib.Basic.NNReal.Defs
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+public import Mathlib.RingTheory.Valuation.Integers
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Data.Nat.Prime.Int
+public import Mathlib.FieldTheory.Finite.Basic
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 
 @[expose] public section
 
@@ -128,14 +140,8 @@ theorem exists_teich [IsAlgClosed C] (hv : v.Integers R) (hpv : v (p : C) < 1) (
   have heq : (Polynomial.X ^ p - Polynomial.X : Polynomial C) =
       ((Polynomial.X ^ p - Polynomial.X : Polynomial C).roots.map (fun a => Polynomial.X - Polynomial.C a)).prod := by
     first
-    | exact Polynomial.eq_prod_roots_of_monic_of_splits_id hmon (IsAlgClosed.splits _)
-    | exact (Polynomial.Monic.eq_prod_roots_of_splits_id hmon (IsAlgClosed.splits _))
     | (have hc := Polynomial.C_leadingCoeff_mul_prod_multiset_X_sub_C
           (Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits (Polynomial.X ^ p - Polynomial.X : Polynomial C)))
-       rw [hmon.leadingCoeff, map_one, one_mul] at hc
-       exact hc.symm)
-    | (have hc := Polynomial.C_leadingCoeff_mul_prod_multiset_X_sub_C
-          (IsAlgClosed.card_roots_eq_natDegree (k := C) (p := Polynomial.X ^ p - Polynomial.X))
        rw [hmon.leadingCoeff, map_one, one_mul] at hc
        exact hc.symm)
   have heval : (n : C) ^ p - n =
@@ -176,7 +182,7 @@ theorem exists_teichChar [IsAlgClosed C] (hv : v.Integers R) (hpv : v (p : C) < 
       have hd : (p : ℤ) ∣ (((a * b).val : ℤ) - (a.val : ℤ) * (b.val : ℤ)) := by
         rw [← ZMod.intCast_zmod_eq_zero_iff_dvd]
         push_cast
-        simp [ZMod.natCast_zmod_val]
+        simp
       have := v_intCast_lt_one_of_dvd hv hpv hd
       push_cast at this
       exact this

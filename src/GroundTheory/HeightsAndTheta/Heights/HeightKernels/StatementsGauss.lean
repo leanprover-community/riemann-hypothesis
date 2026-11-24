@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KernelsMatrix
 public import GroundTheory.GlobalFields.TateThesis.LatticePoissonBasic
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.Fourier.FourierTransform
 
 @[expose] public section
 

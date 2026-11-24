@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementA
-public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.CM4
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementK
 
 @[expose] public section
 

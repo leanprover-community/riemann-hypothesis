@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

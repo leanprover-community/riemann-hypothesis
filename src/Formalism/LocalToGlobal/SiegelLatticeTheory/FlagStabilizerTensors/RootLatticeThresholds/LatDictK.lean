@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.AdmNPf
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictAll
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.KeyLemmaStatement
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictAll
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -30,11 +30,7 @@ theorem crd_vOf (x : Fin X.B.I.n → X.B.I.E) : X.crd (vOf X x) = x := by
   rw [X.bas.repr_sum_self]
   simp
 
-theorem fmatK_inv_mul (x : X.B.I.Gf) : X.B.I.fmat x⁻¹ * X.B.I.fmat x = 1 := by
-  show X.B.I.fmat (x⁻¹ * x) = 1
-  simp [AutInst.fmat]
-
-theorem fmatK_mul (x y : X.B.I.Gf) : X.B.I.fmat (x * y) = X.B.I.fmat x * X.B.I.fmat y := rfl
+alias fmatK_mul := _root_.Formalism.L2.SG.NormCut.fmat_mul
 
 theorem dict_K (a b : X.B.I.Gf) (S : Set (VS D).V)
     (ha : ∀ y, y ∈ S ↔ X.B.I.fmat a⁻¹ *ᵥ incl X.B.I (X.crd y) ∈ X.B.I.Lf)
@@ -88,7 +84,7 @@ theorem ratLink_incl {x : X.B.I.GA} {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V} (h
 theorem ratLink_incl_inv {x : X.B.I.GA} {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V} (h : RatLink X x γ) (y : (VS D).V) :
     X.B.I.fmat x.2⁻¹ *ᵥ incl X.B.I (X.crd y) = incl X.B.I (X.crd (γ.symm y)) := by
   conv_lhs => rw [← γ.apply_symm_apply y, ← ratLink_incl X h]
-  rw [mulVec_mulVec, fmatK_inv_mul, one_mulVec]
+  rw [mulVec_mulVec, _root_.Formalism.L2.SG.NormCut.fmat_inv_mul, one_mulVec]
 
 end DictK2
 
@@ -146,8 +142,7 @@ section DictK3
 
 variable {D : D7} (X : HidaSetting D)
 
-theorem nat_split (g : ℕ) : ∀ m : ℕ, 0 < m → ∃ c d : ℕ, m = c * d ∧ Nat.Coprime c g ∧ d ∣ g ^ m :=
-  _root_.UpperTheory.Reformulated.B.ExistsCoprimeMulDvdPow.main g
+alias nat_split := _root_.UpperTheory.Reformulated.B.ExistsCoprimeMulDvdPow.main
 
 theorem mem_of_loc {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] (L : Submodule R M) (x : M)
     (h : ∀ Q : Ideal R, Q.IsMaximal → ∃ s, s ∉ Q ∧ s • x ∈ L) : x ∈ L := by

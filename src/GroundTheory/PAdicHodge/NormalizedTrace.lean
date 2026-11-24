@@ -1,7 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.PAdicHodge.GaloisOnCp
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RingTheory.Trace.Defs
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.FieldTheory.Relrank
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Trace.Basic
 
 @[expose] public section
 

@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
 public import GroundTheory.ProfiniteCohomology.RealPlaces.GSDefs
 
 @[expose] public section

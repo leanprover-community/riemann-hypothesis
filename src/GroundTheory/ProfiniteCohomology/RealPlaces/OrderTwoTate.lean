@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.OrderTwo
 public import GroundTheory.ProfiniteCohomology.RealPlaces.InvolutionDuality
 public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityDefs
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 
 @[expose] public section
 

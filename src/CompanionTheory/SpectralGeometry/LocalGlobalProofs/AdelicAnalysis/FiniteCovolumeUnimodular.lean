@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
+import Mathlib.Dynamics.Ergodic.Action.Regular
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 

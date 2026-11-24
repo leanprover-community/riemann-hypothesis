@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChowNorm
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.Algebra.MvPolynomial.Nilpotent
+import Mathlib.GroupTheory.MonoidLocalization.UniqueFactorization
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -37,8 +44,8 @@ theorem secCoord_chart {E : Type*} [Field E] {n e : ℕ} (Q : Ideal (MvPolynomia
   have h : Ideal.Quotient.mk (secIdeal Q y) (chartForm y) = 1 := by
     rw [← map_one (Ideal.Quotient.mk _), Ideal.Quotient.eq]
     exact Ideal.mem_sup_right (Ideal.subset_span rfl)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h, chartForm, linForm, map_sum]
+
+  rw [← h, chartForm, linForm, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul]
   rfl

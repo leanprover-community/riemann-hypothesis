@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LaTIsPrime
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
 
 @[expose] public section
 

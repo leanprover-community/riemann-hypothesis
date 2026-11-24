@@ -1,7 +1,54 @@
 module
 
 public import Formalism.DegreeFormula.FlagDegFormula
-public import Formalism.DegreeFormula.PointDegree.PermExpInj
+public import Mathlib.CategoryTheory.Category.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -101,7 +148,7 @@ theorem rem_eq {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (σ : ι → 
   by_cases ht : t = τ
   · subst ht
     by_cases h1 : σ t i = j
-    · simp [h1, hne, Ne.symm hne] <;> omega
+    · simp [h1, Ne.symm hne] <;> omega
     · by_cases h2 : σ t i = j'
       · simp [h2, hne, Ne.symm hne] <;> omega
       · simp [h1, h2, Ne.symm h1, Ne.symm h2]
@@ -174,15 +221,15 @@ theorem degFlEsymm : DegFlEsymm := by
   have hp : ∀ n, 1 ≤ n → ∀ P : MvPolynomial (ι × Fin N) ℝ,
       degFl ι N (rename (fun i : Fin N => (τ, i)) (psum (Fin N) ℝ n) * P) = 0 := by
     intro n hn P
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [psum, map_sum, map_pow, rename_X]
+
+    simp only [psum, map_sum, map_pow, rename_X]
     exact degFlPowerSum ι N τ n P hn
   have hZ : ∀ P : MvPolynomial (ι × Fin N) ℝ, degFl ι N (rename (fun i : Fin N => (τ, i))
       ((k : MvPolynomial (Fin N) ℝ) * esymm (Fin N) ℝ k) * P) = 0 := by
     rw [mul_esymm_eq_sum, map_mul]
     apply Z_mul_left
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     apply Z_sum
     intro a ha
     rw [map_mul]
@@ -206,7 +253,5 @@ end Formalism.DegreeFormula.PPowSum
 
 namespace Formalism.DegreeFormula
 
-theorem degreePowerSumMulEqZero : DegFlPowerSum := PPowSum.degFlPowerSum
-theorem degreeEsymmMulEqZero : DegFlEsymm := PPowSum.degFlEsymm
-
+alias degreePowerSumMulEqZero := _root_.Formalism.DegreeFormula.PPowSum.degFlPowerSum
 end Formalism.DegreeFormula

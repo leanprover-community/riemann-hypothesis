@@ -1,6 +1,54 @@
 module
 
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -64,26 +112,22 @@ theorem exists_lat_le {ι : Type} (I : Finset ι) (M : ι → AddSubgroup K)
 theorem cut_finite (R : Subring K) (hRo : IsOpen (R : Set K)) {S : Set K} (hS : IsCompact S)
     (cr : K ⧸ R.toAddSubgroup → Kˣ) (hcr : IsCr R cr) : {x | (cr x : K) ∈ S}.Finite := by
   have : DiscreteTopology (K ⧸ R.toAddSubgroup) := QuotientAddGroup.discreteTopology hRo
-  have h1 : IsCompact ((QuotientAddGroup.mk : K → K ⧸ R.toAddSubgroup) '' S) :=
-    hS.image QuotientAddGroup.continuous_mk
-  refine h1.finite_of_discrete.subset ?_
-  intro x hx
-  exact ⟨cr x, hx, hcr x⟩
+  exact (hS.image QuotientAddGroup.continuous_mk).finite_of_discrete.subset
+    fun x hx => ⟨cr x, hx, hcr x⟩
 
 theorem cutSet_compact (m : ℕ) {Om : Set K} (hOm : IsCompact Om) (t : Kˣ) :
     IsCompact (cutSet m Om t) := by
+  have ht : (-(t : K)) ^ m = (((-t) ^ m : Kˣ) : K) := by push_cast; rfl
   have h : cutSet m Om t = (fun z : K => ((((-t) ^ m)⁻¹ : Kˣ) : K) * z ^ (m + 1)) '' Om := by
     ext c
     constructor
     · rintro ⟨z, hz, hzc⟩
       refine ⟨z, hz, ?_⟩
-      have : (-(t : K)) ^ m = (((-t) ^ m : Kˣ) : K) := by push_cast; rfl
       simp only
-      rw [hzc, this, ← mul_assoc, Units.inv_mul, one_mul]
+      rw [hzc, ht, ← mul_assoc, Units.inv_mul, one_mul]
     · rintro ⟨z, hz, rfl⟩
       refine ⟨z, hz, ?_⟩
-      have : (-(t : K)) ^ m = (((-t) ^ m : Kˣ) : K) := by push_cast; rfl
-      rw [this, ← mul_assoc, Units.mul_inv, one_mul]
+      rw [ht, ← mul_assoc, Units.mul_inv, one_mul]
   rw [h]
   exact hOm.image (by fun_prop)
 
@@ -98,8 +142,7 @@ theorem germSum_eq (hroots : ∀ D : Kˣ, {z : Kˣ | z ^ (m + 1) = D}.Finite) (t
       ((modK R (t : K) ^ (-((m : ℝ) ^ 2) / 2) : ℝ) : ℂ) *
         ∑ z ∈ (hroots ((-t) ^ m * c)).toFinset, germCoef R ψ m γ t z * f z := by
   unfold germSum
-  congr 1
-  exact finsum_if (hroots ((-t) ^ m * c)) _
+  rw [finsum_if (hroots ((-t) ^ m * c))]
 
 theorem roots_reindex (μ : Finset Kˣ) (hμ : ∀ ζ : Kˣ, ζ ∈ μ ↔ ζ ^ (m + 1) = 1)
     (hroots : ∀ D : Kˣ, {z : Kˣ | z ^ (m + 1) = D}.Finite) (D z₀ : Kˣ) (hz₀ : z₀ ^ (m + 1) = D)
@@ -146,9 +189,9 @@ theorem double_germ (h h' : Point K) (t₁ t₂ κ : Kˣ) (cr : K ⧸ R.toAddSub
   apply Finset.sum_congr rfl
   intro z hz
   have hz' : z ^ (m + 1) = (-t₁) ^ m * cr x := by simpa using hz
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hherm (pt2 h' m t₂ (cr x)) (addBlock h (m + 1) z), hG2 x hx', germSum_eq R ψ m γ hroots,
-    map_mul, Complex.conj_ofReal, map_sum]
+
+  rw [hherm (pt2 h' m t₂ (cr x)) (addBlock h (m + 1) z), hG2 x hx', germSum_eq R ψ m γ hroots,
+  map_mul, Complex.conj_ofReal, map_sum]
   have hz₀ : (κ * z) ^ (m + 1) = (-t₂) ^ m * cr x := by
     rw [mul_pow, hκ, hz', ← mul_assoc, ← mul_pow]
     congr 2
@@ -192,8 +235,7 @@ theorem mm_root (h : MM R) (z : Kˣ) (n : ℕ) (hz : modK R (z : K) ^ (n + 1) = 
   (pow_eq_one_iff_of_nonneg (h z z).1.le (Nat.succ_ne_zero n)).1 hz
 
 theorem mm_root_one (h : MM R) (z : Kˣ) (n : ℕ) (hz : z ^ (n + 1) = 1) : modK R (z : K) = 1 := by
-  apply mm_root h z n
-  rw [← mm_pow h, ← Units.val_pow_eq_pow_val, hz, Units.val_one, mm_one h]
+  exact mm_root h z n (by simpa [← mm_pow h, ← Units.val_pow_eq_pow_val, hz] using mm_one h)
 
 theorem half_sq (A : ℝ) (hA : 0 < A) (m : ℕ) :
     A ^ ((m : ℝ) ^ 2 / 2) * A ^ ((m : ℝ) ^ 2 / 2) = A ^ (m ^ 2) := by
@@ -313,11 +355,10 @@ theorem intLat_smul (Λ : AddSubgroup K) (Om : Set K) (F G : K → ℂ) (c : ℂ
   rw [mul_left_comm]
   congr 1
   rw [← smul_eq_mul, smul_finsum]
-  apply finsum_congr
-  intro y
-  split_ifs with hy
-  · rw [hF _ hy, smul_eq_mul]
-  · simp
+  exact finsum_congr (fun y => by
+    split_ifs with hy
+    · rw [hF _ hy, smul_eq_mul]
+    · simp)
 
 end Mod
 
@@ -333,9 +374,7 @@ theorem back {cr : K ⧸ R.toAddSubgroup → Kˣ} {S : Set K} (t₁ : Kˣ)
       ∑ᶠ z : Kˣ, (if z ^ (m + 1) = (-t₁) ^ m * cr x then G z else 0) else 0) =
       ∑ x ∈ hSfin.toFinset, ∑ z ∈ (hroots ((-t₁) ^ m * cr x)).toFinset, G z := by
   rw [finsum_if hSfin]
-  apply Finset.sum_congr rfl
-  intro x _
-  exact finsum_if (hroots _) G
+  exact Finset.sum_congr rfl (fun x _ => finsum_if (hroots _) G)
 
 def f1 (h h' : Point K) (d : K) (z : K) : ℂ :=
   (((modK R ((m + 1 : ℕ) : K))⁻¹ * (modK R z ^ m)⁻¹ : ℝ) : ℂ) *
@@ -482,8 +521,7 @@ theorem cut_mem [TopologicalSpace K] (m : ℕ) (Om : Set K) (hOm : IsOmega (m + 
       have hu : u ^ (m + 1) = (-t) ^ m * c := Units.ext (by push_cast; exact hzc)
       rw [mul_pow, inv_pow, hz, hu, mul_inv_cancel]
     rw [← Units.val_pow_eq_pow_val, h2, Units.val_one]
-  have h3 := hOm.2.2.2 u hz₀ _ h1
-  simpa using h3
+  simpa using hOm.2.2.2 u hz₀ _ h1
 
 theorem shift_ratio (t t₁ t₂ : Kˣ) (σ σ' : K) (h1 : IsShift t t₁ σ) (h2 : IsShift t t₂ σ') :
     ((t₂ * t₁⁻¹ : Kˣ) : K) = 1 + (σ - σ') * (t₂ : K) := by

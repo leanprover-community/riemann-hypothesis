@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.NumericalH1Condition
 public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.WeightedPrimeSumBound
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntegralExtensionOfRegR1
 
 @[expose] public section

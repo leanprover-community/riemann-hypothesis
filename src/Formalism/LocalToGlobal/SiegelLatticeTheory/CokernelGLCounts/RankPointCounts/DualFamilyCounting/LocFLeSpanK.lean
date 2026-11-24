@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.CardQuotSmulTopCongr
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapIntCastSmul
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.SpanPowMulLe
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SameGenusFix
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FiniteDimensionalOfOrtho
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MemSmulOfMemSmulLocF
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -30,8 +34,7 @@ private theorem coe_iota_eq_algebraMap_coe (a : 𝓞 F) : jK (ι a) = algebraMap
 
 private theorem jK_iota_ne_zero {a : 𝓞 F} (ha : a ≠ 0) : jK (ι a) ≠ 0 := by
   rw [coe_iota_eq_algebraMap_coe]
-  refine (map_ne_zero (algebraMap F K)).mpr ?_
-  exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).mpr ha
+  exact (map_ne_zero (algebraMap F K)).mpr ((map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).mpr ha)
 
 private theorem jK_ne_zero_of_mem_closure_prime_compl {𝔭 : Ideal (𝓞 F)} {s : 𝓞 K}
     (hs : s ∈ Submonoid.closure {s : 𝓞 K | ∃ t : 𝓞 F, t ∉ 𝔭 ∧ algebraMap (𝓞 F) (𝓞 K) t = s}) :
@@ -68,8 +71,8 @@ variable {h : V →ₗ⋆[K] V →ₗ[K] K} {X : Submodule K V} {L : Submodule (
 
 theorem h_sum (horth : ∀ i j, i ≠ j → h (b i) (b j) = 0) (hdiag : ∀ i, h (b i) (b i) = jK (ι (a i)))
     (c : Fin n → K) (k : Fin n) : h (b k) (∑ i, c i • b i) = c k * jK (ι (a k)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, smul_eq_mul]
+
+  simp only [map_sum, map_smul, smul_eq_mul]
   rw [Finset.sum_eq_single k]
   · rw [hdiag]
   · intro i _ hik
@@ -174,8 +177,8 @@ theorem mem_locF_dualIn_iff (hF : IsFixF K F) (h𝔭 : 𝔭.IsMaximal) (hL : IsL
       intro y hy
       have hyB : y ∈ locF 𝔭 L := Formalism.HermitianLattices.Ext.L3.localizedQuotients.le_locF 𝔭 L hy
       obtain ⟨hyX, hc⟩ := (mem_B_iff hbX hloc horth hdiag ha h𝔭.isPrime hL y).mp hyB
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [coords hbX hloc horth hdiag ha h𝔭.isPrime hL hyX, map_sum, LinearMap.sum_apply]
+
+      rw [coords hbX hloc horth hdiag ha h𝔭.isPrime hL hyX, map_sum, LinearMap.sum_apply]
       refine Subring.sum_mem _ fun i _ => ?_
       rw [LinearMap.map_smulₛₗ₂, starRingEnd_apply, smul_eq_mul]
       exact Subring.mul_mem _ (star_mem_HU_SP hF (hc i)) (hq i)

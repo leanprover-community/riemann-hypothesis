@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+public import Mathlib.Topology.Algebra.Module.ModuleTopology
 
 @[expose] public section
 

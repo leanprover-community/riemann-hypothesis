@@ -1,8 +1,11 @@
 module
 
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
-public import ReciprocityTheory.DualLattices.UpSmith
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.DualLattices.ExistsSmulMemOfMemSpan
+public import ReciprocityTheory.DualLattices.UpSmith
 
 @[expose] public section
 

@@ -1,8 +1,59 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.OddLogRelation
+public import Mathlib.RingTheory.MvPowerSeries.Expand
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.PowerSeries.Expand
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -32,8 +83,7 @@ theorem coeff_frobVar_of_not_dvd {K ι : Type} [Field K] {p : ℕ} (hp : p ≠ 0
 theorem coeff_frobVar_ne_zero {K ι : Type} [Field K] {p : ℕ} (hp : p ≠ 0)
     {f : MvPowerSeries ι K} {n : ι →₀ ℕ} (h : MvPowerSeries.coeff n (frobVar p f) ≠ 0) :
     ∃ m : ι →₀ ℕ, n = p • m ∧ MvPowerSeries.coeff m f ≠ 0 := by
-  have hd : ∀ i, p ∣ n i := by
-    intro i
+  have hd : ∀ i, p ∣ n i := fun i => by
     by_contra hc
     exact h (coeff_frobVar_of_not_dvd hp f hc)
   have hn : n = p • n.mapRange (· / p) (by simp) := by
@@ -111,12 +161,10 @@ theorem coeff_mvExp {K ι : Type} [NormedField K] [CharZero K] {f : MvPowerSerie
       (by omega), smul_zero]
 
 theorem powq_inj {p : ℕ} (hp : 2 ≤ p) {i j : ℕ} (h : (p ^ 2) ^ i = (p ^ 2) ^ j) : i = j := by
-  have h2 : 2 ≤ p ^ 2 := by nlinarith
-  exact Nat.pow_right_injective h2 h
+  exact Nat.pow_right_injective (by nlinarith) h
 
 theorem ppowq_inj {p : ℕ} (hp : 2 ≤ p) {i j : ℕ} (h : p * (p ^ 2) ^ i = p * (p ^ 2) ^ j) : i = j := by
-  have h' : (p ^ 2) ^ i = (p ^ 2) ^ j := Nat.eq_of_mul_eq_mul_left (by omega) h
-  exact powq_inj hp h'
+  exact powq_inj hp (Nat.eq_of_mul_eq_mul_left (by omega) h)
 
 private lemma lt_pow_self_of_two_le {b : ℕ} (hb : 2 ≤ b) (j : ℕ) : j < b ^ j := by
   induction j with

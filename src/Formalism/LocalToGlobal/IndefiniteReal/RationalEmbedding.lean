@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.AdelicIsomorphismStatement
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InstExists
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.AdelicIsomorphismStatement
 
 @[expose] public section
 

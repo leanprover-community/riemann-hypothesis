@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsMajorantStabCompact
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PBoundedInverseCompact
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

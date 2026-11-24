@@ -1,6 +1,14 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Mul
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
 public import GroundTheory.ArithmeticGeometry.ToricVarieties.KrullDomain
 

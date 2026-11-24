@@ -1,8 +1,56 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsAvoidFormFinite
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PFibreRepresentatives
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Interval
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Nullstellensatz
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -231,8 +279,8 @@ theorem eval_cmp_eq_zero {S : Set (MRingOver ℂ ι)} (hS : ∀ s ∈ S, ∃ a, 
   | add x y _ _ hx hy => intro D; rw [map_add (f := _), map_add (f := _), hx, hy, add_zero]
   | smul a x _ hx =>
     intro D
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [smul_eq_mul, as_sum a, Finset.sum_mul, map_sum, map_sum]
+
+    rw [smul_eq_mul, as_sum a, Finset.sum_mul, map_sum, map_sum]
     refine Finset.sum_eq_zero fun ν _ => ?_
     rw [mul_comm, cmp_mul (isMultiHomog_monomial ν _)]
     split_ifs
@@ -369,8 +417,8 @@ theorem rel_direct {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι} {e : K �
 theorem eval_eq_sum_support (p : MRingOver ℂ ι) (z : (Σ k, ι k) → ℂ) :
     eval z p = ∑ ν ∈ p.support, AddMonoidAlgebra.coeff p ν * eval z (monomial ν 1) := by
   conv_lhs => rw [as_sum p]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun ν _ => ?_
   rw [eval_monomial, eval_monomial]
   ring
@@ -392,8 +440,8 @@ theorem rel_all {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι} {e : K → �
       choose! H hH hHev using ih
       refine ⟨∑ ν ∈ h₁.support, C (AddMonoidAlgebra.coeff h₁ ν) * H ν,
         isMultiHomog_sum _ _ fun ν hν => isMultiHomog_C_mul (hH ν (bdeg_of_mem hh₁ hν)) _, fun z hz => ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hev z hz, eval_eq_sum_support h₁ z, map_sum]
+
+      rw [hev z hz, eval_eq_sum_support h₁ z, map_sum]
       simp only [map_mul, eval_C]
       rw [Finset.sum_mul, Finset.sum_mul, Finset.sum_mul]
       refine Finset.sum_congr rfl fun ν hν => ?_

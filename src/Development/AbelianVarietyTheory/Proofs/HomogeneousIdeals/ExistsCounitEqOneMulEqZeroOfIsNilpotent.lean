@@ -1,8 +1,68 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.NatCardAlgHomEqFinrankOfIsReducedOfIsFractionRin
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsCounitDerivationCounitComp
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RingTheory.DedekindDomain.Basic
+public import Mathlib.RingTheory.HopfAlgebra.Quotient
+public import Mathlib.RingTheory.HopfAlgebra.TensorProduct
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.NatCardAlgHomEqFinrankOfIsReducedOfIsFractionRin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.AlgebraicGeometry.Group.Affine
+public import Mathlib.AlgebraicGeometry.Group.Smooth
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.AlgebraicGeometry.Geometrically.Basic
+public import Mathlib.AlgebraicGeometry.Geometrically.Reduced
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -104,8 +164,8 @@ theorem exists_derivations_sum_sub_mem_sq [Bialgebra k H] [Algebra.FiniteType k 
     intro a b
     rw [← map_smul, ← map_smul, ← map_add (f := _), hq, hq, Ideal.Quotient.eq]
     have : p (a * b) - p (counit (R := k) a • b + counit (R := k) b • a) = p a * p b := by
-      simp only [hp, map_add (f := _), map_smul, counit_mul, smul_eq_mul, map_mul, Algebra.smul_def,
-        counit_algebraMap, Algebra.algebraMap_self, RingHom.id_apply]
+      simp only [hp, map_add (f := _), counit_mul, map_mul, Algebra.smul_def,
+        counit_algebraMap]
       ring
     rw [this, sq]
     exact Ideal.mul_mem_mul (hpI a) (hpI b)
@@ -149,8 +209,8 @@ theorem exists_derivations_sum_sub_mem_sq [Bialgebra k H] [Algebra.FiniteType k 
     simp only [Submodule.coe_sum, Submodule.coe_smul, ← hz] at h2
     have h3 : Ideal.Quotient.mk (I ^ 2) y = q y := by
       rw [hq, hp, (hmem y).1 hy]; simp
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h3, map_sum]
+
+    rw [h3, map_sum]
     exact h2
   have h2 : ∑ i, p (z i) * p (invariantDerivation (φ i) (hφ i) y) ∈ I ^ 2 :=
     Ideal.sum_mem _ fun i _ ↦ by rw [sq]; exact Ideal.mul_mem_mul (hpI _) (hpI _)

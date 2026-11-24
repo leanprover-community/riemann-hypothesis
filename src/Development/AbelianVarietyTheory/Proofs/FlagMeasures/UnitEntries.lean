@@ -1,14 +1,58 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCommonStabiliserEqPairingMatrixStabiliser
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetFrameClassProperties
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -366,14 +410,14 @@ theorem pair_comb {L : LocE F E} {r k : ℕ} (S : Frames L r k)
   have key : ∀ (α : Fin (r + 1) → E) (g : Fin (r + 1) → S.V) (y : S.V),
       hf L S.Hm (∑ i, α i • g i) y = ∑ i, α i * hf L S.Hm (g i) y := fun α g y => by
     change GlobalTheory.FrameBasic.hfL L S.Hm y _ = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [map_smul]; rfl
   simp only [Frames.h, Matrix.mul_apply, Frames.Zh, Matrix.of_apply, cT]
   rw [key]
   refine Finset.sum_congr rfl fun i _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [GlobalTheory.FrameBasic.hf_conj L S.herm.1, key, map_sum, mul_comm]
+
+  rw [GlobalTheory.FrameBasic.hf_conj L S.herm.1, key, map_sum, mul_comm]
   congr 1
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul, ← GlobalTheory.FrameBasic.hf_conj L S.herm.1]
@@ -384,11 +428,6 @@ theorem comb_mul {V ι : Type} [AddCommGroup V] [Module E V] [Fintype ι] (g : �
   simp only [Finset.smul_sum, Matrix.mul_apply, Finset.sum_smul, smul_smul]
   rw [Finset.sum_comm]
   simp only [mul_comm]
-
-theorem int_mul {L : LocE F E} {n : ℕ} {A B : Matrix (Fin n) (Fin n) E} (hA : IsIntM L A)
-    (hB : IsIntM L B) : IsIntM L (A * B) := fun i j => by
-  rw [Matrix.mul_apply]
-  exact L.O.sum_mem fun c _ => L.O.mul_mem (hA i c) (hB c j)
 
 theorem up_cT (L : LocE F E) {n : ℕ} {A : Matrix (Fin n) (Fin n) E} (hA : UpU A.transpose) :
     UpU (cT L A) :=
@@ -461,7 +500,7 @@ theorem one_class {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   refine ⟨⟨⟨1, one_mem _, 1, one_mem _, rfl⟩, ?_⟩, ?_, ?_⟩
   · rintro p ⟨A, A', iA, iA', -, -, -, h1, h2⟩ a b
     rw [h1, h2, pair_comb]
-    exact int_mul (int_mul (icT iA) iZ) iA' a b
+    exact _root_.GlobalTheory.HL.FrameClass.intM_mul (_root_.GlobalTheory.HL.FrameClass.intM_mul (icT iA) iZ) iA' a b
   · have : S.St ⊓ MulAction.stabilizer S.GLV (S.frameCls S.f S.f') = S.K0 := by
       have key : ∀ h ∈ MulAction.stabilizer S.GLV (S.frameCls S.f S.f'),
           h • Submodule.span L.O (Set.range S.f) ≤ Submodule.span L.O (Set.range S.f) ∧

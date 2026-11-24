@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ProjSpaceHom
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
+public import Mathlib.AlgebraicGeometry.Pullbacks
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -81,8 +84,8 @@ lemma map_eq_pow_mul_of_isHomogeneous {σ R S : Type*} [CommRing R] [CommRing S]
     ψ p = c ^ m * φ p := by
   conv_lhs => rw [p.as_sum]
   conv_rhs => rw [p.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.mul_sum]
+
+  rw [map_sum, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun d hd => ?_
   have hdeg : d.degree = m := by
     have := hp (mem_support_iff.mp hd)

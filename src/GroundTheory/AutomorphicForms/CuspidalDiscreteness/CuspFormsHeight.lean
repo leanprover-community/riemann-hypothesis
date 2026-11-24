@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDiff
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
+public import GroundTheory.AutomorphicForms.ReductionSplitting
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 
 @[expose] public section
 

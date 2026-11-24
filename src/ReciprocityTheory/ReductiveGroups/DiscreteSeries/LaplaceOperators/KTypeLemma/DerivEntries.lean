@@ -1,7 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TensorActionApplyDual
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+public import Mathlib.Analysis.ODE.ExistUnique
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -28,8 +33,8 @@ theorem ode_zero {U : Type*} [AddCommGroup U] [Module ℂ U] [FiniteDimensional 
     intro i
     refine (hG t (b i)).congr_deriv ?_
     have := congrArg (G t) (b.sum_repr (A (b i)))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul] at this
+
+    simp only [map_sum, map_smul, smul_eq_mul] at this
     simp [L, this]
   have hz := ODE_solution_unique_univ (v := fun _ x => L x) (s := fun _ => Set.univ) (K := ‖L‖₊)
     (t₀ := 0) (f := fun s i => G s (b i)) (g := fun _ => 0)
@@ -134,8 +139,8 @@ theorem lc_adX_cons (E : Fin n → Fin n → Module.End ℂ M) (φ : M) (X : Mat
       sum_sub_distrib]
   show _ = C _ + _
   rw [h3]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [adX, adLW, map_sum, map_smul, map_add (f := _), smul_add, sum_add_distrib, h1, h2, lc_adL]
+
+  simp only [adX, adLW, map_sum, map_smul, map_add (f := _), smul_add, sum_add_distrib, h1, h2, lc_adL]
 
 theorem deriv_word (E : Fin n → Fin n → Module.End ℂ M) (φ : M) (X : Matrix (Fin n) (Fin n) ℂ) (s : ℝ)
     (w : List (Fin n × Fin n)) : ∀ l : M →ₗ[ℂ] ℂ, HasDerivAt (fun s => l (wB E φ X s w))
@@ -147,15 +152,15 @@ theorem deriv_word (E : Fin n → Fin n → Module.End ℂ M) (φ : M) (X : Matr
     have e : (fun s => l (wB E φ X s (p :: w))) = fun s => ∑ a, ∑ b,
         cj X s (Matrix.single p.1 p.2 1) a b * (l ∘ₗ E a b) (wB E φ X s w) := by
       funext s
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [wB, actM, map_sum]
+
+      simp [wB, actM, map_sum]
     rw [e]
     refine (HasDerivAt.fun_sum fun a _ => HasDerivAt.fun_sum fun b _ =>
       ((deriv_entries X (Matrix.single p.1 p.2 1) s a b).2.mul (ih (l ∘ₗ E a b)))).congr_deriv ?_
     rw [lc_adX_cons]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [actM, LinearMap.sum_apply, LinearMap.smul_apply, map_add (f := _), map_sum, map_smul,
-      smul_eq_mul, LinearMap.comp_apply, neg_add, ← sum_neg_distrib, ← sum_add_distrib]
+
+    simp only [actM, LinearMap.sum_apply, LinearMap.smul_apply, map_add (f := _), map_sum, map_smul,
+    smul_eq_mul, LinearMap.comp_apply, neg_add, ← sum_neg_distrib, ← sum_add_distrib]
     refine sum_congr rfl fun a _ => sum_congr rfl fun b _ => by ring
 
 theorem adLW_length (a b : Fin n) : ∀ (w w' : List (Fin n × Fin n)), w' ∈ (adLW a b w).support →

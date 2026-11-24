@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.Adjoin.FG
 
 @[expose] public section
 

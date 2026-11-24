@@ -1,8 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.MinorsOnOfDD
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StCut1p
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.UnitaryGroupStructuralFacts
+import Mathlib.Algebra.Order.Star.Real
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.SigIntIntegrable
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HpkMulVecMulVec
 
 @[expose] public section
 

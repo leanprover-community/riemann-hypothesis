@@ -1,6 +1,59 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraMapNormCoeff
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharpolyEqPowOfIrreducible
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraMapNormCoeff
+public import Mathlib.Algebra.Algebra.Spectrum.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
 @[expose] public section
 
@@ -11,49 +64,7 @@ namespace GlobalTheory.CharpolyDvd
 theorem matrix_charpoly_dvd_pow {K : Type} [Field K] {ι : Type} [Fintype ι] [DecidableEq ι]
     (M : Matrix ι ι K) (G : K[X]) (hG : aeval M G = 0) :
     M.charpoly ∣ G ^ Fintype.card ι := by
-  classical
-  by_cases h0 : G = 0
-  · subst h0
-    rcases Nat.eq_zero_or_pos (Fintype.card ι) with h | h
-    · have : M.charpoly = 1 := by
-        apply Polynomial.eq_one_of_monic_natDegree_zero M.charpoly_monic
-        rw [Matrix.charpoly_natDegree_eq_dim, h]
-      rw [this, h, pow_zero]
-    · rw [zero_pow h.ne']
-      exact dvd_zero _
-  let Ω := AlgebraicClosure K
-  let f := algebraMap K Ω
-  rw [← Polynomial.map_dvd_map' f, Polynomial.map_pow, ← Matrix.charpoly_map]
-  set N := M.map f with hNdef
-  have hN : aeval N (G.map f) = 0 := by
-    rw [aeval_map_algebraMap]
-    have := congrArg (AlgHom.mapMatrix (m := ι) (Algebra.ofId K Ω)) hG
-    rw [← aeval_algHom_apply, map_zero] at this
-    exact this
-  have hG0 : G.map f ≠ 0 := Polynomial.map_ne_zero h0
-  have hq0 : G.map f ^ Fintype.card ι ≠ 0 := pow_ne_zero _ hG0
-  refine (IsAlgClosed.splits _).dvd_of_roots_le_roots N.charpoly_monic.ne_zero ?_
-  rw [roots_pow, Multiset.le_iff_count]
-  intro μ
-  rw [Multiset.count_nsmul]
-  by_cases hμ : μ ∈ N.charpoly.roots
-  · have h1 : μ ∈ spectrum Ω N := by
-      rw [Matrix.mem_spectrum_iff_isRoot_charpoly]
-      exact isRoot_of_mem_roots hμ
-    have h2 := spectrum.subset_polynomial_aeval N (G.map f) ⟨μ, h1, rfl⟩
-    rw [hN] at h2
-    have h3 : (G.map f).eval μ = 0 := by
-      by_contra hne
-      exact (spectrum.mem_iff.1 h2)
-        (by simpa using (IsUnit.mk0 _ hne).map (algebraMap Ω (Matrix ι ι Ω)))
-    have h4 : 1 ≤ (G.map f).roots.count μ :=
-      Multiset.one_le_count_iff_mem.2 ((mem_roots hG0).2 h3)
-    calc N.charpoly.roots.count μ ≤ Multiset.card N.charpoly.roots := Multiset.count_le_card _ _
-      _ ≤ N.charpoly.natDegree := card_roots' _
-      _ = Fintype.card ι := Matrix.charpoly_natDegree_eq_dim N
-      _ ≤ Fintype.card ι * (G.map f).roots.count μ := Nat.le_mul_of_pos_right _ h4
-  · rw [Multiset.count_eq_zero.2 hμ]
-    exact Nat.zero_le _
+  apply GlobalTheory.CharpolyPowIrred.charpoly_dvd_pow_of_aeval <;> assumption
 
 theorem charpoly_dvd_pow_finrank {K V : Type} [Field K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] (f : Module.End K V) (G : K[X]) (hG : aeval f G = 0) :
@@ -71,8 +82,6 @@ theorem charpoly_dvd_pow_finrank {K V : Type} [Field K] [AddCommGroup V] [Module
   have := matrix_charpoly_dvd_pow _ G hM
   rwa [LinearMap.charpoly_toMatrix, Fintype.card_fin] at this
 
-theorem main : ∀ {K V : Type} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-    (f : Module.End K V) (G : K[X]), aeval f G = 0 → f.charpoly ∣ G ^ Module.finrank K V :=
-  fun f G hG => charpoly_dvd_pow_finrank f G hG
+alias main := _root_.GlobalTheory.CharpolyDvd.charpoly_dvd_pow_finrank
 
 end GlobalTheory.CharpolyDvd

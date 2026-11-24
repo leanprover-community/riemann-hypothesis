@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Smooth
 
 @[expose] public section

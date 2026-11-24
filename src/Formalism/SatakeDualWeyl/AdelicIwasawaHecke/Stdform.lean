@@ -1,8 +1,58 @@
 module
 
 public import Formalism.SatakeDualWeyl.StatementC
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -146,8 +196,8 @@ theorem stdform_hform_map (σ : E →ₐ[F] E) (τ : E →+* ℂ)
     (hσ : τ.comp (σ : E →+* E) = (starRingEnd ℂ).comp τ) (J : Matrix n n E) (x : n → E) :
     τ (hform (σ : E →+* E) J x x) =
       ∑ i, ∑ j, starRingEnd ℂ (τ (x i)) * (J.map τ) i j * τ (x j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, Matrix.map_apply, AlgHom.coe_toRingHom, stdform_conj σ τ hσ]
+
+  simp only [hform, map_sum, map_mul, Matrix.map_apply, AlgHom.coe_toRingHom, stdform_conj σ τ hσ]
 
 theorem stdform_hform_fixed (σ : E →ₐ[F] E) (τ : E →+* ℂ)
     (hσ : τ.comp (σ : E →+* E) = (starRingEnd ℂ).comp τ) (J : Matrix n n E)
@@ -157,8 +207,8 @@ theorem stdform_hform_fixed (σ : E →ₐ[F] E) (τ : E →+* ℂ)
   have hJ' : ∀ i j, σ (J i j) = J j i := fun i j => by
     have h := congrFun (congrFun hJ j) i
     simpa [cT] using h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, AlgHom.coe_toRingHom, stdform_invol σ τ hσ, hJ']
+
+  simp only [hform, map_sum, map_mul, AlgHom.coe_toRingHom, stdform_invol σ τ hσ, hJ']
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
@@ -204,9 +254,8 @@ theorem stdform_sig_diag {p q : ℕ} (M : Matrix n n ℂ) (e : n ≃ Fin p ⊕ F
     simpa using congrFun hx (e i)
   · rw [← stdform_Q_reindex M e y, stdform_Q_dot, hx, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec,
       Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hP]
-    simp [Jpq, dotProduct, Matrix.fromBlocks_mulVec, Fintype.sum_sum_type, Complex.re_sum, stdform_normSq,
-      re_conj_mul_self_eq_normSq, sub_eq_add_neg, Matrix.neg_mulVec, Matrix.one_mulVec, Complex.normSq_apply,
-      Complex.neg_re, Complex.neg_im, mul_neg, Finset.sum_neg_distrib]
+    simp [Jpq, dotProduct, Matrix.fromBlocks_mulVec, Fintype.sum_sum_type, Complex.re_sum, sub_eq_add_neg, Matrix.neg_mulVec, Matrix.one_mulVec, Complex.normSq_apply,
+      Complex.neg_re, mul_neg, Finset.sum_neg_distrib]
 
 theorem stdform_sig_pos {p : ℕ} (M : Matrix n n ℂ) (hs : HasSignature M p 0) (y : n → ℂ)
     (hy : y ≠ 0) : 0 < stdformQ M y := by
@@ -325,7 +374,7 @@ theorem standard_hermitian_form_definite : Formalism.UG.StdFormDef := by
     ext i j
     by_cases h : i = j
     · subst h; simp
-    · simp [one_apply, h, Ne.symm h]
+    · simp [h, Ne.symm h]
   refine ⟨hH1, ⟨hF, fun ι => ?_⟩, ⟨hF, fun ι => ?_⟩⟩
   · obtain ⟨τ, hτ⟩ := stdform_ext (E := E) ι
     refine (definite_form_signature F E n σ 1 ι τ (hσ τ) hτ hfix hH1 (by simp)).mpr (Or.inl ?_)

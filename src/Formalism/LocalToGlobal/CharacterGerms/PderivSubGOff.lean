@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.BlockMembershipSelfConjCharts
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieMemCDeg
-public import Formalism.LocalToGlobal.CharacterGerms.FinTwoNeOneSub
+public import Formalism.LocalToGlobal.CharacterGerms.GramMatrixMulRight
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -24,7 +23,7 @@ theorem chain_aeval {σ τ : Type} [Fintype σ] (S : MvPolynomial σ C →ₐ[C]
     pderiv ℓ (S p) = ∑ y, S (pderiv y p) * pderiv ℓ (S (X y)) := by
   induction p using MvPolynomial.induction_on with
   | C a =>
-    simp [MvPolynomial.algHom_C, MvPolynomial.pderiv_C]
+    simp [MvPolynomial.algHom_C]
   | add p q hp hq =>
     simp only [map_add (f := _), hp, hq, add_mul, Finset.sum_add_distrib]
   | mul_X p i hp =>
@@ -34,7 +33,7 @@ theorem chain_aeval {σ τ : Type} [Fintype σ] (S : MvPolynomial σ C →ₐ[C]
       by_cases h : i = y
       · subst h
         simp
-      · simp [Pi.single_apply, h]
+      · simp [h]
     conv_lhs => rw [map_mul S p (X i), Derivation.leibniz, hp]
     simp only [key, smul_eq_mul, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, Finset.sum_ite_eq,
       Finset.mem_univ, if_true, Finset.mul_sum, mul_assoc]
@@ -46,8 +45,8 @@ theorem pderiv_subG_off {p : MvPolynomial (Fin N × WVO fun o (_ : Fin 2) => IIs
   refine Finset.sum_eq_zero fun y _ => ?_
   have hX : pderiv ℓ (subG r tau gm plc (X y)) = 0 := by
     unfold subG
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [MvPolynomial.aeval_X, map_sum]
+
+    rw [MvPolynomial.aeval_X, map_sum]
     refine Finset.sum_eq_zero fun col _ => ?_
     rw [Derivation.leibniz, MvPolynomial.pderiv_C, smul_zero, add_zero, MvPolynomial.pderiv_X]
     have hne : (⟨tau y.2.1 y.2.2.2.1, y.2.2.2.2, plc (y.1, col)⟩ : Letter T r n) ≠ ℓ := by
@@ -55,7 +54,7 @@ theorem pderiv_subG_off {p : MvPolynomial (Fin N × WVO fun o (_ : Fin 2) => IIs
       apply h (((eW r tau N) y).1, col)
       rw [← heq]
       rfl
-    simp [Pi.single_apply, hne]
+    simp [hne]
   rw [hX, mul_zero]
 
 private theorem lam_injective_of_tau_injective (inj : Function.Injective fun x : Orb × ZMod 2 => tau x.1 x.2)
@@ -75,8 +74,8 @@ private theorem pderiv_lam_subG_X_eq_ite (inj : Function.Injective fun x : Orb �
     pderiv (lam r tau plc (α0, col0)) (subG r tau gm plc (X y)) =
       if (eW r tau N y).1 = α0 then MvPolynomial.C (gm y.2.1 y.2.2.2.1 col0 y.2.2.1) else 0 := by
   unfold subG
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPolynomial.aeval_X, map_sum]
+
+  rw [MvPolynomial.aeval_X, map_sum]
   have key : ∀ col : Fin 2, pderiv (lam r tau plc (α0, col0))
       (MvPolynomial.C (gm y.2.1 y.2.2.2.1 col y.2.2.1) *
         MvPolynomial.X (⟨tau y.2.1 y.2.2.2.1, y.2.2.2.2, plc (y.1, col)⟩ : Letter T r n)) =
@@ -102,14 +101,13 @@ theorem pderiv_subG_lam (inj : Function.Injective fun x : Orb × ZMod 2 => tau x
   · refine Finset.sum_congr rfl fun g _ => ?_
     rw [pderiv_lam_subG_X_eq_ite plc inj]
     simp only [Equiv.apply_symm_apply]
-    first | rw [if_pos rfl] | skip
     exact mul_comm _ _
   · intro α _ hα
     refine Finset.sum_eq_zero fun g _ => ?_
     rw [pderiv_lam_subG_X_eq_ite plc inj]
     simp only [Equiv.apply_symm_apply]
-    first | rw [if_neg hα] | simp [hα]
-    first | exact mul_zero _ | simp
+    first | rw [if_neg hα]
+    first | exact mul_zero _
   · intro h
     exact absurd (Finset.mem_univ _) h
 

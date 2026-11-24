@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Galois.Notation
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

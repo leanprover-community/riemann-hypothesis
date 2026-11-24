@@ -1,15 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSegreChartFibreSum
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartZeroSet
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartProjFinite
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheetA
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterOsgood
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.MvPolynomial
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 
 @[expose] public section
 
@@ -30,12 +32,7 @@ section Alg
 
 variable {n d : ℕ}
 
-theorem isClosed_zeroSet (J : Ideal (MvPolynomial (Fin n) ℂ)) : IsClosed (zeroSet J) := by
-  have h : zeroSet J = ⋂ q ∈ J, {x : Fin n → ℂ | MvPolynomial.eval x q = 0} := by
-    ext x
-    simp [zeroSet]
-  rw [h]
-  exact isClosed_biInter fun q _ => isClosed_eq (MvPolynomial.continuous_eval q) continuous_const
+alias isClosed_zeroSet := _root_.GroundTheory.Heights₂.Heights.SheetSumMeasurable.isClosed_zeroSet
 
 theorem exists_minimalPrime_of_mem_zeroSet {I : Ideal (MvPolynomial (Fin n) ℂ)} {x : Fin n → ℂ}
     (hx : x ∈ zeroSet I) : ∃ J ∈ I.minimalPrimes, x ∈ zeroSet J := by

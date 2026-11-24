@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.ReproducingKernels.ReproCoreStatement
+public import Formalism.HermitianCurvature.StatementB
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.EquivariantL2Space
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

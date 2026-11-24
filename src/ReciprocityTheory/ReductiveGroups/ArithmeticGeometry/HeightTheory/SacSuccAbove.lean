@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LaTIsPrime
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
 
 @[expose] public section
@@ -84,8 +87,8 @@ theorem sH_rel (hd : d.AxH 𝒜) (c : ι) (i : Fin d.D) :
         (C (ratio (Ω := Ω c) (d.w j c) (d.w (d.jc c) c))) := fun j => (d.algC c _).symm
   have hx : ∀ k, ratio (Ω := Ω c) (d.w ((d.jc c).succAbove k) c) (d.w (d.jc c) c) = d.x c k :=
     fun k => rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [hr, d.sH_eq, ← map_mul, ← map_sum]
+
+  simp_rw [hr, d.sH_eq, ← map_mul, ← map_sum]
   rw [Fin.sum_univ_succAbove _ (d.jc c)]
   simp only [sHp, MvPolynomial.aeval_X, pImg, sac_self, sac_succAbove, ratio_self (hd.w_base c),
     Fin.succ_ne_zero, if_false, hx, MvPolynomial.C_1, mul_one, neg_add_cancel, map_zero]
@@ -124,8 +127,8 @@ theorem evP_sHp (c : ι) (sg : K →+* ℂ) (pt : TVar d.D d.N → ℂ) (hd : d.
           have h1 := heq i'
           rw [Fin.sum_univ_succAbove _ (d.jc c), ratio_self (hd.w_base c), map_one, mul_one] at h1
           simp only [hx] at h1
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp only [evP, map_neg, map_sum, map_mul, eval₂Hom_X', eval₂Hom_C, Sum.elim_inr]
+
+          simp only [evP, map_neg, map_sum, map_mul, eval₂Hom_X', eval₂Hom_C, Sum.elim_inr]
           linear_combination -h1
       · rw [sac_succAbove]
         simp [evP]
@@ -159,8 +162,8 @@ theorem emb_mem_ST (σ : OmS (Ω c) d.D d.N →+* ℂ) (hσ : σ.comp (d.KTtoS h
     rw [RingHom.comp_apply, RingHom.comp_apply, ← IsScalarTower.algebraMap_apply]
     exact h1
   · have h2 := congrArg σ (d.sH_rel hd c i)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero] at h2
+
+    rw [map_sum, map_zero] at h2
     simp only [map_mul, d.emb_sH h c sg pt hpt σ hσ, eval₂_X] at h2
     simpa only [RingHom.comp_apply] using h2
 

@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SecondCountableTopologyOfIsProjOver
 public import Development.AbelianVarietyTheory.Definitions.Divisors.QuasiRegularAlongOfEtale
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LinearIndependentBasisCoords
+public import Development.AbelianVarietyTheory.Definitions.Divisors.NoCommonZeroCombVal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndepBaseChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyHomologyEquiv
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 
 @[expose] public section
 
@@ -150,10 +191,10 @@ theorem linearIndependent_pullChart (h : W ≤ r ⁻¹ᵁ O) (h' : r ⁻¹ᵁ O 
       obtain ⟨d, hd⟩ := exists_chart hB' z
       have hz' := hle hz.1
       have e := congrArg (germ d z (h' hz'.1) hd) hu
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, germ_smul, germ_pullChart, map_zero] at e
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, ger_algX, ger_appLE, ger_resG, map_zero]
+
+      simp only [map_sum, germ_smul, germ_pullChart, map_zero] at e
+
+      simp only [map_sum, map_mul, ger_algX, ger_appLE, map_zero]
       refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) ((Finset.mul_sum _ _ _).symm.trans
         ((congrArg ((r.stalkMap z).hom (tr B (r z) c (a.idx d)).val * ·) e).trans (mul_zero _)))
       rw [mul_left_comm, ← map_mul]
@@ -162,10 +203,10 @@ theorem linearIndependent_pullChart (h : W ≤ r ⁻¹ᵁ O) (h' : r ⁻¹ᵁ O 
   have e₂ := (map_sum Λ _ _).symm.trans ((congrArg Λ e).trans (map_zero Λ))
   have e₃ := congrArg (ger y hyV) ((Finset.sum_congr rfl fun i _ => (hΛ _ _).symm).trans e₂)
   refine ⟨c, hc, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_zero, ger_resG] at e₃
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, germ_smul, map_zero]
+
+  simp only [map_sum, map_mul, map_zero, ger_resG] at e₃
+
+  simp only [map_sum, germ_smul, map_zero]
   refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) e₃
   exact congrArg (· * _) (ger_algX y hyV _).symm
 
@@ -314,10 +355,10 @@ theorem linearIndependent_cval (hq : Etale q) (hB : B.IsLB) (τ : E →+* ℂ) {
     exact congrArg _ ((ev_ofHom hV φ.toRingHom φ.commutes _).symm.trans (ev_res hle hz _))
   have e₂ := congrArg (fun x => ger y hyV (TensorProduct.lid E _ (l.rTensor _ x))) e
   refine ⟨c, hc, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.rTensor_tmul, lid_tmul, Algebra.smul_def, map_mul, map_zero, ger_resG] at e₂
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, germ_smul, map_zero]
+
+  simp only [map_sum, LinearMap.rTensor_tmul, lid_tmul, Algebra.smul_def, map_mul, map_zero, ger_resG] at e₂
+
+  simp only [map_sum, germ_smul, map_zero]
   refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) e₂
   exact congrArg (· * _) (ger_algX y hyV _).symm
 
@@ -345,10 +386,10 @@ theorem csq_pointHerm (τ : E →+* ℂ) {ι : Type*} [Fintype ι] (c : ι → �
     csq (pointHerm hf he φ) τ c g = ∑ᶠ y, (φ τ).nsq (∑ i, c i • cval τ (g i)) y := by
   letI := @Fintype.ofFinite _ (finite_cxPts hf τ)
   rw [finsum_eq_sum_of_fintype, csq, ← Complex.ofReal_re (∑ y, _)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [form_pointHerm, Finset.mul_sum, Weight.nsq, Complex.ofReal_sum, Complex.ofReal_mul,
-    Complex.ofReal_pow, ← Complex.conj_mul', Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul,
-    Finset.sum_mul]
+
+  simp only [form_pointHerm, Finset.mul_sum, Weight.nsq, Complex.ofReal_sum, Complex.ofReal_mul,
+  Complex.ofReal_pow, ← Complex.conj_mul', Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul,
+  Finset.sum_mul]
   refine congrArg _ ?_
   simp only [← Fintype.sum_prod_type']
   exact Fintype.sum_equiv ⟨fun t => (t.2.2, t.2.1, t.1), fun t => (t.2.2, t.2.1, t.1), fun _ => rfl, fun _ => rfl⟩

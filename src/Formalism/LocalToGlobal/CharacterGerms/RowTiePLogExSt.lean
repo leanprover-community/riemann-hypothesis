@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieCuts
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 
 @[expose] public section
 

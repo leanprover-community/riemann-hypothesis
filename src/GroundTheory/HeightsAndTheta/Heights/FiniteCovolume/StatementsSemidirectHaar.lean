@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsLineStabHaar
+public import Mathlib.MeasureTheory.Group.Measure
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Examples
 
 @[expose] public section
 

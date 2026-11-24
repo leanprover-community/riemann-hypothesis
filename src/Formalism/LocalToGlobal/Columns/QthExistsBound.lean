@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TwQLevU
-public import Formalism.LocalToGlobal.Columns.ChainTwZero
+public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
+public import Formalism.LocalToGlobal.Columns.TwQCmp
 
 @[expose] public section
 

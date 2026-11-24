@@ -1,6 +1,15 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCRing
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ChartAway
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Unramified.LocalStructure
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TanSRestrict
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.AlgChart
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLaw
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCSt
 
 @[expose] public section
 
@@ -16,7 +25,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))} [GrpObj G]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem lieBasis_of_etale {S : Type} [CommRing S] [Algebra R S] {n : ℕ} [Algebra (MvPolynomial (Fin n) R) S]
     [IsScalarTower R (MvPolynomial (Fin n) R) S] [Algebra.FormallyEtale (MvPolynomial (Fin n) R) S] (ε' : S →ₐ[R] R)
     (y₀ : sp (R₀ := R) S ⟶ G) (h₀ : spMap ε' ≫ y₀ = 1)

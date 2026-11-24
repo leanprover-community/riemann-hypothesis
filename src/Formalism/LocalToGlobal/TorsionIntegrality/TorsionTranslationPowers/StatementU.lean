@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
+public import Formalism.GaussJetBounds.Statement
 
 @[expose] public section
 

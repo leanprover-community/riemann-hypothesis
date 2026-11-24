@@ -1,8 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.PowSmulLatticeLeWeightLatticeTop
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.CongruenceNoKernelOfHeckeRamified
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.SlopeFormulaOfCharacterFinite
+public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 

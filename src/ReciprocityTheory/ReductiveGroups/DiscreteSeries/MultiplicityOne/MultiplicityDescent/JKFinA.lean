@@ -1,16 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-public import Mathlib.Analysis.InnerProductSpace.TensorProduct
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.WeightedL1OfL2
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.PhiIntegrable
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JSchurG
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JRepro
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalBesselAndTopKernel
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JHaarSF
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JDiagExists
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JDichoWA
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.ContinuousMap.Star
+import Formalism.FormalDegreeBessel.StatementWR
+import Formalism.HermitianCurvature.StatementB
+import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JBeEquivA
 
 @[expose] public section
 

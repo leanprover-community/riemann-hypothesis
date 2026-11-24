@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
+import Mathlib.NumberTheory.NumberField.ClassNumber
+public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 

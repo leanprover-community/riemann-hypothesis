@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.ChainTwOk
+public import Formalism.LocalToGlobal.Columns.AtTOwedC
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

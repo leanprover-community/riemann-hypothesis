@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveSpaceChart
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
+public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Functor
+public import Mathlib.AlgebraicGeometry.Pullbacks
+import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

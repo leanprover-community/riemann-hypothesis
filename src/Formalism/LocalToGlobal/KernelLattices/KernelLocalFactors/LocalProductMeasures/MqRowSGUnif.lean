@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.MuProd
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-public import Formalism.LocalToGlobal.Columns.RowFormsSel
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.Columns.ChainInst
+public import Formalism.LocalToGlobal.Columns.RowFormsSel
+import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
+import Mathlib.RingTheory.Ideal.Norm.RelNorm
 
 @[expose] public section
 

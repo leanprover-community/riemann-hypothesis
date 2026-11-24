@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 @[expose] public section
 

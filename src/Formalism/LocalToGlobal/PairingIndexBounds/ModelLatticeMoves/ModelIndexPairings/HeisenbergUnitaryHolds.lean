@@ -2,6 +2,46 @@ module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.GenModelXi
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,15 +55,8 @@ open Formalism.L2.Th1.H
 section
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem altE_add_left (H : Sesq V) (a a' b : V) : altE H (a + a') b = altE H a b + altE H a' b := by
-  simp [altE, map_add (f := _), LinearMap.add_apply, Complex.add_im]
-
 theorem altE_add_right (H : Sesq V) (a b b' : V) : altE H a (b + b') = altE H a b + altE H a b' := by
   simp [altE, map_add (f := _), Complex.add_im]
-
-theorem opU_smul_fun (H : Sesq V) (x : V) (r : ℂ) (F : V → ℂ) (z : V) :
-    opU H x (fun v => r * F v) z = r * opU H x F z := by
-  simp only [opU]; ring
 
 end
 
@@ -35,7 +68,7 @@ theorem heisenberg_unitary_holds : HeisU := by
     simp only [cU, AddSubgroup.coe_add, altE_add_right, Complex.ofReal_add, ← Complex.exp_add]
     congr 1; ring
   · intro b a a'
-    simp only [cU, AddSubgroup.coe_add, altE_add_left, Complex.ofReal_add, ← Complex.exp_add]
+    simp only [cU, AddSubgroup.coe_add, _root_.Formalism.L2.Th1.H.Inv.altE_add_left, Complex.ofReal_add, ← Complex.exp_add]
     congr 1; ring
   · ext F z
     simp only [wA, wU, LinearMap.coe_mk, AddHom.coe_mk, ZeroMemClass.coe_zero, LinearMap.id_coe, id_eq, hA0, one_mul]
@@ -56,7 +89,7 @@ theorem heisenberg_unitary_holds : HeisU := by
     ext F z
     simp only [wA, wB, wU, cU, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.coe_comp, Function.comp_apply,
       LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul]
-    rw [opU_smul_fun, opU_smul_fun, (opUComm V H hH F z).2 (a : V) (b : V)]
+    rw [_root_.Formalism.L2.Th1.H.Inv.opU_const_mul, _root_.Formalism.L2.Th1.H.Inv.opU_const_mul, (opUComm V H hH F z).2 (a : V) (b : V)]
     ring
 
 theorem self_intersection_holds : InterSelf := by

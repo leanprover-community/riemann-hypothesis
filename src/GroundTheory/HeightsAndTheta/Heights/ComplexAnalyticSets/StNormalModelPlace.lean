@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCurveNormalisationLength
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.EllipticDivisibilitySequence
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib.Algebra.MvPolynomial.Eval
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBridgeA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.BcField
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
 
 @[expose] public section
 

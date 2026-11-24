@@ -1,6 +1,55 @@
 module
 
 public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.PSeries
+public import Mathlib.Analysis.SpecialFunctions.Stirling
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.NumberTheory.ZetaValues
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -11,12 +60,19 @@ namespace Formalism.HermitianLatticeCounting.P
 
 theorem hyperbolicRatioSqLe : ChShSq := by
   intro sh ch hsh hch hc
+  have h1c : (1 + ch) ^ 2 ≤ 2 * (1 + ch ^ 2) := by
+    have hsq := sq_nonneg (ch - 1)
+    rw [sub_sq] at hsq
+    rw [add_sq]
+    linarith
   constructor
   · intro h1
     rw [div_pow, div_le_iff₀ (by positivity)]
-    nlinarith [sq_nonneg (ch - 1), mul_le_mul h1 h1 zero_le_one hsh.le]
+    have hsh2 : (1 : ℝ) ≤ sh ^ 2 := one_le_pow₀ h1
+    linarith
   · intro h1
-    nlinarith [sq_nonneg (ch - 1), mul_pos hsh (sub_pos.mpr h1)]
+    have hsh2 : sh ^ 2 ≤ 1 := by simpa using pow_le_pow_left₀ hsh.le h1.le 2
+    linarith
 
 theorem prodMaxLeProdMaxDiv : PThreshold := by
   intro ι _ x H hH hx
@@ -28,11 +84,6 @@ theorem prodMaxLeProdMaxDiv : PThreshold := by
     have e : H * (x v / H) = x v := by field_simp
     rw [mul_max_of_nonneg _ _ hH0.le, mul_one, e]
     exact max_le_max hH le_rfl
-
-private theorem one_le_finset_prod_of_forall_one_le {ι : Type*} (s : Finset ι) (y : ι → ℝ) (h : ∀ v ∈ s, 1 ≤ y v) :
-    1 ≤ ∏ v ∈ s, y v := by
-  calc (1:ℝ) = ∏ v ∈ s, (1:ℝ) := by simp
-    _ ≤ ∏ v ∈ s, y v := Finset.prod_le_prod₀ (fun _ _ => zero_le_one) h
 
 theorem traceLowerBound : TraceLower := by
   intro ι _ a ha hprod
@@ -49,20 +100,12 @@ theorem traceLowerBound : TraceLower := by
     rwa [le_div_iff₀ hn', one_mul] at this
 
 lemma one_le_finset_prod_real_of_forall_one_le {ι : Type*} (s : Finset ι) (y : ι → ℝ) (h : ∀ v ∈ s, 1 ≤ y v) :
-    1 ≤ ∏ v ∈ s, y v := one_le_finset_prod_of_forall_one_le s y h
-
-private theorem finset_prod_real_mono_of_subset_of_one_le {ι : Type*} (s t : Finset ι) (hst : s ⊆ t) (y : ι → ℝ)
-    (h : ∀ v ∈ t, 1 ≤ y v) : ∏ v ∈ s, y v ≤ ∏ v ∈ t, y v := by
-  classical
-  rw [← Finset.prod_sdiff hst]
-  have h1 : 1 ≤ ∏ v ∈ t \ s, y v :=
-    one_le_finset_prod_of_forall_one_le _ _ (fun v hv => h v (Finset.mem_sdiff.mp hv).1)
-  have h2 : 0 ≤ ∏ v ∈ s, y v :=
-    Finset.prod_nonneg (fun v hv => zero_le_one.trans (h v (hst hv)))
-  exact le_mul_of_one_le_left h2 h1
+    1 ≤ ∏ v ∈ s, y v := Finset.one_le_prod₀ h
 
 lemma finset_prod_le_prod_of_subset_of_one_le {ι : Type*} (s t : Finset ι) (hst : s ⊆ t) (y : ι → ℝ)
-    (h : ∀ v ∈ t, 1 ≤ y v) : ∏ v ∈ s, y v ≤ ∏ v ∈ t, y v := finset_prod_real_mono_of_subset_of_one_le s t hst y h
+    (h : ∀ v ∈ t, 1 ≤ y v) : ∏ v ∈ s, y v ≤ ∏ v ∈ t, y v :=
+  Finset.prod_le_prod_of_subset_of_one_le₀ hst
+    (fun v hv => zero_le_one.trans (h v (hst hv))) (fun v hv _ => h v hv)
 
 private theorem finset_prod_max_one_nonneg {ι : Type*} (s : Finset ι) (y : ι → ℝ) :
     0 ≤ ∏ v ∈ s, max 1 (y v) :=
@@ -90,24 +133,24 @@ theorem prodMaxInvLeSq : LemmaP := by
     rw [e]
     exact le_mul_of_one_le_left (finset_prod_max_one_nonneg _ _) hprod
   have hB : ∏ v ∈ Sg, max 1 (1 / x v) ≤ ∏ v, max 1 (1 / x v) :=
-    finset_prod_real_mono_of_subset_of_one_le _ _ (Finset.subset_univ _) _ (fun v _ => le_max_left _ _)
+    finset_prod_le_prod_of_subset_of_one_le _ _ (Finset.subset_univ _) _ (fun v _ => le_max_left _ _)
   refine ⟨?_, hB.trans hA⟩
   calc ∏ v ∈ Sg, max (x v) (1 / x v) ≤ ∏ v ∈ Sg, (max 1 (x v) * max 1 (1 / x v)) :=
         Finset.prod_le_prod₀ (fun v _ => (hx v).le.trans (le_max_left _ _))
           (fun v _ => max_self_inv_le_max_one_mul_max_one_inv (hx v))
     _ = (∏ v ∈ Sg, max 1 (x v)) * ∏ v ∈ Sg, max 1 (1 / x v) := Finset.prod_mul_distrib
     _ ≤ (∏ v, max 1 (x v)) * ∏ v, max 1 (x v) :=
-        mul_le_mul (finset_prod_real_mono_of_subset_of_one_le _ _ (Finset.subset_univ _) _ (fun v _ => le_max_left _ _))
+        mul_le_mul (finset_prod_le_prod_of_subset_of_one_le _ _ (Finset.subset_univ _) _ (fun v _ => le_max_left _ _))
           (hB.trans hA) (finset_prod_max_one_nonneg _ _) (finset_prod_max_one_nonneg _ _)
     _ = (∏ v, max 1 (x v)) ^ 2 := (sq _).symm
 
 theorem hyperbolicRatioLe : ChShBound := by
   intro sh ch hsh hch hc
-  have hch2 : ch ≤ sh + 1 := by nlinarith
+  have hch2 : ch ≤ sh + 1 := (sq_le_sq₀ hch (by linarith)).mp (by rw [add_sq]; linarith)
   rcases le_or_gt 1 sh with h1 | h1
   · calc (1 + ch) / sh ≤ 3 := by rw [div_le_iff₀ hsh]; linarith
       _ ≤ 3 * max 1 (1 / sh) := by have := le_max_left 1 (1 / sh); linarith
-  · have hc2 : ch ≤ 2 := by nlinarith
+  · have hc2 : ch ≤ 2 := by linarith
     calc (1 + ch) / sh ≤ 3 / sh := div_le_div_of_nonneg_right (by linarith) hsh.le
       _ = 3 * (1 / sh) := by ring
       _ ≤ 3 * max 1 (1 / sh) := by have := le_max_right 1 (1 / sh); linarith
@@ -116,10 +159,11 @@ theorem hyperbolicPairRatioLe : ChShPair := by
   intro sh₁ ch₁ sh₂ ch₂ h1 hc1 e1 h2 hc2 e2
   have key : ∀ sh ch : ℝ, 0 < sh → 0 ≤ ch → ch ^ 2 = sh ^ 2 + 1 → ch * min 1 sh ≤ 2 * sh := by
     intro sh ch hs hc e
+    have hch1 : ch ≤ sh + 1 := (sq_le_sq₀ hc (by linarith)).mp (by rw [add_sq]; linarith)
     rcases le_or_gt 1 sh with h | h
-    · rw [min_eq_left h, mul_one]; nlinarith
+    · rw [min_eq_left h, mul_one]; linarith
     · rw [min_eq_right h.le]
-      have hc2 : ch ≤ 2 := by nlinarith
+      have hc2 : ch ≤ 2 := by linarith
       exact mul_le_mul_of_nonneg_right hc2 hs.le
   have m1 : 0 < min 1 sh₁ := lt_min one_pos h1
   have m2 : 0 < min 1 sh₂ := lt_min one_pos h2
@@ -128,8 +172,11 @@ theorem hyperbolicPairRatioLe : ChShPair := by
   have l1 : min 1 sh₁ ≤ sh₁ := min_le_right _ _
   have l2 : min 1 sh₂ ≤ sh₂ := min_le_right _ _
   rw [div_le_iff₀ (mul_pos h1 h2), div_mul_eq_mul_div, le_div_iff₀ (mul_pos m1 m2)]
-  nlinarith [mul_le_mul_of_nonneg_right k1 m2.le, mul_le_mul_of_nonneg_right k2 m1.le,
-    mul_le_mul_of_nonneg_left l2 h1.le, mul_le_mul_of_nonneg_left l1 h2.le]
+  have h12 : ch₁ * min 1 sh₁ * min 1 sh₂ ≤ (2 * sh₁) * sh₂ :=
+    mul_le_mul k1 l2 m2.le (by positivity)
+  have h21 : ch₂ * min 1 sh₂ * min 1 sh₁ ≤ (2 * sh₂) * sh₁ :=
+    mul_le_mul k2 l1 m1.le (by positivity)
+  linarith
 
 theorem invSqrtPowLeExp : GainSqrt := by
   intro k f b g hk hb hg
@@ -138,7 +185,7 @@ theorem invSqrtPowLeExp : GainSqrt := by
   have hk4pos : (0:ℝ) < (k:ℝ) ^ 4 := pow_pos hkpos 4
   have h8 : ((k:ℝ) ^ 4) ^ 2 ≤ g := by
     calc ((k:ℝ) ^ 4) ^ 2 = (k:ℝ) ^ 8 := by ring
-      _ ≤ ((k:ℝ) * b) ^ 8 := pow_le_pow_left₀ hkpos.le (by nlinarith) 8
+      _ ≤ ((k:ℝ) * b) ^ 8 := pow_le_pow_left₀ hkpos.le (le_mul_of_one_le_right hkpos.le hb) 8
       _ ≤ g := hg
   have hk4 : (k:ℝ) ^ 4 ≤ Real.sqrt g := by
     calc (k:ℝ) ^ 4 = Real.sqrt (((k:ℝ) ^ 4) ^ 2) := (Real.sqrt_sq hk4pos.le).symm
@@ -177,7 +224,8 @@ theorem minBoundSecondZero : MinIIZero := by
   have hbase : (t * T)⁻¹ ≤ CT / (k * g ^ (2 * r + 2)) := by
     rw [le_div_iff₀ (mul_pos hk0 hgp)]
     calc (t * T)⁻¹ * (k * g ^ (2 * r + 2)) ≤ (t * T)⁻¹ * (CT * T * t) :=
-          mul_le_mul_of_nonneg_left (by nlinarith) (inv_nonneg.mpr htT.le)
+          mul_le_mul_of_nonneg_left (hkey.trans (mul_le_mul_of_nonneg_right hCT' ht.le))
+            (inv_nonneg.mpr htT.le)
       _ = CT := by
           rw [show CT * T * t = (t * T) * CT by ring, ← mul_assoc, inv_mul_cancel₀ htT.ne',
             one_mul]
@@ -229,7 +277,9 @@ theorem piPowDivFactorialLt : PiPowFactorial := by
       rw [show m + 1 + 3 = (m + 3) + 1 by ring, Nat.factorial_succ, pow_succ]
       push_cast at ih ⊢
       have hf : (0:ℝ) ≤ ((m + 3).factorial : ℝ) := Nat.cast_nonneg _
-      nlinarith [mul_nonneg (Nat.cast_nonneg m : (0:ℝ) ≤ m) hf]
+      have hm4 : 4 * ((m + 3).factorial : ℝ) ≤ ((m : ℝ) + 3 + 1) * ((m + 3).factorial : ℝ) :=
+        mul_le_mul_of_nonneg_right (by linarith [Nat.cast_nonneg (α := ℝ) m]) hf
+      linarith
   have bound : (3.15:ℝ) ^ (n + 1) ≤ 17 * (n.factorial : ℝ) := by
     rcases (show n = 1 ∨ n = 2 ∨ 3 ≤ n by omega) with h | h | h
     · subst h; norm_num [Nat.factorial]
@@ -300,7 +350,7 @@ lemma volumeFactor_mul_sq_div_le (k r : ℕ) (C G T g v Dr loss' JHS Jop dim : �
           Dr⁻¹ ^ (2 * (k - 2 - r))) := by
   have hVF : 0 ≤ (Real.exp 1 * Real.pi / (k * v)) ^ k * (G / T) ^ k * (g⁻¹ ^ (2 * r + 2)) ^ k := by
     positivity
-  have h1 : JHS ^ 2 / dim ≤ Jop ^ 2 := by rw [div_le_iff₀ hdim]; nlinarith
+  have h1 : JHS ^ 2 / dim ≤ Jop ^ 2 := by rw [div_le_iff₀ hdim]; linarith
   have h2 : Jop ^ 2 ≤ (loss' * (C / (k * v)) ^ (r * (k - 2 - r)) * Dr⁻¹ ^ (k - 2 - r)) ^ 2 :=
     pow_le_pow_left₀ hJop hABS 2
   have h3 : (loss' * (C / (k * v)) ^ (r * (k - 2 - r)) * Dr⁻¹ ^ (k - 2 - r)) ^ 2 =
@@ -363,10 +413,8 @@ theorem minBoundSecond' : MinII' := by
   have hg0 : 0 < g := by linarith
   have hlossp : 0 < loss := lt_of_lt_of_le (pow_pos hDr _) hloss
   have hCTp : 0 < CT := lt_of_lt_of_le (div_pos hT' hT) hCT
-  have heπ : 1 ≤ Real.exp 1 * Real.pi := by
-    have := Real.add_one_le_exp 1
-    have := Real.pi_gt_three
-    nlinarith
+  have heπ : 1 ≤ Real.exp 1 * Real.pi :=
+    one_le_mul_of_one_le_of_one_le (by linarith [Real.add_one_le_exp 1]) (by linarith [Real.pi_gt_three])
   have hratio := hyperbolicRatioSqLe sh ch hsh hch hc
   rcases le_or_gt 1 sh with h1 | h1
   · have hz := minBoundSecondZero k r CT G T T' g v t loss JHS dim hr (by omega) hG hT hT' hg hv ht
@@ -383,7 +431,8 @@ theorem minBoundSecond' : MinII' := by
             (by positivity)
           apply pow_le_pow_left₀ (by positivity)
           apply div_le_div_of_nonneg_right _ (by positivity)
-          nlinarith
+          have := mul_le_mul_of_nonneg_right heπ hCTp.le
+          linarith
   · have h6 : (1 + ch) ^ 2 ≤ 6 := hratio.2 h1
     obtain ⟨q, hq⟩ : ∃ q, q = 1 + ch := ⟨_, rfl⟩
     rw [← hq] at h6 ⊢
@@ -425,64 +474,8 @@ theorem minBoundSecond' : MinII' := by
             CT ^ k * loss := by
           rw [hDD]
           gcongr
-          all_goals first | assumption | positivity | skip
       _ = loss * loss' ^ 2 * (6 * Real.exp 1 * Real.pi * CT / (k * g ^ (2 * r + 2))) ^ k := by
           ring
-
-theorem nondegenerateRowBound : NonDegRow := by
-  intro k f s g v NT G₁ G₂ Xi W count A₁ A₂ l₁ l₂ τ hk hs hg hv hNT hG₁ hG₂ hXi hW hA₁ hA₂ hτ
-    hcount h₁ h₂
-  have hkR : (0:ℝ) < k := by exact_mod_cast (show 0 < k by omega)
-  unfold Formalism.HermitianLatticeCounting.LatticeSumBounds.nTot at h₁ h₂
-  obtain ⟨E, hE⟩ : ∃ E, E = (Real.exp 1 * Real.pi / (k * v)) ^ (k * f) := ⟨_, rfl⟩
-  have hE0 : 0 < E := by rw [hE]; positivity
-  have hE' : E ≠ 0 := hE0.ne'
-  rw [← hE] at h₁ h₂
-  obtain ⟨a, ha⟩ : ∃ x, x = Real.sqrt (G₁ / NT) := ⟨_, rfl⟩
-  obtain ⟨b, hb⟩ : ∃ x, x = Real.sqrt (G₂ / NT) := ⟨_, rfl⟩
-  have ha0 : 0 ≤ a := by rw [ha]; positivity
-  have hb0 : 0 ≤ b := by rw [hb]; positivity
-  have ha2 : a ^ 2 = G₁ / NT := by rw [ha, Real.sq_sqrt (by positivity)]
-  have hb2 : b ^ 2 = G₂ / NT := by rw [hb, Real.sq_sqrt (by positivity)]
-  have hab : Real.sqrt (G₁ * G₂) / NT = a * b := by
-    rw [ha, hb, ← Real.sqrt_mul (div_nonneg hG₁.le hNT.le),
-      show G₁ / NT * (G₂ / NT) = (G₁ * G₂) / NT ^ 2 by ring,
-      Real.sqrt_div (mul_nonneg hG₁.le hG₂.le), Real.sqrt_sq hNT.le]
-  obtain ⟨u₁, hu₁⟩ : ∃ x, x = A₁ * a ^ k := ⟨_, rfl⟩
-  obtain ⟨u₂, hu₂⟩ : ∃ x, x = A₂ * b ^ k := ⟨_, rfl⟩
-  have hu₁0 : 0 ≤ u₁ := by rw [hu₁]; positivity
-  have hu₂0 : 0 ≤ u₂ := by rw [hu₂]; positivity
-  have hl1 : E * u₁ ^ 2 ≤ l₁ * τ := by
-    have e : E * u₁ ^ 2 = E * (G₁ / NT) ^ k * A₁ ^ 2 := by rw [hu₁, ← ha2]; ring
-    rw [e]; exact h₁
-  have hl2 : E * u₂ ^ 2 ≤ l₂ * τ := by
-    have e : E * u₂ ^ 2 = E * (G₂ / NT) ^ k * A₂ ^ 2 := by rw [hu₂, ← hb2]; ring
-    rw [e]; exact h₂
-  have hkey : E * (u₁ * u₂) ≤ Real.sqrt (l₁ * l₂) * τ := by
-    have hprod : (E * (u₁ * u₂)) ^ 2 ≤ (l₁ * τ) * (l₂ * τ) := by
-      have e : (E * (u₁ * u₂)) ^ 2 = (E * u₁ ^ 2) * (E * u₂ ^ 2) := by ring
-      rw [e]
-      exact mul_le_mul hl1 hl2 (by positivity) (le_trans (by positivity) hl1)
-    have h0 : 0 ≤ E * (u₁ * u₂) := by positivity
-    calc E * (u₁ * u₂) = Real.sqrt ((E * (u₁ * u₂)) ^ 2) := (Real.sqrt_sq h0).symm
-      _ ≤ Real.sqrt ((l₁ * τ) * (l₂ * τ)) := Real.sqrt_le_sqrt hprod
-      _ = Real.sqrt (l₁ * l₂ * τ ^ 2) := by congr 1; ring
-      _ = Real.sqrt (l₁ * l₂) * τ := by rw [Real.sqrt_mul' _ (sq_nonneg τ), Real.sqrt_sq hτ]
-  have hid : ((2 / g) ^ ((s - 1) * f) * Real.sqrt (G₁ * G₂) / NT) ^ k * Xi * W * (A₁ * A₂) =
-      (2 / g) ^ ((s - 1) * k * f) * Xi * W * (u₁ * u₂) := by
-    rw [mul_div_assoc, hab, hu₁, hu₂]; ring
-  have hAA : 0 ≤ A₁ * A₂ := mul_nonneg hA₁ hA₂
-  calc count * A₁ * A₂ = count * (A₁ * A₂) := by ring
-    _ ≤ (((2 / g) ^ ((s - 1) * f) * Real.sqrt (G₁ * G₂) / NT) ^ k * Xi * W) * (A₁ * A₂) :=
-        mul_le_mul_of_nonneg_right hcount hAA
-    _ = (2 / g) ^ ((s - 1) * k * f) * Xi * W * (u₁ * u₂) := hid
-    _ = (2 / g) ^ ((s - 1) * k * f) * Xi * W * E⁻¹ * (E * (u₁ * u₂)) := by
-        rw [mul_assoc _ E⁻¹, inv_mul_cancel_left₀ hE']
-    _ ≤ (2 / g) ^ ((s - 1) * k * f) * Xi * W * E⁻¹ * (Real.sqrt (l₁ * l₂) * τ) :=
-        mul_le_mul_of_nonneg_left hkey (by positivity)
-    _ = (2 / g) ^ ((s - 1) * k * f) * (k * v / (Real.exp 1 * Real.pi)) ^ (k * f) *
-          Xi * W * Real.sqrt (l₁ * l₂) * τ := by
-        rw [hE, ← inv_pow, inv_div]; ring
 
 theorem degenerateRowBound : DegRow := by
   intro k f s g v T NT G₁ G₂ K₁ K₂ Xi W count A₁ A₂ lam₁ lam₂ hk hs hg hv hT hNT hG₁ hG₂ hK₁ hK₂
@@ -545,14 +538,29 @@ theorem degenerateRowBound : DegRow := by
           Xi * W * Real.sqrt (lam₁ * lam₂) := by
         rw [hE, ← inv_pow, inv_div]; ring
 
+theorem nondegenerateRowBound : NonDegRow := by
+  intro k f s g v NT G₁ G₂ Xi W count A₁ A₂ l₁ l₂ τ hk hs hg hv hNT hG₁ hG₂ hXi hW hA₁ hA₂ hτ
+    hcount h₁ h₂
+  have hs' : s + 1 - 2 = s - 1 := by omega
+  have h := degenerateRowBound k f (s + 1) g v 1 NT G₁ G₂ 1 1 Xi W count A₁ A₂ (l₁ * τ) (l₂ * τ)
+    hk (by omega) hg hv zero_lt_one hNT hG₁ hG₂ zero_lt_one zero_lt_one hXi hW hA₁ hA₂
+    (by simpa only [hs', inv_one, one_pow, mul_one] using hcount)
+    (by simpa only [inv_one, one_pow, mul_one] using h₁)
+    (by simpa only [inv_one, one_pow, mul_one] using h₂)
+  have hsqrt : Real.sqrt ((l₁ * τ) * (l₂ * τ)) = Real.sqrt (l₁ * l₂) * τ := by
+    rw [show l₁ * τ * (l₂ * τ) = l₁ * l₂ * τ ^ 2 by ring,
+      Real.sqrt_mul' _ (sq_nonneg τ), Real.sqrt_sq hτ]
+  rw [hs', hsqrt, ← mul_assoc] at h
+  simpa only [mul_assoc] using h
+
 theorem prodMinLeOfProdRatio : SmallTerm := by
   intro ι _ sh₁ ch₁ sh₂ ch₂ T T' g hT hT' hg h₁ h₂ hprod
   have hmin : ∀ x : ℝ, 0 < x → min (T' * x ^ 2) T' = T' * (min 1 x) ^ 2 := by
     intro x hx
     rcases le_total x 1 with h | h
-    · have hx2 : x ^ 2 ≤ 1 := by nlinarith
+    · have hx2 : x ^ 2 ≤ 1 := pow_le_one₀ hx.le h
       rw [min_eq_right h, min_eq_left (mul_le_of_le_one_right hT'.le hx2)]
-    · have hx2 : 1 ≤ x ^ 2 := by nlinarith
+    · have hx2 : 1 ≤ x ^ 2 := one_le_pow₀ h
       rw [min_eq_left h, min_eq_right (le_mul_of_one_le_right hT'.le hx2), one_pow, mul_one]
   have hm₁ : ∀ v, 0 < min 1 (sh₁ v) := fun v => lt_min one_pos (h₁ v).1
   have hm₂ : ∀ v, 0 < min 1 (sh₂ v) := fun v => lt_min one_pos (h₂ v).1
@@ -611,8 +619,9 @@ theorem prodMinLeOfProdRatio : SmallTerm := by
   push_neg at hcon
   obtain ⟨ha, hb⟩ := hcon
   have hc0 : 0 ≤ (4 * Real.sqrt (T' / T) * g) ^ Fintype.card ι := by positivity
-  have := mul_lt_mul'' ha hb hc0 hc0
-  nlinarith
+  have hlt := mul_lt_mul'' ha hb hc0 hc0
+  rw [← sq] at hlt
+  linarith
 
 theorem adjugateLastColumnEqCofactor : CofVecAdjugate := by
   intro R _ r Z b
@@ -632,7 +641,9 @@ theorem expSumLe' : ExpSumLe' := by
     calc 3 * A = Real.exp (Real.log (3 * A)) := (Real.exp_log h3A).symm
       _ ≤ Real.exp (x / 6) := Real.exp_le_exp.mpr (by linarith)
   have hpos := Real.exp_pos (-x / 6)
-  have hA' : 3 * A * Real.exp (-x / 6) ≤ 1 := by nlinarith
+  have hA' : 3 * A * Real.exp (-x / 6) ≤ 1 := by
+    have := mul_le_mul_of_nonneg_right h3 hpos.le
+    linarith
   have hsplit : Real.exp (-x / 2) = Real.exp (-x / 3) * Real.exp (-x / 6) := by
     rw [← Real.exp_add]; congr 1; ring
   have t1 : Real.exp (-4 * x) ≤ Real.exp (-x / 2) := Real.exp_le_exp.mpr (by linarith)
@@ -686,7 +697,7 @@ theorem nondegenerateFactorBound : DeNonDegBound := by
   have hsq : Real.sqrt (G₁ * G₂) ≤ HH₁ * HH₂ := by
     calc Real.sqrt (G₁ * G₂) ≤ Real.sqrt (HH₁ * HH₂) :=
           Real.sqrt_le_sqrt (mul_le_mul h₁ h₂ hG₂ (by linarith))
-      _ ≤ Real.sqrt ((HH₁ * HH₂) ^ 2) := Real.sqrt_le_sqrt (by nlinarith)
+      _ ≤ Real.sqrt ((HH₁ * HH₂) ^ 2) := Real.sqrt_le_sqrt (le_self_pow₀ hH (by norm_num))
       _ = HH₁ * HH₂ := Real.sqrt_sq (by linarith)
   have h1 : (2 / g) ^ ((s - 1) * f) * Real.sqrt (G₁ * G₂) ≤ HH₁ * HH₂ := by
     calc (2 / g) ^ ((s - 1) * f) * Real.sqrt (G₁ * G₂) ≤ 1 * (HH₁ * HH₂) :=
@@ -787,71 +798,35 @@ lemma tsum_one_div_add_two_sq : ∑' n : ℕ, 1 / ((n : ℝ) + 2) ^ 2 = Real.pi 
 
 lemma sum_Icc_three_pow_le (x : ℝ) (hx0 : 0 ≤ x) (hx1 : x < 1) (N : ℕ) :
     ∑ j ∈ Finset.Icc 3 N, x ^ j ≤ x ^ 3 / (1 - x) := by
-  have h1x : 0 < 1 - x := by linarith
-  have key : ∀ n, (1 - x) * ∑ j ∈ Finset.Icc 3 (n + 2), x ^ j = x ^ 3 - x ^ (n + 3) := by
-    intro n
-    induction n with
-    | zero =>
-      rw [Finset.Icc_eq_empty (show ¬ 3 ≤ 0 + 2 by norm_num)]
-      simp
-    | succ n ih =>
-      rw [show n + 1 + 2 = (n + 2) + 1 by ring,
-        Finset.sum_Icc_succ_top (show 3 ≤ n + 2 + 1 by omega), mul_add, ih]
-      ring
-  rw [le_div_iff₀ h1x]
-  rcases (show N ≤ 1 ∨ 2 ≤ N by omega) with h | h
-  · rw [Finset.Icc_eq_empty (show ¬ 3 ≤ N by omega), Finset.sum_empty, zero_mul]; positivity
-  · obtain ⟨n, rfl⟩ : ∃ n, N = n + 2 := ⟨N - 2, by omega⟩
-    rw [mul_comm, key n]
-    have : 0 ≤ x ^ (n + 3) := by positivity
-    linarith
+  have hIcc : Finset.Icc 3 N = Finset.Ico 3 (N + 1) := by
+    ext n
+    simp
+  rw [hIcc, Finset.sum_Ico_eq_sum_range]
+  simp_rw [pow_add]
+  rw [← Finset.mul_sum, div_eq_mul_inv, ← tsum_geometric_of_lt_one hx0 hx1]
+  gcongr
+  exact (summable_geometric_of_lt_one hx0 hx1).sum_le_tsum _ (fun n _ => pow_nonneg hx0 n)
 
 private theorem hasSum_inv_succ_sub_inv_succ_succ_eq_one :
     HasSum (fun n : ℕ => 1 / ((n:ℝ) + 1) - 1 / ((n:ℝ) + 2)) 1 := by
-  have hnn : ∀ n : ℕ, 0 ≤ 1 / ((n:ℝ) + 1) - 1 / ((n:ℝ) + 2) := by
-    intro n
-    have h1 : (0:ℝ) < (n:ℝ) + 1 := by positivity
-    rw [sub_nonneg]
-    exact one_div_le_one_div_of_le h1 (by linarith)
-  rw [hasSum_iff_tendsto_nat_of_nonneg hnn]
-  have e : ∀ M : ℕ, ∑ i ∈ Finset.range M, (1 / ((i:ℝ) + 1) - 1 / ((i:ℝ) + 2)) =
-      1 - 1 / ((M:ℝ) + 1) := by
-    intro M
-    induction M with
-    | zero => simp
-    | succ M ih =>
-      rw [Finset.sum_range_succ, ih, Nat.cast_succ, show (M:ℝ) + 1 + 1 = M + 2 by ring]; ring
-  simp_rw [e]
-  have := (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => (1:ℝ)) Filter.atTop (nhds 1)).sub
-    tendsto_one_div_add_atTop_nhds_zero_nat
-  simpa using this
-
-private theorem hasSum_finset_sum_of_forall_hasSum {γ : Type*} [DecidableEq γ] (s : Finset γ) (f : γ → ℕ → ℝ)
-    (a : γ → ℝ) : (∀ i ∈ s, HasSum (f i) (a i)) →
-      HasSum (fun n => ∑ i ∈ s, f i n) (∑ i ∈ s, a i) := by
-  refine Finset.induction_on s ?_ ?_
-  · intro _
-    simp only [Finset.sum_empty]
-    exact hasSum_zero
-  · intro i s hi ih h
-    have e1 : (fun n => ∑ j ∈ insert i s, f j n) = fun n => f i n + ∑ j ∈ s, f j n := by
-      funext n; rw [Finset.sum_insert hi]
-    rw [e1, Finset.sum_insert hi]
-    exact (h i (Finset.mem_insert_self i s)).add (ih (fun j hj => h j (Finset.mem_insert_of_mem hj)))
+  rw [hasSum_iff_tendsto_nat_of_nonneg fun n => sub_nonneg.mpr
+    (one_div_le_one_div_of_le (by positivity) (by linarith))]
+  have hterm (n : ℕ) : (n : ℝ) + 2 = (↑(n + 1) : ℝ) + 1 := by push_cast; ring
+  simp_rw [hterm, Finset.sum_range_sub']
+  simpa using ((tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => (1:ℝ)) Filter.atTop (nhds 1)).sub
+    tendsto_one_div_add_atTop_nhds_zero_nat)
 
 private theorem inv_cube_div_one_sub_inv_eq_of_eq_add_one (a b : ℝ) (ha : a ≠ 0) (hb : b ≠ 0) (hab : b = a + 1) :
     (1 / b) ^ 3 / (1 - 1 / b) = 1 / a - 1 / b - 1 / b ^ 2 := by
-  have e1 : 1 - 1 / b = a / b := by
-    rw [eq_div_iff hb, sub_mul, one_div, inv_mul_cancel₀ hb, hab]; ring
-  have ha' : a * a⁻¹ = 1 := mul_inv_cancel₀ ha
-  have hb' : b * b⁻¹ = 1 := mul_inv_cancel₀ hb
-  rw [e1, div_div_eq_mul_div, div_eq_iff ha]
-  linear_combination (b⁻¹ ^ 2 + 1 + b⁻¹) * hb' - ha' - (b⁻¹ + b⁻¹ ^ 2) * hab
+  subst b
+  field_simp
+  ring_nf
+  exact mul_inv_cancel₀ ha
 
 lemma sum_zetaSeries_sub_one_le (N : ℕ) : ∑ j ∈ Finset.Icc 3 N, (zetaR j - 1) ≤ 0.356 := by
   have hH : HasSum (fun n : ℕ => ∑ j ∈ Finset.Icc 3 N, (1 / ((n:ℝ) + 2)) ^ j)
       (∑ j ∈ Finset.Icc 3 N, (Formalism.HermitianLatticeCounting.LatticeSumBounds.zetaR j - 1)) := by
-    apply hasSum_finset_sum_of_forall_hasSum
+    apply hasSum_sum
     intro j hj
     have hj2 : 2 ≤ j := by simp only [Finset.mem_Icc] at hj; omega
     show HasSum (fun n : ℕ => (1 / ((n:ℝ) + 2)) ^ j) (Formalism.HermitianLatticeCounting.LatticeSumBounds.zetaR j - 1)
@@ -876,7 +851,9 @@ lemma sum_zetaSeries_sub_one_le (N : ℕ) : ∑ j ∈ Finset.Icc 3 N, (zetaR j -
       exact (summable_one_div_add_two_pow 2 le_rfl).hasSum
     exact hasSum_inv_succ_sub_inv_succ_succ_eq_one.sub h2
   have hle := hasSum_le hb hH hS1
-  nlinarith [Real.pi_gt_d4]
+  have hpi2 : (3.1415 : ℝ) ^ 2 < Real.pi ^ 2 :=
+    pow_lt_pow_left₀ Real.pi_gt_d4 (by norm_num) (by norm_num)
+  linarith
 
 lemma one_le_zetaSeries (j : ℕ) (hj : 2 ≤ j) : 1 ≤ zetaR j := by
   rw [zetaSeries_eq_one_add_tsum j hj]
@@ -1061,7 +1038,7 @@ theorem massRatioBound : XiBound := by
       (prod_zetaSeries_le _ hB3) f)
   have hexp : Real.exp 0.356 ^ f * Real.exp 0.356 ^ f ≤ Real.exp (0.72 * f) := by
     rw [← Real.exp_nat_mul, ← Real.exp_add]
-    exact Real.exp_le_exp.mpr (by have := (Nat.cast_nonneg f : (0:ℝ) ≤ f); nlinarith)
+    exact Real.exp_le_exp.mpr (by have := (Nat.cast_nonneg f : (0:ℝ) ≤ f); linarith)
   have key : ∀ (M PA PB LA LB σ : ℝ) (a : ℕ), 0 < PB → 0 < LB → 0 < σ →
       M * (PA ^ f * σ⁻¹ ^ a * LA) / (PB ^ f * σ⁻¹ ^ (a + 2) * LB) =
         M * (PA / PB) ^ f * σ ^ 2 * (LA * LB⁻¹) := by

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.NsmulEqZeroOfNonemptyAddEquiv
+public import GroundTheory.ProfiniteCohomology.CartierDual
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
 
 @[expose] public section

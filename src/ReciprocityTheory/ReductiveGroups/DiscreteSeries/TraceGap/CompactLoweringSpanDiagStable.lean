@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFCoreA
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Unique
+public import Formalism.RealPlaceAnalysis.StatementKT
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

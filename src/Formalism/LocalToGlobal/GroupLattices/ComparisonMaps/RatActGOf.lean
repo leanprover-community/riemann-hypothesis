@@ -43,9 +43,9 @@ theorem natAct_rat {p : ℕ} {O Kf : Type} [CommRing O] [IsDomain O] [IsDiscrete
     | mul_X f x hf =>
       simp only [map_mul, hf]
       congr 1
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [substR, Places.subst, MvPolynomial.aeval_X, map_sum, map_mul, MvPolynomial.map_C,
-        MvPolynomial.map_X, hinv]
+
+      simp only [substR, Places.subst, MvPolynomial.aeval_X, map_sum, map_mul, MvPolynomial.map_C,
+      MvPolynomial.map_X, hinv]
   simp only [natActR, Places.natAct, LinearMap.smul_apply, AlgHom.toLinearMap_apply]
   rw [MvPolynomial.smul_eq_C_mul, MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, hsub]
   congr 2

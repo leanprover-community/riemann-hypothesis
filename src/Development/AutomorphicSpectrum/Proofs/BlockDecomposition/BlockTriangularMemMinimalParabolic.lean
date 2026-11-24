@@ -1,7 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsHermRingRat
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 
 @[expose] public section
 
@@ -75,7 +114,7 @@ theorem levi_core (hc : ∀ x, c (c x) = x) {n r : ℕ} {Jh : Matrix (Fin n) (Fi
     rw [← Matrix.mul_assoc, hyx, Matrix.one_mul]
   have hPXa : P * Xa = 0 := by
     rw [hP]; simp only [Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, hyx, hxx, Matrix.mul_one,
-      Matrix.mul_zero, sub_self, sub_zero]
+      Matrix.mul_zero, sub_self]
   have hPYa : P * Ya = 0 := by
     rw [hP]; simp only [Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, hyy, hxy, Matrix.mul_one,
       Matrix.mul_zero, sub_self, sub_zero]
@@ -84,7 +123,7 @@ theorem levi_core (hc : ∀ x, c (c x) = x) {n r : ℕ} {Jh : Matrix (Fin n) (Fi
       Matrix.one_mul, sub_self, sub_zero]
   have hYdP : Yd * P = 0 := by
     rw [hP]; simp only [Matrix.mul_sub, Matrix.mul_one, ← Matrix.mul_assoc, hyy, hyx, Matrix.zero_mul,
-      Matrix.one_mul, sub_self, sub_zero]
+      Matrix.one_mul, sub_self]
   have hPP : P * P = P := by
     have h : P * P = P * (1 - Xa * Yd - Ya * Xd) := by rw [← hP]
     rw [h, Matrix.mul_sub, Matrix.mul_sub, Matrix.mul_one, ← Matrix.mul_assoc, hPXa, ← Matrix.mul_assoc, hPYa,

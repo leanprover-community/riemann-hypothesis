@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.ReductionDirichlet
+public import GroundTheory.AutomorphicForms.ReductionIwasawa
 public import GroundTheory.AutomorphicForms.ReductionCore
+import GroundTheory.GlobalFields.Adele.Compact
+import GroundTheory.GlobalFields.Adele.Discrete
+import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -262,7 +268,7 @@ theorem exists_siegelSet (n : ℕ) :
     · rw [hu_apply, ← hdUv i]
       calc (e i : 𝔸[K]) * (dU i : 𝔸[K]) * (((dU i)⁻¹ : IdeleGroup K) : 𝔸[K]) *
             (((e i)⁻¹ : IdeleGroup K) : 𝔸[K])
-          = ((e i * dU i * (dU i)⁻¹ * (e i)⁻¹ : IdeleGroup K) : 𝔸[K]) := by simp [Units.val_mul]
+          = ((e i * dU i * (dU i)⁻¹ * (e i)⁻¹ : IdeleGroup K) : 𝔸[K]) := by simp
         _ = 1 := by rw [mul_inv_cancel_right, mul_inv_cancel, Units.val_one]
   obtain ⟨ν, hν, hνD⟩ := exists_unitriangular_mul_mem hDmem n _ huu
   set νGL : GL (Fin n) K := GeneralLinearGroup.mkOfDetNeZero ν

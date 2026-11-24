@@ -1,13 +1,65 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.Integral
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.StrSMul
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.Imports
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.FramePointFiberNonempty
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.LeAdicClosure
+public import Mathlib.RingTheory.Spectrum.Prime.Topology
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.ExistsMemStrSNeZeroOfFrameOk
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.SmoothHomWeightSumNeg
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.FramePointFiberNonempty
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.SmoothCharacterExtendsToOpenSubgroup
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.SmoothDualExact
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.SmoothHomWeightSumNeg
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -18,7 +70,7 @@ private theorem pol2 {Q : Type} [CommRing Q] (x y z : Q) :
       Jmat (R := Q) 2 * (!![x, 0; y, z])ᵀ * Jmat (R := Q) 2 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [Jmat, Matrix.mul_apply, Fin.sum_univ_two, Matrix.transpose_apply]
+    simp [Jmat, Matrix.mul_apply, Fin.sum_univ_two]
 
 private theorem ord2 {H Q : Type} [CommRing Q] (r : H → Matrix (Fin 2) (Fin 2) Q) (ψ : Fin 2 → H → Q) (γ : Q)
     (h : ∀ s, r s = !![ψ 0 s, 0; (ψ 0 s - ψ 1 s) * γ, ψ 1 s]) (g : Fin 2 → H) : ordProd r ψ g = 0 := by
@@ -43,7 +95,7 @@ private theorem hom_ex {G Q : Type} [Group G] [CommRing Q] (p q : G →* Q) (a :
     simp only [h]
     ext i j
     fin_cases i <;> fin_cases j <;>
-      simp [Matrix.mul_apply, Fin.sum_univ_two, map_mul] <;> ring
+      simp [Matrix.mul_apply, Fin.sum_univ_two, map_mul]
 
 private theorem isLocallyConstant_psi_restrict_of_isOpen_ker {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k}
     (hΨ : IsOpen (F.Ψ.ker : Set F.Γ)) : IsLocallyConstant fun g : F.G0 => F.Ψ (g : F.Γ) := by
@@ -79,7 +131,7 @@ private theorem rep_ex {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l]
     rw [mul_comm, ← mul_assoc, inv_mul_cancel, one_mul]
   have a0 : a 1 = 0 := by
     have h1 := hmul 1 1
-    simp only [mul_one, map_one, Units.val_one, one_smul, inv_one] at h1
+    simp only [mul_one] at h1
     simpa using h1
   have hmul' : ∀ g g', a (g * g') = a g * p g' + q g * a g' := by
     intro g g'

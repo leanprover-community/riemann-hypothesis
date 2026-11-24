@@ -1,12 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PtCellUniq
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellInv
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellGeo
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellDef
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellFin
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FlagEEqHyperbolic
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellInv
 
 @[expose] public section
 
@@ -255,7 +253,7 @@ theorem Xa_r (F : FlagG S r T) : F.Xa r = F.X := by
   rw [← Set.image_univ]
   congr 1
   ext i
-  simp [i.isLt]
+  simp
 
 theorem Y_fvec_mem (F : FlagG S r T) {Y : S.V →ₗ[E] S.V} (hY : Y ∈ F.LieN) (ρ : Fin (r + 1)) :
     Y (F.fvec ρ) ∈ F.Xa ρ.val := by
@@ -353,9 +351,9 @@ theorem rel_of_matRel (K : Type) [Field K] [Algebra K E]
     ext a b
     have e := hLie (F.fvec a) (F'.fvec b)
     rw [coefM_expand F hYF a, coefM_expand F' hYF' b] at e
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smulₛₗ, map_smul, LinearMap.sum_apply,
-      LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply] at e
+
+    simp only [map_sum, map_smulₛₗ, LinearMap.sum_apply,
+    LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply] at e
     simp only [Matrix.add_apply, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.zero_apply,
       Zhat, brS]
     rw [← e]

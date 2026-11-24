@@ -1,15 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
-public import Development.AbelianVarietyTheory.Definitions.Divisors.RigidForFan
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsConnK
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianPartConst
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRaynaudTorusWeightFunctionInvariantField
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusInvariantLiftAddInvariantCombination
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LogDerivativePrincipalPolarisationIndependent
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.InvariantFunctionsDescend
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianPartConst
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothRayQuotient
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsGlobalLocDerOfIsCob
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LogDerivativePrincipalPolarisationIndependent
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Divisors.RigidForFan
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -147,9 +184,9 @@ theorem isField_dE (hdd : ∀ a, IsField ⊤ (dd a)) (i : h.J) : IsField (h.W i)
       rw [(hdd a).2.1 W le_top]; ring
     simp only [dE, h₀.2.1 W hW, e]
     ring
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [dE, h₀.2.2 W W' hWW hW, fun a => (hdd a).2.2 W W' hWW le_top, map_add (f := _), map_sum, map_mul,
-      GlobalTheory.KS.GlueDer.res_const]
+
+  · simp only [dE, h₀.2.2 W W' hWW hW, fun a => (hdd a).2.2 W W' hWW le_top, map_add (f := _), map_sum, map_mul,
+    GlobalTheory.KS.GlueDer.res_const]
 
 theorem map_op (e : ℕ) (hν : ν * e = 1) (i : h.J) (O : G.left.Opens) (hO : O ≤ h.W i) {A : Type} [CommRing A]
     (π : Γ(G.left, O) →+* A) (hΘ : ∀ a b, π (constFn G.hom O (h.Θ a b)) = 0) (f : Γ(G.left, O)) :
@@ -161,9 +198,9 @@ theorem map_op (e : ℕ) (hν : ν * e = 1) (i : h.J) (O : G.left.Opens) (hO : O
       rw [← map_natCast (G.hom.appLE ⊤ O (fun _ _ => trivial)).hom,
         ← map_natCast (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom, ← map_mul, ← map_mul, hν, map_one, map_one]
     simpa using congrArg π this
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [op, dE, pE, GlobalTheory.KS.GlueDer.rsT_eq hO, map_add (f := _), map_sub, map_mul, map_sum, hΘ, zero_mul,
-    Finset.sum_const_zero, sub_zero, map_ofNat, map_natCast, map_pow, GlobalTheory.KS.GlueDer.res_const]
+
+  simp only [op, dE, pE, GlobalTheory.KS.GlueDer.rsT_eq hO, map_add (f := _), map_sub, map_mul, map_sum, hΘ, zero_mul,
+  Finset.sum_const_zero, sub_zero, map_ofNat, map_natCast, map_pow, GlobalTheory.KS.GlueDer.res_const]
   linear_combination (-2 * ∑ a, π (constFn G.hom O (h.u a)) * π (dd a O f) -
     2 * (e : A) * π (resG G.left hO (h.p' i)) * π f) * h1
 

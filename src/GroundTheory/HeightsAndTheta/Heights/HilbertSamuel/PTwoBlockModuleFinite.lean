@@ -1,13 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockModuleFinite
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockCycleExpand
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockFnField
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockCycleExpand
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockFnField
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsHomogeneousGrL
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.TwoLeKrullDimOfRelevantPrime
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRed
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRed
 
 @[expose] public section
 
@@ -31,8 +35,8 @@ theorem cone_X (x x' : Ix κ → Ω) (p : Σ k, FinTwoTypeFamily κ k) :
 
 theorem cone_num (x x' : Ix κ → Ω) (l : Ix κ → ℤ) :
     mConeMap (pair x x') (twoBlockNum l) = MvPolynomial.C (∑ j, (l j : Ω) * x' j) * X 1 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [twoBlockNum, map_sum, map_mul, Finset.sum_mul]
+
+  simp only [twoBlockNum, map_sum, map_mul, Finset.sum_mul]
   refine Finset.sum_congr rfl fun j _ => ?_
   obtain ⟨⟨⟩, j⟩ := j
   rw [cone_X]
@@ -41,8 +45,8 @@ theorem cone_num (x x' : Ix κ → Ω) (l : Ix κ → ℤ) :
 theorem coneMap_firstBlock_linearForm (x x' : Ix κ → Ω) (n : Ix κ → ℤ) :
     mConeMap (pair x x') (∑ i : Ix κ, MvPolynomial.C (n i) * (X ⟨0, i.2⟩ : MRing (FinTwoTypeFamily κ))) =
       MvPolynomial.C (∑ i, (n i : Ω) * x i) * X 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, Finset.sum_mul]
+
+  simp only [map_sum, map_mul, Finset.sum_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   obtain ⟨⟨⟩, i⟩ := i
   rw [cone_X]

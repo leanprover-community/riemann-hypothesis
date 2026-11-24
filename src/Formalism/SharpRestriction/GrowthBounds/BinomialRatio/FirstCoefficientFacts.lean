@@ -1,8 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.RankDefs
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.OtherStart
+public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FamilyFourthBound
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
+public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.OtherStart
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -57,11 +98,10 @@ theorem four_fac {e1 e2 x z w : ℝ} (h1 : 0 ≤ e1) (h1' : e1 ≤ 1) (h2 : 0 �
     have a : (1 - e1) * (1 - e2) ≤ 1 := by nlinarith
     have b : 0 ≤ (1 - e1) * (1 - e2) := mul_nonneg (by linarith) (by linarith)
     nlinarith
-  have hPlow : 1 - e1 - e2 - x ≤ (1 - e1) * (1 - e2) * (1 - x) := by
-    nlinarith [mul_nonneg (mul_nonneg h1 h2) (sub_nonneg.2 hx'), mul_nonneg h1 hx, mul_nonneg h2 hx]
-  have hw' : (1 - e1) * (1 - e2) * (1 - x) * (1 - z) ≤ (1 - e1) * (1 - e2) * (1 - x) * w :=
-    mul_le_mul_of_nonneg_left hw hP0
-  nlinarith [mul_nonneg (sub_nonneg.2 hP1) hz]
+  nlinarith [mul_le_mul_of_nonneg_left hw hP0,
+    mul_nonneg (mul_nonneg h1 h2) (sub_nonneg.2 hx'),
+    mul_nonneg h1 hx, mul_nonneg h2 hx,
+    mul_nonneg (sub_nonneg.2 hP1) hz]
 
 theorem symDim_toNat (m : ℕ) (A : ℤ) (hA : 0 ≤ A) : symDim (m + 1) A = sd m A.toNat := by
   unfold symDim sd
@@ -78,7 +118,7 @@ theorem prod_letters {n' : ℕ} (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (f
   ring
 
 
-set_option maxHeartbeats 800000 in
+
 theorem seg_num {k Q a b' Y E0 N1 La m cm A0 mN e1 e2 : ℝ} (hk5 : 5 ≤ k) (hQ1 : 1 ≤ Q) (hb : 0 < b') (hba : b' ≤ a)
     (hY1 : 1 ≤ Y) (hE : 0 ≤ E0) (hN1 : 1 ≤ N1) (hLa1 : 1 ≤ La) (hkm : k = mN + 1) (hm4 : 1 ≤ mN)
     (hA0lo : a / (2 * Q) ≤ A0) (hkQ : k ^ 3 * Q ≤ b') (hm : 0 ≤ m) (hcm : cm < m + 1) (hcm0 : 0 ≤ cm) (t1 : 0 < e1)
@@ -148,7 +188,7 @@ theorem seg_num {k Q a b' Y E0 N1 La m cm A0 mN e1 e2 : ℝ} (hk5 : 5 ≤ k) (hQ
     have h2 : S * (m + 5) * a = k * Q * (m + 5) := by rw [← hSa]; ring
     linarith [mul_nonneg hkQ.le (sub_nonneg.2 hNk)]
   have hkr : k * ((2 * a / (k * Y) + E0 + Q) / a) = 2 * (1 / Y) + k * E0 / a + S := by
-    rw [hS]; field_simp; try ring
+    rw [hS]; field_simp
   have hmr : mN * ((2 * a / (k * Y) + E0 + Q) / a) ≤ k * ((2 * a / (k * Y) + E0 + Q) / a) :=
     mul_le_mul_of_nonneg_right hmNk hr0
   have hSm : 0 ≤ S * m := mul_nonneg hS0 hm

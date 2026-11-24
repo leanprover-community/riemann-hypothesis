@@ -1,9 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsStrict
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationSeriesTermsNestStatement
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaConstantTermRepresentativeDependenceStatement
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationSeriesTermsNest
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaConstantTermRepresentativeDependence
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.Degenerations.NotAllMatchRankZero
 
 @[expose] public section
 
@@ -38,24 +77,6 @@ open scoped CategoryTheory.Obj BigOperators in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {O : Type} [CommRing O] {N : _root_.GlobalTheory.Ex.NumD O} {La : Type} [AddCommGroup La] {EF : LinearMap.BilinForm ℤ La}
   {ζ : ℕ → Oˣ} {lab : ∀ k : ℕ, La → N.QT k} in
-private theorem qEq_mul' (N : _root_.GlobalTheory.Ex.NumD O) {k : ℕ}
-    {p p' q q' : N.QT k} (h : N.QEq p p')
-    (h' : N.QEq q q') :
-    N.QEq (p * q) (p' * q') := by
-  unfold _root_.GlobalTheory.Ex.NumD.QEq at *
-  obtain ⟨z, hz1, hz2⟩ := h
-  obtain ⟨z', hz1', hz2'⟩ := h'
-  refine ⟨z + z', ?_, ?_⟩
-  · simp only [Subgroup.coe_mul, Prod.fst_mul, toAdd_mul, hz1, hz1', smul_add]
-    abel
-  · simp only [Subgroup.coe_mul, Prod.snd_mul, hz2, hz2', N.io_add]
-    ac_rfl
-
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField in
-open scoped CategoryTheory.Obj BigOperators in
-attribute [local instance] Over.cartesianMonoidalCategory in
-variable {O : Type} [CommRing O] {N : _root_.GlobalTheory.Ex.NumD O} {La : Type} [AddCommGroup La] {EF : LinearMap.BilinForm ℤ La}
-  {ζ : ℕ → Oˣ} {lab : ∀ k : ℕ, La → N.QT k} in
 private theorem qEq_label_pow_nsmul
     (hL : _root_.GlobalTheory.ModelData.Labels N EF ζ lab) {k : ℕ} (hk : 0 < k) (x : La) :
     ∀ d : ℕ, 1 ≤ d → N.QEq ((lab k x) ^ d) (lab k (d • x)) := by
@@ -66,7 +87,7 @@ private theorem qEq_label_pow_nsmul
     rw [pow_succ, succ_nsmul]
     unfold _root_.GlobalTheory.ModelData.Labels at hL
     exact (N.qEq_equivalence k).trans
-      (qEq_mul' N ih ((N.qEq_equivalence k).refl _)) (hL.1 k hk _ _)
+      (_root_.GlobalTheory.Ex.TateInh.qEq_mul N ih ((N.qEq_equivalence k).refl _)) (hL.1 k hk _ _)
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField in
 open scoped CategoryTheory.Obj BigOperators in

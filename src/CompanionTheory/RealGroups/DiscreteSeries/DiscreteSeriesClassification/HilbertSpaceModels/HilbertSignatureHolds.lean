@@ -1,7 +1,10 @@
 module
 
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.HilbertSpaceModels.StepSqInt
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Exists
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IrredA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOneA
 
 @[expose] public section
 

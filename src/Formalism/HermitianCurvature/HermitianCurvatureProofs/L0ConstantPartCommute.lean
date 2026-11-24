@@ -1,10 +1,58 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommuteLevelZeroElement
 public import Formalism.HermitianCurvature.StatementFr
-public import Formalism.YangianSpanCharacter.YangianRelationFirst
+public import Mathlib.CategoryTheory.Category.Basic
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuasiDeterminantFromEntries
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleGD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleSS
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuasiDeterminantFromEntries
+public import Formalism.YangianSpanCharacter.YangianRTTProofs.DiagonalEntryEqOfModularRelation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -29,8 +77,7 @@ lemma io_one : (io (1 : A) : SlopeTestRemainingChoices S A) = 1 := by
   exact map_one _
 
 lemma io_comm {x y : A} (h : Commute x y) : Commute (io x : SlopeTestRemainingChoices S A) (io y) := by
-  unfold Commute SemiconjBy
-  rw [← io_mul, ← io_mul, h.eq]
+  simp only [Commute, SemiconjBy, ← io_mul, h.eq]
 
 lemma io_star [StarRing A] (x : A) : star (io x : SlopeTestRemainingChoices S A) = io (star x) := by
   unfold io
@@ -54,23 +101,17 @@ lemma zc {x y : A} (hx : x ∈ zfns L) (hy : y ∈ zfns L) : Commute x y :=
   L.fns_comm x (zsub L hx) y (zsub L hy)
 
 lemma mζ : L.ζ ∈ zfns L := by
-  unfold zfns
-  simp
+  simp [zfns]
 lemma mζi : L.ζi ∈ zfns L := by
-  unfold zfns
-  simp
+  simp [zfns]
 lemma mζb : L.ζb ∈ zfns L := by
-  unfold zfns
-  simp
+  simp [zfns]
 lemma mζbi : L.ζbi ∈ zfns L := by
-  unfold zfns
-  simp
+  simp [zfns]
 lemma mGG : L.GG ∈ zfns L := by
-  unfold zfns
-  simp
+  simp [zfns]
 lemma mGGi : L.GGi ∈ zfns L := by
-  unfold zfns
-  simp
+  simp [zfns]
 
 lemma l0_constant_part_commute (Y : ℂ) {g : A} (hg : g ∈ zfns L) :
     Commute (algebraMap ℂ A (Y + 1 / 2) * (L.ζb * L.GGi)) g :=
@@ -156,8 +197,7 @@ lemma wt_star (hL : IsStarLevel L) : star (wt L : SlopeTestRemainingChoices S A)
     ((zc L (mGGi L) (mζ L)).mul_right (zc L (mGGi L) (mζb L))).eq]
 
 lemma c_wt (hf : IsFrame L f) : Commute f.c (wt L) := by
-  unfold wt; rw [io_mul, io_mul]
-  exact ((hf.c_fn _ (mζ L)).mul_right (hf.c_fn _ (mζb L))).mul_right (hf.c_fn _ (mGGi L))
+  simpa [wt, io_mul] using ((hf.c_fn _ (mζ L)).mul_right (hf.c_fn _ (mζb L))).mul_right (hf.c_fn _ (mGGi L))
 
 lemma d_star (hL : IsStarLevel L) (hf : IsFrame L f) : star (f.d L) = f.d L := by
   unfold FrameData.d
@@ -187,28 +227,12 @@ lemma cancel2 {B : Type} [Ring B] {P Pi Q Qi X Y : B} (h1 : Pi * P = 1) (h2 : Q 
     (h : P * X * Q = P * Y * Q) : X = Y := by
   calc X = Pi * P * X * (Q * Qi) := by rw [h1, h2, one_mul, mul_one]
     _ = Pi * (P * X * Q) * Qi := by noncomm_ring
-    _ = Pi * (P * Y * Q) * Qi := by rw [h]
-    _ = Pi * P * Y * (Q * Qi) := by noncomm_ring
+    _ = Pi * P * Y * (Q * Qi) := by rw [h]; noncomm_ring
     _ = Y := by rw [h1, h2, one_mul, mul_one]
 
 lemma hat_herm (hf : IsFrame L f) {Z : ℂ} (hZ : Z ∈ f.reg) (hr : star Z = Z) (i j : Fin 2) :
     star (f.d L * f.hatT Z i j) = f.d L * f.hatT Z j i := by
-  have h0 := hf.module.herm Z hZ hr
-  have hh : ∀ i j, star (f.RR * f.TT Z i j) = f.RR * f.TT Z j i := by
-    intro i j
-    have := congrFun (congrFun h0 j) i
-    simpa [d0, Matrix.conjTranspose_apply, Matrix.diagonal_mul] using this
-  have hF : ∀ i j, f.RR * f.TT Z i j = star f.F * (f.d L * f.hatT Z i j) * f.F := by
-    intro i j
-    rw [hat_apply hZ, hf.form]
-    calc star f.F * f.d L * f.F * f.TT Z i j
-        = star f.F * f.d L * f.F * f.TT Z i j * (f.Fi * f.F) := by rw [hf.Fi_F, mul_one]
-      _ = _ := by simp only [mul_assoc]
-  have sF : star f.Fi * star f.F = 1 := by rw [← star_mul, hf.F_Fi, star_one]
-  refine cancel2 sF hf.F_Fi ?_
-  have := hh i j
-  rw [hF i j, hF j i, star_mul, star_mul, star_star, ← mul_assoc] at this
-  exact this
+  apply Formalism.FourierDecayAlt.P.Fr9.hat_herm <;> assumption
 
 end Frame
 

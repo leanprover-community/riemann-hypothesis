@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.URepBasic
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -34,7 +39,6 @@ theorem IsIrreducible.spectrum_subsingleton (hπ : IsIrreducible (π := π)) {A 
   · exact this hb ha (Ne.symm hab) (lt_of_le_of_ne (not_lt.mp hlt) (Ne.symm hab))
   set c := (a + b) / 2 with hc
   have hcb : c < b := by rw [hc]; linarith
-  have hac : a < c := by rw [hc]; linarith
   let f : ℝ → ℝ := fun x => max (x - c) 0
   let g : ℝ → ℝ := fun x => max (c - x) 0
   have hfc : Continuous f := by fun_prop

@@ -1,7 +1,48 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.FtFockZeroLeft
+public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.FTDefs
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.OtherStart
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.ContravariantIsotypicOrthogonal
 
 @[expose] public section
 
@@ -210,16 +251,6 @@ private theorem false_of_cdist_between_both_ways {n' : ℕ} (a b x : Fin n') (h1
   rw [cdist_eq_ite, cdist_eq_ite] at h2 h4
   split_ifs at h1 h2 h3 h4 <;> omega
 
-private theorem posAdd_cdist_eq_self' {n' : ℕ} (a s : Fin n') : posAdd a (cdist a s) = s := by
-  apply Fin.ext
-  have ha := a.isLt
-  have hs := s.isLt
-  show (a.val + cdist a s) % n' = s.val
-  rw [cdist_eq_ite]
-  split_ifs with h
-  · rw [show a.val + (s.val - a.val) = s.val by omega, Nat.mod_eq_of_lt hs]
-  · rw [show a.val + (s.val + n' - a.val) = s.val + n' by omega, Nat.add_mod_right, Nat.mod_eq_of_lt hs]
-
 theorem segVars_disj (X : Loc) (j j' : Fin (numSeg X.TT)) (h : j ≠ j') : Disjoint (segVars X j) (segVars X j') := by
   classical
   have hnodup : (evenTops X.TT).Nodup := Finset.sort_nodup _ _
@@ -262,7 +293,7 @@ theorem segVars_disj (X : Loc) (j j' : Fin (numSeg X.TT)) (h : j ≠ j') : Disjo
     obtain ⟨s, hs, hsd⟩ := hd
     have hps : segPos X.TT a i = s := by
       show posAdd (segStart X.TT a) d = s
-      rw [← hsd, posAdd_cdist_eq_self']
+      rw [← hsd, _root_.Formalism.MainNotions.ColumnSystems.Pf.posAdd_cdist]
     rw [hps]
     exact ⟨(Finset.mem_filter.1 hs).2.2.1, (Finset.mem_filter.1 hs).2.2.2⟩
   have hsm : ∀ c : Fin (numSeg X.TT), segStart X.TT c ∈ X.TT ∧ Even (segStart X.TT c).val := by

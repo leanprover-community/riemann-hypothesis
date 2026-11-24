@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.RecTie
-public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksW
 public import Formalism.LocalRingCardinality.DataRRMetric
 public import Formalism.LocalToGlobal.IndefiniteReal.ConjSubConjSub

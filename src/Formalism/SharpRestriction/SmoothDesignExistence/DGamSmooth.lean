@@ -1,6 +1,42 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,22 +63,7 @@ theorem Closed.of_class {𝒞 : FamClass} {P : ∀ {eps : ℝ}, FamP eps → ℝ
 
 theorem Closed.large {𝒞 : FamClass} {P Q : ∀ {eps : ℝ}, FamP eps → ℝ → Prop} (K0 : TransportedAlt) (hP : Closed 𝒞 P)
     (h : ∀ {eps : ℝ} (Fm : FamP eps) (CH : ℝ), Fm.Large K0 CH → P Fm CH → Q Fm CH) : Closed 𝒞 Q := by
-  obtain ⟨e1, he1, h1⟩ := hP
-  refine ⟨e1, he1, fun eps h0 hle => ?_⟩
-  obtain ⟨K1, hK1⟩ := h1 eps h0 hle
-  refine ⟨⟨max K0.pre K1.pre, fun l => max (K0.t l) (K1.t l), fun l => max (K0.mid l) (K1.mid l),
-    fun l => max (K0.last l) (K1.last l)⟩, fun Fm CH hc hL => ?_⟩
-  unfold FamP.Large at hL
-  obtain ⟨hA, -, hC, hD⟩ := hL
-  have hL0 : Fm.Large K0 CH := by
-    unfold FamP.Large
-    exact ⟨fun c hc' => le_trans (le_max_left _ _) (hA c hc'), trivial,
-      fun c hc' => le_trans (le_max_left _ _) (hC c hc'), fun c hc' => le_trans (le_max_left _ _) (hD c hc')⟩
-  have hL1 : Fm.Large K1 CH := by
-    unfold FamP.Large
-    exact ⟨fun c hc' => le_trans (le_max_right _ _) (hA c hc'), trivial,
-      fun c hc' => le_trans (le_max_right _ _) (hC c hc'), fun c hc' => le_trans (le_max_right _ _) (hD c hc')⟩
-  exact h Fm CH hL0 (hK1 Fm CH hc hL1)
+  apply Formalism.MainNotions.S.closed_of_large <;> assumption
 
 end Formalism.MainNotions.Pk
 

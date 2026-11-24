@@ -1,6 +1,48 @@
 module
 
 public import Development.EtaleCohomology.KummerTheory.AdicLimPf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.CategoryTheory.CofilteredSystem
+public import Mathlib.CategoryTheory.Functor.OfSequence
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -72,8 +114,8 @@ theorem AdicFin_of : LateralTheory.KummerTheory.AdicFin := by
       ∑ t, ZMod.castHom (pow_dvd_pow l (Nat.le_succ k)) (ZMod (l ^ k)) (a.1 t) • LateralTheory.KummerTheory.lev l (g t) k := by
     intro k a
     refine (lev_red l E n i k x).symm.trans ((congrArg _ a.2).trans ?_)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun t _ => ?_
     rw [red_smul _ _ _ (pow_dvd_pow l (Nat.le_succ k)), lev_red]
   let f : ∀ k, T (k + 1) ⟶ T k := fun k => TypeCat.ofHom fun a =>
@@ -87,8 +129,8 @@ theorem AdicFin_of : LateralTheory.KummerTheory.AdicFin := by
     obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ_[l]).mp hm
     refine ⟨⟨fun t => PadicInt.toZModPow j.unop (c t), ?_⟩⟩
     change levHom l E n i _ (_ + _) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), map_sum, show levHom l E n i j.unop (((l : ℤ_[l]) ^ j.unop) • y) = 0 from lev_pow_smul l E n i _ y, add_zero]
+
+    rw [map_add (f := _), map_sum, show levHom l E n i j.unop (((l : ℤ_[l]) ^ j.unop) • y) = 0 from lev_pow_smul l E n i _ y, add_zero]
     rfl
   obtain ⟨sec, hsec⟩ := nonempty_sections_of_finite_inverse_system F
   let A : ∀ k, T k := fun k => sec (Opposite.op k)
@@ -113,8 +155,8 @@ theorem AdicFin_of : LateralTheory.KummerTheory.AdicFin := by
     rw [PadicInt.toZModPow_ofIntSeq_of_pow_dvd_sub _ _ (hdiv t), Int.cast_natCast, ZMod.natCast_zmod_val]
   refine (Submodule.mem_span_range_iff_exists_fun ℤ_[l]).mpr ⟨α, Subtype.ext (funext fun k => ?_)⟩
   change levHom l E n i k (∑ t, α t • g t) = LateralTheory.KummerTheory.lev l x k
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, (A k).2]
+
+  rw [map_sum, (A k).2]
   refine Finset.sum_congr rfl fun t _ => ?_
   change LateralTheory.KummerTheory.lev l (α t • g t) k = _
   rw [lev_smul, hα]

@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockParabolicUnitriangularSubgroupsGLnPrimeFiel
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -43,24 +84,7 @@ theorem entN_mul {N : ℕ} (M M' : Mt g N) (hM : IsUniUp M) (hM' : IsUniUp M') (
   · simp [entN, hj]
 
 theorem uni_mul {N : ℕ} (M M' : Mt g N) (hM : IsUniUp M) (hM' : IsUniUp M') : IsUniUp (M * M') := by
-  intro a b
-  constructor
-  · intro hba
-    rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun c _ => ?_
-    rcases lt_or_ge c a with hc | hc
-    · rw [(hM a c).1 hc, zero_mul]
-    · rw [(hM' c b).1 (lt_of_lt_of_le hba hc), mul_zero]
-  · intro hab
-    subst hab
-    rw [Matrix.mul_apply, Finset.sum_eq_single a]
-    · rw [(hM a a).2 rfl, (hM' a a).2 rfl, one_mul]
-    · intro c _ hca
-      rcases lt_or_gt_of_ne hca with hc | hc
-      · rw [(hM a c).1 hc, zero_mul]
-      · rw [(hM' c a).1 hc, mul_zero]
-    · intro hn
-      exact absurd (Finset.mem_univ a) hn
+  apply GlobalTheory.GLm.ParBasic.isUniUp_mul <;> assumption
 
 theorem uni_one {N : ℕ} : IsUniUp (1 : Mt g N) := by
   intro a b
@@ -367,8 +391,6 @@ end
 section
 open GlobalTheory.GLq Formalism.MainNotions.ArithmeticCylinders Polynomial
 open scoped Classical
-theorem _root_.GlobalTheory.Adopt.whittakerJacquetIdempotents_properties_primeField : ∀ (g : ℕ) [Fact g.Prime] (N k s : ℕ) (ψ : AddChar (ZMod g) ℂ), eU g N ψ * eU g N ψ = eU g N ψ ∧ (eU g N ψ).coeff 1 = ((g : ℂ) ^ (N * (N - 1) / 2))⁻¹ ∧ (N = k + 2 * s + 1 → eJ g N k s ψ * eJ g N k s ψ = eJ g N k s ψ ∧ (eJ g N k s ψ).coeff 1 = (g : ℂ) ^ k * ((g : ℂ) ^ (N * (N - 1) / 2))⁻¹) ∧ (k < N → eJ' g N k ψ * eJ' g N k ψ = eJ' g N k ψ ∧ (eJ' g N k ψ).coeff 1 = (g : ℂ) ^ k * ((g : ℂ) ^ (N * (N - 1) / 2))⁻¹) := by
-  intro g _ N k s ψ
-  exact CompanionTheory.Member.whittakerJacquetIdempotents_idem_coeff_one g N k s ψ
+alias _root_.GlobalTheory.Adopt.whittakerJacquetIdempotents_properties_primeField := _root_.CompanionTheory.Member.whittakerJacquetIdempotents_idem_coeff_one
 
 end

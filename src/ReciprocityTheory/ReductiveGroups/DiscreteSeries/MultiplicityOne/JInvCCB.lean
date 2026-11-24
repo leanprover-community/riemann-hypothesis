@@ -1,5 +1,10 @@
 module
 
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDefs
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCCA
 
 @[expose] public section

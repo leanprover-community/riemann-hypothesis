@@ -1,6 +1,48 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.AffineSplittingSpan.SpanCup
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.AffineSplittingSpan.Transfer
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -32,12 +74,6 @@ theorem dc_eq {m : ℕ} (F : (Fin (m + 1) → Y) → ℝ) (y : Fin (m + 2) → Y
     dc F y = ∑ i : Fin (m + 2), (-1 : ℝ) ^ (i : ℕ) * F (fun l => y (fc i l)) := by
   simp only [dc, succAbove_eq_fc]
 
-theorem dc_smul {m : ℕ} (r : ℝ) (F : (Fin (m + 1) → Y) → ℝ) : dc (r • F) = r • dc F := by
-  funext y; simp [dc, Finset.mul_sum]; refine Finset.sum_congr rfl fun i _ => by ring
-
-theorem dc_sub {m : ℕ} (F G : (Fin (m + 1) → Y) → ℝ) : dc (F - G) = dc F - dc G := by
-  funext y; simp [dc, mul_sub, Finset.sum_sub_distrib]
-
 private theorem fc_fc_eq_fc_fc_pred_of_lt {n : ℕ} (i j : ℕ) (hji : j < i) (l : Fin n) :
     (fc i (fc j l) : Fin (n + 2)) = fc j (fc (i - 1) l) := by
   apply Fin.ext
@@ -45,47 +81,7 @@ private theorem fc_fc_eq_fc_fc_pred_of_lt {n : ℕ} (i j : ℕ) (hji : j < i) (l
   split_ifs <;> omega
 
 theorem dc_dc {m : ℕ} (F : (Fin (m + 1) → Y) → ℝ) : dc (dc F) = 0 := by
-  funext y
-  rw [Pi.zero_apply, dc_eq]
-  simp only [dc_eq, Finset.mul_sum]
-  rw [← Finset.sum_product' (Finset.univ : Finset (Fin (m + 1 + 2)))
-    (Finset.univ : Finset (Fin (m + 2)))
-    (fun i j => (-1 : ℝ) ^ (i : ℕ) * ((-1 : ℝ) ^ (j : ℕ) * F (fun l => y (fc i (fc j l)))))]
-  refine Finset.sum_involution (fun p _ => if h : (p.2 : ℕ) < (p.1 : ℕ) then
-      ((⟨p.2, by have := p.1.isLt; have := p.2.isLt; omega⟩ : Fin (m + 1 + 2)),
-        (⟨p.1 - 1, by have := p.1.isLt; have := p.2.isLt; omega⟩ : Fin (m + 2)))
-    else ((⟨p.2 + 1, by have := p.1.isLt; have := p.2.isLt; omega⟩ : Fin (m + 1 + 2)),
-      (⟨p.1, by have := p.1.isLt; have := p.2.isLt; omega⟩ : Fin (m + 2)))) ?_ ?_ ?_ ?_
-  · intro p _
-    split_ifs with h
-    · simp only [Fin.val_mk, fc_fc_eq_fc_fc_pred_of_lt _ _ h]
-      obtain ⟨t, ht⟩ : ∃ t, (p.1 : ℕ) = t + 1 := ⟨p.1 - 1, by omega⟩
-      simp only [ht, Nat.add_sub_cancel, pow_succ]
-      ring
-    · simp only [Fin.val_mk, fc_fc_eq_fc_fc_pred_of_lt ((p.2 : ℕ) + 1) p.1 (by omega), Nat.add_sub_cancel,
-        pow_succ]
-      ring
-  · intro p _ _
-    split_ifs with h
-    · intro he
-      rw [Prod.ext_iff, Fin.ext_iff, Fin.ext_iff] at he
-      simp only [Fin.val_mk] at he
-      omega
-    · intro he
-      rw [Prod.ext_iff, Fin.ext_iff, Fin.ext_iff] at he
-      simp only [Fin.val_mk] at he
-      omega
-  · intro p _
-    simp
-  · intro p _
-    obtain ⟨i, j⟩ := p
-    by_cases h : (j : ℕ) < (i : ℕ)
-    · have h' : ¬ ((i : ℕ) - 1 < (j : ℕ)) := by omega
-      simp only [h, h', dif_pos, dif_neg, not_false_eq_true, Prod.mk.injEq, Fin.ext_iff, Fin.val_mk]
-      exact ⟨by omega, trivial⟩
-    · have h' : (i : ℕ) < (j : ℕ) + 1 := by omega
-      simp only [h, h', dif_pos, dif_neg, not_false_eq_true, Prod.mk.injEq, Fin.ext_iff, Fin.val_mk]
-      exact ⟨trivial, by omega⟩
+  apply PositivityTheory.KB.SplitAffineSpectral.PrismSpan.dc_dc
 
 end PositivityTheory.KB.SplitAffineSpectral.NormTraceLemmas
 

@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameGraphDeg
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.QuotientMapImageZInjective
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameGraph
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

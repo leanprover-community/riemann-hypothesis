@@ -1,13 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.Generic
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.TheoremZeroOfReducedInputs
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.CombBound4Of
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.DescSt
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.GenericSectionsPolynomialDictionaryStatement
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.InBasisIffPointValuesLinearIndependentSpanStatement
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IndepSpanRankTransferLargeFieldComplexStatement
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.GenericSectionsPolynomialDictionary
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.PublishedIntClosHolds
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.InBasisIffPointValuesLinearIndependentSpan
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IndepSpanRankTransferLargeFieldComplex
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -18,15 +52,6 @@ namespace GlobalTheory.Shares.Contain
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps GlobalTheory.Shares
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
-
-theorem addL_zero (u wL : WeightFamilies.Wt D j) : addL u wL 0 = u := by
-  unfold addL wadd wsmul
-  cases u
-  simp only [WeightFamilies.Wt.mk.injEq]
-  refine ⟨?_, ?_, ?_⟩
-  · funext τ i; simp
-  · funext τ i; simp
-  · simp
 
 def secP (X : PJ D B P j) {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL) (i : Fin (WeightFamilies.dimY D j + 1)) :
     MvPolynomial (Idx D j N) X.Forms :=
@@ -62,8 +87,8 @@ end Weights
 
 theorem inContainMR_of_anFacts : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : ModuliIntegralCharts.Prov D) (j : ℕ) (X : PJ D B P j) (ka wL wF : WeightFamilies.Wt D j) (G : GlobalFamilyData X ka wL wF) (R : Rdg X) (t : Idx D j G.N → ℂ) (T : ℕ) (CR c : ℝ) (δ : ℕ) (xs : Fin δ → R.Y), R.Generic t → AnFacts R G.w t ka wF T (WeightFamilies.MggK B CR T c j ka) xs → addL wF wL T = ka → WeightFamilies.dimY D j ≤ T → ∀ S : Scal B, Submodule.span B.KO ((X.Thc S.s0 (X.wF0 wL wF) : Submodule (𝓞 B.KO) _) : Set (B.Cusp j (X.wF0 wL wF))) = ⊤ → ∀ la, InBasis G la → InContainMR G la S CR T c := by
   intro D B P j X ka wL wF G R t T CR c δ xs hgen hA hka hDT S hTh la hB
-  obtain ⟨hsec, hC, hCw, hmul, -, -, hsp, -⟩ := GlobalTheory.T.genericSections_polynomial_dictionary D B P j X R la G.N wL G.w t
-  obtain ⟨hli, hdel⟩ := (GlobalTheory.T.inBasis_iff_pointValues_linearIndependent_span D B P j X ka wL wF G R t T _ δ xs hgen hA hka la).1 hB
+  obtain ⟨hsec, hC, hCw, hmul, -, -, hsp, -⟩ := _root_.GlobalTheory.Shares.polyDictionary D B P j X R la G.N wL G.w t
+  obtain ⟨hli, hdel⟩ := (_root_.GlobalTheory.Shares.inBasis_iff_vals D B P j X ka wL wF G R t T _ δ xs hgen hA hka la).1 hB
   have hs1 : ∀ i, toRp X la G.N (secP X G.w i) = sec X la G.w i := fun i => (hsec i).1
   have hs2 : ∀ i, R.toFn t (secP X G.w i) = R.s G.w t i := fun i => (hsec i).2.1
   have hs3 : ∀ i, OfWt X wL (secP X G.w i) := fun i => (hsec i).2.2
@@ -83,7 +108,7 @@ theorem inContainMR_of_anFacts : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : M
       refine ⟨(∏ k, secP X G.w k.succ ^ al k) * (secP X G.w 0 ^ (T - ∑ k, al k) *
         MvPolynomial.C (X.inc wF (G.th' i))), ⟨?_, Or.inl ⟨al, i, hal, ?_⟩⟩, ?_⟩
       · have h0 : OfWt X (addL wF wL 0) (MvPolynomial.C (X.inc wF (G.th' i)) : MvPolynomial (Idx D j G.N) X.Forms) := by
-          rw [addL_zero]; exact hCw _ _
+          rw [_root_.Formalism.MainNotions.Gaps.EtaleWeightGaps.addL_zero]; exact hCw _ _
         have h1 := ofWt_prod_mul hs3 hmul al wF _ (ofWt_pow_mul hs3 hmul 0 wF 0 (T - ∑ k, al k) h0) Finset.univ
         have he : 0 + (T - ∑ k, al k) + ∑ k, al k = T := by
           unfold a0 at hal; omega
@@ -118,7 +143,7 @@ theorem inContainMR_of_anFacts : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : M
     hle (hcon (Submodule.subset_span ⟨F, hF, rfl⟩))
   obtain ⟨n, a, g, hsum⟩ := Submodule.mem_span_set'.1 hmem
   choose p hp hpg using fun i => (g i).2
-  have htr := (GlobalTheory.T.indep_span_rank_transfer_largeField_complex D B P j X R la G.N t hgen ka (Fin n) p (fun i => (hp i).1)).2.1
+  have htr := (_root_.GlobalTheory.reading_transfer D B P j X R la G.N t hgen ka (Fin n) p (fun i => (hp i).1)).2.1
     (MvPolynomial.C (X.inc ka F)) (hCw _ _)
   rw [(hC _).1, (hC _).2] at htr
   have h2 : R.ev (X.inc ka F) ∈ Submodule.span ℂ (Set.range fun i => R.toFn t (p i)) := by

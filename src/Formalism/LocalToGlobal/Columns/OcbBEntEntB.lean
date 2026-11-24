@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainOneB
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 
 @[expose] public section
 

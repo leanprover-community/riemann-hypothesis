@@ -1,6 +1,46 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.GammaZetaNablaCancel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -121,8 +161,8 @@ def M (A : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ⟦X⟧ := 1 
 theorem mapC_mul_S (A : Matrix (Fin n) (Fin n) ℂ) :
     A.map (fun a => (PowerSeries.C a : ℂ⟦X⟧)) * S A = Matrix.of fun i j => mk fun k => (A ^ (k + 1)) i j := by
   ext i j m
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mul_apply, S, Matrix.map_apply, Matrix.of_apply, map_sum, PowerSeries.coeff_C_mul, PowerSeries.coeff_mk]
+
+  simp only [Matrix.mul_apply, S, Matrix.map_apply, Matrix.of_apply, map_sum, PowerSeries.coeff_C_mul, PowerSeries.coeff_mk]
   rw [pow_succ', Matrix.mul_apply]
 
 theorem X_mul_shift (f : ℕ → ℂ) : (PowerSeries.X : ℂ⟦X⟧) * mk (fun k => f (k + 1)) = mk f - PowerSeries.C (f 0) := by
@@ -161,8 +201,8 @@ theorem det_rank_one (A : Matrix (Fin n) (Fin n) ℂ) :
   rw [hdet]
   have hsum : ∑ i, ∑ j, S A i j = mk (tot A) := by
     refine PowerSeries.ext (R := ℂ) fun m => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [S, tot, map_sum, coeff_mk]
+
+    simp [S, tot, map_sum, coeff_mk]
   congr 1
   simp only [Matrix.add_apply, Matrix.one_apply_eq, Matrix.mul_apply, Matrix.replicateRow_apply,
     Matrix.replicateCol_apply, one_mul]

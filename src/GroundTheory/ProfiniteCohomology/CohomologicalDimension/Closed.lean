@@ -1,13 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.CdpOpenSubgroupLe
-public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.NotDvdSuperIndexBotOfIsProPGroup
 public import GroundTheory.ProfiniteCohomology.ClassFormationDefs
-public import GroundTheory.ProfiniteCohomology.FilteredHomology
-public import GroundTheory.ProfiniteCohomology.Factor
+public import Mathlib.Topology.Sheaves.Presheaf
 public import GroundTheory.ProfiniteCohomology.Colimit
-public import GroundTheory.ProfiniteCohomology.OfNatRelIndexSupAntitone
+import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
+import GroundTheory.ProfiniteCohomology.Factor
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+public import GroundTheory.ProfiniteCohomology.IsProPGroupSubgroupIffIsPGroupMap
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

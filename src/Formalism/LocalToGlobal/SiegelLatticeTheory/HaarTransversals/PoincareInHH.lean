@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.RowsDef
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.ColsDim
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.FoldBound
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareSeriesSquareIntegrable
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrgCountableField
 
@@ -227,7 +225,6 @@ theorem one_mem_level_subgroup : (1 : X.B.I.Gf) ∈ X.K2 := by
     Submodule.zero_mem, implies_true, and_true]
   first
   | simp [AutInst.Kset]
-  | exact (Formalism.UG.stabGL X.B.I.Lf).one_mem
 
 def frameOrthogonalLattice : Set (VA X.B.I) :=
   {y | y ∈ X.B.I.Lf ∧ ∀ a, hA X.B.I (incl X.B.I (X.eR a)) y = 0 ∧ hA X.B.I (incl X.B.I (X.fR a)) y = 0 ∧

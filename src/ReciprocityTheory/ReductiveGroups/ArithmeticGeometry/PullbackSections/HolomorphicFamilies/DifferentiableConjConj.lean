@@ -1,7 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.TorusMatchPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.Semichar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.NonemptyUnitAt
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtData
 
 @[expose] public section
 
@@ -26,7 +27,6 @@ theorem ex_periodic (a : (W.F.Di (W.ik k)).La) (z : Fin W.g → ℂ) :
 theorem primeSpectrum_eq (p q : PrimeSpectrum ℂ) : p = q := by
   first
   | exact Subsingleton.elim p q
-  | exact PrimeSpectrum.ext ((Ideal.eq_bot_of_prime _).trans (Ideal.eq_bot_of_prime _).symm)
 
 theorem exists_chart_pt {X : Scheme.{0}} (L : LB X) (hL : L.IsLB) (y : Sp ℂ ⟶ X) : ∃ j, ⊤ ≤ y ⁻¹ᵁ L.U j := by
   let p0 : Sp ℂ := (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum ℂ)

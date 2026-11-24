@@ -1,8 +1,45 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.LocCompareSplit
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemTwCentSwTw
+public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalTermEqFinprodLocalTerms
 
 @[expose] public section
 
@@ -12,20 +49,6 @@ open PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.Fin GlobalTheory.Comp
 open scoped Classical
 
 namespace GlobalTheory.CompanionTheory.SplitCpt
-
-theorem cptPart_le_self' {G : Type} [Group G] [TopologicalSpace G] (T : Subgroup G) : cptPart T ≤ T := by
-  rw [cptPart, Subgroup.closure_le]
-  rintro t ⟨ht, -⟩
-  exact ht
-
-theorem mem_map_conj {G : Type} [Group G] (K : Subgroup G) (x c : G) :
-    c ∈ K.map (MulAut.conj x).toMonoidHom ↔ x⁻¹ * c * x ∈ K := by
-  constructor
-  · rintro ⟨k, hk, rfl⟩
-    simpa [mul_assoc] using hk
-  · intro h
-    refine ⟨_, h, ?_⟩
-    simp [mul_assoc]
 
 theorem split_cpt : ∀ {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [T2Space H] (σ : H →* H) (K : Subgroup H) (d d' : H),
   Continuous σ → (∀ g, σ (σ g) = g) → IsOpen (K : Set H) → IsCompact (K : Set H) → (∀ k ∈ K, σ k ∈ K) →
@@ -68,12 +91,12 @@ theorem split_cpt : ∀ {H : Type} [Group H] [TopologicalSpace H] [IsTopological
     have hle : B.comap (MonoidHom.fst H H) ⊓ cptPart T ≤
         T ⊓ (K.prod K).map (MulAut.conj y).toMonoidHom := by
       rintro c ⟨hcB, hcC⟩
-      have hcT : c ∈ T := cptPart_le_self' T hcC
+      have hcT : c ∈ T := _root_.GlobalTheory.EulerAbs.cptPart_le_self_term T hcC
       refine ⟨hcT, ?_⟩
       have h2 := ((mem_twCent_swTw σ hσ d d' c).1 hcT).2
-      have hm1 : y.1⁻¹ * c.1 * y.1 ∈ K := (mem_map_conj K _ _).1 hcB.1.2
-      have hm3 : x₃⁻¹ * c.1 * x₃ ∈ K := (mem_map_conj K _ _).1 hcB.2.2
-      refine (mem_map_conj _ _ _).2 (Subgroup.mem_prod.2 ⟨hm1, ?_⟩)
+      have hm1 : y.1⁻¹ * c.1 * y.1 ∈ K := (_root_.GlobalTheory.EulerAbs.mem_map_conj_iff_term K _ _).1 hcB.1.2
+      have hm3 : x₃⁻¹ * c.1 * x₃ ∈ K := (_root_.GlobalTheory.EulerAbs.mem_map_conj_iff_term K _ _).1 hcB.2.2
+      refine (_root_.GlobalTheory.EulerAbs.mem_map_conj_iff_term _ _ _).2 (Subgroup.mem_prod.2 ⟨hm1, ?_⟩)
       have hs := hσK _ hm3
       have e : (y⁻¹ * c * y).2 = σ (x₃⁻¹ * c.1 * x₃) := by
         simp only [Prod.snd_mul, Prod.snd_inv, h2, hx₃, map_mul, map_inv, hσ]

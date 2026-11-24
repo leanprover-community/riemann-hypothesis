@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFibreCut
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Finiteness.Quotient
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

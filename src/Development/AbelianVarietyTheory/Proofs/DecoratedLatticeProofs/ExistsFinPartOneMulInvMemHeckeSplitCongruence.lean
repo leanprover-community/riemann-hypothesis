@@ -1,9 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitLoc
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
+import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 
@@ -94,9 +141,6 @@ theorem val_int_le (Q : HeightOneSpectrum (𝓞 E)) (x : 𝓞 E) :
   rw [Formalism.UG.P.levelaf_valued_algebraMap]
   exact Q.valuation_le_one _
 
-theorem val_nat_le (Q : HeightOneSpectrum (𝓞 E)) (n : ℕ) : Valued.v (n : Q.adicCompletion E) ≤ 1 :=
-  natCast_mem (Q.adicCompletionIntegers E) n
-
 theorem exists_den (s : FiniteAdeleRing (𝓞 E) E) :
     ∃ m : ℕ, 0 < m ∧ ∀ Q : HeightOneSpectrum (𝓞 E), Valued.v ((m : Q.adicCompletion E) * s Q) ≤ 1 := by
   obtain ⟨x, a, ha, rfl⟩ := (GlobalTheory.AdLat.strong_approximation_mod_nat E 1 one_pos).1 s
@@ -116,7 +160,7 @@ theorem exists_den (s : FiniteAdeleRing (𝓞 E) E) :
   rw [e]
   refine Valuation.map_add_le _ ?_ ?_
   · exact val_int_le Q r
-  · rw [Valuation.map_mul]; exact mul_le_one' (val_nat_le Q _) (ha Q)
+  · rw [Valuation.map_mul]; exact mul_le_one' (_root_.GlobalTheory.AdLat.valued_natCast_le_one Q _) (ha Q)
 
 theorem approx_int (c : 𝓞 E ≃+* 𝓞 E) (hc : ∀ x, c (c x) = x) (δ : 𝓞 E) (hδ : c δ ≠ δ) (N : ℕ) (hN : 0 < N)
     (s s' : FiniteAdeleRing (𝓞 E) E) (h : s * s' = 1) (hs : ∀ Q, Valued.v (s Q) ≤ 1) :
@@ -138,7 +182,7 @@ theorem approx_int (c : 𝓞 E ≃+* 𝓞 E) (hc : ∀ x, c (c x) = x) (δ : �
     rw [this, Valuation.map_mul]
     exact mul_le_of_le_one_left' (hm' Q)
   by_cases hlt : Valued.v ((N : Q.adicCompletion E) * m) < 1
-  · refine local_close _ hs0 hms (val_nat_le Q m) hlt ?_
+  · refine local_close _ hs0 hms (_root_.GlobalTheory.AdLat.valued_natCast_le_one Q m) hlt ?_
     have e1 : s Q = algebraMap E (Q.adicCompletion E) (y₀ : E) + (N * m * m) • a Q := by rw [e]; rfl
     have e2 : algebraMap E (Q.adicCompletion E) ((y₀ + (N * m * m : ℕ) * t : 𝓞 E) : E) - s Q =
         (N : Q.adicCompletion E) * m * m * (algebraMap E (Q.adicCompletion E) (t : E) - a Q) := by
@@ -147,7 +191,7 @@ theorem approx_int (c : 𝓞 E ≃+* 𝓞 E) (hc : ∀ x, c (c x) = x) (δ : �
       ring
     rw [e2, Valuation.map_mul]
     exact mul_le_of_le_one_right' (Valuation.map_sub_le _ (val_int_le Q t) (ha Q))
-  · refine local_unit _ (hs Q) hms (val_nat_le Q m) (val_nat_le Q N) hlt ?_
+  · refine local_unit _ (hs Q) hms (_root_.GlobalTheory.AdLat.valued_natCast_le_one Q m) (_root_.GlobalTheory.AdLat.valued_natCast_le_one Q N) hlt ?_
     refine le_antisymm (val_int_le Q _) (not_lt.1 fun h2 => hQ ⟨(val_int Q _).1 h2, fun h3 => hlt ?_⟩)
     have h4 : ((N * m : ℕ) : 𝓞 E) ∈ Q.asIdeal := by
       rw [Nat.cast_mul] at h3

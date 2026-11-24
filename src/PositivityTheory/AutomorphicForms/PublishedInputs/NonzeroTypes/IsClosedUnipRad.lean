@@ -1,7 +1,8 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.NonzeroLeviEigenvectorExists
-public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 
 @[expose] public section
 
@@ -410,8 +411,8 @@ theorem eig_Tz (H : Hyp G) (ϖ : kˣ) (hϖ : IsUnif ϖ) (m : ℕ) [Finite (↥G.
     rw [finsum_eq_sum_of_fintype]
     exact Fintype.sum_bijective _ ⟨iota_inj H ϖ m, iota_surj H ϖ hϖ m⟩ _ _ fun c => (hιF c).symm
   intro g hg
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hT, map_sum]
+
+  rw [hT, map_sum]
   let gJ : ↥(Jsub H) := ⟨g, hg⟩
   have key : ∀ q, π g (Fq H ϖ hϖ m π x hx q) = G.lam g • Fq H ϖ hϖ m π x hx (gJ • q) := by
     intro q

@@ -1,8 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.LatticeInclusionFormsInjective
-public import Formalism.FrobeniusBaseCase.Statement
+public import Mathlib.RingTheory.MvPowerSeries.Derivative
+public import Mathlib.RingTheory.MvPowerSeries.Rename
 public import Formalism.FrobeniusBaseCase.FrobeniusBaseCaseProofs.HasUniqueFixedPoint
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -142,8 +144,8 @@ theorem pderiv_subst [Fintype σ] {a : σ → MvPowerSeries τ C} (ha : ∀ s, O
   have hL : coeff e (pderiv (R := C) b (subst a R)) = 0 :=
     ordGE_pderiv (n := e.degree + 1) (ordGE_subst ha hRo) b e (by omega)
   have hRr : coeff e (∑ w, pderiv (R := C) b (a w) * subst a (pderiv (R := C) w R)) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_eq_zero fun w _ => ?_
     have h1 : OrdGE (0 + (e.degree + 1)) (pderiv (R := C) b (a w) * subst a (pderiv (R := C) w R)) :=
       Formalism.BaseCaseIdentities.OrdGE.mul (ordGE_zero _) (ordGE_subst ha (ordGE_pderiv (n := e.degree + 1) hRo w))
@@ -177,8 +179,8 @@ theorem hasSubst_linS [Finite σ] (M : τ → σ → C) : HasSubst (linS M) :=
 theorem pderiv_linS (M : τ → σ → C) (b : τ) (w : σ) :
     pderiv (R := C) b (linS M w) = MvPowerSeries.C (M b w) := by
   unfold linS
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single b]
+
+  rw [map_sum, Finset.sum_eq_single b]
   · rw [Derivation.map_smul, pderiv_X_self, smul_eq_C_mul, mul_one]
   · intro c _ hc
     rw [Derivation.map_smul, pderiv_X_of_ne hc, smul_zero]

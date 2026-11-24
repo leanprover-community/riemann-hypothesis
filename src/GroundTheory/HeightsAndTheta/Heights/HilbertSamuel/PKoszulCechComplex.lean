@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKoszulCech
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -308,8 +308,8 @@ theorem kosCech_kosD {V : Ideal (MRingOver S ι)} {R : ℕ} {z : Fin R → KH.Ce
     · rfl
     · exact (zsmul_eq_mul (restrict0 (z j) I' * kosExt φ (insert j J.1) I') (kosSign J.1 j)).symm
   show KH.cechD S ι _ n (kosD z p n φ J) I = kosD z p (n + 1) (kosCech S ι V R (p + 1) n φ) J I
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hsplit, map_sum, Finset.sum_apply, kosD_apply]
+
+  rw [hsplit, map_sum, Finset.sum_apply, kosD_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
   split_ifs
   · rw [map_zero]; rfl

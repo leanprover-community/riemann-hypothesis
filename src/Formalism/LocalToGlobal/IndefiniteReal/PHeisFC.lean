@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.PHeisFCA
+public import Formalism.LocalToGlobal.IndefiniteReal.IsWeilDatum
+public import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

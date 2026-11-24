@@ -1,8 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
-public import ReciprocityTheory.GeometryOfNumbers.AsymptoticSequences.ClosingHS
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

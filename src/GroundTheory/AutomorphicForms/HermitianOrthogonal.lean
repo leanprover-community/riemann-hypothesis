@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.HermitianSpaces
+public import Mathlib.FieldTheory.Separable
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Trace.Basic
 
 @[expose] public section
 

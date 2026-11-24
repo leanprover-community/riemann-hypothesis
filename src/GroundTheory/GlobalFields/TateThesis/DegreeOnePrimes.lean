@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.DirichletDensity
+public import Mathlib.RingTheory.RamificationInertia.Inertia
+import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.Analysis.PSeries
+public import Mathlib.RingTheory.RamificationInertia.Basic
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Order.Group.Indicator
 
 @[expose] public section
 

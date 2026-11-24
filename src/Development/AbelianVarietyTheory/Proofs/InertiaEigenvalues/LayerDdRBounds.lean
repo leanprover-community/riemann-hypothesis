@@ -1,15 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TrivIsCr
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistStep
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SecondTwistSmallIffExactlyAtAndFinClause
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EqOfPowEqOneOfNormSubLt
+public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyClosedOfDictClosed
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SecondTwistSmallIffExactlyAtAndFinClause
 public import Formalism.SharpRestriction.LevelLetterCocycles.JsetEmb
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZeroPadic
 
 @[expose] public section
 
@@ -96,8 +133,8 @@ theorem exists_sum_comp {Qp V ι : Type} [Field Qp] [AddCommGroup V] [Module Qp 
   have h1 := LinearMap.congr_fun hG v
   simp only [LinearMap.comp_apply, LinearMap.id_apply] at h1
   simp only [LinearMap.comp_apply, LinearMap.coe_single]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, Finset.univ_sum_single]
+
+  rw [← map_sum, Finset.univ_sum_single]
   exact h1
 
 theorem sum_rTensor {Qp V ι BdR : Type} [Field Qp] [AddCommGroup V] [Module Qp V] [Fintype ι]
@@ -233,9 +270,9 @@ theorem colMap_coe {Γ : Type} [Group Γ] {a d : ℕ} {L₀ : FinExt l} {Cl : Se
     {ρ : Γ →* GL (Fin d) ℤ_[l]} (Ly : Layer L₀ Cl ρ) (k : Fin Ly.m) (c : Fin a) (v : Fin d → ℚ_[l])
     (i : Fin a) :
     algebraMap ↥(Ly.L k).1 (Om l) (colMap Ly k c v i) = ∑ j, algebraMap ℚ_[l] (Om l) (v j) * Ly.b j k i c := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [colMap, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smulRight_apply,
-    LinearMap.proj_apply, Pi.smul_apply, map_sum]
+
+  simp only [colMap, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smulRight_apply,
+  LinearMap.proj_apply, Pi.smul_apply, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Algebra.smul_def, map_mul, ← IsScalarTower.algebraMap_apply]
   rfl
@@ -256,8 +293,8 @@ theorem colMap_equi {Γ : Type} [Group Γ] {a d : ℕ} {L₀ : FinExt l} {Cl : S
     simpa [Matrix.mul_apply, Matrix.sum_apply, smul_eq_mul] using this
   have hL : algebraMap ↥(Ly.L k).1 (Om l) (((repL (Ly.L k) (Ly.rep k) (Ly.rep_mem k) g).val *ᵥ colMap Ly k c v) i₀) =
       ∑ i', (Ly.rep k g).val i₀ i' * ∑ j, algebraMap ℚ_[l] (Om l) (v j) * Ly.b j k i' c := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, colMap_coe]
+
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, colMap_coe]
     rfl
   rw [hL]
   simp only [Finset.mul_sum]
@@ -272,9 +309,9 @@ theorem colMap_equi {Γ : Type} [Group Γ] {a d : ℕ} {L₀ : FinExt l} {Cl : S
   refine Finset.sum_congr rfl fun i _ => ?_
   simp only [qRep, MonoidHom.coe_comp, Function.comp_apply]
   show algebraMap ℚ_[l] (Om l) ((((ρ g).val.map (algebraMap ℤ_[l] ℚ_[l])) *ᵥ v) i) * _ = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, map_sum, Finset.sum_mul,
-    RingHom.mapMatrix_apply, Matrix.map_apply, Units.coeHom_apply, map_mul, zOm, RingHom.comp_apply]
+
+  simp only [Matrix.mulVec, dotProduct, map_sum, Finset.sum_mul,
+  Matrix.map_apply, map_mul, zOm, RingHom.comp_apply]
   refine Finset.sum_congr rfl fun x _ => by ring
 
 end GlobalTheory.LayerJumps

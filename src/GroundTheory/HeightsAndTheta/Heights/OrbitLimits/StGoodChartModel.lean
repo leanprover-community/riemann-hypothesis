@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.SegreChartProjObjects
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsGenericCount
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

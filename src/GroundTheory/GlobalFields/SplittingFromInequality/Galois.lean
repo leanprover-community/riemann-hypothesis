@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.FirstInequalityStatement
+public import GroundTheory.GlobalFields.KummerTheory.Splitting
 public import GroundTheory.GlobalFields.SplittingFromInequality
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

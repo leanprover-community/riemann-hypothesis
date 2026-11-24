@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelConditionEquivalent
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactAltForm
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.TaylorMvLinear
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementS
 
 @[expose] public section
 

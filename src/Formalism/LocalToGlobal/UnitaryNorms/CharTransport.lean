@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Formalism.LocalToGlobal.UnitaryNorms.UnrAe
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 

@@ -1,9 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.FunctionalLowerBoundOfConditionsNumeric
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.SlopeBoundSingleLiftOfDefinitions
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.SlopeBoundOfConditionsWithErrorForFrames
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ExampleSatisfiesConditionsAtFive
+public import Formalism.HarderNarasimhan.StatementPl
+import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
+import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
+public import Formalism.PairingDivisors.StatementH
+import Formalism.PairingDivisors.StatementN
+public import Formalism.PairingDivisors.StatementX
+import Formalism.QuotientMetricDivisors.Statement
 
 @[expose] public section
 

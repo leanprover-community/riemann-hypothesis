@@ -1,6 +1,15 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.SignedIdentityColumns
+public import Mathlib.MeasureTheory.Function.L1Space.Integrable
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.CategoryTheory.Countable
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.SpecialFunctions.Exponential
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 
 @[expose] public section
 

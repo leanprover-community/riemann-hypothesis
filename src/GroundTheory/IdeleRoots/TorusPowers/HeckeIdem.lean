@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.IdeleRoots.TorusPowers.HeckeTensor
+public import Formalism.UnipotentAdelicQuotients.ThmBInHecke
+public import GroundTheory.GlobalFields.Adele.BaseChange.AdeleEquiv
 
 @[expose] public section
 

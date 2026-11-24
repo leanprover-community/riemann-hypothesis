@@ -1,8 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StSchurW
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.UnitaryGroupStructuralFacts
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JPairs
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDefs
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JPairsA
 
 @[expose] public section
 

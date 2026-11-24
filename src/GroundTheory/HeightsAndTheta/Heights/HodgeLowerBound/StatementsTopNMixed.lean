@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesLimitTTop
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesGeo
 
 @[expose] public section
 

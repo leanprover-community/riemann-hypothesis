@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsCoinv
 
 @[expose] public section
@@ -25,17 +24,17 @@ theorem CoinvAboveTopGeneral.proof (h1 : CoinvAboveTop.Statement) :
     fun m b => (hQ'h m (eβ b)).rename_isHomogeneous, ?_⟩
   have hback : H = rename ψ.symm (rename ψ H) := by
     rw [rename_rename, Equiv.symm_comp_self, rename_id_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hback, hQ', map_sum]
+
+  rw [hback, hQ', map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, ← Equiv.sum_comp eβ.symm]
+
+  rw [map_sum, ← Equiv.sum_comp eβ.symm]
   refine Finset.sum_congr rfl fun b' _ => ?_
   rw [map_mul]
   simp only [Equiv.apply_symm_apply]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [bps, map_sum, ← Equiv.sum_comp eι.symm]
+
+  rw [bps, map_sum, ← Equiv.sum_comp eι.symm]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp [hψ]
 

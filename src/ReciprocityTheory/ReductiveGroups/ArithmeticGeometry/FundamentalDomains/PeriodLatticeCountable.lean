@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SpanColsMul
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.RealEmbeddingCharacters
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainTranslate
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicOutsideLine
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TransvectionPeriodicity
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 
 @[expose] public section
 
@@ -86,8 +87,8 @@ theorem flow_Zb_comm (hu : ∀ i k, herm X.Gm (u i) (u k) = 0) (s : X.Ψ → ℝ
   have hk : ∀ i k : Fin 2, ∑ j, W k j * V i j = 0 := by
     intro i k
     have h := congrArg τ.1 (hu i k)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [herm, map_sum, map_mul, emb_cc, map_zero] at h
+
+    simp only [herm, map_sum, map_mul, emb_cc, map_zero] at h
     rw [← h, hW, hV]
     refine Finset.sum_congr rfl fun j _ => ?_
     simp only [Finset.sum_mul]

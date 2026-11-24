@@ -1,16 +1,55 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.DiscreteSeriesCoefficientsCuspidal
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.MapRepComp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.PotentialModularityTower
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.IsAut4
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.RatTorsionFree
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdTransfer
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.PlacesQ
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutCsdIso
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.IrrIff
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.FiniteResidue
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.Clifford
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.SeedDefs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-attribute [-instance] UpperTheory.V.Pr.IsCD.toIsDomain UpperTheory.V.Pr.IsCD.toIsDiscreteValuationRing
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 200000
+
 
 section
 open UpperTheory.GalN.V
@@ -98,7 +137,7 @@ private theorem gsp_map {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R'
   have e : adj (X.map f) = (adj X).map f := by ext i j; simp [adj_apply]
   rw [IsGSp, e, ← Matrix.map_mul, h]
   ext i j
-  by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
+  by_cases hij : i = j <;> simp [hij]
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
 private theorem aut_conj (ι : PadicAlgCl l ≃+* ℂ) {r r' : G ℚ Ω →* M4 (PadicAlgCl l)} (h : IsConj4 r r') (_hi : Irr r)
     (ha : _root_.UpperTheory.V.Aut.IsAut4Alt ι r') : _root_.UpperTheory.V.Aut.IsAut4Alt ι r := by
@@ -183,8 +222,8 @@ private theorem ps_wt_any {D : Raw Ω c} (h : D.Good) {A : ValuationSubring Ω} 
   rwa [e, e] at h3
 private theorem map_psi {ι Γ R R' : Type} [Group Γ] [CommRing R] [CommRing R'] (P : PD ι Γ R) (f : R →+* R') (v : ι) (i : Fin 4)
     (s : Γ) : (P.map f).ψ v i s = f (P.ψ v i s) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [PD.ψ, PD.map, Matrix.mul_apply, adj_apply, map_sum]
+
+  simp [PD.ψ, PD.map, Matrix.mul_apply, adj_apply, map_sum]
 private theorem irr_L {D : Raw Ω c} (T : Tower D) (hT : T.Ok) (𝔞 : Amb l) (f : 𝔞.V →+* PadicAlgCl l) (hf : Function.Injective f)
     (r : G ℚ Ω →* M4 𝔞.V) (hr : ∀ g i j, r g i j - 𝔞.a c (D.r0 g i j) ∈ maximalIdeal 𝔞.V) (hi : Irr (mapRep f r)) :
     Irr ((mapRep f r).comp T.L.fixingSubgroup.subtype) := by
@@ -193,13 +232,13 @@ private theorem irr_L {D : Raw Ω c} (T : Tower D) (hT : T.Ok) (𝔞 : Amb l) (f
     rwa [inv_mul_cancel_right] at this⟩
   refine irr_sub f hf (residue 𝔞.V) r
     (fun i => (Units.map (𝔞.red c).toMonoidHom).comp (D.ps i)) (fun g => ?_) _ (comm_L T) (fun i j hij => ?_) hi
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [Matrix.trace, map_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      have h1 : residue 𝔞.V (r g i i) = residue 𝔞.V (𝔞.a c (D.r0 g i i)) := Ideal.Quotient.eq.2 (hr g i i)
-      have h2 : D.r0 g i i = D.ps i g := Matrix.diagonal_apply_eq _ i
-      rw [h2] at h1
-      exact h1
+
+  · rw [Matrix.trace, map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have h1 : residue 𝔞.V (r g i i) = residue 𝔞.V (𝔞.a c (D.r0 g i i)) := Ideal.Quotient.eq.2 (hr g i i)
+    have h2 : D.r0 g i i = D.ps i g := Matrix.diagonal_apply_eq _ i
+    rw [h2] at h1
+    exact h1
   · obtain ⟨g, hg, hne⟩ := dist_L T hT i j hij
     refine ⟨g, hg, fun h => hne ((𝔞.j c).injective ?_)⟩
     have h1 : 𝔞.red c (D.ps i g) = 𝔞.red c (D.ps j g) := congrArg Units.val h

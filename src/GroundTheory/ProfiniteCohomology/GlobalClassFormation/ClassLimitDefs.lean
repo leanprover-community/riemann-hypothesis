@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.Sequence
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.NormalFixingSubgroupGaloisClosure
-public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 @[expose] public section
 

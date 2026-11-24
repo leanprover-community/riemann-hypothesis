@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.Induced
 public import GroundTheory.TateCohomology.InducedNorm
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

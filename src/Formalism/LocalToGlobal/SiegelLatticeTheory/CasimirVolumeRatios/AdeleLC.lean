@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.GlobalConditionOfLocalAgreement
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.Topology.Algebra.Valued.LocallyCompact
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 
@@ -15,57 +22,7 @@ variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K))
 open Classical in
 theorem exists_mul_mem (x : K) (hx : v.valuation K x ≤ 1) :
     ∃ s : 𝓞 K, s ∉ v.asIdeal ∧ ∃ a : 𝓞 K, (s : K) * x = (a : K) := by
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 K) x
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  have hspan : Ideal.span {b} ≠ ⊥ := by simpa using hb0
-  set S : Finset (HeightOneSpectrum (𝓞 K)) := (Ideal.finite_factors hspan).toFinset with hS
-  set T : Finset (HeightOneSpectrum (𝓞 K)) := insert v S
-  let e : HeightOneSpectrum (𝓞 K) → ℕ := fun w =>
-    if w = v then 1 else (Associates.mk w.asIdeal).count (Associates.mk (Ideal.span {b})).factors
-  obtain ⟨s, hs⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := T) (fun w => w.asIdeal) e
-    (fun w _ => Ideal.prime_of_isPrime w.ne_bot w.isPrime)
-    (fun w _ w' _ hne h => hne (HeightOneSpectrum.ext h))
-    (fun w => if (w : HeightOneSpectrum (𝓞 K)) = v then 1 else 0)
-  have hvT : v ∈ T := Finset.mem_insert_self _ _
-  have hsv : s ∉ v.asIdeal := by
-    intro h
-    have h1 := hs v hvT
-    simp only [e, if_true, pow_one] at h1
-    have h3 : (1 : 𝓞 K) ∈ v.asIdeal := by
-      have := v.asIdeal.sub_mem h h1
-      simpa using this
-    exact v.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h3)
-  refine ⟨s, hsv, ?_⟩
-  have hall : ∀ w : HeightOneSpectrum (𝓞 K), w.valuation K ((s : K) * ((a : K) / (b : K))) ≤ 1 := by
-    intro w
-    by_cases hwv : w = v
-    · rw [hwv, map_mul]
-      exact mul_le_one' (by rw [HeightOneSpectrum.valuation_of_algebraMap]; exact HeightOneSpectrum.intValuation_le_one _ _) hx
-    · have hb' : w.intValuation b ≠ 0 := HeightOneSpectrum.intValuation_ne_zero _ _ hb0
-      rw [map_mul, map_div₀, HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.valuation_of_algebraMap,
-        HeightOneSpectrum.valuation_of_algebraMap, div_eq_mul_inv]
-      by_cases hwS : w ∈ S
-      · have hwT : w ∈ T := Finset.mem_insert_of_mem hwS
-        have h1 := hs w hwT
-        simp only [e, hwv, if_false, sub_zero] at h1
-        have h2 : w.intValuation s ≤ w.intValuation b := by
-          rw [HeightOneSpectrum.intValuation_if_neg w hb0]
-          exact (HeightOneSpectrum.intValuation_le_pow_iff_mem w s _).2 h1
-        calc w.intValuation s * (w.intValuation a * (w.intValuation b)⁻¹)
-            ≤ w.intValuation b * (1 * (w.intValuation b)⁻¹) :=
-              mul_le_mul' h2 (mul_le_mul' (HeightOneSpectrum.intValuation_le_one _ _) le_rfl)
-          _ = 1 := by rw [one_mul, mul_inv_cancel₀ hb']
-      · have hbw : b ∉ w.asIdeal := by
-          intro hmem
-          apply hwS
-          rw [hS, Set.Finite.mem_toFinset]
-          show w.asIdeal ∣ Ideal.span {b}
-          rw [Ideal.dvd_iff_le]
-          exact (Ideal.span_singleton_le_iff_mem _).2 hmem
-        rw [HeightOneSpectrum.intValuation_eq_one_iff.2 hbw, inv_one, mul_one]
-        exact mul_le_one' (HeightOneSpectrum.intValuation_le_one _ _) (HeightOneSpectrum.intValuation_le_one _ _)
-  obtain ⟨r, hr⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one K _ hall
-  exact ⟨r, hr.symm⟩
+  apply Formalism.MainNotions.BridgeLemma.exists_den <;> assumption
 
 theorem dense_algebraMap : DenseRange (algebraMap K (v.adicCompletion K)) := by
   have h1 := HeightOneSpectrum.adicCompletion.continuous_ofCompletion K v
@@ -125,14 +82,14 @@ theorem toInt_valued (r : 𝓞 K) : Valued.v ((toInt v r : Valued.integer (v.adi
   show Valued.v (algebraMap K (v.adicCompletion K) (r : K)) = _
   rw [valued_algebraMap, HeightOneSpectrum.valuation_of_algebraMap]
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem mem_max_iff (y : Valued.integer (v.adicCompletion K)) :
     y ∈ IsLocalRing.maximalIdeal (Valued.integer (v.adicCompletion K)) ↔ Valued.v (y : v.adicCompletion K) < 1 := by
   rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
     (Valuation.integer.integers (Valued.v : Valuation (v.adicCompletion K) _)).isUnit_iff_valuation_eq_one]
   exact ⟨fun h => lt_of_le_of_ne y.2 h, fun h => ne_of_lt h⟩
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem finite_residue : Finite (IsLocalRing.ResidueField (Valued.integer (v.adicCompletion K))) := by
   haveI := v.isMaximal
   let ψ := (IsLocalRing.residue (Valued.integer (v.adicCompletion K))).comp (toInt v)
@@ -163,7 +120,7 @@ theorem finite_residue : Finite (IsLocalRing.ResidueField (Valued.integer (v.adi
 theorem isClosed_integer : IsClosed (Valued.integer (v.adicCompletion K) : Set (v.adicCompletion K)) :=
   (Valued.integer (v.adicCompletion K)).toAddSubgroup.isClosed_of_isOpen (Valued.isOpen_integer _)
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem compactSpace_integer : CompactSpace (Valued.integer (v.adicCompletion K)) := by
   have : CompleteSpace (Valued.integer (v.adicCompletion K)) := (isClosed_integer v).completeSpace_coe
   haveI : IsDiscreteValuationRing (Valued.integer (v.adicCompletion K)) :=

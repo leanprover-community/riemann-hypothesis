@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartFirstGroup
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOrder
 
 @[expose] public section
 

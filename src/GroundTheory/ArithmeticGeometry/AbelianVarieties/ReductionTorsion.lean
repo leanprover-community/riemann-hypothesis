@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FormalGroupReduction
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FormalGroupFiltration
-public import GroundTheory.LocalFields.FormalGroups.Basics
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.AdicCompletion.Basic
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 
 @[expose] public section
 

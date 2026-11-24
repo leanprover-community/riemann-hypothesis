@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumEventual
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperHyperplaneSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperSectionSt
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRestrLenEuler
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapper
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperSection
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperDiffPoly
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperSection
+import Mathlib.Algebra.Order.Star.Int
+import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 

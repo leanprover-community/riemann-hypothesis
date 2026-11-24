@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitArchSum
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitConjSum
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObjects
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PHeightRecR
 
 @[expose] public section

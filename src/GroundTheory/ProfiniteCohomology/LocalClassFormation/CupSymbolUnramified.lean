@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolDefs
+public import GroundTheory.LocalFields.MaximalUnramified
+public import GroundTheory.ProfiniteCohomology.CyclicCupProf
+import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsEqNsmulOfProjEqZero
 public import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
-public import GroundTheory.ProfiniteCohomology.CyclicCup
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsEqNsmulOfProjEqZero
+import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 

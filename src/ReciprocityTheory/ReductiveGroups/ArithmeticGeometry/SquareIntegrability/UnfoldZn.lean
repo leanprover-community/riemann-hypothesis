@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.CubeIcoMeas
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 
 @[expose] public section
 
@@ -57,7 +59,7 @@ theorem gauss_lin {d : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace
   set B : Matrix (Fin d) (Fin d) ℝ := ob.toBasis.toMatrix b with hB
   have hMB : M.transpose * B = 1 := by
     ext j k
-    simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.one_apply, hM, hB,
+    simp only [Matrix.mul_apply, Matrix.one_apply, hM, hB,
       Module.Basis.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
       OrthonormalBasis.repr_apply_apply]
     rw [← hub j k, ← ob.sum_inner_mul_inner (u j) (b k)]
@@ -75,8 +77,8 @@ theorem gauss_lin {d : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace
     rw [← ob.repr.norm_map]
     congr 1
     ext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [hM, Matrix.mulVec, dotProduct, map_sum, mul_comm]
+
+    simp [hM, Matrix.mulVec, dotProduct, map_sum, mul_comm]
   set G : (Fin d → ℝ) → ENNReal := fun y =>
     ENNReal.ofReal (Real.exp (-(2 * Real.pi) * ‖(WithLp.toLp 2 y : EuclideanSpace ℝ (Fin d))‖ ^ 2))
     with hG

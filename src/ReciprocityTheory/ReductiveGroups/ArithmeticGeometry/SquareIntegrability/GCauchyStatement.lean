@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.NumberField.CMField
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
+public import Mathlib.Geometry.Manifold.ContMDiffMap
 
 @[expose] public section
 

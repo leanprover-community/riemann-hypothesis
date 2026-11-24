@@ -1,17 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMixedSectionStep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSmallSectionMixed
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsIntegralAgainstPositive
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsZCombExpand
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionMixed
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftNefBig
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombLimit
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftNefBig
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionMixed
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombLimit
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotLtLtOfMemMinimalPrimes
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.KleimanSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+import Mathlib.Algebra.Order.Star.Int
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 
 @[expose] public section
 

@@ -1,10 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Mathlib.Tactic.ENatToNat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
 
@@ -18,11 +63,6 @@ noncomputable section
 namespace GlobalTheory.SecTwist
 
 variable {X X' Y Z : Scheme.{0}} {R R' : Type} [CommRing R] [CommRing R']
-
-theorem gs_finsum (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) {n : ℕ} (a : Fin n → Γ(X, U)) :
-    gs r z U (∑ i, a i) = ∑ i, gs r z U (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gs_eq r z U h, map_sum]
 
 theorem gs_cst (p : X ⟶ Spec (CommRingCat.of R)) (W : X.Opens) (r : Z ⟶ X) (z : Z) (hz : r z ∈ W) (a : R) :
     gs r z W (GlobalTheory.AbLaw.cst p W a) = Tor.cst (r ≫ p) z a :=
@@ -138,7 +178,7 @@ theorem perf_sec {f : X ⟶ Spec (CommRingCat.of R)} {M : LB X} (Q : Perf f M) (
   refine ⟨E, fun v i Z r z hz => ?_⟩
   have hz' : r z ∈ π ⁻¹ᵁ Q.W i := hz
   refine (gs_res r z (le_pull M π (Q.le i)) hz' _).symm.trans ((congrArg (gs r z _) (hE v i)).trans ?_)
-  rw [gs_finsum r z _ hz']
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.DVR.SectionScalarValuation.gs_sum r z _ hz']
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [gs_mul r z _ hz', gs_cst f' _ r z hz', gs_pull r π z _ hz]
 
@@ -161,8 +201,8 @@ theorem perf_bas {f : X ⟶ Spec (CommRingCat.of R)} {M : LB X} (Q : Perf f M) (
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun k _ => ?_
     simp only [← _root_.mul_assoc, ← map_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.sum_mul, ← map_sum]
+
+    rw [← Finset.sum_mul, ← map_sum]
     congr 2
     simp [Matrix.mulVec, dotProduct, mul_comm, Pi.single_apply]
   refine ⟨b, fun s => ?_⟩
@@ -227,7 +267,7 @@ theorem cmb_iff {p : Y ⟶ Spec (CommRingCat.of R)} {N : LB Y} {n : ℕ} (b : Fi
   have e : ∀ j, ∀ y ∈ N.U j, gs (𝟙 Y) y (N.U j) (∑ i, (Y.presheaf.map (homOfLE le_top).op).hom
       (p.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom (r i))) * (b i).f j) =
       ∑ i, Tor.cst p y (r i) * gs (𝟙 Y) y (N.U j) ((b i).f j) := fun j y hy => by
-    rw [gs_finsum _ y _ hy]
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.DVR.SectionScalarValuation.gs_sum _ y _ hy]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [gs_mul _ y _ hy]
     exact congrArg (· * _) ((gs_cst p _ (𝟙 Y) y hy (r i)).trans (by rw [Category.id_comp]))

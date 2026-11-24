@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.LatSemiSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.IndependentSectionsUpperCount
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementS
-public import Formalism.GaussJetBounds.StatementQ
+public import Formalism.GaussJetBounds.StatementI
 
 @[expose] public section
 

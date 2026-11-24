@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHolGermsIntegrallyClosed
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHolGermsUFD
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHolGermsDomain
+import Mathlib.NumberTheory.Height.NumberField
 
 @[expose] public section
 

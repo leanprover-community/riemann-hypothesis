@@ -2,8 +2,8 @@ module
 
 public import Formalism.PeriodIntegrals.DSInfCharCap
 public import Formalism.PeriodIntegrals.IsLowUnitH
-public import Formalism.RealPlaceAnalysis.StatementA
-public import Formalism.RealPlaceAnalysis.StatementE
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 
 @[expose] public section
 

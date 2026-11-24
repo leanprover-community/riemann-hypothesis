@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ColPhaseCut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ChiNCut
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -140,8 +141,8 @@ theorem leviM_mul {x y : X.B.I.Gf} (hx : x ∈ X.B.I.Kset) (hy : y ∈ X.B.I.Kse
     apply Subtype.ext
     simp only [Subring.coe_add, AddSubmonoidClass.coe_finsetSum, Subring.coe_mul]
     ring
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e3, map_add (f := _), hD, zero_add, map_sum]
+
+  rw [e3, map_add (f := _), hD, zero_add, map_sum]
   simp only [map_mul]
 
 end LeviMul

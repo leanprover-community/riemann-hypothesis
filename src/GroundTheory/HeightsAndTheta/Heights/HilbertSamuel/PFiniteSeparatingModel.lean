@@ -1,9 +1,19 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFiniteSeparatingModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNoetherProjection
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootsLiftToZeros
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 
 @[expose] public section
 
@@ -101,9 +111,9 @@ theorem exists_separating [Fintype σ] (S : Finset (σ → ℂ)) (x : σ → ℂ
   by_contra hzx
   have hev : aeval z (∑ i, C (c ^ (k i : ℕ)) * X i) - aeval x (∑ i, C (c ^ (k i : ℕ)) * X i) =
       (q z).eval (c : ℂ) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, aeval_C, aeval_X, q, Polynomial.eval_finsetSum, Polynomial.eval_mul,
-      Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X, ← Finset.sum_sub_distrib]
+
+    simp only [map_sum, map_mul, aeval_C, aeval_X, q, Polynomial.eval_finsetSum, Polynomial.eval_mul,
+    Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [eq_ratCast (algebraMap ℚ ℂ)]
     push_cast

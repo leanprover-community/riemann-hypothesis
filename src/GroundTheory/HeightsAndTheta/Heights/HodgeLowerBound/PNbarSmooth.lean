@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarSmooth
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsProjSmoothAlong
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsVertFactorSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuRegSmooth
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 

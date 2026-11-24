@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsCN
+public import Mathlib.Tactic.Continuity
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 
 @[expose] public section
 

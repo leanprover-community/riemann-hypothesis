@@ -1,8 +1,16 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.TateThesis.GlobalZetaSplit
+public import GroundTheory.GlobalFields.TateThesis.HeckeChar
+public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureQuotient
+public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhat
+public import GroundTheory.GlobalFields.TateThesis.AdelePoisson
 public import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
+public import GroundTheory.GlobalFields.TateThesis.GlobalZeta
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
 
 @[expose] public section
 

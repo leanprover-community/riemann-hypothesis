@@ -1,35 +1,60 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GGMirabolic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-open Finset Matrix
-
+open Matrix Classical Formalism.L2.SG.GGMirabolic
 open scoped ComplexConjugate ComplexOrder
 
 noncomputable section
 
-open Classical
-
 namespace PI.GGMatBoundW
 
-open Formalism.L2.SG.GGMirabolic
-
-section Defs
-
 variable {ι : Type} [Fintype ι] {Fq : ι → Type} [∀ v, Field (Fq v)] [∀ v, Fintype (Fq v)] {k : ℕ}
+  (ψ : ∀ v, AddChar (Fq v) ℂ) {V : Type} [AddCommGroup V] [Module ℂ V]
+  (π : Representation ℂ (∀ v, GL (Fin k) (Fq v)) V)
 
-def placeOp (ψ : ∀ v, AddChar (Fq v) ℂ) {V : Type} [AddCommGroup V] [Module ℂ V]
-    (π : Representation ℂ (∀ v, GL (Fin k) (Fq v)) V) (v : ι) : V →ₗ[ℂ] V :=
-  ∑ y : GL (Fin k) (Fq v), gam (ψ v) y • π (Pi.mulSingle v y)
+def placeOp (v : ι) : V →ₗ[ℂ] V := ∑ y : GL (Fin k) (Fq v), gam (ψ v) y • π (Pi.mulSingle v y)
 
-def totOp (ψ : ∀ v, AddChar (Fq v) ℂ) {V : Type} [AddCommGroup V] [Module ℂ V]
-    (π : Representation ℂ (∀ v, GL (Fin k) (Fq v)) V) : V →ₗ[ℂ] V :=
-  ∑ x : (∀ v, GL (Fin k) (Fq v)), gamProd ψ x • π x
-
-end Defs
+def totOp : V →ₗ[ℂ] V := ∑ x : (∀ v, GL (Fin k) (Fq v)), gamProd ψ x • π x
 
 def permRep (G : Type) [Monoid G] (X : Type) [MulAction Gᵐᵒᵖ X] : Representation ℂ G (X → ℂ) where
   toFun g := LinearMap.funLeft ℂ ℂ (fun i => MulOpposite.op g • i)

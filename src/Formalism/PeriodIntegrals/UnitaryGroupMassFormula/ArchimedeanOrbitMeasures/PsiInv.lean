@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PsiSmoothHolds
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.ExpCut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.GoodChartExOfStd
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PsiSmoothHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 
 @[expose] public section
 
@@ -26,17 +67,6 @@ def CaySkewU : Prop := ∀ (n : ℕ) (ε : Fin n → Bool) (M : Matrix (Fin n) (
 
 def CayIdU : Prop := ∀ (n : ℕ) (M : Matrix (Fin n) (Fin n) ℂ), IsUnit (M + 1) →
     (2 + (2 : ℂ) • ((M - 1) * (M + 1)⁻¹)) * (2 - (2 : ℂ) • ((M - 1) * (M + 1)⁻¹))⁻¹ = M
-
-theorem unr_re {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) : unrealify ((WithLp.equiv 2 _).symm (realifyFun X)) = X := by
-  exact Formalism.MainNotions.S.Gauge.unrealify_realify X
-
-theorem inUJ_mul {n : ℕ} (ε : Fin n → Bool) {A B : Matrix (Fin n) (Fin n) ℂ} (hA : Formalism.REAL.inUJ ε A)
-    (hB : Formalism.REAL.inUJ ε B) : Formalism.REAL.inUJ ε (A * B) := by
-  unfold Formalism.REAL.inUJ at *
-  calc (A * B)ᴴ * Formalism.REAL.Jm ε * (A * B) = Bᴴ * (Aᴴ * Formalism.REAL.Jm ε * A) * B := by
-        rw [conjTranspose_mul]
-        simp only [Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm ε := by rw [hA, hB]
 
 theorem expR_val {n : ℕ} (ε : Fin n → Bool) (x : EuclideanSpace ℝ (Fin n × Fin n × Bool))
     (hx : (unrealify x)ᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * unrealify x = 0) :
@@ -74,7 +104,7 @@ theorem psiInv_of (hL : LieSkewU) (hS : SkewLieU) (hC : CaySkewU) (hI : CayIdU) 
     rw [← hmh]; exact Submodule.mem_sup_right (L₁ p.2).2
   have ha := hL n ε _ hma
   have hb := hL n ε _ hmb
-  have hMU : Formalism.REAL.inUJ ε (Mf p) := inUJ_mul ε (inUJ_exp ε a ha) (inUJ_exp ε b hb)
+  have hMU : Formalism.REAL.inUJ ε (Mf p) := _root_.Formalism.REAL.indefinite_unitary_mul_mem ε (inUJ_exp ε a ha) (inUJ_exp ε b hb)
   set X := (2 : ℂ) • ((Mf p - 1) * (Mf p + 1)⁻¹) with hX
   have hXs := hC n ε (Mf p) hMU hu
   have hv : (WithLp.equiv 2 _).symm (realifyFun X) ∈ m ⊔ h := by rw [hmh]; exact hS n ε X hXs
@@ -96,7 +126,7 @@ theorem psiInv_of (hL : LieSkewU) (hS : SkewLieU) (hC : CaySkewU) (hI : CayIdU) 
   rw [hrec]
   have hid : (2 + unrealify ((WithLp.equiv 2 _).symm (realifyFun X))) *
       (2 - unrealify ((WithLp.equiv 2 _).symm (realifyFun X)))⁻¹ = Mf p := by
-    rw [unr_re]; exact hI n (Mf p) hu
+    rw [_root_.Formalism.MainNotions.S.Gauge.unrealify_realify]; exact hI n (Mf p) hu
   have hMunit : IsUnit (Mf p) := (Matrix.isUnit_exp a).mul (Matrix.isUnit_exp b)
   apply Subtype.ext
   apply Units.ext
@@ -248,7 +278,7 @@ theorem lieSkew_holds : LieSkewU := by
   refine Submodule.span_induction (p := fun v _ => (unrealify v)ᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * unrealify v = 0)
     ?_ ?_ ?_ ?_ hx
   · rintro v ⟨X, hX, rfl⟩
-    rw [unr_re]; exact skew_of_lieOf ε X hX
+    rw [_root_.Formalism.MainNotions.S.Gauge.unrealify_realify]; exact skew_of_lieOf ε X hX
   · simp [unrealify_zero']
   · intro a b _ _ ha hb
     have e : unrealify (a + b) = unrealify a + unrealify b := (unrLin n).map_add a b

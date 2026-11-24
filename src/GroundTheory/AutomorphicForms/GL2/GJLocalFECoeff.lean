@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJFEDefs
 public import GroundTheory.AutomorphicForms.MeasuresGL
-public import GroundTheory.AutomorphicForms.MeasuresParabolic
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixLocal
+public import GroundTheory.AutomorphicForms.InductionParabolic
+public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
+public import GroundTheory.AutomorphicForms.GL2.GJInducedCoeff
+public import GroundTheory.AutomorphicForms.GL2.GJZetaCore
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

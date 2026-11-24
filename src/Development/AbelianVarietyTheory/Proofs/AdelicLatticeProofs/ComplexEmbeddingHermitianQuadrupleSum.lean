@@ -1,16 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfHeisenbergLevelAndSmooth
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDirectionalDerivFormulaAndSmooth
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SymplecticValTauCompat
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SymplecticRealPartVanish
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.RealAdeleExtAndStandardCharacterFormula
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothIffRealCoordinatesAndRealLines
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfHeisenbergLevelAndSmooth
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundamentalDomainOfCocompact
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SymplecticRealPartVanish
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SymplecticValTauCompat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -45,8 +85,8 @@ theorem herm_sum {A : Type} [CommRing A] {m n : ℕ} (c : A →+* A) (hc : ∀ a
     (x y : Matrix (Fin m) (Fin n) A) :
     c (∑ a, ∑ b, ∑ e, ∑ d, P a b * c (y e b) * Q e d * x d a) =
       ∑ a, ∑ b, ∑ e, ∑ d, P a b * c (x e b) * Q e d * y d a := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, hc, hP, hQ]
+
+  simp only [map_sum, map_mul, hc, hP, hQ]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
   rw [Finset.sum_comm]
@@ -74,8 +114,8 @@ theorem map_hO_zero {A B : Type} [CommRing A] [CommRing B] {m n : ℕ} (q : A �
       rw [h1, mul_zero]
     · have h1 : q (y i j) = 0 := congrFun (congrFun h i) j
       rw [hc _ h1, mul_zero, zero_mul, zero_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, hk, Finset.sum_const_zero]
+
+  simp only [map_sum, hk, Finset.sum_const_zero]
 
 theorem map_trace_hO_zero {F E A B : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
     [CommRing A] [CommRing B] [Algebra F A] [Algebra F B] (p : A →ₐ[F] B) (s : E →ₐ[F] E) {m n : ℕ}
@@ -170,8 +210,8 @@ theorem complexEmbedding_hermitianQuadrupleSum {A : Type} [CommRing A] (φ : A �
     {m n : ℕ} (x y : Fin m → Fin n → A) (P : Fin n → Fin n → A) (Q : Fin m → Fin m → A) :
     φ (∑ a, ∑ b, ∑ e, ∑ d, P a b * c (y e b) * Q e d * x d a) =
       ∑ a, ∑ b, ∑ e, ∑ d, φ (P a b) * starRingEnd ℂ (φ (y e b)) * φ (Q e d) * φ (x d a) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, hc]
+
+  simp only [map_sum, map_mul, hc]
 
 theorem valTau_symplO (hθ : IsInfFam θ) (τ : D.what₂.Tau) (x y : WO S T) :
     valTau θ τ (symplO S T x y) = formAt S T τ (piW θ T S x τ) (piW θ T S y τ) := by
@@ -279,9 +319,9 @@ theorem continuous_of_level (h : Chart θ σ) (hψ : Continuous ψ) (f : WO S T 
       ∀ u ∈ U, u.map (infPart D) = 0 → heisO ψ S T u f = f)
     (hs : Sm (iotaW σ T S) f) : Continuous f := by
   obtain ⟨U, hUo, hU⟩ := hU
-  haveI : IsTopologicalAddGroup (Formalism.L2.Theta.AE D) := IsTopologicalRing.to_topologicalAddGroup
-  haveI : IsTopologicalAddGroup (WO S T) := Pi.topologicalAddGroup
-  haveI : ContinuousSub (WO S T) := IsTopologicalAddGroup.to_continuousSub
+  have : IsTopologicalAddGroup (Formalism.L2.Theta.AE D) := IsTopologicalRing.to_topologicalAddGroup
+  have : IsTopologicalAddGroup (WO S T) := Pi.topologicalAddGroup
+  have : ContinuousSub (WO S T) := IsTopologicalAddGroup.to_continuousSub
   refine continuous_iff_continuousAt.2 fun w => ?_
   let x : WO S T → RW T S := fun w' => piW θ T S (w' - w)
   let a : WO S T → WO S T := fun w' => w + iotaW σ T S (x w')

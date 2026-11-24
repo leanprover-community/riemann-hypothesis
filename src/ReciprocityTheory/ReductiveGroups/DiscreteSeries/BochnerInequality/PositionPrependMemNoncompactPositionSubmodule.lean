@@ -1,7 +1,54 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Permute
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -28,9 +75,7 @@ theorem ofCoords_apply' {X : Type*} [AddCommGroup X] [Module ℂ X] (k : ℕ)
 theorem wordContraction_apply (k : ℕ) (F : Big n k M) :
     phi E k F = ∑ κ, word E κ (F κ) := by
   first
-  | simp only [phi, LinearMap.coeFn_sum, Finset.sum_apply, LinearMap.comp_apply, coord_apply']
   | (rw [phi, LinearMap.sum_apply]; rfl)
-  | simp [phi, coord_apply']
 
 theorem mAct_apply' (k : ℕ) (a b : Fin n) (F : Big n k M) (κ : Fin k → Fin n × Fin n) :
     mAct E k a b F κ = E a b (F κ) := rfl
@@ -43,21 +88,15 @@ theorem factorAd_apply' (k : ℕ) (i : Fin k) (a b : Fin n) (F : Big n k M)
   first
   | (simp only [factorAd, ofCoords_apply', LinearMap.sub_apply]
      split_ifs <;> simp [coord_apply'])
-  | (show ((if (κ i).1 = a then coord k (Function.update κ i (b, (κ i).2)) else 0) -
-        (if (κ i).2 = b then coord k (Function.update κ i ((κ i).1, a)) else 0) :
-        Big n k M →ₗ[ℂ] M) F = _
-     split_ifs <;> simp [coord_apply'])
 
 theorem rootWordProduct_zero (κ : Fin 0 → Fin n × Fin n) : word E κ = 1 := by
   first
   | rfl
-  | simp [word]
 
 theorem rootWordProduct_cons {k : ℕ} (p : Fin n × Fin n) (κ : Fin k → Fin n × Fin n) :
     word E (Fin.cons p κ : Fin (k + 1) → Fin n × Fin n) = E p.1 p.2 * word E κ := by
   first
   | simp only [word, List.ofFn_succ, List.prod_cons, Fin.cons_zero, Fin.cons_succ]
-  | simp [word, List.ofFn_succ]
 
 theorem commutator_rootWordProduct (hE : IsGlRep E) (a b : Fin n) : ∀ {k : ℕ} (κ : Fin k → Fin n × Fin n),
     E a b * word E κ - word E κ * E a b =
@@ -96,7 +135,7 @@ theorem sum_ite_update_reindex {k : ℕ} (i : Fin k) (P Q : Fin n × Fin n → P
   refine Finset.sum_nbij' (fun κ => Function.update κ i (f (κ i)))
     (fun κ => Function.update κ i (g (κ i))) ?_ ?_ ?_ ?_ ?_ <;>
   intro κ hκ <;>
-  simp only [Finset.mem_coe, Finset.coe_filter, Set.mem_setOf_eq, Finset.mem_filter,
+  simp only [Finset.mem_filter,
     Finset.mem_univ, true_and] at hκ ⊢
   · simpa using hf _ hκ
   · simpa using hg _ hκ
@@ -108,8 +147,6 @@ theorem positionTensorAction_apply (k : ℕ) (a b : Fin n) (F : Big n k M) (κ :
     bAct E k a b F κ = E a b (F κ) + ∑ i, factorAd (M := M) k i a b F κ := by
   rw [← coord_apply' k κ (bAct E k a b F)]
   first
-  | (simp only [bAct, LinearMap.add_apply, LinearMap.coeFn_sum, Finset.sum_apply, map_add (f := _), map_sum]
-     simp only [coord_apply', mAct_apply'])
   | (simp only [bAct, LinearMap.add_apply, LinearMap.sum_apply, map_add (f := _), map_sum]
      simp only [coord_apply', mAct_apply'])
 
@@ -145,16 +182,13 @@ theorem wordContraction_tensorAction (hE : IsGlRep E) (k : ℕ) (a b : Fin n) (F
     first
     | simp only [LinearMap.sub_apply, Module.End.mul_apply, LinearMap.sum_apply,
         ite_linearMap_zero_apply] at h
-    | simp only [LinearMap.sub_apply, Module.End.mul_apply, LinearMap.coe_sum, Finset.sum_apply,
-        ite_linearMap_zero_apply] at h
     first
     | exact sub_eq_iff_eq_add'.mp h
-    | (rw [← h]; abel)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [wordContraction_apply, wordContraction_apply, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [positionTensorAction_apply, factorAd_apply', map_add (f := _), map_sum, map_sub,
-    linearMap_apply_ite_zero, hc, Finset.sum_add_distrib]
+
+  rw [wordContraction_apply, wordContraction_apply, map_sum]
+
+  simp only [positionTensorAction_apply, factorAd_apply', map_add (f := _), map_sum, map_sub,
+  linearMap_apply_ite_zero, hc, Finset.sum_add_distrib]
   congr 1
   conv_lhs => rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
@@ -191,7 +225,6 @@ theorem mem_noncompactPositionSubmodule_iff' {k : ℕ} {F : Big n k M} :
     F ∈ ncV ε V k ↔ ∀ κ, F κ ∈ (if ∀ i, ε (κ i).1 ≠ ε (κ i).2 then V else ⊥) := by
   first
   | (rw [ncV, Submodule.mem_iInf]; rfl)
-  | simp only [ncV, Submodule.mem_iInf, Submodule.mem_comap, coord_apply']
 
 theorem wordContraction_mem_noncompactLayer' {k : ℕ} {F : Big n k M} (hF : F ∈ ncV ε V k) :
     phi E k F ∈ layer ε E V k := by
@@ -209,8 +242,8 @@ def indexPairPrepend {k : ℕ} (p : Fin n × Fin n) (G : Big n k M) : Big n (k +
 
 theorem wordContraction_prepend {k : ℕ} (p : Fin n × Fin n) (G : Big n k M) :
     phi E (k + 1) (indexPairPrepend p G) = E p.1 p.2 (phi E k G) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [wordContraction_apply, wordContraction_apply, map_sum]
+
+  rw [wordContraction_apply, wordContraction_apply, map_sum]
   have hL : ∀ κ : Fin (k + 1) → Fin n × Fin n, word E κ ((indexPairPrepend p G) κ) =
       if κ 0 = p then word E κ (G (Fin.tail κ)) else 0 := by
     intro κ
@@ -220,7 +253,7 @@ theorem wordContraction_prepend {k : ℕ} (p : Fin n × Fin n) (G : Big n k M) :
   rw [← Finset.sum_filter]
   refine Finset.sum_nbij' (fun κ => Fin.tail κ) (fun κ' => Fin.cons p κ') ?_ ?_ ?_ ?_ ?_ <;>
   intro κ hκ <;>
-  simp only [Finset.mem_coe, Finset.coe_filter, Set.mem_setOf_eq, Finset.mem_filter,
+  simp only [Finset.mem_filter,
     Finset.mem_univ, true_and] at hκ ⊢
   · simp
   · rw [← hκ]; exact Fin.cons_self_tail κ
@@ -306,9 +339,6 @@ variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin 
 
 theorem phi_bAct (hE : IsGlRep E) (k : ℕ) {a b : Fin n} (hab : ε a = ε b) (F : Big n k M) :
     phi E k (bAct E k a b F) = E a b (phi E k F) := wordContraction_tensorAction hE k a b F
-
-theorem phi_mem_layer {k : ℕ} {F : Big n k M} (hF : F ∈ ncV ε V k) :
-    phi E k F ∈ layer ε E V k := wordContraction_mem_noncompactLayer' hF
 
 theorem layer_succ_le (hE : IsGlRep E) (hV : IsKStableSub ε E V) (k : ℕ) :
     layer ε E V (k + 1) ≤ layer ε E V k ⊔ (ncV ε V (k + 1)).map (phi E (k + 1)) := noncompactLayer_succ_le_sup' k

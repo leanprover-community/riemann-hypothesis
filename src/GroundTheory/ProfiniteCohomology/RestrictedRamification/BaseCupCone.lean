@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.CompactCupEqCompactCupRight
+public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology
+public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConePairing
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+import GroundTheory.TateCohomology.CupCochains
 
 @[expose] public section
 

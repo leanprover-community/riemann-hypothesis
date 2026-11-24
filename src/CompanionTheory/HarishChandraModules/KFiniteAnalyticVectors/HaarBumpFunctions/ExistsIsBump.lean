@@ -1,8 +1,19 @@
 module
 
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.ExistsOpOfForm
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.Garding
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SecondCountableQuotients.ModExists
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothVec
+public import Formalism.PeriodIntegrals.UpqRep
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.IntegralMemOfIsClosed
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.FinOfPI
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.Garding
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.GardingAvg
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.GardingBump
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.ExistsOpOfForm
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Normed.Module.HahnBanach
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.UniformSpace.Matrix
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -356,7 +367,6 @@ theorem IsInv.exists_op [(haar : Measure (MG G hG)).IsInvInvariant] (θ : Mat n 
       have := Submodule.le_topologicalClosure _ hm
       rwa [h0, Submodule.mem_bot] at this
   set C' := |C * ∑ j, ‖dsW σ' (W' j) y‖| * Fintype.card ι + ‖T y‖ with hC'
-  have hC0 : 0 ≤ C' := by positivity
   rw [← sub_eq_zero, ← norm_le_zero_iff]
   refine le_of_forall_pos_le_add fun δ hδ => ?_
   obtain ⟨a, ha, hxa⟩ := exists_approx hG h hiso hx₀s hd hx (ι := Option ι) (W := fun o => o.elim [] W)

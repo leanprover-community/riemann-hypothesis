@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipApplyCastSuccLast
+public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.NumberTheory.LocalField.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,7 +75,7 @@ theorem blockMat_mul {n : ℕ} (g h : Mir k n) :
   have hh := (mem_Mir_iff k (h : GL (Fin (n + 1)) k)).1 h.2
   ext i j
   have e : ((h : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) (Fin.castSucc j) = 0 := by
-    rw [hh]; simp [eLast, Pi.single_apply, Fin.castSucc_ne_last]
+    rw [hh]; simp [eLast, Fin.castSucc_ne_last]
   simp [blockMat, Units.val_mul, Matrix.mul_apply, Fin.sum_univ_castSucc, e]
 
 def mirabolicProjection (n : ℕ) : Mir k n →* GL (Fin n) k :=
@@ -64,7 +110,7 @@ theorem glEmbMat_mul_colMat (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (v : Fin n 
 theorem colMat_mul_glEmbMat (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (w : Fin n → k) :
     colMat k n w * glEmbMat k n A = colMat k n w := by
   ext i j
-  induction j using Fin.lastCases <;> simp [colMat, glEmbMat, Matrix.mul_apply, Fin.sum_univ_castSucc, Fin.castSucc_ne_last]
+  induction j using Fin.lastCases <;> simp [colMat, glEmbMat, Matrix.mul_apply, Fin.castSucc_ne_last]
 
 theorem glEmb_mul_unip' (n : ℕ) (g : GL (Fin n) k) (v : Multiplicative (Fin n → k)) :
     glEmb k n g * unip k n v =
@@ -117,7 +163,7 @@ theorem qEntry_mul (n : ℕ) (a b : Mir k (n + 1)) (ha : mirabolicProjection k (
 def qChar (ψ : AddChar k Circle) (n : ℕ) : Q k n →* ℂˣ where
   toFun q := Circle.toUnits (ψ (qEntry k n ((q : Mir k (n + 1)) : GL (Fin (n + 2)) k)))
   map_one' := by
-    simp [qEntry, one_apply, Fin.castSucc_ne_last]
+    simp [qEntry, Fin.castSucc_ne_last]
   map_mul' a b := by
     simp only [Subgroup.coe_mul, qEntry_mul k n (a : Mir k (n + 1)) (b : Mir k (n + 1)) a.2, AddChar.map_add_eq_mul,
       map_mul]

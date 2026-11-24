@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.StandardDeltaIntegralCoeffs
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP
-public import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.PDescentCutA
+public import Formalism.HermitianLattices.StatementMaj
+public import Formalism.LocalToGlobal.Columns.PolyFn
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.LocalToGlobal.GlobalTheory.HLatOps
 
 @[expose] public section
 

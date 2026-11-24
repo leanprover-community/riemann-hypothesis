@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.StatementKap
+public import Formalism.LocalToGlobal.KernelLattices.KerStd
 
 @[expose] public section
 

@@ -2,6 +2,47 @@ module
 
 public import Development.WeilBound.CoreStatements.FlagImmersions.Transport
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVec
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Hermitian
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -29,7 +70,7 @@ theorem exists_rightInv {p q : ℕ} (Γ : Matrix (Fin p) (Fin p) ℂ) (Γ' : Mat
   have h1 : fromCols (S * Mᴴ * Γ) (-(S * Qᵀ * Γ'ᵀ)) * fromRows M (Q.map (starRingEnd ℂ)) = 1 := by
     rw [fromCols_mul_fromRows, ← hS]
     nth_rewrite 4 [show S = Mᴴ * Γ * M - Qᵀ * Γ'ᵀ * Q.map (starRingEnd ℂ) from h.symm]
-    simp only [Matrix.mul_sub, Matrix.neg_mul, Matrix.mul_assoc, sub_eq_add_neg, Matrix.mul_add, Matrix.mul_neg]
+    simp only [Matrix.neg_mul, Matrix.mul_assoc, sub_eq_add_neg, Matrix.mul_add, Matrix.mul_neg]
   have h2 := (Matrix.mul_eq_one_comm_of_equiv (finSumFinEquiv (m := p) (n := q)).symm).1 h1
   rw [fromRows_mul_fromCols, ← fromBlocks_one, fromBlocks_inj] at h2
   exact ⟨_, h2.1⟩
@@ -259,8 +300,8 @@ theorem perMat_of : PerCoord → MatStep → PerMat := by
     rw [LinearEquiv.eq_symm_apply]
     show k _ = _
     rw [(hall t' ht'.1).2.1 a, (hall t ht.1).2.1 a]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_add (f := _), map_smul, hk, hk']
+
+    simp only [map_sum, map_add (f := _), map_smul, hk, hk']
     refine Finset.sum_congr rfl fun τ _ => ?_
     rw [sum_frame, sum_frame, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ← hUe, ← hUe']
 

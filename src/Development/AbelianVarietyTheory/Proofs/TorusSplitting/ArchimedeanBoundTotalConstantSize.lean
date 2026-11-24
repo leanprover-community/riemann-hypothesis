@@ -1,10 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TorusSections.IsTorusOf
-public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
-public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.IsOrth
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters
 
 @[expose] public section
 
@@ -30,10 +66,7 @@ theorem _root_.GlobalTheory.EtaAn.archimedeanBoundTotalConstant_size : ∀ (E : 
   have hQ : (1 : ℝ) ≤ q := by exact_mod_cast hq
   have hlM : Real.log m ≤ L := (Real.log_le_log (by positivity) hMR).trans hlr
   have hlFnn : 0 ≤ Real.log f := Real.log_nonneg hF
-  have hlRnn : 0 ≤ Real.log r := Real.log_nonneg hR
   have hlMnn : 0 ≤ Real.log m := Real.log_nonneg hM
-  have hlQnn : 0 ≤ Real.log q := Real.log_nonneg hQ
-  have hlDnn : 0 ≤ Real.log D := Real.log_nonneg hrd
   have heOne := Real.exp_one_gt_d9
   have heTwo : (7.3 : ℝ) ≤ Real.exp 2 := by
     rw [show (2 : ℝ) = 1 + 1 by norm_num, Real.exp_add]; nlinarith
@@ -51,8 +84,6 @@ theorem _root_.GlobalTheory.EtaAn.archimedeanBoundTotalConstant_size : ∀ (E : 
     rw [← Real.rpow_natCast] at this
     norm_num at this ⊢
     linarith
-  have hlTwoNonneg : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-  have hlFiveNonneg : 0 ≤ Real.log 5 := Real.log_nonneg (by norm_num)
 
   have hy : (1 : ℝ) ≤ f * r * q :=
     one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le hF hR) hQ
@@ -95,7 +126,6 @@ theorem _root_.GlobalTheory.EtaAn.archimedeanBoundTotalConstant_size : ∀ (E : 
       ≤ 10 + 24 * L := by
     rw [show 5 ^ 4 * (r : ℝ) * (2 * (f : ℝ) * m) / 2 * (4 * D ^ 7 * (2 * (f : ℝ) * m) ^ 2) =
         10000 * r * f ^ 3 * m ^ 3 * D ^ 7 by ring]
-    have hD : (0 : ℝ) < D := by linarith
     rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
       Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
       Real.log_pow, Real.log_pow, Real.log_pow]
@@ -153,9 +183,6 @@ theorem _root_.GlobalTheory.EtaAn.archimedeanBoundTotalConstant_size : ∀ (E : 
   have hprodFiveA : 8 * (f : ℝ) * r ^ 2 * Real.log 5 ≤ 16 * (f * r ^ 2) := by
     have := mul_le_mul_of_nonneg_left hlFive (by positivity : (0 : ℝ) ≤ f * r ^ 2)
     linarith
-  have hprodFiveB : 2 * (f : ℝ) * r ^ 2 * Real.log 5 ≤ 4 * (f * r ^ 2) := by
-    have := mul_le_mul_of_nonneg_left hlFive (by positivity : (0 : ℝ) ≤ f * r ^ 2)
-    linarith
   have hnnSqrt : 0 ≤ (r : ℝ) * (f * r * Real.log (1 + 6 * √((f : ℝ) * r * q))) := by positivity
   have hnnFact : 0 ≤ (r : ℝ) * (2 * f * m * Real.log (3 * (2 * (f : ℝ) * m))) := by positivity
   have hnnLast : 0 ≤ (5 : ℝ) ^ 4 * r * (2 * f * m) / 2 *
@@ -165,7 +192,6 @@ theorem _root_.GlobalTheory.EtaAn.archimedeanBoundTotalConstant_size : ∀ (E : 
   have hnnTwo : 0 ≤ (r : ℝ) * Real.log 2 := by positivity
   have hRlogTwo : (r : ℝ) * Real.log 2 ≤ r := mul_le_of_le_one_right (by positivity) hlTwo
   have hrfm_nonneg : 0 ≤ (r : ℝ) * (2 * f * m) := by positivity
-  have hRnn : (0 : ℝ) ≤ r := by positivity
   constructor
   · linarith
   · linarith

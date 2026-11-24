@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.AllPartsTransfer
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Semisimple
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 
@@ -114,9 +122,9 @@ theorem trace_repC {K : Type} [Field K] (σ : K →+* ℂ) {G : Type} [Group G] 
     LinearMap.trace ℂ _ (repC σ τ g) = σ (charOf τ g) := by
   rw [LinearMap.trace_eq_matrix_trace ℂ (Pi.basisFun ℂ (Fin (finrank K T))), charOf,
     LinearMap.trace_eq_matrix_trace K (Module.finBasis K T) (τ g)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [repC, LinearMap.toMatrix_eq_toMatrix', Matrix.trace, map_sum, LinearMap.toMatrixAlgEquiv_apply,
-    LinearMap.toMatrix_apply]
+
+  simp [repC, LinearMap.toMatrix_eq_toMatrix', Matrix.trace, map_sum, LinearMap.toMatrixAlgEquiv_apply,
+  LinearMap.toMatrix_apply]
 
 end CharacterLemmas
 
@@ -135,7 +143,6 @@ theorem charFacts : CharFacts := by
   obtain ⟨σ⟩ : Nonempty (K →+* ℂ) := by
     first
     | exact inferInstance
-    | exact ⟨(IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := K)).toRingHom⟩
   refine ⟨?_, fun σ' => ⟨(hmain σ').2.1, (hmain σ').2.2⟩⟩
   exact (isIntegral_algHom_iff σ.toIntAlgHom σ.injective).1 (hmain σ).1
 
@@ -165,7 +172,6 @@ theorem dimSq_of (h : Schur) : DimSq := by
   obtain ⟨σ⟩ : Nonempty (K →+* ℂ) := by
     first
     | exact inferInstance
-    | exact ⟨(IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := K)).toRingHom⟩
   have hdim : charOf (τ s) 1 = (finrank K (T s) : K) := by
     unfold charOf
     rw [map_one, LinearMap.trace_one]
@@ -176,8 +182,8 @@ theorem dimSq_of (h : Schur) : DimSq := by
     push_cast
     exact Complex.conj_mul' _
   have e1 := congrArg σ hs
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_natCast] at e1
+
+  rw [map_sum, map_natCast] at e1
   simp_rw [hterm] at e1
   have e2 : (∑ x : G, ‖σ (charOf (τ s) x)‖ ^ 2 : ℝ) = (Fintype.card G : ℝ) := by
     exact_mod_cast e1

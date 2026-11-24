@@ -1,7 +1,60 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LaurentBlockInduction.LdDefs
-public import GroundTheory.AutomorphicForms.GL2.GJFEBlockPoint
+import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Formalism.DoubleCosetMeasures.Statement
+public import GroundTheory.AutomorphicForms.AffineBruhat
+import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
+import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
+import GroundTheory.AutomorphicForms.WhittakerGroups
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.Connected
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -54,18 +107,6 @@ private theorem lc_lemma {G β : Type*} [Group G] [TopologicalSpace G] [IsTopolo
     have := hf x (x⁻¹ * y) hy
     simpa using this
   exact tendsto_nhds_of_eventually_eq h3
-
-private theorem ordDet_zpow' {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F]
-    [IsNonarchimedeanLocalField F] {n : ℕ} (g : GL (Fin n) F) (j : ℤ) :
-    ordDet (g ^ j) = j * ordDet g := by
-  refine Int.induction_on j ?_ ?_ ?_
-  · simp [ordDet_one]
-  · intro i ih
-    rw [zpow_add_one, ordDet_mul, ih]
-    ring
-  · intro i ih
-    rw [zpow_sub_one, ordDet_mul, ordDet_inv, ih]
-    ring
 
 private theorem continuous_ordDet {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F]
     [IsNonarchimedeanLocalField F] {n : ℕ} : Continuous (ordDet : GL (Fin n) F → ℤ) :=
@@ -228,7 +269,7 @@ private theorem exists_isCompact_ordDet_eq_centralUnif_zpow_mul_mem {F : Type*} 
     hJ.isCompact_biUnion (fun j _ => hC.image (continuous_const_mul _)), ?_⟩
   rintro g hg ⟨j, hj⟩
   refine Set.mem_iUnion₂.2 ⟨j, ?_, ⟨_, hj, by simp⟩⟩
-  exact ⟨_, hj, by rw [ordDet_mul, ordDet_zpow', ordDet_centralUnif, hg]⟩
+  exact ⟨_, hj, by rw [ordDet_mul, _root_.GroundTheory.Automorphic.GodementJacquet.ordDet_zpow, ordDet_centralUnif, hg]⟩
 
 private theorem integrableOn_of_continuous_of_support_inter_subset_compact {X : Type*} [MeasurableSpace X] [TopologicalSpace X]
     [OpensMeasurableSpace X] [T2Space X] (μ : Measure X) [IsFiniteMeasureOnCompacts μ]

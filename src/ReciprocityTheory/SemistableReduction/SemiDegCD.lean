@@ -1,5 +1,6 @@
 module
 
+public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
 public import ReciprocityTheory.SemistableReduction.SemiDegCC
 
 @[expose] public section

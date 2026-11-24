@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.GaloisValuations.GlobalA
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -55,7 +97,7 @@ theorem exists_nat_gen {Ω : Type*} [Field Ω] [CharZero Ω] (A : ValuationSubri
       refine ⟨p, hp.ne_zero, fun q hq => ?_⟩
       by_contra hc
       rw [not_or] at hc
-      have hq1 : A.valuation (q : Ω) < 1 := lt_of_le_of_ne (by simpa using hle q) hc.2
+      have hq1 : A.valuation (q : Ω) < 1 := lt_of_le_of_ne (by simp) hc.2
       obtain ⟨x, y, hxy⟩ : IsCoprime (q : ℤ) (p : ℤ) :=
         Nat.isCoprime_iff_coprime.2 ((Nat.coprime_primes hq hp).2 hc.1)
       have e : (x : Ω) * q + (y : Ω) * p = 1 := by exact_mod_cast congrArg (Int.cast : ℤ → Ω) hxy
@@ -66,7 +108,7 @@ theorem exists_nat_gen {Ω : Type*} [Field Ω] [CharZero Ω] (A : ValuationSubri
       rw [e, map_one] at this
       exact lt_irrefl _ this
     · refine ⟨1, one_ne_zero, fun q hq => Or.inr ?_⟩
-      exact le_antisymm (by simpa using hle q) (not_lt.1 fun h' => h ⟨q, hq, h'⟩)
+      exact le_antisymm (by simp) (not_lt.1 fun h' => h ⟨q, hq, h'⟩)
   refine ⟨p, hp0, fun a => ?_⟩
   induction a using Nat.recOnMul with
   | zero => intro h; exact absurd rfl h
@@ -149,8 +191,8 @@ omit [NumberField E] in
 theorem cob_mul (σ τ : G E Ω) (y : Ωˣ) : cob (σ * τ) y = cob σ (cob τ y) * cob σ y * cob τ y := by
   ext
   have h1 : (y : Ω) ≠ 0 := y.ne_zero
-  have h2 : σ (y : Ω) ≠ 0 := by simpa using h1
-  have h3 : τ (y : Ω) ≠ 0 := by simpa using h1
+  have h2 : σ (y : Ω) ≠ 0 := by simp
+  have h3 : τ (y : Ω) ≠ 0 := by simp
   simp only [Units.val_mul, coe_cob, AlgEquiv.mul_apply, map_div₀]
   field_simp
 

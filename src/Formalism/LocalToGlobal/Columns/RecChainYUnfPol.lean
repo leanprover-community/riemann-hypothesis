@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecChainUnfOne
-public import Formalism.LocalToGlobal.Columns.ChainInstY
+public import Formalism.LocalToGlobal.Columns.Record
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 
 @[expose] public section
 

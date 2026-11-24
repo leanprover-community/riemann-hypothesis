@@ -1,9 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.MvPowerSeriesSubstConstTermsLocalAlgHomSpec
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.MvPowerSeriesSubstConstTermsLocalAlgHomSpec
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -288,8 +325,8 @@ theorem hq_sum (hh : B.IsCanonGauge K h) (w0 : O) {n m : ℕ} (mu : Matrix (Fin 
   rw [Finset.sum_comm]
   have e2 : ∀ k, ∑ i, φ j k (star (mu i j) * mu i k * w0) = if j = k then N • φ j k w0 else 0 := by
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum, ← Finset.sum_mul, hmu j k]
+
+    rw [← map_sum, ← Finset.sum_mul, hmu j k]
     split_ifs
     · rw [← nsmul_eq_mul, map_nsmul]
     · rw [zero_mul, map_zero]
@@ -344,9 +381,9 @@ theorem GlobalTheory.PlaceInt.exists_isKappa : ∀ (V : Type) [CommRing V] [IsDo
   have key := hq_sum hi hh w0 mu N hmu (fun j => pt V (n := n) d j) hx
   have hmem : (∑ b : Fin n, ev (n := n) ![fun i => FB.toK K (matV B mu (fun j => pt V (n := n) d j) b i)] (B.hL K h w0)
       - (N : K) • ∑ b : Fin n, ev (n := n) ![pt K d b] (B.hL K h w0)) ∈ intLog K hi n d := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← QuotientAddGroup.eq_zero_iff, ← QuotientAddGroup.mk'_apply, map_sub, sub_eq_zero, Nat.cast_smul_eq_nsmul,
-      map_nsmul, map_sum, map_sum]
+
+    rw [← QuotientAddGroup.eq_zero_iff, ← QuotientAddGroup.mk'_apply, map_sub, sub_eq_zero, Nat.cast_smul_eq_nsmul,
+    map_nsmul, map_sum, map_sum]
     convert key using 2 with b _
     · rw [matV_eq_sumP B mu _ hx b, hq,
         ← ev_hL w0 (constantCoeff_sumP_eq_zero B fun j => gp_comp1 _ _ (constantCoeff_act_eq_zero B _) (hx j))]

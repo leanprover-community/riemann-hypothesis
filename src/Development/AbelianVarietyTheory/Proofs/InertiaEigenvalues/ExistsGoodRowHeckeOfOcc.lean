@@ -1,21 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GoodIdempotentFixesMemGoodTypeSpace
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InjPrimeTo
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-public import Formalism.LocalRingCardinality.DataTies
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NHkRow
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalHeckeScalarOnSphericalVectors
+public import Development.AbelianVarietyTheory.Definitions.Divisors.InstCMHostS
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeEqSmulOfIsot
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowTypeHasSphericalHeckeEigensystem
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCoordLattice
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DivisorsAtInvDualLabelAndStabilizerMul
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeOnMemMult
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankWeightComponentEq
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvolutionSphericalHeckeAnti
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelOperatorsAtPrimeOffLevelDatum
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaLiftLevelsGoodPrimesProperties
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartConjMem
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowTypeHasSphericalHeckeEigensystem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalHeckeScalarOnSphericalVectors
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCoordLattice
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvolutionSphericalHeckeAnti
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelOperatorsAtPrimeOffLevelDatum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -224,8 +258,8 @@ private theorem scalar_on_fixed_isot {hF : D.host.F = maximalRealSubfield D.host
       apply Subtype.ext
       rw [Submodule.coe_sum]
       simpa [principalLevelFrame.Hecke₃, principalLevelFrame.heckeG, LinearMap.sum_apply, piRep_coe] using h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hOn, ← map_smul, ← h2, map_sum]
+
+    rw [hOn, ← map_smul, ← h2, map_sum]
     exact Finset.sum_congr rfl fun γ _ => (hE _ x).symm
   let W : Submodule ℂ (MMap M) := Submodule.span ℂ {T | ∃ Φ : π.S →ₗ[ℂ] MMap M, principalLevelFrame.IsEqvA (principalLevelFrame.actM Q M) π Φ ∧ ∃ x : π.S,
       (∀ κ, Q.ψ κ ∈ hyp V Pr → Formalism.L2.NG.rt D.host.E n κ (x : Formalism.AUTREP.GAf D.host.E n → ℂ) = x) ∧ T = Φ x}
@@ -388,7 +422,7 @@ theorem partR_ne_bot (Y : Read (A3 := A3) R F X0) {i : Fin D.R.m} {σ : D.what�
 abbrev levTriv (R : RealDat D A3.A Ks) (i : Fin D.R.m) : Subgroup (GA D (Wc D i)) :=
   levG (Wc D i) (R.βW i) (R.datWp i R.triv)
 
-theorem rank_Wc (i : Fin D.R.m) : (Wc D i).rank = D.R.r := D.sp.W_rank _ (Nat.le_add_left _ _) i.2
+alias rank_Wc := _root_.Formalism.IndefR.FWT.rank_Wc
 
 theorem exists_local (hL : R.toLevCh.Is A3.A.μ0) (i : Fin D.R.m) {P : HeightOneSpectrum (𝓞 D.host.E)}
     (hP : ∀ PP ∈ R.Pg, PP ≠ P ∧ ¬ Lev.IsConjPl PP P) {k : ℕ} (hk : k ≤ D.R.r) {α : GA D (Wc D i)}

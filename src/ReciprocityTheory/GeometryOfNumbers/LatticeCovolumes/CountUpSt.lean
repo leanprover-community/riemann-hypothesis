@@ -1,7 +1,8 @@
 module
 
-public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountSt
-public import Mathlib
+public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

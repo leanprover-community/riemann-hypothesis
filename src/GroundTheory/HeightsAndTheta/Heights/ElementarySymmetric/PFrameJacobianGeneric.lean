@@ -1,9 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameJacobianGeneric
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StConormalGenerationGeneric
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.JacMinorC
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.GenSmooth
 
 @[expose] public section
 
@@ -56,8 +64,8 @@ theorem FrameJacobianGeneric.proof (hR : JacobianRankGeneric.Statement)
   let W : Matrix (Fin r) (Fin n) K := Matrix.of fun i j => π (frameDeriv b j (G (a i)))
   have hW : W = V * N := by
     ext i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [W, V, N, frameDeriv, Matrix.mul_apply, map_sum, mul_comm]
+
+    simp [W, V, N, frameDeriv, Matrix.mul_apply, map_sum, mul_comm]
   have hVc : (V.submatrix id c).det ≠ 0 := by
     have : V.submatrix id c = π.mapMatrix (Matrix.of fun i j => pderiv (c j) (G (a i))) := by
       ext i j

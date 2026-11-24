@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
 
 @[expose] public section
 

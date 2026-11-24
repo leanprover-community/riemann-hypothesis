@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsFieldIntersectionExample
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PIntNumRatSection
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsFnDegRelDeg
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsFieldIntersectionExample
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsVerticalDivOfIsVerticalDivisorAlt
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PIntNumRatSection
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 
 @[expose] public section
 

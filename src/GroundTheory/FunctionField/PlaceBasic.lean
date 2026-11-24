@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.FunctionField.PlaceDefs
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

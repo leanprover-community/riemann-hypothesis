@@ -1,9 +1,43 @@
 module
 
-public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.GlobalSchurBounds.Chosen
 public import Formalism.SizeWindowBrackets.SChain
 public import Formalism.SizeWindowBrackets.GaloisToProductIsIso
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -51,6 +85,9 @@ def TiePts (pt : φ.A → Fm.Ix x) (av bv : ℕ → ℤ) : Prop :=
 
 variable {φ m f}
 
+/-- Ties the global scalar parameters (`a`, `b`, `b'`, `k`, `L`, `La`, `B0`, `Nc`, `lg`, `logGam`,
+and the scale thresholds `Xpp`, `η`, `X'`) of an abstract `Data` record to those of the arithmetic
+family `Fm` at scale `x`. -/
 def TieGlobal (pt : φ.A → Fm.Ix x) {Top : Type}
     (Dd : Data φ.A (fun u0 => (Fm.D x (pt u0)).what₂.Word) Top m f) (Xpp η X' : ℝ) : Prop :=
   ∀ u0 : φ.A,
@@ -64,6 +101,10 @@ def TieGlobal (pt : φ.A → Fm.Ix x) {Top : Type}
     Xpp = (Fm.L x (pt u0)).sc.X'' (Fm.D x (pt u0)).R.n ∧ η = (Fm.L x (pt u0)).etaSz ∧
     X' = (Fm.L x (pt u0)).sc.X'
 
+/-- Ties the per-word and per-lift arithmetic invariants of `Fm` (lattice ranks, word moduli `T`,
+slopes `μ`/`μMax` of `Nu` and `lat 0`, heights `h`, dual slopes of the common lattice `RR`, and
+the per-lift local energies `EeJ u0 u j = ∑_w sz w (E u (j + 1) w)`) to the abstract `Data`
+record `Dd`. -/
 def TieLocal (pt : φ.A → Fm.Ix x) {Top : Type}
     (Dd : Data φ.A (fun u0 => (Fm.D x (pt u0)).what₂.Word) Top m f) : Prop :=
   ∀ u0 : φ.A,
@@ -98,6 +139,9 @@ def TieArith (pt : φ.A → Fm.Ix x) (av : ℕ → ℤ) (D : ArithData φ.A) (el
 
 end
 
+/-- Main bridge predicate tying the arithmetic family `Fm` at scale `x` to an abstract `Data`
+record satisfying the size, energy, slope, and divisibility hypotheses used to derive the
+`x^(1/2 + O(eps))` square-root bound. -/
 def ChainTied {eps : ℝ} (Fm : FamP eps) (eD eL K cHH eK CL x : ℝ) : Prop :=
   ∃ (i0 : Fm.Ix x) (m f : ℕ) (pt : (Fm.D x i0).R.A → Fm.Ix x) (av bv : ℕ → ℤ)
     (Top : Type) (_ : Fintype Top)

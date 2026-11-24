@@ -1,7 +1,42 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockBoundOfDualFamilies
+public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockBoundUniformiser
 public import Lemmata.GeneralBFactLeftTerForm.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,10 +50,6 @@ section RankSpanGen
 
 variable {R K V : Type} [CommRing R] [IsDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
   [AddCommGroup V] [Module R V] [Module K V] [IsScalarTower R K V]
-
-theorem span_den_gen (M : Submodule R V) (y : V) (hy : y ∈ Submodule.span K (M : Set V)) :
-    ∃ s : R, s ≠ 0 ∧ s • y ∈ M := by
-  first | exact Bl.general_b_fact_left_ter_form.goal1 .. | (apply Bl.general_b_fact_left_ter_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_left_ter_form.goal1 <;> assumption) | (apply @Bl.general_b_fact_left_ter_form.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_left_ter_form.goal1 <;> assumption) | (apply @Bl.general_b_fact_left_ter_form.goal1 <;> first | assumption | infer_instance) | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› M y hy | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› M y | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› M | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V ‹_› | exact @Bl.general_b_fact_left_ter_form.goal1 R K V | exact @Bl.general_b_fact_left_ter_form.goal1 R K | exact @Bl.general_b_fact_left_ter_form.goal1 R
 
 def toSpanG (M : Submodule R V) : M →ₗ[R] (Submodule.span K (M : Set V)) where
   toFun x := ⟨x.1, Submodule.subset_span x.2⟩
@@ -42,7 +73,7 @@ instance toSpanG_loc (M : Submodule R V) : IsLocalizedModule (nonZeroDivisors R)
       simp only [Module.algebraMap_end_apply]
       rw [← algebraMap_smul K (x : R), smul_smul, mul_inv_cancel₀ hxK, one_smul]
   · intro y
-    obtain ⟨s, hs, hsy⟩ := span_den_gen (K := K) M y.1 y.2
+    obtain ⟨s, hs, hsy⟩ := _root_.Bl.general_b_fact_left_ter_form.goal1 (K := K) M y.1 y.2
     exact ⟨(⟨s • y.1, hsy⟩, ⟨s, mem_nonZeroDivisors_of_ne_zero hs⟩), rfl⟩
   · intro x₁ x₂ h
     refine ⟨1, ?_⟩

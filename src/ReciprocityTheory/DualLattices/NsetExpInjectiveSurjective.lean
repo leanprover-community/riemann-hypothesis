@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.StThmA
+public import ReciprocityTheory.DualLattices.ModuliPointsState
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,6 +1,10 @@
 module
 
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ZzMinusSecondProjTranspose
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.MemSpanOfSharpG
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryGramLifts.SecondProjConjEqFirstProj
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumA
 
 @[expose] public section
 
@@ -45,8 +49,8 @@ theorem duU_core (hs : M.split = some g) {T T' : F} {TT : M.R} {Zh : Matrix (Fin
   have hrow : ∀ i, ∑ j, ph1 g (G i j) * ph1 g (c j) = ph1 g (v i) := by
     intro i
     have := congrArg (ph1 g) (congrFun hGc i)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul] at this
+
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul] at this
     exact this
   have hG11 : ∀ a b, ph1 g (G (Sum.inl a) (Sum.inl b)) = cor r a b (-T) := by
     intro a b; rw [← hGd]; simp [gramG, firstProj_corner, firstProj_algebraMap]
@@ -111,8 +115,8 @@ theorem duU_core (hs : M.split = some g) {T T' : F} {TT : M.R} {Zh : Matrix (Fin
   apply (eq_iff_ph (g := g) _ _).2
   constructor
   · rw [hcoe a]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, map_mul, hZσ, firstProj_zzPlus_conj hs, hm1, hTT1, firstProj_algebraMap, heV1]
+
+    simp only [map_sub, map_sum, map_mul, hZσ, firstProj_zzPlus_conj hs, hm1, hTT1, firstProj_algebraMap, heV1]
     rw [← E1 a]
     have hk : T * ph1 g (c (Sum.inl (Fin.last r))) * (if a = Fin.last r then (1 : F) else 0) =
         ∑ b, cor r a b T * ph1 g (c (Sum.inl b)) := by
@@ -122,8 +126,8 @@ theorem duU_core (hs : M.split = some g) {T T' : F} {TT : M.R} {Zh : Matrix (Fin
     refine Finset.sum_congr rfl fun b _ => ?_
     unfold cor; split_ifs <;> ring
   · rw [hcoe a]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, map_mul, hZσ, secondProj_zzPlus_conj hs, hm2, hTT2, ph2_algebraMap_eq, heV2]
+
+    simp only [map_sub, map_sum, map_mul, hZσ, secondProj_zzPlus_conj hs, hm2, hTT2, ph2_algebraMap_eq, heV2]
     have hD2 : ph2 g (((w - w') a : M.R) : E) = ph1 g (((w - w') a : M.R) : E) +
         (g.q : F) * ((ph2 g (((w - w') a : M.R) : E) - ph1 g (((w - w') a : M.R) : E)) / (g.q : F)) := by
       rw [mul_div_cancel₀ _ (q_ne g)]; ring

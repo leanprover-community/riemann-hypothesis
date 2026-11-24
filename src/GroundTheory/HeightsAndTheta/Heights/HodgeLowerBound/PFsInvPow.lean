@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFlagGrassSteps
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

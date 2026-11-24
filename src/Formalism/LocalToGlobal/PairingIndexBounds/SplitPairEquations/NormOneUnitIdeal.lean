@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.ReductionOf
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.DeterminantNormOneOfUnitDisc
+public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.NormOneUnitIdealAlt
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Formalism.LocalToGlobal.GlobalTheory.GL3.Statement
 
 @[expose] public section
 

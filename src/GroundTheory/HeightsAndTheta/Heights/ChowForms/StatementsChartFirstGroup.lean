@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOrder
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

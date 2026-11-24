@@ -1,9 +1,17 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.CoefModX
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
+import Formalism.GradedWeylDivisibility.FinalC
+import Formalism.GradedWeylDivisibility.FinalD
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
+import Formalism.LocalToGlobal.Columns.PolyFnLemmas
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -112,10 +120,10 @@ theorem bc_descent_span {σ κ : Type} [Fintype κ] (v : κ → MvPolynomial σ 
   refine ⟨fun i => π (c i), ?_⟩
   ext m
   have h1 := congrArg (fun P => π (AddMonoidAlgebra.coeff P m)) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [coeff_map, hπ', coeff_sum, coeff_smul, smul_eq_mul, map_sum, hmul] at h1
+
+  simp only [coeff_map, hπ', coeff_sum, MvPolynomial.coeff_smul, smul_eq_mul, map_sum, hmul] at h1
   rw [h1, coeff_sum]
-  simp only [coeff_smul, smul_eq_mul]
+  simp only [MvPolynomial.coeff_smul, smul_eq_mul]
 
 theorem baseChangeSpace_holds : BaseChangeSpace := by
   intro K K' _ _ j ι _ n lam
@@ -171,8 +179,8 @@ theorem baseChangeAction_holds : BaseChangeAct := by
 theorem bc_map_fockS {K K' : Type} [Field K] [StarRing K] [Field K'] [StarRing K'] (j : K →+* K')
     (hj : ∀ x, j (star x) = star (j x)) {σ : Type} (f g : MvPolynomial σ K) :
     fockS (MvPolynomial.map j f) (MvPolynomial.map j g) = j (fockS f g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [fockS_eq_sum _ _ f.support (support_map_subset j f), fockS, map_sum]
+
+  rw [fockS_eq_sum _ _ f.support (support_map_subset j f), fockS, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [map_mul, map_mul, hj, coeff_map, coeff_map, map_natCast]
 
@@ -580,8 +588,8 @@ theorem bc_local_descent {σ : Type} {T : Submodule (𝓞 K) (MvPolynomial σ K)
       obtain ⟨t, ht, rfl⟩ := hy
       obtain ⟨c, hc, rfl⟩ := (hT t).1 (lc_le_locP _ _ ht)
       refine ⟨fun i => j (c i), fun i => map_mem_localized_one j w' (hc i), ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, bc_map_smul]
+
+      simp only [map_sum, bc_map_smul]
     | zero => exact ⟨0, fun i => Submodule.zero_mem _, by simp⟩
     | add x y _ _ hx hy =>
       obtain ⟨c, hc, rfl⟩ := hx
@@ -607,8 +615,8 @@ theorem bc_local_descent {σ : Type} {T : Submodule (𝓞 K) (MvPolynomial σ K)
   have h3 : ∑ i, (j (d i) - (algebraMap (𝓞 K') K' s)⁻¹ * c i) • MvPolynomial.map j (β i) = 0 := by
     simp only [sub_smul, Finset.sum_sub_distrib]
     rw [← h1, hd, sub_eq_zero]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, bc_map_smul]
+
+    simp only [map_sum, bc_map_smul]
   have h4 := Fintype.linearIndependent_iff.1 (bc_linearIndependent_map j β hβ) _ h3
   refine (hT P).2 ⟨d, fun i => mem_localized_one_of_map_mem j w' ?_, hd⟩
   rw [sub_eq_zero.1 (h4 i)]

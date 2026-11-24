@@ -1,6 +1,12 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.EigRamHelp
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.EigRamData
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.DiscriminantEstimates.DiscriminantTheorems.TBIdemDen
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
@@ -19,11 +25,11 @@ theorem dual_int {E : Type} [Field E] [NumberField E] (δ : 𝓞 E) (hδ : δ �
   set ω := RingOfIntegers.basis E
   set bq := integralBasis E
   have hbqω : ∀ i, bq i = algebraMap (𝓞 E) E (ω i) := fun i => integralBasis_apply E i
-  have h := _root_.dual_difference E _ bq (fun i => by rw [hbqω]; exact RingOfIntegers.isIntegral_coe _) (fun x => by
+  have h := _root_.PI.UnitaryGroupMassFormula.TBIdemDen.dualDiff E _ bq (fun i => by rw [hbqω]; exact RingOfIntegers.isIntegral_coe _) (fun x => by
       refine ⟨fun i => ω.repr x i, ?_⟩
       have h1 := congrArg (algebraMap (𝓞 E) E) (ω.sum_repr x)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at h1
+
+      rw [map_sum] at h1
       show algebraMap (𝓞 E) E x = _
       rw [← h1]
       refine Finset.sum_congr rfl fun i _ => ?_

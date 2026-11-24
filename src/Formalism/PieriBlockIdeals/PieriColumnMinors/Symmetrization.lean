@@ -1,7 +1,57 @@
 module
 
 public import Formalism.PieriBlockIdeals.IntegralQuotient
-public import Mathlib
+public import Mathlib.CategoryTheory.Category.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.GroupTheory.Perm.DomMulAct
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -228,8 +278,8 @@ theorem integral_quotient_holds : IntegralQuotient := by
       ext r
       simp [ψ, MvPolynomial.algebraMap_eq]
     have e2 : AAp.map (ψ τ) = X ^ n + ∑ a : Fin n, C (χ τ a) * X ^ a.val := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [hAAp, ψ, Polynomial.map_sum]
+
+      simp [hAAp, ψ, Polynomial.map_sum]
     rw [e1, e2]; exact hdiv τ
   obtain ⟨W0, hW0⟩ : ∃ p : MvPolynomial (Fin n) O, p = algebraMap O _ w := ⟨_, rfl⟩
   have hdivid : DnA.eval W0 = (DnA %ₘ AAp).eval W0 + AAp.eval W0 * (DnA /ₘ AAp).eval W0 := by
@@ -239,9 +289,9 @@ theorem integral_quotient_holds : IntegralQuotient := by
     rw [hDnA, hW0, eval_map, eval₂_at_apply]; exact φ.commutes _
   have hA : φ (AAp.eval W0) = w ^ n • (1 : Module.End O M) + ∑ a : Fin n, w ^ a.val • c a := by
     have hW : φ W0 = algebraMap O (Module.End O M) w := by rw [hW0]; exact φ.commutes w
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hAAp, eval_add, eval_pow, eval_X, eval_finsetSum, eval_mul, eval_C, map_add (f := _), map_pow, map_sum,
-      map_mul, hφX, hW]
+
+    simp only [hAAp, eval_add, eval_pow, eval_X, eval_finsetSum, eval_mul, eval_C, map_add (f := _), map_pow, map_sum,
+    map_mul, hφX, hW]
     congr 1
     · rw [← map_pow, Algebra.algebraMap_eq_smul_one]
     · refine Finset.sum_congr rfl fun a _ => ?_
@@ -636,9 +686,6 @@ variable (k : Type*) {R P M : Type*} [CommRing k] [AddCommGroup M] [Module k M] 
 theorem perm_tensor_apply (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g : Fin n → R × P) :
     perm k σ z g = z (g ∘ σ) := rfl
 
-theorem permSecond_apply_comp (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g : Fin n → R × P) :
-    permY k σ z g = z (fun s => ((g (σ s)).1, (g s).2)) := rfl
-
 theorem contract_apply_insertNth (j : Fin (n + 1)) (v : R × P) (z : Tens R P M (n + 1)) (g : Fin n → R × P) :
     contr k j v z g = z (j.insertNth v g) := rfl
 
@@ -651,12 +698,6 @@ theorem onModule_apply_eval (T : Module.End k M) (z : Tens R P M n) (g : Fin n �
 
 variable [DecidableEq R] [DecidableEq P]
 
-theorem unitSecond_apply_formula (j : Fin n) (a b : R) (z : Tens R P M n) (g : Fin n → R × P) :
-    unitY k j a b z g = if (g j).1 = a then z (Function.update g j (b, (g j).2)) else 0 := by
-  unfold unitY
-  rw [LinearMap.pi_apply]
-  split_ifs <;> rfl
-
 theorem unitFirst_apply_formula (j : Fin n) (a b : P) (z : Tens R P M n) (g : Fin n → R × P) :
     unitX k j a b z g = if (g j).2 = a then z (Function.update g j ((g j).1, b)) else 0 := by
   unfold unitX
@@ -667,7 +708,7 @@ theorem mixedCasimir_apply_sum [Fintype R] (EM : R → R → Module.End k M) (j 
     (g : Fin n → R × P) :
     Om k EM j z g = ∑ b', EM b' (g j).1 (z (Function.update g j (b', (g j).2))) := by
   unfold Om
-  simp only [LinearMap.sum_apply, Finset.sum_apply, Module.End.mul_apply, unitSecond_apply_formula,
+  simp only [LinearMap.sum_apply, Finset.sum_apply, Module.End.mul_apply, _root_.Formalism.CohomologicalDescent.Symmetrization.unitOnTensor_apply,
     onModule_apply_eval]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b' _ => ?_
@@ -847,8 +888,8 @@ theorem symMap_zero_eq_default (z : Tens R P S.W 0) : S.mu 0 z = (z default : V)
 
 theorem symMap_succ_eq_sum_contract (n : ℕ) (j : Fin (n + 1)) (z : Tens R P S.W (n + 1)) :
     S.mu (n + 1) z = ∑ v, S.f v (S.mu n (contr k j v z)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [symMap_apply_sum_words, map_sum, contract_apply_insertNth]
+
+  simp only [symMap_apply_sum_words, map_sum, contract_apply_insertNth]
   rw [← (Fin.insertNthEquiv (fun _ => R × P) j).sum_comp, Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun v _ => Finset.sum_congr rfl fun g _ => ?_
   have h : (Fin.insertNthEquiv (fun _ => R × P) j) (v, g) = j.insertNth v g := rfl
@@ -878,7 +919,7 @@ theorem contract_zero_diagSecond (n : ℕ) (c d : R) (v : R × P) (z : Tens R P 
       diagY k S.EW c d (contr k 0 v z) + (if v.1 = c then contr k 0 (d, v.2) z else 0) := by
   funext g
   simp only [contract_zero_apply_cons, diagY, LinearMap.add_apply, Pi.add_apply, LinearMap.sum_apply,
-    Finset.sum_apply, onModule_apply_eval, unitSecond_apply_formula, Fin.sum_univ_succ, Fin.cons_zero,
+    Finset.sum_apply, onModule_apply_eval, _root_.Formalism.CohomologicalDescent.Symmetrization.unitOnTensor_apply, Fin.sum_univ_succ, Fin.cons_zero,
     Fin.cons_succ, Fin.update_cons_zero, ← Fin.cons_update]
   by_cases hc : v.1 = c
   · simp only [hc, if_true, contract_zero_apply_cons]
@@ -915,8 +956,8 @@ theorem symMap_diagSecond_intertwines : ∀ (n : ℕ) (c d : R) (z : Tens R P S.
     simp [diagY, onModule_apply_eval, HidaSetting.EW]
   | succ n ih =>
     intro c d z
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [symMap_succ_eq_sum_contract S n 0 z, symMap_succ_eq_sum_contract S n 0 (diagY k S.EW c d z), map_sum]
+
+    rw [symMap_succ_eq_sum_contract S n 0 z, symMap_succ_eq_sum_contract S n 0 (diagY k S.EW c d z), map_sum]
     have hv : ∀ v : R × P, S.f v (S.mu n (contr k 0 v (diagY k S.EW c d z))) =
         S.f v (S.mu n (diagY k S.EW c d (contr k 0 v z))) +
           (if v.1 = c then S.f v (S.mu n (contr k 0 (d, v.2) z)) else 0) := by
@@ -940,8 +981,8 @@ theorem symMap_diagFirst_intertwines : ∀ (n : ℕ) (α β : P) (z : Tens R P S
     by_cases h : α = β <;> simp [diagX, h]
   | succ n ih =>
     intro α β z
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [symMap_succ_eq_sum_contract S n 0 z, symMap_succ_eq_sum_contract S n 0 (diagX k S.w α β z), map_sum]
+
+    rw [symMap_succ_eq_sum_contract S n 0 z, symMap_succ_eq_sum_contract S n 0 (diagX k S.w α β z), map_sum]
     have hv : ∀ v : R × P, S.f v (S.mu n (contr k 0 v (diagX k S.w α β z))) =
         S.f v (S.mu n (diagX k S.w α β (contr k 0 v z))) -
           (if v.2 = β then S.f v (S.mu n (contr k 0 (v.1, α) z)) else 0) := by
@@ -967,13 +1008,13 @@ def leviRemainder (n : ℕ) (v0 : R × P) (z : Tens R P S.W (n + 1)) : Tens R P 
 theorem raising_symMap_succ_eq (n : ℕ) (v0 : R × P) (z : Tens R P S.W (n + 1)) :
     S.e v0 (S.mu (n + 1) z) =
       ∑ v, S.f v (S.e v0 (S.mu n (contr k 0 v z))) + S.mu n (leviRemainder S n v0 z) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [symMap_succ_eq_sum_contract S n 0 z, map_sum]
+
+  rw [symMap_succ_eq_sum_contract S n 0 z, map_sum]
   simp_rw [raising_lowering_commutator, Finset.sum_add_distrib, Finset.sum_sub_distrib]
   congr 1
   unfold leviRemainder
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, map_sum, map_sum]
+
+  rw [map_sub, map_sum, map_sum]
   congr 1
   · rw [Fintype.sum_prod_type, Finset.sum_comm]
     refine Finset.sum_congr rfl fun β _ => ?_
@@ -1009,7 +1050,7 @@ def flippedLetterTerm (n : ℕ) (v0 : R × P) (z : Tens R P S.W (n + 1)) (t : Fi
 theorem contract_zero_swap_succ_apply (n : ℕ) (v0 : R × P) (z : Tens R P S.W (n + 1)) (t : Fin n) (g : Fin n → R × P) :
     contr k 0 v0 (permY k (Equiv.swap 0 t.succ) z) g =
       z (Fin.cons ((g t).1, v0.2) (Function.update g t (v0.1, (g t).2))) := by
-  rw [contract_apply_insertNth, permSecond_apply_comp, Equiv.swap_comm]
+  rw [contract_apply_insertNth, _root_.Formalism.CohomologicalDescent.Symmetrization.permSecond_apply, Equiv.swap_comm]
   have h := swap_insertNth_eq_update (0 : Fin (n + 1)) t v0 g
   rw [Fin.zero_succAbove] at h
   rw [h, Fin.insertNth_zero']
@@ -1033,7 +1074,7 @@ theorem contraction_remainder_eq (n : ℕ) (v0 : R × P) (z : Tens R P S.W (n + 
         ∑ j, (if (g j).1 = b then z (Fin.cons (b, v0.2) (Function.update g j (v0.1, (g j).2))) else 0) := by
     intro b
     simp only [diagY, LinearMap.add_apply, Pi.add_apply, LinearMap.sum_apply, Finset.sum_apply,
-      unitSecond_apply_formula, contract_zero_apply_cons, onModule_apply_eval]
+      _root_.Formalism.CohomologicalDescent.Symmetrization.unitOnTensor_apply, contract_zero_apply_cons, onModule_apply_eval]
   simp only [leviRemainder, Pi.sub_apply, Finset.sum_apply, hX, hY, contract_zero_swap_succ_apply, flippedLetterTerm]
   simp only [Finset.sum_sub_distrib, Finset.sum_add_distrib, contract_zero_apply_cons, Pi.smul_apply,
     Pi.sub_apply, mixedCasimir_apply_sum, Fin.cons_zero, Fin.update_cons_zero]
@@ -1048,7 +1089,7 @@ theorem symMap_swap_contraction_eq (m : ℕ) (v0 : R × P) (z : Tens R P S.W (m 
   refine Finset.sum_congr rfl fun v _ => ?_
   congr 2
   funext g
-  rw [contract_apply_insertNth, contract_zero_apply_cons, contract_apply_insertNth, permSecond_apply_comp]
+  rw [contract_apply_insertNth, contract_zero_apply_cons, contract_apply_insertNth, _root_.Formalism.CohomologicalDescent.Symmetrization.permSecond_apply]
   have h := swap_insertNth_eq_update t.succ (0 : Fin (m + 1)) v0 (Fin.cons v g)
   rw [Fin.succ_succAbove_zero] at h
   rw [h]
@@ -1059,8 +1100,8 @@ theorem symMap_firstPositionRemainder_eq (n : ℕ) (v0 : R × P) (z : Tens R P S
     S.mu n (firstPositionRemainder S n v0 z) = S.mu n (leviRemainder S n v0 z) := by
   rw [contraction_remainder_eq]
   unfold firstPositionRemainder
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sub, map_sum, map_add (f := _), Finset.sum_add_distrib]
+
+  simp only [map_sub, map_sum, map_add (f := _), Finset.sum_add_distrib]
   have h : ∀ t : Fin n, S.mu n (flippedLetterTerm S n v0 z t) =
       S.mu n (contr k t.succ v0 (permY k (Equiv.swap 0 t.succ) z)) := by
     cases n with
@@ -1083,7 +1124,7 @@ theorem contract_zero_positionCasimir_succ (m : ℕ) (j : Fin m) (v : R × P) (z
 theorem contract_zero_permSecond_swap_succ (m : ℕ) (j l : Fin m) (v : R × P) (z : Tens R P S.W (m + 1)) :
     contr k 0 v (permY k (Equiv.swap j.succ l.succ) z) = permY k (Equiv.swap j l) (contr k 0 v z) := by
   funext g
-  rw [contract_zero_apply_cons, permSecond_apply_comp, permSecond_apply_comp, contract_zero_apply_cons]
+  rw [contract_zero_apply_cons, _root_.Formalism.CohomologicalDescent.Symmetrization.permSecond_apply, _root_.Formalism.CohomologicalDescent.Symmetrization.permSecond_apply, contract_zero_apply_cons]
   congr 1
   funext s
   refine Fin.cases ?_ (fun t => ?_) s
@@ -1095,9 +1136,9 @@ theorem contract_zero_permSecond_swap_succ (m : ℕ) (j l : Fin m) (v : R × P) 
 theorem contract_zero_tailRemainder (m : ℕ) (v v0 : R × P) (z : Tens R P S.W (m + 2)) :
     contr k 0 v (tailRemainder S (m + 1) v0 z) = raisingRemainder S m v0 (contr k 0 v z) := by
   unfold tailRemainder raisingRemainder
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sub, map_sum, map_add (f := _), map_smul, contract_zero_contract_succ_comm, contract_zero_positionCasimir_succ,
-    contract_zero_permSecond_swap_succ]
+
+  simp only [map_sub, map_sum, map_add (f := _), map_smul, contract_zero_contract_succ_comm, contract_zero_positionCasimir_succ,
+  contract_zero_permSecond_swap_succ]
 
 theorem raising_symMap_eq_one_level_down : ∀ (n : ℕ) (v0 : R × P) (z : Tens R P S.W (n + 1)),
     S.e v0 (S.mu (n + 1) z) = S.mu n (raisingRemainder S n v0 z) := by
@@ -1152,7 +1193,7 @@ theorem raisingRemainder_of_perm_invariant (n : ℕ) (v : R × P) (z : Tens R P 
       contr k (Fin.last n) v (permY k (Equiv.swap t.castSucc (Fin.last n)) z) := by
     intro s t
     funext g
-    rw [contract_apply_insertNth, permSecond_apply_comp, swap_insertNth_eq_update, contract_apply_insertNth, permSecond_apply_comp]
+    rw [contract_apply_insertNth, _root_.Formalism.CohomologicalDescent.Symmetrization.permSecond_apply, swap_insertNth_eq_update, contract_apply_insertNth, _root_.Formalism.CohomologicalDescent.Symmetrization.permSecond_apply]
     have h := swap_insertNth_eq_update (Fin.last n) t v g
     rw [Fin.succAbove_last] at h
     rw [h]
@@ -1171,8 +1212,8 @@ theorem raisingRemainder_of_perm_invariant (n : ℕ) (v : R × P) (z : Tens R P 
   simp only [hA]
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, jucysMurphy_last_eq, ← smul_sub]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sub, map_add (f := _), map_sum]
+
+  simp only [map_sub, map_add (f := _), map_sum]
   abel
 
 end Set4
@@ -1327,8 +1368,8 @@ theorem generators_satisfy_gl_relations {k V P R : Type*} [CommRing k] [AddCommG
 theorem perm_sum_over_perms_eq {k R P M : Type*} [CommRing k] [AddCommGroup M] [Module k M] {n : ℕ}
     (z : Tens R P M n) (τ : Equiv.Perm (Fin n)) :
     perm k τ (∑ σ : Equiv.Perm (Fin n), perm k σ z) = ∑ σ : Equiv.Perm (Fin n), perm k σ z := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Fintype.sum_equiv (Equiv.mulLeft τ) _ _ fun σ => ?_
   funext g
   simp [permOnTensor_apply, Function.comp_assoc, Equiv.Perm.coe_mul]
@@ -1362,12 +1403,12 @@ theorem Iteration_of (h1 : OneStepInv) (h2 : AAComm) (h3 : MuEquivariant) : Iter
     have hAR : AA k S.EW n S.w Rr = contr k (Fin.last n) v X := jucysMurphyProduct_contract_last S.EW S.w v z
     set Y := ∑ σ : Equiv.Perm (Fin n), perm k σ Rr with hY
     have hmuY : S.mu n Y = n.factorial • S.mu n Rr := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hY, map_sum, Finset.sum_congr rfl (fun σ _ => (h3 k V P R S n Rr).2.2 σ)]
+
+      rw [hY, map_sum, Finset.sum_congr rfl (fun σ _ => (h3 k V P R S n Rr).2.2 σ)]
       simp [Fintype.card_perm]
     have hAY : AA k S.EW n S.w Y = n.factorial • contr k (Fin.last n) v X := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hY, map_sum]
+
+      rw [hY, map_sum]
       have : ∀ σ : Equiv.Perm (Fin n), AA k S.EW n S.w (perm k σ Rr) = contr k (Fin.last n) v X := by
         intro σ
         have := ((h2 k R P S.W S.EW (generators_satisfy_gl_relations S) n σ).2.2 S.w).2
@@ -1396,10 +1437,7 @@ namespace Formalism.CohomologicalDescent.Symmetrization
 section Comb
 variable {ι : Type*} {n : ℕ}
 
-theorem content_comp_perm_eq (g : Fin n → ι) (σ : Equiv.Perm (Fin n)) : cont (g ∘ σ) = cont g := by
-  apply Subtype.ext
-  change Finset.univ.val.map (g ∘ σ) = Finset.univ.val.map g
-  rw [← Multiset.map_map, Multiset.map_univ_val_equiv]
+alias content_comp_perm_eq := _root_.Formalism.CohomologicalDescent.Symmetrization.content_comp_perm
 
 theorem content_surjective : Function.Surjective (cont : (Fin n → ι) → Sym ι n) := by
   rintro ⟨m, hm⟩
@@ -1526,8 +1564,8 @@ theorem toSym_single_eq_single_content (g : Fin n → R × P) (u : M) :
 theorem toSym_surjective : Function.Surjective (toSym k : Tens R P M n →ₗ[k] (Sym (R × P) n → M)) := by
   intro y
   refine ⟨∑ m, Pi.single (Function.surjInv content_surjective m) (y m), ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [toSym_single_eq_single_content, Function.surjInv_eq]
   funext m
   simp [Finset.sum_apply, Pi.single_apply]
@@ -1545,8 +1583,8 @@ theorem isAddTorsionFree_of_charZero_module (k : Type) {V : Type} [Field k] [Cha
 
 theorem symMap_norm_toSym_eq_factorial_smul (h3 : MuEquivariant) (S : HidaSetting k V P R) (n : ℕ) (z : Tens R P S.W n) :
     S.mu n (NmS k (toSym k z)) = n.factorial • S.mu n z := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [norm_toSym_eq_sum_perm, map_sum, Finset.sum_congr rfl (fun σ _ => (h3 k V P R S n z).2.2 σ)]
+
+  rw [norm_toSym_eq_sum_perm, map_sum, Finset.sum_congr rfl (fun σ _ => (h3 k V P R S n z).2.2 σ)]
   simp [Fintype.card_perm]
 
 theorem symmetric_action_eq_symMap (h3 : MuEquivariant) (S : HidaSetting k V P R) (n : ℕ) (z : Tens R P S.W n) :
@@ -1572,8 +1610,8 @@ theorem ActSpec_of (h3 : MuEquivariant) (h4 : WordSpec) : ActSpec := by
 
 theorem jucysMurphyProduct_norm_toSym_comm (h2 : AAComm) (S : HidaSetting k V P R) (n : ℕ) (z : Tens R P S.W n) :
     AA k S.EW n S.w (NmS k (toSym k z)) = NmS k (toSym k (AA k S.EW n S.w z)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [norm_toSym_eq_sum_perm, norm_toSym_eq_sum_perm, map_sum]
+
+  rw [norm_toSym_eq_sum_perm, norm_toSym_eq_sum_perm, map_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   have := ((h2 k R P S.W S.EW (generators_satisfy_gl_relations S) n σ).2.2 S.w).2
   have h4 := congrArg (fun T : Module.End k (Tens R P S.W n) => T z) this.eq
@@ -1694,8 +1732,8 @@ theorem descendToCoinvariants_toSym (T : Module.End K (Tens R P M n)) (hT : ∀ 
     descendToCoinvariants T (toSym K z) = toSym K (T z) := by
   have hn : ((n.factorial : ℕ) : K) ≠ 0 := Nat.cast_ne_zero.2 (Nat.factorial_ne_zero n)
   unfold descendToCoinvariants
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearMap.smul_apply, LinearMap.comp_apply, LinearMap.comp_apply, norm_toSym_eq_sum_perm, map_sum, map_sum]
+
+  rw [LinearMap.smul_apply, LinearMap.comp_apply, LinearMap.comp_apply, norm_toSym_eq_sum_perm, map_sum, map_sum]
   have : ∀ σ : Equiv.Perm (Fin n), toSym K (T (perm K σ z)) = toSym K (T z) := by
     intro σ
     have h4 := congrArg (fun U : Module.End K (Tens R P M n) => U z) (hT σ).eq
@@ -1731,9 +1769,9 @@ theorem coefficient_operators_hold : CoeffOps := by
     rw [this]
   · intro t z
     rw [jucysMurphyProduct_expand_coeff]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [LinearMap.add_apply, LinearMap.smul_apply, Module.End.one_apply, LinearMap.sum_apply, map_add (f := _),
-      map_smul, map_sum, h1, ← hp]
+
+    simp only [LinearMap.add_apply, LinearMap.smul_apply, Module.End.one_apply, LinearMap.sum_apply, map_add (f := _),
+    map_smul, map_sum, h1, ← hp]
   · intro L hL a y hy m
     let abelian₂ : AddSubgroup (Tens R P M n) :=
       { carrier := {z | ∀ g, z g ∈ L (cont g)}
@@ -1915,8 +1953,8 @@ theorem ActLattice_of (h3 : MuEquivariant) (h4 : WordSpec) : ActLattice := by
   have hA := (ActSpec_of h3 h4 K V P R S n).1
   have hadd : S.act n (∑ m, Pi.single m (y m)) = ∑ m, S.act n (Pi.single m (y m)) := by
     unfold HidaSetting.act
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, Finset.smul_sum]
+
+    rw [map_sum, map_sum, Finset.smul_sum]
   have hy' : S.act n y = ∑ m, S.act n (Pi.single m (y m)) := by
     rw [← hadd, Finset.univ_sum_single]
   rw [hy']

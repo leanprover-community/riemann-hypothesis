@@ -1,9 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
-public import Formalism.MeanHeightDescent.DivisionInequalityWithCovolume
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.OrthSum
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
+import Formalism.HarderNarasimhan.ShiftInvariance
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
 
 @[expose] public section
 
@@ -49,7 +88,7 @@ theorem inner_pair [StarRing K] {n : ℕ} {b : Module.Basis (Fin n) K V}
     intro k z hz l
     by_cases hl : l = k
     · subst hl; simpa using Submodule.subset_span hz
-    · simp [Pi.single_apply, hl]
+    · simp [hl]
   have h := hN v.embedding (Pi.single i x + Pi.single j y) fun l =>
     Submodule.add_mem _ (hmem i x hx l) (hmem j y hy l)
   have hsum : ∑ l, (Pi.single i x + Pi.single j y : ι → V) l = x + y := by
@@ -58,10 +97,10 @@ theorem inner_pair [StarRing K] {n : ℕ} {b : Module.Basis (Fin n) K V}
       (Pi.single i (N v.embedding x ^ 2) : ι → ℝ) l + (Pi.single j (N v.embedding y ^ 2) : ι → ℝ) l := by
     intro l
     by_cases hli : l = i
-    · subst hli; simp [Pi.single_apply, hij]
+    · subst hli; simp [hij]
     · by_cases hlj : l = j
-      · subst hlj; simp [Pi.single_apply, hli]
-      · simp [Pi.single_apply, hli, hlj, gram_zero hG v]
+      · subst hlj; simp [hli]
+      · simp [hli, hlj, gram_zero hG v]
   rw [hsum, Finset.sum_congr rfl fun l _ => hpt l, Finset.sum_add_distrib] at h
   simpa using h
 
@@ -115,8 +154,8 @@ theorem sum_finset [_root_.NumberField.IsTotallyComplex K] [StarRing K] {n : ℕ
         inner ℝ (Formalism.HermitianLatticesTheory.realize b X x) (Formalism.HermitianLatticesTheory.realize b X y) = 0 := by
       intro x hx y hy
       obtain ⟨μ, hμ⟩ := (Submodule.mem_iSup_finset_iff_exists_sum M y).1 hy
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hμ, map_sum, inner_sum]
+
+      rw [← hμ, map_sum, inner_sum]
       refine Finset.sum_eq_zero fun i hi => ?_
       exact inner_pair hG M hN (by rintro rfl; exact ha hi) hx (μ i).2
     have hlA := (Formalism.HN.plLat K V (Fin n) b X hX (M a) (hM a)).1

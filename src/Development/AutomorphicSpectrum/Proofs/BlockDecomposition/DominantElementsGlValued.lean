@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+import Mathlib
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.CasselmanStrictlyDominantExample
 
 @[expose] public section
@@ -278,7 +281,7 @@ section Top
 
 open Filter Topology
 
-set_option maxHeartbeats 12000000 in
+
 theorem ev_ball (x : L) (A : Set L) (hA : A ∈ 𝓝 x) :
     ∀ᶠ m : ℕ in atTop, {y : L | Valued.v (y - x) ≤ cc ^ m} ⊆ A := by
   let v : Valuation L (WithZero (Multiplicative ℤ)) := Valued.v

@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
-public import Formalism.MeanHeightDescent.DivisionInequalityWithCovolume
-public import Formalism.MeanHeightDescent.AverageDegreeBounds.GlobalBoundRefinements
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DeterminantCauchySchwarz
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
+import Formalism.HarderNarasimhan.ShiftInvariance
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.GoodBadCut
+public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DeterminantCauchySchwarz
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Ideal.Norm.RelNorm
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -60,8 +100,8 @@ theorem relIndex_span {R S M W : Type} [CommRing R] [CommRing S] [Algebra R S] [
     obtain ⟨a, ha⟩ := h1
     have h2 : ∑ k, a k • l (e k) = 0 := by
       have := congrArg θ ha
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [LinearMap.map_smul_of_tower, hz, smul_zero, map_sum] at this
+
+      rw [LinearMap.map_smul_of_tower, hz, smul_zero, map_sum] at this
       simpa [hθ] using this
     have h3 := Fintype.linearIndependent_iff.1 he a h2
     have h4 : m • z = 0 := by rw [← ha]; simp [h3]
@@ -195,8 +235,8 @@ theorem gram_le {K K' V V' ι κ : Type} [Field K] [NumberField K] [StarRing K] 
   have h1 : ∀ x : Fin j → K, Formalism.HermitianLatticesTheory.cnorm (cols b' X' w (fun k => φ (e k)) *ᵥ fun k => σ (x k)) ≤
       t * N σ (∑ k, x k • e k) := fun x => by
     have h := ht w.embedding (∑ k, x k • e k)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← (hG' w).2, map_sum] at h
+
+    rw [← (hG' w).2, map_sum] at h
     simp only [map_smulₛₗ] at h
     rw [normAt_sum] at h
     exact h
@@ -288,8 +328,8 @@ theorem slope_sq_sub_le_slope_sq_span : ∀ (K K' V V' : Type) [Field K] [Number
       refine le_antisymm (Submodule.span_le.2 ?_) (Submodule.span_mono ?_)
       · rintro _ ⟨x, hx, rfl⟩
         obtain ⟨a, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun K).1 (hsp ▸ Submodule.subset_span hx)
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         exact Submodule.sum_mem _ fun k _ => by
           rw [map_smulₛₗ]; exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
       · rintro _ ⟨k, rfl⟩; exact ⟨e k, heL k, rfl⟩

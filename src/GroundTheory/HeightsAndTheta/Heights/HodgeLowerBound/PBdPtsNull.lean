@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsBdPtsNull
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsParamImageNull
 

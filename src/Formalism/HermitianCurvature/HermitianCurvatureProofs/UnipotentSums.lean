@@ -1,7 +1,53 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianXiVector
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerParabolicCoordinates
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FlagSpanVanishing
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianXiVector
 
 @[expose] public section
 
@@ -53,7 +99,6 @@ lemma sum_Xs (g : Fin (2 * r + k + 1) → ℂ) (hg : ∀ p : Fin (2 * r + k + 1)
   · intro p hp
     apply hg
     by_contra h
-    have hp2 := p.isLt
     exact hp ⟨⟨2 * r + k - p.val, by omega⟩, Fin.ext (by show 2 * r + k - (2 * r + k - p.val) = p.val; omega)⟩
 
 lemma sgn_X (p : Fin (2 * r + k + 1)) (hp : p.val < r ∨ r + k < p.val) : GBasic.sgn k r p = 1 := by
@@ -166,11 +211,11 @@ lemma mX_uh (vX : Matrix (Fin r) (Fin r) ℂ) (hu : IsUnit vX.det) : C2.mX k r v
       rw [key, Matrix.mul_nonsing_inv _ hu', Matrix.one_apply]
       simp only [Hpk, Fin.ext_iff]
       show _ = if a.val < r ∧ a.val + j.val = 2 * r + k then (1 : ℂ) else _
-      split_ifs <;> first | rfl | (exfalso; omega) | omega
+      split_ifs <;> first | rfl | (exfalso; omega)
     · simp only [dif_neg hj, mul_zero, Finset.sum_const_zero]
       simp only [Hpk]
       show (0 : ℂ) = if a.val < r ∧ a.val + j.val = 2 * r + k then (1 : ℂ) else _
-      split_ifs <;> first | rfl | (exfalso; omega) | omega
+      split_ifs <;> first | rfl | (exfalso; omega)
   · by_cases hi2 : r + k < i.val
     · obtain ⟨a, rfl⟩ : ∃ a : Fin r, esI k r a = i :=
         ⟨⟨2 * r + k - i.val, by omega⟩, Fin.ext (by show 2 * r + k - (2 * r + k - i.val) = i.val; omega)⟩
@@ -195,11 +240,11 @@ lemma mX_uh (vX : Matrix (Fin r) (Fin r) ℂ) (hu : IsUnit vX.det) : C2.mX k r v
           Matrix.nonsing_inv_mul _ hu, Matrix.one_apply]
         simp only [Hpk, Fin.ext_iff]
         show _ = if 2 * r + k - a.val < r ∧ 2 * r + k - a.val + j.val = 2 * r + k then (1 : ℂ) else _
-        split_ifs <;> first | rfl | (exfalso; omega) | omega
+        split_ifs <;> first | rfl | (exfalso; omega)
       · simp only [dif_neg hj, mul_zero, Finset.sum_const_zero]
         simp only [Hpk]
         show (0 : ℂ) = if 2 * r + k - a.val < r ∧ 2 * r + k - a.val + j.val = 2 * r + k then (1 : ℂ) else _
-        split_ifs <;> first | rfl | (exfalso; omega) | omega
+        split_ifs <;> first | rfl | (exfalso; omega)
     · rw [Finset.sum_eq_single i (fun p _ hp => by
           rw [unipotent_apply_middle_column vX p i (by omega) (by omega), if_neg hp, star_zero, zero_mul])
         (fun h => absurd (Finset.mem_univ i) h)]

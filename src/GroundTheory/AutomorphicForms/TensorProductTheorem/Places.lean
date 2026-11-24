@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.Irreducible
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.LocalComponent
+public import GroundTheory.AutomorphicForms.TensorProductTheorem.Smooth
+public import GroundTheory.AutomorphicForms.TensorProductTheorem.Window
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

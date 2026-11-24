@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcXOmVTop
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.MultiplicityGExists
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcXOmVSt
 
 @[expose] public section
 
@@ -29,7 +27,6 @@ theorem unramAt_of_cm {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
   have hG : Nat.card Gal(E/F) = 2 := by
     first
       | (rw [IsGalois.card_aut_eq_finrank]; exact hc.deg2)
-      | (rw [Nat.card_eq_fintype_card, IsGalois.card_aut_eq_finrank]; exact hc.deg2)
   haveI : Fact (Nat.card Gal(E/F)).Prime := ⟨by rw [hG]; exact Nat.prime_two⟩
   have htop : P.inertia Gal(E/F) = ⊤ := by
     rcases Subgroup.eq_bot_or_eq_top_of_prime_card (P.inertia Gal(E/F)) with h | h

@@ -1,12 +1,56 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerSeriesEvaluation
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankDcrisLetterDeRhamComponentEqDim
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedSubfieldLeCyclotomicExt
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerSeriesEvaluation
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachImageDeRhamPlusComponentLevelStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachImageDeRhamPlusComponentLevel
+public import Mathlib.LinearAlgebra.PiTensorProduct.Generators
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -72,9 +116,9 @@ theorem full_of_det {ι : Type} (D : Submodule L M) {r : ℕ} (d : Module.Basis 
         have := congrArg Subtype.val (d.sum_repr ⟨f ((n : ℤ) - w), hf _⟩)
         simpa only [F, PowerSeries.coeff_mk, AddSubmonoidClass.coe_finsetSum, Submodule.coe_smul] using this.symm
       rw [h1, ← he]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [conv_apply _ _ w (h0 _), hU, Matrix.mulVec, dotProduct, map_sum, Finset.sum_smul,
-        Finset.smul_sum, smul_smul]
+
+      simp only [conv_apply _ _ w (h0 _), hU, Matrix.mulVec, dotProduct, map_sum, Finset.sum_smul,
+      Finset.smul_sum, smul_smul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [Finset.sum_comm]
@@ -210,8 +254,8 @@ theorem full_of_span {X : Type} (D : Submodule LL (T.V ⊗[Qp] B)) [Module.Finit
     have : Pi.basisFun BdR (Fin r) a = ∑ j, b j • g (x j) := by
       funext a'
       have := form_ker T ι (v.coord a') hx
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, sub_eq_zero, map_sum, form_tmul] at this
+
+      rw [map_sub, sub_eq_zero, map_sum, form_tmul] at this
       simp only [form_mul] at this
       simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, g, ← this]
       by_cases h : a' = a
@@ -236,8 +280,8 @@ theorem full_of_span {X : Type} (D : Submodule LL (T.V ⊗[Qp] B)) [Module.Finit
       (fun m n h => antitone_int_of_succ_le PD.Fil_anti h) PD.Fil_mul PD.Fil_exh PD.Fil_sep ι t ev hev
       (fun a => P a a') (U j) _ c fun M => ?_
     have := form_fil PD T ι hι (v.coord a') _ (hc M)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, form_mul, hU, map_smul, form_smul] at this
+
+    simp only [map_sub, map_sum, form_mul, hU, map_smul, form_smul] at this
     simp only [Finset.mul_sum, mul_left_comm (t ^ _)]
     exact this
   have := congrArg Matrix.det key
@@ -248,13 +292,13 @@ theorem full_of_span {X : Type} (D : Submodule LL (T.V ⊗[Qp] B)) [Module.Finit
 end Comp
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem full_lat : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; let C := Cm l; ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ (i : Let K) (ζ : ↥LL.1), IsPrimitiveRoot ζ (l ^ s) → Full (Di (HW l) h T i) (Lat C h T i ζ) := by
   intro D HW F Cm l _ K s LL h W E C T hT i ζ hζ
   obtain ⟨h1, h2, -, -, hc⟩ := Points.points D HW l K s LL h
   obtain ⟨τ, hτ⟩ := h1 i ζ hζ
   obtain ⟨-, -, ι, hι⟩ := h2 i ζ τ hτ
-  obtain ⟨Ψ, -, hspan, hΨ⟩ := GlobalTheory.T.wach_image_deRham_plus_component_level D HW F Cm l K s LL h T hT i ζ τ ι hι
+  obtain ⟨Ψ, -, hspan, hΨ⟩ := _root_.GlobalTheory.NL.PerS.image D HW F Cm l K s LL h T hT i ζ τ ι hι
   obtain ⟨ev, hev, -, ht, -⟩ := EvdR.exists_ev_dR D l K LL s ι
   have := GlobalTheory.Per.LetterDim.finite_Dcris ((D.loc l).PD K) T.ρ hT
   have : Module.Finite ↥LL.1 ↥(Di (HW l) h T i) :=

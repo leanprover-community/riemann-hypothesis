@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagOrd
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsDiagR
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
 
 @[expose] public section
 

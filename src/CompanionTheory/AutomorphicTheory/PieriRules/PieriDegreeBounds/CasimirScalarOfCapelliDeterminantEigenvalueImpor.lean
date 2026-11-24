@@ -1,9 +1,0 @@
-module
-
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CasimirScalarOfCapelliDeterminantEigenvalueStatement
-public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.Imports
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
-public import Formalism.RealPlaceAnalysis.StatementE
-public import Formalism.RealPlaceAnalysis.StatementKT
-
-@[expose] public section

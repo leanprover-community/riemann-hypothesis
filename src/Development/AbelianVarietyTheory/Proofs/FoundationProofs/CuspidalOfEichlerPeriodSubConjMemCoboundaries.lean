@@ -1,9 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerPeriodCocycleMemCocyclesAndEqStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerIntegralFromISlashChangeOfVariablesStatement
+public import Mathlib.Algebra.Polynomial.Homogenize
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.LeviCivita
+public import Mathlib.NumberTheory.ModularForms.QExpansion
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerIntegralFromISlashChangeOfVariables
+public import Mathlib.NumberTheory.ModularForms.Basic
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerPeriodCocycleMemCocyclesAndEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -22,8 +72,8 @@ lemma lam_apply (w : ℕ) (x y : ℂ) (p : ℂ[X]) :
 
 lemma lam_eq (w : ℕ) (x y : ℂ) (p : ℂ[X]) :
     lam w x y p = MvPolynomial.eval ![x, y] (p.homogenize w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lam_apply, Polynomial.homogenize, map_sum, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+
+  rw [lam_apply, Polynomial.homogenize, map_sum, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [MvPolynomial.eval_monomial, Finsupp.prod_fintype _ _ (by simp)]
   simp
@@ -46,17 +96,11 @@ lemma lam_lin_pow (a b x y : ℂ) (i : ℕ) : lam i x y ((C a * X + C b) ^ i) = 
     simp [lam_apply, Finset.sum_range_succ, coeff_X, coeff_C]
     ring
 
-lemma polySlash_sum (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
-    slP w g p = ∑ i ∈ Finset.range (w + 1), p.coeff i •
-      ((C ((g 0 0 : ℤ) : ℂ) * X + C ((g 0 1 : ℤ) : ℂ)) ^ i *
-        (C ((g 1 0 : ℤ) : ℂ) * X + C ((g 1 1 : ℤ) : ℂ)) ^ (w - i)) := by
-  simp only [slP, LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.toSpanSingleton_apply, lcoeff_apply]
-
 lemma lam_slP (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (x y : ℂ) (p : ℂ[X]) :
     lam w x y (slP w g p) =
       lam w ((g 0 0 : ℤ) * x + (g 0 1 : ℤ) * y) ((g 1 0 : ℤ) * x + (g 1 1 : ℤ) * y) p := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [polySlash_sum, map_sum, lam_apply w _ _ p]
+
+  rw [_root_.GlobalTheory.EichlerChange.polySlash_apply, map_sum, lam_apply w _ _ p]
   refine Finset.sum_congr rfl fun i hi => ?_
   have hi' : i ≤ w := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
   rw [map_smul, smul_eq_mul]
@@ -76,8 +120,8 @@ lemma lam_one_zero (w : ℕ) (p : ℂ[X]) : lam w 1 0 p = p.coeff w := by
 
 lemma lam_conj (w : ℕ) (a c : ℤ) (p : ℂ[X]) :
     lam w a c (p.map (starRingEnd ℂ)) = starRingEnd ℂ (lam w a c p) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [lam_apply, map_sum]
+
+  simp [lam_apply, map_sum]
 
 lemma coeff_eichler (w : ℕ) (f : ℍ → ℂ) (τ : ℍ) :
     (eichler w f τ).coeff w = ∫ t in (0 : ℝ)..1,
@@ -154,13 +198,13 @@ lemma lam_per {Γ : Subgroup SL(2, ℤ)} [Γ.FiniteIndex] {k : ℕ} (hk : 2 ≤ 
     (σ : SL(2, ℤ)) (γ : Γ) (n : ℕ) (hn : 0 < n) (h : γ * σ = σ * ModularGroup.T ^ (n : ℤ)) :
     lam (k - 2) (mat σ 0 0 : ℤ) (mat σ 1 0 : ℤ) (per Γ (k - 2) f γ) =
       n * valueAtInfty ((f : ℍ → ℂ) ∣[(k : ℤ)] σ) := by
-  obtain ⟨c, hc⟩ := GlobalTheory.T.eichlerIntegralFromI_slash_change_of_variables k hk f f.holo' σ
+  obtain ⟨c, hc⟩ := _root_.GlobalTheory.EichlerChange.polySlash_eichler_smul k hk f f.holo' σ
   have key : ∀ τ : ℍ, lam (k - 2) (mat σ 0 0 : ℤ) (mat σ 1 0 : ℤ) (eichler (k - 2) f (σ • τ)) =
       (eichler (k - 2) ((f : ℍ → ℂ) ∣[(k : ℤ)] σ) τ).coeff (k - 2) + c.coeff (k - 2) := by
     intro τ
     rw [← coeff_add, ← hc τ, ← lam_one_zero, lam_slP]
     simp
-  rw [(GlobalTheory.T.eichlerPeriodCocycle_mem_cocycles_and_eq Γ k hk f).2 γ (σ • UpperHalfPlane.I), map_sub, lambda_slParabolic _ σ γ n h, ← mul_smul, h,
+  rw [(_root_.GlobalTheory.HeckeFamilyMatrices.PerCoc.per_mem_Z1_and_eq_slP_eichler_sub Γ k hk f).2 γ (σ • UpperHalfPlane.I), map_sub, lambda_slParabolic _ σ γ n h, ← mul_smul, h,
     mul_smul, key, key, modular_T_zpow_smul, coeff_eichler_period _ n hn, coeff_eichler]
   · simp
   · simpa using periodic_slash f σ γ n γ.2 h

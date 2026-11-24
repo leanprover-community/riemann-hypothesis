@@ -1,11 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.Cartan
+public import Mathlib.Algebra.Category.Grp.FilteredColimits
+public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
+public import Mathlib.Topology.Sheaves.Abelian
+public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic
 
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
+
+-- Use `sheafIsAbelian`, the instance Mathlib's `Sheaf.H` API is stated for, instead of the
+-- definitionally equal `TopCat.Sheaf.instAbelian`: the kernel is slow to identify the two.
+attribute [-instance] TopCat.Sheaf.instAbelian
 
 namespace GroundTheory.Arith.SchemeCoh
 

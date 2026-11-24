@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.EquivFunOM
 public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage
+public import Formalism.LocalToGlobal.Divisibility.InertPartitionLePartF
+import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
+import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 
 @[expose] public section
 

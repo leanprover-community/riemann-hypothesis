@@ -1,11 +1,15 @@
 module
 
+public import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
+public import Formalism.LocalToGlobal.Divisibility.NumbersLink
+public import Formalism.SharpRestriction.ParConsts
+public import Formalism.LocalToGlobal.ClassOfRecordOfChoice
+import Formalism.LocalToGlobal.HilbertRowConditions.IsHilbertCF
+import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 public import Formalism.LocalToGlobal.IndefiniteRealisationChoice
-public import Formalism.LocalToGlobal.PtKOfReal
-public import Formalism.LocalToGlobal.Divisibility.ArithClauseRec
-public import Mathlib
-public import Formalism.LocalToGlobal.Divisibility.DivisibilityConstruction.RBDGam
-public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
+import Formalism.LocalToGlobal.Divisibility.EigenvalueSumLeClosedOf
+import Formalism.LocalToGlobal.PtKOfReal
 
 @[expose] public section
 

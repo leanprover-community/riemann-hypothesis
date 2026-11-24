@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.SegreIdealIsHomogeneous
+public import Mathlib.Tactic.ENatToNat
+import Mathlib.CategoryTheory.Monoidal.Mon
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -124,8 +129,8 @@ theorem segreMap_aeval_update [DecidableEq K] (p : (k : K) → ι k) {f : MvPoly
     rw [hc]
     ring
   conv_lhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   conv_rhs => rw [f.as_sum]
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl key

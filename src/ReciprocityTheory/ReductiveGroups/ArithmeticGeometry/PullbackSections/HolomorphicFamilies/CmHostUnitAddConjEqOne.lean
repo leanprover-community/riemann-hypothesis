@@ -1,10 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
-public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
-public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
@@ -151,8 +148,8 @@ theorem harm_rename [Fintype T] {k : Type} [Field k] (cc : T → T) (isX : T →
     intro b
     show pderiv (lEq ⟨τ, i, b⟩) (pderiv (lEq ⟨cc τ, i', b⟩) (rename lEq P)) = _
     rw [pderiv_rename lEq.injective, pderiv_rename lEq.injective]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [e, ← map_sum, h3, map_zero]
+
+  simp only [e, ← map_sum, h3, map_zero]
 
 end Letters
 

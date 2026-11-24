@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.UnitaryNorms.CharHost
+public import Formalism.LocalRingCardinality.DataHost
+public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 
 @[expose] public section
 

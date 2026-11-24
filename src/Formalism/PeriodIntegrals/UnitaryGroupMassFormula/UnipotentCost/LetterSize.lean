@@ -1,6 +1,44 @@
 module
 
 public import Formalism.HermitianCurvature.StatementU
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -104,5 +142,30 @@ def ZCost : Prop :=
       ContDiffAt ℝ q (fun Z' : G.Mat s => H (gaXi k ρ σ d ξ Z' γ)) Z ∧
       ‖iteratedFDeriv ℝ q (fun Z' : G.Mat s => H (gaXi k ρ σ d ξ Z' γ)) Z‖ ≤
         C * β * B.gN (gaXi k ρ σ d ξ Z γ) ^ (5 * ((p + s + ρ : ℕ) : ℝ) * (q : ℝ))
+
+theorem det_zjH_ne {p s : ℕ} {σ : Equiv.Perm (Fin p)} {d : Fin p → ℂ} (hd : ∀ i, d i ≠ 0) (η : XiH p s σ)
+    {Z : G.Mat s} (hZ : G.detM Z ≠ 0) : (ZjH σ d η Z).det ≠ 0 := by
+  simp only [ZjH, Zj, blk2, Matrix.det_mul, Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₁₂,
+    Matrix.det_fromBlocks_zero₂₁, Matrix.det_one, headH, G.detM] at hZ ⊢
+  simp only [lowW, G.upper]
+  have hlow : (1 + Matrix.of fun i j : Fin p =>
+      if h : j < i ∧ σ.symm j < σ.symm i then η.2.1 ⟨(i, j), h⟩ else 0).det = 1 := by
+    rw [Matrix.det_of_isLowerTriangular]
+    · simp
+    · intro i j hij
+      have hij' : i < j := hij
+      simp [Matrix.one_apply_ne hij'.ne, not_lt.2 hij'.le]
+  have hup : (1 + G.strictUpper η.2.2).det = 1 := by
+    rw [Matrix.det_of_isUpperTriangular]
+    · simp [G.strictUpper]
+    · intro i j hij
+      have hij' : j < i := hij
+      simp [G.strictUpper, Matrix.one_apply_ne hij'.ne', not_lt.2 hij'.le]
+  have hP : wP σ = (1 : Matrix (Fin p) (Fin p) ℂ).submatrix σ id := by
+    ext a b; simp [wP, Matrix.one_apply]
+  rw [hlow, hup, hP, Matrix.det_permute, Matrix.det_one, Matrix.det_diagonal]
+  simp only [one_mul, mul_one]
+  refine mul_ne_zero (mul_ne_zero ?_ (Finset.prod_ne_zero_iff.2 fun i _ => hd i)) hZ
+  rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
 
 end PI.UnitaryGroupMassFormula.UsCost

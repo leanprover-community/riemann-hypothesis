@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassFieldLocal
 public import GroundTheory.GlobalFields.ClassFieldConsequences.IdealRayClass
-public import GroundTheory.GlobalFields.ClassFieldConsequences.OpenSubgroup
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
-public import GroundTheory.GlobalFields.GlobalArtinMap.ArtinMap
+public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
+public import Mathlib.FieldTheory.Galois.IsGaloisGroup
+public import Mathlib.RingTheory.Frobenius
+import GroundTheory.GlobalFields.ClassFieldConsequences.OpenSubgroup
+public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassFieldLocal
+import GroundTheory.GlobalFields.GlobalReciprocity.Frobenius
 
 @[expose] public section
 

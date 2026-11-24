@@ -1,11 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.PlaceBoundSplitOfIntegral
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
-public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
-public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

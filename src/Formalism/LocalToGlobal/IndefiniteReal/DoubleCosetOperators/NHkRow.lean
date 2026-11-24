@@ -1,9 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.RatDatOfReal
-public import Formalism.SharpRestriction.LevelLetterCocycles.IntegralHeckeForms
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.GoodPartLeTypeSubspace
-public import Formalism.LocalToGlobal.IndefiniteReal.BridgeTie
 
 @[expose] public section
 

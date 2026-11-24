@@ -1,8 +1,8 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
-public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement
-public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.MinimalSolutionStatement
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

@@ -1,8 +1,55 @@
 module
 
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 public import Formalism.SatakeDualWeyl.DefsCS
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stabfin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -45,35 +92,13 @@ theorem csDual_sig_C (σ : E →ₐ[F] E) (c : 𝓞 F) :
 
 theorem csDual_sig_mem (σ : E →ₐ[F] E) {s : 𝒜} (hs : s ∈ 𝒮) :
     sigR σ (FiniteAdeleRing (𝓞 F) F) s ∈ 𝒮 := by
-  have key : ∀ s ∈ tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F),
-      s ∈ (tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)).comap
-        (sigR σ (FiniteAdeleRing (𝓞 F) F)) := by
-    intro s hs'
-    refine (Subring.closure_le.2 ?_) hs'
-    rintro _ (⟨⟨x, hx⟩, rfl⟩ | ⟨⟨y, hy⟩, rfl⟩)
-    · obtain ⟨a, ha⟩ := hx
-      have hint : IsIntegral ℤ (σ x) := by
-        rw [← ha]
-        simpa using (IsIntegral.algebraMap (Algebra.IsIntegral.isIntegral (R := ℤ) a)).map
-          σ.toRingHom.toIntAlgHom
-      have e1 : sigR σ (FiniteAdeleRing (𝓞 F) F) (x ⊗ₜ[F] (1 : (FiniteAdeleRing (𝓞 F) F))) = (σ x) ⊗ₜ[F] (1 : (FiniteAdeleRing (𝓞 F) F)) := by
-        simp [sigR]
-      show sigR σ (FiniteAdeleRing (𝓞 F) F) (x ⊗ₜ[F] (1 : (FiniteAdeleRing (𝓞 F) F))) ∈ tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-      rw [e1]
-      exact Subring.subset_closure (Or.inl ⟨⟨σ x, IsIntegralClosure.mk' (𝓞 E) _ hint,
-        IsIntegralClosure.algebraMap_mk' _ _ _⟩, rfl⟩)
-    · have e2 : sigR σ (FiniteAdeleRing (𝓞 F) F) ((1 : E) ⊗ₜ[F] y) = (1 : E) ⊗ₜ[F] y := by
-        simp [sigR]
-      show sigR σ (FiniteAdeleRing (𝓞 F) F) ((1 : E) ⊗ₜ[F] y) ∈ tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-      rw [e2]
-      exact Subring.subset_closure (Or.inr ⟨⟨y, hy⟩, rfl⟩)
-  exact key s hs
+  apply Formalism.UG.P.csScale_sigR_mem <;> assumption
 
 theorem csDual_hform_incl (σ : E →ₐ[F] E) (J : Matrix n n E) (y x : n → E) :
     hform (sigR σ (FiniteAdeleRing (𝓞 F) F)) (J.map ι) (fun i => ι (y i)) (fun i => ι (x i)) =
       ι (hform (σ : E →+* E) J y x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [hform, csDual_sig_incl, map_sum, map_mul]
+
+  simp [hform, csDual_sig_incl, map_sum, map_mul]
 
 theorem csDual_span (σ : E →ₐ[F] E) (J : Matrix n n E) (M : Submodule (𝓞 E) (n → E)) (x : n → E)
     (hx : ∀ y ∈ M, hform (σ : E →+* E) J y x ∈ (algebraMap (𝓞 E) E).range)

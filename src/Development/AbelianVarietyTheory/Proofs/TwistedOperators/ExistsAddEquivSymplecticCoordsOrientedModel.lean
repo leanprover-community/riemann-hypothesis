@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
 
 @[expose] public section
 
@@ -21,33 +61,11 @@ namespace GlobalTheory.Twist.exists_addEquiv_symplecticCoords_orientedModel
 
 variable {D : D7}
 
-theorem gram_det_ne_zero (S : HSp D) : S.gram.det ≠ 0 := by
-  intro h
-  obtain ⟨v, hv0, hv⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h
-  apply hv0
-  set x : S.V := ∑ j, v j • S.frame j with hxdef
-  have hfr : ∀ i, S.hT (S.frame i) x = 0 := by
-    intro i
-    have := congrFun hv i
-    simp only [Matrix.mulVec, dotProduct, Pi.zero_apply] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxdef, map_sum]
-    simp only [map_smul, smul_eq_mul]
-    rw [← this]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    simp [Formalism.BasicNotions.HSpace.gram, mul_comm]
-  have hx : S.hT.flip x = 0 := S.frame.ext fun i => by simpa using hfr i
-  have hx0 : x = 0 := S.nondeg.2 x fun y => by
-    have := LinearMap.congr_fun hx y
-    simpa using this
-  funext j
-  exact Fintype.linearIndependent_iff.1 S.frame.linearIndependent v hx0 j
-
 theorem isUnit_det_incM (S : HSp D) (c : D.host.E) (hc : c ≠ 0) :
     IsUnit (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.incM (c • S.gram)).det := by
   have h1 : (c • S.gram).det ≠ 0 := by
     rw [Matrix.det_smul]
-    exact mul_ne_zero (pow_ne_zero _ hc) (gram_det_ne_zero S)
+    exact mul_ne_zero (pow_ne_zero _ hc) (_root_.Formalism.L2.Theta.gram_det_ne S)
   have h2 : (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.incM (c • S.gram)).det =
       (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := D.host.F) (AF D.host.F)) (c • S.gram).det := by
     rw [RingHom.map_det]; rfl

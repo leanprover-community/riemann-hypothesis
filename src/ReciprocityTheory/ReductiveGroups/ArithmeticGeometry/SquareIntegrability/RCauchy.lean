@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Order.CompletePartialOrder
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.DiffContOnCl
+public import Mathlib.Analysis.Complex.Liouville
 
 @[expose] public section
 

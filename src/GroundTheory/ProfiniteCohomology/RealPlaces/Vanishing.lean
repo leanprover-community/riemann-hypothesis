@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingPrimes
+public import GroundTheory.ProfiniteCohomology.RealPlaces.GSDefs
+public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingCriterion
 public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingMackeyTransfer
+public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingPrimes
 
 @[expose] public section
 
@@ -46,18 +47,21 @@ theorem injective_gsRealRes_of_four_le {n : ℕ} (hn : n ≠ 0)
     (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) [IsDiscreteRep M] [Finite M]
     (hM : ∀ m : M, n • m = 0) {r : ℕ} (hr : 4 ≤ r) :
     Function.Injective (gsRealRes S ιr M r).hom := set_option maxHeartbeats 16000000 in by
-  obtain ⟨ιs'⟩ : Nonempty (∀ v : S,
-      ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) :=
-    ⟨fun _ => Classical.choice nonempty_algHom_of_isSepClosed⟩
-  obtain ⟨p, rfl⟩ : ∃ p, r = p + 1 := ⟨r - 1, by omega⟩
-  exact (injective_tateGlobalToLocal_iff (gsFinFamily S ιs') (gsRealFamily S ιr) M
-    (fun v => Rep.res (gsFinFamily S ιs' v).toMonoidHom M) (fun _ => 𝟙 _)
-    (fun w => Rep.res (gsRealFamily S ιr w).toMonoidHom M) (fun _ => 𝟙 _) (p + 1)
-    (fun v => subsingleton_cohomology_gsFinFamily_of_three_le S ιs' hn M hM v (by omega))).1
-    (injective_tateGlobalToLocal_of_eq_zero (gsFinFamily S ιs') (gsRealFamily S ιr) M
-      (fun v => Rep.res (gsFinFamily S ιs' v).toMonoidHom M) (fun _ => 𝟙 _)
-      (fun w => Rep.res (gsRealFamily S ιr w).toMonoidHom M) (fun _ => 𝟙 _) p
-      (gsTateCompactCohomology_eq_zero S ιr ιs' hn hS M hM hr))
+  let ιs' := someFinEmbeddings S
+  cases r with
+  | zero => exact (Nat.not_succ_le_zero _ hr).elim
+  | succ p =>
+    let φ := gsFinFamily S ιs'
+    let ψ := gsRealFamily S ιr
+    let Mᵥ v := Rep.res (φ v).toMonoidHom M
+    let Mᵣ w := Rep.res (ψ w).toMonoidHom M
+    have h₃ : 3 ≤ p + 1 := Nat.le_trans (Nat.le_succ 3) hr
+    exact (injective_tateGlobalToLocal_iff φ ψ M
+      Mᵥ (fun v => 𝟙 (Mᵥ v)) Mᵣ (fun w => 𝟙 (Mᵣ w)) (p + 1)
+      (fun v => subsingleton_cohomology_gsFinFamily_of_three_le S ιs' hn M hM v h₃)).1
+      (injective_tateGlobalToLocal_of_eq_zero φ ψ M
+        Mᵥ (fun v => 𝟙 (Mᵥ v)) Mᵣ (fun w => 𝟙 (Mᵣ w)) p
+        (gsTateCompactCohomology_eq_zero S ιr ιs' hn hS M hM hr))
 
 
 set_option maxHeartbeats 32000000 in
@@ -66,18 +70,21 @@ theorem surjective_gsRealRes_of_three_le {n : ℕ} (hn : n ≠ 0)
     (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) [IsDiscreteRep M] [Finite M]
     (hM : ∀ m : M, n • m = 0) {r : ℕ} (hr : 3 ≤ r) :
     Function.Surjective (gsRealRes S ιr M r).hom := set_option maxHeartbeats 16000000 in by
-  obtain ⟨ιs'⟩ : Nonempty (∀ v : S,
-      ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) :=
-    ⟨fun _ => Classical.choice nonempty_algHom_of_isSepClosed⟩
-  obtain ⟨p, rfl⟩ : ∃ p, r = p + 1 := ⟨r - 1, by omega⟩
-  exact (surjective_tateGlobalToLocal_iff (gsFinFamily S ιs') (gsRealFamily S ιr) M
-    (fun v => Rep.res (gsFinFamily S ιs' v).toMonoidHom M) (fun _ => 𝟙 _)
-    (fun w => Rep.res (gsRealFamily S ιr w).toMonoidHom M) (fun _ => 𝟙 _) (p + 1)
-    (fun v => subsingleton_cohomology_gsFinFamily_of_three_le S ιs' hn M hM v (by omega))).1
-    (surjective_tateGlobalToLocal_of_eq_zero (gsFinFamily S ιs') (gsRealFamily S ιr) M
-      (fun v => Rep.res (gsFinFamily S ιs' v).toMonoidHom M) (fun _ => 𝟙 _)
-      (fun w => Rep.res (gsRealFamily S ιr w).toMonoidHom M) (fun _ => 𝟙 _) p
-      (gsTateCompactCohomology_eq_zero S ιr ιs' hn hS M hM (by omega)))
+  let ιs' := someFinEmbeddings S
+  cases r with
+  | zero => exact (Nat.not_succ_le_zero _ hr).elim
+  | succ p =>
+    let φ := gsFinFamily S ιs'
+    let ψ := gsRealFamily S ιr
+    let Mᵥ v := Rep.res (φ v).toMonoidHom M
+    let Mᵣ w := Rep.res (ψ w).toMonoidHom M
+    have h₄ : 4 ≤ p + 2 := Nat.succ_le_succ hr
+    exact (surjective_tateGlobalToLocal_iff φ ψ M
+      Mᵥ (fun v => 𝟙 (Mᵥ v)) Mᵣ (fun w => 𝟙 (Mᵣ w)) (p + 1)
+      (fun v => subsingleton_cohomology_gsFinFamily_of_three_le S ιs' hn M hM v hr)).1
+      (surjective_tateGlobalToLocal_of_eq_zero φ ψ M
+        Mᵥ (fun v => 𝟙 (Mᵥ v)) Mᵣ (fun w => 𝟙 (Mᵣ w)) p
+        (gsTateCompactCohomology_eq_zero S ιr ιs' hn hS M hM h₄))
 
 end
 

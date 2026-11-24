@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInfinite
+public import GroundTheory.GlobalFields.TateThesis.Gaussian
+public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInverse
 public import GroundTheory.GlobalFields.TateThesis.GaussianComplexFourier
-public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

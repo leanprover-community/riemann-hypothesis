@@ -1,7 +1,61 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.AlgebraicIndependent.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
+public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 @[expose] public section
 
@@ -18,8 +72,8 @@ theorem aeval_mul_of_isHomogeneous {S : Type} [CommRing S] [Algebra K S] (a : σ
     aeval (fun j => a j * w) G = aeval a G * w ^ n := by
   conv_lhs => rw [G.as_sum]
   conv_rhs => rw [G.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm => ?_
   have hmn : m.degree = n := by
     by_contra hne
@@ -40,14 +94,14 @@ theorem exists_homogenisation (F : MvPolynomial σ K) (i : σ) :
     have h2 : n + 1 * (F.totalDegree - n) = F.totalDegree := by omega
     rwa [h2] at h1
   · conv_rhs => rw [← sum_homogeneousComponent F]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, ha]
+
+    simp [map_sum, ha]
 
 theorem aeval_mem_of_isHomogeneous {R : Type} [CommRing R] [Algebra K R] (𝒜 : ℕ → Submodule K R)
     [SetLike.GradedMonoid 𝒜] {N : ℕ} {x : σ → R} (hx : ∀ j, x j ∈ 𝒜 N)
     {G : MvPolynomial σ K} {n : ℕ} (hG : G.IsHomogeneous n) : aeval x G ∈ 𝒜 (N * n) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [G.as_sum, map_sum]
+
+  rw [G.as_sum, map_sum]
   refine Submodule.sum_mem _ fun m hm => ?_
   have hmn : m.degree = n := by
     by_contra hne
@@ -69,16 +123,16 @@ theorem aeval_eq_zero_iff_components {R : Type} [CommRing R] [Algebra K R] (𝒜
     · set_option synthInstance.maxHeartbeats 100000 in
         rw [← sum_homogeneousComponent G, map_sum] at h
       have h2 := congrArg (GradedRing.proj 𝒜 n) h
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero, Finset.sum_eq_single n] at h2
+
+      rw [map_sum, map_zero, Finset.sum_eq_single n] at h2
       · rwa [GradedRing.proj_apply, DirectSum.decompose_of_mem_same 𝒜 (hm n)] at h2
       · intro b _ hb
         rw [GradedRing.proj_apply, DirectSum.decompose_of_mem_ne 𝒜 (hm b) hb]
       · exact fun h' => absurd hn h'
     · rw [homogeneousComponent_eq_zero _ _ (by simpa using hn), map_zero]
   · intro h
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sum_homogeneousComponent G, map_sum]
+
+    rw [← sum_homogeneousComponent G, map_sum]
     exact Finset.sum_eq_zero fun n _ => h n
 
 theorem aeval_cone_eq_zero_iff {C : Type} [CommRing C] [Algebra K C] (r : σ → C)
@@ -104,8 +158,8 @@ theorem aeval_cone_eq_zero_iff {C : Type} [CommRing C] [Algebra K C] (r : σ →
       · exact fun h' => absurd hn h'
     · rw [homogeneousComponent_eq_zero _ _ (by simpa using hn), map_zero]
   · intro h
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sum_homogeneousComponent G, map_sum]
+
+    rw [← sum_homogeneousComponent G, map_sum]
     exact Finset.sum_eq_zero fun n _ => by rw [hm, h, map_zero, zero_mul]
 
 theorem trdeg_eq_of_isAlgebraic {A : Type} [CommRing A] [IsDomain A] [Algebra K A]

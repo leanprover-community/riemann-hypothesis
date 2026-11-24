@@ -1,27 +1,56 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
+public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryCompletionMapsDualLattices
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
+public import Formalism.LocalToGlobal.IndefiniteReal.ConjSubConjSub
+public import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.PNeatB
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
+import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.LatSOfLocBasis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Definitions.Divisors.InstCMHostS
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinRepApply
-public import Development.AbelianVarietyTheory.Definitions.Divisors.InstCMHostS
-public import Formalism.LocalToGlobal.IndefiniteReal.PartsRow
-public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
-public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasInfExpOfOrder
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCompatFiniteIsometry
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelSubgroupConjFiniteMovesFrame
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryCompletionMapsDualLattices
-public import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.PNeatB
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsDefiniteSelfDualOfBaseFramePosDef
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
+import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 
@@ -37,19 +66,6 @@ attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 noncomputable section
 
 namespace GlobalTheory.GramFrame
-
-theorem hform_add_right {A : Type} [CommRing A] {n : Type} [Fintype n] (τ : A →+* A)
-    (J : Matrix n n A) (x u v : n → A) : Formalism.UG.hform τ J x (u + v) = Formalism.UG.hform τ J x u + Formalism.UG.hform τ J x v := by
-  simp only [Formalism.UG.hform, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-
-theorem hform_smul_right {A : Type} [CommRing A] {n : Type} [Fintype n] (τ : A →+* A)
-    (J : Matrix n n A) (a : A) (x y : n → A) : Formalism.UG.hform τ J x (a • y) = a * Formalism.UG.hform τ J x y := by
-  simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-
-theorem hform_zero_right {A : Type} [CommRing A] {n : Type} [Fintype n] (τ : A →+* A)
-    (J : Matrix n n A) (x : n → A) : Formalism.UG.hform τ J x 0 = 0 := by
-  simp [Formalism.UG.hform]
 
 variable {D : D7}
 
@@ -69,8 +85,8 @@ theorem hform_inclE {n : ℕ} (J : Matrix (Fin n) (Fin n) D.host.E) (x y : Fin n
       (fun i => Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F) (x i))
       (fun i => Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F) (y i)) =
     Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F) (Formalism.UG.hform (D.sp.cm.sig : D.host.E →+* D.host.E) J x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Formalism.UG.hform, map_sum, map_mul, sigR_inclE, Matrix.map_apply]
+
+  simp only [Formalism.UG.hform, map_sum, map_mul, sigR_inclE, Matrix.map_apply]
   rfl
 
 theorem pair_hatL {n : ℕ} (J : Matrix (Fin n) (Fin n) D.host.E) (Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E))
@@ -89,9 +105,9 @@ theorem pair_hatL {n : ℕ} (J : Matrix (Fin n) (Fin n) D.host.E) (Λ : Submodul
       obtain ⟨b, hb⟩ := h x0 hx0 y0 hy0
       rw [← hb]
       exact inclE_int b
-    | zero => rw [hform_zero_right]; exact zero_mem _
-    | add a b _ _ ha hb => rw [hform_add_right]; exact add_mem ha hb
-    | smul s a _ ha => rw [Subring.smul_def, hform_smul_right]; exact mul_mem s.2 ha
+    | zero => rw [_root_.Formalism.UG.P.csScale_hform_zero_right]; exact zero_mem _
+    | add a b _ _ ha hb => rw [_root_.Formalism.UG.P.csScale_hform_add_right]; exact add_mem ha hb
+    | smul s a _ ha => rw [Subring.smul_def, _root_.Formalism.UG.P.csScale_hform_smul_right]; exact mul_mem s.2 ha
   | zero => rw [Formalism.UG.P.csDual_hform_zero_left]; exact zero_mem _
   | add a b _ _ ha hb => rw [Formalism.UG.P.csDual_hform_add_left]; exact add_mem ha hb
   | smul s a _ ha =>
@@ -116,8 +132,8 @@ theorem prV_hform' {n : ℕ} (σ : E →ₐ[F] E) (J : Matrix (Fin n) (Fin n) E)
   have hs : ∀ z, Formalism.UG.prV (E := E) v (Formalism.UG.sigR σ (Formalism.L2.Herm.Af F) z) =
       Formalism.UG.sigR σ (v.adicCompletion F) (Formalism.UG.prV (E := E) v z) :=
     fun z => RingHom.congr_fun (Formalism.UG.P.afsplit_prV_comp_sigR σ v) z
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Formalism.UG.hform, map_sum, map_mul, hs, Matrix.map_apply]
+
+  simp only [Formalism.UG.hform, map_sum, map_mul, hs, Matrix.map_apply]
   rfl
 
 theorem inv_int {n : ℕ} (σ : E →ₐ[F] E)

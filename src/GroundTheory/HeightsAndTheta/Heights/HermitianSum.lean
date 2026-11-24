@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.InnerProductSpace.Defs
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
+public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 

@@ -1,28 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.IsolateSpec
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistSectionsLocallyGeneratedStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleLocallyIffAffineEtalePointCoverStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleSheafSectionsSepGlueOfSurjectiveFamilyStatement
+public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleSheafSectionsSepGlueOfSurjectiveFamily
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistReductionResolutionMapGenerator
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistSectionsLocallyGeneratedStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
 
 namespace UpperTheory.Gal.TranscendenceTraces
-
-section
-variable {R : Type} [CommRing R] {F : Shv R}
-
-private theorem res_nsmul' {V U : Scheme.{0}} (g : V ⟶ U) (n : ℕ) (x : Sec F U) :
-    Sec.res g (n • x) = n • Sec.res g x := map_nsmul (ModuleCat.Hom.hom (F.obj.map g.op)) n x
-
-private theorem res_sub' {V U : Scheme.{0}} (g : V ⟶ U) (x x' : Sec F U) :
-    Sec.res g (x - x') = Sec.res g x - Sec.res g x' := map_sub (ModuleCat.Hom.hom (F.obj.map g.op)) x x'
-
-end
 
 private theorem res_eq_of_range {q : ℕ} {i : ℤ} {U V : Scheme.{0}} (g : V ⟶ U) [Etale g]
     (y G : Sec (tw q i) U) (c : ℕ) (h : Sec.res g y = c • Sec.res g G) {Ω : Type} [Field Ω]
@@ -31,26 +61,26 @@ private theorem res_eq_of_range {q : ℕ} {i : ℤ} {U V : Scheme.{0}} (g : V �
   obtain ⟨t, -, -⟩ := Scheme.Pullback.exists_preimage_pullback (f := x) (g := g)
     (IsLocalRing.closedPoint Ω) v hv.symm
   have hE : Etale (pullback.fst x g) := inferInstance
-  have hz := (GlobalTheory.T.etaleSheafSections_sep_glue_of_surjective_family _ (tw q i) (gp Ω) Unit (fun _ => pullback x g) (fun _ => pullback.fst x g)
+  have hz := (_root_.GlobalTheory.EtC.sec_sep_glue_of_points _ (tw q i) (gp Ω) Unit (fun _ => pullback x g) (fun _ => pullback.fst x g)
     (fun _ => hE) (fun u => ⟨(), t, Subsingleton.elim _ _⟩)).1 (Sec.res x y - c • Sec.res x G) (fun _ => by
-      rw [res_sub', res_nsmul', res_res, res_res, pullback.condition, ← res_res, ← res_res, h, res_nsmul', sub_self])
+      rw [_root_.GlobalTheory.EtC.Stair.res_sub, _root_.GlobalTheory.TwSec.res_nsmul, res_res, res_res, pullback.condition, ← res_res, ← res_res, h, _root_.GlobalTheory.TwSec.res_nsmul, sub_self])
   exact sub_eq_zero.mp hz
 
 theorem secFun_of : PtEx → SecFun := by
   intro hpt q _ i U ζ y
   have hq : 0 < q := Nat.pos_of_ne_zero (NeZero.ne q)
-  obtain ⟨-, h2, h3, h4, -, -⟩ := GlobalTheory.T.tateTwist_sections_locally_generated q i
+  obtain ⟨-, h2, h3, h4, -, -⟩ := _root_.GlobalTheory.EtC.twist_sections q i
   let P : (V : Scheme.{0}) → (V ⟶ U) → Prop :=
     fun V g => ∃ c : ℕ, Sec.res g y = c • Sec.res g (twGen i ζ)
   have hP : ∀ (V W : Scheme) (g : V ⟶ U) (k : W ⟶ V), P V g → P W (k ≫ g) := by
     rintro V W g k ⟨c, hc⟩
-    exact ⟨c, by rw [← res_res, hc, res_nsmul', res_res]⟩
+    exact ⟨c, by rw [← res_res, hc, _root_.GlobalTheory.TwSec.res_nsmul, res_res]⟩
   have hloc : Loc U P := by
     obtain ⟨S, hS, hSa⟩ := h2 U ζ y
     refine ⟨S, hS, fun V g hg => ?_⟩
     obtain ⟨c, hc⟩ := hSa V g hg
     exact ⟨c, by rw [hc, h4]⟩
-  have hpts := (GlobalTheory.T.etaleLocally_iff_affine_etale_point_cover U P hP).mp hloc
+  have hpts := (_root_.GlobalTheory.EtC.loc_iff_etale_affine_points U P hP).mp hloc
   choose V g hVa hge hgr hc using hpts
   choose c hc using hc
   have key : ∀ (u : U) {Ω : Type} [Field Ω] (x : gp Ω ⟶ U), pt x ∈ Set.range (g u) →

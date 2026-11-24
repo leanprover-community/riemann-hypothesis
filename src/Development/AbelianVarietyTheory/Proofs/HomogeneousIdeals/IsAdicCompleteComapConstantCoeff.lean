@@ -1,6 +1,56 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.AdicCompletion.RingHom
+public import Mathlib.RingTheory.PowerSeries.Trunc
+public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.Polynomial.Div
+import ReciprocityTheory.AdicCompleteness.IsAdicCompleteComapConstantCoeff
 
 @[expose] public section
 
@@ -156,56 +206,11 @@ variable {A : Type*} [CommRing A] (I : Ideal A)
 
 theorem map_C_sup_span_X :
     I.map (C : A →+* A⟦X⟧) ⊔ Ideal.span {X} = I.comap (constantCoeff (R := A)) := by
-  apply le_antisymm
-  · refine sup_le ?_ ?_
-    · rw [Ideal.map_le_iff_le_comap]
-      intro a ha
-      simpa using ha
-    · simp [Ideal.span_singleton_le_iff_mem]
-  · intro f hf
-    rw [f.eq_X_mul_shift_add_const]
-    exact add_mem
-      (Ideal.mem_sup_right (Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _)))
-      (Ideal.mem_sup_left (Ideal.mem_map_of_mem _ hf))
+  exact ReciprocityTheory.P1.map_C_sup_span_X I
 
 theorem mem_pow_comap_constantCoeff_iff (n : ℕ) (f : A⟦X⟧) :
     f ∈ I.comap (constantCoeff (R := A)) ^ n ↔ ∀ i, coeff i f ∈ I ^ (n - i) := by
-  constructor
-  · induction n generalizing f with
-    | zero => simp
-    | succ n ih =>
-      intro hf
-      rw [pow_succ] at hf
-      refine Submodule.mul_induction_on hf (fun a ha b hb i => ?_) (fun a b ha hb i => ?_)
-      · rw [coeff_mul]
-        refine sum_mem fun x hx => ?_
-        have hx' := Finset.HasAntidiagonal.mem_antidiagonal.1 hx
-        have h1 := ih a ha x.1
-        have h2 : coeff x.2 b ∈ I ^ (1 - x.2) := by
-          rcases Nat.eq_zero_or_pos x.2 with h | h
-          · rw [h]; simpa using hb
-          · rw [show 1 - x.2 = 0 by omega]; simp
-        have h3 := Ideal.mul_mem_mul h1 h2
-        rw [← pow_add] at h3
-        exact Ideal.pow_le_pow_right (by omega) h3
-      · rw [map_add]; exact add_mem (ha i) (hb i)
-  · intro h
-    have hX : (X : A⟦X⟧) ∈ I.comap (constantCoeff (R := A)) := by simp
-    rw [f.eq_X_pow_mul_shift_add_trunc n]
-    refine add_mem (Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow hX n)) ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [trunc_apply, ← Polynomial.coeToPowerSeries.ringHom_apply, map_sum]
-    refine sum_mem fun i hi => ?_
-    have hi' : i < n := (Finset.mem_Ico.1 hi).2
-    rw [Polynomial.coeToPowerSeries.ringHom_apply, Polynomial.coe_monomial,
-      monomial_eq_C_mul_X_pow]
-    have h1 : C (coeff i f) ∈ I.comap (constantCoeff (R := A)) ^ (n - i) := by
-      have := Ideal.mem_map_of_mem (C : A →+* A⟦X⟧) (h i)
-      rw [Ideal.map_pow] at this
-      refine Ideal.pow_right_mono ?_ _ this
-      rw [← map_C_sup_span_X]; exact le_sup_left
-    have h2 := Ideal.mul_mem_mul h1 (Ideal.pow_mem_pow hX i)
-    rwa [← pow_add, Nat.sub_add_cancel hi'.le] at h2
+  exact ReciprocityTheory.P1.mem_pow_comap_constantCoeff_iff I n f
 
 theorem isHausdorff_comap_constantCoeff [IsHausdorff I A] :
     IsHausdorff (I.comap (constantCoeff (R := A))) A⟦X⟧ where
@@ -220,21 +225,7 @@ theorem isHausdorff_comap_constantCoeff [IsHausdorff I A] :
 theorem isPrecomplete_comap_constantCoeff [IsPrecomplete I A] :
     IsPrecomplete (I.comap (constantCoeff (R := A))) A⟦X⟧ where
   prec' F hF := by
-    simp only [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, mem_pow_comap_constantCoeff_iff] at hF ⊢
-    have : ∀ i, ∃ L : A, ∀ n, coeff i (F (n + i)) - L ∈ I ^ n := by
-      intro i
-      have := IsPrecomplete.prec' (I := I) (fun n => coeff i (F (n + i))) (by
-        intro m n h
-        simp only [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top]
-        simpa using hF (show m + i ≤ n + i by omega) i)
-      simpa only [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top] using this
-    choose L hL using this
-    refine ⟨mk L, fun n i => ?_⟩
-    rcases le_or_gt i n with h | h
-    · have := hL i (n - i)
-      rw [Nat.sub_add_cancel h] at this
-      simpa using this
-    · rw [show n - i = 0 by omega]; simp
+    exact (ReciprocityTheory.P1.isPrecomplete_comap_constantCoeff I).prec' F hF
 
 theorem isAdicComplete_comap_constantCoeff [IsAdicComplete I A] :
     IsAdicComplete (I.comap (constantCoeff (R := A))) A⟦X⟧ :=

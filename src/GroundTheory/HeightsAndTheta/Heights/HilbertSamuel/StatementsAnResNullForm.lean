@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImage
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithRes
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

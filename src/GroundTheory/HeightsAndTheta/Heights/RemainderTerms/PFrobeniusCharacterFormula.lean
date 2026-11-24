@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsSchur
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.AltCoeff
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.FieldTheory.AlgebraicClosure
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.NumberTheory.Padics.RingHoms
+public import Mathlib.Topology.ContinuousMap.Algebra
 
 @[expose] public section
 

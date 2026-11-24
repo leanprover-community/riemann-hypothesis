@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.GroupTheory.DoubleCoset
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

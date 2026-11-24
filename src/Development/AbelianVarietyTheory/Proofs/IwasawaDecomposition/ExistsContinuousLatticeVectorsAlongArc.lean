@@ -1,12 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MonoSpMapRingOfIntegersAlt
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ToroidalBoundaryMetricData
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HolomorphicHomDetermined
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBaseChangeStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSemiAbelianExponentialAlongDiscStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanPeriodLatticeComplexSemiAbelianEqTopStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSemiAbelianExponentialAlongDisc
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFrameBaseChangeRingHom
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanPeriodLatticeComplexSemiAbelianEqTop
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
+import Development.AbelianVarietyTheory.Statements.PrincipalLattices.LogHermFormOfUnitDiscriminant
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.DualNumber
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeC
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeH
+import Mathlib.Algebra.Azumaya.Basic
 
 @[expose] public section
 
@@ -29,16 +72,6 @@ theorem isDerivAt_comp_iff {V V' : Type} [NormedAddCommGroup V] [NormedSpace ℂ
   have h2 : fderiv ℂ (fun t => valAt' (c (L t)) U f) 0 w = fderiv ℂ (fun t => valAt' (c t) U f) 0 (L w) :=
     congrArg (· w) (h1.comp 0 L.hasFDerivAt).fderiv
   rw [h2]
-
-theorem isDerivAt_smul {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {X : Scheme.{0}} {c : V → (Sp ℂ ⟶ X)}
-    {z w : V} {v : Sp (DualNumber ℂ) ⟶ X} (h : IsDerivAt c z w v) (a : ℂ) :
-    IsDerivAt c z (a • w) (spMap (epsMul a) ≫ v) := by
-  refine ⟨?_, fun U hU f => ?_⟩
-  · rw [← h.1, ← Category.assoc, ← Spec.map_comp]
-    congr 2
-    exact CommRingCat.hom_ext (RingHom.ext fun x => by simp [epsMul])
-  · rw [valR_spMap _ _ _ ((le_preimage_dual_iff h.1 U).2 hU), map_smul, ← h.2 U hU f]
-    simp [epsMul]
 
 theorem isDerivAt_add {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {S : Scheme.{0}} {G : Over S} [GrpObj G]
     {y : Sp ℂ ⟶ S} {e : V → (Over.mk y ⟶ G)} (he : ∀ z w, e (z + w) = e z * e w)
@@ -65,7 +98,7 @@ theorem exists_lieEquiv {X : Scheme.{0}} (t : SAB H X) {y : Sp ℂ ⟶ X} {g : �
   let D : (Fin g → ℂ) →ₗ[ℂ] TanM y t.G :=
     { toFun := fun w => tanOf (t := t) ⟨(hd w).over, (hd w).1.trans (congrArg (·.left) h0)⟩
       map_add' := fun w w' => tan_ext ((hd _).unique (isDerivAt_add he hol (hd w) (hd w')))
-      map_smul' := fun a w => tan_ext ((hd _).unique (isDerivAt_smul (hd w) a)) }
+      map_smul' := fun a w => tan_ext ((hd _).unique (_root_.GlobalTheory.DerivEig.isDerivAt_epsMul (hd w) a)) }
   have hu := fun v : TanM y t.G => hdiff (tv v) ((isTan_tv v).2.trans (congrArg (·.left) h0.symm))
   simp only [isDerivAt0_iff] at hu
   refine ⟨LinearEquiv.ofBijective D ⟨fun w w' h => (hu (D w)).unique (hd w) (by rw [h]; exact hd w'), fun v => ?_⟩, hd⟩
@@ -90,8 +123,8 @@ theorem exists_basis {σ : c.F →+* ℂ} {y : Sp ℂ ⟶ Z.X} (f : EigFrame Z �
   refine ⟨Module.Basis.mk (v := fun p => f.vec p.1 p.2) (Fintype.linearIndependent_iff.2 fun a ha q => ?_)
     fun w _ => ?_, fun _ => Module.Basis.mk_apply _ _ _⟩
   · have := proj_sum_eig (actR (x0 := y) Z.t.act) χ α hα (fun τ => ∑ i, a ⟨τ, i⟩ • f.vec τ i) (fun τ b => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, f.act_vec, Finset.smul_sum]
+
+      simp only [map_sum, map_smul, f.act_vec, Finset.smul_sum]
       exact Finset.sum_congr rfl fun i _ => smul_comm _ _ _) q.1
     rw [← Fintype.sum_sigma (fun q : Σ τ : E →+* ℂ, Fin (Dw.mult τ) => a q • f.vec q.1 q.2), ha, map_zero] at this
     exact Fintype.linearIndependent_iff.1 (f.linearIndependent_vec q.1) _ this.symm q.2
@@ -234,7 +267,7 @@ namespace GlobalTheory.ShFam.BdArc
 open LatSec in
 theorem exists_lattice_sections : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Z : Model Xo c β) (σ : c.F →+* ℂ) (A : Type) [CommRing A] (φ : c.F →+* A) (x : Sp A ⟶ gen Z) (fr : EigFrame Z φ (x ≫ genι Z)) (ψ : ℂ → (A →+* ℂ)) (r : ℝ) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)), IsArc Z σ φ x ψ r → ∃ (ρ : ℝ) (n : ℕ) (lam : Fin n → ℂ → (Fin g → ℂ)), 0 < ρ ∧ ρ ≤ r ∧ (∀ j, ContinuousOn (lam j) (Metric.ball 0 ρ)) ∧ Submodule.span ℂ (Set.range fun j => lam j 0) = ⊤ ∧ ∀ u ∈ Metric.ball (0 : ℂ) ρ, ∀ ex : (Fin g → ℂ) → (Over.mk (spMap (ψ u) ≫ x ≫ genι Z) ⟶ Z.t.G), (∀ z w, ex (z + w) = ex z * ex w) → IsHolTo Set.univ (fun z => (show Sp ℂ ⟶ Z.t.G.left from (ex z).left)) → (∀ j, IsDerivAt0 (fun z => (ex z).left) (Pi.single j 1) (spMap (dualMap (ψ u)) ≫ fr.v (e j).1 (e j).2)) → ∀ j, ex (lam j u) = 1 := by
   intro E _ _ _ H Dw l Xo c O _ β Z σ A _ φ x fr ψ r g e harc
-  obtain ⟨g', ρ, e', hρ, hρr, hol, hexp, hdef⟩ := GlobalTheory.T.exists_semi_abelian_exponential_along_disc Z.X Z.t.G (fun u => spMap (ψ u) ≫ x ≫ genι Z) r
+  obtain ⟨g', ρ, e', hρ, hρr, hol, hexp, hdef⟩ := _root_.GlobalTheory.RelExp.exists_exp_along_disc Z.X Z.t.G (fun u => spMap (ψ u) ≫ x ≫ genι Z) r
     Z.t.semi harc.1.1 (LatSec.isHolTo_spMap harc.1 _)
   have hA : ∀ u ∈ Metric.ball (0 : ℂ) ρ, HolAt (fun z => (e' u z).left) 0 := fun u hu =>
     holAt_of_isHolTo (hexp u hu).2.2.1 trivial
@@ -282,8 +315,8 @@ theorem exists_lattice_sections : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   have hc : ∀ u ∈ Metric.ball (0 : ℂ) ρ, ContinuousAt (fun u => (h u).inverse) u := fun u hu => by
     refine ((hh u hu).1.contDiffAt_map_inverse (n := 1)).continuousAt.comp (continuousAt_clm_apply.2 fun z => ?_)
     have : ∀ u, h u z = ∑ j, z j • h u (Pi.single j 1) := fun u => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [← map_smul, ← map_sum]
+
+      simp only [← map_smul, ← map_sum]
       exact congrArg _ (pi_eq_sum_univ' z)
     simp only [this]
     refine tendsto_finsetSum _ fun j _ => ContinuousAt.const_smul ?_ (z j)
@@ -292,7 +325,7 @@ theorem exists_lattice_sections : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   have h0 : (0 : ℂ) ∈ Metric.ball (0 : ℂ) ρ := Metric.mem_ball_self hρ
   obtain ⟨s, hs, hfin, hspan⟩ : ∃ s ⊆ {z | e' 0 z = 1}, s.Finite ∧ Submodule.span ℂ s = ⊤ := by
     obtain ⟨s, h1, h2, h3⟩ := exists_linearIndependent ℂ {z | e' 0 z = 1}
-    exact ⟨s, h1, h3.set_finite_of_isNoetherian, h2.trans (GlobalTheory.T.span_periodLattice_complexSemiAbelian_eq_top _ _ _ _ _ Z.t.semi (hexp 0 h0))⟩
+    exact ⟨s, h1, h3.set_finite_of_isNoetherian, h2.trans (_root_.GlobalTheory.PeriodSpan.span_ker_eq_top _ _ _ _ _ Z.t.semi (hexp 0 h0))⟩
   obtain ⟨n, z, -, rfl⟩ := hfin.fin_param
   choose ζ hζ0 hζa hζ using fun j => hdef (z j) (hs ⟨j, rfl⟩)
   obtain ⟨ρ', hρ', hball⟩ := Metric.eventually_nhds_iff_ball.1 ((eventually_all.2 hζ).and

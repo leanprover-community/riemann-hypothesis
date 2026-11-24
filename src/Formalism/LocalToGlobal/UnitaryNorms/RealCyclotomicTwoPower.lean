@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
-public import Formalism.FrobeniusOrbits.HostDiffSupport
+public import Formalism.FrobeniusOrbits.Statement
 
 @[expose] public section
 

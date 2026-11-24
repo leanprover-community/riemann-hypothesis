@@ -3,10 +3,49 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaBounds.UnfoldedThetaIntegralConvergesSimilitudeOne
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaBounds.FiniteFamilyOfCompact
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaBounds.WtBound
+import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.HatSt
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
-public import GroundTheory.HeightsAndTheta.Theta.Weil.PartialFourierAdelicPi
-public import GroundTheory.HeightsAndTheta.Theta.AdelicFourierCoord
+import GroundTheory.HeightsAndTheta.Theta.AdelicFourierCoord
+import GroundTheory.HeightsAndTheta.Theta.Weil.PartialFourierAdelicPi
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.Smooth
 
 @[expose] public section
 
@@ -165,8 +204,8 @@ theorem UpperTheory.ConvolutionTheory.R2.Ff.hatMaj :
     rw [show nu F (infGL E 2 y) = 1 from hy, cD_one_left] at h
     exact (LinearMap.congr_fun h φ).symm
   have hΨ : W.Om k (W.L (infGL E 2 y) φ) = ∑ i, c i • W.L (infGL E 2 y) (e i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hcomm, hk', map_sum]
+
+    rw [hcomm, hk', map_sum]
     exact Finset.sum_congr rfl fun i _ => map_smul _ _ _
   have hsplit : W.Om (nU b * mD a * k) (W.L (infGL E 2 y) φ) =
       W.Om (nU b) (W.Om (mD a) (∑ i, c i • W.L (infGL E 2 y) (e i))) := by
@@ -178,9 +217,7 @@ theorem UpperTheory.ConvolutionTheory.R2.Ff.hatMaj :
     have h0 := W.η_sq a
     have h : ((W.η.1 a : ℂˣ) : ℂ) ^ 2 = 1 := by
       first
-        | exact h0
         | (rw [← Units.val_pow_eq_pow_val, h0]; rfl)
-        | simpa using congrArg Units.val h0
     exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 (by rw [← norm_pow, h, norm_one])
   set v' : V4 F := ![0, ((a⁻¹ : (A F)ˣ) : A F) * x, a * u, a * t] with hv'
   have hm : hat (W.Om (mD a) (∑ i, c i • W.L (infGL E 2 y) (e i))).1 ![0, x, u, t] =

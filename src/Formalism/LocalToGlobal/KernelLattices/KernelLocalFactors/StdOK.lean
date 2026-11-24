@@ -1,5 +1,6 @@
 module
 
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
 
 @[expose] public section
@@ -8,8 +9,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions
 
 namespace Formalism.L2.Ker
 
-theorem Base.stdOK {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (hcc : TaylorLogMetric.IsCurveIdeal D cc)
-    (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) : B.StdOK :=
-  Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.stdOK B hcc hδ
+alias Base.stdOK := _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.stdOK
 
 end Formalism.L2.Ker

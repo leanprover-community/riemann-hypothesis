@@ -1,8 +1,44 @@
 module
 
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartTransportSt
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SaturationChartsHolds
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -26,8 +62,8 @@ theorem jetCoef_mk (κ : Type) (m : ℕ) (p : MvPolynomial κ V) :
 
 theorem psTrunc_map {σ : Type} [Fintype σ] [DecidableEq σ] (m : ℕ) (F : MvPowerSeries σ V) :
     psTrunc m (MvPowerSeries.map f F) = MvPolynomial.map f (psTrunc m F) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [psTrunc, map_sum, MvPolynomial.map_monomial, MvPowerSeries.coeff_map]
+
+  simp only [psTrunc, map_sum, MvPolynomial.map_monomial, MvPowerSeries.coeff_map]
 
 theorem jetCoef_alg (κ : Type) (m : ℕ) :
     (jetCoef f κ m).comp (algebraMap V (Jet V κ m)) = (algebraMap K (Jet K κ m)).comp f := by
@@ -35,9 +71,6 @@ theorem jetCoef_alg (κ : Type) (m : ℕ) :
   first
   | (show jetCoef f κ m (Ideal.Quotient.mk _ (MvPolynomial.C v)) = Ideal.Quotient.mk _ (MvPolynomial.C (f v))
      rw [jetCoef_mk, MvPolynomial.map_C])
-  | (simp only [RingHom.comp_apply]
-     rw [← Ideal.Quotient.mk_algebraMap, ← Ideal.Quotient.mk_algebraMap, MvPolynomial.algebraMap_eq,
-       MvPolynomial.algebraMap_eq, jetCoef_mk, MvPolynomial.map_C])
 
 theorem jetCoef_aug (κ : Type) (m : ℕ) :
     ((jetAug : Jet K κ m →ₐ[K] K) : Jet K κ m →+* K).comp (jetCoef f κ m) =
@@ -62,7 +95,6 @@ theorem jetCoef_trunc (κ : Type) (m : ℕ) :
   refine Ideal.Quotient.ringHom_ext (RingHom.ext fun p => ?_)
   first
   | rfl
-  | simp [jetCoef_mk, jetTrunc]
 
 theorem jetCoef_map {κ κ' : Type} (m : ℕ) (φ : κ → MvPolynomial κ' V) (hφ : ∀ i, φ i ∈ orig V κ')
     (hφ' : ∀ i, MvPolynomial.map f (φ i) ∈ orig K κ') :

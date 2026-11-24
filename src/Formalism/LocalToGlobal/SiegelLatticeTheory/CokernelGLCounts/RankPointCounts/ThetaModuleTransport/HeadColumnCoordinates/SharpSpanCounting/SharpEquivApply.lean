@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumACut
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumA
 
 @[expose] public section
 
@@ -57,7 +59,7 @@ def gramH {ι : Type} (g : ι → V) : Matrix ι ι E := Matrix.of fun i j => H.
 theorem pairing_sum {ι : Type} [Fintype ι] (g : ι → V) (c : ι → E) :
     pairing H g (∑ i, c i • g i) = Matrix.vecMul c (gramH H g) := by
   funext j
-  simp [pairing, gramH, Matrix.vecMul, dotProduct, h_sum_left H]
+  simp [pairing, gramH, Matrix.vecMul, dotProduct]
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 

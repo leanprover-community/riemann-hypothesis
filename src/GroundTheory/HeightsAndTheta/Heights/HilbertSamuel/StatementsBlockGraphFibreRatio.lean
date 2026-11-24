@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockGraphDeg
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.QuotientMapImageZInjective
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockGraphImage
 
 @[expose] public section
 

@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTubeDeepMass
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTubeDeepRankOne
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTubeDeepAreaCount
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTubeDeepWeightMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffTube
+import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

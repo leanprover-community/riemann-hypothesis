@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGoodCT
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimCoefficientsFiniteDetermining
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineGLForms.GenSpace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CommuteCapOfCommuteEop
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimCoefficientsFiniteDetermining
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -36,7 +74,7 @@ theorem map_lev {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (g : GL (
   ext i j
   simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.map_apply]
   rcases (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm i with a | a <;>
-    rcases (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm j with b | b <;> simp <;> rfl
+    rcases (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm j with b | b <;> simp
 
 theorem lev_infGL (a : GL (Fin r) (Cinf E)) (b : GL (Fin s) (Cinf E)) :
     lev (Ad E) r s (infGL E r a, infGL E s b) = infGL E (r + s) (lev (Cinf E) r s (a, b)) := by
@@ -137,7 +175,7 @@ def blkL (x : Lie E s) : Lie E (r + s) :=
 
 theorem contDiff_blkL : ContDiff ℝ ∞ (blkL (E := E) (r := r) (s := s)) := by
   refine contDiff_pi.2 fun i => contDiff_pi.2 fun j => ?_
-  simp only [blkL, Matrix.reindex_apply, Matrix.submatrix_apply]
+  simp only [blkL, Matrix.reindex_apply]
   change ContDiff ℝ ∞ fun x : Lie E s => Matrix.fromBlocks 1 0 0 (Matrix.of x)
     ((GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm i) ((GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm j)
   rcases (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm i with a | a <;>
@@ -203,8 +241,8 @@ theorem exists_interp {K : Type} (A : Submodule ℂ (K → ℂ)) [FiniteDimensio
     funext κ'
     simp [Finset.sum_apply, Pi.single_apply, ev]
   have h3 := congrArg (fun x : A => x.1 k) h1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [h2, map_sum, map_smul] at h3
+
+  simp only [h2, map_sum, map_smul] at h3
   rw [← h3]
   simp [mul_comm]
 

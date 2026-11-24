@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsUnitApprox
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNonvanishingDense
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwistMetric
+import Mathlib.Algebra.MvPolynomial.Nilpotent
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

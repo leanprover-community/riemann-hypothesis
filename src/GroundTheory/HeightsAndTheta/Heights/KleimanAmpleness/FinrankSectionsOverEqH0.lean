@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreFurther
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraSide
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiProjPrimeMIdealOverGraph
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

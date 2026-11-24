@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.SphericalIntegral
 public import GroundTheory.AutomorphicForms.SatakeSymmetric
+public import GroundTheory.LocalFields.PadicLogSeries
 public import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -211,8 +213,8 @@ theorem normalize_esymm_yElt (k : ℕ) :
     normalize F n ((Finset.univ.val.map (yElt F (n := n))).esymm k) =
       (sqrtQ F ^ ((n : ℤ) - 1)) ^ k • polyEmb (n := n) (MvPolynomial.esymm (Fin n) ℂ k) := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.esymm_map_val, map_sum, MvPolynomial.esymm, map_sum, Finset.smul_sum]
+
+  rw [Finset.esymm_map_val, map_sum, MvPolynomial.esymm, map_sum, Finset.smul_sum]
   refine Finset.sum_congr rfl fun t ht => ?_
   rw [map_prod, map_prod]
   simp only [normalize_yElt, polyEmb_X, smul_single', mul_one]

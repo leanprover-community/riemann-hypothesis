@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Anisotropic
+public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Topology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -219,9 +219,9 @@ theorem hermTrace_eq_sum (x y : ι → R ⊗[K] E) :
   simp only [hval]
   conv_lhs => rw [← sum_coords_smul_stdVec b x, ← sum_coords_smul_stdVec b y]
   rw [← hermTraceBilin_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
-    hermTraceBilin_apply, Finset.mul_sum]
+
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+  hermTraceBilin_apply, Finset.mul_sum]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => by ring
 

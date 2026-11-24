@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MemDdPowMulQd
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfLocGlob
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.GlobalConditionOfLocalAgreement
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LtOfBlkOfLt
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfLocGlob
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfQ
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.GlobalConditionOfLocalAgreement
 
 @[expose] public section
 
@@ -83,8 +84,8 @@ theorem Psi_sub (A B : MatR D) : Psi w (A - B) = Psi w A - Psi w B := by
 
 theorem Psi_mul (A B : MatR D) : Psi w (A * B) = Psi w B * Psi w A := by
   funext a c
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Psi, Matrix.mul_apply, map_sum, map_mul, Finset.mul_sum]
+
+  simp only [Psi, Matrix.mul_apply, map_sum, map_mul, Finset.mul_sum]
   refine Fintype.sum_equiv (piPerm w) _ _ (fun e => ?_)
   simp only [piPerm, Equiv.coe_fn_mk, pinv_pinv]
   rw [← sgm_mul a (pinv w e) c]; ring

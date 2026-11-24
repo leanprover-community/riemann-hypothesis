@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameImplicitGraph
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.HasStrictFDerivAtEval
+public import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -66,8 +70,8 @@ theorem phiDeriv_injective (b : OrthonormalBasis (Fin n) ℂ (EuclideanSpace ℂ
     simp only [phiDeriv, ContinuousLinearMap.prod_apply, ContinuousLinearMap.pi_apply, polyDeriv_apply,
       Prod.snd_zero, Pi.zero_apply] at this
     rw [← this]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [frameDeriv, map_sum, map_mul, eval_C, hvl, Finset.mul_sum]
+
+    simp only [frameDeriv, map_sum, map_mul, eval_C, hvl, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => by ring
   let M : Matrix {j // j ∉ I} {j // j ∉ I} ℂ := Matrix.of fun k j => eval (fun i => x i) (frameDeriv b j (f k))

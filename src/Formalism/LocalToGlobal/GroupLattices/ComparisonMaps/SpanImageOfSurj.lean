@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.LatticeComparisonCompatible
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.MRatSpanOf
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.MRatSpanRec
+public import Formalism.LocalToGlobal.HermitianColumns.BaseModelLevelEq
+import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 
 @[expose] public section
 

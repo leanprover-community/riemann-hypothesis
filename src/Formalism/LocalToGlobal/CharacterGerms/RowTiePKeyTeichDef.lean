@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePKeyDef
+public import Formalism.LocalToGlobal.CharacterGerms.CoeffSubstEqSum
+public import Mathlib.Data.Matrix.Mul
 
 @[expose] public section
 

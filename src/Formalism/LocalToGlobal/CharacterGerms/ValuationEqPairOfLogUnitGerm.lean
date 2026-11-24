@@ -1,6 +1,12 @@
 module
 
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
+public import Formalism.DropLevelBounds.ConstantCoeffVanishing.UbintConstantCoeffEqZero
 public import Formalism.LocalToGlobal.CharacterGerms.IntSProd
+public import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieJet
+public import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
+import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 
 @[expose] public section
 
@@ -34,9 +40,9 @@ theorem expS_copies (Y : FBChart C V O dd) (n : ℕ) :
   have hs : ∀ b : Fin n, ev (n := n) ![pt C dd b] ((Y.k : C) • Y.B.hL C Y.h Y.w0) =
       (Y.k : C) • ev (n := n) ![pt C dd b] (Y.B.hL C Y.h Y.w0) := fun b =>
     MvPowerSeries.subst_smul (hasSubst_of_ordGE (VP.og (a := fun s : Fin 1 × Fin dd => ![pt C dd b] s.1 s.2) (ha b))) _ _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [VP.expS_eq _ (cc_smul _ (by rw [map_sum]; exact Finset.sum_eq_zero fun b _ => hc b)), Finset.smul_sum,
-    Formalism.UnitaryBoundIntegral.ubint_mvExp_sum _ _ (fun b _ => cc_smul _ (hc b))]
+
+  rw [VP.expS_eq _ (cc_smul _ (by rw [map_sum]; exact Finset.sum_eq_zero fun b _ => hc b)), Finset.smul_sum,
+  Formalism.UnitaryBoundIntegral.ubint_mvExp_sum _ _ (fun b _ => cc_smul _ (hc b))]
   refine Finset.prod_congr rfl fun b _ => ?_
   rw [VP.expS_eq _ (cc_smul _ (VP.cc_hL Y))]
   show _ = MvPowerSeries.subst (fun s : Fin 1 × Fin dd => ![pt C dd b] s.1 s.2) (mvExp _)
@@ -55,7 +61,7 @@ theorem rowCopy_mul_exp {J : Fin 2 → Type} {n : ℕ} (b : Fin n) (F L : MvPowe
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun y hy => ?_
   have hdeg : y.degree = x.degree := by
-    simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq, Set.mem_preimage] at hy
+    simp only [Set.Finite.mem_toFinset, Set.mem_preimage] at hy
     rw [← hy, Finsupp.degree_mapDomain]
   show ∑ k ∈ Finset.range (y.degree + 1), _ = _
   rw [hdeg]

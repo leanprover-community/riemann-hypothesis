@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.TiedCls
-public import Formalism.LocalToGlobal.Columns.TiedCH
+public import Formalism.LocalToGlobal.HermitianForms.RankEqFirstLevel
+import Formalism.LocalToGlobal.Columns.BaseLemmas
 public import Formalism.LocalToGlobal.HermitianForms.BothLemmas
 
 @[expose] public section

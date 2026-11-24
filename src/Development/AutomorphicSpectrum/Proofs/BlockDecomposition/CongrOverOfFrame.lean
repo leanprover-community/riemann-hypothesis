@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.WeakApproximationFinitePlace
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.HermitianHassePrincipleHolds
 public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsGlIsometryCompEqOfNondegenerate
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -39,7 +81,7 @@ theorem st_one {n : Type*} [DecidableEq n] : st c (1 : Matrix n n R) = 1 := by
   ext i j
   by_cases h : i = j
   · subst h; simp [st]
-  · simp [st, Matrix.one_apply, h, Ne.symm h]
+  · simp [st, h, Ne.symm h]
 
 theorem st_smul {m n : Type*} (a : R) (A : Matrix m n R) : st c (a • A) = c a • st c A := by
   ext i j; simp [st]
@@ -56,7 +98,7 @@ theorem gram_fromCols {N m n : Type*} [Fintype N] [Fintype m] [Fintype n] (G : M
     st c (fromCols A B) * G * fromCols A B =
       fromBlocks (st c A * G * A) (st c A * G * B) (st c B * G * A) (st c B * G * B) := by
   ext (i | i) (j | j) <;>
-    simp [st, Matrix.mul_apply, Matrix.fromCols, Matrix.fromBlocks, Finset.sum_comm]
+    simp [st, Matrix.mul_apply, Matrix.fromCols, Matrix.fromBlocks]
 
 def hyp (R : Type*) [CommRing R] (t : ℕ) : Matrix (Fin t ⊕ Fin t) (Fin t ⊕ Fin t) R := fromBlocks 0 1 1 0
 
@@ -358,7 +400,7 @@ theorem frame_of_free {R : Type*} [CommRing R] (π : AE D →+* R) (c : R →+* 
       ext i j
       by_cases hij : i = j
       · subst hij; simp [he]
-      · simp [Matrix.one_apply, hij]
+      · simp [hij]
     rw [← Matrix.map_mul, ← h3, ← hL2]
   · rw [← mi, h1]
     ext i j

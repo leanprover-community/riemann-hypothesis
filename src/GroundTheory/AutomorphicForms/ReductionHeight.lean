@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AdelicGLn
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -90,8 +91,8 @@ theorem infComp_vecMul (w : InfinitePlace K) (y : Fin n → 𝔸[K]) (M : Matrix
     infComp w (y ᵥ* M) = infComp w y ᵥ* (M.map (infEval w)) := by
   ext j
   simp only [infComp, vecMul, dotProduct, Matrix.map_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← infEval_apply, map_sum]
+
+  rw [← infEval_apply, map_sum]
   simp [map_mul]
 
 theorem finComp_vecMul (v : HeightOneSpectrum (𝓞 K)) (y : Fin n → 𝔸[K])
@@ -99,8 +100,8 @@ theorem finComp_vecMul (v : HeightOneSpectrum (𝓞 K)) (y : Fin n → 𝔸[K])
     finComp v (y ᵥ* M) = finComp v y ᵥ* (M.map (finEval v)) := by
   ext j
   simp only [finComp, vecMul, dotProduct, Matrix.map_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← finEval_apply, map_sum]
+
+  rw [← finEval_apply, map_sum]
   simp [map_mul]
 
 theorem infComp_vecMul_GL (w : InfinitePlace K) (y : Fin n → 𝔸[K]) (g : AdelicGLn.AdelicGL K n) :
@@ -198,8 +199,8 @@ theorem ratVec_smul (c : K) (x : Fin n → K) :
 theorem ratVec_vecMul (x : Fin n → K) (M : Matrix (Fin n) (Fin n) K) :
     ratVec (x ᵥ* M) = ratVec x ᵥ* M.map (algebraMap K 𝔸[K]) := by
   ext j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [ratVec, vecMul, dotProduct, map_sum, map_mul]
+
+  simp [ratVec, vecMul, dotProduct, map_sum, map_mul]
 
 theorem eventually_norm_le_one (k : K) :
     ∀ᶠ v : HeightOneSpectrum (𝓞 K) in cofinite, ‖(k : v.adicCompletion K)‖ ≤ 1 := by

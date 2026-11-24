@@ -1,6 +1,55 @@
 module
 
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsIsomFrame
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsNormOneOfPair
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.LinearAlgebra.Dimension.Constructions
 
 @[expose] public section
 
@@ -28,7 +77,7 @@ theorem exists_next_unit (hS : IsHermSemilocal S)
       h p p + m * h p q + star m * h q p + star m * m * h q q := by
     intro p q m
     simp only [map_add (f := _), map_smulₛₗ, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
-      starRingEnd_apply, map_smul, RingHom.id_apply]
+      starRingEnd_apply, RingHom.id_apply]
     ring
   obtain ⟨hstar, -, hunram, hprinc, -⟩ := hS
   obtain ⟨hsm, hint, hdual, hspan⟩ := hM
@@ -87,8 +136,8 @@ theorem exists_next_unit (hS : IsHermSemilocal S)
     exact hsm _ (hcS i hi) _ (hxM i hi)
   have hyo : ∀ j ∈ s, h (x j) y = 0 := by
     intro j hj
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hy, map_sub, map_sum]
+
+    rw [hy, map_sub, map_sum]
     simp only [map_smul, smul_eq_mul]
     rw [Finset.sum_eq_single j]
     · have hne : h (x j) (x j) ≠ 0 := ((hunit _).mp (hxu j hj)).1
@@ -99,11 +148,10 @@ theorem exists_next_unit (hS : IsHermSemilocal S)
     · intro hjs
       exact absurd hj hjs
   have hyw : h y w = 1 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hy, map_sub, map_sum, LinearMap.sub_apply]
+
+    rw [hy, map_sub, map_sum, LinearMap.sub_apply]
     first
       | rw [LinearMap.sum_apply]
-      | rw [LinearMap.coe_fn_sum, Finset.sum_apply]
     simp only [map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_zero (fun i hi => by rw [hwo i hi, mul_zero]), hm0w, sub_zero]
   have hwy : h w y = 1 := by
@@ -194,8 +242,8 @@ theorem exists_orth_unit_frame [FiniteDimensional K V] (hS : IsHermSemilocal S)
         (fun h0 => hu (by rw [sub_eq_zero.mp h0]; exact hsW))
         (by
           intro j hj
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sub, map_sum, Finset.sum_eq_single j]
+
+          rw [map_sub, map_sum, Finset.sum_eq_single j]
           · rw [map_smul, smul_eq_mul,
               inv_mul_cancel_right₀ (hxu j (Finset.mem_range.mp hj)).1, sub_self]
           · intro i hi hij

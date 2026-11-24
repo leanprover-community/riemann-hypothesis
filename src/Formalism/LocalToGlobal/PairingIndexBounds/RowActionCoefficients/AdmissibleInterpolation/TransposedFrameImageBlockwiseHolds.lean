@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.NumericalIdentityScalar
-public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.AdmissibleInterpolation.HighestVectorFullHolds
+public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.AdmissibleInterpolation.YVMapRowAct
 
 @[expose] public section
 
@@ -32,8 +32,8 @@ theorem coeff_of_eval {σ τ K : Type} [Field K] [Infinite K] (P : MvPolynomial 
   classical
   have hR : R = ∑ n ∈ P.support, monomial n (l (AddMonoidAlgebra.coeff P n)) := by
     refine MvPolynomial.funext fun d0 => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h d0, ev_eq, map_sum, map_sum]
+
+    rw [h d0, ev_eq, map_sum, map_sum]
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [map_smul, eval_monomial, smul_eq_mul, mul_comm]
     rfl
@@ -50,8 +50,8 @@ theorem pairing_series_linear_form_holds : PairingSeriesLinearForm := by
   intro p _ X Kc _ _ _ j P f l R h
   have hc := PairingSeriesCoefficients.coeff_of_eval P l R h
   unfold pairD
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_smul, smul_eq_mul, hc]
   classical
   rw [Finset.sum_subset (Finset.subset_union_left (s₁ := P.support) (s₂ := R.support)),
@@ -119,9 +119,9 @@ theorem evD_linT (d0 : X.ZA j → Kc) (Q : DA X Kc j) :
         DA X Kc j →ₐ[XspC (X.Pj (j + 1)) Kc] DA X Kc j).toRingHom = evD X Kc j (fun y => ∑ z, Lk z y * d0 z) := by
     refine ringHom_ext (fun r => ?_) fun y => ?_
     · simp [evD]
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [evD, RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, aeval_X, linT, map_sum, map_mul,
-        coe_eval₂Hom, eval₂_C, eval₂_X, RingHom.id_apply, algebraMap_eq]
+
+    · simp only [evD, RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, aeval_X, linT, map_sum, map_mul,
+      coe_eval₂Hom, eval₂_C, eval₂_X, RingHom.id_apply, algebraMap_eq]
   exact RingHom.congr_fun h Q
 
 end GlobalTheory
@@ -159,9 +159,9 @@ variable {p : ℕ} [Fact p.Prime] (X : Sys p) (Kc : Type) [Field Kc] [Algebra X.
 theorem evD_xd (b : BX X) (x : Fin (NJ X j) → ℕ → X.G.Kf) (d0 : X.ZA j → Kc) (b' : Fin (NJ X (j + 1))) (i : ℕ) :
     evD X Kc j d0 (xd X Kc j b.1 b.2 x b' i) =
       C (mulC (dM X Kc j b d0).transpose (fun a i => algebraMap X.G.Kf Kc (x a i)) b' i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [xd, mulC, map_sum, map_mul, Matrix.transpose_apply, dMat, dM, evD, coe_eval₂Hom, eval₂_X, MvPolynomial.algebraMap_apply,
-    eval₂_C, RingHom.id_apply]
+
+  simp only [xd, mulC, map_sum, map_mul, Matrix.transpose_apply, dMat, dM, evD, coe_eval₂Hom, eval₂_X, MvPolynomial.algebraMap_apply,
+  eval₂_C, RingHom.id_apply]
 
 theorem evD_yMat (b : BX X) (d0 : X.ZA j → Kc) :
     (yMat X Kc j b.1 b.2).map (evD X Kc j d0) =
@@ -261,8 +261,8 @@ theorem frame_change_group_action_holds : XG := by
   classical
   rw [Finset.sum_subset (support_map_subset _ _) (fun n _ hn => by rw [notMem_support_iff.1 hn, mul_zero])]
   unfold applyD
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun n hn => ?_
   rw [smul_eval, eval_map, coeff_map, coe_eval₂Hom]
   congr 1

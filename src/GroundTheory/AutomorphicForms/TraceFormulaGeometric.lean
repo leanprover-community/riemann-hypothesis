@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.TraceStrongLimit
-public import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
-public import GroundTheory.AutomorphicForms.TraceFormulaConvolution
+public import GroundTheory.AutomorphicForms.QuotientMeasure
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

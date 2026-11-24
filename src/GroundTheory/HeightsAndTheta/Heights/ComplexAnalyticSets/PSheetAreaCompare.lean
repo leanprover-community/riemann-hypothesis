@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSheetAreaCompare
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSheetImageArea
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
+public import Mathlib.Topology.Separation.CompletelyRegular
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.IsAddHaarMeasureHausdorffMeasureEuclideanSpaceCo
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PProjectionFormula
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.IsAddHaarMeasureHausdorffMeasureEuclideanSpaceCo
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

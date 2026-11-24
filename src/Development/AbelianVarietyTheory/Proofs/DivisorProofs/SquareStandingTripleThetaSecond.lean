@@ -1,15 +1,70 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMixModelB
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAwayUnitOfPowEqOne
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsScalarFiniteTensorEqDatumSmallModel
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergStableRelationOfVacua
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAddEquivSymplecticCoordsOrientedModel
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AtWAtPlSelf
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareStanding
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenPtSSubset
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaAtEqSumHeisOfFourierSum
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoxGraphGraphHeis
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsINeZeroKind
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNatMulIntegralOfIsCompact
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridLocalTensorPlacesSplitIdempotentSum
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergStableRelationOfVacua
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartAlgebraMapLiftV
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemScLatOfMem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsScalarFiniteTensorEqDatumSmallModel
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OrthogonalSumSelfDualExists
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchrodingerThetaDatumHeisenbergOriented
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAddEquivSymplecticCoordsOrientedModel
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrimeDvdAbsNormHalfDifferent
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ModelLatIn
+import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
+import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 
 @[expose] public section
 
@@ -71,7 +126,7 @@ theorem exists_nat_conj {w : Pl D.host.E}
     (hw : ((D.host.QS * D.host.q * D.host.d * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ w.asIdeal) :
     ∃ m : ℕ, (m : 𝓞 D.host.E) ∉ w.asIdeal ∧ ∀ a ∈ D.host.AA, star ((m : D.host.E) * a) ∈ D.host.AA := by
   obtain ⟨p, hp, hP⟩ := GlobalTheory.HalfCompare.exists_prime_under w
-  have hb := ReciprocityTheory.ChartRestriction.G.PullbackSections.MLI.bb_ne_bot D
+  have hb := _root_.Formalism.L2.Pj.b_ne_bot D
   have h0 : ((D.host.𝔟 : Ideal (𝓞 D.host.E)) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) ≠ 0 :=
     FractionalIdeal.coeIdeal_ne_zero.2 hb
   refine ⟨Ideal.absNorm D.host.ccK * Ideal.absNorm D.host.𝔟, fun h => hw ((hP _).2 ?_), fun a ha => ?_⟩
@@ -247,12 +302,12 @@ theorem adj_surj (S X : HSp D) (βS : GL (Fin S.rank) (EAf D)) (βX : GL (Fin X.
     ∃ y : WO S X, IsHalf (cA D (atPl w 1)) y ∧ (frMapAdj S X βS βX y).map (cpt w) = z := by
   have h1 : ((βS⁻¹).val.map (cpt w) * ((S.gram⁻¹).map (incA D)).map (atW w)) *
       ((S.gram.map (incA D)).map (atW w) * βS.val.map (cpt w)) = 1 := by
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (Matrix.map _ (atW w)), ← Matrix.map_mul, GlobalTheory.SquareAgree.HeisCov.gram_inv_mul,
+    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (Matrix.map _ (atW w)), ← Matrix.map_mul, _root_.GlobalTheory.RouteCoords.inv_mul_gram,
       Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mul, ← Matrix.map_mul, Units.inv_mul,
       Matrix.map_one _ (map_zero _) (map_one _)]
   have h2 : ((βX⁻¹).val.map (cpt w) * ((X.gram⁻¹).map (incA D)).map (atW w)) *
       ((X.gram.map (incA D)).map (atW w) * βX.val.map (cpt w)) = 1 := by
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (Matrix.map _ (atW w)), ← Matrix.map_mul, GlobalTheory.SquareAgree.HeisCov.gram_inv_mul,
+    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (Matrix.map _ (atW w)), ← Matrix.map_mul, _root_.GlobalTheory.RouteCoords.inv_mul_gram,
       Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mul, ← Matrix.map_mul, Units.inv_mul,
       Matrix.map_one _ (map_zero _) (map_one _)]
   obtain ⟨y₀, hy₀⟩ : ∃ y₀ : Matrix (Fin S.rank) (Fin X.rank) (Kw w), y₀ = ((S.gram.map (incA D)).map (atW w) * βS.val.map (cpt w)) * z *
@@ -357,7 +412,7 @@ theorem halves (e : Num G i j) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.Uni
 end Vac
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem isDatum_linB : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G), SquareStanding G t →
     ∀ (e : Num G i j) (Bs : Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : Chars D.host.F D.host.E)
       (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W), IsTripleOf W M t i j e Bs Γ X →
@@ -431,8 +486,8 @@ theorem isDatum_linB : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheor
           by_contra! hall
           refine hl (GlobalTheory.SmallPlaces.mem_of_sum_smul (P := locPl G t) (a := fun w => cA D (atPl w 1)) ?_
             fun w hw => (congrArg (· ∈ homLatB G i j) (ptB_smul e _ u)).mp (hall w hw))
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [← map_sum, ← hεs]
+
+          rw [← map_sum, ← hεs]
           exact hu
         obtain ⟨w, hw, hn⟩ := this
         rw [if_neg fun h' => hl h'.1, mul_zero]

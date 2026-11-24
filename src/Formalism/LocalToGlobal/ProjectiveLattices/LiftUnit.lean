@@ -1,6 +1,9 @@
 module
 
+public import Formalism.LocalToGlobal.ProjectiveLattices.LiftCurveSt
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

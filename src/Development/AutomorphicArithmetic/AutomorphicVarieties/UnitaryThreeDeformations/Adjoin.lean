@@ -2,6 +2,51 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.IsCharZeroPt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.WPresEx
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.PWO
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -50,8 +95,8 @@ private theorem exists_decomp {O σ : Type} [CommRing O] [Finite σ] (w : σ →
     rw [map_add (f := _)] at e1
     omega
   · ext n
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp_rw [MvPowerSeries.coeff_monomial_mul, one_mul]
     by_cases hn : n ∈ S
     · rw [Finset.sum_eq_single (c n)]
@@ -141,8 +186,8 @@ private theorem part_decomp {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
   refine ⟨B, le_antisymm ?_ (iSup₂_le fun b hb => ?_)⟩
   · rintro _ ⟨f, hf, rfl⟩
     obtain ⟨g, hg, rfl⟩ := hd f hf
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine sum_mem fun b hb => ?_
     refine Submodule.mem_iSup_of_mem b (Submodule.mem_iSup_of_mem hb ⟨W.π (g b), ⟨g b, hg b hb, rfl⟩, ?_⟩)
     simp
@@ -277,8 +322,8 @@ private theorem part_zero_le {O R : Type} [CommRing O] [IsLocalRing O] [CommRing
       ring
     have hval : W.π.toLinearMap f = algebraMap O R c + ∑ b ∈ B, zz b * W.π (g b) := by
       show W.π f = _
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hf2, map_add (f := _), map_sum, MvPowerSeries.c_eq_algebraMap, W.π.commutes]
+
+      rw [hf2, map_add (f := _), map_sum, MvPowerSeries.c_eq_algebraMap, W.π.commutes]
       simp only [map_mul, zz]
     show _ ∈ N ⊔ I • N'
     rw [hval]

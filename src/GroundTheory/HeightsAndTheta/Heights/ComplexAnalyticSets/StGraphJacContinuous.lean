@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 @[expose] public section
 

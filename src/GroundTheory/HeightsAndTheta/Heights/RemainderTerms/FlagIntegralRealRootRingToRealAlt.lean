@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.IsPowerSumDecompositionHomogeneousComponent
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagIntegralRealEqMulDdConst
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -44,22 +44,22 @@ theorem coeff_coeffMap (P : MvPolynomial σ ℝ) (d : σ →₀ ℕ) :
 theorem coeffMap_sum {ι : Type*} (s : Finset ι) (P : ι → MvPolynomial σ ℝ) :
     coeffMap φ (∑ i ∈ s, P i) = ∑ i ∈ s, coeffMap φ (P i) := by
   ext d
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [coeff_coeffMap, coeff_sum, map_sum]
+
+  simp only [coeff_coeffMap, coeff_sum, map_sum]
 
 theorem coeffMap_map_mul (R : MvPolynomial σ ℚ) (P : MvPolynomial σ ℝ) :
     coeffMap φ (map (algebraMap ℚ ℝ) R * P) = R * coeffMap φ P := by
   classical
   ext d
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coeff_coeffMap, coeff_mul, coeff_mul, map_sum]
+
+  rw [coeff_coeffMap, coeff_mul, coeff_mul, map_sum]
   refine sum_congr rfl fun x _ => ?_
   rw [coeff_map, coeff_coeffMap, ← Algebra.smul_def, map_smul, smul_eq_mul]
 
 theorem coeffMap_map (R : MvPolynomial σ ℚ) :
     coeffMap φ (map (algebraMap ℚ ℝ) R) = φ 1 • R := by
   ext d
-  rw [coeff_coeffMap, coeff_map, coeff_smul, smul_eq_mul, ← mul_one (algebraMap ℚ ℝ _),
+  rw [coeff_coeffMap, coeff_map, MvPolynomial.coeff_smul, smul_eq_mul, ← mul_one (algebraMap ℚ ℝ _),
     ← Algebra.smul_def, map_smul, smul_eq_mul, mul_comm]
 
 theorem dual_flagIntegralReal (f N : ℕ) (P : MvPolynomial (Fin f × Fin N) ℝ) :
@@ -73,15 +73,15 @@ theorem dual_flagIntegralReal (f N : ℕ) (P : MvPolynomial (Fin f × Fin N) ℝ
     simp only [Finsupp.prod, Rat.cast_mul, Rat.cast_prod, Rat.cast_natCast]
     ring
   show φ (∑ α ∈ _, _) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hterm, map_sum, map_smul, smul_eq_mul, flagIntegral, coeff_coeffMap]
+
+  simp only [hterm, map_sum, map_smul, smul_eq_mul, flagIntegral, coeff_coeffMap]
   exact sum_congr rfl fun α _ => by ring
 
 theorem flagIntegral_sub_smul (f N : ℕ) (A B : RootRing f N) (s : ℚ) :
     flagIntegral f N (A - s • B) = flagIntegral f N A - s * flagIntegral f N B := by
   rw [flagIntegral, flagIntegral, flagIntegral, mul_sum, ← sum_sub_distrib]
   refine sum_congr rfl fun α _ => ?_
-  rw [coeff_sub, coeff_smul, smul_eq_mul]
+  rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_smul, smul_eq_mul]
   ring
 
 end TermBoundEq

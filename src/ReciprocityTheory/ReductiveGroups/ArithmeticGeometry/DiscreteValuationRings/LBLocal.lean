@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -47,7 +49,7 @@ lemma linComb_g_self (j : K → L.ι) :
   erw [res_res', res_pullU_eq (φ k) (le_inf le_rfl le_rfl) _ (LB.wchart_le L φ j k), hL.g_self]
   rw [map_one, map_one, one_zpow]
 
-set_option maxHeartbeats 1000000 in
+
 include hL in
 lemma linComb_cocycle (i j l : K → L.ι) :
     res (inf_le_left : LB.wchart L φ i ⊓ LB.wchart L φ j ⊓ LB.wchart L φ l ≤ LB.wchart L φ i ⊓ LB.wchart L φ j)

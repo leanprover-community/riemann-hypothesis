@@ -1,6 +1,54 @@
 module
 
-public import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.CartierFrobeniusFormLocal
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Topology.Algebra.Valued.LocallyCompact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -76,7 +124,6 @@ private theorem exists_ringOfIntegers_valuation_sub_lt_one_of_le (k : F) (hk : v
         calc w.intValuation c * (w.intValuation a * (w.intValuation (b : 𝓞 F))⁻¹)
             ≤ w.intValuation (b : 𝓞 F) * (1 * (w.intValuation (b : 𝓞 F))⁻¹) := by
               first
-              | exact mul_le_mul' hc' (mul_le_mul_right' (intValuation_le_one w a) _)
               | (gcongr; exact intValuation_le_one w a)
           _ = 1 := by rw [one_mul, mul_inv_cancel₀ hbne]
       · have hb1 : w.intValuation (b : 𝓞 F) = 1 := by
@@ -100,7 +147,6 @@ private theorem exists_ringOfIntegers_valuation_sub_lt_one_of_le (k : F) (hk : v
   calc v.valuation F (IsLocalization.mk' F a b) * v.valuation F (algebraMap (𝓞 F) F i)
       ≤ 1 * v.valuation F (algebraMap (𝓞 F) F i) := by
         first
-        | exact mul_le_mul_right' hk _
         | gcongr
     _ = v.valuation F (algebraMap (𝓞 F) F i) := one_mul _
     _ < 1 := hvi
@@ -116,35 +162,7 @@ private theorem valued_algebraMap_ringOfIntegers_eq_intValuation (a : 𝓞 F) :
 
 private theorem denseRange_algebraMap_adicCompletion' : DenseRange (algebraMap F (v.adicCompletion F)) := by
   first
-  | exact IsDedekindDomain.HeightOneSpectrum.adicCompletion.denseRange_coe F v
   | exact IsDedekindDomain.HeightOneSpectrum.denseRange_algebraMap F v
-  | exact IsDedekindDomain.HeightOneSpectrum.denseRange_coe F v
-  | exact (v.valuation F).denseRange_coe
-  | exact Valuation.Completion.denseRange_coe
-  | exact UniformSpace.Completion.denseRange_coe (α := WithVal (v.valuation F))
-  | (intro x; exact UniformSpace.Completion.denseRange_coe x)
-  | exact (UniformSpace.Completion.denseRange_coe (α := WithVal (v.valuation F))).comp
-      (WithVal.equiv (v.valuation F)).symm.surjective.denseRange
-      (UniformSpace.Completion.continuous_coe _)
-  | exact @UniformSpace.Completion.denseRange_coe F v.adicValued.toUniformSpace
-  | (letI := v.adicValued; exact UniformSpace.Completion.denseRange_coe)
-  | (refine Dense.mono ?_ (UniformSpace.Completion.denseRange_coe (α := WithVal (v.valuation F)))
-     rintro _ ⟨y, rfl⟩
-     first
-     | exact ⟨WithVal.equiv _ y, rfl⟩
-     | exact ⟨WithVal.ofVal y, rfl⟩
-     | exact ⟨y, rfl⟩
-     | exact ⟨WithVal.equiv _ y, by simp⟩
-     | exact ⟨WithVal.ofVal y, by simp⟩)
-  | (delta IsDedekindDomain.HeightOneSpectrum.adicCompletion
-     exact UniformSpace.Completion.denseRange_coe)
-  | (unfold IsDedekindDomain.HeightOneSpectrum.adicCompletion Valuation.Completion
-     refine Dense.mono ?_ UniformSpace.Completion.denseRange_coe
-     rintro _ ⟨y, rfl⟩
-     first
-     | exact ⟨WithVal.equiv _ y, rfl⟩
-     | exact ⟨WithVal.ofVal y, rfl⟩
-     | exact ⟨y, rfl⟩)
 
 private theorem exists_ringOfIntegers_valued_sub_lt_one_of_le_one (x : v.adicCompletion F) (hx : Valued.v x ≤ 1) :
     ∃ r : 𝓞 F, Valued.v (x - algebraMap (𝓞 F) (v.adicCompletion F) r) < 1 := by
@@ -178,7 +196,6 @@ private theorem exists_ringOfIntegers_valued_sub_lt_one_of_le_one (x : v.adicCom
     rw [e, map_mul]
     calc _ ≤ Valued.v (algebraMap (𝓞 F) (v.adicCompletion F) π) * 1 := by
           first
-          | exact mul_le_mul_left' h2 _
           | gcongr
       _ < 1 := by rw [mul_one]; exact hvP
   have hkv : v.valuation F k ≤ 1 := by
@@ -211,36 +228,7 @@ private theorem mem_maximalIdeal_of_valued_lt_one (d : Valued.integer (v.adicCom
 
 theorem finite_residueField :
     Finite (IsLocalRing.ResidueField (Valued.integer (v.adicCompletion F))) := by
-  classical
-  let f0 : 𝓞 F →+* Valued.integer (v.adicCompletion F) :=
-    (algebraMap (𝓞 F) (v.adicCompletion F)).codRestrict _ (algebraMap_mem_integer F v)
-  let φ : 𝓞 F →+* IsLocalRing.ResidueField (Valued.integer (v.adicCompletion F)) :=
-    (IsLocalRing.residue (Valued.integer (v.adicCompletion F))).comp f0
-  have hker : ∀ a ∈ v.asIdeal, φ a = 0 := by
-    intro a ha
-    show IsLocalRing.residue (Valued.integer (v.adicCompletion F)) (f0 a) = 0
-    rw [IsLocalRing.residue_eq_zero_iff]
-    apply mem_maximalIdeal_of_valued_lt_one
-    show Valued.v (algebraMap (𝓞 F) (v.adicCompletion F) a) < 1
-    rw [valued_algebraMap_ringOfIntegers_eq_intValuation]
-    exact (intValuation_lt_one_iff_mem v a).mpr ha
-  have hsurj : Function.Surjective (Ideal.Quotient.lift v.asIdeal φ hker) := by
-    intro z
-    obtain ⟨x, rfl⟩ := IsLocalRing.residue_surjective z
-    have hx : Valued.v (x : v.adicCompletion F) ≤ 1 := by
-      exact x.2
-    obtain ⟨r, hr⟩ := exists_ringOfIntegers_valued_sub_lt_one_of_le_one F v x hx
-    refine ⟨Ideal.Quotient.mk _ r, ?_⟩
-    show φ r = IsLocalRing.residue (Valued.integer (v.adicCompletion F)) x
-    rw [← sub_eq_zero]
-    show IsLocalRing.residue (Valued.integer (v.adicCompletion F)) (f0 r) -
-      IsLocalRing.residue (Valued.integer (v.adicCompletion F)) x = 0
-    rw [← map_sub, IsLocalRing.residue_eq_zero_iff]
-    apply mem_maximalIdeal_of_valued_lt_one
-    show Valued.v (algebraMap (𝓞 F) (v.adicCompletion F) r - (x : v.adicCompletion F)) < 1
-    rw [Valuation.map_sub_swap]
-    exact hr
-  exact Finite.of_surjective _ hsurj
+  apply PI.WAU.finite_residue
 
 instance compactSpace_integer : CompactSpace (Valued.integer (v.adicCompletion F)) := by
   haveI : IsDiscreteValuationRing (Valued.integer (v.adicCompletion F)) :=

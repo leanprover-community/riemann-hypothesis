@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
+public import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.KrullDimension.PID
 
 @[expose] public section
 
@@ -54,7 +56,7 @@ theorem isArithVar_bot (n : ℕ) : IsArithVar (⊥ : Ideal (MRing (GlobalTheory 
   · rw [ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _),
       MvPolynomial.ringKrullDim_of_isNoetherianRing,
       IsPrincipalIdealRing.ringKrullDim_eq_one ℤ Int.not_isField]
-    simp [Nat.card_eq_fintype_card]
+    simp
     exact add_comm _ _
 
 theorem isMultiHomog_Xb (n : ℕ) (i : Fin n) : IsMultiHomog (Xb n i) fun _ => 1 := by

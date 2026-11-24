@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.TraceMulSelfEqSumEigenvaluesSq
 
 @[expose] public section

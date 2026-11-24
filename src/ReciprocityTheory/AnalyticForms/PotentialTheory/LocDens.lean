@@ -1,9 +1,55 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.Geometry.Manifold.IsManifold.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ComplexHessianIsHermitianOfContDiffAt
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscPos
 
 @[expose] public section
 
@@ -34,12 +80,12 @@ theorem potSmoothAt {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e
     ContDiffAt ℝ 2 (P.φ x ∘ (A.chart j).symm) y := by
   have hopen : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' P.U x) :=
     (A.chart j).isOpen_inter_preimage_symm (P.isOpen_U x)
-  exact ((hP.1 x j).contDiffAt (hopen.mem_nhds hy)).of_le (by first | exact ENat.LEInfty.out | simp | norm_num)
+  exact ((hP.1 x j).contDiffAt (hopen.mem_nhds hy)).of_le (by first | exact ENat.LEInfty.out)
 
 theorem potSmoothOn {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (P : LocPot X)
     (hP : IsPotential A P) (x : X) (j : Fin A.n) :
     ContDiffOn ℝ 2 (P.φ x ∘ (A.chart j).symm) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' P.U x) := by
-  exact (hP.1 x j).of_le (by first | exact ENat.LEInfty.out | simp | norm_num)
+  exact (hP.1 x j).of_le (by first | exact ENat.LEInfty.out)
 
 theorem locDensBase : LocDensBaseStatement := by
   intro e X _ A Φ hΦ j y hy x hx
@@ -170,10 +216,9 @@ theorem re_star_dot_hessC {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z x : Fin D 
           (H (E i) (Complex.I • E j) - H (Complex.I • E i) (E j))) / 4 := by
     unfold levi
     rw [← hH, hIw, hw]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_add (f := _), map_smul, ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.coe_smul',
-      Pi.smul_apply, smul_eq_mul]
+
+    simp only [map_sum, map_add (f := _), map_smul, ContinuousLinearMap.sum_apply,
+    ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
     simp only [Finset.mul_sum, ← Finset.sum_add_distrib, Finset.sum_div]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_

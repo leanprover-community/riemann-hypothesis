@@ -1,14 +1,61 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsEqZpowMulUnit
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardSubmoduleAndHomLe
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardSubmoduleAndHomLe
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsEqZpowMulUnit
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 
@@ -90,8 +137,8 @@ theorem det_blocks {E : Type} [CommRing E] {r : ℕ} (Z Z' : Matrix (Fin (r + 1)
       · subst hi
         by_cases hj : j = Fin.last r
         · subst hj; simp [sub_eq_add_neg]
-        · simp [hj, Matrix.single_apply, Ne.symm hj]
-      · simp [hi, Matrix.single_apply, Ne.symm hi]
+        · simp [hj, Ne.symm hj]
+      · simp [hi, Ne.symm hi]
     rw [this, Matrix.det_updateRow_add, Matrix.det_updateRow_smul, Matrix.updateRow_eq_self,
       ← Matrix.adjugate_apply, hadj]
     ring
@@ -232,14 +279,14 @@ theorem hf_comb (L : LocE F E) {n : ℕ} {H : Matrix (Fin n) (Fin n) E} (h : IsH
   have key : ∀ (α : ι → E) (g : ι → Fin n → E) (y : Fin n → E),
       hf L H (∑ i, α i • g i) y = ∑ i, α i * hf L H (g i) y := fun α g y => by
     change GlobalTheory.FrameBasic.hfL L H y _ = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [map_smul]; rfl
   ext i j
   simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
     Finset.sum_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [GlobalTheory.FrameBasic.hf_conj L h, key, map_sum]
+
+  rw [GlobalTheory.FrameBasic.hf_conj L h, key, map_sum]
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [map_mul, ← GlobalTheory.FrameBasic.hf_conj L h, key, Finset.mul_sum]
   exact Finset.sum_congr rfl fun m _ => by ring
@@ -304,12 +351,12 @@ theorem encard_overlattices_le : ∀ {F : Type} [Field F] [ValuativeRel F] [Topo
     Matrix.fromBlocks U (-(t • U)) 0 (t • U')
   have hg : ∀ i, g i = ∑ l, B l i • Sum.elim S.f' S.f l := by
     rintro (i | i)
-    · simp [g, B, h1, h2, smul_sub, Finset.smul_sum, smul_smul, sub_eq_add_neg, add_comm]
+    · simp [g, B, h1, h2, Finset.smul_sum, smul_smul, sub_eq_add_neg, add_comm]
     · simp [g, B, h1]
   have hg' : ∀ i, g' i = ∑ l, B' l i • Sum.elim S.f S.f' l := by
     rintro (i | i)
     · simp [g', B', h1]
-    · simp [g', B', h1, h2, smul_sub, Finset.smul_sum, smul_smul, sub_eq_add_neg, add_comm]
+    · simp [g', B', h1, h2, Finset.smul_sum, smul_smul, sub_eq_add_neg, add_comm]
   have hB : B.det = t ^ (r + 1) := by
     simp [B, Matrix.det_fromBlocks_zero₁₂, hU, hU']
   have hB' : B'.det = t ^ (r + 1) := by

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpOrderLe
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

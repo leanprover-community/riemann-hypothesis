@@ -1,6 +1,64 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Category.ModuleCat.Abelian
+public import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
+public import Mathlib.Algebra.Homology.Augment
+public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
+public import Mathlib.Algebra.Homology.ShortComplex.ShortExact
+public import Mathlib.CategoryTheory.Monoidal.Mon
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.LinearAlgebra.TensorProduct.Pi
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.Tactic.Monotonicity.Lemmas
+public import Mathlib.Algebra.Homology.HomologicalComplexAbelian
+public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -74,7 +132,7 @@ def res (A : Cube.{v} ι R) {s t : Finset ι} (h : s ⊆ t) : A.obj s →ₗ[R] 
 theorem res_self (A : Cube.{v} ι R) {s : Finset ι} (h : s ⊆ s) (x : A.obj s) :
     res A h x = x := by
   have : (homOfLE h : s ⟶ s) = 𝟙 s := rfl
-  simp [res, this]
+  simp [res]
 
 @[simp]
 theorem res_res (A : Cube.{v} ι R) {s t w : Finset ι} (h : s ⊆ t) (h' : t ⊆ w) (x : A.obj s) :
@@ -229,8 +287,8 @@ theorem totalD_totalD (A : Cube.{v} ι R) (x : ∀ s, A.obj s) : totalD A (total
     rw [totalD_apply, Finset.sum_finset_product t.offDiag t (fun i => t.erase i)
       (fun q => by simp only [Finset.mem_offDiag, Finset.mem_erase]; tauto)]
     refine Finset.sum_congr rfl fun i _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [totalD_apply, map_sum, Finset.smul_sum]
+
+    rw [totalD_apply, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     simp only [f, map_zsmul, res_res, smul_smul]
   rw [h1]
@@ -259,8 +317,8 @@ theorem d_comp_d (A : Cube.{v} ι R) (p : ℕ) : d A (p + 1) ∘ₗ d A p = 0 :=
 theorem termMap_d {A B : Cube.{v} ι R} (φ : A ⟶ B) (p : ℕ) (x : Term A p) :
     termMap φ (p + 1) (d A p x) = d B p (termMap φ p x) := by
   funext t
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [termMap_apply, d_apply, map_sum, map_zsmul, app_res]
+
+  simp only [termMap_apply, d_apply, map_sum, map_zsmul, app_res]
 
 theorem d_zero_apply (A : Cube.{v} ι R) (x : Term A 0) :
     d A 0 x = aug A (termZeroEquiv A x) := by
@@ -606,15 +664,15 @@ instance Cube.isIso_termComparison [Finite ι] [F.Additive] (A : Cube.{v} ι R) 
   · rw [injective_iff_map_eq_zero]
     intro x hx
     have h : (F.map (∑ s, Cube.termProj A s ≫ e s)).hom x = x := by rw [h1, F.map_id]; rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h, F.map_sum, ModuleCat.hom_sum, LinearMap.sum_apply]
+
+    rw [← h, F.map_sum, ModuleCat.hom_sum, LinearMap.sum_apply]
     refine Finset.sum_eq_zero fun s _ => ?_
     have hs : (F.map (Cube.termProj A s)).hom x = 0 := congrFun hx s
     rw [F.map_comp, ModuleCat.hom_comp, LinearMap.comp_apply, hs, map_zero]
   · intro y
     refine ⟨∑ s, (F.map (e s)).hom (y s), funext fun t => ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Cube.termComparison_apply, map_sum, Finset.sum_eq_single t]
+
+    rw [Cube.termComparison_apply, map_sum, Finset.sum_eq_single t]
     · rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, ← F.map_comp, h2, F.map_id]; rfl
     · intro s _ hs
       rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, ← F.map_comp, h3 _ _ hs.symm, F.map_zero]
@@ -635,8 +693,8 @@ theorem Cube.map_d_termComparison (A : Cube.{v} ι R) (p : ℕ) :
       Cube.termComparison F A p ≫ ModuleCat.ofHom (Cube.d (A ⋙ F) p) := by
   refine ModuleCat.hom_ext (LinearMap.ext fun x => funext fun t => ?_)
   have h := congrArg F.map (Cube.d_termProj A p t)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [F.map_comp, F.map_sum] at h
+
+  rw [F.map_comp, F.map_sum] at h
   refine Eq.trans congr(($h).hom x) (Eq.trans ?_ (Cube.d_apply (A ⋙ F) p _ t).symm)
   rw [ModuleCat.hom_sum, LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -813,8 +871,8 @@ theorem homology_directSum_bijective {K : κ → CochainComplex (ModuleCat.{v} R
     refine Eq.trans ?_ h
     have h' := (HomologicalComplex.homologyFunctor _ _ p).map_sum (fun k => π k ≫ i k) T
     refine Eq.trans ?_ congr(($h').hom ((L.homologyπ p).hom c)).symm
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, ModuleCat.hom_sum]
+
+    rw [map_sum, ModuleCat.hom_sum]
     refine Eq.trans (Finset.sum_congr rfl fun k _ => ?_) (LinearMap.sum_apply _ _ _).symm
     rw [DirectSum.toModule_lof, Functor.map_comp]
     rfl

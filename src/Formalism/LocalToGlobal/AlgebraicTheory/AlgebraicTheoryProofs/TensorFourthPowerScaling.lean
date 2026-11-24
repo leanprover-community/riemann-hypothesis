@@ -1,15 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementC
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.HasSubstBlock
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.GramFrameCompositionMvExpFact
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.IntOpTwoFreeOf
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.Inertia
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.AgreeOnAdjoin
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.EigenCompatOf
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.EigenFrameEOf
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.Tensor
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.EigenFinal
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.QuadraticSemicharactersOfProductThetaMem
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormNatCastClOfNotDvd
 
 @[expose] public section
 
@@ -26,12 +25,6 @@ open Formalism.L2.Th1.GD (LocNorm InMul thetaLin frameM hOK)
 open Formalism.DworkPowerSeriesWeights (JetsIntegral jetPair)
 
 namespace LocalJetRescaling
-
-theorem norm_natCast (p : ℕ) [Fact p.Prime] {N : ℕ} (h : ¬ p ∣ N) : ‖(N : ℂ_[p])‖ = 1 := by
-  rw [ReciprocityTheory.ChartRestriction.L1.norm_natCast_Cl]
-  have e : ((N : ℚ) : ℚ_[p]) = (N : ℚ_[p]) := by push_cast; rfl
-  rw [← e, Padic.eq_padicNorm]
-  exact_mod_cast (padicNorm.nat_eq_one_iff N).2 h
 
 private theorem linSub_scl_eq_rescale {K : Type} [Field K] (m : Type) [Fintype m] [DecidableEq m] (c : K)
     (f : MvPowerSeries m K) : linSub (scl m c) f = MvPowerSeries.rescale (fun _ => c) f := by
@@ -63,7 +56,7 @@ theorem jets_rescale (hS : LinScale) (p : ℕ) [Fact p.Prime] (m : Type) [Fintyp
     rw [Finsupp.prod, norm_prod]
     apply Finset.prod_eq_one
     intro i _
-    rw [norm_pow, norm_natCast p hN', one_pow]
+    rw [norm_pow, _root_.ReciprocityTheory.ChartRestriction.L1.norm_natCast_Cl_of_not_dvd p hN', one_pow]
   rw [hsplit] at h1
   have eq : ∀ a b c d : ℂ_[p], a * (b * c * d) = b * (a * (c * d)) := by intros; ring
   rw [eq, norm_mul, hn, one_mul] at h1
@@ -117,7 +110,7 @@ private theorem cmL_squarefree_and_lattice_mem (a₀ : ℕ) (b₀ c₀ : ℤ) (d
       generalize (a₀ : ℤ) * c₀ - k * k = X at e
       omega
     · exact h
-  have hCM0 := Formalism.L2.Th1.F.cmPairHasCMBy a₀ b₀ c₀ dK ha hdK hE hodd
+  have hCM0 := _root_.Formalism.L2.Th1.F.cm_pair_has_cm a₀ b₀ c₀ dK ha hdK hE hodd
   have hlift : ∀ z ∈ (Formalism.L2.Th1.F.cmPair a₀ b₀ dK ha hdK).lattice,
       lam * z ∈ (cmL a₀ b₀ dK ha hdK lam hlam).lattice := by
     intro z hz
@@ -199,7 +192,7 @@ private theorem norm_apply_le_one_of_not_dvd_relIdx (L : PeriodPair) {n : Type} 
     have := congrArg ι hst
     simpa using this
   rw [map_mul, norm_mul, map_natCast] at h1
-  have hD1 : ‖(D : ℂ_[p])‖ = 1 := LocalJetRescaling.norm_natCast p hidx
+  have hD1 : ‖(D : ℂ_[p])‖ = 1 := _root_.ReciprocityTheory.ChartRestriction.L1.norm_natCast_Cl_of_not_dvd p hidx
   rw [hD1, one_mul] at h1
   exact h1
 
@@ -213,8 +206,8 @@ private theorem sum_inverse_mul_sum_eq_ite_frameM {n ν J : Type} [Fintype n] [D
     intro u
     have h : ∑ w, g u w • g.symm (Pi.single w 1) = u := by
       simp_rw [← LinearEquiv.map_smul]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum]
+
+      rw [← map_sum]
       have : ∑ w, g u w • (Pi.single w (1 : ℂ) : Fin 4 × n → ℂ) = g u := by
         ext z
         simp [Finset.sum_apply, Pi.single_apply]
@@ -232,20 +225,20 @@ private theorem sum_inverse_mul_sum_eq_ite_frameM {n ν J : Type} [Fintype n] [D
     rw [map_mul]
     field_simp
   rw [Finset.sum_congr rfl (fun w _ => step w), Finset.sum_comm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [← Finset.mul_sum, ← map_sum, key]
+
+  simp_rw [← Finset.mul_sum, ← map_sum, key]
   unfold frameM
   split_ifs with hab
   · subst hab
     simp [mul_comm]
-  · simp [hab]
+  · simp
 
 private theorem jetsIntegral_sum_C_mul {p : ℕ} [Fact p.Prime] {X κ : Type} [Fintype κ] (r : κ → ℂ_[p])
     (f : κ → MvPowerSeries X ℂ_[p]) (hr : ∀ k, ‖r k‖ ≤ 1) (hf : ∀ k, JetsIntegral (f k)) :
     JetsIntegral (∑ k, MvPowerSeries.C (r k) * f k) := by
   intro e
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.mul_sum]
+
+  rw [map_sum, Finset.mul_sum]
   apply IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one
   intro k _
   rw [MvPowerSeries.coeff_C_mul]
@@ -278,7 +271,7 @@ theorem etLoc_of (h1 : TensZEt) (h2 : EtThetaZ) (h3 : LinScale) : EtLoc := by
       obtain ⟨m1, m2, hm⟩ := hα
       exact ⟨N' * m1, N' * m2, by rw [hm]; push_cast; ring⟩
     have hn : ‖ι ((N' : ℂ) * α)‖ = 1 := by
-      rw [map_mul, norm_mul, map_natCast, LocalJetRescaling.norm_natCast p hN'p, hια, one_mul]
+      rw [map_mul, norm_mul, map_natCast, _root_.ReciprocityTheory.ChartRestriction.L1.norm_natCast_Cl_of_not_dvd p hN'p, hια, one_mul]
     have hz := h2 dK (cmL a₀ b₀ dK ha hdK lam hlam) hsq h43 hCM p ι hp2 hpd hcur (lam * a₀) hω0 hω2
       κ (Fin 4 × n) r' s ((N' : ℂ) * α) (N' * M) hq hn (Nat.mul_pos hN'0 hM) hr' hsα hsM
     have hz2 := jets_rescale h3 p (Fin 4 × n) N' M hN'p _ hz

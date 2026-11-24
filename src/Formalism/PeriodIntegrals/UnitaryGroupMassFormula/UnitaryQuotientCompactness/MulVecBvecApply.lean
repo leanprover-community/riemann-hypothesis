@@ -1,6 +1,50 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.NilpotentSubgroup
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.SBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -95,24 +139,6 @@ private lemma Hpk_applyUnitaryQuotientCompactness (i x : Fin (2 * r + k + 1)) :
       have n2 : ¬ (x.val < r ∧ i.val + x.val = 2 * r + k) := by omega
       rw [if_neg hx', if_neg n1, if_neg n2, if_neg n3]
 
-private lemma piI_piI' (i : Fin (2 * r + k + 1)) : piI k r (piI k r i) = i := by
-  by_cases hW : r ≤ i.val ∧ i.val ≤ r + k
-  · have hp : piI k r i = i := by
-      unfold piI
-      exact if_pos hW
-    rw [hp, hp]
-  · have hi := i.isLt
-    have hp : piI k r i = ⟨2 * r + k - i.val, by omega⟩ := by
-      unfold piI
-      exact if_neg hW
-    rw [hp]
-    have hW' : ¬ (r ≤ 2 * r + k - i.val ∧ 2 * r + k - i.val ≤ r + k) := by omega
-    unfold piI
-    rw [if_neg hW']
-    apply Fin.ext
-    show 2 * r + k - (2 * r + k - i.val) = i.val
-    omega
-
 lemma uw_block {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z)
     (i j : Fin (2 * r + k + 1)) (hij : ¬ (inW k r i ∧ inW k r j)) :
     h i j = if i = j then 1 else 0 := by
@@ -138,13 +164,13 @@ lemma uw_block {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh 
     rw [Matrix.mul_apply] at e
     simp only [hrowp] at e
     rw [Finset.sum_eq_single i] at e
-    · rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) i, Hpk_applyUnitaryQuotientCompactness (piI k r i) j, piI_piI', if_pos rfl,
+    · rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) i, Hpk_applyUnitaryQuotientCompactness (piI k r i) j, _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.piI_piI, if_pos rfl,
         if_neg (Ne.symm hne)] at e
       have hc : (if (piI k r i).val = r + k then (-1 : ℂ) else 1) ≠ 0 := by
         split_ifs <;> norm_num
       exact (mul_eq_zero.mp e).resolve_left hc
     · intro y _ hy
-      rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) y, piI_piI', if_neg hy, zero_mul]
+      rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) y, _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.piI_piI, if_neg hy, zero_mul]
     · intro hm
       exact absurd (Finset.mem_univ _) hm
   · exact uw_col_out hh j hj i
@@ -187,26 +213,13 @@ private lemma sign_mul_sign_piI_eq_one (i : Fin (2 * r + k + 1)) :
       omega
     rw [if_neg h1, if_neg h2, one_mul]
 
-private lemma Hpk_mul_Hpk : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  rw [Matrix.mul_apply, Matrix.one_apply, Finset.sum_eq_single (piI k r i)]
-  · rw [Hpk_applyUnitaryQuotientCompactness i (piI k r i), if_pos rfl, Hpk_applyUnitaryQuotientCompactness (piI k r i) j, piI_piI']
-    by_cases hij : i = j
-    · subst hij
-      rw [if_pos rfl, if_pos rfl, sign_mul_sign_piI_eq_one]
-    · rw [if_neg (Ne.symm hij), if_neg hij, mul_zero]
-  · intro x _ hx
-    rw [Hpk_applyUnitaryQuotientCompactness i x, if_neg hx, zero_mul]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
-
 lemma inv_fix {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hU : a ∈ UH (Hpk k r))
     {v : Fin (2 * r + k + 1) → ℂ} (hv : a *ᵥ v = v) : a⁻¹ *ᵥ v = v := by
   have hU' : aᴴ * Hpk k r * a = Hpk k r := hU
   have hl : (Hpk k r * aᴴ * Hpk k r) * a = 1 := by
     calc Hpk k r * aᴴ * Hpk k r * a = Hpk k r * (aᴴ * Hpk k r * a) := by
           simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hU', Hpk_mul_Hpk]
+      _ = 1 := by rw [hU', _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.Hpk_mul_self]
   rw [Matrix.inv_eq_left_inv hl]
   calc (Hpk k r * aᴴ * Hpk k r) *ᵥ v = (Hpk k r * aᴴ * Hpk k r) *ᵥ (a *ᵥ v) := by rw [hv]
     _ = v := by rw [Matrix.mulVec_mulVec, hl, Matrix.one_mulVec]
@@ -219,7 +232,7 @@ lemma inv_mem_UW {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
   have hl : (Hpk k r * aᴴ * Hpk k r) * a = 1 := by
     calc Hpk k r * aᴴ * Hpk k r * a = Hpk k r * (aᴴ * Hpk k r * a) := by
           simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hU, Hpk_mul_Hpk]
+      _ = 1 := by rw [hU, _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.Hpk_mul_self]
   have hinv : a⁻¹ = Hpk k r * aᴴ * Hpk k r := Matrix.inv_eq_left_inv hl
   have hr : a * a⁻¹ = 1 := by
     have hla : a⁻¹ * a = 1 := by

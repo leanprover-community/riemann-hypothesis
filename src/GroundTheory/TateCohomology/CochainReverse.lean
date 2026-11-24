@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RepresentationTheory.Coinduced
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
 public import GroundTheory.TateCohomology.DimensionShift
+import Mathlib.RepresentationTheory.Homological.GroupCohomology.Shapiro
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -150,11 +154,11 @@ theorem d_revCochain {A : Rep k G} (n : ℕ) (f : (Fin n → G) → A) :
   have hP' : Fin.partialProd x (Fin.last (n + 1)) =
       Fin.partialProd (Fin.init x) (Fin.last n) * x (Fin.last n) := by
     rw [← Fin.succ_last, Fin.partialProd_succ, Fin.partialProd_init]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [inhomogeneousCochains.d_hom_apply, revCochain_apply, Fin.sum_univ_castSucc,
-    Fin.val_last, Fin.val_castSucc, contractNth_last, contractNth_revInv,
-    partialProd_last_contractNth, tail_revInv', init_revInv', map_add, map_sum, map_smul,
-    smul_add, Finset.smul_sum]
+
+  simp only [inhomogeneousCochains.d_hom_apply, revCochain_apply, Fin.sum_univ_castSucc,
+  Fin.val_last, Fin.val_castSucc, contractNth_last, contractNth_revInv,
+  partialProd_last_contractNth, tail_revInv', init_revInv', map_add, map_sum, map_smul,
+  smul_add, Finset.smul_sum]
   refine add_add_eq_add_add ?_ ?_ ?_
   · rw [← Module.End.mul_apply, ← map_mul, ← hP, smul_smul, ← pow_add]
     congr 1

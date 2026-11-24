@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
+import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.NumberTheory.BernoulliPolynomials
 
 @[expose] public section
 
@@ -17,8 +18,8 @@ variable {K : Type}
 
 theorem totalDegree_aeval_le (g : K → MvPolynomial K ℚ) (hg : ∀ j, (g j).totalDegree ≤ 1)
     (P : MvPolynomial K ℚ) : (aeval g P).totalDegree ≤ P.totalDegree := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [P.as_sum, map_sum]
+
+  conv_lhs => rw [P.as_sum, map_sum]
   refine totalDegree_finsetSum_le fun α hα => ?_
   rw [aeval_monomial, algebraMap_eq]
   refine (totalDegree_mul _ _).trans ?_
@@ -90,7 +91,7 @@ theorem exists_antideriv (k : K) (q : MvPolynomial K ℚ) : ∃ P : MvPolynomial
         have hjk : j ≠ k := by
           rw [Finsupp.support_erase] at hj
           exact (Finset.mem_erase.1 hj).1
-        simp [Pi.single_apply, hjk]
+        simp [hjk]
       have hev : ∀ y : K → ℚ, eval y (Polynomial.aeval (X k) F) = F.eval (y k) :=
         fun y => eval_aeval_X y k F
       rw [hmono, map_mul, map_mul, hsh, hev, hev, map_mul, map_pow, eval_X, ← mul_sub]
@@ -100,8 +101,8 @@ theorem exists_antideriv (k : K) (q : MvPolynomial K ℚ) : ∃ P : MvPolynomial
   choose! P hPd hPe using key
   refine ⟨∑ α ∈ q.support, P α, totalDegree_finsetSum_le hPd, fun x => ?_⟩
   conv_rhs => rw [q.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, ← Finset.sum_sub_distrib]
+
+  simp only [map_sum, ← Finset.sum_sub_distrib]
   exact Finset.sum_congr rfl fun α hα => hPe α hα x
 
 noncomputable def freeze (s : Finset K) (N : K → ℚ) : K → MvPolynomial K ℚ :=
@@ -150,7 +151,7 @@ theorem proof : PolyOfDiffs.Statement := by
       funext j
       by_cases hj : j = k
       · subst hj; simp
-      · simp [Pi.single_apply, hj]
+      · simp [hj]
     rw [e3] at e2
     simp only [diffStep] at e1
     push_cast at e1
@@ -172,7 +173,7 @@ theorem proof : PolyOfDiffs.Statement := by
         funext j
         by_cases hj : j = k
         · subst hj; simp
-        · simp [Pi.single_apply, hj]
+        · simp [hj]
       rw [hstep k _ hy, hsh, ih]
 
   have key : ∀ s : Finset K, ∃ Q : MvPolynomial K ℚ, Q.totalDegree ≤ d ∧

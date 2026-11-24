@@ -1,12 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSncPatchRat
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EmbedsGeneric
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePointStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalizationStatement
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIsLocalRingIsFractionRingStalk
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSncPatchRat
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 @[expose] public section
 
@@ -129,10 +171,10 @@ theorem regAt_eq_of_units (hA : CoordTie o ξ t) (hF : CoordTie F ξ' t) {c : κ
   ext a
   constructor
   · intro ha
-    obtain ⟨s, hs, hsu, hsa⟩ := (GlobalTheory.T.regAt_iff_chart_localization X Ω ξ o κ t hA c p hc a).1 ha
+    obtain ⟨s, hs, hsu, hsa⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ o κ t hA c p hc a).1 ha
     exact mem_regAt_of_unitAt_mul ((hu s hs).1 hsu) (hA' _ hsa)
   · intro ha
-    obtain ⟨s, hs, hsu, hsa⟩ := (GlobalTheory.T.regAt_iff_chart_localization W Ω ξ' F κ t hF c p' hc' a).1 ha
+    obtain ⟨s, hs, hsu, hsa⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction W Ω ξ' F κ t hF c p' hc' a).1 ha
     obtain ⟨d, hd, hds⟩ := exists_mul_mem_adjoin o F _ s hs
     obtain ⟨e, he, hes⟩ := exists_mul_mem_adjoin o F _ _ hsa
     have hunit : unitAt ξ' p' (algebraMap o Ω e * (algebraMap o Ω d * s)) :=
@@ -140,7 +182,7 @@ theorem regAt_eq_of_units (hA : CoordTie o ξ t) (hF : CoordTie F ξ' t) {c : κ
     have hmemA : algebraMap o Ω e * (algebraMap o Ω d * s) ∈
         Algebra.adjoin o (Set.range fun j => t j / t c) :=
       mul_mem (Subalgebra.algebraMap_mem _ e) hds
-    refine (GlobalTheory.T.regAt_iff_chart_localization X Ω ξ o κ t hA c p hc a).2
+    refine (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ o κ t hA c p hc a).2
       ⟨_, hmemA, (hu _ hmemA).2 hunit, ?_⟩
     have : algebraMap o Ω e * (algebraMap o Ω d * s) * a =
         algebraMap o Ω d * (algebraMap o Ω e * (s * a)) := by ring
@@ -161,7 +203,7 @@ theorem regAt_frac :
     have hsub : ∀ s ∈ Algebra.adjoin o (Set.range fun j => t j / t c), s ∈ regAt ξ' p' := fun s hs =>
       (hF.ring c hc.1 s).1 (adjoin_subset o F _ s hs) p' hc
     obtain ⟨I, hI, hIu⟩ := exists_prime_of_subset _ (regAt ξ' p') hloc hsub
-    obtain ⟨p, ⟨hp, hpu⟩, -⟩ := GlobalTheory.T.prime_chart_existsUnique_point X Ω ξ o κ t hA c hc.1 I hI
+    obtain ⟨p, ⟨hp, hpu⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.chart_point_of_prime X Ω ξ o κ t hA c hc.1 I hI
     refine ⟨p, regAt_eq_of_units o F hA hF hp hc fun s hs => ?_⟩
     exact (hpu ⟨s, hs⟩).symm.trans (hIu ⟨s, hs⟩)
   · intro p hd
@@ -171,7 +213,7 @@ theorem regAt_frac :
       obtain ⟨d, hd0, hds⟩ := exists_mul_mem_adjoin o F _ s hs
       exact mem_regAt_of_unitAt_mul (hd d hd0) ((hA.ring c hc.1 _).1 hds p hc)
     obtain ⟨I, hI, hIu⟩ := exists_prime_of_subset _ (regAt ξ p) hloc hsub
-    obtain ⟨p', ⟨hp', hpu⟩, -⟩ := GlobalTheory.T.prime_chart_existsUnique_point W Ω ξ' F κ t hF c hc.1 I hI
+    obtain ⟨p', ⟨hp', hpu⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.chart_point_of_prime W Ω ξ' F κ t hF c hc.1 I hI
     refine ⟨p', regAt_eq_of_units o F hA hF hc hp' fun s hs => ?_⟩
     have hsB := adjoin_subset o F _ s hs
     exact (hIu ⟨s, hsB⟩).symm.trans (hpu ⟨s, hsB⟩)

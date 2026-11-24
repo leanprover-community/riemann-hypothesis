@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.FiniteBruhat
 public import GroundTheory.AutomorphicForms.Iwasawa
+public import Mathlib.LinearAlgebra.Matrix.Rank
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

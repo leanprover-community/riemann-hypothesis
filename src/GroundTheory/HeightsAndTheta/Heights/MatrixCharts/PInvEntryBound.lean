@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.StatementsBounds
+public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.BoundsY
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

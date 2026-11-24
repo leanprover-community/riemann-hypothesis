@@ -1,30 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiscreteSeriesWeylDimension
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCPX
-public import Formalism.SharpRestriction.CuspSpanNormBounds.TheoremBConstants
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
 public import Formalism.SharpRestriction.CuspSpanNormBounds.ExpansionFromLemmaB
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.FamilyStatementOfAbsAndVandermonde
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
-public import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
 public import Formalism.PeriodIntegrals.KFinSmooth
-public import Formalism.HermitianCurvature.StatementB
-public import Formalism.HermitianLattices.StatementMass
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import Formalism.PeriodIntegrals.UpqRep
 public import Formalism.PeriodIntegrals.PhMeasCore
-public import Formalism.RealPlaceAnalysis.StatementE
-public import Formalism.FormalDegreeBessel.StatementDS
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SphericalFunctionIntegrableOfLocal
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLand
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GGMirabolicBase
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 
 @[expose] public section
 

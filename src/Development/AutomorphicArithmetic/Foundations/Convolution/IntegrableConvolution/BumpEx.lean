@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensSmooth
-public import GroundTheory.AutomorphicForms.L2LocalComponents.ArchBump
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDiff
 public import GroundTheory.AutomorphicForms.CuspidalProjection.OrthogonalProjectionOntoCompSubtypeL
+public import GroundTheory.AutomorphicForms.L2LocalComponents.ArchBump
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -130,7 +176,7 @@ private def Good (P : archGroup K n → ℂ) : Prop :=
     ∀ k : archCompact K n, (fun g => P ((k : archGroup K n) * g)) ∈ W
 
 private theorem Good.cont {P : archGroup K n → ℂ} (h : Good P) : Continuous P := by
-  letI := (isExpLieAlgebra K n).chartedSpace
+  let := (isExpLieAlgebra K n).chartedSpace
   exact ContMDiff.continuous h.1
 
 private theorem Good.add {P Q : archGroup K n → ℂ} (hP : Good P) (hQ : Good Q) :
@@ -167,8 +213,8 @@ private theorem coord_mul {ι : Type*} [Fintype ι] (b : Module.Basis ι ℝ (Ar
   let L : ArchMatrix K n →ₗ[ℝ] ℝ := (b.coord i).comp (LinearMap.mulLeft ℝ a)
   have h : L x = ∑ j, b.repr x j • L (b j) := by
     conv_lhs => rw [← b.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smul]
   exact h
 
@@ -215,13 +261,13 @@ private def polS (C : Set (archGroup K n)) : StarSubalgebra ℂ C(C, ℂ) where
 private theorem exists_good_near {C : Set (archGroup K n)} (hC : IsCompact C) (f : archGroup K n → ℂ)
     (hf : Continuous f) {ε : ℝ} (hε : 0 < ε) :
     ∃ P : archGroup K n → ℂ, Good P ∧ ∀ x ∈ C, ‖P x - f x‖ < ε := by
-  haveI : CompactSpace C := isCompact_iff_compactSpace.1 hC
+  have : CompactSpace C := isCompact_iff_compactSpace.1 hC
   set b := Module.finBasis ℝ (ArchMatrix K n)
   have hsep : (polS C).SeparatesPoints := by
     intro x y hxy
     obtain ⟨i, hi⟩ : ∃ i, b.coord i (archVal (x : archGroup K n)) ≠ b.coord i (archVal (y : archGroup K n)) := by
       by_contra hall
-      push_neg at hall
+      push Not at hall
       refine hxy (Subtype.ext (Subtype.ext (Units.ext (b.ext_elem fun i => ?_))))
       exact hall i
     have hG := good_coord b i
@@ -325,7 +371,7 @@ theorem UpperTheory.ConvolutionTheory.L1.bumpEx :
   have hb : ∀ g, b g = (t : ℂ) * (P g * (c g : ℂ)) := fun g => rfl
   refine ⟨b, hQ.1, ?_, ?_, fun h0 => ?_⟩
   · obtain ⟨W, hW, hk⟩ := hQ.2
-    haveI : FiniteDimensional ℂ W := Module.Finite.iff_fg.2 hW
+    have : FiniteDimensional ℂ W := Module.Finite.iff_fg.2 hW
     refine Submodule.finiteDimensional_of_le (S₂ := W) (Submodule.span_le.2 ?_)
     rintro _ ⟨k, rfl⟩
     exact hk k

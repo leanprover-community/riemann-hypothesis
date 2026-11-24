@@ -2,7 +2,57 @@ module
 
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.StatementB
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.HomRelationHolds
+public import Formalism.PolynomialDimension.MultinomialDepth.MonoCount
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.InvInt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -32,8 +82,8 @@ theorem weightZeroProj_weight (G₁ : GlW K U n) (G₂ : GlW K V n) (S : Finset 
   ext x
   have hd : dl c c = 0 := sub_self _
   change G₂.E c c (pr0 G₁ G₂ S φ x) - pr0 G₁ G₂ S φ (G₁.E c c x) = 0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [scalar_projection_apply, scalar_projection_apply, map_sum, sub_eq_zero]
+
+  rw [scalar_projection_apply, scalar_projection_apply, map_sum, sub_eq_zero]
   refine Finset.sum_congr rfl fun ν _ => ?_
   rw [G₂.diag, G₁.shift, hd, sub_zero, G₁.diag, map_smul, map_smul]
 
@@ -45,11 +95,9 @@ theorem weightZeroProj_mem (G₁ : GlW K U n) (G₂ : GlW K V n) (S : Finset (Fi
 theorem weightZeroProj_mem_homLat (G₁ : GlW K U n) (G₂ : GlW K V n) (S : Finset (Fin n → ℤ)) {L : AddSubgroup U} {M : AddSubgroup V}
     (hL : ∀ μ, ∀ x ∈ L, G₁.comp μ x ∈ L) (hM : ∀ μ, ∀ x ∈ M, G₂.comp μ x ∈ M)
     {φ : U →ₗ[K] V} (hφ : φ ∈ HomLat (K := K) L M) : pr0 G₁ G₂ S φ ∈ HomLat (K := K) L M := by
-  have hφ' : ∀ x ∈ L, φ x ∈ M := hφ
-  show ∀ x ∈ L, pr0 G₁ G₂ S φ x ∈ M
   intro x hx
   rw [scalar_projection_apply]
-  exact AddSubgroup.sum_mem _ fun ν _ => hM ν _ (hφ' _ (hL ν x hx))
+  exact AddSubgroup.sum_mem _ fun ν _ => hM ν _ (hφ _ (hL ν x hx))
 
 theorem comp_comm2 (G₁ : GlW K U n) (G₂ : GlW K V n) (θ : U →ₗ[K] V)
     (hθ : ∀ c x, θ (G₁.E c c x) = G₂.E c c (θ x)) (μ : Fin n → ℤ) (x : U) :
@@ -60,8 +108,8 @@ theorem comp_comm2 (G₁ : GlW K U n) (G₂ : GlW K V n) (θ : U →ₗ[K] V)
   have hx : ∑ ν ∈ insert μ S, G₁.comp ν x = x :=
     G₁.sum_comp x _ (fun ν hν => hS ν (fun h => hν (Finset.mem_insert_of_mem h)))
   conv_rhs => rw [← hx]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_eq_single μ]
+
+  rw [map_sum, map_sum, Finset.sum_eq_single μ]
   · exact (hw μ).symm
   · intro ν _ hne
     rw [← hw ν, G₂.idem, if_neg (Ne.symm hne)]
@@ -72,8 +120,8 @@ theorem weightZeroProj_comp (G₁ : GlW K U n) (G₂ : GlW K V n) (S : Finset (F
     (hθ : ∀ μ x, θ (G₁.comp μ x) = G₂.comp μ (θ x)) (φ : U →ₗ[K] U) :
     pr0 G₁ G₂ S (θ ∘ₗ φ) = θ ∘ₗ pr0 G₁ G₁ S φ := by
   ext x
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.comp_apply, scalar_projection_apply, map_sum, hθ]
+
+  simp only [LinearMap.comp_apply, scalar_projection_apply, map_sum, hθ]
 
 theorem weightZeroProj_trace (G₁ : GlW K U n) (S : Finset (Fin n → ℤ)) (hS : ∀ x, ∀ μ ∉ S, G₁.comp μ x = 0) (φ : U →ₗ[K] U) :
     LinearMap.trace K U (pr0 G₁ G₁ S φ) = LinearMap.trace K U φ := by
@@ -88,15 +136,15 @@ theorem weightZeroProj_trace (G₁ : GlW K U n) (S : Finset (Fin n → ℤ)) (hS
   have hp : pr0 G₁ G₁ S φ = ∑ ν ∈ S, G₁.comp ν * (φ * G₁.comp ν) := by
     ext x
     simp [scalar_projection_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hp, map_sum]
+
+  rw [hp, map_sum]
   calc ∑ ν ∈ S, LinearMap.trace K U (G₁.comp ν * (φ * G₁.comp ν))
       = ∑ ν ∈ S, LinearMap.trace K U (φ * G₁.comp ν) := by
         refine Finset.sum_congr rfl fun ν _ => ?_
         rw [LinearMap.trace_mul_comm, mul_assoc, hidem ν]
     _ = LinearMap.trace K U φ := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← map_sum, ← Finset.mul_sum, hsum, mul_one]
+
+        rw [← map_sum, ← Finset.mul_sum, hsum, mul_one]
 
 def Psi (G₁ : GlW K U n) (G₂ : GlW K V n) (S : Finset (Fin n → ℤ)) (l : ℕ) : Module.End K (U →ₗ[K] V) :=
   InvOp (homAct G₁.E G₂.E) l (List.finRange n) * pr0 G₁ G₂ S
@@ -145,7 +193,7 @@ theorem QQ_id (hNat : InvNat) (G₁ : GlW K U n) (G₂ : GlW K V n) (S : Finset 
   have htr : ∀ i, LinearMap.trace K U ((b.coord i).smulRight y) = b.coord i y := by
     intro i
     rw [LinearMap.trace_eq_matrix_trace K b, Matrix.trace]
-    simp [LinearMap.toMatrix_apply, Finsupp.single_apply]
+    simp
     simp [Matrix.vecMulVec_apply, Module.Basis.repr_self, Finsupp.single_apply]
   have key : ∀ i, Psi G₁ G₂ S l ((b.coord i).smulRight (θ y)) (b i) = (b.coord i y / (k : K)) • θ (b i) := by
     intro i
@@ -169,8 +217,8 @@ theorem QQ_id (hNat : InvNat) (G₁ : GlW K U n) (G₂ : GlW K V n) (S : Finset 
     rw [smul_smul, hc, map_smul]
   rw [QQ_apply, Finset.smul_sum]
   simp_rw [key, hsc]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, b.sum_repr]
+
+  rw [← map_sum, b.sum_repr]
 
 end gen
 
@@ -384,9 +432,7 @@ theorem QQ_int (G₁ : GlW ℚ_[p] U n) (G₂ : GlW ℚ_[p] V n) (S : Finset (Fi
     have hI := invariant_integral_holds p (U →ₗ[ℚ_[p]] V) (Fin n) (homAct G₁.E G₂.E) hrel _ hZH hDH l (List.finRange n)
       (List.nodup_finRange n) _ hp
     rw [List.length_finRange] at hI
-    have hI' : ∀ x ∈ L, (((p : ℚ_[p]) ^ (n.choose 2 * Nat.log p (l + n - 1))) •
-        InvOp (homAct G₁.E G₂.E) l (List.finRange n) (pr0 G₁ G₂ S ((b.coord i).smulRight m))) x ∈ M := hI
-    exact hI' (b i) (hbL i)
+    exact hI (b i) (hbL i)
   rw [QQ_apply, smul_comm, Finset.smul_sum, Nat.cast_smul_eq_nsmul]
   exact AddSubgroup.nsmul_mem _ (AddSubgroup.sum_mem _ fun i _ => hterm i) _
 

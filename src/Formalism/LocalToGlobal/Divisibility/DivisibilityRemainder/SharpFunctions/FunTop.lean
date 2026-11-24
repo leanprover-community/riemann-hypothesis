@@ -1,11 +1,22 @@
 module
 
-public import Formalism.LocalToGlobal.TieTwRecOf
-public import Formalism.SharpRestriction.Divisibility.HookProducts.GaugeFormBoundOfUniformSize
-public import Formalism.SharpRestriction.Divisibility.SlopeExcess.HeightBoundOfComponentBounds
-public import Formalism.LocalToGlobal.GlobalTheory.PlacesP
-public import Formalism.LocalToGlobal.Divisibility.DivisibilityRemainder.SharpFunctions.MidExp
-public import Formalism.LocalToGlobal.Divisibility.DivisibilityRemainder.SharpFunctions.PointB
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Algebra.Order.Star.Real
+import Formalism.LocalRingCardinality.DataAmbForm
+import Formalism.LocalRingCardinality.SpanPowerMembership.NZTypeD
+public import Formalism.LocalToGlobal.ClassOfRecordOfChoice
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
+import Formalism.LocalToGlobal.HilbertRowConditions.IsHilbertCF
+import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
+import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+public import Formalism.LocalToGlobal.IndefiniteRealisationChoice
+import Formalism.LocalToGlobal.SiegelLatticeTheory.PtEquivApply
+import Formalism.MirabolicMackeyTheory.StatementT
+import Formalism.QuotientMetricDivisors.Statement
+import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
+import Formalism.LocalToGlobal.Divisibility.EigenvalueSumLeClosedOf
+import Formalism.LocalToGlobal.PtKOfReal
 
 @[expose] public section
 

@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.ConeDefs
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalInvariants
+public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology
 
 @[expose] public section
 

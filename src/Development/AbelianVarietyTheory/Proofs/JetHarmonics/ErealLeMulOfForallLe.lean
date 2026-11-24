@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
+public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
+public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
+import Formalism.DropLevelBounds.ThBounds
+import Formalism.IncomingBounds.IncomingBound
+import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
+import Formalism.LocalToGlobal.Divisibility.Numbers
 
 @[expose] public section
 
@@ -13,26 +58,7 @@ namespace GlobalTheory.GoodDepth
 
 theorem ramOverZ_ne_zero' {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) :
     ramOverZ la ≠ 0 := by
-  have hl := Formalism.L2.Pj.Crude.resCharOf_prime la
-  have hne0 : Ideal.span {((resCharOf la : ℕ) : ℤ)} ≠ ⊥ := by
-    rw [Ne, Ideal.span_singleton_eq_bot]
-    exact_mod_cast hl.ne_zero
-  have hmax : (Ideal.span {((resCharOf la : ℕ) : ℤ)}).IsMaximal :=
-    PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hl).irreducible
-  have hle : Ideal.span {((resCharOf la : ℕ) : ℤ)} ≤ la.asIdeal.under ℤ := by
-    rw [Ideal.span_le, Set.singleton_subset_iff]
-    show algebraMap ℤ (𝓞 K) ((resCharOf la : ℕ) : ℤ) ∈ la.asIdeal
-    rw [map_natCast]
-    exact Formalism.L2.Pj.Crude.crv_char_mem la
-  have hne : la.asIdeal.under ℤ ≠ ⊤ := by
-    intro h
-    apply la.isPrime.ne_top
-    rw [Ideal.eq_top_iff_one]
-    have h1 : (1 : ℤ) ∈ la.asIdeal.under ℤ := by rw [h]; trivial
-    change algebraMap ℤ (𝓞 K) 1 ∈ la.asIdeal at h1
-    rwa [map_one] at h1
-  have : la.asIdeal.LiesOver (Ideal.span {((resCharOf la : ℕ) : ℤ)}) := ⟨hmax.eq_of_le hne hle⟩
-  exact Ideal.IsDedekindDomain.ramificationIdx'_ne_zero_of_liesOver la.asIdeal hne0
+  apply Formalism.MainNotions.ModuliIntegralCharts.H1.H1algLink.ramOverZ_ne_zero
 
 theorem ereal_le_mul_of_forall_le {x : EReal} {e B : ℝ} (he : 0 < e)
     (h : ∀ ν : ℝ, ((e * ν : ℝ) : EReal) ≤ x → ν ≤ B) : x ≤ ((e * B : ℝ) : EReal) := by

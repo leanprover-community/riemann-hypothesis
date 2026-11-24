@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.EqSmulHighestWeightOfIsWeight
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.UniqueU
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.RootSumApply
 
 @[expose] public section

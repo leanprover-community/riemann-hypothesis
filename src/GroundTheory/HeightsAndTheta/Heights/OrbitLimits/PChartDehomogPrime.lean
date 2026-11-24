@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDehomogPrime
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocDomain
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartHomogenise
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocDomain
 
 @[expose] public section
 
@@ -26,7 +25,7 @@ theorem ChartDehomogPrime.proof : ChartDehomogPrime.Statement := by
   let φ : MvPolynomial (Fin n) F →ₐ[F] A :=
     (IsScalarTower.toAlgHom F (MvPolynomial (Fin n) F ⧸ W) A).comp (Ideal.Quotient.mkₐ F W)
   have hφ : ∀ g, aeval (fun m => φ (X m)) g = φ g := fun g => by
-    rw [← comp_aeval_apply]; simp
+    exact (DFunLike.congr_fun (MvPolynomial.aeval_unique φ) g).symm
   let ψ : MvPolynomial (Fin n) F →ₐ[F] A := aeval fun m => v * φ (X m)
   have hhom : ∀ {g : MvPolynomial (Fin n) F} {k : ℕ}, g.IsHomogeneous k → ψ g = v ^ k * φ g :=
     fun hg => by rw [← hφ]; exact ChartLocDomain.aeval_mul_of_isHomogeneous hg _ _
@@ -38,8 +37,8 @@ theorem ChartDehomogPrime.proof : ChartDehomogPrime.Statement := by
     rw [this, mul_comm, IsLocalization.Away.mul_invSelf, sub_self]
   have hle : W ⊔ Ideal.span {linForm t - 1} ≤ RingHom.ker ψ := by
     refine sup_le (fun g hg => ?_) hspan
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [RingHom.mem_ker, ← sum_homogeneousComponent g, map_sum]
+
+    rw [RingHom.mem_ker, ← sum_homogeneousComponent g, map_sum]
     refine Finset.sum_eq_zero fun k _ => ?_
     rw [hhom (homogeneousComponent_isHomogeneous k g)]
     have : φ (homogeneousComponent k g) = 0 := by

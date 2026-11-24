@@ -1,8 +1,44 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.GlOperatorsFormRepresentation
-public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.SaturatedLowerSetSpanOfLowerSetTypesSpan
-public import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
+public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.LowerSetTypesSpan
+public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.FormalSeriesConditionsB1ToB4
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,9 +61,9 @@ theorem span_inter_eq_span_image {O Kf : Type} [CommRing O] [Field Kf] [Algebra 
   have hmaplc : ∀ c : X →₀ O, MvPolynomial.map (algebraMap O Kf) (Finsupp.linearCombination O bO c) =
       Finsupp.linearCombination Kf bK (c.mapRange (algebraMap O Kf) (map_zero _)) := by
     intro c
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finsupp.linearCombination_apply, Finsupp.linearCombination_apply,
-      Finsupp.sum_mapRange_index (by intro i; exact zero_smul _ _), Finsupp.sum, Finsupp.sum, map_sum]
+
+    rw [Finsupp.linearCombination_apply, Finsupp.linearCombination_apply,
+    Finsupp.sum_mapRange_index (by intro i; exact zero_smul _ _), Finsupp.sum, Finsupp.sum, map_sum]
     refine Finset.sum_congr rfl fun x _ => ?_
     rw [MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, hmap, ← MvPolynomial.smul_eq_C_mul]
   ext G
@@ -134,8 +170,8 @@ def externalProductJointData : JointData F (MvPolynomial (Fin N × Fin (r + K)) 
     | .inl _ => Dominant
     | .inr _ => Dominant
   le_refl := fun s => match s with
-    | .inl _ => fun a => dominance_refl a
-    | .inr _ => fun a => dominance_refl a
+    | .inl _ => fun a => _root_.Formalism.MainNotions.LemmaBAlt.domLE_refl a
+    | .inr _ => fun a => _root_.Formalism.MainNotions.LemmaBAlt.domLE_refl a
   le_trans := fun s => match s with
     | .inl _ => fun _ _ _ h1 h2 => dominance_trans h1 h2
     | .inr _ => fun _ _ _ h1 h2 => dominance_trans h1 h2

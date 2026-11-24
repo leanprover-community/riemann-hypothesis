@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalQuotCard
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PSubringPrimeMaximal
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.CardLength
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.KrullDimQuotientEqOneIffEqBot
+public import Mathlib.RingTheory.Ideal.Height
 
 @[expose] public section
 

@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftNefBig
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefPlusAmpleDegree
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PKodairaSection
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOfSemipos
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPerturbSemipos
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ZcombIsConjInvariantH
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

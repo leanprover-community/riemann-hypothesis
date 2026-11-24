@@ -1,13 +1,70 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasLabelOfIsCuspOf
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SeriesIdempotentMulOfMapsToParabolicInduction
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelExistsUniqueGLn
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.DetCharacterMemPrincipalCongruenceFixedVectors
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemChainVecsDet
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntertwinerUnipotentInvariant
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DepthZeroSupercuspidalCuspidalModule
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValuationUnitsMapEqOne
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUpperMulInc
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasLabelOfIsCuspOf
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasSupportOfIsSubquotientProdIrr
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SeriesIdempotentMulOfMapsToParabolicInduction
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValuationUnitsMapEqOne
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LabelEqOfSuppAdds
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharInOfIsCharLab
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CentralIdempotentOfIrrCharacterOrthogonalCentral
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCuspidalListHarishChandraPairingNeZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteIrrCharactersAndFinsumCentralIdempotentsEq
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesCentralIdempotentLaws
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelMulOfConstituent
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemPrincipalCongruenceFixedVectorsIff
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParIndJacPlacing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -26,7 +83,7 @@ def AllLab (L : LabelDatum g) : Prop := ∀ (d : ℕ) (χ : Gn g d → ℂ), IsC
 
 theorem label_exists (L : LabelDatum g) (hA : AllLab L) {n : ℕ} (χ : Gn g n → ℂ)
     (hχ : IsIrr χ) : ∃ f, HasLabel L χ f := by
-  obtain ⟨C, hC, hd, hi⟩ := GlobalTheory.T.exists_cuspidal_list_harishChandra_pairing_ne_zero g n χ hχ
+  obtain ⟨C, hC, hd, hi⟩ := _root_.GlobalTheory.GLq.SuppCusp.exists_cusp_list g n χ hχ
   have hs : (C.map fun c => (Label.lab L c, c)).map Prod.snd = C := by
     rw [List.map_map]; exact List.map_id' C
   refine ⟨_, C.map fun c => (Label.lab L c, c), ?_, ?_, rfl, ?_⟩
@@ -52,8 +109,8 @@ theorem eSerC_laws (L : LabelDatum g) (hg : 5 ≤ g) (hA : AllLab L) (n : ℕ) :
     obtain ⟨f, hf⟩ := label_exists L hA χ hχ
     exact ⟨f, hf, fun f' hf' => Label.label_unique L hg χ hχ f' f hf' hf⟩
   have hmon := label_mon L (n := n)
-  obtain ⟨hfin, hsum⟩ := GlobalTheory.T.finite_irrCharacters_and_finsum_centralIdempotents_eq_one (Gn g n)
-  have horth := GlobalTheory.T.centralIdempotentOfIrrCharacter_orthogonal_central (Gn g n)
+  obtain ⟨hfin, hsum⟩ := _root_.GlobalTheory.GLq.irr_finite_and_finsum_zOf_eq_one (Gn g n)
+  have horth := _root_.GlobalTheory.GLq.ZOrth.zorth (Gn g n)
   have hmem : ∀ f χ, χ ∈ hfin.toFinset.filter (fun χ => HasLabel L χ f) ↔ IsIrr χ ∧ HasLabel L χ f := by
     intro f χ; simp
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
@@ -120,7 +177,7 @@ theorem ser_vanish (L : LabelDatum g) (h5 : 5 ≤ g) {k l n : ℕ} (σ : Fin k �
   refine irr_vanish σ χ α β hχ hα hβ ?_
   by_contra hne
   exact hf (Label.label_unique L h5 χ hχ _ _ hχ'
-    (GlobalTheory.T.harishChandraSeriesLabel_mul_of_constituent g L k l n χ α β f₁ f₂ hn hχ hα hβ hα' hβ' hne))
+    (_root_.GlobalTheory.GLq.LabelMul.hasLabel_mul g L k l n χ α β f₁ f₂ hn hχ hα hβ hα' hβ' hne))
 
 theorem ser_vanish' (L : LabelDatum g) (h5 : 5 ≤ g) (hA : AllLab L) {k l n : ℕ} (σ : Fin k ⊕ Fin l ≃ Fin n)
     (f f₁ f₂ : (ZMod g)[X]) (hf : f ≠ f₁ * f₂) :
@@ -161,8 +218,8 @@ def sysOf (L : LabelDatum g) (h5 : 5 ≤ g) (hA : AllLab L) : Sys g where
       have := congrArg (fun z => ρ.asAlgebraHom z v) hv
       simpa only [map_mul, Module.End.mul_apply, hN, hA', hB, map_zero, LinearMap.zero_apply] using this
     have e : v = ∑ F ∈ S, ρ.asAlgebraHom (eSerC L (a + b) F) v := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← LinearMap.sum_apply, ← map_sum, hS, map_one, Module.End.one_apply]
+
+      rw [← LinearMap.sum_apply, ← map_sum, hS, map_one, Module.End.one_apply]
     by_cases hm : f * f' ∈ S
     · rw [Finset.sum_eq_single_of_mem _ hm fun F _ hF => hz F hF] at e; exact e.symm
     · rw [Finset.sum_eq_zero fun F hF => hz F (by rintro rfl; exact hm hF)] at e; rw [e]; simp
@@ -182,12 +239,12 @@ theorem isCuspOf_of_series (L : LabelDatum g) (h5 : 5 ≤ g) (hA : AllLab L) {d 
 
 theorem eSerC_mul_zOf (L : LabelDatum g) {n : ℕ} {χ : Gn g n → ℂ} {f : (ZMod g)[X]} (hχ : IsIrr χ)
     (hf : HasLabel L χ f) : eSerC L n f * zOf χ = zOf χ := by
-  have hfin := (GlobalTheory.T.finite_irrCharacters_and_finsum_centralIdempotents_eq_one (Gn g n)).1
+  have hfin := (_root_.GlobalTheory.GLq.irr_finite_and_finsum_zOf_eq_one (Gn g n)).1
   rw [eSerC_eq_sum L n hfin, Finset.sum_mul, Finset.sum_eq_single_of_mem χ (by simp [hχ, hf])]
-  · simpa using (GlobalTheory.T.centralIdempotentOfIrrCharacter_orthogonal_central _ χ χ hχ hχ).1
+  · simpa using (_root_.GlobalTheory.GLq.ZOrth.zorth _ χ χ hχ hχ).1
   · intro b hb hne
     have hb' : IsIrr b := by simpa using (Finset.mem_filter.1 hb).1
-    rw [(GlobalTheory.T.centralIdempotentOfIrrCharacter_orthogonal_central _ b χ hb' hχ).1, if_neg hne]
+    rw [(_root_.GlobalTheory.GLq.ZOrth.zorth _ b χ hb' hχ).1, if_neg hne]
 
 end Finite
 
@@ -276,10 +333,10 @@ theorem series_of_sep (S : Sys g) (a b : ℕ) (V : Type) [AddCommGroup V] [Modul
     intro m i u hu
     obtain ⟨R, hR⟩ := S.sum m
     have e : u = ∑ f ∈ R, (repK π).asAlgebraHom (mapDomainAlgHom ℂ ℂ i (S.e m f)) u := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← LinearMap.sum_apply, ← map_sum, ← map_sum, hR, map_one, map_one, Module.End.one_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum] at hu
+
+      rw [← LinearMap.sum_apply, ← map_sum, ← map_sum, hR, map_one, map_one, Module.End.one_apply]
+
+    rw [e, map_sum] at hu
     obtain ⟨f, -, hf⟩ := Finset.exists_ne_zero_of_sum_ne_zero hu
     exact ⟨f, hf⟩
   obtain ⟨f₂, hf₂⟩ := hsum (inB finSumFinEquiv) _ hw0
@@ -358,8 +415,8 @@ theorem actK_map {n : ℕ} {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCom
     {π : Representation ℂ (GL (Fin n) ℚ_[g]) V} {π' : Representation ℂ (GL (Fin n) ℚ_[g]) V'} (T : V →ₗ[ℂ] V')
     (hT : ∀ x v, T (π x v) = π' x (T v)) (a : MonoidAlgebra ℂ (Gn g n)) (v : V) :
     T (actK π a v) = actK π' a (T v) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [actK, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, hT]
+
+  simp only [actK, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, hT]
 
 
 open GlobalTheory.SmGL GlobalTheory.PRep in

@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Imports
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

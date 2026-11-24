@@ -1,7 +1,49 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
-public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjInertiaTameCharOtherPlace
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -38,9 +80,9 @@ theorem heckePol_res (D : D7) (a : D.nd.Loc) (x x' : D.nd.X a) (w : PlE D.host) 
     (heckePol D.nd a x w).map (IsLocalRing.residue (D.nd.O a)) =
       (heckePol D.nd a x' w).map (IsLocalRing.residue (D.nd.O a)) := by
   unfold heckePol
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum,
-    Polynomial.map_mul, Polynomial.map_C, map_mul]
+
+  simp only [Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum,
+  Polynomial.map_mul, Polynomial.map_C, map_mul]
   congr 1
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [res_T_indep D a (D.nd.hT a w k) x x']
@@ -127,8 +169,8 @@ theorem span_descent {k L : Type} [Field k] [Field L] (φ : k →+* L) {n : ℕ}
   have hfc : ∀ M : Matrix (Fin n) (Fin n) k, f M = ∑ i, ∑ j, M i j * c i j := by
     intro M
     conv_lhs => rw [Matrix.matrix_eq_sum_single M]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum]
+
+    simp only [map_sum]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     have : Matrix.single i j (M i j) = M i j • Matrix.single i j (1 : k) := by
       rw [Matrix.smul_single, smul_eq_mul, mul_one]
@@ -146,8 +188,8 @@ theorem span_descent {k L : Type} [Field k] [Field L] (φ : k →+* L) {n : ℕ}
     show F ((S i).map φ) = 0
     rw [hF]
     have := congrArg φ h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_zero] at this
+
+    simp only [map_sum, map_mul, map_zero] at this
     rw [← this]
     refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
     rw [Matrix.map_apply, mul_comm]
@@ -164,11 +206,11 @@ theorem span_descent {k L : Type} [Field k] [Field L] (φ : k →+* L) {n : ℕ}
       rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
       · simp
       · intro q _ hq
-        simp [Matrix.single_apply, Ne.symm hq]
+        simp [Ne.symm hq]
       · simp
       · intro p _ hp
         refine Finset.sum_eq_zero fun q _ => ?_
-        simp [Matrix.single_apply, Ne.symm hp]
+        simp [Ne.symm hp]
       · simp
     rw [h2] at this
     exact (map_eq_zero_iff φ φ.injective).mp this.symm
@@ -177,31 +219,7 @@ theorem span_descent {k L : Type} [Field k] [Field L] (φ : k →+* L) {n : ℕ}
 theorem conj_mem_Ine_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     (A : ValuationSubring Ω) (τ σ : G F Ω) (hσ : σ ∈ Ine (F := F) A) :
     τ * σ * τ⁻¹ ∈ Ine (F := F) (τ • A) := by
-  have hmem : ∀ x : Ω, x ∈ τ • A ↔ (τ⁻¹ : G F Ω) x ∈ A := by
-    intro x
-    rw [← ValuationSubring.smul_mem_pointwise_smul_iff (g := τ⁻¹), inv_smul_smul]
-    rfl
-  have hlt : ∀ y : Ω, (τ • A).valuation y < 1 ↔ A.valuation ((τ⁻¹ : G F Ω) y) < 1 := by
-    intro y
-    rw [valuation_lt_one_iff', valuation_lt_one_iff', hmem, hmem, map_inv₀,
-      map_eq_zero_iff _ (τ⁻¹ : G F Ω).injective]
-  refine ⟨?_, fun x hx => ?_⟩
-  · show (τ * σ * τ⁻¹) • (τ • A) = τ • A
-    rw [mul_smul, mul_smul, inv_smul_smul]
-    congr 1
-    exact hσ.1
-  · rw [hlt]
-    have hx' : A.valuation ((τ⁻¹ : G F Ω) x) ≤ 1 := by
-      rw [A.valuation_le_one_iff, ← hmem]
-      exact ((τ • A).valuation_le_one_iff x).mp hx
-    have e : (τ⁻¹ : G F Ω) ((τ * σ * τ⁻¹) x - x) = σ ((τ⁻¹ : G F Ω) x) - (τ⁻¹ : G F Ω) x := by
-      rw [map_sub]
-      congr 1
-      show (τ⁻¹ * (τ * σ * τ⁻¹)) x = _
-      rw [← mul_assoc, ← mul_assoc, inv_mul_cancel, one_mul]
-      rfl
-    rw [e]
-    exact hσ.2 _ hx'
+  apply GlobalTheory.TameMove.conj_mem_Ine_smul <;> assumption
 
 theorem placesOver_disj (E : Type) [Field E] [NumberField E] {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
     (hpq : p ≠ q) (v : HeightOneSpectrum (𝓞 E)) (h1 : v ∈ placesOver E p) : v ∉ placesOver E q := by

@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Analysis.Complex.AbsMax
+public import Mathlib.Analysis.Complex.Periodic
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Analysis.Calculus.DSlope
+public import Mathlib.Analysis.Calculus.DiffContOnCl
 
 @[expose] public section
 

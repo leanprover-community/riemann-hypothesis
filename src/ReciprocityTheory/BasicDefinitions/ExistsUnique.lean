@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+public import Mathlib.RingTheory.AdicCompletion.Basic
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+public import Mathlib.Topology.Defs.Basic
 
 @[expose] public section
 

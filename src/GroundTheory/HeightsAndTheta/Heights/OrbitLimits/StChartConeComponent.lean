@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartSection
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -25,7 +23,7 @@ def chartSubst {m : ℕ} (σ : Fin m ≃ ((k : K) → ι k)) (i : (k : K) → ι
 
 theorem chartSubst_X {m : ℕ} (σ : Fin m ≃ ((k : K) → ι k)) (i : (k : K) → ι k) (p : Σ k, ι k) :
     chartSubst σ i (X p) = X (σ.symm (Function.update i p.1 p.2)) := by
-  simp [chartSubst]
+  exact MvPolynomial.bind₁_X_right _ _
 
 theorem chartSection_eq_chartSubst [Fintype K] [∀ k, Fintype (ι k)] {m : ℕ} (σ : Fin m ≃ ((k : K) → ι k))
     (i : (k : K) → ι k) (s : MRing ι) :

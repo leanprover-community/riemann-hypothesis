@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalLength
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLoc
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -52,7 +53,7 @@ end Fibre
 
 
 open scoped Classical in
-set_option synthInstance.maxHeartbeats 100000 in
+
 open Classical in
 set_option synthInstance.maxHeartbeats 400000 in
 def SemilocalLengthSum.Statement : Prop :=

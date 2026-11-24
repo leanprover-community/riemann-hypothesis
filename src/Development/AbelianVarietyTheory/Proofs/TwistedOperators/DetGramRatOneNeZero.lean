@@ -1,8 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SelfReciprocalLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsInfiniteDecomp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -226,9 +270,9 @@ theorem isometric_iff (G : Matrix (Fin r) (Fin r) E) (x : k ⊗[(maximalRealSubf
       refine ⟨ψ y, ?_⟩
       conv_rhs => rw [h2 y]
       funext a
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, g1, Matrix.mulVec, dotProduct, Matrix.of_apply, Finset.sum_apply, Pi.smul_apply,
-        smul_eq_mul]
+
+      simp only [map_sum, g1, Matrix.mulVec, dotProduct, Matrix.of_apply, Finset.sum_apply, Pi.smul_apply,
+      smul_eq_mul]
       exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
     · ext i j
       simp only [gram, Matrix.of_apply, ← g2, gramForm, Matrix.mul_apply, Matrix.transpose_apply,
@@ -243,14 +287,14 @@ theorem isometric_iff (G : Matrix (Fin r) (Fin r) E) (x : k ⊗[(maximalRealSubf
     · change gramForm k G (Q *ᵥ ψ y) (Q *ᵥ ψ y') = _
       have e : (fun b => ccBase E k ((Q *ᵥ ψ y') b)) = Q.map (ccBase E k) *ᵥ fun b => ccBase E k (ψ y' b) := by
         funext b
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
+
+        simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
       rw [gramForm_eq, e, ← Matrix.vecMul_transpose, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec,
         Matrix.mulVec_mulVec, ← h]
       conv_rhs => rw [h2 y, h2 y']
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [traceForm, map_sum, map_mul, involBase_inclBase, Finset.mul_sum, Finset.sum_mul,
-        dotProduct, Matrix.mulVec, gram, Matrix.of_apply]
+
+      simp only [traceForm, map_sum, map_mul, involBase_inclBase, Finset.mul_sum, Finset.sum_mul,
+      dotProduct, Matrix.mulVec, gram, Matrix.of_apply]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
       rw [mul_comm _ (ccBase E k _), ← traceBase_inclBase_mul, ← traceBase_inclBase_mul]
@@ -273,12 +317,12 @@ theorem det_gram (x : k ⊗[(maximalRealSubfield E)] plus P) :
     ext i j
     have e : inclPlus P k x * 1 ⊗ₜ B i = ∑ l, c.repr (x * c i) l • ((1 : k) ⊗ₜ[(maximalRealSubfield E)] B l) := by
       have hc : ∀ l, inclPlus P k (c l) = 1 ⊗ₜ B l := fun l => by simp [c, inclPlus, hB]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [← hc, ← map_smul, ← map_sum, c.sum_repr, map_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [gram, traceForm, Matrix.of_apply, e, Matrix.mul_apply, Matrix.transpose_apply,
-      RingHom.mapMatrix_apply, Matrix.map_apply, Algebra.leftMulMatrix_eq_repr_mul, Finset.sum_mul,
-      map_sum, smul_mul_assoc, map_smul, map_one, one_mul, ← Algebra.smul_def]
+
+      simp only [← hc, ← map_smul, ← map_sum, c.sum_repr, map_mul]
+
+    simp only [gram, traceForm, Matrix.of_apply, e, Matrix.mul_apply, Matrix.transpose_apply,
+    RingHom.mapMatrix_apply, Matrix.map_apply, Algebra.leftMulMatrix_eq_repr_mul, Finset.sum_mul,
+    map_sum, smul_mul_assoc, map_smul, map_one, one_mul, ← Algebra.smul_def]
   rw [h, Matrix.det_mul, Matrix.det_transpose, ← RingHom.map_det, ← Algebra.norm_eq_matrix_det,
     Algebra.TensorProduct.one_def, gram_tmul]
   congr 1

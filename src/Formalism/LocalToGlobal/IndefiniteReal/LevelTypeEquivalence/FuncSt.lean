@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.StdCharExists
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ThetaSquareIntegrable
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 

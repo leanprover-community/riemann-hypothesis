@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDiscrAdjoin
+public import Mathlib.RingTheory.DedekindDomain.Different
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
+public import Mathlib.LinearAlgebra.BilinearForm.DualLattice
 
 @[expose] public section
 

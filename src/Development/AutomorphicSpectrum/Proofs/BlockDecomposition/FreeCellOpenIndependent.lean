@@ -1,10 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FreeCell
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LinearlyIndependentFramesOpenStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
+public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitsOpenEmbeddingLocalTensor
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LinearlyIndependentFramesOpen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCovolOne
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TrMMemFramesEIff
 
 @[expose] public section
 
@@ -100,8 +147,8 @@ theorem yPart_linearIndependent (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fi
   have htail : tailH w = 0 := funext hwr
   have hx0 : ∀ y, hR R σ (hypOne J) (X 0) y = hLin R σ (hypOne J) (X 0) y := fun _ => rfl
   have hzero : hR R σ (hypOne J) (X 0) w = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hx0, hw, map_sub, map_sum, map_smul]
+
+    rw [hx0, hw, map_sub, map_sum, map_smul]
     have h1 : ∀ j : Fin n, hLin R σ (hypOne J) (X 0) (g j • X j.succ) = 0 := fun j => by
       rw [map_smul, ← hx0]
       have := congrFun (congrFun hg 0) j.succ
@@ -258,11 +305,11 @@ theorem freeCell_props : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
   intro F E _ _ _ _ _ σ hCM M J _ R _ _ _ _ _ hR n
   obtain ⟨iTR, iLC, iSC, iT2, -⟩ := id hR
   haveI := iTR; haveI := iLC; haveI := iSC; haveI := iT2
-  obtain ⟨kTR, kLC, kSC, kT2, ksig, -, -, -, -, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hCM R
+  obtain ⟨kTR, kLC, kSC, kT2, ksig, -, -, -, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hCM R
   haveI := kTR; haveI := kLC; haveI := kSC; haveI := kT2
   haveI : BorelSpace (R ⊗[F] E) := ⟨rfl⟩
   have hU := GlobalTheory.CompanionTheory.SW.KUnits.units_val_isOpenEmbedding F E σ hCM R hR
-  refine ⟨isOpen_freeCell hU (GlobalTheory.T.linearly_independent_frames_open F E σ hCM R hR n M),
+  refine ⟨isOpen_freeCell hU (_root_.GlobalTheory.CompanionTheory.WeilSiegel.FreeOpen.isOpen_free F E σ hCM R hR n M),
     fun X hX => linearIndependent_of_yPart X hX.1 hX.2,
     fun X hX hg hu => ⟨hu, yPart_linearIndependent R σ J X hX hg hu⟩,
     fun x a s Y hu hY => ?_,

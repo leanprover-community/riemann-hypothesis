@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 
 @[expose] public section
 

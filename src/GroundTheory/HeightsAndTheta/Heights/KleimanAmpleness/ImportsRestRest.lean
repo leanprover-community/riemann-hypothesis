@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerTail
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SecsTwistSysPtX
 
 @[expose] public section
 

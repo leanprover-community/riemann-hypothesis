@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 @[expose] public section
 

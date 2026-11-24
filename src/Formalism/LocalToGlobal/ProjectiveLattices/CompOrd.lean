@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompData
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

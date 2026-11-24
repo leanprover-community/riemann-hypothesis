@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderInfRes
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderScalars
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.UnramifiedRes
+import GroundTheory.LocalFields.FiniteExtension
+import GroundTheory.LocalFields.IntermediateField
 public import GroundTheory.LocalFields.UnramifiedExistence
-public import GroundTheory.LocalFields.FiniteExtension
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderBound
+import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderCyclic
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

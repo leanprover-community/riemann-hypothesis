@@ -1,6 +1,55 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.StepOne
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+public import Mathlib.Analysis.Calculus.Deriv.Star
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.Deriv.Inv
 
 @[expose] public section
 
@@ -38,8 +87,7 @@ theorem hasDerivAt_eval {σ : Type*} [Fintype σ] (v : ℝ → σ → ℂ) (v' :
         fun a b c d h1 h2 => by rw [h1, h2, add_comm]]
       · rw [Finset.sum_mul]
         exact Finset.sum_congr rfl fun j _ => by ring
-      · simp [Pi.single_apply, apply_ite (eval (v 0)), mul_ite, ite_mul, Finset.sum_ite_eq,
-          Finset.sum_ite_eq']
+      · simp [Pi.single_apply, apply_ite (eval (v 0)), mul_ite, ite_mul, Finset.sum_ite_eq]
 
 theorem crv_var {k r : ℕ} (X g : Mat k r) (i : Vr (2 * r + k + 1)) :
     HasDerivAt (fun t => vars (crv (false, X) g t) i) (eval (vars g) (lin X i)) 0 := by
@@ -51,12 +99,12 @@ theorem crv_var {k r : ℕ} (X g : Mat k r) (i : Vr (2 * r + k + 1)) :
     simpa [dirv] using h2
   rcases i with ⟨a, b⟩ | ⟨a, b⟩
   · refine (hab a b).congr_deriv ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [lin, map_sum, map_mul, eval_C, eval_X, vars, Sum.elim_inl, Matrix.mul_apply]
+
+    simp only [lin, map_sum, map_mul, eval_C, eval_X, vars, Sum.elim_inl, Matrix.mul_apply]
     exact Finset.sum_congr rfl fun c _ => mul_comm _ _
   · refine (hab a b).star.congr_deriv ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [lin, map_sum, map_mul, eval_C, eval_X, vars, Sum.elim_inr, Matrix.mul_apply, star_sum, star_mul']
+
+    simp only [lin, map_sum, map_mul, eval_C, eval_X, vars, Sum.elim_inr, Matrix.mul_apply, star_sum, star_mul']
     exact Finset.sum_congr rfl fun c _ => mul_comm _ _
 
 theorem hasDerivAt_poly {k r : ℕ} (X g : Mat k r) (q : MvPolynomial (Vr (2 * r + k + 1)) ℂ) :
@@ -66,8 +114,8 @@ theorem hasDerivAt_poly {k r : ℕ} (X g : Mat k r) (q : MvPolynomial (Vr (2 * r
   have h0 : crv (false, X) g 0 = g := by simp [crv]
   rw [h0] at h
   convert h using 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dP, map_sum, map_mul]
+
+  simp only [dP, map_sum, map_mul]
 
 theorem eval_qD {k j ρ : ℕ} (g : Mat k (j + ρ)) : eval (vars g) (qD k j ρ) = DjU k j ρ g := by
   rw [qD, DjU, RingHom.map_det]

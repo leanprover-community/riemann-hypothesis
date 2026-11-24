@@ -1,14 +1,51 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.EmbeddingTypes
-public import Formalism.WachLatticeTwists.TorsionLengthCounts.RowCol
-public import Formalism.WachLatticeTwists.TorsionLengthCounts.SubmoduleLengthBoundStatement
 public import Formalism.WachLatticeTwists.Statement
-public import Formalism.CharacterColumnKernels.CharacterColumnKernelEqualityForm
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.CharacterColumnKernelsOfBlockChiCOfBlockChiOne
-public import Formalism.CharacterColumnKernels.Statement
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.SingleEqSmul
+public import Formalism.WachLatticeTwists.TorsionLengthCounts.SubmoduleLengthBoundStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.OrderOfVanishing.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -224,14 +261,6 @@ theorem subquot_of_quot {V V' : Type} [AddCommGroup V] [Module LL V] [AddCommGro
        exact ⟨u, hu, rfl⟩
      · intro g u hu
        simp only [LinearMap.comp_apply]
-       rw [hq g u hu, hfg])
-  | (refine ⟨m, xs, U, fun u => f (q u), hU, ?_, ?_⟩
-     · intro v'
-       obtain ⟨v, rfl⟩ := hf v'
-       obtain ⟨u, hu, rfl⟩ := hs v
-       exact ⟨u, hu, rfl⟩
-     · intro g u hu
-       show f (q _) = ρ' g (f (q u))
        rw [hq g u hu, hfg])
 
 theorem rowAt_of_lift {ι : Type} {k k2 : ℕ} (Ms : ι → G → Matrix (Fin k) (Fin k) LL)
@@ -469,7 +498,6 @@ theorem locDeg_conj {u : HeightOneSpectrum (𝓞 H.E)} (huw : IsConjPl H u w) :
     locDeg H.E w = locDeg H.E u := by
   first
   | exact ef_conj _ u w huw
-  | (unfold locDeg; exact ef_conj _ u w huw)
 
 end AtPlace
 
@@ -537,7 +565,6 @@ theorem sum_lenW_split (hdecl : RowsAreConj i dc) (e' : ℕ)
     unfold Br.lenCol
     first
     | exact lenCol_le e' _ _ _ _ _ (vdel_nonneg i) (hJ u hu)
-    | exact (0 : Nat)
   have hrow : ∀ v ∈ dc.row,
       Formalism.MainNotions.TruncatedSeriesCountingIdentities.lenW i ρ π dc (lenRowSplit i dc e' c0) (fun _ => e') v ≤
         rowNum e' c0 (backPl i dc v) := by
@@ -556,7 +583,6 @@ theorem sum_lenW_split (hdecl : RowsAreConj i dc) (e' : ℕ)
       2 * D.nd.vdel i + Br.h0W i u ρ π)
     (rowNum e' c0) (backPl i dc) hback hinj hcol hrow hnn)
     (le_of_eq (Finset.sum_congr rfl (fun u _ => ?_)))
-  beta_reduce
   unfold rowNum
   ring
 
@@ -689,9 +715,6 @@ theorem locC_self {k : ℕ} (M : GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i))
     locC (CoefExt.self i w hw) M = Br.loc D.nbr i w hw M := by
   first
   | rfl
-  | (ext g a b; rfl)
-  | (unfold locC; rfl)
-  | (unfold locC CoefExt.self; exact (0 : Nat))
 
 variable (C : CoefExt D i w hw)
 
@@ -728,7 +751,7 @@ theorem multW_eq (hπ : π ∈ D.nd.Z i) (hg0 : D.nd.l i ≠ D.host.g 0) (hg1 : 
 variable {ep : Bool}
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem jump_bound_of_admitted (hL : hypL i) (hD : hypDecl i dc ep) (hπ : π ∈ D.nd.Z i) (hG2 : admG2 i r ep)
     (hBl : ambBlock i r ρ π) (h56 : ColumnH0Vanishing i ρ π dc) (hBK : admBK i) (hTie : TruncatedSeriesCountingIdentities.LocalCoefficientCompatibility i)
     (hW : ambW i ρ π dc) (hFil : ambFil i r ρ π dc) (hCont : ambCont i r ρ π) :
@@ -759,7 +782,7 @@ theorem jump_bound_of_admitted (hL : hypL i) (hD : hypDecl i dc ep) (hπ : π �
   exact h
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem length_bound_of_admitted (e' : ℕ) (c0 : HeightOneSpectrum (𝓞 D.host.E) → ℕ) (hL : hypL i)
     (hD : hypDecl i dc ep) (hπ : π ∈ D.nd.Z i) (hG2 : admG2 i r ep) (hBl : ambBlock i r ρ π)
     (hBK : admBK i) (hTie : TruncatedSeriesCountingIdentities.LocalCoefficientCompatibility i) (hLift : LiftExponentDualPlaces i r dc e') (hH0 : H0ColumnLengthBound i ρ π dc c0)

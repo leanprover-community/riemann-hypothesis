@@ -1,6 +1,46 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.LineBasis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.PerCApply
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -51,7 +91,7 @@ private theorem form_ext {F : Type} [Field F] [NumberField F] [IsCMField F] {n :
       ext k
       by_cases hk : k = i
       · subst hk; simp
-      · simp [Pi.single_apply, hk]
+      · simp [hk]
     rw [e1, Matrix.mulVec_smul, Matrix.mulVec_single_one, single_one_dotProduct]
     simp [mul_comm]
   rwa [e M, e N] at this
@@ -82,8 +122,8 @@ private theorem form_core {F : Type} [Field F] [NumberField F] [IsCMField F] {n 
   have hform : ∀ u w, B u w = Algebra.trace ℚ F ((fun i => IsCMField.complexConj F (w i)) ⬝ᵥ (A *ᵥ u)) := by
     intro u w
     conv_lhs => rw [sum_single u, sum_single w]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, AddMonoidHom.finsetSum_apply, dotProduct, Matrix.mulVec, Finset.mul_sum, hterm]
+
+    simp only [map_sum, AddMonoidHom.finsetSum_apply, dotProduct, Matrix.mulVec, Finset.mul_sum, hterm]
   refine ⟨A, ?_, ?_, hform⟩
   · intro hdet
     obtain ⟨v, hv, hAv⟩ := Matrix.exists_mulVec_eq_zero_iff.2 hdet
@@ -191,8 +231,8 @@ theorem UpperTheory.Gal.W2.fForm_of :
     rw [← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, Matrix.vecMul_transpose]
     congr 1
     ext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+    simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
   rw [hcj, ← Matrix.mulVec_mulVec]
   have h1 := hform (σ (sh G c) *ᵥ u) w
   have h2 := hform u (σ c *ᵥ w)

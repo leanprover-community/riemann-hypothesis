@@ -1,13 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.Params
-public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
-public import Formalism.FrobeniusOrbits.DiscrMaximalRealCyclotomic
-public import Formalism.FrobeniusOrbits.HostOrbitsPlaces
-public import Formalism.FrobeniusOrbits.HostDiffSupport
 public import Formalism.FrobeniusOrbits.HostThickExists
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,9 +51,7 @@ open scoped Pointwise
 
 namespace Formalism.BasicNotions
 
-theorem hypOdd_of_hostHyp {q d : ℕ} (h : HostHyp q d) : HypOdd q d := by
-  obtain ⟨hq, hd, hq8, hd16, -⟩ := h
-  refine ⟨hq, hd, ?_, ?_, ?_⟩ <;> rintro rfl <;> omega
+alias hypOdd_of_hostHyp := _root_.Formalism.FrobeniusOrbits.HostHyp.toHypOdd
 
 noncomputable def iotaH (e : ℕ) (i : ZMod (2 ^ e)) : HGrp e := hcl e (u5 (e + 2)) ^ i.val
 
@@ -205,9 +238,7 @@ def HNeZero {R : Ranks} (H : Host R) (p : ℕ) : Prop :=
 theorem HNeZero.ne_one {R : Ranks} {H : Host R} {p : ℕ} (h : HNeZero H p) (P : Ideal (𝓞 H.E)) [P.IsPrime]
     [P.LiesOver (Ideal.span {(p : ℤ)})] (σ : H.E ≃ₐ[ℚ] H.E) (hσ : IsArithFrobAt ℤ σ P) : (H.galE σ).2 ≠ 1 := by
   intro h1
-  have := h P σ hσ
-  rw [h1, orderOf_one] at this
-  exact Nat.not_even_one this
+  exact Nat.not_even_one (by simpa [h1, orderOf_one] using h P σ hσ)
 
 def FactRd : Prop := ∀ (R : Ranks) (H : Host R),
   (2 : ℝ) ^ ((R.e : ℝ) + 1 - (2 : ℝ) ^ (-(R.e : ℝ))) * Real.sqrt H.d ≤ H.rdE ∧

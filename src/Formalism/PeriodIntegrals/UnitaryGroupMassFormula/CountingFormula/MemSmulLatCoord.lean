@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGS
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGSDvr
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LinQRawRange
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 
 @[expose] public section
 
@@ -24,7 +65,6 @@ def InP (ϖ : 𝒪[F]) (u : F) : Prop := ∃ o : 𝒪[F], u = (ϖ : F) * o
 theorem e_alg (e : E ≃ₐ[F] F × F) (c : F) : e (algebraMap F E c) = (c, c) := by
   first
   | (rw [e.commutes]; rfl)
-  | simp [e.commutes]
 
 theorem pi_smulF (e : E ≃ₐ[F] F × F) {n : ℕ} (π : V ≃+ (Fin n → F) × (Fin n → F))
     (hπ : ∀ (a : E) (x : V), π (a • x) = ((e a).1 • (π x).1, (e a).2 • (π x).2)) (c : F) (x : V) :
@@ -50,8 +90,6 @@ theorem mem_smulLat_iff' (H : Loc.HermSp M V) (Λ : Submodule M.L.O V) (c : E) (
       refine ⟨a • y, Λ.smul_mem a hy, ?_⟩
       first
       | exact smul_comm a c y
-      | exact (smul_comm c a y).symm
-      | (show ((a : E)) • c • y = c • ((a : E) • y); exact smul_comm _ _ _)
   · rintro ⟨y, hy, rfl⟩
     exact Submodule.subset_span ⟨y, hy, rfl⟩
 
@@ -89,16 +127,13 @@ theorem inP_sub_iff [IsDiscreteValuationRing 𝒪[F]] {ϖ : 𝒪[F]} (hϖ : Irre
   have e1 : resF F u = IsLocalRing.residue 𝒪[F] ⟨u, hu⟩ := by
     first
     | simp [resF, hu]
-    | (unfold resF; rw [dite_eq_left hu])
   have e2 : resF F w = IsLocalRing.residue 𝒪[F] ⟨w, hw⟩ := by
     first
     | simp [resF, hw]
-    | (unfold resF; rw [dite_eq_left hw])
   have hs : (u - w : F) = ((⟨u, hu⟩ - ⟨w, hw⟩ : 𝒪[F]) : F) := rfl
   have hm : IsLocalRing.maximalIdeal 𝒪[F] = Ideal.span {ϖ} := by
     first
     | exact hϖ.maximalIdeal_eq
-    | exact (IsDiscreteValuationRing.irreducible_iff_uniformizer _).1 hϖ
   rw [e1, e2, hs, key, ← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff, hm, Ideal.mem_span_singleton]
 
 theorem mk_eq_iff [IsDiscreteValuationRing 𝒪[F]] (e : E ≃ₐ[F] F × F) (H : Loc.HermSp M V)
@@ -124,14 +159,14 @@ theorem mem_span_irr_iff (e : E ≃ₐ[F] F × F)
   · rintro ⟨a, rfl⟩
     have ha := (hO a).1 a.2
     refine ⟨⟨⟨(e a).1, ha.1⟩, ?_⟩, ⟨⟨(e a).2, ha.2⟩, ?_⟩⟩ <;>
-      simp [Subring.smul_def, Submonoid.smul_def, Subalgebra.smul_def, map_mul, e_alg, mul_comm]
+      simp [Subring.smul_def, map_mul, mul_comm]
   · rintro ⟨⟨o1, h1⟩, ⟨o2, h2⟩⟩
     have hmem : e.symm ((o1 : F), (o2 : F)) ∈ M.L.O := by
       rw [hO, AlgEquiv.apply_symm_apply]
       exact ⟨o1.2, o2.2⟩
     refine ⟨⟨_, hmem⟩, ?_⟩
     apply e.injective
-    ext <;> simp [Subring.smul_def, Submonoid.smul_def, Subalgebra.smul_def, map_mul, e_alg, h1, h2, mul_comm]
+    ext <;> simp [Subring.smul_def, map_mul, h1, h2, mul_comm]
 
 theorem resF_bil {n : ℕ} (x y : Fin n → F) (hx : ∀ k, x k ∈ 𝒪[F]) (hy : ∀ k, y k ∈ 𝒪[F])
     (Ph : Matrix (Fin n) (Fin n) 𝒪[F]) :
@@ -141,21 +176,16 @@ theorem resF_bil {n : ℕ} (x y : Fin n → F) (hx : ∀ k, x k ∈ 𝒪[F]) (hy
     intro a ha
     first
     | simp [resF, ha]
-    | (unfold resF; rw [dite_eq_left ha])
   have hsum : (∑ k, ∑ l, x k * (Ph k l : F) * y l) =
       ((∑ k, ∑ l, (⟨x k, hx k⟩ : 𝒪[F]) * Ph k l * (⟨y l, hy l⟩ : 𝒪[F]) : 𝒪[F]) : F) := by
     first
     | (push_cast; rfl)
-    | (simp only [AddSubmonoidClass.coe_finsetSum, MulMemClass.coe_mul]; rfl)
-    | (simp only [AddSubmonoidClass.coe_finsetSum, MulMemClass.coe_mul])
-    | (push_cast; simp)
-    | simp
   have hxk : ∀ k, resF F (x k) = IsLocalRing.residue 𝒪[F] ⟨x k, hx k⟩ := fun k => hc _ (hx k)
   have hyl : ∀ l, resF F (y l) = IsLocalRing.residue 𝒪[F] ⟨y l, hy l⟩ := fun l => hc _ (hy l)
   have hc' : ∀ z : 𝒪[F], resF F (z : F) = IsLocalRing.residue 𝒪[F] z := fun z => hc z z.2
   rw [hsum, hc']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, hxk, hyl]
+
+  simp only [map_sum, map_mul, hxk, hyl]
 
 theorem bil_mem {n : ℕ} (x y : Fin n → F) (hx : ∀ k, x k ∈ 𝒪[F]) (hy : ∀ k, y k ∈ 𝒪[F])
     (Ph : Matrix (Fin n) (Fin n) 𝒪[F]) : (∑ k, ∑ l, x k * (Ph k l : F) * y l) ∈ 𝒪[F] := by

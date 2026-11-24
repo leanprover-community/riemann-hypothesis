@@ -1,6 +1,61 @@
 module
 
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementG
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 
@@ -23,7 +78,7 @@ private theorem exists_conjTranspose_mul_self {n : Type} [Fintype n] [DecidableE
   refine ⟨Matrix.diagonal d * star U, ?_⟩
   have h1 : (Matrix.diagonal d * star U)ᴴ * (Matrix.diagonal d * star U) =
       U * Matrix.diagonal (fun i => star (d i) * d i) * star U := by
-    simp only [Matrix.conjTranspose_mul, ← Matrix.star_eq_conjTranspose, star_mul, star_star, Matrix.mul_assoc]
+    simp only [← Matrix.star_eq_conjTranspose, star_mul, star_star, Matrix.mul_assoc]
     rw [← Matrix.mul_assoc (star (Matrix.diagonal d)), Matrix.star_eq_conjTranspose (Matrix.diagonal d),
       Matrix.diagonal_conjTranspose, Matrix.diagonal_mul_diagonal]
     rfl
@@ -35,7 +90,7 @@ private theorem exists_conjTranspose_mul_self {n : Type} [Fintype n] [DecidableE
 
 private theorem eval_bind₁' {σ τ : Type} (f : σ → MvPolynomial τ ℂ) (x : τ → ℂ) (P : MvPolynomial σ ℂ) :
     MvPolynomial.eval x (MvPolynomial.bind₁ f P) = MvPolynomial.eval (fun v => MvPolynomial.eval x (f v)) P := by
-  induction P using MvPolynomial.induction_on <;> simp_all
+  exact MvPolynomial.eval₂Hom_bind₁ (RingHom.id ℂ) x f P
 
 private theorem hq_eq {n : ℕ} (S : Matrix (Fin n) (Fin n) ℂ) (u : Fin n → ℂ) :
     ReciprocityTheory.MultiplicativeHeights.hq (Sᴴ * S) u = ∑ k, ‖(S *ᵥ u) k‖ ^ 2 := by
@@ -44,7 +99,7 @@ private theorem hq_eq {n : ℕ} (S : Matrix (Fin n) (Fin n) ℂ) (u : Fin n → 
   simp only [dotProduct, Pi.star_apply, Complex.re_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [← Complex.normSq_eq_norm_sq]
-  simp [Complex.normSq_apply, Complex.mul_re, Complex.star_def]
+  simp [Complex.normSq_apply, Complex.mul_re]
 
 private def colE {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (i : Fin n) : EuclideanSpace ℂ (Fin n) :=
   WithLp.toLp 2 (fun k => M k i)
@@ -57,7 +112,6 @@ private theorem colNormSq_eq {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (i : Fin
 private theorem colE_add {n : ℕ} (M N : Matrix (Fin n) (Fin n) ℂ) (i : Fin n) : colE (M + N) i = colE M i + colE N i := by
   first
   | (ext k; simp [colE])
-  | (simp only [colE, ← WithLp.toLp_add]; rfl)
 
 private theorem norm_colE_smul_one {n : ℕ} (t : ℂ) (i : Fin n) : ‖colE (t • (1 : Matrix (Fin n) (Fin n) ℂ)) i‖ = ‖t‖ := by
   rw [← Real.sqrt_sq (norm_nonneg (colE _ i)), ← colNormSq_eq]
@@ -360,8 +414,8 @@ theorem subst_homogeneous : SubstHomog := by
       (∑ j, MvPolynomial.C (U v.1 j v.2.2) * MvPolynomial.X (⟨v.1, (v.2.1, j)⟩ : FrVar m)) =
       2 * MvPolynomial.eval x (∑ j, MvPolynomial.C (U v.1 j v.2.2) * MvPolynomial.X (⟨v.1, (v.2.1, j)⟩ : FrVar m)) := by
     intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X, Finset.mul_sum]
+
+    simp only [map_sum, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X, Finset.mul_sum]
     exact Finset.sum_congr rfl fun j _ => by ring
   simp only [hlin]
   exact eval_scale_of_degree P N hP 2 _

@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedKfin
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilUnr
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 
 @[expose] public section
 

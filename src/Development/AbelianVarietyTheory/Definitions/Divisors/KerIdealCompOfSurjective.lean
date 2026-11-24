@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.MemPrimitiveTensorsIffIsPrimitiveElem
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FinrankOfIsStandardSmoothOfRelativeDimension
+public import Mathlib.NumberTheory.Padics.RingHoms
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -241,14 +283,14 @@ theorem cotMap_mul [IsCocomm R C] (f g : WithConv (C →ₐc[R] A)) :
       (Coalgebra.sum_counit_smul r)
     have h2 : ∑ i ∈ r.index, counit (R := R) (r.right i) • r.left i = c := by
       have := congrArg (TensorProduct.rid R C) (Coalgebra.sum_tmul_counit_eq r)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa only [map_sum, TensorProduct.rid_tmul, one_smul] using this
+
+      simpa only [map_sum, TensorProduct.rid_tmul, one_smul] using this
     have h3 := congrArg (fun x => dUnit (R := R) (A := A) (f.ofConv x)) h2
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul] at h1 h3
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.add_apply, cotMap_d, cotMap_d, cotMap_d, h, ← h1, ← h3, add_comm,
-      ← Finset.sum_add_distrib, dUnit, map_sum]
+
+    simp only [map_sum, map_smul] at h1 h3
+
+    rw [LinearMap.add_apply, cotMap_d, cotMap_d, cotMap_d, h, ← h1, ← h3, add_comm,
+    ← Finset.sum_add_distrib, dUnit, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [AugCot.d_mul]
     simp
@@ -288,8 +330,8 @@ def dualMonoidHom :
       (CartierDual.transpose f.ofConv.toLinearMap) (CartierDual.transpose g.ofConv.toLinearMap)
       (comul φ))) c
     rw [CartierDual.mul'_apply, CartierDual.pair_map_transpose, h, ← r.eq]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, TensorProduct.map_tmul, CartierDual.pair_comul_tmul]
+
+    simp only [map_sum, TensorProduct.map_tmul, CartierDual.pair_comul_tmul]
     rfl
 
 

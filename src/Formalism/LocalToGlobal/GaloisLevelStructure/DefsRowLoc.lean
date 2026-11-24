@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAutLoc
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsFinTyp
+public import Formalism.AlgebraicWeights.InertDatumExists
+public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 
 @[expose] public section
 

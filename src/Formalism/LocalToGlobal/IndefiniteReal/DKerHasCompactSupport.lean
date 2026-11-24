@@ -1,6 +1,15 @@
 module
 
+public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.UnitaryModelOfMultiplicityGardingDensity
 public import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
+import Formalism.LocalToGlobal.IndefiniteReal.SmExpSmulContDiff
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BesselDerivatives.ExpSup
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.Garding
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -266,7 +275,7 @@ theorem gvT_smooth (M : DSModel V S) (τ : D.what₂.Tau) {Φ : Matrix (Fin V.ra
     SmoothVec (lieAt V τ) (M.rep τ) (gvT M τ Φ w) := by
   have : CompleteSpace (M.H τ) := (M.ds τ).1
   exact Formalism.IndefR.PeterssonHilbertSpace.sm_transfer (M.ε τ) (M.σ τ) (M.fr τ) _ (M.fr_unit τ) (M.fr_gram τ) (lieAt V τ)
-    (fun X hX => hX) _ (PI.KFinSmoothW.garding_vectors_smooth _ (M.ε τ) (M.H τ) (M.σ τ) (urep M τ) Φ hΦ hΦc w)
+    (fun X hX => hX) _ (_root_.PI.KFinSmoothW.Gard.stepGarding_main _ (M.ε τ) (M.H τ) (M.σ τ) (urep M τ) Φ hΦ hΦc w)
 
 def gvTL (M : DSModel V S) (τ : D.what₂.Tau) (Φ : Matrix (Fin V.rank) (Fin V.rank) ℂ → ℂ)
     (hΦ : Continuous Φ) (hΦc : HasCompactSupport Φ) : M.H τ →ₗ[ℂ] M.H τ where

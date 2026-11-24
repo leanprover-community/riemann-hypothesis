@@ -1,18 +1,156 @@
 module
 
-public import Mathlib
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
+public import Mathlib.RingTheory.Ideal.Int
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDefs
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsSat
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDiff
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SplitRow
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.AdjointActionReduction
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.FrameReduction
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TameSurjectivity.RecUnram
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLandSt
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Saturated
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsVecOfHermRep
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLand
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDiff
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsSat
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.AdjointActionReduction
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.DualFamilyExists
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.FrameReduction
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SecondDualReduction
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LatExistsOfSteps
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.RetractionReduction
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SesquilinearRepresentation
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TameSurjectivity.RecUnram, Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExists
+
+-- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TameSurjectivity.RecUnram =====
+-- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TameSurjectivity.RecUnram", "h": "module\n\npublic import Formalism.SharpRestriction.LevelLetterCocycles.DataN\nimport Mathlib.Algebra.AffineMonoid.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Int\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\npublic import Mathlib.RingTheory.Ideal.Int\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open NumberField IsDedekindDomain
+
+namespace PI.TameSurjW
+
+theorem liesOver_span_iff {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime)
+    (P : Ideal (𝓞 E)) [hP : P.IsPrime] :
+    P.LiesOver (Ideal.span {(p : ℤ)}) ↔ ((p : ℕ) : 𝓞 E) ∈ P := by
+  have : Fact p.Prime := ⟨hp⟩
+  have hmax : (Ideal.span {(p : ℤ)}).IsMaximal := Int.ideal_span_isMaximal_of_prime p
+  constructor
+  · intro h
+    have h1 : (p : ℤ) ∈ Ideal.span {(p : ℤ)} := Ideal.subset_span rfl
+    rw [Ideal.mem_of_liesOver P (Ideal.span {(p : ℤ)})] at h1
+    simpa using h1
+  · intro h
+    refine ⟨hmax.eq_of_le (Ideal.IsPrime.under ℤ P).ne_top ?_⟩
+    rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.under, Ideal.mem_comap]
+    simpa using h
+
+theorem notMem_sq_of_split {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime)
+    (h : (Formalism.BasicNotions.placesOver E p).ncard = Module.finrank ℚ E)
+    (v : HeightOneSpectrum (𝓞 E)) (hv : v ∈ Formalism.BasicNotions.placesOver E p) :
+    ((p : ℕ) : 𝓞 E) ∉ v.asIdeal ^ 2 := by
+  set P0 : Ideal ℤ := Ideal.span {(p : ℤ)} with hP0def
+  have : Fact p.Prime := ⟨hp⟩
+  have hmax : P0.IsMaximal := Int.ideal_span_isMaximal_of_prime p
+  have hP0 : P0 ≠ ⊥ := by
+    simp [P0, hp.ne_zero]
+  have himg : HeightOneSpectrum.asIdeal '' (Formalism.BasicNotions.placesOver E p) = P0.primesOver (𝓞 E) := by
+    ext P
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      exact ⟨w.isPrime, (liesOver_span_iff hp w.asIdeal).2 hw⟩
+    · rintro ⟨hPp, hPl⟩
+      have hPne : P ≠ ⊥ := Ideal.ne_bot_of_mem_primesOver hP0 ⟨hPp, hPl⟩
+      exact ⟨⟨P, hPp, hPne⟩, (liesOver_span_iff hp P).1 hPl, rfl⟩
+  have hcard : Fintype.card (P0.primesOver (𝓞 E)) = Module.finrank ℚ E := by
+    rw [Fintype.card_eq_nat_card, Nat.card_coe_set_eq, ← himg,
+      Set.ncard_image_of_injective _ (fun a b hab => HeightOneSpectrum.ext hab), h]
+  have hsum := Ideal.sum_ramification_inertia_eq_finrank P0 (𝓞 E)
+  rw [RingOfIntegers.rank] at hsum
+  intro hsq
+  have hlo : v.asIdeal.LiesOver P0 := (liesOver_span_iff hp v.asIdeal).2 hv
+  let q : P0.primesOver (𝓞 E) := ⟨v.asIdeal, v.isPrime, hlo⟩
+  have hmap : Ideal.map (algebraMap ℤ (𝓞 E)) P0 ≠ ⊥ := Ideal.map_ne_bot_of_ne_bot hP0
+  have hdvd : v.asIdeal ^ 2 ∣ Ideal.map (algebraMap ℤ (𝓞 E)) P0 := by
+    rw [Ideal.dvd_iff_le, hP0def, Ideal.map_span, Set.image_singleton, Ideal.span_le,
+      Set.singleton_subset_iff, SetLike.mem_coe]
+    simpa using hsq
+  have hfin : FiniteMultiplicity v.asIdeal (Ideal.map (algebraMap ℤ (𝓞 E)) P0) :=
+    FiniteMultiplicity.of_prime_left (Ideal.prime_of_isPrime v.ne_bot v.isPrime) hmap
+  have he : 2 ≤ v.asIdeal.ramificationIdx ℤ := by
+    rw [Ideal.IsDedekindDomain.ramificationIdx_eq_multiplicity P0 v.asIdeal hmap]
+    exact hfin.le_multiplicity_of_pow_dvd hdvd
+  have hlt : Fintype.card (P0.primesOver (𝓞 E)) <
+      ∑ r : P0.primesOver (𝓞 E), r.1.ramificationIdx ℤ * r.1.inertiaDeg ℤ := by
+    rw [Fintype.card_eq_sum_ones]
+    apply Finset.sum_lt_sum
+    · intro r _
+      exact Nat.mul_pos (Ideal.ramificationIdx_pos (R := ℤ) r.1) (Ideal.inertiaDeg_pos r.1 ℤ)
+    · refine ⟨q, Finset.mem_univ _, ?_⟩
+      have hf : 0 < v.asIdeal.inertiaDeg ℤ := Ideal.inertiaDeg_pos v.asIdeal ℤ
+      show 1 < v.asIdeal.ramificationIdx ℤ * v.asIdeal.inertiaDeg ℤ
+      nlinarith
+  omega
+
+end PI.TameSurjW
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TameSurjectivity.RecUnram =====
+
+-- ===== clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExists =====
+-- clump-header: {"m": "Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExists", "h": "module\n\nimport Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LatExistsOfSteps\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDefs\npublic import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLandSt\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Saturated\npublic import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsVecOfHermRep\npublic import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLand\npublic import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice\npublic import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDiff\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsSat\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.AdjointActionReduction\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.DualFamilyExists\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.FrameReduction\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.RetractionReduction\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SecondDualReduction\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SesquilinearRepresentation\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TameSurjectivity.RecUnram\nimport Mathlib.Algebra.AffineMonoid.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -88,30 +226,7 @@ theorem hsmulL (c : E) (x y : S.V) : S.hT (c • x) y = star c * S.hT x y := by
 
 theorem mem_latSpan {r : ℕ} (c : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (v : Fin r → S.V)
     (y : S.V) : y ∈ latSpan c v ↔ ∃ x : Fin r → E, (∀ i, x i ∈ c i) ∧ y = ∑ i, x i • v i := by
-  constructor
-  · intro hy
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨a, x, hx, rfl⟩ := hy
-      refine ⟨Pi.single a x, fun i => ?_, ?_⟩
-      · by_cases h : i = a
-        · subst h; simpa using hx
-        · rw [Pi.single_eq_of_ne h]; exact PI.SRW.fi_zero _
-      · simp [Pi.single_apply, ite_smul]
-    | zero => exact ⟨0, fun i => PI.SRW.fi_zero _, by simp⟩
-    | add y y' _ _ h1 h2 =>
-      obtain ⟨x, hx, rfl⟩ := h1
-      obtain ⟨x', hx', rfl⟩ := h2
-      exact ⟨x + x', fun i => PI.SRW.fi_add (hx i) (hx' i), by simp [add_smul, Finset.sum_add_distrib]⟩
-    | smul o y _ h1 =>
-      obtain ⟨x, hx, rfl⟩ := h1
-      refine ⟨fun i => (o : E) * x i, fun i => ?_, ?_⟩
-      · have := PI.SRW.fi_smul o (hx i)
-        simpa [Algebra.smul_def] using this
-      · rw [PI.SRW.osmul o, Finset.smul_sum]
-        simp [smul_smul]
-  · rintro ⟨x, hx, rfl⟩
-    exact Submodule.sum_mem _ (fun i _ => Submodule.subset_span ⟨i, x i, hx i, rfl⟩)
+  apply GlobalTheory.St.Lat.mem_latSpan
 
 theorem latSpan_le {r : ℕ} (c : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (v : Fin r → S.V)
     (Λ : Submodule (𝓞 E) S.V) (h : ∀ a, ∀ x ∈ c a, x • v a ∈ Λ) : latSpan c v ≤ Λ :=
@@ -142,12 +257,12 @@ theorem decomp {r : ℕ} (e f : Fin r → S.V) (hee : ∀ a b, S.hT (e a) (e b) 
       S.hT (f b) (y - ∑ a, S.hT (f a) y • e a - ∑ a, S.hT (e a) y • f a) = 0 := by
   have hfe := hfe_of hef
   constructor
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sub, map_sum, map_smul, hee, hef, smul_eq_mul, mul_zero, Finset.sum_const_zero, sub_zero,
-      mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sub, map_sum, map_smul, hff, hfe, smul_eq_mul, mul_zero, Finset.sum_const_zero,
-      mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+
+  · simp only [map_sub, map_sum, map_smul, hee, hef, smul_eq_mul, mul_zero, Finset.sum_const_zero, sub_zero,
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+
+  · simp only [map_sub, map_sum, map_smul, hff, hfe, smul_eq_mul, mul_zero, Finset.sum_const_zero,
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
 
 theorem key_split (Λ : Submodule (𝓞 E) S.V) {r : ℕ} (e f : Fin r → S.V)
     (P Q : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (hee : ∀ a b, S.hT (e a) (e b) = 0)
@@ -219,9 +334,9 @@ theorem zero_of_dual {r : ℕ} {e f : Fin r → S.V} (hfe : ∀ a b, S.hT (f a) 
   have ht : ∀ b, t b = 0 := by
     intro b
     have h := h0 b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, hfe, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true] at h
+
+    simp only [map_sum, map_smul, hfe, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
+    Finset.mem_univ, if_true] at h
     exact h
   simp [ht]
 
@@ -280,112 +395,7 @@ theorem fi_intm {E : Type} [Field E] [NumberField E] {I : FractionalIdeal (nonZe
   exact FractionalIdeal.mem_coe.1 h1
 
 theorem genFrame_holds : GenFrame := by
-  intro E _ _ _ S Λ hlat hU htr n e c hind hiso hc0 hX
-  obtain ⟨s0, hs0⟩ := htr
-  obtain ⟨s1, hs1⟩ := PI.SRW.star_int s0
-  let N : Submodule (𝓞 E) S.V := Λ ⊓ (Submodule.span E (Set.range e)).restrictScalars (𝓞 E)
-  have hNΛ : N ≤ Λ := inf_le_left
-  have hsat : ∀ (o : 𝓞 E) (x : S.V), o ≠ 0 → x ∈ Λ → o • x ∈ N → x ∈ N := by
-    intro o x ho hx hox
-    have h1 := (Submodule.mem_inf.1 hox).2
-    rw [Submodule.restrictScalars_mem] at h1
-    have hoE : (o : E) ≠ 0 := (RingOfIntegers.coe_ne_zero_iff).2 ho
-    rw [PI.SRW.osmul] at h1
-    have h2 := (Submodule.span E (Set.range e)).smul_mem (o : E)⁻¹ h1
-    rw [smul_smul, inv_mul_cancel₀ hoE, one_smul] at h2
-    exact Submodule.mem_inf.2 ⟨hx, (Submodule.restrictScalars_mem _ _ _).2 h2⟩
-  obtain ⟨ρ, hρN, hρid⟩ := PI.SRW.retraction_reduction E S.V Λ N hNΛ hlat.fg hsat
-  obtain ⟨cf, hcf⟩ := PI.SRW.dualFamilyExists E S.V n e hind
-  have hcfN : ∀ b, ∀ y ∈ N, cf b y ∈ c b := by
-    intro b y hy
-    have hy' : y ∈ latSpan c e := by rw [← hX]; exact hy
-    obtain ⟨x, hx, rfl⟩ := (mem_latSpan c e y).1 hy'
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, hcf, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
-    exact hx b
-  have hw := fun b : Fin n =>
-    PI.SRW.sesquilinearRepresentation E S.V S.hT S.nondeg Λ hlat (((cf b).restrictScalars (𝓞 E)).comp ρ)
-  choose f0 hf0 using hw
-  have hf0v : ∀ b, ∀ y (hy : y ∈ Λ), S.hT (f0 b) y = cf b (ρ ⟨y, hy⟩) := fun b y hy => hf0 b ⟨y, hy⟩
-  have hf0Λ : ∀ b, ∀ y ∈ Λ, S.hT (f0 b) y ∈ c b := fun b y hy => by
-    rw [hf0v b y hy]; exact hcfN b _ (hρN _)
-  have hceN : ∀ a, ∀ x ∈ c a, x • e a ∈ N := fun a x hx => by
-    have h1 : x • e a ∈ latSpan c e := Submodule.subset_span ⟨a, x, hx, rfl⟩
-    rw [← hX] at h1; exact h1
-  have hceΛ : ∀ a, ∀ x ∈ c a, x • e a ∈ Λ := fun a x hx => (hceN a x hx).1
-  have hf0e : ∀ b a, S.hT (f0 b) (e a) = if b = a then 1 else 0 := by
-    intro b a
-    have hne : (c a : Submodule (𝓞 E) E) ≠ ⊥ := FractionalIdeal.coeToSubmodule_ne_bot.2 (hc0 a)
-    obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
-    have hxN := hceN a x hx
-    have h1 := hf0v b (x • e a) hxN.1
-    rw [hρid ⟨_, hxN.1⟩ hxN] at h1
-    simp only [map_smul, hcf, smul_eq_mul] at h1
-    exact mul_left_cancel₀ hx0 h1
-  have hef0 : ∀ a b, S.hT (e a) (f0 b) = if a = b then 1 else 0 := by
-    intro a b
-    rw [← hconj, hf0e b a]
-    by_cases h : a = b
-    · subst h; simp
-    · simp [h, Ne.symm h]
-  have hstar : ∀ k, ∀ y ∈ Λ, S.hT (e k) y • f0 k ∈ Λ := by
-    intro k y hy
-    refine mem_of_dual hU (fun l hl => ?_)
-    obtain ⟨o, ho⟩ := PI.SRW.pair_int S hU hy (hceΛ k _ (hf0Λ k l hl))
-    refine ⟨o, ?_⟩
-    rw [ho, hsmulL, map_smul, smul_eq_mul, ← hconj (f0 k) l]
-    ring
-  let cc : Fin n → Fin n → E := fun a b =>
-    if a < b then -S.hT (f0 a) (f0 b) else if a = b then -(S.hT (f0 b) (f0 b) * (s0 : E)) else 0
-  have hsum : ∀ a b, S.hT (f0 a) (f0 b) + cc a b + star (cc b a) = 0 := by
-    intro a b
-    rcases lt_trichotomy a b with hab | hab | hab
-    · have h1 : ¬ b < a := not_lt.2 hab.le
-      have h2 : b ≠ a := hab.ne'
-      simp [cc, hab, h1, h2]
-    · subst hab
-      simp only [cc, lt_irrefl, ↓reduceIte]
-      rw [star_neg, star_mul', hconj]
-      have h3 : S.hT (f0 a) (f0 a) * (s0 : E) + S.hT (f0 a) (f0 a) * star (s0 : E) = S.hT (f0 a) (f0 a) := by
-        rw [← mul_add, hs0, mul_one]
-      linear_combination -h3
-    · have h1 : ¬ a < b := not_lt.2 hab.le
-      have h2 : a ≠ b := hab.ne'
-      simp [cc, hab, h1, h2, hconj]
-  have hterm : ∀ k b, ∀ y ∈ Λ, star (cc k b) * S.hT (e k) y ∈ c b := by
-    intro k b y hy
-    have hm := hf0Λ b _ (hstar k y hy)
-    rw [map_smul, smul_eq_mul] at hm
-    rcases lt_trichotomy k b with hkb | hkb | hkb
-    · simp only [cc, hkb, ↓reduceIte, star_neg, hconj, neg_mul]
-      exact fi_neg (by rw [mul_comm]; exact hm)
-    · subst hkb
-      have key : star (cc k k) * S.hT (e k) y = -((s1 : E) * (S.hT (e k) y * S.hT (f0 k) (f0 k))) := by
-        simp only [cc, lt_irrefl, ↓reduceIte]
-        rw [star_neg, star_mul', hconj, hs1]
-        ring
-      rw [key]
-      exact fi_neg (fi_intm s1 hm)
-    · have h1 : ¬ k < b := not_lt.2 hkb.le
-      have h2 : k ≠ b := hkb.ne'
-      simp only [cc, h1, h2, ↓reduceIte, star_zero, zero_mul]
-      exact PI.SRW.fi_zero _
-  refine ⟨fun b => f0 b + ∑ k, cc k b • e k, ?_, ?_, ?_⟩
-  · intro a b
-    have h := hsum a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hf0e, hef0, hiso, Finset.sum_ite_eq', starRingEnd_apply]
-    linear_combination h
-  · intro a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hiso, hef0]
-  · intro b y hy
-    have hexp : S.hT (f0 b + ∑ k, cc k b • e k) y = S.hT (f0 b) y + ∑ k, star (cc k b) * S.hT (e k) y := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum, starRingEnd_apply]
-    rw [hexp]
-    exact PI.SRW.fi_add (hf0Λ b y hy) (fi_sum _ (fun k => hterm k b y hy))
+  apply GlobalTheory.St.Lat.genFrame_holds
 
 end GF
 
@@ -580,27 +590,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E]
 theorem locgen {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E} (hI : I ≠ 0) {P : Ideal (𝓞 E)}
     {c : E} (hcI : c ∈ I) (hcP : c ∉ I * (P : FractionalIdeal (nonZeroDivisors (𝓞 E)) E)) :
     ∀ x ∈ I, ∃ s : 𝓞 E, s ∉ P ∧ ∃ o : 𝓞 E, (s : E) * x = (o : E) * c := by
-  intro x hx
-  set J := FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 E)) c * I⁻¹ with hJ
-  have hJ1 : J ≤ 1 := by
-    have h1 : FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 E)) c ≤ I :=
-      FractionalIdeal.spanSingleton_le_iff_mem.2 hcI
-    calc J ≤ I * I⁻¹ := by rw [hJ]; gcongr
-      _ = 1 := mul_inv_cancel₀ hI
-  have hJP : ¬ J ≤ (P : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) := by
-    intro h
-    apply hcP
-    have h2 : J * I ≤ (P : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) * I := by gcongr
-    rw [hJ, mul_assoc, inv_mul_cancel₀ hI, mul_one, mul_comm] at h2
-    exact h2 (FractionalIdeal.mem_spanSingleton_self _ _)
-  obtain ⟨s, hsJ, hsP⟩ := SetLike.not_le_iff_exists.1 hJP
-  obtain ⟨s', rfl⟩ := (FractionalIdeal.mem_one_iff _).1 (hJ1 hsJ)
-  refine ⟨s', fun h => hsP (FractionalIdeal.mem_coeIdeal_of_mem _ h), ?_⟩
-  have h3 : (algebraMap (𝓞 E) E s') * x ∈ J * I := FractionalIdeal.mul_mem_mul hsJ hx
-  rw [hJ, mul_assoc, inv_mul_cancel₀ hI, mul_one, FractionalIdeal.mem_spanSingleton] at h3
-  obtain ⟨o, ho⟩ := h3
-  refine ⟨o, ?_⟩
-  rw [← ho, Algebra.smul_def]
+  apply GlobalTheory.St.Lat.locgen <;> assumption
 
 theorem exists_gen {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E} (hI : I ≠ 0) {P : Ideal (𝓞 E)} (hP : P ≠ ⊤) :
     ∃ c ∈ I, c ∉ I * (P : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) := by
@@ -697,11 +687,11 @@ theorem posFrameSig (S : HSpace E) (σ : E →+* ℂ)
     have h3 : σ (S.hT y y) = star z ⬝ᵥ G.mulVec z := by
       have := LinearMap.sum_repr_mul_repr_mulₛₗ S.frame S.frame (B := S.hT) y y
       rw [← this, Finsupp.sum_fintype _ _ (by intro i; simp)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [dotProduct, Matrix.mulVec, map_sum]
+
+      simp only [dotProduct, Matrix.mulVec, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Finsupp.sum_fintype _ _ (by intro j; simp), map_sum, Finset.mul_sum]
+
+      rw [Finsupp.sum_fintype _ _ (by intro j; simp), map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       simp only [smul_eq_mul, map_mul, RingHom.id_apply, hG, hz, Matrix.map_apply, HSpace.gram, Pi.star_apply]
       rw [starRingEnd_apply, hσ]
@@ -834,36 +824,7 @@ theorem aa_gen_one (hDd : DdG D) (P : HeightOneSpectrum (𝓞 D.host.E))
     (hP : ((gS D : ℕ) : 𝓞 D.host.E) ∈ P.asIdeal) (a : Fin D.R.rS) :
     (1 : D.host.E) ∈ aaS D a ∧
       (1 : D.host.E) ∉ aaS D a * (P.asIdeal : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) := by
-  have hd0 : ddS D ≠ 0 := PI.SRW.ddS_ne D
-  have hd1 : ddS D ≤ 1 := FractionalIdeal.coeIdeal_le_one
-  set j : ℕ := D.R.rS - (a : ℕ) with hj
-  have hex : -((D.R.rS : ℤ) - (a : ℕ)) = -(j : ℤ) := by
-    have := a.isLt
-    rw [hj]; push_cast [Nat.cast_sub this.le]; ring
-  have haa : aaS D a = (ddS D ^ j)⁻¹ := by
-    simp only [aaS]
-    rw [hex, zpow_neg, zpow_natCast]
-  have hpow0 : ddS D ^ j ≠ 0 := pow_ne_zero _ hd0
-  have hpow1 : ddS D ^ j ≤ 1 := pow_le_one₀ zero_le hd1
-  rw [haa]
-  constructor
-  · rw [FractionalIdeal.mem_inv_iff hpow0]
-    intro y hy
-    rw [one_mul]
-    exact hpow1 hy
-  · intro h1
-    apply hDd P hP
-    have h2 : FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 D.host.E)) (1 : D.host.E) ≤
-        (ddS D ^ j)⁻¹ * (P.asIdeal : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) :=
-      FractionalIdeal.spanSingleton_le_iff_mem.2 h1
-    rw [FractionalIdeal.spanSingleton_one] at h2
-    have h3 : ddS D ^ j * 1 ≤ ddS D ^ j * ((ddS D ^ j)⁻¹ *
-        (P.asIdeal : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E)) := by gcongr
-    rw [mul_one, ← mul_assoc, mul_inv_cancel₀ hpow0, one_mul] at h3
-    have h4 : (Ideal.map (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) (differentIdeal ℤ (𝓞 D.host.F))) ^ j ≤ P.asIdeal := by
-      rw [← FractionalIdeal.coeIdeal_le_coeIdeal D.host.E, FractionalIdeal.coeIdeal_pow]
-      exact h3
-    exact P.isPrime.le_of_pow_le h4
+  apply GlobalTheory.St.Lat.aa_gen_one <;> assumption
 
 end D7asm
 
@@ -888,8 +849,8 @@ theorem lat_riesz (φ : (VS D).V →ₗ[D.host.E] D.host.E) : ∃ μ : (VS D).V,
   have key : (VS D).hT (∑ j, star (φ ((VS D).frame j)) • bs j) = φ := by
     apply (VS D).frame.ext
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, LinearMap.sum_apply]
+
+    rw [map_sum, LinearMap.sum_apply]
     have hs : ∀ j, (VS D).hT (star (φ ((VS D).frame j)) • bs j) ((VS D).frame i) =
         φ ((VS D).frame j) * (if i = j then 1 else 0) := by
       intro j
@@ -956,8 +917,8 @@ theorem latExists_of_steps (hSB : SatBasis) (hPC : PrimesInClasses) (hDd : DdG D
     have hc : ∀ j : Fin D.R.rS, g (Fin.castSucc j) = 0 := by
       intro j
       have h1 := congrArg ((VS D).hT (D.sp.hypF j)) hg
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero, Fin.sum_univ_castSucc] at h1
+
+      rw [map_sum, map_zero, Fin.sum_univ_castSucc] at h1
       simp only [wf, map_smul, Fin.snoc_castSucc, Fin.snoc_last, (hwo j).2, hfe_hyp, smul_eq_mul, mul_zero,
         add_zero, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h1
       exact h1
@@ -1141,3 +1102,14 @@ theorem latExists_of (hPC : LatEx.PrimesInClasses) (D : Formalism.BasicNotions.D
   LatEx.latExists_of_steps D LatEx.satBasis_holds hPC (LatEx.ddG_of D LatEx.splitDiff_holds)
 
 end Formalism.L2.SG.Pf
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExists =====

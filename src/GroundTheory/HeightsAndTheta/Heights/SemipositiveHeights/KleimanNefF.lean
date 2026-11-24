@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailRest
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVocabMultiHomog
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVocabMultiHomogIdeal
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PKleimanNefF
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PModelGenericPoint
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsFieldSubalgebraSelf
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailRest
 
 @[expose] public section
 

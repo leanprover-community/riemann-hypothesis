@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrand
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.Unramified
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains
+public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
+public import Mathlib.FieldTheory.KrullTopology
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.Unramified
 
 @[expose] public section
 

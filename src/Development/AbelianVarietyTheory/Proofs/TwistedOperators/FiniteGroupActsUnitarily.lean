@@ -1,11 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.UnitaryAtAllRows
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormGoodRowsFiniteGroupActionStatement
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormLiftFormsFiniteGroupActionStatement
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TranslateUnitaryLifts
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoefActionReprMemSubfield
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemCmComplexOfPow
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ReprMemOfBasisRational
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TranslateUnitaryLifts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ClassPresBasic
 
 @[expose] public section
 
@@ -33,23 +72,23 @@ theorem pairAt_eq_of_rat (x y : S.V) (hx : ∀ i, S.bV.repr x i ∈ cmMax K) : p
 
   have hexp : S.pair x y = ∑ i, ∑ j, star (S.bV.repr x i) * S.gramV i j * S.bV.repr y j := by
     conv_lhs => rw [← S.bV.sum_repr x, ← S.bV.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, CSD.gramV, Matrix.of_apply,
-      starRingEnd_apply, RingHom.id_apply, Finset.mul_sum]
+
+    simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, CSD.gramV, Matrix.of_apply,
+    starRingEnd_apply, RingHom.id_apply, Finset.mul_sum]
     conv_rhs => rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring
   rw [hexp]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [pairAt, map_sum, map_mul]
+
+  simp only [pairAt, map_sum, map_mul]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
 
   have hc : ∀ τ : K →+* ℂ, τ (star (S.bV.repr x i)) = starRingEnd ℂ (τ (S.bV.repr x i)) := hx i
   rw [hc σ]
 
 theorem csumAt_eq_of_rat (f f' : S.Cl → S.V) (hf : S.IsRat f) : csumAt S σ f f' = σ (S.csum f f') := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [csumAt, CSD.csum, map_sum, map_mul, map_inv₀, map_natCast]
+
+  simp only [csumAt, CSD.csum, map_sum, map_mul, map_inv₀, map_natCast]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [pairAt_eq_of_rat S σ (f c) (f' c) (fun i => hf c i)]
 
@@ -97,9 +136,9 @@ theorem csumAt_map (hb : S.HasRatBasis) (U : Module.End K S.Forms)
     rw [csumAt_eq_of_rat S σ _ _ (hU _ (hbr i)), csumAt_eq_of_rat S σ _ _ (hbr i), hc]
 
   rw [← b.sum_repr f, ← b.sum_repr f']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, Submodule.coe_sum, Submodule.coe_smul, csumAt_sum_left, csumAt_sum_right,
-    csumAt_smul_left, csumAt_smul_right', key]
+
+  simp only [map_sum, map_smul, Submodule.coe_sum, Submodule.coe_smul, csumAt_sum_left, csumAt_sum_right,
+  csumAt_smul_left, csumAt_smul_right', key]
 
 end ClassSum
 

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.TraceFormulaGeometric
+public import GroundTheory.AutomorphicForms.QuotientMeasure
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 

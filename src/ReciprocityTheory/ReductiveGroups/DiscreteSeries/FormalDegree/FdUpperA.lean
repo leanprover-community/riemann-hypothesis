@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.TraceMulSelfEqSumEigenvaluesSq
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
+public import Mathlib.MeasureTheory.Integral.Gamma
+public import Mathlib.MeasureTheory.Integral.Pi
 
 @[expose] public section
 

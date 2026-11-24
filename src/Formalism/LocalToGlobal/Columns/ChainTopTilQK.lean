@@ -1,9 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainTopTilQ
-public import Formalism.LocalToGlobal.Columns.ChainLawXi
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.TopLawQ
-public import Formalism.LocalToGlobal.Columns.BaseLemmas
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+import Formalism.LocalToGlobal.KernelLattices.TopLawQ
 
 @[expose] public section
 

@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PointDegreePosSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PHilbertPositive
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PHilbertPositive
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

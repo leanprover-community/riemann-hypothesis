@@ -1,9 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.Points
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.GenusOneWittExistsOf
 public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveEndoAll
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.DegreeLeOfMemAntidiagonal
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.Points
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.CurveSer
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.EqWSerSubst
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -12,23 +59,6 @@ open PowerSeries
 noncomputable section
 
 namespace Formalism.L2.KerInert.VC
-
-section Alg
-
-variable {A : Type*} [CommRing A] (a1 a2 a3 a4 a6 U Ui r s t u w v : A)
-
-theorem weq_vc (hw : w = u^3 + a1*u*w + a2*u^2*w + a3*w^2 + a4*u*w^2 + a6*w^3)
-    (hv : v * (1 + s*u + (t - s*r)*w) = 1) (hU : U * Ui = 1) :
-    (U^3*w*v) = (U*(u - r*w)*v)^3 + (Ui*(a1+2*s))*(U*(u - r*w)*v)*(U^3*w*v) + (Ui^2*(a2 - s*a1 + 3*r - s^2))*(U*(u - r*w)*v)^2*(U^3*w*v) + (Ui^3*(a3 + r*a1 + 2*t))*(U^3*w*v)^2 + (Ui^4*(a4 - s*a3 + 2*r*a2 - (t + r*s)*a1 + 3*r^2 - 2*s*t))*(U*(u - r*w)*v)*(U^3*w*v)^2 + (Ui^6*(a6 + r*a4 + r^2*a2 + r^3 - t*a3 - t^2 - r*t*a1))*(U^3*w*v)^3 := by
-  linear_combination (U^3*v^3*(1)) * hw + (U^3*(v^3*((-a1*r*s*u*w^2 + a1*s*u^2*w + a1*t*u*w^2 - a2*u^2*w - a3*r*s*w^3 + a3*s*u*w^2 + a3*t*w^3 - a4*u*w^2 - a6*w^3 + r^2*s^2*w^3 - 2*r*s^2*u*w^2 - 2*r*s*t*w^3 + s^2*u^2*w + 2*s*t*u*w^2 + t^2*w^3 - u^3)*(1 + s*u + (t - s*r)*w)^0*((v*(1 + s*u + (t - s*r)*w))^0 + (v*(1 + s*u + (t - s*r)*w))^1 + (v*(1 + s*u + (t - s*r)*w))^2) + (-a1*u*w - a3*w^2 + 2*r*s*w^2 - 2*s*u*w - 2*t*w^2)*(1 + s*u + (t - s*r)*w)^1*((v*(1 + s*u + (t - s*r)*w))^0 + (v*(1 + s*u + (t - s*r)*w))^1) + (w)*(1 + s*u + (t - s*r)*w)^2*((v*(1 + s*u + (t - s*r)*w))^0)) - (-a1*r*s*u*v^3*w^2 + a1*s*u^2*v^3*w + a1*t*u*v^3*w^2 - a1*u*v^2*w - a2*u^2*v^3*w - a3*r*s*v^3*w^3 + a3*s*u*v^3*w^2 + a3*t*v^3*w^3 - a3*v^2*w^2 - a4*u*v^3*w^2 - a6*v^3*w^3 + r^2*s^2*v^3*w^3 - 2*r*s^2*u*v^3*w^2 - 2*r*s*t*v^3*w^3 + 2*r*s*v^2*w^2 + s^2*u^2*v^3*w + 2*s*t*u*v^3*w^2 - 2*s*u*v^2*w + t^2*v^3*w^3 - 2*t*v^2*w^2 - u^3*v^3 + v*w)*((v*(1 + s*u + (t - s*r)*w))^0 + (v*(1 + s*u + (t - s*r)*w))^1 + (v*(1 + s*u + (t - s*r)*w))^2))) * hv + (U^3*(a1*r*t*v^3*w^3 - a2*r^2*v^3*w^3 + a3*t*v^3*w^3 - a4*r*v^3*w^3 - a6*v^3*w^3 - r^3*v^3*w^3 + t^2*v^3*w^3)*((U*Ui)^0 + (U*Ui)^1 + (U*Ui)^2 + (U*Ui)^3 + (U*Ui)^4 + (U*Ui)^5) + U^3*(-a1*r^2*s*v^3*w^3 + a1*r*s*u*v^3*w^2 - a1*r*t*v^3*w^3 + a1*t*u*v^3*w^2 + 2*a2*r^2*v^3*w^3 - 2*a2*r*u*v^3*w^2 - a3*r*s*v^3*w^3 + a3*s*u*v^3*w^2 + a4*r*v^3*w^3 - a4*u*v^3*w^2 + 3*r^3*v^3*w^3 - 3*r^2*u*v^3*w^2 - 2*r*s*t*v^3*w^3 + 2*s*t*u*v^3*w^2)*((U*Ui)^0 + (U*Ui)^1 + (U*Ui)^2 + (U*Ui)^3) + U^3*(-a1*r*v^2*w^2 - a3*v^2*w^2 - 2*t*v^2*w^2)*((U*Ui)^0 + (U*Ui)^1 + (U*Ui)^2) + U^3*(a1*r^2*s*v^3*w^3 - 2*a1*r*s*u*v^3*w^2 + a1*s*u^2*v^3*w - a2*r^2*v^3*w^3 + 2*a2*r*u*v^3*w^2 - a2*u^2*v^3*w - 3*r^3*v^3*w^3 + r^2*s^2*v^3*w^3 + 6*r^2*u*v^3*w^2 - 2*r*s^2*u*v^3*w^2 - 3*r*u^2*v^3*w + s^2*u^2*v^3*w)*((U*Ui)^0 + (U*Ui)^1) + U^3*(a1*r*v^2*w^2 - a1*u*v^2*w + 2*r*s*v^2*w^2 - 2*s*u*v^2*w)*((U*Ui)^0)) * hU
-
-theorem flow_vc (hw : w = u^3 + a1*u*w + a2*u^2*w + a3*w^2 + a4*u*w^2 + a6*w^3)
-    (hv : v * (1 + s*u + (t - s*r)*w) = 1) (hU : U * Ui = 1) :
-    U*(((1 - a1*u - a2*u^2 - 2*a3*w - 2*a4*u*w - 3*a6*w^2) - r*(3*u^2 + a1*w + 2*a2*u*w + a4*w^2))*v + (u - r*w)*(-v^2*(s*(1 - a1*u - a2*u^2 - 2*a3*w - 2*a4*u*w - 3*a6*w^2) + (t - s*r)*(3*u^2 + a1*w + 2*a2*u*w + a4*w^2)))) =
-      U*(1 - (Ui*(a1+2*s))*(U*(u - r*w)*v) - (Ui^2*(a2 - s*a1 + 3*r - s^2))*(U*(u - r*w)*v)^2 - 2*(Ui^3*(a3 + r*a1 + 2*t))*(U^3*w*v) - 2*(Ui^4*(a4 - s*a3 + 2*r*a2 - (t + r*s)*a1 + 3*r^2 - 2*s*t))*(U*(u - r*w)*v)*(U^3*w*v) - 3*(Ui^6*(a6 + r*a4 + r^2*a2 + r^3 - t*a3 - t^2 - r*t*a1))*(U^3*w*v)^2) := by
-  linear_combination (U^1*v^2*(3*t)) * hw + (U^1*(v^2*((-3*a1*t*u*w - 2*a2*r^2*s*u*w^2 + a2*r*s*u^2*w + 2*a2*r*t*u*w^2 + 2*a2*r*u*w + a2*s*u^3 - 2*a2*t*u^2*w + a2*u^2 - 3*a3*t*w^2 - a4*r^2*s*w^3 - a4*r*s*u*w^2 + a4*r*t*w^3 + a4*r*w^2 + 2*a4*s*u^2*w - a4*t*u*w^2 + 2*a4*u*w - 3*a6*r*s*w^3 + 3*a6*s*u*w^2 + 3*a6*w^2 - r^2*s^2*w^2 - 3*r^2*s*u^2*w + 2*r*s^2*u*w + 4*r*s*t*w^2 + 3*r*s*u^3 + r*s*w + 3*r*t*u^2*w + 3*r*u^2 - s^2*u^2 - 4*s*t*u*w - s*u - 3*t^2*w^2 - 3*t*u^3)*(1 + s*u + (t - s*r)*w)^0*((v*(1 + s*u + (t - s*r)*w))^0 + (v*(1 + s*u + (t - s*r)*w))^1) + (-2*a2*r*u*w - a2*u^2 - a4*r*w^2 - 2*a4*u*w - 3*a6*w^2 - 2*r*s*w - 3*r*u^2 + 2*s*u + 4*t*w + 1)*(1 + s*u + (t - s*r)*w)^1*((v*(1 + s*u + (t - s*r)*w))^0)) - (-3*a1*t*u*v^2*w - 2*a2*r^2*s*u*v^2*w^2 + a2*r*s*u^2*v^2*w + 2*a2*r*t*u*v^2*w^2 + 2*a2*r*u*v^2*w - 2*a2*r*u*v*w + a2*s*u^3*v^2 - 2*a2*t*u^2*v^2*w + a2*u^2*v^2 - a2*u^2*v - 3*a3*t*v^2*w^2 - a4*r^2*s*v^2*w^3 - a4*r*s*u*v^2*w^2 + a4*r*t*v^2*w^3 + a4*r*v^2*w^2 - a4*r*v*w^2 + 2*a4*s*u^2*v^2*w - a4*t*u*v^2*w^2 + 2*a4*u*v^2*w - 2*a4*u*v*w - 3*a6*r*s*v^2*w^3 + 3*a6*s*u*v^2*w^2 + 3*a6*v^2*w^2 - 3*a6*v*w^2 - r^2*s^2*v^2*w^2 - 3*r^2*s*u^2*v^2*w + 2*r*s^2*u*v^2*w + 4*r*s*t*v^2*w^2 + 3*r*s*u^3*v^2 + r*s*v^2*w - 2*r*s*v*w + 3*r*t*u^2*v^2*w + 3*r*u^2*v^2 - 3*r*u^2*v - s^2*u^2*v^2 - 4*s*t*u*v^2*w - s*u*v^2 + 2*s*u*v - 3*t^2*v^2*w^2 - 3*t*u^3*v^2 + 4*t*v*w + v - 1)*((v*(1 + s*u + (t - s*r)*w))^0 + (v*(1 + s*u + (t - s*r)*w))^1))) * hv + (U^1*(-3*a1*r*t*v^2*w^2 + 3*a2*r^2*v^2*w^2 - 3*a3*t*v^2*w^2 + 3*a4*r*v^2*w^2 + 3*a6*v^2*w^2 + 3*r^3*v^2*w^2 - 3*t^2*v^2*w^2)*((U*Ui)^0 + (U*Ui)^1 + (U*Ui)^2 + (U*Ui)^3 + (U*Ui)^4 + (U*Ui)^5) + U^1*(2*a1*r^2*s*v^2*w^2 - 2*a1*r*s*u*v^2*w + 2*a1*r*t*v^2*w^2 - 2*a1*t*u*v^2*w - 4*a2*r^2*v^2*w^2 + 4*a2*r*u*v^2*w + 2*a3*r*s*v^2*w^2 - 2*a3*s*u*v^2*w - 2*a4*r*v^2*w^2 + 2*a4*u*v^2*w - 6*r^3*v^2*w^2 + 6*r^2*u*v^2*w + 4*r*s*t*v^2*w^2 - 4*s*t*u*v^2*w)*((U*Ui)^0 + (U*Ui)^1 + (U*Ui)^2 + (U*Ui)^3) + U^1*(2*a1*r*v*w + 2*a3*v*w + 4*t*v*w)*((U*Ui)^0 + (U*Ui)^1 + (U*Ui)^2) + U^1*(-a1*r^2*s*v^2*w^2 + 2*a1*r*s*u*v^2*w - a1*s*u^2*v^2 + a2*r^2*v^2*w^2 - 2*a2*r*u*v^2*w + a2*u^2*v^2 + 3*r^3*v^2*w^2 - r^2*s^2*v^2*w^2 - 6*r^2*u*v^2*w + 2*r*s^2*u*v^2*w + 3*r*u^2*v^2 - s^2*u^2*v^2)*((U*Ui)^0 + (U*Ui)^1) + U^1*(-a1*r*v*w + a1*u*v - 2*r*s*v*w + 2*s*u*v)*((U*Ui)^0)) * hU
-
-end Alg
 
 open Formalism.L2.Th1.A
 
@@ -76,7 +106,7 @@ theorem weq_phi : psi W C = phi W C ^ 3 + PowerSeries.C (C • W).a₁ * phi W C
     + PowerSeries.C (C • W).a₂ * phi W C ^ 2 * psi W C + PowerSeries.C (C • W).a₃ * psi W C ^ 2
     + PowerSeries.C (C • W).a₄ * phi W C * psi W C ^ 2 + PowerSeries.C (C • W).a₆ * psi W C ^ 3 := by
   have hw := (CurveSer.wSer_fixed W).2
-  have h := weq_vc (PowerSeries.C W.a₁) (PowerSeries.C W.a₂) (PowerSeries.C W.a₃) (PowerSeries.C W.a₄)
+  have h := Formalism.L2.KerInert.MC.weq_vc (PowerSeries.C W.a₁) (PowerSeries.C W.a₂) (PowerSeries.C W.a₃) (PowerSeries.C W.a₄)
     (PowerSeries.C W.a₆) (PowerSeries.C (C.u : R)) (PowerSeries.C ((C.u⁻¹ : Rˣ) : R)) (PowerSeries.C C.r)
     (PowerSeries.C C.s) (PowerSeries.C C.t) X (wSer W) (vv W C) hw (hv_C W C) (hU_C C)
   simp only [phi, psi, WeierstrassCurve.variableChange_a₁, WeierstrassCurve.variableChange_a₂,
@@ -93,38 +123,7 @@ theorem D_C (a : R) : D W (PowerSeries.C a) = 0 := by
   rw [C_eq_algebraMap, Derivation.map_algebraMap]
 
 theorem D_phi : D W (phi W C) = PowerSeries.C (C.u : R) * (fw (C • W)).subst (phi W C) := by
-  obtain ⟨-, -, hFl, hfwAt, hfuAt, -⟩ := flowU R W
-  obtain ⟨-, hDX, hDw⟩ := hFl
-  rw [hfwAt] at hDX
-  rw [hfuAt] at hDw
-  have hs : HasSubst (phi W C) := HasSubst.of_constantCoeff_zero' (phi_cc W C)
-  have hfwsub : (fw (C • W)).subst (phi W C) = 1 - PowerSeries.C (C • W).a₁ * phi W C
-      - PowerSeries.C (C • W).a₂ * phi W C ^ 2 - 2 * PowerSeries.C (C • W).a₃ * psi W C
-      - 2 * PowerSeries.C (C • W).a₄ * phi W C * psi W C - 3 * PowerSeries.C (C • W).a₆ * psi W C ^ 2 := by
-    rw [← ISer.subHom_apply _ (phi_cc W C)]
-    simp only [fw, map_sub, map_mul, map_pow, map_one, map_ofNat, ISer.subHom_X, ISer.subHom_C]
-    rw [ISer.subHom_apply, wSer_phi]
-  have hvD : D W (vv W C) = -(vv W C) ^ 2 * D W (den W C) := by
-    have h1 : D W (den W C * vv W C) = 0 := by rw [den_mul_vv, Derivation.map_one_eq_zero]
-    rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul] at h1
-    have h2 := den_mul_vv W C
-    linear_combination (vv W C) * h1 - (D W (vv W C)) * h2
-  have hdenD : D W (den W C) = PowerSeries.C C.s * D W X + PowerSeries.C (C.t - C.s * C.r) * D W (wSer W) := by
-    simp only [den, map_add (f := _), Derivation.leibniz, smul_eq_mul, D_C, Derivation.map_one_eq_zero]
-    ring
-  have hphiD : D W (phi W C) = PowerSeries.C (C.u : R) * ((D W X - PowerSeries.C C.r * D W (wSer W)) * vv W C
-      + (X - PowerSeries.C C.r * wSer W) * D W (vv W C)) := by
-    simp only [phi, map_sub, Derivation.leibniz, smul_eq_mul, D_C]
-    ring
-  rw [hphiD, hvD, hdenD, hDX, hDw, hfwsub]
-  have hw := (CurveSer.wSer_fixed W).2
-  have h := flow_vc (PowerSeries.C W.a₁) (PowerSeries.C W.a₂) (PowerSeries.C W.a₃) (PowerSeries.C W.a₄)
-    (PowerSeries.C W.a₆) (PowerSeries.C (C.u : R)) (PowerSeries.C ((C.u⁻¹ : Rˣ) : R)) (PowerSeries.C C.r)
-    (PowerSeries.C C.s) (PowerSeries.C C.t) X (wSer W) (vv W C) hw (hv_C W C) (hU_C C)
-  simp only [phi, psi, fw, fu, WeierstrassCurve.variableChange_a₁, WeierstrassCurve.variableChange_a₂,
-    WeierstrassCurve.variableChange_a₃, WeierstrassCurve.variableChange_a₄, WeierstrassCurve.variableChange_a₆,
-    map_mul, map_add, map_sub, map_pow, map_ofNat] at h ⊢
-  linear_combination h
+  apply Formalism.L2.KerInert.MC.D_phi
 
 end Ring
 
@@ -189,32 +188,7 @@ theorem exp_eq : expSer (C • W) =
 
 theorem mulBy_eq (c : K) : Formalism.L2.Th1.C.mulBy (logSer (C • W)) (expSer (C • W)) c =
     (phi W C).subst ((Formalism.L2.Th1.C.mulBy (logSer W) (expSer W) c).subst (compInv (phi W C))) := by
-  have hs : HasSubst (phi W C) := HasSubst.of_constantCoeff_zero' (phi_cc W C)
-  have hci := compInvSpec K (phi W C) (phi_cc W C) (by rw [phi_coeff_one]; exact Units.isUnit _)
-  have hp0 : constantCoeff (compInv (phi W C)) = 0 := hci.1
-  have hpS : HasSubst (compInv (phi W C)) := HasSubst.of_constantCoeff_zero' hp0
-  have hl := logSpec K W
-  have he := expSpec K W
-  have heS : HasSubst (expSer W) := HasSubst.of_constantCoeff_zero' he.1
-  have hl' : logSer (C • W) = PowerSeries.C (C.u : K) * (logSer W).subst (compInv (phi W C)) := by
-    have h := congrArg (fun f : K⟦X⟧ => f.subst (compInv (phi W C))) (log_phi W C)
-    rw [subst_comp_subst_apply hs hpS, hci.2.1, X_subst, subst_mul hpS, subst_C' hp0] at h
-    exact h
-  have hq0 : constantCoeff (PowerSeries.C c * logSer (C • W)) = 0 := by
-    simp [(logSpec K (C • W)).1]
-  have hqS : HasSubst (PowerSeries.C c * logSer (C • W)) := HasSubst.of_constantCoeff_zero' hq0
-  have hm0 := cUi_cc C
-  have hmS : HasSubst (PowerSeries.C ((C.u⁻¹ : Kˣ) : K) * X) := HasSubst.of_constantCoeff_zero' hm0
-  have hh0 : constantCoeff ((expSer W).subst (PowerSeries.C ((C.u⁻¹ : Kˣ) : K) * X)) = 0 := cc_subst0 hm0 he.1
-  have hhS := HasSubst.of_constantCoeff_zero' hh0
-  have hr0 : constantCoeff (PowerSeries.C c * logSer W) = 0 := by simp [hl.1]
-  have hrS : HasSubst (PowerSeries.C c * logSer W) := HasSubst.of_constantCoeff_zero' hr0
-  unfold Formalism.L2.Th1.C.mulBy
-  rw [exp_eq, subst_comp_subst_apply hhS hqS, subst_comp_subst_apply hmS hqS, subst_mul hqS, subst_C' hq0,
-    subst_X hqS, subst_comp_subst_apply hrS hpS, subst_mul hpS, subst_C' hp0, hl']
-  congr 2
-  rw [← mul_assoc, ← mul_assoc, ← map_mul, ← map_mul, mul_comm (((C.u⁻¹ : Kˣ) : K)) c, mul_assoc c,
-    Units.inv_mul, mul_one]
+  apply Formalism.L2.KerInert.MC.mulBy_eq
 
 end Field
 

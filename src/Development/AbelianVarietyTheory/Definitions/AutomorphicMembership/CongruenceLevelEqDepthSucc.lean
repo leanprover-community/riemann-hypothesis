@@ -1,11 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CardStabilizerForgetFr
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.IntegralGLSuccEmbeddingMemParahoricTimesPrincipa
-public import Formalism.LocalToGlobal.Columns.LevGCount
-public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
-public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
+public import Formalism.LocalToGlobal.Columns.RowFormsSym
+public import Mathlib.Topology.Sheaves.Presheaf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -140,11 +175,6 @@ theorem inv_mul_mem_prinCong (a k : GLint E N P) : a⁻¹ * k ∈ prinCong N P c
   rw [e, ← map_smul]
   exact (a⁻¹).2 _
 
-theorem mem_levCong_iff (k : GLint E N P) :
-    k ∈ (levCong hN P c l).H ↔ ∃ j ∈ (levRed P l).H,
-      ∀ x ∈ stdAt E N P, ((qOf P : E) ^ (c + 1))⁻¹ • (k.1 x - sumE hN j.1 1 x) ∈ stdAt E N P := by
-  simp only [mem_levCong, inv_mul_mem_prinCong, extI_val]
-
 theorem prinCong_le_levCong : prinCong N P (c + 1) ≤ (levCong hN P c l).H := le_sup_right
 
 theorem extI_mem_levCong (j : GLint E n P) : extI hN P j ∈ (levCong hN P c l).H ↔ j ∈ (levRed P l).H := by
@@ -164,12 +194,6 @@ theorem levCong_lam_extI {j : GLint E n P} (hk : extI hN P j ∈ (levCong hN P c
 theorem levCong_lam_prinCong {k : GLint E N P} (h : k ∈ prinCong N P (c + 1)) :
     (levCong hN P c l).lam ⟨k, prinCong_le_levCong hN c l h⟩ = 1 :=
   (levCong_lam hN c l _ (one_mem _) (by simpa using h)).trans (map_one _)
-
-theorem levCong_last {k : GLint E N P} (hk : k ∈ (levCong hN P c l).H) {x : Sp E N} (hx : x ∈ stdAt E N P) :
-    IntAt P (((qOf P : E) ^ (c + 1))⁻¹ * (k.1 x (Br.iL hN) - x (Br.iL hN))) := by
-  obtain ⟨j, -, h⟩ := (mem_levCong_iff hN c l k).1 hk
-  have := mem_stdAt.1 (h x hx) (Br.iL hN)
-  rwa [Pi.smul_apply, Pi.sub_apply, sumE_last, Units.val_one, one_mul] at this
 
 instance levCong_finiteIndex : (levCong hN P c l).H.FiniteIndex := Subgroup.finiteIndex_of_le (prinCong_le_levCong hN c l)
 

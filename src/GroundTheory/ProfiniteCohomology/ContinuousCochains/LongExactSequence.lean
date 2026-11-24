@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
+public import Mathlib.Algebra.Homology.HomologicalComplexAbelian
+import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 @[expose] public section
 

@@ -1,10 +1,47 @@
 module
 
-public import Mathlib
-public import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
-public import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-public import Formalism.CyclotomicNorms.StatementI
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+public import Mathlib.NumberTheory.LSeries.Nonvanishing
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -40,8 +77,6 @@ theorem finite_zeros {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (t T :
     (zerosIn χ t T).Finite := by
   obtain ⟨F, hF, h1, h0⟩ := exists_entire χ
   have hA : AnalyticOnNhd ℂ F Set.univ := hF.differentiableOn.analyticOnNhd isOpen_univ
-  by_contra hinf
-  have hinf : (zerosIn χ t T).Infinite := hinf
   have hsub : zerosIn χ t T ⊆ Metric.closedBall (0 : ℂ) (1 + |t| + T) := by
     rintro ρ ⟨h0, h1, h2, -⟩
     rw [mem_closedBall_zero_iff]
@@ -51,13 +86,10 @@ theorem finite_zeros {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (t T :
       have := abs_sub_abs_le_abs_sub ρ.im t
       linarith
     linarith
-  obtain ⟨z, -, hz⟩ := hinf.exists_accPt_of_subset_isCompact (isCompact_closedBall _ _) hsub
-  have hfr : ∃ᶠ w in nhdsWithin z {z}ᶜ, F w = 0 := by
-    rw [accPt_iff_frequently_nhdsNE] at hz
-    exact hz.mono fun w hw => h0 w (ne_one_of_mem hw) hw.2.2.2
-  have := hA.eqOn_zero_of_preconnected_of_frequently_eq_zero isPreconnected_univ
-    (Set.mem_univ z) hfr
-  exact h1 (this (Set.mem_univ 1))
+  have hfin := (isCompact_closedBall (0 : ℂ) (1 + |t| + T)).finite_sdiff_of_mem_codiscreteWithin
+    (Filter.codiscreteWithin_mono (Set.subset_univ _) (hA.preimage_zero_mem_codiscrete h1))
+  refine hfin.subset fun ρ hρ => ⟨hsub hρ, ?_⟩
+  simpa using h0 ρ (ne_one_of_mem hρ) hρ.2.2.2
 
 theorem order_ne_top {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {ρ : ℂ} (hρ : ρ ≠ 1) :
     analyticOrderAt (LFunction χ) ρ ≠ ⊤ := by

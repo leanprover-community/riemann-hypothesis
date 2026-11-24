@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueIsTanFrameOfIsEmpty
-public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WedgeOrdVpBaseChangeOfNeBot
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsChernExistsUniqueAndIso
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 @[expose] public section
 
@@ -40,8 +82,8 @@ theorem exp_sum (T : Thick κ s) {K : Type} [Fintype K] (ε : K → ℤ) (a : K 
     change _ = dpExp T.δ (Subtype.val _)
     congr 1
     simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e2, map_sum, toMul_sum, ← Units.val_mul, ← Finset.prod_mul_distrib]
+
+  rw [e2, map_sum, toMul_sum, ← Units.val_mul, ← Finset.prod_mul_distrib]
   congr 1
   refine Finset.prod_congr rfl fun k _ ↦ ?_
   rw [e1, mul_zpow, map_zsmul, toMul_zsmul]
@@ -136,8 +178,8 @@ theorem isChern_cube {L : LB A.left} {n : ℕ} {a b : Fin n → prim κ t A}
   have e : ∀ J : ULift.{0} (Finset (Fin 2)), (isMor_psum ![u, v] J).pull2 (∑ k, cup _ (a k).1 (b k).1) =
       ∑ k, cup _ (∑ i ∈ J.down, pullOver κ t (![u, v] i) (a k).1)
         (∑ i ∈ J.down, pullOver κ t (![u, v] i) (b k).1) := fun J ↦ by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun k _ ↦ ?_
     rw [IsMor.pullCohomologyTwo_cup, ← pullOver_psum, ← pullOver_psum]
     rfl
@@ -234,10 +276,10 @@ theorem adjoint_of_lbIso (P : GlobalTheory.Published.AbelianDeRham.Free) {R : Ty
       E.symm (pullOver (dp0 R) (𝟙 _) ρ c.1) = primPull (dp0 R) (𝟙 _) ρ c := fun _ _ _ ↦ Subtype.ext rfl
   have v₁ : ∀ c : primDR A, primPull (dp0 R) (𝟙 _) (𝟙 A) c = c := fun c ↦
     Subtype.ext (IsMor.pullCohomologyOne_id _ _)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_add (f := _), hΛ, LinearMap.comp_apply, LinearEquiv.coe_coe, pullOver_pullOver,
-    lift_fst_assoc, lift_snd_assoc, lift_fst, lift_snd, Category.id_comp, MonObj.one_comp, pullOver_one,
-    map_zero, v, v₁, mul_zero, zero_mul, sub_zero, zero_sub] at e
+
+  simp only [map_sum, map_add (f := _), hΛ, LinearMap.comp_apply, LinearEquiv.coe_coe, pullOver_pullOver,
+  lift_fst_assoc, lift_snd_assoc, lift_fst, lift_snd, Category.id_comp, MonObj.one_comp, pullOver_one,
+  map_zero, v, v₁, mul_zero, sub_zero, zero_sub] at e
   simp only [wedgeForm_apply, push_apply, sub_eq_add_neg]
   exact e
 

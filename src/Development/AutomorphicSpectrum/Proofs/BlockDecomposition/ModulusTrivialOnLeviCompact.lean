@@ -1,8 +1,52 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableZetaIntegrand
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.StrictDominanceCasselman.IsStrictlyDominant
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,30 +60,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 theorem exists_nabs_le_of_isCompact {C : Set k} (hC : IsCompact C) :
     ∃ B : ℝ, ∀ u : kˣ, (u : k) ∈ C → nabs k u ≤ B := by
-  classical
-  have hopen : ∀ y : kˣ, IsOpen {x : k | valuation k x ≤ valuation k (y : k)} := by
-    intro y
-    have hy : valuation k (y : k) ≠ 0 := by simp
-    rw [isOpen_iff_mem_nhds]
-    intro x hx
-    rw [IsValuativeTopology.mem_nhds_iff]
-    refine ⟨Units.mk0 (valuation k (y : k)) hy, ?_⟩
-    rintro _ ⟨z, hz, rfl⟩
-    simp only [Set.mem_ofPred_eq] at hz hx ⊢
-    calc valuation k (x + z) ≤ max (valuation k x) (valuation k z) := Valuation.map_add _ _ _
-      _ ≤ valuation k (y : k) := max_le hx (le_of_lt (by simpa using hz))
-  obtain ⟨t, ht⟩ := hC.elim_finite_subcover (fun y : kˣ => {x : k | valuation k x ≤ valuation k (y : k)})
-    hopen (by
-      intro x _
-      rw [Set.mem_iUnion]
-      by_cases hx : x = 0
-      · exact ⟨1, by simp [hx]⟩
-      · exact ⟨Units.mk0 x hx, by simp⟩)
-  obtain ⟨y, -, hy⟩ := Finset.exists_max_image (insert 1 t) (fun y : kˣ => valuation k (y : k))
-    (Finset.insert_nonempty _ _)
-  refine ⟨nabs k y, fun u hu => nabs_le_of_valuation_le ?_⟩
-  obtain ⟨z, hz, hzu⟩ := Set.mem_iUnion₂.1 (ht hu)
-  exact le_trans hzu (hy z (Finset.mem_insert_of_mem hz))
+  apply GlobalTheory.ZetaConvergence.exists_nabs_le <;> assumption
 
 theorem nabs_pow_eq (y : kˣ) (n : ℕ) : nabs k (y ^ n) = nabs k y ^ n := by
   unfold nabs
@@ -75,8 +96,6 @@ theorem continuous_blockDet {N h : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N
   unfold blockDet
   first
     | fun_prop
-    | exact Continuous.matrix_det (continuous_pi fun i => continuous_pi fun j =>
-        (Units.continuous_val.matrix_elem _ _))
 
 theorem blockDet_leviEmb {N h : ℕ} (d : Fin h → ℕ) (hd : ∑ a, d a = N) (a : Fin h)
     (x : Levi k (Bl d)) :

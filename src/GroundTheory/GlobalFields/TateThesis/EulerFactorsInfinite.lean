@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsArch
 public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
 public import GroundTheory.GlobalFields.TateThesis.TraceFourier
 public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
 public import GroundTheory.GlobalFields.Adele.IntegersLattice
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

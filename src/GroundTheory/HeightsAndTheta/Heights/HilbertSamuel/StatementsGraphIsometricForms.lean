@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGraphChangeOfModel
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChangeOfModel
 
 @[expose] public section
 

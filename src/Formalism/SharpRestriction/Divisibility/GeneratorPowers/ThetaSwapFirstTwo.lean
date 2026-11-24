@@ -1,11 +1,49 @@
 module
 
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdLB
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsChartIff
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdSy
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.CartesianLiftThreeCompProjection
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -136,15 +174,13 @@ theorem mk_rename {κ κ' : Type} (m : ℕ) (ρ : κ → κ') (P : MvPolynomial 
 theorem cc_psTrunc {κ : Type} [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPowerSeries κ S) :
     constantCoeff (psTrunc m f) = MvPowerSeries.constantCoeff f := by
   unfold psTrunc
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [MvPolynomial.constantCoeff_monomial]
   rw [Finset.sum_ite_eq']
   rw [if_pos]
   · first
       | exact MvPowerSeries.coeff_zero_eq_constantCoeff_apply f
-      | simp
-      | rfl
   · simp [degLE]
     exact ⟨fun _ => 0, by ext; simp⟩
 
@@ -153,12 +189,6 @@ theorem cc_psIn {n n' : ℕ} (m : ℕ) (r : Fin n → Fin n') (f : PS S n d) :
   unfold psIn
   first
     | (rw [MvPolynomial.constantCoeff_rename]; exact cc_psTrunc m f)
-    | simp [cc_psTrunc]
-    | (rw [show (rename fun p : Fin n × Fin d => (r p.1, p.2)) (psTrunc m f) =
-          aeval (fun p : Fin n × Fin d => (X (r p.1, p.2) : MvPolynomial (Fin n' × Fin d) S)) (psTrunc m f) from
-          DFunLike.congr_fun (MvPolynomial.algHom_ext fun i => by simp) _]
-       rw [cc_aeval _ (fun p => by simp)]
-       exact cc_psTrunc m f)
 
 end Ser
 
@@ -176,10 +206,7 @@ section AxTools
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} (t : SAB H X0)
 variable {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) (d : ℕ) (x : ∀ m, jOG x0 d m 1 ⟶ t.G)
 
-theorem subst_jpt {n n' : ℕ} (m : ℕ) (ψ : Fin n × Fin d → MvPolynomial (Fin n' × Fin d) S) (i : Fin n) (k : Fin n')
-    (h : ∀ j, ψ (i, j) = X (k, j)) :
-    homAt x0 (jetSubstP m ψ) ≫ jptG t x0 d x m i = jptG t x0 d x m k := by
-  exact subst_jpt_lemma_3 t x0 d x m ψ i k h
+alias subst_jpt := _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.subst_jpt_lemma_3
 
 end AxTools
 

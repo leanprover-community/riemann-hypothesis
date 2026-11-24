@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.WuDecay
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 
 @[expose] public section
 

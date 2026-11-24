@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecEq
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PUpperNormalisation
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -64,8 +67,8 @@ theorem homog_prod {J : Type} (s : Finset J) (f : J → MRing ι) (d : J → K �
 theorem homog_bind₁ {a : K → ℕ} {N : ℕ} (φ : Fin (N + 1) → MRing ι) (hφ : ∀ j, IsMultiHomog (φ j) a)
     {f : MvPolynomial (Fin (N + 1)) ℤ} {n : ℕ} (hf : f.IsHomogeneous n) :
     IsMultiHomog (bind₁ φ f) (fun k => n * a k) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum]
+
+  rw [f.as_sum, map_sum]
   refine SectionBounded.homog_sum _ fun m hm => ?_
   rw [bind₁_monomial]
   refine SectionBounded.homog_congr (SectionBounded.homog_mul (SectionBounded.homog_C _)

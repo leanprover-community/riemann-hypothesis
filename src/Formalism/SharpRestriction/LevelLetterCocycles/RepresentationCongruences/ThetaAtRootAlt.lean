@@ -1,7 +1,64 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ExistsGLLatBasisOfIsSplitEquiv
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.CharP.Lemmas
+public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
+public import Mathlib.RingTheory.PowerSeries.Order
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 
 @[expose] public section
 
@@ -25,13 +82,11 @@ theorem root_eq (l : ℕ) [hp : Fact l.Prime] {x₀ y w : O} (hx : x₀ ≠ 0)
     rwa [orderOf_eq_prime hrx hζ1] at h
   have hζu : IsUnit (1 + x₀) := by
     first
-    | exact hprim.isUnit hl0
     | exact hprim.isUnit hl0.ne'
   have hwu : ¬ IsUnit w := (IsLocalRing.mem_maximalIdeal w).1 hw
   obtain ⟨i, hil, hi⟩ : ∃ i < l, (1 + x₀) ^ i = 1 + y := by
     first
     | exact hprim.eq_pow_of_pow_eq_one hry
-    | exact hprim.eq_pow_of_pow_eq_one hry hl0
   rcases i with _ | j
   · exfalso
     have hy0 : y = 0 := by linear_combination -hi
@@ -53,7 +108,6 @@ theorem root_eq (l : ℕ) [hp : Fact l.Prime] {x₀ y w : O} (hx : x₀ ≠ 0)
       obtain ⟨m, -, hm⟩ : ∃ m < l, ((1 + x₀) ^ (j + 1)) ^ m = 1 + x₀ := by
         first
         | exact hprim'.eq_pow_of_pow_eq_one hrx
-        | exact hprim'.eq_pow_of_pow_eq_one hrx hl0
       have e1 := geom_sum_mul ((1 + x₀) ^ (j + 1)) m
       have e2 := geom_sum_mul (1 + x₀) (j + 1)
       rw [hm] at e1
@@ -86,8 +140,6 @@ theorem mem_max (l : ℕ) [hp : Fact l.Prime] (hl : ((l : ℕ) : O) ∈ IsLocalR
   haveI : CharP (IsLocalRing.ResidueField O) l := by
     first
     | exact (CharP.charP_iff_prime_eq_zero hp.out).2 hk
-    | exact ringChar.of_eq ((hp.out.eq_one_or_self_of_dvd _ (ringChar.dvd hk)).resolve_left
-        CharP.ringChar_ne_one)
   have h := congrArg (IsLocalRing.residue O) hroot
   simp only [map_pow, map_add (f := _), map_one] at h
   rw [add_pow_char, one_pow] at h
@@ -113,22 +165,14 @@ theorem decomp {x₀ : O} (hx : x₀ ∈ IsLocalRing.maximalIdeal O) (p : O⟦X�
   have hdeg := hqr.1
   first
   | rw [map_mk hx, PowerSeries.order_X] at hdeg
-  | rw [map_res hx, PowerSeries.order_X] at hdeg
   simp at hdeg
   have hrc : (r : O⟦X⟧) = C (r.coeff 0) := by
     first
     | (have hr0 : r.degree ≤ 0 := by
           first
           | exact Nat.WithBot.lt_one_iff_le_zero.1 hdeg
-          | exact Order.le_of_lt_succ hdeg
        conv_lhs => rw [Polynomial.eq_C_of_degree_le_zero hr0]
        exact Polynomial.coe_C _)
-    | (ext n
-       rcases n with _ | n
-       · simp
-       · rw [Polynomial.coeff_coe, PowerSeries.coeff_C, if_neg (Nat.succ_ne_zero n)]
-         exact Polynomial.coeff_eq_zero_of_degree_lt
-           (lt_of_lt_of_le hdeg (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n))))
   refine ⟨r.coeff 0, q, ?_⟩
   rw [← hrc]
   exact hqr.2
@@ -157,7 +201,6 @@ theorem uniq {x₀ : O} (hx : x₀ ∈ IsLocalRing.maximalIdeal O) {c : O}
   have hcoef0 : coeff 0 f = 0 := by
     first
     | exact IsHausdorff.haus inferInstance _ hall
-    | exact IsHausdorff.haus' _ hall
   have h0 := congrArg (fun g => coeff 0 g) hf
   simp only [mul_sub, map_sub, PowerSeries.coeff_zero_mul_X, PowerSeries.coeff_mul_C, hcoef0,
     PowerSeries.coeff_zero_C] at h0

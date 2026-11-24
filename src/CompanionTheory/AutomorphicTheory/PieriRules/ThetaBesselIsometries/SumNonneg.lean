@@ -1,11 +1,9 @@
 module
 
-public import Mathlib
-public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.Imports
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
+public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.IsDSOfIsDG
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselNeZeroOfCyclicOrbit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
-public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.IsDSOfIsDG
 
 @[expose] public section
 

@@ -1,7 +1,48 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.Lemma4ElementZero
+public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.TestSideExplicitIdentification
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FockRLinDual
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -26,11 +67,6 @@ theorem normDeg_univ (r : ℕ) (m : TV n' k →₀ ℕ) :
   rw [Finsupp.notMem_support_iff] at hv
   simp [hv]
 
-theorem normDeg_add (r : ℕ) (m m' : TV n' k →₀ ℕ) : normDeg r (m + m') = normDeg r m + normDeg r m' := by
-  simp only [normDeg_univ, Finsupp.coe_add, Pi.add_apply, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun v _ => ?_
-  split_ifs <;> simp
-
 def NDsub (R : Type) [CommRing R] (n' k r T : ℕ) : Submodule R (MvPolynomial (TV n' k) R) :=
   restrictSupport R {mm | normDeg r mm ≤ T}
 
@@ -47,7 +83,7 @@ theorem NDsub_mono {r T T' : ℕ} (h : T ≤ T') : NDsub R n' k r T ≤ NDsub R 
 
 theorem nd_move (r : ℕ) (mm : TV n' k →₀ ℕ) (v v' : TV n' k) :
     normDeg r (Finsupp.single v 1 + (mm - Finsupp.single v' 1)) ≤ normDeg r mm + 1 := by
-  rw [normDeg_add]
+  rw [_root_.Formalism.MainNotions.G.WittFrameLocaliserOrders.bx_normDeg_add]
   have h1 : normDeg r (Finsupp.single v 1 : TV n' k →₀ ℕ) ≤ 1 := by
     rw [normDeg_univ]
     calc ∑ w : TV n' k, (if IsNormal r w then (Finsupp.single v 1 : TV n' k →₀ ℕ) w else 0)
@@ -67,8 +103,8 @@ theorem nd_move (r : ℕ) (mm : TV n' k →₀ ℕ) (v v' : TV n' k) :
 theorem nd_op (r T : ℕ) (v v' : TV n' k) {P : MvPolynomial (TV n' k) R} (hP : P ∈ NDsub R n' k r T) :
     X v * pderiv v' P ∈ NDsub R n' k r (T + 1) := by
   rw [mem_NDsub] at hP
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [P.as_sum, map_sum, Finset.mul_sum]
+
+  rw [P.as_sum, map_sum, Finset.mul_sum]
   refine Submodule.sum_mem _ fun mm hmm => ?_
   rw [pderiv_monomial, ← pow_one (X v), ← monomial_single_add, mem_NDsub]
   intro mm' hmm'
@@ -82,7 +118,7 @@ theorem nd_mul {r T T' : ℕ} {P Q : MvPolynomial (TV n' k) R} (hP : P ∈ NDsub
   have h1 := support_mul P Q hmm
   rw [Finset.mem_add] at h1
   obtain ⟨a, ha, b, hb, rfl⟩ := h1
-  rw [normDeg_add]
+  rw [_root_.Formalism.MainNotions.G.WittFrameLocaliserOrders.bx_normDeg_add]
   exact Nat.add_le_add (hP a ha) (hQ b hb)
 
 theorem Lin_pderiv (N N' : Fin n' → Matrix (Fin k) (Fin k) R) (h : ∀ s, N s * N' s = 1) (s : Fin n') (b : Fin k)
@@ -131,7 +167,7 @@ theorem word_length {τ : Type} (TT : Finset (Fin n')) (c : ℕ) :
       have e : ∀ s, ((z :: l).filter fun w => w.1 = s).length =
           (l.filter fun w => w.1 = s).length + if z.1 = s then 1 else 0 := by
         intro s
-        by_cases hs : z.1 = s <;> simp [List.filter_cons, hs]
+        by_cases hs : z.1 = s <;> simp [hs]
       rw [List.length_cons, ih (fun w hw => hl w (List.mem_cons_of_mem _ hw)),
         Finset.sum_congr rfl (fun s _ => e s), Finset.sum_add_distrib, Finset.sum_ite_eq]
       simp [hl z (by simp)]

@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.IsProbabilityMeasureSphereLaw
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.RingTheory.RootsOfUnity.CyclotomicUnits
+public import Mathlib.RingTheory.RootsOfUnity.Lemmas
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.Associated
 
 @[expose] public section
 

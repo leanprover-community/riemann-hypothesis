@@ -1,22 +1,61 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-public import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-public import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
-public import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
-public import Formalism.LocalRingCardinality.HostCls
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DisjointExceptional
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIffHostBound
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LogCondLeThree
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.AuxiliaryPrimeMemAvoidedPrimes
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.SetUnipotentTranslate
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ScalePolynomialQuantitiesComparison
+public import Development.AbelianVarietyTheory.Definitions.Foundations.RootOfUnityEightQMemCoeffGaloisSubfield
+public import Formalism.LogVandermondeBounds.LogRatioLowerBound
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExplicitRanksBasicBoundsLargeScale
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HostBoundsTwoMulRpowLogSqLe
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.GoodTopCountLeConstMulLog
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ScalePolynomialQuantitiesComparison
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmData
+public import Formalism.GL3MeanSquares.HookFormulaTorsion.DimensionMassJointBound
+import Formalism.LocalRingCardinality.HostCls
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.LogVandermondeBounds.LogVandermondeProofs.CardStabilizerVector
+public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.SetUnipotentTranslate
+public import Formalism.HermitianLattices.HermitianLatticesProofs.MassTelescope
+import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsExplicitParameters
 
 @[expose] public section
 
@@ -32,7 +71,7 @@ theorem host_cm {R : Ranks} (H : Host R) : letI := H.cmStar; Formalism.Hermitian
   letI := H.cmStar
   (host_cmData R H).cmUnram
 
-theorem finrank_E {R : Ranks} (H : Host R) : Module.finrank ℚ H.E = 2 * R.f := H.finrank_E'
+alias finrank_E := _root_.Formalism.BasicNotions.Host.finrank_E'
 
 theorem fDeg_E {R : Ranks} (H : Host R) : Formalism.HermitianLatticesTheory.fDeg H.E = R.f := by
   let _ := H.cmStar
@@ -385,48 +424,7 @@ theorem scale_sizes (eps cD ch : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) (hcD : 
 theorem bottom_len (eps : ℝ) (K : G.Consts) (h0 : 0 < eps) (h1 : eps < 1 / 52) (hK : 1 ≤ K.La) :
     ∃ x0 : ℝ, ∀ (s : Scale) (R : Ranks), s.eps = eps → x0 ≤ s.x → RankVal s R →
       2 * (R.n : ℝ) * s.delta1 * s.x ^ s.eps * G.La K s * s.b' / (R.k : ℝ) ≤ s.b' := by
-  obtain ⟨CN, x1, hx1⟩ := GlobalTheory.topCount_and_lambda_bounds eps h0 h1
-  refine ⟨max x1 (32 * K.La * CN ^ 2), fun s R he hx hR => ?_⟩
-  obtain ⟨-, -, hLa⟩ := hx1 s he (le_trans (le_max_left _ _) hx)
-  obtain ⟨hLa1, hLa2⟩ := hLa K hK
-  have hx2 : 32 * K.La * CN ^ 2 ≤ s.x := le_trans (le_max_right _ _) hx
-  obtain ⟨⟨-, hn⟩, -, ⟨hk, -⟩, -⟩ := hR
-  have hx1' : 1 < s.x := s.one_lt_alt
-  have hxp : 0 < s.x := by linarith
-  have hb : 0 < s.b' := by
-    unfold Scale.b' Scale.a Scale.b Scale.X'
-    positivity
-  have hkp : (0 : ℝ) < R.k := lt_of_lt_of_le (Real.rpow_pos_of_pos hxp _) hk
-  have hd0 : 0 < s.delta1 := Real.rpow_pos_of_pos hxp _
-  have hd1 : s.delta1 ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hx1'.le (by have := s.eps_pos; linarith)
-  have hy : 0 < s.x ^ s.eps := Real.rpow_pos_of_pos hxp _
-  have hlog0 : 0 ≤ Real.log s.x := Real.log_nonneg hx1'.le
-  have hlog : Real.log s.x ^ 2 ≤ 4 * s.x := by
-    have h := Real.log_le_rpow_div hxp.le (show (0 : ℝ) < 1 / 2 by norm_num)
-    have h2 : (s.x ^ (1 / 2 : ℝ)) ^ 2 = s.x := by
-      rw [← Real.rpow_natCast, ← Real.rpow_mul hxp.le]; norm_num
-    calc Real.log s.x ^ 2 ≤ (s.x ^ (1 / 2 : ℝ) / (1 / 2)) ^ 2 := pow_le_pow_left₀ hlog0 h 2
-      _ = 4 * (s.x ^ (1 / 2 : ℝ)) ^ 2 := by ring
-      _ = 4 * s.x := by rw [h2]
-  have hKC : 0 ≤ K.La * CN ^ 2 := by positivity
-  have hLa3 : G.La K s ≤ s.x ^ (2 : ℝ) / 4 * s.x ^ s.eps := by
-    refine hLa2.trans ?_
-    rw [Real.rpow_two]
-    have : K.La * CN ^ 2 * Real.log s.x ^ 2 ≤ s.x / 32 * (4 * s.x) :=
-      mul_le_mul (by linarith) hlog (by positivity) (by positivity)
-    nlinarith
-  have hLa0 : 0 ≤ G.La K s := hy.le.trans hLa1
-  have hmain : 2 * (R.n : ℝ) * s.delta1 * s.x ^ s.eps * G.La K s ≤ R.k := by
-    calc 2 * (R.n : ℝ) * s.delta1 * s.x ^ s.eps * G.La K s
-        ≤ 2 * (2 * s.x ^ (2 + 8 * s.eps)) * 1 * s.x ^ s.eps * (s.x ^ (2 : ℝ) / 4 * s.x ^ s.eps) := by
-          gcongr
-      _ = s.x ^ (2 + 8 * s.eps) * s.x ^ s.eps * s.x ^ (2 : ℝ) * s.x ^ s.eps := by ring
-      _ = s.x ^ (2 + 8 * s.eps + s.eps + 2 + s.eps) := by
-          rw [← Real.rpow_add hxp, ← Real.rpow_add hxp, ← Real.rpow_add hxp]
-      _ ≤ s.x ^ (9 / 2 + 10 * s.eps) := Real.rpow_le_rpow_of_exponent_le hx1'.le (by linarith)
-      _ ≤ R.k := hk
-  rw [div_le_iff₀ hkp]
-  nlinarith
+  apply _root_.GlobalTheory.EX.bottom_window_le <;> assumption
 
 end GlobalTheory.EX.WinLow
 

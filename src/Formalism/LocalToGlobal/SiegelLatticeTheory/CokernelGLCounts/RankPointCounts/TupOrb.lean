@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RepAtTup
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RatIota
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TermDefPf
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermCarrierStability.TermStableHolds
 
 @[expose] public section
 
@@ -26,8 +28,8 @@ def rAct {n : ℕ} (β : Matrix (Fin n) (Fin n) E) (f : Fin n → S.V) : Fin n �
 theorem rAct_map {n : ℕ} (β : Matrix (Fin n) (Fin n) E) (f : Fin n → S.V) (k : S.V ≃ₗ[E] S.V) :
     rAct β (fun c => k (f c)) = fun a => k (rAct β f a) := by
   funext a
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [rAct, map_sum, map_smul]
+
+  simp [rAct, map_sum, map_smul]
 
 theorem rAct_mul {n : ℕ} (α β : Matrix (Fin n) (Fin n) E) (f : Fin n → S.V) :
     rAct α (rAct β f) = rAct (α * β) f := by
@@ -151,8 +153,8 @@ theorem zhat_move {Λ : Submodule (𝓞 E) S.V} {T : E} (F : LFlag S r T) {n : S
       = S.hT (n (n.symm (frame F a))) (n (rAct β f b)) := by rw [n.apply_symm_apply]
     _ = S.hT (n.symm (frame F a)) (rAct β f b) := Saturated.isom_apply hn.1.1 _ _
     _ = S.hT (n.symm (frame F a)) (rAct β f' b) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [rAct, map_sum, map_smul]
+
+      simp only [rAct, map_sum, map_smul]
       exact Finset.sum_congr rfl (fun c _ => by rw [key c])
     _ = S.hT (n (n.symm (frame F a))) (n (rAct β f' b)) := (Saturated.isom_apply hn.1.1 _ _).symm
     _ = S.hT (frame F a) (n (rAct β f' b)) := by rw [n.apply_symm_apply]
@@ -298,7 +300,7 @@ theorem move_exists (hΛ : IsRowLat D F0 Λ) {t : TermsOf D u' F0 Λ} {Z₁ Z₂
     obtain ⟨p₁, e₁⟩ := r₁
     obtain ⟨p'', e''⟩ := r''
     obtain ⟨n'', hn'', m'', hm'', hfr'', -⟩ :=
-      (Formalism.L2.SG.Closed.TermEqIff_holds D u u' F0 Λ hΛ ⟨F₁, p₁⟩ ⟨F'', p''⟩).1 (e₁.trans e''.symm)
+      (_root_.term_eq_iff_relation D u u' F0 Λ hΛ ⟨F₁, p₁⟩ ⟨F'', p''⟩).1 (e₁.trans e''.symm)
     have hgA : IsAutLam (VS D) Λ (n * n'' * (m'' * m)) :=
       Formalism.L2.SG.Pf.isAutLam_mul (Formalism.L2.SG.Pf.isAutLam_mul hn.1 hn''.1)
         (Formalism.L2.SG.Pf.isAutLam_mul hm''.1 hm.1)
@@ -310,10 +312,10 @@ theorem move_exists (hΛ : IsRowLat D F0 Λ) {t : TermsOf D u' F0 Λ} {Z₁ Z₂
         fun a => by rw [hf3 a]; rfl, rfl⟩
     have hframe : ∀ a, frame F3 a = n (rAct β (frame F'') a) := fun a => by
       rw [hf3 a, hβ a]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [rAct, map_sum, map_smul, hfr'']
+
+      simp only [rAct, map_sum, map_smul, hfr'']
     have pd3 : PD D Λ (lf D F0) u' F3 :=
-      Formalism.L2.SG.Closed.TermStable_holds D u u' F0 Λ hΛ ⟨F₁, p₁⟩ F3 hdc
+      _root_.PI.TCS.termStable_holds D u u' F0 Λ hΛ ⟨F₁, p₁⟩ F3 hdc
     have hrep : TermDef.Rep Λ (lf D F0) (PD D Λ (lf D F0) u') t F3 :=
       ⟨pd3, (Quot.sound (show TermDef.Rel Λ (lf D F0) (PD D Λ (lf D F0) u') ⟨F₁, p₁⟩ ⟨F3, pd3⟩ from hdc)).symm.trans e₁⟩
     have hF₂ : ∀ a, frame F₂ a = n (rAct β (frame F₁) a) := fun a => by rw [hfr a, hβ a]; rfl
@@ -348,7 +350,7 @@ theorem move_exists (hΛ : IsRowLat D F0 Λ) {t : TermsOf D u' F0 Λ} {Z₁ Z₂
       · have := h₁.2.1.2.2 c; rwa [frameAct_one'] at this
       · have := h''.2.1.2.2 c; rwa [frameAct_one'] at this
       · have := h₂.2.1.2.2 c; rwa [frameAct_one'] at this
-    · exact ((Formalism.L2.SG.Closed.TermFun_holds D u u' F0 Λ hΛ).2.2.2.1 ⟨F₁, p₁⟩ ⟨F3, pd3⟩ hdc).1 h₁.2.2.1
+    · exact ((_root_.term_function_const D u u' F0 Λ hΛ).2.2.2.1 ⟨F₁, p₁⟩ ⟨F3, pd3⟩ hdc).1 h₁.2.2.1
     · have hZZ : ZhatL (lf D F0) F3 = ZhatL (lf D F0) F₂ := by
         funext a b
         exact hent a b
@@ -365,7 +367,7 @@ theorem orb_le (hΛ : IsRowLat D F0 Λ) {t : TermsOf D u' F0 Λ} {Z₁ Z₂ : Pa
   obtain ⟨p₁, e₁⟩ := r₁
   obtain ⟨p₂, e₂⟩ := r₂
   obtain ⟨n, hn, m, hm, hfr, -⟩ :=
-    (Formalism.L2.SG.Closed.TermEqIff_holds D u u' F0 Λ hΛ ⟨F₁, p₁⟩ ⟨F₂, p₂⟩).1 (e₁.trans e₂.symm)
+    (_root_.term_eq_iff_relation D u u' F0 Λ hΛ ⟨F₁, p₁⟩ ⟨F₂, p₂⟩).1 (e₁.trans e₂.symm)
   obtain ⟨β, hβ0, hβ1, hβ⟩ := Formalism.L2.SG.Pf.nlam_coef hm
   have mv : ∀ F'' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E),
       F'' ∈ CntLocal.EZ (D := D) ((Tu D u' : ℕ) : D.host.E) F0 Λ Z₁ ∧
@@ -430,13 +432,13 @@ theorem orbZT_holds (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D,
   obtain ⟨r₂, hadm, -⟩ := hex.choose_spec
   obtain ⟨p₁, e₁⟩ := r₁
   obtain ⟨p₂, e₂⟩ := r₂
-  have hdc := (Formalism.L2.SG.Closed.TermEqIff_holds D u u' F0 γ.lam hΛ ⟨F₁, p₁⟩ ⟨_, p₂⟩).1 (e₁.trans e₂.symm)
+  have hdc := (_root_.term_eq_iff_relation D u u' F0 γ.lam hΛ ⟨F₁, p₁⟩ ⟨_, p₂⟩).1 (e₁.trans e₂.symm)
   have h₂ : hex.choose.2.1 ∈ CntLocal.EZ (D := D) ((Tu D u' : ℕ) : D.host.E) F0 γ.lam
       (ZhatL (lf D F0) hex.choose.2.1) :=
     ⟨⟨p₂.1, p₂.2.1, by
         set_option backward.isDefEq.respectTransparency false in
           rw [Formalism.L2.SG.Pf.gval_rel (lf D F0) hdc]; exact h₁.1.2.2⟩, hadm,
-      ((Formalism.L2.SG.Closed.TermFun_holds D u u' F0 γ.lam hΛ).2.2.2.1 ⟨F₁, p₁⟩ ⟨_, p₂⟩ hdc).1 h₁.2.2.1, p₂.2.2, rfl⟩
+      ((_root_.term_function_const D u u' F0 γ.lam hΛ).2.2.2.1 ⟨F₁, p₁⟩ ⟨_, p₂⟩ hdc).1 h₁.2.2.1, p₂.2.2, rfl⟩
   rw [hz]
   exact orb_eq hΛ h₂ h₁ ⟨p₂, e₂⟩ ⟨p₁, e₁⟩
 

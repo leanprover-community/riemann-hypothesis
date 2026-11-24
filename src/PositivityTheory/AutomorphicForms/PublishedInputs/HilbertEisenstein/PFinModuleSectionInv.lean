@@ -1,9 +1,51 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.RightBilinearApply
+public import GroundTheory.GlobalFields.TateThesis.TateThetaDecay
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ExistsDecayBoundTwo
-public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SigmaFinitePosRealMeasure
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.FiniteSupportOfHyp
+public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SigmaFinitePosRealMeasure
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 @[expose] public section
 
@@ -72,16 +114,16 @@ theorem vInf_rowv (g : GA F 2) (a : Ideles F) (ξ : Fin 2 → F) :
     vInf (rowv g a ξ) = (fun i => UpperTheory.V.TR.pInf F ((a : Ad F) * algebraMap F (Ad F) (ξ i))) ᵥ*
       (g : Matrix (Fin 2) (Fin 2) (Ad F)).map (UpperTheory.V.TR.pInf F) := by
   funext j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [vInf, rowv_eq, Matrix.vecMul, dotProduct, Finset.mul_sum, map_sum, map_mul, Matrix.map_apply, rowA]
+
+  simp only [vInf, rowv_eq, Matrix.vecMul, dotProduct, Finset.mul_sum, map_sum, map_mul, Matrix.map_apply, rowA]
   refine Finset.sum_congr rfl fun i _ => by ring
 
 theorem vInf_colv (g : GA F 2) (a : Ideles F) (ξ : Fin 2 → F) :
     vInf (colv g a ξ) = ((g⁻¹ : GA F 2) : Matrix (Fin 2) (Fin 2) (Ad F)).map (UpperTheory.V.TR.pInf F) *ᵥ
       (fun i => UpperTheory.V.TR.pInf F (((a⁻¹ : Ideles F) : Ad F) * algebraMap F (Ad F) (ξ i))) := by
   funext j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [vInf, colv_eq, Matrix.mulVec, dotProduct, Finset.mul_sum, map_sum, map_mul, Matrix.map_apply, rowA]
+
+  simp only [vInf, colv_eq, Matrix.mulVec, dotProduct, Finset.mul_sum, map_sum, map_mul, Matrix.map_apply, rowA]
   refine Finset.sum_congr rfl fun i _ => by ring
 
 theorem map_pInf_mul_inv (g : GA F 2) :
@@ -153,7 +195,7 @@ theorem hint1 {χ : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (H : Hyp �
   set K := ∑ i, ∑ j, ‖G' i j‖ with hKdef
   have hK : 0 ≤ K := by positivity
   refine ⟨k, ?_⟩
-  haveI : IsFiniteMeasure ((normOneMeasure F).restrict E) :=
+  have : IsFiniteMeasure ((normOneMeasure F).restrict E) :=
     ⟨by rw [Measure.restrict_apply_univ]; exact normOneMeasure_normOneFundamentalDomain_lt_top F⟩
   set bnd : Pp F × Xi F → ℝ := fun q =>
     (K + 1) ^ k * (((((q.1.1 : ℝ) ^ 2)⁻¹ * (q.1.1 : ℝ)) * 1) * |U q.2.1|) with hbnddef
@@ -244,7 +286,7 @@ theorem hint2 {χ : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (H : Hyp �
   set K := ∑ i, ∑ j, ‖G i j‖ with hKdef
   have hK : 0 ≤ K := by positivity
   refine ⟨k, ?_⟩
-  haveI : IsFiniteMeasure ((normOneMeasure F).restrict E) :=
+  have : IsFiniteMeasure ((normOneMeasure F).restrict E) :=
     ⟨by rw [Measure.restrict_apply_univ]; exact normOneMeasure_normOneFundamentalDomain_lt_top F⟩
   set bnd : Pp F × Xi F → ℝ := fun q =>
     (K + 1) ^ k * (((((q.1.1 : ℝ) ^ 2) * (q.1.1 : ℝ)⁻¹) * 1) * |U q.2.1|) with hbnddef

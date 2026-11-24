@@ -1,7 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.SelfDualPHolds
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ClassMapPropertiesOfSymmetricForms
+public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
+public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.FiniteAdeleRingNontrivial
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.PrVTensInt
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ColSpanMap
 
 @[expose] public section

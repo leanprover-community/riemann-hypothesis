@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideTer
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 
@@ -33,8 +33,8 @@ theorem aeval_eq_ratioPt (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k
   classical
   conv_lhs => rw [F.as_sum]
   conv_rhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun μ hμ => ?_
   simp only [aeval_monomial]
   rw [Finsupp.prod_fintype _ _ (fun _ => by simp), Finsupp.prod_fintype _ _ (fun _ => by simp)]

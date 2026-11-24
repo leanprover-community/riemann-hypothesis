@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsBij
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
-public import Formalism.SharpRestriction.CuspSpanNormBounds.ExpansionFromLemmaB
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
+import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 
 @[expose] public section
 

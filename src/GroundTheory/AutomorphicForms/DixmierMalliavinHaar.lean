@@ -1,7 +1,20 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import GroundTheory.AutomorphicForms.DixmierMalliavinHaarCoord
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+public import Mathlib.Analysis.Calculus.BumpFunction.Normed
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
+public import Mathlib.MeasureTheory.Function.Jacobian
+public import Mathlib.MeasureTheory.Group.Integral
+public import Mathlib.MeasureTheory.Integral.Prod
 
 @[expose] public section
 

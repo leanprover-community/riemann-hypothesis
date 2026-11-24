@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ContinuousHermScal
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 
@@ -33,11 +31,11 @@ theorem hR_self_fixed {σ : E →ₐ[F] E} (hσ : IsCMExt F E σ) {M : ℕ}
     simp only [JR, Matrix.map_apply, inclR, sigR]
     simp [h]
   unfold hR hform
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_comm]
+
+  rw [map_sum, Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, map_mul, sigR_sigR R hσ, hJR]
   ring

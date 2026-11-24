@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ReductionMahler
+import GroundTheory.GlobalFields.Adele.Discrete
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

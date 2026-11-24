@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Unramified.Locus
+public import Mathlib.NumberTheory.RamificationInertia.Galois
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

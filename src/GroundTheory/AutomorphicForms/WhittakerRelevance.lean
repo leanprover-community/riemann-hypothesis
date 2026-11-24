@@ -1,6 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Group.End
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Data.Fintype.Basic
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+public import Mathlib.Data.Finset.Max
+public import Mathlib.Order.Interval.Finset.Defs
+public import Mathlib.Order.Interval.Finset.Fin
 
 @[expose] public section
 
@@ -74,8 +82,6 @@ theorem val_eq_of_le_right
     have hcard : #R ≤ m.val - b.val := by
       have := card_le_card hsub
       rwa [Fin.card_Ioc] at this
-    have hbm := Fin.lt_def.1 hm.2.1
-    have hwbm := Fin.lt_def.1 hm.2.2
     exact val_eq_of_le_of_le hB ((w m).val - (w b).val) b m (by omega) (le_of_lt hm.2.1) x hbx
       (Fin.le_iff_val_le_val.2 (by omega))
   · rw [not_nonempty_iff_eq_empty] at hne
@@ -101,8 +107,6 @@ theorem val_add_eq_of_le_left
     have hcard : #L ≤ b.val - m.val := by
       have := card_le_card hsub
       rwa [Fin.card_Ico] at this
-    have hmb := Fin.lt_def.1 hm.2.1
-    have hwmb := Fin.lt_def.1 hm.2.2
     have h1 := val_eq_of_le_of_le hB ((w b).val - (w m).val) m b (by omega) (le_of_lt hm.2.1) x
       (Fin.le_iff_val_le_val.2 (by omega)) hxb
     have h2 := val_eq_of_le_of_le hB ((w b).val - (w m).val) m b (by omega) (le_of_lt hm.2.1) b
@@ -156,7 +160,6 @@ theorem relevant_involution
   set c := Fin.rev (w b) with hc
   have hcv : c.val = n - (↑(w b) + 1) := by rw [hc, Fin.val_rev]
   have hb := b.isLt
-  have hwb := (w b).isLt
   apply Fin.ext
   rw [Fin.val_rev]
   by_cases hcb : b.val ≤ c.val
@@ -180,7 +183,6 @@ theorem apply_eq_of_run_right {α : Type*} (t : Fin n → α)
     rw [this]
   | succ k ih =>
     intro x hx hk
-    have hxn := x.isLt
     have hk1 : b.val + k < n := by omega
     have h1 := ih ⟨b.val + k, hk1⟩ rfl (by omega)
     have e1 := val_eq_of_le_right hB b x (Fin.le_iff_val_le_val.2 (by omega)) (by omega)
@@ -212,7 +214,6 @@ theorem apply_eq_of_run_left {α : Type*} (t : Fin n → α)
     rw [this]
   | succ k ih =>
     intro x hx hk
-    have hbn := b.isLt
     have hx1 : x.val + 1 < n := by omega
     have h1 := ih ⟨x.val + 1, hx1⟩ (by simp; omega) (by omega)
     have e1 := val_add_eq_of_le_left hB b x (Fin.le_iff_val_le_val.2 (by omega)) (by omega)
@@ -236,7 +237,6 @@ theorem relevant_torus {α : Type*} (t : Fin n → α)
   set c := Fin.rev (w b) with hc
   have hcv : c.val = n - (↑(w b) + 1) := by rw [hc, Fin.val_rev]
   have hb := b.isLt
-  have hwb := (w b).isLt
   by_cases hcb : b.val ≤ c.val
   · exact (apply_eq_of_run_right t hB ht b (c.val - b.val) c (by omega) (by omega)).symm
   · exact (apply_eq_of_run_left t hB ht b (b.val - c.val) c (by omega) (by omega)).symm

@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.SubThickRees
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
+public import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsDPMorphismBot
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.InstAddCommGroup
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.XSmulSucc
 
 @[expose] public section
 
@@ -36,9 +82,6 @@ theorem fil_anti (δ : DividedPowers J) {a c : ℕ} (h : a ≤ c) :
   rintro b ⟨l, h1, h2, h3⟩
   exact ⟨l, h1, h.trans h2, h3⟩
 
-theorem fil_zero (δ : DividedPowers J) : GlobalTheory.PDA.fil δ 0 = ⊤ :=
-  (Ideal.eq_top_iff_one _).2 (Ideal.subset_span ⟨[], by simp, by simp, by simp⟩)
-
 theorem dpow_mem_fil (δ : DividedPowers J) (n : ℕ) {x : B} (hx : x ∈ J) :
     δ.dpow n x ∈ GlobalTheory.PDA.fil δ n :=
   Ideal.subset_span ⟨[(n, x)], by simpa using hx, by simp, by simp⟩
@@ -62,7 +105,7 @@ theorem coefFil_anti (δ : DividedPowers J) (Q : PDPoly B) {a c : ℕ} (h : a �
 theorem mem_coefFil_zero (δ : DividedPowers J) (Q : PDPoly B) (z : Q.P) :
     z ∈ coefFil δ Q 0 := by
   intro k
-  simp [fil_zero]
+  simp [_root_.GlobalTheory.PDA.fil_zero_eq_top]
 
 theorem smul_e_mem_coefFil (δ : DividedPowers J) (Q : PDPoly B) {r k : ℕ} {b : B}
     (hb : b ∈ GlobalTheory.PDA.fil δ (r - k)) : b • Q.e k ∈ coefFil δ Q r := by
@@ -71,7 +114,7 @@ theorem smul_e_mem_coefFil (δ : DividedPowers J) (Q : PDPoly B) {r k : ℕ} {b 
   · subst h
     simpa using hb
   · have : Q.e.repr (b • Q.e k) j = 0 := by
-      simp [Finsupp.single_apply, Ne.symm h]
+      simp [Ne.symm h]
     rw [this]
     exact Ideal.zero_mem _
 
@@ -112,7 +155,7 @@ theorem algebraMap_mem_coefFil (δ : DividedPowers J) (Q : PDPoly B) {r : ℕ} {
 theorem e_mem_coefFil (δ : DividedPowers J) (Q : PDPoly B) {n m : ℕ} (h : n ≤ m) :
     Q.e m ∈ coefFil δ Q n := by
   have : (1 : B) ∈ GlobalTheory.PDA.fil δ (n - m) := by
-    rw [Nat.sub_eq_zero_of_le h, fil_zero]
+    rw [Nat.sub_eq_zero_of_le h, _root_.GlobalTheory.PDA.fil_zero_eq_top]
     trivial
   simpa using smul_e_mem_coefFil δ Q this
 
@@ -208,7 +251,7 @@ theorem coefFil_le_fil (δ : DividedPowers J) (Q : PDPoly B) (η : DividedPowers
 
 theorem fil_pdPoly : ∀ {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (Q : PDPoly B) (η : DividedPowers (Q.ext J)), Q.IsStd δ η → (∀ a c, fil δ a * fil δ c ≤ fil δ (a + c)) ∧ (∀ a c, a ≤ c → fil δ c ≤ fil δ a) ∧ fil δ 0 = ⊤ ∧ ∀ (r : ℕ) (z : Q.P), z ∈ fil η r ↔ ∀ k, Q.e.repr z k ∈ fil δ (r - k) := by
   intro B _ J δ Q η h
-  exact ⟨fil_mul_le δ, fun _ _ hac ↦ fil_anti δ hac, fil_zero δ, fun r z ↦
+  exact ⟨fil_mul_le δ, fun _ _ hac ↦ fil_anti δ hac, _root_.GlobalTheory.PDA.fil_zero_eq_top δ, fun r z ↦
     ⟨fun hz ↦ fil_le_coefIdeal δ Q η h r hz, fun hz ↦ coefFil_le_fil δ Q η h r hz⟩⟩
 
 end GlobalTheory.CompanionTheory.PDFil

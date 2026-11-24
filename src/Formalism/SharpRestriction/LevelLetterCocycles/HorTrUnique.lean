@@ -1,6 +1,47 @@
 module
 
+public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
+public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
+import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -45,19 +86,6 @@ theorem lA_smul_smul (T : LocLat G Qp LL O) (t s : ℕ) (z : W.DD T) :
     lA W ^ t • lA W ^ s • z = lA W ^ (s + t) • z := by
   rw [smul_smul, ← pow_add, add_comm]
 
-theorem φpow_lA (T : LocLat G Qp LL O) (e t : ℕ) (z : W.DD T) :
-    ((W.φD T) ^ e) (lA W ^ t • z) = lA W ^ t • ((W.φD T) ^ e) z := by
-  rw [Formalism.MainNotions.UnusedSlot80.Relay2.φpow_smul, map_pow]
-  congr 2
-  unfold lA
-  rw [map_natCast]
-
-theorem vecB_smul (T : LocLat G Qp LL O) {d : ℕ} (b : Fin d → W.DD T) (c : O) (y : Fin d → O) :
-    Formalism.MainNotions.LiftingTheory.vecB W T b (fun m => c * y m) = c • Formalism.MainNotions.LiftingTheory.vecB W T b y := by
-  unfold Formalism.MainNotions.LiftingTheory.vecB
-  rw [Finset.smul_sum]
-  exact Finset.sum_congr rfl fun m _ => mul_smul _ _ _
-
 theorem horTr_scale (T : LocLat G Qp LL O) {d : ℕ} (b : Fin d → W.DD T) (sol : Fin d → ℕ → Fin d → LL)
     (R κ t : ℕ) (k : Fin d) {H : W.DD T} (h : IsHorTr W T b sol R κ k H) :
     IsHorTr W T b sol R (κ + t) k (lA W ^ t • H) := by
@@ -66,7 +94,7 @@ theorem horTr_scale (T : LocLat G Qp LL O) {d : ℕ} (b : Fin d → W.DD T) (sol
   · rw [map_mul, map_pow, map_natCast, hy r hr m, pow_add]; ring
   · rw [lA_smul_eq, Finset.smul_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
-    rw [vecB_smul, smul_comm]
+    rw [_root_.Formalism.MainNotions.LiftingTheory.frame_vecB_smul, smul_comm]
 
 variable [IsDomain O]
 
@@ -103,7 +131,7 @@ theorem rv_up (T : LocLat G Qp LL O) (c' : ZMod n) (e : ℕ) (Λ : LetA O n) {d 
   refine ⟨κ', a, ha, ?_⟩
   have e1 : lA W ^ κ' • (lA W ^ (κ + t) • Λ • x - ∑ k, a k • ((W.φD T) ^ e) (lA W ^ t • Hh k)) =
       lA W ^ t • (lA W ^ κ' • (lA W ^ κ • Λ • x - ∑ k, a k • ((W.φD T) ^ e) (Hh k))) := by
-    simp only [φpow_lA, smul_sub, Finset.smul_sum, smul_smul, pow_add]
+    simp only [_root_.Formalism.MainNotions.UnusedSlot80.Relay2.φpow_lsmul, smul_sub, Finset.smul_sum, smul_smul, pow_add]
     congr 1
     · ring_nf
     · refine Finset.sum_congr rfl fun k _ => ?_

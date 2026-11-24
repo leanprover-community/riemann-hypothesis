@@ -1,7 +1,44 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ProjectiveAutomorphicHecke.CentralEig2
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -81,8 +118,8 @@ private theorem av_eig (L : Lvl χ) {x : V} (hx : Fx σ L.N x) (k : C) :
   have e : ∑ q : C ⧸ L.N, σ k (tw σ χ x q.out) = ((χ k : ℂˣ) : ℂ) • ∑ q : C ⧸ L.N, tw σ χ x q.out := by
     rw [hs, Finset.smul_sum]
     exact Finset.sum_congr rfl fun q _ => tw_left x k _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [av_apply, map_smul, map_sum, e, smul_comm]
+
+  rw [av_apply, map_smul, map_sum, e, smul_comm]
 
 private theorem av_translate (L : Lvl χ) {x : V} (hx : Fx σ L.N x) (k : C) :
     av σ χ L (σ k x) = ((χ k : ℂˣ) : ℂ) • av σ χ L x := by
@@ -104,8 +141,8 @@ private theorem av_refine {L' L : Lvl χ} (hle : L'.N ≤ L.N) {x : V} (hx : Fx 
   have h2 : av σ χ L' (av σ χ L x) = av σ χ L' x := by
     have h : ∀ k, av σ χ L' (tw σ χ x k) = av σ χ L' x := fun k => by
       rw [tw, map_smul, av_translate L' (hx.mono hle), smul_smul, inv_mul_cancel₀ (Units.ne_zero _), one_smul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [av_apply L x, map_smul, map_sum]
+
+    rw [av_apply L x, map_smul, map_sum]
     simp only [h, Finset.sum_const, Finset.card_univ, ← Nat.card_eq_fintype_card, ← Nat.cast_smul_eq_nsmul ℂ]
     rw [smul_smul, inv_mul_cancel₀ (card_ne L), one_smul]
   rw [← h2, h1]
@@ -115,8 +152,8 @@ private theorem av_indep {L L' : Lvl χ} {x : V} (hx : Fx σ L.N x) (hx' : Fx σ
 
 private theorem av_comm (L : Lvl χ) (T : V →ₗ[ℂ] V) (hT : ∀ k x, T (σ k x) = σ k (T x)) (x : V) :
     av σ χ L (T x) = T (av σ χ L x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [av_apply, map_smul, map_sum, tw, hT]
+
+  simp only [av_apply, map_smul, map_sum, tw, hT]
 
 private def Z (σ : Representation ℂ C V) (χ : C →* ℂˣ) (x : V) : Prop := ∃ L : Lvl χ, Fx σ L.N x ∧ av σ χ L x = 0
 
@@ -194,11 +231,11 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pLocAdj_of :
     · exact absurd (h ▸ hφ₀π) hφ₀N
   obtain ⟨v₀, hv₀⟩ : ∃ v, f v ≠ 0 := by
     by_contra hh
-    push_neg at hh
+    push Not at hh
     exact hf (LinearMap.ext hh)
   obtain ⟨h, hh, hZ⟩ : ∃ h ∈ H, ¬ Z σ χ (ρ h (f v₀)) := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have : f v₀ ∈ Nn := ⟨hfπ v₀, hcon⟩
     rw [hbot] at this
     exact hv₀ ((Submodule.mem_bot ℂ).1 this)
@@ -215,8 +252,8 @@ theorem UpperTheory.Gal.CertificateRingHomMap.pLocAdj_of :
   have hr : ∀ v, (r.sum fun g a => a • ρ g (f v)) = av σ χ L (ρ h (f v)) := fun v => by
     have e : (r.sum fun g a => a • ρ g (f v)) = Finsupp.linearCombination ℂ (fun g => ρ g (f v)) r :=
       (Finsupp.linearCombination_apply _ _).symm
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, av_apply, map_sum, Finset.smul_sum]
+
+    rw [e, av_apply, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [Finsupp.linearCombination_single, map_mul, Module.End.mul_apply, tw, mul_smul]
     rfl

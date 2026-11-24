@@ -1,12 +1,68 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrangianInvariantFormsProportionalFinitePlace
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.GoodCharIsLocallyConstant
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.IntegrablePair
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.CyclicAndLine
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsEqMulApplyZero
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsInvariantForm
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.DualNumberGraphFiltrationIsotropicOfSkew
+public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsInvariantForm
+public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.IntegrablePair
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
+import Mathlib.Topology.Sheaves.Init
+public import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.LaEqSqrtSmulLam
 
 @[expose] public section
 
@@ -141,34 +197,7 @@ omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Inver
 theorem mem_of_orth (large₂ : Submodule k ((κ → k) × (κ → k)))
     (hiso : ∀ w ∈ large₂, ∀ w' ∈ large₂, w.1 ⬝ᵥ w'.2 = w'.1 ⬝ᵥ w.2) (hdim : Module.finrank k large₂ = Fintype.card κ)
     (z : (κ → k) × (κ → k)) (hz : ∀ w ∈ large₂, w.1 ⬝ᵥ z.2 = z.1 ⬝ᵥ w.2) : z ∈ large₂ := by
-  classical
-  let Ω : ((κ → k) × (κ → k)) →ₗ[k] Module.Dual k ((κ → k) × (κ → k)) :=
-    LinearMap.mk₂ k (fun z w => w.1 ⬝ᵥ z.2 - z.1 ⬝ᵥ w.2)
-      (fun a b c => by simp only [Prod.fst_add, Prod.snd_add, add_dotProduct, dotProduct_add]; ring)
-      (fun a b c => by simp only [Prod.smul_fst, Prod.smul_snd, smul_dotProduct, dotProduct_smul, smul_eq_mul]; ring)
-      (fun a b c => by simp only [Prod.fst_add, Prod.snd_add, add_dotProduct, dotProduct_add]; ring)
-      (fun a b c => by simp only [Prod.smul_fst, Prod.smul_snd, smul_dotProduct, dotProduct_smul, smul_eq_mul]; ring)
-  have hinj : Function.Injective Ω := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-    intro a ha
-    refine Prod.ext (funext fun i => ?_) (funext fun i => ?_)
-    · simpa [Ω] using LinearMap.congr_fun ha (0, Pi.single i 1)
-    · simpa [Ω] using LinearMap.congr_fun ha (Pi.single i 1, 0)
-  have hmem : ∀ z : (κ → k) × (κ → k), (∀ w ∈ large₂, w.1 ⬝ᵥ z.2 = z.1 ⬝ᵥ w.2) → Ω z ∈ large₂.dualAnnihilator := fun z hz => by
-    rw [Submodule.mem_dualAnnihilator]
-    intro w hw
-    exact sub_eq_zero.2 (hz w hw)
-  have hle : large₂.map Ω ≤ large₂.dualAnnihilator := by
-    rintro _ ⟨w, hw, rfl⟩
-    exact hmem w fun w' hw' => hiso w' hw' w hw
-  have h1 := Subspace.finrank_add_finrank_dualAnnihilator_eq large₂
-  rw [Module.finrank_prod, Module.finrank_fintype_fun_eq_card, hdim] at h1
-  have h2 : Module.finrank k (large₂.map Ω) = Module.finrank k large₂.dualAnnihilator := by
-    rw [← (Submodule.equivMapOfInjective Ω hinj large₂).finrank_eq, hdim]
-    omega
-  have h3 := Submodule.eq_of_le_of_finrank_eq hle h2
-  obtain ⟨w, hw, e⟩ : Ω z ∈ large₂.map Ω := h3 ▸ hmem z hz
-  exact hinj e ▸ hw
+  apply GlobalTheory.LagrInvForm.mem_of_orth <;> assumption
 
 theorem exists_test (hc : Continuous ψ) (hn : ∀ x, ‖ψ x‖ = 1) (h1 : ψ ≠ 1) (large₂ : Submodule k ((κ → k) × (κ → k)))
     (hiso : ∀ w ∈ large₂, ∀ w' ∈ large₂, w.1 ⬝ᵥ w'.2 = w'.1 ⬝ᵥ w.2) (hdim : Module.finrank k large₂ = Fintype.card κ) :

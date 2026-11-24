@@ -1,21 +1,63 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FinitePartTypes
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DiscreteSeriesUpqExistsIffDsExists
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DiscreteSeriesUpqUniqueOfClassification
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
-public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.BlattnerShiftsSignedParameters
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasTypeAllAddOfEquiv
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAndHasSumKAvg
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompactAverageKFiniteFiniteRank
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddHsConjLe
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionTranslateAtRealPlace
+public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.BlattnerShiftsSignedParameters
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormDwLeSobNorm
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactFiniteApproxIdentity
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsSmoothAutomorphicFunctionCompactFamilyAverageStatement
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactFiniteApproxIdentityStatement
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.RankOneOperatorMemOfTranslationAverageClosedStatement
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.RankOneOperatorMemOfTranslationAverageClosed
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAndHasSumKAvg
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddHsConjLe
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompactAverageKFiniteFiniteRank
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasTypeTransport
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionTranslateAtRealPlace
+import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -223,7 +265,7 @@ theorem exists_rank_one (hθ : IsInfFam (D := D) θ) (hP : IsUnit P) (hJ : Pᴴ 
     ⟨_, GlobalTheory.Mem.RealTranslate.isAutFunSm_rTr_atTau D θ hθ V φ hφ τ _ (conj_inv_mem hP hJ hg),
       fun x S v ℓ C hS _ h => h.translate hσ.1 hS hg fun y hy => by
         simp only [res, rTr, at_mul hθ hP hJ hy hg, mul_assoc x]⟩
-  refine GlobalTheory.T.rankOneOperator_mem_of_translation_average_closed _ ε H σ hσ (Acts θ V τ ε σ P) htr (fun T T' hT hT' => ⟨fun φ hφ => ?_, fun φ hφ => ?_⟩) hsmul
+  refine _root_.GlobalTheory.TypeSum.rank_one_mem_of_closed _ ε H σ hσ (Acts θ V τ ε σ P) htr (fun T T' hT hT' => ⟨fun φ hφ => ?_, fun φ hφ => ?_⟩) hsmul
     (fun e he φ hφ => ⟨_, GlobalTheory.T.isSmoothAutomorphicFunction_compactFamily_average D θ hθ V τ (KG ε) (muK ε) _ continuous_conjK
       (fun k => conj_inv_mem hP hJ (K_le_UJ (toMK_mem_K k))) e
       (by obtain ⟨F, -, h1, h2, -⟩ := he; exact h2 _ h1) φ hφ, moves_avg hθ hP hJ hσ he φ⟩) ?_ e he
@@ -310,7 +352,7 @@ theorem hasTypeAt_of_isTypeAt : ∀ {D : D7} (θ : D.what₂.Tau → (Ainf D.hos
   have hk : Continuous fun k : KG ε => atTau θ V τ (P⁻¹ * toMK k * P) :=
     (continuousOn_atTau hθ V τ).comp_continuous continuous_conjK
       fun k => conj_inv_mem hP hJ (K_le_UJ (toMK_mem_K k))
-  obtain ⟨e, he, hap⟩ := GlobalTheory.T.exists_compactFinite_approxIdentity _ ε (GA D V) (fun x k => φ (x * atTau θ V τ (P⁻¹ * toMK k * P)))
+  obtain ⟨e, he, hap⟩ := _root_.GlobalTheory.KFinApprox.approx_identity _ ε (GA D V) (fun x k => φ (x * atTau θ V τ (P⁻¹ * toMK k * P)))
     (hφ.cont.comp (continuous_fst.mul (hk.comp continuous_snd))) K hK δ hδ
   obtain ⟨m, a, c, ha, hQ, hA⟩ := exists_rank_one hθ hP hJ hσ he
   choose T hT hTv using fun j => exists_gkMap hθ hP hJ hσ hφ hW hc h (hA j)
@@ -318,8 +360,8 @@ theorem hasTypeAt_of_isTypeAt : ∀ {D : D7} (θ : D.what₂.Tau → (Ainf D.hos
     (le_sSup (a := LinearMap.range (T j)) ⟨H, _, _, σ, lam, ε, P, T j, hE, hlam, hD, hP, hJ, hT j, rfl⟩ :
       _ ≤ finPartOfType θ V τ S) ⟨_, rfl⟩, fun x hxK => ?_⟩
   have h1 := (moves_avg hθ hP hJ hσ he φ x _ _ _ _ (hW x) (hc x) (h x)).1.2.2.2.2 1 (one_mem_UJ ε)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [res_one hθ hP, sigma_one hσ.1, hQ, map_sum, map_smul, smul_eq_mul] at h1
+
+  simp only [res_one hθ hP, sigma_one hσ.1, hQ, map_sum, map_smul, smul_eq_mul] at h1
   have h2 := h1.unique (hasSum_sum fun j _ => (Expn.summable_term (h x) (c j) (hσ.2.2.1 _ (ha j))).hasSum)
   have h3 := hap x hxK
   have h4 : φ (x * atTau θ V τ (P⁻¹ * toMK (1 : KG ε) * P)) = φ x := res_one hθ hP φ x

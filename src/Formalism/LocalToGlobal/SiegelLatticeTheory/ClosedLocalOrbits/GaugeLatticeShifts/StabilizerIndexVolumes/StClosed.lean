@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 
 @[expose] public section

@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ModeHalfStatementPfB
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 
 @[expose] public section
 
@@ -120,7 +118,6 @@ theorem scalar_step {Ψ : Finset (E →+* ℂ)} (τ₀ : Ψ) (g : Matrix (Fin r)
             rw [Matrix.mul_adjugate]
             first
               | rw [Matrix.smul_mulVec, Matrix.one_mulVec]
-              | (ext i; simp [Matrix.mulVec, dotProduct, Matrix.one_apply])
     have hXz' : X *ᵥ z = z i0 • v := by
       funext a
       simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul]
@@ -175,7 +172,7 @@ theorem scalar_step {Ψ : Finset (E →+* ℂ)} (τ₀ : Ψ) (g : Matrix (Fin r)
     have h := hall (Pi.single a 1 + Pi.single b 1) a b
     rw [Matrix.mulVec_add] at h
     simp only [Pi.add_apply, hcolv] at h
-    simp [Pi.single_apply, hab, Ne.symm hab, hoff a b hab, hoff b a (Ne.symm hab)] at h
+    simp [hab, Ne.symm hab, hoff a b hab, hoff b a (Ne.symm hab)] at h
     linear_combination h
   refine ⟨M i0 i0, ?_⟩
   ext a b

@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopStacked
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ScaledExample
 
 @[expose] public section
 

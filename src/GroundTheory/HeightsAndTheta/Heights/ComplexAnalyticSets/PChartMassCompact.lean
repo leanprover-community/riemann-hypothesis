@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompact
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompare
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOff
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOff
+import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 
 @[expose] public section
 

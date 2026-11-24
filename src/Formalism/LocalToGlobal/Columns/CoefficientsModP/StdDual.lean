@@ -2,8 +2,22 @@ module
 
 public import Formalism.LocalToGlobal.Columns.CoefModB
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaRoundFreeHolds
 public import Formalism.GradedWeylDivisibility.StatementE
+public import Formalism.GradedWeylDivisibility.FinalD
+public import Mathlib.Tactic.Monotonicity.Lemmas
+public import Mathlib.Topology.Sheaves.Presheaf
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FinalB
+import Formalism.GradedWeylDivisibility.FinalC
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaRoundFreeHolds
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -55,7 +69,6 @@ def sdDelta (i : Formalism.GradedWeylDivisibility.ssIdx n n ν) : MvPolynomial (
   sdC ν • ∑ j, (sdGram ν)⁻¹ i j • sdBetaQ ν j
 
 theorem sd_delta_mem (i : Formalism.GradedWeylDivisibility.ssIdx n n ν) : sdDelta ν i ∈ Formalism.GradedWeylDivisibility.dualWeyl ℚ n n ν := by
-  unfold sdDelta
   refine Submodule.smul_mem _ _ (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ ?_)
   rw [← (sd_betaQ_spec ν).2]
   exact Submodule.subset_span ⟨j, rfl⟩
@@ -68,8 +81,8 @@ theorem sd_delta_beta (i k : Formalism.GradedWeylDivisibility.ssIdx n n ν) :
   have h1 : ∀ j, fockBL (sdBetaQ ν j) (sdBetaQ ν k) = sdGram ν j k := fun j => by
     rw [fockBL_apply, sd_fockB_rat]; rfl
   unfold sdDelta
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_smul, map_sum, LinearMap.smul_apply, LinearMap.sum_apply, h1, smul_eq_mul]
+
+  simp only [map_smul, map_sum, LinearMap.smul_apply, LinearMap.sum_apply, h1, smul_eq_mul]
   have h2 : ∑ j, (sdGram ν)⁻¹ i j * sdGram ν j k = ((sdGram ν)⁻¹ * sdGram ν) i k := (Matrix.mul_apply ..).symm
   rw [h2, Matrix.nonsing_inv_mul _ hdet, Matrix.one_apply]
   split_ifs <;> simp
@@ -86,9 +99,9 @@ theorem sd_bDual : Formalism.GradedWeylDivisibility.bDual n n le_rfl ν ((Formal
         rw [← Int.cast_smul_eq_zsmul ℚ]; exact Submodule.smul_mem _ _ (sd_delta_mem ν k))
     have h0 : ∀ k, fockBL (P - ∑ j, z j • sdDelta ν j) (sdBetaQ ν k) = 0 := by
       intro k
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sub, map_sum, map_zsmul, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.smul_apply,
-        sd_delta_beta]
+
+      simp only [map_sub, map_sum, map_zsmul, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.smul_apply,
+      sd_delta_beta]
       rw [fockBL_apply, sd_fockB_rat, hz k]
       simp
     have h1 : ∀ y ∈ Formalism.GradedWeylDivisibility.dualWeyl ℚ n n ν, fockBL (P - ∑ j, z j • sdDelta ν j) y = 0 := by
@@ -176,9 +189,9 @@ theorem sd_dual_bases {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) 
     obtain ⟨a, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun K).1 hx
     have h1 : ∀ j, b (∑ i, a i • u i) (v j) = a j := by
       intro j
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, h, smul_eq_mul, mul_ite, mul_one,
-        mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+
+      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, h, smul_eq_mul, mul_ite, mul_one,
+      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     have h2 : ∀ j, ∃ r : 𝓞 K, algebraMap (𝓞 K) K r = a j := fun j => by
       have := hy (v j) (Submodule.subset_span ⟨j, rfl⟩)
       rw [h1 j] at this

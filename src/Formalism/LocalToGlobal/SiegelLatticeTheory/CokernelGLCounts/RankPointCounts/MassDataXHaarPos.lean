@@ -1,13 +1,19 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataPos
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXRed
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.MeasBAll
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.StrongApproxN
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXLeaves
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.UnitaryGroupSecondCountableT2
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.LatStab
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.FrameStd
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXRed
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.IUnfold
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovolumeFrames.StepSize
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.IdxTop
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.OpenCompact
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.StKHolds
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.UnitaryGroupSecondCountableT2
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.FrameStd
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.LatStab
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -35,10 +41,7 @@ section Typed
 
 variable {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (p : TypX X)
 
-theorem kg_sub_kv : MassDataIdxSteps.KgX X p ⊆ MassDataIdxSteps.KvX X p := by
-  intro x hx
-  simp only [MassDataIdxSteps.KgX, MassDataIdxSteps.KvX] at hx ⊢
-  exact hx.1
+alias kg_sub_kv := _root_.MassDataIdxSteps.kg_sub
 
 theorem kv_facts : IsOpen (MassDataIdxSteps.KvX X p) ∧ IsCompact (MassDataIdxSteps.KvX X p) ∧
     IsOpen (MassDataIdxSteps.KgX X p) ∧ (1 : MassDataIdxSteps.HAp X p) ∈ MassDataIdxSteps.KgX X p := by

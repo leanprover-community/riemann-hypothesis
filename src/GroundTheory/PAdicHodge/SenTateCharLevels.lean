@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.SenTateCharTower
-public import GroundTheory.PAdicHodge.SenTateCharUnitPow
+public import GroundTheory.PAdicHodge.FieldOfNormsRam
+import GroundTheory.LocalFields.ConductorReciprocity
 
 @[expose] public section
 

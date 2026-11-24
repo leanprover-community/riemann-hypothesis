@@ -1,30 +1,77 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenPtSubset
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsNotRelZero
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareStanding
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaAtEqSumHeisOfFourierSum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicHeisenbergActsByLocalSchrodinger
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SelfDualLocalImageLatticeSupportedAtPlace
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorLatticeLocalDarbouxCoordsBounded
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicCharacterNontrivialAtPlaces
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqAdeleSupportedAtFinitePlaceOfSupportedAt
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsNatDatumSquareFlip
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsThetaFunOMul
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchroedingerFixedFunctionsProportionalOfSelfDual
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzEqPureTensorOfFiniteSlices
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemScLatOfMem
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatPtLeClosureAndSelfDual
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewGramInrInl
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasDerivAtThetaTransformHeisenbergRealLine
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockVacuumThetaFunctionDerivativeComplexStructur
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransposeMapConj
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridLocalTensorPlacesSplitIdempotentSum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AtWAtPlSelf
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartAlgebraMapLiftV
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoxGraphGraphHeis
+public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.EqAdeleSupportedAtFinitePlaceOfSupportedAt
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsINeZeroKind
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockVacuumThetaFunctionDerivativeComplexStructur
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridLocalTensorPlacesSplitIdempotentSum
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasDerivAtThetaTransformHeisenbergRealLine
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergStableRelationOfVacua
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartAlgebraMapLiftV
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsThetaFunOMul
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatPtLeClosureAndSelfDual
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchroedingerFixedFunctionsProportionalOfSelfDual
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SelfDualLocalImageLatticeSupportedAtPlace
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewGramInrInl
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemScLatOfMem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicCharacterNontrivialAtPlaces
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorLatticeLocalDarbouxCoordsBounded
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransposeMapConj
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOrEqOfPlaceIdem
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -60,7 +107,7 @@ theorem schr_slice (co : Darboux B κ) (ψ : AddChar (AF F) ℂ) {v : HeightOneS
   have hc : ∀ u : AF F, evFin F v u = 0 → u • co.e γ = 0 := fun u hu => by rw [← map_smul, hγ u hu, map_zero]
   have h1 : ∀ k, At (evFin F v) ((co.e γ).1 k) := fun k u hu => congrArg (fun z => z.1 k) (hc u hu)
   have h2 : ∀ k, At (evFin F v) ((co.e γ).2 k) := fun k u hu => congrArg (fun z => z.2 k) (hc u hu)
-  have hl : ∀ z : AF F, At (evFin F v) z → liftV v (evFin F v z) = z := fun z hz => (GlobalTheory.VacAny.eq_atPlace_of_at v z hz).symm
+  have hl : ∀ z : AF F, At (evFin F v) z → liftV v (evFin F v z) = z := fun z hz => (Tw.VacAny.eq_atPlace_of_at v z hz).symm
   conv_rhs => rw [← h]
   simp only [Darboux.rho, schr]
   congr 1
@@ -76,9 +123,9 @@ theorem schr_slice (co : Darboux B κ) (ψ : AddChar (AF F) ℂ) {v : HeightOneS
       simp only [hz', hz, Finset.sum_const_zero, add_zero]
     rw [← hl _ hat]
     refine congrArg (fun z => ψ (liftV v z)) ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_add (f := _), map_sum, map_mul, Pi.add_apply, hy, zero_add,
-      GlobalTheory.LatVac.evFin_liftV]
+
+    simp only [dotProduct, map_add (f := _), map_sum, map_mul, Pi.add_apply, hy, zero_add,
+    GlobalTheory.LatVac.evFin_liftV]
     have hi : evFin F v (⅟(2 : AF F)) = ⅟(2 : Fv F v) := by
       refine (invOf_eq_right_inv ?_).symm
       have hh : evFin F v (2 * ⅟(2 : AF F)) = 1 := by rw [mul_invOf_self, map_one]
@@ -129,11 +176,7 @@ theorem thetaPt_smul {i j : ℕ} (Γ : GlobalTheory.IndefiniteRowSideFullHecke.U
     (Φ : (Ix G i j → AF D.host.F) → ℂ) (u : Pt G i j) : thetaPt Γ ψ (c • Φ) u = c * thetaPt Γ ψ Φ u :=
   (tsum_congr fun _ => mul_left_comm _ _ _).trans tsum_mul_left
 
-theorem splitIdem_conj {a : AE D} (h : IsSplitIdem D a) : IsSplitIdem D (cA D a) := by
-  obtain ⟨h1, h2, v, ε, h3, h4⟩ := h
-  refine ⟨by rw [← RingHom.map_mul, h1], ?_, v, ε, h3, ?_⟩
-  · rw [GlobalTheory.DualPairCheck.cA_cA, mul_comm, h2]
-  · rw [GlobalTheory.DualPairCheck.cA_cA, add_comm, h4]
+alias splitIdem_conj := _root_.GlobalTheory.SplitScalar.isSplitIdem_conj
 
 theorem vac_ne_zero {S T : HSp D} {ψ θ sS sT LS LT} {f : WO S T → ℂ} (h : IsVacO ψ θ S T sS sT LS LT f) : f ≠ 0 := by
   rintro rfl
@@ -184,13 +227,13 @@ theorem pure_vac_inj {ψ} (hG : Γ.M.IsGood ψ) {f f' : SInf D.host.F (Ix G i j)
     refine finprod_induction (· ≠ (0 : ℂ)) one_ne_zero (fun _ _ => mul_ne_zero) fun v => ?_
     by_cases hv : v ∈ hS.toFinset
     · have : (fun k => evalV D.host.F v (y k)) = ξ v := funext fun k => by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.sum_eq_single_of_mem v hv fun v' _ h => evalV_singleFin_ne h.symm _, evalV_singleFin_self]
+
+        rw [map_sum, Finset.sum_eq_single_of_mem v hv fun v' _ h => evalV_singleFin_ne h.symm _, evalV_singleFin_self]
       rw [this]
       exact hξ v
     · have : (fun k => evalV D.host.F v (y k)) = 0 := funext fun k => by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         exact Finset.sum_eq_zero fun v' h => evalV_singleFin_ne (fun e : v = v' => hv (e ▸ h)) _
       rw [this, of_not_not (mt hS.mem_toFinset.2 hv), Set.indicator_of_mem (by exact fun _ => zero_mem _)]
       exact one_ne_zero
@@ -261,7 +304,7 @@ theorem mem_of_sum_smul {m n : ℕ} {ι : Type} {P : Finset ι} {a : ι → AE D
   exact sum_mem h
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_gauss_datum : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (ρ : RealMatch W) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t)
     (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E)
     (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (h : IsTripleOf W M t i j e Bs Γ X), IsTriple Bs Γ X om om' → IsTied t i j e Bs Γ X → ∀ n Φ τ τ',

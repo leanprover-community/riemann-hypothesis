@@ -1,6 +1,11 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.SmoothRepIrreducibleSubcontainingVector
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -53,8 +58,8 @@ theorem maschke [TopologicalSpace K] [IsTopologicalGroup K] [CompactSpace K]
     rw [hP, Finset.sum_congr rfl fun g _ => h1 g, Finset.sum_const, Finset.card_univ]
   have hPeq : ∀ h v, P (ρ h v) = ρ h (P v) := by
     intro h v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hP, hP, map_sum]
+
+    rw [hP, hP, map_sum]
     refine Fintype.sum_equiv (Equiv.mulLeft h⁻¹) _ _ fun x => ?_
     simp only [Equiv.coe_mulLeft]
     rw [hmul h, mul_inv_cancel_left, mul_inv_rev, inv_inv, ← hmul]

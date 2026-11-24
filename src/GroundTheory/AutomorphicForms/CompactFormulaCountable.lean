@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.Adele.Topology
-public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
-public import GroundTheory.GlobalFields.TateThesis.AdeleMeasurable
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import GroundTheory.GlobalFields.LocalAtPlace
+import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

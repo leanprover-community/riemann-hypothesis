@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.PHeisThP
+public import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 
 @[expose] public section
 

@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.CartierFrobeniusFormLocal
 public import Formalism.LocalToGlobal.AdelicCompactOpens.IntAdelesCompactOpen
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Topology.Algebra.Valued.LocallyCompact
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,79 +65,15 @@ theorem isOpen_lt_one (x : v.adicCompletion F) :
   exact h1.preimage (continuous_id.sub continuous_const)
 
 theorem valued_algebraMap (k : F) :
-    Valued.v (algebraMap F (v.adicCompletion F) k) = v.valuation F k := by
-  first
-  | exact valuedAdicCompletion_eq_valuation' v k
-  | rfl
+    Valued.v (algebraMap F (v.adicCompletion F) k) = v.valuation F k :=
+  IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k
 
 theorem denseRange : DenseRange (algebraMap F (v.adicCompletion F)) := by
   exact denseRange_algebraMap F v
 
 theorem exists_close (x : v.adicCompletion F) (hx : Valued.v x ≤ 1) :
     ∃ a : 𝓞 F, Valued.v (x - algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F a)) < 1 := by
-  obtain ⟨k, hk⟩ : ∃ k : F, algebraMap F (v.adicCompletion F) k ∈
-      {y : v.adicCompletion F | Valued.v (y - x) < 1} :=
-    (denseRange v).exists_mem_open (isOpen_lt_one v x) ⟨x, by simp⟩
-  simp only [Set.mem_setOf_eq] at hk
-  have hk1 : v.valuation F k ≤ 1 := by
-    rw [← valued_algebraMap]
-    have e : algebraMap F (v.adicCompletion F) k = (algebraMap F (v.adicCompletion F) k - x) + x := by ring
-    rw [e]
-    exact Valuation.map_add_le _ hk.le hx
-  obtain ⟨r, s, hs, hrs⟩ : ∃ r s : 𝓞 F, s ∉ v.asIdeal ∧
-      algebraMap (𝓞 F) F s * k = algebraMap (𝓞 F) F r := by
-    have hmem : k ∈ valuationSubringAtPrime F v := by
-      rw [valuationSubringAtPrime_eq_valuationSubring]
-      exact (Valuation.mem_valuationSubring_iff _ _).mpr hk1
-    obtain ⟨⟨r, s⟩, h⟩ := IsLocalization.surj v.asIdeal.primeCompl
-      (⟨k, hmem⟩ : valuationSubringAtPrime F v)
-    refine ⟨r, s, s.2, ?_⟩
-    have e : ∀ y : 𝓞 F, ((algebraMap (𝓞 F) (valuationSubringAtPrime F v) y :
-        valuationSubringAtPrime F v) : F) = algebraMap (𝓞 F) F y := by
-      intro y
-      first
-      | rfl
-      | simp
-      | exact (IsScalarTower.algebraMap_apply (𝓞 F) (valuationSubringAtPrime F v) F y).symm
-    have h' := congrArg Subtype.val h
-    have h'' : k * ((algebraMap (𝓞 F) (valuationSubringAtPrime F v) s : valuationSubringAtPrime F v) : F) =
-        ((algebraMap (𝓞 F) (valuationSubringAtPrime F v) r : valuationSubringAtPrime F v) : F) := by
-      simpa using h'
-    rw [e, e] at h''
-    rw [mul_comm]
-    exact h''
-  obtain ⟨t, ht⟩ : ∃ t : 𝓞 F, s * t - 1 ∈ v.asIdeal := by
-    haveI := v.isMaximal
-    have hs0 : (Ideal.Quotient.mk v.asIdeal s) ≠ 0 := by
-      rwa [Ne, Ideal.Quotient.eq_zero_iff_mem]
-    obtain ⟨b, hb⟩ := Ideal.Quotient.exists_inv hs0
-    obtain ⟨t, rfl⟩ := Ideal.Quotient.mk_surjective b
-    refine ⟨t, ?_⟩
-    rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_mul, hb, map_one, sub_self]
-  refine ⟨r * t, ?_⟩
-  have hkrt : v.valuation F (k - algebraMap (𝓞 F) F (r * t)) < 1 := by
-    have e : k - algebraMap (𝓞 F) F (r * t) = k * (1 - algebraMap (𝓞 F) F (s * t)) := by
-      rw [map_mul, map_mul, ← hrs]; ring
-    rw [e, map_mul]
-    have h1 : v.valuation F (1 - algebraMap (𝓞 F) F (s * t)) < 1 := by
-      have e1 : (1 : F) - algebraMap (𝓞 F) F (s * t) = algebraMap (𝓞 F) F (-(s * t - 1)) := by
-        rw [map_neg, map_sub, map_one]; ring
-      rw [e1, valuation_lt_one_iff_mem]
-      exact v.asIdeal.neg_mem_iff.mpr ht
-    calc v.valuation F k * v.valuation F (1 - algebraMap (𝓞 F) F (s * t))
-        ≤ 1 * v.valuation F (1 - algebraMap (𝓞 F) F (s * t)) := by
-          first
-          | exact mul_le_mul_of_nonneg_right hk1 zero_le'
-          | gcongr
-      _ < 1 := by rw [one_mul]; exact h1
-  have e2 : x - algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F (r * t)) =
-      (x - algebraMap F (v.adicCompletion F) k) +
-        algebraMap F (v.adicCompletion F) (k - algebraMap (𝓞 F) F (r * t)) := by
-    rw [map_sub]; ring
-  rw [e2]
-  apply Valuation.map_add_lt
-  · rw [Valuation.map_sub_swap]; exact hk
-  · rw [valued_algebraMap]; exact hkrt
+  apply PI.WAU.exists_int_near <;> assumption
 
 theorem mem_maximalIdeal_iff (x : Valued.integer (v.adicCompletion F)) :
     x ∈ IsLocalRing.maximalIdeal (Valued.integer (v.adicCompletion F)) ↔

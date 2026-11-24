@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.CompleteTrivial
+public import Mathlib.FieldTheory.Fixed
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Hilbert90
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

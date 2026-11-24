@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcLead
+public import Aesop.BuiltinRules
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -152,14 +157,14 @@ theorem stackedFormEval_bipart (b : Module.Basis T ℤ (dualLattice F))
   rw [map_zero]
   change formEvalFrac b b' (bipart f p) = 0
   have h0 := biEval_eq_zero b b' hb hf
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← support_sum_monomial_coeff f, map_sum] at h0
+
+  rw [← support_sum_monomial_coeff f, map_sum] at h0
   simp_rw [biEval_monomial] at h0
   have h1 := congrArg (fun q => AddMonoidAlgebra.coeff (AddMonoidAlgebra.coeff q (Finsupp.single () p.2)) (Finsupp.single () (p.1 + p.2))) h0
   simp only [coeff_sum, coeff_C_mul_X_pow_unit, apply_ite (AddMonoidAlgebra.coeff · (Finsupp.single () (p.1 + p.2))),
     AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at h1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h1, bipart, map_sum, Finset.sum_filter]
+
+  rw [← h1, bipart, map_sum, Finset.sum_filter]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [sum_eq_bideg, sum_secW_eq_bideg]
   obtain ⟨d, e⟩ := p

@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.SkodaWeightStatement
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

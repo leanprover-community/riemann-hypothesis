@@ -1,14 +1,14 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartLeviThGe
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaEWeight
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETailLog
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PKaehlerBound
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormHolo
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.EnergyStep
+public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PKaehlerBound
+public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETailLog
+public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormHolo
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartLeviThGe
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ContinuousTmaxShift
 
 @[expose] public section
 

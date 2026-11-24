@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPtsIntegralPoints
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
+public import Mathlib.Algebra.Module.Submodule.Union
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section

@@ -1,10 +1,41 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AssembleLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SemilinearBasisImageIndepOfBasis
-public import Formalism.LocalRingCardinality.DataIdx
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -159,7 +190,7 @@ def levP (F : Face D A) : Bool → Σ P : Subgroup G, P →* D.what₂.LLˣ
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
-set_option maxHeartbeats 2000000 in
+
 structure ChT {R : RealDat D A Ks} (y : Hd R) (F : Face D A) (b : Bool) {Φ : Type} (rep : Φ → Formalism.L2.NG.FinTyp D.host.E D.R.r)
     {Top : D.what₂.Tup → Hs} (jA : ∀ t, (Fin (rDim D A (levP F b).1 (levP F b).2 t) → D.what₂.LL) → (Top (y.tup t)).T)
     (c : ChD D.what₂.Tup Φ D.R.m Top) : Type where
@@ -192,7 +223,7 @@ structure ChT {R : RealDat D A Ks} (y : Hd R) (F : Face D A) (b : Bool) {Φ : Ty
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
-set_option maxHeartbeats 2000000 in
+
 structure LfT {R : RealDat D A Ks} (y : Hd R) (F : Face D A) {Φ : Type} (rep : Φ → Formalism.L2.NG.FinTyp D.host.E D.R.r)
     {Mt : D.what₂.Tup → ℕ → Hs}
     (jL : ∀ (i : Fin D.R.m) t, (Fin (lDim D A F.P0 F.ψ0 i t) → D.what₂.LL) → (Mt (y.tup t) ((i : ℕ) + 1)).T)
@@ -258,7 +289,7 @@ abbrev PkD (D : D7) (G : Type) [Group G] : Type 1 :=
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
-set_option maxHeartbeats 2000000 in
+
 structure PkT {R : RealDat3 D A3 Ks} (F : Face3 D A3) (y : Hd R.toRealDat) (mA : Bool → D.what₂.Tup → Mat1 D.what₂.LL G)
     (p : PkD D G) : Type where
   rep : p.Φ → Formalism.L2.NG.FinTyp D.host.E D.R.r
@@ -284,7 +315,7 @@ def etaOf (R : RealDat3 D A3 Ks) (F : Face3 D A3) (j : ℕ) (w : D.what₂.place
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
-set_option maxHeartbeats 4000000 in
+
 structure RationalReadingWithoutCongruence (R : RealDat3 D A3 Ks) (F : Face3 D A3) (X0 : BaseLevelRowSide D) (Y : Read (A3 := A3) R.toRealDat F.lv2 X0) : Type where
   eRR : (Fin ((R.toCx3 F).data F.cr true).D → D.what₂.LL) ≃ₗ[D.what₂.LL] D.div.RR.V
   eRR0 : (Fin ((R.toCx3 F).data F.cr false).D → D.what₂.LL) ≃ₗ[D.what₂.LL] X0.s.RR.V

@@ -1,7 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
+public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.BiextensionHypothesesOfConditions
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ExponentialSpecification
+import Mathlib.Tactic.Lemma
+public import Mathlib.LinearAlgebra.Vandermonde
 
 @[expose] public section
 
@@ -92,7 +97,7 @@ theorem trace_dual_exists : TrDualExists := by
     rw [h] at hnd
     exact hnd (dvd_zero l)
   have nζ : ‖ζ‖ = 1 := FormalExponential.norm_eq_one_of_pow hN0 hζ.pow_eq_one
-  have hσζ : σ ζ = ζ ^ l := teichSigma K l (m + m) σ hU (by omega) ζ hζ.pow_eq_one
+  have hσζ : σ ζ = ζ ^ l := _root_.Formalism.L2.Th1.D.teichmuller_sigma K l (m + m) σ hU (by omega) ζ hζ.pow_eq_one
   have hit : ∀ j, σ^[j] ζ = ζ ^ (l ^ j) := B4.iterate_of_pow hσζ
   have hper : σ^[m + m] ζ = ζ := by
     rw [hit, show l ^ (m + m) = (l ^ (m + m) - 1) + 1 by omega, pow_succ, hζ.pow_eq_one, one_mul]

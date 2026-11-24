@@ -2,6 +2,52 @@ module
 
 public import Formalism.HermitianCurvature.StatementSz
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MassRatioFormula
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -40,7 +86,6 @@ lemma partial_le (M : ℕ) (hM : 3 ≤ M) (n : ℕ) :
     rw [sum_range_succ]
     have h := term_le M (n + 1) hM (by omega)
     push_cast at h ⊢
-    have e1 : (n : ℝ) + 1 + 1 + 1 = n + 1 + 2 := by ring
     have e2 : (n : ℝ) + 1 + 1 = n + 2 := by ring
     rw [e2] at h ⊢
     have e3 : (n : ℝ) + 1 + 2 = n + 2 + 1 := by ring
@@ -373,7 +418,6 @@ theorem corA_of_propA (hPA : PropA) : CorA := by
 
 theorem bracketBound : BracketBound := by
   intro k r m ka rd g VV Vu hm hk hrd hka hg hVV hVu om
-  have hpi : 0 < Real.pi := Real.pi_pos
   have h2pi : (1 : ℝ) ≤ 2 * Real.pi := by linarith [Real.pi_gt_three]
   have hrd0 : 0 < rd := by linarith
   have hka0 : 0 < ka := by rw [hka]; positivity
@@ -382,10 +426,7 @@ theorem bracketBound : BracketBound := by
   obtain ⟨e, he⟩ : ∃ e : ℕ, e = m * (m - 1) / 2 := ⟨_, rfl⟩
   have he2 : e = (r + 1) * (2 * r + 1) := by
     rw [he, hm]
-    have : (2 * r + 2) * (2 * r + 2 - 1) = 2 * ((r + 1) * (2 * r + 1)) := by
-      have : 2 * r + 2 - 1 = 2 * r + 1 := by omega
-      rw [this]; ring
-    rw [this]; simp
+    exact Formalism.FourierDecayAlt.P.Sz1.half_eq r
   have hmR : (m : ℝ) = 2 * r + 2 := by rw [hm]; push_cast; ring
   have heR : (e : ℝ) = ((r : ℝ) + 1) * (2 * r + 1) := by rw [he2]; push_cast; ring
   have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
@@ -446,10 +487,6 @@ end Formalism.FourierDecayAlt.P.Sz2
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem exponent_sizes : Formalism.FourierDecayAlt.Sz.EaSize := Sz2.eaSize
-
 theorem corollary_a_of_proposition_a : Formalism.FourierDecayAlt.Sz.CorA := Sz2.corA_of_propA massRatioFormula
-
-theorem bracket_bound_alt : Formalism.FourierDecayAlt.Sz.BracketBound := Sz2.bracketBound
 
 end Formalism.FourierDecayAlt.P

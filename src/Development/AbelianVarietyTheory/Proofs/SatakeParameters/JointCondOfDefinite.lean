@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.IrreducibilityOfTheoremThree
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReadingLaws
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
+import Formalism.AlgebraicWeights.IsAlgWeight
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
+import ReciprocityTheory.Automorphisms.PlaceA
+import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.ImaginaryGeneratorMulDenominator
 
 @[expose] public section
 
@@ -36,12 +81,6 @@ theorem mem_F_iff (x : D.host.E) : x ∈ D.host.F ↔ D.host.conj x = x :=
 theorem d_ne_zero : ((D.host.d : ℕ) : D.host.E) ≠ 0 :=
   Nat.cast_ne_zero.mpr D.host.hyp.2.1.ne_zero
 
-theorem sqrtMinusD_ne_zero : D.host.sqrtMinusD ≠ 0 := by
-  intro h
-  have := sqrtMinusD_mul_self D
-  rw [h, zero_mul, eq_comm, neg_eq_zero] at this
-  exact d_ne_zero D this
-
 end GlobalTheory.DesignBC
 
 namespace GlobalTheory.DesignBC
@@ -55,7 +94,7 @@ theorem hypEFK : Formalism.MainNotions.SphericalInertData.HypEFK D := by
   intro x _
   set c := D.host.conj
   set s := D.host.sqrtMinusD
-  have hs : s ≠ 0 := sqrtMinusD_ne_zero D
+  have hs : s ≠ 0 := _root_.Formalism.IndefR.NX.sqrtMinusD_ne_zero D
   have hcs : c s = -s := conj_sqrtMinusD D
   have hcc : c (c x) = x := conj_conj D x
   have hu : (x + c x) / 2 ∈ D.host.F := by
@@ -110,7 +149,6 @@ theorem isIntegral_half (y : D.host.E) (hy : y * y = -((D.host.d : ℕ) : D.host
       linear_combination this
     simp only [eval₂_add, eval₂_sub, eval₂_X_pow, eval₂_X, eval₂_C]
     simp only [Int.cast_mul, Int.cast_ofNat, Int.cast_natCast, algebraMap_int_eq, eq_intCast]
-    push_cast
     rw [hd] at hy
     linear_combination (1/4 : D.host.E) * hy
 

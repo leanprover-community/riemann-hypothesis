@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GenusGluing.GenusApproximation.ComplF
+public import Formalism.LocalToGlobal.Columns.Inputs
 
 @[expose] public section
 

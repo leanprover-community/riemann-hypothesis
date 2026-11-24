@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Formalism.LocalToGlobal.Divisibility.LiftLat
-public import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
+public import Mathlib.NumberTheory.NumberField.ClassNumber
 
 @[expose] public section
 

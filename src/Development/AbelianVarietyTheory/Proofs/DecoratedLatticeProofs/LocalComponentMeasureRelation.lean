@@ -1,18 +1,45 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsNormalFr
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FrameTopAlt
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PairForm
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TailRd
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.NotBadPrimeBase
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ValuationEqZeroOfRootOfSUnitRatio
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.VacOfShape
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiStarOfMid
 
 @[expose] public section
 
@@ -138,13 +165,13 @@ theorem selfDualFor_sum {ι κ : Type} [Fintype ι] [Fintype κ] {GA : Matrix ι
       · rintro _ ⟨x, hx, rfl⟩
         rw [mem_sumLat]
         refine ⟨by simpa [extL, extR] using hx, ?_⟩
-        have : (extL (D := D) ι κ x) ∘ Sum.inr = 0 := by ext i; simp [extL, extR]
+        have : (extL (D := D) ι κ x) ∘ Sum.inr = 0 := by ext i; simp [extL]
         simp only [LinearMap.coe_restrictScalars] at this ⊢
         rw [this]; exact ΛB.zero_mem
       · rintro _ ⟨x, hx, rfl⟩
         rw [mem_sumLat]
         refine ⟨?_, by simpa [extL, extR] using hx⟩
-        have : (extR (D := D) ι κ x) ∘ Sum.inl = 0 := by ext i; simp [extL, extR]
+        have : (extR (D := D) ι κ x) ∘ Sum.inl = 0 := by ext i; simp [extR]
         simp only [LinearMap.coe_restrictScalars] at this ⊢
         rw [this]; exact ΛA.zero_mem
   refine ⟨⟨?_, ?_⟩, ?_⟩
@@ -165,25 +192,25 @@ theorem selfDualFor_sum {ι κ : Type} [Fintype ι] [Fintype κ] {GA : Matrix ι
         have hm : extL (D := D) ι κ x ∈ sumLat ΛA ΛB := by
           rw [mem_sumLat]
           refine ⟨by simpa [extL, extR] using hx, ?_⟩
-          have : (extL (D := D) ι κ x) ∘ Sum.inr = 0 := by ext i; simp [extL, extR]
+          have : (extL (D := D) ι κ x) ∘ Sum.inr = 0 := by ext i; simp [extL]
           rw [this]; exact ΛB.zero_mem
         obtain ⟨b, hb⟩ := h _ hm
         refine ⟨b, ?_⟩
         rw [hb, form_sum]
-        have e1 : (extL (D := D) ι κ x) ∘ Sum.inl = x := by ext i; simp [extL, extR]
-        have e2 : (extL (D := D) ι κ x) ∘ Sum.inr = 0 := by ext i; simp [extL, extR]
+        have e1 : (extL (D := D) ι κ x) ∘ Sum.inl = x := by ext i; simp [extL]
+        have e2 : (extL (D := D) ι κ x) ∘ Sum.inr = 0 := by ext i; simp [extL]
         rw [e1, e2]; simp
       · intro x hx
         have hm : extR (D := D) ι κ x ∈ sumLat ΛA ΛB := by
           rw [mem_sumLat]
           refine ⟨?_, by simpa [extL, extR] using hx⟩
-          have : (extR (D := D) ι κ x) ∘ Sum.inl = 0 := by ext i; simp [extL, extR]
+          have : (extR (D := D) ι κ x) ∘ Sum.inl = 0 := by ext i; simp [extR]
           rw [this]; exact ΛA.zero_mem
         obtain ⟨b, hb⟩ := h _ hm
         refine ⟨b, ?_⟩
         rw [hb, form_sum]
-        have e1 : (extR (D := D) ι κ x) ∘ Sum.inl = 0 := by ext i; simp [extL, extR]
-        have e2 : (extR (D := D) ι κ x) ∘ Sum.inr = x := by ext i; simp [extL, extR]
+        have e1 : (extR (D := D) ι κ x) ∘ Sum.inl = 0 := by ext i; simp [extR]
+        have e2 : (extR (D := D) ι κ x) ∘ Sum.inr = x := by ext i; simp [extR]
         rw [e1, e2]; simp
 
 theorem line_mat_eq {κ : Type} [Fintype κ] (hk : Fintype.card κ = 1) {M N : Matrix κ κ D.host.E} {ζ : κ → D.host.E}

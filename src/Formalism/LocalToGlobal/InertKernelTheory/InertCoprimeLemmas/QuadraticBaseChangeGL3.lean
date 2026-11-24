@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DelPolOfTies
+import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
+import Formalism.LocalToGlobal.InertKernelTheory.TieSerPin
 
 @[expose] public section
 
@@ -67,8 +69,8 @@ theorem pairing_dictionary : PairDict := by
   rw [Formalism.L2.G.Pend.pairD_eq X Kc j _ f _ (support_trDY X Kc j D e Φ₀ R),
     Finset.sum_image (fun a _ b _ h => Finsupp.mapDomain_injective he h)]
   unfold pairR
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.smul_sum]
+
+  rw [map_sum, Finset.smul_sum]
   refine Finset.sum_congr rfl fun α hα => ?_
   rw [coeff_trDY X Kc j D e he Φ₀ R α]
   have hC : AddMonoidAlgebra.coeff R α * MvPolynomial.C ((α.prod fun _ n => (n.factorial : ℂ)) * TaylorLogMetric.taylor D Θ α) =

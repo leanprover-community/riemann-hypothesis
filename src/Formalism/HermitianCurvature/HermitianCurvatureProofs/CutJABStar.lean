@@ -2,6 +2,47 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -133,12 +174,12 @@ theorem fm_mul {a b : A P (DQ P)} (ha : FM P a) (hb : FM P b) : FM P (a * b) := 
   · rw [Matrix.mul_apply, cjD_sum, ← multiplierPair_sum]
     refine Finset.sum_congr rfl fun π' _ => ?_
     rw [hpa, hpb, multiplierPair_mul, cjD_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun π' _ => ?_)
-      rw [map_mul, norm_mul]
-      exact mul_le_mul ((hCa π π' q).trans (le_max_left _ _)) ((hCb π' π'' q).trans (le_max_left _ _))
-        (norm_nonneg _) (le_max_right _ _)
+
+  · rw [map_sum]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun π' _ => ?_)
+    rw [map_mul, norm_mul]
+    exact mul_le_mul ((hCa π π' q).trans (le_max_left _ _)) ((hCb π' π'' q).trans (le_max_left _ _))
+      (norm_nonneg _) (le_max_right _ _)
 
 theorem fm_star {a : A P (DQ P)} (ha : FM P a) : FM P (star a) := by
   intro π π'
@@ -163,8 +204,8 @@ theorem actA_fm_apply {b : A P (DQ P)} {β : M.Ty P → M.Ty P → (DQ P).R}
     (hβ : ∀ π π', b π π' = (DQ P).fnP (β π π') (cjD P (β π π'))) (V : M.Ty P → SmQ P.r P.TT) (π : M.Ty P)
     (q : Qp P.r P.TT) : evQ P (actA P b V π) q = ∑ π', evD P q (β π π') * evQ P (V π') q := by
   show evD P q (∑ π', (b π π').1 (V π')) = ∑ π', evD P q (β π π') * evD P q (V π')
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun π' _ => ?_
   rw [hβ π π']
   rfl
@@ -211,8 +252,8 @@ theorem ipA_fm {b : A P (DQ P)} (hb : FM P b) {ε : ℝ} (U V : M.Ty P → SmQ P
     intro π
     rw [← integral_finsetSum _ (fun π' _ => hint π π' _ _ (hCc π π'))]
     congr 1; funext q
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [actA_fm_apply P hβ V π q, map_sum, Finset.mul_sum]
+
+    rw [actA_fm_apply P hβ V π q, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun π' _ => ?_
     rw [map_mul, evD_cjD]
   have eR : ∀ π, ∫ q, evQ P (actA P (star b) U π) q * conj (evQ P (V π) q) ∂mu0 P.r P.TT =

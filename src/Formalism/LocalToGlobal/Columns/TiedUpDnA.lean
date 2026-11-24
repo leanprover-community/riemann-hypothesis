@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TiedUpDnLoc
+public import Formalism.LocalToGlobal.Columns.RecLevel
+public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
+public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
 
 @[expose] public section
 

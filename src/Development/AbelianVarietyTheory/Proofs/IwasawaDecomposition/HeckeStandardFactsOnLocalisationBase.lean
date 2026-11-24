@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitsLiftSpec
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
+public import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Charpoly
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 
 @[expose] public section
 
@@ -23,7 +63,7 @@ theorem coeff_prod_isIntegral (m : Multiset ℂ) (hm : ∀ a ∈ m, IsIntegral �
     rw [Multiset.map_cons, Multiset.prod_cons, coeff_mul]
     refine IsIntegral.sum _ fun x _ => IsIntegral.mul ?_ (ih hm' _)
     rw [coeff_sub, coeff_X, coeff_C]
-    split_ifs <;> simp [isIntegral_one, isIntegral_zero, ha.neg, isIntegral_one.sub ha, ha]
+    split_ifs <;> simp [isIntegral_one, isIntegral_zero, ha.neg, isIntegral_one.sub ha]
 
 theorem coeff_isIntegral_of_roots (Q : ℂ[X]) (hQ : Q.Monic) (c : ℕ) (h : ∀ a ∈ Q.roots, IsIntegral ℤ ((c : ℂ) * a)) (n : ℕ) :
     IsIntegral ℤ ((Q.scaleRoots (c : ℂ)).coeff n) := by
@@ -142,8 +182,8 @@ theorem exists_complexify {K : Type} [Field K] {E : Type} [AddCommGroup E] [Modu
     intro z i
     have e : j z = ∑ i, φ (b.repr z i) • b' i := by
       conv_lhs => rw [← b.sum_repr z]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [LinearMap.map_smulₛₗ, hb']
     rw [e, b'.repr_sum_self]
@@ -162,7 +202,7 @@ section Gen
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R}
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem isRoot_of_eig (B : LocBase0 H what₂) (j : ℕ) (w : what₂.places.Pl) (v : HeightOneSpectrum (𝓞 H.E)) (k : ℕ)
     [Module.Finite what₂.LL (what₂.MtL (what₂.muTw w) j)] (μ : FractionRing (B.Oc j w))
     (hμ : (B.hK j w v k).maxGenEigenspace μ ≠ ⊥) :
@@ -207,7 +247,7 @@ theorem finite_MtL {R : Ranks} (what₂ : Rows.Data R) (μ : what₂.Tup) (j : �
 variable {D : D7}
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem root_int (M : MtFam D) (C : NChoice D) (hR : HeckeLift0 (mt0 M) C.Q) (hP : HeckeStdPlain) (hG : GenHyp M C.Q)
     (hsp : ∀ v : PlE D.host, IsSplitPl D.host v → ∃ (s : SplitPlace D.host.E) (ϖ : s.v.adicCompletion (maximalRealSubfield D.host.E)),
       IsConjPl D.host v s.w ∧ IsUnif D.host.E s.v ϖ)
@@ -270,7 +310,7 @@ end GlobalTheory.HeckeStdBase
 namespace GlobalTheory.HeckeStdBase
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem heckeStd0_base : ∀ (D : D7) (M : MtFam D) (C : NChoice D) (hR : HeckeLift0 (mt0 M) C.Q) (X : CoefIn D.what₂)
     (hS : SplitK (mt0 M) C.Q hR X), HeckeStdPlain → GenHyp M C.Q →
     (∀ v : PlE D.host, IsSplitPl D.host v → ∃ (s : SplitPlace D.host.E) (ϖ : s.v.adicCompletion (maximalRealSubfield D.host.E)),

@@ -1,7 +1,19 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.Nullstellensatz
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.Module.LocalizedModule.Basic
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.FieldTheory.Minpoly.Field
+public import Mathlib.FieldTheory.Minpoly.Finite
+public import Mathlib.RingTheory.Ideal.GoingUp
+public import Mathlib.RingTheory.Polynomial.GaussLemma
 
 @[expose] public section
 

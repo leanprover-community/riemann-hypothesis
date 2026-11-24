@@ -1,8 +1,12 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjDehom
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.LogResStC
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinTypeQE
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.SegreIdealIsHomogeneous
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjDehom
 
 @[expose] public section
 

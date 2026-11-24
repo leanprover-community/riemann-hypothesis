@@ -1,12 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlockVolumeProd
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MatrixEntrywiseProductMeasureUniformizerPowerBox
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChainStepIdentities
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MatrixEntrywiseProductMeasureUniformizerPowerBox
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ValTwoBlockParahoricInfTorusConjBlockwise
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.VolumeFlatSection
 
 @[expose] public section
 
@@ -84,11 +126,11 @@ theorem pi_smul_const (ι : Type) [Fintype ι] {X : Type} [MeasurableSpace X] (�
   haveI : SigmaFinite ((c : ℝ≥0∞) • μ) := by
     have e : (c : ℝ≥0∞) • μ = c • μ := by
       ext s _
-      simp [Measure.smul_apply]
+      simp
     rw [e]
     infer_instance
   refine Measure.pi_eq fun s hs => ?_
-  simp [Measure.smul_apply, Measure.pi_pi, Finset.prod_mul_distrib, smul_eq_mul]
+  simp [Measure.pi_pi, Finset.prod_mul_distrib, smul_eq_mul]
 
 variable {k : Type} [MeasurableSpace k]
 
@@ -204,7 +246,7 @@ theorem GlobalTheory.RectBlockVolume.vol_topBlock_KO : ∀ (k : Type) [Field k] 
   clear hset hpre htot
   have hq0 : (0 : ℝ) ≤ (GlobalTheory.SplitWeil.resCard k : ℝ) := Nat.cast_nonneg _
   simp only [Fintype.card_fin, Finset.sum_const_zero, neg_zero, zpow_zero, ENNReal.ofReal_one, mul_one,
-    Finset.sum_const, Finset.card_univ, smul_eq_mul, nsmul_eq_mul, Nat.add_sub_cancel_left]
+    Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Nat.add_sub_cancel_left]
   simp only [ENNReal.toReal_mul, ENNReal.toReal_pow]
   rw [ENNReal.toReal_ofReal (zpow_nonneg hq0 _), GlobalTheory.RectBlockVolume.volKO_real]
   have hz : ∀ m n : ℕ, (GlobalTheory.SplitWeil.resCard k : ℝ) ^ (-((m : ℤ) * (n : ℤ))) = ((GlobalTheory.SplitWeil.resCard k : ℝ) ^ (n * m))⁻¹ := by

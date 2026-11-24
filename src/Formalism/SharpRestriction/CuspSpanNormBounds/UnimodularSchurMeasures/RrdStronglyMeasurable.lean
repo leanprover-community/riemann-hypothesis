@@ -1,6 +1,64 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.Orthonormal
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Aesop.Main
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.l2Space
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Function.AEEqOfIntegral
+public import Mathlib.MeasureTheory.Function.ContinuousMapDense
+public import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.InnerProductSpace.Orthogonal
+public import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
+public import Mathlib.MeasureTheory.Group.Integral
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 @[expose] public section
 
@@ -18,7 +76,6 @@ theorem rrd_countable {ι : Type*} {H : Type*} [NormedAddCommGroup H] [InnerProd
     have h2 : ‖v i - v j‖ ^ 2 = 2 := by
       first
       | rw [norm_sub_sq (𝕜 := ℂ), hv.1 i, hv.1 j, hv.2 hij]; norm_num
-      | rw [@norm_sub_sq ℂ, hv.1 i, hv.1 j, hv.2 hij]; norm_num
     nlinarith [norm_nonneg (v i - v j)]
   have hdisj : (Set.univ : Set ι).PairwiseDisjoint (fun i => Metric.ball (v i) (1 / 2 : ℝ)) := by
     intro i _ j _ hij
@@ -48,7 +105,6 @@ theorem rrd_stronglyMeasurable {α : Type*} [MeasurableSpace α] {H : Type*} [No
     intro i
     first
     | exact (hF (b i)).smul_const (b i)
-    | exact (hF (b i)).smul stronglyMeasurable_const
   have hfin : ∀ s : Finset w, StronglyMeasurable fun a => ∑ i ∈ s, ⟪b i, F a⟫_ℂ • b i := by
     intro s
     refine Finset.induction_on s ?_ ?_
@@ -65,7 +121,6 @@ theorem rrd_stronglyMeasurable {α : Type*} [MeasurableSpace α] {H : Type*} [No
     exact h
   first
   | exact stronglyMeasurable_of_tendsto atTop hfin hlim
-  | exact StronglyMeasurable.of_tendsto atTop hfin hlim
 
 section Trans
 
@@ -78,7 +133,6 @@ private theorem integrable_comp_mul_left' {G : Type*} [Group G] [TopologicalSpac
     Integrable (fun g => f (h * g)) μ := by
   first
   | exact hf.comp_mul_left h
-  | exact hf.comp_mul_left' h
 
 private theorem integral_comp_mul_left_eq {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] {μ : Measure G} [μ.IsMulLeftInvariant]
@@ -86,13 +140,11 @@ private theorem integral_comp_mul_left_eq {G : Type*} [Group G] [TopologicalSpac
     ∫ g, f (h * g) ∂μ = ∫ g, f g ∂μ := by
   first
   | exact integral_mul_left_eq_self f h
-  | exact integral_comp_mul_left f h
 
 private theorem abs_norm_sub_sub_norm_add_norm_le_two_mul (a b : ℂ) : |‖a - b‖ - ‖a‖ + ‖b‖| ≤ 2 * ‖b‖ := by
   have h1 := norm_sub_le a b
   have h2 : ‖a‖ ≤ ‖a - b‖ + ‖b‖ := by
-    calc ‖a‖ = ‖(a - b) + b‖ := by rw [sub_add_cancel]
-      _ ≤ ‖a - b‖ + ‖b‖ := norm_add_le _ _
+    simpa [sub_add_cancel] using norm_add_le (a - b) b
   rw [abs_le]
   constructor <;> linarith [norm_nonneg b, norm_nonneg a, norm_nonneg (a - b)]
 
@@ -142,14 +194,11 @@ theorem rrd_ae_zero [SigmaFinite μ] [IsLocallyFiniteMeasure μ] (ψ : G → ℂ
   have hreg : μ.WeaklyRegular := by
     first
     | infer_instance
-    | exact Measure.WeaklyRegular.of_pseudoMetrizableSpace_secondCountable_of_locallyFinite
   have hint_r : ∀ s, MeasurableSet s → μ s < ⊤ → IntegrableOn ψ s μ := by
     intro s hs hμs
     have hc : IntegrableOn (fun _ : G => M) s μ := by
       first
       | exact integrableOn_const hμs.ne
-      | exact integrableOn_const.2 (Or.inr hμs)
-      | exact integrableOn_const_iff.2 (Or.inr hμs)
     exact Integrable.mono' hc hψ.aestronglyMeasurable (Filter.Eventually.of_forall hM)
   have hzero : ∀ s, MeasurableSet s → μ s < ⊤ → ∫ x in s, ψ x ∂μ = 0 := by
     intro s hs hμs
@@ -157,8 +206,6 @@ theorem rrd_ae_zero [SigmaFinite μ] [IsLocallyFiniteMeasure μ] (ψ : G → ℂ
       rw [integrable_indicator_iff hs]
       first
       | exact integrableOn_const hμs.ne
-      | exact integrableOn_const.2 (Or.inr hμs)
-      | exact integrableOn_const_iff.2 (Or.inr hμs)
     have hI : ∫ x in s, ψ x ∂μ = ∫ x, s.indicator (fun _ : G => (1 : ℂ)) x * ψ x ∂μ := by
       rw [← integral_indicator hs]
       congr 1
@@ -172,11 +219,9 @@ theorem rrd_ae_zero [SigmaFinite μ] [IsLocallyFiniteMeasure μ] (ψ : G → ℂ
       have hφi : Integrable (⇑φ) μ := by
         first
         | exact hφ.2
-        | exact hφ.1
       have hφd : ∫ x, ‖s.indicator (fun _ : G => (1 : ℂ)) x - φ x‖ ∂μ ≤ ε / (M + 1) := by
         first
         | exact hφ.1
-        | exact hφ.2
       have e : ∫ x, s.indicator (fun _ : G => (1 : ℂ)) x * ψ x ∂μ =
           ∫ x, (s.indicator (fun _ : G => (1 : ℂ)) x - φ x) * ψ x ∂μ := by
         have hsplit : (fun x => (s.indicator (fun _ : G => (1 : ℂ)) x - φ x) * ψ x) =
@@ -302,8 +347,6 @@ theorem rr_cont_of_meas' [SigmaFinite μ] [IsLocallyFiniteMeasure μ] (hμ : μ 
           (memW _).2 (rrd_vec_tendsto hmul hiso hmeas hc hf v)
         first
         | exact Submodule.inner_left_of_mem_orthogonal hw hu
-        | exact (Submodule.mem_orthogonal' W u).1 hu _ hw
-        | exact inner_eq_zero_symm.1 ((Submodule.mem_orthogonal W u).1 hu _ hw)
     have hall : ∀ᵐ g ∂μ, ∀ n : ℕ, ⟪u, π g (denseSeq H n)⟫_ℂ = 0 := ae_all_iff.2 fun n => hae _
     haveI : (ae μ).NeBot := ae_neBot.2 hμ
     obtain ⟨g, hg⟩ := hall.exists
@@ -321,7 +364,6 @@ theorem rr_cont_of_meas' [SigmaFinite μ] [IsLocallyFiniteMeasure μ] (hμ : μ 
   have htc : W.topologicalClosure = ⊤ := by
     first
     | exact Submodule.topologicalClosure_eq_top_iff.2 hperp
-    | exact (Submodule.topologicalClosure_eq_top_iff W).2 hperp
   have hx : ∀ x : H, Tendsto (fun h => π h x) (𝓝 1) (𝓝 x) := by
     intro x
     have h1 : x ∈ W.topologicalClosure := by

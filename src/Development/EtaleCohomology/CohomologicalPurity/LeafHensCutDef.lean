@@ -2,7 +2,6 @@ module
 
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RingHom.Etale
-public import Mathlib.Algebra.Category.Ring.FilteredColimits
 
 @[expose] public section
 

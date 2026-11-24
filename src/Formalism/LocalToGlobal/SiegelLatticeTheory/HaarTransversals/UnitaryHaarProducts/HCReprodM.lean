@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.Admissible
 
 @[expose] public section
@@ -65,10 +66,7 @@ theorem isKFin_of_mem_lowKSub {lam : Fin n → ℝ} {w : H} (hw : w ∈ lowKSub 
   unfold IsKTypeOf at hw
   obtain ⟨s, hs, hws⟩ := (Submodule.mem_sSup_iff_exists_finset).1 hw
   obtain ⟨hfd, hst⟩ := finsetSup_kstable s (fun S hS => ⟨(hs hS).1, (hs hS).2.1⟩)
-  have hws' : w ∈ s.sup (id : Submodule ℂ H → Submodule ℂ H) := by
-    rw [Finset.sup_eq_iSup]
-    exact hws
-  exact ⟨_, hfd, hws', hst⟩
+  exact ⟨_, hfd, by simpa [Finset.sup_eq_iSup] using hws, hst⟩
 
 end KFin
 
@@ -76,11 +74,9 @@ theorem hcReprodDSc : HCReprodDSc := by
   intro n ε lam H _ _ _ σ hDS w hw
   have hσ : IsURepOn (UJset ε) σ := hDS.2.2.1
   have hirr : IsIrredOn (UJset ε) σ := hDS.2.2.2.1
-  have hadm : AdmProjAt ε σ := Formalism.L2.SG.Pf.harishChandra_admissible n ε lam H σ hDS
+  have hadm : AdmProjAt ε σ := _root_.Formalism.L2.SG.Pf.admitted.hcAdmDS n ε lam H σ hDS
   by_cases h0 : w = 0
-  · refine ⟨0, continuous_const, HasCompactSupport.zero, ?_, ?_⟩
-    · simp
-    · simp [h0]
+  · exact ⟨0, continuous_const, HasCompactSupport.zero, by simp, by simp [h0]⟩
   · obtain ⟨Φ, hΦ, hx⟩ := kfin_mem_Vsub hσ hirr hadm h0 (isKFin_of_mem_lowKSub hw)
     exact ⟨fun y => Φ (umat y), hΦ.1.continuous.comp continuous_umat, test_comp_cs hΦ,
       vec_integrable hσ w hΦ, hx.symm⟩

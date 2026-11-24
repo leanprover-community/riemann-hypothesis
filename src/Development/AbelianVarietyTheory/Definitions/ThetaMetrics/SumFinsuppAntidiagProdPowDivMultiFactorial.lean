@@ -1,6 +1,63 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Analysis.RCLike.Basic
+public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.Algebra.Order.Antidiag.FinsuppEquiv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.Order.Chebyshev
+public import Mathlib.Data.Nat.Choose.Bounds
+public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 
 @[expose] public section
 
@@ -139,22 +196,6 @@ theorem l1Norm_linearForm_le_sum {ι : Type*} (s : Finset ι) (v : ι → σ) (e
   refine (l1Norm_sum_le _ _).trans_eq (sum_congr rfl fun k _ ↦ ?_)
   rw [C_mul_X_eq_monomial, l1Norm_monomial]
 
-theorem l1Norm_linearForm_eq_sum {ι : Type*} (s : Finset ι) {v : ι → σ}
-    (hv : Function.Injective v) (e : ι → K) :
-    l1Norm (∑ k ∈ s, C (e k) * X (v k) : MvPolynomial σ K) = ∑ k ∈ s, ‖e k‖ := by
-  classical
-  refine (l1Norm_linearForm_le_sum s v e).antisymm ?_
-  have hinj : Function.Injective fun k ↦ (Finsupp.single (v k) 1 : σ →₀ ℕ) :=
-    fun a b h ↦ hv (Finsupp.single_left_injective one_ne_zero h)
-  refine le_trans (le_of_eq ?_) (sum_norm_coeff_le_l1Norm _ (s.image fun k ↦ .single (v k) 1))
-  rw [sum_image fun a _ b _ h ↦ hinj h]
-  refine sum_congr rfl fun k hk ↦ ?_
-  rw [coeff_sum, sum_eq_single k]
-  · simp [C_mul_X_eq_monomial]
-  · intro b _ hb
-    rw [C_mul_X_eq_monomial, coeff_monomial, if_neg fun h ↦ hb (hinj h)]
-  · exact fun h ↦ (h hk).elim
-
 theorem l1Norm_linearForm_le {ι : Type*} [Fintype ι] (v : ι → σ) (e : ι → K) :
     l1Norm (∑ k, C (e k) * X (v k) : MvPolynomial σ K) ≤
       √(Fintype.card ι) * √(∑ k, ‖e k‖ ^ 2) :=
@@ -198,8 +239,8 @@ theorem degree_le_totalDegree {R : Type*} [CommSemiring R] {P : MvPolynomial σ 
 theorem l1Norm_bind_le_sum_norm_coeff_mul_pow_degree [NormOneClass K] (f : σ → MvPolynomial τ K) (P : MvPolynomial σ K)
     {R : ℝ} (h : ∀ i, l1Norm (f i) ≤ R) :
     l1Norm (bind₁ f P) ≤ ∑ α ∈ P.support, ‖P.coeff α‖ * R ^ α.degree := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [P.as_sum, map_sum]
+
+  conv_lhs => rw [P.as_sum, map_sum]
   refine (l1Norm_sum_le _ _).trans (sum_le_sum fun α _ ↦ ?_)
   rw [bind₁_monomial]
   refine (l1Norm_mul_le _ _).trans ?_
@@ -404,8 +445,8 @@ theorem fockInner_eq_sum_of_subset_right (P : MvPolynomial σ 𝕜) {Q : MvPolyn
 
 theorem fockInner_conj_symm (P Q : MvPolynomial σ 𝕜) :
     starRingEnd 𝕜 (fockInner P Q) = fockInner Q P := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [fockInner_eq_sum_of_subset_right Q (subset_refl P.support), fockInner, map_sum]
+
+  rw [fockInner_eq_sum_of_subset_right Q (subset_refl P.support), fockInner, map_sum]
   exact sum_congr rfl fun α _ ↦ by simp [mul_comm]
 
 theorem fockInner_add_left (P P' Q : MvPolynomial σ 𝕜) :
@@ -416,7 +457,7 @@ theorem fockInner_add_left (P P' Q : MvPolynomial σ 𝕜) :
 theorem fockInner_smul_left (c : 𝕜) (P Q : MvPolynomial σ 𝕜) :
     fockInner (c • P) Q = c * fockInner P Q := by
   simp only [fockInner_eq_sum_of_subset_right _ (subset_refl Q.support), mul_sum]
-  exact sum_congr rfl fun α _ ↦ by rw [coeff_smul, smul_eq_mul]; ring
+  exact sum_congr rfl fun α _ ↦ by rw [MvPolynomial.coeff_smul, smul_eq_mul]; ring
 
 theorem fockInner_add_right (P Q Q' : MvPolynomial σ 𝕜) :
     fockInner P (Q + Q') = fockInner P Q + fockInner P Q' := by
@@ -425,7 +466,7 @@ theorem fockInner_add_right (P Q Q' : MvPolynomial σ 𝕜) :
 theorem fockInner_smul_right (c : 𝕜) (P Q : MvPolynomial σ 𝕜) :
     fockInner P (c • Q) = starRingEnd 𝕜 c * fockInner P Q := by
   simp only [fockInner, mul_sum]
-  exact sum_congr rfl fun α _ ↦ by rw [coeff_smul, smul_eq_mul, map_mul]; ring
+  exact sum_congr rfl fun α _ ↦ by rw [MvPolynomial.coeff_smul, smul_eq_mul, map_mul]; ring
 
 def fockInnerₛₗ (σ 𝕜 : Type*) [RCLike 𝕜] :
     MvPolynomial σ 𝕜 →ₗ[𝕜] MvPolynomial σ 𝕜 →ₗ⋆[𝕜] 𝕜 :=
@@ -442,12 +483,6 @@ theorem fockInner_monomial_left (α : σ →₀ ℕ) (c : 𝕜) (Q : MvPolynomia
     fockInner (monomial α c) Q = multiFactorial α * (c * starRingEnd 𝕜 (Q.coeff α)) := by
   classical
   rw [fockInner_eq_sum_of_subset_left Q (s := {α}) support_monomial_subset]
-  simp
-
-theorem fockInner_monomial_right (P : MvPolynomial σ 𝕜) (α : σ →₀ ℕ) (c : 𝕜) :
-    fockInner P (monomial α c) = multiFactorial α * (P.coeff α * starRingEnd 𝕜 c) := by
-  classical
-  rw [fockInner_eq_sum_of_subset_right P (s := {α}) support_monomial_subset]
   simp
 
 theorem fockInner_X_mul_left (i : σ) (P Q : MvPolynomial σ 𝕜) :

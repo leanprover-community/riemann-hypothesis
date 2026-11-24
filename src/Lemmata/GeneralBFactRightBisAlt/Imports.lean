@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Matrix.Mul
 
 @[expose] public section
 

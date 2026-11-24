@@ -1,8 +1,53 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FubiniHeadLastPart
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerBlockPoint
+public import Mathlib.Tactic.Linter.HaveILetI
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerBlockPoint
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -212,18 +257,18 @@ theorem mat_block {n : ℕ} (a : Fin 1 → Fin n → ℂ) (b : Fin n → Fin 1 �
   · rw [G4.blk_mul, G4.blk_mul]
     unfold G.ptLong
     congr 1
-    all_goals first | rfl | (funext i; simp [Matrix.vecMulVec, Matrix.mulVec_mulVec]; done) |
-      (simp [Matrix.vecMulVec, Matrix.mulVec_mulVec]; done)
+    all_goals first | (funext i; simp [Matrix.vecMulVec, Matrix.mulVec_mulVec]; done) |
+      (simp; done)
 
 def shearU (n : ℕ) : (G.UT n → ℂ) × (Fin n → ℂ) ≃ᵐ (G.UT n → ℂ) × (Fin n → ℂ) where
   toFun q := (q.1, G.upper q.1 *ᵥ q.2)
   invFun q := (q.1, (G.upper q.1)⁻¹ *ᵥ q.2)
   left_inv q := by
     simp only
-    rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ (Dx2.SL.isUnit_up q.1), Matrix.one_mulVec]
+    rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ (_root_.Formalism.FourierDecayAlt.P.Dx2.Split.upper_det q.1), Matrix.one_mulVec]
   right_inv q := by
     simp only
-    rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (Dx2.SL.isUnit_up q.1), Matrix.one_mulVec]
+    rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (_root_.Formalism.FourierDecayAlt.P.Dx2.Split.upper_det q.1), Matrix.one_mulVec]
   measurable_toFun := (continuous_fst.prodMk ((Dx2.SL.cont_upper.comp continuous_fst).matrix_mulVec
     continuous_snd)).measurable
   measurable_invFun := (continuous_fst.prodMk (((G5.continuous_inv_upper n).comp continuous_fst).matrix_mulVec

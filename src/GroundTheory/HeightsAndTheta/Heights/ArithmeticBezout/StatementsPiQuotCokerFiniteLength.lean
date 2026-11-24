@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.FiniteLength
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

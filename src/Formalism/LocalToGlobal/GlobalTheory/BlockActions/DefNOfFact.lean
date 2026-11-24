@@ -3,6 +3,7 @@ module
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.MulLatMulLat
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.HformSmulRightB
 public import Formalism.LocalToGlobal.GlobalTheory.ExistsUnitaryOneDetEq
+import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
 
 @[expose] public section
 
@@ -61,10 +62,10 @@ theorem defN_of_fact {n : ℕ} (J : Matrix (Fin n) (Fin n) D.host.E) (C : GL (Fi
     rw [← hC, ← Matrix.mul_one (cT (sigD D : D.host.E →+* D.host.E) C.1), ← Formalism.L2.GlobalTheoryTheory.Comp.hform_mulVec_rect]
     simp only [hform, Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   refine ⟨∑ a, Complex.normSq (φ ((C.1 *ᵥ x) a)), Finset.sum_nonneg (fun a _ => Complex.normSq_nonneg _), ?_, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [e1, map_sum, Complex.ofReal_sum]
-      refine Finset.sum_congr rfl (fun a _ => ?_)
-      rw [map_mul, conj_sigD, Complex.normSq_eq_conj_mul_self]
+
+  · rw [e1, map_sum, Complex.ofReal_sum]
+    refine Finset.sum_congr rfl (fun a _ => ?_)
+    rw [map_mul, conj_sigD, Complex.normSq_eq_conj_mul_self]
   · intro h0
     have hz : C.1 *ᵥ x = 0 := by
       funext a

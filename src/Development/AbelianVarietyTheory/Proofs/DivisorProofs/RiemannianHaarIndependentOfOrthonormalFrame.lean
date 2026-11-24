@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstMeasurableSpaceRealSU
+public import Mathlib.Analysis.InnerProductSpace.Adjoint
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -51,9 +99,9 @@ theorem herm_skew_iff {E : Type} [Field E] {r : ℕ} (τ : E →+* ℂ) (G : Mat
   have key : ∀ u w, hermC τ G (A *ᵥ u) w + hermC τ G u (A *ᵥ w) =
       ∑ a, ∑ b, u a * (Aᵀ * G.map τ + G.map τ * cj A) a b * conj (w b) := by
     intro u w
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hermC, Matrix.mulVec, dotProduct, Matrix.add_apply, Matrix.mul_apply, Matrix.transpose_apply,
-      Matrix.map_apply, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum, mul_add, add_mul, Finset.sum_add_distrib]
+
+    simp only [hermC, Matrix.mulVec, dotProduct, Matrix.add_apply, Matrix.mul_apply, Matrix.transpose_apply,
+    Matrix.map_apply, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum, mul_add, add_mul, Finset.sum_add_distrib]
     congr 1
     · refine (Finset.sum_congr rfl fun y _ => Finset.sum_comm).trans (Finset.sum_comm.trans
         (Finset.sum_congr rfl fun x _ => ?_))
@@ -91,7 +139,7 @@ theorem sgnMat_mul (r p : ℕ) : sgnMat r p * sgnMat r p = 1 := by
 theorem sgnMat_transpose (r p : ℕ) : (sgnMat r p)ᵀ = sgnMat r p := Matrix.diagonal_transpose _
 
 theorem cj_sgnMat (r p : ℕ) : cj (sgnMat r p) = sgnMat r p := by
-  ext a b; by_cases h : a = b <;> simp [h, Matrix.diagonal_apply]
+  ext a b; by_cases h : a = b <;> simp [h]
 
 theorem frame_facts {E : Type} [Field E] {r p : ℕ} (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E)
     (M : Matrix (Fin r) (Fin r) ℂ) (h : gram τ G M = sgnMat r p) :
@@ -148,7 +196,7 @@ theorem inner_theta {ι : Type} [Fintype ι] {r : ℕ} (d : Fin r → ℝ) (hd :
   have key : ∀ t a b, (starRingEnd ℂ) ((d a : ℂ) * Y (t, a, b) * (d b : ℂ)) = -(Y (t, b, a)) := by
     intro t a b
     have h := congrArg (fun A : Matrix (Fin r) (Fin r) ℂ => A a b) (hY t)
-    simp only [IsSkew, Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.transpose_apply,
+    simp only [Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.transpose_apply,
       Matrix.map_apply, blk, Matrix.of_apply, Matrix.zero_apply] at h
     have hb : (d b : ℂ) * d b = 1 := by rw [← Complex.ofReal_mul, hd]; simp
     rw [map_mul, map_mul, Complex.conj_ofReal, Complex.conj_ofReal]

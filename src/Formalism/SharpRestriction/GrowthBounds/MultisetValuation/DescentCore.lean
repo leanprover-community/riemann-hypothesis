@@ -1,6 +1,69 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Algebra.Defs
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Field.Defs
+public import Mathlib.Algebra.Ring.Subring.Defs
+public import Mathlib.Data.Finset.Card
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.BigOperators.Finsupp.Basic
+public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
+public import Mathlib.Algebra.Module.Pi
+public import Mathlib.Algebra.Module.Submodule.Lattice
+public import Mathlib.Algebra.Module.Submodule.LinearMap
+public import Mathlib.LinearAlgebra.Dual.Defs
+public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 
@@ -87,15 +150,15 @@ private theorem coeff_mem_range_algebraMap_of_linearIndependent {K Kc V Vc M : T
   have e1 : ∀ m, algebraMap K Kc (π m y) = ∑ k : s, a k * algebraMap K Kc (π m (z k)) := by
     intro m; rw [← hπ, hy', map_sum]; simp [hπ]
   refine ⟨∑ m ∈ l.support, l m * π m y, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_mul, e1, Finset.mul_sum]
   rw [Finset.sum_comm]
   have h4 : ∀ k : s, ∑ m ∈ l.support, algebraMap K Kc (l m) * (a k * algebraMap K Kc (π m (z k))) =
       a k * algebraMap K Kc (if k = k0 then 1 else 0) := by
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hz k, map_sum, Finset.mul_sum]
+
+    rw [← hz k, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     rw [map_mul]; ring
   rw [Finset.sum_congr rfl (fun k _ => h4 k)]
@@ -134,8 +197,8 @@ theorem descent_core {K Kc V Vc M : Type*} [Field K] [Field Kc] [Algebra K Kc]
         have h1 : ∑ k ∈ s, (b k / b k0) • z k = 0 := by
           simp_rw [div_eq_mul_inv, mul_comm _ (b k0)⁻¹, mul_smul, ← Finset.smul_sum, hb0, smul_zero]
         rw [← Finset.add_sum_erase s _ hk0, div_self hbk0, one_smul] at h1
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [eq_neg_of_add_eq_zero_left h1, map_neg, map_sum]
+
+        rw [eq_neg_of_add_eq_zero_left h1, map_neg, map_sum]
         simp only [hιs]
       have hy' : ι y = ∑ k ∈ s.erase k0,
           (a k - algebraMap K Kc (b k / b k0) * a k0) • ι (z k) := by
@@ -173,8 +236,8 @@ theorem descent_core {K Kc V Vc M : Type*} [Field K] [Field Kc] [Algebra K Kc]
       refine ⟨c, fun k hk => ?_, ?_⟩
       · rw [hc k hk]; exact ha k hk
       · have h6 : ι (y - ∑ k ∈ s, c k • z k) = 0 := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sub, map_sum, hy, sub_eq_zero]
+
+          rw [map_sub, map_sum, hy, sub_eq_zero]
           refine Finset.sum_congr rfl fun k hk => ?_
           rw [hιs, hc k hk]
         exact sub_eq_zero.1 (hιinj _ h6)

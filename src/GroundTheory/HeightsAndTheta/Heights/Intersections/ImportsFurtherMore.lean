@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherFurther
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PullBad
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 
 @[expose] public section
 

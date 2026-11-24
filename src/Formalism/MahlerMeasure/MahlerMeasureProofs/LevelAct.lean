@@ -1,6 +1,53 @@
 module
 
 public import Formalism.MahlerMeasure.LevelSum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Data.Rat.Cast.Lemmas
 
 @[expose] public section
 
@@ -89,8 +136,8 @@ theorem pderiv_X_inj {f : Fin r → σ} (hf : Function.Injective f) (c d : Fin r
 theorem pderiv_e_S (he : Function.Injective e) (hwe : ∀ c d, w c ≠ e d)
     (c : Fin r) : pderiv (e c) (∑ d, X (w d) * X (e d) : MvPolynomial σ k) = X (w c) := by
   have h0 : ∀ d, pderiv (e c) (X (w d) : MvPolynomial σ k) = 0 := fun d => mvPolynomial_pderiv_X_of_ne (hwe d c)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [Derivation.leibniz, h0, pderiv_X_inj he, smul_eq_mul, mul_ite, mul_one, mul_zero,
     add_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
 
@@ -98,8 +145,8 @@ theorem pderiv_w_S (hw : Function.Injective w) (hwe : ∀ c d, w c ≠ e d)
     (c : Fin r) : pderiv (w c) (∑ d, X (w d) * X (e d) : MvPolynomial σ k) = X (e c) := by
   have h0 : ∀ d, pderiv (w c) (X (e d) : MvPolynomial σ k) = 0 :=
     fun d => mvPolynomial_pderiv_X_of_ne (fun h => hwe c d h.symm)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [Derivation.leibniz, h0, pderiv_X_inj hw, smul_eq_mul, mul_ite, mul_one, mul_zero,
     zero_add, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
 

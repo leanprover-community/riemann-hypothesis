@@ -1,6 +1,53 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ComplexMinusRealLineMeasureCoordinates
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+public import Mathlib.Data.Nat.Choose.Dvd
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -130,7 +177,7 @@ theorem integral {J : Type} [DecidableEq J] (ν : Valuation ℂ ℝ≥0) (L : Fi
   have hj : ∀ u ∈ S.erase t, ∃ j, u j ≠ t j := by
     intro u hu
     by_contra h
-    push_neg at h
+    push Not at h
     exact (Finset.ne_of_mem_erase hu) (funext h)
   have : Nonempty J := ⟨j0⟩
   choose! jj hjj using hj
@@ -140,7 +187,7 @@ theorem integral {J : Type} [DecidableEq J] (ν : Valuation ℂ ℝ≥0) (L : Fi
     by_cases hx : ν x ≤ 1
     · simp only [c, if_pos hx, one_mul]; exact ⟨by simp, hx, one_ne_zero⟩
     · simp only [c, if_neg hx]
-      push_neg at hx
+      push Not at hx
       have hx0 : x ≠ 0 := by rintro rfl; simp at hx
       refine ⟨?_, ?_, inv_ne_zero hx0⟩
       · rw [map_inv₀]; exact inv_le_one_of_one_le₀ hx.le
@@ -197,7 +244,7 @@ theorem integral {J : Type} [DecidableEq J] (ν : Valuation ℂ ℝ≥0) (L : Fi
       rw [hKdef, List.map_append, List.prod_append, List.map_replicate, List.prod_replicate]; ring
     rwa [e, Valuation.map_mul, Valuation.map_pow] at this
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have hK0 : 0 < ν K := pos_iff_ne_zero.2 ((Valuation.ne_zero_iff ν).2 hK)
   obtain ⟨n, hn'⟩ := pow_unbounded_of_one_lt (ν K)⁻¹ hlt
   have h1 : ν K * (ν K)⁻¹ < ν K * ν (t j0) ^ n := mul_lt_mul_of_pos_left hn' hK0
@@ -223,7 +270,7 @@ theorem UpperTheory.Esk.finite_system_proof : UpperTheory.Esk.Sys → UpperTheor
   have hs0 : ∀ j ∈ L, s j ≠ 0 := fun j hj h => by have := hsL j hj; rw [h, map_zero] at this; exact zero_ne_one this
   have hsint : ∀ j, ν (s j) ≤ 1 := intV s hsS hs0
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hS'nc : ∀ u ∈ S', ∃ j, 1 ≤ ν (u j - s j) := by
     intro u hu
     obtain ⟨f', hf', hu'⟩ := (hS' u).1 hu
@@ -277,7 +324,7 @@ theorem UpperTheory.Esk.finite_system_proof : UpperTheory.Esk.Sys → UpperTheor
       refine List.mem_map.2 ⟨((s (jn u) - u (jn u))⁻¹, jn u, -(u (jn u) * (s (jn u) - u (jn u))⁻¹)), ?_, ?_⟩
       · exact List.mem_map.2 ⟨u, Finset.mem_toList.2 huNC, rfl⟩
       · simp only; ring
-    · push_neg at hI
+    · push Not at hI
       obtain ⟨j, hj, hj0⟩ := hI
       apply mul_eq_zero_of_left
       apply List.prod_eq_zero
@@ -375,7 +422,7 @@ theorem UpperTheory.Esk.finite_system_proof : UpperTheory.Esk.Sys → UpperTheor
       intro u hu
       split_ifs with hc
       · ring
-      · push_neg at hc
+      · push Not at hc
         rw [hG0 u (Finset.mem_union_left _ hu) (by obtain ⟨j, hj⟩ := hc; exact ⟨j, hj⟩), zero_pow (by omega)]
         ring
     rw [h1, h2, sub_zero, hd]

@@ -1,12 +1,61 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.NormOneIsCoboundaryUnramifiedQuadratic
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.WTrans
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.IrreducibleParity.MemCOfInt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.Descent
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.SplitUnitElements.SplitS
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.WTrans
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.SplitUnitElements.Fst
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.SplitUnitElements.Imports
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.IrreducibleParity.MemCOfInt
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.SplitUnitElements.SplitS
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -90,7 +139,7 @@ private theorem isDat_M {c s t : K} (hτ : τ ^ 2 - 4 ≠ 0) (hc : c ≠ 0) (hs 
     all_goals ring
   have hsm : sigL ((t • s • (ω : Lsq K Δ)) • ofE Δ (ω - star ω : Etau K τ)) =
       -((t • s • (ω : Lsq K Δ)) • ofE Δ (ω - star ω : Etau K τ)) := by
-    ext <;> simp [sigL, ofE] <;> ring
+    ext <;> simp [sigL, ofE]
   have hmm : ((t • s • (ω : Lsq K Δ)) • ofE Δ (ω - star ω : Etau K τ)) *
       ((algebraMap K (Lsq K Δ) (t ^ 2 * (Δ * s ^ 2) * (τ ^ 2 - 4))⁻¹) •
         ((t • s • (ω : Lsq K Δ)) • ofE Δ (ω - star ω : Etau K τ))) = 1 := by
@@ -231,7 +280,7 @@ private theorem cmb_add' (s : K) (a b a' b' : Etau K τ) :
 
 private theorem smul_cmb (r : O) (s : K) (a b : Etau K τ) :
     r • cmb Δ s a b = cmb Δ s (r • a) (r • b) := by
-  ext <;> simp [cmb] <;> simp only [Algebra.smul_def] <;> ring
+  ext <;> simp [cmb]
 
 private theorem cmb_zero' (s : K) : cmb Δ s (0 : Etau K τ) 0 = 0 := by
   ext <;> simp [cmb]
@@ -421,7 +470,7 @@ private theorem phi_fix (L : IsLoc O Δ) {c g s t : K} (hg : g ≠ 0) {η ε : O
         generalize hW : c • (g⁻¹ • (1 : Lsq K Δ) * star y1) + _ = W at hw
         have e : g • y1 = ((η⁻¹ : Oˣ) : O) • star W := by
           rw [← hW]
-          ext <;> simp [hc] <;> simp only [Algebra.smul_def, map_units_inv] <;> field_simp <;> ring
+          ext <;> simp [hc] <;> simp only [Algebra.smul_def, map_units_inv] <;> field_simp
         rw [e]
         exact IsIntegral.smul _ ((D _).2 hw)
       · rw [h.dual]
@@ -432,7 +481,7 @@ private theorem phi_fix (L : IsLoc O Δ) {c g s t : K} (hg : g ≠ 0) {η ε : O
         refine ⟨o, ?_⟩
         simp [hs0] at ho
         rw [← ho]
-        simp <;> ring
+        simp
       · rw [h.dual]
         intro b hb
         have hw := H (0, cmb Δ s b 0) ⟨by simpa using (isIntegral_zero : IsIntegral O (0 : Lsq K Δ)), b, hb, 0, fixP_zero h, rfl⟩
@@ -442,7 +491,7 @@ private theorem phi_fix (L : IsLoc O Δ) {c g s t : K} (hg : g ≠ 0) {η ε : O
         refine ⟨-(((ε⁻¹ : Oˣ) : O) * o), ?_⟩
         rw [map_neg, map_mul, ho, hs, map_units_inv]
         have hX : (b * star b').im = -(b.re * b'.im) + b.im * (b'.re + τ * b'.im) + -(τ * b.im * b'.im) := by
-          simp <;> ring
+          simp
         rw [hX]
         field_simp
   · have hsu : (star u).re ∈ (algebraMap O K).range ∧ (star u).im ∈ (algebraMap O K).range := by

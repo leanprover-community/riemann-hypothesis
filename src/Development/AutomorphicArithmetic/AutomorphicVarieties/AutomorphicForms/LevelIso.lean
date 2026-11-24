@@ -1,10 +1,47 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Hypotheses2
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.LocIsotypic
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicHodgePropertiesConjInvariantStatement
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Brauer
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SemisimpleLevels.SsMonoOdd
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.CrystallineBaseChange.QuadBC0OfQuadBaseChange
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FiniteDimensionalWdSpace
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicHodgePropertiesConjInvariant
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RecOfRecLiteralStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalAdjoinRange
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -59,7 +96,7 @@ theorem FrobEig.of_iso {ι : Qbar l ≃+* ℂ} {w : HeightOneSpectrum (𝓞 F)} 
 theorem PotCrysAt.of_iso {A : ValuationSubring Ω} (H : PotCrysAt r A) (h : RepIso r r') : PotCrysAt r' A := by
   obtain ⟨g, hg⟩ := h
   obtain ⟨O, i1, i2, i3, Bw, hj, hp⟩ := H
-  exact ⟨O, i1, i2, i3, Bw, hj, (GlobalTheory.T.padicHodgeProperties_conj_invariant l (Loc.PP l) F Ω O _ Bw n _ _ g fun s => hg s).2.2.1 hp⟩
+  exact ⟨O, i1, i2, i3, Bw, hj, (_root_.GlobalTheory.ConjLocal.local_conj l (Loc.PP l) F Ω O _ Bw n _ _ g fun s => hg s).2.2.1 hp⟩
 
 theorem LevelAt.of_iso {M : ℕ} {m : Fin n → ℤ} (H : LevelAt l M m r) (h : RepIso r r') : LevelAt l M m r' := fun w hw => by
   obtain ⟨A, hA, χ, κ, h1, h2, h3, h4⟩ := H w hw
@@ -80,12 +117,6 @@ theorem eventually_not_mem : ∀ᶠ w : HeightOneSpectrum (𝓞 F) in Filter.cof
   simpa [Ideal.dvd_span_singleton] using hw
 
 variable [IsAlgClosure F Ω]
-
-theorem Hypotheses₂.exists_rec (P : Hypotheses₂) {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 F)} (h : IsPlaceOver A w) :
-    ∃ rc : IrrGL (k := w.adicCompletion F) → WD h, IsRec h rc := by
-  have L := P.litN.loc
-  obtain ⟨rc, hrc⟩ := L.llc F Ω A w h
-  exact ⟨rc, GlobalTheory.T.rec_of_rec_literal L.dzc L.dzi L.exh L.multi L.cos L.zel L.geo L.bz F Ω A w h rc hrc⟩
 
 theorem exists_bridge {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 F)} (h : IsPlaceOver A w)
     (hw : ((l : ℕ) : 𝓞 F) ∈ w.asIdeal) :

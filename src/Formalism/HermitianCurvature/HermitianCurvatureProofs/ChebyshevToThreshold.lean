@@ -1,6 +1,49 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AxiomsFromFamilies
 public import Formalism.HermitianCurvature.StatementJ
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -12,35 +55,7 @@ namespace Formalism.FourierDecayAlt.P.Jx10
 
 theorem pull {α X : Type} [DecidableEq X] (η : α → X) (F : Finset α) (k : X → X → ℂ)
     (h : A5.IsPSD (F.image η) k) : A5.IsPSD F (fun x y => k (η x) (η y)) := by
-  unfold Formalism.FourierDecayAlt.A5.IsPSD at h ⊢
-  intro a
-  show (∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y)).im = 0 ∧
-    0 ≤ (∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y)).re
-  set b : X → ℂ := fun u => ∑ z ∈ F.filter (fun z => η z = u), a z with hb
-  have hmaps : ∀ x ∈ F, η x ∈ F.image η := fun x hx => Finset.mem_image_of_mem η hx
-  have rhs : ∀ u v, b u * conj (b v) * k u v =
-      ∑ x ∈ F.filter (fun z => η z = u), ∑ y ∈ F.filter (fun z => η z = v),
-        a x * conj (a y) * k (η x) (η y) := by
-    intro u v
-    simp only [hb]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_mul_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl (fun x hx => ?_)
-    rw [Finset.sum_mul]
-    refine Finset.sum_congr rfl (fun y hy => ?_)
-    have h1 := (Finset.mem_filter.mp hx).2
-    have h2 := (Finset.mem_filter.mp hy).2
-    rw [h1, h2] <;> ring
-  have key : (∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y)) =
-      ∑ u ∈ F.image η, ∑ v ∈ F.image η, b u * conj (b v) * k u v := by
-    simp_rw [rhs]
-    rw [← Finset.sum_fiberwise_of_maps_to hmaps]
-    refine Finset.sum_congr rfl (fun u _ => ?_)
-    conv_rhs => rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun x _ => ?_)
-    rw [Finset.sum_fiberwise_of_maps_to hmaps]
-  rw [key]
-  exact h b
+  apply Formalism.FourierDecayAlt.P.Jx9.pull <;> assumption
 
 theorem inter_of_module (E : Type) [Field E] [NumberField E] [IsCMField E] (L : Submodule ℤ E)
     (hL : ∀ (a : 𝓞 (maximalRealSubfield E)) (t : E), t ∈ L →

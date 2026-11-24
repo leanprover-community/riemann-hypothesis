@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
+public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.AdicCompletion.Completeness
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,7 +74,7 @@ theorem gal_eq_of_coeff (X : Tower Ω ε) (s : Ω ≃ₐ[ℚ] Ω) (f : X.K)
 theorem coeff_alg (c : Ω) (r : ℚ) :
     ((algebraMap Ω (HahnSeries ℚ Ω)) c).coeff r = if r = 0 then c else 0 := by
   rw [HahnSeries.algebraMap_apply']
-  simp [PowerSeries.algebraMap_apply, HahnSeries.coeff_single, eq_comm]
+  simp [HahnSeries.coeff_single]
 
 theorem gal_algebraMap (X : Tower Ω ε) (s : Ω ≃ₐ[ℚ] Ω) (c : Ω) (hc : s c = c) :
     X.gal s (algebraMap Ω X.K c) = algebraMap Ω X.K c := by
@@ -186,8 +233,8 @@ theorem galB_sub_mem_of_Pol [IsAlgClosure ℚ Ω] (X : Tower Ω ε) (l w : ℕ) 
       (Finset.mem_biUnion.2 ⟨i, Finset.mem_univ _, hx⟩)))
   set χ := (cyclotomicCharacter Ω l s.toRingEquiv : ℤ_[l]) with hχdef
   have hgal : X.galB l s b u = X.kmap l (X.gal s) (b ![u 0, χ * u 1]) := rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Pi.sub_apply, hgal, hbc, hbc, map_sum, ← Finset.sum_sub_distrib]
+
+  rw [Pi.sub_apply, hgal, hbc, hbc, map_sum, ← Finset.sum_sub_distrib]
   refine Submodule.sum_mem _ fun i _ => ?_
   simp only [map_smul, Matrix.cons_val_zero, Matrix.cons_val_one]
   have hpow : χ ^ (w - (i : ℕ)) - 1 ∈ (idl l) ^ n := by
@@ -223,7 +270,7 @@ theorem galB_cont : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
       (hF s (fun x hx => hs x (Finset.mem_union_right _ hx)) u)
     rw [map_add (f := _)]
     convert this using 1
-    simp only [LinearMap.sub_apply, Pi.add_apply, Pi.sub_apply]
+    simp only [Pi.add_apply, Pi.sub_apply]
     abel
   | smul r a _ ha =>
     obtain ⟨E, hE⟩ := ha
@@ -231,6 +278,6 @@ theorem galB_cont : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
     have := Submodule.smul_mem _ r (hE s hs u)
     rw [map_smul]
     convert this using 1
-    simp only [LinearMap.sub_apply, Pi.smul_apply, Pi.sub_apply, smul_sub]
+    simp only [Pi.smul_apply, Pi.sub_apply, smul_sub]
 
 end GlobalTheory.KZ.GalCont

@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
+public import Mathlib.NumberTheory.RamificationInertia.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 
 @[expose] public section
 

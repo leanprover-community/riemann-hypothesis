@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
 public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.HasModerateGrowthZero
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

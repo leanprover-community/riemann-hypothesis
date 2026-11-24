@@ -1,39 +1,58 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.ClopenRestriction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.NoetherianBlowup
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceRelations
-public import Development.ResolutionOfSingularities.Foundations.Blowup.StrictTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.PowerContainmentAndOrderLocus
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdealSheaf
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
 public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.LogDerivativeIdealSheaf
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.MaxContactIdeal
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReductionProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.StrictTransformRestriction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.ControlledTransformRestriction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.DivisorReductionSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.AmbientBlowupSequence
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.ControlledTransformBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.ControlledTransformPowers
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.OrderLocusComparison
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.PowerContainmentAndOrderLocus
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.AmbientCenterImage
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.ControlledTransformPowers
+import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.ControlledTransformRestriction
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.OrderLocusComparison
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.StrictNormalCrossingsMoveToFront
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.IsomorphismTransport
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.AmbientEmbedding
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.BlowupSequenceData
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IrreducibleComponentsAlongSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.ControlledTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IsoInvariance
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequenceBoundary
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceOfBlowups
+import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IsoInvariance
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceTransforms
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.IsomorphismTransport
+import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.NoetherianBlowup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IrreducibleComponentsAlongSequence
 
 @[expose] public section
 
@@ -52,7 +71,7 @@ def StrictNormalCrossingsLiftFromDivisor : Prop :=
     InStrictNormalCrossingPosition p (H :: N) →
     ∀ Z : H.subscheme.IdealSheafData,
       HasStrictNormalCrossingsWith (H.subschemeι ≫ p) Z (N.map (fun D => D.comap H.subschemeι)) →
-      HasStrictNormalCrossingsWith p (imageIdealSheaf H.subschemeι Z) (H :: N)
+      HasStrictNormalCrossingsWith p (_root_.FunctorialResolution.Blowup.schemeImageIdeal H.subschemeι Z) (H :: N)
 
 theorem derivIdealSheafIterate_congr {k : Type u} [Field k] {Y : Scheme.{u}}
     (p q : Y ⟶ Spec (CommRingCat.of k))
@@ -71,7 +90,7 @@ theorem logDerivIdealSheafIterate_congr {k : Type u} [Field k] {Y : Scheme.{u}}
   rfl
 
 theorem imageIdealSheaf_hom_eq_comap_inv {A B : Scheme.{u}} (e : A ≅ B) (J : A.IdealSheafData) :
-    imageIdealSheaf e.hom J = J.comap e.inv := by
+    _root_.FunctorialResolution.Blowup.schemeImageIdeal e.hom J = J.comap e.inv := by
   rw [FunctorialResolution.EmbeddedResolution.imageIdealSheaf_eq_comap_inv e.hom J,
     CategoryTheory.IsIso.Iso.inv_hom]
 
@@ -139,15 +158,7 @@ private theorem le_length_imp_isNoetherian_ambientBlowupSeq_schemeAt
         exact hn
       exact isNoetherian_of_isBlowupAlongIdealSheaf ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).isBlowup n hlen)
 
-theorem isNoetherian_ambientBlowupSeq_schemeAt (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
-    (hno : BlowupPreservesNoetherian.{u}) (T : MarkedIdealWithBoundary.{u})
-    [AlgebraicGeometry.IsNoetherian T.scheme] (j : ℕ) (hj : j < T.boundary.length)
-    (I₀ : T.scheme.IdealSheafData) (E₀ : List T.scheme.IdealSheafData)
-    (s : (restrictToBoundaryDivisor T j hj I₀ E₀).SequenceOfBlowups)
-    (hpr : (MarkedBlowupSequenceData.ofMarkedSequence s).toBlowupSequenceData.CentersContainNoComponent)
-    (t : ℕ) (ht : t ≤ s.length) :
-    AlgebraicGeometry.IsNoetherian ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).obj t) :=
-  le_length_imp_isNoetherian_ambientBlowupSeq_schemeAt hres hno T j hj I₀ E₀ s hpr t ht
+alias isNoetherian_ambientBlowupSeq_schemeAt := _root_.FunctorialResolution.EmbeddedResolution.DivisorReduction.le_length_imp_isNoetherian_ambientBlowupSeq_schemeAt
 
 theorem ker_embeddingIntoAmbient_le_center (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (hno : BlowupPreservesNoetherian.{u}) (T : MarkedIdealWithBoundary.{u})
@@ -161,7 +172,7 @@ theorem ker_embeddingIntoAmbient_le_center (hres : FunctorialResolution.Blowup.S
       Scheme.Hom.ker ((s.center t).subschemeι ≫
         embeddingIntoAmbient hres hno T j hj I₀ E₀ s hpr t) := by
     apply Scheme.Hom.le_ker_comp
-  have h2 := (imageIdealSheaf_eq_ker_subschemeι_comp
+  have h2 := (_root_.FunctorialResolution.EmbeddedResolution.imageIdealSheaf_eq_ker
     (embeddingIntoAmbient hres hno T j hj I₀ E₀ s hpr t) (s.center t)).symm
   have h3 := (ambientBlowupSeq_center_eq_imageIdealSheaf hres hno T j hj I₀ E₀ s hpr t).symm
   exact le_of_le_of_eq key (h2.trans h3)
@@ -336,7 +347,7 @@ private theorem exists_iso_ker_subschemeι {S X : Scheme.{u}} (f : S ⟶ X)
 
 private theorem imageIdealSheaf_comp {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C)
     (J : A.IdealSheafData) :
-    imageIdealSheaf g (imageIdealSheaf f J) = imageIdealSheaf (f ≫ g) J :=
+    _root_.FunctorialResolution.Blowup.schemeImageIdeal g (_root_.FunctorialResolution.Blowup.schemeImageIdeal f J) = _root_.FunctorialResolution.Blowup.schemeImageIdeal (f ≫ g) J :=
   (Scheme.IdealSheafData.map_comp J f g).symm
 
 private theorem hasStrictNormalCrossingsWith_imageIdealSheaf_of_restriction {k : Type u} [Field k] [CharZero k]
@@ -349,7 +360,7 @@ private theorem hasStrictNormalCrossingsWith_imageIdealSheaf_of_restriction {k :
     (hsnc : InStrictNormalCrossingPosition p (Scheme.Hom.ker ι :: N))
     (hlow : HasStrictNormalCrossingsWith q Zs Bs)
     (hlift : StrictNormalCrossingsLiftFromDivisor.{u}) :
-    HasStrictNormalCrossingsWith p (imageIdealSheaf ι Zs) (Scheme.Hom.ker ι :: N) := by
+    HasStrictNormalCrossingsWith p (_root_.FunctorialResolution.Blowup.schemeImageIdeal ι Zs) (Scheme.Hom.ker ι :: N) := by
   obtain ⟨e, he⟩ := exists_iso_ker_subschemeι ι
   have hinv : e.inv ≫ ι = (Scheme.Hom.ker ι).subschemeι := by
     have h := congrArg (fun m => e.inv ≫ m) he.symm
@@ -373,8 +384,8 @@ private theorem hasStrictNormalCrossingsWith_imageIdealSheaf_of_restriction {k :
     rw [hq', hlist] at h
     exact h
   have hfin := hlift k P p (Scheme.Hom.ker ι) N hsnc (Zs.comap e.inv) hZ
-  have himg : imageIdealSheaf (Scheme.Hom.ker ι).subschemeι (Zs.comap e.inv)
-      = imageIdealSheaf ι Zs := by
+  have himg : _root_.FunctorialResolution.Blowup.schemeImageIdeal (Scheme.Hom.ker ι).subschemeι (Zs.comap e.inv)
+      = _root_.FunctorialResolution.Blowup.schemeImageIdeal ι Zs := by
     rw [← imageIdealSheaf_hom_eq_comap_inv e Zs, imageIdealSheaf_comp e.hom _ Zs, he]
   rwa [himg] at hfin
 

@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoitouTate.PtCompactDualMapEqZeroOfPtCompactToGlobalEqZero
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
+public import GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs
+import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolBridge
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolSep
+public import Mathlib.GroupTheory.Schreier
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

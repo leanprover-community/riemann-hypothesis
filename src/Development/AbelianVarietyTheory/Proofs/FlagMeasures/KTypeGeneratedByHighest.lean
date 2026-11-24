@@ -1,11 +1,54 @@
 module
 
-public import Mathlib
-public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
-public import Formalism.RealPlaceAnalysis.StatementU
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.OrbitStepSpace
+public import Formalism.RealPlaceAnalysis.StatementKT
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+public import Mathlib.Analysis.ODE.ExistUnique
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -224,7 +267,7 @@ theorem sum_diag (E : Fin n → Fin n → Module.End ℂ W) (d : Fin n → ℂ) 
 
 theorem sum_single (E : Fin n → Fin n → Module.End ℂ W) (a b : Fin n) (c : ℂ) (v : W) :
     ∑ i, ∑ j, Matrix.single a b c i j • E i j v = c • E a b v := by
-  simp [Matrix.single_apply, ite_and, ite_smul, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [Matrix.single_apply, ite_and, ite_smul, Finset.sum_ite_eq]
 
 theorem isWeight_root {E : Fin n → Fin n → Module.End ℂ W} (hE : GlRel E) {μ : Fin n → ℝ} {u : W}
     (hu : IsWeight E μ u) (a b : Fin n) : IsWeight E (μ + root a b) (E a b u) := by
@@ -259,11 +302,11 @@ theorem not_cdom (Λ : Fin n → ℝ) {a b : Fin n} (hab : a < b) : ¬ CDom ε (
       ∑ i, ∑ j, ((c i j : ℕ) : ℝ) * (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) := by
     have h1 := congrArg φ heq
     rw [hneg, map_neg, hφr] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h1, map_sum]
+
+    rw [h1, map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [map_smul, hφr, smul_eq_mul]
   have hle : ∑ i, ∑ j, ((c i j : ℕ) : ℝ) * (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) ≤ 0 := by
@@ -291,16 +334,9 @@ theorem group_zero (hσ : IsURepOn (UJset ε) σ) (Z : Matrix (Fin n) (Fin n) �
   rw [Complex.ofReal_zero, zero_smul, NormedSpace.exp_zero, hσ.1.1]
   rfl
 
-private theorem Jm_mul_JmFlagMeasures (ε : Fin n → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  simp only [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal]
-  rw [← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split <;> norm_num
-
 private theorem inUJ_exp_smul_of_inG {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inG ε Z) (t : ℝ) :
     Formalism.REAL.inUJ ε (NormedSpace.exp ((t : ℂ) • Z)) := by
-  have hJJ := Jm_mul_JmFlagMeasures ε
+  have hJJ := _root_.Formalism.REAL.Jm_mul_self ε
   have hst : star (t : ℂ) = t := by simp
   have hAg : ((t : ℂ) • Z)ᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * ((t : ℂ) • Z) = 0 := by
     have hZ' : Zᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * Z = 0 := hZ
@@ -374,7 +410,7 @@ theorem isWeight_of_isWtOn
     intro t
     rw [Finset.sum_eq_single a]
     · simp; ring
-    · intro b _ hb; simp [Pi.single_apply, hb]
+    · intro b _ hb; simp [hb]
     · simp
   have hf : GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ (Matrix.diagonal fun b => (((Pi.single a (1 : ℝ) : Fin n → ℝ) b : ℝ) : ℂ) *
       Complex.I) (v : H) = fun t : ℝ => Complex.exp ((t : ℂ) * ((μ a : ℂ) * Complex.I)) • (v : H) := by
@@ -398,7 +434,7 @@ theorem isWeight_of_isWtOn
   have hs : ∑ b, ((((Pi.single a (1 : ℝ) : Fin n → ℝ) b : ℝ) : ℂ) * Complex.I) • E b b v = Complex.I • E a a v := by
     rw [Finset.sum_eq_single a]
     · simp
-    · intro b _ hb; simp [Pi.single_apply, hb]
+    · intro b _ hb; simp [hb]
     · simp
   rw [hs] at h3
   apply Subtype.ext
@@ -440,7 +476,6 @@ theorem kStable_comap
     simp only [Submodule.coe_sub, Submodule.coe_smul, star_one, Complex.star_def, Complex.conj_I]
     match_scalars <;> first
       | linear_combination (1 / 2 : ℂ) * hI
-      | linear_combination (-1 / 2 : ℂ) * hI
   show ((E a b x : Vs) : H) ∈ S
   rw [key]
   exact S.add_mem (S.smul_mem _ h1) (S.smul_mem _ h2)

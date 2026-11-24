@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.KappaSt
+public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 @[expose] public section
 

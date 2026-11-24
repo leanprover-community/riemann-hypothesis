@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicIndexSums
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianPairingAlgebra
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 
 @[expose] public section
 
@@ -144,9 +147,9 @@ lemma hC_comb2_ortho (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {n p : �
   have h2 : ∀ (w : Fin n → ℂ) (u : Fin r → ℂ),
       hermC τ G u (∑ l, w l • f l) = ∑ l, conj (w l) * hermC τ G u (f l) := by
     intro w u
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hermC, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul,
-      Finset.mul_sum]
+
+    simp only [hermC, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul,
+    Finset.mul_sum]
     conv_rhs => rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Finset.sum_comm]

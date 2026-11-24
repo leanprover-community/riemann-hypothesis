@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.BilinearMap
+public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib.LinearAlgebra.FreeModule.Basic
+public import Mathlib.RingTheory.Finiteness.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.FreeModule.PID
 
 @[expose] public section
 
@@ -28,7 +35,7 @@ include halt he
 theorem proj_mem (y : H) : y - B y f • e + B y e • f ∈ perp B e f := by
   have h1 : B f e = -1 := by rw [alt_swap B halt, he]
   rw [mem_perp]
-  constructor <;> simp [halt, he, h1] <;> ring
+  constructor <;> simp [halt, he, h1]
 
 def proj : H →ₗ[ℤ] perp B e f where
   toFun y := ⟨y - B y f • e + B y e • f, proj_mem B halt e f he y⟩

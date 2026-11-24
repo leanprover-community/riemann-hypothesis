@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsUnitApprox
+public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
+public import Mathlib.Algebra.Module.ZLattice.Basic
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+public import Mathlib.NumberTheory.NumberField.Units.Basic
 
 @[expose] public section
 

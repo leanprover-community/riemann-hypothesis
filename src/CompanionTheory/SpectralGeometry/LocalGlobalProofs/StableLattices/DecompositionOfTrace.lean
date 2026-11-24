@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+public import Mathlib.LinearAlgebra.Trace
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -51,9 +52,9 @@ theorem exists_basis (hc : IsLinCat N Hom) {P : Type} [DecidableEq P] {T : P →
     have := hT.1 ν
     obtain ⟨x, hx⟩ := exists_ne (0 : N (T ν))
     have h3 := congrArg (fun w : homSub hc (T ν) X => θ' i (pr i.1 (w.1 x))) hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [v, Submodule.coe_sum, Submodule.coe_smul, LinearMap.sum_apply, LinearMap.smul_apply,
-      map_sum, map_smul, Submodule.coe_zero, LinearMap.zero_apply, map_zero, LinearMap.comp_apply] at h3
+
+    simp only [v, Submodule.coe_sum, Submodule.coe_smul, LinearMap.sum_apply, LinearMap.smul_apply,
+    map_sum, map_smul, Submodule.coe_zero, LinearMap.zero_apply, map_zero, LinearMap.comp_apply] at h3
     rw [Finset.sum_eq_single i] at h3
     · have e1 : pr i.1 (io i.1 (θ i x)) = θ i x := LinearMap.congr_fun (hd.pr_io i.1) _
       have e2 : θ' i (θ i x) = x := LinearMap.congr_fun (h2 i) _
@@ -158,8 +159,8 @@ theorem dec_of_gen (hc : IsLinCat N Hom) {P : Type} {T : P → O} (hT : IsSimple
       have e1 := LinearMap.congr_fun hd.sum (j x)
       have e2 : q (j x) = x := LinearMap.congr_fun hqj x
       simp only [LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.id_apply] at e1 ⊢
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum, e1, e2]
+
+      rw [← map_sum, e1, e2]
     rw [this]
     exact Finset.sum_induction _ S Sadd S0 fun k _ =>
       Sterm _ _ _ (hc.comp _ _ _ _ _ (hd.io_hom k) hq) (hc.comp _ _ _ _ _ hj (hd.pr_hom k))

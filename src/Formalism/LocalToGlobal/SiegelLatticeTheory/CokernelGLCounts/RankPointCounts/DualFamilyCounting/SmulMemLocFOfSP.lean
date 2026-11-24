@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.InPOfMemPow
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.StarAlgebraMap
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.NeZeroOfNotMem
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SameGenusFix
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExtPPowLeSpanSup
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.StarAlgebraMap
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NondegOnOfCompl
 
 @[expose] public section
 
@@ -149,28 +154,6 @@ theorem unit_part_c (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : I
   have hc : ((t * s₀ ^ vF 𝔭 a : 𝓞 F) : F) = (t : F) * (s₀ : F) ^ vF 𝔭 a := by simp
   rw [hc, map_mul, map_pow, ← mul_assoc, mul_comm (algebraMap F K (b : F)), mul_assoc, hbK]
   field_simp
-
-theorem pair_solve {q a c r X Y : K} (hq : q ≠ 0) (ha : a ≠ 0) (hc : c ≠ 0)
-    (hr : a + c = q ^ 2 * r) :
-    (X * q * (a⁻¹ * q) - Y * (a⁻¹ * q)) * (q⁻¹ ^ 2 * (a + c)) +
-        (Y * r * (a⁻¹ * q) * (c⁻¹ * q) - X * (a⁻¹ * q)) * (q⁻¹ * c) = X ∧
-      (X * q * (a⁻¹ * q) - Y * (a⁻¹ * q)) * (q⁻¹ * c) +
-        (Y * r * (a⁻¹ * q) * (c⁻¹ * q) - X * (a⁻¹ * q)) * c = Y := by
-  obtain rfl : c = q ^ 2 * r - a := by rw [← hr]; ring
-  constructor
-  · field_simp
-    ring
-  · field_simp
-    ring
-
-theorem pair_coeffs_mem {𝔭 : Ideal (𝓞 F)} [𝔭.IsPrime] {q a c r X Y : K}
-    (hp : q ∈ SP K 𝔭) (hua : a⁻¹ * q ∈ SP K 𝔭) (huc : c⁻¹ * q ∈ SP K 𝔭) (hr : r ∈ SP K 𝔭)
-    (hX : X ∈ SP K 𝔭) (hY : Y ∈ SP K 𝔭) :
-    X * q * (a⁻¹ * q) - Y * (a⁻¹ * q) ∈ SP K 𝔭 ∧
-      Y * r * (a⁻¹ * q) * (c⁻¹ * q) - X * (a⁻¹ * q) ∈ SP K 𝔭 := by
-  exact ⟨(SP K 𝔭).sub_mem ((SP K 𝔭).mul_mem ((SP K 𝔭).mul_mem hX hp) hua) ((SP K 𝔭).mul_mem hY hua),
-    (SP K 𝔭).sub_mem ((SP K 𝔭).mul_mem ((SP K 𝔭).mul_mem ((SP K 𝔭).mul_mem hY hr) hua) huc)
-      ((SP K 𝔭).mul_mem hX hua)⟩
 
 section Vec
 

@@ -1,17 +1,63 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedInOfQuasiLogarithm
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffSubstRestrictSumVariables
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueHasPAdicPowerSeriesValueOfDiffCoeffs
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPAdicPowerSeriesValueAddSmulMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPAdicPowerSeriesValueMapOfContinuousEvaluatio
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPAdicPowerSeriesValueSubMemPdIdeal
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicContinuousEvaluationExistsUniqueSubstNatura
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantCoeffNmul
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicEvaluationSubstCompatibleThickening
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NmulSucc
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivGroupFormalChartEvNatMultipleEqConvPowerStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmegaBaseChangeFiniteProjectiveReflexive
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicEvaluationSubstCompatibleThickening
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivGroupFormalChartEvNatMultipleEqConvPower
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicContinuousEvaluationExistsUniqueSubstNatura
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PderivSubstChainRule
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 @[expose] public section
 
@@ -34,7 +80,7 @@ private lemma dIn_univ_of_forall_pderiv_integral {B Q : Type} [CommRing B] [Comm
   by_cases hα : α i = 0
   · exact ⟨0, Submodule.mem_top, by simp [hα]⟩
   · obtain ⟨m, rfl⟩ : ∃ m, α = m + Finsupp.single i 1 := ⟨α - Finsupp.single i 1, by
-      ext j; by_cases hj : j = i <;> simp [Finsupp.single_apply, hj] <;> omega⟩
+      ext j; by_cases hj : j = i <;> simp [hj] <;> omega⟩
     refine ⟨coeff m s, Submodule.mem_top, ?_⟩
     have := congrArg (coeff m) hs
     rw [coeff_map, coeff_pderiv] at this
@@ -62,15 +108,15 @@ private lemma subst_pderiv_inr_cob1_eq_sum_sub_C {R : Type} [CommRing R] {d : �
   rw [map_sub, map_sub, _root_.GlobalTheory.PSChain.pderiv_subst_chain μ hμ, _root_.GlobalTheory.PSChain.pderiv_subst_chain _ (by simp),
     _root_.GlobalTheory.PSChain.pderiv_subst_chain _ (by simp)]
   have hs1 : ∀ x : Fin d, ((Pi.single (Sum.inr j) (1 : MvPowerSeries (Fin d ⊕ Fin d) R) :
-      Fin d ⊕ Fin d → MvPowerSeries (Fin d ⊕ Fin d) R) (Sum.inl x)) = 0 := fun x => by simp [Pi.single_apply]
+      Fin d ⊕ Fin d → MvPowerSeries (Fin d ⊕ Fin d) R) (Sum.inl x)) = 0 := fun x => by simp
   have hs2 : ∀ x : Fin d, ((Pi.single (Sum.inr j) (1 : MvPowerSeries (Fin d ⊕ Fin d) R) :
       Fin d ⊕ Fin d → MvPowerSeries (Fin d ⊕ Fin d) R) (Sum.inr x)) = if x = j then 1 else 0 := fun x => by simp [Pi.single_apply]
   simp only [pderiv_X, hs1, hs2]
   rw [← coe_substAlgHom hE]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sub, map_sum, map_mul, map_zero, mul_zero, Finset.sum_const_zero, sub_zero,
-    apply_ite, map_one, mul_ite, mul_one, Finset.sum_ite_eq, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+
+  simp only [map_sub, map_sum, map_mul, mul_zero, Finset.sum_const_zero, sub_zero,
+  apply_ite, mul_one, Finset.sum_ite_eq',
+  Finset.mem_univ, if_true]
   simp only [coe_substAlgHom]
   have h1 : (fun s => subst (Sum.elim (X : Fin d → MvPowerSeries (Fin d) R) (0 : Fin d → MvPowerSeries (Fin d) R)) (μ s)) = X :=
     funext hadd
@@ -144,8 +190,8 @@ private lemma exists_integral_pderiv_of_integral_cob1_lin {B Q : Type} [CommRing
       = ∑ j, (∑ k, pderiv (R := Q) k f * map (algebraMap B Q) (M k j)) *
           map (algebraMap B Q) (M⁻¹ j i) := by simp [map_sum, hrow]
     _ = ∑ k, pderiv (R := Q) k f * map (algebraMap B Q) ((M * M⁻¹) k i) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.mul_apply, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum, mul_assoc]
+
+        simp only [Matrix.mul_apply, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum, mul_assoc]
         exact Finset.sum_comm
     _ = pderiv (R := Q) i f := by
         rw [hMN]; simp [Matrix.one_apply]

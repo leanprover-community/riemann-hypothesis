@@ -1,11 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
 public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleIdentityIso
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

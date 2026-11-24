@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SpanSteps
-public import Formalism.LocalToGlobal.ProjectiveLattices.FullExists
+public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

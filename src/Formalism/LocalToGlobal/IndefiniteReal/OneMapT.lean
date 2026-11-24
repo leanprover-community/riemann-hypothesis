@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.ThPinsR
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPins
+public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPinsRec
 
 @[expose] public section
 
@@ -26,13 +27,11 @@ abbrev sOv (C : Core D) (c' : Coeff C.Q.l) (hle : C.Q.c.F ≤ c'.F) : C.Q.c.F �
 theorem sOv_eq (C : Core D) (c' : Coeff C.Q.l) (hle : C.Q.c.F ≤ c'.F) : sOv C c' hle = C.σ₀ := by
   first
   | rfl
-  | (ext x; rfl)
-  | (ext x; simp [sOv, inC, incF])
 
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
-set_option maxHeartbeats 1000000 in
+
 structure OMDat (C : Core D) [Algebra C.Q.c.F D.what₂.LL] (R : RealDat D A C.Q.c.F) (i : Fin D.R.m) (Tp : Type) (tup : Tp → T0) : Type 1 where
   c' : Coeff C.Q.l
   hle : C.Q.c.F ≤ c'.F

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.MeasureTheory.Integral.IntegrableOn
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -165,10 +167,10 @@ theorem mdisc_cons_eq_sum' {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ
           Finset.sum_eq_single c (by intro b _ hb; simp [hb]) (by simp)]
         simp
       simp_rw [hL]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hA, map_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp_rw [map_sum, map_smul, smul_eq_mul, Finset.mul_sum]
+
+      rw [hA, map_sum]
+
+      simp_rw [map_sum, map_smul, smul_eq_mul, Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring
     · simp [polCoef_eq_zero r hs]
   rw [mdisc_eq_sum_polCoef]

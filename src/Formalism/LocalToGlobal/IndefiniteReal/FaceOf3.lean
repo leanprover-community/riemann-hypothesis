@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
-public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
+public import Formalism.LocalToGlobal.Divisibility.HeckeRI
+public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
 
 @[expose] public section
 

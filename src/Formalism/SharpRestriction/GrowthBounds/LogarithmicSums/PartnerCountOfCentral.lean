@@ -1,9 +1,47 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
-public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.TsumTruncatedShiftLe
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Development.AutomorphicArithmetic.OrbitLabellings.EvenAddOrderOfHPOfPowLe
+public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.TsumTruncatedShiftLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -23,29 +61,23 @@ theorem bs_add (X : Inst D L) (h u : HH D) (i : ℕ) : X.bs h (u + i • h) = X.
 
 theorem bs_idem (X : Inst D L) (h t : HH D) : X.bs h (X.bs h t) = X.bs h t := by
   obtain ⟨i, hi⟩ := X.bs_orb h t
-  have := bs_add X h (X.bs h t) i
-  rw [hi] at this
-  exact this.symm
+  simpa [hi] using (bs_add X h (X.bs h t) i).symm
 
 theorem not_singular_of_central {p : ℕ} (hc : IsResidueClassZero D p) : ¬ IsSg D p := by
   intro h
-  have h2 : PrimeClass.inertClass = PrimeClass.signal := hc.symm.trans h
-  cases h2
+  cases hc.symm.trans h
 
 theorem frobenius_step_large_order {p : ℕ} (hc : IsResidueClassZero D p) : stepP D p = hP D p := by
-  unfold stepP
-  rw [if_neg (not_singular_of_central hc)]
+  simp [stepP, not_singular_of_central hc]
 
 theorem partner_count_of_central {p : ℕ} (hc : IsResidueClassZero D p) : nP D p = addOrderOf (hP D p) := by
-  unfold nP
-  rw [if_neg (not_singular_of_central hc)]
+  simp [nP, not_singular_of_central hc]
 
 def phi (D : D7) (p : ℕ) (t0 : HH D) (i : Fin (addOrderOf (hP D p))) : HH D := t0 + (i : ℕ) • hP D p
 
 theorem phi_inj (p : ℕ) (t0 : HH D) : Function.Injective (phi D p t0) := by
   intro i j hij
-  have h1 : (i : ℕ) • hP D p = (j : ℕ) • hP D p := add_left_cancel hij
-  exact Fin.ext (nsmul_injOn_Iio_addOrderOf (Set.mem_Iio.2 i.2) (Set.mem_Iio.2 j.2) h1)
+  exact Fin.ext (nsmul_injOn_Iio_addOrderOf (Set.mem_Iio.2 i.2) (Set.mem_Iio.2 j.2) (add_left_cancel hij))
 
 theorem phi_posAdd (p : ℕ) (t0 : HH D) (i : Fin (addOrderOf (hP D p))) (e : ℕ) :
     phi D p t0 (posAdd i e) = phi D p t0 i + e • hP D p := by
@@ -56,8 +88,7 @@ theorem phi_posAdd (p : ℕ) (t0 : HH D) (i : Fin (addOrderOf (hP D p))) (e : �
 theorem bs_phi (X : Inst D L) {p : ℕ} (hc : IsResidueClassZero D p) {t0 : HH D} (h0 : X.bs (stepP D p) t0 = t0)
     (i : Fin (addOrderOf (hP D p))) : X.bs (stepP D p) (phi D p t0 i) = t0 := by
   rw [frobenius_step_large_order hc] at h0 ⊢
-  unfold phi
-  rw [bs_add, h0]
+  simpa [phi] using (bs_add X (hP D p) t0 i).trans h0
 
 theorem reps_fix (X : Inst D L) {p : ℕ} {t0 : HH D} (h : t0 ∈ reps X p) : X.bs (stepP D p) t0 = t0 := by
   unfold reps at h
@@ -74,8 +105,7 @@ theorem topsOn_eq_image (X : Inst D L) {p : ℕ} (hc : IsResidueClassZero D p) {
   · rintro ⟨ht, hb⟩
     obtain ⟨i, hi⟩ := X.bs_orb (stepP D p) t
     rw [hb, frobenius_step_large_order hc] at hi
-    have hpos : 0 < addOrderOf (hP D p) := addOrderOf_pos _
-    refine ⟨⟨i % addOrderOf (hP D p), Nat.mod_lt _ hpos⟩, ?_, ?_⟩
+    refine ⟨⟨i % addOrderOf (hP D p), Nat.mod_lt _ (addOrderOf_pos _)⟩, ?_, ?_⟩
     · simp only
       rw [mod_addOrderOf_nsmul, hi]
       exact ht
@@ -355,18 +385,14 @@ theorem sum_topsOn_V (X : Inst D L) {p : ℕ} (hc : IsResidueClassZero D p) {t0 
     (F : HH D → ℝ) : ∑ s ∈ (topsOn X p t0).filter (fun s => IsV X p s), F s =
       ∑ i ∈ (topsPos D p t0).filter (fun i => IsTypeV i), F (phi D p t0 i) := by
   rw [Finset.sum_filter, Finset.sum_filter, sum_topsOn X hc h0]
-  apply Finset.sum_congr rfl
-  intro i _
-  exact if_congr (isV_phi X hc h0 i) rfl rfl
+  exact Finset.sum_congr rfl (fun i _ => if_congr (isV_phi X hc h0 i) rfl rfl)
 
 open Classical in
 theorem sum_topsOn_nV (X : Inst D L) {p : ℕ} (hc : IsResidueClassZero D p) {t0 : HH D} (h0 : X.bs (stepP D p) t0 = t0)
     (F : HH D → ℝ) : ∑ s ∈ (topsOn X p t0).filter (fun s => ¬ IsV X p s), F s =
       ∑ i ∈ (topsPos D p t0).filter (fun i => ¬ IsTypeV i), F (phi D p t0 i) := by
   rw [Finset.sum_filter, Finset.sum_filter, sum_topsOn X hc h0]
-  apply Finset.sum_congr rfl
-  intro i _
-  exact if_congr (not_congr (isV_phi X hc h0 i)) rfl rfl
+  exact Finset.sum_congr rfl (fun i _ => if_congr (not_congr (isV_phi X hc h0 i)) rfl rfl)
 
 
 open Classical in

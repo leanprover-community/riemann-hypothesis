@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Points
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

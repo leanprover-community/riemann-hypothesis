@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
+public import Mathlib.NumberTheory.NumberField.CMField
 
 @[expose] public section
 

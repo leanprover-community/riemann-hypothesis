@@ -1,6 +1,55 @@
 module
 
+public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AAvCongr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StrictMonoSnoc
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThirdPeelingMinorMemIdeal
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThirdPolynomialExpansion
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -55,7 +104,7 @@ theorem column_indicator_expansion : ExpansionCovector := by
       else xi (Fin.castLE le_rfl a) (ew w l)).det = (-1) ^ s'' * (h.det * t ^ s'' * sgnW s'') := by
     intro w
     rw [Matrix.det_succ_row _ i, Finset.sum_eq_single (Fin.last _)]
-    · simp only [Matrix.of_apply, if_pos rfl, (hew_last w (Fin.last _)).mpr rfl, if_true, mul_one,
+    · simp only [Matrix.of_apply, (hew_last w (Fin.last _)).mpr rfl, if_true, mul_one,
         Fin.succAbove_last]
       have hsub : (Matrix.of fun a l => if a = i then (if ew w l = wI k _ w then (1 : ℂ) else 0)
           else xi (Fin.castLE le_rfl a) (ew w l)).submatrix i.succAbove Fin.castSucc =
@@ -75,7 +124,7 @@ theorem column_indicator_expansion : ExpansionCovector := by
       rw [show i.val + (i0 + s'') = (i0 + i0) + s'' by simp [i]; ring, pow_add, ← two_mul, pow_mul]
       norm_num
     · intro j _ hj
-      simp only [Matrix.of_apply, if_pos rfl]
+      simp only [Matrix.of_apply]
       rw [if_neg (fun h' => hj ((hew_last w j).mp h'))]; simp
     · simp
   have hAA : AAx k (i0 + s'' + 1) E xi (i0 + s'' + 1) le_rfl u =
@@ -118,15 +167,15 @@ theorem column_indicator_expansion : ExpansionCovector := by
   have hLa : (∑ w, herm (Hpk k _) (bvec (wI k _ w)) yb • La (qminor E (xR k _ (i0 + s'' + 1) le_rfl) (ew w) u)) =
       t • La (qminor E (xR k _ i0 (by omega)) (xR k _ i0 (by omega)) u) := by
     have := la_congr hR hP
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     simp only [map_smul] at this
     rw [hzy] at this
     exact this
   have hD : Dlead i0 (s'' + 2) h t (i0 + s'' + 1 + 1) = h.det * t ^ (s'' + 2) * -sgnW s'' := by
     rw [show i0 + s'' + 1 + 1 = i0 + (s'' + 2) by omega, (derivative_leading_zb i0 (s'' + 2) h t).2, sign_alternates_add_two]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hAA, hhead, map_smul, map_smul, map_sum]
+
+  rw [hAA, hhead, map_smul, map_smul, map_sum]
   simp only [map_smul]
   rw [hLa, hD, (derivative_leading_zb i0 (s'' + 2) h t).1, smul_smul, smul_smul, smul_smul, smul_smul]
   congr 1

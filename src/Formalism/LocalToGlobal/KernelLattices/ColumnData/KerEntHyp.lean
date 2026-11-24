@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
 public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
 public import Formalism.LocalRingCardinality.SpanPowerMembership.EntPlNonempty
+public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

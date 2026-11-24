@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftModel
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 
 @[expose] public section
 

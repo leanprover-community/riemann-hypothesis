@@ -1,8 +1,56 @@
 module
 
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementD
-public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.FockBlocks
+public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.InitPartZeroXMul
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FiltrationBotHolds
+public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
+import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.MulEarlyLettersHolds
+public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 
 @[expose] public section
 
@@ -30,16 +78,6 @@ theorem glAct_succ_comm (LL : Letters (K + 1)) (s t a b : Fin r) (F : MvPolynomi
   simp only [LinearMap.add_apply, map_add (f := _)]
   rw [glRest_comm LL K (K + 1) (Nat.le_succ K) s t a b F, ← glAct_comm LL K s t a b F]
   abel
-
-theorem eulL_keep_supp {σ : Type} {s : ℕ} (t : Fin s → σ) (Q : Set (σ →₀ ℕ)) :
-    ∀ x ∈ restrictSupport ℚ_[p] Q, ProjS.eulL t x ∈ restrictSupport ℚ_[p] Q := by
-  intro x hx
-  rw [mem_restrictSupport_iff] at hx ⊢
-  intro m hm
-  apply hx
-  rw [Finset.mem_coe, mem_support_iff] at hm ⊢
-  rw [ProjS.coeff_eulL] at hm
-  exact left_ne_zero_of_mul hm
 
 theorem resL_eulL {σ : Type} {s : ℕ} (t : Fin s → σ) (v : σ) (e : ℕ) (x : MvPolynomial σ ℚ_[p]) :
     resL p v e (ProjS.eulL t x) = ProjS.eulL t (resL p v e x) := by
@@ -85,7 +123,7 @@ theorem Uop_supp [NeZero r] (LL : Letters (K + 1)) (hv : LL.vec (Fin.last K) = t
   rw [Uop_apply]
   refine Submodule.sub_mem _ ?_ (Submodule.sum_mem _ fun b _ => ?_)
   · rw [X_mul_mem p]
-    refine restrictSupport_mono ℚ_[p] ?_ (Submodule.sub_mem _ (Submodule.smul_mem _ _ hF) (eulL_keep_supp _ _ F hF))
+    refine restrictSupport_mono ℚ_[p] ?_ (Submodule.sub_mem _ (Submodule.smul_mem _ _ hF) (_root_.Formalism.CountingSumsFrames.eul_keep_supp _ _ F hF))
     intro m hm
     simp only [Set.mem_ofPred_eq] at hm ⊢
     rw [last_wt LL (K + 1) le_rfl hv]
@@ -136,8 +174,8 @@ theorem raising_comm_holds : UComm := by
   have hc : ∀ b, glAct p LL (K + 1) s t (glAct p LL K a b F) = glAct p LL K a b (glAct p LL (K + 1) s t F) +
       ((if t = a then glAct p LL K s b F else 0) - (if b = s then glAct p LL K a t F else 0)) := by
     intro b; rw [← glAct_succ_comm]; abel
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Uop_apply, Uop_apply, map_sub, map_sum, hX, map_sub, map_smul, eul_glAct]
+
+  rw [Uop_apply, Uop_apply, map_sub, map_sum, hX, map_sub, map_smul, eul_glAct]
   simp only [hX, hc, mul_add, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib]
   have h1 : ∑ b ∈ Cs, (if t = b then X (Fin.last K, s) * glAct p LL K a b F else 0) =
       X (Fin.last K, s) * glAct p LL K a t F := by
@@ -169,8 +207,8 @@ theorem restriction_raising_holds : ResU := by
   change resL p (Fin.last K, ρ) 0 _ = Uop p LL c (univ.erase ρ) a (resL p (Fin.last K, ρ) 0 F)
   have hne : ∀ b : Fin r, b ≠ ρ → ((Fin.last K, b) : Fin (K + 1) × Fin r) ≠ (Fin.last K, ρ) :=
     fun b hb h => hb (Prod.mk.inj h).2
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Uop_apply, Uop_apply, map_sub, map_sum, resL_X_mul _ _ (hne a ha), map_sub, map_smul, resL_eulL]
+
+  rw [Uop_apply, Uop_apply, map_sub, map_sum, resL_X_mul _ _ (hne a ha), map_sub, map_smul, resL_eulL]
   congr 1
   rw [← Finset.add_sum_erase univ _ (Finset.mem_univ ρ), resL_apply, initPart_zero_X_mul, zero_add]
   refine Finset.sum_congr rfl fun b hb => ?_
@@ -213,7 +251,7 @@ theorem raising_keeps_last_letter : UKeepsLast := by
         (ycond_glStable LL (K + 1) _ 0 0) F hF c
       have h0 : glAct p LL (K + 1) 0 0 G = ((c : ℤ) : ℚ_[p]) • G := by
         ext m
-        rw [coeff_cartan, coeff_smul, smul_eq_mul, hG, coeff_compP]
+        rw [coeff_cartan, MvPolynomial.coeff_smul, smul_eq_mul, hG, coeff_compP]
         split_ifs with h
         · rw [h]
         · simp
@@ -242,7 +280,7 @@ theorem raising_keeps_last_letter : UKeepsLast := by
         have hF' := hYs F hF
         rw [mem_restrictSupport_iff] at hF' ⊢
         intro m hm
-        rw [Finset.mem_coe, mem_support_iff, coeff_sub, hG, coeff_compP] at hm
+        rw [Finset.mem_coe, mem_support_iff, MvPolynomial.coeff_sub, hG, coeff_compP] at hm
         split_ifs at hm with h
         · exact absurd (sub_self _) hm
         · rw [sub_zero] at hm

@@ -1,6 +1,12 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 
@@ -34,8 +40,8 @@ variable {n : ℕ}
 theorem ofReal_normSq_sum_mul (a ξ : Fin n → ℂ) :
     ((Complex.normSq (∑ j, a j * ξ j) : ℝ) : ℂ) =
       ∑ j, ∑ kk, a j * conj (a kk) * ξ j * conj (ξ kk) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← mul_conj, map_sum, Finset.sum_mul_sum]
+
+  rw [← mul_conj, map_sum, Finset.sum_mul_sum]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun kk _ => ?_
   rw [map_mul]; ring
 

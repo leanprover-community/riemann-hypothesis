@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.LinearAlgebra.Multilinear.Basic
+public import Mathlib.Tactic.Continuity
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

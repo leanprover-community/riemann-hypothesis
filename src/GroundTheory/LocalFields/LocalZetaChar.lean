@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LocalZetaShell
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
+import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

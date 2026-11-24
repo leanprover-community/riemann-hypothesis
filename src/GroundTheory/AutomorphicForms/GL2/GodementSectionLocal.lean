@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.LocalZeta
 public import GroundTheory.AutomorphicForms.GLnLocal
+public import GroundTheory.LocalFields.UnitsBasic
+public import Mathlib.Topology.LocallyConstant.Basic
+public import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

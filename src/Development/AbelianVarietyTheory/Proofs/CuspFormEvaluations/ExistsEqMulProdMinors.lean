@@ -1,13 +1,63 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsMemRowHighestTotalDegreeEqTwo
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CommuteRowOpRightMixedOp
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Sl2NonnegWeightOfHighestWeightVector
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.EqZeroOfPartialSumsNonneg
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowAddGenericRowAddTerm
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ColumnDegreeLe
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ProdLeadMinorDiagonal
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowAddGenericRowAddTerm
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Sl2NonnegWeightOfHighestWeightVector
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -24,7 +74,7 @@ theorem coeff_X_mul_pderiv (u : σ) (m : σ →₀ ℕ) (P : MvPolynomial σ K) 
   classical
   induction P using MvPolynomial.induction_on' with
   | monomial d r =>
-    rw [X_mul_pderiv_monomial, coeff_smul, coeff_monomial]
+    rw [X_mul_pderiv_monomial, MvPolynomial.coeff_smul, coeff_monomial]
     split_ifs with h
     · subst h; simp
     · simp
@@ -73,7 +123,7 @@ theorem weight_of_mem_support (z : Fin p × Fin n → σ) (y : Fin q × Fin n �
     {m : σ →₀ ℕ} (hm : m ∈ P.support) :
     ∑ a, (m (z (a, k)) : ℤ) - ∑ b, (m (y (b, k)) : ℤ) = w := by
   have := congrArg (AddMonoidAlgebra.coeff · m) h
-  rw [mixedOp_apply, coeff_sub, coeff_sum, coeff_sum, coeff_smul] at this
+  rw [mixedOp_apply, MvPolynomial.coeff_sub, coeff_sum, coeff_sum, MvPolynomial.coeff_smul] at this
   simp only [coeff_X_mul_pderiv, ← Finset.sum_mul, ← sub_mul, smul_eq_mul] at this
   have h2 := mul_right_cancel₀ (mem_support_iff.1 hm) this
   exact_mod_cast h2
@@ -83,7 +133,7 @@ omit [CharZero K] in
 theorem rowOp_self (z : Fin p × Fin n → σ) {P : MvPolynomial σ K} {a : Fin p} {d : ℕ}
     (h : ∀ m ∈ P.support, ∑ k, m (z (a, k)) = d) : rowOp K z a a P = ((d : ℤ) : K) • P := by
   ext m
-  rw [rowOp_apply, coeff_sum, coeff_smul]
+  rw [rowOp_apply, coeff_sum, MvPolynomial.coeff_smul]
   simp only [coeff_X_mul_pderiv, ← Finset.sum_mul, smul_eq_mul]
   by_cases hm : m ∈ P.support
   · rw [← h m hm]; simp

@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveAsm
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLoc
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveCountB
 
 @[expose] public section

@@ -1,7 +1,43 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockMatrixMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -62,12 +98,12 @@ theorem mA_isUnit_det (σ : F₀ →+* F₀) {a : Matrix (Fin n) (Fin n) F₀} (
 theorem nB_isUnit_det (b : Matrix (Fin n) (Fin n) F₀) : IsUnit (nB b).det := by
   refine Matrix.isUnit_det_of_right_inverse (B := blk4 1 (-b) 0 1) ?_
   rw [nB, submatrix_fromBlocks_mul]
-  simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, zero_add, add_zero, add_neg_cancel, neg_mul, neg_neg, neg_zero, neg_add_cancel, block_matrix_one]
+  simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, zero_add, add_zero, neg_add_cancel, block_matrix_one]
 
 theorem Jm_isUnit_det : IsUnit (EC.Jm F₀ n).det := by
   refine Matrix.isUnit_det_of_right_inverse (B := blk4 0 (-1) 1 0) ?_
   rw [EC.Jm, submatrix_fromBlocks_mul]
-  simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, zero_add, add_zero, add_neg_cancel, neg_mul, neg_neg, neg_zero, neg_add_cancel, block_matrix_one]
+  simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, zero_add, add_zero, neg_mul, neg_neg, neg_zero, block_matrix_one]
 
 theorem mA_isUnitary {σ : F₀ →+* F₀} (hσ : ∀ x, σ (σ x) = x) {a : Matrix (Fin n) (Fin n) F₀} (ha : IsUnit a.det) :
     IsUnitary σ (EC.Jm F₀ n) (mA σ a) := by
@@ -77,18 +113,18 @@ theorem mA_isUnitary {σ : F₀ →+* F₀} (hσ : ∀ x, σ (σ x) = x) {a : Ma
     rwa [cT_mul, cT_cT hσ, cT_one] at h
   unfold IsUnitary EC.Jm mA
   rw [cT_blk4, submatrix_fromBlocks_mul, submatrix_fromBlocks_mul]
-  simp only [cT_zero, Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, Matrix.one_mul, zero_add, add_zero, neg_mul, mul_neg, neg_neg, neg_zero, neg_add_cancel, h1, h2]
+  simp only [cT_zero, Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, zero_add, add_zero, neg_mul, mul_neg, neg_zero, h1, h2]
 
 theorem nB_isUnitary {σ : F₀ →+* F₀} {b : Matrix (Fin n) (Fin n) F₀} (hb : cT σ b = b) :
     IsUnitary σ (EC.Jm F₀ n) (nB b) := by
   unfold IsUnitary EC.Jm nB
   rw [cT_blk4, submatrix_fromBlocks_mul, submatrix_fromBlocks_mul]
-  simp only [cT_zero, cT_one, hb, Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, Matrix.one_mul, zero_add, add_zero, neg_mul, mul_neg, neg_neg, neg_zero, neg_add_cancel, add_neg_cancel]
+  simp only [cT_zero, cT_one, hb, Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, Matrix.one_mul, zero_add, add_zero, neg_mul, mul_neg, neg_zero, neg_add_cancel]
 
 theorem Jm_isUnitary (σ : F₀ →+* F₀) : IsUnitary σ (EC.Jm F₀ n) (EC.Jm F₀ n) := by
   unfold IsUnitary EC.Jm
   rw [cT_blk4, submatrix_fromBlocks_mul, submatrix_fromBlocks_mul]
-  simp only [cT_zero, cT_one, cT_neg, Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, Matrix.one_mul, zero_add, add_zero, neg_mul, mul_neg, neg_neg, neg_zero, neg_add_cancel]
+  simp only [cT_zero, cT_one, cT_neg, Matrix.mul_zero, Matrix.mul_one, zero_add, add_zero, neg_mul, mul_neg, neg_neg, neg_zero]
 
 theorem isUnitary_mul {σ : F₀ →+* F₀} {N : ℕ} {J g h : Matrix (Fin N) (Fin N) F₀} (hg : IsUnitary σ J g)
     (hh : IsUnitary σ J h) : IsUnitary σ J (g * h) := by

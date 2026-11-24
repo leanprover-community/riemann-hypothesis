@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.ReductionTorsion
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

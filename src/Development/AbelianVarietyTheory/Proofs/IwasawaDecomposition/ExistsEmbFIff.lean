@@ -1,22 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemPrinCongOfSm
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryOfIsON
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBasisAtOfIsLocBasis
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EmbFColZeroMemMram
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.InvSmulMemOfRedL
+public import Formalism.LocalToGlobal.Columns.TiedVal
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemClosureIff
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PlacesOverConjPrimes
-public import Formalism.LocalToGlobal.Columns.RecLevelStep
-public import Formalism.LocalToGlobal.Columns.ChainInst
-public import Formalism.LocalToGlobal.Columns.TiedValRat
-public import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.FrobeniusNoKernelOfFrobeniusSimilitude
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EmbFColZeroMemMram
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermitianLatticeChartFamilyLawBasis
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBasisAtOfIsLocBasis
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdAbsNormDivsDvd
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UfGLRatHom
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.InvSmulMemOfRedL
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryOfIsON
+import Formalism.LocalRingCardinality.Lemmas
+import Formalism.LocalToGlobal.Columns.BaseLemmas
+public import Formalism.LocalToGlobal.Columns.ChainInst
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
+import Formalism.LocalToGlobal.Columns.RecLevelLocP
+public import Formalism.LocalToGlobal.Columns.TiedValRat
+import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -135,7 +175,7 @@ theorem lat_iff (hS : S.Ok) {G : ι → Matrix (Fin n) (Fin n) ℂ} {sh : ι →
       ∃ Q ∈ Sp w, (show Frames G → ℂ from S.embF emb σ lam h x c) =
         fnOf G (shiftOf lam) (Formalism.L2.Forms.atInf (embAt σ emb) (B⁻¹ : GL (Fin n) E).1) Q) := by
     intro w c B hB
-    refine (BwLat.mem_localization_delAtr_fn emb σ lam (pl w) (by first | exact hfull c | exact (hfull c).toIsLattice) (fun _ => B) (fun τ => BwLat.isBasisAt_of_isLocBasis (hrc w) _
+    refine (BwLat.mem_localization_delAtr_fn emb σ lam (pl w) (by first | exact hfull c) (fun _ => B) (fun τ => BwLat.isBasisAt_of_isLocBasis (hrc w) _
       ((bc_mem_below _ _ _).2 (by rw [map_natCast]; exact hm w)) hB) (x.1 c)).trans ⟨?_, ?_⟩
     · rintro ⟨z, hz, e⟩
       exact ⟨_, (hSp w _).2 ⟨z, hz, rfl⟩, e⟩
@@ -214,7 +254,7 @@ namespace GlobalTheory.Mem.Col2.TC
 open GlobalTheory.Mem.Col2.RowTie
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem clsP_tie : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)),
     ∀ u : B.Word, ∃ (KP : ClsPTied (D := (I.rec7 l Z)) u) (W : ValPTied u KP),
       I.ReadsP I.mu0 KP.lev.Lb KP.lev.U KP.lev.chi (fun c => (KP.y c).1) KP.lat (fun c s => (KP.stabI c s).1) ∧
@@ -286,7 +326,7 @@ theorem clsP_tie : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.P
         (VV_shW B.wts.sgW _) hsh z
       lat := fun x => lat_iff (I.stX I.mu0) B.fields.emb B.embLL (I.perIn u I.mu0).sgT (l.fmL u I.mu0).famP hS hsh hemb
         (I.rec7 l Z).plEq (I.rec7 l Z).what₂.places.resChar (I.rec7 l Z).what₂.places.resChar_prime
-        (GlobalTheory.LvT.Inh.resChar_mem_plEq (I.rec7 l Z)) (fun w => IntSpan (I.rec7 l Z) w B.wts.sgW)
+        (_root_.Formalism.BasicNotions.resChar_mem (I.rec7 l Z)) (fun w => IntSpan (I.rec7 l Z) w B.wts.sgW)
         (fun w Q => by
           have h := GlobalTheory.LvT.Built.ValLat.mem_closure_iff B.embLL ((I.rec7 l Z).plEq w) (intW (I.rec7 l Z).what₂.places w)
             ((I.rec7 l Z).val_nonneg_iff w) B.wts.sgW Q

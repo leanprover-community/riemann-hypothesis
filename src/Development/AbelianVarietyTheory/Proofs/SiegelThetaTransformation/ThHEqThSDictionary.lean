@@ -1,7 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.FirstCoordinateAdmissible
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -179,7 +229,7 @@ theorem _root_.GlobalTheory.SW.Dict.sum_type {Ψ : Finset (E →+* ℂ)}
     ∑ σ, f σ = ∑ τ : Ψ, (f τ + f (ComplexEmbedding.conjugate τ.1)) := by
   classical
   have hc : ∀ φ : E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate φ) = φ :=
-    fun φ => by ext x; simp [ComplexEmbedding.conjugate_coe_eq]
+    fun φ => by ext x; simp
   rw [Finset.sum_add_distrib, Finset.sum_coe_sort Ψ f]
   have hconj : ∑ τ : Ψ, f (ComplexEmbedding.conjugate τ.1) = ∑ σ ∈ Ψᶜ, f σ := by
     rw [Finset.sum_coe_sort Ψ (fun σ => f (ComplexEmbedding.conjugate σ))]
@@ -211,8 +261,8 @@ theorem _root_.GlobalTheory.SW.Dict.quad_tauOf (Z : _root_.GlobalTheory.SW.CM Ψ
       2 * ∑ τ : Ψ, _root_.GlobalTheory.SW.Dict.vec τ.1 m ⬝ᵥ Z τ *ᵥ
         fun a => conj (_root_.GlobalTheory.SW.Dict.vec τ.1 m a) := by
   rw [two_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, mulVec, _root_.GlobalTheory.SW.tauOf, _root_.GlobalTheory.SW.Dict.vec, Matrix.of_apply, map_sum, map_mul, hm, Fintype.sum_prod_type, Finset.mul_sum, Finset.sum_mul, mul_add, add_mul, Finset.sum_add_distrib]
+
+  simp only [dotProduct, mulVec, _root_.GlobalTheory.SW.tauOf, _root_.GlobalTheory.SW.Dict.vec, Matrix.of_apply, map_sum, map_mul, hm, Fintype.sum_prod_type, Finset.mul_sum, Finset.sum_mul, mul_add, add_mul, Finset.sum_add_distrib]
   congr 1
   ·
     conv_rhs => rw [Finset.sum_comm]
@@ -249,8 +299,8 @@ theorem _root_.GlobalTheory.SW.Dict.lin_zetaOf (z z' : _root_.GlobalTheory.SW.CM
     m ⬝ᵥ _root_.GlobalTheory.SW.zetaOf Ψ z z' k =
       ∑ τ : Ψ, (_root_.GlobalTheory.SW.Dict.vec τ.1 m ⬝ᵥ z τ k +
         z' τ k ⬝ᵥ fun a => conj (_root_.GlobalTheory.SW.Dict.vec τ.1 m a)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, _root_.GlobalTheory.SW.zetaOf, _root_.GlobalTheory.SW.Dict.vec, map_sum, map_mul, hm, Fintype.sum_prod_type, Finset.mul_sum, Finset.sum_mul, mul_add, Finset.sum_add_distrib]
+
+  simp only [dotProduct, _root_.GlobalTheory.SW.zetaOf, _root_.GlobalTheory.SW.Dict.vec, map_sum, map_mul, hm, Fintype.sum_prod_type, Finset.mul_sum, Finset.sum_mul, mul_add, Finset.sum_add_distrib]
   rw [Finset.sum_comm (s := (Finset.univ : Finset Ψ))]
   simp only [Finset.sum_comm (s := (Finset.univ : Finset Ψ))]
   congr 1 <;> exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ =>
@@ -264,9 +314,9 @@ theorem _root_.GlobalTheory.SW.Dict.map_ofQ (σ : E →+* ℂ)
     (m : Matrix (Fin n) (_root_.GlobalTheory.SW.QI E N) ℚ) (k : Fin n) (a : Fin N) :
     σ (_root_.GlobalTheory.SW.ofQ m k a) =
       _root_.GlobalTheory.SW.Dict.vec σ (_root_.GlobalTheory.SW.qv (m k)) a := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [_root_.GlobalTheory.SW.ofQ, Matrix.of_apply, map_sum,
-    _root_.GlobalTheory.SW.Dict.vec, _root_.GlobalTheory.SW.qv]
+
+  simp only [_root_.GlobalTheory.SW.ofQ, Matrix.of_apply, map_sum,
+  _root_.GlobalTheory.SW.Dict.vec, _root_.GlobalTheory.SW.qv]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Rat.smul_def, map_mul, map_ratCast, mul_comm]
 
@@ -331,7 +381,7 @@ theorem _root_.GlobalTheory.SW.Dict.tauOf_mem (hΨ : _root_.GlobalTheory.SW.IsTy
     (Z : _root_.GlobalTheory.SW.CM Ψ N N) (hZ : Z ∈ _root_.GlobalTheory.SW.Hn Ψ N) :
     _root_.GlobalTheory.SW.tauOf Ψ Z ∈ _root_.GlobalTheory.SW.Siegel (_root_.GlobalTheory.SW.QI E N) := by
   have hinv : ∀ φ : E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate φ) = φ :=
-    fun φ => by ext y; simp [ComplexEmbedding.conjugate_coe_eq]
+    fun φ => by ext y; simp
   refine ⟨Matrix.IsSymm.ext fun p q => ?_, ?_⟩
   · simp only [_root_.GlobalTheory.SW.tauOf, Matrix.of_apply]
     exact Finset.sum_congr rfl fun _ _ => add_comm _ _
@@ -356,9 +406,9 @@ theorem _root_.GlobalTheory.SW.Dict.tauOf_mem (hΨ : _root_.GlobalTheory.SW.IsTy
       funext a; simp
     have hconjT : v τ ⬝ᵥ (Z τ)ᴴ *ᵥ (fun a => conj (v τ a)) =
         conj (v τ ⬝ᵥ Z τ *ᵥ fun a => conj (v τ a)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [dotProduct, mulVec, conjTranspose_apply, map_sum, map_mul, Complex.star_def,
-        Complex.conj_conj, Finset.mul_sum]
+
+      simp only [dotProduct, mulVec, conjTranspose_apply, map_sum, map_mul, Complex.star_def,
+      Complex.conj_conj, Finset.mul_sum]
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
     rw [hstar]
@@ -366,7 +416,6 @@ theorem _root_.GlobalTheory.SW.Dict.tauOf_mem (hΨ : _root_.GlobalTheory.SW.IsTy
     rw [Matrix.smul_mulVec, dotProduct_smul, Matrix.sub_mulVec, dotProduct_sub, hconjT,
       Complex.sub_conj, smul_eq_mul]
     all_goals simp [Complex.mul_re, Complex.inv_re, Complex.inv_im, Complex.normSq]
-    all_goals field_simp
   have hpos : ∀ τ : Ψ, v τ ≠ 0 → 0 < (v τ ⬝ᵥ Z τ *ᵥ fun a => conj (v τ a)).im := by
     intro τ hv
     have hw : (fun a => conj (v τ a)) ≠ 0 := by
@@ -398,8 +447,8 @@ theorem _root_.GlobalTheory.SW.Dict.tauOf_mem (hΨ : _root_.GlobalTheory.SW.IsTy
         simp only [hvdef, _root_.GlobalTheory.SW.Dict.vec,
           ComplexEmbedding.conjugate_coe_eq, Pi.zero_apply] at h1
         have h2 := congrArg conj h1
-        set_option synthInstance.maxHeartbeats 100000 in
-          simpa [map_sum, hm] using h2
+
+        simpa [map_sum, hm] using h2
     apply hx
     funext p
     obtain ⟨a, j0⟩ := p

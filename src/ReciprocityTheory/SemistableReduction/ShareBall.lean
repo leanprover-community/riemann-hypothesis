@@ -1,6 +1,10 @@
 module
 
+public import ReciprocityTheory.SemistableReduction.ShareSt
+import Mathlib.Algebra.Order.Star.Real
+public import ReciprocityTheory.SemistableReduction.ShareBallA
 public import ReciprocityTheory.SemistableReduction.ShareBallC
+public import ReciprocityTheory.SemistableReduction.ShareBallB
 
 @[expose] public section
 

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpOverLocMaxCentreCut
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpOverLocMaxPointCut
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.LiftFormNotMemBlowUpOf
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSteps
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHomLocRingIsLocal
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHomLocRingMem
+import Mathlib.Algebra.AffineMonoid.UniqueSums
 
 @[expose] public section
 
@@ -89,9 +92,9 @@ theorem BlowUpOverLocMaxCentre.proof (h₁ : BlowUpOverLocCentreDom.Statement.{u
     rw [hval, IsLocalization.AtPrime.isUnit_to_map_iff _ 𝔫] at hU
     exact hU hm
   intro w hwW
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Ideal.mem_comap, ← sum_weightedHomogeneousComponent (w := blockWeight ι) w,
-    finsum_eq_sum _ (weightedHomogeneousComponent_finsupp _), map_sum]
+
+  rw [Ideal.mem_comap, ← sum_weightedHomogeneousComponent (w := blockWeight ι) w,
+  finsum_eq_sum _ (weightedHomogeneousComponent_finsupp _), map_sum]
   exact Ideal.sum_mem _ fun b _ =>
     key b _ (weightedHomogeneousComponent_isWeightedHomogeneous _ _) (hWmh w hwW b)
 

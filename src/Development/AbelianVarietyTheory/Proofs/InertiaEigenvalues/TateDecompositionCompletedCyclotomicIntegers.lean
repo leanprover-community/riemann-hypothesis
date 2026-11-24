@@ -1,9 +1,59 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegersEqSumZetaPowStatement
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegersEqSumZetaPow
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.LocalField
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Nonarchimedean.Completion
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -58,9 +108,7 @@ theorem exists_level (K : FinExt l) {x : Om l} (hx : x ∈ Kinf K) : ∃ i, x �
   rw [IntermediateField.coe_iSup_of_directed hd] at h3
   simpa using h3
 
-theorem exists_prim (i : ℕ) : ∃ ζ : Om l, IsPrimitiveRoot ζ (l ^ i) := by
-  haveI : NeZero (l ^ i) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
-  exact HasEnoughRootsOfUnity.exists_primitiveRoot (Om l) (l ^ i)
+alias exists_prim := _root_.GlobalTheory.Cyc.exists_primRoot_pow
 
 theorem root_mem_subC (K : FinExt l) {i : ℕ} {ξ : PadicComplex l} (h : ξ ^ (l ^ i) = 1) :
     ξ ∈ subC (Ks K i) := by
@@ -236,7 +284,7 @@ theorem Xlev_inter (K : FinExt l) {i : ℕ} (hi : 2 ≤ i) {x : PadicComplex l} 
   obtain ⟨y, h1, h2, h3⟩ := Xlev_form K (by omega) hζ hx
   obtain ⟨w, hw, rfl⟩ := hx'
   have h4 := (io l).injective h3
-  have h5 := (GlobalTheory.T.integers_eq_sum_zeta_pow_unique l K i hi ζ hζ).2 (y - Pi.single ⟨0, hp.pos⟩ w) (fun a => by
+  have h5 := (_root_.GlobalTheory.Cyc.integers_eq_sum_zeta_pow l K i hi ζ hζ).2 (y - Pi.single ⟨0, hp.pos⟩ w) (fun a => by
     refine sub_mem (h1 a) ?_
     rw [Pi.single_apply]
     split_ifs
@@ -258,13 +306,13 @@ theorem step (K : FinExt l) {i : ℕ} (hi : 2 ≤ i) {z : PadicComplex l} (hz : 
   obtain ⟨ζ, hζ⟩ := exists_prim (l := l) i
   obtain ⟨⟨w, hw, rfl⟩, hn⟩ := intC_iff.1 hz
   rw [norm_io] at hn
-  obtain ⟨y, h1, h2⟩ := (GlobalTheory.T.integers_eq_sum_zeta_pow_unique l K i hi ζ hζ).1 w hw hn
+  obtain ⟨y, h1, h2⟩ := (_root_.GlobalTheory.Cyc.integers_eq_sum_zeta_pow l K i hi ζ hζ).1 w hw hn
   have h3 : ∀ a, io l (y a) ∈ intC (Ks K (i - 1)) := fun a =>
     ⟨⟨y a, (h1 a).1, rfl⟩, (norm_io _).le.trans (h1 a).2⟩
   refine ⟨io l (y ⟨0, hp.pos⟩), h3 _, ?_⟩
   rw [h2, ← Finset.add_sum_erase _ _ (Finset.mem_univ ⟨0, hp.pos⟩)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [pow_zero, one_mul, map_add (f := _), add_sub_cancel_left, map_sum, map_mul]
+
+  simp only [pow_zero, one_mul, map_add (f := _), add_sub_cancel_left, map_sum, map_mul]
   refine sum_mem fun a ha => AddSubgroup.subset_closure ⟨_, _, ?_, h3 a, rfl⟩
   refine (hζ.pow_of_coprime a ?_).map_of_injective (io l).injective
   refine Nat.Coprime.pow_right _ (Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd hp).2 ?_))

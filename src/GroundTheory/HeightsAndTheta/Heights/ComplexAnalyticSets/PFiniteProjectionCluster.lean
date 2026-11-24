@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteProjectionCluster
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelProper
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

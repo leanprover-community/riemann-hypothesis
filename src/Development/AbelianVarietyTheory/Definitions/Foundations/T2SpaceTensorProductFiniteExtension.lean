@@ -1,12 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactLevelOffFinEmpty
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsNormFromBaseChangeBaseChangeProperties
+public import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AlgebraMapNormTensorEqProdConjugates
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsGLSubmatrix
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Charpoly.BaseChange
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,22 +64,7 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
 
 theorem norm_map (φ : R →ₐ[F] R') (x : R ⊗[F] E) :
     Algebra.norm R' (Algebra.TensorProduct.map φ (AlgHom.id F E) x) = φ (Algebra.norm R x) := by
-  classical
-  let b := Module.finBasis F E
-  have h : ∀ (y : R ⊗[F] E) i, (Algebra.TensorProduct.basis R' b).repr
-      (Algebra.TensorProduct.map φ (AlgHom.id F E) y) i = φ ((Algebra.TensorProduct.basis R b).repr y i) := by
-    intro y i
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a e => simp [Algebra.TensorProduct.basis_repr_tmul]
-    | add x y hx hy => simp only [map_add (f := _), Finsupp.add_apply, hx, hy]
-  rw [Algebra.norm_eq_matrix_det (Algebra.TensorProduct.basis R' b),
-    Algebra.norm_eq_matrix_det (Algebra.TensorProduct.basis R b), AlgHom.map_det]
-  congr 1
-  ext i j
-  rw [AlgHom.mapMatrix_apply, Matrix.map_apply, Algebra.leftMulMatrix_eq_repr_mul, Algebra.leftMulMatrix_eq_repr_mul,
-    ← h, map_mul (Algebra.TensorProduct.map φ (AlgHom.id F E))]
-  simp [Algebra.TensorProduct.basis_apply]
+  apply GlobalTheory.CNorm.tensor_norm_map
 
 theorem norm_inclR (x : E) : Algebra.norm R (inclR (F := F) R x) = algebraMap F R (Algebra.norm F x) := by
   rw [Algebra.norm_apply, Algebra.norm_apply, ← LinearMap.det_baseChange]
@@ -56,7 +80,7 @@ theorem norm_sigR (σ : E →ₐ[F] E) (x : R ⊗[F] E) :
 theorem continuous_norm_tens [TopologicalSpace R] [IsTopologicalRing R] :
     Continuous (Algebra.norm R : R ⊗[F] E → R) := by
   classical
-  haveI : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
+  have : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
   let b := Algebra.TensorProduct.basis R (Module.finBasis F E)
   rw [show (Algebra.norm R : R ⊗[F] E → R) = fun x => (Algebra.leftMulMatrix b x).det from
     funext fun x => Algebra.norm_eq_matrix_det b x]
@@ -137,7 +161,7 @@ theorem absEv_algebraMap (v : HeightOneSpectrum (𝓞 F)) (a : (Fv F v)ˣ) :
 theorem algebraMap_norm_eq {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {R : Type} [CommRing R] [Algebra F R] (x : R ⊗[F] E) :
     algebraMap R (R ⊗[F] E) (Algebra.norm R x) = x * Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ x := by
   classical
-  haveI : Algebra.IsQuadraticExtension F E := ⟨h.2.2.1⟩
+  have : Algebra.IsQuadraticExtension F E := ⟨h.2.2.1⟩
   let s := AlgEquiv.ofBijective σ (Algebra.IsAlgebraic.algHom_bijective σ)
   have hs : (1 : E ≃ₐ[F] E) ≠ s := fun e => by
     have := h.2.1
@@ -238,7 +262,7 @@ theorem continuous_unitInf (w : InfinitePlace F) : Continuous (unitInf F E w) :=
     ((continuous_apply w).comp continuous_fst))
 
 theorem continuous_absE : Continuous (absE F E) := by
-  haveI := isTopologicalRing_tens (F := F) (E := E) (R := AF F)
+  have := isTopologicalRing_tens (F := F) (E := E) (R := AF F)
   refine continuous_of_continuousAt_one _ ?_
   have ho : IsOpen {a : AF F | ∀ v, evFin F v a ∈ v.adicCompletionIntegers F} :=
     (RestrictedProduct.isOpen_forall_mem fun v : HeightOneSpectrum (𝓞 F) =>

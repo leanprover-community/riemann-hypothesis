@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNorms
-public import GroundTheory.GlobalFields.KummerTheory.Splitting
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
-public import GroundTheory.LocalFields.UnramifiedNorms
-public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import Mathlib.RingTheory.TotallySplit
+import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import GroundTheory.GlobalFields.KummerTheory.Splitting
+public import GroundTheory.LocalFields.UnramifiedNormSurj
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Deriv
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.LocalFields.UnramifiedDefs
 
 @[expose] public section
 

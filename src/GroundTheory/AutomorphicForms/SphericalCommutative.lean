@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.HeckeIrreducible
-public import GroundTheory.AutomorphicForms.MeasuresGL
+public import GroundTheory.AutomorphicForms.Cartan
+public import GroundTheory.AutomorphicForms.HeckeAlgebraLevel
+public import Mathlib.Topology.Algebra.Group.Units
+import GroundTheory.AutomorphicForms.MeasuresModulus
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 

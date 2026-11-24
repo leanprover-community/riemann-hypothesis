@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockSectionsRank
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageGenDeg
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionsRank
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenericFibre
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

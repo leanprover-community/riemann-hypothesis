@@ -1,9 +1,13 @@
 module
 
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.DifferentialCommutesWeightOperator
+import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.DifferentialBoundedSupport
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.KTypeCount
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOnePOf
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SchwartzBilinear.DoubleSumReduceSecond
+public import Mathlib.Analysis.InnerProductSpace.Spectrum
+public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.RingTheory.Finiteness.Lattice
 
 @[expose] public section
 
@@ -78,8 +82,8 @@ theorem cok_of (hG : GenCO) : COK := by
     ∑ c, FreeAlgebra.ι ℂ c * FreeAlgebra.ι ℂ c - ∑ c, ((2 * rhoC ε c : ℝ) : ℂ) • FreeAlgebra.ι ℂ c
   have ha : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V),
       evK ε E a = CasK ε E := fun V _ _ E => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [a, CasK, map_sum]
+
+    simp only [a, CasK, map_sum]
     refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
     split_ifs with h
     · simp [evK, h]
@@ -91,9 +95,9 @@ theorem cok_of (hG : GenCO) : COK := by
   refine ⟨w, hw, ?_⟩
   rw [← e, ha, evd_eig _ _ _ hτ]
   congr 2
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [b, map_sub, map_sum, map_mul, map_smul, FreeAlgebra.lift_ι_apply, smul_eq_mul, nsq, PI.UpqRep.dot,
-    Pi.sub_apply, ← Finset.sum_sub_distrib]
+
+  simp only [b, map_sub, map_sum, map_mul, map_smul, FreeAlgebra.lift_ι_apply, smul_eq_mul, nsq, PI.UpqRep.dot,
+  Pi.sub_apply, ← Finset.sum_sub_distrib]
   push_cast
   exact Finset.sum_congr rfl fun c _ => by ring
 
@@ -120,8 +124,8 @@ theorem exists_poly {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] 
     simp [Module.algebraMap_end_apply]
   rw [e, show x = ∑ i, (hs.eigenvectorBasis rfl).repr ⟨x, hx⟩ i • (hs.eigenvectorBasis rfl i : V) by
     simpa using (congrArg Subtype.val ((hs.eigenvectorBasis rfl).sum_repr ⟨x, hx⟩)).symm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, Finset.smul_sum]
+
+  simp only [map_sum, map_smul, Finset.smul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   have h1 : T (hs.eigenvectorBasis rfl i : V) = (ev i : ℂ) • (hs.eigenvectorBasis rfl i : V) :=
     congrArg Subtype.val (hs.apply_eigenvectorBasis rfl i)
@@ -132,9 +136,16 @@ theorem exists_poly {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] 
       (mem_insert_of_mem (mem_image_of_mem _ (mem_univ i)))
     simp [this]
 
-theorem vanK_of (hC : COK) (hP : WtProj) (hM : WtMajor) : VanK := by
-  intro n ε lam V _ _ E hl hE hU hF hmin B j z hB hz hwt hb
-  set τ := lowK ε lam + (2 : ℝ) • rhoC ε with hτ
+theorem exists_boundary_of_weight_obstruction (hC : COK) (hP : WtProj) (hM : WtMajor)
+    {n : ℕ} (ε : Fin n → Bool) {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
+    (E : Fin n → Fin n → Module.End ℂ V) (hE : KRel ε E) (hU : KUnit ε E)
+    (hF : LocFin ε E) (B : Finset (Pos n)) (j : ℕ) (τ : Fin n → ℝ) (z : Cn n V)
+    (hz : Sup ε B j z) (hwt : Wt (allT n) E τ z) (hb : bd ε E z = 0)
+    (hObstruct : ∀ A, z A ≠ 0 → ∀ (ν : Fin n → ℝ) (y : V), y ≠ 0 → KHighest ε E ν y →
+      (∀ c d, c < d → ε c = ε d → ν d ≤ ν c) →
+      (∀ w : Equiv.Perm (Fin n), (∀ c, ε (w c) = ε c) → PI.UpqRep.CDom ε ((τ - wt A) ∘ w) ν) →
+      nsq (τ - wt B - rhoC ε) = nsq (ν + rhoC ε) → False) :
+    ∃ t : Cn n V, Sup ε B (j + 1) t ∧ Wt (allT n) E τ t ∧ bd ε E t = z := by
   have hzw : ∀ A, IsWeight E (τ - wt A) (z A) := fun A c => by
     have := congrFun (hwt c) A
     rw [Ft_apply, filter_all, Pi.smul_apply] at this
@@ -178,26 +189,33 @@ theorem vanK_of (hC : COK) (hP : WtProj) (hM : WtMajor) : VanK := by
           Module.End.mul_apply, hzw A c]
         simp only [map_smul, map_sub, smul_add, smul_sub, Pi.sub_apply, smul_comm ((τ c - wt A c : ℝ) : ℂ)])
       (hq (z A) (Submodule.mem_iSup_of_mem A (hmem _)) _ rfl)
-    have hA1 := (hz A hA).1
-    refine absurd (hmin ν y hy0 hy) (not_le.2 (K_type_count n ε lam ν B (A.filter (cpt ε)) hl hB
-      (fun i hi => (mem_filter.1 (hA1.symm ▸ hi :)).2) (fun i hi => (mem_filter.1 hi).2) hd (fun w hw' => ?_) ?_))
-    · convert hc w hw' using 2
-      funext c
-      simp only [Pi.sub_apply, wt_split (ε := ε) A, hA1, hτ]
-      ring
-    · have h1 : nsq (τ - wt B - rhoC ε) = nsq (ν + rhoC ε) := by
-        have := Complex.ofReal_injective hs
-        linarith
-      rw [← h1]
-      congr 1
-      rw [hτ, two_smul]
-      abel
+    have hnorm : nsq (τ - wt B - rhoC ε) = nsq (ν + rhoC ε) := by
+      have hs' := Complex.ofReal_injective hs
+      linarith
+    exact hObstruct A hA ν y hy0 hy hd hc hnorm
   have h1 : bd ε E (-lift n (Polynomial.aeval (CasK ε E) q) w) = z := by
     rw [map_neg, ← lift_bd _ E E fun i hi x => hcq _ _ hi x]
     exact (eq_neg_of_add_eq_zero_left h0).symm
   obtain ⟨t, ht1, ht2, ht3⟩ := hP n (allT n) ε V E hE hU (fun x => ⟨S x, hS x, hSt x, hmem x⟩) (bd ε E)
     (differential_commutes_weight_operator n _ ε V E (fun _ _ _ => rfl) hE) τ _ (h1.symm ▸ hwt)
   exact ⟨t, sup_of_supp hw fun A h => ht3 A (by simp [h]), ht1, ht2.trans h1⟩
+
+theorem vanK_of (hC : COK) (hP : WtProj) (hM : WtMajor) : VanK := by
+  intro n ε lam V _ _ E hl hE hU hF hmin B j z hB hz hwt hb
+  set τ := lowK ε lam + (2 : ℝ) • rhoC ε with hτ
+  apply exists_boundary_of_weight_obstruction hC hP hM ε E hE hU hF B j τ z hz hwt hb
+  intro A hA ν y hy0 hy hd hc hnorm
+  have hA1 := (hz A hA).1
+  refine absurd (hmin ν y hy0 hy) (not_le.2 (K_type_count n ε lam ν B (A.filter (cpt ε)) hl hB
+    (fun i hi => (mem_filter.1 (hA1.symm ▸ hi :)).2) (fun i hi => (mem_filter.1 hi).2) hd (fun w hw' => ?_) ?_))
+  · convert hc w hw' using 2
+    funext c
+    simp only [Pi.sub_apply, wt_split (ε := ε) A, hA1, hτ]
+    ring
+  · rw [← hnorm]
+    congr 1
+    rw [hτ, two_smul]
+    abel
 
 theorem inj_of (hV : VanK) (hP : WtProj) (hS : BdSq) : Inj := by
   intro n ε lam V _ _ E hl hgl hU hF hmin u y hu hy hb
@@ -256,8 +274,8 @@ theorem inj_of (hV : VanK) (hP : WtProj) (hS : BdSq) : Inj := by
                 obtain ⟨i, hi⟩ := hBn
                 rw [← hAB] at hi
                 exact (mem_filter.1 hi).2 (mem_filter.1 (mem_filter.1 hi).1).2
-              set_option synthInstance.maxHeartbeats 100000 in
-                rw [Pi.single_eq_of_ne hAo, hsum, map_sum, Finset.sum_apply, Finset.sum_eq_single B] at e
+
+              rw [Pi.single_eq_of_ne hAo, hsum, map_sum, Finset.sum_apply, Finset.sum_eq_single B] at e
               · apply hne
                 by_contra h'
                 have := (s4 B _ _ (hr B) A (by rw [Pi.sub_apply, e, zero_sub]; exact neg_ne_zero.2 hne)).1
@@ -303,14 +321,14 @@ theorem inj_of (hV : VanK) (hP : WtProj) (hS : BdSq) : Inj := by
           have h2 := (hrne B A hB').1
           have h3 := (hr B A hB').1
           exact ⟨(h A fun h' => hB' (by simp [r, h'])).1, by rw [h3]; omega⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        · rw [map_sub, map_sum, hw c, smul_sub, Finset.smul_sum]
-          congr 1
-          refine Finset.sum_congr rfl fun B _ => ?_
-          rw [← Module.End.mul_apply, (hc c).eq, Module.End.mul_apply, t1 B c, map_smul]
-      set_option synthInstance.maxHeartbeats 100000 in
-        · rw [map_sub, map_sum, hb, Finset.sum_eq_zero, sub_zero]
-          exact fun B _ => LinearMap.congr_fun (hS n _ V E hA) _
+
+      · rw [map_sub, map_sum, hw c, smul_sub, Finset.smul_sum]
+        congr 1
+        refine Finset.sum_congr rfl fun B _ => ?_
+        rw [← Module.End.mul_apply, (hc c).eq, Module.End.mul_apply, t1 B c, map_smul]
+
+      · rw [map_sub, map_sum, hb, Finset.sum_eq_zero, sub_zero]
+        exact fun B _ => LinearMap.congr_fun (hS n _ V E hA) _
   obtain ⟨y', y1, y2, y3⟩ := hP n (allT n) ε V E hE hU hF _ hc τ y (fun c => funext fun A => by
     rw [hb, Ft_apply, filter_all]
     by_cases e : A = om ε

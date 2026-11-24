@@ -1,12 +1,10 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShift
-public import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundB
+public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.RingTheory.PiTensorProduct
+public import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundA
 
 @[expose] public section
 

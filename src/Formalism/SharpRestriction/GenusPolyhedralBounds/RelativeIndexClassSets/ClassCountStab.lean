@@ -1,28 +1,54 @@
 module
 
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.ClassSet
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
-public import Formalism.HermitianLattices.HermitianLatticesProofs.AutFinite
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.MassIntegralClass
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapFacts
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-public import Formalism.SatakeDualWeyl.DefsCS
-public import Formalism.ThetaLiftIndependence.Statement
-public import Formalism.HermitianLattices.StatementMass
-public import Mathlib
-public import Formalism.SatakeDualWeyl.StatementC
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelv
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+import Formalism.SatakeDualWeyl.StatementC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Ideal.Int
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 public import Formalism.HermitianLattices.StatementLat
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsAsmHformSmulRight
-public import Formalism.HermitianLattices.FinalNeighbourConstruct
+public import Formalism.SatakeDualWeyl.DefsCS
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 
 @[expose] public section
 

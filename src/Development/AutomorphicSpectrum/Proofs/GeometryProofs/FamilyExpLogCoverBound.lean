@@ -1,21 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.SlopeBoundSt
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-public import Development.AbelianVarietyTheory.PublishedTheorems.SemiabelianTori.GeometricallyConnectedSplitTorusAff
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsAbLift
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodSetClosedStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodHolomorphicContinuationStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionSectionEqOfConnectedStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeDiscreteFreeStatement
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodHolomorphicContinuation
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeDiscreteFree
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodSetClosed
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionSectionEqOfConnected
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -79,7 +111,7 @@ theorem period_of_tendsto (e : FamExp G M B ψ) (hsep : IsSeparated G.hom) (hhol
     (hb : Tendsto bs atTop (𝓝 b₀)) (hq : Tendsto q atTop (𝓝 p))
     (hper : ∀ m, q m ∈ e.per (bs m)) : p ∈ e.per b₀ := by
   by_cases hfreq : ∃ᶠ m in atTop, bs m = b₀
-  · obtain ⟨Γ₀, hΓ, hdisc, -, -⟩ := GlobalTheory.T.period_lattice_discrete_free R G g n M B ψ e b₀ hb₀
+  · obtain ⟨Γ₀, hΓ, hdisc, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.FamExp.per_discrete R G g n M B ψ e b₀ hb₀
     have hcl : IsClosed (Γ₀ : Set (Fin g → ℂ)) := by
       haveI := hdisc
       exact (Γ₀.toAddSubgroup).isClosed_of_discreteTopology
@@ -125,7 +157,7 @@ theorem period_of_tendsto (e : FamExp G M B ψ) (hsep : IsSeparated G.hom) (hhol
       obtain ⟨k, hk, hsk⟩ : ∃ k, bs k = bs m ∧ s (bs m) = q k := ⟨Nat.find h.2, Nat.find_spec h.2, dif_pos h⟩
       rw [hsk, ← hk]
       exact hper k
-    have := GlobalTheory.T.period_set_closed R G g n M B ψ e hsep hhol b₀ hb₀ s hcont hfr
+    have := _root_.GlobalTheory.CompanionTheory.Ar.Flat.mem_per_of_frequently R G g n M B ψ e hsep hhol b₀ hb₀ s hcont hfr
     rwa [hs₀] at this
 
 end Exp
@@ -155,7 +187,7 @@ theorem limit_core {R : Type} [CommRing R] (t : SAB H (Sp R)) {g n : ℕ} {M : L
       DifferentiableOn ℂ s (ball b₀ ε) ∧ s b₀ = p ∧ (∀ b ∈ ball b₀ ε, s b ∈ e.per b) ∧
       (∀ m, bs m ∈ ball b₀ ε → P m (y m) = s (bs m)) ∧ Tendsto (fun m => P m (y m)) atTop (𝓝 p) := by
     intro p hp
-    obtain ⟨ε, s, hε, hsub, hsd, hs₀, hsper⟩ := GlobalTheory.T.period_holomorphic_continuation R t.G g n M B ψ e hhol.1 b₀ hb₀ p hp
+    obtain ⟨ε, s, hε, hsub, hsd, hs₀, hsper⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.per_spreads R t.G g n M B ψ e hhol.1 b₀ hb₀ p hp
     have hy : ∀ m, ∃ y : Λ, bs m ∈ ball b₀ ε → P m y = s (bs m) := by
       intro m
       by_cases hm : bs m ∈ ball b₀ ε
@@ -230,7 +262,7 @@ theorem limit_core {R : Type} [CommRing R] (t : SAB H (Sp R)) {g n : ℕ} {M : L
     obtain ⟨u, hu, -⟩ := GlobalTheory.UU.existsUnique_cubWeil t.cub (htors b₀ hb₀').1 (htors b₀ hb₀').2.1
     obtain ⟨ζ₁, rfl⟩ : ∃ z : ℂˣ, unitOn z = u :=
       ⟨Units.map (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom.toMonoidHom u, Units.ext (by simp [unitOn])⟩
-    have hconst := GlobalTheory.T.torsion_section_eq_of_connected (Sp R) t.G t.PP t.cub n N (ball b₀ (min ε ε')) (fun b => spMap (ψ b)) X X' ζ₁ b₀ hN
+    have hconst := _root_.GlobalTheory.CompanionTheory.Ar.Flat.cubWeil_const_of_isHolTo_family (Sp R) t.G t.PP t.cub n N (ball b₀ (min ε ε')) (fun b => spMap (ψ b)) X X' ζ₁ b₀ hN
       isOpen_ball (convex_ball _ _).isPreconnected hb₀' hX hX' htors hu
     have hbm : ∀ᶠ m in atTop, bs m ∈ ball b₀ (min ε ε') := hbs (ball_mem_nhds b₀ hδ)
     obtain ⟨m, hm, hym, hym'⟩ := (hbm.and ((hval x y ht).and (hval x' y' ht'))).exists

@@ -1,13 +1,49 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.CoordinateDivisorRadical
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.GermRegularParameters
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.CoordinatePolynomialRing
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.ChartRing
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
 public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
 public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.RegularLocalRing
+public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.CoordinateDivisorRadical
+public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.GermRegularParameters
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -101,12 +137,7 @@ theorem orderAt_eq_one_of_restrictIdeal_eq_coordIdeal_singleton {V : X.Opens}
   le_antisymm (orderAt_le_one_of_mem_of_restrictIdeal_eq_coordIdeal p hV c {j} j (Finset.mem_singleton_self j) D hD y hy)
     ((one_le_orderAt_iff_mem_support D y).mpr hys)
 
-theorem orderAt_le_one_of_restrictIdeal_eq_coordIdeal {V : X.Opens}
-    (hV : IsAffineOpen V) {n : ℕ} (c : EtaleChart p V n) (S : Finset (Fin n)) (j : Fin n)
-    (hj : j ∈ S) (D : X.IdealSheafData) (hD : restrictIdeal D V = c.coordIdeal S)
-    (y : X) (hy : y ∈ V) :
-    orderAt D y ≤ 1 :=
-  orderAt_le_one_of_mem_of_restrictIdeal_eq_coordIdeal p hV c S j hj D hD y hy
+alias orderAt_le_one_of_restrictIdeal_eq_coordIdeal := _root_.FunctorialResolution.EmbeddedResolution.orderAt_le_one_of_mem_of_restrictIdeal_eq_coordIdeal
 
 theorem orderAt_eq_one_of_restrictIdeal_eq_coordIdeal {V : X.Opens}
     (hV : IsAffineOpen V) {n : ℕ} (c : EtaleChart p V n) (S : Finset (Fin n)) (j : Fin n)

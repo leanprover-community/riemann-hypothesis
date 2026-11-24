@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecondVeroneseParts
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecondVeronese
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

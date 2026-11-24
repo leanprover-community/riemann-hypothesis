@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Norm.Defs
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Trace.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

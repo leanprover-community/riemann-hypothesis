@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.GroupCohomology.CupConnRightStatement
+public import ReciprocityTheory.GroupCohomology.IsTowerLim
 
 @[expose] public section
 

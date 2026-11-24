@@ -1,7 +1,50 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTKLineCut
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagonalTransferAction
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedF
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -32,14 +75,14 @@ theorem alg {ι : Type} [Fintype ι] [DecidableEq ι] (Qs : ι → (Wq →L[ℂ]
     have h := congrArg (fun T : Wq →L[ℂ] Wp => T v) (hid Y)
     simp only [ContinuousLinearMap.comp_apply] at h
     rw [← h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum]
+
+    simp [map_sum]
   have hEv : ∀ v, E v = ∑ σ, E (Qs σ v) := by
     intro v
     have h : (∑ σ, Qs σ) v = v := by rw [hsum, ContinuousLinearMap.one_apply]
     conv_lhs => rw [← h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [ContinuousLinearMap.sum_apply, map_sum]
+
+    rw [ContinuousLinearMap.sum_apply, map_sum]
   constructor
   · intro h Y v
     have hE : ∀ w, E (Qs ρ w) = E w := fun w => congrArg (fun T : Wq →L[ℂ] Wp => T w) h
@@ -112,8 +155,7 @@ theorem lie_eigenvalue_holds : KLEig := by
     intro Y
     have h : d.x Y = d.L.GGi * X.QQ Y 1 1 := by
       rw [hQ]
-      simp only [Q.NFData.QQ, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_one, Matrix.head_cons,
-        Matrix.cons_val_fin_one, Matrix.empty_val', Matrix.cons_val_zero]
+      simp only [Q.NFData.QQ, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_one, Matrix.cons_val_fin_one, Matrix.empty_val']
       rw [← mul_assoc, d.L.GGi_GG, one_mul]
     show Formalism.FourierDecayAlt.P5.Kfp.fstAlg _ (d.x Y) = _
     rw [h, hL.2.2.2.2.2.2.2.2.2.2.2.1]

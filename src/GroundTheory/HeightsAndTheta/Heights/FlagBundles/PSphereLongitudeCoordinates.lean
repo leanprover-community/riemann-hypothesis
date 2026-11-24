@@ -1,8 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.Statements
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsSphereLongitude
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.SpecialFunctions.PolarCoord
+public import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Tactic.Lemma
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.Pow
+public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 
 @[expose] public section
 

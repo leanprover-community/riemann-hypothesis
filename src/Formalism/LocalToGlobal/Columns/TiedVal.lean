@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TiedCls
+public import Formalism.LocalToGlobal.Columns.TiedCF
+public import Formalism.LocalToGlobal.Columns.WordFin
 
 @[expose] public section
 

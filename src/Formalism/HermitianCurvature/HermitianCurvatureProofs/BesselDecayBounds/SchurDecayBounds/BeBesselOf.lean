@@ -1,9 +1,48 @@
 module
 
+public import Formalism.HermitianCurvature.BesselNonvanishingReduction
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.GrowthIntegrals.BeBessel
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.HaarCompactGrowth.IsHaarOnUWsetOfIsHaarOnOfUnivEqOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.SchurDecayBounds.NormIdFix
-public import Formalism.HermitianCurvature.BesselNonvanishingReduction
+import Formalism.SharpRestriction.CuspSpanNormBounds.KfinOfMemLowKSub
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -40,38 +79,5 @@ theorem psiConst : Formalism.FourierDecayAlt.ThreeDimData.PsiConst := by
   intro k r z c g
   simp only [Formalism.QuantumDeterminants.psi, PI.BesselMapUniq.psiGen, ← Finset.mul_sum]
   rfl
-
-theorem beBessel_of (hGS : Formalism.FourierDecayAlt.ThreeDimData.GrowthS) : Formalism.FourierDecayAlt.ThreeDimData.BeBessel := by
-  intro hIn k r ε lam h H _ _ _ σ w0 Wp _ _ _ _ z c u π μW μN μG νq hSide v hv ξ
-  obtain ⟨-, hDI, -, -⟩ := hIn
-  obtain ⟨hlam, hds, hgap, hOK, hw0, hz, hT, hc, hπ, hμW, hμN, hμG, hq⟩ := hSide
-  have : SigmaFinite μN := hμN.1
-  have hds' : Formalism.MainNotions.S.IsDSHpk k r ε lam σ := hds
-  have hπ' : Formalism.MainNotions.S.IsHCTypeW k r z u π := hπ
-  have hw0' : Formalism.MainNotions.S.IsLowUnitH k r ε lam σ w0 := hw0
-  have hM := Formalism.MainNotions.MeasFS.measF_side hz hT hπ hμW hμN
-  set a := Formalism.FourierDecayAlt.ThreeDimData.aOf r h with ha_def
-  obtain ⟨ha1, hAG, -⟩ := PI.WBL.NIS.thresholds hOK.2.2.1
-  have hAG0 : 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AG k r := by unfold Formalism.FourierDecayAlt.ThreeDimData.AG; positivity
-  have hAG' : Formalism.FourierDecayAlt.ThreeDimData.AG k r < a - 1 := by linarith
-  have hgr0 := hGS k r z μW μN μG νq (a - 1) hz hT hμW hμN hμG hq hAG'
-  have hgr : Integrable (fun p : Mt k r × Mt k r =>
-      Formalism.FourierDecayAlt.B.gN (Matrix.of p.1 * Matrix.of p.2 : Mx k r) ^ (1 - a)) (μW.prod μN) := by
-    refine hgr0.congr (ae_of_all _ fun p => ?_)
-    simp only [neg_sub]
-  have hK : PtDec σ a (fun v => Formalism.MainNotions.S.IsKFinHpk (k := k) (r := r) σ v) := by
-    intro v0 hv0
-    obtain ⟨C, Ws, hWs, hb⟩ := hDI k r ε lam h H σ hlam hds hgap hOK v0 hv0
-    refine ⟨C, Ws, hWs, fun w hw x hx => ?_⟩
-    have := hb w hw x hx
-    simpa only [dsigW_eq] using this
-  have hB : Formalism.MainNotions.S.IsBesselMapSm (k := k) (r := r) z (psi k r z c) σ π
-      (fun x => (∫ p, Formalism.MainNotions.DoubleDerivativeSmoothness.FI z c π σ x v p ∂(μW.prod μN)) ξ) := by
-    rcases hv with hvD | hvK
-    · have h0 : PtB σ a w0 := hK w0 (Formalism.MainNotions.DoubleDerivativeSmoothness.kfinHpk_of_lowUnitH hw0')
-      exact Formalism.MainNotions.BeBesselW.beBessel_DD (u := u) z c π μW μN σ w0 a hds' hz hT hπ' hM hgr ha1 h0 v hvD ξ
-    · exact Formalism.MainNotions.BeBesselW.beBessel_K (u := u) z c π μW μN σ a hds' hz hT hπ' hM hgr hK v hvK ξ
-  obtain ⟨h1, h2, h3, h4⟩ := hB
-  exact ⟨h1, h2, h3, cwCont_conv h4⟩
 
 end PI.WBL.S5

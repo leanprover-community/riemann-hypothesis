@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

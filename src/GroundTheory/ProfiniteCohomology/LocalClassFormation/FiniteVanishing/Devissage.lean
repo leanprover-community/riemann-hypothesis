@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.Shapiro
+public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 public import GroundTheory.ProfiniteCohomology.EulerChar
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveSnake
-public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
 
 @[expose] public section
 

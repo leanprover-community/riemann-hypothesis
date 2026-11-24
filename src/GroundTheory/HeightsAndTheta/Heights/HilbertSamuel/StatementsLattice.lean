@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.HermitianTensor
+public import Mathlib.Algebra.Module.ZLattice.Covolume
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDivisorGoodPoint
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 
 @[expose] public section
 

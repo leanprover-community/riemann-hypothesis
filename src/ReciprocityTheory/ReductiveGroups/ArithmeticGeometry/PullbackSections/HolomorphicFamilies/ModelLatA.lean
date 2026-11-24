@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

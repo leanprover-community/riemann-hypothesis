@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.Analysis.SpecialFunctions.Pow.Complex
+public import Mathlib.Basic.Real.Sign
 public import GroundTheory.GlobalFields.TateThesis.ArchChars
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

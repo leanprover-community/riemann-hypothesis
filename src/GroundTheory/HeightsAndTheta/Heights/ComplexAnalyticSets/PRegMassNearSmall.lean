@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegMassNearSmall
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegFormCompare
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegBallMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSmallSetBallCover
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarIntAdd
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

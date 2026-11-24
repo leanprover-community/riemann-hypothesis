@@ -1,7 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
+public import Mathlib.Analysis.Calculus.Deriv.Star
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
+public import Mathlib.Analysis.Calculus.Deriv.Mul
 
 @[expose] public section
 
@@ -25,8 +29,6 @@ theorem op_inv_eq_adjoint (T : KType ε Λ) (k : KG ε) :
   rw [KType.op, map_inv, ← ContinuousLinearMap.star_eq_adjoint]
   first
   | rfl
-  | simp [Unitary.star_eq_inv]
-  | simp [unitary.star_eq_inv]
 
 private lemma commute_Jm_of_isBlock {Y : Matrix (Fin n) (Fin n) ℂ} (hY : IsBlock ε Y) :
     Y * Jm ε = Jm ε * Y := by

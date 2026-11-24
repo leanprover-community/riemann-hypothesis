@@ -1,6 +1,19 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 
 @[expose] public section
 

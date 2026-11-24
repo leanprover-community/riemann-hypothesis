@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AtTauExUniqueHolds
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousTensMap
 
 @[expose] public section
 
@@ -13,7 +14,7 @@ namespace Formalism.IndefR.Eqv
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option synthInstance.maxHeartbeats 200000
+
 
 open Classical
 

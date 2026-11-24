@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemConeIdeal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockSphereMeanEqOfFrameNormEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinSubstLinSubst
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -54,16 +95,16 @@ private theorem exists_integral_matrix_toMatrix_mul_eq_of_isFrame {Nm : (K →+*
   refine ⟨Matrix.of fun i k => c k i, ?_⟩
   ext j k
   have hk := congr_arg (fun x => b.repr x j) (hc k)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
-    Pi.smul_apply, smul_eq_mul] at hk
+
+  simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
+  Pi.smul_apply, smul_eq_mul] at hk
   simp only [Matrix.mul_apply, Matrix.map_apply, Matrix.of_apply, Basis.toMatrix_apply]
   rw [show (∑ x, (b.repr (b' x)) j * w' x k) = ∑ x, w' x k * (b.repr (b' x)) j from
     Finset.sum_congr rfl fun _ _ => mul_comm _ _, ← hk]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← IsScalarTower.algebraMap_smul K (c k i), map_smul, Finsupp.smul_apply, smul_eq_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, Finsupp.single_apply, mul_comm]
+
+  simp [map_sum, Finsupp.single_apply, mul_comm]
 
 set_option autoImplicit false in
 open MvPolynomial NumberField Module in
@@ -193,8 +234,8 @@ private theorem gaussAbs_aeval_le_of_gaussAbs_le_one {ι κ : Type} (v : FiniteP
     (hψ : ∀ i, _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs v (ψ i) ≤ 1) (g : MvPolynomial ι K) :
     _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs v (aeval ψ g) ≤ _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs v g := by
   conv_lhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine gaussAbs_finset_sum_le_of_forall_le v _ _ (gaussAbs_nonneg' v g) fun s _ => ?_
   rw [aeval_monomial, algebraMap_eq]
   refine (gaussAbs_C_mul_le' v _ _).trans ?_
@@ -328,7 +369,7 @@ private theorem frameNorm_toMatrix_map_mul_eq_of_isFrame {Nm : (K →+* ℂ) →
     intro j
     have := hzeroK (Pi.single j 1)
     have e : (fun i => σ ((Pi.single j 1 : Fin N → K) i)) = (Pi.single j 1 + (0 : ℂ) • Pi.single j 1 : Fin N → ℂ) := by
-      funext i; by_cases hi : i = j <;> simp [hi, Pi.single_apply]
+      funext i; by_cases hi : i = j <;> simp [hi]
     rw [e, hpair] at this
     simpa using this
   have hre : ∀ (j k : Fin N) (a : K), (σ a * H j k).re = 0 := by

@@ -1,27 +1,82 @@
 module
 
-public import Mathlib
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RhoAntitoneOfInterlacing
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuasiDeterminantFromEntries
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ResidueForm
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameOfAdmissibleWord
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.L0ConstantPartCommute
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FreeOf2RmatrixTranspose
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.EnergyEstimateFromParts
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivedCoefficientIntegrable
+import CompanionTheory.AutomorphicTheory.JacobiDiagonalBounds.NFModel
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ModelWordsAssemble
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleGD
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleInv
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleSS
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositionInsertionDiagonalCompat
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
-public import Formalism.HermitianCurvature.StatementFr
-public import Formalism.HermitianCurvature.StatementMA
-public import Formalism.HermitianCurvature.StatementR
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.LinearAlgebra.Lagrange
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.PolyInMul
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Cauchy
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivedCoefficientIntegrable
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.EnergyEstimateFromParts
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameOfAdmissibleWord
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FreeOf2RmatrixTranspose
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.L0ConstantPartCommute
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMatrixTransferConjTransposeCommute
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ModelWordsAssemble
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositionInsertionDiagonalCompat
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuasiDeterminantFromEntries
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ResidueForm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RhoAntitoneOfInterlacing
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleGD
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleInv
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleSS
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -31,16 +86,6 @@ set_option linter.unusedVariables false
 namespace Formalism.FourierDecayAlt.P.MAx3
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA MeasureTheory
-
-theorem one_act (P : M.Par) (j : M.Ty P → SmQ P.r P.TT) : actA P (1 : A P (DQ P)) j = j := by
-  funext π
-  classical
-  show ∑ π', ((1 : Matrix (M.Ty P) (M.Ty P) (DQ P).Pr) π π').1 (j π') = j π
-  rw [Finset.sum_eq_single π]
-  · rw [Matrix.one_apply_eq]; rfl
-  · intro b _ hb
-    rw [Matrix.one_apply_ne (Ne.symm hb)]; rfl
-  · simp
 
 theorem dens_nil (P : M.Par) (l : ℕ) (L : R.LevelData (A P (DQ P)) P.r) (j : M.Ty P → SmQ P.r P.TT)
     (lam : Fin (P.k + 2 * P.r + 1) → ℝ) (α β Lb : ℝ) (c : LE.Cut) (Ntot : ℕ) (ω : Qp P.r P.TT) :
@@ -67,7 +112,7 @@ theorem jacobi_square_integrable : Formalism.FourierDecayAlt.MA.SourceSquareInte
     funext (MAx3.dens_nil P l L j lam α β Lb c Ntot)]
   refine MeasureTheory.integrable_finsetSum _ fun π _ => ?_
   have := hD [] (by simp) (by simp) π
-  rw [List.prod_nil, MAx3.one_act] at this
+  rw [List.prod_nil, _root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_one] at this
   exact this
 
 theorem polynomial_regular : Formalism.FourierDecayAlt.MA.PRegQ := by
@@ -227,8 +272,8 @@ theorem cwPos (P : M.Par) (l : ℕ) (L : R.LevelData (A P (DQ P)) P.r) (j : M.Ty
     rw [e]
     exact ⟨Complex.ofReal_im _, by rw [Complex.ofReal_re]; exact hcut _ (hYI _ hY')⟩
   have hπ := Formalism.FourierDecayAlt.P.types_interlace P hOK (ixOf P w.length i).2
-  have hpos := Formalism.FourierDecayAlt.P.c_pos_truncated Formalism.FourierDecayAlt.P.interlacing_sign Formalism.FourierDecayAlt.P.q_positive_interlacing
-    Formalism.FourierDecayAlt.P.q_positive_shift Formalism.FourierDecayAlt.P.cPos_true (Fin w.length) P.k P.u P.u'
+  have hpos := _root_.Formalism.FourierDecayAlt.P.Fr2.cPosCut _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive
+    _root_.Formalism.FourierDecayAlt.P.Fr2.qPositiveShift _root_.Formalism.FourierDecayAlt.P.Fr2.cPos (Fin w.length) P.k P.u P.u'
     (M.rho P (ixOf P w.length i).2) l P.T P.T' (wordP w) hl1 hlk hπ hOK.T_pos hOK.T'_pos hcutw
     (MAx2.pairwise_wordP hpw) (ixOf P w.length i).1
   exact hpos.1
@@ -399,8 +444,8 @@ theorem actS_mul {N : ℕ} (b c : SlopeTestRemainingChoices (Fin N) (A P (DQ P))
   funext p
   show ∑ e', ∑ π', (((b * c) p.1 e') p.2 π').1 (F (e', π')) =
     ∑ e'', ∑ π'', ((b p.1 e'') p.2 π'').1 (∑ e', ∑ π', ((c e'' e') π'' π').1 (F (e', π')))
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [matrix_mul_entry, op_sum_apply, op_mul_apply, map_sum]
+
+  simp only [matrix_mul_entry, op_sum_apply, op_mul_apply, map_sum]
   exact sum4 (fun e' π' e'' π'' => ((b p.1 e'') p.2 π'').1 (((c e'' e') π'' π').1 (F (e', π'))))
 
 theorem apply_matrix_action {N : ℕ} (b : SlopeTestRemainingChoices (Fin N) (A P (DQ P))) (U : Qp P.r P.TT → Iota P N → ℂ)
@@ -592,17 +637,10 @@ noncomputable section
 
 variable (P : M.Par)
 
-theorem smoothLog_rpow (s : ℝ) : LE.SmoothLog (fun x : ℝ => x ^ s) := by
-  unfold LE.SmoothLog
-  have h : (fun u : ℝ => (fun x : ℝ => x ^ s) (Real.exp u)) = fun u => Real.exp (u * s) :=
-    funext fun u => (Real.exp_mul u s).symm
-  rw [h]
-  exact Real.contDiff_exp.comp (contDiff_id.mul contDiff_const)
-
 def Gpow (s : ℝ) : SmQ P.r P.TT := MAx2.Jet.Phi P (fun x : ℝ => x ^ s) 0
 
 theorem ev_Gpow (s : ℝ) (q : Qp P.r P.TT) : evQ P (Gpow P s) q = ((Gq P q ^ s : ℝ) : ℂ) := by
-  rw [Gpow, MAx2.Jet.ev_Phi P (smoothLog_rpow s)]
+  rw [Gpow, MAx2.Jet.ev_Phi P (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow s)]
   simp only [LE.ld, iteratedDeriv_zero, Real.exp_log (Gq_pos P q)]
 
 theorem log_derivative_rpow (s x : ℝ) (hx : 0 < x) : LE.ld 1 (fun x : ℝ => x ^ s) x = s * x ^ s := by
@@ -618,11 +656,11 @@ theorem log_derivative_rpow (s x : ℝ) (hx : 0 < x) : LE.ld 1 (fun x : ℝ => x
 theorem Phi1 (s : ℝ) : MAx2.Jet.Phi P (fun x : ℝ => x ^ s) 1 = (s : ℂ) • Gpow P s := by
   apply Subtype.ext; funext q
   show evQ P (MAx2.Jet.Phi P _ 1) q = evQ P ((s : ℂ) • Gpow P s) q
-  rw [MAx2.Jet.ev_Phi P (smoothLog_rpow s), evQ_smul, ev_Gpow, log_derivative_rpow s _ (Gq_pos P q)]
+  rw [MAx2.Jet.ev_Phi P (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow s), evQ_smul, ev_Gpow, log_derivative_rpow s _ (Gq_pos P q)]
   push_cast; ring
 
 theorem euler_Gpow (s : ℝ) (v : M.Var P.r) : eulerQ v (Gpow P s) = ((s : ℂ) • Gpow P s) * MAx2.Jet.kapG P v := by
-  have h := MAx2.Jet.euler_Phi P (smoothLog_rpow s) 0 v
+  have h := MAx2.Jet.euler_Phi P (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow s) 0 v
   rw [zero_add] at h
   rw [Gpow, h, Phi1]
   rfl
@@ -686,26 +724,26 @@ theorem ev_cc (v : M.Var P.r) (m : Fin P.r) : eulerQ v (cc P m) =
   rw [cc, euler_mul, euler_coord, euler_coord]
   by_cases h1 : v = M.vc m
   · subst h1
-    simp only [if_true, MAx1.vc_vcb m m, if_false, true_or]; ring
+    simp only [if_true, _root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb m m, if_false, true_or]; ring
   · by_cases h2 : v = M.vcb m
     · subst h2
-      simp only [(MAx1.vc_vcb m m).symm, if_true, if_false, or_true]; ring
+      simp only [(_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb m m).symm, if_true, if_false, or_true]; ring
     · simp only [h1, h2, if_false, or_self]; ring
 
 theorem ev_GQ_c (l : Fin P.r) : eulerQ (M.vc l) (MAx2.Jet.GQ P) = MAx2.Jet.GQ P := by
   classical
-  have hg : eulerQ (M.vc l) (ggQ P.r P.TT) = 0 := MAx1.euler_gamma_vanish hL _ (MAx1.vc_vz l) (MAx1.vc_vzb l)
+  have hg : eulerQ (M.vc l) (ggQ P.r P.TT) = 0 := MAx1.euler_gamma_vanish hL _ (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vz l) (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vzb l)
   have hc : (Finset.univ.filter fun m => M.vc l = M.vc m ∨ M.vc l = M.vcb m) = {l} := by
-    ext m; simp [MAx1.vc_inj, MAx1.vc_vcb, eq_comm]
+    ext m; simp [_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj, _root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb, eq_comm]
   rw [GQ_eq, euler_mul, ev_prod_gen hL (M.vc l) (cc P) (fun m => M.vc l = M.vc m ∨ M.vc l = M.vcb m)
     (ev_cc hL _) Finset.univ, hg, hc, Finset.card_singleton]
   simp
 
 theorem ev_GQ_cb (l : Fin P.r) : eulerQ (M.vcb l) (MAx2.Jet.GQ P) = MAx2.Jet.GQ P := by
   classical
-  have hg : eulerQ (M.vcb l) (ggQ P.r P.TT) = 0 := MAx1.euler_gamma_vanish hL _ (MAx1.vcb_vz l) (MAx1.vcb_vzb l)
+  have hg : eulerQ (M.vcb l) (ggQ P.r P.TT) = 0 := MAx1.euler_gamma_vanish hL _ (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vz l) (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vzb l)
   have hc : (Finset.univ.filter fun m => M.vcb l = M.vc m ∨ M.vcb l = M.vcb m) = {l} := by
-    ext m; simp [MAx1.vcb_inj, (MAx1.vc_vcb _ _).symm, eq_comm]
+    ext m; simp [_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj, (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb _ _).symm, eq_comm]
   rw [GQ_eq, euler_mul, ev_prod_gen hL (M.vcb l) (cc P) (fun m => M.vcb l = M.vc m ∨ M.vcb l = M.vcb m)
     (ev_cc hL _) Finset.univ, hg, hc, Finset.card_singleton]
   simp
@@ -715,8 +753,8 @@ theorem euler_gamma_product_zeta (v : M.Var P.r) (hv : v = M.vz ∨ v = M.vzb) :
   classical
   have hc : (Finset.univ.filter fun m => v = M.vc m ∨ v = M.vcb m) = ∅ := by
     ext m
-    rcases hv with rfl | rfl <;> simp [(MAx1.vc_vz m).symm, (MAx1.vcb_vz m).symm, (MAx1.vc_vzb m).symm,
-      (MAx1.vcb_vzb m).symm]
+    rcases hv with rfl | rfl <;> simp [(_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vz m).symm, (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vz m).symm, (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vzb m).symm,
+      (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vzb m).symm]
   have hg : eulerQ v (ggQ P.r P.TT) = coordQ M.vz * coordQ M.vzb := by
     rcases hv with rfl | rfl
     · exact MAx1.euler_GG_z hL
@@ -1107,8 +1145,8 @@ theorem polyIn_io {S : Type} [Fintype S] [DecidableEq S] {f : ℂ → A P (DQ P)
   dsimp only
   rw [ha]
   unfold io
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   have := io_smul P (S := S) (s ^ k) (a k)
   unfold io at this
@@ -1391,7 +1429,7 @@ theorem theorem_P_form : Formalism.FourierDecayAlt.MA.ThmPForm := by
   have hLL := MAx3.F.level_unique P (DQ P) L' L hL' hML
   subst hLL
   have hFr := (hFC (Fin (List.ofFn Y).length) (wordP (List.ofFn Y)) hcw).2.1
-  have hMW := (model_words P hOK (DQ P) (analytic_laws P.r P.TT hTT) l (Fin (List.ofFn Y).length)
+  have hMW := (_root_.Formalism.FourierDecayAlt.P.MAx2.R2.modelWordsD P hOK (DQ P) (analytic_laws P.r P.TT hTT) l (Fin (List.ofFn Y).length)
     (wordP (List.ofFn Y)) (MAx3.F.good_of_cut _ hcw)).1
   rw [MAx3.F.prod_eq] at hMW
   rw [hFr, MAx3.F.plusWord_length] at hMW
@@ -1729,7 +1767,7 @@ theorem site_vector_second (L : LevelData (A P D) P.r) (hL : IsModelLevel P D L)
 theorem uw_prod (l : ℕ) (hS : SitesOK (K := ℂ) (startM P D l).QQ (sites P D)) (w : List ℝ) (hG : Good (wordP w))
     (z : Ix (Fin w.length)) :
     uw (sites P D) (wordP w) z = ((wordP w).map fun a => v0 (sites P D) a.pt (z a.intersection_update_fsHerm_neg_one)).prod := by
-  rw [Formalism.FourierDecayAlt.P.word_product_formula ℂ (A P D) (Fin w.length) _ (sites P D) (wordP w) hS hG z]
+  rw [_root_.Formalism.FourierDecayAlt.P.Wd8.uwProduct ℂ (A P D) (Fin w.length) _ (sites P D) (wordP w) hS hG z]
   rw [if_pos (fun c hc => absurd (wordP_all_positions w c) hc)]
   congr 1
   refine List.map_congr_left fun a ha => ?_
@@ -1996,17 +2034,7 @@ section Idx
 
 variable (P : M.Par)
 
-theorem ixOf_iotaOf : ∀ (N : ℕ) (e : Ix (Fin N)) (π : M.Ty P), ixOf P N (iotaOf P N e π) = (e, π)
-  | 0, e, π => by
-    show ((fun i => i.elim0), π) = (e, π)
-    congr 1; funext i; exact i.elim0
-  | N + 1, e, π => by
-    show (Fin.snoc (α := fun _ => Fin 2) (ixOf P N (iotaOf P N (Fin.init e) π)).1
-      (if decide (e (Fin.last N) = 1) then 1 else 0), (ixOf P N (iotaOf P N (Fin.init e) π)).2) = (e, π)
-    rw [ixOf_iotaOf N (Fin.init e) π]
-    have hb : (if decide (e (Fin.last N) = 1) then (1 : Fin 2) else 0) = e (Fin.last N) := by
-      rcases Fin.exists_fin_two.1 ⟨e (Fin.last N), rfl⟩ with h | h <;> rw [h] <;> rfl
-    rw [hb, Fin.snoc_init_self]
+alias ixOf_iotaOf := _root_.Formalism.FourierDecayAlt.P.MAx3.G.ixOf_iotaOf
 
 theorem ixOf_succ (N : ℕ) (b : Bool) (i : Iota P N) :
     ixOf P (N + 1) (b, i) = (Fin.snoc (α := fun _ => Fin 2) (ixOf P N i).1 (if b then 1 else 0), (ixOf P N i).2) := rfl
@@ -2022,18 +2050,7 @@ def fstH : (DQ P).Pr →+ (DQ P).Op where
   map_zero' := rfl
   map_add' _ _ := rfl
 
-theorem actA_mul (a b : A P (DQ P)) (j : M.Ty P → SmQ P.r P.TT) : actA P (a * b) j = actA P a (actA P b j) := by
-  funext π
-  have h : ∀ π', ((a * b : Matrix (M.Ty P) (M.Ty P) (DQ P).Pr) π π').1 = ∑ k, (a π k).1 * (b k π').1 := fun π' => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Matrix.mul_apply]; exact map_sum (fstH P) (fun k => a π k * b k π') Finset.univ
-  show ∑ π', ((a * b : Matrix (M.Ty P) (M.Ty P) (DQ P).Pr) π π').1 (j π') = ∑ π', (a π π').1 (∑ π'', (b π' π'').1 (j π''))
-  have h2 : ∀ x, (∑ k, (a π k).1 * (b k x).1) (j x) = ∑ k, (a π k).1 ((b k x).1 (j x)) := fun x => by
-    exact (LinearMap.sum_apply Finset.univ (fun k => (a π k).1 * (b k x).1) (j x)).trans rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [h, map_sum]
-  rw [Finset.sum_congr rfl fun x _ => h2 x]
-  exact Finset.sum_comm
+alias actA_mul := _root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_mul
 
 end Act
 
@@ -2293,7 +2310,7 @@ theorem Xw_eq (hL : IsModelLevel P (DQ P) L) (hS : SitesOK (K := ℂ) (startM P 
       refine (Finset.sum_eq_single_of_mem e (Finset.mem_univ e) ?_).trans (Matrix.one_apply_eq e)
       intro b _ hb
       exact absurd (funext fun k => Fin.elim0 k) hb
-    rw [hg, MAx3.one_act]
+    rw [hg, _root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_one]
     rfl
   | Y :: w, hcw, ⟨b, i⟩, q => by
     have hcw' := cut_tail Y w hcw
@@ -2406,7 +2423,7 @@ end S_F_F11
 section S_F_F12
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2465,7 +2482,7 @@ end S_F_F12
 section S_F_F13
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2531,7 +2548,7 @@ end S_F_F13
 section S_F_F14
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2615,7 +2632,7 @@ end S_F_F14
 section S_F_F15
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2711,7 +2728,7 @@ end S_F_F15
 section S_F_F16
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2804,7 +2821,7 @@ end S_F_F16
 section S_F_F17
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2924,7 +2941,7 @@ end S_F_F17
 section S_F_F18
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2948,7 +2965,7 @@ theorem mem_lift_positions (w : List ℝ) (k : Fin w.length) : k.castSucc ∈ ((
 theorem uw_lift (hS : SitesOK (K := ℂ) (startM P (DQ P) l).QQ (sites P (DQ P))) (w : List ℝ)
     (hG : Good (wordP w)) (hGl : Good ((wordP w).map liftL)) (e : Ix (Fin w.length)) (b : Fin 2) :
     uw (sites P (DQ P)) ((wordP w).map liftL) (sn e b) = if b = 0 then uw (sites P (DQ P)) (wordP w) e else 0 := by
-  rw [Formalism.FourierDecayAlt.P.word_product_formula ℂ (A P (DQ P)) (Fin (w.length + 1)) _ (sites P (DQ P)) _ hS hGl (sn e b)]
+  rw [_root_.Formalism.FourierDecayAlt.P.Wd8.uwProduct ℂ (A P (DQ P)) (Fin (w.length + 1)) _ (sites P (DQ P)) _ hS hGl (sn e b)]
   by_cases hb : b = 0
   · subst hb
     rw [if_pos (fun c hc => ?_), if_pos rfl, uw_prod P (DQ P) l hS w hG e, List.map_map]
@@ -2968,7 +2985,7 @@ theorem core4 (hL : IsModelLevel P (DQ P) L) (hOK : P.OK) (hS : SitesOK (K := �
   have hcwl := cut_lift_tail Y w hcw
   have hGl : Good ((wordP w).map liftL) := good_of_cutW _ (liftL_plus w) hcwl
   have hG : Good (wordP w) := good_of_cut w (cut_tail Y w hcw)
-  have hMW := (Formalism.FourierDecayAlt.P.model_words P hOK (DQ P) (Formalism.FourierDecayAlt.P.analytic_laws P.r P.TT hTT) l
+  have hMW := (_root_.Formalism.FourierDecayAlt.P.MAx2.R2.modelWordsD P hOK (DQ P) (Formalism.FourierDecayAlt.P.analytic_laws P.r P.TT hTT) l
     (Fin (w.length + 1)) ((wordP w).map liftL) hGl).2 ((Y : ℝ) : ℂ) (reg_new Y w hcw) (Complex.conj_ofReal _) (sn e 0)
 
   have hTTf := TT_free (P := P) (l := l) L Y w
@@ -3003,7 +3020,7 @@ end S_F_F18
 section S_F_F19
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3092,7 +3109,7 @@ end S_F_F19
 section S_F_F20
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3109,8 +3126,8 @@ theorem act_sc (w : (DQ P).Pr) (Mx : A P (DQ P)) (j : M.Ty P → SmQ P.r P.TT) (
     actA P (sc P (DQ P) w * Mx) j π = w.1 (actA P Mx j π) := by
   show ∑ π', ((Matrix.scalar (M.Ty P) w * Mx : Matrix (M.Ty P) (M.Ty P) (DQ P).Pr) π π').1 (j π') =
     w.1 (∑ π', (Mx π π').1 (j π'))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun π' _ => ?_
   rw [Matrix.scalar_apply, Matrix.diagonal_mul]
   rfl
@@ -3173,7 +3190,7 @@ end S_F_F20
 section S_F_F21
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3194,9 +3211,6 @@ section Model
 
 variable (P : M.Par)
 
-theorem sc_mul' (a b : (DQ P).Pr) : sc P (DQ P) a * sc P (DQ P) b = sc P (DQ P) (a * b) :=
-  ((Matrix.scalar (M.Ty P)).map_mul a b).symm
-
 theorem sc_pow' (a : (DQ P).Pr) (n : ℕ) : sc P (DQ P) a ^ n = sc P (DQ P) (a ^ n) :=
   ((Matrix.scalar (M.Ty P)).map_pow a n).symm
 
@@ -3212,7 +3226,7 @@ theorem wt_sc {L : LevelData (A P (DQ P)) P.r} (hL : IsModelLevel P (DQ P) L) {S
   unfold wt
   rw [hz, hzb, hggi]
   show io (sc P (DQ P) _ * sc P (DQ P) _ * sc P (DQ P) _) = _
-  rw [sc_mul', sc_mul']
+  rw [_root_.Formalism.FourierDecayAlt.P.MAx3.G.sc_mul, _root_.Formalism.FourierDecayAlt.P.MAx3.G.sc_mul]
   rfl
 
 theorem cocycle_smul (s : ℂ) (Q : ℂ → M2 (A P (DQ P))) (sts : List (Site (A P (DQ P)))) (Y : ℂ) :
@@ -3248,7 +3262,7 @@ end S_F_F21
 section S_F_F22
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3284,21 +3298,17 @@ theorem DnM_diag (hL : IsModelLevel P (DQ P) L) (Y : ℝ) (w : List ℝ)
   · simp only [Fin.zero_eta, Fin.isValue, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero,
       Matrix.empty_val', Matrix.cons_val_fin_one]
     rw [hq, hxi, ← Matrix.diagonal_smul, Matrix.diagonal_mul_diagonal]
-    congr 1
-    funext e
+    refine congrArg Matrix.diagonal (funext fun e => ?_)
     rw [Pi.smul_apply, ← map_smul, mul_assoc, ← map_mul]
-    congr 2
-    funext π
+    refine congrArg _ (congrArg (kap P (DQ P)) (funext fun π => ?_))
     rw [cs_cons, if_pos rfl, div_eq_mul_inv]
     rfl
   · simp only [Fin.mk_one, Fin.isValue, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_one, Matrix.head_cons,
       Matrix.empty_val', Matrix.cons_val_fin_one]
     rw [hx, Matrix.diagonal_mul_diagonal]
-    congr 1
-    funext e
+    refine congrArg Matrix.diagonal (funext fun e => ?_)
     rw [mul_assoc, ← map_mul]
-    congr 2
-    funext π
+    refine congrArg _ (congrArg (kap P (DQ P)) (funext fun π => ?_))
     rw [cs_cons, if_neg (by decide)]
     rfl
 
@@ -3321,7 +3331,7 @@ end S_F_F22
 section S_F_F23
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 2000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3347,8 +3357,8 @@ theorem cs_real (hOK : P.OK) {l : ℕ} (hl1 : 1 ≤ l) (hlk : l ≤ P.k) {S : Ty
     (w : List (Letter ℂ S)) (h : M.CutWord P l w) (π : M.Ty P) (e : Ix S) :
     (((cs (M.x0 P l π) (M.qC P) w e).re : ℝ) : ℂ) = cs (M.x0 P l π) (M.qC P) w e := by
   have hπ := Formalism.FourierDecayAlt.P.types_interlace P hOK π
-  have hpos := Formalism.FourierDecayAlt.P.c_pos_truncated Formalism.FourierDecayAlt.P.interlacing_sign Formalism.FourierDecayAlt.P.q_positive_interlacing
-    Formalism.FourierDecayAlt.P.q_positive_shift Formalism.FourierDecayAlt.P.cPos_true S P.k P.u P.u' (M.rho P π) l P.T P.T' w hl1 hlk hπ
+  have hpos := _root_.Formalism.FourierDecayAlt.P.Fr2.cPosCut _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive
+    _root_.Formalism.FourierDecayAlt.P.Fr2.qPositiveShift _root_.Formalism.FourierDecayAlt.P.Fr2.cPos S P.k P.u P.u' (M.rho P π) l P.T P.T' w hl1 hlk hπ
     hOK.T_pos hOK.T'_pos h.2.1 h.2.2 e
   exact Complex.ext (by simp) (by rw [Complex.ofReal_im]; exact hpos.2.symm)
 
@@ -3363,7 +3373,7 @@ end S_F_F23
 section S_F_F24
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3415,7 +3425,7 @@ end S_F_F24
 section S_F_F25
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3486,7 +3496,7 @@ end S_F_F25
 section S_F_F26
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-set_option maxHeartbeats 1000000
+
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3509,7 +3519,7 @@ theorem third_identity_frame (hTT : 0 ≤ P.TT) (hOK : P.OK) (hl1 : 1 ≤ l) (hl
   have hcw' := cut_tail Y w hcw
   have hX := Xw_eq hL hS (fun w h => (hFC _ _ h).1) j w hcw'
   have hFr : IsFrame L (ofWord L (startM P (DQ P) l) (wordP w)) := (hFC _ _ hcw').1
-  have hCD := Formalism.FourierDecayAlt.P.c_diagonal (A P (DQ P)) (Fin w.length) P.r L (startM P (DQ P) l) (M.Ty P) (kap P (DQ P))
+  have hCD := _root_.Formalism.FourierDecayAlt.P.Fr2.cDiag (A P (DQ P)) (Fin w.length) P.r L (startM P (DQ P) l) (M.Ty P) (kap P (DQ P))
     (M.x0 P l) (fun Y => rfl) (fun Y => rfl) (wordP w)
   have hq : (ofWord L (startM P (DQ P) l) (wordP w)).q = qw (startM P (DQ P) l).q (wordP w) :=
     (Formalism.FourierDecayAlt.P.frame_module_of_word (A P (DQ P)) (Fin w.length) P.r L (startM P (DQ P) l) (wordP w)).2.2.1
@@ -3799,16 +3809,7 @@ theorem wordS_plus : ∀ v : List (Bool × ℝ), (wordS v).map Letter.plus = v.m
     rw [← wordS_plus v]
     rfl
 
-theorem plusWord_letters_plus (w : List ℝ) : ∀ a ∈ wordP w, a.plus = true := by
-  intro a ha
-  have h1 : a.plus ∈ (wordP w).map Letter.plus := List.mem_map_of_mem ha
-  have h2 : (wordP w).map Letter.plus = (LE.plus w).map Prod.fst := by
-    unfold wordP
-    rw [List.map_map, ← wordS_plus]
-    rfl
-  rw [h2, LE.plus, List.map_map, List.mem_map] at h1
-  obtain ⟨_, _, h⟩ := h1
-  exact h.symm
+alias plusWord_letters_plus := _root_.Formalism.FourierDecayAlt.P.MAx3.F.plusWord_letters_plus
 
 theorem tl_pts (w : List ℝ) : (tl w).map Letter.pt = w.map fun Y : ℝ => (Y : ℂ) := by
   have h := MAx2.plusWord_points (0 :: w)
@@ -3997,13 +3998,13 @@ theorem weightRatio : WeightRatioQ := by
   set π := (ixOf P w.length i).2 with hπdef
   have hπ := Formalism.FourierDecayAlt.P.types_interlace P hOK π
   have hsx : ∀ Z ∈ Set.Icc α β, 0 < sx P l π Z ∧ 0 < sx P l π (Z + 1) := fun Z hZ => by
-    have h0 := Formalism.FourierDecayAlt.P.interlacing_sign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 0 (by simp)
-    have h1 := Formalism.FourierDecayAlt.P.interlacing_sign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 1 (by simp)
+    have h0 := _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 0 (by simp)
+    have h1 := _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 1 (by simp)
     rw [add_zero] at h0
     exact ⟨h0, h1⟩
   have hT : 0 < P.T * P.T' := mul_pos hOK.T_pos hOK.T'_pos
   have hqp : ∀ Z ∈ Set.Icc α β, 0 < qp P Z := fun Z hZ =>
-    Formalism.FourierDecayAlt.P.q_positive_interlacing P.k P.u P.u' (M.rho P π) l Z P.T P.T' hl1 hlk hπ (hcut Z hZ) hOK.T_pos hOK.T'_pos
+    _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive P.k P.u P.u' (M.rho P π) l Z P.T P.T' hl1 hlk hπ (hcut Z hZ) hOK.T_pos hOK.T'_pos
   have hnn : ((P.k + 2 * P.r + 1 : ℕ) : ℝ) * Lb ≤ β - α := hn
   have hcardx : (((Finset.Icc 1 (P.k - 1)).card : ℕ) : ℝ) * Lb ≤ β - α := by
     refine le_trans (mul_le_mul_of_nonneg_right ?_ hLpos.le) hnn
@@ -4078,8 +4079,8 @@ theorem weightRatio : WeightRatioQ := by
       exact hpw.imp fun h => by simpa using h
     rwa [List.pairwise_map] at h2
   have hcs : ∀ e, Pos (cs (M.x0 P l π) (M.qC P) (tl w) e) := fun e =>
-    Formalism.FourierDecayAlt.P.c_pos_truncated Formalism.FourierDecayAlt.P.interlacing_sign Formalism.FourierDecayAlt.P.q_positive_interlacing
-      Formalism.FourierDecayAlt.P.q_positive_shift Formalism.FourierDecayAlt.P.cPos_true (Fin (w.length + 1)) P.k P.u P.u'
+    _root_.Formalism.FourierDecayAlt.P.Fr2.cPosCut _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive
+      _root_.Formalism.FourierDecayAlt.P.Fr2.qPositiveShift _root_.Formalism.FourierDecayAlt.P.Fr2.cPos (Fin (w.length + 1)) P.k P.u P.u'
       (M.rho P π) l P.T P.T' (tl w) hl1 hlk hπ hOK.T_pos hOK.T'_pos hcutw hpwt e
   have hcsr : ∀ e, cs (M.x0 P l π) (M.qC P) (tl w) e = (((cs (M.x0 P l π) (M.qC P) (tl w) e).re : ℝ) : ℂ) :=
     fun e => Complex.ext (by simp) (by simp [(hcs e).2])
@@ -5329,28 +5330,9 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDec
 
 noncomputable section
 
-theorem wordS_nodup : ∀ v : List (Bool × ℝ), ((wordS v).map Letter.intersection_update_fsHerm_neg_one).Nodup := fun v =>
-  match v with
-  | [] => List.nodup_nil
-  | x :: v => by
-    simp only [wordS, List.map_cons, List.map_map, List.nodup_cons]
-    constructor
-    · intro h
-      rw [List.mem_map] at h
-      obtain ⟨a, _, ha⟩ := h
-      exact (Fin.castSucc_lt_last a.intersection_update_fsHerm_neg_one).ne ha
-    · have := (wordS_nodup v).map (Fin.castSucc_injective v.length)
-      rw [List.map_map] at this
-      exact this
+alias wordS_nodup := _root_.Formalism.FourierDecayAlt.P.MAx3.F.wordS_nodup
 
-theorem plusWord_slots_nodup (w : List ℝ) : ((wordP w).map Letter.intersection_update_fsHerm_neg_one).Nodup := by
-  unfold wordP
-  rw [List.map_map]
-  have h : ((wordS (LE.plus w)).map Letter.intersection_update_fsHerm_neg_one).map (Fin.cast (by simp [LE.plus])) =
-      (wordS (LE.plus w)).map (Letter.intersection_update_fsHerm_neg_one ∘ fun lt => (⟨lt.plus, Fin.cast (by simp [LE.plus]) lt.intersection_update_fsHerm_neg_one, lt.pt⟩ :
-        Letter ℂ (Fin w.length))) := by rw [List.map_map]; rfl
-  rw [← h]
-  exact (wordS_nodup _).map (Fin.cast_injective _)
+alias plusWord_slots_nodup := _root_.Formalism.FourierDecayAlt.P.MAx3.F.plusWord_slots_nodup
 
 end
 
@@ -5389,11 +5371,11 @@ theorem eeA_split (P : M.Par) (Y : ℂ) :
       (kap P (DQ P) (fun π => if π = π0 then 1 else 0) * SS P (DQ P) ((l' : ℕ) + 1)) =
       (kap P (DQ P) fun π => (Y + (M.rho P π ((l' : ℕ) + 1) : ℂ))⁻¹) * SS P (DQ P) ((l' : ℕ) + 1) := by
     intro l'
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp_rw [← smul_mul_assoc, ← Finset.sum_mul, ← map_smul, ← map_sum]
+
+    simp_rw [← smul_mul_assoc, ← Finset.sum_mul, ← map_smul, ← map_sum]
     congr 2
     funext π
-    simp [Finset.sum_apply, Pi.smul_apply, Finset.sum_ite_eq', sub_neg_eq_add]
+    simp [Finset.sum_apply, Pi.smul_apply, sub_neg_eq_add]
   simp_rw [e1]
   rw [Fin.sum_univ_eq_sum_range (fun i => (kap P (DQ P) fun π => (Y + (M.rho P π (i + 1) : ℂ))⁻¹) * SS P (DQ P) (i + 1))]
   have e2 : Finset.Icc 1 (P.k - 1) = Finset.Ico 1 (P.k - 1 + 1) := by ext i; simp
@@ -5433,8 +5415,8 @@ theorem ee_form (P : M.Par) (l : ℕ) (L : R.LevelData (A P (DQ P)) P.r) (hOK : 
   have hStart : IsLevelStart L (startM P (DQ P) l) := Formalism.FourierDecayAlt.P.start_admissible P hOK (DQ P) hLaws l L hL
   have hAdm : admitted (startM P (DQ P) l) (wordP w) :=
     (Formalism.FourierDecayAlt.P.admissible_joint_alt P (DQ P) l _ (wordP w)).2
-      (Formalism.FourierDecayAlt.P.cut_admissible Formalism.FourierDecayAlt.P.interlacing_sign Formalism.FourierDecayAlt.P.q_positive_interlacing
-        Formalism.FourierDecayAlt.P.q_positive_shift Formalism.FourierDecayAlt.P.types_interlace Formalism.FourierDecayAlt.P.realPoints_statement
+      (Formalism.FourierDecayAlt.P.cut_admissible _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive
+        _root_.Formalism.FourierDecayAlt.P.Fr2.qPositiveShift Formalism.FourierDecayAlt.P.types_interlace Formalism.FourierDecayAlt.P.realPoints_statement
         P hOK l hl1 hlk _ (wordP w) hcutW)
   have hee : ∀ Y, (startM P (DQ P) l).ee Y = L.ζ * L.ζbi * ∑ j, (Y - gJ P j)⁻¹ • ZJ P j := by
     intro Y
@@ -6156,8 +6138,7 @@ noncomputable section
 theorem up_relation_source_unique (P : M.Par) (m : ℕ) (π₁ π₂ π : M.Ty P) (h1 : M.Up P m π₁ π) (h2 : M.Up P m π₂ π) : π₁ = π₂ := by
   funext i; apply Fin.ext; have := h1 i; have := h2 i; omega
 
-theorem up_tgt (P : M.Par) (m : ℕ) (π π₁ π₂ : M.Ty P) (h1 : M.Up P m π π₁) (h2 : M.Up P m π π₂) : π₁ = π₂ := by
-  funext i; apply Fin.ext; have := h1 i; have := h2 i; omega
+alias up_tgt := _root_.Formalism.FourierDecayAlt.P.Mx4.up_fun
 
 theorem dSS_sparse (P : M.Par) (w : List ℝ) (Y₁ Y₂ : ℝ) (q : Qp P.r P.TT) (e e' : Ix (Fin w.length))
     (π π' : M.Ty P) :
@@ -6267,14 +6248,14 @@ theorem Ctx.twelve_le_window (h : Ctx P l α β Lb Ntot w Y s) : 12 ≤ β - α 
 theorem Ctx.sx_pos (h : Ctx P l α β Lb Ntot w Y s) (π : M.Ty P) (Z : ℝ) (hZ : Z ∈ Set.Icc α β) :
     0 < sx P l π Z ∧ 0 < sx P l π (Z + 1) := by
   have hπ := Formalism.FourierDecayAlt.P.types_interlace P h.hOK π
-  have h0 := Formalism.FourierDecayAlt.P.interlacing_sign P.k P.u P.u' (M.rho P π) l Z h.hl1 h.hlk hπ (h.hcut Z hZ) 0 (by simp)
-  have h1 := Formalism.FourierDecayAlt.P.interlacing_sign P.k P.u P.u' (M.rho P π) l Z h.hl1 h.hlk hπ (h.hcut Z hZ) 1 (by simp)
+  have h0 := _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign P.k P.u P.u' (M.rho P π) l Z h.hl1 h.hlk hπ (h.hcut Z hZ) 0 (by simp)
+  have h1 := _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign P.k P.u P.u' (M.rho P π) l Z h.hl1 h.hlk hπ (h.hcut Z hZ) 1 (by simp)
   rw [add_zero] at h0
   exact ⟨h0, h1⟩
 
 theorem Ctx.qp_pos (h : Ctx P l α β Lb Ntot w Y s) (Z : ℝ) (hZ : Z ∈ Set.Icc α β) : 0 < qp P Z := by
   have hπ := Formalism.FourierDecayAlt.P.types_interlace P h.hOK (fun _ => 0)
-  exact Formalism.FourierDecayAlt.P.q_positive_interlacing P.k P.u P.u' _ l Z P.T P.T' h.hl1 h.hlk hπ (h.hcut Z hZ) h.hOK.T_pos h.hOK.T'_pos
+  exact _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive P.k P.u P.u' _ l Z P.T P.T' h.hl1 h.hlk hπ (h.hcut Z hZ) h.hOK.T_pos h.hOK.T'_pos
 
 theorem Ctx.mid_I (h : Ctx P l α β Lb Ntot w Y s) (Z : ℝ) (hZ : α + (β - α) / 3 ≤ Z ∧ Z ≤ β - (β - α) / 3) :
     Z ∈ Set.Icc α β := ⟨by linarith [hZ.1, h.hαβ], by linarith [hZ.2, h.hαβ]⟩
@@ -6527,7 +6508,7 @@ theorem Ctx.ss_entry (h : Ctx P l α β Lb Ntot w Y s) (q : Qp P.r P.TT) (i i' :
   have hdist := hf.dist_b h.hl1 h.hlk h.hαβ Y h.hYm.1 h.hYm.2 mm hmm
   have hdist' := hg.dist_b h.hl1 h.hlk h.hαβ Y h.hYm.1 h.hYm.2 mm hmm
 
-  have hNrm : 0 ≤ M.Nrm P mm πs := ((Formalism.FourierDecayAlt.P.nrmFacts_statement P h.hOK mm hmm πs).1 πt hup).1.le
+  have hNrm : 0 ≤ M.Nrm P mm πs := ((_root_.Formalism.FourierDecayAlt.P.Mx4.nrmFacts P h.hOK mm hmm πs).1 πt hup).1.le
 
   have hnorm : ‖(((Y : ℂ) - gJ P (m, πt))⁻¹ - (((Y + s : ℝ) : ℂ) - gJ P (m, πt))⁻¹) *
         multS (wordP w) (gJ P (m, πt)) (ixOf P w.length i).1 *
@@ -7003,7 +6984,7 @@ theorem Ctx.summand_nonneg (h : Ctx P l α β Lb Ntot w Y s) (π : M.Ty P) (m : 
   unfold summand
   exact div_nonneg (mul_nonneg (hf.resA_nonneg h.hOK.k_pos m hm) (abs_nonneg _)) (by positivity)
 
-set_option maxHeartbeats 800000 in
+
 theorem Ctx.ss_bound (h : Ctx P l α β Lb Ntot w Y s) (q : Qp P.r P.TT) (v : Iota P w.length → ℂ) :
     ∑ i, dwW P l (Y :: w) q (true, i) * ‖∑ i', dSS P w Y (Y + s) q (ixOf P w.length i).1 (ixOf P w.length i').1
       (ixOf P w.length i).2 (ixOf P w.length i').2 * v i'‖ ^ 2 ≤
@@ -7109,7 +7090,7 @@ noncomputable section
 section
 variable {P : M.Par} {l : ℕ} {α β Lb : ℝ} {Ntot : ℕ} {w : List ℝ} {Y s : ℝ}
 
-set_option maxHeartbeats 800000 in
+
 theorem Ctx.let_bound (h : Ctx P l α β Lb Ntot w Y s) (q : Qp P.r P.TT) (v : Iota P w.length → ℂ) :
     ∑ i, dwW P l (Y :: w) q (true, i) * ‖∑ i', dL P w Y (Y + s) (ixOf P w.length i).1 (ixOf P w.length i').1
       (ixOf P w.length i).2 (ixOf P w.length i').2 * v i'‖ ^ 2 ≤
@@ -7187,7 +7168,7 @@ theorem norm_sub_sq_le (a b : ℂ) : ‖a - b‖ ^ 2 ≤ 2 * ‖a‖ ^ 2 + 2 * �
   have h0 : 0 ≤ ‖a - b‖ := norm_nonneg _
   nlinarith [sq_nonneg (‖a‖ - ‖b‖), norm_nonneg a, norm_nonneg b]
 
-set_option maxHeartbeats 800000 in
+
 theorem residues : Formalism.FourierDecayAlt.MA.ResiduesQ := by
   refine ⟨Real.sqrt (176 * Real.exp 7 + 2 * Real.exp 14), Real.sqrt_nonneg _, ?_⟩
   intro P l L j lam α β Lb c Ntot hH w hw hl Y s hY hYs (ω : Qp P.r P.TT) (v : Iota P w.length → ℂ)
@@ -7525,21 +7506,7 @@ variable {P L} (hTT : 0 ≤ P.TT) (hL : IsModelLevel P (DQ P) L)
 include hL
 
 theorem fns_sc : ∀ x ∈ L.fns, ∃ w, x = sc P (DQ P) w := by
-  obtain ⟨hp, hpb, hc, hci, hcb, hcbi, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
-  intro x hx
-  simp only [LevelData.fns, Set.mem_union, Set.mem_range, Set.mem_insert_iff, Set.mem_singleton_iff] at hx
-  rcases hx with ((((⟨l, rfl⟩ | ⟨l, rfl⟩) | ⟨l, rfl⟩) | ⟨l, rfl⟩) | h)
-  · exact ⟨(DQ P).cP l, by rw [hc]; rfl⟩
-  · exact ⟨(DQ P).ciP l, by rw [hci]; rfl⟩
-  · exact ⟨(DQ P).cbP l, by rw [hcb]; rfl⟩
-  · exact ⟨(DQ P).cbiP l, by rw [hcbi]; rfl⟩
-  · rcases h with rfl | rfl | rfl | rfl | rfl | rfl
-    · exact ⟨(DQ P).zP, by rw [hz]; rfl⟩
-    · exact ⟨(DQ P).ziP, by rw [hzi]; rfl⟩
-    · exact ⟨(DQ P).zbP, by rw [hzb]; rfl⟩
-    · exact ⟨(DQ P).zbiP, by rw [hzbi]; rfl⟩
-    · exact ⟨(DQ P).ggP P.TT, by rw [hg]; rfl⟩
-    · exact ⟨(DQ P).ggiP P.TT, by rw [hgi]; rfl⟩
+  apply Formalism.FourierDecayAlt.P.NormalFormRelations.fns_sc <;> assumption
 
 theorem kap_letters (f : M.Ty P → ℂ) (y : ℂ) :
     la L y * kap P (DQ P) f = kap P (DQ P) f * la L y ∧ lb L y * kap P (DQ P) f = kap P (DQ P) f * lb L y := by
@@ -8111,18 +8078,11 @@ theorem ptMat_one {N : ℕ} (q : Qp P.r P.TT) (i k : Iota P N) :
   simp only [U, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
   exact h1.symm
 
-theorem eq_iff_last {N : ℕ} (x y : Ix (Fin (N + 1))) :
-    x = y ↔ Fin.init x = Fin.init y ∧ x (Fin.last N) = y (Fin.last N) := by
-  constructor
-  · rintro rfl; exact ⟨rfl, rfl⟩
-  · rintro ⟨h1, h2⟩
-    rw [← Fin.snoc_init_self x, ← Fin.snoc_init_self y, h1, h2]
-
 theorem fin2 (c : Fin 2) : c = 0 ∨ c = 1 := by fin_cases c <;> simp
 
 theorem block_extend_one {N : ℕ} : ext2 P (1 : SlopeTestRemainingChoices (Fin N) (A P (DQ P))) 0 0 1 = 1 := by
   ext x y : 1
-  simp only [ext2, Matrix.of_apply, Matrix.one_apply, eq_iff_last x y]
+  simp only [ext2, Matrix.of_apply, Matrix.one_apply, _root_.Formalism.FourierDecayAlt.P.MAx3.F.init_eq_iff x y]
   rcases fin2 (x (Fin.last N)) with hx | hx <;> rcases fin2 (y (Fin.last N)) with hy | hy <;>
     simp [hx, hy, Matrix.one_apply]
 
@@ -8162,8 +8122,8 @@ theorem Bi_mem (hTT : 0 ≤ P.TT) (hL : IsModelLevel P (DQ P) L) : ∀ w : List 
 
 theorem op_sum_smul {ι : Type} (s : Finset ι) (T : (DQ P).Op) (F : ι → (DQ P).R) (a : ι → ℂ) (q : Qp P.r P.TT) :
     evQ P (T (∑ t ∈ s, a t • F t)) q = ∑ t ∈ s, a t * evQ P (T (F t)) q := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine (MAx2.Jet.evQ_sum P _ _ q).trans (Finset.sum_congr rfl fun t _ => ?_)
   rw [map_smul]
   exact G.evQ_smul P _ _ q
@@ -8520,9 +8480,6 @@ theorem comm_cl {z : A} (hz : ∀ x ∈ FS L, z * x = x * z) {y : A} (hy : y ∈
   | neg x _ h => rw [mul_neg, neg_mul, h]
   | mul x y _ _ h1 h2 => rw [← mul_assoc, h1, mul_assoc, h2, mul_assoc]
 
-theorem Dr_Dri' : L.Dr * L.Dri = 1 := Dr_Dri L
-theorem Drb_Drbi' : L.Drb * L.Drbi = 1 := Drb_Drbi L
-
 theorem hat_ζbi (Y : ℂ) : L.ζbi * L.Ahat Y = L.Ahat Y * L.ζbi ∧ L.ζbi * L.R0 Y = L.R0 Y * L.ζbi :=
   commA L L.ζbi L.ζb L.ζbi_ζb L.ζb_ζbi (fun m => (L.p_ζbi m)) (fun y hy => fc L hy (m_ζbi L))
     L.nab_ζbi Y
@@ -8541,12 +8498,8 @@ open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
-theorem D_Di : L.D * L.Di = 1 := by
-  unfold LevelData.D LevelData.Di
-  rw [mul_assoc, ← mul_assoc L.ζ, L.ζ_ζi, one_mul, Dr_Dri]
-theorem Di_D : L.Di * L.D = 1 := by
-  unfold LevelData.D LevelData.Di
-  rw [mul_assoc, ← mul_assoc L.Dri, Dri_Dr, one_mul, L.ζi_ζ]
+alias D_Di := _root_.Formalism.FourierDecayAlt.P.MAx3.NF.D_Di
+alias Di_D := _root_.Formalism.FourierDecayAlt.P.MAx3.NF.Di_D
 theorem Db_Dbi : L.Db * L.Dbi = 1 := by
   unfold LevelData.Db LevelData.Dbi
   rw [mul_assoc, ← mul_assoc L.ζb, L.ζb_ζbi, one_mul, Drb_Drbi]
@@ -8559,16 +8512,7 @@ theorem memDi : L.Di ∈ Subring.closure (FS L) := Subring.mul_mem _ (memF L (m_
 theorem memDb : L.Db ∈ Subring.closure (FS L) := Subring.mul_mem _ (memDrb L) (memF L (m_ζb L))
 theorem memDbi : L.Dbi ∈ Subring.closure (FS L) := Subring.mul_mem _ (memF L (m_ζbi L)) (memDrbi L)
 
-theorem hat_Dbi (Y : ℂ) : L.Dbi * L.Ahat Y = L.Ahat Y * L.Dbi ∧ L.Dbi * L.R0 Y = L.R0 Y * L.Dbi := by
-  have h := commA L L.Drbi L.Drb (Drbi_Drb L) (Drb_Drbi L)
-    (fun m => (comm_prod L.cbi (L.p m) (fun i => L.p_cbi m i)))
-    (fun y hy => cl_comm L (memF L hy) (memDrbi L))
-    (comm_prod L.cbi L.nab (fun i => L.nab_cbi i)) Y
-  have h2 := hat_ζbi L Y
-  unfold LevelData.Dbi
-  constructor
-  · rw [mul_assoc, h.1, ← mul_assoc, h2.1, mul_assoc]
-  · rw [mul_assoc, h.2, ← mul_assoc, h2.2, mul_assoc]
+alias hat_Dbi := _root_.Formalism.FourierDecayAlt.P.MAx3.NF.hat_Dbi
 
 theorem hat_Db (Y : ℂ) : L.Db * L.Ahat Y = L.Ahat Y * L.Db ∧ L.Db * L.R0 Y = L.R0 Y * L.Db := by
   obtain ⟨h1, h2⟩ := hat_Dbi L Y
@@ -9106,8 +9050,7 @@ open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
-theorem Ahat_D (Y : ℂ) : L.Ahat Y * L.D = L.D * L.Ahat (Y + 1) := by
-  rw [← (Formalism.FourierDecayAlt.P.shiftConjugation A r L Y).1, ← mul_assoc, ← mul_assoc, D_Di, one_mul]
+alias Ahat_D := _root_.Formalism.FourierDecayAlt.P.MAx3.NF.Ahat_D
 
 theorem raising_mul_D (Y : ℂ) : L.R0 Y * L.D = L.D * (L.R0 (Y + 1) + L.TT • (L.Drb * L.Di * L.Ahat (Y + 1))) := by
   rw [Algebra.smul_def, ← (Formalism.FourierDecayAlt.P.shiftConjugation A r L Y).2.1, ← mul_assoc, ← mul_assoc, D_Di, one_mul]
@@ -9557,8 +9500,7 @@ noncomputable section
 
 variable (P : M.Par)
 
-theorem actA_zero (f : M.Ty P → SmQ P.r P.TT) : actA P 0 f = 0 := by
-  funext π; simp only [MAx2.R2.actA_eq, Matrix.zero_apply, map_zero, LinearMap.zero_apply, Finset.sum_const_zero]; rfl
+alias actA_zero := _root_.Formalism.FourierDecayAlt.P.MAx3.F.actA_zero
 
 theorem actA_sum {ι : Type} (s : Finset ι) (x : ι → A P (DQ P)) (f : M.Ty P → SmQ P.r P.TT) (π : M.Ty P) :
     actA P (∑ t ∈ s, x t) f π = ∑ t ∈ s, actA P (x t) f π := by
@@ -9621,7 +9563,7 @@ theorem Xw_rep (l : ℕ) (j : M.Ty P → SmQ P.r P.TT) : ∀ w : List ℝ, ∃ �
   match w with
   | [] => ⟨fun _ => 1, fun _ => one_mem_normal_form_two (hyp_model hL hLaw), fun q i => by
       show (j i : Qp P.r P.TT → ℂ) q = evQ P (actA P 1 j i) q
-      rw [MAx3.one_act]; rfl⟩
+      rw [_root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_one]; rfl⟩
   | Y :: w => by
     obtain ⟨𝒳, h1, h2⟩ := Xw_rep l j w
     have hE : (frW P l L w).ee (Y : ℂ) ∈ UB L (Fin w.length) := (frame_memB hL hLaw l (wordP w)).1 (Y : ℂ)
@@ -10450,8 +10392,8 @@ theorem eeA_rep : Rep L (Gbase P) (fun Y => (io (eeA P (DQ P) Y) : SlopeTestRema
       have hf : (fun π => (Y + (M.rho P π j : ℂ))⁻¹) = ∑ π : M.Ty P, (Y + (M.rho P π j : ℂ))⁻¹ • Pi.single π (1 : ℂ) := by
         funext π'
         simp [Finset.sum_apply, Pi.single_apply]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hf, map_sum]
+
+      rw [hf, map_sum]
       exact Finset.sum_congr rfl fun π _ => map_smul _ _ _
     rw [hk, Finset.sum_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun π _ => ?_
@@ -10462,11 +10404,11 @@ theorem eeA_rep : Rep L (Gbase P) (fun Y => (io (eeA P (DQ P) Y) : SlopeTestRema
     funext Y
     rw [e]
     unfold io
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun π _ => ?_
     have := G.io_smul P (S := S) (Y + (M.rho P π j : ℂ))⁻¹ (L.ζ * L.ζbi * (kap P (DQ P) (Pi.single π 1) * SS P (DQ P) j))
     unfold io at this
@@ -10674,8 +10616,8 @@ theorem part_poly {N : ℕ} (x : ℂ → A P (DQ P)) (d : ℕ) (hx : G.PolyIn (f
   have e2 : (io (x Y) : SlopeTestRemainingChoices (Fin N) (A P (DQ P))) = ∑ k ∈ Finset.range (d + 1), Y ^ k • io (a k) := by
     rw [e1]
     unfold io
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     have := G.io_smul P (S := Fin N) (Y ^ k) (a k)
     unfold io at this
@@ -10769,8 +10711,6 @@ end lists
 
 variable {P : M.Par}
 
-theorem ofReal_add_one' (Y : ℝ) : (Y : ℂ) + 1 = ((Y + 1 : ℝ) : ℂ) := by push_cast; ring
-
 theorem sx_cont (l : ℕ) (π : M.Ty P) : Continuous (fun Z => MAx3.R.sx P l π Z) := by
   unfold MAx3.R.sx I.xpoly
   exact continuous_const.mul (continuous_finsetProd _ fun i _ => continuous_id.add continuous_const)
@@ -10807,7 +10747,7 @@ theorem kf_cont (l : ℕ) (w : List ℝ) (π : M.Ty P) (e : Ix (Fin (w.length + 
         (((MAx3.R.qp P Z * MAx3.R.psR (MAx3.R.tl w) Z : ℝ) : ℂ) /
           ((MAx3.R.sx P l π (Z + 1) * MAx3.R.phR (MAx3.R.tl w) e (Z + 1) : ℝ) : ℂ))).re := by
     funext Z
-    rw [ofReal_add_one', MAx3.R.qw_real _ _ (MAx3.R.tl_real w), MAx3.R.xs_real _ _ (MAx3.R.tl_real w),
+    rw [_root_.Formalism.FourierDecayAlt.P.MAx3.R.ofReal_add_one, MAx3.R.qw_real _ _ (MAx3.R.tl_real w), MAx3.R.xs_real _ _ (MAx3.R.tl_real w),
       MAx3.R.coordinate_real, MAx3.R.qC_real]
     push_cast; ring
   rw [e1]
@@ -10921,8 +10861,8 @@ theorem sx_pos (hH : Hyps P l L j lam α β Lb Ntot) (π : M.Ty P) {Z : ℝ} (hZ
     0 < MAx3.R.sx P l π Z ∧ 0 < MAx3.R.sx P l π (Z + 1) := by
   obtain ⟨⟨hOK, hl1, hlk, _, hu, hu', hαβ, hcut⟩, _⟩ := hH
   have hπ := Formalism.FourierDecayAlt.P.types_interlace P hOK π
-  have h0 := Formalism.FourierDecayAlt.P.interlacing_sign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 0 (by simp)
-  have h1 := Formalism.FourierDecayAlt.P.interlacing_sign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 1 (by simp)
+  have h0 := _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 0 (by simp)
+  have h1 := _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign P.k P.u P.u' (M.rho P π) l Z hl1 hlk hπ (hcut Z hZ) 1 (by simp)
   rw [add_zero] at h0
   exact ⟨h0, h1⟩
 
@@ -11336,7 +11276,7 @@ theorem ldq_rpow (s : ℝ) (q : ℕ) (x : ℝ) (hx : 0 < x) : LE.ld q (fun x : �
 theorem Phiq_rpow (s : ℝ) (q : ℕ) : Phi P (fun x : ℝ => x ^ s) q = ((s : ℂ) ^ q) • G.Gpow P s := by
   apply Subtype.ext; funext x
   show evQ P (Phi P _ q) x = evQ P (((s : ℂ) ^ q) • G.Gpow P s) x
-  rw [ev_Phi P (G.smoothLog_rpow s), G.evQ_smul, G.ev_Gpow, ldq_rpow s q _ (Gq_pos P x)]
+  rw [ev_Phi P (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow s), G.evQ_smul, G.ev_Gpow, ldq_rpow s q _ (Gq_pos P x)]
   push_cast; ring
 
 theorem isJ_group {F : (ℝ → ℝ) → SmQ P.r P.TT} (hF : IsJ P F) :
@@ -11398,8 +11338,8 @@ theorem isJ_unique {F F' : (ℝ → ℝ) → SmQ P.r P.TT} (hF : IsJ P F) (hF' :
       rw [if_neg (by simp [Finset.mem_Ico] at hk; omega), mul_zero]), add_zero]
     exact Finset.sum_congr rfl fun k hk => by rw [if_pos (by simp at hk; omega)]
   have hu := group_unique P K (fun k => if k ≤ K1 then a k else 0) (fun k => if k ≤ K2 then b k else 0) (fun s => by
-    rw [← pad K1 a (le_max_left _ _), ← pad K2 b (le_max_right _ _), ← ha _ (G.smoothLog_rpow s),
-      ← hb _ (G.smoothLog_rpow s)]
+    rw [← pad K1 a (le_max_left _ _), ← pad K2 b (le_max_right _ _), ← ha _ (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow s),
+      ← hb _ (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow s)]
     exact h s)
   intro φ hφ
   rw [ha φ hφ, hb φ hφ, pad K1 a (le_max_left _ _), pad K2 b (le_max_right _ _)]
@@ -11451,8 +11391,8 @@ theorem act_leibniz (x : A P (DQ P)) (hx : x ∈ MAx2.Jet.TS P) (d : ℕ) (c : �
       have h1 := congrArg (fun y : A P (DQ P) => MAx2.R2.Phi P (y π π') (f π')) (hconj s)
       simp only [Gs_conj_entry, map_mul, Module.End.mul_apply] at h1
       rw [Matrix.sum_apply] at h1
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, Matrix.smul_apply, map_smul, LinearMap.sum_apply, LinearMap.smul_apply] at h1
+
+      simp only [map_sum, Matrix.smul_apply, map_smul, LinearMap.sum_apply, LinearMap.smul_apply] at h1
       exact h1
     show ∑ π', MAx2.R2.Phi P (x π π') (G.Gpow P s * f π') = ∑ p ∈ Finset.range (d + 1),
       MAx2.Jet.Phi P (fun x : ℝ => x ^ s) p * ∑ π', MAx2.R2.Phi P (c p π π') (f π')
@@ -11487,7 +11427,7 @@ variable {R : Type} [Ring R] [Algebra ℂ R]
 
 theorem polyIn_mul {f g : ℂ → R} {d₁ d₂ : ℕ} (hf : PolyIn f d₁) (hg : PolyIn g d₂) :
     PolyIn (fun t => f t * g t) (d₁ + d₂) := by
-  first | exact UpperTheory.Reformulated.B.Qk18.polyIn_mul .. | (apply UpperTheory.Reformulated.B.Qk18.polyIn_mul <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qk18.polyIn_mul <;> assumption) | (apply @UpperTheory.Reformulated.B.Qk18.polyIn_mul <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qk18.polyIn_mul <;> assumption) | (apply @UpperTheory.Reformulated.B.Qk18.polyIn_mul <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› ‹_› f g d₁ d₂ hf hg | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› ‹_› f g d₁ d₂ hf | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› ‹_› f g d₁ d₂ | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› ‹_› f g d₁ | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› ‹_› f g | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› ‹_› f | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› ‹_› | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R ‹_› | exact @UpperTheory.Reformulated.B.Qk18.polyIn_mul R
+  first | (apply UpperTheory.Reformulated.B.Qk18.polyIn_mul <;> assumption)
 
 theorem lagrange {M : Type} [AddCommGroup M] [Module ℂ M] (F : ℂ → M) (K : ℕ) (a : ℕ → M)
     (hF : ∀ t, F t = ∑ k ∈ Finset.range (K + 1), t ^ k • a k) :
@@ -11697,9 +11637,6 @@ theorem smoothLog_chi (c : LE.Cut) (ε : ℝ) : LE.SmoothLog (chi c ε) := by
     Real.contDiff_exp.div_const ε
   exact (c.smooth.comp h1).pow 1
 
-theorem log_derivative_zero (φ : ℝ → ℝ) (x : ℝ) (hx : 0 < x) : LE.ld 0 φ x = φ x := by
-  simp [LE.ld, Real.exp_log hx]
-
 theorem chiJ_eq (j : M.Ty P → SmQ P.r P.TT) (c : LE.Cut) (ε : ℝ) :
     chiJ P j c ε = fun π => MAx2.Jet.Phi P (chi c ε) 0 * j π := by
   funext π
@@ -11709,7 +11646,7 @@ theorem chiJ_eq (j : M.Ty P → SmQ P.r P.TT) (c : LE.Cut) (ε : ℝ) :
         fun q => (c.sc ε 1 (Gq P q) : ℂ) * (j π).1 q := by
       funext q
       show evQ P (MAx2.Jet.Phi P (chi c ε) 0 * j π) q = _
-      rw [MAx2.Jet.evQ_mul, MAx2.Jet.ev_Phi P (smoothLog_chi c ε), log_derivative_zero _ _ (Gq_pos P q)]
+      rw [MAx2.Jet.evQ_mul, MAx2.Jet.ev_Phi P (smoothLog_chi c ε), _root_.Formalism.FourierDecayAlt.P.LEx2.ld_zero' _ _ (Gq_pos P q)]
       rfl
     rw [← e]; exact h
   show toSm P _ = _
@@ -11717,7 +11654,7 @@ theorem chiJ_eq (j : M.Ty P → SmQ P.r P.TT) (c : LE.Cut) (ε : ℝ) :
   apply Subtype.ext
   funext q
   show (c.sc ε 1 (Gq P q) : ℂ) * (j π).1 q = evQ P (MAx2.Jet.Phi P (chi c ε) 0 * j π) q
-  rw [MAx2.Jet.evQ_mul, MAx2.Jet.ev_Phi P (smoothLog_chi c ε), log_derivative_zero _ _ (Gq_pos P q)]
+  rw [MAx2.Jet.evQ_mul, MAx2.Jet.ev_Phi P (smoothLog_chi c ε), _root_.Formalism.FourierDecayAlt.P.LEx2.ld_zero' _ _ (Gq_pos P q)]
   rfl
 
 variable {L : LevelData (A P (DQ P)) P.r} (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)
@@ -11846,7 +11783,7 @@ theorem chi_bound (j : M.Ty P → SmQ P.r P.TT) (c : LE.Cut) (ε : ℝ) (hε : 0
   have hχ : ∀ p : ℕ, ∃ C : ℝ, ∀ ε x : ℝ, 0 < ε → 0 < x →
       |LE.ld p (c.sc ε 1) x| ≤ C ∧ (x < ε / 2 → LE.ld p (c.sc ε 1) x = 0) ∧
         (ε < x → LE.ld p (c.sc ε 1) x = if p = 0 then 1 else 0) :=
-    fun p => Formalism.FourierDecayAlt.P.cutoff_bound c 1 p le_rfl
+    fun p => _root_.Formalism.FourierDecayAlt.P.LEx1.cutBound c 1 p le_rfl
   choose Cχ hCχ using hχ
   set T := (List.range (K + 1)).flatMap Tp with hT
   set C := (2 / ε) ^ N * ((K + 1 : ℕ) : ℝ) * ∑ p ∈ Finset.range (K + 1), (|Cχ p| * Cp p) ^ 2 * (Tp p).length
@@ -12075,7 +12012,7 @@ theorem ju_chiJ (j : M.Ty P → SmQ P.r P.TT) (c : LE.Cut) (ε : ℝ) :
   show evQ P (chiJ P j c ε a) ω = _
   rw [chiJ_eq]
   show evQ P (MAx2.Jet.Phi P (chi c ε) 0 * j a) ω = _
-  rw [MAx2.Jet.evQ_mul, MAx2.Jet.ev_Phi P (smoothLog_chi c ε), log_derivative_zero _ _ (Gq_pos P ω)]
+  rw [MAx2.Jet.evQ_mul, MAx2.Jet.ev_Phi P (smoothLog_chi c ε), _root_.Formalism.FourierDecayAlt.P.LEx2.ld_zero' _ _ (Gq_pos P ω)]
   rfl
 
 theorem inner_real_of_pointwise (f : Qp P.r P.TT → ℝ) (g h : SmQ P.r P.TT) (hgh : ∀ q, evQ P g q * conj (evQ P h q) = (f q : ℂ)) :
@@ -12456,15 +12393,11 @@ theorem psnd_smul (z : ℂ) (x : (DQ P).Pr) : (z • x).2.unop = (starRingEnd �
   rw [Algebra.smul_def, psnd_mul]
   show x.2.unop * (algebraMap ℂ (DQ P).Op (starRingEnd ℂ z)) = _
   rw [← Algebra.commutes, Algebra.smul_def]
-theorem pfst_smul' (z : ℂ) (x : (DQ P).Pr) : (z • x).1 = z • x.1 := G.pfst_smul P z x
 theorem multiplierPair_fst (f g : SmQ P.r P.TT) : ((DQ P).fnP f g).1 = (DQ P).mulOp f := rfl
 theorem multiplierPair_snd (f g : SmQ P.r P.TT) : ((DQ P).fnP f g).2.unop = (DQ P).mulOp g := rfl
 theorem mulOp_apply (f g : SmQ P.r P.TT) : (DQ P).mulOp f g = f * g := rfl
 
 def asS (f : (DQ P).R) : SmQ P.r P.TT := f
-
-theorem isJ_const_mul (p : ℕ) (f : SmQ P.r P.TT) : IsJ P (fun ψ => Phi P ψ p * f) :=
-  ⟨1, fun _ => p, fun _ => f, fun φ hφ => by simp⟩
 
 theorem real_pow_conj (σ s : ℝ) (k : ℕ) : starRingEnd ℂ (((σ * s : ℝ) : ℂ) ^ k) = ((σ * s : ℝ) : ℂ) ^ k := by
   rw [map_pow, Complex.conj_ofReal]
@@ -12477,11 +12410,11 @@ theorem fst_leib (x : (DQ P).Pr) (c : ℕ → (DQ P).Pr) (d : ℕ) (σ : ℝ) (h
   have hGG : ∀ s, G.Gpow P s * G.Gpow P (-s) = 1 := G.Gpow_mul_neg P
   refine isJ_unique P (F := fun ψ => x.1 (Phi P ψ 0 * f))
     (F' := fun ψ => ∑ p ∈ Finset.range (d + 1), Phi P ψ p * (((σ : ℂ) ^ p) • asS P ((c p).1 f)))
-    (hx1 _ (isJ_const_mul P 0 f)) (isJ_sum P _ _ fun p _ => isJ_const_mul P p _) (fun s => ?_) φ hφ
+    (hx1 _ (_root_.Formalism.FourierDecayAlt.P.MAx3.PG.isJ_cm P 0 f)) (isJ_sum P _ _ fun p _ => _root_.Formalism.FourierDecayAlt.P.MAx3.PG.isJ_cm P p _) (fun s => ?_) φ hφ
   have h1 : G.Gpow P (-s) * asS P (x.1 (G.Gpow P s * f)) =
       ∑ k ∈ Finset.range (d + 1), (((σ * s : ℝ) : ℂ) ^ k) • asS P ((c k).1 f) := by
     have := congrArg (fun y : (DQ P).Pr => asS P (y.1 f)) (hconj s)
-    simp only [asS, G.pfst_mul, multiplierPair_fst, G.pfst_sum, pfst_smul', G.op_mul_apply, G.op_sum_apply] at this
+    simp only [asS, G.pfst_mul, multiplierPair_fst, G.pfst_sum, _root_.Formalism.FourierDecayAlt.P.MAx3.G.pfst_smul, G.op_mul_apply, G.op_sum_apply] at this
     exact this
   show asS P (x.1 (G.Gpow P s * f)) = _
   rw [show asS P (x.1 (G.Gpow P s * f)) = G.Gpow P s * (G.Gpow P (-s) * asS P (x.1 (G.Gpow P s * f))) by
@@ -12499,7 +12432,7 @@ theorem snd_leib (x : (DQ P).Pr) (c : ℕ → (DQ P).Pr) (d : ℕ) (σ : ℝ) (h
   have hGG : ∀ s, G.Gpow P s * G.Gpow P (-s) = 1 := G.Gpow_mul_neg P
   refine isJ_unique P (F := fun ψ => Phi P ψ 0 * asS P (x.2.unop f))
     (F' := fun ψ => ∑ p ∈ Finset.range (d + 1), ((σ : ℂ) ^ p) • (c p).2.unop (Phi P ψ p * f))
-    (isJ_const_mul P 0 _) (isJ_sum P _ _ fun p _ => isJ_smul P _ (hc2 p _ (isJ_const_mul P p f))) (fun s => ?_) φ hφ
+    (_root_.Formalism.FourierDecayAlt.P.MAx3.PG.isJ_cm P 0 _) (isJ_sum P _ _ fun p _ => isJ_smul P _ (hc2 p _ (_root_.Formalism.FourierDecayAlt.P.MAx3.PG.isJ_cm P p f))) (fun s => ?_) φ hφ
   have h1 : G.Gpow P s * asS P (x.2.unop f) =
       ∑ k ∈ Finset.range (d + 1), (((σ * s : ℝ) : ℂ) ^ k) • asS P ((c k).2.unop (G.Gpow P s * f)) := by
     have := congrArg (fun y : (DQ P).Pr => asS P (y.2.unop (G.Gpow P s * f))) (hconj s)
@@ -12940,12 +12873,10 @@ theorem isAdmissibleSplittingCharPair_mul_twist {φ ψ : ℝ → ℝ} (hφ : adm
     exact mul_le_mul (mul_le_mul_of_nonneg_left h1 (Nat.cast_nonneg _)) h2 (abs_nonneg _)
       (mul_nonneg (Nat.cast_nonneg _) hc0)
 
-theorem smoothLog_rpow' (t : ℝ) : LE.SmoothLog (fun x : ℝ => x ^ t) := G.smoothLog_rpow t
-
 theorem admissible_mul_rpow {φ : ℝ → ℝ} (hφ : admitted φ) {t : ℝ} (ht : t ≤ 0) : admitted (fun x => φ x * x ^ t) := by
   obtain ⟨hs, ⟨ε, hε, h0⟩, hb⟩ := hφ
   have hsm : LE.SmoothLog (fun x => φ x * x ^ t) := by
-    unfold LE.SmoothLog; exact hs.mul (smoothLog_rpow' t)
+    unfold LE.SmoothLog; exact hs.mul (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow t)
   have hvan : ∀ x, x ≤ ε → φ x * x ^ t = 0 := fun x hx => by rw [h0 x hx, zero_mul]
   refine ⟨hsm, ⟨ε, hε, hvan⟩, fun q => ?_⟩
   choose C hC using hb
@@ -12955,7 +12886,7 @@ theorem admissible_mul_rpow {φ : ℝ → ℝ} (hφ : admitted φ) {t : ℝ} (ht
     refine Finset.sum_nonneg fun i _ => mul_nonneg (mul_nonneg (Nat.cast_nonneg _) ((abs_nonneg _).trans (hC i 1 one_pos)))
       (mul_nonneg (pow_nonneg (abs_nonneg _) _) (Real.rpow_nonneg hε.le _))
   · push Not at hxe
-    rw [ld_mul hs (smoothLog_rpow' t)]
+    rw [ld_mul hs (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow t)]
     refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ => ?_)
     rw [ldq_rpow t (q - i) x hx, abs_mul, abs_mul, abs_mul, abs_of_nonneg (Nat.cast_nonneg _), abs_pow,
       abs_of_nonneg (Real.rpow_nonneg hx.le _)]
@@ -12998,7 +12929,7 @@ theorem Ph_mul {φ ψ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (hψ : LE.SmoothLog
 theorem Ph_Gs {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) (t : ℝ) :
     Ph P φ * G.Gs P t = Ph P (fun x => φ x * x ^ t) := by
   have : G.Gs P t = Ph P (fun x : ℝ => x ^ t) := rfl
-  rw [this, Ph_mul P hφ (smoothLog_rpow' t)]
+  rw [this, Ph_mul P hφ (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow t)]
 
 end
 
@@ -13006,21 +12937,9 @@ end Formalism.FourierDecayAlt.P.MAx3.AD
 
 end S_AD_AD2
 
-section S_K_K1
-
-set_option linter.unusedVariables false
-
 namespace Formalism.FourierDecayAlt.P.MAx3.K
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H
-
-variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} {L : LevelData A r} {S : Submonoid A}
-
-variable {Hs : Set A}
-
 end Formalism.FourierDecayAlt.P.MAx3.K
-
-end S_K_K1
 
 section S_K_K2
 
@@ -13248,7 +13167,7 @@ theorem drv_eq : L.Dr * L.Dbi = L.D * L.Dbi * L.ζi := by
 theorem vgen_ζbi_R (Y : ℂ) : L.R0v Y * L.ζbi = L.ζbi * L.R0v (Y + 0) +
     ([((-1 : ℂ), L.D * L.Dbi, Y), (L.TT, L.ζi * L.ζbi * (L.D * L.Dbi), Y)].map
       fun x => x.1 • (x.2.1 * L.Ahatv x.2.2)).sum := by
-  have h := (Formalism.FourierDecayAlt.P.inverseCommutators A r L Y).2.2.2.1
+  have h := (_root_.Formalism.FourierDecayAlt.R.PInv.ruleInv A r L Y).2.2.2.1
   rw [add_zero, sub_eq_iff_eq_add'.mp h]
   congr 1
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
@@ -13323,7 +13242,7 @@ theorem hypV_model : HypV L (Submonoid.closure (bddSet P L)) := by
   have mζbi : L.ζbi ∈ bddSet P L := Or.inl (Or.inl (Or.inl (by simp)))
   have hdrv : L.Dr * L.Dbi ∈ Submonoid.closure (bddSet P L) := by
     rw [drv_eq]; exact Submonoid.mul_mem _ (gen mDD) (gen mζi)
-  have hInv := fun Y => Formalism.FourierDecayAlt.P.inverseCommutators _ P.r L Y
+  have hInv := fun Y => _root_.Formalism.FourierDecayAlt.R.PInv.ruleInv _ P.r L Y
   refine hypV_closure (bddSet P L) ?_ ?_ hdrv
   · rintro b ((((hb | ⟨f, rfl⟩) | ⟨i, hi, rfl⟩) | ⟨i, hi, rfl⟩))
     · simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hb
@@ -14453,8 +14372,8 @@ theorem PR_kap {p : M.Ty P → ℝ → ℂ} {d : ℕ} (hp : ∀ π, PR (p π) d)
   dsimp only
   have : (fun π => p π s) = ∑ k ∈ range (d + 1), ((s : ℂ) ^ k) • (fun π => a π k) := by
     funext π; rw [ha π s, Finset.sum_apply]; rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [this, map_sum]
+
+  rw [this, map_sum]
   exact Finset.sum_congr rfl fun k _ => by rw [map_smul]
 
 theorem PR_xC (π : M.Ty P) : PR (fun s : ℝ => M.xC P π (s : ℂ)) (P.k - 1) := by
@@ -14873,8 +14792,8 @@ theorem first_identity_of_integral (h : IntHyp) : EnergyPolynomialInPoints := by
       C0 (startM P (DQ P) l).QQ (sites P (DQ P)) (x.2 : ℂ)).prod = prodC P l Y := by
     simp [prodC, List.map_reverse, List.map_ofFn, Function.comp_def]
   unfold cutoffEnergyForm ipA ip0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hprod, map_sum]
+
+  rw [hprod, map_sum]
   simp_rw [eval_ex]
   have hI : ∀ π, ∫ q, ((actA P (prodC P l Y) (chiJ P j c ε) π : SmQ P.r P.TT) : Qp P.r P.TT → ℂ) q *
       conj (((chiJ P j c ε π : SmQ P.r P.TT) : Qp P.r P.TT → ℂ) q) ∂mu0 P.r P.TT =
@@ -14933,7 +14852,7 @@ theorem prodC_eq {P : M.Par} {l : ℕ} {L : LevelData (A P (DQ P)) P.r} {j : M.T
   have hLL := F.level_unique P (DQ P) L' L hL' hML
   subst hLL
   have hFr := (hFC (Fin (List.ofFn Y).length) (wordP (List.ofFn Y)) hcw).2.1
-  have hMW := (model_words P hOK (DQ P) (analytic_laws P.r P.TT hTT) l (Fin (List.ofFn Y).length)
+  have hMW := (_root_.Formalism.FourierDecayAlt.P.MAx2.R2.modelWordsD P hOK (DQ P) (analytic_laws P.r P.TT hTT) l (Fin (List.ofFn Y).length)
     (wordP (List.ofFn Y)) (F.good_of_cut _ hcw)).1
   rw [F.prod_eq] at hMW
   rw [hFr, F.plusWord_length] at hMW
@@ -15091,7 +15010,7 @@ theorem admissible_cutoff (c : LE.Cut) {ε : ℝ} (hε : 0 < ε) : admitted (PG.
   refine ⟨PG.smoothLog_chi c ε, ⟨ε / 2, by positivity, fun x hx => ?_⟩, fun p => ?_⟩
   · unfold PG.chi LE.Cut.sc
     rw [c.zero (x / ε) (by rw [div_le_iff₀ hε]; linarith), pow_one]
-  · obtain ⟨C, hC⟩ := Formalism.FourierDecayAlt.P.cutoff_bound c 1 p le_rfl
+  · obtain ⟨C, hC⟩ := _root_.Formalism.FourierDecayAlt.P.LEx1.cutBound c 1 p le_rfl
     exact ⟨C, fun x hx => (hC ε x hε hx).1⟩
 
 variable {P : M.Par} {L : LevelData (A P (DQ P)) P.r} (hTTp : 0 < P.TT) (hL : IsModelLevel P (DQ P) L)
@@ -15357,8 +15276,8 @@ theorem SA_mul {x y : A P (DQ P)} {Mx My : Qp P.r P.TT → Matrix (M.Ty P) (M.Ty
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
   · rw [star_mul, F.actA_mul, hy.2]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp_rw [hx.2, Finset.mul_sum, Matrix.mul_apply, map_sum, Finset.sum_mul]
+
+    simp_rw [hx.2, Finset.mul_sum, Matrix.mul_apply, map_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by rw [map_mul]; ring
 
@@ -15653,26 +15572,9 @@ end Formalism.FourierDecayAlt.P.MAx3.AD
 
 end S_AD_AD12
 
-section S_AD_AD13
-
-set_option linter.unusedVariables false
-set_option linter.unusedSimpArgs false
-
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
-open MeasureTheory ComplexConjugate
-
-noncomputable section
-
-variable {P : M.Par} {L : LevelData (A P (DQ P)) P.r} (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)
-include hL hLaw
-
-end
-
 end Formalism.FourierDecayAlt.P.MAx3.AD
-
-end S_AD_AD13
 
 section S_AD_AD14
 
@@ -15745,9 +15647,9 @@ theorem multAdj {m : ℕ} (hD : JDecay P L j m) {a β s : A P (DQ P)} {C : ℝ} 
       _ = _ := by rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
   refine ⟨int1, int2, ?_⟩
   rw [ipA_eq, ipA_eq, ← integral_finsetSum _ fun π _ => int1 π, ← integral_finsetSum _ fun π _ => int2 π]
-  congr 1; funext q
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [e1, e2, map_sum, map_mul, Complex.conj_conj, Finset.mul_sum, Finset.sum_mul]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun q => ?_)
+
+  simp only [e1, e2, map_sum, map_mul, Complex.conj_conj, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
@@ -16441,11 +16343,10 @@ noncomputable section
 
 variable {P : M.Par}
 
-theorem cf_Ph {φ : ℝ → ℝ} (hφ : LE.SmoothLog φ) : CF (Ph P φ) (fun q => ((φ (Gq P q) : ℝ) : ℂ)) :=
-  ⟨Phi P φ 0, Phi P φ 0, rfl, fun q => eval_cutoff_operator_zero P hφ q, fun q => by rw [Complex.conj_ofReal]; exact eval_cutoff_operator_zero P hφ q⟩
+alias cf_Ph := _root_.Formalism.FourierDecayAlt.P.MAx3.Z.cf_Ph
 
 theorem cf_Gs (t : ℝ) : CF (G.Gs P t) (fun q => ((Gq P q ^ t : ℝ) : ℂ)) :=
-  cf_Ph (φ := fun x : ℝ => x ^ t) (G.smoothLog_rpow t)
+  cf_Ph (φ := fun x : ℝ => x ^ t) (_root_.Formalism.FourierDecayAlt.P.LEx2.smoothLog_rpow t)
 
 variable {L : LevelData (A P (DQ P)) P.r} {j : M.Ty P → SmQ P.r P.TT}
 
@@ -16960,11 +16861,12 @@ theorem int_conj {f : Qp P.r P.TT → ℂ} (hf : Integrable f (mu0 P.r P.TT)) :
     (Filter.Eventually.of_forall fun q => by simp)
 
 theorem ipA_conj (f g : M.Ty P → SmQ P.r P.TT) : ipA P f g = conj (ipA P g f) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [AD.ipA_eq, AD.ipA_eq, map_sum]
+
+  rw [AD.ipA_eq, AD.ipA_eq, map_sum]
   refine Finset.sum_congr rfl fun π _ => ?_
   rw [← integral_conj]
-  congr 1; funext q
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun q => ?_)
+  dsimp only
   rw [map_mul, Complex.conj_conj, mul_comm]
 
 theorem pair_sum {N : ℕ} (j : M.Ty P → SmQ P.r P.TT) (F Gf : Qp P.r P.TT → Iota P N → ℂ) (U V : Ix (Fin N) → A P (DQ P))
@@ -17246,14 +17148,14 @@ noncomputable section
 
 theorem admissible_cutoff_product (c : LE.Cut) {ε ε₂ σ : ℝ} (hε : 0 < ε) (hε₂ : 0 < ε₂) (hσ : 4 ≤ σ) :
     admitted (fun y => c.sc ε₂ 1 y * LE.th ε σ y) := by
-  refine ⟨(PG.smoothLog_chi c ε₂).mul (Formalism.FourierDecayAlt.P.le_thetaSmooth_proof ε σ hε), ⟨ε₂ / 2, by positivity, fun x hx => ?_⟩,
+  refine ⟨(PG.smoothLog_chi c ε₂).mul (_root_.Formalism.FourierDecayAlt.P.LEx1.thetaSmooth ε σ hε), ⟨ε₂ / 2, by positivity, fun x hx => ?_⟩,
     fun p => ?_⟩
   · show c.χ (x / ε₂) ^ 1 * LE.th ε σ x = 0
     rw [c.zero (x / ε₂) (by rw [div_le_iff₀ hε₂]; linarith), pow_one, zero_mul]
-  · obtain ⟨C, hC⟩ := Formalism.FourierDecayAlt.P.cutoff_theta Formalism.FourierDecayAlt.P.cauchy_theta_identity c σ ε hσ hε p
+  · obtain ⟨C, hC⟩ := _root_.Formalism.FourierDecayAlt.P.LEx1.cutTheta Formalism.FourierDecayAlt.P.cauchy_theta_identity c σ ε hσ hε p
     refine ⟨|C|, fun x hx => ?_⟩
     have h1 := (hC ε₂ x hε₂ hx).1
-    have h2 := Formalism.FourierDecayAlt.P.le_thetaRange_proof ε σ x hε (by linarith) hx
+    have h2 := _root_.Formalism.FourierDecayAlt.P.LEx2.thetaRange ε σ x hε (by linarith) hx
     calc |LE.ld p (fun y => c.sc ε₂ 1 y * LE.th ε σ y) x| ≤ C * LE.th ε σ x := h1
       _ ≤ |C| * LE.th ε σ x := mul_le_mul_of_nonneg_right (le_abs_self C) h2.1.le
       _ ≤ |C| * 1 := mul_le_mul_of_nonneg_left h2.2 (abs_nonneg C)
@@ -17347,9 +17249,9 @@ theorem adjoint_bounded : Formalism.FourierDecayAlt.MA.AdjBQ := by
   have eR : ∀ b e, ipA P (actA P (uv P l L' w Y b e) j) (actA P (yv' P l L' w Y ψ b e) j) =
       conj (ipA P (actA P (star (uv P l L' w Y b e) * yv' P l L' w Y ψ b e) j) j) := fun b e => by
     rw [Formalism.FourierDecayAlt.P.MAx3.AB.ipA_conj, (QR b e).2.2]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [eL, eR, ← map_sum]
-  congr 1
+
+  simp only [eL, eR, ← map_sum]
+  apply congrArg conj
   rw [ipA_sum_j Finset.univ _ j (fun e _ => (QL e).2.1)]
   have inner : ∀ b, ∑ e, ipA P (actA P (star (uv P l L' w Y b e) * yv' P l L' w Y ψ b e) j) j =
       ipA P (actA P (∑ e, star (uv P l L' w Y b e) * yv' P l L' w Y ψ b e) j) j :=
@@ -17363,10 +17265,6 @@ end S_AB_AB16
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem weight_ratio : Formalism.FourierDecayAlt.MA.WeightRatioQ := MAx3.R.weightRatio
-
-theorem residuesAlt : Formalism.FourierDecayAlt.MA.ResiduesQ := MAx3.R.residues
-
 theorem family_imports : Formalism.FourierDecayAlt.MA.FamImportsQ :=
   family_imports_of_parts factor_exists factor_chosen family_restriction
 
@@ -17375,10 +17273,10 @@ theorem theorem_P : Formalism.FourierDecayAlt.MA.ThmPQ :=
 
 theorem induction_imports : Formalism.FourierDecayAlt.MA.StepImportsQ :=
   induction_imports_of_parts measure_regular weight_positive polynomial_regular third_identity adjoint_bounded jet_module_closed
-    fourth_identity fourth_identity_dual fifth_identity_first residuesAlt weight_ratio probability_ratio
+    fourth_identity fourth_identity_dual fifth_identity_first _root_.Formalism.FourierDecayAlt.P.MAx3.R.residues _root_.Formalism.FourierDecayAlt.P.MAx3.R.weightRatio probability_ratio
 
 theorem lemma_model : Formalism.FourierDecayAlt.MA.LemmaEModel :=
-  lemma_model_of_parts le_E_proof constants_choice induction_imports family_imports
+  lemma_model_of_parts _root_.Formalism.FourierDecayAlt.P.LEx2.lemmaE_closed constants_choice induction_imports family_imports
     roots_outside first_identity jacobi_square_integrable theorem_P jacobi_norm
 
 end Formalism.FourierDecayAlt.P

@@ -1,8 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.PeterssonNormOfUpLift
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ThetaFinsetSum
+import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.RealPlaceImaginaryGeneratorReEqZero
+public import Formalism.LocalToGlobal.Divisibility.LiftLat
+import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 
@@ -31,15 +34,10 @@ theorem dRho_smul (θ : InfFam D) (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) 
   have hx : ∀ t, heisO ψ S T ((lineAt θ τ z) t) (c • g) x = c * heisO ψ S T ((lineAt θ τ z) t) g x := by
     intro t
     first
-      | (rw [map_smul]; rfl)
       | (simp only [heisO, Pi.smul_apply, smul_eq_mul]; ring)
-      | (unfold heisO; simp only [Pi.smul_apply, smul_eq_mul]; ring)
-      | simp [heisO, mul_left_comm]
   simp only [hx, Pi.smul_apply, smul_eq_mul]
   first
     | exact congrFun (deriv_const_mul_field' c) 0
-    | rw [deriv_const_mul_field']
-    | done
 
 theorem comm_pureTensorO (hψ : IsStdChar D ψ (-1)) (θ : InfFam D) (hθ : IsInfFam θ)
     (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ) (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ)
@@ -67,13 +65,11 @@ theorem comm_pureTensorO (hψ : IsStdChar D ψ (-1)) (θ : InfFam D) (hθ : IsIn
     unfold aPlusAll aPlus crea
     first
       | exact hsm _ _ (hsub _ _ (hs _ _ _ hg) (hs _ _ _ hg))
-      | exact hsmR _ _ (hsub _ _ (hs _ _ _ hg) (hs _ _ _ hg))
   have hAW : ∀ x g, IsThetaFunO ψ S T g → W (aPlusAll (heisO ψ S T) θ (fun τ => cplxO (sS τ) (sT τ)) BS BT x g) = aPlusAll (heisO ψ S T) θ (fun τ => cplxO (sS τ) (sT τ)) BS BT x (W g) := by
     intro x g hg
     unfold aPlusAll aPlus crea
     first
       | rw [map_smul, map_sub, map_smul, hW _ _ _ hg, hW _ _ _ hg]
-      | rw [LinearMap.map_smul_of_tower, map_sub, map_smul, hW _ _ _ hg, hW _ _ _ hg]
   unfold Formalism.IndefR.Datum.pureTensorO
   generalize aPlusAll (heisO ψ S T) θ (fun τ => cplxO (sS τ) (sT τ)) BS BT = A at hAθ hAW ⊢
   unfold pureTensorL
@@ -95,8 +91,7 @@ theorem comm_pureTensorO (hψ : IsStdChar D ψ (-1)) (θ : InfFam D) (hθ : IsIn
   first
     | (rw [show (fun m => opPow A m (W f)) = W ∘ (fun m => opPow A m f) from funext fun m => (hO m).symm]
        first
-         | (rw [Module.Basis.constr_comp] <;> rfl)
-         | (rw [Basis.constr_comp] <;> rfl))
+         | (rw [Module.Basis.constr_comp] <;> rfl))
     | (simp only [← hO]
        rw [show (fun m => W (opPow A m f)) = W ∘ (fun m => opPow A m f) from rfl]
        first
@@ -114,8 +109,6 @@ theorem pureTensorO_smul (θ : InfFam D)
     rw [dRho_smul, dRho_smul]
     first
       | module
-      | rw [smul_comm Complex.I c, ← smul_sub, smul_comm]
-      | (simp only [smul_sub, smul_smul]; ring_nf)
   unfold Formalism.IndefR.Datum.pureTensorO
   generalize aPlusAll (heisO ψ S T) θ (fun τ => cplxO (sS τ) (sT τ)) BS BT = A at hA ⊢
   unfold pureTensorL
@@ -129,8 +122,6 @@ theorem pureTensorO_smul (θ : InfFam D)
   first
     | rw [show (fun m => opPow A m (c • f)) = c • (fun m => opPow A m f) from funext fun m => hO m,
         map_smul, LinearMap.smul_apply]
-    | (simp only [hO]
-       rw [show (fun m => c • opPow A m f) = c • (fun m => opPow A m f) from rfl, map_smul, LinearMap.smul_apply])
 
 end Gen
 

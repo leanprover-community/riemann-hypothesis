@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.XcNotMemOfIsRelevant
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerFurther
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.TwoMemFunFieldSpecZ
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerTer
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerMore
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerTail
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

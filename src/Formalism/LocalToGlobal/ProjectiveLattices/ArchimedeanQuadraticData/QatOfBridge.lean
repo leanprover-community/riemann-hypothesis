@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.WeightedPrimeSumBound
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.QCoreSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.QCorePf
 
 @[expose] public section

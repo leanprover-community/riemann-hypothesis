@@ -1,13 +1,66 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import Formalism.RealPlaceAnalysis.FinalF
-public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Aesop.Main
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.RightDerivativeZeroOutsideSupport
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.DecayHypothesisOfLargeConstants
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.TraceConjMulEqHilbertSchmidt
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Matrix
+import Mathlib.Topology.UniformSpace.Uniformizable
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
+import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Convolution
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
 
 @[expose] public section
 
@@ -121,12 +174,6 @@ theorem rep_vec {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsU
 
 end Vec
 
-section Bound
-
-variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-
-end Bound
-
 section Der
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -195,13 +242,6 @@ section DerVec
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-theorem continuous_exp_smul (Y : Matrix (Fin n) (Fin n) ℂ) :
-    Continuous (fun s : ℝ => NormedSpace.exp ((s : ℂ) • Y)) := by
-  have : ∀ t : ℝ, HasDerivAt (fun s : ℝ => NormedSpace.exp ((s : ℂ) • Y)) (Y * (NormedSpace.exp ((t : ℂ) • Y) * 1)) t := by
-    intro t
-    simpa using hasDerivAt_exp_mul Y 1 t
-  exact continuous_iff_continuousAt.2 fun t => (this t).continuousAt
-
 theorem test_bounded {Φ : Matrix (Fin n) (Fin n) ℂ → ℂ} (hΦ : IsTest Φ) : ∃ B : ℝ, ∀ m, ‖Φ m‖ ≤ B :=
   hΦ.2.exists_bound_of_continuous hΦ.1.continuous
 
@@ -232,7 +272,7 @@ theorem hasDerivAt_vec {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (h�
   have h𝒦 : IsCompact 𝒦 := by
     apply (isCompact_Icc.prod hΘ.2.isCompact).image
     have c1 : Continuous (fun p : ℝ × Matrix (Fin n) (Fin n) ℂ => NormedSpace.exp (((-p.1 : ℝ) : ℂ) • Y)) :=
-      (continuous_exp_smul Y).comp continuous_fst.neg
+      (_root_.Formalism.REAL.continuous_exp_real_smul Y).comp continuous_fst.neg
     exact c1.matrix_mul continuous_snd
   let S : Set (UJ ε) := (fun y : UJ ε => umat y) ⁻¹' 𝒦
   have hS : IsCompact S := (isClosedEmbeddingMatrix n ε).1.isCompact_preimage h𝒦
@@ -701,12 +741,6 @@ def cjL (Pc : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ →L[ℝ]
 
 end Model2
 
-section Sig
-
-open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData
-
-end Sig
-
 section Final
 
 open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
@@ -722,22 +756,6 @@ def HCAdmDS : Prop :=
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 end Final
-
-section Left
-
-open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
-
-variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-variable {Hm Pc : Matrix (Fin n) (Fin n) ℂ}
-variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
-
-end Left
-
-section PK
-
-open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
-
-end PK
 
 def eqImg {K H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ρ : K → H →L[ℂ] H) (S : Submodule ℂ H) :
     Submodule ℂ H :=
@@ -916,8 +934,8 @@ theorem compactProj : CompactProj := by
     have e4 : ∀ a, ee c a • ρ a x = ∑ l, t l • (ee c a • ρ a (b l : H)) := by
       intro a
       conv_lhs => rw [← h3]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.smul_sum]
+
+      rw [map_sum, Finset.smul_sum]
       refine Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_comm]
     simp_rw [e4]
     have hI3 : ∀ l : Fin d, Integrable (fun a => t l • ee c a • ρ a (b l : H)) μ := fun l => (hIv _).smul (t l)

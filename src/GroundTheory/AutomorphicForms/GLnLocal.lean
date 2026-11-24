@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.LocallyProfinite
+public import Mathlib.Algebra.Group.Submonoid.Units
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

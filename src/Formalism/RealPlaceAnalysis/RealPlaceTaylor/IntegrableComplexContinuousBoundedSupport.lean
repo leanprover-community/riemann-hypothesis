@@ -1,14 +1,66 @@
 module
 
 public import Formalism.RealPlaceAnalysis.SmoothVectorGrowthBound
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CasComm
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SmoothOnGroupSum
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CasComm
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.Deriv.Star
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -89,8 +141,7 @@ lemma smooth_on_group_conj {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : Smooth
   obtain ⟨U, F, hU, hgU, hF, hfF⟩ := hf g₀ hg₀
   refine ⟨U, fun x => starRingEnd ℂ (F x), hU, hgU, ?_, fun g hg hgJ => by
     have := hfF g hg hgJ; simp only at this ⊢; rw [this]⟩
-  have := (Complex.conjCLE : ℂ ≃L[ℝ] ℂ).contDiff.comp_contDiffOn hF
-  exact this
+  exact (Complex.conjCLE : ℂ ≃L[ℝ] ℂ).contDiff.comp_contDiffOn hF
 
 lemma smooth_real_comp {h : Matrix (Fin n) (Fin n) ℂ → ℝ} (ψ : ℝ → ℝ) (hψ : ContDiff ℝ ∞ ψ)
     (hh : SmoothOnG ε (fun x => ((h x : ℝ) : ℂ))) :
@@ -136,8 +187,7 @@ lemma right_derivative_mul {f h : Matrix (Fin n) (Fin n) ℂ → ℂ} {g X : Mat
 lemma right_derivative_conj {f : Matrix (Fin n) (Fin n) ℂ → ℂ} {g X : Matrix (Fin n) (Fin n) ℂ}
     (hf : SmoothOnG ε f) (hX : inG ε X) (hg : inUJ ε g) :
     Rd X (fun x => starRingEnd ℂ (f x)) g = starRingEnd ℂ (Rd X f g) := by
-  have H := (hasDerivAt_smooth_curve hf hX hg).star
-  exact H.deriv
+  exact (hasDerivAt_smooth_curve hf hX hg).star.deriv
 
 lemma right_derivative_real_comp {h : Matrix (Fin n) (Fin n) ℂ → ℝ} (ψ : ℝ → ℝ) (hψ : ContDiff ℝ ∞ ψ)
     (hh : SmoothOnG ε (fun x => ((h x : ℝ) : ℂ))) {g X : Matrix (Fin n) (Fin n) ℂ}
@@ -274,9 +324,7 @@ lemma lie_derivative_real_comp_le {h : Matrix (Fin n) (Fin n) ℂ → ℝ} (ψ :
   refine (norm_add_le _ _).trans ?_
   rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
     Real.norm_eq_abs, abs_mul, abs_mul, mul_add]
-  gcongr
-  · exact Complex.abs_re_le_norm _
-  · exact Complex.abs_re_le_norm _
+  gcongr <;> exact Complex.abs_re_le_norm _
 
 def lieDerivativeLogFrobeniusBound (ε : Fin n → Bool) (a b : Fin n) : ℝ :=
   2 * Real.sqrt (hs (cpart1 ε (Matrix.single a b (1 : ℂ)))) +
@@ -335,8 +383,7 @@ lemma continuous_smooth_on_group_eval {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (
   exact (hfF _ hg' g'.2).symm
 
 lemma isCompact_frobenius_ball_group (ε : Fin n → Bool) (R : ℝ) : IsCompact {g : UJ ε | hsG g ≤ R} := by
-  have h := (isClosedEmbeddingMatrix n ε).1.isCompact_preimage ((hermitian_small_ball n ε).1 R)
-  convert h using 1
+  convert (isClosedEmbeddingMatrix n ε).1.isCompact_preimage ((hermitian_small_ball n ε).1 R) using 1
   ext g
   exact ⟨fun hg => ⟨g.2, hg⟩, fun hg => hg.2⟩
 
@@ -412,10 +459,8 @@ lemma contDiff_radialCutoff (R : ℝ) : ContDiff ℝ ∞ (radialCutoff R) :=
 
 lemma hasDerivAt_cutoff_alt (R t : ℝ) :
     HasDerivAt (radialCutoff R) (deriv cutoffProfile (t / R) * (1 / R)) t := by
-  have h1 : HasDerivAt (fun s : ℝ => s / R) (1 / R) t := (hasDerivAt_id t).div_const R
-  have h2 : HasDerivAt cutoffProfile (deriv cutoffProfile (t / R)) (t / R) :=
-    (contDiff_cutoff_profile.differentiable (by simp) _).hasDerivAt
-  exact h2.comp t h1
+  exact ((contDiff_cutoff_profile.differentiable (by simp) (t / R)).hasDerivAt.comp t
+    ((hasDerivAt_id t).div_const R))
 
 lemma abs_deriv_cutoff_le {R : ℝ} (hR : 0 < R) (t : ℝ) : |deriv (radialCutoff R) t| ≤ cutoffDerivBound / R := by
   rw [(hasDerivAt_cutoff_alt R t).deriv, abs_mul, abs_of_pos (by positivity : 0 < 1 / R)]
@@ -520,7 +565,7 @@ variable {n : ℕ} {ε : Fin n → Bool}
 
 lemma smooth_on_group_sum {ι : Type*} (s : Finset ι) (f : ι → Matrix (Fin n) (Fin n) ℂ → ℂ)
     (h : ∀ i ∈ s, SmoothOnG ε (f i)) : SmoothOnG ε (fun x => ∑ i ∈ s, f i x) := by
-  first | exact UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum .. | (apply UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum n ε ι s f h | exact @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum n ε ι s f | exact @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum n ε ι s | exact @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum n ε ι | exact @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum n ε | exact @UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum n
+  first | (apply UpperTheory.Reformulated.B.Qh27.smooth_on_group_sum <;> assumption)
 
 def signedCasimirDifference (ε : Fin n → Bool) (u : Matrix (Fin n) (Fin n) ℂ → ℂ) :
     Matrix (Fin n) (Fin n) ℂ → ℂ :=
@@ -574,8 +619,7 @@ lemma aestronglyMeasurable_weighted_norm_sq (a : ℝ) {u : Matrix (Fin n) (Fin n
 
 lemma integrable_of_ofReal {F : UJ ε → ℝ} (h : Integrable (fun g => ((F g : ℝ) : ℂ)) (muG ε)) :
     Integrable F (muG ε) := by
-  have := h.re
-  simpa using this
+  simpa using h.re
 
 lemma amgm_mul_le (x y e : ℝ) (he : 0 ≤ e) : x * y * e ≤ x ^ 2 * e / 2 + y ^ 2 * e / 2 := by
   nlinarith [mul_nonneg he (sq_nonneg (x - y))]
@@ -700,8 +744,8 @@ lemma sum_weighted_lie_derivative_bound (hl : HhLip) (hz : IntRdZero) {a : ℝ} 
         ∑ i, ∑ j, ((sgn ε i j : ℝ) : ℂ) * (radialWeight a R (toM g) * u (toM g) *
           starRingEnd ℂ (Eab ε j i (Eab ε i j u) (toM g))) := by
       intro g
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [signedCasimirDifference, map_sum, map_mul, Complex.conj_ofReal]
+
+      simp only [signedCasimirDifference, map_sum, map_mul, Complex.conj_ofReal]
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Finset.mul_sum]
@@ -921,11 +965,8 @@ lemma integrable_mul_conj_of_weighted {a : ℝ} (ha : 0 ≤ a) {f f' : Matrix (F
   refine hb.mono' ((continuous_smooth_on_group_eval hf).mul ((continuous_smooth_on_group_eval hf').star)).aestronglyMeasurable
     (Eventually.of_forall fun g => ?_)
   rw [norm_mul, Complex.norm_conj]
-  have he := one_le_exponential_weight ha g
-  have h1 := amgm_mul_le ‖f (toM g)‖ ‖f' (toM g)‖ 1 zero_le_one
-  have h3 : 0 ≤ ‖f (toM g)‖ ^ 2 := by positivity
-  have h4 : 0 ≤ ‖f' (toM g)‖ ^ 2 := by positivity
-  nlinarith
+  nlinarith [one_le_exponential_weight ha g, amgm_mul_le ‖f (toM g)‖ ‖f' (toM g)‖ 1 zero_le_one,
+    sq_nonneg ‖f (toM g)‖, sq_nonneg ‖f' (toM g)‖]
 
 def radialCutoffFunction (R : ℝ) (x : Matrix (Fin n) (Fin n) ℂ) : ℂ := ((radialCutoff R (hh x) : ℝ) : ℂ)
 
@@ -1105,12 +1146,8 @@ lemma quotient_mk_eq_iff {u v : smoothFunctionsOnGroup ε} :
   unfold quotientMkAlt
   rw [Submodule.Quotient.eq]
   constructor
-  · intro h g hg
-    have := h g hg
-    exact sub_eq_zero.1 this
-  · intro h g hg
-    show (u : Matrix (Fin n) (Fin n) ℂ → ℂ) g - (v : Matrix (Fin n) (Fin n) ℂ → ℂ) g = 0
-    rw [h g hg, sub_self]
+  · exact fun h g hg => sub_eq_zero.1 (h g hg)
+  · exact fun h g hg => sub_eq_zero.2 (h g hg)
 
 lemma quotient_mk_add (u v : smoothFunctionsOnGroup ε) : quotientMkAlt (u + v) = quotientMkAlt u + quotientMkAlt v := rfl
 lemma quotient_mk_sub (u v : smoothFunctionsOnGroup ε) : quotientMkAlt (u - v) = quotientMkAlt u - quotientMkAlt v := rfl
@@ -1118,8 +1155,7 @@ lemma quotient_mk_smul (c : ℂ) (u : smoothFunctionsOnGroup ε) : quotientMkAlt
 lemma quotient_mk_zero : quotientMkAlt (0 : smoothFunctionsOnGroup ε) = 0 := rfl
 
 lemma quotient_mk_surjective (m : SmoothFunctionsModGroup ε) : ∃ u : smoothFunctionsOnGroup ε, m = quotientMkAlt u := by
-  obtain ⟨u, rfl⟩ := Submodule.Quotient.mk_surjective _ m
-  exact ⟨u, rfl⟩
+  exact (Submodule.Quotient.mk_surjective _ m).imp fun u hu => hu.symm
 
 variable (ε)
 

@@ -4,6 +4,7 @@ public import Formalism.LocalToGlobal.CharacterGerms.MemVarsProdAll
 public import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
 public import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 public import Formalism.LocalToGlobal.CharacterGerms.CoeffIterateZero
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

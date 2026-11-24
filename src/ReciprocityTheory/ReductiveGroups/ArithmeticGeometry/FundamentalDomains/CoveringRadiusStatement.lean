@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+public import Mathlib.NumberTheory.NumberField.CMField
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 
 @[expose] public section
 

@@ -1,12 +1,13 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.DatDatum
-public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.UmgOps
-public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.HkApply
-public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.TsphVec
 
+public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.TsphVec
 import all Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.TsphVec
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsContRep
+import Batteries.Tactic.OpenPrivate
+public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.HkApply
+public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.UmgOps
+public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocalRepresentationL2
 
 @[expose] public section
 

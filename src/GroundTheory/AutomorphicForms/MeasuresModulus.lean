@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
+public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.AutomorphicForms.GLnLocal
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

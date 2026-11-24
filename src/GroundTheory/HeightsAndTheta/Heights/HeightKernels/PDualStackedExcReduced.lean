@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcChart
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcReduced
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcCycle
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedGraphHorizontal
+import Mathlib.RingTheory.Henselian
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.InhDivCycleOfSuppEmpty
 
 @[expose] public section

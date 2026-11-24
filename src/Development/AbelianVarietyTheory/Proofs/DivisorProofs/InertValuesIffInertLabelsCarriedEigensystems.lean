@@ -1,20 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinRepApply
-public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
-public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MatchedSphericalPairsCommuteCompositeLiftStatement
+public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoreClausesOfWeakCharacterisation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLabelThetaLiftSpaceIffDualStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertHeckeOperatorsRowsRationalSelfAdjointLabelsStatement
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsSphericalDoubleCosetLabelIffDecreasingStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsSphericalDoubleCosetLabelIffDecreasingStatement
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MatchedSphericalPairsCommuteCompositeLiftStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealizationFamilyNormalOperatorsStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SelfDualAntitoneListIffInertPrimeHeckeExponents
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoreClausesOfWeakCharacterisation
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealizationFamilyNormalOperatorsStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -177,7 +209,7 @@ section Ctx2
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
-set_option maxHeartbeats 4000000 in
+
 theorem ev_lemma (R : RealDat3 D A3 Ks) (F : Face3 D A3) (hCore : Core R.toRealDat F.lv2) (hSchur : SchurAll R.toRealDat)
     (hSF : IsSF R.toRealDat R.SF) (hEEc : ∀ c, R.EEc c = EEc R.toRealDat R.SF c)
     (hInj : ∀ p, ∀ w ∈ R.EEp3 p, LinearMap.adjoint (R.Th A3.A.μ0) w = 0 → w = 0)
@@ -198,7 +230,7 @@ theorem ev_lemma (R : RealDat3 D A3 Ks) (F : Face3 D A3) (hCore : Core R.toRealD
     exact (GlobalTheory.T.matched_spherical_pairs_commute_composite_lift R.toRealDat F.lv2 hCore hSchur R.SF hSF A3.A.μ0 P hP cX c0 hM hX hXops).2 e w
       (by rw [← hEEc]; exact hw)
 
-set_option maxHeartbeats 4000000 in
+
 theorem lin_lemma (R : RealDat3 D A3 Ks) (hX : Pl D.host.E → (List ℤ →₀ ℂ) → Module.End ℂ (R.HX A3.A.μ0).H)
     (hXops : GlobalTheory.Hk3.IsOpsX R.toRealDat A3.A.μ0 hX) (heInj : Function.Injective (R.HX A3.A.μ0).e)
     (P : Pl D.host.E) (hP : Good R.toRealDat A3.A.μ0 P) (cX : List ℤ →₀ ℂ) (x : (R.HX A3.A.μ0).H) :
@@ -208,7 +240,7 @@ theorem lin_lemma (R : RealDat3 D A3 Ks) (hX : Pl D.host.E → (List ℤ →₀ 
   simp only [map_smul, hXops P hP]
   exact hkF_eq_sum _ _ _ _
 
-set_option maxHeartbeats 4000000 in
+
 theorem zer_lemma (R : RealDat3 D A3 Ks) (hX : Pl D.host.E → (List ℤ →₀ ℂ) → Module.End ℂ (R.HX A3.A.μ0).H)
     (hXops : GlobalTheory.Hk3.IsOpsX R.toRealDat A3.A.μ0 hX) (heInj : Function.Injective (R.HX A3.A.μ0).e)
     (P : Pl D.host.E) (hP : Good R.toRealDat A3.A.μ0 P) (d : List ℤ) (hd : ¬ IsLab D.sp.X' P d) (x : (R.HX A3.A.μ0).H) :
@@ -216,7 +248,7 @@ theorem zer_lemma (R : RealDat3 D A3 Ks) (hX : Pl D.host.E → (List ℤ →₀ 
   apply heInj
   rw [hXops P hP, map_zero, hkF_single_of_not _ _ _ hd]
 
-set_option maxHeartbeats 4000000 in
+
 theorem opv_lemma (R : RealDat3 D A3 Ks) (F : Face3 D A3) (hCore : Core R.toRealDat F.lv2) (hIn : R.IsInert)
     (hAll : R.AllPlaces) (hX : Pl D.host.E → (List ℤ →₀ ℂ) → Module.End ℂ (R.HX A3.A.μ0).H)
     (hXops : GlobalTheory.Hk3.IsOpsX R.toRealDat A3.A.μ0 hX)
@@ -246,7 +278,7 @@ def muQ (Q : A3.okI A3.A.μ0) (q : A3.fam3.base3.Ix) (d : List ℤ) : ℂ :=
   if h : ∃ y, Formalism.L2.Col.InertTypeOk D.sp.X'.rank y ∧ d = labIn D.sp.X'.rank y then
     D.what₂.embLL (q.1.2 (Q.1, h.choose)) else 0
 
-set_option maxHeartbeats 4000000 in
+
 theorem mu_lemma (R : RealDat3 D A3 Ks) (F : Face3 D A3) (hCore : Core R.toRealDat F.lv2) (hIn : R.IsInert)
     (hAll : R.AllPlaces) (hX : Pl D.host.E → (List ℤ →₀ ℂ) → Module.End ℂ (R.HX A3.A.μ0).H)
     (hXops : GlobalTheory.Hk3.IsOpsX R.toRealDat A3.A.μ0 hX) (heInj : Function.Injective (R.HX A3.A.μ0).e)
@@ -268,7 +300,7 @@ theorem mu_lemma (R : RealDat3 D A3 Ks) (F : Face3 D A3) (hCore : Core R.toRealD
     exact zer_lemma R hX hXops heInj _ (tie2 R hIn hAll Q).1 d'
       (fun hl => h (labs _ _ _ hl (tie2 R hIn hAll Q).2)) v
 
-set_option maxHeartbeats 4000000 in
+
 theorem dir1 (R : RealDat3 D A3 Ks) (F : Face3 D A3) {s : ℕ} (hCore : Core R.toRealDat F.lv2)
     (hSchur : SchurAll R.toRealDat) (hSF : IsSF R.toRealDat R.SF) (hEEc : ∀ c, R.EEc c = EEc R.toRealDat R.SF c)
     (hInj : ∀ p, ∀ w ∈ R.EEp3 p, LinearMap.adjoint (R.Th A3.A.μ0) w = 0 → w = 0) (hIn : R.IsInert) (hAll : R.AllPlaces)
@@ -304,7 +336,7 @@ theorem dir1 (R : RealDat3 D A3 Ks) (F : Face3 D A3) {s : ℕ} (hCore : Core R.t
   · exact congrArg D.what₂.embLL (hp (Q, h.choose))
   · rfl
 
-set_option maxHeartbeats 4000000 in
+
 theorem dir2 (R : RealDat3 D A3 Ks) (F : Face3 D A3) {s : ℕ} (hCore : Core R.toRealDat F.lv2)
     (hSchur : SchurAll R.toRealDat) (hSF : IsSF R.toRealDat R.SF) (hEEc : ∀ c, R.EEc c = EEc R.toRealDat R.SF c)
     (hInj : ∀ p, ∀ w ∈ R.EEp3 p, LinearMap.adjoint (R.Th A3.A.μ0) w = 0 → w = 0) (hIn : R.IsInert) (hAll : R.AllPlaces)
@@ -370,7 +402,7 @@ theorem dir2 (R : RealDat3 D A3 Ks) (F : Face3 D A3) {s : ℕ} (hCore : Core R.t
 end Ctx3
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem inert_vals_iff_labels : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) {s : ℕ}, GlobalTheory.Chain.LiftInteg D → A3.fam3.Ok3 s → R.WeakCharacterisation F → R.toRealDat.ExAt → SchurAll R.toRealDat → (∀ P, Good R.toRealDat A3.A.μ0 P → conjPl P = P → TwoSided R.toRealDat A3.A.μ0 P) → ((∀ t (k : A3.okI t × List ℕ), A3.heckeRI t k = 0 ∨ ∃ y, Formalism.L2.Col.InertTypeOk (A3.A.fam.R t).n y ∧ A3.heckeRI t k = A3.heckeRI t (k.1, y)) ∧ ∀ j t (k : A3.okI t × List ℕ), A3.heckeLI j t k = 0 ∨ ∃ y, Formalism.L2.Col.InertTypeOk (A3.A.fam.L j t).n y ∧ A3.heckeLI j t k = A3.heckeLI j t (k.1, y)) → (∀ p, ∀ w ∈ R.EEp3 p, LinearMap.adjoint (R.Th A3.A.μ0) w = 0 → w = 0) → ∀ (i : Fin D.R.m) (p p' : A3.fam3.base3.Ix) c c', R.Carries p c → R.Carries p' c' → ((∀ k : A3.okI A3.A.μ0 × List ℕ, p.1.2 (k.1.1, k.2) = p'.1.2 (k.1.1, k.2)) ↔ (∀ P d, Good R.toRealDat A3.A.μ0 P → conjPl P = P → IsLab (Wc D i) P d → c P d = c' P d)) := by
   intro D G _ _ Pl0 I0 T A3 Ks _ _ _ R F s hLI hOk hCW hEx hSchur hTS hJunk hInj i p p' c c' hc hc'
   obtain ⟨hCore, hSF, hEEc, -⟩ := GlobalTheory.CoreOfWeak.core_of_weak R F hCW hEx

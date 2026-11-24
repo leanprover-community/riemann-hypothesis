@@ -1,7 +1,45 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AtlasGroupActions.AtlasOf
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.BocksteinBaseChangeP
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.AtlasGroupActions.LimSurjFil
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -19,44 +57,49 @@ namespace GlueB'
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (Amp : ∀ M : Model l K, E.LineData M.X → Prop)
 
 theorem f_act (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (j : ℕ) (σ : K.fixingSubgroup) (x : ((dat Amp).H a).N j) :
-    bβ Amp hC a j (((dat Amp).H a).act j σ x) = ((dat Amp).A a).act j σ (bβ Amp hC a j x) :=
-  GlueBL.lim_sq (βS hC (B.schFn M.p) (okToOC l K) false j) (βS hC (B.schFn M.p) (okToOC l K) false j)
-    (M.galH false j (IntermediateField.fixingSubgroupEquiv K σ)) (M.galS j (IntermediateField.fixingSubgroupEquiv K σ))
-    (fun n y => hC.gal (B.schFn M.p) (okToOC l K) (IntermediateField.fixingSubgroupEquiv K σ) (galOC_okToOC _) false n j y) x
+    bβ Amp hC a j (((dat Amp).H a).act j σ x) = ((dat Amp).A a).act j σ (bβ Amp hC a j x) := by
+  let g := IntermediateField.fixingSubgroupEquiv K σ
+  refine Subtype.ext (funext fun n => ?_)
+  exact hC.gal (B.schFn M.p) (okToOC l K) g (galOC_okToOC g) false n j
+    ((show (M.HS false j).lim from x).1 n)
 
 theorem f_act' (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (j : ℕ) (σ : K.fixingSubgroup) (x : ((dat Amp).H' a).N j) :
-    bβ' Amp hC a j (((dat Amp).H' a).act j σ x) = ((dat Amp).A a).act j σ (bβ' Amp hC a j x) :=
-  GlueBL.lim_sq (βS hC (B.schFn M.p) (okToOC l K) true j) (βS hC (B.schFn M.p) (okToOC l K) true j)
-    (M.galH true j (IntermediateField.fixingSubgroupEquiv K σ)) (M.galS j (IntermediateField.fixingSubgroupEquiv K σ))
-    (fun n y => hC.gal (B.schFn M.p) (okToOC l K) (IntermediateField.fixingSubgroupEquiv K σ) (galOC_okToOC _) true n j y) x
+    bβ' Amp hC a j (((dat Amp).H' a).act j σ x) = ((dat Amp).A a).act j σ (bβ' Amp hC a j x) := by
+  let g := IntermediateField.fixingSubgroupEquiv K σ
+  refine Subtype.ext (funext fun n => ?_)
+  exact hC.gal (B.schFn M.p) (okToOC l K) g (galOC_okToOC g) true n j
+    ((show (M.HS true j).lim from x).1 n)
 
 theorem f_phi' (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (j : ℕ) (x : ((dat Amp).H' a).N j) :
-    bβ' Amp hC a j ((dat Amp).phi' a j x) = (dat Amp).phiA a j (bβ' Amp hC a j x) :=
-  GlueBL.lim_sq (βS hC (B.schFn M.p) (okToOC l K) true j) (βS hC (B.schFn M.p) (okToOC l K) true j)
-    (M.phiH j) (M.phiS j) (fun n y => hC.phi (B.schFn M.p) (okToOC l K) n j y) x
+    bβ' Amp hC a j ((dat Amp).phi' a j x) = (dat Amp).phiA a j (bβ' Amp hC a j x) := by
+  refine Subtype.ext (funext fun n => ?_)
+  exact hC.phi (B.schFn M.p) (okToOC l K) n j ((show (M.HS true j).lim from x).1 n)
 
 theorem f_nat (hC : B.Compat l) {M N : Model l K} {u : M.X ⟶ N.X} {hu : u ≫ N.p = M.p} {a : (dat Amp).Ch M}
     {b : (dat Amp).Ch N} (m : (dat Amp).Mo u hu a b) (j : ℕ) (x : ((dat Amp).H b).N j) :
-    bβ Amp hC a j ((dat Amp).pullH m j x) = (dat Amp).pullA m j (bβ Amp hC b j x) :=
-  GlueBL.lim_sq (βS hC (B.schFn N.p) (okToOC l K) false j) (βS hC (B.schFn M.p) (okToOC l K) false j)
-    (Model.pullH u hu false j) (Model.pullS u hu j) (fun n y => hC.pull (okToOC l K) (B.schMap u hu) false n j y) x
+    bβ Amp hC a j ((dat Amp).pullH m j x) = (dat Amp).pullA m j (bβ Amp hC b j x) := by
+  refine Subtype.ext (funext fun n => ?_)
+  exact hC.pull (okToOC l K) (B.schMap u hu) false n j ((show (N.HS false j).lim from x).1 n)
 
 theorem f_nat' (hC : B.Compat l) {M N : Model l K} {u : M.X ⟶ N.X} {hu : u ≫ N.p = M.p} {a : (dat Amp).Ch M}
     {b : (dat Amp).Ch N} (m : (dat Amp).Mo u hu a b) (j : ℕ) (x : ((dat Amp).H' b).N j) :
-    bβ' Amp hC a j (datPull Amp m j x) = (dat Amp).pullA m j (bβ' Amp hC b j x) :=
-  GlueBL.lim_sq (βS hC (B.schFn N.p) (okToOC l K) true j) (βS hC (B.schFn M.p) (okToOC l K) true j)
-    (Model.pullH u hu true j) (Model.pullS u hu j) (fun n y => hC.pull (okToOC l K) (B.schMap u hu) true n j y) x
+    bβ' Amp hC a j (datPull Amp m j x) = (dat Amp).pullA m j (bβ' Amp hC b j x) := by
+  refine Subtype.ext (funext fun n => ?_)
+  exact hC.pull (okToOC l K) (B.schMap u hu) true n j ((show (N.HS true j).lim from x).1 n)
 
 theorem f_cup (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) {i j : ℕ} (x : ((dat Amp).H a).N i)
     (y : ((dat Amp).H a).N j) (z : ((dat Amp).H a).N (i + j)) (hz : ((dat Amp).H a).cup x y z) :
     ((dat Amp).A a).cup (bβ Amp hC a i x) (bβ Amp hC a j y) (bβ Amp hC a (i + j) z) :=
   GlueBL.lim_cup (fun j => βS hC (B.schFn M.p) (okToOC l K) false j)
-    (fun n i j x y => hC.cup (B.schFn M.p) (okToOC l K) false n rfl x y) x y z hz
+    (fun n _ _ x y => hC.cup (B.schFn M.p) (okToOC l K) false n rfl x y) x y z hz
 
 theorem f_one (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (x : ((dat Amp).H a).N 0) (hx : ((dat Amp).H a).one x) :
-    ((dat Amp).A a).one (bβ Amp hC a 0 x) :=
-  GlueBL.lim_one (fun j => βS hC (B.schFn M.p) (okToOC l K) false j)
-    (fun n => hC.one (B.schFn M.p) (okToOC l K) false n) x hx
+    ((dat Amp).A a).one (bβ Amp hC a 0 x) := by
+  intro n
+  let F := B.schFn M.p
+  let κ := okToOC l K
+  exact (congrArg (fun v : M.Hc false n 0 => B.β F κ false n 0 v) (hx n)).trans
+    (hC.one F κ false n)
 
 theorem first_chern_compat_glue (hC : B.Compat l) (h1 : B.FirstChernCompatible l) {M : Model l K} (a : (dat Amp).Ch M) (x : ((dat Amp).H a).N 2)
     (hx : (dat Amp).c1H a x) : (dat Amp).c1A a (bβ Amp hC a 2 x) :=
@@ -83,7 +126,7 @@ def bphi (hMain : B.Main l) (hC : B.Compat l) (h1 : B.FirstChernCompatible l) : 
 
 end GlueB'
 
-theorem glueB : GlueB := fun l _ K Amp hMain hC h1 =>
+theorem glueB : GlueB := fun _ _ _ Amp hMain hC h1 =>
   ⟨GlueB'.bmap Amp hMain hC h1, GlueB'.bphi Amp hMain hC h1, rfl⟩
 
 end CrystallineSemistableComparison

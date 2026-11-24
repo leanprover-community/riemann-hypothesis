@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ABHNPrep
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteSetOfNsmulEqZeroQZ
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 
 @[expose] public section
 
@@ -108,7 +108,7 @@ theorem exists_nsmul_eq_localPrimaryKernel (hK : ℓ ≠ 2 ∨ IsTotallyComplex 
     rw [AddEquiv.apply_symm_apply, sub_self]
 
 
-set_option maxHeartbeats 1000000 in
+
 include hℓ hS in
 theorem exists_nsmul_eq_h2SUnits (hK : ℓ ≠ 2 ∨ IsTotallyComplex K.1)
     (y : AddCommGroup.primaryComponent (cohomology (galSUnitsMax K.1 (AlgebraicClosure ℚ) S) 2) ℓ) :

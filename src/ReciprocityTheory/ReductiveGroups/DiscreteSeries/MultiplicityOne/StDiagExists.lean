@@ -1,7 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDefs
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.TransposeUnitary
+public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 
 @[expose] public section
 

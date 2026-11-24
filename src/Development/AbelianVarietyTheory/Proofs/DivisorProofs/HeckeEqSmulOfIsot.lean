@@ -1,16 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinRepApply
 public import Development.AbelianVarietyTheory.Definitions.Divisors.InstCMHostS
-public import Formalism.LocalToGlobal.IndefiniteReal.PartsRow
-public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
-public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
+public import Formalism.LocalToGlobal.IndefiniteReal.ConjSubConjSub
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
 
 @[expose] public section
 
@@ -46,8 +81,8 @@ theorem avg_fixed (ρ : G →* Module.End ℂ A) {x : A} (hx : ∀ s ∈ S, ρ s
     have e : k * q.out = (k • q).out * (((k • q).out)⁻¹ * (k * q.out)) := by group
     have e2 : ρ k (ρ q.out x) = ρ (k * q.out) x := by rw [map_mul]; rfl
     rw [e2, e, map_mul, Module.End.mul_apply, hx _ hmem]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [avg, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, key]
+
+  simp only [avg, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, key]
   congr 1
   exact Equiv.sum_comp (MulAction.toPerm k) (fun q : G ⧸ S => ρ q.out x)
 
@@ -58,8 +93,8 @@ theorem avg_of_fixed (ρ : G →* Module.End ℂ A) {y : A} (hy : ∀ k, ρ k y 
 
 theorem avg_map (ρ : G →* Module.End ℂ A) (ρ' : G →* Module.End ℂ B) (Φ : A →ₗ[ℂ] B)
     (h : ∀ g a, Φ (ρ g a) = ρ' g (Φ a)) (a : A) : Φ (avg S ρ a) = avg S ρ' (Φ a) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [avg, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, h]
+
+  simp only [avg, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, h]
 
 end Avg
 
@@ -235,8 +270,8 @@ theorem hecke_eq_smul_of_isot : ∀ {D : D7} {V : HSp D} {n : ℕ} (hF : D.host.
       apply Subtype.ext
       rw [Submodule.coe_sum]
       simpa [principalLevelFrame.Hecke₃, principalLevelFrame.heckeG, LinearMap.sum_apply, piRep_coe] using h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hOn, ← map_smul, ← h2, map_sum]
+
+    rw [hOn, ← map_smul, ← h2, map_sum]
     exact Finset.sum_congr rfl fun γ _ => (hE _ x).symm
   let W : Submodule ℂ (MMap M) := Submodule.span ℂ {T | ∃ Φ : π.S →ₗ[ℂ] MMap M, principalLevelFrame.IsEqvA (principalLevelFrame.actM Q M) π Φ ∧ ∃ x : π.S,
       (∀ κ, Q.ψ κ ∈ hyp V Pr → Formalism.L2.NG.rt D.host.E n κ (x : Formalism.AUTREP.GAf D.host.E n → ℂ) = x) ∧ T = Φ x}

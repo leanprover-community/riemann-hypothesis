@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesMultiplicativeShiftCompAndSubst
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffShiftS
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -26,36 +68,7 @@ theorem continuous_zc : Continuous (zc : ℤ_[q] → ℂ_[q]) := by
   simp [zc]
 
 theorem norm_sub_one_lt_of_root {ζ : ℂ_[q]} {n : ℕ} (h : ζ ^ (q ^ n) = 1) : ‖ζ - 1‖ < 1 := by
-  have hp : q.Prime := Fact.out
-  have hn : q ^ n ≠ 0 := pow_ne_zero _ hp.ne_zero
-  have h1 : ‖ζ‖ = 1 := by
-    have := congrArg norm h
-    rw [norm_pow, norm_one] at this
-    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn).mp this
-  let O : Subring ℂ_[q] :=
-    { carrier := {x | ‖x‖ ≤ 1}
-      mul_mem' := fun {a b} ha hb => by
-        show ‖a * b‖ ≤ 1
-        rw [norm_mul]; exact mul_le_one₀ ha (norm_nonneg _) hb
-      one_mem' := by simp
-      add_mem' := fun {a b} ha hb => (IsUltrametricDist.norm_add_le_max a b).trans (max_le ha hb)
-      zero_mem' := by simp
-      neg_mem' := fun {a} ha => by simpa using ha }
-  have hz : ζ ∈ O := h1.le
-  obtain ⟨r, hr⟩ := exists_add_pow_prime_pow_eq hp ((⟨ζ, hz⟩ : O) - 1) 1 n
-  have hr' := congrArg (fun x : O => (x : ℂ_[q])) hr
-  simp only [sub_add_cancel] at hr'
-  push_cast at hr'
-  have hq : ‖(q : ℂ_[q])‖ < 1 := by
-    rw [← zc_natCast, norm_zc]; exact Padic.norm_p_lt_one
-  have e : (ζ - 1) ^ q ^ n = -((q : ℂ_[q]) * ((ζ - 1) * r)) := by
-    rw [h, one_pow] at hr'
-    linear_combination -hr'
-  have hm : ‖(ζ - 1) * r‖ ≤ 1 := O.mul_mem (O.sub_mem hz O.one_mem) r.2
-  have : ‖ζ - 1‖ ^ q ^ n < 1 := by
-    rw [← norm_pow, e, norm_neg, norm_mul]
-    exact (mul_le_of_le_one_right (norm_nonneg _) hm).trans_lt hq
-  exact (pow_lt_one_iff_of_nonneg (norm_nonneg _) hn).mp this
+  apply GlobalTheory.MomOne.ShiftComp.norm_sub_one_lt_of_root <;> assumption
 
 theorem continuous_redFun (r : ℕ) (g : ZMod (q ^ r) → ℂ_[q]) :
     Continuous fun a : ℤ_[q] => g (PadicInt.toZModPow r a) := by
@@ -131,8 +144,8 @@ theorem twisted_moments : ∀ (q : ℕ) [Fact q.Prime] (S : ℂ_[q]⟦X⟧) (ζ 
   have := hasSum_coeff_iter hζ hS k 0
   rw [coeff_zero_eq_constantCoeff] at this
   convert this using 3 with m
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [fwdDiff_iter_eq_sum_shift, sS_pow_eq, DT_iter_sum, map_sum]
+
+  rw [fwdDiff_iter_eq_sum_shift, sS_pow_eq, DT_iter_sum, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   have e : (0 : ℤ_[q]) + j • (1 : ℤ_[q]) = (j : ℤ_[q]) := by simp
   rw [e]

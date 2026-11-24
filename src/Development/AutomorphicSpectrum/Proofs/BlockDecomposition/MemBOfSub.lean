@@ -1,10 +1,44 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormUniq
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.NLeA
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ChartGrConst
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FirstChernCoboundary
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.TotPairing
 
 @[expose] public section
 
@@ -33,11 +67,6 @@ theorem cls_surj (K : Cx.{w} R) (n : ℕ) (c : K.H n) : ∃ x hx, K.cls x hx = c
 theorem cls_eq_zero (K : Cx.{w} R) {n : ℕ} (x : K.X n) (hx : K.d n x = 0) : K.cls x hx = 0 ↔ x ∈ K.B n := by
   unfold Cx.cls
   rw [Submodule.Quotient.mk_eq_zero]
-  rfl
-
-theorem cls_congr (K : Cx.{w} R) {n : ℕ} {x y : K.X n} (e : x = y) (hx : K.d n x = 0) (hy : K.d n y = 0) :
-    K.cls x hx = K.cls y hy := by
-  subst e
   rfl
 
 theorem mem_B_of_sub {n : ℕ} (h : Subsingleton (K.H n)) (x : K.X n) (hx : K.d n x = 0) : x ∈ K.B n :=
@@ -214,7 +243,7 @@ theorem secM_nat (t : AD K L) (t' : AD K' L') (f : Cx.Hom K K' (RingHom.id R)) (
     obtain ⟨b, hb, rfl⟩ := cls_surj L c z
     have e : (inc t').f c (g.f c b) = (coneHom t t' f g hc).f c ((inc t).f c b) :=
       Prod.ext rfl (by change 0 = f.f c 0; rw [map_zero])
-    exact cls_congr _ e _ _
+    exact _root_.CrystallineSemistableComparison.Auxff.cls_congr _ e _ _
   obtain ⟨x, hx, rfl⟩ := cls_surj K c y
   change (sec u').mapH c (f.mapH c (K.cls x hx)) + (inc t').mapH c (l' (f.mapH c (K.cls x hx))) =
     (coneHom t t' f g hc).mapH c ((sec u).mapH c (K.cls x hx) + (inc t).mapH c (l (K.cls x hx)))
@@ -222,7 +251,7 @@ theorem secM_nat (t : AD K L) (t' : AD K' L') (f : Cx.Hom K K' (RingHom.id R)) (
   congr 1
   have e : (sec u').f c (f.f c x) = (coneHom t t' f g hc).f c ((sec u).f c x) :=
     Prod.ext (by change -(u'.h c (f.f c x)) = g.f c (-(u.h c x)); rw [hu, map_neg]) rfl
-  exact cls_congr _ e _ _
+  exact _root_.CrystallineSemistableComparison.Auxff.cls_congr _ e _ _
 
 end Basic
 
@@ -366,8 +395,8 @@ theorem cech_nat (P Q : PM.{w} R ι) (f : ∀ S, P.M S →ₗ[R] Q.M S)
     (hf : ∀ {S T : Finset ι} (h : S ⊆ T) x, f T (P.res h x) = Q.res h (f S x)) (n : ℕ) (x : P.cech.X n) :
     Q.cech.d n (fun i => f _ (x i)) = fun i => f _ (P.cech.d n x i) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [cech_d, cech_d, map_sum]
+
+  rw [cech_d, cech_d, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_zsmul, hf]
 

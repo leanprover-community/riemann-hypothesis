@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsPiola
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StMaDensLogPow
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensChain
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
 
 @[expose] public section
 

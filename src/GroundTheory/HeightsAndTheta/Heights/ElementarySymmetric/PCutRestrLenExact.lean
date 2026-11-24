@@ -1,14 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StCutRestrLenExact
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionMulInj
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeAway
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSurjectiveClosed
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropFiltStep
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionMulInj
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeAway
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSurjectiveClosed
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PZeroIdealChart
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

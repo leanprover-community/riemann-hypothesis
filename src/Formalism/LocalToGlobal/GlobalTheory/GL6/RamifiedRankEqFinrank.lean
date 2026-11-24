@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
-public import Formalism.LogVandermondeBounds.LogVandermondeProofs.MulSingleMulApplySelf
+public import Formalism.LocalRingCardinality.DataKernels
 
 @[expose] public section
 

@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionMulInjSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeAway
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeOnWGen
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.PosCompatOfBase
-public import Formalism.LocalToGlobal.HermitianColumns.StarConj
 
 @[expose] public section
 

@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.GKTensor
-public import GroundTheory.AutomorphicForms.GKModules.Casimir
+public import GroundTheory.AutomorphicForms.GKModules.ZKFinite
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Charpoly.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -106,8 +110,8 @@ theorem σ_mul_casimirOp [DecidableEq ι] (M : h.GKModule K V)
     have e2 := congrArg A e
     rw [AdLie_AdLie_inv] at e2
     conv_lhs => rw [e2]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul]
     congr 2
@@ -116,8 +120,8 @@ theorem σ_mul_casimirOp [DecidableEq ι] (M : h.GKModule K V)
   have hsum : ∀ j l, ∑ i, ε i * B (b j) (f i) * B (b l) (f i) = B (b j) (b l) := by
     intro j l
     conv_rhs => rw [hexp (b l)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_congr rfl]
+
+    rw [map_sum, Finset.sum_congr rfl]
     intro i _
     rw [map_smul, smul_eq_mul]
     ring
@@ -125,8 +129,8 @@ theorem σ_mul_casimirOp [DecidableEq ι] (M : h.GKModule K V)
   have hρf : ∀ i, M.ρ (f i) = ∑ j, (ε j * B (b j) (f i)) • M.ρ (b j) := by
     intro i
     conv_lhs => rw [eq_sum_of_orthogonal hε horth (f i)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul]
   have hcas : ∑ i, ε i • (M.ρ (f i) * M.ρ (f i)) = casimirOp M b ε := by
@@ -313,8 +317,8 @@ theorem aeval_eq_zero_of_equiv (M : h.GKModule K V) {ι : Type*} [Fintype ι]
       show (∑ i, M.ρ (Z i) * M.ρ (Z i)) (w : V) = _
       rw [LinearMap.sum_apply]
       rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum, LinearMap.sum_apply]
+
+    rw [e, map_sum, LinearMap.sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Module.End.mul_apply]
     rw [map_ρ_of_equivariant M hFs fm hfm (hZ i) ⟨_, ρ_mem_of_stable M hFs (hZ i) w.2⟩,

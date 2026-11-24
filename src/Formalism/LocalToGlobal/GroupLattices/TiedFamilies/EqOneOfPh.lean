@@ -1,10 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.NatActRVtupR
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.FramesTr
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmApply
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.JPMemAwayP
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ValUniqOf
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmApply
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 
 @[expose] public section
 

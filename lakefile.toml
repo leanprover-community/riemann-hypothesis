@@ -3,7 +3,7 @@ platformIndependent = true
 
 name = "tree"
 srcDir = "src"
-defaultTargets = ["CompanionTheory", "Development", "Formalism", "GroundTheory", "GroundTheoryFields", "Lemmata", "PositivityTheory", "ReciprocityTheory", "Supplements", "Main"]
+defaultTargets = ["CompanionTheory", "Development", "Formalism", "GroundTheory", "GroundTheoryFields", "Lemmata", "PositivityTheory", "ReciprocityTheory", "Main"]
 moreLeanArgs = ["--tstack=400000"]
 
 [leanOptions]
@@ -16,7 +16,7 @@ maxHeartbeats = 4000000
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
-rev = "fc4f59e577feb1a4956671bc04ac18aaaf8cd842"
+rev = "31ce06eaadf4a200c0e1407c5f10953cf606b8f8"
 
 [[lean_lib]]
 name = "CompanionTheory"
@@ -50,10 +50,6 @@ globs = ["PositivityTheory.+"]
 [[lean_lib]]
 name = "ReciprocityTheory"
 globs = ["ReciprocityTheory.+"]
-
-[[lean_lib]]
-name = "Supplements"
-globs = ["Supplements.+"]
 
 [[lean_lib]]
 name = "Main"

@@ -1,8 +1,48 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfDict
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfB
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdCondition
+public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfB
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -67,7 +107,7 @@ theorem framepf_hyp_local (e s' : ℕ) (hs : 1 ≤ s') (π' : LetA O n) (E : ZMo
 end Local
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem frame_uniformiser_unit_multiple (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (h1 : adm1 D HW F Cm) (l : ℕ) [hpf : Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL))
@@ -92,7 +132,7 @@ theorem ramification_quotient_pos (l : ℕ) [hpf : Fact l.Prime] (hl : l ≠ 2) 
   exact (Nat.one_le_div_iff he0).mpr (Nat.le_of_dvd hl1 hd)
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem framepf_hyp_arith (D : D7) (HW : HWOf D.loc) (l : ℕ) [hpf : Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL) (h' : ℕ) (hs : 1 ≤ sK l K) :
     (∀ y : ℕ, 1 ≤ y → (((((HW l).W K 1 LL hG).χΓ ((HW l).W K 1 LL hG).gam : (↥(OL LL))ˣ) : ↥(OL LL)) ^ sK l K) ^ y ≠ 1) ∧
@@ -141,7 +181,7 @@ theorem framepf_hyp_arith (D : D7) (HW : HWOf D.loc) (l : ℕ) [hpf : Fact l.Pri
     exact ha
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem framepf_hyps (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (h1 : adm1 D HW F Cm) (l : ℕ) [hpf : Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL) (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))

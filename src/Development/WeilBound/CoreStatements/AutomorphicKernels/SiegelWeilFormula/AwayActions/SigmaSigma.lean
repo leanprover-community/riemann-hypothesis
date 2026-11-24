@@ -1,18 +1,13 @@
 module
 
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AdDecomp
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SplitLocF
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemClosureHeckeSplitCongruenceOfFinPartOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilDatumTwistByHeckeCharactersTrivialBase
-public import Development.WeilBound.ThetaLifts.LatticeBasics.ConstIdele
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 
 @[expose] public section
 
 noncomputable section
 
 open scoped TensorProduct Matrix
-open NumberField Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open NumberField Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 namespace PositivityTheory.SiegelWeilFormula.KAway
 
@@ -22,28 +17,8 @@ theorem cA_inclR (e : E) : cA σ (inclR (F := F) (AF F) e) = inclR (F := F) (AF 
   unfold cA inclR
   simp [Algebra.TensorProduct.includeRight_apply]
 
-private theorem isHecke_div_and_resEtaPow_div (hcm : IsCMExt F E σ) (a : E) : σ (σ a) = a := by
-  unfold IsCMExt at hcm
-  obtain ⟨-, -, -, h⟩ := hcm
-  let τ : E →+* ℂ := (IsAlgClosed.lift (R := ℚ) (S := E) (M := ℂ)).toRingHom
-  apply τ.injective
-  rw [h, h, star_star]
-
-theorem cA_cA (hcm : IsCMExt F E σ) (z : AE F E) : cA σ (cA σ z) = z := by
-  have hσσ := isHecke_div_and_resEtaPow_div hcm
-  unfold cA
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a b => simp [hσσ]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
-theorem sigma_sigma' (hcm : IsCMExt F E σ) (a : E) : σ (σ a) = a := by
-  let τ : E →+* ℂ := (IsAlgClosed.lift (M := ℂ) (R := ℚ) (S := E)).toRingHom
-  apply τ.injective
-  rw [hcm.2.2.2 τ, hcm.2.2.2 τ, star_star]
-
-private theorem isPair_and_isPair_of_isTriple (hcm : IsCMExt F E σ) : ∃ δ : E, δ ≠ 0 ∧ σ δ = -δ := by
-  have hσσ := isHecke_div_and_resEtaPow_div hcm
+theorem exists_delta (hcm : IsCMExt F E σ) : ∃ δ : E, δ ≠ 0 ∧ σ δ = -δ := by
+  have hσσ := _root_.GlobalTheory.AdelicU.cm_conj_conj hcm
   unfold IsCMExt at hcm
   obtain ⟨-, hE, -, h⟩ := hcm
   by_contra hne
@@ -67,7 +42,7 @@ private theorem isPair_and_isPair_of_isTriple (hcm : IsCMExt F E σ) : ∃ δ : 
 
 private theorem exists_trace_zero_generator_of_isCMExt (hcm : IsCMExt F E σ) :
     ∃ δ : E, δ ≠ 0 ∧ σ δ = -δ ∧ ∀ e : E, ∃ s t : F, e = algebraMap F E s + t • δ := by
-  obtain ⟨δ, hδ0, hδ⟩ := isPair_and_isPair_of_isTriple hcm
+  obtain ⟨δ, hδ0, hδ⟩ := exists_delta hcm
   have hrank : Module.finrank F E = 2 := by
     unfold IsCMExt at hcm
     exact hcm.2.2.1
@@ -115,10 +90,6 @@ theorem sigma_fix (hcm : IsCMExt F E σ) (e : E) : σ e = e ↔ e ∈ (algebraMa
     exact ⟨s, by simp [ht]⟩
   · rintro ⟨f, rfl⟩
     exact σ.commutes f
-
-theorem exists_delta (hcm : IsCMExt F E σ) : ∃ δ : E, δ ≠ 0 ∧ σ δ = -δ := by
-  obtain ⟨δ, h1, h2⟩ := Formalism.IndefR.Fin.U1.exists_delta σ (sigma_sigma' hcm) (sigma_fix hcm) hcm.2.2.1
-  exact ⟨δ, h2, h1⟩
 
 theorem nrm_exists (hcm : IsCMExt F E σ) (z : AE F E) : ∃ a : AF F, algebraMap (AF F) (AE F E) a = z * cA σ z := by
   obtain ⟨δ, hδ0, hδ, hdec⟩ := exists_trace_zero_generator_of_isCMExt hcm

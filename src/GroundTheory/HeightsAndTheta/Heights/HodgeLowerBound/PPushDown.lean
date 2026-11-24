@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPushDown
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFStep
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PfAtZero
 
 @[expose] public section

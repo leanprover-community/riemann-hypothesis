@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LocalAxiomDictionary
-public import GroundTheory.LocalFields.HerbrandLocal
 public import GroundTheory.LocalFields.MaximalUnramified
+public import Mathlib.FieldTheory.Galois.Profinite
+public import GroundTheory.LocalFields.HerbrandLocal
 public import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.LocalFields.SeparableClosureValuation
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

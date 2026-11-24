@@ -1,6 +1,48 @@
 module
 
 public import Formalism.SatakeDualWeyl.Statement
+public import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -11,7 +53,6 @@ open Matrix
 theorem sigex_cT_conj_eq {m p : Type} (M : Matrix m p ℂ) : Formalism.UG.cT (starRingEnd ℂ) M = Mᴴ := by
   first
     | rfl
-    | (ext i j; simp [Formalism.UG.cT, Matrix.conjTranspose_apply])
 
 noncomputable def scal {n : Type} (ev : n → ℝ) : n → ℂ := fun i => (((Real.sqrt |ev i|)⁻¹ : ℝ) : ℂ)
 
@@ -47,7 +88,6 @@ theorem herm_diag {n : Type} [Fintype n] [DecidableEq n] {J : Matrix n n ℂ}
       (hJ.eigenvectorUnitary : Matrix n n ℂ)) hJ.spectral_theorem
     first
       | simp only [Unitary.conjStarAlgAut_apply, Matrix.star_eq_conjTranspose] at h1
-      | simp only [Unitary.conjStarAlgAut, Matrix.star_eq_conjTranspose] at h1
     rw [h1, ← Matrix.mul_assoc, ← Matrix.mul_assoc, hU, Matrix.one_mul, Matrix.mul_assoc, hU, Matrix.mul_one]
   calc _ = diagonal (scal hJ.eigenvalues) * (((hJ.eigenvectorUnitary : Matrix n n ℂ))ᴴ * J *
           (hJ.eigenvectorUnitary : Matrix n n ℂ)) * diagonal (scal hJ.eigenvalues) := by
@@ -94,12 +134,12 @@ theorem signature_exists : Formalism.UG.SigExists := by
       ((Fintype.equivFin {i // 0 < hH.eigenvalues i}).symm a : n) := by
     intro a
     rw [he]
-    first | rfl | simp
+    first | rfl
   have hinr : ∀ a, e.symm (Sum.inr a) =
       ((Fintype.equivFin {i // ¬ 0 < hH.eigenvalues i}).symm a : n) := by
     intro a
     rw [he]
-    first | rfl | simp
+    first | rfl
   have hdetQ : IsUnit (reindex e e Q).det := by
     rw [Matrix.det_reindex_self, hQdef, Matrix.det_mul, Matrix.det_diagonal]
     refine IsUnit.mul (Matrix.isUnit_det_of_left_inverse hU) ?_
@@ -119,8 +159,8 @@ theorem signature_exists : Formalism.UG.SigExists := by
     split_ifs
     · rw [sign_pos ((Fintype.equivFin {i // 0 < hH.eigenvalues i}).symm a).2, Complex.ofReal_one]
     · rfl
-  · simp [Matrix.diagonal_apply]
-  · simp [Matrix.diagonal_apply]
+  · simp
+  · simp
   · simp only [Matrix.fromBlocks_apply₂₂, Matrix.diagonal_apply, Function.comp_apply, hinr,
       Sum.inr.injEq, Matrix.neg_apply, Matrix.one_apply]
     split_ifs

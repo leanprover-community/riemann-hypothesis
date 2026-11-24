@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceInst
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
 
 @[expose] public section
 

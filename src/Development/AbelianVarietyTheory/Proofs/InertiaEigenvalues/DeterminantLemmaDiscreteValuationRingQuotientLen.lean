@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GlobalCore
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthCommensurableSpanSpanOfDetNeZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.OrderOfVanishing.Noetherian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -220,8 +262,8 @@ theorem exists_relations {A : Type} [Ring A] [Algebra O A] {d : ℕ} (ψ : A →
   choose θ hθ hθr using fun (p : Fin g) (a : Fin d) => hrN (p, a) a
   have hM : (Matrix.of fun (pa qb : Fin g × Fin d) => ψ ((∑ a, θ pa.1 a) qb.1) pa.2 qb.2) = Matrix.of r := by
     ext ⟨p, a⟩ ⟨q, b⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Finset.sum_apply, map_sum, Matrix.sum_apply, hθr]
+
+    simp [Finset.sum_apply, map_sum, Matrix.sum_apply, hθr]
   refine ⟨fun p => ∑ a, θ p a, fun p => Rel.sum_mem fun a _ => hθ p a, ?_⟩
   rw [hM]
   let π : (Fin g × Fin d → FractionRing O) →ₗ[O] (Fin g → KOG O d) :=
@@ -248,8 +290,8 @@ theorem exists_relations {A : Type} [Ring A] [Algebra O A] {d : ℕ} (ψ : A →
           (LinearMap.proj q : (Fin g → KOG O d) →ₗ[O] KOG O d)) (π y) =
         (stdG O (FractionRing O) d).mkQ
           (∑ q, ((ψ (t q)).map (algebraMap O (FractionRing O))).mulVec fun b => y (q, b)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [LinearMap.sum_apply, map_sum]
+
+      rw [LinearMap.sum_apply, map_sum]
       rfl
     rw [h1, Submodule.mkQ_apply, mk_eq_zero_iff]
     intro a

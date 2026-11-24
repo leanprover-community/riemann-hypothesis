@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.ScalG
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepLt
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepRec
+public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.LtCNeZero
 
 @[expose] public section
 

@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.ShareBallB
+public import Mathlib.Analysis.Matrix.PosDef
 
 @[expose] public section
 

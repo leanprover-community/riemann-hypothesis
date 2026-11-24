@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.DataLevel
 
 @[expose] public section
 

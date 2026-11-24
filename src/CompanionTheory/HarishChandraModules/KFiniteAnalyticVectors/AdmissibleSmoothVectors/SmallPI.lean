@@ -1,6 +1,9 @@
 module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.MapStdPoly
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 
 @[expose] public section
 

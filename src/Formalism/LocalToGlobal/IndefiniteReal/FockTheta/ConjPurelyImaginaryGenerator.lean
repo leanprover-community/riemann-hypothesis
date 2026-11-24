@@ -1,8 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.UnitBracket
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.InfFam
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumLemmas
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
+import Formalism.LocalToGlobal.IndefiniteReal.PHeisThA
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -42,8 +47,6 @@ theorem decR {R : Type} [CommRing R] [Algebra D.host.F R] (x : R ⊗[D.host.F] D
   have h0 : Eqv.basE D 0 = 1 := by
     first
     | exact Eqv.basE_zero D
-    | exact Eqv.basE_zero
-    | simp [Eqv.basE]
   conv_lhs => rw [← (basR D R).sum_repr x]
   simp [Fin.sum_univ_two, basR, Algebra.TensorProduct.basis_apply, h0, Eqv.basE_one, TensorProduct.smul_tmul']
 
@@ -52,8 +55,6 @@ theorem pair_eq_zero (R : Type) [CommRing R] [Algebra D.host.F R] (x y : R)
   have h0 : Eqv.basE D 0 = 1 := by
     first
     | exact Eqv.basE_zero D
-    | exact Eqv.basE_zero
-    | simp [Eqv.basE]
   have e0 : x ⊗ₜ[D.host.F] (1 : D.host.E) = x • basR D R 0 := by
     simp [basR, Algebra.TensorProduct.basis_apply, h0, TensorProduct.smul_tmul']
   have e1 : y ⊗ₜ[D.host.F] Eqv.alphaE D = y • basR D R 1 := by
@@ -611,7 +612,7 @@ theorem cont_symplOH_right (S T : HSp D) (x : WO S T) : Continuous fun y : WO S 
 
 theorem continuous_compAt {m n : ℕ} (ρ : D.what₂.Tau) : Continuous fun x : Mx D m n => compAt (Eqv.thetaC D) ρ x := by
   refine continuous_matrix fun i j => ?_
-  simp only [compAt, Matrix.of_apply, Matrix.map_apply]
+  simp only [compAt, Matrix.map_apply]
   exact (continuous_thC D ρ).comp (continuous_id.matrix_elem i j)
 
 theorem continuous_phR (v : V D T.rank S.rank) : Continuous fun x : WO S T => phR S T x v := by

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
+public import Mathlib.RingTheory.DedekindDomain.Different
+import Mathlib.Algebra.AffineMonoid.Basic
 
 @[expose] public section
 

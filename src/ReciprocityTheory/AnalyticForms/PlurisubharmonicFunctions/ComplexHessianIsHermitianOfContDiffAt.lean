@@ -1,6 +1,13 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 
@@ -87,8 +94,8 @@ theorem lv_sum_right (a v : Fin D → ℂ) :
   rw [← vec_eq_sum] at this
   simp only [map_smul, smul_eq_mul] at this
   have h := congrArg (starRingEnd ℂ) this
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [ℓ, LinearMap.coe_mk, AddHom.coe_mk, Complex.conj_conj, map_sum, map_mul] at h
+
+  simp only [ℓ, LinearMap.coe_mk, AddHom.coe_mk, Complex.conj_conj, map_sum, map_mul] at h
   exact h
 
 theorem lv_expand (u v : Fin D → ℂ) :
@@ -230,14 +237,14 @@ theorem fderiv_sum_normSq :
     ((sqForm D).hasFDerivAt_of_bilinear (hasFDerivAt_id w) (hasFDerivAt_id w)).fderiv
   rw [h]
   ext v
-  simp [add_comm]
+  simp
 
 theorem sqForm_single (i j : Fin D) (a b : ℂ) :
     sqForm D (Pi.single i a) (Pi.single j b) = if i = j then inner ℝ a b else 0 := by
   rw [sqForm_apply, Finset.sum_eq_single i]
   · by_cases h : i = j
     · subst h; simp
-    · simp [h, Pi.single_apply, Ne.symm h]
+    · simp [h]
   · intro k _ hk; simp [hk]
   · simp
 
@@ -257,9 +264,9 @@ theorem complexHessian_sum_normSq_coord (z : Fin D → ℂ) :
     ContinuousLinearMap.flip_apply, smul_single_one, sqForm_single]
   by_cases hij : i = j
   · subst hij
-    simp [Matrix.one_apply, Complex.inner]
+    simp [Complex.inner]
     norm_num
-  · simp [Matrix.one_apply, hij, Ne.symm hij]
+  · simp [hij, Ne.symm hij]
 
 end SqForm
 

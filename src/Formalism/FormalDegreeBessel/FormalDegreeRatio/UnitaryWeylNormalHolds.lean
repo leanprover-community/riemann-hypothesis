@@ -1,6 +1,53 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.MulVecApplyOfRow
 public import Formalism.FormalDegreeBessel.StatementG
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Complex.Trigonometric
 
 @[expose] public section
 
@@ -95,8 +142,8 @@ theorem hpk_row (i m : Fin (2 * r + k + 1)) :
   have hi := i.isLt
   have hm := m.isLt
   unfold Hpk tau sgn
-  simp only [Fin.ext_iff, Fin.val_mk]
-  split_ifs <;> first | rfl | omega | (exfalso; omega) | norm_num
+  simp only [Fin.ext_iff]
+  split_ifs <;> first | rfl | omega
 
 theorem hpk_mul_apply (A : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (i j : Fin (2 * r + k + 1)) : (Hpk k r * A) i j = sgn k r i * A (tau k r i) j := by
@@ -114,7 +161,7 @@ theorem tau_tau (i : Fin (2 * r + k + 1)) : tau k r (tau k r i) = i := by
 theorem sgn_tau (i : Fin (2 * r + k + 1)) : sgn k r (tau k r i) = sgn k r i := by
   have hi := i.isLt
   simp only [sgn, tau, Fin.val_mk]
-  split_ifs <;> first | rfl | omega | (exfalso; omega) | norm_num
+  split_ifs <;> first | rfl | omega
 
 theorem sgn_mul_self (i : Fin (2 * r + k + 1)) : sgn k r i * sgn k r i = 1 := by
   unfold sgn
@@ -222,7 +269,6 @@ theorem ell_mul (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z)
   · simp only [dif_neg h1]
     first
       | simp only [Matrix.mulVec, dotProduct]
-      | simp only [Matrix.mulVec, Matrix.dotProduct]
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun q _ => ?_)
     by_cases hq : q.val < r ∨ r + k < q.val
@@ -252,7 +298,6 @@ theorem additive_character_holds : PsiChar := by
     rw [mul_comm Complex.I]
     first
       | exact Complex.norm_exp_ofReal_mul_I _
-      | simp [Complex.norm_exp]
 
 namespace WeylGroupFacts
 
@@ -267,8 +312,6 @@ theorem col_of_fix {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
   first
     | (simp only [Matrix.mulVec, dotProduct, hb, mul_ite, mul_one, mul_zero,
         Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1; exact h1)
-    | simpa [Matrix.mulVec, dotProduct, hb] using h1
-    | simpa [Matrix.mulVec, Matrix.dotProduct, hb] using h1
 
 theorem row_of_fixed_col {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hU : h ∈ UH (Hpk k r)) (c : Fin (2 * r + k + 1))
@@ -301,22 +344,7 @@ theorem uw_fixed_col {z : Fin (2 * r + k + 1) → ℂ}
     {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z)
     (c : Fin (2 * r + k + 1)) (hc : c.val < r ∨ r + k < c.val) (p : Fin (2 * r + k + 1)) :
     h p c = if p = c then 1 else 0 := by
-  simp only [UWset, Set.mem_setOf_eq] at hh
-  obtain ⟨_, hfix, _⟩ := hh
-  rcases hc with hc | hc
-  · have e := (hfix ⟨c.val, hc⟩).1
-    have he : eI k r ⟨c.val, hc⟩ = c := Fin.ext rfl
-    rw [he] at e
-    exact col_of_fix e p
-  · have hcl := c.isLt
-    have hc' : 2 * r + k - c.val < r := by omega
-    have e := (hfix ⟨2 * r + k - c.val, hc'⟩).2
-    have he : esI k r ⟨2 * r + k - c.val, hc'⟩ = c := by
-      apply Fin.ext
-      show 2 * r + k - (2 * r + k - c.val) = c.val
-      omega
-    rw [he] at e
-    exact col_of_fix e p
+  apply WlocSk.UnitaryGroupBasics.uw_fixed_col <;> assumption
 
 theorem tau_out (i : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :
     (tau k r i).val < r ∨ r + k < (tau k r i).val := by
@@ -418,7 +446,6 @@ theorem mulVec_apply_of_row {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 
     (hrow : ∀ p, h i p = if i = p then 1 else 0) : (h *ᵥ v) i = v i := by
   first
     | simp only [Matrix.mulVec, dotProduct]
-    | simp only [Matrix.mulVec, Matrix.dotProduct]
   rw [Fintype.sum_eq_single i]
   · rw [hrow i, if_pos rfl, one_mul]
   · intro p hp

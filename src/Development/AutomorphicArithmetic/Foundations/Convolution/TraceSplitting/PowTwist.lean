@@ -1,13 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.NormCharSplit
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SubsingletonRankZero
-public import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.AbsRigClosed
-public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.EllipticTorusNorm
-public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite
-public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.AdUnique
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
+public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.EllipticTorusNorm
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SubsingletonRankZero
+public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.AdUnique
+public import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.SatakeTwists.SatakeTwistHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
+public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DenseRangeUnits
 
 @[expose] public section
 
@@ -266,27 +305,13 @@ section Conj
 open scoped NumberField.AdeleRing
 open Formalism.L2.Host
 
-private theorem denseInf (u : InfinitePlace K) :
-    DenseRange (algebraMap K u.Completion) := by
-  have h1 := (AbsoluteValue.Completion.denseRange_coe u.1)
-  refine h1.mono ?_
-  rintro _ ⟨x, rfl⟩
-  refine ⟨x.ofAbs, ?_⟩
-  rw [InfinitePlace.Completion.algebraMap_apply]
-
-private theorem normAlg (w : InfinitePlace K) (x : K) :
-    ‖algebraMap K w.Completion x‖ = w x :=
-  by
-    rw [InfinitePlace.Completion.algebraMap_apply]
-    exact AbsoluteValue.Completion.norm_coe (WithAbs.toAbs w.1 x)
-
 private theorem norm_infEquiv (j : K ≃+* K) (u : InfinitePlace K)
     (y : (u.comap j.toRingHom).Completion) : ‖CT.infEquiv j u y‖ = ‖y‖ := by
-  have h := (denseInf (u.comap j.toRingHom)).equalizer
+  have h := (_root_.GlobalTheory.FrobDense.denseRange_inf (u.comap j.toRingHom)).equalizer
     (continuous_norm.comp (CT.continuous_infEquiv j u)) continuous_norm (funext fun x => ?_)
   · exact congrFun h y
   simp only [Function.comp_apply]
-  rw [CT.infEquiv_algebraMap, normAlg, normAlg]
+  rw [CT.infEquiv_algebraMap, _root_.GlobalTheory.FrobDense.norm_inf, _root_.GlobalTheory.FrobDense.norm_inf]
   rfl
 
 private theorem mult_comap_equiv (j : K ≃+* K) (u : InfinitePlace K) :

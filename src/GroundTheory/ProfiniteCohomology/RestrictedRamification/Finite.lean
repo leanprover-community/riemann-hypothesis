@@ -1,14 +1,21 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteRoots
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeModules
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangePlaces
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Devissage
+public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassMapIdeleClassMap
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
+public import Mathlib.FieldTheory.KrullTopology
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FiniteCohomologyOfTrivialOfCyclic
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Devissage
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeModules
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteRoots
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeDefs
 
 @[expose] public section
 
@@ -186,7 +193,7 @@ theorem finite_cohomology_of_trivial_gs (W₀ : OpenSubgroup (galUnramifiedOutsi
     (A : Rep.{0} (ULift.{0} ℤ) (V : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) [IsDiscreteRep A]
     [Finite A] (htriv : ∀ (g : (V : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) (a : A), A.ρ g a = a)
     (hA : ∀ a : A, n • a = 0) (r : ℕ) (hr : r ≤ 2) : Finite (cohomology A r) :=
-  finite_cohomology_of_trivial_of_cyclic n r
+  _root_.UpperTheory.Reformulated.B.Gua5.finite_cohomology_of_trivial_of_cyclic n r
     (fun C _ _ _ hC1 hC2 => finite_cohomology_of_isAddCyclic_gs K S n hS W₀ hW₀ V hV C hC1 hC2 r hr)
     A htriv hA
 

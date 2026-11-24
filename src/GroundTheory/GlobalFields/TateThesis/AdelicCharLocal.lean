@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.AdelicChar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -183,7 +228,7 @@ theorem exists_sub_mem_adicCompletionIntegers_and_forall_ne (v : HeightOneSpectr
     (Valued.isOpen_valuationSubring (v.adicCompletion K)).preimage
       (continuous_const.sub continuous_id)
   obtain ⟨z, hz⟩ := (denseRange_algebraMap (K := K) v).exists_mem_open hU ⟨y, by simp⟩
-  obtain ⟨k, hkS, hkn⟩ := exists_valuation_sub_le_one {v} (fun _ => z)
+  obtain ⟨k, hkS, hkn⟩ := _root_.UpperTheory.Reformulated.B.ExistsValuationSubLeOne.exists_valuation_sub_le_one {v} (fun _ => z)
   refine ⟨k, ?_, fun u hu => ?_⟩
   · have h1 := (coe_mem_adicCompletionIntegers_iff v (k - z)).mpr (hkS v (Finset.mem_singleton_self v))
     have h2 : y - (k : v.adicCompletion K) =
@@ -307,8 +352,8 @@ theorem adelicChar_eq_prod (x : 𝔸[K]) :
       (mem_invDifferentAdeles.mpr (by rw [finiteAdeleInr_snd]; exact hrest)),
       finiteAdeleInr_fst, map_zero, neg_zero, AddChar.map_zero_eq_one]
   have h2 : adelicChar K (finiteAdeleInr f) = ∏ v ∈ S, localAdelicChar K v (x.2 v) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hfdef, map_sum, addChar_map_finsetSum]
+
+    rw [hfdef, map_sum, addChar_map_finsetSum]
     rfl
   have h3 : ∏ᶠ v, localAdelicChar K v (x.2 v) = ∏ v ∈ S, localAdelicChar K v (x.2 v) := by
     refine finprod_eq_prod_of_mulSupport_subset _ fun v hv => ?_

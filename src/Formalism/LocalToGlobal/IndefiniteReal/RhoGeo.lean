@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.OneMapEq
 public import Formalism.LocalToGlobal.IndefiniteReal.FWTie
+public import Formalism.LocalToGlobal.IndefiniteReal.OneMapT
 
 @[expose] public section
 

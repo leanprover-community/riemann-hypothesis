@@ -1,8 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionFractionalIdealProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -284,13 +333,13 @@ theorem _root_.GlobalTheory.AdLat.exists_integral_unit_root : ∀ (F E : Type) [
     push_neg at hcon
     choose cy hcy using fun j => _root_.GlobalTheory.AdLat.UnitRoot.conj_mem c _ ⟨Y j, rfl⟩
     have h1 : ∑ i, ρ (Y i) * m i = 1 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [m, mul_add, Finset.sum_add_distrib, mul_left_comm _ u, ← Finset.mul_sum,
-        ← map_mul, ← map_sum, hXY, hCXY, map_one, map_zero, mul_zero, add_zero]
+
+      simp only [m, mul_add, Finset.sum_add_distrib, mul_left_comm _ u, ← Finset.mul_sum,
+      ← map_mul, ← map_sum, hXY, hCXY, map_one, map_zero, mul_zero, add_zero]
     have h1' : ∑ j, ρ (cy j) * σ (m j) = 1 := by
       have := congrArg σ h1
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_one] at this
+
+      rw [map_sum, map_one] at this
       rw [← this]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [map_mul, hρ (Y j), hσ, ← hcy]
@@ -330,7 +379,6 @@ theorem _root_.GlobalTheory.AdLat.exists_integral_unit_root : ∀ (F E : Type) [
       (fun a b ha hb => hmulv a b ha.1 hb) Finset.univ
       (fun ij : Option (Fin n) × Option (Fin n) => p ij.1 ij.2)
       (fun ij : Option (Fin n) × Option (Fin n) => Y ij.1 * cy ij.2) hPv
-    beta_reduce at eN
     rw [hZ, map_one, mul_one, Algebra.TensorProduct.one_def] at eN
     have hN1 : N = 1 := (Algebra.TensorProduct.includeLeft_injective (R := F)
       (S := F) (A := FiniteAdeleRing (𝓞 F) F) (B := E) (algebraMap F E).injective eN).symm
@@ -372,10 +420,10 @@ theorem _root_.GlobalTheory.AdLat.exists_integral_unit_root : ∀ (F E : Type) [
     have hevv : ∀ a : FiniteAdeleRing (𝓞 F) F, ev v a = a v := fun _ => rfl
     have hev : ∀ q, e q v = if ij v = q then 1 else 0 := fun _ => rfl
     have hdv : d v = (p (ij v).1 (ij v).2 v)⁻¹ := rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul]
+
+    simp only [map_sum, map_mul]
     simp only [hevv, hev, hdv, ite_mul, one_mul, zero_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
     exact inv_mul_cancel₀ (hne v)
   refine ⟨∑ q, (e q ⊗ₜ[F] (1 : E)) * m q.1, ?_, ⟨(d ⊗ₜ[F] (1 : E)) *
     ∑ q, (e q ⊗ₜ[F] (1 : E)) * σ (m q.2), ?_, ?_⟩, ?_⟩
@@ -393,9 +441,9 @@ theorem _root_.GlobalTheory.AdLat.exists_integral_unit_root : ∀ (F E : Type) [
         Algebra.TensorProduct.tmul_mul_tmul, Algebra.TensorProduct.tmul_mul_tmul, mul_one, mul_one]
     simp only [hterm, ← TensorProduct.sum_tmul, Algebra.TensorProduct.tmul_mul_tmul, mul_one, hsum1]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun q _ => ?_
-      rw [map_mul, hσ, map_one, mul_left_comm, hum]
+
+  · rw [map_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    rw [map_mul, hσ, map_one, mul_left_comm, hum]
 
 end GlobalTheory.AdLat

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.RingKrullDimQuotBotOne
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

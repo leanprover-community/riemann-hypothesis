@@ -1,13 +1,47 @@
 module
 
+import Mathlib
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.TeichmullerParts.HodgeTateFromSandwich
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.TeichmullerParts.UnramifiedTrivialInertialType
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueSpecializes
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.HiComm
-public import Mathlib.LinearAlgebra.Eigenspace.Pi
-public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.RingTheory.Support
-public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
-public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsSemi
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Pi
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -214,12 +248,7 @@ private theorem joint_gen {I : Type} (g : I → B)
   rwa [e, e'] at hm
 
 omit [Module B M] in
-private theorem exists_semi [Algebra A K] [Module.Free A M] {C W : Type} [Field C] [AddCommGroup W] [Module C W] (ι : K ≃+* C)
-    (sp : M →+ W) (hsm : ∀ (a : A) m, sp (a • m) = ι (algebraMap A K a) • sp m)
-    (hind : ∀ (κ : Type) (b : Module.Basis κ A M), LinearIndependent C fun i => sp (b i)) :
-    ∃ Ψ : K ⊗[A] M →+ W, (∀ k m, Ψ (k ⊗ₜ m) = ι k • sp m) ∧ (∀ (k : K) v, Ψ (k • v) = ι k • Ψ v) ∧ Function.Injective Ψ ∧
-      ∀ w, w ∈ Submodule.span C (Set.range sp) ↔ ∃ v, Ψ v = w :=
-  by apply _root_.UpperTheory.Reformulated.B.Ra9.exists_semi <;> assumption
+private alias exists_semi := _root_.UpperTheory.Reformulated.B.Ra9.exists_semi
 
 include hann in
 private theorem mu_eq [IsAlgClosed K] [Module.Finite A M] [Module.Free A M] {I : Type} (g : I → B)

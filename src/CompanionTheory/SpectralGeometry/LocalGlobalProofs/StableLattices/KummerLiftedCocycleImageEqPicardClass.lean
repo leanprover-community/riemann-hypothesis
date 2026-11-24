@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.CapelliDeterminantBlockProduct
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -206,7 +206,7 @@ theorem verma : CompanionTheory.D.DSIC.Verma := by
       all_goals simp
     · simp
   · intro a b f
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [yy, LinearMap.sum_apply, map_sum]
+
+    simp [yy, LinearMap.sum_apply, map_sum]
 
 end GlobalTheory.CompanionTheory.DSVerma

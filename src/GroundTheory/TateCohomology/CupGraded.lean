@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.CupProduct
 public import GroundTheory.TateCohomology.CochainReverse
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointLengthSteps
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertRIndexSteps
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

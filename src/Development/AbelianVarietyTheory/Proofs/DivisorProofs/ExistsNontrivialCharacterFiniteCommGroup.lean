@@ -1,11 +1,64 @@
 module
 
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SameIdIff
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
-public import Development.AbelianVarietyTheory.PublishedTheorems.RelativeAmpleness.RelAmpleAndKTrivIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCharacter
+public import Mathlib.AlgebraicGeometry.Group.Affine
+public import Mathlib.AlgebraicGeometry.Morphisms.Finite
+public import Mathlib.RingTheory.Coalgebra.GroupLike
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.MemPrimitiveTensorsIffIsPrimitiveElem
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsIdPowEqOneOfIsFiniteOfFlat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.HopfAlgebra.GroupLike
+import Mathlib.RingTheory.HopfAlgebra.TensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Divisors.SameIdIff
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
+import Development.AbelianVarietyTheory.PublishedTheorems.AbelianLaws.PrincipalPolarisationOneSection
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsAdditiveOfUniversal
 
 @[expose] public section
 
@@ -166,8 +219,8 @@ theorem mulsharp (K : Type) [CommRing K] (B : Type) [CommRing B] [HopfAlgebra K 
     ((Spec.map (CommRingCat.ofHom (Bialgebra.comulAlgHom K B).toRingHom)).appTop.hom _)) = _
   rw [← nC]
   change (lift f g).left.appTop.hom (secMap K B B (Bialgebra.comulAlgHom K B b)) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Bialgebra.comulAlgHom_apply, hb, map_sum, map_sum]
+
+  rw [Bialgebra.comulAlgHom_apply, hb, map_sum, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   exact secMap_lift K B B Y f g (x i) (y i)
 
@@ -222,9 +275,9 @@ theorem bridge (K : Type) [Field K] (B D : Type) [CommRing B] [HopfAlgebra K B] 
     | tmul b d =>
       rw [hΦY]
       obtain ⟨S, hS⟩ := TensorProduct.exists_finset (Coalgebra.comul (R := K) b)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [mulsharp K B Y _ _ b S (fun i => i.1) (fun i => i.2) hS, TensorProduct.comm_tmul,
-        LinearMap.lTensor_tmul, hS, TensorProduct.tmul_sum, map_sum, Finset.sum_mul]
+
+      rw [mulsharp K B Y _ _ b S (fun i => i.1) (fun i => i.2) hS, TensorProduct.comm_tmul,
+      LinearMap.lTensor_tmul, hS, TensorProduct.tmul_sum, map_sum, Finset.sum_mul]
       refine Finset.sum_congr rfl fun i _ => ?_
       simp only [Θ, Algebra.TensorProduct.lift_tmul]
       exact _root_.mul_comm _ _
@@ -283,9 +336,9 @@ theorem exists_character_ne_one : ∀ (K : Type) [Field K] (N : Over (Sp K)) [Gr
     refine eq_of_forall_apply (R := K) fun φ => ?_
     have h2 := congr(($h1 φ) a)
     rw [pairingMap_tmul, LinearMap.id_apply] at h2
-    simp only [ofConv_toConv, AlgHom.id_apply]
+    simp only [AlgHom.id_apply]
     rw [← h2]
-    simp [_root_.one_apply, Algebra.algebraMap_eq_smul_one, mul_comm, AlgHom.convOne_apply]
+    simp [Algebra.algebraMap_eq_smul_one, mul_comm, AlgHom.convOne_apply]
   have hgl := (isPerfectBicharacter_canonical K B).left
   have hu : IsUnit (canonical K B) := by
     have := hgl.isUnit

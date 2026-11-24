@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,8 +73,8 @@ theorem projSum_sum_embeddings_eq_trace (K : Type) [Field K] [CharZero K] (E : T
     rw [h, AlgHom.card]
   apply (algebraMap K L).injective
   have ht := trace_eq_sum_embeddings L (K := ℚ) (L := E) (x := y)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_ratCast, ← eq_ratCast (algebraMap ℚ L), ht]
+
+  rw [map_sum, map_ratCast, ← eq_ratCast (algebraMap ℚ L), ht]
   exact Fintype.sum_bijective f hbij _ _ (fun σ => by simp [f])
 
 theorem projSum_trace_dualInt (E : Type) [Field E] [NumberField E]
@@ -39,8 +83,8 @@ theorem projSum_trace_dualInt (E : Type) [Field E] [NumberField E]
   classical
   have h1 : (1 : E) = ∑ j, (((RingOfIntegers.basis E).repr 1 j : ℤ) : ℚ) • integralBasis E j := by
     have := congrArg (algebraMap (𝓞 E) E) ((RingOfIntegers.basis E).sum_repr 1)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, (algebraMap (𝓞 E) E).map_one] at this
+
+    rw [map_sum, (algebraMap (𝓞 E) E).map_one] at this
     refine this.symm.trans ?_
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [integralBasis_apply, map_zsmul, Int.cast_smul_eq_zsmul]
@@ -48,8 +92,8 @@ theorem projSum_trace_dualInt (E : Type) [Field E] [NumberField E]
     rw [Algebra.traceForm_apply, mul_one]
   rw [h2]
   conv_lhs => rw [h1]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_smul, dualInt, LinearMap.BilinForm.apply_dualBasis_left]
   simp
 
@@ -61,8 +105,8 @@ theorem sum_eigProj_eq_one (K : Type) [Field K] [CharZero K] (V : Type) [AddComm
   unfold eigProj
   rw [Finset.sum_comm]
   have := congrArg ρ ((RingOfIntegers.basis E).sum_repr 1)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, ρ.map_one] at this
+
+  rw [map_sum, ρ.map_one] at this
   refine Eq.trans ?_ this
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [← Finset.sum_smul, projSum_sum_embeddings_eq_trace K E h, projSum_trace_dualInt,

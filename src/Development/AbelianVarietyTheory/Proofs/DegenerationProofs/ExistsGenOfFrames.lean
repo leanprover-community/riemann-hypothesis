@@ -1,12 +1,54 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.MvPowerSeries.Inverse
+public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Completeness
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 @[expose] public section
 
@@ -60,8 +102,8 @@ theorem lin_all (hL : L.IsLB) {T T' : Over Z} {h : T' ⟶ T} {n : ℕ} {b : Fin 
   obtain ⟨J', hJ', e⟩ := exists_good L hL (r z) (K := PUnit) (fun _ => (snd T' G).left)
     (fun _ => J (r ≫ (snd T' G).left)) (fun _ _ _ => rfl) (fun _ => hJ (r ≫ (snd T' G).left))
   have e₀ := congrArg (r.stalkMap z).hom (H (r z) J' hJ')
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum] at e₀
+
+  rw [map_sum] at e₀
   have e₁ := sv_stalk G L N s (𝟙 _) r z hJ' (J' := J) (by simpa only [Category.id_comp] using e PUnit.unit)
   rw [Category.comp_id] at e₁
   refine e₁.symm.trans (e₀.trans (Finset.sum_congr rfl fun i _ => ?_))
@@ -76,7 +118,7 @@ theorem exists_pull (hL : L.IsLB) {T T' : Over Z} (h : T' ⟶ T) (a : LB.Sec (LP
       sv G L N s r z J = sv G L N a (r ≫ (h ▷ G).left) z J := by
   have one := isGen_one L (T' ⊗ G).left
   obtain ⟨s, hs⟩ := exists_sec hL (φ' := fun _ : Fin 1 => (snd T' G).left) (ε' := fun _ => (N : ℤ))
-    (fun U _ k => by simp [wh_snd])
+    (fun U _ k => by simp [])
     (pullMulSec (L := L) (φ := fun _ : Fin 1 => (snd T G).left) (ε := fun _ => (N : ℤ)) a (h ▷ G).left _ one)
   refine ⟨s, fun Y r z J hJ => (hs Y r z J hJ).trans ((sval_pullMulSec _ _ _ _ r z hJ).trans ?_)⟩
   rw [val_one, Units.val_one, _root_.mul_one]; rfl
@@ -104,13 +146,13 @@ theorem Rel.pull {M} (H : Rel G L N h₁ a h₂ b M) (g : T' ⟶ T) :
 theorem Rel.trans {M P} (H : Rel G L N h₁ a h₂ b M) (H' : Rel G L N h₂ b h₃ c P) : Rel G L N h₁ a h₃ c (M * P) := by
   intro k Y r z J hJ
   rw [H k Y r z J hJ]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [H' _ Y r z J hJ, Matrix.mul_apply, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul, _root_.mul_assoc]
+
+  simp only [H' _ Y r z J hJ, Matrix.mul_apply, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul, _root_.mul_assoc]
   exact Finset.sum_comm
 
 theorem Rel.refl : Rel G L N h₁ a h₁ a 1 := by
   intro k Y r z J _
-  simp [Matrix.one_apply, apply_ite (gT (r ≫ (fst T G).left) z)]
+  simp [Matrix.one_apply]
 
 theorem rel_of_lin (hL : L.IsLB) {M : Matrix (Fin m) (Fin n) Γ(T.left, ⊤)}
     (H : ∀ k, ∃ t, Lin G L N h₁ (fun _ : Fin 1 => a k) (fun _ => 1) t ∧ Lin G L N h₂ b (fun k' => M k k') t) :
@@ -229,7 +271,7 @@ theorem trait_matrix (hL : L.IsLB) (hb : TraitBasis G L N U b) (hx : Set.range x
   have e₁ : M' * P' = 1 := (hM'.trans hP').unique hL hU Rel.refl
   have e₂ : P' * M' = 1 := (hP'.trans hM').unique hL hb' Rel.refl
   refine ⟨M', P', e₁, e₂, ?_⟩
-  haveI : CharZero W := hW.2.2
+  have : CharZero W := hW.2.2
   have r₁ := hM.pull (Over.homMk (spMap gam) h : Over.mk (jK W ≫ χ) ⟶ Over.mk x)
   have r₂ := (rel_one_of_lin hL hbb).1
   have r₃ := hP'.pull (Over.homMk (jK W) rfl : Over.mk (jK W ≫ χ) ⟶ Over.mk χ)

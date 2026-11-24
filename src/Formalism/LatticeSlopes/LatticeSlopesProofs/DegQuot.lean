@@ -1,8 +1,55 @@
 module
 
 public import Formalism.LatticeSlopes.Statement
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.CovolEqGram
+public import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.LinearAlgebra.FreeModule.PID
 
 @[expose] public section
 
@@ -19,11 +66,9 @@ theorem linearIndependent_coe_basis''' {E : Type*} [NormedAddCommGroup E] [Inner
   have hs : Submodule.span ℤ (Set.range fun i => (b i : E)) = L := by
     have h1 : (Set.range fun i => (b i : E)) = L.subtype '' Set.range b := Set.range_comp L.subtype b
     rw [h1, Submodule.span_image, b.span_eq, Submodule.map_top, Submodule.range_subtype]
-  have hd : DiscreteTopology (Submodule.span ℤ (Set.range fun i => (b i : E))) := by
-    rw [hs]; infer_instance
+  have hd : DiscreteTopology (Submodule.span ℤ (Set.range fun i => (b i : E))) := by rw [hs]; infer_instance
   rw [linearIndependent_iff_card_eq_finrank_span, Real.finrank_eq_int_finrank_of_discrete hd]
-  unfold Set.finrank
-  rw [hs, Module.finrank_eq_card_basis b]
+  unfold Set.finrank; rw [hs, Module.finrank_eq_card_basis b]
 
 theorem discreteTopology_span_range_of_linearIndependent {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     {ι : Type*} [Fintype ι] (c : ι → E) (hc : LinearIndependent ℝ c) :
@@ -73,10 +118,9 @@ theorem discreteTopology_span_range_of_linearIndependent {E : Type*} [NormedAddC
 
 theorem span_range_coe_basis' {E : Type*} [AddCommGroup E] (L : Submodule ℤ E) {ι : Type*}
     (b : Basis ι ℤ L) : span ℤ (Set.range (fun i => (b i : E))) = L := by
-  have h1 : (Set.range fun i => (b i : E)) = L.subtype '' Set.range b := Set.range_comp L.subtype b
-  rw [h1, Submodule.span_image, b.span_eq, Submodule.map_top, Submodule.range_subtype]
+  rw [show (Set.range fun i => (b i : E)) = L.subtype '' Set.range b from Set.range_comp L.subtype b, Submodule.span_image, b.span_eq, Submodule.map_top, Submodule.range_subtype]
 
-set_option maxHeartbeats 800000 in
+
 theorem degree_quotient : DegQuot := by
   intro E _ _ _ L N hL hsat
   classical
@@ -96,8 +140,6 @@ theorem degree_quotient : DegQuot := by
     intro u hu w hw
     first
       | exact (Submodule.mem_orthogonal W w).1 hw u hu
-      | exact (Submodule.mem_orthogonal w).1 hw u hu
-      | exact Submodule.inner_right_of_mem_orthogonal hu hw
   have hPW : ∀ x ∈ W, P x = 0 := by
     intro x hx
     have h2 : P x ∈ W := by
@@ -120,7 +162,6 @@ theorem degree_quotient : DegQuot := by
     show Module.Finite ℤ (L.map _)
     first
       | exact Module.Finite.map L _
-      | exact Module.Finite.iff_fg.mpr (Submodule.FG.map _ (Module.Finite.iff_fg.mp inferInstance))
   haveI : Module.IsTorsionFree ℤ Q := Module.IsTorsionFree.mk fun r hr x y hxy => by
     have hr0 : r ≠ 0 := hr.ne_zero
     apply Subtype.ext
@@ -152,9 +193,9 @@ theorem degree_quotient : DegQuot := by
         rw [map_zsmul, hPW _ (hNW _ (bN i).2), smul_zero]
       have h2 : ∀ j, P (g (Sum.inr j) • ℓ j) = g (Sum.inr j) • (eQ j : E) := fun j => by
         rw [map_zsmul, hℓP]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_add (f := _), map_sum, map_sum, map_zero, Finset.sum_congr rfl (fun i _ => h1 i),
-        Finset.sum_const_zero, zero_add, Finset.sum_congr rfl (fun j _ => h2 j)] at h
+
+      rw [map_add (f := _), map_sum, map_sum, map_zero, Finset.sum_congr rfl (fun i _ => h1 i),
+      Finset.sum_const_zero, zero_add, Finset.sum_congr rfl (fun j _ => h2 j)] at h
       exact h
     have hQz : ∀ j, g (Sum.inr j) = 0 := by
       have h : ∑ j, g (Sum.inr j) • eQ j = 0 := by
@@ -198,7 +239,7 @@ theorem degree_quotient : DegQuot := by
     refine ⟨Sum.elim s r, ?_⟩
     apply Subtype.ext
     simp only [Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr, Submodule.coe_add,
-      Submodule.coe_sum, Submodule.coe_smul, v, Submodule.coe_mk]
+      Submodule.coe_sum, Submodule.coe_smul, v]
     rw [hs]
     abel
   let cB := Module.Basis.mk hli hsp
@@ -222,8 +263,8 @@ theorem degree_quotient : DegQuot := by
     intro a ha
     have hmem : ∑ j, a j • ℓ j ∈ W := by
       have h1 : P (∑ j, a j • ℓ j) = 0 := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         simp only [map_smul, hℓP]
         exact ha
       have h := hPsub (∑ j, a j • ℓ j)
@@ -280,7 +321,6 @@ theorem degree_quotient : DegQuot := by
         Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂,
         Matrix.zero_apply]
     all_goals first
-      | rfl
       | exact horth _ (hNW _ (bN i).2) _ (heQW j')
       | (rw [real_inner_comm]; exact horth _ (hNW _ (bN i').2) _ (heQW j))
   have hdet : (Matrix.gram ℝ fun k => ((cB k : L) : E)).det =

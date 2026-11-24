@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechH0SectionsHypothesesLine
+public import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
@@ -68,8 +69,8 @@ theorem cocycle_coe_eq (F : SubSystem S x E) {s : Cech.Cochain (fun I => F.sub I
   have hval : ∀ L L' : Cech.Idx (support x) 0, L = L' → (s L : E) = (s L' : E) := by
     rintro L L' rfl; rfl
   have h0 := congrArg (F.sub J.1).subtype (congrFun hs J)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Cech.d_apply, map_sum, Pi.zero_apply, map_zero] at h0
+
+  rw [Cech.d_apply, map_sum, Pi.zero_apply, map_zero] at h0
   have huniv : (Finset.univ : Finset J.1.1) = {⟨a, ha'⟩, ⟨b, hb'⟩} := by
     ext ⟨z, hz⟩
     simp only [Finset.mem_univ, Finset.mem_insert, Finset.mem_singleton, Subtype.mk.injEq, true_iff]

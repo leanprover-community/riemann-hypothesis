@@ -1,7 +1,10 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ProjectionLemmaBaseLevel
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.MulMemRiemannRochSpaceAdd
+public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 @[expose] public section
 

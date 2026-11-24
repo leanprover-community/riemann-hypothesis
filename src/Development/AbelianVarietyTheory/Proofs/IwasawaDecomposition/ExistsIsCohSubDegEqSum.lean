@@ -1,7 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsTorsionFreeOfForallExists
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -85,8 +124,8 @@ theorem IsTriangular.res (H : IsTriangular v rk e g) (j j' : J) (a : α) {V : C.
   refine ⟨fun b => resG C (le_inf h h') (cf b), by dsimp only; rw [h1], fun b hb hr => by dsimp only; rw [h2 b hb hr, map_zero], ?_⟩
   have e1 : resM F h' (v j' (e j' a)) = resM F (le_inf h h') (resM F inf_le_right (v j' (e j' a))) := by
     rw [resM_resM]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e1, h3, map_sum]
+
+  rw [e1, h3, map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [resM_smul, resM_resM]
 
@@ -138,8 +177,8 @@ theorem IsTriangular.repr_eq (H : IsTriangular v rk e g) (hv : ∀ j, IsFrame (v
         (e j').injective.eq_iff]
     change ((hv j).basis h).repr (resM F h' (v j' (e j' b))) (e j a) =
       resG C (le_inf h h') (g a j j') * ((hv j').basis h').repr (resM F h' (v j' (e j' b))) (e j' a)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hr, h3, map_sum, Finset.sum_apply']
+
+    rw [hr, h3, map_sum, Finset.sum_apply']
     simp only [hB, map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply,
       (e j).injective.eq_iff, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
       Finset.mem_univ, if_true]
@@ -178,8 +217,8 @@ theorem IsTriangular.isVB (H : IsTriangular v rk e g) (hT : ⨆ j, T j = ⊤)
       (Fintype.linearCombination Γ(C, V) (fun k => resM (sub hv e S).toMod h (w k)) c) =
         ∑ k, c k • (hv j).basis h (ι' k) := by
     intro c
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Fintype.linearCombination_apply, ← GlobalTheory.QCoh.appLinear_apply, map_sum]
+
+    rw [Fintype.linearCombination_apply, ← GlobalTheory.QCoh.appLinear_apply, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, GlobalTheory.QCoh.appLinear_apply, hinc]
   have hli : LinearIndependent Γ(C, V) (fun k => (hv j).basis h (ι' k)) :=

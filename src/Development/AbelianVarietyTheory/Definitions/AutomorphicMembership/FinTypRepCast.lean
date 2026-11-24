@@ -1,8 +1,42 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodPartEq
 public import Formalism.LocalToGlobal.IndefiniteReal.IsMultMapUnivZero
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RealIoX
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodPartEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JEvExists
 
 @[expose] public section
 
@@ -34,8 +68,12 @@ def isotLB : type_of% (@principalLevelFrame.isotL b.D) := @fun V n S θ P M J χ
 variable (a) in
 theorem isotL_eq : @principalLevelFrame.isotL b.D = @isotLB B C a b := by
   funext V n S θ P M J χ e π
-  exact (by with_unfolding_all exact ((congrArg₂ (fun (g : type_of% (@goodPart b.D)) (m : type_of% (@Mult.Mult b.D)) =>
-    g θ M J χ e ⊓ principalLevelFrame.isotIn (principalLevelFrame.actM P M) (⨆ N : ℕ, m θ M (principalLevelFrame.levN P (N + 1)) fun _ => 1) π) (goodPart_eq a b) (mult_eq a b)) :))
+  delta isotLB principalLevelFrame.isotL
+  with_unfolding_all exact (congrArg₂
+    (fun (g : type_of% (@goodPart b.D)) (m : type_of% (@Mult.Mult b.D)) =>
+      g θ M J χ e ⊓ principalLevelFrame.isotIn (principalLevelFrame.actM P M)
+        (⨆ N : ℕ, m θ M (principalLevelFrame.levN P (N + 1)) fun _ => 1) π)
+    (goodPart_eq a b) (mult_eq a b) :)
 
 section General
 
@@ -85,10 +123,11 @@ variable (F : Face a.D A) (tupT : a.D.what₂.Tup → T) (hm : 0 < a.D.R.m) (hTo
 abbrev chainB : ChainReal b.D :=
   @toChainReal b.D G _ _ Pl0 T (famM b A) Ks _ _ (alg b iK) (real b R) (face b F) ((by with_unfolding_all exact (tupT :))) ((by with_unfolding_all exact (hm :))) (topMult_tr b hTop)
 
-theorem chain_EEc : (toChainReal R F tupT hm hTop).EEc = ((chainB b F tupT hm hTop).EEc) :=
-  (by with_unfolding_all exact ((congrArg (fun (g : type_of% (@goodPart a.D)) (c : Bool) =>
+theorem chain_EEc : (toChainReal R F tupT hm hTop).EEc = ((chainB b F tupT hm hTop).EEc) := by
+  delta ChainReal.EEc chainB toChainReal real
+  with_unfolding_all exact ((congrArg (fun (g : type_of% (@goodPart a.D)) (c : Bool) =>
     (g R.θ (R.MY 0) (levS _ (R.βY 0) (R.dat0 (R.levR F c))) (levChi _ (R.βY 0) (R.dat0 (R.levR F c))) R.e0).map
-      (PiTensorProduct.lift : MMap (R.MY 0) ≃ₗ[ℂ] AmbT (R.MY 0)).toLinearMap) (goodPart_eq b a)) :))
+      (PiTensorProduct.lift : MMap (R.MY 0) ≃ₗ[ℂ] AmbT (R.MY 0)).toLinearMap) (goodPart_eq b a)) :)
 
 theorem chain_CC : (toChainReal R F tupT hm hTop).CC = ((chainB b F tupT hm hTop).CC) :=
   (by with_unfolding_all exact ((congrFun (congrArg (fun (m : type_of% (@MultT a.D)) (Ch : ChainReal a.D) => fun c μ j => m Ch.θ (Ch.MY j) (Ch.J c μ j) (Ch.χ c μ j)) (multT_eq b a) :)
@@ -123,11 +162,22 @@ theorem chain_ioX (t : T) (v : AmbT R.MX) (hT : topW (@multTB B C b a) R)
 
 theorem chain_ioOK {c : Bool} {μ : a.D.what₂.Tup} (h : (chainB b F tupT hm hTop).IoOK c ((μ))) :
     (toChainReal R F tupT hm hTop).IoOK c μ := by
-  have e := io_congr R (multT_eq b a) (fun m y x => ∃ hT : topW (@m) R,
-    ioOKW (@m) (toChainReal R F tupT hm hTop) c μ ((by with_unfolding_all exact ((ioCW (@m) R y (tupT μ)) :))) ((by with_unfolding_all exact ((ioXW (@m) R x hm hT (tupT μ)) :))))
-    ((by with_unfolding_all exact (R.ioY :))) ((by with_unfolding_all exact (R.ioX :)))
-  obtain ⟨_, h'⟩ := cast e.symm (Exists.intro ((by with_unfolding_all exact ((topMult_tr b hTop) :))) ((by with_unfolding_all exact (h :))))
-  exact (by with_unfolding_all exact (h' :))
+  let Ch := toChainReal R F tupT hm hTop
+  let P (m : type_of% (@MultT a.D)) (y : IoYT (@m) R) (x : IoXT (@m) R) : Prop :=
+    ∃ hT : topW (@m) R,
+      ioOKW (@m) Ch c μ (ioCW (@m) R y (tupT μ)) (ioXW (@m) R x hm hT (tupT μ))
+  have e : P (@MultT a.D) R.ioY R.ioX = P (@multTB B C b a) (ioYB b R) (ioXB b R) :=
+    io_congr R (multT_eq b a) P R.ioY R.ioX
+  have hT : topW (@multTB B C b a) R :=
+    (congrArg (fun m : type_of% (@MultT a.D) => topW (@m) R) (multT_eq b a)).mp hTop
+  have hB : P (@multTB B C b a) (ioYB b R) (ioXB b R) := by
+    refine ⟨hT, ?_⟩
+    -- Both types are determined, so let the kernel check their conversion.
+    run_tac
+      Lean.Elab.Tactic.closeMainGoalUsing `chain_ioOK fun _ _ =>
+        Lean.Elab.Term.elabTerm (Lean.mkIdent `h) none
+  obtain ⟨_, hA⟩ := e.mpr hB
+  exact hA
 
 variable (hinj : ∀ i t, Function.Injective (R.extV i t))
 
@@ -139,10 +189,11 @@ abbrev liftB : LiftReal b.D (chainB b F tupT hm hTop) :=
   (by with_unfolding_all exact ((@toLiftReal b.D G _ _ Pl0 T (famM b A) Ks _ _ (alg b iK) (real b R) (face b F) ((tupT)) ((hm)) (topMult_tr b hTop)
     (inj_tr b hinj)) : _))
 
-theorem lift_Wc : (toLiftReal R F tupT hm hTop hinj).Wc = ((liftB b F tupT hm hTop hinj).Wc) :=
-  (by with_unfolding_all exact ((congrFun (congrArg (fun (g : type_of% (@goodPart a.D)) (L : LiftReal a.D (toChainReal R F tupT hm hTop)) => fun i =>
+theorem lift_Wc : (toLiftReal R F tupT hm hTop hinj).Wc = ((liftB b F tupT hm hTop hinj).Wc) := by
+  delta LiftReal.Wc liftB toLiftReal chainB toChainReal real
+  with_unfolding_all exact ((congrFun (congrArg (fun (g : type_of% (@goodPart a.D)) (L : LiftReal a.D (toChainReal R F tupT hm hTop)) => fun i =>
     (g R.θ (L.MW i) (L.JW i) (L.χW i) (L.eW i)).map (PiTensorProduct.lift : MMap (L.MW i) ≃ₗ[ℂ] L.AmbW i).toLinearMap)
-    (goodPart_eq b a) :) (toLiftReal R F tupT hm hTop hinj)) :))
+    (goodPart_eq b a) :) (toLiftReal R F tupT hm hTop hinj)) :)
 
 theorem lift_MultW : (toLiftReal R F tupT hm hTop hinj).MultW = ((liftB b F tupT hm hTop hinj).MultW) :=
   (by with_unfolding_all exact ((congrFun (congrArg (fun (m : type_of% (@MultT a.D)) (L : LiftReal a.D (toChainReal R F tupT hm hTop)) => fun i =>

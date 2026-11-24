@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
 
 @[expose] public section
 

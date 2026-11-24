@@ -1,10 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPolynomialRootPredicateFactor
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAnalyticRootBranch
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRiemannExtensionAnalytic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PManifoldZerosComplementConnected
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRiemannExtensionAnalytic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.Topology.Algebra.Polynomial
 
 @[expose] public section
 

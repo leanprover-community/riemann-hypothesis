@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.CyclotomicCharacters.Degree
-public import GroundTheory.GlobalFields.CyclotomicCharacters.ClosedSubgroups
+import GroundTheory.GlobalFields.CyclotomicCharacters.Frobenius
+import Mathlib.FieldTheory.Galois.Profinite
+public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
+public import Mathlib.RingTheory.Invariant.Profinite
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 
 @[expose] public section
 

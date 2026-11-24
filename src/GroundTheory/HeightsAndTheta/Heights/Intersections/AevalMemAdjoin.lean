@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherAlt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsEvalKerKrullDim
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiProjPrimeImageZ
+public import Mathlib.Algebra.Algebra.ZMod
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

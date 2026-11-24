@@ -1,13 +1,20 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
+public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDefs
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalDefs
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -182,9 +189,19 @@ theorem gsLocalInvRootsQZ_cohomologyMapAlong (v : S) (x : cohomology (gsRoots S 
   refine congrArg (brauerInvZOfIsSepClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)
     (AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))) ?_
   refine (AddMonoidHom.comp_apply _ _ _).trans ?_
-  exact cohomologyMap_uliftInt_cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
+  have hres : gsLocalRes S (ιs v) 2 =
+      cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
+        (embUnitsMorZ S (ιs v)) 2 := rfl
+  have hmap := cohomologyMap_uliftInt_cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom
+    (continuous_toMonoidHom _)
     (rootsOfUnityToSUnits S (maxUnramifiedOutside K.1 ℚ̄ S) n) (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S))
     (rootsLocalMorZ S ιs n v) (embUnitsMorZ S (ιs v)) (fun _ => rfl) 2 x
+  let y := cohomologyULiftIntAddEquiv (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2
+    ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom
+      ((cohomologyMap (rootsOfUnityToSUnits S (maxUnramifiedOutside K.1 ℚ̄ S) n) 2).hom x))
+  have happly := congrArg (fun f => ModuleCat.Hom.hom f y) hres.symm
+  simp only [LinearMap.toAddMonoidHom_coe, AddEquiv.coe_toAddMonoidHom]
+  with_reducible exact hmap.trans happly
 
 
 omit [Fintype S] [NeZero n] in
@@ -212,8 +229,8 @@ theorem sumPlaceInv_eq_sum_of_placeInv (T : Finset (Place K.1)) (y : ⨁ w : Pla
     (hT : ∀ w ∉ T, placeInv w (y w) = 0) : sumPlaceInv K y = ∑ w ∈ T, placeInv w (y w) := by
   classical
   conv_lhs => rw [← DirectSum.sum_support_of y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp_rw [sumPlaceInv_of]
   calc ∑ w ∈ DFinsupp.support y, placeInv w (y w)
       = ∑ w ∈ DFinsupp.support y ∪ T, placeInv w (y w) :=
@@ -316,14 +333,16 @@ noncomputable def gsCompactInv (hn : Odd n ∨ IsTotallyComplex K.1) (h3 : Subsi
     (localToCompact_two_surjective S ιs n h3) (gsSumInvRoots S ιs n) (ker_localToCompact_le S ιs n hn)
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem gsCompactInv_localToCompact (hn : Odd n ∨ IsTotallyComplex K.1)
     (h3 : Subsingleton (cohomology (gsRoots S n) 3))
     (ξ : ∀ v : S, cohomology (Rep.res (gsFinFamily S ιs v).toMonoidHom (gsRoots S n)) 2) :
     gsCompactInv S ιs n hn h3 ((localToCompact (gsFinFamily S ιs) (gsRoots S n) _ (fun _ => 𝟙 _) 2).hom ξ) =
-      gsSumInvRoots S ιs n ξ :=
-  descendAlong_apply (localToCompact (gsFinFamily S ιs) (gsRoots S n) _ (fun _ => 𝟙 _) 2).hom
+      gsSumInvRoots S ιs n ξ := by
+  delta gsCompactInv
+  have h := descendAlong_apply (localToCompact (gsFinFamily S ιs) (gsRoots S n) _ (fun _ => 𝟙 _) 2).hom
     (localToCompact_two_surjective S ιs n h3) (gsSumInvRoots S ιs n) (ker_localToCompact_le S ιs n hn) ξ
+  with_reducible exact h
 
 end
 

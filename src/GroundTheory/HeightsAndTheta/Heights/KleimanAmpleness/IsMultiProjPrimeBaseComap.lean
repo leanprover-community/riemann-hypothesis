@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BaseComap
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherFurther
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.OneBlockPnPt
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.ContractRelevant

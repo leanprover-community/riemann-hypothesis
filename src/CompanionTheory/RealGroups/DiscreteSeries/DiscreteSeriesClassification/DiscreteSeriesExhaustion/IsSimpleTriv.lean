@@ -1,7 +1,7 @@
 module
 
-public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.FormalDegreeBessel.StatementDS
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 
@@ -63,8 +63,8 @@ theorem om_apply (X : GMod n) (u : Fin n → X.V) (b : Fin n) : om X u b = ∑ a
 
 theorem commute_om (X : GMod n) (c d : Fin n) : Commute (tensE X c d) (om X) := by
   refine LinearMap.ext fun u => funext fun b => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Module.End.mul_apply, tensE_apply, om_apply, map_sum, map_add (f := _), sum_add_distrib]
+
+  simp only [Module.End.mul_apply, tensE_apply, om_apply, map_sum, map_add (f := _), sum_add_distrib]
   simp only [comm_apply X c d _ b, sum_sub_distrib, sum_add_distrib, apply_ite (X.E _ b), map_zero]
   by_cases h : b = c <;> simp [h]
 

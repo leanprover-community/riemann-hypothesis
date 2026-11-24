@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.RhoDotSelf
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

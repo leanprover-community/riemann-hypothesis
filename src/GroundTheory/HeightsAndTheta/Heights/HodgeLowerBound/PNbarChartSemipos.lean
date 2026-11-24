@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartMargin
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarChartSemipos
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarLeviChart
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

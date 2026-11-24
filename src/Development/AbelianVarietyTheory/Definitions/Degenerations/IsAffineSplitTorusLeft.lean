@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.IsNormalSchemeSp
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
+public import Mathlib.Tactic.ENatToNat
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsPullbackCompIsoMonHom
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyOfFinitePresentationDiagMap
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -93,39 +133,6 @@ def Core.HasCharts (C : Core) : Prop :=
 
 def SplitAll {Z : Scheme.{0}} (G : Over Z) [GrpObj G] : Prop :=
   ∀ z : Z, ∃ E : SplitExt (Sp (Z.residueField z)), E.IsGt ((Over.pullback (Z.fromSpecResidueField z)).obj G)
-
-theorem isUnit_resG_basicOpen (X : Scheme.{0}) (s : Γ(X, ⊤)) :
-    IsUnit (resG X (le_top : X.basicOpen s ≤ ⊤) s) := by
-  exact X.toRingedSpace.isUnit_res_basicOpen s
-
-def Charts.ofSections (X : Scheme.{0}) [IsAffine X] {I Cl : Type} [Finite I] [Finite Cl] (wt : I → Cl) (c₀ : Cl)
-    (s : I → Γ(X, ⊤)) (hs : ⨆ i : {i // wt i = c₀}, X.basicOpen (s i.1) = ⊤) : Charts X where
-  I := I
-  Cl := Cl
-  wt := wt
-  c₀ := c₀
-  W := fun i => X.basicOpen (s i.1)
-  aff := fun i => (isAffineOpen_top X).basicOpen (s i.1)
-  cover := hs
-  r := fun i j => resG X le_top (s j) * ↑(isUnit_resG_basicOpen X (s i.1)).unit⁻¹
-  r_self := fun i => (isUnit_resG_basicOpen X (s i.1)).mul_val_inv
-  inter := fun i i' => by
-    rw [Scheme.basicOpen_mul, X.basicOpen_of_isUnit (Units.isUnit _)]
-    erw [X.basicOpen_res (s i'.1) (homOfLE le_top).op]
-    exact (inf_eq_left.2 inf_le_left).symm
-  trans := fun i i' j => by
-    have h := congrArg (resG X (inf_le_right : X.basicOpen (s i.1) ⊓ X.basicOpen (s i'.1) ≤ _))
-      (isUnit_resG_basicOpen X (s i'.1)).mul_val_inv
-    have e : ∀ (V : X.Opens) (h : X.basicOpen (s i.1) ⊓ X.basicOpen (s i'.1) ≤ V) (u : Γ(X, ⊤)),
-        resG X h (resG X le_top u) = resG X le_top u := by
-      intro V h u
-      change (X.presheaf.map _ ≫ X.presheaf.map _).hom u = _
-      rw [← X.presheaf.map_comp]
-      rfl
-    rw [map_mul, map_one, e] at h
-    simp only [map_mul, e]
-    linear_combination (-(resG X le_top (s j)) * resG X inf_le_left
-      ↑(isUnit_resG_basicOpen X (s i.1)).unit⁻¹) * h
 
 def Charts.single (X : Scheme.{0}) [IsAffine X] {J : Type} [Finite J] (f : J → Γ(X, ⊤)) : Charts X where
   I := Option J

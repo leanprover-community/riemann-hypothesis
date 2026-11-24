@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Statements
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.NumberTheory.NumberField.ProductFormula
 
 @[expose] public section
 
@@ -15,12 +63,12 @@ noncomputable section
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
 
-def metricDefect (A : HermLine n) (z : Cone n ℂ) : ℝ :=
+def metricDefect (A : Heights.HermLine n) (z : Cone n ℂ) : ℝ :=
   Real.log (A.metric z) - ∑ k, (A.deg k : ℝ) * Real.log (l2Norm (z k))
 
 
 omit [DecidableEq ι] in
-theorem metricDefect_smul (A : HermLine n) (c : ι → ℂ) (z : Cone n ℂ) (hc : ∀ k, c k ≠ 0)
+theorem metricDefect_smul (A : Heights.HermLine n) (c : ι → ℂ) (z : Cone n ℂ) (hc : ∀ k, c k ≠ 0)
     (hz : BlockNonzero z) :
     metricDefect A (fun k i ↦ c k * z k i) = metricDefect A z := by
   have hcn : ∀ k, 0 < ‖c k‖ := fun k ↦ norm_pos_iff.mpr (hc k)
@@ -60,7 +108,7 @@ theorem isCompact_unitSpheres : IsCompact (unitSpheres (n := n)) := by
 
 
 omit [DecidableEq ι] in
-theorem exists_bound_metricDefect (A : HermLine n) :
+theorem exists_bound_metricDefect (A : Heights.HermLine n) :
     ∃ M, ∀ z : Cone n ℂ, BlockNonzero z → |metricDefect A z| ≤ M := by
   have hsub : unitSpheres (n := n) ⊆ {z | BlockNonzero z} := fun z hz k h ↦ by
     have := hz k
@@ -203,7 +251,7 @@ theorem blockNonzero_sigma {x : Cone n (AlgebraicClosure ℚ)} (hx : BlockNonzer
 
 
 omit [DecidableEq ι] in
-theorem height_eq_blockSum (A : HermLine n) (x : Cone n (AlgebraicClosure ℚ))
+theorem height_eq_blockSum (A : Heights.HermLine n) (x : Cone n (AlgebraicClosure ℚ))
     (hx : BlockNonzero x) :
     height A x = ((Module.finrank ℚ (coordField x) : ℝ))⁻¹ *
       (∑ k, (A.deg k : ℝ) * blockSum (coordVec x) k +

@@ -1,8 +1,13 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.MaDensCompEqZeroOfRankLt
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 @[expose] public section
 
@@ -95,8 +100,8 @@ theorem sum_leviC_mul (H : (Fin e → ℂ) →L[ℝ] (Fin e → ℂ) →L[ℝ] �
   let ℓ : (Fin e → ℂ) →+ ℂ := AddMonoidHom.mk' (fun b => leviC H a b) (leviC_add_snd H a)
   rw [hx]
   show _ = ℓ _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   simp only [ℓ, AddMonoidHom.mk'_apply, leviC_smul_snd, star_star]
   ring
@@ -168,7 +173,7 @@ theorem re_mdisc_cons_vecMulVec_nonneg (a : Fin (n + 1) → ℂ)
     (B : Fin n → Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) (hB : ∀ i, (B i).PosSemidef) :
     0 ≤ (mdisc (Fin.cons (vecMulVec a (star a)) B :
       Fin (n + 1) → Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)).re := by
-  refine (mdisc_nonneg_of_posSemidef _ fun k => ?_).2
+  refine (_root_.ReciprocityTheory.AnForm.A.mixedDiscriminant_nonneg_of_gram _ fun k => ?_).2
   refine Fin.cases ?_ (fun i => ?_) k
   · simpa using posSemidef_vecMulVec_self_star a
   · simpa using hB i

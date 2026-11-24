@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.RealGroupsPolar
+public import GroundTheory.AutomorphicForms.HarishChandraRegularity.CartanBasis
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
 public import GroundTheory.AutomorphicForms.HarishChandraInvariance.Compact
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Isometric
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

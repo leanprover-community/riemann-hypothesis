@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.CutTuples2
+public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -34,8 +38,8 @@ def uQ (t : Bs.Tup) : Fin ((lv (fc X.zs) b).dQ t) → X.FC t :=
 
 theorem iC_eq_comp (t : Bs.Tup) (c : Fin ((lv (fc X.zs) b).dQ t) → ℂ) :
     X.iC cr b t c = X.Θ t (lin (X.uQ cr b t) c) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [iC, uQ, lin_apply, map_sum, map_smul]
+
+  simp only [iC, uQ, lin_apply, map_sum, map_smul]
 
 theorem lin_uQ_cpt (t : Bs.Tup) (x : Fin ((lv (fc X.zs) b).dQ t) → K) :
     lin (X.uQ cr b t) (cpt Bs.v0.embedding x) = X.jR t (cr.toR X.zs b t x) := by
@@ -43,8 +47,8 @@ theorem lin_uQ_cpt (t : Bs.Tup) (x : Fin ((lv (fc X.zs) b).dQ t) → K) :
     funext i
     simp [Finset.sum_apply, Pi.single_apply]
   conv_rhs => rw [hx]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.map_smulₛₗ, lin_apply, uQ, cpt]
+
+  simp only [map_sum, map_smul, LinearMap.map_smulₛₗ, lin_apply, uQ, cpt]
 
 theorem gram_uQ (hIso : X.IsoR cr b) (t : Bs.Tup) :
     Matrix.gram ℂ (X.uQ cr b t) = ((X.nP b : ℝ) : ℂ) • metOf ((lv (fc X.zs) b).XQ t Bs.v0) := by

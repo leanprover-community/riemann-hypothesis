@@ -1,18 +1,107 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.RealTB
-public import Formalism.LocalToGlobal.IndefiniteReal.RealPins
-public import Formalism.LocalToGlobal.IndefiniteReal.RealRec
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NMjT
-public import Formalism.LocalRingCardinality.DataNChTie
+public import Mathlib.RingTheory.Localization.FractionRing
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SemilinearExtensionBases
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FractionalBaseInclusion
+public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.RatDatOfReal
+public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsBasisTensor
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FractionFieldEmbeddingCompat
-public import Formalism.LocalRingCardinality.DataIdx
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ImportsFurther
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Formalism.LocalToGlobal.HilbertRowConditions.IsHilbertCF
+import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ImportsFurther, Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeFamilyAdoptionSecond
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ImportsFurther =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.ImportsFurther", "h": "module\n\npublic import Mathlib.RingTheory.Localization.FractionRing\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace GlobalTheory.SmulMemOfMemSpanExists
+
+theorem exists_smul_mem_of_mem_span {Oe K'' T : Type} [CommRing Oe] [IsDomain Oe] [Field K'']
+    [Algebra Oe K''] [IsFractionRing Oe K''] [AddCommGroup T] [Module K'' T] [Module Oe T]
+    [IsScalarTower Oe K'' T] (M : Submodule Oe T) {x : T}
+    (hx : x ∈ Submodule.span K'' (↑M : Set T)) : ∃ c : Oe, c ≠ (0 : Oe) ∧ c • x ∈ M := by
+  induction hx using Submodule.span_induction with
+  | mem y hy => exact ⟨1, one_ne_zero, by simpa using hy⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add y z _ _ hy hz =>
+    obtain ⟨a, ha, hay⟩ := hy
+    obtain ⟨b, hb, hbz⟩ := hz
+    refine ⟨a * b, mul_ne_zero ha hb, ?_⟩
+    rw [smul_add]
+    refine M.add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]; exact M.smul_mem _ hay
+    · rw [mul_smul]; exact M.smul_mem _ hbz
+  | smul k y _ hy =>
+    obtain ⟨a, ha, hay⟩ := hy
+    obtain ⟨n, d, hd, rfl⟩ := IsFractionRing.div_surjective (A := Oe) k
+    have hd0 : d ≠ 0 := nonZeroDivisors.ne_zero hd
+    have hd1 : algebraMap Oe K'' d ≠ 0 := fun h =>
+      hd0 (IsFractionRing.injective Oe K'' (by rw [h, map_zero]))
+    refine ⟨a * d, mul_ne_zero ha hd0, ?_⟩
+    have key : (a * d) • ((algebraMap Oe K'' n / algebraMap Oe K'' d) • y) = n • (a • y) := by
+      rw [← algebraMap_smul K'' (a * d), ← algebraMap_smul K'' n, ← algebraMap_smul K'' a,
+        smul_smul, smul_smul, map_mul]
+      congr 1
+      field_simp
+    rw [key]
+    exact M.smul_mem _ hay
+
+end GlobalTheory.SmulMemOfMemSpanExists
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ImportsFurther =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeFamilyAdoptionSecond =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeFamilyAdoptionSecond", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SemilinearExtensionBases\npublic import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FractionalBaseInclusion\npublic import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.RatDatOfReal\npublic import Formalism.SharpRestriction.Divisibility.LiftErrorLocal\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsBasisTensor\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FractionFieldEmbeddingCompat\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ImportsFurther\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Formalism.LocalToGlobal.HilbertRowConditions.IsHilbertCF\nimport Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector\n\n"}
+section -- clump:auto
 @[expose] public section
 
 namespace GroupAverageFixedPoints
@@ -44,8 +133,8 @@ theorem avg_fix (a : Γ →* Module.End F M) (P : Subgroup Γ) [Fintype P] (t : 
 
 theorem avg_type (a : Γ →* Module.End F M) (P : Subgroup Γ) [Fintype P] (t : P →* Fˣ) (v : P) (y : M) :
     a (v : Γ) (avg a P t y) = ((t v : Fˣ) : F) • avg a P t y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [avg, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum]
+
+  simp only [avg, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum]
   rw [smul_comm]
   congr 1
   rw [Finset.smul_sum]
@@ -125,7 +214,7 @@ theorem ext_smul (c : K) (A : Module.End K Fm) :
     ext O K'' (c • A) = algebraMap K K'' c • ext O K'' A := by
   apply TensorProduct.AlgebraTensorModule.ext
   intro x m
-  simp [tmul_smul_frac, TensorProduct.smul_tmul', smul_eq_mul]
+  simp [tmul_smul_frac, TensorProduct.smul_tmul']
   rw [Algebra.smul_def]
 
 theorem ext_sum {ι : Type} (s : Finset ι) (A : ι → Module.End K Fm) :
@@ -203,12 +292,12 @@ theorem span_image_good (σ : LL →+* K'') (f : WL →ₛₗ[σ] K'' ⊗[O] Fm)
     have := congrArg (algebraMap K K'') h
     rwa [map_natCast, map_zero] at this))
   have hfE : ∀ x, f (grp aLh cL x) = ext O K'' (grp aF cF) (f x) := fun x => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [grp, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smulₛₗ, ext_sum, ext_smul]
+
+    simp only [grp, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smulₛₗ, ext_sum, ext_smul]
     exact Finset.sum_congr rfl fun g _ => by rw [hcf]; congr 1; exact hc g x
   have hfA : ∀ x, f (avg aLh P tL x) = ext O K'' (avg aF P tF) (f x) := fun x => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [avg, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smulₛₗ, ext_sum, ext_smul]
+
+    simp only [avg, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smulₛₗ, ext_sum, ext_smul]
     rw [map_inv₀, map_inv₀, map_natCast, map_natCast]
     congr 1
     refine Finset.sum_congr rfl fun u _ => ?_
@@ -264,17 +353,6 @@ variable {LL Oe K'' V T : Type} [Field LL] [NumberField LL] [AddCommGroup V] [Mo
   [IsScalarTower (𝓞 LL) LL V] [CommRing Oe] [IsDomain Oe] [Field K''] [Algebra Oe K''] [IsFractionRing Oe K'']
   [AddCommGroup T] [Module K'' T] [Module Oe T] [IsScalarTower Oe K'' T]
 
-theorem exists_smul_mem (M : Submodule Oe T) {x : T} (hx : x ∈ Submodule.span K'' (M : Set T)) :
-    ∃ c : Oe, c ≠ 0 ∧ c • x ∈ M := by
-  first
-  | (rename_i h_3 h_4 h_5 h_6 h_7 h_8 h_9 h_10 h_11; revert Oe K'' T h_3 h_4 h_5 h_6 h_7 h_8 h_9 h_10 h_11 M x hx; exact @_root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span)
-  | exact @_root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span
-  | exact _root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span
-  | (apply _root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span <;> assumption)
-  | (intros; apply _root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span ..)
-
 theorem isLatIn_span (σ : LL →+* K'') (hint : ∀ a : 𝓞 LL, ∃ r : Oe, σ (a : LL) = algebraMap Oe K'' r)
     (eM : V →ₛₗ[σ] T) (L : Submodule (𝓞 LL) V) (hFG : L.FG) (hsp : Submodule.span LL (L : Set V) = ⊤)
     (VV : Submodule K'' T) (hVV : Submodule.span K'' (Set.range eM) = VV) :
@@ -317,7 +395,7 @@ theorem isLatIn_span (σ : LL →+* K'') (hint : ∀ a : 𝓞 LL, ∃ r : Oe, σ
       | smul a x _ hx => rw [map_smulₛₗ]; exact Submodule.smul_mem _ _ hx
     have hx' : x ∈ VV := hx
     rw [← hVV] at hx'
-    exact exists_smul_mem _ (Submodule.span_le.2 hle hx')
+    exact _root_.GlobalTheory.SmulMemOfMemSpanExists.exists_smul_mem_of_mem_span _ (Submodule.span_le.2 hle hx')
 
 end Lat
 
@@ -354,8 +432,8 @@ theorem inj_span_of_carries {emb : LL →+* K''} (e : WL →ₛₗ[emb] K'' ⊗[
   set b := Basis.ofVectorSpace LL WL with hbdef
   have hsum : ∀ x, e x = ∑ i ∈ (b.repr x).support, emb (b.repr x i) • b'' i := fun x => by
     conv_lhs => rw [← b.linearCombination_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smulₛₗ, hb]
+
+    simp [Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smulₛₗ, hb]
   constructor
   · refine (injective_iff_map_eq_zero e).2 fun x hx => ?_
     rw [hsum] at hx
@@ -384,13 +462,13 @@ theorem ext_intertwine (hF : IsForm LL WK) {emb : LL →+* K''} (eF : Fm ≃ₗ[
   have e1 := he (Fin n) a f
   have e2 := he (Fin n) (fun k => cL * a k) (fun k => rK (f k))
   have e3 : cL • rL (∑ k, a k • b k) = ∑ k, (cL * a k) • ((rK (f k) : WK) : WL) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.smul_sum]
+
+    rw [map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, ← hr (f k), mul_smul]
   have e4 : ∑ k, a k • b k = ∑ k, a k • ((f k : WK) : WL) := rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e3, e2, e4, e1, map_sum]
+
+  rw [e3, e2, e4, e1, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [ext_tmul]
   have e5 : aF (eF.symm ((1 : K) ⊗ₜ[Ks] f k)) = cK • eF.symm ((1 : K) ⊗ₜ[Ks] rK (f k)) := by
@@ -447,8 +525,8 @@ theorem isKsForm_of_iso {A : FormsL LL Ks WL W G} {A' : FormsL LL Ks' WL' W' G'}
     obtain ⟨a, ha⟩ := (Submodule.mem_span_range_iff_exists_fun LL).1 hx
     have : x = ∑ k, a k • I.e.symm (b k) := by
       apply I.e.injective
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← ha, map_sum]
+
+      rw [← ha, map_sum]
       simp
     rw [this]
     exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
@@ -480,7 +558,7 @@ variable {D : D7} (c : NChoice D) (w : D.what₂.places.Pl)
 
 attribute [local instance] algKK
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 instance towKK : IsScalarTower (D.ntw.O (c.twI w)) (FractionRing (D.ntw.O (c.twI w))) (FractionRing (c.Oe w)) :=
   IsScalarTower.of_algebraMap_eq fun y => by
     rw [IsScalarTower.algebraMap_apply (D.ntw.O (c.twI w)) (c.Oe w) (FractionRing (c.Oe w)), RingHom.algebraMap_toAlgebra]
@@ -488,8 +566,8 @@ instance towKK : IsScalarTower (D.ntw.O (c.twI w)) (FractionRing (D.ntw.O (c.twI
 
 variable {c w}
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
+
+
 theorem stage1 (ht : NChTie D c) (j : ℕ) (S : RatDat D.ntw) (hks : (S.A j).IsKsForm)
     (rho : RhoStab S j) (chi : ChiInLL0 S j)
     (eF : D.nexp.Fm (c.twI w) j (c.sd w) ≃ₗ[FractionRing (D.ntw.O (c.twI w))] Fm S (c.twI w) j (c.sd w))
@@ -566,8 +644,8 @@ variable {D : D7} {c : NChoice D} {w : D.what₂.places.Pl}
 
 attribute [local instance] algKK
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 2000000 in
+
+
 theorem stage2 (ht : NChTie D c) {Gp : Type} [Group Gp] [Fintype Gp] (I : Gp ≃* G0g D.nd)
     (S : RatDat D.ntw) (j : ℕ)
     {Ks' WL' : Type} [Field Ks'] [NumberField Ks'] [Algebra Ks' D.what₂.LL] [AddCommGroup WL'] [Module D.what₂.LL WL']
@@ -708,10 +786,6 @@ end
 end
 
 end GroupAverageFixedPoints
-section
-open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.FWT Formalism.IndefR.NX Formalism.L2.Pj
-open Formalism.L2.Rows
-open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeFamilyAdoptionSecond =====

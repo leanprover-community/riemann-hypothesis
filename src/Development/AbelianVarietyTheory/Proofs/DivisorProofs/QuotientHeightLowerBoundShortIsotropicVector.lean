@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLatticeDenominatorHeightBoundProof
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.NormInfSubmultiplicativeLeAdelicHeight
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AtPlaceIffEqAtTau
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.NormInfSubmultiplicativeLeAdelicHeight
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLatticeDenominatorHeightBoundProof
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.House
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -36,11 +74,11 @@ theorem exists_denom_dot (b : Module.Basis (Fin m) F E) (R : Subring A)
   obtain ⟨d, hd, h⟩ := exists_common_denom R
     (fun p : Fin n × Fin m × Fin m => B.repr (B p.2.1 * w p.1) p.2.2) fun _ => hR _
   refine ⟨d, hd, fun y e hy l => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finsupp.finsetSum_apply, Finset.mul_sum]
+
+  rw [map_sum, Finsupp.finsetSum_apply, Finset.mul_sum]
   refine R.sum_mem fun j _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← B.sum_repr (y j), Finset.sum_mul, map_sum, Finsupp.finsetSum_apply, Finset.mul_sum]
+
+  rw [← B.sum_repr (y j), Finset.sum_mul, map_sum, Finsupp.finsetSum_apply, Finset.mul_sum]
   refine R.sum_mem fun k _ => ?_
   rw [smul_mul_assoc, map_smul, Finsupp.smul_apply, smul_eq_mul, Nat.cast_mul, mul_comm (d : A), mul_mul_mul_comm]
   exact R.mul_mem (hy j k) (h (j, k, l))
@@ -67,7 +105,7 @@ theorem exists_denom_adele (a : Af F) : ∃ d : ℕ, 0 < d ∧ (d : Af F) * a �
   have hf : (Function.mulSupport fun v => max 1 ‖evalV F v a‖₊).Finite := by
     refine (Filter.eventually_cofinite.1 a.2).subset fun v hv hv' => hv (max_eq_left ?_)
     exact_mod_cast Valued.toNormedField.norm_le_one_iff.2 hv'
-  obtain ⟨d, hd, -, h⟩ := GlobalTheory.SmoothForms.denom_global _ (fun v => le_max_left _ _) hf
+  obtain ⟨d, hd, -, h⟩ := _root_.GlobalTheory.AdicNormZpowEstimates.exists_denominator _ (fun v => le_max_left _ _) hf
   refine ⟨d, hd, mem_intRing.2 fun v => ?_⟩
   rw [map_mul, map_natCast]
   exact h v _ (le_max_right _ _)
@@ -87,7 +125,7 @@ theorem exists_emb_large (b : Module.Basis (Fin m) F E) :
       (∀ l, (e : Af F) * (Algebra.TensorProduct.basis (Af F) b).repr ((1 : Af F) ⊗ₜ[F] x) l ∈ intRing F) →
       ∃ σ : E →+* ℂ, 1 ≤ (d * e : ℝ) * ‖σ x‖ := by
   obtain ⟨d, hd, h⟩ := exists_common_denom (integralClosure ℤ E).toSubring b fun k => by
-    obtain ⟨k, hk, r, hr⟩ := GlobalTheory.SmoothForms.denom_exists_int (b k)
+    obtain ⟨k, hk, r, hr⟩ := _root_.GlobalTheory.NatMulMemRingOfIntegers.exists_nat_mul_mem_ringOfIntegers (b k)
     exact ⟨k, hk, hr ▸ r.2⟩
   refine ⟨d, hd, fun x e he hx hl => ?_⟩
   have hi : IsIntegral ℤ (((d * e : ℕ) : E) * x) := by
@@ -178,7 +216,7 @@ theorem infPr_incA (x : D.host.E) : infPr D (incA D x) = (1 : Ainf D.host.F) ⊗
 theorem exists_denom_le_height (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (g : GA D V) :
     ∃ d : ℕ, 0 < d ∧ (d : ℝ) ≤ height θ V g ∧
       ∀ i j k, (d : Af D.host.F) * finCoord D (finMat D.sp.cm.sig V.gram g i j) k ∈ intRing D.host.F := by
-  obtain ⟨d₁, hd₁, hle, hint⟩ := GlobalTheory.SmoothForms.denom_global (fun v => finHt V v g) (fun v => le_max_left _ _)
+  obtain ⟨d₁, hd₁, hle, hint⟩ := _root_.GlobalTheory.AdicNormZpowEstimates.exists_denominator (fun v => finHt V v g) (fun v => le_max_left _ _)
     (finHt_mulSupport_finite V g)
   have hH : (d₁ : NNReal) ≤ height θ V g :=
     hle.trans (le_mul_of_one_le_left' (Finset.one_le_prod' fun _ _ => le_max_left _ _))

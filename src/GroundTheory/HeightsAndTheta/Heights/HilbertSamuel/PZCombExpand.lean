@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsZCombExpand
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmAExpand
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombLimit
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.SymExp
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

@@ -1,8 +1,56 @@
 module
 
 public import Formalism.HermitianCurvature.StatementU
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DetNormLe
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -78,7 +126,7 @@ lemma entry_le_mx {m n : Type*} [Fintype m] [Fintype n] (A : Matrix m n ℂ) (i 
 
 lemma det_norm_le {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℂ) {m : ℝ} (h : EB A m) :
     ‖A.det‖ ≤ (Fintype.card n).factorial * m ^ Fintype.card n := by
-  first | exact UpperTheory.Reformulated.B.Qi39.det_norm_le .. | (apply UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (apply @UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (apply @UpperTheory.Reformulated.B.Qi39.det_norm_le <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A m h | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A m | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n
+  first | (apply UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption)
 
 lemma inv_entry_le {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) {m : ℝ} (h : EB A m) :
     EB A⁻¹ ((n - 1).factorial * m ^ (n - 1) / ‖A.det‖) := by
@@ -322,7 +370,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.aux_statement_17 : BlockHeadSizes := 
   have hδ0pos : 0 < δ0 := by positivity
   set Kd : ℝ := ∑ i : Fin p, ((i.val + 1).factorial : ℝ) / ‖∏ t : Fin (i.val + 1), d (Fin.castLE i.isLt t)‖
     with hKd
-  have hKd0 : 0 ≤ Kd := Finset.sum_nonneg fun _ _ => by positivity
   have hδi : 0 ≤ δ0⁻¹ := inv_nonneg.mpr hδ0pos.le
   refine ⟨Kd * (1 + δ0⁻¹) + (p.factorial : ℝ) / ‖dH‖ + (1 + δ0⁻¹) + (p : ℝ) * ((p.factorial : ℝ) / ‖dH‖),
     fun η Z => ?_⟩
@@ -401,7 +448,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.aux_statement_17 : BlockHeadSizes := 
     have h2 := EB_mul hHi hHBb
     rw [← h1, Fintype.card_fin] at h2
     exact h2.mono ((le_of_eq (by ring)).trans hfa)
-  have hbA0 : 0 ≤ bA := by positivity
   have hZb : EB (Matrix.of Z) (m + p * (m * bA)) := by
     have h1 : Matrix.of Z = (Matrix.of a * H * Matrix.of b + Matrix.of Z) - Matrix.of a * H * Matrix.of b := by abel
     have h2 := EB_sub hBRb (EB_mul hAHb hb)
@@ -486,7 +532,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.sizes_top_level : SizesTop := by
   have hCp0 : 0 ≤ Cp := le_max_right _ _
   set K : ℝ := (1 + Cp) ^ 5 with hK
   have hK0 : 0 < K := by positivity
-  have hps1 : (1 : ℝ) ≤ ((p + s : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ p + s)
   have hps : (0 : ℝ) < 5 * ((p + s : ℕ) : ℝ) := by positivity
   set e := A' / (5 * ((p + s : ℕ) : ℝ)) with he
   have he0 : 0 ≤ e := div_nonneg hA' hps.le
@@ -706,7 +751,7 @@ lemma EB_mulF {l n : Type*} {m : ℕ} {A : Matrix l (Fin m) ℂ} {B : Matrix (Fi
   have := EB_mul hA hB
   rwa [Fintype.card_fin] at this
 
-set_option maxHeartbeats 1000000 in
+
 theorem _root_.Formalism.FourierDecayAlt.P.block3_apply_embedding : BigCellCoordinateSizes := by
   intro k j ρ hj
   have hj0 : j ≠ 0 := by omega

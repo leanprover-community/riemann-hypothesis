@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementS
-public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementR
-public import Formalism.GaussJetBounds.StatementQ
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveEndoAll
+public import Formalism.GaussJetBounds.StatementI
+public import Formalism.GaussJetBounds.StatementN
 
 @[expose] public section
 

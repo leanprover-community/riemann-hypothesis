@@ -1,7 +1,45 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteDimensionalOfSlices
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -105,14 +143,6 @@ def frameProj (B : Set (Fin r)) : Matrix (Fin n) (Fin n) E :=
 
 variable {σ J X Y}
 
-theorem yJx (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) :
-    Formalism.UG.cT (σ : E →+* E) Y * J * X = 1 := by
-  have hcJ : Formalism.UG.cT (σ : E →+* E) J = J := by ext i j; simp [Formalism.UG.cT, hJ.1 i j]
-  have hcc : Formalism.UG.cT (σ : E →+* E) (Formalism.UG.cT (σ : E →+* E) X) = X := by
-    ext i j; simp [Formalism.UG.cT, sig_sig σ hCM]
-  have := congrArg (Formalism.UG.cT (σ : E →+* E)) hW.xy
-  rwa [Formalism.UG.cT_mul, Formalism.UG.cT_mul, hcJ, hcc, Formalism.UG.cT_one, ← Matrix.mul_assoc] at this
-
 theorem xJ_frameProj (hW : IsWittFrame σ J X Y) (B : Set (Fin r)) :
     Formalism.UG.cT (σ : E →+* E) X * J * frameProj σ J X Y B = blockDiag B * (Formalism.UG.cT (σ : E →+* E) X * J) := by
   simp only [frameProj, Matrix.mul_add, ← Matrix.mul_assoc, hW.xx, hW.xy, Matrix.zero_mul, Matrix.one_mul, zero_add]
@@ -120,7 +150,7 @@ theorem xJ_frameProj (hW : IsWittFrame σ J X Y) (B : Set (Fin r)) :
 
 theorem yJ_frameProj (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) (B : Set (Fin r)) :
     Formalism.UG.cT (σ : E →+* E) Y * J * frameProj σ J X Y B = blockDiag B * (Formalism.UG.cT (σ : E →+* E) Y * J) := by
-  simp only [frameProj, Matrix.mul_add, ← Matrix.mul_assoc, hW.yy, yJx hCM hJ hW, Matrix.zero_mul, Matrix.one_mul,
+  simp only [frameProj, Matrix.mul_add, ← Matrix.mul_assoc, hW.yy, _root_.GlobalTheory.StdPar.yx hCM hJ hW, Matrix.zero_mul, Matrix.one_mul,
     add_zero]
   exact Matrix.mul_assoc _ _ _
 

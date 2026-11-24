@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
+public import Mathlib.GroupTheory.Torsion
 
 @[expose] public section
 

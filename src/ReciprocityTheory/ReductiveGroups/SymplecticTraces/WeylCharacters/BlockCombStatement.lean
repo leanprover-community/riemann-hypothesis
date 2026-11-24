@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.AntitoneOfMemInterl
+public import Mathlib.Tactic.Continuity
+public import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.AltBranchStatement
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

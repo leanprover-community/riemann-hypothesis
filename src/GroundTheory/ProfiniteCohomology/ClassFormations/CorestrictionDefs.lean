@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.Shapiro
 public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+public import Mathlib.CategoryTheory.Monoidal.Mon
 
 @[expose] public section
 

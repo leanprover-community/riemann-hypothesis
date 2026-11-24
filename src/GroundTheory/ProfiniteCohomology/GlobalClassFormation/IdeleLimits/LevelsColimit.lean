@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.Levels
-public import GroundTheory.ProfiniteCohomology.FilteredHomology
 public import GroundTheory.ProfiniteCohomology.Factor
+import GroundTheory.ProfiniteCohomology.FilteredHomology
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
+import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 
@@ -48,7 +48,7 @@ theorem levelCochains_injective (p : GLevel K) (m : ℕ) :
   have hσ : (fun i => restrictHom (E := p.1) (σ i)) = τ :=
     funext fun i => Function.surjInv_eq (restrictHom_surjective (F := K) (E := p.1)) (τ i)
   have h1 := congrFun (congrArg (fun c => ((cochainsComplexι (limitRep K)).f m).hom c) h) σ
-  simp only [cochainsComplexι_cochainsMapAlong_apply] at h1
+  simp only at h1
   change Additive.ofMul (of p.1 (((cochainsComplexι _).f m).hom y
       (fun i => restrictHom (E := p.1) (σ i))).toMul) =
     Additive.ofMul (of p.1 (((cochainsComplexι _).f m).hom y'
@@ -122,7 +122,7 @@ theorem exists_levelInfl_eq (n : ℕ) (x : cohomology (limitRep K) n) :
   rw [iCycles_cyclesMap_apply, hw, hy₀]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_levelTransition_eq_zero (n : ℕ) (p : GLevel K) (y : cohomology (ideleRep K.1 p.1.1) n)
     (hy : (levelInfl K p.1 n).hom y = 0) :
     ∃ (q : GLevel K) (h : p ≤ q),

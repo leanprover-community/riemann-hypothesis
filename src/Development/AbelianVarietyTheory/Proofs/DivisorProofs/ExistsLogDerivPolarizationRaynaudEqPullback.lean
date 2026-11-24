@@ -1,16 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidChart
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBasisRaynaudTangentInvariantFields
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusInvariantLiftAddInvariantCombination
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRaynaudTorusWeightFunctionInvariantField
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AwayToAwayRightEqOfComp
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsChartOfMemRedKer
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LeISupInfPreimage
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBasisRaynaudTangentInvariantFields
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRaynaudTorusWeightFunctionInvariantField
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusInvariantLiftAddInvariantCombination
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsResEqOfUnitInChart
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothRayQuotient
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LeISupInfPreimage
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HolomorphicHomDetermined
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidChart
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsEigenvectorIffLieBasisCoordinates
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueInvariantVectorFieldOfTangent
 
 @[expose] public section
 
@@ -158,13 +204,6 @@ theorem pushL_surjective [IsLocalRing R] (φ : G ⟶ G') [IsMonHom φ] [Smooth �
     ext <;> simp [epsMul, π, TrivSqZeroExt.algebraMap_eq_inl]
   exact ⟨PullbackSections.mkT V hV, PullbackSections.tanM_ext (Over.OverMorphism.ext h₁)⟩
 
-theorem comp_prod {T T' : Over (Sp R)} (k : T ⟶ T') {κ : Type} (s : Finset κ) (x : κ → (T' ⟶ G)) :
-    k ≫ ∏ i ∈ s, x i = ∏ i ∈ s, k ≫ x i := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => exact MonObj.comp_one k
-  | insert i s hi ih => rw [Finset.prod_insert hi, Finset.prod_insert hi, MonObj.comp_mul, ih]
-
 theorem epsTo_inr (S : Type) [CommRing S] [Algebra R S] (c : R) :
     SqZero.epsTo R (inr (algebraMap R S c) : DualNumber S) (TrivSqZeroExt.inr_mul_inr _ _ _) =
       (SqZero.epsTo R (inr 1 : DualNumber S) (TrivSqZeroExt.inr_mul_inr _ _ _)).comp
@@ -213,7 +252,7 @@ theorem isInv_pbT (φ : G ⟶ G') [IsMonHom φ] {v : TanM (𝟙 (Sp R)) G} {d : 
     refine congrArg (fun q : DualNumber R →+* DualNumber S => spMap q ≫ (tv (w a)).left) (RingHom.ext fun y => ?_)
     exact (AlgHom.congr_fun (epsTo_inr S (c a)) y))
   have e₃ : (k ≫ tv v * z') ≫ φ = (∏ a, k ≫ tv (c a • w a)) * (z' ≫ φ) := by
-    rw [MonObj.mul_comp, Category.assoc, ← tv_pushL, hc, RayBasis.tv_sum, comp_prod]
+    rw [MonObj.mul_comp, Category.assoc, ← tv_pushL, hc, RayBasis.tv_sum, _root_.GlobalTheory.Reg.VecEig.comp_finProd]
   rw [e₁] at c₁ c₂
   simp only [e₂] at d₂
   have f₁ := c₂ (pbT φ.left s W)
@@ -226,18 +265,14 @@ theorem isInv_pbT (φ : G ⟶ G') [IsMonHom φ] {v : TanM (𝟙 (Sp R)) G} {d : 
   have f₃ := congrArg TrivSqZeroExt.snd f₂
   simp only [TrivSqZeroExt.snd_sum, TrivSqZeroExt.inr_mul_inl, TrivSqZeroExt.snd_inr, MulOpposite.smul_eq_mul_unop,
     MulOpposite.unop_op, _root_.one_mul] at f₃
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [HolHom.valR_eq _ _ hx, map_sub, ← HolHom.valR_eq _ _ hx, ← HolHom.valR_eq _ _ hx, f₃,
-    GlobalTheory.KS.pbT_of_le _ hW, valR_appLE _ _ _ _ hW hx, HolHom.valR_eq _ _ hxU, map_sum, sub_eq_zero]
+
+  rw [HolHom.valR_eq _ _ hx, map_sub, ← HolHom.valR_eq _ _ hx, ← HolHom.valR_eq _ _ hx, f₃,
+  GlobalTheory.KS.pbT_of_le _ hW, valR_appLE _ _ _ _ hW hx, HolHom.valR_eq _ _ hxU, map_sum, sub_eq_zero]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [map_mul, ← HolHom.valR_eq _ _ hxU, ← HolHom.valR_eq _ _ hxU,
     valR_constFn _ G'.hom (algebraMap R S) (by rw [Category.assoc, Over.w φ, hψ]) U hxU]
 
 end Hom
-
-theorem pbT_id {Z : Scheme.{0}} {U : Z.Opens} (s : Γ(Z, U)) : pbT (𝟙 Z) s U = s := by
-  rw [GlobalTheory.KS.pbT_of_le (𝟙 Z) (O₀ := U) (O := U) le_rfl]
-  exact (congrArg (fun φ => φ.hom s) (Scheme.Hom.appLE_eq_app (𝟙 Z) (U := U))).trans rfl
 
 theorem exists_dlg_eq_pbT : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R] [IsAdicComplete (maximalIdeal R) R] [Algebra ℚ R] (Dd : DegData R (maximalIdeal R)) (O : Type) [CommRing O] [StarRing O] [Module O Dd.toPre.X] (oa : Dd.toPre.OAct O) (Y : Ray oa) (n : ℕ) (v : Module.Basis (Fin n) R (TanM (𝟙 (Sp R)) Y.H)) (dd : Fin n → Fld Y.H.left), (∀ a, IsInv Y.H (v a) (dd a)) → ∃ (g : ℕ) (w : Fin g → TanM (𝟙 (Sp R)) Dd.toPre.P.A) (dd' : Fin g → Fld Dd.toPre.P.A.left) (M : Fin n → Fin g → R) (N : Fin g → Fin n → R), (∀ a, IsInv Dd.toPre.P.A (w a) (dd' a)) ∧ (∀ u : TanM (𝟙 (Sp R)) Dd.toPre.P.A, ∃ cf : Fin g → R, u = ∑ a, cf a • w a) ∧ (∀ a a', ∑ b, N a b * M b a' = if a = a' then 1 else 0) ∧ ∀ (b : Fin n) (i i' : Dd.toPre.P.L.ι) (W : Y.H.left.Opens), W ≤ Y.q.left ⁻¹ᵁ (Dd.toPre.P.L.U i ⊓ Dd.toPre.P.L.U i') → dlg Y.H Y.q.left Dd.toPre.P.L (dd b) i i' W = pbT Y.q.left (∑ a, constFn Dd.toPre.P.A.hom _ (M b a) * dlg Dd.toPre.P.A (𝟙 _) Dd.toPre.P.L (dd' a) i i' (Dd.toPre.P.L.U i ⊓ Dd.toPre.P.L.U i')) W := by
   intro R _ _ _ _ _ _ Dd O _ _ _ oa Y n v dd hdd
@@ -249,11 +284,11 @@ theorem exists_dlg_eq_pbT : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRin
   refine ⟨g, w, dd', fun b a => w.repr (pushL Y.q (v b)) a, fun a b => v.repr (u a) b, hdd',
     fun m => ⟨w.repr m, (w.sum_repr m).symm⟩, fun a a' => ?_, fun b i i' W hW => ?_⟩
   · have h := congrArg (fun m => w.repr (pushL Y.q m) a') (v.sum_repr (u a))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, hu, Finsupp.finsetSum_apply, Finsupp.smul_apply, smul_eq_mul,
-      Module.Basis.repr_self, Finsupp.single_apply] at h
+
+    simp only [map_sum, map_smul, hu, Finsupp.finsetSum_apply, Finsupp.smul_apply, smul_eq_mul,
+    Module.Basis.repr_self, Finsupp.single_apply] at h
     exact h
-  · simp only [dlg, pbT_id]
+  · simp only [dlg, _root_.GlobalTheory.KS.InvField.pbT_id]
     rw [isInv_pbT Y.q (hdd b) hdd' _ (w.sum_repr _).symm _ _ W hW, ← GlobalTheory.KS.pbT_mul, Finset.sum_mul]
     simp only [_root_.mul_assoc]
 

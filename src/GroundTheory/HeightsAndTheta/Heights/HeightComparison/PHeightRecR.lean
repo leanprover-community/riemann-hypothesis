@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightRecR
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitDivVertical
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitFiniteSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitArchSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Comparison
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -27,8 +28,8 @@ theorem mConeMap_of_isMultiHomog {Ω : Type*} [Field Ω] (y : Coord n → Ω)
   classical
   conv_lhs => rw [s.as_sum]
   conv_rhs => rw [s.as_sum, eval₂_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm ↦ ?_
   have hmon : ∏ p ∈ m.support, (X p.1 : MvPolynomial ι Ω) ^ m p = ∏ k, X k ^ a k := by
     rw [Finset.prod_subset (Finset.subset_univ m.support) (fun p _ hp ↦ by

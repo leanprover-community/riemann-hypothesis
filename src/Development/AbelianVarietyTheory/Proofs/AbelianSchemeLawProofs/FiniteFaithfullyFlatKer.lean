@@ -1,7 +1,62 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Finiteness.Projective
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.RingTheory.Ideal.BigOperators
+public import Mathlib.RingTheory.Spectrum.Prime.Topology
+import Mathlib.Topology.Sheaves.Presheaf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 @[expose] public section
 
@@ -22,8 +77,8 @@ theorem tr_comm (e : ι → M) (c : ι → M →ₗ[A] A) (h : ∀ m, ∑ i, c i
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [LinearMap.comp_apply]
     conv_lhs => rw [← h (ψ (e i))]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum]
+
+    simp [map_sum]
   rw [key, key, Finset.sum_comm]
   simp [mul_comm]
 
@@ -173,7 +228,7 @@ theorem sum_lam (e : ι → Λ) (c : ι → Λ →ₗ[R] R)
         (hit (c k) ∘ₗ LinearMap.mulLeft R x) ∘ₗ
           LinearMap.mulLeft R (HopfAlgebra.antipode R (e k)) := by
       ext y
-      simp [mul_left_comm, mul_assoc]
+      simp [mul_left_comm]
     rw [lam_apply, this, tr_comm e c h]
     simp [tr]
   have h2 : ∀ y : Λ, ∑ k, HopfAlgebra.antipode R (e k) * hit (c k) y =
@@ -186,17 +241,17 @@ theorem sum_lam (e : ι → Λ) (c : ι → Λ →ₗ[R] R)
     | add u v hu hv => simp only [map_add (f := _), mul_add, Finset.sum_add_distrib, hu, hv]
     | tmul u v =>
       conv_rhs => rw [← h v]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [tmul_sum, map_sum, mul_comm]
+
+      simp [tmul_sum, map_sum, mul_comm]
   simp only [h1]
   rw [Finset.sum_comm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← map_sum, h2, Bialgebra.counit_mul, Algebra.algebraMap_eq_smul_one, map_smul,
-    smul_eq_mul, mul_assoc, ← Finset.mul_sum]
+
+  simp only [← map_sum, h2, Bialgebra.counit_mul, Algebra.algebraMap_eq_smul_one, map_smul,
+  smul_eq_mul, mul_assoc, ← Finset.mul_sum]
   have : ∑ i, Coalgebra.counit (R := R) (e i) * c i 1 = 1 := by
     have := congrArg (Coalgebra.counit (R := R)) (h 1)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum, mul_comm] using this
+
+    simpa [map_sum, mul_comm] using this
   rw [this, mul_one]
 
 theorem exists_integrals (R Λ : Type*) [CommRing R] [CommRing Λ] [HopfAlgebra R Λ]
@@ -211,8 +266,8 @@ theorem exists_integrals (R Λ : Type*) [CommRing R] [CommRing Λ] [HopfAlgebra 
     intro m
     have h1 : p (s m) = m := LinearMap.congr_fun hps m
     conv_rhs => rw [← h1, pi_eq_sum_univ' (s m)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [c, e, map_sum]
+
+    simp [c, e, map_sum]
   exact ⟨n, fun k => lam e c (c k), fun k => HopfAlgebra.antipode R (e k),
     fun k x => lam_integral e c h _ x, sum_lam e c h⟩
 
@@ -270,8 +325,8 @@ theorem exists_dual_family [Module.Finite R Λ] [Module.Projective R Λ]
   · rw [Fintype.sum_sigma]
     have h1 : ∀ k, ∑ i, ev B (l k) (ρ (y k i) * ρ u) * x k i = ev B (l k) (1 ⊗ₜ T k * ρ u) := by
       intro k
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hz, hxy, map_sum, Finset.sum_mul, map_sum]
+
+      rw [← hz, hxy, map_sum, Finset.sum_mul, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [mul_comm, ← smul_eq_mul, ← map_smul, Algebra.TensorProduct.productMap_apply_tmul,
         mul_assoc, Algebra.smul_def]

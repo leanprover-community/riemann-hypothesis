@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.EpsteinZeta.DedekindFactorK
+public import Mathlib.NumberTheory.ModularForms.LevelOne.GradedRing
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.NumberTheory.ModularForms.Discriminant
 
 @[expose] public section
 
@@ -88,7 +91,7 @@ theorem jac_eisG (a z : ℂ) (ha : a ≠ 0) (hz : 0 < z.im) (k : ℕ) (hk : k �
     exact zero_zpow _ (by omega)
   rw [← tsum_subtype_eq_of_support_subset hsupp, ← tsum_mul_left]
   refine tsum_congr fun v => ?_
-  simp only [Equiv.ofBijective_apply, f, EisensteinSeries.eisSummand, UpperHalfPlane.coe_mk, zpow_natCast]
+  simp only [Equiv.ofBijective_apply, f, EisensteinSeries.eisSummand]
   rw [mul_pow, one_div, mul_inv, zpow_neg, zpow_natCast]
 
 theorem E4_eq_half_eisensteinSeries (z : UpperHalfPlane) :

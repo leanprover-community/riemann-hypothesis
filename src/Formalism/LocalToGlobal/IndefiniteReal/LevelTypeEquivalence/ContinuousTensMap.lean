@@ -1,6 +1,6 @@
 module
 
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

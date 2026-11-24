@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
 
 @[expose] public section

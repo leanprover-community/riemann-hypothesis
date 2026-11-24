@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsPic
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsOrd
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FunctionFieldPoint
 
 @[expose] public section
 

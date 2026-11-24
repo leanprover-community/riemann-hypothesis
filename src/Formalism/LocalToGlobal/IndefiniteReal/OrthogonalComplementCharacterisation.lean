@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

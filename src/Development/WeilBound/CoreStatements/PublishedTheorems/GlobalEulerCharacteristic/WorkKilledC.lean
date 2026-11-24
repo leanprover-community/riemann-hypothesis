@@ -1,11 +1,54 @@
 module
 
+public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ArtinDefs
+public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.GlobalEulerFormulaInf
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalEulerCharacteristic.Reduce
-public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.Shapiro
-public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ApplySubrepresentationCongr
+public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ShapiroReal
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ToFunEqZeroOfForallIsCyclic
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFixed
-public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.DefsForms
+import GroundTheory.ProfiniteCohomology.PoitouTate.RealOdd
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -156,23 +199,12 @@ theorem exists_card_eq_pow' {ℓ : ℕ} [Fact ℓ.Prime] {X : Type*} [AddCommGro
   obtain ⟨n, hn⟩ := hp.exists_card_eq
   exact ⟨n, by rw [← hn]; rfl⟩
 
-theorem ratio_shortExact_l' (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
-    (hS : S.Finite) (hSl : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
-    (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal},
-        AlgebraicClosure ℚ →ₐ[K.1] AlgebraicClosure v.1.Completion)
-    (T : ShortComplex (Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 (AlgebraicClosure ℚ) S)))
-    (hT : T.ShortExact) [IsDiscreteRep T.X₁] [IsDiscreteRep T.X₂] [IsDiscreteRep T.X₃] [Finite T.X₂]
-    (hl : ∃ r : ℕ, ∀ m : T.X₂, (ℓ ^ r) • m = 0) :
-    haveI : Finite S := hS
-    gsEulerRatio S T.X₂ ιr = gsEulerRatio S T.X₁ ιr * gsEulerRatio S T.X₃ ιr :=
-  PositivityTheory.Lit1.GEN.ratio_shortExact_l ℓ K S hS hSl ιr T hT hl
-
 theorem gs_multKilled (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (hS : S.Finite) (hSl : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion) :
     MultKilled ℓ (fun A [IsDiscreteRep A] => gsEulerRatio S A ιr) := by
   intro T _ _ _ _ hT hl
-  exact ratio_shortExact_l' ℓ K S hS hSl ιr T hT ⟨1, by simpa using hl⟩
+  exact _root_.PositivityTheory.Lit1.GEN.W_multl.ratio_shortExact_l ℓ K S hS hSl ιr T hT ⟨1, by simpa using hl⟩
 
 theorem gs_posKilled (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (hS : S.Finite) (hSl : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
@@ -204,7 +236,7 @@ theorem gs_posKilled (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set 
   convert div_pos (mul_pos hEuler (pow_pos hCard (Fintype.card (InfinitePlace K.1)))) hReal
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_field_of_cyclic (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
     (L : FiniteSubfield) [Fact (K ≤ L)]

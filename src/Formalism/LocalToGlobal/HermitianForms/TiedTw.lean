@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.HermitianForms.TiedTwGen
-public import Formalism.LocalToGlobal.HermitianColumns.TiedQCJoint
-public import Formalism.LocalRingCardinality.DataKerP
+public import Formalism.LocalToGlobal.HermitianColumns.TiedQC
+public import Formalism.LocalToGlobal.HermitianForms.RankEqFirstLevel
 
 @[expose] public section
 
@@ -49,7 +49,7 @@ def twY (T : Formalism.L2.Herm.TwChTied D inQ) (F : ∀ u, FormsTied D u) (u : D
   (T.eY u μ i hi).symm.trans ((F u).val i hi).eY
 
 
-set_option maxHeartbeats 4000000 in
+
 structure TwFormsTied (D : D7) (Tw : TwForms D) {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop}
     (T : Formalism.L2.Herm.TwChTied D inQ) (F : ∀ u, FormsTied D u) where
 

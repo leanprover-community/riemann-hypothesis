@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupActionIso
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Mathlib.NumberTheory.NumberField.FractionalIdeal
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
+public import Mathlib.RingTheory.ClassGroup.Basic
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -81,9 +90,8 @@ theorem exists_rat_eq_of_im_eq_zero {x : K} (hx : (σ x).im = 0) : ∃ q : ℚ, 
     intro y
     rw [← b.sum_repr y, Fin.sum_univ_two]
     simp only [b, coe_basisOfLinearIndependentOfCardEqFinrank, Matrix.cons_val_zero,
-      Matrix.cons_val_one, Matrix.cons_val_fin_one, map_add, Rat.smul_def, map_mul, map_one,
-      mul_one, map_ratCast, Complex.add_im, Complex.mul_im, Complex.ratCast_im, Complex.ratCast_re,
-      hx, Complex.one_im, zero_mul, mul_zero, add_zero]
+      Matrix.cons_val_one, Matrix.cons_val_fin_one, map_add, Rat.smul_def, map_mul, mul_one, map_ratCast, Complex.add_im, Complex.mul_im, Complex.ratCast_im, Complex.ratCast_re,
+      hx, zero_mul, mul_zero, add_zero]
   have hR : ComplexEmbedding.IsReal σ := by
     rw [ComplexEmbedding.isReal_iff]
     ext y

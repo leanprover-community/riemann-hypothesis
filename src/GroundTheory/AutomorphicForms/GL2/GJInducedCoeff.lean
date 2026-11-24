@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
+public import GroundTheory.AutomorphicForms.InductionParabolic
+public import GroundTheory.AutomorphicForms.AdmissibleInduction
 public import GroundTheory.AutomorphicForms.HaarCosets
+import GroundTheory.AutomorphicForms.LocallyConstantCompact
+public import GroundTheory.AutomorphicForms.SmoothRepContragredient
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -152,8 +157,8 @@ theorem exists_eval_decomposition (hσ : IsSmooth σ) {m : ℕ} {R : Finset (GL 
     have hlam : lam ψ = L (E ⟨ψ, hψ⟩) := by
       simp only [L, LinearMap.coe_comp, Function.comp_apply, Submodule.coe_subtype]
       rw [← LinearMap.comp_apply E' E, hE', LinearMap.id_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hlam, hEψ, map_sum, ← Finset.sum_coe_sort R]
+
+    rw [hlam, hEψ, map_sum, ← Finset.sum_coe_sort R]
     refine Finset.sum_congr rfl fun x _ => ?_
     dsimp only
     rw [dite_eq_left x.2]

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenNearCover
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGradedSubmodules
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
 
 @[expose] public section
@@ -203,8 +204,8 @@ theorem GenNearCover.proof (hG : GradedSubmodules.Statement) : GenNearCover.Stat
           rw [weightedHomogeneousComponent_of_mem ((mem_weightedHomogeneousSubmodule _ _ _ _).2 hXk), if_pos rfl]
       _ = weightedHomogeneousComponent (blockDeg (ι := ι)) D (v + ∑ P, g P * F P.1 ^ N) := by rw [hg, hvy]
       _ = _ := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_add (f := _), map_sum]
+
+          rw [map_add (f := _), map_sum]
           congr 1
           refine Finset.sum_congr rfl fun P _ => ?_
           rw [component_mul (hFN P) D]

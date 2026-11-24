@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CyclicCupDefs
 public import GroundTheory.ProfiniteCohomology.Characters
 public import GroundTheory.ProfiniteCohomology.CupProducts
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
 public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
 
 @[expose] public section

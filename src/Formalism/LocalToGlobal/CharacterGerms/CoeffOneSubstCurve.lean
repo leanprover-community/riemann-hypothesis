@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.FirstVanishingAt
+public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieDefs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Formalism.LocalToGlobal.CharacterGerms.CoeffLMulCvFrob
+import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
 
 @[expose] public section
 
@@ -46,8 +49,8 @@ theorem coeff_l_frob {P : PS C 1 dd} (hP : IntS V P) (hPz : MvPowerSeries.consta
   have hsq : ∀ (s : Fin 1 × Fin dd), s = ((0 : Fin 1), s.2) := fun s => Prod.ext (Subsingleton.elim _ _) rfl
   have hD2 : Agr (2 * V.l) (P - D1 - D3) 0 := by
     intro μ hμ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sub, map_zero, hD1def, hD3def, map_sum]
+
+    rw [map_sub, map_sub, map_zero, hD1def, hD3def, map_sum]
     simp only [MvPowerSeries.coeff_monomial]
     by_cases hex : ∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)
     · rw [if_pos hex, sub_self, zero_sub, neg_eq_zero]
@@ -97,8 +100,8 @@ theorem coeff_l_frob {P : PS C 1 dd} (hP : IntS V P) (hPz : MvPowerSeries.consta
     hB1' (Finsupp.single () V.l)
   have hD3 : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3 =
       ∑ i, MvPowerSeries.C (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) V.l) P) * γ i ^ V.l := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hD3def, ← MvPowerSeries.coe_substAlgHom hG, map_sum]
+
+    rw [hD3def, ← MvPowerSeries.coe_substAlgHom hG, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [MvPowerSeries.coe_substAlgHom hG, MvPowerSeries.subst_monomial hG, Finsupp.prod_single_index (by simp)]
     rfl
@@ -116,8 +119,8 @@ theorem coeff_l_frob {P : PS C 1 dd} (hP : IntS V P) (hPz : MvPowerSeries.consta
           MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3 := by
     conv_lhs => rw [hsplit]
     rw [MvPowerSeries.subst_add hG, MvPowerSeries.subst_add hG]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [eP, map_add (f := _), map_add (f := _), hA2', add_zero, hD3, map_sum]
+
+  rw [eP, map_add (f := _), map_add (f := _), hA2', add_zero, hD3, map_sum]
   have e : ∀ (a : C) (s t : Fin dd → C),
       a + ∑ i, s i - ∑ i, t i = a + ∑ i, (s i - t i) := fun a s t => by
     rw [Finset.sum_sub_distrib]
@@ -224,8 +227,8 @@ theorem coeff_one_subst_curve {P : PS C 1 dd} (hPz : MvPowerSeries.constantCoeff
       (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) 1) P) := ⟨_, rfl⟩
   have hD2 : Agr 2 P D3 := by
     intro μ hμ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hD3def, map_sum]
+
+    rw [hD3def, map_sum]
     simp only [MvPowerSeries.coeff_monomial]
     rcases Nat.lt_succ_iff.1 hμ |>.lt_or_eq with h1 | h1
     · have h0 : μ = 0 := (Finsupp.degree_eq_zero_iff _).1 (by omega)
@@ -253,13 +256,13 @@ theorem coeff_one_subst_curve {P : PS C 1 dd} (hPz : MvPowerSeries.constantCoeff
       PowerSeries.coeff 1 (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3) := hA
   have hD3 : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3 =
       ∑ i, MvPowerSeries.C (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) 1) P) * γ i ^ 1 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hD3def, ← MvPowerSeries.coe_substAlgHom hG, map_sum]
+
+    rw [hD3def, ← MvPowerSeries.coe_substAlgHom hG, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [MvPowerSeries.coe_substAlgHom hG, MvPowerSeries.subst_monomial hG, Finsupp.prod_single_index (by simp)]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hA', hD3, map_sum]
+
+  rw [hA', hD3, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [pow_one]
   exact MvPowerSeries.coeff_C_mul _ _ _

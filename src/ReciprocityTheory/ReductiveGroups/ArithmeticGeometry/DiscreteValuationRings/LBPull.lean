@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
 
 @[expose] public section
@@ -20,7 +23,7 @@ lemma pullU_comp {X Y Z : Scheme.{0}} (f : Z ⟶ Y) (g : Y ⟶ X) (U : X.Opens) 
   simp only [pullU, Units.coe_map, MonoidHom.coe_coe, Scheme.Hom.comp_app]
   rfl
 
-set_option maxHeartbeats 1000000 in
+
 lemma pullback_generator_isGenerator {X Y Z : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ)
     (t : LB.Gen (LB.LinComb L φ ε)) (ht : t.IsGen) (h : Z ⟶ Y) (i j : K → L.ι) :
     res (inf_le_left : (LB.LinComb L (fun k => h ≫ φ k) ε).U i ⊓ (LB.LinComb L (fun k => h ≫ φ k) ε).U j ≤
@@ -55,7 +58,6 @@ lemma pullback_generator_isGenerator {X Y Z : Scheme.{0}} (L : LB X) {K : Type} 
     rw [ha1, ha0]
     first
       | (rw [map_prod, map_prod]; exact Finset.prod_congr rfl fun k _ => by rw [map_zpow, map_zpow])
-      | simp only [map_prod, map_zpow]
   rw [hg]
   erw [res_res', res_res']
   exact h1
@@ -70,10 +72,9 @@ lemma inverse_generator_isGenerator {X Y : Scheme.{0}} (L : LB X) {K : Type} [Fi
       (LB.LinComb L φ (fun k => -ε k)).g i j *
         res (inf_le_right : (LB.LinComb L φ (fun k => -ε k)).U i ⊓ (LB.LinComb L φ (fun k => -ε k)).U j ≤
           (LB.LinComb L φ (fun k => -ε k)).U j) ((LB.invGen L φ ε t).s j) := by
-  have h1 := ht i j
   have hg : (LB.LinComb L φ (fun k => -ε k)).g i j = ((LB.LinComb L φ ε).g i j)⁻¹ := by
     (simp only [LB.LinComb, zpow_neg, Finset.prod_inv_distrib]) <;> rfl
-  have h2 := congrArg (fun z => z⁻¹) h1
+  have h2 := congrArg (fun z => z⁻¹) (ht i j)
   simp only [mul_inv, ← map_inv] at h2
   rw [hg]
   exact h2
@@ -81,7 +82,7 @@ lemma inverse_generator_isGenerator {X Y : Scheme.{0}} (L : LB X) {K : Type} [Fi
 theorem invGen_isGen {X Y : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ)
     (t : LB.Gen (LB.LinComb L φ ε)) (ht : t.IsGen) : (LB.invGen L φ ε t).IsGen := fun i j => inverse_generator_isGenerator L φ ε t ht i j
 
-set_option maxHeartbeats 1000000 in
+
 lemma product_generator_isGenerator {X Y : Scheme.{0}} (L : LB X) {K K' : Type} [Fintype K] [Fintype K']
     (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
     (t : LB.Gen (LB.LinComb L φ ε)) (t' : LB.Gen (LB.LinComb L φ' ε')) (ht : t.IsGen) (ht' : t'.IsGen)
@@ -132,7 +133,6 @@ lemma product_generator_isGenerator {X Y : Scheme.{0}} (L : LB X) {K K' : Type} 
     first
       | (rw [map_prod, map_prod]
          congr 1 <;> exact Finset.prod_congr rfl fun k _ => by rw [map_zpow])
-      | simp only [map_prod, map_zpow]
   have h1 := congrArg (fun z : Γ(Y, (LB.LinComb L φ ε).U (i ∘ Sum.inl) ⊓ (LB.LinComb L φ ε).U (j ∘ Sum.inl))ˣ =>
     res hA z) (ht (i ∘ Sum.inl) (j ∘ Sum.inl))
   have h2 := congrArg (fun z : Γ(Y, (LB.LinComb L φ' ε').U (i ∘ Sum.inr) ⊓ (LB.LinComb L φ' ε').U (j ∘ Sum.inr))ˣ =>
@@ -143,7 +143,6 @@ lemma product_generator_isGenerator {X Y : Scheme.{0}} (L : LB X) {K K' : Type} 
   erw [res_res', res_res', res_res', res_res']
   rw [mul_mul_mul_comm (res hA _) (res hB _)]
   erw [h1, h2]
-  try rfl
 
 theorem mulGen_isGen {X Y : Scheme.{0}} (L : LB X) {K K' : Type} [Fintype K] [Fintype K']
     (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)

@@ -1,6 +1,63 @@
 module
 
 public import Formalism.MahlerMeasure.StatementTM
+public import Formalism.MahlerMeasure.StatementD
+import Formalism.MahlerMeasure.MahlerMeasureProofs.FockPairing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Interval
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.RingTheory.Localization.Module
 
 @[expose] public section
 
@@ -102,7 +159,7 @@ theorem exists_pow_smul_intPol {σ : Type} (x : MvPolynomial σ ℚ_[p]) :
   have hp : (1 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).one_lt
   obtain ⟨k, hk⟩ := pow_unbounded_of_one_lt (∑ m ∈ x.support, ‖x.coeff m‖) hp
   refine ⟨k, mem_intPol_of_norm _ fun m => ?_⟩
-  rw [coeff_smul, smul_eq_mul, norm_mul, norm_pow, Padic.norm_p]
+  rw [MvPolynomial.coeff_smul, smul_eq_mul, norm_mul, norm_pow, Padic.norm_p]
   by_cases hm : m ∈ x.support
   · have h1 : ‖x.coeff m‖ ≤ ∑ m ∈ x.support, ‖x.coeff m‖ :=
       Finset.single_le_sum (f := fun m => ‖x.coeff m‖) (fun _ _ => norm_nonneg _) hm
@@ -425,8 +482,8 @@ theorem adStep_succ (L : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p])) (v : σ) (
         intro j _
         rw [hgmk j]
       have hc2 : Fe1.mkQ (∑ j, c j • g j) = Fe1.mkQ x := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]; simp only [map_smul]; exact hc'
+
+        rw [map_sum]; simp only [map_smul]; exact hc'
       simp only [Submodule.mkQ_apply] at hc2
       have hdiff : x - ∑ j, c j • g j ∈ Fe1 := (Submodule.Quotient.eq Fe1).mp hc2.symm
       have : x = (x - ∑ j, c j • g j) + ∑ j, c j • g j := by abel
@@ -583,41 +640,19 @@ variable {p : ℕ} [Fact p.Prime] {σ : Type}
 
 theorem fock_eq_sum (F G : MvPolynomial σ ℚ_[p]) (s : Finset (σ →₀ ℕ)) (hs : F.support ⊆ s) :
     fock p F G = ∑ m ∈ s, F.coeff m * G.coeff m * (m.prod fun _ k => (k.factorial : ℚ_[p])) := by
-  classical
-  unfold fock
-  apply Finset.sum_subset hs
-  intro m _ hm
-  rw [notMem_support_iff.mp hm, zero_mul, zero_mul]
+  simpa only [M.fock_eq_pair, cast_fock_weight] using FockPairing.pair_eq_sum F G s hs
 
 theorem fock_add_left (F F' G : MvPolynomial σ ℚ_[p]) : fock p (F + F') G = fock p F G + fock p F' G := by
-  classical
-  rw [fock_eq_sum (F + F') G (F.support ∪ F'.support) support_add,
-    fock_eq_sum F G (F.support ∪ F'.support) subset_union_left,
-    fock_eq_sum F' G (F.support ∪ F'.support) subset_union_right, ← Finset.sum_add_distrib]
-  apply Finset.sum_congr rfl
-  intro m _
-  rw [MvPolynomial.coeff_add]; ring
+  simpa only [M.fock_eq_pair] using FockPairing.pair_add_left F F' G
 
 theorem fock_smul_left (c : ℚ_[p]) (F G : MvPolynomial σ ℚ_[p]) : fock p (c • F) G = c * fock p F G := by
-  classical
-  rw [fock_eq_sum (c • F) G F.support (support_smul), fock_eq_sum F G F.support subset_rfl, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro m _
-  rw [coeff_smul, smul_eq_mul]; ring
+  simpa only [M.fock_eq_pair] using FockPairing.pair_smul_left c F G
 
 theorem fock_add_right (F G G' : MvPolynomial σ ℚ_[p]) : fock p F (G + G') = fock p F G + fock p F G' := by
-  unfold fock
-  rw [← Finset.sum_add_distrib]
-  apply Finset.sum_congr rfl
-  intro m _
-  rw [MvPolynomial.coeff_add]; ring
+  simpa only [M.fock_eq_pair] using FockPairing.pair_add_right F G G'
 
 theorem fock_smul_right (c : ℚ_[p]) (F G : MvPolynomial σ ℚ_[p]) : fock p F (c • G) = c * fock p F G := by
-  unfold fock
-  rw [Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro m _
-  rw [coeff_smul, smul_eq_mul]; ring
+  simpa only [M.fock_eq_pair] using FockPairing.pair_smul_right c F G
 
 noncomputable def fockBil {N r : ℕ} (LL : Letters N)
     (φ : MvPolynomial (Fin N × Fin r) ℚ_[p] →ₗ[ℚ_[p]] MvPolynomial (Fin N × Fin r) ℚ_[p]) :

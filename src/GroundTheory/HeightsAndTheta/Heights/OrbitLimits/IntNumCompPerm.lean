@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsSymmRelabel
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsFieldIntersectionExample
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsSymmRelabel
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumSymm
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

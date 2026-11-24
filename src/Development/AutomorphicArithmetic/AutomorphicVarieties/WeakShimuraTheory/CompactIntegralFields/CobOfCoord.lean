@@ -2,14 +2,57 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EntryMem
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.FerreroWashington
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.PtPair
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.GeAlgTop
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.dvrFinite
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EiiUnit
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.XvanExt
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.GeAlgTop
+import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LocVanP
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.NormO
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.XvanExt
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.PtPair
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -76,8 +119,8 @@ private theorem lattice {O : Type} [CommRing O] [IsDomain O] [IsLocalRing O] {H 
     have e5 : residue O (r h s s) = residue O (r h s s) - residue O 0 := by simp
     rw [← e4, e5, ← e3]
     conv_rhs => rw [← e2]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, hm, ← Finset.sum_sub_distrib, Finset.mul_sum]
+
+    simp only [map_sum, map_mul, hm, ← Finset.sum_sub_distrib, Finset.mul_sum]
     refine Finset.sum_congr rfl fun g _ => ?_
     ring
   have c1 : c 1 = 0 := by
@@ -312,8 +355,8 @@ theorem UpperTheory.V.Ws.triV :
     have e : Matrix.single i i (1 : R') = ∑ g ∈ b.support, y (b g) • mapRep y ρ g := by
       ext p q
       have h2 := congrArg y (congrFun (congrFun hb p) q)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Finsupp.sum, Matrix.sum_apply, map_sum] at h2
+
+      rw [Finsupp.sum, Matrix.sum_apply, map_sum] at h2
       rw [Matrix.sum_apply]
       simp only [Matrix.smul_apply, smul_eq_mul, map_mul, mapRep_apply] at h2 ⊢
       rw [h2, Matrix.single_apply, Matrix.single_apply]
@@ -331,7 +374,7 @@ theorem UpperTheory.V.Ws.triV :
     unfold IsGSp at h ⊢
     rw [← hadj, ← map_mul, h]
     ext i j
-    by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
+    by_cases hij : i = j <;> simp [hij]
   have hge : ∀ i j, Ge (mapRep 𝔞.toK r) i j ↔ Ge r i j := fun i j => by
     simp only [Ge, mapRep_apply, Ne, map_eq_zero_iff _ hinj]
   obtain ⟨-, grefl, gtr, h3, h5, -⟩ := geAlg 𝔞.K (mapRep 𝔞.toK r) _ (fun g => hgsp _ _ (hu.mult g)) fun i => push _ r i (hE i)

@@ -1,9 +1,52 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.BetaLUniq
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.EqZeroOfNormLtOne
+public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -256,8 +299,8 @@ theorem e_mem_loc_adm {g r : ℕ} {T T' : E} {F : LFlag S r T} {F' : LFlag S r T
 
 theorem hT_sum_left {ι : Type*} (s : Finset ι) (f : ι → S.V) (y : S.V) :
     S.hT (∑ i ∈ s, f i) y = ∑ i ∈ s, S.hT (f i) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, LinearMap.sum_apply]
+
+  rw [map_sum, LinearMap.sum_apply]
 
 theorem algebraMap_injO : Function.Injective (algebraMap (𝓞 E) E) :=
   FaithfulSMul.algebraMap_injective (𝓞 E) E
@@ -400,8 +443,8 @@ theorem surj {r : ℕ} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT
           rw [hfW] at this
           exact (Submodule.mem_bot _).mp this
         rw [hfw] at h1
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         simp only [map_mul]
         rw [← h1]
         apply Finset.sum_congr rfl
@@ -453,10 +496,10 @@ theorem surj {r : ℕ} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT
       simp only [wv, Matrix.mulVec_mulVec, Matrix.mul_adjugate, Matrix.smul_mulVec,
         Matrix.one_mulVec, Pi.smul_apply, smul_eq_mul]
     have e1 : S.hT (ε b) (∑ a, wv a • lam a) = algebraMap (𝓞 E) E ((Mo.mulVec wv) b) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+      rw [map_sum]
+
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
       apply Finset.sum_congr rfl
       intro a _
       rw [smulO, hT_smul_right, ← iv_spec hU (hε b) (hlamΛ a)]
@@ -596,8 +639,7 @@ theorem cong {g r : ℕ} {T T' : E} {F : LFlag S r T} {F' F'' : LFlag S r T'}
     · exact hs h
     · exact ht h
   · have key : (s * t) • (β₁.symm (β₂ y) - y) = β₁.symm (s • (β₂ x - β₁ x)) := by
-      simp only [x, smulO, map_smul, map_sub, LinearEquiv.symm_apply_apply, smul_sub, map_mul,
-        mul_smul]
+      simp only [x, smulO, map_smul, map_sub, LinearEquiv.symm_apply_apply, smul_sub, mul_smul]
     rw [key, ← hz, map_add (f := _), smulO, map_smul, ← smulO]
     refine Submodule.add_mem _ (Submodule.mem_sup_left (g_mem_gΛ (Λ := Λ) g
       (symm_mem hP1.1 hl₁))) (Submodule.mem_sup_right ⟨symm_mem hP1.1 hz₂.1, ?_⟩)

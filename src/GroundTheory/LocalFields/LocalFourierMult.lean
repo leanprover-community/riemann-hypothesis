@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Different
-public import GroundTheory.LocalFields.LocalFourierExistence
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
+public import Mathlib.NumberTheory.LocalField.Basic
+public import GroundTheory.LocalFields.LocalFourier
+import Mathlib.NumberTheory.Padics.PadicNumbers
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

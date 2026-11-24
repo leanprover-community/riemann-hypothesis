@@ -3,6 +3,54 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.LemmaKOfSteps
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.SChain
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.SPrism
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.GroupTheory.SemidirectProduct
+import Mathlib.LinearAlgebra.Projectivization.Action
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.LinearAlgebra.Projectivization.Basic
 
 @[expose] public section
 
@@ -87,9 +135,9 @@ private theorem IsCoc.tr_bd [Fintype X] {a : G → X → X} {c : G → X → M} 
     (z : Ch A G (m + 1)) : bd A M m (tr A a c (m + 1) z) = tr A a c m (bd A G m z) := by
   refine LinearMap.congr_fun (ext1 (f := (bd A M m).comp (tr A a c (m + 1)))
     (f' := (tr A a c m).comp (bd A G m)) fun g => ?_) z
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.comp_apply, tr_single, bd_single, map_sum, map_add (f := _), map_smul, Finset.sum_add_distrib,
-    Finset.smul_sum, h.contract, h.tail]
+
+  simp only [LinearMap.comp_apply, tr_single, bd_single, map_sum, map_add (f := _), map_smul, Finset.sum_add_distrib,
+  Finset.smul_sum, h.contract, h.tail]
   congr 1
   · exact Equiv.sum_comp (h.perm (g 0)) fun x => Finsupp.single (term a c x fun i => g i.succ) (1 : A)
   · exact Finset.sum_comm
@@ -156,7 +204,7 @@ private theorem tr_cob [Fintype X] {a : G → X → X} {c c' : G → X → M} (h
     ext g : 1
     show (⟨c' g, g⟩ : W) = β⁻¹ * ⟨c g, g⟩ * β⁻¹⁻¹
     refine SemidirectProduct.ext (funext fun x => ?_) (by simp [β, W])
-    simp [β, W, hs, hb, h.a_one]
+    simp [β, W, hs, hb]
   obtain ⟨-, s2, s3, -, -⟩ := sChain A
   rw [e h, e h', ← map_sub, e2, s3]
   refine hW.tr_Bd ⟨prism A β (m + 1) (cm A (ρ h) (m + 1) z), ?_⟩
@@ -416,8 +464,6 @@ end Lines
 
 end UpperTheory.V.ZK.Trans
 
-theorem UpperTheory.V.ZK.sTrans :
-    UpperTheory.V.ZK.STrans :=
-  UpperTheory.V.ZK.Trans.main
+alias UpperTheory.V.ZK.sTrans := _root_.UpperTheory.V.ZK.Trans.main
 
 end

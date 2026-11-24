@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.FiniteBruhat
-public import GroundTheory.AutomorphicForms.InductionParabolicGroups
+public import GroundTheory.AutomorphicForms.Iwasawa
+public import Mathlib.LinearAlgebra.Matrix.Rank
+public import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -24,7 +31,7 @@ theorem exists_mul_mul_eq_one_of_rank (A : Matrix m l K) :
     ∃ (L : Matrix (Fin A.rank) m K) (R : Matrix l (Fin A.rank) K), L * A * R = 1 := by
   classical
   set f := A.mulVecLin with hf
-  have hr : Module.finrank K (LinearMap.range f) = A.rank := rfl
+  have hr : Module.finrank K (LinearMap.range f) = A.rank := Matrix.finrank_range_mulVecLin A
   let b : Module.Basis (Fin A.rank) K (LinearMap.range f) := Module.finBasisOfFinrankEq K _ hr
   have hx : ∀ i, ∃ x, f x = (b i : m → K) := fun i => LinearMap.mem_range.1 (b i).2
   choose x hx using hx
@@ -37,8 +44,8 @@ theorem exists_mul_mul_eq_one_of_rank (A : Matrix m l K) :
     intro c
     rw [← Matrix.mulVec_mulVec, hRc]
     have : A *ᵥ (∑ i, c i • x i) = f (∑ i, c i • x i) := rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum]
+
+    rw [this, map_sum]
     simp only [map_smul, hx]
   have hli : LinearIndependent K (fun i => (b i : m → K)) :=
     b.linearIndependent.map' (LinearMap.range f).subtype (Submodule.ker_subtype _)
@@ -173,7 +180,7 @@ theorem cellRank_permGL (w : Equiv.Perm (Fin n)) (a b : ℕ) :
   set X := ((permGL F w : GL (Fin n) F) : Matrix (Fin n) (Fin n) F).submatrix
     (fun i : {i : Fin n // a ≤ β i} => (i : Fin n)) (fun j : {j : Fin n // γ j ≤ b} => (j : Fin n))
     with hX
-  rw [Matrix.rank_eq_finrank_span_cols]
+  rw [← Matrix.finrank_span_range_col]
   let v : {j : Fin n // γ j ≤ b ∧ a ≤ β (w j)} → ({i : Fin n // a ≤ β i} → F) :=
     fun t => Pi.single ⟨w t, t.2.2⟩ 1
   have hv : LinearIndependent F v := by

@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StIrreducibleGermComplementConnected
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegularLocusDense
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StIrreducibleGermRegularConnected
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StManifoldZerosComplementConnected
+public import Mathlib.Analysis.Analytic.ChangeOrigin
 
 @[expose] public section
 

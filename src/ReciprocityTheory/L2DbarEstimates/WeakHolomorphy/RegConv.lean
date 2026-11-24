@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.IntegralBumpProfOnePos
+public import Mathlib.Analysis.Convolution
+public import Mathlib.Analysis.Calculus.ContDiff.Convolution
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

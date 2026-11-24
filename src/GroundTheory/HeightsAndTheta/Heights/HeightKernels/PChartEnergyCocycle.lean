@@ -1,12 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergyCocycle
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergySymm
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartDensityIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergyIntegrable
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartHessCompare
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotLtLtOfMemMinimalPrimes
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ADensStBA
 
 @[expose] public section
 
@@ -73,7 +76,7 @@ theorem integrable_pairing {X Y : Matrix (Fin (e + 1)) (Fin (e + 1)) ℂ} (hX : 
       rw [h]
       exact (hC j y).2.add (hNp.smul (Complex.zero_le_real.2 (sub_nonneg.2 (hCj j))))
     have hmono : (mixedDisc A).re ≤ (mixedDisc B).re := ReciprocityTheory.AnForm.A.mdisc_re_mono A B hApsd hAB
-    have hnn : 0 ≤ (mixedDisc A).re := (ReciprocityTheory.AnForm.A.mdisc_nonneg_of_posSemidef A hApsd).2
+    have hnn : 0 ≤ (mixedDisc A).re := (_root_.ReciprocityTheory.AnForm.A.mixedDiscriminant_nonneg_of_gram A hApsd).2
     have hB : mixedDisc B = ((C' : ℝ) : ℂ) ^ e * HN.det := by
       have h := ReciprocityTheory.AnForm.A.mdisc_const (((C' : ℝ) : ℂ) • HN)
       rw [det_smul, Fintype.card_fin] at h

@@ -1,10 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Statements.AlgebraStatements.IsPolarisationOfRelAmple
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
-public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.FibAmpleD
-public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.FibLamD
+public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.IsLBZb
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianDeRhamPoincareDualityOfCubeDual
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsPointPrimitiveBundleEqTranslatePpav
+public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.FibLamA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.WeilBound.CoreStatements.AbelianHeightsDuality.ZarhinTrick.FibLamB
 
 @[expose] public section
 
@@ -52,22 +89,11 @@ section Biadd
 variable {A B : Over S} [GrpObj A] [GrpObj B] {P : LB (A ⊗ B).left} (hD : IsDual A B P)
   (hD' : IsDual B A (swap P)) {Y : Over S}
 
-private theorem evc_mul_left' (a a' : Y ⟶ A) (b : Y ⟶ B) :
-    evc hD.isLB (a * a') b = evc hD.isLB a b + evc hD.isLB a' b := by
-  have hP := hD.isLB
-  have hm := hD.additive Y a a' b
-  have h1 : (ev P a b).IsLB := ReciprocityTheory.ChartRestriction.G.Geo.Tor.pull_isLB hP _
-  have h2 : (ev P a' b).IsLB := ReciprocityTheory.ChartRestriction.G.Geo.Tor.pull_isLB hP _
-  have h3 : (ev P (a * a') b).IsLB := ReciprocityTheory.ChartRestriction.G.Geo.Tor.pull_isLB hP _
-  change cls (ev P (a * a') b) h3 = cls (ev P a b) h1 + cls (ev P a' b) h2
-  rw [← cls_tens h1 h2 (isLB_tens h1 h2)]
-  exact (cls_eq_iff _ _).2 hm
-
 include hD in
 theorem evc_pow_left (a : Y ⟶ A) (b : Y ⟶ B) (n : ℕ) : evc hD.isLB (a ^ n) b = n • evc hD.isLB a b := by
   induction n with
   | zero => simpa using IsAdditive.evc_one hD.isLB hD.additive b
-  | succ k ih => rw [pow_succ, evc_mul_left' hD, ih, succ_nsmul]
+  | succ k ih => rw [pow_succ, _root_.PositivityTheory.PrwZar.evc_mul_left hD, ih, succ_nsmul]
 
 include hD hD' in
 theorem evc_pow_right (a : Y ⟶ A) (b : Y ⟶ B) (n : ℕ) : evc hD.isLB a (b ^ n) = n • evc hD.isLB a b := by
@@ -109,7 +135,7 @@ private theorem lam_mul_left' (hD0 : IsDual A B P) (e' : LBIso ((ev P (fst A A) 
     (x x' y : T ⟶ (Over.pullback s).obj A) :
     lam (cls L hL) (x * x') y = lam (cls L hL) x y + lam (cls L hL) x' y := by
   rw [lam_eq_evc_toBase_of_isDual (hD := hD0) (e' := e'), lam_eq_evc_toBase_of_isDual (hD := hD0) (e' := e'),
-    lam_eq_evc_toBase_of_isDual (hD := hD0) (e' := e'), toBase_mul, evc_mul_left' hD0]
+    lam_eq_evc_toBase_of_isDual (hD := hD0) (e' := e'), toBase_mul, _root_.PositivityTheory.PrwZar.evc_mul_left hD0]
 
 private theorem lam_mul_right_zarhin_trick (hD0 : IsDual A B P) (hD1 : IsDual B A (swap P)) (e' : LBIso ((ev P (fst A A) (snd A A ≫ l)).pull (sqToBase A s)) (abelian₂ ((Over.pullback s).obj A) L))
     (x y y' : T ⟶ (Over.pullback s).obj A) :
@@ -118,7 +144,7 @@ private theorem lam_mul_right_zarhin_trick (hD0 : IsDual A B P) (hD1 : IsDual B 
     lam_eq_evc_toBase_of_isDual (hD := hD0) (e' := e'), toBase_mul]
   have hm : (toBase A s y * toBase A s y') ≫ l = (toBase A s y ≫ l) * (toBase A s y' ≫ l) :=
     map_mul (IsMonHom.monoidHom l _) _ _
-  rw [hm, ← evc_swap hD0.isLB hD1.isLB, evc_mul_left' hD1, evc_swap hD0.isLB hD1.isLB,
+  rw [hm, ← evc_swap hD0.isLB hD1.isLB, _root_.PositivityTheory.PrwZar.evc_mul_left hD1, evc_swap hD0.isLB hD1.isLB,
     evc_swap hD0.isLB hD1.isLB]
 
 private theorem lam_pow_left' (hD0 : IsDual A B P) (e' : LBIso ((ev P (fst A A) (snd A A ≫ l)).pull (sqToBase A s)) (abelian₂ ((Over.pullback s).obj A) L))
@@ -200,8 +226,8 @@ theorem two_cls_pow (hA : IsAbelianScheme A) (hB : IsAbelianScheme B) {P : LB (A
   have hz := isLB_zb mu α s hP hL
   have hpull : cls _ h' = pull ((𝟙 ((Over.pullback s).obj (G4 (A ⊗ B)))) ^ n).left (cls _ hz) := rfl
   have hsplit : cls _ hz = cls _ hLA + cls _ hPA := cls_tens hLA hPA hz
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hpull, hsplit, map_add (f := _), cls_linComb hL, cls_linComb hP, map_sum, map_sum]
+
+  rw [hpull, hsplit, map_add (f := _), cls_linComb hL, cls_linComb hP, map_sum, map_sum]
   simp only [map_zsmul, ← pull_comp, one_smul]
   rw [Fintype.sum_prod_type, Fintype.sum_prod_type, Fintype.sum_prod_type, Fintype.sum_prod_type]
   obtain ⟨N, hN⟩ : ∃ N : (Over.pullback s).obj (G4 (A ⊗ B)) ⟶ (Over.pullback s).obj (G4 (A ⊗ B)), N = (𝟙 _) ^ n := ⟨_, rfl⟩

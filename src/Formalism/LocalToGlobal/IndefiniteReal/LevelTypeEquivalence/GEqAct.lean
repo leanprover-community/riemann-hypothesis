@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
-public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 

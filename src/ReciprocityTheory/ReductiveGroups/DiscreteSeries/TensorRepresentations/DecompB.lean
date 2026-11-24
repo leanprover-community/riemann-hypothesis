@@ -1,9 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Unitarize
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.DecompA
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.HidaSetting
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -29,9 +30,7 @@ theorem dc_tensF_single_true {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fi
   simp only [tensF, cond_true, tensVd_coord, Pi.sub_apply, Pi.single_apply]
   by_cases h1 : c' = c <;> by_cases h2 : c' = b <;> by_cases h3 : a = c <;> subst_vars <;> simp_all
 
-theorem dc_mem_tensSub {M : Type*} [AddCommGroup M] [Module ℂ M] {S : Submodule ℂ M} {f : Fin n → M} :
-    f ∈ tensSub S ↔ ∀ c, f c ∈ S := by
-  simp [tensSub, Submodule.mem_pi]
+alias dc_mem_tensSub := _root_.ReciprocityTheory.ChartRestriction.DS.tset_mem
 
 theorem dc_tens_gen_le {M : Type*} [AddCommGroup M] [Module ℂ M] {E : Fin n → Fin n → Module.End ℂ M}
     {V : Submodule ℂ M} (dual : Bool) {T : Submodule ℂ (Fin n → M)} (hVT : tensSub V ≤ T)

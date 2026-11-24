@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecondVeroneseParts
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStA
-public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
 
 @[expose] public section
 

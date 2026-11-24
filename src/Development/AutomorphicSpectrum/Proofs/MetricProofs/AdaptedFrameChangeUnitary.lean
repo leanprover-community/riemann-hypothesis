@@ -1,11 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
-public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 @[expose] public section
 
@@ -78,8 +114,8 @@ theorem perExt_injective : Function.Injective (C.perExt R) := by
     intro l
     obtain ⟨x, hx⟩ := R.unimod.2 (C.lam.coord l)
     have key : imLin R.Hm (R.P x) (C.perExt R y) = C.bas.equivFun y l := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [LatEmb.perExt, Module.Basis.constr_apply_fintype, map_sum]
+
+      rw [LatEmb.perExt, Module.Basis.constr_apply_fintype, map_sum]
       have hk : ∀ k, imLin R.Hm (R.P x) (R.P (C.lam k)) = if k = l then 1 else 0 := by
         intro k
         have h1 : imLin R.Hm (R.P x) (R.P (C.lam k)) = (R.form x (C.lam k) : ℝ) := R.im x _
@@ -172,11 +208,11 @@ theorem inl_eq_zero {A : Ψ → Matrix (Fin (j + j')) (Sg j j') ℂ} (hA : C.IsA
 
 theorem mulVec_inl (u : Matrix (Sg j j') (Sg j j') ℂ) (k : Fin j) (x : Sg j j') :
     (u *ᵥ Sum.elim (Pi.single k 1) (0 : Fin j' → ℂ)) x = u x (Sum.inl k) := by
-  simp [mulVec, dotProduct, Fintype.sum_sum_type, Pi.single_apply]
+  simp [mulVec, dotProduct, Pi.single_apply]
 
 theorem mulVec_inr (u : Matrix (Sg j j') (Sg j j') ℂ) (k : Fin j') (x : Sg j j') :
     (u *ᵥ Sum.elim (0 : Fin j → ℂ) (Pi.single k 1)) x = u x (Sum.inr k) := by
-  simp [mulVec, dotProduct, Fintype.sum_sum_type, Pi.single_apply]
+  simp [mulVec, dotProduct, Pi.single_apply]
 
 theorem mulVec_diag_inl (u : Matrix (Sg j j') (Sg j j') ℂ) (h : u.toBlocks₂₁ = 0) (v : Fin j → ℂ) :
     u *ᵥ Sum.elim v (0 : Fin j' → ℂ) = Sum.elim (u.toBlocks₁₁ *ᵥ v) (0 : Fin j' → ℂ) := by

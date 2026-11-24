@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.LeviStagesJacquet
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

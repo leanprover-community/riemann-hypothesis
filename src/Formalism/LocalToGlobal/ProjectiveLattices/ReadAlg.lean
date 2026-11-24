@@ -1,6 +1,22 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.AlgebraMapCAt
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+public import Mathlib.FieldTheory.Normal.Basic
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+public import Mathlib.RingTheory.Ideal.Quotient.Nilpotent
+public import Mathlib.RingTheory.Jacobson.Ideal
+public import Mathlib.RingTheory.Jacobson.Ring
+public import Mathlib.RingTheory.Trace.Basic
 
 @[expose] public section
 
@@ -27,9 +43,8 @@ theorem eq_zero_of_pts {M : Type} [Field M] [IsAlgClosed M] [Algebra K M] (p : T
   have hjac : (⊥ : Ideal p.R).jacobson = ⊥ := by
     first
     | exact IsJacobsonRing.out inferInstance hrad
-    | exact IsJacobsonRing.out' ⊥ hrad
   have ha : a ∈ (⊥ : Ideal p.R).jacobson := by
-    set_option synthInstance.maxHeartbeats 400000 in
+
     refine Ideal.mem_sInf.2 fun J hJ => ?_
     have hJm : J.IsMaximal := hJ.2
     letI := Ideal.Quotient.field J
@@ -79,8 +94,8 @@ theorem linIndep_alg_pts [CharZero K] {Kb : Type} [Field Kb] [IsAlgClosed Kb] [A
     let Ge : Kb ≃ₐ[K] Kb := AlgEquiv.ofBijective G hb
     have h1 := h ((Ge.symm : Kb →ₐ[K] Kb).comp φ)
     have h2 := congrArg G h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_zero, map_sum] at h2
+
+    rw [map_zero, map_sum] at h2
     refine Eq.trans ?_ h2
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, ← hu i, AlgHom.liftNormal_commutes]
@@ -92,8 +107,8 @@ theorem linIndep_alg_pts [CharZero K] {Kb : Type} [Field Kb] [IsAlgClosed Kb] [A
     intro lam
     have hpt : ∀ φ : p.R →ₐ[K] Kb, φ (∑ i, Algebra.trace K L (lam * u i) • a i) = 0 := by
       intro φ
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       have : ∀ i, φ (Algebra.trace K L (lam * u i) • a i) =
           (∑ g : L →ₐ[K] Kb, g (lam * u i)) * φ (a i) := by
         intro i
@@ -139,8 +154,8 @@ theorem linIndep_cpts [CharZero K] (σ : K →+* ℂ) (p : TRing K) {m : ℕ} (a
     exact hj ((Module.forall_dual_apply_eq_zero_iff Kb (w j)).1 hne)
   have hv := linIndep_alg_pts (Kb := AlgebraicClosure K) p a ha (fun i => ℓ (w i)) fun φ => by
     have h1 := congrArg ℓ (h (ι.comp φ : p.R →ₐ[K] ℂ))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_zero, map_sum] at h1
+
+    rw [map_zero, map_sum] at h1
     refine Eq.trans ?_ h1
     refine Finset.sum_congr rfl fun i _ => ?_
     have e : w i * cvalR σ ((ι.comp φ : p.R →ₐ[K] ℂ) (a i)) = φ (a i) • w i := by
@@ -166,8 +181,8 @@ theorem descend_cpts [CharZero K] (σ : K →+* ℂ) (p : TRing K) {r : ℕ} (a 
     e.linearIndependent.map' S.subtype (Submodule.ker_subtype S)
   have key := linIndep_cpts σ p (fun l => (e l : p.R)) hind (fun l => ∑ j, σ (t j l) * w j) fun ψ => by
     rw [← h ψ]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp_rw [hat, map_sum, map_smul, Algebra.smul_def, map_mul, cvalR_algebraMap, Finset.mul_sum, Finset.sum_mul]
+
+    simp_rw [hat, map_sum, map_smul, Algebra.smul_def, map_mul, cvalR_algebraMap, Finset.mul_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_
     ring
@@ -177,8 +192,8 @@ theorem descend_cpts [CharZero K] (σ : K →+* ℂ) (p : TRing K) {r : ℕ} (a 
     simp only [Pi.zero_apply] at this
     exact this
   calc ∑ j, θ (toCAt σ (w j)) • a j = ∑ l, θ (∑ j, t j l • toCAt σ (w j)) • (e l : p.R) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp_rw [hat, Finset.smul_sum, map_sum, map_smul, smul_eq_mul, Finset.sum_smul, smul_smul]
+
+        simp_rw [hat, Finset.smul_sum, map_sum, map_smul, smul_eq_mul, Finset.sum_smul, smul_smul]
         rw [Finset.sum_comm]
         refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => ?_
         rw [mul_comm]

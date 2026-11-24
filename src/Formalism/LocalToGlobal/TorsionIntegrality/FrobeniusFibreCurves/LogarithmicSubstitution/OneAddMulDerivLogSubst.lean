@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementA
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.CurveHyp
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

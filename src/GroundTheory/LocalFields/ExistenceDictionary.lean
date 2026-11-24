@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.LocalReciprocityFinite
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.NormGroups
+public import GroundTheory.LocalFields.LocalAxiomDictionary
+public import Mathlib.FieldTheory.Galois.Profinite
+public import GroundTheory.LocalFields.LocalReciprocityFinite
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.LocalFields.LocalAxiom
 
 @[expose] public section
 

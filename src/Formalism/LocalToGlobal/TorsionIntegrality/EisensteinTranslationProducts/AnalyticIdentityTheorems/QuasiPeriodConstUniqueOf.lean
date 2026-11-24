@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.ThetaZeroLogDerivative
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.Legendre
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.InnerProductSpace.Adjoint
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Analysis.InnerProductSpace.JointEigenspace
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.RealPlaceAnalysis.StatementC
-public import Formalism.FormalDegreeBessel.StatementDS
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+public import Formalism.RealPlaceAnalysis.StatementE
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 
@@ -89,8 +90,8 @@ theorem eq_zero_of_eval (P : B[X]) (h : ∀ u : ℂ, P.eval (algebraMap ℂ B u)
     apply Polynomial.funext
     intro u
     have := congrArg ℓ (h u)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [eval_eq_sum, Polynomial.sum, map_sum, map_zero] at this
+
+    rw [eval_eq_sum, Polynomial.sum, map_sum, map_zero] at this
     rw [eval_zero, ← this, Polynomial.eval_finsetSum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← map_pow, ← Algebra.commutes, ← Algebra.smul_def, map_smul, eval_monomial, smul_eq_mul,

@@ -1,22 +1,66 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.RowFormsSel
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsHalfPtIff
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CmQuadraticFormEqAlternatingForm
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HermitianCodeWordWeilElementMemQuadraticField
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NcardPrimesOverOfStabilizer
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGaloisGe
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsTwistOfIsDelta
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmInverseHalfDifferentMulRelativeDifferent
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCommonField
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotMemVGsOfMemQE
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntMulMemInvHalfDifferent
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalAdditiveCharApply
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmInverseHalfDifferentMulRelativeDifferent
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfCongSet
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCommonField
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGaloisGe
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsTwistOfIsDelta
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalAdditiveCharApply
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NcardPrimesOverOfStabilizer
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotMemVGsOfMemQE
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResCharConj
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TameHeckeCharLocalEqInvTypeCharacter
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqOfMapEq
+import Formalism.LocalRingCardinality.ConjSqrtMinusD
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjugateEmbApply
 
 @[expose] public section
 
@@ -43,9 +87,7 @@ def cjO {R : Ranks} (H : Host R) : 𝓞 H.E →+* 𝓞 H.E := RingOfIntegers.map
 
 theorem cjO_coe {R : Ranks} (H : Host R) (x : 𝓞 H.E) : (cjO H x : H.E) = H.conj x := rfl
 
-theorem conj_conj {R : Ranks} (H : Host R) (x : H.E) : H.conj (H.conj x) = x := by
-  letI := H.cmStar
-  rw [← bridge_star_holds R H, ← bridge_star_holds R H, star_star]
+alias conj_conj := _root_.Formalism.MainNotions.UnusedSlot33.HK.conj_conj
 
 theorem exists_orient {R : Ranks} (H : Host R) {p : ℕ} (hp : p.Prime) {a : 𝓞 H.E} (hK : (a : H.E) ∈ H.K)
     (hn : (a : H.E) * H.conj a = p) (𝔭 : HeightOneSpectrum (𝓞 H.K)) (h𝔭 : (p : 𝓞 H.K) ∈ 𝔭.asIdeal) :
@@ -122,11 +164,6 @@ theorem root_mem {K : Type} [Field K] (σ : K →+* ℂ) {n : ℕ} (hn : n ≠ 0
   obtain ⟨i, -, hi⟩ := (Complex.isPrimitiveRoot_exp n hn).eq_pow_of_pow_eq_one hz
   exact ⟨x ^ i, by rw [map_pow, hx, hi]⟩
 
-theorem isAlgebraic_exp (n : ℕ) : IsAlgebraic ℚ (Complex.exp (2 * Real.pi * Complex.I / n)) := by
-  rcases Nat.eq_zero_or_pos n with rfl | h
-  · simpa using isAlgebraic_one
-  · exact ((Complex.isPrimitiveRoot_exp n h.ne').isIntegral h).tower_top.isAlgebraic
-
 def Holds {E K : Type} [Field E] [NumberField E] [Field K] (σ : K →+* ℂ) (n : ℕ) (ξ : HChar E) : Prop :=
   (∀ a, ((ξ.1 a : ℂˣ) : ℂ) ∈ σ.range) ∧ ∀ P, ¬ ξ.UnrAt P →
     (∃ s : K, s ^ 2 = (Ideal.absNorm P.asIdeal : K)) ∧ ∃ ζ : K, IsPrimitiveRoot ζ (Ideal.absNorm P.asIdeal ^ n)
@@ -143,10 +180,10 @@ theorem exists_holds_one {E : Type} [Field E] [NumberField E] (n : ℕ) (ξ : HC
   let A := (UnrAe.finite_ramified ξ).toFinset.image fun P => Ideal.absNorm P.asIdeal
   refine ⟨insert (e N) (A.image r ∪ A.image fun q => e (q ^ n)), fun z hz => ?_, fun _ K _ σ hS => ⟨fun a => ?_, fun P hP => ?_⟩⟩
   · rcases Finset.mem_insert.1 hz with rfl | hz
-    · exact isAlgebraic_exp _
+    · exact _root_.GlobalTheory.Mem.BaseExt.isAlgebraic_exp _
     rcases Finset.mem_union.1 hz with h | h <;> obtain ⟨k, -, rfl⟩ := Finset.mem_image.1 h
     · exact IsAlgebraic.of_pow two_pos (by rw [hr]; exact isAlgebraic_nat _)
-    · exact isAlgebraic_exp _
+    · exact _root_.GlobalTheory.Mem.BaseExt.isAlgebraic_exp _
   · refine root_mem σ hN.ne' (hS _ (Finset.mem_insert_self _ _)) ?_
     have h1 : ξ.1 a ^ N = 1 := congrArg (fun χ : HChar E => χ.1 a) hO
     rw [← Units.val_pow_eq_pow_val, h1, Units.val_one]

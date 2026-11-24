@@ -1,7 +1,73 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PbWords
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LeftFubiniNormalizedTower
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliWordSumExpansion
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NegMulCCancel
+import Aesop.Main
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChartIntegralLocal
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContDiffBumpG
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EmbeddedGroupMeasurePreserving
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LocOfSmoothOnH
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpNormPiLe
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PsiContOf
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadicalUnipotentFirstBasisEqOne
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightAverageSmoothComm
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothLevOfLoc
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothnessOnGoodSet
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableCsmul
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AutomorphicInSphericalLevel
 
 @[expose] public section
 
@@ -110,7 +176,7 @@ theorem norm_gI_le (Bj : B.RealPlaceData k ρ Wp Wq) (e : p + ρ = n) (Ψ : B.Ma
   unfold gI
   split_ifs with hx
   · refine (ContinuousLinearMap.opNorm_comp_le _ _).trans ?_
-    have := Formalism.FourierDecayAlt.P.LeftFubiniLemmas.opNorm_pi_le Bj hx.1
+    have := _root_.Formalism.FourierDecayAlt.P.SmoothExtensionClosedSet.norm_pi_le_one Bj hx.1
     exact (mul_le_of_le_one_left (norm_nonneg _) this)
   · simp
 

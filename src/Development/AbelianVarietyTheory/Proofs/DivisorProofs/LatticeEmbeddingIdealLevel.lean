@@ -1,9 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLevelPlaceDatumOverNumberField
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeIsometrySignFirst
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNonvanishingFiniteDatumDefiniteLift
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsDualFamilySelfDualHermitianSpace
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeIsometrySignFirst
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRepsOfFiniteIndex
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinCongMemLevEnv
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrimeDvdAbsNormHalfDifferent
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SelfDualVectorPairsIntegralFrameColumns
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ModelLatA
 
 @[expose] public section
 
@@ -35,8 +79,8 @@ theorem exists_point {O La ι : Type} [CommRing O] [AddCommGroup La] [Module O L
     choose c hc using fun b : Fin n => crt fun i => ∑ a', ρ i a' x * B' i (Fin.castLE hrn a') b
     have : (Submodule.Quotient.mk x : La ⧸ J) = Submodule.Quotient.mk (∑ b, c b • z b) := by
       refine (heq _ _).2 fun i hi a => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [hs, hc _ i hi, hz _ i hi, Finset.sum_mul]
       rw [Finset.sum_comm]
       simp only [mul_assoc, ← Finset.mul_sum]
@@ -46,8 +90,8 @@ theorem exists_point {O La ι : Type} [CommRing O] [AddCommGroup La] [Module O L
       simp [h1]
     rw [this]
     change (Submodule.mkQ J) _ ∈ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact sum_mem fun b _ => by
       rw [map_smul]
       exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨b, rfl⟩)
@@ -147,8 +191,8 @@ theorem exists_dual (W : HSp D) (β : GL (Fin W.rank) (EAf D)) (Λ : Submodule (
       change _ = ((fun a => pr W β y a) ᵥ* ((β⁻¹).val * s₁.map (eToEAf D))) k
       rw [h1, Matrix.vecMul_vecMul, ← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul, congrFun hc' k,
         ← Matrix.vecMul_vecMul]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.vecMul, dotProduct, map_sum, map_mul, Matrix.map_apply]
+
+      simp only [Matrix.vecMul, dotProduct, map_sum, map_mul, Matrix.map_apply]
 
 theorem pr_int {W : HSp D} {β : GL (Fin W.rank) (EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)}
     (hβ : IsSDFrame W β Λ 1) {y : Fin W.rank → D.host.E} (hy : y ∈ Λ) (a : Fin W.rank) :
@@ -235,12 +279,12 @@ theorem rho_onto {Λ : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)} (hβ
       hc k PP hPP, show (⟨_, pr_int hβ (hs k) a⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) = B k a from
         Subtype.ext (hB k a).symm, mul_mul_mul_comm, hu PP hPP, one_mul, Finset.sum_mul]
     simp only [mul_assoc]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [h1]
   rw [Finset.sum_comm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← Finset.mul_sum, ← RingHom.map_mul, ← map_sum, ← Matrix.mul_apply, hAB, Matrix.one_apply]
+
+  simp only [← Finset.mul_sum, ← RingHom.map_mul, ← map_sum, ← Matrix.mul_apply, hAB, Matrix.one_apply]
   rw [Finset.sum_eq_single a (fun b _ hb => by rw [if_neg hb, map_zero, mul_zero]) (by simp), if_pos rfl, map_one, mul_one]
 
 theorem rho_ker {Λ : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)} (hβ : IsSDFrame W β Λ 1) (hι : LatEmb W ι)
@@ -264,8 +308,8 @@ theorem rho_ker {Λ : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)} (hβ 
       refine Subtype.ext ?_
       rw [AddSubmonoidClass.coe_finsetSum]
       exact hc2 k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Ideal.Quotient.eq_zero_iff_mem, ← resS_oToS (F := D.host.F), h1, map_sum]
+
+    rw [← Ideal.Quotient.eq_zero_iff_mem, ← resS_oToS (F := D.host.F), h1, map_sum]
     refine Finset.sum_eq_zero fun a _ => ?_
     have h2 := rho_eq W β e ι hi he PP hPP a ((m : 𝓞 D.host.E) • x) 1 _ (pr_int hβ hm a) (by
       rw [map_smul, show ((1 : 𝓞 D.host.E) : D.host.E) = 1 from rfl, map_one, one_smul, ← hcast]; rfl)
@@ -273,8 +317,8 @@ theorem rho_ker {Λ : Submodule (𝓞 D.host.E) (Fin W.rank → D.host.E)} (hβ 
     rw [map_mul, ← h2, zero_mul]
   have h3 : ((N * m : ℕ) : 𝓞 D.host.E) • x = ∑ k, τ (c k) • z k := by
     refine hι.1 ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum]
+
+    rw [map_smul, map_sum]
     change (((N * m : ℕ) : 𝓞 D.host.E) : D.host.E) • ι x = _
     rw [hcast, Nat.cast_mul, mul_smul, hc1, Finset.smul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_

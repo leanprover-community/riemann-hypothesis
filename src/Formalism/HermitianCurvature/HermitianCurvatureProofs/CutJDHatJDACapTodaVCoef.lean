@@ -1,10 +1,51 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDACapTodaVCut
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FourTermExpansion
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliWordSumExpansion
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FiniteSumLocalExpansion
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFibreBoundV
 
 @[expose] public section
 
@@ -21,19 +62,6 @@ noncomputable section
 namespace TVCoefPf
 
 variable {k r : ℕ}
-
-theorem castLE_self (h : r ≤ r) (a : Fin r) : Fin.castLE h a = a := Fin.ext rfl
-
-theorem esI_inj (a b : Fin r) : esI k r a = esI k r b ↔ a = b := by
-  have := a.isLt
-  have := b.isLt
-  constructor
-  · intro h
-    apply Fin.ext
-    have h' := congrArg Fin.val h
-    simp only [esI] at h'
-    omega
-  · intro h; rw [h]
 
 theorem keyS_esI (a : Fin r) : C3.keyS k r (esI k r a) = a.val := by
   have := a.isLt
@@ -117,7 +145,7 @@ theorem det_entry {c : Fin r → ℂ} (hc : c ∈ OmX r) {g : Q.Mx k r} (hg : g 
       Matrix.of fun a l : Fin r => star (c a) * (if B l = esI k r a then (1 : ℂ) else 0) := by
   ext a l
   simp only [Matrix.of_apply]
-  rw [castLE_self, inv_e hc hg a]
+  rw [_root_.Fin.castLE_refl, inv_e hc hg a]
   simp [bvec, Pi.single_apply]
 
 theorem sm_ge {n : ℕ} {τ : Fin n → Fin n} (h : StrictMono τ) : ∀ m (j : Fin n), j.val = m → m ≤ (τ j).val := by
@@ -173,7 +201,7 @@ theorem det_sR {c : Fin r → ℂ} (hc : c ∈ OmX r) {g : Q.Mx k r} (hg : g ∈
   have e : (Matrix.of fun a l : Fin r => star (c a) * (if C3.sR k r r le_rfl l = esI k r a then (1 : ℂ) else 0)) =
       Matrix.diagonal fun a => star (c a) := by
     ext a l
-    simp only [Matrix.of_apply, Matrix.diagonal_apply, C3.sR, castLE_self, esI_inj]
+    simp only [Matrix.of_apply, Matrix.diagonal_apply, C3.sR, _root_.Fin.castLE_refl, _root_.PI.UnitaryGroupMassFormula.DLm.NBk.esI_inj]
     by_cases h : a = l
     · subst h; simp
     · simp [h, Ne.symm h]
@@ -204,7 +232,7 @@ theorem coef_gen {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {c : Fin 
   rw [Fintype.sum_eq_single (C3.sR k r r le_rfl)]
   · have hmono : StrictMono fun l => C3.keyS k r (C3.sR k r r le_rfl l) := by
       intro a b hab
-      simp only [C3.sR, castLE_self, keyS_esI]
+      simp only [C3.sR, _root_.Fin.castLE_refl, keyS_esI]
       exact hab
     rw [if_pos hmono]
     rfl

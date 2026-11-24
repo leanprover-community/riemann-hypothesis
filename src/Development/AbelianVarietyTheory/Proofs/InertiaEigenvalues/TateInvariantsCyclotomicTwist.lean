@@ -1,14 +1,55 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicPropertiesStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicNormZpowSubOnePadicValIntStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCyclotomicTowerLevelGeneratorPropertiesStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDecompositionCompletedCyclotomicIntegersStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerGeneratorMatrixPerturbationStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerFixedIffMemCompletedIntegersStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerFixedIffMemCompletedIntegers
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerGeneratorMatrixPerturbation
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCyclotomicTowerLevelGeneratorProperties
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicNormZpowSubOnePadicValInt
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDecompositionCompletedCyclotomicIntegers
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -28,9 +69,6 @@ theorem cyclotomicTowerLevelGaloisSubgroup_le_fixingUnramified (K : FinExt l) (j
 
 theorem Hinf_le_Gj (K : FinExt l) (j : ℕ) : Hinf K ≤ Gj K j :=
   fun _ hg x => hg ⟨x.1, Ks_le_Kinf K j x.2⟩
-
-theorem mem_inC_iff (F : IntermediateField ℚ_[l] (Om l)) (y : PadicComplex l) :
-    y ∈ inC F ↔ y ∈ F.toSubfield.map (algebraMap (Om l) (PadicComplex l)) := Iff.rfl
 
 theorem algebraMap_mem_inC (F : IntermediateField ℚ_[l] (Om l)) (u : ℚ_[l]) :
     algebraMap ℚ_[l] (PadicComplex l) u ∈ inC F :=
@@ -57,9 +95,9 @@ theorem exists_scale (y : PadicComplex l) : ∃ n : ℕ, ‖(l : PadicComplex l)
 
 theorem invariants_twist : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicComplex l ≃+* PadicComplex l)) (χ : GQ l →* ℚ_[l]ˣ), IsActC act → IsCyc χ → ∀ (K : FinExt l), ∀ j : ℕ, Lev l j → ∀ (i : ℤ) (y : PadicComplex l), (∀ g ∈ Gj K j, chiC χ i g * act g y = y) → (i ≠ 0 → y = 0) ∧ (i = 0 → y ∈ inC (Ks K j)) := by
   intro l _ act χ ha hχ K j hj i y hy
-  obtain ⟨hnorm, -, hker⟩ := GlobalTheory.T.cyclotomicCharacterPadic_basic_properties l χ hχ
-  obtain ⟨⟨g, hg⟩, -⟩ := GlobalTheory.T.exists_cyclotomicTowerLevelGenerator_properties l act χ ha hχ K j hj
-  obtain ⟨hdec, hdir, -, hmul, hact, -⟩ := GlobalTheory.T.tate_decomposition_completed_cyclotomic_integers l act χ ha hχ K j hj.1
+  obtain ⟨hnorm, -, hker⟩ := _root_.GlobalTheory.Cyc.cyc_basic l χ hχ
+  obtain ⟨⟨g, hg⟩, -⟩ := _root_.GlobalTheory.Cyc.gen_dense l act χ ha hχ K j hj
+  obtain ⟨hdec, hdir, -, hmul, hact, -⟩ := _root_.GlobalTheory.TateDecomp.tate_decomposition l act χ ha hχ K j hj.1
   obtain ⟨n, hn⟩ := exists_scale y
   have hl0 : (l : PadicComplex l) ^ n ≠ 0 :=
     pow_ne_zero _ (Nat.cast_ne_zero.mpr (Fact.out : l.Prime).ne_zero)
@@ -68,9 +106,9 @@ theorem invariants_twist : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicC
     intro σ hσ
     rw [hz, map_mul, map_pow, map_natCast, mul_left_comm, hy σ hσ]
   have hzO : z ∈ Ohat K := by
-    refine (GlobalTheory.T.cyclotomicTower_fixed_iff_mem_completedIntegers l act ha K z hn).mp fun h hh => ?_
+    refine (_root_.GlobalTheory.CycInvariants.fixed_iff_mem_Ohat l act ha K z hn).mp fun h hh => ?_
     have h1 : χ h = 1 := (hker K h (cyclotomicTowerLevelGaloisSubgroup_le_fixingUnramified K j (Hinf_le_Gj K j hh))).2.mp hh
-    have h2 := hzinv h (Hinf_le_Gj K j hh)
+    have h2 := hzinv h (_root_.GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj K j hh)
     simpa [chiC, h1] using h2
   obtain ⟨a, haK, x, hx, hax⟩ := hdec z hzO
   set c := chiC χ i g with hc
@@ -82,19 +120,19 @@ theorem invariants_twist : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicC
     have := hzinv g hg.1
     rwa [hax, map_add, hga] at this
   have hX : x - c * act g x ∈ Xj K j :=
-    (Xj K j).sub_mem hx (hmul c ⟨hcK, hc1.le⟩ _ (hact g (cyclotomicTowerLevelGaloisSubgroup_le_fixingUnramified K j hg.1) x hx))
+    (Xj K j).sub_mem hx (hmul c ⟨hcK, hc1.le⟩ _ (hact g (_root_.GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base K j hg.1) x hx))
   have hK : (c - 1) * a ∈ inC (Ks K j) := by
-    rw [mem_inC_iff]
+    rw [_root_.GlobalTheory.CycPerturb.mem_inC_iff]
     exact Subfield.mul_mem _ (Subfield.sub_mem _ hcK (Subfield.one_mem _)) haK.1
   have h0 : (c - 1) * a = 0 := hdir _ hK _ hX 0 (by linear_combination heq)
   have hrho : 0 < rho1 l :=
     Real.rpow_pos_of_pos (Nat.cast_pos.mpr (Fact.out : l.Prime).pos) _
   have hx0 : x = 0 := by
-    have h := (GlobalTheory.T.cyclotomic_tower_generator_matrix_perturbation l act χ ha hχ K j hj g hg 1 (fun _ => 1) (by
+    have h := (_root_.GlobalTheory.CycPerturb.perturbation l act χ ha hχ K j hj g hg 1 (fun _ => 1) (by
       intro a b
       rw [Subsingleton.elim a b, Matrix.one_apply_eq]
       refine ⟨?_, by simp⟩
-      rw [mem_inC_iff]
+      rw [_root_.GlobalTheory.CycPerturb.mem_inC_iff]
       exact Subfield.one_mem _) (by intro a b; simpa using hrho) i).1 (fun _ => x) (fun _ => hx) (by
       funext b
       simp only [twAct, Matrix.one_mulVec, Pi.smul_apply, smul_eq_mul]
@@ -102,7 +140,7 @@ theorem invariants_twist : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicC
     exact congrFun h 0
   rw [hx0, add_zero] at hax
   refine ⟨fun hi => ?_, fun _ => ?_⟩
-  · have hv := GlobalTheory.T.padic_norm_zpow_sub_one_padicValInt l j hj (χ g : ℚ_[l]) hg.2 i hi
+  · have hv := _root_.GlobalTheory.Cyc.LiftExp.norm_zpow_sub_one l j hj (χ g : ℚ_[l]) hg.2 i hi
     have hne : c - 1 ≠ 0 := by
       intro h
       have h2 : c - 1 = algebraMap ℚ_[l] (PadicComplex l) ((χ g : ℚ_[l]) ^ i - 1) := by
@@ -115,7 +153,7 @@ theorem invariants_twist : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicC
     exact (mul_eq_zero.mp hax).resolve_left hl0
   · have : y = ((l : PadicComplex l) ^ n)⁻¹ * a := by
       rw [← hax, hz, inv_mul_cancel_left₀ hl0]
-    rw [this, mem_inC_iff]
+    rw [this, _root_.GlobalTheory.CycPerturb.mem_inC_iff]
     exact Subfield.mul_mem _ (Subfield.inv_mem _ (Subfield.pow_mem _ (natCast_mem _ l) n)) haK.1
 
 end GlobalTheory.CyclotomicTowerSubgroupInclusions

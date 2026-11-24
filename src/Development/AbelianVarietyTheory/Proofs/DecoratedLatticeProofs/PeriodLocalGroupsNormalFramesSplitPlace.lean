@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.CosInj
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceLocalGroupElementsJacobiBessel
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemRootExchangeParabolicAndFourierJacobiIffEntri
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.BaseMatrixGlApply
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCombAt
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnipotentRadicalBasic
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StabilizesSelfDualIffFrameMatrixStabilizes
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FlagUnipotentFourierJacobiGroupStructure
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemRootExchangeParabolicAndFourierJacobiIffEntri
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsOneComb
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ToOneSucc
 
 @[expose] public section
 
@@ -66,7 +106,7 @@ theorem flag_YY {g : GA D S} (hg : g ∈ flagN d) {i j : Fin ρ} (hij : i ≤ j)
   have e1 : adj (mt S g⁻¹) ⬝ gA S = gA S ⬝ mt S g := by
     conv_rhs => rw [← inv_inv g, GlobalTheory.MixModel.mt_inv, gA_giA_cancel]
   have e2 : d.pY ⬝ ((mt S g - 1) ⬝ d.jY) = adj ((mt S g⁻¹ - 1) ⬝ d.jX) ⬝ (gA S ⬝ d.jY) := by
-    simp only [d.pY_eq, adj_mul, adj_sub, adj_one, Matrix.mul_assoc, Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul,
+    simp only [d.pY_eq, adj_mul, adj_sub, Matrix.mul_assoc, Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul,
       cancel₂ e1]
   rw [e2, h1, adj_mul, Matrix.mul_assoc, d.gram_XY, Matrix.mul_one]
   change cA D (T j i) = 0
@@ -187,8 +227,8 @@ theorem flagFrame_bes (B : BesLev D ρ) (s : k) (FA : Frame k B.A.rank n) (F : F
       exact Finset.sum_congr rfl fun u _ => by rw [h₀.1]; rfl
     · refine (hz _ rfl r).trans (congrArg (s * ·) ?_)
       change Witness.prH p (∑ u, B.d.i₀ r u * vecB B.o B.ζ u) = (B.d.i₀.map (Witness.prH p) * F₀.β) r (Sum.inr ())
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Matrix.mul_apply, map_sum]
+
+      rw [Matrix.mul_apply, map_sum]
       exact Finset.sum_congr rfl fun u _ => by rw [h₀.2, one_mul, RingHom.map_mul]; rfl
     · exact hX i _ rfl r
     · exact hY i _ (by simp only; omega) r

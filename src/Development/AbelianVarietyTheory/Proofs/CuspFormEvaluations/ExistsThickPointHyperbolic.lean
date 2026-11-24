@@ -1,15 +1,69 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspidalExponentialDecay
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajorantOperators
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticCoefficientForms
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.DiscriminantEstimates.DiscriminantTheorems.ScaledBoundInequality
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MinimumGrowthBounds
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.EmbeddingHermSelf
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.TraceHermNondegenerate
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HyperbolicFlagDataBasePoint
-public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.FirstMinimumInvariantContinuousPosOnFrames
+public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.TraceFormDualOneTraceFormDual
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.InnerProductSpace.Dual
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticCoefficientForms
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.UnipotentCoefficientShift
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Transference
 
 @[expose] public section
 
@@ -40,8 +94,8 @@ theorem _root_.GlobalTheory.ThickPoint.exists_euclidean_real {M : ℕ} [FiniteDi
   refine ⟨(EuclideanSpace.equiv (Fin _) ℝ).symm.toLinearEquiv.toLinearMap ∘ₗ L, fun x y => ?_⟩
   have hB : B x y = ∑ i, v.repr x i * v.repr y i * B (v i) (v i) := by
     conv_lhs => rw [← v.sum_repr x, ← v.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.sum_eq_single i (fun j _ hj => by rw [hv hj]; ring) (by simp)]
     ring
@@ -88,9 +142,9 @@ theorem _root_.GlobalTheory.ThickPoint.transference_pair {M : ℕ} (b : Basis (F
     have hψu : ψ u = ∑ j, m j • c j := by simp [hu, map_sum, map_zsmul, hc]
     have hu0 : u ≠ 0 := fun h => hx0 (by rw [← hψu, h, map_zero])
     have hint : ∀ j, ∃ k : ℤ, B u (b j) = k := fun j => ⟨m j, by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [hu, map_sum, map_zsmul, LinearMap.sum_apply, hd,
-        LinearMap.BilinForm.apply_dualBasis_left]⟩
+
+      simp [hu, map_sum, map_zsmul, LinearMap.sum_apply, hd,
+      LinearMap.BilinForm.apply_dualBasis_left]⟩
     have h := hmin u hu0 hint
     rw [hψu] at h
     nlinarith [norm_nonneg (∑ j, m j • c j)]
@@ -99,16 +153,16 @@ theorem _root_.GlobalTheory.ThickPoint.transference_pair {M : ℕ} (b : Basis (F
   have hφv : ∀ i, φ (∑ j, m i j • b j) = y i := by
     intro i
     refine InnerProductSpace.ext_inner_right_basis c fun j => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hm i j, hc j, map_sum, sum_inner]
+
+    rw [hm i j, hc j, map_sum, sum_inner]
     simp [map_zsmul, ← Int.cast_smul_eq_zsmul ℝ, inner_smul_left, hpair]
   refine ⟨fun i => ∑ j, m i j • b j, fun i => ?_, ?_, fun i => ?_⟩
   · exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (subset_span ⟨j, rfl⟩)
   · rw [Fintype.linearIndependent_iff]
     intro g hg i
     have h1 : ∑ j, (g j : ℝ) • y j = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_zero φ, ← hg, map_sum]
+
+      rw [← map_zero φ, ← hg, map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [← hφv j, ← map_ratCast_smul φ ℚ ℝ (g j)]
       simp
@@ -143,8 +197,8 @@ private lemma herm_swap_eq_cc_herm {G : Matrix (Fin r) (Fin r) E}
   have hcc : ∀ z : E, IsCMField.complexConj E (IsCMField.complexConj E z) = z := fun z => by
     simpa [hc] using _root_.GlobalTheory.TraceDualMin.cc_cc z
   simp only [hc] at hG
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.herm, hc, map_sum, map_mul, hcc, hG]
+
+  simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.herm, hc, map_sum, map_mul, hcc, hG]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   ring
@@ -179,7 +233,7 @@ theorem _root_.GlobalTheory.ThickPoint.traceFormOf_nondegenerate {G : Matrix (Fi
     funext b
     have hs : ∀ j, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc ((Pi.single b (1 : E) : Fin r → E) j) =
         (Pi.single b (1 : E) : Fin r → E) j := fun j => by
-      by_cases hj : j = b <;> simp [hj, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc, Pi.single_apply]
+      by_cases hj : j = b <;> simp [hj, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc]
     have h := h1 (Pi.single b 1)
     simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.herm, hs] at h
     simpa [Matrix.vecMul, dotProduct, Pi.single_apply] using h

@@ -1,10 +1,62 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.HLatOps
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
 public import Formalism.HarderNarasimhan.ShiftInvariance
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.ExistsNsmulMem
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
-public import Formalism.LocalRingCardinality.DataDIVDefs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalRingCardinality.DataDIV
 
 @[expose] public section
 
@@ -90,8 +142,6 @@ theorem isSesq_maj (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
     refine Finset.sum_congr rfl fun i _ => ?_
     first
     | (rw [Complex.star_def]; ring)
-    | (simp only [RCLike.star_def]; ring)
-    | ring
   · simp only [majAt, hsmul, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     ring
@@ -139,7 +189,7 @@ theorem gramOf_maj (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
     by_cases hj : j = i
     · subst hj
       simp
-    · simp [Finsupp.single_apply, Pi.single_apply, hj, Ne.symm hj]
+    · simp [hj]
   have hf : ∀ i k, fcoord b X v (b i) k = (X v)⁻¹ k i := by
     intro i k
     simp [fcoord, hv, Matrix.mulVec, dotProduct, Pi.single_apply]
@@ -310,7 +360,6 @@ theorem exists_frame {ι : Type} [Fintype ι] [DecidableEq ι] {G : Matrix ι ι
     ∃ B : Matrix ι ι ℂ, IsUnit B.det ∧ B.conjTranspose * B = G := by
   have hex : ∃ B : Matrix ι ι ℂ, G = B.conjTranspose * B := by
     first
-    | exact Matrix.posSemidef_iff_eq_conjTranspose_mul_self.1 hG.posSemidef
     | (obtain ⟨B, hB⟩ := Matrix.posSemidef_iff_eq_conjTranspose_mul_self.1 hG.posSemidef
        exact ⟨B, hB⟩)
     | (have h0 : (0 : Matrix ι ι ℂ) ≤ G := Matrix.nonneg_iff_posSemidef.2 hG.posSemidef
@@ -323,8 +372,6 @@ theorem exists_frame {ι : Type} [Fintype ι] [DecidableEq ι] {G : Matrix ι ι
   have hdet : G.det ≠ 0 := by
     first
     | exact hG.det_pos.ne'
-    | exact hG.det_ne_zero
-    | exact (Matrix.isUnit_iff_isUnit_det G).1 hG.isUnit |>.ne_zero
   rw [isUnit_iff_ne_zero]
   intro h0
   apply hdet
@@ -394,7 +441,6 @@ theorem posAt_comp {V ι W κ : Type} [AddCommGroup V] [Module K V] [Fintype ι]
   rw [hgram]
   first
   | exact hG.conjTranspose_mul_mul_same hinj
-  | exact Matrix.PosDef.conjTranspose_mul_mul_same hG hinj
 
 theorem isSesq_comp {V W : Type} [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
     {H : InfinitePlace K → V → V → ℂ} (hH : IsSesq H) (f : W →ₗ[K] V) :
@@ -423,9 +469,6 @@ theorem posAt_maj {V ι : Type} [AddCommGroup V] [Module K V] [Fintype ι] [Deci
     simpa [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (hX v)] using h1
   first
   | exact Matrix.PosDef.conjTranspose_mul_self _ hinj
-  | exact (Matrix.posDef_conjTranspose_mul_self_iff _).2 hinj
-  | (have h1 := Matrix.PosDef.one.conjTranspose_mul_mul_same hinj
-     simpa using h1)
 
 end Forms
 
@@ -455,9 +498,6 @@ theorem map_comap_eq' {V W : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K
   rw [Submodule.map_comap_eq, inf_comm]
   first
   | rfl
-  | (congr 1
-     ext y
-     simp [LinearMap.mem_range])
 
 theorem rkK_map {V W : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
     [IsScalarTower (𝓞 K) K V] [AddCommGroup W] [Module K W] [Module (𝓞 K) W]
@@ -550,7 +590,7 @@ theorem vecAt_basis {V ι : Type} [AddCommGroup V] [Module K V] [Fintype ι] [De
   by_cases hj : j = i
   · subst hj
     simp
-  · simp [Finsupp.single_apply, Pi.single_apply, hj, Ne.symm hj]
+  · simp [hj]
 
 theorem fcoord_basis {V ι : Type} [AddCommGroup V] [Module K V] [Fintype ι] [DecidableEq ι]
     (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ) (v : InfinitePlace K) (i : ι) :

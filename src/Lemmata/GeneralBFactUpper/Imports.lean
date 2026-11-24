@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Normed.Field.Basic
+public import Mathlib.Topology.MetricSpace.Ultra.Basic
+public import Mathlib.Analysis.Normed.Group.Ultra
+import Mathlib.Tactic.Ring
 
 @[expose] public section
 

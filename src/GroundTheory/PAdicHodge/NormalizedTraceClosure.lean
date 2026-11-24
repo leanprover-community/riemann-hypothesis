@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.Padics.Complex
 public import GroundTheory.PAdicHodge.GaloisOnCp
+import Mathlib.Topology.Algebra.Nonarchimedean.Completion
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

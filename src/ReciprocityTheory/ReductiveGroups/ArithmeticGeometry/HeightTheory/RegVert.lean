@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegAVpt
+public import Mathlib.RingTheory.Ideal.Height
+public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
+public import Mathlib.RingTheory.Valuation.ValuationRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
+public import Mathlib.RingTheory.Localization.Submodule
 
 @[expose] public section
 
@@ -20,11 +67,9 @@ theorem regVert_eq_of_le_height_one {A : Type*} [CommRing A] [IsDomain A] {Q P :
   haveI : (⊥ : Ideal A).FiniteHeight := ⟨Or.inr (by simp)⟩
   have h1 : (⊥ : Ideal A).height + 1 ≤ Q.height := by
     first
-    | exact ENat.add_one_le_of_lt (Ideal.height_strict_mono_of_isPrime hbot)
     | exact Order.add_one_le_of_lt (Ideal.height_strict_mono_of_isPrime hbot)
   have h2 : Q.height + 1 ≤ P.height := by
     first
-    | exact ENat.add_one_le_of_lt (Ideal.height_strict_mono_of_isPrime hlt)
     | exact Order.add_one_le_of_lt (Ideal.height_strict_mono_of_isPrime hlt)
   rw [hP] at h2
   have h3 : (2 : ℕ∞) ≤ 1 := by
@@ -42,7 +87,6 @@ theorem regVert_valuationRing {A : Type*} [CommRing A] [IsDomain A] [IsNoetheria
     have h0 : (⊥ : Ideal A).height = 0 := by
       first
       | exact Ideal.height_bot
-      | simp
     rw [h0] at hP
     exact zero_ne_one hP
   haveI : IsNoetherianRing (Localization.AtPrime P) :=
@@ -56,7 +100,6 @@ theorem regVert_valuationRing {A : Type*} [CommRing A] [IsDomain A] [IsNoetheria
       (IsLocalRing.maximalIdeal (Localization.AtPrime P)) = P := by
     first
     | exact Localization.AtPrime.under_maximalIdeal
-    | exact IsLocalization.AtPrime.comap_maximalIdeal _ P
   have hmne : IsLocalRing.maximalIdeal (Localization.AtPrime P) ≠ ⊥ := by
     rw [← hmax]
     intro h
@@ -67,15 +110,9 @@ theorem regVert_valuationRing {A : Type*} [CommRing A] [IsDomain A] [IsNoetheria
   haveI : IsDomain (Localization.AtPrime P) := by
     first
     | infer_instance
-    | exact IsLocalization.isDomain_localization P.primeCompl_le_nonZeroDivisors
   haveI hic : IsIntegrallyClosed (Localization.AtPrime P) := by
     first
-    | exact isIntegrallyClosed_of_isLocalization P.primeCompl P.primeCompl_le_nonZeroDivisors
     | exact isIntegrallyClosed_of_isLocalization (S := Localization.AtPrime P) P.primeCompl
-        P.primeCompl_le_nonZeroDivisors
-    | exact IsIntegrallyClosed.of_isLocalization (Localization.AtPrime P) P.primeCompl
-        P.primeCompl_le_nonZeroDivisors
-    | exact isIntegrallyClosed_of_isLocalization (Localization.AtPrime P) P.primeCompl
         P.primeCompl_le_nonZeroDivisors
   have huniq : ∃! Q' : Ideal (Localization.AtPrime P), Q' ≠ ⊥ ∧ Q'.IsPrime := by
     refine ⟨IsLocalRing.maximalIdeal _, ⟨hmne, inferInstance⟩, ?_⟩
@@ -90,16 +127,6 @@ theorem regVert_valuationRing {A : Type*} [CommRing A] [IsDomain A] [IsNoetheria
     have heq := regVert_eq_of_le_height_one hcne hc hP
     rw [← IsLocalization.map_under P.primeCompl (Localization.AtPrime P) Q', heq, hmax]
   first
-  | exact ((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 3).mpr (And.intro hic huniq)
-  | exact ((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 4).mpr (And.intro hic huniq)
-  | exact ((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 2).mpr (And.intro hic huniq)
-  | exact ((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 5).mpr (And.intro hic huniq)
-  | exact @ValuationRing.of_isDiscreteValuationRing _ _ _ (((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 4).mpr (And.intro hic huniq))
-  | exact @ValuationRing.of_isDiscreteValuationRing _ _ _ (((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 5).mpr (And.intro hic huniq))
-  | exact @ValuationRing.of_isDiscreteValuationRing _ _ _ (((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 3).mpr (And.intro hic huniq))
-  | exact @ValuationRing.of_isDiscreteValuationRing _ _ _ (((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 1 6).mpr (And.intro hic huniq))
-  | exact ((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 2 3).mpr (And.intro hic huniq)
   | exact ((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 2 4).mpr (And.intro hic huniq)
-  | exact ((IsDiscreteValuationRing.TFAE (Localization.AtPrime P) hnf).out 2 5).mpr (And.intro hic huniq)
 
 end ReciprocityTheory.ChartRestriction.G.T0

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+public import Mathlib.Algebra.Group.End
+import Mathlib.Tactic.TypeStar
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
@@ -20,13 +21,11 @@ def ptList {K : Type*} [Zero K] {i : ℕ} (p : Formalism.MainNotions.S.Point K i
 
 theorem ptList_isPtL {K : Type*} [Zero K] {i : ℕ} (p : Formalism.MainNotions.S.Point K i) : IsPtL (ptList p) i := by
   refine ⟨?_, ?_⟩
-  · have h := p.2.2
-    show ((p.1.map Prod.swap).map Prod.fst).sum = i
+  · show ((p.1.map Prod.swap).map Prod.fst).sum = i
     rw [List.map_map]
-    exact h
+    exact p.2.2
   · intro b hb
-    simp only [ptList, List.mem_map] at hb
-    obtain ⟨c, hc, rfl⟩ := hb
+    obtain ⟨c, hc, rfl⟩ := List.mem_map.mp (show b ∈ p.1.map Prod.swap from hb)
     exact ⟨(p.2.1 c hc).2, (p.2.1 c hc).1⟩
 
 def ptEquiv (K : Type*) [Zero K] (i : ℕ) : Formalism.MainNotions.S.Point K i ≃ {l : List (ℕ × K) // IsPtL l i} where

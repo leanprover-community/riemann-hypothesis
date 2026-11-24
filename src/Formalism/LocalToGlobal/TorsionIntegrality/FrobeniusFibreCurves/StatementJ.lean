@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementX
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.CMQuasiPeriodConst
-public import Formalism.EllipticTorsion.FormalGroupPointsTorsionFree
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementI
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.IsFibreCurve
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementW
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementW
 
 @[expose] public section
 

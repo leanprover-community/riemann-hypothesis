@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.SmoothRepContragredient
-public import GroundTheory.AutomorphicForms.SmoothRepSchur
-public import GroundTheory.AutomorphicForms.HeckeAlgebra
-public import GroundTheory.AutomorphicForms.LocallyProfinite
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RepresentationTheory.Irreducible
+public import Mathlib.Topology.Algebra.Group.Defs
+import Mathlib.Tactic.TypeStar
+public import Lean.Elab.MutualDef
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
+public import Mathlib.MeasureTheory.Group.Defs
+public import Mathlib.MeasureTheory.Group.Measure
 
 @[expose] public section
 
@@ -29,7 +32,7 @@ theorem span_orbit_eq_top [π.IsIrreducible] {v : V} (hv : v ≠ 0) :
     intro g x hx
     have : S ≤ S.comap (π g) := Submodule.span_le.2 (by
       rintro _ ⟨h, rfl⟩
-      exact Submodule.subset_span ⟨g * h, by simp [Module.End.mul_apply]⟩)
+      exact Submodule.subset_span ⟨g * h, by simp⟩)
     exact this hx
   rcases IsSimpleOrder.eq_bot_or_eq_top (⟨S, hS⟩ : Subrepresentation π) with h | h
   · exfalso

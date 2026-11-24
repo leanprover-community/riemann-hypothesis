@@ -1,8 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TiedCls
-public import Formalism.LocalToGlobal.Columns.AtTOwedS
+public import Formalism.LocalToGlobal.Columns.TiedCrd
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+public import Formalism.LocalToGlobal.Columns.RecLevelLocP
+public import Formalism.LocalToGlobal.Columns.RecLevelStep
 
 @[expose] public section
 
@@ -106,7 +107,7 @@ variable {d : ColDat} (a : ColArgs d)
 theorem att_star_eq (x : d.host.E) : star x = d.host.conj x := Formalism.BasicNotions.Examples₂.star_eq_conj d.host x
 
 
-set_option maxHeartbeats 1000000 in
+
 def atTTied (hH : HostHyp d) (u : d.what₂.Word) : CF.AtTTied (D := d.colRec a) u where
   eV := tieEV d.sp.cm d.hX d.hPr u
   piU := d.piT u

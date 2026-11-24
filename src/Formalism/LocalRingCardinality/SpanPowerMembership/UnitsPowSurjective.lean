@@ -1,6 +1,69 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+public import Mathlib.GroupTheory.Divisible
+public import Mathlib.RingTheory.WittVector.Teichmuller
+public import Mathlib.SetTheory.Cardinal.Continuum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+public import Mathlib.FieldTheory.IsAlgClosed.Classification
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Algebraic.Cardinality
+public import Mathlib.RingTheory.Localization.Cardinality
+import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.RingTheory.WittVector.Compare
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Category.Grp.Injective
+public import Mathlib.Analysis.Complex.Cardinality
+public import Mathlib.RingTheory.RootsOfUnity.Complex
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.WittVector.Domain
 
 @[expose] public section
 
@@ -15,19 +78,16 @@ section ToC
 variable (p : ℕ) [Fact p.Prime]
 
 theorem teich_charZero : CharZero (WittVector p (AlgebraicClosure (ZMod p))) := by
-  let f : ℤ_[p] →+* WittVector p (AlgebraicClosure (ZMod p)) :=
-    (WittVector.map (algebraMap (ZMod p) (AlgebraicClosure (ZMod p)))).comp
-      (WittVector.equiv p).symm.toRingHom
-  have hf : Function.Injective f :=
-    (WittVector.map_injective _ (algebraMap (ZMod p) (AlgebraicClosure (ZMod p))).injective).comp
-      (WittVector.equiv p).symm.injective
-  exact charZero_of_injective_ringHom hf
+  exact charZero_of_injective_ringHom
+    (f := (WittVector.map (algebraMap (ZMod p) (AlgebraicClosure (ZMod p)))).comp
+      (WittVector.equiv p).symm.toRingHom)
+    ((WittVector.map_injective _ (algebraMap (ZMod p) (AlgebraicClosure (ZMod p))).injective).comp
+      (WittVector.equiv p).symm.injective)
 
 theorem teich_card_Fbar : #(AlgebraicClosure (ZMod p)) = ℵ₀ := by
-  apply le_antisymm
-  · refine (Algebra.IsAlgebraic.cardinalMk_le_max (ZMod p) (AlgebraicClosure (ZMod p))).trans ?_
-    exact max_le (Cardinal.mk_le_aleph0) le_rfl
-  · exact Cardinal.aleph0_le_mk _
+  refine le_antisymm ?_ (Cardinal.aleph0_le_mk _)
+  exact (Algebra.IsAlgebraic.cardinalMk_le_max (ZMod p) (AlgebraicClosure (ZMod p))).trans
+    (max_le Cardinal.mk_le_aleph0 le_rfl)
 
 def teichCoeffEquiv (R : Type) : WittVector p R ≃ (ℕ → R) where
   toFun x := x.coeff
@@ -36,8 +96,7 @@ def teichCoeffEquiv (R : Type) : WittVector p R ≃ (ℕ → R) where
   right_inv f := by funext n; rfl
 
 theorem mk_wittVector : #(WittVector p (AlgebraicClosure (ZMod p))) = 𝔠 := by
-  rw [Cardinal.mk_congr (teichCoeffEquiv p (AlgebraicClosure (ZMod p)))]
-  simp [teich_card_Fbar]
+  simpa [teich_card_Fbar] using Cardinal.mk_congr (teichCoeffEquiv p (AlgebraicClosure (ZMod p)))
 
 abbrev TeichOm : Type :=
   AlgebraicClosure (FractionRing (WittVector p (AlgebraicClosure (ZMod p))))
@@ -82,10 +141,8 @@ def teichToC : AlgebraicClosure (ZMod p) →* ℂ :=
 
 theorem teichToC_injective : Function.Injective (teichToC p) := by
   intro x y h
-  have h1 : WittVector.teichmuller p x = WittVector.teichmuller p y :=
-    teichWOm_injective p ((teich_Om_equiv p).some.injective h)
-  have h2 := congrArg (fun w => w.coeff 0) h1
-  simpa [WittVector.teichmuller_coeff_zero] using h2
+  have h1 := teichWOm_injective p ((teich_Om_equiv p).some.injective h)
+  simpa [WittVector.teichmuller_coeff_zero] using congrArg (fun w => w.coeff 0) h1
 
 end ToC
 
@@ -202,9 +259,8 @@ def iotaSub : primeToSub g l →* (AlgebraicClosure (ZMod l))ˣ :=
 
 theorem iotaSub_injective : Function.Injective (iotaSub g l) := by
   intro x y h
-  have h1 := (MonoidHom.ofInjective (teichU_injective l)).symm.injective h
-  have h2 : teichU g x.1 = teichU g y.1 := congrArg Subtype.val h1
-  exact Subtype.ext (teichU_injective g h2)
+  exact Subtype.ext (teichU_injective g (congrArg Subtype.val
+    ((MonoidHom.ofInjective (teichU_injective l)).symm.injective h)))
 
 theorem iotaU_exists : ∃ χ : (AlgebraicClosure (ZMod g))ˣ →* (AlgebraicClosure (ZMod l))ˣ,
     ∀ x : primeToSub g l, χ x.1 = iotaSub g l x := by
@@ -213,9 +269,8 @@ theorem iotaU_exists : ∃ χ : (AlgebraicClosure (ZMod g))ˣ →* (AlgebraicClo
     (MonoidHom.toAdditive (primeToSub g l).subtype)
     (fun a b hab => Subtype.ext (congrArg Additive.toMul hab : _))
     (MonoidHom.toAdditive (iotaSub g l))
-  refine ⟨MonoidHom.toAdditive.symm h, fun x => ?_⟩
-  have := DFunLike.congr_fun hh (Additive.ofMul x)
-  exact congrArg Additive.toMul this
+  exact ⟨MonoidHom.toAdditive.symm h, fun x =>
+    congrArg Additive.toMul (DFunLike.congr_fun hh (Additive.ofMul x))⟩
 
 def teichIota : AlgebraicClosure (ZMod g) →* AlgebraicClosure (ZMod l) :=
   extZeroHom (iotaU_exists g l).choose
@@ -231,8 +286,7 @@ theorem teichIota_inj (x y : AlgebraicClosure (ZMod g)) (hx : x ≠ 0) (hy : y �
   rw [extZeroHom_of_ne _ hx, extZeroHom_of_ne _ hy] at h
   have h1 := Units.ext h
   rw [(iotaU_exists g l).choose_spec ⟨_, hX⟩, (iotaU_exists g l).choose_spec ⟨_, hY⟩] at h1
-  have h2 := iotaSub_injective g l h1
-  exact congrArg (fun u : primeToSub g l => ((u.1 : (AlgebraicClosure (ZMod g))ˣ) : AlgebraicClosure (ZMod g))) h2
+  exact congrArg (fun u : primeToSub g l => ((u.1 : (AlgebraicClosure (ZMod g))ˣ) : AlgebraicClosure (ZMod g))) (iotaSub_injective g l h1)
 
 end Iota
 

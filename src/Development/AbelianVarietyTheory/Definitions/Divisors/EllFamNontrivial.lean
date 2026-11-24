@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FderivFnCongr
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CommAlgFunctorCoboundaryZeroMemCocyclesOne
+public import Mathlib.Algebra.DualNumber
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.RingTheory.Ideal.BigOperators
 
 @[expose] public section
 
@@ -78,8 +124,8 @@ theorem Close.map {W : Opens (Tot I g)} {C C' : Type} [CommRing C] [CommRing C']
   | tail _ hs ih =>
     obtain ⟨n, hn, hnn, hρ⟩ := hs
     refine ih.tail ⟨fun a ↦ φ (n a), fun a ↦ hφ _ (hn a), fun a b ↦ by rw [← map_mul, hnn, map_zero], fun f ↦ ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [RingHom.comp_apply, hρ, map_add (f := _), map_sum, map_mul]
+
+    simp only [RingHom.comp_apply, hρ, map_add (f := _), map_sum, map_mul]
 
 theorem Close.comap {W W' : Opens (Tot I g)} {C : Type} [CommRing C] {J : Ideal C}
     {ρ₁ ρ₂ : Hol W' →+* C} (h : Close J ρ₁ ρ₂) (ψ : Hol W →+* Hol W') (hψ : ∀ a f, dw a (ψ f) = ψ (dw a f)) :
@@ -297,17 +343,6 @@ def ptHom {l : Λ} {k : K.K} (T : K.Obj) (h : K.le l T.k k) : K.triv k ⟶ T :=
   fromTriv T h (T.ρ.comp (K.sh h)) (fun f ↦ (congrArg T.ρ (sh_cst h f)).trans (T.ρ_cst f)) Relation.ReflTransGen.refl
 
 end Charts
-
-theorem Fam.allCharts_based (F : Fam I g Λ) : F.allCharts.Based := by
-  exact ⟨F.totChart, fun z hz ↦ hz⟩
-
-theorem Fam.allCharts_rich (F : Fam I g Λ) : F.allCharts.Rich := by
-  refine ⟨fun p hp ↦ ⟨F.totChart, hp⟩, fun l k₁ k₂ p h₁ h₂ ↦ ?_⟩
-  have hopen : IsOpen ((k₁.1 : Set (Tot I g)) ∩ F.shift l ⁻¹' (k₂.1 : Set (Tot I g))) :=
-    (F.shift_analytic l k₁.2).continuousOn.isOpen_inter_preimage k₁.1.isOpen k₂.1.isOpen
-  refine ⟨⟨⟨_, hopen⟩, fun q hq ↦ k₁.2 q hq.1⟩, ⟨h₁, h₂⟩, fun q hq ↦ ?_, fun q hq ↦ hq.2⟩
-  rw [F.shift_zero]
-  exact hq.1
 
 def Fam.transl (F : Fam I g Λ) (l : Λ) : F.allCharts.triv F.totChart ⟶ F.allCharts.triv F.totChart :=
   Charts.ptHom (l := l) (F.allCharts.triv F.totChart) (fun _ h ↦ h)

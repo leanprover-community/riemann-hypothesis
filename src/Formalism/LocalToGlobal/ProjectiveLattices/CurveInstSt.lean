@@ -3,8 +3,6 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftCurveSt
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
-public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
-public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
 
 @[expose] public section
 

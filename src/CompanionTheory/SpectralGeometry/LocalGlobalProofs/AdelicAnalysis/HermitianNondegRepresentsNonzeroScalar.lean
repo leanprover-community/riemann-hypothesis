@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.EqIdOfFixed
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 
 @[expose] public section
 
@@ -20,10 +24,6 @@ theorem sig_sig (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
   obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
   apply τ.injective
   rw [h.2.2.2, h.2.2.2, star_star]
-
-theorem exists_of_sig_fixed (h : IsCMExt F E σ) {x : E} (hx : σ x = x) :
-    ∃ t : F, algebraMap F E t = x :=
-  _root_.Bl.EqIdOfFixed.goal1 h hx
 
 end Fixed
 
@@ -57,7 +57,7 @@ theorem exists_repr : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
   obtain ⟨hH, hdet⟩ := hT
   by_cases hd : ∃ i, T i i ≠ 0
   · obtain ⟨i, hi⟩ := hd
-    obtain ⟨t, ht⟩ := exists_of_sig_fixed hσ (hH i i)
+    obtain ⟨t, ht⟩ := _root_.Bl.EqIdOfFixed.goal1 hσ (hH i i)
     refine ⟨t, Pi.single i 1, ?_, ?_⟩
     · rintro rfl
       exact hi (by rw [← ht, map_zero])
@@ -67,9 +67,6 @@ theorem exists_repr : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
       by_contra hc
       push_neg at hc
       exact hdet (by rw [show T = 0 from Matrix.ext hc, Matrix.det_zero])
-    have hne : i ≠ j := by
-      rintro rfl
-      exact hij (hd i)
     refine ⟨2, Pi.single i (σ (T i j)⁻¹) + Pi.single j 1, two_ne_zero, ?_⟩
     have hji : T j i = σ (T i j) := (hH j i).symm
     have hs : σ (σ (T i j)⁻¹) = (T i j)⁻¹ := sig_sig hσ _

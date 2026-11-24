@@ -2,9 +2,49 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ExtendedStatementOfParts
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FactorsOfPerturb
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptFin
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TotalDegreeEplus
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExponentFactorialAddSingleOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -24,15 +64,11 @@ def SmithData {r s t : ℕ} (form : SegVs O r s t → SegVs O r s t → KK O) (L
     (∀ i l, i ≠ l → form (al i) (be l) = 0) ∧ LinearIndependent O al ∧
     Submodule.span O (Set.range al) = L ∧ Submodule.span O (Set.range be) = L
 
-theorem vK_zero (p : ℕ) : vK p (0 : KK O) = ⊤ := by
-  unfold vK ordW
-  simp
-
 theorem vLE_ne_zero {p : ℕ} {κ : KK O} {D : ℝ} (h : vLE p κ D) : κ ≠ 0 := by
   intro hκ
   subst hκ
   obtain ⟨q, hq, -⟩ := h
-  rw [vK_zero] at hq
+  rw [_root_.Formalism.MainNotions.G.GLWeightTheory.valuation_zero_alt] at hq
   exact WithTop.top_ne_coe hq
 
 theorem scale_to_O {p : ℕ} {w : O} (hw : Irreducible w) (h2 : w ^ 2 = (p : O)) {κ : KK O} {D : ℝ} (hD : 0 ≤ D)
@@ -347,11 +383,11 @@ theorem segForm_eq_sum (p r : ℕ) {s : ℕ} (S : SegData s) (T : Finset (SegBlo
 
 theorem fock_bilin {σ : Type} {n : ℕ} (F G : Fin n → MvPolynomial σ (KK O)) (a η : Fin n → O) :
     fock (∑ i, a i • F i) (∑ l, η l • G l) = ∑ i, ∑ l, algebraMap O (KK O) (a i * η l) * fock (F i) (G l) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← fockBilinear_apply, map_sum, Finset.sum_comm]
+
+  rw [← fockBilinear_apply, map_sum, Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, LinearMap.sum_apply]
+
+  rw [map_sum, LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← algebraMap_smul (KK O) (a i) (F i), ← algebraMap_smul (KK O) (η l) (G l), map_smul, map_smul,
     LinearMap.smul_apply, smul_eq_mul, smul_eq_mul, fockBilinear_apply, map_mul]

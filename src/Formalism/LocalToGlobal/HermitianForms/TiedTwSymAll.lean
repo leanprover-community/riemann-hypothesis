@@ -2,6 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.HermitianForms.TiedTwSymP
 public import Formalism.LocalToGlobal.HermitianColumns.TiedQCHost
+public import Formalism.LocalToGlobal.HermitianForms.BothSym
+public import Formalism.LocalToGlobal.HermitianForms.TiedTwJSym
 
 @[expose] public section
 

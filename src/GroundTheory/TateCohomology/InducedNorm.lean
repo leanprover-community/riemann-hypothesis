@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.Induced
 
 @[expose] public section
@@ -36,9 +35,9 @@ noncomputable def fromCoindRes (φ : M.V →ₗ[k] M.V) :
   ofHom ⟨∑ x : G, M.ρ x⁻¹ ∘ₗ φ ∘ₗ LinearMap.proj x ∘ₗ
       (Representation.coindV (⊥ : Subgroup G).subtype (res (⊥ : Subgroup G).subtype M).ρ).subtype,
     fun g => LinearMap.ext fun f => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [LinearMap.coe_comp, LinearMap.coe_sum, Function.comp_apply, Finset.sum_apply,
-        map_sum]
+
+      simp only [LinearMap.coe_comp, LinearMap.coe_sum, Function.comp_apply, Finset.sum_apply,
+      map_sum]
       refine Fintype.sum_equiv (Equiv.mulRight g) _ _ fun x => ?_
       change M.ρ x⁻¹ (φ (f.1 (x * g))) = M.ρ g (M.ρ (x * g)⁻¹ (φ (f.1 (x * g))))
       rw [← Module.End.mul_apply (M.ρ g) (M.ρ (x * g)⁻¹), ← map_mul, mul_inv_rev,

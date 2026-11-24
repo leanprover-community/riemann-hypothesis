@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Topology.Algebra.OpenSubgroup
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

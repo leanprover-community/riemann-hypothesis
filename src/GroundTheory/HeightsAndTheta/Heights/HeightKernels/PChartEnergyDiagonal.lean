@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergyDiagonal
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergyInvariant
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergyCocycle
+public import Mathlib.Analysis.Matrix.PosDef
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Basic.PEquiv
+public import Mathlib.Data.Matrix.PEquiv
 
 @[expose] public section
 

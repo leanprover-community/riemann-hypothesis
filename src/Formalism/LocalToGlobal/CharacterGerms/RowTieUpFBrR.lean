@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrI
+public import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
+public import Formalism.LocalToGlobal.CharacterGerms.PlugUP
 
 @[expose] public section
 

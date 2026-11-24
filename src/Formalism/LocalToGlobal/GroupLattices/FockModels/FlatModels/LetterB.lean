@@ -1,6 +1,59 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDRInvEig
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.Letter
+public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
+public import Formalism.GradedWeylDivisibility.FinalD
+public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ColLexInitMinor
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetMinor
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 @[expose] public section
 
@@ -83,7 +136,7 @@ theorem nuOf_letterWt (m : ℕ) (hm : 1 ≤ m) (d : ℕ) (vec : Bool) : nuOf (le
 
 theorem nuL_smul (m d : ℕ) (vec : Bool) : nuL m d vec = d • nuL m 1 vec := by
   funext t
-  cases vec <;> simp [nuL] <;> split_ifs <;> simp
+  cases vec <;> simp [nuL]
 
 def s0 (m : ℕ) (vec : Bool) : ℕ := if vec then 1 else m
 
@@ -138,8 +191,6 @@ theorem Nv_mem (R : Type) [CommRing R] (m : ℕ) (vec : Bool) (c : Fin (m + 1)) 
           ext
           first
             | (rw [Fin.val_zero]; omega)
-            | (simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod]; omega)
-            | (norm_num; omega)
         simp [ht, h1]
     rw [e]
     exact initMinor_isWeightedHomogeneous _ _
@@ -183,8 +234,8 @@ theorem theta_Hd_le (R : Type) [CommRing R] (m d : ℕ) (vec : Bool) :
   intro y hy
   obtain ⟨P, hP, rfl⟩ := Submodule.mem_map.1 hy
   rw [mem_Hd] at hP
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [AlgHom.toLinearMap_apply, P.as_sum, map_sum]
+
+  rw [AlgHom.toLinearMap_apply, P.as_sum, map_sum]
   refine Submodule.sum_mem _ (fun μ hμ => ?_)
   unfold theta
   rw [MvPolynomial.aeval_monomial, ← Algebra.smul_def]
@@ -199,33 +250,7 @@ theorem theta_Hd_le (R : Type) [CommRing R] (m d : ℕ) (vec : Bool) :
 
 theorem exists_succAbove {m : ℕ} (I : Fin m → Fin (m + 1)) (hI : StrictMono I) :
     ∃ c : Fin (m + 1), I = c.succAbove := by
-  classical
-  have hinj := hI.injective
-  have hcard : (Finset.univ \ Finset.univ.image I).card = 1 := by
-    first
-      | rw [Finset.card_sdiff (Finset.subset_univ _), Finset.card_image_of_injective _ hinj]
-      | rw [Finset.card_sdiff_of_subset (Finset.subset_univ _), Finset.card_image_of_injective _ hinj]
-    simp
-  obtain ⟨c, hc⟩ := Finset.card_eq_one.1 hcard
-  refine ⟨c, (StrictMono.range_inj hI (Fin.strictMono_succAbove c)).1 ?_⟩
-  rw [Fin.range_succAbove]
-  ext x
-  simp only [Set.mem_range, Set.mem_compl_iff, Set.mem_singleton_iff]
-  constructor
-  · rintro ⟨y, rfl⟩ hy
-    have h1 : I y ∈ Finset.univ \ Finset.univ.image I := by
-      rw [hc, hy]
-      exact Finset.mem_singleton_self _
-    simp at h1
-  · intro hx
-    by_contra hne
-    have h1 : x ∈ Finset.univ \ Finset.univ.image I := by
-      simp only [Finset.mem_sdiff, Finset.mem_univ, Finset.mem_image, true_and]
-      intro hex
-      apply hne
-      simpa using hex
-    rw [hc] at h1
-    exact hx (Finset.mem_singleton.1 h1)
+  apply Formalism.FourierDecayAlt.P.CutMP.InvEig.smono_succAbove <;> assumption
 
 theorem minor_pre (R : Type) [CommRing R] (m : ℕ) (hm : 1 ≤ m) (vec : Bool) (s : ℕ) (hs : s ≤ m + 1)
     (I : Fin s → Fin (m + 1)) (hI : StrictMono I) (h : s = 0 ∨ s = s0 m vec) :
@@ -273,7 +298,7 @@ theorem shape_sizes (m : ℕ) (hm : 1 ≤ m) (d : ℕ) (vec : Bool) {K : ℕ} (s
   have hsum : ∑ k, (if sz k = 0 then 0 else 1) = (Finset.univ.filter fun k : Fin K => ((0 : Fin (m + 1)) : ℕ) < sz k).card := by
     rw [Finset.card_filter]
     refine Finset.sum_congr rfl (fun k _ => ?_)
-    by_cases h : sz k = 0 <;> simp [h, Nat.pos_iff_ne_zero, Fin.val_zero]
+    by_cases h : sz k = 0 <;> simp [h, Nat.pos_iff_ne_zero]
   have h0 : (Finset.univ.filter fun k : Fin K => ((0 : Fin (m + 1)) : ℕ) < sz k).card = d := by
     rw [hA 0]
     cases vec <;> simp [nuL, hl]

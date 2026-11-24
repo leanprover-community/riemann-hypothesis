@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjTwistAway
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ConsCompSuccAboveZero
+public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

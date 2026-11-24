@@ -4,6 +4,9 @@ public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.Admiss
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.GardingAvg
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.GardingBump
 public import GroundTheory.AutomorphicForms.GKModules.ParametricIntegral
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

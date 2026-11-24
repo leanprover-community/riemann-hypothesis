@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.BdRGalois
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.RingTheory.Etale.QuasiFinite
 
 @[expose] public section
 

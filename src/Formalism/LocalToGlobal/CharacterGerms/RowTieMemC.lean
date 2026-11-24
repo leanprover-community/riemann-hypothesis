@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.ValBlocksCChart
 public import Formalism.LocalToGlobal.CharacterGerms.NormOneIntegral
 
 @[expose] public section

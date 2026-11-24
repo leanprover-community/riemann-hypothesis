@@ -1,6 +1,43 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -13,9 +50,7 @@ namespace Formalism.MainNotions.G.symbolGeneratorData
 open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning Formalism.MainNotions.G.WittFrameLocaliserOrders Formalism.MainNotions.CovariantDegrees
 
 theorem coe_untopD_le_alt (x : WithTop ℤ) (d : ℤ) : ((x.untopD d : ℤ) : WithTop ℤ) ≤ x := by
-  cases x with
-  | top => exact le_top
-  | coe z => simp
+  cases x <;> simp
 
 theorem le_untopD_of_coe_le {x : WithTop ℤ} {c d : ℤ} (h : ((c : ℤ) : WithTop ℤ) ≤ x) (hd : c ≤ d) : c ≤ x.untopD d := by
   cases x with
@@ -23,9 +58,7 @@ theorem le_untopD_of_coe_le {x : WithTop ℤ} {c d : ℤ} (h : ((c : ℤ) : With
   | coe z => simpa using h
 
 theorem le_coe_unbotD' (x : WithBot ℤ) (d : ℤ) : x ≤ ((x.unbotD d : ℤ) : WithBot ℤ) := by
-  cases x with
-  | bot => exact bot_le
-  | coe z => simp
+  cases x <;> simp
 
 theorem unbotD_le_of_le_coe {x : WithBot ℤ} {c d : ℤ} (h : x ≤ ((c : ℤ) : WithBot ℤ)) (hd : d ≤ c) : x.unbotD d ≤ c := by
   cases x with
@@ -45,9 +78,7 @@ theorem lattice_path_nonneg_prefix {n N : ℕ} {LL : Letters (Fin N)} {B : Fin N
     have hsN : s < N := by omega
     have h1 := P.step ⟨s, hsN⟩
     rw [if_pos (hv ⟨s, hsN⟩ (by simp))] at h1
-    have h2 := ih (by omega) (fun i hi => hv i (by omega)) a
-    have h3 := h1.1 a
-    exact le_trans h2 h3
+    exact le_trans (ih (by omega) (fun i hi => hv i (by omega)) a) (h1.1 a)
 
 theorem lattice_path_zero_prefix {n N : ℕ} {LL : Letters (Fin N)} {B : Fin N → ℕ} (P : PPath n N LL B) :
     ∀ (s : ℕ) (hs : s < N + 1), (∀ i : Fin N, i.val < s → LL.vec i = true ∧ B i = 0) → P.mu ⟨s, hs⟩ = 0 := by
@@ -65,11 +96,9 @@ theorem lattice_path_zero_prefix {n N : ℕ} {LL : Letters (Fin N)} {B : Fin N �
     have h2 : P.mu (Fin.castSucc ⟨s, hsN⟩) = 0 := ih (by omega) (fun i hi => hv i (by omega))
     obtain ⟨g1, _, g3⟩ := h1
     have g4 := (Finset.sum_eq_zero_iff_of_nonneg (fun a _ => sub_nonneg.2 (g1 a))).1 (by simpa using g3)
+    simp only [h2, Pi.zero_apply, sub_zero] at g4
     funext a
-    have g5 := g4 a (Finset.mem_univ a)
-    rw [h2] at g5
-    have g6 : P.mu (Fin.succ ⟨s, hsN⟩) a = 0 := by simpa using g5
-    exact g6
+    exact g4 a (Finset.mem_univ a)
 
 section Fr
 

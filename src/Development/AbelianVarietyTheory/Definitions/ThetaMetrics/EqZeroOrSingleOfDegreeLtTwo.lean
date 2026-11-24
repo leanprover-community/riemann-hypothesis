@@ -1,6 +1,54 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Matrix.Mul
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -33,8 +81,8 @@ theorem le_order_sub {k : ℕ∞} {f g : MvPowerSeries σ R} (hf : k ≤ f.order
 
 theorem le_order_sum {ι : Type*} {k : ℕ∞} (s : Finset ι) {f : ι → MvPowerSeries σ R}
     (hf : ∀ i ∈ s, k ≤ (f i).order) : k ≤ (∑ i ∈ s, f i).order := le_order fun d hd => by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_eq_zero fun i hi => coeff_of_lt_order (hd.trans_le (hf i hi))
 
 theorem coeff_eq_of_le_order_sub {k : ℕ} {f g : MvPowerSeries σ R} (h : (k : ℕ∞) ≤ (f - g).order)
@@ -98,10 +146,10 @@ theorem two_le_order_sub_linear [Fintype σ] {f : MvPowerSeries σ R} (hf : cons
     2 ≤ (f - ∑ j, coeff (Finsupp.single j 1) f • X j).order := by
   classical
   refine two_le_order_iff.mpr ⟨?_, fun k => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp [map_sub, map_sum, hf]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp [map_sub, map_sum, coeff_index_single_X]
+
+  · simp [map_sub, map_sum, hf]
+
+  · simp [map_sub, map_sum, coeff_index_single_X]
 
 private def Close (k n : ℕ) (P Q : MvPowerSeries τ S) : Prop :=
   (n : ℕ∞) ≤ P.order ∧ (n : ℕ∞) ≤ Q.order ∧ ((k + n : ℕ) : ℕ∞) ≤ (P - Q).order + 1
@@ -193,8 +241,8 @@ theorem subst_eq_linear_add [Fintype σ] {a : σ → MvPowerSeries τ S} (ha : H
     (f : MvPowerSeries σ R) :
     f.subst a = ∑ j, coeff (Finsupp.single j 1) f • a j +
       (f - ∑ j, coeff (Finsupp.single j 1) f • X j).subst a := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← substAlgHom_apply ha, ← substAlgHom_apply ha, map_sub, map_sum]
+
+  rw [← substAlgHom_apply ha, ← substAlgHom_apply ha, map_sub, map_sum]
   simp only [map_smul, substAlgHom_X]
   abel
 
@@ -227,12 +275,12 @@ theorem coeff_single_subst [Fintype σ] {a : σ → MvPowerSeries τ S}
       ∑ j, coeff (Finsupp.single j 1) f • coeff (Finsupp.single k 1) (a j) := by
   classical
   have ha' : HasSubst a := hasSubst_of_constantCoeff_zero ha
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [subst_eq_linear_add ha' f, map_add (f := _), coeff_single_subst_eq_zero_of_linear_coeff_zero ha, add_zero, map_sum]
+
+  rw [subst_eq_linear_add ha' f, map_add (f := _), coeff_single_subst_eq_zero_of_linear_coeff_zero ha, add_zero, map_sum]
   · rfl
   · intro j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sub, map_sum, coeff_index_single_X]
+
+    simp [map_sub, map_sum, coeff_index_single_X]
 
 theorem jacobian_subst [Fintype τ] {f : τ → MvPowerSeries σ R}
     (hf : ∀ s, constantCoeff (f s) = 0) (g : υ → MvPowerSeries τ R) :
@@ -307,8 +355,8 @@ theorem exists_subst_eq [Fintype σ] [Fintype τ] [DecidableEq τ] {u : τ → M
       ∀ v j, Φ v j = ∑ i, B j i • (c i - (N i).subst v) := ⟨fun v j => ∑ i, B j i • (c i - (N i).subst v), fun _ _ => rfl⟩
   have h0 : ∀ v, (∀ s, constantCoeff (v s) = 0) → ∀ s, constantCoeff (Φ v s) = 0 := by
     intro v hv j
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hΦ, map_sum]
+
+    rw [hΦ, map_sum]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [constantCoeff_smul, map_sub, hc i,
       constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero hv) hv (hNc i), sub_zero,

@@ -1,7 +1,62 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IntegerApproximationCountHolds
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PackingSeparation
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 
@@ -282,9 +337,9 @@ theorem exists_mem_of_pairing {v w : Fin r → Fin r → E} (hv : ∀ i, v i ∈
       rw [h3, h4] at h2
       rw [smul_sub, smul_add, sub_vecMul, add_vecMul, Pi.sub_apply, Pi.add_apply, ← sub_sub, ← h2,
         hvA]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [vecMulLinear_apply, vecMul, dotProduct, map_sum, Matrix.smul_apply, smul_eq_mul,
-        map_mul, map_natCast, Pi.smul_apply, map_apply, Pi.zero_apply, ← Finset.sum_sub_distrib]
+
+      simp only [vecMulLinear_apply, vecMul, dotProduct, map_sum, Matrix.smul_apply, smul_eq_mul,
+      map_mul, map_natCast, Pi.smul_apply, map_apply, Pi.zero_apply, ← Finset.sum_sub_distrib]
       refine Finset.sum_eq_zero fun i _ => ?_
       push_cast
       ring
@@ -378,9 +433,9 @@ theorem exists_finset_boundedBasis_of_gram (X : DataX E r) {B : ℝ} (hB : 0 ≤
     obtain ⟨γ, hγ, h⟩ := exists_mem_of_pairing X hv.1 w.2.1.1 hv.2.1 w.2.1.2.1 A hvA w.2.2
       fun m => by
         obtain ⟨c, m', rfl⟩ := hx m
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_add (f := _), map_add (f := _), add_sub_add_comm, map_sum, map_sum, ← Finset.sum_sub_distrib,
-          map_smul, map_smul, ← smul_sub]
+
+        rw [map_add (f := _), map_add (f := _), add_sub_add_comm, map_sum, map_sum, ← Finset.sum_sub_distrib,
+        map_smul, map_smul, ← smul_sub]
         refine add_mem (Submodule.sum_mem _ fun j _ => ?_) ⟨(pairing X w.1 w.2.1.1 m' -
           pairing X v hv.1 m') ᵥ* N.adjugate, ?_⟩
         · rw [map_smul, map_smul, ← smul_sub]

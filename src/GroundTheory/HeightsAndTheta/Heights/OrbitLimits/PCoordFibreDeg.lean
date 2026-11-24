@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CoordFibreDeg
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.FibreMultiHomog
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CoordRatioDeg

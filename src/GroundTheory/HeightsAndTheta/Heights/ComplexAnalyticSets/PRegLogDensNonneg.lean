@@ -1,13 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegLogDensNonneg
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegDensNonneg
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFormIntPos
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PTorusInvLevi
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegDensNonneg
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PTorusInvLevi
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
 @[expose] public section
 

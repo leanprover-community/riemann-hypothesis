@@ -1,14 +1,61 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameLocalBound
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagEqualChangeLowerTriangularStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameSectionBound
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptFlagXdeg
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecializesOfUnits
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCompactificationInteriorPoint
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjEmbRtOfNe
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.FiniteEtaleSurjectiveOfPullback
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.BcExAll
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagEqualChangeLowerTriangularStatement
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameLocalBound
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecializesOfUnits
+import Development.AutomorphicSpectrum.Statements.GeometryStatements.ExistsAlgPtOff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ExistsPrimeFiltrationOfIsMultiHomogIdeal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCRing
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelSigBijective
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LiftFactorization
 
 @[expose] public section
 
@@ -139,7 +186,7 @@ theorem interior_of {S : Finset ℕ} {Ω : Type} [Field Ω] {K : Type} [Fintype 
       have h2 : (v ≫ Y.jQ ≫ Limits.pullback.fst Y.s (spMap β))
           (IsLocalRing.closedPoint ℂ) = (z ≫ 𝔐.f) (IsLocalRing.closedPoint ℂ) := by
         rw [show v ≫ Y.jQ ≫ Limits.pullback.fst Y.s (spMap β) = z ≫ 𝔐.f from hv]
-      simp only [Scheme.Hom.comp_apply] at h2
+      simp only at h2
       exact h2
     have hab : 𝔐.f (GlobalTheory.CompanionTheory.Ar.centre z) ∈ abLocus Y.t.G := e ▸ hmem
     exact (abLocus_pullback abLocusOne Y.t.semi 𝔐.m.cart.1 (GlobalTheory.CompanionTheory.Ar.centre z)).1 hab
@@ -158,7 +205,7 @@ variable {SS : Finset ℕ} {RM : Top.RootModel (CMType H) (Dw.p + Dw.q)}
   {Sys : PB.AnSys (Top.dimFl (CMType H) (Dw.p + Dw.q)) (Option (RootIx Dw))} {Fx : FixedData Y Sys}
   {Or : RootOrigin Y SS RM Fx}
 
-set_option maxHeartbeats 400000 in
+
 theorem pt_frame (Fr : Small.GenFrame Or) (F : Type) [Field F] [Algebra c.F F] (zC : Sp F ⟶ Or.𝔐.X) (q : TRing c.F)
     (φ : letI := Small.cstAlg Or; q.R →ₐ[c.F] RM.Ω) (yq : FrPt Xo c q.R)
     (hφ : letI := Small.cstAlg Or; FrMap φ yq Fr.y₀) (ψ : q.R →ₐ[c.F] F) (y : FrPt Xo c F)

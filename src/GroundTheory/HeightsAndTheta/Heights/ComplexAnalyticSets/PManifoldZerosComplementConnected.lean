@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StManifoldZerosComplementConnected
+public import Mathlib.LinearAlgebra.Dimension.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Normed.Module.Ball.Homeomorph
+public import Mathlib.Analysis.Normed.Module.Connected
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Analytic.Composition
+public import Mathlib.Analysis.Analytic.Constructions
+public import Mathlib.Analysis.Analytic.IsolatedZeros
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 
 @[expose] public section
 

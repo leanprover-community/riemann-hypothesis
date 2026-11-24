@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKrullDimMatAct
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.IsAlgebraicAdjoinRangeIff
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 
@@ -26,8 +28,8 @@ theorem mem_coneAdjoinQ_matAct (A : Matrix J J ℚ) (x : J → Ω) (i : J) :
     Polynomial.C (matAct A x i) * Polynomial.X ∈ coneAdjoinQ x := by
   have h : Polynomial.C (matAct A x i) * Polynomial.X =
       ∑ j, A i j • (Polynomial.C (x j) * Polynomial.X) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [matAct, map_sum, Finset.sum_mul]
+
+    simp only [matAct, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Algebra.smul_def, Polynomial.algebraMap_apply, eq_ratCast, Polynomial.C_mul, mul_assoc]
   rw [h]

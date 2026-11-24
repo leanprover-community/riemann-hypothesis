@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.IsProPGroupSubgroupIffIsPGroupMap
+public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.PrimaryComponentCohomologyEqBotOfScdpLt
+public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 public import GroundTheory.ProfiniteCohomology.Colimit
-public import GroundTheory.ProfiniteCohomology.OfNatRelIndexSupAntitone
-public import GroundTheory.ProfiniteCohomology.IsProPGroupSubgroupIffIsPGroupMap
+import Mathlib.GroupTheory.Nilpotent
 
 @[expose] public section
 

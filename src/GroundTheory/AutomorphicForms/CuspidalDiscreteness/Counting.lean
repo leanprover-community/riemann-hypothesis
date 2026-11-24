@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.Adele.Approximation
+public import Mathlib.Analysis.CStarAlgebra.Classes
 public import GroundTheory.GlobalFields.Adele.Discrete
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
 public import Formalism.LocalToGlobal.Divisibility.Frames
 public import Formalism.LocalToGlobal.Columns.HeckeSp

@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ConstGen
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 

@@ -1,10 +1,16 @@
 module
 
-public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCI
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegerSubgroupIntersection.IsOpenIntSub
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegerSubgroupIntersection.Imports
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegerSubgroupIntersection.IntInterAlt
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+public import Formalism.LocalRingCardinality.DataHost
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.LocalRingCardinality.DataTheta
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 
@@ -38,27 +44,6 @@ theorem sc_Fv (v : HeightOneSpectrum (𝓞 F)) : SecondCountableTopology (v.adic
   have : TopologicalSpace.SeparableSpace (v.adicCompletion F) :=
     ⟨_, Set.countable_range _, v.denseRange_algebraMap F⟩
   infer_instance
-
-theorem sc_Af : SecondCountableTopology (FiniteAdeleRing (𝓞 F) F) := by
-  have := countable_primes F
-  have := sc_Fv F
-  have ho : ∀ v : HeightOneSpectrum (𝓞 F), IsOpen (v.adicCompletionIntegers F : Set (v.adicCompletion F)) :=
-    fun v => Valued.isOpen_valuationSubring _
-  have hS : ∀ T : Finset (HeightOneSpectrum (𝓞 F)), Filter.cofinite ≤ Filter.principal ((T : Set (HeightOneSpectrum (𝓞 F)))ᶜ) := fun T =>
-    Filter.le_principal_iff.2 T.finite_toSet.compl_mem_cofinite
-  have he := fun T : Finset (HeightOneSpectrum (𝓞 F)) => RestrictedProduct.isOpenEmbedding_inclusion_principal ho (hS T)
-  have hU : ∀ T : Finset (HeightOneSpectrum (𝓞 F)), SecondCountableTopology (Set.range (RestrictedProduct.inclusion
-      (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F) (fun v => (v.adicCompletionIntegers F : Set _)) (hS T))) :=
-    fun T => by
-      have := (RestrictedProduct.isEmbedding_coe_of_principal (R := fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
-        (A := fun v => (v.adicCompletionIntegers F : Set _)) (S := (T : Set (HeightOneSpectrum (𝓞 F)))ᶜ)).secondCountableTopology
-      exact (he T).isEmbedding.toHomeomorph.symm.secondCountableTopology
-  refine @TopologicalSpace.secondCountableTopology_of_countable_cover _ _ _ _ _ hU (fun T => (he T).isOpen_range) ?_
-  refine Set.eq_univ_of_forall fun x => Set.mem_iUnion.2 ?_
-  have hx := Filter.eventually_cofinite.1 x.2
-  refine ⟨hx.toFinset, ⟨x.1, Filter.eventually_principal.2 fun v hv => ?_⟩, rfl⟩
-  by_contra h
-  exact hv (by simpa using h)
 
 variable {F} {E : Type} [Field E] [NumberField E] [Algebra F E]
 

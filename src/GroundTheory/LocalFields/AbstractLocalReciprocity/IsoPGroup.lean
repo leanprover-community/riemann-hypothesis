@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.IsoCyclic
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.Functoriality
+public import Mathlib.GroupTheory.Abelianization.Defs
+public import Mathlib.GroupTheory.PGroup
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.FunctorialityTransfer
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.IsoCyclic
+import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
+public import Mathlib.GroupTheory.IndexNormal
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.FunctorialityNorm
 
 @[expose] public section
 

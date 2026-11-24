@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StageData
+public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 
 @[expose] public section
 

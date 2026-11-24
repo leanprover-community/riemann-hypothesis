@@ -1,9 +1,46 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.DataLevel
-public import Formalism.LocalRingCardinality.DataLevelD
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -34,7 +71,7 @@ def uniSub (k : ℕ) (A : Type) [CommRing A] : Subgroup (GL (Fin k) A) where
   inv_mem' := by
     intro x hx i j
     have bx : BlockTriangular (x : Matrix (Fin k) (Fin k) A) id := fun a b h => (hx a b).1 h
-    letI : Invertible (x : Matrix (Fin k) (Fin k) A) := x.invertible
+    let : Invertible (x : Matrix (Fin k) (Fin k) A) := x.invertible
     have bi : BlockTriangular ((x⁻¹ : GL (Fin k) A) : Matrix (Fin k) (Fin k) A) id := by
       rw [Matrix.coe_units_inv]
       exact blockTriangular_inv_of_blockTriangular bx
@@ -68,8 +105,8 @@ theorem isUnitri_glEquiv (k : ℕ) {A B : Type} [CommRing A] [CommRing B] (e : A
 theorem index_upperUni : ∀ (κ : Type) [CommRing κ] (g k : ℕ), g.Prime → Nat.card κ = g →
     (((Subgroup.closure (upperUni k κ)).index : ℕ) : ℝ) = idxColLoc g k := by
   intro κ _ g k hg hc
-  haveI : Finite κ := Nat.finite_of_card_ne_zero (hc ▸ hg.ne_zero)
-  letI : Fintype κ := Fintype.ofFinite κ
+  have : Finite κ := Nat.finite_of_card_ne_zero (hc ▸ hg.ne_zero)
+  let : Fintype κ := Fintype.ofFinite κ
   have e : ZMod g ≃+* κ := ZMod.ringEquivOfPrime κ hg (by rw [← Nat.card_eq_fintype_card, hc])
   have h1 : Nat.card (GL (Fin k) (ZMod g)) = Nat.card (GL (Fin k) κ) :=
     Nat.card_congr (glEquiv k e).toEquiv

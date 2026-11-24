@@ -1,12 +1,55 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.IsotypicSignedParameters
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsBlockOrd
+public import Formalism.LocalRingCardinality.DataCD
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariant
+import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,14 +62,14 @@ namespace GlobalTheory.CompactDualUnique
 
 theorem isOmegaLeb_unique {P Q : ℕ} {lam lam' : Measure (lieU P Q)}
     (h : IsOmegaLeb lam) (h' : IsOmegaLeb lam') : lam = lam' := by
-  haveI : BorelSpace (lieU P Q) := ⟨rfl⟩
-  haveI : LocallyCompactSpace (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :=
+  have : BorelSpace (lieU P Q) := ⟨rfl⟩
+  have : LocallyCompactSpace (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :=
     inferInstanceAs (LocallyCompactSpace ((Fin P ⊕ Fin Q) → (Fin P ⊕ Fin Q) → ℂ))
-  haveI : SecondCountableTopology (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :=
+  have : SecondCountableTopology (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :=
     inferInstanceAs (SecondCountableTopology ((Fin P ⊕ Fin Q) → (Fin P ⊕ Fin Q) → ℂ))
-  haveI : LocallyCompactSpace (lieU P Q) :=
+  have : LocallyCompactSpace (lieU P Q) :=
     (Submodule.closed_of_finiteDimensional (lieU P Q)).isClosedEmbedding_subtypeVal.locallyCompactSpace
-  haveI : SecondCountableTopology (lieU P Q) :=
+  have : SecondCountableTopology (lieU P Q) :=
     TopologicalSpace.Subtype.secondCountableTopology _
   obtain ⟨h1, h2⟩ := h
   obtain ⟨h1', h2'⟩ := h'
@@ -80,11 +123,11 @@ theorem omegaDensity_smul {P Q : ℕ} {μ : Measure (UpqT P Q)} {c : ℝ≥0∞}
 
 theorem exists_eq_smul {P Q : ℕ} (μ ν : Measure (UpqT P Q)) [μ.IsHaarMeasure] [ν.IsHaarMeasure] :
     ∃ t : ℝ≥0, μ = t • ν := by
-  haveI : IsTopologicalGroup (UpqT P Q) := inferInstanceAs (IsTopologicalGroup (Formalism.UG.Upq P Q))
-  haveI : BorelSpace (UpqT P Q) := ⟨rfl⟩
-  haveI : LocallyCompactSpace (UpqT P Q) :=
+  have : IsTopologicalGroup (UpqT P Q) := inferInstanceAs (IsTopologicalGroup (Formalism.UG.Upq P Q))
+  have : BorelSpace (UpqT P Q) := ⟨rfl⟩
+  have : LocallyCompactSpace (UpqT P Q) :=
     (UpqUnimodular.modelEquiv P Q).toHomeomorph.isClosedEmbedding.locallyCompactSpace
-  haveI : SecondCountableTopology (UpqT P Q) :=
+  have : SecondCountableTopology (UpqT P Q) :=
     (UpqUnimodular.modelEquiv P Q).toHomeomorph.secondCountableTopology
   exact ⟨_, Measure.isMulLeftInvariant_eq_smul μ ν⟩
 
@@ -92,9 +135,9 @@ theorem eq_cd (cd : CDHaar) (P Q : ℕ) (ν : Measure (UpqT P Q)) (νc : Measure
     (c : ENNReal) (hν : ν.IsHaarMeasure) (hνc : νc.IsHaarMeasure) (hp : IsProbabilityMeasure νc)
     (_h0 : c ≠ 0) (_ht : c ≠ ⊤) (h1 : OmegaDensity ν c) (h2 : OmegaDensity νc c) :
     ν = cd.cd P Q := by
-  haveI := cd.haar P Q
-  haveI := cd.haar (P + Q) 0
-  haveI := cd.prob (P + Q)
+  have := cd.haar P Q
+  have := cd.haar (P + Q) 0
+  have := cd.prob (P + Q)
   obtain ⟨c', h0', ht', h1', h2'⟩ := cd.trick P Q
   obtain ⟨s, hs⟩ := exists_eq_smul νc (cd.cd (P + Q) 0)
   have hs1 : s = 1 := by

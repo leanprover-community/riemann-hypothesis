@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.PowerSeries.Exp
 
 @[expose] public section
 

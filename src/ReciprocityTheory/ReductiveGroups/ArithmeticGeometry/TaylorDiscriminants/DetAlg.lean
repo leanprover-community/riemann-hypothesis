@@ -1,6 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.RingTheory.FiniteType
+public import Mathlib.RingTheory.Jacobson.Ideal
+public import Mathlib.RingTheory.Jacobson.Ring
 
 @[expose] public section
 

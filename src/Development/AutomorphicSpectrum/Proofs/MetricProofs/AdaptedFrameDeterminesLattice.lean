@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
-public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameChangeUnitary
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 @[expose] public section
 
@@ -44,23 +85,7 @@ theorem exists_dual (R : RiemLat E g Λ) (i : Fin (2 * g)) :
   simp [Module.Basis.coord_apply, Finsupp.single_apply]
 
 theorem perExt_injective (R : RiemLat E g Λ) : Function.Injective (C.perExt R) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro y hy
-  have hc : ∀ i, C.bas.repr y i = 0 := by
-    intro i
-    obtain ⟨z, hz⟩ := C.exists_dual R i
-    have h0 : ((C.perExt R y) ⬝ᵥ R.Hm *ᵥ star (R.P z)).im = 0 := by simp [hy]
-    have hk : ∀ k, ((C.bas.repr y k • R.P (C.lam k)) ⬝ᵥ R.Hm *ᵥ star (R.P z)).im =
-        C.bas.repr y k * (R.form (C.lam k) z : ℝ) := by
-      intro k
-      rw [smul_dotProduct, Complex.smul_im, R.im]
-      simp
-    rw [C.perExt_eq_sum, sum_dotProduct, Complex.im_sum] at h0
-    simp only [hk, hz] at h0
-    simpa using h0
-  apply C.bas.repr.injective
-  ext i
-  simpa using hc i
+  apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.perExt_injective
 
 theorem perExt_bijective (R : RiemLat E g Λ) : Function.Bijective (C.perExt R) := by
   have hd : Module.finrank ℝ (Ψ → Fin (j + j') → ℂ) = Module.finrank ℝ (Fin g → ℂ) := by
@@ -72,13 +97,13 @@ def latPt (x : Λ) : Ψ → Fin (j + j') → ℂ := ∑ k, ((C.lam.repr x k : �
 
 theorem perExt_latPt (R : RiemLat E g Λ) (x : Λ) : C.perExt R (C.latPt x) = R.P x := by
   have hb : ∀ k, C.perExt R (C.bas k) = R.P (C.lam k) := fun k => by
-    simp [perExt, Module.Basis.constr_basis]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_rhs => rw [← C.lam.sum_repr x, map_sum]
+    simp [perExt]
+
+  conv_rhs => rw [← C.lam.sum_repr x, map_sum]
   unfold latPt
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
-  simp only [map_smul, hb, Int.cast_smul_eq_zsmul, map_zsmul]
+
+  rw [map_sum]
+  simp only [hb, Int.cast_smul_eq_zsmul, map_zsmul]
 
 
 omit [NumberField E] in
@@ -148,8 +173,8 @@ theorem perExt_single_cxStr {R : RiemLat E g Λ} {A : Ψ → Matrix (Fin (j + j'
 open Classical in
 theorem perExt_eq_sum_single (R : RiemLat E g Λ) (y : Ψ → Fin (j + j') → ℂ) :
     C.perExt R y = ∑ τ, C.perExt R (Pi.single τ (y τ)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, Finset.univ_sum_single]
+
+  rw [← map_sum, Finset.univ_sum_single]
 
 theorem perExt_cxStr {R : RiemLat E g Λ} {A : Ψ → Matrix (Fin (j + j')) (Sg j j') ℂ} (hA : C.IsAdapted R A)
     (y : Ψ → Fin (j + j') → ℂ) : C.perExt R (C.cxStr A y) = Complex.I • C.perExt R y := by

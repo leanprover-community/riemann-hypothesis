@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedBessel
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.BesselDatum
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -41,11 +81,11 @@ theorem cA_inc (a : D.host.E) : cA D (incA D a) = incA D (star a) := by
 theorem hT_co (B : HSp D) (x y : B.V) :
     B.hT x y = ∑ i, ∑ j, star (co B x i) * B.gram i j * co B y j := by
   conv_lhs => rw [← B.frame.sum_repr x, ← B.frame.sum_repr y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul, Finset.mul_sum]
+
+  simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  simp only [co, HSpace.gram, RingHom.id_apply, starRingEnd_apply]
+  simp only [co, HSpace.gram, starRingEnd_apply]
   ring
 
 theorem cT_mulVec (B : HSp D) {ρ : ℕ} (e : Fin ρ → B.V) (v : B.V) (i : Fin ρ) :
@@ -69,8 +109,8 @@ theorem hform_co (B : HSp D) (x y : B.V) :
 theorem hA_vec (B : HSp D) (x y : B.V) : hA B (vecA B x) (vecA B y) = incA D (B.hD x y) := by
   unfold HSpace.hD
   rw [hT_co]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hA, vecA, map_sum, map_mul, cA_inc, co]
+
+  simp only [hA, vecA, map_sum, map_mul, cA_inc, co]
 
 theorem hA_add (B : HSp D) (x x' y) : hA B (x + x') y = hA B x y + hA B x' y := by
   simp only [hA, Pi.add_apply, mul_add, Finset.sum_add_distrib]
@@ -135,7 +175,7 @@ theorem mt_mul (B : HSp D) (g h : GA D B) : mt B (g * h) = mt B g * mt B h := by
 theorem mt_one (B : HSp D) : mt B 1 = 1 := by simp [Formalism.L2.Theta.mt]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem closure_prop (B : HSp D) {ρ : ℕ} (e : Fin ρ → B.V) (n : GA D B) (hn : n ∈ Subgroup.closure (NS B e)) :
     (∀ s ∈ spanA B e, (mt B n).mulVec s ∈ spanA B e) ∧
       ∀ x : B.V, (∀ i, B.hD x (e i) = 0) → actV B n x - vecA B x ∈ spanA B e := by
@@ -169,8 +209,8 @@ theorem closure_prop (B : HSp D) {ρ : ℕ} (e : Fin ρ → B.V) (n : GA D B) (h
         rw [h', Matrix.mulVec_add, ← eq_sub_iff_add_eq] at h2
         rw [h2]
         refine sub_mem (hgen l) ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← Matrix.mulVecLin_apply, map_sum]
+
+        rw [← Matrix.mulVecLin_apply, map_sum]
         refine Submodule.sum_mem _ fun k _ => ?_
         rcases lt_or_ge k l with hk | hk
         · rw [map_smul]; exact Submodule.smul_mem _ _ (ih k hk)
@@ -285,8 +325,8 @@ def toBes (d : BesselDatum A B ι) : BesDat A B ι where
         simpa [eMat, Finset.sum_apply] using this
       have h1 : B.hT (d.f i) (∑ l, g l • d.e l) = 0 := by rw [h0, map_zero]
       have ef : ∀ l, B.hT (d.f i) (d.e l) = if l = i then 1 else 0 := fun l => d.ef l i
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa [map_sum, ef] using h1
+
+      simpa [map_sum, ef] using h1
     · funext i j; rw [cT_mul]; exact d.ee j i
   e_perp := by funext i j; rw [frameMat_eq, cT_mul]; exact d.eA j _
   z := co B d.z
@@ -332,8 +372,8 @@ theorem exists_rep (B : HSp D) (l : B.V →ₗ[D.host.E] D.host.E) : ∃ v, ∀ 
   refine ⟨v, fun x => ?_⟩
   rw [hT_co, hv, Finset.sum_comm]
   conv_rhs => rw [← B.frame.sum_repr x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   have := congrFun hw j
   simp only [Matrix.vecMul, dotProduct] at this

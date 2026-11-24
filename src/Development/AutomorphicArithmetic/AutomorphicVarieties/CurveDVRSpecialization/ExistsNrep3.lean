@@ -1,9 +1,49 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.RatTorsionFree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.HostFrameEx
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.PropagationTheoremGL2
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.MatGstar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicCases.AutomorphyClauseStatement
 
 @[expose] public section
 
@@ -100,7 +140,6 @@ private theorem z_diag {A : Type} [CommRing A] (X : Matrix (Fin 3) (Fin 3) A)
     | linear_combination -h01
     | linear_combination h10
     | linear_combination -h10
-    | exact absurd rfl h
 
 private theorem upl_compact (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (L : Type) [Field L] [NumberField L]
     [Algebra L Ω] : CompactSpace (upl Ω L) := by
@@ -135,8 +174,7 @@ private theorem mat_mul {A : Type} [CommRing A] (x y : GG (m := 3) (R := A)) (hx
 private theorem conj_mat {G A : Type} [Group G] [CommRing A] (h : GL (Fin 3) A)
     (r : G →* GG (m := 3) (R := A)) (s : G)
     (hs : (r s).right = 1) : (conjBy h⁻¹ r s).mat = (h⁻¹ : GL (Fin 3) A).val * (r s).mat * h.val := by
-  simp [conjBy, GG.mat, MulAut.conj_apply, hs, SemidirectProduct.mul_left, SemidirectProduct.mul_right,
-    mul_assoc]
+  simp [conjBy, GG.mat, hs, SemidirectProduct.mul_left, mul_assoc]
 
 private theorem local_chars {G H O A : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
     [TopologicalSpace H] [CommRing O] [IsLocalRing O] [CommRing A] [IsLocalRing A] [Algebra O A]
@@ -170,7 +208,7 @@ private theorem local_chars {G H O A : Type} [Group G] [TopologicalSpace G] [IsT
   let R' := conjBy h⁻¹ (r.comp D.subtype)
   have hright : ∀ x : D, (R' x).right = (r x).right := by
     intro x
-    simp [R', conjBy, MulAut.conj_apply]
+    simp [R', conjBy]
   have hrd : ∀ g, (r ((d g : D) : G)).right = 1 := fun g => by rw [hmult]; exact hd_eta g
   let Tm : H →* Matrix (Fin 3) (Fin 3) A :=
     { toFun := fun g => (R' (d g)).mat

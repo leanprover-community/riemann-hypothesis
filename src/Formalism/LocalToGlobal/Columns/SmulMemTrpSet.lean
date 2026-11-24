@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.Columns.ColForms
+public import Formalism.LocalToGlobal.Columns.DecoFin
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
-public import Formalism.LogVandermondeBounds.FinrankFiberSumZero
-public import Formalism.LogVandermondeBounds.GaussOperatorProductFormula
 
 @[expose] public section
 

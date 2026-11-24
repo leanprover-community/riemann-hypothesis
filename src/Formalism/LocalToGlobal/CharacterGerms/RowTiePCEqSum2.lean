@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqOf
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieDefs
+public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+public import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
+import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqOf
+import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 
 @[expose] public section
 
@@ -38,12 +42,11 @@ theorem hasSubst_unit {τ : Type} {T : MvPowerSeries τ C} (hT : MvPowerSeries.c
 theorem subst_lin {σ τ : Type} {a : σ → MvPowerSeries τ C} (ha : MvPowerSeries.HasSubst a) {ι : Type}
     (s : Finset ι) (r : ι → C) (F : ι → MvPowerSeries σ C) :
     MvPowerSeries.subst a (∑ i ∈ s, r i • F i) = ∑ i ∈ s, r i • MvPowerSeries.subst a (F i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom ha, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom ha, map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   first
   | exact map_smul _ _ _
-  | exact AlgHom.map_smul_of_tower _ _ _
 
 theorem coeff_subst_tyS {τ : Type} [Finite τ] {l : ℕ} (hl : 2 ≤ l) {T : MvPowerSeries τ C}
     (hT : MvPowerSeries.constantCoeff T = 0) (a : ℕ → C) (μ : τ →₀ ℕ) :
@@ -53,8 +56,8 @@ theorem coeff_subst_tyS {τ : Type} [Finite τ] {l : ℕ} (hl : 2 ≤ l) {T : Mv
   set P : PowerSeries C := ∑ s ∈ Finset.range N, a s • PowerSeries.X ^ (l ^ s) with hP
   have hPc : ∀ m < l ^ N, PowerSeries.coeff m (tyS l a) = PowerSeries.coeff m P := by
     intro m hm
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hP, map_sum]
+
+    rw [hP, map_sum]
     simp only [PowerSeries.coeff_smul, PowerSeries.coeff_X_pow]
     by_cases h : ∃ s', l ^ s' = m
     · obtain ⟨s', rfl⟩ := h
@@ -82,8 +85,8 @@ theorem coeff_subst_tyS {τ : Type} [Finite τ] {l : ℕ} (hl : 2 ≤ l) {T : Mv
     exact hPc _ (lt_of_lt_of_le he (Nat.lt_pow_self (by omega)).le)
   have h1 := Formalism.G.LogCR.Agree.subst (a := fun _ : Unit => T) (a' := fun _ : Unit => T) (fun _ => hT) (fun _ => hT) hAg
     (fun _ _ _ => rfl) μ (by omega)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h1, hP, ← MvPowerSeries.coe_substAlgHom (hasSubst_unit hT), map_sum, map_sum]
+
+  rw [h1, hP, ← MvPowerSeries.coe_substAlgHom (hasSubst_unit hT), map_sum, map_sum]
   refine Finset.sum_congr rfl fun s _ => ?_
   rw [map_smul, map_pow, MvPowerSeries.coe_substAlgHom]
   rw [show (PowerSeries.X : PowerSeries C) = (MvPowerSeries.X () : MvPowerSeries Unit C) from rfl,

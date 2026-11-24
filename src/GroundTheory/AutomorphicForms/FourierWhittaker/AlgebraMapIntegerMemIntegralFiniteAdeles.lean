@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.FourierWhittaker.Series
 public import GroundTheory.GlobalFields.TateThesis.LatticePoisson
+public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -60,8 +63,8 @@ theorem ofCoord_intCast (n : BIdx K → ℤ) :
     ofCoord (fun j => (n j : ℝ)) =
       algebraMap K (InfiniteAdeleRing K) (algebraMap (𝓞 K) K (∑ j, n j • RingOfIntegers.basis K j)) := by
   apply (GroundTheory.Global.homeomorphMixedSpace K).injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [homeomorphMixedSpace_ofCoord, homeomorphMixedSpace_algebraMap, map_sum, map_sum]
+
+  rw [homeomorphMixedSpace_ofCoord, homeomorphMixedSpace_algebraMap, map_sum, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [latticeBasis_apply, integralBasis_apply, map_zsmul, map_zsmul, Int.cast_smul_eq_zsmul]
 
@@ -72,9 +75,9 @@ theorem mem_fundamentalSetInfinite_iff (y : InfiniteAdeleRing K) :
 theorem infiniteTrace_algebraMap_mul_ofCoord (q : K) (t : BIdx K → ℝ) :
     GroundTheory.Global.infiniteTrace K (algebraMap K (InfiniteAdeleRing K) q * ofCoord t) =
       ∑ j, t j * (Algebra.trace ℚ K (q * integralBasis K j) : ℝ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← GroundTheory.Global.mixedTrace_homeomorphMixedSpace, GroundTheory.Global.homeomorphMixedSpace_mul,
-    homeomorphMixedSpace_algebraMap, homeomorphMixedSpace_ofCoord, Finset.mul_sum, map_sum]
+
+  rw [← GroundTheory.Global.mixedTrace_homeomorphMixedSpace, GroundTheory.Global.homeomorphMixedSpace_mul,
+  homeomorphMixedSpace_algebraMap, homeomorphMixedSpace_ofCoord, Finset.mul_sum, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [mul_smul_comm, map_smul, latticeBasis_apply, ← map_mul,
     GroundTheory.Global.mixedTrace_mixedEmbedding, smul_eq_mul]
@@ -93,9 +96,9 @@ def dualVec (n : ι × BIdx K → ℤ) : ι → K := fun i => ∑ j, (n (i, j) :
 theorem trace_dualVec_mul (n : ι × BIdx K → ℤ) (i : ι) (k : BIdx K) :
     Algebra.trace ℚ K (dualVec n i * integralBasis K k) = n (i, k) := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dualVec, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul,
-    trace_traceDualBasis_mul, smul_eq_mul, mul_ite, mul_one, mul_zero]
+
+  simp only [dualVec, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul,
+  trace_traceDualBasis_mul, smul_eq_mul, mul_ite, mul_one, mul_zero]
   rw [Finset.sum_ite_eq]
   simp
 
@@ -113,10 +116,10 @@ theorem isDual_dualVec (n : ι × BIdx K → ℤ) : IsDual (dualVec n) := by
   have ha : algebraMap (𝓞 K) K a =
       ∑ k, ((RingOfIntegers.basis K).repr a k : ℚ) • integralBasis K k := by
     conv_lhs => rw [← (RingOfIntegers.basis K).sum_repr a]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, integralBasis_apply, Int.cast_smul_eq_zsmul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ha, Finset.mul_sum, map_sum]
+
+    simp [map_sum, integralBasis_apply, Int.cast_smul_eq_zsmul]
+
+  rw [ha, Finset.mul_sum, map_sum]
   refine sum_mem fun k _ => ?_
   rw [mul_smul_comm, map_smul, trace_dualVec_mul, smul_eq_mul]
   exact ⟨(RingOfIntegers.basis K).repr a k * n (i, k), by rw [map_mul, eq_intCast, eq_intCast]⟩
@@ -210,8 +213,8 @@ theorem IsIntegralPeriodic.torusFun_toTorus {f : (ι → 𝔸[K]) → ℂ} (hf :
 theorem pair_torusPt (ξ : ι → K) (t : ι × BIdx K → ℝ) :
     pair ξ (torusPt t) = GroundTheory.Global.infiniteAdeleInl
       (∑ i, algebraMap K (InfiniteAdeleRing K) (ξ i) * ofCoord fun j => t (i, j)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [pair, torusPt, GroundTheory.Global.algebraMap_mul_infiniteAdeleInl, map_sum]
+
+  simp only [pair, torusPt, GroundTheory.Global.algebraMap_mul_infiniteAdeleInl, map_sum]
 
 theorem adelicChar_neg_pair_dualVec_torusPt (n : ι × BIdx K → ℤ) (t : ι × BIdx K → ℝ) :
     (GroundTheory.Global.adelicChar K (-pair (dualVec n) (torusPt t)) : ℂ) =
@@ -221,8 +224,8 @@ theorem adelicChar_neg_pair_dualVec_torusPt (n : ι × BIdx K → ℤ) (t : ι �
     (-∑ i, algebraMap K (InfiniteAdeleRing K) (dualVec n i) * ofCoord fun j => t (i, j))
   refine (congrArg (fun z : Circle => (z : ℂ)) this).trans ?_
   congr 2
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_neg (GroundTheory.Global.infiniteTrace K), neg_neg, map_sum, Fintype.sum_prod_type]
+
+  rw [map_neg (GroundTheory.Global.infiniteTrace K), neg_neg, map_sum, Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [infiniteTrace_algebraMap_mul_ofCoord]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -484,7 +487,7 @@ theorem IsIntegralPeriodic.hasSum_vecCoeff {f : (ι → 𝔸[K]) → ℂ} (hf : 
     rw [hfx]
     convert h2 using 1
     funext n
-    simp [Function.comp_def, hcoeff, hchar, smul_eq_mul]
+    simp [hcoeff, hchar, smul_eq_mul]
   refine (dualVec_injective.hasSum_iff fun ξ hξ => ?_).1 h3
   have hnd : ¬ IsDual ξ := fun hd => hξ (exists_dualVec_eq hd)
   rw [vecCoeff_eq_zero_of_not_isDual hf.periodic hf.finite hnd, zero_mul]

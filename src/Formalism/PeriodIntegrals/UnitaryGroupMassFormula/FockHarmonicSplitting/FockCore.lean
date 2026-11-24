@@ -1,6 +1,56 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockHarmonicSplitting.FockInnerSelfReNonneg
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.InnerProductSpace.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Interval
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.InnerProductSpace.Orthogonal
+public import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 
 @[expose] public section
 
@@ -31,7 +81,6 @@ private lemma finiteDimensional_homog' [Fintype σ] (n : ℕ) :
     FiniteDimensional ℂ (FockH1Action.homog σ n) := by
   classical
   first
-  | exact inferInstance
   | (let c : σ →₀ ℕ := Finsupp.equivFunOnFinite.symm (fun _ => n)
      have hS : (Set.Icc (0 : σ →₀ ℕ) c).Finite := Set.finite_Icc 0 c
      have hle : FockH1Action.homog σ n ≤ Submodule.span ℂ
@@ -44,16 +93,14 @@ private lemma finiteDimensional_homog' [Fintype σ] (n : ℕ) :
            = AddMonoidAlgebra.coeff p d • MvPolynomial.monomial d (1 : ℂ) := by
          first
          | simp [MvPolynomial.smul_monomial]
-         | rw [MvPolynomial.smul_monomial, smul_eq_mul, mul_one]
        rw [hmono]
-       refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨d, ⟨by first | exact zero_le | exact bot_le | simp, ?_⟩, rfl⟩)
+       refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨d, ⟨by first | exact zero_le | simp, ?_⟩, rfl⟩)
        have hp0 : p ≠ 0 := by
          rintro rfl
          simp at hd
        have htd : p.totalDegree ≤ n := by
          first
          | exact hph.totalDegree_le
-         | exact (hph.totalDegree hp0).le
        have hsum : (d.sum fun _ e => e) ≤ n := (MvPolynomial.le_totalDegree hd).trans htd
        intro i
        have h1 : d i ≤ d.sum (fun _ e => e) := by
@@ -69,7 +116,7 @@ private lemma finiteDimensional_homog' [Fintype σ] (n : ℕ) :
      exact Submodule.finiteDimensional_of_le hle)
 
 
-set_option maxHeartbeats 800000 in
+
 lemma exists_orth [Fintype σ] (K : Submodule ℂ (MvPolynomial σ ℂ)) (n : ℕ)
     (hK : K ≤ FockH1Action.homog σ n) (f : MvPolynomial σ ℂ) :
     ∃ y ∈ K, ∀ x ∈ K, FockH1Action.fockInner x (f - y) = 0 := by
@@ -82,15 +129,11 @@ lemma exists_orth [Fintype σ] (K : Submodule ℂ (MvPolynomial σ ℂ)) (n : �
   letI : InnerProductSpace ℂ (FockV σ) := by
     first
     | exact InnerProductSpace.ofCore (fockCore (σ := σ)).toCore
-    | exact InnerProductSpace.ofCore (fockCore (σ := σ)).toPreInnerProductSpaceCore
-    | exact InnerProductSpace.ofCore (fockCore (σ := σ))
   haveI hproj : K'.HasOrthogonalProjection := inferInstance
   let g : FockV σ := f
   let P := K'.orthogonalProjection g
   have hP : ∀ x ∈ K', inner ℂ x (g - (P : FockV σ)) = 0 := by
     first
-    | exact K'.orthogonalProjection_inner_eq_zero g
-    | exact fun x hx => (K'.mem_orthogonal _).1 (K'.sub_orthogonalProjection_mem_orthogonal g) x hx
     | exact fun x hx => (K'.mem_orthogonal _).1 (K'.sub_starProjection_mem_orthogonal g) x hx
   have key : ∀ x y : FockV σ, inner ℂ x y = FockH1Action.fockInner (σ := σ) x y := fun _ _ => rfl
   let q : MvPolynomial σ ℂ := (P : FockV σ)

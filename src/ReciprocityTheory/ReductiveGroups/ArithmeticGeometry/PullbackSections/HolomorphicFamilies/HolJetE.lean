@@ -1,5 +1,7 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetB
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetD
 
 @[expose] public section
@@ -54,9 +56,7 @@ theorem jetPt_const (u : Sp ℂ ⟶ Y) (m : ℕ) :
       spMap (algebraMap ℂ (Jet ℂ (Fin 1 × Fin g) m)) ≫
         spMap ((jetAug : Jet ℂ (Fin 1 × Fin g) m →ₐ[ℂ] ℂ) : Jet ℂ (Fin 1 × Fin g) m →+* ℂ) := by
     first
-    | rfl
     | (simp only [spMap]; rw [← Spec.map_comp]; rfl)
-    | (unfold spMap; rw [← Spec.map_comp]; rfl)
   rw [h2, h3, Category.assoc, jetPt_aug]
 
 theorem jetPt_over (e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)) (hol : IsHolFam e) (p : Y ⟶ Y') (u : Sp ℂ ⟶ Y')

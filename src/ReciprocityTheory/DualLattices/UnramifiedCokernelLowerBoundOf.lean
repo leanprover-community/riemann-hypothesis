@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundStatement
-public import ReciprocityTheory.DualLattices.MapSmulOneMulVec
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

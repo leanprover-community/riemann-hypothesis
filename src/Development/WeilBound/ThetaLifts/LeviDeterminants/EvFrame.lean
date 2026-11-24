@@ -1,6 +1,47 @@
 module
 
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.EvModel
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.AdaptC
+import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.EventuallySelfDualLatticeIndicatorIsVacuum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -57,7 +98,7 @@ theorem incM_one' {α : Type} [DecidableEq α] : incM F (1 : Matrix α α E) = 1
 theorem inc_herm {α : Type} {J : Matrix α α E} {η : ℤ} (hJ : ∀ i j, σ (J j i) = η * J i j) (i j : α) :
     cA σ (incM F J j i) = η * incM F J i j := by
   show cA σ (inclR (F := F) (AF F) _) = _ * inclR (F := F) (AF F) _
-  rw [GlobalTheory.VacIndic.cA_inclR, hJ, map_mul, map_intCast]
+  rw [Tw.VacIndic.cA_inclR, hJ, map_mul, map_intCast]
 
 structure FrOK (σ : E →ₐ[F] E) {m m₁ : ℕ} (Y : Spc F E m) (Y₁ : Spc F E m₁) (H : Plane E m m₁) (η : ℤ)
     (Q : Matrix (Fin m₁ ⊕ Fin 2) (Fin m) E) : Prop where
@@ -145,15 +186,15 @@ theorem w_inc {α β α' β' : Type} [Fintype α] [Fintype β] (Q : Matrix α' �
 theorem DR_inc {α β : Type} [Fintype α] (J : Matrix α α E) (x : Matrix α (β ⊕ Fin 2) E) :
     DR (cA σ) (incM F J) (incM F x) = fun k => inclR (F := F) (AF F) (DR σ J x k) := by
   funext k
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [DR, map_neg, map_sum, map_mul]
+
+  simp only [DR, map_neg, map_sum, map_mul]
   rfl
 
 theorem DL_inc {α β : Type} [Fintype β] (J : Matrix β β E) (x : Matrix (α ⊕ Fin 2) β E) :
     DL (cA σ) (incM F J) (incM F x) = fun k => inclR (F := F) (AF F) (DL σ J x k) := by
   funext k
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [DL, map_sum, map_mul]
+
+  simp only [DL, map_sum, map_mul]
   rfl
 
 end PositivityTheory.ThKF0

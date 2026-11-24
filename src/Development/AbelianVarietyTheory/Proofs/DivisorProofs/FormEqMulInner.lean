@@ -1,7 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsEqConstMulProdInnerOfSlotwise
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Dual
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 
@@ -128,10 +178,6 @@ theorem exists_const (B : (∀ i, E i) → W → (∀ i, E i) → W → ℂ) (w�
       mul_zero] at k
     rw [k, zero_mul]
 
-private lemma inner_self_eq_one_of_unit_norm {F : Type} [NormedAddCommGroup F] [InnerProductSpace ℂ F] {u : F}
-    (hu : ‖u‖ = 1) : ⟪u, u⟫_ℂ = 1 := by
-  rw [inner_self_eq_norm_sq_to_K, hu]; simp
-
 private lemma eq_smul_of_form_eq_of_unit_modulus {Y : Type} [AddCommGroup Y] [Module ℂ Y] (b : Y →ₗ⋆[ℂ] Y →ₗ[ℂ] ℂ)
     (hs : ∀ x y, b y x = conj (b x y)) (hd : ∀ x, b x x = 0 → x = 0)
     {x y : Y} {κ : ℂ} (hk : conj κ * κ = 1) (hyy : b y y = b x x) (hxy : b x y = κ * b x x) :
@@ -153,9 +199,9 @@ theorem exists_phase {Y : Type} [AddCommGroup Y] [Module ℂ Y] (b : Y →ₗ⋆
     {l : ℂ} (hl : ‖l‖ = 1) (hm : F v₀ w₀ = l • F' v₀' w₀') :
     ∃ κ : ℂ, ‖κ‖ = 1 ∧ ∀ v w, F' v w = κ • F v w := by
   have P1 : (∏ i, ⟪v₀ i, v₀ i⟫_ℂ) * ⟪w₀, w₀⟫_ℂ = 1 := by
-    rw [Finset.prod_eq_one (fun i _ => inner_self_eq_one_of_unit_norm (n1 i)), inner_self_eq_one_of_unit_norm n3, one_mul]
+    rw [Finset.prod_eq_one (fun i _ => _root_.GlobalTheory.ConjLiftUnique.inner_self_eq_one_of_norm_eq_one' (n1 i)), _root_.GlobalTheory.ConjLiftUnique.inner_self_eq_one_of_norm_eq_one' n3, one_mul]
   have P2 : (∏ i, ⟪v₀' i, v₀' i⟫_ℂ) * ⟪w₀', w₀'⟫_ℂ = 1 := by
-    rw [Finset.prod_eq_one (fun i _ => inner_self_eq_one_of_unit_norm (n2 i)), inner_self_eq_one_of_unit_norm n4, one_mul]
+    rw [Finset.prod_eq_one (fun i _ => _root_.GlobalTheory.ConjLiftUnique.inner_self_eq_one_of_norm_eq_one' (n2 i)), _root_.GlobalTheory.ConjLiftUnique.inner_self_eq_one_of_norm_eq_one' n4, one_mul]
   have hl1 : conj l * l = 1 := by
     rw [Complex.conj_mul', hl]
     simp

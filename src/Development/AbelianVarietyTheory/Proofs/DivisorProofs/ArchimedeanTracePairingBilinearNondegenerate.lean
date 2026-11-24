@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TrPairApply
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 
 @[expose] public section
 
@@ -34,7 +74,7 @@ theorem trace_conjM_mul {F : Type} [Field F] [NumberField F] (z : mixedEmbedding
   rw [Algebra.trace_prod_apply, trace_pi', trace_pi']
   congr 1
   · refine Finset.sum_congr rfl fun w _ => ?_
-    simp [conjM, Algebra.trace_self_apply, sq]
+    simp [conjM, sq]
   · refine Finset.sum_congr rfl fun w _ => ?_
     simp [conjM, Algebra.trace_complex_apply, Complex.normSq_apply, Complex.mul_re]
 
@@ -63,8 +103,8 @@ theorem trPair_nondeg : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} [Fi
     (∀ x, trPair F κ x y = 0) → y = 0 := by
   intro F _ _ κ _ y h
   have h0 := h (fun i => TrNondeg.conjM (y i))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [trPair_apply, map_sum] at h0
+
+  rw [trPair_apply, map_sum] at h0
   have hnn : ∀ i, 0 ≤ Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (TrNondeg.conjM (y i) * y i) := by
     intro i
     rw [TrNondeg.trace_conjM_mul]

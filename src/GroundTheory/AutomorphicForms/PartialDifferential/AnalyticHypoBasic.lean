@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.PartialDifferential.EllipticDiffOp
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

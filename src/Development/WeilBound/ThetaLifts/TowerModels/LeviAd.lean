@@ -1,8 +1,50 @@
 module
 
-public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.PlaneRemovalConfiguration
 public import Development.WeilBound.ThetaLifts.TowerModels.LeviAlg
+public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EqPlaceIdemOfIsPrimeIdem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -54,11 +96,11 @@ theorem exists_inf (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E
     ∃ a : AE F E, (∀ w, piInf (τ w) a = z w) ∧ ∀ v, compFin F E v a = 1 := by
   choose b hb using fun w => (infEmb_bijective h (τ w)).2 (z w - 1)
   refine ⟨1 + ∑ w, TensorProduct.map (sgI w) LinearMap.id (b w), fun w => ?_, fun v => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_add (f := _), map_one, piInf, RingHom.comp_apply, map_sum, Finset.sum_eq_single w (fun u _ hu => compInf_sgI_ne hu.symm _)
-      (fun h => absurd (Finset.mem_univ w) h), compInf_sgI_self, hb, add_sub_cancel]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp [map_sum, compFin_sgI]
+
+  · rw [map_add (f := _), map_one, piInf, RingHom.comp_apply, map_sum, Finset.sum_eq_single w (fun u _ hu => compInf_sgI_ne hu.symm _)
+    (fun h => absurd (Finset.mem_univ w) h), compInf_sgI_self, hb, add_sub_cancel]
+
+  · simp [map_sum, compFin_sgI]
 
 theorem ad_ext (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w) {a b : AE F E}
     (h1 : ∀ w, piInf (τ w) a = piInf (τ w) b) (h2 : ∀ v, compFin F E v a = compFin F E v b) : a = b :=
@@ -97,9 +139,7 @@ theorem piInf_cA (h : IsCMExt F E σ) {w : InfinitePlace F} (τ : EmbOver E w) (
   | tmul a x => rfl
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-theorem sig_sig (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  exact τ.injective (by rw [h.2.2.2, h.2.2.2, star_star])
+alias sig_sig := _root_.GlobalTheory.AdelicU.cm_conj_conj
 
 theorem cA_cA (h : IsCMExt F E σ) (z : AE F E) : cA σ (cA σ z) = z := by
   induction z using TensorProduct.induction_on with
@@ -156,8 +196,8 @@ theorem det_ne_zero (hW : W.IsSkew σ B r s) : W.J.det ≠ 0 := by
 omit [NumberField F] [NumberField E] in
 theorem form_skew (hs : ∀ x, σ (σ x) = x) {J : Matrix (Fin d) (Fin d) E} (hJ : ∀ i j, σ (J j i) = -J i j) (x y : Fin d → E) :
     form σ J x y = -σ (form σ J y x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [form, dotProduct, Matrix.mulVec, map_sum, map_mul, Finset.mul_sum, hs, hJ, ← Finset.sum_neg_distrib]
+
+  simp only [form, dotProduct, Matrix.mulVec, map_sum, map_mul, Finset.mul_sum, hs, hJ, ← Finset.sum_neg_distrib]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 

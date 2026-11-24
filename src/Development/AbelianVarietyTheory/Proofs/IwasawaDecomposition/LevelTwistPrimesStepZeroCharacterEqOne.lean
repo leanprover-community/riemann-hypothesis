@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResidueEqZeroIff
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdAbsNormDivsDvd
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
+import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Formalism.LocalToGlobal.Columns.BaseLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -470,11 +512,11 @@ theorem supSum_inv {κ : Type} [CommRing κ] {n a : ℕ} (S : Finset ℕ) {g : G
 
 theorem lamJ_zero {κ L : Type} [CommRing κ] [Field L] (ρ : κ →+* L) (ψ : AddChar L ℂ) (χ : ℕ → MulChar L ℂ) {n : ℕ} (k m t : ℕ)
     (A : Matrix (Fin n) (Fin n) κ) : Formalism.L2.Forms.lamJ ψ χ k t 0 k (A.map ρ) = ψ (ρ (supSum k (SX k m 0) A)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Formalism.L2.Forms.lamJ, Finset.range_zero, Finset.prod_empty, mul_one, supSum, map_sum ρ]
+
+  rw [Formalism.L2.Forms.lamJ, Finset.range_zero, Finset.prod_empty, mul_one, supSum, map_sum ρ]
   refine congrArg ψ (Finset.sum_congr rfl fun x _ => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum ρ]
+
+  rw [map_sum ρ]
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [apply_ite ρ, map_zero]
   refine if_congr (and_congr_right fun h1 => and_congr_right fun h2 => ?_) rfl rfl
@@ -530,7 +572,7 @@ theorem mem_Uloc (hI : I.Ok) (hG : G.piG = X.piG) (i : Fin 2) (v : HeightOneSpec
       exact one_mem _
 
 
-set_option maxHeartbeats 800000 in
+
 include hR in
 theorem chi_prod (hI : I.Ok) (x : S.U) : ∃ h : GLG (E := B.host.E) (n := B.R.N 0) (SG := (B.primes X).vGs),
     (∀ w, h w ∈ uniUT (B.R.N 0) (𝓞 B.host.E ⧸ w.1.asIdeal) B.R.k []) ∧ (∀ w : (B.primes X).vGs, IsRed w.1 x.1 ((h w)⁻¹).1) ∧
@@ -550,7 +592,7 @@ theorem chi_prod (hI : I.Ok) (x : S.U) : ∃ h : GLG (E := B.host.E) (n := B.R.N
   have e : h w = A w := Units.ext (h2 w)
   exact e ▸ hA' w
 
-set_option maxHeartbeats 800000 in
+
 include hR in
 theorem exists_glev (hI : I.Ok) (hG : G.piG = X.piG)
     (hψ : ∀ j v h (w : {w // w ∈ (B.primes X).vGs}), w.1.under (𝓞 B.host.F) = v → ∀ n : ℕ,

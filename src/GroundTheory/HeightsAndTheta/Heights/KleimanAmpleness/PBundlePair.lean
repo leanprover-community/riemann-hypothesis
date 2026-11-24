@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsGraphGenTwistBundleZero
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerAlt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerExtra
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.ModelSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PExtension
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

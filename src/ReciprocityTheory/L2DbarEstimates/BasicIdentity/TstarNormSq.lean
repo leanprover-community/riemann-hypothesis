@@ -1,8 +1,11 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.BasicIdentityStatement
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.HasCompactSupportDTw
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivApplyEqZero
+import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
 
 @[expose] public section
 
@@ -64,8 +67,8 @@ theorem tStarIbp (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
       rw [← Complex.ofReal_mul, ← Real.exp_add, add_neg_cancel, Real.exp_zero, Complex.ofReal_one]
     unfold tstar
     rw [← Finset.mul_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_neg, map_mul, map_sum, Complex.conj_ofReal]
+
+    simp only [map_neg, map_mul, map_sum, Complex.conj_ofReal]
     generalize (∑ j : Fin n, conj (d n z j (fun y => (Real.exp (-ph₂ y) : ℂ) * f y j) x)) = S
     linear_combination (-(g x * S)) * he
   rw [lhs, rhs]
@@ -137,12 +140,10 @@ theorem tstar_norm_sq (n : ℕ) {M : Type*} [TopologicalSpace M] (z : M → V n)
     congr 1
     first
       | rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos he]
-      | simp [abs_of_pos he]
   have hT' : ‖T‖ = ‖S‖ * Real.exp (-ψ x) := by
     rw [Real.exp_neg, ← hn]
     first
       | rw [mul_comm (Real.exp (ψ x)), mul_assoc, mul_inv_cancel₀ he.ne', mul_one]
-      | field_simp
   have hx : Real.exp (-ψ x) ^ 2 * Real.exp (-(ph x - 2 * ψ x)) = Real.exp (-ph x) := by
     rw [sq, ← Real.exp_add, ← Real.exp_add]
     congr 1

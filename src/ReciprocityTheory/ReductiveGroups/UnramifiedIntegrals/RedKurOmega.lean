@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedDefs
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormNatCastClOfNotDvd
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorHensel
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SemiChar
 
 @[expose] public section
 

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GenusGluing.GenusApproximation.GlueExists
+public import Formalism.LocalToGlobal.GenusGluing.GenusApproximation.Statement
 
 @[expose] public section
 

@@ -1,9 +1,57 @@
 module
 
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-public import Formalism.FormalDegreeBessel.FinalG
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeisenbergLeviConjugationMeasure
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -106,9 +154,7 @@ lemma herm3 (u w : Fin (2 * (1 + r') + k + 1) → ℂ) :
     by_cases hj : j.val = r' + k
     · rw [WeylGroupFacts.sgn, WeylGroupFacts.sgn, if_pos hj, if_pos (by rw [lv_val]; omega)]
     · rw [WeylGroupFacts.sgn, WeylGroupFacts.sgn, if_neg hj, if_neg (by rw [lv_val]; omega)]
-  simp only [herm, dotProduct, hpk_mulVec, Pi.star_apply]
-  rw [sum3]
-  simp only [tF, tL, tm, sF, sL, sm, res, one_mul]
+  simp only [herm, dotProduct, hpk_mulVec, Pi.star_apply, sum3, tF, tL, tm, sF, sL, sm, res, one_mul]
   ring
 
 lemma herm_add_left {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (u u' w : Fin m → ℂ) :
@@ -214,9 +260,7 @@ lemma lev_mulVec_L (g : Mat k r') (u : Fin (2 * (1 + r') + k + 1) → ℂ) :
 lemma lev_mulVec_res (g : Mat k r') (u : Fin (2 * (1 + r') + k + 1) → ℂ) :
     res (ιLev k 1 r' g *ᵥ u) = g *ᵥ res u := by
   funext i
-  simp only [res, mulVec, dotProduct]
-  rw [sum3]
-  simp only [lev_mF, lev_mL, lev_mm, zero_mul, zero_add, add_zero]
+  simp only [res, mulVec, dotProduct, sum3, lev_mF, lev_mL, lev_mm, zero_mul, zero_add, add_zero]
 
 lemma lev_uh {g : Mat k r'} (hg : g ∈ UH (Hpk k r')) : ιLev k 1 r' g ∈ UH (Hpk k (1 + r')) := by
   apply uh_of_herm
@@ -262,27 +306,22 @@ lemma heisAct (v u : Fin (2 * (1 + r') + k + 1) → ℂ) (b : ℂ) :
 
 lemma heis_F (x : HPar k r') (u : Fin (2 * (1 + r') + k + 1) → ℂ) :
     (heis0 k r' x *ᵥ u) (iF k r') = u (iF k r') - herm (Hpk k r') (res u) x.1 + u (iL k r') * hb k r' x.1 x.2 := by
-  rw [heis0, heisAct, hermitian_form_base_vector_right, herm_lift]
-  simp
+  simp [heis0, heisAct, hermitian_form_base_vector_right, herm_lift]
 
 lemma heis_L (x : HPar k r') (u : Fin (2 * (1 + r') + k + 1) → ℂ) :
     (heis0 k r' x *ᵥ u) (iL k r') = u (iL k r') := by
-  rw [heis0, heisAct, hermitian_form_base_vector_right, herm_lift]
-  simp
+  simp [heis0, heisAct, hermitian_form_base_vector_right, herm_lift]
 
 lemma heis_res (x : HPar k r') (u : Fin (2 * (1 + r') + k + 1) → ℂ) :
     res (heis0 k r' x *ᵥ u) = res u + u (iL k r') • x.1 := by
-  rw [heis0, heisAct, hermitian_form_base_vector_right, herm_lift]
-  simp [res_add, res_sub, res_smul]
+  simp [heis0, heisAct, hermitian_form_base_vector_right, herm_lift, res_add, res_sub, res_smul]
 
 lemma herm_self_real (y : Fin (2 * r' + k + 1) → ℂ) :
     herm (Hpk k r') y y = ((herm (Hpk k r') y y).re : ℂ) := by
-  have h := ggHerm_swap (Hpk k r') (GBasic.Hpk_herm k r') y y
   apply Complex.ext
   · simp
-  · have := congrArg Complex.im h
-    simp only [Complex.star_def, Complex.conj_im] at this
-    simp only [Complex.ofReal_im]
+  · have := congrArg Complex.im (ggHerm_swap (Hpk k r') (GBasic.Hpk_herm k r') y y)
+    simp only [Complex.star_def, Complex.conj_im, Complex.ofReal_im] at this ⊢
     linarith
 
 lemma hb_add_star (y : Fin (2 * r' + k + 1) → ℂ) (s : ℝ) :
@@ -338,9 +377,7 @@ def blk (g : Mat k (1 + r')) : Mat k r' := fun i j => g (lv k r' i) (lv k r' j)
 
 lemma mulVec3 (g : Mat k (1 + r')) (u : Fin (2 * (1 + r') + k + 1) → ℂ) (p : Fin (2 * (1 + r') + k + 1)) :
     (g *ᵥ u) p = g p (iF k r') * u (iF k r') + ∑ j, g p (lv k r' j) * res u j + g p (iL k r') * u (iL k r') := by
-  simp only [mulVec, dotProduct]
-  rw [sum3]
-  rfl
+  simp only [mulVec, dotProduct, sum3, res]
 
 lemma blk_mulVec (g : Mat k (1 + r')) (z : Fin (2 * r' + k + 1) → ℂ) :
     blk g *ᵥ z = res (g *ᵥ liftVec k 1 r' z) := by
@@ -490,8 +527,7 @@ theorem unipotent_haar_base_case : Formalism.FourierDecayAlt.B2.NBase := by
   constructor
   · rintro ⟨_, _, h⟩
     ext i j
-    have := h i j (Nat.zero_le _) (by have := j.isLt; omega) (Nat.zero_le _)
-    rw [this, Matrix.one_apply]
+    simpa [Matrix.one_apply] using h i j (Nat.zero_le _) (by have := j.isLt; omega) (Nat.zero_le _)
   · rintro rfl
     refine ⟨?_, ?_, ?_⟩
     · show (1 : Mat k 0)ᴴ * Hpk k 0 * 1 = Hpk k 0

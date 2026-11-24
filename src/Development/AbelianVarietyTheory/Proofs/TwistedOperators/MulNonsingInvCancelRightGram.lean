@@ -1,12 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtWeilRepRealOneParamAdelicPoint
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKernelLieActionThroughWeylAlgebra
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsWeilDatumGeneratorRealOneParamGroup
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralEqOfNorms
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsQuadOfPlane
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PureTensorOInjective
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfPderivStable
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsCCRXOpDOp
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsWeilDatumGeneratorRealOneParamGroup
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtWeilRepRealOneParamAdelicPoint
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeisenbergSmoothVectorDerivativeCalculus
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKernelLieActionThroughWeylAlgebra
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.VacuumFockOfThetaSquareIntegrable
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -70,18 +120,18 @@ theorem quad_basis {ι A : Type} [Fintype ι] [DecidableEq ι] [Ring A] [Algebra
     funext b
     simp [Finset.sum_apply, Pi.single_apply]
   have e1 : ∀ l, y ((U * Δ * Uᴴ) *ᵥ Pi.single l 1) = ∑ a, U l a • y ((U * Δ) *ᵥ Pi.single a 1) := fun l => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← mulVec_mulVec, e Uᴴ, mulVec_sum, map_sum]
+
+    rw [← mulVec_mulVec, e Uᴴ, mulVec_sum, map_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [mulVec_smul, map_smulₛₗ, conjTranspose_apply, star_def, conj_conj]
   have e2 : ∀ k, x (U *ᵥ Pi.single k 1) = ∑ a, U a k • x (Pi.single a 1) := fun k => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum]
+
+    rw [e, map_sum]
     simp only [map_smul]
   simp only [e1, e2]
   calc _ = ∑ k, ∑ a, (X * U) k a • (x (Pi.single k 1) * c • y ((U * Δ) *ᵥ Pi.single a 1)) := by
         refine Finset.sum_congr rfl fun k _ => ?_
-        simp only [Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, Finset.mul_sum, mul_smul_comm, smul_smul]
+        simp only [Matrix.mul_apply, Finset.smul_sum, Finset.mul_sum, mul_smul_comm, smul_smul]
         rw [Finset.sum_comm]
         refine Finset.sum_congr rfl fun _ _ => ?_
         rw [Finset.sum_mul, Finset.sum_smul]
@@ -125,9 +175,9 @@ theorem exists_der {ι : Type} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι �
       simpa only [LinearMap.add_apply, map_add (f := _), Module.End.mul_apply, hd, LinearMap.smul_apply, map_smul,
         Module.End.one_apply] using this))
   refine ⟨d, x, y, hd, fun v => by simpa using hsm (-1) v, hx, hy, c1, c2, c3, fun X f => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [nOp, xOp, dOp, LinearMap.sum_apply, LinearMap.smul_apply, Module.End.mul_apply, map_sum, hx, hy,
-    LinearMap.sub_apply, LinearMap.add_apply]
+
+  simp only [nOp, xOp, dOp, LinearMap.sum_apply, LinearMap.smul_apply, Module.End.mul_apply, map_sum, hx, hy,
+  LinearMap.sub_apply, LinearMap.add_apply]
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
   simp only [← hd, ← map_smul, ← map_add (f := _), ← map_sub]
 
@@ -254,8 +304,7 @@ theorem sgn_mul (e e' : Bool) : sgn e * sgn e' = if e = e' then 1 else -1 := by 
 
 theorem Jm_eq (ε : Fin n → Bool) : Formalism.REAL.Jm ε = diagonal fun a => sgn (ε a) := rfl
 
-theorem Jm_mul_self (ε : Fin n → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  simp only [Jm_eq, diagonal_mul_diagonal, sgn_mul_self, diagonal_one]
+alias Jm_mul_self := _root_.Formalism.REAL.Jm_mul_self
 
 variable {F G X : Matrix (Fin n) (Fin n) ℂ} {ε : Fin n → Bool}
 
@@ -476,9 +525,9 @@ theorem lift_quad {M N ι κ : Type} [AddCommGroup M] [Module ℂ M] [AddCommGro
     E ((∑ i, ∑ k, Y i k • ∑ j, (r i j * l k j + if i = k then (1 / 2 : ℂ) • 1 else 0)) P) =
       (∑ i, ∑ k, Y i k • ∑ j, R i j * L k j) (E P) +
         (∑ i, ∑ k, Y i k * ∑ _j : κ, if i = k then (1 / 2 : ℂ) else 0) • E P := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.add_apply, Module.End.mul_apply, map_sum, map_smul,
-    map_add, hr, hl, Finset.sum_smul, mul_smul, ← Finset.sum_add_distrib, ← smul_add]
+
+  simp only [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.add_apply, Module.End.mul_apply, map_sum, map_smul,
+  map_add, hr, hl, Finset.sum_smul, mul_smul, ← Finset.sum_add_distrib, ← smul_add]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => congrArg _ (Finset.sum_congr rfl fun j _ => ?_)
   split_ifs <;> simp
 

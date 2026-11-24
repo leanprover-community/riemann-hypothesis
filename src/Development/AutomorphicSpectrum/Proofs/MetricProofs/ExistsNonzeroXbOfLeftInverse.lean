@@ -1,7 +1,46 @@
 module
 
-public import Mathlib
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartYvEqAlgebraMapXb
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ColFlags
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -45,31 +84,7 @@ theorem exists_rows_castLE_det_ne_zero {Ω : Type} [Field Ω] {n m a : ℕ} (M :
 theorem step_full {Ψ : Type} {p q : ℕ} (K₀ : Type) (t : StepIx Ψ p q)
     (h : ∀ r, blkF (Ψ := Ψ) (p := p) (q := q) K₀ r ≠ some (.inr t)) :
     (t.2 : ℕ) + 1 = rk Ψ p q t.1 := by
-  classical
-  obtain ⟨s, a⟩ := t
-  rcases s with τ | τ
-  · have ha : (a : ℕ) < p := a.2
-    by_contra hne
-    have hne' : (a : ℕ) + 1 ≠ p := hne
-    refine h (τ, ⟨a, by omega⟩) ?_
-    have hp : IsProperStep (p + q) p (⟨a, by omega⟩ : Fin (p + q)) :=
-      ⟨hne', by show (a : ℕ) + 1 ≠ p + q; intro h'; omega⟩
-    rw [blkF, if_pos hp]
-    simp [stepOf, ha]
-    rfl
-  · have ha : (a : ℕ) < q := a.2
-    by_contra hne
-    have hne' : (a : ℕ) + 1 ≠ q := hne
-    refine h (τ, ⟨p + a, by omega⟩) ?_
-    have hp : IsProperStep (p + q) p (⟨p + a, by omega⟩ : Fin (p + q)) := by
-      constructor
-      · show p + (a : ℕ) + 1 ≠ p
-        omega
-      · show p + (a : ℕ) + 1 ≠ p + q
-        omega
-    rw [blkF, if_pos hp]
-    simp [stepOf]
-    rfl
+  apply GlobalTheory.CompanionTheory.Ar.PB.FMX.YBase.full_of_noBlock <;> assumption
 
 theorem xb_block_ne : ∀ (Ψ : Type) [Fintype Ψ] (p q : ℕ) (Ω : Type) [Field Ω] (n : Ψ ⊕ Ψ → ℕ)
     (A : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (K₀ : Type) [Fintype K₀] (J₀ : K₀ → Type)

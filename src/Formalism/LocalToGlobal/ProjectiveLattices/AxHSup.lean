@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
-public import Formalism.LocalToGlobal.ProjectiveLattices.AlgebraMapCAt
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.PTNonempty
 
 @[expose] public section

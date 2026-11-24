@@ -1,9 +1,49 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPt
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdOfCoeffSubstXPowNeZero
-public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantUniformizer
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfA
+public import Formalism.SharpRestriction.LevelLetterCocycles.LamPS
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -28,7 +68,7 @@ theorem framepf_ι_mul (g h : PowerSeries O) :
   have ha : PowerSeries.HasSubst (π' i) := PowerSeries.HasSubst.of_constantCoeff_zero' hπ0
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   simp only [framepf_ι, hS, map_mul, Pi.single_mul]
 
 theorem framepf_ι_add (g h : PowerSeries O) :
@@ -36,7 +76,7 @@ theorem framepf_ι_add (g h : PowerSeries O) :
   have ha : PowerSeries.HasSubst (π' i) := PowerSeries.HasSubst.of_constantCoeff_zero' hπ0
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   simp only [framepf_ι, hS, map_add (f := _), Pi.single_add]
 
 theorem framepf_ι_sub (g h : PowerSeries O) :
@@ -44,7 +84,7 @@ theorem framepf_ι_sub (g h : PowerSeries O) :
   have ha : PowerSeries.HasSubst (π' i) := PowerSeries.HasSubst.of_constantCoeff_zero' hπ0
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   simp only [framepf_ι, hS, map_sub, Pi.single_sub]
 
 theorem framepf_ι_C (o : O) :
@@ -52,32 +92,32 @@ theorem framepf_ι_C (o : O) :
   have ha : PowerSeries.HasSubst (π' i) := PowerSeries.HasSubst.of_constantCoeff_zero' hπ0
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   have hC : PowerSeries.C o = o • (1 : PowerSeries O) := by rw [PowerSeries.smul_eq_C_mul, mul_one]
   simp only [framepf_ι, hS, letE, hC, map_smul, map_one, Algebra.algebraMap_eq_smul_one]
   funext j
   by_cases hj : j = i
   · subst hj; simp
-  · simp [Pi.single_apply, hj]
+  · simp [hj]
 
 theorem framepf_ι_one : framepf_ι π' i 1 = letE i := by
   have ha : PowerSeries.HasSubst (π' i) := PowerSeries.HasSubst.of_constantCoeff_zero' hπ0
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   simp only [framepf_ι, hS, map_one, letE]
 
 theorem framepf_ι_X : framepf_ι π' i PowerSeries.X = letE i * π' := by
   have ha : PowerSeries.HasSubst (π' i) := PowerSeries.HasSubst.of_constantCoeff_zero' hπ0
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   have hSX : S PowerSeries.X = π' i := by rw [← hS]; exact PowerSeries.subst_X ha
   simp only [framepf_ι, hS, hSX, letE]
   funext j
   by_cases hj : j = i
   · subst hj; simp
-  · simp [Pi.single_apply, hj]
+  · simp [hj]
 
 private lemma powerSeries_algHom_eq_subst_X (ψ : PowerSeries O →ₐ[O] PowerSeries O)
     (hψ : PowerSeries.constantCoeff (ψ PowerSeries.X) = 0) (f : PowerSeries O) :
@@ -85,7 +125,7 @@ private lemma powerSeries_algHom_eq_subst_X (ψ : PowerSeries O →ₐ[O] PowerS
   have ha : PowerSeries.HasSubst (ψ PowerSeries.X) := PowerSeries.HasSubst.of_constantCoeff_zero' hψ
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (ψ PowerSeries.X) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   have hSX : S PowerSeries.X = ψ PowerSeries.X := by
     rw [← hS]; exact PowerSeries.subst_X ha
   have hC : ∀ a : O, ψ (PowerSeries.C a) = S (PowerSeries.C a) := fun a => by
@@ -127,9 +167,9 @@ theorem framepf_ι_letγ (γ₀ : PowerSeries O →ₐ[O] PowerSeries O)
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   let SG : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom hGs
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   have hSG : ∀ g, PowerSeries.subst G g = SG g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom hGs) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom hGs) g).symm
   have hSX : S PowerSeries.X = π' i := by rw [← hS]; exact PowerSeries.subst_X ha
   have hSGX : SG PowerSeries.X = G := by rw [← hSG]; exact PowerSeries.subst_X hGs
   have h1X : (γ₀.comp S) PowerSeries.X = PowerSeries.subst (π' i) G := by
@@ -200,7 +240,7 @@ theorem framepf_coord {x : W.DD T} (hx : x ∈ NcS W T i) :
   funext j
   by_cases hj : j = i
   · subst hj; simp [framepf_ι, letE, hf k]
-  · simp [framepf_ι, letE, Pi.single_apply, hj]
+  · simp [framepf_ι, letE, hj]
 
 
 include hπ0 hΔπ hR2 in
@@ -209,7 +249,7 @@ theorem framepf_subst_inj (γ0 : ∀ δ ∈ W.DelF, PowerSeries.constantCoeff (W
   have ha : PowerSeries.HasSubst (π' i) := PowerSeries.HasSubst.of_constantCoeff_zero' (hπ0 i)
   let S : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom ha
   have hS : ∀ g, PowerSeries.subst (π' i) g = S g := fun g => by
-    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm | rfl
+    first | exact (congrFun (PowerSeries.coe_substAlgHom ha) g).symm
   have hSX : S PowerSeries.X = π' i := by rw [← hS]; exact PowerSeries.subst_X ha
   have hfix : ∀ δ ∈ W.DelF, ∀ g : PowerSeries O, W.γ₀ δ (PowerSeries.subst (π' i) g) = PowerSeries.subst (π' i) g := by
     intro δ hδ g
@@ -232,7 +272,6 @@ theorem framepf_subst_inj (γ0 : ∀ δ ∈ W.DelF, PowerSeries.constantCoeff (W
     have hj := PowerSeries.HasSubst.of_constantCoeff_zero' (hπ0 j)
     first
       | (rw [← PowerSeries.coe_substAlgHom hj]; exact map_zero _)
-      | exact map_zero (PowerSeries.substAlgHom hj)
   have hrep : ∀ g : PowerSeries O, ∀ j, framepf_ι π' i g j = PowerSeries.subst (π' j) ((Pi.single i g : ZMod n → PowerSeries O) j) := by
     intro g j
     by_cases hj : j = i
@@ -261,7 +300,7 @@ theorem framepf_letE_ι (g : PowerSeries O) : letE i * framepf_ι π' i g = fram
   funext j
   by_cases hj : j = i
   · subst hj; simp [letE, framepf_ι]
-  · simp [letE, framepf_ι, Pi.single_apply, hj]
+  · simp [letE, framepf_ι, hj]
 
 
 include hπ0 hΔπ hR2 in
@@ -304,8 +343,8 @@ theorem framepf_γ_vec (Gs : PowerSeries O) (hGs0 : PowerSeries.constantCoeff Gs
   have hι : ∀ h : PowerSeries O, letγ (W.γ₀ W.gam) (framepf_ι π' i h) = framepf_ι π' i (PowerSeries.subst Gs h) :=
     fun h => framepf_ι_letγ π' i (hπ0 i) (W.γ₀ W.gam) hγ0 Gs hGs0 hGs h
   unfold framepf_vec
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   have hterm : ∀ m, W.γD T W.gam (framepf_ι π' i (H m k) • Bs.b m) =
       ∑ p, framepf_ι π' i (Γ p m * PowerSeries.subst Gs (H m k)) • Bs.b p := by
     intro m

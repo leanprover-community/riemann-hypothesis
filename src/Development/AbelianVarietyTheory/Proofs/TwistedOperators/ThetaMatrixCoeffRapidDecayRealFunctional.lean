@@ -1,13 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MeanXMulStarRat
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HermitianSymplecticScalars
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaFunctionsSquareIntegrableHeisenbergUnitary
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRealPlaceSymplecticFormPositiveComplexStru
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfPderivStable
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRealPlaceSymplecticFormPositiveComplexStru
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HomSymplecticHalfFormAlgebraicLawsContinuous
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothIffRealCoordinatesAndRealLines
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaFunctionsSquareIntegrableHeisenbergUnitary
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaSquareIntegrable
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -62,7 +104,7 @@ theorem dRho_heisO {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) 
     dRho (heisO ψ V W) θ τ z (heisO ψ V W ξ H) =
       heisO ψ V W ξ (dRho (heisO ψ V W) θ τ z H) +
         (-(2 * Real.pi * Complex.I) * (symplAt V W τ z (compAt θ τ ξ) : ℂ)) • heisO ψ V W ξ H := by
-  have hA := (GlobalTheory.ThetaSquare.thetaFunctions_squareIntegrable_heisenbergUnitary D V W).2 ψ hψ
+  have hA := (_root_.GlobalTheory.ThetaSquare.theta_square_integrable D V W).2 ψ hψ
   have hU := hA.2.1
   have hDS := ((hA.2.2 θ hθ).1 τ z).1 H hH
   obtain ⟨l1, l2, l3, -, -⟩ := GlobalTheory.OrientedFormLaws.symplOH_laws D V W
@@ -129,7 +171,7 @@ theorem norm_coef_le {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)
     |symplAt V W τ z (compAt θ τ ξ)| * ‖∫ x in 𝓕, heisO ψ V W ξ G x * star (G' x) ∂ν‖ ≤
       ‖∫ x in 𝓕, heisO ψ V W ξ G x * star (dRho (heisO ψ V W) θ τ z G' x) ∂ν‖ +
         ‖∫ x in 𝓕, heisO ψ V W ξ (dRho (heisO ψ V W) θ τ z G) x * star (G' x) ∂ν‖ := by
-  have hA := (GlobalTheory.ThetaSquare.thetaFunctions_squareIntegrable_heisenbergUnitary D V W).2 ψ hψ
+  have hA := (_root_.GlobalTheory.ThetaSquare.theta_square_integrable D V W).2 ψ hψ
   have hU := hA.2.1
   have hDS := (hA.2.2 θ hθ).1 τ z
   have hDG := hDS.2.1 G hG
@@ -171,7 +213,7 @@ theorem norm_coef_bdd {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1
     (h𝓕 : IsAddFundamentalDomain (ratL W V) 𝓕 ν) {G G' : WO V W → ℂ} (hG : IsThetaFunO ψ V W G)
     (hG' : IsThetaFunO ψ V W G') :
     ∃ C : ℝ, ∀ ξ : WO V W, ‖∫ x in 𝓕, heisO ψ V W ξ G x * star (G' x) ∂ν‖ ≤ C := by
-  have hSI := ((GlobalTheory.ThetaSquare.thetaFunctions_squareIntegrable_heisenbergUnitary D V W).2 ψ hψ).1
+  have hSI := ((_root_.GlobalTheory.ThetaSquare.theta_square_integrable D V W).2 ψ hψ).1
   obtain ⟨a, ha⟩ := (hSI G hG).2.1
   obtain ⟨b, hb⟩ := (hSI G' hG').2.1
   have hfin : ν 𝓕 < ⊤ := lt_top_iff_ne_top.2 (GlobalTheory.Size.measure_dom hν h𝓕).2
@@ -182,7 +224,7 @@ theorem norm_coef_bdd {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1
 
 theorem coef_decay : ∀ (D : D7) (V W : HSp D) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (ν : Measure (WO V W)) (𝓕 : Set (WO V W)), ν.IsAddHaarMeasure → IsAddFundamentalDomain (ratL W V) 𝓕 ν → ∀ G G' : WO V W → ℂ, IsThetaFunO ψ V W G → IsThetaFunO ψ V W G' → ∀ θ : InfFam D, IsInfFam θ → ∀ (τ : D.what₂.Tau) (z : Matrix (Fin W.rank) (Fin V.rank) ℂ) (m : ℕ), ∃ C : ℝ, ∀ ξ : WO V W, |GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.symplAt V W τ z (compAt θ τ ξ)| ^ m * ‖∫ x in 𝓕, heisO ψ V W ξ G x * star (G' x) ∂ν‖ ≤ C := by
   intro D V W ψ hψ ν 𝓕 hν h𝓕 G G' hG hG' θ hθ τ z m
-  have hDS := (((GlobalTheory.ThetaSquare.thetaFunctions_squareIntegrable_heisenbergUnitary D V W).2 ψ hψ).2.2 θ hθ).1 τ z
+  have hDS := (((_root_.GlobalTheory.ThetaSquare.theta_square_integrable D V W).2 ψ hψ).2.2 θ hθ).1 τ z
   exact pow_bound (IsThetaFunO ψ V W) (dRho (heisO ψ V W) θ τ z)
     (fun ξ F F' => ∫ x in 𝓕, heisO ψ V W ξ F x * star (F' x) ∂ν) (fun ξ => symplAt V W τ z (compAt θ τ ξ))
     (fun F hF => hDS.2.1 F hF) (fun F F' hF hF' => norm_coef_bdd hψ hν h𝓕 hF hF')

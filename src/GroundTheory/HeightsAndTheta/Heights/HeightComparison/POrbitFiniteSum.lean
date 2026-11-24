@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitFiniteSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitDegreeRatio
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterZero
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitLocalSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PHeightRecR
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

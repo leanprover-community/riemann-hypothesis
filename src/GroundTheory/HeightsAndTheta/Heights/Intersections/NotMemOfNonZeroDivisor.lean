@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsFunFieldMulEq
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -40,7 +41,7 @@ theorem isMultiHomog_X_single [DecidableEq K] (k : K) (i : ι k) :
     simp [Finsupp.single_apply]
   · have : ∀ j : ι k', (⟨k, i⟩ : Σ k, ι k) ≠ ⟨k', j⟩ := fun j e => h (congrArg Sigma.fst e).symm
     classical
-    simp [Finsupp.single_apply, this, h, Pi.single_apply]
+    simp [h]
 
 def formSub (P : Ideal (MRing ι)) : Submonoid (MRing ι ⧸ P) :=
   Submonoid.closure {y | ∃ (v : MRing ι) (a : K → ℕ), IsMultiHomog v a ∧ v ∉ P ∧ Ideal.Quotient.mk P v = y}
@@ -151,8 +152,8 @@ theorem chartHom_mul {P : Ideal (MRing ι)} (j : ∀ k, ι k) (r : (Σ k, ι k) 
   rw [chartHom_coe]
   conv_lhs => rw [f.as_sum]
   conv_rhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun μ hμ => ?_
   have hdeg := hf μ hμ
   rw [monomial_eq, map_mul, map_mul, mul_assoc]

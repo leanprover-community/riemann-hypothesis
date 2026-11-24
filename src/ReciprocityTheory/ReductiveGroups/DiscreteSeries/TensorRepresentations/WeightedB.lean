@@ -1,6 +1,18 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.WeightedA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EqZeroOfDatumEmbeddingEqZero
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IntegrableComplexContinuousBoundedSupport
+import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
+import Mathlib.RingTheory.PiTensorProduct
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.ArbitraryB
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.ClassTwoEntries
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumIrr
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FormulaF
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FormulaFA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.InfChar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.NormSubOneLeOfHsdA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
 
 @[expose] public section
 
@@ -72,8 +84,8 @@ theorem wd_key (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) (i : Fin n) (w :
       have e2 : wdCoef ε w (casimir (smE ε (rreg ε)) x) g =
           ∑ a, ∑ b, wdCoef ε w (smE ε (rreg ε) a b (smE ε (rreg ε) b a x)) g := by
         unfold casimir
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [LinearMap.sum_apply, Module.End.mul_apply, map_sum, Finset.sum_apply]
+
+        simp only [LinearMap.sum_apply, Module.End.mul_apply, map_sum, Finset.sum_apply]
       show ∑ a, ∑ b, Formalism.REAL.Eab ε a b (Formalism.REAL.Eab ε b a (wdCoef ε w x)) g = _
       simp only [e1]
       rw [← e2, datumV_casimir hP v₀ x hx, map_smul, Pi.smul_apply, smul_eq_mul])

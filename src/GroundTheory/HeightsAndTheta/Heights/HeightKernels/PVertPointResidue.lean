@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertRIndexSteps
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumMem
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveDivVertical
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumMem
+public import Mathlib.RingTheory.LittleWedderburn
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
 
 @[expose] public section
 

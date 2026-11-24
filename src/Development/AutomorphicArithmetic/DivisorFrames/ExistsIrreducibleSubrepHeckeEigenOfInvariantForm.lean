@@ -1,10 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NontrivialOfNeBot
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeightEqOfFinitePartNeBot
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteUnitaryClassSetFiniteStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIrreducibleSubrepFixedOfUnitary
+public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 @[expose] public section
 
@@ -48,8 +94,8 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
     refine ⟨∑ w ∈ hO.toFinset, w, ?_, ?_, hO.toFinset.card, ?_, ?_⟩
     · rw [memV]
       intro k hk
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       apply Finset.sum_nbij' (fun w => ρ k w) (fun w => ρ k⁻¹ w)
       · intro w hw
         simp only [Set.Finite.mem_toFinset, Set.mem_range] at hw ⊢
@@ -87,10 +133,10 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
         calc B y (ρ k' u) = B (ρ k' y) (ρ k' u) := by rw [hy k' k'.2]
           _ = B y u := hinv _ _ _
       constructor
-      set_option synthInstance.maxHeartbeats 100000 in
-        · rw [map_sum, LinearMap.sum_apply, Finset.sum_congr rfl e1, Finset.sum_const, nsmul_eq_mul]
-      set_option synthInstance.maxHeartbeats 100000 in
-        · rw [map_sum, Finset.sum_congr rfl e2, Finset.sum_const, nsmul_eq_mul]
+
+      · rw [map_sum, LinearMap.sum_apply, Finset.sum_congr rfl e1, Finset.sum_const, nsmul_eq_mul]
+
+      · rw [map_sum, Finset.sum_congr rfl e2, Finset.sum_const, nsmul_eq_mul]
   have proj : ∀ S1 : Submodule ℂ W, FiniteDimensional ℂ S1 → ∀ v, ∃ p ∈ S1, ∀ s ∈ S1, B s (v - p) = 0 := by
     intro S1 hS1 v
     let b := Module.finBasis ℂ S1
@@ -131,7 +177,7 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
   have hmin : ∀ N : Submodule ℂ W, (∀ g, ∀ u ∈ N, ρ g u ∈ N) → (∃ u ∈ N, B u x ≠ 0) →
       Nat.find hex ≤ Module.finrank ℂ ↥(N ⊓ V) :=
     fun N h1 h2 => Nat.find_min' hex ⟨N, h1, h2, rfl⟩
-  haveI hfinV : FiniteDimensional ℂ V := hfin
+  have hfinV : FiniteDimensional ℂ V := hfin
   have finInf : ∀ N : Submodule ℂ W, FiniteDimensional ℂ ↥(N ⊓ V) :=
     fun N => Submodule.finiteDimensional_of_le inf_le_right
   let U : Submodule ℂ W := Submodule.span ℂ {w | ∃ h : H, ∃ s ∈ N0 ⊓ V, w = ρ h s}
@@ -160,7 +206,7 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
     · right
       have h1 := hmin N hNi hF
       have hle : N ⊓ V ≤ N0 ⊓ V := by rw [← hUV]; exact inf_le_inf_right _ hNU
-      haveI := finInf N0
+      have := finInf N0
       have heq : N ⊓ V = N0 ⊓ V := Submodule.eq_of_le_of_finrank_le hle (by rw [hN0d]; exact h1)
       apply le_antisymm hNU
       rw [Submodule.span_le]
@@ -168,11 +214,11 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
       have : s ∈ N ⊓ V := by rw [heq]; exact hs
       exact hNi h s (Submodule.mem_inf.1 this).1
     · left
-      push_neg at hF
+      push Not at hF
       have hS1 : N ⊓ V = ⊥ := by
         by_contra hne
         obtain ⟨s1, hs1, hs1ne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
-        haveI := finInf N
+        have := finInf N
         obtain ⟨p, hp, hpq⟩ := proj (N ⊓ V) inferInstance s0
         have hpS : p ∈ N0 ⊓ V := by rw [← hUV]; exact inf_le_inf_right _ hNU hp
         have hpN : p ∈ N := (Submodule.mem_inf.1 hp).1
@@ -203,7 +249,7 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
           (fun g u hu => Submodule.mem_inf.2 ⟨hUi g u (Submodule.mem_inf.1 hu).1,
             orth_inv N hNi g u (Submodule.mem_inf.1 hu).2⟩)
           ⟨s0 - p, Submodule.mem_inf.2 ⟨hSU hqS, hqo⟩, hqx⟩
-        haveI := finInf N0
+        have := finInf N0
         have := Submodule.finrank_lt_finrank_of_lt hlt
         omega
       rw [eq_bot_iff]
@@ -213,7 +259,7 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
       have hvv : B v v ≠ 0 := fun h => hv0 (hB v h)
       have hex2 : ∃ h : H, ∃ s ∈ N0 ⊓ V, B (ρ h s) v ≠ 0 := by
         by_contra hall
-        push_neg at hall
+        push Not at hall
         have hle : U ≤ LinearMap.ker (B.flip v) := by
           rw [Submodule.span_le]
           rintro w ⟨h, s, hs, rfl⟩
@@ -231,7 +277,7 @@ theorem UpperTheory.exists_irreducible_subrep_hecke_eigen_of_invariant_form :
       rw [hv'N, map_zero] at h2
       have hm' : (m : ℂ) ≠ 0 := by exact_mod_cast hm.ne'
       exact hne ((mul_eq_zero.1 h2.symm).resolve_left hm')
-  haveI := finInf N0
+  have := finInf N0
   obtain ⟨p, hp, hpt⟩ := proj (N0 ⊓ V) inferInstance x
   have htU : x - p ∈ orth U := by
     rw [mem_orth]

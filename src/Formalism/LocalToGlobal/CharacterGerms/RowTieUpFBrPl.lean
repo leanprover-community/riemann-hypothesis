@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.Padics.PadicIntegers
+public import Mathlib.RingTheory.DedekindDomain.Basic
+public import Mathlib.RingTheory.Discriminant
 
 @[expose] public section
 

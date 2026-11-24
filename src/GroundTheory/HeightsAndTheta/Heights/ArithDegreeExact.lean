@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -138,14 +139,14 @@ theorem linearIndependent_sumElim {s' : m → E'.carrier} {s'' : n → E''.carri
   simp only [Sum.elim_inl, Sum.elim_inr] at hg
   have h2 : ∑ j, g (Sum.inr j) • s'' j = 0 := by
     have := congrArg X.proj hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_add (f := _), map_sum, map_smul, proj_incl, hu] using this
+
+    simpa [map_add (f := _), map_sum, map_smul, proj_incl, hu] using this
   have hr := hs'' _ h2
   have h1 : ∑ i, g (Sum.inl i) • s' i = 0 := by
     apply X.incl_injective
     simp only [hr, zero_smul, Finset.sum_const_zero, add_zero] at hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero]
+
+    rw [map_sum, map_zero]
     simpa [map_smul] using hg
   have hl := hs' _ h1
   rintro (i | j)
@@ -174,13 +175,13 @@ theorem card_quotient_sumElim {s' : m → E'.carrier} {s'' : n → E''.carrier}
         simp only [w, Sum.elim_inl, Sum.elim_inr] at hg
         have h2 : ∑ j, g (Sum.inr j) • s'' j = 0 := by
           have := congrArg X.proj hg
-          set_option synthInstance.maxHeartbeats 100000 in
-            simpa [map_add (f := _), map_sum, map_smul, proj_incl, hu] using this
+
+          simpa [map_add (f := _), map_sum, map_smul, proj_incl, hu] using this
         have hr := (Fintype.linearIndependent_iff.mp hs'') _ h2
         simp only [hr, zero_smul, Finset.sum_const_zero, add_zero] at hg
         have : X.incl (∑ i, g (Sum.inl i) • s' i) = X.incl x := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [← hg, map_sum]
+
+          rw [← hg, map_sum]
           simp [map_smul]
         rw [← X.incl_injective this]
         exact Submodule.sum_mem _ fun i _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
@@ -202,8 +203,8 @@ theorem card_quotient_sumElim {s' : m → E'.carrier} {s'' : n → E''.carrier}
           Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at hx
         obtain ⟨b, hb⟩ := (Submodule.mem_span_range_iff_exists_fun (𝓞 K)).mp hx
         have hy : x - ∑ j, b j • u j ∈ LinearMap.range X.incl := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [← X.exact.linearMap_ker_eq, LinearMap.mem_ker, map_sub, map_sum]
+
+          rw [← X.exact.linearMap_ker_eq, LinearMap.mem_ker, map_sub, map_sum]
           simp only [map_smul, hu, hb, sub_self]
         have hN : ∑ j, b j • u j ∈ N :=
           Submodule.sum_mem _ fun j _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨Sum.inr j, rfl⟩)
@@ -278,8 +279,8 @@ theorem gramDet_sumElim (σ : K →+* ℂ) {s' : m → E'.carrier} {s'' : n → 
     fun j w ↦ Submodule.inner_right_of_mem_orthogonal (hLW w) (hqW j)
   have hP : ∀ j, P (q j) = fibreVec E''.metric σ (s'' j) := by
     intro j
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hq j, map_sub, map_sum]
+
+    rw [hq j, map_sub, map_sum]
     have h0 : ∀ i, P (a i) = 0 := fun i ↦ by
       change X.proj.lTensor (ComplexAt σ) ((1 : ComplexAt σ) ⊗ₜ X.incl (s' i)) = 0
       rw [LinearMap.lTensor_tmul, proj_incl, tmul_zero]

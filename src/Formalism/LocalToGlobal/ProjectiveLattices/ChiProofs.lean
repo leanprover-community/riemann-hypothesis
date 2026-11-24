@@ -1,5 +1,6 @@
 module
 
+public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
 
 @[expose] public section

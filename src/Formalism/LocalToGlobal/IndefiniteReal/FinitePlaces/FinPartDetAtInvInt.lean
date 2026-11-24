@@ -1,12 +1,53 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
-public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.TameAtOne
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceS
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
 public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
-public import Mathlib.NumberTheory.NumberField.ClassNumber
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -16,7 +57,7 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Datum
 open scoped TensorProduct
 
-set_option synthInstance.maxHeartbeats 160000
+
 
 namespace Formalism.IndefR.Fin.LevelGroupLemmas
 
@@ -78,9 +119,7 @@ theorem resM_mul {s : R} (hs : s * s = s) (A B : Matrix n n R) : resM s A * resM
 theorem resM_orth {s t : R} (hst : s * t = 0) (A B : Matrix n n R) :
     resM s A * resM t B = 1 + s • (A - 1) + t • (B - 1) := by
   have hts : t * s = 0 := by rw [mul_comm, hst]
-  simp only [resM, hts, add_mul, mul_add, one_mul, mul_one, smul_mul_assoc, mul_smul_comm, smul_add, smul_smul, hst,
-    zero_smul, add_zero]
-  try abel
+  simp only [resM, hts, add_mul, mul_add, one_mul, mul_one, smul_mul_assoc, mul_smul_comm, smul_add, smul_smul, zero_smul, add_zero]
 
 theorem resM_add {s t : R} (hst : s * t = 0) (A : Matrix n n R) : resM s A * resM t A = resM (s + t) A := by
   rw [resM_orth hst]
@@ -98,7 +137,7 @@ theorem resM_one_right (s : R) : resM s (1 : Matrix n n R) = 1 := by
 theorem resM_map {R' : Type*} [CommRing R'] (f : R →+* R') (s : R) (A : Matrix n n R) :
     (resM s A).map f = resM (f s) (A.map f) := by
   ext i j
-  by_cases h : i = j <;> simp [resM, Matrix.one_apply, h]
+  by_cases h : i = j <;> simp [resM, h]
 
 theorem resM_transpose (s : R) (A : Matrix n n R) : (resM s A)ᵀ = resM s Aᵀ := by
   simp [resM, Matrix.transpose_sub]
@@ -146,8 +185,8 @@ theorem idemSum_conj_orth (hes : ∀ PP ∈ P, Formalism.L2.NTheta.IsIdemAt (es 
   have hsum : ∑ x ∈ P ×ˢ P, es x.1 * cA D (es x.2) = 0 := by
     rw [Finset.sum_product]
     show ∑ x ∈ P, ∑ y ∈ P, es x * cA D (es y) = 0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.sum_mul_sum, ← map_sum, ← he, hc]
+
+    rw [← Finset.sum_mul_sum, ← map_sum, ← he, hc]
   refine idem_sum_zero (K := D.host.F) (P ×ˢ P) (fun x => es x.1 * cA D (es x.2)) ?_ hsum (PP, PP')
     (Finset.mem_product.2 ⟨hPP, hPP'⟩)
   rintro ⟨a, b⟩ hab
@@ -218,8 +257,8 @@ theorem idemSum_eps (h : IsIdemSum e P) :
     simpa [Algebra.TensorProduct.algebraMap_apply] using hab
   choose! v ε hpl hε using fun PP (hPP : PP ∈ P) => (hes PP hPP).1.2.2
   have hsum : algebraMap (AF D.host.F) (AE D) (∑ PP ∈ P, ε PP) = e + cA D e := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, he, map_sum, ← Finset.sum_add_distrib]
+
+    rw [map_sum, he, map_sum, ← Finset.sum_add_distrib]
     exact Finset.sum_congr rfl (fun PP hPP => (hε PP hPP).symm)
   refine ⟨∑ PP ∈ P, ε PP, ?_, hsum⟩
   apply hinj
@@ -327,7 +366,7 @@ theorem resG_compl (hε : IsIdempotentElem ε) (g : GA D V) : resG V ε g * resG
   have h1 : ε + (1 - ε) = 1 := by ring
   rw [resG_orth V hε hε.one_sub h0 g, h1, resG_one_eps]
 
-set_option maxHeartbeats 1000000 in
+
 theorem resG_mem_GfC (hε : IsIdempotentElem ε) {g : GA D V} (hg : g ∈ GfC V) : resG V ε g ∈ GfC V := by
   unfold GfC at hg ⊢
   rw [MonoidHom.mem_ker] at hg ⊢
@@ -377,7 +416,7 @@ theorem frGL_val' {n : ℕ} (β : GL (Fin n) (Lev.EAf D)) (y : GL (Fin n) (Forma
         ((β⁻¹ : GL (Fin n) (Lev.EAf D)) : Matrix (Fin n) (Fin n) (Lev.EAf D)) := rfl
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem finE_resG_mem_St (hε : IsIdempotentElem ε) {g : GA D V} {β : GL (Fin V.rank) (Lev.EAf D)}
     (hg : Lev.finE V g ∈ Formalism.L2.DIV.St β) : Lev.finE V (resG V ε g) ∈ Formalism.L2.DIV.St β := by
   obtain ⟨y, hy⟩ := hg
@@ -479,7 +518,7 @@ theorem comm_comm (z : Af D.host.F ⊗[D.host.F] D.host.E) :
 
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem toEAf_det {V : HSp D} {g : GA D V} {β : GL (Fin V.rank) (Lev.EAf D)}
     {y : GL (Fin V.rank) (Formalism.L2.Herm.intAf D.host.F D.host.E)} (hy : Formalism.L2.DIV.frGL β y = Lev.finE V g) :
     toEAf D (mt V g).det =
@@ -524,14 +563,11 @@ theorem infPart_idemAt {e : AE D} {PP : Formalism.L2.DIV.Pl D.host.E} (hPP : For
     simp only [infPart, pairA, fstA]
     first
       | (erw [Algebra.TensorProduct.map_tmul]; exact TensorProduct.zero_tmul _ _)
-      | (erw [Algebra.TensorProduct.map_tmul]; show (0 : Ainf D.host.F) ⊗ₜ[D.host.F] (1 : D.host.E) = 0; simp)
-      | exact TensorProduct.zero_tmul _ _
-      | rfl
   have hz : infPart D e * infPart D e = infPart D e := by rw [← map_mul, h1]
   linear_combination -hz + (infPart D e) * hy - hx
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem unrOff_detAt {e e₁ : AE D} {PP₁ : Formalism.L2.DIV.Pl D.host.E} (hPP₁ : Formalism.L2.NTheta.IsIdemAt e₁ PP₁)
     (horth : (e + cA D e) * e₁ = 0) (V : HSp D) {g : GA D V} {β : GL (Fin V.rank) (Lev.EAf D)}
     (hg : Lev.finE V g ∈ Formalism.L2.DIV.St β) {χ : (AE D)ˣ →* Circle} (hU : UnrOff e χ) : χ (detAt e₁ V g) = 1 := by
@@ -623,8 +659,8 @@ theorem isIdemSum_conj {e : AE D} {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (h
   · rw [Finset.sum_image (fun a _ b _ (hab : Formalism.L2.DIV.conjPl a = Formalism.L2.DIV.conjPl b) => by
       rw [← Formalism.L2.DIV.conjPl_conjPl a, hab, Formalism.L2.DIV.conjPl_conjPl])]
     simp only [Formalism.L2.DIV.conjPl_conjPl]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [he, map_sum]
+
+    rw [he, map_sum]
   · rw [cA_cA, mul_comm]; exact hc
 
 

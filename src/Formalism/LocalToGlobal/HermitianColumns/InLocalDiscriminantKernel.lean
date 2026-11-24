@@ -1,8 +1,6 @@
 module
 
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalRingCardinality.DataLevel
-public import Formalism.LocalRingCardinality.DataLevelD
 
 @[expose] public section
 
@@ -25,9 +23,9 @@ def crdLat (S : HSpace E) (L : Submodule (𝓞 E) S.V) : Submodule (𝓞 E) (Fin
 theorem hT_crd (hc : CMData F E) (S : HSpace E) (x y : S.V) :
     S.hT x y = hform (hc.sig : E →+* E) S.gram (crd S x) (crd S y) := by
   conv_lhs => rw [← S.frame.sum_repr x, ← S.frame.sum_repr y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
-    starRingEnd_apply, Finset.mul_sum]
+
+  simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
+  starRingEnd_apply, Finset.mul_sum]
   unfold hform
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_

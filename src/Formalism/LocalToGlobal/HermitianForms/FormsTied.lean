@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.HermitianForms.LastCoordinateUniformizerVectorSpansOrthogonalLi
-public import Formalism.LocalToGlobal.HermitianForms.TransportT
 
 @[expose] public section
 
@@ -76,7 +75,7 @@ def fcOf (R : Ranks) (i : ℕ) : ℕ := if R.m ≤ i + 1 then R.k else R.N i
 theorem fcOf_lt {R : Ranks} {i : ℕ} (h : i + 1 < R.m) : fcOf R i = R.N i := if_neg (Nat.not_le.2 h)
 
 
-set_option maxHeartbeats 1000000 in
+
 structure FormsTied (D : D7) (u : D.what₂.Word) where
   atT : AtTTied u
   cls : ∀ i hi, ClsTied u i hi
@@ -123,7 +122,6 @@ theorem rhoT_eq {u : D.what₂.Word} {eV : (D.mem u).A.vT ≃ PlT D u} {K : ClsT
     (hδ : IsDia K.lev (eV v).1 (eV v).2 k δ) (g) (hg : g ∈ AdFun K.lev (embT D)) :
     (D.mem u).A.rhoT v a (fun c s => g (K.y c) (W.eY s)) = fun c s => g (K.y c * δ) (W.eY s) := by
   funext c
-  rw [(D.fm u).rhoT_dil]
-  exact W.dilT v a k hk c δ hδ g hg
+  simpa only [(D.fm u).rhoT_dil] using W.dilT v a k hk c δ hδ g hg
 
 end Formalism.L2.Forms

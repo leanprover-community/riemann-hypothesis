@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.ComapMaximalIdealParDVR
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChowNorm
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsSecIdealOfPrime
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsGenSecKer
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsUniqueFactorCompletedStalkOfMap
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.RingHom.FaithfullyFlat
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsMemPowSubMemPowSucc
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.RingTheory.Filtration
+public import Mathlib.RingTheory.Flat.EquationalCriterion
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -40,15 +89,15 @@ theorem relationsLift_of_flat {I : Ideal A} {C : Type*} [CommRing C] [Algebra A 
   obtain ⟨k, m, v, rfl⟩ := TensorProduct.exists_sum_tmul_eq x
   rw [← hker, mem_ker] at hx
   have h0 : ∑ i, algebraMap A C (f (v i)) • q (m i) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum] using hx
+
+    simpa [map_sum] using hx
   obtain ⟨l, c, y, hy, hc⟩ := Module.Flat.isTrivialRelation_of_sum_smul_eq_zero h0
   choose a ha using fun i j => hC (c i j)
   choose z hz using fun j => hq (y j)
   have hd : ∀ i, m i - ∑ j, a i j • z j ∈ I • (⊤ : Submodule A M) := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hker, mem_ker, map_sub, show q (m i) = _ from hy i, map_sum, sub_eq_zero]
+
+    rw [← hker, mem_ker, map_sub, show q (m i) = _ from hy i, map_sum, sub_eq_zero]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul, hz, ← ha, algebraMap_smul]
   have hsum : ∑ i, m i ⊗ₜ[A] v i = ∑ i, (m i - ∑ j, a i j • z j) ⊗ₜ[A] v i +
@@ -71,8 +120,8 @@ theorem relationsLift_of_flat {I : Ideal A} {C : Type*} [CommRing C] [Algebra A 
     rw [Submodule.mem_comap, ← hI]
     change algebraMap A C _ = 0
     rw [← hc j]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, ha, mul_comm]
+
+    simp [map_sum, ha, mul_comm]
 
 theorem relationsLift_pow {π : A} (h : RelationsLift (Ideal.span {π}) M)
     (hreg : IsSMulRegular M π) (k : ℕ) : RelationsLift (Ideal.span {π} ^ k) M := by
@@ -293,12 +342,7 @@ theorem exists_sub_mem_pow_succ (hle : I ≤ J.comap φ) (h₀ : ∀ b, ∃ a, �
     (h₁ : ∀ y ∈ J, ∃ x ∈ I, φ x - y ∈ J ^ 2) (n : ℕ) :
     ∀ y ∈ J ^ n, ∃ x ∈ I ^ n, φ x - y ∈ J ^ (n + 1) := by
   first
-  | exact @_root_.GlobalTheory.exists_mem_pow_sub_mem_pow_succ_facts.exists_mem_pow_sub_mem_pow_succ
-  | exact _root_.GlobalTheory.exists_mem_pow_sub_mem_pow_succ_facts.exists_mem_pow_sub_mem_pow_succ
   | (apply _root_.GlobalTheory.exists_mem_pow_sub_mem_pow_succ_facts.exists_mem_pow_sub_mem_pow_succ <;> assumption)
-  | (intros; apply _root_.GlobalTheory.exists_mem_pow_sub_mem_pow_succ_facts.exists_mem_pow_sub_mem_pow_succ <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.exists_mem_pow_sub_mem_pow_succ_facts.exists_mem_pow_sub_mem_pow_succ <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.exists_mem_pow_sub_mem_pow_succ_facts.exists_mem_pow_sub_mem_pow_succ ..)
 
 theorem quotientMap_pow_surjective (hle : I ≤ J.comap φ) (h₀ : ∀ b, ∃ a, φ a - b ∈ J)
     (h₁ : ∀ y ∈ J, ∃ x ∈ I, φ x - y ∈ J ^ 2) (n : ℕ) :

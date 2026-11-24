@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsVectorOrbits
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

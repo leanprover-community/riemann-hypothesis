@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
+import Mathlib.Algebra.Order.Star.Real
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 

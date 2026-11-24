@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.AdeleIdealMeasure
-public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 public import GroundTheory.GlobalFields.TateThesis.TraceDualLattice
+public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
+public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

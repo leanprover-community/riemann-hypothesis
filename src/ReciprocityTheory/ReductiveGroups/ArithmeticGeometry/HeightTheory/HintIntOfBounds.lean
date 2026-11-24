@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
+public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.SemistableReduction.AeBlockSphereEvalNeZero
 public import ReciprocityTheory.SemistableReduction.RestBlockSubstIsMultiHomogeneous
-public import ReciprocityTheory.SemistableReduction.IntCoresA
+public import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 
 @[expose] public section
 
@@ -48,9 +51,6 @@ theorem hint_mpTail (D n : ℕ) (hn : 0 < n) :
     funext z i
     first
       | rfl
-      | (simp [MeasurableEquiv.piFinSuccAbove_apply, Fin.removeNth]; done)
-      | (simp [MeasurableEquiv.piFinSuccAbove_apply, Fin.removeNth]; rfl)
-      | exact congrArg z (by simp)
   rw [e]
   exact h
 

@@ -1,9 +1,65 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsSMulRegularCokerDualMapOfExactFibres
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsRegularRingOfSmooth
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExactAndKerBaseChangeOfForallResidueField
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsRegularOfSupportDimQuotientAddLengthLe
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RingKrullDimOfEtaleMvPolynomial
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Depth.Rees
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
 
 @[expose] public section
 
@@ -22,10 +78,10 @@ theorem extZero_hom (M : Type) [AddCommGroup M] [Module R M] (n : ℕ) (h : ExtZ
       (ModuleCat.ofHom (LinearMap.applyₗ (b i)) : ModuleCat.of R (F →ₗ[R] M) ⟶ ModuleCat.of R M) ≫
       (ModuleCat.ofHom (LinearMap.smulRightₗ (b.coord i)) : ModuleCat.of R M ⟶ ModuleCat.of R (F →ₗ[R] M)) := by
     ext f x
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [ModuleCat.hom_sum, ModuleCat.hom_id, LinearMap.id_apply, ModuleCat.hom_comp, ModuleCat.hom_ofHom,
-      LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.applyₗ_apply_apply, LinearMap.smulRightₗ_apply, LinearMap.smulRight_apply,
-      Module.Basis.coord_apply, ← map_smul, ← map_sum, b.sum_repr x]
+
+    simp only [ModuleCat.hom_sum, ModuleCat.hom_id, LinearMap.id_apply, ModuleCat.hom_comp, ModuleCat.hom_ofHom,
+    LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.applyₗ_apply_apply, LinearMap.smulRightₗ_apply, LinearMap.smulRight_apply,
+    Module.Basis.coord_apply, ← map_smul, ← map_sum, b.sum_repr x]
   refine subsingleton_of_forall_eq 0 fun x => ?_
   rw [← Ext.comp_mk₀_id x, hid, Ext.mk₀_sum, Ext.comp_sum]
   refine Finset.sum_eq_zero fun i _ => ?_
@@ -215,7 +271,7 @@ theorem regular_fibre {A T : Type} [CommRing A] [IsLocalRing A] [CommRing T] [Al
     [IsScalarTower A T R] :
     IsRegularLocalRing (R ⧸ (maximalIdeal A).map (algebraMap A R)) ∧
       (g : WithBot ℕ∞) ≤ ringKrullDim (R ⧸ (maximalIdeal A).map (algebraMap A R)) := by
-  letI := Ideal.Quotient.field (maximalIdeal A)
+  let := Ideal.Quotient.field (maximalIdeal A)
   let k := A ⧸ maximalIdeal A
   let T' := k ⊗[A] T
   let π : T →+* T' := Algebra.TensorProduct.includeRight.toRingHom
@@ -249,11 +305,11 @@ theorem regular_fibre {A T : Type} [CommRing A] [IsLocalRing A] [CommRing T] [Al
     (RingHom.isStandardSmoothOfRelativeDimension_algebraMap g).2 hss
   obtain ⟨φ, hφC, hφ⟩ := hf.exists_etale_mvPolynomial
   algebraize [φ]
-  haveI : IsScalarTower k (MvPolynomial (Fin g) k) T' := IsScalarTower.of_algebraMap_eq' hφC.symm
-  haveI hp := SmoothDim.isMaximal_under_of_finiteType k (MvPolynomial (Fin g) k) T' (q.map π)
+  have : IsScalarTower k (MvPolynomial (Fin g) k) T' := IsScalarTower.of_algebraMap_eq' hφC.symm
+  have hp := SmoothDim.isMaximal_under_of_finiteType k (MvPolynomial (Fin g) k) T' (q.map π)
   have h1 := ReciprocityTheory.CA.height_add_ringKrullDim_quotient_mvPolynomial_field k g
     ((q.map π).under (MvPolynomial (Fin g) k))
-  letI := Ideal.Quotient.field ((q.map π).under (MvPolynomial (Fin g) k))
+  let := Ideal.Quotient.field ((q.map π).under (MvPolynomial (Fin g) k))
   rw [ringKrullDim_eq_zero_of_field, add_zero] at h1
   have h2 : ((q.map π).under (MvPolynomial (Fin g) k)).height ≤ (q.map π).height := by
     rw [Ideal.height_eq_height_add_of_liesOver_of_hasGoingDown
@@ -277,7 +333,7 @@ theorem exists_localRing {A : Type} [CommRing A] [IsLocalRing A] [IsNoetherianRi
   obtain ⟨U, hU, V, hV, hxV, e, hs⟩ := hf.exists_isStandardSmoothOfRelativeDimension x
   obtain rfl : U = ⊤ := (closedPoint_mem_iff U).1 (hc ▸ e hxV)
   let ψ : CommRingCat.of A ⟶ Γ(X, V) := (Scheme.ΓSpecIso (CommRingCat.of A)).inv ≫ f.appLE ⊤ V e
-  letI : Algebra A Γ(X, V) := ψ.hom.toAlgebra
+  let : Algebra A Γ(X, V) := ψ.hom.toAlgebra
   have hψ : ψ.hom.IsStandardSmoothOfRelativeDimension g :=
     RingHom.isStandardSmoothOfRelativeDimension_respectsIso.2 _
       (Scheme.ΓSpecIso (CommRingCat.of A)).symm.commRingCatIsoToRingEquiv hs
@@ -287,9 +343,9 @@ theorem exists_localRing {A : Type} [CommRing A] [IsLocalRing A] [IsNoetherianRi
     rw [← IsAffineOpen.SpecMap_appLE_fromSpec f hU hV e, IsAffineOpen.fromSpec_top, Scheme.isoSpec_Spec_inv,
       ← Spec.map_comp]
   let R : Type := X.presheaf.stalk x
-  letI : Algebra Γ(X, V) R := X.presheaf.algebra_section_stalk ⟨x, hxV⟩
+  let : Algebra Γ(X, V) R := X.presheaf.algebra_section_stalk ⟨x, hxV⟩
   have hloc : IsLocalization.AtPrime R (hV.primeIdealOf ⟨x, hxV⟩).asIdeal := hV.isLocalization_stalk ⟨x, hxV⟩
-  letI : Algebra A R := ((algebraMap Γ(X, V) R).comp (algebraMap A Γ(X, V))).toAlgebra
+  let : Algebra A R := ((algebraMap Γ(X, V) R).comp (algebraMap A Γ(X, V))).toAlgebra
   have : IsScalarTower A Γ(X, V) R := IsScalarTower.of_algebraMap_eq' rfl
   have hq := hV.primeIdealOf_isMaximal_of_isClosed ⟨x, hxV⟩ hp
   have : IsNoetherianRing Γ(X, V) := Algebra.FiniteType.isNoetherianRing A _

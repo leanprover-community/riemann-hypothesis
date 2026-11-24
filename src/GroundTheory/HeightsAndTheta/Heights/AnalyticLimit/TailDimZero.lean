@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

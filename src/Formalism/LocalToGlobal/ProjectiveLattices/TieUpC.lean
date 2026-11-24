@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.TieUpA
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveComp
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.PublishedIntClosHolds
 
 @[expose] public section
 
@@ -14,7 +16,7 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 variable {D : D7} {T : Top D}
 
 
-set_option maxHeartbeats 1000000 in
+
 abbrev OmSK (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (hT : GenFromTest (T.Q.Xo j) T.Q.c hG)
     {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData (recPlus h j hj) ka wL wF)
     (la : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO)) (Z : Comp (T.Q.Xo j) T.Q.c) : Type :=
@@ -22,7 +24,7 @@ abbrev OmSK (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.
     Ideal.map (phiZ (recPlus h j hj) la G.N (Om Z) (formsEvR j hG hT Z) G.w) (Jid (recPlus h j hj) la G.w)
 
 
-set_option maxHeartbeats 4000000 in
+
 def qZ (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (hT : GenFromTest (T.Q.Xo j) T.Q.c hG)
     {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData (recPlus h j hj) ka wL wF)
     (la : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO)) (Z : Comp (T.Q.Xo j) T.Q.c)
@@ -34,8 +36,8 @@ def qZ (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (h
         (emb (recPlus h j hj) la G.N ((recPlus h j hj).inc wF F))))
 
 
-set_option maxHeartbeats 4000000 in
-set_option synthInstance.maxHeartbeats 1000000 in
+
+
 def algZ (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (hT : GenFromTest (T.Q.Xo j) T.Q.c hG)
     {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData (recPlus h j hj) ka wL wF)
     (la : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO)) (Z : Comp (T.Q.Xo j) T.Q.c) :
@@ -50,6 +52,11 @@ set_option synthInstance.maxHeartbeats 1000000 in
 def TieSSt (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
     (hT : GenFromTest (T.Q.Xo j) T.Q.c hG) {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData (recPlus h j hj) ka wL wF)
     (la : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO)) (g0 : (recB h.toLawsCore).Cusp j wF) : Prop :=
+  -- Take the additive structure of `OmSK` from its ring structure. Left to instance search, it is
+  -- found as a quotient by a submodule, after about 25 s spent unifying the ring structures of the
+  -- localisation underneath, and matching the module structure below against it takes 13 s more.
+  letI : ∀ Z, AddCommMonoid (OmSK h j hj hG hT G la Z) := fun _ =>
+    NonUnitalNonAssocSemiring.toAddCommMonoid
   letI : ∀ Z, Module (Kp (recPlus h j hj) la G.N) (OmSK h j hj hG hT G la Z) := fun Z =>
     (algZ h j hj hG hT G la Z).toModule
   (∃ e : SectionSheafQuotient (recPlus h j hj) la G.w wF ≃ₗ[Kp (recPlus h j hj) la G.N] (∀ Z, OmSK h j hj hG hT G la Z),

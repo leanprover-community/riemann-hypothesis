@@ -1,10 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.TilEqLevel
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.DefNOfFact
+public import Formalism.LocalToGlobal.HermitianForms.TiedSym
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ArchimedeanSignatureMatchingOfTrivialBranchingSymm
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ExistsOnOfPosDef
+import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
 
 @[expose] public section
 
@@ -35,7 +35,7 @@ theorem exists_proj {E : Type} [Field E] {N n : ℕ} (hN : n + 1 = N) (A : Matri
     simpa [Matrix.mul_apply, Matrix.one_apply] using e
   · funext a
     have e := congrFun (congrFun h (Fin.castSucc a)) (Fin.last n)
-    simp only [Matrix.mul_apply, hBdef, of_apply, Fin.val_last, lt_irrefl, dif_neg, not_false_eq_true, one_apply] at e
+    simp only [Matrix.mul_apply, hBdef, of_apply, Fin.val_last, lt_irrefl, dif_neg, not_false_eq_true] at e
     simpa [mulVec, dotProduct, (Fin.castSucc_lt_last a).ne] using e
 
 theorem cT_ext_unitary {A : Type} [CommRing A] (τ : A →+* A) {N n : ℕ} (I : Matrix (Fin N) (Fin n) A)
@@ -60,8 +60,8 @@ theorem latS_mulVec (R : Type) [CommRing R] [Algebra F R] (S : Subring (E ⊗[F]
     apply Submodule.subset_span
     refine ⟨M *ᵥ x0, hM x0 hx0, ?_⟩
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
+
+    simp only [mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
   | zero => rw [mulVec_zero]; exact zero_mem _
   | add x y _ _ hx hy => rw [mulVec_add]; exact add_mem hx hy
   | smul a x _ hx =>
@@ -124,7 +124,7 @@ theorem isExt_prV {z0 : Fin (D.R.N D.R.m) → D.host.E} (v : HeightOneSpectrum (
     exact (RingHom.map_mulVec _ _ _ _).symm.trans this
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem lev_lat (Tf : FormsTiedSym D u Ch chOf)
     (k : Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F))
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F))

@@ -1,16 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
 public import Formalism.LocalToGlobal.Columns.GSetLemmas
-public import Formalism.LocalToGlobal.Columns.ColForms
 public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
 public import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
-public import Formalism.LocalToGlobal.Columns.RowForms
 public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
 public import Formalism.LocalToGlobal.Divisibility.Frames
-public import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
-public import Formalism.LocalToGlobal.GlobalTheory.HLatOps
+import Formalism.LocalToGlobal.GlobalTheory.HLatOps
 
 @[expose] public section
 

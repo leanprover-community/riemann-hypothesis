@@ -1,6 +1,7 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.InPow
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

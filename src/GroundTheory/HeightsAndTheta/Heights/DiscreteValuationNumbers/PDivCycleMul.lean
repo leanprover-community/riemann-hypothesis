@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsMultiHomogIdealSpanSingleton
+public import Mathlib.Algebra.Module.LocalizedModule.Exact
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

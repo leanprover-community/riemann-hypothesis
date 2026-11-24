@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenKoszulStep
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKoszulCech
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKoszulCechExact
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDoubleComplexVanish
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt

@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValHalfInf
+public import Development.AbelianVarietyTheory.Definitions.Foundations.MemSiegelOfIffRightAct
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -360,8 +402,7 @@ theorem core (j : E →+* A) (e : n ⊕ n ≃ ι) {σ : A →+* A} (hσc : Conti
     have h8 : β q = (bc j (δ q))⁻¹ * (dg s (l q) * c q) := by rw [← hred, inv_mul_cancel_left]
     have h9 : (ν x : ℝ) = ν (GeneralLinearGroup.det (c q)⁻¹) * ∏ i, b ^ l q i := by
       rw [h7, map_mul, map_mul, hνd U hUj, mul_one, det_cti, hνσ, h8]
-      simp only [_root_.mul_inv_rev, map_mul, map_inv, inv_inv, hνd _ ⟨δ q, rfl⟩, mul_one, det_dg, map_prod, map_zpow₀,
-        map_zpow]
+      simp only [_root_.mul_inv_rev, map_mul, map_inv, inv_inv, hνd _ ⟨δ q, rfl⟩, mul_one, det_dg, map_prod, map_zpow]
       push_cast
       simp only [hνs, _root_.inv_zpow, Finset.prod_inv_distrib, inv_inv]
     refine le_trans ?_ (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))

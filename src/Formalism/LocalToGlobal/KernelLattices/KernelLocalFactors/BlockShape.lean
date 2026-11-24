@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-public import Formalism.ThetaSupremumBounds.StatementE
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 
 @[expose] public section
 

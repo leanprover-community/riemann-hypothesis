@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsIntCoordChange
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
 
 @[expose] public section
 

@@ -1,6 +1,13 @@
 module
 
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Norm.Basic
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 
@@ -103,8 +110,8 @@ theorem HermFam.ds_form_sum_right (h : HermFam K V) (σ : K →+* ℂ) (x : V) {
 
 theorem HermFam.ds_form_sum_left (h : HermFam K V) (σ : K →+* ℂ) (y : V) {ι : Type*}
     (s : Finset ι) (f : ι → V) : h.form σ (∑ i ∈ s, f i) y = ∑ i ∈ s, h.form σ (f i) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h.conj_symm, h.ds_form_sum_right, map_sum]
+
+  rw [← h.conj_symm, h.ds_form_sum_right, map_sum]
   exact Finset.sum_congr rfl fun i _ => h.conj_symm σ y (f i)
 
 theorem HermFam.ds_form_smul_left (h : HermFam K V) (σ : K →+* ℂ) (a : K) (x y : V) :

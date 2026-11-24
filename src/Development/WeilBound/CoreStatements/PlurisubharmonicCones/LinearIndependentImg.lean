@@ -1,9 +1,50 @@
 module
 
-public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsSmulMemEig
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsAdapted
+public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogIndexOfOrthogonalFamily
+public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsSmulMemEig
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeIdeal
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PLocalChange
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 
 @[expose] public section
 
@@ -64,7 +105,7 @@ theorem span_I_le : Submodule.span (𝓞 L) (A.I : Set V) ≤ A.Λ := Submodule.
 
 theorem mem_span_I {x : V} (hx : x ∈ A.Λ) (h : x ∈ Submodule.span L (A.I : Set V)) :
     x ∈ Submodule.span (𝓞 L) (A.I : Set V) := by
-  obtain ⟨c, hc, h1⟩ := exists_smul_mem_of_mem_span (Submodule.span (𝓞 L) (A.I : Set V))
+  obtain ⟨c, hc, h1⟩ := _root_.UpperTheory.Reformulated.B.Qo3.exists_smul_mem_of_mem_span (Submodule.span (𝓞 L) (A.I : Set V))
     (fun y hy => Submodule.subset_span hy) h
   have h2 := (A.ker (c • ⟨x, hx⟩)).2 h1
   rw [map_smul] at h2
@@ -174,8 +215,8 @@ theorem index_quot {R N N' : Type} [CommRing R] [AddCommGroup N] [Module R N] [A
       rw [e]
       exact M.sub_mem hxM' (sum_mem fun j _ => M.smul_mem _ (hq j)))
     rw [e, map_sub, sub_eq_zero] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa only [map_sum, map_smul] using h1
+
+    simpa only [map_sum, map_smul] using h1
   change (x : N) ∈ T ⊔ Submodule.span R (Set.range fun c => (q c : N)) ↔ f x ∈ _
   constructor
   · intro hx

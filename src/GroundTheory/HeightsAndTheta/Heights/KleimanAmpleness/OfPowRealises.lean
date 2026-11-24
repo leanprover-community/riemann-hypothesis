@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherTail
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastFurther
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsBisExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestTer
 
 @[expose] public section

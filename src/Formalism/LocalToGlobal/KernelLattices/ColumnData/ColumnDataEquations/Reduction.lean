@@ -1,14 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SemiCharImg
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.ConstCopies
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.HenselQuad
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.TripleSumIndependence.TripleSumIndep
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SplitTripleEquations.MuOneOfSplit
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SplitPairGen
+import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.HenselQuad
 
 @[expose] public section
 

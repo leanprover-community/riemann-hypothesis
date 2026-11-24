@@ -1,11 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CoreExists
-public import Formalism.LocalToGlobal.ProjectiveLattices.ReadProofs
-public import Formalism.LocalToGlobal.ProjectiveLattices.ReadQuot
 public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonalBis
-public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
-public import Formalism.LocalToGlobal.ProjectiveLattices.UnitIndepOfCharts
+public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+public import Formalism.LocalToGlobal.ProjectiveLattices.DatProofs
 
 @[expose] public section
 

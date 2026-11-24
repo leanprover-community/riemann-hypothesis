@@ -1,8 +1,62 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+public import Formalism.WeaklyAdmissibleFiltrations.Statement
+public import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+public import Mathlib.FieldTheory.Separable
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.Unramified.Basic
+public import Mathlib.RingTheory.Unramified.Field
 
 @[expose] public section
 
@@ -205,12 +259,12 @@ theorem idem_repr (τ : K →ₐ[Qp] LL) : ∃ (n : ℕ) (a : Fin n → LL) (c :
   obtain ⟨n, a, c, h⟩ := TensorProduct.exists_sum_tmul_eq (exists_idem τ).choose
   refine ⟨n, a, c, ?_, ?_⟩
   · rw [idem, h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum]
+
+    simp [map_sum]
   · have := (exists_idem τ).choose_spec.1
     rw [h] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum] using this
+
+    simpa [map_sum] using this
 
 theorem tmul_mul_idem (τ : K →ₐ[Qp] LL) (c : K) :
     ((1 : LL) ⊗ₜ[Qp] algebraMap K F c) * idem F τ = τ c • idem F τ := by
@@ -229,8 +283,8 @@ theorem mulR_sm_idem (τ : K →ₐ[Qp] LL) (c : K) (x : V ⊗[Qp] F) :
 theorem sm_idem_of_eigen (τ : K →ₐ[Qp] LL) (x : V ⊗[Qp] F)
     (hx : ∀ c : K, mulR Qp F LL V (algebraMap K F c) x = τ c • x) : sm Qp F LL V (idem F τ) x = x := by
   obtain ⟨n, a, c, h, h1⟩ := idem_repr F τ
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, map_sum, LinearMap.sum_apply]
+
+  rw [h, map_sum, LinearMap.sum_apply]
   simp only [sm_tmul_left, hx, smul_smul, ← Finset.sum_smul, h1, one_smul]
 
 theorem sm_idem_idem (τ : K →ₐ[Qp] LL) (x : V ⊗[Qp] F) :
@@ -483,17 +537,17 @@ theorem dual_family (ρ : Representation LL G V) (ρ' : Representation LL G V') 
     intro x
     have h1 : ∀ i, bil Qp F β x (d' i) = e * ∑ a, ext Qp F (v.coord a) x * r a i := by
       intro i
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hd', bil_sm_right, sm_self, map_sum]
+
+      rw [hd', bil_sm_right, sm_self, map_sum]
       simp only [bil_sm_right, sm_self, hv, mul_comm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [h1, sm_mul, map_sum, LinearMap.sum_apply]
+
+    simp only [h1, sm_mul, map_sum, LinearMap.sum_apply]
     rw [Finset.sum_comm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [eq_sum_basis v x, ← he, sm_mul, map_sum, map_sum]
+
+    conv_lhs => rw [eq_sum_basis v x, ← he, sm_mul, map_sum, map_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [sm_comm e (ext Qp F (v.coord a) x), hr, map_sum, map_sum]
+
+    rw [sm_comm e (ext Qp F (v.coord a) x), hr, map_sum, map_sum]
   have hed' : ∀ i, sm Qp F LL V' e (d' i) = d' i := fun i => by rw [hd', ← sm_mul, he]
   have hδ : ∀ i j, bil Qp F β (d j) (d' i) = if j = i then e else 0 := by
     intro i j
@@ -508,8 +562,8 @@ theorem dual_family (ρ : Representation LL G V) (ρ' : Representation LL G V') 
     intro z hz h
     have : ∀ a, ext Qp F (w.coord a) z = 0 := by
       intro a
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hw, ← hz, bil_sm_right, ← bil_sm_left, hr, map_sum, LinearMap.sum_apply]
+
+      rw [← hw, ← hz, bil_sm_right, ← bil_sm_left, hr, map_sum, LinearMap.sum_apply]
       simp [bil_sm_left, h]
     rw [eq_sum_basis w z]
     simp [this]
@@ -556,8 +610,8 @@ theorem idem_mem_FilV (τ : K →ₐ[Qp] LL) : idem F τ ∈ FilV PD (LL := LL) 
 
 theorem actR_idem (τ : K →ₐ[Qp] LL) (g : G) : actR PD LL g (idem F τ) = idem F τ := by
   obtain ⟨n, a, c, h, -⟩ := idem_repr F τ
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, map_sum]
+
+  rw [h, map_sum]
   simp
 
 theorem sm_idem_mem_FilV (τ : K →ₐ[Qp] LL) {a : ℤ} {x : V ⊗[Qp] F}

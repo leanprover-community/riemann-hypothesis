@@ -1,8 +1,60 @@
 module
 
-public import Mathlib
-public import Formalism.DistinguishedUnitIdeals.CoprimeProd
-public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GroundTheory
+public import Formalism.DistinguishedUnitIdeals.Statement
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.LinearAlgebra.FreeModule.PID
 
 @[expose] public section
 
@@ -233,13 +285,13 @@ theorem linExt_apply (g : (Fin r → O) →ₗ[O] O) (u : Fin r → PowerSeries 
 
 theorem linExt_cst (g : (Fin r → O) →ₗ[O] O) (v : Fin r → O) : linExt g (cst v) = C (g v) := by
   rw [linExt_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [cst, ← map_mul, ← map_sum]
+
+  simp_rw [cst, ← map_mul, ← map_sum]
   congr 1
   have key : ∀ i, v i * g (Pi.single i 1) = g (v i • Pi.single i 1) := fun i => by
     rw [LinearMap.map_smul, smul_eq_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [key, ← map_sum]
+
+  simp_rw [key, ← map_sum]
   congr 1
   ext j
   simp [Finset.sum_apply, Pi.single_apply]
@@ -249,7 +301,7 @@ theorem linExt_proj (u : Fin r → PowerSeries O) (j : Fin r) :
   rw [linExt_apply, Finset.sum_eq_single j]
   · simp
   · intro i _ hij
-    simp [Pi.single_apply, Ne.symm hij]
+    simp [Ne.symm hij]
   · intro h
     exact absurd (Finset.mem_univ j) h
 
@@ -359,9 +411,8 @@ theorem exists_const_decomp (ϖ : O) (hϖ : Irreducible ϖ) (F C : Submodule O (
       exact h1.symm
     refine ⟨t, ?_⟩
     rw [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Module.Basis.equivFun_self, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
-      Pi.single_apply]
+
+    simp only [map_sum, map_smul, Module.Basis.equivFun_self, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
   let Φ : _ → (Fin r → O) →ₗ[O] O := fun j =>
     LinearMap.proj j ∘ₗ snf.bM.equivFun.toLinearMap ∘ₗ F.mkQ
   have hΦ : ∀ j v, Φ j v = snf.bM.equivFun (F.mkQ v) j := fun j v => rfl
@@ -505,7 +556,7 @@ end Main
 
 section Proof
 
-set_option maxHeartbeats 4000000 in
+
 theorem descent_estimate_up_down : MUD := by
   intro O _ _ _ ϖ hϖ ℓ ell r p H b kind V hℓ hPS hsat hub s₀ s₁ h01 h1ell hk1 hk0 hthin c α β
     hαβ hnot y
@@ -695,7 +746,7 @@ theorem descent_estimate_up_down : MUD := by
             map_mul, map_pow] at hi ⊢
           rw [hLamE] at hi ⊢
           rw [hLL0]
-          simp only [pow_add, map_mul, map_pow] at hi ⊢
+          simp only [pow_add] at hi ⊢
           have hαβ' := hαβ
           rw [map_pow] at hαβ'
           linear_combination (C ϖ ^ c) * hi +

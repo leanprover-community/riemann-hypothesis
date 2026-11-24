@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReducedBases.TBInjective
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

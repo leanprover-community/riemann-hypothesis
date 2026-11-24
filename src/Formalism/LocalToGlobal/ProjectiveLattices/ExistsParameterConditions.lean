@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
 
 @[expose] public section
 

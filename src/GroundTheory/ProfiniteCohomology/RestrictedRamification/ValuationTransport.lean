@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
+public import Mathlib.RingTheory.Unramified.Locus
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Ramification
 
 @[expose] public section
 

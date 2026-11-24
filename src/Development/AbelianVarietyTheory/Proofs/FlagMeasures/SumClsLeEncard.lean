@@ -1,18 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermLat
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassOrbitsEqTsumFiber
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCommonStabiliserEqPairingMatrixStabiliserStatement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetFrameClassPropertiesStatement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerStabilizersCommensurableVolumeStatement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesPairingStabilizerBlockDiagonalStatement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LatticeStabilizerInfLeConjNormalisingSubgroupStatement
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerStabilizersCommensurableVolume
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCommonStabiliserEqPairingMatrixStabiliser
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetFrameClassProperties
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesPairingStabilizerBlockDiagonal
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassOrbitsEqTsumFiber
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LatticeStabilizerInfLeConjNormalisingSubgroup
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -67,28 +105,12 @@ theorem sameBlock_trans {E : Type} [CommRing E] (bs : List (Eˣ × ℕ+)) :
     · omega
     · exact Or.inr ⟨⟨h1.2, h2.2⟩, ih _ _ _ h1' h2'⟩
 
-theorem isUni_mul {E : Type} [CommRing E] {N : ℕ} {s u : Matrix (Fin N) (Fin N) E}
-    (hs : IsUni s) (hu : IsUni u) : IsUni (s * u) := by
-  refine ⟨fun i j hij => ?_, fun i => ?_⟩
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    rcases lt_or_ge l i with h | h
-    · rw [hs.1 i l h, zero_mul]
-    · rw [hu.1 l j (hij.trans_le h), mul_zero]
-  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
-    · rw [hs.2, hu.2, one_mul]
-    · intro l _ hl
-      rcases lt_or_gt_of_ne hl with h | h
-      · rw [hs.1 i l h, zero_mul]
-      · rw [hu.1 l i h, mul_zero]
-    · simp
-
 theorem apply_frame {E V : Type} [CommRing E] [AddCommGroup V] [Module E V] {N : ℕ}
     (g : V ≃ₗ[E] V) (f : Fin N → V) (s u : Matrix (Fin N) (Fin N) E)
     (hs : ∀ j, g (f j) = ∑ i, s i j • f i) (j : Fin N) :
     g (∑ i, u i j • f i) = ∑ i, (s * u) i j • f i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, hs, Matrix.mul_apply, Finset.smul_sum, Finset.sum_smul, smul_smul]
+
+  simp only [map_sum, map_smul, hs, Matrix.mul_apply, Finset.smul_sum, Finset.sum_smul, smul_smul]
   rw [Finset.sum_comm]
   simp only [mul_comm]
 
@@ -106,7 +128,7 @@ theorem isIntCls_smul {h : S.GLV} (hh : h ∈ S.St) {C : Set S.FrP} (hC : S.IsIn
     S.IsIntCls (h • C) := by
   obtain ⟨⟨n, hn, n', hn', rfl⟩, hI⟩ := hC
   refine ⟨⟨h * n, mul_mem hh.1 hn, h * n', mul_mem hh.2 hn', ?_⟩, ?_⟩
-  · rw [(GlobalTheory.T.hermitianDoubleCosetFrameClass_properties L r k S _ _).2.2 h]
+  · rw [(_root_.GlobalTheory.HL.FrameClass.frame_classes L r k S _ _).2.2 h]
     rfl
   · rintro _ ⟨p, hp, rfl⟩ a b
     have := hh.1.1.1 (p.2 b) (p.1 a)
@@ -127,12 +149,12 @@ theorem stab_le (g g' : Fin (r + 1) → S.V) :
     MulAction.stabilizer S.GLV (S.frameCls g g') ≤ stabL L (Submodule.span L.O (Set.range g)) := by
   intro h hh
   have h1 : h • S.frameCls g g' = S.frameCls g g' := hh
-  rw [(GlobalTheory.T.hermitianDoubleCosetFrameClass_properties L r k S _ _).2.2 h] at h1
+  rw [(_root_.GlobalTheory.HL.FrameClass.frame_classes L r k S _ _).2.2 h] at h1
   change h • Submodule.span L.O (Set.range g) = _
   rw [smul_span]
   refine le_antisymm ?_ ?_
-  · exact span_le_of_mem S (p := (_, _)) (h1 ▸ (GlobalTheory.T.hermitianDoubleCosetFrameClass_properties L r k S _ _).1)
-  · exact span_le_of_mem S (p := (g, g')) (h1.symm ▸ (GlobalTheory.T.hermitianDoubleCosetFrameClass_properties L r k S _ _).1)
+  · exact span_le_of_mem S (p := (_, _)) (h1 ▸ (_root_.GlobalTheory.HL.FrameClass.frame_classes L r k S _ _).1)
+  · exact span_le_of_mem S (p := (g, g')) (h1.symm ▸ (_root_.GlobalTheory.HL.FrameClass.frame_classes L r k S _ _).1)
 
 theorem matrix_of_mem {g : S.GLV} (hg : g ∈ S.K0) :
     ∃ s s' : Matrix (Fin (r + 1)) (Fin (r + 1)) E, IsUni s ∧ IsUni s' ∧ IsIntM L s ∧
@@ -140,8 +162,8 @@ theorem matrix_of_mem {g : S.GLV} (hg : g ∈ S.K0) :
       (∀ j, g (S.f j) = ∑ i, s i j • S.f i) ∧ ∀ j, g (S.f' j) = ∑ i, s' i j • S.f' i := by
   obtain ⟨s, hs, e⟩ := (FrameOnto.unipotent_onto L r k S).1 g hg.1.1.1
   obtain ⟨s', hs', e'⟩ := (FrameOnto.unipotent_onto L r k S).2.1 g hg.1.1.2
-  have hz := ((GlobalTheory.T.frames_commonStabiliser_eq_pairingMatrix_stabiliser L r k S).2 s s' hs hs').2 ⟨g, hg.1.1, e, e'⟩
-  have hb := ((GlobalTheory.T.hermitianFrames_pairingStabilizer_blockDiagonal L r k S).1 s s' hs hs' hz).1
+  have hz := ((_root_.GlobalTheory.HL.FrameStab.stab_eq L r k S).2 s s' hs hs').2 ⟨g, hg.1.1, e, e'⟩
+  have hb := ((_root_.GlobalTheory.HL.BlockStab.stabiliser_blockDiag L r k S).1 s s' hs hs' hz).1
   refine ⟨s, s', hs, hs', fun i j => ?_, fun i j h => (hb i j h).1, e, e'⟩
   have h1 : g • Submodule.span L.O (Set.range S.f) = Submodule.span L.O (Set.range S.f) := hg.1.2
   rw [smul_span] at h1
@@ -164,10 +186,10 @@ theorem sumCls_le_encard : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologica
   refine tsum_le_encard S.St S.K0 (fun _ h => h.1.1) S.IsIntCls _ S.wC fun C hC => ?_
   have hC' := hC
   obtain ⟨⟨n, hn, n', hn', rfl⟩, -⟩ := hC'
-  obtain ⟨h, hh, hle, u, hu, hub, e⟩ := GlobalTheory.T.latticeStabilizer_inf_le_conj_normalisingSubgroup L r k S n hn
+  obtain ⟨h, hh, hle, u, hu, hub, e⟩ := _root_.GlobalTheory.HL.StabConj.main L r k S n hn
   obtain ⟨u', hu', e'⟩ := (FrameOnto.unipotent_onto L r k S).2.1 (h⁻¹ * n')
     (S.N'.mul_mem (S.St.inv_mem hh).2 hn')
-  refine ⟨h⁻¹, inv_mem hh, (((GlobalTheory.T.commonStabilizer_stabilizers_commensurable_volume L r k S).2 _ hC.1).2.2.2 _ (inv_mem hh)).symm, ?_, ?_⟩
+  refine ⟨h⁻¹, inv_mem hh, (((_root_.GlobalTheory.HL.volSt L r k S).2 _ hC.1).2.2.2 _ (inv_mem hh)).symm, ?_, ?_⟩
   · rintro g ⟨g1, g2⟩
     have h1 : h * g * h⁻¹ ∈ MulAut.conj h • S.K0 := by
       refine hle ⟨S.St.mul_mem (S.St.mul_mem hh g1) (S.St.inv_mem hh), stab_le S _ (fun b => n' (S.f' b)) ?_⟩
@@ -177,13 +199,13 @@ theorem sumCls_le_encard : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologica
   · intro g hg
     obtain ⟨s, s', hs, hs', hi, hb, d, d'⟩ := matrix_of_mem S hg
     refine ⟨isIntCls_smul S hg.1.1 (isIntCls_smul S (S.St.inv_mem hh) hC), s * u, s' * u',
-      isUni_mul hs hu, isUni_mul hs' hu', fun i j hij => ?_, ?_⟩
+      _root_.GlobalTheory.HL.FrameStabLat.uni_mul hs hu, _root_.GlobalTheory.HL.FrameStabLat.uni_mul hs' hu', fun i j hij => ?_, ?_⟩
     · rw [Matrix.mul_apply]
       refine Subring.sum_mem _ fun l _ => ?_
       cases hl : sameBlock S.w.blocks i l
       · rw [hb i l hl, zero_mul]; exact zero_mem _
       · exact mul_mem (hi i l) (hub l j (sameBlock_trans _ _ _ _ hl hij))
-    · rw [(GlobalTheory.T.hermitianDoubleCosetFrameClass_properties L r k S _ _).2.2 h⁻¹, (GlobalTheory.T.hermitianDoubleCosetFrameClass_properties L r k S _ _).2.2 g]
+    · rw [(_root_.GlobalTheory.HL.FrameClass.frame_classes L r k S _ _).2.2 h⁻¹, (_root_.GlobalTheory.HL.FrameClass.frame_classes L r k S _ _).2.2 g]
       congr 1
       · funext j
         rw [e j, apply_frame g S.f s u d]

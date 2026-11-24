@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyFrobenius
+public import Mathlib.FieldTheory.SeparableDegree
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

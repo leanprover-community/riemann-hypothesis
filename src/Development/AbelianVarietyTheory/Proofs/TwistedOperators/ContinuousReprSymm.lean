@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsAuxiliaryVectorWittDec
 public import GroundTheory.GlobalFields.Adele.IntegersLattice
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapTop
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 
 @[expose] public section
 
@@ -21,10 +63,7 @@ namespace GlobalTheory.AscFinInhab
 
 variable {D : D7}
 
-theorem upSum_add' {ρ : ℕ} (A B : Mx D ρ ρ) : upSum (A + B) = upSum A + upSum B := by
-  simp only [upSum, Matrix.add_apply, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  split_ifs <;> simp
+alias upSum_add' := _root_.GlobalTheory.MixPer.upSum_add
 
 theorem upSum_one' {ρ : ℕ} : upSum (1 : Mx D ρ ρ) = 0 := by
   refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
@@ -33,7 +72,7 @@ theorem upSum_one' {ρ : ℕ} : upSum (1 : Mx D ρ ρ) = 0 := by
     intro hij; rw [hij] at h; omega
   · rfl
 
-theorem mt_one_ (V : HSp D) : Formalism.L2.Theta.mt V 1 = 1 := by simp [Formalism.L2.Theta.mt]
+alias mt_one_ := _root_.GlobalTheory.BesselCompare.mt_one
 
 section Cond
 
@@ -43,7 +82,7 @@ variable {V V₀ W W₀ : HSp D} {ρ σ : ℕ} {dV : HypDec V V₀ ρ} {dW : Hyp
 theorem _root_.GlobalTheory.AscFin.cond_one (hp : p.Is dV dW x ψ) (y : Mx D V₀.rank σ) : Cond dW p x y ψ (fun _ => True) 1 := by
   refine ⟨⟨1, 0, zero_mem _, ?_⟩, ?_, ?_⟩
   · intro i j
-    simp [mt_one_]
+    simp
   · intro N h1 h2 h3
     rw [inv_one, mt_one_, Matrix.one_mul] at h3
     have hdet : (1 + N).det = 1 := by
@@ -102,10 +141,6 @@ theorem infPart_tmul (r : AF D.host.F) (e : D.host.E) :
     infPart D (r ⊗ₜ[D.host.F] e) = fstA D.host.F r ⊗ₜ[D.host.F] e := by
   simp only [infPart, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, Algebra.TensorProduct.map_tmul, AlgHom.id_apply]
 
-theorem finPart_tmul (r : AF D.host.F) (e : D.host.E) :
-    finPart D (r ⊗ₜ[D.host.F] e) = sndA D.host.F r ⊗ₜ[D.host.F] e := by
-  simp only [finPart, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, Algebra.TensorProduct.map_tmul, AlgHom.id_apply]
-
 theorem bInf_repr_infPart (a : AE D) (k : Fin (dimE D)) :
     (bInf D).repr (infPart D a) k = fstA D.host.F ((bAE D).repr a k) := by
   induction a using TensorProduct.induction_on with
@@ -126,7 +161,7 @@ theorem bFin_repr_finPart (a : AE D) (k : Fin (dimE D)) :
     rw [map_add (finPart D), LinearEquiv.map_add (e := _), LinearEquiv.map_add (e := _), Finsupp.add_apply, Finsupp.add_apply, ha, hb]
     exact (map_add (sndA D.host.F) _ _).symm
   | tmul r e =>
-    rw [finPart_tmul, bFin, bAE, Algebra.TensorProduct.basis_repr_tmul,
+    rw [_root_.GlobalTheory.LatVac.finPart_tmul, bFin, bAE, Algebra.TensorProduct.basis_repr_tmul,
       Algebra.TensorProduct.basis_repr_tmul]
     simp [Finsupp.mapRange_apply, map_mul, AlgHom.commutes]
 

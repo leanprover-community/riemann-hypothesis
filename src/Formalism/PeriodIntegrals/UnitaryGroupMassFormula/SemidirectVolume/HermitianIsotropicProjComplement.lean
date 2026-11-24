@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjGen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,15 +65,15 @@ theorem h_e_pX (H : D.Hyp) (b : Fin r) (u : n → A) : D.h (D.e b) (D.pX u) = 0 
   have key : ∀ x y, D.h x y = D.hL x y := fun _ _ => rfl
   have H3 : ∀ a c, D.hL (D.e a) (D.e c) = 0 := fun a c => H.3 a c
   rw [key]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Dat.pX.eq_1, LinearMap.sum_apply, LinearMap.smulRight_apply, map_sum,
-    map_smul, H3, smul_zero, Finset.sum_const_zero]
+
+  simp only [Dat.pX.eq_1, LinearMap.sum_apply, LinearMap.smulRight_apply, map_sum,
+  map_smul, H3, smul_zero, Finset.sum_const_zero]
 
 theorem h_pX_left {y : n → A} (hy : ∀ b, D.h (D.e b) y = 0) (u : n → A) : D.h (D.pX u) y = 0 := by
   have hy' : ∀ b, ∑ x, ∑ x_1, D.σA (D.e b x) * D.JA x x_1 * y x_1 = 0 := fun b => hy b
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Dat.h, hform, Dat.pX.eq_1, LinearMap.sum_apply, LinearMap.smulRight_apply,
-    Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.sum_mul]
+
+  simp only [Dat.h, hform, Dat.pX.eq_1, LinearMap.sum_apply, LinearMap.smulRight_apply,
+  Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.sum_mul]
   simp_rw [Finset.sum_comm (s := (Finset.univ : Finset n)) (t := (Finset.univ : Finset (Fin r)))]
   refine Finset.sum_eq_zero fun d _ => ?_
   rw [← mul_zero (D.σA ((D.hL (D.f d)) u)), ← hy' d, Finset.mul_sum]
@@ -48,9 +88,9 @@ theorem h_pX_right (H : D.Hyp) {y : n → A} (hy : ∀ b, D.h (D.e b) y = 0) (u 
 
 theorem S_pX {S : (n → A) →ₗ[A] (n → A)} (hS : ∀ a, S (D.e a) = D.e a) (u : n → A) :
     S (D.pX u) = D.pX u := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Dat.pX.eq_1, LinearMap.sum_apply, LinearMap.smulRight_apply, map_sum,
-    map_smul, hS]
+
+  simp only [Dat.pX.eq_1, LinearMap.sum_apply, LinearMap.smulRight_apply, map_sum,
+  map_smul, hS]
 
 theorem h_e_S {S : (n → A) →ₗ[A] (n → A)} (hS : D.FixEZ S) (hU : D.Uni S) (b : Fin r)
     (w : n → A) : D.h (D.e b) (S w) = D.h (D.e b) w := by

@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.LocalFourierHaar
+public import GroundTheory.LocalFields.PadicLogSeries
+public import Mathlib.Analysis.Complex.Circle
 public import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
+public import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 
 @[expose] public section
 

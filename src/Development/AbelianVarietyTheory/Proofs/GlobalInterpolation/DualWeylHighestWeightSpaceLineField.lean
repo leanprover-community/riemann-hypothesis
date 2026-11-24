@@ -1,13 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
-public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
-public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-public import Formalism.GradedWeylDivisibility.FinalB
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+public import Formalism.GradedWeylDivisibility.StatementA
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DualWeylEqEvalAtOneSmulExtremalOfRowWeight
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelPrimePowSmulMemValueLatticeErase
+import Formalism.GradedWeylDivisibility.FinalB
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
 
 @[expose] public section
 
@@ -35,9 +71,9 @@ theorem rowDiv_raise_eq_zero (k : Type) [Field k] (N : ℕ) (ν : Fin N → ℕ)
   have hrow : ∀ i, ((rowDeg m i : ℕ) : ℤ) = (ν i : ℤ) + (j : ℤ) * ((Pi.single a (1:ℤ) : Fin N → ℤ) i - (Pi.single b (1:ℤ) : Fin N → ℤ) i) := by
     intro i
     have := congrFun e i
-    rw [GlobalTheory.LvT.KerLat.weight_rowZ, GlobalTheory.LvT.KerLat.weight_rowW] at this
+    rw [GlobalTheory.LvT.KerLat.weight_rowZ, _root_.Formalism.GradedWeylDivisibility.ldrow_weight_rowW] at this
     rw [this]
-    simp [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    simp [Pi.add_apply]
   have hcast : ((∑ i : Fin N with i.val < a.val + 1, rowDeg m i : ℕ) : ℤ) =
       ((∑ i : Fin N with i.val < a.val + 1, ν i : ℕ) : ℤ) + j := by
     push_cast
@@ -46,7 +82,7 @@ theorem rowDiv_raise_eq_zero (k : Type) [Field k] (N : ℕ) (ν : Fin N → ℕ)
     have ha : (∑ i : Fin N with i.val < a.val + 1, (Pi.single a (1:ℤ) : Fin N → ℤ) i) = 1 := by
       rw [Finset.sum_eq_single a]
       · simp
-      · intro i _ hi; simp [Pi.single_apply, hi]
+      · intro i _ hi; simp [hi]
       · intro h; simp at h
     have hb : (∑ i : Fin N with i.val < a.val + 1, (Pi.single b (1:ℤ) : Fin N → ℤ) i) = 0 := by
       apply Finset.sum_eq_zero
@@ -56,7 +92,7 @@ theorem rowDiv_raise_eq_zero (k : Type) [Field k] (N : ℕ) (ν : Fin N → ℕ)
         simp at hi
         have : a.val < i.val := hab
         omega
-      simp [Pi.single_apply, this]
+      simp [this]
     rw [ha, hb]; ring
   have hj' : (1 : ℤ) ≤ j := by exact_mod_cast hj
   have : ((∑ i : Fin N with i.val < a.val + 1, rowDeg m i : ℕ) : ℤ) ≤
@@ -77,7 +113,7 @@ theorem hw_line_field : ∀ (k : Type) [Field k] (N : ℕ) (ν : Fin N → ℕ),
   obtain ⟨m, hm⟩ := ne_zero_iff.mp (hwNe k N N le_rfl ν)
   refine ⟨AddMonoidAlgebra.coeff f m / AddMonoidAlgebra.coeff (hw k le_rfl ν) m, ?_⟩
   have hcm := congrArg (AddMonoidAlgebra.coeff · m) hc
-  rw [coeff_map, coeff_smul, ← lclosedeq_hw_map φ, coeff_map, smul_eq_mul] at hcm
+  rw [coeff_map, MvPolynomial.coeff_smul, ← lclosedeq_hw_map φ, coeff_map, smul_eq_mul] at hcm
   have hφ : φ (AddMonoidAlgebra.coeff (hw k le_rfl ν) m) ≠ 0 := (map_ne_zero φ).mpr hm
   have hcv : c = φ (AddMonoidAlgebra.coeff f m / AddMonoidAlgebra.coeff (hw k le_rfl ν) m) := by
     rw [map_div₀, hcm, mul_div_cancel_right₀ _ hφ]

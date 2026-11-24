@@ -1,10 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsExamples
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivPushForward
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContractedDim
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRelevantPrimeDimGe
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 
 @[expose] public section
 

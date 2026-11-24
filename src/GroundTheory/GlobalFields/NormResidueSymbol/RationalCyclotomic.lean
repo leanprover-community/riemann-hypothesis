@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.Rational
 public import GroundTheory.GlobalFields.CyclotomicCharacters.ProfinitePadic
 

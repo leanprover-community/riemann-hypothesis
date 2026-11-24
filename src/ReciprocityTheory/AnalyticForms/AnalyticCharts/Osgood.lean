@@ -1,6 +1,12 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.ContinuousMap
+public import Mathlib.MeasureTheory.Integral.TorusIntegral
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.OsgoodA
+public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

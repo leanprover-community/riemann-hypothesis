@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.DataCoeff
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.LocalRingCardinality.Params
 
 @[expose] public section
 

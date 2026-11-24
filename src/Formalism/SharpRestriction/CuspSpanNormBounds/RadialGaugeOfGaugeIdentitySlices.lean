@@ -1,38 +1,58 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
-public import Formalism.SharpRestriction.CuspSpanNormBounds.OscillatoryIntegralBounds
-public import Formalism.HermitianCurvature.StatementWd
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LeSCSCl
-public import Formalism.SharpRestriction.ParConsts
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRWeyl
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleGD
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleSS
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleInv
-public import Formalism.FormalDegreeBessel.FinalIO
-public import Formalism.FormalDegreeBessel.FinalBF
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointnessPolynomiallyBounded
+public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
+public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
+public import Formalism.FormalDegreeBessel.FinalG
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarUniquenessConjugation
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormBallVolumes
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarScaling
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationInvarianceEverySetting
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationScalesHeisenbergMeasure
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaBOfComponents
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChangeOfVariablesXy
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferProductMonic
-public import Formalism.HermitianCurvature.StatementB
 public import Formalism.RealPlaceAnalysis.FinalF
-public import Formalism.FormalDegreeBessel.FinalG
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
-public import Formalism.HermitianCurvature.StatementTC
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RecursionWithDensities
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianCurvature.StatementI
+import Formalism.HermitianCurvature.StatementR
+import Formalism.HermitianCurvature.StatementTA
+import Formalism.HermitianCurvature.StatementWd
+import Formalism.SharpRestriction.CuspSpanNormBounds.AuxiliarySlotStates
+import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
+import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
+import Formalism.SharpRestriction.CuspSpanNormBounds.OscillatoryIntegralBounds
+public import Formalism.SharpRestriction.CuspSpanNormBounds.WeightedMirrorLevelOperator
 
 @[expose] public section
 

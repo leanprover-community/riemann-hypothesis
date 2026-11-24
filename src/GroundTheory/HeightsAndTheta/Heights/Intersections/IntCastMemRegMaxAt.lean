@@ -1,13 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreMore
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingLocal
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreTer
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingInj
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreFurther
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisAlt
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingLocal
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisAlt
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingLocal
 
 @[expose] public section
 

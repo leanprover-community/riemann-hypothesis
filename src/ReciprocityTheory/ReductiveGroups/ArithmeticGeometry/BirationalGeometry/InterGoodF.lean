@@ -2,6 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodB
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -27,7 +28,7 @@ theorem weight_blkWt_apply (m : (Σ k, ι k) →₀ ℕ) (k : K) :
   refine (Finset.sum_eq_single k ?_ ?_).trans ?_
   · intro k' _ hk'
     refine Finset.sum_eq_zero fun i _ => ?_
-    simp [blkWt, Finsupp.single_apply, hk']
+    simp [blkWt, hk']
   · simp
   · refine Finset.sum_congr rfl fun i _ => ?_
     simp [blkWt]
@@ -117,12 +118,12 @@ theorem weight_sWt_apply {r : ℕ} (n : (Fin r ⊕ {k // k ≠ k0}) →₀ ℕ) 
     · subst h
       rw [dite_eq_left rfl]
       refine Finset.sum_eq_zero fun k' _ => ?_
-      simp [sWt, Finsupp.single_apply, k'.2]
+      simp [sWt, k'.2]
     · rw [dite_eq_right h, Finset.sum_eq_single ⟨k, h⟩]
       · simp [sWt]
       · intro k' _ hk'
         have : k'.1 ≠ k := fun e => hk' (Subtype.ext e)
-        simp [sWt, Finsupp.single_apply, this]
+        simp [sWt, this]
       · simp
 
 theorem inr_eq_of_weight_eq {r : ℕ} {n n0 : (Fin r ⊕ {k // k ≠ k0}) →₀ ℕ}

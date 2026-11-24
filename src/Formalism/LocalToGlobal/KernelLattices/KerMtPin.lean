@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.KernelLattices.KerMemPin
+public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
 
 @[expose] public section
 

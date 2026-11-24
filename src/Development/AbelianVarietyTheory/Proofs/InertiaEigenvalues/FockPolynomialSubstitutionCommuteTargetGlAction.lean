@@ -1,17 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LengthPosOfPosDef
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdjFormula
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ParamsEx
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksStage
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.GaussianBinomialClosedForm
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ToUnitsCompToCircle
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ActOfMemGfC
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RaisingLoweringOperators
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TranslateMemCoefLatFn
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.InfinityTypes
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ParamsEx
 
 @[expose] public section
 
@@ -43,19 +77,19 @@ theorem pderiv_fockSubst_X (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.wha
     (u : FVar D m n) :
     pderiv (τ, i, b) (fockSubst p g (X u)) = if u.1 = τ ∧ u.2.1 = i then C (rowMat p g τ i u.2.2 b) else 0 := by
   rw [fockSubst_X]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Derivation.leibniz, pderiv_C, smul_zero, add_zero, pderiv_X, smul_eq_mul]
+
+  simp only [map_sum, Derivation.leibniz, pderiv_C, pderiv_X, smul_eq_mul]
   split_ifs with h
   · obtain ⟨h1, h2⟩ := h
     subst h1; subst h2
     rw [Finset.sum_eq_single b]
-    · simp [Pi.single_apply]
-    · intro c _ hc; simp [Pi.single_apply, Prod.ext_iff, hc]
+    · simp
+    · intro c _ hc; simp [Prod.ext_iff, hc]
     · simp
   · refine Finset.sum_eq_zero fun c _ => ?_
     have : (u.1, u.2.1, c) ≠ (τ, i, b) := by
       intro e; simp [Prod.ext_iff] at e; exact h ⟨e.1, e.2.1⟩
-    simp [Pi.single_apply, this]
+    simp [this]
 
 theorem chain_X (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) (i : Fin m) (c : Fin n)
     (C' : Matrix (Fin n) (Fin n) ℂ) (hC : rowMat p g τ i * C' = 1) (u : FVar D m n) :
@@ -66,8 +100,8 @@ theorem chain_X (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) (
   by_cases h : u.1 = τ ∧ u.2.1 = i
   · simp only [if_pos h]
     have e : (∑ b, C' b c • C (rowMat p g τ i u.2.2 b) : PolF D m n) = C ((rowMat p g τ i * C') u.2.2 c) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Matrix.mul_apply, map_sum]
+
+      rw [Matrix.mul_apply, map_sum]
       refine Finset.sum_congr rfl fun b _ => ?_
       rw [smul_eq_C_mul, ← map_mul, mul_comm]
     rw [e, hC]
@@ -78,17 +112,17 @@ theorem chain_X (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) (
     by_cases h3 : u3 = c
     · subst h3; simp
     · have : ((u1, u2, u3) : FVar D m n) ≠ (u1, u2, c) := by simp [h3]
-      simp [Pi.single_apply, this, Matrix.one_apply, h3]
+      simp [this, h3]
   · simp only [if_neg h, smul_zero, Finset.sum_const_zero]
     have : u ≠ (τ, i, c) := by
       rintro rfl; exact h ⟨rfl, rfl⟩
-    simp [Pi.single_apply, this]
+    simp [this]
 
 theorem chain (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) (i : Fin m) (c : Fin n)
     (C' : Matrix (Fin n) (Fin n) ℂ) (hC : rowMat p g τ i * C' = 1) (P : PolF D m n) :
     fockSubst p g (pderiv (τ, i, c) P) = ∑ b, C' b c • pderiv (τ, i, b) (fockSubst p g P) := by
   induction P using MvPolynomial.induction_on with
-  | C a => simp [pderiv_C]
+  | C a => simp
   | add P Q hP hQ =>
     simp only [map_add (f := _), hP, hQ, smul_add, Finset.sum_add_distrib]
   | mul_X P u ih =>

@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StBoundedInverseCompact
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
@@ -81,12 +83,12 @@ theorem exists_rightInv (v : Basis ι E W) {n : ℕ} {e : Fin n → W}
   refine ⟨c, fun w => ?_⟩
   ext k i
   have h1 : ∑ a, v.repr (e a) k * c i a = v.repr (v i) k := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hc i, map_sum, Finsupp.finsetSum_apply]
+
+    rw [← hc i, map_sum, Finsupp.finsetSum_apply]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [map_smul, Finsupp.smul_apply, smul_eq_mul, mul_comm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mul_apply, of_apply, vecAt, ← map_mul, ← map_sum, h1, Basis.repr_self, one_apply]
+
+  simp only [Matrix.mul_apply, of_apply, vecAt, ← map_mul, ← map_sum, h1, Basis.repr_self]
   by_cases hki : k = i
   · subst hki
     simp

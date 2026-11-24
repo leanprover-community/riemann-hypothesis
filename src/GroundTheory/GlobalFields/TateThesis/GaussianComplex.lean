@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.Gaussian
+public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 @[expose] public section
 
@@ -51,21 +51,12 @@ theorem complexFourier_complexGaussian_zero :
     complexFourier (complexGaussian 0) = complexGaussian 0 := by
   funext w
   rw [complexFourier_eq_two_mul_fourier]
-  have hb : 0 < ((2 * π : ℝ) : ℂ).re := by simp [Real.pi_pos]
-  have h := fourier_gaussian_innerProductSpace (V := ℂ) hb (2 * conj w)
-  have e : complexGaussian 0 = fun v : ℂ ↦ Complex.exp (-((2 * π : ℝ) : ℂ) * (‖v‖ : ℂ) ^ 2) := by
-    funext v; rw [complexGaussian_zero]; push_cast; ring_nf
-  rw [e, h, Complex.finrank_real_complex]
+  have hb : 0 < (2 * π : ℂ).re := by simp [Real.pi_pos]
   have hpi : (π : ℂ) ≠ 0 := ofReal_ne_zero.mpr Real.pi_ne_zero
-  have hn : ‖2 * conj w‖ = 2 * ‖w‖ := by simp
-  rw [hn]
-  have h1 : ((π : ℂ) / ((2 * π : ℝ) : ℂ)) ^ (((2 : ℕ) : ℂ) / 2) = 1 / 2 := by
-    have : ((2 : ℕ) : ℂ) / 2 = 1 := by norm_num
-    rw [this, cpow_one]; push_cast; field_simp
-  rw [h1]
-  push_cast
-  rw [← mul_assoc, show (2 : ℂ) * (1 / 2) = 1 by norm_num, one_mul]
-  congr 1
+  have hg : complexGaussian 0 = fun z : ℂ ↦ Complex.exp (-(2 * π) * (‖z‖ : ℂ) ^ 2) :=
+    funext fun z ↦ by rw [complexGaussian_zero, neg_mul (2 : ℂ) π]
+  rw [hg, fourier_gaussian_innerProductSpace (V := ℂ) hb, Complex.finrank_real_complex]
+  norm_num [norm_mul, Complex.norm_conj, hpi]
   field_simp
 
 theorem integrable_norm_pow_mul_exp_neg_two_pi_mul_sq (k : ℕ) :
@@ -75,7 +66,7 @@ theorem integrable_norm_pow_mul_exp_neg_two_pi_mul_sq (k : ℕ) :
   refine h ?_
   rw [Complex.finrank_real_complex]
   have h2 := integrableOn_rpow_mul_exp_neg_mul_sq (b := 2 * π) (by positivity)
-    (s := ((k + 1 : ℕ) : ℝ)) (by have := Nat.cast_nonneg (α := ℝ) (k + 1); linarith)
+    (s := ((k + 1 : ℕ) : ℝ)) (neg_one_lt_zero.trans_le (Nat.cast_nonneg _))
   refine h2.congr_fun (fun y _ ↦ ?_) measurableSet_Ioi
   simp only [Real.rpow_natCast, smul_eq_mul]
   ring
@@ -114,10 +105,8 @@ theorem complexGaussian_mul_zpow {z : ℂ} (hz : z ≠ 0) (m : ℤ) :
   · obtain ⟨n, hn'⟩ : ∃ n : ℕ, m = -(n : ℤ) := ⟨m.natAbs, by omega⟩
     subst hn'
     simp only [Int.natAbs_neg, Int.natAbs_natCast, neg_neg, zpow_natCast, div_pow]
-    have hc : conj z * z = (‖z‖ : ℂ) ^ 2 := by
-      rw [mul_comm, mul_conj, normSq_eq_norm_sq]; push_cast; ring
     have : conj z ^ n * z ^ n = (‖z‖ : ℂ) ^ n * (‖z‖ : ℂ) ^ n := by
-      rw [← mul_pow, hc, ← pow_mul, ← pow_add]; ring_nf
+      rw [← mul_pow, conj_mul' z, sq, mul_pow]
     field_simp
     linear_combination this
 

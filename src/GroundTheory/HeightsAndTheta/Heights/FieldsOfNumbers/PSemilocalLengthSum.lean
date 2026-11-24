@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreFinite
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocalRing
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFiniteAlgebraLengthSum
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalMaxIdeals
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalFiniteRank
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree
 
 @[expose] public section
 
@@ -19,7 +20,7 @@ noncomputable section
 universe u
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem SemilocalLengthSum.proof (h1 : FibreFinite.Statement.{u})
     (h2 : SemilocalFiniteRank.Statement.{u}) (h3 : DegZeroLocalRing.Statement.{u})
     (h4 : FiniteAlgebraLengthSum.Statement.{u}) (h5 : SemilocalMaxIdeals.Statement.{u}) :

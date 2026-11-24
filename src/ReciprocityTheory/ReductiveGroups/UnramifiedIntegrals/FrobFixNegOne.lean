@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.KurDefs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section
 

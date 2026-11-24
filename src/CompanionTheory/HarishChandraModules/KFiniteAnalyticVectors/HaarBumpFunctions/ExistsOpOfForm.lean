@@ -1,6 +1,50 @@
 module
 
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.FinOfPI
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.InnerProductSpace.Continuous
+public import Mathlib.Analysis.InnerProductSpace.LinearMap
+public import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 @[expose] public section
 
@@ -18,7 +62,7 @@ omit [CompleteSpace H] in
 theorem inner_map_left (hiso : ∀ g v, ‖σ g v‖ = ‖v‖) (g : G) (v w : H) : ⟪σ g v, w⟫_ℂ = ⟪v, σ g⁻¹ w⟫_ℂ := by
   have h := (⟨(σ g : H →ₗ[ℂ] H), hiso g⟩ : H →ₗᵢ[ℂ] H).inner_map_map v (σ g⁻¹ w)
   have e : σ g (σ g⁻¹ w) = w := by
-    rw [← ContinuousLinearMap.mul_apply, ← map_mul, mul_inv_cancel, map_one]; rfl
+    rw [← mul_apply_eq_comp, ← map_mul, mul_inv_cancel, map_one]; rfl
   rw [← h]
   show _ = ⟪σ g v, σ g (σ g⁻¹ w)⟫_ℂ
   rw [e]
@@ -105,7 +149,7 @@ theorem exists_op_of_form (hiso : ∀ g v, ‖σ g v‖ = ‖v‖) (hiso' : ∀ 
     show ⟪σ g p.2, x⟫_ℂ = ⟪σ' g p.1, w⟫_ℂ
     rw [inner_map_left hiso, inner_map_left hiso']
     refine hp _ (hS _ x hx) _ fun y hy => ?_
-    rw [← hB g _ (hS _ x hx) y hy, ← inner_map_left hiso', ← hw _ (hS' g y hy), ← ContinuousLinearMap.mul_apply,
+    rw [← hB g _ (hS _ x hx) y hy, ← inner_map_left hiso', ← hw _ (hS' g y hy), ← mul_apply_eq_comp,
       ← map_mul, mul_inv_cancel, map_one]
     rfl
   obtain ⟨T, hT, hΓ⟩ := exists_graph hiso hiso' hs Γ hcl hinv (y₀ := y₀) (z₀ := z₀)

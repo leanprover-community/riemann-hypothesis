@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreRest
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsBlockRatioAlg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockRatioAlg
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -78,12 +79,12 @@ theorem ArithmeticIntersectionChartFinite.of_blockRatioAlg (hR : BlockRatioAlg.S
     rw [h0, Polynomial.coeff_zero] at this
     exact aeval_ne_zero_of_not_mem G hAm this.symm
   · have hsum := aeval_eq_zero_of_mem G hmem
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow, aeval_X, aeval_rename_eq] at hsum
+
+    simp only [map_sum, map_mul, map_pow, aeval_X, aeval_rename_eq] at hsum
     have hpow : G.x' c ^ m ≠ 0 := pow_ne_zero _ hc0
     unfold coeffPoly
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow, Polynomial.aeval_C, Polynomial.aeval_X]
+
+    simp only [map_sum, map_mul, map_pow, Polynomial.aeval_C, Polynomial.aeval_X]
     apply (mul_left_inj' hpow).mp
     rw [zero_mul, Finset.sum_mul, ← hsum]
     refine Finset.sum_congr rfl fun i _ => ?_

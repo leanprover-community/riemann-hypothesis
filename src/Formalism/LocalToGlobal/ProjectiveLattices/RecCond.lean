@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
+public import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
+public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 
 @[expose] public section
 

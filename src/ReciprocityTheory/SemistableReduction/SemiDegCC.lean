@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
-public import ReciprocityTheory.SemistableReduction.SemiDegCB
 public import Lemmata.MiscLemmasR.Imports
 
 @[expose] public section
@@ -21,16 +20,16 @@ theorem hermForm_smul_smul {K : Type} [Field K] [NumberField K] {r : ℕ} (S : H
 theorem hermForm_sum_left {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
     {ι : Type} (s : Finset ι) (u : ι → Fin r → K) (w : Fin r → K) :
     S.h (∑ i ∈ s, u i) w = ∑ i ∈ s, S.h (u i) w := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [HermForm.h, Finset.sum_apply, map_sum, Finset.sum_mul]
+
+  simp only [HermForm.h, Finset.sum_apply, map_sum, Finset.sum_mul]
   rw [Finset.sum_comm (s := s)]
   refine Finset.sum_congr rfl fun a _ => ?_
   exact Finset.sum_comm
 
 theorem hermForm_conj {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
     (u w : Fin r → K) : S.c (S.h u w) = S.h w u := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [HermForm.h, map_sum, map_mul, S.c_invol, S.G_herm]
+
+  simp only [HermForm.h, map_sum, map_mul, S.c_invol, S.G_herm]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 

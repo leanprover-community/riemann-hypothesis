@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingLocal
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingFrac
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

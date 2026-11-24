@@ -156,8 +156,8 @@ theorem h_sum_left {ι : Type} (s : Finset ι) (x : ι → V) (y : V) :
 
 theorem h_sum_right {ι : Type} (s : Finset ι) (x : V) (y : ι → V) :
     H.h x (∑ i ∈ s, y i) = ∑ i ∈ s, H.h x (y i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [H.h_herm, h_sum_left, map_sum]
+
+  rw [H.h_herm, h_sum_left, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← H.h_herm]
 

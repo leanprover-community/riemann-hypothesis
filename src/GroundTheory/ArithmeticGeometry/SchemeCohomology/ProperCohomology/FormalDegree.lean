@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesNatural
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalIdealMul
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.CechFamily
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalIdeal
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSheaf
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

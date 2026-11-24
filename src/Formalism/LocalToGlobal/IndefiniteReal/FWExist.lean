@@ -2,6 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FWTie
 public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
 
 @[expose] public section
 
@@ -45,8 +48,8 @@ theorem extB_apply (σ : L →+* ℂ) (w : Fin n → H) (x : Fin n → L) : extB
 theorem extB_crd (σ : L →+* ℂ) (b : Basis (Fin n) K C) (jK : C →ₛₗ[σ.comp (algebraMap K L)] H) (f : C) :
     extB σ (fun k => jK (b k)) (crd L b f) = jK f := by
   conv_rhs => rw [← b.sum_repr f]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, extB_apply]
+
+  rw [map_sum, extB_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_smulₛₗ, crd_apply]
   rfl
@@ -173,8 +176,8 @@ theorem rhoIs_rhoB (σ : L →+* ℂ) (b : Basis (Fin n) K C) (jK : C →ₛₗ[
     simp only [crd_basis]
     exact pi_eq_sum_univ' x
   rw [hx]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smulₛₗ, Finset.smul_sum, RingHom.id_apply, rhoB_crd, extB_crd, h]
+
+  simp only [map_sum, map_smulₛₗ, Finset.smul_sum, RingHom.id_apply, rhoB_crd, extB_crd, h]
   exact Finset.sum_congr rfl fun k _ => smul_comm _ _ _
 
 end Gen

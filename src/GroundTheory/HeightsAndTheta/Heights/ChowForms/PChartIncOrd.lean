@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartIncOrd
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocalOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -49,8 +49,8 @@ theorem toInc_mk (x : MvPolynomial (Fin n) F) :
     toInc I t e (mkQ I t x) = chartX I t e x := rfl
 
 theorem sum_tQ : (∑ m, mkQ I t (C (t m) * X m)) = 1 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, ← map_one (mkQ I t), Ideal.Quotient.eq]
+
+  rw [← map_sum, ← map_one (mkQ I t), Ideal.Quotient.eq]
   exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self _)
 
 theorem sum_tS : (∑ m, chartX I t e (C (t m) * X m)) = 1 := by
@@ -60,8 +60,8 @@ theorem sum_tS : (∑ m, chartX I t e (C (t m) * X m)) = 1 := by
 
 theorem sum_uS (i : Fin e) :
     (∑ m, mkS I t e (X (Sum.inr (i, m)) * X (Sum.inl m))) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum]
+
+  rw [← map_sum]
   exact mkS_eq_zero I t e (Ideal.mem_sup_right (Ideal.subset_span ⟨i, rfl⟩))
 
 def fwd : MvPolynomial (Fin e × Fin n) (ChartQ I t) →+* MvPolynomial (Fin e) (ChartInc I t e) :=
@@ -138,8 +138,8 @@ theorem sum_fwd (i : Fin e) :
       C (chartX I t e (X l))) = (X i : MvPolynomial (Fin e) (ChartInc I t e)) := by
   have hu := congrArg (C : ChartInc I t e →+* MvPolynomial (Fin e) (ChartInc I t e)) (sum_uS I t e i)
   have ht := congrArg (C : ChartInc I t e →+* MvPolynomial (Fin e) (ChartInc I t e)) (sum_tS I t e)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_one, map_zero] at hu ht
+
+  simp only [map_sum, map_mul, map_one, map_zero] at hu ht
   have hX : ∀ l, chartX I t e (X l) = mkS I t e (X (Sum.inl l)) := fun l => by
     rw [chartX_apply, rename_X]
   simp only [hX] at ht ⊢

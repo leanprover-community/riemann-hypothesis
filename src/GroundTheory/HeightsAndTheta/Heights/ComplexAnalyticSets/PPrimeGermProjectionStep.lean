@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeGermProjectionStep
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermGeneralCoordinates
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
@@ -47,8 +47,8 @@ theorem affineGerm_eq_eval₂ {σ : Type} [Fintype σ] {d : ℕ} (w : σ → ℂ
   change ∑ i, Germ.coeRingHom _ ((fun _ : Fin d → ℂ => L (fun j => if i = j then 1 else 0)) ∘ A) *
       Germ.coeRingHom _ (fun z : σ → ℂ => z i) + Germ.coeRingHom _ ((fun _ : Fin d → ℂ => c) ∘ A) =
     Germ.coeRingHom _ (fun z : σ → ℂ => L z + c)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← map_mul, ← map_sum, ← map_add (f := _)]
+
+  simp only [← map_mul, ← map_sum, ← map_add (f := _)]
   congr 1
   funext z
   have hL := (L : (σ → ℂ) →ₗ[ℂ] ℂ).pi_apply_eq_sum_univ z
@@ -123,8 +123,8 @@ theorem germ_division_after_coordinates (hD : WeierstrassDivision.Statement)
   change (↑h : Germ (𝓝 w) ℂ) = Germ.coeRingHom _ (fun z => q (M (z - w))) * Germ.coeRingHom _ f +
     ∑ j : Fin n, Germ.coeRingHom _ ((fun u => a j (u - π w)) ∘ π) *
       Germ.coeRingHom _ (fun z : σ → ℂ => T z + -T w) ^ (j : ℕ)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← map_mul, ← map_pow, ← map_sum, ← map_add (f := _)]
+
+  simp only [← map_mul, ← map_pow, ← map_sum, ← map_add (f := _)]
   refine Germ.coe_eq.2 ?_
   filter_upwards [hev'] with z hz
   simp [hz, Finset.sum_apply]
@@ -224,8 +224,8 @@ theorem isFiniteGermProjection_comp {σ τ : Type} [Fintype σ] [Fintype τ] (w 
         rw [e]
         exact hb
       have h0 := Ideal.Quotient.eq_zero_iff_mem.2 hS
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_add (f := _), map_sum, map_pow] at h0
+
+      rw [map_add (f := _), map_sum, map_pow] at h0
       simp only [map_mul, map_pow] at h0
       rw [Polynomial.eval₂_add, Polynomial.eval₂_X_pow, Polynomial.eval₂_finsetSum]
       simp only [Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_X_pow]
@@ -236,8 +236,8 @@ theorem isFiniteGermProjection_comp {σ τ : Type} [Fintype σ] [Fintype τ] (w 
     intro ψ
     obtain ⟨a, ha⟩ := hdiv ψ
     have hψ : Ideal.Quotient.mk P ψ = ∑ j : Fin n, Ideal.Quotient.mk P (ι (a j)) * Ideal.Quotient.mk P (affineGerm w T c) ^ (j : ℕ) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Ideal.Quotient.eq.2 ha, map_sum]
+
+      rw [Ideal.Quotient.eq.2 ha, map_sum]
       simp only [map_mul, map_pow]
     rw [hψ]
     exact ⟨Subalgebra.sum_mem _ fun j _ => Subalgebra.mul_mem _ (hR (a j)).1

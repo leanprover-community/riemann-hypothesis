@@ -1,6 +1,59 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.MemXspIff
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.IsUnitDetOfMemGV
+public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.IsotropicSubspaceEqPrimed
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFlagVector
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFdGramCut
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.BigCellVanishingOfCommute
 
 @[expose] public section
 
@@ -20,10 +73,6 @@ lemma mv_sum {ι : Type*} (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)
     (v : ι → Fin (2 * r + k + 1) → ℂ) : M *ᵥ (∑ i ∈ s, v i) = ∑ i ∈ s, M *ᵥ v i := by
   first
   | exact Matrix.mulVec_sum M s v
-  | simpa using map_sum (Matrix.mulVecLin M) v s
-  | (induction s using Finset.cons_induction with
-     | empty => simp
-     | cons a s ha ih => rw [Finset.sum_cons, Finset.sum_cons, Matrix.mulVec_add, ih])
 
 lemma hm_sum_l {ι : Type*} (s : Finset ι) (c : ι → ℂ) (v : ι → Fin (2 * r + k + 1) → ℂ)
     (w : Fin (2 * r + k + 1) → ℂ) :
@@ -49,36 +98,13 @@ lemma hm_sum_r {ι : Type*} (s : Finset ι) (c : ι → ℂ) (v : ι → Fin (2 
 
 lemma herm_bvec_eI (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     herm (Hpk k r) v (bvec (eI k r a)) = v (esI k r a) := by
-  have ha := a.isLt
-  have key : ∀ j, Hpk k r (eI k r a) j = if j = esI k r a then 1 else 0 := by
-    intro j
-    by_cases hj : j = esI k r a
-    · subst hj
-      rw [if_pos rfl]
-      simp only [Hpk, eI, esI, Fin.val_mk]
-      have h3 : ¬ r ≤ (a : ℕ) := by omega
-      simp only [h3, false_and, if_false]
-      split_ifs <;> first | rfl | (exfalso; omega) | omega
-    · rw [if_neg hj]
-      have hj' : (j : ℕ) ≠ (esI k r a : ℕ) := fun h => hj (Fin.ext h)
-      simp only [Hpk, eI, esI, Fin.val_mk] at hj' ⊢
-      have h3 : ¬ r ≤ (a : ℕ) := by omega
-      simp only [h3, false_and, if_false]
-      split_ifs <;> first | rfl | (exfalso; omega) | omega
-  unfold herm bvec
-  have hs : star (Pi.single (eI k r a) (1 : ℂ) : Fin (2 * r + k + 1) → ℂ) = Pi.single (eI k r a) 1 := by
-    ext i
-    by_cases h : i = eI k r a <;> simp [Pi.single_apply, h]
-  rw [hs]
-  simp [key, Matrix.mulVec, dotProduct, Pi.single_apply]
+  apply PI.StabPairsW.herm_e
 
 lemma fvec_lt (z : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     fvec k r z ⟨a.val, by omega⟩ = bvec (eI k r a) := by
   unfold fvec
   first
   | exact dif_pos a.isLt
-  | simp
-  | rfl
 
 lemma wb_N {n : B.Mat k r} (hn : n ∈ Nset k r) {v : Fin (2 * r + k + 1) → ℂ}
     (hv : ∀ a : Fin r, v (esI k r a) = 0) : PI.UnitaryGroupMassFormula.GsFr.wbPart k r (n *ᵥ v) = PI.UnitaryGroupMassFormula.GsFr.wbPart k r v := by

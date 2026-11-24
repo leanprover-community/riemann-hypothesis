@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Field.Defs
+public import Mathlib.Algebra.Module.Pi
+public import Mathlib.LinearAlgebra.Span.Defs
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

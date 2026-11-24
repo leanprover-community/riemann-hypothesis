@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsWeightedHomogeneousOfMemOrbitSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -237,9 +283,9 @@ theorem laplacian_colSubst (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ 
     (b : Fin q) (P : Poly R T p q κ) :
     laplacian t a b (colSubst A B P) = ∑ k : κ, ∑ k' : κ, (A t * B t) k k' •
       colSubst A B (pderiv (xVar t a k) (pderiv (yVar t b k') P)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [laplacian_apply, pderiv_yVar_colSubst, map_sum, Derivation.map_smul,
-    pderiv_xVar_colSubst, Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, smul_smul]
+
+  simp only [laplacian_apply, pderiv_yVar_colSubst, map_sum, Derivation.map_smul,
+  pderiv_xVar_colSubst, Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, smul_smul]
   rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun k' _ => ?_
@@ -250,8 +296,8 @@ theorem laplacian_colSubst_of_mul_eq_one [DecidableEq κ] (A : T → Matrix κ �
     (B : T → Matrix κ' κ R) {t : T} (h : A t * B t = 1) (a : Fin p) (b : Fin q)
     (P : Poly R T p q κ) :
     laplacian t a b (colSubst A B P) = colSubst A B (laplacian t a b P) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [laplacian_colSubst, h, laplacian_apply, map_sum]
+
+  rw [laplacian_colSubst, h, laplacian_apply, map_sum]
   simp [Matrix.one_apply]
 
 theorem IsHarmonic.colSubst [DecidableEq κ] {A : T → Matrix κ κ' R} {B : T → Matrix κ' κ R}

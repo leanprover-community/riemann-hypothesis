@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedGraph
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedDegree
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLatticeIndex
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSimpleSub
 
 @[expose] public section
 

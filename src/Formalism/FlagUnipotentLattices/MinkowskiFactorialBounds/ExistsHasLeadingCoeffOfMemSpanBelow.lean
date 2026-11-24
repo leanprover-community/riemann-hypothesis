@@ -1,6 +1,58 @@
 module
 
 public import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -92,7 +144,6 @@ lemma e_notMem_Xa (F : FlagD H r) (a : Fin r) : F.e a.castSucc ∉ F.Xa a.val :=
   unfold Formalism.HermitianLatticeCounting.S6.FlagD.Xa
   first
   | exact F.indep.notMem_span_image (s := {b : Fin r | b.val < a.val}) (by simp)
-  | exact F.indep.not_mem_span_image (s := {b : Fin r | b.val < a.val}) (by simp)
 
 lemma level_mem (F : FlagD H r) {x : V} {a : Fin r} {al : K} (h : F.HasLevel x a al) :
     x ∈ F.Xa (a.val + 1) := by
@@ -350,7 +401,7 @@ lemma nFStep_of (hY1 : Formalism.HermitianLatticeCounting.S6.Y1) (hPP : Formalis
     obtain ⟨-, -, hL, hc⟩ := hY1 K V H r F x (star t • v) a al hxa hvt
     obtain ⟨-, -, hL', hc'⟩ := hY1 K V H r F' x (star t • v) a' al' hxa' hvt'
     have h1 := hrel _ hL hL' _ _ hc hc'
-    simp only [HermSpace_B_smul_right_eq_star_mul, star_star, star_mul', star_add] at h1
+    simp only [HermSpace_B_smul_right_eq_star_mul, star_star, star_mul'] at h1
     rw [hd_def]
     simp only [star_mul', star_sub]
     linear_combination h1
@@ -647,7 +698,6 @@ lemma B_sum_left (H : HermSpace K V) {n : ℕ} (c : Fin n → K) (u : Fin n → 
     H.B (∑ a, c a • u a) y = ∑ a, c a * H.B (u a) y := by
   first
   | (rw [map_sum, LinearMap.sum_apply]; simp only [HermSpace_B_smul_left])
-  | simp [map_sum, HermSpace_B_smul_left]
 
 lemma gram_solve (H : HermSpace K V) {n : ℕ} (u w : Fin n → V)
     (hM : (Matrix.of fun a b => H.B (u a) (w b)).det ≠ 0) (t : Fin n → K) :
@@ -719,8 +769,8 @@ lemma Dl_zeroL (F F' : FlagD H r) {j : ℕ} (hj : j ≤ r) (hD : Dl F F' j (hj.t
     exact Fintype.linearIndependent_iff.1 ((indep_le F) hj) c h0 a
   · intro u hu
     obtain ⟨d, rfl⟩ := ((mem_Xa_iff F') hj).1 hu
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_eq_zero fun b _ => by rw [HermSpace_B_smul_right_eq_star_mul, hcb b, mul_zero]
 
 lemma II_comm (F F' : FlagD H r) : II F' F = II F F' := by
@@ -848,7 +898,7 @@ theorem normalFormMinorNeZero : Formalism.HermitianLatticeCounting.S6.NFCaseB :=
   have hsub : (P.updateRow (Fin.last r) (fun b => H.B (F.z - x) (F'.e b))).submatrix Fin.castSucc Fin.castSucc =
       Matrix.of fun a b : Fin r => H.B (F.e (Fin.castLE (Nat.le_succ r) a)) (F'.e (Fin.castLE (Nat.le_succ r) b)) := by
     ext a b
-    simp [hPdef, Matrix.updateRow_ne (Fin.castSucc_ne_last a)] <;> rfl
+    simp [hPdef] <;> rfl
   have hP : Formalism.HermitianLatticeCounting.S6.Dl F F' (r + 1) le_rfl = P.det := by
     rw [hPdef]
     exact Dl_eq F F' (r + 1) le_rfl
@@ -1471,10 +1521,10 @@ theorem eichlerMapIsometry : Formalism.HermitianLatticeCounting.S6.EichlerIsom :
   · simp only [eich_apply_eq_add_wedge_add_smul, HermSpace_B_add_left, HermSpace_B_sub_left, HermSpace_B_smul_left, HermSpace_B_add_right, HermSpace_B_sub_right, HermSpace_B_smul_right_eq_star_mul,
       H.herm, hxx, hxv, hvx]
     linear_combination (H.B y x * H.B x y') * hc
-  · simp only [eich_apply_eq_add_wedge_add_smul, HermSpace_B_add_left, HermSpace_B_sub_left, HermSpace_B_smul_left, HermSpace_B_neg_left, map_neg, LinearMap.neg_apply, hxx, hxv, hvx]
+  · simp only [eich_apply_eq_add_wedge_add_smul, HermSpace_B_add_left, HermSpace_B_sub_left, HermSpace_B_smul_left, map_neg, hxx, hxv, hvx]
     rw [hcs]
     module
-  · simp only [eich_apply_eq_add_wedge_add_smul, HermSpace_B_add_left, HermSpace_B_sub_left, HermSpace_B_smul_left, HermSpace_B_neg_left, map_neg, LinearMap.neg_apply, hxx, hxv, hvx]
+  · simp only [eich_apply_eq_add_wedge_add_smul, HermSpace_B_add_left, HermSpace_B_sub_left, HermSpace_B_smul_left, map_neg, LinearMap.neg_apply, hxx, hxv, hvx]
     rw [hcs]
     module
 
@@ -1483,10 +1533,7 @@ section Lift
 variable {K : Type} [Field K] [StarRing K] {V : Type} [AddCommGroup V] [Module K V]
   {H : HermSpace K V} {r : ℕ}
 
-lemma eich_apply (H : HermSpace K V) (x v : V) (c : K) (y : V) :
-    eich H x v c y = y + (H.B y v • x - H.B y x • v) + c • H.B y x • x := by
-  simp only [Formalism.HermitianLatticeCounting.S6.eich, LinearMap.add_apply, LinearMap.id_apply, LinearMap.smul_apply, LinearMap.smulRight_apply,
-    LinearMap.flip_apply, xv_apply_eq_B_smul_sub_B_smul]
+alias eich_apply := _root_.Formalism.HermitianLatticeCounting.P.eich_apply_eq_add_wedge_add_smul
 
 def GoodMap (F F' : FlagD H r) (g : V →ₗ[K] V) : Prop :=
   (∀ x y : V, H.B (g x) (g y) = H.B x y) ∧ Function.Bijective g ∧ (∀ y ∈ V0 F F', g y = y) ∧
@@ -1666,8 +1713,8 @@ lemma liftTransitive_of (hE : Formalism.HermitianLatticeCounting.S6.EichlerIsom)
   have hφ : ∀ w : W₁, (w : V) - (φ w : V) ∈ W₂ := by
     intro w
     rw [← b1.sum_repr w]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [φ, map_sum, map_smul, Module.Basis.constr_basis, Submodule.coe_sum, Submodule.coe_smul]
+
+    simp only [φ, map_sum, map_smul, Module.Basis.constr_basis, Submodule.coe_sum, Submodule.coe_smul]
     rw [← Finset.sum_sub_distrib]
     exact Submodule.sum_mem _ fun k _ => by
       rw [← smul_sub]

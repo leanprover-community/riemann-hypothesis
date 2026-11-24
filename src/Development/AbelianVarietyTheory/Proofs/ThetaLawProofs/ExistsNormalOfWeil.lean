@@ -1,17 +1,71 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRuleOneOfKeyFormula
-public import Development.AbelianVarietyTheory.Statements.FundamentalDomains.ExistsIsAddFundamentalDomain
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyInNormalFormAndArchimedeanConstant
+public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DualRestrictSurjectiveOfIsTorsionFreeQuotient
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SemicharacterSqEqOneOfSymmetric
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLinearEquivLift
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueThetaCharAtPoint
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniformisationOfPoint
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsIffOfIsGrpPullbackComm
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsHolomorphicLieFrame
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt0OfIsPullback
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HolomorphicMapModuliLiftsLocallyToPeriods
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaFrameOfPreconnected
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PushEquivSymmLeft
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ConstGen
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsCoordinatesOfRelations
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsEqMulCanonicalThetaOfSignMultiplier
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsThetaFnAndNeZeroOfIsFn
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.NormalFormOfParts
+public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TangentBijectionOfValues
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HolDifferentiableAt
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt0OfIsPullback
+public import Development.AbelianVarietyTheory.Statements.FundamentalDomains.ExistsIsAddFundamentalDomain
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HasSumPolyDerivMulProdAddMatrix
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueHalfChar
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsValLineLogNormAtIffEmbedding
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnitOnInjectiveOfCommRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -73,8 +127,8 @@ theorem exists_normal_of_weil (hT : ThetaUnifAV) (hmul : Out.MulNSt) (x : KeyIn 
     have h1 : ∀ m : Fin x.P.g → ℤ, (fun i => (m i : ℂ)) = ∑ i, m i • (Pi.single i 1 : Fin x.P.g → ℂ) := by
       intro m; ext k; simp [Finset.sum_apply, Pi.single_apply]
     rw [h1 m, h1 n]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec_sum, Matrix.mulVec_smul, map_add (f := _), map_sum, map_zsmul, (hφ _).1, (hφ _).2]
+
+    simp only [Matrix.mulVec_sum, Matrix.mulVec_smul, map_add (f := _), map_sum, map_zsmul, (hφ _).1, (hφ _).2]
   have hΛ : ∀ z, φ z ∈ u.Λ ↔ ∃ m n : Fin x.P.g → ℤ, z = (fun i => (m i : ℂ)) + τ.mulVec (fun i => (n i : ℂ)) := by
     refine fun z => ⟨fun hz => ?_, ?_⟩
     · obtain ⟨l, hl⟩ := (hFΛ (F.symm (φ z))).1 (by rwa [F.apply_symm_apply])
@@ -140,24 +194,7 @@ theorem valAt'_rig {X : Scheme.{0}} {G : Over X} [GrpObj G] [IsCommMonObj G] {G'
     valAt' y ((L.pull (eSec G)).U fun _ => j) (r.s fun _ => j).val =
       valAt' (show Sp ℂ ⟶ _ from eSec G') ((L.pull φ).U (fun _ => j) ⊓ L'.U i) (w.s (fun _ => j, i)).val *
         valAt' (𝟙 (Sp ℂ)) ((L'.pull (eSec G')).U fun _ => i) (r'.s fun _ => i).val := by
-  have hm : ⊤ ≤ (𝟙 (Sp ℂ) : Sp ℂ ⟶ _) ⁻¹ᵁ (((L.pull φ).pull (eSec G')).U (fun _ _ => j) ⊓
-      (L'.pull (eSec G')).U fun _ => i) := fun p hq => ⟨mem_pull.2 (hp hq).1, mem_pull.2 (hp hq).2⟩
-  have e := congrArg (fun q => valAt' (𝟙 (Sp ℂ)) _ q.val) (h (fun _ _ => j, fun _ => i))
-  have l : valAt' (𝟙 (Sp ℂ)) _ (res (inf_le_left : ((L.pull φ).pull (eSec G')).U (fun _ _ => j) ⊓
-      (L'.pull (eSec G')).U (fun _ => i) ≤ _) ((rigPullOf φ y he L r).s fun _ _ => j)).val =
-      valAt' y ((L.pull (eSec G)).U fun _ => j) (r.s fun _ => j).val := by
-    refine (CubeValues.val_res _ valAt'_rules _ hm _).trans ((CubeValues.val_res _ valAt'_rules _
-      (top_le_preimage_mono _ inf_le_left hm) _).trans ((CubeValues.val_pullU _ valAt'_rules _ _ _).trans ?_))
-    rw [Category.id_comp]
-    rfl
-  refine l.symm.trans (e.trans ((valAt'_mul _ _ _ _).trans (congrArg₂ (· * ·) ?_
-    (CubeValues.val_res _ valAt'_rules _ hm _))))
-  dsimp only [LB.linCombIso, id]
-  erw [Fintype.prod_unique, zpow_one]
-  refine (CubeValues.val_res _ valAt'_rules _ hm _).trans ((CubeValues.val_pullU (𝟙 (Sp ℂ)) valAt'_rules
-    (show Sp ℂ ⟶ _ from eSec G') (((L.pull φ).div L').U (fun _ => j, i)) (w.s (fun _ => j, i))).trans ?_)
-  rw [Category.id_comp]
-  rfl
+  apply GlobalTheory.ArchMetricCompare.val_rig <;> assumption
 
 theorem exists_push_iff {X : Scheme.{0}} (A : Out.PolAV X) (A' : Out.PolAV (Sp ℂ)) {y : Sp ℂ ⟶ X}
     {φ : A'.A.left ⟶ A.A.left} (h : IsGrpPullback A'.A A.A y φ) (hL : LBIso A'.L (A.L.pull φ)) :
@@ -169,7 +206,7 @@ theorem exists_push_iff {X : Scheme.{0}} (A : Out.PolAV X) (A' : Out.PolAV (Sp �
       ∀ (k : ℤ) p q c, Out.WeilIs A'.A A'.L k p q c ↔ Out.WeilIs A.A A.L k (Φ p) (Φ q) c := by
     rintro _ rfl
     exact ⟨ObjPull.pushEquiv h _, fun _ => rfl, fun k p q c =>
-      weilIs_iff_of_isGrpPullback_comm _ _ A.A A'.A y φ A.L A'.L A.isLB A'.isLB h hL _ k p q _ _ c rfl rfl⟩
+      _root_.GlobalTheory.weilIs_grpPullback_of_comm _ _ A.A A'.A y φ A.L A'.L A.isLB A'.isLB h hL _ k p q _ _ c rfl rfl⟩
   exact key y (Category.id_comp y)
 
 theorem exists_normal_fibre (hT : ThetaUnifAV) (hmul : Out.MulNSt) {S : Type} [CommRing S] (y : KeyIn S)

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.RealGroupsIwasawa
 public import GroundTheory.AutomorphicForms.RealGroupsHaar
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.CategoryTheory.Countable
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Algebra.Star.Real
+import Mathlib.Topology.Algebra.Star.Unitary
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 
@@ -14,12 +21,6 @@ open scoped ComplexOrder
 set_option linter.unusedSectionVars false
 
 variable {𝕜 : Type*} [RCLike 𝕜] {n : Type*} [Fintype n] [LinearOrder n]
-
-theorem rclike_inv_pos {z : 𝕜} (hz : 0 < z) : 0 < z⁻¹ := by
-  obtain ⟨hre, him⟩ := RCLike.pos_iff.1 hz
-  have hz' : z = (RCLike.re z : 𝕜) := by rw [← RCLike.re_add_im z, him]; simp
-  rw [hz', ← RCLike.ofReal_inv]
-  exact RCLike.ofReal_pos.2 (inv_pos.2 hre)
 
 def upperPosSubgroup (n 𝕜 : Type*) [RCLike 𝕜] [Fintype n] [LinearOrder n] : Subgroup (GL n 𝕜) where
   carrier := {g | (g : Matrix n n 𝕜).IsUpperTriangular ∧ ∀ i, 0 < (g : Matrix n n 𝕜) i i}
@@ -39,7 +40,7 @@ def upperPosSubgroup (n 𝕜 : Type*) [RCLike 𝕜] [Fintype n] [LinearOrder n] 
     have e := congrFun (congrFun e0 i) i
     rw [mul_apply_self_of_isUpperTriangular hU ha.1, one_apply_eq] at e
     rw [eq_inv_of_mul_eq_one_left e]
-    exact rclike_inv_pos (ha.2 i)
+    exact RCLike.inv_pos_of_pos (ha.2 i)
 
 theorem mem_upperPosSubgroup {g : GL n 𝕜} :
     g ∈ upperPosSubgroup n 𝕜 ↔

@@ -1,7 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SupGenTies
-public import Formalism.LocalRingCardinality.ConjSqrtMinusD
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -38,7 +38,7 @@ lemma sum_single_embedding_extend_le {E : Type} [Field E] [NumberField E] (e : E
     (g : Fin p → ℕ) :
     ∑ τ : E →+* ℂ, ∑ i : Fin (mult τ), (if τ = e then ext0 g i else 0) ≤ ∑ i, g i := by
   rw [Finset.sum_eq_single e]
-  · simp only [eq_self_iff_true, if_true]
+  · simp only [if_true]
     exact sum_extendByZero_le_sum g (mult e)
   · intro τ _ hτ
     exact Finset.sum_eq_zero (fun i _ => if_neg hτ)

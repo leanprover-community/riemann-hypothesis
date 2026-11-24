@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.CxPassSk
 public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
+public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
+import Formalism.LocalToGlobal.GlobalTheory.DivPassage
+import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 
 @[expose] public section
 
@@ -32,15 +34,6 @@ theorem cv_injective (ℓ : Lvl K G) (Z : Submodule K B.S.Forms) : Function.Inje
   intro x y h
   exact (subspace_image_spec K _ (B.Z0 ℓ Z)).1
     ((image_idempotent_spec K B.S.dim (B.S.gaMat B.r (goodAt ℓ.X ℓ.P ℓ.ψ))).1 h)
-
-theorem mem_coord (Z : Submodule K B.S.Forms) (w : Fin B.S.dim → K) :
-    w ∈ B.coord Z ↔ B.S.basis.equivFun.symm w ∈ Z := by
-  unfold BlockDat.coord
-  constructor
-  · rintro ⟨f, hf, rfl⟩
-    simpa using hf
-  · intro h
-    exact ⟨_, h, B.S.basis.equivFun.apply_symm_apply w⟩
 
 theorem range_cv (ℓ : Lvl K G) (Z : Submodule K B.S.Forms) (w : Fin B.S.dim → K) :
     (∃ y, cv B ℓ Z y = w) ↔ w ∈ B.coord Z ∧ w ∈ LinearMap.range (B.vE ℓ).mulVecLin := by
@@ -100,13 +93,9 @@ theorem actMat_coord (g : G) (w : Fin B.S.dim → K) :
 
 theorem coord_act (Z : Submodule K B.S.Forms) (g : G) (hZ : ∀ f ∈ Z, B.r g f ∈ Z) (w : Fin B.S.dim → K)
     (hw : w ∈ B.coord Z) : (B.S.actMat B.r g).mulVec w ∈ B.coord Z := by
-  rw [mem_coord] at hw ⊢
+  rw [_root_.Formalism.L2.DIV.BlockDat.mem_coord] at hw ⊢
   rw [actMat_coord, LinearEquiv.symm_apply_apply]
   exact hZ _ hw
-
-theorem gaMat_single (g : G) : B.S.gaMat B.r (MonoidAlgebra.single g 1) = B.S.actMat B.r g := by
-  rw [CSD.gaMat_eq_lift, MonoidAlgebra.lift_single, one_smul]
-  rfl
 
 theorem comm_idem (X : Finset (G → K)) (hX : ∀ χ ∈ X, IsAbsIrrChar χ) (a : MonoidAlgebra K G) :
     B.S.gaMat B.r a * B.S.gaMat B.r (idemOf X) = B.S.gaMat B.r (idemOf X) * B.S.gaMat B.r a := by
@@ -123,7 +112,7 @@ theorem toF_act (X : Finset (G → K)) (hX : ∀ χ ∈ X, IsAbsIrrChar χ) (Z :
     rw [range_vE_bot]
     refine ⟨(B.S.actMat B.r g).mulVec w, ?_⟩
     simp only [Matrix.mulVecLin_apply] at hw ⊢
-    rw [← hw, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ← gaMat_single, comm_idem B X hX]
+    rw [← hw, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ← _root_.Formalism.L2.DIV.BlockDat.gaMat_single, comm_idem B X hX]
   obtain ⟨y, hy⟩ := (range_cv B ⟨X, ⊥, 1⟩ Z _).2 ⟨coord_act B Z g hZ _ hZx, h1⟩
   refine ⟨y, ?_⟩
   rw [toF_eq, toF_eq, hy, actMat_coord, LinearEquiv.symm_apply_apply]
@@ -162,8 +151,8 @@ theorem iC_cpt {Bs : DefBase K} {A : DefAmb Bs} (X : CxData A) {fc : DefSub A �
     funext i
     simp [Finset.sum_apply, Pi.single_apply]
   conv_rhs => rw [hx]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.map_smulₛₗ, CxData.iC, lin_apply, cpt]
+
+  simp only [map_sum, map_smul, LinearMap.map_smulₛₗ, CxData.iC, lin_apply, cpt]
 
 theorem key_row' {Bs : DefBase K} {A : DefAmb Bs} (X : CxData A) {fc : DefSub A → DefFace Bs} (cr : Crd A fc)
     (b : Bool) (hr : ∀ t, LinearMap.range (X.iC cr b t) = LinearMap.range (X.iC cr b Bs.μ0)) (hq : X.RATmu cr b)
@@ -323,11 +312,6 @@ end Lev
 end PassRep
 
 namespace In
-
-open Formalism.IndefR.CxPass.PassRep
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
-  (I : In K G Pl0 T m)
 
 end In
 

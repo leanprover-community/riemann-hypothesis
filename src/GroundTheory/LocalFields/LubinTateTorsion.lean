@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LubinTatePoints
-public import GroundTheory.LocalFields.Eisenstein
+public import Mathlib.FieldTheory.IsSepClosed
+public import Mathlib.RingTheory.Polynomial.Eisenstein.Basic
+import GroundTheory.LocalFields.SeparableClosure
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 
 @[expose] public section
 

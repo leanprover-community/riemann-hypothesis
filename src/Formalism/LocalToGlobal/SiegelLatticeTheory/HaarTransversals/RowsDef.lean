@@ -1,8 +1,5 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ProjRows
 
 @[expose] public section

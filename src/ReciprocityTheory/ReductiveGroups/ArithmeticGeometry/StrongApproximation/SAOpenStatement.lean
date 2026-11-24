@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+public import Mathlib.Topology.Algebra.Module.ModuleTopology
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

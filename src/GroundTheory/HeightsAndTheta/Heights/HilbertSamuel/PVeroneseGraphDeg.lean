@@ -1,14 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsVeroneseGraph
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseArith
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.QuotientMapImageZInjective
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+public import Mathlib.Order.CompletePartialOrder
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseArith
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.QuotientMapImageZInjective
 
 @[expose] public section
 

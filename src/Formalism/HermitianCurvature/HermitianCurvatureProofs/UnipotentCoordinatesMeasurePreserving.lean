@@ -1,33 +1,89 @@
 module
 
 public import Formalism.HermitianCurvature.StatementD
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentHeisenbergDecomposition
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationInvarianceEverySetting
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelSizesJointMean
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DualCovolumeChangeOfVariables
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PoissonJointFirstReduction
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwistedIsRealOrderLattice
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LocalConditionsAndQuotientSplitting
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PeriodLatticeFactsSplitOfGeneral
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
+public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
-public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerSplit
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerPairs
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerParabolicCoordinates
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFlagVector
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ShearMeasurability
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DualCovolumeChangeOfVariables
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeisenbergLeviConjugationMeasure
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFlagVector
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelSizesJointMean
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LocalConditionsAndQuotientSplitting
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerParabolicCoordinates
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PoissonJointFirstReduction
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ShearMeasurability
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerFourthCondition
+public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
+public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.StabPairs
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerSplit
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentHeisenbergDecomposition
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WittOrthonormalBasis
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
+import Formalism.FormalDegreeBessel.FinalG
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PeriodLatticeFactsSplitOfGeneral
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwistedIsRealOrderLattice
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -1631,12 +1687,32 @@ theorem cast_or_last (b : Fin (r + 1)) : b = Fin.last r ∨ ∃ b' : Fin r, b = 
   | last => exact Or.inl rfl
   | cast b' => exact Or.inr ⟨b', rfl⟩
 
-theorem caseA {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+private theorem smat_commutes_with_frame_stabilizer {k r : ℕ} {ι : Type*} [Fintype ι] (u w Y : ι → Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r)
+    (hg : g ∈ UH (Hpk k r)) (hu : ∀ i, g *ᵥ u i = u i) (hw : ∀ i, g *ᵥ w i = w i) (hY : ∀ i, g *ᵥ Y i = Y i) :
+    smat (Hpk k r) u w Y * g = g * smat (Hpk k r) u w Y := by
+  apply Matrix.toLin'.injective
+  apply LinearMap.ext
+  intro x
+  simp only [Matrix.toLin'_apply, ← Matrix.mulVec_mulVec, smat_mulVec, smap]
+  rw [Matrix.mulVec_add, Matrix.mulVec_sum]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i _
+  have e := herm_m0_mulVec_invariant g hg x (w i)
+  rw [hw i] at e
+  rw [Matrix.mulVec_smul, Matrix.mulVec_sub, hY i, hu i]
+  rw [e]
+
+private theorem exists_frame_of_moves_last {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
     (hbase : Formalism.FourierDecayAlt.D.IsBaseFrame S ν' m₀) (π : Equiv.Perm (Fin (r + 1))) (d0 : Fin (r + 1) → ℂ)
     (hd0 : ∀ a, d0 a ≠ 0) (a0 b0 : Fin r) (ha : π (Fin.last r) = a0.castSucc)
     (hb : π b0.castSucc = Fin.last r) :
-    ∃ γ ∈ B.GV k r, Zhat k r S.z S.z' γ = C2.monoP π d0 ∧ Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ γ := by
+    ∃ σ : B.Mat k r, m₀ * σ ∈ B.GV k r ∧ Zhat k r S.z S.z' (m₀ * σ) = C2.monoP π d0 ∧
+      Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ (m₀ * σ) ∧ σ ∈ UH (Hpk k r) ∧
+      (∀ x, inWb k r x → herm (Hpk k r) x S.z' = 0 → herm (Hpk k r) x ν' = 0 → σ *ᵥ x = x) ∧
+      (∀ g ∈ UH (Hpk k r), (∀ a : Fin r, g *ᵥ ee k r a = ee k r a ∧ g *ᵥ es k r a = es k r a) →
+        g *ᵥ S.z' = S.z' → g *ᵥ ν' = ν' → σ * g = g * σ) := by
   obtain ⟨hν, hνz, hνν, ⟨hmU, hmfix⟩, hmz⟩ := hbase
   have hme : ∀ a : Fin r, m₀ *ᵥ ee k r a = ee k r a := fun a => (hmfix a a.isLt).1
   have hms : ∀ a : Fin r, m₀ *ᵥ es k r a = es k r a := fun a => (hmfix a a.isLt).2
@@ -1714,7 +1790,7 @@ theorem caseA {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] 
   have hm0u : IsUnit m₀.det := (Formalism.FourierDecayAlt.P.unitary_group_closed k r).unit _ hmU
   have hDl : d0 (Fin.last r) ≠ 0 := hd0 _
   have hDc : conj (d0 (Fin.last r)) ≠ 0 := by simpa using hDl
-  refine ⟨m₀ * σ, hγ, hZ, ?_, ?_, ?_⟩
+  refine ⟨σ, hγ, hZ, ⟨?_, ?_, ?_⟩, hσU, ?_, ?_⟩
   ·
     refine ⟨μ / s, div_pos hμ hs, ?_⟩
     have hcof : Formalism.FourierDecayAlt.D.cofR S (m₀ * σ) =
@@ -1824,12 +1900,50 @@ theorem caseA {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] 
       rw [← this, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hγu, Matrix.one_mulVec]
     rw [hinv, ← hmv, orthoProj_m0_intertwine m₀ hmU hme hms hz hz' μ hμ.ne' hmz hzz0]
 
-theorem caseB {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+  ·
+    intro x hx hxz hxν
+    apply sig_fix Y x
+    intro i
+    rcases i with ((b | b) | i)
+    · show herm (Hpk k r) x (es k r b) = 0
+      rw [herm_es]; exact wb_eI hx b
+    · show herm (Hpk k r) x (ee k r b) = 0
+      rw [herm_ee]; exact wb_esI hx b
+    · fin_cases i
+      · simp [wB, B2x4.herm_smul_right, herm_neg_right, hxz]
+      · simpa [wB] using hxν
+  ·
+    intro g hg hge hgz hgν
+    apply smat_commutes_with_frame_stabilizer _ _ _ g hg
+    · intro i; rcases i with ((b | b) | i)
+      · exact (hge b).1
+      · exact (hge b).2
+      · fin_cases i
+        · exact hgz
+        · exact hgν
+    · intro i; rcases i with ((b | b) | i)
+      · exact (hge b).2
+      · exact (hge b).1
+      · fin_cases i
+        · simp [wB, Matrix.mulVec_smul, Matrix.mulVec_neg, hgz]
+        · simpa [wB] using hgν
+    · intro i
+      simp only [hYdef]
+      rcases i with ((b | b) | i)
+      · simp only [YA]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+      · simp only [YA]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+      · fin_cases i <;> simp [YA, Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+
+private theorem exists_frame_of_fixes_last {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
     (hbase : Formalism.FourierDecayAlt.D.IsBaseFrame S ν' m₀) (π : Equiv.Perm (Fin (r + 1))) (d0 : Fin (r + 1) → ℂ)
     (hd0 : ∀ a, d0 a ≠ 0) (hB : π (Fin.last r) = Fin.last r)
     (hG : Tz k r S.z * Tz k r S.z' < Complex.normSq (d0 (Fin.last r))) :
-    ∃ γ ∈ B.GV k r, Zhat k r S.z S.z' γ = C2.monoP π d0 ∧ Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ γ := by
+    ∃ σ : B.Mat k r, m₀ * σ ∈ B.GV k r ∧ Zhat k r S.z S.z' (m₀ * σ) = C2.monoP π d0 ∧
+      Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ (m₀ * σ) ∧ σ ∈ UH (Hpk k r) ∧
+      (∀ x, inWb k r x → herm (Hpk k r) x S.z' = 0 → herm (Hpk k r) x ν' = 0 → σ *ᵥ x = x) ∧
+      (∀ g ∈ UH (Hpk k r), (∀ a : Fin r, g *ᵥ ee k r a = ee k r a ∧ g *ᵥ es k r a = es k r a) →
+        g *ᵥ S.z' = S.z' → g *ᵥ ν' = ν' → σ * g = g * σ) := by
   obtain ⟨hν, hνz, hνν, ⟨hmU, hmfix⟩, hmz⟩ := hbase
   have hme : ∀ a : Fin r, m₀ *ᵥ ee k r a = ee k r a := fun a => (hmfix a a.isLt).1
   have hms : ∀ a : Fin r, m₀ *ᵥ es k r a = es k r a := fun a => (hmfix a a.isLt).2
@@ -1914,7 +2028,7 @@ theorem caseB {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] 
   have hm0u : IsUnit m₀.det := (Formalism.FourierDecayAlt.P.unitary_group_closed k r).unit _ hmU
   have hDl : d0 (Fin.last r) ≠ 0 := hd0 _
   have hDc : conj (d0 (Fin.last r)) ≠ 0 := by simpa using hDl
-  refine ⟨m₀ * σ, hγ, hZ, ?_, ?_, ?_⟩
+  refine ⟨σ, hγ, hZ, ⟨?_, ?_, ?_⟩, hσU, ?_, ?_⟩
   ·
     refine ⟨μ * κ, mul_pos hμ hκ0, ?_⟩
     have hcof : Formalism.FourierDecayAlt.D.cofR S (m₀ * σ) =
@@ -2019,6 +2133,58 @@ theorem caseB {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] 
       have : (m₀ * σ) *ᵥ v = u := by rw [← Matrix.mulVec_mulVec, hfix, hmv]
       rw [← this, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hγu, Matrix.one_mulVec]
     rw [hinv, ← hmv, orthoProj_m0_intertwine m₀ hmU hme hms hz hz' μ hμ.ne' hmz hzz0]
+
+  ·
+    intro x hx hxz hxν
+    apply sig_fix Y x
+    intro i
+    rcases i with ((b | b) | i)
+    · show herm (Hpk k r) x (es k r b) = 0
+      rw [herm_es]; exact wb_eI hx b
+    · show herm (Hpk k r) x (ee k r b) = 0
+      rw [herm_ee]; exact wb_esI hx b
+    · fin_cases i
+      · simp [wB, B2x4.herm_smul_right, herm_neg_right, hxz]
+      · simpa [wB] using hxν
+  ·
+    intro g hg hge hgz hgν
+    apply smat_commutes_with_frame_stabilizer _ _ _ g hg
+    · intro i; rcases i with ((b | b) | i)
+      · exact (hge b).1
+      · exact (hge b).2
+      · fin_cases i
+        · exact hgz
+        · exact hgν
+    · intro i; rcases i with ((b | b) | i)
+      · exact (hge b).2
+      · exact (hge b).1
+      · fin_cases i
+        · simp [wB, Matrix.mulVec_smul, Matrix.mulVec_neg, hgz]
+        · simpa [wB] using hgν
+    · intro i
+      simp only [hYdef]
+      rcases i with ((b | b) | i)
+      · simp only [YB]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+      · simp only [YB]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+      · fin_cases i <;> simp [YB, Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+
+theorem caseA {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+    [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
+    (hbase : Formalism.FourierDecayAlt.D.IsBaseFrame S ν' m₀) (π : Equiv.Perm (Fin (r + 1))) (d0 : Fin (r + 1) → ℂ)
+    (hd0 : ∀ a, d0 a ≠ 0) (a0 b0 : Fin r) (ha : π (Fin.last r) = a0.castSucc)
+    (hb : π b0.castSucc = Fin.last r) :
+    ∃ γ ∈ B.GV k r, Zhat k r S.z S.z' γ = C2.monoP π d0 ∧ Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ γ :=
+  let ⟨σ, hG, hZ, hFrame, _, _, _⟩ := exists_frame_of_moves_last S ν' m₀ hbase π d0 hd0 a0 b0 ha hb
+  ⟨m₀ * σ, hG, hZ, hFrame⟩
+
+theorem caseB {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+    [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
+    (hbase : Formalism.FourierDecayAlt.D.IsBaseFrame S ν' m₀) (π : Equiv.Perm (Fin (r + 1))) (d0 : Fin (r + 1) → ℂ)
+    (hd0 : ∀ a, d0 a ≠ 0) (hB : π (Fin.last r) = Fin.last r)
+    (hG : Tz k r S.z * Tz k r S.z' < Complex.normSq (d0 (Fin.last r))) :
+    ∃ γ ∈ B.GV k r, Zhat k r S.z S.z' γ = C2.monoP π d0 ∧ Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ γ :=
+  let ⟨σ, hG, hZ, hFrame, _, _, _⟩ := exists_frame_of_fixes_last S ν' m₀ hbase π d0 hd0 hB hG
+  ⟨m₀ * σ, hG, hZ, hFrame⟩
 
 end caseAmain
 
@@ -2172,11 +2338,6 @@ theorem um_uni (x1 : U.RC k 1 (j + ρ)) : Ux2.uniK (Ux2.kU (j + 1)) (Um x1) := b
         rw [Matrix.one_apply_ne]
         intro h; subst h; exact lt_irrefl _ hab
 
-theorem rev_zero' (n : ℕ) : Fin.rev (0 : Fin (n + 1)) = Fin.last n := by ext; simp
-theorem rev_succ' {n : ℕ} (a : Fin n) : Fin.rev a.succ = (Fin.rev a).castSucc := by ext; simp [Fin.val_rev]; try omega
-theorem rev_last' (n : ℕ) : Fin.rev (Fin.last n) = 0 := by ext; simp
-theorem rev_castSucc' {n : ℕ} (a : Fin n) : Fin.rev a.castSucc = (Fin.rev a).succ := by ext; simp [Fin.val_rev]; try omega
-
 theorem wvec_apply (v : Fin j → ℂ) (a : Fin j) : (G.wMat j *ᵥ v) a = v a.rev := by
   simp [G.wMat, Matrix.mulVec, dotProduct]
 
@@ -2208,21 +2369,21 @@ theorem um_ct_mul (x1 : U.RC k 1 (j + ρ)) :
   cases a using Fin.cases with
   | zero =>
     cases b using Fin.cases with
-    | zero => simp [Um, Ut0, rev_zero', rev_succ']
+    | zero => simp [Um, Ut0, Fin.rev_zero, Fin.rev_succ]
     | succ b =>
-      simp [Um, Ut0, rev_zero', rev_succ', Matrix.one_apply]
+      simp [Um, Ut0, Fin.rev_zero, Fin.rev_succ, Matrix.one_apply]
       exact (Fin.succ_ne_zero b).symm
   | succ a =>
     cases b using Fin.cases with
     | zero =>
-      simp only [Um, Ut0, rev_zero', rev_succ', Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
+      simp only [Um, Ut0, Fin.rev_zero, Fin.rev_succ, Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
         Fin.lastCases_castSucc, vecMul_w_apply, Pi.star_apply, star_neg, star_star]
       rw [Finset.sum_eq_single a]
       · simp
       · intro c _ hc; simp [Matrix.one_apply_ne hc]
       · simp
     | succ b =>
-      simp only [Um, Ut0, rev_zero', rev_succ', Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
+      simp only [Um, Ut0, Fin.rev_zero, Fin.rev_succ, Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
         Fin.lastCases_castSucc]
       by_cases h : a = b
       · subst h; simp [Matrix.one_apply]
@@ -2419,7 +2580,6 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.neg_apply, Matrix.neg_mul]
         rw [rowP, hrn_form, vecMul_block3_first_coords, e1, e2, e3]
         simp [Um]
-        done
     | succ a =>
       cases a' using Fin.cases with
       | zero => simp only [posX, pos0, Ux3.block3_apply]; simp [Um]
@@ -2428,7 +2588,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
     | zero =>
       simp only [pos0, posV, Ux3.block3_apply]
       simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.neg_apply, Matrix.neg_mul]
-      rw [rowP, hrn_form, vecMul_block3_middle_coords, e1, e2, e3, Matrix.mul_assoc, Ux3.wMat_mul_apply, rev_zero']
+      rw [rowP, hrn_form, vecMul_block3_middle_coords, e1, e2, e3, Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_zero]
       simp only [TX, Cm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
         Fin.lastCases_last, Matrix.mulVec, Pi.star_apply, star_sub, Matrix.zero_apply, mul_zero, Finset.sum_const_zero,
         zero_add, Matrix.neg_apply, mul_neg, Finset.sum_neg_distrib, star_sum, star_mul', sub_mul, Finset.sum_sub_distrib,
@@ -2440,7 +2600,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
     | succ a =>
       simp only [posX, posV, Ux3.block3_apply]
       simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.neg_apply, Ux3.rn_eq, Ux3.block3_apply]
-      rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Matrix.mul_assoc, Ux3.wMat_mul_apply, rev_succ']
+      rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_succ]
       simp [TX, Cm, Matrix.mul_apply]
   · cases a using Fin.cases with
     | zero =>
@@ -2448,7 +2608,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
       | last =>
         simp only [pos0, posL, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr]
-        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply (n := j + 1), rev_zero', mul_unitriangular_last_col]
+        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply (n := j + 1), Fin.rev_zero, mul_unitriangular_last_col]
         simp only [Z_lc, Z_ll]
         have hw1 : G.wMat 1 = 1 := by ext a b; fin_cases a; fin_cases b; simp [G.wMat]
         rw [hw1, Matrix.one_mul]
@@ -2525,7 +2685,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
       | cast b' =>
         simp only [pos0, posS, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.neg_mul, Matrix.neg_apply]
-        rw [rowP, hrn_form, vecMul_block3_last_coord, e1, e2, e3, Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, rev_zero',
+        rw [rowP, hrn_form, vecMul_block3_last_coord, e1, e2, e3, Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, Fin.rev_zero,
           mul_unitriangular_castSucc_col, Z_lc]
         have hH : (Hpk k ρ)ᴴ = Hpk k ρ := Ux4.hpk_conjTranspose k ρ
         have hw : (G.wMat j)ᴴ = G.wMat j := Ux4.wMat_conjTranspose j
@@ -2548,7 +2708,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
       | last =>
         simp only [posX, posL, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr]
-        rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, rev_succ', mul_unitriangular_last_col]
+        rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_succ, mul_unitriangular_last_col]
         simp only [Z_cc, Z_cl]
         show cX x1 a = _
         have hv : (((-(1 / 2 : ℂ)) • ((Matrix.of x.1)ᴴ * Hpk k ρ * Matrix.of x.1) + U.skewOf x.2) *ᵥ cS x1) +
@@ -2564,7 +2724,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
         simp only [posX, posS, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.rn_eq, Ux3.block3_apply]
         rw [Ux3.wMat_mul_apply]
-        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, rev_succ', mul_unitriangular_castSucc_col, Z_cc]
+        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, Fin.rev_succ, mul_unitriangular_castSucc_col, Z_cc]
   ·
     cases a' using Fin.cases with
     | zero => simp only [posV, pos0, Ux3.block3_apply]; simp
@@ -2665,7 +2825,7 @@ theorem emb_muP (q : Matrix (Fin j) (Fin j) ℂ) (hq : IsUnit q.det) :
       simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
   · cases b using Fin.lastCases <;> cases b' using Fin.lastCases <;>
       simp only [posS, posL, U.embG, U.muP, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply, w_conj_apply, rev_last', rev_castSucc', Dm]
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply, w_conj_apply, Fin.rev_last, Fin.rev_castSucc, Dm]
 
 theorem emb_emb (y : B.Mat k ρ) :
     D.castM (by omega : 1 + (j + ρ) = (j + 1) + ρ) (U.embG k 1 (j + ρ) (U.embG k j ρ y)) = U.embG k (j + 1) ρ y := by
@@ -3480,7 +3640,7 @@ include hd hZ
 
 theorem u_lstg {ρ : B.Mat k r} (hρ : ρ ∈ C6.Rset γ) : (C2.uMap k r D.z ρ)ᴴ ∈ C2.Lstg (C2.monoP w d) := by
   rw [rset_eq D hγ hpos] at hρ
-  have h1 := (Formalism.FourierDecayAlt.P.stabilizer_pairs k r D.z D.z' γ (std D) ⟨hγ, hpos⟩).1.mapsTo hρ
+  have h1 := (_root_.stabPairs k r D.z D.z' γ (std D) ⟨hγ, hpos⟩).1.mapsTo hρ
   simp only [Set.mem_ofPred_eq] at h1
   rw [hZ] at h1
   have h2 : C2.uMap k r D.z ρ ∈ {u | u ∈ C2.UTset (r + 1) ∧ ∃ u' ∈ C2.UTset (r + 1), uᴴ * C2.monoP w d * u' =
@@ -3497,13 +3657,13 @@ theorem exists_rho (x : C2.Lstidx w → ℂ) : ∃ ρ ∈ C6.Rset γ, C2.uMap k 
   have hmem : ((low w x)ᴴ, u') ∈ {p : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ × Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ |
       p.1 ∈ C2.UTset (r + 1) ∧ p.2 ∈ C2.UTset (r + 1) ∧ p.1ᴴ * Zhat k r D.z D.z' γ * p.2 = Zhat k r D.z D.z' γ} := by
     refine ⟨hu1, hu', ?_⟩; rw [hZ]; exact he
-  obtain ⟨ρ, hρ, hρe⟩ := (Formalism.FourierDecayAlt.P.stabilizer_pairs k r D.z D.z' γ (std D) ⟨hγ, hpos⟩).1.surjOn hmem
+  obtain ⟨ρ, hρ, hρe⟩ := (_root_.stabPairs k r D.z D.z' γ (std D) ⟨hγ, hpos⟩).1.surjOn hmem
   refine ⟨ρ, by rw [rset_eq D hγ hpos]; exact hρ, ?_⟩
   exact congrArg Prod.fst hρe
 
 theorem u_inj : Set.InjOn (C2.uMap k r D.z) (C6.Rset γ) := by
   rw [rset_eq D hγ hpos]
-  exact (Formalism.FourierDecayAlt.P.stabilizer_pairs k r D.z D.z' γ (std D) ⟨hγ, hpos⟩).2.1
+  exact (_root_.stabPairs k r D.z D.z' γ (std D) ⟨hγ, hpos⟩).2.1
 
 end posG
 
@@ -4060,7 +4220,7 @@ theorem mem_N (M : B.Mat k r) (hM : M ∈ UH (Hpk k r)) (U : Matrix (Fin (r + 1)
     · rw [ee_sum_hi _ i (by omega), if_neg]; intro e; rw [e] at hi; simp [eI] at hi
   · intro i j hj1 hj2 hi
     rw [entry M i j, hw j hj1 hj2 i hi]
-    simp [bvec, Pi.single_apply, eq_comm]
+    simp [bvec, Pi.single_apply]
 
 include hγ hd hZ hB
 
@@ -4332,9 +4492,9 @@ theorem trivial_of_u_one {ρ : B.Mat k r} (hρ : ρ ∈ C6.Rset γ) (hu1 : C2.uM
   ext i j
   rw [entry ρ i j]
   rcases pos_cases j with ⟨c, rfl⟩ | ⟨h1, h2⟩ | ⟨c, rfl⟩
-  · rw [show bvec (eI k r c) = DF.ee k r c from rfl, hee c]; simp [Matrix.one_apply, DF.ee, bvec, Pi.single_apply, eq_comm]
-  · rw [hW j h1 h2]; simp [Matrix.one_apply, bvec, Pi.single_apply, eq_comm]
-  · rw [show bvec (esI k r c) = DF.es k r c from rfl, hes c]; simp [Matrix.one_apply, DF.es, bvec, Pi.single_apply, eq_comm]
+  · rw [show bvec (eI k r c) = DF.ee k r c from rfl, hee c]; simp [Matrix.one_apply, DF.ee, bvec, Pi.single_apply]
+  · rw [hW j h1 h2]; simp [Matrix.one_apply, bvec, Pi.single_apply]
+  · rw [show bvec (esI k r c) = DF.es k r c from rfl, hes c]; simp [Matrix.one_apply, DF.es, bvec, Pi.single_apply]
 
 theorem inj_degen : Set.InjOn (C2.uMap k r D.z) (C6.Rset γ) := by
   intro ρ1 h1 ρ2 h2 heq
@@ -5016,19 +5176,8 @@ open Formalism.FourierDecayAlt.P.Dx2.DF
 
 theorem smat_comm_Hpk {k r : ℕ} {ι : Type*} [Fintype ι] (u w Y : ι → Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r)
     (hg : g ∈ UH (Hpk k r)) (hu : ∀ i, g *ᵥ u i = u i) (hw : ∀ i, g *ᵥ w i = w i) (hY : ∀ i, g *ᵥ Y i = Y i) :
-    smat (Hpk k r) u w Y * g = g * smat (Hpk k r) u w Y := by
-  apply Matrix.toLin'.injective
-  apply LinearMap.ext
-  intro x
-  simp only [Matrix.toLin'_apply, ← Matrix.mulVec_mulVec, smat_mulVec, smap]
-  rw [Matrix.mulVec_add, Matrix.mulVec_sum]
-  congr 1
-  apply Finset.sum_congr rfl
-  intro i _
-  have e := herm_m0_mulVec_invariant g hg x (w i)
-  rw [hw i] at e
-  rw [Matrix.mulVec_smul, Matrix.mulVec_sub, hY i, hu i]
-  rw [e]
+    smat (Hpk k r) u w Y * g = g * smat (Hpk k r) u w Y :=
+  smat_commutes_with_frame_stabilizer u w Y g hg hu hw hY
 
 end explicit
 
@@ -5046,227 +5195,8 @@ theorem caseA' {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
       Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ (m₀ * σ) ∧ σ ∈ UH (Hpk k r) ∧
       (∀ x, inWb k r x → herm (Hpk k r) x S.z' = 0 → herm (Hpk k r) x ν' = 0 → σ *ᵥ x = x) ∧
       (∀ g ∈ UH (Hpk k r), (∀ a : Fin r, g *ᵥ ee k r a = ee k r a ∧ g *ᵥ es k r a = es k r a) →
-        g *ᵥ S.z' = S.z' → g *ᵥ ν' = ν' → σ * g = g * σ) := by
-  obtain ⟨hν, hνz, hνν, ⟨hmU, hmfix⟩, hmz⟩ := hbase
-  have hme : ∀ a : Fin r, m₀ *ᵥ ee k r a = ee k r a := fun a => (hmfix a a.isLt).1
-  have hms : ∀ a : Fin r, m₀ *ᵥ es k r a = es k r a := fun a => (hmfix a a.isLt).2
-  have hz := S.z_mem
-  have hz' := S.z'_mem
-  have hT := S.T_pos
-  have hT' := S.T'_pos
-  set s := Real.sqrt (Tz k r S.z') with hsdef
-  have hs : 0 < s := Real.sqrt_pos.2 hT'
-  have hs' : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
-  have hs2 : s ^ 2 = Tz k r S.z' := Real.sq_sqrt hT'.le
-  have hzz : herm (Hpk k r) S.z' S.z' = -((s : ℂ) ^ 2) := by
-    rw [herm_self_alt]; congr 1; exact_mod_cast hs2.symm
-  have hzz0 : herm (Hpk k r) S.z' S.z' ≠ 0 := by rw [hzz]; simpa using hs'
-  set μ := Real.sqrt (Tz k r S.z' / Tz k r S.z) with hμdef
-  have hμ : 0 < μ := Real.sqrt_pos.2 (div_pos hT' hT)
-  have hμ' : (μ : ℂ) ≠ 0 := by exact_mod_cast hμ.ne'
-  set d' : Fin (r + 1) → ℂ := fun b => if π b = Fin.last r then (μ : ℂ) * d0 b else d0 b with hd'def
-  have hd' : ∀ b, d' b ≠ 0 := by
-    intro b; simp only [hd'def]; split_ifs
-    · exact mul_ne_zero hμ' (hd0 b)
-    · exact hd0 b
-  have hne : ∀ b : Fin r, b ≠ b0 → π b.castSucc ≠ Fin.last r := by
-    intro b hb' h; rw [← hb] at h; exact hb' (Fin.castSucc_injective _ (π.injective h))
-  have hdb0 : d' b0.castSucc = (μ : ℂ) * d0 b0.castSucc := by simp [hd'def, hb]
-  have hdl : d' (Fin.last r) = d0 (Fin.last r) := by
-    simp only [hd'def]; rw [if_neg (by rw [ha]; exact Fin.castSucc_ne_last a0)]
-  have hdb : ∀ b : Fin r, b ≠ b0 → d' b.castSucc = d0 b.castSucc := by
-    intro b h; simp only [hd'def]; rw [if_neg (hne b h)]
-  set Y := YA π d' S.z' ν' s a0 b0 with hYdef
-  set σ := smat (Hpk k r) (uB S.z' ν') (wB S.z' ν' s) Y with hσdef
-  have hσU : σ ∈ UH (Hpk k r) :=
-    sig_UH Y hz' hν hs hzz hνz hνν (YA_gram π d' hz' hν hs hzz hνz hνν hd' a0 b0 ha hb)
-      (fun x hx i => YA_perp π d' a0 b0 x hx i)
-  have hσu : ∀ i, σ *ᵥ uB S.z' ν' i = Y i := sig_u Y hz' hν hs hzz hνz hνν
-  have hγ : m₀ * σ ∈ UH (Hpk k r) := mul_UH hmU hσU
-  have hzν := herm_zν hνz
-  have hσe : ∀ b : Fin r, σ *ᵥ ee k r b = Y (Sum.inl (Sum.inl b)) := fun b => hσu (Sum.inl (Sum.inl b))
-  have hσz : σ *ᵥ S.z' = Y (Sum.inr 0) := hσu (Sum.inr 0)
-  have hσn : σ *ᵥ ν' = Y (Sum.inr 1) := hσu (Sum.inr 1)
-  have hZ : Zhat k r S.z S.z' (m₀ * σ) = C2.monoP π d0 := by
-    ext a b
-    rw [reduced_matrix_of_stabilizer m₀ σ hmU hme μ hμ.ne' hmz]
-    rcases cast_or_last b with hbl | ⟨b', rfl⟩ <;> rcases cast_or_last a with hal | ⟨a', rfl⟩
-    · subst hbl hal
-      rw [fvec_lastI, fvec_lastI, hσz]
-      have h1 : ¬ (Fin.last r = π (Fin.last r)) := by rw [ha]; exact (Fin.castSucc_ne_last a0).symm
-      simp [hYdef, YA, C2.monoP, h1, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-    · subst hbl
-      rw [fvec_lastI, fvec_cs, hσz]
-      have e : (a'.castSucc = π (Fin.last r)) ↔ (a0 = a') := by
-        rw [ha]; constructor
-        · intro h; exact (Fin.castSucc_injective _ h).symm
-        · rintro rfl; rfl
-      simp [hYdef, YA, C2.monoP, e, hdl, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-    · subst hal
-      rw [fvec_lastI, fvec_cs, hσe]
-      by_cases hb' : b' = b0
-      · subst hb'
-        simp [hYdef, YA, C2.monoP, hb, hdb0, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-        field_simp
-      · have h1 : ¬ (Fin.last r = π b'.castSucc) := fun h => hne b' hb' h.symm
-        simp [hYdef, YA, C2.monoP, hb', h1, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-    · rw [fvec_cs, fvec_cs, hσe]
-      by_cases hb' : b' = b0
-      · subst hb'
-        have h1 : ¬ (a'.castSucc = π b'.castSucc) := by rw [hb]; exact Fin.castSucc_ne_last a'
-        simp [hYdef, YA, C2.monoP, h1, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-      · have e : (a'.castSucc = π b'.castSucc) ↔ (piX π b' = a') := by
-          rw [← piX_spec π b' (hne b' hb')]; constructor
-          · intro h; exact (Fin.castSucc_injective _ h).symm
-          · rintro rfl; rfl
-        simp [hYdef, YA, C2.monoP, hb', e, hdb b' hb', B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-  have hγu : IsUnit (m₀ * σ).det := (Formalism.FourierDecayAlt.P.unitary_group_closed k r).unit _ hγ
-  have hm0u : IsUnit m₀.det := (Formalism.FourierDecayAlt.P.unitary_group_closed k r).unit _ hmU
-  have hDl : d0 (Fin.last r) ≠ 0 := hd0 _
-  have hDc : conj (d0 (Fin.last r)) ≠ 0 := by simpa using hDl
-  refine ⟨σ, hγ, hZ, ⟨?_, ?_, ?_⟩, hσU, ?_, ?_⟩
-  ·
-    refine ⟨μ / s, div_pos hμ hs, ?_⟩
-    have hcof : Formalism.FourierDecayAlt.D.cofR S (m₀ * σ) =
-        ((C2.monoP π d0).det * (d0 b0.castSucc)⁻¹) • (m₀ *ᵥ (σ *ᵥ ee k r b0)) := by
-      unfold Formalism.FourierDecayAlt.D.cofR; rw [hZ]
-      rw [Finset.sum_eq_single b0.castSucc]
-      · rw [monomialMatrix_adj π d0 hd0, if_pos hb, fvec_cs, Matrix.mulVec_mulVec]
-      · intro b _ hbne
-        have : π b ≠ Fin.last r := by intro h; rw [← hb] at h; exact hbne (π.injective h)
-        rw [monomialMatrix_adj π d0 hd0, if_neg this]; simp
-      · simp
-    rw [hcof, prW_smul, orthoProj_m0_intertwine m₀ hmU hme hms hz hz' μ hμ.ne' hmz hzz0, hσe]
-    simp only [hYdef, YA, if_true]
-    rw [prW_smul, prW_sub, prW_smul, prW_perp hν hνz, prW_self hz' hzz0, smul_zero, sub_zero, hZ,
-      Matrix.mulVec_smul, smul_smul, hdb0]
-    congr 1
-    have := hd0 b0.castSucc
-    push_cast; field_simp
-  ·
-    refine ⟨1 / s, by positivity, ?_⟩
-    have hcof : Formalism.FourierDecayAlt.D.cofL S (m₀ * σ) =
-        (conj ((C2.monoP π d0).det * (d0 (Fin.last r))⁻¹)) • ee k r a0 := by
-      unfold Formalism.FourierDecayAlt.D.cofL; rw [hZ]
-      rw [Finset.sum_eq_single (π (Fin.last r))]
-      · rw [monomialMatrix_adj π d0 hd0, if_pos rfl, ha, fvec_cs]
-      · intro a _ hane; rw [monomialMatrix_adj π d0 hd0, if_neg (Ne.symm hane)]; simp
-      · simp
-    set Dl := d0 (Fin.last r) with hDldef
-    have hvec : (-(conj Dl / (s : ℂ) ^ 2)) • Y (Sum.inr 0) + (conj Dl / (s : ℂ)) • Y (Sum.inr 1) = ee k r a0 := by
-      simp only [hYdef, YA, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, hdl]
-      rw [show ∀ (α β p q c1 c2 : ℂ), α • (p • es k r a0 - c1 • ee k r a0) + β • (c2 • ee k r a0 + q • es k r a0) =
-          (α * p + β * q) • es k r a0 + (β * c2 - α * c1) • ee k r a0 from by intros; module]
-      have h0 : -(conj Dl / (s : ℂ) ^ 2) * Dl + conj Dl / (s : ℂ) * (Dl / (s : ℂ)) = 0 := by ring
-      have h1 : conj Dl / (s : ℂ) * ((s : ℂ) / (2 * conj Dl)) - -(conj Dl / (s : ℂ) ^ 2) * ((s : ℂ) ^ 2 / (2 * conj Dl)) = 1 := by
-        field_simp; ring
-      rw [h0, h1, zero_smul, zero_add, one_smul]
-    have hw : (m₀ * σ) *ᵥ ((-(conj Dl / (s : ℂ) ^ 2)) • S.z' + (conj Dl / (s : ℂ)) • ν') = ee k r a0 := by
-      rw [← Matrix.mulVec_mulVec, Matrix.mulVec_add, Matrix.mulVec_smul, Matrix.mulVec_smul, hσz, hσn, hvec, hme]
-    have hinv : (m₀ * σ)⁻¹ *ᵥ ee k r a0 = (-(conj Dl / (s : ℂ) ^ 2)) • S.z' + (conj Dl / (s : ℂ)) • ν' := by
-      rw [← hw, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hγu, Matrix.one_mulVec]
-    rw [hcof, Matrix.mulVec_smul, hinv, prW_smul, prW_add, prW_smul, prW_smul, prW_self hz' hzz0,
-      prW_perp hν hνz, hZ, smul_zero, zero_add, smul_smul]
-    congr 1
-    simp only [map_mul, map_inv₀]
-    push_cast
-    field_simp
-  ·
-    intro u hu
-    set v := m₀⁻¹ *ᵥ u with hvdef
-    have hmv : m₀ *ᵥ v = u := by
-      rw [hvdef, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hm0u, Matrix.one_mulVec]
-    have hv1 : ∀ a : Fin r, herm (Hpk k r) v (ee k r a) = 0 := by
-      intro a; have := (hu a.castSucc).1; rw [fvec_cs, ← hmv, ← hme a, herm_m0_mulVec_invariant m₀ hmU] at this; exact this
-    have hzeq : S.z = (μ : ℂ)⁻¹ • (m₀ *ᵥ S.z') := by rw [hmz, smul_smul, inv_mul_cancel₀ hμ', one_smul]
-    have hv2 : herm (Hpk k r) v S.z' = 0 := by
-      have := (hu (Fin.last r)).1
-      rw [fvec_lastI, ← hmv, hzeq, B2x4.herm_smul_right, herm_m0_mulVec_invariant m₀ hmU] at this
-      simpa [hμ'] using this
-    have hvY : ∀ a, herm (Hpk k r) v (σ *ᵥ fvec k r S.z' a) = 0 := by
-      intro a; have := (hu a).2; rw [← hmv, ← Matrix.mulVec_mulVec, herm_m0_mulVec_invariant m₀ hmU] at this; exact this
-    have hv3 : herm (Hpk k r) v ν' = 0 := by
-      have := hvY b0.castSucc
-      rw [fvec_cs, hσe] at this
-      simp only [hYdef, YA, if_true, B2x4.herm_smul_right, B2x4.herm_sub_right, hv2, mul_zero, sub_zero] at this
-      rcases mul_eq_zero.1 this with h | h
-      · exfalso; have := hd' b0.castSucc; simp at h
-        rcases h with h | h
-        · exact this h
-        · exact hs.ne' h
-      · exact h
-    have hv4 : ∀ c : Fin r, herm (Hpk k r) v (es k r c) = 0 := by
-      intro c
-      by_cases hc : c = a0
-      · subst hc
-        have := hvY (Fin.last r)
-        rw [fvec_lastI, hσz] at this
-        simp only [hYdef, YA, Matrix.cons_val_zero, B2x4.herm_smul_right, B2x4.herm_sub_right, hv1, mul_zero,
-          sub_zero, hdl] at this
-        rcases mul_eq_zero.1 this with h | h
-        · exact absurd h hDc
-        · exact h
-      · have hbl : π.symm c.castSucc ≠ Fin.last r := by
-          intro h; have h2 := congrArg π h; rw [π.apply_symm_apply, ha] at h2
-          exact hc (Fin.castSucc_injective _ h2)
-        obtain ⟨b', hb'⟩ := (cast_or_last (π.symm c.castSucc)).resolve_left hbl
-        have hb'0 : b' ≠ b0 := by
-          intro h; subst h; rw [← hb', π.apply_symm_apply] at hb; exact Fin.castSucc_ne_last c hb
-        have hpx : piX π b' = c := by
-          apply Fin.castSucc_injective; rw [piX_spec π b' (hne b' hb'0), ← hb', π.apply_symm_apply]
-        have := hvY b'.castSucc
-        rw [fvec_cs, hσe] at this
-        simp only [hYdef, YA, if_neg hb'0, hpx, B2x4.herm_smul_right] at this
-        rcases mul_eq_zero.1 this with h | h
-        · exfalso; have := hd' b'.castSucc; simp at h; exact this h
-        · exact h
-    have hfix : σ *ᵥ v = v := by
-      apply sig_fix Y v
-      intro i
-      rcases i with ((b | b) | i)
-      · exact hv4 b
-      · exact hv1 b
-      · fin_cases i
-        · simp [wB, B2x4.herm_smul_right, herm_neg_right, hv2]
-        · simpa [wB] using hv3
-    have hinv : (m₀ * σ)⁻¹ *ᵥ u = v := by
-      have : (m₀ * σ) *ᵥ v = u := by rw [← Matrix.mulVec_mulVec, hfix, hmv]
-      rw [← this, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hγu, Matrix.one_mulVec]
-    rw [hinv, ← hmv, orthoProj_m0_intertwine m₀ hmU hme hms hz hz' μ hμ.ne' hmz hzz0]
-
-  ·
-    intro x hx hxz hxν
-    apply sig_fix Y x
-    intro i
-    rcases i with ((b | b) | i)
-    · show herm (Hpk k r) x (es k r b) = 0
-      rw [herm_es]; exact wb_eI hx b
-    · show herm (Hpk k r) x (ee k r b) = 0
-      rw [herm_ee]; exact wb_esI hx b
-    · fin_cases i
-      · simp [wB, B2x4.herm_smul_right, herm_neg_right, hxz]
-      · simpa [wB] using hxν
-  ·
-    intro g hg hge hgz hgν
-    apply smat_comm_Hpk _ _ _ g hg
-    · intro i; rcases i with ((b | b) | i)
-      · exact (hge b).1
-      · exact (hge b).2
-      · fin_cases i
-        · exact hgz
-        · exact hgν
-    · intro i; rcases i with ((b | b) | i)
-      · exact (hge b).2
-      · exact (hge b).1
-      · fin_cases i
-        · simp [wB, Matrix.mulVec_smul, Matrix.mulVec_neg, hgz]
-        · simpa [wB] using hgν
-    · intro i
-      simp only [hYdef]
-      rcases i with ((b | b) | i)
-      · simp only [YA]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
-      · simp only [YA]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
-      · fin_cases i <;> simp [YA, Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+        g *ᵥ S.z' = S.z' → g *ᵥ ν' = ν' → σ * g = g * σ) :=
+  exists_frame_of_moves_last S ν' m₀ hbase π d0 hd0 a0 b0 ha hb
 
 theorem caseB' {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
@@ -5277,230 +5207,8 @@ theorem caseB' {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
       Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ (m₀ * σ) ∧ σ ∈ UH (Hpk k r) ∧
       (∀ x, inWb k r x → herm (Hpk k r) x S.z' = 0 → herm (Hpk k r) x ν' = 0 → σ *ᵥ x = x) ∧
       (∀ g ∈ UH (Hpk k r), (∀ a : Fin r, g *ᵥ ee k r a = ee k r a ∧ g *ᵥ es k r a = es k r a) →
-        g *ᵥ S.z' = S.z' → g *ᵥ ν' = ν' → σ * g = g * σ) := by
-  obtain ⟨hν, hνz, hνν, ⟨hmU, hmfix⟩, hmz⟩ := hbase
-  have hme : ∀ a : Fin r, m₀ *ᵥ ee k r a = ee k r a := fun a => (hmfix a a.isLt).1
-  have hms : ∀ a : Fin r, m₀ *ᵥ es k r a = es k r a := fun a => (hmfix a a.isLt).2
-  have hz := S.z_mem
-  have hz' := S.z'_mem
-  have hT := S.T_pos
-  have hT' := S.T'_pos
-  set s := Real.sqrt (Tz k r S.z') with hsdef
-  have hs : 0 < s := Real.sqrt_pos.2 hT'
-  have hs' : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
-  have hs2 : s ^ 2 = Tz k r S.z' := Real.sq_sqrt hT'.le
-  have hzz : herm (Hpk k r) S.z' S.z' = -((s : ℂ) ^ 2) := by
-    rw [herm_self_alt]; congr 1; exact_mod_cast hs2.symm
-  have hzz0 : herm (Hpk k r) S.z' S.z' ≠ 0 := by rw [hzz]; simpa using hs'
-  set μ := Real.sqrt (Tz k r S.z' / Tz k r S.z) with hμdef
-  have hμ : 0 < μ := Real.sqrt_pos.2 (div_pos hT' hT)
-  have hμ' : (μ : ℂ) ≠ 0 := by exact_mod_cast hμ.ne'
-  have hμ2 : μ ^ 2 = Tz k r S.z' / Tz k r S.z := Real.sq_sqrt (div_pos hT' hT).le
-  set d' : Fin (r + 1) → ℂ := fun b => if π b = Fin.last r then (μ : ℂ) * d0 b else d0 b with hd'def
-  have hd' : ∀ b, d' b ≠ 0 := by
-    intro b; simp only [hd'def]; split_ifs
-    · exact mul_ne_zero hμ' (hd0 b)
-    · exact hd0 b
-  have hne : ∀ b : Fin r, π b.castSucc ≠ Fin.last r := by
-    intro b h; rw [← hB] at h; exact Fin.castSucc_ne_last b (π.injective h)
-  have hdl : d' (Fin.last r) = (μ : ℂ) * d0 (Fin.last r) := by simp [hd'def, hB]
-  have hdb : ∀ b : Fin r, d' b.castSucc = d0 b.castSucc := by
-    intro b; simp only [hd'def]; rw [if_neg (hne b)]
-
-  set N := Complex.normSq (d' (Fin.last r)) with hNdef
-  have hN : s ^ 4 < N := by
-    rw [hNdef, hdl, Complex.normSq_mul, Complex.normSq_ofReal]
-    have : s ^ 4 = μ * μ * (Tz k r S.z * Tz k r S.z') := by
-      have e1 : μ * μ = μ ^ 2 := by ring
-      rw [e1, hμ2, show s ^ 4 = (s ^ 2) ^ 2 by ring, hs2]; field_simp
-    rw [this]; exact mul_lt_mul_of_pos_left hG (by positivity)
-  have hN0 : 0 < N := lt_trans (by positivity) hN
-  set κ := Real.sqrt (1 / s ^ 2 - s ^ 2 / N) with hκdef
-  have hκarg : 0 < 1 / s ^ 2 - s ^ 2 / N := by
-    rw [sub_pos, div_lt_div_iff₀ hN0 (by positivity)]; nlinarith [hN]
-  have hκ0 : 0 < κ := Real.sqrt_pos.2 hκarg
-  have hκ2 : κ ^ 2 = 1 / s ^ 2 - s ^ 2 / N := Real.sq_sqrt hκarg.le
-  have hκr : κ ^ 2 * s ^ 2 * N = N - s ^ 4 := by rw [hκ2]; field_simp
-  have hDD : d' (Fin.last r) * conj (d' (Fin.last r)) = ((N : ℝ) : ℂ) := by rw [hNdef, Complex.mul_conj]
-  have hκ : (κ : ℂ) ^ 2 * (s : ℂ) ^ 2 * (d' (Fin.last r) * conj (d' (Fin.last r))) =
-      d' (Fin.last r) * conj (d' (Fin.last r)) - (s : ℂ) ^ 4 := by
-    rw [hDD]; exact_mod_cast hκr
-  set Y := YB π d' S.z' ν' s κ with hYdef
-  set σ := smat (Hpk k r) (uB S.z' ν') (wB S.z' ν' s) Y with hσdef
-  have hσU : σ ∈ UH (Hpk k r) :=
-    sig_UH Y hz' hν hs hzz hνz hνν (YB_gram π d' hz' hν hs hzz hνz hνν hd' κ hκ hB)
-      (fun x hx i => YB_perp π d' κ x hx i)
-  have hσu : ∀ i, σ *ᵥ uB S.z' ν' i = Y i := sig_u Y hz' hν hs hzz hνz hνν
-  have hγ : m₀ * σ ∈ UH (Hpk k r) := mul_UH hmU hσU
-  have hzν := herm_zν hνz
-  have hσe : ∀ b : Fin r, σ *ᵥ ee k r b = Y (Sum.inl (Sum.inl b)) := fun b => hσu (Sum.inl (Sum.inl b))
-  have hσz : σ *ᵥ S.z' = Y (Sum.inr 0) := hσu (Sum.inr 0)
-  have hσn : σ *ᵥ ν' = Y (Sum.inr 1) := hσu (Sum.inr 1)
-  have hZ : Zhat k r S.z S.z' (m₀ * σ) = C2.monoP π d0 := by
-    ext a b
-    rw [reduced_matrix_of_stabilizer m₀ σ hmU hme μ hμ.ne' hmz]
-    rcases cast_or_last b with hbl | ⟨b', rfl⟩ <;> rcases cast_or_last a with hal | ⟨a', rfl⟩
-    · subst hbl hal
-      rw [fvec_lastI, fvec_lastI, hσz]
-      simp [hYdef, YB, C2.monoP, hB, hdl, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-      field_simp
-    · subst hbl
-      rw [fvec_lastI, fvec_cs, hσz]
-      have h1 : ¬ (a'.castSucc = π (Fin.last r)) := by rw [hB]; exact Fin.castSucc_ne_last a'
-      simp [hYdef, YB, C2.monoP, h1, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-    · subst hal
-      rw [fvec_lastI, fvec_cs, hσe]
-      have h1 : ¬ (Fin.last r = π b'.castSucc) := fun h => hne b' h.symm
-      simp [hYdef, YB, C2.monoP, h1, B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-    · rw [fvec_cs, fvec_cs, hσe]
-      have e : (a'.castSucc = π b'.castSucc) ↔ (piX π b' = a') := by
-        rw [← piX_spec π b' (hne b')]; constructor
-        · intro h; exact (Fin.castSucc_injective _ h).symm
-        · rintro rfl; rfl
-      simp [hYdef, YB, C2.monoP, e, hdb b', B2x4.herm_smul_left, B2x4.herm_smul_right, herm_rsmul_left, herm_rsmul_right, B2x4.herm_add_left, B2x4.herm_add_right, B2x4.herm_sub_left, B2x4.herm_sub_right, herm_neg_left, herm_neg_right, h_w_ee hz', h_w_ee hν, h_w_es hz', h_w_es hν, h_ee_w hz', h_ee_w hν, h_es_w hz', h_es_w hν, hzz, hνz, hνν, hzν, Complex.conj_ofReal]
-  have hγu : IsUnit (m₀ * σ).det := (Formalism.FourierDecayAlt.P.unitary_group_closed k r).unit _ hγ
-  have hm0u : IsUnit m₀.det := (Formalism.FourierDecayAlt.P.unitary_group_closed k r).unit _ hmU
-  have hDl : d0 (Fin.last r) ≠ 0 := hd0 _
-  have hDc : conj (d0 (Fin.last r)) ≠ 0 := by simpa using hDl
-  refine ⟨σ, hγ, hZ, ⟨?_, ?_, ?_⟩, hσU, ?_, ?_⟩
-  ·
-    refine ⟨μ * κ, mul_pos hμ hκ0, ?_⟩
-    have hcof : Formalism.FourierDecayAlt.D.cofR S (m₀ * σ) =
-        ((C2.monoP π d0).det * (d0 (Fin.last r))⁻¹) • (m₀ *ᵥ (σ *ᵥ S.z')) := by
-      unfold Formalism.FourierDecayAlt.D.cofR; rw [hZ]
-      rw [Finset.sum_eq_single (Fin.last r)]
-      · rw [monomialMatrix_adj π d0 hd0, if_pos hB, fvec_lastI, Matrix.mulVec_mulVec]
-      · intro b _ hbne
-        have : π b ≠ Fin.last r := by intro h; rw [← hB] at h; exact hbne (π.injective h)
-        rw [monomialMatrix_adj π d0 hd0, if_neg this]; simp
-      · simp
-    rw [hcof, prW_smul, orthoProj_m0_intertwine m₀ hmU hme hms hz hz' μ hμ.ne' hmz hzz0, hσz]
-    simp only [hYdef, YB, Matrix.cons_val_zero]
-    rw [prW_smul, prW_sub, prW_smul, prW_perp hν hνz, prW_self hz' hzz0, sub_zero, hZ,
-      Matrix.mulVec_smul, Matrix.mulVec_smul, smul_smul, smul_smul, hdl]
-    congr 1
-    push_cast; field_simp
-  ·
-    refine ⟨κ, hκ0, ?_⟩
-    have hcof : Formalism.FourierDecayAlt.D.cofL S (m₀ * σ) =
-        (conj ((C2.monoP π d0).det * (d0 (Fin.last r))⁻¹)) • S.z := by
-      unfold Formalism.FourierDecayAlt.D.cofL; rw [hZ]
-      rw [Finset.sum_eq_single (Fin.last r)]
-      · rw [monomialMatrix_adj π d0 hd0, if_pos hB, fvec_lastI]
-      · intro a _ hane; rw [monomialMatrix_adj π d0 hd0, if_neg (by rw [hB]; exact Ne.symm hane)]; simp
-      · simp
-    set Dp := d' (Fin.last r) with hDpdef
-    have hvec : (-(conj Dp / (s : ℂ) ^ 2)) • Y (Sum.inr 0) + ((κ : ℂ) * conj Dp) • Y (Sum.inr 1) = S.z' := by
-      simp only [hYdef, YB, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
-      rw [show ∀ (α β p q c1 c2 : ℂ), α • (p • (c1 • ν' - S.z')) + β • (q • (ν' - c2 • S.z')) =
-          (α * p * c1 + β * q) • ν' + (-(α * p) - β * q * c2) • S.z' from by intros; module]
-      have h0 : -(conj Dp / (s : ℂ) ^ 2) * (Dp / (s : ℂ) ^ 2) * ((κ : ℂ) * (s : ℂ) ^ 2) +
-          (κ : ℂ) * conj Dp * (Dp / (s : ℂ) ^ 2) = 0 := by field_simp; ring
-      have h1 : -(-(conj Dp / (s : ℂ) ^ 2) * (Dp / (s : ℂ) ^ 2)) - (κ : ℂ) * conj Dp * (Dp / (s : ℂ) ^ 2) * (κ : ℂ) = 1 := by
-        field_simp
-        first | linear_combination -hκ | linear_combination hκ | linear_combination (-1 : ℂ) * hκ
-      rw [h0, h1, zero_smul, zero_add, one_smul]
-    set w := (μ : ℂ)⁻¹ • ((-(conj Dp / (s : ℂ) ^ 2)) • S.z' + ((κ : ℂ) * conj Dp) • ν') with hwdef
-    have hw : (m₀ * σ) *ᵥ w = S.z := by
-      rw [hwdef, Matrix.mulVec_smul, ← Matrix.mulVec_mulVec, Matrix.mulVec_add, Matrix.mulVec_smul, Matrix.mulVec_smul,
-        hσz, hσn, hvec, hmz, smul_smul, inv_mul_cancel₀ hμ', one_smul]
-    have hinv : (m₀ * σ)⁻¹ *ᵥ S.z = w := by
-      rw [← hw, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hγu, Matrix.one_mulVec]
-    rw [hcof, Matrix.mulVec_smul, hinv, hwdef, prW_smul, prW_smul, prW_add, prW_smul, prW_smul, prW_self hz' hzz0,
-      prW_perp hν hνz, hZ, smul_zero, zero_add, smul_smul, smul_smul, hdl]
-    congr 1
-    simp only [map_mul, map_inv₀, Complex.conj_ofReal]
-    field_simp
-  ·
-    intro u hu
-    set v := m₀⁻¹ *ᵥ u with hvdef
-    have hmv : m₀ *ᵥ v = u := by
-      rw [hvdef, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hm0u, Matrix.one_mulVec]
-    have hv1 : ∀ a : Fin r, herm (Hpk k r) v (ee k r a) = 0 := by
-      intro a; have := (hu a.castSucc).1; rw [fvec_cs, ← hmv, ← hme a, herm_m0_mulVec_invariant m₀ hmU] at this; exact this
-    have hzeq : S.z = (μ : ℂ)⁻¹ • (m₀ *ᵥ S.z') := by rw [hmz, smul_smul, inv_mul_cancel₀ hμ', one_smul]
-    have hv2 : herm (Hpk k r) v S.z' = 0 := by
-      have := (hu (Fin.last r)).1
-      rw [fvec_lastI, ← hmv, hzeq, B2x4.herm_smul_right, herm_m0_mulVec_invariant m₀ hmU] at this
-      simpa [hμ'] using this
-    have hvY : ∀ a, herm (Hpk k r) v (σ *ᵥ fvec k r S.z' a) = 0 := by
-      intro a; have := (hu a).2; rw [← hmv, ← Matrix.mulVec_mulVec, herm_m0_mulVec_invariant m₀ hmU] at this; exact this
-    have hv3 : herm (Hpk k r) v ν' = 0 := by
-      have := hvY (Fin.last r)
-      rw [fvec_lastI, hσz] at this
-      simp only [hYdef, YB, Matrix.cons_val_zero, B2x4.herm_smul_right, B2x4.herm_sub_right, hv2, sub_zero] at this
-      rcases mul_eq_zero.1 this with h | h
-      · exfalso; have := hd' (Fin.last r); simp at h
-        rcases h with h | h
-        · exact this h
-        · exact hs.ne' h
-      · rcases mul_eq_zero.1 h with h | h
-        · exfalso; simp at h
-          rcases h with h | h
-          · exact hκ0.ne' h
-          · exact hs.ne' h
-        · exact h
-    have hv4 : ∀ c : Fin r, herm (Hpk k r) v (es k r c) = 0 := by
-      intro c
-      have hbl : π.symm c.castSucc ≠ Fin.last r := by
-        intro h; have h2 := congrArg π h; rw [π.apply_symm_apply, hB] at h2
-        exact Fin.castSucc_ne_last c h2
-      obtain ⟨b', hb'⟩ := (cast_or_last (π.symm c.castSucc)).resolve_left hbl
-      have hpx : piX π b' = c := by
-        apply Fin.castSucc_injective; rw [piX_spec π b' (hne b'), ← hb', π.apply_symm_apply]
-      have := hvY b'.castSucc
-      rw [fvec_cs, hσe] at this
-      simp only [hYdef, YB, hpx, B2x4.herm_smul_right] at this
-      rcases mul_eq_zero.1 this with h | h
-      · exfalso; have := hd' b'.castSucc; simp at h; exact this h
-      · exact h
-    have hfix : σ *ᵥ v = v := by
-      apply sig_fix Y v
-      intro i
-      rcases i with ((b | b) | i)
-      · exact hv4 b
-      · exact hv1 b
-      · fin_cases i
-        · simp [wB, B2x4.herm_smul_right, herm_neg_right, hv2]
-        · simpa [wB] using hv3
-    have hinv : (m₀ * σ)⁻¹ *ᵥ u = v := by
-      have : (m₀ * σ) *ᵥ v = u := by rw [← Matrix.mulVec_mulVec, hfix, hmv]
-      rw [← this, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hγu, Matrix.one_mulVec]
-    rw [hinv, ← hmv, orthoProj_m0_intertwine m₀ hmU hme hms hz hz' μ hμ.ne' hmz hzz0]
-
-  ·
-    intro x hx hxz hxν
-    apply sig_fix Y x
-    intro i
-    rcases i with ((b | b) | i)
-    · show herm (Hpk k r) x (es k r b) = 0
-      rw [herm_es]; exact wb_eI hx b
-    · show herm (Hpk k r) x (ee k r b) = 0
-      rw [herm_ee]; exact wb_esI hx b
-    · fin_cases i
-      · simp [wB, B2x4.herm_smul_right, herm_neg_right, hxz]
-      · simpa [wB] using hxν
-  ·
-    intro g hg hge hgz hgν
-    apply smat_comm_Hpk _ _ _ g hg
-    · intro i; rcases i with ((b | b) | i)
-      · exact (hge b).1
-      · exact (hge b).2
-      · fin_cases i
-        · exact hgz
-        · exact hgν
-    · intro i; rcases i with ((b | b) | i)
-      · exact (hge b).2
-      · exact (hge b).1
-      · fin_cases i
-        · simp [wB, Matrix.mulVec_smul, Matrix.mulVec_neg, hgz]
-        · simpa [wB] using hgν
-    · intro i
-      simp only [hYdef]
-      rcases i with ((b | b) | i)
-      · simp only [YB]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
-      · simp only [YB]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
-      · fin_cases i <;> simp [YB, Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+        g *ᵥ S.z' = S.z' → g *ᵥ ν' = ν' → σ * g = g * σ) :=
+  exists_frame_of_fixes_last S ν' m₀ hbase π d0 hd0 hB hG
 
 end explicit2
 
@@ -5610,8 +5318,8 @@ theorem cofL_free {γ : B.Mat k r} (hγ : γ ∈ B.GV k r) (a : Fin r) :
   rw [Matrix.mul_apply] at h
   simp only [Matrix.smul_apply, Matrix.one_apply_ne (Fin.castSucc_ne_last a).symm, smul_zero] at h
   have h2 := congrArg (starRingEnd ℂ) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_zero] at h2
+
+  rw [map_sum, map_zero] at h2
   rw [← h2]
   apply Finset.sum_congr rfl; intro c _
   rw [map_mul]; congr 1
@@ -6182,7 +5890,7 @@ theorem zj_split (v : U.LW (sigP (n := n) σ) → ℂ) (u : G.UT (ph + (n + 1)) 
   have hL := Matrix.nonsing_inv_mul _ (isUnit_low σ (v1 σ v))
   have hW := Matrix.nonsing_inv_mul _ (isUnit_wP σ)
   have hU := Matrix.mul_nonsing_inv _ (isUnit_up (u1 u))
-  simp only [Matrix.of_symm_apply, Equiv.apply_symm_apply, U.headH, aN, bN]
+  simp only [Equiv.apply_symm_apply, U.headH, aN, bN]
   congr 1
   · rw [show U.wP σ * U.lowW σ (v1 σ v) * Matrix.diagonal d * G.upper (u1 u) * ((G.upper (u1 u))⁻¹ * Bm u) =
       U.wP σ * U.lowW σ (v1 σ v) * Matrix.diagonal d * (G.upper (u1 u) * (G.upper (u1 u))⁻¹) * Bm u by
@@ -6247,8 +5955,7 @@ theorem conj_split (v : U.LW (sigP (n := n) σ) → ℂ) :
 theorem upper_fact (u : G.UT (ph + (n + 1)) → ℂ) :
     G.upper u = U.blk2 (G.upper (u1 u)) 0 0 (G.upper (u2 u)) * U.blk2 1 (Matrix.of (Matrix.of.symm (bN u))) 0 1 := by
   rw [upper_split, Ux2.symmetricScalarBlockMatrix_mul]
-  simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul,
-    Equiv.apply_symm_apply]
+  simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Equiv.apply_symm_apply]
   congr 1
   unfold bN
   rw [← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ (isUnit_up (u1 u)), Matrix.one_mul]; rfl
@@ -6637,7 +6344,7 @@ section core
 
 theorem card_UT (m : ℕ) : 2 * Fintype.card (G.UT m) = m * (m - 1) := by
   induction m with
-  | zero => simp [Fintype.card_eq_zero_iff]
+  | zero => simp
   | succ m ih =>
     have e := Fintype.card_congr (utEquiv (ph := m) (n := 0))
     have h1 : Fintype.card (G.UT (0 + 1)) = 0 := by
@@ -6646,12 +6353,12 @@ theorem card_UT (m : ℕ) : 2 * Fintype.card (G.UT m) = m * (m - 1) := by
         have b := q.1.2.isLt
         have e : q.1.1 = q.1.2 := Fin.ext (by omega)
         rw [e]; exact lt_irrefl _)⟩
-    simp only [Fintype.card_sum, Fintype.card_prod, Fintype.card_fin, h1, add_zero, mul_one] at e
+    simp only [Fintype.card_sum, Fintype.card_prod, Fintype.card_fin, h1, add_zero] at e
     rw [show m + (0 + 1) = m + 1 from rfl] at e
     rw [e, mul_add, ih]
     cases m with
     | zero => simp
-    | succ m => simp [Nat.succ_sub_one]; ring
+    | succ m => simp; ring
 
 theorem card_UT' (n : ℕ) : Fintype.card (G.UT (n + 1)) = (n + 1) * n / 2 := by
   have := card_UT (n + 1)

@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.BaseEmbeddingInclusion
+public import Mathlib.Algebra.Module.LinearMap.Defs
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Algebra.Defs
 
 @[expose] public section
 

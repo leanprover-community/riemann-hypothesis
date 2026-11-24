@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

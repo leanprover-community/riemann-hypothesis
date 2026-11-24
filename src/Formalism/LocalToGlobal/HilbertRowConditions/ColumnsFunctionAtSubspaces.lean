@@ -1,12 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
-public import Formalism.LocalToGlobal.IndefiniteForms.PairingConditionOfInverseMatrixIdentity
 public import Formalism.LocalToGlobal.Divisibility.DivisionCompatibleToSub2Indef2
-public import Formalism.LocalToGlobal.ClassSK
-public import Formalism.SharpRestriction.Divisibility.StatementFT.PeriodPointConditions
-public import Formalism.SharpRestriction.Divisibility.HookProducts.AdmPtTw
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+public import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
 
 @[expose] public section
 

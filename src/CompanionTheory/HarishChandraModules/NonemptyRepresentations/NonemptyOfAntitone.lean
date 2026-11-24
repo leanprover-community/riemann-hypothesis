@@ -1,6 +1,22 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.LinearAlgebra.Matrix.Block
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.Deriv.ZPow
 
 @[expose] public section
 
@@ -39,7 +55,7 @@ theorem differentiable_det : Differentiable ℂ (fun B : Fin k → Fin k → ℂ
 def detPow (k : ℕ) (m : ℤ) : HWRep k (fun _ => m) where
   I := Unit
   ρ A := Matrix.of fun _ _ => A.det ^ m
-  map_one := by ext i j; simp [Matrix.one_apply]
+  map_one := by ext i j; simp
   map_mul A B := by ext i j; simp [Matrix.mul_apply, mul_zpow]
   map_star A := by ext i j; simp [Matrix.det_conjTranspose, Matrix.conjTranspose_apply]
   diff A hA i j := (differentiableAt_zpow.2 (Or.inl hA)).comp A (differentiable_det A)

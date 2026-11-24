@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.VolUMeasurableSetTriPos
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

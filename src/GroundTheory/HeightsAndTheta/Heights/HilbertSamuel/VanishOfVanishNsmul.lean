@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsLast
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsTail
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsRest

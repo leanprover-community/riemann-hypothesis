@@ -1,6 +1,52 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.IsClosedRStab
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.FlagMatLower
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupJacobian.SUpPowEqZero
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.TriShear
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupHaar.MatEqZeroOfSpan
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupJacobian.ContinuousRootCoords
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,37 +62,7 @@ variable {k r : ℕ}
 
 theorem nset_mul' {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ Nset k r)
     (hb : b ∈ Nset k r) : a * b ∈ Nset k r := by
-  refine ⟨?_, ?_, ?_⟩
-  · show (a * b)ᴴ * Hpk k r * (a * b) = Hpk k r
-    have h1 : aᴴ * Hpk k r * a = Hpk k r := ha.1
-    have h2 : bᴴ * Hpk k r * b = Hpk k r := hb.1
-    rw [conjTranspose_mul]
-    calc bᴴ * aᴴ * Hpk k r * (a * b) = bᴴ * (aᴴ * Hpk k r * a) * b := by simp only [Matrix.mul_assoc]
-      _ = Hpk k r := by rw [h1, h2]
-  · intro c i hci
-    rw [Matrix.mul_apply, Finset.sum_eq_single (eI k r c)]
-    · rw [hb.2.1 c (eI k r c) le_rfl, if_pos rfl, mul_one]; exact ha.2.1 c i hci
-    · intro j _ hj
-      by_cases hjc : c.val ≤ j.val
-      · rw [hb.2.1 c j hjc, if_neg hj, mul_zero]
-      · have hjr : j.val < r := by have := c.isLt; omega
-        have e : eI k r ⟨j.val, hjr⟩ = j := Fin.ext rfl
-        have := ha.2.1 ⟨j.val, hjr⟩ i (show j.val ≤ i.val by omega)
-        rw [e, if_neg (fun h => hjc (by rw [← h]; exact hci))] at this
-        rw [this, zero_mul]
-    · intro h; exact absurd (Finset.mem_univ _) h
-  · intro i j hj1 hj2 hi
-    rw [Matrix.mul_apply, Finset.sum_eq_single j]
-    · rw [hb.2.2 j j hj1 hj2 hj1, if_pos rfl, mul_one]; exact ha.2.2 i j hj1 hj2 hi
-    · intro l _ hl
-      by_cases hlr : r ≤ l.val
-      · rw [hb.2.2 l j hj1 hj2 hlr, if_neg hl, mul_zero]
-      · have hlr' : l.val < r := by omega
-        have e : eI k r ⟨l.val, hlr'⟩ = l := Fin.ext rfl
-        have := ha.2.1 ⟨l.val, hlr'⟩ i (show l.val ≤ i.val by omega)
-        rw [e, if_neg (fun h => by rw [h] at hi; omega)] at this
-        rw [this, zero_mul]
-    · intro h; exact absurd (Finset.mem_univ _) h
+  apply PI.AmpOrbQuot.nset_mul <;> assumption
 
 theorem rstab_mul' {g a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ UH (Hpk k r))
     (ha : a ∈ RStab k r g) (hb : b ∈ RStab k r g) : a * b ∈ RStab k r g := by

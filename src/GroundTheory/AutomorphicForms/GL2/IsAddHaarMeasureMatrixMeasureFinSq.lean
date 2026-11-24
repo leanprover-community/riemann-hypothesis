@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJFEDefs
-public import GroundTheory.AutomorphicForms.GL2.GJLeviZetaBlocks
 public import GroundTheory.AutomorphicForms.MeasuresGL
+public import Mathlib.Order.CompletePartialOrder
+import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualCotangentKer
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -83,8 +87,8 @@ theorem DualCotangentKer.proof : DualCotangentKer.Statement := by
       _ = 0 := by rw [hg, smul_zero]
   have hσχ : ∀ x, σ (χ x) = ρ (c x) • σ (w x) := fun x => hsl (c x) (w x) (χ x) rfl
   have hσsum : ∑ x, ρ (c x) • σ (w x) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_zero σ, ← hsum, map_sum]
+
+    rw [← map_zero σ, ← hsum, map_sum]
     exact Finset.sum_congr rfl fun x _ => (hσχ x).symm
 
   have hsome : ∀ j, ρ (c (some j)) = 0 := by

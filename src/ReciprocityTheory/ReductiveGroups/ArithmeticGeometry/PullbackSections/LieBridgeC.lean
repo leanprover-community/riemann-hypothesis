@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

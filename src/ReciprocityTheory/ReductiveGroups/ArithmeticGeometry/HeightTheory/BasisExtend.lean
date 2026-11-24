@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import Mathlib.LinearAlgebra.Matrix.ToLin
+public import Mathlib.RingTheory.Localization.FractionRing
+public import Mathlib.Tactic.Continuity
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LinearIndependentC
+public import Mathlib.RingTheory.Algebraic.Basic
+public import Mathlib.RingTheory.Algebraic.Integral
 
 @[expose] public section
 
@@ -44,8 +53,8 @@ theorem basis_extend [FiniteDimensional L E] {n : Type} [Fintype n] [DecidableEq
     intro q P; rw [hsmul, map_mul, hlift]
   have hmem : ∀ P : MvPolynomial σ E, algebraMap (MvPolynomial σ E) (FractionRing (MvPolynomial σ E)) P ∈ Submodule.span (FractionRing (MvPolynomial σ L)) (Set.range (fun i => algebraMap (MvPolynomial σ E) (FractionRing (MvPolynomial σ E)) (MvPolynomial.C (b i)))) := by
     intro P
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [PolynomialCoordinateBasis.eq_sum_crd b P, map_sum]
+
+    rw [PolynomialCoordinateBasis.eq_sum_crd b P, map_sum]
     refine Submodule.sum_mem _ fun i _ => ?_
     rw [himg, ← Algebra.smul_def]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
@@ -58,8 +67,8 @@ theorem basis_extend [FiniteDimensional L E] {n : Type} [Fintype n] [DecidableEq
       fun j => hd j (Finset.mem_univ j)
     choose a ha using hd'
     have h0 : algebraMap (MvPolynomial σ E) (FractionRing (MvPolynomial σ E)) (∑ j, a j • (MvPolynomial.C (b j) : MvPolynomial σ E)) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [himg, ha]
       have e1 : ∑ j, algebraMap (FractionRing (MvPolynomial σ L)) (FractionRing (MvPolynomial σ E)) ((d : MvPolynomial σ L) • g j) * algebraMap (MvPolynomial σ E) (FractionRing (MvPolynomial σ E)) (MvPolynomial.C (b j)) =
           algebraMap (FractionRing (MvPolynomial σ L)) (FractionRing (MvPolynomial σ E)) (algebraMap (MvPolynomial σ L) (FractionRing (MvPolynomial σ L)) d) * ∑ j, g j • algebraMap (MvPolynomial σ E) (FractionRing (MvPolynomial σ E)) (MvPolynomial.C (b j)) := by
@@ -103,13 +112,12 @@ theorem basis_extend [FiniteDimensional L E] {n : Type} [Fintype n] [DecidableEq
       ∑ k, algebraMap L (FractionRing (MvPolynomial σ L)) (b.repr (e * b j) k) • (Module.Basis.mk hli htop) k := by
     rw [← map_mul, ← MvPolynomial.C_mul]
     conv_lhs => rw [← b.sum_repr (e * b j)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Module.Basis.mk_apply, Algebra.smul_def (algebraMap L (FractionRing (MvPolynomial σ L)) _),
       IsScalarTower.algebraMap_apply L (MvPolynomial σ L) (FractionRing (MvPolynomial σ L)), MvPolynomial.algebraMap_eq,
       ← himg, hsmul, MvPolynomial.map_C, ← MvPolynomial.C_mul, Algebra.smul_def]
-  beta_reduce
   rw [hx, Module.Basis.repr_sum_self]
 
 end ReciprocityTheory.ChartRestriction.G.T0.VariableBasisExtension

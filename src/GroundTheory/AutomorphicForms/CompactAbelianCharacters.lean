@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CompactSelfAdjoint
-public import GroundTheory.AutomorphicForms.HilbertSchmidtCompact
-public import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
+public import Mathlib.Analysis.CStarAlgebra.ContinuousMap
+public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.MeasureTheory.Function.LpSpace.Basic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsCharNeOne
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.ContinuousMap.StoneWeierstrass
 
 @[expose] public section
 
@@ -35,11 +36,8 @@ variable (ψ : C(C, ℝ))
 
 end Metrizable
 
-theorem exists_char_ne_one {g : C} (hg : g ≠ 1) : ∃ χ : C →ₜ* Circle, χ g ≠ 1 :=
-  _root_.UpperTheory.Reformulated.B.CharactersSeparatePoints.exists_char_ne_one hg
-
 theorem exists_char_ne {x y : C} (hxy : x ≠ y) : ∃ χ : C →ₜ* Circle, χ x ≠ χ y := by
-  obtain ⟨χ, hχ⟩ := exists_char_ne_one (g := x * y⁻¹) (fun h => hxy (mul_inv_eq_one.1 h))
+  obtain ⟨χ, hχ⟩ := _root_.UpperTheory.Reformulated.B.CharactersSeparatePoints.exists_char_ne_one (g := x * y⁻¹) (fun h => hxy (mul_inv_eq_one.1 h))
   refine ⟨χ, fun h => hχ ?_⟩
   rw [map_mul, map_inv, h, mul_inv_cancel]
 
@@ -101,14 +99,6 @@ theorem span_charCM_dense :
   intro f _
   have hf : f ∈ (charAlgebra (C := C)).topologicalClosure := by rw [h]; trivial
   exact hf
-
-section L2
-
-variable [MeasurableSpace C] [BorelSpace C] (μ : Measure C) [μ.IsHaarMeasure]
-
-variable [IsProbabilityMeasure μ]
-
-end L2
 
 end
 

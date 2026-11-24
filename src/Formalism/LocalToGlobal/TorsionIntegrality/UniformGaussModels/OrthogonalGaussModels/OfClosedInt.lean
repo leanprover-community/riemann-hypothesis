@@ -1,11 +1,17 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthShapeOne
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.Joints
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SecondLevelOfNormHolds
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ComplexMultiplicationFieldData
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.BaseChangeCompatible
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionRelation
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.FirstLevelFromUniversalLaw
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ComplexMultiplicationFieldData
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SecondLevelOfNormHolds
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstFirstCoboundaryThree
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.ConstantCoeffVecConsPairEqZero
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.PhNormFromDatum
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.SecondCoeffConsistency
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.Joints
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
 
 @[expose] public section
 
@@ -116,7 +122,7 @@ theorem CalcC_proof : CalcC := by
     have h : ‖(((l : ℕ) : MaximalUnramifiedExtension l) : ℂ_[l])‖ = (l : ℝ)⁻¹ := hU.2.2.1
     simpa using h
   have hP := BrC.logPair (K := ℂ_[l]) hl
-  obtain ⟨F', hF'⟩ := (Formalism.InvariantFactorPaths.G7.Top.lawExists ℂ_[l] l hU.1 hnl).1
+  obtain ⟨F', hF'⟩ := (_root_.Formalism.InvariantFactorPaths.G7.formal_law_exists ℂ_[l] l hU.1 hnl).1
   have hph : PowerSeries.constantCoeff (PowerSeries.map (MaximalUnramifiedExtension l).subtype (phFF l g2 g3 s2 ε)) = 0 :=
     cc_map _ (FAux.cc_phFF hl g2 g3 s2 ε)
   have hth' : ∀ n, ‖PowerSeries.coeff n (thetaS l (g2 : ℂ_[l]) (g3 : ℂ_[l]) (ε : ℂ_[l]))‖ ≤ 1 := by
@@ -140,7 +146,7 @@ theorem CalcC_proof : CalcC := by
     of_closed_int hU (Formalism.L2.Th1.C.binomClosed ℂ_[l] _ hcl) (Formalism.L2.Th1.C.intBinomScalar ℂ_[l] _)
       hz hs
   let _ : StarRing (BrC.Osub σ) := BrC.starO hσ
-  have key := Formalism.L2.Th1.C.normAdjAll ℂ_[l] (unitBall ℂ_[l]) _ _ _ hFr (BrC.Osub σ)
+  have key := _root_.Formalism.L2.Th1.C.norm_adjoint_all_places ℂ_[l] (unitBall ℂ_[l]) _ _ _ hFr (BrC.Osub σ)
     ((MaximalUnramifiedExtension l).subtype.comp (BrC.Osub σ).subtype)
     (fun α => endInt hU α.2.1 α.2.2)
     (fun z hz => hbin z.1 z.2.1 (congrArg Subtype.val hz))

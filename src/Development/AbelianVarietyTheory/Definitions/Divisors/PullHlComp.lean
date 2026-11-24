@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
+public import Mathlib.Algebra.Algebra.ZMod
+public import Mathlib.NumberTheory.Padics.RingHoms
+public import Mathlib.RepresentationTheory.Basic
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsOrd
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsNorm
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 
@@ -150,8 +152,8 @@ theorem toClass_pointOfIdeal (v : HeightOneSpectrum W.toAffine.CoordinateRing) :
 theorem toClass_sum (D : HeightOneSpectrum W.toAffine.CoordinateRing →₀ ℤ) :
     Point.toClass (W := W.toAffine) (D.sum fun v n => n • pointOfIdeal W v) =
       Additive.ofMul (ClassGroup.mk W.toAffine.FunctionField (idealOfExps W D)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finsupp.sum, map_sum, idealOfExps, Finsupp.prod, map_prod, ofMul_prod]
+
+  rw [Finsupp.sum, map_sum, idealOfExps, Finsupp.prod, map_prod, ofMul_prod]
   refine Finset.sum_congr rfl fun v _ => ?_
   rw [map_zsmul, toClass_pointOfIdeal, map_zpow, ofMul_zpow]
 

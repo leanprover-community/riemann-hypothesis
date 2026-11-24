@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IntermediateMapWittQuadratic
+import Mathlib.RingTheory.Valuation.Integral
 
 @[expose] public section
 

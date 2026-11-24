@@ -1,7 +1,48 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutDec
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
+public import Formalism.HermitianCurvature.StatementTBB
+public import Mathlib.Analysis.InnerProductSpace.Adjoint
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -106,7 +147,6 @@ private theorem pow_mul_le_pow_of_param_bounds (C₃ CΛ C₀ C₂ Cκ : ℝ) (h
   have ha : ((2 * p₀ + n₀ : ℕ) : ℝ) = 2 * (p₀ : ℝ) + n₀ := by push_cast; ring
   rw [ha]
   rw [hN] at hΛb hκb ⊢
-  have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
   have hn' : (n₀ : ℝ) ≤ 30 * ((r : ℝ) + 1) ^ 2 + 6 := by exact_mod_cast hn
   have e1 : (3 * b) ^ (2 * n₀) ≤ b ^ (4 * (n₀ : ℝ)) := by
     have : b ^ (4 * (n₀ : ℝ)) = (b ^ 2) ^ (2 * n₀) := by
@@ -156,15 +196,12 @@ private theorem pow_mul_le_pow_of_param_bounds (C₃ CΛ C₀ C₂ Cκ : ℝ) (h
         apply Real.rpow_le_rpow_of_exponent_le hb1
         have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
         have hk0 : 0 ≤ |Cκ| := abs_nonneg Cκ
-        have hs : 1 ≤ (r : ℝ) + 1 := by linarith
         have hs2 : (r + 1 : ℝ) ≤ ((r : ℝ) + 1) ^ 2 := by nlinarith
         have hs4 : ((r : ℝ) + 1) ^ 2 ≤ ((r : ℝ) + 1) ^ 4 := by
-          have h22 : (1 : ℝ) ≤ ((r : ℝ) + 1) ^ 2 := by linarith
           have : ((r : ℝ) + 1) ^ 4 = ((r : ℝ) + 1) ^ 2 * ((r : ℝ) + 1) ^ 2 := by ring
           rw [this]
           nlinarith
         have hN2 : (2 * (r : ℝ) + 2) ^ 2 ≤ (2 * (r : ℝ) + 2) ^ 4 := by linarith
-        have p1 : 4 * (n₀ : ℝ) + 1 ≤ 37 * (2 * (r : ℝ) + 2) ^ 4 := by linarith
         have p2 : |Cκ| * (2 * (r : ℝ) + 2) ^ 2 ≤ |Cκ| * (2 * (r : ℝ) + 2) ^ 4 :=
           mul_le_mul_of_nonneg_left hN2 hk0
         have p3 : ((m : ℝ) + 2 * CΛ * (2 * (r : ℝ) + 2)) * ((r : ℝ) + 1) ≤
@@ -210,7 +247,6 @@ theorem thmBpOfPartsSh (C₃ CΛ C₀ C₂ Cκ : ℝ) (hC₃ : 0 ≤ C₃) (hCΛ
   intro γ hγ hG
   have hGp : Gp pp γ = Gp p γ := gp_eq p pp hpp γ
   have hGm : Gp pm γ = Gp p γ := gp_eq p pm hpm γ
-  have hb0 : 0 < b := by linarith
   have hT0 : 0 < Tq p := by linarith
   have hK : 0 ≤ κ₀ * (C₂ * Λ ^ 2) ^ (P.r + 1) := by positivity
   have hTn : 0 ≤ (Tq p)⁻¹ ^ n₀ := by positivity

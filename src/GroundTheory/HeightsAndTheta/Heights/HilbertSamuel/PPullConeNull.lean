@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeNull
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
+import Mathlib.Algebra.MvPolynomial.Cardinal
+import Mathlib.RingTheory.Localization.Cardinality
 
 @[expose] public section
 

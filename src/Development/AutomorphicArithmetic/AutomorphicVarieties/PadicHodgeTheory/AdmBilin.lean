@@ -1,11 +1,55 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.OpenField
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BcrisRegularOfTensorInjStatement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgClosureTensorBcrisToBdRInjectiveStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RatioInvariantInK0
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BcrisRegularOfTensorInj
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.OpenField
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -113,7 +157,7 @@ private theorem indepB (ρ : G → V →ₗ[Q] V) {ι : Type} (d : ι → ↥(DD
     hd.map' (DD F a ha ρ).subtype (DD F a ha ρ).ker_subtype
   rw [linearIndependent_iff_finset_linearIndependent]
   intro s
-  exact GlobalTheory.RegularRing.linearIndepOn_of_invariant (fun g b => a g b) (fun g => (sig a ρ g).toAddMonoidHom)
+  exact _root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed (fun g b => a g b) (fun g => (sig a ρ g).toAddMonoidHom)
     (sig_smul a ρ) hf _ (fun g i => (d i).2 g) s (h1.linearIndepOn _)
 
 include hf in
@@ -145,18 +189,18 @@ private theorem span_eq_top_of_invariant [FiniteDimensional Q V] (ρ : G → V �
     ext j
     have := congrFun hc0 j
     simp only [Matrix.mulVec, dotProduct, A, Basis.toMatrix_apply, Pi.zero_apply] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
-      smul_eq_mul, map_zero, Finsupp.zero_apply]
+
+    simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
+    smul_eq_mul, map_zero, Finsupp.zero_apply]
     rw [← this]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
   have hrep : ∀ g (w : B ⊗[Q] V) k, e.repr (sig a ρ g w) k =
       ∑ j, algebraMap Q B (v.repr (ρ g (v j)) k) * a g (e.repr w j) := by
     intro g w k
     conv_lhs => rw [← e.sum_repr w]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, sig_smul, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
-      smul_eq_mul]
+
+    simp only [map_sum, sig_smul, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
+    smul_eq_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [mul_comm]
     congr 1
@@ -245,7 +289,7 @@ theorem UpperTheory.V.Loc.admissible_of_bilinear_openSubgroup_galois :
       obtain ⟨g, rfl⟩ := e.surjective g
       rw [← eB, ← eB]
       exact hxy g
-    · refine GlobalTheory.RegularRing.lineUnit hfit (GlobalTheory.T.bcris_regular_of_tensorInj l C (GlobalTheory.T.algClosure_tensor_bcris_to_bdR_injective l C)) K x hx fun g => ?_
+    · refine GlobalTheory.RegularRing.lineUnit hfit (_root_.GlobalTheory.MemLoc.regular_of_tensorInj l C (GlobalTheory.T.algClosure_tensor_bcris_to_bdR_injective l C)) K x hx fun g => ?_
       obtain ⟨g, rfl⟩ := e.surjective g
       rw [← eB]
       exact hxy g

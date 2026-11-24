@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LocalArtinMap
+import GroundTheory.LocalFields.Existence
 public import GroundTheory.LocalFields.KroneckerWeber
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

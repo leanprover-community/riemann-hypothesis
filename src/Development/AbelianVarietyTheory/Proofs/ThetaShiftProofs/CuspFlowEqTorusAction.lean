@@ -1,10 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsSt
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsPfA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SublatticeCoefficients
-public import Formalism.LocalToGlobal.ProjectiveLattices.RdOrbIntOfLatZ
+import Formalism.LocalToGlobal.ProjectiveLattices.RdOrbIntOfLatZ
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMeanContinuity
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TransvectionPeriodicity
 
 @[expose] public section
 
@@ -21,8 +65,8 @@ theorem herm_comb_eq_zero (X : Data E r) (cu : CuspFD X ρ) (η : Fin ρ → E) 
     herm X.Gm (∑ a, η a • cu.e a) (∑ a, η a • cu.e a) = 0 := by
   have h : herm X.Gm (∑ a, η a • cu.e a) (∑ a, η a • cu.e a) =
       ∑ a, ∑ b, η a * cc (η b) * herm X.Gm (cu.e a) (cu.e b) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [herm, maxCuspsA_vec_apply, cc, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
+
+    simp only [herm, maxCuspsA_vec_apply, cc, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
     calc ∑ k, ∑ l, ∑ b, ∑ a, η a * cu.e a k * X.Gm k l *
             (IsCMField.complexConj E (η b) * IsCMField.complexConj E (cu.e b l))
         = ∑ k, ∑ b, ∑ a, ∑ l, η a * cu.e a k * X.Gm k l *
@@ -83,10 +127,10 @@ theorem exists_linear (X : Data E r) (cu : CuspFD X ρ) (hb : IsZBasis X cu (zBa
       intro j
       have h1 := congrArg (fun M : Matrix (Fin ρ) (Fin ρ) E => τ.1 (M i i')) (hc j)
       simp only [Matrix.sum_apply, Matrix.smul_apply] at h1
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, mcMη, Matrix.of_apply,
-        smul_eq_mul, zsmul_eq_mul, map_mul, map_intCast, map_natCast,
-        Formalism.L2.Pj.FJ.emb_cc'] at h1
+
+      simp only [map_sum, mcMη, Matrix.of_apply,
+      smul_eq_mul, zsmul_eq_mul, map_mul, map_intCast, map_natCast,
+      Formalism.L2.Pj.FJ.emb_cc'] at h1
       have h2 : (ω j τ : ℂ) = (X.m : ℂ) * (n0 : ℂ) * τ.1 (a j) := by
         rw [hae j, RealEmbeddingCharacters.emb_real (ha j)]
         simp only [RealEmbeddingCharacters.per]
@@ -100,8 +144,8 @@ theorem exists_linear (X : Data E r) (cu : CuspFD X ρ) (hb : IsZBasis X cu (zBa
     have hs : s = ∑ j, ω.repr s j • ω j := (ω.sum_repr s).symm
     generalize ω.repr s = t at hs
     subst hs
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+
+    simp only [map_sum, map_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
     push_cast
     simp only [Finset.sum_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
@@ -122,8 +166,8 @@ theorem exists_linear (X : Data E r) (cu : CuspFD X ρ) (hb : IsZBasis X cu (zBa
       field_simp
     refine ⟨X.chiOrd la * ∑ j, d j * c j k, ?_⟩
     rw [h1, ← hd]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_smul, map_sum, map_zsmul, Pi.smul_apply, Finset.sum_apply, hL]
+
+    simp only [map_smul, map_sum, map_zsmul, Pi.smul_apply, Finset.sum_apply, hL]
     simp only [smul_eq_mul, zsmul_eq_mul]
     push_cast
     rw [Finset.mul_sum, Finset.mul_sum]
@@ -155,15 +199,15 @@ theorem flow_eq_zAct : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r
       have e1 : ∀ k, τ.1 (Matrix.trace (χ.transpose * zBas X cu k) / (X.κ0 / 2)) * (L s k : ℂ) =
           ∑ b, ∑ a, 2 / τ.1 X.κ0 * τ.1 (χ a b) * ((L s k : ℂ) * τ.1 (zBas X cu k a b)) := by
         intro k
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply, Matrix.transpose_apply,
-          map_div₀, map_sum, map_mul, map_ofNat, Finset.sum_div, Finset.sum_mul]
+
+        simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply, Matrix.transpose_apply,
+        map_div₀, map_sum, map_mul, map_ofNat, Finset.sum_div, Finset.sum_mul]
         refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => ?_
         field_simp
       simp only [e1]
       rw [Finset.sum_comm]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hq, map_sum, map_mul, Formalism.L2.Pj.FJ.emb_cc', Finset.sum_mul, Finset.mul_sum]
+
+      simp only [hq, map_sum, map_mul, Formalism.L2.Pj.FJ.emb_cc', Finset.sum_mul, Finset.mul_sum]
       rw [Finset.sum_comm (f := fun a b => 2 * (τ.1 (η a) * τ.1 (χ a b) * conj (τ.1 (η b)) * (s τ : ℂ)))]
       refine Finset.sum_congr rfl fun b _ => ?_
       rw [Finset.sum_comm]

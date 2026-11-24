@@ -1,14 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsChartMember
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
+public import Development.AbelianVarietyTheory.Definitions.Divisors.FromBase
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFromBase
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueScalar
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SharpBundleFibre
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UnivIdentity
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FlatBCSec
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GsAppTopOfSection
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDominantToUnitLeft
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GmSpMapUnitOn
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaNonvanishTorsion
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIntegralSectionUnitAt
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPullbackDegPreStrictLineBundleIso
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LbIsoSecOnto
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValMemOfCorrPull
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtUniq
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdIso
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -420,7 +463,7 @@ theorem cub_mem (H : Desc f q ev k₀ u) (x x' y : Over.mk (spMap ev) ⟶ D.P.A)
     (fun U _ h => by simp [Fin.prod_univ_eight])
     (fun U _ h => by
       simp only [← Over.comp_left, MonObj.comp_mul, MonObj.comp_one, lift_fst_assoc, lift_snd, Category.id_comp,
-        _root_.mul_one, _root_.one_mul]
+        _root_.mul_one]
       simp)
     (fun z J hJ => by
       simp only [lift_snd]
@@ -463,9 +506,9 @@ theorem theta_mem (H : Desc f q ev k₀ u) (θ : LB.Sec (LB.LinComb D.P.L (D.fam
     fin_cases k
     · exact Category.comp_id _
     · show (y ≫ (𝟙 D.P.A * (toUnit D.P.A ≫ D.c 0))).left = y.left
-      rw [ThetaOne.c_zero, MonObj.comp_one, _root_.mul_one, Category.comp_id]
+      rw [_root_.GlobalTheory.IndivisibleSection.c_zero_eq_one, MonObj.comp_one, _root_.mul_one, Category.comp_id]
     · show (y ≫ toUnit D.P.A ≫ D.c 0).left = (1 : T ⟶ D.P.A).left
-      rw [ThetaOne.c_zero, MonObj.comp_one, MonObj.comp_one]
+      rw [_root_.GlobalTheory.IndivisibleSection.c_zero_eq_one, MonObj.comp_one, MonObj.comp_one]
     · show (y ≫ (1 : D.P.A ⟶ D.P.A)).left = (1 : T ⟶ D.P.A).left
       rw [MonObj.comp_one]
   obtain ⟨κ, hκ, hval⟩ := galois_sec H.hk₀ H.hP H.hk D.P.isLB H.hL₂ u H.hu H.hπ
@@ -593,7 +636,7 @@ theorem exists_omega
   refine Finset.prod_congr rfl fun a _ => Finset.prod_congr rfl fun b _ => congrArg (· ^ W a b) ?_
   refine (isoV_isoPull _ _ _ _ z _ _ (Set.mem_iInter.1 (c₃.le _ (hJ₀.mem _ x)) (a, b))
     (Set.mem_iInter.1 (c₂.le _ (hJQ.mem _ x)) (a, b))).trans ?_
-  simp only [lamVal, Category.assoc]
+  simp only [lamVal]
   rfl
 
 theorem piB_congr {β : Q.B.left ⟶ B₀.left} (hsq : IsSquare β β₂) (Z : Scheme.{0}) (x y : Z ⟶ D.P.A.left)

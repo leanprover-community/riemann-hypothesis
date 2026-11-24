@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.LatticeVectorsBoundedBelow
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.Imports
 
 @[expose] public section
 

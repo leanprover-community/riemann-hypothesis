@@ -1,15 +1,11 @@
 module
 
-public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SExpDefs
-public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
-public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
-public import GroundTheory.LocalFields.LocalZetaGauss
-public import GroundTheory.LocalFields.LocalZeta
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ArchInt
-public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.UnitaryTransvectionZeroSecondMemClosure
-public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalFinite
-public import GroundTheory.GlobalFields.TateThesis.FiniteOrderParams
 public import GroundTheory.GlobalFields.WeilGroups.QuasiCharacterDecomposition
+public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.UnitaryTransvectionZeroSecondMemClosure
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 @[expose] public section
 

@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TiedUpDnLoc
+public import Formalism.LocalToGlobal.Columns.RecLevelLoc
+public import Formalism.LocalToGlobal.Columns.RecLevelCls
 
 @[expose] public section
 

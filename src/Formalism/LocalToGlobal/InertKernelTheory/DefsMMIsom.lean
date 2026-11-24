@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.OneCopyTh1S
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsMM
+public import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
+public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelConditionEquivalent
 
 @[expose] public section
 

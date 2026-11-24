@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
+public import Mathlib.NumberTheory.ModularForms.DedekindEta
+public import Mathlib.NumberTheory.NumberField.DedekindZeta
 
 @[expose] public section
 

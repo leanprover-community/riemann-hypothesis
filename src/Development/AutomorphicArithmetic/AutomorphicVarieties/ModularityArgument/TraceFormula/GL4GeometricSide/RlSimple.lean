@@ -1,7 +1,49 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4GeometricSide.InnerEq
+import Aesop.Main
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CommuteCapOfCommuteEop
 public import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.KugaCoordinates.UnitaryCurves.StarMulOfPlaces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -92,7 +134,7 @@ private theorem lie_mem (N : Submodule ℂ (Sm E n))
       ((X i j w).re • toL (Matrix.single i j (atEmb w.embedding 1)) +
         (X i j w).im • toL (Matrix.single i j (atEmb w.embedding Complex.I))) := by
     funext a b v
-    simp only [Finset.sum_apply, Pi.add_apply, Pi.smul_apply, toL, Matrix.single_apply]
+    simp only [Finset.sum_apply, Pi.add_apply, Pi.smul_apply, toL]
     rw [Finset.sum_eq_single a, Finset.sum_eq_single b, Finset.sum_eq_single v]
     · simp [atEmb_apply]
     · intro w _ hw
@@ -105,9 +147,9 @@ private theorem lie_mem (N : Submodule ℂ (Sm E n))
       simp [hi]
     · simp
   rw [hX]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_add (f := _), map_smul, ← lieS_apply, lieS_atEmb_one, lieS_atEmb_I, LinearMap.sum_apply,
-    LinearMap.add_apply, LinearMap.smul_apply, LinearMap.sub_apply]
+
+  simp only [map_sum, map_add (f := _), map_smul, ← lieS_apply, lieS_atEmb_one, lieS_atEmb_I, LinearMap.sum_apply,
+  LinearMap.add_apply, LinearMap.smul_apply, LinearMap.sub_apply]
   refine N.sum_mem fun i _ => N.sum_mem fun j _ => N.sum_mem fun w _ => N.add_mem ?_ ?_
   · exact N.smul_of_tower_mem _ (N.add_mem (h1 w i j x hx) (h2 w i j x hx))
   · exact N.smul_of_tower_mem _ (N.smul_mem _ (N.sub_mem (h1 w i j x hx) (h2 w i j x hx)))
@@ -250,9 +292,9 @@ theorem UpperTheory.V.Z.GSp4Splitting.rlSimple :
             rw [map_mul, mul_assoc])
       have hN : (T.card : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hT.card_pos.ne'
       refine ⟨(c * T.card)⁻¹ • D.R ⟨h, hs, hbi⟩ x, W.smul_mem _ (hR _ x hx), fun u => ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_smul, map_smul, e1, map_smul, map_sum, Finset.sum_congr rfl (e2 u), Finset.sum_const, nsmul_eq_mul,
-        smul_eq_mul, smul_eq_mul, ← mul_assoc c, inv_mul_cancel_left₀ (mul_ne_zero hc hN)]
+
+      rw [map_smul, map_smul, e1, map_smul, map_sum, Finset.sum_congr rfl (e2 u), Finset.sum_const, nsmul_eq_mul,
+      smul_eq_mul, smul_eq_mul, ← mul_assoc c, inv_mul_cancel_left₀ (mul_ne_zero hc hN)]
   refine eq_top_iff.2 fun v _ => ?_
   obtain ⟨x, hx, e⟩ := key (D.i v).1 (h1.ge (D.i v).2) (D.i v).2
   have : v = x := ext_inner_left ℂ fun u => by

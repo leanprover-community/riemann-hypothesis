@@ -1,7 +1,51 @@
 module
 
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AdlEqZeroOfMemNbhd
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -17,16 +61,12 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem tns_isModuleTopology : IsModuleTopology (AF F) (AF F ⊗[F] E) := by
   first
     | exact ⟨rfl⟩
-    | infer_instance
 
 attribute [local instance] tns_isModuleTopology
 
 theorem tns_isTopologicalAddGroup : IsTopologicalAddGroup (AF F ⊗[F] E) := by
   first
     | exact IsModuleTopology.topologicalAddGroup (AF F) (AF F ⊗[F] E)
-    | exact IsModuleTopology.topologicalAddGroup (R := AF F)
-    | exact IsModuleTopology.topologicalAddGroup (AF F)
-    | infer_instance
 
 section Basis
 
@@ -38,22 +78,17 @@ def tnsCoord : (AF F ⊗[F] E) ≃ₗ[AF F] (Fin d → AF F) :=
 theorem tnsCoord_continuous : Continuous (tnsCoord b) := by
   first
     | exact IsModuleTopology.continuous_of_linearMap (R := AF F) (tnsCoord b).toLinearMap
-    | exact IsModuleTopology.continuous_of_linearMap (tnsCoord b).toLinearMap
 
 theorem tnsCoord_inclR (e : E) (k : Fin d) :
     tnsCoord b (inclR (AF F) e) k = algebraMap F (AF F) (b.repr e k) := by
   first
     | simp [tnsCoord, inclR, Algebra.TensorProduct.basis_repr_tmul]
-    | (simp only [tnsCoord, Module.Basis.equivFun_apply]
-       erw [Algebra.TensorProduct.basis_repr_tmul]
-       simp)
 
 end Basis
 
 private theorem module_finite_F_E : Module.Finite F E := by
   first
     | infer_instance
-    | exact Module.Finite.of_restrictScalars_finite ℚ F E
 
 private theorem exists_isOpen_nhd_zero_algebraMap_discrete : ∃ V : Set (AF F), IsOpen V ∧ (0 : AF F) ∈ V ∧
     ∀ a : F, algebraMap F (AF F) a ∈ V → a = 0 := by
@@ -72,9 +107,6 @@ private theorem exists_isOpen_nhd_zero_algebraMap_discrete : ∃ V : Set (AF F),
         intro v
         first
           | exact Valued.isOpen_valuationSubring _
-          | exact Valued.valuationSubring_isOpen _
-          | exact (Valued.isOpen_integer _)
-          | exact IsDedekindDomain.HeightOneSpectrum.isOpen_adicCompletionIntegers v
       exact (RestrictedProduct.isOpen_forall_mem hO).preimage continuous_snd
     exact hA.inter hB
   · refine ⟨fun w => ?_, fun v => ?_⟩
@@ -107,21 +139,17 @@ private theorem exists_isOpen_nhd_zero_algebraMap_discrete : ∃ V : Set (AF F),
     obtain ⟨x, rfl⟩ : a ∈ (algebraMap (𝓞 F) F).range := by
       first
         | exact IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one F a hv
-        | exact IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one a hv
     obtain ⟨w0⟩ := (inferInstance : Nonempty (NumberField.InfinitePlace F))
     have hnn : ∀ w : NumberField.InfinitePlace F, 0 ≤ w (algebraMap (𝓞 F) F x) := by
       intro w
       first
         | positivity
-        | exact w.nonneg _
-        | exact apply_nonneg w _
     have hle : ∏ w ∈ Finset.univ.erase w0, w (algebraMap (𝓞 F) F x) ^ w.mult ≤ 1 :=
       Finset.prod_le_one₀ (fun w _ => pow_nonneg (hnn w) _)
         fun w _ => pow_le_one₀ (hnn w) (hw w).le
     have hm : w0.mult ≠ 0 := by
       first
         | exact NumberField.InfinitePlace.mult_ne_zero
-        | exact (NumberField.InfinitePlace.mult_pos).ne'
     have hlt : w0 (algebraMap (𝓞 F) F x) ^ w0.mult < 1 := pow_lt_one₀ (hnn w0) (hw w0) hm
     have hprod : ∏ w : NumberField.InfinitePlace F, w (algebraMap (𝓞 F) F x) ^ w.mult < 1 := by
       rw [← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ w0)]
@@ -188,8 +216,5 @@ theorem tup_disc (M n : ℕ) :
         exact h0
   first
     | exact discreteTopology_iff_isOpen_singleton.mpr key
-    | exact ⟨eq_bot_of_singletons_open key⟩
-    | exact singletons_open_iff_discrete.mp key
-    | exact discreteTopology_iff_singleton_mem_nhds.mpr fun p => (key p).mem_nhds rfl
 
 end Formalism.IndefR.Eqv.G5

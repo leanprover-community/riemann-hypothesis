@@ -1,52 +1,104 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RenameBaseHomogeneousComponent
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsFormDivOfMemChartRing
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsAlgebraicAdjoin
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ProdExp
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTail
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SpanSecsMemLocInSelf
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FoldTensorToSubSystem
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCombCyclic
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCombContract
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHTheoremSFree
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeEmbed
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeDecomp
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeIndep
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeBadFinite
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechSES
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechDSq
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechDDeg
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHTheoremS
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHPrimeFilt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperComponentMulX
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PEulerVarX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsPolyBackDiffPow
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.QuotPartEqGradedPiece
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsPowSmulEqZero
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsBisBis
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsFormOfMemChartRingOver
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellMeetsPt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsPowOfMemCellSec
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SetCApplyNotMem
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellDMulLeft
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiHomogRename
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRowLocCoverX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellMeetsBaseCell
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SgnSingleton
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PDoubleCechX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LineBundleTwistVanish
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechDMemLocPart
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FinrankSectionsOverEqH0
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.DegreeOneCellEqChartUpdate
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AltSumEqOfEventually
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTer
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XMemMIdealOverIff
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LocAtRatio
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XBaseMemMIdealOverGraph
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemMIdealOverIff
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraBis
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraLast
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraSide
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraTail
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastFurther
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastMore
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreFurther
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreLast
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestExtra
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideExtra
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerLast
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerRest
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.KHCombCyclicSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgSFreeSt
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.Imports
+public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PDoubleCechX
+public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PEulerVarX
+public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRowLocCoverX
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AltSumEqOfEventually
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechDMemLocPart
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellDMulLeft
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellMeetsBaseCell
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellMeetsPt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.DegreeOneCellEqChartUpdate
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsFormDivOfMemChartRing
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsFormOfMemChartRingOver
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsPolyBackDiffPow
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsPowOfMemCellSec
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsPowSmulEqZero
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FinrankSectionsOverEqH0
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FoldTensorToSubSystem
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsBisBis
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTail
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTer
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsAlgebraicAdjoin
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiHomogRename
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LineBundleTwistVanish
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LocAtRatio
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemMIdealOverIff
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechDDeg
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechDSq
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechSES
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCombContract
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCombCyclic
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeBadFinite
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeDecomp
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeEmbed
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeIndep
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHPrimeFilt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHTheoremS
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHTheoremSFree
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ProdExp
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.QuotPartEqGradedPiece
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RenameBaseHomogeneousComponent
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SetCApplyNotMem
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SgnSingleton
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperComponentMulX
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SpanSecsMemLocInSelf
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XBaseMemMIdealOverGraph
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XMemMIdealOverIff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 

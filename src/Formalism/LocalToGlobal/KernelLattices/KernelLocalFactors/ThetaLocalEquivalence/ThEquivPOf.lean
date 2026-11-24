@@ -1,10 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ThEquiv
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.AtZeroCompProdX
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivGen
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 
 @[expose] public section
 

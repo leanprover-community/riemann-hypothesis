@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodairaGeneric
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 
 @[expose] public section
 

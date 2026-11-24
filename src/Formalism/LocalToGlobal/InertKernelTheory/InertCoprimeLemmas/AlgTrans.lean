@@ -1,10 +1,53 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.KerTransAll
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FourthTensorThetaEqKernel
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.QuasiPeriodConstUnique
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.QuasiPeriodConstUnique
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -158,10 +201,6 @@ open Formalism.L2.Th1.H (imgLat pow4 stdLat relIdx altE IsReps dualLat)
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
-theorem embT_mem_Qbar (τ : D.what₂.Tau) (x : D.host.E) : Formalism.MainNotions.TaylorLogMetric.embT D τ x ∈ Formalism.MainNotions.TaylorLogMetric.Qbar :=
-  mem_algebraicClosure_iff.2
-    ((Algebra.IsIntegral.isIntegral (R := ℚ) x).map (Formalism.MainNotions.TaylorLogMetric.embT D τ).toRatAlgHom).isAlgebraic
-
 theorem gC_symm_single (B : Ker.Base D cc δ) (w : Fin 4 × D.what₂.Tau) :
     B.gC.symm (Pi.single w 1) = fun w' => Formalism.MainNotions.TaylorLogMetric.embT D w'.2 (B.γ₀.g.symm (Pi.single w 1) w'.1) := by
   rw [LinearEquiv.symm_apply_eq, B.gC_spec, LinearEquiv.apply_symm_apply]
@@ -177,7 +216,7 @@ theorem gC_mat_mem (B : Ker.Base D cc δ) (i j : Fin 4 × D.what₂.Tau) :
       ∈ Formalism.MainNotions.TaylorLogMetric.Qbar := by
     intro i j
     rw [LinearMap.toMatrix'_apply, LinearEquiv.coe_coe, gC_symm_single]
-    exact embT_mem_Qbar _ _
+    exact _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.RestC.emb_mem _ _
   refine mat_inv_mem _ _ _ ?_ hA i j
   rw [← LinearMap.toMatrix'_comp]
   have h : ((B.gC.symm : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)).comp

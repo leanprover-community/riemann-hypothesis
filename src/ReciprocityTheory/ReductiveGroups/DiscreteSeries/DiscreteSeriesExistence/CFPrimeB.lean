@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFPrimeA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerWeight
 
 @[expose] public section
@@ -100,11 +103,11 @@ theorem sg_raise_wt (ε : Fin n → Bool) {a b : Fin n} (hab : a ≠ b) (hε : �
     by_cases hca : c = a
     · subst hca
       have hbc : b ≠ c := fun h => hab h.symm
-      simp [root, Pi.single_apply, hbc, hab]
+      simp [root, hbc, hab]
     · by_cases hbc : b = c
       · subst hbc
-        simp [root, Pi.single_apply, hca, Ne.symm hca]
-      · simp [root, Pi.single_apply, hca, Ne.symm hca, hbc, Ne.symm hbc]
+        simp [root, hca]
+      · simp [root, hca, hbc, Ne.symm hbc]
   have h1 : sgE ε cpFock cmFock c c (sgE ε cpFock cmFock a b f) -
       sgE ε cpFock cmFock a b (sgE ε cpFock cmFock c c f) =
         ((root a b c : ℝ) : ℂ) • sgE ε cpFock cmFock a b f := by
@@ -146,8 +149,8 @@ theorem khw_extract (ε : Fin n → Bool) {lam : Fin n → ℝ} (hlam : StrictAn
       tcoef φ y = ∑ t, φ (fockBasis n t) • tcoef ((fockBasis n).coord t) y := by
     intro φ
     conv_lhs => rw [tcoef_expand y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, tcoef_tmul]
+
+    simp [map_sum, tcoef_tmul]
   refine ⟨s, hs, ?_⟩
   unfold IsKHWVec
   refine ⟨fun a => ?_, fun a b hab heq => ?_⟩
@@ -186,7 +189,7 @@ theorem zPlus_comm {ε : Fin n → Bool} {E : Fin n → Fin n → Module.End ℂ
       ((if c = a then (1 : ℂ) else 0) - (if b = c then (1 : ℂ) else 0)) • E a b := by
     intro c
     rw [← sub_eq_iff_eq_add', hE c c a b]
-    rcases eq_or_ne c a with rfl | h1 <;> rcases eq_or_ne b c with rfl | h2 <;> simp [*, sub_smul]
+    rcases eq_or_ne c a with rfl | h1 <;> rcases eq_or_ne b c with rfl | h2 <;> simp [*]
   unfold zPlus
   rw [Finset.sum_mul, Finset.sum_congr rfl (fun c _ => key c), Finset.sum_add_distrib,
     ← Finset.mul_sum, ← Finset.sum_smul]
@@ -211,7 +214,7 @@ theorem zPlus_V {ε : Fin n → Bool} {E : Fin n → Fin n → Module.End ℂ M}
     have hz := hv.2
     rw [LinearMap.sub_apply, sub_eq_zero, LinearMap.smul_apply, Module.End.one_apply] at hz
     have hc := LinearMap.congr_fun (zPlus_comm (ε := ε) hE a b) v
-    simp only [Module.End.mul_apply, LinearMap.add_apply, LinearMap.smul_apply, hz, hab, sub_self,
+    simp only [Module.End.mul_apply, hz, hab, sub_self,
       zero_smul, add_zero] at hc
     rw [LinearMap.sub_apply, sub_eq_zero, LinearMap.smul_apply, Module.End.one_apply, hc, map_smul]
   rcases hirr _ inf_le_left hS'st with h0 | hV'

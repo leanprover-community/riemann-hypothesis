@@ -1,10 +1,59 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartFPlaceIdem
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.Deriv.Basic
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasDerivAtOfContinuousOfMapAdd
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasDerivAtOfContinuousRealToComplexExponential
 public import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,7 +67,7 @@ namespace GlobalTheory.HeisKeepF
 theorem contDiff_real_char (g : ℝ → ℂ) (hc : Continuous g) (hm : ∀ s t, g (s + t) = g s * g t) (h0 : g 0 = 1) :
     ContDiff ℝ ∞ g := by
   set c := deriv g 0
-  have hd : ∀ s, HasDerivAt g (c * g s) s := GlobalTheory.hasDerivAt_of_continuous_additive_to_mul g hc hm h0
+  have hd : ∀ s, HasDerivAt g (c * g s) s := _root_.GlobalTheory.DerivativeOfAdditiveContinuous.hasDerivAt_of_continuous_of_map_add g hc hm h0
   have he : ∀ s : ℝ, HasDerivAt (fun s : ℝ => Complex.exp (-(c * (s : ℂ)))) (Complex.exp (-(c * (s : ℂ))) * -c) s := by
     intro s
     have h1 : HasDerivAt (fun s : ℝ => -(c * (s : ℂ))) (-(c * ((1 : ℝ) : ℂ))) s :=
@@ -57,7 +106,7 @@ theorem contDiff_char {k : ℕ} (χ : (Fin k → ℝ) → ℂ) (hc : Continuous 
   rw [hsplit]
   refine contDiff_prod fun i _ => ?_
   have hsc : Continuous fun s : ℝ => (Pi.single i s : Fin k → ℝ) := by
-    first | fun_prop | exact continuous_single i | exact (LinearMap.single ℝ (fun _ : Fin k => ℝ) i).continuous_of_finiteDimensional
+    first | exact (LinearMap.single ℝ (fun _ : Fin k => ℝ) i).continuous_of_finiteDimensional
   have hi : ContDiff ℝ ∞ fun s : ℝ => χ (Pi.single i s) :=
     contDiff_real_char _ (hc.comp hsc) (fun s t => by rw [Pi.single_add, hm])
       (by rw [Pi.single_zero, h0])
@@ -71,8 +120,8 @@ theorem ker_fin_mem_nhds {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF 
     show ‖ψ (pairA F 0 0) - 1‖ < 1 / 2
     rw [show pairA F 0 (0 : Af F) = 0 from rfl, ψ.map_zero_eq_one]
     norm_num
-  obtain ⟨N, hN, hNV⟩ := GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F _ hV
-  refine Filter.mem_of_superset (GlobalTheory.AdLat.OpenLat.nsmul_integral_mem_nhds F N hN) ?_
+  obtain ⟨N, hN, hNV⟩ := _root_.GlobalTheory.LocalNormBound.main F _ hV
+  refine Filter.mem_of_superset (_root_.GlobalTheory.IntegralNeighbourhoodZero.nsmul_integral_mem_nhds_zero F N hN) ?_
   rintro _ ⟨a, ha, rfl⟩
   refine GroundTheory.Global.eq_one_of_sq_mem
     (s := {z | ∃ b : Af F, (∀ v, b v ∈ v.adicCompletionIntegers F) ∧ z = ψ (pairA F 0 (N • b))}) ?_ ?_ ⟨a, ha, rfl⟩

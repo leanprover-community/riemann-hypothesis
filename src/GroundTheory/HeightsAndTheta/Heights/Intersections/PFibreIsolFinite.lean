@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreIsolFinite
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVanishNearPoint
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteMapOpen
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVanishNearPoint
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section

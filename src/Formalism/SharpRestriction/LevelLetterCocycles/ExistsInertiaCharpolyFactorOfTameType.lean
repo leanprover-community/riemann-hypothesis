@@ -1,9 +1,160 @@
 module
 
+public import Formalism.PadicSubsetSums.CentralIdempotents.PrimitiveRootFifteenSubOneUnit
 public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 public import Formalism.PadicSubsetSums.StableGradedCounts.CardLtAddCardGtAddCardEq
-public import Formalism.PadicSubsetSums.StableGradedCounts.ContinuousCoeffCharpolyRev
+public import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbitt
+public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
+public import Mathlib.RepresentationTheory.Semisimple
+public import Mathlib.RingTheory.DedekindDomain.Factorization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.PadicSubsetSums.StableGradedCounts.ZReuse
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RepresentationTheory.Maschke
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.PadicSubsetSums.StableGradedCounts.ContinuousCoeffCharpolyRev, Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
+
+-- ===== clump member: Formalism.PadicSubsetSums.StableGradedCounts.ContinuousCoeffCharpolyRev =====
+-- clump-header: {"m": "Formalism.PadicSubsetSums.StableGradedCounts.ContinuousCoeffCharpolyRev", "h": "module\n\npublic import Formalism.PadicSubsetSums.CentralIdempotents.PrimitiveRootFifteenSubOneUnit\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open Polynomial
+
+namespace Formalism.IrreducibleCountingLemmas.Z
+
+section
+variable {G R : Type} [TopologicalSpace G] [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
+
+private def CoeffCont (P : G → R[X]) : Prop := ∀ j, Continuous fun g => (P g).coeff j
+
+private theorem CoeffCont.const (p : R[X]) : CoeffCont (fun _ : G => p) := by
+  intro j
+  exact continuous_const
+
+private theorem CoeffCont.mul {P Q : G → R[X]} (hP : CoeffCont P) (hQ : CoeffCont Q) :
+    CoeffCont fun g => P g * Q g := by
+  intro j
+  simp only [Polynomial.coeff_mul]
+  exact continuous_finsetSum _ fun x _ => (hP x.1).mul (hQ x.2)
+
+private theorem CoeffCont.sub {P Q : G → R[X]} (hP : CoeffCont P) (hQ : CoeffCont Q) :
+    CoeffCont fun g => P g - Q g := by
+  intro j
+  simp only [Polynomial.coeff_sub]
+  exact (hP j).sub (hQ j)
+
+private theorem CoeffCont.sum {ι : Type} (s : Finset ι) {P : ι → G → R[X]}
+    (hP : ∀ i ∈ s, CoeffCont (P i)) : CoeffCont fun g => ∑ i ∈ s, P i g := by
+  intro j
+  simp only [Polynomial.finsetSum_coeff]
+  exact continuous_finsetSum _ fun i hi => hP i hi j
+
+private theorem CoeffCont.prod {ι : Type} (s : Finset ι) {P : ι → G → R[X]}
+    (hP : ∀ i ∈ s, CoeffCont (P i)) : CoeffCont fun g => ∏ i ∈ s, P i g := by
+  classical
+  revert hP
+  refine Finset.induction_on s ?_ ?_
+  · intro _
+    simpa using CoeffCont.const (G := G) (1 : R[X])
+  · intro a s ha ih hP
+    have h1 := hP a (Finset.mem_insert_self a s)
+    have h2 := ih (fun i hi => hP i (Finset.mem_insert_of_mem hi))
+    have h3 := CoeffCont.mul h1 h2
+    simpa only [Finset.prod_insert ha] using h3
+
+private theorem CoeffCont.C {f : G → R} (hf : Continuous f) :
+    CoeffCont fun g => Polynomial.C (f g) := by
+  intro j
+  by_cases h : j = 0
+  · subst h
+    simpa using hf
+  · simpa [Polynomial.coeff_C, h] using (continuous_const : Continuous fun _ : G => (0 : R))
+
+theorem continuous_coeff_charpolyRev {n : ℕ} {r : G → Matrix (Fin n) (Fin n) R}
+    (hr : Continuous r) (j : ℕ) : Continuous fun g => (Matrix.charpolyRev (r g)).coeff j := by
+  have hsmul : ∀ (u : ℤˣ) {Q : G → R[X]}, CoeffCont Q → CoeffCont fun g => u • Q g := by
+    intro u Q hQ j
+    simp only [Units.smul_def, Polynomial.coeff_smul]
+    exact (hQ j).const_smul (u : ℤ)
+  have h : CoeffCont fun g => Matrix.charpolyRev (r g) := by
+    simp only [Matrix.charpolyRev, Matrix.det_apply]
+    refine CoeffCont.sum _ fun σ _ => ?_
+    refine hsmul _ (CoeffCont.prod _ fun i _ => ?_)
+    simp only [Matrix.sub_apply, Matrix.one_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul]
+    exact CoeffCont.sub (CoeffCont.const _) (CoeffCont.mul (CoeffCont.const _) (CoeffCont.C (hr.matrix_elem _ _)))
+  exact h j
+
+end
+
+theorem charpolyCoeffClosure : CharpolyCoeffClosure := by
+  intro G _ R _ _ _ X _ n r T D hr hT hD hDT g j
+  have hc : Continuous fun g => (fun x => (Matrix.charpolyRev (r x g)).coeff j) :=
+    continuous_pi fun x => continuous_coeff_charpolyRev (hr x) j
+  have hcl : IsClosed {g | (fun x => (Matrix.charpolyRev (r x g)).coeff j) ∈ T} := hT.preimage hc
+  have hsub : D ⊆ {g | (fun x => (Matrix.charpolyRev (r x g)).coeff j) ∈ T} := fun g hg => hDT g hg j
+  have hcs := hcl.closure_subset_iff.mpr hsub
+  exact hcs (by rw [hD.closure_eq]; exact Set.mem_univ g)
+
+end Formalism.IrreducibleCountingLemmas.Z
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.PadicSubsetSums.StableGradedCounts.ContinuousCoeffCharpolyRev =====
+
+-- ===== clump member: Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType =====
+-- clump-header: {"m": "Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType", "h": "module\n\npublic import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations\npublic import Formalism.PadicSubsetSums.StableGradedCounts.CardLtAddCardGtAddCardEq\npublic import Formalism.PadicSubsetSums.StableGradedCounts.ContinuousCoeffCharpolyRev\npublic import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbitt\nimport Formalism.PadicSubsetSums.StableGradedCounts.ZReuse\nimport Mathlib.Algebra.AffineMonoid.UniqueSums\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\npublic import Mathlib.LinearAlgebra.Eigenspace.Charpoly\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RepresentationTheory.Maschke\nimport Mathlib.RingTheory.Coalgebra.CoassocSimps\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.HopfAlgebra.Basic\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.TotallySplit\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\npublic import Formalism.PadicSubsetSums.CentralIdempotents.PrimitiveRootFifteenSubOneUnit\npublic import Mathlib.RepresentationTheory.Semisimple\npublic import Mathlib.RingTheory.DedekindDomain.Factorization\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -106,8 +257,8 @@ theorem closed_of_adic {O : Type} [CommRing O] [IsLocalRing O] [IsNoetherianRing
     have h2 : g - f = ∑ x, (g x - f x) • (Pi.single x 1 : X → O) := by
       funext y
       simp [Finset.sum_apply, Pi.single_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h2, map_sum]
+
+    rw [h2, map_sum]
     refine Submodule.sum_mem _ fun x _ => ?_
     rw [map_smul]
     exact Submodule.smul_mem_smul (hg x) Submodule.mem_top
@@ -245,8 +396,8 @@ theorem isSSRep_descent (ρ : Γ →* GL (Fin a) K) (hs : IsSSRep (mapRep (algeb
     intro M y
     funext j
     show s (∑ b, algebraMap K L (M j b) * y b) = ∑ b, M j b * s (y b)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [← Algebra.smul_def, map_smul, smul_eq_mul]
   intro W hW
@@ -353,8 +504,8 @@ theorem norm_le_one_of_finite {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [
   have hbd : ∀ x : O, ‖ι x‖ ≤ ∑ j, ‖ι (b j)‖ := by
     intro x
     obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ_[l]).1 (hb ▸ Submodule.mem_top : x ∈ _)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
     rw [Algebra.smul_def, map_mul, norm_mul]
     exact mul_le_of_le_one_left (norm_nonneg _) (hz _)
@@ -621,8 +772,8 @@ theorem eq_one_of_map_eq_one {A B : Type} [CommRing A] [IsDomain A] [CommRing B]
   have h2 : ∑ k ∈ Finset.range n, x ^ k = 0 := (mul_eq_zero.1 h1).resolve_left (sub_ne_zero.2 h)
   apply hn
   have h3 := congrArg f h2
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa [map_sum, map_pow, hf] using h3
+
+  simpa [map_sum, map_pow, hf] using h3
 
 theorem card_map_eq {Γ A B : Type} [Group Γ] [Group A] [Group B] (K : Subgroup Γ) (δ : Γ →* A) (χ : Γ →* B)
     (φ : A →* B) (h : ∀ σ ∈ K, χ σ = φ (δ σ)) (hinj : ∀ x ∈ K.map δ, φ x = 1 → x = 1) :
@@ -738,20 +889,20 @@ theorem psiChi_span (hG : Formalism.MainNotions.SumRepresentations.At.Idempotent
   have hM : (∑ k, f k π • rO N i r π (g k)).map (toK N i) =
       ∑ k, toK N i (f k π) • mapM (toK N i) (rO N i r π) (g k) := by
     show (toK N i).mapMatrix _ = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     ext a b
     simp [mapM]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hM, Matrix.sum_mulVec, map_sum] at h1
+
+  rw [hM, Matrix.sum_mulVec, map_sum] at h1
   simp only [Matrix.smul_mulVec, map_smul, hgrp] at h1
   have h2 := congrFun (congrArg Prod.snd h1) c
   simp only [LinearEquiv.apply_symm_apply, Pi.single_eq_same, mul_one, Prod.snd_sum, Prod.smul_snd,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at h2
   apply IsFractionRing.injective (N.O i) (KK N i)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h2, map_sum]
+
+  rw [← h2, map_sum]
   simp
 
 end G5c
@@ -826,7 +977,7 @@ theorem quad_of_split {w : PlE H} {x : N.X i} (h : SplitI N r w x) (γ' γ : GE 
   have h3 : (algebraMap (N.O i) (Kf N i)).mapMatrix (chi1 N i γ • (1 : Matrix (Fin R.nV) (Fin R.nV) (N.O i))) =
       algebraMap (N.O i) (Kf N i) (chi1 N i γ) • 1 := by
     ext a b
-    by_cases hab : a = b <;> simp [hab, Matrix.one_apply]
+    by_cases hab : a = b <;> simp [hab]
   rw [h3]
   exact h1
 
@@ -1698,3 +1849,7 @@ theorem galois_clause_iff_reduced (D : D7) : ConclusionG5 D ↔ ReducedGaloisCla
   forall_congr' fun i => At.galois_clause_iff_reduced D.nd D.naut i (Del_holds D i)
 
 end Formalism.MainNotions.SumRepresentations
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType =====

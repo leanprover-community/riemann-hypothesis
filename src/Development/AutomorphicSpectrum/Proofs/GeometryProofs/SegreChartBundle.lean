@@ -1,11 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Metric
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueLatOfChartBundle
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GermGenPtInjectiveRangeRegAt
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 @[expose] public section
 
@@ -30,18 +74,7 @@ theorem genMap_germ (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 �
 
 theorem isUnit_iff_unitAt {q : Cpt ξ} (hi : Function.Injective (genMap ξ q)) (s : X.presheaf.stalk q.1) :
     IsUnit s ↔ unitAt ξ q (genMap ξ q s) := by
-  constructor
-  · intro hs
-    have hu := hs.map (genMap ξ q)
-    refine ⟨hu.ne_zero, ⟨s, rfl⟩, ?_⟩
-    obtain ⟨u, rfl⟩ := hs
-    refine ⟨(u⁻¹ : (X.presheaf.stalk q.1)ˣ).1, ?_⟩
-    have : genMap ξ q u.1 * genMap ξ q (u⁻¹ : (X.presheaf.stalk q.1)ˣ).1 = 1 := by
-      rw [← map_mul, Units.mul_inv, map_one]
-    exact eq_inv_of_mul_eq_one_right this
-  · rintro ⟨h0, -, ⟨s', hs'⟩⟩
-    have : s * s' = 1 := hi (by rw [map_mul, hs', map_one, mul_inv_cancel₀ h0])
-    exact IsUnit.of_mul_eq_one _ this
+  apply GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt <;> assumption
 
 theorem mem_basicOpen_iff (hg : IsCptGen ξ) (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 ∈ U)
     (t : Γ(X, U)) : q.1 ∈ X.basicOpen t ↔ unitAt ξ q (secVal ξ U h t) := by
@@ -123,24 +156,7 @@ theorem exists_chart (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) :
 
 theorem exists_point (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (P : Ideal (chartRing o x c)) (hP : P.IsPrime) :
     ∃ p : Cpt ξ, InChart ξ x c p ∧ ∀ s : chartRing o x c, s ∈ P ↔ ¬ unitAt ξ p s := by
-  obtain ⟨U, h, hU, hUq, hsp, -, hran⟩ := exists_chart hT hc
-  let φ : Γ(X, U) →+* chartRing o x c :=
-    (secVal ξ U h).codRestrict (chartRing o x c) fun t => (hran _).2 ⟨t, rfl⟩
-  let y : PrimeSpectrum Γ(X, U) := ⟨P.comap φ, inferInstance⟩
-  have hyU : hU.fromSpec y ∈ U := by
-    have : hU.fromSpec y ∈ Set.range hU.fromSpec := ⟨y, rfl⟩
-    rwa [hU.range_fromSpec] at this
-  let q : Cpt ξ := ⟨_, hsp _ hyU⟩
-  refine ⟨q, (hUq q).1 hyU, fun s => ?_⟩
-  obtain ⟨t, ht⟩ := (hran s).1 s.2
-  have hst : s = φ t := Subtype.ext ht.symm
-  have key : q.1 ∈ X.basicOpen t ↔ t ∉ P.comap φ := by
-    show y ∈ hU.fromSpec ⁻¹ᵁ X.basicOpen t ↔ _
-    rw [hU.fromSpec_preimage_basicOpen]
-    rfl
-  have h2 := mem_basicOpen_iff hT.gen U h q hyU t
-  have h3 : (s : Ω) = secVal ξ U h t := ht.symm
-  rw [h3, ← h2, key, hst, Ideal.mem_comap, not_not]
+  apply GlobalTheory.CompanionTheory.Ar.TieVB.exists_point <;> assumption
 
 theorem exists_basic (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (V : X.Opens) {q : Cpt ξ}
     (hq : InChart ξ x c q) (hV : q.1 ∈ V) :
@@ -214,27 +230,7 @@ theorem exists_den_span (hT : CoordTie o ξ x) {c : κ} {p : Cpt ξ} (hp : InCha
     (hM : ∀ a ∈ chartRing o x c, ∀ e ∈ M, a • e ∈ M) {e : E}
     (he : e ∈ Submodule.span (regAt ξ p) (M : Set E)) :
     ∃ s ∈ chartRing o x c, unitAt ξ p s ∧ s • e ∈ M := by
-  induction he using Submodule.span_induction with
-  | mem v hv => exact ⟨1, one_mem _, unitAt_one p, by simpa using hv⟩
-  | zero => exact ⟨1, one_mem _, unitAt_one p, by simp⟩
-  | add u v _ _ hu hv =>
-    obtain ⟨s, hs, hsu, hsM⟩ := hu
-    obtain ⟨t, ht, htu, htM⟩ := hv
-    refine ⟨s * t, mul_mem hs ht, unitAt_mul hsu htu, ?_⟩
-    have h1 : (s * t) • (u + v) = t • s • u + s • t • v := by
-      rw [smul_add, smul_smul, smul_smul, mul_comm t s]
-    rw [h1]
-    exact add_mem (hM t ht _ hsM) (hM s hs _ htM)
-  | smul r u _ hu =>
-    obtain ⟨s, hs, hsu, hsM⟩ := hu
-    obtain ⟨t, ht, htu, htr⟩ := exists_den hT hp r.2
-    refine ⟨t * s, mul_mem ht hs, unitAt_mul htu hsu, ?_⟩
-    have h1 : (t * s) • r • u = (t * (r : Ω)) • s • u := by
-      rw [Subring.smul_def, smul_smul, smul_smul]
-      congr 1
-      ring
-    rw [h1]
-    exact hM _ htr _ hsM
+  apply GlobalTheory.CompanionTheory.Ar.TieVB.exists_den_span <;> assumption
 
 theorem coords_mem {p : Cpt ξ} {r : ℕ} {b : Fin r → E} (hli : LinearIndependent Ω b) {a : Fin r → Ω}
     (h : ∑ i, a i • b i ∈ Submodule.span (regAt ξ p) (Set.range b)) (i : Fin r) : a i ∈ regAt ξ p := by

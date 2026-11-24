@@ -2,10 +2,6 @@ module
 
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
 public import Formalism.SharpRestriction.CuspSpanNormBounds.DiscreteSeriesWeylDimension
-public import Mathlib
-public import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
-public import Formalism.FormalDegreeBessel.StatementDS
-public import Formalism.FormalDegreeBessel.StatementRP
 
 @[expose] public section
 

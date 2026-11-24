@@ -1,6 +1,9 @@
 module
 
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsOrb
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtRec
+public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
 
 @[expose] public section
 
@@ -35,7 +38,7 @@ end Gen
 variable {D : D7} (X : Formalism.L2.Herm.Herm0 D)
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem chi_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E)
     (e : D.what₂.LL →+* (D.gat u w hg).Kf)

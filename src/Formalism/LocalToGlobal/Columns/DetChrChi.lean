@@ -1,60 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecChainUnfOne
-public import Mathlib
-public import Formalism.LocalToGlobal.Divisibility.Tuples
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Formalism.LocalToGlobal.Columns.WordFin
-public import Formalism.LocalToGlobal.Columns.TiedCB
-public import Formalism.LocalToGlobal.Columns.TiedLv
-public import Formalism.LocalToGlobal.Columns.RecLevelLocF
-public import Formalism.LocalToGlobal.Columns.TiedVal
-public import Formalism.LocalToGlobal.Columns.TiedValRat
-public import Formalism.LocalToGlobal.Columns.TiedValLatG
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
-public import Formalism.LocalToGlobal.Columns.TiedAtT
-public import Formalism.LocalToGlobal.Columns.TiedValBwG
-public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
-public import Formalism.LocalToGlobal.Columns.TiedUpDnA
-public import Formalism.LocalToGlobal.Columns.TiedCls
-public import Formalism.LocalToGlobal.Columns.TiedXp
-public import Formalism.LocalToGlobal.Columns.TiedGlPl
-public import Formalism.LocalToGlobal.Columns.TiedGlMat
-public import Formalism.LocalToGlobal.Columns.RecLevelDiv
-public import Formalism.LocalToGlobal.HermitianForms.FormsTied
-public import Formalism.LocalToGlobal.HermitianForms.DefsChi
-public import Formalism.LocalToGlobal.Columns.TiedGlSplit
-public import Formalism.LocalToGlobal.Columns.TiedXpU
-public import Formalism.LocalToGlobal.Columns.InputsGenus
-public import Formalism.LocalToGlobal.Columns.TiedTilA
-public import Formalism.LocalToGlobal.Columns.TiedXpT
-public import Formalism.LocalToGlobal.Columns.Record
-public import Formalism.LocalToGlobal.Columns.NonDeg
-public import Formalism.LocalToGlobal.Columns.LevPackFrLat
-public import Formalism.LocalToGlobal.Columns.HermOwed
-public import Formalism.LocalToGlobal.Columns.LocalLevelIsKOneEverywhere
-public import Formalism.LocalToGlobal.Columns.RecLevelLocK
-public import Formalism.LocalToGlobal.Columns.RecLevelLocT
-public import Formalism.LocalToGlobal.Columns.HermitianFormLastCoordinateUniformizerVectorSelf
-public import Formalism.LocalToGlobal.Columns.LocalLevelIsKOneAtT
-public import Formalism.LocalToGlobal.Columns.LastVectorMemSpan
-public import Formalism.LocalToGlobal.Columns.ReferenceActionRationalLevels
-public import Formalism.LocalToGlobal.Columns.RecLevel
-public import Formalism.LocalToGlobal.KernelLattices.ThDistC
-public import Formalism.LocalToGlobal.KernelLattices.ColInst
-public import Formalism.LocalToGlobal.Columns.InputsWeyl
-public import Formalism.LocalToGlobal.Columns.SummandSlopeAtDecoratedLattice
-public import Formalism.LocalToGlobal.Columns.BaseLemmas
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleWeightMiddleEntries
-public import Formalism.GL3MeanSquares.RankMulPowThreeHalvesLeFourthPower
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.HilbertSchmidtHalfBound
-public import Formalism.LogVandermondeBounds.LogVandermondeProofs.LogRatioLowerBoundOfLogVandermondeGap
-public import Formalism.LogVandermondeBounds.LogVandermondeProofs.UpperPlaceHolds
-public import Formalism.LogVandermondeBounds.LogVandermondeProofs.VandNSuccRight
-public import Formalism.LocalToGlobal.Columns.RecLevelCls
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Formalism.LocalToGlobal.Columns.Adelic
 public import Formalism.LocalToGlobal.Columns.AdelicLemmas
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlobApprox
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
+public import Formalism.LocalToGlobal.Columns.ColForms
+import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

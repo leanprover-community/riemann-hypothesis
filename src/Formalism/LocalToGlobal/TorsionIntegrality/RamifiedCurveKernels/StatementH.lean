@@ -1,8 +1,8 @@
 module
 
-public import Formalism.GaussJetBounds.StatementQ
 public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.JetExpShape
 public import Formalism.FormalGroupLog.Statement
+public import Formalism.GaussJetBounds.StatementN
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeDefs
+public import GroundTheory.GlobalFields.NormResidueSymbol.Rational
+public import GroundTheory.GlobalFields.NormResidueSymbol.RationalDiagonal
 
 @[expose] public section
 

@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.WuDecay
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ConcreteSettingExists
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature

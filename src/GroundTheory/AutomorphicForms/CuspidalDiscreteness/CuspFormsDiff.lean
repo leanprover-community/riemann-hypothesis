@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.AltSum
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.SmoothKZ
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -200,10 +201,10 @@ theorem uAction_lieOf_apply (Y : ArchMatrix K n) (ψ : archSmooth K n) (g : Adel
         (uAction (UniversalEnvelopingAlgebra.ι ℝ (lieOf (archBasis K n j))) ψ :
           AdelicGLn.AdelicGL K n → ℂ) g := by
   conv_lhs => rw [← (archBasis K n).sum_repr Y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
-    Submodule.coe_sum, Submodule.coe_smul_of_tower, Finset.sum_apply, Pi.smul_apply,
-    Complex.real_smul]
+
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
+  Submodule.coe_sum, Submodule.coe_smul_of_tower, Finset.sum_apply, Pi.smul_apply,
+  Complex.real_smul]
 
 theorem norm_diffSum_le {c : ℝ} (hc0 : 0 ≤ c)
     (hc : ∀ (Y : ArchMatrix K n) (j : Fin (archDim K n)), |(archBasis K n).repr Y j| ≤ c * ‖Y‖) :

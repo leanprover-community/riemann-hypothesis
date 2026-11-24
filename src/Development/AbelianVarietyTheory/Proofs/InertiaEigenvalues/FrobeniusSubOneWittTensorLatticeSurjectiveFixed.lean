@@ -1,10 +1,52 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
+import Formalism.SharpRestriction.LevelLetterCocycles.ZlWCbInjective
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Mathlib.RingTheory.Flat.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobSubMulSurjective
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegersCompleteDVR
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.Domain
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -89,7 +131,7 @@ theorem baseChange_flat {R W O : Type} [CommRing R] [CommRing W] [Algebra R W] [
     intro b
     induction b using TensorProduct.induction_on with
     | zero => simp
-    | tmul o w => simp [g, TensorProduct.tmul_sub]
+    | tmul o w => simp [g]
     | add x y hx hy => rw [map_add (f := _), map_add (f := _), ← hx, ← hy]; abel
   have gsurj : Function.Surjective g := fun y => by
     obtain ⟨b, hb⟩ := hs y
@@ -132,22 +174,7 @@ theorem baseChange_flat {R W O : Type} [CommRing R] [CommRing W] [Algebra R W] [
 
 theorem algebraMap_WCb_injective (l : ℕ) [Fact l.Prime] :
     Function.Injective (algebraMap ℤ_[l] (WCb l)) := by
-
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro x hx
-  by_contra hne
-  have hker : RingHom.ker (algebraMap ℤ_[l] (WCb l)) ≠ ⊥ := by
-    intro h
-    apply hne
-    have hxk : x ∈ RingHom.ker (algebraMap ℤ_[l] (WCb l)) := hx
-    rw [h] at hxk
-    exact (Submodule.mem_bot _).mp hxk
-  obtain ⟨n, hn⟩ := PadicInt.ideal_eq_span_pow_p hker
-  have hmem : (l : ℤ_[l]) ^ n ∈ RingHom.ker (algebraMap ℤ_[l] (WCb l)) := by
-    rw [hn]
-    exact Ideal.subset_span (Set.mem_singleton _)
-  rw [RingHom.mem_ker, map_pow, map_natCast] at hmem
-  exact pow_ne_zero n (WittVector.p_nonzero l (Cb l)) hmem
+  apply Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators.zl_WCb_injective
 
 theorem flat_lattice {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Type} [Field Qp]
     [Field LL] [Algebra Qp LL] [CommRing O] [Algebra O LL] [TopologicalSpace LL] [IsDomain O]
@@ -191,7 +218,7 @@ theorem ring_fixed (l : ℕ) [Fact l.Prime] (LL : FinExt l) :
   exact baseChange_flat (frobW l) hs hk (algebraMap_WCb_injective l)
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem main : ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)), (∀ y : TW (RW LL) T, ∃ b, TWmap (φRW LL) T b - b = y) ∧ (∀ b : TW (RW LL) T, TWmap (φRW LL) T b = b ↔ ∃ t : ↥T.L.T, b = (1 : RW LL) ⊗ₜ[↥(OL LL)] t) ∧ Function.Injective (fun t : ↥T.L.T => (1 : RW LL) ⊗ₜ[↥(OL LL)] t) := by
   intro l _ K LL T
   obtain ⟨hdvr, -⟩ := GlobalTheory.Per.integers_completeDVR l LL

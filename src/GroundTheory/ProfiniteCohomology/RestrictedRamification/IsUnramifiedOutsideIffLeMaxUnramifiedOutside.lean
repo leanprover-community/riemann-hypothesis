@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
+public import Mathlib.FieldTheory.KrullTopology
 public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Ramification
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Unramified
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -86,8 +93,8 @@ theorem isUnramifiedOutside_iff_le_maxUnramifiedOutside {E : IntermediateField F
     intro x hx
     have hx' : x = ∑ i, b.repr ⟨x, hx⟩ i • (b i : Ω) := by
       have := congrArg E.val (b.sum_repr ⟨x, hx⟩)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at this
+
+      rw [map_sum] at this
       simp only [map_smul] at this
       exact this.symm
     rw [hx']

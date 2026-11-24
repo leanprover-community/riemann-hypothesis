@@ -1,9 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.SubBSplit
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.K2Hermitian
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.NatActRVtupR
+public import Formalism.LocalToGlobal.InertKernelTheory.DelPolOfTies
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.QuadraticBaseChangeGL3
+import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
+import Formalism.LocalToGlobal.InertKernelTheory.TieSerPin
+import Formalism.LocalToGlobal.InertKernelTheory.SubBSplit
 
 @[expose] public section
 
@@ -89,7 +90,7 @@ theorem wt_deg {N : ℕ} (ν : D.what₂.Tau → Fin N → ℕ) (Q : MvPolynomia
   have h1 := hQ (fun τ' => Matrix.diagonal fun _ : Fin N => d τ') hB
   rw [colSub_diag] at h1
   have h2 := congrArg (AddMonoidAlgebra.coeff · m) h1
-  rw [coeff_aeval_CX, coeff_smul, smul_eq_mul] at h2
+  rw [coeff_aeval_CX, MvPolynomial.coeff_smul, smul_eq_mul] at h2
   have h3 := mul_right_cancel₀ hm h2
   have hl : (m.prod fun k e => d k.1 ^ e) = (2 : ℂ) ^ Finsupp.weight (wF τ) m := by
     rw [Finsupp.weight_apply, Finsupp.prod, Finsupp.sum, hd]
@@ -122,8 +123,8 @@ theorem polDY_wh {N N' : ℕ} (s : D.what₂.Tau → ℂ) (ν : D.what₂.Tau �
     exact (isWeightedHomogeneous_X _ _ _).C_mul _
   unfold polDY
   conv => enter [2]; rw [Q.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine IsWeightedHomogeneous.sum _ _ _ fun m hm => ?_
   rw [aeval_monomial, MvPolynomial.algebraMap_apply, ← wt_deg ν Q hQ τ m (mem_support_iff.1 hm), Finsupp.weight_apply]
   have := (isWeightedHomogeneous_C (wI (N := N) (N' := N') τ) (algebraMap ℂ (MvPolynomial (GL3Theta.FrV D N') ℂ) (AddMonoidAlgebra.coeff Q m))).mul

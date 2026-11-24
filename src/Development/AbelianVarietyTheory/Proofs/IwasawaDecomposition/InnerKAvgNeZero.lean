@@ -1,7 +1,45 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormDwLeSobNorm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -51,19 +89,19 @@ theorem kFinFun_coef (hσ : IsURepOn (UJset ε) σ) {y : H} (hy : IsKFin ε σ y
         have : φ x 0 = 0 := by ext k; simp [φ]
         rw [this]; exact Submodule.zero_mem _
       | add a b _ _ ha hb =>
-        have : φ x (a + b) = φ x a + φ x b := by ext k; simp [φ, inner_add_left]
+        have : φ x (a + b) = φ x a + φ x b := by ext k; simp [φ]
         rw [this]; exact Submodule.add_mem _ ha hb
       | smul c a _ ha =>
-        have : φ x (c • a) = (starRingEnd ℂ c) • φ x a := by ext k; simp [φ, inner_smul_left, mul_comm]
+        have : φ x (c • a) = (starRingEnd ℂ c) • φ x a := by ext k; simp [φ, mul_comm]
         rw [this]; exact Submodule.smul_mem _ _ ha
     | zero =>
       have : φ 0 s' = 0 := by ext k; simp [φ]
       rw [this]; exact Submodule.zero_mem _
     | add a b _ _ ha hb =>
-      have : φ (a + b) s' = φ a s' + φ b s' := by ext k; simp [φ, inner_add_right]
+      have : φ (a + b) s' = φ a s' + φ b s' := by ext k; simp [φ]
       rw [this]; exact Submodule.add_mem _ ha hb
     | smul c a _ ha =>
-      have : φ (c • a) s' = c • φ a s' := by ext k; simp [φ, inner_smul_right]
+      have : φ (c • a) s' = c • φ a s' := by ext k; simp [φ]
       rw [this]; exact Submodule.smul_mem _ _ ha
   have htS : ∀ x ∈ (t : Set H), x ∈ S := fun x hx => ht ▸ Submodule.subset_span hx
   refine ⟨Submodule.span ℂ (Set.image2 φ (t : Set H) (t : Set H)), FiniteDimensional.span_of_finite ℂ hfin, ?_, ?_, ?_⟩

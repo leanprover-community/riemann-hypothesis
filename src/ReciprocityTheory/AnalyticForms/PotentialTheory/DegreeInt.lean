@@ -1,9 +1,19 @@
 module
 
+public import Mathlib.Order.CompletePartialOrder
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
+import Mathlib.Algebra.Order.Star.Real
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeIntA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeIntB
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
+import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
+import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
+public import Mathlib.MeasureTheory.Function.LocallyIntegrable
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 
@@ -107,8 +117,6 @@ theorem exists_sheet_partition [CompactSpace Y] [T2Space Y] [CompactSpace X] [T2
   · intro m
     first
       | exact disjointed_subset _ m
-      | exact disjointed_le _ m
-      | exact disjointed_subset m
   · intro m
     exact ⟨hV0o _, hk0 _, hW0 _, hdis0 _, hpre0 _, hsh0 _⟩
 

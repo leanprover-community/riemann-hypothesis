@@ -1,6 +1,8 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
+import Formalism.LocalToGlobal.GroupLattices.FockModels.MkP
 
 @[expose] public section
 

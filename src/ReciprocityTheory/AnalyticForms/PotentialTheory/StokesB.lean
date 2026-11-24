@@ -1,6 +1,10 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesA
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Order.CompletePartialOrder
+public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Partition
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

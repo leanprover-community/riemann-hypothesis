@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
-public import Formalism.LocalRingCardinality.DataTies
 
 @[expose] public section
 

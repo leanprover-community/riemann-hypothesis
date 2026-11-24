@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJLocalFECoeff
-public import GroundTheory.AutomorphicForms.WhittakerCriterion
+public import GroundTheory.AutomorphicForms.GL2.GJFERat
+public import GroundTheory.AutomorphicForms.GL2.GJLocalZeta
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixLocal
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

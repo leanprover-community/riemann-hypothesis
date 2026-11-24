@@ -1,9 +1,57 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.CokernelIndexFactors.StatementB
-public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ImagQuadraticMaximalOrderArithmeticAtSplitPrime
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
 
 @[expose] public section
 
@@ -67,8 +115,8 @@ open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma conj_beta_eq_beta_swap (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian)
     (x z : Fin g → ℂ) : conj (_root_.Formalism.L2.Ker.JMB.beta d H x z) = _root_.Formalism.L2.Ker.JMB.beta d H z x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [_root_.Formalism.L2.Ker.JMB.beta, _root_.Formalism.L2.Ker.JMB.hf, map_mul, map_sum, Complex.conj_ofReal, Complex.conj_conj]
+
+  simp only [_root_.Formalism.L2.Ker.JMB.beta, _root_.Formalism.L2.Ker.JMB.hf, map_mul, map_sum, Complex.conj_ofReal, Complex.conj_conj]
   congr 1
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
@@ -98,8 +146,8 @@ private lemma beta_sum_right' (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H
   rw [← conj_beta_eq_beta_swap d hH]
   have := map_sum (_root_.GlobalTheory.MomOne.OrthFrame.betaL d H x) f s
   simp only [_root_.GlobalTheory.MomOne.OrthFrame.betaL, LinearMap.coe_mk, AddHom.coe_mk] at this
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [this, map_sum]
+
+  rw [this, map_sum]
   exact Finset.sum_congr rfl fun i _ => conj_beta_eq_beta_swap d hH _ _
 
 open scoped ComplexConjugate BigOperators ComplexOrder in
@@ -129,7 +177,7 @@ private lemma exists_pos_nat_beta_self_eq {d : ℕ} (hd : 0 < d) {H : Matrix (Fi
   have hpos : 0 < _root_.Formalism.L2.Ker.JMB.hf H w w := by
     have := hH.dotProduct_mulVec_pos (x := star w) (by simpa using hw)
     convert this using 1
-    simp [_root_.Formalism.L2.Ker.JMB.hf, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc, Complex.star_def]
+    simp [_root_.Formalism.L2.Ker.JMB.hf, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
   rw [Complex.pos_iff] at hpos
   have hv : v = 0 := by
     have := im_hf_eq_of_beta_eq hd huv
@@ -281,8 +329,8 @@ private lemma exists_orthogonal_vector_norm_coprime {q : ℕ} (hq : q.Prime) (S 
   have hPorth : ∀ y j, _root_.Formalism.L2.Ker.JMB.beta S.d S.Hm (P y) (x j) = 0 := by
     intro y j
     have e : _root_.Formalism.L2.Ker.JMB.beta S.d S.Hm (P y) (x j) = _root_.GlobalTheory.MomOne.OrthFrame.betaL S.d S.Hm (x j) (P y) := rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, hP, map_sub, map_smul, map_sum]
+
+    rw [e, hP, map_sub, map_smul, map_sum]
     simp only [map_smul, smul_eq_mul, _root_.GlobalTheory.MomOne.OrthFrame.betaL, LinearMap.coe_mk,
       AddHom.coe_mk, horth, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rw [mul_assoc, mul_comm (_root_.Formalism.L2.Ker.JMB.beta S.d S.Hm y (x j)), ← mul_assoc, ← Nat.cast_mul,

@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CompactCellConvergence.MsetOfClosed
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 public import Formalism.SharpRestriction.CuspSpanNormBounds.SpanMemOfImage
 
 @[expose] public section

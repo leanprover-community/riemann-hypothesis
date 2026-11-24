@@ -1,11 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.RowsDef
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DstarEq
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
+public import GroundTheory.AutomorphicForms.ReductionSiegel
+public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

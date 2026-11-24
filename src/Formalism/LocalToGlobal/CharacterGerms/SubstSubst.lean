@@ -1,9 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.LeafHolds
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
+public import Formalism.FrobeniusBaseCase.Statement
+public import Formalism.IncomingBounds.StatementThmP
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Formalism.LocalToGlobal.CharacterGerms.LemmaMJet
-public import Formalism.DropLevelBounds.ConstantCoeffVanishing.UbintConstantCoeffEqZero
+import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
 
 @[expose] public section
 

@@ -1,10 +1,11 @@
 module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.Clause1
-public import CompanionTheory.AutomorphicTheory.HarishChandraMultiplicity.HCMult
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeExpK
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCPX
+public import CompanionTheory.AutomorphicTheory.HarishChandraMultiplicity.HCMult
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Bridge
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeExpK
 
 @[expose] public section
 

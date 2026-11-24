@@ -1,6 +1,15 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.TriDens
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Integral.IntegrableOn
+public import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+public import Mathlib.MeasureTheory.Integral.Gamma
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 @[expose] public section
 

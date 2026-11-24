@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsThroughTwoPointsTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsTrdegAdjoinLe
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -27,8 +30,8 @@ theorem ThroughTwoPointsTrdeg.proof (hT : TrdegAdjoinLe.Statement) : ThroughTwoP
   have heq : ∀ i, ∑ m, u (i, m) * z m = s i * ∑ m, c' m * z m := by
     intro i
     have h := hy i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [genSubst, map_sub, map_mul, map_sum, hC] at h
+
+    simp only [genSubst, map_sub, map_mul, map_sum, hC] at h
     have h' : ∑ m, u (i, m) * y m = s i * ∑ m, c' m * y m := by
       rw [← sub_eq_zero, Finset.mul_sum, ← Finset.sum_sub_distrib, ← h]
       refine Finset.sum_congr rfl fun m _ => ?_

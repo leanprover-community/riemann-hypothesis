@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClass
 public import GroundTheory.GlobalFields.Adele.WeakApproxUnits
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

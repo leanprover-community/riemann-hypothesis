@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Deligne
+public import Mathlib.Basic.Real.Sign
+public import Mathlib.Analysis.Fourier.FourierTransformDeriv
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
+public import Mathlib.MeasureTheory.Constructions.HaarToSphere
 
 @[expose] public section
 
@@ -32,10 +38,9 @@ theorem realGaussian_eq_ofReal (x : ℝ) :
   simp [realGaussian, ofReal_exp]
 
 theorem fourier_realGaussian : 𝓕 realGaussian = realGaussian := by
-  have h := fourier_gaussian_pi (b := 1) (by simp)
-  simp only [mul_one, one_cpow, div_one, one_mul] at h
   unfold realGaussian
-  rw [h]
+  simpa only [mul_one, one_cpow, div_one, one_mul] using
+    (fourier_gaussian_pi (b := 1) (by simp))
 
 theorem integrable_realGaussian : Integrable realGaussian := by
   exact integrable_cexp_neg_mul_sq (b := (π : ℂ)) (by simpa using Real.pi_pos)
@@ -111,34 +116,19 @@ theorem integral_realGaussian_mul_abs_cpow {s : ℂ} (hs : 0 < s.re) :
 theorem integral_realGaussianOdd_mul_sign_mul_abs_cpow {s : ℂ} (hs : -1 < s.re) :
     ∫ x : ℝ, realGaussianOdd x * (Real.sign x : ℂ) * ((|x| : ℝ) : ℂ) ^ s / ((|x| : ℝ) : ℂ) =
       Gammaℝ (s + 1) := by
-  have hs1 : 0 < (s + 1).re := by simp; linarith
-  have h : (fun x : ℝ ↦ realGaussianOdd x * (Real.sign x : ℂ) * ((|x| : ℝ) : ℂ) ^ s /
-        ((|x| : ℝ) : ℂ)) =
-      fun x ↦ (fun y : ℝ ↦ (y : ℂ) * ((Real.exp (-(π * y ^ 2)) : ℝ) : ℂ) * (y : ℂ) ^ s /
-        (y : ℂ)) |x| := by
-    funext x
-    have hx : (x : ℂ) * (Real.sign x : ℂ) = ((|x| : ℝ) : ℂ) := by
-      rw [← ofReal_mul]
-      congr 1
-      rcases lt_trichotomy x 0 with h | h | h
-      · rw [Real.sign_of_neg h, abs_of_neg h]; ring
-      · simp [h]
-      · rw [Real.sign_of_pos h, abs_of_pos h]; ring
-    rw [realGaussianOdd, ← realGaussian, realGaussian_eq_ofReal]
-    simp only [sq_abs]
-    rw [← hx]
+  rw [← integral_realGaussian_mul_abs_cpow (s := s + 1) (by simpa using neg_lt_iff_pos_add.mp hs)]
+  apply integral_congr_ae
+  filter_upwards with x
+  obtain rfl | hx := eq_or_ne x 0
+  · simp
+  · have hsign : x * Real.sign x = |x| := by
+      rcases hx.lt_or_gt with h | h
+      · simp [Real.sign_of_neg h, abs_of_neg h]
+      · simp [Real.sign_of_pos h, abs_of_pos h]
+    rw [cpow_add _ _ (ofReal_ne_zero.mpr (abs_ne_zero.mpr hx)), cpow_one,
+      ← hsign, ofReal_mul]
+    change ((x : ℂ) * realGaussian x) * _ * _ / _ = _
     ring
-  rw [h, integral_comp_abs_complex
-    (fun y : ℝ ↦ (y : ℂ) * ((Real.exp (-(π * y ^ 2)) : ℝ) : ℂ) * (y : ℂ) ^ s / (y : ℂ))]
-  have : ∫ y in Ioi (0 : ℝ), (y : ℂ) * ((Real.exp (-(π * y ^ 2)) : ℝ) : ℂ) * (y : ℂ) ^ s / (y : ℂ)
-      = mellin (fun t : ℝ ↦ ((Real.exp (-(π * t ^ 2)) : ℝ) : ℂ)) (s + 1) := by
-    rw [mellin]
-    refine setIntegral_congr_fun measurableSet_Ioi fun y hy ↦ ?_
-    have hy' : (y : ℂ) ≠ 0 := ofReal_ne_zero.mpr (ne_of_gt hy)
-    rw [add_sub_cancel_right, smul_eq_mul]
-    field_simp
-  rw [this, mellin_exp_neg_pi_mul_sq hs1]
-  ring
 
 end
 

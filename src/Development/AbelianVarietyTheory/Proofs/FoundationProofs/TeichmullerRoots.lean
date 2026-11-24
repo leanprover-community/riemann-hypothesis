@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootsReverseProd
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.FactorSeriesSupport
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+public import Mathlib.FieldTheory.PrimeField
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -78,25 +119,7 @@ theorem root_pow_rootExp {N : ℕ} {f : (ZMod g)[X]} (hf : IsLabel N f) {x : Fba
 
 theorem roots_reverse_prod {F : Type} [Field F] (S : Multiset F) (hS : 0 ∉ S) :
     ((S.map fun x => X - C x).prod.reverse).roots = S.map fun x => x⁻¹ := by
-  induction S using Multiset.induction_on with
-  | empty => simp [reverse]
-  | cons x S ih =>
-    have hx : x ≠ 0 := fun h => hS (h ▸ Multiset.mem_cons_self _ _)
-    have hS' : 0 ∉ S := fun h => hS (Multiset.mem_cons_of_mem h)
-    have hm : (S.map fun x => X - C x).prod.Monic :=
-      monic_multiset_prod_of_monic _ _ fun x _ => monic_X_sub_C x
-    have e : (X - C x).reverse = C (-x) * (X - C x⁻¹) := by
-      have : (X - C x) = X + C (-x) := by simp [sub_eq_add_neg]
-      rw [this, reverse_add_C, natDegree_X]
-      have hX : (X : F[X]).reverse = 1 := by
-        have := reverse_mul_X (1 : F[X])
-        simpa [reverse] using this
-      rw [hX, mul_sub, ← C_mul, neg_mul, mul_inv_cancel₀ hx]
-      simp; ring
-    rw [Multiset.map_cons, Multiset.prod_cons, reverse_mul_of_domain, roots_mul, ih hS', e,
-      roots_C_mul _ (neg_ne_zero.2 hx), roots_X_sub_C, Multiset.map_cons, Multiset.singleton_add]
-    exact mul_ne_zero (by rw [Ne, reverse_eq_zero]; exact X_sub_C_ne_zero x)
-      (by rw [Ne, reverse_eq_zero]; exact hm.ne_zero)
+  apply GlobalTheory.DualLabel.roots_reverse_prod <;> assumption
 
 theorem dual_spec {f : (ZMod g)[X]} (hm : f.Monic) (h0 : f.coeff 0 ≠ 0) :
     (C (f.coeff 0)⁻¹ * f.reverse).Monic ∧ IsPowLabel (-1) f (C (f.coeff 0)⁻¹ * f.reverse) := by

@@ -1,8 +1,56 @@
 module
 
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AkCountEqRedCountMul
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.LocalDensityRatio
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsBasisLocF
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExtPPowLeSpanSup
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MemSmulOfMemSmulLocF
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FinitePrimesOfMem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -50,24 +98,21 @@ theorem InI.neg {k : ℕ} {a : K} (ha : InI 𝔭 k a) : InI 𝔭 k (-a) := by
 
 theorem InI.sub (hp : 𝔭.IsPrime) {k : ℕ} {a b : K} (ha : InI 𝔭 k a) (hb : InI 𝔭 k b) :
     InI 𝔭 k (a - b) := by
-  rw [sub_eq_add_neg]
-  exact ha.add hp hb.neg
+  simpa only [sub_eq_add_neg] using ha.add hp hb.neg
 
 theorem InI.mul (hp : 𝔭.IsPrime) {i k : ℕ} {a b : K} (ha : InI 𝔭 i a) (hb : InI 𝔭 k b) :
     InI 𝔭 (i + k) (a * b) := by
   obtain ⟨t, ht, z, hz, e⟩ := ha
   obtain ⟨u, hu, y, hy, f⟩ := hb
   refine ⟨t * u, fun h => (hp.mem_or_mem h).elim ht hu, z * y, ?_, ?_⟩
-  · rw [pow_add]
-    exact Ideal.mul_mem_mul hz hy
+  · simpa only [pow_add] using Ideal.mul_mem_mul hz hy
   · simp only [map_mul, e, f]
     ring
 
 theorem InI.conj (hF : IsFixF K F) {k : ℕ} {a : K} (ha : InI 𝔭 k a) : InI 𝔭 k (star a) := by
   obtain ⟨t, ht, z, hz, e⟩ := ha
   refine ⟨t, ht, conjO K z, conjO_mem_pow hF 𝔭 k z hz, ?_⟩
-  have : κ (conjO K z) = star (κ z) := rfl
-  rw [this, e, star_mul', star_ι hF]
+  rw [(show κ (conjO K z) = star (κ z) from rfl), e, star_mul', star_ι hF]
 
 theorem InI.mono {i k : ℕ} (hik : k ≤ i) {a : K} (ha : InI 𝔭 i a) : InI 𝔭 k a := by
   obtain ⟨t, ht, z, hz, e⟩ := ha
@@ -95,8 +140,7 @@ theorem InL.neg {k : ℕ} {a : V} (ha : InL 𝔭 A k a) : InL 𝔭 A k (-a) := b
 
 theorem InL.sub (hp : 𝔭.IsPrime) {k : ℕ} {a b : V} (ha : InL 𝔭 A k a) (hb : InL 𝔭 A k b) :
     InL 𝔭 A k (a - b) := by
-  rw [sub_eq_add_neg]
-  exact ha.add hp hb.neg
+  simpa only [sub_eq_add_neg] using ha.add hp hb.neg
 
 theorem InL.mono {i k : ℕ} (hik : k ≤ i) {a : V} (ha : InL 𝔭 A i a) : InL 𝔭 A k a := by
   obtain ⟨t, ht, e⟩ := ha
@@ -250,9 +294,8 @@ theorem InI.unit (h𝔭 : 𝔭.IsMaximal) (hF : IsFixF K F) {ε : K} (hε : InI 
   field_simp
 
 theorem inL_zero_iff (hp : 𝔭.IsPrime) {v : V} : InL 𝔭 A 0 v ↔ v ∈ locF 𝔭 A := by
-  rw [mem_locF 𝔭 A v]
   unfold InL
-  simp only [pow_zero, Ideal.one_eq_top, Submodule.top_smul]
+  simp only [mem_locF 𝔭 A v, pow_zero, Ideal.one_eq_top, Submodule.top_smul]
 
 theorem InL.of_mem (h𝔭 : 𝔭.IsMaximal) {k : ℕ} {v : V} (hv : v ∈ extP K 𝔭 ^ k • locF 𝔭 A) :
     InL 𝔭 A k v := exists_smul_mem h𝔭 A _ hv

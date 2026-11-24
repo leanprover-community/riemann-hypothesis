@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.SatakeDualWeyl.Statement
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLoc
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Valuation.LocalSubring
 
 @[expose] public section
 
@@ -39,8 +42,6 @@ theorem rc_isIntegral (v : HeightOneSpectrum (𝓞 F)) (x : E ⊗[F] v.adicCompl
       rw [← hb]
       first
       | exact b.isIntegral_coe
-      | exact b.2
-      | exact NumberField.RingOfIntegers.isIntegral_coe b
     exact IsIntegral.map_of_comp_eq (Int.castRingHom (v.adicCompletionIntegers F))
       (Algebra.TensorProduct.includeLeftRingHom (R := F) (A := E) (B := v.adicCompletion F))
       (RingHom.ext_int _ _) ha
@@ -58,7 +59,6 @@ theorem rc_idem_zero (v : HeightOneSpectrum (𝓞 F)) (f t : E ⊗[F] v.adicComp
     ⟨⟨c, by
       first
       | exact hc1
-      | exact (IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 hc1
       | simpa [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers] using hc1⟩, rfl⟩
   subst hc'
   have hC : algebraMap (v.adicCompletionIntegers F) (E ⊗[F] v.adicCompletion F) c' =
@@ -73,8 +73,8 @@ theorem rc_idem_zero (v : HeightOneSpectrum (𝓞 F)) (f t : E ⊗[F] v.adicComp
     have h := congrArg (f * ·) hq0
     simp only [mul_zero] at h
     rw [Polynomial.eval₂_eq_sum_range, Finset.mul_sum] at h
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Polynomial.eval_eq_sum_range, map_sum, Finset.mul_sum, ← h]
+
+    rw [Polynomial.eval_eq_sum_range, map_sum, Finset.mul_sum, ← h]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [one_pow, mul_one, mul_left_comm, hidem, mul_comm]
   have hsplit : (p.scaleRoots c').eval 1 =
@@ -90,7 +90,6 @@ theorem rc_idem_zero (v : HeightOneSpectrum (𝓞 F)) (f t : E ⊗[F] v.adicComp
     have h1 : Valued.v ((p.coeff i : v.adicCompletionIntegers F) : v.adicCompletion F) ≤ 1 := by
       first
       | exact (p.coeff i).2
-      | exact (IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).1 (p.coeff i).2
     have hm : p.natDegree - i = (p.natDegree - i - 1) + 1 := by omega
     rw [Valuation.map_mul, Valuation.map_pow, hm, pow_succ]
     calc Valued.v ((p.coeff i : v.adicCompletionIntegers F) : v.adicCompletion F) *
@@ -128,10 +127,6 @@ theorem rc_finrank (v : HeightOneSpectrum (𝓞 F)) :
           first
           | (show y ⊗ₜ[F] (a • b) = (1 ⊗ₜ[F] a) * (y ⊗ₜ[F] b)
              rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, smul_eq_mul])
-          | (rw [Algebra.smul_def]
-             show y ⊗ₜ[F] (a • b) = (1 ⊗ₜ[F] a) * (y ⊗ₜ[F] b)
-             rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, smul_eq_mul])
-          | (simp [Algebra.smul_def, Algebra.TensorProduct.tmul_mul_tmul, mul_comm]; done)
         | add x y hx hy =>
           rw [smul_add, map_add (f := _), map_add (f := _), hx, hy, smul_add] }
   rw [← e.finrank_eq, Module.finrank_baseChange]
@@ -223,8 +218,6 @@ theorem reduction_structure_holds : RedCore := by
       exact (hr2 _).symm
     first
     | (obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.mp hint'; rw [← hy]; exact y.2)
-    | exact ValuationSubring.mem_of_isIntegral _ hint'
-    | exact (Valuation.integer.integers _).mem_of_integral hint'
   · intro x hx
     show x = ((1 : E) ⊗ₜ[F] r0 x) * e
     rw [halg, ← hr, hx]

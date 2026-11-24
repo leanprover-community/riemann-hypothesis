@@ -2,6 +2,58 @@ module
 
 public import Formalism.HermitianCurvature.BlockKernelPropertiesOfSteps
 public import Formalism.DoubleCosetMeasures.LatticeCoset
+public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.ExistsContinuousLowerUpperEntry
+import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsIntOfLatOfLe
+import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsOpenIsIntSet
+public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.LowUniMulVecELast
+import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.TwoSided
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -91,11 +143,7 @@ theorem isInt_orbZ_inv {K : Type} [CommRing K] (R : Subring K) (w : Point K)
     IsInt R (orbZ w (a * x, y * b)) ↔ IsInt R (orbZ w (x, y)) := by
   have h := Formalism.DoubleCosetMeasures.P.intInv K R w.1.sum _ _ (orbZ w (x, y)) a.2.1 b.2 ha.1 hb.1
   rw [← h]
-  have : orbZ w (a * x, y * b) =
-      ((a : GL (Fin w.1.sum) K) : Matrix (Fin w.1.sum) (Fin w.1.sum) K) * orbZ w (x, y) *
-        ((b : GL (Fin w.1.sum) K) : Matrix (Fin w.1.sum) (Fin w.1.sum) K) := by
-    simp only [orbZ, Subgroup.coe_mul, Units.val_mul, Matrix.mul_assoc]
-  rw [this]
+  simp only [orbZ, Subgroup.coe_mul, Units.val_mul, Matrix.mul_assoc]
 
 end Formalism.FourierDecayAlt.P.A5x4
 
@@ -128,8 +176,7 @@ theorem integral_points_finite : Formalism.FourierDecayAlt.A5.IntFinite := by
     (Formalism.DoubleCosetMeasures.P.isOpen_intSub R hL.isOpen _) (Formalism.DoubleCosetMeasures.P.isOpen_intSub R hL.isOpen _) ℝ f hinv hc).1
   refine key.subset ?_
   intro q hq
-  have hq' : IsInt R (orbZ w (q.1.out, q.2.out)) := hq
-  simp [f, hq']
+  simpa [f, rep] using hq
 
 theorem kernel_quotient_finite : Formalism.FourierDecayAlt.A5.KpFinite := by
   intro K _ _ _ R ψ hL w w'
@@ -140,8 +187,7 @@ theorem kernel_quotient_finite : Formalism.FourierDecayAlt.A5.KpFinite := by
   apply hq
   rw [if_neg]
   · simp
-  · intro hI
-    exact hcon ⟨hI.1, hI.2⟩
+  · exact fun hI => hcon ⟨hI.1, hI.2⟩
 
 end Formalism.FourierDecayAlt.P
 
@@ -168,9 +214,7 @@ theorem Kp_eq_sum {K : Type} [CommRing K] (R : Subring K) (ψ : AddChar K ℂ) (
     apply hq
     rw [if_neg]
     · simp
-    · intro hI
-      apply hcon
-      simp [hI.1, hI.2]
+    · exact fun hI => hcon (by simp [hI.1, hI.2])
 
 
 open Classical in
@@ -190,7 +234,7 @@ theorem BB_eq_sum {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRin
     have := (hL.selfDual 1).2 R.one_mem r hr
     simpa using this
   rw [Formalism.DoubleCosetMeasures.Final.bbNorm K R hL.isOpen w.1 w.2 ψ hψ μ₁ μ₂ h1 h2 C e lam
-    (Formalism.DoubleCosetMeasures.Final.suppCompact K R hL.isOpen hL.isCompact w.1 w.2 ψ C e lam),
+    (_root_.Formalism.DoubleCosetMeasures.P.suppCompact K R hL.isOpen hL.isCompact w.1 w.2 ψ C e lam),
     finsum_eq_sum_of_support_subset (s := h.toFinset)]
   · refine Finset.sum_congr rfl fun q hq => ?_
     have h1 : IsInt R (orbZ w (rep R q)) := by simpa using hq
@@ -315,10 +359,10 @@ theorem gram_kernel_identity : Formalism.FourierDecayAlt.A5.GramIdentity := by
         (Nat.card (autSet R (C a) (e a) (lam a)) : ℂ)) * phase ψ (rep R q) *
         conj (phase ψ (rep R q')) := by
     intro a
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [BB_eq_sum R ψ hL w μ₁ μ₂ h1 h2 (C a) (e a) (lam a) hf,
-      BB_eq_sum R ψ hL w' μ₁' μ₂' h1' h2' (C a) (e a) (lam a) hf', map_sum,
-      Finset.sum_mul_sum, Finset.sum_div]
+
+    rw [BB_eq_sum R ψ hL w μ₁ μ₂ h1 h2 (C a) (e a) (lam a) hf,
+    BB_eq_sum R ψ hL w' μ₁' μ₂' h1' h2' (C a) (e a) (lam a) hf', map_sum,
+    Finset.sum_mul_sum, Finset.sum_div]
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [Finset.sum_div]
     refine Finset.sum_congr rfl fun q' _ => ?_
@@ -356,8 +400,7 @@ theorem lamLin_mk_eq {n : ℕ} (Z : Matrix (Fin n) (Fin n) K) {v v' : Fin n → 
       · exact Submodule.zero_mem _
     · rw [Matrix.nonsing_inv_apply_not_isUnit _ hd]
       simp
-  rw [map_sub, sub_eq_zero] at h2
-  exact h2
+  simpa only [map_sub, sub_eq_zero] using h2
 
 theorem isoZZ_refl {n : ℕ} (Z : Matrix (Fin n) (Fin n) K) :
     LinearEquiv.refl R (coker R Z) ∈ isoZZ R Z Z :=
@@ -366,8 +409,7 @@ theorem isoZZ_refl {n : ℕ} (Z : Matrix (Fin n) (Fin n) K) :
 theorem isoZZ_symm {n n' : ℕ} {Z : Matrix (Fin n) (Fin n) K} {Z' : Matrix (Fin n') (Fin n') K}
     {φ : coker R Z ≃ₗ[R] coker R Z'} (h : φ ∈ isoZZ R Z Z') : φ.symm ∈ isoZZ R Z' Z := by
   refine ⟨by rw [← h.1]; simp, fun v' v hv => ?_⟩
-  have : φ (Submodule.Quotient.mk v) = Submodule.Quotient.mk v' := by rw [← hv]; simp
-  exact (h.2 v v' this).symm
+  exact (h.2 v v' (by rw [← hv]; simp)).symm
 
 theorem isoZZ_trans {n n' n'' : ℕ} {Z : Matrix (Fin n) (Fin n) K}
     {Z' : Matrix (Fin n') (Fin n') K} {Z'' : Matrix (Fin n'') (Fin n'') K}
@@ -375,8 +417,7 @@ theorem isoZZ_trans {n n' n'' : ℕ} {Z : Matrix (Fin n) (Fin n) K}
     (h : φ ∈ isoZZ R Z Z') (h' : φ' ∈ isoZZ R Z' Z'') : φ.trans φ' ∈ isoZZ R Z Z'' := by
   refine ⟨by simp [h.1, h'.1], fun v v'' hv => ?_⟩
   obtain ⟨v', hv'⟩ := Submodule.Quotient.mk_surjective _ (φ (Submodule.Quotient.mk v))
-  simp only [LinearEquiv.trans_apply] at hv
-  rw [← hv'] at hv
+  simp only [LinearEquiv.trans_apply, ← hv'] at hv
   rw [h'.2 v' v'' hv, h.2 v v' hv'.symm]
 
 theorem card_isoZZ_congr {n n' m m' : ℕ} {A : Matrix (Fin n) (Fin n) K}
@@ -404,8 +445,8 @@ theorem sum_of_classes {T Q : Type} [Fintype T] [Fintype Q] [DecidableEq Q] (f :
       ∑ i, ∑ j, (μ κ : ℂ) * ((if f i = κ then c i else 0) *
         conj (if f j = κ then c j else 0)) := by
     intro κ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Complex.ofReal_mul, ← Complex.mul_conj, map_sum, Finset.sum_mul_sum, Finset.mul_sum]
+
+    rw [Complex.ofReal_mul, ← Complex.mul_conj, map_sum, Finset.sum_mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.mul_sum]
   rw [Complex.ofReal_sum, Finset.sum_congr rfl fun κ _ => h κ,

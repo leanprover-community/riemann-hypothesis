@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.NullZero
 
 @[expose] public section
@@ -67,7 +68,6 @@ theorem integralWith_congr_null {e : ℕ} {X : Type} [TopologicalSpace X] (A : F
     integralWith A P Φ g = integralWith A P Φ g' := by
   first
   | unfold integralWith
-  | simp only [integralWith]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   have hT : MeasurableSet (A.chart j).target := (A.chart j).open_target.measurableSet
   have hnull : volume ((A.chart j) '' (S ∩ (A.chart j).source)) = 0 :=

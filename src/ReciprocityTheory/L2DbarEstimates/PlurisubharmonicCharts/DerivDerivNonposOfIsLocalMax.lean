@@ -1,6 +1,13 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 @[expose] public section
 

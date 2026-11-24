@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.HarishChandraCentre.MemCenterOfCommuteE
+public import Mathlib.Data.Finsupp.Multiset
+public import Mathlib.Data.Finsupp.Weight
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

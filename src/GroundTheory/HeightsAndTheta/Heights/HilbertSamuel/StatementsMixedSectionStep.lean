@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMixedKleimanLow
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 
 @[expose] public section
 

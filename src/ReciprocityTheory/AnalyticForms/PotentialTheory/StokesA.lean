@@ -1,8 +1,12 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 
@@ -81,7 +85,6 @@ theorem st_locDens_cons_eq_zero (A : FinHolAtlas (e + 1) X) (k : Fin A.n) (ψ : 
   filter_upwards [h2] with y' hy'
   first
   | exact image_eq_zero_of_notMem_tsupport hy'
-  | exact image_eq_zero_of_nmem_tsupport hy'
 
 theorem st_mIntConstPot (A : FinHolAtlas (e + 1) X) (c : ℝ) (Φ : Fin e → LocPot X)
     (g : X → ℝ) : mInt A (Fin.cons (LocPot.ofFun fun _ => c) Φ) g = 0 := by

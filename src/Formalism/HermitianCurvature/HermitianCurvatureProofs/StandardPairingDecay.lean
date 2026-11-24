@@ -1,12 +1,60 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableOfDecay4
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyContinuousOn
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThetaCompactSupport
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousZetaL
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
+public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.BFCell
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
-public import Formalism.HermitianCurvature.HerGenC
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousZetaL
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfBetaAdjCOfLemmaBNorm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThetaCompactSupport
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Matrix
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -17,13 +65,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.PBO
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt.P5
-
-theorem hsInner_zero_left' {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (A : Wq →L[ℂ] Wp) : B.hsInner (0 : Wq →L[ℂ] Wp) A = 0 := by
-  unfold B.hsInner B.hsVec
-  have : (WithLp.toLp 2 fun i : Fin (Module.finrank ℂ Wq) => (0 : Wq →L[ℂ] Wp) (stdOrthonormalBasis ℂ Wq i)) = 0 := by
-    simp; rfl
-  rw [this, inner_zero_right]
 
 section vec
 
@@ -102,7 +143,7 @@ theorem rr_top_small {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
   · omega
   · have hv : D.vecV p.T.base p.ν' p.m₀ F (h ++ [(1, c)]) = 0 :=
       vecV_zero_small p.T.base p.ν' p.m₀ (fun g hg h0 => le_trans hεF' (hGF g hg h0)) _ hpt
-    rw [hv, hsInner_zero_left']
+    rw [hv, _root_.Formalism.FourierDecayAlt.P.PBD.hsInner_zero_left]
   · unfold Top.topOf
     refine Finset.sum_eq_zero fun e _ => Finset.sum_eq_zero fun ρ _ => ?_
     have hv : D.vecV p.T.base p.ν' p.m₀ (p.Θ.Θ w e F) (h ++ [(1, c)]) = 0 := by
@@ -110,7 +151,7 @@ theorem rr_top_small {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
       unfold KB.Pl.V at this
       rw [this]
       exact vecV_zero_small p.T.base p.ν' p.m₀ (fun g hg h0 => le_trans (hεe' e) (hGe e g hg h0)) _ hpt
-    rw [hv, ContinuousLinearMap.comp_zero, hsInner_zero_left', mul_zero]
+    rw [hv, ContinuousLinearMap.comp_zero, _root_.Formalism.FourierDecayAlt.P.PBD.hsInner_zero_left, mul_zero]
   · omega
   · rfl
 

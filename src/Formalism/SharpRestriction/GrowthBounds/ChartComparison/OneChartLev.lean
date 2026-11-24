@@ -1,9 +1,48 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.StepIn
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ExistsPrimeToLe
-public import Formalism.LocalToGlobal.HermitianForms.TiedSym
+public import Formalism.LocalToGlobal.HermitianForms.TiedTwGen
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsIdealDenominator
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ExistsPrimeToLe
+import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ExtWRec
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemMIff
 
 @[expose] public section
 
@@ -78,15 +117,11 @@ theorem locW_intAtI (V : ValTied u eV i hi K) (w : D.what₂.places.Pl) (x : ((D
     rw [hPy t]
     rfl
 
-theorem exists_denI (u : D.what₂.Word) (i : ℕ) (x : ((D.fm u).lat i).V) :
-    ∃ d : 𝓞 D.what₂.LL, d ≠ 0 ∧ d • x ∈ ((D.fm u).lat i).L :=
-  _root_.UpperTheory.Reformulated.B.ExistsIdealDenominator.exists_denI u i x
-
 theorem locWBackI (V : ValTied u eV i hi K) (w : D.what₂.places.Pl) (x : ((D.fm u).lat i).V) (hx : ∀ c, IntAtI V w x c) :
     x ∈ Formalism.BasicNotions.locW D.what₂.places w ((D.fm u).lat i).L := by
   have key : ∀ (r : 𝓞 D.what₂.LL) (v : ((D.fm u).lat i).V), r • v = (algebraMap (𝓞 D.what₂.LL) D.what₂.LL r) • v :=
     fun r v => (algebraMap_smul D.what₂.LL r v).symm
-  obtain ⟨d, hd0, hdL⟩ := exists_denI u i x
+  obtain ⟨d, hd0, hdL⟩ := _root_.UpperTheory.Reformulated.B.ExistsIdealDenominator.exists_denI u i x
   obtain ⟨s, hsP, hsv⟩ := exists_prime_to_le (D.plEq w) d hd0
   have hs0 : s ≠ 0 := fun h => hsP (h ▸ Submodule.zero_mem _)
   have hsL : s • x ∈ ((D.fm u).lat i).L := by
@@ -154,7 +189,7 @@ def oneChart (K : ClsTied u i hi) (β : Unit) :
   stabI_range := fun c => K.stabI_range c.1
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem valTied_toG (V : ValTied u eV i hi K) :
     ValuationCompatibleChart (D.fm u) V.eY (fun _ => True) (chU u i) (lat := clsCrd D u i hi) (oneChart K) := by
   refine ⟨?_, V.rat, fun w _ x => locWCritI V w x⟩

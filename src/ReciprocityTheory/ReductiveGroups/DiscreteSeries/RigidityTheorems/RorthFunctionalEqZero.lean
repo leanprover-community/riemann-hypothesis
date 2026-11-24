@@ -1,8 +1,59 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+public import Mathlib.Analysis.InnerProductSpace.Dual
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Linear
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
 
 @[expose] public section
 
@@ -21,18 +72,17 @@ variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin 
 
 theorem rorth_apply_mem_genSub (a b : Fin n) {y : M} (hy : y ∈ genSub E V) :
     E a b y ∈ genSub E V := by
-  unfold genSub at hy ⊢
-  rw [Submodule.mem_sInf] at hy ⊢
-  intro T hT
-  exact hT.2 a b y (hy T hT)
+  rw [genSub, Submodule.mem_sInf] at hy ⊢
+  exact fun T hT => hT.2 a b y (hy T hT)
 
 theorem rorth_le_genSub : V ≤ genSub E V := by
   unfold genSub
   exact le_sInf fun T hT => hT.1
 
-theorem rorth_functional_eq_zero (hE : IsGlRep E) (hU : IsInfUnitary ε E)
-    (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hgap : StdGap ε lam) (f : M →ₗ[ℂ] ℂ) (hfV : ∀ v ∈ V, f v = 0)
+private theorem rorth_functional_eq_zero_of_highest_weight_mem (hE : IsGlRep E) (hU : IsInfUnitary ε E)
+    (hV : IsKIrrHW ε E (lowK ε lam) V)
+    (hlow : ∀ {w : M}, w ∈ genSub E V → IsKHWVec ε E (lowK ε lam) w → w ∈ V)
+    (f : M →ₗ[ℂ] ℂ) (hfV : ∀ v ∈ V, f v = 0)
     (hfd : ∀ a y, f (E a a y) = (lowK ε lam a : ℂ) * f y)
     (hfl : ∀ a b, a < b → ε a = ε b → ∀ y, f (E b a y) = 0) :
     ∀ y ∈ genSub E V, f y = 0 := by
@@ -40,16 +90,15 @@ theorem rorth_functional_eq_zero (hE : IsGlRep E) (hU : IsInfUnitary ε E)
   rw [genSub_eq_iSup_layer hE hV.2.1,
     Submodule.mem_iSup_of_directed _ (Monotone.directed_le fun _ _ h => layer_mono h)] at hy
   obtain ⟨k, hk⟩ := hy
-  set W := layer ε E V k with hW
+  set W := layer ε E V k
   have : FiniteDimensional ℂ W := finiteDimensional_layer hV.1 k
   have : CompleteSpace W := FiniteDimensional.complete ℂ W
   have hWK : IsKStableSub ε E W := layer_kStable hE hV.2.1 k
   obtain ⟨u, hu⟩ : ∃ u : W, ∀ w : W, inner ℂ (u : M) (w : M) = f w := by
     refine ⟨(InnerProductSpace.toDual ℂ W).symm
       (LinearMap.toContinuousLinearMap (f.comp W.subtype)), fun w => ?_⟩
-    have := InnerProductSpace.toDual_symm_apply (𝕜 := ℂ) (x := w)
+    exact InnerProductSpace.toDual_symm_apply (𝕜 := ℂ) (x := w)
       (y := LinearMap.toContinuousLinearMap (f.comp W.subtype))
-    exact this
   have hsg : ∀ a b, ε a = ε b → adjSign ε a b = 1 := fun a b h => by simp [adjSign, h]
   have hkhw : IsKHWVec ε E (lowK ε lam) (u : M) := by
     refine ⟨fun a => ?_, fun a b hab h => ?_⟩
@@ -65,11 +114,20 @@ theorem rorth_functional_eq_zero (hE : IsGlRep E) (hU : IsInfUnitary ε E)
     · have hz : E a b u ∈ W := hWK a b h _ u.2
       rw [← inner_self_eq_zero (𝕜 := ℂ), hU a b, hsg a b h, one_mul]
       exact (hu ⟨_, hWK b a h.symm _ hz⟩).trans (hfl a b hab h _)
-  have huV : (u : M) ∈ V := khw_lowK_mem hE hU hV hc hgap (layer_le_genSub k u.2) hkhw
+  have huV : (u : M) ∈ V := hlow (layer_le_genSub k u.2) hkhw
   have hu0 : (u : M) = 0 := by
     rw [← inner_self_eq_zero (𝕜 := ℂ), hu u]
     exact hfV _ huV
   rw [← hu ⟨y, hk⟩, hu0, inner_zero_left]
+
+theorem rorth_functional_eq_zero (hE : IsGlRep E) (hU : IsInfUnitary ε E)
+    (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
+    (hgap : StdGap ε lam) (f : M →ₗ[ℂ] ℂ) (hfV : ∀ v ∈ V, f v = 0)
+    (hfd : ∀ a y, f (E a a y) = (lowK ε lam a : ℂ) * f y)
+    (hfl : ∀ a b, a < b → ε a = ε b → ∀ y, f (E b a y) = 0) :
+    ∀ y ∈ genSub E V, f y = 0 := by
+  exact rorth_functional_eq_zero_of_highest_weight_mem hE hU hV
+    (khw_lowK_mem hE hU hV hc hgap) f hfV hfd hfl
 
 end Alg
 
@@ -107,9 +165,7 @@ theorem rorth_mem_UJset {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (
 
 theorem rorth_inK_of_skew {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (h1 : Zᴴ = -Z)
     (h2 : Z * Jm ε = Jm ε * Z) : inK ε Z := by
-  refine ⟨?_, h2⟩
-  unfold inG
-  rw [h1, Matrix.neg_mul, h2, neg_add_cancel]
+  exact ⟨by unfold inG; rw [h1, Matrix.neg_mul, h2, neg_add_cancel], h2⟩
 
 theorem rorth_inK_smul {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inK ε Z) (t : ℝ) :
     inK ε ((t : ℂ) • Z) := by
@@ -122,8 +178,7 @@ theorem rorth_inK_smul {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (h
 theorem rorth_single_comm {ε : Fin n → Bool} {a b : Fin n} (h : ε a = ε b) :
     Matrix.single a b (1 : ℂ) * Jm ε = Jm ε * Matrix.single a b (1 : ℂ) := by
   ext i j
-  unfold Jm
-  rw [Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.single_apply]
+  simp only [Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.single_apply]
   by_cases hij : a = i ∧ b = j
   · obtain ⟨rfl, rfl⟩ := hij
     simp [h]
@@ -179,14 +234,12 @@ theorem rorth_inner_actM (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ 
     funext t
     have hk := exp_mem_Kset (rorth_inK_smul hZ t)
     obtain ⟨w, hw, hwe⟩ := hVK _ hk v v.2
-    have h4 := hj _ hk v ⟨w, hw⟩ hwe
     simp only [Function.comp_apply, ContinuousLinearMap.coe_restrictScalars']
-    rw [← hwe, hφ ⟨w, hw⟩, h4, rorth_inner_map hσ (rorth_mem_UJset hk)]
+    rw [← hwe, hφ ⟨w, hw⟩, hj _ hk v ⟨w, hw⟩ hwe,
+      rorth_inner_map hσ (rorth_mem_UJset hk)]
   rw [hconst] at h3
-  have h5 := h3.unique (hasDerivAt_const (0 : ℝ) _)
-  simp only [Function.comp_apply, ContinuousLinearMap.coe_restrictScalars', exp_zero_smul, hσ.1.1,
-    one_apply_eq_self, hφ] at h5
-  exact h5
+  simpa only [Function.comp_apply, ContinuousLinearMap.coe_restrictScalars', exp_zero_smul, hσ.1.1,
+    one_apply_eq_self, hφ] using h3.unique (hasDerivAt_const (0 : ℝ) _)
 
 theorem rorth_inner_E (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
     (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (j : V →ₗ[ℂ] H)
@@ -205,9 +258,9 @@ theorem rorth_inner_E (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E
     (1 / 2 : ℂ) * (inner ℂ (j v) ((E a b x : D) : H) + inner ℂ (j v) ((E b a x : D) : H) -
       inner ℂ (φ ((E a b v : D) : H)) (x : H) - inner ℂ (φ ((E b a v : D) : H)) (x : H)) * hI
 
-theorem rigid_orth_genSub {lam : Fin n → ℝ} (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ)
+private theorem rigid_orth_genSub_of_highest_weight_mem {lam : Fin n → ℝ} (hσ : IsURepOn (UJset ε) σ)
     (hD : IsDerivedOn ε σ D E) (hV : IsKIrrHW ε E (lowK ε lam) V)
-    (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
+    (hlow : ∀ {w : D}, w ∈ genSub E V → IsKHWVec ε E (lowK ε lam) w → w ∈ V)
     (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (j : V →ₗ[ℂ] H)
     (hj : ∀ k ∈ Kset ε, ∀ v w : V, ((w : D) : H) = σ k ((v : D) : H) → j w = σ k (j v))
     (horth : ∀ v v' : V, inner ℂ (j v') ((v : D) : H) = 0) :
@@ -216,7 +269,7 @@ theorem rigid_orth_genSub {lam : Fin n → ℝ} (hgap : StdGap ε lam) (hσ : Is
   have hrel := fun a b (h : ε a = ε b) => rorth_inner_E hσ hD hVK j hj φ hφ h
   obtain ⟨w, hwV, hw0, hw⟩ := hV.2.2.2
   have h0 : ∀ y ∈ genSub E V, inner ℂ (j ⟨w, hwV⟩) (y : H) = 0 := by
-    refine rorth_functional_eq_zero hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV hc hgap
+    refine rorth_functional_eq_zero_of_highest_weight_mem hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV hlow
       ((innerₛₗ ℂ (j ⟨w, hwV⟩)).comp D.subtype) (fun v hv => horth ⟨v, hv⟩ _) (fun a y => ?_)
       (fun a b hab h y => ?_)
     · have := hrel a a rfl ⟨w, hwV⟩ y
@@ -246,6 +299,16 @@ theorem rigid_orth_genSub {lam : Fin n → ℝ} (hgap : StdGap ε lam) (hσ : Is
     have hv' : (v' : D) ∈ S := by rw [h]; exact v'.2
     rw [← hφ]
     exact hv'.2 y hy
+
+theorem rigid_orth_genSub {lam : Fin n → ℝ} (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ)
+    (hD : IsDerivedOn ε σ D E) (hV : IsKIrrHW ε E (lowK ε lam) V)
+    (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
+    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (j : V →ₗ[ℂ] H)
+    (hj : ∀ k ∈ Kset ε, ∀ v w : V, ((w : D) : H) = σ k ((v : D) : H) → j w = σ k (j v))
+    (horth : ∀ v v' : V, inner ℂ (j v') ((v : D) : H) = 0) :
+    ∀ v' : V, ∀ y ∈ genSub E V, inner ℂ (j v') (y : H) = 0 := by
+  exact rigid_orth_genSub_of_highest_weight_mem hσ hD hV
+    (khw_lowK_mem hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV hc hgap) hVK j hj horth
 
 theorem rigid_orth_closure {lam : Fin n → ℝ} (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ)
     (hD : IsDerivedOn ε σ D E) (hV : IsKIrrHW ε E (lowK ε lam) V)

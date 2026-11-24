@@ -1,6 +1,18 @@
 module
 
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.Clause1
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.NilpotentOfPowerTraces
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.SubquotientNontrivial
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.NcBound
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Taylor
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.WeightBound
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SmoothA
 
 @[expose] public section
 
@@ -27,8 +39,8 @@ theorem compact_sq_le_A (hU : IsInfUnitary ε E) (x : M) {a b : Fin n} (hab : ε
     rw [Module.End.mul_apply, hU a' b', adjSign, if_pos h.symm, one_mul, inner_self_eq_norm_sq]
   have hsum : RCLike.re (inner ℂ (casimirK ε E x) x) =
       ∑ a', ∑ b' ∈ Finset.univ.filter (fun b' => ε b' = ε a'), ‖E b' a' x‖ ^ 2 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [casimirK, LinearMap.sum_apply, sum_inner, map_sum]
+
+    simp only [casimirK, LinearMap.sum_apply, sum_inner, map_sum]
     exact Finset.sum_congr rfl fun a' _ => Finset.sum_congr rfl fun b' hb' =>
       key a' b' (Finset.mem_filter.1 hb').2
   rw [hsum]

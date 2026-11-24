@@ -1,8 +1,14 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SExpDefs
-public import GroundTheory.GlobalFields.TateThesis.EulerFactorsFourierInfinite
-public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
+public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
+import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
+public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInfinite
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 @[expose] public section
 
@@ -119,10 +125,10 @@ theorem slice_eq {c : HeightOneSpectrum (𝓞 F) → ℕ} (hc : {w | c w ≠ 0}.
   · by_cases h2 : ∀ w, Valued.v (pLoc F w (pFin F B) - 1) ≤ WithZero.exp (-(c w : ℤ))
     · have h3 : ∀ w, Valued.v (pLoc F w (pFin F A)) ≤ WithZero.exp (-(c w : ℤ)) ∧
           Valued.v (pLoc F w (pFin F B) - 1) ≤ WithZero.exp (-(c w : ℤ)) := fun w => ⟨h1 w, h2 w⟩
-      simp only [forall_and, h1, h2, and_self, implies_true, ↓reduceIte, mul_one, one_mul]
+      simp only [h1, h2, and_self, implies_true, ↓reduceIte, mul_one, one_mul]
     · have h3 : ¬ ∀ w, Valued.v (pLoc F w (pFin F A)) ≤ WithZero.exp (-(c w : ℤ)) ∧
           Valued.v (pLoc F w (pFin F B) - 1) ≤ WithZero.exp (-(c w : ℤ)) := fun h => h2 fun w => (h w).2
-      simp only [forall_and, h1, h2, true_and, and_false, ↓reduceIte, mul_zero, one_mul]
+      simp only [h1, h2, true_and, ↓reduceIte, mul_zero]
   · have h3 : ¬ ∀ w, Valued.v (pLoc F w (pFin F A)) ≤ WithZero.exp (-(c w : ℤ)) ∧
         Valued.v (pLoc F w (pFin F B) - 1) ≤ WithZero.exp (-(c w : ℤ)) := fun h => h1 fun w => (h w).1
     simp only [forall_and, h1, false_and, ↓reduceIte, mul_zero, zero_mul]

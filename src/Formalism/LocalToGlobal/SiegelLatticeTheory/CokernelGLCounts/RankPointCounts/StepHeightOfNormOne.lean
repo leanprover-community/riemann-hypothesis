@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
 
 @[expose] public section
@@ -112,12 +111,9 @@ theorem sizes_of_hypotheses : StepSizes := by
   have hkCl : (D.R.k : ℝ) ^ (2 : ℝ) ≤ (D.R.k : ℝ) ^ Cl :=
     Real.rpow_le_rpow_of_exponent_le (by linarith) hCl
   have hb256 : (256 : ℝ) ≤ large₂.sc.b ^ 2 := by
-    have e1 : (D.R.k : ℝ) ^ (2 : ℝ) = (D.R.k : ℝ) ^ 2 := Real.rpow_two _
-    have e2 : large₂.sc.b ^ (2 : ℝ) = large₂.sc.b ^ 2 := Real.rpow_two _
+    rw [Real.rpow_two] at hkCl hb2
     have h256 : (D.R.k : ℝ) ^ 2 ≥ 256 := by nlinarith
     have h5 := le_trans (le_max_left _ _) hb1
-    rw [e1] at hkCl
-    rw [e2] at hb2
     linarith
   have hb16 : (16 : ℝ) ≤ large₂.sc.b := by nlinarith
   have hb1' : (1 : ℝ) ≤ large₂.sc.b := by linarith
@@ -211,7 +207,6 @@ theorem stepHeight_of_normOne (h : StepNormOne) : StepHeight := by
   · have ha : 0 < (2 * D.R.rS + 1) * Fintype.card (InfinitePlace D.host.E) :=
       Nat.mul_pos (by omega) Fintype.card_pos
     simp [hg, zero_pow ha.ne']
-    try positivity
   · have hg1 : (1 : ℝ) ≤ X.B.g := by exact_mod_cast hg
     exact (inv_le_one_of_one_le₀ (one_le_pow₀ hg1)).trans (one_le_pow₀ hg1)
 

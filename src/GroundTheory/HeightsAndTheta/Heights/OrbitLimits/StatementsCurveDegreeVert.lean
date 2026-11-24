@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.SameOrbitOneSpecZ
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLengthStatement
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
 
 @[expose] public section
 

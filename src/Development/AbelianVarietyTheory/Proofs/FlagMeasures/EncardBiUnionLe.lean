@@ -1,7 +1,44 @@
 module
 
-public import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.ModLatticeAbsoluteValue
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -84,21 +121,7 @@ theorem Xflag_mono (j : ℕ) : Xflag F j ≤ Xflag F (j + 1) := by
   exact Submodule.span_mono (Set.image_mono fun i (hi : i.1 < j) => Nat.lt_succ_of_lt hi)
 
 theorem X_le_orth : Xsp F ≤ orth S (Xsp F) := by
-
-  have key : ∀ a, Xsp F ≤ LinearMap.ker (S.hT (F.fl.e a)) := fun a => by
-    show Submodule.span E (Set.range F.fl.e) ≤ _
-    rw [Submodule.span_le]
-    rintro _ ⟨b, rfl⟩
-    exact F.fl.e_iso a b
-  intro y hy
-  simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
-  intro x hx
-  have key2 : Xsp F ≤ LinearMap.ker (S.hT.flip y) := by
-    show Submodule.span E (Set.range F.fl.e) ≤ _
-    rw [Submodule.span_le]
-    rintro _ ⟨a, rfl⟩
-    exact key a hy
-  simpa using key2 hx
+  apply PI.UnitaryGroupMassFormula.BetaModX.xsp_le_orth
 
 theorem symm_sub_mem (n : S.V ≃ₗ[E] S.V) {A B : Submodule E S.V} (hAB : A ≤ B)
     (h : ∀ x ∈ B, n x - x ∈ A) : ∀ x ∈ B, n.symm x - x ∈ A := by
@@ -170,8 +193,8 @@ theorem frameAct_mul {k : ℕ} (f : Fin k → S.V) (ξ η : Matrix (Fin k) (Fin 
 theorem map_frameAct {k : ℕ} (n : S.V ≃ₗ[E] S.V) (f : Fin k → S.V) (ξ : Matrix (Fin k) (Fin k) (𝓞 E)) :
     (fun a => n (frameAct f ξ a)) = frameAct (fun a => n (f a)) ξ := by
   funext b
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [frameAct, map_sum, map_smul]
+
+  simp only [frameAct, map_sum, map_smul]
 
 theorem uni_mul {k : ℕ} {O : Type} [CommRing O] {ξ η : Matrix (Fin k) (Fin k) O}
     (h1 : ∀ a b, b < a → ξ a b = 0) (h2 : ∀ a b, b < a → η a b = 0) (a : Fin k) :

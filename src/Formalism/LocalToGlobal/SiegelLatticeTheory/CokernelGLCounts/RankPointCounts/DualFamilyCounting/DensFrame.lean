@@ -1,19 +1,19 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.LocGlobInt
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SecondFlagXsLeBigBlock
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NotIntDensOfSteps
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocFacts
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.NotIntAllOfLoc
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.RingInverseAlgebraMap
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.TrDual
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.LGSmall
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.T2SpaceOfNonarchimedeanLocalField
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.DApprox
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.PerpendicularDefinitionHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.DApprox
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.LGSmall
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.NGCong
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.FrIntGOfDelta
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.NGDiff
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.RingInverseAlgebraMap
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.T2SpaceOfNonarchimedeanLocalField
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.TrDual
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.EqZeroOfMulVec
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.FrIntGOfDelta
 
 @[expose] public section
 
@@ -304,7 +304,7 @@ theorem amat_inl (p : PlF D) (g : Loc.SplitG (M p).L) {V : Type} [AddCommGroup V
     ∑ d, amat p g d (Sum.inl a) • v d = v (Sum.inl a) := by
   simp only [amat, Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₁,
     Matrix.zero_apply, zero_smul, Finset.sum_const_zero, add_zero, Matrix.one_apply, ite_smul, one_smul,
-    Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, if_true]
 
 theorem amat_inr (p : PlF D) (g : Loc.SplitG (M p).L) {V : Type} [AddCommGroup V] [Module (D.s.atP p).Ep V]
     (v : Fin (D.R.rS + 1) ⊕ Fin (D.R.rS + 1) → V) (a : Fin (D.R.rS + 1)) :
@@ -361,7 +361,7 @@ def NX (δ : ∀ p : PlF D, (D.s.atP p).Fp) (L : LocSp D M) (p : PlF D) {T : D.h
     Submodule (M p).L.O (L.V p) :=
   Submodule.span (M p).L.O (Set.range fun a : Fin D.R.rS => frFac δ p a.castSucc • L.bc p (F.e a))
 
-set_option maxHeartbeats 1000000 in
+
 theorem latP_MMof (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D.host.E}
     (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') :
     lattice₂ L p (MMof D F0 F') = NG L p F0 F' ⊔ NX δ L p F0 ⊔ NX δ L p F'.fl := by
@@ -424,7 +424,7 @@ theorem bc_f_eq (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D
   exact ⟨w, hw, by rw [locFam_inl, smul_smul, hw1, one_smul]⟩
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem span_le_none (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D.host.E}
     (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (hs : (M p).split = none) :
     Submodule.span (M p).L.O (Set.range (locFam L δ p F0 F')) ≤ NG L p F0 F' ⊔ NX δ L p F0 ⊔ NX δ L p F'.fl := by
@@ -451,7 +451,7 @@ theorem span_le_none (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T
       exact Submodule.mem_sup_right (mem_NX L p F'.fl b)
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem le_span_none (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D.host.E}
     (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (hs : (M p).split = none) :
     NG L p F0 F' ⊔ NX δ L p F0 ⊔ NX δ L p F'.fl ≤ Submodule.span (M p).L.O (Set.range (locFam L δ p F0 F')) := by
@@ -495,7 +495,7 @@ end SpanMain
 section SpanG
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem span_le_some (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D.host.E}
     (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') {g : Loc.SplitG (M p).L} (hs : (M p).split = some g) :
     Submodule.span (M p).L.O (Set.range (locFam L δ p F0 F')) ≤ NG L p F0 F' ⊔ NX δ L p F0 ⊔ NX δ L p F'.fl := by
@@ -519,7 +519,7 @@ theorem span_le_some (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T
       (Submodule.smul_mem _ (⟨_, hc⟩ : (M p).L.O) (mem_NG_d L p F0 F' a)))
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem le_span_some (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D.host.E}
     (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') {g : Loc.SplitG (M p).L} (hs : (M p).split = some g) :
     NG L p F0 F' ⊔ NX δ L p F0 ⊔ NX δ L p F'.fl ≤ Submodule.span (M p).L.O (Set.range (locFam L δ p F0 F')) := by
@@ -696,8 +696,8 @@ theorem ga_det_ne {T T' : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.
   have hperp : ∀ a, (VS D).hT (vfam F0 F' a) w = 0 := fun a => by
     have := congrFun hc a
     simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply, brS] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hw, map_sum]
+
+    rw [hw, map_sum]
     simp only [map_smul, smul_eq_mul]
     rw [← this]; exact Finset.sum_congr rfl fun b _ => mul_comm _ _
   have hwO : w ∈ orthK (VS D).hT (UPair D F0 F') := by

@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+public import Mathlib.Analysis.Complex.Circle
 
 @[expose] public section
 

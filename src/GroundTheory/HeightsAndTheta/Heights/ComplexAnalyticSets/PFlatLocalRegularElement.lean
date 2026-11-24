@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFlatLocalRegularElement
+public import Mathlib.RingTheory.Filtration
+public import Mathlib.RingTheory.Flat.Tensor
+public import Mathlib.RingTheory.LocalRing.RingHom.Basic
 
 @[expose] public section
 

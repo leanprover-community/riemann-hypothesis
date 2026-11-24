@@ -3,6 +3,46 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -149,8 +189,7 @@ private lemma mem_LL_of_GoodCoef_of_le_Ks {l : ℕ} [Fact l.Prime] (K LL : FinEx
       have hyK : y ∈ Ks K 1 :=
         (le_sup_right : IntermediateField.adjoin ℚ_[l] {x : Om l | x ^ (l ^ 1) = 1} ≤ K0 K ⊔ _)
           (IntermediateField.subset_adjoin _ _ hy)
-      have hy' : y ^ l = 1 := by simpa using hy
-      have h1 : (⟨y, hyK⟩ : ↥(Ks K 1)) ^ l = 1 := Subtype.ext (by simpa using hy')
+      have h1 : (⟨y, hyK⟩ : ↥(Ks K 1)) ^ l = 1 := Subtype.ext (by simpa using hy)
       have hpow : (τ ⟨y, hyK⟩) ^ Nat.lcm l N = 1 := by
         obtain ⟨c, hc⟩ := Nat.dvd_lcm_left l N
         rw [hc, pow_mul, ← map_pow τ, h1, map_one, one_pow]
@@ -158,16 +197,14 @@ private lemma mem_LL_of_GoodCoef_of_le_Ks {l : ℕ} [Fact l.Prime] (K LL : FinEx
     show K0 K ⊔ IntermediateField.adjoin ℚ_[l] {x : Om l | x ^ (l ^ 1) = 1} ≤ _
     exact sup_le ((inf_le_left : K0 K ≤ K.1).trans hK) hA
   obtain ⟨z, hz, hzx⟩ := hT x.2
-  have hzx' : z = x := Subtype.ext hzx
-  rw [← hzx']
+  rw [← Subtype.ext hzx]
   exact hz
 
 theorem CoefExt.IsGood.good_one {C : CoefExt D i w hw} (h : C.IsGood) (h2 : D.nd.l i ≠ 2)
     (hle : (D.nbr i w hw).Kw.1 ≤ Ks (D.nbr i w hw).Kw 1) : Good (D.nbr i w hw).Kw 1 C.LL := by
   delta Good
-  refine ⟨le_rfl, fun h' => absurd h' h2, hle, ?_⟩
-  intro τ x
-  exact mem_LL_of_GoodCoef_of_le_Ks _ _ _ h C.split hle τ x
+  exact ⟨le_rfl, fun h' => absurd h' h2, hle, fun τ x =>
+    mem_LL_of_GoodCoef_of_le_Ks _ _ _ h C.split hle τ x⟩
 
 end AtW
 

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoBasic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -205,8 +208,8 @@ theorem norm_le_sqrt_sum_basis {k : ℕ}
     simpa [ev] using ((EuclideanSpace.basisFun (Fin n) ℝ).sum_repr (m l)).symm
   have hT : T m = ∑ J : Fin k → Fin n, (∏ l, m l (J l)) • T (fun l ↦ ev (J l)) := by
     conv_lhs => rw [show m = fun l ↦ ∑ i, (m l i) • ev i from funext hm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [T.map_sum]
+
+    rw [T.map_sum]
     refine Finset.sum_congr rfl fun J _ ↦ ?_
     rw [T.map_smul_univ]
   have hprod : ∑ J : Fin k → Fin n, (∏ l, m l (J l)) ^ 2 = ∏ l, ‖m l‖ ^ 2 := by

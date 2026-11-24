@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PtOrderProdSub
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PtCoeffSingleSubst
+public import Mathlib.Data.Matrix.Mul
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -42,8 +43,8 @@ theorem pt_subst_lin_split {σ τ : Type*} [Fintype σ] {x : σ → MvPowerSerie
     (hx : HasSubst x) (Φ : MvPowerSeries σ C) (m : σ → C) :
     subst x Φ = ∑ a, m a • x a + subst x (Φ - ∑ a, m a • X a) := by
   have hs : subst x (∑ a, m a • X a : MvPowerSeries σ C) = ∑ a, m a • x a := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← MvPowerSeries.coe_substAlgHom hx, map_sum]
+
+    rw [← MvPowerSeries.coe_substAlgHom hx, map_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [MvPowerSeries.coe_substAlgHom hx, MvPowerSeries.subst_smul hx, MvPowerSeries.subst_X hx]
   rw [MvPowerSeries.subst_sub hx, hs]
@@ -54,8 +55,8 @@ theorem pt_low_of_lin {σ : Type*} [Fintype σ] {Φ : MvPowerSeries σ C}
     (hm : ∀ s, coeff (Finsupp.single s 1) Φ = m s) :
     ∀ α : σ →₀ ℕ, α.degree ≤ 1 → coeff α (Φ - ∑ a, m a • X a) = 0 := by
   intro α hα
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, map_sum]
+
+  rw [map_sub, map_sum]
   simp only [map_smul, smul_eq_mul]
   rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hα with h | h
   · obtain rfl := (Finsupp.degree_eq_zero_iff α).mp h
@@ -74,7 +75,7 @@ theorem pt_low_of_lin {σ : Type*} [Fintype σ] {Φ : MvPowerSeries σ C}
       · subst hi
         simp only [Finsupp.single_eq_same]
         omega
-      · simp [Finsupp.single_apply, Ne.symm hi]
+      · simp [Ne.symm hi]
     have hadd := add_tsub_cancel_of_le hle
     have hd := congrArg Finsupp.degree hadd
     rw [map_add (f := _), Finsupp.degree_single, h] at hd
@@ -134,8 +135,8 @@ theorem ptSolveMap_agree
     (hxy : PTAgree k x y) :
     PTAgree (k + 1) (ptSolveMap A K N f x) (ptSolveMap A K N f y) := by
   intro c e he
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [ptSolveMap, map_sum, coeff_smul, map_sub]
+
+  simp only [ptSolveMap, map_sum, coeff_smul, map_sub]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [pt_subst_agree (hasSubst_of_constantCoeff_zero (hA0 x hx))
     (hasSubst_of_constantCoeff_zero (hA0 y hy)) (hA0 x hx) (hA0 y hy) (K b) k
@@ -151,10 +152,10 @@ theorem ptSolveMap_good (hN : ∀ i j, N i j ∈ ptIntSub v) (hf : PTGood v f)
   have hs := hasSubst_of_constantCoeff_zero (hA0 x hx)
   refine ⟨?_, ?_⟩
   · rw [← coeff_zero_eq_constantCoeff_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [ptSolveMap, map_sum, coeff_smul, map_sub, coeff_zero_eq_constantCoeff_apply,
-      (hf _).1, constantCoeff_subst_eq_zero hs (hA0 x hx) (hK0 _), sub_zero, mul_zero,
-      Finset.sum_const_zero]
+
+    simp only [ptSolveMap, map_sum, coeff_smul, map_sub, coeff_zero_eq_constantCoeff_apply,
+    (hf _).1, constantCoeff_subst_eq_zero hs (hA0 x hx) (hK0 _), sub_zero, mul_zero,
+    Finset.sum_const_zero]
   · exact Subring.sum_mem _ fun b _ => ptIntSer_smul (hN b c)
       (Subring.sub_mem _ (hf b).2 (ptIntSer_subst hs (hAi x hx) (hKi b)))
 

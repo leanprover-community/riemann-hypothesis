@@ -10,18 +10,8 @@ open Complex Matrix
 
 namespace ReciprocityTheory.PTheta
 
-theorem eC_add (x y : ℂ) : eC (x + y) = eC x * eC y := by
-  simp only [eC, ← Complex.exp_add]
-  congr 1
-  ring
-
 theorem eC_zero : eC 0 = 1 := by
   simp [eC]
-
-theorem eC_int (k : ℤ) : eC (k : ℂ) = 1 := by
-  unfold eC
-  rw [show (2 * (Real.pi : ℂ) * Complex.I * (k : ℂ)) = (k : ℂ) * (2 * Real.pi * Complex.I) by ring]
-  exact Complex.exp_int_mul_two_pi_mul_I k
 
 theorem eC_neg_half_int (k : ℤ) : eC (-(k : ℂ) / 2) = (-1) ^ k := by
   unfold eC
@@ -32,8 +22,8 @@ theorem eC_neg_half_int (k : ℤ) : eC (-(k : ℂ) / 2) = (-1) ^ k := by
 variable {ι : Type*} [Fintype ι]
 
 theorem dot_mulVec_symm {τ : Matrix ι ι ℂ} (hτ : τ.IsSymm) (s w : ι → ℂ) :
-    w ⬝ᵥ (τ *ᵥ s) = s ⬝ᵥ (τ *ᵥ w) := by
-  rw [dotProduct_mulVec, dotProduct_comm, ← mulVec_transpose, hτ.eq]
+    w ⬝ᵥ (τ *ᵥ s) = s ⬝ᵥ (τ *ᵥ w) :=
+  hτ.dotProduct_mulVec_comm
 
 theorem shiftVec_add_char (a u : ι → ℝ) (l : ι → ℤ) :
     shiftVec (a + u) l = shiftVec a l + ofRealVec u := by

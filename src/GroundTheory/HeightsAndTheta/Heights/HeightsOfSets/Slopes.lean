@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

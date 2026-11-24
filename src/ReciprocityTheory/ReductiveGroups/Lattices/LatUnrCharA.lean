@@ -1,6 +1,16 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
 
 @[expose] public section
 
@@ -19,9 +29,9 @@ theorem lat_charpoly_blockDiagonal {R n o : Type*} [CommRing R] [Fintype n] [Dec
     · subst hk
       by_cases hij : i = j
       · subst hij
-        simp [Matrix.charmatrix_apply, Matrix.blockDiagonal_apply]
-      · simp [Matrix.charmatrix_apply, Matrix.blockDiagonal_apply, Matrix.diagonal_apply, hij]
-    · simp [Matrix.charmatrix_apply, Matrix.blockDiagonal_apply, Matrix.diagonal_apply, hk]
+        simp [Matrix.blockDiagonal_apply]
+      · simp [Matrix.blockDiagonal_apply, hij]
+    · simp [Matrix.blockDiagonal_apply, hk]
   rw [Matrix.charpoly, h, Matrix.det_blockDiagonal]
   rfl
 
@@ -60,7 +70,6 @@ theorem lat_cp_map (θ : 𝓞 E) :
       algebraMap (𝓞 E) E (Algebra.lmul ℤ (𝓞 E) θ (RingOfIntegers.basis E j)) := by
     first
     | rfl
-    | simp [map_mul]
   rw [e, integralBasis_repr_apply]
 
 theorem lat_cp_eq_minpoly_pow (θ : 𝓞 E) : ∃ r : ℕ, 1 ≤ r ∧ lat_cp θ = (minpoly ℤ θ) ^ r := by

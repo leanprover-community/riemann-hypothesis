@@ -1,21 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsBaseClassLevelAdapted
-public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.AnChartAsm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.Taylor
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.L2NormFundamentalDomain
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsTranslationSectionsUniversalObject
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointBaseChangeLaws
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaValueExistsUniqueOfChartIndependence
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsTranslationSectionsUniversalObject
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaSeriesTestFunctionHolomorphicWeight
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeisenbergOperatorRationalPointLaws
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockHxDifferentiable
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HarmonicConnectionValueEqPolynomialDerivativeStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeisenbergOperatorRationalPointLaws
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SectionsReadAsTranslatesAtScaledPointStatement
+public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaSeriesTestFunctionHolomorphicWeight
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.L2NormFundamentalDomain
 
 @[expose] public section
 
@@ -114,12 +148,6 @@ theorem smul_mem_of_rep (l : Geo.Tor.Level H) (L : Lt E r) (mk : Dw.La →ₗ[�
   rw [h3]
   exact L.add_mem (L.smul_mem t hY) (hm b)
 
-theorem level_mem (l : Geo.Tor.Level H) : (l.M : 𝓞 E) ∈ l.Mb :=
-  by
-  have h := Ideal.mem_span_singleton_self (l.M : 𝓞 E)
-  rw [← l.prod] at h
-  exact Ideal.mul_le_left h
-
 theorem root_laws (l : Geo.Tor.Level H) (L : Lt E r) (Y : Fin r → E) (h1 : ∀ t ∈ l.Mb, t • Y ∈ L) (j : ℕ)
     (hj : ∀ s ∈ l.Mb ^ j, ∃ u ∈ L, s • Y = (2 * l.M) • u) :
     (∀ s ∈ l.Mb ^ 2, s • ((l.M : E)⁻¹ • Y) ∈ L) ∧
@@ -154,8 +182,8 @@ theorem root_laws (l : Geo.Tor.Level H) (L : Lt E r) (Y : Fin r → E) (h1 : ∀
     rw [Ideal.eq_top_iff_one]
     have e : (1 : 𝓞 E) = (l.M : 𝓞 E) + (-(k : 𝓞 E)) * ((2 : ℕ) : 𝓞 E) := by rw [hk]; push_cast; ring
     rw [e]
-    exact Submodule.add_mem_sup (level_mem l) (Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _))
-  have h3 := key 2 l.M (by norm_num) rfl _ h2 l.Mb le_rfl _ (level_mem l)
+    exact Submodule.add_mem_sup (_root_.GlobalTheory.LevelPoints.natCast_mem l) (Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _))
+  have h3 := key 2 l.M (by norm_num) rfl _ h2 l.Mb le_rfl _ (_root_.GlobalTheory.LevelPoints.natCast_mem l)
   refine ⟨_, h3, ?_⟩
   rw [Nat.cast_smul_eq_nsmul, ← Nat.cast_smul_eq_nsmul E, ← Nat.cast_smul_eq_nsmul E, ← Nat.cast_smul_eq_nsmul E,
     smul_smul, smul_smul, smul_smul]

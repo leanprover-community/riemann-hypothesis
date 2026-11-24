@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSeparatedSmallCount
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionLatticeFinite
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalRep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPacking
+import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Analysis.Normed.Lp.lpSpace
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColSlopeEq
 public import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 

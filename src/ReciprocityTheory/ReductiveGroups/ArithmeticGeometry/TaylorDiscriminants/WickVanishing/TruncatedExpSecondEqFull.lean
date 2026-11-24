@@ -2,6 +2,8 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.SecondColumnOperator
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.GaugeExp
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -42,7 +44,7 @@ def lamL (W : (σ →₀ ℕ) → k) : MvPolynomial σ k →ₗ[k] k where
     simp only [RingHom.id_apply, smul_eq_mul]
     rw [lam_eq W (r • P) P.support support_smul, lam, mul_sum]
     refine sum_congr rfl fun m _ => ?_
-    rw [coeff_smul, smul_eq_mul, mul_assoc]
+    rw [AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, mul_assoc]
 
 theorem lamL_apply (W : (σ →₀ ℕ) → k) (R : MvPolynomial σ k) : lamL W R = lam W R := rfl
 
@@ -59,8 +61,8 @@ theorem nabVal_eq_lam {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] 
     B.nabVal k h w0 m f u Q = lam (fun e => B.nabVal k h w0 m f u (monomial e 1)) Q := by
   classical
   unfold FB.nabVal lam
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [DpolyOf, map_sum, map_mul, MvPowerSeries.constantCoeff_C]
+
+  simp only [DpolyOf, map_sum, map_mul, MvPowerSeries.constantCoeff_C]
   refine Finset.sum_congr rfl fun e _ => ?_
   congr 1
   simp [MvPolynomial.support_monomial, MvPolynomial.coeff_monomial]
@@ -87,14 +89,12 @@ theorem colM_glue (g : Fin n → (ι →₀ ℕ)) (b : Fin n) : colM (glue g) b 
   ext l
   first
   | simp [colM, glue_apply]
-  | exact glue_apply g l b
 
 theorem glue_colM (mo : (ι × Fin n) →₀ ℕ) : glue (fun b => colM mo b) = mo := by
   ext ⟨l, b⟩
   rw [glue_apply]
   first
   | simp [colM]
-  | rfl
 
 theorem prodQ_monomial (g : Fin n → (ι →₀ ℕ)) :
     prodQ (fun b => (monomial (g b) (1 : k) : MvPolynomial ι k)) = monomial (glue g) 1 := by
@@ -112,8 +112,8 @@ theorem lam_prodQ (V : Fin n → (ι →₀ ℕ) → k) (Q : Fin n → MvPolynom
         (monomial (Finsupp.mapDomain (fun l => (l, b)) e) ((Q b).coeff e) : MvPolynomial (ι × Fin n) k) := by
       intro b
       conv_lhs => rw [(Q b).as_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun e _ => ?_
       exact MvPolynomial.rename_monomial _ _ _
     unfold prodQ
@@ -123,8 +123,8 @@ theorem lam_prodQ (V : Fin n → (ι →₀ ℕ) → k) (Q : Fin n → MvPolynom
     rw [glue, MvPolynomial.monomial_sum_index, map_prod, ← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun i _ => ?_
     rw [MvPolynomial.C_mul_monomial, mul_one]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hP, ← lamL_apply, map_sum]
+
+  rw [hP, ← lamL_apply, map_sum]
   simp only [lamL_apply, lam_monomial, colM_glue]
   simp only [lam]
   rw [Finset.prod_univ_sum]
@@ -141,8 +141,8 @@ private lemma totalDegree_pderiv_le_of_le_succ {σ : Type} (l : σ) (q : MvPolyn
     (hq : q.totalDegree ≤ D + 1) : (pderiv l q).totalDegree ≤ D := by
   classical
   conv_lhs => rw [q.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine (MvPolynomial.totalDegree_finsetSum _ _).trans (Finset.sup_le fun s hs => ?_)
   rw [MvPolynomial.pderiv_monomial]
   by_cases hsl : s l = 0
@@ -151,10 +151,6 @@ private lemma totalDegree_pderiv_le_of_le_succ {σ : Type} (l : σ) (q : MvPolyn
   · refine le_trans (b := (s - Finsupp.single l 1).sum fun _ e => e) ?_ ?_
     · first
       | exact MvPolynomial.totalDegree_monomial_le _ _
-      | (by_cases hc : AddMonoidAlgebra.coeff q s * (s l : k) = 0
-         · rw [hc, MvPolynomial.monomial_zero, MvPolynomial.totalDegree_zero]
-           exact Nat.zero_le _
-         · rw [MvPolynomial.totalDegree_monomial _ hc])
     · have hs' : (s.sum fun _ e => e) ≤ D + 1 := (MvPolynomial.le_totalDegree hs).trans hq
       have hsplit : s = (s - Finsupp.single l 1) + Finsupp.single l 1 := by
         ext x
@@ -184,7 +180,7 @@ private lemma secondOrder_eq_zero_of_totalDegree_eq_zero {σ : Type} [Fintype σ
   rw [MvPolynomial.totalDegree_eq_zero_iff_eq_C] at hq
   rw [hq]
   unfold secondOrder
-  simp [MvPolynomial.pderiv_C]
+  simp
 
 private lemma iterate_secondOrder_eq_zero_of_totalDegree_lt {σ : Type} [Fintype σ] (c : σ → σ → k) (i : ℕ) :
     ∀ q : MvPolynomial σ k, q.totalDegree + 1 ≤ i → (secondOrder k c)^[i] q = 0 := by
@@ -227,9 +223,6 @@ theorem TL_apply {σ : Type} [Fintype σ] (c : σ → σ → k) (t : k) (N : ℕ
   congr 1
   first
   | exact Module.End.pow_apply _ _ _
-  | exact LinearMap.pow_apply _ _ _
-  | (rw [Module.End.coe_pow]; rfl)
-  | (rw [LinearMap.coe_pow]; rfl)
 
 end Trunc
 
@@ -286,8 +279,8 @@ theorem gauge_second_columns_of_exp (hG : GaugeExpSt) : GaugeIndependenceColumns
       ∏ b, B.nabVal k h' w0 mm (f b) u (monomial (colM mo b) 1)) = lam W (TL cD t N P) := by
     rw [sum_congr rfl fun mo hmo => by rw [key mo hmo]]
     conv_rhs => rw [as_sum P]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, ← lamL_apply, map_sum]
+
+    rw [map_sum, ← lamL_apply, map_sum]
     refine sum_congr rfl fun mo _ => ?_
     rw [show (monomial mo (P.coeff mo) : MvPolynomial (ι × Fin n) k) = P.coeff mo • monomial mo 1 by
       rw [smul_monomial, smul_eq_mul, mul_one], map_smul, map_smul, lamL_apply, smul_eq_mul]

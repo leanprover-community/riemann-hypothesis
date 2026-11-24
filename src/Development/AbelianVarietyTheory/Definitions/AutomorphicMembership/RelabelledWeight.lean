@@ -1,9 +1,40 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RedivisionStructureEq
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodPartEq
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.See
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RealIoX
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -22,7 +53,7 @@ section PiLocalization₂
 variable {B : Base} {C : Cols B} (a : Late B C) (Z : New a.D)
 
 
-set_option maxHeartbeats 4000000 in
+
 def setV : DivStage B C a.W where
   div := ((reD a.D Z).div)
   div_good := (a.V.div_good)
@@ -42,53 +73,53 @@ def setV : DivStage B C a.W where
 def reL : Late B C := ⟨a.W, setV a Z, (reStage a.st Z.Z), a.N, a.G⟩
 
 
-set_option maxHeartbeats 4000000 in
+
 def XL (X : HidaSetting a.D) : HidaSetting (reL a Z).D := (reX Z X)
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem hL {X : HidaSetting a.D} (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf a.D) :
     (XL a Z X).B.I = Formalism.L2.SG.InstExistsPf.instOf (reL a Z).D := (h)
 
 
-set_option maxHeartbeats 4000000 in
+
 def gdL {X : HidaSetting a.D} (G : GoodOp X) : GoodOp (XL a Z X) := ⟨(G.Rg), (G.Rg_spec)⟩
 
 
-set_option maxHeartbeats 4000000 in
+
 def tL (t : GA a.D (a.D.sp.Y 0)) : GA (reL a Z).D ((reL a Z).D.sp.Y 0) := (t)
 
 
-set_option maxHeartbeats 4000000 in
+
 def jL {X : HidaSetting a.D} {G : GoodOp X} (j : a.D.what₂.EE ≃ₗᵢ[ℂ] EEC X G) :
     (reL a Z).D.what₂.EE ≃ₗᵢ[ℂ] EEC (XL a Z X) (gdL a Z G) := (j)
 
 
-set_option maxHeartbeats 4000000 in
+
 def SameL (F₀ : ∀ u, Forms0 a.D u) (F₁ : ∀ u, Forms0 (reL a Z).D u) : Prop := SameForms0LevelsAndValues Z F₀ ((F₁))
 
 variable {G' : Type} [Group G'] [Fintype G'] {Pl0 T : Type} {A : FamIn a.D.what₂.LL G' Pl0 T a.D.R.m} {Ks : Type} [Field Ks]
   [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL]
 
 
-set_option maxHeartbeats 4000000 in
+
 def eL (R : RealDat a.D A Ks) (eE : a.D.what₂.EE →ₗ[ℂ] R.HE.H) :
     letI := alg (reL a Z) iK; (reL a Z).D.what₂.EE →ₗ[ℂ] (real (reL a Z) R).HE.H := (eE)
 
 
-set_option maxHeartbeats 4000000 in
+
 def SAtL (R : RealDat a.D A Ks) (F : Face a.D A) (eE : a.D.what₂.EE →ₗ[ℂ] R.HE.H) (F₁ : ∀ u, Forms0 (reL a Z).D u) : Type 1 :=
   letI := alg (reL a Z) iK; SAt (real (reL a Z) R) (face (reL a Z) F) (eL a Z R eE) F₁
 
 
-set_option maxHeartbeats 4000000 in
+
 def SAtL.pt {R : RealDat a.D A Ks} {F : Face a.D A} {eE : a.D.what₂.EE →ₗ[ℂ] R.HE.H} {F₁ : ∀ u, Forms0 (reL a Z).D u}
     (s : SAtL a Z R F eE F₁) : GA (reL a Z).D ((reL a Z).D.sp.Y 0) := letI := alg (reL a Z) iK; SAt.t s
 
 end PiLocalization₂
 
 
-set_option maxHeartbeats 4000000 in
+
 def MvSee : Prop := ∀ {B : Base} {C : Cols B} (a : Late B C) (Z : New a.D) {G' : Type} [Group G'] [Fintype G'] {Pl0 T : Type}
     {A : FamIn a.D.what₂.LL G' Pl0 T a.D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL]
     (R : RealDat a.D A Ks) (F : Face a.D A) (X : HidaSetting a.D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf a.D)
@@ -96,7 +127,7 @@ def MvSee : Prop := ∀ {B : Base} {C : Cols B} (a : Late B C) (Z : New a.D) {G'
     letI := alg (reL a Z) iK; SeeAt (real (reL a Z) R) (face (reL a Z) F) (XL a Z X) (hL a Z h) (tL a Z t)
 
 
-set_option maxHeartbeats 4000000 in
+
 def MvEv : Prop := ∀ {B : Base} {C : Cols B} (a : Late B C) (Z : New a.D) {G' : Type} [Group G'] [Fintype G'] {Pl0 T : Type}
     {A : FamIn a.D.what₂.LL G' Pl0 T a.D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL]
     (R : RealDat a.D A Ks) (F : Face a.D A) (X : HidaSetting a.D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf a.D)
@@ -106,7 +137,7 @@ def MvEv : Prop := ∀ {B : Base} {C : Cols B} (a : Late B C) (Z : New a.D) {G' 
       (gdL a Z G) (iotaX (XL a Z X) (hL a Z h)).toMulEquiv (tL a Z t) c
 
 
-set_option maxHeartbeats 4000000 in
+
 def MvRowJ : Prop := ∀ {B : Base} {C : Cols B} (a : Late B C) (Z : New a.D) {G' : Type} [Group G'] [Fintype G'] {Pl0 T : Type}
     {A : FamIn a.D.what₂.LL G' Pl0 T a.D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL]
     (R : RealDat a.D A Ks) (X : HidaSetting a.D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf a.D)

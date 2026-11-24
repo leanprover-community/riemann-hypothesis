@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsFormsThroughPoint
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PComponentOfIncIdeal
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 
 @[expose] public section
 

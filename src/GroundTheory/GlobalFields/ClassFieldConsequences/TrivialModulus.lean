@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassField
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Unramified
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

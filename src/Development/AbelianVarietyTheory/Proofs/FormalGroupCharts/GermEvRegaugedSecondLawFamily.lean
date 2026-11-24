@@ -1,10 +1,47 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.WickOperatorVanishing
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GEWick
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -212,7 +249,7 @@ section Main
 variable {k : Type} [CommRing k] [Algebra ℚ k] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 
 
-set_option maxHeartbeats 2000000 in
+
 def regauge (B : FB k d O) (h : PS k 2 d) (h0 : ev (n := 1) ![0, pt k d 0] h = 0)
     (h1 : ev (n := 1) ![pt k d 0, 0] h = 0) : FB k d O where
   G := B.G
@@ -222,117 +259,117 @@ def regauge (B : FB k d O) (h : PS k 2 d) (h0 : ev (n := 1) ![0, pt k d 0] h = 0
   sy := sy B h
   ad := ad B h
   cocycleLeft_zero_fst := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, gp_pt, gp_zero₂]
     rw [B.cocycleLeft_zero_fst]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [zero_addOf, ax_left h0, gp_pt, sub_self, sub_zero, expR_zero, mul_one]
   cocycleLeft_zero_snd := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, gp_pt, gp_zero₂]
     rw [B.cocycleLeft_zero_snd]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [addOf_zero, ax_left h0, gp_pt, sub_self, expR_zero, mul_one]
   cocycleLeft_zero_thd := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, gp_pt, gp_zero₂]
     rw [B.cocycleLeft_zero_thd]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [ax_right h1, gp_pt, gp_add, sub_self, expR_zero, mul_one]
   cocycleRight_zero_fst := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedSecondLawFamily, gp_pt, gp_zero₂]
     rw [B.cocycleRight_zero_fst]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [ax_left h0, gp_pt, gp_add, sub_self, expR_zero, mul_one]
   cocycleRight_zero_snd := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedSecondLawFamily, gp_pt, gp_zero₂]
     rw [B.cocycleRight_zero_snd]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [zero_addOf, ax_right h1, gp_pt, sub_self, sub_zero, expR_zero, mul_one]
   cocycleRight_zero_thd := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedSecondLawFamily, gp_pt, gp_zero₂]
     rw [B.cocycleRight_zero_thd]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [addOf_zero, ax_right h1, gp_pt, sub_self, expR_zero, mul_one]
   symmetry_zero_fst := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [ev_sy, gp_pt, gp_zero₂]
     rw [B.symmetry_zero_fst]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [ax_left h0, ax_right h1, gp_pt, sub_self, expR_zero, mul_one]
   symmetry_zero_snd := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [ev_sy, gp_pt, gp_zero₂]
     rw [B.symmetry_zero_snd]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [ax_left h0, ax_right h1, gp_pt, sub_self, expR_zero, mul_one]
   adjoint_zero_fst := fun a => by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [ev_ad, gp_pt, gp_zero₂]
     rw [B.adjoint_zero_fst a]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [act_zero_pt, ax_left h0, gp_pt, gp_act, sub_self, expR_zero, mul_one]
   adjoint_zero_snd := fun a => by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [ev_ad, gp_pt, gp_zero₂]
     rw [B.adjoint_zero_snd a]
-    simp (maxDischargeDepth := 4) only [zero_addOf, addOf_zero, act_zero_pt, ax_left h0, ax_right h1, gp_pt, gp_zero₂, gp_add, gp_act, sub_self, sub_zero, expR_zero, mul_one]
+    simp (maxDischargeDepth := 4) only [act_zero_pt, ax_right h1, gp_pt, gp_act, sub_self, expR_zero, mul_one]
   cocycleLeft_assoc := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, gp_pt, gp_add, mul_expR]
     rw [B.cocycleLeft_assoc ]
     congr 2
-    simp (maxDischargeDepth := 4) only [addOf_assoc, act_addOf, add_act_pt, mul_act_pt, star_star, star_mul, star_add, gp_pt, gp_add, gp_act]
+    simp (maxDischargeDepth := 4) only [addOf_assoc, gp_pt]
     ring
   cocycleLeft_comm := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, gp_pt]
     rw [B.cocycleLeft_comm, ph1, addOf_comm B.G (gp_pt 1) (gp_pt 0)]
     congr 2
     ring
   cocycleRight_assoc := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedSecondLawFamily, gp_pt, gp_add, mul_expR]
     rw [B.cocycleRight_assoc ]
     congr 2
-    simp (maxDischargeDepth := 4) only [addOf_assoc, act_addOf, add_act_pt, mul_act_pt, star_star, star_mul, star_add, gp_pt, gp_add, gp_act]
+    simp (maxDischargeDepth := 4) only [addOf_assoc, gp_pt]
     ring
   cocycleRight_comm := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedSecondLawFamily, gp_pt]
     rw [B.cocycleRight_comm, ph2, addOf_comm B.G (gp_pt 2) (gp_pt 1)]
     congr 2
     ring
   interchange := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, gp_pt, gp_add, mul_expR]
     rw [B.interchange ]
     congr 2
     ring
   sy_inv := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [ev_sy, gp_pt]
     rw [sy, mul_expR, B.sy_inv, one_mul, ← expR_zero]
     congr 1
     ring
   sy_law := by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, ev_sy, gp_pt, gp_add, mul_expR]
     simp only [ph2, mul_expR]
     rw [B.sy_law ]
     congr 2
     ring
   adjoint_compat_left := fun a => by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, ev_ad, gp_pt, gp_add, gp_act, mul_expR]
     rw [B.adjoint_compat_left a]
     congr 2
-    simp (maxDischargeDepth := 4) only [addOf_assoc, act_addOf, add_act_pt, mul_act_pt, star_star, star_mul, star_add, gp_pt, gp_add, gp_act]
+    simp (maxDischargeDepth := 4) only [act_addOf, gp_pt]
     ring
   adjoint_compat_right := fun a => by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedSecondLawFamily, ev_ad, gp_pt, gp_add, gp_act, mul_expR]
     rw [B.adjoint_compat_right a]
     congr 2
-    simp (maxDischargeDepth := 4) only [addOf_assoc, act_addOf, add_act_pt, mul_act_pt, star_star, star_mul, star_add, gp_pt, gp_add, gp_act]
+    simp (maxDischargeDepth := 4) only [act_addOf, gp_pt]
     ring
   ad_one := by
     rw [ad, B.ad_one, star_one, one_act_pt _ (gp_pt _), one_act_pt _ (gp_pt _), sub_self, expR_zero, mul_one]
   ad_mul := fun a b => by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
-    simp only [ad, mul_expR]
+    simp (maxDischargeDepth := 4) only [ev_ad, gp_pt, gp_act, mul_expR]
+    simp only [ad]
     rw [B.ad_mul a b]
     congr 2
-    simp (maxDischargeDepth := 4) only [addOf_assoc, act_addOf, add_act_pt, mul_act_pt, star_star, star_mul, star_add, gp_pt, gp_add, gp_act]
+    simp (maxDischargeDepth := 4) only [mul_act_pt, star_mul, gp_pt]
     ring
   ad_add := fun a b => by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, gp_pt, gp_act]
     simp only [ad, mul_expR]
     rw [B.ad_add a b]
     congr 2
-    simp (maxDischargeDepth := 4) only [addOf_assoc, act_addOf, add_act_pt, mul_act_pt, star_star, star_mul, star_add, gp_pt, gp_add, gp_act]
+    simp (maxDischargeDepth := 4) only [add_act_pt, star_add, gp_pt]
     ring
   ad_sy := fun a => by
-    simp (maxDischargeDepth := 4) only [germEv_regaugedFirstLawFamily, germEv_regaugedSecondLawFamily, ev_sy, ev_ad, gp_pt, gp_zero₂, gp_add, gp_act, mul_expR]
+    simp (maxDischargeDepth := 4) only [ev_sy, ev_ad, gp_pt, gp_act]
     simp only [ad, mul_expR]
     rw [B.ad_sy a]
     congr 2
-    simp (maxDischargeDepth := 4) only [addOf_assoc, act_addOf, add_act_pt, mul_act_pt, star_star, star_mul, star_add, gp_pt, gp_add, gp_act]
+    simp (maxDischargeDepth := 4) only [star_star]
     ring
 
 end Main

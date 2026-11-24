@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

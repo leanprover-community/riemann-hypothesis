@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsHyperbolicPairs
+public import Mathlib.NumberTheory.NumberField.Basic
+public import GroundTheory.AutomorphicForms.HermitianOrthogonal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

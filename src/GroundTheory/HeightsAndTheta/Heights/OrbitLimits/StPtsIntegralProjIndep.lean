@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StokesObjects
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreCoordGoodProj
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
 
 @[expose] public section
 

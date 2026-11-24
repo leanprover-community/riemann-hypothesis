@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftModel
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PNefCountAlongMultiples
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StatementsNefBigCountAlongMultiples
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PNefCountAlongMultiples
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 @[expose] public section
 

@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.DeltaGeneratedSpace
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.Calculus.ParametricIntegral
 
 @[expose] public section
 

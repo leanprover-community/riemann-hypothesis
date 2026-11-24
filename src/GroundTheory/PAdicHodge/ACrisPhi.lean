@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.ACrisLog
 public import GroundTheory.PAdicHodge.LogPowSeries
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -110,11 +111,11 @@ theorem factorial_mul_dpow_eq_sum (x : AInf K p) (n L : ℕ) (hL : p * (n + 1) �
         (((j + 1).factorial / (n + 1) : ℕ) : ℤ) : ℤ) : 𝔸) * dpow (j + 1) x := by
   have h1 := isUnit_natCast (K := K) (p := p) (Nat.succ_ne_zero n)
   apply h1.mul_left_cancel
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← mul_assoc, ← Nat.cast_mul, ← Nat.factorial_succ, factorial_mul_dpow, ← map_pow,
-    one_add_pow_sub_one_pow_eq_sum x (n + 1) L hL, map_sum, Finset.sum_range_succ', Finset.mul_sum]
+
+  rw [← mul_assoc, ← Nat.cast_mul, ← Nat.factorial_succ, factorial_mul_dpow, ← map_pow,
+  one_add_pow_sub_one_pow_eq_sum x (n + 1) L hL, map_sum, Finset.sum_range_succ', Finset.mul_sum]
   simp only [map_mul, map_intCast, map_pow, pow_zero, mul_one, powCoeff_of_lt p n.succ_pos,
-    Int.cast_zero, zero_mul, map_zero, add_zero]
+    Int.cast_zero, map_zero, add_zero]
   refine Finset.sum_congr rfl fun j _ => ?_
   by_cases h : n ≤ j
   · have hdvd : n + 1 ∣ (j + 1).factorial := Nat.dvd_factorial n.succ_pos (Nat.succ_le_succ h)
@@ -214,9 +215,9 @@ theorem log_one_add_pow (hx : x ∈ RingHom.ker θ) :
   have h2 : ∑ n ∈ Finset.range M, algebraMap (ACrisZero (K := K) (p := p)) (ACris (K := K) (p := p)) (p : ACrisZero (K := K) (p := p)) *
       logTerm hx n - ∑ n ∈ Finset.range M, logTerm (one_add_pow_sub_one_mem hx) n ∈ 𝔭 ^ k := by
     have h := algebraMap_mem_pow (sum_p_mul_logTermZero_sub_mem hx (le_of_max_le_right hM))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [RingHom.map_sub, @map_sum _ _ _ _ _ _ _
-      (RingHomClass.toAddMonoidHomClass (self := RingHom.instRingHomClass))] at h
+
+    simp only [RingHom.map_sub, @map_sum _ _ _ _ _ _ _
+    (RingHomClass.toAddMonoidHomClass (self := RingHom.instRingHomClass))] at h
     simpa only [map_mul, logTerm] using h
   have := add_mem h1 h2
   simp only at this

@@ -1,6 +1,8 @@
 module
 
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.PCDesc
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.AdmissibleVectors
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

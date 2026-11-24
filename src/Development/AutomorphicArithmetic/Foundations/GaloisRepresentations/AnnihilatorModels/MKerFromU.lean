@@ -1,8 +1,46 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.SameNormBasic
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PairCalc
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.OrdReadOf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SemiAbelianTorsionFiniteAndClosedPointFiniteOrde
 
 @[expose] public section
 
@@ -16,15 +54,6 @@ open UpperTheory.Gal.crystallineComparison UpperTheory.Gal.crystallineComparison
 section Helpers
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R] {b : Base D R} {N : ℕ}
   {S : Scheme.{0}} {s : S ⟶ Sp R}
-
-private theorem cpow {A T T' : Over S} [GrpObj A] (f : T' ⟶ T) (h : T ⟶ A) (n : ℕ) :
-    f ≫ (h ^ n) = (f ≫ h) ^ n := by
-  induction n with
-  | zero =>
-    simp only [pow_zero, Hom.one_def]
-    rw [← Category.assoc, toUnit_unique (f ≫ toUnit T) (toUnit T')]
-  | succ n ih =>
-    rw [pow_succ, pow_succ, ← ih, Hom.mul_def, Hom.mul_def, ← Category.assoc, comp_lift]
 
 private theorem powc {A B T : Over S} [GrpObj A] [GrpObj B] (h : T ⟶ A) (f : A ⟶ B) [IsMonHom f] (n : ℕ) :
     (h ^ n) ≫ f = (h ≫ f) ^ n := by
@@ -61,7 +90,7 @@ private theorem sc_nat (o : Obj b N s) (n : ℕ) : sc o (n : 𝓞 D.F) = (𝟙 o
 
 private theorem sc_killed (o : Obj b N s) {T : Over S} (z : T ⟶ o.A) {c : ℕ} (hz : z ^ c = 1) (t : 𝓞 D.F) :
     z ≫ sc o (t * (c : 𝓞 D.F)) = 1 := by
-  rw [sc_mul, sc_nat, ← Category.assoc, cpow, Category.comp_id, hz]
+  rw [sc_mul, sc_nat, ← Category.assoc, _root_.GlobalTheory.SemiAbTorsion.comp_pow_points, Category.comp_id, hz]
   have h := powc z (sc o t) 0
   rwa [pow_zero, pow_zero] at h
 
@@ -77,7 +106,7 @@ private theorem one_comp_monHom' {S : Scheme.{0}} {T A B : Over S} [GrpObj A] [G
 
 private theorem comp_one_grpObj {S : Scheme.{0}} {X T A : Over S} [GrpObj A] (f : X ⟶ T) :
     f ≫ (1 : T ⟶ A) = 1 := by
-  have h := cpow f (1 : T ⟶ A) 0
+  have h := _root_.GlobalTheory.SemiAbTorsion.comp_pow_points f (1 : T ⟶ A) 0
   rwa [pow_zero, pow_zero] at h
 
 private theorem comp_mul_grpObj {S : Scheme.{0}} {T A B : Over S} [GrpObj B] (f : T ⟶ A)
@@ -86,7 +115,7 @@ private theorem comp_mul_grpObj {S : Scheme.{0}} {T A B : Over S} [GrpObj B] (f 
 
 private theorem comp_id_pow_eq_pow {S : Scheme.{0}} {T A : Over S} [GrpObj A] (f : T ⟶ A) (n : ℕ) :
     f ≫ (𝟙 A ^ n) = f ^ n := by
-  rw [cpow, Category.comp_id]
+  rw [_root_.GlobalTheory.SemiAbTorsion.comp_pow_points, Category.comp_id]
 
 theorem UpperTheory.Gal.crystallineComparison.Mod.kerFromU_of :
     UElt → PairCalc → Adjoint → DivC → KerFromU := by

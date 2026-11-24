@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GeometricLemmaFiltration
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetOfInducedFiltration
 

@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalQuotCentred
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightCentredRingNormal
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalNormalIndex
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

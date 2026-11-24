@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
 
 @[expose] public section
 

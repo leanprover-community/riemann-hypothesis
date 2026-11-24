@@ -1,10 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.Interface
-public import GroundTheory.LocalFields.Uniqueness
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.UnitsPowers
+import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

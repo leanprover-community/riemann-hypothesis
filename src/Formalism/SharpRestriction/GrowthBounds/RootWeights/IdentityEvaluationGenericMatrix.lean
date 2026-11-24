@@ -1,6 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.MulLaurentSup
+public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -15,28 +58,12 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 private theorem mapRingHom_laurent_C' {A B : Type*} [CommRing A] [CommRing B] (f : A →+* B) (a : A) :
     AddMonoidAlgebra.mapRingHom ℤ f (LaurentPolynomial.C a) = LaurentPolynomial.C (f a) := by
   first
-  | simp [LaurentPolynomial.C_apply, AddMonoidAlgebra.mapRingHom_single]
-  | simp [LaurentPolynomial.C_apply, Finsupp.mapRange_single]
-  | (ext k; simp [LaurentPolynomial.C_apply, Finsupp.single_apply]; split_ifs <;> simp)
-  | (ext k; simp [LaurentPolynomial.C_apply, AddMonoidAlgebra.coeff_single]; split_ifs <;> simp)
-  | rfl
+  | (ext k; simp [LaurentPolynomial.C_apply]; split_ifs <;> simp)
 
 private theorem mapRingHom_laurent_T {A B : Type*} [CommRing A] [CommRing B] (f : A →+* B) (k : ℤ) :
     AddMonoidAlgebra.mapRingHom ℤ f (LaurentPolynomial.T k : LaurentPolynomial A) = LaurentPolynomial.T k := by
   first
   | (simp [LaurentPolynomial.T, -LaurentPolynomial.single_eq_C_mul_T]; done)
-  | (ext j
-     simp [LaurentPolynomial.T, -LaurentPolynomial.single_eq_C_mul_T, Finsupp.single_apply]
-     split_ifs <;> simp; done)
-  | (ext j
-     simp [LaurentPolynomial.T, -LaurentPolynomial.single_eq_C_mul_T, AddMonoidAlgebra.single_apply]
-     split_ifs <;> simp; done)
-  | (ext j
-     simp [LaurentPolynomial.T_apply]
-     split_ifs <;> simp; done)
-  | (ext j
-     simp [LaurentPolynomial.coeff_T]
-     split_ifs <;> simp; done)
 
 theorem mul_Psi_support {σ A R' : Type*} [CommRing A] [CommRing R'] (φ0 : A →+* R') (x : σ → R')
     (P : MvPolynomial σ (LaurentPolynomial A)) :
@@ -75,8 +102,6 @@ theorem mul_ev_alg (R : Type*) [CommRing R] (n : ℕ) (a : MvPolynomial (Fin n �
     mul_ev R n (algebraMap _ (GLCoord R n) a) = identityEvaluation R n a := by
   first
   | simp [mul_ev]
-  | exact IsLocalization.Away.lift_eq _ _ a
-  | (unfold mul_ev; exact IsLocalization.lift_eq _ a)
 
 theorem mul_ev_inv (R : Type*) [CommRing R] (n : ℕ) :
     mul_ev R n (IsLocalization.Away.invSelf (S := GLCoord R n) (genMat R n).det) = 1 := by
@@ -111,7 +136,7 @@ theorem mul_ph_gLinv (R : Type*) [CommRing R] (n : ℕ) : (mul_ph R n).mapMatrix
   have hab := congrFun (congrFun hadj a) b
   simp only [RingHom.mapMatrix_apply, Matrix.map_apply] at hab
   simp only [gLinv, RingHom.mapMatrix_apply, Matrix.map_apply, mul_ph_C, map_mul, mul_ev_inv,
-    mul_ev_alg, one_mul, hab, Matrix.one_apply]
+    mul_ev_alg, hab, Matrix.one_apply]
   split_ifs <;> simp
 
 theorem mul_ph_twist (R : Type*) [CommRing R] (n : ℕ) (j : Fin n) (k : ℤ) :
@@ -150,8 +175,8 @@ theorem mul_valS_detA_le {R : Type} [Field R] {ι : Type} (LL : Letters ι) {r :
     · have : twistSub LL S' (lastIdx r) (X (A i, j) : MvPolynomial (ι × Fin r) R) =
           ∑ b : Fin r, C (twistMat R r (lastIdx r) 1 b j) * X (A i, b) := by
         simp [twistSub, hS, hv]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [this, map_sum]
+
+      rw [this, map_sum]
       simp only [map_mul, hC, hX, ht]
       simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
       by_cases hij : i = j

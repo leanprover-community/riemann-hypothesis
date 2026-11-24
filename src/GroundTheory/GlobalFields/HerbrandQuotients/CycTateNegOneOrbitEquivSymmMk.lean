@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.TateCohomology.HerbrandAbstract
 public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -99,8 +98,8 @@ theorem cycNorm_apply_base [Fintype G] [Fintype X] (ρ : Representation k G (∀
       (fun p => ρ ((p.1 : G) * ((orbitRep (G := G)) x₀ p.2)⁻¹) f x₀) (fun g => ρ g f x₀) fun p => rfl).symm]
   rw [Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun d _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [map_mul, Module.End.mul_apply, hρ₀]
 
@@ -211,8 +210,8 @@ theorem orbitZeroMap_surjective [Fintype G] (ρ : Representation k G (∀ x, M x
   let F : ∀ x, M x := ∑ y, ρ ((orbitRep (G := G)) x₀ y) (Pi.single x₀ b)
   have hF : ∀ g, ρ g F = F := by
     intro g
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine (Finset.sum_congr rfl fun y _ => ?_).trans (Fintype.sum_equiv (MulAction.toPerm g)
       (fun y => ρ ((orbitRep (G := G)) x₀ (g • y)) (Pi.single x₀ b))
       (fun y => ρ ((orbitRep (G := G)) x₀ y) (Pi.single x₀ b)) fun y => rfl)

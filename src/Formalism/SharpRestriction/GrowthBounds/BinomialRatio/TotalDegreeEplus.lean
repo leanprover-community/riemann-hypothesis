@@ -2,6 +2,46 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ExtendedStatementOfParts
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptFin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -54,8 +94,7 @@ theorem smul_mem_bbSpec (p : ℕ) {σ : Type*} (sp : ℕ) (F : MvPolynomial σ (
   classical
   have hF : s • F = ∑ μ ∈ F.support, monomial μ (s • F.coeff μ) := by
     conv_lhs => rw [← F.support_sum_monomial_coeff, Finset.smul_sum]
-    refine Finset.sum_congr rfl fun μ _ => ?_
-    rw [MvPolynomial.smul_monomial]
+    simp only [MvPolynomial.smul_monomial]
   rw [hF]
   refine Submodule.sum_mem _ fun μ hμ => Submodule.subset_span ?_
   obtain ⟨o, ho⟩ := h μ hμ
@@ -167,9 +206,8 @@ theorem totalDegree_chPol {K : Type*} [CommSemiring K] (LL : ChainLetters N) (y 
   unfold totalDegree
   refine Finset.sup_le fun m hm => ?_
   have h := hy (Finset.mem_coe.2 hm)
-  have h' : ∀ i, multideg m i = LL.deg i := h
   rw [Finsupp.sum_fintype _ _ (fun _ => rfl), Fintype.sum_prod_type]
-  exact le_of_eq (Finset.sum_congr rfl fun i _ => h' i)
+  exact le_of_eq (Finset.sum_congr rfl fun i _ => h i)
 
 theorem totalDegree_xi (t b : ℕ) (g : MvPolynomial (BVar N r t) (KK O)) (hg : g ∈ XiPolZ O N r t b) :
     g.totalDegree ≤ b := by
@@ -327,7 +365,6 @@ theorem rkAt_all (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc : ℝ) : RkAt C0 CYb Cde Ck 
   exact finrank_segLat _ _ _ _ _ _ (kf_kept_finite _ _ _ _)
 
 theorem restRk : RestRk := by
-  unfold RestRk
-  exact TransportedAlt.mono (fun C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc _ => rkAt_all C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc) thr_std
+  simpa [RestRk] using TransportedAlt.mono (fun C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc _ => rkAt_all C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc) thr_std
 
 end Formalism.MainNotions.ColumnSystems.Pf

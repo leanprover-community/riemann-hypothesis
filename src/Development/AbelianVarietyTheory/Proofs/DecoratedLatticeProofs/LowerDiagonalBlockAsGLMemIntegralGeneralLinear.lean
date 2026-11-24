@@ -1,9 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCoType
-public import Formalism.LocalToGlobal.Columns.HeckeSp
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParahoricDatumEigenvectorTwoBlockParahoric
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasBoundedSumsOne
 
 @[expose] public section
 
@@ -283,7 +332,7 @@ theorem card_filter_eq {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (
     simpa [mul_assoc] using this
   apply Finset.card_nbij pick
   · intro j hj
-    simp only [Finset.coe_filter, Set.mem_setOf_eq, Finset.mem_coe, Finset.mem_filter] at hj ⊢
+    simp only [Finset.coe_filter, Set.mem_setOf_eq] at hj ⊢
     obtain ⟨hjR, -, h22⟩ := hj
     have hJ := hJR j hjR
     obtain ⟨hg, hK⟩ := spec j hJ
@@ -312,7 +361,7 @@ theorem card_filter_eq {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (
       simp only [map_mul, map_inv]; group
     exact (hR.2 j₂ hJ2).unique ⟨h1R, hm⟩ ⟨h2R, by simp⟩
   · intro g hg
-    simp only [Finset.coe_filter, Set.mem_setOf_eq, Finset.mem_coe, Finset.mem_filter] at hg
+    simp only [Finset.coe_filter, Set.mem_setOf_eq] at hg
     obtain ⟨hgR, hSg⟩ := hg
     obtain ⟨κ, hκ, κ', hκ', hgdef⟩ := hRK.1 g hgR
     have hj₀ : (nmat u)⁻¹ * dg A κ ∈ parahoric k A D := mul_mem (inv_mem (nmat_mem hu)) (dg_mem hκ)
@@ -321,7 +370,7 @@ theorem card_filter_eq {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (
     have hm' : m' ∈ parahoric k A D := inv_mem hm
     have hJ := hJR j hjR
     have eW : nmat u * j * dg A T = dg A (κ * T) * m' := by
-      rw [hm'def]; simp only [map_mul, map_inv]; group
+      rw [hm'def]; simp only [map_mul]; group
     have hv : (nmat u * j * dg A T).val = fromBlocks m'.val.toBlocks₁₁ m'.val.toBlocks₁₂
         ((κ * T).val * m'.val.toBlocks₂₁) ((κ * T).val * m'.val.toBlocks₂₂) := by
       rw [eW, Units.val_mul, val_dg, fromBlocks_diag_mul]
@@ -330,7 +379,7 @@ theorem card_filter_eq {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (
       rw [Units.val_mul, lowerDiagonalBlockAsGL_val_eq_toBlocks_two_two hJ, ← hW22, hv, toBlocks_fromBlocks₂₂, Units.val_mul (κ * T), lowerDiagonalBlockAsGL_val_eq_toBlocks_two_two hm']
     have hE' : g⁻¹ * (lowerDiagonalBlockAsGL j * T) = κ'⁻¹ * lowerDiagonalBlockAsGL m' := by rw [hE, hgdef]; group
     refine ⟨j, ?_, uniq j hJ g hgR (by rw [hE']; exact mul_mem (inv_mem hκ') (lowerDiagonalBlockAsGL_mem_integralGeneralLinear hm'))⟩
-    simp only [Finset.coe_filter, Set.mem_setOf_eq, Finset.mem_coe, Finset.mem_filter]
+    simp only [Finset.coe_filter, Set.mem_setOf_eq]
     refine ⟨hjR, ?_, ?_⟩
     · rw [hv, toBlocks_fromBlocks₁₂]; exact (isIntM_toBlocks (isIntM_of_mem_parahoric hm')).2.1
     · have e2 : lowerDiagonalBlockAsGL j * T = g * (κ'⁻¹ * lowerDiagonalBlockAsGL m') := by rw [← hE']; group

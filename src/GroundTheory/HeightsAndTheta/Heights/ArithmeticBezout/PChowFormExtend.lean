@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsBaseChange
+public import Mathlib.RingTheory.Nullstellensatz
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -89,7 +93,7 @@ def coordPoly (φ : L →ₗ[K] K) : MvPolynomial Y L →+ MvPolynomial Y K wher
   toFun p := AddMonoidAlgebra.map φ.toAddMonoidHom p
   map_zero' := by
     ext m
-    simp [coeff_addMonoidAlgebraMap]
+    simp
   map_add' p q := by
     ext m
     simp only [coeff_addMonoidAlgebraMap, MvPolynomial.coeff_add, map_add (f := _)]
@@ -132,8 +136,8 @@ theorem sum_coordPoly (b : Module.Basis β K L) (p : MvPolynomial Y L) :
 theorem coordPoly_sum (b : Module.Basis β K L) (S : Finset β) (h : β → MvPolynomial Y K) (c : β) :
     coordPoly (b.coord c) (∑ c' ∈ S, C (b c') * map (algebraMap K L) (h c')) =
       if c ∈ S then h c else 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp_rw [coordPoly_C_mul_map, Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply]
   simp [apply_ite C, ite_mul]
 
@@ -162,11 +166,11 @@ theorem coordPoly_mem_of_mem_map (b : Module.Basis β K L) (T : Ideal (MvPolynom
       refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
       rw [C_mul, map_mul]
       ring
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [smul_eq_mul, e, map_sum]
+
+    rw [smul_eq_mul, e, map_sum]
     refine T.sum_mem fun c₁ _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine T.sum_mem fun c₂ _ => ?_
     rw [coordPoly_C_mul_map]
     exact T.mul_mem_left _ (T.mul_mem_left _ (hx c₂))
@@ -202,8 +206,8 @@ theorem isChowForm_map (h : RadicalBaseChange.Statement) {K L : Type} [Field K] 
       have e : X (Sum.inr j) * rename Sum.inl g = ∑ c' ∈ S,
           C (b c') * map (algebraMap K L) (X (Sum.inr j) * rename Sum.inl (hc c')) := by
         conv_lhs => rw [← hsum]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.mul_sum]
+
+        rw [map_sum, Finset.mul_sum]
         refine Finset.sum_congr rfl fun c' _ => ?_
         rw [map_mul, rename_C, hmapX]
         ring

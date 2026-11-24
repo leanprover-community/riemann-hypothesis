@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCN
+public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCR
 
 @[expose] public section
 

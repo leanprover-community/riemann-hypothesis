@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalLengthPlaces
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalQuotCard
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightCentredPlacesFinite

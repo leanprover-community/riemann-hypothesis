@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Topology.Algebra.OpenSubgroup
+public import Mathlib.Topology.LocallyConstant.Basic
 public import GroundTheory.ProfiniteCohomology.OpenNormal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

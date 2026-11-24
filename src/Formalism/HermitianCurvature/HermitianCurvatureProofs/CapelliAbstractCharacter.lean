@@ -1,7 +1,58 @@
 module
 
 public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
+public import Mathlib.LinearAlgebra.Lagrange
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuantumMinorCommutation
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -38,10 +89,7 @@ theorem IsPol.zero (d : ℕ) : IsPol d (fun _ => (0 : X)) := by
 theorem IsPol.sum {ι : Type} (S : Finset ι) {d : ℕ} {f : ι → ℂ → X} (hf : ∀ i ∈ S, IsPol d (f i)) :
     IsPol d (fun u => ∑ i ∈ S, f i u) := by
   obtain ⟨c, hc⟩ := Finset.sum_induction f (IsPol d) (fun a b ha hb => IsPol.add ha hb) (IsPol.zero d) hf
-  refine ⟨c, fun u => ?_⟩
-  show ∑ i ∈ S, f i u = _
-  rw [← Finset.sum_apply]
-  exact hc u
+  exact ⟨c, fun u => by simpa only [Finset.sum_apply] using hc u⟩
 
 theorem IsPol.map {d : ℕ} {f : ℂ → X} (L : X →ₗ[ℂ] Y) (hf : IsPol d f) : IsPol d (fun u => L (f u)) := by
   obtain ⟨c, h⟩ := hf
@@ -105,8 +153,8 @@ theorem polyVanish {X : Type} [AddCommGroup X] [Module ℂ X] (d : ℕ) (c : ℕ
   have hroot : ∀ u : ℂ, u ∉ F → p.eval u = 0 := by
     intro u hu
     have h1 := congrArg φ (h u hu)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul, map_zero] at h1
+
+    simp only [map_sum, map_smul, smul_eq_mul, map_zero] at h1
     rw [hp, Polynomial.eval_finsetSum]
     simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
     calc _ = ∑ j ∈ Finset.range d, u ^ j * φ (c j) := Finset.sum_congr rfl (fun j _ => mul_comm _ _)
@@ -137,8 +185,7 @@ theorem aeval_mem {W : Type} [AddCommGroup W] [Module ℂ W] (G : Submodule ℂ 
 private theorem shift_sum_lemma {W : Type} [AddCommGroup W] [Module ℂ W] (d : ℕ) (a : ℕ → W) (u : ℂ) :
     ∑ s ∈ Finset.range (d + 1), u ^ s • shiftC a s = u • ∑ s ∈ Finset.range d, u ^ s • a s := by
   rw [Finset.sum_range_succ', Finset.smul_sum]
-  simp only [shiftC, smul_zero, add_zero]
-  exact Finset.sum_congr rfl (fun s _ => by rw [pow_succ', mul_smul])
+  simp only [shiftC, smul_zero, add_zero, pow_succ', mul_smul]
 
 private theorem ite_sum_lemma_2 {W : Type} [AddCommGroup W] [Module ℂ W] (d : ℕ) (b : ℕ → W) (u : ℂ) :
     ∑ s ∈ Finset.range (d + 1), u ^ s • (if s < d then b s else 0) = ∑ s ∈ Finset.range d, u ^ s • b s := by
@@ -175,7 +222,6 @@ theorem ch_abstract {W : Type} [AddCommGroup W] [Module ℂ W] (G : Submodule �
     rw [LinearMap.smul_apply, pow_succ']
     first
       | rw [Module.End.mul_apply]
-      | rw [LinearMap.mul_apply]
     exact h1.symm
   rw [Finset.sum_congr rfl hterm, Finset.sum_range_succ, Finset.sum_sub_distrib]
   have hg : ∀ i ∈ Finset.range d, (if i < d then A i ((K ^ (i + 1)) X) else 0) =
@@ -196,8 +242,7 @@ section ring
 variable {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} {E : Fin n → Fin n → A}
 
 theorem isCov_zero : IsCov E (fun _ => (0 : A)) := by
-  intro a b c
-  simp
+  simp [IsCov]
 
 theorem isCov_add {η η' : Fin n → A} (h : IsCov E η) (h' : IsCov E η') : IsCov E (fun j => η j + η' j) := by
   intro a b c
@@ -220,7 +265,7 @@ theorem isCov_D (hE : GlRel E) {η : Fin n → A} (h : IsCov E η) : IsCov E (fu
   by_cases hbc : b = c
   · subst hbc
     simp [sub_mul, Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  · simp [hbc, sub_mul, Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  · simp [hbc, Finset.sum_add_distrib]
 
 end ring
 
@@ -261,8 +306,6 @@ theorem EE_mem (hE : GlRel E) {v : V} {X : Fin (N + 1) → V} (hX : X ∈ Gd E v
   rw [EE_apply]
   first
     | (simp [hXη]; done)
-    | (simp [hXη, Module.End.mul_apply]; done)
-    | (simp [hXη, LinearMap.mul_apply]; done)
 
 theorem Tm_apply (w : ℂ) (j l : Fin (N + 1)) (y : V) :
     Tm E w j l y = (if j = l then w • y else 0) + E j l y := by
@@ -283,8 +326,8 @@ theorem comat (hE : GlRel E) (u : ℂ) (X : Fin (N + 1) → V) (i : Fin (N + 1))
   have h2 : ∑ l, (if i = l then qdet E u (X l) else 0) = qdet E u (X i) := by simp
   rw [← h2, ← Finset.sum_congr rfl (fun l _ => h l), Finset.sum_comm, Th_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Finset.smul_sum, ← map_sum]
+
+  rw [← Finset.smul_sum, ← map_sum]
   congr 2
   simp only [Tm_apply, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, Pi.add_apply,
     Pi.smul_apply, EE_apply]
@@ -313,7 +356,7 @@ theorem eval_prod_lin {ι : Type} (S : Finset ι) (m : ι → ℂ) (u : ℂ) :
 theorem deg_prod_lin {ι : Type} (S : Finset ι) (m : ι → ℂ) :
     (∏ j ∈ S, ((Polynomial.X : ℂ[X]) + C (m j))).natDegree ≤ S.card := by
   refine (Polynomial.natDegree_prod_le _ _).trans ?_
-  simp [Polynomial.natDegree_X_add_C]
+  simp
 
 theorem basis_mul {N : ℕ} (m : Fin (N + 1) → ℂ) (i : Fin (N + 1)) :
     ∃ w : ℂ, ((Polynomial.X : ℂ[X]) + C (m i)) * Lagrange.basis Finset.univ (fun j => -m j) i =
@@ -327,7 +370,6 @@ theorem basis_mul {N : ℕ} (m : Fin (N + 1) → ℂ) (i : Fin (N + 1)) :
     refine Finset.prod_congr rfl (fun j _ => ?_)
     simp only [Lagrange.basisDivisor, map_neg, sub_neg_eq_add]
   rw [hb]
-  beta_reduce
   ring
 
 section main
@@ -337,7 +379,7 @@ variable {V : Type} [AddCommGroup V] [Module ℂ V] {N : ℕ} (E : Fin (N + 1) �
 def KK : Module.End ℂ (Fin (N + 1) → V) := ((N : ℂ) + 1) • 1 - EE E
 
 theorem KK_apply (X : Fin (N + 1) → V) : KK E X = ((N : ℂ) + 1) • X - EE E X := by
-  first | rfl | (simp [KK]; done)
+  first | rfl
 
 theorem KK_mem (hE : GlRel E) {v : V} {X : Fin (N + 1) → V} (hX : X ∈ Gd E v) : KK E X ∈ Gd E v := by
   rw [KK_apply]
@@ -353,7 +395,6 @@ theorem star (hE : GlRel E) {m : Fin (N + 1) → ℂ} {v : V} (hv : v ∈ CapSp 
     simp only [map_add (f := _), map_sub, map_smul, Pi.add_apply, Pi.sub_apply, Pi.smul_apply]
     first
       | module
-      | (simp only [sub_smul, add_smul, one_smul]; abel)
   rw [lin, h1, h2, Pi.smul_apply, add_sub_cancel_right]
 
 theorem Th_pol : ∃ A : ℕ → (Fin (N + 1) → V) → (Fin (N + 1) → V), ∀ (u : ℂ) (X : Fin (N + 1) → V),
@@ -374,9 +415,8 @@ theorem charId (hE : GlRel E) {m : Fin (N + 1) → ℂ} {v : V} (hv : v ∈ CapS
   obtain ⟨A, hA⟩ := Th_pol E
   intro X hX
   refine ch_abstract (Gd E v) (KK E) (fun Y hY => KK_mem E hE hY) (N + 1) A _ ?_ (fun u Y hY => ?_) X hX
-  · have h := deg_prod_lin (Finset.univ : Finset (Fin (N + 1))) m
-    simp only [Finset.card_univ, Fintype.card_fin] at h
-    omega
+  · simpa only [Finset.card_univ, Fintype.card_fin, Nat.lt_succ_iff] using
+      deg_prod_lin (Finset.univ : Finset (Fin (N + 1))) m
   · rw [← hA, ← hA, star E hE hv hY u, eval_prod_lin]
     rfl
 
@@ -440,11 +480,9 @@ theorem covUp_succ (η : Fin (N + 1) → Module.End ℂ V) (hE : GlRel E) (hη :
       rw [hw, map_mul, Polynomial.aeval_C]
       first
         | rw [Module.End.mul_apply, charId E hE hv Z hZ, map_zero]
-        | rw [LinearMap.mul_apply, charId E hE hv Z hZ, map_zero]
     rw [map_mul] at h1
     first
       | rw [Module.End.mul_apply] at h1
-      | rw [LinearMap.mul_apply] at h1
     rw [map_add (f := _), Polynomial.aeval_X, Polynomial.aeval_C, LinearMap.add_apply,
       Module.algebraMap_end_apply] at h1
     rw [hYdef, neg_smul]
@@ -453,8 +491,8 @@ theorem covUp_succ (η : Fin (N + 1) → Module.End ℂ V) (hE : GlRel E) (hη :
   · have hs : ∑ i, Lagrange.basis Finset.univ (fun j => -m j) i = 1 :=
       Lagrange.sum_basis (fun a _ b _ h => hm (neg_injective h)) Finset.univ_nonempty
     have hsum : ∑ i, Y i = Z := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hYdef, ← LinearMap.sum_apply, ← map_sum, hs, map_one]
+
+      rw [hYdef, ← LinearMap.sum_apply, ← map_sum, hs, map_one]
       rfl
     have h1 := congrFun hsum x
     rw [Finset.sum_apply] at h1
@@ -464,7 +502,6 @@ theorem covUp_succ (η : Fin (N + 1) → Module.End ℂ V) (hE : GlRel E) (hη :
     rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, sub_eq_zero]
     first
       | rw [Module.End.one_apply]
-      | rw [LinearMap.one_apply]
     rw [detCov E hE hv (hY i) w x, Th_eigen E hE hv i (hY i) (hKY i) w, Pi.smul_apply, ← add_smul]
     congr 1
     have hP : ∏ j ∈ Finset.univ.erase i, (w + Function.update m i (m i + 1) j) =

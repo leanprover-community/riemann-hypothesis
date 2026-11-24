@@ -1,13 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-public import Formalism.HarderNarasimhan.ShiftInvariance
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LamXEquivariant
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NearTrivialPointwise
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatticeIntersectionSelfDualProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FgOfHtNeZero
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NearTrivialPointwise
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrthogonalCanonicalFiltrationStepsAutPoint
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PackingGeometricMeanSeparated
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrthogonalCanonicalFiltrationStepsAutPointStatement
+import Formalism.HarderNarasimhan.ShiftInvariance
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -52,21 +93,7 @@ theorem finrank_op (n : ℕ) :
 
 variable (I : AutInst)
 
-theorem comap_bijective :
-    Function.Bijective (fun w : InfinitePlace I.E => w.comap (algebraMap I.F I.E)) := by
-  have key : ∀ w : InfinitePlace I.E, w = InfinitePlace.mk (I.φ (w.comap (algebraMap I.F I.E))) := by
-    intro w
-    rcases GlobalTheory.Count.Test.embedding_cases I w with h | h
-    · rw [← h, InfinitePlace.mk_embedding]
-    · rw [← InfinitePlace.mk_conjugate_eq, ← h, InfinitePlace.mk_embedding]
-  refine ⟨fun w w' h => ?_, InfinitePlace.comap_surjective⟩
-  rw [key w, key w']
-  exact congrArg (fun v => InfinitePlace.mk (I.φ v)) h
-
-theorem card_places : Fintype.card (InfinitePlace I.F) = I.f := by
-  have hR := I.cm.totReal
-  rw [InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces, AutInst.f, IsTotallyReal.finrank,
-    IsTotallyReal.nrComplexPlaces_eq_zero, add_zero]
+alias card_places := _root_.GlobalTheory.Count.FrameMajorant.card_places
 
 theorem opNormAt_eq (x y : I.GA) (δ : Matrix (Fin I.n) (Fin I.n) I.E) (w : InfinitePlace I.E) :
     opNormAt (bas I) (frm I y) (bas I) (frm I x) w (Matrix.toLin' δ) =
@@ -115,7 +142,7 @@ theorem mulVec_mem (x y a : I.GA) (γ : GL (Fin I.n) I.E)
 
 theorem lamX_ne_bot (hn : 1 ≤ I.n) (x : I.GA) : lamX I x ≠ ⊥ := by
   intro h0
-  have h1 := (GlobalTheory.T.autPointLatticeIntersection_selfDual_properties I x).2.2.1
+  have h1 := (_root_.GlobalTheory.PointLattice.lamX_selfDual I x).2.2.1
   rw [h0] at h1
   have : Nonempty (Fin I.n) := ⟨⟨0, hn⟩⟩
   simp at h1
@@ -151,15 +178,15 @@ theorem separated (hn : 1 ≤ I.n) (x y a b : I.GA) (ha : a ∈ I.GFset) (hb : b
       apply hne
       apply Matrix.toLin'.injective
       rw [map_zero]
-      refine LinearMap.ext_on (GlobalTheory.T.autPointLatticeIntersection_selfDual_properties I y).2.2.1 fun z hz => ?_
+      refine LinearMap.ext_on (_root_.GlobalTheory.PointLattice.lamX_selfDual I y).2.2.1 fun z hz => ?_
       exact (Submodule.eq_bot_iff _).1 h0 _ ⟨z, hz, rfl⟩)
-  rw [(GlobalTheory.T.orthogonal_canonicalFiltration_steps_autPoint I y).2.1 hn, div_inv_eq_mul] at h
+  rw [(_root_.GlobalTheory.Count.PerpStep.main I y).2.1 hn, div_inv_eq_mul] at h
   have e1 : (nPl I.E : ℝ) = Fintype.card (InfinitePlace I.F) := by
-    rw [nPl, Fintype.card_of_bijective (comap_bijective I)]
+    rw [nPl, Fintype.card_of_bijective (_root_.GlobalTheory.Count.FrameMajorant.comap_bijective I)]
   have e2 : ∏ w, opNormAt (bas I) (frm I y) (bas I) (frm I x) w
       (Matrix.toLin' ((γ : Matrix (Fin I.n) (Fin I.n) I.E) - η)) =
       ∏ v, ‖op (uMat ((x⁻¹ * a * y).1 v)) - op (uMat ((x⁻¹ * b * y).1 v))‖ := by
-    refine Fintype.prod_bijective _ (comap_bijective I) _ _ fun w => ?_
+    refine Fintype.prod_bijective _ (_root_.GlobalTheory.Count.FrameMajorant.comap_bijective I) _ _ fun w => ?_
     rw [opNormAt_eq, uMat_eq I x y a γ _ (hγ1 _), uMat_eq I x y b η _ (hη1 _), op, op, op, ← map_sub, ← map_sub,
       Matrix.map_sub _ (map_sub _), Matrix.mul_sub, Matrix.sub_mul]
   rw [e1, e2] at h

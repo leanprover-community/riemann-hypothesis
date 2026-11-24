@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.HerbrandCyclic
-public import GroundTheory.LocalFields.HilbertCyclic
 public import GroundTheory.LocalFields.UnitsGalois
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
+public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
+public import GroundTheory.LocalFields.CompleteTrivial
 public import GroundTheory.GlobalFields.HerbrandQuotients.Cyclic
+public import GroundTheory.LocalFields.HerbrandCyclic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -129,8 +129,8 @@ theorem unitsOrd_cycSubOne (τ : L ≃ₐ[K] L) (x : Additive Lˣ) :
 theorem unitsOrd_cycNorm (x : Additive Lˣ) :
     unitsOrd (L := L) (cycNorm (Representation.ofMulDistribMulAction (L ≃ₐ[K] L) Lˣ) x) =
       cycNorm (Representation.trivial ℤ (L ≃ₐ[K] L) ℤ) (unitsOrd (L := L) x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [cycNorm_apply, cycNorm_apply, map_sum]
+
+  rw [cycNorm_apply, cycNorm_apply, map_sum]
   refine Finset.sum_congr rfl fun g _ => ?_
   rw [Representation.ofMulDistribMulAction_apply_apply, unitsOrd_smul, Representation.trivial_apply]
   rfl

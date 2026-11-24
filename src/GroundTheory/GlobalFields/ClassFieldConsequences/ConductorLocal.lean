@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassField
-public import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
-public import GroundTheory.GlobalFields.TateThesis.LocalConductor
-public import GroundTheory.GlobalFields.TateThesis.ConductorIdeal
+public import GroundTheory.GlobalFields.ClassFieldConsequences.CongruenceSubgroupLeStandardOpenSubgroup
+public import GroundTheory.GlobalFields.NormResidueSymbol.RangeFiniteLocalNormLeKerLocalSymbol
+public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassFieldLocal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

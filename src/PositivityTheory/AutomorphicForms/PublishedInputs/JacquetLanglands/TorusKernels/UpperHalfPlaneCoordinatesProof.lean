@@ -1,6 +1,9 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ComplexMinusRealLineMeasureCoordinates
+public import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
+import Mathlib.MeasureTheory.Order.Group.Lattice
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

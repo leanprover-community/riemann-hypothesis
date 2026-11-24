@@ -1,17 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-public import Formalism.SharpRestriction.Divisibility.KudlaSiegelWeil
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertPlaceHeckeDoubleCosetsInverseRepsLabel
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHomLatticeIffIntegralMatrixSplitChart
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnramifiedConjugatePlaceUniformiser
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsFinWeil
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsDeltaPsi
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ActOMemFinSub
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompletedHomLatticeFinitelyGeneratedStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompletedHomLatticeMultipleMemOpenLevelStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexNeZeroOfFinite
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanHeisenbergTranslatesOfLatticeVacuaEqTop
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EventuallyFinEqOne
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,8 +63,8 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 namespace GlobalTheory.InertLoc
 
@@ -151,13 +191,13 @@ theorem Chart.pi_rk (h : Chart e σ π) (S T : HSp D) (a : D.host.E) (s : Fin S.
     refine h.pi_eq_of_finPart ?_
     rw [rk, Matrix.of_apply, finPart_liftFin]
     simp only [← finPart_cA]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [RingHom.map_mul (finPart D) (_ * _), RingHom.map_mul (finPart D) (incA D a), map_sum (finPart D)]
+
+    rw [RingHom.map_mul (finPart D) (_ * _), RingHom.map_mul (finPart D) (incA D a), map_sum (finPart D)]
     simp only [finPart_mul_incA]
     rfl
   rw [h1]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [RingHom.map_mul, map_sum π, h.1.2.1, h.pi_idem, one_mul, h.2.2.2.1, h.2.2.2.2.1]
+
+  simp only [RingHom.map_mul, map_sum π, h.1.2.1, h.pi_idem, one_mul, h.2.2.2.1, h.2.2.2.2.1]
 
 theorem mem_latO_iff (h : Chart e σ π) (hσ : ∀ x, Valued.v (σ x) = Valued.v x) (hS : Frame S e σ π βS) (hT : Frame T e σ π βT)
     (hc : IsGen D P c) {u : WO S T} (hu : IsHalf e u) :
@@ -193,15 +233,15 @@ theorem mem_latO_iff (h : Chart e σ π) (hσ : ∀ x, Valued.v (σ x) = Valued.
               S.gram.map (algebraMap D.host.E (LP D P))) := by
         ext i j : 2
         rw [Matrix.map_apply, Matrix.of_apply, hm]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.smul_apply, smul_eq_mul, vecMulVec_apply, Matrix.vecMul, dotProduct, Matrix.map_apply,
-          RingHom.map_mul, map_sum, hs', h.2.2.2.1]
+
+        simp only [Matrix.smul_apply, smul_eq_mul, vecMulVec_apply, Matrix.vecMul, dotProduct, Matrix.map_apply,
+        RingHom.map_mul, map_sum, hs', h.2.2.2.1]
         ring
       rw [e1, Matrix.mul_smul, Matrix.smul_mul, mul_vecMulVec, vecMulVec_mul, vecMul_vecMul, hS.gram_mul]
       convert h5 using 1
       have e2 : ((fun k => σ (π (incA D (s k)))) ᵥ* cT σ (βS⁻¹).1) j = σ (((βS⁻¹).1 *ᵥ fun k => π (incA D (s k))) j) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [Matrix.mulVec, dotProduct, map_sum, Matrix.vecMul, dotProduct]
+
+        rw [Matrix.mulVec, dotProduct, map_sum, Matrix.vecMul, dotProduct]
         refine Finset.sum_congr rfl fun k _ => ?_
         rw [σ.map_mul, mul_comm]
         rfl
@@ -236,8 +276,8 @@ theorem mem_latO_iff (h : Chart e σ π) (hσ : ∀ x, Valued.v (σ x) = Valued.
       (sum_mem fun j (_ : j ∈ Finset.univ) => rk_mem S T ha₀ (hs j) (ht j))
     convert hU using 1
     ext i l
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Matrix.smul_apply, smul_eq_mul, ← hu i l, h.mul_eq_iff, Matrix.sum_apply, map_sum]
+
+    rw [Matrix.smul_apply, smul_eq_mul, ← hu i l, h.mul_eq_iff, Matrix.sum_apply, map_sum]
     have hsum : ∀ j, π (rk S T a₀ (fun k => finPart D (e * h.sec (βS.1 k j)))
         (fun k => finPart D (e * h.sec (Y k j))) i l) = algebraMap D.host.E (LP D P) a₀ * (Y i j * (βS⁻¹).1 j l) := by
       intro j
@@ -309,9 +349,9 @@ theorem th_conj (h : Chart e σ π) (hσ : ∀ x, σ (σ x) = x) (z : LP D P) : 
 theorem Chart.pi_hO (h : Chart e σ π) (u u' : WO S T) :
     π (hO S T u u') = Matrix.trace ((S.gram⁻¹).map (algebraMap D.host.E (LP D P)) * cT σ (u'.map π) *
       T.gram.map (algebraMap D.host.E (LP D P)) * u.map π) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hO, map_sum π, RingHom.map_mul, h.2.2.2.1, h.2.2.2.2.1, Matrix.trace, Matrix.diag, Matrix.mul_apply,
-    Finset.sum_mul]
+
+  simp only [hO, map_sum π, RingHom.map_mul, h.2.2.2.1, h.2.2.2.2.1, Matrix.trace, Matrix.diag, Matrix.mul_apply,
+  Finset.sum_mul]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.sum_comm]
   refine Eq.trans (Finset.sum_congr rfl fun c _ => Finset.sum_comm) ?_
@@ -390,7 +430,7 @@ theorem span_vacua (hψ : IsStdChar D ψ (-1)) (he : e * e = e) (hce : cA D e = 
   have hT := GlobalTheory.PlaceModel.isSelfDualC_latFrame T
   obtain ⟨w, hw⟩ := exists_w D
   have hA := selfDual_latF (GlobalTheory.LatVac.latO_selfDual_approx_sign D ψ S T _ _ hψ hS hT).1
-  have hspan := GlobalTheory.T.span_heisenberg_translates_of_lattice_vacua_eq_top (isHeis_opF hψ.1 S T hw) _ hA
+  have hspan := _root_.GlobalTheory.FinWeil.span_translates_vacua (isHeis_opF hψ.1 S T hw) _ hA
     (smooth_theta hψ.1 hS hT hw hA (GlobalTheory.T.completedHomLattice_multiple_mem_open_level D S T _ _ hS hT (GlobalTheory.T.completedHomLattice_finitelyGenerated D S T _ _ hS hT)).1)
   rw [GlobalTheory.PlaceModel.coe_latFrame, GlobalTheory.PlaceModel.coe_latFrame] at hspan
   rw [eq_top_iff, ← hspan, Submodule.span_le]

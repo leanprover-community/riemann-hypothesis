@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.InterNumPointSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

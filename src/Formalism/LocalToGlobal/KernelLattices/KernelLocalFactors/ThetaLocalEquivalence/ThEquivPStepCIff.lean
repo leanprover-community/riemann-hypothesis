@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPOf
+public import Formalism.LocalToGlobal.KernelLattices.ColInst
+public import Formalism.LocalToGlobal.KernelLattices.ThEquiv
+import Formalism.LocalToGlobal.Columns.BaseLemmas
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

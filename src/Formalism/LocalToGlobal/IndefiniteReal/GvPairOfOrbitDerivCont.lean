@@ -1,6 +1,16 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DKerHasCompactSupport
+import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.DenseWeakVectors
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.Garding
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Calculus.Deriv.Prod
+public import Mathlib.Analysis.Calculus.Deriv.Star
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+public import Mathlib.Analysis.Normed.Module.HahnBanach
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -577,8 +587,8 @@ theorem gp_dRep_expand {M : DSModel V S} {τ : D.what₂.Tau} {u : M.H τ}
   have h1 : dRep (M.rep τ) Y u = gpA M τ u hu ⟨Y, hY⟩ := rfl
   rw [h1]
   conv_lhs => rw [← (Module.finBasis ℝ (gpTan V τ)).sum_repr ⟨Y, hY⟩]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_smul, Complex.coe_smul]
   all_goals rfl

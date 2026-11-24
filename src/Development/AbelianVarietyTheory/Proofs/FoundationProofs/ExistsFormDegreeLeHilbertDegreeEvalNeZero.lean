@@ -1,11 +1,72 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MonomialCountAndBinomialEstimates
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.XSmulMemWeightedHomogeneousSubmodule
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LeadingCoeffNonnegOfEventuallyEvalNat
+public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MonomialCountAndBinomialEstimates
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.KrullDimension.Field
+public import Mathlib.RingTheory.KrullDimension.Polynomial
+public import Mathlib.RingTheory.Polynomial.HilbertPoly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.IntegralStatementPfA
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 
 @[expose] public section
 
@@ -109,8 +170,8 @@ theorem isIntegral_of_projection {σ R A : Type*} [Fintype σ] [CommRing R] [Alg
     rw [← hdeg d hd]
     exact (prod_pow_natDegree_coeff' Finset.univ v d hv).1
   have hQ2 : Q.coeff m = algebraMap k R (eval c g) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hQe, Polynomial.finsetSum_coeff, eval_eq', map_sum]
+
+    rw [hQe, Polynomial.finsetSum_coeff, eval_eq', map_sum]
     refine Finset.sum_congr rfl fun d hd => ?_
     rw [Polynomial.coeff_C_mul, ← hdeg d hd, (prod_pow_natDegree_coeff' Finset.univ v d hv).2]
     simp [hv1]
@@ -268,8 +329,8 @@ theorem exists_monic_minimal {R A : Type*} [CommRing R] [IsDomain R] [IsIntegral
   have hq0 : (q : Polynomial R) = 0 := by
     by_contra h0
     have h1 := minpoly.IsIntegrallyClosed.degree_le_of_ne_zero (s := t) h0 (by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hq, map_sum, ← ha]
+
+      rw [hq, map_sum, ← ha]
       simp only [Polynomial.aeval_monomial]
       rfl)
     have h2 := Polynomial.mem_degreeLT.1 q.2
@@ -377,7 +438,8 @@ theorem ringKrullDim_eq_natDegree_idealHilbertPoly [Infinite k] [Finite ι]
       obtain rfl : j = 0 := Subsingleton.elim _ _
       refine (injective_iff_map_eq_zero _).1 hzinj _ ?_
       refine (comp_aeval_apply z (Ideal.Quotient.mkₐ k P) _).symm.trans ?_
-      simpa [Ideal.Quotient.eq_zero_iff_mem] using ha))).1
+      apply Ideal.Quotient.eq_zero_iff_mem.mpr
+      simpa using ha))).1
   let φ : MvPolynomial (Fin (e + 1)) k →ₐ[k] _ := aeval fun j => Ideal.Quotient.mk P (z j)
   letI := φ.toRingHom.toAlgebra
   haveI : Algebra.IsIntegral (MvPolynomial (Fin (e + 1)) k) (MvPolynomial ι k ⧸ P) := ⟨hzint⟩

@@ -1,8 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.JetSubstPCompJetBC
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsExpChart
+public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.BcField
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
 
 @[expose] public section
 

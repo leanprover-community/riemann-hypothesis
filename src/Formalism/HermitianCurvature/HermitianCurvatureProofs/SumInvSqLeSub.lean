@@ -1,6 +1,55 @@
 module
 
 public import Formalism.HermitianCurvature.StatementSz
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 
@@ -81,7 +130,9 @@ lemma sum_inv_sq_le_sub (n : ℕ) (hn : 2 ≤ n) : ∑ d ∈ Ioc 0 n, (1 : ℝ) 
     have hnpos : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
     have : (1 : ℝ) / ((n : ℝ) + 1) ^ 2 ≤ 1 / n - 1 / ((n : ℝ) + 1) := by
       rw [div_sub_div _ _ (by positivity) (by positivity), div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith
+      have : (1 * ((n : ℝ) + 1) - (n : ℝ) * 1) * ((n : ℝ) + 1) ^ 2 - 1 * ((n : ℝ) * ((n : ℝ) + 1)) =
+          (n : ℝ) + 1 := by ring
+      linarith
     push_cast
     linarith
 
@@ -104,19 +155,30 @@ lemma one_add_ge (t : ℝ) (ht : |t| ≤ 1 / 4) : Real.exp (t - 2 / 3 * t ^ 2) �
   have hs0 : 0 ≤ |t| := abs_nonneg t
   have hs2 : |t| ^ 2 = t ^ 2 := sq_abs t
   have h4 : |t| ^ 4 / (1 - |t|) ≤ t ^ 2 / 12 := by
-    rw [div_le_iff₀ (by linarith)]
-    rw [← hs2]
-    nlinarith [mul_nonneg hs0 hs0, pow_nonneg hs0 2, pow_nonneg hs0 3]
+    rw [div_le_iff₀ (by linarith), ← hs2]
+    have hsq : |t| ^ 2 ≤ 1 / 16 := by
+      calc |t| ^ 2 ≤ (1 / 4 : ℝ) ^ 2 := pow_le_pow_left₀ hs0 ht 2
+        _ = 1 / 16 := by norm_num
+    calc |t| ^ 4 = |t| ^ 2 * |t| ^ 2 := by ring
+      _ ≤ |t| ^ 2 * (1 / 16) := mul_le_mul_of_nonneg_left hsq (sq_nonneg _)
+      _ = |t| ^ 2 / 12 * (3 / 4) := by ring
+      _ ≤ |t| ^ 2 / 12 * (1 - |t|) := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
   have h5 : -(t ^ 2 / 4) ≤ t ^ 3 := by
     have : |t ^ 3| = |t| ^ 3 := abs_pow t 3
     have h6 := neg_abs_le (t ^ 3)
     rw [this] at h6
     rw [← hs2]
-    nlinarith [mul_nonneg hs0 hs0]
+    have h7 : |t| ^ 3 ≤ |t| ^ 2 / 4 := by
+      calc |t| ^ 3 = |t| ^ 2 * |t| := by ring
+        _ ≤ |t| ^ 2 * (1 / 4) := mul_le_mul_of_nonneg_left ht (sq_nonneg _)
+        _ = |t| ^ 2 / 4 := by ring
+    linarith
   have e : 1 - -t = 1 + t := by ring
+  have e3 : (-t) ^ 3 = -(t ^ 3) := by ring
   rw [e] at h3
   norm_num at h3
-  nlinarith
+  rw [e3] at h3
+  linarith
 
 lemma lin_bound (J : ℕ) (hJ : 1 ≤ J) (de : ℕ → ℝ) (h01 : ∀ i, de i = 0 ∨ de i = 1) :
     |∑ i ∈ Icc 1 J, ∑ j ∈ Ioc i J, (de j - de i) / (4 * ((j : ℝ) - (i : ℝ)))| ≤
@@ -216,6 +278,8 @@ lemma rde_bound (J : ℕ) (hJ : 1 ≤ J) (de : ℕ → ℝ) (h01 : ∀ i, de i =
   have hquad := quad_bound J de h01
   have hlog2 := Real.log_two_lt_d9
   have hJpos : (0 : ℝ) < J := by exact_mod_cast hJ
+  have hJl : (J : ℝ) * Real.log 2 ≤ (J : ℝ) * (7 / 10) :=
+    mul_le_mul_of_nonneg_left (by linarith) hJpos.le
   constructor
   · calc Real.exp (-(((J : ℝ) + 1) / 4))
         ≤ Real.exp (∑ i ∈ Icc 1 J, ∑ j ∈ Ioc i J,
@@ -223,7 +287,7 @@ lemma rde_bound (J : ℕ) (hJ : 1 ≤ J) (de : ℕ → ℝ) (h01 : ∀ i, de i =
               2 / 3 * ((de j - de i) / (4 * ((j : ℝ) - (i : ℝ)))) ^ 2)) := by
           apply Real.exp_le_exp.mpr
           simp only [Finset.sum_sub_distrib, ← Finset.mul_sum]
-          nlinarith [hlin.1]
+          linarith [hlin.1]
       _ = ∏ i ∈ Icc 1 J, ∏ j ∈ Ioc i J, Real.exp
             ((de j - de i) / (4 * ((j : ℝ) - (i : ℝ))) -
               2 / 3 * ((de j - de i) / (4 * ((j : ℝ) - (i : ℝ)))) ^ 2) := by
@@ -251,7 +315,7 @@ lemma rde_bound (J : ℕ) (hJ : 1 ≤ J) (de : ℕ → ℝ) (h01 : ∀ i, de i =
           exact (Finset.prod_congr rfl fun i _ => Real.exp_sum _ _).symm
       _ ≤ Real.exp (((J : ℝ) + 1) / 4) := by
           apply Real.exp_le_exp.mpr
-          nlinarith [hlin.2]
+          linarith [hlin.2]
 
 lemma prod_shift (p : ℕ) (f : ℕ → ℝ) : ∏ i ∈ Icc 1 p, f (i + 1) = ∏ i ∈ Icc 2 (p + 1), f i := by
   refine Finset.prod_nbij' (fun i => i + 1) (fun i => i - 1) ?_ ?_ ?_ ?_ ?_
@@ -329,7 +393,8 @@ lemma v_anti (c : Cfg) (hc : c.Ok) (i j : ℕ) (hij : i < j) : c.v j < c.v i := 
   have h := v_sub c i j
   have h1 : (i : ℝ) + 1 ≤ j := by exact_mod_cast hij
   have h2 := hc.hDel
-  nlinarith
+  have h3 : 0 < 4 * c.Del * ((j : ℝ) - (i : ℝ)) := mul_pos (by linarith) (by linarith)
+  linarith
 
 lemma u_succ (c : Cfg) (de : ℕ → ℝ) (hw : IsWord c.k de) (i : ℕ) (hi : 1 ≤ i)
     (_hik : i + 1 ≤ c.k) (h : i + 2 ≤ c.k ∨ c.top = false) :
@@ -438,7 +503,7 @@ lemma edge_factor (c : Cfg) (de : ℕ → ℝ) (hc : c.Ok) (hw : IsWord c.k de) 
   rw [hv]
   have m1 : 0 ≤ c.Del * ((l : ℝ) - 1) := mul_nonneg (by linarith) (by linarith)
   have m2 : 0 ≤ c.Del * ((c.k : ℝ) - 1 - l) := mul_nonneg (by linarith) (by linarith)
-  rcases hw.1 l with e | e <;> rw [e] <;> constructor <;> nlinarith
+  rcases hw.1 l with e | e <;> rw [e] <;> constructor <;> grind
 
 lemma prod_ratio_le (s : Finset ℕ) (f g : ℕ → ℝ) (ε : ℝ) (hg : ∀ i ∈ s, 0 < g i)
     (hf : ∀ i ∈ s, 0 < f i) (h : ∀ i ∈ s, f i ≤ (1 + ε) * g i) :
@@ -487,7 +552,6 @@ lemma edge_ratio_le (c : Cfg) (de de' : ℕ → ℝ) (hc : c.Ok) (hw : IsWord c.
     ∏ i ∈ Icc 2 (c.k - 1), ((c.a - c.u de i) / (c.a - c.u de' i)) ≤ Real.exp (1 / 3) := by
   have hkD := kDel_pos c hc
   have hk : (4 : ℝ) ≤ c.k := by exact_mod_cast hc.hk
-  have hD := hc.hDel
   refine (prod_ratio_le (Icc 2 (c.k - 1)) (fun i => c.a - c.u de i) (fun i => c.a - c.u de' i)
     (1 / (4 * c.k)) (fun i hi => ?_) (fun i hi => ?_) (fun i hi => ?_)).trans ?_
   · have := a_sub_u_pos c de' hc hw' i hi; linarith
@@ -514,8 +578,10 @@ lemma u_mid_nonneg (c : Cfg) (de : ℕ → ℝ) (hc : c.Ok) (hw : IsWord c.k de)
   have hv0 := hc.hv0
   have hiR : ((i - 1 : ℕ) : ℝ) + 2 ≤ c.k := by exact_mod_cast (by omega : i - 1 + 2 ≤ c.k)
   have m : 0 ≤ c.Del * ((c.k : ℝ) - 2 - ((i - 1 : ℕ) : ℝ)) := mul_nonneg (by linarith) (by linarith)
+  have hring : 4 * c.Del * ((c.k : ℝ) - 1 - ((i - 1 : ℕ) : ℝ)) =
+      4 * (c.Del * ((c.k : ℝ) - 2 - ((i - 1 : ℕ) : ℝ))) + 4 * c.Del := by ring
   unfold Cfg.v
-  rcases hw.1 (i - 1) with e | e <;> rw [e] <;> nlinarith
+  rcases hw.1 (i - 1) with e | e <;> rw [e] <;> linarith
 
 lemma top_ratio_le (c : Cfg) (de de' : ℕ → ℝ) (hc : c.Ok) (ht : c.top = true)
     (hw : IsWord c.k de) (hw' : IsWord c.k de') :
@@ -531,13 +597,16 @@ lemma top_ratio_le (c : Cfg) (de de' : ℕ → ℝ) (hc : c.Ok) (ht : c.top = tr
     have h2 := (abs_le.mp (u_mid_diff c de de' hc hw hw' i hi)).2
     have h3 : c.Del ≤ c.Del / c.bp * (c.u de' i + c.bp) := by
       rw [div_mul_eq_mul_div, le_div_iff₀ hb]
-      nlinarith
+      exact mul_le_mul_of_nonneg_left (by linarith) (by linarith)
     linarith
   · apply Real.exp_le_exp.mpr
     rw [card_mid c hc]
     have e : c.vthp = 4 * c.k * c.Del / c.bp := by simp [Cfg.vthp, ht]
     rw [e, div_div, mul_div_assoc', div_le_div_iff₀ hb (by positivity)]
-    nlinarith [mul_pos hb (by linarith : (0 : ℝ) < c.Del), mul_pos (mul_pos hb (by linarith : (0 : ℝ) < c.Del)) (by linarith : (0 : ℝ) < c.k)]
+    calc ((c.k : ℝ) - 2) * c.Del * (c.bp * 3) = (3 * ((c.k : ℝ) - 2)) * (c.Del * c.bp) := by ring
+      _ ≤ (4 * (c.k : ℝ)) * (c.Del * c.bp) :=
+          mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg (by linarith) hb.le)
+      _ = 4 * (c.k : ℝ) * c.Del * c.bp := by ring
 
 end Formalism.FourierDecayAlt.P.Sz4
 
@@ -625,10 +694,10 @@ lemma combine (E E' C R R' W α β γ M : ℝ) (hE : 0 < E) (hE' : 0 < E') (hC :
   have a2 : E' * β ≤ α * E * β := mul_le_mul_of_nonneg_right h1 hβ.le
   have a3 : α * β * E ≤ M * γ * E := mul_le_mul_of_nonneg_right h4 hE.le
   have a4 : M * E * γ ≤ M * E * R := mul_le_mul_of_nonneg_left h3 (mul_pos hM hE).le
-  have a5 : E' * R' ≤ M * E * R := by nlinarith
+  have a5 : E' * R' ≤ M * E * R := by grind
   have a6 : E' * R' * (C * W) ≤ M * E * R * (C * W) :=
     mul_le_mul_of_nonneg_right a5 (mul_pos hC hW).le
-  nlinarith
+  grind
 
 lemma prod_le_of_ratio (s : Finset ℕ) (f g : ℕ → ℝ) (A : ℝ) (hg : ∀ i ∈ s, 0 < g i)
     (h : ∏ i ∈ s, f i / g i ≤ A) : ∏ i ∈ s, f i ≤ A * ∏ i ∈ s, g i := by
@@ -646,7 +715,10 @@ lemma vthp_small (c : Cfg) (hc : c.Ok) (hv : c.vth ≤ 1 / 10) (ht : c.top = tru
   unfold Cfg.vth at hv
   rw [div_le_iff₀ (by linarith)] at hv
   rw [e, div_le_iff₀ hb]
-  have : 2 * (4 * (c.k : ℝ) * c.Del) ≤ 4 * c.m * c.k * c.Del := by nlinarith
+  have : 2 * (4 * (c.k : ℝ) * c.Del) ≤ 4 * c.m * c.k * c.Del := by
+    calc 2 * (4 * (c.k : ℝ) * c.Del) ≤ (c.m : ℝ) * (4 * (c.k : ℝ) * c.Del) :=
+          mul_le_mul_of_nonneg_right hm hkD.le
+      _ = 4 * c.m * c.k * c.Del := by ring
   linarith
 
 lemma vand_le (c : Cfg) (de de' : ℕ → ℝ) (hc : c.Ok) (hv : c.vth ≤ 1 / 10) (hw : IsWord c.k de)

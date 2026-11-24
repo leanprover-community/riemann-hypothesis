@@ -3,6 +3,7 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.NonnegIffOfLiesTotal
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiesOverBaseChange
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
+public import Formalism.LocalToGlobal.ProjectiveLattices.DataAtPointN3
 
 @[expose] public section
 

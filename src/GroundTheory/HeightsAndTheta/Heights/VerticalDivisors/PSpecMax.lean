@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.IntToFracInjective
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsSecIdealOfPrime
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -41,8 +40,8 @@ theorem exists_secCoord_not_mem (e : ℕ) (I : Ideal (MvPolynomial (Fin n) K)) (
   have h1 : Ideal.Quotient.mk (secIdeal (modelR e I v) (parY e n v)) (chartForm (parY e n v)) = 1 := by
     rw [← sub_eq_zero, ← map_one (Ideal.Quotient.mk _), ← map_sub, Ideal.Quotient.eq_zero_iff_mem]
     exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self _)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h1, chartForm, linForm, map_sum]
+
+  rw [← h1, chartForm, linForm, map_sum]
   refine J.sum_mem fun j _ => ?_
   rw [map_mul]
   refine J.mul_mem_left _ ?_

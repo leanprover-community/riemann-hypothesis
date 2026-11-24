@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.MinfDensity
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

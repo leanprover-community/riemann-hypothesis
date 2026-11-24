@@ -2,8 +2,48 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.ActUVariableEqPow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwDomSum
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwFactTorus
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHeckePairIwC
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkApply
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkNorm
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -35,7 +75,7 @@ private theorem trOf_split (t : Fin n → kˣ) : ∃ b : Fin n → kˣ, Dom b �
     simp only [w]
     split_ifs with h
     · exact le_of_eq (by rw [← hVmul, inv_mul_cancel_right])
-    · push_neg at h
+    · push Not at h
       calc V (t i) = V (t i * (t j)⁻¹) * V (t j) := by rw [← hVmul, inv_mul_cancel_right]
         _ ≤ 1 * V (t j) := mul_le_mul_left h.le _
         _ = V 1 * V (t j) := by simp [V]
@@ -370,8 +410,8 @@ private theorem trOf_main (Θ1) (h1 : IsThetaQ ρ C Θ1) (Θw) (hw : IsThetaQ ρ
     have hvC := fixd_anti ρ hle hv
     rw [hw.1 j t ht, hsum, hsum, h1.1 j t ht]
     rw [trOf_lev (ρ.comp (atJ n w j)) (C j) ht (trOf_fix ρ (fun _ => ⊤) j hv) (trOf_fix ρ C j hvC)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun y hy => ?_
     exact trOf_commQ ρ C j t y (hST j (y j) (hsS y hy j (Set.mem_univ j))) m.2
   intro j t m

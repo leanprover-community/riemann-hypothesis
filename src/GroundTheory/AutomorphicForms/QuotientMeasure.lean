@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.RightCosetSpaceCompact
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.ProperAction.Torsor
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 @[expose] public section
 

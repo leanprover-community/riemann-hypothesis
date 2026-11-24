@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.XFacts
+public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.AdmissibleInterpolation.FinalTheorems
+public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.AdmissibleInterpolation.FockRSmulLeft
 
 @[expose] public section
 

@@ -1,8 +1,58 @@
 module
 
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FiniteDimensionalOfOrtho
 public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.MassSt
+public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
-public import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -37,14 +87,14 @@ namespace StandardSymmetricSums
 theorem form_sum {h : V →ₗ⋆[K] V →ₗ[K] K} {n : ℕ} {e : Fin n → V}
     (he : ∀ i j, h (e i) (e j) = if i = j then 1 else 0) (c d : Fin n → K) :
     h (∑ i, c i • e i) (∑ j, d j • e j) = ∑ i, star (c i) * d i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, LinearMap.sum_apply, he, mul_comm, starRingEnd_apply]
+
+  simp [map_sum, LinearMap.sum_apply, he, mul_comm, starRingEnd_apply]
 
 theorem form_left {h : V →ₗ⋆[K] V →ₗ[K] K} {n : ℕ} {e : Fin n → V}
     (he : ∀ i j, h (e i) (e j) = if i = j then 1 else 0) (i : Fin n) (d : Fin n → K) :
     h (e i) (∑ j, d j • e j) = d i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, he]
+
+  simp [map_sum, he]
 
 theorem star_int (r : 𝓞 K) : ∃ t : 𝓞 K, algebraMap (𝓞 K) K t = star (algebraMap (𝓞 K) K r) :=
   ⟨RingOfIntegers.mapRingHom (starRingEnd K) r, rfl⟩
@@ -89,22 +139,7 @@ theorem isFullLattice_of_ortho {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule
 theorem isTotPosDef_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hs : h.IsSymm) {L : Submodule (𝓞 K) V} {n : ℕ} (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) :
     IsTotPosDef h := by
-  obtain ⟨e, hli, hsp, -, he⟩ := hL
-  intro x hx φ
-  obtain ⟨c, rfl⟩ := exists_coord hsp x
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [form_sum he, map_sum, Complex.re_sum]
-  have hc : ∃ i, c i ≠ 0 := by
-    by_contra hcon
-    push Not at hcon
-    exact hx (by simp [hcon])
-  obtain ⟨i, hi⟩ := hc
-  have hterm : ∀ j, (φ (star (c j) * c j)).re = Complex.normSq (φ (c j)) := by
-    intro j
-    rw [map_mul, hK.2.1, Complex.normSq_eq_conj_mul_self.symm, Complex.ofReal_re]
-  simp only [hterm]
-  refine Finset.sum_pos' (fun j _ => Complex.normSq_nonneg _) ⟨i, Finset.mem_univ _, ?_⟩
-  exact Complex.normSq_pos.2 (by simpa using hi)
+  apply Formalism.HermitianLattices.Ext.L3.isTotPosDef_of_ortho <;> assumption
 
 theorem trace_pos_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hs : h.IsSymm) {L : Submodule (𝓞 K) V} {n : ℕ} (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) :
@@ -125,36 +160,11 @@ theorem trace_pos_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) 
 
 theorem isIntegralLat_of_ortho {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V} {n : ℕ}
     (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) : Formalism.HermitianLatticesTheory.IsIntegralLat h L := by
-  obtain ⟨e, hli, hsp, rfl, he⟩ := hL
-  intro x hx y hy
-  obtain ⟨c, rfl⟩ := (mem_lat_iff x).1 hx
-  obtain ⟨d, rfl⟩ := (mem_lat_iff y).1 hy
-  rw [form_sum he]
-  refine Submodule.sum_mem _ fun i _ => ?_
-  obtain ⟨t, ht⟩ := star_int (c i)
-  rw [← ht, ← map_mul]
-  exact Submodule.mem_one.2 ⟨_, rfl⟩
+  apply Formalism.HermitianLattices.Ext.L3.isIntegralLat_of_ortho <;> assumption
 
 theorem isUnimodular_of_ortho {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V} {n : ℕ}
     (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) : Formalism.HermitianLatticesTheory.IsUnimodular h L := by
-  have hint := isIntegralLat_of_ortho hL
-  obtain ⟨e, hli, hsp, rfl, he⟩ := hL
-  apply le_antisymm
-  · intro x hx
-    obtain ⟨c, rfl⟩ := exists_coord hsp x
-    simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-      LinearMap.coe_restrictScalars] at hx
-    have hc : ∀ i, ∃ r : 𝓞 K, algebraMap (𝓞 K) K r = c i := by
-      intro i
-      have := hx (e i) (Submodule.subset_span ⟨i, rfl⟩)
-      rw [form_left he] at this
-      exact Submodule.mem_one.1 this
-    choose r hr using hc
-    exact (mem_lat_iff _).2 ⟨r, by simp only [hr]⟩
-  · intro x hx
-    simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-      LinearMap.coe_restrictScalars]
-    exact fun y hy => hint y hy x hx
+  apply Formalism.HermitianLattices.Ext.L3.isUnimodular_of_ortho <;> assumption
 
 theorem mass_pos_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hs : h.IsSymm) {L : Submodule (𝓞 K) V} {n : ℕ} (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) :

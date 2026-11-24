@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import Mathlib.Topology.Algebra.ContinuousMonoidHom
 
 @[expose] public section
 

@@ -1,9 +1,12 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CyclicBaseChange.SConjSpaceC
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousMapGL
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicGLHomeomorphInfiniteFinite
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CapelliOperatorAlgebraStableUnderComplexConj
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicGLHomeomorphInfiniteFinite
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousMapGL
+import GroundTheory.AutomorphicForms.GLnLocal
+import GroundTheory.GlobalFields.LocalFieldAtPlace
 
 @[expose] public section
 

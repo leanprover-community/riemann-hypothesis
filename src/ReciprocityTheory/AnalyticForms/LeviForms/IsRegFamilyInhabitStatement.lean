@@ -1,7 +1,7 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

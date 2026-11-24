@@ -1,10 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.MulCMemSec
+public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 

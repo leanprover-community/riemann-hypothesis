@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankOfMulEqOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WachRingFactsUnramifiedLevelOneStatement
+public import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocE
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WachRingFactsUnramifiedLevelOne
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.HeckeLFunctionIdealEulerProduct
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -66,13 +107,13 @@ theorem coeff_comm {R M M' : Type} [CommRing R] [AddCommGroup M] [Module R M] [A
     (hA : ∀ k, g (e k) = ∑ m, A m k • (b' m : M')) (j : Fin n') (k : Fin n) :
     ∑ m, p m k * A j m = ∑ m, σ (A m k) * p' j m := by
   have h1 : g (u (e k)) = ∑ j, (∑ m, p m k * A j m) • (b' j : M') := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hp k, map_sum]
+
+    rw [hp k, map_sum]
     simp only [hg, hA]
     exact sum_smul_sum (fun m => p m k) (fun m j => A j m) (fun j => (b' j : M'))
   have h2 : u' (g (e k)) = ∑ j, (∑ m, σ (A m k) * p' j m) • (b' j : M') := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hA k, map_sum]
+
+    rw [hA k, map_sum]
     simp only [hu', hp']
     exact sum_smul_sum (fun m => σ (A m k)) (fun m j => p' j m) (fun j => (b' j : M'))
   have hc' := coeff_unique (c := fun j => ∑ m, p m k * A j m) (d := fun j => ∑ m, σ (A m k) * p' j m) b'
@@ -87,8 +128,8 @@ theorem mul_eq_of_inc {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [Algebra 
   apply (pi0Subst_laws_hold l O).2.2.2.2.2.2.2 hl
   simp only [Matrix.mul_apply]
   show incHom l O (∑ m, P' j m * A' m k) = incHom l O (∑ m, A j m * P m k)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, incHom_apply]
+
+  simp only [map_sum, map_mul, incHom_apply]
   rw [Finset.sum_congr rfl fun m _ => mul_comm (inc l O (P' j m)) (inc l O (A' m k)), ← h j k]
   exact Finset.sum_congr rfl fun m _ => mul_comm _ _
 
@@ -136,8 +177,8 @@ theorem exists_mapMat (RF : ∀ a : O⟦X⟧, (∀ δ ∈ W.DelF, W.γ₀ δ a =
       (show (b' m : W.DD T') ∈ W.N T' ∧ ∀ δ ∈ W.DelF, W.γD T' δ (b' m : W.DD T') = b' m from hb' m).2 δ hδ
     have e1 : W.γD T' δ (W.map g (b k : W.DD T)) = W.map g (b k : W.DD T) := by
       rw [← W.map_γ, hk.2 δ hδ]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hc, map_sum] at e1
+
+    rw [hc, map_sum] at e1
     simp only [gamD_smul, hb2] at e1
     have e2 := coeff_unique (c := fun m => letγ (W.γ₀ δ) (c m)) (d := c) b' e1
     exact congrFun (congrFun e2 m) i
@@ -238,12 +279,12 @@ theorem charP_residueField_of_irreducible {l : ℕ} [Fact l.Prime] (LL : FinExt 
   simpa using hmem
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_mapMat_redHom : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (H : LocHW l P) (K LL : FinExt l) (hA : CaseA K LL) (T T' : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (n n' : ℕ) (γ : (H.W K 1 LL hA.2.2).Gam) (b : Module.Basis (Fin n) (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥((H.W K 1 LL hA.2.2).N T)) (b' : Module.Basis (Fin n') (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥((H.W K 1 LL hA.2.2).N T')) (N : Lat (ZMod (Module.finrank ℚ_[l] ↥(K0 K))) n ↥(OL LL)) (N' : Lat (ZMod (Module.finrank ℚ_[l] ↥(K0 K))) n' ↥(OL LL)) (u : ℤ_[l]) (un : PowerSeries ↥(OL LL)) (g : LatHom T.L T'.L), IsCrys (P.PD K) T.ρ → IsCrys (P.PD K) T'.ρ → IsFrame (H.W K 1 LL hA.2.2) T γ b N → IsFrame (H.W K 1 LL hA.2.2) T' γ b' N' → ((H.W K 1 LL hA.2.2).χΓ γ : ↥(OL LL)) = algebraMap ℤ_[l] ↥(OL LL) u → IsUn l ↥(OL LL) u un → ∃ A : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → Mx (PowerSeries ↥(OL LL)) n' n, IsMapMat (H.W K 1 LL hA.2.2) g b b' A ∧ ∀ i, RedHom l ((PowerSeries.map (residue ↥(OL LL))) un) ((N.P i).map (PowerSeries.map (residue ↥(OL LL)))) ((N.D i).map (PowerSeries.map (residue ↥(OL LL)))) ((N'.P i).map (PowerSeries.map (residue ↥(OL LL)))) ((N'.D i).map (PowerSeries.map (residue ↥(OL LL)))) ((A i).map (PowerSeries.map (residue ↥(OL LL)))) ((A (i - 1)).map (PowerSeries.map (residue ↥(OL LL)))) := by
   intro l _ P H K LL hA T T' n n' γ b b' N N' u un g hT hT' hF hF' hχ hun
   have hl : l ≠ 2 := hA.2.1
   have := charP_residueField_of_irreducible LL
-  obtain ⟨hφ, -, hγ, -, hRF, -⟩ := GlobalTheory.T.wachRingFacts_unramified_levelOne H K LL hA
+  obtain ⟨hφ, -, hγ, -, hRF, -⟩ := _root_.GlobalTheory.WachPlace.ringFacts_of_caseA H K LL hA
   have RF : ∀ a : (↥(OL LL))⟦X⟧, (∀ δ ∈ (H.W K 1 LL hA.2.2).DelF, (H.W K 1 LL hA.2.2).γ₀ δ a = a) →
       ∃ y, inc l ↥(OL LL) y = a := fun a ha => (hRF a).mp ha
   obtain ⟨A, hAm⟩ := exists_mapMat (H.W K 1 LL hA.2.2) b b' RF g hT hT' hF.1 hF'.1

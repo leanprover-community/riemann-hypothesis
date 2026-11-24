@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.AllPartsTransfer
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 
@@ -87,8 +90,8 @@ variable {p₀ p : V →ₗ[K] V} {x y : Fin n → V →ₗ[K] V} {c : Matrix (F
 
 theorem Tr.yx_sum (h : Tr p₀ p x y c) (a : Fin n → V) (ha : ∀ j, p₀ (a j) = a j) (i : Fin n) :
     y i (∑ j, x j (a j)) = ∑ j, c i j • a j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun j _ => h.2.2.2.2.2.1 i j _ (ha j)
 
 theorem Tr.first_axis_injective (h : Tr p₀ p x y c) (a : Fin n → V) (ha : ∀ j, p₀ (a j) = a j)
@@ -228,8 +231,8 @@ theorem sandwich (hE : IdemE) (hP : IdemP) (hτ : IsGood τ) (ρ : Representatio
   · obtain ⟨haA, z, hz⟩ := ha
     have hz' : a = ∑ s, epP H χ ρ (eS (τ s) ρ z) := by
       rw [← hz]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [LinearMap.comp_apply, eGood, LinearMap.sum_apply, map_sum]
+
+      simp only [LinearMap.comp_apply, eGood, LinearMap.sum_apply, map_sum]
     have hs : ∀ s, eS (τ s) ρ a = epP H χ ρ (eS (τ s) ρ z) := by
       intro s
       have h2 : ∀ a, eS (τ s) ρ (epP H χ ρ a) = epP H χ ρ (eS (τ s) ρ a) :=
@@ -237,8 +240,8 @@ theorem sandwich (hE : IdemE) (hP : IdemP) (hτ : IsGood τ) (ρ : Representatio
       have h3 : eS (τ s) ρ (eGood τ ρ z) = eS (τ s) ρ z := by
         classical
         unfold eGood
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [LinearMap.sum_apply, map_sum, Finset.sum_eq_single s]
+
+        rw [LinearMap.sum_apply, map_sum, Finset.sum_eq_single s]
         · exact LinearMap.congr_fun (he s) z
         · intro t _ hts
           exact LinearMap.congr_fun (ho s t hts.symm) z

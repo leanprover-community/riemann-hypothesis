@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
 public import Formalism.LocalToGlobal.HermitianForms.FormsTied
+public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 
@@ -27,7 +27,7 @@ theorem eval_subP {ι : Type} [Fintype ι] {n : ℕ} (N Z : ι → Matrix (Fin n
   | add p q hp hq => simp [hp, hq]
   | mul_X p x hp =>
     simp only [map_mul, MvPolynomial.eval_X, hp]
-    simp [Formalism.L2.Forms.subP, Matrix.mul_apply, MvPolynomial.eval_sum]
+    simp [Formalism.L2.Forms.subP, Matrix.mul_apply]
 
 theorem fnOf_mul {ι : Type} [Fintype ι] {n : ℕ} (G : ι → Matrix (Fin n) (Fin n) ℂ) (s : ι → ℤ)
     (N M : ι → Matrix (Fin n) (Fin n) ℂ) (P : MvPolynomial (ι × Fin n × Fin n) ℂ) :

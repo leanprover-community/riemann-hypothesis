@@ -1,10 +1,51 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ConstantCoeffQZeroEqP
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSAddLeft
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExistsInfFilVEqBot
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.IndepOfSpan
+public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
+public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -26,8 +67,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-theorem Q_eq_q (hs : W.s = 1) : W.Q = W.q := by
-  simp [LocWach.Q, hs]
+alias Q_eq_q := _root_.Formalism.MainNotions.LiftingTheory.wmap_Q_one
 
 theorem q_mul : (letπ : LetA O n) * W.q = (1 + letπ) ^ PD.p - 1 := by
   funext i
@@ -41,22 +81,13 @@ theorem cc_lev_pi (c : ZMod n) (ζ : LL) (hζ : ∃ j : ℕ, IsPrimitiveRoot ζ 
   rw [map_add (f := _), map_one, map_mul, PowerSeries.constantCoeff_C, hE0, mul_one] at this
   linear_combination this
 
-theorem constantCoeff_q_zero_eq_p : PowerSeries.constantCoeff W.q₀ = (PD.p : O) := by
-  have h := congrArg (PowerSeries.coeff 1) W.q₀_def
-  rw [PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply] at h
-  rw [h, map_sub, PowerSeries.coeff_one, if_neg one_ne_zero, sub_zero]
-  have e : ((1 : PowerSeries O) + PowerSeries.X) ^ PD.p =
-      (((Polynomial.X + 1) ^ PD.p : Polynomial O) : PowerSeries O) := by
-    rw [Polynomial.coe_pow, Polynomial.coe_add, Polynomial.coe_X, Polynomial.coe_one, add_comm]
-  rw [e, Polynomial.coeff_coe, Polynomial.coeff_X_add_one_pow, Nat.choose_one_right]
-
 theorem cc_lev_q_one (c : ZMod n) : PowerSeries.constantCoeff (W.lev c 1 W.q) = (PD.p : LL) := by
   have hq : W.q = (fun _ => PowerSeries.mk fun k => PowerSeries.coeff (k + 1) W.q₀) * letπ +
       (PD.p : LetA O n) := by
     funext i
     simp only [LocWach.q, Pi.add_apply, Pi.mul_apply, letπ, Pi.natCast_apply]
     conv_lhs => rw [PowerSeries.eq_shift_mul_X_add_const W.q₀]
-    rw [constantCoeff_q_zero_eq_p, map_natCast]
+    rw [Formalism.MainNotions.N.Ln34.CrystallineExponents.constantCoeff_q_zero_eq_p, map_natCast]
   rw [hq, map_add (f := _), map_mul, map_natCast, map_add (f := _), map_mul,
     cc_lev_pi W c 1 ⟨0, by rw [pow_zero]; exact IsPrimitiveRoot.one⟩, sub_self, mul_zero, zero_add,
     map_natCast]
@@ -120,11 +151,7 @@ theorem lev_q_eq (c : ZMod n) {ζ : LL} (hζ : IsPrimitiveRoot ζ PD.p) (hp : (P
           rw [← mul_assoc, PowerSeries.inv_mul_cancel _ hne, one_mul]
       _ = PowerSeries.X * ((W.lev c ζ letπ)⁻¹ * w) := by rw [h, hw]; ring
 
-theorem letE_mul_self (c : ZMod n) : (letE c : LetA O n) * letE c = letE c := by
-  funext i
-  by_cases h : i = c
-  · subst h; simp [letE]
-  · simp [letE, h]
+alias letE_mul_self := _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq
 
 theorem letE_smul_of_mem_Nl {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T}
     (hy : y ∈ W.Nl T c) : (letE c : LetA O n) • y = y := by
@@ -132,32 +159,11 @@ theorem letE_smul_of_mem_Nl {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T}
   simp only [LinearMap.smul_apply, LinearMap.id_apply]
   rw [smul_smul, letE_mul_self]
 
-theorem Nl_le_N (T : LocLat G Qp LL O) (c : ZMod n) : W.Nl T c ≤ W.N T := by
-  rintro _ ⟨z, hz, rfl⟩
-  simp only [LinearMap.smul_apply, LinearMap.id_apply]
-  exact (W.N T).smul_mem _ hz
+alias Nl_le_N := _root_.Formalism.MainNotions.LiftingTheory.wmap_Nl_le
 
 theorem mem_Nl_of {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T} (hy : y ∈ W.N T)
     (hc : (letE c : LetA O n) • y = y) : y ∈ W.Nl T c :=
   ⟨y, hy, by simp only [LinearMap.smul_apply, LinearMap.id_apply]; exact hc⟩
-
-theorem smul_eq_single {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T}
-    (hc : (letE c : LetA O n) • y = y) (o : O) :
-    o • y = (Pi.single c (PowerSeries.C o) : LetA O n) • y := by
-  conv_lhs => rw [← hc]
-  rw [← smul_assoc]
-  congr 1
-  funext i
-  by_cases h : i = c
-  · subst h; simp [letE, PowerSeries.smul_eq_C_mul]
-  · simp [letE, h]
-
-theorem letπ_mul_single (c : ZMod n) (a : PowerSeries O) :
-    (letπ : LetA O n) * Pi.single c a = Pi.single c (PowerSeries.X * a) := by
-  funext i
-  by_cases h : i = c
-  · subst h; simp [letπ]
-  · simp [letπ, h]
 
 theorem levN_sum {T : LocLat G Qp LL O} (c : ZMod n) (ζ : LL) {r : ℕ} {b : Fin r → W.DD T}
     (hbN : ∀ m, b m ∈ W.N T) (a : Fin r → LetA O n) (hy : ∑ m, a m • b m ∈ W.N T) (j : ℤ) :
@@ -165,8 +171,8 @@ theorem levN_sum {T : LocLat G Qp LL O} (c : ZMod n) (ζ : LL) {r : ℕ} {b : Fi
       ∑ m, smulS (W.lev c ζ (a m)) (W.levN T c ζ ⟨b m, hbN m⟩) j := by
   have e : (⟨∑ m, a m • b m, hy⟩ : ↥(W.N T)) = ∑ m, a m • (⟨b m, hbN m⟩ : ↥(W.N T)) :=
     Subtype.ext (by simp [Submodule.coe_sum])
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, map_sum, Finset.sum_apply]
+
+  rw [e, map_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [W.levN_smul]
   rfl
@@ -177,62 +183,7 @@ theorem rank_le (hFr : IsFractionRing O LL) (T : LocLat G Qp LL O) (c : ZMod n) 
       x = ∑ j, (Pi.single c (a j) : LetA O n) • b j)
     (h3 : Formalism.MainNotions.DeltaInvariantLattices.p3 W T) [FiniteDimensional LL ↥(Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c)] :
     r ≤ finrank LL ↥(Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c) := by
-  have hbN : ∀ m, b m ∈ W.N T := fun m => Nl_le_N W T c (hbS m)
-  let bN : Fin r → ↥(W.N T) := fun m => ⟨b m, hbN m⟩
-  have hcmp : ∀ m, W.cmp T (bN m) ∈ DcrisL PD T.ρ (W.emb c) := by
-    intro m
-    have e : (letE c : LetA O n) • bN m = bN m :=
-      Subtype.ext (letE_smul_of_mem_Nl W (hbS m))
-    rw [← e]
-    exact W.cmp_letter T c (bN m)
-  let vv : Fin r → ↥(Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c) := fun m =>
-    ⟨ιV PD (LL := LL) (V := T.V) (W.cmp T (bN m)), Submodule.mem_map_of_mem (hcmp m)⟩
-  have hli : LinearIndependent LL vv := by
-    refine Fintype.linearIndependent_iff.2 fun g hg m => ?_
-    have hg' : ιV PD (LL := LL) (V := T.V) (∑ m, g m • W.cmp T (bN m)) = 0 := by
-      have := congrArg Subtype.val hg
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa [vv, Submodule.coe_sum, map_sum, map_smul] using this
-    have hsum : ∑ m, g m • W.cmp T (bN m) = 0 :=
-      Formalism.MainNotions.UnusedSlot80.LevR.ιV_inj (PD := PD) (V := T.V) (hg'.trans (map_zero _).symm)
-    obtain ⟨⟨d, hd⟩, hint⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors O)
-      (Finset.univ : Finset (Fin r)) g
-    choose o ho using fun i => hint i (Finset.mem_univ i)
-    haveI : Nontrivial O := (algebraMap O LL).domain_nontrivial
-    have hdne : algebraMap O LL d ≠ 0 := IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hd
-    have hcz : W.cmp T (∑ i, o i • bN i) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
-      simp only [W.cmp_smul]
-      calc ∑ i, algebraMap O LL (o i) • W.cmp T (bN i)
-          = ∑ i, algebraMap O LL d • (g i • W.cmp T (bN i)) := by
-            refine Finset.sum_congr rfl fun i _ => ?_
-            rw [ho i, Algebra.smul_def, mul_smul]
-        _ = 0 := by rw [← Finset.smul_sum, hsum, smul_zero]
-    obtain ⟨y, hy, hyz⟩ := h3.1 _ hcz
-    set z : W.DD T := ∑ i, o i • b i with hz
-    have hzc : ((∑ i, o i • bN i : ↥(W.N T)) : W.DD T) = z := by simp [hz, bN, Submodule.coe_sum]
-    have hy' : (letπ : LetA O n) • y = z := by
-      rw [← hzc, ← hyz]
-      simp [Formalism.MainNotions.DeltaInvariantLattices.smulA]
-    have hzl : z ∈ W.Nl T c := Submodule.sum_mem _ fun i _ => Submodule.smul_of_tower_mem _ _ (hbS i)
-    obtain ⟨a, ha, -⟩ := hu _ (mem_Nl_of W ((W.N T).smul_mem (letE c) hy) (by rw [smul_smul, letE_mul_self]))
-    have rep1 : z = ∑ j, (Pi.single c (PowerSeries.C (o j)) : LetA O n) • b j := by
-      rw [hz]
-      exact Finset.sum_congr rfl fun j _ => smul_eq_single W (letE_smul_of_mem_Nl W (hbS j)) (o j)
-    have rep2 : z = ∑ j, (Pi.single c (PowerSeries.X * a j) : LetA O n) • b j := by
-      have e1 : z = (letE c : LetA O n) • z := (letE_smul_of_mem_Nl W hzl).symm
-      rw [e1, ← hy', smul_comm, ha, Finset.smul_sum]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      rw [smul_smul, letπ_mul_single]
-    have heq := (hu z hzl).unique rep1 rep2
-    have h0 : o m = 0 := by
-      have := congrArg (fun f => PowerSeries.constantCoeff (f m)) heq
-      simpa using this
-    have : algebraMap O LL d * g m = 0 := by
-      rw [← Algebra.smul_def, ← ho m, h0, map_zero]
-    exact (mul_eq_zero.1 this).resolve_left hdne
-  simpa using hli.fintype_card_le_finrank
+  apply Formalism.MainNotions.N.Ln34.CrystallineExponents.rank_le <;> assumption
 
 end Loc
 

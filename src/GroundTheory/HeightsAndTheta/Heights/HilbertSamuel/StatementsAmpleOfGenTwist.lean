@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturb
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AmpleSt
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 @[expose] public section
 

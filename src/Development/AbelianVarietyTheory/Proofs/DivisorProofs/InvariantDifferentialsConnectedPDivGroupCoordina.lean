@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.WittOnFalse
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobKerIdealLeAugIdeal
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CounitCotangentClassPowerSeriesEvalAtNilpotentStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionsEqSeriesInChartStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CounitCotangentClassPowerSeriesEvalAtNilpotent
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqZeroOfCobOneEqZero
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FunctionsEqSeriesInChart
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -45,7 +83,7 @@ theorem exists_eq_sum (hsurj : Function.Surjective (evA k x hx)) (u : Cot k A) :
     ∃ w : Fin d → k, u = ∑ i, w i • dUnit (R := k) (x i) := by
   obtain ⟨a, rfl⟩ := AugCot.d_surjective _ u
   obtain ⟨f, rfl⟩ := hsurj a
-  exact ⟨lin f, (GlobalTheory.T.counit_cotangentClass_powerSeriesEvalAtNilpotent k d A x hx haug f).2⟩
+  exact ⟨lin f, (_root_.GlobalTheory.Katz.counit_dUnit_evA k d A x hx haug f).2⟩
 
 
 include haug in
@@ -57,10 +95,10 @@ theorem eq_zero_of_sum (hsurj : Function.Surjective (evA k x hx))
     funext i
     simp [f, lin, coeff_X, Finsupp.single_eq_single_iff]
   have hcc : constantCoeff f = 0 := by simp [f]
-  obtain ⟨h1, h2⟩ := GlobalTheory.T.counit_cotangentClass_powerSeriesEvalAtNilpotent k d A x hx haug f
+  obtain ⟨h1, h2⟩ := _root_.GlobalTheory.Katz.counit_dUnit_evA k d A x hx haug f
   have hd : dUnit (R := k) (evA k x hx f) = 0 := by rw [h2, hlin, hw]
   have hε : ∀ g, Bialgebra.counitAlgHom k A (evA k x hx g) = constantCoeff g := fun g =>
-    (GlobalTheory.T.counit_cotangentClass_powerSeriesEvalAtNilpotent k d A x hx haug g).1
+    (_root_.GlobalTheory.Katz.counit_dUnit_evA k d A x hx haug g).1
   rw [dUnit, AugCot.d_eq_zero_iff, hε, hcc, map_zero, sub_zero] at hd
   have hK : RingHom.ker (Bialgebra.counitAlgHom k A) =
       Ideal.map (evA k x hx) (RingHom.ker (constantCoeff (R := k) (σ := Fin d))) := by
@@ -95,12 +133,12 @@ theorem omega_coord : ∀ (p : ℕ) (k : Type) [CommRing k] (d : ℕ) (G : PDivG
   have hres : ∀ n (w : Fin d → k), cotMap (G.res n) (∑ i, w i • dUnit (R := k) (c.x (n + 1) i)) =
       ∑ i, w i • dUnit (R := k) (c.x n i) := by
     intro n w
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, cotMap_d, c.res]
+
+    simp only [map_sum, map_smul, cotMap_d, c.res]
   refine ⟨fun w n => hres n w, fun u => ?_⟩
   have hu : ∀ n, cotMap (G.res n) (u.1 (n + 1)) = u.1 n := u.2
   obtain ⟨n0, hn0⟩ := c.presents.2 2
-  have hone := (GlobalTheory.T.functions_eq_series_in_chart p k d G c).1
+  have hone := (_root_.GlobalTheory.Katz.Chart.functions_are_series p k d G c).1
   have hker : ∀ j f, c.ev (n0 + j) f = 0 → ∀ α : Fin d →₀ ℕ, α.degree < 2 → coeff α f = 0 := by
     intro j
     induction j with

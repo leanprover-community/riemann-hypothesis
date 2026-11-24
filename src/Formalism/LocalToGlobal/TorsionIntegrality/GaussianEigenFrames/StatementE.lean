@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 

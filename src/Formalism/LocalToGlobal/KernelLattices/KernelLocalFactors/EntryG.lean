@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.KernelLattices.EntryG
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
+import Formalism.LocalToGlobal.AlgebraicTheory.StatementA
+public import Formalism.LocalToGlobal.AlgebraicTheory.StatementKer
+public import Formalism.LocalToGlobal.ExponentGrids.EntryG
 
 @[expose] public section
 

@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
+public import Mathlib.RingTheory.Ideal.Height
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

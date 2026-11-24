@@ -1,13 +1,48 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeSandwichAinf
+public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusIntegralityTensorAinfCoefficients
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachInclusionXQFrobenius
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeHeightsFromHodgeJumpsStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeHeightsFromHodgeJumps
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeSandwichAinf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,7 +84,7 @@ theorem NAinf_smul (E : EtTie W RA RW inclR φR gR πA) (T : LocLat G Qp LL O) (
   | smul c z _ h1 => rw [smul_comm]; exact Submodule.smul_mem _ _ h1
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem sand_exps [Nontrivial O] (E : EtTie W RA RW inclR φR gR πA)
     (hA : ∀ (p q : Type) [Fintype p] [Fintype q] (Z : Matrix p q RW) (P : Matrix p p RA)
       (P' : Matrix q q RA) (Y : Matrix p q RA),
@@ -70,15 +105,15 @@ theorem sand_exps [Nontrivial O] (E : EtTie W RA RW inclR φR gR πA)
     intro y hy
     refine ⟨fun j => b.repr ⟨y, hy⟩ j, ?_⟩
     have := congrArg (W.N T).subtype (b.sum_repr ⟨y, hy⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     exact this.symm
   have hj : ∀ (c : Fin (Module.finrank O ↥T.L.T) → LetA O n)
       (w : Fin (Module.finrank O ↥T.L.T) → W.DD T),
       E.jD T (∑ j, c j • w j) = ∑ j, inclR (E.io (c j)) • E.jD T (w j) := by
     intro c w
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun j _ => jD_smulA E T _ _
   have hsp : ⊤ ≤ Submodule.span RW (Set.range fun i => E.jD T (b i : W.DD T)) := by
     rw [← E.jD_span T, Submodule.span_le]
@@ -112,8 +147,8 @@ theorem sand_exps [Nontrivial O] (E : EtTie W RA RW inclR φR gR πA)
         refine Submodule.span_le.mpr ?_
         rintro _ ⟨z, hz, rfl⟩
         obtain ⟨c, rfl⟩ := hexp z hz
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         refine Submodule.sum_mem _ fun j _ => ?_
         rw [φD_smulA]
         exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
@@ -195,8 +230,8 @@ theorem le_mx [NeZero n] (M : ZMod n → ℕ) (i : ZMod n) : M i ≤ mx M :=
 theorem upper_exp [NeZero n] (T : LocLat G Qp LL O) (M h : ZMod n → ℕ) (hp : p5 W T M h) :
     ∀ x ∈ W.N T, W.Q ^ mx M • W.φD T x ∈ W.N T := by
   intro x hx
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [decomp T x, map_sum, Finset.smul_sum]
+
+  rw [decomp T x, map_sum, Finset.smul_sum]
   refine Submodule.sum_mem _ fun j _ => ?_
   have h1 := hp.1 (j + 1) _ (by rw [add_sub_cancel_right]; exact smul_mem_Nl T j x hx)
   obtain ⟨d, hd⟩ := Nat.exists_eq_add_of_le (le_mx M (j + 1))
@@ -215,15 +250,6 @@ theorem lower_exp [NeZero n] (T : LocLat G Qp LL O) (M h : ZMod n → ℕ) (hp :
   refine Submodule.smul_mem _ _ ?_
   exact Submodule.span_mono (Set.image_mono (Nl_le T (j - 1))) h1
 
-theorem φA_X (W : LocWach PD LL O v n) : W.φA W.X = W.X * W.Q := by
-  have h1 : W.φA letπ = letπ * W.q := by
-    funext i
-    exact W.φ₀_X
-  have h2 := DFunLike.congr_fun ((Commute.refl W.φA).pow_right (W.s - 1)).eq letπ
-  simp only [AlgHom.mul_apply] at h2
-  unfold LocWach.X LocWach.Q
-  rw [h2, h1, map_mul]
-
 end Generic
 
 end GlobalTheory.NL.SandJumps
@@ -231,21 +257,21 @@ end GlobalTheory.NL.SandJumps
 namespace GlobalTheory.NL.SandJumps
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 200000 in
+
+
 theorem main : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F), p5eL D.loc D.locA HW F := by
   intro D HW F Cm l _ K s LL h T M hh hT hJ
   haveI := ((D.loc l).PD K).finK₀
   haveI : NeZero (Module.finrank ℚ_[l] ↥(K0 K)) := ⟨Module.finrank_pos.ne'⟩
-  have hp : p5 ((HW l).W K s LL h) T M hh := GlobalTheory.T.wachLattice_heights_from_hodgeJumps D HW F Cm l K s LL h T M hh hT hJ
+  have hp : p5 ((HW l).W K s LL h) T M hh := _root_.GlobalTheory.NL.Heights.heights_from_jumps D HW F Cm l K s LL h T M hh hT hJ
   obtain ⟨b⟩ := GlobalTheory.NL.N_basis D HW F l K s LL h T hT
   have hio := GlobalTheory.NL.IoXQ.main D HW F l K s LL h
   obtain ⟨-, -, -, -, hφ, -⟩ := hio
   have hx : φRW LL (inclR LL (((F l).E K s LL h).tie.io ((HW l).W K s LL h).X)) =
       inclR LL (((F l).E K s LL h).tie.io ((HW l).W K s LL h).X) *
         inclR LL (((F l).E K s LL h).tie.io ((HW l).W K s LL h).Q) := by
-    rw [← hφ, φA_X, map_mul, map_mul]
+    rw [← hφ, _root_.Formalism.BasicNotions.LocWach.φA_X, map_mul, map_mul]
   exact sand_exps _ (GlobalTheory.FrobIntegralCoeff.frobenius_integrality_coeff l LL) hx T hT b _ _
     (upper_exp T M hh hp) (lower_exp T M hh hp)
 

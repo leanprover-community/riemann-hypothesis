@@ -1,7 +1,15 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

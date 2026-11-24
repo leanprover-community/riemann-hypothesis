@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleSheaf
+public import Mathlib.Tactic.Bound
+public import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,6 +1,46 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.ExpansionFormAll
+public import Formalism.SharpRestriction.LevelLetterCocycles.ModelKStep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -31,7 +71,7 @@ theorem smulE_mul (π' : LetA O n) (c : ZMod n) (e f : W.EE) (x : LA W T π' c) 
     smulE W T π' c (e * f) x = smulE W T π' c e (smulE W T π' c f x) := by
   induction x using TensorProduct.induction_on with
   | zero => simp
-  | tmul y l => simp [smulE, mul_assoc]
+  | tmul y l => simp [smulE]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), map_add (f := _), hx, hy]
 
 theorem smulE_one (π' : LetA O n) (c : ZMod n) (x : LA W T π' c) : smulE W T π' c 1 x = x := by
@@ -61,7 +101,7 @@ theorem smulE_tmul (π' : LetA O n) (c : ZMod n) (e f : W.EE) (l : LcQ W T π' c
   simp [smulE]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem finite_of (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (π' Eπ : LetA O n) (h' : ℕ) (c : ZMod n)
     (hEu : IsUnit (algebraMap (LetA O n) W.EE Eπ))
     (h4 : (LinearMap.range (toLA W T π' c ⊤)).map (smulLA W T π' c (Eπ ^ h')) ≤ NL W T Pt π' Eπ h' c)
@@ -103,8 +143,8 @@ theorem finite_of (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (π' Eπ :
       · refine Submodule.mem_sup_left ?_
         have hl : (l : LcQ W T π' c) ∈ Submodule.span O (Set.range gL) := by rw [hgL]; trivial
         obtain ⟨o, ho⟩ := (Submodule.mem_span_range_iff_exists_fun O).1 hl
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← ho, Finset.mul_sum, map_sum, TensorProduct.tmul_sum]
+
+        rw [← ho, Finset.mul_sum, map_sum, TensorProduct.tmul_sum]
         refine Submodule.sum_mem _ fun j _ => ?_
         rw [TensorProduct.tmul_smul, TensorProduct.sum_tmul]
         refine Submodule.smul_mem _ _ (Submodule.sum_mem _ fun r hr => ?_)
@@ -139,20 +179,20 @@ theorem finite_of (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (π' Eπ :
 
   obtain ⟨cf, hcf⟩ := (Submodule.mem_span_range_iff_exists_fun O).1 hy
   have hyL1 : smulE W T π' c Ei y ∈ LamLA W T π' Eπ h' c ⊤ := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hcf, map_sum]
+
+    rw [← hcf, map_sum]
     exact Submodule.sum_mem _ fun p _ => by rw [map_smul]; exact Submodule.smul_mem _ _ (hmem p)
   have hyeq : (⟨_, hyL1⟩ : ↥(LamLA W T π' Eπ h' c ⊤)) = ∑ p, cf p • ⟨_, hmem p⟩ := by
     apply Subtype.ext
     rw [Submodule.coe_sum]
     simp only [Submodule.coe_smul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hcf, map_sum]
+
+    rw [← hcf, map_sum]
     exact Finset.sum_congr rfl fun p _ => map_smul _ _ _
   have hyL2 : mkQ ⟨_, hyL1⟩ ∈ Submodule.span O ((Finset.univ.image fun p => mkQ ⟨_, hmem p⟩ : Finset _) :
       Set (QL W T Pt π' Eπ h' c)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hyeq, map_sum]
+
+    rw [hyeq, map_sum]
     exact Submodule.sum_mem _ fun p _ => by
       rw [map_smul]
       exact Submodule.smul_mem _ _ (Submodule.subset_span

@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorRes
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+import Mathlib.Algebra.Order.Star.Real
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ExistsTeichmullerRepModPrime
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.KurNewton
+import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormNatCastClOfNotDvd
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorRes
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementK
 
 @[expose] public section
 
@@ -122,7 +127,7 @@ theorem sqrt_mem (hl : l ≠ 2) (c y : ℂ_[l]) (hc : c ∈ MaximalUnramifiedExt
   · rw [Polynomial.coeff_sub, Polynomial.coeff_X_pow, Polynomial.coeff_C]
     split_ifs <;> first | (exfalso; omega) | simp [hc1]
   · simp [h]
-  · simp [Polynomial.derivative_X_pow, norm_mul, hy]
+  · simp [norm_mul, hy]
     rw [one_add_one_eq_two]
     exact h2
 

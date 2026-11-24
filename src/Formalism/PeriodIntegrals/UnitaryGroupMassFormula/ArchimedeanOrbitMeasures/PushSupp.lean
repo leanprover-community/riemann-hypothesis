@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushCut
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushInv
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushLF
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.ProdFirstProjectionSmul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -25,8 +68,8 @@ theorem hR_eq (x y : Fin M → R ⊗[F] E) :
 theorem sigR_mulVec (G : Matrix (Fin M) (Fin M) (R ⊗[F] E)) (x : Fin M → R ⊗[F] E) :
     (fun i => sigR R σ ((G *ᵥ x) i)) = (G.map (sigR R σ)) *ᵥ (fun i => sigR R σ (x i)) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+  simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
 
 theorem hR_smul (g : HA R σ J) (x y : Fin M → R ⊗[F] E) :
     hR R σ J ((HA.mat R σ J g : Matrix (Fin M) (Fin M) (R ⊗[F] E)) *ᵥ x)
@@ -43,8 +86,8 @@ theorem gramR_smul {m : ℕ} (g : HA R σ J) (Y : Fin m → Fin M → R ⊗[F] E
 theorem gramR_ratTup {m : ℕ} (Y : Fin m → Fin M → E) :
     gramR R σ J (ratTup R Y) = (gramE σ J Y).map (inclR R) := by
   funext a b
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [gramR, gramE, hR, hE, Formalism.UG.hform, ratTup, JR, inclR, sigR, map_sum, map_mul]
+
+  simp [gramR, gramE, hR, hE, Formalism.UG.hform, ratTup, JR, inclR, sigR, map_sum, map_mul]
 
 def hLin (x : Fin M → R ⊗[F] E) : (Fin M → R ⊗[F] E) →ₗ[R ⊗[F] E] R ⊗[F] E where
   toFun := hR R σ J x

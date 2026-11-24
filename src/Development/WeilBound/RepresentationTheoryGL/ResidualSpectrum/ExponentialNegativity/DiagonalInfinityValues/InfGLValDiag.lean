@@ -1,10 +1,46 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ExpNegGlue
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermFiniteOfSmaller
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineGLForms.GenSpace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLocCompAndIsLocLoc
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermFiniteOfSmaller
 public import Development.WeilBound.RepresentationTheoryGL.ConstantTermFiniteness.LieInvariants.InvariantOfLieOneLEqZero
-public import GroundTheory.PAdicHodge.NormalizedTrace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -34,24 +70,6 @@ theorem ltr_lie {a : ℕ} (h : GA E a) (X : Lie E a) : Commute (ltr h) (lie E a 
     change lieD X φ.1 (h * g) = fderiv ℝ (chart (fun x => φ.1 (h * x)) g) (oneL E a) X
     rw [chart_left]
     rfl
-
-theorem commute_zalg {a : ℕ} {T : Module.End ℂ (Sm E a)} (hT : ∀ X, Commute T (lie E a X))
-    {z : Module.End ℂ (Sm E a)} (hz : z ∈ Zalg E a) : Commute T z := by
-  let S : Subalgebra ℂ (Module.End ℂ (Sm E a)) := Subalgebra.centralizer ℂ {T}
-  have hS : ∀ {z}, z ∈ S ↔ Commute T z := by
-    intro z
-    simp [S, Subalgebra.mem_centralizer_iff, Commute, SemiconjBy]
-  have hV : ∀ X, lie E a X ∈ S := fun X => hS.2 (hT X)
-  have hE : ∀ τ i j, Eop τ i j ∈ S := fun τ i j =>
-    S.smul_mem (S.sub_mem (hV _) (S.smul_mem (hV _) _)) _
-  refine hS.1 ((Algebra.adjoin_le (S := S) ?_) hz)
-  rintro _ ⟨τ, u, rfl⟩
-  refine S.sum_mem fun σ _ => S.mul_mem (intCast_mem S _) (S.list_prod_mem fun x hx => ?_)
-  obtain ⟨k, rfl⟩ := List.mem_ofFn.1 hx
-  refine S.add_mem ?_ (hE _ _ _)
-  split_ifs
-  · exact S.algebraMap_mem _
-  · exact S.zero_mem
 
 theorem infGL_val_diag {a : ℕ} (y : GL (Fin a) (Cinf E)) (d : Fin a → Cinf E) (hy : y.val = Matrix.diagonal d) :
     (infGL E a y).val = Matrix.diagonal fun i => 1 - sInf E 1 + sInf E (d i) := by
@@ -139,7 +157,7 @@ theorem ltr_mem_goodCT {r s : ℕ} {L : Subgroup (GL (Fin (r + s)) (Af E))} {W :
     change ‖F.1 (aT E (r + s) r t * (g * infGL E (r + s) y))‖ ≤ _
     rw [← mul_assoc]
     exact hC y
-  · rw [← Module.End.mul_apply, ← (commute_zalg (ltr_lie (aT E (r + s) r t)) (hJ hz)).eq, Module.End.mul_apply,
+  · rw [← Module.End.mul_apply, ← (_root_.GlobalTheory.CuspQuot.commute_Zalg (ltr_lie (aT E (r + s) r t)) (hJ hz)).eq, Module.End.mul_apply,
       a6 z hz, map_zero]
 
 def stabFin {a : ℕ} (φ : Sm E a) : Subgroup (GL (Fin a) (Af E)) where
@@ -159,7 +177,7 @@ def stabFin {a : ℕ} (φ : Sm E a) : Subgroup (GL (Fin a) (Af E)) where
     rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one]; rfl
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem cofin_ann {a : ℕ} (φ : Sm E a)
     [hφ : FiniteDimensional ℂ (Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' Zalg E a))] :
     Cofin {z : Module.End ℂ (Sm E a) | z ∈ Zalg E a ∧ z φ = 0} := by
@@ -215,7 +233,7 @@ end PositivityTheory.Rg.Rs.JFinTr
 
 namespace PositivityTheory.Rg.Rs
 
-theorem finTr_holds : FinTr := JFinTr.finTr
+alias finTr_holds := _root_.PositivityTheory.Rg.Rs.JFinTr.finTr
 
 end PositivityTheory.Rg.Rs
 

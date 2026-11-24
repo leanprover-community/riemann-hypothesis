@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffGradient
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLogLogCutHess
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.CovLog
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 @[expose] public section
 

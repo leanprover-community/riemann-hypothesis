@@ -1,14 +1,65 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
-public import Formalism.LocalToGlobal.ProjectiveLattices.CompOrd
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
-public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
-public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsOpenSameModel
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FiniteImageOfLocallyConstantOnHolomorphicFamilie
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsFiniteExtGeomIntegralLocalization
+public import Formalism.LocalToGlobal.ProjectiveLattices.UnFree
+public import Mathlib.FieldTheory.LinearDisjoint
+public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsHolomorphicFamily
+public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
+public import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.MemRangeOfIsAlgebraicRatFun
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.SupCLeISupGeneric
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsFiniteExtGeomIntegralLocalization
+public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsOpenSameModel
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsIsConnectedPrincipalOpen
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsMvPolynomialOfPolyBoundOffHypersurface
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsPrimitiveElementDiscriminantMultiple
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsConnectedAndDenseComplHypersurface
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsConnectedBasicOpenComplexPointsOfDense
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsConnectedUnramifiedCoverOfIrreducible
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.PrincipalOpenDenseComplexPoints
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIff
+import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp
 
 @[expose] public section
 
@@ -123,7 +174,7 @@ theorem ReadOn.eventually {U : Formalism.L2.PjFree.Unf Xo c σ r} (hσ : Formali
     {f : A → ℂ} {k : U.Comp} (h : ReadOn U yA f k) :
     ∀ᶠ g in 𝓝 f, (∃ ρ : A →+* ℂ, ρ.comp (algebraMap c.F A) = σ ∧ ⇑ρ = g) → ReadOn U yA g k := by
   classical
-  obtain ⟨hL, -, -, -⟩ := GlobalTheory.T.evaluation_laws_generic_frames_atlas_hold E H Dw l Xo c
+  obtain ⟨hL, -, -, -⟩ := _root_.GlobalTheory.Reg.evLaws_genFr_atlas E H Dw l Xo c
   obtain ⟨ψ₀, z₀, x₀, t₀, hf, hz₀, hb₀⟩ := h
   let φ₀ : A →+* ℂ := ψ₀.toRingHom
   obtain rfl : ⇑φ₀ = f := funext hf
@@ -164,7 +215,7 @@ theorem ReadOn.eq_of_isPreconnected {U : Formalism.L2.PjFree.Unf Xo c σ r} (hσ
     (hU : Formalism.L2.PjFree.IsUnf U) {A : Type} [CommRing A] [Algebra c.F A] [Algebra.Smooth c.F A] {yA : FrPt Xo c A}
     (hc : IsPreconnected {g : A → ℂ | ∃ ρ : A →+* ℂ, ρ.comp (algebraMap c.F A) = σ ∧ ⇑ρ = g})
     {f f' : A → ℂ} {k k' : U.Comp} (h : ReadOn U yA f k) (h' : ReadOn U yA f' k') : k = k' := by
-  obtain ⟨hL, -, -, -⟩ := GlobalTheory.T.evaluation_laws_generic_frames_atlas_hold E H Dw l Xo c
+  obtain ⟨hL, -, -, -⟩ := _root_.GlobalTheory.Reg.evLaws_genFr_atlas E H Dw l Xo c
   have hmem : ∀ {f k}, ReadOn U yA f k → ∃ ρ : A →+* ℂ, ρ.comp (algebraMap c.F A) = σ ∧ ⇑ρ = f := by
     rintro f k ⟨ψ, -, -, -, hψ, -⟩
     exact ⟨ψ.toRingHom, RingHom.ext fun a => ψ.commutes a, funext hψ⟩
@@ -181,7 +232,7 @@ theorem ReadOn.eq_of_isPreconnected {U : Formalism.L2.PjFree.Unf Xo c σ r} (hσ
 
 theorem comp_eq_of_fnAlgClosed : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Unf Xo c σ r), GoodEmb c σ → IsUnf U → FnAlgClosed (Xo := Xo) (c := c) → ∀ (h : GenFrEx Xo c) (Z : Comp Xo c) (k k' : U.Comp) (x : (U.X k).dom) (x' : (U.X k').dom), (∃ (φ : Om Z →ₐ[c.F] CAt σ) (y' : FrPt Xo c (CAt σ)) (t : Ix Dw → (CAt σ)ˣ), FrMap φ (genFr h Z) y' ∧ FrBor t (U.un k x) y') → (∃ (φ : Om Z →ₐ[c.F] CAt σ) (y' : FrPt Xo c (CAt σ)) (t : Ix Dw → (CAt σ)ˣ), FrMap φ (genFr h Z) y' ∧ FrBor t (U.un k' x') y') → k = k' := by
   intro E _ _ _ H Dw l Xo c σ r U hσ hU hac h Z k k' x x' hk hk'
-  obtain ⟨hL, -, -, hA⟩ := GlobalTheory.T.evaluation_laws_generic_frames_atlas_hold E H Dw l Xo c
+  obtain ⟨hL, -, -, hA⟩ := _root_.GlobalTheory.Reg.evLaws_genFr_atlas E H Dw l Xo c
   obtain ⟨-, hmul, hinv, -⟩ := GlobalTheory.Reg.BorelGroupoid.frBor_groupoid E H Dw l Xo c (CAt σ)
   obtain ⟨C, ψ, z, t, hz, ht⟩ := hA h (Om Z) (genFr h Z)
   haveI := C.sm

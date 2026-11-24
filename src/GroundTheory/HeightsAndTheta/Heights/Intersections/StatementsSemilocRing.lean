@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IdDeg
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZ
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 
 @[expose] public section
 
@@ -40,40 +86,7 @@ open Classical in
 theorem rename_isMultiHomog {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')} (hv : IsBlockMap κ v)
     {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) :
     IsMultiHomog (rename v f) (Function.extend κ a 0) := by
-  intro m' hm' k'
-  rw [support_rename_of_injective hv.2.1, Finset.mem_image] at hm'
-  obtain ⟨m, hm, rfl⟩ := hm'
-  have hblock : ∀ (F : (Σ k', ι' k') → ℕ), ∑ i, F ⟨k', i⟩ = ∑ q, if q.1 = k' then F q else 0 := by
-    intro F
-    rw [Fintype.sum_sigma, Finset.sum_eq_single k']
-    · simp
-    · intro b _ hb
-      simp [hb]
-    · simp
-  rw [hblock]
-  have h1 : (∑ q, if q.1 = k' then Finsupp.mapDomain v m q else 0) =
-      ∑ p, if κ p.1 = k' then m p else 0 := by
-    have := Finsupp.sum_mapDomain_index_inj (h := fun (q : Σ k', ι' k') (n : ℕ) => if q.1 = k' then n else 0)
-      (s := m) hv.2.1
-    rw [Finsupp.sum_fintype _ _ (by simp), Finsupp.sum_fintype _ _ (by simp)] at this
-    simpa [hv.2.2.1] using this
-  have h2 : (∑ p : Σ k, ι k, if κ p.1 = k' then m p else 0) = ∑ k, if κ k = k' then a k else 0 := by
-    rw [Fintype.sum_sigma]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    split_ifs with hk
-    · exact hf m hm k
-    · simp
-  convert h1.trans h2
-  by_cases h : ∃ k, κ k = k'
-  · obtain ⟨k, rfl⟩ := h
-    rw [hv.1.extend_apply, Finset.sum_eq_single k]
-    · simp
-    · intro b _ hb
-      simp [hv.1.ne hb]
-    · simp
-  · rw [Function.extend_apply' _ _ _ h]
-    refine (Finset.sum_eq_zero fun k _ => ?_).symm
-    rw [if_neg fun hk => h ⟨k, hk⟩]
+  apply GroundTheory.Heights₂.Heights.Inter.ArithmeticIntersectionHorizontal.isMultiHomog_rename <;> assumption
 
 abbrev quotMapZ (v : (Σ k, ι k) → (Σ k', ι' k')) (P' : Ideal (MRing ι')) :
     MRing ι ⧸ imageZ v P' →+* MRing ι' ⧸ P' :=

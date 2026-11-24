@@ -1,8 +1,8 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureB
+import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogenyExists
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Isogeny
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcLinear
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSimpleSub
 
 @[expose] public section
 

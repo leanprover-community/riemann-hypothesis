@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GenusGluing.GenusApproximation.GlueExists
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 
 @[expose] public section
 

@@ -1,9 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.AdelicFunctionRightTranslateDiamond
-public import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
+public import Formalism.LocalToGlobal.HermitianForms.FormsTied
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
+public import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
 
 @[expose] public section
 
@@ -55,12 +56,6 @@ theorem frame_translate_is_orthonormal (emb : ι → E →+* ℂ) (hc : ∀ τ x
   rw [e, at_infinity_unitary emb hc γ hγ τ]
   exact hy τ
 
-theorem at_infinity_mul_inv (emb : ι → E →+* ℂ) (γ : GL (Fin n) E) (τ : ι) :
-    atInf emb (γ : Matrix (Fin n) (Fin n) E) τ * atInf emb ((γ⁻¹ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) τ = 1 := by
-  simp only [atInf]
-  rw [← Matrix.map_mul, Units.mul_inv]
-  simp
-
 theorem adelic_value_translate (S : StepLevel F E σ J T f bad) (emb : ι → E →+* ℂ)
     (hc : ∀ τ x, emb τ (σ x) = starRingEnd ℂ (emb τ x))
     {g : UPts σ J (FiniteAdeleRing (𝓞 F) F) → Frames (gramC J emb) → ℂ} (hg : g ∈ AdFun S emb)
@@ -71,7 +66,7 @@ theorem adelic_value_translate (S : StepLevel F E σ J T f bad) (emb : ι → E 
   intro τ
   show y.1 τ = atInf emb (γ : Matrix (Fin n) (Fin n) E) τ *
     (atInf emb ((γ⁻¹ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) τ * y.1 τ)
-  rw [← Matrix.mul_assoc, at_infinity_mul_inv, Matrix.one_mul]
+  rw [← Matrix.mul_assoc, Formalism.L2.Forms.atInf_mul_inv, Matrix.one_mul]
 
 theorem complex_span_block_action_stable (lam : ι → DomWeight n) (w : ι → Matrix (Fin n) (Fin n) ℂ)
     {P : MvPolynomial (ι × Fin n × Fin n) ℂ} (hP : P ∈ CSpan lam) : blockAct ℂ w P ∈ CSpan lam := by
@@ -103,8 +98,6 @@ theorem forms_from_adelic_function (Tf : FormsTied D u) (i : ℕ) (hi : i ≤ D.
   have := congrFun (congrFun hgφ c) ((Tf.val i hi).eY z)
   simp only [Equiv.symm_apply_apply] at this
   exact this.symm
-
-
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 

@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+import Std.Tactic.BVDecide.Normalize.BitVec
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

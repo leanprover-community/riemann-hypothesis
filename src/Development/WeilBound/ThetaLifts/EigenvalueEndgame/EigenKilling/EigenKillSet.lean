@@ -1,12 +1,77 @@
 module
 
 public import Development.WeilBound.ThetaLifts.SmallCones.SoDefs
-public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
-public import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.SoStatement
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDict
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfSurj
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.EigenKilling.ConeIntegralFactorisation
+public import Development.WeilBound.ThetaLifts.CTKernel
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianSelfDualLatticeSpaceFormHermitianNondeg
+import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PureEqPureA
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.IndicatorMem
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
+public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfActs
+public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDict
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictAd
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
+public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
+import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
+import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
+import GroundTheory.GlobalFields.LocalAtPlace
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.LocallyConstant.Algebra
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.EqZeroOfLocW
+public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -66,7 +131,7 @@ theorem kill_set {X : Type} [TopologicalSpace X] (N : Submodule ℂ (X → ℂ))
 
 theorem rank_ne_iff {k : Type} [Field k] {n d : ℕ} (C : Matrix (Fin n) (Fin d) k) : C.rank ≠ n ↔ ∃ p, p ≠ 0 ∧ p ᵥ* C = 0 := by
   have h := LinearMap.finrank_range_add_finrank_ker Cᵀ.mulVecLin
-  rw [Module.finrank_fin_fun, ← Matrix.rank, Matrix.rank_transpose] at h
+  rw [Module.finrank_fin_fun, Matrix.finrank_range_mulVecLin, Matrix.rank_transpose] at h
   have : C.rank ≠ n ↔ LinearMap.ker Cᵀ.mulVecLin ≠ ⊥ := by
     rw [Ne, Ne, ← Submodule.finrank_eq_zero]
     omega
@@ -140,14 +205,10 @@ end
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {v : Pl F}
   {n d n₁ d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁} {B : Base F E}
 
-theorem sig_sig (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  exact τ.injective (by rw [h.2.2.2, h.2.2.2, star_star])
-
 theorem form_swap (hσ : ∀ x, σ (σ x) = x) {J : Matrix (Fin n) (Fin n) E} (ε : E) (h : ∀ i j, σ (J j i) = ε * J i j) (x y : Fin n → E) :
     σ (form σ J x y) = ε * form σ J y x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [form, dotProduct, mulVec, map_sum, map_mul, hσ, h, Finset.mul_sum]
+
+  simp only [form, dotProduct, mulVec, map_sum, map_mul, hσ, h, Finset.mul_sum]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
@@ -564,7 +625,7 @@ theorem position_inj (hM : M.IsGood B.ψ) {f : SInf F (Fin n × Fin d)} (hf : f 
       funext w
       by_cases hw : w = v
       · subst w; simp [t]
-      · simp [t, hw, Function.update_of_ne hw]
+      · simp [t, hw]
     unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
     rw [key, finprod_mul_distrib ht hs, finprod_eq_single t v fun w hw => if_neg hw]
     simp only [t, if_true]
@@ -630,7 +691,7 @@ theorem acts_rho (M : Model σ X W) (ψ) {u} (hu : At (evFin F v) u) (φ) : Acts
 
 theorem sep {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {s s' : Fv F v} (h : ∀ c, ψ (liftV v (s * c)) = ψ (liftV v (s' * c))) : s = s' := by
   by_contra hne
-  refine GlobalTheory.PsiNontriv.psiV_ne_one ψ hψ v (AddChar.ext _ _ fun y => ?_)
+  refine Tw.PsiNontriv.psiV_ne_one ψ hψ v (AddChar.ext _ _ fun y => ?_)
   have h1 := h ((s - s')⁻¹ * y)
   have h2 : s * ((s - s')⁻¹ * y) = y + s' * ((s - s')⁻¹ * y) := by
     have := sub_ne_zero.2 hne
@@ -662,7 +723,7 @@ theorem map_vv (t : E →ₐ[F] Fv F v) (a : Fin n → AE F E) (x : Fin d → E)
 theorem soLower_of (hMx : PositivityTheory.ThKG.MixW) : SoLower := by
   intro F E _ _ _ _ _ σ B n d d₁ X W W₁ M M₁ χX χW om om₁ r s r' s' r₁ s₁ H i₀ i₁ hp hp₁ hH hn hd hν e ei ev he hl φ hφ
   have hB := hp.base
-  have hσ : ∀ x, σ (σ x) = x := sig_sig hB.cm
+  have hσ : ∀ x, σ (σ x) = x := _root_.GlobalTheory.AdelicU.cm_conj_conj hB.cm
   have dX := det_herm hp.herm
   have dW := det_skew hp.skew
   have dW₁ := det_skew hp₁.skew
@@ -703,8 +764,8 @@ theorem soLower_of (hMx : PositivityTheory.ThKG.MixW) : SoLower := by
     have h1 : ι'ᵀ * J * ιb = J₁ := by
       rw [hJ₁, ← hH.gram, hι', hJ, hιb]
       refine Matrix.ext fun i j => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mul_apply, map_apply, transpose_apply, map_sum, map_mul, AlgHom.comp_apply]
+
+      simp only [Matrix.mul_apply, map_apply, transpose_apply, map_sum, map_mul, AlgHom.comp_apply]
     rw [← h1, transpose_mul, transpose_mul, transpose_transpose, Matrix.mul_assoc]
   let κ : Matrix (Fin d₁) (Fin d) (Fv F B.v₁) := J₁ᵀ⁻¹ * (ιbᵀ * Jᵀ)
   let ρ : Fin d → Fv F B.v₁ := J *ᵥ fun i => (t.comp σ) (H.x i)

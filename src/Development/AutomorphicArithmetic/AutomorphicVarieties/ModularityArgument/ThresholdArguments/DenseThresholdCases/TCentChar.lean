@@ -1,13 +1,54 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.DiscreteSeriesCoefficientsCuspidal
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ShortLatticeUnitarize.CompactBoxLattices.CentChar
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutomorphicFormHyp
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ShortLatticeUnitarize.Unitarize
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CapCentral
+import Formalism.GaloisIrreducibility.GaloisIrreducibilityProofs.OneNonUnit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 200000
+
+
 
 section
 noncomputable section
@@ -19,8 +60,8 @@ variable {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V]
 private def orb (κ : Representation ℂ K V) (x : V) : (K →₀ ℂ) →ₗ[ℂ] V := Finsupp.linearCombination ℂ fun k => κ k x
 private theorem orb_comm (κ : Representation ℂ K V) (T : Module.End ℂ V) (hT : ∀ k x, T (κ k x) = κ k (T x)) (x : V)
     (c : K →₀ ℂ) : orb κ (T x) c = T (orb κ x c) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [orb, Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, hT]
+
+  simp only [orb, Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, hT]
 private theorem orb_act (κ : Representation ℂ K V) (x : V) (k : K) (c : K →₀ ℂ) :
     orb κ x (c.mapDomain (k * ·)) = κ k (orb κ x c) := by
   induction c using Finsupp.induction_linear with
@@ -75,10 +116,10 @@ private abbrev sc (y : Rˣ) : GL (Fin 2) R := GeneralLinearGroup.scalar (Fin 2) 
 private theorem corner_scalar (s : R →ₙ+* S) (y : Rˣ) : cornerGL 2 s (sc y) = sc (Units.map (corner s) y) := by
   ext i j
   change (1 : Matrix (Fin 2) (Fin 2) S) i j - s ((1 : Matrix (Fin 2) (Fin 2) R) i j) + s (sc y i j) = _
-  fin_cases i <;> fin_cases j <;> simp [corner, GeneralLinearGroup.scalar]
+  fin_cases i <;> fin_cases j <;> simp [corner]
 private theorem sc_comm (y : Rˣ) (g : GL (Fin 2) R) : g * sc y = sc y * g := by
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [GeneralLinearGroup.scalar, Matrix.mul_apply, Fin.sum_univ_succ, mul_comm]
+  fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_succ, mul_comm]
 private theorem continuous_sc [TopologicalSpace R] : Continuous (sc : Rˣ → GL (Fin 2) R) := by
   refine Units.continuous_iff.2 ⟨?_, ?_⟩
   · exact (continuous_pi fun _ => Units.continuous_val : Continuous fun (y : Rˣ) (_ : Fin 2) => (y : R)).matrix_diagonal
@@ -192,7 +233,7 @@ private theorem scal_sign (h : UpperTheory.V.Published.AdmissibleReal) (π : Cus
   have hk : (sc s).val ∈ Matrix.unitaryGroup (Fin 2) (Rinf F) := by
     rw [Matrix.mem_unitaryGroup_iff]
     ext i j : 1
-    fin_cases i <;> fin_cases j <;> simp [GeneralLinearGroup.scalar, Matrix.mul_apply, Fin.sum_univ_succ, hs']
+    fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_succ, hs']
   have e : Unitary.toUnits (⟨_, hk⟩ : Kinf F 2) = sc s := Units.ext rfl
   refine schur h π _ (fun φ hφ => ?_) fun o => ?_
   · rw [← inf_sc, ← e]; exact π.stable (.cpt _) φ hφ
@@ -308,7 +349,7 @@ private theorem main (h : UpperTheory.V.Published.AdmissibleReal) (π : CuspSub 
   refine Subtype.ext (funext fun x => ?_)
   have e : sc (diagUnits F k) = ratGL F 2 (sc k) := by
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [GeneralLinearGroup.scalar, ratGL, diagUnits]
+    fin_cases i <;> fin_cases j <;> simp [ratGL, diagUnits]
   rw [rt_apply, sc_comm, e]
   exact (π.cusp φ hφ).1.left _ _
 end UpperTheory.V.Sd.Wc.CentralCharacter

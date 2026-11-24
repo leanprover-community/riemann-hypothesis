@@ -1,18 +1,8 @@
 module
 
-public import Mathlib
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Formalism.PadicSubsetSums.CentralIdempotents.EigenbasisOfDistinctRoots
-public import Formalism.PadicSubsetSums.CentralIdempotents.GaloisIrreducibility
-public import Formalism.GaloisIrreducibility.NoSolvableTransitive
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRCycleProbSum
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRPrimeRecipSum
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRPrimeToPartEqIff
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRPrimeToPartSpec
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRLemmaP
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRIrredCountUpper
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRSquarefreeCount
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRTypeCountExact
-public import Formalism.PadicSubsetSums.StableGradedCounts.IRRCycleTypeProb
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 
 @[expose] public section
 
@@ -24,26 +14,16 @@ private lemma cyc {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
     (w : V) (hw : w ≠ 0) (S : Submodule ℂ V) (f : Module.End ℂ V)
     (hf : ∀ g : G, f (ρ g w) ∈ S) : ∀ v, f v ∈ S := by
   intro v
-  have hU : Submodule.span ℂ (Set.range fun g => ρ g w) = ⊤ := by
-    have hinv : ∀ g : G, ∀ x ∈ Submodule.span ℂ (Set.range fun g => ρ g w),
-        ρ g x ∈ Submodule.span ℂ (Set.range fun g => ρ g w) := by
-      intro g x hx
-      have hle : Submodule.span ℂ (Set.range fun g => ρ g w) ≤
-          (Submodule.span ℂ (Set.range fun g => ρ g w)).comap (ρ g) := by
-        rw [Submodule.span_le]
-        rintro _ ⟨g', rfl⟩
-        exact Submodule.subset_span ⟨g * g', by simp [map_mul]⟩
-      exact hle hx
-    rcases hirr _ hinv with h | h
-    · exfalso
-      apply hw
-      have hmem : w ∈ Submodule.span ℂ (Set.range fun g => ρ g w) :=
-        Submodule.subset_span ⟨1, by simp⟩
-      rw [h] at hmem
-      simpa using hmem
-    · exact h
-  have hle : Submodule.span ℂ (Set.range fun g => ρ g w) ≤ S.comap f := by
-    rw [Submodule.span_le]
+  let U := Submodule.span ℂ (Set.range fun g => ρ g w)
+  have hinv (g : G) : U ≤ U.comap (ρ g) := by
+    apply Submodule.span_le.mpr
+    rintro _ ⟨g', rfl⟩
+    exact Submodule.subset_span ⟨g * g', by simp [map_mul]⟩
+  have hwU : w ∈ U := Submodule.subset_span ⟨1, by simp⟩
+  have hU : U = ⊤ :=
+    (hirr U (fun g _ hx => hinv g hx)).resolve_left (fun h => hw (by simpa [h] using hwU))
+  have hle : U ≤ S.comap f := by
+    apply Submodule.span_le.mpr
     rintro _ ⟨g, rfl⟩
     exact hf g
   rw [hU] at hle
@@ -140,8 +120,8 @@ theorem goal1 :
     ⟨_, rfl⟩
   have hP : ∀ v, P v = ∑ u : J, ((↑(Nat.card J) : ℂ)⁻¹ * ↑(χ u)⁻¹) • ρ ↑u v := by
     intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hPdef, Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.twistedIdem.eq_def, map_sum, LinearMap.sum_apply]
+
+    rw [hPdef, Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.twistedIdem.eq_def, map_sum, LinearMap.sum_apply]
     refine Finset.sum_congr rfl (fun u _ => ?_)
     rw [map_smul, LinearMap.smul_apply, Representation.asAlgebraHom_of]
   have hPW : ∀ v, P v ∈ Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.eqvSpace ρ (fun u : J => u.val) (fun u => (χ u).val) := by
@@ -149,8 +129,8 @@ theorem goal1 :
     rw [Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.eqvSpace.eq_def]
     show ∀ u : J, ρ ↑u (P v) = (χ u : ℂ) • P v
     intro u0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hP, map_sum, Finset.smul_sum]
+
+    rw [hP, map_sum, Finset.smul_sum]
     refine Fintype.sum_equiv (Equiv.mulLeft u0) _ _ (fun u => ?_)
     simp only [Equiv.coe_mulLeft, map_smul, Subgroup.coe_mul, map_mul, Module.End.mul_apply, smul_smul,
       mul_inv_rev, Units.val_mul]

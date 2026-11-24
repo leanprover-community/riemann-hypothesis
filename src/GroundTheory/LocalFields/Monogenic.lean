@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
+public import GroundTheory.LocalFields.Interface
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.LocalFields.Eisenstein
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

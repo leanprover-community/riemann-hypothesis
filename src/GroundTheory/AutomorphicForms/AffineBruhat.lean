@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GLnLocal
-public import GroundTheory.AutomorphicForms.GLnLattice
 public import GroundTheory.AutomorphicForms.FiniteBruhat
+public import Mathlib.GroupTheory.SemidirectProduct
+public import GroundTheory.AutomorphicForms.GLnLattice
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

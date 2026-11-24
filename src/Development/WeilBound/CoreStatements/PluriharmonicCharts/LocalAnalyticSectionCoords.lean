@@ -1,13 +1,63 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsImg
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFifth
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFirst
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPointStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticEighthStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSecondStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.PullDegSome
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFirst
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticThird
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointInPoints
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPoint
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 
@@ -147,7 +197,7 @@ theorem Sw.data (S : Sw M τ a b k₀ ca cb) {z : (Σ o : Option K, ι (o.getD k
 theorem Sw.mem (S : Sw M τ a b k₀ ca cb) {z : (Σ o : Option K, ι (o.getD k₀)) → ℂ}
     (h₀ : fstPt k₀ z ∈ mcPts (mCoordIdeal y)) (h₁ : sndPt k₀ z ∈ mcPts (mCoordIdeal y)) :
     z ∈ mcPts (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) := by
-  obtain ⟨F, hF, hG⟩ := (GlobalTheory.T.flag_model_base_projection_points K ι Φ y Ψ N j M).2.1 _ (CPts.base_mem M h₀)
+  obtain ⟨F, hF, hG⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.main K ι Φ y Ψ N j M).2.1 _ (CPts.base_mem M h₀)
   obtain ⟨z', ho, h, t, H, H'⟩ := S.data h₀ h₁ hF hG
   have m₀ := mem_mcPts_of_sameOrbit (CoordinateConeArithVar.isMultiHomogIdeal y) (fst_orbit ho) h₀
   have hG' : M.GoodAt F (mCoordIdeal (basePart M.blk (fstPt k₀ z'))) := by
@@ -187,8 +237,8 @@ theorem img_blk (Cv : FlagCover M' M) {d : ℕ}
     (hb : SameOrbit (basePart M'.blk z₁) (basePart M'.blk z₂)) {p : Ψ × Fin N} {k : K} {k' : K'}
     (hk : M.blk p = some k) (hp' : M'.blk p = some k') (hww : ∀ m, w₁ ⟨k, m⟩ = w₂ ⟨k, m⟩) :
     ∃ c : ℂ, c ≠ 0 ∧ ∀ m, z₁ ⟨k', m⟩ = c * z₂ ⟨k', m⟩ := by
-  have P := GlobalTheory.T.flag_model_base_projection_points K ι Φ y Ψ N j M
-  have P' := GlobalTheory.T.flag_model_base_projection_points K' ι' Φ' y' Ψ N j M'
+  have P := _root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.main K ι Φ y Ψ N j M
+  have P' := _root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.main K' ι' Φ' y' Ψ N j M'
   obtain ⟨F', hF', hg'⟩ := P'.2.1 _ (P'.1 z₁ h₁)
   obtain ⟨a₁, o₁, n₁⟩ := exists_normal_base M'.blk F'.c z₁ fun k => chart_ne (hg'.1 k)
   obtain ⟨a₂, o₂, n₂⟩ := exists_normal_base M'.blk F'.c z₂ fun k =>
@@ -203,7 +253,7 @@ theorem img_blk (Cv : FlagCover M' M) {d : ℕ}
   have ha₁ := mem_mcPts_of_sameOrbit hy'.2.1.2.1 o₁ h₁
   have ha₂ := mem_mcPts_of_sameOrbit hy'.2.1.2.1 o₂ h₂
   have hbw : SameOrbit (basePart M'.blk a₁ ∘ Cv.v) (basePart M.blk w₁) := Cj.sameOrbit_trans
-    (comp_orbit Cv.block ob₁) (Cj.sameOrbit_symm (GlobalTheory.T.flag_cover_arithmetic_third K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv d hy hy' z₁ h₁ w₁ i₁))
+    (comp_orbit Cv.block ob₁) (Cj.sameOrbit_symm (_root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.img_lies_over K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv d hy hy' z₁ h₁ w₁ i₁))
   have hbv := mem_mcPts_of_sameOrbit (CoordinateConeArithVar.isMultiHomogIdeal _) hbw (P.1 w₁ hw)
   obtain ⟨F, hF, hg⟩ := P.2.1 _ hbv
   obtain ⟨g₁, fl₁⟩ := (P'.2.2 F' hF' a₁ hbm hgb n₁).1 ha₁
@@ -277,7 +327,7 @@ theorem exists_relW_lift_of_isImg (Cv : FlagCover M' M) (S : Sw M τ a b k₀ ca
     {w : (Σ o : Option K, ι (o.getD k₀)) → ℂ} (hw : w ∈ mcPts (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)))
     {z₀ : (Σ k, ι' k) → ℂ} (hz₀ : z₀ ∈ mcPts (mCoordIdeal y')) (hi : IsImg Cv z₀ (fstPt k₀ w)) :
     ∃ z ∈ mcPts (mCoordIdeal (M'.wCo (τ, a) k₀' ca cb RatFunc.X)), fstPt k₀' z = z₀ ∧ RelW Cv k₀ k₀' z w := by
-  have hb := GlobalTheory.T.flag_cover_arithmetic_third K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv d hy hy' z₀ hz₀ _ hi
+  have hb := _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.img_lies_over K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv d hy hy' z₀ hz₀ _ hi
   obtain ⟨z₁, hz₁, ho, hi₁⟩ := FibreCount.img_surj Cv hy hy' (S.snd_mem hy hw) (CPts.base_mem M' hz₀)
     (by rw [Pts.basePart_snd M S.hk]; exact orbit_symm hb)
   have hs : SameOrbit (sndPt k₀' (joinPt k₀' z₀ z₁)) z₁ := by
@@ -334,12 +384,12 @@ theorem local_analytic_section_coords (Cv : FlagCover M' M) (S : Sw M τ a b k�
   have hz₀ := fst_mem hz
   have hz₁ := S'.snd_mem hy' hz
   have hb := CPts.base_mem M' hz₀
-  have hbv := (GlobalTheory.T.flag_cover_base_point_in_points K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ hb).1
-  obtain ⟨F', hF', hg'⟩ := (GlobalTheory.T.flag_model_base_projection_points K' ι' Φ' y' Ψ N j M').2.1 _ hb
-  obtain ⟨F, hF, hg⟩ := (GlobalTheory.T.flag_model_base_projection_points K ι Φ y Ψ N j M).2.1 _ hbv
+  have hbv := (_root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.Pt.main K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ hb).1
+  obtain ⟨F', hF', hg'⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.main K' ι' Φ' y' Ψ N j M').2.1 _ hb
+  obtain ⟨F, hF, hg⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.main K ι Φ y Ψ N j M).2.1 _ hbv
   have hsb := Pts.basePart_snd M' S'.hk
-  obtain ⟨V₀, f₀, hV₀, hzV₀, hf₀, hs₀⟩ := GlobalTheory.T.flag_cover_frames_at_point K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ F' F hz₀ hF' hF hg' hg
-  obtain ⟨V₁, f₁, hV₁, hzV₁, hf₁, hs₁⟩ := GlobalTheory.T.flag_cover_frames_at_point K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ F' F hz₁ hF' hF
+  obtain ⟨V₀, f₀, hV₀, hzV₀, hf₀, hs₀⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.An.main K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ F' F hz₀ hF' hF hg' hg
+  obtain ⟨V₁, f₁, hV₁, hzV₁, hf₁, hs₁⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.An.main K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ F' F hz₁ hF' hF
     (by rw [hsb]; exact hg') (by rw [hsb]; exact hg)
   refine ⟨fstPt k₀' ⁻¹' V₀ ∩ sndPt k₀' ⁻¹' V₁, fun u => joinPt k₀ (f₀ (fstPt k₀' u)) (f₁ (sndPt k₀' u)),
     (hV₀.preimage (continuous_comp_idx _)).inter (hV₁.preimage (continuous_comp_idx _)), ⟨hzV₀, hzV₁⟩,

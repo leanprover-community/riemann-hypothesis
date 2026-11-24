@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootsNear
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Algebra.Polynomial.Eval.Coeff
+public import Mathlib.Algebra.Polynomial.Eval.Degree
+public import Mathlib.Algebra.Polynomial.Monic
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 @[expose] public section
 

@@ -1,9 +1,45 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPotential
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysLatOfTrivial
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OneNotMemFilOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -119,8 +155,8 @@ theorem galOW_iW_of_covers {h : GQ l} {γ : TameGal K l e a} (hc : Covers K t ϖ
 omit [TameDescentExponentData K l e a] in
 theorem galOB_iB_const {h : GQ l} (hh : h ∈ GK (ϖ.field a)) (f : ZMod a → invL l (S O K e))
     (c : ZMod a → K) (hf : ∀ τ, (f τ : K⟦X⟧) = C (c τ)) : galOB O h (ϖ.iB t K f) = ϖ.iB t K f := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [PiSys.iB, glue_apply, map_sum]
+
+  rw [PiSys.iB, glue_apply, map_sum]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [map_mul]
   congr 1
@@ -159,12 +195,12 @@ def unitGal (s : G →* GQ l) (η H : ℕ) (T : LocLat G ℚ_[l] K O) (hT : ∀ 
     have h1 : (unitIdent t ϖ T b).j (inclL t ϖ (unitMod l a e O K ι) c) =
         (unitIdent t ϖ T b).j (inclL t ϖ (unitMod l a e O K ι) c') := by
       refine h.trans ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [unitIdent_j, coordEq_apply, map_sum, inclL_apply, frobMat_unitMod, Matrix.one_mulVec]
+
+      rw [unitIdent_j, coordEq_apply, map_sum, inclL_apply, frobMat_unitMod, Matrix.one_mulVec]
       rfl
     obtain rfl := inclL_injective t ϖ _ ((unitIdent t ϖ T b).j.injective h1)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [coordEq_apply, coordEq_apply, map_sum]
+
+    rw [coordEq_apply, coordEq_apply, map_sum]
     rfl
   desc g γ hc v v' hv := by
     refine (unitIdent_act t ϖ T b (s g) (hT g) _).trans (funext fun i => ?_)
@@ -172,8 +208,8 @@ def unitGal (s : G →* GQ l) (η H : ℕ) (T : LocLat G ℚ_[l] K O) (hT : ∀ 
       (congrFun (congrFun hv τ) i).trans (unitDesc_act γ v.1 τ i)
   stable g := (Ident.exists_isLMat_iff _ _ _).1 ⟨1, isLMat_unitIdent t ϖ T b (s g) (hT g)⟩
   horiz g hg d h := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [coordEq_apply, map_sum]
+
+    rw [coordEq_apply, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     have h1 : T.actT g (b i) = b i := Subtype.ext (hT g _)
     rw [actB, TWact, TensorProduct.map_tmul, h1, AlgHom.toLinearMap_apply, toBcris_apply,

@@ -4,8 +4,6 @@ public import ReciprocityTheory.DualLattices.EvLatStatement
 public import ReciprocityTheory.DualLattices.EvHopfStatement
 public import ReciprocityTheory.DualLattices.EvActStatement
 public import ReciprocityTheory.DualLattices.EvHtStatement
-public import ReciprocityTheory.DualLattices.PSerFrobStatement
-public import ReciprocityTheory.DualLattices.WFrobStatement
 public import ReciprocityTheory.DualLattices.EvBtStatement
 public import ReciprocityTheory.DualLattices.EvenTwoEvaluationSign
 public import ReciprocityTheory.DualLattices.EvCotStatement

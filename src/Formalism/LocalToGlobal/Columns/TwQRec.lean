@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TwQDCls
+public import Formalism.LocalToGlobal.Columns.TwQDefs
 
 @[expose] public section
 

@@ -1,6 +1,60 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.AdicCompletion.Basic
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Polynomial.RingDivision
+public import Mathlib.RingTheory.Polynomial.Tower
+public import Mathlib.RingTheory.PowerSeries.Inverse
 
 @[expose] public section
 
@@ -20,7 +74,6 @@ theorem eq_X_mul_unit (s : PowerSeries K) (h0 : PowerSeries.constantCoeff s = 0)
     rw [hu]
     first
     | simp [PowerSeries.coeff_succ_X_mul]
-    | exact PowerSeries.coeff_succ_X_mul 0 u
   rw [PowerSeries.isUnit_iff_constantCoeff]
   rw [hc] at h1
   exact isUnit_iff_ne_zero.mpr h1
@@ -29,8 +82,6 @@ private theorem algebraMap_powerSeries_self_eq_C {R : Type} [CommRing R] (a : R)
     algebraMap R (PowerSeries R) a = PowerSeries.C a := by
   first
   | rfl
-  | (rw [Algebra.algebraMap_eq_smul_one, PowerSeries.smul_eq_C_mul, mul_one])
-  | simp [PowerSeries.algebraMap_apply']
 
 private theorem constantCoeff_aeval_eq_eval_constantCoeff (y : PowerSeries K) (r : K[X]) :
     PowerSeries.constantCoeff (Polynomial.aeval y r) = r.eval (PowerSeries.constantCoeff y) := by
@@ -75,7 +126,7 @@ theorem eq_zero_of_pow_dvd (r : K[X]) (cs : Finset K) (b : ℕ)
     exact (Polynomial.isCoprime_X_sub_C_of_isUnit_sub (sub_ne_zero.mpr hxy).isUnit).pow
   have hdeg' : (∏ c ∈ cs, (Polynomial.X - Polynomial.C c) ^ b).natDegree = cs.card * b := by
     rw [Polynomial.natDegree_prod _ _ (fun c _ => pow_ne_zero _ (Polynomial.X_sub_C_ne_zero c))]
-    simp [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_comm]
+    simp [Polynomial.natDegree_pow, mul_comm]
   have := Polynomial.natDegree_le_of_dvd hprod hr
   omega
 
@@ -92,10 +143,6 @@ private theorem aeval_map_algebraMap_eq_aeval {O : Type} [CommRing O] [Algebra O
     (r : O[X]) : Polynomial.aeval y (r.map (algebraMap O K)) = Polynomial.aeval y r := by
   first
   | exact Polynomial.aeval_map_algebraMap K y r
-  | (refine Polynomial.induction_on r (fun a => ?_) (fun p q hp hq => ?_) (fun n a _ => ?_)
-     · simp [algebraMap_powerSeries_self_eq_C, PowerSeries.algebraMap_apply']
-     · simp only [Polynomial.map_add (f := _), map_add (f := _), hp, hq]
-     · simp [algebraMap_powerSeries_self_eq_C, PowerSeries.algebraMap_apply'])
 
 theorem dvd_of_vanish {O : Type} [CommRing O] [IsLocalRing O]
     [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [Algebra O K]

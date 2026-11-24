@@ -1,7 +1,5 @@
 module
 
-public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.CIface
-public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.GIface
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.TensorProductVectors
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Brauer
 
@@ -151,16 +149,6 @@ def JacquetImageProp : Prop :=
       jacU G.e π m (Submodule.Quotient.mk x : Jacquet π (unipRad k G.e)) = G.eta m • Submodule.Quotient.mk x
 
 def UniformizerProp : Prop := ∃ ϖ : kˣ, IsUnif ϖ
-
-def JacquetProductProp : Prop :=
-  GlobalTheory.Mem.LiteralAutomorphy.LitN → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V),
-    IsSmooth π → π.IsIrreducible →
-    (∃ y : Jacquet π (unipRad k G.e), y ≠ 0 ∧ ∀ m ∈ leviK k (m := fun a : Fin G.s => Fin (G.d a)), jacU G.e π m y = G.eta m • y) →
-    IsTwSphProd π G.d G.hd G.μ
-
-def CMainFor : Prop :=
-  GlobalTheory.Mem.LiteralAutomorphy.LitN → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V),
-    IsSmooth π → π.IsIrreducible → (∃ x : V, x ≠ 0 ∧ x ∈ G.Eig π) → IsTwSphProd π G.d G.hd G.μ
 
 end Grp
 

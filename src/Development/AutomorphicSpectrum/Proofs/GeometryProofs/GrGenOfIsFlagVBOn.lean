@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
+import Development.WeilBound.CoreStatements.PlurisubharmonicCones.DeterminantLatticeGradedTensor
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -12,48 +57,9 @@ namespace GlobalTheory.CompanionTheory.Ar.Flag
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
 
-private theorem div_mem_of_mem_span_singleton {R : Subring Ω} {x y : Ω} (hy : y ≠ 0)
-    (h : x ∈ Submodule.span R {y}) : x / y ∈ R := by
-  obtain ⟨r, hr⟩ := Submodule.mem_span_singleton.mp h
-  have e : r • y = (r : Ω) * y := rfl
-  rw [← hr, e, mul_div_assoc, div_self hy, mul_one]
-  exact r.2
-
-private theorem zpow_mem_lemma_2 {R : Subring Ω} {x : Ω} (hx : x ∈ R) (hxi : x⁻¹ ∈ R) (n : ℤ) :
-    x ^ n ∈ R := by
-  cases n with
-  | ofNat n => rw [Int.ofNat_eq_natCast, zpow_natCast]; exact pow_mem hx n
-  | negSucc n => rw [zpow_negSucc, ← inv_pow]; exact pow_mem hxi _
-
 theorem tens_gen {I : Type} [Fintype I] (Λ : I → Lat ξ Ω) (a : I → ℤ) (p : Cpt ξ) (s : I → Ω)
     (hs : ∀ i, (Λ i).IsGenAt p (s i)) : (Lat.tens Λ a).IsGenAt p (∏ i, s i ^ a i) := by
-  have hs0 : ∀ i, s i ≠ 0 := fun i => (hs i).1
-  refine ⟨Finset.prod_ne_zero_iff.mpr fun i _ => zpow_ne_zero _ (hs0 i), ?_⟩
-  show Submodule.span (regAt ξ p) {t | ∃ s' : I → Ω, (∀ i, (Λ i).IsGenAt p (s' i)) ∧ t = ∏ i, s' i ^ a i} = _
-  apply le_antisymm
-  · rw [Submodule.span_le]
-    rintro t ⟨s', hs', rfl⟩
-    have hs'0 : ∀ i, s' i ≠ 0 := fun i => (hs' i).1
-    have hw : ∀ i, s' i / s i ∈ regAt ξ p := fun i => by
-      refine div_mem_of_mem_span_singleton (hs0 i) ?_
-      rw [← (hs i).2, (hs' i).2]
-      exact Submodule.mem_span_singleton_self _
-    have hwi : ∀ i, (s' i / s i)⁻¹ ∈ regAt ξ p := fun i => by
-      rw [inv_div]
-      refine div_mem_of_mem_span_singleton (hs'0 i) ?_
-      rw [← (hs' i).2, (hs i).2]
-      exact Submodule.mem_span_singleton_self _
-    have hc : ∏ i, (s' i / s i) ^ a i ∈ regAt ξ p :=
-      prod_mem fun i _ => zpow_mem_lemma_2 (hw i) (hwi i) (a i)
-    rw [SetLike.mem_coe, Submodule.mem_span_singleton]
-    refine ⟨⟨_, hc⟩, ?_⟩
-    show (∏ i, (s' i / s i) ^ a i) * ∏ i, s i ^ a i = ∏ i, s' i ^ a i
-    rw [← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun i _ => ?_
-    rw [← mul_zpow, div_mul_cancel₀ _ (hs0 i)]
-  · apply Submodule.span_mono
-    rw [Set.singleton_subset_iff]
-    exact ⟨s, hs, rfl⟩
+  apply LevelTowerAlt.N1.tens_gen <;> assumption
 
 variable {E : Type} [AddCommGroup E] [Module Ω E]
 

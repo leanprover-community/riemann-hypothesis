@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSectionCycleReduced
+public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
 
 @[expose] public section
 

@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+public import Mathlib.Topology.Algebra.Valued.LocallyCompact
+import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 
 @[expose] public section
 

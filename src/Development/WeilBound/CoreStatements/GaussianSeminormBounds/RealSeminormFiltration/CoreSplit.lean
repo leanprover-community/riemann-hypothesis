@@ -1,6 +1,58 @@
 module
 
+public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreDefs
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreHarm
+public import Formalism.PeriodIntegrals.FockDegreeTwoParts
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockHarmonicSplitting.MinusPartOfMem
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockWeightDegree.ExistsMonomialWeight
+import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreLie
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FockRaiseLow
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.RedOps
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockHarmonicSplitting.ConjTransposeOneKronecker
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -84,7 +136,7 @@ theorem polChi_small (c : ℂ) (c0 : ℚ) (hc : c = c0) (d : ℕ)
     (hd : (d : ℚ) < degW (cPair r s) (fun _ : Ix p q => c0)) {g : Pol p q r s}
     (hg : g ∈ homog (Ix p q × Ix r s) d) (hχ : g ∈ polChi p q r s c) : g = 0 := by
   by_contra h0
-  have := (highestWeightDegree_le p q r s).1 d (fun _ => c0) g hg ⟨h0, (mem_polChi_iff_hw c c0 hc g).1 hχ⟩
+  have := (_root_.PI.FockWtDegWork.wtDeg p q r s).1 d (fun _ => c0) g hg ⟨h0, (mem_polChi_iff_hw c c0 hc g).1 hχ⟩
   linarith
 
 theorem th_small (c : ℂ) (c0 : ℚ) (hc : c = c0) (d : ℕ)
@@ -108,7 +160,7 @@ theorem th_next (c : ℂ) (c0 : ℚ) (hc : c = c0) (d0 : ℕ)
     (hd : (d0 : ℚ) = degW (cPair r s) (fun _ : Ix p q => c0)) :
     (homog (Ix p q × Ix r s) (d0 + 2)).map (thMkC p q r s c) ≤
       (harm1 p q r s ⊓ polChi p q r s c ⊓ homog (Ix p q × Ix r s) (d0 + 2)).map (thMkC p q r s c) := by
-  have hs := harmonicSplitting_holds p q r s true false rfl d0
+  have hs := _root_.PI.FHS.harmSplit p q r s true false rfl d0
   have hR : (Submodule.span ℂ (raised p q r s true false d0)).map (thMkC p q r s c) = ⊥ := by
     rw [Submodule.map_span, Submodule.span_eq_bot]
     rintro _ ⟨_, ⟨Q, hQ, (⟨-, Z, hZ, rfl⟩ | ⟨h, -⟩)⟩, rfl⟩

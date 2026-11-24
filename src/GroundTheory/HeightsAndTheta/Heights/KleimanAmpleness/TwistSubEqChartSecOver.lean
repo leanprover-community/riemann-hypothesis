@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraMore
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PBundlePair
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockBase
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockBase
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PBundlePair
 
 @[expose] public section
 

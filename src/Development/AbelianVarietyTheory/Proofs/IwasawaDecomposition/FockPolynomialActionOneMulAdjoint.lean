@@ -1,11 +1,48 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
-public import Formalism.LocalRingCardinality.DataExtra
-public import Formalism.LocalRingCardinality.DataTies
-public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsHolRepOfIsTau
+import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -34,9 +71,9 @@ theorem lsub_one [DecidableEq σ] : lsub (1 : Matrix σ σ ℂ) = AlgHom.id ℂ 
 
 theorem lsub_mul (M N : Matrix σ σ ℂ) : lsub (M * N) = (lsub M).comp (lsub N) := by
   refine algHom_ext fun v => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [AlgHom.comp_apply, lsub_X, map_sum, map_mul, algHom_C, algebraMap_eq, Matrix.mul_apply,
-    Finset.sum_mul, Finset.mul_sum]
+
+  simp only [AlgHom.comp_apply, lsub_X, map_sum, map_mul, algHom_C, algebraMap_eq, Matrix.mul_apply,
+  Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun w _ => Finset.sum_congr rfl fun x _ => ?_
   ring
@@ -56,8 +93,8 @@ theorem pderiv_lsub [DecidableEq σ] (M : Matrix σ σ ℂ) (s : σ) (g : MvPoly
   | add p q hp hq => simp only [map_add (f := _), hp, hq, mul_add, Finset.sum_add_distrib]
   | mul_X p k hp =>
     have hX : pderiv s (lsub M (X k)) = C (M s k) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [lsub_X, map_sum, Finset.sum_eq_single s]
+
+      rw [lsub_X, map_sum, Finset.sum_eq_single s]
       · simp [pderiv_X]
       · intro b _ hb
         rw [Derivation.leibniz, pderiv_C, pderiv_X_of_ne hb]
@@ -87,11 +124,11 @@ theorem fockL_lsub_adj (M : Matrix σ σ ℂ) (F F' : MvPolynomial σ ℂ) :
       rw [map_mul, lsub_X, Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [smul_eq_C_mul]; ring
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e1, map_sum, LinearMap.sum_apply]
+
+    rw [e1, map_sum, LinearMap.sum_apply]
     simp_rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, fockL_X_pderiv, hp]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [mul_comm p, fockL_X_pderiv, pderiv_lsub, map_sum]
+
+    rw [mul_comm p, fockL_X_pderiv, pderiv_lsub, map_sum]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [← smul_eq_C_mul, map_smul, Matrix.conjTranspose_apply, starRingEnd_apply]
 
@@ -117,17 +154,9 @@ theorem inv_comm {ε : Fin m → Bool} {k : Matrix (Fin m) (Fin m) ℂ} (hk : k 
     _ = Formalism.REAL.Jm ε * k⁻¹ := by
         rw [← hk.2, ← Matrix.mul_assoc k⁻¹, Matrix.nonsing_inv_mul _ hd, Matrix.one_mul]
 
-theorem Jm_mul_Jm (ε : Fin m → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  rw [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  cases ε a <;> simp
+alias Jm_mul_Jm := _root_.Formalism.REAL.Jm_mul_self
 
-theorem Jm_conj (ε : Fin m → Bool) : (Formalism.REAL.Jm ε)ᴴ = Formalism.REAL.Jm ε := by
-  rw [Formalism.REAL.Jm, Matrix.diagonal_conjTranspose]
-  congr 1
-  funext a
-  cases h : ε a <;> simp [h]
+alias Jm_conj := _root_.Formalism.REAL.Jm_conjTranspose
 
 def blk (J k : Matrix (Fin m) (Fin m) ℂ) : Matrix (Fin m) (Fin m) ℂ :=
   (1 / 2 : ℂ) • (1 + J) * k + (1 / 2 : ℂ) • (1 - J)
@@ -154,8 +183,7 @@ theorem blk_conj {J k : Matrix (Fin m) (Fin m) ℂ} (hJ : Jᴴ = J) (hk : k * J 
     exact this.symm
   have h2 : star (1 / 2 : ℂ) = 1 / 2 := by simp
   simp only [blk, Matrix.conjTranspose_add, Matrix.conjTranspose_mul, Matrix.conjTranspose_smul,
-    Matrix.conjTranspose_sub, Matrix.conjTranspose_one, hJ, h2, Matrix.smul_mul, Matrix.mul_smul, add_mul, mul_add,
-    one_mul, mul_one, h1]
+    Matrix.conjTranspose_sub, Matrix.conjTranspose_one, hJ, h2, Matrix.smul_mul, add_mul, one_mul, h1]
 
 theorem detPlus_def₂ (ε : Fin m → Bool) (k : Matrix (Fin m) (Fin m) ℂ) :
     detP ε k = (blk (Formalism.REAL.Jm ε) k).det := rfl

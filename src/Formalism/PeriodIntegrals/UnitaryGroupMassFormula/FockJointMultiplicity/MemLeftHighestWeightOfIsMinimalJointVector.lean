@@ -1,6 +1,58 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.CauchyHW
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Bool
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -24,7 +76,7 @@ theorem coeff_diag (T : Module.End ℂ (MvPolynomial σ ℂ)) (w : (σ →₀ �
   · have h1 : monomial m a = a • monomial m (1 : ℂ) := by
       rw [smul_monomial, smul_eq_mul, mul_one]
     rw [h1, map_smul, hT, smul_smul]
-    simp only [coeff_smul, coeff_monomial, smul_eq_mul]
+    simp only [MvPolynomial.coeff_smul, coeff_monomial, smul_eq_mul]
     by_cases h : m = e
     · subst h
       rw [if_pos rfl]
@@ -38,14 +90,14 @@ theorem eig_of_mem_support (T : Module.End ℂ (MvPolynomial σ ℂ)) (w : (σ �
     (e : σ →₀ ℕ) (he : e ∈ P.support) : w e = c := by
   have h1 := coeff_diag T w hT P e
   rw [hP] at h1
-  simp only [coeff_smul, smul_eq_mul] at h1
+  simp only [MvPolynomial.coeff_smul, smul_eq_mul] at h1
   exact (mul_right_cancel₀ (mem_support_iff.mp he) h1).symm
 
 def NoVar (P : MvPolynomial σ ℂ) (v : σ) : Prop := ∀ e ∈ P.support, e v = 0
 
 theorem pderiv_eq_zero_of_noVar {P : MvPolynomial σ ℂ} {v : σ} (h : NoVar P v) : pderiv v P = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [P.as_sum, map_sum]
+
+  rw [P.as_sum, map_sum]
   refine Finset.sum_eq_zero fun e he => ?_
   rw [pderiv_monomial]
   simp [h e he]
@@ -53,8 +105,8 @@ theorem pderiv_eq_zero_of_noVar {P : MvPolynomial σ ℂ} {v : σ} (h : NoVar P 
 theorem noVar_pderiv {P : MvPolynomial σ ℂ} {v : σ} (h : NoVar P v) (u : σ) : NoVar (pderiv u P) v := by
   classical
   intro f hf
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [P.as_sum, map_sum] at hf
+
+  rw [P.as_sum, map_sum] at hf
   obtain ⟨e, he, hfe⟩ := Finset.mem_biUnion.mp (support_sum hf)
   rw [pderiv_monomial] at hfe
   obtain rfl := Finset.mem_singleton.mp (support_monomial_subset hfe)
@@ -66,8 +118,8 @@ theorem noVar_of_pderiv_eq_zero {P : MvPolynomial σ ℂ} {v : σ} (h : pderiv v
   by_contra hev
   have hc : AddMonoidAlgebra.coeff (pderiv v P) (e - Finsupp.single v 1) = AddMonoidAlgebra.coeff P e * (e v : ℂ) := by
     conv_lhs => rw [P.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, coeff_sum]
+
+    rw [map_sum, coeff_sum]
     simp only [pderiv_monomial, coeff_monomial]
     rw [Finset.sum_eq_single e]
     · rw [if_pos rfl]
@@ -113,8 +165,8 @@ theorem gR_pos_lemma (u v : κ → σ) (pos : κ → Bool) (hu : Function.Inject
     rw [Derivation.leibniz, pderiv_eq_zero_of_noVar (noVar_pderiv hno0 b), smul_zero, zero_add, smul_eq_mul]
   have h0 : pderiv (u c0) (gR u v pos P) = 0 := by rw [hR, map_zero]
   unfold gR at h0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single c0] at h0
+
+  rw [map_sum, Finset.sum_eq_single c0] at h0
   · rw [if_pos hc0, key, pderiv_X_self, mul_one] at h0
     exact h0
   · intro c _ hc
@@ -314,7 +366,6 @@ theorem pureJ_of (hW1 : FormWt1) (hW2 : FormWt2) : PureJ := by
     have h0 := (mem_homogeneousSubmodule d P).mp hH (mem_support_iff.mp he)
     first
       | simpa [Finsupp.weight_apply, Finsupp.sum_fintype] using h0
-      | simpa [← Finsupp.degree_eq_weight_one, Finsupp.degree_eq_sum] using h0
   have hsum : (∑ a : Ix p q, ∑ c : Ix r s, (e (a, c) : ℤ)) = d := by
     rw [← Fintype.sum_prod_type']
     exact_mod_cast hdeg
@@ -379,7 +430,7 @@ theorem leftRootOperator_eq_signedPolarization {p q r s : ℕ} (a b : Ix p q) (h
     simp
   · have hne : ((b, c) : Ln p q r s) ≠ (a, c) := fun e => hab (Prod.ext_iff.mp e).1.symm
     simp only [if_neg h]
-    simp [Derivation.leibniz, pderiv_X_of_ne hne, hne]
+    simp [Derivation.leibniz, pderiv_X_of_ne hne]
 
 theorem rightRootOperator_eq_signedPolarization {p q r s : ℕ} (c d : Ix r s) (hcd : c ≠ d)
     (hsame : ∀ a : Ix p q, linePos ((a, d) : Ln p q r s) = linePos ((a, c) : Ln p q r s)) (P : Pol p q r s) :
@@ -397,7 +448,7 @@ theorem rightRootOperator_eq_signedPolarization {p q r s : ℕ} (c d : Ix r s) (
     simp
   · have hne : ((a, d) : Ln p q r s) ≠ (a, c) := fun e => hcd (Prod.ext_iff.mp e).2.symm
     simp only [if_neg h]
-    simp [Derivation.leibniz, pderiv_X_of_ne hne, hne]
+    simp [Derivation.leibniz, pderiv_X_of_ne hne]
 
 theorem ker_of_hw {p q : ℕ} {V : Type*} [AddCommGroup V] [Module ℂ V] {act : Mat p q →ₗ[ℂ] Module.End ℂ V}
     {μ : Ix p q → ℚ} {v : V} (hv : v ∈ hwSub act μ) (a b : Ix p q) (hab : posC a b) : act (Eab a b) v = 0 := by

@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.JetFieldLeKR
-public import Formalism.LocalToGlobal.KernelLattices.ColInst
 
 @[expose] public section
 

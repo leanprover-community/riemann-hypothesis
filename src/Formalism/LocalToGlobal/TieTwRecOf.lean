@@ -1,18 +1,15 @@
 module
 
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
+public import Formalism.LocalRingCardinality.DataDIV
+public import Formalism.LocalRingCardinality.DataExtra
+public import Formalism.LocalToGlobal.ClassOfRecordOfChoice
+import Formalism.LocalToGlobal.GlobalTheory.GL6.CoordMapInjective
 public import Formalism.LocalToGlobal.IndefiniteRealisationChoice
-public import Formalism.LocalToGlobal.FiniteTOf
-public import Formalism.LocalToGlobal.BaseRankEqOfRealisation
-public import Formalism.LocalToGlobal.IndefiniteReal.RealTB
-public import Formalism.LocalToGlobal.IndefiniteReal.RealPins
-public import Formalism.LocalToGlobal.IndefiniteReal.RealRec
-public import Formalism.LocalToGlobal.IndefiniteReal.RealRecPins
-public import Formalism.LocalToGlobal.Divisibility.PsiWeilOfAbsNorm
-public import Formalism.LocalToGlobal.IndefiniteReal.ThetaFireRow
-public import Formalism.LocalToGlobal.CarriedPlMap
-public import Formalism.LocalToGlobal.Divisibility.ColPins
-public import Formalism.LocalToGlobal.Divisibility.QLocTied
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NHkRow
+import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
+import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeUnderScaleOfGeneral
+import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 
 @[expose] public section
 

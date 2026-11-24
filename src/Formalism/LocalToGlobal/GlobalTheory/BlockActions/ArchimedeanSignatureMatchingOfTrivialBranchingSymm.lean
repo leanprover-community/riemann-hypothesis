@@ -1,7 +1,14 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedBrProof
 public import Formalism.LocalToGlobal.HermitianForms.TiedSym
+public import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
+public import Formalism.LocalToGlobal.HermitianForms.TiedBr
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrCo
+public import Formalism.LocalToGlobal.KernelLattices.InterlaceAll
+public import Formalism.LocalToGlobal.HermitianForms.Interlace
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrRep
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
 
 @[expose] public section
 
@@ -16,7 +23,7 @@ variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem
 theorem beOn_closedS (Tf : FormsTiedSym D u Ch chOf) (h : Formalism.L2.Ker.BeOnTie D u) (τ : D.what₂.Tau) :
     (D.fm u).beOn τ = Formalism.L2.Ker.beOnVal (Nm_succ D.R).symm (lamTr D u τ) (sgTr D u τ) := by
   rw [h τ]
-  exact Formalism.L2.Ker.beOnEq D u τ (interlaceTr D u (sg_interlace Tf.valP) τ)
+  exact _root_.Formalism.L2.Ker.nm_beOnEq D u τ (interlaceTr D u (sg_interlace Tf.valP) τ)
 
 def LowerMapTieSym (Tf : FormsTiedSym D u Ch chOf) : Prop :=
   IsUnit (bZ u Tf.til.z0).det → ∀ (ψ : (D.mem u).P.Wz) (c : (D.fm u).clsP)
@@ -104,7 +111,7 @@ theorem trEv_eqS (Tf : FormsTiedSym D u Ch chOf) (φ : Fn D u D.R.m) (c : (D.fm 
     rw [← Matrix.mul_assoc, atInf_mul_inv, Matrix.one_mul]
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem val_repS (Tf : FormsTiedSym D u Ch chOf) (φ : Formalism.MainNotions.product_first_zeroth_parts.Fn D u D.R.m) (hφ : φ ∈ (D.fm u).Fi D.R.m) (c : (D.fm u).clsP) :
     ∃ P ∈ Formalism.L2.Forms.CSpan ((D.fm u).lam D.R.m), ∀ s, Tf.eWz ((D.mem u).P.evz φ) c s =
       fnOf _ (shiftOf (lamT u D.R.m)) (mZ u Tf.til.z0) P ((Tf.val D.R.m le_rfl (Or.inr rfl)).eY s) := by

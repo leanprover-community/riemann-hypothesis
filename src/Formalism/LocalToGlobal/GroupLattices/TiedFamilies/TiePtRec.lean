@@ -1,10 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsOrb
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.GramDetIsUnit
-public import Formalism.LocalToGlobal.HermitianForms.RankEqFirstLevel
 
 @[expose] public section
 
@@ -90,7 +90,7 @@ end Away
 variable {D : D7} (X : Formalism.L2.Herm.Herm0 D)
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem locGood_locAt (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
     (B : GL (Fin D.R.k) D.host.E) : LocGood (sigD D) (gramN D 0 (Nat.zero_le _)) (locAt X u w hg B) := by
   refine { herm := isHerm_re (rank_eq_first_level D.R) _ D.sp.gram0 _ (gramN_zero D) D.sp.baseGram_isHermitian
@@ -105,7 +105,7 @@ theorem locGood_locAt (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx 
   exact h2
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem ptEx_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E) :
     PtEx ((T u).cls0).lev (D.gat u w hg) (locAt X u w hg B) ((T u).cls0).y :=
@@ -118,7 +118,7 @@ theorem sameUloc_of_joint (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what�
     SameUloc X T u := hJ.Uloc_eq
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem ptAll_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) (hU : SameUloc X T u) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E) :
     PtAll ((T u).cls0).lev (D.gat u w hg) (locAt X u w hg B) ((T u).cls0).y := by
@@ -131,7 +131,7 @@ theorem ptAll_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) 
   exact Subgroup.mem_map.2 ⟨_, ((mem_awayP_iff _ _ k).1 hk).2 w' hw', rfl⟩
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem awayEx_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) (hU : SameUloc X T u) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E)
     (i : (D.gat u w hg).comp) (γ : ((D.gat u w hg).lev i).Γ) :

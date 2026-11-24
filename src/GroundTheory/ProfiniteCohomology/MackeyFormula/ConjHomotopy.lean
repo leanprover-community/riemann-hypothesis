@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.InnerConj
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -202,8 +202,8 @@ theorem conjHomotopyFun_spec (n : ℕ) (φ : (Fin (n + 1) → Γ) → A) :
       A.ρ g (ψ fun l => g⁻¹ * F l * g) -
         A.ρ (F 0) (∑ i ∈ range (n + 1), (-1 : k) ^ i •
           ψ (prismSeq g i fun l => F (l + 1))) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [sum_range_succ', map_sum]
+
+    rw [sum_range_succ', map_sum]
     simp only [prismSeq_zero_zero, prismSeq_succ_zero, prismSeq_succ_succ, pow_zero, one_smul,
       map_smul]
     have e0 : (fun l => prismSeq g 0 F (l + 1)) = fun l => g⁻¹ * F l * g :=

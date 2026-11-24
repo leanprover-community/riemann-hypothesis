@@ -1,9 +1,60 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainRecursionFromSingleDescent
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRWeyl
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRWeyl
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -830,7 +881,6 @@ theorem isBorder0 : IsBorder (e0 k l) (es0 k l) (v0 k l) := by
     (simp only [v0, e0] at h') <;> omega
   · intro j h
     have h' := congrArg Fin.val h
-    have hj := j.isLt
     (simp only [v0, es0] at h') <;> omega
 
 theorem val_bS (y : Fin (mdim k r l.succ + 1)) : (bS (v0 k l) (es0 k l) y).val = y.val + 1 := by
@@ -1977,8 +2027,8 @@ theorem signed_first_column_expansion_block01 (ho : IsOpen (UU Dc)) (z z' : Fin 
     (∑ w : Fin (mdim k r L), ∑ x : Fin (mdim k r L), (((((-1 : ℤ) ^ ((w : ℕ) + (x : ℕ)) : ℤ)) : ℂ) * xv k r z' L x) •
       (mulB E L ho (aYb z L w) * mB E L ho (skip1 w) (skip1 x) (uC k r L Y - 1))) = -tB E L ho z z' Y 0 1 := by
   refine stp_end_ext ho (fun Ψ c hc g hg hgD => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, map_neg, stp_ev_mul ho (sf_aYb z _) Ψ hc hg hgD]
+
+  simp only [map_sum, map_smul, map_neg, stp_ev_mul ho (sf_aYb z _) Ψ hc hg hgD]
   show _ = -(((tB E L ho z z' Y 0 1 Ψ : (sfData E L ho).V) : Fn k r E) c g)
   rw [stp_tB_apply ho z z' Y 0 1 Ψ hc hg hgD]
   show _ = -(-(chatL (EH k r) (posL k r L) (uC k r L Y - 1) (fun _ => xv k r z' L) (ybv k r z L) ((Ψ : Fn k r E) c) g))
@@ -1995,8 +2045,8 @@ theorem signed_expansion_block10 (ho : IsOpen (UU Dc)) (z z' : Fin (2 * r + k + 
     (∑ w : Fin (mdim k r L), ∑ x : Fin (mdim k r L), (((((-1 : ℤ) ^ ((w : ℕ) + (x : ℕ)) : ℤ)) : ℂ) * xbv k r z' L w) •
       (mulB E L ho (aY z L x) * mB E L ho (skip1 w) (skip1 x) (uC k r L Y))) = -tB E L ho z z' Y 1 0 := by
   refine stp_end_ext ho (fun Ψ c hc g hg hgD => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, map_neg, stp_ev_mul ho (sf_aY z _) Ψ hc hg hgD]
+
+  simp only [map_sum, map_smul, map_neg, stp_ev_mul ho (sf_aY z _) Ψ hc hg hgD]
   show _ = -(((tB E L ho z z' Y 1 0 Ψ : (sfData E L ho).V) : Fn k r E) c g)
   rw [stp_tB_apply ho z z' Y 1 0 Ψ hc hg hgD]
   show _ = -(-(chatL (EH k r) (posL k r L) (uC k r L Y) (yv k r z L) (fun _ => xbv k r z' L) ((Ψ : Fn k r E) c) g))
@@ -2020,9 +2070,9 @@ theorem signed_double_expansion_block11 (ho : IsOpen (UU Dc)) (z z' : Fin (2 * r
     (fun i i' j j' => (LinearMap.toSpanSingleton ℂ E (qminorOp (EH k r) (posL k r L ∘ skip2 i i')
       (posL k r L ∘ skip2 j j') (uC k r L Y - 1) ((Ψ : Fn k r E) c) g)).toAddMonoidHom)
   simp only [LinearMap.toAddMonoidHom_coe, LinearMap.toSpanSingleton_apply] at key
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_neg, apply_ite (evP ho Ψ c g), map_zero, map_smul, stp_ev_mul ho (sf_aYb z _) Ψ hc hg hgD,
-    stp_ev_mul ho (sf_aY z _) Ψ hc hg hgD]
+
+  simp only [map_sum, map_neg, apply_ite (evP ho Ψ c g), map_zero, map_smul, stp_ev_mul ho (sf_aYb z _) Ψ hc hg hgD,
+  stp_ev_mul ho (sf_aY z _) Ψ hc hg hgD]
   show _ = -(((tB E L ho z z' Y 1 1 Ψ : (sfData E L ho).V) : Fn k r E) c g)
   rw [stp_tB_apply ho z z' Y 1 1 Ψ hc hg hgD]
   show _ = -(-(chat2L (EH k r) (posL k r L) (uC k r L Y - 1) (yv k r z L) (fun _ => xv k r z' L) (ybv k r z L)
@@ -2098,14 +2148,14 @@ theorem stp_gauge (G P Pb C Ci Cb Cbi t00 t01 t10 t11 : B) (Y s : ℂ)
   have n : ∀ {X X' : B}, Commute X X' → ∀ Z : B, X * (X' * Z) = X' * (X * Z) := fun h Z => by
     rw [← mul_assoc, h.eq, mul_assoc]
   refine ⟨?_, ?_, ?_, ?_⟩
-  · simp only [mul_add, add_mul, mul_assoc, m a1, m a2, a1, m gCi.eq, m gCbi.eq, m g00.eq, m g10.eq,
-      g01.eq, g11.eq, n ci01, n ci11, n ciCbi, gCi.eq]
+  · simp only [mul_add, add_mul, mul_assoc, m a2, a1, m gCi.eq, m gCbi.eq, m g00.eq, m g10.eq,
+      g01.eq, g11.eq, n ci01, n ci11, n ciCbi]
     abel
-  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, m a2, m gC.eq,
+  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, add_zero, m a2, m gC.eq,
       m gCbi.eq, g00.eq, g10.eq, n a3, n cCbi, n c00, n c10, neg_add]
-  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, a1, m gCb.eq,
+  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, zero_mul, add_zero, a1, m gCb.eq,
       m gCi.eq, m g00.eq, g01.eq, n ci01, neg_add]
-  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, neg_neg, neg_zero, m gC.eq,
+  · simp only [mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, neg_neg, neg_zero, m gC.eq,
       m gCb.eq, g00.eq, n cCb, n c00]
 
 end Alg

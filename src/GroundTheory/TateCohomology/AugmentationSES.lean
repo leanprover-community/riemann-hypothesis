@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.TateCohomology.InducedNorm
-public import GroundTheory.TateCohomology.DimensionShift
 public import GroundTheory.TateCohomology.TateConnecting
+public import GroundTheory.TateCohomology.Induced
+public import Mathlib.RingTheory.Flat.Basic
+public import GroundTheory.TateCohomology.DimensionShift
+public import GroundTheory.TateCohomology.InducedNorm
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

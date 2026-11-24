@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.InnerProductSpace.Defs
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.LinearAlgebra.UnitaryGroup
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 @[expose] public section
 

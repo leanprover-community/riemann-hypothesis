@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GaloisModules.FixedField
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
+public import GroundTheory.ProfiniteCohomology.GaloisModules.FixedField
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Ramification
+import Mathlib.FieldTheory.Galois.IsGaloisGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

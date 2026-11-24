@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurvePointDVR
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelPlace
+public import Mathlib.Analysis.Analytic.Order
 
 @[expose] public section
 

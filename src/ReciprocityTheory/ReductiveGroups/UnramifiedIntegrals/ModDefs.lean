@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Mathlib.NumberTheory.ModularForms.Discriminant
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

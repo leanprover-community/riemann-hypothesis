@@ -1,16 +1,70 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ModelsAt
+public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
+public import Development.AbelianVarietyTheory.Counterexamples.ModuliSurvey.MemOfPowEqInt
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ArcDatumSectionValueCoeffEqFourierJacobi
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.EqZeroOfSumSq
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ArchBoundFlow
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LetterSquaredLengthLeFlowHeightStatement
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmMetrisedLineLengthsEqSectionLieNormsStatement
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NormalisedTrivialisationNormOneComplexReadingStatement
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsTauCanonicalIffOfIsPullDegTauBimultStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticCoefficientForms
+public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArchimedeanUniqueness.MetricDef
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmMetrisedLineLengthsEqSectionLieNorms
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.EqZeroOfSumSq
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsTauCanonicalIffOfIsPullDegTauBimult
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LetterSquaredLengthLeFlowHeight
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NormalisedTrivialisationNormOneComplexReading
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.AbsNormSpanGalois
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticCoefficientForms
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.DegenerationDataBaseChangesExistPid
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LaurentCoeffSectionValueArcEqFourierJacobi
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
+import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
+import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NonemptyUnifWitnessDataOfIsUnf
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TorusExtExponentialDerivativeBijectiveTangent
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Algebra.MvPolynomial
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowCoefficientBounds
 
 @[expose] public section
 
@@ -79,7 +133,7 @@ theorem le_of_invBl {f : (ArcLt Dw → ℂ) → ℝ} (hf : Continuous f) (ρ : �
     rw [← Polynomial.coe_evalRingHom, RingHom.map_det]
     congr 1
     ext i k
-    simp [mul_comm]
+    simp
   have hQ0 : ∀ τ, Q τ ≠ 0 := fun τ h0 => by
     have := hQ τ 1
     rw [h0, Polynomial.eval_zero] at this
@@ -118,8 +172,8 @@ theorem cfOf_le {K₁ : Type} [Field K₁] [Algebra c.F K₁] (d : ArcDatum Xo c
   set P := arcNum (evR Xo c F d.yF) with hP
   let G : MvPolynomial (ArcLt Dw) ℂ := ∑ m ∈ P.support, MvPolynomial.monomial m (em ((P.coeff m).coeff d.jj))
   have hG : ∀ x, MvPolynomial.eval x G = ajAt d em F x := fun x => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [G, map_sum, MvPolynomial.eval_monomial, ajAt, Finsupp.prod, hP]
+
+    simp only [G, map_sum, MvPolynomial.eval_monomial, ajAt, Finsupp.prod, hP]
   have hc : G.coeff d.μ = em (cfOf d.yF d.μ d.jj F) := by
     simp only [G, MvPolynomial.coeff_sum, MvPolynomial.coeff_monomial, Finset.sum_ite_eq', cfOf, ← hP]
     split_ifs with hm
@@ -247,7 +301,7 @@ theorem norm_cfOf_le : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   letI : Algebra (FractionRing ℂ) ℂ := FractionRing.liftAlgebra ℂ ℂ
   haveI : IsScalarTower ℂ (FractionRing ℂ) ℂ := FractionRing.isScalarTower_liftAlgebra ℂ ℂ
   letI : Algebra c.F ℂ⸨X⸩ := (ArcId.cstL.comp (em.comp (algebraMap c.F K₁))).toAlgebra
-  obtain ⟨Uw⟩ := GlobalTheory.T.nonempty_unifWitnessData_of_isUnf E H Dw l Xo c _ r U hunf
+  obtain ⟨Uw⟩ := _root_.GlobalTheory.ArcQ.nonempty_unfWit_of_isUnf E H Dw l Xo c _ r U hunf
   have hth : ThNZ d.th := s.th_nz
   obtain ⟨⟨a₁, p, hp⟩, hbc⟩ := GlobalTheory.ArcQBC.baseChanges h1 h2 hK.ubc hK.laws5 E H Dw l Xo c _ _ d.Y K₁ ℂ _
     (d.a.restrict (c.V d.Wp).subtype) em em.injective ((em.comp (algebraMap c.F K₁)).comp (c.V d.Wp).subtype) rfl
@@ -271,14 +325,14 @@ theorem norm_cfOf_le : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   have hβ := ArcId.betaAt_comp f s.ξ hp.2.2.1 s.beta
   have hw : Ha.T < (((Ha.T + 1 : ℝ) : ℂ) * Complex.I).im := by simp
   generalize ((Ha.T + 1 : ℝ) : ℂ) * Complex.I = w at hw
-  obtain ⟨k, ξ', sE, C, hiso, hsE, -, -, hC, hCle, hmain⟩ := GlobalTheory.T.laurentCoeff_sectionValue_arc_eq_fourierJacobi h1 h2 E H Dw l Xo c _ r U Uw _ _ d.Y a₁ _ W₁
+  obtain ⟨k, ξ', sE, C, hiso, hsE, -, -, hC, hCle, hmain⟩ := _root_.GlobalTheory.ArcCoeff.coeff_evR_eq_fj h1 h2 E H Dw l Xo c _ r U Uw _ _ d.Y a₁ _ W₁
     Ha th₁ _ s.ν₀ d.jj a' n hev hgood hunf (fun _ => rfl) hover₁ (mono_spMap_subtype _) hpush (hnz _ _ hth₁ hth) hrk hξ hβ
     hdom htv w hw
-  obtain ⟨v₁, v₂, -, v₄⟩ := GlobalTheory.T.torusExt_exponential_derivative_bijective_tangent h1.globalFns E H Dw l Xo c _ _ _ d.Y a₁ _ W₁ _ _ Uw.F Ha
+  obtain ⟨v₁, v₂, -, v₄⟩ := _root_.GlobalTheory.ExpTan.anVec_bijective h1.globalFns E H Dw l Xo c _ _ _ d.Y a₁ _ W₁ _ _ Uw.F Ha
   choose z₁ hz₁ using fun τ i => (v₁ (e₁ τ i) (htan _ _ (he₁ τ i) (s.tan τ i))).exists
-  have hN : NormOne Ha := GlobalTheory.T.normalisedTrivialisation_normOne_complexReading hK E H Dw l Xo c _ _ _ d.Y a₁ _ W₁ _ _ Uw.F Ha n' s.n_pos
-    ((GlobalTheory.T.isTauCanonical_iff_of_isPullDeg_tauBimult hK K₁ ℂ em _ _ p n' em.injective d.a.bimult a₁.bimult).1 s.tau)
-  have hCT := hCle _ (((GlobalTheory.T.cm_metrised_line_lengths_eq_section_lie_norms hK E H Dw l c K₁ d.a d.e d.th d.jj n' La c₁ s em).2.2.2 _ p).1 th₁ hth₁)
+  have hN : NormOne Ha := _root_.GlobalTheory.ArcNormOne.normOne_of_tauCan hK E H Dw l Xo c _ _ _ d.Y a₁ _ W₁ _ _ Uw.F Ha n' s.n_pos
+    ((_root_.GlobalTheory.TauCanPull.tauCan_iff_of_isPullDeg hK K₁ ℂ em _ _ p n' em.injective d.a.bimult a₁.bimult).1 s.tau)
+  have hCT := hCle _ (((_root_.GlobalTheory.ArcCM.NormTie.lengths_eq_norms hK E H Dw l c K₁ d.a d.e d.th d.jj n' La c₁ s em).2.2.2 _ p).1 th₁ hth₁)
   rw [sqrt_discr (U.X k)] at hCT
   obtain ⟨hT, hl⟩ := line_pos s em
   have hL := lieFac_pos Dw xi a'
@@ -309,7 +363,7 @@ theorem norm_cfOf_le : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
       hdom.2 (hxi k) hκ
     obtain ⟨-, -, -, -, Hm, hH⟩ := Uw.period k ⟨_, hx''⟩
     have hH' : IsRiem Uw.F (Uw.ik k) (Uw.Pm k ⟨_, hx''⟩) Hm := hH
-    have hlen := fun τ i => GlobalTheory.T.letter_squaredLength_le_flow_height hK E H Dw l Xo c K₁ d.a d.e d.th d.jj n' La c₁ s em _ r U Uw _ _ d.Y a₁ p _ W₁
+    have hlen := fun τ i => _root_.GlobalTheory.LetterLen.letter_length_le hK E H Dw l Xo c K₁ d.a d.e d.th d.jj n' La c₁ s em _ r U Uw _ _ d.Y a₁ p _ W₁
       Ha k ξ' fr ⟨_, hx''⟩ _ w L gm _ Hm rfl hgood hunf hp hLa hep hiso hw hLgm hEgm ht rfl htep hH' τ i _ _ (he₁ τ i)
       (hz₁ τ i)
     rw [inv_inv, max_eq_right (le_max_left 1 c₁)] at hlen
@@ -321,8 +375,8 @@ theorem norm_cfOf_le : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
           unfold Datum.mult
           split_ifs <;> omega
         exact_mod_cast this
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← herm_single Hm, ← hLz, map_sum]
+
+      rw [← herm_single Hm, ← hLz, map_sum]
       have := herm_sum_le hH'.2.1 (fun j => L (x ⟨τ, (i, j)⟩ • z₁ τ j))
         (b := (La * Real.sqrt (max 1 c₁)) ^ 2 / Real.pi) fun j => by
           rw [le_div_iff₀' Real.pi_pos, map_smul, herm_smul, mul_left_comm]
@@ -349,7 +403,7 @@ theorem norm_cfOf_le : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
         Real.exp (4 * Real.pi * ((max 1 c₁)⁻¹ * ∑ τ : (U.X k).Ψ, (τ.1 s.ν₀).re)) * ‖eTwoPi w ^ d.jj‖ := by
       rw [norm_zpow, eTwoPi, Complex.norm_exp, ← Real.rpow_intCast, ← Real.exp_mul, ← Real.exp_add, ← hjj]
       congr 1
-      simp only [htt, mul_sub, Finset.sum_sub_distrib, Finset.mul_sum, Complex.mul_re, Complex.mul_im, Complex.I_re,
+      simp only [htt, mul_sub, Finset.mul_sum, Complex.mul_re, Complex.mul_im, Complex.I_re,
         Complex.I_im, Complex.ofReal_re, Complex.ofReal_im, Complex.re_ofNat, Complex.im_ofNat, ← Finset.sum_add_distrib,
         ← Finset.sum_sub_distrib]
       exact Finset.sum_congr rfl fun τ _ => by ring

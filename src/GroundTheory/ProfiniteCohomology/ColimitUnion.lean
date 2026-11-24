@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
-public import GroundTheory.ProfiniteCohomology.FilteredHomology
 public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
+public import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 @[expose] public section
 

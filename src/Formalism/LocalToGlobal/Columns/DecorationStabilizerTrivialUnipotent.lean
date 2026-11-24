@@ -1,13 +1,19 @@
 module
 
-public import Mathlib
-public import Formalism.GL3MeanSquares.RationalMatrixPrimeOrderBound
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.LengthQuotientBoundGeneral
-public import Formalism.HermitianLattices.StatementLat
-public import Formalism.HermitianLattices.HermitianLatticesProofs.AutFinite
-public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.Columns.GenericUnipotentCharacter
+public import Formalism.GL3MeanSquares.HookFormulaTorsion.LengthQuotientBoundGeneral
+public import Formalism.HermitianLattices.HermitianLatticesProofs.AutFinite
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -444,8 +450,8 @@ theorem trace_star_mul_self_pos (hconj : ∀ (φ : E →+* ℂ) (x : E), φ (sta
 
 theorem hStd_trace_pos (hconj : ∀ (φ : E →+* ℂ) (x : E), φ (star x) = starRingEnd ℂ (φ x))
     (x : Sp E n) (hx : x ≠ 0) : 0 < Algebra.trace ℚ E (hStd E n x x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hStd_apply, map_sum]
+
+  rw [hStd_apply, map_sum]
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
     by_contra hh
     push Not at hh

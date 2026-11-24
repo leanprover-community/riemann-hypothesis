@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
+public import GroundTheory.PAdicHodge.ACrisBdRGalois
+public import GroundTheory.PAdicHodge.BdRAlgCl
+public import GroundTheory.PAdicHodge.UnramifiedClosure
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.PAdicHodge.ACrisFrobFixed
-public import GroundTheory.PAdicHodge.BCrisGalois
+public import GroundTheory.PAdicHodge.AInfTopology
 public import GroundTheory.PAdicHodge.BdRInvariants
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -75,7 +121,8 @@ theorem exists_teichmuller_rootOfUnity {ζ : PadicAlgCl p} {m : ℕ} (hm : 0 < m
     rw [this, map_one]
   refine ⟨teichmuller p ζf, by rw [← map_pow, hζf, map_one], ?_⟩
   rw [fontaineTheta_teichmuller, IsPerfectoidField.untilt_ofCompatible]
-  simp [y, z]
+  change ((ζ ^ p ^ (0 * (m.totient - 1)) : PadicAlgCl p) : ℂ_[p]) = _
+  rw [Nat.zero_mul, pow_zero, pow_one]
 
 theorem eq_of_pow_eq_one_of_theta_eq {u v : 𝔹} {m : ℕ} (hm : 0 < m) (hu : u ^ m = 1)
     (hv : v ^ m = 1) (hθ : thetaAlgHom p u = thetaAlgHom p v) (h0 : thetaAlgHom p v ≠ 0) :
@@ -86,8 +133,8 @@ theorem eq_of_pow_eq_one_of_theta_eq {u v : 𝔹} {m : ℕ} (hm : 0 < m) (hu : u
   have hS : ∑ i ∈ Finset.range m, u ^ i * v ^ (m - 1 - i) ≠ 0 := by
     intro hS
     have h1 := congrArg (thetaAlgHom p) hS
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_zero, map_sum] at h1
+
+    rw [map_zero, map_sum] at h1
     simp only [map_mul, map_pow, hθ] at h1
     rw [Finset.sum_congr rfl fun i hi => (by
       rw [← pow_add]; congr 1; have := Finset.mem_range.1 hi; omega :
@@ -117,35 +164,101 @@ end Teichmuller
 
 section Padic
 
+private theorem map_natCast_pow {R S : Type*} [Semiring R] [Semiring S]
+    (f : R →+* S) (n k : ℕ) : f ((n : R) ^ k) = (n : S) ^ k :=
+  (map_pow f (n : R) k).trans (congrArg (fun z : S => z ^ k) (map_natCast f n))
+
+/-- General-field version of `padicIntToBCrisPlus`, so that instantiating at `ℂ_[p]` avoids
+abstracting `IsPerfectoidField.fact_not_isUnit` into a `_proof_n` auxiliary constant. -/
+def padicIntToBCrisPlusOf (K : Type*) [NontriviallyNormedField K] [IsUltrametricDist K]
+    [IsPerfectoidField K p] : ℤ_[p] →+* BCrisPlus K p :=
+  (algebraMap (ACris K p) (BCrisPlus K p)).comp
+    ((algebraMap (AInf K p) (ACris K p)).comp
+      (IsPerfectoidField.padicIntToWitt (K := K) p))
+
 def padicIntToBCrisPlus : ℤ_[p] →+* BCrisPlus ℂ_[p] p :=
-  (algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p)).comp
-    ((algebraMap (AInf ℂ_[p] p) (ACris ℂ_[p] p)).comp
-      (IsPerfectoidField.padicIntToWitt (K := ℂ_[p]) p))
+  padicIntToBCrisPlusOf ℂ_[p]
 
 theorem isUnit_p_bCrisPlus : IsUnit ((p : ℕ) : BCrisPlus ℂ_[p] p) := by
-  simpa using IsLocalization.Away.algebraMap_isUnit (S := BCrisPlus ℂ_[p] p) (p : ACris ℂ_[p] p)
+  let j := algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p)
+  exact (map_natCast j p) ▸
+    IsLocalization.Away.algebraMap_isUnit (S := BCrisPlus ℂ_[p] p) (p : ACris ℂ_[p] p)
 
 theorem isUnit_padicIntToBCrisPlus {x : ℤ_[p]} (hx : x ≠ 0) : IsUnit (padicIntToBCrisPlus x) := by
-  rw [PadicInt.unitCoeff_spec hx, map_mul, map_pow, map_natCast]
-  exact ((PadicInt.unitCoeff hx).isUnit.map _).mul (isUnit_p_bCrisPlus.pow _)
+  let f := padicIntToBCrisPlus (p := p)
+  let u := (PadicInt.unitCoeff hx : ℤ_[p])
+  have h : f x = f u * (p : BCrisPlus ℂ_[p] p) ^ x.valuation := calc
+    f x = f (u * (p : ℤ_[p]) ^ x.valuation) := congrArg f (PadicInt.unitCoeff_spec hx)
+    _ = f u * f ((p : ℤ_[p]) ^ x.valuation) := map_mul f _ _
+    _ = _ := congrArg (fun z => f u * z) (map_natCast_pow f p x.valuation)
+  exact h.symm ▸ ((PadicInt.unitCoeff hx).isUnit.map f).mul ((isUnit_p_bCrisPlus (p := p)).pow _)
+
+theorem isUnit_padicIntToBCrisPlus_nzd (y : nonZeroDivisors ℤ_[p]) :
+    IsUnit (padicIntToBCrisPlusOf (p := p) ℂ_[p] y) :=
+  isUnit_padicIntToBCrisPlus (nonZeroDivisors.coe_ne_zero y)
+
+/-- General-field version of `padicToBCrisPlus` to avoid kernel unfolding of `BCrisPlus ℂ_[p] p`. -/
+def padicToBCrisPlusOf (K : Type*) [NontriviallyNormedField K] [IsUltrametricDist K]
+    [IsPerfectoidField K p]
+    (h : ∀ y : nonZeroDivisors ℤ_[p], IsUnit (padicIntToBCrisPlusOf (p := p) K y)) :
+    ℚ_[p] →+* BCrisPlus K p :=
+  IsLocalization.lift (M := nonZeroDivisors ℤ_[p]) (S := ℚ_[p])
+    (g := padicIntToBCrisPlusOf (p := p) K) h
 
 def padicToBCrisPlus : ℚ_[p] →+* BCrisPlus ℂ_[p] p :=
-  IsLocalization.lift (M := nonZeroDivisors ℤ_[p]) (S := ℚ_[p]) (g := padicIntToBCrisPlus)
-    fun y => isUnit_padicIntToBCrisPlus (nonZeroDivisors.coe_ne_zero y)
+  padicToBCrisPlusOf ℂ_[p] isUnit_padicIntToBCrisPlus_nzd
 
-instance algebraPadicBCrisPlus : Algebra ℚ_[p] (BCrisPlus ℂ_[p] p) := padicToBCrisPlus.toAlgebra
+/-- General-field version of `algebraPadicBCrisPlus` to avoid kernel unfolding of `BCrisPlus ℂ_[p] p`. -/
+@[instance_reducible]
+def algebraPadicBCrisPlusOf (K : Type*) [NontriviallyNormedField K] [IsUltrametricDist K]
+    [IsPerfectoidField K p] (f : ℚ_[p] →+* BCrisPlus K p) : Algebra ℚ_[p] (BCrisPlus K p) :=
+  f.toAlgebra
+
+instance algebraPadicBCrisPlus : Algebra ℚ_[p] (BCrisPlus ℂ_[p] p) :=
+  algebraPadicBCrisPlusOf ℂ_[p] padicToBCrisPlus
+
+private theorem padicToBCrisPlusOf_apply_int (K : Type*) [NontriviallyNormedField K]
+    [IsUltrametricDist K] [IsPerfectoidField K p]
+    (h : ∀ y : nonZeroDivisors ℤ_[p], IsUnit (padicIntToBCrisPlusOf (p := p) K y)) (x : ℤ_[p]) :
+    padicToBCrisPlusOf (p := p) K h (algebraMap ℤ_[p] ℚ_[p] x) =
+      padicIntToBCrisPlusOf (p := p) K x := by
+  delta padicToBCrisPlusOf
+  apply @IsLocalization.lift_eq
+
+private theorem padicToBCrisPlus_apply_int (x : ℤ_[p]) :
+    padicToBCrisPlus (p := p) (algebraMap ℤ_[p] ℚ_[p] x) = padicIntToBCrisPlus (p := p) x :=
+  padicToBCrisPlusOf_apply_int ℂ_[p] isUnit_padicIntToBCrisPlus_nzd x
+
+private theorem localization_hom_apply_eq {R S T : Type*} [CommSemiring R] [CommSemiring S]
+    [Semiring T] [Algebra R S] (M : Submonoid R) [IsLocalization M S]
+    (f g : S →+* T) (h : ∀ x, f (algebraMap R S x) = g (algebraMap R S x)) (x : S) :
+    f x = g x :=
+  RingHom.congr_fun (IsLocalization.ringHom_ext M (RingHom.ext h)) x
 
 theorem iotaPlus_algebraMap_padic (q : ℚ_[p]) :
     iotaPlus ℂ_[p] p (algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q) = algebraMap ℚ_[p] 𝔹 q := by
-  have h : (iotaPlus ℂ_[p] p).comp padicToBCrisPlus = algebraMap ℚ_[p] 𝔹 := by
-    refine IsLocalization.ringHom_ext (nonZeroDivisors ℤ_[p]) (RingHom.ext fun x => ?_)
-    simp only [RingHom.comp_apply, padicToBCrisPlus, IsLocalization.lift_eq, padicIntToBCrisPlus,
-      iotaPlus_algebraMap]
-    exact iota_padicInt x
-  exact RingHom.congr_fun h q
+  let j := iotaPlus ℂ_[p] p
+  let f := padicToBCrisPlus (p := p)
+  change j (f q) = _
+  refine localization_hom_apply_eq (nonZeroDivisors ℤ_[p])
+    (j.comp f) (algebraMap ℚ_[p] 𝔹) (fun x => ?_) q
+  let a := IsPerfectoidField.padicIntToWitt (K := ℂ_[p]) p x
+  let b := algebraMap (AInf ℂ_[p] p) (ACris ℂ_[p] p) a
+  change j (f (algebraMap ℤ_[p] ℚ_[p] x)) = algebraMap ℚ_[p] 𝔹 (x : ℚ_[p])
+  exact (congrArg j (padicToBCrisPlus_apply_int x)).trans
+    ((iotaPlus_algebraMap (K := ℂ_[p]) (p := p) b).trans (iota_padicInt x))
+
+/-- General-field version of `iotaPlusAlg` to avoid kernel unfolding of `BCrisPlus ℂ_[p] p`. -/
+def iotaPlusAlgOf (K : Type*) [NontriviallyNormedField K] [IsUltrametricDist K]
+    [IsPerfectoidField K p] [CharZero K] [Algebra ℚ_[p] (BCrisPlus K p)]
+    [Algebra ℚ_[p] (BDeRhamPlus (normInteger K) p)]
+    (hc : ∀ q : ℚ_[p], iotaPlus K p (algebraMap ℚ_[p] (BCrisPlus K p) q) =
+      algebraMap ℚ_[p] (BDeRhamPlus (normInteger K) p) q) :
+    BCrisPlus K p →ₐ[ℚ_[p]] BDeRhamPlus (normInteger K) p :=
+  { iotaPlus K p with commutes' := hc }
 
 def iotaPlusAlg : BCrisPlus ℂ_[p] p →ₐ[ℚ_[p]] 𝔹 :=
-  { iotaPlus ℂ_[p] p with commutes' := iotaPlus_algebraMap_padic }
+  iotaPlusAlgOf ℂ_[p] iotaPlus_algebraMap_padic
 
 theorem iotaPlusAlg_apply (x : BCrisPlus ℂ_[p] p) : iotaPlusAlg x = iotaPlus ℂ_[p] p x :=
   rfl
@@ -161,15 +274,32 @@ theorem frobenius_padicIntToWitt (a : ℤ_[p]) :
 theorem phiPlus_algebraMap_padic (q : ℚ_[p]) :
     phiPlus ℂ_[p] p (algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q) =
       algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q := by
-  have h : (phiPlus ℂ_[p] p).comp padicToBCrisPlus = padicToBCrisPlus := by
-    refine IsLocalization.ringHom_ext (nonZeroDivisors ℤ_[p]) (RingHom.ext fun x => ?_)
-    simp only [RingHom.comp_apply, padicToBCrisPlus, IsLocalization.lift_eq, padicIntToBCrisPlus,
-      phiPlus_algebraMap, phi_algebraMap]
-    rw [frobenius_padicIntToWitt]
-  exact RingHom.congr_fun h q
+  let F := phiPlus ℂ_[p] p
+  let f := padicToBCrisPlus (p := p)
+  change F (f q) = f q
+  refine localization_hom_apply_eq (nonZeroDivisors ℤ_[p]) (F.comp f) f (fun x => ?_) q
+  let a := IsPerfectoidField.padicIntToWitt (K := ℂ_[p]) p x
+  let j := algebraMap (AInf ℂ_[p] p) (ACris ℂ_[p] p)
+  let k := algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p)
+  have hx := padicToBCrisPlus_apply_int x
+  change F (f (algebraMap ℤ_[p] ℚ_[p] x)) = f (algebraMap ℤ_[p] ℚ_[p] x)
+  calc
+    _ = F (k (j a)) := congrArg F hx
+    _ = k (phi (K := ℂ_[p]) (p := p) (j a)) := phiPlus_algebraMap (K := ℂ_[p]) (p := p) (j a)
+    _ = k (j (φW a)) := congrArg k (phi_algebraMap (K := ℂ_[p]) (p := p) a)
+    _ = k (j a) := congrArg (fun w => k (j w)) (frobenius_padicIntToWitt x)
+    _ = _ := hx.symm
+
+/-- General-field version of `phiPlusAlg` to avoid kernel unfolding of `BCrisPlus ℂ_[p] p`. -/
+def phiPlusAlgOf (K : Type*) [NontriviallyNormedField K] [IsUltrametricDist K]
+    [IsPerfectoidField K p] [Algebra ℚ_[p] (BCrisPlus K p)]
+    (hc : ∀ q : ℚ_[p], phiPlus K p (algebraMap ℚ_[p] (BCrisPlus K p) q) =
+      algebraMap ℚ_[p] (BCrisPlus K p) q) :
+    BCrisPlus K p →ₐ[ℚ_[p]] BCrisPlus K p :=
+  { phiPlus K p with commutes' := hc }
 
 def phiPlusAlg : BCrisPlus ℂ_[p] p →ₐ[ℚ_[p]] BCrisPlus ℂ_[p] p :=
-  { phiPlus ℂ_[p] p with commutes' := phiPlus_algebraMap_padic }
+  phiPlusAlgOf ℂ_[p] phiPlus_algebraMap_padic
 
 theorem phiPlusAlg_apply (x : BCrisPlus ℂ_[p] p) : phiPlusAlg x = phiPlus ℂ_[p] p x :=
   rfl
@@ -206,14 +336,14 @@ theorem algebraMap_aCris_injective :
   IsLocalization.injective (BCrisPlus ℂ_[p] p)
     (Submonoid.powers_le.2 p_mem_nonZeroDivisors_aCris)
 
-set_option maxHeartbeats 1600000 in
+
 theorem phiPlus_iterate_algebraMap (n : ℕ) (a : ACris ℂ_[p] p) :
     (phiPlus ℂ_[p] p)^[n] (algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) a) =
       algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) ((phi (K := ℂ_[p]) (p := p))^[n] a) := by
-  induction n with
-  | zero => rfl
-  | succ n ih => rw [Function.iterate_succ_apply', ih, phiPlus_algebraMap,
-      Function.iterate_succ_apply']
+  have h : Function.Semiconj (algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p))
+      (phi (K := ℂ_[p]) (p := p)) (phiPlus ℂ_[p] p) :=
+    fun b => (phiPlus_algebraMap (K := ℂ_[p]) (p := p) b).symm
+  exact (h.iterate_right n a).symm
 
 theorem exists_root_of_aeval_eq_zero {Q : ℚ_[p][X]} (hQ : Q.Monic) {z : 𝔹} (hz : aeval z Q = 0) :
     ∃ r ∈ (Q.map (algebraMap ℚ_[p] (PadicAlgCl p))).roots, z = algClToBdR p r := by
@@ -231,70 +361,105 @@ theorem exists_root_of_aeval_eq_zero {Q : ℚ_[p][X]} (hQ : Q.Monic) {z : 𝔹} 
   exact ⟨r, hr, sub_eq_zero.1 hr0⟩
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem mem_unramifiedClosure_of_iotaPlus_eq {x : BCrisPlus ℂ_[p] p} {β : PadicAlgCl p}
     (hx : iotaPlus ℂ_[p] p x = algClToBdR p β) : β ∈ unramifiedClosure p := by
   classical
   have hint : IsIntegral ℚ_[p] β := Algebra.IsIntegral.isIntegral β
-  set Q := minpoly ℚ_[p] β
+  let Q := minpoly ℚ_[p] β
   have hQm : Q.Monic := minpoly.monic hint
-
+  let J := iotaPlus ℂ_[p] p
+  let F := phiPlus ℂ_[p] p
+  let iotaAlg := iotaPlusAlg (p := p)
+  let phiAlg := phiPlusAlg (p := p)
+  let evalPlus (y : BCrisPlus ℂ_[p] p) := aeval y Q
+  let evalBdR (z : 𝔹) := aeval z Q
   have hQ0 : aeval x Q = 0 := by
-    apply iotaPlus_injective (K := ℂ_[p]) (p := p)
-    rw [map_zero, ← iotaPlusAlg_apply, ← aeval_algHom_apply, iotaPlusAlg_apply, hx,
-      aeval_algHom_apply, minpoly.aeval, map_zero]
-  have hQn : ∀ n, aeval ((phiPlus ℂ_[p] p)^[n] x) Q = 0 := by
+    have hβ0 : aeval (algClToBdR p β) Q = 0 :=
+      (aeval_algHom_apply (algClToBdR p) β Q).trans
+        ((congrArg (algClToBdR p) (minpoly.aeval ℚ_[p] β)).trans (map_zero (algClToBdR p)))
+    have hjx : iotaAlg x = algClToBdR p β := (iotaPlusAlg_apply x).trans hx
+    refine iotaPlus_injective (K := ℂ_[p]) (p := p) ?_
+    calc
+      J (aeval x Q) = iotaAlg (aeval x Q) := (iotaPlusAlg_apply _).symm
+      _ = aeval (iotaAlg x) Q := (aeval_algHom_apply iotaAlg x Q).symm
+      _ = aeval (algClToBdR p β) Q := congrArg evalBdR hjx
+      _ = 0 := hβ0
+      _ = J 0 := (map_zero J).symm
+  have hQn : ∀ n, aeval (F^[n] x) Q = 0 := by
     intro n
     induction n with
     | zero => exact hQ0
     | succ n ih =>
-      rw [Function.iterate_succ_apply', ← phiPlusAlg_apply, aeval_algHom_apply, ih, map_zero]
+      let y := F^[n] x
+      calc
+        _ = aeval (F y) Q := congrArg evalPlus
+          (Function.iterate_succ_apply' (f := (F : BCrisPlus ℂ_[p] p → BCrisPlus ℂ_[p] p)) n x)
+        _ = aeval (phiAlg y) Q := congrArg evalPlus (phiPlusAlg_apply y).symm
+        _ = phiAlg (aeval y Q) := aeval_algHom_apply phiAlg y Q
+        _ = 0 := (congrArg phiAlg ih).trans (map_zero phiAlg)
   have hroot : ∀ n, ∃ r ∈ (Q.map (algebraMap ℚ_[p] (PadicAlgCl p))).roots,
-      iotaPlus ℂ_[p] p ((phiPlus ℂ_[p] p)^[n] x) = algClToBdR p r := fun n =>
-    exists_root_of_aeval_eq_zero hQm (by
-      rw [← iotaPlusAlg_apply, aeval_algHom_apply, hQn, map_zero])
+      J (F^[n] x) = algClToBdR p r := fun n => by
+    let y := F^[n] x
+    refine exists_root_of_aeval_eq_zero (p := p) hQm ?_
+    calc
+      aeval (J y) Q = aeval (iotaAlg y) Q := congrArg evalBdR (iotaPlusAlg_apply y).symm
+      _ = iotaAlg (aeval y Q) := aeval_algHom_apply iotaAlg y Q
+      _ = 0 := (congrArg iotaAlg (hQn n)).trans (map_zero iotaAlg)
   choose r hr hrx using hroot
 
-  let f : ℕ → (Q.map (algebraMap ℚ_[p] (PadicAlgCl p))).roots.toFinset := fun n =>
+  let root : ℕ → (Q.map (algebraMap ℚ_[p] (PadicAlgCl p))).roots.toFinset := fun n =>
     ⟨r n, Multiset.mem_toFinset.2 (hr n)⟩
-  obtain ⟨a₁, a₂, hne, hf⟩ := Finite.exists_ne_map_eq_of_infinite f
-  have hr12 : r a₁ = r a₂ := by
-    have := congrArg Subtype.val hf
-    simpa [f] using this
+  obtain ⟨a₁, a₂, hne, hf⟩ := Finite.exists_ne_map_eq_of_infinite root
+  have hr12 : r a₁ = r a₂ := congrArg Subtype.val hf
   obtain ⟨n₁, n₂, hlt, hr'⟩ : ∃ n₁ n₂, n₁ < n₂ ∧ r n₁ = r n₂ := by
     rcases lt_or_gt_of_ne hne with h | h
     · exact ⟨a₁, a₂, h, hr12⟩
     · exact ⟨a₂, a₁, h, hr12.symm⟩
-  set x' := (phiPlus ℂ_[p] p)^[n₁] x
-  set N := n₂ - n₁
-  have hN : 1 ≤ N := by omega
-  have hfix : (phiPlus ℂ_[p] p)^[N] x' = x' := by
-    apply iotaPlus_injective (K := ℂ_[p]) (p := p)
-    rw [← Function.iterate_add_apply, Nat.sub_add_cancel hlt.le, hrx, hrx, hr']
+  let x' := F^[n₁] x
+  let N := n₂ - n₁
+  have hN : 1 ≤ N := Nat.sub_pos_of_lt hlt
+  have hfix : F^[N] x' = x' := by
+    refine iotaPlus_injective (K := ℂ_[p]) (p := p) ?_
+    calc
+      J (F^[N] x') = J (F^[N + n₁] x) := congrArg J
+        (Function.iterate_add_apply (f := (F : BCrisPlus ℂ_[p] p → BCrisPlus ℂ_[p] p)) N n₁ x).symm
+      _ = J (F^[n₂] x) := congrArg (fun n => J (F^[n] x)) (Nat.sub_add_cancel hlt.le)
+      _ = algClToBdR p (r n₂) := hrx n₂
+      _ = algClToBdR p (r n₁) := congrArg (algClToBdR p) hr'.symm
+      _ = J x' := (hrx n₁).symm
 
-  obtain ⟨⟨a, s⟩, hs⟩ := IsLocalization.surj (Submonoid.powers (p : ACris ℂ_[p] p)) x'
-  obtain ⟨k, hk⟩ := s.2
-  simp only at hs
-  have hsk : algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) (s : ACris ℂ_[p] p) =
-      ((p : BCrisPlus ℂ_[p] p)) ^ k := by
-    rw [← hk, map_pow, map_natCast]
-  have hphik : ∀ n, (phiPlus ℂ_[p] p)^[n] (((p : BCrisPlus ℂ_[p] p)) ^ k) =
-      ((p : BCrisPlus ℂ_[p] p)) ^ k := by
-    intro n
-    induction n with
-    | zero => rfl
-    | succ n ih => rw [Function.iterate_succ_apply', ih, map_pow, map_natCast]
+  let E := algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p)
+  obtain ⟨k, a, hs⟩ := IsLocalization.Away.surj (p : ACris ℂ_[p] p) x'
+  let d : BCrisPlus ℂ_[p] p := (p : BCrisPlus ℂ_[p] p) ^ k
+  have hs' : x' * d = E a :=
+    (congrArg (fun b : BCrisPlus ℂ_[p] p => x' * b ^ k) (map_natCast E p)).symm.trans hs
+  let G := F ^ N
+  have hd : G d = d := map_natCast_pow G p k
   have ha : (phi (K := ℂ_[p]) (p := p))^[N] a = a := by
-    apply algebraMap_aCris_injective
-    rw [← phiPlus_iterate_algebraMap, ← hs, hsk, ← RingHom.coe_pow, map_mul, RingHom.coe_pow,
-      hfix, hphik]
-  obtain ⟨u₀, -⟩ := exists_theta_approx_of_phi_iterate hN ha 0
+    refine algebraMap_aCris_injective (p := p) ?_
+    calc
+      E ((phi (K := ℂ_[p]) (p := p))^[N] a) = G (E a) := (phiPlus_iterate_algebraMap N a).symm
+      _ = G (x' * d) := congrArg G hs'.symm
+      _ = G x' * G d := map_mul G x' d
+      _ = x' * d := congrArg₂ (· * ·) hfix hd
+      _ = E a := hs'
 
   have hθa : ((theta ℂ_[p] p a : 𝒪) : ℂ_[p]) = ((r n₁ * (p : PadicAlgCl p) ^ k : PadicAlgCl p) : ℂ_[p]) := by
     have h1 : iota ℂ_[p] p a = algClToBdR p (r n₁ * (p : PadicAlgCl p) ^ k) := by
-      rw [← iotaPlus_algebraMap, ← hs, map_mul, hsk, map_pow, map_natCast, hrx, map_mul, map_pow,
-        map_natCast]
-    rw [← thetaField_iota, ← thetaAlgHom_apply, h1, thetaAlgHom_algClToBdR]
+      have hjd : J d = (p : 𝔹) ^ k := map_natCast_pow J p k
+      have hrd : algClToBdR p ((p : PadicAlgCl p) ^ k) = (p : 𝔹) ^ k :=
+        map_natCast_pow (algClToBdR p).toRingHom p k
+      calc
+        _ = J (E a) := (iotaPlus_algebraMap (K := ℂ_[p]) (p := p) a).symm
+        _ = J (x' * d) := congrArg J hs'.symm
+        _ = J x' * J d := map_mul J x' d
+        _ = algClToBdR p (r n₁) * algClToBdR p ((p : PadicAlgCl p) ^ k) :=
+          congrArg₂ (· * ·) (hrx n₁) (hjd.trans hrd.symm)
+        _ = _ := (map_mul (algClToBdR p) (r n₁) ((p : PadicAlgCl p) ^ k)).symm
+    exact (thetaField_iota a).symm.trans
+      ((thetaAlgHom_apply p _).symm.trans
+        ((congrArg (thetaAlgHom p) h1).trans (thetaAlgHom_algClToBdR p _)))
   have hpnorm : ‖(p : ℂ_[p])‖ = ‖(p : PadicAlgCl p)‖ := by
     rw [← PadicComplex.coe_natCast, PadicComplex.norm_extends]
   have hmem : r n₁ * (p : PadicAlgCl p) ^ k ∈ unramifiedClosure p := by
@@ -329,21 +494,21 @@ variable {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
 theorem iotaPlus_gal_smul (σ : Gal(PadicAlgCl p/K)) (x : BCrisPlus ℂ_[p] p) :
     iotaPlus ℂ_[p] p (σ • x) = σ • iotaPlus ℂ_[p] p x := by
-  have h : (iotaPlus ℂ_[p] p).comp (galPlus σ) = (galBdRHom σ).comp (iotaPlus ℂ_[p] p) := by
-    apply IsLocalization.ringHom_ext (Submonoid.powers (p : ACris ℂ_[p] p))
-    ext y
-    simp only [RingHom.comp_apply]
-    rw [galPlus_algebraMap, iotaPlus_algebraMap, iotaPlus_algebraMap, ← gal_smul_def,
-      iota_gal_smul]
-    rfl
-  exact RingHom.congr_fun h x
+  let j := iotaPlus ℂ_[p] p
+  let g := galBdRHom σ
+  change j (galPlus σ x) = g (j x)
+  refine localization_hom_apply_eq (Submonoid.powers (p : ACris ℂ_[p] p))
+    (j.comp (galPlus σ)) (g.comp j) (fun y => ?_) x
+  exact (congrArg j (galPlus_algebraMap σ y)).trans
+    ((iotaPlus_algebraMap (K := ℂ_[p]) (p := p) (galCris σ y)).trans
+      ((iota_gal_smul σ y).trans (congrArg g (iotaPlus_algebraMap (K := ℂ_[p]) (p := p) y).symm)))
 
 variable [FiniteDimensional ℚ_[p] K]
 
 theorem bCrisPlus_fixed (x : BCrisPlus ℂ_[p] p) (hx : ∀ σ : Gal(PadicAlgCl p/K), σ • x = x) :
     ∃ k ∈ maxUnramified p K, iotaPlus ℂ_[p] p x = algClToBdR p k := by
   obtain ⟨k, hk⟩ := bDeRhamPlus_fixed K (iotaPlus ℂ_[p] p x) fun σ => by
-    rw [← iotaPlus_gal_smul, hx σ]
+    exact (iotaPlus_gal_smul σ x).symm.trans (congrArg (iotaPlus ℂ_[p] p) (hx σ))
   exact ⟨k, ⟨k.2, mem_unramifiedClosure_of_iotaPlus_eq hk.symm⟩, hk.symm⟩
 
 
@@ -353,9 +518,10 @@ theorem exists_bCrisPlus_fixed {k : PadicAlgCl p} (hk : k ∈ maxUnramified p K)
       iotaPlus ℂ_[p] p x = algClToBdR p k := by
   obtain ⟨x, hx⟩ := (mem_algClInBCrisPlus (p := p)).1 (unramifiedClosure_le hk.2)
   refine ⟨x, fun σ => iotaPlus_injective (K := ℂ_[p]) (p := p) ?_, hx⟩
-  rw [iotaPlus_gal_smul, hx, gal_smul_algClToBdR]
-  congr 1
-  exact σ.commutes ⟨k, hk.1⟩
+  exact (iotaPlus_gal_smul σ x).trans
+    ((congrArg (fun y : 𝔹 => σ • y) hx).trans
+      ((gal_smul_algClToBdR σ k).trans
+        ((congrArg (algClToBdR p) (σ.commutes (⟨k, hk.1⟩ : K))).trans hx.symm)))
 
 end Invariants
 

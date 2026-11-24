@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsDiagR
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Assembly
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.DiagonalDivisors.InhabitBaseStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 
 @[expose] public section
 

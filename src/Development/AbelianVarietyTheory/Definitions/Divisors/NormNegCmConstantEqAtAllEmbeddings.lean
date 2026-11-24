@@ -1,23 +1,23 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 public import Formalism.LocalToGlobal.IndefiniteReal.FWTie
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPins
-public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
-public import Formalism.SharpRestriction.Divisibility.PlaceRankTwoOne
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DividedWeightUnique
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCoversOfHalves
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCovPinNotIsXiDet
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RankOneBaseWeightEqCmTheta
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModuliSchemePolarizedAbelianLevel
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermitianCodeWordStagesRingOfIntegersFull
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermitianCodeWordStagesHasRootOfUnity
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsUnitaryOfOrderDvd
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CmModuliConsequenceOfAbelianSchemeLaws
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeEmbeddingLiftDatumHermitianSpace
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMemberDictionaryContextGoodEmbedding
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsPrincipalLevelSubgroupOpen
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniformisationDictionaryCharacterLaws
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NonemptyFrPtComplex
+import Formalism.LocalRingCardinality.ConjSqrtMinusD
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.Prime
 
 @[expose] public section
 
@@ -347,7 +347,7 @@ theorem exists_half (s : ℤ) (hs : (15 : ℤ) ∣ s ^ 2 + H.d) (e : ℕ) :
   let J : Ideal (𝓞 E) := Ideal.span {15, (s : 𝓞 E) + H.rt}
   have hJ : J.map (H.bar : 𝓞 E →+* 𝓞 E) = Ideal.span {15, (s : 𝓞 E) - H.rt} := by
     rw [Ideal.map_span, Set.image_pair]
-    simp [bar_root, sub_eq_add_neg, map_ofNat]
+    simp [sub_eq_add_neg, map_ofNat]
   have m1 : (15 : 𝓞 E) ∈ J := Ideal.subset_span (by simp)
   have m2 : (s : 𝓞 E) + H.rt ∈ J := Ideal.subset_span (by simp)
   have m3 : (15 : 𝓞 E) ∈ J.map (H.bar : 𝓞 E →+* 𝓞 E) := hJ ▸ Ideal.subset_span (by simp)
@@ -430,7 +430,7 @@ theorem rank_pos (T : Core D) (hQ : T.Q.Pins) (j : ℕ) (hj : InR D j) : 1 ≤ (
   rw [hr]; unfold Ranks.r; omega
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_good_pin (T : Core D) (hQ : T.Q.Pins) (j : ℕ) (hj : InR D j) (c' : Coeff T.Q.l) (hle : T.Q.c.F ≤ c'.F)
     (d : DeltaDat (T.Q.Xo j) c' 0) (e : ℕ) (a1 : d.pd = 15 ^ e) (a2 : d.IsLev) (a3 : d.l₂.A = 1)
     (a4 : FnAlgClosed (Xo := d.Xo₂) (c := d.c₂)) (a5 : ∀ s : ℂ ≃+* ℂ, (∀ a ∈ T.Q.c.F, s a = a) → ∀ a ∈ c'.F, s a ∈ c'.F)

@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
+public import GroundTheory.AutomorphicForms.ReductionSplitting
+public import Mathlib.Topology.ContinuousMap.CompactlySupported
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
+import GroundTheory.AutomorphicForms.Reduction
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
 
 @[expose] public section
 

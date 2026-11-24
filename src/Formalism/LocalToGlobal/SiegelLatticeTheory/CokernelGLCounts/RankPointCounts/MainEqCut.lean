@@ -1,14 +1,20 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGram
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ChiNCut
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ColPhaseCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentBlockMeasure
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LatDictK
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowDictPf
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCoreGamProdSum
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCorePsiNatEquiv
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLocPfA
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLocPfB
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LatDictK
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowDictPf
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.AdmNPf
 
 @[expose] public section
 
@@ -41,12 +47,8 @@ theorem genT_one (X : PB.Terms τ Rw I H H₁) : (genT X).one (genT X).ngSet = X
   ext p
   simp only [PB.Terms.one, PB.Terms.sc, PB.Terms.allPairs, Set.mem_setOf_eq]
   by_cases h : X.s0 p.1 p.2 = 1 ∧ X.scal p.1 p.2
-  · have e : (genT X).s0 p.1 p.2 = 1 := by simp only [genT]; rw [if_pos h]
-    rw [e]
-    exact ⟨fun ⟨a, _⟩ => ⟨a, h.1, h.2⟩, fun ⟨a, _, _⟩ => ⟨a, rfl⟩⟩
-  · have e : (genT X).s0 p.1 p.2 = 2 := by simp only [genT]; rw [if_neg h]
-    rw [e]
-    exact ⟨fun ⟨_, b⟩ => absurd b (by norm_num), fun ⟨_, b, c⟩ => absurd ⟨b, c⟩ h⟩
+  · simp [genT, h]
+  · simp [genT, h]
 
 theorem genT_pairSum (X : PB.Terms τ Rw I H H₁) :
     (genT X).pairSum ((genT X).one (genT X).ngSet) = X.pairSum (X.sc X.genSet) := by
@@ -275,11 +277,9 @@ theorem rowGenJoint_of (hCh : PN.NGChain) (hMG : MeanAmpGen) : RowGenJoint := by
   set dd : ℝ := B.d * B.d' / B.Dstar with hdd
   set AAre : ℝ := PN.abelian₂ rd r k f * B.AA with hAAre
   set EX : ℝ := Real.exp (Cn * ((2 * r + 2 : ℕ) : ℝ) ^ 5 * f * Real.log b) with hEX
-  have hS0 : 0 ≤ S := by rw [hS]; positivity
-  have hPc0 : 0 ≤ Pc := by rw [hPc]; positivity
-  have hgA0 : 0 ≤ gA := by rw [hgA]; positivity
-  have hex0 : 0 ≤ ex := by rw [hex]; positivity
-  have hF : 0 ≤ S * cSt * e1 * Pc * gA * ex := by positivity
+  have hF : 0 ≤ S * cSt * e1 * Pc * gA * ex := by
+    rw [hS, hPc, hgA, hex]
+    positivity
   calc B.Gam1 * (S * (cSt * AAre * e1 * Pc * gA * (ex * Ire)))
       = (S * cSt * e1 * Pc * gA * ex) * (B.Gam1 * AAre * Ire) := by ring
     _ ≤ (S * cSt * e1 * Pc * gA * ex) * (vg * dd) := mul_le_mul_of_nonneg_left hnr hF
@@ -356,8 +356,7 @@ theorem sum_prodG (L : PN.LocalNG Cl Nu) :
     ∑ d, (∏ p, L.wt p (d p)) * ‖ampGen L d‖ ^ 2 = ∏ p, ∑ d, L.wt p d * ‖L.aZ p d‖ ^ 2 := by
   rw [Fintype.prod_sum]
   refine Finset.sum_congr rfl (fun d _ => ?_)
-  unfold ampGen
-  rw [norm_prod, ← Finset.prod_pow, ← Finset.prod_mul_distrib]
+  simp only [ampGen, norm_prod, ← Finset.prod_pow, ← Finset.prod_mul_distrib]
 
 theorem meanAmplitudeGeneric_holds : MeanAmpGen := by
   intro Cl Nu L C1 C0 r hb hZ hM hU S
@@ -479,9 +478,7 @@ theorem typedCountC_of (hS : Formalism.L2.SG.Pf.SatGramLoc.SplitPrimeLoc) (hRC :
     TypedCountC := by
   intro D X Y _ i
   rw [Formalism.L2.SG.Pf.SatGram.typed_count' (X := X) hS hRC Y.TR i]
-  have h := Formalism.L2.SG.Pf.RowDictPf.f_eq X
-  unfold Formalism.MainNotions.S.AutInst.f at h
-  exact h
+  simpa only [Formalism.MainNotions.S.AutInst.f] using Formalism.L2.SG.Pf.RowDictPf.f_eq X
 
 theorem diagNumC_of (hTC : TypedCountC) : DiagNumC := by
   intro Cg cb Cw cT CT C0 A CB C4 hCB hC4

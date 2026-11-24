@@ -1,9 +1,60 @@
 module
 
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZeroPadic
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPsCharOne
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteSemisimple
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootsCharpolyPowEqMapPow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZeroPadic
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPsCharOne
+import Formalism.SharpRestriction.LevelLetterCocycles.DataN
+public import Mathlib.RingTheory.Polynomial.Vieta
 
 @[expose] public section
 
@@ -20,9 +71,9 @@ theorem newton_fn {σ : Type} [Fintype σ] (f : σ → k) (j : ℕ) :
       ∑ a ∈ antidiagonal j with a.1 < j,
         (-1) ^ a.1 * (univ.val.map f).esymm a.1 * ∑ i, f i ^ a.2 := by
   have h := congrArg (MvPolynomial.aeval f) (MvPolynomial.mul_esymm_eq_sum σ k j)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa only [map_mul, map_sum, map_pow, map_neg, map_one, map_natCast,
-    MvPolynomial.aeval_esymm_eq_multiset_esymm, MvPolynomial.psum, MvPolynomial.aeval_X] using h
+
+  simpa only [map_mul, map_sum, map_pow, map_neg, map_one, map_natCast,
+  MvPolynomial.aeval_esymm_eq_multiset_esymm, MvPolynomial.psum, MvPolynomial.aeval_X] using h
 
 theorem newton_multiset (s : Multiset k) (j : ℕ) :
     (j : k) * s.esymm j = (-1) ^ (j + 1) *
@@ -63,7 +114,7 @@ theorem prod_eq_of_psum_eq [CharZero k] (s t : Multiset k) (hc : Multiset.card s
   by_cases hj : j ≤ Multiset.card s
   · rw [Multiset.prod_X_sub_C_coeff s hj, Multiset.prod_X_sub_C_coeff t (hc ▸ hj), hc,
       esymm_eq_of_psum_eq s t h]
-  · push_neg at hj
+  · push Not at hj
     rw [coeff_eq_zero_of_natDegree_lt, coeff_eq_zero_of_natDegree_lt]
     · rw [natDegree_multiset_prod_X_sub_C_eq_card]; omega
     · rw [natDegree_multiset_prod_X_sub_C_eq_card]; omega

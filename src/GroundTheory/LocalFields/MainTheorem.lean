@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.LocalArtinUniqueness
-public import GroundTheory.LocalFields.LocalArtinCompletion
 public import GroundTheory.LocalFields.LocalArtinFunctoriality
 public import GroundTheory.LocalFields.LocalArtinTransport
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

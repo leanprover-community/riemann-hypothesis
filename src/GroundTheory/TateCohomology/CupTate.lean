@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.CupTateShift
+public import GroundTheory.TateCohomology.TateLow
+import GroundTheory.TateCohomology.CupConnecting
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
@@ -39,7 +41,7 @@ theorem cupH_zero_zero_π {A B : Rep.{u} k G} (f : (Fin 0 → G) → A) (g : (Fi
   simp [Fin.partialProd]
 
 
-set_option maxHeartbeats 1600000 in
+
 set_option backward.isDefEq.respectTransparency false in
 theorem tateCup_zero_zero (A B : Rep.{u} k G) (x : A.ρ.invariants) (y : B.ρ.invariants) :
     tateCup 0 0 A B 0 (add_zero 0)
@@ -103,7 +105,7 @@ theorem tateCup_zero_zero (A B : Rep.{u} k G) (x : A.ρ.invariants) (y : B.ρ.in
   rfl
 
 
-set_option maxHeartbeats 800000 in
+
 theorem tateCup_unique_of_agrees (μ : ∀ p q : ℤ, TateCupFam k G p q)
     (hpos : ∀ (n m l : ℕ) [NeZero n] [NeZero m] [NeZero l] (hl : n + m = l) (A B : Rep.{u} k G)
       (a : tateCohomology A n) (b : tateCohomology B m),

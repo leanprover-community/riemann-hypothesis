@@ -1,7 +1,15 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
+public import Formalism.RealPlaceAnalysis.StatementKT
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.UniqueA
+public import Mathlib.LinearAlgebra.Dimension.Finite
 
 @[expose] public section
 
@@ -128,9 +136,7 @@ theorem highest_weight_differences_nat (hF : Formalism.REAL.KRel ε F) (S : Subm
   obtain ⟨m, hm⟩ := exists_nat_weight_sub_eq_of_highest_vector_in_stable hF (ne_of_lt hab) he S (fun y hy => hS b a he.symm y hy) hv hv0
     (hw.1 a) (hw.1 b) (hw.2 a b hab he)
   refine ⟨m, ?_⟩
-  apply Complex.ofReal_injective
-  push_cast
-  exact hm
+  exact Complex.ofReal_injective (by push_cast; exact hm)
 
 end SL2
 
@@ -146,9 +152,7 @@ theorem lowest_weight_differences_nat {ε : Fin n → Bool} {ι : Type*} [Fintyp
     (fun _ _ => Submodule.mem_top) Submodule.mem_top hf0 (la := ((ν b : ℝ) : ℂ)) (lb := ((ν a : ℝ) : ℂ))
     (by rw [happ]; exact hfw b) (by rw [happ]; exact hfw a) (by rw [happ]; exact hfl b a hab he.symm)
   refine ⟨m, ?_⟩
-  apply Complex.ofReal_injective
-  push_cast
-  exact hm
+  exact Complex.ofReal_injective (by push_cast; exact hm)
 
 theorem block_weights_integral {ε : Fin n → Bool} {M : Type*} [AddCommGroup M] [Module ℂ M]
     {F : Fin n → Fin n → Module.End ℂ M} (hF : Formalism.REAL.KRel ε F) (S : Submodule ℂ M) [FiniteDimensional ℂ S]
@@ -168,8 +172,7 @@ theorem block_weights_integral {ε : Fin n → Bool} {M : Type*} [AddCommGroup M
   intro a b he
   rcases lt_trichotomy a b with h | h | h
   · exact key a b h he
-  · subst h
-    exact ⟨0, by simp⟩
+  · exact ⟨0, by simp [h]⟩
   · obtain ⟨z, hz⟩ := key b a h he.symm
     exact ⟨-z, by push_cast; linarith⟩
 

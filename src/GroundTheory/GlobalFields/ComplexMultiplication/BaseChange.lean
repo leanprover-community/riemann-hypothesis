@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstantField
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogenyExists
+public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialBaseChange
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

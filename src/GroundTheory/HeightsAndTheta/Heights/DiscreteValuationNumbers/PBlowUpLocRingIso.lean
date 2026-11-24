@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpFibreSemilocalCut
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpModel
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

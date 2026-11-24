@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNdStd
-public import Formalism.LocalToGlobal.NumberFieldFamilies.GamCSpec
+public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNd
 
 @[expose] public section
 
@@ -13,7 +12,7 @@ namespace Formalism.L2.Fam.NPC.LatticeFinitenessFree
 
 open Formalism.L2.Fam.NPC
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (B : LocBase0 H what₂)
 

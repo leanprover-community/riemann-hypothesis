@@ -1,14 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.CarchAt
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt
-public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.QatOfBridgeAlt
-public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.FinitePlaceArcs.BeSumPf
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecConj
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.QbridgeOfNumGood
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.WeightedPrimeSumBound
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ArcDatumCoefficientFunctionalLinearDegree
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmArcDatumFamilyFunctionalBoundedLinearOnCuspFor
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmFamilyFunctionalsDetectLowCoefficients
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmArcDatumFamilyFunctionalBoundedLinearOnCuspForStatement
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.QbridgeOfNumGood
+public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.FinitePlaceArcs.BeSumPf
+public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.QatOfBridgeAlt
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ModelsAt
+import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.FinitePlaceArcs.BeSumStatement
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.FinLocalCutAt
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmArcDatumFunctionalFiniteIntegralityBound
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmValueLineLengthConjEq
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LamDegreeParameters
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ModelsAtOfGoodLevel
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NdegLineOptionLe
+import Formalism.LocalToGlobal.ProjectiveLattices.RecConj
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.LocalQuotientRank
 
 @[expose] public section
 
@@ -111,7 +154,7 @@ theorem qat_of_kill_detect : Known → ∀ (D : D7) (T : Core D) (h : LawsCore T
       obtain ⟨hN, hNd⟩ := valLine_ndeg_le hK _ _ _ _ _ K₁ _ _ _ _ _ _ _ s large₂.logOm d.μ ka.n hLa
         (lamDegSt_logOm₂ hK D T large₂ h.pins)
       refine ⟨s.valLine d.μ ka.n, hN, hNd.trans ?_,
-        GlobalTheory.T.cmValueLine_length_conj_eq hK _ _ _ _ _ K₁ _ _ _ _ _ _ _ s _ _, ?_, ?_⟩
+        _root_.GlobalTheory.ArcCM.valLine_conj hK _ _ _ _ _ K₁ _ _ _ _ _ _ _ s _ _, ?_, ?_⟩
       · unfold BdegAt
         refine mul_le_mul_of_nonneg_left ?_ hc
         rw [hμ, hf, hpq, Nat.mul_div_cancel_left _ two_pos]
@@ -119,7 +162,7 @@ theorem qat_of_kill_detect : Known → ∀ (D : D7) (T : Core D) (h : LawsCore T
         exact RunNum.absA_add_le_size T h.pins j hj ka
       · intro la w hw G hGm hne'
         rw [hφ] at hne' ⊢
-        exact GlobalTheory.T.cmArcDatum_functional_finite_integrality_bound hK _ _ _ _ (T.Q.Xo j) T.Q.c K₁ d _ _ _ s
+        exact _root_.GlobalTheory.ArcCM.cfOf_fin_bound hK _ _ _ _ (T.Q.Xo j) T.Q.c K₁ d _ _ _ s
           (modelsAt_of_good_level hK _ _ _ _ _ _ (hpq ▸ hr) hgood) hstd hLa la w hw (wtA ka) ka.n G.1
           ⟨hle G.2, fun v hv => hGm la v hv⟩ hne'
       · intro em G _ hne'

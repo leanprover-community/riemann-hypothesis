@@ -1,8 +1,17 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.UnipTool
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SCompact
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -62,10 +71,10 @@ theorem hE_crd (v w : (VS D).V) : hE X (X.crd v) (X.crd w) = X.ιE.symm ((VS D).
   apply X.ιE.injective
   rw [RingEquiv.apply_symm_apply]
   conv_rhs => rw [← X.bas.sum_repr v, ← X.bas.sum_repr w]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hE, Formalism.UG.P.hform_eq_dot, dotProduct, mulVec, Function.comp_apply, map_sum, map_mul,
-    LinearMap.sum_apply, LinearMap.map_smulₛₗ₂, LinearMap.map_smul, smul_eq_mul,
-    starRingEnd_apply, X.ιE_conj, X.J_eq, HidaSetting.crd, crdOf, RingEquiv.apply_symm_apply, Finset.mul_sum]
+
+  simp only [hE, Formalism.UG.P.hform_eq_dot, dotProduct, mulVec, Function.comp_apply, map_sum, map_mul,
+  LinearMap.sum_apply, LinearMap.map_smulₛₗ₂, LinearMap.map_smul, smul_eq_mul,
+  starRingEnd_apply, X.ιE_conj, X.J_eq, HidaSetting.crd, crdOf, RingEquiv.apply_symm_apply, Finset.mul_sum]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [star_host_apply]
@@ -145,8 +154,8 @@ theorem pW_mem (x : Fin X.B.I.n → X.B.I.E) : pW X x ∈ Wsub X := by
   show ∀ a, hE X (X.eR a) (pW X x) = 0 ∧ hE X (X.fR a) (pW X x) = 0
   intro a
   constructor
-  · simp [pW, hE_sub_right, hE_sum_right, hE_smul_right, hE_ee, hE_ef, mul_boole, Finset.sum_ite_eq]
-  · simp [pW, hE_sub_right, hE_sum_right, hE_smul_right, hE_ff, hE_fe, mul_boole, Finset.sum_ite_eq]
+  · simp [pW, hE_sub_right, hE_sum_right, hE_smul_right, hE_ee, hE_ef, Finset.sum_ite_eq]
+  · simp [pW, hE_sub_right, hE_sum_right, hE_smul_right, hE_ff, hE_fe, Finset.sum_ite_eq]
 
 theorem pW_add (x y : Fin X.B.I.n → X.B.I.E) : pW X (x + y) = pW X x + pW X y := by
   simp only [pW, hE_add_right, add_smul, Finset.sum_add_distrib]
@@ -226,7 +235,6 @@ theorem Bm'_mulVec (x : Fin X.B.I.n → X.B.I.E) : Bm' X *ᵥ x = cE X x := by
   have hB : Bm' X = LinearMap.toMatrix' (cE X) := by
     ext k i
     simp only [Bm', Matrix.of_apply, LinearMap.toMatrix'_apply]
-    try (congr 2; funext j'; simp [Pi.single_apply])
   rw [hB, ← Matrix.toLin'_apply, Matrix.toLin'_toMatrix']
 
 theorem Bm_mulVec (c : Kap X → X.B.I.E) : Bm X *ᵥ c = ∑ k, c k • bv X k := by
@@ -244,8 +252,8 @@ theorem Bm'_mul_Bm : Bm' X * Bm X = 1 := by
   apply Matrix.toLin'.injective
   apply LinearMap.ext
   intro c
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.toLin'_apply, Matrix.toLin'_apply, ← Matrix.mulVec_mulVec, Bm_mulVec, Bm'_mulVec, map_sum, Matrix.one_mulVec]
+
+  rw [Matrix.toLin'_apply, Matrix.toLin'_apply, ← Matrix.mulVec_mulVec, Bm_mulVec, Bm'_mulVec, map_sum, Matrix.one_mulVec]
   funext k'
   simp [Finset.sum_apply, cE_bv]
 
@@ -275,7 +283,6 @@ theorem JB_graded : Graded (lvk X) (2 * D.R.rS + 2) (JB X) := by
       not_not] at h ⊢
   all_goals first
     | omega
-    | (have ha := a.isLt; have hb := b.isLt; subst h; omega)
 
 theorem JB_e_row (a : Fin D.R.rS) (k : Kap X) :
     JB X (Sum.inl a) k = if k = Sum.inr (Sum.inr a) then 1 else 0 := by
@@ -286,8 +293,8 @@ theorem JB_e_row (a : Fin D.R.rS) (k : Kap X) :
   · simp only [JB, Matrix.of_apply, bv, Sum.elim_inl, Sum.elim_inr, hE_ef, Sum.inr.injEq]
     by_cases h : a = b
     · subst h
-      simp [hE_ef]
-    · simp [hE_ef, h, Ne.symm h]
+      simp
+    · simp [h, Ne.symm h]
 
 def JB' : Matrix (Kap X) (Kap X) X.B.I.E := Bm' X * (X.B.I.J)⁻¹ * (Bm' X)ᴴ
 

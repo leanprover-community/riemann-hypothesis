@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.GaussJetBounds.StatementP
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.IsLawOfLog
-public import Formalism.FormalGroupWitt.Statement
 
 @[expose] public section
 

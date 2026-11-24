@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.CohomologyResMemCohomologyConjInvariants
+public import Mathlib.Algebra.Module.ZMod
+import Mathlib.CategoryTheory.Monoidal.Mon
 
 @[expose] public section
 
@@ -34,8 +35,8 @@ include he in
 theorem addEquiv_inhomogeneousCochains_d (i : ℕ) (f : (Fin i → G) → A) (g : Fin (i + 1) → G) :
     e ((inhomogeneousCochains.d A i).hom f g) =
       (inhomogeneousCochains.d A' i).hom (fun h => e (f h)) g := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [inhomogeneousCochains.d_hom_apply, inhomogeneousCochains.d_hom_apply, map_add (f := _), map_sum, he]
+
+  rw [inhomogeneousCochains.d_hom_apply, inhomogeneousCochains.d_hom_apply, map_add (f := _), map_sum, he]
   congr 1
   refine Finset.sum_congr rfl fun m _ => ?_
   have hk : ∀ (c : ℕ) (a : A), ((-1 : k) ^ c) • a = ((-1 : ℤ) ^ c) • a := fun c a => by
@@ -174,7 +175,7 @@ noncomputable def zmodRepOfTorsion : Rep.{0} (ZMod l) G :=
         simp
       map_mul' := fun g h => by
         ext a
-        simp [Module.End.mul_apply] }
+        simp }
 
 def zmodRepOfTorsionEquiv : A ≃+ zmodRepOfTorsion l A hA :=
   AddEquiv.refl A

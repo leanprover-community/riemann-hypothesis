@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.RhoWApply
+public import Formalism.LocalToGlobal.ProjectiveLattices.AlgebraMapCAt
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

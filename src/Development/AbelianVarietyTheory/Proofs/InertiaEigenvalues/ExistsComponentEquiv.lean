@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfForallMemFilV
+public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdemNotMemFilVOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -151,8 +198,8 @@ theorem TensInj.tensor (h : TensInj PD) (m : ℕ) (c : Fin m → K) (hc : Linear
   apply (TensorProduct.equivFinsuppOfBasisLeft (N := B) b).injective
   ext j
   have := congrArg (fun z => TensorProduct.equivFinsuppOfBasisLeft (N := F) b z j) hx
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finsupp.finsetSum_apply, key, map_zero, Finsupp.zero_apply] at this
+
+  simp only [map_sum, Finsupp.finsetSum_apply, key, map_zero, Finsupp.zero_apply] at this
   simpa using h m c hc _ this i
 
 theorem isDR_of_isCrys (h : TensInj PD) (ρ : Representation LL G V) [FiniteDimensional LL ↥(DdR PD ρ)]
@@ -199,8 +246,8 @@ theorem sub_sm_idem_mem (ρ : Representation LL G V) (τ : K →ₐ[Qp] LL) {y :
   obtain ⟨n, a, c, h, h1⟩ := idem_repr F τ
   have : y - sm Qp F LL V (idem F τ) y =
       ∑ i, (-a i) • (mulR (Qp := Qp) F (LL := LL) (V := V) (algebraMap K F (c i)) y - τ (c i) • y) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h, map_sum, LinearMap.sum_apply]
+
+    rw [h, map_sum, LinearMap.sum_apply]
     simp only [sm_tmul_left, smul_sub, smul_smul, neg_smul, neg_mul, Finset.sum_sub_distrib,
       Finset.sum_neg_distrib, ← Finset.sum_smul, h1, one_smul]
     abel
@@ -233,19 +280,19 @@ theorem exists_component_equiv (h : TensInj PD) (ρ : Representation LL G V)
     have e1 : ∀ c : K, mulR (Qp := Qp) F (LL := LL) (V := V) (algebraMap K F c) (ιV PD (LL := LL) (V := V) x) =
         ∑ i, τ₀ (β.repr c i) • mulR (Qp := Qp) F (LL := LL) (V := V) (algebraMap K F (β i)) (ιV PD (LL := LL) (V := V) x) := by
       intro c
-      set_option synthInstance.maxHeartbeats 100000 in
-        conv_lhs => rw [← β.sum_repr c, map_sum, ← sm_one_tmul, tmul_sum, map_sum, LinearMap.sum_apply]
+
+      conv_lhs => rw [← β.sum_repr c, map_sum, ← sm_one_tmul, tmul_sum, map_sum, LinearMap.sum_apply]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [sm_one_tmul, Algebra.smul_def, map_mul, mul_comm, ← mulR_mulR, ← hιc, ← ιV_mulR,
         ((mem_DcrisL PD ρ τ₀ x).1 hx).2, map_smul, map_smul]
     have e2 : ∀ c : K, τ c = ∑ i, τ₀ (β.repr c i) * τ (β i) := by
       intro c
-      set_option synthInstance.maxHeartbeats 100000 in
-        conv_lhs => rw [← β.sum_repr c, map_sum]
+
+      conv_lhs => rw [← β.sum_repr c, map_sum]
       simp only [Algebra.smul_def, map_mul, hτ]
     have e3 := h.tensor (LL := LL) _ β β.linearIndependent (fun i => (∑ j, a j * τ₀ (β.repr (c j) i)) • x) (by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [he, map_sum, LinearMap.sum_apply] at h0
+
+      rw [he, map_sum, LinearMap.sum_apply] at h0
       simp only [sm_tmul_left, e1 (c _), Finset.smul_sum, smul_smul] at h0
       rw [Finset.sum_comm] at h0
       simpa only [map_smul, ← Finset.sum_smul] using h0)
@@ -263,8 +310,8 @@ theorem exists_component_equiv (h : TensInj PD) (ρ : Representation LL G V)
     obtain ⟨n, a, u, he, h1⟩ := idem_repr B τ₀
     have e0 : ∀ z, sm Qp B LL V (idem B τ₀) z = ∑ j, a j • mulR (Qp := Qp) B (LL := LL) (V := V) (algebraMap K₀ B (u j)) z := by
       intro z
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [he, map_sum, LinearMap.sum_apply]
+
+      rw [he, map_sum, LinearMap.sum_apply]
       simp only [sm_tmul_left]
     have e1 : ∀ i, sm Qp B LL V (idem B τ₀) (x i) ∈ DcrisL PD ρ τ₀ := fun i => by
       refine (mem_DcrisL PD ρ τ₀ _).2 ⟨?_, fun c => mulR_sm_idem τ₀ c _⟩
@@ -273,13 +320,13 @@ theorem exists_component_equiv (h : TensInj PD) (ρ : Representation LL G V)
     have e2 : ∀ z, sm Qp F LL V (idem F τ) (ιV PD (LL := LL) (V := V) (sm Qp B LL V (idem B τ₀) z)) =
         sm Qp F LL V (idem F τ) (ιV PD (LL := LL) (V := V) z) := by
       intro z
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [e0, map_sum, map_sum]
+
+      rw [e0, map_sum, map_sum]
       simp only [map_smul, ιV_mulR, hιc, hcomm, smul_smul, ← hτ, ← Finset.sum_smul, h1, one_smul]
     refine ⟨∑ i, τ (c i) • ⟨_, e1 i⟩, Subtype.ext ?_⟩
     change _ = y
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sm_idem_of_mem_DdRE PD ρ τ hy, hy', map_sum, map_sum, Submodule.coe_sum]
+
+    rw [← sm_idem_of_mem_DdRE PD ρ τ hy, hy', map_sum, map_sum, Submodule.coe_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hcomm, map_smul, Submodule.coe_smul, ← e2]
     rfl

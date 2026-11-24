@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.ScalarOnInertiaProp
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -82,8 +84,8 @@ theorem proj_ne_of_mem (R : Γ →* Module.End ℂ V) {χ χ' : Γ →* ℂˣ} (
 theorem proj_mem (R : Γ →* Module.End ℂ V) (χ : Γ →* ℂˣ) (v : V) : proj R χ v ∈ eigSub R χ := by
   rw [mem_eigSub]
   intro k
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [proj_apply, map_smul, map_sum]
+
+  simp only [proj_apply, map_smul, map_sum]
   rw [smul_comm (χ k : ℂ) ((Fintype.card Γ : ℂ)⁻¹)]
   congr 1
   rw [Finset.smul_sum, ← Equiv.sum_comp (Equiv.mulLeft k) (fun g => (χ k : ℂ) • (((χ g)⁻¹ : ℂˣ) : ℂ) • R g v)]
@@ -103,8 +105,8 @@ theorem finrank_eigSub [FiniteDimensional ℂ V] (R : Γ →* Module.End ℂ V) 
 theorem trace_proj [FiniteDimensional ℂ V] (R : Γ →* Module.End ℂ V) (χ : Γ →* ℂˣ) :
     LinearMap.trace ℂ V (proj R χ) =
       (Fintype.card Γ : ℂ)⁻¹ * ∑ g, (((χ g)⁻¹ : ℂˣ) : ℂ) * LinearMap.trace ℂ V (R g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [proj, map_sum, map_smul]
+
+  simp [proj, map_sum, map_smul]
 
 theorem decomp [FiniteDimensional ℂ V] {ι : Type*} [Fintype ι] (R : Γ →* Module.End ℂ V)
     (χ : ι → Γ →* ℂˣ) (d : ι → ℕ) (hχ : Function.Injective χ)
@@ -133,8 +135,8 @@ theorem decomp [FiniteDimensional ℂ V] {ι : Type*} [Fintype ι] (R : Γ →* 
     rw [hE, LinearMap.sum_apply]
   have hPP : ∀ b v, proj R (χ b) (E v) = proj R (χ b) v := by
     intro b v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hEv, map_sum, Finset.sum_eq_single b]
+
+    rw [hEv, map_sum, Finset.sum_eq_single b]
     · exact proj_self_of_mem R _ (proj_mem R _ _)
     · intro c _ hcb
       exact proj_ne_of_mem R (fun h => hcb (hχ h).symm) (proj_mem R _ _)
@@ -149,8 +151,8 @@ theorem decomp [FiniteDimensional ℂ V] {ι : Type*} [Fintype ι] (R : Γ →* 
       obtain ⟨u, rfl⟩ := hv
       exact hEE u⟩
   have htrE : LinearMap.trace ℂ V E = finrank ℂ V := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hE, map_sum]
+
+    rw [hE, map_sum]
     simp_rw [htp]
     rw [← Nat.cast_sum, hdim]
   have hr : finrank ℂ (LinearMap.range E) = finrank ℂ V := by

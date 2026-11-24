@@ -2,9 +2,70 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.Inertia
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
+public import GroundTheory.LocalFields.LocalArtinMap
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixingSubgroupEquivBicontinuous
+import GroundTheory.LocalFields.Examples
 public import GroundTheory.LocalFields.LocalArtinCompletion
 public import GroundTheory.LocalFields.PrincipalUnitsRank
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixingSubgroupEquivBicontinuous
+import GroundTheory.LocalFields.SeparableClosureValuation
+import GroundTheory.LocalFields.UnitsPowers
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Module.Torsion.Prod
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Dimension.Torsion.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.ProperSpace
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Algebra.ProperAction.Basic
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import GroundTheory.LocalFields.ExamplesCharZero
 
 @[expose] public section
 
@@ -204,7 +265,7 @@ private theorem units_pack (l : ℕ) [Fact l.Prime] (M : Type) [CommGroup M] (o 
     have hdiv : ((l : ℤ) ^ k) ∣ (o x).toAdd := by
       rw [← PadicInt.norm_int_le_pow_iff_dvd, hy2, nsmul_eq_mul, norm_mul]
       have h1 : ‖((l ^ k : ℕ) : ℤ_[l])‖ = (l : ℝ) ^ (-k : ℤ) := by
-        simp [PadicInt.norm_p_pow]
+        simp
       rw [h1]
       exact mul_le_of_le_one_right (by positivity) (PadicInt.norm_le_one _)
     obtain ⟨n0, hn0⟩ := hdiv
@@ -252,9 +313,6 @@ private theorem ball_pow (l d : ℕ) [Fact l.Prime] (k : ℕ) (y : (Fin d → �
   · rintro ⟨z, rfl⟩
     exact ⟨fun i => (key _).mpr ⟨z.1 i, by simp⟩, (key _).mpr ⟨z.2, by simp⟩⟩
 
-private theorem exists_zpow_lt (l : ℕ) [Fact l.Prime] {ε : ℝ} (hε : 0 < ε) : ∃ k : ℕ, (l : ℝ) ^ (-k : ℤ) < ε :=
-  PadicInt.exists_pow_neg_lt l hε
-
 private theorem sep_open {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
     [TotallyDisconnectedSpace G] (h : TopologicalAbelianization G) (hh : h ≠ 1) :
     ∃ V : Subgroup (TopologicalAbelianization G), IsOpen (V : Set (TopologicalAbelianization G)) ∧ h ∉ V := by
@@ -298,7 +356,7 @@ private theorem core_ab (l d : ℕ) [Fact l.Prime] {A M : Type} [CommGroup A] [T
     exact toAdd_eq_zero.mp (h1.resolve_left hne)
   have h0 : Tendsto (fun x => (φ x).toAdd) (Filter.comap r (𝓝 1)) (𝓝 0) := by
     refine Metric.nhds_basis_closedBall.tendsto_right_iff.mpr fun ε hε => ?_
-    obtain ⟨k, hk⟩ := exists_zpow_lt l hε
+    obtain ⟨k, hk⟩ := _root_.PadicInt.exists_pow_neg_lt l hε
     obtain ⟨V, hV, hVx⟩ := hopen k
     filter_upwards [Filter.preimage_mem_comap hV] with x hx
     obtain ⟨z, rfl⟩ := hVx x hx
@@ -533,7 +591,7 @@ private theorem core (l d : ℕ) [Fact l.Prime] {G M : Type} [Group G] [Topologi
         rw [norm_neg]
         exact hb.le
       by_contra hne
-      obtain ⟨k, hk'⟩ := exists_zpow_lt l (norm_pos_iff.mpr hne)
+      obtain ⟨k, hk'⟩ := _root_.PadicInt.exists_pow_neg_lt l (norm_pos_iff.mpr hne)
       exact absurd (hk k) (not_le.mpr hk')
     · intro hx2
       obtain ⟨m, hom, hm1⟩ := hφs x.1

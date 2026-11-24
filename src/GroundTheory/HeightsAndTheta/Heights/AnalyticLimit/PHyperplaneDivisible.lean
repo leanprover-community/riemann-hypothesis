@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StRegSectionParts
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 
 @[expose] public section

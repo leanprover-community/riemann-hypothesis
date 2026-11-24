@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.ChiDefs
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 
 @[expose] public section
 

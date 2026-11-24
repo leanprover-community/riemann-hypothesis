@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.IsWeilDatum
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
+import Formalism.LocalToGlobal.IndefiniteReal.IsWeilDatum
 
 @[expose] public section
 

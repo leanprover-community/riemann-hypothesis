@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsRefAlongSheet
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 
 @[expose] public section

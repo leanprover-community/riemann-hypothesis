@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.HeckeRamifiedZeroOfMatchingsAndDu
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.NaturalTranslateAdelicFunction
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -30,7 +31,7 @@ theorem natTr0_sum (T : Forms0 D u) (γ : UJ (sigD D : D.host.E →+* D.host.E) 
   simp only [natTr0, Finset.mul_sum]
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem dnU_term (T : Forms0 D u) (v : (D.mem u).A.vT) (ψ : Fn D u 0)
     {G : UPts (sigD D) (gramN D 0 (Nat.zero_le _)) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) → Fr D 0 (Nat.zero_le _) → ℂ}
     (hG : G ∈ AdFun T.cls0.lev (embT D))

@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedBessel
-public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
+public import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
+import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 

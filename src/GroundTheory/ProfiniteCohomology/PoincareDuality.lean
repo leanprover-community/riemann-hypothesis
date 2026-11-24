@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Devissage
+import GroundTheory.ProfiniteCohomology.CupProducts.Projection
+import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
 
 @[expose] public section
 

@@ -1,14 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSelfDualE
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.HarderNarasimhan.ShiftInvariance
-public import Formalism.QuotientMetricDivisors.ReductionLemmaZero
-public import Formalism.QuotientMetricDivisors.ProdFormula
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.MeanMaxLeaf.LeafMMFree
+public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsSelfDualE
+import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.MeanMaxLeaf.LeafMMFree
+import Formalism.QuotientMetricDivisors.Statement
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Mathlib.Algebra.Module.FinitePresentation
+public import Mathlib.RingTheory.Flat.EquationalCriterion
+public import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 
@@ -73,8 +114,8 @@ theorem exists_dual_family {E : Type} [Field E] [NumberField E] {n : ℕ} (L : S
   have hdot : ∀ i y, (fun b => f i (Pi.single b 1)) ⬝ᵥ y = f i y := by
     intro i y
     conv_rhs => rw [pi_eq_sum_univ' y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul, dotProduct, mul_comm]
+
+    simp only [map_sum, map_smul, smul_eq_mul, dotProduct, mul_comm]
   have key : ∀ y, ∑ i, f i y • x i = y := by
     have : (∑ i, (f i).smulRight (x i)) = LinearMap.id := by
       apply LinearMap.ext_on hL.span_eq_top
@@ -82,8 +123,8 @@ theorem exists_dual_family {E : Type} [Field E] [NumberField E] {n : ℕ} (L : S
       have h1 : π (s ⟨y, hy⟩) = ⟨y, hy⟩ := LinearMap.congr_fun hs ⟨y, hy⟩
       have h2 : (π (s ⟨y, hy⟩) : Fin n → E) = y := by rw [h1]
       rw [pi_eq_sum_univ' (s ⟨y, hy⟩)] at h2
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, Submodule.coe_sum, Submodule.coe_smul] at h2
+
+      simp only [map_sum, map_smul, Submodule.coe_sum, Submodule.coe_smul] at h2
       simp only [LinearMap.sum_apply, LinearMap.smulRight_apply, LinearMap.id_apply]
       refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) h2
       rw [hf i ⟨y, hy⟩, algebraMap_smul]
@@ -108,8 +149,8 @@ theorem expand_left {E K : Type} [Field E] [Field K] (f : E →+* K) {n m : ℕ}
   have : ∀ a, ∑ i, f (x i a) * v a * f (φ i b) = if a = b then v a else 0 := by
     intro a
     have h1 := congrArg f (h a b)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at h1
+
+    rw [map_sum] at h1
     calc _ = v a * ∑ i, f (x i a * φ i b) := by
           rw [Finset.mul_sum]; refine Finset.sum_congr rfl fun i _ => ?_; rw [map_mul]; ring
       _ = _ := by rw [h1]; split_ifs <;> simp
@@ -222,9 +263,9 @@ theorem roundLat : RoundLat := by
   have hherm : ∀ a b, cE (J a b) = J b a := fun a b => congrFun (congrFun hH b) a
   have hform' : ∀ u y : Fin n → E, Formalism.UG.hform cE J u y = cE ((Jᵀ *ᵥ fun a => cE (y a)) ⬝ᵥ u) := by
     intro u y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Formalism.UG.hform, dotProduct, Matrix.mulVec, Matrix.transpose_apply, map_sum, map_mul, hc, hherm,
-      Finset.sum_mul]
+
+    simp only [Formalism.UG.hform, dotProduct, Matrix.mulVec, Matrix.transpose_apply, map_sum, map_mul, hc, hherm,
+    Finset.sum_mul]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
     ring
   have hJt : IsUnit Jᵀ.det := by rwa [Matrix.det_transpose]

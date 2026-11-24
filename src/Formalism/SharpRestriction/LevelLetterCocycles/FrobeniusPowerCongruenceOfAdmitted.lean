@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
+public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingInputs
+public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSAddLeft
+public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalClauseOfFrobeniusHyps
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExistsXPowMul
+import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMulVBFilCris
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSDivMem
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMulVBFilCris
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
+public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExistsXPowMul
 
 @[expose] public section
 
@@ -43,8 +86,8 @@ theorem PhiSeq_smulS (hp : (PD.p : LL) ≠ 0) {T : LocLat G Qp LL O} {m : ℤ} {
     ⟨Int.toNat (k - m) + 1, by have := Int.self_le_toNat (k - m); push_cast; omega⟩
   rw [smulS_eq_sum (LB_PhiSeq hd) _ k N hN]
   simp only [PhiSeq]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [smulS_eq_sum hd g k N hN, map_sum, Finset.smul_sum]
+
+  rw [smulS_eq_sum hd g k N hN, map_sum, Finset.smul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_smul, smul_smul, PowerSeries.coeff_rescale, smul_smul]
   congr 1
@@ -353,10 +396,10 @@ theorem key_idJ {T : LocLat G Qp LL O} (Φ : W.DD T →ₗ[O] W.DD T) (ψ : LetA
         L ^ (σ + (J - e y)) • (r y • Φ (cc y)) := by
     intro y _
     rw [sub_smul, smul_sub, smul_smul (L ^ σ), ← pow_add]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lO_smul, map_sub, map_sum, hΦL, Finset.sum_congr rfl fun y _ => hφ y, smul_sub, smul_sub,
-    Finset.smul_sum, Finset.smul_sum, Finset.sum_congr rfl ht, Finset.sum_congr rfl hs,
-    Finset.sum_sub_distrib, smul_smul, smul_smul, mul_comm (L ^ J)]
+
+  rw [lO_smul, map_sub, map_sum, hΦL, Finset.sum_congr rfl fun y _ => hφ y, smul_sub, smul_sub,
+  Finset.smul_sum, Finset.smul_sum, Finset.sum_congr rfl ht, Finset.sum_congr rfl hs,
+  Finset.sum_sub_distrib, smul_smul, smul_smul, mul_comm (L ^ J)]
   abel
 
 theorem φpow_smulA {T : LocLat G Qp LL O} (j : ℕ) (a : LetA O n) (x : W.DD T) :
@@ -418,9 +461,9 @@ theorem expH (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (hR : RingA W) (
           (⟨cc y, hcc y⟩ : ↥(W.N T)) := by
       apply Subtype.ext
       simp only [hh, Submodule.coe_sub, Submodule.coe_smul, Submodule.coe_sum, smul_smul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hhsub, levB_sub, map_sum, Pi.sub_apply, Finset.sum_apply, levB_smul,
-      smulSeries_apply_zero (laurentBounded_zero_of_trivial_twist C hs h4 i _)]
+
+    rw [hhsub, levB_sub, map_sum, Pi.sub_apply, Finset.sum_apply, levB_smul,
+    smulSeries_apply_zero (laurentBounded_zero_of_trivial_twist C hs h4 i _)]
     have h0 : ∀ y ∈ Finset.range K, C.levB T i 1 ((((PD.p : ℕ) : LetA O n) ^ (J - e y) * W.π₀ ^ y) •
         (⟨cc y, hcc y⟩ : ↥(W.N T))) 0 = 0 := by
       intro y _
@@ -482,7 +525,7 @@ theorem iter_single {T : LocLat G Qp LL O} (j : ℕ) (c : T.V ⊗[Qp] B) :
     funext k
     by_cases hk : k = 0
     · subst hk; simp [PhiSeq]
-    · simp [PhiSeq, Pi.single_apply, hk]
+    · simp [PhiSeq, hk]
 
 theorem tHor_of (Ct : CmpTie W E ιdR p1 tS zS) (hinj : Function.Injective (algebraMap O LL))
     {Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop} (h4 : Formalism.MainNotions.DeltaInvariantLattices.P4W W Pt) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)
@@ -609,9 +652,9 @@ theorem tHor_of (Ct : CmpTie W E ιdR p1 tS zS) (hinj : Function.Injective (alge
       smulS (W.lev (i + ((j' + 1 : ℕ) : ZMod n)) ζ Bb)
         (smulS (W.lev (i + ((j' + 1 : ℕ) : ZMod n)) ζ (Formalism.MainNotions.LiftingTheory.qp W ^ k * a)) Stuff) := by
     simp only [U]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [levB_smul, levB_add, map_sum, levB_smul, hEBh,
-      Finset.sum_congr rfl fun y hy => by rw [levB_smul, hLxc y hy]]
+
+    rw [levB_smul, levB_add, map_sum, levB_smul, hEBh,
+    Finset.sum_congr rfl fun y hy => by rw [levB_smul, hLxc y hy]]
     rw [smulS_comm hΦh, Finset.sum_congr rfl fun y _ => smulS_comm (hΦc y) _ _,
       ← smulS_sum _ _ (fun y _ => LB_smulS (hΦc y) _),
       ← smulS_add (LB_smulS hΦh _) hSumLB, ← hStuff, smulS_comm hStuffLB]
@@ -679,7 +722,7 @@ theorem tHor_of (Ct : CmpTie W E ιdR p1 tS zS) (hinj : Function.Injective (alge
       iter_single, Pi.add_apply, LB_iter hEh'LB _ kk (lt_of_lt_of_le hkk (by exact_mod_cast hF1)), add_zero, hφiter]
     by_cases h0 : kk = 0
     · subst h0; simp
-    · simp [Pi.single_apply, h0]
+    · simp [h0]
   have hErr : LB (R₀ : ℤ) (Stuff - Pi.single (0 : ℤ)
       ((PD.p : LL) ^ σ • ((PD.p : LL) ^ (jj + eY PD.p (max M X + 1)) •
         (φVB PD (LL := LL) (V := T.V))^[j' + 1] (W.cmp T ⟨w, hw⟩)))) := fun kk hkk => by

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomApplyHomApplyEqOfCompEq
 public import GroundTheory.ProfiniteCohomology.FilteredHomology
 

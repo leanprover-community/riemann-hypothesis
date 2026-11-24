@@ -1,8 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.MemPairOfMemSingle
-public import Mathlib.NumberTheory.Padics.PadicVal.Basic
-public import Mathlib.Data.Nat.Choose.Factorization
+public import Mathlib.RingTheory.Ideal.BigOperators
 
 @[expose] public section
 
@@ -70,11 +69,8 @@ theorem ContM_mem_of_unif_mul {ϖ : O} (hϖ : Irreducible ϖ) {G : O⟦X⟧} (hG
   rw [Ideal.mem_span_pair]
   exact ⟨t, b, by linear_combination -ht⟩
 
-theorem ContM_order_unit {K : Type*} [Field K] {w : K⟦X⟧} (hw : IsUnit w) : w.order = 0 := by
-  obtain ⟨v, rfl⟩ := hw
-  have h := order_mul (v : K⟦X⟧) (↑v⁻¹ : K⟦X⟧)
-  rw [Units.mul_inv, order_one] at h
-  exact (add_eq_zero.1 h.symm).1
+theorem ContM_order_unit {K : Type*} [Field K] {w : K⟦X⟧} (hw : IsUnit w) : w.order = 0 :=
+  order_zero_of_isUnit hw
 
 variable [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
 
@@ -95,8 +91,8 @@ theorem dvd_coeffs_of_mem_span_distinguished {ϖ : O} (hϖ : Irreducible ϖ) {Xg
   obtain ⟨a, b, hab⟩ := h
   have himg : (∑ i ∈ S, (u i).map f * C (f (c i)) * g ^ i) = a.map f * g ^ y := by
     have h1 := congrArg (PowerSeries.map f) hab
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_mul, map_pow, map_sum, map_C, hfϖ, map_zero, mul_zero, add_zero] at h1
+
+    simp only [map_add (f := _), map_mul, map_pow, map_sum, map_C, hfϖ, map_zero, mul_zero, add_zero] at h1
     exact h1.symm
   intro i hi
   by_contra hnd
@@ -104,26 +100,24 @@ theorem dvd_coeffs_of_mem_span_distinguished {ϖ : O} (hϖ : Irreducible ϖ) {Xg
     ⟨i, Finset.mem_filter.2 ⟨hi, fun h0 => hnd ((ContM_dvd_iff_residue hϖ _).2 h0)⟩⟩
   obtain ⟨i₀, hi₀T, hmin⟩ := Finset.exists_min_image _ id hT
   rw [Finset.mem_filter] at hi₀T
-  have hlt : i₀ * wdeg Xg < y * wdeg Xg := by nlinarith [hS i₀ hi₀T.1]
+  have hDpos : 0 < wdeg Xg := Nat.zero_lt_one.trans_le hD
+  have hlt : i₀ * wdeg Xg < y * wdeg Xg := mul_lt_mul_of_pos_right (hS i₀ hi₀T.1) hDpos
   have hL : coeff (i₀ * wdeg Xg) (a.map f * g ^ y) = 0 := by
     apply coeff_of_lt_order
     rw [order_mul, order_pow, hord]
-    calc ((i₀ * wdeg Xg : ℕ) : ℕ∞) < ((y * wdeg Xg : ℕ) : ℕ∞) := by exact_mod_cast hlt
+    calc ((i₀ * wdeg Xg : ℕ) : ℕ∞) < ((y * wdeg Xg : ℕ) : ℕ∞) := ENat.natCast_lt_natCast.mpr hlt
       _ = y • (wdeg Xg : ℕ∞) := by
-        rw [nsmul_eq_mul]
-        push_cast
-        rfl
+        rw [nsmul_eq_mul, ENat.natCast_mul]
       _ ≤ (a.map f).order + y • (wdeg Xg : ℕ∞) := le_add_self
   have hterm : ∀ i ∈ S, f (c i) ≠ 0 →
       ((u i).map f * C (f (c i)) * g ^ i).order = ((i * wdeg Xg : ℕ) : ℕ∞) := by
     intro i hi hci
     rw [order_mul, order_mul, order_pow, hord, ContM_order_unit ((hu i hi).map (PowerSeries.map f)),
-      ContM_order_unit ((isUnit_iff_ne_zero.2 hci).map C), zero_add, zero_add, nsmul_eq_mul]
-    push_cast
-    rfl
+      ContM_order_unit ((isUnit_iff_ne_zero.2 hci).map C), zero_add, zero_add, nsmul_eq_mul,
+      ENat.natCast_mul]
   have hR : coeff (i₀ * wdeg Xg) (∑ i ∈ S, (u i).map f * C (f (c i)) * g ^ i) ≠ 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_eq_single i₀]
+
+    rw [map_sum, Finset.sum_eq_single i₀]
     · have ho := hterm i₀ hi₀T.1 hi₀T.2
       have hne : ((u i₀).map f * C (f (c i₀)) * g ^ i₀) ≠ 0 := by
         intro h0
@@ -138,8 +132,7 @@ theorem dvd_coeffs_of_mem_span_distinguished {ϖ : O} (hϖ : Irreducible ϖ) {Xg
         rw [hterm j hj hcj]
         have hle : i₀ ≤ j := hmin j (Finset.mem_filter.2 ⟨hj, hcj⟩)
         have hlt' : i₀ < j := lt_of_le_of_ne hle (Ne.symm hne)
-        have hD' : 1 ≤ wdeg Xg := hD
-        exact_mod_cast (by nlinarith : i₀ * wdeg Xg < j * wdeg Xg)
+        exact ENat.natCast_lt_natCast.mpr (mul_lt_mul_of_pos_right hlt' hDpos)
     · intro h0
       exact absurd hi₀T.1 h0
   exact hR (by rw [himg]; exact hL)

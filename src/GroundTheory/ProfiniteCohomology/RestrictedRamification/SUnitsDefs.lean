@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCochainsFHomApply
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
+public import Mathlib.RingTheory.DedekindDomain.SInteger
+import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
 
 @[expose] public section
 

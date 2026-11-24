@@ -1,10 +1,45 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowShiftEq
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExistsActO
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmVacuumEqSplitFacSmulSum
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSplit
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExistsActO
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmVacuumEqSplitFacSmulSum
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemOrth
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSplit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvolutionSphericalHeckeAnti
 
 @[expose] public section
 
@@ -23,8 +58,8 @@ theorem idemSum_mul_eq_zero {P P' : Finset (Pl D.host.E)} {e e' : AE D} (he : Is
     (hPP : ∀ w ∈ P, ∀ w' ∈ P', w ≠ w' ∧ ¬ Formalism.IndefR.Lev.IsConjPl (D := D) w w') : e * (e' + cA D e') = 0 := by
   obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
   obtain ⟨⟨es', hes', rfl⟩, -⟩ := he'
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, ← Finset.sum_add_distrib, Finset.mul_sum]
+
+  rw [map_sum, ← Finset.sum_add_distrib, Finset.mul_sum]
   refine Finset.sum_eq_zero fun w' hw' => ?_
   rw [Finset.sum_mul]
   refine Finset.sum_eq_zero fun w hw => ?_
@@ -61,19 +96,14 @@ theorem actO_eq_self_of_half {S T : HSp D} {e a b : AE D} (ha : e * (a + cA D a)
   conv_lhs => rw [← hx' _ ha]
   rw [Matrix.smul_mul, ← Matrix.mul_smul, GlobalTheory.SplitScalar.off_smul_mt_inv hg, Matrix.mul_smul, Matrix.mul_one, hx' _ ha]
 
-theorem suppAt_inv' {a : AE D} {V : HSp D} {g : GA D V} (hg : SuppAt a V g) : SuppAt a V g⁻¹ := by
-  have h := GlobalTheory.SplitScalar.off_smul_mt_inv hg
-  rw [← sub_eq_zero, ← smul_sub, sub_smul, one_smul, sub_eq_zero] at h
-  exact fun i j => (congrFun (congrFun h i) j).symm
-
 end GlobalTheory.StdHalfLat
 
 namespace GlobalTheory.StdHalfLat
 
 open Matrix
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 variable {D : D7}
 
@@ -118,12 +148,9 @@ theorem mem_latO_iff_of_half {S T : HSp D} (g : GA D S) (h : GA D T)
     rwa [actO_eq_self_of_half ha hb hg hh hx] at this
   · intro hm
     have := actO_mem_latO_of_hat g⁻¹ h⁻¹ hS' hT' hm
-    rwa [actO_eq_self_of_half ha hb (suppAt_inv' hg) (suppAt_inv' hh) hx] at this
+    rwa [actO_eq_self_of_half ha hb (_root_.GlobalTheory.SplitPlace.suppAt_inv hg) (_root_.GlobalTheory.SplitPlace.suppAt_inv hh) hx] at this
 
-theorem half_nsmul {m n : ℕ} {e : AE D} {x : Mx D m n} (hx : IsHalf e x) (k : ℕ) : IsHalf e (k • x) := fun i j => by
-  have h := hx i j
-  simp only [Matrix.smul_apply, nsmul_eq_mul]
-  linear_combination (k : AE D) * h
+alias half_nsmul := _root_.GlobalTheory.SplitScalar.isHalf_nsmul
 
 end GlobalTheory.StdHalfLat
 
@@ -131,8 +158,8 @@ namespace GlobalTheory.StdHalfLat
 
 open Matrix
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 theorem hat_moves {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {U : Set T} (N : Std G U)
     {X : Node} (hX : DefNode D.R.m X) :
@@ -164,8 +191,8 @@ namespace GlobalTheory.LastVertexMove
 
 open GlobalTheory.StdHalfLat
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 theorem isSBHalf_stdLat : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
     (S : GridChoice W U) {t : T}, t ∈ U → ∀ {p : Pair T}, DefPair D.R.m p → ∀ d : FinDatum G t p,

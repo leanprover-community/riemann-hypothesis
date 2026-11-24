@@ -1,6 +1,16 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Field.Defs
+public import Mathlib.Data.Fintype.Defs
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.CharP.Basic
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section
 

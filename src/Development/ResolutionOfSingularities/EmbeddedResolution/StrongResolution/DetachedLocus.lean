@@ -1,30 +1,59 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupCoproduct
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProper
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.ClopenRestriction
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransform
+public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.EmbeddedBlowupSequence
+public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.ClopenSubscheme
+import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.ReducedSubscheme
+public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.SmoothRegular
+import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.NoetherianBlowup
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.Saturation
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransform
-public import Development.ResolutionOfSingularities.Foundations.Blowup.StrictTransform
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupClosedSubscheme
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.SmoothRegular
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.EmbeddedResolutionRule
-public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.ClopenSubscheme
-public import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeCoproduct
-public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.ReducedSubscheme
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.FunctorialPrincipalization
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.EmbeddedBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.EmbeddedStrictTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.DiscardedLocus
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
+import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupCoproduct
+import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
+import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProper
+import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeCoproduct
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -113,10 +142,7 @@ theorem union_detachedOpens_detachedClosureCompl (i : ℕ) (h : IsOpen (S.detach
   rw [S.coe_detachedOpens i h, S.detachedClosureCompl_coe i, S.detachedClosure_coe i]
   exact Set.union_compl_self _
 
-theorem coe_detachedClosureCompl (i : ℕ) :
-    ((S.detachedClosureCompl i : (S.strictTransform i).Opens) : Set ↥(S.strictTransform i)) =
-      ((S.detachedClosure i : TopologicalSpace.Closeds ↥(S.strictTransform i)) :
-        Set ↥(S.strictTransform i))ᶜ := rfl
+alias coe_detachedClosureCompl := _root_.FunctorialResolution.EmbeddedResolution.EmbeddedBlowupSequence.detachedClosureCompl_coe
 
 theorem isClosed_detachedClosureCompl (i : ℕ)
     (hn : TopologicalSpace.NoetherianSpace ↥(S.strictTransform i))
@@ -492,14 +518,14 @@ private def coprodSwapAssocIso (A F T : Scheme.{u}) : A ⨿ (T ⨿ F) ≅ (A ⨿
   inv := coprodSwapAssocInv A F T
   hom_inv_id := by
     refine coprod.hom_ext ?_ ?_
-    · simp [coprodSwapAssocHom, coprodSwapAssocInv, coprod.inl_desc, coprod.inr_desc]
+    · simp [coprodSwapAssocHom, coprodSwapAssocInv]
     · refine coprod.hom_ext ?_ ?_ <;>
-        simp [coprodSwapAssocHom, coprodSwapAssocInv, coprod.inl_desc, coprod.inr_desc]
+        simp [coprodSwapAssocHom, coprodSwapAssocInv]
   inv_hom_id := by
     refine coprod.hom_ext ?_ ?_
     · refine coprod.hom_ext ?_ ?_ <;>
-        simp [coprodSwapAssocHom, coprodSwapAssocInv, coprod.inl_desc, coprod.inr_desc]
-    · simp [coprodSwapAssocHom, coprodSwapAssocInv, coprod.inl_desc, coprod.inr_desc]
+        simp [coprodSwapAssocHom, coprodSwapAssocInv]
+    · simp [coprodSwapAssocHom, coprodSwapAssocInv]
 
 private theorem coprodSwapAssocIso_hom (A F T : Scheme.{u}) :
     (coprodSwapAssocIso A F T).hom = coprodSwapAssocHom A F T := rfl
@@ -532,14 +558,13 @@ theorem isBlowupAlongIdealSheaf_totalTransition_of_coprod_desc (i : ℕ)
         S.totalTransition i := by
     refine coprod.hom_ext ?_ ?_
     · simp only [coprodSwapAssocIso_hom, coprodSwapAssocHom, Category.assoc,
-        coprod.inl_desc_assoc, coprod.inl_map, coprod.inl_desc]
+        coprod.inl_desc_assoc, coprod.inl_map]
       exact (S.inl_totalTransition_eq_strictTransformMap_inl i).symm
     · refine coprod.hom_ext ?_ ?_
-      · simp only [coprodSwapAssocIso_hom, coprodSwapAssocHom, Category.assoc,
-          coprod.inr_desc_assoc, coprod.inl_desc_assoc, coprod.inr_map, Category.comp_id]
+      · simp only [coprodSwapAssocIso_hom, coprodSwapAssocHom, coprod.inr_desc_assoc, coprod.inl_desc_assoc, coprod.inr_map]
         exact (S.inl_inr_totalTransition i).symm
       · simp only [coprodSwapAssocIso_hom, coprodSwapAssocHom, Category.assoc,
-          coprod.inr_desc_assoc, coprod.inl_map, coprod.inr_desc]
+          coprod.inr_desc_assoc, coprod.inl_map]
         exact (S.inr_inr_totalTransition i).symm
   have hfin := hmap.iso_hom_comp
     (coprodSwapAssocIso (S.strictTransform (i + 1)) (S.detachedScheme i) (S.detachedCoprod i))

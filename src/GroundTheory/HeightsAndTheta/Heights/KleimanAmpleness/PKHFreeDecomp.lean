@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.KHFreeDecompSt
+import Mathlib.CategoryTheory.Action.Concrete
 
 @[expose] public section
 
@@ -101,8 +101,8 @@ theorem locPart_le (I : ∀ k, Finset (ι k)) (c d : K → ℤ) :
       conv_lhs => rw [p.as_sum]
       refine Finset.sum_congr rfl fun v _ => ?_
       rw [smul_monomial, smul_eq_mul, mul_one]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hsum, map_sum, map_sum]
+
+    rw [hsum, map_sum, map_sum]
     refine Submodule.sum_mem _ fun v hv => ?_
     rw [quot_mk_smul, map_smul]
     refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨fun q => (v q : ℤ) - u q, ?_, ?_⟩)

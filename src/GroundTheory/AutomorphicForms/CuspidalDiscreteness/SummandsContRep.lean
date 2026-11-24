@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
+import Mathlib.Tactic.TypeStar
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsBase
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.IsHilbertSchmidtOfAeEqDual
 
 @[expose] public section
 

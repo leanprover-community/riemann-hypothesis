@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.SectionScalarValuation
+public import Mathlib.Tactic.ENatToNat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegExp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.SectionScalarValuation
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCSt
 
 @[expose] public section
 
@@ -27,8 +73,8 @@ theorem gs_sub' (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) (a b : Γ(X,
 
 theorem gs_sum' (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) {ι : Type} [Fintype ι]
     (a : ι → Γ(X, U)) : gs r z U (∑ i, a i) = ∑ i, gs r z U (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gs_eq r z U h, map_sum]
+
+  simp only [gs_eq r z U h, map_sum]
 
 theorem gs_one' (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) : gs r z U 1 = 1 := by
   simp only [gs_eq r z U h, map_one]
@@ -249,8 +295,8 @@ theorem ker_sup_span_eq_top (f : X ⟶ Y) [IsAffine Y] [UniversallyClosed f] {H 
   have key : gs p₁ z _ ((s j).f k) = ∑ l, gs p₂ z ⊤ (e (MvPolynomial.C (c j l))) *
       (gs p₁ z _ ((t l).f k) - gs p₂ z ⊤ (e (MvPolynomial.X l)) * gs p₁ z _ (t₀.f k)) +
       gs p₂ z ⊤ (e (∑ l, MvPolynomial.C (c j l) * MvPolynomial.X l)) * gs p₁ z _ (t₀.f k) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hc, gs_sum' _ _ _ hk, map_sum, gs_sum' _ _ _ (mem_top' _), Finset.sum_mul, ← Finset.sum_add_distrib]
+
+    rw [hc, gs_sum' _ _ _ hk, map_sum, gs_sum' _ _ _ (mem_top' _), Finset.sum_mul, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [gs_mul _ _ _ hk, hb, map_mul, gs_mul _ _ _ (mem_top' _)]
     ring
@@ -291,8 +337,8 @@ theorem EmbedsBy.affine_and_surjective {f : X ⟶ Y} [IsAffine Y] [UniversallyCl
     have hρ : ∀ j, IsRatio (s j) t₀ (ψ (lam j)) := fun j => isRatio_of_gs fun x hx => by
       obtain ⟨k, hk⟩ := exists_chart_of_mem t₀ hx
       refine ⟨k, hk, ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hc, gs_sum' (𝟙 X) x _ hk, hlam, map_sum, gs_sum' (𝟙 X) x _ hx, Finset.sum_mul]
+
+      rw [hc, gs_sum' (𝟙 X) x _ hk, hlam, map_sum, gs_sum' (𝟙 X) x _ hx, Finset.sum_mul]
       refine Finset.sum_congr rfl fun l _ => ?_
       rw [map_mul, hψ, MvPolynomial.eval₂Hom_C, MvPolynomial.eval₂Hom_X', gs_mul (𝟙 X) x _ hk,
         gs_mul (𝟙 X) x _ hx, gs_const f _ (𝟙 X) x hk, gs_const f _ (𝟙 X) x hx,
@@ -352,7 +398,6 @@ theorem EmbedsBy.affine_and_surjective {f : X ⟶ Y} [IsAffine Y] [UniversallyCl
       have hy' : resG X hV x₀ * resG X hV' (σ j) ^ m = resG X hV' (MvPolynomial.eval₂Hom
           (f.appLE ⊤ (nonzeroLocus (s j)) le_top).hom (rs j) p) := hy
       have z : resG X hV (ψ (lam j) ^ n * x₀ - ψ (lam j ^ m * a)) = 0 := by
-        change (resG X hV) (_ - _) = 0
         rw [map_sub, map_mul, map_pow]
         change θ (lam j) ^ n * _ - θ (lam j ^ m * a) = 0
         rw [map_mul, map_pow, ← ha, ← hy']

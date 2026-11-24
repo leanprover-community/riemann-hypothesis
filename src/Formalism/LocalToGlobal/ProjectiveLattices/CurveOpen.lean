@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveComp
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.GlobalFamilyData
+import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
 
 @[expose] public section
 

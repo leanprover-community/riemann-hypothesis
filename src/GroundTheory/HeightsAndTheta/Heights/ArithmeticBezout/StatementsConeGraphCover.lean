@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsGraphAreaFibre
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentAverage
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
 
 @[expose] public section
 

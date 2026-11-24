@@ -3,6 +3,7 @@ module
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.IsSemiChar
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EndoZInstance
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementN
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

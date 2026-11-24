@@ -1,13 +1,59 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameL
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactSupportDcos
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DgMatOne
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsHalfBlockDetIntegralGLInvariant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockLevelsEqIntegralGLOfUnramified
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.BorelApproximation
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ZeroContDiffOnSupported
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactSupportDcos
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
+import GroundTheory.AutomorphicForms.GLnLocal
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -74,9 +120,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 theorem isOpen_KGL (w : Pl E) (a : ℕ) : IsOpen (GlobalTheory.LFun.KGL w (n := a) : Set (GLw a w)) := by
   rw [GlobalTheory.CompanionTheory.IwLevels.KGL_eq_KO]
   exact GlobalTheory.SplitFlip.isOpen_KO
-
-theorem isCompact_KGL (w : Pl E) (a : ℕ) : IsCompact (GlobalTheory.LFun.KGL w (n := a) : Set (GLw a w)) :=
-  GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w a
 
 theorem thL_KGL (a : ℕ) (w : Pl E) (k : GLw a w) (hk : k ∈ GlobalTheory.LFun.KGL w (n := a)) : thL a w k ∈ GlobalTheory.LFun.KGL w (n := a) := by
   unfold thL
@@ -150,12 +193,30 @@ section Place
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem dcos_left {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
-    dcos m w t (k * g) = dcos m w t g :=
-  _root_.UpperTheory.Reformulated.B.BorelApproximation.dcos_left t k g hk
+    dcos m w t (k * g) = dcos m w t g := by
+  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, k * g = x * t * z) ↔
+      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
+    constructor
+    · rintro ⟨x, hx, z, hz, e⟩
+      refine ⟨k⁻¹ * x, mul_mem (inv_mem hk) hx, z, hz, ?_⟩
+      calc g = k⁻¹ * (k * g) := by group
+        _ = _ := by rw [e]; simp only [mul_assoc]
+    · rintro ⟨x, hx, z, hz, e⟩
+      exact ⟨k * x, mul_mem hk hx, z, hz, by rw [e]; simp only [mul_assoc]⟩
+  simp only [dcos, this]
 
 theorem dcos_right {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
-    dcos m w t (g * k) = dcos m w t g :=
-  _root_.UpperTheory.Reformulated.B.H23.dcos_right t k g hk
+    dcos m w t (g * k) = dcos m w t g := by
+  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g * k = x * t * z) ↔
+      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
+    constructor
+    · rintro ⟨x, hx, z, hz, e⟩
+      refine ⟨x, hx, z * k⁻¹, mul_mem hz (inv_mem hk), ?_⟩
+      calc g = (g * k) * k⁻¹ := by group
+        _ = _ := by rw [e]; simp only [mul_assoc]
+    · rintro ⟨x, hx, z, hz, e⟩
+      exact ⟨x, hx, z * k, mul_mem hz hk, by rw [e]; simp only [mul_assoc]⟩
+  simp only [dcos, this]
 
 theorem isHecke_iwahori_pair_double_coset {a b : ℕ} (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (x : Fin a → ℤ) (y : Fin b → ℤ) :
     IsHecke (I2 a b w) (dc2 w ϖ x y) := by
@@ -352,7 +413,7 @@ theorem hc_H (h2 : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], LocOp
     simp only [F, toSub, dif_pos hy]
   have hHk : IsHk (GlobalTheory.LFun.KGL w (n := n)) F := by
     rw [hF]
-    exact ⟨isOpen_KGL w n, isCompact_KGL w n, hcs_of_fin (isCompact_KGL w n) hT.2,
+    exact ⟨isOpen_KGL w n, _root_.GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w n, hcs_of_fin (_root_.GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w n) hT.2,
       fun k₁ hk₁ k₂ hk₂ g => hT.1 ⟨k₁, hk₁⟩ ⟨k₂, hk₂⟩ g⟩
   obtain ⟨c1, c2, -, -⟩ := h2 E n a (n - a) (Nat.add_sub_of_le ha) w (GlobalTheory.LFun.KGL w (n := n)) (isOpen_KGL w n) le_rfl
     (fun k hk k' hk' => mul_mem (mul_mem hk hk') (inv_mem hk)) {1} (by simp)

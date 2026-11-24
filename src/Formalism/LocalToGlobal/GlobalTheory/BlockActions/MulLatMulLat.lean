@@ -1,10 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.FixOrthogonalVector
 public import Formalism.LocalToGlobal.HermitianForms.TiedSym
-public import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ExtendOneMulVecSingleLast
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ArchimedeanSignatureMatchingOfTrivialBranchingSymm
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ExtendOneMulVecSingleLast
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.FixOrthogonalVector
+import Formalism.LocalToGlobal.GlobalTheory.BlockActions.LengthInverseBound
+import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
 
 @[expose] public section
 

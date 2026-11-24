@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ProdEApproxLoc
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 
 @[expose] public section
 

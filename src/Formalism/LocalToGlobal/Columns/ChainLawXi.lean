@@ -1,15 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainLawLev
-public import Formalism.LocalToGlobal.Columns.ChainInst
-public import Formalism.LocalToGlobal.Columns.ChainLawPhi
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ColInst
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
-public import Formalism.LocalToGlobal.Columns.ChainInstY
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-public import Formalism.LocalToGlobal.Columns.RecLevelSym
-public import Formalism.LocalToGlobal.Columns.ChainOne
 
 @[expose] public section
 

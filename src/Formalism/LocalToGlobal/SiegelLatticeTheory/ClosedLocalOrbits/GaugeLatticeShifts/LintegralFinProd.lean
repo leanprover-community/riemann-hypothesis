@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Constructions.Pi
+public import Mathlib.Algebra.BigOperators.Fin
 
 @[expose] public section
 

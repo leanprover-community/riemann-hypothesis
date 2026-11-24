@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+public import Mathlib.MeasureTheory.Group.Measure
+public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
+import Mathlib.Topology.Compactness.Paracompact
+public import Mathlib.MeasureTheory.Measure.Haar.Basic
 
 @[expose] public section
 

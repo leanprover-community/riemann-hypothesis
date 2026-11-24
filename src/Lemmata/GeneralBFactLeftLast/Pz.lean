@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 
@@ -13,7 +13,7 @@ variable {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 private lemma pz {T : End K V} {x : V} {k m : ℕ} (hkm : k ≤ m) (hx : (T ^ k) x = 0) :
     (T ^ m) x = 0 := by
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hkm
-  rw [show k + d = d + k from Nat.add_comm k d, pow_add, Module.End.mul_apply, hx, map_zero]
+  rw [show k + d = d + k from Nat.add_comm k d, pow_add, mul_apply_eq_comp, hx, map_zero]
 
 theorem goal1 {A B : End K V} (h : Commute A B) {a b : K} {x : V}
     (hA : x ∈ A.maxGenEigenspace a) (hB : x ∈ B.maxGenEigenspace b) :
@@ -27,17 +27,17 @@ theorem goal1 {A B : End K V} (h : Commute A B) {a b : K} {x : V}
   have hBM : Commute B (B - b • 1) :=
     (Commute.refl B).sub_right ((Commute.one_right B).smul_right b)
   have key : A * B - (a * b) • (1 : End K V) = (A - a • 1) * B + a • (B - b • 1) := by
-    rw [sub_mul, smul_mul_assoc, one_mul, smul_sub, smul_smul]; abel
+    rw [sub_mul, smul_mul_assoc, one_mul, smul_sub, smul_smul, sub_add_sub_cancel]
   have hc : Commute ((A - a • 1) * B) (a • (B - b • 1)) := (hNM.mul_left hBM).smul_right a
   refine ⟨k + l, ?_⟩
   rw [key, hc.add_pow, LinearMap.sum_apply]
   refine Finset.sum_eq_zero fun m _ => ?_
-  rw [Module.End.mul_apply, Module.End.natCast_apply, map_nsmul, hNB.mul_pow, smul_pow]
+  rw [mul_apply_eq_comp, natCast_apply_eq_smul, map_nsmul, hNB.mul_pow, smul_pow]
   refine (congrArg _ ?_).trans (smul_zero _)
   rcases le_or_gt k m with hkm | hkm
   · have hC : Commute ((A - a • 1) ^ m) (B ^ m * (a ^ (k + l - m) • (B - b • 1) ^ (k + l - m))) :=
       (hNB.pow_pow m m).mul_right ((hNM.pow_pow m (k + l - m)).smul_right _)
-    rw [mul_assoc, hC.eq, Module.End.mul_apply, pz hkm hk, map_zero]
-  · rw [Module.End.mul_apply, LinearMap.smul_apply, pz (by omega) hl, smul_zero, map_zero]
+    rw [mul_assoc, hC.eq, mul_apply_eq_comp, pz hkm hk, map_zero]
+  · rw [mul_apply_eq_comp, LinearMap.smul_apply, pz (by omega) hl, smul_zero, map_zero]
 
 end Bl.general_b_fact_left_last

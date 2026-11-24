@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.ToHLat
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.SquareMomentFromBound
-public import Formalism.GL3MeanSquares.ConcavityEquidistribution
-public import Formalism.LogVandermondeBounds.MultinomialPowerBound
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.SquareMomentArithmeticBound
+public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
+import Formalism.GL3MeanSquares.ConcavityEquidistribution
+import Formalism.LocalToGlobal.GlobalTheory.HLatOps
 
 @[expose] public section
 

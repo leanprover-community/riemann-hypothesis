@@ -1,19 +1,95 @@
 module
 
-public import Mathlib
-public import Formalism.HermitianCurvature.StatementTBB
-public import Formalism.HermitianCurvature.HerGenC
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimE
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermRateBound
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormsJointContinuity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHeads
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadGermSmoothExtension
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialExhaustion
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGCongr
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGerm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostDensOfParts
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCSplit
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PbGermRateLowBOfParts
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AestronglyMeasurableGermIntegrand
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AverageOne
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BaseCutoffIsTruncation
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfChoices
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CcCoefMMono
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEX_UwTop
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCStep
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BaseCutoffIsTruncation
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimE
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsNormBoundThreeFamilies
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FmSmulLeft
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermLocTail
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermRateLowerBound
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadContinuityAtZeroOfStandard
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadGermSmoothExtension
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralBoundOfParts
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsCompactRoots
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormsJointContinuity
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeanBoundsLimits
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSumLeOfForm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSumLeOfGram
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OneSubPowLe
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCBlk
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCLoc
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGCongr
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBTAsm
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ParametersUPrimeForULower
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositivityBoundOfActual
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PtEntryAppendStart
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialExhaustion
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingDecay
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHeads
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThetaCompactSupport
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.VecVNonloc
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightProductGermIndep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Lam1
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SecondDefectNonneg
 
 @[expose] public section
 
@@ -603,8 +679,8 @@ theorem rate_top (p : KB.Pl P Wp Wq) {nn : ℝ → ℝ} (hnn : ∀ y, 0 < nn y) 
       L i (∑ j ∈ Finset.insertNone (G.rootSet (m + 2) ((-1) ^ (m + 2 + 1) * D)),
         (conj (co (m + 2) x j) * (omTop p nn w (FormNormSumIdentities.PPt (m + 2) h x D j) : ℂ)) •
           p.V (Fi i) (FormNormSumIdentities.PPt (m + 2) h x D j)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul, smul_smul]
   rw [e]

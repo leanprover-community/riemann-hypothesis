@@ -1,9 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -117,10 +161,10 @@ theorem form_add_right (Q : Matrix α α E) (w w₁ w₂ : Matrix α (ν ⊕ ν)
 theorem form_swap (hc : ∀ z, c (c z) = z) {Q : Matrix α α E} (hQ : IsHerm c Q) (w w' : Matrix α (ν ⊕ ν) E) :
     form c Q w' w = -form c Q w w' := by
   have hJ : ∀ j l, c (stdJ ν E j l) = -stdJ ν E l j := by
-    rintro (j | j) (l | l) <;> by_cases h : j = l <;> simp [stdJ, one_apply, h, eq_comm, map_one, map_zero]
+    rintro (j | j) (l | l) <;> by_cases h : j = l <;> simp [stdJ, h, eq_comm, map_one, map_zero]
   have h : hTens c Q (stdJ ν E) w' w = -c (hTens c Q (stdJ ν E) w w') := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hTens, map_sum, map_mul, hc, hJ, hQ.1, ← Finset.sum_neg_distrib]
+
+    simp only [hTens, map_sum, map_mul, hc, hJ, hQ.1, ← Finset.sum_neg_distrib]
     simp only [← Finset.sum_product', Finset.univ_product_univ]
     exact Fintype.sum_equiv ⟨fun p => (p.2.2.1, p.2.2.2, p.1, p.2.1), fun p => (p.2.2.1, p.2.2.2, p.1, p.2.1),
       fun _ => rfl, fun _ => rfl⟩ _ _ fun p => by simp only [Equiv.coe_fn_mk]; ring
@@ -151,8 +195,8 @@ theorem continuous_form_left (Q : Matrix α α E) (w' : Matrix α (ν ⊕ ν) E)
     Continuous fun x : Matrix α ν E => form c Q (fromCols x 0) w' := by
   have h : ∀ e : E, Continuous fun z : E => Algebra.trace F E (z * e) := fun e =>
     IsModuleTopology.continuous_of_linearMap ((Algebra.trace F E).comp (LinearMap.mulRight F e))
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [form, hTens, map_sum, mul_assoc]
+
+  simp only [form, hTens, map_sum, mul_assoc]
   refine continuous_const.mul (continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ =>
     continuous_finsetSum _ fun k _ => continuous_finsetSum _ fun l _ => (h _).comp ?_)
   rcases j with j | j
@@ -188,6 +232,14 @@ open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
 open GlobalTheory.SplitWeil (SB IsSmoothRep nabs)
 open GlobalTheory.SplitUnitary
 
+/-- **Kudla's splitting theorem for split unitary groups**: for a non-archimedean local field `F`
+and a quadratic extension `E/F`, the two-fold metaplectic cover over the split unitary group
+`U(ν, ν)` splits via a character `χ`, giving a smooth unitary Weil representation `ω` on the
+Schwartz space `S(M_{α × ν}(E))` intertwined with the Heisenberg representation and with explicit
+action on the Siegel Levi subgroup.
+
+Proposed reference:
+[S. S. Kudla, *Splitting metaplectic covers of dual reductive pairs* (Theorem 4.1)][kudla1996]. -/
 def KudlaSplittingSplitUnitary : Prop :=
   ∀ (F : Type) [Field F] [CharZero F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
     (E : Type) [Field E] [Algebra F E] [TopologicalSpace E] [IsModuleTopology F E]

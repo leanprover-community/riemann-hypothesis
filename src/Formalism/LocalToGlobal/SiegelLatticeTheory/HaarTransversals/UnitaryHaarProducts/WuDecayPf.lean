@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.WuDecay
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -120,7 +127,7 @@ theorem real_key (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hb1 : b ≤ 1) (h : 
     rw [this]; nlinarith [mul_nonneg ha ha]
   nlinarith
 
-set_option maxHeartbeats 400000 in
+
 theorem one_le_opn {n : ℕ} {ε : Fin n → Bool} (hn : 0 < n) (g : Formalism.REAL.UJ ε) : 1 ≤ opn (uMat g) := by
   have hg : star (uMat g) * Formalism.REAL.Jm ε * uMat g = Formalism.REAL.Jm ε := g.2
   have hid : Formalism.REAL.Jm ε * (star (uMat g) * Formalism.REAL.Jm ε * uMat g) = 1 := by

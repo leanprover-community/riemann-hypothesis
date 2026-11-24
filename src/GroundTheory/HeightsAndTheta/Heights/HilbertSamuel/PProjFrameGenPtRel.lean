@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameGenPtRel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjFrameFibrePt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.LemCone
 
 @[expose] public section
 

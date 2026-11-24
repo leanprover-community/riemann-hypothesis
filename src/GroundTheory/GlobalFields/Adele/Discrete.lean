@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.Adele.Approximation
 public import GroundTheory.GlobalFields.Adele.IntegersLattice
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

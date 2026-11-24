@@ -58,7 +58,7 @@ abbrev gatOfLevel (L : ColLevel R F E sp gp C A clsLat) (hS : HidaSetting p n' W
   gatConst sp.cm.sig sp.gram0 (Formalism.L2.Herm.awayFrom₂ L p) hS nV r lam0 dom hk I.iw I.frQ ψ (fun i => (y i : GL (Fin R.k) (E ⊗[F] Formalism.L2.Herm.Af F))) e
 
 
-set_option maxHeartbeats 2000000 in
+
 def gatOfLevel_tie (L : ColLevel R F E sp gp C A clsLat) (hS : HidaSetting p n' W Qq O Kf ι σ j w) (nV r : ℕ)
     (lam0 : Fin nV → Fin n' → Fin (m + 1) → ℤ) (dom : ∀ v, IsDominant (lam0 v)) (hk : m + 1 = R.k)
     (I : LocId L p nV W Qq) (ψ : Formalism.L2.Herm.awayFrom₂ L p →* Oˣ)

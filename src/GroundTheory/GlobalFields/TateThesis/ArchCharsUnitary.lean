@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.Analysis.SpecialFunctions.Pow.Complex
+public import Mathlib.Basic.Real.Sign
 public import GroundTheory.GlobalFields.TateThesis.ArchChars
 public import GroundTheory.GlobalFields.TateThesis.ArchCharsUnits
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 @[expose] public section
 

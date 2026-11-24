@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpFibreSemilocalCut
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyDimensionInequality
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.LiftFormNotMemBlowUpOf
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -25,7 +28,7 @@ theorem length_quot_span_ringEquiv {R R' : Type*} [CommRing R] [CommRing R'] (ψ
   rw [e.toLinearEquiv.length_eq, Module.length_eq_of_surjective ψ.surjective]
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem BlowUpFibreSemilocal.proof (ha : HomLocRingLocal.Statement.{u})
     (hb : DivCycleHomLoc.Statement.{u}) (hiso : BlowUpLocRingIso.Statement.{u})
     (hfin : BlowUpOverLocFinite.Statement.{u}) (hmax : BlowUpOverLocMax.Statement.{u}) :

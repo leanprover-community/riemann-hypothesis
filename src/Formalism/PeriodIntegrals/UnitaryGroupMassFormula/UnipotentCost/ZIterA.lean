@@ -1,6 +1,54 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Bounds
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+
+set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 
@@ -75,7 +123,7 @@ section words
 variable {V I : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [Fintype I]
 
 theorem norm_smulRightL_le (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] :
-    ‖ContinuousLinearMap.smulRightL ℝ V E‖ ≤ 1 := by
+    ‖StrongDual.smulRightL ℝ V E‖ ≤ 1 := by
   exact ContinuousLinearMap.norm_smulRightL_le
 
 private theorem one_le_pow_of_one_le_real {x : ℝ} (hx : 1 ≤ x) (n : ℕ) : 1 ≤ x ^ n := by
@@ -151,18 +199,18 @@ theorem iter_words (q : ℕ) (Kc : ℝ) (hKc : 0 ≤ Kc) : ∃ C : ℝ, 1 ≤ C 
       have hG : ∀ i, ContDiffOn ℝ b (fun z => Dop i H (Γ z)) U := fun i z hz =>
         (hsmooth b (Dop i H) (hDop b H i hH) z hz).contDiffWithinAt
       have hf : ∀ i, ContDiffOn ℝ b
-          (fun z => ContinuousLinearMap.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U := fun i =>
-        ((ContinuousLinearMap.smulRightL ℝ V E).contDiff.comp_contDiffOn (hc i b)).clm_apply (hG i)
+          (fun z => StrongDual.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U := fun i =>
+        ((StrongDual.smulRightL ℝ V E).contDiff.comp_contDiffOn (hc i b)).clm_apply (hG i)
       have heq : Set.EqOn (fderiv ℝ (fun z => H (Γ z)))
-          (∑ i, fun z => ContinuousLinearMap.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U := by
+          (∑ i, fun z => StrongDual.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U := by
         intro z hz
         rw [Finset.sum_apply, hderiv b H hH z hz]
         rfl
       have hfi : ∀ i, ‖iteratedFDerivWithin ℝ b
-          (fun z => ContinuousLinearMap.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U z₀‖ ≤
+          (fun z => StrongDual.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U z₀‖ ≤
             2 ^ b * T := by
         intro i
-        refine ((ContinuousLinearMap.smulRightL ℝ V E).norm_iteratedFDerivWithin_le_of_bilinear
+        refine ((StrongDual.smulRightL ℝ V E).norm_iteratedFDerivWithin_le_of_bilinear
           (hc i b) (hG i) hU.uniqueDiffOn hz₀ le_rfl).trans ?_
         have hsum : ∑ j ∈ Finset.range (b + 1), (b.choose j : ℝ) *
             ‖iteratedFDerivWithin ℝ j (c i) U z₀‖ *
@@ -209,7 +257,7 @@ theorem iter_words (q : ℕ) (Kc : ℝ) (hKc : 0 ≤ Kc) : ∃ C : ℝ, 1 ≤ C 
         mul_nonneg (mul_nonneg (pow_nonneg hR0 _) hβ) (pow_nonneg (mul_nonneg hlam0 hM0) _)
       calc ‖iteratedFDeriv ℝ (b + 1) (fun z => H (Γ z)) z₀‖
           = ‖iteratedFDerivWithin ℝ b
-              (∑ i, fun z => ContinuousLinearMap.smulRightL ℝ V E (c i z) (Dop i H (Γ z)))
+              (∑ i, fun z => StrongDual.smulRightL ℝ V E (c i z) (Dop i H (Γ z)))
               U z₀‖ := by
             rw [← norm_iteratedFDeriv_fderiv,
               ← (iteratedFDerivWithin_of_isOpen b hU hz₀ :
@@ -217,10 +265,10 @@ theorem iter_words (q : ℕ) (Kc : ℝ) (hKc : 0 ≤ Kc) : ∃ C : ℝ, 1 ≤ C 
                   iteratedFDeriv ℝ b (fderiv ℝ (fun z => H (Γ z))) z₀),
               iteratedFDerivWithin_congr heq hz₀]
         _ = ‖∑ i, iteratedFDerivWithin ℝ b
-              (fun z => ContinuousLinearMap.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U z₀‖ := by
+              (fun z => StrongDual.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U z₀‖ := by
             rw [iteratedFDerivWithin_sum_apply hU.uniqueDiffOn hz₀ fun i _ => hf i z₀ hz₀]
         _ ≤ ∑ i, ‖iteratedFDerivWithin ℝ b
-              (fun z => ContinuousLinearMap.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U z₀‖ :=
+              (fun z => StrongDual.smulRightL ℝ V E (c i z) (Dop i H (Γ z))) U z₀‖ :=
             norm_sum_le _ _
         _ ≤ ∑ _i : I, 2 ^ b * T := Finset.sum_le_sum fun i _ => hfi i
         _ = (Fintype.card I : ℝ) * (2 ^ b * T) := by

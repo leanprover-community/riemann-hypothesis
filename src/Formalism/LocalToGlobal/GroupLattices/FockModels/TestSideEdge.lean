@@ -1,7 +1,10 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
+import Formalism.LocalToGlobal.GroupLattices.FockModels.MkP
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgePlane
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ManyEdges
 
 @[expose] public section
 

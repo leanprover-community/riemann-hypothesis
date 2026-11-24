@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Topology.Sheaves.Presheaf
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulVbar
+import Mathlib.Algebra.Ring.IsFormallyReal
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsA
 
 @[expose] public section

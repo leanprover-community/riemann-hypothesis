@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

@@ -1,6 +1,66 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.LetAct
+public import Formalism.LocalToGlobal.Divisibility.CoefMod
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalB
+import Formalism.GradedWeylDivisibility.FinalC
+import Formalism.GradedWeylDivisibility.FinalD
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Monoid.Prod
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.MvPolynomial.Groebner
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
@@ -196,8 +256,8 @@ theorem fock_monomial (m : σ →₀ ℕ) (c : K) (g : MvPolynomial σ K) :
 theorem fock_eq (f g : MvPolynomial σ K) :
     fock σ K f g = ∑ m ∈ f.support, AddMonoidAlgebra.coeff f m * (fac m * AddMonoidAlgebra.coeff g m) := by
   conv_lhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, LinearMap.sum_apply]
+
+  rw [map_sum, LinearMap.sum_apply]
   simp only [fock_monomial]
 
 theorem fock_symm (f g : MvPolynomial σ K) : fock σ K f g = fock σ K g f := by
@@ -285,8 +345,8 @@ theorem aeval_scale {A : Type} [CommRing A] [Algebra K A] {w : σ → ρ} {a : �
     aeval (fun v => t (w v) * x v) P = (∏ r, t r ^ a r) * aeval x P := by
   conv_lhs => rw [P.as_sum]
   conv_rhs => rw [P.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.mul_sum]
+
+  rw [map_sum, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m hm => ?_
   rw [aeval_scale_monomial, hP (mem_support_iff.1 hm)]
 
@@ -354,8 +414,8 @@ variable {K : Type} [Field K]
 
 theorem fock_qf (i : ι) (f g : MvPolynomial σ K) : fock σ K (f * qf x y K i) g = fock σ K f (lp x y i g) := by
   unfold qf lp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.mul_sum, map_sum, LinearMap.sum_apply, map_sum]
+
+  rw [Finset.mul_sum, map_sum, LinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [← fock_X_mul, ← fock_X_mul]
   congr 2; ring
@@ -363,8 +423,8 @@ theorem fock_qf (i : ι) (f g : MvPolynomial σ K) : fock σ K (f * qf x y K i) 
 theorem fock_ideal {f h : MvPolynomial σ K} (hf : f ∈ Ideal.span (Set.range (qf x y K)))
     (hh : ∀ i, lp x y i h = 0) : fock σ K f h = 0 := by
   obtain ⟨c, rfl⟩ := Ideal.mem_span_range_iff_exists_fun.1 hf
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, LinearMap.sum_apply]
+
+  rw [map_sum, LinearMap.sum_apply]
   exact Finset.sum_eq_zero fun i _ => by rw [fock_qf, hh, map_zero]
 
 theorem harm_ideal_zero (φ : K →+* ℂ) {h : MvPolynomial σ K} (hf : h ∈ Ideal.span (Set.range (qf x y K)))
@@ -374,8 +434,8 @@ theorem harm_ideal_zero (φ : K →+* ℂ) {h : MvPolynomial σ K} (hf : h ∈ I
   apply eq_zero_of_fock_conj
   apply fock_ideal x y
   · obtain ⟨c, rfl⟩ := Ideal.mem_span_range_iff_exists_fun.1 hf
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Ideal.sum_mem _ fun i _ => ?_
     rw [map_mul]
     refine Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨i, ?_⟩)
@@ -608,8 +668,8 @@ theorem rowGen_eval (a b : Fin n) (c : ℚ) (f : MvPolynomial (Fin n × Fin n) �
       · by_cases h : u = b
         · simp [h]
           ring
-        · simp [h, Matrix.single_apply, Ne.symm h]
-      · intro j _ hj; simp [Matrix.single_apply, Ne.symm hj]
+        · simp [h, Ne.symm h]
+      · intro j _ hj; simp [Ne.symm hj]
       · simp
   have := congrArg (fun F => F f) this
   simpa [Polynomial.coe_aeval_eq_eval] using this
@@ -635,7 +695,7 @@ theorem closed_of_stable (M : Submodule ℚ (MvPolynomial (Fin n × Fin n) ℚ))
           · subst hij
             by_cases hi : i = b
             · simp [hi]
-            · simp [hi, Matrix.single_apply, Ne.symm hi]
+            · simp [hi, Ne.symm hi]
           · simp only [Matrix.add_apply, Matrix.one_apply_ne hij, Matrix.diagonal_apply_ne _ hij, Matrix.single_apply]
             rw [if_neg (by rintro ⟨rfl, rfl⟩; exact hij rfl)]; simp
         rw [this, Matrix.det_diagonal, Finset.prod_ne_zero_iff]
@@ -651,8 +711,8 @@ theorem closed_of_stable (M : Submodule ℚ (MvPolynomial (Fin n × Fin n) ℚ))
       rw [rowGen_eval]
       exact (Submodule.mem_dualAnnihilator φ).1 hφ _ h1
     simp only [Set.mem_setOf_eq, Polynomial.IsRoot.def, R, Polynomial.eval_finsetSum, Polynomial.eval_monomial]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Polynomial.eval_eq_sum_range, map_sum] at h2
+
+    rw [Polynomial.eval_eq_sum_range, map_sum] at h2
     rw [← h2]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← C_pow, mul_comm (Q.coeff i), ← smul_eq_C_mul, map_smul, smul_eq_mul, mul_comm]
@@ -897,7 +957,7 @@ theorem pev_cof_mem [CharZero K] {a : Row Ix p q → ℕ} {P : MvPolynomial (Lt 
     ext1 b k
     by_cases hs : s = t
     · by_cases hk : k = j
-      · simp [hs, hk, gen, pev, colAdd, hlj.ne]
+      · simp [hs, hk, gen, pev, colAdd]
       · simp [hs, hk, gen, pev, colAdd]
     · simp [hs, gen, pev]
 
@@ -978,14 +1038,14 @@ theorem shift_act (g : Ix → GL (Fin n) K) {ρ ρ' : Row Ix p q} (hm : mat g ρ
   apply algHom_ext
   intro ℓ
   by_cases hl : ℓ.1 = ρ
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [AlgHom.comp_apply, act, shift, aeval_X, hl, if_true, map_sum, map_mul, map_add (f := _), algHom_C, algebraMap_eq,
-      ← hm, Finset.mul_sum, ← Finset.sum_add_distrib]
-      simp only [mul_add, Finset.sum_add_distrib]
-      congr 1
-      apply Finset.sum_congr rfl
-      intro j _
-      ring
+
+  · simp only [AlgHom.comp_apply, act, shift, aeval_X, hl, if_true, map_sum, map_mul, map_add (f := _), algHom_C, algebraMap_eq,
+    ← hm, Finset.mul_sum, ← Finset.sum_add_distrib]
+    simp only [mul_add, Finset.sum_add_distrib]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro j _
+    ring
   · simp only [AlgHom.comp_apply, act, shift, aeval_X, hl, if_false, map_sum, map_mul, algHom_C, algebraMap_eq]
 
 theorem act_inv (g : Ix → GL (Fin n) K) {P : MvPolynomial (Lt Ix p q n) K} (hP : Inv P) : Inv (act g P) :=
@@ -1029,8 +1089,8 @@ theorem harm_shift (t : Ix) (c : K) {P : MvPolynomial (Lt Ix p q n) K} (hP : ∀
   · rintro u u' ⟨s, i, j⟩
     have h1 := congrArg (shift (t, Sum.inl u) (t, Sum.inl u') c) (hP (s, i, j))
     have h2 := congrArg (shift (t, Sum.inl u) (t, Sum.inl u') c) (hP (t, u, j))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [lp, xl, yl, map_sum, map_zero] at h1 h2 ⊢
+
+    simp only [lp, xl, yl, map_sum, map_zero] at h1 h2 ⊢
     simp only [pderiv_shift, Prod.mk.injEq, reduceCtorEq, and_false, if_false, add_zero, Finset.sum_add_distrib, h1,
       zero_add]
     by_cases h3 : s = t ∧ (Sum.inl i : Fin p ⊕ Fin q) = Sum.inl u'
@@ -1039,10 +1099,10 @@ theorem harm_shift (t : Ix) (c : K) {P : MvPolynomial (Lt Ix p q n) K} (hP : ∀
   · rintro u u' ⟨s, i, j⟩
     have h1 := congrArg (shift (t, Sum.inr u) (t, Sum.inr u') c) (hP (s, i, j))
     have h2 := congrArg (shift (t, Sum.inr u) (t, Sum.inr u') c) (hP (t, i, u))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [lp, xl, yl, map_sum, map_zero] at h1 h2 ⊢
+
+    simp only [lp, xl, yl, map_sum, map_zero] at h1 h2 ⊢
     by_cases h3 : s = t ∧ (Sum.inr j : Fin p ⊕ Fin q) = Sum.inr u'
-    · simp only [pderiv_shift, Prod.mk.injEq, h3, and_self, if_true, map_add (f := _), Derivation.map_smul, reduceCtorEq, and_false,
+    · simp only [pderiv_shift, Prod.mk.injEq, h3, if_true, map_add (f := _), Derivation.map_smul, reduceCtorEq, and_false,
         if_false, add_zero, Finset.sum_add_distrib, ← Finset.smul_sum, h2, smul_zero]
       simpa only [h3] using h1
     · simp only [pderiv_shift, Prod.mk.injEq, h3, reduceCtorEq, and_false, if_false, add_zero, h1]
@@ -1051,8 +1111,8 @@ theorem ideal_shift_of {ρ ρ' : Row Ix p q} {c : K}
     (hq : ∀ i, shift ρ ρ' c (qf xl yl K i) ∈ II Ix p q n K) {P : MvPolynomial (Lt Ix p q n) K}
     (hP : P ∈ II Ix p q n K) : shift ρ ρ' c P ∈ II Ix p q n K := by
   obtain ⟨d, rfl⟩ := Ideal.mem_span_range_iff_exists_fun.1 hP
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Ideal.sum_mem _ fun i _ => by rw [map_mul]; exact Ideal.mul_mem_left _ _ (hq i)
 
 theorem ideal_shift (t : Ix) (c : K) {P : MvPolynomial (Lt Ix p q n) K} (hP : P ∈ II Ix p q n K) :
@@ -1244,7 +1304,7 @@ theorem degree_qf (m : MonomialOrder.{0,0} (Lt Ix p q n))
     (qf xl yl K i : MvPolynomial (Lt Ix p q n) K) ≠ 0 ∧ m.degree (qf xl yl K i) =
       Finsupp.single (xl i (lead h i)) 1 + Finsupp.single (yl i (lead h i)) 1 := by
   have e : qf xl yl K i = ∑ b : Fin n, monomial (Finsupp.single (xl i b) 1 + Finsupp.single (yl i b) 1) (1 : K) := by
-    simp [qf, X, monomial_mul]
+    simp [qf, X]
   rw [e]
   refine degree_sum_monomial m wt hm _ _ (lead h i) one_ne_zero fun b hb _ => ?_
   obtain ⟨t, i, j⟩ := i
@@ -1280,14 +1340,14 @@ theorem degree_det (m : MonomialOrder.{0,0} (Lt Ix p q n))
     have := Finset.prod_ne_zero_iff.1 (right_ne_zero_of_mul hc) k (Finset.mem_univ _)
     by_contra h3
     simp [hk, h3] at this
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [e, map_sum]
+
+  simp only [e, map_sum]
   apply Finset.sum_lt_sum
   · intro k _
     split_ifs
     · simp only [Finsupp.weight_single, one_smul]
       zify
-      simp only [weight_variable_formula, Equiv.Perm.coe_one, id]
+      simp only [weight_variable_formula, id]
       nlinarith [sq_nonneg (((σ k : ℕ) : ℤ) - (k : ℕ))]
     · rfl
   · obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
@@ -1298,7 +1358,7 @@ theorem degree_det (m : MonomialOrder.{0,0} (Lt Ix p q n))
     refine ⟨k, Finset.mem_univ _, ?_⟩
     simp only [hk', dif_pos, Finsupp.weight_single, one_smul]
     zify
-    simp only [weight_variable_formula, Equiv.Perm.coe_one, id]
+    simp only [weight_variable_formula, id]
     have : ((σ k : ℕ) : ℤ) - (k : ℕ) ≠ 0 := by
       intro e; apply hk; simp only [Fin.ext_iff]; omega
     nlinarith [sq_pos_of_ne_zero this]
@@ -1817,15 +1877,15 @@ theorem letAct_fw (g : Ix → GL (Fin n) K) (P : MvPolynomial (Lt Ix Dw.p Dw.q n
   rintro ⟨⟨t, i | i⟩, b⟩
   · have h1 : ∃ s, pl s = pl t := ⟨t, rfl⟩
     have h2 : h1.choose = t := he.1 h1.choose_spec
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, rename_X, letAct, aeval_X, fw_inl, dif_pos, h1, h2, act, map_sum, map_mul, rename_C]
+
+    simp only [AlgHom.comp_apply, rename_X, letAct, aeval_X, fw_inl, dif_pos, h1, h2, act, map_sum, map_mul, rename_C]
     rfl
   · have h0 : ¬ ∃ s, pl s = ComplexEmbedding.conjugate (pl t) := fun ⟨s, hs⟩ => pl_ne he _ _ hs
     have h1 : ∃ s, ComplexEmbedding.conjugate (pl s) = ComplexEmbedding.conjugate (pl t) := ⟨t, rfl⟩
     have h2 : h1.choose = t := conj_pl_inj he h1.choose_spec
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, rename_X, letAct, aeval_X, fw_inr, dif_pos, h1, h2, act, map_sum, map_mul, rename_C,
-      h0, dif_neg, not_false_eq_true]
+
+    simp only [AlgHom.comp_apply, rename_X, letAct, aeval_X, fw_inr, dif_pos, h1, h2, act, map_sum, map_mul, rename_C,
+    h0, dif_neg, not_false_eq_true]
     rfl
 
 theorem rowShift_fw {ρ ρ' : Row Ix Dw.p Dw.q} {σ : E →+* ℂ} {i i' : Fin (Dw.mult σ)}
@@ -1894,8 +1954,8 @@ theorem deg_fw (a : (E →+* ℂ) × ℕ → ℕ) (P : MvPolynomial (Lt Ix Dw.p 
 theorem lap_fw (t : Ix) (i : Fin Dw.p) (j : Fin Dw.q) (P : MvPolynomial (Lt Ix Dw.p Dw.q n) K) :
     lap Dw.mult n K 1 (pl t) (ComplexEmbedding.conjugate (pl t)) (Fin.cast (mult_pl Dw he _).symm i)
       (Fin.cast (mult_conj Dw he _).symm j) (rename (fw Dw he) P) = rename (fw Dw he) (lp xl yl (t, i, j) P) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [lap, lp, LinearMap.sum_apply, map_sum, LinearMap.smul_apply, LinearMap.comp_apply]
+
+  simp only [lap, lp, LinearMap.sum_apply, map_sum, LinearMap.smul_apply, LinearMap.comp_apply]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [Finset.sum_eq_single b]
   · rw [Matrix.one_apply_eq, one_smul, ← pderiv_rename (fw_inj Dw he), ← pderiv_rename (fw_inj Dw he)]

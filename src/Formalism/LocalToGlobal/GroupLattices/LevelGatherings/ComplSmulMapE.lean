@@ -1,6 +1,8 @@
 module
 
+public import Formalism.SatakeDualWeyl.StatementC
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.IdemMulCompl
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -140,8 +142,8 @@ def mapE (X : Matrix n n (E ⊗[F] w.adicCompletion F)) : Matrix n n (E ⊗[F] F
 theorem mapE_mul (X Y : Matrix n n (E ⊗[F] w.adicCompletion F)) :
     mapE F E w (X * Y) = mapE F E w X * mapE F E w Y := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [mapE, Matrix.map_apply, Matrix.mul_apply, map_sum, iE_mul]
+
+  simp only [mapE, Matrix.map_apply, Matrix.mul_apply, map_sum, iE_mul]
 
 theorem eps_smul_mapE (X : Matrix n n (E ⊗[F] w.adicCompletion F)) : epsW F E w • mapE F E w X = mapE F E w X := by
   ext i j
@@ -210,7 +212,7 @@ theorem sec_mem_UPts (σE : E →ₐ[F] E) (J : Matrix n n E) {X : GL n (E ⊗[F
     ext a b
     by_cases hab : a = b
     · subst hab; simp [cT, mapE, hσ, sig_iE]
-    · simp [cT, mapE, hσ, sig_iE, Matrix.one_apply_ne hab, Matrix.one_apply_ne (Ne.symm hab)]
+    · simp [cT, mapE, sig_iE, Matrix.one_apply_ne hab, Matrix.one_apply_ne (Ne.symm hab)]
   have hJ : epsW F E w • J.map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) =
       mapE F E w (J.map (inclE (F := F) (w.adicCompletion F))) := by
     ext a b

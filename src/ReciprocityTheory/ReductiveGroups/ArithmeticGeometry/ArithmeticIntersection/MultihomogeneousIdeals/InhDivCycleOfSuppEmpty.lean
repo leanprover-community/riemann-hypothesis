@@ -1,6 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

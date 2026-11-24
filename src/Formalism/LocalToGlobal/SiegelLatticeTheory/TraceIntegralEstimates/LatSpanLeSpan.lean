@@ -1,9 +1,9 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.FrameTop
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SplitRow
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IdentityCellTrace.TraceOneHolds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Saturated
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.Development
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.FrameL
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.HeisOpHolds
 
 @[expose] public section
 
@@ -43,8 +43,8 @@ theorem coef_of_span (e f : Fin r → S.V) (hfe : ∀ a b, S.hT (f a) (e b) = if
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).mp hx
   refine Finset.sum_congr rfl (fun a _ => ?_)
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp [hfe]
 
 variable (Λ : Submodule (𝓞 E) S.V) (aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (e f : Fin r → S.V)

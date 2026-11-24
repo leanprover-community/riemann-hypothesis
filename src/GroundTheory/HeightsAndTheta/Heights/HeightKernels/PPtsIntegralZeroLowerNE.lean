@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeightNE
+public import Mathlib.Algebra.Module.Submodule.Union
+import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section

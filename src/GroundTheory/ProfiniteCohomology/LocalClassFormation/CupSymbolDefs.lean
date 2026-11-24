@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolBridge
 public import GroundTheory.ProfiniteCohomology.LocalClassFormationAlt
 
@@ -42,6 +41,12 @@ noncomputable def ClassFormation.toInt (F : ClassFormation A) : ClassFormation (
   inv_bijective U := (F.inv_bijective U).comp
     (cohomologyULiftIntAddEquiv (Rep.res (U : Subgroup G).subtype A) 2).symm.bijective
 
+private theorem ClassFormation.toInt_inv (F : ClassFormation A) (U : OpenSubgroup G)
+    (x : H2Open (uliftIntToIntRep A) U) :
+    (ClassFormation.toInt A F).inv U x = F.inv U
+      ((cohomologyULiftIntAddEquiv (Rep.res (U : Subgroup G).subtype A) 2).symm x) :=
+  rfl
+
 end Transfer
 
 section Local
@@ -66,7 +71,7 @@ noncomputable def localClassFormationZ : ClassFormation (galUnitsZ K Ω) :=
 theorem localClassFormationZ_inv (U : OpenSubgroup Gal(Ω/K)) (x : H2Open (galUnitsZ K Ω) U) :
     (localClassFormationZ K Ω).inv U x = localInv K Ω U
       ((cohomologyULiftIntAddEquiv (Rep.res (U : Subgroup Gal(Ω/K)).subtype (galUnits.{0} K Ω)) 2).symm x) :=
-  rfl
+  ClassFormation.toInt_inv (galUnits.{0} K Ω) (localClassFormation K Ω) U x
 
 end Local
 

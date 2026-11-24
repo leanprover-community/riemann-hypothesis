@@ -1,10 +1,58 @@
 module
 
-public import Mathlib
-public import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodUnramUnique
 public import Formalism.LocalRingCardinality.DataHost
-public import Formalism.FrobeniusOrbits.HostCorollaries
 public import Formalism.SatakeDualWeyl.Statement
+public import Mathlib.RingTheory.Henselian
+public import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodUnramUnique
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 
@@ -23,50 +71,27 @@ theorem wz_lt_one_iff (γ : ℤᵐ⁰) : γ < 1 ↔ γ ≤ exp (-1 : ℤ) := by
   rcases eq_or_ne γ 0 with rfl | hγ
   · first
     | exact iff_of_true zero_lt_one zero_le'
-    | simp
   · first
     | (rw [← WithZero.exp_log hγ, ← WithZero.exp_zero, WithZero.exp_lt_exp, WithZero.exp_le_exp]; omega)
-    | (obtain ⟨a, rfl⟩ := WithZero.ne_zero_iff_exists.mp hγ
-       rw [← WithZero.coe_one, WithZero.exp, WithZero.coe_lt_coe, WithZero.coe_le_coe,
-         ← ofAdd_toAdd a, ← ofAdd_zero, Multiplicative.ofAdd_lt, Multiplicative.ofAdd_le]
-       omega)
-
-theorem adicInt_integers :
-    Valuation.Integers (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰) (v.adicCompletionIntegers K) := by
-  first
-  | exact Valuation.integer.integers _
-  | exact ⟨Subtype.val_injective, fun x => x.2, fun r hr => ⟨⟨r, hr⟩, rfl⟩⟩
-  | (refine ⟨Subtype.val_injective, fun x => ?_, fun r hr => ⟨⟨r, ?_⟩, rfl⟩⟩
-     · exact (mem_adicCompletionIntegers R K v).mp x.2
-     · exact (mem_adicCompletionIntegers R K v).mpr hr)
 
 theorem adicInt_exists_unif :
     ∃ π : v.adicCompletionIntegers K, Valued.v (π : v.adicCompletion K) = exp (-1 : ℤ) := by
   obtain ⟨π, hπ⟩ : ∃ π : K, v.valuation K π = exp (-1 : ℤ) := by
     first
     | exact valuation_exists_uniformizer K v
-    | exact v.valuation_exists_uniformizer K
-    | exact valuation_exists_uniformizer (K := K) v
   have hv : Valued.v (π : v.adicCompletion K) = exp (-1 : ℤ) := by
     rw [← hπ]
     first
     | exact valuedAdicCompletion_eq_valuation' (v := v) π
-    | exact valuedAdicCompletion_eq_valuation' v π
-    | exact valuedAdicCompletion_eq_valuation' K v π
-    | exact valuedAdicCompletion_eq_valuation (v := v) π
-    | exact Valued.valuedCompletion_apply π
-    | simp
   have hle : Valued.v (π : v.adicCompletion K) ≤ 1 := by
     rw [hv]; exact ((wz_lt_one_iff _).mpr le_rfl).le
   refine ⟨⟨(π : v.adicCompletion K), ?_⟩, hv⟩
   first
   | exact hle
-  | exact (mem_adicCompletionIntegers R K v).mpr hle
-  | simpa [mem_adicCompletionIntegers] using hle
 
 theorem adicInt_mem_max_iff (x : v.adicCompletionIntegers K) :
     x ∈ maximalIdeal (v.adicCompletionIntegers K) ↔ Valued.v (x : v.adicCompletion K) < 1 := by
-  have hI := adicInt_integers (K := K) v
+  have hI := IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := K) v
   rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, hI.isUnit_iff_valuation_eq_one]
   exact (hI.map_le_one x).lt_iff_ne.symm
 
@@ -83,8 +108,7 @@ local notation "Ov" => v.adicCompletionIntegers K
 theorem adicInt_dvd_iff (x y : Ov) :
     x ∣ y ↔ Valued.v (y : Kv) ≤ Valued.v (x : Kv) := by
   first
-  | exact (adicInt_integers (K := K) v).dvd_iff_le
-  | exact Valuation.Integers.dvd_iff_le (adicInt_integers (K := K) v)
+  | exact (IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := K) v).dvd_iff_le
 
 theorem adicInt_max_eq_span (π : Ov) (hπ : Valued.v (π : Kv) = exp (-1 : ℤ)) :
     maximalIdeal Ov = Ideal.span {π} := by
@@ -98,28 +122,19 @@ theorem adicInt_mem_pow_iff (n : ℕ) (x : Ov) :
     first
     | rfl
     | push_cast; rfl
-    | simp
   have hpow : Valued.v ((π ^ n : Ov) : Kv) = exp (-(n : ℤ)) := by
     rw [h1, map_pow, hπ]
     first
     | (rw [← WithZero.exp_nsmul]; congr 1; simp)
-    | (rw [← WithZero.exp_nsmul]; simp)
-    | simp [WithZero.exp, ← ofAdd_nsmul]
   rw [adicInt_max_eq_span v π hπ, Ideal.span_singleton_pow, Ideal.mem_span_singleton,
     adicInt_dvd_iff v, hpow]
-
-theorem wz_exists_nat_lt (γ : ℤᵐ⁰) (h : γ ≠ 0) : ∃ N : ℕ, exp (-(N : ℤ)) < γ := by
-  obtain ⟨m, rfl⟩ : ∃ m : ℤ, exp m = γ := ⟨_, WithZero.exp_log h⟩
-  exact ⟨m.natAbs + 1, by rw [WithZero.exp_lt_exp]; omega⟩
 
 theorem adicInt_eq_zero_of_forall (x : Kv) (h : ∀ n : ℕ, Valued.v x ≤ exp (-(n : ℤ))) : x = 0 := by
   by_contra hx
   have h0 : Valued.v x ≠ 0 := by
     first
     | exact (Valuation.ne_zero_iff _).mpr hx
-    | exact (map_ne_zero _).mpr hx
-    | simpa using hx
-  obtain ⟨N, hN⟩ := wz_exists_nat_lt (Valued.v x) h0
+  obtain ⟨N, hN⟩ := @WithZero.exists_exp_neg_natCast_lt (Valued.v x) h0
   exact absurd (h N) (not_le.mpr hN)
 
 theorem adicCompl_isClosed_le (r : ℤᵐ⁰) : IsClosed {x : Kv | Valued.v x ≤ r} := by
@@ -129,11 +144,7 @@ theorem adicCompl_isClosed_le (r : ℤᵐ⁰) : IsClosed {x : Kv | Valued.v x �
   have hx0 : Valued.v x ≠ 0 := (lt_of_le_of_lt zero_le' hx').ne'
   have hmem : {y : Kv | Valued.v y = Valued.v x} ∈ 𝓝 x := by
     first
-    | exact Valuation.loc_const hx0
     | exact Valued.locally_const hx0
-    | exact (Valued.isOpen_sphere Kv hx0).mem_nhds rfl
-    | exact (Valued.isClopen_sphere Kv hx0).isOpen.mem_nhds rfl
-    | exact (Valued.isOpen_sphere (R := Kv) hx0).mem_nhds rfl
   filter_upwards [hmem] with y hy
   show ¬ Valued.v y ≤ r
   rw [show Valued.v y = Valued.v x from hy]
@@ -162,7 +173,7 @@ theorem adicInt_isAdicComplete : IsAdicComplete (maximalIdeal Ov) Ov := by
       intro γ _
       have hne : MonoidWithZeroHom.ValueGroup₀.embedding γ.1 ≠ 0 := fun h =>
         γ.ne_zero (MonoidWithZeroHom.ValueGroup₀.embedding_injective (h.trans (map_zero _).symm))
-      obtain ⟨N, hN⟩ := wz_exists_nat_lt _ hne
+      obtain ⟨N, hN⟩ := @WithZero.exists_exp_neg_natCast_lt _ hne
       refine ⟨N, fun m hm n hn => ?_⟩
       simp only [Set.mem_ofPred_eq, Valuation.restrict_lt_iff_lt_embedding]
       have hle : ∀ a b, N ≤ a → a ≤ b →
@@ -205,11 +216,6 @@ local notation "Ov" => v.adicCompletionIntegers K
 theorem adicCompl_val_algebraMap (y : K) : Valued.v (algebraMap K Kv y) = v.valuation K y := by
   first
   | exact valuedAdicCompletion_eq_valuation' (v := v) y
-  | exact valuedAdicCompletion_eq_valuation' v y
-  | exact valuedAdicCompletion_eq_valuation' K v y
-  | exact valuedAdicCompletion_eq_valuation (v := v) y
-  | exact Valued.valuedCompletion_apply y
-  | simp
 
 theorem adicInt_residue_surj : Function.Surjective ((residue Ov).comp (algebraMap R Ov)) := by
   intro y
@@ -250,26 +256,20 @@ theorem adicInt_residue_finite [Finite (R ⧸ v.asIdeal)] : Finite (ResidueField
     have h1 : ((algebraMap R Ov a : Ov) : Kv) = algebraMap K Kv (algebraMap R K a) := by
       first
       | rfl
-      | simp
     rw [h1, adicCompl_val_algebraMap, valuation_of_algebraMap]
     first
     | exact (v.intValuation_lt_one_iff_dvd a).mpr (Ideal.dvd_span_singleton.mpr ha)
-    | exact (intValuation_lt_one_iff_mem v a).mpr ha
   exact Finite.of_surjective _
     (Ideal.Quotient.lift_surjective_of_surjective v.asIdeal hf (adicInt_residue_surj v))
 
 theorem adicInt_isUnit_of_not_mem (r : R) (hr : r ∉ v.asIdeal) : IsUnit (algebraMap R Ov r) := by
-  rw [(adicInt_integers (K := K) v).isUnit_iff_valuation_eq_one]
+  rw [(IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := K) v).isUnit_iff_valuation_eq_one]
   have h1 : algebraMap Ov Kv (algebraMap R Ov r) = algebraMap K Kv (algebraMap R K r) := by
     first
     | rfl
-    | simp
   rw [h1, adicCompl_val_algebraMap, valuation_of_algebraMap]
   first
-  | exact (intValuation_eq_one_iff v r).mpr hr
   | exact v.intValuation_eq_one_iff.mpr hr
-  | (refine le_antisymm (v.intValuation_le_one r) (not_lt.mp fun h => hr ?_)
-     exact Ideal.dvd_span_singleton.mp ((v.intValuation_lt_one_iff_dvd r).mp h))
 
 theorem adicInt_exists_norm [Finite (R ⧸ v.asIdeal)] (T N : ℤ)
     (hD : ((T ^ 2 - 4 * N : ℤ) : R) ∉ v.asIdeal) :
@@ -295,9 +295,6 @@ theorem adel_conj_aE : H.conj (H.sqq) = - H.sqq := by
   have hc : (((H.gal H.conj).1.1 : ℤˣ) : ℤ) = -1 := by
     first
     | (simp only [Formalism.HC.HostRaw.conj, MulEquiv.apply_symm_apply]; rfl)
-    | (simp only [Formalism.HC.HostRaw.conj, MulEquiv.apply_symm_apply]; decide)
-    | (rw [Formalism.HC.HostRaw.conj, MulEquiv.apply_symm_apply]; rfl)
-    | simp [Formalism.HC.HostRaw.conj, Formalism.HC.Frame.cc]
   rw [hc]; simp
 
 theorem adel_conj_bE : H.conj (H.sqd) = - H.sqd := by
@@ -305,9 +302,6 @@ theorem adel_conj_bE : H.conj (H.sqd) = - H.sqd := by
   have hc : (((H.gal H.conj).1.2 : ℤˣ) : ℤ) = -1 := by
     first
     | (simp only [Formalism.HC.HostRaw.conj, MulEquiv.apply_symm_apply]; rfl)
-    | (simp only [Formalism.HC.HostRaw.conj, MulEquiv.apply_symm_apply]; decide)
-    | (rw [Formalism.HC.HostRaw.conj, MulEquiv.apply_symm_apply]; rfl)
-    | simp [Formalism.HC.HostRaw.conj, Formalism.HC.Frame.cc]
   rw [hc]; simp
 
 theorem adel_mem_F (x : H.E) (hx : H.conj x = x) : x ∈ H.F := by
@@ -317,11 +311,6 @@ theorem adel_mem_F (x : H.E) (hx : H.conj x = x) : x ∈ H.F := by
     exact h1.symm
   first
   | exact (NumberField.mem_maximalRealSubfield_iff x).mpr key
-  | exact (mem_maximalRealSubfield_iff x).mpr key
-  | exact fun φ => key φ
-  | (intro φ; exact key φ)
-  | (show ∀ φ : H.E →+* ℂ, star (φ x) = φ x
-     exact key)
 
 end Global
 
@@ -360,7 +349,6 @@ theorem adelic_theta_conj : H.conj (adelTheta H) = 1 - adelTheta H := by
   unfold adelTheta
   first
   | (rw [map_div₀, map_add (f := _), map_one, adel_conj_bE, map_ofNat]; ring)
-  | (simp [adel_conj_bE]; ring)
 
 theorem adelic_theta_mul_one_sub : adelTheta H * (1 - adelTheta H) = ((adelNd H : ℤ) : H.E) := by
   have h4 := congrArg (Int.cast : ℤ → H.E) (adelNd_spec H)
@@ -419,14 +407,11 @@ theorem adel_local (v : HeightOneSpectrum (𝓞 H.F)) :
   haveI : Finite (𝓞 H.F ⧸ v.asIdeal) := by
     first
     | exact Ideal.finiteQuotientOfFreeOfNeBot v.asIdeal v.ne_bot
-    | infer_instance
-    | exact (Ideal.fintypeQuotientOfFreeOfNeBot v.asIdeal v.ne_bot).finite
   have hI3 : 2 * algebraMap H.F (v.adicCompletion H.F) (adelAlpha H)
       + algebraMap H.F (v.adicCompletion H.F) (adelBeta H) = 1 := by
     have h := congrArg (algebraMap H.F (v.adicCompletion H.F)) (adelic_alpha_beta_linear H)
     first
     | (rw [map_add (f := _), map_mul, map_ofNat, map_one] at h; exact h)
-    | simpa using h
   have hI4 : algebraMap H.F (v.adicCompletion H.F) (adelAlpha H) ^ 2
       + algebraMap H.F (v.adicCompletion H.F) (adelAlpha H)
         * algebraMap H.F (v.adicCompletion H.F) (adelBeta H)
@@ -435,7 +420,6 @@ theorem adel_local (v : HeightOneSpectrum (𝓞 H.F)) :
     have h := congrArg (algebraMap H.F (v.adicCompletion H.F)) (adelic_alpha_beta_norm H)
     first
     | (rw [map_add (f := _), map_add (f := _), map_mul, map_mul, map_pow, map_pow, map_intCast, map_intCast] at h; exact h)
-    | simpa using h
   by_cases hdv : ((H.d : ℤ) : 𝓞 H.F) ∈ v.asIdeal
   · have hqv : ((H.q : ℤ) : 𝓞 H.F) ∉ v.asIdeal := fun h => adel_not_both H v ⟨hdv, h⟩
     have hc : (1 : ℤ) ^ 2 - 4 * adelNq H = -(H.q : ℤ) := by
@@ -447,7 +431,6 @@ theorem adel_local (v : HeightOneSpectrum (𝓞 H.F)) :
       have h := congrArg (fun z : v.adicCompletionIntegers H.F => (z : v.adicCompletion H.F)) hst
       first
       | (push_cast at h; linear_combination h)
-      | (simp at h; linear_combination h)
     refine ⟨(s : v.adicCompletion H.F)
         + algebraMap H.F (v.adicCompletion H.F) (adelAlpha H) * (t : v.adicCompletion H.F),
       algebraMap H.F (v.adicCompletion H.F) (adelBeta H) * (t : v.adicCompletion H.F),
@@ -463,7 +446,6 @@ theorem adel_local (v : HeightOneSpectrum (𝓞 H.F)) :
       have h := congrArg (fun z : v.adicCompletionIntegers H.F => (z : v.adicCompletion H.F)) hst
       first
       | (push_cast at h; linear_combination h)
-      | (simp at h; linear_combination h)
     refine ⟨(s : v.adicCompletion H.F), (t : v.adicCompletion H.F), fun _ => ⟨s.2, t.2⟩, ?_⟩
     linear_combination hst'
 
@@ -515,7 +497,6 @@ theorem adel_key : adelS H * adelS H + adelS H * adelT H +
   | (change adelSv H v * adelSv H v + adelSv H v * adelTv H v
         + ((adelNd H : ℤ) : v.adicCompletion H.F) * (adelTv H v * adelTv H v) = -1
      exact h)
-  | simpa [adelS, adelT] using h
 
 theorem adel_hom_key {A B : Type*} [CommRing A] [CommRing B] (f : A →+* B) (S T : A) (N : ℤ)
     (h : S * S + S * T + (N : A) * (T * T) = -1) :

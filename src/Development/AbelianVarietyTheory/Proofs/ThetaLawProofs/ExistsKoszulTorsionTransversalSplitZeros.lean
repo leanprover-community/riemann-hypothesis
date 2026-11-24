@@ -1,24 +1,60 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.KeyFormula.IsSquareDeterminantComparison
-public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBRing
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubmatrixMulOfVanish
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsIsUnitField
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.AlternatingSumChooseMulSubPow
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.PwIsoIsGen
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MemNonzeroLocusVia
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SignInsert
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.BasisPowerSectionsLocalBaseChange
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KoszulSectionsExactAlgClosedPolarisedAVStatement
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.JacNeZeroIffSpanEqMaximalIdeal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.IsPluriharmonicSiegel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.MapsAtLeA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.OneEqSpTranslZero
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.AlternatingSumChooseMulSubPow
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.BasisPowerSectionsLocalBaseChange
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsIsUnitField
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBRing
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.JacNeZeroIffSpanEqMaximalIdeal
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KoszulSectionsExactAlgClosedPolarisedAVStatement
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MemNonzeroLocusVia
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubmatrixMulOfVanish
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -48,8 +84,8 @@ theorem Ex.descend {k Ω Ix : Type} [Field k] [Field Ω] [Fintype Ix] (f : k →
   have e := congrArg ρ (congrFun hw p)
   rw [Function.comp_apply, hρ'] at e
   rw [← e]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply, Function.comp_apply]
+
+  simp only [Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply, Function.comp_apply]
   refine Finset.sum_congr rfl fun q _ => ?_
   exact ((ρ.map_smul (D p q) (w q)).trans (smul_eq_mul _ _)).symm
 
@@ -204,8 +240,8 @@ def comb {R : Type} [CommRing R] {X : Scheme.{0}} (p : X ⟶ Sp R) {L : LB X} {S
     [Fintype S] (a : S → R) (s : S → L.Sec) : L.Sec where
   f j := ∑ i, AbLaw.cst p (L.U j) (a i) * (s i).f j
   compat j k := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, Finset.mul_sum]
+
+    rw [map_sum, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, map_mul, rs_cst, rs_cst, (s i).compat j k]
     ring
@@ -266,8 +302,8 @@ theorem coords_sum (x : KeyIn R) {l N : ℕ} {S : Type} [Fintype S] (b : Fin N �
   intro i
   refine (Finset.sum_congr rfl fun a _ => hc a i).trans (Finset.sum_comm.trans ?_)
   refine Finset.sum_congr rfl fun k _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_apply, map_sum, Finset.sum_mul]
+
+  rw [Finset.sum_apply, map_sum, Finset.sum_mul]
 
 theorem resolves_field (hL : Out.Laws) (K : Type) [Field K] [IsAlgClosed K] (x : KeyIn K) (n l d : ℕ)
     (s : Fin x.P.g → RR x n) (b : ∀ j, Fin ((l - j * n) ^ x.P.g) → RR x (l - j * n)) (z : Fin d → Pt x)
@@ -300,7 +336,7 @@ theorem resolves_field (hL : Out.Laws) (K : Type) [Field K] [IsAlgClosed K] (x :
       rw [hc]; exact hyU a
     · rw [show c t = c₀ t from Function.extend_apply' _ _ _ h]; exact hc₀ t
   have hfin : FinZ x s := (Set.finite_range y).subset fun t ht => hzero t ht
-  obtain ⟨h₁, h₂, h₃⟩ := GlobalTheory.T.koszul_sections_exact_algClosed_polarisedAV hL K x n l s b m c hn hl hfin hb hm hcU
+  obtain ⟨h₁, h₂, h₃⟩ := _root_.GlobalTheory.koszul_sections_exact_field hL K x n l s b m c hn hl hfin hb hm hcU
   have hl0 : l = l - 0 * n := by simp
   refine ⟨h₁, fun t => ?_, fun v hv => ?_⟩
   · obtain ⟨sg, hsg⟩ := h₂ fun q => gs (𝟙 _) q (x.P.L.U (c q)) (AbLaw.cst x.P.A.hom (x.P.L.U (c q)) (Function.extend y t 0 q))

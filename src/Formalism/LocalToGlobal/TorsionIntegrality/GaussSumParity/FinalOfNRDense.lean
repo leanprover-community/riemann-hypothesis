@@ -1,24 +1,13 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionRelation
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementG
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.NRCMOf
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.HomotheticLatticeIntegralS2
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.HomotheticLatticeIntegralOf
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SqrtInUnramifiedCompletion
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.HomotheticLatticeIntegralOf
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TwoPlaces
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.SecondLevelOfNorm
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementB
-public import Formalism.GaussJetBounds.StatementW
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.BiextensionOfExpSpec
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.BiextensionPointsOfExpSpec
 
 @[expose] public section
 
 namespace Formalism.L2.Th1.D
 
-theorem sqrtKur : SqrtKur := sqrt_in_unramified_completion
-theorem denseOK : DenseOK := dense_criterion
-theorem homothetic_lattice_integral_s2 : HomotheticLatticeIntegralS2 := homothetic_lattice_integral_of
-
+alias sqrtKur := _root_.Formalism.L2.Th1.D.sqrt_in_unramified_completion
+alias denseOK := _root_.Formalism.L2.Th1.D.dense_criterion
 end Formalism.L2.Th1.D

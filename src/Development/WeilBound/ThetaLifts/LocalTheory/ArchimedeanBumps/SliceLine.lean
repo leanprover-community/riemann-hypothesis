@@ -1,10 +1,56 @@
 module
 
-public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
-public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.SliceAn
-public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneAd
+public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneGen
+public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.ArchSlice
+public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneAd
+public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
+public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -132,15 +178,15 @@ theorem exists_dual (hB : B.IsGood σ) (I : Set (Matrix (Fin n) (Fin d) (AE F E)
           rw [this, Algebra.traceForm_apply, mul_comm, mul_assoc]
         have h3 : σ (t⁻¹ * (t * σ x)) = x := by rw [inv_mul_cancel_left₀ t0, PositivityTheory.Mix.conj_conj hB]
         conv_rhs => rw [← h3, ← h1]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [h2, Finset.mul_sum, map_sum, mul_smul_comm, b]
+
+        simp only [h2, Finset.mul_sum, map_sum, mul_smul_comm, b]
         exact Finset.sum_congr rfl fun j _ => (σ.toLinearMap.map_smul _ _).symm
       rw [e]
       simp only [map_smul, smul_eq_mul, mul_smul, ← Finset.smul_sum, e1]
       congr 1
       conv_rhs => rw [← e2]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       change _ = (1 : AF F) ⊗ₜ[F] (_ • b j)
       rw [TensorProduct.tmul_smul, algebraMap_smul]; rfl
@@ -227,8 +273,7 @@ theorem line_ex (hS : Slice) (hH : ArchHeis) (hU : ArchUniq) (hc : Cfg B M M₁ 
     refine SchwartzMap.ext fun y => ?_
     have h2 := congrFun h1 (ptA y a)
     simp only [Finset.sum_apply, pureA_ptA] at h2
-    simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, SchwartzMap.sum_apply, SchwartzMap.smul_apply,
-      smul_eq_mul]
+    simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
     rw [eq_div_of_mul_eq ha h2, Finset.sum_div]
     exact Finset.sum_congr rfl fun i _ => by ring
   · obtain ⟨p, hp', hq'⟩ := hdec q N hq
@@ -239,8 +284,8 @@ theorem line_ex (hS : Slice) (hH : ArchHeis) (hU : ArchUniq) (hc : Cfg B M M₁ 
     have S0 : 0 ≤ Sg := Finset.sum_nonneg fun j _ => Finset.sum_nonneg fun w _ => mixedEmbedding.normAtPlace_nonneg _ _
     have hn : ‖c‖ ≤ K * Sg := by
       refine (pi_norm_le_iff_of_nonneg (by positivity)).2 fun w => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hL.pi c w, ← hY (lift c), map_sum, hSg, Finset.mul_sum]
+
+      rw [← hL.pi c w, ← hY (lift c), map_sum, hSg, Finset.mul_sum]
       refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
       have e1 : Y j (lift c) • inclR (F := F) (AF F) (b j) = (Y j (lift c) ⊗ₜ[F] b j : AE F E) := by
         change _ • ((1 : AF F) ⊗ₜ[F] b j) = _; rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]

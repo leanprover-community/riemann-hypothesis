@@ -1,14 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.HeckeSp
-public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.Columns.Adelic
-public import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
 public import Formalism.LogVandermondeBounds.LogRatioLowerBound
 public import Formalism.GradedWeylDivisibility.StatementD
-public import Formalism.HermitianLattices.StatementMass
-public import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 
 @[expose] public section
 

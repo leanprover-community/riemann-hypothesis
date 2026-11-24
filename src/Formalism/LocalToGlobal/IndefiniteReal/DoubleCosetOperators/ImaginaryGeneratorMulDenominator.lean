@@ -2,6 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.XiNeZeroOfIsStdGeneric
 public import Formalism.LocalRingCardinality.ConjSqrtMinusD
+import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.RingTheory.Ideal.Int
 
 @[expose] public section
 

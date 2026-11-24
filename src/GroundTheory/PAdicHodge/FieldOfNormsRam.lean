@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.FieldOfNormsTower
-public import GroundTheory.LocalFields.DifferentGalois
-public import GroundTheory.LocalFields.RamificationStructure
-public import GroundTheory.PAdicHodge.FieldOfNormsUpper
+public import GroundTheory.LocalFields.HerbrandFunction
+public import GroundTheory.LocalFields.SeparableClosure
+public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

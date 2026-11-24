@@ -1,9 +1,58 @@
 module
 
-public import Mathlib
 public import Formalism.DistinguishedUnitIdeals.FrobeniusDiffBijective
-public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.RhoMapFunctorial
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GroundTheory
+public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.RhoMapFunctorial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Data.Nat.Factorization.Basic
+public import Mathlib.Data.Nat.Multiplicity
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 
 @[expose] public section
 
@@ -412,13 +461,6 @@ theorem sa_sat {O : Type} [CommRing O] [IsDomain O] (ϖ : O) [(Ideal.span {ϖ}).
     rw [pow_succ, map_mul] at hw
     linear_combination hw
 
-theorem sa_it_add {O : Type} [CommRing O] (f : PowerSeries O →ₐ[O] PowerSeries O) (k : ℕ)
-    (a b : PowerSeries O) : (⇑f)^[k] (a + b) = (⇑f)^[k] a + (⇑f)^[k] b := by
-  induction k with
-  | zero => rfl
-  | succ k ih => rw [Function.iterate_succ_apply', Function.iterate_succ_apply',
-      Function.iterate_succ_apply', ih, map_add]
-
 theorem sa_p_ne {O : Type} [CommRing O] [IsDomain O] (ϖ : O) [(Ideal.span {ϖ}).IsMaximal]
     (B : Base O) (hd : ϖ ∣ (B.ℓ : O)) (hE3 : ∀ s, B.E3it s) (s : ℕ) :
     PowerSeries.map (Ideal.Quotient.mk (Ideal.span {ϖ})) (B.p s) ≠ 0 := by
@@ -430,7 +472,7 @@ theorem sa_p_ne {O : Type} [CommRing O] [IsDomain O] (ϖ : O) [(Ideal.span {ϖ})
       Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr hd)
     have hp : B.p s = (u : PowerSeries O) * X * ∏ k ∈ Finset.range s, B.p k ^ (B.ℓ - 1)
         + C (B.ℓ : O) := by
-      rw [Base.p, Base.q, sa_it_add, IdempotentNormalFormsRhoFacts.it_C, hu]
+      rw [Base.p, Base.q, _root_.Formalism.ExponentWindows.E.GoodPlacesAlt.it_add, IdempotentNormalFormsRhoFacts.it_C, hu]
     rw [hp, map_add (f := _), PowerSeries.map_C, hl, map_zero, add_zero, map_mul, map_mul, map_prod,
       PowerSeries.map_X]
     refine mul_ne_zero (mul_ne_zero ?_ X_ne_zero) ?_
@@ -594,8 +636,8 @@ theorem extension_generated_holds : ExtGOf := by
   obtain ⟨m, hm, hme⟩ := isPhiCombination_of_mem_pull Y.LY hb hu'
   have h0 : ∑ t, b t • L₀.phiIt i k (Y.π.f (m t)) = 0 := by
     have h1 : Y.π.f (Y.ι.f (lam • u)) = 0 := (Y.exact _).2 ⟨_, rfl⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hme, map_sum] at h1
+
+    rw [hme, map_sum] at h1
     simpa only [map_smul, hom_phiIt] using h1
   have hm0 := hind (fun t => Y.π.f (m t)) (fun t => Y.π.map_N i _ (hm t)) h0
   have hex : ∀ t, ∃ w : V₂, Y.ι.f w = m t := fun t => (Y.exact _).1 (hm0 t)
@@ -603,8 +645,8 @@ theorem extension_generated_holds : ExtGOf := by
   have hwN : ∀ t, w t ∈ L₂.N i := fun t => h6 i (w t) (by rw [hw t]; exact hm t)
   have heq : lam • u = ∑ t, b t • L₂.phiIt i k (w t) := by
     apply Y.ι_inj
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hme, map_sum]
+
+    rw [hme, map_sum]
     refine Finset.sum_congr rfl fun t _ => ?_
     rw [map_smul, hom_phiIt, hw t]
   show lam • u ∈ L₂.pull i k
@@ -943,16 +985,6 @@ theorem phi_maps_filtered_lattice (h3 : B.E3) {M : ℕ} (hq : L.FrobeniusMapsXPo
     rw [smul_add, map_add (f := _)]
     exact Submodule.add_mem _ hx hy
 
-theorem power_series_X_cancel (hX : L.XReg) (i : ZMod n) (M : ℕ) {w : V} (hw : w ∈ L.N i)
-    (h : (X : PowerSeries O) ^ M • w = 0) : w = 0 := by
-  induction M with
-  | zero => simpa using h
-  | succ M ih =>
-    apply ih
-    apply hX i _ ((L.N i).smul_mem _ hw)
-    rw [← mul_smul, ← pow_succ']
-    exact h
-
 theorem mem_all_filtered_powers_zero (hC : L.Complete) (hX : L.XReg) (i : ZMod n) (M : ℕ) {v : V}
     (h : ∀ k : ℕ, v ∈ sm (X ^ M) (B.mm ^ k • L.N i)) : v = 0 := by
   obtain ⟨w, hw, rfl⟩ := mem_sm.1 (h 0)
@@ -963,7 +995,7 @@ theorem mem_all_filtered_powers_zero (hC : L.Complete) (hX : L.XReg) (i : ZMod n
     intro k
     obtain ⟨w', hw', e⟩ := mem_sm.1 (h k)
     have : w' - w = 0 := by
-      apply power_series_X_cancel L hX i M ((L.N i).sub_mem (ideal_smul_submodule_le _ _ hw') hwN)
+      apply _root_.Formalism.ExponentWindows.E.GoodPlacesAlt.sat_xreg_pow L hX i M ((L.N i).sub_mem (ideal_smul_submodule_le _ _ hw') hwN)
       rw [smul_sub, e, sub_self]
     rw [← sub_eq_zero.1 this]
     exact hw'
@@ -1045,8 +1077,8 @@ theorem lattice_filtration_second_form : FrobeniusDiffBijective := by
     have e1 : L.φ i ((X : PowerSeries O) ^ M • y (i - 1)) =
         (∑ k ∈ Finset.range K, f1bIt L t (k + 1) i) -
           L.φ i ((X : PowerSeries O) ^ M • ((∑ k ∈ Finset.range K, w k (i - 1)) - y (i - 1))) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [smul_sub, map_sub, Finset.smul_sum, map_sum]
+
+      rw [smul_sub, map_sub, Finset.smul_sum, map_sum]
       simp only [hwe]
       simp [f1bIt]
     have e2 : (X : PowerSeries O) ^ M • y i = (∑ k ∈ Finset.range K, f1bIt L t k i) -
@@ -1320,8 +1352,8 @@ theorem cp_mem_equiv {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] (J 
       simp [Finset.sum_apply, Pi.single_apply]
     have h2 : x = ∑ t, Φ x t • Φ.symm (Pi.single t (1 : R)) := by
       apply Φ.injective
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simpa only [map_smul, LinearEquiv.apply_symm_apply] using h1
     rw [h2]
     exact Submodule.sum_mem _ fun t _ => Submodule.smul_mem_smul (h t) trivial

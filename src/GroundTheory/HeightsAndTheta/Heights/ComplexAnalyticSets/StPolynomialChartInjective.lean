@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Analysis.CStarAlgebra.Classes
 
 @[expose] public section
 

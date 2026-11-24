@@ -1,11 +1,61 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.MCoordIdealLeOfHomog
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverTransferIdealEq
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFnFieldTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagFormDiv
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -213,14 +263,14 @@ theorem birational_extension_two (hb : Birational y) (A : ι k₀ → Φ) : Bira
 
 theorem sum_smul_penCo_none_eq_one {α : ι k₀ → Φ} (hA : ∑ m, α m * A m = 1) (hB : ∑ m, α m * B m = 0) (t : RatFunc Φ) :
     ∑ m, algebraMap Φ (RatFunc Φ) (α m) * penCo y k₀ A B t ⟨none, m⟩ = 1 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [penCo, mul_add, Finset.sum_add_distrib, mul_left_comm _ t, ← Finset.mul_sum, ← map_mul, ← map_sum, hA, hB]
+
+  simp only [penCo, mul_add, Finset.sum_add_distrib, mul_left_comm _ t, ← Finset.mul_sum, ← map_mul, ← map_sum, hA, hB]
   simp
 
 theorem pencil_coordinate_sum {β : ι k₀ → Φ} (hA : ∑ m, β m * A m = 0) (hB : ∑ m, β m * B m = 1) (t : RatFunc Φ) :
     ∑ m, algebraMap Φ (RatFunc Φ) (β m) * penCo y k₀ A B t ⟨none, m⟩ = t := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [penCo, mul_add, Finset.sum_add_distrib, mul_left_comm _ t, ← Finset.mul_sum, ← map_mul, ← map_sum, hA, hB]
+
+  simp only [penCo, mul_add, Finset.sum_add_distrib, mul_left_comm _ t, ← Finset.mul_sum, ← map_mul, ← map_sum, hA, hB]
   simp
 
 theorem exists_ne_of_sum {R σ : Type} [Field R] [Fintype σ] {a b : σ → R} (h : ∑ m, a m * b m ≠ 0) :

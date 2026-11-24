@@ -1,13 +1,64 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.FibreFramesOnModels
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PushInvertibleModelOfIso
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModelBaseChangeOverring
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabCancel
+public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.AuxiliaryInertOddPrime
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverCompOfIsClosedImmersion
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsSecPullNonzeroOnFibres
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.GenericPointMemModuliOfMeetsAbelianLocus
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModelBaseChangeOverring
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabCancel
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsProperRestrictPull
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PushforwardPolarisationBundleInvertibleOnModel
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCRing
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.LevelFrameOfLaws
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ThetaKeyRuleExistsOfAlgebraicInvariants
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ValueAtNormalForm
 
 @[expose] public section
 
@@ -22,17 +73,6 @@ section Sections
 
 variable {R : Type} [CommRing R]
 
-theorem constFn_mul {X : Scheme.{0}} (f : X ⟶ Sp R) (U : X.Opens) (a b : R) :
-    constFn f U (a * b) = constFn f U a * constFn f U b := by
-  simp only [constFn, map_mul]
-
-theorem constFn_one {X : Scheme.{0}} (f : X ⟶ Sp R) (U : X.Opens) : constFn f U 1 = 1 := by
-  simp only [constFn, map_one]
-
-theorem constFn_pow {X : Scheme.{0}} (f : X ⟶ Sp R) (U : X.Opens) (a : R) (n : ℕ) :
-    constFn f U (a ^ n) = constFn f U a ^ n := by
-  simp only [constFn, map_pow]
-
 theorem constFn_congr {X : Scheme.{0}} {f f' : X ⟶ Sp R} (h : f = f') (U : X.Opens) (a : R) :
     constFn f U a = constFn f' U a := by rw [h]
 
@@ -45,9 +85,9 @@ variable {X : Over (Sp R)} {L : LB X.left}
 
 theorem IsMul.trans {s t u : L.Sec} {a b : R} (h₁ : IsMul (X := X) s a t) (h₂ : IsMul (X := X) t b u) :
     IsMul (X := X) s (a * b) u := fun i => by
-  rw [h₁ i, h₂ i, constFn_mul, _root_.mul_assoc]
+  rw [h₁ i, h₂ i, _root_.GlobalTheory.KeyPow.constFn_mul, _root_.mul_assoc]
 
-theorem isMul_self (s : L.Sec) : IsMul (X := X) s 1 s := fun i => by rw [constFn_one, _root_.one_mul]
+theorem isMul_self (s : L.Sec) : IsMul (X := X) s 1 s := fun i => by rw [_root_.GlobalTheory.KeyPow.constFn_one, _root_.one_mul]
 
 theorem Generates.isUnit {s t : L.Sec} (hs : Generates (X := X) s) (ht : Generates (X := X) t) {a : R}
     (h : IsMul (X := X) t a s) : IsUnit a := by
@@ -66,7 +106,7 @@ theorem isMul_boxSec {G : Over (Sp R)} {L : LB G.left} {θ θ₀ : L.Sec} {b : R
   show (∏ k : Fin N, _) = _ * ∏ k : Fin N, _
   have e : ∀ k : Fin N, (pr G N k ≫ G.hom) = (pow G N).hom := fun k => Over.w (Pi.π (fun _ : Fin N => G) k)
   simp only [h (j _), map_mul, appLE_constFn, constFn_congr (e _)]
-  exact (prod_const_mul _ _).trans (congrArg (· * _) (constFn_pow _ _ _ _).symm)
+  exact (prod_const_mul _ _).trans (congrArg (· * _) (_root_.GlobalTheory.PowChange.constFn_pow _ _ _ _).symm)
 
 end Sections
 

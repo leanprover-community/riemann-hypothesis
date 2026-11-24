@@ -1,14 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SecValuesComplexFibreAbelianScheme
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FamilyUnifExpUnique
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsHolToFibPtAndCompFibre
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.WeilEqIffHermFormEqComplex
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAddFundamentalDomainLatticeDomain
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.WeilEqIffHermFormEqComplex
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FamilyUnifExpUnique
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsHolToFibPtAndCompFibre
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SecValuesComplexFibreAbelianScheme
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Separation.CompletelyRegular
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -73,19 +110,6 @@ theorem norm_factor (Hm : Matrix (Fin g) (Fin g) ℂ) (z a : Fin g → ℂ) :
   rw [show (Real.pi / 2 : ℂ) = ((Real.pi / 2 : ℝ) : ℂ) by push_cast; rfl, Complex.add_re, Complex.re_ofReal_mul,
     Complex.re_ofReal_mul]
 
-theorem re_hermForm_add {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian) (z a : Fin g → ℂ) :
-    (hermForm Hm (z + a) (z + a)).re =
-      (hermForm Hm z z).re + 2 * (hermForm Hm z a).re + (hermForm Hm a a).re := by
-  have h : hermForm Hm a z = star (hermForm Hm z a) := by
-    rw [hermForm, hermForm, ← Matrix.star_dotProduct_star, Matrix.star_mulVec, star_star, hH.eq,
-      ← Matrix.dotProduct_mulVec]
-  have e : hermForm Hm (z + a) (z + a) = hermForm Hm z z + hermForm Hm z a + hermForm Hm a z + hermForm Hm a a := by
-    simp only [hermForm, star_add, Matrix.mulVec_add, dotProduct_add, add_dotProduct]
-    ring
-  rw [e, h]
-  simp only [Complex.add_re, Complex.star_def, Complex.conj_re]
-  ring
-
 theorem density (P : L →+ (Fin g → ℂ)) {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian)
     (U : ι → (Fin g → ℂ) → Prop) (Uo : ∀ j, IsOpen {z | U j z}) (Uc : ∀ z, ∃ j, U j z)
     (Up : ∀ j z a, U j z → U j (z + P a)) (fr S : ι → (Fin g → ℂ) → ℂ) (θ : (Fin g → ℂ) → ℂ)
@@ -114,7 +138,7 @@ theorem density (P : L →+ (Fin g → ℂ)) {Hm : Matrix (Fin g) (Fin g) ℂ} (
     have h1 := congrArg norm (Sp a j z)
     rw [hθ j z hj, hθ j _ (Up j z a hj), norm_mul, norm_mul, p a j z hj, ← mul_assoc] at h1
     have h2 := mul_right_cancel₀ (norm_ne_zero_iff.2 (n _ _ (Up j z a hj))) h1
-    rw [h2, re_hermForm_add hH, mul_pow, mul_assoc, ← Real.exp_nat_mul, ← Real.exp_add]
+    rw [h2, _root_.GlobalTheory.AppellHumbertTrivial.re_hermForm_add_self hH, mul_pow, mul_assoc, ← Real.exp_nat_mul, ← Real.exp_add]
     congr 2
     push_cast
     ring

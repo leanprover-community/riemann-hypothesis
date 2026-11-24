@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.DUAllOfPt
+public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.AdelicFunctionRightTranslateDiamond
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.LocalUnitaryOfMatchingZero
 
 @[expose] public section
@@ -15,7 +16,7 @@ open scoped TensorProduct Classical
 variable {D : D7} {u : D.what₂.Word}
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem val_of_mem (T : Forms0 D u) (v : (D.mem u).A.vT)
     (y h1 h2 : UPts (sigD D) (gramN D 0 (Nat.zero_le _)) (FiniteAdeleRing (𝓞 D.host.F) D.host.F))
     (hs1 : ∀ v', v' ≠ (T.atT.eV v).1 → bc (prV (E := D.host.E) v') h1.1 = 1)
@@ -38,8 +39,8 @@ theorem val_of_mem (T : Forms0 D u) (v : (D.mem u).A.vT)
   rw [key s s (fun τ => by simp [atInf, Matrix.map_one]), hχ, one_mul]
 
 
-set_option maxHeartbeats 8000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem trip_mem (T : Forms0 D u) (v : (D.mem u).A.vT) (c c1 c3 : (D.mem u).C.cls 0)
     (Γ1 Γ3 : UJ (sigD D : D.host.E →+* D.host.E) (gramN D 0 (Nat.zero_le _)))
     (h1 h3 : UPts (sigD D) (gramN D 0 (Nat.zero_le _)) (FiniteAdeleRing (𝓞 D.host.F) D.host.F))

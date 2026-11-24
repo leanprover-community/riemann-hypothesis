@@ -1,6 +1,48 @@
 module
 
 public import Development.EtaleCohomology.KummerTheory.InjSlicePf
+import Mathlib.Algebra.Category.ModuleCat.AB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.CategoryTheory.Preadditive.Injective.Preserves
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -69,7 +111,6 @@ def zNat {P Q : (Over U)ᵒᵖ ⥤ A} (φ : P ⟶ Q) : zPre P ⟶ zPre Q where
     show zMap P g.unop ≫ zNatApp φ _ = zNatApp φ _ ≫ zMap Q g.unop
     apply Sigma.hom_ext; intro s
     rw [ι_zMap_assoc, ι_zNatApp, ι_zNatApp_assoc, ι_zMap, ← φ.naturality_assoc]
-    all_goals rfl
 
 def zFun : ((Over U)ᵒᵖ ⥤ A) ⥤ (Cᵒᵖ ⥤ A) where
   obj := zPre
@@ -109,7 +150,6 @@ def zCounit (Q : Cᵒᵖ ⥤ A) : zPre ((Over.forget U).op ⋙ Q) ⟶ Q where
     rw [ι_zMap_assoc]
     erw [ι_zCoApp, ι_zCoApp_assoc]
     simp
-    all_goals rfl
 
 def zAdj : (zFun : ((Over U)ᵒᵖ ⥤ A) ⥤ (Cᵒᵖ ⥤ A)) ⊣ (Functor.whiskeringLeft _ _ A).obj (Over.forget U).op :=
   Adjunction.mkOfUnitCounit
@@ -129,8 +169,7 @@ def zAdj : (zFun : ((Over U)ᵒᵖ ⥤ A) ⥤ (Cᵒᵖ ⥤ A)) ⊣ (Functor.whis
                     all_goals rfl }
       left_triangle := by
         ext P X
-        simp only [NatTrans.comp_app, Functor.whiskerRight_app, Functor.associator_hom_app, Functor.whiskerLeft_app,
-          NatTrans.id_app, Category.id_comp]
+        simp only [NatTrans.comp_app, Functor.whiskerRight_app, Functor.associator_hom_app, Functor.whiskerLeft_app]
         erw [Category.id_comp]
         show zNatApp (zUnit P) X.unop ≫ zCoApp (zPre P) X.unop = 𝟙 _
         apply Sigma.hom_ext; intro s
@@ -139,7 +178,7 @@ def zAdj : (zFun : ((Over U)ᵒᵖ ⥤ A) ⥤ (Cᵒᵖ ⥤ A)) ⊣ (Functor.whis
       right_triangle := by
         ext Q V
         simp only [NatTrans.comp_app, Functor.whiskerRight_app, Functor.associator_inv_app, Functor.whiskerLeft_app,
-          NatTrans.id_app, Category.id_comp]
+          Category.id_comp]
         try erw [Category.id_comp]
         change Sigma.ι (fun s : V.unop.left ⟶ U => ((Over.forget U).op ⋙ Q).obj (op (Over.mk s))) V.unop.hom ≫
           zCoApp Q V.unop.left = 𝟙 _

@@ -1,6 +1,49 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.RingTheory.Length
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -32,15 +75,12 @@ theorem length_le_of_span {M : Type} [AddCommGroup M] [Module O M] {n : ℕ} (m 
       (Pi.single i (Submodule.Quotient.mk (1 : O))) = m i
     first
       | rw [LinearMap.sum_apply]
-      | rw [LinearMap.coe_fn_sum, Finset.sum_apply]
     rw [Finset.sum_eq_single i]
     · first
         | (show (ψ i) ((Pi.single i (Submodule.Quotient.mk (1 : O)) : Fin n → O ⧸ Ideal.span {a}) i) = m i
            rw [Pi.single_eq_same]
            show (LinearMap.toSpanSingleton O M (m i)) 1 = m i
            simp)
-        | (simp [ψ]; exact one_smul O (m i))
-        | (simp [ψ]; rfl)
     · intro j _ hj
       simp [hj]
     · simp
@@ -49,7 +89,6 @@ theorem length_le_of_span {M : Type} [AddCommGroup M] [Module O M] {n : ℕ} (m 
     _ = (n : ℕ∞) * Module.length O (O ⧸ Ideal.span {a}) := by
         first
           | (rw [Module.length_pi_of_fintype]; simp)
-          | (rw [Module.length_pi]; simp)
 
 private theorem length_le_length_ker_add_length {N P : Type} [AddCommGroup N] [Module O N]
     [AddCommGroup P] [Module O P] (f : N →ₗ[O] P) :
@@ -60,8 +99,6 @@ private theorem length_le_length_ker_add_length {N P : Type} [AddCommGroup N] [M
   have hex : Function.Exact (LinearMap.ker f).subtype f.rangeRestrict := by
     first
       | exact LinearMap.exact_iff.2 (by rw [LinearMap.ker_rangeRestrict, Submodule.range_subtype])
-      | exact fun y => ⟨fun hy => ⟨⟨y, LinearMap.mem_ker.2 (congrArg Subtype.val hy)⟩, rfl⟩,
-          by rintro ⟨z, rfl⟩; exact Subtype.ext (LinearMap.mem_ker.1 z.2)⟩
   rw [Module.length_eq_add_of_exact (LinearMap.ker f).subtype f.rangeRestrict
     Subtype.val_injective hs hex]
   exact add_le_add le_rfl
@@ -82,12 +119,9 @@ theorem length_torsionBy_pow_le {M : Type} [AddCommGroup M] [Module O M] (a : O)
     have h0 : Module.length O ↥(Submodule.torsionBy O M (a ^ 0)) = 0 := by
       first
         | exact Module.length_eq_zero_iff.2 hs
-        | exact Module.length_eq_zero
     rw [h0]
     first
-      | exact zero_le _
       | exact zero_le
-      | simp
   | succ c ih =>
     have hpow : a * a ^ c = a ^ (c + 1) := by ring
     let f : ↥(Submodule.torsionBy O M (a ^ (c + 1))) →ₗ[O] ↥(Submodule.torsionBy O M a) :=
@@ -158,21 +192,17 @@ theorem length_torsion_quot (T : Submodule O V) {n : ℕ} (b : Fin n → V)
             refine Finset.sum_congr rfl fun i _ => ?_
             first
               | exact smul_comm _ _ _
-              | rw [← algebraMap_smul LL (c i) ((algebraMap O LL a)⁻¹ • b i), smul_smul, mul_comm,
-                  ← smul_smul, algebraMap_smul]
     have he : (⟨Submodule.Quotient.mk x, hy⟩ : ↥(Submodule.torsionBy O (V ⧸ T) a)) =
         ∑ i, c i • m i := by
       apply Subtype.ext
       first
         | (rw [Submodule.coe_sum]; simp only [Submodule.coe_smul, m])
-        | simp only [AddSubmonoidClass.coe_finsetSum, SetLike.val_smul, m]
       rw [hx]
       first
         | (change T.mkQ _ = ∑ i, c i • T.mkQ ((algebraMap O LL a)⁻¹ • b i)
-           set_option synthInstance.maxHeartbeats 100000 in
-             rw [map_sum]
+
+           rw [map_sum]
            simp only [map_smul])
-        | simp [Submodule.Quotient.mk_sum]
     rw [he]
     exact sum_mem fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
   · intro i
@@ -195,7 +225,6 @@ theorem length_le_of_killed (T : Submodule O V) {n : ℕ} (b : Fin n → V)
     _ ≤ (c : ℕ∞) * ((n : ℕ∞) * Module.length O (O ⧸ Ideal.span {a})) := by
         first
           | exact mul_le_mul' le_rfl h3
-          | gcongr
     _ = (n : ℕ∞) * (c : ℕ∞) * Module.length O (O ⧸ Ideal.span {a}) := by ring
 
 end Quot

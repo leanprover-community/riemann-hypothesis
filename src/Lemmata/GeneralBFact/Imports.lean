@@ -1,6 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,8 +29,8 @@ theorem goal1 {R : Type*} [CommRing R] {i N : ℕ} (A : Matrix (Fin i) (Fin N) R
         (fun a => ∑ k, A a k • B k) := by
     rw [Matrix.det, h1]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h2, MultilinearMap.map_sum]
+
+  rw [h2, MultilinearMap.map_sum]
   refine Finset.sum_congr rfl fun f _ => ?_
   rw [MultilinearMap.map_smul_univ, smul_eq_mul]
   rfl

@@ -1,5 +1,7 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
+public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.MkP
 
 @[expose] public section
@@ -14,9 +16,9 @@ theorem lo_blockAct_comp (K : Type) [CommRing K] {S : Type} {k n : ℕ} (M N : S
     (blockAct K (n := n) M).comp (blockAct K N) = blockAct K (fun s => N s * M s) := by
   apply MvPolynomial.algHom_ext
   intro v
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [AlgHom.comp_apply, blockAct, aeval_X, map_sum, map_mul, aeval_C, MvPolynomial.algebraMap_eq,
-    Matrix.mul_apply, Finset.sum_mul, Finset.mul_sum]
+
+  simp only [AlgHom.comp_apply, blockAct, aeval_X, map_sum, map_mul, aeval_C, MvPolynomial.algebraMap_eq,
+  Matrix.mul_apply, Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => ?_
   rw [← mul_assoc, ← map_mul]
@@ -191,7 +193,7 @@ theorem lo_Ntgt (G : GAtP p) (v : Fin G.P.nV) (tv : ℕ) (A : GL (Fin (G.P.m + 1
     refine ⟨(je_locV G v A).dualMap ψ, ?_, ?_⟩
     · intro x hx
       refine hψ (je_locV G v A x) ?_
-      simp only [HL, toV, SetLike.mem_coe, Submodule.mem_comap, LinearMap.restrictScalars_apply,
+      simp only [HL, toV, Submodule.mem_comap, LinearMap.restrictScalars_apply,
         Submodule.subtype_apply]
       rw [je_locV_coe]
       exact je_H_ext G v A Lv hLv _ hx
@@ -210,7 +212,7 @@ theorem lo_Ntgt (G : GAtP p) (v : Fin G.P.nV) (tv : ℕ) (A : GL (Fin (G.P.m + 1
     refine ⟨(je_locV G v A).dualMap ψ, ?_, ?_⟩
     · intro x hx
       refine hψ (je_locV G v A x) ?_
-      simp only [HLe, toV, SetLike.mem_coe, Submodule.mem_comap, LinearMap.restrictScalars_apply,
+      simp only [HLe, toV, Submodule.mem_comap, LinearMap.restrictScalars_apply,
         Submodule.subtype_apply]
       rw [je_locV_coe]
       cases e with
@@ -296,8 +298,7 @@ theorem lo_trans {W Qq : Type} [CommRing W] [Field Qq] [Algebra W Qq] {k : ℕ}
     congr 2
     funext c
     funext i
-    simp only [Function.comp_apply, nt_phi, LinearMap.restrictScalars_apply, Matrix.mulVecLin_apply,
-      Units.val_mk]
+    simp only [Function.comp_apply, nt_phi, LinearMap.restrictScalars_apply, Matrix.mulVecLin_apply]
     rw [Matrix.mulVec, dotProduct, ← Matrix.mul_apply, Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hg,
       Matrix.mul_one]
 

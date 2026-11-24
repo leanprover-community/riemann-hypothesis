@@ -1,6 +1,59 @@
 module
 
 public import Formalism.HyperbolicPlaceProducts.Statement
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.RamificationInertia.Basic
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.FieldTheory.Finite.Basic
+public import Mathlib.RingTheory.DedekindDomain.Dvr
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -82,8 +135,7 @@ theorem exists_rel_not_mem {X : Type} [AddCommGroup X] [Module R X]
     calc ∑ i ∈ t, g i0 • d i • v i = ∑ i ∈ t, s • g i • v i := by
           refine Finset.sum_congr rfl fun i hi => ?_
           rw [smul_smul, smul_smul, hd i hi]
-      _ = s • ∑ i ∈ t, g i • v i := by rw [Finset.smul_sum]
-      _ = 0 := by rw [hg, smul_zero]
+      _ = 0 := by rw [← Finset.smul_sum, hg, smul_zero]
 
 theorem exists_gen_mod (P : Ideal R) [hPm : P.IsMaximal] (hP : P ≠ ⊥) {X : Type}
     [AddCommGroup X] [Module R X] [Module.Finite R X]
@@ -152,16 +204,13 @@ theorem card_hom_le (P : Ideal R) [P.IsMaximal] [Finite (R ⧸ P)] {X : Type}
       refine sup_le ?_ ?_
       · rw [Submodule.span_le]
         intro x hx
-        have := congrFun h ⟨x, hx⟩
-        simp only [F] at this
-        simp [this]
+        simpa [F, sub_eq_zero] using congrFun h ⟨x, hx⟩
       · refine Submodule.smul_le.mpr fun r hr n _ => ?_
         rw [LinearMap.mem_ker, map_smul, Algebra.smul_def, Ideal.Quotient.algebraMap_eq,
           Ideal.Quotient.eq_zero_iff_mem.mpr hr, zero_mul]
     rw [hs, top_le_iff, LinearMap.ker_eq_top, sub_eq_zero] at hle
     exact hle
-  have : Finite (X →ₗ[R] R ⧸ P) := Finite.of_injective F hF
-  refine ⟨this, ?_⟩
+  refine ⟨Finite.of_injective F hF, ?_⟩
   calc Nat.card (X →ₗ[R] R ⧸ P) ≤ Nat.card (s → R ⧸ P) := Nat.card_le_card_of_injective F hF
     _ = Nat.card (R ⧸ P) ^ s.card := by rw [Nat.card_fun]; simp
     _ ≤ Nat.card (R ⧸ P) ^ k := Nat.pow_le_pow_right Nat.card_pos hsk
@@ -207,9 +256,7 @@ theorem exists_hom_ker (P : Ideal R) [hPm : P.IsMaximal] [Finite (R ⧸ P)] {X :
     calc v = (b * a + i) • v := by rw [hbi, one_smul]
       _ = b • (a • v) + i • v := by rw [add_smul, mul_smul]
       _ = 0 := by rw [hz', hiv, smul_zero, add_zero]
-  have hbij : Function.Bijective τ' :=
-    hinj.bijective_of_nat_card_le (by rw [hcardQ])
-  let e := LinearEquiv.ofBijective τ' hbij
+  let e := LinearEquiv.ofBijective τ' (hinj.bijective_of_nat_card_le (by rw [hcardQ]))
   refine ⟨e.symm.toLinearMap ∘ₗ L.mkQ, ?_⟩
   rw [LinearEquiv.ker_comp, Submodule.ker_mkQ]
 
@@ -231,8 +278,7 @@ theorem hyp_count (P : Ideal R) [P.IsMaximal] [Finite (R ⧸ P)] {X : Type}
   have hinj : Set.InjOn F (hyp P X) := by
     intro L₁ h₁ L₂ h₂ h
     rw [← hF L₁ h₁, ← hF L₂ h₂, h]
-  have hfinS : (hyp P X).Finite := Set.Finite.of_finite_image (Set.toFinite _) hinj
-  refine ⟨hfinS, ?_⟩
+  refine ⟨Set.Finite.of_finite_image (Set.toFinite _) hinj, ?_⟩
   calc (hyp P X).ncard ≤ (Set.univ : Set (X →ₗ[R] R ⧸ P)).ncard :=
         Set.ncard_le_ncard_of_injOn F (fun _ _ => Set.mem_univ _) hinj (Set.toFinite _)
     _ = Nat.card (X →ₗ[R] R ⧸ P) := Set.ncard_univ _
@@ -298,9 +344,7 @@ theorem inf_sup_mulSub (N : Submodule R X) {a b : ℕ} (hab : a.Coprime b)
     (hN : N.toAddSubgroup.index = a * b) :
     (N ⊔ mulSub R X a) ⊓ (N ⊔ mulSub R X b) = N := by
   have hkill : ∀ w : X, (a * b) • w ∈ N := fun w => by
-    have := AddSubgroup.nsmul_index_mem N.toAddSubgroup w
-    rw [hN] at this
-    exact this
+    simpa [hN] using AddSubgroup.nsmul_index_mem N.toAddSubgroup w
   refine le_antisymm ?_ (le_inf le_sup_left le_sup_left)
   rintro x ⟨hx1, hx2⟩
   obtain ⟨y1, hy1, z1, hz1, rfl⟩ := Submodule.mem_sup.mp hx1

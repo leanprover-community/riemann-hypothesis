@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ReciprocityMap
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.CoeNormEqProdSmulNorm
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
+import GroundTheory.LocalFields.AbstractLocalReciprocity.CoeNormEqProdSmulNorm
+import GroundTheory.LocalFields.AbstractLocalReciprocity.Multiplicative
+import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
+import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
+import GroundTheory.LocalFields.AbstractLocalReciprocity.Unramified
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

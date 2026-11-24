@@ -1,9 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.GlobalArtinMap.ArtinMap
-public import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
-public import GroundTheory.GlobalFields.ClassFieldConsequences.OpenSubgroup
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
+public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
+import GroundTheory.GlobalFields.ClassFieldConsequences.OpenSubgroup
+import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
+import Mathlib.Algebra.Order.Positive.Field
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.ProperAction.Basic
+import Mathlib.Topology.Connected.Separation
 
 @[expose] public section
 

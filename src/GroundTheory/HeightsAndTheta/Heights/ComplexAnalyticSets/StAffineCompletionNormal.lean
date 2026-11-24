@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StZariskiObjects
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.AdicCompletion.Algebra
+public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 
 @[expose] public section
 

@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsBoundedAtOfIsBoundedH
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNmSectionsRankBound
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionSupBound
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionPointValue
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRealFormsOnPoints
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IntConst
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 
@@ -102,11 +104,11 @@ theorem SectionL2Lattice.proof (hV : SectionPointValue.Statement) (hF : RealForm
       convert h2 using 1 <;> first | rfl | (funext i; simp [hgy i])
     · intro z hz
       have hF' := hZ e (∑ i, (c i : ℂ) • map (Int.castRingHom ℂ) (g i)) (isMultiHomog_sum_smul_map hg _) ?_ z hz
-      set_option synthInstance.maxHeartbeats 100000 in
-        · simpa only [map_sum, smul_eval] using hF'
+
+      · simpa only [map_sum, smul_eval] using hF'
       · filter_upwards [hc, hae] with z hz0 hzP
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         simp only [smul_eval]
         calc ∑ i, (c i : ℂ) * eval z (map (Int.castRingHom ℂ) (g i))
             = ∑ i, (c i : ℂ) * (w n (x i) z * eval z (map (Int.castRingHom ℂ) h) * (A.h z : ℂ) ^ n) := by

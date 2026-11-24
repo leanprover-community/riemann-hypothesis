@@ -1,6 +1,14 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
+public import Mathlib.Analysis.Matrix.Normed
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Lemma
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 
@@ -43,15 +51,8 @@ lemma toM_mul_invVG {ε : Fin n → Bool} (g : UJ ε) : toM g * toM g⁻¹ = 1 :
   unfold toM
   rw [Subgroup.coe_inv, Units.mul_inv]
 
-private lemma Jm_mul_self_eq_one' (ε : Fin n → Bool) : Jm ε * Jm ε = 1 := by
-  unfold Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
-
 lemma gJgH_VG {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) : g * Jm ε * gᴴ = Jm ε := by
-  have hJ := Jm_mul_self_eq_one' ε
+  have hJ := _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_mul_self ε
   have hg' : gᴴ * Jm ε * g = Jm ε := hg
   have h1 : (Jm ε * gᴴ * Jm ε) * g = 1 := by
     rw [Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc gᴴ, hg', hJ]
@@ -62,7 +63,7 @@ lemma gJgH_VG {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ 
 
 lemma normSq_detVG {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     Complex.normSq g.det = 1 := by
-  have hJ := Jm_mul_self_eq_one' ε
+  have hJ := _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_mul_self ε
   have hJ0 : (Jm ε).det ≠ 0 := by
     intro h0
     have h1 := congrArg Matrix.det hJ
@@ -87,7 +88,7 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 lemma ballFiniteVG (ε : Fin n → Bool) (ν : Measure (UJ ε)) [ν.IsHaarMeasure] (R : ℝ) :
     ν {g | hs (toM g) ≤ R} < ⊤ := by
   classical
-  have hJ := Jm_mul_self_eq_one' ε
+  have hJ := _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_mul_self ε
   let K : Set (Matrix (Fin n) (Fin n) ℂ) := {M | inUJ ε M ∧ hs M ≤ R}
   have hKc : IsCompact K := by
     apply Metric.isCompact_of_isClosed_isBounded
@@ -236,8 +237,6 @@ lemma stdBasis_reprV {Q : Type} [Fintype Q] [DecidableEq Q] (x : Matrix (Fin n) 
     (Matrix.stdBasis ℂ (Fin n) Q).repr x (i, j) = x i j := by
   first
     | rfl
-    | (simp [Matrix.stdBasis]; done)
-    | (simp [Matrix.stdBasis, Basis.reindex_repr, Pi.basis_repr]; done)
 
 lemma LcV_det {Q : Type} [Fintype Q] [DecidableEq Q] (g : Matrix (Fin n) (Fin n) ℂ) :
     LinearMap.det (LcV (Q := Q) g) = g.det ^ Fintype.card Q := by

@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.LatticeGeometry.PluckerHadamard.BlockVandermondeForms
+public import Formalism.LocalToGlobal.LatticeGeometry.PluckerHadamard.FlagIntegralKillsPowerSums
 public import Formalism.DegreeFormula.PointDegree.FlagDeg
+public import Formalism.LocalToGlobal.LatticeGeometry.PluckerHadamard.BlockVandermondeForms
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -71,7 +74,7 @@ theorem Qp_eq (ℓ : ι → R) (s : Finset ι) : ∀ k ≤ s.card,
       rw [if_pos rfl, Finset.sum_eq_single 0]
       · rw [ih _ (by omega), if_pos (by omega), Finset.prod_insert ha, Nat.factorial_succ]
         push_cast
-        simp only [Nat.choose_one_right, zero_add, pow_one]
+        simp only [Nat.choose_one_right, pow_one]
         push_cast
         ring
       · intro m hm hm0
@@ -103,7 +106,7 @@ theorem apol_add (P g h : MvPolynomial σ ℝ) : apol P (g + h) = apol P g + apo
   unfold apol; rw [← Finset.sum_add_distrib]; refine Finset.sum_congr rfl (fun m _ => ?_); rw [MvPolynomial.coeff_add]; ring
 
 theorem apol_smul (P g : MvPolynomial σ ℝ) (c : ℝ) : apol P (c • g) = c * apol P g := by
-  unfold apol; rw [Finset.mul_sum]; refine Finset.sum_congr rfl (fun m _ => ?_); rw [coeff_smul, smul_eq_mul]; ring
+  unfold apol; rw [Finset.mul_sum]; refine Finset.sum_congr rfl (fun m _ => ?_); rw [MvPolynomial.coeff_smul, smul_eq_mul]; ring
 
 theorem apol_self_pos (P : MvPolynomial σ ℝ) (hP : P ≠ 0) : 0 < apol P P := by
   unfold apol
@@ -258,8 +261,8 @@ theorem weyl_coeff (j : ℕ) (ν : Ψ → Fin N → ℝ) (n k : ℕ) (hD : Forma
     Polynomial.C ((D.choose m : ℝ) * degFlL Ψ N (μ ^ m * L ^ (D - m))) * Polynomial.X ^ (D - m) with hPLdef
   have hPL : ∀ ε : ℝ, PL.eval ε = degFlL Ψ N ((μ + C ε * L) ^ D) := by
     intro ε
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [add_pow, map_sum, hPLdef, Polynomial.eval_finsetSum]
+
+    rw [add_pow, map_sum, hPLdef, Polynomial.eval_finsetSum]
     refine Finset.sum_congr rfl (fun m _ => ?_)
     have e : μ ^ m * (C ε * L) ^ (D - m) * ((D.choose m : ℕ) : Pol Ψ N) =
         C (ε ^ (D - m) * (D.choose m : ℝ)) * (μ ^ m * L ^ (D - m)) := by

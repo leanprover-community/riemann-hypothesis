@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcReal
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselFrame
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConst
 public import Formalism.SharpRestriction.CuspSpanNormBounds.SGauge
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFrobeniusHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ProductExactness
 
 @[expose] public section
@@ -24,8 +23,6 @@ theorem muInf_compact_pos : ∃ K : Set X.B.I.Ginf, IsCompact K ∧ 0 < Formalis
   refine ⟨K, hK, ?_, hK.measure_lt_top⟩
   first
     | exact Measure.measure_pos_of_mem_nhds _ hKn
-    | exact MeasureTheory.Measure.measure_pos_of_mem_nhds _ hKn
-    | exact (measure_pos_of_nonempty_interior _ ⟨1, mem_interior_iff_mem_nhds.mpr hKn⟩)
 
 theorem cooOf_eq (u u' : D.what₂.Word) (sc C : ℝ) (hC : 0 < C) (h : Disint X u u' sc C) : DisintegrationConstant X u u' sc = C := by
   have hex : ∃ C, 0 < C ∧ Disint X u u' sc C := ⟨C, hC, h⟩
@@ -218,7 +215,7 @@ theorem realBracket_of (hP : ProdExact) (hA : AprimeInf) (hS : PlaceSplit)
     first | (field_simp; ring) | field_simp
   rw [e1, hprod, hcN, hY]
   simp only [_root_.zpow_neg, zpow_natCast, pow_mul, mul_pow, inv_pow]
-  first | (field_simp; ring) | field_simp | ring
+  first | (field_simp; ring) | field_simp
 
 end Reduction
 

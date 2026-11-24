@@ -1,8 +1,19 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.HaarCosets
 public import GroundTheory.AutomorphicForms.SmoothRep
+public import GroundTheory.AutomorphicForms.LocallyConstantCompact
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Aesop.Main
+public import GroundTheory.AutomorphicForms.HaarCosets
+import GroundTheory.AutomorphicForms.LocallyProfinite
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
+public import Mathlib.MeasureTheory.Group.Integral
 
 @[expose] public section
 
@@ -195,9 +206,9 @@ theorem dual_heckeAct [IsFiniteMeasureOnCompacts μ] {f : G → ℂ}
       exact absurd ((Set.Finite.mem_toFinset hfin).2 (Set.mem_range_self g)) h
   have hmeas : ∀ w, MeasurableSet {x | f x • ρ x v = w} := fun w =>
     (hF.1.isOpen_fiber w).measurableSet
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [heckeAct_eq_sum hfin, map_sum, integral_congr_ae (Eventually.of_forall hpt),
-    integral_finsetSum]
+
+  rw [heckeAct_eq_sum hfin, map_sum, integral_congr_ae (Eventually.of_forall hpt),
+  integral_finsetSum]
   · refine Finset.sum_congr rfl fun w _ => ?_
     rw [integral_indicator_const _ (hmeas w), map_smul, smul_eq_mul, Complex.real_smul]
   · intro w _

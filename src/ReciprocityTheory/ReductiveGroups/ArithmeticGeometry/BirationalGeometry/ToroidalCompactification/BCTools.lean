@@ -1,7 +1,13 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Splits
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.OLinBaseChangeSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -100,7 +106,7 @@ private lemma res_res_toroidal_compactification {A : Scheme.{0}} {U V W : A.Open
   ext1
   have e := congrArg (fun g => g.hom (u : Γ(A, U))) (A.presheaf.map_comp (homOfLE h2).op (homOfLE h1).op)
   simp only [CommRingCat.hom_comp, RingHom.comp_apply] at e
-  simp only [res, Units.coe_map, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe]
+  simp only [res, Units.coe_map, MonoidHom.coe_coe]
   exact e.symm
 
 theorem pull_isLB {L : LB X} (hL : L.IsLB) (F : Y ⟶ X) : (L.pull F).IsLB := by
@@ -168,9 +174,6 @@ private lemma germ_app_presheaf_map_eq_germ_app {A B : Scheme.{0}} (f : A ⟶ B)
   rw [nat]
   first
     | exact TopCat.Presheaf.germ_res_apply _ _ _ _ _
-    | exact TopCat.Presheaf.germ_res_apply _ _ _ _ _ _
-    | (erw [TopCat.Presheaf.germ_res_apply])
-    | (simp; done)
 
 private lemma germ_app_app_eq_germ_app_comp {A B C : Scheme.{0}} (r : A ⟶ B) (h : B ⟶ C) (y : A) (W : C.Opens)
     (hy : h (r y) ∈ W) (a : Γ(C, W)) :
@@ -178,8 +181,6 @@ private lemma germ_app_app_eq_germ_app_comp {A B C : Scheme.{0}} (r : A ⟶ B) (
       (A.presheaf.germ ((r ≫ h) ⁻¹ᵁ W) y hy).hom (((r ≫ h).app W).hom a) := by
   first
     | rfl
-    | (simp only [Scheme.Hom.comp_app, CommRingCat.hom_comp, RingHom.comp_apply]; rfl)
-    | (simp [Scheme.Hom.comp_app]; done)
 
 private lemma gm_res_toroidal_compactification {A B : Scheme.{0}} (f : A ⟶ B) (y : A) {U V : B.Opens} (hVU : V ≤ U)
     (hy : f y ∈ V) (u : Γ(B, U)ˣ) : gm f y V (res hVU u) = gm f y U u := by
@@ -209,8 +210,7 @@ theorem gm_pullGen {Z Z' : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] (φ : K
     fun _ hy => Set.mem_iInter.2 fun k => Set.mem_iInter.1 hy k
   ext1
   rw [gm, gm, dite_eq_left hz, dite_eq_left (show (r ≫ h) z ∈ LB.wchart L φ j from hz')]
-  simp only [LB.pullGen, MonoidHom.comp_apply, Units.coe_map, res, pullU, RingHom.toMonoidHom_eq_coe,
-    MonoidHom.coe_coe]
+  simp only [LB.pullGen, res, pullU, RingHom.toMonoidHom_eq_coe]
   exact (germ_app_presheaf_map_eq_germ_app r z hle hz _).trans (germ_app_app_eq_germ_app_comp r h z _ hz' _)
 
 end Iso
@@ -230,8 +230,6 @@ theorem top_le_iff_mem (x : Sp F ⟶ X) (U : X.Opens) (z : Sp F) : ⊤ ≤ x ⁻
     have hwz : w = z := by
       first
         | exact Subsingleton.elim _ _
-        | exact PrimeSpectrum.ext ((Ideal.eq_bot_of_prime _).trans (Ideal.eq_bot_of_prime _).symm)
-        | exact PrimeSpectrum.ext (by simp)
     subst hwz
     exact hz
 
@@ -248,12 +246,6 @@ theorem toStk_valF (x : Sp F ⟶ X) (U : X.Opens) (z : Sp F) (h : x z ∈ U) (a 
   first
     | (simp only [Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply]
        exact TopCat.Presheaf.germ_res_apply _ _ _ _ _)
-    | (simp only [Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply]
-       erw [TopCat.Presheaf.germ_res_apply])
-    | (simp only [Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply]
-       exact (TopCat.Presheaf.germ_res_apply _ _ _ _ _).trans rfl)
-    | (simp only [Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply]
-       exact Eq.refl _)
 
 variable {B B' B₀ : Scheme.{0}} {M : LB B} {M' : LB B'} {M₀ : LB B₀} {K : Type} [Fintype K] {ε : K → ℤ}
 

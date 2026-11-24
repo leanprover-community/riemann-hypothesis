@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.TracePairing
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.LinearAlgebra.Complex.Determinant
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

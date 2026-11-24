@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsRename
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Order.Filter.AtTopBot.Map
 
 @[expose] public section
 

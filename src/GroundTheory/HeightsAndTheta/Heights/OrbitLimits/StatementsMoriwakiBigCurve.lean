@@ -1,11 +1,6 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.MoriwakiSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOfSemipos
 
 @[expose] public section
 

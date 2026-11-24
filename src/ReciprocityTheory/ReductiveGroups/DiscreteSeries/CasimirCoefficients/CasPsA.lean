@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Data.Matrix.Basis
 
 @[expose] public section
 
@@ -16,13 +17,13 @@ variable {n : ℕ}
 
 theorem entry_conj_single (u v : Matrix (Fin n) (Fin n) ℂ) (a b i j : Fin n) :
     (u * Matrix.single a b (1 : ℂ) * v) i j = u i a * v b j := by
-  simp [Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq]
 
 theorem conj_single_eq (u v : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) :
     u * Matrix.single a b (1 : ℂ) * v = ∑ c, ∑ d, (u c a * v b d) • Matrix.single c d (1 : ℂ) := by
   ext i j
   rw [entry_conj_single]
-  simp [Matrix.sum_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [Matrix.sum_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq']
 
 theorem sum_coef_conj (u v : Matrix (Fin n) (Fin n) ℂ) (huv : u * v = 1) (c d : Fin n) :
     ∑ a, ∑ b, (u c a * v b d) • (u * Matrix.single b a (1 : ℂ) * v) = Matrix.single d c (1 : ℂ) := by
@@ -56,15 +57,15 @@ theorem sum_bilin_conj (B : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] Matrix (Fin n
       = ∑ a, ∑ b, ∑ c, ∑ d, (u c a * v b d) • B (Matrix.single c d 1) (u * Matrix.single b a 1 * v) := by
         refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
         rw [conj_single_eq u v a b]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
+
+        simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
     _ = ∑ c, ∑ d, ∑ a, ∑ b, (u c a * v b d) • B (Matrix.single c d 1) (u * Matrix.single b a 1 * v) :=
         sum_sum_sum_sum_comm _
     _ = ∑ c, ∑ d, B (Matrix.single c d 1) (Matrix.single d c 1) := by
         refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
         rw [← sum_coef_conj u v huv c d]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul]
+
+        simp only [map_sum, map_smul]
 
 end CasPsA
 

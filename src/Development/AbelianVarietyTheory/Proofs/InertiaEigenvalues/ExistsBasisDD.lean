@@ -1,15 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.UnitDualParts
-public import Formalism.CoboundaryTransfers.Statement
-public import Formalism.WeaklyAdmissibleFiltrations.Statement
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.WachLettersFree
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.CrystallineSubrepresentation
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeAlgebraMapOC
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqTopOfSpanImage
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IoEquivariant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.UnitDualParts
 
 @[expose] public section
 
@@ -66,8 +100,8 @@ theorem exists_basis_jD (T : LocLat G Qp LL O) {ι : Type} [Fintype ι]
   have hsp : ⊤ ≤ Submodule.span RW (Set.range fun i => E.jD T (e i)) := by
     rw [← E.jD_span T, Submodule.span_le]
     rintro _ ⟨x, rfl⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← e.sum_repr x, map_sum]
+
+    rw [← e.sum_repr x, map_sum]
     refine Submodule.sum_mem _ fun i _ => ?_
     rw [E.jD_smul]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
@@ -97,8 +131,8 @@ theorem exists_frob_inv (hm : ∀ m : Ideal W.EE, m.IsMaximal → m.map E.ioE.to
   intro y _
   obtain ⟨x, rfl⟩ : ∃ x, TWmap φR T x = y :=
     TensorProduct.map_surjective (g := φR.toLinearMap) hφ Function.surjective_id y
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← c.sum_repr x, map_sum]
+
+  rw [← c.sum_repr x, map_sum]
   refine Submodule.sum_mem _ fun i _ => ?_
   rw [TWmap, map_smul_alg]
   refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨W.φD T (e i),
@@ -118,8 +152,8 @@ theorem mem_range_jD (hd : Descends E) (T : LocLat G Qp LL O) {ι : Type} [Finty
     (fun p q => U p.1 q.1 * e.repr (W.φD T (e q.2)) p.2) (fun p => c.repr (z p.1) p.2) ?_ ?_
   · choose u hu using h
     refine ⟨∑ k, u (a, k) • e k, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, ← c.sum_repr (z a)]
+
+    rw [map_sum, ← c.sum_repr (z a)]
     exact Finset.sum_congr rfl fun k _ => by rw [E.jD_smul, hu, hc]
   · rintro g hg ⟨a, k⟩
     have h1 := hz g hg a
@@ -132,21 +166,21 @@ theorem mem_range_jD (hd : Descends E) (T : LocLat G Qp LL O) {ι : Type} [Finty
     have h2 : ∀ q, TWmap φR T (c q) = ∑ r, E.ioE (e.repr (W.φD T (e q)) r) • c r := by
       intro q
       rw [hc, ← E.jD_φ]
-      set_option synthInstance.maxHeartbeats 100000 in
-        conv_lhs => rw [← e.sum_repr (W.φD T (e q)), map_sum]
+
+      conv_lhs => rw [← e.sum_repr (W.φD T (e q)), map_sum]
       simp only [E.jD_smul, hc]
     have h3 : ∀ b, c.repr (TWmap φR T (z b)) k =
         ∑ q, E.ioE (e.repr (W.φD T (e q)) k) * φR (c.repr (z b) q) := by
       intro b
-      set_option synthInstance.maxHeartbeats 100000 in
-        conv_lhs => rw [← c.sum_repr (z b), map_sum, map_sum, Finsupp.finsetSum_apply]
+
+      conv_lhs => rw [← c.sum_repr (z b), map_sum, map_sum, Finsupp.finsetSum_apply]
       refine Finset.sum_congr rfl fun q _ => ?_
       rw [TWmap, map_smul_alg]
       change c.repr (_ • TWmap φR T (c q)) k = _
       rw [h2, map_smul, Finsupp.smul_apply, c.repr_sum_self, smul_eq_mul, mul_comm]
     change c.repr (z a) k = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [hU a, map_sum, Finsupp.finsetSum_apply]
+
+    conv_lhs => rw [hU a, map_sum, Finsupp.finsetSum_apply]
     rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [map_smul, Finsupp.smul_apply, h3, smul_eq_mul, Finset.mul_sum]

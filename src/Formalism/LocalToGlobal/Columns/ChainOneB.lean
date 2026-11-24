@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainOne
-public import Formalism.LocalToGlobal.Columns.ChainInstS
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
+public import Formalism.LocalToGlobal.Columns.ChainInst
 
 @[expose] public section
 

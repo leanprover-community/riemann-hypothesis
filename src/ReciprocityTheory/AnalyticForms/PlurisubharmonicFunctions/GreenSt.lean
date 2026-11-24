@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
+public import Mathlib.Analysis.InnerProductSpace.Laplacian
 
 @[expose] public section
 

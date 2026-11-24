@@ -1,15 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
-public import Formalism.LocalToGlobal.ProjectiveLattices.RegQFree
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntAllFree
-public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
-public import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms
-public import Formalism.LocalToGlobal.ProjectiveLattices.RegularityR2Quotient
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntAll
-public import Formalism.LocalToGlobal.ProjectiveLattices.DatIndep
-public import Formalism.LocalToGlobal.ProjectiveLattices.IntAllProofFree
-public import Formalism.LocalToGlobal.ProjectiveLattices.IntAllProof
 
 @[expose] public section
 

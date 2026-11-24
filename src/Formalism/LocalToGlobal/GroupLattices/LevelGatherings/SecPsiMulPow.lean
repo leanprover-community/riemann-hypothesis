@@ -1,8 +1,5 @@
 module
 
-public import Mathlib
-public import Formalism.FrobeniusOrbits.Statement
-public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Formalism.SharpRestriction.InertJacobiLevels.VVEqEmptyOfNotIsResidueClassZero
 
 @[expose] public section

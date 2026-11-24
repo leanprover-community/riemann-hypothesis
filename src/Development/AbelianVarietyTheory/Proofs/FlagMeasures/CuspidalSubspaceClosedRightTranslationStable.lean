@@ -1,13 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-public import Formalism.HarderNarasimhan.ShiftInvariance
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomainStatement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicUnitaryHaarBiInvariantStatement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproximationUnitaryUnipotentRadicalStatement
+public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicUnitaryHaarBiInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AestronglyMeasurableCompRep
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproximationUnitaryUnipotentRadical
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 
 @[expose] public section
 
@@ -283,8 +325,8 @@ theorem cuspidal_closed_stable : ∀ B : RowsAut, ∃ S : Submodule ℂ (B.I.L2 
   intro B
   classical
   obtain ⟨hT2, hLC, hSC, -⟩ := GlobalTheory.CongTop.adelic_topology B.I
-  obtain ⟨Γ, hΓset, hΓc, hΓfin, hΓfd⟩ := GlobalTheory.T.rationalUnitaryPoints_discrete_fundamentalDomain B.I
-  have h8 := GlobalTheory.T.adelicUnitaryHaar_bi_invariant B.I B.μf
+  obtain ⟨Γ, hΓset, hΓc, hΓfin, hΓfd⟩ := _root_.GlobalTheory.RatDiscrete.rational_points B.I
+  have h8 := _root_.GlobalTheory.AdelicUnimod.adelic_unimodular B.I B.μf
   have : (B.I.muA B.μf).IsMulLeftInvariant := ⟨h8.1⟩
   have : (B.I.muA B.μf).IsMulRightInvariant := ⟨h8.2.1⟩
   have : SFinite (B.I.muA B.μf) := by
@@ -313,7 +355,7 @@ theorem cuspidal_closed_stable : ∀ B : RowsAut, ∃ S : Submodule ℂ (B.I.L2 
       B.I.IsNQuotMeas W ν → ∃ Cp : Set B.I.GA, IsCompact Cp ∧
         ∀ᵐ m ∂ν, ∃ γ : Γ, (γ : B.I.GA)⁻¹ * m ∈ Cp := by
     intro W hW ν hνW
-    obtain ⟨-, -, -, -, Cp, hCp, -, hCpm⟩ := GlobalTheory.T.strong_approximation_unitaryUnipotentRadical B.I W hW
+    obtain ⟨-, -, -, -, Cp, hCp, -, hCpm⟩ := _root_.GlobalTheory.UnipApprox.strong_approximation B.I W hW
     refine ⟨Cp, hCp, ?_⟩
     have hN : ∀ᵐ m ∂ν, m ∈ B.I.NA W := ae_iff.2 hνW.2.2.1
     filter_upwards [hN] with m hm

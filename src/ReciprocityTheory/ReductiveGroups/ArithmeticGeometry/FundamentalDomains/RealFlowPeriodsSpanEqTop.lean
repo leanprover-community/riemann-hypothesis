@@ -1,9 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspidalExponentialDecay
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivityHolds
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.PiTensorProduct
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IntegerApproximationCountHolds
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivityHolds
 
 @[expose] public section
 
@@ -67,7 +70,7 @@ theorem realFlowPeriods_span_eq_top {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) :
         have hN0 : N ≠ 0 := hNpos.ne'
         have ht0 : t ≠ 0 := htpos.ne'
         simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hre]
-        field_simp <;> ring
+        field_simp
       rw [hval, Real.norm_eq_abs, abs_div, abs_of_pos htpos, div_lt_iff₀ htpos]
       have h1 : |t * v τ - (τ.1 (α : E)).re| ≤ ‖τ.1 (α : E) - ((t * v τ : ℝ) : ℂ)‖ := by
         have h := Complex.abs_re_le_norm (τ.1 (α : E) - ((t * v τ : ℝ) : ℂ))

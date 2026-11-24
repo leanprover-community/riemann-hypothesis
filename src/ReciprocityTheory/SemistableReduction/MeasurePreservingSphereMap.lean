@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

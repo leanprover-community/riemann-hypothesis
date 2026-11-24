@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.RowForms
 public import Formalism.LocalToGlobal.Columns.HeckeSp
 

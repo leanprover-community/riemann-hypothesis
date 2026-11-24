@@ -1,7 +1,20 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
+public import Mathlib.LinearAlgebra.Matrix.Trace
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TracePowEqZeroOfLeDim
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.LinearAlgebra.Trace
+public import Mathlib.RingTheory.IntegralClosure.Algebra.Defs
+import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FamilyLeCoords
 
 @[expose] public section
 
@@ -17,11 +30,6 @@ universe u
 section Newton
 
 open Polynomial
-
-private theorem trace_pow_eq_zero_of_le_dim {K : Type*} [Field K] (r : ℕ)
-    (N : Matrix (Fin r) (Fin r) K) (h : ∀ k, 1 ≤ k → k ≤ r → (N ^ k).trace = 0) :
-    ∀ k, 1 ≤ k → (N ^ k).trace = 0 := by
-  first | exact UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim .. | (apply UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> first | assumption | infer_instance)
 
 private theorem trace_aeval_X_mul {K : Type*} [Field K] {n : ℕ} (N : Matrix (Fin n) (Fin n) K)
     (h : ∀ k : ℕ, (N ^ (k + 1)).trace = 0) (p : K[X]) :
@@ -79,7 +87,7 @@ end Newton
 theorem isNilpotent_of_trace_pow {K : Type*} [Field K] [CharZero K] (r : ℕ)
     (N : Matrix (Fin r) (Fin r) K) (h : ∀ k, 1 ≤ k → k ≤ r → (N ^ k).trace = 0) :
     IsNilpotent N :=
-  isNilpotent_of_trace_pow_succ N fun k => trace_pow_eq_zero_of_le_dim r N h (k + 1) (by omega)
+  isNilpotent_of_trace_pow_succ N fun k => _root_.UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim r N h (k + 1) (by omega)
 
 end
 

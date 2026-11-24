@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EtaleSpaceCohomologyEqZeroOfSimplicialRowExact
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeTensorPowerLineBundleStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBlockRefinementLinesStatement
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBlockRefinementLines
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeTensorPowerLineBundle
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -27,9 +65,9 @@ theorem HodgeCpt.Flag.exists_recoord_rootLines : ∀ (E : Type) [Field E] [Numbe
   have hgr : ∀ s i, ((𝔐.V s).gr (Fl.b s) i).IsVBOn Set.univ 1 ⊤ := fun s i =>
     (Lat.IsFlagVBOn.isVBOn_gr_inter _ _ _ _ _ _ _ (Fl.b s) (hlin s) (Fl.sub s)).2.1 i
   have hroot : ∀ r, (Fl.rootLat r).IsVB 1 ⊤ := fun r =>
-    (GlobalTheory.T.lattice_tensor_power_line_bundle _ _ _ Unit _ Set.univ (fun _ => hgr _ _) _).1
+    (_root_.GlobalTheory.CompanionTheory.Ar.LatTens.tens_isVBOn _ _ _ Unit _ Set.univ (fun _ => hgr _ _) _).1
   obtain ⟨K', fK, J', fJ, y', κ, v, hκ, hv, tie', h⟩ :=
-    GlobalTheory.T.exists_block_refinement_lines 𝔐.X Ω 𝔐.ξ K J y (CMType H × Fin (D.p + D.q)) Fl.rootLat 𝔐.tie hroot
+    _root_.GlobalTheory.CompanionTheory.Ar.exists_addBlocks_isDegOn 𝔐.X Ω 𝔐.ξ K J y (CMType H × Fin (D.p + D.q)) Fl.rootLat 𝔐.tie hroot
   choose xdeg e hdeg using h
   exact ⟨K', fK, J', fJ, y', κ, v, tie', xdeg, e, hκ, hv, hdeg⟩
 

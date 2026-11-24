@@ -1,16 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.UnitaryNorms.CharExCol
-public import Formalism.LocalToGlobal.UnitaryNorms.CharExHost
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Formalism.LocalToGlobal.UnitaryNorms.CharExGen
-public import Formalism.PeriodIntegrals.EtaHostFacts
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HostPrimeSplitting.FinrankOE
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Formalism.LocalToGlobal.UnitaryNorms.RealPl
-public import Formalism.LocalToGlobal.Columns.CyclotomicIsCyclotomicExtension
+public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 
 @[expose] public section
 

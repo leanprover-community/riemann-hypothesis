@@ -1,12 +1,15 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferStatement
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DTauFacts
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiMLocal
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.PsWord
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferB
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiMLocal
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DTauFacts
+public import Mathlib.MeasureTheory.Function.LocallyIntegrable
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 
@@ -25,7 +28,7 @@ variable {n : ℕ}
 
 lemma tt_adW_neg (ε : Fin n → Bool) (k : KG ε) (D : List (Matrix (Fin n) (Fin n) ℂ)) :
     adW ε k (D.map Neg.neg) = (adW ε k D).map Neg.neg := by
-  simp [adW, List.map_map, Function.comp_def, Matrix.mul_neg, Matrix.neg_mul]
+  simp [adW, List.map_map, Function.comp_def]
 
 lemma tt_rWord_local {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (μ : Fin n → ℤ)
     {U W : Set (Matrix (Fin n) (Fin n) ℂ)} {k₀ : KG ε} (hU : IsOpen U) (hW : IsOpen W)
@@ -65,8 +68,8 @@ theorem transfer (n : ℕ) : TransferStatement n := by
       T.op k₀ (lWord ((D i).map Neg.neg) (psM T μ) x₀ (v i)) := fun i => by
     rw [tt_rWord_local T μ hU hW (fun D => (hword D).1) hWU hloc (D i) g₀ hg₀W hg₀]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_congr rfl fun i _ => hA i, ← map_sum]
+
+  rw [Finset.sum_congr rfl fun i _ => hA i, ← map_sum]
   suffices h : ∑ i, lWord ((D i).map Neg.neg) (psM T μ) x₀ (v i) = 0 by rw [h, map_zero]
   have hopc : Continuous fun k : KG ε => T.op k := continuous_subtype_val.comp T.cont
   have hAc : Continuous fun k : KG ε => T.op k * projW T * T.op k⁻¹ :=

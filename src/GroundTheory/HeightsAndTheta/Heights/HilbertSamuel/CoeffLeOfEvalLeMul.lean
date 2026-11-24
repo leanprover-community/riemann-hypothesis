@@ -1,13 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsSemipositiveRelTrivLine
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftIntersectionPolynomial
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftDegreePolynomial
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftNefBig
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftVolumeBound
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

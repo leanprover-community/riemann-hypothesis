@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ClassFormations.CorestrictionDefs
 public import GroundTheory.ProfiniteCohomology.ClassFormations
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

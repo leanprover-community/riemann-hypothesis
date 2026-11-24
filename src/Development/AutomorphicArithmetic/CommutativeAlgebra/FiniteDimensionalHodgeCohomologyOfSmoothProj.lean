@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraMapZeroEquiv
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import Mathlib.Basic.Complex.Basic
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SurjectiveOfLocallySurjective
+import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ChowProduct
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperFiniteness
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.ExteriorPower.Basis
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.Linear
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
 
 @[expose] public section
 
@@ -17,15 +63,12 @@ private theorem smulHom_eq {X : Scheme.{0}} (F : X.Modules) (r : Γ(X, ⊤)) :
   ext U x
   rfl
 
-private def cohEquiv {X : Scheme.{0}} (R : Type) [CommRing R] [Algebra R Γ(X, ⊤)] (F : X.Modules)
-    (n : ℕ) : coh F n ≃ₗ[R] Sheaf.H.{0} (GroundTheory.Arith.SchemeCoh.modulesAb F) n :=
-  { (coh.toH F n) with
-    map_smul' := fun r x => by
-      have h := coh.toH_map R (smulHom F (algebraMap R Γ(X, ⊤) r)) n x
-      rw [← cohOn.smul_eq_map] at h
-      refine h.trans ?_
-      rw [smulHom_eq]
-      rfl }
+/-- `Module.Finite` passes from `N` to `M` along an additive equivalence that commutes with scalars.
+Used below in place of a linear equivalence onto `Sheaf.H`, which is slow for the kernel to check. -/
+private theorem finite_of_addEquiv {R M N : Type} [CommRing R] [AddCommGroup M] [Module R M]
+    [AddCommMonoid N] [Module R N] (h : Module.Finite R N) (e : M ≃+ N)
+    (he : ∀ (r : R) (x : M), e (r • x) = r • e x) : Module.Finite R M :=
+  Module.Finite.equiv (e.toLinearEquiv he).symm
 
 private theorem finiteType_sec {Z : Scheme.{0}} (s : Z ⟶ Sp ℂ) [LocallyOfFiniteType s]
     {U : Z.Opens} (hU : IsAffineOpen U) : Algebra.FiniteType ℂ (CechDR.Sec s U) := by
@@ -58,9 +101,11 @@ theorem UpperTheory.finiteDimensional_hodgeCohomology_of_smooth_proj :
   have hc : GroundTheory.Arith.SchemeCoh.IsCoherent (Omega s a) := isCoherent_Omega s a
   have h := @GroundTheory.Arith.SchemeCoh.finite_H_of_isProper ℂ _ _ Z _ _ (Omega s a) hc b
   letI := algΓ s
-  have h' : Module.Finite ℂ (coh (Omega s a) b) := by
-    haveI : Module.Finite ℂ (Sheaf.H.{0} (GroundTheory.Arith.SchemeCoh.modulesAb (Omega s a)) b) := h
-    exact Module.Finite.equiv (cohEquiv ℂ (Omega s a) b).symm
+  have h' : Module.Finite ℂ (coh (Omega s a) b) :=
+    finite_of_addEquiv h (coh.toH (Omega s a) b) fun r x => by
+      have hx := coh.toH_map ℂ (smulHom (Omega s a) (algebraMap ℂ Γ(Z, ⊤) r)) b x
+      rw [smulHom_eq] at hx
+      exact hx.trans (GroundTheory.Arith.SchemeCoh.H.smul_def ℂ (Omega s a) b r _).symm
   exact h'
 
 end

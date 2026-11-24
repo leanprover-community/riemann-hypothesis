@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.CyclotomicCharacters.Degree
 public import GroundTheory.GlobalFields.NormResidueSymbol.CyclotomicCompositum
 

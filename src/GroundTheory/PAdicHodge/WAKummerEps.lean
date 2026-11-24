@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.BStPeriod
+public import GroundTheory.PAdicHodge.TateCpTwist
+public import GroundTheory.PAdicHodge.BdRLattice
 public import GroundTheory.PAdicHodge.BdRTGalois
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

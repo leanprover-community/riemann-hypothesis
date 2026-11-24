@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LubinTateTowerMaps
-public import GroundTheory.LocalFields.ExamplesLaurent
+public import GroundTheory.LocalFields.UnitsBasic
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.Order.CompletePartialOrder
+import GroundTheory.LocalFields.ExamplesLaurent
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+public import Mathlib.Topology.Algebra.Ring.Compact
 
 @[expose] public section
 

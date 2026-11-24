@@ -1,10 +1,54 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsFormExtendToAllLattices
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.DifferentiableOnDetHMat
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HMatMulVecPerCrd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -23,57 +67,13 @@ noncomputable def spOf (γ : GL (Fin r) E) : Matrix (Fin g ⊕ Fin g) (Fin g ⊕
 
 
 omit [NumberField E] [IsCMField E] in
-theorem gl_mulVec_inv_mulVec (γ : GL (Fin r) E) (v : Fin r → E) :
-    (γ : Matrix (Fin r) (Fin r) E) *ᵥ ((γ⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) *ᵥ v = v := by
-  rw [Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
+alias gl_mulVec_inv_mulVec := _root_.GlobalTheory.CongruenceIndex.mulVec_inv_mulVec
 
 variable {X bas}
 
 theorem IsUn.lact_mem {γ : GL (Fin r) E} (hγ : IsUn X γ) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
     lact γ x ∈ X.dom := by
-
-  have hent : ∀ a b, ∑ c, ∑ d, (γ : Matrix (Fin r) (Fin r) E) c a * X.Gm c d *
-      cc ((γ : Matrix (Fin r) (Fin r) E) d b) = X.Gm a b := by
-    intro a b
-    have h := hγ (Pi.single a 1) (Pi.single b 1)
-    simpa [herm, Matrix.mulVec, dotProduct, Pi.single_apply, cc] using h
-
-  have key : ∀ τ : X.Ψ, ((γ : Matrix (Fin r) (Fin r) E).map τ.1)ᵀ * X.Gm.map τ.1 *
-      ((γ : Matrix (Fin r) (Fin r) E).map τ.1).map (starRingEnd ℂ) = X.Gm.map τ.1 := by
-    intro τ
-    ext a b
-    have h := congrArg τ.1 (hent a b)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, cc, NumberField.IsCMField.complexEmbedding_complexConj] at h
-    simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Finset.sum_mul]
-    rw [Finset.sum_comm]
-    exact h
-
-  have hgram : ∀ (τ : X.Ψ) (m : Matrix (Fin r) (Fin r) ℂ),
-      gram τ.1 X.Gm m = mᵀ * X.Gm.map τ.1 * m.map (starRingEnd ℂ) := by
-    intro τ m
-    ext a b
-    simp only [FD.gram, FD.hermC, FD.col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
-      Matrix.map_apply, Finset.sum_mul]
-    rw [Finset.sum_comm]
-  have hmat : ∀ τ : X.Ψ, gram τ.1 X.Gm (mat (lact γ x) τ) = gram τ.1 X.Gm (mat x τ) := by
-    intro τ
-    have hm : mat (lact γ x) τ = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ := rfl
-    rw [hm, hgram, hgram, Matrix.transpose_mul, Matrix.map_mul]
-    calc (mat x τ)ᵀ * ((γ : Matrix (Fin r) (Fin r) E).map τ.1)ᵀ * X.Gm.map τ.1 *
-          (((γ : Matrix (Fin r) (Fin r) E).map τ.1).map (starRingEnd ℂ) *
-            (mat x τ).map (starRingEnd ℂ))
-        = (mat x τ)ᵀ * (((γ : Matrix (Fin r) (Fin r) E).map τ.1)ᵀ * X.Gm.map τ.1 *
-          ((γ : Matrix (Fin r) (Fin r) E).map τ.1).map (starRingEnd ℂ)) *
-            (mat x τ).map (starRingEnd ℂ) := by simp only [Matrix.mul_assoc]
-      _ = (mat x τ)ᵀ * X.Gm.map τ.1 * (mat x τ).map (starRingEnd ℂ) := by rw [key]
-  intro τ
-  obtain ⟨hdet, hpos⟩ := hx τ
-  refine ⟨?_, fun i => ?_⟩
-  · have hm : mat (lact γ x) τ = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ := rfl
-    rw [hm, Matrix.det_mul, ← RingHom.mapMatrix_apply, ← RingHom.map_det]
-    exact mul_ne_zero ((map_ne_zero τ.1).mpr (Matrix.isUnits_det_units γ).ne_zero) hdet
-  · simpa only [dmin, hmat τ] using hpos i
+  apply GlobalTheory.Dict.Extend.lact_mem <;> assumption
 
 theorem spOf_mem (hs : IsSympl X bas) {γ : GL (Fin r) E} (hγ : IsUn X γ) :
     spOf X bas γ ∈ Matrix.symplecticGroup (Fin g) ℚ := by

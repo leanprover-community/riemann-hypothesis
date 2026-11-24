@@ -1,7 +1,45 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.SecondPropositionFree
-public import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
+public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Topology.Sheaves.Presheaf
+public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -37,7 +75,7 @@ theorem univLinkPf_InvS_anti (T : LocLat G Qp LL O) (π' Eπ : LetA O n) (h' : �
 theorem univLinkPf_cocycle {T : LocLat G Qp LL O} {y z : W.DD T} (h : (y, z) ∈ W.wachCocyclesDelta T) :
     W.γD T W.gamK y - y = W.φD T z - z := by
   have h1 := ((Formalism.MainNotions.LiftingTheory.lifta_mem_Z1DΔ W T y z).mp h).1
-  try simp only [herrCocycles, Set.mem_setOf_eq, Submodule.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply] at h1
+  try simp only [herrCocycles, LinearMap.mem_ker] at h1
   simp only [LinearMap.coprod_apply, LinearMap.sub_apply, LinearMap.neg_apply, LinearMap.id_apply] at h1
   rw [← sub_eq_zero, sub_eq_add_neg]
   exact h1
@@ -49,7 +87,7 @@ theorem univLinkPf_mem_Z1DΔ {T : LocLat G Qp LL O} (y z : W.DD T) (hy : ∀ δ 
     (hz : ∀ δ ∈ W.DelF, W.γD T δ z = z) (h : W.γD T W.gamK y - y = W.φD T z - z) :
     (y, z) ∈ W.wachCocyclesDelta T := by
   refine (Formalism.MainNotions.LiftingTheory.lifta_mem_Z1DΔ W T y z).mpr ⟨?_, fun δ hδ => ⟨hy δ hδ, hz δ hδ⟩⟩
-  try simp only [herrCocycles, Set.mem_setOf_eq, Submodule.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply]
+  try simp only [herrCocycles, LinearMap.mem_ker]
   simp only [LinearMap.coprod_apply, LinearMap.sub_apply, LinearMap.neg_apply, LinearMap.id_apply]
   rw [← sub_eq_add_neg, sub_eq_zero]
   exact h
@@ -168,8 +206,8 @@ theorem univLinkPf_basis [StrongRankCondition O] (Pt : ZMod n → LL → (K →�
     rw [show (Submodule.Quotient.mk (∑ i, b.repr (Submodule.Quotient.mk x) i • xb i) :
         IIrest W T Pt π' Eπ h' c S) =
         Submodule.mkQ _ (∑ i, b.repr (Submodule.Quotient.mk x) i • xb i) from rfl]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Submodule.mkQ_apply, hxb]
+
+    simp only [map_sum, map_smul, Submodule.mkQ_apply, hxb]
     exact (b.sum_repr _).symm
   rw [Submodule.Quotient.eq] at h
   simpa using h
@@ -200,8 +238,8 @@ theorem univLinkPf_transport {Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop}
       Submodule.Quotient.mk (Y - ∑ j, Yj j - ∑ i, o i • Yb i) := by
     rw [show (Submodule.Quotient.mk (Y - ∑ j, Yj j - ∑ i, o i • Yb i) : QLamP W T π' Eπ h' M c) =
       Submodule.mkQ _ (Y - ∑ j, Yj j - ∑ i, o i • Yb i) from rfl]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, map_smul, Submodule.mkQ_apply, hX, hXj, hXb]
+
+    simp only [map_sub, map_sum, map_smul, Submodule.mkQ_apply, hX, hXj, hXb]
   have hmem := h3 ((X - ∑ j, Xj j - ∑ i, o i • Xb i : ↥(LamLA W T π' Eπ h' c ⊤)) : LA W T π' c)
     (X - ∑ j, Xj j - ∑ i, o i • Xb i).2
     ((Y - ∑ j, Yj j - ∑ i, o i • Yb i : ↥(LamPS W T Eπ h' c)) : W.DD T)

@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleRingFreeOverFrobeniusImageStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleRingFreeOverFrobeniusImage
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -68,7 +108,7 @@ theorem bas_apply (i : Fin l) : (bas hex i : R) = u ^ (i : ℕ) := by
   change (∑ j : Fin l, u ^ (j : ℕ) * φ ((Pi.single i (1 : R) : Fin l → R) j) : R) = u ^ (i : ℕ)
   rw [Finset.sum_eq_single i]
   · simp
-  · intro j _ hj; simp [Pi.single_apply, hj]
+  · intro j _ hj; simp [hj]
   · simp
 
 end Main
@@ -137,8 +177,8 @@ theorem hex_gam (γ γi : R →+* R) (h1 : ∀ a, γ (γi a) = a) (h2 : ∀ a, �
   refine ⟨fun j => γ (c j), ?_, ?_⟩
   · have := congrArg γ hc
     rw [h1] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum]
+
+    rw [this, map_sum]
     simp [map_mul, map_pow, hφγ]
   · intro d hd
     have : c = fun j => γi (d j) :=
@@ -153,8 +193,8 @@ theorem repr_gam (γ γi : R →+* R) (h1 : ∀ a, γ (γi a) = a) (h2 : ∀ a, 
   have hz := expL_repr hex z
   have key : (γ z : R) = ∑ j : Fin l, γ u ^ (j : ℕ) * φ (γ ((bas hex).repr z j)) := by
     conv_lhs => rw [← hz]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [expL_apply, map_sum]
+
+    rw [expL_apply, map_sum]
     simp [map_mul, map_pow, hφγ]
   have key2 : (γ z : R) = expL φ (γ u) l (fun j => γ ((bas hex).repr z j)) := key
   rw [key2, repr_expL]
@@ -193,13 +233,13 @@ theorem psi_single [NeZero l] (j : ℕ) (hj : j < l) (a : R) :
   have e1 : (u ^ j * φ a : R) = expL φ u l (Pi.single (⟨j, hj⟩ : Fin l) a) := by
     rw [expL_apply, Finset.sum_eq_single (⟨j, hj⟩ : Fin l)]
     · simp
-    · intro b _ hb; simp [Pi.single_apply, hb]
+    · intro b _ hb; simp [hb]
     · simp
   unfold psi
   rw [e1, repr_expL]
   by_cases hj0 : j = 0
   · subst hj0; simp
-  · simp [Pi.single_apply, Fin.ext_iff, hj0, Ne.symm hj0]
+  · simp [Fin.ext_iff, hj0, Ne.symm hj0]
 
 theorem psi_gam [NeZero l] (hu : u ^ l = φ u) (γ γi : R →+* R) (h1 : ∀ a, γ (γi a) = a)
     (h2 : ∀ a, γi (γ a) = a) (hφγ : ∀ a, φ (γ a) = γ (φ a))
@@ -337,7 +377,7 @@ theorem psiE_exists : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
   intro D HW F l _ K s LL h
   haveI : NeZero l := ⟨(Fact.out : l.Prime).ne_zero⟩
   have hp : ((D.loc l).PD K).p = l := (D.loc l).PD_p K
-  refine GlobalTheory.PsiOp.psi_exists ((HW l).W K s LL h) hp ?_ (fun x => GlobalTheory.T.etaleRing_free_over_frobenius_image D HW F l K s LL h x)
+  refine GlobalTheory.PsiOp.psi_exists ((HW l).W K s LL h) hp ?_ (fun x => _root_.GlobalTheory.NL.FreeEE.ee_free D HW F l K s LL h x)
   intro c hc
   rcases mul_eq_zero.1 hc with h0 | h0
   · exfalso

@@ -1,7 +1,61 @@
 module
 
 public import Formalism.MahlerMeasure.HasOrder
-public import Mathlib
+import Formalism.MahlerMeasure.MahlerMeasureProofs.FockPairing
+public import Mathlib.Algebra.Group.ForwardDiff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.RingTheory.Polynomial.Pochhammer
 
 @[expose] public section
 
@@ -17,9 +71,6 @@ def IVP (p : ℕ) [Fact p.Prime] (D : ℕ) (g : ℕ → ℚ_[p]) : Prop :=
 theorem norm_natCast_le_one' (n : ℕ) : ‖(n : ℚ_[p])‖ ≤ 1 := by
   have := Padic.norm_int_le_one (p := p) (n : ℤ)
   simpa using this
-
-theorem norm_intCast_le_one' (n : ℤ) : ‖(n : ℚ_[p])‖ ≤ 1 :=
-  Padic.norm_int_le_one n
 
 theorem norm_sum_le_one {ι : Type} (s : Finset ι) (f : ι → ℚ_[p]) (h : ∀ i ∈ s, ‖f i‖ ≤ 1) :
     ‖∑ i ∈ s, f i‖ ≤ 1 := by
@@ -102,7 +153,7 @@ theorem IVP.newton {D : ℕ} {g : ℕ → ℚ_[p]} (hg : IVP p D g) :
     apply norm_sum_le_one
     intro i _
     rw [zsmul_eq_mul, norm_mul]
-    exact mul_le_one₀ (by exact_mod_cast norm_intCast_le_one' _) (norm_nonneg _) (hn i)
+    exact mul_le_one₀ (by exact_mod_cast Padic.norm_int_le_one _) (norm_nonneg _) (hn i)
   have hd_zero : ∀ k, D < k → d k = 0 := by
     intro k hk
     have h0 : (fwdDiff (1 : ℚ_[p]))^[k] P.eval 0 = 0 := by
@@ -290,15 +341,7 @@ theorem prod_eq_wf (m : σ →₀ ℕ) : (m.prod fun _ k => (k.factorial : ℚ_[
 
 theorem wf_add_single (m : σ →₀ ℕ) (i : σ) :
     (wf (p := p) (m + Finsupp.single i 1)) = ((m i + 1 : ℕ) : ℚ_[p]) * wf m := by
-  unfold wf
-  have h : ∀ x : σ, (((m + Finsupp.single i 1 : σ →₀ ℕ) x).factorial : ℚ_[p]) =
-      ((m x).factorial : ℚ_[p]) * (if x = i then ((m i + 1 : ℕ) : ℚ_[p]) else 1) := by
-    intro x
-    by_cases hx : x = i
-    · subst hx; simp [Nat.factorial_succ]; ring
-    · simp [hx, Finsupp.single_apply]
-  rw [Finset.prod_congr rfl (fun x _ => h x), Finset.prod_mul_distrib, Finset.prod_ite_eq']
-  simp [mul_comm]
+  simpa only [prod_eq_wf] using factorial_prod_add_single (R := ℚ_[p]) m i
 
 theorem fock_def' (F G : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p F G = ∑ m ∈ F.support, F.coeff m * G.coeff m * wf m := by
@@ -307,59 +350,42 @@ theorem fock_def' (F G : MvPolynomial σ ℚ_[p]) :
 
 theorem fock_eq_sum (F G : MvPolynomial σ ℚ_[p]) (s : Finset (σ →₀ ℕ)) (h : F.support ⊆ s) :
     Formalism.GM.M.fock p F G = ∑ m ∈ s, F.coeff m * G.coeff m * wf m := by
-  rw [fock_def']
-  apply Finset.sum_subset h
-  intro m _ hm
-  rw [notMem_support_iff.mp hm]; ring
+  simpa only [M.fock_eq_pair, cast_fock_weight, prod_eq_wf] using FockPairing.pair_eq_sum F G s h
 
 theorem fock_symm (F G : MvPolynomial σ ℚ_[p]) : Formalism.GM.M.fock p F G = Formalism.GM.M.fock p G F := by
-  rw [fock_eq_sum F G _ (Finset.subset_union_left (s₂ := G.support)),
-    fock_eq_sum G F _ (Finset.subset_union_right (s₁ := F.support))]
-  exact Finset.sum_congr rfl (fun m _ => by ring)
+  simpa only [M.fock_eq_pair] using FockPairing.pair_comm F G
 
 theorem fock_add_left (F F' G : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p (F + F') G = Formalism.GM.M.fock p F G + Formalism.GM.M.fock p F' G := by
-  rw [fock_eq_sum (F + F') G (F.support ∪ F'.support) support_add,
-    fock_eq_sum F G _ (Finset.subset_union_left (s₂ := F'.support)),
-    fock_eq_sum F' G _ (Finset.subset_union_right (s₁ := F.support)), ← Finset.sum_add_distrib]
-  exact Finset.sum_congr rfl (fun m _ => by rw [MvPolynomial.coeff_add]; ring)
+  simpa only [M.fock_eq_pair] using FockPairing.pair_add_left F F' G
 
 theorem fock_smul_left (c : ℚ_[p]) (F G : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p (c • F) G = c * Formalism.GM.M.fock p F G := by
-  rw [fock_eq_sum (c • F) G F.support support_smul, fock_def', Finset.mul_sum]
-  exact Finset.sum_congr rfl (fun m _ => by rw [coeff_smul, smul_eq_mul]; ring)
+  simpa only [M.fock_eq_pair] using FockPairing.pair_smul_left c F G
 
 theorem fock_zero_left (G : MvPolynomial σ ℚ_[p]) : Formalism.GM.M.fock p 0 G = 0 := by
   simp [Formalism.GM.M.fock]
 
 theorem fock_sum_left {ι : Type} (t : Finset ι) (F : ι → MvPolynomial σ ℚ_[p]) (G : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p (∑ i ∈ t, F i) G = ∑ i ∈ t, Formalism.GM.M.fock p (F i) G := by
-  classical
-  induction t using Finset.induction_on with
-  | empty => simp [fock_zero_left]
-  | insert a t ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, fock_add_left, ih]
+  simpa only [M.fock_eq_pair] using FockPairing.pair_sum_left t F G
 
 theorem fock_sum_right {ι : Type} (t : Finset ι) (F : MvPolynomial σ ℚ_[p]) (G : ι → MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p F (∑ i ∈ t, G i) = ∑ i ∈ t, Formalism.GM.M.fock p F (G i) := by
-  rw [fock_symm, fock_sum_left]; exact Finset.sum_congr rfl (fun i _ => fock_symm _ _)
+  simpa only [M.fock_eq_pair] using FockPairing.pair_sum_right t F G
 
 theorem fock_smul_right (c : ℚ_[p]) (F G : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p F (c • G) = c * Formalism.GM.M.fock p F G := by
-  rw [fock_symm, fock_smul_left, fock_symm]
+  simpa only [M.fock_eq_pair] using FockPairing.pair_smul_right c F G
 
 theorem fock_X_mul (i : σ) (g h : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p (X i * g) h = Formalism.GM.M.fock p g (pderiv i h) := by
-  have hs : (X i * g).support = g.support.map (addRightEmbedding (Finsupp.single i 1)) := by
-    rw [mul_comm]; exact support_mul_X i g
-  rw [fock_def', hs, Finset.sum_map, fock_def']
-  refine Finset.sum_congr rfl (fun m _ => ?_)
-  simp only [addRightEmbedding_apply]
-  rw [mul_comm (X i) g, coeff_mul_X, coeff_pderiv, wf_add_single]
-  push_cast; ring
+  simpa only [M.fock_eq_pair, mul_comm (X i) g] using FockPairing.pair_mul_X i g h
 
 theorem fock_monomial (α α' : σ →₀ ℕ) (c c' : ℚ_[p]) :
     Formalism.GM.M.fock p (monomial α c) (monomial α' c') = if α = α' then c * c' * wf α else 0 := by
-  rw [fock_eq_sum _ _ {α} support_monomial_subset, Finset.sum_singleton, coeff_monomial, coeff_monomial]
+  rw [M.fock_eq_pair, FockPairing.pair_monomial_left, coeff_monomial,
+    cast_fock_weight, prod_eq_wf]
   by_cases h : α = α'
   · subst h; simp
   · simp [h, Ne.symm h]
@@ -371,20 +397,11 @@ variable {σ : Type} [Fintype σ] [DecidableEq σ] {r : ℕ} (w e : Fin r → σ
 
 theorem fock_E (g h : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p (Formalism.GM.tieE w e g) h = Formalism.GM.M.fock p g (Formalism.GM.tieF w e h) := by
-  have h1 : Formalism.GM.tieE w e g = ∑ c, X (e c) * (X (w c) * g) := by
-    simp only [Formalism.GM.tieE, LinearMap.mulLeft_apply, Finset.sum_mul]
-    exact Finset.sum_congr rfl (fun c _ => by ring)
-  have h2 : Formalism.GM.tieF w e h = ∑ c, pderiv (w c) (pderiv (e c) h) := by
-    simp [Formalism.GM.tieF, LinearMap.sum_apply]
-  rw [h1, h2, fock_sum_left, fock_sum_right]
-  exact Finset.sum_congr rfl (fun c _ => by rw [fock_X_mul, fock_X_mul])
+  simpa only [M.fock_eq_pair] using pair_tieE w e g h
 
 theorem fock_E_pow (j : ℕ) (g h : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p ((Formalism.GM.tieE w e ^ j) g) h = Formalism.GM.M.fock p g ((Formalism.GM.tieF w e ^ j) h) := by
-  induction j generalizing h with
-  | zero => simp
-  | succ j ih =>
-    rw [pow_succ', Module.End.mul_apply, fock_E, ih, pow_succ, Module.End.mul_apply]
+  simpa only [M.fock_eq_pair] using pair_tieE_pow w e j g h
 
 end tie
 
@@ -397,8 +414,8 @@ theorem pderiv_comm' (i j : σ) (q : MvPolynomial σ ℚ_[p]) :
   rw [coeff_pderiv, coeff_pderiv, coeff_pderiv, coeff_pderiv]
   by_cases h : i = j
   · subst h; rfl
-  · have h1 : ((m + Finsupp.single i 1 : σ →₀ ℕ) : σ → ℕ) j = m j := by simp [Finsupp.single_apply, h]
-    have h2 : ((m + Finsupp.single j 1 : σ →₀ ℕ) : σ → ℕ) i = m i := by simp [Finsupp.single_apply, Ne.symm h]
+  · have h1 : ((m + Finsupp.single i 1 : σ →₀ ℕ) : σ → ℕ) j = m j := by simp [h]
+    have h2 : ((m + Finsupp.single j 1 : σ →₀ ℕ) : σ → ℕ) i = m i := by simp [Ne.symm h]
     rw [h1, h2, show m + Finsupp.single i 1 + Finsupp.single j 1 = m + Finsupp.single j 1 + Finsupp.single i 1 by
       rw [add_assoc, add_comm (Finsupp.single i 1), ← add_assoc]]
     ring
@@ -426,11 +443,11 @@ theorem coeff_Dop_pow (u v : σ) (huv : u ≠ v) (a : ℕ) (G : MvPolynomial σ 
     rw [pow_succ', Module.End.mul_apply, Dop_apply, coeff_pderiv, coeff_pderiv]
     rw [ih]
     have hv : ((β + Finsupp.single u 1 : σ →₀ ℕ) : σ → ℕ) v = β v := by
-      simp [Finsupp.single_apply, huv]
+      simp [huv]
     have hu' : ((β + Finsupp.single u 1 + Finsupp.single v 1 : σ →₀ ℕ) : σ → ℕ) u = β u + 1 := by
-      simp [Finsupp.single_apply, huv]
+      simp [huv]
     have hv' : ((β + Finsupp.single u 1 + Finsupp.single v 1 : σ →₀ ℕ) : σ → ℕ) v = β v + 1 := by
-      simp [Finsupp.single_apply, huv]
+      simp [huv]
     rw [hv, hu', hv']
     have hm : β + Finsupp.single u 1 + Finsupp.single v 1 + a • (Finsupp.single u 1 + Finsupp.single v 1) =
         β + (a + 1) • (Finsupp.single u 1 + Finsupp.single v 1) := by
@@ -468,7 +485,7 @@ theorem Dop_pow_monomial_add (u v : σ) (huv : u ≠ v) (a : ℕ) (δ : σ →�
   · subst hb; simp
   · have : δ + a • (Finsupp.single u 1 + Finsupp.single v 1) ≠ β + a • (Finsupp.single u 1 + Finsupp.single v 1) :=
       fun h' => hb (add_right_cancel h')
-    simp [this, hb]
+    simp [hb]
 
 theorem Dop_pow_monomial_lt (u v : σ) (huv : u ≠ v) (a : ℕ) (γ : σ →₀ ℕ) (h : ℚ_[p]) (hlt : γ u < a) :
     (Dop u v ^ a) (monomial γ h) = 0 := by
@@ -478,7 +495,7 @@ theorem Dop_pow_monomial_lt (u v : σ) (huv : u ≠ v) (a : ℕ) (γ : σ →₀
   have : γ ≠ β + a • (Finsupp.single u 1 + Finsupp.single v 1) := by
     intro h'
     have := congrArg (fun f : σ →₀ ℕ => f u) h'
-    simp [Finsupp.single_apply, huv] at this
+    simp [huv] at this
     omega
   rw [if_neg this]
   simp [AddMonoidAlgebra.coeff_zero]
@@ -486,7 +503,7 @@ theorem Dop_pow_monomial_lt (u v : σ) (huv : u ≠ v) (a : ℕ) (γ : σ →₀
 theorem pderiv_X_pow_mul (i y : σ) (hiy : i ≠ y) (m : ℕ) (G : MvPolynomial σ ℚ_[p]) :
     pderiv i (X y ^ m * G) = X y ^ m * pderiv i G := by
   rw [Derivation.leibniz, X_pow_eq_monomial, pderiv_monomial]
-  have : (Finsupp.single y m : σ →₀ ℕ) i = 0 := by simp [Finsupp.single_apply, Ne.symm hiy]
+  have : (Finsupp.single y m : σ →₀ ℕ) i = 0 := by simp [Ne.symm hiy]
   rw [this]
   simp
 
@@ -572,7 +589,7 @@ theorem FT_pow_coeff_norm (hwe : ∀ c, w c ≠ e c) (Tb B : ℕ) (hB : Nat.log 
     intro a ha
     rw [mem_range] at ha
     rw [Module.End.mul_apply, Module.End.mul_apply, Module.End.natCast_apply, map_nsmul, map_nsmul,
-      coeff_smul, nsmul_eq_mul, norm_mul, coeff_Dop_pow _ _ (hwe c), norm_mul, norm_mul]
+      MvPolynomial.coeff_smul, nsmul_eq_mul, norm_mul, coeff_Dop_pow _ _ (hwe c), norm_mul, norm_mul]
     have h1 := ih (b - a) (by omega) (β + a • (Finsupp.single (w c) 1 + Finsupp.single (e c) 1))
     have h2 := norm_desc_le (p := p) (β (w c) + a) a
     have h3 := norm_desc_le (p := p) (β (e c) + a) a
@@ -715,7 +732,7 @@ theorem IsIntP.add {P P' : MvPolynomial σ ℚ_[p]} (h : IsIntP P) (h' : IsIntP 
   intro β; rw [MvPolynomial.coeff_add]; exact (Padic.nonarchimedean _ _).trans (max_le (h β) (h' β))
 
 theorem IsIntP.neg {P : MvPolynomial σ ℚ_[p]} (h : IsIntP P) : IsIntP (-P) := by
-  intro β; rw [coeff_neg, norm_neg]; exact h β
+  intro β; rw [MvPolynomial.coeff_neg, norm_neg]; exact h β
 
 theorem IsIntP.sub {P P' : MvPolynomial σ ℚ_[p]} (h : IsIntP P) (h' : IsIntP P') : IsIntP (P - P') := by
   rw [sub_eq_add_neg]; exact h.add h'.neg
@@ -805,7 +822,7 @@ theorem freezeSub_good (LL : Letters (N + 1)) (ρ : Fin r) (hW : LL.vec (Fin.las
   · apply AllMono.X_mul_X
     refine ⟨by rw [δv_add, δv_single, δv_single, dv]; exact add_comm _ _, ?_⟩
     simp only [Finsupp.add_apply, Finsupp.single_apply, Prod.mk.injEq]
-    simp [hne, Ne.symm hc]
+    simp [hne]
     try (split_ifs <;> omega)
   · subst hc
     apply AllMono.X_mul_X
@@ -817,12 +834,12 @@ theorem freezeSub_good (LL : Letters (N + 1)) (ρ : Fin r) (hW : LL.vec (Fin.las
     · apply AllMono.X_mul_X
       refine ⟨by rw [δv_add, δv_single, δv_single, dv]; exact add_comm _ _, ?_⟩
       simp only [Finsupp.add_apply, Finsupp.single_apply, Prod.mk.injEq]
-      simp [hne, Ne.symm hc]
+      simp [hne]
       split_ifs <;> omega
     · apply AllMono.X_mul_X
       refine ⟨by rw [δv_add, δv_single, δv_single]; rfl, ?_⟩
       simp only [Finsupp.add_apply, Finsupp.single_apply, Prod.mk.injEq]
-      simp [hne, hi, Ne.symm hc, Fin.castSucc_ne_last]
+      simp [hne, hi, Fin.castSucc_ne_last]
 
 theorem freezeSub_int (LL : Letters (N + 1)) (ρ : Fin r) (v : Fin (N + 1) × Fin r) :
     IsIntP (freezeSub p LL ρ v) := by
@@ -873,8 +890,8 @@ theorem aeval_expand (LL : Letters (N + 1)) (ρ : Fin r) (f : MvPolynomial (Fin 
     aeval (freezeSub p LL ρ) f = ∑ μ ∈ f.support,
       C (AddMonoidAlgebra.coeff f μ) * ∏ v : Fin (N + 1) × Fin r, freezeSub p LL ρ v ^ μ v := by
   conv_lhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   apply sum_congr rfl
   intro μ _
   rw [aeval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _), MvPolynomial.algebraMap_eq]
@@ -952,7 +969,7 @@ theorem fock_Dop_term (x y : σ) (hxy : x ≠ y) (a a' m : ℕ) (β₀ β₀' : 
       (β₀' + Finsupp.single y m) + a' • (Finsupp.single x 1 + Finsupp.single y 1) := by abel
   rw [e1, e2, Dop_pow_monomial_add x y hxy, Dop_pow_monomial_add x y hxy, fock_monomial]
   have hx : ∀ δ : σ →₀ ℕ, (δ + Finsupp.single y m) x = δ x := by
-    intro δ; simp [Finsupp.single_apply, Ne.symm hxy]
+    intro δ; simp [Ne.symm hxy]
   have hy : ∀ δ : σ →₀ ℕ, (δ + Finsupp.single y m) y = δ y + m := by
     intro δ; simp
   rw [hx, hx, hy, hy]
@@ -1189,8 +1206,8 @@ theorem fock_F_pow_expand (hy : ∀ c ∈ univ.erase ρ, w c ≠ e ρ ∧ e c �
   apply sum_congr rfl; intro a' _
   rw [fock_smul_left, fock_smul_right, FT_pow_X_pow_mul w e (e ρ) _ hy, FT_pow_X_pow_mul w e (e ρ) _ hy]
   conv_lhs => rw [((FT w e (univ.erase ρ) ^ (j - a)) G).as_sum, ((FT w e (univ.erase ρ) ^ (j - a')) G').as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [mul_sum, mul_sum, map_sum, map_sum, fock_sum_left, mul_sum, mul_sum]
+
+  rw [mul_sum, mul_sum, map_sum, map_sum, fock_sum_left, mul_sum, mul_sum]
   apply sum_congr rfl; intro β _
   rw [fock_sum_right, mul_sum, mul_sum]
   apply sum_congr rfl; intro γ _

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstant
+public import GroundTheory.GlobalFields.ComplexMultiplication.Differential
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
 
 @[expose] public section
 

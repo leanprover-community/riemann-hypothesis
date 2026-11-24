@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DblZMemHnStatement
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DblZMemHn
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -51,10 +97,6 @@ theorem of_row {m n : Type} (f : m → n → ℂ) (k : m) : Matrix.of f k = f k 
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)
 
-theorem emb_cc (τ : E →+* ℂ) (x : E) : τ (cc x) = conj (τ x) := by
-  simp only [cc]
-  rw [IsCMField.complexEmbedding_complexConj]
-
 theorem cc_kappa : cc X.κ0 = -X.κ0 := by
   have h := X.ξ0_im
   simp only [cc] at h ⊢
@@ -63,9 +105,9 @@ theorem cc_kappa : cc X.κ0 = -X.κ0 := by
 theorem kappa_ne : X.κ0 ≠ 0 := by
   rcases X.κ0_xi with h | h <;> rw [h] <;> simp [X.ξ0_ne]
 
-theorem conj_kappa (τ : E →+* ℂ) : conj (τ X.κ0) = -τ X.κ0 := by rw [← emb_cc, cc_kappa X, map_neg]
+theorem conj_kappa (τ : E →+* ℂ) : conj (τ X.κ0) = -τ X.κ0 := by rw [← _root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc, cc_kappa X, map_neg]
 
-theorem conj_Gm (τ : E →+* ℂ) (a b : Fin r) : conj (τ (X.Gm a b)) = τ (X.Gm b a) := by rw [← emb_cc, X.Gm_herm]
+theorem conj_Gm (τ : E →+* ℂ) (a b : Fin r) : conj (τ (X.Gm a b)) = τ (X.Gm b a) := by rw [← _root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc, X.Gm_herm]
 
 theorem det_Gm (τ : E →+* ℂ) : (X.Gm.map τ).det ≠ 0 := by
   rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]
@@ -119,8 +161,8 @@ theorem comm (x₁ x₂ : Frame X.Ψ r) (τ : X.Ψ) (h₁ : (mat x₁ τ).det �
         intro had; rw [had] at ha; exact ha hd
       rw [Matrix.mul_apply] at h0
       have h0' := congrArg (starRingEnd ℂ) h0
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero] at h0'
+
+      rw [map_sum, map_zero] at h0'
       rw [← h0', dotProduct]
       exact Finset.sum_congr rfl fun c _ => by simp [mat]
     rw [hP]; simp
@@ -139,9 +181,9 @@ theorem lin_coord (x₁ x₂ : Frame X.Ψ r) (τ : X.Ψ) (v₁ v₂ : Fin r → 
       intro w; simp [Matrix.mulVec, dotProduct, aLin, ha]
     have hc : conj (per X x₂ v₂ (τ, a)) = (aLin X x₁ x₂ τ *ᵥ Data.emb τ.1 v₂) a := by
       rw [hL, per_of_lt X x₂ v₂ τ ha]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hermC, FD.col, mat, Matrix.of_apply, map_sum, map_mul, Complex.conj_conj,
-        conj_Gm, Finset.sum_mul]
+
+      simp only [hermC, FD.col, mat, Matrix.of_apply, map_sum, map_mul, Complex.conj_conj,
+      conj_Gm, Finset.sum_mul]
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => by ring
     rw [if_pos ha, hc]
@@ -174,9 +216,9 @@ theorem anti_coord (x₁ x₂ : Frame X.Ψ r) (τ : X.Ψ) (v₁ v₂ : Fin r →
     ring
   · have hc : conj (per X x₂ v₂ (τ, a)) = (aAnti X x₁ x₂ τ *ᵥ star (Data.emb τ.1 v₂)) a := by
       rw [per_of_le X x₂ v₂ τ (not_lt.mp ha)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mulVec, dotProduct, aAnti, Matrix.of_apply, if_neg ha, map_sum, map_mul,
-        Pi.star_apply, Complex.star_def]
+
+      simp only [Matrix.mulVec, dotProduct, aAnti, Matrix.of_apply, if_neg ha, map_sum, map_mul,
+      Pi.star_apply, Complex.star_def]
     rw [if_neg ha, hc]
     simp only [sgn, if_neg ha]
     push_cast
@@ -222,7 +264,7 @@ theorem ccT_dblT : ccT (dblT X) =
 
 theorem dbl_per : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ x₁ ∈ X.dom, ∀ x₂ ∈ X.dom, ∀ y₁ y₂ : Matrix (Fin n) (Fin r) E, (∀ τ, dblz' X idx x₁ x₂ (fun k => per X x₁ (y₁ k) ∘ idx) (fun k i => conj (per X x₂ (y₂ k) (idx i))) τ = ((Matrix.fromCols y₁ y₂ * dblT X).toCols₂).map τ.1 + ((Matrix.fromCols y₁ y₂ * dblT X).toCols₁).map τ.1 * dblZ X x₁ x₂ τ) ∧ (∀ τ, dblz X idx x₁ x₂ (fun k => per X x₁ (y₁ k) ∘ idx) (fun k i => conj (per X x₂ (y₂ k) (idx i))) τ = (((Matrix.fromCols y₁ y₂ * dblT X).toCols₂).map τ.1).map conj + (((Matrix.fromCols y₁ y₂ * dblT X).toCols₁).map τ.1).map conj * (dblZ X x₁ x₂ τ)ᵀ) ∧ IsUnit (dblT X).det ∧ dblT X * Matrix.J (Fin r) E * ccT (dblT X) = (X.κ0 / 2) • Matrix.fromBlocks X.Gm 0 0 (-X.Gm) := by
   intro E _ _ _ r X g bas idx n _ _ x₁ hx₁ x₂ hx₂ y₁ y₂
-  have hI := GlobalTheory.T.dblZ_mem_Hn_and_det_ne_zero E r X x₁ hx₁ x₂ hx₂
+  have hI := _root_.GlobalTheory.SW.dblZ_mem_Hn E r X x₁ hx₁ x₂ hx₂
   have hm₁ : ∀ τ, (mat x₁ τ).det ≠ 0 := fun τ => (hx₁ τ).1
   have hm₂ : ∀ τ, (mat x₂ τ).det ≠ 0 := fun τ => (hx₂ τ).1
 
@@ -251,9 +293,9 @@ theorem dbl_per : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
     have h2 : (((X.κ0 / 4) • ((y₁ + y₂) * X.Gm)).map τ.1) k j =
         τ.1 X.κ0 / 4 * ((Data.emb τ.1 (y₁ k) + Data.emb τ.1 (y₂ k)) ᵥ* X.Gm.map τ.1) j := by
       have h4 : τ.1 (4 : E) = 4 := map_ofNat τ.1 4
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [Matrix.mul_apply, Matrix.vecMul, dotProduct, Data.emb, map_sum, Finset.mul_sum,
-        add_mul, h4]
+
+      simp [Matrix.mul_apply, Matrix.vecMul, dotProduct, Data.emb, map_sum, Finset.mul_sum,
+      add_mul, h4]
     rw [h1, h2, dblZ]
     simp only [Matrix.vecMul_smul, ← Matrix.vecMul_vecMul, Matrix.vecMul_transpose,
       Matrix.smul_vecMul, Matrix.add_vecMul, Pi.smul_apply, Pi.add_apply, smul_eq_mul,
@@ -280,10 +322,10 @@ theorem dbl_per : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
       have hk := conj_kappa X τ.1
       have hG := conj_Gm X τ.1
       have h4 : τ.1 (4 : E) = 4 := map_ofNat τ.1 4
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.map_apply, Matrix.smul_apply, Matrix.mul_apply, Matrix.add_apply,
-        smul_eq_mul, map_mul, map_div₀, map_sum, map_add, h4, hk, hG, Matrix.mulVec, dotProduct,
-        Pi.add_apply, Pi.star_apply, Data.emb, Finset.mul_sum]
+
+      simp only [Matrix.map_apply, Matrix.smul_apply, Matrix.mul_apply, Matrix.add_apply,
+      smul_eq_mul, map_mul, map_div₀, map_sum, map_add, h4, hk, hG, Matrix.mulVec, dotProduct,
+      Pi.add_apply, Pi.star_apply, Data.emb, Finset.mul_sum]
       refine Finset.sum_congr rfl fun x _ => ?_
       simp only [Complex.star_def, map_ofNat]
       ring

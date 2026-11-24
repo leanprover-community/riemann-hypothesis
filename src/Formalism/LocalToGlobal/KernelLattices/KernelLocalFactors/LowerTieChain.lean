@@ -1,12 +1,7 @@
 module
 
-public import Mathlib
+public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
-public import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.ClsSum
-public import Formalism.GradedWeylDivisibility.FinalD
-public import Formalism.RealPlaceAnalysis.FockPairGl
-public import Formalism.LocalRingCardinality.DataCoeff
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ProdFactorialSupportSubSingle
 
 @[expose] public section
 

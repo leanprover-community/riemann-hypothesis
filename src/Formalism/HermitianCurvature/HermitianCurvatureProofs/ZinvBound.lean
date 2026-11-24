@@ -1,6 +1,54 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleWordLengthLe
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleOfUnitWords
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SplLen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+public import Mathlib.Analysis.Calculus.ContDiff.RestrictScalars
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -60,9 +108,7 @@ lemma ubl_mul {S : Set (Mat k r)} (hSG : S ⊆ GV k r) {a b : Mat k r → ℂ} {
     (ha : UBL a S n ea γ) (hb : UBL b S n eb γ) : UBL (fun g => a g * b g) S n (ea + eb) γ := by
   have ha' : UBL (fun g => ((ContinuousLinearMap.mul ℂ ℂ).restrictScalars ℝ) (a g)) S n ea γ :=
     ubl_clm _ hSG ha
-  have h := ubl_app hSG ha' hb
-  convert h using 2
-  simp
+  simpa using ubl_app hSG ha' hb
 
 lemma ubl_prod {ι : Type*} [DecidableEq ι] {S : Set (Mat k r)} (hSG : S ⊆ GV k r) {n γ : ℕ} (s : Finset ι)
     (f : ι → Mat k r → ℂ) (h : ∀ i ∈ s, UBL (f i) S n 0 γ) : UBL (fun g => ∏ i ∈ s, f i g) S n 0 γ := by
@@ -72,9 +118,8 @@ lemma ubl_prod {ι : Type*} [DecidableEq ι] {S : Set (Mat k r)} (hSG : S ⊆ GV
     exact ubl_const 1 hSG n γ
   | insert a s ha ih =>
     simp only [Finset.prod_insert ha]
-    have h1 := ubl_mul hSG (h a (Finset.mem_insert_self a s))
+    simpa using ubl_mul hSG (h a (Finset.mem_insert_self a s))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-    simpa using h1
 
 lemma ubl_poly {d : ℕ} {P : Mat k r → ℂ} (hP : U.IsPolyDeg d P) (S : Set (Mat k r)) (hSG : S ⊆ GV k r) (n γ : ℕ) :
     UBL P S n d γ := by
@@ -99,15 +144,10 @@ lemma ubl_fdb {E F : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAdd
   obtain ⟨C, hC, hb⟩ := fdb ψ hψ S K hK gN (fun g hg => gN_ge_one (hSG hg)) α 0 M n
     (fun w hw hne g hg => by simpa using H w hw hne g (hSG hg)) n E Φ hΦ hB
   refine ⟨⟨C, hC, fun w hw g hg => ?_⟩, lss_of_contDiff (hΦ.comp hψ) S⟩
-  have hlen : w.length ≤ n := by
-    obtain ⟨u, v, -, -, hl, rfl⟩ := hw
-    simpa [wL, wR] using hl
-  simpa using hb w hw hlen g hg
+  simpa using hb w hw (admissible_word_length_le hw) g hg
 
 lemma normSq_cd : ContDiff ℝ ∞ (fun z : ℂ => Complex.normSq z) := by
-  have h : (fun z : ℂ => Complex.normSq z) = fun z => ‖z‖ ^ 2 :=
-    funext fun z => Complex.normSq_eq_norm_sq z
-  rw [h]
+  rw [funext Complex.normSq_eq_norm_sq]
   exact contDiff_norm_sq ℝ
 
 def zinv (c : ℝ) (m : ℕ) (z : ℂ) : ℂ := (sc c (Complex.normSq z) : ℂ) * z⁻¹ ^ m
@@ -124,21 +164,14 @@ lemma zinv_cd {c : ℝ} (hc : 0 < c) (m : ℕ) : ContDiff ℝ ∞ (zinv c m) := 
         rw [hz, map_zero]
         positivity
       filter_upwards [hopen.mem_nhds hmem] with w hw
-      unfold zinv
-      rw [sc_zero hc (le_of_lt hw)]
-      simp
+      simp [zinv, sc_zero hc (le_of_lt hw)]
     exact contDiffAt_const.congr_of_eventuallyEq hev
   · unfold zinv
-    have h1 : ContDiffAt ℝ ∞ (fun w : ℂ => ((sc c (Complex.normSq w) : ℝ) : ℂ)) z :=
-      (Complex.ofRealCLM.contDiff.comp ((sc_cd c).comp normSq_cd)).contDiffAt
-    have h2 : ContDiffAt ℝ ∞ (fun w : ℂ => w⁻¹ ^ m) z :=
-      ((contDiffAt_inv ℂ hz).pow m).restrict_scalars ℝ
-    exact h1.mul h2
+    exact ((Complex.ofRealCLM.contDiff.comp ((sc_cd c).comp normSq_cd)).contDiffAt).mul
+      (((contDiffAt_inv ℂ hz).pow m).restrict_scalars ℝ)
 
 lemma zinv_eq {c : ℝ} (hc : 0 < c) (m : ℕ) {z : ℂ} (hz : c / 2 ≤ Complex.normSq z) : zinv c m z = z⁻¹ ^ m := by
-  unfold zinv
-  rw [sc_one hc hz]
-  simp
+  simp [zinv, sc_one hc hz]
 
 lemma zinv_bound {c : ℝ} (hc : 0 < c) (m j : ℕ) :
     ∃ B : ℝ, ∀ z ∈ {z : ℂ | c ≤ Complex.normSq z}, ‖iteratedFDeriv ℝ j (zinv c m) z‖ ≤ B := by

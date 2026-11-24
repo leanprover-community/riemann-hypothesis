@@ -1,12 +1,13 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.UniformizerOfResidueIndep
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GoodPrimesProperties
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormPts
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LaTIsPrime
+public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HintISBounds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IntNsg
-public import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FsumEqSum
+import ReciprocityTheory.SemistableReduction.RestBlockSubstIsMultiHomogeneous
 
 @[expose] public section
 

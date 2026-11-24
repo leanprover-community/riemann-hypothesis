@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.QuotientToInvariantsFunctorPreservesZeroMorphism
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.CohomologyResMemCohomologyConjInvariants
+public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.InnerConj
 
 @[expose] public section

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpOverLocFiniteCut
+public import Mathlib.Combinatorics.Pigeonhole
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

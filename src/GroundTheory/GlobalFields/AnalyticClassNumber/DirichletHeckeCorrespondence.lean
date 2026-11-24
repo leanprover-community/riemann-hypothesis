@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHecke
+public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeDefs
 
 @[expose] public section
 

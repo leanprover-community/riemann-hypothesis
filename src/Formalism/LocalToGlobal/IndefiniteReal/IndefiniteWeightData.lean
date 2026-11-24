@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Ring.Parity
+public import Mathlib.Data.Rat.Init
 
 @[expose] public section
 

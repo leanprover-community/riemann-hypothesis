@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LinQRawRange
 
 @[expose] public section

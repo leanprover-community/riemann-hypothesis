@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TranslationZeroModeLift
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

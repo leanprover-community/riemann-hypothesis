@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleHilbertSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleSnapperSt
+public import Mathlib.Algebra.Group.ForwardDiff
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrLenPrimeOfEqFinrank
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

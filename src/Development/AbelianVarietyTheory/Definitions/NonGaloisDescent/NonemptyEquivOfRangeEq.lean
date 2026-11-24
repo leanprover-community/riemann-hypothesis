@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsCuspidalIffCompositions
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NontrivialOfIrreducible
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -311,7 +351,7 @@ theorem out_apply (π : Representation ℂ G V) {H : Subgroup G} {U : Subgroup H
 
 theorem exists_normal_fix {π : Representation ℂ G V} (hπ : IsSmooth π) {H : Subgroup G} (hH : IsCompact (H : Set G))
     (v : V) : ∃ U : Subgroup H, U.Normal ∧ U.FiniteIndex ∧ ∀ u ∈ U, π (u : H) v = v := by
-  haveI : CompactSpace H := isCompact_iff_compactSpace.1 hH
+  have : CompactSpace H := isCompact_iff_compactSpace.1 hH
   let S : Subgroup H :=
     { carrier := {h | π h v = v}
       mul_mem' := fun {a b} ha hb => by
@@ -323,8 +363,8 @@ theorem exists_normal_fix {π : Representation ℂ G V} (hπ : IsSmooth π) {H :
         conv_lhs => rw [← ha]
         rw [← Module.End.mul_apply, ← map_mul]; simp }
   have ho : IsOpen (S : Set H) := (hπ v).preimage continuous_subtype_val
-  haveI := S.quotient_finite_of_isOpen ho
-  haveI := S.finiteIndex_of_finite_quotient
+  have := S.quotient_finite_of_isOpen ho
+  have := S.finiteIndex_of_finite_quotient
   exact ⟨S.normalCore, inferInstance, inferInstance, fun u hu => S.normalCore_le hu⟩
 
 theorem isCompl_fixed_twKer {π : Representation ℂ G V} (hπ : IsSmooth π) {H : Subgroup G} (hH : IsCompact (H : Set G)) :
@@ -354,18 +394,18 @@ theorem isCompl_fixed_twKer {π : Representation ℂ G V} (hπ : IsSmooth π) {H
         exact ⟨A, h0, fun U _ _ hU => by rw [map_smul, hA U hU, smul_zero]⟩
     refine Submodule.disjoint_def.2 fun v hv hv' => ?_
     obtain ⟨U, _, hU⟩ := key v hv'
-    letI := Fintype.ofFinite (H ⧸ U.normalCore)
+    let := Fintype.ofFinite (H ⧸ U.normalCore)
     have h := hU U.normalCore U.normalCore_le
     rw [cosetSum, LinearMap.sum_apply, Finset.sum_congr rfl fun q _ => mem_fixed.1 hv _ (q.out : H).2,
       Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ] at h
     exact (smul_eq_zero.1 h).resolve_left (Nat.cast_ne_zero.2 Fintype.card_ne_zero)
   · refine codisjoint_iff.2 (eq_top_iff.2 fun v _ => ?_)
     obtain ⟨U, -, _, hU⟩ := exists_normal_fix hπ hH v
-    letI := Fintype.ofFinite (H ⧸ U)
+    let := Fintype.ofFinite (H ⧸ U)
     have hc : (Fintype.card (H ⧸ U) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
     have h1 : cosetSum π U v ∈ fixed π H := mem_fixed.2 fun h hh => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [cosetSum, LinearMap.sum_apply, map_sum]
+
+      simp only [cosetSum, LinearMap.sum_apply, map_sum]
       refine Fintype.sum_equiv (MulAction.toPerm (⟨h, hh⟩ : H)) _ _ fun q => ?_
       conv_rhs => rw [MulAction.toPerm_apply, ← q.out_eq, MulAction.Quotient.smul_mk]
       rw [out_apply π hU, smul_eq_mul, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
@@ -378,17 +418,17 @@ theorem isCompl_fixed_twKer {π : Representation ℂ G V} (hπ : IsSmooth π) {H
     rwa [sub_sub_cancel, smul_smul, inv_mul_cancel₀ hc, one_smul] at h3
 
 def idem {π : Representation ℂ G V} (hπ : IsSmooth π) {H : Subgroup G} (hH : IsCompact (H : Set G)) : V →ₗ[ℂ] V :=
-  (fixed π H).subtype ∘ₗ Submodule.linearProjOfIsCompl _ _ (isCompl_fixed_twKer hπ hH)
+  (fixed π H).subtype ∘ₗ Submodule.projectionOnto _ _ (isCompl_fixed_twKer hπ hH)
 
 variable {π : Representation ℂ G V} (hπ : IsSmooth π) {H : Subgroup G} (hH : IsCompact (H : Set G))
 
 theorem idem_mem (v : V) : idem hπ hH v ∈ fixed π H := Subtype.property _
 
 theorem idem_of_mem {v : V} (hv : v ∈ fixed π H) : idem hπ hH v = v :=
-  congrArg Subtype.val (Submodule.linearProjOfIsCompl_apply_left (isCompl_fixed_twKer hπ hH) ⟨v, hv⟩)
+  congrArg Subtype.val (Submodule.projectionOnto_apply_left (isCompl_fixed_twKer hπ hH) ⟨v, hv⟩)
 
 theorem idem_eq_zero_iff {v : V} : idem hπ hH v = 0 ↔ v ∈ twKer π H 1 := by
-  rw [← Submodule.linearProjOfIsCompl_apply_eq_zero_iff (isCompl_fixed_twKer hπ hH)]
+  rw [← Submodule.projectionOnto_apply_eq_zero_iff (isCompl_fixed_twKer hπ hH)]
   exact Submodule.coe_eq_zero
 
 theorem idem_apply_mem {h : G} (hh : h ∈ H) (v : V) : idem hπ hH (π h v) = idem hπ hH v := by
@@ -399,14 +439,14 @@ theorem idem_eq_cosetSum (U : Subgroup H) [Fintype (H ⧸ U)] {v : V} (hv : ∀ 
     idem hπ hH v = (Fintype.card (H ⧸ U) : ℂ)⁻¹ • ∑ q : H ⧸ U, π (q.out : H) v := by
   have hc : (Fintype.card (H ⧸ U) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
   have h1 : ∑ q : H ⧸ U, π (q.out : H) v ∈ fixed π H := mem_fixed.2 fun h hh => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum]
+
+    simp only [map_sum]
     refine Fintype.sum_equiv (MulAction.toPerm (⟨h, hh⟩ : H)) _ _ fun q => ?_
     conv_rhs => rw [MulAction.toPerm_apply, ← q.out_eq, MulAction.Quotient.smul_mk]
     rw [out_apply π hv, smul_eq_mul, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← idem_of_mem hπ hH h1, map_sum, Finset.sum_congr rfl fun q _ => idem_apply_mem hπ hH (q.out : H).2 v,
-    Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hc, one_smul]
+
+  rw [← idem_of_mem hπ hH h1, map_sum, Finset.sum_congr rfl fun q _ => idem_apply_mem hπ hH (q.out : H).2 v,
+  Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hc, one_smul]
 
 end Idem
 

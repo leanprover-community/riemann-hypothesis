@@ -1,8 +1,7 @@
 module
 
-public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SSmooth
-public import GroundTheory.GlobalFields.TateThesis.TraceLatticePoisson
-public import GroundTheory.GlobalFields.TateThesis.AdelePoisson
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RealCusp
 
 @[expose] public section
 

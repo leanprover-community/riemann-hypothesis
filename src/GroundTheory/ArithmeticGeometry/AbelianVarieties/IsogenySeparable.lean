@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilTranslate
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarInj
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarNumerator
 
@@ -46,8 +45,8 @@ theorem ConeVarInj.proof (hNum : ConeVarNumerator.Statement.{u}) : ConeVarInj.St
   simp only [AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
   by_contra hd
   have hcomp := hP.multiHomog _ hN (B + ⇑d)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single d] at hcomp
+
+  rw [map_sum, Finset.sum_eq_single d] at hcomp
   · rw [((hh d).mul (hu d)).weightedHomogeneousComponent_same] at hcomp
     have hhd : h d ∈ P := (hP.isPrime.mem_or_mem hcomp).resolve_right fun hm => huW d (hPW hm)
     apply hd

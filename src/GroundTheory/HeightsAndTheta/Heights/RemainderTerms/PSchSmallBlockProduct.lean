@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsSchur
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.JacobiTrudi
-public import GroundTheory.HeightsAndTheta.Heights.KernelsRest
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

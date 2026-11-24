@@ -1,9 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieStd
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.CompletionIntegersIff
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IntSplitOf
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LocIdFr
 public import Formalism.LocalToGlobal.HermitianForms.BothLemmas
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LocIdFr
 
 @[expose] public section
 

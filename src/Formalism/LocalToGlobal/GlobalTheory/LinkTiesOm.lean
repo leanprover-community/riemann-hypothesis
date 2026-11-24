@@ -1,6 +1,8 @@
 module
 
-public import Formalism.SharpRestriction.GlobalSchurBounds.Joints
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+import Mathlib.Tactic.TypeStar
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

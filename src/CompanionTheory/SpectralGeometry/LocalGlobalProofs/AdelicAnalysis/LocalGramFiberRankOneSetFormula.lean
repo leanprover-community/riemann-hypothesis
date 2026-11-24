@@ -1,12 +1,16 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRingStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasureStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasuresContinuityStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasuresTransitivityStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasure
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasuresContinuity
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasuresTransitivity
+import Formalism.UnipotentAdelicQuotients.SWXSDefs
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -21,11 +25,6 @@ section Alg
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E}
-
-theorem conj_invol (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  apply τ.injective
-  rw [h.2.2.2, h.2.2.2, star_star]
 
 theorem exists_conj_ne (h : IsCMExt F E σ) : ∃ e : E, σ e ≠ e := by
   by_contra hσ
@@ -42,9 +41,9 @@ theorem exists_conj_ne (h : IsCMExt F E σ) : ∃ e : E, σ e ≠ e := by
 theorem exists_imag (h : IsCMExt F E σ) :
     ∃ w : E, σ w = -w ∧ ∀ e : E, ∃ a c : F, a • (1 : E) + c • w = e := by
   obtain ⟨e, he⟩ := exists_conj_ne h
-  refine ⟨e - σ e, by rw [map_sub, conj_invol h]; ring, ?_⟩
+  refine ⟨e - σ e, by rw [map_sub, _root_.GlobalTheory.CompanionTheory.SW.HermTop.sigma_sigma h]; ring, ?_⟩
   set w := e - σ e with hw
-  have hw' : σ w = -w := by rw [hw, map_sub, conj_invol h]; ring
+  have hw' : σ w = -w := by rw [hw, map_sub, _root_.GlobalTheory.CompanionTheory.SW.HermTop.sigma_sigma h]; ring
   have hw0 : w ≠ 0 := fun h0 => he (sub_eq_zero.mp h0).symm
   have h2 : (2 : F) ≠ 0 := two_ne_zero
   have hli : LinearIndependent F ![(1 : E), w] := by
@@ -129,7 +128,7 @@ theorem sigR_hR_self (h : IsCMExt F E σ) (hJ : IsHermND σ J) (x : Fin M → R 
     intro y
     induction y using TensorProduct.induction_on with
     | zero => simp
-    | tmul r e => rw [sigR_tmul, sigR_tmul, conj_invol h]
+    | tmul r e => rw [sigR_tmul, sigR_tmul, _root_.GlobalTheory.CompanionTheory.SW.HermTop.sigma_sigma h]
     | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
   have hJR : ∀ i j, sigR R σ (JR R J j i) = JR R J i j := by
     intro i j
@@ -137,8 +136,8 @@ theorem sigR_hR_self (h : IsCMExt F E σ) (hJ : IsHermND σ J) (x : Fin M → R 
     show sigR R σ ((1 : R) ⊗ₜ[F] J j i) = (1 : R) ⊗ₜ[F] J i j
     rw [sigR_tmul, hJ.1]
   show sigR R σ (hform (sigR R σ) (JR R J) x x) = hform (sigR R σ) (JR R J) x x
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, hinv]
+
+  simp only [hform, map_sum, map_mul, hinv]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [hJR]
@@ -328,11 +327,11 @@ theorem ratio_field (R : Type) [Field R] [Algebra F R] [TopologicalSpace R] [Mea
   haveI := h2
   haveI := h3
   haveI := h4
-  obtain ⟨-, -, -, hT2, -, htr, -, hBor, -, hgr⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ h R
+  obtain ⟨-, -, -, hT2, -, htr, -, hBor, -, hgr⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ h R
   haveI := hT2
   haveI := hBor 1 M
   haveI : BorelSpace (HermR R σ 1) := ⟨rfl⟩
-  have hHaar := GlobalTheory.T.coordinate_haar_measure F E σ h R d b lam hlam
+  have hHaar := _root_.GlobalTheory.CompanionTheory.SW.coord_measures_haar F E σ h R d b lam hlam
   have hμ := hHaar.2.1 1 M
   have hν := hHaar.2.2 1
   have hAm : MeasurableSet A := hAo.measurableSet
@@ -342,9 +341,9 @@ theorem ratio_field (R : Type) [Field R] [Algebra F R] [TopologicalSpace R] [Mea
     continuous_indicator (by simp [hAclopen.frontier_eq]) continuousOn_const
   have hφs : HasCompactSupport φ :=
     HasCompactSupport.intro hAc fun x hx => Set.indicator_of_notMem hx _
-  obtain ⟨⟨hg, -⟩, -⟩ := GlobalTheory.T.gram_fiber_integral_isContDensityOn F E σ h M J hJ R hloc 1 _ _ m hμ hν hfib φ hφc hφs
+  obtain ⟨⟨hg, -⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.GramDensity.isContDensityOn_gram F E σ h M J hJ R hloc 1 _ _ m hμ hν hfib φ hφc hφs
   have hfin : ∀ S, m S A < ⊤ := fun S => by
-    haveI := (GlobalTheory.T.gram_fiber_measure_locallyFinite_and_ne_zero_of_isOpen F E σ h M J hJ R hloc 1 _ _ m hμ hν hfib S).1
+    haveI := (_root_.GlobalTheory.CompanionTheory.SW.LocFin.fibre_loc_fin F E σ h M J hJ R hloc 1 _ _ m hμ hν hfib S).1
     exact hAc.measure_lt_top
   have hint : ∀ S, ∫ X, φ X ∂(m S) = (((m S A).toReal : ℝ) : ℂ) := fun S => by
     rw [hφ, integral_indicator_const _ hAm]
@@ -424,6 +423,6 @@ open scoped TensorProduct ENNReal NNReal Matrix
 theorem fibre_mass_ratio : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (lam : Measure (Fv F v)), IsStdV v lam → ∀ m, IsGramFib (Fv F v) σ J 1 (coordW (Fv F v) b lam 1 M) (coordHerm (Fv F v) σ b lam 1) m → ∀ A : Set (Fin 1 → Fin M → Fv F v ⊗[F] E), IsCompact A → IsOpen A → ∀ s : Fv F v, s ≠ 0 → ∀ ε : ℝ, 0 < ε → ∃ U ∈ 𝓝 s, ∀ V : Set (Fv F v), MeasurableSet V → V ⊆ U → |(coordW (Fv F v) b lam 1 M (A ∩ {X | algebraMap F (Fv F v) (1 / 2) * Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (gramR (Fv F v) σ J X 0 0) ∈ V})).toReal - (m (hermScal (Fv F v) σ s) A).toReal * (lam V).toReal| ≤ ε * (lam V).toReal := by
   intro F E _ _ _ _ _ σ hσ M J hJ d b v lam hlam m hfib A hAc hAo s hs ε hε
   haveI : BorelSpace (Fv F v) := ⟨rfl⟩
-  exact FibreRatio.ratio_field (Fv F v) (GlobalTheory.T.completion_is_local_ring F v) hσ hJ b lam hlam.1 m hfib A hAc hAo s hs ε hε
+  exact FibreRatio.ratio_field (Fv F v) (_root_.GlobalTheory.CompanionTheory.SW.LocFv.isLocR_Fv F v) hσ hJ b lam hlam.1 m hfib A hAc hAo s hs ε hε
 
 end GlobalTheory.CompanionTheory.SW

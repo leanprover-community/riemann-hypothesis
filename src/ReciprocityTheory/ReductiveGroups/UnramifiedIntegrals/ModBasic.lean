@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 
@@ -62,7 +62,6 @@ theorem isMF_AA : IsMF 12 AA := by
 
 theorem isMF_DD : IsMF 12 DD := by
   first
-    | exact ⟨ModularFormClass.modularForm CuspForm.discriminant, fun τ => rfl⟩
     | exact ⟨ModularFormClass.modularForm CuspForm.discriminant, fun τ => rfl⟩
 
 theorem IsMF.smul_eq {k : ℤ} {f : ℍ → ℂ} (h : IsMF k f) (γ : SL(2, ℤ)) (τ : ℍ) :

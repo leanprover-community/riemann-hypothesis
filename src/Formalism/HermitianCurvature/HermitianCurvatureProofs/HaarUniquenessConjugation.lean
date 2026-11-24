@@ -1,10 +1,49 @@
 module
 
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.RealPlaceAnalysis.FinalF
-public import Formalism.FormalDegreeBessel.FinalG
-public import Mathlib
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.RightDerivativeZeroOutsideSupport
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -79,12 +118,10 @@ lemma phi_range (hE : UJEmb) (hC : UHConj) (hP : IsUnit P.det) (hH : Pᴴ * Jm �
     Set.range (phi ε P) = GV k r := Set.ext fun g => phi_range_iff hE hC hP hH g
 
 lemma lmul_cont (a : Mat k r) : Continuous (lmulM a) := by
-  have : Continuous (fun x : Mat k r => a * x) := continuous_const.matrix_mul continuous_id
-  exact this
+  exact (continuous_const (y := a)).matrix_mul continuous_id
 
 lemma rmul_cont (a : Mat k r) : Continuous (rmulF a) := by
-  have : Continuous (fun x : Mat k r => x * a) := continuous_id.matrix_mul continuous_const
-  exact this
+  exact continuous_id.matrix_mul (continuous_const (y := a))
 
 theorem haar_map (hE : UJEmb) (hU : Unimodular) (hC : UHConj) (hP : IsUnit P.det)
     (hH : Pᴴ * Jm ε * P = Hpk k r) : IsHaarOn (GV k r) ((muG ε).map (phi ε P)) := by
@@ -94,9 +131,7 @@ theorem haar_map (hE : UJEmb) (hU : Unimodular) (hC : UHConj) (hP : IsUnit P.det
   have hcl : IsClosed (Set.range (phi ε P)) := hce.isClosed_range
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · rw [← hr, Measure.map_apply hm hcl.measurableSet.compl]
-    have : phi ε P ⁻¹' (Set.range (phi ε P))ᶜ = ∅ := by
-      ext u; simp
-    rw [this, measure_empty]
+    simp
   · intro a ha
     rw [← hr] at ha
     obtain ⟨u, rfl⟩ := ha
@@ -166,10 +201,9 @@ theorem haar_unique (hE : UJEmb) (hC : UHConj) (hP : IsUnit P.det) (hH : Pᴴ * 
   rw [← Measure.map_smul _ hm.aemeasurable, ← h1, h2]
 
 lemma hs_eq_gN (g : Mat k r) : hs g = gN g ^ 2 := by
-  have h0 : 0 ≤ ∑ i, ∑ j, Complex.normSq (g i j) :=
-    Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _
-  have h1 : gN g ^ 2 = ∑ i, ∑ j, Complex.normSq (g i j) := Real.sq_sqrt h0
-  rw [h1]
+  rw [show gN g ^ 2 = ∑ i, ∑ j, Complex.normSq (g i j) from
+    Real.sq_sqrt (Finset.sum_nonneg (fun _ _ =>
+      Finset.sum_nonneg (fun _ _ => Complex.normSq_nonneg _)))]
   unfold hs
   simp only [Complex.normSq_eq_norm_sq]
 
@@ -184,7 +218,6 @@ theorem vol_crude (hE : UJEmb) (hV : VolGrowth) (hC : UHConj) (hP : IsUnit P.det
   have hm := phi_measurable (ε := ε) hE hP
   set M : ℝ := 1 + hs P * hs P⁻¹ with hM
   have hM0 : 0 ≤ hs P * hs P⁻¹ := mul_nonneg (hs_nonneg' _) (hs_nonneg' _)
-  have hM1 : 1 ≤ M := by linarith
   refine ⟨c * (C * M ^ (2 * (2 * r + k + 1) ^ 2)), fun R hR => ?_⟩
   have hms : MeasurableSet {g : Mt k r | gN (Matrix.of g) ≤ R} := by
     have : Measurable fun g : Mt k r => gN (Matrix.of g) := by
@@ -226,14 +259,10 @@ theorem vol_crude (hE : UJEmb) (hV : VolGrowth) (hC : UHConj) (hP : IsUnit P.det
 
 theorem gN_meas (k r : ℕ) : Measurable fun g : Mt k r => gN (Matrix.of g) := by
   unfold gN
-  apply Measurable.sqrt
-  refine Finset.measurable_sum _ fun i _ => Finset.measurable_sum _ fun j _ => ?_
-  have : Measurable fun g : Mt k r => g i j := (measurable_pi_apply j).comp (measurable_pi_apply i)
-  exact Complex.continuous_normSq.measurable.comp this
+  exact Measurable.sqrt (Finset.measurable_sum _ fun i _ => Finset.measurable_sum _ fun j _ => Complex.continuous_normSq.measurable.comp ((measurable_pi_apply j).comp (measurable_pi_apply i)))
 
 theorem ae_mem {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ) : ∀ᵐ g ∂μ, Matrix.of g ∈ U := by
-  rw [ae_iff]
-  exact h.conc
+  exact ae_iff.mpr h.conc
 
 theorem gFromDiag' (hE : UJEmb) (hU : Unimodular) (hV : VolGrowth) (hF : HpkFacts) (hC : UHConj) :
     HaarGExists ∧ VolCrude := by

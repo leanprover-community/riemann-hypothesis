@@ -1,7 +1,10 @@
 module
 
-public import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 public import Mathlib.LinearAlgebra.Trace
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.InnerProductSpace.Defs
+public import Mathlib.Analysis.InnerProductSpace.Projection.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -72,12 +75,6 @@ theorem str_eq_str_ker (Dl Γ B : Y →ₗ[ℂ] Y) (hD : ∀ x y, inner ℂ (Dl 
   suffices h0 : LinearMap.trace ℂ (LinearMap.range Dl) ((Γ ∘ₗ B).restrict hV) = 0 by
     rw [h0, add_zero]
   have hDV : ∀ x ∈ LinearMap.range Dl, Dl x ∈ LinearMap.range Dl := fun x _ => LinearMap.mem_range_self Dl x
-  have hΓV : ∀ x ∈ LinearMap.range Dl, Γ x ∈ LinearMap.range Dl := by
-    rintro _ ⟨y, rfl⟩
-    exact ⟨-Γ y, by rw [map_neg, hDΓ, neg_neg]⟩
-  have hBV : ∀ x ∈ LinearMap.range Dl, B x ∈ LinearMap.range Dl := by
-    rintro _ ⟨y, rfl⟩
-    exact ⟨B y, (hBD y).symm⟩
   have hinj : Function.Injective (Dl.restrict hDV) := by
     rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
     intro v hv
@@ -87,20 +84,16 @@ theorem str_eq_str_ker (Dl Γ B : Y →ₗ[ℂ] Y) (hD : ∀ x y, inner ℂ (Dl 
       simpa using this
     exact Subtype.ext (Submodule.disjoint_def.1 hkr.disjoint _ hv' v.2)
   set e := LinearEquiv.ofInjectiveEndo (Dl.restrict hDV) hinj
-  have hsplit : (Γ ∘ₗ B).restrict hV = Γ.restrict hΓV ∘ₗ B.restrict hBV := by
-    ext v
-    rfl
   have hconj : e.conj ((Γ ∘ₗ B).restrict hV) = -((Γ ∘ₗ B).restrict hV) := by
-    ext v
-    obtain ⟨w, rfl⟩ : ∃ w, v = e w := ⟨e.symm v, (e.apply_symm_apply v).symm⟩
-    simp only [LinearEquiv.conj_apply, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply,
-      LinearMap.neg_apply]
+    refine LinearMap.ext fun v => Subtype.ext ?_
+    obtain ⟨w, rfl⟩ := e.surjective v
+    simp only [LinearEquiv.conj_apply_apply, LinearEquiv.symm_apply_apply, LinearMap.neg_apply]
     show ((Dl.restrict hDV) ((Γ ∘ₗ B).restrict hV w) : Y) = -(((Γ ∘ₗ B).restrict hV (Dl.restrict hDV w)) : Y)
     simp only [LinearMap.restrict_apply, LinearMap.comp_apply]
     rw [hDΓ, ← hBD]
   have ht := LinearMap.trace_conj' ((Γ ∘ₗ B).restrict hV) e
   rw [hconj, map_neg] at ht
-  linear_combination -ht / 2
+  exact CharZero.neg_eq_self_iff.mp ht
 
 end S4
 

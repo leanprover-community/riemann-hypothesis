@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
-public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
+public import Formalism.LocalRingCardinality.DataExtra
 
 @[expose] public section
 

@@ -1,6 +1,54 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PairEvaluation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -192,7 +240,7 @@ theorem lead_biadd {P : MvPolynomial (Fin 2 × Fin d) S} {m j : ℕ} (hj1 : 1 �
     have hP' := hP
     rw [memIo_lemma] at hP' ⊢
     intro x hx
-    rw [MvPolynomial.mem_support_iff, coeff_sub, coeff_homogeneousComponent] at hx
+    rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, coeff_homogeneousComponent] at hx
     split_ifs at hx with hxj
     · simp at hx
     · have hxQ : x ∈ (P - 1).support := by
@@ -276,8 +324,8 @@ private theorem coeffDiag_lemma_5 {σ : Type} (s : σ → S) (h : MvPolynomial �
     AddMonoidAlgebra.coeff (aeval (fun p => C (s p) * X p) h) e = (e.prod fun p k => s p ^ k) * AddMonoidAlgebra.coeff h e := by
   classical
   conv_lhs => rw [h.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, coeff_sum]
+
+  rw [map_sum, coeff_sum]
   simp only [monoDiag_lemma_4, coeff_monomial]
   rw [Finset.sum_eq_single e]
   · rw [if_pos rfl]
@@ -462,7 +510,7 @@ theorem const_one {P : MvPolynomial (Fin 2 × Fin d) S} {m : ℕ}
   have hfF : ∀ i, constantCoeff (fF i) = 0 := by
     intro i
     have h2 : AddMonoidAlgebra.coeff (fF i - (xs S d 0 i + xs S d 1 i)) 0 = 0 := ccmem_lemma_2 (n := 1) (hF i)
-    rw [coeff_sub, MvPolynomial.coeff_add] at h2
+    rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_add] at h2
     have h0 : AddMonoidAlgebra.coeff (xs S d 0 i) 0 = 0 := hx 0 i
     have h1 : AddMonoidAlgebra.coeff (xs S d 1 i) 0 = 0 := hx 1 i
     rw [h0, h1, add_zero, sub_zero] at h2
@@ -496,7 +544,7 @@ theorem const_one {P : MvPolynomial (Fin 2 × Fin d) S} {m : ℕ}
     exact hi ((Finset.sum_eq_zero_iff.1 hs) i (Finsupp.mem_support_iff.2 hi))
   subst hx0
   apply MvPolynomial.mem_support_iff.1 hx
-  rw [coeff_sub, coeff_zero_one]
+  rw [MvPolynomial.coeff_sub, coeff_zero_one]
   linear_combination -h3
 
 private theorem coeffXX_lemma_15 (c : S) (a b : Fin 2 × Fin d) (e : Fin 2 × Fin d →₀ ℕ) :
@@ -547,21 +595,21 @@ theorem bilin_of_biadd {h : MvPolynomial (Fin 2 × Fin d) S}
         rw [hu]
         by_cases hii : i = i0
         · subst hii
-          simp [Finsupp.single_apply]
-        · simp [Finsupp.single_apply, hii, Ne.symm hii]
+          simp
+        · simp [hii]
       · have hu := one_lemma_16 (fun i => e (1, i)) hs1 l0 hl0 i
         rw [hu]
         by_cases hii : i = l0
         · subst hii
-          simp [Finsupp.single_apply]
-        · simp [Finsupp.single_apply, hii, Ne.symm hii]
+          simp
+        · simp [hii]
     subst hE
     rw [Finset.sum_eq_single i0, Finset.sum_eq_single l0, if_pos rfl]
     · intro l _ hl
       rw [if_neg]
       intro heq
       have := congrArg (fun f => f ((1 : Fin 2), l)) heq
-      simp [Finsupp.single_apply, Ne.symm hl] at this
+      simp [Ne.symm hl] at this
     · intro h'
       exact absurd (Finset.mem_univ _) h'
     · intro i _ hi
@@ -569,7 +617,7 @@ theorem bilin_of_biadd {h : MvPolynomial (Fin 2 × Fin d) S}
       rw [if_neg]
       intro heq
       have := congrArg (fun f => f ((0 : Fin 2), i)) heq
-      simp [Finsupp.single_apply, Ne.symm hi] at this
+      simp [Ne.symm hi] at this
     · intro h'
       exact absurd (Finset.mem_univ _) h'
 

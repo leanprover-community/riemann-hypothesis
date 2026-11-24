@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CBinet
+public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 @[expose] public section
 

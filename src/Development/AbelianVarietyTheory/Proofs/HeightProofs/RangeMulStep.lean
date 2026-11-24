@@ -1,16 +1,52 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
-public import Formalism.LocalToGlobal.ProjectiveLattices.LocRingPf
-public import Formalism.LocalToGlobal.ProjectiveLattices.RealPtPf
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLoc
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInj
 public import Formalism.LocalToGlobal.ProjectiveLattices.PtOfSPf
 public import Formalism.LocalToGlobal.ProjectiveLattices.SecPtRed
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 4000000
+
+
 
 noncomputable section
 
@@ -58,8 +94,8 @@ theorem range_aeval {k : ℕ} (Pw : MvPolynomial (Fin N) B.KO) (hPw : Pw.IsHomog
     (hy : y ∈ LinearMap.range (X.inc (addL (wt0 D j) wL m))) :
     y * MvPolynomial.aeval (fun i => X.inc wL (w i)) Pw ∈ LinearMap.range (X.inc (addL (wt0 D j) wL (m + k))) := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Pw.as_sum, map_sum, Finset.mul_sum]
+
+  rw [Pw.as_sum, map_sum, Finset.mul_sum]
   refine Submodule.sum_mem _ fun d hd => ?_
   rw [MvPolynomial.aeval_monomial, mul_left_comm, ← Algebra.smul_def]
   refine Submodule.smul_mem _ _ ?_
@@ -194,8 +230,8 @@ theorem ev_sec {F : Type} [Field F] (ev : Rp X la N →+* F) (τ : Ω →+* F) (
     ev (sec X la w i) = (∑ k, evK X la N ev (@algebraMap (Op X la N) (Kp X la N) _ _ _ (Tv X la N (i, k))) *
       τ (gF (X.inc wL (w k)))) * σ := by
   unfold Formalism.MainNotions.Gaps.EtaleWeightGaps.sec
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_mul]
+
+  rw [map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [ev_smul, hc 1 _ (by rw [add_zero_weight_one_eq]; exact emb_mem_Vw X la N wL (w k)), pow_one, mul_assoc]
 

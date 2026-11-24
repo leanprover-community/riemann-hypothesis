@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsUniqueFixedPoint
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -112,17 +115,5 @@ theorem add_le_order_subst_sub_subst {a b : σ → MvPowerSeries τ S} (ha : Has
   exact he (hcoeff e (by rw [hdeg]; exact hlt))
 
 end Subst
-
-section FixedPoint
-
-variable {σ R : Type*} [CommRing R]
-
-theorem existsUnique_fixedPoint (Φ : MvPowerSeries σ R → MvPowerSeries σ R)
-    (hΦ : ∀ f g : MvPowerSeries σ R, ∀ n : ℕ, (n : ℕ∞) ≤ order (f - g) →
-      ((n + 1 : ℕ) : ℕ∞) ≤ order (Φ f - Φ g)) :
-    ∃! f, Φ f = f :=
-  _root_.UpperTheory.Reformulated.B.Ydb5.existsUnique_fixedPoint Φ hΦ
-
-end FixedPoint
 
 end GroundTheory.LocalField.FormalGroup

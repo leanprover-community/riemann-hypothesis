@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.WeakCharacterisationWithError
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.BaseSt
+public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

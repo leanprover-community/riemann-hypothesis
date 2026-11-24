@@ -1,10 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CrossOpSlotBound
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.StdGap
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Permute
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.InnerCrossOpEigEqZero
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.SltEqZeroOfCompact
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.BochnerG2.NcVOneDecomp
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.BochnerG2.CrossOpEigGap
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.BochnerG2.Numerics
 
 @[expose] public section
 
@@ -115,16 +116,16 @@ theorem crossOp_position_bound (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : I
     · rw [slt_eq_slice i r p P]
       exact hP _
   have h1 : ‖P‖ ^ 2 = ∑ r, ‖slt i r P‖ ^ 2 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [@norm_sq_eq_re_inner ℂ, slt_inner_eq_sum i P P, map_sum]
+
+    rw [@norm_sq_eq_re_inner ℂ, slt_inner_eq_sum i P P, map_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     rw [@norm_sq_eq_re_inner ℂ]
   have h2 : inner ℂ (crossOp ε E k i P) P =
       ∑ r, inner ℂ (crossOp ε E 1 0 (slt i r P)) (slt i r P) := by
     rw [slt_inner_eq_sum i]
     simp only [slt_crossOp]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h1, h2, map_sum, Finset.mul_sum, Finset.mul_sum]
+
+  rw [h1, h2, map_sum, Finset.mul_sum, Finset.mul_sum]
   exact Finset.sum_le_sum fun r _ => Wp_bound hE hU hV hmono hh hbig (hslt r)
 
 end Slot

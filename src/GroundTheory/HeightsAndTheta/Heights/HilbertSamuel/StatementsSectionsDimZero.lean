@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodairaGeneric
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.CoordCurveDegree
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.Pi
+public import Mathlib.Topology.Algebra.OpenSubgroup
+public import Mathlib.Topology.LocallyConstant.Basic
 public import GroundTheory.AutomorphicForms.LocallyProfinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsOverIff
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ThetaSetupStructureMapComp
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsPolAVFiniteTypeSubring
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsToricRankOne
 
 @[expose] public section
 

@@ -1,10 +1,59 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HeckePairTop
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwSimpleOrbit
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHeckePairIwC
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkApply
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkNorm
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHeckePairIwC
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwSimpleOrbit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 
 @[expose] public section
 
@@ -21,8 +70,8 @@ private theorem quadAbs {A G M ι : Type} [CommRing A] [Group G] [AddCommGroup M
   have fx : ∀ (w : fixd ρ I), ∀ g ∈ I, ρ g w = w := fun w => w.2
   have key : ∀ c ≠ o, ∑ c', ρ (x c' * s) (ρ (x c * s) v) = (hk ρ I s (hk ρ I (d c) v) : M) := by
     intro c hco
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← fx (hk ρ I s _) _ (hy c hco), hT, map_sum]
+
+    rw [← fx (hk ρ I s _) _ (hy c hco), hT, map_sum]
     refine Finset.sum_congr rfl fun c' _ => ?_
     rw [(hkNorm A G M ρ I (d c) hI (hd c hco)).1]
     conv_rhs => rw [← fx v _ (hy c hco)]
@@ -37,8 +86,8 @@ private theorem quadAbs {A G M ι : Type} [CommRing A] [Group G] [AddCommGroup M
     simp only [this]
     simp [Nat.cast_smul_eq_nsmul]
   rw [Module.End.mul_apply, hT, hT]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum]
+
+  simp only [map_sum]
   rw [Finset.sum_comm, ← Finset.add_sum_erase _ _ (Finset.mem_univ o), k0]
   simp only [LinearMap.add_apply, LinearMap.smul_apply, Module.End.one_apply, LinearMap.sum_apply,
     Submodule.coe_add, Submodule.coe_smul, Submodule.coe_sum, Module.End.mul_apply]
@@ -66,8 +115,7 @@ private theorem matId {R : Type} [CommRing R] {n : ℕ} (i j : Fin n) (hij : i �
       simp_all [eq_comm]
   rw [hP, hD]
   simp only [mul_add, add_mul, mul_sub, sub_mul, mul_one, one_mul, single_mul_single_same,
-    single_mul_single_of_ne _ _ _ _ hij, single_mul_single_of_ne _ _ _ _ hij.symm, zero_mul, mul_zero,
-    Units.inv_mul, Units.mul_inv]
+    single_mul_single_of_ne _ _ _ _ hij, single_mul_single_of_ne _ _ _ _ hij.symm, zero_mul, Units.inv_mul, Units.mul_inv]
   abel
 
 private theorem swapDiag {R : Type} [CommRing R] {n : ℕ} (w : Equiv.Perm (Fin n)) (t : Fin n → Rˣ) :

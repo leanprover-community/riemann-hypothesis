@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.NormalizedValuationMul
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInstSt
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

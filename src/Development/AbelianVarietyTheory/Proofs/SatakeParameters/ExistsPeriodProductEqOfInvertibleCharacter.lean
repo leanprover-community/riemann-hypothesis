@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+import Mathlib.Tactic
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
 public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
@@ -88,8 +88,8 @@ theorem stRep_trivial_one (g : ↥(GK K)) :
 end GlobalTheory.Pst.TwistLetters.Invert
 
 
-set_option maxHeartbeats 1600000 in
-set_option synthInstance.maxHeartbeats 200000 in
+
+
 open GlobalTheory.Pst.TwistLetters.Invert in
 theorem GlobalTheory.Pst.TwistLetters.exists_dmul_eq_of_inv : ∀ {l : ℕ} [Fact l.Prime] (P : LocPrime l) {K L : FinExt l} {V : Type} [AddCommGroup V] [Module ↥L.1 V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] ↥L.1 V] (ρs ρt : Representation ↥L.1 ↥(GK K) V) (ρm : Representation ↥L.1 ↥(GK K) (Fin 1 → ↥L.1)) (χ : ↥(GK K) → ↥L.1) (hm : ∀ g v, ρm g v = χ g • v) (ht : ∀ g v, ρt g v = χ g • ρs g v) (y : ↥(Dpst P ρm)) (y' : (Fin 1 → ↥L.1) ⊗[ℚ_[l]] Bst P), GlobalTheory.Pst.TwistLetters.mulB P (Fin 1 → ↥L.1) y' (y : (Fin 1 → ↥L.1) ⊗[ℚ_[l]] Bst P) = (fun _ => (1 : ↥L.1)) ⊗ₜ (1 : Bst P) → ∀ z : ↥(Dpst P ρt), ∃ x : ↥(Dpst P ρs), GlobalTheory.Pst.TwistLetters.dmul P ρs ρt ρm χ hm ht x y = z := by
   intro l _ P K L V _ _ _ _ ρs ρt ρm χ hm ht y y' hinv z

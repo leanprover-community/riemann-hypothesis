@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AdmissibleFiniteLength
 public import GroundTheory.LocalFields.LocalFourierHaar
-public import GroundTheory.LocalFields.LocalFourierChar
-public import GroundTheory.LocalFields.LocalZetaEpsilon
+public import GroundTheory.AutomorphicForms.GLnLocal
+public import Mathlib.Topology.LocallyConstant.Basic
+public import GroundTheory.AutomorphicForms.Cartan
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
+public import GroundTheory.LocalFields.LocalZetaEpsilon
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.LocalFields.LocalFourierChar
 
 @[expose] public section
 

@@ -1,5 +1,10 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullGenPf
 
 @[expose] public section
@@ -13,7 +18,7 @@ open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction
 
 variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {O : Type} [CommRing O] [StarRing O] [Module O D.X]
 
-set_option maxHeartbeats 800000 in
+
 theorem exists_sq_val (oa : D.OAct O) (w0 a : O) (N : ℕ) (haa : star a * a = ((N + 1 : ℕ) : O))
     (u₀ : LB.Gen (LB.LinComb D.P.L (K := Fin 4) ![(padd D.P.A (𝟙 _) (oa.onB.act w0)).left, 𝟙 D.P.A.left,
       (oa.onB.act w0).left, (toUnit D.P.A ≫ η[D.P.A]).left] ![1, -2, -1, 2])) (hu₀ : u₀.IsGen)
@@ -54,7 +59,7 @@ theorem exists_sq_val (oa : D.OAct O) (w0 a : O) (N : ℕ) (haa : star a * a = (
       have a₁ : x ≫ w = w := Category.id_comp _
       have a₂ : x ≫ g = g := Category.id_comp _
       rw [hz, a₁, a₂, Fin.prod_univ_three]
-      simp only [Sum.elim_inl, Sum.elim_inr, Matrix.cons_val]
+      simp only [Sum.elim_inr, Matrix.cons_val]
       rw [_root_.one_mul (w ^ (N + 1)), _root_.one_mul x, mul_comm (w ^ (N + 1)) x, mul_comm w x]
       apply Additive.ofMul.injective
       simp only [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]
@@ -115,7 +120,7 @@ theorem tauK_nsmul (hB : D.TauBimult) (a b : D.X) (n : ℕ) :
 
 end K
 
-set_option maxHeartbeats 800000 in
+
 theorem X_value' (hGF : GlobalFnsSt) (hB : D.TauBimult) (oa : D.OAct O) (w0 : O) (hΨ : TraceFormTwistIso D oa w0)
     (a : O) (N : ℕ) (hN : a * star a = (N : O)) (hN1 : 1 ≤ N) (k : ℕ)
     (X : LB.Gen (LB.LinComb D.P.L (K := Fin 2) ![𝟙 D.P.A.left, (oa.onB.act a).left]

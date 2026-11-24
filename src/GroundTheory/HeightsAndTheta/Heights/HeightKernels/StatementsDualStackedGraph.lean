@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSimpleStacked
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLineDegreeDual
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 
 @[expose] public section
 

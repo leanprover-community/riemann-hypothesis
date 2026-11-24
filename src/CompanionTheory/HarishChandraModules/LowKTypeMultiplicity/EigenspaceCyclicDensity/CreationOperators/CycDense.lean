@@ -1,6 +1,9 @@
 module
 
+public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOnePOf
+public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
 
 @[expose] public section

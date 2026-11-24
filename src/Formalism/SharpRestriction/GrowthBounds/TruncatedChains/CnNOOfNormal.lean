@@ -1,6 +1,48 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.ObjPol
 public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.CnStepsTail
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -79,7 +121,7 @@ theorem cn_posR_braid (l1 l2 : List (Fin n × Fin n)) (x1 x2 y1 y2 z1 z2 : Fin n
   · exact Or.inr (Or.inr (Or.inr ⟨fun hh => e1 (hu _ _ hh), fun hh => e2 (hu _ _ hh),
       fun hh => e3 (hu _ _ hh), h3, h4⟩))
 
-set_option maxHeartbeats 1600000 in
+
 theorem cn_ar_swap {p P Q R P' Q' R' x y z a b c d : ℕ} (hxy : x < y) (hyz : y < z) (h1 : a ≠ c) (h2 : a ≠ d)
     (h3 : b ≠ c) (h4 : b ≠ d) (o : (P < Q ∧ Q < R) ∨ (R < Q ∧ Q < P))
     (p1 : (x = a ∧ y = b ∧ P = p ∧ P' = p + 1) ∨ (x = c ∧ y = d ∧ P = p + 1 ∧ P' = p) ∨
@@ -92,7 +134,7 @@ theorem cn_ar_swap {p P Q R P' Q' R' x y z a b c d : ℕ} (hxy : x < y) (hyz : y
   rcases p1 with h1' | h1' | h1' <;> rcases p2 with h2' | h2' | h2' <;>
     rcases p3 with h3' | h3' | h3' <;> rcases o with o | o <;> omega
 
-set_option maxHeartbeats 3200000 in
+
 theorem cn_ar_braid' {p P Q R P' Q' R' x y z a b c : ℕ} (hxy : x < y) (hyz : y < z) (hab : a < b) (hbc : b < c)
     (o : (P < Q ∧ Q < R) ∨ (R < Q ∧ Q < P))
     (p1 : (x = b ∧ y = c ∧ P = p ∧ P' = p + 2) ∨ (x = a ∧ y = c ∧ P = p + 1 ∧ P' = p + 1) ∨

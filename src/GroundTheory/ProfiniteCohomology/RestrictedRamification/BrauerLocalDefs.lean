@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDefs
+public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.NormalFixingSubgroupGaloisClosure
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.IntScalars
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.LocalMaps
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDefs
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolBridge
 
 @[expose] public section
 

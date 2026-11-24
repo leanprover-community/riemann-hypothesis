@@ -1,9 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ThetaSetupStructureMapComp
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedLatticeQuadraticSumGeDiagonal
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ClassSums
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.ConvexCones.FinitePosDefFormSublevel
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedLatticeQuadraticSumGeDiagonal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Pi.Interval
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.SiegelToroidalIntegral
 
 @[expose] public section
 
@@ -365,8 +403,8 @@ theorem orbitSums_of_classSums : ∀ (O : Type) [CommRing O] (bar : O → O) (q 
   set F : B := ∑ c ∈ C, ∏ i, f (fun u => c (i, u)) (κ i) with hF
   obtain ⟨g, hg1, hg2⟩ := exists_invariant (A := A) 𝔷 hz E F (fun σ hσ => by
     obtain ⟨γ, h1, h2, h3, h4⟩ := hγ σ hσ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hF, map_sum]
+
+    rw [hF, map_sum]
     simp only [map_prod, h4]
     exact sum_comp_eq C hC1 hC2 hC3 γ h1 h2 h3 (fun c => ∏ i, f (fun u => c (i, u)) (κ i))
       (fun c c' h => Finset.prod_congr rfl fun i _ => hf _ _ _ fun u => h _))
@@ -422,8 +460,8 @@ theorem orbitSums_of_classSums : ∀ (O : Type) [CommRing O] (bar : O → O) (q 
   · rw [sum_orbit_eq C hC1 hC2 hC3 (k y) (hk y) T _ (fun μ => hSfin.mem_toFinset) (fun i ν => t y ν (κ i))]
     rw [← sub_add_sub_cancel _ (ev' y F), max_comm]
     refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le_max hgF ?_)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hF, map_sum, ← Finset.sum_sub_distrib]
+
+    rw [hF, map_sum, ← Finset.sum_sub_distrib]
     refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hε.le fun c hc => ?_
     rw [map_prod]
     refine (norm_prod_sub_le _ _ _ _ hε'.le (min_le_right _ _) (fun i => hle y _) fun i => ?_).trans (min_le_left _ _)

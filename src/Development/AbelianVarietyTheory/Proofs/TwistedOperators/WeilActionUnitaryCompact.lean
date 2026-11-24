@@ -1,12 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzSpaceTranslateMemOfMem
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsTrigPolynomialAnnihilatingAdelicSchwartzStatement
-public import GroundTheory.GlobalFields.Adele.Compact
 public import GroundTheory.GlobalFields.Adele.Approximation
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsTrigPolynomialAnnihilatingAdelicSchwartz
+public import GroundTheory.GlobalFields.Adele.Compact
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,13 +60,10 @@ theorem evI_mul {F : Type} [Field F] [NumberField F] (a b : AF F) : evI F (a * b
 theorem evI_fin {F : Type} [Field F] [NumberField F] : evI F ((0, 1) : AF F) = 0 :=
   map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
 
-theorem fst_eq_zero {F : Type} [Field F] [NumberField F] {a : AF F} (h : evI F a = 0) : a.1 = 0 :=
-  (InfiniteAdeleRing.ringEquiv_mixedSpace F).map_eq_zero_iff.mp h
-
 theorem loc_chars : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ), IsStd ψ →
     ∀ Φ ∈ schA F κ, ∀ y : κ → AF F, (∀ z, At (evI F) z → Φ (y + z) = 0) →
     ∃ (s : Finset (κ → AF F)) (c : (κ → AF F) → ℂ), (∀ q ∈ s, ∀ i, evI F (q i) = 0) ∧
-      ∑ q ∈ s, c q * ψ (y ⬝ᵥ q) = 1 ∧ ∀ x, (∑ q ∈ s, c q * ψ (x ⬝ᵥ q)) * Φ x = 0 := GlobalTheory.T.exists_trigPolynomial_annihilating_adelicSchwartz
+      ∑ q ∈ s, c q * ψ (y ⬝ᵥ q) = 1 ∧ ∀ x, (∑ q ∈ s, c q * ψ (x ⬝ᵥ q)) * Φ x = 0 := _root_.GlobalTheory.FinTrig.loc_chars
 
 theorem snd_eq_zero_of_at {F : Type} [Field F] [NumberField F] {κ : Type} {z : κ → AF F} (hz : At (evI F) z) (i : κ) :
     (z i).2 = 0 := by
@@ -128,7 +160,7 @@ theorem fibre {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (ψ 
       T (schr ψ (u • p, u • q) Φ) = schr ψ (u • p, u • q) (T Φ))
     (Φ : (κ → AF F) → ℂ) (hΦ : Φ ∈ schA F κ) (y : κ → AF F) (hy : ∀ z, At (evI F) z → Φ (y + z) = 0) :
     T Φ y = 0 := by
-  obtain ⟨s, c, hs, h1, h0⟩ := loc_chars ψ hψ Φ hΦ y hy
+  obtain ⟨s, c, hs, h1, h0⟩ := _root_.GlobalTheory.FinTrig.loc_chars ψ hψ Φ hΦ y hy
   have hch : ∀ q ∈ s, T (fun x => ψ (x ⬝ᵥ q) * Φ x) = fun x => ψ (x ⬝ᵥ q) * T Φ x := by
     intro q hq
     set u : AF F := (0, 1) with hu
@@ -136,7 +168,7 @@ theorem fibre {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (ψ 
     have huq : u • q = q := by
       funext i
       have hi := hs q hq i
-      have hq1 : (q i).1 = 0 := fst_eq_zero hi
+      have hq1 : (q i).1 = 0 := _root_.GlobalTheory.FinTrig.fst_eq_zero hi
       refine Prod.ext ?_ ?_
       · show (0 : InfiniteAdeleRing F) * (q i).1 = (q i).1
         rw [hq1, zero_mul]
@@ -151,8 +183,8 @@ theorem fibre {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (ψ 
       ∑ q ∈ s, c q • (fun x => ψ (x ⬝ᵥ q) * G x) := by
     intro G; funext x; simp [Finset.sum_mul, mul_assoc]
   have hT : T (fun x => (∑ q ∈ s, c q * ψ (x ⬝ᵥ q)) * Φ x) = fun x => (∑ q ∈ s, c q * ψ (x ⬝ᵥ q)) * T Φ x := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hsum, hsum, map_sum]
+
+    rw [hsum, hsum, map_sum]
     refine Finset.sum_congr rfl fun q hq => ?_
     rw [map_smul, hch q hq]
   have hz : (fun x => (∑ q ∈ s, c q * ψ (x ⬝ᵥ q)) * Φ x) = 0 := funext h0

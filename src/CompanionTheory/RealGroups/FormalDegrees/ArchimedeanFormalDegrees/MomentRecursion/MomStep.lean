@@ -1,6 +1,12 @@
 module
 
 public import CompanionTheory.RealGroups.FormalDegrees.ArchimedeanFormalDegrees.MomB
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.MeasureTheory.Order.Group.Lattice
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 @[expose] public section
 

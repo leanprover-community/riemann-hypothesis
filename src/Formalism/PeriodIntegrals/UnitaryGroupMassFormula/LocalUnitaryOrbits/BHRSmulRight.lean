@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcSIntWittOEv
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.TraceEqAdd
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.SdVolHOfPi
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.SdVolWOfTop
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.PairHermZeroRight
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -32,8 +71,8 @@ theorem b_fg : (Submodule.span (v.adicCompletionIntegers F)
         have := congrArg (fun y : 𝓞 E => (y : E)) (b.sum_repr x)
         simpa using this.symm
       simp only
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hx, map_sum]
+
+      rw [hx, map_sum]
       refine Submodule.sum_mem _ fun i _ => ?_
       rw [map_zsmul]
       exact zsmul_mem (Submodule.subset_span (Set.mem_range_self i)) _
@@ -63,29 +102,7 @@ theorem b_int_of_sc {a : Fv F v} (ha : sc (E := E) v a ∈ OEv (E := E) v) : a �
 
 theorem b_sigR_mem (σ : E →ₐ[F] E) {z : Fv F v ⊗[F] E} (hz : z ∈ OEv (E := E) v) :
     sigR (Fv F v) σ z ∈ OEv (E := E) v := by
-  induction hz using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨b, -, rfl⟩ := hx
-    have hb : IsIntegral ℤ (σ (b : E)) := by
-      simpa using (b.isIntegral_coe).map (σ.toRingHom.toIntAlgHom)
-    have e : sigR (Fv F v) σ (inclR (F := F) (Fv F v) (b : E)) =
-        inclR (F := F) (Fv F v) ((⟨σ (b : E), hb⟩ : 𝓞 E) : E) := by
-      simp [sigR, inclR]
-    rw [e]
-    exact b_inclR_mem (F := F) (E := E) v ⟨σ (b : E), hb⟩
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add x y _ _ hx hy => rw [map_add (f := _)]; exact Submodule.add_mem _ hx hy
-  | smul r x _ hx =>
-    have h1 : r • x = algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v) * x := by
-      rw [← Algebra.smul_def]; rfl
-    have h2 : algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v) * sigR (Fv F v) σ x =
-        r • sigR (Fv F v) σ x := by
-      rw [← Algebra.smul_def]; rfl
-    have h3 : sigR (Fv F v) σ (algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v)) =
-        algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v) := by
-      simp [sigR, Algebra.TensorProduct.algebraMap_apply]
-    rw [h1, map_mul, h3, h2]
-    exact Submodule.smul_mem _ r hx
+  apply Formalism.L2.SG.Pf.NcS.IntWittPf.oev_sigR <;> assumption
 
 theorem b_tr_sc (s : Fv F v) (w : Fv F v ⊗[F] E) :
     Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (sc (E := E) v s * w) =

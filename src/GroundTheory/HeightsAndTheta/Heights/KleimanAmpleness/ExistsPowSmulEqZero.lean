@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideFurther
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticeLocalEqIntegralAlmostAll
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PlaceIdempotentActsOnSupportedAndOff
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,19 +57,7 @@ section General
 
 variable {D : D7}
 
-theorem mul_mem_intAE {x y : Af D.host.F ⊗[D.host.F] D.host.E} (hx : x ∈ intAE D) (hy : y ∈ intAE D) :
-    x * y ∈ intAE D := by
-  refine AddSubgroup.closure_induction₂ (p := fun x y _ _ => x * y ∈ intAE D) ?_ ?_ ?_ ?_ ?_ ?_ ?_ hx hy
-  · rintro _ _ ⟨a, ha, u, rfl⟩ ⟨b, hb, v, rfl⟩
-    refine AddSubgroup.subset_closure ⟨a * b, fun w => ?_, u * v, ?_⟩
-    · rw [map_mul]; exact mul_mem (ha w) (hb w)
-    · rw [Algebra.TensorProduct.tmul_mul_tmul]; rfl
-  · intro x _; rw [zero_mul]; exact zero_mem _
-  · intro x _; rw [mul_zero]; exact zero_mem _
-  · intro x y z _ _ _ h1 h2; rw [add_mul]; exact add_mem h1 h2
-  · intro x y z _ _ _ h1 h2; rw [mul_add]; exact add_mem h1 h2
-  · intro x y _ _ h; rw [neg_mul]; exact neg_mem h
-  · intro x y _ _ h; rw [mul_neg]; exact neg_mem h
+alias mul_mem_intAE := _root_.GlobalTheory.IdemPrime.mul_mem_int
 
 theorem finPart_cA (x : AE D) : finPart D (cA D x) = sigR (Af D.host.F) D.sp.cm.sig (finPart D x) := by
   induction x using TensorProduct.induction_on with
@@ -54,7 +80,7 @@ theorem cA_int_iff (a : AE D) : finPart D (cA D a) ∈ intAE D ↔ finPart D a �
   refine ⟨fun h => ?_, fun h => by rw [finPart_cA]; exact sigR_mem_intAE h⟩
   rw [← cA_cA a, finPart_cA]; exact sigR_mem_intAE h
 
-theorem cA_incA (x : D.host.E) : cA D (incA D x) = incA D (star x) := rfl
+alias cA_incA := _root_.GlobalTheory.DualPairCheck.cA_incA
 
 def row (S : HSp D) (s : Fin S.rank → D.host.E) (b : Fin S.rank) : D.host.E := ∑ k, star (s k) * S.gram k b
 
@@ -127,8 +153,8 @@ theorem exists_expansion (hL : IsSelfDualC S L) :
   refine ⟨m, s, s', hs, hs', fun y a => ?_⟩
   have h1 : ∀ b, ∑ l, incA D (row S (s' l) b) * y b * incA D (s l a) = if a = b then y b else 0 := fun b => by
     have h2 : ∑ l, incA D (row S (s' l) b) * y b * incA D (s l a) = incA D (∑ l, s l a * row S (s' l) b) * y b := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_mul]
+
+      rw [map_sum, Finset.sum_mul]
       exact Finset.sum_congr rfl fun l _ => by rw [RingHom.map_mul]; ring
     rw [h2]
     unfold row
@@ -222,8 +248,8 @@ theorem mt_sec (β : Frame p S n) (g : GL n k) (y : Fin S.rank → k) :
     mt S (β.gl g) *ᵥ (fun i => p.sec (y i)) = fun i => p.sec (((β.b * g.val * β.b') *ᵥ y) i) := by
   funext i
   rw [← β.gl_mat g]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply]
+
+  simp only [Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [sec_mul, p.sec_pr, mul_comm p.e, mul_assoc, e_mul_sec]
 
@@ -231,8 +257,8 @@ theorem mt_csec (h : GA D S) (z : Fin S.rank → k) :
     mt S h *ᵥ (fun i => cA D (p.sec (z i))) =
       fun i => cA D (p.sec ((((mt S h).map (fun a => p.pr (cA D a))) *ᵥ z) i)) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply]
+
+  simp only [Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [sec_mul, p.sec_pr, mul_comm p.e, mul_assoc, e_mul_sec, map_mul, cA_cA]
 
@@ -243,20 +269,20 @@ theorem csec_mem_idAt (c : k) : cA D (p.sec c) ∈ idAt D (· = p.v) := by
 
 theorem pairing_sec (s : Fin S.rank → D.host.E) (u : Fin S.rank → k) :
     pairing S s (fun i => p.sec (u i)) = p.sec (∑ b, p.pr (incA D (row S s b)) * u b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [mul_comm, sec_mul_right, mul_comm]
 
 theorem pairing_csec (s : Fin S.rank → D.host.E) (z : Fin S.rank → k) :
     pairing S s (fun i => cA D (p.sec (z i))) =
       cA D (p.sec (∑ i, ∑ j, p.pr (incA D (s i)) * p.pr (cA D (incA D (S.gram i j))) * z j)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_comm, map_sum, map_sum]
+
+  rw [Finset.sum_comm, map_sum, map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
   have h : ∑ i, p.pr (incA D (s i)) * p.pr (cA D (incA D (S.gram i b))) = p.pr (cA D (incA D (row S s b))) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [row, map_sum, RingHom.map_mul, cA_incA (star _), star_star]
+
+    simp only [row, map_sum, RingHom.map_mul, cA_incA (star _), star_star]
   rw [← Finset.sum_mul, h, mul_comm (p.pr _), ← sec_mul_right, RingHom.map_mul, cA_cA, mul_comm]
 
 theorem sec_inc_mem {L : Lat S} {s : Fin S.rank → D.host.E} (hs : s ∈ L) :
@@ -272,8 +298,8 @@ theorem exists_gen {L : Lat S} (hL : IsSelfDualC S L) :
   refine ⟨m, s, fun l u => ∑ b, p.pr (incA D (row S (s' l) b)) * u b, hs, fun u => ?_, fun u hu l => ?_⟩
   · funext a
     have h := congrArg p.pr (hd (fun i => p.sec (u i)) a)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [pairing_sec, map_sum p.pr, RingHom.map_mul, p.pr_sec] at h
+
+    simp only [pairing_sec, map_sum p.pr, RingHom.map_mul, p.pr_sec] at h
     rw [Finset.sum_apply]
     exact h
   · rw [p.int_iff, ← pairing_sec]

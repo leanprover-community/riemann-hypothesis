@@ -1,14 +1,52 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.UnlinkedHalfIntegral.UnitFormC
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.UnitFam
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.TsumNormEisensteinTranslate
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.EisSlash
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.EisVan
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.EisCoef
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.EisSlash
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.EisVan
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.EulerianNumeratorThree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.LevelOne
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.TsumNormEisensteinTranslate
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.UnlinkedHalfIntegral.UnlinkedHeckeRoots.MapLk
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -75,8 +113,8 @@ private lemma Good.mul {k k' : ℤ} {f g : (ZMod N)ˣ → ℍ → ℂ} (hf : Goo
   refine { pre := hf.pre.mul hg.pre, int := ?_, cg := ?_ }
   · intro a n
     show ‖ι.symm (coef (f a * g a) n)‖ ≤ 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hf.pre.coef_sum hg.pre, map_sum]
+
+    rw [hf.pre.coef_sum hg.pre, map_sum]
     refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun p _ => ?_
     rw [map_mul, norm_mul]
     exact mul_le_one₀ (hf.int a p.1) (norm_nonneg _) (hg.int a p.2)
@@ -85,8 +123,8 @@ private lemma Good.mul {k k' : ℤ} {f g : (ZMod N)ˣ → ℍ → ℂ} (hf : Goo
     obtain ⟨g', pg, cg⟩ := hg.cg σ
     refine ⟨fun a => f' a * g' a, pf.mul pg, fun a n => ?_⟩
     show coef (f' a * g' a) n = σ (coef (f a * g a) n)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [pf.coef_sum pg, hf.pre.coef_sum hg.pre, map_sum]
+
+    rw [pf.coef_sum pg, hf.pre.coef_sum hg.pre, map_sum]
     exact Finset.sum_congr rfl fun p _ => by rw [map_mul, cf, cg]
 
 private lemma Pre.coef_comb {k : ℤ} {f g : (ZMod N)ˣ → ℍ → ℂ} (hf : Pre k f) (hg : Pre k g) (c : ℂ) (a) (n : ℕ) :
@@ -288,8 +326,8 @@ private lemma VC.mul {k k' : ℕ} {f g : (ZMod N)ˣ → ℍ → ℂ} (hv : VC k 
   obtain ⟨g', pg, cg⟩ := hg.cg σ
   refine ⟨fun a => f' a * g' a, by rw [Nat.cast_add]; exact p'.mul pg, fun a => van_mul (v' a) pg a, fun a n => ?_⟩
   show coef (f' a * g' a) n = σ (coef (f a * g a) n)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [p'.coef_sum pg, pf.coef_sum hg.pre, map_sum]
+
+  rw [p'.coef_sum pg, pf.coef_sum hg.pre, map_sum]
   exact Finset.sum_congr rfl fun p _ => by rw [map_mul, c', cg]
 
 private lemma vc_eis (hN : 3 ≤ N) : VC 3 (fun a : (ZMod N)ˣ => eisFun N 3 a) := by

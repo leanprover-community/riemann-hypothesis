@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPlaceCentredSum
+public import Mathlib.NumberTheory.RamificationInertia.Inertia
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.RamificationInertia.Basic
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

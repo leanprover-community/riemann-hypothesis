@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatFinite
-public import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.AutomorphicForms.ReductionMeasure
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,48 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsFirstOrderDeformationOfRZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -23,7 +65,7 @@ theorem aeval_semi {X h : M4 R} {c : Fin 4 → R} (H : X * h = h * Matrix.diagon
       ← mul_smul_comm]
     congr 1
     ext i j
-    by_cases hij : i = j <;> simp [Matrix.diagonal_apply, hij, Polynomial.eval_monomial]
+    by_cases hij : i = j <;> simp [hij, Polynomial.eval_monomial]
 
 theorem aeval_red (π : R →+* E) {X : M4 R} {c : Fin 4 → R} (H : X.map π = Matrix.diagonal fun a => π (c a)) (p : R[X]) :
     (aeval X p).map π = Matrix.diagonal fun a => π (p.eval (c a)) := by
@@ -105,7 +147,7 @@ theorem sandwich {X : M4 R} {h : (M4 R)ˣ} {c : Fin 4 → R} (hd : ∀ i j, i �
   · intro h0
     have h1 := hW j i
     rw [h0] at h1
-    simp only [Matrix.zero_apply, if_pos rfl] at h1
+    simp only [Matrix.zero_apply] at h1
     exact (isUnit_dd hd j).mul_right_eq_zero.mp ((isUnit_dd hd i).mul_left_eq_zero.mp h1.symm)
   · intro h0
     ext a b
@@ -470,7 +512,7 @@ theorem UpperTheory.V.Loc.spFlag :
     simp only [mapRep_apply] at e
     rw [Matrix.map_apply, e]
     simp [Raw.r0At, Raw.r0, diagRep, Matrix.diagonal_apply]
-    split_ifs <;> simp [IsScalarTower.algebraMap_apply c.O E B]
+    split_ifs <;> simp
   have key := fun hX => SpFlag.ord_iff (π : B →+* E) hπ' ((D.Ip l).subgroupOf (D.Gp l))
     (fun i g => algebraMap c.O B (D.ps i g)) (s₀ := D.s0) (Subgroup.mem_subgroupOf.mpr hs0) r
     hd hu hν hX hred

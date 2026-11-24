@@ -2,6 +2,53 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.CrystallineCardinalities.UnitStep
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.CrystallineCardinalities.OkFin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.LinearAlgebra.Matrix.Block
 
 @[expose] public section
 
@@ -56,31 +103,31 @@ private theorem conj_facts {T B X : Matrix (Fin 3) (Fin 3) C} (hT : UpT T) (hB :
   obtain ⟨i00, i11, i22, i01, i12⟩ := inv_entries hT hB h
   have d0 : (T * X * B) 0 0 = X 0 0 := by
     rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [b1, b2, x1, x2, x3, mul_zero, add_zero]
     linear_combination X 0 0 * i00
   have d1 : (T * X * B) 1 1 = X 1 1 := by
     rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [a1, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
     linear_combination X 1 1 * i11
   have d2 : (T * X * B) 2 2 = X 2 2 := by
     rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [a2, a3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
     linear_combination X 2 2 * i22
   have s0 : (T * X * B) 0 1 = T 0 0 * B 1 1 * X 0 1 - T 0 1 * B 1 1 * (X 0 0 - X 1 1) := by
     rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [b3, x1, x2, x3, mul_zero, add_zero]
     linear_combination X 0 0 * i01
   have s1 : (T * X * B) 1 2 = T 1 1 * B 2 2 * X 1 2 - T 1 2 * B 2 2 * (X 1 1 - X 2 2) := by
     rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [a1, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
     linear_combination X 1 1 * i12
   refine ⟨up_of ?_ ?_ ?_, ?_, ?_⟩
   · rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [a1, b1, b2, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
   · rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [a2, a3, b1, b2, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
   · rw [conj_apply]
-    simp only [a1, a2, a3, b1, b2, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
+    simp only [a2, a3, b3, x1, x2, x3, mul_zero, zero_mul, add_zero, zero_add]
   · intro i
     fin_cases i
     exacts [d0, d1, d2]
@@ -94,7 +141,7 @@ private theorem conj_single {T B : Matrix (Fin 3) (Fin 3) C} (hT : UpT T) (hB : 
   obtain ⟨b1, b2, b3⟩ := up_entries hB
   ext i j
   rw [conj_apply]
-  fin_cases i <;> fin_cases j <;> simp [Matrix.single_apply, a1, a2, a3, b1, b2, b3] <;> ring
+  fin_cases i <;> fin_cases j <;> simp [a1, a2, a3, b1, b2, b3] <;> ring
 
 private theorem up_of_conj {T B Y : Matrix (Fin 3) (Fin 3) C} (hT : UpT T) (hBT : B * T = 1)
     (hY : UpT (T * Y * B - Y)) (u0 : IsUnit (T 2 2 - T 0 0)) (u1 : IsUnit (T 1 1 - T 0 0))

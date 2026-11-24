@@ -1,14 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefPlusAmpleDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenDegAmple
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftDegreePolynomial
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefAmpleGeneric
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenDegTwist
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBridgeFull
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.KleimanSt
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivPrincipalDegree
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ExistsLinearIndependentOfGenerates
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefAmpleGeneric
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftDegreePolynomial
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

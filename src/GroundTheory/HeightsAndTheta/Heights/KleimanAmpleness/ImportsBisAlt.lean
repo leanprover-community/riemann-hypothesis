@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraAlt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsBisSide
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsBisTail

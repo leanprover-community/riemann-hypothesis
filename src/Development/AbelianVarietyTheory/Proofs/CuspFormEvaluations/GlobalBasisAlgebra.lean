@@ -1,12 +1,51 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
-public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsChartIff
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtUniq
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrTanAlg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -60,8 +99,8 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
       intro y
       calc ∑ σ, c σ * χ' σ y = ∑ σ, c σ * χ' σ (∑ j, b.repr y j • b j) := by rw [b.sum_repr y]
         _ = ∑ j, (b.repr y j : K) * ∑ σ, c σ * χ' σ (b j) := by
-            set_option synthInstance.maxHeartbeats 100000 in
-              simp only [map_sum, zsmul_eq_mul, map_mul, map_intCast, Finset.mul_sum]
+
+            simp only [map_sum, zsmul_eq_mul, map_mul, map_intCast, Finset.mul_sum]
             rw [Finset.sum_comm]
             exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun σ _ => by ring
         _ = 0 := by simp [hcj]
@@ -80,15 +119,15 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
   let P : J → M → M := fun σ V => ∑ j, κ (B j σ) • ρ (b j) V
   have hPadd : ∀ τ (F : J → M), P τ (∑ σ, F σ) = ∑ σ, P τ (F σ) := by
     intro τ F
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [P, map_sum, Finset.smul_sum]
+
+    simp only [P, map_sum, Finset.smul_sum]
     exact Finset.sum_comm
   have hρ : ∀ (y : 𝓞 E) (V : M), ρ y V = ∑ τ, κ (χ' τ y) • P τ V := by
     intro y V
     have e1 : ∀ τ, χ' τ y = ∑ k, (b.repr y k : K) * A τ k := fun τ => by
       conv_lhs => rw [← b.sum_repr y]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, zsmul_eq_mul, map_mul, map_intCast, A]
+
+      simp only [map_sum, zsmul_eq_mul, map_mul, map_intCast, A]
     have hy : ∀ j, ∑ τ, χ' τ y * B j τ = (b.repr y j : K) := by
       intro j
       calc ∑ τ, χ' τ y * B j τ = ∑ τ, ∑ k, (b.repr y k : K) * (B j τ * A τ k) := by
@@ -101,26 +140,26 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
             simp only [hBA, mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
     calc ρ y V = ρ (∑ j, b.repr y j • b j) V := by rw [b.sum_repr y]
       _ = ∑ j, κ (b.repr y j : K) • ρ (b j) V := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp only [map_sum, map_zsmul, LinearMap.sum_apply, LinearMap.smul_apply,
-            map_intCast, Int.cast_smul_eq_zsmul]
+
+          simp only [map_sum, map_zsmul, LinearMap.sum_apply, LinearMap.smul_apply,
+          map_intCast, Int.cast_smul_eq_zsmul]
       _ = ∑ j, κ (∑ τ, χ' τ y * B j τ) • ρ (b j) V := by simp only [hy]
       _ = ∑ τ, κ (χ' τ y) • P τ V := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp only [P, Finset.smul_sum, smul_smul, map_sum, Finset.sum_smul, map_mul]
+
+          simp only [P, Finset.smul_sum, smul_smul, map_sum, Finset.sum_smul, map_mul]
           exact Finset.sum_comm
   have hPeig : ∀ σ V (a : 𝓞 E), ρ a (P σ V) = algebraMap K S (χ σ (a : E)) • P σ V := by
     intro σ V a
     calc ρ a (P σ V) = ∑ k, κ (B k σ) • ρ (a * b k) V := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp only [P, map_sum, map_smul, map_mul, Module.End.mul_apply]
+
+          simp only [P, map_sum, map_smul, map_mul, Module.End.mul_apply]
       _ = ∑ k, ∑ ν, κ (B k σ * (χ' ν a * A ν k)) • P ν V := by
           simp only [hρ, Finset.smul_sum, smul_smul, ← map_mul, A]
       _ = ∑ ν, κ (χ' ν a * ∑ k, A ν k * B k σ) • P ν V := by
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl fun ν _ => ?_
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [Finset.mul_sum, map_sum, Finset.sum_smul]
+
+          rw [Finset.mul_sum, map_sum, Finset.sum_smul]
           exact Finset.sum_congr rfl fun k _ => by congr 2; ring
       _ = algebraMap K S (χ σ (a : E)) • P σ V := by
           rw [Finset.sum_eq_single σ]
@@ -146,8 +185,8 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
   have hYeig : ∀ (a : (Σ σ, Fin (mult σ)) → S) σ (c : 𝓞 E),
       ρ c (∑ i, a ⟨σ, i⟩ • U ⟨σ, i⟩) = algebraMap K S (χ σ (c : E)) • ∑ i, a ⟨σ, i⟩ • U ⟨σ, i⟩ := by
     intro a σ c
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.smul_sum]
+
+    rw [map_sum, Finset.smul_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [map_smul, hU, smul_comm]
   have hproj : ∀ (a : (Σ σ, Fin (mult σ)) → S), ∑ ℓ, a ℓ • U ℓ = W →
       ∀ τ, ∑ i, a ⟨τ, i⟩ • U ⟨τ, i⟩ = P τ W := by

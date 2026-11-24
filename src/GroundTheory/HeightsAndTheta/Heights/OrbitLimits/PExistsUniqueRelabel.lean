@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.SwapLoc
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
+public import Mathlib.RingTheory.Ideal.MinimalPrime.Localization
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppAA
 
 @[expose] public section
 

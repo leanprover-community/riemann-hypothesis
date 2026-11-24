@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedTwPGen
+public import Formalism.LocalToGlobal.HermitianForms.TiedTw
 
 @[expose] public section
 

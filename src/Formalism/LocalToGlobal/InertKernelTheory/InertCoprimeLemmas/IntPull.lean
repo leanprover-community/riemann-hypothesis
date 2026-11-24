@@ -1,6 +1,12 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsInt
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+public import Mathlib.Analysis.Analytic.IteratedFDeriv
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -31,8 +37,8 @@ theorem iter_expand (G : VC D N N' → ℂ) (n : ℕ) (z : VC D N N') :
         (∏ j, cz D z (κ j)) * iteratedFDeriv ℂ n G 0 (fun j => coordV D (κ j)) := by
   have h : (fun _ : Fin n => z) = fun _ => ∑ k, cz D z k • coordV D k := by
     funext _; exact (sum_coordV D z).symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, (iteratedFDeriv ℂ n G 0).map_sum (fun (_ : Fin n) k => cz D z k • coordV D k)]
+
+  rw [h, (iteratedFDeriv ℂ n G 0).map_sum (fun (_ : Fin n) k => cz D z k • coordV D k)]
   refine Finset.sum_congr rfl fun κ _ => ?_
   rw [ContinuousMultilinearMap.map_smul_univ, smul_eq_mul]
 
@@ -86,8 +92,8 @@ def ak {m : ℕ} (κ : Fin m → D.what₂.Tau × Fin N' × Fin N) : Mono D N N'
 theorem toMultiset_ak {m : ℕ} (κ : Fin m → D.what₂.Tau × Fin N' × Fin N) :
     Finsupp.toMultiset (ak D κ) = Multiset.map κ Finset.univ.val := by
   unfold ak
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [Finsupp.toMultiset_single, one_smul]
   rw [Finset.sum_eq_multiset_sum]
   conv_rhs => rw [← Multiset.sum_map_singleton (Multiset.map κ Finset.univ.val), Multiset.map_map]
@@ -105,8 +111,8 @@ def RP (G : VC D N N' → ℂ) (n : ℕ) : MvPolynomial (D.what₂.Tau × Fin N'
 
 theorem eval_RP (G : VC D N N' → ℂ) (n : ℕ) (z : VC D N N') :
     eval (cz D z) (RP D G n) = iteratedFDeriv ℂ n G 0 (fun _ => z) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [iter_expand, RP, map_sum]
+
+  rw [iter_expand, RP, map_sum]
   refine Finset.sum_congr rfl fun κ _ => ?_
   simp [map_prod, mul_comm]
 
@@ -175,9 +181,9 @@ theorem RP_comp (H : VC D N N' → ℂ) (hH : AnalyticOnNhd ℂ H Set.univ)
       cz D (A z) := by
     funext s
     conv_rhs => rw [← sum_coordV D z]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eval, eval_X, cz, Finset.sum_apply, Pi.smul_apply,
-      smul_eq_mul]
+
+    simp only [map_sum, map_smul, smul_eval, eval_X, cz, Finset.sum_apply, Pi.smul_apply,
+    smul_eq_mul]
     refine Finset.sum_congr rfl fun k _ => ?_
     ring
   rw [hz, eval_RP]
@@ -189,8 +195,8 @@ theorem taylor_comp (H : VC D N N' → ℂ) (hH : AnalyticOnNhd ℂ H Set.univ)
   have hHA : AnalyticOnNhd ℂ (H ∘ A) Set.univ :=
     hH.comp (A.analyticOnNhd _) (Set.mapsTo_univ _ _)
   have h1 := congrArg (AddMonoidAlgebra.coeff · α) (RP_comp D H hH A (α.sum fun _ m => m))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coeff_RP D (H ∘ A) hHA, if_pos rfl, RP_eq D H hH, map_sum, coeff_sum] at h1
+
+  rw [coeff_RP D (H ∘ A) hHA, if_pos rfl, RP_eq D H hH, map_sum, coeff_sum] at h1
   simp only [aeval_monomial, algebraMap_eq, coeff_C_mul] at h1
   have h0 : ((α.sum fun _ m => m).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
   apply mul_left_cancel₀ h0
@@ -259,16 +265,16 @@ theorem pSer_comp (H : VC D N N' → ℂ) (hH : AnalyticOnNhd ℂ H Set.univ)
   have hmapC : ∀ β, MvPolynomial.map (algebraMap Qbar ℂ) (Q' β) =
       β.prod fun s e => (∑ k, cz D (A (coordV D k)) s • MvPolynomial.X k) ^ e := by
     intro β
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Q', Finsupp.prod, map_prod, map_pow, map_sum, MvPolynomial.smul_eq_C_mul, map_mul,
-      MvPolynomial.map_C, MvPolynomial.map_X]
+
+    simp only [Q', Finsupp.prod, map_prod, map_pow, map_sum, MvPolynomial.smul_eq_C_mul, map_mul,
+    MvPolynomial.map_C, MvPolynomial.map_X]
     rfl
   have hmapP : ∀ β, MvPolynomial.map lam (Q' β) =
       β.prod fun s e => (∑ k, lamC lam (cz D (A (coordV D k)) s) • MvPolynomial.X k) ^ e := by
     intro β
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Q', Finsupp.prod, map_prod, map_pow, map_sum, MvPolynomial.smul_eq_C_mul, map_mul,
-      MvPolynomial.map_C, MvPolynomial.map_X]
+
+    simp only [Q', Finsupp.prod, map_prod, map_pow, map_sum, MvPolynomial.smul_eq_C_mul, map_mul,
+    MvPolynomial.map_C, MvPolynomial.map_X]
     refine Finset.prod_congr rfl fun s _ => ?_
     congr 1
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -290,13 +296,13 @@ theorem pSer_comp (H : VC D N N' → ℂ) (hH : AnalyticOnNhd ℂ H Set.univ)
         (∑ k, cz D (A (coordV D k)) s • MvPolynomial.X k) ^ e) α) =
       algebraMap Qbar ℂ (∑ β ∈ Finset.finsuppAntidiag Finset.univ (α.sum fun _ m => m),
         t' β * AddMonoidAlgebra.coeff (Q' β) α) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun β _ => ?_
     rw [map_mul, ← MvPolynomial.coeff_map, hmapC β]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e1, lamC_alg, map_sum]
+
+  rw [e1, lamC_alg, map_sum]
   have hsupp : Function.support (fun d : Mono D N N' => MvPowerSeries.coeff d (pSer D lam H) •
       MvPowerSeries.coeff α (d.prod fun s e => ((∑ k, lamC lam (cz D (A (coordV D k)) s) •
         MvPolynomial.X k : MvPolynomial (D.what₂.Tau × Fin N' × Fin N) ℂ_[p]) :
@@ -471,13 +477,13 @@ theorem lamC_sum_mul {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {ι : T
     (hx : ∀ i, x i ∈ Qbar) (hy : ∀ i, y i ∈ Qbar) :
     lamC lam (∑ i ∈ s, x i * y i) = ∑ i ∈ s, lamC lam (x i) * lamC lam (y i) := by
   have e : (∑ i ∈ s, x i * y i) = algebraMap Qbar ℂ (∑ i ∈ s, (⟨x i, hx i⟩ : Qbar) * ⟨y i, hy i⟩) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, lamC_alg, map_sum]
+
+  rw [e, lamC_alg, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, ← lamC_alg lam ⟨x i, hx i⟩, ← lamC_alg lam ⟨y i, hy i⟩]
   rfl
@@ -485,8 +491,8 @@ theorem lamC_sum_mul {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {ι : T
 theorem cz_apply {N N' : ℕ} (A : VC D N N' →L[ℂ] VC D N N') (z : VC D N N') (s : D.what₂.Tau × Fin N' × Fin N) :
     cz D (A z) s = ∑ k, cz D (A (coordV D k)) s * cz D z k := by
   conv_lhs => rw [← sum_coordV D z]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, cz, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+
+  simp only [map_sum, map_smul, cz, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
   refine Finset.sum_congr rfl fun k _ => ?_
   ring
 
@@ -593,8 +599,8 @@ theorem locBasis_pull {N N' r : ℕ} (p : ℕ) (γ : Matrix (Fin N) (Fin N) D.ho
     obtain ⟨s, hs, c, hc⟩ := hgen _ (hΨ y hy)
     refine ⟨s, hs, c, ?_⟩
     have := congrArg (PQ (star γ') γ) hc
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum, PQ_apply, hinv'] at this
+
+    rw [map_smul, map_sum, PQ_apply, hinv'] at this
     rw [this]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, PQ_apply]
@@ -642,17 +648,17 @@ theorem atLog_subst {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* �
     intro bb
     apply MvPowerSeries.hasSubst_of_constantCoeff_zero
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, hL, mul_zero, Finset.sum_const_zero]
+
+    simp only [map_sum, map_mul, hL, mul_zero, Finset.sum_const_zero]
   dsimp only [atLog]
   rw [MvPowerSeries.subst_comp_subst_apply hB (hφ b)]
   congr 1
   funext s
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPowerSeries.subst_coe, map_sum]
+
+  rw [MvPowerSeries.subst_coe, map_sum]
   simp only [map_smul, MvPolynomial.aeval_X, ← hc s]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.smul_sum, Finset.mul_sum, map_sum, Finset.sum_mul]
+
+  simp only [Finset.smul_sum, Finset.mul_sum, map_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_
   rw [Algebra.smul_def]

@@ -1,6 +1,11 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ComplexMinusRealLineMeasureCoordinates
+import Aesop.Main
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.Order.Group.Lattice
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 @[expose] public section
 

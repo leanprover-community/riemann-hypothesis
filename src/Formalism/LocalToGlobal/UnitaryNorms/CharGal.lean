@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalRingCardinality.DataNChTie
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 

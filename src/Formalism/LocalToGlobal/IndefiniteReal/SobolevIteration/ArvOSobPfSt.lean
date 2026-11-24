@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.GlobalThetaOrthogonality
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedType
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 

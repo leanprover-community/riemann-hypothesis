@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.ConductorTransport
 public import GroundTheory.LocalFields.SeparableClosure
+public import GroundTheory.LocalFields.HerbrandFunction
+public import Mathlib.FieldTheory.Galois.GaloisClosure
+public import Mathlib.FieldTheory.KrullTopology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -18,7 +62,7 @@ section
 variable {g : Matrix (Fin (N + 2)) (Fin (N + 2)) L} {g₀ U V : Matrix (Fin N) (Fin N) L} {b : Fin N → L}
 
 theorem rowM_zero (hg10 : ∀ i, g (mid i) 0 = 0) (k : Fin N) : rowM g U V k 0 = 0 := by
-  simp [rowM, Finset.sum_apply, Matrix.one_apply, hg10, mid_ne_zero]
+  simp [rowM, Finset.sum_apply, hg10, mid_ne_zero]
 
 theorem rowM_mid (hg11 : ∀ i j, g (mid i) (mid j) = g₀ i j) (k j : Fin N) :
     rowM g U V k (mid j) = (U + V * g₀) k j := by
@@ -26,7 +70,7 @@ theorem rowM_mid (hg11 : ∀ i j, g (mid i) (mid j) = g₀ i j) (k j : Fin N) :
 
 theorem rowM_last (hg12 : ∀ i, g (mid i) (Fin.last (N + 1)) = (g₀ *ᵥ b) i) (k : Fin N) :
     rowM g U V k (Fin.last (N + 1)) = (V *ᵥ (g₀ *ᵥ b)) k := by
-  simp [rowM, Finset.sum_apply, Matrix.one_apply, hg12, mid_ne_last, Matrix.mulVec, dotProduct]
+  simp [rowM, Finset.sum_apply, hg12, mid_ne_last, Matrix.mulVec, dotProduct]
 
 theorem comb_zero (hg10 : ∀ i, g (mid i) 0 = 0) (A : Matrix (Fin N) (Fin N) L) (i : Fin N) :
     (∑ k, A i k • rowM g U V k) 0 = 0 := by
@@ -68,7 +112,7 @@ theorem det_rowsP {a : ℤ} {g : Matrix (Fin (N + 2)) (Fin (N + 2)) L} {g₀ U V
   rw [Matrix.det_succ_column_zero, Fin.sum_univ_succ]
   have h1 : ∀ i : Fin (N + 1), rowsP a g U V y i.succ 0 = 0 := fun i => by
     induction i using Fin.lastCases with
-    | last => rw [Fin.succ_last, rowsP_last]; simp [Matrix.one_apply]
+    | last => rw [Fin.succ_last, rowsP_last]; simp
     | cast k => exact (rowsP_mid a g U V y k).symm ▸ rowM_zero hg10 k
   simp only [h1, mul_zero, zero_mul, Finset.sum_const_zero, add_zero, Fin.val_zero, pow_zero, one_mul,
     Fin.succAbove_zero]
@@ -83,7 +127,7 @@ theorem det_rowsP {a : ℤ} {g : Matrix (Fin (N + 2)) (Fin (N + 2)) L} {g₀ U V
     simp only [Matrix.submatrix_apply]
     exact (rowsP_mid a g U V y i) ▸ rowM_mid hg11 i j
   rw [h3, Fin.succ_last, rowsP_last]
-  simp [Matrix.one_apply]
+  simp
   ring_nf
 
 def vecOf (x₀ : L) (xm : Fin N → L) (xl : L) : Fin (N + 2) → L := fun i =>
@@ -138,9 +182,9 @@ theorem comb_C (hg10 : ∀ i, g (mid i) 0 = 0) (hg11 : ∀ i j, g (mid i) (mid j
     ∑ k, C i k • rowM g U V k = (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) (mid i) +
       ((C * V * g₀) *ᵥ b) i • (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) (Fin.last (N + 1)) := by
   refine vec_ext ?_ (fun j => ?_) ?_
-  · rw [comb_zero hg10]; simp [Matrix.one_apply, mid_ne_zero]
-  · rw [comb_mid hg11, hCM]; simp [Matrix.one_apply, mid_injective.eq_iff, mid_ne_last, last_ne_mid]
-  · rw [comb_last hg12]; simp [Matrix.one_apply, mid_ne_last, Matrix.mulVec_mulVec, Matrix.mul_assoc]
+  · rw [comb_zero hg10]; simp [mid_ne_zero]
+  · rw [comb_mid hg11, hCM]; simp [Matrix.one_apply, mid_injective.eq_iff, last_ne_mid]
+  · rw [comb_last hg12]; simp [mid_ne_last, Matrix.mulVec_mulVec, Matrix.mul_assoc]
 
 theorem comb_gC (hg10 : ∀ i, g (mid i) 0 = 0) (hg11 : ∀ i j, g (mid i) (mid j) = g₀ i j)
     (hg12 : ∀ i, g (mid i) (Fin.last (N + 1)) = (g₀ *ᵥ b) i) (hCM : C * (U + V * g₀) = 1) (i : Fin N) :
@@ -150,10 +194,10 @@ theorem comb_gC (hg10 : ∀ i, g (mid i) 0 = 0) (hg11 : ∀ i j, g (mid i) (mid 
     rw [eq_sub_iff_add_eq, Matrix.mul_assoc g₀ C U, Matrix.mul_assoc (g₀ * C) V, Matrix.mul_assoc g₀ C, ← Matrix.mul_add,
       ← Matrix.mul_add, hCM, Matrix.mul_one]
   refine vec_ext ?_ (fun j => ?_) ?_
-  · rw [comb_zero hg10]; simp [Matrix.one_apply, hg10]
-  · rw [comb_mid hg11, Matrix.mul_assoc, hCM]; simp [Matrix.one_apply, mid_ne_last, last_ne_mid, hg11]
+  · rw [comb_zero hg10]; simp [hg10]
+  · rw [comb_mid hg11, Matrix.mul_assoc, hCM]; simp [last_ne_mid, hg11]
   · rw [comb_last hg12, Pi.sub_apply, hg12, hCU, Matrix.sub_mulVec]
-    simp [Matrix.one_apply, Matrix.mulVec_mulVec, Matrix.mul_assoc]
+    simp [Matrix.mulVec_mulVec, Matrix.mul_assoc]
 end
 
 theorem rho_mul {a : ℤ} {g : Matrix (Fin (N + 2)) (Fin (N + 2)) L} {g₀ U V C : Matrix (Fin N) (Fin N) L} {b r : Fin N → L}
@@ -167,7 +211,7 @@ theorem rho_mul {a : ℤ} {g : Matrix (Fin (N + 2)) (Fin (N + 2)) L} {g₀ U V C
   refine vec_ext ?_ (fun j => ?_) ?_
   · simp only [Matrix.vecMul, dotProduct, sum_idx, vecOf_zero, vecOf_mid, vecOf_last, rowsP_mid, rowsP_last,
       rowM_zero hg10]
-    simp [Matrix.one_apply]
+    simp
   · simp only [Matrix.vecMul, dotProduct, sum_idx, vecOf_zero, vecOf_mid, vecOf_last, rowsP_mid, rowsP_last,
       rowM_mid hg11]
     have := congrFun h1 j
@@ -200,7 +244,7 @@ theorem spanEq_holds : SpanEq := by
       rw [← map_mul, ← Matrix.det_mul, hM, Matrix.det_one, map_one]
     rw [det_rowsP hg10 hg11, map_mul, map_mul, hdet, rowsP_zero]
     split_ifs with ha
-    · rw [Int.toNat_of_nonpos (by omega)]; simp [Matrix.one_apply]
+    · rw [Int.toNat_of_nonpos (by omega)]; simp
     · rw [hg00, v_zpow hϖ, Int.toNat_of_nonneg (by omega)]
   · rw [rho_mul hg10 hg11 hg12 hCM hy0]
     have hvy1 : 1 ≤ Valued.v y := le_trans (by rw [← WithZero.exp_zero, WithZero.exp_le_exp]; omega) hy1
@@ -220,12 +264,12 @@ theorem spanEq_holds : SpanEq := by
       split_ifs with ha
       · have hza : (ϖ ^ a.toNat : L) = ϖ ^ a := by rw [← zpow_natCast, Int.toNat_of_nonneg ha]
         refine vec_ext ?_ (fun j => ?_) ?_ <;>
-          simp [hza, hg00, hg0m, hg0l, Matrix.one_apply, mid_ne_zero, zero_ne_mid, zero_ne_last]
+          simp [hza, hg00, hg0m, hg0l, zero_ne_mid]
       · have h1 : a.toNat = 0 := by omega
         have h2 : (ϖ ^ (-a).toNat : L) * ϖ ^ a = 1 := by
           rw [← zpow_natCast, Int.toNat_of_nonneg (by omega), _root_.zpow_neg, inv_mul_cancel₀ (zpow_ne_zero _ hϖ0)]
         refine vec_ext ?_ (fun j => ?_) ?_ <;>
-          simp [h1, hg00, hg0m, hg0l, Matrix.one_apply, mid_ne_zero, zero_ne_mid, zero_ne_last, ← mul_assoc, h2]
+          simp [h1, hg00, hg0m, hg0l, zero_ne_mid, ← mul_assoc, h2]
     apply le_antisymm
     · have PS : ∀ i, rowsP a g U V y i ∈ rowLat (rowsP a g U V y) ⊔
           Submodule.span (intL L) {vecOf 0 (fun j => ϖ ^ a.toNat * r j) (ϖ ^ a.toNat * c)} :=

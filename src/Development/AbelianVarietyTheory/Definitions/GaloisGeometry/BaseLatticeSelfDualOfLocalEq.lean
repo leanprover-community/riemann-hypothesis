@@ -1,10 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.MemberChainFormsLevelPrimeEqMember
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI
-public import Formalism.LocalToGlobal.HermitianColumns.SymAll
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IntSplitOf
+public import Formalism.LocalToGlobal.HermitianForms.BothSym
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI
+import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IntSplitOf
+import Formalism.LocalToGlobal.HermitianForms.BothLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -47,8 +83,8 @@ theorem mulVec_map_rho (A : Matrix (Fin N) (Fin N) E) (x : Fin N → E) (a : Fin
     ((A.map ((rho v spl).comp (inclE (F := F) (v.adicCompletion F)))) *ᵥ
       fun b => rho v spl (inclE (F := F) (v.adicCompletion F) (x b))) a =
       rho v spl (inclE (F := F) (v.adicCompletion F) ((A *ᵥ x) a)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, RingHom.comp_apply, map_sum, map_mul]
+
+  simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, RingHom.comp_apply, map_sum, map_mul]
 
 theorem base_free (hs : SplitInt v spl) (hd : ∀ a : v.adicCompletion F, spl ((1 : E) ⊗ₜ[F] a) = (a, a)) (B : GL (Fin N) E)
     (Λ : Submodule (𝓞 E) (Fin N → E))
@@ -131,9 +167,9 @@ theorem base_free (hs : SplitInt v spl) (hd : ∀ a : v.adicCompletion F, spl ((
         rw [hc, Matrix.mulVec_mulVec, ← Matrix.map_mul, Units.mul_inv, Matrix.map_one _ (map_zero _) (map_one _),
           Matrix.one_mulVec]
       rw [← key]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Finset.sum_apply, Pi.smul_apply, Subring.smul_def, smul_eq_mul, map_sum, map_mul, Prod.fst_sum,
-        Prod.fst_mul, hd, Matrix.mulVec, dotProduct, Matrix.map_apply, RingHom.comp_apply]
+
+      simp only [Finset.sum_apply, Pi.smul_apply, Subring.smul_def, smul_eq_mul, map_sum, map_mul, Prod.fst_sum,
+      Prod.fst_mul, hd, Matrix.mulVec, dotProduct, Matrix.map_apply, RingHom.comp_apply]
       refine Finset.sum_congr rfl fun b _ => ?_
       exact mul_comm _ _
 
@@ -310,7 +346,7 @@ section Mem
 variable (cols : ColsTiedSym D)
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem top_car (u : D.what₂.Word) (j : ℕ) (hj : j ≤ D.R.m) (h : j = D.R.m) (h1 : 1 ≤ j) :
     ∃ β' : cols.herm.base.Ch u j,
       ((cols.forms u).cls j hj (Or.inr h)).lev.Lb = reL (rankN D j hj) (cols.herm.base.lev u j h1 hj β').Lb := by
@@ -318,7 +354,7 @@ theorem top_car (u : D.what₂.Word) (j : ℕ) (hj : j ≤ D.R.m) (h : j = D.R.m
   exact ⟨chM cols.herm.base u, (cols.carM u).Lb_eq⟩
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem base_lattice_self_dual_of_chain (u : D.what₂.Word) (dt : MemDt (cols.forms u)) (i : ℕ) (hi : i + 1 ≤ D.R.m) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
     BaseLatticeSelfDualAbove (formsInMem (cols.forms u) dt i hi) (D.what₂.places.resChar w) := by

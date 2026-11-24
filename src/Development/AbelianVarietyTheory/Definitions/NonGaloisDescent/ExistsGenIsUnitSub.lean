@@ -1,11 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.PowerSeriesVecReduceModUMulVec
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsUltrametricDistFinExt
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsAdicCompleteOfPowLe
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConstantCoeffTeichSub
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobSubMulSurjective
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltWittEqZeroOfPrimeMulEqZero
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusSubOneWittTensorLatticeSurjectiveFixed
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedIntegersTensorEqLetterwiseProductAinf
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RootOfUnityPrimeToTeichmullerLift
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.DiscreteValuationRing
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeffZeroEqZeroIff
 
 @[expose] public section
 
@@ -36,8 +82,8 @@ theorem idem_mul_of_ne {τ σ : ZMod a} (h : τ ≠ σ) : idem c τ * idem c σ 
 
 theorem sum_idem : ∑ τ, idem c τ = 1 := by
   simp only [idem]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, Finset.univ_sum_single (fun _ : ZMod a => (1 : O))]
+
+  rw [← map_sum, Finset.univ_sum_single (fun _ : ZMod a => (1 : O))]
   exact map_one c
 
 theorem idem_mul_sum (x : ZMod a → R) (τ : ZMod a) : idem c τ * ∑ σ, idem c σ * x σ = idem c τ * x τ := by
@@ -45,8 +91,8 @@ theorem idem_mul_sum (x : ZMod a → R) (τ : ZMod a) : idem c τ * ∑ σ, idem
     rw [← mul_assoc, idem_mul_of_ne c h.symm, zero_mul]) (by simp), ← mul_assoc, idem_mul_self]
 
 theorem eq_sum_idem (x : ZMod a → O) : c x = ∑ τ, idem c τ * algebraMap O R (x τ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [← Finset.univ_sum_single x, map_sum]
+
+  conv_lhs => rw [← Finset.univ_sum_single x, map_sum]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [mul_comm, ← Algebra.smul_def, idem, ← map_smul, ← Pi.single_smul, smul_eq_mul, mul_one]
 
@@ -78,8 +124,8 @@ theorem map_glue {B' R' : Type} [CommRing B'] [CommRing R'] [Algebra O B'] [Alge
     {c' : (ZMod a → O) →ₐ[O] R'} {f' : B' →ₐ[O] R'} (s : R →+* R') (k : ZMod a)
     (hs : ∀ τ, s (idem c τ) = idem c' (τ + k)) {x : ZMod a → B} {y : ZMod a → B'}
     (h : ∀ τ, s (f (x (τ - k))) = f' (y τ)) : s (glue c f x) = glue c' f' y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [glue_apply, glue_apply, map_sum]
+
+  rw [glue_apply, glue_apply, map_sum]
   refine Fintype.sum_equiv (Equiv.addRight k) _ _ fun τ => ?_
   rw [map_mul, hs, Equiv.coe_addRight, ← h, add_sub_cancel_right]
 
@@ -391,8 +437,8 @@ theorem exists_eq_sum_toAc {J : Type} [Fintype J] (o : Module.Basis J ℤ_[l] O)
   refine ⟨fun j => mk fun n => GlobalTheory.Decompl.crd o j (y n), funext fun τ => ?_⟩
   refine (equivA O K).symm.injective (PowerSeries.ext fun n => ?_)
   rw [← congrFun (hy n) τ, ← GlobalTheory.Decompl.sum_crd o (y n)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finset.sum_apply, Pi.smul_apply, map_smul, splitHom_tmul]
+
+  simp only [map_sum, Finset.sum_apply, Pi.smul_apply, map_smul, splitHom_tmul]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [show toAc t K (mk fun n => GlobalTheory.Decompl.crd o j (y n)) τ =
     equivA O K (PowerSeries.map (emb t τ).toRingHom _) from rfl, AlgEquiv.symm_apply_apply,
@@ -495,8 +541,8 @@ theorem galOA_teichR (g : GQ l) : galOA O g (ϖ.teichR O) = (1 + 1 ⊗ₜ ϖ.mu 
 theorem galOA_iTot {g : GQ l} (hg : g ∈ ϖ.GfieldInf a) (f : ZMod a → A O K) :
     galOA O g (ϖ.iTot t K f) = ϖ.iTot t K f := by
   obtain ⟨x, rfl⟩ := exists_eq_sum_toAc t K (Module.Free.chooseBasis ℤ_[l] O) f
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, iTot_toAc, galOA_tmul, ϖ.gal_ev l a hg]
+
+  simp only [map_sum, map_smul, iTot_toAc, galOA_tmul, ϖ.gal_ev l a hg]
 
 variable (O)
 

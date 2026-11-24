@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.FoldBound
+public import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -33,9 +34,7 @@ def stab {G : Type*} [Group G] (S S' : Subgroup G) (γ : G) : Subgroup G :=
 
 theorem mem_stab {G : Type*} [Group G] (S S' : Subgroup G) (γ g : G) :
     g ∈ stab S S' γ ↔ g ∈ S ∧ γ⁻¹ * g * γ ∈ S' := by
-  unfold stab
-  rw [Subgroup.mem_inf, Subgroup.mem_comap]
-  simp only [MulEquiv.coe_toMonoidHom, MulAut.conj_apply, inv_inv]
+  simp [stab]
 
 def IsDoubleTransversal {G : Type*} [Group G] (Γ S S' : Subgroup G) (R : Set G) : Prop :=
   R ⊆ (Γ : Set G) ∧

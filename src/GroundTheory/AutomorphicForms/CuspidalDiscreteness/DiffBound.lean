@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.AltSum
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
+import Aesop.Main
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.MixedDifference
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.QuotientMeasure
 
 @[expose] public section
 

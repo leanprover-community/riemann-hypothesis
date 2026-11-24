@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.ThetaPlus
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.RingTheory.WittVector.Compare
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.RecursiveLatticeMembership.ModelXiNZOf
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.IsSemiChar
+public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.LocalToGlobal.GlobalTheory.GL3.Statement
+import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.IsBichar
 
 @[expose] public section
 

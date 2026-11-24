@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRatPrimeDense
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFiniteSeparatingModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootsNear
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootsBounded
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPolyNonvanishDense
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

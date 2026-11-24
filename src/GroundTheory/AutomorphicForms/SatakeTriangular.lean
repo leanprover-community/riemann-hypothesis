@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.SatakeNormalized
+public import Mathlib.Tactic.Monotonicity.Lemmas
+public import Mathlib.Topology.Sheaves.Presheaf
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -263,8 +267,8 @@ theorem satakeTransform_mem_symmetric (h : SphericalHecke μ (F := F) (n := n)) 
       (h : HeckeAlgebra μ) (Cartan.diagPow F n ν) / (H ν : HeckeAlgebra μ) (Cartan.diagPow F n ν)
     set h' := h - ∑ ν ∈ Top, c ν • H ν
     have hsum : satakeTransform μ (∑ ν ∈ Top, c ν • H ν) ∈ symmetricLaurent (n := n) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Subalgebra.sum_mem _ fun ν hν => ?_
       rw [map_smul, hHs ν hν]
       exact Subalgebra.smul_mem _ (orbitSum_mem ν) _

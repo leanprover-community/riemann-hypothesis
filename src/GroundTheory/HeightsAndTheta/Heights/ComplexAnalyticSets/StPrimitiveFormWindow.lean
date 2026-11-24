@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimitiveFormSheetedLocusCutOut
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.AnalyticGerm
+public import Mathlib.FieldTheory.Separable
 
 @[expose] public section
 

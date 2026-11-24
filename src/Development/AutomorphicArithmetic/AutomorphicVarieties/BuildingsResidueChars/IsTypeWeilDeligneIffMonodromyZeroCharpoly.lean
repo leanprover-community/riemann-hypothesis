@@ -1,7 +1,52 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.CoefficientRepTrivialOnUnramified
-public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.Distinct
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ContinuousResP
+import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Pi
+import Mathlib.LinearAlgebra.Eigenspace.Semisimple
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Artinian.Instances
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -23,8 +68,8 @@ private theorem commute_of_semisimple_of_charpoly_prod_chars {G : Type} [Group G
       rw [hcp]
       have : ∀ i, ((χ i (g * k * g⁻¹ * k⁻¹) : ℂˣ) : ℂ) = 1 := by
         intro i
-        simp [map_mul, map_inv, mul_comm, mul_left_comm, mul_assoc]
-      simp [this]
+        simp [map_mul, map_inv, mul_assoc]
+      simp
     have hdvd : minpoly ℂ (T (g * k * g⁻¹ * k⁻¹)) ∣ (X - C (1 : ℂ)) ^ n :=
       h1 ▸ LinearMap.minpoly_dvd_charpoly _
     have hd : minpoly ℂ (T (g * k * g⁻¹ * k⁻¹)) ∣ X - C (1 : ℂ) := by
@@ -96,7 +141,7 @@ private theorem exists_linearEquiv_diagonal_chars_of_eigenbasis {G : Type} [Grou
     rw [LinearMap.toMatrix_apply, hT, map_smul, b.repr_self, Matrix.diagonal_apply]
     by_cases h : i = j
     · subst h; simp
-    · simp [Finsupp.single_apply, Ne.symm h, h]
+    · simp [h]
   have hsum : ∀ g, ∑ j, c j g = ∑ i, ((χ i g : ℂˣ) : ℂ) := by
     intro g
     have hp := LinearMap.charpoly_toMatrix (T g) b
@@ -109,8 +154,8 @@ private theorem exists_linearEquiv_diagonal_chars_of_eigenbasis {G : Type} [Grou
     have hli := linearIndependent_monoidHom G ℂ
     set l : (G →* ℂ) →₀ ℂ := ∑ j, Finsupp.single (ψ j) 1 - ∑ i, Finsupp.single (χ' i) 1 with hl
     have hlc : Finsupp.linearCombination ℂ (fun f : G →* ℂ => (f : G → ℂ)) l = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hl, map_sub, map_sum, map_sum]
+
+      rw [hl, map_sub, map_sum, map_sum]
       simp only [Finsupp.linearCombination_single, one_smul]
       funext g
       simp only [Pi.sub_apply, Finset.sum_apply, Pi.zero_apply]
@@ -132,7 +177,7 @@ private theorem exists_linearEquiv_diagonal_chars_of_eigenbasis {G : Type} [Grou
       (f₂ := c k g • (Finsupp.lapply k).comp b.repr.toLinearMap) (by
         intro j
         simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, hT, map_smul, b.repr_self,
-          Finsupp.lapply_apply, LinearMap.smul_apply, Finsupp.smul_apply, Finsupp.single_apply, smul_eq_mul]
+          Finsupp.lapply_apply, LinearMap.smul_apply, Finsupp.single_apply, smul_eq_mul]
         by_cases h : j = k
         · subst h; simp
         · simp [h])

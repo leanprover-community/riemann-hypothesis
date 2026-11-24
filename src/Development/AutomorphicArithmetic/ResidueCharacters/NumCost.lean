@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicArithmetic.ResidueCharacters.NumParameters
 public import Development.AutomorphicArithmetic.ResidueCharacters.NumBounds
+public import Formalism.LocalRingCardinality.DataParams
+public import Development.AutomorphicArithmetic.ResidueCharacters.NumParameters
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -53,9 +94,9 @@ theorem factorization_condN' (D : D7) {l : ℕ} (hq : l ≠ D.host.q) (hd : l �
   show (D.host.QS * D.host.q * D.host.d).factorization l = _
   rw [Nat.factorization_mul (mul_ne_zero D.host.QS_pos.ne' pq.ne_zero) pd.ne_zero,
     Nat.factorization_mul D.host.QS_pos.ne' pq.ne_zero, pq.factorization, pd.factorization]
-  simp [Finsupp.single_apply, hq.symm, hd.symm]
+  simp [hq.symm, hd.symm]
 
-set_option maxHeartbeats 800000 in
+
 theorem cost_le' (L : SizeData₂ D) (P : ParameterChoice' D L) {A B C0 : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 1 ≤ C0)
     (hx : 1 ≤ Real.log L.sc.x) (hn : (D.R.n : ℝ) ≤ L.sc.x ^ C0) (ht : (D.R.t : ℝ) ≤ L.sc.x ^ C0) {l : ℕ}
     (hl : l.Prime) (hfac : D.host.condN.factorization l = D.host.QS.factorization l) {C : ℝ}

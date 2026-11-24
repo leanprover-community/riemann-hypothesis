@@ -1,10 +1,55 @@
 module
 
-public import Mathlib
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.OddLogRelation
-public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
-public import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
+public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
+public import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
+public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
+import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Ring.Ultra
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,8 +70,8 @@ def clSum {K ι : Type} [Field K] (pp : K) (hh : MvPowerSeries ι K) (U : ℕ �
 theorem low_sum {K ι α : Type} [Field K] (s : Finset α) (f : α → MvPowerSeries ι K) (N : ℕ)
     (h : ∀ a ∈ s, Low N (f a)) : Low N (∑ a ∈ s, f a) := by
   intro d hd
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_eq_zero fun a ha => h a ha d hd
 
 theorem low_pow_mul {K ι : Type} [Field K] {hh : MvPowerSeries ι K}
@@ -38,8 +83,8 @@ theorem coeff_clSum {K ι : Type} [Field K] (pp : K) (hh : MvPowerSeries ι K)
     (U : ℕ → MvPowerSeries ι K) (M : ℕ) (n : ι →₀ ℕ) :
     MvPowerSeries.coeff n (clSum pp hh U M) =
       ∑ i ∈ range M, (pp ^ i)⁻¹ * MvPowerSeries.coeff n (hh ^ i * U i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [clSum, map_sum, MvPowerSeries.coeff_C_mul]
+
+  simp only [clSum, map_sum, MvPowerSeries.coeff_C_mul]
 
 theorem inClass_iff {K ι : Type} [NormedField K] {pp : K} {hh : MvPowerSeries ι K}
     (h0 : MvPowerSeries.constantCoeff hh = 0) (F : MvPowerSeries ι K) :
@@ -81,8 +126,8 @@ theorem class_substitution : ClassSubst := by
   have e : MvPowerSeries.subst φ F -
       clSum pp (MvPowerSeries.subst φ hh) (fun i => MvPowerSeries.subst φ (U i)) M =
       MvPowerSeries.subst φ (F - clSum pp hh U M) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [clSum, ← MvPowerSeries.coe_substAlgHom hs, map_sub, map_sum, map_mul, map_pow]
+
+    simp only [clSum, ← MvPowerSeries.coe_substAlgHom hs, map_sub, map_sum, map_mul, map_pow]
     congr 1
     refine Finset.sum_congr rfl fun i _ => ?_
     congr 1
@@ -109,8 +154,8 @@ theorem low_chU {K ι : Type} [Field K] {Y : MvPowerSeries ι K}
     (hY : MvPowerSeries.constantCoeff Y = 0) (U : ℕ → MvPowerSeries ι K) (b N : ℕ) :
     Low N (∑ a ∈ range N, chT Y U b a - chU Y U b) := by
   intro d hd
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, map_sum, sub_eq_zero]
+
+  rw [map_sub, map_sum, sub_eq_zero]
   symm
   refine Finset.sum_subset (Finset.range_subset_range.2 (by omega)) fun a _ ha => ?_
   exact low_chT hY U b a d (by simp only [mem_range] at ha; omega)
@@ -188,8 +233,8 @@ def expSum {K ι : Type} [Field K] (f : MvPowerSeries ι K) (M : ℕ) : MvPowerS
 theorem low_mvExp_sub {K ι : Type} [NormedField K] [CharZero K] {f : MvPowerSeries ι K}
     (hf : MvPowerSeries.constantCoeff f = 0) (M : ℕ) : Low M (mvExp f - expSum f M) := by
   intro d hd
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, coeff_mvExp hf, expSum, map_sum, sub_eq_zero]
+
+  rw [map_sub, coeff_mvExp hf, expSum, map_sum, sub_eq_zero]
   simp only [MvPowerSeries.coeff_C_mul]
   refine Finset.sum_subset (Finset.range_subset_range.2 (by omega)) fun k _ hk => ?_
   rw [low_pow ((low_one_iff _).2 hf) k d (by simp only [mem_range] at hk; omega), mul_zero]
@@ -246,8 +291,8 @@ theorem mvExp_add {K ι : Type} [NormedField K] [CharZero K] {a b : MvPowerSerie
     refine low_sum _ _ _ fun k _ => ?_
     rw [Finset.mul_sum]
     intro d hd
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sum, map_sum, sub_eq_zero]
+
+    rw [map_sub, map_sum, map_sum, sub_eq_zero]
     symm
     refine Finset.sum_subset (Finset.range_subset_range.2 (Nat.sub_le _ _)) fun l _ hl => ?_
     have hkl : Low (k + l) ((MvPowerSeries.C ((k.factorial : K)⁻¹) * a ^ k) *
@@ -376,8 +421,8 @@ theorem subst_g_series_eq {K τ : Type} [Field K] (p : ℕ) (c c' : K) {a : Fin 
 
 theorem constant_coeff_hh_zero {K E : Type} [Field K] [Fintype E] {p : ℕ} (hp : p ≠ 0) (c c' : K) :
     MvPowerSeries.constantCoeff (hh1 (E := E) p c c') = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [hh1, map_sum, zero_pow hp]
+
+  simp [hh1, map_sum, zero_pow hp]
 
 theorem norm_unif {K : Type} [NormedField K] {p : ℕ} (hp : p.Prime) (hn : ‖(p : K)‖ = (p : ℝ)⁻¹)
     {ϖ : K} (hϖ : ϖ ^ (p ^ 2 - 1) = (p : K)) :
@@ -419,8 +464,8 @@ theorem RescaleExact_of (hT : ValTable) (hE : ExpIntegral) : RescaleExact := by
     simp only [a, if_true, Fin.isValue, one_ne_zero, if_false]
     ring
   have hR0 : MvPowerSeries.constantCoeff (∑ e : E, MvPowerSeries.subst (a e) (G1 p c c')) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_eq_zero fun e _ => (low_one_iff _).1
       (low_subst_of_low (ha0 e) ((low_one_iff _).2 (constant_coeff_g_one hp.ne_zero c c')))
   have hwa : ∀ e z, WtGe ((p : ℝ)⁻¹) (fun _ : Bool × E => (0 : ℝ)) (1 / ((p : ℝ) ^ 2 - 1))
@@ -435,8 +480,8 @@ theorem RescaleExact_of (hT : ValTable) (hE : ExpIntegral) : RescaleExact := by
   have hRn : ∀ n, ‖MvPowerSeries.coeff n (∑ e : E, MvPowerSeries.subst (a e) (G1 p c c'))‖ ≤
       (p : ℝ) ^ (-(1 / ((p : ℝ) - 1))) := by
     intro n
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun e _ => ?_
     have h := substitution_weight_bound K ((p : ℝ)⁻¹) hpos hlt (Fin 2) (Bool × E) (a e)
       (fun _ => 1 / ((p : ℝ) ^ 2 - 1)) (fun _ => 0) (1 / ((p : ℝ) - 1)) (G1 p c c') (ha0 e)

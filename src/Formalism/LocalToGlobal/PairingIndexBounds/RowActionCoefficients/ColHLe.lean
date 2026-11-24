@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CardFilterValLt
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FormCoreSK
-public import Formalism.GradedWeylDivisibility.FinalD
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
 
 @[expose] public section
 

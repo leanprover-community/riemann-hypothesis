@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.MemIffOfLocBasisG
-public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColInf
 public import Formalism.LocalToGlobal.HermitianForms.FormsTied
+public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
+public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColInf
 
 @[expose] public section
 
@@ -37,8 +37,8 @@ theorem map_actAll (s : K →+* L) (lam : ι → DomWeight n) (g : ι → Matrix
   · congr 1
     congr 1
     funext v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, Matrix.map_apply]
+
+    simp [map_sum, Matrix.map_apply]
 
 end Map
 
@@ -135,7 +135,7 @@ theorem gram_of_norm (hG : Gᴴ = G) (t : E) (ht : (φ t).im ≠ 0)
         norm_cast
       have i2 : (φ (star x ⬝ᵥ (G *ᵥ x))).im = 0 := by
         have e : star (star x ⬝ᵥ (G *ᵥ x)) = star x ⬝ᵥ (G *ᵥ x) := by
-          simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum, Finset.sum_mul]
+          simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum]
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
           have hij : star (G j i) = G i j := by

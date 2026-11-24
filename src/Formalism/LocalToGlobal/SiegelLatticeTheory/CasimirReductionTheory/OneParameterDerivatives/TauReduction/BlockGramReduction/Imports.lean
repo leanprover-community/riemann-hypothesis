@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.LatticeVectorsBoundedBelow
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
 
 @[expose] public section
 

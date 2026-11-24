@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PIdealTwistFamily
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperHyperplaneSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperHyperplaneMidSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperQuotAddSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperQuotDevissageSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PIdealTwistFamily
 
 @[expose] public section
 

@@ -1,25 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.ToHLat
-public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
-public import Formalism.LocalToGlobal.Columns.LocWLemmas
-public import Formalism.LocalToGlobal.Columns.AtTRank
-public import Formalism.LocalToGlobal.Columns.DiamondPreservesRamified
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Formalism.LocalToGlobal.Columns.CmUnramifiedOfFieldConditions
-public import Formalism.LocalToGlobal.Columns.RowFormsRat
-public import Formalism.LocalToGlobal.Columns.RowFormsSym
-public import Formalism.LocalToGlobal.Columns.SliceIntegralDeltaNeBot
-public import Formalism.LocalToGlobal.Columns.SummandSlopeAtDecoratedLattice
-public import Formalism.LocalToGlobal.Columns.BrzoPairAtZeroRight
-public import Formalism.SizeWindowBrackets.Chain2aCoreNoAnalytic
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondStepGluing
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import Formalism.FormalDegreeBessel.StatementDS
-public import Formalism.FormalDegreeBessel.FinalDS
-public import Mathlib.LinearAlgebra.Vandermonde
+public import Formalism.LocalRingCardinality.DataParams₂
+public import Formalism.LocalToGlobal.Columns.ColForms
+import Mathlib.Algebra.Order.Star.Rat
+import Formalism.LocalToGlobal.GlobalTheory.HLatOps
 
 @[expose] public section
 

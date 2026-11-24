@@ -1,14 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.TensorHomZmodDualIsoZmodMulPairing
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
+public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+public import GroundTheory.ProfiniteCohomology.CupProducts.Graded
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.CupPairingEvalPairingCohomologyMap
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.DeltaPairing
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-public import GroundTheory.ProfiniteCohomology.Characters
-public import GroundTheory.ProfiniteCohomology.CupProducts.Graded
+public import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
+import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
 
 @[expose] public section
 

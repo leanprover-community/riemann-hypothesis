@@ -1,45 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnitBasePointAdjoinTwistedSigmaStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnitBasePointAdjoinTwistedSigma
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
 namespace GlobalTheory.UnitLemma.TwistUnit
 
 open GlobalTheory.UnitLemma Polynomial
-
-theorem mem_adjoin_of_mul_eq_one {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {s t : A}
-    (h : s * t = 1) (ht : IsIntegral O t) : t ∈ Algebra.adjoin O {s} := by
-  obtain ⟨p, hp, hpt⟩ := ht
-  have e : aeval t p = 0 := hpt
-  rw [aeval_eq_sum_range, Finset.sum_range_succ, hp.coeff_natDegree, one_smul] at e
-  rcases Nat.eq_zero_or_pos p.natDegree with h0 | hpos
-  · rw [h0] at e
-    simp at e
-    have : t = 0 := by simpa using congrArg (t * ·) e
-    rw [this]; exact Subalgebra.zero_mem _
-  obtain ⟨k, hk⟩ : ∃ k, p.natDegree = k + 1 := ⟨_, (Nat.succ_pred_eq_of_pos hpos).symm⟩
-  rw [hk] at e
-  have hts : t * s = 1 := by rw [mul_comm]; exact h
-  have h1 : t ^ (k + 1) * s ^ k = t := by
-    rw [pow_succ', mul_assoc, ← mul_pow, hts, one_pow, mul_one]
-  have h2 : ∀ i ∈ Finset.range (k + 1), p.coeff i • t ^ i * s ^ k = p.coeff i • s ^ (k - i) := by
-    intro i hi
-    have hik : i ≤ k := Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)
-    rw [smul_mul_assoc]
-    congr 1
-    rw [show s ^ k = s ^ i * s ^ (k - i) by rw [← pow_add, Nat.add_sub_cancel' hik], ← mul_assoc,
-      ← mul_pow, hts, one_pow, one_mul]
-  have e2 := congrArg (· * s ^ k) e
-  simp only [add_mul, zero_mul, Finset.sum_mul] at e2
-  rw [Finset.sum_congr rfl h2, h1] at e2
-  have key : t = -∑ i ∈ Finset.range (k + 1), p.coeff i • s ^ (k - i) := by
-    linear_combination e2
-  rw [key]
-  exact Subalgebra.neg_mem _ (Subalgebra.sum_mem _ fun i _ =>
-    Subalgebra.smul_mem _ (Subalgebra.pow_mem _ (Algebra.self_mem_adjoin_singleton O s) _) _)
 
 theorem adjoin_stab {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {s : A} (L : Submodule O A)
     (hL : ∀ y ∈ L, s * y ∈ L) {a : A} (ha : a ∈ Algebra.adjoin O {s}) : ∀ y ∈ L, a * y ∈ L := by
@@ -80,8 +93,8 @@ theorem trace_σ (B : InvAlg K) (a : B.A) :
     intro y _
     have h1 : y = ∑ j, K.c (b.repr (B.σ.symm y) j) • B.σ (b j) := by
       conv_lhs => rw [← B.σ.apply_symm_apply y, ← b.sum_repr (B.σ.symm y)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_congr rfl fun j _ => hsm _ _
     rw [h1]
     exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
@@ -93,13 +106,13 @@ theorem trace_σ (B : InvAlg K) (a : B.A) :
     intro y i
     have h1 : B.σ y = ∑ j, K.c (b.repr y j) • b' j := by
       conv_lhs => rw [← b.sum_repr y]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_congr rfl fun j _ => by rw [hsm, hb']
     rw [h1, b'.repr_sum_self]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Algebra.trace_eq_matrix_trace b', Algebra.trace_eq_matrix_trace b, Matrix.trace, Matrix.trace,
-    map_sum]
+
+  rw [Algebra.trace_eq_matrix_trace b', Algebra.trace_eq_matrix_trace b, Matrix.trace, Matrix.trace,
+  map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp only [Matrix.diag_apply, Algebra.leftMulMatrix_eq_repr_mul]
   rw [hb', ← map_mul, hrepr]
@@ -125,7 +138,7 @@ theorem twisted_unit_eq_unit : ∀ (K : UQ) (B : InvAlg K), B.g * B.σ B.g = 1 �
         {L : Submodule K.O B.A | IsLat K.O K.E L ∧ ∀ z, z ∈ L ↔ ∀ y ∈ L,
           B.herm (β₀ * x) y z ∈ (algebraMap K.O K.E).range} = B.X x := by
   intro K B hg hs hi ε hε
-  obtain ⟨β₀, hβ, hb1, hb2⟩ := GlobalTheory.T.exists_unit_basePoint_adjoin_twisted_sigma K B hg hs hi ε hε
+  obtain ⟨β₀, hβ, hb1, hb2⟩ := _root_.GlobalTheory.UnitLemma.UnitBase.exists_unit_base K B hg hs hi ε hε
   refine ⟨β₀, hβ, fun x hx => ?_⟩
   set R := (algebraMap K.O K.E).range with hR
   set T := Algebra.trace K.E B.A with hT
@@ -163,9 +176,9 @@ theorem twisted_unit_eq_unit : ∀ (K : UQ) (B : InvAlg K), B.g * B.σ B.g = 1 �
       show B.σ ((β₀ : B.A) * x * a * B.σ b) = ε * ((β₀ : B.A) * x * (B.g * b) * B.σ a) by
         rw [map_mul, map_mul, map_mul, hβ, hx, B.σ_σ]; ring, hεT]
   have hgg : B.σ B.g * B.g = 1 := by rw [mul_comm]; exact hg
-  have hgad : B.g ∈ Algebra.adjoin K.O {B.σ B.g} := mem_adjoin_of_mul_eq_one hgg hi
+  have hgad : B.g ∈ Algebra.adjoin K.O {B.σ B.g} := _root_.GlobalTheory.UnitLemma.UnitBase.mem_adjoin_of_mul_eq_one' hgg hi
   ext L
-  simp only [Set.mem_setOf_eq, InvAlg.X, InvAlg.herm, Units.val_mul, ← hT, ← hR]
+  simp only [Set.mem_setOf_eq, InvAlg.X, InvAlg.herm, ← hT, ← hR]
   constructor
   · rintro ⟨hLat, hU⟩
     have h1 : ∀ y ∈ L, B.σ B.g * y ∈ L := by

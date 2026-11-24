@@ -1,7 +1,12 @@
 module
 
+public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement
+import Aesop.Main
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.ExtWeak
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.RegBall
+public import Mathlib.Analysis.Analytic.Uniqueness
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

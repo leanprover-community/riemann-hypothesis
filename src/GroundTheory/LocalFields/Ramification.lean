@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
 public import GroundTheory.LocalFields.Uniqueness
-public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.UnitsBasic
-public import GroundTheory.LocalFields.UnitsPowers
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Data.Fintype.Order
 
 @[expose] public section
 

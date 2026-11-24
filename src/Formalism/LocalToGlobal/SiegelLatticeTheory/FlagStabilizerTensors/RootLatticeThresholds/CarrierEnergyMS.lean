@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.ConstPinOfStd
+import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.Algebra.FiniteSupport.Basic
 
 @[expose] public section
 

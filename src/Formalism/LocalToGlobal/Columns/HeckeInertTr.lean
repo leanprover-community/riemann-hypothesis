@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.HeckeInertLemmas
-public import Formalism.LocalToGlobal.Columns.WmLemmas
 public import Formalism.LocalToGlobal.Divisibility.LiftLatInst
+public import Formalism.LocalToGlobal.Columns.HeckeInert
+public import Formalism.LocalToGlobal.Columns.HeckeInertLemmas
 
 @[expose] public section
 

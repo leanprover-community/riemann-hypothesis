@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StepHeightOfNormOne
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGram
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.DensInertDisplayHolds
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.FinrankOrthAddLe
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.EqZeroOfMulVec
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.FinrankOrthAddLe
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
@@ -25,13 +27,13 @@ theorem span_pair_orth_eq_zero {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') 
     (ho : ∀ i, S.hT (Sum.elim F.fvec F'.fvec i) x = 0) : x = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 hx
   have hdet : (Formalism.L2.SG.GramJoint.gramFF F F').det ≠ 0 := by
-    rw [Formalism.L2.SG.Closed.GramDetFlag_holds E S r T T' F F']
+    rw [_root_.Formalism.L2.SG.GramJoint.gramDetFlag E S r T T' F F']
     exact mul_ne_zero (pow_ne_zero _ (by norm_num)) hG
   have hc : Formalism.L2.SG.GramJoint.gramFF F F' *ᵥ c = 0 := by
     funext i
     have h := ho i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at h
+
+    rw [map_sum] at h
     simp only [Matrix.mulVec, dotProduct, Pi.zero_apply]
     rw [← h]
     refine Finset.sum_congr rfl fun j _ => ?_

@@ -1,5 +1,0 @@
-module
-
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransportedWeilDatumCMPreservesSchwartzHeisenberStatement
-
-@[expose] public section

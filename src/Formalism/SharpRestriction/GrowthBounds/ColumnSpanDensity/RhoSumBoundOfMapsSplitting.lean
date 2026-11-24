@@ -1,6 +1,50 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoUpperBoundSmallDepth
+public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundLargeConductor
+public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LatticeCountPrimeMonoLevel
+public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundOfEdgeCount
+public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoUpperBoundOfEdgeCount
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -135,14 +179,14 @@ theorem rho_sum_bound_of_maps_splitting (hM : RhoSumLatticeMaps) (hBS : BlockSpl
   have hsumA : ∑ j, Aj j = ((p : R.O) ^ (3 * u) * z) • (1 : Matrix (Fin n) (Fin n) R.O) := by
     ext i k
     apply hinj
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Matrix.sum_apply, map_sum]
+
+    rw [Matrix.sum_apply, map_sum]
     have e1 : ∀ j : Jf, algebraMap R.O R.Kf (Aj j i k) =
         ∑ l, (p : R.Kf) ^ (3 * u) * beHH (m := m) p TT (ex A) (ex B) (io j (pr j (x i))) (y l) *
           algebraMap R.O R.Kf (Mat l k) := by
       intro j
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Aj, Matrix.mul_apply, Matrix.of_apply, map_sum, map_mul, ← hg, hkey]
+
+      simp only [Aj, Matrix.mul_apply, Matrix.of_apply, map_sum, map_mul, ← hg, hkey]
     simp only [e1]
     rw [Finset.sum_comm]
     have e2 : ∀ l, ∑ j : Jf, (p : R.Kf) ^ (3 * u) * beHH (m := m) p TT (ex A) (ex B) (io j (pr j (x i))) (y l) *
@@ -153,8 +197,8 @@ theorem rho_sum_bound_of_maps_splitting (hM : RhoSumLatticeMaps) (hBS : BlockSpl
           beHH (m := m) p TT (ex A) (ex B) (x i) (y l) := by
         rw [Finset.sum_coe_sort Jf (fun j => beHH (m := m) p TT (ex A) (ex B) (io j (pr j (x i))) (y l))]
         unfold beHH
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← map_sum, ← Finset.smul_sum, hsum]
+
+        rw [← map_sum, ← Finset.smul_sum, hsum]
       rw [← e3, Finset.sum_mul, Finset.mul_sum]
       exact Finset.sum_congr rfl fun j _ => by ring
     simp only [e2]
@@ -178,8 +222,8 @@ theorem rho_sum_bound_of_maps_splitting (hM : RhoSumLatticeMaps) (hBS : BlockSpl
       intro a' l'
       show be p 1 (lamj j) (∑ i, algebraMap R.O R.Kf (P jj a' i) • xs j i) (∑ l, (Mat * Q jj) l l' • ys j l) = _
       rw [be_sum_left, Matrix.mul_assoc]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [be_sum, Matrix.mul_apply, map_sum, map_mul, Aj, Matrix.of_apply]
+
+      simp only [be_sum, Matrix.mul_apply, map_sum, map_mul, Aj, Matrix.of_apply]
       refine Finset.sum_congr rfl fun i _ => ?_
       congr 1
       have hgj : ∀ l, be p 1 (lamj j) (xs j i) (ys j l) = algebraMap R.O R.Kf (g jj i l) := fun l => hg jj i l

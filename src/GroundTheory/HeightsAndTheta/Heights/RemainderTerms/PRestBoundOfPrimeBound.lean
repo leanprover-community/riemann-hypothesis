@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsElem
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Elementary
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PrimeWeightEqZeroOfLt
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Elementary
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

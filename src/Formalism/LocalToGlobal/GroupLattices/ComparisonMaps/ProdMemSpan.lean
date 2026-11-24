@@ -1,9 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.MRatSpanOf
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.DeterminantTwistRowActionMem
+public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.DeterminantTwistRowActionMem
 
 @[expose] public section
 
@@ -38,7 +39,7 @@ theorem prod_mem_span {O Y ι : Type} [CommRing O] [CommRing Y] [Algebra O Y] (t
       · have hne : i ≠ j := fun h => hj (h ▸ hi)
         simpa [Function.update_apply, hne] using ha i hi
     · rw [Finset.prod_insert hj]
-      simp only [Function.update_apply, if_pos rfl]
+      simp only [Function.update_apply]
       congr 1
       refine Finset.prod_congr rfl fun i hi => ?_
       have hne : i ≠ j := fun h => hj (h ▸ hi)
@@ -74,8 +75,8 @@ theorem rowAct_map {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {k n 
   | add p q hp hq => simp only [map_add (f := _), hp, hq]
   | mul_X p v hp =>
     rw [map_mul, map_mul, map_mul, hp]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [rowAct, map_sum, Matrix.map_apply]
+
+    simp [rowAct, map_sum, Matrix.map_apply]
 
 theorem glMap_inv {k : ℕ} (g : GL (Fin k) LL) :
     ((g : Matrix (Fin k) (Fin k) LL).map e)⁻¹ = ((g⁻¹ : GL (Fin k) LL) : Matrix (Fin k) (Fin k) LL).map e := by

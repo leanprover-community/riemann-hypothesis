@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 @[expose] public section
 
@@ -64,15 +67,15 @@ def proj (σ : A →+* A) (J : Matrix n n A) (u : n → A) (ainv : A) : Matrix n
 
 theorem sigma_rowJ (σ : A →+* A) (hσ : ∀ a, σ (σ a) = a) (J : Matrix n n A) (hJ : ∀ i j, σ (J i j) = J j i)
     (u : n → A) (i : n) : σ (rowJ σ J u i) = (J *ᵥ u) i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [rowJ, vecMul, mulVec, dotProduct, map_sum, map_mul, hσ, hJ]
+
+  simp only [rowJ, vecMul, mulVec, dotProduct, map_sum, map_mul, hσ, hJ]
   exact Finset.sum_congr rfl fun k _ => mul_comm _ _
 
 theorem sigma_hsq (σ : A →+* A) (hσ : ∀ a, σ (σ a) = a) (J : Matrix n n A) (hJ : ∀ i j, σ (J i j) = J j i)
     (u : n → A) : σ (hsq σ J u) = hsq σ J u := by
   have h1 : σ (hsq σ J u) = ∑ i, (J *ᵥ u) i * σ (u i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hsq, dotProduct, map_sum, map_mul, sigma_rowJ σ hσ J hJ]
+
+    simp only [hsq, dotProduct, map_sum, map_mul, sigma_rowJ σ hσ J hJ]
   rw [h1]
   show _ = rowJ σ J u ⬝ᵥ u
   rw [rowJ, ← dotProduct_mulVec]
@@ -112,8 +115,8 @@ theorem proj_unitary (σ : A →+* A) (hσ : ∀ a, σ (σ a) = a) (J : Matrix n
 theorem rowJ_map {B : Type*} [CommRing B] (f : A →+* B) (σ : A →+* A) (σ' : B →+* B)
     (hf : ∀ a, f (σ a) = σ' (f a)) (J : Matrix n n A) (u : n → A) (j : n) :
     f (rowJ σ J u j) = rowJ σ' (J.map f) (fun i => f (u i)) j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [rowJ, vecMul, dotProduct, map_sum, map_mul, hf, Matrix.map_apply]
+
+  simp only [rowJ, vecMul, dotProduct, map_sum, map_mul, hf, Matrix.map_apply]
 
 theorem proj_map {B : Type*} [CommRing B] (f : A →+* B) (σ : A →+* A) (σ' : B →+* B)
     (hf : ∀ a, f (σ a) = σ' (f a)) (J : Matrix n n A) (u : n → A) (ainv : A) :
@@ -125,8 +128,8 @@ theorem proj_map {B : Type*} [CommRing B] (f : A →+* B) (σ : A →+* A) (σ' 
 theorem hsq_map {B : Type*} [CommRing B] (f : A →+* B) (σ : A →+* A) (σ' : B →+* B)
     (hf : ∀ a, f (σ a) = σ' (f a)) (J : Matrix n n A) (u : n → A) :
     f (hsq σ J u) = hsq σ' (J.map f) (fun i => f (u i)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hsq, dotProduct, map_sum, map_mul, rowJ_map f σ σ' hf]
+
+  simp only [hsq, dotProduct, map_sum, map_mul, rowJ_map f σ σ' hf]
 
 end Herm
 
@@ -148,8 +151,8 @@ theorem exists_aniso (σ : K →+* K) (hσ : ∀ a, σ (σ a) = a) (J : Matrix n
     ring
   have hsym : ∀ u v, B v u = σ (B u v) := by
     intro u v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hB, dotProduct, map_sum, map_mul, sigma_rowJ σ hσ J hJ]
+
+    simp only [hB, dotProduct, map_sum, map_mul, sigma_rowJ σ hσ J hJ]
     simp only [rowJ, vecMul, mulVec, dotProduct, Finset.sum_mul]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => by ring

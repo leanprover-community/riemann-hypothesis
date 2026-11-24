@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.PAdicHodge.NormalizedTrace
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 @[expose] public section
 

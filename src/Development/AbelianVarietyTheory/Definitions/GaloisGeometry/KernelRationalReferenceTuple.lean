@@ -1,10 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.JetsRationalOfKernelRationality
-public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.KerEntHyp
-public import Formalism.GradedWeylDivisibility.FinalC
+public import Formalism.LocalToGlobal.KernelLattices.JetFieldLeKR
+import Formalism.GradedWeylDivisibility.FinalC
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.JetsRationalOfKernelRationality
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -152,7 +198,7 @@ theorem wtTie_meet {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNoti
       exact_mod_cast key
   · simp only [shh, if_neg (Nat.succ_ne_zero i), Nat.add_sub_cancel]
     rw [sDiv_indep u D.what₂.mu0 μ i hi τ]
-  · haveI : Infinite D.what₂.LL := Infinite.of_injective (fun n : ℕ => (n : D.what₂.LL)) (fun a b h => by
+  · have : Infinite D.what₂.LL := Infinite.of_injective (fun n : ℕ => (n : D.what₂.LL)) (fun a b h => by
       have := congrArg D.what₂.embLL h; simp only [map_natCast] at this; exact_mod_cast this)
     refine jet_in_vv_of_weight D.what₂.LL D.what₂.Tau (D.R.N i) (D.R.N (i + 1)) (by unfold Ranks.N; nlinarith) _ _ _ fun τ r => ?_
     unfold extNu
@@ -414,7 +460,7 @@ theorem vqTie_kerEntC (hD : WtDiv) (t : KerEntTied ex) (P : Examples₂.EntPl D)
   rw [he]
   show Set.range (evC t.O u μ i) = _
   rw [range_evC]
-  haveI hLL : Infinite D.what₂.LL := Infinite.of_injective (fun n : ℕ => (n : D.what₂.LL)) (fun a b h => by
+  have hLL : Infinite D.what₂.LL := Infinite.of_injective (fun n : ℕ => (n : D.what₂.LL)) (fun a b h => by
     have := congrArg D.what₂.embLL h; simp only [map_natCast] at this; exact_mod_cast this)
   have hne : ∀ y τ, ((t.O u μ).frm i y τ).det ≠ 0 := fun y τ => by
     rw [← (t.O u μ).frm_de i hi y τ]; exact (D.chTw u μ).de_ne i y τ
@@ -445,7 +491,7 @@ theorem vqTie_kerEntC (hD : WtDiv) (t : KerEntTied ex) (P : Examples₂.EntPl D)
     · rintro ⟨⟨Q, hQ⟩, rfl⟩
       have hQ' : Q ∈ WtPol D.what₂.LL (nuT D u 0) := hQ
       obtain ⟨P0, hP0, rfl⟩ := hD D.what₂.LL D.what₂.Tau (D.R.N 0) (nuT D u 0) (nn D u 0) hk Q hQ'
-      rw [Set.mem_setOf_eq]
+      rw [Set.mem_ofPred_eq]
       refine ⟨P0, ?_, hfun P0 hQ⟩
       rw [VV_eq_WtPol]
       have e : (fun τ r => (lam (antitone_kernelChain_nuT D) u 0 τ).natW r) = fun τ r => nuT D u 0 τ r - nn D u 0 τ := by
@@ -478,7 +524,7 @@ theorem vqTie_kerEntC (hD : WtDiv) (t : KerEntTied ex) (P : Examples₂.EntPl D)
     ext f
     constructor
     · rintro ⟨⟨Q, hQ⟩, rfl⟩
-      rw [Set.mem_setOf_eq]
+      rw [Set.mem_ofPred_eq]
       exact ⟨Q, hVV ▸ hQ, hfun Q hQ⟩
     · rintro ⟨Q, hQ, rfl⟩
       have hQ' : Q ∈ polV D u (j + 1) := hVV ▸ hQ

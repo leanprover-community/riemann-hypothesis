@@ -2,7 +2,54 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 
 @[expose] public section
 
@@ -147,14 +194,6 @@ theorem inG_of_lieOf {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ}
 
 end ExpD
 
-theorem inG_add {ε : Fin n → Bool} {X Y : Matrix (Fin n) (Fin n) ℂ} (hX : Formalism.REAL.inG ε X) (hY : Formalism.REAL.inG ε Y) :
-    Formalism.REAL.inG ε (X + Y) := by
-  unfold Formalism.REAL.inG at *
-  rw [Matrix.conjTranspose_add, Matrix.add_mul, Matrix.mul_add]
-  calc Xᴴ * Formalism.REAL.Jm ε + Yᴴ * Formalism.REAL.Jm ε + (Formalism.REAL.Jm ε * X + Formalism.REAL.Jm ε * Y)
-      = (Xᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * X) + (Yᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * Y) := by abel
-    _ = 0 := by rw [hX, hY, add_zero]
-
 theorem inG_smul {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : Formalism.REAL.inG ε X) (c : ℝ) :
     Formalism.REAL.inG ε ((c : ℂ) • X) := by
   unfold Formalism.REAL.inG at *
@@ -173,7 +212,7 @@ theorem inG_of_gLie (ε : Fin n → Bool) (x : gLie ε) :
     rw [unrealify_realify]
     exact inG_of_lieOf hX
   | zero => rw [unrealify_zero]; simp [Formalism.REAL.inG]
-  | add x y _ _ hx hy => rw [unrealify_add]; exact inG_add hx hy
+  | add x y _ _ hx hy => rw [unrealify_add]; exact _root_.Formalism.REAL.lie_algebra_add_mem_matrix hx hy
   | smul c x _ hx => rw [unrealify_smul]; exact inG_smul hx c
 
 theorem exists_uMat (ε : Fin n → Bool) (x : gLie ε) :

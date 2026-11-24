@@ -1,11 +1,11 @@
 module
 
-public import Formalism.SharpRestriction.Divisibility.HookProducts.GaugeFormBoundOfUniformSize
-public import Formalism.SharpRestriction.Divisibility.SlopeExcess.HeightBoundOfComponentBounds
-public import Formalism.LocalToGlobal.GlobalTheory.PlacesP
+public import Formalism.SharpRestriction.AdmissibleParameterJoins.SumLogPrimeFactorsLe
+public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.LocalToGlobal.Divisibility.RecBridgeWire
-public import Formalism.LocalToGlobal.ClassOfRecordOfChoice
-public import Formalism.SharpRestriction.GlobalSchurBounds.LogXLowerFamilyOfTheorems
+import Formalism.LocalToGlobal.GlobalTheory.GL6.CoordMapInjective
+import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
+import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 
 @[expose] public section
 

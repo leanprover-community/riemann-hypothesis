@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockPairingHighestWeight
 public import Formalism.ThetaLogCoordinates.SandwichModelDomains.StatementW
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
 
 @[expose] public section
 

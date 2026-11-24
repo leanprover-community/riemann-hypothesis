@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedBr
-public import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
-public import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
+public import Formalism.LocalToGlobal.HermitianForms.LastCoordinateUniformizerVectorSpansOrthogonalLi
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrInj
+import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 

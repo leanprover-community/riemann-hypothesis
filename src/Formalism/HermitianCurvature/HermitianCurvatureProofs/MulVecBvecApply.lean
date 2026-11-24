@@ -1,11 +1,58 @@
 module
 
-public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+public import Formalism.HermitianCurvature.StatementD
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeisenbergLeviConjugationMeasure
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
 
 @[expose] public section
 
@@ -60,34 +107,8 @@ theorem herm_bvec_r {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (v : Fin m → �
   rw [Finset.sum_eq_single p]
   · simp
   · intro b _ hb
-    simp [Pi.single_apply, hb]
+    simp [hb]
   · simp
-
-theorem hpk_esI_row {r : ℕ} (b : Fin r) (x : Fin (2 * r + k + 1)) :
-    Hpk k r (esI k r b) x = if x = eI k r b then 1 else 0 := by
-  have hb := b.isLt
-  rcases x with ⟨x, hx⟩
-  simp only [Hpk, esI, eI, Fin.mk.injEq]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
-theorem hpk_eI_row {r : ℕ} (b : Fin r) (x : Fin (2 * r + k + 1)) :
-    Hpk k r (eI k r b) x = if x = esI k r b then 1 else 0 := by
-  have hb := b.isLt
-  rcases x with ⟨x, hx⟩
-  simp only [Hpk, esI, eI, Fin.mk.injEq]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
-theorem herm_bvec_esI' {r : ℕ} (v : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
-    herm (Hpk k r) v (bvec (esI k r b)) = v (eI k r b) := by
-  rw [herm_bvec_r]
-  simp only [hpk_esI_row, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
-
-theorem herm_bvec_eI' {r : ℕ} (v : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
-    herm (Hpk k r) v (bvec (eI k r b)) = v (esI k r b) := by
-  rw [herm_bvec_r]
-  simp only [hpk_eI_row, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
 
 def midB (o ρ : ℕ) (G : B.Mat k (o + ρ)) : B.Mat k ρ := fun a b => G (levPos k o ρ a) (levPos k o ρ b)
 
@@ -122,11 +143,11 @@ theorem uw_block (o ρ : ℕ) (z : Fin (2 * ρ + k + 1) → ℂ) (G : B.Mat k (o
         rw [if_neg]; intro h; rw [h] at hc; exact hc hq
       by_cases h1 : p.val < o
       · have e : p = eI k (o + ρ) ⟨p.val, by omega⟩ := by ext; simp [eI]
-        rw [e, ← herm_bvec_esI' (G *ᵥ bvec q), ← (hG.2.1 _).2, TwoByOneBlock.herm_UH hG.1, herm_bvec_esI']
+        rw [e, ← _root_.PI.StabPairsW.herm_es (G *ᵥ bvec q), ← (hG.2.1 _).2, TwoByOneBlock.herm_UH hG.1, _root_.PI.StabPairsW.herm_es]
         refine (hqne _ ?_).symm
         simp [eI]; omega
       · have e : p = esI k (o + ρ) ⟨2 * (o + ρ) + k - p.val, by omega⟩ := by ext; simp [esI]; omega
-        rw [e, ← herm_bvec_eI' (G *ᵥ bvec q), ← (hG.2.1 _).1, TwoByOneBlock.herm_UH hG.1, herm_bvec_eI']
+        rw [e, ← _root_.PI.StabPairsW.herm_e (G *ᵥ bvec q), ← (hG.2.1 _).1, TwoByOneBlock.herm_UH hG.1, _root_.PI.StabPairsW.herm_e]
         refine (hqne _ ?_).symm
         simp [esI]; omega
   · rw [lev_out_col o ρ _ p q hq, show G p q = (G *ᵥ bvec q) p from (mulVec_bvec_apply G q p).symm, hfix q hq]
@@ -293,7 +314,7 @@ theorem embG_conj_Rn (y : B.Mat k ρ) (hy : y ∈ B.GV k ρ) (x : U.RC k j ρ) :
       Equiv.apply_symm_apply]
     rw [hq]
   · simp
-  · simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add]
+  · simp only [Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add]
     exact Matrix.nonsing_inv_mul _ hu
   · simp [rnAct]
     rfl
@@ -336,7 +357,7 @@ theorem uw_inv_mulVec_eI {r : ℕ} (Z : Fin (2 * r + k + 1) → ℂ) (E : B.Mat 
     have := B2x5.normSq_det_GV hE.1
     refine isUnit_iff_ne_zero.2 fun h0 => ?_
     rw [h0, Complex.normSq_zero] at this; exact zero_ne_one this
-  rw [← herm_bvec_esI' (E⁻¹ *ᵥ w), ← herm_bvec_esI' w, ← TwoByOneBlock.herm_UH hE.1, (hE.2.1 a).2, Matrix.mulVec_mulVec,
+  rw [← _root_.PI.StabPairsW.herm_es (E⁻¹ *ᵥ w), ← _root_.PI.StabPairsW.herm_es w, ← TwoByOneBlock.herm_UH hE.1, (hE.2.1 a).2, Matrix.mulVec_mulVec,
     Matrix.mul_nonsing_inv _ hu, Matrix.one_mulVec]
 
 theorem ell_conj_UW {r : ℕ} (Z : Fin (2 * r + k + 1) → ℂ) (E : B.Mat k r) (hE : E ∈ UWset k r Z)

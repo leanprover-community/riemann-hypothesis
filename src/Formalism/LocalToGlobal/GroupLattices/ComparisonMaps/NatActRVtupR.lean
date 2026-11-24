@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ValUniqOf
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmBc
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 @[expose] public section
@@ -113,12 +113,12 @@ theorem substR_rename (R : Type) [CommRing R] (h : ∀ v, Fin (P.n' v) → Matri
       (MvPolynomial.rename (fun x => (⟨v, x⟩ : Var P))).comp (Formalism.GradedWeylDivisibility.blockAct R (h v)) := by
     apply MvPolynomial.algHom_ext
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [substR, Formalism.GradedWeylDivisibility.blockAct, map_sum]
+
+    simp [substR, Formalism.GradedWeylDivisibility.blockAct, map_sum]
   exact congrArg (fun f => f F) e
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem natActR_VtupR (R : Type) [Field R] (g : ∀ v, Fin (P.n' v) → GL (Fin (P.m + 1)) R) (Q : XR P R)
     (hQ : Q ∈ VtupR P R) : natActR P R g Q ∈ VtupR P R := by
   unfold VtupR at hQ ⊢

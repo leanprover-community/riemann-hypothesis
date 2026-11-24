@@ -1,7 +1,9 @@
 module
 
 public import Formalism.GaloisCohomology.LocalTateDualityK
-public import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
+public import GroundTheory.ProfiniteCohomology.CupProducts
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.NumberTheory.LocalField.Basic
 
 @[expose] public section
 

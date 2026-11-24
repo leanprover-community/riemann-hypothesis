@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinS2LimitFormula
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SemiChar
 
 @[expose] public section
 

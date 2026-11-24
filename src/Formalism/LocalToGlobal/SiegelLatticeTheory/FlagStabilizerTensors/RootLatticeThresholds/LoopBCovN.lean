@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LoopTerm
 public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
-public import Formalism.SharpRestriction.ElevenLe
 
 @[expose] public section
 

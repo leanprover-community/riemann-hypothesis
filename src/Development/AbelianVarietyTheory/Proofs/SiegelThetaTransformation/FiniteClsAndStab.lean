@@ -1,8 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.FirstCoordinateAdmissible
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FiniteClassesSelfDualOfSelfDual
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -69,7 +112,7 @@ private lemma unitary_of_hermitian_mulVec {h : Matrix (Fin n) (Fin n) E}
   rw [_root_.GlobalTheory.SW.Base.herm_one, _root_.GlobalTheory.SW.Base.herm_one, Matrix.mulVec_single_one,
     Matrix.mulVec_single_one] at this
   rw [Matrix.mul_apply]
-  simp only [ccT_apply, Matrix.transpose_apply, Matrix.col_apply] at this ⊢
+  simp only [ccT_apply, Matrix.col_apply] at this ⊢
   rw [Finset.sum_congr rfl (fun a _ => mul_comm _ _), this]
   simp [Pi.single_apply, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc, Matrix.one_apply, eq_comm]
 
@@ -149,7 +192,7 @@ private lemma related_of_same_reduction_lemma_5 (M : ℕ) {Λ₁ Λ₂ : _root_.
       have e₂ : (s₂ : E) = 1 + M * t₂ := by rw [hst₂]; push_cast; ring
       have hδ : (1 : Matrix (Fin n) (Fin n) E) a i = (Pi.single i (1 : E) : Fin n → E) a := by
         rw [Matrix.one_apply, Pi.single_apply]
-      simp only [Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul, hδ, Pi.smul_apply]
+      simp only [Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul, hδ]
       change _ = (M : E) * (-c a i + (s₁ : E) * ((t₁ : E) - t₂) * (Pi.single i (1 : E) : Fin n → E) a)
       push_cast
       linear_combination (-1 : E) * hce a i + (s₁ : E) * (Pi.single i (1 : E) : Fin n → E) a * (e₁ - e₂)
@@ -211,8 +254,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma norm_embedding_entry_le_one_of_unitary {h : Matrix (Fin n) (Fin n) E}
     (hh : _root_.GlobalTheory.SW.ccT h * h = 1) (τ : E →+* ℂ) (k a : Fin n) : ‖τ (h k a)‖ ≤ 1 := by
   have key := congrArg τ (sum_conj_mul_eq_of_unitary hh a a)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, _root_.GlobalTheory.SW.Base.map_cc, Matrix.one_apply_eq, map_one] at key
+
+  simp only [map_sum, map_mul, _root_.GlobalTheory.SW.Base.map_cc, Matrix.one_apply_eq, map_one] at key
   have hsum : ∑ b, ‖τ (h b a)‖ ^ 2 = 1 := by
     have : ((∑ b, ‖τ (h b a)‖ ^ 2 : ℝ) : ℂ) = 1 := by
       push_cast
@@ -259,9 +302,9 @@ private lemma herm_one_mulVec_of_unitary {h : Matrix (Fin n) (Fin n) E}
   rw [_root_.GlobalTheory.SW.Base.herm_one, _root_.GlobalTheory.SW.Base.herm_one]
   calc ∑ a, (h *ᵥ x) a * _root_.ReciprocityTheory.ChartRestriction.G.FD.cc ((h *ᵥ y) a)
       = ∑ i, ∑ j, x i * _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (y j) * ∑ a, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (h a j) * h a i := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.mulVec, dotProduct, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc, map_sum, map_mul, Finset.sum_mul,
-          Finset.mul_sum]
+
+        simp only [Matrix.mulVec, dotProduct, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc, map_sum, map_mul, Finset.sum_mul,
+        Finset.mul_sum]
         have e : ∀ f : Fin n → Fin n → Fin n → E,
             ∑ a, ∑ i, ∑ j, f a i j = ∑ j, ∑ i, ∑ a, f a i j := fun f => by
           calc _ = ∑ a, ∑ j, ∑ i, f a i j := Finset.sum_congr rfl fun a _ => Finset.sum_comm

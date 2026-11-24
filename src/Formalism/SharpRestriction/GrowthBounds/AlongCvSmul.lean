@@ -1,9 +1,53 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.PowerSeriesFrobeniusCongruence
-public import Formalism.SharpRestriction.GrowthBounds.CoeffIdentityPlainChartOfThree
-public import Formalism.LocalToGlobal.CharacterGerms.TripleSubstSecondCoordinate
+public import Formalism.DropLevelBounds.ConstantCoeffVanishing.UbintConstantCoeffEqZero
+public import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
+public import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
+public import Formalism.LocalToGlobal.CharacterGerms.TripleSubstSecondCoordinate
+public import Formalism.SharpRestriction.GrowthBounds.CoeffIdentityPlainChartOfThree
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -155,16 +199,16 @@ theorem r1sRestC_of (hFr : PowerSeriesFrobeniusCongruence) (hRo : RootsOfUnityPr
     intro c m hm hc
     constructor
     · intro n j hj
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [haC, map_sub, map_sum]
+
+      simp only [haC, map_sub, map_sum]
       rw [(HL _ c cX m hm hc).1 n j hj, Finset.sum_eq_zero fun k _ => (HL _ c (rc_cc cγ _) m hm hc).1 n j hj, sub_zero]
     · intro n
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [haC, map_sub, map_sum]
+
+      simp only [haC, map_sub, map_sum]
       rw [(HL _ c cX m hm hc).2 n, Finset.sum_congr rfl fun k _ => (HL _ c (rc_cc cγ (ζ ^ k)) m hm hc).2 n]
       unfold phi
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sub, map_sum, alongCv_rc cγ, alongCv_pw cδ hll, Finset.sum_neg_distrib]
+
+      simp only [map_sub, map_sum, alongCv_rc cγ, alongCv_pw cδ hll, Finset.sum_neg_distrib]
       ring
 
   have bK : ∀ x : κ → PowerSeries C, (∀ i, PowerSeries.constantCoeff (x i) = 0) →
@@ -172,13 +216,13 @@ theorem r1sRestC_of (hFr : PowerSeriesFrobeniusCongruence) (hRo : RootsOfUnityPr
     intro x hx
     constructor
     · intro n
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hbC, map_sub, map_sum]
+
+      simp only [hbC, map_sub, map_sum]
       rw [(HL x _ hx 1 le_rfl (low1 _ cZ)).1 n 0 one_pos,
         Finset.sum_eq_zero fun k _ => (HL x _ hx 1 le_rfl (low1 _ (rc_cc cz (ζ ^ k)))).1 n 0 one_pos, sub_zero]
     · intro n
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hbC, map_sub, map_sum]
+
+      simp only [hbC, map_sub, map_sum]
       rw [(HL x _ hx V.l hl0 (pw_low cε hl0)).1 n 1 (by omega),
         Finset.sum_congr rfl fun k _ => (HL x _ hx 1 le_rfl (low1 _ (rc_cc cz (ζ ^ k)))).2 n, sub_zero]
       have e : ∀ k, (fun i => PowerSeries.coeff 1 (rc (ζ ^ k) z i)) = fun i => ζ ^ k * PowerSeries.coeff 1 (z i) := by
@@ -203,20 +247,20 @@ theorem r1sRestC_of (hFr : PowerSeriesFrobeniusCongruence) (hRo : RootsOfUnityPr
     ring
   have hE : mvExp (bC (pw (V.l ^ 2) δ)) * ∏ k ∈ Finset.range V.l, mvExp (aC (rc (ζ ^ k) z)) =
       mvExp (aC (pw V.l ε)) * ∏ k ∈ Finset.range V.l, mvExp (bC (rc (ζ ^ k) γ)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Formalism.UnitaryBoundIntegral.ubint_mvExp_sum _ _ (fun k _ => cca _ (rc_cc cz _)),
-      ← Formalism.UnitaryBoundIntegral.ubint_mvExp_sum _ _ (fun k _ => ccb _ (rc_cc cγ _)),
-      ← VP.exp_add (ccb _ cX) (by rw [map_sum]; exact Finset.sum_eq_zero fun k _ => cca _ (rc_cc cz _)),
-      ← VP.exp_add (cca _ cZ) (by rw [map_sum]; exact Finset.sum_eq_zero fun k _ => ccb _ (rc_cc cγ _)), hid]
+
+    rw [← Formalism.UnitaryBoundIntegral.ubint_mvExp_sum _ _ (fun k _ => cca _ (rc_cc cz _)),
+    ← Formalism.UnitaryBoundIntegral.ubint_mvExp_sum _ _ (fun k _ => ccb _ (rc_cc cγ _)),
+    ← VP.exp_add (ccb _ cX) (by rw [map_sum]; exact Finset.sum_eq_zero fun k _ => cca _ (rc_cc cz _)),
+    ← VP.exp_add (cca _ cZ) (by rw [map_sum]; exact Finset.sum_eq_zero fun k _ => ccb _ (rc_cc cγ _)), hid]
   have ars : ∀ c : C, aC (rc c z) = rs 1 c (aC z) := by
     intro c
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [haC, map_sub, map_sum]
+
+    simp only [haC, map_sub, map_sum]
     rw [(hHR C d I κ X _ z cX cz c).2, Finset.sum_congr rfl fun k _ => (hHR C d I κ X _ z (rc_cc cγ (ζ ^ k)) cz c).2]
   have brs : ∀ c : C, bC (rc c γ) = rs 0 c (bC γ) := by
     intro c
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hbC, map_sub, map_sum]
+
+    simp only [hbC, map_sub, map_sum]
     rw [(hHR C d I κ X γ _ cγ cZ c).1, Finset.sum_congr rfl fun k _ => (hHR C d I κ X γ _ cγ (rc_cc cz (ζ ^ k)) c).1]
   set Aa := mvExp (aC z) with hAa
   set Bb := mvExp (bC γ) with hBb
@@ -273,8 +317,8 @@ theorem r1sRestC_of (hFr : PowerSeriesFrobeniusCongruence) (hRo : RootsOfUnityPr
     have hK : ∀ i j, j < 1 → coeff (ee i j) (∑ k ∈ Finset.range V.l, bC (rc (ζ ^ k) γ)) = 0 := by
       intro i j hj
       obtain rfl : j = 0 := by omega
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_eq_zero fun k _ => (bK _ (rc_cc cγ _)).1 i
     rw [map_sub, e2, hEx C _ 1 le_rfl hK i j (by omega), hK i j hj, add_zero, sub_self]
 

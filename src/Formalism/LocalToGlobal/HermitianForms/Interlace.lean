@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.FormsTied
+public import Formalism.LocalToGlobal.HermitianForms.LastCoordinateUniformizerVectorSpansOrthogonalLi
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 

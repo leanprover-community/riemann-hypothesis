@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalRestriction
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.LiesOver
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfLiesOver
+import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfLiesOver
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.LiesOver
 
 @[expose] public section
 
@@ -102,7 +102,7 @@ theorem coe_idelesProj_of (F : FiniteSubfield) [Fact (K ≤ F)] (x : IdeleGroup 
   rw [idelesProj_of, coe_idelesLevelProj]
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem idelesProj_smul (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) (z : IdeleLimit) :
     idelesProj ι ((globalDecomp (v.adicCompletion K.1) ι σ : ℚ̄ ≃ₐ[ℚ] ℚ̄) • z) =
       galUnitsHom (v.adicCompletion K.1) (AlgebraicClosure (v.adicCompletion K.1)) σ (idelesProj ι z) := by

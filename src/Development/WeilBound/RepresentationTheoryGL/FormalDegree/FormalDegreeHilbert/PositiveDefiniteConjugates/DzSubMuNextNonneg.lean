@@ -1,7 +1,44 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.FormalDegree.FormalDegreeHilbert.HlamStable
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FiPmatEqFiOneSmulPmat
 
@@ -18,15 +55,6 @@ open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-theorem inP_entry_zero {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : inP ε X) {a b : Fin n}
-    (h : ε a = ε b) : X a b = 0 := by
-  have h1 : (Matrix.diagonal (fun c => if ε c = true then (1 : ℂ) else -1) * X *
-      Matrix.diagonal (fun c => if ε c = true then (1 : ℂ) else -1)) a b = (-X) a b :=
-    congrFun (congrFun (ReciprocityTheory.ChartRestriction.DS.S7.inP_JXJ hX) a) b
-  simp only [Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.neg_apply] at h1
-  rw [h] at h1
-  split_ifs at h1 <;> linear_combination h1 / 2
-
 theorem exists_pmat {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : inP ε X) :
     ∃ z : PCoord ε → ℂ, pmat z = X := by
   refine ⟨fun ab => X ab.1.1 ab.1.2, ?_⟩
@@ -38,7 +66,7 @@ theorem exists_pmat {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX :
   · have h3 := congrFun (congrFun hH a) b
     simpa [Matrix.conjTranspose_apply] using h3
   · symm
-    apply inP_entry_zero hX
+    apply _root_.ReciprocityTheory.ChartRestriction.DS.inP_apply_eq_zero hX
     by_contra hne
     rcases lt_trichotomy a b with hlt | heq | hgt
     · exact h2 ⟨hlt, fun e => hne e.symm⟩
@@ -62,7 +90,7 @@ theorem dz_sub_muNext_nonneg (i : Fin n) : 0 ≤ Dz n i - muNext (Dz n) i := by
   show (0 : ℤ) ≤ ((n : ℤ) - 1 - ((i : ℕ) : ℤ)) -
     (if h : (i : ℕ) + 1 < n then ((n : ℤ) - 1 - (((⟨(i : ℕ) + 1, h⟩ : Fin n) : ℕ) : ℤ)) else 0)
   split_ifs with h
-  · simp only [Fin.val_mk]
+  · simp only
     omega
   · omega
 

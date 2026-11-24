@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
+public import Mathlib.Analysis.Calculus.BumpFunction.Normed
+public import Mathlib.MeasureTheory.Integral.CircleAverage
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 
 @[expose] public section
 

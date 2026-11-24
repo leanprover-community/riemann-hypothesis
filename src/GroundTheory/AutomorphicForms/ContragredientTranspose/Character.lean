@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.HeckeIrreducible
 public import GroundTheory.AutomorphicForms.WhittakerCriterion
-public import GroundTheory.AutomorphicForms.SmoothRepContragredient
-public import GroundTheory.AutomorphicForms.SmoothRepSchur
+public import GroundTheory.AutomorphicForms.HeckeAlgebraLevel
+public import Mathlib.LinearAlgebra.Trace
+public import GroundTheory.AutomorphicForms.HeckeIrreducible
+import GroundTheory.AutomorphicForms.SmoothRepSchur
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

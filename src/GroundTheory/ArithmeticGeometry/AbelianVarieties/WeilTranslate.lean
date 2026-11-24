@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsPullback
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisionPoints
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
+import Mathlib.AlgebraicGeometry.EllipticCurve.DivisionPolynomial.Degree
 
 @[expose] public section
 

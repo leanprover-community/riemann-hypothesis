@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.GlobalZetaFinite
 public import GroundTheory.GlobalFields.TateThesis.GlobalZetaInfinite
 public import GroundTheory.GlobalFields.TateThesis.HeckeChar
+public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhat
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

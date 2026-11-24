@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.OrderTwoTate
-public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityPlace
 public import GroundTheory.ProfiniteCohomology.RealPlaces.GSDefs
 public import GroundTheory.ProfiniteCohomology.EulerCharDefs
+public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityPlace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

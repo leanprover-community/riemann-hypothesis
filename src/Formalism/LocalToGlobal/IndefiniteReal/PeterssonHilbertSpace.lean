@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

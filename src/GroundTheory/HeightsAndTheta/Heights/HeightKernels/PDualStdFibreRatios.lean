@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.DualStdModelField
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ImportsFurther
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

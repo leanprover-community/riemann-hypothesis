@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.LemmaN
 

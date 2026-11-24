@@ -1,7 +1,44 @@
 module
 
+public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictDef
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsEqMulApplyZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -125,7 +162,7 @@ theorem symp_eq (h : IsSec σ t sec) (hG : Grams σ t JA JB) {u : Matrix α β (
       ((coord σ t JA JB u).1 ⬝ᵥ (coord σ t JA JB u').2 - (coord σ t JA JB u').1 ⬝ᵥ (coord σ t JA JB u).2) := by
   obtain ⟨ε, hε, hA, hB⟩ := hG.sym
   have e : hTens (cA σ) JA JB u u' = trace (JAᵀ * u * JB * (u'.map (cA σ))ᵀ) := by
-    simp only [hTens, trace, diag, Matrix.mul_apply, dotProduct, transpose_apply, map_apply, Finset.sum_mul]
+    simp only [hTens, trace, diag, Matrix.mul_apply, transpose_apply, map_apply, Finset.sum_mul]
     calc _ = ∑ i, ∑ k, ∑ j, ∑ l, u i j * JA i k * JB j l * cA σ (u' k l) := Finset.sum_congr rfl fun i _ => Finset.sum_comm
       _ = ∑ k, ∑ i, ∑ j, ∑ l, u i j * JA i k * JB j l * cA σ (u' k l) := Finset.sum_comm
       _ = ∑ k, ∑ l, ∑ j, ∑ i, u i j * JA i k * JB j l * cA σ (u' k l) := Finset.sum_congr rfl fun k _ => by
@@ -141,7 +178,7 @@ theorem symp_eq (h : IsSec σ t sec) (hG : Grams σ t JA JB) {u : Matrix α β (
   congr 1
   simp only [map_mul, map_neg, map_one, AddMonoidHom.map_trace, Matrix.map_mul, transpose_map, h.conj1, h.conj2, hA, hB, coord, dot_ofM,
     transpose_smul, transpose_transpose, Matrix.smul_mul, Matrix.mul_smul, smul_smul, trace_smul, smul_eq_mul, transpose_neg,
-    transpose_mul, Matrix.neg_mul, Matrix.mul_neg, neg_neg, trace_neg]
+    transpose_mul, Matrix.neg_mul, Matrix.mul_neg, neg_neg]
   set A := JA.map (piW t)
   set B := JB.map (piW t)
   set P := u.map (piW t)

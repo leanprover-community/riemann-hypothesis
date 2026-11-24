@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.KerEntHyp
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExistsHomOfBasis
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 

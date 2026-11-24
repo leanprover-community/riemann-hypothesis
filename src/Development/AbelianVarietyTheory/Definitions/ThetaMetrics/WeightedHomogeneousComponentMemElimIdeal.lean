@@ -1,7 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsWeaklyRegularMapCAppendMapLinForm
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.Tactic.Continuity
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Nilpotent
+public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 
 @[expose] public section
 
@@ -83,9 +138,9 @@ theorem aeval_eq_zero_of_mem_elimIdeal {G : Type*} [CommRing G] [IsDomain G] [Al
   have hle : incidenceIdeal (β := β) p ≤ RingHom.ker ev := by
     refine incidenceIdeal_le.2 ⟨fun g hg => ?_, fun i => ?_⟩
     · simpa [ev, RingHom.mem_ker] using hξ g hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      · rw [RingHom.mem_ker, genericForm_eq, map_sum]
-        simpa [ev, mul_comm] using ht i
+
+    · rw [RingHom.mem_ker, genericForm_eq, map_sum]
+      simpa [ev, mul_comm] using ht i
   have h := hle (hm j)
   have h2 : ev (map C f) = aeval t f := by
     have : ev.comp (map C) = (aeval t : _ →ₐ[K] G).toRingHom := by
@@ -283,7 +338,7 @@ theorem weight_blockWeight [Fintype σ] (d : β × σ →₀ ℕ) (i : β) :
     by_cases h : k = i
     · subst h
       simp [Finsupp.weight_single, blockWeight, Finsupp.single_apply]
-    · simp [Finsupp.weight_single, blockWeight, Finsupp.single_apply, h, Ne.symm h]
+    · simp [Finsupp.weight_single, blockWeight, Ne.symm h]
 
 theorem isBlockHomogeneous_iff [Fintype σ] {f : MvPolynomial (β × σ) K} {a : β → ℕ} :
     IsBlockHomogeneous f a ↔ ∀ d ∈ f.support, ∀ i, ∑ j, d (i, j) = a i := by

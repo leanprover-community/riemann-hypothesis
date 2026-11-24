@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.AlgebraicityGalois
 public import GroundTheory.GlobalFields.ComplexMultiplication.DualDescent
+public import GroundTheory.GlobalFields.ComplexMultiplication.AlgebraicityHom
+public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupAction
+public import GroundTheory.GlobalFields.ComplexMultiplication.AlgebraicityClass
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

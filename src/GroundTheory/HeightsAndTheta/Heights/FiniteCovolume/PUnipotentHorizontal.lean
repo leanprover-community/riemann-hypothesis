@@ -1,13 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipotentHorizontal
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StRationalUnipotent
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipRadicalOfRational
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StComplementArchCocompact
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLeviPlaces
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PMahlerCompactness
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PArchInvariant
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PMahlerCompactness
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLeviPlaces
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -132,7 +133,7 @@ theorem UnipotentHorizontal.proof (h : HermitianForm F E W) (v : Basis ι E W)
   simp only [Pi.neg_apply, Pi.sub_apply]
   rw [hprod, hgW, mulVec_add, huY, mulVec_add, mulVec_smul, hs,
     (hδw w).1, hdW w, add_smul]
-  simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, Pi.neg_apply]
+  simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
   ring
 
 end

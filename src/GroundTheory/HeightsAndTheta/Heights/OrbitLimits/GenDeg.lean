@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogRenameCoordPow
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsIntegralLogNormRat
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PConsequences
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherBis
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsFieldIntersectionNoBlockFam
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogRenameCoordPow
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PConsequences
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsIntegralLogNormRat
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

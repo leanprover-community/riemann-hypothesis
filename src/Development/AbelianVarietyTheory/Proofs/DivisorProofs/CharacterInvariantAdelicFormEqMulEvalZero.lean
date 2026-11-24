@@ -1,12 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompactOpenSeparating
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqMulApplyZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormIteratedFDerivRemCompLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzVanishingDecomposition
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceFormMapSurjective
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqMulApplyZero
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompactOpenSeparating
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -36,8 +75,8 @@ theorem arch (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimens
     ext x
     rw [hsum x, SchwartzMap.sum_apply]
   have : T (f - f 0 • f₀) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum]
+
+    rw [e, map_sum]
     exact Finset.sum_eq_zero fun i _ => GlobalTheory.CharFormDeriv.charForm_kills_linear_mul V T hT (L i) (h i) (g i) (hg i)
   rw [map_sub, map_smul, sub_eq_zero] at this
   rw [this, smul_eq_mul, mul_comm]
@@ -56,26 +95,26 @@ theorem pairA_zero_add (a b : Af F) : pairA F 0 (a + b) = pairA F 0 a + pairA F 
 theorem dot_pairA_fin {κ : Type} [Fintype κ] (x : κ → AF F) (y : κ → Af F) :
     (x ⬝ᵥ fun i => pairA F 0 (y i)) = pairA F 0 ((fun i => (x i).2) ⬝ᵥ y) := by
   have h1 : (RingHom.fst (Ainf F) (Af F)) (x ⬝ᵥ fun i => pairA F 0 (y i)) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sum, map_mul]
+
+    simp only [dotProduct, map_sum, map_mul]
     exact Finset.sum_eq_zero fun i _ => by
       show (RingHom.fst (Ainf F) (Af F)) (x i) * 0 = 0
       exact mul_zero _
   have h2 : (RingHom.snd (Ainf F) (Af F)) (x ⬝ᵥ fun i => pairA F 0 (y i)) = (fun i => (x i).2) ⬝ᵥ y := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sum, map_mul]
+
+    simp only [dotProduct, map_sum, map_mul]
     rfl
   exact Prod.ext h1 h2
 
 theorem dot_pairA_inf {κ : Type} [Fintype κ] (x : κ → AF F) (y : κ → Ainf F) :
     (x ⬝ᵥ fun i => pairA F (y i) 0) = pairA F (∑ i, (x i).1 * y i) 0 := by
   have h1 : (RingHom.fst (Ainf F) (Af F)) (x ⬝ᵥ fun i => pairA F (y i) 0) = ∑ i, (x i).1 * y i := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sum, map_mul]
+
+    simp only [dotProduct, map_sum, map_mul]
     rfl
   have h2 : (RingHom.snd (Ainf F) (Af F)) (x ⬝ᵥ fun i => pairA F (y i) 0) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sum, map_mul]
+
+    simp only [dotProduct, map_sum, map_mul]
     exact Finset.sum_eq_zero fun i _ => by
       show (RingHom.snd (Ainf F) (Af F)) (x i) * 0 = 0
       exact mul_zero _
@@ -111,8 +150,8 @@ theorem psi_dot_inf {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) �
   rw [dot_pairA_inf, hψ.2.2 _ hat]
   show Complex.exp (_ * ((Algebra.trace ℝ (mixedEmbedding.mixedSpace F)
     (InfiniteAdeleRing.ringEquiv_mixedSpace F (∑ i, (x i).1 * (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (Y i))) : ℝ) : ℂ)) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum]
+
+  rw [map_sum, map_sum]
   simp only [map_mul, RingEquiv.apply_symm_apply]
   congr 1
   push_cast

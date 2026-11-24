@@ -1,13 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDeLeSemiPos
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.IsMultiHomogPlaneCoordinate
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PoincareLelongLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LelongSectionLimit
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDeLeSemiPos
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

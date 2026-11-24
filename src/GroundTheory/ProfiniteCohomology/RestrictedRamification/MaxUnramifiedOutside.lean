@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
+public import Mathlib.RingTheory.Unramified.Locus
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

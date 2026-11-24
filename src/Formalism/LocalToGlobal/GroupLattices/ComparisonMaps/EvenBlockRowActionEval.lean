@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemMIff
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ProdMemSpan
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.MapNatActR
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.DeterminantTwistRowActionMem
 
 @[expose] public section
 

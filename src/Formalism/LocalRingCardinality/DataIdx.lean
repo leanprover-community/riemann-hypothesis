@@ -2,6 +2,44 @@ module
 
 public import Formalism.LocalRingCardinality.DataDIV
 public import Formalism.LocalRingCardinality.DataNChoice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -200,7 +238,7 @@ def IsLatIn {R W : Type} [CommRing R] [AddCommGroup W] [Module R W] (M V : Submo
 end NForms
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 def NChoice.thPe (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ) :
     FractionRing (c.Oe w) ⊗[D.ntw.Ok (c.twI w) (c.k' w)]
         D.nexp.MtV (c.twI w) j (c.sd w) (c.k' w) (c.Q w) ((c.psi' w).comp (D.ntw.art (c.twI w) (c.Q w))) →ₗ[FractionRing (c.Oe w)]
@@ -211,14 +249,14 @@ def NChoice.thPe (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ) :
       (FractionRing (c.Oe w))
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 def NChoice.toFracE (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ) :
     c.Oe w ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w) →ₗ[D.ntw.O (c.twI w)]
       FractionRing (c.Oe w) ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w) :=
   ((Algebra.linearMap (c.Oe w) (FractionRing (c.Oe w))).restrictScalars (D.ntw.O (c.twI w))).rTensor _
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem NChoice.thPe_one (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ)
     (m : D.nexp.MtV (c.twI w) j (c.sd w) (c.k' w) (c.Q w) ((c.psi' w).comp (D.ntw.art (c.twI w) (c.Q w)))) :
     NChoice.thPe D c w j ((1 : FractionRing (c.Oe w)) ⊗ₜ m) =
@@ -235,7 +273,7 @@ theorem NChoice.thPe_one (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j :
   | add x y hx hy => rw [TensorProduct.tmul_add, map_add (f := _), hx, hy, map_add (f := _)]
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure NMj (D : D7) (X : DivX D) (c : NChoice D) where
 
   eMj : ∀ w j, (X.MjH j).V →+ (c.Oe w ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w))

@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhat
 public import GroundTheory.GlobalFields.TateThesis.AdelePoisson
+import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import GroundTheory.GlobalFields.TateThesis.LatticePoissonBasic
+import Mathlib.Algebra.Module.ZLattice.Summable
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

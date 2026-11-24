@@ -1,12 +1,18 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRatNoetherFrame
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodE
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStB
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.KrullDimension.Field
+public import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodA
 
 @[expose] public section
 
@@ -76,8 +82,8 @@ variable {Ω : Type} [Field Ω] [CharZero Ω] {J : Type}
 theorem sum_smul_cone [Fintype J] (x : J → Ω) (c : J → ℚ) :
     ∑ t, c t • (Polynomial.C (x t) * Polynomial.X) =
       Polynomial.C (∑ t, (c t : Ω) * x t) * Polynomial.X := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_mul]
+
+  rw [map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [Algebra.smul_def, Polynomial.algebraMap_apply, ← mul_assoc, ← map_mul]
   simp

@@ -1,7 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementN
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementI
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementP
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FglInvariant
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.Laurent
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.ToLTDenMulInv
 
 @[expose] public section
 
@@ -32,10 +36,7 @@ theorem X_pow_succ_dvd_of_derivative
     rw [mul_comm]
     exact_mod_cast hk
 
-theorem eq_zero_of_forall_X_pow_dvd {f : R⟦X⟧} (h : ∀ n : ℕ, X ^ n ∣ f) : f = 0 := by
-  ext n
-  have h1 := (PowerSeries.X_pow_dvd_iff).mp (h (n + 1)) n (Nat.lt_succ_self n)
-  simpa using h1
+alias eq_zero_of_forall_X_pow_dvd := _root_.Formalism.ELL.WeierstrassSeriesLimit.eq_zero_of_forall_X_pow_dvd
 
 end Unique
 

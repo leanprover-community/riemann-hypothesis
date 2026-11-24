@@ -1,8 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.Adele.Approximation
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.RingTheory.DedekindDomain.Different
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.InfiniteTraceAlgebraMap
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -58,7 +66,7 @@ theorem extensionEmbedding_algebraMap_apply (k : K) (w : InfinitePlace K) :
 
 theorem infiniteTrace_algebraMap (k : K) :
     infiniteTrace K (algebraMap K (InfiniteAdeleRing K) k) = (Algebra.trace ℚ K k : ℝ) :=
-  by apply _root_.UpperTheory.Reformulated.B.Qh34.infiniteTrace_algebraMap <;> assumption
+  by apply _root_.UpperTheory.Reformulated.B.Qh34.infiniteTrace_algebraMap
 
 theorem forall_mul_mem_iff_forall_trace_mem (k : K) :
     (∀ y ∈ differentIdeal ℤ (𝓞 K), k * algebraMap (𝓞 K) K y ∈ (algebraMap (𝓞 K) K).range) ↔

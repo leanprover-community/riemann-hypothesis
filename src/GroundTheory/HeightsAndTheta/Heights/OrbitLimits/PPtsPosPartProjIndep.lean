@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSheetOnlyNull
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosPartLocal
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosDensMeasurable
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 
 @[expose] public section
 

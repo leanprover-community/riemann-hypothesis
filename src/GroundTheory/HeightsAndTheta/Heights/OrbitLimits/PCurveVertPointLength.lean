@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertPointLengthSteps
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.MultAtPosOfMemDivSupp
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
 
 @[expose] public section
 

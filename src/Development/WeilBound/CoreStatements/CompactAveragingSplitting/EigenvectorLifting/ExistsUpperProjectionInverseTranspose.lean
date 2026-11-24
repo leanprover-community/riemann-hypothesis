@@ -2,9 +2,60 @@ module
 
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitDict
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantOrbit
+import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EventuallyDeepSubset
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableZetaIntegrand
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsMulLeftInvariantVolGL
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyConstantExtensionByZero
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
+public import Formalism.DoubleCosetMeasures.Statement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Pi.Interval
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -507,14 +558,14 @@ theorem upperProjection_right_inverse (h : GL (Fin (a + a')) k) : X0 k (finSumFi
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc h.val, Units.mul_inv, Matrix.one_mul]
   ext i j
   rw [frameMatrixFirstColumnBlock_mul_apply]
-  simp only [X0, transpose_apply, of_apply, one_apply, EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq, eq_comm, Matrix.one_apply]
+  simp only [X0, transpose_apply, of_apply, EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq, eq_comm, Matrix.one_apply]
 
 theorem lowerProjection_right_inverse (h : GL (Fin (a + a')) k) : Y0 k (finSumFinEquiv (m := a) (n := a')) * h.val *
     ((h⁻¹).val * (Y0 k (finSumFinEquiv (m := a) (n := a')))ᵀ) = 1 := by
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc h.val, Units.mul_inv, Matrix.one_mul]
   ext i j
   rw [frameMatrixSecondColumnBlock_mul_apply]
-  simp only [Y0, transpose_apply, of_apply, one_apply, EmbeddingLike.apply_eq_iff_eq, Sum.inr.injEq, eq_comm, Matrix.one_apply]
+  simp only [Y0, transpose_apply, of_apply, EmbeddingLike.apply_eq_iff_eq, Sum.inr.injEq, eq_comm, Matrix.one_apply]
 
 theorem gdet_block {b : GL (Fin (a + a')) k} (hb : IsBlockUpper b) {dA dD : kˣ} (h1 : (dA : k) = (blkA b).det)
     (h2 : (dD : k) = (blkD b).det) : gdet b = dA * dD := by

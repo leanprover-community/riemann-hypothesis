@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogTwoXc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 
 @[expose] public section
 

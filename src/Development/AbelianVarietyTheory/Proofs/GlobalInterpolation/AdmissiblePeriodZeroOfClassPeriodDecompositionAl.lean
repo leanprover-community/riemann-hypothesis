@@ -1,15 +1,52 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.StatementFT.PeriodPointConditions
-public import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
-public import Formalism.LocalToGlobal.HermitianForms.TiedBrRep
-public import Formalism.LocalRingCardinality.PosOfIsomEmb
-public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.SharpRestriction.LevelLetterCocycles.TwGuard
-public import Formalism.SharpRestriction.Divisibility.ThetaNormsAndLinks
 public import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
+public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
+public import Formalism.LocalRingCardinality.PosOfIsomEmb
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrRep
+public import Formalism.SharpRestriction.Divisibility.ThetaNormsAndLinks
+public import Formalism.SharpRestriction.LevelLetterCocycles.TwGuard
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -209,8 +246,8 @@ theorem admissiblePeriodZero_of_classPeriodDecomposition {D : D7} (h : ∀ u, Fo
   refine ⟨∑ c, ((Nat.card ((D.fm u).stabilizer₂ c) : ℕ) : D.what₂.LL)⁻¹ * y c, ?_, ?_⟩
   · have hz : (D.fm u).ptEmb x ∈ (D.fm u).ptC := ((T.valP.rat _).1 ⟨x, rfl⟩).1
     have hG : T.jM ((D.eMt u).symm F) ∈ (D.fm u).ptC := T.per.2.1 _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [T.per.2.2, petersson_eq_sum_restrict T _ _ hG hz, map_sum]
+
+    rw [T.per.2.2, petersson_eq_sum_restrict T _ _ hG hz, map_sum]
     refine Finset.sum_congr rfl fun c _ => ?_
     rw [map_mul, map_inv₀, map_natCast, hy c]
     unfold Formalism.MainNotions.RT.PeriodPointConditions.pcL

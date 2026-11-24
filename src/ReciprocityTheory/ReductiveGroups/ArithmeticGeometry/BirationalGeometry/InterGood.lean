@@ -1,7 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodF
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodG
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodE
 
 @[expose] public section
 
@@ -103,8 +108,8 @@ theorem goodProjExists : GoodProjExistsStatement := by
       intro j
       have h1 := congrFun h0 ⟨j.1, lt_of_lt_of_le j.2 hr⟩
       rw [hΨ] at h1
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [forms, map_sum, Algebra.smul_def, map_mul, RingHom.map_rat_algebraMap, hφs]
+
+      simp only [forms, map_sum, Algebra.smul_def, map_mul, RingHom.map_rat_algebraMap, hφs]
       simpa using h1
     have hcomp : (evQ P z' hz').comp (aeval (forms (segQ P) L)).toRingHom =
         (algebraMap ℚ ℂ).comp MvPolynomial.constantCoeff := by

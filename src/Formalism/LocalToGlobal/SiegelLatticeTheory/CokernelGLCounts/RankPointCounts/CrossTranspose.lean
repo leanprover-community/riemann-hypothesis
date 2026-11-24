@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CornerShOfKind
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

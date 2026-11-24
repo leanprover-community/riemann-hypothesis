@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.DualLattices.CyclicRecursionStatement
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+public import Mathlib.NumberTheory.Basic
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -18,7 +22,7 @@ variable {p : ℕ} [hp : Fact p.Prime]
 private lemma ghost_one {R : Type*} [CommRing R] (x : WittVector p R) :
     ghostComponent 1 x = x.coeff 0 ^ p + (p : R) * x.coeff 1 := by
   rw [WittVector.ghostComponent_apply, wittPolynomial_eq_sum_C_mul_X_pow]
-  simp [Finset.sum_range_succ] <;> ring
+  simp [Finset.sum_range_succ]
 
 private lemma coeff_zero_sum {R ι : Type*} [CommRing R] (s : Finset ι) (f : ι → WittVector p R) :
     (∑ i ∈ s, f i).coeff 0 = ∑ i ∈ s, (f i).coeff 0 := by
@@ -42,8 +46,8 @@ private lemma univ_coeff {ι : Type} (s : Finset ι) :
   refine ⟨h0, ?_⟩
   have hg : ghostComponent 1 (∑ i ∈ s, teichmuller p (X i : MvPolynomial ι ℤ)) =
       ∑ i ∈ s, (X i : MvPolynomial ι ℤ) ^ p := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [ghost_one]
     simp [WittVector.teichmuller_coeff_pos]
@@ -110,8 +114,8 @@ theorem teichSum (p : ℕ) [Fact p.Prime] : TeichSumStatement p := by
     have hmap : WittVector.map (MvPolynomial.aeval X).toRingHom
         (∑ i ∈ s, teichmuller p (MvPolynomial.X i : MvPolynomial ι ℤ)) =
           ∑ i ∈ s, teichmuller p (X i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [WittVector.map_teichmuller]
       simp

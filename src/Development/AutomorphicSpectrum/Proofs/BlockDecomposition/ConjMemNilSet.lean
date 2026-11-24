@@ -1,8 +1,55 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.SymZeroCommFrame
+public import Mathlib.MeasureTheory.Group.ModularCharacter
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuotientIntegrationFormulaDiscreteSubgroupLeft
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -151,12 +198,12 @@ theorem exists_tri {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} (h12 : W₁ ≤ W
   refine ⟨P, F - P, 1 - F, ⟨by abel, hPP, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, fun v => ?_, fun v => ?_⟩
   · simp [sub_mul, mul_sub, hFF, hPF, hFP, hPP]
   · simp [sub_mul, mul_sub, hFF]
-  · simp [sub_mul, mul_sub, hPF, hPP]
-  · simp [sub_mul, mul_sub, hPF]
-  · simp [sub_mul, mul_sub, hFP, hPP]
-  · simp [sub_mul, mul_sub, hFF, hFP, hPF]
-  · simp [sub_mul, mul_sub, hFP]
-  · simp [sub_mul, mul_sub, hFF, hPF, hFP]
+  · simp [mul_sub, hPF, hPP]
+  · simp [mul_sub, hPF]
+  · simp [sub_mul, hFP, hPP]
+  · simp [sub_mul, mul_sub, hFF, hPF]
+  · simp [sub_mul, hFP]
+  · simp [sub_mul, mul_sub, hFF, hFP]
   · simp only [Matrix.sub_mulVec, Matrix.one_mulVec, sub_eq_zero]
     constructor
     · intro hv
@@ -266,11 +313,11 @@ theorem conj_val {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} {P Q R : Mat n} (h 
       (t : ℂ) • (P * X * Q + Q * X * R) + (t : ℂ) ^ 2 • (P * X * R) := by
     have hPXP : P * X * P = 0 := by rw [mul_assoc, hXP, mul_zero]
     have hQXP : Q * X * P = 0 := by rw [mul_assoc, hXP, mul_zero]
-    simp only [aM, add_mul, mul_add, smul_mul_assoc, mul_smul_comm, hRX, hXP, hPXP, hQXP, hQXQ,
-      zero_mul, smul_zero, add_zero, zero_add]
+    simp only [aM, add_mul, mul_add, smul_mul_assoc, mul_smul_comm, hRX, hPXP, hQXP, hQXQ,
+      smul_zero, add_zero, zero_add]
     module
   rw [Units.val_mul, Units.val_mul, hiv, hv, hu', mul_add, add_mul, mul_one, hone, e1]
-  simp only [add_sub_cancel_left, add_assoc]
+  simp only [add_assoc]
 
 def conjN (N : Subgroup (G n)) (g : G n) (hg : ∀ u ∈ N, g * u * g⁻¹ ∈ N)
     (hg' : ∀ u ∈ N, g⁻¹ * u * g ∈ N) : N ≃* N where

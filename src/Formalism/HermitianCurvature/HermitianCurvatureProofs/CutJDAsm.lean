@@ -2,6 +2,46 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutAsm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsAdmissibleSplittingCharPairMulTwist
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
 
 @[expose] public section
 
@@ -16,18 +56,6 @@ noncomputable section
 section gen
 
 variable (P : M.Par)
-
-theorem jd_actA_add (a b : MA.A P (MA.DQ P)) (x : M.Ty P → MA.SmQ P.r P.TT) :
-    MA.actA P (a + b) x = MA.actA P a x + MA.actA P b x := by
-  funext π
-  show ∑ π', ((a + b) π π').1 (x π') = ∑ π', (a π π').1 (x π') + ∑ π', (b π π').1 (x π')
-  rw [← Finset.sum_add_distrib]
-  rfl
-
-theorem jd_actA_zero (x : M.Ty P → MA.SmQ P.r P.TT) : MA.actA P 0 x = 0 := by
-  funext π
-  show ∑ π', ((0 : MA.A P (MA.DQ P)) π π').1 (x π') = 0
-  exact Finset.sum_eq_zero fun _ _ => rfl
 
 theorem jd_actA_addR (a : MA.A P (MA.DQ P)) (x y : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P a (x + y) = MA.actA P a x + MA.actA P a y := by
@@ -70,7 +98,7 @@ theorem jd_word_span {Fn : Type} (L : R.LevelData (MA.A P (MA.DQ P)) P.r) (Good 
   | nil =>
     intro _ _ F hF
     refine Submodule.subset_span ⟨1, Submonoid.one_mem _, F, hF, ?_⟩
-    rw [List.prod_nil, actA_one]
+    rw [List.prod_nil, _root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_one]
   | cons a w ih =>
     intro hlen hw F hF
     have ha : a ∈ MA.hatSet P L := hw a (List.mem_cons_self ..)
@@ -90,8 +118,8 @@ theorem jd_word_span {Fn : Type} (L : R.LevelData (MA.A P (MA.DQ P)) P.r) (Good 
         obtain ⟨t, ht, rfl⟩ := List.mem_map.1 hu
         rw [← actA_mul]
         exact Submodule.subset_span ⟨b' * t.1, Submonoid.mul_mem _ hb' (hts t ht).1, t.2, (hts t ht).2, rfl⟩
-      | zero => rw [jd_actA_zero]; exact Submodule.zero_mem _
-      | add x y _ _ h1 h2 => rw [jd_actA_add]; exact Submodule.add_mem _ h1 h2
+      | zero => rw [_root_.Formalism.FourierDecayAlt.P.MAx3.F.actA_zero]; exact Submodule.zero_mem _
+      | add x y _ _ h1 h2 => rw [_root_.Formalism.FourierDecayAlt.P.MAx3.F.actA_add]; exact Submodule.add_mem _ h1 h2
       | smul c x _ h1 => rw [actA_smul]; exact Submodule.smul_mem _ c h1
     have key : ∀ x ∈ Submodule.span ℂ
         {u | ∃ b ∈ Submonoid.closure (MA.bddSet P L), ∃ F', Good w.length F' ∧ u = MA.actA P b (tr F')},
@@ -180,18 +208,12 @@ theorem jd_arith (C2 C3 C5 R n N A₀ : ℝ) (hC2 : 0 ≤ C2) (hR : 0 ≤ R) (hn
       _ ≤ |C5| * X := mul_le_mul_of_nonneg_left hXa' (abs_nonneg C5)
   have e4 : 0 ≤ |C5| * X := mul_nonneg (abs_nonneg _) hX0
   have e4' : 0 ≤ |C3| * X := mul_nonneg (abs_nonneg _) hX0
-  have hA2 : (8 * C2 + |C3| + |C5|) * X ≤ A₀ := by
-    have e : (8 * C2 + |C3| + |C5|) * X = (8 * C2 + |C3| + |C5|) * (R + 1) ^ 4 * (N * n ^ 2 + n ^ 3) := by
-      rw [hX]; ring
-    rw [e]; exact hA
-  have hsplit : (8 * C2 + |C3| + |C5|) * X = 2 * C2 * X + 6 * C2 * X + |C3| * X + |C5| * X := by ring
   have e6 : 0 ≤ 6 * C2 * X := by positivity
   constructor
   · intro i o hi ho
     have e1 : (i + 1) * (C2 * (R + 1) * n) ≤ (2 * N + 2) * (C2 * (R + 1) * n) := mul_le_mul_of_nonneg_right hi hdm0
     have e5 : 6 * R * o ≤ 6 * C2 * X := by
       have h1 : R * o ≤ R * (C2 * n) := mul_le_mul_of_nonneg_left ho hR
-      have h2 : R * (C2 * n) = C2 * (R * n) := by ring
       have h3 : C2 * (R * n) ≤ C2 * X := mul_le_mul_of_nonneg_left hXc hC2
       linarith
     have e : C3 * (R + 1) * n ^ 2 + 6 * R * o + C2 * (R + 1) * n + i * (C2 * (R + 1) * n) =

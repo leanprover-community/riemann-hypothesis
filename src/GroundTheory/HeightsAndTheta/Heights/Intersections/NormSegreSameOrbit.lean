@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsChartRankAdjoin
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOver
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherTer
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherMore
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherFurther
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 

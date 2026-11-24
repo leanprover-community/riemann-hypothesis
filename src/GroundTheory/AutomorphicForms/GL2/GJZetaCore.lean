@@ -1,9 +1,19 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJInducedCoeff
+public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
+public import GroundTheory.AutomorphicForms.SupercuspidalCoefficients
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Order.CompletePartialOrder
+import GroundTheory.AutomorphicForms.AdmissibleInduction
 public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
+public import GroundTheory.AutomorphicForms.GL2.GJInducedCoeff
 public import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
+public import GroundTheory.AutomorphicForms.JacquetAdmissible
+import GroundTheory.AutomorphicForms.SmoothRepContragredient
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

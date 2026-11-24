@@ -1,9 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFactsStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisInvKRegularIffIsUnitStatement
+public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisInvKRegularIffIsUnit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -56,9 +105,9 @@ theorem bL_repr (hG : A.IsGen τ p) (v : A.K) (i : Fin r) :
 
 theorem trace_map (hG : A.IsGen τ p) (c : A.K) :
     Algebra.trace E A.L (algebraMap A.K A.L c) = algebraMap F E (Algebra.trace F A.K c) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Algebra.trace_eq_matrix_trace (bL A hG), Algebra.trace_eq_matrix_trace (bK A hG), Matrix.trace,
-    Matrix.trace, map_sum]
+
+  rw [Algebra.trace_eq_matrix_trace (bL A hG), Algebra.trace_eq_matrix_trace (bK A hG), Matrix.trace,
+  Matrix.trace, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp only [Matrix.diag, Algebra.leftMulMatrix_eq_repr_mul]
   rw [bL_apply, ← map_mul, bL_repr, bK_apply]
@@ -121,18 +170,18 @@ theorem mat_charpoly (hG : A.IsGen τ p) {j : A.L ≃ₗ[E] (Fin r → E)} (i : 
     simpa only [bL_apply] using this
   have h2 : algebraMap A.K A.L (τ ^ r) = -∑ k : Fin r, algebraMap F E (p k) • bL A hG k := by
     have := congrArg (algebraMap A.K A.L) (pow_rec A hG 0)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [zero_add, map_neg, map_sum, map_mul] at this
+
+    simp only [zero_add, map_neg, map_sum, map_mul] at this
     rw [this]; congr 1
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [bL_apply, Algebra.smul_def, ← IsScalarTower.algebraMap_apply F A.K A.L,
       ← IsScalarTower.algebraMap_apply F E A.L]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h2, map_neg, map_sum] at h1
+
+  rw [h2, map_neg, map_sum] at h1
   have h3 : j (∑ k : Fin r, (M.charpoly.coeff k - algebraMap F E (p k)) • bL A hG k) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h1, Finset.sum_congr rfl (fun k _ => sub_smul _ _ _), Finset.sum_sub_distrib, map_sub, map_sum,
-      map_sum]
+
+    rw [← h1, Finset.sum_congr rfl (fun k _ => sub_smul _ _ _), Finset.sum_sub_distrib, map_sub, map_sum,
+    map_sum]
     simp only [map_smul]
     abel
   rw [LinearEquiv.map_eq_zero_iff] at h3
@@ -157,7 +206,7 @@ theorem isom_to_herm (hG : A.IsGen τ p) (lam : F) (x : A.K) (j : A.L ≃ₗ[E] 
       algebraMap F E (Algebra.trace F A.K (τ ^ (i : ℕ) * (x * A.NL y)))
     rw [mat_pow_mulVec, hj, ← trace_map A hG]
     congr 1
-    rw [map_mul, map_mul, (GlobalTheory.T.etaleHermitianPair_structure_facts F E A).1 y]
+    rw [map_mul, map_mul, (_root_.GlobalTheory.JR.EtFacts.main F E A).1 y]
     ring
 
 end GlobalTheory.EtIsom
@@ -193,8 +242,8 @@ theorem herm_gram (M : Matrix (Fin r) (Fin r) E) (hM : M.conjTranspose = M) (b :
 theorem trace_rec (hG : A.IsGen τ p) (a : A.K) (m : ℕ) :
     algebraMap F E (Algebra.trace F A.K (τ ^ (m + r) * a)) =
       -∑ i, algebraMap F E (p i) • algebraMap F E (Algebra.trace F A.K (τ ^ (m + (i : ℕ)) * a)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [pow_rec A hG, neg_mul, Finset.sum_mul, map_neg, map_sum, map_neg, map_sum]
+
+  rw [pow_rec A hG, neg_mul, Finset.sum_mul, map_neg, map_sum, map_neg, map_sum]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [mul_assoc, ← Algebra.smul_def, map_smul, smul_eq_mul, map_mul, smul_eq_mul]
@@ -214,10 +263,10 @@ theorem form_eq (hG : A.IsGen τ p) (a : A.K) (M : Matrix (Fin r) (Fin r) E) (hM
     (φ : A.L →ₗ[E] (Fin r → E)) (hφb : ∀ i, φ (bL A hG i) = M ^ (i : ℕ) *ᵥ b) (w w' : A.L) :
     star (φ w) ⬝ᵥ φ w' = Algebra.trace E A.L (algebraMap A.K A.L a * star w * w') := by
   rw [← (bL A hG).sum_repr w, ← (bL A hG).sum_repr w']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, star_sum, star_smul_vec, star_smul_L, hφb, sum_dotProduct, dotProduct_sum,
-    smul_dotProduct, dotProduct_smul, Finset.mul_sum, Finset.sum_mul, smul_mul_assoc, mul_smul_comm, smul_eq_mul,
-    herm_gram M hM, hmom, star_bL]
+
+  simp only [map_sum, map_smul, star_sum, star_smul_vec, star_smul_L, hφb, sum_dotProduct, dotProduct_sum,
+  smul_dotProduct, dotProduct_smul, Finset.mul_sum, Finset.sum_mul, smul_mul_assoc, mul_smul_comm, smul_eq_mul,
+  herm_gram M hM, hmom, star_bL]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_
   rw [bL_apply, bL_apply, ← map_mul, ← map_mul, trace_map A hG, pow_add]
   ring_nf
@@ -245,14 +294,14 @@ theorem mom_all (hG : A.IsGen τ p) {lam : F} {a : A.K} {X : Hn r F E} (hX : Has
 
 theorem detH (hG : A.IsGen τ p) {a : A.K} (ha : IsUnit a) :
     (Matrix.of fun i k : Fin r => Algebra.trace F A.K (τ ^ ((i : ℕ) + (k : ℕ)) * a)).det ≠ 0 := by
-  have hinj := (GlobalTheory.T.jacquetRallis_invK_regular_iff_isUnit F E A r τ p 0 hG).1.1
+  have hinj := (_root_.GlobalTheory.JR.EtInv.invK_regular_iff_isUnit F E A r τ p 0 hG).1.1
   rw [← isUnit_iff_ne_zero, ← Matrix.isUnit_iff_isUnit_det, ← Matrix.mulVec_injective_iff_isUnit]
   have key : ∀ e : Fin r → F, (Matrix.of fun i k : Fin r => Algebra.trace F A.K (τ ^ ((i : ℕ) + (k : ℕ)) * a)) *ᵥ e =
       (fun i : Fin r => Algebra.trace F A.K (τ ^ (i : ℕ) * (a * ∑ k, e k • τ ^ (k : ℕ)))) := by
     intro e
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Finset.mul_sum, map_sum]
+
+    simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Finset.mul_sum, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [mul_smul_comm, mul_smul_comm, map_smul, smul_eq_mul, pow_add, mul_comm]
     ring_nf
@@ -306,8 +355,8 @@ theorem herm_to_isom (hG : A.IsGen τ p) {lam : F} {a : A.K} (ha : IsUnit a) {X 
       (fun n => X.1.1 ^ n *ᵥ X.2.1) (fun m => ?_) (mat_rec _ _ (cayley_hasInv A hX) _) (fun n hn => ?_)
     · show φ (algebraMap A.K A.L (τ ^ (m + r))) =
         -∑ i, algebraMap F E (p i) • φ (algebraMap A.K A.L (τ ^ (m + (i : ℕ))))
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [pow_rec A hG, map_neg, map_sum, map_neg, map_sum]
+
+      rw [pow_rec A hG, map_neg, map_sum, map_neg, map_sum]
       congr 1
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_mul, ← IsScalarTower.algebraMap_apply F A.K A.L, IsScalarTower.algebraMap_apply F E A.L,
@@ -333,7 +382,7 @@ theorem herm_to_isom (hG : A.IsGen τ p) {lam : F} {a : A.K} (ha : IsUnit a) {X 
   · rw [hj, hj]
     refine (form_eq A hG a X.1.1 hAh X.2.1 (mom_all A hG hX) φ.toLinearMap hφb _ _).trans ?_
     congr 1
-    rw [hxa, map_mul, (GlobalTheory.T.etaleHermitianPair_structure_facts F E A).1 y, star_mul']
+    rw [hxa, map_mul, (_root_.GlobalTheory.JR.EtFacts.main F E A).1 y, star_mul']
     linear_combination (algebraMap A.K A.L x * star z * z') * (star y * star ((u⁻¹ : A.Lˣ) : A.L)) * h1 +
       (algebraMap A.K A.L x * star z * z') * h2
   · rw [hj, hj, mul_assoc, hτ]

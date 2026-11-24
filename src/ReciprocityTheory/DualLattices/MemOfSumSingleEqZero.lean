@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.DualLattices.ProdDvdOfIso
+public import ReciprocityTheory.DualLattices.CotangentSurjective
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -19,7 +20,7 @@ lemma single_smul_self {m : ℕ} (c : Fin m → R) (i : Fin m) :
   funext k
   by_cases hk : k = i
   · subst hk
-    simp [Algebra.smul_def, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton_self]
+    simp [Algebra.smul_def]
   · simp [Pi.single_eq_of_ne hk]
 
 lemma eq_sum_single {m : ℕ} (c : Fin m → R) (x : (i : Fin m) → R ⧸ Ideal.span {c i}) :
@@ -52,25 +53,25 @@ theorem hasLen_ext {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [Com
     rw [← map_smul, single_smul_self, map_zero]
   have reprA : ∀ y : A, y = ∑ i, (Quotient.out (eA y i) : R) • gA i := fun y => by
     conv_lhs => rw [← eA.symm_apply_apply y, eq_sum_single α (eA y)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hgA, map_sum, map_smul]
+
+    simp only [hgA, map_sum, map_smul]
   have reprD : ∀ y : D, y = ∑ j, (Quotient.out (eD y j) : R) • gD j := fun y => by
     conv_lhs => rw [← eD.symm_apply_apply y, eq_sum_single δ (eD y)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hgD, map_sum, map_smul]
+
+    simp only [hgD, map_sum, map_smul]
   have memA : ∀ r : Fin m → R, ∑ i, r i • gA i = 0 → ∀ i, r i ∈ Ideal.span {α i} := by
     intro r hr i
     have h1 : eA (∑ i, r i • gA i) = 0 := by rw [hr, map_zero]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hgA, map_sum, map_smul, LinearEquiv.apply_symm_apply] at h1
+
+    simp only [hgA, map_sum, map_smul, LinearEquiv.apply_symm_apply] at h1
     have h3 := congrFun h1 i
     rw [Finset.sum_apply, Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_eq_of_ne' hj]) (by simp)] at h3
     simpa [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, Ideal.Quotient.eq_zero_iff_mem] using h3
   have memD : ∀ r : Fin m' → R, ∑ j, r j • gD j = 0 → ∀ j, r j ∈ Ideal.span {δ j} := by
     intro r hr i
     have h1 : eD (∑ j, r j • gD j) = 0 := by rw [hr, map_zero]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hgD, map_sum, map_smul, LinearEquiv.apply_symm_apply] at h1
+
+    simp only [hgD, map_sum, map_smul, LinearEquiv.apply_symm_apply] at h1
     have h3 := congrFun h1 i
     rw [Finset.sum_apply, Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_eq_of_ne' hj]) (by simp)] at h3
     simpa [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, Ideal.Quotient.eq_zero_iff_mem] using h3
@@ -107,8 +108,8 @@ theorem hasLen_ext {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [Com
     intro w j
     simp [X, Matrix.mulVec, dotProduct, Fintype.sum_sum_type, Matrix.diagonal_apply]
   have hιx : ∀ j, ι (aj j) = ∑ i, x j i • ι (gA i) := fun j => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hx j, map_sum]
+
+    rw [hx j, map_sum]
     simp only [map_smul]
   have hΦX : ∀ w, Φ (X.mulVec w) = 0 := by
     intro w
@@ -133,12 +134,12 @@ theorem hasLen_ext {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [Com
       rw [LinearMap.mem_ker, hΦ] at hp
       have hπs : ∑ j, p (Sum.inr j) • gD j = 0 := by
         have h1 := congrArg π hp
-        set_option synthInstance.maxHeartbeats 100000 in
-          simpa [map_add (f := _), map_sum, map_smul, hb, hπι] using h1
+
+        simpa [map_add (f := _), map_sum, map_smul, hb, hπι] using h1
       choose t ht using fun j => Ideal.mem_span_singleton'.1 (memD _ hπs j)
       have hsb : ∑ j, p (Sum.inr j) • b j = ι (∑ i, (∑ j, t j * x j i) • gA i) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         simp only [map_smul]
         have e4 : ∀ j, p (Sum.inr j) • b j = t j • ι (aj j) := by
           intro j
@@ -147,8 +148,8 @@ theorem hasLen_ext {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [Com
         rw [Finset.sum_comm]
       have hι0 : ι (∑ i, (p (Sum.inl i) + ∑ j, t j * x j i) • gA i) = 0 := by
         rw [← hp, hsb]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [add_smul, Finset.sum_add_distrib, map_add (f := _), map_sum, map_smul]
+
+        simp only [add_smul, Finset.sum_add_distrib, map_add (f := _), map_sum, map_smul]
       have hA0 : ∑ i, (p (Sum.inl i) + ∑ j, t j * x j i) • gA i = 0 :=
         hι (hι0.trans (map_zero ι).symm)
       choose q hq using fun i => Ideal.mem_span_singleton'.1 (memA _ hA0 i)
@@ -174,8 +175,8 @@ theorem hasLen_ext {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [Com
     intro y
     set s : Fin m' → R := fun j => (Quotient.out (eD (π y) j) : R) with hs
     have hys : y - ∑ j, s j • b j ∈ LinearMap.range ι := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hex, LinearMap.mem_ker, map_sub, map_sum]
+
+      rw [hex, LinearMap.mem_ker, map_sub, map_sum]
       simp only [map_smul, hb]
       rw [← reprD (π y), sub_self]
     obtain ⟨zA, hzA⟩ := hys
@@ -184,8 +185,8 @@ theorem hasLen_ext {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [Com
     simp only [Sum.elim_inl, Sum.elim_inr]
     have e5 : ∑ i, (Quotient.out (eA zA i) : R) • ι (gA i) = ι zA := by
       conv_rhs => rw [reprA zA]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [map_smul]
     rw [e5, hzA, sub_add_cancel]
   let e1 : ((Fin m ⊕ Fin m' → R) ⧸ LinearMap.range X.mulVecLin) ≃ₗ[R] B :=

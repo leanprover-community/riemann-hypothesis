@@ -1,10 +1,50 @@
 module
 
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTie
-public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectors
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
 public import Formalism.LocalToGlobal.ProjectiveLattices.SatLeaves
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DegreeOneStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
 
 @[expose] public section
 
@@ -66,13 +106,6 @@ theorem aeval_tan [Fintype κ] [DecidableEq κ] (v : κ → S) (P : MvPolynomial
       MvPolynomial.constantCoeff_X, mul_zero, map_zero, zero_add]
     apply TrivSqZeroExt.ext <;> simp [Algebra.smul_def, TrivSqZeroExt.algebraMap_eq_inl, mul_comm]
 
-theorem const_of_mem_orig {P : MvPolynomial κ S} (h : P ∈ orig S κ) : MvPolynomial.constantCoeff P = 0 := by
-  have hle : orig S κ ≤ RingHom.ker (MvPolynomial.constantCoeff : MvPolynomial κ S →+* S) := by
-    rw [orig, Ideal.span_le]
-    rintro _ ⟨i, rfl⟩
-    simp
-  exact hle h
-
 theorem tanV_comp_jetMap {κ' : Type} [Fintype κ'] [DecidableEq κ'] (φ : κ → MvPolynomial κ' S)
     (hφ : ∀ i, φ i ∈ orig S κ') (v : κ' → S) :
     (tanV v).comp (jetMap φ hφ : Jet S κ (0 + 1) →ₐ[S] Jet S κ' (0 + 1)) =
@@ -86,7 +119,7 @@ theorem tanV_comp_jetMap {κ' : Type} [Fintype κ'] [DecidableEq κ'] (φ : κ �
       Ideal.Quotient.mk _ (φ i) := by
     show Ideal.Quotient.mk _ (MvPolynomial.aeval φ (MvPolynomial.X i)) = _
     rw [MvPolynomial.aeval_X]
-  rw [e, tanV_mk, tanV_mk, aeval_tan, MvPolynomial.aeval_X, const_of_mem_orig (hφ i), map_zero, zero_add]
+  rw [e, tanV_mk, tanV_mk, aeval_tan, MvPolynomial.aeval_X, GlobalTheory.EigDir.const_of_mem_orig (hφ i), map_zero, zero_add]
 
 theorem coeff_psTrunc' {ιt : Type} [Fintype ιt] [DecidableEq ιt] (m : ℕ) (f : MvPowerSeries ιt S) (e : ιt →₀ ℕ)
     (he : e.degree ≤ m) : AddMonoidAlgebra.coeff (psTrunc m f) e = MvPowerSeries.coeff e f := by
@@ -112,56 +145,11 @@ variable {S : Type} [CommRing S] {d : ℕ}
 
 
 open MvPowerSeries Formalism.FG.SolveVAux in
-theorem coeff_single_subst' {σ τ : Type} [Fintype σ] [DecidableEq σ] [DecidableEq τ]
-    (a : σ → MvPowerSeries τ S) (ha : ∀ s, constantCoeff (a s) = 0) (f : MvPowerSeries σ S) (t : τ) :
-    coeff (Finsupp.single t 1) (subst a f) =
-      ∑ s, coeff (Finsupp.single s 1) f * coeff (Finsupp.single t 1) (a s) :=
-  _root_.UpperTheory.Reformulated.B.LinearTermOfSubstitution.main a ha f t
+alias coeff_single_subst' := _root_.UpperTheory.Reformulated.B.LinearTermOfSubstitution.main
 
 theorem law_coeff (G : Germ.FGLaw S d) (i j : Fin d) (k : Fin 2) :
     MvPowerSeries.coeff (Finsupp.single (k, j) 1) (G.F i) = if j = i then 1 else 0 := by
-  have hX : ∀ (p q : Fin 1 × Fin d), MvPowerSeries.coeff (Finsupp.single p 1)
-      (MvPowerSeries.X q : MvPowerSeries (Fin 1 × Fin d) S) = if p = q then 1 else 0 := by
-    intro p q
-    rw [MvPowerSeries.coeff_X]
-    by_cases h : p = q
-    · simp [h]
-    · rw [if_neg, if_neg h]
-      intro h'
-      exact h (Finsupp.single_left_injective one_ne_zero h')
-  have hX2 : ∀ (p q : Fin 2 × Fin d), MvPowerSeries.coeff (Finsupp.single p 1)
-      (MvPowerSeries.X q : MvPowerSeries (Fin 2 × Fin d) S) = if p = q then 1 else 0 := by
-    intro p q
-    rw [MvPowerSeries.coeff_X]
-    by_cases h : p = q
-    · simp [h]
-    · rw [if_neg, if_neg h]
-      intro h'
-      exact h (Finsupp.single_left_injective one_ne_zero h')
-
-  have h1 : MvPowerSeries.coeff (Finsupp.single ((1 : Fin 2), j) 1) (G.F i) = if j = i then 1 else 0 := by
-    have h := congrArg (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), j) 1)) (G.unit i)
-    unfold Germ.ev at h
-    rw [coeff_single_subst' _ (by
-      rintro ⟨k, l⟩; fin_cases k <;> simp [Germ.pt])] at h
-    rw [hX] at h
-    simp only [Fintype.sum_prod_type, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Pi.zero_apply, map_zero, mul_zero, Finset.sum_const_zero, zero_add, Germ.pt, hX,
-      Prod.mk.injEq, true_and, mul_ite, _root_.mul_one] at h
-    simpa [Finset.sum_ite_eq, Finset.sum_ite_eq', eq_comm] using h
-  have h0 : MvPowerSeries.coeff (Finsupp.single ((0 : Fin 2), j) 1) (G.F i) = if j = i then 1 else 0 := by
-
-    have h := congrArg (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 2), j) 1)) (G.comm i)
-    unfold Germ.ev at h
-    rw [coeff_single_subst' _ (by
-      rintro ⟨k, l⟩; fin_cases k <;> simp [Germ.pt])] at h
-    simp only [Fintype.sum_prod_type, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Germ.pt, hX2, Prod.mk.injEq, mul_ite, _root_.mul_one, mul_zero] at h
-    rw [← h1, ← h]
-    simp [Finset.sum_ite_eq]
-  fin_cases k
-  · exact h0
-  · exact h1
+  apply GlobalTheory.EigDir.law_coeff
 
 end Law
 
@@ -228,57 +216,7 @@ theorem Tv_add (F : Germ.FGLaw S d)
     (hlaw : homAt y.x (jetSubstP 1 fun p : Fin 1 × Fin d => psTrunc 1 (F.F p.2)) ≫ x 1 =
       jpt y d x 1 (0 : Fin 2) * jpt y d x 1 (1 : Fin 2)) (v w : Fin 1 × Fin d → S) :
     Tv y x (v + w) = Tv y x v * Tv y x w := by
-  classical
-  let ψv : Fin 2 × Fin d → S := fun p => if p.1 = 0 then v (0, p.2) else w (0, p.2)
-  have hc : ∀ (i : Fin 2), (tanV ψv : Jet S (Fin 2 × Fin d) (0 + 1) →ₐ[S] DualNumber S).comp
-      (jetCopy d 1 i : Jet S (Fin 1 × Fin d) 1 →ₐ[S] Jet S (Fin 2 × Fin d) 1) =
-      tanV (fun p : Fin 1 × Fin d => ψv (i, p.2)) := by
-    intro i
-    unfold jetCopy
-    rw [tanV_comp_jetMap]
-    congr 1
-    funext p
-    rw [Finset.sum_eq_single (i, p.2)]
-    · simp
-    · intro b _ hb
-      rw [MvPolynomial.coeff_X, if_neg (fun h => hb (Finsupp.single_left_injective one_ne_zero h).symm), zero_mul]
-    · intro h; exact absurd (Finset.mem_univ _) h
-  have hL : (tanV ψv : Jet S (Fin 2 × Fin d) (0 + 1) →ₐ[S] DualNumber S).comp
-      (jetSubstP 1 fun p : Fin 1 × Fin d => psTrunc 1 (F.F p.2)) = tanV (v + w) := by
-    unfold jetSubstP
-    rw [tanV_comp_jetMap]
-    congr 1
-    funext p
-    have hco : ∀ s : Fin 2 × Fin d, AddMonoidAlgebra.coeff (psTrunc 1 (F.F p.2) - MvPolynomial.C (MvPolynomial.constantCoeff (psTrunc 1 (F.F p.2))))
-        (Finsupp.single s 1) =
-        if s.2 = p.2 then 1 else 0 := by
-      intro s
-      rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_neg (Finsupp.single_ne_zero.2 one_ne_zero).symm,
-        sub_zero, coeff_psTrunc' 1 _ _ (by simp), law_coeff]
-    simp only [hco, ite_mul, _root_.one_mul, zero_mul, Fintype.sum_prod_type, Fin.sum_univ_two]
-    obtain ⟨p1, p2⟩ := p
-    fin_cases p1
-    simp [ψv, Finset.sum_ite_eq']
-  have h1 : homAt y.x (tanV ψv : Jet S (Fin 2 × Fin d) (0 + 1) →ₐ[S] DualNumber S) ≫ jpt y d x 1 (0 : Fin 2) =
-      Tv y x v := by
-    unfold jpt Tv
-    rw [← Category.assoc, homAt_comp, hc]
-    congr 3
-    funext p
-    obtain ⟨p1, p2⟩ := p
-    fin_cases p1
-    rfl
-  have h2 : homAt y.x (tanV ψv : Jet S (Fin 2 × Fin d) (0 + 1) →ₐ[S] DualNumber S) ≫ jpt y d x 1 (1 : Fin 2) =
-      Tv y x w := by
-    unfold jpt Tv
-    rw [← Category.assoc, homAt_comp, hc]
-    congr 3
-    funext p
-    obtain ⟨p1, p2⟩ := p
-    fin_cases p1
-    rfl
-  rw [← h1, ← h2, ← MonObj.comp_mul, ← hlaw, ← Category.assoc, homAt_comp, hL]
-  rfl
+  apply GlobalTheory.EigDir.Tv_add <;> assumption
 
 end Pts
 
@@ -293,69 +231,7 @@ theorem localization_quotient_separated_dvd {T A : Type} [DecidableEq T] (φ : A
     ∀ (n : ℕ) (s : Finset T) (W : T → (overAt x0 (DualNumber S) ⟶ G)), s.card = n →
       (∀ τ a, W τ ≫ φ a = smT x0 (χ τ a) (W τ)) → (∀ τ, smT x0 0 (W τ) = 1) →
       ∏ τ ∈ s, W τ = 1 → ∀ τ ∈ s, W τ = 1 := by
-  intro n
-  induction n with
-  | zero =>
-    intro s W hs _ _ _ τ hτ
-    rw [Finset.card_eq_zero] at hs
-    subst hs
-    exact absurd hτ (Finset.notMem_empty τ)
-  | succ n ih =>
-    intro s W hs hE hT hP τ1 hτ1
-    by_cases hone : ∃ τ2 ∈ s, τ2 ≠ τ1
-    · obtain ⟨τ2, hτ2, hne⟩ := hone
-      obtain ⟨a, ha⟩ := hsep τ1 τ2 hne.symm
-      let W' : T → (overAt x0 (DualNumber S) ⟶ G) := fun τ => smT x0 (χ τ a - χ τ2 a) (W τ)
-      have hQ : ∀ τ, W' τ = (W τ ≫ φ a) * smT x0 (-χ τ2 a) (W τ) := by
-        intro τ
-        rw [hE, ← smT_add x0 _ (hT τ), ← sub_eq_add_neg]
-      let Q : (overAt x0 (DualNumber S) ⟶ G) →* (overAt x0 (DualNumber S) ⟶ G) :=
-        letI := hφ a
-        (postHom x0 (φ a)) * (smHom x0 (-χ τ2 a))
-      have hQ' : ∀ τ, W' τ = Q (W τ) := fun τ => hQ τ
-      have hP' : ∏ τ ∈ s, W' τ = 1 := by
-        simp only [hQ']
-        rw [← map_prod, hP, map_one]
-      have hW'2 : W' τ2 = 1 := by
-        show smT x0 (χ τ2 a - χ τ2 a) (W τ2) = 1
-        rw [sub_self, hT]
-      have hP'' : ∏ τ ∈ s.erase τ2, W' τ = 1 := by
-        rw [← Finset.mul_prod_erase s W' hτ2, hW'2, _root_.one_mul] at hP'
-        exact hP'
-      have hE' : ∀ τ a', W' τ ≫ φ a' = smT x0 (χ τ a') (W' τ) := by
-        intro τ a'
-        show smT x0 _ (W τ) ≫ φ a' = smT x0 (χ τ a') (smT x0 _ (W τ))
-        rw [← smT_post, hE, smT_smT, smT_smT, _root_.mul_comm]
-      have hT' : ∀ τ, smT x0 0 (W' τ) = 1 := by
-        intro τ
-        show smT x0 0 (smT x0 _ (W τ)) = 1
-        rw [smT_smT, zero_mul, hT]
-      have h1 := ih (s.erase τ2) W' (by rw [Finset.card_erase_of_mem hτ2, hs]; rfl) hE' hT' hP'' τ1
-        (Finset.mem_erase.2 ⟨hne.symm, hτ1⟩)
-      obtain ⟨u, hu⟩ := ha
-      have h2 : smT x0 (↑u⁻¹ : S) (W' τ1) = W τ1 := by
-        show smT x0 _ (smT x0 _ (W τ1)) = W τ1
-        rw [smT_smT, ← hu, Units.inv_mul, smT_unit]
-      rw [← h2, h1, smT_one']
-    · push Not at hone
-      have hs1 : s = {τ1} := by
-        ext τ
-        constructor
-        · intro hτ; exact Finset.mem_singleton.2 (hone τ hτ)
-        · intro hτ; rw [Finset.mem_singleton.1 hτ]; exact hτ1
-      rw [hs1, Finset.prod_singleton] at hP
-      exact hP
-
-theorem combT_add {m : ℕ} (D : Fin m → (overAt x0 (DualNumber S) ⟶ G)) (hD : ∀ j, smT x0 0 (D j) = 1)
-    (p q : Fin m → S) : combT x0 D (p + q) = combT x0 D p * combT x0 D q := by
-  simp only [combT, Pi.add_apply, smT_add x0 _ (hD _), Finset.prod_mul_distrib]
-
-theorem combT_sum {m : ℕ} (D : Fin m → (overAt x0 (DualNumber S) ⟶ G)) (hD : ∀ j, smT x0 0 (D j) = 1)
-    {κ : Type} (s : Finset κ) (f : κ → Fin m → S) : combT x0 D (∑ k ∈ s, f k) = ∏ k ∈ s, combT x0 D (f k) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using combT_zero x0 D hD
-  | insert k s hk ih => rw [Finset.sum_insert hk, Finset.prod_insert hk, combT_add x0 D hD, ih]
+  apply GlobalTheory.EigDir.localization_quotient_separated_dvd <;> assumption
 
 end Sep
 
@@ -420,117 +296,11 @@ section Main
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem embK_sep {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l)
-    (τ τ' : E →+* ℂ) (h : τ ≠ τ') : ∃ a : 𝓞 E, embK c τ a ≠ embK c τ' a := by
-  by_contra hc
-  push Not at hc
-  apply h
-  have hF : embF c τ = embF c τ' :=
-    IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) (RingHom.ext fun a => hc a)
-  ext x
-  exact congrArg (fun f : E →+* c.F => ((f x : c.F) : ℂ)) hF
-
-
-set_option maxHeartbeats 1000000 in
 theorem linEig_holds : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H)
     (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)] (S : Type) [CommRing S] [Algebra c.F S]
     [Algebra ℚ S] (y : FrPt Xo c S) (C : ChartAt Xo c y) (a : 𝓞 E) (ℓ : Lt1 Dw) (i : Fin C.d),
     ∑ j, ReciprocityTheory.ChartRestriction.G.TB.dLin (C.B.A.act a) i j * C.uvec ℓ j = algebraMap c.F S (embK c ℓ.1 a) * C.uvec ℓ i := by
-  intro E _ _ _ H Dw l Xo c _ S _ _ _ y C a ℓ i
-  classical
-  have h0T : Tv y C.x 0 = 1 := Tv_zero (C.chart.zero 1)
-  have haddT : ∀ v w, Tv y C.x (v + w) = Tv y C.x v * Tv y C.x w := Tv_add C.B.G (C.chart.law 1)
-  have hD : ∀ j, smT y.x 0 (Dt y C.x j) = 1 := fun j =>
-    smT_zero_jetTan y.x ((0 : Fin 1), j) 0 (C.x 1) (C.chart.zero 1)
-  let Y : Lt1 Dw → (overAt y.x (DualNumber S) ⟶ Xo.univ.t.G) := fun ℓ => combT y.x (Dt y C.x) (C.uvec ℓ)
-  have hYl : ∀ ℓ, (Y ℓ).left = y.u ℓ.1 ℓ.2 := fun ℓ =>
-    (isCombAtG_iff Xo.univ.t y.x (Dt y C.x) _ _).1 (C.chart.tan ℓ)
-  have hYt : ∀ ℓ, smT y.x 0 (Y ℓ) = 1 := fun ℓ => combT_tan y.x _ hD _
-  have hYe : ∀ ℓ (b : 𝓞 E), Y ℓ ≫ Xo.univ.t.act.act b = smT y.x (algebraMap c.F S (embK c ℓ.1 b)) (Y ℓ) := by
-    intro ℓ b
-    apply Over.OverMorphism.ext
-    rw [Over.comp_left, smT_left, hYl]
-    exact y.eig ℓ.1 ℓ.2 b
-  let χ : (E →+* ℂ) → 𝓞 E → S := fun τ b => algebraMap c.F S (embK c τ b)
-  have hsep : ∀ τ τ', τ ≠ τ' → ∃ b, IsUnit (χ τ b - χ τ' b) := by
-    intro τ τ' hne
-    obtain ⟨b, hb⟩ := embK_sep c τ τ' hne
-    refine ⟨b, ?_⟩
-    show IsUnit (algebraMap c.F S (embK c τ b) - algebraMap c.F S (embK c τ' b))
-    rw [← map_sub]
-    exact (isUnit_iff_ne_zero.2 (sub_ne_zero.2 hb)).map _
-
-  have inj : ∀ p : Fin C.d → S, combT y.x (Dt y C.x) p = 1 → p = 0 := by
-    intro p hp
-    obtain ⟨b, hb, -⟩ := C.chart.basis p
-    have hpb : p = ∑ ℓ, b ℓ • C.uvec ℓ := by
-      funext j
-      rw [← hb j, Finset.sum_apply]
-      simp [smul_eq_mul]
-    let W : (E →+* ℂ) → (overAt y.x (DualNumber S) ⟶ Xo.univ.t.G) := fun τ =>
-      combT y.x (fun k : Fin (Dw.mult τ) => Y ⟨τ, k⟩) (fun k => b ⟨τ, k⟩)
-    have hprod : ∏ τ ∈ Finset.univ, W τ = 1 := by
-      rw [← hp, hpb, combT_sum y.x _ hD, Fintype.prod_sigma]
-      refine Finset.prod_congr rfl fun τ _ => ?_
-      show ∏ k, smT y.x (b ⟨τ, k⟩) (Y ⟨τ, k⟩) = _
-      refine Finset.prod_congr rfl fun k _ => ?_
-      rw [smT_combT]
-      rfl
-    have hWe : ∀ τ (b' : 𝓞 E), W τ ≫ Xo.univ.t.act.act b' = smT y.x (χ τ b') (W τ) := by
-      intro τ b'
-      have := Xo.univ.t.act.hom b'
-      exact combT_eig y.x (fun k => Y ⟨τ, k⟩) (Xo.univ.t.act.act b') (χ τ b') (fun k => hYe ⟨τ, k⟩ b')
-        (fun k => b ⟨τ, k⟩)
-    have hWt : ∀ τ, smT y.x 0 (W τ) = 1 := fun τ => combT_tan y.x _ (fun k => hYt _) _
-    have hW1 : ∀ τ, W τ = 1 := fun τ =>
-      localization_quotient_separated_dvd y.x (fun b' => Xo.univ.t.act.act b') (fun b' => Xo.univ.t.act.hom b') χ hsep _ Finset.univ W rfl
-        hWe hWt hprod τ (Finset.mem_univ τ)
-    have hb0 : ∀ τ (k : Fin (Dw.mult τ)), b ⟨τ, k⟩ = 0 := by
-      intro τ k
-      have e : (fun k : Fin (Dw.mult τ) => (Y ⟨τ, k⟩).left) = y.u τ := funext fun k => hYl ⟨τ, k⟩
-      have h1 : IsCombAt y.x (y.u τ) (fun k => b ⟨τ, k⟩) (W τ).left := by
-        have := (isCombAtG_iff Xo.univ.t y.x (fun k : Fin (Dw.mult τ) => Y ⟨τ, k⟩) (fun k => b ⟨τ, k⟩)
-          (W τ).left).2 rfl
-        rw [e] at this
-        exact this
-      have h2 : IsCombAt y.x (y.u τ) 0 (W τ).left := by
-        have := (isCombAtG_iff Xo.univ.t y.x (fun k : Fin (Dw.mult τ) => Y ⟨τ, k⟩) 0 (W τ).left).2
-          (by rw [combT_zero y.x _ (fun k => hYt _), hW1 τ])
-        rw [e] at this
-        exact this
-      have htan : IsTanAt y.x (W τ).left := isTanAtG_of (t := Xo.univ.t) (W τ) (hWt τ)
-      have heig : IsEigAt c τ (W τ).left := by
-        intro b'
-        have := congrArg (fun f => f.left) (hWe τ b')
-        simpa only [Over.comp_left, smT_left] using this
-      have hu := (y.basis τ _ htan heig).unique h1 h2
-      simpa using congrFun hu k
-    rw [hpb]
-    refine Finset.sum_eq_zero fun ℓ _ => ?_
-    obtain ⟨τ, k⟩ := ℓ
-    rw [hb0 τ k, zero_smul]
-
-  have e1 : Y ℓ ≫ Xo.univ.t.act.act a =
-      combT y.x (Dt y C.x) (fun i => ∑ j, ReciprocityTheory.ChartRestriction.G.TB.dLin (C.B.A.act a) i j * C.uvec ℓ j) := by
-    show combT y.x (Dt y C.x) (C.uvec ℓ) ≫ _ = _
-    rw [combT_Dt h0T haddT, Tv_act a (C.B.A.act a) (C.chart.act 1 a), combT_Dt h0T haddT]
-  have e2 : Y ℓ ≫ Xo.univ.t.act.act a =
-      combT y.x (Dt y C.x) (fun i => algebraMap c.F S (embK c ℓ.1 a) * C.uvec ℓ i) := by
-    rw [hYe, smT_combT]
-  have hz := combT_add y.x (Dt y C.x) hD
-    (fun i => ∑ j, ReciprocityTheory.ChartRestriction.G.TB.dLin (C.B.A.act a) i j * C.uvec ℓ j -
-      algebraMap c.F S (embK c ℓ.1 a) * C.uvec ℓ i)
-    (fun i => algebraMap c.F S (embK c ℓ.1 a) * C.uvec ℓ i)
-  have hs : ((fun i => ∑ j, ReciprocityTheory.ChartRestriction.G.TB.dLin (C.B.A.act a) i j * C.uvec ℓ j -
-      algebraMap c.F S (embK c ℓ.1 a) * C.uvec ℓ i) +
-      fun i => algebraMap c.F S (embK c ℓ.1 a) * C.uvec ℓ i) =
-      fun i => ∑ j, ReciprocityTheory.ChartRestriction.G.TB.dLin (C.B.A.act a) i j * C.uvec ℓ j := by
-    funext i
-    simp
-  rw [hs, ← e1, e2] at hz
-  have hd := inj _ (mul_eq_right.1 hz.symm)
-  have := congrFun hd i
-  simpa [sub_eq_zero] using this
+  apply GlobalTheory.EigDir.linEig_holds
 
 end Main
 

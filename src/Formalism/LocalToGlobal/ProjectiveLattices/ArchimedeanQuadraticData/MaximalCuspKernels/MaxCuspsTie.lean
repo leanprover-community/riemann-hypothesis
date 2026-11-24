@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.SpanRatSmulMem
 public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
+import Formalism.LocalToGlobal.ProjectiveLattices.SpanRatSmulMem
 
 @[expose] public section
 

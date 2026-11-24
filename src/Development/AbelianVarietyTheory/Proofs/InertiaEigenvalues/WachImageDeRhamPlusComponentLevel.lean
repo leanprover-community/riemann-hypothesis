@@ -1,12 +1,51 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapMulLeft
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachInclusionXQFrobenius
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemRangeOfIsIntegral
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeAlgebraMapOC
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvFilD
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapMulLeft
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemRangeOfIsIntegral
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachInclusionXQFrobenius
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRFiltrationLaws
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -252,7 +291,7 @@ theorem βdR_mem_FilV (Ct : CmpTie W E ιdR p1 tS zS) (T : LocLat G Qp LL O) (hA
       exact tmul_mem_FilV T _ (hA w)
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem core_gen (Ct : CmpTie W E ιdR p1 tS zS) (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) (i : ZMod n)
     (ζ : LL) (ι : LL →ₐ[Qp] BdR) (hιK : ∀ c : K₀, ι (W.emb i c) = algebraMap K₀ BdR c) (hζ : ι ζ = zS)
     (hι : ∀ c, ι c ∈ PD.Fil 0) (hA : ∀ w, ιdR w ∈ PD.Fil 0) (u : BdR) (hu0 : u ∈ PD.Fil 0)
@@ -315,7 +354,7 @@ theorem core_gen (Ct : CmpTie W E ιdR p1 tS zS) (T : LocLat G Qp LL O) (hT : Is
         have e : mulVR T b (Ct.βdR T (a • Y x)) = mulVR T b (Ct.βdR T (a • Y x) - mulVR T β (Ct.βdR T (Y x))) +
             mulVR T (b * (β * ιdR p1 ^ m)) (Ψ x) := by
           rw [map_sub, hΨβ x]
-          simp only [mulVR_mulVR, mul_assoc]
+          simp only [mulVR_mulVR]
           abel
         rw [e]
         refine add_mem (Submodule.mem_sup_left (mulVR_compKer T ι b (hβY _))) (mem_gen T ι Ψ ?_ x)

@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceAt
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatLevel
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSelf
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceAt
 
 @[expose] public section
 

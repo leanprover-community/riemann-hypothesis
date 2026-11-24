@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleDimSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PDimTie
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

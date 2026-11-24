@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.TwoMemFunFieldSpecZ
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsFunFieldMulEq
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Central.Defs
+public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.TensorProduct.Basic
 public import GroundTheory.Brauer.TensorSimple
+public import Mathlib.LinearAlgebra.Dimension.Constructions
 
 @[expose] public section
 

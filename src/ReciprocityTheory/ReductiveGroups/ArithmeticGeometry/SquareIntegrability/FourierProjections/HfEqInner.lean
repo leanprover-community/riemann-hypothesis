@@ -1,6 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.PropABSt
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GaussianTailBound
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

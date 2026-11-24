@@ -1,23 +1,64 @@
 module
 
-public import Formalism.HermitianCurvature.StatementMA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateCommuteRaisingConstant
-public import Formalism.HermitianCurvature.StatementWd
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositionInsertionDiagonalCompat
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KroneckerEmbedMulApply
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SecondEmbedMulFirstEmbedApply
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QEFirstMulSecondEqSwap
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferMatrixFactorization
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.EntryCommuteTransposedRMatrix
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMatrixTransferConjTransposeCommute
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagScalarCommuteOfEntries
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PartialFlipCommuteDiagScalarOfFree
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagScalarCommuteTransposedRMatrix
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivedCoefficientIntegrable
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMatrixTransferConjTransposeCommute
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelNablaStarRelations
 
 @[expose] public section
 
@@ -109,8 +150,8 @@ theorem actA_eq (a : A P (DQ P)) (f π) : actA P a f π = ∑ π', Phi P (a π �
 
 theorem act_mul (a b : A P (DQ P)) (f) : actA P (a * b) f = actA P a (actA P b f) := by
   funext π
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [actA_eq, Matrix.mul_apply, map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply]
+
+  simp only [actA_eq, Matrix.mul_apply, map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply]
   rw [Finset.sum_comm]
 theorem act_add (a b : A P (DQ P)) (f π) : actA P (a + b) f π = actA P a f π + actA P b f π := by
   simp only [actA_eq, Matrix.add_apply, map_add, LinearMap.add_apply, Finset.sum_add_distrib]
@@ -128,10 +169,6 @@ theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π =
   rw [Matrix.algebraMap_eq_diagonal, act_diag]; rfl
 theorem act_kap (g : M.Ty P → ℂ) (f π) : actA P (kap P (DQ P) g) f π = g π • f π := act_diag P _ f π
 end Act
-
-section R0
-variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
 
 abbrev Pb (b : ℕ) : M.Par := ⟨1, 0, 1, 1, fun _ => 0, fun _ => 2 * b⟩
 
@@ -153,17 +190,6 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
-
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
-
-noncomputable section
-
-variable {τ : ℝ}
-
-end
-
 end Formalism.FourierDecayAlt.P.MAx2.R2
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
@@ -359,8 +385,6 @@ theorem lemma_model_of_parts : Formalism.FourierDecayAlt.MA.LemmaEModelOfParts :
   rw [hJn P l L j lam α β _ c Ntot] at this
   exact this
 
-theorem model_words : Formalism.FourierDecayAlt.MA.ModelWordsD := MAx2.R2.modelWordsD
-
 end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.MAx2
@@ -429,8 +453,8 @@ theorem famPos (P : M.Par) (l : ℕ) (L : R.LevelData (A P (DQ P)) P.r) (j : M.T
       exact ⟨Complex.ofReal_im _, by rw [Complex.ofReal_re]; exact hcut _ (hYI b)⟩
     set ix := ixOf P (List.ofFn Y).length (cast (iota_len P N Y) i)
     have hπ := Formalism.FourierDecayAlt.P.types_interlace P hOK ix.2
-    have hpos := Formalism.FourierDecayAlt.P.c_pos_truncated Formalism.FourierDecayAlt.P.interlacing_sign Formalism.FourierDecayAlt.P.q_positive_interlacing
-      Formalism.FourierDecayAlt.P.q_positive_shift Formalism.FourierDecayAlt.P.cPos_true (Fin (List.ofFn Y).length) P.k P.u P.u'
+    have hpos := _root_.Formalism.FourierDecayAlt.P.Fr2.cPosCut _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive
+      _root_.Formalism.FourierDecayAlt.P.Fr2.qPositiveShift _root_.Formalism.FourierDecayAlt.P.Fr2.cPos (Fin (List.ofFn Y).length) P.k P.u P.u'
       (M.rho P ix.2) l P.T P.T' (wordP (List.ofFn Y)) hl1 hlk hπ hOK.T_pos hOK.T'_pos hcutw
       (pairwise_wordP hpw) ix.1
     exact hpos.1
@@ -585,8 +609,8 @@ theorem isJ_euler (v : M.Var P.r) {F : (ℝ → ℝ) → SmQ P.r P.TT} (hF : IsJ
   refine ⟨n + n, Fin.append (fun t => qs t + 1) qs, Fin.append (fun t => kapG P v * c t) (fun t => eulerQ v (c t)),
     fun φ hφ => ?_⟩
   beta_reduce
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h φ hφ, map_sum, Fin.sum_univ_add]
+
+  rw [h φ hφ, map_sum, Fin.sum_univ_add]
   simp only [Fin.append_left, Fin.append_right]
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun t _ => ?_
@@ -703,24 +727,24 @@ theorem lev_mem : (∀ l, L.p l ∈ TS P) ∧ (∀ l, L.pb l ∈ TS P) ∧ (∀ 
   obtain ⟨hp, hpb, hc, hci, hcb, hcbi, hz, hzi, hzb, hzbi, hg, hgi, hn, hns, -⟩ := hL
   have gm : ∀ a ∈ (DQ P).gens P.TT, sc P (DQ P) a ∈ TS P := fun a ha => sc_mem P (gen_mem P ha)
   refine ⟨fun l => ?_, fun l => ?_, fun l => ?_, fun l => ?_, fun l => ?_, fun l => ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hp]; exact gm _ (by simp [DAlg.gens])
-  · rw [hpb]; exact gm _ (by simp [DAlg.gens])
-  · rw [hc]; exact gm _ (by simp [DAlg.gens])
-  · rw [hci]; exact gm _ (by simp [DAlg.gens])
-  · rw [hcb]; exact gm _ (by simp [DAlg.gens])
-  · rw [hcbi]; exact gm _ (by simp [DAlg.gens])
-  · rw [hz]; exact gm _ (by simp [DAlg.gens])
-  · rw [hzi]; exact gm _ (by simp [DAlg.gens])
-  · rw [hzb]; exact gm _ (by simp [DAlg.gens])
-  · rw [hzbi]; exact gm _ (by simp [DAlg.gens])
-  · rw [hg]; exact gm _ (by simp [DAlg.gens])
-  · rw [hgi]; exact gm _ (by simp [DAlg.gens])
+  · rw [hp]; exact gm _ (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩)))
+  · rw [hpb]; exact gm _ (Or.inl (Or.inr ⟨l, rfl⟩))
+  · rw [hc]; exact gm _ (Or.inl (Or.inl (Or.inl (Or.inl (Or.inl (Or.inl ⟨l, rfl⟩))))))
+  · rw [hci]; exact gm _ (Or.inl (Or.inl (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩))))))
+  · rw [hcb]; exact gm _ (Or.inl (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩)))))
+  · rw [hcbi]; exact gm _ (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩))))
+  · rw [hz]; exact gm _ (Or.inr (Or.inl rfl))
+  · rw [hzi]; exact gm _ (Or.inr (Or.inr (Or.inl rfl)))
+  · rw [hzb]; exact gm _ (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
+  · rw [hzbi]; exact gm _ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))
+  · rw [hg]; exact gm _ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))
+  · rw [hgi]; exact gm _ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))))
   · rw [hn]
-    refine diag_mem _ _ fun π => add_mem (gen_mem P (by simp [DAlg.gens])) (Subalgebra.smul_mem _
-      (mul_mem (gen_mem P (by simp [DAlg.gens])) (gen_mem P (by simp [DAlg.gens]))) _)
+    refine diag_mem _ _ fun π => add_mem (gen_mem P (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))) (Subalgebra.smul_mem _
+      (mul_mem (gen_mem P (Or.inr (Or.inr (Or.inr (Or.inl rfl))))) (gen_mem P (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))) _)
   · rw [hns]
-    refine diag_mem _ _ fun π => add_mem (neg_mem (gen_mem P (by simp [DAlg.gens]))) (Subalgebra.smul_mem _
-      (mul_mem (gen_mem P (by simp [DAlg.gens])) (gen_mem P (by simp [DAlg.gens]))) _)
+    refine diag_mem _ _ fun π => add_mem (neg_mem (gen_mem P (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))))))) (Subalgebra.smul_mem _
+      (mul_mem (gen_mem P (Or.inr (Or.inl rfl))) (gen_mem P (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))) _)
 
 theorem Dr_mem : L.Dr ∈ TS P ∧ L.Drb ∈ TS P ∧ L.Dri ∈ TS P ∧ L.Drbi ∈ TS P := by
   obtain ⟨hp, hpb, hc, hci, hcb, hcbi, -⟩ := lev_mem P hL
@@ -779,7 +803,7 @@ theorem frame_mem (l : ℕ) {L : LevelData (A P (DQ P)) P.r} (hL : IsModelLevel 
   | nil =>
     refine ⟨fun Y => io_mem P ?_, fun Y => io_mem P (kap_mem P _), fun Y => io_mem P (kap_mem P _)⟩
     show eeA P (DQ P) Y ∈ TS P
-    refine mul_mem (mul_mem (sc_mem P (gen_mem P (by simp [DAlg.gens]))) (sc_mem P (gen_mem P (by simp [DAlg.gens]))))
+    refine mul_mem (mul_mem (sc_mem P (gen_mem P (Or.inr (Or.inl rfl)))) (sc_mem P (gen_mem P (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))
       (Subalgebra.sum_mem _ fun j _ => mul_mem (kap_mem P _) (SS_mem P j))
   | cons lt w ih =>
     obtain ⟨he, hx, hxi⟩ := ih
@@ -991,8 +1015,8 @@ theorem actA_eq (a : A P (DQ P)) (f π) : actA P a f π = ∑ π', Phi P (a π �
 
 theorem act_mul (a b : A P (DQ P)) (f) : actA P (a * b) f = actA P a (actA P b f) := by
   funext π
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [actA_eq, Matrix.mul_apply, map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply]
+
+  simp only [actA_eq, Matrix.mul_apply, map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply]
   rw [Finset.sum_comm]
 theorem act_diag (d : M.Ty P → (DQ P).Pr) (f π) : actA P (Matrix.diagonal d) f π = (d π).1 (f π) := by
   rw [actA_eq, Finset.sum_eq_single π (fun b _ hb => by rw [Matrix.diagonal_apply_ne _ hb.symm, map_zero]; rfl)
@@ -1005,10 +1029,6 @@ theorem alg_fst (c : ℂ) (g : SmQ P.r P.TT) : (algebraMap ℂ (DQ P).Pr c).1 g 
 theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π = c • f π := by
   rw [Matrix.algebraMap_eq_diagonal, act_diag]; rfl
 end Act
-
-section R0
-variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
 
 variable {τ : ℝ}
 
@@ -1058,8 +1078,6 @@ end
 end Formalism.FourierDecayAlt.P.MAx2.J0
 
 namespace Formalism.FourierDecayAlt.P
-
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx2.J0
 
 end Formalism.FourierDecayAlt.P
 
@@ -1502,14 +1520,14 @@ theorem ev_d0Q_alt (hTT : 0 ≤ TT) : eulerQ M.vz (d0Q : SmQ r TT) = 0 := by
   rw [ev_d0Q hTT]
   have h : ∀ m : Fin r, ((if (M.vz : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vz : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vz m).symm, if_neg (Formalism.FourierDecayAlt.P.MAx1.vcb_vz m).symm, add_zero]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vz m).symm, if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vz m).symm, add_zero]
   simp [h]
 
 theorem ev_d0Q_zb (hTT : 0 ≤ TT) : eulerQ M.vzb (d0Q : SmQ r TT) = 0 := by
   rw [ev_d0Q hTT]
   have h : ∀ m : Fin r, ((if (M.vzb : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vzb : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vzb m).symm, if_neg (Formalism.FourierDecayAlt.P.MAx1.vcb_vzb m).symm, add_zero]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vzb m).symm, if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vzb m).symm, add_zero]
   simp [h]
 
 theorem ev_d0Q_c (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (d0Q : SmQ r TT) = (-1 : ℂ) • d0Q := by
@@ -1517,10 +1535,10 @@ theorem ev_d0Q_c (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (d0Q : SmQ r TT)
   congr 1
   have h : ∀ m : Fin r, ((if (M.vc l : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vc l : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = if l = m then (-1 : ℂ) else 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vcb l m), add_zero]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb l m), add_zero]
     by_cases hlm : l = m
-    · rw [if_pos hlm, if_pos ((Formalism.FourierDecayAlt.P.MAx1.vc_inj l m).2 hlm)]
-    · rw [if_neg hlm, if_neg (fun h => hlm ((Formalism.FourierDecayAlt.P.MAx1.vc_inj l m).1 h))]
+    · rw [if_pos hlm, if_pos ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).2 hlm)]
+    · rw [if_neg hlm, if_neg (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).1 h))]
   simp [h]
 
 theorem ev_d0Q_cb (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vcb l) (d0Q : SmQ r TT) = (-1 : ℂ) • d0Q := by
@@ -1528,10 +1546,10 @@ theorem ev_d0Q_cb (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vcb l) (d0Q : SmQ r T
   congr 1
   have h : ∀ m : Fin r, ((if (M.vcb l : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vcb l : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = if l = m then (-1 : ℂ) else 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vcb m l).symm, zero_add]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb m l).symm, zero_add]
     by_cases hlm : l = m
-    · rw [if_pos hlm, if_pos ((Formalism.FourierDecayAlt.P.MAx1.vcb_inj l m).2 hlm)]
-    · rw [if_neg hlm, if_neg (fun h => hlm ((Formalism.FourierDecayAlt.P.MAx1.vcb_inj l m).1 h))]
+    · rw [if_pos hlm, if_pos ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).2 hlm)]
+    · rw [if_neg hlm, if_neg (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).1 h))]
   simp [h]
 
 theorem ev_kc (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (coordQ (M.vc l) * d0Q : SmQ r TT) = 0 := by

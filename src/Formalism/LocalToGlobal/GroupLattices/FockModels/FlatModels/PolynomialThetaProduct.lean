@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterB
+import Mathlib.Algebra.AffineMonoid.UniqueSums
 
 @[expose] public section
 
@@ -25,13 +26,17 @@ theorem lin_comp {R : Type} [CommRing R] {k : ℕ} (M N : Matrix (Fin k) (Fin k)
   simp only [mul_assoc, MvPolynomial.algebraMap_eq]
 
 theorem lin_one {R : Type} [CommRing R] {k : ℕ} (P : MvPolynomial (Fin k) R) : lin (1 : Matrix (Fin k) (Fin k) R) P = P := by
-  simp [lin, Matrix.one_apply]
+  unfold lin
+  calc
+    _ = MvPolynomial.aeval (fun i : Fin k => (X i : MvPolynomial (Fin k) R)) P := by
+      apply congrArg (fun v => MvPolynomial.aeval v P)
+      funext i
+      simp [Matrix.one_apply, apply_ite]
+    _ = P := MvPolynomial.aeval_X_left_apply P
 
 theorem mono_eq {R : Type} [CommRing R] {σ : Type} [Fintype σ] (μ : σ →₀ ℕ) :
     (monomial μ (1 : R)) = ∏ v, X v ^ μ v := by
-  rw [MvPolynomial.monomial_eq, MvPolynomial.C_1, one_mul, Finsupp.prod_fintype]
-  intro i
-  exact pow_zero _
+  simp [MvPolynomial.monomial_eq, Finsupp.prod_fintype]
 
 theorem scaleHd {R : Type} [CommRing R] {k d : ℕ} (q : MvPolynomial (Fin k) R) (P : MvPolynomial (Fin k) R)
     (hP : P ∈ Hd R k d) : aeval (fun c => q * X c) P = q ^ d * P := by
@@ -39,8 +44,8 @@ theorem scaleHd {R : Type} [CommRing R] {k d : ℕ} (q : MvPolynomial (Fin k) R)
   simp only [Hd, MvPolynomial.mem_restrictSupport_iff] at hP
   conv_lhs => rw [MvPolynomial.as_sum P]
   conv_rhs => rw [MvPolynomial.as_sum P]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.mul_sum]
+
+  rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun μ hμ => ?_
   have hd : ∑ c, μ c = d := hP hμ
   rw [MvPolynomial.aeval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
@@ -55,8 +60,8 @@ theorem lin_smul {R : Type} [CommRing R] {k d : ℕ} (a : R) (M : Matrix (Fin k)
   simp only [lin]
   conv_lhs => rw [MvPolynomial.as_sum P]
   conv_rhs => rw [MvPolynomial.as_sum P]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.smul_sum]
+
+  rw [map_sum, map_sum, Finset.smul_sum]
   refine Finset.sum_congr rfl fun μ hμ => ?_
   have hd : ∑ c, μ c = d := hP hμ
   have e : ∀ c, (∑ b, C ((a • M) c b) * X b : MvPolynomial (Fin k) R) = C a * ∑ b, C (M c b) * X b := by
@@ -161,7 +166,13 @@ theorem Lin_comp {R : Type} [CommRing R] {k : ℕ} (M N : S → Matrix (Fin k) (
 
 theorem Lin_one {R : Type} [CommRing R] {k : ℕ} (P : MvPolynomial (S × Fin k) R) :
     Lin (fun _ : S => (1 : Matrix (Fin k) (Fin k) R)) P = P := by
-  simp [Lin, Matrix.one_apply]
+  unfold Lin
+  calc
+    _ = MvPolynomial.aeval (fun v : S × Fin k => (X v : MvPolynomial (S × Fin k) R)) P := by
+      apply congrArg (fun v => MvPolynomial.aeval v P)
+      funext v
+      simp [Matrix.one_apply, apply_ite]
+    _ = P := MvPolynomial.aeval_X_left_apply P
 
 theorem mem_Pol {R : Type} [CommRing R] {k : ℕ} {d : S → ℕ} {F : MvPolynomial (S × Fin k) R} :
     F ∈ Pol R k d ↔ ∀ μ ∈ F.support, ∀ i, multideg μ i = d i := by
@@ -255,8 +266,8 @@ theorem scalePol {R : Type} [CommRing R] {k : ℕ} {d : S → ℕ} (Q : S → Mv
   rw [mem_Pol] at hF
   conv_lhs => rw [MvPolynomial.as_sum F]
   conv_rhs => rw [MvPolynomial.as_sum F]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.mul_sum]
+
+  rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun μ hμ => ?_
   have hd : ∀ s, ∑ c, μ (s, c) = d s := fun s => hF μ hμ s
   rw [MvPolynomial.aeval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _),
@@ -289,8 +300,8 @@ theorem Lin_smul {R : Type} [CommRing R] {k : ℕ} {d : S → ℕ} (a : S → R)
   simp only [Lin]
   conv_lhs => rw [MvPolynomial.as_sum F]
   conv_rhs => rw [MvPolynomial.as_sum F]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.smul_sum]
+
+  rw [map_sum, map_sum, Finset.smul_sum]
   refine Finset.sum_congr rfl fun μ hμ => ?_
   have hd : ∀ s, ∑ c, μ (s, c) = d s := fun s => hF μ hμ s
   have e : ∀ v : S × Fin k, (∑ b, C ((a v.1 • M v.1) v.2 b) * X (v.1, b) : MvPolynomial (S × Fin k) R) =
@@ -332,8 +343,7 @@ theorem polynomial_theta_product (R : Type) [CommRing R] [IsDomain R] (m : ℕ) 
   rfl
 
 theorem qf_ne (R : Type) [CommRing R] [IsDomain R] (m : ℕ) (vec : Bool) : qf R m vec ≠ 0 := by
-  simp only [qf]
-  cases vec <;> simp [MvPolynomial.X_ne_zero]
+  cases vec <;> simp [qf, MvPolynomial.X_ne_zero]
 
 theorem Th0_inj (R : Type) [CommRing R] [IsDomain R] (m : ℕ) (hm : 1 ≤ m) (vec : S → Bool) (d : S → ℕ)
     (F G : MvPolynomial (S × Fin (m + 1)) R) (hF : F ∈ Pol R (m + 1) d) (hG : G ∈ Pol R (m + 1) d)

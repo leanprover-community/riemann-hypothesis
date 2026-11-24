@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideBis
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideMore
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideAlt
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

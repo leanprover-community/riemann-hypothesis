@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionOfDecompGlob
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
+public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
+public import Formalism.LocalRingCardinality.Lemmas
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 

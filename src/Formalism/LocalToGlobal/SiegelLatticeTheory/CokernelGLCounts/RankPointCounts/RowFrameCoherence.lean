@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataForm
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -128,11 +128,9 @@ theorem rowForm_alg (c S n0c g κ nc α mR : ℝ) (hN : nc = n0c * g / (α * κ)
     (hm : 0 < mR) (hg : 0 < g) : c * (S / mR) = n0c * (g / (κ * (nc * α) * mR) * (c * S)) := by
   have hn0 : n0c ≠ 0 := by
     rintro rfl
-    rw [hN] at hnc
-    simp at hnc
+    simp [hN] at hnc
   subst hN
   field_simp
-  try ring
 
 theorem rowFormC_of {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (Y : Formalism.L2.SG.Full.Full X)
     (u u' : D.what₂.Word) (X0 : Fin (2 * D.R.rS + 2) → Fin X.B.I.n → X.B.I.E)

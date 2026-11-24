@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColLoc
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 
 @[expose] public section
 

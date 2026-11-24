@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergy
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergyInvariant
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergyDiagonal
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

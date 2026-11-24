@@ -1,7 +1,11 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.PartialSumRootEq
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TensorActionApplyDual
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.SACommSES
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.LowestKTypeVectorExists
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.VermaConeA
 
 @[expose] public section
 
@@ -47,15 +51,15 @@ theorem sC_mul (a b c d : Fin n) : sC V a b * sC V c d = if b = c then sC V a d 
 theorem compactWordAction_commute (hV : IsKStableSub ε E V) (a b c d : Fin n) :
     compactWordAction ε E V hV a b * sC V c d = sC V c d * compactWordAction ε E V hV a b := by
   refine Finsupp.lhom_ext fun p v => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Module.End.mul_apply, Module.End.mul_apply, sC_single, compactWordAction_single, map_add (f := _), map_sum]
+
+  rw [Module.End.mul_apply, Module.End.mul_apply, sC_single, compactWordAction_single, map_add (f := _), map_sum]
   by_cases h1 : p.2 = d <;> by_cases h : ε a = ε b <;>
     simp only [h1, h, if_true, if_false, dif_pos, dif_neg, not_false_eq_true, compactWordAction_single, map_smul,
       sC_single, map_zero, smul_zero, sum_const_zero, add_zero]
 
 theorem isKRelation_compactWordAction (hV : IsKStableSub ε E V) (hE : IsGlRep E) : IsKRel ε (compactWordAction ε E V hV) := by
   intro a b c d hab hcd
-  have h1 := sA_isKRel ε E V hV hE a b c d hab hcd
+  have h1 := _root_.ReciprocityTheory.ChartRestriction.DS.Lap.LemK.KernelRelationLemmas.sA_isKRel ε E V hV hE a b c d hab hcd
   have e : ∀ x y, sA ε E V hV x y = compactWordAction ε E V hV x y + sC V x y := fun x y => by simp [compactWordAction]
   rw [e a b, e c d, e a d, e c b] at h1
   simp only [add_mul, mul_add, sC_mul, compactWordAction_commute] at h1

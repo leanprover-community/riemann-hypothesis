@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.IntToFracInjective
+public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Statements
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

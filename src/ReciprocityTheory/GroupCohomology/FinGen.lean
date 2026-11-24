@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.GroupCohomology.CupConnRightStatement
-public import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
+public import Mathlib.RingTheory.AdicCompletion.Functoriality
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.GroupCohomology.ConnNatHolds
 public import ReciprocityTheory.GroupCohomology.IsSuccSubset
 

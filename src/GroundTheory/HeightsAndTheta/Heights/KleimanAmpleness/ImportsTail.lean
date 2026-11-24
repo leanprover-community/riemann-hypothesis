@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherRest
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PChartSecGen
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PBundlePair
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PChartSecGen
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistBundleToSubSystem
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockBase
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemChartSecOverOfMem
 
 @[expose] public section
 

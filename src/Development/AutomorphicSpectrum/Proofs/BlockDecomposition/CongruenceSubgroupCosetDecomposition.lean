@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+public import GroundTheory.LocalFields.UnramifiedHensel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -244,19 +286,15 @@ theorem step (ω : Fˣ →* ℂˣ) {n : ℕ} (f : GL (Fin 2) F → ℂ) (hn : 1 
   have hy := entries ϖ ϖ' β β' x
   set y : GL (Fin 2) F := (upm ϖ' β')⁻¹ * x * upm ϖ β with hyd
   have y00 : y 0 0 = ((ϖ'⁻¹ : Fˣ) : F) * ((x 0 0 - β' * x 1 0) * ϖ) := by
-    change (y : Matrix (Fin 2) (Fin 2) F) 0 0 = _
     rw [hy]
     rfl
   have y01 : y 0 1 = ((ϖ'⁻¹ : Fˣ) : F) * (x 0 0 * β + x 0 1 - β' * (x 1 0 * β + x 1 1)) := by
-    change (y : Matrix (Fin 2) (Fin 2) F) 0 1 = _
     rw [hy]
     rfl
   have y10 : y 1 0 = x 1 0 * ϖ := by
-    change (y : Matrix (Fin 2) (Fin 2) F) 1 0 = _
     rw [hy]
     rfl
   have y11 : y 1 1 = x 1 0 * β + x 1 1 := by
-    change (y : Matrix (Fin 2) (Fin 2) F) 1 1 = _
     rw [hy]
     rfl
   have hyent : ∀ i j, y i j ∈ 𝒪[F] := by
@@ -377,7 +415,7 @@ theorem sum_step (ω : Fˣ →* ℂˣ) {n : ℕ} (f : GL (Fin 2) F → ℂ) (hn 
       simp only [t]
       generalize x 1 0 * b1 + x 1 1 = D1 at hD1 ⊢
       generalize x 1 0 * b2 + x 1 1 = D2 at hD2 ⊢
-      field_simp <;> ring
+      field_simp
     rw [ht12, map_mul, map_mul, hdetx, one_mul, map_inv₀, map_mul, hD b1 hb1, hD b2 hb2,
       mul_one, inv_one, mul_one] at k
     exact reps_eq hB hb1 hb2 k
@@ -394,7 +432,6 @@ end Main
 theorem c1 : Ad3.R.C1 := by
   unfold Ad3.R.C1 Ad3.R.ForF
   intro F _ _ _ _ _ _ ψ _
-  beta_reduce
   refine ⟨reps_exists, fun ϖ B hB => reps_card hB, ?_⟩
   intro ω n f hn hker hf ϖ B ϖ' B' hB hB' x d hx g
   exact sum_step ω f hn hker hf hB hB' hx g

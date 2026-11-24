@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.FieldTheory.Galois.Infinite
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.Topology.Algebra.OpenSubgroup
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

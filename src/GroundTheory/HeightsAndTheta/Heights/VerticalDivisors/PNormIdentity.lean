@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.ComapMaximalIdealParDVR
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
+
+attribute [local simp] MvPolynomial.bind₁
 
 set_option maxSynthPendingDepth 1
 
@@ -68,8 +71,8 @@ theorem eval_specRest_lin (g : MvPolynomial (Fin (e + 1) × Fin n) (𝓞 K)) (u 
 
 theorem secLin_eq_sum {R : Type*} [CommRing R] {Q : Ideal (MvPolynomial (Fin n) R)} {y : Par e n → R}
     (w : Fin n → R) : secLin Q y w = ∑ j, algebraMap R (SecAlg Q y) (w j) * secCoord Q y j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [secLin, linForm, map_sum, map_mul]
+
+  simp only [secLin, linForm, map_sum, map_mul]
   rfl
 
 theorem chart_sum_eq_one {R : Type*} [CommRing R] {Q : Ideal (MvPolynomial (Fin n) R)}

@@ -1,6 +1,60 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.LogDerivUniformlyOn
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Normed.Module.Connected
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Transform
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Uniformizable
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.UniformLimitsDeriv
+public import Mathlib.Analysis.Complex.Liouville
+public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Summable
 
 @[expose] public section
 
@@ -378,7 +432,7 @@ theorem quasiPeriod_ω₁_eq_eisenstein (τ : UpperHalfPlane) (hτ : (τ : ℂ) 
       simp only [Function.comp_apply, he, zetaTerm_eq, eisSummand, Matrix.cons_val_zero,
         Matrix.cons_val_one, Matrix.cons_val_fin_one]
       rw [show L.ω₁ - -(L.ω₁ * (m * τ + n)) = L.ω₁ * (m * τ + n + 1) by ring]
-      simp only [zpow_neg, zpow_ofNat, div_neg, inv_neg, neg_sq, mul_pow, div_eq_mul_inv, mul_inv, one_mul]
+      simp only [zpow_neg, zpow_ofNat, inv_neg, neg_sq, mul_pow, div_eq_mul_inv, mul_inv, one_mul]
       generalize ((m : ℂ) * τ + n + 1)⁻¹ = a
       generalize (((m : ℂ) * τ + n) ^ 2)⁻¹ = b
       linear_combination (L.ω₁⁻¹ * b) * mul_inv_cancel₀ h0
@@ -1007,7 +1061,6 @@ theorem weierstrassP_sub_weierstrassP {u v : ℂ} (hu : u ∉ L.lattice) (hv : v
       have e : cexp (quasiPeriod L w * (z + v + w / 2)) * cexp (quasiPeriod L w * (z - v + w / 2)) =
           cexp (quasiPeriod L w * (z + w / 2)) ^ 2 := by
         rw [sq, ← Complex.exp_add, ← Complex.exp_add]; congr 1; ring
-      beta_reduce
       rw [L.weierstrassP_add_coe z ⟨w, hw⟩, add_right_comm, add_sub_right_comm,
         weierstrassSigma_add L hw, weierstrassSigma_add L hw, weierstrassSigma_add L hw]
       congr 1
@@ -1020,7 +1073,6 @@ theorem weierstrassP_sub_weierstrassP {u v : ℂ} (hu : u ∉ L.lattice) (hv : v
       have h2 := (differentiable_sigmaProd L).analyticAt 0
       refine .add (.div (by fun_prop) (by fun_prop) (by simp)) (by fun_prop))
     (fun z => by
-      beta_reduce
       rw [show -z + v = -(z - v) by ring, show -z - v = -(z + v) by ring, weierstrassSigma_neg,
         weierstrassSigma_neg, sigmaProd_neg, L.weierstrassPExcept_neg, neg_zero]
       ring)
@@ -1031,7 +1083,6 @@ theorem weierstrassP_sub_weierstrassP {u v : ℂ} (hu : u ∉ L.lattice) (hv : v
       have h2 := L.weierstrassPExcept_add 0 z
       simp only [ZeroMemClass.coe_zero, sub_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
         zero_pow, div_zero] at h2
-      beta_reduce
       rw [← h2, show weierstrassSigma L z = z * sigmaProd L z from rfl]
       field_simp
       ring)
@@ -1066,7 +1117,7 @@ theorem exists_eq_const_of_periodic_of_simple_pole {f N : ℂ → ℂ}
   have ho := L.isClosed_lattice.isOpen_compl
   obtain ⟨M, hM, e⟩ := hN.exists_eq_sum_add_pow_mul 1
   simp only [Finset.sum_range_one, pow_zero, Nat.factorial_zero, Nat.cast_one, div_one,
-    iteratedDeriv_zero, one_smul, pow_one, smul_eq_mul, one_mul] at e
+    iteratedDeriv_zero, pow_one, smul_eq_mul, one_mul] at e
   set r := N 0
   let h : ℂ → ℂ := fun z => f z - r * weierstrassZeta L z
   have hh : AnalyticOnNhd ℂ h (L.lattice : Set ℂ)ᶜ := fun z hz =>
@@ -1127,7 +1178,6 @@ theorem exists_eq_mul_canonicalSigma {F : ℂ → ℂ} (hF : Differentiable ℂ 
     (N := fun z => F z / (sigmaProd L z * cexp (-(sTwo L * z ^ 2 / 2))))
     (.div hF.differentiableOn (differentiable_canonicalSigma L).differentiableOn hne)
     (fun z hz w hw => by
-      beta_reduce
       rw [hlaw w hw, canonicalSigma_add L hw,
         mul_div_mul_left _ _ (mul_ne_zero (sigmaSign_ne_zero L w) (exp_ne_zero _))])
     ((hF.analyticAt 0).div (Differentiable.analyticAt (by fun_prop) 0) (by simp))

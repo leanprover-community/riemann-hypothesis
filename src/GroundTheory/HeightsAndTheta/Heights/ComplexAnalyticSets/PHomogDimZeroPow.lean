@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHomogDimZeroPow
+public import Mathlib.RingTheory.GradedAlgebra.Radical
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Finiteness.Ideal
 
 @[expose] public section
 

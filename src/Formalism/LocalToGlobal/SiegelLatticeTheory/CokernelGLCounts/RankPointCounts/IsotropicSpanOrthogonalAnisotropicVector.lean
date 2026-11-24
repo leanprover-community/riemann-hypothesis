@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBetaID
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfK
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNA
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA
+import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 
 @[expose] public section
 
@@ -44,14 +43,14 @@ theorem iso_X {T : D.host.E} (F : FlagG (VS D) D.R.rS T) {x y : (VS D).V} (hx : 
     (VS D).hT x y = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun D.host.E).1 hx
   obtain ⟨d, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun D.host.E).1 hy
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, LinearMap.sum_apply, F.e_iso]
+
+  simp [map_sum, LinearMap.sum_apply, F.e_iso]
 
 theorem isotropicSpan_orthogonal_anisotropicVector {T : D.host.E} (F : FlagG (VS D) D.R.rS T) {x : (VS D).V} (hx : x ∈ F.X) :
     (VS D).hT x F.z = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun D.host.E).1 hx
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, LinearMap.sum_apply, F.z_orth]
+
+  simp [map_sum, LinearMap.sum_apply, F.z_orth]
 
 theorem z_orth_X {T : D.host.E} (F : FlagG (VS D) D.R.rS T) {x : (VS D).V} (hx : x ∈ F.X) :
     (VS D).hT F.z x = 0 := by

@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.Topology.MetricSpace.HausdorffDimension
 
 @[expose] public section
 

@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralTsumOfFactor
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LiftFormsMainTerm
+public import Development.AbelianVarietyTheory.Counterexamples.RotationExamples.LevelVectorSizeBounds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicScalarBase
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralTsumOfFactor
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormLiftFormsFiniteGroupAction
+public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -174,8 +214,8 @@ theorem adjoint_eH (hM : R.IsModels) (hX : ∀ χ ∈ A.X, IsAbsIrrChar χ) (i :
   have hc : ∀ g, starRingEnd ℂ (RealDat.eC (A := A) (sg0 D A) g) = RealDat.eC (A := A) (sg0 D A) g⁻¹ := by
     intro g
     unfold RealDat.eC
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [coeff_idemOf, coeff_idemOf, map_sum, map_sum, map_sum]
+
+    rw [coeff_idemOf, coeff_idemOf, map_sum, map_sum, map_sum]
     refine Finset.sum_congr rfl fun χ hχ => ?_
     have h1 := (hX χ hχ).map_inv (sg0 D A) 1
     have h2 := (hX χ hχ).map_inv (sg0 D A) g⁻¹
@@ -193,8 +233,8 @@ theorem adjoint_eH (hM : R.IsModels) (hX : ∀ χ ∈ A.X, IsAbsIrrChar χ) (i :
 theorem e_eH (hM : R.IsModels) (i : Fin D.R.m) (x : (R.HW i (sg0 D A)).H) :
     (R.HW i _).e (GlobalTheory.Hk3.eH R i x) = postOn _ (R.eWf i (sg0 D A)) ((R.HW i _).e x) := by
   unfold GlobalTheory.Hk3.eH RealDat.eWf gaL
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, hM.gW i]
+
+  simp only [LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, hM.gW i]
   ext v g
   simp [postOn]
   rfl

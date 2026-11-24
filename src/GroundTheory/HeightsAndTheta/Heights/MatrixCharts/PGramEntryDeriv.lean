@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.StatementsBounds
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Calculus.FDeriv.Add
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 

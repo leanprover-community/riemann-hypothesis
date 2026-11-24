@@ -1,14 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherFurther
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiProjPrimeBaseComap
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TrdegEqOfLeOfIsAlgebraic
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CoeNeZeroOfNotMem
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XMemMIdealOverIff
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemMIdealOverIff
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsMChart
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PMChartHomog
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PMChartLocDim
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CoeNeZeroOfNotMem
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiProjPrimeBaseComap
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemMIdealOverIff
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TrdegEqOfLeOfIsAlgebraic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

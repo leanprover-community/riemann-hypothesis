@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.SatakeDualWeyl.Statement
 
 @[expose] public section

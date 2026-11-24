@@ -1,6 +1,53 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PermutationSigns.PadMHerm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -73,31 +120,12 @@ private theorem actL_inv_actL' (g : Gp L N) (h : HS L N) : actL g⁻¹ (actL g h
 theorem actL_inv_sec {h : HS L N} (hh : h ∈ Pos L N) : actL (sec h)⁻¹ (one L N).1 = h := by
   rw [← actL_sec hh, actL_inv_actL']
 
-private theorem actL_mul' (a b : Gp L N) (x : HS L N) : actL (a * b) x = actL a (actL b x) := by
-  refine HS_ext fun w => ?_
-  rw [mat_actL_eq_conjTranspose_inv_mul_mul_inv, mat_actL_eq_conjTranspose_inv_mul_mul_inv, mat_actL_eq_conjTranspose_inv_mul_mul_inv, Pi.mul_apply, Units.val_mul, Matrix.mul_inv_rev,
-    Matrix.conjTranspose_mul]
-  simp only [Matrix.mul_assoc]
-
-open ComplexOrder in
-private theorem actL_mem_Pos (g : Gp L N) {h : HS L N} (hh : h ∈ Pos L N) : actL g h ∈ Pos L N := by
-  simp only [Pos, Set.mem_setOf_eq] at hh ⊢
-  intro w
-  rw [mat_actL_eq_conjTranspose_inv_mul_mul_inv, ← Matrix.coe_units_inv]
-  have hB : IsUnit (((g w)⁻¹ : GL (Fin N) ℂ) : Matrix (Fin N) (Fin N) ℂ) := Units.isUnit _
-  have hBh : IsUnit (((g w)⁻¹ : GL (Fin N) ℂ) : Matrix (Fin N) (Fin N) ℂ)ᴴ := by
-    refine (Matrix.isUnit_iff_isUnit_det _).mpr ?_
-    rw [Matrix.det_conjTranspose]
-    exact ((Matrix.isUnit_iff_isUnit_det _).mp hB).star
-  exact ((hh w).posSemidef.conjTranspose_mul_mul_same _).posDef_iff_isUnit.mpr
-    ((hBh.mul (hh w).isUnit).mul hB)
-
 theorem fInv_ext {q : ℕ} {β : HS L N [⋀^Fin q]→L[ℝ] ℝ} (hβ : UInv β) (g : Gp L N) : FInv (ext β) g := by
   intro h hh
-  have hgh := actL_mem_Pos g hh
+  have hgh := _root_.PositivityTheory.KB.actL_pos g hh
   have e1 : actL (sec (actL g h)) (actL g h) = (one L N).1 := actL_sec hgh
   have hu : actL (sec (actL g h) * g * (sec h)⁻¹) (one L N).1 = (one L N).1 := by
-    rw [actL_mul', actL_mul', actL_inv_sec hh, e1]
+    rw [_root_.PositivityTheory.KB.actL_mul, _root_.PositivityTheory.KB.actL_mul, actL_inv_sec hh, e1]
   have hβu := hβ _ hu
   have hmul : sec (actL g h) * g = (sec (actL g h) * g * (sec h)⁻¹) * sec h := by group
   ext v
@@ -106,7 +134,7 @@ theorem fInv_ext {q : ℕ} {β : HS L N [⋀^Fin q]→L[ℝ] ℝ} (hβ : UInv β
       = β (fun i => actL (sec (actL g h) * g * (sec h)⁻¹) (actL (sec h) (v i))) := by
         congr 1
         funext i
-        rw [← actL_mul', ← actL_mul', ← hmul]
+        rw [← _root_.PositivityTheory.KB.actL_mul, ← _root_.PositivityTheory.KB.actL_mul, ← hmul]
     _ = β (fun i => actL (sec h) (v i)) := by
         have := congrArg (fun f => f (fun i => actL (sec h) (v i))) hβu
         simpa [Function.comp_def] using this
@@ -260,9 +288,9 @@ theorem intP_inv {q : ℕ} {ω : Form (HS L N) q} (hω : ∀ g, FInv ω g) (g : 
   unfold FInv at hF
   have h1 := hF _ hmem
   rw [← h1]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply, map_add (f := _), map_sum, map_sub, map_smul,
-    Function.comp_def]
+
+  simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply, map_add (f := _), map_sum, map_sub, map_smul,
+  Function.comp_def]
 
 def evL {G H Y : Type} [Group G] [Group H] [MulAction H Y] (ρ : G →* H) {m : ℕ}
     (F : (Fin (m + 1) → Y) → ℝ) (y : Y) : Chn G m →ₗ[ℝ] ℝ :=

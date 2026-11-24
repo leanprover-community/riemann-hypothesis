@@ -1,6 +1,51 @@
 module
 
 public import Formalism.HermitianCurvature.StatementTB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -15,16 +60,14 @@ lemma exists_reps (L : AddSubgroup E) (S : Finset E) :
     ∃ R : Finset E, (∀ t ∈ S, ∃ t₀ ∈ R, t - t₀ ∈ L) ∧
       (∀ t₀ ∈ R, ∀ t₀' ∈ R, t₀ - t₀' ∈ L → t₀ = t₀') := by
   classical
-  have hout : ∀ t : E, (((t : E ⧸ L).out : E) : E ⧸ L) = (t : E ⧸ L) :=
-    fun t => QuotientAddGroup.out_eq' _
   refine ⟨S.image (fun t : E => (QuotientAddGroup.mk t : E ⧸ L).out), ?_, ?_⟩
   · intro t ht
     refine ⟨_, Finset.mem_image_of_mem _ ht, ?_⟩
-    rw [← QuotientAddGroup.eq_zero_iff, QuotientAddGroup.mk_sub, hout, sub_self]
+    rw [← QuotientAddGroup.eq_zero_iff, QuotientAddGroup.mk_sub, QuotientAddGroup.out_eq', sub_self]
   · intro a ha b hb hab
     obtain ⟨t, _, rfl⟩ := Finset.mem_image.1 ha
     obtain ⟨t', _, rfl⟩ := Finset.mem_image.1 hb
-    rw [← QuotientAddGroup.eq_zero_iff, QuotientAddGroup.mk_sub, hout, hout, sub_eq_zero] at hab
+    rw [← QuotientAddGroup.eq_zero_iff, QuotientAddGroup.mk_sub, QuotientAddGroup.out_eq', QuotientAddGroup.out_eq', sub_eq_zero] at hab
     simp only [hab]
 
 lemma budget_step (K r i s c m : ℕ) (hsi : s ≤ i) (hi : i ≤ r + 1)
@@ -47,8 +90,6 @@ theorem oneLevel_of_steps : OneLevelOfSteps := by
   have hwc : D.cnt w ≤ 4 * D.K * (D.r + 1 - i) := (Finset.mem_filter.1 hw).2
   have hwt : 0 < D.wt w := hW w
   have he : 0 ≤ D.e i := (hA13 i 1 le_rfl hi1 hi).1.1
-  have ha0 : 0 ≤ 3 ^ D.f * ep := by positivity
-  have hb0 : 0 ≤ 2 ^ D.f * ep := by positivity
 
   have hS : ∀ s, 1 ≤ s → s ≤ i → ∀ M : ℝ,
       (∀ w' ∈ D.Wb (D.cnt w + D.K), D.Dg T ε i s w' ≤ M) →
@@ -154,9 +195,7 @@ lemma coef (D : Data E W) (Θ C₄ C₀ a e : ℝ) (hΘ : 1 ≤ Θ) (h4 : 1 ≤ 
     (i s : ℕ) (hs : 2 ≤ s) (hsi : s ≤ i) (hi : i ≤ D.r + 1) :
     √((1 + a) * (1 + e) * C₄ ^ (D.f * s) * ∏ s' ∈ Ico 1 s, D.vol (i - s + 1) s') ≤
       ((C₀ / Θ) ^ D.f) ^ (s - 1) := by
-  have hΘ0 : 0 < Θ := by linarith
   set q : ℝ := (Θ ^ D.f)⁻¹ with hq
-  have hq0 : 0 ≤ q := by positivity
   have hC0 : 0 ≤ C₀ := by linarith
   have hP : ∏ s' ∈ Ico 1 s, D.vol (i - s + 1) s' ≤ (q ^ 2) ^ (s - 1) := by
     calc ∏ s' ∈ Ico 1 s, D.vol (i - s + 1) s' ≤ ∏ _s' ∈ Ico 1 s, q ^ 2 := by
@@ -203,9 +242,7 @@ lemma size_le_one (D : Data E W) (Θ : ℝ) (hΘ : 1 ≤ Θ) (hS : D.SizesBelow 
     ∀ b s, 1 ≤ b → 1 ≤ s → b + s ≤ D.r + 2 → D.vol b s ≤ 1 := by
   intro b s hb hs hbs
   refine (hS.2 b s hb hs hbs).trans ?_
-  have h1 : (Θ ^ D.f)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (one_le_pow₀ hΘ)
-  have h0 : 0 ≤ (Θ ^ D.f)⁻¹ := by positivity
-  exact pow_le_one₀ h0 h1
+  exact pow_le_one₀ (by positivity) (inv_le_one_of_one_le₀ (one_le_pow₀ hΘ))
 
 lemma small (r f : ℕ) (C C₀ Θ : ℝ) (hΘ : 0 < Θ) (h0 : 0 ≤ C₀) (h : C₀ ≤ C)
     (hs : (r : ℝ) * (C / Θ) ^ f ≤ 1) : (r : ℝ) * (C₀ / Θ) ^ f ≤ 1 := by
@@ -233,15 +270,11 @@ theorem Q0 (D : Data E W) (T : Tower E) (ε : ℝ) (w : W) :
 
 lemma gram_diag (D : Data E W) (hG : D.GramPSD) (ε : ℝ) (hε : 0 < ε) (i : ℕ) (w : W) (p : Pt E) :
     0 ≤ (D.gram ε i w p p).re := by
-  have h := hG ε hε i w {p}
-  have := Matrix.PosSemidef.diag_nonneg h (i := ⟨p, by simp⟩)
-  have h2 : 0 ≤ D.gram ε i w p p := by simpa using this
-  exact (Complex.le_def.1 h2).1
+  have h := Matrix.PosSemidef.diag_nonneg (hG ε hε i w {p}) (i := ⟨p, by simp⟩)
+  exact (Complex.le_def.1 (by simpa using h)).1
 
 end Formalism.FourierDecayAlt.P.OneLevelCoefficients
 
 namespace Formalism.FourierDecayAlt.P
-
-theorem levelInequalityOfSteps : Formalism.FourierDecayAlt.TB.OneLevelOfSteps := OneLevelCoefficients.oneLevel_of_steps
 
 end Formalism.FourierDecayAlt.P

@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
 public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
+public import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
+import Aesop.Main
+import GroundTheory.GlobalFields.LocalAtPlace
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -45,10 +49,10 @@ theorem adeleSingleS_apply_of_mem (a : (v : S) → v.1.adicCompletion K) (w : S)
     adeleSingleS S a w.1 = a w := by
   classical
   change (∑ v : S, finiteAdeleSingleAdd v.1 (a v)) w.1 = a w
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show (∑ v : S, finiteAdeleSingleAdd v.1 (a v)) w.1 =
-      ∑ v : S, (finiteAdeleSingleAdd v.1 (a v)) w.1 from
-    map_sum (RestrictedProduct.evalAddMonoidHom _ w.1) _ _]
+
+  rw [show (∑ v : S, finiteAdeleSingleAdd v.1 (a v)) w.1 =
+    ∑ v : S, (finiteAdeleSingleAdd v.1 (a v)) w.1 from
+  map_sum (RestrictedProduct.evalAddMonoidHom _ w.1) _ _]
   rw [Finset.sum_eq_single w]
   · exact finiteAdeleSingleAdd_apply_self w.1 (a w)
   · intro u _ hu
@@ -59,10 +63,10 @@ theorem adeleSingleS_apply_of_mem (a : (v : S) → v.1.adicCompletion K) (w : S)
 theorem adeleSingleS_apply_of_notMem (a : (v : S) → v.1.adicCompletion K)
     {w : HeightOneSpectrum (𝓞 K)} (hw : w ∉ S) : adeleSingleS S a w = 0 := by
   change (∑ v : S, finiteAdeleSingleAdd v.1 (a v)) w = 0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show (∑ v : S, finiteAdeleSingleAdd v.1 (a v)) w =
-      ∑ v : S, (finiteAdeleSingleAdd v.1 (a v)) w from
-    map_sum (RestrictedProduct.evalAddMonoidHom _ w) _ _]
+
+  rw [show (∑ v : S, finiteAdeleSingleAdd v.1 (a v)) w =
+    ∑ v : S, (finiteAdeleSingleAdd v.1 (a v)) w from
+  map_sum (RestrictedProduct.evalAddMonoidHom _ w) _ _]
   exact Finset.sum_eq_zero fun u _ ↦
     finiteAdeleSingleAdd_apply_of_ne (fun h ↦ hw (by rw [h]; exact u.2)) _
 
@@ -83,12 +87,8 @@ theorem apply_adeleSingleS_add {E : Type*} {G : FiniteAdeleRing (𝓞 K) K → E
 def intS : Set ((v : S) → v.1.adicCompletion K) :=
   Set.univ.pi fun v ↦ (v.1.adicCompletionIntegers K : Set (v.1.adicCompletion K))
 
-theorem isOpen_adicCompletionIntegers (v : HeightOneSpectrum (𝓞 K)) :
-    IsOpen (v.adicCompletionIntegers K : Set (v.adicCompletion K)) :=
-  Valued.isOpen_integer _
-
 theorem isOpen_intS : IsOpen (intS (K := K) S) :=
-  isOpen_set_pi Set.finite_univ fun v _ ↦ isOpen_adicCompletionIntegers v.1
+  isOpen_set_pi Set.finite_univ fun v _ ↦ _root_.GroundTheory.Global.isOpen_adicCompletionIntegers v.1
 
 theorem measurableSet_intS : MeasurableSet (intS (K := K) S) :=
   (isOpen_intS S).measurableSet

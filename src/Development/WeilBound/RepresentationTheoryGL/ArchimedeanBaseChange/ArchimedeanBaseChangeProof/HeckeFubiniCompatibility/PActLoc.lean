@@ -1,8 +1,49 @@
 module
 
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.CompatFub
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PSplit
+public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.InfinitesimalCharacterGL.EopW
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.MultHasCompactSupport
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -65,7 +106,7 @@ theorem Rd_sum {ι : Type} [Fintype ι] (X : Mat n) (φ : ι → Mat n → ℂ) 
     Rd X (fun x => ∑ j, φ j x • b j) g = ∑ j, Rd X (φ j) g • b j := by
   have h : HasFDerivAt (fun x => ∑ j, φ j x • b j) (∑ j, (fderiv ℝ (φ j) g).smulRight (b j)) g :=
     HasFDerivAt.fun_sum fun j _ => (hd j).hasFDerivAt.smul_const (b j)
-  simp only [Rd, h.fderiv, ContinuousLinearMap.sum_apply, Finset.sum_apply, ContinuousLinearMap.smulRight_apply]
+  simp only [Rd, h.fderiv, ContinuousLinearMap.sum_apply, ContinuousLinearMap.smulRight_apply]
 
 theorem Eu_sum {ι : Type} [Fintype ι] (s : Bool) (a c : Fin n) (φ : ι → Mat n → ℂ) (b : ι → V) {g : Mat n}
     (hd : ∀ j, DifferentiableAt ℝ (φ j) g) :
@@ -211,8 +252,8 @@ theorem loc_act (hMA : MultAlg) [MeasurableSpace (G n)] [BorelSpace (G n)] (μ :
       intro j
       show along v g₀ (Φ j) g = _
       rw [← unitOf_val hg, along_val]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hF, e2, e3, map_sum, map_smul]
+
+    simp only [hF, e2, e3, map_sum, map_smul]
     have e4 : ∀ i, M.ρ u⁻¹ (b i) = ∑ j, ent M (M.ρ u⁻¹) j i • b j := fun i => (b.sum_repr' _).symm
     simp only [e4, Finset.smul_sum, smul_smul, Finset.sum_smul]
     rw [Finset.sum_comm]
@@ -238,8 +279,8 @@ theorem loc_act (hMA : MultAlg) [MeasurableSpace (G n)] [BorelSpace (G n)] (μ :
   have e5 : ∀ y : G n, inner ℂ (b l) (k y.val (F (1 * y.val))) =
       ∑ j, ent M (k y.val) l j * Φ j (g₀ * infP n (Pi.mulSingle v y)) := by
     intro y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [one_mul, hF, map_sum, map_smul, inner_sum, inner_smul_right]
+
+    simp only [one_mul, hF, map_sum, map_smul, inner_sum, inner_smul_right]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [mul_comm]
     simp only [ent, hb, hφdef, along_val]

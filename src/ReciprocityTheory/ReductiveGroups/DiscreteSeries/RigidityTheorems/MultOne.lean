@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RigidOrth
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOneA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RigidOrth
+public import Mathlib.Analysis.InnerProductSpace.Orthogonal
 
 @[expose] public section
 

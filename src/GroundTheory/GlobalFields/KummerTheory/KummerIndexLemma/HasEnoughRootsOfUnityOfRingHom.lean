@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
-public import GroundTheory.GlobalFields.IdeleGroups.IndexProductFormula
 public import GroundTheory.ProfiniteCohomology.KummerBasic
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
+public import GroundTheory.GlobalFields.IdeleGroups.IndexProductFormula
+public import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -74,7 +76,7 @@ def ordMod (p : ℕ) : (v.adicCompletion K)ˣ →* Multiplicative (ZMod p) where
 
 theorem exists_uniformizer_unit :
     ∃ π : (v.adicCompletion K)ˣ, Valued.v (π : v.adicCompletion K) = exp (-1 : ℤ) := by
-  obtain ⟨x, hx⟩ := valued_adicCompletion_surjective (v := v) (K := K) (exp (-1 : ℤ))
+  obtain ⟨x, hx⟩ := IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_surjective (v := v) (K := K) (exp (-1 : ℤ))
   have hx0 : x ≠ 0 := by
     rintro rfl
     rw [map_zero] at hx

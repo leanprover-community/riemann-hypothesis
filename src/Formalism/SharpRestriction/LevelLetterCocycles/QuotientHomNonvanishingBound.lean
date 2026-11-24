@@ -1,9 +1,51 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Formalism.WeaklyAdmissibleFiltrations.StatementTor
-public import Formalism.GaloisCohomology.Statement
+public import Mathlib.LinearAlgebra.Matrix.Rank
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -299,9 +341,7 @@ def MtLow (i : N.Loc) (Z' : Finset (N.X i)) :
 
 theorem stdO_inj (i : N.Loc) (k : ℕ) :
     Function.Injective (LinearMap.compLeft (Algebra.linearMap (N.O i) (KK N i)) (Fin k)) := by
-  intro u v h
-  funext j
-  exact IsFractionRing.injective (N.O i) (KK N i) (congrFun h j)
+  exact fun u v h => funext fun j => IsFractionRing.injective (N.O i) (KK N i) (congrFun h j)
 
 def stdLat (i : N.Loc) {Γ : Type} [Group Γ] {k : ℕ} (M : Γ →* Matrix (Fin k) (Fin k) (N.O i)) :
     Lattice (O := N.O i) (matRep (mapM (toK N i) M)) where
@@ -590,9 +630,7 @@ variable {O LL : Type} [CommRing O] [Field LL] [Algebra O LL]
 
 theorem stdG_inj (hinj : Function.Injective (algebraMap O LL)) (k : ℕ) :
     Function.Injective (LinearMap.compLeft (Algebra.linearMap O LL) (Fin k)) := by
-  intro u v h
-  funext j
-  exact hinj (congrFun h j)
+  exact fun u v h => funext fun j => hinj (congrFun h j)
 
 def stdLatG (hinj : Function.Injective (algebraMap O LL)) {Γ : Type} [Group Γ] {k : ℕ}
     (M : Γ →* Matrix (Fin k) (Fin k) O) : Lattice (O := O) (matRep (mapM (algebraMap O LL) M)) where

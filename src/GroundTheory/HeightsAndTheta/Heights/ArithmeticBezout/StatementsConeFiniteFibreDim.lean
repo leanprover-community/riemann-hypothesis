@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentAverage
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFibre
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

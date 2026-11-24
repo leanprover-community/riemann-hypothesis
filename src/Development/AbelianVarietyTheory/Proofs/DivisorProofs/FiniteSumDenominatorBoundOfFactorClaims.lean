@@ -1,20 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.InfClassAt
-public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Formalism.PairingDivisors.PairingDivisorProofs.ValAdd
-public import Formalism.LocalToGlobal.Columns.CoefModAt
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle
-public import Formalism.LocalToGlobal.Divisibility.JetBounds.JetBoundsProofs.NormEqOneOfNotMem
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.TwistedLatticeNaturality
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OrthogonalSumCoefficientLatticeIsLatticeAndDual
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsTestLatUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFinClAndGamOrd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalUnitaryConjSplitSupportedFiniteAdelicPoi
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsTestLatUnique
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OrthogonalSumCoefficientLatticeIsLatticeAndDual
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeightLawGoodOfFieldEmbedding
+import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
+public import Formalism.LocalToGlobal.Divisibility.JetBounds.JetBoundsProofs.NormEqOneOfNotMem
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle
+public import Formalism.PairingDivisors.PairingDivisorProofs.ValAdd
+public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.TwistedLatticeNaturality
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -172,8 +206,8 @@ theorem deltaForm_eq_sum (x g : A) (hf : {γ : Γ | x⁻¹ * ((ι γ)⁻¹ * g) 
 theorem deltaForm_sum {J : Type} (x g : A) (hf : {γ : Γ | x⁻¹ * ((ι γ)⁻¹ * g) ∈ U}.Finite) (s : Finset J) (a : J → K) (v : J → M) :
     deltaForm ι U ρ x (∑ i ∈ s, a i • v i) g = ∑ i ∈ s, a i • deltaForm ι U ρ x (v i) g := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [deltaForm_eq_sum ι U ρ x g hf, map_sum, map_smul, Finset.smul_sum]
+
+  simp only [deltaForm_eq_sum ι U ρ x g hf, map_sum, map_smul, Finset.smul_sum]
   exact Finset.sum_comm
 
 theorem finite_index (x g : A) (h : Finite {δ : Γ // g⁻¹ * ι δ * g ∈ U}) :
@@ -269,8 +303,8 @@ theorem vCore_lin {S : GridChoice W U} {t : T} {Φ : G.Datum} (h : S.SumOK t Φ)
   simp only [GridChoice.classSum, finsum_eq_sum_of_fintype, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun c _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hv β c, map_sum, LinearMap.sum_apply, Finset.mul_sum, Finset.mul_sum]
+
+  rw [hv β c, map_sum, LinearMap.sum_apply, Finset.mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, LinearMap.smul_apply, smul_eq_mul]
   ring
@@ -320,7 +354,7 @@ theorem core_loss (ch : Choice R) {t : T} {w : PlL D} {Φ : ch.G.Datum} (hS : ch
   have := Fintype.ofFinite (ch.S.Classes t Φ β)
   rw [GridChoice.classSum, finsum_eq_sum_of_fintype]
   refine loss_sum _ _ fun c _ => loss_mul (hG β c) ?_
-  simp only [GridChoice.pairAt, Finsupp.sum, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, LinearMap.compl₁₂_apply]
+  simp only [GridChoice.pairAt, Finsupp.sum, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
   refine loss_sum _ _ fun d hd => ?_
   obtain ⟨x', y', e⟩ := (hτ β hβ').coef_eq hd
   rw [e]
@@ -375,8 +409,8 @@ theorem psiC_sum {L : LevCh D T} {sc : Consts} {G : GridData L sc} {J : Type} (s
     psiC Ψ0 x = ∑ i ∈ s, D.what₂.embLL (a i) • psiC (Ψs i) x := by
   apply Subtype.ext
   show (GlobalTheory.CoefModel.mapVV D.what₂.embLL (LaP G) (Ψ0 (finG (Xp G) x))).1 = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, map_sum, Submodule.coe_sum, Submodule.coe_sum]
+
+  rw [h, map_sum, Submodule.coe_sum, Submodule.coe_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smulₛₗ, Submodule.coe_smul, Submodule.coe_smul]
   rfl
@@ -398,7 +432,7 @@ theorem gam_ne {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U
   simp
 
 
-set_option maxHeartbeats 1600000 in
+
 open Classical in
 theorem exists_intMod_levelPrimePow_eq_add_mul (ch : Choice R) {t : T} {w : PlL D} {B : ℝ} (hB : 0 ≤ B) (hO : ∀ a, ch.S.SumOK t (ch.Phi a))
     {X' : InfinitePlace D.what₂.LL → Matrix (Fin ch.n) (Fin ch.n) ℂ} {M : Submodule (𝓞 D.what₂.LL) (Fin ch.n → D.what₂.LL)}
@@ -453,8 +487,8 @@ theorem exists_intMod_levelPrimePow_eq_add_mul (ch : Choice R) {t : T} {w : PlL 
       exact hb c.1 c.2 hSO _ hc
     obtain ⟨y', e, h⟩ := hl
     have e2 : y' = y ⬝ᵥ x := D.what₂.embLL.injective (by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [e, dotProduct, map_sum]
+
+      rw [e, dotProduct, map_sum]
       refine Finset.sum_congr rfl fun a _ => ?_
       rw [map_mul, hy, mul_comm])
     rwa [e2] at h
@@ -514,7 +548,7 @@ variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn 
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem fin_at (F : Face D A) (ch : Choice R) (C b : ℝ) (hO : ∀ t a, ch.S.SumOK t (ch.Phi a)) (hD : DepthAt ch)
     (hS : FinScalAt ch (C / 16) b) (hC : FinCoefAt ch (C / 16) b) (hDt : FinDatAt ch (C / 16) b) (hG : FinGamAt ch (C / 16) b)
     (hT : FinTopAt ch (C / 16) b) (hR : FinRowAt ch (C / 16) b) (hP : FinPairAt ch (C / 16) b) (hΨ : FinPsiAt ch)
@@ -542,7 +576,7 @@ theorem fin_at (F : Face D A) (ch : Choice R) (C b : ℝ) (hO : ∀ t a, ch.S.Su
   exact LossLe.mono (loss_mul (hS w) core) (le_of_eq (by ring))
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem fin_of_factors : SumOKK → DepthK → FinScalK → FinCoefK → FinDatK → FinGamK → FinTopK → FinRowK → FinPairK → FinPsiK →
     FinFormK → FinK := by
   rintro ⟨a0, hO⟩ ⟨a1, hD⟩ ⟨a2, hS⟩ ⟨a3, hC⟩ ⟨a4, hDt⟩ ⟨a5, hG⟩ ⟨a6, hT⟩ ⟨a7, hR⟩ ⟨a8, hP⟩ ⟨a9, hΨ⟩ ⟨a10, hF⟩
@@ -593,9 +627,3 @@ end
 end
 
 end DenominatorLossAdditivity
-section
-open GlobalTheory.SumSize GlobalTheory.RowClaim
-theorem _root_.GlobalTheory.Adopt.finiteSumDenominatorBound_of_factor_claims : SumOKK → DepthK → FinScalK → FinCoefK → FinDatK → FinGamK → FinTopK → FinRowK → FinPairK → FinPsiK → FinFormK → FinK := by
-  first | exact @DenominatorLossAdditivity.GlobalTheory.CompanionTheory.FinDen.fin_of_factors | exact DenominatorLossAdditivity.GlobalTheory.CompanionTheory.FinDen.fin_of_factors | (intros; apply DenominatorLossAdditivity.GlobalTheory.CompanionTheory.FinDen.fin_of_factors <;> assumption)
-
-end

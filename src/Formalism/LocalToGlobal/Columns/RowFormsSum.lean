@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.DoubleCosetDecompositionAll
+import Formalism.LocalToGlobal.Columns.GSetLemmas
 
 @[expose] public section
 

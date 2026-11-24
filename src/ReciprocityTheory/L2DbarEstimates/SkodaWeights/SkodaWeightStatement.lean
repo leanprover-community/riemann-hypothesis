@@ -1,8 +1,11 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
-public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.MinimalSolutionStatement
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
+public import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
 
 @[expose] public section
 

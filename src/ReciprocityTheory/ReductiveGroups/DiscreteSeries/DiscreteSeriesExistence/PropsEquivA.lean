@@ -1,8 +1,11 @@
 module
 
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.InnerProductSpace.Defs
+import Mathlib.Algebra.Order.Field.Power
+public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.Normed.Operator.Extend
-public import Mathlib.Analysis.InnerProductSpace.Subspace
-public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

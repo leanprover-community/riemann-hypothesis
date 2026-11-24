@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
+public import Lean.Elab.MutualDef
 
 @[expose] public section
 
@@ -84,8 +89,7 @@ theorem leviProj_leviSec (hG : IsUnit (Bᴴ * H * B).det) (m : Matrix κ κ ℂ)
     leviProj H B (leviSec H B m) = m := by
   have h2 := leftInv_mul hG (H := H) (B := B)
   unfold leviProj leviSec
-  simp only [Matrix.add_mul, Matrix.sub_mul, Matrix.mul_add, Matrix.mul_sub, Matrix.one_mul,
-    Matrix.mul_one, Matrix.mul_assoc, leftInv_mul_mul hG, h2]
+  simp only [Matrix.add_mul, Matrix.sub_mul, Matrix.mul_add, Matrix.mul_sub, Matrix.mul_one, Matrix.mul_assoc, leftInv_mul_mul hG, h2]
   abel
 
 theorem leviSec_mulVec_of {X : ι → ℂ} (hBX : Bᴴ *ᵥ (H *ᵥ X) = 0) (m : Matrix κ κ ℂ) :
@@ -205,7 +209,7 @@ theorem leviProj_unitary {g : Matrix ι ι ℂ} (hg : gᴴ * H * g = H) (hgX : g
   simp only [leviProj, ← mulVec_mulVec]
   rw [ec, ed]
   simp only [star_sub, star_smul, mulVec_sub, mulVec_smul, sub_dotProduct, dotProduct_sub,
-    smul_dotProduct, dotProduct_smul, h1, h2, hXX, smul_zero, sub_zero, smul_eq_mul]
+    smul_dotProduct, dotProduct_smul, h1, h2, hXX, smul_eq_mul]
   rw [ip_unitary hg]
   simp only [mul_zero, sub_zero]
 

@@ -1,6 +1,12 @@
 module
 
 public import ReciprocityTheory.DualLattices.DiscriminantColengthStatement
+public import Mathlib.LinearAlgebra.Vandermonde
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import ReciprocityTheory.DualLattices.TensorSpan
 
 @[expose] public section
 

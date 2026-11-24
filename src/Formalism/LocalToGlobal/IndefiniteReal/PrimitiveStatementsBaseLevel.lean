@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.PackageFromPrimitiveStatements
+import Formalism.LocalToGlobal.IndefiniteReal.FinrankISupLeSum
 
 @[expose] public section
 

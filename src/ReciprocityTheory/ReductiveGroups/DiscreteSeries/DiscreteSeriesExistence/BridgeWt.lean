@@ -1,6 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Bridge
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -21,7 +24,7 @@ theorem bwtDiag_inG (ε : Fin n → Bool) (θ : Fin n → ℝ) : inG ε (bwtDiag
     Matrix.diagonal_mul_diagonal, Matrix.diagonal_add, ← Matrix.diagonal_zero]
   congr 1
   funext i
-  by_cases hε : ε i = true <;> simp [hε, Complex.conj_I] <;> ring_nf
+  by_cases hε : ε i = true <;> simp [hε, Complex.conj_I]
 
 theorem bwt_exp (θ : Fin n → ℝ) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • bwtDiag θ) =
@@ -29,7 +32,7 @@ theorem bwt_exp (θ : Fin n → ℝ) (t : ℝ) :
   have h : (t : ℂ) • bwtDiag θ = Matrix.diagonal (fun a => (t : ℂ) * ((θ a : ℂ) * Complex.I)) := by
     rw [bwtDiag]
     ext i j
-    by_cases h : i = j <;> simp [Matrix.diagonal_apply, h]
+    by_cases h : i = j <;> simp [h]
   rw [h, Matrix.exp_diagonal]
   congr 1
   funext a
@@ -50,8 +53,6 @@ theorem bwt_diag_mem_Kset (ε : Fin n → Bool) (θ : Fin n → ℝ) :
     simp only [Pi.star_apply]
     rw [Complex.star_def, ← Complex.exp_conj, map_mul, Complex.conj_ofReal, Complex.conj_I,
       ← Complex.exp_add]
-    congr 1
-    push_cast
     ring
     simp
   · rw [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal]
@@ -97,8 +98,7 @@ private theorem apply_one_eq_exp_smul_of_hasDerivAt_smul {F : ℝ → H} {c : �
     simp
   have hconst := is_const_of_deriv_eq_zero (fun s => (hG s).differentiableAt)
     (fun s => (hG s).deriv) 1 0
-  simp only [Complex.ofReal_one, one_mul, Complex.ofReal_zero, zero_mul, neg_zero,
-    Complex.exp_zero, one_smul] at hconst
+  simp only [Complex.ofReal_one, one_mul, Complex.ofReal_zero, zero_mul, Complex.exp_zero, one_smul] at hconst
   rw [← hconst, smul_smul, ← Complex.exp_add]
   simp
 

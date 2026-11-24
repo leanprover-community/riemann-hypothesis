@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Topology.Algebra.InfiniteSum.Defs
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
+public import Mathlib.Analysis.Normed.Group.Real
 
 @[expose] public section
 

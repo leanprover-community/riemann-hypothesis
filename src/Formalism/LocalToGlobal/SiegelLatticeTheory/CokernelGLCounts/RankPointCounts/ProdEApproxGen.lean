@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StrongApproximation.DedekindLFunctions
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.DedekindDomain.Basic
 
 @[expose] public section
 

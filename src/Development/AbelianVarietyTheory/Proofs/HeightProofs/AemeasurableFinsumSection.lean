@@ -1,11 +1,55 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValuationResidueLemmas
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraMapOLInjective
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.NormOrderStatement
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Kaehler.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.SacSuccAbove
-public import ReciprocityTheory.SemistableReduction.AlgAll
+import ReciprocityTheory.SemistableReduction.AlgAll
 
 @[expose] public section
 
@@ -25,7 +69,7 @@ theorem sImg_indep_finite (K Ω : Type) [Field K] [CharZero K] [Field Ω] [Algeb
     Function.Injective (sHom (K := K) (D := D) j₀ x) ∧
       FiniteDimensional (IntermediateField.adjoin K (Set.range (sImg (D := D) j₀ x)))
         (OmS Ω D N) := by
-  have hfs := ReciprocityTheory.MultiplicativeHeights.Closed.fieldOfS K Ω D N x hfg htr hJ
+  have hfs := _root_.ReciprocityTheory.MultiplicativeHeights.genericImageFinite K Ω D N x hfg htr hJ
   let e : TVar D N ≃ TVar D N :=
     Equiv.prodCongr (Equiv.refl _) (Fin.cycleRange j₀).symm
   have key : (ReciprocityTheory.MultiplicativeHeights.sImage (D := D) x) = (sImg (D := D) j₀ x) ∘ e := by
@@ -122,9 +166,8 @@ theorem sImg_rel {Ω : Type} [Field Ω] {D N : ℕ} (j₀ : Fin (N + 1)) (x : Fi
   have hC : ∀ a : Ω, algebraMap (MvPolynomial (SVar D N) Ω) (OmS Ω D N) (C a) =
       algebraMap Ω (OmS Ω D N) a := fun a => by
     rw [← MvPolynomial.algebraMap_eq, ← IsScalarTower.algebraMap_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [sImg, sac_self, sac_succAbove, Fin.succ_ne_zero, if_false,
-    ↓reduceIte, map_neg, map_sum, map_mul, hC]
+
+  simp only [sImg, sac_self, sac_succAbove, Fin.succ_ne_zero, ↓reduceIte, map_neg, map_sum, map_mul, hC]
   exact neg_add_cancel _
 
 theorem bijOn_restrict {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {D N : ℕ}
@@ -155,8 +198,8 @@ theorem bijOn_restrict {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {D N : 
         rw [← MvPolynomial.algebraMap_eq]; exact (sHom (K := K) (D := D) j₀ x).commutes a,
         eval₂_C] at this
     · have := congrArg P (sImg_rel (D := D) j₀ x i)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa [map_sum, map_mul, hX P hP] using this
+
+      simpa [map_sum, map_mul, hX P hP] using this
   refine ⟨hmaps, ?_, ?_⟩
   · intro P₁ h₁ P₂ h₂ he
     have hm := hmaps h₁

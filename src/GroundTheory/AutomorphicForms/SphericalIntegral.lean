@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.SphericalMinuscule
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Polynomial.Vieta
 
 @[expose] public section
 

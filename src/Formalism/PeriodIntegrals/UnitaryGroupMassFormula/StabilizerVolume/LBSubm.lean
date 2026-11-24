@@ -1,6 +1,61 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Group.Measure
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.ContDiff.RCLike
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
+public import Mathlib.MeasureTheory.Function.Jacobian
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 
@@ -91,7 +146,7 @@ private theorem isAddHaarMeasure_map_restrict_slab {n m : ℕ} (μ : Measure (Fi
     exact hopen.measure_ne_zero μ ⟨_, hmem⟩
 
 
-set_option maxHeartbeats 800000 in
+
 theorem submLB_holds : SubmLB := by
   intro n m μ ν hμ hν f hf x0 hsurj W hW hx0W
   have := hμ
@@ -117,7 +172,7 @@ theorem submLB_holds : SubmLB := by
     have h2 := ((hasStrictFDerivAt_id x0).add (R.hasStrictFDerivAt.comp x0 h1)).add_const
       (R (A x0) - R (f x0))
     rw [hhdef]
-    convert h2 using 1 <;> first | rfl | (funext x; simp) | (ext v; simp) | (ext v i; simp)
+    convert h2 using 1 <;> first | rfl | (funext x; simp) | (ext v; simp)
   have hdiff : Differentiable ℝ h := hC.differentiable (by norm_num)
   have hdet : Continuous fun x => (fderiv ℝ h x).det :=
     ContinuousLinearMap.continuous_det.comp (hC.continuous_fderiv (by norm_num))
@@ -125,8 +180,6 @@ theorem submLB_holds : SubmLB := by
     rw [hh.hasFDerivAt.fderiv]
     first
     | simp [ContinuousLinearMap.det]
-    | simp
-    | norm_num [ContinuousLinearMap.det, LinearMap.det_id]
   obtain ⟨U0, hU0⟩ : ∃ U0 : Set (Fin n → ℝ), U0 = W ∩ {x | |(fderiv ℝ h x).det| < 2} :=
     ⟨_, rfl⟩
   have hU0open : IsOpen U0 := by
@@ -153,9 +206,6 @@ theorem submLB_holds : SubmLB := by
     refine ⟨ρ.addHaarScalarFactor ν, Measure.addHaarScalarFactor_pos_of_isAddHaarMeasure ρ ν, ?_⟩
     first
     | exact Measure.isAddLeftInvariant_eq_smul ρ ν
-    | exact Measure.isAddHaarMeasure_eq_smul_of_isAddHaarMeasure ρ ν
-    | exact Measure.isAddLeftInvariant_eq_smul_of_innerRegular ρ ν
-    | exact Measure.isAddLeftInvariant_eq_smul_of_regular ρ ν
   have hK0 : ENNReal.ofReal 2 ≠ 0 := (ENNReal.ofReal_pos.2 two_pos).ne'
   have hpos : (0 : ℝ) < ‖R‖ + 1 := by positivity
   refine ⟨(ENNReal.ofReal 2)⁻¹ * c0, ?_, ?_, Metric.ball (f x0) (r / (‖R‖ + 1)),
@@ -163,7 +213,6 @@ theorem submLB_holds : SubmLB := by
   · first
     | exact ENNReal.mul_pos (ENNReal.inv_ne_zero.2 ENNReal.ofReal_ne_top)
         (ENNReal.coe_ne_zero.2 hc0pos.ne')
-    | (apply ENNReal.mul_pos <;> simp [hc0pos.ne'])
   · exact ENNReal.mul_ne_top (ENNReal.inv_ne_top.2 hK0) ENNReal.coe_ne_top
   · intro S hSN hS
     have hAm : Measurable A := A.continuous.measurable
@@ -204,8 +253,6 @@ theorem submLB_holds : SubmLB := by
       rw [hρeq]
       first
       | exact Measure.nnreal_smul_coe_apply _ _ _
-      | simp
-      | rfl
     have h3 : ρ ((fun y => y + (f x0 - A x0)) ⁻¹' S) = μ (A ⁻¹' ((fun y => y + (f x0 - A x0)) ⁻¹' S) ∩
         {x | ‖x - R (A x) - (x0 - R (A x0))‖ < r}) := by
       rw [hρdef, Measure.map_apply hAm hS'', Measure.restrict_apply (hAm hS'')]
@@ -214,20 +261,15 @@ theorem submLB_holds : SubmLB := by
       first
       | exact addHaar_image_le_lintegral_abs_det_fderiv μ hM
           (fun x _ => (hdiff x).hasFDerivAt.hasFDerivWithinAt)
-      | exact addHaar_image_le_lintegral_abs_det_fderiv hM
-          (fun x _ => (hdiff x).hasFDerivAt.hasFDerivWithinAt)
     have h6 : ∫⁻ x in f ⁻¹' S ∩ U0, ENNReal.ofReal |(fderiv ℝ h x).det| ∂μ ≤
         ∫⁻ _ in f ⁻¹' S ∩ U0, ENNReal.ofReal 2 ∂μ := by
       have hle : ∀ x ∈ f ⁻¹' S ∩ U0, ENNReal.ofReal |(fderiv ℝ h x).det| ≤ ENNReal.ofReal 2 :=
         fun x hx => ENNReal.ofReal_le_ofReal (hU0det x hx.2).le
       first
       | exact setLIntegral_mono' hM hle
-      | exact setLIntegral_mono measurable_const hle
-      | exact lintegral_mono_ae ((ae_restrict_iff' hM).2 (Filter.Eventually.of_forall hle))
     have h7 : ∫⁻ _ in f ⁻¹' S ∩ U0, ENNReal.ofReal 2 ∂μ = ENNReal.ofReal 2 * μ (f ⁻¹' S ∩ U0) := by
       first
       | exact setLIntegral_const _ _
-      | rw [lintegral_const, Measure.restrict_apply_univ]
     have h8 : μ (f ⁻¹' S ∩ U0) ≤ μ (f ⁻¹' S ∩ W) :=
       measure_mono (fun x hx => ⟨hx.1, hU0W hx.2⟩)
     have key : (c0 : ℝ≥0∞) * ν S ≤ ENNReal.ofReal 2 * μ (f ⁻¹' S ∩ W) := by

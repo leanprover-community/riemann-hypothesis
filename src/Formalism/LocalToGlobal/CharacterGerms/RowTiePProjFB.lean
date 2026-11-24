@@ -1,6 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.EndomorphismLimitIntegral
+public import Formalism.LocalToGlobal.CharacterGerms.CoeffSubstEqSum
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.NumberTheory.Basic
+import Mathlib.Topology.Sheaves.Presheaf
+import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementG
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinS2LimitFormula
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.CM4
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.TranslateProduct
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementE
 
 @[expose] public section
 

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.DefsSym
+public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
 
 @[expose] public section
 

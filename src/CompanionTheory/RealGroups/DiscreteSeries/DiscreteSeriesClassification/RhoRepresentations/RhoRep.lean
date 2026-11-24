@@ -1,6 +1,7 @@
 module
 
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.EquivariantSections.EquivSection
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -58,8 +59,8 @@ theorem rho_representation_holds : CompanionTheory.RgDs.K.RhoRep := by
     rfl
   · intro k k' a
     funext x'
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [rhoA, map_sum, map_smul, Finset.smul_sum, smul_smul]
+
+    simp only [rhoA, map_sum, map_smul, Finset.smul_sum, smul_smul]
     refine Eq.trans ?_ (Finset.sum_comm (s := (Finset.univ : Finset (Fin x'.1 → Fin n × Fin n))) (t := (Finset.univ : Finset (Fin x'.1 → Fin n × Fin n)))).symm
     refine Finset.sum_congr rfl fun w _ => ?_
     rw [← Finset.sum_smul, rr_op_mul]

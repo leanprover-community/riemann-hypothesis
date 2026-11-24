@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.LengthInverseBound
 public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.LengthInverseBound
 
 @[expose] public section
 

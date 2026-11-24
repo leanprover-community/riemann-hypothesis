@@ -1,13 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeisenbergIntertwiningSumsCompEqIndex
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormalizedHeisenbergIntertwinerComp
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntertwinerHeisenbergCocycleOfFixedVector
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsWeilRepresentationHeisenberg
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SpanHeisenbergTranslatesVacuumEqTop
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormalizedHeisenbergIntertwinerComp
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -31,8 +70,8 @@ private theorem eq_zero_of_sum_eigenvectors_eq_zero_of_injective {M ι α : Type
       refine ih (fun i => (χ i a - χ j a) • v i) (fun i hi b => ?_) ?_
       · rw [map_smul, hv i (Finset.mem_insert_of_mem hi) b, smul_comm]
       · have h1 := congrArg (T a) hsum
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_add (f := _), map_sum, map_zero, hv j (Finset.mem_insert_self _ _)] at h1
+
+        rw [map_add (f := _), map_sum, map_zero, hv j (Finset.mem_insert_self _ _)] at h1
         have h2 : v j = -∑ i ∈ s, v i := eq_neg_of_add_eq_zero_left hsum
         rw [Finset.sum_congr rfl fun i hi => hv i (Finset.mem_insert_of_mem hi) a] at h1
         simp only [sub_smul, Finset.sum_sub_distrib]
@@ -103,8 +142,8 @@ private theorem isHeis_sum_filter_quotient_eq_zero_of_sum_eq_zero {R X M : Type}
   have key := eq_zero_of_sum_eigenvectors_eq_zero_of_injective (fun a : A => W a) χ hχ (s.image fun i => (x i : X ⧸ A.toAddSubgroup))
     (fun q' => ∑ i ∈ s.filter (fun i => (x i : X ⧸ A.toAddSubgroup) = q'), c i • W (x i) (e i))
     (fun q' _ a => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.smul_sum]
+
+      rw [map_sum, Finset.smul_sum]
       refine Finset.sum_congr rfl fun i hi => ?_
       rw [map_smul, isHeis_apply_apply_eq_smul_of_fixes hW (he i) a.2, smul_comm,
         hval q' (x i) (Finset.mem_filter.1 hi).2 a])
@@ -167,8 +206,8 @@ private theorem isHeis_sum_map_eq_zero_of_sum_eq_zero {R X M : Type} [CommRing R
     (c i * (γ (w • x0) (-x0 + x i))⁻¹) • e i
   have hu : u = 0 := by
     apply eq_zero_of_isHeis_apply_eq_zero hW x0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hfib, map_sum]
+
+    rw [← hfib, map_sum]
     refine Finset.sum_congr rfl fun i hi => ?_
     rw [map_smul, mul_smul, ← isHeis_apply_add_eq_inv_smul_of_fixes hW (he i) (hd i hi), ← hxi]
   have hfixρ : ∀ i ∈ s.filter (fun i => (x i : X ⧸ A.toAddSubgroup) = q),
@@ -183,11 +222,11 @@ private theorem isHeis_sum_map_eq_zero_of_sum_eq_zero {R X M : Type} [CommRing R
         rw [← map_add (f := _), ← hxi, ← ρ.map_smul w x0, hρ] at h
         exact h
     _ = W (ρ x0) (L u) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, ← map_sum]
+
+        rw [map_sum, ← map_sum]
         congr 1
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [u, map_sum, map_smul]
+
+        simp only [map_smul]
     _ = 0 := by rw [hu, map_zero, map_zero]
 
 
@@ -314,8 +353,8 @@ theorem _root_.GlobalTheory.FinWeil.exists_weil_rep_of_vacua : ∀ {R X M : Type
             (lam (_root_.GlobalTheory.FinWeil.idx (A.map (ρ g)) (A.map (ρ (g * h)))))⁻¹ •
               _root_.GlobalTheory.FinWeil.sumOp W (A.map (ρ g)) (A.map (ρ (g * h))) (large₂ g e) := rfl
         rw [hLg (g * h) e he, ← hcomp, ← hLg g e he, h3, hsum2, hcard2, ← hcard1, hLh]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_smul, map_sum]
+
+        simp only [map_smul, map_sum]
         congr 1
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [hmul (ρ h x) (f i) e, map_smul, hgen _ _ _ he, hmul, map_mul, Module.End.mul_apply,

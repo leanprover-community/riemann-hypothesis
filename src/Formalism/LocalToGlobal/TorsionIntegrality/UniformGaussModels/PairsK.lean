@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.IsotropicVanish
 
 @[expose] public section
 

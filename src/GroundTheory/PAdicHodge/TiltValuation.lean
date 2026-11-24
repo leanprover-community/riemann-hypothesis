@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.PerfectoidField
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

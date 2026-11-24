@@ -1,9 +1,12 @@
 module
 
+import Formalism.LocalToGlobal.AlgebraicTheory.AlgebraicTheoryProofs.NormPow
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementNorm
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LogarithmEquivalence
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SelfDualCovolume
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactTer
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SelfDualCovolume
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.GaussDegenerate
 
 @[expose] public section
 
@@ -24,26 +27,7 @@ variable {V : Type} [AddCommGroup V]
 
 theorem relIdx_eq_card {Λ₁ Λ₂ : AddSubgroup V} {S : Finset V} (hS : IsReps Λ₁ Λ₂ S) :
     relIdx Λ₁ Λ₂ = S.card := by
-  unfold relIdx AddSubgroup.relIndex AddSubgroup.index
-  let f : S → (Λ₂ ⧸ Λ₁.addSubgroupOf Λ₂) := fun x => QuotientAddGroup.mk ⟨x.1, hS.1 x.1 x.2⟩
-  have hf : Function.Bijective f := by
-    constructor
-    · rintro ⟨x, hx⟩ ⟨y, hy⟩ hxy
-      have h1 := (QuotientAddGroup.eq).1 hxy
-      rw [AddSubgroup.mem_addSubgroupOf] at h1
-      have h2 : x - y ∈ Λ₁ := by
-        have := Λ₁.neg_mem h1
-        simpa [sub_eq_add_neg, add_comm] using this
-      exact Subtype.ext (hS.2.1 x hx y hy h2)
-    · intro q
-      induction q using QuotientAddGroup.induction_on with
-      | H z =>
-        obtain ⟨x, hx, hzx⟩ := hS.2.2 z.1 z.2
-        refine ⟨⟨x, hx⟩, ?_⟩
-        apply (QuotientAddGroup.eq).2
-        rw [AddSubgroup.mem_addSubgroupOf]
-        simpa [sub_eq_add_neg, add_comm] using hzx
-  rw [← Nat.card_eq_of_bijective f hf, Nat.card_eq_fintype_card, Fintype.card_coe]
+  apply Formalism.L2.AlgTh.RepresentativeBijection.relIdx_eq_card <;> assumption
 
 theorem semiChar_congr [Module ℂ V] {H : Sesq V} {Λ : AddSubgroup V} {α α' : V → ℂ} (h : IsSemiChar H Λ α)
     (he : ∀ x ∈ Λ, α' x = α x) : IsSemiChar H Λ α' := by
@@ -126,7 +110,7 @@ theorem inter_isom (H : Sesq V) (H' : Sesq W) (hH : IsHerm H) (hH' : IsHerm H') 
     rw [h1, h2]
   have hGV : (fun v => G (g v)) ∈ fixedBy H (fun x => α' (g x)) A := by
     intro x hx z
-    have hI := Formalism.L2.Th1.H.opUIsom V W H H' (g : V →ₗ[ℂ] W) hg x G z
+    have hI := _root_.Formalism.L2.Th1.H.heisenbergIsometry V W H H' (g : V →ₗ[ℂ] W) hg x G z
     simp only [LinearEquiv.coe_coe] at hI
     simp only
     rw [hI]
@@ -138,7 +122,7 @@ theorem inter_isom (H : Sesq V) (H' : Sesq W) (hH : IsHerm H) (hH' : IsHerm H') 
   simp only [sumU]
   rw [Finset.sum_image (fun x _ y _ hxy => g.injective hxy)]
   refine Finset.sum_congr rfl fun x _ => ?_
-  have hI := Formalism.L2.Th1.H.opUIsom V W H H' (g : V →ₗ[ℂ] W) hg x G z
+  have hI := _root_.Formalism.L2.Th1.H.heisenbergIsometry V W H H' (g : V →ₗ[ℂ] W) hg x G z
   simp only [LinearEquiv.coe_coe] at hI
   rw [hI]
 
@@ -231,8 +215,8 @@ theorem hermitian_fourth_block (h : Matrix n n ℂ) (hH : IsHerm (matH h)) : IsH
       simp [Ne.symm hb]
     · simp
   intro x y
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [key, key, map_sum]
+
+  rw [key, key, map_sum]
   exact Finset.sum_congr rfl fun a _ => hH _ _
 
 theorem semicharacter_fourth_power (h : Matrix n n ℂ) {Λ : AddSubgroup (n → ℂ)} {α : (n → ℂ) → ℂ}
@@ -267,7 +251,7 @@ theorem fourth_tensor_intertwiner (h : Matrix n n ℂ) (hH : IsHerm (matH h)) (�
   have hS4 := representatives_fourth_power hS
   have hH4 : IsHerm (matH (blk4 h)) := hermitian_fourth_block h hH
   have hfix4 : tens4 θ ∈ fixedBy (matH (blk4 h)) (fun x => ∏ a, α (slice a x)) (pow4 Λ₁) :=
-    (Formalism.L2.Th1.H.tens4Mem n h Λ₁ α (fun _ => θ) (fun _ => hθ)).2
+    (_root_.Formalism.L2.Th1.H.fourfoldTensorMem n h Λ₁ α (fun _ => θ) (fun _ => hθ)).2
   funext z
   have eL : tens4 (inter (matH h) α Λ₁ Λ₂ θ) z = (((Real.sqrt (relIdx Λ₁ Λ₂) : ℝ) : ℂ)⁻¹) ^ 4 *
       ∑ p ∈ Fintype.piFinset (fun _ : Fin 4 => S), ∏ a, (α (p a) * opU (matH h) (p a) θ (slice a z)) := by
@@ -283,7 +267,7 @@ theorem fourth_tensor_intertwiner (h : Matrix n n ℂ) (hH : IsHerm (matH h)) (�
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [Finset.prod_mul_distrib]
     congr 1
-    exact (Formalism.L2.Th1.H.opUBlk4 n h).2 (asm p) (fun _ => θ) z
+    exact (_root_.Formalism.L2.Th1.H.heisenbergFourfold n h).2 (asm p) (fun _ => θ) z
   rw [eL, eR]
 
 end Tens
@@ -308,7 +292,7 @@ theorem local_norm_intertwiner : LocNormInter := by
   obtain ⟨g₁, ε, hI, hidx, hidx2, hε, htens⟩ := hLN
 
   have hαs₂ : IsSemiChar (matH h) Λ₂ (alphaQ (Real.sqrt dK / 2) (matH h)) :=
-    (Formalism.L2.Th1.H.alphaQSemi _ (matH h) hH b₀ dK (odd_b hcm) Λ₂ (le_of_eq hSD₂.symm) hSt₂).2.2
+    (_root_.Formalism.L2.Th1.H.quadMultiplierSemicharacter _ (matH h) hH b₀ dK (odd_b hcm) Λ₂ (le_of_eq hSD₂.symm) hSt₂).2.2
   have htens1 := fourth_tensor_intertwiner h hH Λ₁ Λ₂ _ hαs₂ h12 θ hθ
 
   have hBC : relIdx (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ₁))
@@ -348,7 +332,7 @@ theorem local_norm_intertwiner : LocNormInter := by
   have hscStd : IsSemiChar (stdH (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))
       (stdLat (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))
       (alphaQ (Real.sqrt dK / 2) (stdH (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))) :=
-    semiChar_congr (Formalism.L2.Th1.H.stdSemiChar (cmL a₀ b₀ dK ha hdK lam hlam) (lam * a₀) (Fin 4 × n) hD1.per)
+    semiChar_congr (_root_.Formalism.L2.Th1.H.StdSemiChar_proof (cmL a₀ b₀ dK ha hdK lam hlam) (lam * a₀) (Fin 4 × n) hD1.per)
       hD1.betaStd
   have hK1fix := Formalism.L2.Th1.H.interFixed _ _ hSH.2.1 _ _ _ hD1.betaSemi hstdB0 _ hF0.1.2
 
@@ -358,7 +342,7 @@ theorem local_norm_intertwiner : LocNormInter := by
       (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ₁))
       (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ₂)) :=
     { herm := hSH.2.1
-      sd₁ := Formalism.L2.Th1.H.stdSelfDual _ _
+      sd₁ := _root_.Formalism.L2.Th1.H.StdSelfDual_proof _ _
       sd₂ := hD1.selfDual
       sd₃ := hD2.selfDual
       sc₁ := hscStd

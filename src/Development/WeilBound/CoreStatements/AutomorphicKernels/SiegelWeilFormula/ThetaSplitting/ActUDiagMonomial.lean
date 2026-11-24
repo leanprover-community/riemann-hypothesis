@@ -1,6 +1,56 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.NullSec
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
+public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 
@@ -28,18 +78,18 @@ theorem actU_X (u : Matrix (Fin m) (Fin m) ℂ) (a : Fin m) (i : Fin n) (b : Boo
 
 theorem lin_lf (φ : PX m n →ₗ[ℂ] PX m n) (b : Bool) (N M : Matrix (Fin m) (Fin m) ℂ) (a : Fin m) (i : Fin n)
     (h : ∀ c, φ (X (c, i, b)) = lf b N c i) : φ (lf b M a i) = lf b (M * N) a i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [lf, C_mul', map_sum, map_smul, h, Finset.smul_sum, smul_smul, Matrix.mul_apply]
+
+  simp only [lf, C_mul', map_sum, map_smul, h, Finset.smul_sum, smul_smul, Matrix.mul_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [Finset.sum_mul]
   exact Finset.sum_congr rfl fun x _ => C_mul'.symm
 
 theorem mstar_mul (A B : Matrix (Fin m) (Fin m) ℂ) : (A * B).map star = A.map star * B.map star := by
-  ext i j; simp [Matrix.mul_apply, star_sum]
+  ext i j; simp [Matrix.mul_apply]
 
 theorem am_mul (b : Bool) (A B : Matrix (Fin m) (Fin m) ℂ) : am b (A * B) = am b A * am b B := by
-  cases b <;> simp [am, mstar_mul]
+  cases b <;> simp [am]
 
 theorem actU_lf (u M : Matrix (Fin m) (Fin m) ℂ) (b : Bool) (a : Fin m) (i : Fin n) :
     actU u (lf b M a i) = lf b (M * am b u) a i :=
@@ -70,7 +120,7 @@ theorem evX_actU (u : Matrix (Fin m) (Fin m) ℂ) (P : PX m n) (v : Matrix (Fin 
     · simp [actU, Matrix.mul_apply]
     · simp [actU, Matrix.mul_apply, star_sum]
   have e := congrArg (fun f : PX m n →ₐ[ℂ] ℂ => f P) h
-  simp only [AlgHom.comp_apply, coe_aeval_eq_eval] at e
+  simp only [AlgHom.comp_apply] at e
   exact e
 
 def dm (b : Bool) (Y : Matrix (Fin m) (Fin m) ℂ) : Matrix (Fin m) (Fin m) ℂ := if b then -Yᵀ else Y
@@ -203,7 +253,7 @@ theorem kill_charged (Λ : PX m n →ₗ[ℂ] ℂ) (hΛ : ∀ u ∈ unitaryGroup
   set ζ : Fin m → ℂ := fun c => if c = a then z else 1
   have hu : diagonal ζ ∈ unitaryGroup (Fin m) ℂ := by
     rw [mem_unitaryGroup_iff', star_eq_conjTranspose, diagonal_conjTranspose, diagonal_mul_diagonal, ← diagonal_one]
-    congr 1; ext c; simp only [ζ, Pi.star_apply, Pi.mul_apply, Pi.one_apply]; split_ifs
+    congr 1; ext c; simp only [ζ, Pi.star_apply]; split_ifs
     · exact hz
     · simp
   have e := hΛ _ hu (monomial s 1)
@@ -244,8 +294,8 @@ theorem kill_diag (Λ : PX m n →ₗ[ℂ] ℂ) (hΛ : ∀ u ∈ unitaryGroup (F
     · push Not at h
       obtain ⟨a, ha⟩ := h
       rw [kill_charged Λ hΛ s a ha, mul_zero]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [P.as_sum, map_sum, map_sum]
+
+  rw [P.as_sum, map_sum, map_sum]
   refine Finset.sum_eq_zero fun s _ => ?_
   rw [show (monomial s (AddMonoidAlgebra.coeff P s) : PX m n) = AddMonoidAlgebra.coeff P s • monomial s 1 by rw [smul_monomial, smul_eq_mul, mul_one],
     (dY (diagonal d)).map_smul, map_smul, hmon, smul_zero]
@@ -267,15 +317,15 @@ theorem kill_dY (Λ : PX m n →ₗ[ℂ] ℂ) (hΛ : ∀ u ∈ unitaryGroup (Fin
       H₂.IsHermitian ∧ Y = H₁ + Complex.I • H₂ := by
     refine ⟨(1 / 2 : ℂ) • (Y + Yᴴ), ?_, (1 / (2 * Complex.I) : ℂ) • (Y - Yᴴ), ?_, ?_⟩
     · ext i j
-      simp only [IsHermitian, conjTranspose_apply, Matrix.smul_apply, Matrix.add_apply, smul_eq_mul, star_mul',
+      simp only [conjTranspose_apply, Matrix.smul_apply, Matrix.add_apply, smul_eq_mul, star_mul',
         star_add, star_star]
-      rw [show star (1 / 2 : ℂ) = 1 / 2 by simp [Complex.ext_iff]]
+      rw [show star (1 / 2 : ℂ) = 1 / 2 by simp]
       ring
     · ext i j
-      simp only [IsHermitian, conjTranspose_apply, Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul, star_mul',
+      simp only [conjTranspose_apply, Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul, star_mul',
         star_sub, star_star]
       rw [show star (1 / (2 * Complex.I)) = -(1 / (2 * Complex.I)) by
-        simp [Complex.ext_iff, Complex.div_re, Complex.div_im]]
+        simp]
       ring
     · ext i j
       simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul]
@@ -311,7 +361,7 @@ theorem hOp_eq (c : ℝ) (a b : Fin m) (P : PX m n) : hOp (fun _ => true) c a b 
         rw [Finset.sum_eq_single i' (fun c _ hc => by simp [Ne.symm hc]) (by simp)]
         simp
       · simp [Ne.symm ha, ha]
-    · simp only [lf, dm, if_true, and_false, and_true, mul_zero, zero_sub, single_apply, Matrix.neg_apply,
+    · simp only [lf, dm, if_true, and_true, single_apply, Matrix.neg_apply,
         transpose_apply]
       by_cases hb : a' = b
       · subst hb

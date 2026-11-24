@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
+import Mathlib.Algebra.Order.Star.Real
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
 
 @[expose] public section

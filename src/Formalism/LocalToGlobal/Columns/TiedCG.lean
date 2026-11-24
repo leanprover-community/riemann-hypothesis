@@ -52,7 +52,7 @@ def IsExt (z0 : Fin (D.R.N D.R.m) → D.host.E) {R : Type} [CommRing R] (φ : D.
 variable {D}
 
 
-set_option maxHeartbeats 1000000 in
+
 structure ClsPTied (u : D.what₂.Word) where
 
   lev : StepLevel D.host.F D.host.E (sigD D) (gramP D) 1 D.R.f (badG D)
@@ -79,7 +79,7 @@ def sgT (u : D.what₂.Word) : D.what₂.Tau → DomWeight (D.R.N D.R.m - 1) :=
 
 
 
-set_option maxHeartbeats 1000000 in
+
 structure TilTied (u : D.what₂.Word) (A : AtTTied u) (K : ClsPTied u) (P : LvTied u A D.R.m le_rfl) where
   z0 : Fin (D.R.N D.R.m) → D.host.E
   lastCoordinateUniformizerVector_spans_orthogonal_line : ∃ a : D.host.E, z0 = a • zc D
@@ -94,7 +94,7 @@ structure TilTied (u : D.what₂.Word) (A : AtTTied u) (K : ClsPTied u) (P : LvT
 
 
 
-set_option maxHeartbeats 4000000 in
+
 structure TilAd {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTied u A D.R.m le_rfl}
     (Tl : TilTied u A K P) (Km : ClsTied u D.R.m le_rfl) where
   ka : (D.fm u).clsP → Km.lev.U

@@ -1,34 +1,51 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.ClopenRestriction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceRelations
-public import Development.ResolutionOfSingularities.Foundations.Blowup.StrictTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
-public import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReductionProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ComapSubschemeIso
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.PrincipalizationCertificateMonotone
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.PrincipalizationCertificate
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DimensionRecursion
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.DivisorFamilyCenters
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.DivisorReductionSequence
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.AmbientBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.LowerBoundaryData
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.CanonicalPrincipalization
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MaxContactReduction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.FunctorialPrincipalization
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.AmbientEmbedding
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.BlowupSequenceData
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ComapSubschemeIso
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.DivisorFamilyCenters
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IrreducibleComponentsAlongSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.ControlledTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceOfBlowups
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.EmbeddedStrictTransform
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.PrincipalizationCertificateMonotone
+import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -193,7 +210,7 @@ structure PushedBlowupSequenceProperties (hres : FunctorialResolution.Blowup.Str
   support_imageIdeal_subset_ker :
     ∀ (X Y : Scheme.{u}) (f : X ⟶ Y) [AlgebraicGeometry.IsClosedImmersion f]
       (I : X.IdealSheafData),
-      ((imageIdealSheaf f I).support : Set ↥Y) ⊆
+      ((_root_.FunctorialResolution.Blowup.schemeImageIdeal f I).support : Set ↥Y) ⊆
         ((AlgebraicGeometry.Scheme.Hom.ker f).support : Set ↥Y)
   support_preIdeal_subset_boundary :
     ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible → ∀ (j : ℕ) (hj : j < T.boundary.length),
@@ -300,7 +317,7 @@ private theorem divisorReductionShape_of_pullback_then_strictTransforms {T : Mar
 
 private theorem comap_imageIdealSheaf_eq_self_of_isClosedImmersion {X Y : Scheme.{u}} (f : X ⟶ Y)
     [AlgebraicGeometry.IsClosedImmersion f] (I : X.IdealSheafData) :
-    (imageIdealSheaf f I).comap f = I :=
+    (_root_.FunctorialResolution.Blowup.schemeImageIdeal f I).comap f = I :=
   Blowup.comap_map_of_isClosedImmersion f I
 
 private theorem orderAtLeastLocus_comap_iso_eq_empty {X Y : Scheme.{u}} (e : X ≅ Y)
@@ -317,7 +334,7 @@ private theorem exists_principalizationCertificate_ker_of_isClosedImmersion {k :
     (hp : pX = f ≫ pY)
     (hMem : Mem ⊆ ⇑f ⁻¹' MemY)
     (hIY : IY.comap f = I)
-    (hZY : ZY = imageIdealSheaf f Z)
+    (hZY : ZY = _root_.FunctorialResolution.Blowup.schemeImageIdeal f Z)
     (hnz : NonzeroOnComponents I)
     (hcert : PrincipalizationCertificate X pX I m Mem Z) :
     ∃ J : (AlgebraicGeometry.Scheme.Hom.ker f).subscheme.IdealSheafData,
@@ -338,7 +355,7 @@ private theorem exists_principalizationCertificate_ker_of_isClosedImmersion {k :
       IY.comap (AlgebraicGeometry.Scheme.Hom.ker f).subschemeι := by
     rw [← hIY, ← kerSubschemeIso_hom_comp f, Scheme.IdealSheafData.comap_comp]
   refine ⟨I.comap (kerSubschemeIso f).hom,
-    nonzeroOnComponents_comap_iso_hom (kerSubschemeIso f) I hnz, ?_, ?_⟩
+    _root_.FunctorialResolution.EmbeddedResolution.PrincipalizationIsoTransport.nonzeroOnComponents_comap_iso (kerSubschemeIso f) I hnz, ?_, ?_⟩
   · intro x _
     refine ⟨⊤, trivial, ?_⟩
     exact congrArg
@@ -476,7 +493,7 @@ private theorem center_ambientMarkedSeq_eq_imageIdealSheaf (hres : FunctorialRes
         (DivisorReduction.lowerIdealWithoutBlowup T) (DivisorReduction.lowerBoundaryWithoutBlowup T) s hpr).IsMarked
           T.structMap T.ideal T.mult T.boundary) (t : ℕ) :
     (DivisorReduction.pushedMarkedSeq hres blowupPreservesNoetherian T j hj s hpr hmk).center t =
-      imageIdealSheaf (DivisorReduction.embeddingIntoAmbient hres blowupPreservesNoetherian T j hj
+      _root_.FunctorialResolution.Blowup.schemeImageIdeal (DivisorReduction.embeddingIntoAmbient hres blowupPreservesNoetherian T j hj
         (DivisorReduction.lowerIdealWithoutBlowup T) (DivisorReduction.lowerBoundaryWithoutBlowup T) s hpr t)
         (s.center t) :=
   DivisorReduction.ambientBlowupSeq_center_eq_imageIdealSheaf hres blowupPreservesNoetherian
@@ -776,7 +793,7 @@ private theorem center_prependedAmbientSeq_succ_eq_imageIdealSheaf (hres : Funct
           hpr)).IsMarked T.structMap T.ideal T.mult T.boundary) (t : ℕ) :
     (DivisorReduction.prependedPushedMarkedSeq hres blowupPreservesNoetherian T j hj hb s hpr
         hmk).center (t + 1) =
-      imageIdealSheaf (DivisorReduction.embeddingIntoAmbient hres blowupPreservesNoetherian T j hj
+      _root_.FunctorialResolution.Blowup.schemeImageIdeal (DivisorReduction.embeddingIntoAmbient hres blowupPreservesNoetherian T j hj
         (DivisorReduction.lowerIdealAfterBlowup T j hj) (DivisorReduction.lowerBoundaryAfterBlowup T j hj) s hpr t)
         (s.center t) :=
   DivisorReduction.ambientBlowupSeq_center_eq_imageIdealSheaf hres blowupPreservesNoetherian

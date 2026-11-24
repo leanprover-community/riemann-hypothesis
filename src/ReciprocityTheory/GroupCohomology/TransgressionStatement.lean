@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.GroupCohomology.CupConnRightStatement
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import ReciprocityTheory.GroupCohomology.ContinuousContractNth
 
 @[expose] public section
 

@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRatOfForallComplexRingEquivFixedStatement
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.Basis.Defs
+public import Mathlib.LinearAlgebra.DFinsupp
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRatOfForallComplexRingEquivFixed
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
 
 @[expose] public section
 
@@ -33,7 +78,7 @@ private theorem exists_rational_support_subset_of_galois_stable {V κ : Type} [A
   by_cases hfix : ∀ σ : ℂ ≃+* ℂ, ∀ k,
       σ (b.repr ((b.repr w k₀)⁻¹ • w) k) = b.repr ((b.repr w k₀)⁻¹ • w) k
   ·
-    refine ⟨_, hvW, ?_, fun k => GlobalTheory.T.exists_rat_of_forall_complex_ringEquiv_fixed _ (fun σ => hfix σ k), ?_⟩
+    refine ⟨_, hvW, ?_, fun k => _root_.GlobalTheory.ClassFin.exists_rat_of_forall_ringEquiv_fixed _ (fun σ => hfix σ k), ?_⟩
     · intro h0
       rw [h0, map_zero, Finsupp.zero_apply] at hv1
       exact zero_ne_one hv1
@@ -69,14 +114,6 @@ private theorem exists_rational_support_subset_of_galois_stable {V κ : Type} [A
     obtain ⟨u, huW, hu0, hurat, husub⟩ := ih _ hlt _ hdW hd0 rfl
     exact ⟨u, huW, hu0, hurat, husub.trans hsub⟩
 
-theorem exists_rational_support_subset {V κ : Type} [AddCommGroup V] [Module ℂ V]
-    (b : Module.Basis κ ℂ V) (W : Submodule ℂ V)
-    (hW : ∀ σ : ℂ ≃+* ℂ, ∀ w ∈ W, ∃ w' ∈ W, ∀ k, b.repr w' k = σ (b.repr w k)) (n : ℕ) :
-    ∀ w ∈ W, w ≠ 0 → (b.repr w).support.card = n →
-      ∃ u ∈ W, u ≠ 0 ∧ (∀ k, ∃ q : ℚ, b.repr u k = q) ∧
-        (b.repr u).support ⊆ (b.repr w).support :=
-  fun w hw hw0 hcard => exists_rational_support_subset_of_galois_stable b W hW n w hw hw0 hcard
-
 private theorem mem_span_rational_of_galois_stable_of_support_card {V κ : Type} [AddCommGroup V] [Module ℂ V]
     (b : Module.Basis κ ℂ V) (W : Submodule ℂ V)
     (hW : ∀ σ : ℂ ≃+* ℂ, ∀ w ∈ W, ∃ w' ∈ W, ∀ k, b.repr w' k = σ (b.repr w k)) :
@@ -89,7 +126,7 @@ private theorem mem_span_rational_of_galois_stable_of_support_card {V κ : Type}
   by_cases hw0 : w = 0
   · rw [hw0]; exact Submodule.zero_mem _
   obtain ⟨u, huW, hu0, hurat, husub⟩ :=
-    exists_rational_support_subset b W hW n w hw hw0 hcard
+    _root_.GlobalTheory.ClassFin.GaloisDescent.exists_rational_support_subset_of_galois_stable b W hW n w hw hw0 hcard
   have hru : b.repr u ≠ 0 := fun h => hu0 (b.repr.map_eq_zero_iff.mp h)
   obtain ⟨k, hk⟩ := Finsupp.support_nonempty_iff.mpr hru
   have huk : b.repr u k ≠ 0 := Finsupp.mem_support_iff.mp hk

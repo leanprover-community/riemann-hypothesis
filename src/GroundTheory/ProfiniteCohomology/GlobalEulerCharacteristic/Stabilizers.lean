@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.StabilizersFinite
+public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsPerm
+public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.StabilizersDefs
+public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.OrbitInvariants
+public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingMackeyPlaces
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

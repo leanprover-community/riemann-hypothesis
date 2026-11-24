@@ -1,7 +1,12 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Order.CompletePartialOrder
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

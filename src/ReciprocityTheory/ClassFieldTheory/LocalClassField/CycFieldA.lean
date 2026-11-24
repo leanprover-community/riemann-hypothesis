@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.CycDefs
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.GalBasic
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.GabLim
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.NormOpen
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulVbar
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsD
 
 @[expose] public section
 

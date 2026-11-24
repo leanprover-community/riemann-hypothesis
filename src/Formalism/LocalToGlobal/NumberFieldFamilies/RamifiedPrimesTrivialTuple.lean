@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.UnitaryNorms.CharDiv
-public import Formalism.LocalToGlobal.UnitaryNorms.UnrAEPf
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
+public import Formalism.LocalRingCardinality.DataNChoice
+public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 
 @[expose] public section
 

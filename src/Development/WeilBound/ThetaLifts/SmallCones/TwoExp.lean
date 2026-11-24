@@ -1,6 +1,56 @@
 module
 
 public import Development.WeilBound.ThetaLifts.SmallCones.KerPol
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNatMulIntegralOfIsCompact
+import Development.AutomorphicSpectrum.Proofs.MembershipProofs.HeisenbergCommutingOperatorScalar
+import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneAd
+import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
+import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+import Development.WeilBound.ThetaLifts.CTKernel
+import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
 
 @[expose] public section
 
@@ -76,7 +126,7 @@ theorem PG.x_ne (h : PG σ X X₁ H ε) : H.x ≠ 0 := fun h0 => by
 variable (H H') in
 def capAB : Submodule (AE F E) (Ten F E n d) where
   carrier := sumA H H' ∩ sumB H H'
-  zero_mem' := ⟨⟨0, 0, by simp [vv0]⟩, ⟨0, 0, by simp [vv0]⟩⟩
+  zero_mem' := ⟨⟨0, 0, by simp⟩, ⟨0, 0, by simp⟩⟩
   add_mem' := by
     rintro a b ⟨⟨y, z, e⟩, ⟨z', y', e'⟩⟩ ⟨⟨y₁, z₁, e₁⟩, ⟨z₁', y₁', e₁'⟩⟩
     refine ⟨⟨y + y₁, z + z₁, ?_⟩, ⟨z' + z₁', y' + y₁', ?_⟩⟩
@@ -90,15 +140,15 @@ def capAB : Submodule (AE F E) (Ten F E n d) where
 
 theorem cap_xx : incM F (vecMulVec H.x H'.x) ∈ capAB (F := F) H H' := by
   rw [incM_vv]
-  exact ⟨⟨incV F H.x, 0, by simp [vv0]⟩, ⟨incV F H'.x, 0, by simp [vv0]⟩⟩
+  exact ⟨⟨incV F H.x, 0, by simp⟩, ⟨incV F H'.x, 0, by simp⟩⟩
 
 theorem cap_ix (u) : incM F (vecMulVec (H.ι *ᵥ u) H'.x) ∈ capAB (F := F) H H' := by
   rw [incM_vv, ← inc_mulVec]
-  exact ⟨⟨incM F H.ι *ᵥ incV F u, 0, by simp [vv0]⟩, ⟨0, incV F u, by simp [vv0]⟩⟩
+  exact ⟨⟨incM F H.ι *ᵥ incV F u, 0, by simp⟩, ⟨0, incV F u, by simp⟩⟩
 
 theorem cap_xi (u) : incM F (vecMulVec H.x (H'.ι *ᵥ u)) ∈ capAB (F := F) H H' := by
   rw [incM_vv, ← inc_mulVec]
-  exact ⟨⟨0, incV F u, by simp [vv0]⟩, ⟨incM F H'.ι *ᵥ incV F u, 0, by simp [vv0]⟩⟩
+  exact ⟨⟨0, incV F u, by simp⟩, ⟨incM F H'.ι *ᵥ incV F u, 0, by simp⟩⟩
 
 theorem incM_smul (l : E) (v : Matrix (Fin n) (Fin d) E) : incM F (l • v) = inclR (F := F) (AF F) l • incM F v := by
   ext i j
@@ -132,7 +182,7 @@ theorem twoExp_of (hE : ThetaExp) : TwoExp := by
   obtain ⟨C, hC, h1⟩ := (polA p p').exp hE hB hM hM₀ hA'
   obtain ⟨C', hC', h2⟩ := (polB p p').exp hE hB hM hM₀ hB'
   have eA' : ∀ ξ : E, vA H.y H'.y H'.ι (ξ • H.x, 0) = ξ • vecMulVec H.x H'.y := fun ξ => by
-    simp [vv0, vA_apply, Matrix.smul_vecMulVec]
+    simp [vA_apply, Matrix.smul_vecMulVec]
   have eB' : ∀ ξ : E, vB H.y H'.y H.ι (ξ • H'.x, 0) = ξ • vecMulVec H.y H'.x := fun ξ => by
     simp [vB_apply, Matrix.vecMulVec_smul]
   have iA : Function.Injective fun ξ : E => ((ξ • H.x, 0) : (Fin n → E) × (Fin d₁ → E)) := fun a b e =>

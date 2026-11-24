@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ChartConeObjects
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.SegreChartObjects
 
 @[expose] public section
 

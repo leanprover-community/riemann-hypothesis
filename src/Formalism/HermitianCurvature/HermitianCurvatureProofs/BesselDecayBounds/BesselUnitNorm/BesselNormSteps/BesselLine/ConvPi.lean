@@ -1,7 +1,53 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.UnitaryHaarColumns
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.SfiniteMuN
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvGrp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselLine
 
 @[expose] public section
 
@@ -70,22 +116,7 @@ theorem sum_block (F : Fin (2 * r + k + 1) → ℂ) (hF : ∀ l, ¬ inB k r l �
 
 theorem blockW_mul (h₁ h₂ : Matrix (Fin k) (Fin k) ℂ) :
     blockW k r (h₁ * h₂) = blockW k r h₁ * blockW k r h₂ := by
-  ext i j
-  rw [Matrix.mul_apply]
-  by_cases hi : inB k r i
-  · rw [sum_block _ (fun l hl => by rw [blockW_in_out hi hl, zero_mul])]
-    by_cases hj : inB k r j
-    · rw [blockW_in hi hj, Matrix.mul_apply]
-      refine Finset.sum_congr rfl fun m _ => ?_
-      rw [blockW_in hi (eB_inB m), blockW_in (eB_inB m) hj]
-      simp [eB]
-    · rw [blockW_in_out hi hj]
-      exact (Finset.sum_eq_zero fun m _ => by rw [blockW_in_out (eB_inB m) hj, mul_zero]).symm
-  · rw [blockW_out hi, Finset.sum_eq_single i]
-    · rw [blockW_out (h := h₁) hi, if_pos rfl, one_mul, blockW_out (h := h₂) hi]
-    · intro l _ hl
-      rw [blockW_out (h := h₁) hi, if_neg (Ne.symm hl), zero_mul]
-    · simp
+  apply ReciprocityTheory.ChartRestriction.DS.Lap.Base.StandardBasisEmbedding.blockW_mul
 
 theorem hpk_in_col {i m : Fin (2 * r + k + 1)} (hm : inB k r m) : Hpk k r i m = if i = m then 1 else 0 := by
   unfold inB at hm
@@ -103,7 +134,7 @@ private theorem Hpk_apply_wp_eq_ite {i : Fin (2 * r + k + 1)} (hi : ¬ inB k r i
     split_ifs <;> first | rfl | (exfalso; omega)
   · refine ⟨⟨2 * r + k - i.val, by omega⟩, by unfold inB; simp only; omega, 1, one_ne_zero, fun b => ?_⟩
     have hbl := b.isLt
-    simp only [Hpk, Fin.ext_iff, Fin.val_mk]
+    simp only [Hpk, Fin.ext_iff]
     split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem eq_blockW {c : Mx k r} (hc : c ∈ UH (Hpk k r))
@@ -237,7 +268,7 @@ theorem piAll : PiAll := by
     · by_cases hj : inB k r j
       · rw [blockW_in hi hj, Matrix.one_apply]
         unfold inB at hi hj
-        simp only [Fin.ext_iff, Fin.val_mk]
+        simp only [Fin.ext_iff]
         split_ifs <;> first | rfl | (exfalso; omega)
       · rw [blockW_in_out hi hj, if_neg (by rintro rfl; exact hj hi)]
     · rw [blockW_out hi]
@@ -261,11 +292,6 @@ theorem piAll : PiAll := by
     rw [hea]
     exact hiso _ hua x
 
-theorem frame_block {z : Fin (2 * r + k + 1) → ℂ} {g : Mx k r} (hT : 0 < Tz k r z) (hg : IsFrameW k r z g)
-    {a : Mx k r} (ha : a ∈ UWset k r z) :
-    ub (g⁻¹ * a * g) ∈ UJset (allPos k) ∧ a = g * blockW k r (ub (g⁻¹ * a * g)) * g⁻¹ := by
-  exact ub_conj_mem_UJset_and_eq_blockW hT hg ha
-
 theorem piContAll : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (u : Fin k → ℝ)
     (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] (π : Mx k r → (Wp →L[ℂ] Wp)),
     inWb k r z → 0 < Tz k r z → IsHCTypeW k r z u π → ∀ x : Wp, ContinuousOn (fun g => π g x) (UWset k r z) := by
@@ -277,12 +303,12 @@ theorem piContAll : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (u : Fin k
     exact ((continuous_const.matrix_mul continuous_id).matrix_mul continuous_const).matrix_elem
       (eB k r m) (eB k r m')
   have hmaps : Set.MapsTo (fun a : Mx k r => ub (g⁻¹ * a * g)) (UWset k r z) (UJset (allPos k)) :=
-    fun a ha => (frame_block hT hg ha).1
+    fun a ha => (_root_.PI.WBL.Cv.ub_conj_mem_UJset_and_eq_blockW hT hg ha).1
   have h1 : ContinuousOn (fun a => π (g * blockW k r (ub (g⁻¹ * a * g)) * g⁻¹) x) (UWset k r z) :=
     (hcont x).comp hF.continuousOn hmaps
   refine h1.congr fun a ha => ?_
   simp only
-  rw [← (frame_block hT hg ha).2]
+  rw [← (_root_.PI.WBL.Cv.ub_conj_mem_UJset_and_eq_blockW hT hg ha).2]
 
 end PiRep
 

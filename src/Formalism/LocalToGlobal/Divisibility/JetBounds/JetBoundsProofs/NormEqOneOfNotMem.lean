@@ -1,9 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.Divisibility.JetBounds.IsExpansion
-public import Formalism.LocalToGlobal.Divisibility.JetBounds.Statement
+public import Formalism.QuotientMetricDivisors.Statement
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.VwEqZeroOfNotMem
+import Formalism.GaussJetBounds.StatementH
+import Formalism.MirabolicMackeyTheory.StatementT
 
 @[expose] public section
 

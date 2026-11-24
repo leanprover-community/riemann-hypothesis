@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.GroupTheory.DoubleCoset
+public import Mathlib.Topology.Algebra.Group.Defs
+public import Mathlib.Topology.Separation.Hausdorff
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Group.OpenMapping
+import Mathlib.Topology.Baire.LocallyCompactRegular
+public import Mathlib.Topology.Algebra.Group.ContinuousInv
 
 @[expose] public section
 

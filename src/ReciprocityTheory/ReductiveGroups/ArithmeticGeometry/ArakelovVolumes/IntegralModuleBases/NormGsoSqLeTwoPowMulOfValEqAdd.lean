@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.ReducedBases.LatticeReduction
+public import Mathlib.Analysis.InnerProductSpace.GramMatrix
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReducedBases.TBInjective
 
 @[expose] public section

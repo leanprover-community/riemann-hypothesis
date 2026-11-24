@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsDivisorPreimageNull
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsParamImageNull
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts

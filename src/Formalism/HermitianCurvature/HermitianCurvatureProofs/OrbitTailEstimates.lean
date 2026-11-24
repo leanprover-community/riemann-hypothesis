@@ -1,10 +1,55 @@
 module
 
 public import Formalism.HermitianCurvature.StatementG
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionCriticalPoints
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AffineChangeOfVariables
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralConvergesAbs
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionCriticalPoints
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 
 @[expose] public section
 
@@ -27,7 +72,6 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensiona
 theorem integrable_maxpow (ν : Measure E) [ν.IsAddHaarMeasure] (B : ℝ)
     (hB : (Module.finrank ℝ E : ℝ) < B) : Integrable (fun q : E => (max 1 ‖q‖) ^ (-B)) ν := by
   have h0 : Integrable (fun q : E => (1 + ‖q‖) ^ (-B)) ν := integrable_one_add_norm hB
-  have hB0 : 0 ≤ B := le_trans (Nat.cast_nonneg _) hB.le
   refine Integrable.mono' (h0.const_mul (2 ^ B)) ?_ (Filter.Eventually.of_forall fun q => ?_)
   · exact (Continuous.rpow_const (by fun_prop) (fun q => Or.inl (by positivity))).aestronglyMeasurable
   · rw [Real.norm_of_nonneg (by positivity)]
@@ -98,11 +142,9 @@ theorem norm_orbM_ge (m : ℕ) (t c : ℂ) (p : BlockCoord (m + 1)) : ‖t‖ �
     exact isStrictUpper_strictUpper _
   have h := (shape_of_matrix m t (c + p.1 ⬝ᵥ (wMat (m + 1) *ᵥ (t • p.2.2))) (Xof t p.2.1) (t • p.2.2)
     (rhoOf t p.1 p.2.1) hX).2.1 0 ⟨m, by omega⟩ (by simp)
-  have e0 : orbM (m + 1) t c p = Mcoord t (Xof t p.2.1) (t • p.2.2) (rhoOf t p.1 p.2.1)
-      (c + p.1 ⬝ᵥ (wMat (m + 1) *ᵥ (t • p.2.2))) := matrix_entries (m + 1) t c p
-  have e : orbM (m + 1) t c p 0 ⟨m, by omega⟩ = t := by
-    rw [e0]; exact h
-  calc ‖t‖ = ‖orbM (m + 1) t c p 0 ⟨m, by omega⟩‖ := by rw [e]
+  calc ‖t‖ = ‖orbM (m + 1) t c p 0 ⟨m, by omega⟩‖ := by
+        rw [(show orbM (m + 1) t c p = Mcoord t (Xof t p.2.1) (t • p.2.2) (rhoOf t p.1 p.2.1) (c + p.1 ⬝ᵥ (wMat (m + 1) *ᵥ (t • p.2.2))) from matrix_entries (m + 1) t c p)]
+        exact (congrArg norm h).symm
     _ ≤ _ := norm_entry_le _ _ _
 
 theorem detM_orbM (n : ℕ) (t c : ℂ) (p : BlockCoord n) :
@@ -198,19 +240,13 @@ theorem tailStepOfBound : TailStepOfBound := by
   refine ⟨C1 * C2, ?_⟩
   intro V _ _ _ Φ A K ε t c hε hε1 hA ht ht1 hΦ
   have ht0 : 0 < ‖t‖ := norm_pos_iff.2 ht
-  have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   set τ : ℝ := ‖t‖ ^ (-ε) with hτ
   have hτ1 : 1 ≤ τ := Real.one_le_rpow_of_pos_of_le_one_of_nonpos ht0 ht1 (by linarith)
   have hτ0 : 0 < τ := by linarith
   have hD := (hC2 V Φ _ _ τ hτ1 hΦ).2
   have hD' : DerivBound 0 {(wMat (m + 1)).det * (c * t ^ (m + 1))}
       (fun Z => (C2 * K) * min 1 (‖Z‖ ^ (-A))) (cutPhiC τ Φ) := by
-    intro Z hZ
-    obtain ⟨h1, h2⟩ := hD Z hZ
-    refine ⟨h1, fun j hj => ?_⟩
-    have h3 : ‖iteratedFDeriv ℝ j (cutPhiC τ Φ) Z‖ ≤ C2 * (K * min 1 (‖Z‖ ^ (-A))) := h2 j hj
-    show ‖iteratedFDeriv ℝ j (cutPhiC τ Φ) Z‖ ≤ C2 * K * min 1 (‖Z‖ ^ (-A))
-    rwa [mul_assoc]
+    simpa only [mul_assoc] using hD
   have hvan : ∀ p : BlockCoord (m + 1), ‖orbM (m + 1) t c p‖ < τ →
       cutPhiC τ Φ (orbM (m + 1) t c p) = 0 := by
     intro p hp
@@ -251,9 +287,7 @@ theorem tailStepOfBound : TailStepOfBound := by
     _ = C1 * C2 * K * ‖t‖ := by rw [pow_arith m _ ht0]; ring
 
 theorem coef_nonneg {x c P : ℝ} (hx : 0 ≤ x) (hP : 0 < P) (h : x ≤ c * P) : 0 ≤ c := by
-  by_contra hneg
-  have : c * P < 0 := mul_neg_of_neg_of_pos (not_le.1 hneg) hP
-  linarith
+  exact nonneg_of_mul_nonneg_right (by simpa [mul_comm] using le_trans hx h) hP
 
 def longM (d : ℕ) (z : ℂ) (v : UT d → ℂ) : Mat d := ptLong d z * G.upper v
 
@@ -290,12 +324,11 @@ theorem norm_omLong_le (m : ℕ) (β : ℂ) (r : ℝ) (hr : 0 < r) {V : Type} [N
     (Filter.Eventually.of_forall fun v => ?_)
   rw [norm_smul, (additive_character_psi β _ 0).2.1, one_mul]
   refine (hb v).trans (mul_le_mul_of_nonneg_left ?_ hK)
-  have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   calc min 1 (‖longM (m + 1 + 1) z v‖ ^ (-A)) ≤ (max 1 ‖longM (m + 1 + 1) z v‖) ^ (-A) := min_le_maxpow A _
     _ ≤ (max 1 ‖longM (m + 1 + 1) z v‖) ^ (-(((m : ℝ) + 1) * ((m : ℝ) + 4) + 1)) :=
         Real.rpow_le_rpow_of_exponent_le (le_max_left _ _) (by linarith)
     _ ≤ _ := by
-        refine Real.rpow_le_rpow_of_nonpos (by positivity) ?_ (by nlinarith)
+        refine Real.rpow_le_rpow_of_nonpos (by positivity) ?_ (by nlinarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ (m : ℝ))])
         refine max_le_max le_rfl ?_
         refine le_trans ?_ (norm_long_le z v (longM (m + 1 + 1) z v) rfl)
         rw [norm_smul, norm_smul, Real.norm_of_nonneg hr.le]
@@ -321,15 +354,12 @@ theorem germLargeT : GermLargeT := by
   set r : ℝ := min 1 r0 with hr
   set R : ℝ := max 1 R0 with hR
   have hrpos : 0 < r := lt_min one_pos hr0
-  have hRpos : 0 < R := lt_of_lt_of_le one_pos (le_max_left _ _)
   set C1 : ℝ := ∫ v : UT (m + 1 + 1) → ℂ,
       (max 1 ‖r • v‖) ^ (-(((m : ℝ) + 1) * ((m : ℝ) + 4) + 1)) ∂(muPi β (UT (m + 1 + 1))) with hC1
-  have hC1pos : 0 ≤ C1 := integral_nonneg fun v => by positivity
   refine ⟨CT * (t₀ ^ (3 * m + 4))⁻¹ + ((m : ℝ) + 2) * R ^ ((m + 1) ^ 2) * C1 / t₀, ?_⟩
   intro V _ _ _ Φ A K hA hΦ t c ht hD
   have ht0 : 0 < ‖t‖ := ht₀.trans_le ht
   have htne : t ≠ 0 := norm_pos_iff.1 ht0
-  have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   have hbZ : ∀ Z : Mat (m + 1 + 1), detM Z = (wMat (m + 1)).det * (c * t ^ (m + 1)) →
       ‖Φ Z‖ ≤ K * min 1 (‖Z‖ ^ (-A)) := by
     intro Z hZ
@@ -376,17 +406,13 @@ theorem germLargeT : GermLargeT := by
       have h1 : ‖z‖ < r := not_le.1 hlt
       have h2 : ‖z‖ ≤ 1 := h1.le.trans (min_le_left _ _)
       have h3 : ‖z‖ ^ (m + 2) ≤ ‖z‖ := pow_le_of_le_one (norm_nonneg _) h2 (by omega)
-      have h4 := hr0' _ hD
-      have h5 : r ≤ r0 := min_le_right _ _
-      linarith
+      linarith [hr0' _ hD, show r ≤ r0 from min_le_right _ _]
     have hzR : ‖z‖ ≤ R := by
       by_contra hlt
       have h1 : R < ‖z‖ := not_le.1 hlt
       have h2 : 1 ≤ ‖z‖ := (le_max_left _ _).trans h1.le
       have h3 : ‖z‖ ≤ ‖z‖ ^ (m + 2) := le_self_pow₀ h2 (by omega)
-      have h4 := hR0 _ hD
-      have h5 : R0 ≤ R := le_max_right _ _
-      linarith
+      linarith [hR0 _ hD, show R0 ≤ R from le_max_right _ _]
     rw [norm_smul, norm_mul, norm_mul, (additive_character_psi β _ 0).2.1, norm_one, mul_one, mul_one, Complex.norm_real,
       Real.norm_of_nonneg (by positivity)]
     refine mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) hzR _) ?_ (norm_nonneg _) (by positivity)
@@ -424,11 +450,5 @@ theorem germLargeT : GermLargeT := by
 end Formalism.FourierDecayAlt.P.OrbitTailEstimates
 
 namespace Formalism.FourierDecayAlt.P
-
-theorem tailBound_statement : Formalism.FourierDecayAlt.G.TailBound := OrbitTailEstimates.tailBound
-
-theorem tail_estimate_of_bound : Formalism.FourierDecayAlt.G.TailStepOfBound := OrbitTailEstimates.tailStepOfBound
-
-theorem germ_large_parameter : Formalism.FourierDecayAlt.G.GermLargeT := OrbitTailEstimates.germLargeT
 
 end Formalism.FourierDecayAlt.P

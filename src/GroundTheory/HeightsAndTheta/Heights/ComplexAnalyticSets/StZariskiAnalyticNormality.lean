@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
+public import Mathlib.Analysis.Analytic.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Order.Filter.Germ.Basic
+public import Mathlib.Analysis.Analytic.Constructions
 
 @[expose] public section
 

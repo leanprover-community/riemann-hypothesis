@@ -1,15 +1,10 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChangeOfModel
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfModel
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PIsomInvariance
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogRenameCoordPow
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.QuotientMapImageZInjective
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZIff
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsIntegralLogNormRat
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PConsequences
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
 
 @[expose] public section

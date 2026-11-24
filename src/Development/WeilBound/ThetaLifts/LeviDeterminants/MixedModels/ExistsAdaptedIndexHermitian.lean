@@ -1,7 +1,50 @@
 module
 
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneC
+public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
+public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.AddCharHalfTraceTensorLatticeHeisenbergCocycle
+public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.EventuallySelfDualLatticeIndicatorIsVacuum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalDarbouxCoordinatesTensorHermitian
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.AdaptC
 
 @[expose] public section
 
@@ -17,7 +60,7 @@ namespace PositivityTheory.Mix
 
 open Adapt
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_adapted_index_hermitian : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (r s r' s' : ℕ), B.IsGood σ → X.IsHerm σ B r s → W.IsSkew σ B r' s' →
     ∀ (n₁ : ℕ) (X₁ : Spc F E n₁) (H : Plane E n n₁) (j₀ j₁ : ℕ) (M₁ : Model σ X₁ W) (r₁ s₁ : ℕ), X₁.IsHerm σ B r₁ s₁ →
@@ -59,27 +102,28 @@ theorem exists_adapted_index_hermitian : ∀ (F E : Type) [Field F] [NumberField
       hTens_plane_left]
     have hc := conj_pair (cA σ) (cA_cA hB) (J := incM F W.J) (η := -1) (fun i j => by
       show cA σ (inclR (F := F) (AF F) _) = -1 * inclR (F := F) (AF F) _
-      rw [GlobalTheory.VacIndic.cA_inclR, hW.skew, map_neg, neg_one_mul]) (b z') ((incM F Q * z) (.inr 0))
+      rw [Tw.VacIndic.cA_inclR, hW.skew, map_neg, neg_one_mul]) (b z') ((incM F Q * z) (.inr 0))
     have e1 : ∀ z z', b z ⬝ᵥ D z' = ∑ i, ∑ k, b z i * incM F W.J i k * cA σ ((incM F Q * z') (.inr 0) k) := fun z z' => by
       simp only [dotProduct, D, Finset.mul_sum, mul_assoc]
     rw [e1, e1, hc]
     simp only [b, π]
     ring
-  let ε : Fin n × Fin d ≃ (Fin d × Fin 2) ⊕ Fin n₁ × Fin d := Fintype.equivOfCardEq (by simp [hH.rank]; ring)
+  let ε : Fin n × Fin d ≃ (Fin d × Fin 2) ⊕ Fin n₁ × Fin d :=
+    Fintype.equivOfCardEq (by simp only [Fintype.card_prod, Fintype.card_sum, Fintype.card_fin, hH.rank]; ring)
   let β := Module.finBasisOfFinrankEq F E hB.cm.2.2.1
   let βA := Algebra.TensorProduct.basis (AF F) β
   let Tr := Algebra.trace (AF F) (AE F E)
   let p : Matrix (Fin n) (Fin d) (AE F E) → Fin d × Fin 2 → AF F := fun z k => βA.repr (b z k.1) k.2
   let q : Matrix (Fin n) (Fin d) (AE F E) → Fin d × Fin 2 → AF F := fun z k => -Tr (βA k.2 * D z k.1)
   have hpq : ∀ z z', p z ⬝ᵥ q z' = -Tr (b z ⬝ᵥ D z') := fun z z' => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, Fintype.sum_prod_type, map_sum, ← Finset.sum_neg_distrib]
+
+    simp only [dotProduct, Fintype.sum_prod_type, map_sum, ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_rhs => rw [← βA.sum_repr (b z k), Finset.sum_mul, map_sum, ← Finset.sum_neg_distrib]
+
+    conv_rhs => rw [← βA.sum_repr (b z k), Finset.sum_mul, map_sum, ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [smul_mul_assoc, map_smul, smul_eq_mul, ← mul_neg]
-  have hTr : ∀ z, Tr (cA σ z) = Tr z := GlobalTheory.VacCocycle.trace_conj (cA σ) (cA_cA hB)
+  have hTr : ∀ z, Tr (cA σ z) = Tr z := Tw.VacCocycle.trace_conj (cA σ) (cA_cA hB)
   have hb : IsLinearMap (AF F) b := ⟨fun z z' => by simp only [b, Matrix.mul_add]; rfl, fun c z => by
     simp only [b, Matrix.mul_smul]; rfl⟩
   have hD : IsLinearMap (AF F) D := ⟨fun z z' => funext fun k => by
@@ -91,7 +135,9 @@ theorem exists_adapted_index_hermitian : ∀ (F E : Type) [Field F] [NumberField
     { toFun := fun z => (glue ε (p z) (M₁.co.e (π z)).1, glue ε (q z) (M₁.co.e (π z)).2)
       map_add' := fun z z' => by
         rw [Prod.mk_add_mk, glue_add, glue_add, hπ.map_add (f := _), map_add (f := _)]
-        congr 2 <;> funext k <;> simp [p, q, hb.map_add (f := _), hD.map_add (f := _), mul_add, add_comm]
+        congr 2 <;> funext k
+        · simp only [p, hb.map_add (f := _), Pi.add_apply, map_add, Finsupp.coe_add]
+        · simp only [q, hD.map_add (f := _), Pi.add_apply, mul_add, map_add, neg_add]
       map_smul' := fun c z => by
         rw [Prod.smul_mk, glue_smul, glue_smul, hπ.map_smul, map_smul]
         congr 2 <;> funext k <;> simp [p, q, hb.map_smul, hD.map_smul] }
@@ -118,8 +164,8 @@ theorem exists_adapted_index_hermitian : ∀ (F E : Type) [Field F] [NumberField
     have hy : b (incM F x) = fun k => inclR (F := F) (AF F) ((Q * x) (.inr 1) k) := by simp only [b, ← incM_mul]; rfl
     have hy' : D (incM F x) = fun k => inclR (F := F) (AF F) (∑ l, W.J k l * σ ((Q * x) (.inr 0) l)) := by
       funext k
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [D, ← incM_mul, map_sum, map_mul]
+
+      simp only [D, ← incM_mul, map_sum, map_mul]
       rfl
     refine ⟨glue ε (fun k => β.repr ((Q * x) (.inr 1) k.1) k.2) u,
       glue ε (fun k => -Algebra.trace F E (β k.2 * ∑ l, W.J k.1 l * σ ((Q * x) (.inr 0) l))) w, ?_⟩
@@ -129,7 +175,7 @@ theorem exists_adapted_index_hermitian : ∀ (F E : Type) [Field F] [NumberField
       show βA.repr ((1 : AF F) ⊗ₜ[F] (Q * x) (.inr 1) k.1) k.2 = _
       simp [βA, Algebra.TensorProduct.basis_repr_tmul]
     · simp only [q, hy']
-      rw [map_neg, ← GlobalTheory.VacIndic.trace_inclR, map_mul (inclR (F := F) (AF F)), Algebra.TensorProduct.basis_apply]
+      rw [map_neg, ← Tw.VacIndic.trace_inclR, map_mul (inclR (F := F) (AF F)), Algebra.TensorProduct.basis_apply]
       rfl
   · have e := mul_iota hA z
     have h1 : p (incM F H.ι * z) = 0 := funext fun k => by simp [p, b, e, what₂, Sum.elim]

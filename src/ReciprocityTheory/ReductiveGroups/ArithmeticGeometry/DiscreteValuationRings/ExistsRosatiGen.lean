@@ -1,11 +1,15 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.WchartLePreimage
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalB
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.RosatiAdj
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalB
+public import Mathlib.Topology.Algebra.Order.Archimedean
 
 @[expose] public section
 
@@ -44,13 +48,11 @@ lemma over_sec {Y B : Over (Spec (CommRingCat.of V))} (q : 𝟙_ (Over (Spec (Co
   rw [Category.assoc, Over.w f]
   first
   | simpa using Over.w q
-  | exact Over.w q
 
 lemma rosatiφ_over {S : Scheme.{0}} (A : Over S) [GrpObj A] (f g : A ⟶ A) (k : Fin 6) :
     ∃ q : A ⊗ A ⟶ A, rosatiφ A f g k = q.left := by
   fin_cases k <;> first
   | exact ⟨_, rfl⟩
-  | (simp [rosatiφ]; exact ⟨_, rfl⟩)
 
 lemma sumElim_sec {Y : Scheme.{0}} {Ix Ix' : Type} {f : Ix → (Spec (CommRingCat.of V) ⟶ Y)}
     {g : Ix' → (Spec (CommRingCat.of V) ⟶ Y)} {s : Y ⟶ Spec (CommRingCat.of V)}
@@ -162,14 +164,12 @@ lemma gram_int_pos (hQ : IsQ D.toPre ϖ Q) {d : ℕ} (b : Module.Basis (Fin d) �
   have lin : ∀ (a : D.toPre.X) (c : Fin d → ℤ),
       bOf D.toPre Q a (∑ i, c i • b i) = ∑ i, c i * bOf D.toPre Q a (b i) := by
     intro a c
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← bHom_apply hϖ D hQ, map_sum]
+
+    rw [← bHom_apply hϖ D hQ, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_zsmul, bHom_apply hϖ D hQ]
     first
     | rfl
-    | simp
-    | exact zsmul_eq_mul _ _
   have hexp : bOf D.toPre Q (∑ i, m i • b i) (∑ i, m i • b i) =
       ∑ i, ∑ j, m i * bOf D.toPre Q (b i) (b j) * m j := by
     rw [lin]

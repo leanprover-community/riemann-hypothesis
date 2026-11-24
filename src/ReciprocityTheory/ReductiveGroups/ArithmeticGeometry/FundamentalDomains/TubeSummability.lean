@@ -1,8 +1,14 @@
 module
 
+public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.AdmissibleHermitianColumns
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivity
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.EmbeddingHermitianPairs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMeanContinuity
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourIndep
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourBasic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TransvectionPeriodicity
 
 @[expose] public section
 
@@ -20,7 +26,7 @@ lemma summable_exp_abs (c : ℝ) (hc : 0 < c) :
   have h1 : Summable (fun m : ℤ => Real.exp (-c * |(m : ℝ)|)) := by
     apply Summable.of_nat_of_neg
     · refine hgeo.congr fun m => ?_
-      simp only [Function.comp, Int.cast_natCast, Nat.abs_cast]
+      simp only [Int.cast_natCast, Nat.abs_cast]
       rw [← Real.exp_nat_mul]
       ring_nf
     · refine hgeo.congr fun m => ?_

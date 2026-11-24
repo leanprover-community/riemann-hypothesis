@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionCountDropFiltKernelSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -53,8 +53,8 @@ theorem idealMod_le (j : Fin (N + 1)) (b : ℕ) (I : Chart x) {i : Fin (N + 1)} 
   have hK : primeOf (S := S) x ⊔ zeroIdeal (twistSys S x (b : ℤ)) (x j ^ b) ≤ K := by
     refine sup_le (fun f hf => ?_) (Ideal.span_le.mpr ?_)
     · change aeval (fun l => x l / x i) f ∈ M
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← sum_homogeneousComponent f, map_sum]
+
+      rw [← sum_homogeneousComponent f, map_sum]
       convert M.zero_mem
       refine Finset.sum_eq_zero fun d _ => ?_
       rw [aeval_div_of_isHomogeneous (homogeneousComponent_isHomogeneous d f) i,

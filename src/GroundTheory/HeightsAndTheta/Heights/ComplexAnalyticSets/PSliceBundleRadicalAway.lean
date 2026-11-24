@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceBundleRadicalAway
+public import Mathlib.RingTheory.Localization.Away.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Ideal.Quotient.Nilpotent
 
 @[expose] public section
 
@@ -78,12 +122,12 @@ def backMap : MvPolynomial (Fin d × Fin n) (Base J q k) →+* Tot J d q k :=
   eval₂Hom (baseToTot J d q k) fun ij => toTot J d q k (C (X ij))
 
 theorem backMap_rowForm (i : Fin d) : backMap J d q k (rowForm J d q k i) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [rowForm, map_sum, map_mul, backMap, eval₂Hom_X', eval₂Hom_C, baseToTot_toBase]
+
+  simp only [rowForm, map_sum, map_mul, backMap, eval₂Hom_X', eval₂Hom_C, baseToTot_toBase]
   rw [← toTot_eq_zero J d q k (x := ∑ j, C (X (i, j)) * (X j - C (C (q j))))
     (Ideal.mem_sup_right (Ideal.subset_span ⟨i, rfl⟩))]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, map_mul, map_sub]
+
+  simp [map_sum, map_mul, map_sub]
 
 theorem backMap_comp_solveMap : (backMap J d q k).comp (solveMap J d q k) = toTot J d q k := by
   have hc : (backMap J d q k).comp (coeffMap J d q k) = (toTot J d q k).comp C := by
@@ -124,8 +168,8 @@ theorem solveMap_gen (i : Fin d) :
     rw [map_mul, this]
     congr 1
     rw [solveMap, eval₂Hom_C, coeffMap, eval₂Hom_X']
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_congr rfl fun j _ => h j]
+
+  rw [map_sum, Finset.sum_congr rfl fun j _ => h j]
   simp only [sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq',
     Finset.mem_univ, if_true]
   rw [← rowForm, mul_assoc, mul_comm (rowForm J d q k i), ← mul_assoc, ← map_mul]

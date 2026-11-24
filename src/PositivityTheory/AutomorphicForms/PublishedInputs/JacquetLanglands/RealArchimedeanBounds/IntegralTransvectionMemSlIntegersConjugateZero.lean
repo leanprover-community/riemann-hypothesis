@@ -3,7 +3,8 @@ module
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.RealArchimedeanBounds.ATrans
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.KLevTop
 public import GroundTheory.AutomorphicForms.StrongApproximationSLDense
-public import GroundTheory.GlobalFields.Adele.Topology
+import GroundTheory.GlobalFields.Adele.Discrete
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 
 @[expose] public section
 

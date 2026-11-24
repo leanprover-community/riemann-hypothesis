@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFHoriz
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

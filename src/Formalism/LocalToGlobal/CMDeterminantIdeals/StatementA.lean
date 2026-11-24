@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 
 @[expose] public section
 

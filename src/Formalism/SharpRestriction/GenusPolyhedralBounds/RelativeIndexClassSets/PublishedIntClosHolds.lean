@@ -4,6 +4,47 @@ public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClas
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.RestrictionEqZeroIffMemVanishingFiltration
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.HasseKpAlgebraMapKl
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,6 +56,14 @@ namespace Formalism.MainNotions.Gaps.EtaleWeightGaps
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
 
+/-- If `O` is a discrete valuation ring with fraction field `K` of characteristic zero and `A` is a
+reduced finite-dimensional `K`-algebra, then the integral closure of `O` in `A` is finite over `O`
+and its localization at each maximal ideal is a discrete valuation ring.
+[The Stacks project authors, *Stacks Project* (Tags 032L and 09IG)][stacks-project].
+This is a special case of these two tags, after splitting `A` into a product of fields; the last step,
+from a Dedekind domain to its localizations at maximal ideals being discrete valuation rings, is standard
+and is not part of Tag 09IG.
+This reference is a reader's proposal and has not been checked by a mathematician. -/
 def PublishedIntClos : Prop :=
   ∀ (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K]
     [IsFractionRing O K] [CharZero K] [CommRing A] [Algebra K A] [Algebra O A] [IsScalarTower O K A]
@@ -24,12 +73,11 @@ def PublishedIntClos : Prop :=
 private theorem inj_lemma (K A : Type) [Field K] [CommRing A] [Algebra K A] [FiniteDimensional K A]
     [IsReduced A] (x : A) (hx : ∀ M : MaximalSpectrum A, x ∈ M.asIdeal) : x = 0 := by
   haveI : IsArtinianRing A := IsArtinianRing.of_finite K A
-  have h : IsNilpotent x := by
-    rw [nilpotent_iff_mem_prime]
-    intro J hJ
-    haveI := hJ
-    exact hx ⟨J, IsArtinianRing.isMaximal_of_isPrime J⟩
-  exact h.eq_zero
+  apply IsNilpotent.eq_zero
+  rw [nilpotent_iff_mem_prime]
+  intro J hJ
+  haveI := hJ
+  exact hx ⟨J, IsArtinianRing.isMaximal_of_isPrime J⟩
 
 private theorem idem_lemma_2 (K A : Type) [Field K] [CommRing A] [Algebra K A] [FiniteDimensional K A]
     (I : MaximalSpectrum A) : ∃ e : A, Ideal.Quotient.mk I.asIdeal e = 1 ∧
@@ -56,11 +104,9 @@ private theorem idem_lemma_2 (K A : Type) [Field K] [CommRing A] [Algebra K A] [
     exact Finset.prod_eq_one fun J hJ => hbI J (Finset.mem_filter.mp hJ).2
   · intro J hJ
     rw [Ideal.Quotient.eq_zero_iff_mem]
-    have hmem : J ∈ Finset.univ.filter (fun J => J ≠ I) :=
-      Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩
+    have hmem : J ∈ Finset.univ.filter (fun J => J ≠ I) := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩
     obtain ⟨c, hc⟩ := Finset.dvd_prod_of_mem b hmem
-    rw [hc]
-    exact Ideal.mul_mem_right _ _ (hbJ J hJ)
+    simpa [hc] using Ideal.mul_mem_right _ _ (hbJ J hJ)
 
 private theorem fld_lemma_3 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K]
     [Algebra O K] [IsFractionRing O K] [CharZero K] [CommRing A] [Algebra K A] [Algebra O A]
@@ -83,7 +129,7 @@ private theorem fld_lemma_3 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscrete
   exact hinj (congrArg Subtype.val hab)
 
 
-set_option maxHeartbeats 800000 in
+
 private theorem dvr_lemma_4 (Cr Dr : Type) [CommRing Cr] [CommRing Dr] [IsDomain Dr] [IsDedekindDomain Dr]
     (hD : ¬IsField Dr) (φ : Cr →+* Dr) (hφ : Function.Surjective φ) (e : Cr) (he1 : φ e = 1)
     (he0 : ∀ c, φ c = 0 → e * c = 0) (Pm : Ideal Cr) [Pm.IsMaximal] (heP : e ∉ Pm) :
@@ -188,7 +234,7 @@ private theorem fin_lemma_5 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscrete
   exact Module.Finite.of_injective ψ hψ
 
 
-set_option maxHeartbeats 800000 in
+
 private theorem pt_lemma_6 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K]
     [Algebra O K] [IsFractionRing O K] [CharZero K] [CommRing A] [Algebra K A] [Algebra O A]
     [IsScalarTower O K A] [FiniteDimensional K A] [IsReduced A] (ζ : Pts O A) : IsDVRAt ζ := by
@@ -226,8 +272,8 @@ private theorem pt_lemma_6 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteV
     rw [← sub_eq_zero]
     apply inj_lemma K A
     intro M
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_sum, map_one, Finset.sum_eq_single M]
+
+    rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_sum, map_one, Finset.sum_eq_single M]
     · rw [hE1, sub_self]
     · intro J _ hJ
       exact hE0 J M (Ne.symm hJ)
@@ -276,8 +322,7 @@ private theorem pt_lemma_6 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteV
   exact ⟨h1, h2⟩
 
 theorem integralClosure_dvr' : PublishedIntClos := by
-  intro O K A _ _ _ _ _ _ _ _ _ _ _ _ _
-  exact ⟨fin_lemma_5 O K A, fun ζ => pt_lemma_6 O K A ζ⟩
+  exact fun (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] [CharZero K] [CommRing A] [Algebra K A] [Algebra O A] [IsScalarTower O K A] [FiniteDimensional K A] [IsReduced A] => ⟨fin_lemma_5 O K A, pt_lemma_6 O K A⟩
 
 def unif (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) : X.Ol la :=
   Classical.choose (IsDiscreteValuationRing.exists_irreducible (X.Ol la))

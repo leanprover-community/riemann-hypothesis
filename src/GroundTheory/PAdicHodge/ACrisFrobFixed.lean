@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.PAdicHodge.ACrisBdRGalois
 public import GroundTheory.PAdicHodge.UnramifiedClosure
+public import GroundTheory.PAdicHodge.ACrisBdR
+public import GroundTheory.PAdicHodge.ACrisBdRInj
+public import GroundTheory.PAdicHodge.ACrisGalois
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -86,7 +88,7 @@ theorem of_eq_algebraMap (t : ACrisZero K p) :
   rfl
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_eq_add_p_pow_mul (k : ℕ) (y : ACris K p) :
     ∃ yk : ACrisZero K p, ∃ z : ACris K p,
       y = algebraMap (ACrisZero K p) (ACris K p) yk + (p : ACris K p) ^ k * z := by
@@ -105,7 +107,7 @@ theorem exists_eq_add_p_pow_mul (k : ℕ) (y : ACris K p) :
   exact (add_sub_cancel _ _).symm
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_phi_eq (y : ACris K p) :
     ∃ w : AInf K p, ∃ z : ACris K p,
       phi (K := K) (p := p) y = algebraMap (AInf K p) (ACris K p) w + (p : ACris K p) * z := by
@@ -135,7 +137,7 @@ theorem phi_iterate_algebraMap (n : ℕ) (w : AInf K p) :
     rw [Function.iterate_succ_apply', ih, phi_algebraMap, pow_succ', RingAut.mul_apply]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_phi_iterate_eq (n : ℕ) (y : ACris K p) :
     ∃ w : AInf K p, ∃ z : ACris K p,
       (phi (K := K) (p := p))^[n] y = algebraMap (AInf K p) (ACris K p) w + (p : ACris K p) ^ n * z := by
@@ -277,8 +279,8 @@ theorem exists_theta_approx_of_phi_iterate {y : ACris ℂ_[p] p} {N : ℕ} (hN :
   have hp1 : ‖(p : ℂ_[p])‖ ≤ 1 := norm_natCast_p_lt_one.le
   have hcoe : ((∑ i ∈ Finset.range m, (p : PadicAlgCl p) ^ i * u i : PadicAlgCl p) : ℂ_[p]) =
       ∑ i ∈ Finset.range m, (p : ℂ_[p]) ^ i * (u i : ℂ_[p]) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [PadicComplex.coe_eq, map_sum, map_mul, map_pow, map_natCast]
+
+    simp only [PadicComplex.coe_eq, map_sum, map_mul, map_pow, map_natCast]
   rw [he, hcoe]
   have hdiff : ∑ i ∈ Finset.range m, (p : ℂ_[p]) ^ i * (c i : ℂ_[p]) ^ p ^ (N * J) +
       (p : ℂ_[p]) ^ m * (e : ℂ_[p]) - ∑ i ∈ Finset.range m, (p : ℂ_[p]) ^ i * (u i : ℂ_[p]) =

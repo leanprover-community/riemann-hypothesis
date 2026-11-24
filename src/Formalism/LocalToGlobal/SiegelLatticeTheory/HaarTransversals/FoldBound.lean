@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

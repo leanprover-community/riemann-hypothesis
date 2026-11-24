@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFDOf
+public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
 
 @[expose] public section
 

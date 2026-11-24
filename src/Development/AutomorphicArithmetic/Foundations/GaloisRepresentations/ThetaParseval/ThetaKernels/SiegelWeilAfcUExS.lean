@@ -1,17 +1,67 @@
 module
 
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AdelicFormCongruences.ProjectedBlockUpperSum
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilDatumProperties
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.LiftedSchrodingerDatum
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilKrdPlace
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.FourierCompactness.DoubledGroupTopologicalProperties
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilKfourNA
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilKrdPlace
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilKrdRDIota
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DenseRationalsPlusSinglePlaceAdeles
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AdelicFormCongruences.ProjectedBlockUpperSum
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundamentalDomainOfCocompact
+import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.BlockTriangularFrames.SiegelParabolicEqStabiliserCols
+import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.G2HaarMeasure.CountableRationalPointsDoubled
+import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.UnitsBorelSpace.BorelSpaceDoubledGroup
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.CayleyTransform.CompFinFinOne
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.FourierCompactness.SigmaSigmaOfGood
+import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactOfUnits
+import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 200000
+
 
 section
 noncomputable section
@@ -235,7 +285,7 @@ theorem sum_mem_Sw_k (w : InfinitePlace F) (s : Fin (Module.finrank F E) → AF 
     refine Finset.sum_eq_zero fun k _ => ?_
     rw [smul_smul, finOne_mul (hs k).1, zero_smul]
 theorem dense_Sw_k (w : InfinitePlace F) : Dense {z : AE F E | ∃ e : E, ∃ s ∈ _root_.PositivityTheory.SiegelWeilFormula.Afc.Sw_k d w, inclR (F := F) (AF F) e + s = z} := by
-  have hA := GlobalTheory.T.dense_rationals_plus_single_place_adeles F w
+  have hA := _root_.GlobalTheory.CompanionTheory.AddSA.dense_add_place F w
   let Φ : (Fin (Module.finrank F E) → AF F) → AE F E := fun a => ∑ k, a k • kfour.bsA F E k
   have hΦc : Continuous Φ := continuous_finsetSum _ fun k _ => (continuous_apply k).smul continuous_const
   have hΦs : Function.Surjective Φ := fun z => ⟨fun k => (kfour.bsA F E).repr z k, (kfour.bsA F E).sum_repr z⟩
@@ -248,8 +298,8 @@ theorem dense_Sw_k (w : InfinitePlace F) : Dense {z : AE F E | ∃ e : E, ∃ s 
   choose q hq using hx
   refine ⟨∑ k, q k • kfour.bsE F E k, ∑ k, s k • kfour.bsA F E k, _root_.PositivityTheory.SiegelWeilFormula.Afc.sum_mem_Sw_k d w s hs, ?_⟩
   have h1 : inclR (F := F) (AF F) (∑ k, q k • kfour.bsE F E k) = ∑ k, algebraMap F (AF F) (q k) • kfour.bsA F E k := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Algebra.TensorProduct.basis_apply, algebraMap_smul, kfour.inclR_eq, TensorProduct.tmul_smul]
   rw [h1, ← Finset.sum_add_distrib]
@@ -267,8 +317,8 @@ variable {d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ} (L : _root_.Pos
 theorem cw_uN_k (w' : InfinitePlace F) (u : Fin L.n → AE F E) :
     d.cw w' (_root_.PositivityTheory.SiegelWeilFormula.Afc.uN_k L u) = ∑ j, Matrix.single L.i₀ (L.em j) (piInf (d.B.emb w') (u j)) := by
   ext a b
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [_root_.PositivityTheory.SiegelWeilFormula.SD_k.cw, _root_.PositivityTheory.SiegelWeilFormula.Afc.uN_k, Matrix.map_apply, Matrix.sum_apply, map_sum, Matrix.single_apply]
+
+  simp only [_root_.PositivityTheory.SiegelWeilFormula.SD_k.cw, _root_.PositivityTheory.SiegelWeilFormula.Afc.uN_k, Matrix.map_apply, Matrix.sum_apply, map_sum, Matrix.single_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
   split_ifs <;> simp
 theorem fin_uN_k (u : Fin L.n → AE F E) : finOne F • _root_.PositivityTheory.SiegelWeilFormula.Afc.uN_k L u = ∑ j, Matrix.single L.i₀ (L.em j) (finOne F • u j) := by

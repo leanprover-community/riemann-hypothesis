@@ -1,10 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
-public import Formalism.LocalToGlobal.HermitianForms.FormsTied
-public import Formalism.LocalToGlobal.HermitianForms.TiedBrInj
-public import Formalism.LocalToGlobal.HermitianForms.Interlace
-public import Formalism.SharpRestriction.GlobalSchurBounds.LinkMin
+public import Formalism.LocalToGlobal.HermitianForms.LastCoordinateUniformizerVectorSpansOrthogonalLi
+import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 

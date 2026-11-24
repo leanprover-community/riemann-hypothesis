@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.AdelicFourier2TensorCosetIndicatorAlgebraMap
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixFinite
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
+public import GroundTheory.AutomorphicForms.GL2.AdelicFourier2TensorCosetIndicatorAlgebraMap
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.TateThesis.AdelePoisson
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

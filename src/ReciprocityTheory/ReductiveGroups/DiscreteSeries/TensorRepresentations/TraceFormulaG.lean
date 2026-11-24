@@ -1,9 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.TraceFormulaC
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefEmbed
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RightDerivativeToL2
 
 @[expose] public section
 
@@ -117,7 +119,7 @@ theorem tf_closure_stable (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [Norme
         have ht : tensGrp dual σ g (fun i => ((a • f.1 i : D) : H)) =
             a • tensGrp dual σ g (fun i => ((f.1 i : D) : H)) := by
           funext i
-          simp [tensGrp, smul_sum, smul_smul, mul_assoc, mul_comm, mul_left_comm]
+          simp [tensGrp, smul_sum, smul_smul, mul_comm]
         simp only [Pi.smul_apply, Submodule.coe_smul]
         have ht' := ht
         simp only [Submodule.coe_smul] at ht'
@@ -170,8 +172,8 @@ theorem tf_closure_stable (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [Norme
       · exact LinearMap.congr_fun (casimir_tensVd hD.glRep) _
     show casimir _ (Φ (P' f)) = _ • Φ (P' f)
     rw [← map_smul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [casimir, LinearMap.sum_apply, Module.End.mul_apply, hΦE, ← map_sum]
+
+    simp only [casimir, LinearMap.sum_apply, Module.End.mul_apply, hΦE, ← map_sum]
     refine congrArg Φ (Subtype.ext ?_)
     simp only [Submodule.coe_sum, Submodule.coe_smul]
     rw [show ((P' f : tensSub (n := n) (genSub E V)) : Fin n → D) = P f.1 from rfl, ← h2]

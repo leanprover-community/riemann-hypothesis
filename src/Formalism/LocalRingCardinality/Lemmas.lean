@@ -1,13 +1,60 @@
 module
 
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.DataDIVDefs
-public import Formalism.LocalRingCardinality.DataLatDefs
-public import Formalism.LocalRingCardinality.DataKap
+import Mathlib.LinearAlgebra.TensorProduct.Lift
 public import Formalism.LocalRingCardinality.DataExtra
 public import Formalism.LocalRingCardinality.DataParams
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Rerealize
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
+public import Formalism.LocalRingCardinality.HostCls
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -151,18 +198,8 @@ theorem length_tensor_loc {A : Type*} [CommRing A] (P : Ideal A) [P.IsPrime]
 theorem range_liftBaseChange {A : Type*} [CommRing A] (O : Type*) [CommRing O] [Algebra A O]
     {X W : Type*} [AddCommGroup X] [Module A X] [AddCommGroup W] [Module A W] [Module O W]
     [IsScalarTower A O W] (l : X →ₗ[A] W) :
-    LinearMap.range (l.liftBaseChange O) = Submodule.span O (Set.range l) := by
-  apply le_antisymm
-  · rintro _ ⟨t, rfl⟩
-    induction t using TensorProduct.induction_on with
-    | zero => simp
-    | tmul c x =>
-      rw [LinearMap.liftBaseChange_tmul]
-      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨x, rfl⟩)
-    | add a b ha hb => rw [map_add (f := _)]; exact Submodule.add_mem _ ha hb
-  · rw [Submodule.span_le]
-    rintro _ ⟨x, rfl⟩
-    exact ⟨1 ⊗ₜ x, by simp⟩
+    LinearMap.range (l.liftBaseChange O) = Submodule.span O (Set.range l) :=
+  LinearMap.range_liftBaseChange O l
 
 theorem length_span_quot {A : Type*} [CommRing A] (O : Type*) [CommRing O] [Algebra A O]
     {V W : Type*} [AddCommGroup V] [Module A V] [AddCommGroup W] [Module A W] [Module O W]
@@ -1077,18 +1114,50 @@ open Formalism.MainNotions.G IsDedekindDomain IsDiscreteValuationRing
 
 variable {D : D7}
 
+/-- The empty orbit in the literal NP span absorbs any power at least as deep
+as both its orbit weight and its natural tau ceiling. -/
+private theorem pow_smul_mem_NP_of_empty_subset {L : SizeData₂ D}
+    (X : Inst D L) (Y : LatInst D) (K : Consts) (u : D.what₂.Word)
+    (w : D.what₂.places.Pl)
+    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
+    (F : (D.gat u w hg).Fn)
+    (hF : F ∈ (D.gat u w hg).M ⊓ Y.Vram u w hg) (n : ℕ)
+    (hB : (∑ t0 ∈ VV X K (aL L) (bL L) (D.what₂.places.resChar w),
+      ⌈Sv X K (aL L) (bL L) (D.what₂.places.resChar w) t0⌉.toNat) ≤ n)
+    (hT : ⌈tauP X K (aL L) (bL L) (D.what₂.places.resChar w)⌉.toNat ≤ n) :
+    (((D.what₂.places.resChar w : ℕ) : (D.gat u w hg).O) ^ n) • F ∈
+      NP X Y K u w hg := by
+  let p := D.what₂.places.resChar w
+  let G := D.gat u w hg
+  let VVp := VV X K (aL L) (bL L) p
+  let B := ∑ t0 ∈ VVp, ⌈Sv X K (aL L) (bL L) p t0⌉.toNat
+  let T := ⌈tauP X K (aL L) (bL L) p⌉.toNat
+  have hpow (k : ℕ) (hk : k ≤ n) :
+      ((p : G.O) ^ k) • (((p : G.O) ^ (n - k)) • F) =
+        ((p : G.O) ^ n) • F := by
+    rw [smul_smul, ← pow_add, Nat.add_sub_of_le hk]
+  unfold NP
+  refine ⟨⟨?_, ?_⟩, (Y.Vram u w hg).smul_mem _ hF.2⟩
+  · apply Submodule.subset_span
+    refine ⟨∅, Finset.empty_subset _, ((p : G.O) ^ (n - B)) • F,
+      G.M.smul_mem _ hF.1, ?_⟩
+    simpa [yProd, B] using (hpow B hB).symm
+  · refine Submodule.mem_map.mpr
+      ⟨((p : G.O) ^ (n - T)) • F, G.M.smul_mem _ hF.1, ?_⟩
+    simpa [LinearMap.smul_apply, LinearMap.id_apply] using
+      (smul_comm ((p : G.O) ^ (n - T)) ((p : G.O) ^ T) F).trans (hpow T hT)
+
 theorem inf_le_localSubmodule_of_empty {L : SizeData₂ D} (X : Inst D L) (Y : LatInst D) (K : Consts) (u : D.what₂.Word)
     (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
     (hVV : VV X K (aL L) (bL L) (D.what₂.places.resChar w) = ∅) :
     (D.gat u w hg).M ⊓ Y.Vram u w hg ≤ NP X Y K u w hg := by
-  rintro F ⟨hF1, hF2⟩
-  unfold NP
-  refine ⟨⟨?_, ?_⟩, hF2⟩
-  · apply Submodule.subset_span
-    refine ⟨∅, Finset.empty_subset _, F, hF1, ?_⟩
-    simp [hVV, yProd]
-  · refine ⟨F, hF1, ?_⟩
+  intro F hF
+  have hB : (∑ t0 ∈ VV X K (aL L) (bL L) (D.what₂.places.resChar w),
+      ⌈Sv X K (aL L) (bL L) (D.what₂.places.resChar w) t0⌉.toNat) ≤ 0 := by
+    simp [hVV]
+  have hT : ⌈tauP X K (aL L) (bL L) (D.what₂.places.resChar w)⌉.toNat ≤ 0 := by
     simp [tauP, hVV]
+  simpa using pow_smul_mem_NP_of_empty_subset X Y K u w hg F hF 0 hB hT
 
 theorem lenMN_unserved {L : SizeData₂ D} (hNu : DV.NuDef D L) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (h : DV.LocEq (D.plEq w) (L.NuLat u) (DV.MramL D u)) : L.lenMN u w = 0 := by
@@ -1147,23 +1216,16 @@ theorem length_quotient_ne_top₂ {L : SizeData₂ D} (X : Inst D L) (Y : LatIns
   set a : ℕ := ∑ t0 ∈ VV X K (aL L) (bL L) (D.what₂.places.resChar w),
     ⌈Sv X K (aL L) (bL L) (D.what₂.places.resChar w) t0⌉.toNat with ha
   set b : ℕ := ⌈tauP X K (aL L) (bL L) (D.what₂.places.resChar w)⌉.toNat with hb
-  apply FBC.length_ne_top_of_smul (((D.what₂.places.resChar w : ℕ) : (D.gat u w hg).O) ^ (b + a))
+  apply FBC.length_ne_top_of_smul
+    (((D.what₂.places.resChar w : ℕ) : (D.gat u w hg).O) ^ (max a b))
     (pow_ne_zero _ (c.resChar_ne_zero_O u w hg))
   intro q
   obtain ⟨⟨F, hF1, hF2⟩, rfl⟩ := Submodule.mkQ_surjective _ q
   rw [← map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, Submodule.mem_comap]
-  show ((D.what₂.places.resChar w : ℕ) : (D.gat u w hg).O) ^ (b + a) • F ∈ NP X Y K u w hg
-  unfold NP
-  refine ⟨⟨?_, ?_⟩, Submodule.smul_mem _ _ hF2⟩
-  · rw [pow_add, mul_smul]
-    apply Submodule.smul_mem
-    apply Submodule.subset_span
-    refine ⟨∅, Finset.empty_subset _, F, hF1, ?_⟩
-    simp [yProd, ha]
-  · refine ⟨((D.what₂.places.resChar w : ℕ) : (D.gat u w hg).O) ^ a • F, Submodule.smul_mem _ _ hF1, ?_⟩
-    rw [pow_add, mul_smul]
-    rfl
-
+  show ((D.what₂.places.resChar w : ℕ) : (D.gat u w hg).O) ^ (max a b) • F ∈ NP X Y K u w hg
+  exact pow_smul_mem_NP_of_empty_subset X Y K u w hg F ⟨hF1, hF2⟩ (max a b)
+    (by simpa only [← ha] using le_max_left a b)
+    (by simpa only [← hb] using le_max_right a b)
 
 omit c in
 theorem frac_of_ties (hT : GatTies D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
@@ -1453,8 +1515,8 @@ theorem lenLoc_atT {L : SizeData₂ D} (hAtT : NuAtTDef D L) (u : D.what₂.Word
     (hw : D.what₂.places.resChar w = (D.mem u).A.T) :
     DV.lenLoc (D.plEq w) (L.NuLat u) (DV.MramL D u) =
       Module.length (LT.Ow D w) (↥(LT.Sram D u w) ⧸ (LT.Nlam D u w).comap (LT.Sram D u w).subtype) := by
-  haveI := D.intW_dvr w
-  haveI := D.intW_frac w
+  have := D.intW_dvr w
+  have := D.intW_frac w
   have hσ : ∀ x : D.what₂.LL, (D.plEq w).valuation D.what₂.LL x ≤ 1 ↔
       (RingHom.id D.what₂.LL) x ∈ Set.range (algebraMap (intW D.what₂.places w) D.what₂.LL) := by
     intro x

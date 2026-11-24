@@ -1,13 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.PAdicHodge.ACrisBdRInj
-public import GroundTheory.PAdicHodge.ACrisLog
-public import GroundTheory.PAdicHodge.ACrisGalois
 public import GroundTheory.PAdicHodge.InstMulSemiringActionGalPlus
 public import GroundTheory.PAdicHodge.BdRGalois
 public import GroundTheory.PAdicHodge.UntiltFrobeniusEquivSymmEpsilonNeOne
-public import GroundTheory.PAdicHodge.BdRAlg
+public import GroundTheory.PAdicHodge.ACrisBdR
+public import GroundTheory.PAdicHodge.ACrisBdRInj
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -45,15 +44,12 @@ theorem iotaPlus_algebraMap (x : ACris K p) :
   IsLocalization.lift_eq _ x
 
 theorem iotaPlus_injective : Function.Injective (iotaPlus K p) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro x hx
-  obtain ⟨⟨a, s⟩, rfl⟩ := IsLocalization.mk'_surjective (Submonoid.powers (p : ACris K p)) x
-  have h := IsLocalization.mk'_spec (BCrisPlus K p) a s
-  have h2 := congrArg (iotaPlus K p) h
-  rw [map_mul, hx, zero_mul, iotaPlus_algebraMap] at h2
-  have ha : a = 0 := iota_injective (K := K) (p := p) (by rw [← h2, map_zero])
-  subst ha
-  exact IsLocalization.mk'_zero _
+  refine (IsLocalization.injective_iff_map_algebraMap_eq
+    (Submonoid.powers (p : ACris K p)) (iotaPlus K p)).2 fun x y => ⟨?_, ?_⟩
+  · exact congrArg (iotaPlus K p)
+  · intro h
+    have hi := (iotaPlus_algebraMap x).symm.trans (h.trans (iotaPlus_algebraMap y))
+    exact congrArg (algebraMap (ACris K p) (BCrisPlus K p)) (iota_injective hi)
 
 theorem iotaM_of (m : ℕ) (y : ACrisZero K p) :
     embedding₂ K p m (_root_.AdicCompletion.of _ _ y) = iotaZero K p m y :=
@@ -77,29 +73,31 @@ set_option maxHeartbeats 2000000 in
 theorem iotaQ_log {x : AInf K p} (hx : x ∈ RingHom.ker (fontaineTheta (normInteger K) p)) (m : ℕ) :
     iotaQ K p m (log hx) = Ideal.Quotient.mk (kerAway K p ^ m)
       (∑ n ∈ Finset.range m, (logTermZero hx n : Localization.Away (p : AInf K p))) := by
-  have hle : Ideal.span {(p : ACris K p)} ≤
-      (Ideal.span {(p : acrisQ K p m)}).comap (embedding₂ K p m) := by
-    rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_comap, map_natCast]
+  let e := embedding₂ K p m
+  let j := (acrisQ K p m).subtype
+  let q := Ideal.Quotient.mk (kerAway K p ^ m)
+  let I := Ideal.span {(p : acrisQ K p m)}
+  have hle : Ideal.span {(p : ACris K p)} ≤ I.comap e := by
+    refine (Ideal.span_singleton_le_iff_mem (I.comap e)).2 ?_
+    change e (p : ACris K p) ∈ I
+    rw [map_natCast e]
     exact Ideal.mem_span_singleton_self _
-  have hsum := (isAdicSum_log hx).map (embedding₂ K p m) hle
-  have hterm : ∀ n, ((embedding₂ K p m (logTerm hx n) : acrisQ K p m) :
-      Localization.Away (p : AInf K p) ⧸ kerAway K p ^ m) =
-      Ideal.Quotient.mk (kerAway K p ^ m) (logTermZero hx n : Localization.Away (p : AInf K p)) :=
-    fun n => by
-      rw [logTerm, AdicCompletion.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply,
-        iotaM_of]
-      rfl
-  have hzero : ∀ n, m ≤ n → embedding₂ K p m (logTerm hx n) = 0 := fun n hn => by
-    apply Subtype.ext
-    rw [hterm, ZeroMemClass.coe_zero, logTermZero]
-    simp only [Subalgebra.coe_mul, Subalgebra.coe_pow, Subalgebra.coe_neg, Subalgebra.coe_one,
-      SubringClass.coe_natCast, coe_dpowZero, map_mul, mk_dpow_eq_zero hx (Nat.le_succ_of_le hn),
-      mul_zero]
-  have h0 := isAdicSum_of_eq_zero (I := Ideal.span {(p : acrisQ K p m)}) hzero
-  have h := hsum.unique h0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [iotaQ, RingHom.comp_apply, h, map_sum, map_sum]
-  exact Finset.sum_congr rfl fun n _ => hterm n
+  have hterm (n : ℕ) : j (e (logTerm hx n)) = q (logTermZero hx n) :=
+    iotaQ_of m (logTermZero hx n)
+  have hzero (n : ℕ) (hn : m ≤ n) : e (logTerm hx n) = 0 := by
+    refine Subtype.ext ((hterm n).trans ?_)
+    change q (logTermZero hx n) = 0
+    simp only [logTermZero, Subalgebra.coe_mul, Subalgebra.coe_pow, Subalgebra.coe_neg,
+      Subalgebra.coe_one, SubringClass.coe_natCast, coe_dpowZero, map_mul,
+      mk_dpow_eq_zero hx (Nat.le_succ_of_le hn), mul_zero, q]
+  have h := ((isAdicSum_log hx).map e hle).unique (isAdicSum_of_eq_zero (I := I) hzero)
+  calc
+    iotaQ K p m (log hx) = j (∑ n ∈ Finset.range m, e (logTerm hx n)) := congrArg j h
+    _ = ∑ n ∈ Finset.range m, j (e (logTerm hx n)) := map_sum j.toAddMonoidHom _ _
+    _ = ∑ n ∈ Finset.range m, q (logTermZero hx n) :=
+      Finset.sum_congr rfl fun n _ => hterm n
+    _ = q (∑ n ∈ Finset.range m, (logTermZero hx n : Localization.Away (p : AInf K p))) :=
+      (map_sum q _ _).symm
 
 end Plus
 
@@ -117,21 +115,16 @@ def galS (σ : Gal(PadicAlgCl p/K)) (m : ℕ) : acrisQ ℂ_[p] p m →+* acrisQ 
     rw [RingHom.comp_apply, Subring.subtype_apply, ← hys, galQuot_mk]
     exact ⟨ACris.galAway σ y, galAway_mem σ hy, rfl⟩
 
-set_option maxHeartbeats 2000000 in
+
 theorem iotaM_gal_smul (σ : Gal(PadicAlgCl p/K)) (m : ℕ) :
     (embedding₂ ℂ_[p] p m).comp (galCris σ) = (galS σ m).comp (embedding₂ ℂ_[p] p m) := by
-  refine ringHom_ext fun y => ?_
-  have h1 : galCris σ (_root_.AdicCompletion.of _ _ y) = _root_.AdicCompletion.of _ _ (σ • y) :=
-    galCris_of σ y
-  have h2 := iotaM_of (p := p) m (σ • y)
-  have h3 := iotaM_of (p := p) m y
-  rw [RingHom.comp_apply, RingHom.comp_apply, h1, h2, h3]
-  apply Subtype.ext
-  show Ideal.Quotient.mk _ _ = galQuot σ m (Ideal.Quotient.mk _ _)
-  rw [galQuot_mk]
-  show Ideal.Quotient.mk _ ((σ • y : ACrisZero ℂ_[p] p) : 𝔸) = Ideal.Quotient.mk _ _
-  rw [coe_gal_smul_zero]
-  rfl
+  refine ringHom_ext (B := acrisQ ℂ_[p] p m) fun y => ?_
+  have hl := (congrArg (embedding₂ ℂ_[p] p m) (galCris_of σ y)).trans (iotaM_of m _)
+  have hr := congrArg (galS σ m) (iotaM_of m y)
+  refine hl.trans (Eq.trans ?_ hr.symm)
+  exact Subtype.ext
+    ((congrArg (Ideal.Quotient.mk (kerAway ℂ_[p] p ^ m)) (coe_gal_smul_zero σ y)).trans
+      (galQuot_mk σ m (y : 𝔸)).symm)
 
 theorem iota_gal_smul (σ : Gal(PadicAlgCl p/K)) (x : ACris ℂ_[p] p) :
     iota ℂ_[p] p (σ • x) = σ • iota ℂ_[p] p x := by
@@ -159,10 +152,10 @@ theorem toBDeRhamPlus_factorial_mul_dpow (x : AInf ℂ_[p] p) (n : ℕ) :
     rwa [map_natCast] at this
   apply hu.mul_left_cancel
   have e1 : ((n + 1 : ℕ) : 𝔹) * algebraMap ℚ 𝔹 (1 / (n + 1 : ℚ)) = 1 := by
+    have hq : ((n + 1 : ℕ) : ℚ) * (1 / (n + 1 : ℚ)) = 1 := by
+      rw [← Nat.cast_succ, mul_one_div_cancel (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero n))]
     rw [← map_natCast (algebraMap ℚ 𝔹), ← map_mul, ← map_one (algebraMap ℚ 𝔹)]
-    congr 1
-    push_cast
-    field_simp
+    exact congrArg (algebraMap ℚ 𝔹) hq
   calc ((n + 1 : ℕ) : 𝔹) * toBDeRhamPlus (normInteger ℂ_[p]) p ((n.factorial : 𝔸) * dpow (n + 1) x)
       = toBDeRhamPlus (normInteger ℂ_[p]) p (((n + 1 : ℕ) : 𝔸) * ((n.factorial : 𝔸) * dpow (n + 1) x)) := by
         rw [map_mul (toBDeRhamPlus (normInteger ℂ_[p]) p) ((n + 1 : ℕ) : 𝔸), map_natCast]
@@ -182,8 +175,8 @@ theorem iota_periodT {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1) :
   rw [← IsPerfectoidField.ker_evalB, RingHom.mem_ker, map_sub, sub_eq_zero] at h1
   rw [h1, ← IsPerfectoidField.evalB_toBDeRhamPlus]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_Ico_eq_sum_range, Nat.add_sub_cancel]
+
+  rw [map_sum, Finset.sum_Ico_eq_sum_range, Nat.add_sub_cancel]
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [logTermZero]
   simp only [Subalgebra.coe_mul, Subalgebra.coe_pow, Subalgebra.coe_neg, Subalgebra.coe_one,
@@ -192,12 +185,12 @@ theorem iota_periodT {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1) :
     add_comm 1 n]
   have e : algebraMap ℚ 𝔹 ((-1) ^ (n + 1 + 1) / ((n + 1 : ℕ) : ℚ)) =
       (-1) ^ n * algebraMap ℚ 𝔹 (1 / (n + 1 : ℚ)) := by
+    have hq : (-1 : ℚ) ^ (n + 1 + 1) / ((n + 1 : ℕ) : ℚ) =
+        (-1) ^ n * (1 / (n + 1 : ℚ)) := by
+      rw [Nat.add_assoc n 1 1, pow_add, neg_one_sq, mul_one, Nat.cast_succ, mul_one_div]
     rw [← map_one (algebraMap ℚ 𝔹), ← map_neg, ← map_pow, ← map_mul]
-    congr 1
-    push_cast
-    ring
-  rw [e]
-  ring
+    exact congrArg (algebraMap ℚ 𝔹) hq
+  rw [e, mul_assoc]
 
 end Cp
 

@@ -1,8 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.EvNatPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThValDescIn
 public import Formalism.LocalToGlobal.ProjectiveLattices.CoreProofs
+public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
+public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.EvNatPf
 
 @[expose] public section
 

@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.Legendre
+public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Defs
+import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Transform
+import Mathlib.Tactic.Lemma
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Exp
 
 @[expose] public section
 
@@ -113,7 +118,7 @@ lemma sumA (u v : ℂ) (h : 0 < (v / u).im) :
   unfold EisensteinSeries.e2Summand
   rw [← tsum_mul_left]
   refine tsum_congr fun m => ?_
-  simp only [eisSummand, Matrix.cons_val, hc]
+  simp only [eisSummand, Matrix.cons_val]
   apply one_div_sq_eq_of_eq_mul
   field_simp
   ring

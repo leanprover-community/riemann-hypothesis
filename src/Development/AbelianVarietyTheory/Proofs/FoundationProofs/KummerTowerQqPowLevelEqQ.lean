@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -64,13 +111,10 @@ theorem int_zero : IsInt (p := p) (0 : Ω) := isIntegral_zero
 theorem int_one : IsInt (p := p) (1 : Ω) := isIntegral_one
 theorem int_nat (k : ℕ) : IsInt (p := p) (k : Ω) := by
   simpa using (int_alg (k : O0 p) : IsInt (p := p) (algebraMap (O0 p) Ω _))
-theorem int_int (k : ℤ) : IsInt (p := p) (k : Ω) := by
-  simpa using (int_alg (k : O0 p) : IsInt (p := p) (algebraMap (O0 p) Ω _))
 theorem int_sum {ι : Type*} (s : Finset ι) (f : ι → Ω) (h : ∀ i ∈ s, IsInt (p := p) (f i)) :
     IsInt (p := p) (∑ i ∈ s, f i) := IsIntegral.sum f h
 theorem int_congr {x y : Ω} (hx : IsInt (p := p) x) (h : y = x) : IsInt (p := p) y := h ▸ hx
-theorem int_gal (g : Gal p Ω) {x : Ω} (hx : IsInt (p := p) x) : IsInt (p := p) (g x) :=
-  IsIntegral.map (g : Ω →ₐ[O0 p] Ω) hx
+alias int_gal := _root_.GlobalTheory.K5.Basic.isInt_gal
 theorem int_of_pow {x : Ω} {k : ℕ} (hk : 0 < k) (hx : IsInt (p := p) (x ^ k)) : IsInt (p := p) x :=
   IsIntegral.of_pow hk hx
 
@@ -94,9 +138,7 @@ theorem zeta_ne (T : Tower p Ω) (n : ℕ) : T.ζ n ≠ 0 := (T.prim n).ne_zero 
 theorem int_zeta_inv (T : Tower p Ω) (n : ℕ) : IsInt (p := p) (T.ζ n)⁻¹ :=
   int_of_pow (ppow_pos n) (by rw [inv_pow, (T.prim n).pow_eq_one, inv_one]; exact int_one)
 
-theorem kummerTower_qq_pow_level_eq_q (T : Tower p Ω) (n : ℕ) : T.qq n ^ (p ^ n) = algebraMap (O0 p) Ω (qO p) := by
-  have := qq_pow T 0 n
-  rwa [zero_add, T.q0] at this
+alias kummerTower_qq_pow_level_eq_q := _root_.GlobalTheory.K5.Basic.qq_pow
 
 theorem isUnit_qO : IsUnit (qO p) := by
   refine IsUnit.map _ (IsUnit.of_mul_eq_one (HahnSeries.single (-1 : ℤ) (1 : ℤ_[p])) ?_)
@@ -105,11 +147,7 @@ theorem isUnit_qO : IsUnit (qO p) := by
 theorem int_qq (T : Tower p Ω) (n : ℕ) : IsInt (p := p) (T.qq n) :=
   int_of_pow (ppow_pos n) (by rw [kummerTower_qq_pow_level_eq_q]; exact int_alg _)
 
-theorem qq_ne (T : Tower p Ω) (n : ℕ) : T.qq n ≠ 0 := by
-  intro h
-  have h1 := kummerTower_qq_pow_level_eq_q T n
-  rw [h, zero_pow (ppow_pos (p := p) n).ne'] at h1
-  exact ((isUnit_qO (p := p)).map (algebraMap (O0 p) Ω)).ne_zero h1.symm
+alias qq_ne := _root_.GlobalTheory.K5.Basic.qq_ne_zero
 
 theorem int_qq_inv (T : Tower p Ω) (n : ℕ) : IsInt (p := p) (T.qq n)⁻¹ := by
   refine int_of_pow (ppow_pos (p := p) n) ?_

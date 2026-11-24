@@ -1,7 +1,6 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.StepDownStatement
-public import Formalism.RealPlaceAnalysis.SmoothVectorGrowthBound
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.EquivariantL2Space
 
 @[expose] public section
 

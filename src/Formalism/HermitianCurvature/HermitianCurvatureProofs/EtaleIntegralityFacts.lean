@@ -1,17 +1,72 @@
 module
 
 public import Formalism.HermitianCurvature.StatementG
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionCriticalPoints
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AffineChangeOfVariables
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RemainderNormLeStrictUpper
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralConvergesAbs
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CuspidalIrreducibleSubrep
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FourierUniquenessMirabolic
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralConvergesAbs
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionCriticalPoints
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionDerivatives
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RemainderNormLeStrictUpper
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeakApproximationGL
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WhittakerVanishingImpliesZero
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CuspidalIrreducibleSubrep
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionDerivatives
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.ContDiff.Bounds
+public import Mathlib.Analysis.Calculus.ContDiff.RestrictScalars
+import Mathlib.Analysis.Complex.OperatorNorm
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -521,7 +576,6 @@ theorem first_cofactor_norm_le (m : ℕ) (t : ℂ) (p : XY m) {R : ℝ} (hR : 1 
 theorem remainder_norm_le (m : ℕ) (t : ℂ) (p : XY m) {R : ℝ} (hR : 1 ≤ R) (ht : ‖t‖ ≤ 1) (hx : ∀ k, ‖p.1 k‖ ≤ R)
     (hy : ‖p.2‖ ≤ R) : ‖r1XY m t p‖ ≤ ((m : ℝ) + 1) ^ (m + 2) * R ^ (m + 1) := by
   have hR0 : 0 ≤ R := zero_le_one.trans hR
-  have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   have hm1 : (1 : ℝ) ≤ (m : ℝ) + 1 := by linarith
   have term : ∀ j ∈ Finset.range m,
       ‖(∑ k : Fin m, rm m p k * ((-Xm m p) ^ j *ᵥ Bm m p) k.succ) * t ^ (m - 1 - j)‖ ≤
@@ -660,7 +714,6 @@ theorem DB.mulQ {q : ℕ} {f g : E → ℂ} {u : E} {Q P : ℝ} {a b : ℕ} (hf 
 theorem DB.addQ {q : ℕ} {f g : E → F} {u : E} {Q P : ℝ} {a : ℕ} (hf : DB q f u (Q ^ a) P)
     (hg : DB q g u (Q ^ a) P) (hP : 0 ≤ P) (h2 : (2 : ℝ) ≤ Q) :
     DB q (fun v => f v + g v) u (Q ^ (a + 1)) P := by
-  have hQ0 : 0 ≤ Q := le_trans (by positivity) h2
   refine (hf.add hg).mono ?_ hP le_rfl
   calc Q ^ a + Q ^ a = 2 * Q ^ a := by ring
     _ ≤ Q * Q ^ a := by gcongr
@@ -669,7 +722,6 @@ theorem DB.addQ {q : ℕ} {f g : E → F} {u : E} {Q P : ℝ} {a : ℕ} (hf : DB
 theorem DB.subQ {q : ℕ} {f g : E → F} {u : E} {Q P : ℝ} {a : ℕ} (hf : DB q f u (Q ^ a) P)
     (hg : DB q g u (Q ^ a) P) (hP : 0 ≤ P) (h2 : (2 : ℝ) ≤ Q) :
     DB q (fun v => f v - g v) u (Q ^ (a + 1)) P := by
-  have hQ0 : 0 ≤ Q := le_trans (by positivity) h2
   refine (hf.sub hg).mono ?_ hP le_rfl
   calc Q ^ a + Q ^ a = 2 * Q ^ a := by ring
     _ ≤ Q * Q ^ a := by gcongr
@@ -849,22 +901,24 @@ theorem card_range_inf_torsion_le_index_pow (E : Type) [NormedAddCommGroup E] [N
   have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   have hf1 : (1 : ℝ) ≤ (q.factorial : ℝ) := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero q)
   have hp1 : (1 : ℝ) ≤ (2 : ℝ) ^ q := one_le_pow₀ (by norm_num)
-  have hs1 : (4 : ℝ) ≤ ((m : ℝ) + 2) ^ 2 := by nlinarith
+  have hm2' : (2 : ℝ) ≤ (m : ℝ) + 2 := by linarith only [hm0]
+  have hms : (m : ℝ) + 2 ≤ ((m : ℝ) + 2) ^ 2 :=
+    le_self_pow₀ (one_le_two.trans hm2') (by omega)
   have hA : (2 : ℝ) ^ q * ((m : ℝ) + 2) ^ 2 ≤ Q :=
     le_trans (le_mul_of_one_le_right (by positivity) hf1) hQc
-  have h2 : (2 : ℝ) ^ q ≤ Q := le_trans (le_mul_of_one_le_right (by positivity) (by linarith)) hA
+  have h2 : (2 : ℝ) ^ q ≤ Q := le_trans (le_mul_of_one_le_right (pow_nonneg zero_le_two _) (one_le_two.trans (hm2'.trans hms))) hA
   have hs : ((m : ℝ) + 2) ^ 2 ≤ Q := le_trans (le_mul_of_one_le_left (by positivity) hp1) hA
   have hfQ : (q.factorial : ℝ) ≤ Q :=
-    le_trans (le_mul_of_one_le_left (by positivity) (by nlinarith)) hQc
-  have h4 : (4 : ℝ) ≤ Q := le_trans hs1 hs
-  have h1Q : (1 : ℝ) ≤ Q := by linarith
-  have h2Q : (2 : ℝ) ≤ Q := by linarith
-  have hQ0 : (0 : ℝ) ≤ Q := by linarith
-  have hm : (m : ℝ) + 1 ≤ Q := by nlinarith
-  have hm2 : (m : ℝ) + 2 ≤ Q := by nlinarith
+    (le_mul_of_one_le_left (Nat.cast_nonneg _)
+      (one_le_mul_of_one_le_of_one_le hp1 (one_le_two.trans (hm2'.trans hms)))).trans hQc
+  have hm2 : (m : ℝ) + 2 ≤ Q := hms.trans hs
+  have h2Q : (2 : ℝ) ≤ Q := hm2'.trans hm2
+  have h1Q : (1 : ℝ) ≤ Q := one_le_two.trans h2Q
+  have hQ0 : (0 : ℝ) ≤ Q := zero_le_one.trans h1Q
+  have hm : (m : ℝ) + 1 ≤ Q := (by linarith only : (m : ℝ) + 1 ≤ (m : ℝ) + 2).trans hm2
   have hQW1 : Q ≤ W := le_trans (le_self_pow₀ h1Q (by omega)) hQW
   have h1W : (1 : ℝ) ≤ W := le_trans h1Q hQW1
-  have hW0 : (0 : ℝ) ≤ W := by linarith
+  have hW0 : (0 : ℝ) ≤ W := zero_le_one.trans h1W
   have h2W : (2 : ℝ) ≤ W := le_trans h2Q hQW1
   have h2qW : (2 : ℝ) ^ q ≤ W := le_trans h2 hQW1
   have hfW : (q.factorial : ℝ) ≤ W := le_trans hfQ hQW1
@@ -872,8 +926,8 @@ theorem card_range_inf_torsion_le_index_pow (E : Type) [NormedAddCommGroup E] [N
     intro f a h ha
     rw [pow_one]
     exact (h.powle h1Q ha zero_le_one).mono hQW zero_le_one le_rfl
-  have P2 : (0 : ℝ) ≤ W ^ 2 := by positivity
-  have tableLineDegreeTwo : (0 : ℝ) ≤ W ^ 16 := by positivity
+  have P2 : (0 : ℝ) ≤ W ^ 2 := pow_nonneg hW0 _
+  have hW16 : (0 : ℝ) ≤ W ^ 16 := pow_nonneg hW0 _
   have one2 : (1 : ℝ) ≤ W ^ 2 := one_le_pow₀ h1W
   have up2 : ∀ {f : E → ℂ} {a : ℕ}, DB q f u (W ^ a) 1 → DB q f u (W ^ a) (W ^ 2) :=
     fun h => h.mono le_rfl zero_le_one one2
@@ -898,19 +952,22 @@ theorem card_range_inf_torsion_le_index_pow (E : Type) [NormedAddCommGroup E] [N
 
   have dci : DB q (fun v => (cofXY m (tt v) (xx v, yy v))⁻¹) u (W ^ 3) (W ^ 2) := by
     have h := DB.inv dcof hc hcW (by simpa using h1W) h1W zero_le_one
-    refine h.mono ?_ (by positivity) (by rw [pow_one, mul_one, sq])
-    calc (q.factorial : ℝ) * (q.factorial * W) ≤ W * (W * W) := by gcongr
-      _ = W ^ 3 := by ring
-  have hc0 : cof0XY m (xx u, yy u) ≠ 0 := by
-    simp only [cof0XY]
-    exact mul_ne_zero (pow_ne_zero _ (by norm_num)) hp
+    refine h.mono ?_ (mul_nonneg (mul_nonneg hW0 (pow_nonneg hW0 1)) zero_le_one) (by rw [pow_one, mul_one, sq])
+    calc (q.factorial : ℝ) * (q.factorial * W) ≤ W * (W * W) :=
+        mul_le_mul hfW (mul_le_mul_of_nonneg_right hfW hW0)
+          (mul_nonneg (Nat.cast_nonneg _) hW0) hW0
+      _ = W ^ 3 := by simp only [pow_succ, pow_zero, one_mul, mul_assoc]
+  have hc0 : cof0XY m (xx u, yy u) ≠ 0 :=
+    leading_cofactor_ne_zero m (xx u, yy u) hp
   have hc0W : ‖cof0XY m (xx u, yy u)‖⁻¹ ≤ W := by
     simpa [cof0XY, norm_mul, norm_pow] using hpW
   have dc0i : DB q (fun v => (cof0XY m (xx v, yy v))⁻¹) u (W ^ 3) (W ^ 2) := by
     have h := DB.inv dcof0 hc0 hc0W (by simpa using h1W) h1W zero_le_one
-    refine h.mono ?_ (by positivity) (by rw [pow_one, mul_one, sq])
-    calc (q.factorial : ℝ) * (q.factorial * W) ≤ W * (W * W) := by gcongr
-      _ = W ^ 3 := by ring
+    refine h.mono ?_ (mul_nonneg (mul_nonneg hW0 (pow_nonneg hW0 1)) zero_le_one) (by rw [pow_one, mul_one, sq])
+    calc (q.factorial : ℝ) * (q.factorial * W) ≤ W * (W * W) :=
+        mul_le_mul hfW (mul_le_mul_of_nonneg_right hfW hW0)
+          (mul_nonneg (Nat.cast_nonneg _) hW0) hW0
+      _ = W ^ 3 := by simp only [pow_succ, pow_zero, one_mul, mul_assoc]
 
   have drho : DB q (fun v => rhoXY m D (tt v) (xx v, yy v)) u (W ^ 5) (W ^ 2) := by
     simp only [rhoXY_eq]
@@ -935,12 +992,15 @@ theorem card_range_inf_torsion_le_index_pow (E : Type) [NormedAddCommGroup E] [N
     have a1 := dβ.mulQ dg P2 h2qW
     have a2 := DB.clm_one (Complex.reCLM : ℂ →L[ℝ] ℝ) (by simp) a1
     have a3 := DB.comp (DB_expI q _) a2 (one_le_pow₀ h1W) le_rfl P2
-    refine a3.mono (by simpa using hfW) (by positivity) (le_of_eq (by ring))
+    refine a3.mono (by simpa only [pow_one, mul_one] using hfW)
+      (mul_nonneg (mul_nonneg zero_le_one (pow_nonneg hW0 _)) P2) ?_
+    simp only [one_mul, ← pow_add]
+    exact le_rfl
 
   have dn : DB q (fun v => (((‖cofXY m (tt v) (xx v, yy v)‖ ^ 2)⁻¹ : ℝ) : ℂ)) u (W ^ 7) (W ^ 2) := by
     simp only [normSq_inv_cast]
     exact dci.mulQ (DB.clm_one (Complex.conjCLE : ℂ →L[ℝ] ℂ) (by simp) dci) P2 h2qW
-  have dsc := dpsi.mulQ (dn.mono le_rfl P2 le216) tableLineDegreeTwo h2qW
+  have dsc := dpsi.mulQ (dn.mono le_rfl P2 le216) hW16 h2qW
 
   have dent : ∀ i j : Fin (m + 2), DB q (fun v => MXY m D (tt v) (xx v, yy v) i j) u (W ^ 5) (W ^ 2) := by
     intro i j
@@ -958,21 +1018,27 @@ theorem card_range_inf_torsion_le_index_pow (E : Type) [NormedAddCommGroup E] [N
     have r1 : ∀ i : Fin (m + 2), DB q (fun v => MXY m D (tt v) (xx v, yy v) i) u (W ^ 6) (W ^ 2) := by
       intro i
       refine (DB.pi (fun j => dent i j) P2).mono ?_ P2 le_rfl
-      calc ((Fintype.card (Fin (m + 2)) : ℕ) : ℝ) * W ^ 5 ≤ W * W ^ 5 := by gcongr
-        _ = W ^ 6 := by ring
+      calc ((Fintype.card (Fin (m + 2)) : ℕ) : ℝ) * W ^ 5 ≤ W * W ^ 5 :=
+          mul_le_mul_of_nonneg_right hcard (pow_nonneg hW0 _)
+        _ = W ^ 6 := (pow_succ' W 5).symm
     refine (DB.pi (fun i => r1 i) P2).mono ?_ P2 le_rfl
-    calc ((Fintype.card (Fin (m + 2)) : ℕ) : ℝ) * W ^ 6 ≤ W * W ^ 6 := by gcongr
-      _ = W ^ 7 := by ring
+    calc ((Fintype.card (Fin (m + 2)) : ℕ) : ℝ) * W ^ 6 ≤ W * W ^ 6 :=
+        mul_le_mul_of_nonneg_right hcard (pow_nonneg hW0 _)
+      _ = W ^ 7 := (pow_succ' W 6).symm
   have dΦ : DB q (fun v => Φ (MXY m D (tt v) (xx v, yy v))) u (q.factorial * K') (W ^ 16) := by
     have a := DB.comp (g := Φ) (f := fun v => MXY m D (tt v) (xx v, yy v)) hΦ dM (one_le_pow₀ h1W) le_rfl P2
     refine a.mono le_rfl (by positivity) ?_
-    calc 1 * W ^ 7 * W ^ 2 = W ^ 9 := by ring
+    calc 1 * W ^ 7 * W ^ 2 = W ^ 9 := by rw [one_mul, ← pow_add]
       _ ≤ W ^ 16 := pow_le_pow_right₀ h1W (by norm_num)
   have hK : 0 ≤ K' := hΦ.nonneg
-  have fin := DB.smul dsc dΦ tableLineDegreeTwo
-  refine fin.mono ?_ tableLineDegreeTwo le_rfl
-  calc (2 : ℝ) ^ q * W ^ (1 + 7 + 1) * (q.factorial * K') ≤ W * W ^ (1 + 7 + 1) * (W * K') := by gcongr
-    _ = K' * W ^ 11 := by ring
+  have fin := DB.smul dsc dΦ hW16
+  refine fin.mono ?_ hW16 le_rfl
+  calc (2 : ℝ) ^ q * W ^ (1 + 7 + 1) * (q.factorial * K') ≤ W * W ^ (1 + 7 + 1) * (W * K') :=
+      mul_le_mul (mul_le_mul_of_nonneg_right h2qW (pow_nonneg hW0 _))
+        (mul_le_mul_of_nonneg_right hfW hK) (mul_nonneg (Nat.cast_nonneg _) hK)
+        (mul_nonneg hW0 (pow_nonneg hW0 _))
+    _ = K' * W ^ 11 := by
+      rw [← mul_assoc, mul_comm _ K', ← pow_succ' W (1 + 7 + 1), ← pow_succ]
 
 theorem core : ∃ a b : ℕ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m q : ℕ) (β D : ℂ) (tt : E → ℂ)
     (xx : E → Fin (m + 1) → ℂ) (yy : E → UT (m + 2) → ℂ) (u : E) (Q W : ℝ),
@@ -1132,15 +1198,20 @@ theorem amplitude_bound_far : Formalism.FourierDecayAlt.G.AmpBoundFar := by
   obtain ⟨cQ, hcQ⟩ : ∃ cQ : ℝ, cQ = 2 ^ q * ((m : ℝ) + 2) ^ 2 * q.factorial + |RD| + ‖β‖ + 2 := ⟨_, rfl⟩
   obtain ⟨cW, hcW⟩ : ∃ cW : ℝ, cW = cQ ^ (4 * (m + 2)) + c₁⁻¹ + c₂⁻¹ := ⟨_, rfl⟩
   have hpos1 : (0 : ℝ) ≤ 2 ^ q * ((m : ℝ) + 2) ^ 2 * q.factorial := by positivity
-  have hcQ2 : 2 ≤ cQ := by
-    rw [hcQ]; have := abs_nonneg RD; have := norm_nonneg β; linarith
+  have hRD0 : 0 ≤ |RD| := abs_nonneg RD
+  have hβ0 : 0 ≤ ‖β‖ := norm_nonneg β
+  have hcQbase : 2 ^ q * ((m : ℝ) + 2) ^ 2 * q.factorial ≤ cQ := by linarith
+  have hcQabs : |RD| ≤ cQ := by linarith
+  have hcQβ : ‖β‖ ≤ cQ := by linarith
+  have hcQ2 : 2 ≤ cQ := by linarith
   have hcQ1 : 1 ≤ cQ := by linarith
-  have hcW1 : 1 ≤ cW := by
-    rw [hcW]
-    have h1 : 1 ≤ cQ ^ (4 * (m + 2)) := one_le_pow₀ hcQ1
-    have h2 : 0 < c₁⁻¹ := inv_pos.2 hc₁
-    have h3 : 0 < c₂⁻¹ := inv_pos.2 hc₂
-    linarith
+  have hcQpow : 1 ≤ cQ ^ (4 * (m + 2)) := one_le_pow₀ hcQ1
+  have hinv₁ : 0 < c₁⁻¹ := inv_pos.2 hc₁
+  have hinv₂ : 0 < c₂⁻¹ := inv_pos.2 hc₂
+  have hcWpow : cQ ^ (4 * (m + 2)) ≤ cW := by linarith
+  have hcWc₁ : c₁⁻¹ ≤ cW := by linarith
+  have hcWc₂ : c₂⁻¹ ≤ cW := by linarith
+  have hcW1 : 1 ≤ cW := by linarith
   refine ⟨2 ^ q * Cf * (max Cc 0) * cW ^ (a + b * q), min (min t₁ t₂) 1, c₂,
     lt_min (lt_min ht₁ ht₂) one_pos, hc₂, ?_⟩
   intro V _ _ _ Φ A K k hA hqk hΦ t D ht htt hD y
@@ -1168,15 +1239,16 @@ theorem amplitude_bound_far : Formalism.FourierDecayAlt.G.AmpBoundFar := by
     have hy : ‖(x, y).2‖ ≤ 2 * τ := (y_le_MXY m D t (x, y)).trans hM.le
     have hρ : ‖rhoXY m D t (x, y)‖ ≤ 2 * τ := (rho_le_MXY m D t (x, y)).trans hM.le
     have hxo : ∀ k, xOf (Xm m (x, y)) (Bm m (x, y)) k = x k := (split_xy_matrix m t 0 (x, y)).1
+    have hXm : ∀ i j, ‖Xm m (x, y) i j‖ ≤ 2 * ‖t‖ ^ (-ε) := by rw [← hτdef]; exact Xm_le m (x, y) h2τ hxk hy
+    have hBm : ∀ i, ‖Bm m (x, y) i‖ ≤ 2 * ‖t‖ ^ (-ε) := by rw [← hτdef]; exact Bm_le m (x, y) h2τ hxk hy
+    have hRho : ‖rhoXY m D t (x, y)‖ ≤ 2 * ‖t‖ ^ (-ε) := by rw [← hτdef]; exact hρ
+    have hRm : ∀ k, ‖rm m (x, y) k‖ ≤ 2 * ‖t‖ ^ (-ε) := by rw [← hτdef]; exact rm_le m (x, y) h2τ hxk hy
+    have hSm : ‖sm m (x, y)‖ ≤ 2 * ‖t‖ ^ (-ε) := by rw [← hτdef]; exact sm_le m (x, y) h2τ hxk hy
     have hA1 := hCof ε hε hε' D hD t ht htt₁ (Xm m (x, y)) (Bm m (x, y)) (rhoXY m D t (x, y)) (rm m (x, y))
-      (sm m (x, y)) (Xm_strict m _) (by rw [← hτdef]; exact fun i j => Xm_le m _ h2τ hxk hy i j)
-      (by rw [← hτdef]; exact fun i => Bm_le m _ h2τ hxk hy i) (by rw [← hτdef]; exact hρ)
-      (by rw [← hτdef]; exact fun k => rm_le m _ h2τ hxk hy k) (by rw [← hτdef]; exact sm_le m _ h2τ hxk hy)
+      (sm m (x, y)) (Xm_strict m _) hXm hBm hRho hRm hSm
       (corner_XY m D t (x, y) hc)
     have hA2 := hProd ε hε hε' D hD t ht htt₂ (Xm m (x, y)) (Bm m (x, y)) (rhoXY m D t (x, y)) (rm m (x, y))
-      (sm m (x, y)) (Xm_strict m _) (by rw [← hτdef]; exact fun i j => Xm_le m _ h2τ hxk hy i j)
-      (by rw [← hτdef]; exact fun i => Bm_le m _ h2τ hxk hy i) (by rw [← hτdef]; exact hρ)
-      (by rw [← hτdef]; exact fun k => rm_le m _ h2τ hxk hy k) (by rw [← hτdef]; exact sm_le m _ h2τ hxk hy)
+      (sm m (x, y)) (Xm_strict m _) hXm hBm hRho hRm hSm
       (corner_XY m D t (x, y) hc)
     simp only [hxo] at hA2
     rw [hτinv] at hA1 hA2
@@ -1227,7 +1299,7 @@ theorem amplitude_bound_far : Formalism.FourierDecayAlt.G.AmpBoundFar := by
         ⟨((hΦ Z hZ).1).of_le (by exact_mod_cast hqk), fun j hj => (hΦ Z hZ).2 j (hj.trans hqk)⟩
       have h1 := (hCc V Φ (detSet (m + 1) Kc) _ τ hτ1 hΦq).1
       have hdet : detM (MXY m D t (x, y)) ∈ detSet (m + 1) Kc :=
-        ⟨D, hD, (det_matrix_xy m D t (x, y) hcof).symm⟩
+        ⟨D, hD, (_root_.Formalism.FourierDecayAlt.P.CuspidalIrreducibleSubrep.detMXY m D t (x, y) hcof).symm⟩
       have hΦ' : DB q (cutPhi τ Φ) (MXY m D t (x, y)) (max Cc 0 * K) 1 := by
         refine (DB_of_DerivBound h1 le_rfl hdet).mono ?_ zero_le_one le_rfl
         have hb0 : 0 ≤ K * min 1 (‖MXY m D t (x, y)‖ ^ (-A)) :=
@@ -1243,30 +1315,18 @@ theorem amplitude_bound_far : Formalism.FourierDecayAlt.G.AmpBoundFar := by
           (by simpa using (hxk k).trans h2Q) ((proj_norm_le _ k).trans (hcQ1.trans hcQQ))
         simpa using this
       have hDBcore := hcore (Fin (m + 1) → ℂ) m q β D (fun _ => t) (fun v => v) (fun _ => y) x Q W
-        (le_trans (by rw [hcQ]; have := abs_nonneg RD; have := norm_nonneg β; linarith) hcQQ)
+        (hcQbase.trans hcQQ)
         (DB.const q t x (ht1.trans (hcQ1.trans hcQQ)) zero_le_one) hDBx
         (fun e => DB.const q (y e) x (((norm_le_pi_norm y e).trans hy).trans h2Q) zero_le_one)
-        (le_trans (by rw [hcQ]; have := hRD D hD; have := le_abs_self RD; have := norm_nonneg β; linarith) hcQQ)
-        (le_trans (by rw [hcQ]; have := abs_nonneg RD; linarith) hcQQ)
+        ((hRD D hD).trans ((le_abs_self RD).trans (hcQabs.trans hcQQ)))
+        (hcQβ.trans hcQQ)
         (by
           rw [hQ, hW, mul_pow]
-          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-          rw [hcW]
-          have h2 : 0 < c₁⁻¹ := inv_pos.2 hc₁
-          have h3 : 0 < c₂⁻¹ := inv_pos.2 hc₂
-          linarith)
+          exact mul_le_mul_of_nonneg_right hcWpow (by positivity))
         hcof
-        (hinvW c₁ _ hc₁ (by
-          rw [hcW]
-          have h1 : 0 ≤ cQ ^ (4 * (m + 2)) := by positivity
-          have h3 : 0 < c₂⁻¹ := inv_pos.2 hc₂
-          linarith) hcofl)
+        (hinvW c₁ _ hc₁ hcWc₁ hcofl)
         hprod
-        (hinvW c₂ _ hc₂ (by
-          rw [hcW]
-          have h1 : 0 ≤ cQ ^ (4 * (m + 2)) := by positivity
-          have h3 : 0 < c₁⁻¹ := inv_pos.2 hc₁
-          linarith) hprodl)
+        (hinvW c₂ _ hc₂ hcWc₂ hprodl)
         V (cutPhi τ Φ) (max Cc 0 * K) hΦ'
       have hev : (fun v : Fin (m + 1) → ℂ => ampIn β m ε Φ D t (v, y)) =ᶠ[𝓝 x]
           fun v => ampE β m (cutPhi τ Φ) D t (v, y) := by
@@ -1336,7 +1396,7 @@ theorem K_nonneg {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {m k : �
     rw [h, norm_zero] at h2
     exact (pow_pos (norm_pos_iff.2 hz) (m + 1)).ne h2
   have hdet : detM (MXY m D 0 (fun _ => z, (0 : UT (m + 2) → ℂ))) ∈ detSet (m + 1) Kc :=
-    ⟨D, hD, (det_matrix_xy m D 0 _ hc).symm⟩
+    ⟨D, hD, (_root_.Formalism.FourierDecayAlt.P.CuspidalIrreducibleSubrep.detMXY m D 0 _ hc).symm⟩
   have hM : 0 < ‖MXY m D 0 (fun _ => z, (0 : UT (m + 2) → ℂ))‖ :=
     lt_of_lt_of_le (norm_pos_iff.2 hz) (x_le_MXY m D 0 (fun _ => z, (0 : UT (m + 2) → ℂ)) 0)
   have h := (hΦ _ hdet).2 0 (Nat.zero_le _)
@@ -1375,8 +1435,10 @@ theorem cof_lower (m : ℕ) {δ c ε : ℝ} (hδ : 0 < δ) (hc : 2 ≤ c) (hε0 
     calc δ ^ (m + 1) = ∏ _k : Fin (m + 1), δ := by simp
       _ ≤ ∏ k, ‖p.1 k‖ := Finset.prod_le_prod₀ (fun _ _ => hδ.le) fun k _ => hxl k
   refine ⟨hprod, ?_⟩
-  have hR : 1 ≤ c * T := by nlinarith
-  have h1 := first_cofactor_norm_le m t p hR ht1 (fun k => (hx k).trans (by nlinarith)) (hy.trans (by nlinarith))
+  have hcT : c ≤ c * T := le_mul_of_one_le_right (zero_le_two.trans hc) hT
+  have hR : 1 ≤ c * T := one_le_two.trans (hc.trans hcT)
+  have h1 := first_cofactor_norm_le m t p hR ht1 (fun k => (hx k).trans hcT)
+    (hy.trans (mul_le_mul_of_nonneg_right hc (zero_le_one.trans hT)))
   have h2 : T ^ m * ‖t‖ ≤ Real.sqrt ‖t‖ := by
     refine le_trans ?_ (G6.rpow_bound m htp ht1 hε)
     exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hT (by omega)) htp.le
@@ -1389,9 +1451,9 @@ theorem cof_lower (m : ℕ) {δ c ε : ℝ} (hδ : 0 < δ) (hc : 2 ≤ c) (hε0 
           mul_le_mul_of_nonneg_left h2 (by positivity)
       _ ≤ _ := hts
   have h4 : ‖cof0XY m p‖ = ‖∏ k, p.1 k‖ := by simp [cof0XY, norm_pow]
-  have h5 : cof0XY m p = cofXY m t p - t * cof1XY m t p := by rw [cofXY_eq]; ring
+  have h5 : cof0XY m p = cofXY m t p - t * cof1XY m t p := by rw [cofXY_eq, add_sub_cancel_right]
   have h6 : ‖cof0XY m p‖ ≤ ‖cofXY m t p‖ + ‖t * cof1XY m t p‖ := by rw [h5]; exact norm_sub_le _ _
-  linarith
+  linarith only [hprod, h3, h4, h6]
 
 theorem main : AmpBoundCrit := by
   obtain ⟨a, b, hcore⟩ := core
@@ -1406,16 +1468,14 @@ theorem main : AmpBoundCrit := by
   obtain ⟨Ccrit, hCcrit⟩ := hcr2 q
   obtain ⟨c, hcdef⟩ : ∃ c : ℝ, c = max RD 1 + 2 * δ + 2 := ⟨_, rfl⟩
   have hc2 : 2 ≤ c := by
-    have := le_max_right RD 1
-    linarith
+    linarith only [hcdef, le_max_right RD 1, hδ0]
   have hcRD : RD ≤ c := by
-    have := le_max_left RD 1
-    linarith
+    linarith only [hcdef, le_max_left RD 1, hδ0]
   obtain ⟨cQ, hcQdef⟩ : ∃ cQ : ℝ, cQ = max (2 ^ q * ((m : ℝ) + 2) ^ 2 * q.factorial) (max c ‖β‖) := ⟨_, rfl⟩
   have hcQ1 : 2 ^ q * ((m : ℝ) + 2) ^ 2 * q.factorial ≤ cQ := hcQdef ▸ le_max_left _ _
   have hcQ2 : c ≤ cQ := hcQdef ▸ (le_max_left _ _).trans (le_max_right _ _)
   have hcQ3 : ‖β‖ ≤ cQ := hcQdef ▸ (le_max_right _ _).trans (le_max_right _ _)
-  have hcQ0 : 1 ≤ cQ := by linarith
+  have hcQ0 : 1 ≤ cQ := one_le_two.trans (hc2.trans hcQ2)
   obtain ⟨cW, hcWdef⟩ : ∃ cW : ℝ, cW = max (cQ ^ (4 * (m + 2))) (2 / δ ^ (m + 1)) := ⟨_, rfl⟩
   have hcW1 : cQ ^ (4 * (m + 2)) ≤ cW := hcWdef ▸ le_max_left _ _
   have hcW2 : 2 / δ ^ (m + 1) ≤ cW := hcWdef ▸ le_max_right _ _
@@ -1437,9 +1497,9 @@ theorem main : AmpBoundCrit := by
       _ = δ ^ (m + 1) / 2 := by rw [hκdef]; field_simp
   have hzl : 100 * ((m : ℝ) + 2) * δ ≤ ‖z‖ := hδz D hD z hz
   have hz200 : 200 * δ ≤ ‖z‖ := by
-    have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-    nlinarith
-  have hzne : z ≠ 0 := norm_pos_iff.1 (by linarith)
+    have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+    nlinarith only [hzl, mul_nonneg hm hδ0.le]
+  have hzne : z ≠ 0 := norm_pos_iff.1 ((mul_pos (by norm_num) hδ0).trans_le hz200)
   have hzR : ‖z‖ ≤ max RD 1 := by
     by_contra hcon
     have h1 : max RD 1 < ‖z‖ := not_le.1 hcon
@@ -1447,23 +1507,21 @@ theorem main : AmpBoundCrit := by
     have h3 : ‖z‖ ≤ ‖z‖ ^ (m + 2) := le_self_pow₀ h2 (by omega)
     have h4 : ‖z‖ ^ (m + 2) = ‖D‖ := by
       rw [← norm_pow, hz, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
-    have h5 := hRD D hD
-    have h6 := le_max_left RD 1
-    linarith
+    exact (not_lt_of_ge (h3.trans (h4.le.trans ((hRD D hD).trans (le_max_left _ _))))) h1
   have hK : 0 ≤ K := K_nonneg hΦ hD hzne
   obtain ⟨τ, hτdef⟩ : ∃ τ : ℝ, τ = ‖t‖ ^ (-ε) := ⟨_, rfl⟩
-  have hτ : 1 ≤ τ := hτdef ▸ Real.one_le_rpow_of_pos_of_le_one_of_nonpos htp ht1 (by linarith)
+  have hτ : 1 ≤ τ := hτdef ▸ Real.one_le_rpow_of_pos_of_le_one_of_nonpos htp ht1 (neg_nonpos.mpr hε0.le)
   obtain ⟨Y, hYdef⟩ : ∃ Y : ℝ, Y = 1 + ‖y‖ := ⟨_, rfl⟩
-  have hY1 : 1 ≤ Y := by rw [hYdef]; linarith [norm_nonneg y]
+  have hY1 : 1 ≤ Y := by rw [hYdef]; exact le_add_of_nonneg_right (norm_nonneg y)
   obtain ⟨mx, hmxdef⟩ : ∃ mx : ℝ, mx = (max 1 ‖y‖) ^ (-A) := ⟨_, rfl⟩
   have hmx0 : 0 ≤ mx := by rw [hmxdef]; positivity
   obtain ⟨Q, hQdef⟩ : ∃ Q : ℝ, Q = cQ * Y := ⟨_, rfl⟩
   have hQle : ∀ r : ℝ, r ≤ cQ → r ≤ Q := fun r hr => by
-    rw [hQdef]; exact hr.trans (le_mul_of_one_le_right (by linarith) hY1)
+    rw [hQdef]; exact hr.trans (le_mul_of_one_le_right (zero_le_one.trans hcQ0) hY1)
   obtain ⟨W, hWdef⟩ : ∃ W : ℝ, W = cW * Y ^ (4 * (m + 2)) := ⟨_, rfl⟩
   have hYp : 1 ≤ Y ^ (4 * (m + 2)) := one_le_pow₀ hY1
   have hWle : ∀ r : ℝ, r ≤ cW → r ≤ W := fun r hr => by
-    rw [hWdef]; exact hr.trans (le_mul_of_one_le_right (by linarith) hYp)
+    rw [hWdef]; exact hr.trans (le_mul_of_one_le_right (zero_le_one.trans hcW0) hYp)
   have hW1 : 1 ≤ W := hWle 1 hcW0
   have hQW : Q ^ (4 * (m + 2)) ≤ W := by
     rw [hQdef, hWdef, mul_pow]
@@ -1480,7 +1538,7 @@ theorem main : AmpBoundCrit := by
     swap
     · refine DB.of_eventually_zero (Filter.Eventually.of_forall fun v => ?_) hS0 hP0
       show ((critCut δ z v : ℝ) : ℂ) • ampIn β m ε Φ D t (v, y) = 0
-      rw [ampIn_zero β m ε Φ D t (v, y) (by rw [← hτdef]; linarith) (by rw [← hτdef]; exact (not_le.1 hy).le),
+      rw [ampIn_zero β m ε Φ D t (v, y) (by rw [← hτdef]; exact zero_lt_one.trans_le hτ) (by rw [← hτdef]; exact (not_le.1 hy).le),
         smul_zero]
     by_cases hx : ‖x - fun _ => z‖ ≤ 2 * δ
     swap
@@ -1496,23 +1554,18 @@ theorem main : AmpBoundCrit := by
         have h1 := norm_add_le (x k - z) z
         rw [sub_add_cancel] at h1
         have h2 := hxk k
-        linarith
+        linarith only [h1, h2, hzR, hcdef]
       have hxl : ∀ k, δ ≤ ‖x k‖ := fun k => by
         have h1 := norm_sub_norm_le z (x k)
         rw [norm_sub_rev] at h1
         have h2 := hxk k
-        linarith
+        linarith only [h1, h2, hz200, hδ0]
       obtain ⟨hprod, hcof⟩ := cof_lower m hδ0 hc2 hε0 hε ht0 ht1 hts (x, y) hxu hxl (by rw [← hτdef]; exact hy)
       have hcofne : cofXY m t (x, y) ≠ 0 := by
-        intro h
-        rw [h, norm_zero] at hcof
-        linarith
+        exact norm_pos_iff.mp ((div_pos hδp two_pos).trans_le hcof)
       have hprodne : ∏ k, x k ≠ 0 := by
-        intro h
-        change δ ^ (m + 1) ≤ ‖∏ k, x k‖ at hprod
-        rw [h, norm_zero] at hprod
-        linarith
-      have hdet : detM (MXY m D t (x, y)) ∈ detSet (m + 1) Kc := ⟨D, hD, (det_matrix_xy m D t (x, y) hcofne).symm⟩
+        exact norm_pos_iff.mp (hδp.trans_le hprod)
+      have hdet : detM (MXY m D t (x, y)) ∈ detSet (m + 1) Kc := ⟨D, hD, (_root_.Formalism.FourierDecayAlt.P.CuspidalIrreducibleSubrep.detMXY m D t (x, y) hcofne).symm⟩
       have hΦ' := (hCcut V Φ _ _ τ hτ (derivBound_mono hΦ hk)).1
       have hDBΦ : DB q (cutPhi τ Φ) (MXY m D t (x, y)) K' 1 := by
         refine (DB_of_DerivBound hΦ' le_rfl hdet).mono ?_ zero_le_one le_rfl
@@ -1534,13 +1587,10 @@ theorem main : AmpBoundCrit := by
         calc ‖∏ k, x k‖⁻¹ ≤ (δ ^ (m + 1))⁻¹ := inv_anti₀ hδp hprod
           _ ≤ 2 / δ ^ (m + 1) := by
             rw [div_eq_mul_inv]
-            have : 0 ≤ (δ ^ (m + 1))⁻¹ := by positivity
-            linarith
+            exact le_mul_of_one_le_left (inv_nonneg.mpr hδp.le) one_le_two
       have hyQ : ∀ e, ‖y e‖ ≤ Q := fun e => by
-        have h1 := norm_le_pi_norm y e
-        have h2 : Y ≤ Q := by rw [hQdef]; exact le_mul_of_one_le_left (by linarith) hcQ0
-        rw [hYdef] at h2
-        linarith
+        have h2 : Y ≤ Q := by rw [hQdef]; exact le_mul_of_one_le_left (zero_le_one.trans hY1) hcQ0
+        exact (norm_le_pi_norm y e).trans ((by rw [hYdef]; exact le_add_of_nonneg_left zero_le_one : ‖y‖ ≤ Y).trans h2)
       have hc := hcore (Fin (m + 1) → ℂ) m q β D (fun _ => t) (fun v => v) (fun _ => y) x Q W (hQle _ hcQ1)
         (DB.const q t x (hQle _ (ht1.trans hcQ0)) zero_le_one)
         (fun k => DB_proj q (m + 1) k x (hQle _ ((hxu k).trans hcQ2)) (hQle _ hcQ0))
@@ -1583,8 +1633,6 @@ theorem main : AmpBoundCrit := by
     _ = _ := by rw [hYdef, hmxdef]; ring
 
 end Formalism.FourierDecayAlt.P.EtaleIntegralityFacts.Crit
-
-theorem Formalism.FourierDecayAlt.P.amplitude_bound_critical : Formalism.FourierDecayAlt.G.AmpBoundCrit := Formalism.FourierDecayAlt.P.EtaleIntegralityFacts.Crit.main
 
 namespace Formalism.FourierDecayAlt.P.EtaleIntegralityFacts.Lim
 
@@ -1635,7 +1683,7 @@ theorem cof_lower (m : ℕ) (z τ' : ℂ) (y : UT (m + 2) → ℂ) {R c : ℝ} (
     exact (mul_le_mul_of_nonneg_left h1 (norm_nonneg _)).trans hs
   rw [cofXY_eq]
   have h3 := norm_sub_le_norm_add (cof0XY m (fun _ => z, y)) (τ' * cof1XY m τ' (fun _ => z, y))
-  linarith [h3]
+  linarith only [hc, h0, h2, h3]
 
 theorem geom (m : ℕ) (Kc : Set ℂ) (hK : IsCompact Kc) (h0 : (0 : ℂ) ∉ Kc) (ε : ℝ) (hε0 : 0 < ε)
     (hε : ε ≤ 1 / (2 * ((m : ℝ) + 2))) :
@@ -1664,9 +1712,11 @@ theorem geom (m : ℕ) (Kc : Set ℂ) (hK : IsCompact Kc) (h0 : (0 : ℂ) ∉ Kc
   have hC₂0 : 0 < C₂ := by positivity
   set Rb : ℝ := max ((2 * Rz + Rz + C₂) * (2 / c)) Rz with hRb
   have hRb1 : 1 ≤ Rb := hRz1.trans (le_max_right _ _)
-  have hRb0 : 0 < Rb := by linarith
+  have hRb0 : 0 < Rb := zero_lt_one.trans_le hRb1
+  have h2Rz : 0 ≤ 2 * Rz := mul_nonneg zero_le_two (zero_le_one.trans hRz1)
+  have hRz2 : Rz ≤ 2 * Rz := le_mul_of_one_le_left (zero_le_one.trans hRz1) one_le_two
   refine ⟨min 1 (min ((c / (2 * C₁)) ^ 2) (Rb ^ (-(1 / ε)))), c, Rz, ?_, min_le_left _ _, hc0, hRz1, ?_⟩
-  · refine lt_min one_pos (lt_min (by positivity) (Real.rpow_pos_of_pos hRb0 _))
+  · refine lt_min one_pos (lt_min (pow_pos (div_pos hc0 (mul_pos two_pos hC₁0)) _) (Real.rpow_pos_of_pos hRb0 _))
   intro D hD z hzD t ht htle
   have ht0 : 0 < ‖t‖ := norm_pos_iff.mpr ht
   have ht1 : ‖t‖ ≤ 1 := htle.trans (min_le_left _ _)
@@ -1680,7 +1730,7 @@ theorem geom (m : ℕ) (Kc : Set ℂ) (hK : IsCompact Kc) (h0 : (0 : ℂ) ∉ Kc
     exact lt_of_lt_of_le hrz0 hzl
   have hcz : c ≤ ‖z‖ ^ (m + 1) := pow_le_pow_left₀ hrz0.le hzl _
   set T : ℝ := ‖t‖ ^ (-ε) with hT
-  have hT1 : 1 ≤ T := Real.one_le_rpow_of_pos_of_le_one_of_nonpos ht0 ht1 (by linarith)
+  have hT1 : 1 ≤ T := Real.one_le_rpow_of_pos_of_le_one_of_nonpos ht0 ht1 (neg_nonpos.mpr hε0.le)
   have hsq : Real.sqrt ‖t‖ ≤ c / (2 * C₁) := by
     rw [← Real.sqrt_sq (by positivity : (0 : ℝ) ≤ c / (2 * C₁))]
     exact Real.sqrt_le_sqrt ht2
@@ -1688,61 +1738,61 @@ theorem geom (m : ℕ) (Kc : Set ℂ) (hK : IsCompact Kc) (h0 : (0 : ℂ) ∉ Kc
     rw [← Real.sqrt_one]
     exact Real.sqrt_le_sqrt ht1
   have hRbT : Rb ≤ T := by
-    have h1 : (Rb ^ (-(1 / ε))) ^ (-ε) ≤ T := Real.rpow_le_rpow_of_nonpos ht0 ht3 (by linarith)
+    have h1 : (Rb ^ (-(1 / ε))) ^ (-ε) ≤ T := Real.rpow_le_rpow_of_nonpos ht0 ht3 (neg_nonpos.mpr hε0.le)
     rw [← Real.rpow_mul hRb0.le] at h1
     have h2 : -(1 / ε) * -ε = 1 := by field_simp
     rwa [h2, Real.rpow_one] at h1
-  have hR1 : 1 ≤ 2 * Rz * T := by nlinarith
-  have hzR : ‖z‖ ≤ 2 * Rz * T := by nlinarith
+  have hRzT : Rz ≤ 2 * Rz * T := hRz2.trans (le_mul_of_one_le_right h2Rz hT1)
+  have hR1 : 1 ≤ 2 * Rz * T := hRz1.trans hRzT
+  have hzR : ‖z‖ ≤ 2 * Rz * T := hzu.trans hRzT
+  have h2TR : 2 * T ≤ 2 * Rz * T :=
+    mul_le_mul_of_nonneg_right (le_mul_of_one_le_right zero_le_two hRz1) (zero_le_one.trans hT1)
   have hcof : ∀ (y : UT (m + 2) → ℂ) (τ' : ℂ), ‖y‖ ≤ 2 * T → ‖τ'‖ ≤ ‖t‖ →
       c / 2 ≤ ‖cofXY m τ' (fun _ => z, y)‖ := by
     intro y τ' hy hτ'
-    refine cof_lower m z τ' y hR1 (hτ'.trans ht1) hzR (by nlinarith) hcz ?_
+    refine cof_lower m z τ' y hR1 (hτ'.trans ht1) hzR (hy.trans h2TR) hcz ?_
     calc ‖τ'‖ * (((m : ℝ) + 1) ^ (m + 1) * (2 * Rz * T) ^ m)
         ≤ ‖t‖ * (((m : ℝ) + 1) ^ (m + 1) * (2 * Rz * T) ^ m) :=
           mul_le_mul_of_nonneg_right hτ' (by positivity)
-      _ = C₁ * (T ^ m * ‖t‖) := by rw [hC₁, mul_pow]; ring
+      _ = C₁ * (T ^ m * ‖t‖) := by rw [hC₁, mul_pow]; simp only [mul_assoc, mul_left_comm, mul_comm]
       _ ≤ C₁ * Real.sqrt ‖t‖ :=
           mul_le_mul_of_nonneg_left (Tpow m ht0 ht1 hε0 hε (by omega)) hC₁0.le
       _ ≤ C₁ * (c / (2 * C₁)) := mul_le_mul_of_nonneg_left hsq hC₁0.le
       _ = c / 2 := by field_simp
   refine ⟨hz0, hzu, (hRD D hD).trans (le_max_right _ _), hcz, hcof, ?_⟩
   intro y hy
-  have hyR : ‖y‖ ≤ 2 * Rz * T := by nlinarith
-  have hcl := hcof y t (by linarith) le_rfl
+  have hy2 : ‖y‖ ≤ 2 * T := hy.trans (le_mul_of_one_le_left (zero_le_one.trans hT1) one_le_two)
+  have hyR : ‖y‖ ≤ 2 * Rz * T := hy2.trans h2TR
+  have hcl := hcof y t hy2 le_rfl
   have hρ : ‖rhoXY m D t (fun _ => z, y)‖ ≤ (2 * Rz + Rz + C₂) * (2 / c) := by
     rw [rhoXY_eq, norm_mul, norm_inv]
     have e1 : ‖cofXY m t (fun _ => z, y)‖⁻¹ ≤ 2 / c := by
-      rw [inv_le_comm₀ (by linarith) (by positivity)]
-      rw [inv_div]
-      exact hcl
+      simpa only [inv_div] using inv_anti₀ (div_pos hc0 two_pos) hcl
     have e2 : ‖t ^ (m + 1) * sm m (fun _ => z, y)‖ ≤ 2 * Rz := by
       rw [norm_mul, norm_pow]
       have a1 : ‖sm m (fun _ => z, y)‖ ≤ 2 * Rz * T :=
-        sm_le m (fun _ => z, y) (by linarith) (fun _ => hzR) hyR
+        sm_le m (fun _ => z, y) (zero_le_one.trans hR1) (fun _ => hzR) hyR
       have a2 : ‖t‖ ^ (m + 1) ≤ ‖t‖ := pow_le_of_le_one ht0.le ht1 (by omega)
       calc ‖t‖ ^ (m + 1) * ‖sm m (fun _ => z, y)‖ ≤ ‖t‖ * (2 * Rz * T) :=
             mul_le_mul a2 a1 (norm_nonneg _) ht0.le
-        _ = 2 * Rz * (T ^ 1 * ‖t‖) := by ring
+        _ = 2 * Rz * (T ^ 1 * ‖t‖) := by rw [pow_one, mul_comm ‖t‖, mul_assoc]
         _ ≤ 2 * Rz * Real.sqrt ‖t‖ :=
             mul_le_mul_of_nonneg_left (Tpow m ht0 ht1 hε0 hε (by omega)) (by positivity)
-        _ ≤ 2 * Rz * 1 := mul_le_mul_of_nonneg_left hsq1 (by positivity)
-        _ = 2 * Rz := by ring
+        _ ≤ 2 * Rz := by simpa only [mul_one] using mul_le_mul_of_nonneg_left hsq1 h2Rz
     have e3 : ‖t * r1XY m t (fun _ => z, y)‖ ≤ C₂ := by
       rw [norm_mul]
       have a1 := remainder_norm_le m t (fun _ => z, y) hR1 ht1 (fun _ => hzR) hyR
       calc ‖t‖ * ‖r1XY m t (fun _ => z, y)‖ ≤ ‖t‖ * (((m : ℝ) + 1) ^ (m + 2) * (2 * Rz * T) ^ (m + 1)) :=
             mul_le_mul_of_nonneg_left a1 ht0.le
-        _ = C₂ * (T ^ (m + 1) * ‖t‖) := by rw [hC₂, mul_pow]; ring
+        _ = C₂ * (T ^ (m + 1) * ‖t‖) := by rw [hC₂, mul_pow]; simp only [mul_assoc, mul_left_comm, mul_comm]
         _ ≤ C₂ * Real.sqrt ‖t‖ :=
             mul_le_mul_of_nonneg_left (Tpow m ht0 ht1 hε0 hε (by omega)) hC₂0.le
-        _ ≤ C₂ * 1 := mul_le_mul_of_nonneg_left hsq1 hC₂0.le
-        _ = C₂ := by ring
+        _ ≤ C₂ := by simpa only [mul_one] using mul_le_mul_of_nonneg_left hsq1 hC₂0.le
     have e4 : ‖t ^ (m + 1) * sm m (fun _ => z, y) - D - t * r1XY m t (fun _ => z, y)‖ ≤ 2 * Rz + Rz + C₂ := by
       refine (norm_sub_le _ _).trans (add_le_add ((norm_sub_le _ _).trans (add_le_add e2 ?_)) e3)
       exact (hRD D hD).trans (le_max_right _ _)
     exact mul_le_mul e4 e1 (by positivity) (by positivity)
-  refine MXY_le m D t (fun _ => z, y) (by linarith) (ht1.trans hT1) ?_ (fun _ => ?_) hy
+  refine MXY_le m D t (fun _ => z, y) (zero_le_one.trans hT1) (ht1.trans hT1) ?_ (fun _ => ?_) hy
   · exact hρ.trans ((le_max_left _ _).trans hRbT)
   · exact hzu.trans ((le_max_right _ _).trans hRbT)
 
@@ -1767,7 +1817,7 @@ theorem norm_psi (β w : ℂ) : ‖psi β w‖ = 1 := (additive_character_psi β
 
 theorem det_mem (m : ℕ) (Kc : Set ℂ) {D : ℂ} (hD : D ∈ Kc) (t : ℂ) (p : XY m) (hc : cofXY m t p ≠ 0) :
     detM (MXY m D t p) ∈ detSet (m + 1) Kc := by
-  rw [det_matrix_xy m D t p hc]
+  rw [_root_.Formalism.FourierDecayAlt.P.CuspidalIrreducibleSubrep.detMXY m D t p hc]
   exact ⟨D, hD, rfl⟩
 
 theorem K_nonneg (m : ℕ) (Kc : Set ℂ) (Φ : Mat (m + 1 + 1) → V) (A K : ℝ) (k : ℕ)
@@ -1860,16 +1910,19 @@ theorem diff_key {a b : ℕ} (hcore : CoreProp a b) (m : ℕ) (β D z τ' : ℂ)
   set cQ : ℝ := 4 * ((m : ℝ) + 2) ^ 2 + Rz + ‖β‖ with hcQ
   set cW : ℝ := cQ ^ (4 * (m + 2)) + 2 / c with hcW
   set Y : ℝ := 1 + ‖y‖ with hY
-  have hy0 := norm_nonneg y
-  have hY1 : 1 ≤ Y := by linarith
+  have hY1 : 1 ≤ Y := le_add_of_nonneg_right (norm_nonneg y)
+  have hY0 : 0 ≤ Y := zero_le_one.trans hY1
   have hβ0 := norm_nonneg β
-  have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-  have hm2 : (0 : ℝ) ≤ ((m : ℝ) + 2) ^ 2 := by positivity
-  have hcQ1 : 1 ≤ cQ := by linarith
-  have hcQ0 : 0 ≤ cQ := by linarith
-  have h2c : 0 ≤ 2 / c := by positivity
-  have hcQp : 0 ≤ cQ ^ (4 * (m + 2)) := by positivity
-  have hcW0 : 0 ≤ cW := by linarith
+  have hm2 : (0 : ℝ) ≤ ((m : ℝ) + 2) ^ 2 := sq_nonneg _
+  have hRz0 : 0 ≤ Rz := zero_le_one.trans hRz
+  have h4m : (0 : ℝ) ≤ 4 * ((m : ℝ) + 2) ^ 2 := mul_nonneg (by norm_num) hm2
+  have hRzcQ : Rz ≤ cQ := (le_add_of_nonneg_left h4m).trans (le_add_of_nonneg_right hβ0)
+  have hcQ1 : 1 ≤ cQ := hRz.trans hRzcQ
+  have hcQ0 : 0 ≤ cQ := zero_le_one.trans hcQ1
+  have h2c : 0 ≤ 2 / c := div_nonneg zero_le_two hc0.le
+  have hcQp : 0 ≤ cQ ^ (4 * (m + 2)) := pow_nonneg hcQ0 _
+  have hcW0 : 0 ≤ cW := add_nonneg hcQp h2c
+  have hinv : 2 / c ≤ cW := le_add_of_nonneg_left hcQp
   have hYp : 1 ≤ Y ^ (4 * (m + 2)) := one_le_pow₀ hY1
   have hQ : ∀ r : ℝ, r ≤ cQ → r ≤ cQ * Y := fun r hr =>
     hr.trans (le_mul_of_one_le_right hcQ0 hY1)
@@ -1878,44 +1931,38 @@ theorem diff_key {a b : ℕ} (hcore : CoreProp a b) (m : ℕ) (β D z τ' : ℂ)
   have g1 : (2 : ℝ) ^ 1 * ((m : ℝ) + 2) ^ 2 * (Nat.factorial 1 : ℕ) ≤ cQ * Y := by
     refine hQ _ ?_
     simp only [pow_one, Nat.factorial_one, Nat.cast_one, mul_one]
-    linarith
+    rw [hcQ]
+    linarith only [hm2, hRz0, hβ0]
   have g2 : DB 1 (fun v : ℂ => v) τ' (cQ * Y) 1 := by
     have h := DB.affine 1 (ContinuousLinearMap.id ℝ ℂ) (0 : ℂ) τ' (S := cQ * Y)
       (by
         simp only [ContinuousLinearMap.id_apply, add_zero]
-        exact hQ _ (by linarith))
+        exact hQ _ (hτ1.trans hcQ1))
       (ContinuousLinearMap.norm_id_le.trans (hQ _ hcQ1))
-    simpa using h
+    simpa only [ContinuousLinearMap.id_apply, add_zero] using h
   have g3 : ∀ _k : Fin (m + 1), DB 1 (fun _ : ℂ => z) τ' (cQ * Y) 1 := fun _ =>
-    DB.const 1 z τ' (hQ _ (by linarith)) zero_le_one
+    DB.const 1 z τ' (hQ _ (hzR.trans hRzcQ)) zero_le_one
   have g4 : ∀ e : UT (m + 2), DB 1 (fun _ : ℂ => y e) τ' (cQ * Y) 1 := fun e => by
     refine DB.const 1 (y e) τ' ((norm_le_pi_norm y e).trans ?_) zero_le_one
-    calc ‖y‖ ≤ 1 * Y := by linarith
-      _ ≤ cQ * Y := mul_le_mul_of_nonneg_right hcQ1 (by linarith)
-  have g5 : ‖D‖ ≤ cQ * Y := hQ _ (by linarith)
-  have g6 : ‖β‖ ≤ cQ * Y := hQ _ (by linarith)
+    exact (le_add_of_nonneg_left zero_le_one : ‖y‖ ≤ Y).trans (le_mul_of_one_le_left hY0 hcQ1)
+  have g5 : ‖D‖ ≤ cQ * Y := hQ _ (hDR.trans hRzcQ)
+  have g6 : ‖β‖ ≤ cQ * Y := hQ _ (le_add_of_nonneg_left (add_nonneg h4m hRz0))
   have g7 : (cQ * Y) ^ (4 * (m + 2)) ≤ cW * Y ^ (4 * (m + 2)) := by
     rw [mul_pow]
-    exact mul_le_mul_of_nonneg_right (by linarith) (by linarith)
-  have g8 : cofXY m τ' (fun _ => z, y) ≠ 0 := by
-    rw [← norm_pos_iff]
-    linarith
-  have g9 : ‖cofXY m τ' (fun _ => z, y)‖⁻¹ ≤ cW * Y ^ (4 * (m + 2)) := by
-    refine hW _ ?_
-    have e1 : ‖cofXY m τ' (fun _ => z, y)‖⁻¹ ≤ 2 / c := by
-      rw [inv_le_comm₀ (by linarith) (by positivity), inv_div]
-      exact hl
-    linarith
+    exact mul_le_mul_of_nonneg_right (le_add_of_nonneg_right h2c) (pow_nonneg hY0 _)
+  have hcHalf : 0 < c / 2 := div_pos hc0 two_pos
+  have g8 : cofXY m τ' (fun _ => z, y) ≠ 0 := norm_pos_iff.mp (hcHalf.trans_le hl)
+  have g9 : ‖cofXY m τ' (fun _ => z, y)‖⁻¹ ≤ cW * Y ^ (4 * (m + 2)) :=
+    hW _ ((by simpa only [inv_div] using inv_anti₀ hcHalf hl :
+      ‖cofXY m τ' (fun _ => z, y)‖⁻¹ ≤ 2 / c).trans hinv)
   have g10 : ∏ _k : Fin (m + 1), z ≠ 0 := by
     simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     exact pow_ne_zero _ hz0
   have g11 : ‖∏ _k : Fin (m + 1), z‖⁻¹ ≤ cW * Y ^ (4 * (m + 2)) := by
-    refine hW _ ?_
     simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin, norm_pow]
     have e1 : (‖z‖ ^ (m + 1))⁻¹ ≤ 2 / c := by
-      rw [inv_le_comm₀ (by linarith) (by positivity), inv_div]
-      linarith
-    linarith
+      simpa only [inv_div] using inv_anti₀ hcHalf ((half_le_self hc0.le).trans hcz)
+    exact hW _ (e1.trans hinv)
   exact hcore ℂ m 1 β D (fun v => v) (fun _ _ => z) (fun _ => y) τ' (cQ * Y) (cW * Y ^ (4 * (m + 2)))
     g1 g2 g3 g4 g5 g6 g7 g8 g9 g10 g11 V Φ K' hΦ
 
@@ -2010,33 +2057,31 @@ theorem arith (a b m : ℕ) {ε A : ℝ} (hε0 : 0 < ε) (hε : ε ≤ 1 / (2 * 
     0 ≤ A ∧ ((4 * (m + 2) * (a + b) : ℕ) : ℝ) + ((m : ℝ) + 2) * ((m : ℝ) + 1) + 1 ≤ A ∧
       1 ≤ -ε * (((4 * (m + 2) * (a + b) : ℕ) : ℝ) + ((m : ℝ) + 2) * ((m : ℝ) + 1) - A) := by
   have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-  have ha0 : (0 : ℝ) ≤ (a : ℝ) := Nat.cast_nonneg a
-  have hb0 : (0 : ℝ) ≤ (b : ℝ) := Nat.cast_nonneg b
   have hε1 : ε ≤ 1 := by
     refine hε.trans ?_
     rw [div_le_one (by positivity)]
-    linarith
+    linarith only [hm0]
   set u : ℝ := 3 * ((m : ℝ) + 2) / ε with hu
   have hεu : ε * u = 3 * ((m : ℝ) + 2) := by
     rw [hu]
     field_simp
   have hu1 : 1 ≤ u := by
     rw [hu, le_div_iff₀ hε0]
-    linarith
+    linarith only [hε1, hm0]
   have hab : (0 : ℝ) ≤ ((a : ℝ) + b) * ((m : ℝ) + 2) * ((m : ℝ) + 1) := by positivity
   have key : ((4 * (m + 2) * (a + b) : ℕ) : ℝ) + ((m : ℝ) + 2) * ((m : ℝ) + 1) + u ≤ A := by
     refine le_trans ?_ hA
     push_cast
-    nlinarith
+    linarith only [hm0, hab]
   have hE0 : (0 : ℝ) ≤ ((4 * (m + 2) * (a + b) : ℕ) : ℝ) := Nat.cast_nonneg _
-  refine ⟨?_, by linarith, ?_⟩
+  refine ⟨?_, by linarith only [key, hu1], ?_⟩
   · have : (0 : ℝ) ≤ ((m : ℝ) + 2) * ((m : ℝ) + 1) := by positivity
-    linarith
+    linarith only [key, hu1, hE0, this]
   · have h1 : ε * u ≤ ε * (A - ((4 * (m + 2) * (a + b) : ℕ) : ℝ) - ((m : ℝ) + 2) * ((m : ℝ) + 1)) :=
-      mul_le_mul_of_nonneg_left (by linarith) hε0.le
-    nlinarith
+      mul_le_mul_of_nonneg_left (by linarith only [key]) hε0.le
+    linarith only [h1, hεu, hm0]
 
-set_option maxHeartbeats 1000000 in
+
 theorem ampLimit : AmpLimit := by
   obtain ⟨a, b, hcore⟩ := core'
   refine ⟨4 * (a + b) + 1, ?_⟩
@@ -2057,34 +2102,33 @@ theorem ampLimit : AmpLimit := by
   have hK0 : 0 ≤ K := K_nonneg m Kc Φ A K k hΦ hD hz0
   obtain ⟨hmi, hmI, hmT⟩ := hmaj A hA1
   set T : ℝ := ‖t‖ ^ (-ε) with hT
-  have hT1 : 1 ≤ T := Real.one_le_rpow_of_pos_of_le_one_of_nonpos ht0 ht1 (by linarith)
+  have hT1 : 1 ≤ T := Real.one_le_rpow_of_pos_of_le_one_of_nonpos ht0 ht1 (neg_nonpos.mpr hε0.le)
   set maj : (UT (m + 2) → ℂ) → ℝ := fun y => (1 + ‖y‖) ^ (4 * (m + 2) * (a + b)) * (max 1 ‖y‖) ^ (-A) with hmajdef
   have hmx0 : ∀ y : UT (m + 2) → ℂ, 0 ≤ (max 1 ‖y‖) ^ (-A) := fun y =>
     Real.rpow_nonneg (le_trans zero_le_one (le_max_left _ _)) _
   have hmaj0 : ∀ y, 0 ≤ maj y := fun y => mul_nonneg (by positivity) (hmx0 y)
   have hmxle : ∀ y : UT (m + 2) → ℂ, (max 1 ‖y‖) ^ (-A) ≤ maj y := fun y =>
-    le_mul_of_one_le_left (hmx0 y) (one_le_pow₀ (by linarith [norm_nonneg y]))
+    le_mul_of_one_le_left (hmx0 y) (one_le_pow₀ (le_add_of_nonneg_right (norm_nonneg y)))
   have hne : ∀ (y : UT (m + 2) → ℂ) (τ' : ℂ), c / 2 ≤ ‖cofXY m τ' (fun _ => z, y)‖ →
-      cofXY m τ' (fun _ => z, y) ≠ 0 := fun y τ' h => by
-    rw [← norm_pos_iff]
-    linarith
+      cofXY m τ' (fun _ => z, y) ≠ 0 := fun _ _ h =>
+    norm_pos_iff.mp ((div_pos hc0 two_pos).trans_le h)
   have hCm0 : 0 ≤ Cm := le_trans (integral_nonneg hmaj0) hmI
   have hprod : ∏ _k : Fin (m + 1), z ≠ 0 := by
     simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     exact pow_ne_zero _ hz0
 
+  have hCpow : cW ^ (a + b) ≤ C₃ := le_add_of_nonneg_right (sq_nonneg _)
+  have hCsmall : (2 / c) ^ 2 ≤ C₃ := le_add_of_nonneg_left (pow_nonneg hcW0 _)
   have hfb : ∀ y : UT (m + 2) → ℂ, ‖ampIn β m ε Φ D t (fun _ => z, y)‖ ≤ K * C₃ * maj y := by
     intro y
     have h1 := f_bound m β ε Φ D t (fun _ => z, y) (K' := K * (max 1 ‖y‖) ^ (-A)) hc0 ht
       (mul_nonneg hK0 (hmx0 y)) (fun hy => hcof y t hy le_rfl)
       (fun hc => (Phi_DB m Kc Φ A K k 0 hA0 hK0 (Nat.zero_le _) hΦ hD t (fun _ => z, y) hc).norm_le)
     calc ‖ampIn β m ε Φ D t (fun _ => z, y)‖ ≤ (2 / c) ^ 2 * (K * (max 1 ‖y‖) ^ (-A)) := h1
-      _ ≤ C₃ * (K * maj y) := by
-          refine mul_le_mul ?_ (mul_le_mul_of_nonneg_left (hmxle y) hK0) (mul_nonneg hK0 (hmx0 y)) hC₃0
-          rw [hC₃]
-          have : 0 ≤ cW ^ (a + b) := by positivity
-          linarith
-      _ = K * C₃ * maj y := by ring
+      _ ≤ C₃ * (K * maj y) :=
+          mul_le_mul hCsmall (mul_le_mul_of_nonneg_left (hmxle y) hK0)
+            (mul_nonneg hK0 (hmx0 y)) hC₃0
+      _ = K * C₃ * maj y := by rw [mul_left_comm, ← mul_assoc]
   have hc00 : ∀ y : UT (m + 2) → ℂ, cofXY m 0 ((fun _ => z, y) : XY m) ≠ 0 := fun y => by
     rw [← norm_pos_iff, cofXY_zero]
     exact pow_pos (norm_pos_iff.mpr hz0) _
@@ -2093,31 +2137,30 @@ theorem ampLimit : AmpLimit := by
     have h1 := g_bound m β Φ D z y (K' := K * (max 1 ‖y‖) ^ (-A)) hc0 hcz
       (Phi_DB m Kc Φ A K k 0 hA0 hK0 (Nat.zero_le _) hΦ hD 0 (fun _ => z, y) (hc00 y)).norm_le
     calc ‖ampE β m Φ D 0 (fun _ => z, y)‖ ≤ (2 / c) ^ 2 * (K * (max 1 ‖y‖) ^ (-A)) := h1
-      _ ≤ C₃ * (K * maj y) := by
-          refine mul_le_mul ?_ (mul_le_mul_of_nonneg_left (hmxle y) hK0) (mul_nonneg hK0 (hmx0 y)) hC₃0
-          rw [hC₃]
-          have : 0 ≤ cW ^ (a + b) := by positivity
-          linarith
-      _ = K * C₃ * maj y := by ring
+      _ ≤ C₃ * (K * maj y) :=
+          mul_le_mul hCsmall (mul_le_mul_of_nonneg_left (hmxle y) hK0)
+            (mul_nonneg hK0 (hmx0 y)) hC₃0
+      _ = K * C₃ * maj y := by rw [mul_left_comm, ← mul_assoc]
   have hin : ∀ y : UT (m + 2) → ℂ, y ∉ {y : UT (m + 2) → ℂ | T ≤ ‖y‖} →
       ‖ampIn β m ε Φ D t (fun _ => z, y) - ampE β m Φ D 0 (fun _ => z, y)‖ ≤ K * C₃ * ‖t‖ * maj y := by
     intro y hy
-    have hyT : ‖y‖ ≤ T := by
-      exact (not_le.mp hy).le
+    have hyT : ‖y‖ ≤ T := (not_le.mp hy).le
+    have hyt : ‖y‖ ≤ 2 * T := hyT.trans (le_mul_of_one_le_left (zero_le_one.trans hT1) one_le_two)
+    have hcofy : ∀ τ' : ℂ, ‖τ'‖ ≤ ‖t‖ → c / 2 ≤ ‖cofXY m τ' (fun _ => z, y)‖ :=
+      fun τ' hτ' => hcof y τ' hyt hτ'
     rw [f_eq m β ε Φ D t (fun _ => z, y) ht hprod (hM y hyT)]
     have h1 := diff_bound hcore m β D z t y (K' := K * (max 1 ‖y‖) ^ (-A)) Φ hc0 hRz hz0 hzR hDR hcz ht1
-      (fun τ' hτ' => hcof y τ' (by linarith) hτ')
-      (fun τ' hτ' => Phi_DB m Kc Φ A K k 1 hA0 hK0 hk hΦ hD τ' (fun _ => z, y)
-        (hne y τ' (hcof y τ' (by linarith) hτ')))
+      hcofy (fun τ' hτ' => Phi_DB m Kc Φ A K k 1 hA0 hK0 hk hΦ hD τ' (fun _ => z, y)
+        (hne y τ' (hcofy τ' hτ')))
     refine h1.trans ?_
     calc K * (max 1 ‖y‖) ^ (-A) * cW ^ (a + b) * (1 + ‖y‖) ^ (4 * (m + 2) * (a + b)) * ‖t‖
-        = cW ^ (a + b) * (K * ‖t‖ * maj y) := by rw [hmajdef]; ring
-      _ ≤ C₃ * (K * ‖t‖ * maj y) := by
-          refine mul_le_mul_of_nonneg_right ?_ (mul_nonneg (mul_nonneg hK0 ht0.le) (hmaj0 y))
-          rw [hC₃]
-          have : 0 ≤ (2 / c) ^ 2 := by positivity
-          linarith
-      _ = K * C₃ * ‖t‖ * maj y := by ring
+        = cW ^ (a + b) * (K * ‖t‖ * maj y) := by
+          rw [hmajdef]
+          simp only [mul_assoc, mul_left_comm, mul_comm]
+      _ ≤ C₃ * (K * ‖t‖ * maj y) :=
+          mul_le_mul_of_nonneg_right hCpow (mul_nonneg (mul_nonneg hK0 ht0.le) (hmaj0 y))
+      _ = K * C₃ * ‖t‖ * maj y := by
+          rw [← mul_assoc C₃ (K * ‖t‖) (maj y), mul_comm C₃ (K * ‖t‖), mul_right_comm K ‖t‖ C₃]
   have hΦ0 : DerivBound 0 (detSet (m + 1) Kc) (fun Z => K * min 1 (‖Z‖ ^ (-A))) Φ := fun Z hZ =>
     ⟨(hΦ Z hZ).1.of_le (by exact_mod_cast Nat.zero_le k), fun j hj => (hΦ Z hZ).2 j (hj.trans (Nat.zero_le k))⟩
   have hfc := hcont V Φ _ hΦ0 t D z ht (htle.trans (min_le_right _ _)) hD hzD
@@ -2155,4 +2198,3 @@ end
 
 end Formalism.FourierDecayAlt.P.EtaleIntegralityFacts.Lim
 
-theorem Formalism.FourierDecayAlt.P.amplitude_limit : Formalism.FourierDecayAlt.G.AmpLimit := Formalism.FourierDecayAlt.P.EtaleIntegralityFacts.Lim.ampLimit

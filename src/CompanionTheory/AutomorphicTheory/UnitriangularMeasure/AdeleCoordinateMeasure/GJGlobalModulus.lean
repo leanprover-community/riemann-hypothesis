@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.IdeleModuleDetOfMemMaxCompact
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
 public import GroundTheory.AutomorphicForms.ReductionIwasawa
-public import GroundTheory.AutomorphicForms.ReductionHeight
+import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
+public import GroundTheory.AutomorphicForms.ReductionMahler
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -173,7 +177,6 @@ theorem adeleMeasurePi_unitBall_ne_zero : adeleMeasurePi K (unitBall : Set (Fin 
   set U : Set (Fin n → 𝔸[K]) :=
     {x | (∀ i, ∀ w : InfinitePlace K, ‖(x i).1 w‖ < 1 / ((n : ℝ) + 1)) ∧
       ∀ i, (x i).2 ∈ integralFiniteAdeles (𝓞 K) K}
-  have hn1 : (0 : ℝ) < (n : ℝ) + 1 := by positivity
   have hU : IsOpen U := by
     simp only [U]
     rw [Set.ofPred_and]

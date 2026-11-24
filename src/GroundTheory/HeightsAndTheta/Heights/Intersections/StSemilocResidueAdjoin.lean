@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocResidueDeg
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocMaxIdeals
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 
 @[expose] public section
 

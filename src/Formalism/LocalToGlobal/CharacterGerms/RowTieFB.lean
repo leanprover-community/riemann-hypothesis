@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTie
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
+public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieDefs
 
 @[expose] public section
 

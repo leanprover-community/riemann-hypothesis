@@ -1,9 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.JoinSI
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.KerSideCut
-public import Formalism.LocalToGlobal.IndefiniteReal.IsometricPeriodsOfHypotheses
-public import Formalism.LocalToGlobal.IndefiniteReal.IsometricPeriodsOfUnitHypotheses
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.KerJoinS
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

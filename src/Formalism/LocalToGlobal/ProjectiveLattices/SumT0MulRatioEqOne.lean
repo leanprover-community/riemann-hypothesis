@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.PowMapMemOfPowMulMem
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.RestrictionEqZeroIffMemVanishingFiltration
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -252,14 +253,14 @@ theorem sum_T0_mul_ratio_eq_one : ∑ k, algebraMap (Kp X la N) (Frac0 X la w) (
   have hL : ∑ k, algebraMap (Kp X la N) (Lw X la w) (@algebraMap (Op X la N) (Kp X la N) _ _ _ (Tv X la N (0, k))) *
       frac X la w 1 (emb X la N (X.inc wL (w k))) = 1 := by
     simp_rw [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum]
+
+    rw [← map_sum]
     show frac X la w 1 (sec X la w 0) = 1
     rw [frac_apply, pow_one, section_mul_inverse_eq_one]
   apply Subtype.ext
   show (Frac0 X la w).val (∑ k, _) = (Frac0 X la w).val 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_one]
+
+  rw [map_sum, map_one]
   simp only [map_mul, AlgHom.commutes]
   exact hL
 

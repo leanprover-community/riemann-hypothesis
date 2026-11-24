@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraicIndependentResidueOfIsUnit
 
 @[expose] public section
@@ -85,7 +89,6 @@ theorem card_subtype_ne' {σ : Type} [Fintype σ] [DecidableEq σ] (e0 : σ) :
     Fintype.card {e // e ≠ e0} = Fintype.card σ - 1 := by
   first
   | rw [Fintype.card_subtype_compl, Fintype.card_subtype_eq]
-  | simp [Fintype.card_subtype_compl]
 
 theorem card_baseOrOffColumn {D N : ℕ} (j0 : Fin (N + 1)) :
     Fintype.card {e : TVar D N // e.1 = 0 ∨ e.2 ≠ j0} = (D + 1) * (N + 1) - D := by
@@ -193,7 +196,6 @@ theorem exists_integral_base (hd : d.AxH 𝒜) (c : ι) (v : AddValuation (Ω c)
     rw [h0, AddValuation.map_zero] at hvle
     first
     | exact absurd hvle (by simp)
-    | exact WithTop.zero_ne_top (top_le_iff.mp hvle)
   have hw0 : d.w j0 c ≠ 0 := by
     rw [hx j0]
     exact smul_ne _ _ hq0 (hd.w_base c)
@@ -260,8 +262,8 @@ theorem genericHomAt_relation (hd : d.AxH 𝒜) (c : ι) (j0 : Fin (d.N + 1)) (h
       MvPolynomial.algebraMap_eq]
   have hTjc : T (d.jc c) = -∑ k, T ((d.jc c).succAbove k) * algebraMap (Ω c) (OmS (Ω c) d.D d.N) (d.x c k) := by
     rw [hTX, Fin.succAbove_cases_eq_insertNth, Fin.insertNth_apply_same]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_neg, map_sum, map_mul, hCr]
+
+    simp only [map_neg, map_sum, map_mul, hCr]
     congr 1
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [hTX, Fin.succAbove_cases_eq_insertNth, Fin.insertNth_apply_succAbove]

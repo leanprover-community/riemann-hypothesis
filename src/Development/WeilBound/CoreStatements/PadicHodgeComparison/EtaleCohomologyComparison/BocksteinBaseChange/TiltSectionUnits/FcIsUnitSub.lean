@@ -1,9 +1,47 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.StmtPhi
+public import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.TiltedDrinfeld.Base
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.TranscendentalPeriodUnits.CrBase
-public import Development.WeilBound.RepresentationTheoryGL.PeriodRingBases.FixedBaseSurjectivity.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -17,64 +55,61 @@ namespace CrystallineSemistableComparison
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem fc_inv_mem {R F : Type*} [CommRing R] [Field F] (f : R →+* F) {u : R} (hu : IsUnit u) :
-    (f u)⁻¹ ∈ f.range := by
-  obtain ⟨v, rfl⟩ := hu
-  exact ⟨↑v⁻¹, map_units_inv (f : R →* F) v⟩
-
 theorem fc_isUnit_sub {F : Type*} [Field F] (S : Subring F) {x : F} (hx : x ∈ S) (hx' : x⁻¹ ∈ S) (h0 : x ≠ 0) :
     IsUnit (⟨x, hx⟩ : S) :=
   ⟨⟨⟨x, hx⟩, ⟨x⁻¹, hx'⟩, Subtype.ext (mul_inv_cancel₀ h0), Subtype.ext (inv_mul_cancel₀ h0)⟩, rfl⟩
 
-theorem fc_ι_c (a : ACris.ACris ℂ_[l] l) : period_ring_base.ι l (cB l a) = iC l a := Loc2.lift_mk₀ _ _ _ a
+theorem fc_ι_c (a : ACris.ACris ℂ_[l] l) : period_ring_base.ι l (cB l a) = iC l a :=
+  period_ring_base.BaseA.ι_cB l a
 
-theorem fc_range_le : (period_ring_base.ι l).range ≤ Bcr l := by
-  let f : ACris.ACris ℂ_[l] l →+* Bcr l := (iC l).codRestrict (Bcr l) (fun a => iC_mem_bcr a)
-  have hl : IsUnit (f (l : ACris.ACris ℂ_[l] l)) := by
-    have e : iC l (l : ACris.ACris ℂ_[l] l) = (l : BdR l) := map_natCast _ l
-    have := fc_isUnit_sub (Bcr l) (x := iC l (l : ACris.ACris ℂ_[l] l)) (iC_mem_bcr _) (by rw [e]; exact linv_mem_bcr)
-      (by rw [e]; exact l_ne)
-    exact this
-  have ht : IsUnit (f (tA l)) :=
-    fc_isUnit_sub (Bcr l) (x := iC l (tA l)) (iC_mem_bcr _) tinv_mem_bcr DeRhamTwist.Twist.tQ_ne
-  have hg : (Bcr l).subtype.comp (Loc2.lift f hl ht) = period_ring_base.ι l :=
-    Loc2.hom_ext (fun x => by
-      rw [RingHom.comp_apply, Loc2.lift_mk₀]
-      exact (fc_ι_c x).symm)
+private theorem fc_lift_range_le {A F : Type} [CommRing A] [Field F] {a t : A}
+    (ι : Loc2 a t →+* F) (i : A →+* F) (hι : ∀ x, ι (Loc2.mk₀ a t x) = i x)
+    (S : Subring F) (hi : ∀ x, i x ∈ S)
+    (ha : (i a)⁻¹ ∈ S) (ha₀ : i a ≠ 0) (ht : (i t)⁻¹ ∈ S) (ht₀ : i t ≠ 0) :
+    ι.range ≤ S := by
+  let f := i.codRestrict S hi
+  have ha' : IsUnit (f a) := fc_isUnit_sub S (hi a) ha ha₀
+  have ht' : IsUnit (f t) := fc_isUnit_sub S (hi t) ht ht₀
+  let g := Loc2.lift f ha' ht'
+  have hg : S.subtype.comp g = ι := Loc2.hom_ext fun x =>
+    (congrArg Subtype.val (Loc2.lift_mk₀ f ha' ht' x)).trans (hι x).symm
   rintro _ ⟨x, rfl⟩
   rw [← hg]
-  exact (Loc2.lift f hl ht x).2
+  exact (g x).2
+
+theorem fc_range_le : (period_ring_base.ι l).range ≤ Bcr l := by
+  refine fc_lift_range_le (a := (l : ACris.ACris ℂ_[l] l)) (t := tA l)
+    (period_ring_base.ι l) (iC l) (fc_ι_c (l := l)) (Bcr l) (iC_mem_bcr (l := l))
+    ?_ ?_ (tinv_mem_bcr (l := l)) (DeRhamTwist.Twist.tQ_ne (l := l))
+  · simpa only [map_natCast (iC l)] using (linv_mem_bcr (l := l))
+  · simpa only [map_natCast (iC l)] using (l_ne (l := l))
 
 theorem fc_bcr_le : Bcr l ≤ (period_ring_base.ι l).range := by
-  have hb := period_ring_base.base l
   refine Subring.closure_le.2 ?_
   rintro x (⟨a, rfl⟩ | rfl | rfl)
-  · exact ⟨_, fc_ι_c a⟩
-  · have h := fc_inv_mem (period_ring_base.ι l) (period_ring_base.isUnit_l l)
-    rwa [map_natCast] at h
-  · have h := fc_inv_mem (period_ring_base.ι l) hb.t_unit
-    rwa [hb.ι_t] at h
+  · exact RingHom.mem_range.2 ⟨cB l a, fc_ι_c (l := l) a⟩
+  · change ((l : BdR l))⁻¹ ∈ (period_ring_base.ι l).range
+    simpa only [map_natCast (period_ring_base.ι l)] using
+      _root_.CrystallineSemistableComparison.inv_mem_range (period_ring_base.ι l) (period_ring_base.isUnit_l l)
+  · change (tQ l)⁻¹ ∈ (period_ring_base.ι l).range
+    simpa only [period_ring_base.period_image_eq l] using
+      _root_.CrystallineSemistableComparison.inv_mem_range (period_ring_base.ι l) (period_ring_base.base_t_unit l)
 
-theorem fc_range : (period_ring_base.ι l).range = Bcr l := le_antisymm fc_range_le fc_bcr_le
+theorem fc_range : (period_ring_base.ι l).range = Bcr l :=
+  le_antisymm (fc_range_le (l := l)) (fc_bcr_le (l := l))
 
 theorem factsC : BcrisPeriodFacts := fun l _ K r => by
-  have hb := period_ring_base.base l
-  refine ⟨⟨fun a => fc_ι_c a, fun z => hb.ι_q z, hb.ι_inj, Loc2.isUnit_right _ _,
-      ?_, fun z => hb.φ_q z, ?_, ?_, fun g z => hb.σ_q g.1 z, ?_⟩, fc_range⟩
-  · intro a
-    show φB l (cB l a) = cB l (ACris.phi (K := ℂ_[l]) (p := l) a)
-    exact Loc2.map_mk₀ _ _ _ _ _ a
-  · intro z
-    show ACris.phi (K := ℂ_[l]) (p := l) (algebraMap (AInf ℂ_[l] l) (ACris.ACris ℂ_[l] l)
-      (IsPerfectoidField.padicIntToWitt l z)) =
-      algebraMap (AInf ℂ_[l] l) (ACris.ACris ℂ_[l] l) (IsPerfectoidField.padicIntToWitt l z)
-    rw [ACris.phi_algebraMap, ACris.frobenius_padicIntToWitt]
-  · intro g a
-    show Formalism.Per6.σB g.1 (cB l a) = cB l (ACris.galCris (IntermediateField.fixingSubgroupEquiv K g) a)
-    exact Loc2.map_mk₀ _ _ _ _ _ a
-  · intro g a
-    show ACris.phi (K := ℂ_[l]) (p := l) (ACris.galCris (IntermediateField.fixingSubgroupEquiv K g) a) =
-      ACris.galCris (IntermediateField.fixingSubgroupEquiv K g) (ACris.phi (K := ℂ_[l]) (p := l) a)
-    rw [← ACris.gal_smul_def, ← ACris.gal_smul_def, ACris.phi_gal_smul]
+  exact ⟨{
+    ι_c := fc_ι_c (l := l)
+    ι_q := period_ring_base.base_ι_q l
+    ι_inj := period_ring_base.base_ι_inj l
+    t_unit := period_ring_base.base_t_unit l
+    φ_c := PositivityTheory.LocInh.φB_cB (l := l)
+    φ_q := period_ring_base.base_φ_q l
+    frobenius_fixes_z := PositivityTheory.LocInh.frob_phi_padicInt (l := l)
+    σ_c := fun g => PositivityTheory.LocInh.σB_cB (l := l) g.1
+    σ_q := fun g => period_ring_base.base_σ_q l g.1
+    φ_σ := fun g a => ACris.phi_gal_smul (IntermediateField.fixingSubgroupEquiv K g) a
+  }, fc_range (l := l)⟩
 
 end CrystallineSemistableComparison

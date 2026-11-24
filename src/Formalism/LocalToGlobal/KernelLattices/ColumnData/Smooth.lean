@@ -1,14 +1,13 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Formalism.LocalToGlobal.KernelLattices.ColumnData.SelfDual
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.SelfDual
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseExP
-public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.RecursiveLatticeMembership.MemLamOfIff
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 
 @[expose] public section
 
@@ -108,8 +107,8 @@ theorem Seam.stdH_vec (hok : s.Ok) {n : ℕ} (x y : Sp X.E n) :
     (letI := D.host.cmStar; stdH D.host.E n (s.vec x) (s.vec y)) = s.iE (hStd X.E n x y) := by
   rw [Formalism.L2.Ker.Cd.IntegralLatticeDensity.SD.stdH_eq]
   show _ = s.iE (∑ i, star (x i) * y i)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, hok.2]
   rfl

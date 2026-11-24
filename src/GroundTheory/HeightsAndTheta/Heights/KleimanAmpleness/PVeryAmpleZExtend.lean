@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsVeryAmpleZFinite
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
 
 @[expose] public section
 

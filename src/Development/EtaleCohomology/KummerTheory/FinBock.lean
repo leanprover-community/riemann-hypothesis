@@ -1,38 +1,82 @@
 module
 
-public import Development.EtaleCohomology.TateTwists.EtaleSheafInjectiveResolutionPropertiesOfMathlib
+public import Development.EtaleCohomology.TateTwists.EtaleLocallyExistsPrimitiveRootOfUnityOfInvertib
+public import Development.EtaleCohomology.TateTwists.EtaleKInjectiveHomLiftAlongQuasiIsoUpToHomotopy
+public import Development.EtaleCohomology.TateTwists.EtaleSemilinearCohomologyOperationExistsOfEvalua
+public import Development.EtaleCohomology.TateTwists.EtaleSheafRestrictScalarsResolutionHomExistsOfEx
+public import Development.EtaleCohomology.KummerTheory.BockCut
+public import Development.EtaleCohomology.TateTwists.EtaleCochainSemilinearMapCompCompatible
+public import Development.EtaleCohomology.TateTwists.EtaleInjectiveResolutionBasicProperties
+public import Development.EtaleCohomology.TateTwists.EtaleLocalPropertyBasicClosure
+public import Development.EtaleCohomology.TateTwists.EtaleRootsOfUnityReductionMapGenerator
+public import Development.EtaleCohomology.TateTwists.EtaleSheafMonoEpiSectionCriteria
+public import Development.EtaleCohomology.TateTwists.EtaleSheafShortComplexExactIffLocallyLifts
+public import Development.EtaleCohomology.TateTwists.EtaleTateTwistSectionsLocallyGenerated
+public import Development.EtaleCohomology.KummerExtensions.EtaleRootsOfUnityReductionGenerator
+public import Development.EtaleCohomology.KummerExtensions.EtaleTateTwistSectionsLocallyGenerated
 public import Development.EtaleCohomology.KummerTheory.DerDictPf
 public import Development.EtaleCohomology.KummerTheory.NatLESPf
-public import Development.EtaleCohomology.KummerTheory.ZHomPf
-public import Development.EtaleCohomology.KummerExtensions.EtaleTateTwistSectionsLocallyGenerated
-public import Development.EtaleCohomology.TateTwists.CyclotomicPrimitiveRootProductIdentitiesOfAdjoin
+public import Development.EtaleCohomology.KummerTheory.RedEpiPf
 public import Development.EtaleCohomology.KummerTheory.RedExPf
-public import Development.EtaleCohomology.TateTwists.EtaleSheafMonoEpiIffSectionsOfSeparation
+public import Development.EtaleCohomology.KummerTheory.RedKerPf
+public import Development.EtaleCohomology.KummerTheory.RedPostPf
+public import Development.EtaleCohomology.KummerTheory.RestrResPf
+public import Development.EtaleCohomology.KummerTheory.SemiUniqPf
 public import Development.EtaleCohomology.KummerTheory.TwExtPf
+public import Development.EtaleCohomology.KummerTheory.TwSESPf
+public import Development.EtaleCohomology.KummerTheory.ZHomPf
+public import Development.EtaleCohomology.TateTwists.CyclotomicPrimitiveRootProductIdentitiesOfAdjoin
+public import Development.EtaleCohomology.TateTwists.EtaleKInjectiveHomLiftAlongQuasiIsoHolds
+public import Development.EtaleCohomology.TateTwists.EtaleLocalPropertyBasicClosureProperties
 public import Development.EtaleCohomology.TateTwists.EtaleLocallyExistsPrimitiveRootOfUnityOfInvertibleOrder
 public import Development.EtaleCohomology.TateTwists.EtaleLocallyKummerRootsOfUnitsOfInvertibleOrder
-public import Development.EtaleCohomology.TateTwists.EtaleLocallyExistsPrimitiveRootOfUnityOfInvertib
-public import Development.EtaleCohomology.TateTwists.EtaleLocalPropertyBasicClosureProperties
-public import Development.EtaleCohomology.KummerTheory.RedEpiPf
-public import Development.EtaleCohomology.KummerTheory.RedKerPf
-public import Development.EtaleCohomology.TateTwists.EtaleSheafShortComplexExactIffLocalLiftsHolds
-public import Development.EtaleCohomology.KummerTheory.TwSESPf
-public import Development.EtaleCohomology.KummerTheory.RestrResPf
-public import Development.EtaleCohomology.TateTwists.Imports
-public import Development.EtaleCohomology.TateTwists.EtaleKInjectiveHomLiftAlongQuasiIsoHolds
-public import Development.EtaleCohomology.TateTwists.EtaleSingleSheafHomotopicMapsEqualHolds
-public import Development.EtaleCohomology.TateTwists.EtaleKInjectiveHomLiftAlongQuasiIsoUpToHomotopy
-public import Development.EtaleCohomology.KummerTheory.SemiUniqPf
-public import Development.EtaleCohomology.TateTwists.PpEvBasicPf
-public import Development.EtaleCohomology.TateTwists.PpEvMkPf
-public import Development.EtaleCohomology.TateTwists.PpEvDeltaPf
-public import Development.EtaleCohomology.TateTwists.EtaleSemilinearCohomologyOperationExistsOfEvalua
-public import Development.EtaleCohomology.KummerExtensions.EtaleRootsOfUnityReductionGenerator
+public import Development.EtaleCohomology.TateTwists.EtaleSheafInjectiveResolutionPropertiesOfMathlib
+public import Development.EtaleCohomology.TateTwists.EtaleSheafMonoEpiIffSectionsOfSeparation
 public import Development.EtaleCohomology.TateTwists.EtaleSheafRestrictScalarsFunctorExactOfAdjoints
-public import Development.EtaleCohomology.TateTwists.EtaleSheafRestrictScalarsResolutionHomExistsOfEx
-public import Development.EtaleCohomology.TateTwists.EtaleSheafRestrictScalarsInjectiveResolutionHomE
-public import Development.EtaleCohomology.KummerTheory.RedPostPf
-public import Development.EtaleCohomology.KummerTheory.BockCut
+public import Development.EtaleCohomology.TateTwists.EtaleSheafShortComplexExactIffLocalLiftsHolds
+public import Development.EtaleCohomology.TateTwists.EtaleSingleSheafHomotopicMapsEqualHolds
+public import Development.EtaleCohomology.TateTwists.Imports
+import Development.EtaleCohomology.TateTwists.PpEvBasicPf
+import Development.EtaleCohomology.TateTwists.EtaleChainCochainEvalDifferentialFormulaHolds
+import Development.EtaleCohomology.TateTwists.PpEvMkPf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -66,7 +110,7 @@ theorem etale_torsion_cohomology_localization_basic : LateralTheory.EtaleFoundat
 theorem etale_bockstein_reduction_surjective : LateralTheory.KummerTheory.BockCut.RedEpi := by
   apply LateralTheory.KummerTheory.RedEpiPf.RedEpi_of <;> first | exact etale_torsion_cohomology_twist_section | exact etale_torsion_cohomology_primary_part_basic | exact etale_torsion_cohomology_primary_localization | exact etale_torsion_cohomology_mono_epi_of_exact | exact etale_torsion_cohomology_localization_basic
 theorem etale_bockstein_reduction_kernel_eq_image : LateralTheory.KummerTheory.BockCut.RedKer := by
-  apply LateralTheory.KummerTheory.RedKerPf.RedKer_of <;> first | exact etale_torsion_cohomology_twist_section | exact etale_torsion_cohomology_primary_part_basic | exact etale_torsion_cohomology_localization_basic | exact etale_torsion_cohomology_mono_epi_of_exact
+  apply LateralTheory.KummerTheory.RedKerPf.RedKer_of <;> first | exact etale_torsion_cohomology_twist_section | exact etale_torsion_cohomology_primary_part_basic | exact etale_torsion_cohomology_localization_basic
 theorem etale_sheaf_short_complex_exact_iff_locally_lifts : LateralTheory.EtaleFoundations.EtaleSheafShortComplexExactIffLocallyLifts := by
   apply LateralTheory.EtaleFoundations.etale_sheaf_short_complex_exact_iff_local_lifts_holds
 theorem etale_bockstein_twisted_short_exact_sequence : LateralTheory.KummerTheory.BockCut.TwSES := by
@@ -88,7 +132,7 @@ theorem etale_evaluation_map_basic_of_components : LateralTheory.EtaleFoundation
 theorem etale_cohomology_evaluation_mk : LateralTheory.EtaleFoundations.pp_ev_mk := by
   apply LateralTheory.EtaleFoundations.pp_ev_mk_of
 theorem etale_cohomology_evaluation_connecting_hom : LateralTheory.EtaleFoundations.pp_ev_delta := by
-  apply LateralTheory.EtaleFoundations.pp_ev_delta_of
+  apply _root_.LateralTheory.EtaleFoundations.etale_chain_cochain_eval_differential_formula_holds
 theorem etale_torsion_cohomology_operation_spec : LateralTheory.EtaleFoundations.EtaleCochainSemilinearMapOnClasses := by
   apply LateralTheory.EtaleFoundations.etale_semilinear_cohomology_operation_exists_of_evaluation <;> first | exact etale_evaluation_map_basic_of_components | exact etale_cohomology_evaluation_mk | exact etale_cohomology_evaluation_connecting_hom
 theorem etale_prime_power_twist_reduction_map_exists : LateralTheory.EtaleFoundations.EtaleRootsOfUnityReductionMapGenerator := by
@@ -102,6 +146,6 @@ theorem etale_prime_power_twist_restriction_exists : LateralTheory.EtaleFoundati
 theorem etale_bockstein_reduction_postcomposition_compat : LateralTheory.KummerTheory.BockCut.RedPost := by
   apply LateralTheory.KummerTheory.RedPostPf.RedPost_of <;> first | exact etale_bockstein_connecting_map_unique_up_to_sign | exact etale_bockstein_twisted_extension | exact etale_bockstein_integer_hom_compat | exact etale_torsion_cohomology_operation_spec | exact etale_torsion_cohomology_operation_comp | exact etale_prime_power_twist_reduction_map_exists | exact etale_prime_power_twist_restriction_exists | exact etale_torsion_cohomology_primary_part_basic | exact etale_torsion_cohomology_residue_basic
 theorem etale_bockstein_sequence_adic_finiteness : LateralTheory.KummerTheory.Bock := by
-  apply LateralTheory.KummerTheory.BockCut.goal_of <;> first | exact etale_bockstein_derived_category_dictionary | exact etale_bockstein_long_exact_sequence_natural | exact etale_bockstein_integer_hom_compat | exact etale_bockstein_reduction_exact | exact etale_bockstein_twisted_extension | exact etale_bockstein_reduction_surjective | exact etale_bockstein_reduction_kernel_eq_image | exact etale_bockstein_twisted_short_exact_sequence | exact etale_bockstein_restriction_of_resolution | exact etale_bockstein_connecting_map_unique_up_to_sign | exact etale_bockstein_reduction_postcomposition_compat | exact etale_torsion_cohomology_primary_part_basic | exact etale_torsion_cohomology_primary_localization | exact etale_torsion_cohomology_twist_section | exact etale_torsion_cohomology_mono_epi_of_exact | exact etale_sheaf_short_complex_exact_iff_locally_lifts | exact etale_torsion_cohomology_localization_basic | exact etale_torsion_cohomology_residue_basic | exact etale_torsion_cohomology_extension_hom_exists | exact etale_torsion_cohomology_operation_spec | exact etale_torsion_cohomology_operation_comp | exact etale_prime_power_twist_reduction_map_exists | exact etale_prime_power_twist_restriction_exists
+  apply LateralTheory.KummerTheory.BockCut.goal_of <;> first | exact etale_bockstein_derived_category_dictionary | exact etale_bockstein_long_exact_sequence_natural | exact etale_bockstein_integer_hom_compat | exact etale_bockstein_reduction_exact | exact etale_bockstein_twisted_extension | exact etale_bockstein_reduction_surjective | exact etale_bockstein_reduction_kernel_eq_image | exact etale_bockstein_twisted_short_exact_sequence | exact etale_bockstein_restriction_of_resolution | exact etale_bockstein_connecting_map_unique_up_to_sign | exact etale_bockstein_reduction_postcomposition_compat | exact etale_torsion_cohomology_primary_part_basic
 theorem intersectionNumber_baseChange : LateralTheory.KummerTheory.Bock := etale_bockstein_sequence_adic_finiteness
 end LateralTheory.Fin.Bock

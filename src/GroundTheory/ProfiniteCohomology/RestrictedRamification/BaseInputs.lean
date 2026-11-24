@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseLocal
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Dimension
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFormal
+public import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteRoots
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteRoots
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

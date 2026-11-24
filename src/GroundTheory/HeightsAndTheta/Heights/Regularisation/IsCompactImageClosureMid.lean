@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.BoundedStatements
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
 
 @[expose] public section

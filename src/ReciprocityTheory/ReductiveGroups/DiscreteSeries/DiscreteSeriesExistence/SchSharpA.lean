@@ -1,8 +1,58 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFPrimeB
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFock
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CARUnit
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.DSymmHypsInhabited
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.WeylPos
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFockA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFockD
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.RealPlaceAnalysis.StatementKT
 
 @[expose] public section
 
@@ -28,24 +78,24 @@ theorem tform_conj (y y' : TensorProduct ℂ M (Fock n)) : star (tform y y') = t
 theorem tform_sum_left {ι : Type*} (t : Finset ι) (f : ι → TensorProduct ℂ M (Fock n))
     (y' : TensorProduct ℂ M (Fock n)) : tform (∑ i ∈ t, f i) y' = ∑ i ∈ t, tform (f i) y' := by
   unfold tform
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, sum_inner]
+
+  simp only [map_sum, sum_inner]
   exact sum_comm
 
 theorem tform_sum_right {ι : Type*} (t : Finset ι) (f : ι → TensorProduct ℂ M (Fock n))
     (y : TensorProduct ℂ M (Fock n)) : tform y (∑ i ∈ t, f i) = ∑ i ∈ t, tform y (f i) := by
   unfold tform
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, inner_sum]
+
+  simp only [map_sum, inner_sum]
   exact sum_comm
 
 theorem tform_neg_left (y y' : TensorProduct ℂ M (Fock n)) : tform (-y) y' = -tform y y' := by
   unfold tform
-  simp [inner_neg_left]
+  simp
 
 theorem tform_neg_right (y y' : TensorProduct ℂ M (Fock n)) : tform y (-y') = -tform y y' := by
   unfold tform
-  simp [inner_neg_right]
+  simp
 
 theorem tform_add_left (y z y' : TensorProduct ℂ M (Fock n)) :
     tform (y + z) y' = tform y y' + tform z y' := by
@@ -94,8 +144,8 @@ theorem tco_lTensor (g : Module.End ℂ (Fock n)) (s : Finset (Fin (n * n))) (y 
     tco s (TensorProduct.map LinearMap.id g y) =
       ∑ t, (fockBasis n).repr (g (fockBasis n t)) s • tco t y := by
   conv_lhs => rw [tcoef_expand y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, TensorProduct.map_tmul, LinearMap.id_apply, tcoef_tmul, Module.Basis.coord_apply]
+
+  simp only [map_sum, TensorProduct.map_tmul, LinearMap.id_apply, tcoef_tmul, Module.Basis.coord_apply]
 
 theorem tform_eT {ε : Fin n → Bool} {E : Fin n → Fin n → Module.End ℂ M} (hU : IsInfUnitary ε E) (a b : Fin n)
     (y y' : TensorProduct ℂ M (Fock n)) :
@@ -187,7 +237,7 @@ theorem ssh_strictAnti {ε : Fin n → Bool} {lam : Fin n → ℝ} (hmono : Stri
     have hl := hmono hxy
     simp only [Pi.sub_apply]
     by_cases he : ε i.castSucc = ε i.succ
-    · obtain ⟨N, hN⟩ := HW.kIrrHW_int ε hF hW _ _ hxy he
+    · obtain ⟨N, hN⟩ := _root_.ReciprocityTheory.ChartRestriction.DS.HW.kIrrHW_int' ε hF hW _ _ hxy he
       have hbet : ∀ c, i.castSucc < c → c < i.succ → False := by
         intro c h1 h2
         rw [Fin.lt_def] at h1 h2

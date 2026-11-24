@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFunctionFieldFinite
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsMChart
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.BasicDefinitions.ExistsUnique
+public import Mathlib.RepresentationTheory.Basic
+public import Mathlib.Topology.LocallyConstant.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

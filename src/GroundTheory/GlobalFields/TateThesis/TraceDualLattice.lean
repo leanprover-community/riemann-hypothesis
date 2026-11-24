@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.TraceFourier
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.RingTheory.DedekindDomain.Different
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

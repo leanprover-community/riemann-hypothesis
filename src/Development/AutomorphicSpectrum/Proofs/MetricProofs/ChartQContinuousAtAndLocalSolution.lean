@@ -1,15 +1,62 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodLimit
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsChart
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeCovolumePositiveStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjectionStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIntPreimageOfOrthogonalKernelStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RiemannFormHermitianLatticeStatement
+public import Mathlib.Data.Matrix.Mul
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIntPreimageOfOrthogonalKernel
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsAdaptedUnimodular
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ImLowerOnKernel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
 
 @[expose] public section
 
@@ -124,8 +171,8 @@ theorem kappa_transpose (R : Matrix (Fin g) (Fin g) ℝ) : κ[R]ᵀ = κ[Rᵀ] :
 theorem star_kappa_mulVec (R : Matrix (Fin g) (Fin g) ℝ) (v : Fin g → ℂ) :
     star (κ[R] *ᵥ v) = κ[R] *ᵥ star v := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [mulVec, dotProduct]
+
+  simp [mulVec, dotProduct]
 
 theorem kappa_mulVec_ofReal (R : Matrix (Fin g) (Fin g) ℝ) (r : Fin g → ℝ) :
     κ[R] *ᵥ (fun k => (r k : ℂ)) = fun k => ((R *ᵥ r) k : ℂ) := by
@@ -211,7 +258,7 @@ theorem pr_kills (hB : ∀ j, ((B j).map (fun x : ℤ => (x : ℝ))).PosSemidef)
     (hK : IsKerProj (∑ j, B j) Pr) (u : Fin g → ℤ)
     (hu : ∀ v : Fin g → ℤ, (∑ j, B j) *ᵥ v = 0 → u ⬝ᵥ v = 0) :
     Pr *ᵥ (fun k => (u k : ℝ)) = 0 := by
-  obtain ⟨N, c, hN, h⟩ := GlobalTheory.T.exists_int_preimage_of_orthogonal_kernel g _ (S_symm hB) u hu
+  obtain ⟨N, c, hN, h⟩ := _root_.GlobalTheory.CompanionTheory.Ar.IntegralKernel.exists_smul_eq_mulVec g _ (S_symm hB) u hu
   have h1 : (N : ℝ) • (fun k => (u k : ℝ)) =
       (∑ j, B j).map (fun x : ℤ => (x : ℝ)) *ᵥ (fun k => (c k : ℝ)) := by
     funext k

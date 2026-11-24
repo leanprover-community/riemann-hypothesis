@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsSmoothPts
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 
@@ -98,8 +100,8 @@ def reInner : (J → ℂ) →L[ℝ] ((J → ℂ) →L[ℝ] ℝ) :=
 theorem reInner_apply (y v : J → ℂ) : reInner y v = inner ℝ (eL y) (eL v) := rfl
 
 theorem realInner_eq (x y : EuclideanSpace ℂ J) : inner ℝ x y = RCLike.re (inner ℂ x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [PiLp.inner_apply, PiLp.inner_apply, map_sum]
+
+  rw [PiLp.inner_apply, PiLp.inner_apply, map_sum]
   exact Finset.sum_congr rfl fun i _ => real_inner_eq_re_inner ℂ _ _
 
 def normSqE (z : J → ℂ) : ℝ := ‖eL z‖ ^ 2

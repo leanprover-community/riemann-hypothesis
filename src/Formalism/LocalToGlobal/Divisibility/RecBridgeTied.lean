@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Divisibility.LinkDIVL2R3Col
 public import Formalism.LocalToGlobal.Divisibility.RecBridge
 public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
+public import Formalism.LocalToGlobal.IndefiniteReal.FaceOf3
+public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
 
 @[expose] public section
 

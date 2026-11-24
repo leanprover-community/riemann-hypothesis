@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.FirstCoordinateAdmissible
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -119,28 +164,15 @@ end Cplx
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ}
 
-theorem emb_cc (τ : E →+* ℂ) (x : E) : τ (cc x) = conj (τ x) :=
-  IsCMField.complexEmbedding_complexConj E τ x
+alias emb_cc := _root_.GlobalTheory.SW.Base.map_cc
 
-theorem ccT_mul {α β δ : Type} [Fintype β] (X : Matrix α β E) (Y : Matrix β δ E) :
-    ccT (X * Y) = ccT Y * ccT X := by
-  ext i j
-  simp [ccT, cc, Matrix.mul_apply, mul_comm]
+alias ccT_mul := _root_.GlobalTheory.SW.Base.ccT_mul
 
-theorem ccT_ccT {α β : Type} (X : Matrix α β E) : ccT (ccT X) = X := by
-  ext i j
-  simp [ccT, cc]
+alias ccT_ccT := _root_.GlobalTheory.SW.Base.ccT_ccT
 
-theorem ccT_one {α : Type} [DecidableEq α] : ccT (1 : Matrix α α E) = 1 := by
-  ext i j
-  by_cases h : i = j
-  · subst h; simp [ccT, cc]
-  · simp [ccT, cc, Matrix.one_apply, h, Ne.symm h]
+alias ccT_one := _root_.GlobalTheory.SW.Base.ccT_one
 
-theorem map_ccT {α β : Type} (τ : E →+* ℂ) (X : Matrix α β E) :
-    (ccT X).map τ = (X.map τ)ᴴ := by
-  ext i j
-  simp [ccT, emb_cc]
+alias map_ccT := _root_.GlobalTheory.SW.Base.ccT_map
 
 theorem left_inv {γ : M2 E N} (h : γ ∈ UU E N) :
     -(Matrix.J (Fin N) E * ccT γ * Matrix.J (Fin N) E) * γ = 1 := by
@@ -188,7 +220,7 @@ theorem map_mem (τ : E →+* ℂ) {γ : M2 E N} (h : γ ∈ UU E N) :
   have hJ : (Matrix.J (Fin N) E).map τ = Matrix.J (Fin N) ℂ := by
     ext i j
     rcases i with i | i <;> rcases j with j | j <;> by_cases hij : i = j <;>
-      simp [Matrix.J, Matrix.one_apply, hij]
+      simp [Matrix.J, hij]
   have h2 := congrArg (fun X => X.map τ) h1
   simp only [Matrix.map_mul, map_ccT, hJ] at h2
   exact h2

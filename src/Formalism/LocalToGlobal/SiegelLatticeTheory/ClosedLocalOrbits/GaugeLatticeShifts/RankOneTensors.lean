@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.InfCut
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
@@ -26,8 +28,8 @@ theorem norm_rankOneInnerOperator (a : V) (b : V') : ‖TermOp.rk1 a b‖ = ‖a
 theorem continuous_rankOneOperator {T : Type*} [TopologicalSpace T] {f : T → V} {g : T → V'} (hf : Continuous f)
     (hg : Continuous g) : Continuous fun x => TermOp.rk1 (f x) (g x) := by
   have h1 : Continuous fun x => innerSL ℂ (g x) := (innerSL ℂ).continuous.comp hg
-  have h2 : Continuous fun x => ContinuousLinearMap.smulRightL ℂ V' V (innerSL ℂ (g x)) :=
-    (ContinuousLinearMap.smulRightL ℂ V' V).continuous.comp h1
+  have h2 : Continuous fun x => StrongDual.smulRightL ℂ V' V (innerSL ℂ (g x)) :=
+    (StrongDual.smulRightL ℂ V' V).continuous.comp h1
   unfold TermOp.rk1
   exact h2.clm_apply hf
 

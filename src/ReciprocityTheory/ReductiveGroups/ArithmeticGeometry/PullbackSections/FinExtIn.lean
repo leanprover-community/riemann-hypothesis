@@ -1,9 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.FullExists
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThValDescIn
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
-public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
+public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

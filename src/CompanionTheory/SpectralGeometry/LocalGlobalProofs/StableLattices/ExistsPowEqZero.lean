@@ -1,12 +1,58 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IsCompactInvariantCompactSpan
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents.HighestWeightDifferencesNat
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.InnerEqZeroOfWeight
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IsCompactInvariantCompactSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents.HighestWeightDifferencesNat
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -40,15 +86,15 @@ lemma isWeight_pow (hF : KRel ε E) {a b : Fin n} (he : ε a = ε b) {μ : Fin n
       simp [shift]
     · subst h1
       have h2' : ¬ c = b := fun h => h2 h.symm
-      simp only [shift, if_pos rfl, if_neg h2', if_neg h2, sub_zero, mul_one]
+      simp only [shift, if_neg h2', if_neg h2, sub_zero]
       push_cast
       simp only [mul_one, add_smul, one_smul]
       abel
     · subst h2
       have h1' : ¬ b = a := h1
-      simp only [shift, if_pos rfl, if_neg h1', zero_sub, mul_neg, mul_one, zero_sub]
+      simp only [shift, if_neg h1', zero_sub, mul_neg, zero_sub]
       push_cast
-      simp only [sub_eq_add_neg, mul_one, add_smul, neg_add, neg_smul, one_smul]
+      simp only [mul_one, add_smul, neg_add, neg_smul, one_smul]
       abel
     · have h2' : ¬ c = b := fun h => h2 h.symm
       simp only [shift, if_neg h1, if_neg h2', if_neg h2, sub_zero, mul_zero, add_zero]
@@ -56,7 +102,7 @@ lemma isWeight_pow (hF : KRel ε E) {a b : Fin n} (he : ε a = ε b) {μ : Fin n
 lemma norm_identity (hF : KRel ε E) (hU : KUnit ε E) {a b : Fin n} (he : ε a = ε b) {μ : Fin n → ℝ} {w : V}
     (hw : IsWeight E μ w) : ‖E a b w‖ ^ 2 = ‖E b a w‖ ^ 2 + (μ b - μ a) * ‖w‖ ^ 2 := by
   have hc := hF a b b a he he.symm
-  simp only [if_pos rfl, ↓reduceIte] at hc
+  simp only [↓reduceIte] at hc
   have hcw : E a b (E b a w) - E b a (E a b w) = (μ a : ℂ) • w - (μ b : ℂ) • w := by
     have := congrArg (fun T : Module.End ℂ V => T w) hc
     simpa [Module.End.mul_apply, hw a, hw b] using this
@@ -85,7 +131,7 @@ lemma string_bound (hF : KRel ε E) (hU : KUnit ε E) {a b : Fin n} (hab : a ≠
       rw [pow_succ', Module.End.mul_apply]
     have hE1 : (E a b ^ (k + 1)) z = E a b ((E a b ^ k) z) := by rw [pow_succ', Module.End.mul_apply]
     have hsh : shift μ a b (k + 1) b - shift μ a b (k + 1) a = μ b - μ a - 2 * ((k : ℝ) + 1) := by
-      simp only [shift, if_neg hab, if_neg (Ne.symm hab), if_pos rfl, ↓reduceIte]; push_cast; ring
+      simp only [shift, if_neg hab, if_neg (Ne.symm hab), ↓reduceIte]; push_cast; ring
     have hcs : ‖(E a b ^ (k + 1)) z‖ ^ 2 ≤ ‖E b a ((E a b ^ (k + 1)) z)‖ * ‖(E a b ^ k) z‖ := by
       have h1 : inner ℂ (E b a ((E a b ^ (k + 1)) z)) ((E a b ^ k) z) =
           inner ℂ ((E a b ^ (k + 1)) z) ((E a b ^ (k + 1)) z) := by
@@ -97,7 +143,6 @@ lemma string_bound (hF : KRel ε E) (hU : KUnit ε E) {a b : Fin n} (hab : a ≠
       exact h2
     have hn0 := norm_nonneg ((E a b ^ k) z)
     have hn1 := norm_nonneg ((E a b ^ (k + 1)) z)
-    have hnA := norm_nonneg (E b a ((E a b ^ (k + 1)) z))
     have key : ((k : ℝ) + 1) * (μ b - μ a - k) * ‖(E a b ^ (k + 1)) z‖ ^ 2 ≤
         ‖E b a ((E a b ^ (k + 1)) z)‖ ^ 2 := by
       rcases le_or_gt (((k : ℝ) + 1) * (μ b - μ a - k)) 0 with hc | hc
@@ -181,18 +226,18 @@ lemma swap_weight_of_le (hF : KRel ε E) (hU : KUnit ε E) {L : Submodule ℂ V}
     induction j with
     | zero =>
       rw [zero_add, pow_one, kcomm_apply hF he he.symm, hEu, map_zero, zero_add]
-      simp only [if_pos rfl, ↓reduceIte, pow_zero, Module.End.one_apply, hνu a, hνu b]
+      simp only [↓reduceIte, pow_zero, Module.End.one_apply, hνu a, hνu b]
       rw [← sub_smul]
       congr 1
       push_cast
       ring
     | succ j ih =>
       rw [pow_succ' (E b a) (j + 1), Module.End.mul_apply, kcomm_apply hF he he.symm, ih, map_smul]
-      simp only [if_pos rfl, ↓reduceIte]
+      simp only [↓reduceIte]
       have hwj := isWeight_pow hF he.symm hνu (j + 1)
       rw [hwj a, hwj b, ← Module.End.mul_apply (E b a), ← pow_succ', ← sub_smul, ← add_smul]
       congr 1
-      simp only [shift, if_neg hab, if_neg (Ne.symm hab), if_pos rfl, ↓reduceIte]
+      simp only [shift, if_neg hab, if_neg (Ne.symm hab), ↓reduceIte]
       push_cast
       ring
   have hnormlow : ∀ j : ℕ, ‖(E b a ^ (j + 1)) ((E a b ^ K') z)‖ ^ 2 =
@@ -254,12 +299,12 @@ lemma swap_weight_of_le (hF : KRel ε E) (hU : KUnit ε E) {L : Submodule ℂ V}
     by_cases hca : c = a
     · subst hca
       rw [Equiv.swap_apply_left]
-      simp only [if_pos rfl, ↓reduceIte, if_neg hab, sub_zero, mul_one]
+      simp only [↓reduceIte, if_neg hab, sub_zero, mul_one]
       linarith
     · by_cases hcb : c = b
       · subst hcb
         rw [Equiv.swap_apply_right]
-        simp only [if_pos rfl, ↓reduceIte, if_neg hca, zero_sub, mul_neg, mul_one]
+        simp only [↓reduceIte, if_neg hca, zero_sub, mul_neg, mul_one]
         linarith
       · rw [Equiv.swap_apply_of_ne_of_ne hca hcb]
         simp only [if_neg hca, if_neg hcb, sub_zero, mul_zero, add_zero]

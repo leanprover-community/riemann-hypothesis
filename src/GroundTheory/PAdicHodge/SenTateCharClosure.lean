@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.SenTateCharUnits
-public import GroundTheory.PAdicHodge.NormalizedTraceClosure
 public import GroundTheory.PAdicHodge.NormalizedTrace
+public import Mathlib.FieldTheory.KrullTopology
 public import GroundTheory.PAdicHodge.AxLemma
-public import GroundTheory.PAdicHodge.TateCpTwist
+public import GroundTheory.PAdicHodge.NormalizedTraceClosure
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

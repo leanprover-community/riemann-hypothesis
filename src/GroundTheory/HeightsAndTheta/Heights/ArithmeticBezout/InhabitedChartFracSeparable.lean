@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOrder
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncIdealBelow
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocDomain
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartKernel
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartIncDomain
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartNormSep
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartKernel
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocDomain
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncIdealBelow
 
 @[expose] public section
 

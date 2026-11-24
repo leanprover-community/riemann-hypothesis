@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.MacdonaldAlternant
+public import Mathlib.LinearAlgebra.Vandermonde
 
 @[expose] public section
 
@@ -126,13 +126,13 @@ theorem exists_antisymm_hlFactor_eq (t : ℂ) :
     refine ⟨(hlFactor n t).coeff ν * c, ?_⟩
     have : (single ν ((hlFactor n t).coeff ν) : LaurentRing n) =
         (hlFactor n t).coeff ν • monomial ν := by
-      simp [monomial, smul_single']
+      simp [monomial]
     rw [this, map_smul, ← alternant, hc, smul_smul]
   choose c hc using key
   refine ⟨∑ ν ∈ (hlFactor n t).coeff.support.attach, c ν.1 ν.2, ?_⟩
   conv_lhs => rw [← AddMonoidAlgebra.sum_coeff_single (hlFactor n t)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finsupp.sum, map_sum, Finset.sum_smul, ← Finset.sum_attach]
+
+  rw [Finsupp.sum, map_sum, Finset.sum_smul, ← Finset.sum_attach]
   exact Finset.sum_congr rfl fun ν _ => hc ν.1 ν.2
 
 theorem evalAt_varL (w : Fin n → ℂˣ) (a : Fin n) : evalAt w (varL a) = w a := by
@@ -150,8 +150,8 @@ theorem evalAt_hlFactor (w : Fin n → ℂˣ) (t : ℂ) :
 theorem evalAt_antisymm (w : Fin n → ℂˣ) (p : LaurentRing n) :
     evalAt w (antisymm n p) = ∑ σ : Equiv.Perm (Fin n),
       ((Equiv.Perm.sign σ : ℤ) : ℂ) * evalAt (w ∘ σ) p := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [antisymm_apply, map_sum]
+
+  rw [antisymm_apply, map_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [Units.smul_def, map_zsmul, evalAt_permAct, zsmul_eq_mul]
 
@@ -324,7 +324,7 @@ theorem hlR_zero (t : ℂ) (ht : Function.Injective fun k : ℕ => t ^ k) :
       rw [hlFactor]
       exact Finset.prod_eq_one fun p _ => p.1.elim0
     rw [hD, hδ, antisymm_apply, Fintype.sum_unique] at hc
-    simp only [Equiv.Perm.sign_one, one_smul, map_one] at hc
+    simp only [map_one] at hc
     rw [vPoly, Finset.range_zero, Finset.prod_empty]
     have := congrArg (fun p : LaurentRing 0 => p.coeff 0) hc
     simp [AddMonoidAlgebra.one_def] at this

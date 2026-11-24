@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.AxHLAM
 public import Formalism.LocalToGlobal.ProjectiveLattices.SupNDataOfNonneg
+public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
+import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
 
 @[expose] public section
 

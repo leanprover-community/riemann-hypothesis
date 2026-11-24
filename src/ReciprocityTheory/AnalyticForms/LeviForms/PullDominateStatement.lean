@@ -1,9 +1,6 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
 
 @[expose] public section
 

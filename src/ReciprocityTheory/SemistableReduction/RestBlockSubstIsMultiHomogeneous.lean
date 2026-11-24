@@ -1,6 +1,13 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.AevalIsWeightedHomogeneous
+public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -189,7 +196,7 @@ theorem restBlockSubst_isMultiHomogeneous {B n : ℕ} {a : Fin (B + 1) → ℕ}
       rw [Finset.sum_eq_single b]
       · simp
       · intro c _ hc
-        simp [Pi.single_apply, Ne.symm hc]
+        simp [Ne.symm hc]
       · simp
   intro s hs b
   have hb := congrFun (hW (MvPolynomial.mem_support_iff.mp hs)) b
@@ -200,7 +207,7 @@ theorem restBlockSubst_isMultiHomogeneous {B n : ℕ} {a : Fin (B + 1) → ℕ}
     Fintype.sum_prod_type, Finset.sum_eq_single b]
   · simp
   · intro c _ hc
-    simp [Pi.single_apply, Ne.symm hc]
+    simp [Ne.symm hc]
   · simp
 
 theorem blockSphere_logMean_bound (hSJ : SJStatement) (hInt : SphereLogIntegrableStatement) {n : ℕ}

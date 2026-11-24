@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.TateCohomology.HerbrandAbstract
 public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
 public import GroundTheory.LocalFields.CompleteTrivial
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

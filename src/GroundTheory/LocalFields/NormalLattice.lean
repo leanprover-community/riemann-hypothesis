@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Galois.Basic
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.LocalFields.Interface
 public import GroundTheory.LocalFields.UnitsBasic
+public import Mathlib.FieldTheory.Galois.NormalBasis
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Baire.LocallyCompactRegular
 
 @[expose] public section
 
@@ -86,8 +93,8 @@ theorem algEquiv_smul_sum (τ : Gal(L/K)) (s : ℕ) (c : Gal(L/K) → 𝒪[K]) :
     τ (π ^ s • ∑ σ, c σ • σ θ) = π ^ s • ∑ σ, c (τ⁻¹ * σ) • σ θ := by
   have h : ∀ (a : 𝒪[K]) (y : L), τ (a • y) = a • τ y := fun a y => by
     rw [integer_smul_eq, integer_smul_eq, map_mul, AlgEquiv.commutes]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, map_sum]
+
+  rw [h, map_sum]
   congr 1
   simp_rw [h, ← AlgEquiv.mul_apply]
   exact Fintype.sum_equiv (Equiv.mulLeft τ) _ _ (fun σ => by simp)

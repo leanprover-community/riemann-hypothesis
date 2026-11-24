@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
+public import Mathlib.RingTheory.Algebraic.Cardinality
 public import ReciprocityTheory.ReductiveGroups.LatticeEmbeddings.IotaPlaceB
 
 @[expose] public section
@@ -37,8 +38,5 @@ theorem power_series_embedding : PSerIota := by
   rw [MvPowerSeries.coeff_map]
   change Formalism.MainNotions.TaylorLogMetric.lamC lam (Formalism.MainNotions.TaylorLogMetric.taylor D G α) = ι (Formalism.MainNotions.TaylorLogMetric.taylor D G α)
   exact (lattice_embedding p lam ι h).1 _ (hG α)
-
-theorem lamExt : LamExt := lattice_extension
-theorem lamCIota : LamCIota := lattice_embedding
 
 end Formalism.L2.KerInert

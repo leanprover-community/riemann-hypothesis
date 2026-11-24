@@ -1,8 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
-public import Formalism.SatakeDualWeyl.DefsCS
-public import Formalism.HermitianLattices.StatementMaj
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Formalism.LocalRingCardinality.DataHost
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.SatakeDualWeyl.Statement
 
 @[expose] public section
 

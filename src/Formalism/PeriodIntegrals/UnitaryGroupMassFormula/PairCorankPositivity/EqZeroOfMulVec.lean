@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.PairCorankPos
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.NGCong
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -16,28 +60,12 @@ open scoped Matrix
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-theorem hT_swap (S : HSpace E) (x y : S.V) : S.hT y x = star (S.hT x y) := by
-  rw [← S.herm.eq x y, starRingEnd_apply]
+theorem hT_swap (S : HSpace E) (x y : S.V) : S.hT y x = star (S.hT x y) :=
+  (S.herm.eq x y).symm
 
 theorem gram_fvec {S : HSpace E} {r : ℕ} {T : E} (F : FlagG S r T) (c i : Fin (r + 1)) :
     S.hT (F.fvec c) (F.fvec i) = if c = Fin.last r ∧ i = Fin.last r then -T else 0 := by
-  induction c using Fin.lastCases with
-  | last =>
-    induction i using Fin.lastCases with
-    | last => simp [FlagG.fvec, F.z_norm]
-    | cast j =>
-      have h1 : Fin.castSucc j ≠ Fin.last r := Fin.castSucc_ne_last j
-      simp only [FlagG.fvec, Fin.snoc_last, Fin.snoc_castSucc, h1, and_false, if_false]
-      rw [hT_swap, F.z_orth j, star_zero]
-  | cast j =>
-    have h1 : Fin.castSucc j ≠ Fin.last r := Fin.castSucc_ne_last j
-    induction i using Fin.lastCases with
-    | last =>
-      simp only [FlagG.fvec, Fin.snoc_last, Fin.snoc_castSucc, h1, false_and, if_false]
-      exact F.z_orth j
-    | cast l =>
-      simp only [FlagG.fvec, Fin.snoc_castSucc, h1, false_and, if_false]
-      exact F.e_iso j l
+  apply PI.CntNotIntW.flag_gram
 
 theorem det_mul_last {r : ℕ} (A : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (v : Fin (r + 1) → E) (c : E)
     (h : ∀ i, (A *ᵥ v) i = if i = Fin.last r then c else 0) :
@@ -65,8 +93,7 @@ theorem eq_zero_of_mulVec {n : Type} [Fintype n] [DecidableEq n] (A : Matrix n n
 
 theorem Dl_top {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') :
     Dl F F' (r + 1) = (Zhat F F').det := by
-  simp only [Dl, leadMinorE, le_refl, dif_pos]
-  rfl
+  simp [Dl, leadMinorE]
 
 theorem Dl_r {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') :
     Dl F F' r = ((Zhat F F').submatrix Fin.castSucc Fin.castSucc).det := by
@@ -87,9 +114,9 @@ theorem linIndep {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : Fla
   have hZb : ∀ c, (Z *ᵥ b) c = if c = Fin.last r then T * a (Fin.last r) else 0 := by
     intro c
     have h0 := congrArg (S.hT (F.fvec c)) hsum
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, LinearMap.map_smulₛₗ, RingHom.id_apply, map_zero,
-      smul_eq_mul, gram_fvec] at h0
+
+    simp only [map_add (f := _), map_sum, LinearMap.map_smulₛₗ, RingHom.id_apply, map_zero,
+    smul_eq_mul, gram_fvec] at h0
     have e1 : ∑ i, a i * (if c = Fin.last r ∧ i = Fin.last r then -T else 0) =
         if c = Fin.last r then -T * a (Fin.last r) else 0 := by
       by_cases hc : c = Fin.last r
@@ -108,9 +135,9 @@ theorem linIndep {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : Fla
   have hZa : ∀ d, (Z.conjTranspose *ᵥ a) d = if d = Fin.last r then T' * b (Fin.last r) else 0 := by
     intro d
     have h0 := congrArg (S.hT (F'.fvec d)) hsum
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, LinearMap.map_smulₛₗ, RingHom.id_apply, map_zero,
-      smul_eq_mul, gram_fvec] at h0
+
+    simp only [map_add (f := _), map_sum, LinearMap.map_smulₛₗ, RingHom.id_apply, map_zero,
+    smul_eq_mul, gram_fvec] at h0
     have e1 : ∑ j, b j * (if d = Fin.last r ∧ j = Fin.last r then -T' else 0) =
         if d = Fin.last r then -T' * b (Fin.last r) else 0 := by
       by_cases hd : d = Fin.last r

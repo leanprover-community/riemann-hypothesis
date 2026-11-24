@@ -1,9 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.PadicLogSeries
-public import GroundTheory.LocalFields.Uniqueness
+public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
+import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 public import GroundTheory.LocalFields.SeparableClosureValuation
+import GroundTheory.LocalFields.Uniqueness
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

@@ -1,7 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
 public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.FiniteStabAtOfLocal
+public import Formalism.LocalRingCardinality.DataLevel
+public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

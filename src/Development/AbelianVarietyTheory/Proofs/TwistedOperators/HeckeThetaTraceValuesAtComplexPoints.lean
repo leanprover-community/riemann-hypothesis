@@ -1,9 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsCan
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AbsGeneratorRatioEqOneOfUnitFrameMove
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeIsogenyLiftsToLatticeMapScalingForms
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrMoveValues
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsHolToFibPtAndCompFibre
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtUniq
+public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.KerScheme
 
 @[expose] public section
 
@@ -25,10 +68,6 @@ namespace GlobalTheory.HeckeValues
 section Gen
 
 variable {X Y Z : Scheme.{0}} {L : LB X}
-
-theorem g_self (hL : L.IsLB) (f : Y ⟶ X) (y : Y) {i : L.ι} (hi : f y ∈ L.U i) :
-    gm f y (L.U i ⊓ L.U i) (L.g i i) = 1 :=
-  mul_eq_left.1 (gm_cocycle hL f y hi hi hi)
 
 theorem mem_twoPullbackChart_iff {φ : Fin 2 → (Y ⟶ X)} (r : Z ⟶ Y) (z : Z) (a b : L.ι) :
     r z ∈ LB.wchart L φ ![a, b] ↔ (r ≫ φ 0) z ∈ L.U a ∧ (r ≫ φ 1) z ∈ L.U b := by
@@ -136,7 +175,7 @@ theorem W_trans (hβ : β.IsGen) (hβ₀ : β₀.IsGen) (a : Over.mk x ⟶ A) (�
   rw [gv_trans hβ₀ (rpt a) cpt (fiberComplexPoint_mem_thetaTraceChart_of_mem a hk hj) (fiberComplexPoint_mem_thetaTraceChart_of_mem a hk' hj'),
     gv_trans hβ (rpt a) cpt (fiberComplexPoint_mem_thetaTraceIsoChart_of_comp a ψa ha hk hi) (fiberComplexPoint_mem_thetaTraceIsoChart_of_comp a ψa ha hk' hi'), e0, e0', e1, f1]
   apply Additive.ofMul.injective
-  simp only [ofMul_mul, ofMul_inv, ofMul_zpow, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_zero]
+  simp only [ofMul_mul, ofMul_inv, ofMul_zpow, Matrix.cons_val_one, Matrix.cons_val_zero]
   abel
 
 end Core
@@ -158,7 +197,7 @@ theorem W_eq (hβ : β.IsGen) (hβ₀ : β₀.IsGen) (a : Over.mk x ⟶ A) (ψa 
     {k j i : L.L.ι} (hk : pl a cpt ∈ L.L.U k) (hj : pl (a ^ p) cpt ∈ L.L.U j) (hi : pl ψa cpt ∈ L.L.U i) :
     W L β β₀ (rpt a) k j i = W L β β₀ (rpt a) (kc L a) j i := by
   have e := W_trans hβ hβ₀ a ψa ha hk (kc_mem L a) hj hj hi hi
-  rwa [g_self L.isLB _ _ hj, g_self L.isLB _ _ hi, _root_.mul_one, _root_.one_mul] at e
+  rwa [_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.gm_self L.isLB _ _ hj, _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.gm_self L.isLB _ _ hi, _root_.mul_one, _root_.one_mul] at e
 
 theorem bv_trans (hβ : β.IsGen) (hβ₀ : β₀.IsGen) (a : Over.mk x ⟶ A) (ψa : Over.mk x' ⟶ A) (ha : rpt a ≫ Ψ = rpt ψa)
     {i j i' j' : L.L.ι} (hi : pl ψa cpt ∈ L.L.U i) (hi' : pl ψa cpt ∈ L.L.U i')
@@ -202,8 +241,8 @@ theorem bv_values (hβ : β.IsGen) (hβ₀ : β₀.IsGen) {s : LB.Sec (LPow A L.
     Set.mem_iInter.2 fun _ => by
       show (rpt ψa ≫ (snd (Over.mk x') A).left) cpt ∈ L.L.U i
       rw [rpt_snd]; exact hi
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← ev_gs (rpt ψa) _ ml (s'.f fun _ => i), ← hl, H, map_sum]
+
+  rw [← ev_gs (rpt ψa) _ ml (s'.f fun _ => i), ← hl, H, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [rpt_transl]
   set c := cr m * a with hc
@@ -232,7 +271,7 @@ theorem bv_values (hβ : β.IsGen) (hβ₀ : β₀.IsGen) {s : LB.Sec (LPow A L.
   have hk : pl c cpt ∈ L.L.U (J (pl c)) := hJ _
   have hj' : pl (c ^ p) cpt ∈ L.L.U (J (pl (c ^ p))) := hJ _
   have et := W_trans hβ hβ₀ c ψa hcΨ hk (kc_mem L c) hj' (hj m) hi hi
-  rw [g_self L.isLB _ _ hi, _root_.one_mul] at et
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.gm_self L.isLB _ _ hi, _root_.one_mul] at et
   have st : gs (rpt (c ^ p)) cpt ((LPow A L.L 1 (Over.mk x)).U (fun _ => J (pl (c ^ p))))
       (s.f (fun _ => J (pl (c ^ p)))) =
       (gm (pl (c ^ p)) cpt (L.L.U (J (pl (c ^ p))) ⊓ L.L.U (jm m)) (L.L.g (J (pl (c ^ p))) (jm m))).val *

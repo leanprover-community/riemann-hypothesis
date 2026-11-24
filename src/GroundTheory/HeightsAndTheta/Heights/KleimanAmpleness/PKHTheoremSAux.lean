@@ -1,13 +1,18 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgSFreeSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgFiltSt
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGradedSubquot
+public import Mathlib.Algebra.Order.PUnit
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AmpleSt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.CechHcSubsingletonOfBij
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGradedSubquot
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.H1VanishGeneratedOfLocalizedSubsingleton
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenSESStep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGradedSubquot
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PQuotPartGraded
+import Mathlib.Topology.Sheaves.Presheaf
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKleimanScheme
 
 @[expose] public section
 
@@ -106,8 +111,8 @@ theorem cechD_cechMap {M N : Type} [AddCommGroup M] [Module (MRingOver S ι) M] 
     KH.cechD S ι N n (KH.cechMap S ι g n z) = KH.cechMap S ι g (n + 1) (KH.cechD S ι M n z) := by
   funext I
   rw [cechMap_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [KH.cechD, LinearMap.pi_apply, LinearMap.sum_apply, map_sum]
+
+  simp only [KH.cechD, LinearMap.pi_apply, LinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun i _ => ?_
   split_ifs with hI
   · change KH.faceSign I.1 k i • KH.cellRes S N _ I.1 (KH.cechMap S ι g n z ⟨_, hI⟩) =

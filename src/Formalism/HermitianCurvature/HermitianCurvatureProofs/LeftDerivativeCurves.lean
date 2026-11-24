@@ -1,7 +1,57 @@
 module
 
 public import Formalism.HermitianCurvature.StatementQr
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -91,10 +141,9 @@ theorem ld_smooth {f : Mx k r → E} (hf : SmoothLev k r i D f) {X : Mx k r} (hX
   intro g₀ hg₀
   obtain ⟨U, F, hU, hgU, hF, he⟩ := hf g₀ hg₀
   refine ⟨U, fun x => fderiv ℝ F x (X * x), hU, hgU, ?_, fun x hxU hx => ?_⟩
-  · have h2 : ContDiffOn ℝ ∞ (fun x : Mx k r => X * x) U := (mulL X).contDiff.contDiffOn
-    exact (hF.fderiv_of_isOpen hU (by simp)).clm_apply h2
-  · have hFd : DifferentiableAt ℝ F x := (hF.contDiffAt (hU.mem_nhds hxU)).differentiableAt (by simp)
-    exact (l_hasDeriv_ext hU hxU hx hX hFd he).deriv
+  · exact (hF.fderiv_of_isOpen hU (by simp)).clm_apply (mulL X).contDiff.contDiffOn
+  · exact (l_hasDeriv_ext hU hxU hx hX
+      ((hF.contDiffAt (hU.mem_nhds hxU)).differentiableAt (by simp)) he).deriv
 
 theorem ld_lin {f f₂ : Mx k r → E} (hf : SmoothLev k r i D f) (hf₂ : SmoothLev k r i D f₂) (s : ℂ)
     {g X : Mx k r} (hg : g ∈ Glev k r i ∩ D) (hX : inLieLev k r i X) :
@@ -261,26 +310,19 @@ theorem uh_inv_mul {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ * g = 1 := by
   rw [Matrix.inv_eq_left_inv hl, hl]
 
 theorem uh_mul_inv {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g * g⁻¹ = 1 := by
-  have hl : (Hpk k r * gᴴ * Hpk k r) * g = 1 := by
-    rw [show Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) by simp only [Matrix.mul_assoc], hg,
-      Qx2.hpk_sq']
-  exact Matrix.mul_nonsing_inv g (Matrix.isUnit_det_of_left_inverse hl)
+  exact mul_eq_one_comm.mp (uh_inv_mul hg)
 
 theorem unitary_hermitian_inv {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : Hpk k r * g⁻¹ = gᴴ * Hpk k r := by
   have hl : (Hpk k r * gᴴ * Hpk k r) * g = 1 := by
     rw [show Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) by simp only [Matrix.mul_assoc], hg,
       Qx2.hpk_sq']
-  have hsq : ∀ X : Mx k r, Hpk k r * (Hpk k r * X) = X := fun X => by
-    rw [← Matrix.mul_assoc, Qx2.hpk_sq', Matrix.one_mul]
   rw [Matrix.inv_eq_left_inv hl]
-  simp only [Matrix.mul_assoc, hsq]
+  simp only [← Matrix.mul_assoc, Qx2.hpk_sq', Matrix.one_mul]
 
 theorem unitary_inv_conjTranspose_hermitian {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : (g⁻¹)ᴴ * Hpk k r = Hpk k r * g := by
   have hl : (Hpk k r * gᴴ * Hpk k r) * g = 1 := by
     rw [show Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) by simp only [Matrix.mul_assoc], hg,
       Qx2.hpk_sq']
-  have hsq : ∀ X : Mx k r, Hpk k r * (Hpk k r * X) = X := fun X => by
-    rw [← Matrix.mul_assoc, Qx2.hpk_sq', Matrix.one_mul]
   rw [Matrix.inv_eq_left_inv hl]
   simp only [conjTranspose_mul, conjTranspose_conjTranspose, Qx2.hpk_h, Matrix.mul_assoc, Qx2.hpk_sq', Matrix.mul_one]
 
@@ -288,8 +330,6 @@ theorem unitary_hermitian_conjTranspose {g : Mx k r} (hg : g ∈ UH (Hpk k r)) :
   have hl : (Hpk k r * gᴴ * Hpk k r) * g = 1 := by
     rw [show Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) by simp only [Matrix.mul_assoc], hg,
       Qx2.hpk_sq']
-  have hsq : ∀ X : Mx k r, Hpk k r * (Hpk k r * X) = X := fun X => by
-    rw [← Matrix.mul_assoc, Qx2.hpk_sq', Matrix.one_mul]
   rw [Matrix.inv_eq_left_inv hl]
   simp only [Matrix.mul_assoc, Qx2.hpk_sq', Matrix.mul_one]
 
@@ -333,11 +373,9 @@ theorem lie_conj {g X : Mx k r} (hg : g ∈ Glev k r i) (hX : inLieLev k r i X) 
 
 theorem exp_swap {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (X : Mx k r) (t : ℝ) :
     g * NormedSpace.exp ((t : ℂ) • (g⁻¹ * X * g)) = NormedSpace.exp ((t : ℂ) • X) * g := by
-  have h1 := uh_inv_mul hg
-  have h2 := uh_mul_inv hg
-  have hu : IsUnit g := ⟨⟨g, g⁻¹, h2, h1⟩, rfl⟩
+  have hu : IsUnit g := ⟨⟨g, g⁻¹, uh_mul_inv hg, uh_inv_mul hg⟩, rfl⟩
   rw [show (t : ℂ) • (g⁻¹ * X * g) = g⁻¹ * ((t : ℂ) • X) * g by rw [Matrix.mul_smul, Matrix.smul_mul]]
-  rw [Matrix.exp_conj' g _ hu, ← Matrix.mul_assoc, ← Matrix.mul_assoc, h2, Matrix.one_mul]
+  rw [Matrix.exp_conj' g _ hu, ← Matrix.mul_assoc, ← Matrix.mul_assoc, uh_mul_inv hg, Matrix.one_mul]
 
 theorem rd_conj {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (X : Mx k r) (F : Mx k r → E) :
     RdV (g⁻¹ * X * g) F g = LdV X F g := by

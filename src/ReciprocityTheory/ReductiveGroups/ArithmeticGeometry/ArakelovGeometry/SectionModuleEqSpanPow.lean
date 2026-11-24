@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
+public import Mathlib.Algebra.Order.Antidiag.FinsuppEquiv
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -22,9 +25,7 @@ private theorem section_module_eq_span_pow (x : κ → Ω) (n : ℕ) :
 theorem sec_mul_sec (x : κ → Ω) (a b : ℕ) : sec ℤ x a * sec ℤ x b = sec ℤ x (a + b) := by
   rw [section_module_eq_span_pow, section_module_eq_span_pow, section_module_eq_span_pow, pow_add]
 
-theorem sec_eq_span_pow (x : κ → Ω) (n : ℕ) :
-    sec ℤ x n = (Submodule.span ℤ (Set.range x)) ^ n :=
-  section_module_eq_span_pow x n
+alias sec_eq_span_pow := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.section_module_eq_span_pow
 
 theorem sec_comp_le (x : κ → Ω) (e : Fin (D + 1) → κ) (n : ℕ) : sec ℤ (x ∘ e) n ≤ sec ℤ x n := by
   rintro z ⟨p, hp, rfl⟩
@@ -48,8 +49,8 @@ private theorem coneMap_of_isHomogeneous (y : κ → Ω) {p : MvPolynomial κ �
     (hp : p.IsHomogeneous n) : coneMap ℤ y p = C (MvPolynomial.aeval y p) * X ^ n := by
   conv_lhs => rw [p.as_sum]
   conv_rhs => rw [p.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun d hd => ?_
   have hdeg : d.degree = n := by
     have := hp (MvPolynomial.mem_support_iff.mp hd)
@@ -61,8 +62,8 @@ private theorem coneMap_of_isHomogeneous (y : κ → Ω) {p : MvPolynomial κ �
 
 private theorem coeff_coneMap_mem (y : κ → Ω) (p : MvPolynomial κ ℤ) (N : ℕ) :
     (coneMap ℤ y p).coeff N ∈ sec ℤ y N := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPolynomial.sum_homogeneousComponent p, map_sum, Polynomial.finsetSum_coeff]
+
+  rw [← MvPolynomial.sum_homogeneousComponent p, map_sum, Polynomial.finsetSum_coeff]
   refine Submodule.sum_mem _ fun k _ => ?_
   rw [coneMap_of_isHomogeneous y (MvPolynomial.homogeneousComponent_isHomogeneous k p),
     Polynomial.coeff_C_mul_X_pow]
@@ -111,8 +112,8 @@ private theorem sec_le_of_monomial (x : κ → Ω) (n : ℕ) (P : Submodule ℤ 
     sec ℤ x n ≤ P := by
   rintro z ⟨p, hp, rfl⟩
   show MvPolynomial.aeval x p ∈ P
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [p.as_sum, map_sum]
+
+  rw [p.as_sum, map_sum]
   refine Submodule.sum_mem _ fun d hd => ?_
   have hdeg : d.degree = n := by
     rw [Finsupp.degree_eq_weight_one]; exact hp (MvPolynomial.mem_support_iff.mp hd)

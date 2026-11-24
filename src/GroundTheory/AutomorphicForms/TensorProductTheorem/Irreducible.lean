@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Smooth
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Window
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

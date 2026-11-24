@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLinearNoetherNormalization
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
+import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

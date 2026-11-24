@@ -1,6 +1,14 @@
 module
 
 public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+public import Mathlib.Analysis.SpecialFunctions.PolarCoord
+public import Mathlib.MeasureTheory.Constructions.HaarToSphere
+public import Mathlib.MeasureTheory.Integral.Gamma
+public import Mathlib.MeasureTheory.Integral.Pi
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 @[expose] public section
 

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CoinducedModules
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains
+import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

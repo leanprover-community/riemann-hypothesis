@@ -1,8 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCB
-public import Formalism.SharpRestriction.InertJacobiLevels.ExtraTheta
-public import Formalism.LocalRingCardinality.SpanPowerMembership.BaseFormAnisotropicOrthogonalSingle
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
+public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
 
 @[expose] public section
 

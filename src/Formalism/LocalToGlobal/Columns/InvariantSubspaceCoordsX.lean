@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.Columns.GSetLemmas
+public import Formalism.LocalToGlobal.Columns.RowForms
 public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
-public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 
 @[expose] public section
 
@@ -41,12 +41,12 @@ theorem rf_coord_ga (a : MonoidAlgebra K A) (φ : S.EqFun) :
   have hsum : ∀ {m : ℕ} (M : A → Matrix (Fin m) (Fin m) K) (c : A → K) (v : Fin m → K),
       (∑ t, c t • M t).mulVec v = ∑ t, c t • (M t).mulVec v := by
     intro m M c v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Matrix.toLin'_apply, map_sum, LinearMap.sum_apply]
+
+    rw [← Matrix.toLin'_apply, map_sum, LinearMap.sum_apply]
     refine Finset.sum_congr rfl (fun t _ => ?_)
     rw [map_smul, LinearMap.smul_apply, Matrix.toLin'_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [rf_asAlgebraHom_eq, LinearMap.sum_apply, map_sum]
+
+  rw [rf_asAlgebraHom_eq, LinearMap.sum_apply, map_sum]
   unfold CSD.gaMat
   rw [hsum]
   refine Finset.sum_congr rfl (fun t _ => ?_)

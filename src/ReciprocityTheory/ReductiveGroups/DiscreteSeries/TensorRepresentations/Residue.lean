@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Resolvent
+import Mathlib.RingTheory.PowerSeries.Inverse
 
 @[expose] public section
 
@@ -114,8 +115,8 @@ theorem resSeries_eq_sum {n : ℕ} {a : Fin n → ℂ} (ha : Function.Injective 
 theorem resSeries_coeff_succ' {n : ℕ} {a : Fin n → ℂ} (ha : Function.Injective a) (k : ℕ) :
     PowerSeries.coeff (k + 1) (resSeries a) =
       ∑ s, (∏ s' ∈ univ.erase s, (a s - a s' + 1) / (a s - a s')) * a s ^ k := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [resSeries_eq_sum ha, map_sum]
+
+  rw [resSeries_eq_sum ha, map_sum]
   refine Finset.sum_congr rfl fun s _ => ?_
   rw [PowerSeries.coeff_smul, inv_one_sub_C_mul_X, PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_mk,
     smul_eq_mul]
@@ -184,7 +185,7 @@ theorem ratioVd_add_single_mul {μ : Fin n → ℝ} (s : Fin n) (hμ : Function.
     intro h
     apply hne
     apply hμs
-    simp [Pi.single_apply, hne]
+    simp [hne]
     linarith
   simp only [Pi.add_apply, Pi.single_eq_same, Pi.single_apply, hne, if_false, add_zero]
   rw [show μ s + 1 - 1 - μ s' = μ s - μ s' by ring]

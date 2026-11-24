@@ -1,16 +1,12 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.MoriwakiSt
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsSemipositiveRelTrivLine
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOfSemipos
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftModel
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenDegGeomDeg
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PConstantShift
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsSemipositiveRelConstShift
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsConstantShift
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.CharacterNondegenerate
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.CoeffLeOfEvalLeMul
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsSemipositiveRelConstShift
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.SimpleRing.Principal
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 @[expose] public section
 

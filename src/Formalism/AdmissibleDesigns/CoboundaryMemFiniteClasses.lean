@@ -2,6 +2,50 @@ module
 
 public import Formalism.AdmissibleDesigns.FiniteClassesContinuousLattice
 public import Formalism.AdmissibleDesigns.SelfGood
+public import Formalism.SharpRestriction.LevelLetterCocycles.LargeLevelLemmas
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -330,7 +374,7 @@ theorem coboundary_mem_finite_classes {V : Type} [AddCommGroup V] [Module O V] [
     abel
   · show (ofV e (ρ (ι g) x - x) : TrV e V) ⊗ₜ[Qp] (1 : B) = actVB PD (repL e ρ ι) g (ofV e x ⊗ₜ[Qp] (1 : B)) - ofV e x ⊗ₜ[Qp] (1 : B)
     rw [actVB, TensorProduct.AlgebraTensorModule.map_tmul]
-    simp only [LinearMap.restrictScalars_apply, AlgHom.toLinearMap_apply, AlgEquiv.coe_toAlgHom, map_one]
+    simp only [LinearMap.restrictScalars_apply, AlgHom.toLinearMap_apply, map_one]
     rw [← TensorProduct.sub_tmul]
     rfl
 
@@ -415,7 +459,7 @@ theorem cup_iff (hι : Continuous ι) (hK : HomeoK e) (hcyc : CycMatch Dat e ι 
     refine ⟨fun g => e (f (ι g)), hK.1.comp (hf.comp hι), ?_⟩
     funext ⟨g, g'⟩
     have h1 := congrFun hfe (ι g, ι g')
-    simp only [d1_apply, cupCocycleZ1Z1_apply, twist_apply, Algebra.smul_def] at h1
+    simp only [d1_apply, twist_apply, Algebra.smul_def] at h1
     show ((cycLL PD LL g : LLˣ) : LL) * e (f (ι g')) - e (f (ι (g * g'))) + e (f (ι g)) =
       e (Dat.bT (c.1 (ι g)) (Dat.ρT' (ι g) (d.1 (ι g'))))
     rw [← hcyc g, ← map_mul, ← map_sub, ← map_add (f := _), map_mul ι]

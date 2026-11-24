@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ClassFieldConsequences.CongruenceSubgroupLeStandardOpenSubgroup
+public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

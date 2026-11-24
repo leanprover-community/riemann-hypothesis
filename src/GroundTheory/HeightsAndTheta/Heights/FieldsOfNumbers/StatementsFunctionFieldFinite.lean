@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsLocalIntegralClosureFinite
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 
 @[expose] public section
 

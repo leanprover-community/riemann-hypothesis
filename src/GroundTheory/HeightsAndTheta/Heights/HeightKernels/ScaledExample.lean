@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLineDegreeDual
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
 
 @[expose] public section
 

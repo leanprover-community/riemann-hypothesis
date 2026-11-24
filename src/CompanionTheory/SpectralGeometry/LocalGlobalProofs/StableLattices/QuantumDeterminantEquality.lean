@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.RealPlaceAnalysis.StatementE
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.CapelliCentralStatement
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.IsBichar
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.IsSemiChar
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -274,9 +275,9 @@ theorem brS_frameAct {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFl
     (ξ : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (𝓞 D.host.E)) (a b : Fin (D.R.rS + 1)) :
     brS (VS D) (frameAct (frame F') ξ b) (frame F a) =
       (ZhatL F F' * ξ.map (algebraMap (𝓞 D.host.E) D.host.E)) a b := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [frameAct, brS, map_sum, map_smul, smul_eq_mul, Matrix.mul_apply, Matrix.map_apply, ZhatL,
-    Formalism.MainNotions.S.Zhat, frame]
+
+  simp only [frameAct, brS, map_sum, map_smul, smul_eq_mul, Matrix.mul_apply, Matrix.map_apply, ZhatL,
+  Formalism.MainNotions.S.Zhat, frame]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [mul_comm]
 
@@ -753,7 +754,7 @@ theorem local_split_type_zero_second (Z : LocDat D) (Λ : Submodule (𝓞 D.host
   simp only [Loc.HermSp.ZZplus, Loc.HermSp.ZZplusOf, hM, Matrix.map_apply, Matrix.of_apply, hge, hgq,
     Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, map_sub, snd_proj_symm, apply_ite (p2 sg.e), map_zero, zhat_loc,
     map_mul, Prod.fst_mul, Prod.snd_mul, ← adeleInfiniteComponent_apply, ← adele_ext_components, hs', hs1, hcj2, hs2, hf1, hf2, Ecorner, hT',
-    Matrix.mul_diagonal, Matrix.diagonal_mul, Sg, hA, Amat, hφ2, RingHom.comp_apply, map_pow, map_neg, map_one, hqd,
+    Matrix.mul_diagonal, Matrix.diagonal_mul, Sg, hA, Amat, hφ2, RingHom.comp_apply, hqd,
     Matrix.transpose_apply]
   split_ifs <;> ring
 
@@ -803,7 +804,7 @@ theorem local_split_type_mixed_first (Z : LocDat D) (Λ : Submodule (𝓞 D.host
     simp only [if_true, modMat_blk, map_sub, map_mul, fst_proj_algebraMap, htw1, hqi, apply_ite (p1 sg.e), hta1, map_zero,
       hφ1, RingHom.comp_apply]
     by_cases ha : a = Fin.last D.R.rS
-    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2) | (exfalso; rename_i h1 h2; exact h1 h2.2)
+    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2)
     · simp only [ha, false_and, if_false]; ring
   · rw [if_neg hb, if_neg hb, map_zero, map_zero, mul_zero, zero_mul, mul_zero]
     by_cases ha : a = Fin.last D.R.rS ∧ b = Fin.last D.R.rS
@@ -860,7 +861,7 @@ theorem local_split_type_mixed_second (Z : LocDat D) (Λ : Submodule (𝓞 D.hos
     simp only [if_true, modMat_blk, map_sub, map_mul, snd_proj_algebraMap, htw2, hqi, apply_ite (p2 sg.e), hta2, map_zero,
       hφ2, RingHom.comp_apply, hsr]
     by_cases ha : a = Fin.last D.R.rS
-    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2) | (exfalso; rename_i h1 h2; exact h1 h2.2)
+    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2)
     · simp only [ha, false_and, if_false]; ring
   · rw [if_neg hb, if_neg hb, map_zero, map_zero, mul_zero, zero_mul, mul_zero, zero_mul]
     by_cases ha : a = Fin.last D.R.rS ∧ b = Fin.last D.R.rS

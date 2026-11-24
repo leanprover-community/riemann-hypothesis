@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.ConvGGG
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.SchurTensInst
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.HaarSubSWire
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LintegralFinProd
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.LintegralFintypeProd
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.SchurTensInst
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.IUnfold
 
 @[expose] public section
 
@@ -23,35 +61,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Glob
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
-
-private theorem norm_psiR_eq_one {n r : ℕ} (ε : Fin n → Bool) (gg : ℕ) (e f : Fin r → Fin n → ℂ)
-    (z : Fin n → ℂ) (g : Matrix (Fin n) (Fin n) ℂ) : ‖psiR ε gg e f z g‖ = 1 := by
-  unfold psiR
-  have hS : (∑ a, (rootCoord ε e f z g a + star (rootCoord ε e f z g a))) =
-      ((∑ a, 2 * (rootCoord ε e f z g a).re : ℝ) : ℂ) := by
-    push_cast
-    refine Finset.sum_congr rfl fun a _ => ?_
-    rw [Complex.star_def, Complex.add_conj]
-    push_cast
-    ring
-  convert Complex.norm_exp_ofReal_mul_I (2 * Real.pi * (∑ a, 2 * (rootCoord ε e f z g a).re) / gg) using 2
-  rw [hS]
-  push_cast
-  ring_nf
-
-private theorem norm_psiInf_eq_one (I : Formalism.MainNotions.S.AutInst) {r : ℕ} (g : ℕ) (e f : Fin r → Fin I.n → I.E)
-    (z : Fin I.n → I.E) (s : I.Ginf) : ‖psiInf I g e f z s‖ = 1 := by
-  unfold psiInf
-  rw [norm_prod]
-  exact Finset.prod_eq_one fun v _ => norm_psiR_eq_one _ _ _ _ _ _
-
-theorem norm_Wu_S (u : D.what₂.Word) : ∀ s ∈ X.SinfU u, ∀ x, ‖X.Wu u (s * x)‖ = ‖X.Wu u x‖ := by
-  intro s hs x
-  rw [(X.Wu_spec u).1 s hs x, norm_smul, norm_psiInf_eq_one, one_mul]
-  have h := (X.piU_rep u).2.2.1 s hs (X.Wu u x) (X.Wu u x)
-  rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at h
-  have h2 : ‖X.piU u s (X.Wu u x)‖ ^ 2 = ‖X.Wu u x‖ ^ 2 := by exact_mod_cast h
-  exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h2
 
 @[irreducible] def phiV (u u' : D.what₂.Word) (γ : X.B.I.Ginf) (v : InfinitePlace X.B.I.F) (a b : Formalism.REAL.UJ (X.B.I.ε v)) :
     ℝ≥0∞ :=

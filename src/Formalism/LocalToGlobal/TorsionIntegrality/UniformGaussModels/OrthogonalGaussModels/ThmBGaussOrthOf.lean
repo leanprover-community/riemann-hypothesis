@@ -1,8 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
-public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.FinalD
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SqrtInUnramifiedCompletion
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveSecondLogDerivative
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.FirstLevelFromUniversalLaw
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementK
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementS
 
 @[expose] public section
 

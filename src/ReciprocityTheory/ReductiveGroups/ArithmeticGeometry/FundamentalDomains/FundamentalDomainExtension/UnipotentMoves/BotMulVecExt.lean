@@ -2,7 +2,56 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainExtension.UnipotentMoves.KatoClassHeckeEulerFactorRelation
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LowBlock
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.NsqMulVecLeOpN
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,9 +67,6 @@ def en {n : ℕ} (v : Fin n → ℂ) : ℝ := ‖(WithLp.toLp 2 v : EuclideanSpa
 lemma en_nonneg {n : ℕ} (v : Fin n → ℂ) : 0 ≤ en v := by
   exact norm_nonneg _
 
-private lemma nsq_nonneg_unipotent_moves {n : ℕ} (v : Fin n → ℂ) : 0 ≤ nsq v :=
-  Finset.sum_nonneg fun j _ => sq_nonneg _
-
 lemma en_sq {n : ℕ} (v : Fin n → ℂ) : en v ^ 2 = nsq v := by
   have e : en v = Real.sqrt (nsq v) := by
     unfold en nsq
@@ -28,7 +74,7 @@ lemma en_sq {n : ℕ} (v : Fin n → ℂ) : en v ^ 2 = nsq v := by
       | (rw [EuclideanSpace.norm_eq]; rfl)
       | (rw [EuclideanSpace.norm_eq]; simp)
       | simp [EuclideanSpace.norm_eq]
-  rw [e, Real.sq_sqrt (nsq_nonneg_unipotent_moves v)]
+  rw [e, Real.sq_sqrt (_root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalChartBounds.nsq_nonneg v)]
 
 lemma en_eq_sqrt {n : ℕ} (v : Fin n → ℂ) : en v = Real.sqrt (nsq v) := by
   unfold en nsq
@@ -41,18 +87,14 @@ lemma en_add_le {n : ℕ} (u v : Fin n → ℂ) : en (u + v) ≤ en u + en v := 
   unfold en
   first
     | (rw [WithLp.toLp_add]; exact norm_add_le _ _)
-    | exact norm_add_le _ _
-    | simpa using norm_add_le (WithLp.toLp 2 u : EuclideanSpace ℂ (Fin n)) (WithLp.toLp 2 v)
 
 lemma en_sub_le {n : ℕ} (u v : Fin n → ℂ) : en (u - v) ≤ en u + en v := by
   unfold en
   first
     | (rw [WithLp.toLp_sub]; exact norm_sub_le _ _)
-    | exact norm_sub_le _ _
-    | simpa using norm_sub_le (WithLp.toLp 2 u : EuclideanSpace ℂ (Fin n)) (WithLp.toLp 2 v)
 
 lemma eq_zero_of_en {n : ℕ} (d : Fin n → ℂ) (h : en d = 0) : d = 0 := by
-  rw [en_eq_sqrt, Real.sqrt_eq_zero (nsq_nonneg_unipotent_moves d)] at h
+  rw [en_eq_sqrt, Real.sqrt_eq_zero (_root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalChartBounds.nsq_nonneg d)] at h
   have hs : ∀ j ∈ Finset.univ, ‖d j‖ ^ 2 = 0 :=
     (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => sq_nonneg ‖d j‖)).mp h
   funext j
@@ -87,8 +129,6 @@ lemma re_conj_mul (w : ℂ) (s : ℝ) : (conj w * (w * (s : ℂ))).re = s * ‖w
     Complex.ofReal_re, Complex.ofReal_im]
   first
     | (rw [Complex.sq_norm, Complex.normSq_apply]; ring)
-    | (rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring)
-    | (simp [Complex.sq_abs, Complex.normSq_apply]; ring)
 
 section Blocks
 
@@ -121,14 +161,14 @@ lemma nsq_split (w : Fin r → ℂ) : nsq w = nsq (top X w) + nsq (bot X w) := b
 lemma en_top_le (w : Fin r → ℂ) : en (top X w) ≤ en w := by
   rw [en_eq_sqrt, en_eq_sqrt]
   apply Real.sqrt_le_sqrt
-  have h0 := nsq_nonneg_unipotent_moves (bot X w)
+  have h0 := _root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalChartBounds.nsq_nonneg (bot X w)
   rw [nsq_split X w]
   linarith
 
 lemma en_bot_le (w : Fin r → ℂ) : en (bot X w) ≤ en w := by
   rw [en_eq_sqrt, en_eq_sqrt]
   apply Real.sqrt_le_sqrt
-  have h0 := nsq_nonneg_unipotent_moves (top X w)
+  have h0 := _root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalChartBounds.nsq_nonneg (top X w)
   rw [nsq_split X w]
   linarith
 
@@ -178,9 +218,7 @@ lemma blkB_low (Z : X.Coord) (τ : X.Ψ) : blkB X (X.lowBlock Z τ) = Matrix.of 
   have hb := b.isLt
   have hne : X.p0 + (m : ℕ) ≠ (b : ℕ) := by omega
   first
-    | simp [blkB, Data.lowBlock, nI, Fin.ext_iff, hne, hb]
-    | (simp only [blkB, Data.lowBlock, Matrix.of_apply, Fin.ext_iff, Fin.coe_castLE, nI]
-       split_ifs <;> first | (simp_all; done) | omega | (congr 1 <;> ext <;> simp))
+    | simp [blkB, Data.lowBlock, nI, Fin.ext_iff, hne]
 
 end Blocks
 
@@ -199,7 +237,6 @@ lemma fin_split (i : Fin r) :
 lemma col_mul (P Q : Matrix (Fin r) (Fin r) ℂ) (j : Fin r) : col (P * Q) j = P *ᵥ col Q j := by
   first
     | rfl
-    | (funext k; simp [col, Matrix.mul_apply, Matrix.mulVec, dotProduct])
 
 lemma span_cols_eq {p : ℕ} (u w : Fin p → Fin r → ℂ) (A : Matrix (Fin p) (Fin p) ℂ)
     (hA : IsUnit A.det) (h : ∀ a, u a = ∑ b, A b a • w b) :
@@ -241,9 +278,9 @@ private lemma hermC_mulVec_mulVec_eq_sum_gram' (τ : E →+* ℂ) (G : Matrix (F
   have e1 : ∀ a b, (M *ᵥ c) a * τ (G a b) * conj ((M *ᵥ d) b) =
       ∑ j, ∑ k, M a j * c j * τ (G a b) * (conj (M b k) * conj (d k)) := by
     intro a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [show (M *ᵥ c) a = ∑ j, M a j * c j from rfl, show (M *ᵥ d) b = ∑ k, M b k * d k from rfl,
-      map_sum, Finset.sum_mul, Finset.sum_mul_sum]
+
+    rw [show (M *ᵥ c) a = ∑ j, M a j * c j from rfl, show (M *ᵥ d) b = ∑ k, M b k * d k from rfl,
+    map_sum, Finset.sum_mul, Finset.sum_mul_sum]
     simp only [map_mul]
   have e2 : ∀ j k, c j * gram τ G M j k * conj (d k) =
       ∑ a, ∑ b, c j * (M a j * τ (G a b) * conj (M b k)) * conj (d k) := by
@@ -262,8 +299,6 @@ private lemma col_eq_mulVec_single (M : Matrix (Fin r) (Fin r) ℂ) (j : Fin r) 
   funext k
   first
     | simp [col, Matrix.mulVec, dotProduct, Pi.single_apply]
-    | simp [col, Matrix.mulVec_single_one]
-    | (rw [Matrix.mulVec_single_one]; rfl)
 
 private lemma hermC_mat_mulVec_eq_sum_sgn_of_isOrtho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c d : Fin r → ℂ) :
     hermC τ.1 X.Gm (mat x τ *ᵥ c) (mat x τ *ᵥ d) =
@@ -272,7 +307,6 @@ private lemma hermC_mat_mulVec_eq_sum_sgn_of_isOrtho {x : Frame X.Ψ r} (ho : X.
   first
     | simp only [Matrix.diagonal_apply, mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq,
         Finset.mem_univ, if_true]
-    | simp [Matrix.diagonal_apply]
 
 lemma maj_ortho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c : Fin r → ℂ) :
     X.maj x τ (mat x τ *ᵥ c) = nsq c := by
@@ -315,20 +349,6 @@ lemma maj_ortho {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (c : Fin r →
   simp only [h1, h2, one_mul, neg_one_mul, Finset.sum_neg_distrib]
   ring
 
-private lemma nsq_mulVec_le_sum_norm_sq_mul_nsq {m n : ℕ} (W : Matrix (Fin m) (Fin n) ℂ) (v : Fin n → ℂ) :
-    nsq (W *ᵥ v) ≤ (∑ i, ∑ j, ‖W i j‖ ^ 2) * nsq v := by
-  unfold nsq
-  rw [Finset.sum_mul]
-  apply Finset.sum_le_sum
-  intro i _
-  have h1 : ‖(W *ᵥ v) i‖ ≤ ∑ j, ‖W i j‖ * ‖v j‖ := by
-    calc ‖(W *ᵥ v) i‖ = ‖∑ j, W i j * v j‖ := rfl
-      _ ≤ ∑ j, ‖W i j * v j‖ := norm_sum_le _ _
-      _ = ∑ j, ‖W i j‖ * ‖v j‖ := Finset.sum_congr rfl fun j _ => norm_mul _ _
-  have h2 := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => ‖W i j‖) (fun j => ‖v j‖)
-  calc ‖(W *ᵥ v) i‖ ^ 2 ≤ (∑ j, ‖W i j‖ * ‖v j‖) ^ 2 := by gcongr
-    _ ≤ _ := h2
-
 private lemma en_mulVec_le_opN_mul_en {m n : ℕ} (W : Matrix (Fin m) (Fin n) ℂ) (v : Fin n → ℂ) :
     en (W *ᵥ v) ≤ Data.opN W * en v := by
   by_cases hv : v = 0
@@ -338,7 +358,7 @@ private lemma en_mulVec_le_opN_mul_en {m n : ℕ} (W : Matrix (Fin m) (Fin n) �
     have hF : 0 ≤ ∑ i, ∑ j, ‖W i j‖ ^ 2 :=
       Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => sq_nonneg _
     have hC : ∀ u, en (W *ᵥ u) ≤ Real.sqrt (∑ i, ∑ j, ‖W i j‖ ^ 2) * en u := fun u =>
-      en_le_of_nsq _ _ (Real.sqrt_nonneg _) (by rw [Real.sq_sqrt hF]; exact nsq_mulVec_le_sum_norm_sq_mul_nsq W u)
+      en_le_of_nsq _ _ (Real.sqrt_nonneg _) (by rw [Real.sq_sqrt hF]; exact _root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalChartBounds.nsq_mulVec_le W u)
     have hmem : en (W *ᵥ v) / en v ∈ {t | ∃ v : Fin n → ℂ, v ≠ 0 ∧
         t = Real.sqrt (∑ i, ‖Matrix.mulVec W v i‖ ^ 2) / Real.sqrt (∑ j, ‖v j‖ ^ 2)} :=
       ⟨v, hv, by rw [en_eq_sqrt, en_eq_sqrt]; rfl⟩

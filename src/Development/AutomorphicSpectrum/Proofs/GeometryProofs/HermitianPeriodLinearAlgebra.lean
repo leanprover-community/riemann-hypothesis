@@ -1,13 +1,60 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LevelSectionsExactKernelLocusOpen
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannFormPeriodDeterminantBoundStatement
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+public import Mathlib.LinearAlgebra.Matrix.Rank
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
+public import Mathlib.Analysis.Complex.Order
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannFormPeriodDeterminantBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 
 @[expose] public section
 
@@ -47,7 +94,7 @@ theorem exists_rightInverse {p : ℕ} {κ : Type*} [Fintype κ] [DecidableEq κ]
   have hs : Function.Surjective A.mulVecLin := by
     rw [← LinearMap.range_eq_top]
     apply Submodule.eq_top_of_finrank_eq
-    simpa [Matrix.rank] using hA
+    simpa only [Module.finrank_fin_fun] using (Matrix.finrank_range_mulVecLin A).trans hA
   choose c hc using fun a : Fin p => hs (Pi.single a 1)
   refine ⟨Matrix.of c, ?_⟩
   ext a b
@@ -60,7 +107,7 @@ theorem eq_zero_of_vecMul_eq_zero {q : ℕ} {κ : Type*} [Fintype κ]
   have hFt : Fᵀ.rank = q := by rw [Matrix.rank_transpose, hF]
   have hk : LinearMap.ker Fᵀ.mulVecLin = ⊥ := by
     have h0 := LinearMap.finrank_range_add_finrank_ker Fᵀ.mulVecLin
-    have h1 : Module.finrank ℂ (LinearMap.range Fᵀ.mulVecLin) = q := hFt
+    have h1 : Module.finrank ℂ (LinearMap.range Fᵀ.mulVecLin) = q := (Matrix.finrank_range_mulVecLin Fᵀ).trans hFt
     rw [h1] at h0
     simp only [Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at h0
     exact Submodule.finrank_eq_zero.mp (by omega)
@@ -175,7 +222,7 @@ theorem reindexed {p q : ℕ} (A : Matrix (Fin p) (Fin p ⊕ Fin q) ℂ)
     simpa [Matrix.mul_apply] using this
   have hdet : (S.submatrix e e).det ≠ 0 := by
     rwa [Matrix.det_submatrix_equiv_self]
-  obtain ⟨t₁, t₂, t₃, -⟩ := GlobalTheory.T.riemann_form_period_determinant p q (A.submatrix id e) (B.submatrix id e)
+  obtain ⟨t₁, t₂, t₃, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.fcNorm p q (A.submatrix id e) (B.submatrix id e)
     (S.submatrix e e) H₁ H₂ h₁ h₂ hdet hrel'
   have hG : ((S.submatrix e e)ᵀ)⁻¹ * (B.submatrix id e)ᵀ = ((Sᵀ)⁻¹ * Bᵀ).submatrix e id := by
     rw [Matrix.transpose_submatrix, Matrix.transpose_submatrix, Matrix.inv_submatrix_equiv,

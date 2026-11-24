@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StFibreOverFinite
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreIncomp
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreDivSupp
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

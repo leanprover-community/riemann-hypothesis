@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+public import Mathlib.RingTheory.Valuation.Discrete.IsDiscreteValuationRing
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -67,17 +73,15 @@ lemma nval_ne_bot (e : ℕ) (x : K') : nval V e x ≠ ⊥ := by
 
 lemma nval_add (e : ℕ) (x y : K') : min (nval V e x) (nval V e y) ≤ nval V e (x + y) := by
   by_cases hxy : x + y = 0
-  · rw [hxy, nval_zero]; exact le_top
+  · simp [hxy, nval_zero]
   by_cases hx : x = 0
   · subst hx; simp
   by_cases hy : y = 0
   · subst hy; simp
   rw [nval_of_ne hx, nval_of_ne hy, nval_of_ne hxy]
   rcases min_le_iff.1 (min_le_vV_add (V := V) hx hy hxy) with h | h
-  · exact min_le_iff.2 (Or.inl (EReal.coe_le_coe_iff.2
-      (div_le_div_of_nonneg_right (by exact_mod_cast h) (Nat.cast_nonneg e))))
-  · exact min_le_iff.2 (Or.inr (EReal.coe_le_coe_iff.2
-      (div_le_div_of_nonneg_right (by exact_mod_cast h) (Nat.cast_nonneg e))))
+  · exact min_le_iff.2 (Or.inl (EReal.coe_le_coe_iff.2 (div_le_div_of_nonneg_right (by exact_mod_cast h) (Nat.cast_nonneg e))))
+  · exact min_le_iff.2 (Or.inr (EReal.coe_le_coe_iff.2 (div_le_div_of_nonneg_right (by exact_mod_cast h) (Nat.cast_nonneg e))))
 
 lemma nval_mul (e : ℕ) (x y : K') : nval V e (x * y) = nval V e x + nval V e y := by
   by_cases hx : x = 0
@@ -98,8 +102,7 @@ lemma nval_bc {V' K'' : Type} [CommRing V'] [IsDomain V'] [IsDiscreteValuationRi
   by_cases hx : x = 0
   · subst hx; rw [map_zero, nval_zero, nval_zero]
   rw [nval_of_ne ((map_ne_zero i).2 hx), nval_of_ne hx, hi]
-  have hr' : (r : ℝ) ≠ 0 := by exact_mod_cast hr.ne'
-  congr 1; push_cast; exact mul_div_mul_left _ _ hr'
+  congr 1; push_cast; exact mul_div_mul_left _ _ (by exact_mod_cast hr.ne')
 
 end Dvr
 
@@ -135,8 +138,7 @@ lemma nval_smul {ι : K →+* K'} {e : ℕ} (ho : OverLa la V ι e) {a : K} (ha 
     nval V e (ι a * x) = (((vLa la a : ℤ) : ℝ) : EReal) + nval V e x := by
   rw [nval_mul, nval_of_ne ((map_ne_zero ι).2 ha), ho.2 a]
   congr 1
-  have he : (e : ℝ) ≠ 0 := by exact_mod_cast ho.1.ne'
-  congr 1; push_cast; field_simp
+  congr 1; push_cast; field_simp [(show (e : ℝ) ≠ 0 by exact_mod_cast ho.1.ne')]
 
 lemma OverLa.bc {ι : K →+* K'} {e : ℕ} (ho : OverLa la V ι e) {V' K'' : Type} [CommRing V']
     [IsDomain V'] [IsDiscreteValuationRing V'] [Field K''] [Algebra V' K''] [IsFractionRing V' K'']
@@ -154,8 +156,7 @@ structure IsEval {W : Type} {Cusp : W → Type} [∀ w, AddCommGroup (Cusp w)] [
 lemma IsEval.zero {W : Type} {Cusp : W → Type} [∀ w, AddCommGroup (Cusp w)] [∀ w, Module K (Cusp w)]
     {wadd : W → W → W} {mulC : ∀ w w', Cusp w → Cusp w' → Cusp (wadd w w')} {F : Type} [Field F]
     {ι : K →+* F} {ev : ∀ w, Cusp w → F} (h : IsEval wadd mulC ι ev) (w : W) : ev w 0 = 0 := by
-  have := h.smul w 0 0
-  rwa [zero_smul, map_zero, zero_mul] at this
+  simpa only [zero_smul, map_zero, zero_mul] using h.smul w 0 0
 
 end Over
 
@@ -167,7 +168,7 @@ lemma finitePlace_eq_zpow {a : K} (ha : a ≠ 0) :
     FinitePlace.mk la a = (Ideal.absNorm la.asIdeal : ℝ) ^ (-(vLa la a)) := by
   rw [FinitePlace.mk_apply, FinitePlace.norm_embedding',
     WithZeroMulInt.toNNReal_neg_apply _ ((la.valuation K).ne_zero_iff.2 ha)]
-  simp [vLa, WithZero.toAdd_unzero_eq_log]
+  simp [vLa]
 
 def nrmOf (v : EReal) : ℝ :=
   open Classical in if v = ⊤ then 0 else (Ideal.absNorm la.asIdeal : ℝ) ^ (-v.toReal)

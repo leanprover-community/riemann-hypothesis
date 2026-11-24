@@ -1,16 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FinitePartPreservesFormDetNormOne
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRootNear
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.Hilbert90AdeleRingTensorQuadratic
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUnitaryAdelicCharOfHeckeChar
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+public import Formalism.LocalToGlobal.Divisibility.TuplesLemmas
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralHilbert90FiniteIdelesTrivialWhereTrivial
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsConjStabilizersSelfDualLatticesUnramified
-public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRootNear
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FinitePartPreservesFormDetNormOne
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.Hilbert90AdeleRingTensorQuadratic
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Matrix
 
 @[expose] public section
 
@@ -223,59 +262,5 @@ theorem resEtaF_mul {χ ν : (AEF F E)ˣ →* Circle} {k : ℕ} (hχ : ResEtaF �
 theorem triv_of_resEtaF {ν : (AEF F E)ˣ →* Circle} (h : ResEtaF ν 0) (a : (AF F)ˣ) : ν (idFF F E a) = 1 := by
   obtain ⟨η, hη⟩ := h.1
   rw [h.2 η hη a, pow_zero]
-
-theorem exists_weilDatumOF_twist : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
-    B.IsGood σ → ∀ (nS nT : ℕ) (JS : Matrix (Fin nS) (Fin nS) E) (JT : Matrix (Fin nT) (Fin nT) E),
-      IsHermND σ JS → IsHermND σ JT → ∀ ξ₀ : E, ξ₀ ≠ 0 → σ ξ₀ = -ξ₀ →
-      ∀ (χS χT νS νT : (AF F ⊗[F] E)ˣ →* Circle) ω,
-        IsWeilDatumOF σ JS JT (fun w : InfinitePlace F => (B.emb w).1) ξ₀ B.ψ χS χT ω →
-        IsHeckeCharF νS → IsHeckeCharF νT → ResEtaF νS 0 → ResEtaF νT 0 →
-        ∃ ω', IsWeilDatumOF σ JS JT (fun w : InfinitePlace F => (B.emb w).1) ξ₀ B.ψ (χS * νS) (χT * νT) ω' := by
-  intro F E _ _ _ _ _ σ B hB nS nT JS JT hS hT ξ₀ hξ hξσ χS χT νS νT om ho hνS hνT rS rT
-  have hcm := hB.cm
-  have hun := hB.unram
-  obtain ⟨a, aval, arat, acont⟩ := exists_muF (σ := σ) hcm hun hS.2 νT⁻¹ (heckeF_inv hνT)
-    (fun t => by rw [MonoidHom.inv_apply, triv_of_resEtaF rT, inv_one])
-  obtain ⟨b, bval, brat, bcont⟩ := exists_muF (σ := σ) hcm hun hT.2 νS hνS (triv_of_resEtaF rS)
-  let om' : GAF σ JS × GAF σ JT →* Module.End ℂ (WOF F E nS nT → ℂ) :=
-    { toFun := fun p => ((a p.1 * b p.2 : Circle) : ℂ) • om p
-      map_one' := by simp
-      map_mul' := fun p q => by
-        simp only [Prod.fst_mul, Prod.snd_mul, map_mul, smul_mul_smul_comm, Circle.coe_mul]
-        congr 1
-        ring }
-  have happ : ∀ p f, om' p f = ((a p.1 * b p.2 : Circle) : ℂ) • om p f := fun p f => rfl
-  have hval : ∀ g h x y, IsRootF σ JS g x → IsRootF σ JT h y →
-      ((a g * b h : Circle) : ℂ) = (((νT x)⁻¹ * νS y : Circle) : ℂ) := by
-    intro g h x y hx hy
-    rw [aval g x hx, bval h y hy, MonoidHom.inv_apply]
-  refine ⟨om', ⟨ho.std, heckeF_mul ho.hecS hνS, heckeF_mul ho.hecT hνT, resEtaF_mul ho.resS rS,
-    resEtaF_mul ho.resT rT, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
-  · intro p f hf
-    rw [happ]
-    exact thetaOF_smul _ (ho.om_pres p f hf)
-  · intro g h w₀ f hf
-    rw [happ, happ, heisOF_smul, ho.om_heis g h w₀ f hf]
-  · intro γ hγ γ' hγ' f hf
-    rw [happ]
-    change ((a γ * b γ' : Circle) : ℂ) * om (γ, γ') f 0 = f 0
-    rw [arat γ hγ, brat γ' hγ', mul_one, Circle.coe_one, one_mul]
-    exact ho.om_aut γ hγ γ' hγ' f hf
-  · intro f hf w
-    exact (continuous_subtype_val.comp ((acont.comp continuous_fst).mul (bcont.comp continuous_snd))).mul
-      (ho.om_cont f hf w)
-  · intro μ 𝓕 hμ h𝓕 p f hf
-    rw [← ho.om_unit μ 𝓕 hμ h𝓕 p f hf]
-    refine lintegral_congr fun w => ?_
-    have hn : ‖om' p f w‖ = ‖om p f w‖ := by
-      rw [happ, Pi.smul_apply, smul_eq_mul, norm_mul, Circle.norm_coe, one_mul]
-    rw [← ofReal_norm, ← ofReal_norm, hn]
-  · intro e he g h hg hh x y hx hy
-    obtain ⟨r, hr, H⟩ := ho.om_split e he g h hg hh x y hx hy
-    refine ⟨r, hr, fun ℓ hℓ f hf => ?_⟩
-    rw [happ, map_smul, H ℓ hℓ f hf,
-      hval g h x y (root_of_detAt hS.2 he g hg x hx) (root_of_detAt hT.2 he h hh y hy)]
-    simp only [splitFacOF, MonoidHom.mul_apply, mul_inv, Circle.coe_mul, smul_eq_mul]
-    ring
 
 end GlobalTheory.WeilTwistF

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.WeylComplementInDetCoeffSpan
+public import Mathlib.Algebra.MvPolynomial.Rename
 
 @[expose] public section
 

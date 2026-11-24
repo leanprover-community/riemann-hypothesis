@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.HilbertSchmidt
+public import Mathlib.Analysis.Normed.Operator.Compact.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

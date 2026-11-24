@@ -1,10 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.EqOneOfCoprimeTorsionTwoPrimes
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedRankEqFinrank
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
-public import Formalism.HarderNarasimhan.ShiftInvariance
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ClearDenominatorsLattice
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 

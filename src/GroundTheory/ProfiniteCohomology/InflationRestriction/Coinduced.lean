@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.Section
-public import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
+public import GroundTheory.ProfiniteCohomology.CoinducedModules
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.Section
 
 @[expose] public section
 

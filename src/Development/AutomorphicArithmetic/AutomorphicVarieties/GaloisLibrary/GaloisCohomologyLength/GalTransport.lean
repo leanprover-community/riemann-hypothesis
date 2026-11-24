@@ -1,8 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.LevelInertiaLeLevelDec
+public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.FinrankAdjoinRootsEqRootDeg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.GaloisValuations.GlobalA
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.LevelInertiaLeLevelDec
+import Formalism.GaloisCohomology.Statement
 
 @[expose] public section
 
@@ -15,8 +58,7 @@ theorem UpperTheory.V.LDataCardLeFinrank.galTransport :
   have hc : ∀ g : G F' Ω', ∀ x : F,
       ((σ.trans g.toRingEquiv).trans σ.symm) (algebraMap F Ω x) = algebraMap F Ω x := by
     intro g x
-    simp only [RingEquiv.trans_apply, hσ, AlgEquiv.coe_toRingEquiv, AlgEquiv.coe_ringEquiv,
-      AlgEquiv.commutes]
+    simp only [RingEquiv.trans_apply, hσ, AlgEquiv.coe_toRingEquiv, AlgEquiv.commutes]
     rw [← hσ, RingEquiv.symm_apply_apply]
   let φ : G F' Ω' →* G F Ω :=
     { toFun := fun g => AlgEquiv.ofRingEquiv (hc g)
@@ -50,8 +92,8 @@ theorem UpperTheory.V.LDataCardLeFinrank.galTransport :
     rw [AlgEquiv.smul_def]
     have hs := congrArg (fun z : E => (z : Ω)) (b.sum_repr ⟨y, hy⟩)
     simp only [IntermediateField.coe_sum, IntermediateField.coe_smul] at hs
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hs, map_sum]
+
+    rw [← hs, map_sum]
     simp [map_smul, hb]
   · intro l _ g
     haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective

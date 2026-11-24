@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.CMQuasiPeriodConst
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

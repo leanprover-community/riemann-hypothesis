@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Convex.Basic
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidStA
 
 @[expose] public section
@@ -20,11 +26,6 @@ noncomputable def qR {r : ℕ} (G : Matrix (Fin r) (Fin r) ℝ) (y : Fin r → �
 private lemma exists_factor_C {r : ℕ} {G : Matrix (Fin r) (Fin r) ℂ} (hG : G.PosDef) :
     ∃ B : Matrix (Fin r) (Fin r) ℂ, G = Bᴴ * B := by
   first
-  | exact Matrix.posSemidef_iff_eq_transpose_mul_self.1 hG.posSemidef
-  | exact (Matrix.posSemidef_iff_eq_conjTranspose_mul_self).1 hG.posSemidef
-  | exact hG.posSemidef.exists_eq_conjTranspose_mul_self
-  | (refine ⟨hG.posSemidef.sqrt, ?_⟩
-     rw [hG.posSemidef.posSemidef_sqrt.isHermitian.eq, hG.posSemidef.sqrt_mul_self])
   | (refine ⟨CFC.sqrt G, ?_⟩
      have h0 : 0 ≤ G := hG.posSemidef.nonneg
      have hs : (CFC.sqrt G)ᴴ = CFC.sqrt G := (CFC.sqrt_nonneg G).isSelfAdjoint.star_eq
@@ -34,11 +35,6 @@ private lemma exists_factor_R {r : ℕ} {G : Matrix (Fin r) (Fin r) ℝ} (hG : G
     ∃ B : Matrix (Fin r) (Fin r) ℝ, G = Bᵀ * B := by
   have hC : ∃ B : Matrix (Fin r) (Fin r) ℝ, G = Bᴴ * B := by
     first
-    | exact Matrix.posSemidef_iff_eq_transpose_mul_self.1 hG.posSemidef
-    | exact (Matrix.posSemidef_iff_eq_conjTranspose_mul_self).1 hG.posSemidef
-    | exact hG.posSemidef.exists_eq_conjTranspose_mul_self
-    | (refine ⟨hG.posSemidef.sqrt, ?_⟩
-       rw [hG.posSemidef.posSemidef_sqrt.isHermitian.eq, hG.posSemidef.sqrt_mul_self])
     | (refine ⟨CFC.sqrt G, ?_⟩
        have h0 : 0 ≤ G := hG.posSemidef.nonneg
        have hs : (CFC.sqrt G)ᴴ = CFC.sqrt G := (CFC.sqrt_nonneg G).isSelfAdjoint.star_eq
@@ -62,7 +58,7 @@ private lemma qR_eq {r : ℕ} (B : Matrix (Fin r) (Fin r) ℝ) (y : Fin r → �
   have h1 : qR (Bᵀ * B) y = dotProduct y ((Bᵀ * B) *ᵥ y) := by
     simp only [qR, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
   rw [h1, ← mulVec_mulVec, dotProduct_mulVec, vecMul_transpose]
-  simp only [dotProduct, Real.norm_eq_abs, sq_abs, sq, abs_mul_abs_self]
+  simp only [dotProduct, Real.norm_eq_abs, sq, abs_mul_abs_self]
 
 private lemma setC_eq {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) (R : ℝ) :
     {y | qC (Bᴴ * B) y ≤ R ^ 2} = ((Matrix.toLin' B).restrictScalars ℝ) ⁻¹' sqBall r ℂ R := by
@@ -74,7 +70,6 @@ private lemma setR_eq {r : ℕ} (B : Matrix (Fin r) (Fin r) ℝ) (R : ℝ) :
     {y | qR (Bᵀ * B) y ≤ R ^ 2} = (Matrix.toLin' B) ⁻¹' sqBall r ℝ R := by
   ext y
   simp only [Set.mem_setOf_eq, Set.mem_preimage, qR_eq, Matrix.toLin'_apply, sqBall]
-  skip
 
 private lemma detC_eq {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) :
     (Bᴴ * B).det = (Complex.normSq B.det : ℂ) := by

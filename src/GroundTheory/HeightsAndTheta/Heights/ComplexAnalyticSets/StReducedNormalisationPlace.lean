@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCurveResidueDegree
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.CurveNormalisationFiniteLemmas
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 
 @[expose] public section
 

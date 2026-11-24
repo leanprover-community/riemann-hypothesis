@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.NonvanishingHypotheses
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.ReproducingKernels.ReproCoreStatement
-public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 
 @[expose] public section
 

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremTrivial
+public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremScaling
+public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremConj
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

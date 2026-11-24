@@ -1,6 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Linear
+public import Mathlib.Analysis.Matrix.Normed
 
 @[expose] public section
 
@@ -64,15 +69,15 @@ theorem actM_single (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) (c 
   classical
   unfold actM
   rw [Finset.sum_eq_single a, Finset.sum_eq_single b]
-  · simp [Matrix.single_apply]
+  · simp
   · intro j _ hj
-    simp [Matrix.single_apply, Ne.symm hj]
+    simp [Ne.symm hj]
   · intro h
     exact absurd (Finset.mem_univ _) h
   · intro i _ hi
     apply Finset.sum_eq_zero
     intro j _
-    simp [Matrix.single_apply, Ne.symm hi]
+    simp [Ne.symm hi]
   · intro h
     exact absurd (Finset.mem_univ _) h
 

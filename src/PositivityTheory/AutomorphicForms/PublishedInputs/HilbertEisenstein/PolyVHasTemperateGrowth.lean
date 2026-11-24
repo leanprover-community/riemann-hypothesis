@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SSmooth
 public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 
 @[expose] public section
 

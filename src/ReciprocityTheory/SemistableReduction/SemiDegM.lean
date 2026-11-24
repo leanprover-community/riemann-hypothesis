@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.SemiDegI
+public import ReciprocityTheory.SemistableReduction.SemiDegT
 
 @[expose] public section
 
@@ -40,8 +40,8 @@ theorem form_colMat {K : Type} [Field K] [NumberField K] {r k : ℕ} (S : HermFo
 
 theorem hermForm_swap {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
     (x y : Fin r → K) : S.c (S.h x y) = S.h y x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [HermForm.h, map_sum, map_mul, S.c_invol]
+
+  simp only [HermForm.h, map_sum, map_mul, S.c_invol]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [S.G_herm]

@@ -1,12 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.IsNormalSchemeSp
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.CompanionTheory
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.RegularOfBoundedAtPadicAlgClPoints
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.JacobsonClosedPointsToolsInt
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MemPadicAlgClValuationSubringIffNormLeOne
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueExtensionOfForallNormLeOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.RegularOfBoundedAtPadicAlgClPoints
 
 @[expose] public section
 
@@ -53,20 +96,7 @@ theorem exists_point_norm_valF_eq {X : Scheme.{0}} {p : ℕ} [Fact p.Prime]
       valF (gPt p ≫ y') U φ = (((Scheme.ΓSpecIso (.of K)).hom
         ((Spec.map (CommRingCat.ofHom (algebraMap (integralClosure ℤ_[p] K) K)) ≫ y).appLE
           U ⊤ hy φ) : K) : PadicAlgCl p) := by
-  haveI := isLocalHom_integralClosureToPadicAlgClIntegers K
-  have e : gPt p ≫ spMap (integralClosureToPadicAlgClIntegers K) ≫ y =
-      spMap K.val.toRingHom ≫
-        Spec.map (CommRingCat.ofHom (algebraMap (integralClosure ℤ_[p] K) K)) ≫ y := by
-    rw [← Category.assoc, ← Category.assoc, ← Spec.map_comp, ← Spec.map_comp]
-    rfl
-  refine ⟨spMap (integralClosureToPadicAlgClIntegers K) ≫ y, ?_, ?_, ?_⟩
-  · refine (Scheme.Hom.comp_apply _ _ _).trans (congrArg y ?_)
-    exact IsLocalRing.comap_closedPoint (integralClosureToPadicAlgClIntegers K)
-  · rw [e]
-    rintro _ ⟨q, rfl⟩
-    exact hy (Set.mem_univ (spMap K.val.toRingHom q))
-  · rw [e, valF_spMap_comp_eq _ _ U hy]
-    rfl
+  apply _root_.GlobalTheory.BoundedRegular.exists_point_norm_valF_eq
 
 theorem existsUnique_resG_eq {X : Scheme.{0}} [IsIntegral X] (π : X ⟶ Sp ℤ) [Flat π]
     [LocallyOfFiniteType π] (hX : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X) {U W : X.Opens}
@@ -106,33 +136,7 @@ theorem regular_of_bounded_at_padicAlgCl_points :
       (IsUnit φ → (∀ (p : ℕ) [Fact p.Prime] (y : Sp (OO p) ⟶ X), y (cPt p) ∈ W →
         Set.range (gPt p ≫ y) ⊆ U → ‖valF (gPt p ≫ y) U φ‖ = 1) →
           ∃ ψ : Γ(X, W), IsUnit ψ ∧ resG X h ψ = φ)) := by
-  refine ⟨fun X _ π _ _ x hx hn U φ hU H => ?_, fun X _ π _ _ hX U W h φ hU =>
-    ⟨existsUnique_resG_eq π hX h φ hU, fun hφ H => ?_⟩⟩
-  · haveI : Nonempty U := hU.to_subtype
-    obtain ⟨p, hp, hpx⟩ := exists_prime_residueField_eq_zero π hx
-    haveI : Fact p.Prime := ⟨hp⟩
-    have hm := mem_range_stalk_of_forall_norm_le_one π hx hpx (φ := φ) fun K _ y hy hyx => by
-      obtain ⟨y', h1, h2, h3⟩ := exists_point_norm_valF_eq K y U hy φ
-      rw [← h3]
-      exact H p y' (h1.trans hyx) h2
-    obtain ⟨V, hV, s, hxV, -, hs⟩ :=
-      exists_germToFunctionField_eq_of_mem_range_stalk hm (W := ⊤) trivial
-    have hg : ∀ (W : X.Opens) [Nonempty W], genericPoint X ∈ W := fun W h =>
-      ((genericPoint_spec X).mem_open_set_iff W.isOpen).mpr (by simpa using h)
-    haveI : Nonempty (V ⊓ U : X.Opens) := ⟨⟨_, hg V, hg U⟩⟩
-    refine ⟨V, s, hxV, X.germToFunctionField_injective (V ⊓ U) ?_⟩
-    exact (X.presheaf.germ_res_apply (homOfLE inf_le_left) _ _ s).trans
-      (hs.trans (X.presheaf.germ_res_apply (homOfLE inf_le_right) _ _ φ).symm)
-  · haveI : Nonempty U := hU.to_subtype
-    obtain ⟨φ', hφ'⟩ := hφ.exists_right_inv
-    obtain ⟨ψ, hψ, -⟩ := existsUnique_resG_eq π hX h φ hU fun p _ y h1 h2 => (H p y h1 h2).le
-    obtain ⟨ψ', hψ', -⟩ := existsUnique_resG_eq π hX h φ' hU fun p _ y h1 h2 => by
-      have e := congrArg norm (valF_mul_valF_eq_one _ U h2 hφ')
-      rw [norm_mul, H p y h1 h2, _root_.one_mul, norm_one] at e
-      exact e.le
-    refine ⟨ψ, IsUnit.of_mul_eq_one ψ' (map_injective_of_isIntegral X (homOfLE h) ?_), hψ⟩
-    change resG X h (ψ * ψ') = resG X h 1
-    rw [map_mul, hψ, hψ', hφ', map_one]
+  apply _root_.GlobalTheory.regular_of_bounded_at_padicAlgCl_points
 
 end RegularSupport
 

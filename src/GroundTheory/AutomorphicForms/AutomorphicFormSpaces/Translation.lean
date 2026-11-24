@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
+public import GroundTheory.AutomorphicForms.GKModules.ZKFinite
+public import Mathlib.RepresentationTheory.Basic
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

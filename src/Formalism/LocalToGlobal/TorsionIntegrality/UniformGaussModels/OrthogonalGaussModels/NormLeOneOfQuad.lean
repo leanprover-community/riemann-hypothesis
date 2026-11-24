@@ -2,9 +2,13 @@ module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SecondLogDerivativeUnique
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.AnalyticTransOfAdd
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.FinalA
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.FinalD
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.AnalyticTransOfAdd
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.CmIntegralityOfTorsionPoints
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
@@ -161,9 +165,9 @@ theorem CMDatum_proof : CMDatum := by
     rwa [Formalism.L2.Th1.E.ScaledModelNorms.py_ptOf p L ι hΔ _ (hker P).2] at h
   · rw [← map_mul, hprod, Fintype.card_coe]
     simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [← map_sub, ← map_mul, ← map_mul, hs2C, map_sum, hb2]
-      simp
+
+  · rw [← map_sub, ← map_mul, ← map_mul, hs2C, map_sum, hb2]
+    simp
 
 theorem ShapeCM_of (hD : CMDatum) : ShapeCM := by
   intro dK L hmod hCM p _ hpd ι hW

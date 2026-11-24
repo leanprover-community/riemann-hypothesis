@@ -1,9 +1,63 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KronHolPsiStatementHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.BoundedSectionAlgebra
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.PointwiseNormInvarianceHolds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.DivStartPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExtFStatementPfB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfE
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExtFStatementPfB
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPfA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KronHolPsiStatementHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LUStatementPf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PoinStatementPf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PoinStatementPfA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowCoefficientBounds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
 
 @[expose] public section
 
@@ -22,44 +76,13 @@ variable {r : ℕ} (X : Data E r)
 
 theorem bchar_add (la la' : Wt X.Ψ r) {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) :
     bchar (la + la') b = bchar la b * bchar la' b := by
-  unfold bchar
-  rw [← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun τ _ => ?_
-  rw [← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  obtain ⟨hdet, htri⟩ := hb τ
-  have hd : (mat b τ).det = ∏ j, mat b τ j j :=
-    Matrix.det_of_upperTriangular (fun a c h => htri a c h)
-  have hne : b τ i i ≠ 0 := by
-    intro h0
-    apply hdet
-    rw [hd]
-    exact Finset.prod_eq_zero (Finset.mem_univ i) h0
-  exact zpow_add₀ hne _ _
-
-private lemma exp_neg_neg_two_mul_log (P : ℝ) (hP : 0 < P) : Real.exp (-(-2 * Real.log P)) = P ^ 2 := by
-  rw [show -(-2 * Real.log P) = Real.log P + Real.log P by ring, Real.exp_add, Real.exp_log hP]
-  ring
-
-theorem exp_phla (la : Wt X.Ψ r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
-    Real.exp (-phla X la x) = X.nfac la x ^ 2 := by
-  unfold Data.dom GG at hx
-  have hd : ∀ τ (i : Fin (r + 1)), dmin X.Gm x τ i ≠ 0 := by
-    intro τ i h0
-    have h1 := (hx τ).2 i
-    rw [h0, Complex.zero_re, mul_zero] at h1
-    exact lt_irrefl _ h1
-  unfold phla Data.nfac
-  exact exp_neg_neg_two_mul_log _ (Finset.prod_pos fun τ _ => Finset.prod_pos fun i _ =>
-    Real.rpow_pos_of_pos (norm_pos_iff.2 (div_ne_zero (hd τ _) (hd τ _))) _)
+  apply ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.bchar_add <;> assumption
 
 theorem nfac_meas (la : Wt X.Ψ r) : Measurable (X.nfac la) := by
   have hc : ∀ (τ : X.Ψ) (i : Fin (r + 1)), Continuous fun x : Frame X.Ψ r => dmin X.Gm x τ i := by
     intro τ i
     first
       | (unfold dmin lminor gram mat hermC col; fun_prop)
-      | (unfold dmin lminor gram mat hermC col; continuity)
-      | (unfold dmin lminor gram mat hermC col; exact Nat.zero)
   unfold Data.nfac
   refine Finset.measurable_prod _ fun τ _ => Finset.measurable_prod _ fun i _ => ?_
   exact (((hc τ _).measurable.div (hc τ _).measurable).norm).pow_const _
@@ -77,7 +100,7 @@ theorem metricW_exp (la : Wt X.Ψ r) :
         zpow_ne_zero _ (FrameDegreeData.bdiag_ne X hb τ i)
     have hn := FlowCoefficientBounds.nfac_pos X hx la
     simp only
-    rw [exp_phla X la hxb, exp_phla X la hx, normFactor_rightBorel_holds r X la x hx b hb, mul_pow, inv_pow,
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IW.exp_neg_phla X la hxb, _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IW.exp_neg_phla X la hx, normFactor_rightBorel_holds r X la x hx b hb, mul_pow, inv_pow,
       ← ENNReal.ofReal_div_of_pos (by positivity)]
     congr 1
     field_simp

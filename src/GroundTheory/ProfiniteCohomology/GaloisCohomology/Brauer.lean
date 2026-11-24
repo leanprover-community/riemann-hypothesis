@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.Colimit
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCochainsFHomApply
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
+public import GroundTheory.ProfiniteCohomology.ColimitDefs
+import GroundTheory.ProfiniteCohomology.Colimit
+import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 

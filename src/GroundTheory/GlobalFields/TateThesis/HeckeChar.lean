@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
 public import GroundTheory.GlobalFields.TateThesis.ConductorIdeal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

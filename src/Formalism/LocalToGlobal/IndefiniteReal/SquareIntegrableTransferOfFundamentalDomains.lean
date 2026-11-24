@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.SquareIntegrableTransfer
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodGA
+public import Formalism.LocalToGlobal.IndefiniteReal.MeasurableMulGA
 
 @[expose] public section
 

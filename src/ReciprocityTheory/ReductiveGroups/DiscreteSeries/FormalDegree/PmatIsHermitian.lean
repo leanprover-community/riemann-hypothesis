@@ -1,11 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+public import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.DataInst
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.AFTransport
@@ -55,25 +55,7 @@ theorem mem_mapPl_pow (j : E ≃+* L) (w : HeightOneSpectrum (𝓞 E)) (n : ℕ)
 
 theorem eq_of_forall_le_exp {a b : WithZero (Multiplicative ℤ)} (ha : a ≠ 0) (hb : b ≠ 0) (ha1 : a ≤ 1)
     (hb1 : b ≤ 1) (h : ∀ n : ℕ, a ≤ WithZero.exp (-(n : ℤ)) ↔ b ≤ WithZero.exp (-(n : ℤ))) : a = b := by
-  have hA := WithZero.exp_log ha
-  have hB := WithZero.exp_log hb
-  have la : WithZero.log a ≤ 0 := by
-    rw [← WithZero.exp_le_exp, hA, WithZero.exp_zero]
-    exact ha1
-  have lb : WithZero.log b ≤ 0 := by
-    rw [← WithZero.exp_le_exp, hB, WithZero.exp_zero]
-    exact hb1
-  obtain ⟨ka, hka⟩ := Int.exists_eq_neg_ofNat la
-  obtain ⟨kb, hkb⟩ := Int.exists_eq_neg_ofNat lb
-  have h1 : WithZero.log b ≤ WithZero.log a := by
-    have h3 := (h ka).1 (by rw [← hA, WithZero.exp_le_exp, hka])
-    rw [← hB, WithZero.exp_le_exp] at h3
-    omega
-  have h2 : WithZero.log a ≤ WithZero.log b := by
-    have h3 := (h kb).2 (by rw [← hB, WithZero.exp_le_exp, hkb])
-    rw [← hA, WithZero.exp_le_exp] at h3
-    omega
-  rw [← hA, ← hB, le_antisymm h2 h1]
+  apply Formalism.L2.Host.CT.eq_of_forall_le_exp <;> assumption
 
 theorem intValuation_mapPl (j : E ≃+* L) (w : HeightOneSpectrum (𝓞 E)) (x : 𝓞 E) :
     (mapPl j w).intValuation (RingOfIntegers.mapRingEquiv j x) = w.intValuation x := by
@@ -95,11 +77,9 @@ theorem valuation_mapPl (j : E ≃+* L) (w : HeightOneSpectrum (𝓞 E)) (x : E)
   have ha' : j (algebraMap (𝓞 E) E a) = algebraMap (𝓞 L) L (RingOfIntegers.mapRingEquiv j a) := by
     first
       | rfl
-      | simp
   have hb' : j (algebraMap (𝓞 E) E b) = algebraMap (𝓞 L) L (RingOfIntegers.mapRingEquiv j b) := by
     first
       | rfl
-      | simp
   rw [map_div₀, map_div₀, map_div₀, ha', hb', HeightOneSpectrum.valuation_of_algebraMap,
     HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.valuation_of_algebraMap,
     HeightOneSpectrum.valuation_of_algebraMap, intValuation_mapPl, intValuation_mapPl]
@@ -107,25 +87,7 @@ theorem valuation_mapPl (j : E ≃+* L) (w : HeightOneSpectrum (𝓞 E)) (x : E)
 theorem continuous_withVal {R S : Type} [Field R] [Field S] {v : Valuation R (WithZero (Multiplicative ℤ))}
     {v' : Valuation S (WithZero (Multiplicative ℤ))} (hs : Function.Surjective v) (f : WithVal v →+* WithVal v')
     (hf : ∀ x, Valued.v (f x) = Valued.v x) : Continuous f := by
-  refine continuous_of_continuousAt_zero f ?_
-  intro s hs'
-  rw [map_zero] at hs'
-  obtain ⟨γ, hγ⟩ := Valued.mem_nhds_zero.mp hs'
-  obtain ⟨x0, hx0⟩ := hs (embedding γ.val)
-  have hpos : 0 < embedding γ.val := by
-    rw [← map_zero (embedding (f := ((Valued.v : Valuation (WithVal v') _) : WithVal v' →*₀ _)))]
-    exact embedding_strictMono (Units.zero_lt γ)
-  have hx0' : 0 < Valued.v.restrict (WithVal.toVal v x0) := by
-    rw [Valuation.restrict_pos_iff, WithVal.valued_toVal, hx0]
-    exact hpos
-  refine Filter.mem_map.mpr (Valued.mem_nhds_zero.mpr ⟨Units.mk0 _ hx0'.ne', fun x hx => hγ ?_⟩)
-  have hx1 : Valued.v.restrict x < Valued.v.restrict (WithVal.toVal v x0) := hx
-  rw [Valuation.restrict_lt_iff] at hx1
-  have e0 : Valued.v (WithVal.toVal v x0) = v x0 := WithVal.valued_toVal _ _
-  rw [e0, hx0] at hx1
-  show Valued.v.restrict (f x) < (γ : ValueGroup₀ _)
-  rw [Valuation.restrict_lt_iff_lt_embedding, hf]
-  exact hx1
+  apply Formalism.L2.Host.CT.continuous_withVal <;> assumption
 
 theorem continuous_congrVal (j : E ≃+* L) (w : HeightOneSpectrum (𝓞 E)) :
     Continuous (WithVal.congr (w.valuation E) ((mapPl j w).valuation L) j) :=
@@ -267,14 +229,11 @@ namespace Formalism.L2.SG.Pf.AlTie
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting
 open scoped TensorProduct
 
-theorem asIdeal_mapPl' {F L : Type} [Field F] [NumberField F] [Field L] [NumberField L] (j : F ≃+* L)
-    (v : HeightOneSpectrum (𝓞 F)) : (mapPl j v).asIdeal = v.asIdeal.map (RingOfIntegers.mapRingEquiv j) := asIdeal_mapPl j v
-
 theorem absNorm_mapPl {F L : Type} [Field F] [NumberField F] [Field L] [NumberField L] (j : F ≃+* L)
     (v : HeightOneSpectrum (𝓞 F)) : Ideal.absNorm (mapPl j v).asIdeal = Ideal.absNorm v.asIdeal := by
   rw [Ideal.absNorm_apply, Ideal.absNorm_apply, Submodule.cardQuot_apply, Submodule.cardQuot_apply]
   exact Nat.card_congr (Ideal.quotientEquiv v.asIdeal (mapPl j v).asIdeal (RingOfIntegers.mapRingEquiv j)
-    (asIdeal_mapPl' j v)).toEquiv.symm
+    (_root_.Formalism.L2.SG.Pf.AlTie.asIdeal_mapPl j v)).toEquiv.symm
 
 theorem natCast_mem_mapPl {F L : Type} [Field F] [NumberField F] [Field L] [NumberField L] (j : F ≃+* L)
     (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) : ((n : 𝓞 L) ∈ (mapPl j v).asIdeal) ↔ ((n : 𝓞 F) ∈ v.asIdeal) := by

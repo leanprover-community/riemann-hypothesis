@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.CokernelIndexFactors.StatementB
-public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OpUConstMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
 
 @[expose] public section
 
@@ -142,8 +187,8 @@ theorem _root_.GlobalTheory.MomOne.lift_change : ∀ (q : ℕ) [Fact q.Prime] (l
   have hconjhf : ∀ x w : Fin g → ℂ, conj (_root_.Formalism.L2.Ker.JMB.hf S.Hm x w) = _root_.Formalism.L2.Ker.JMB.hf S.Hm w x := by
     intro x w
     unfold _root_.Formalism.L2.Ker.JMB.hf
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, Complex.conj_conj]
+
+    simp only [map_sum, map_mul, Complex.conj_conj]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [show conj (S.Hm j i) = S.Hm i j from hpos.1.apply i j]
@@ -151,7 +196,7 @@ theorem _root_.GlobalTheory.MomOne.lift_change : ∀ (q : ℕ) [Fact q.Prime] (l
   have hOKim : ∀ {u u' : ℤ}, ((u : ℂ) + (u' : ℂ) * _root_.Formalism.L2.Ker.JMB.w0 S.d).im = u' * (√(S.d : ℝ) / 2) := by
     intro u u'
     rw [hw0]
-    simp [Complex.add_im, Complex.mul_im, Complex.div_im]
+    simp [Complex.add_im, Complex.mul_im]
   have hbetaim : ∀ x w, (_root_.Formalism.L2.Ker.JMB.beta S.d S.Hm x w).im = √(S.d : ℝ) / 2 * (_root_.Formalism.L2.Ker.JMB.hf S.Hm x w).im := by
     intro x w
     unfold _root_.Formalism.L2.Ker.JMB.beta
@@ -215,8 +260,6 @@ theorem _root_.GlobalTheory.MomOne.lift_change : ∀ (q : ℕ) [Fact q.Prime] (l
         congr 1
         first
         | exact (map_intCast (UniformSpace.Completion.coeRingHom (α := PadicAlgCl q)) N).symm
-        | norm_cast
-        | simp
       rw [hcast] at hNn
       have hm := (Padic.norm_int_le_pow_iff_dvd N m).1 hNn
       exact (pow_dvd_pow (q : ℤ) (by omega : n ≤ m)).trans hm

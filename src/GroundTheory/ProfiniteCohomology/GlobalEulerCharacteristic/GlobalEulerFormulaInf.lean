@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.GSDefs
-public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.MainCoind
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
+public import GroundTheory.ProfiniteCohomology.EulerCharDefs
 
 @[expose] public section
 

@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 @[expose] public section
 

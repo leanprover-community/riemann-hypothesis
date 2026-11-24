@@ -3,7 +3,8 @@ module
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.KIface
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.CIface
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.ScalarOnInertiaProp
-public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.TensorProductVectors
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 
 @[expose] public section
 

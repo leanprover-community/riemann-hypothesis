@@ -1,6 +1,56 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceAppend
+
+public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BaseCutoffIsTruncation
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfBetaAdjCOfLemmaBNorm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhiBoundPartsOfRadicalParametrisation
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PosCoreQ
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -34,16 +84,7 @@ theorem sliceAt_lincomb (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [Inne
       ∑ q ∈ S, c q • D.sliceAt k r T.base.z T.base.z' (D.uwG k r T.base.z T.base.z' F i hi (ws q) (as q)) p γ := by
   revert γ
 
-  obtain ⟨h, n, t, rfl⟩ : ∃ (h : C.LPt) (n : ℕ) (t : ℂ), p = h ++ [(n + 1, t)] := by
-    have hne : p ≠ [] := by
-      rintro rfl
-      have := hp.2
-      simp [D.ptSize] at this
-      omega
-    refine ⟨p.dropLast, (p.getLast hne).1 - 1, (p.getLast hne).2, ?_⟩
-    have h1 : 1 ≤ (p.getLast hne).1 := (hp.1 _ (List.getLast_mem hne)).1
-    rw [Nat.sub_add_cancel h1]
-    exact (List.dropLast_append_getLast hne).symm
+  obtain ⟨h, n, t, rfl⟩ := Formalism.FourierDecayAlt.P.SliceAppend.exists_append_succ hi1 hp
   obtain ⟨hpb, hps⟩ := hp
   subst hps
   set ph := D.ptSize h with hph
@@ -55,52 +96,14 @@ theorem sliceAt_lincomb (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [Inne
   set ρ := r - D.ptSize (h ++ [(n + 1, t)]) with hρ
   intro γ hγ
   have hsum : ph + (n + 1) + ρ = r := by omega
-  have hspec := (Formalism.FourierDecayAlt.P.ptPerm_spec _ _ hloc).1
-  have hspec' := (Formalism.FourierDecayAlt.P.ptPerm_spec _ _ hlocH).1
-  have hσ : ∀ q : Fin (D.ptSize (h ++ [(n + 1, t)])),
-      ((Formalism.FourierDecayAlt.P.Dx2.SL.sigP (n := n) (D.ptPerm h)) (Fin.cast hP q)).val = (D.ptPerm (h ++ [(n + 1, t)]) q).val := by
-    intro q
-    rw [hspec q, Formalism.FourierDecayAlt.P.Dx2.SL.partner_append (n + 1) t h q.val (by have := q.isLt; omega)]
-    by_cases h1 : q.val < D.ptSize h
-    · rw [if_pos h1]
-      have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_castAdd]
-      exact hspec' ⟨q.val, h1⟩
-    · rw [if_neg h1]
-      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h) ⟨q.val - D.ptSize h, by have := q.isLt; omega⟩ :=
-        Fin.ext (by simp; omega)
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_natAdd]
-      simp only [Fin.val_natAdd, Fin.val_rev]
-      omega
-  have hd : ∀ q : Fin (D.ptSize (h ++ [(n + 1, t)])),
-      Formalism.FourierDecayAlt.P.Dx2.SL.dP (n := n) (D.ptDiag h) t (Fin.cast hP q) = D.ptDiag (h ++ [(n + 1, t)]) q := by
-    intro q
-    simp only [D.ptDiag]
-    rw [Formalism.FourierDecayAlt.P.Dx2.SL.scal_append (n + 1) t h q.val (by have := q.isLt; omega)]
-    by_cases h1 : q.val < D.ptSize h
-    · rw [if_pos h1]
-      have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_left]; rfl
-    · rw [if_neg h1]
-      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h) ⟨q.val - D.ptSize h, by have := q.isLt; omega⟩ :=
-        Fin.ext (by simp; omega)
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_right]
-  have hdP : ∀ q, Formalism.FourierDecayAlt.P.Dx2.SL.dP (n := n) (D.ptDiag h) t q ≠ 0 := by
-    intro q
-    refine Fin.addCases (fun i => ?_) (fun i => ?_) q
-    · simp only [Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_left]; exact hd0 i
-    · simp only [Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_right]; exact ht
+  have hdP := Formalism.FourierDecayAlt.P.SliceAppend.diag_append_ne_zero (n := n) hd0 ht
 
   have hS : ∀ Gw : B.Mat k r → (Wq →L[ℂ] Wp), D.sliceAt k r T.base.z T.base.z' Gw (h ++ [(n + 1, t)]) γ =
       U.PhiFun (p := ph + (n + 1)) (s := 0) k ρ (Formalism.FourierDecayAlt.P.Dx2.SL.sigP (D.ptPerm h))
         (Formalism.FourierDecayAlt.P.Dx2.SL.dP (D.ptDiag h) t) (D.castV (by omega) T.base.z) (D.castV (by omega) T.base.z')
         (D.castF (by omega) Gw) (fun a => a.elim0) γ := by
     intro Gw
-    obtain ⟨-, hT2⟩ := Formalism.FourierDecayAlt.P.Dx2.SL.phi_transport (k := k) (ρ := ρ) hP _ _ hσ _ _ hd
-      (D.castV (by omega) T.base.z) (D.castV (by omega) T.base.z') (D.castF (by omega) Gw) γ
-    unfold D.sliceAt
-    rw [dite_eq_left (by omega), hT2]
-    simp only [Formalism.FourierDecayAlt.P.Dx2.SL.castV_castV, Formalism.FourierDecayAlt.P.Dx2.SL.castF_castF]
+    exact Formalism.FourierDecayAlt.P.SliceAppend.slice_append k r T.base.z T.base.z' Gw h n t hloc (by omega) γ
   have e1 : r = ph + (n + 1) + ρ := hsum.symm
   have e2 : ph + (n + 1) + ρ = r := hsum
   have hj1 : 1 ≤ ph + (n + 1) := by omega
@@ -172,14 +175,14 @@ theorem sliceAt_lincomb (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [Inne
     set g := U.gaXi (p := ph + (n + 1)) (s := 0) k ρ (Formalism.FourierDecayAlt.P.Dx2.SL.sigP (D.ptPerm h))
       (Formalism.FourierDecayAlt.P.Dx2.SL.dP (D.ptDiag h) t) ξ (fun a => a.elim0) γ with hg
     have hgG : g ∈ B.GV k (ph + (n + 1) + 0 + ρ) :=
-      Formalism.FourierDecayAlt.P.Ux10.gaXi_mem Formalism.FourierDecayAlt.P.slice_membership Formalism.FourierDecayAlt.P.radical_parametrisation _ _ hdP ξ _ hZ0 hγ
+      Formalism.FourierDecayAlt.P.Ux10.gaXi_mem _root_.Formalism.FourierDecayAlt.P.Ux2.sliceMem _root_.Formalism.FourierDecayAlt.P.Ux2.radicalParam _ _ hdP ξ _ hZ0 hγ
     have hDj : U.DjU k (ph + (n + 1) + 0) ρ g = _ :=
-      Formalism.FourierDecayAlt.P.Ux10.DjU_gaXi Formalism.FourierDecayAlt.P.hat_z_on_slice _ _ ξ _ γ
+      Formalism.FourierDecayAlt.P.Ux10.DjU_gaXi _root_.Formalism.FourierDecayAlt.P.Ux3.zhSlice _ _ ξ _ γ
     have hD : Dmin k r T.base.z T.base.z' (D.castM e2 g) ⟨D.ptSize (h ++ [(n + 1, t)]), by omega⟩ ≠ 0 := by
       rw [Dmin_castM e2 _ _ g _ _ (by omega)]
       have e3 : (⟨D.ptSize (h ++ [(n + 1, t)]), by omega⟩ : Fin (ph + (n + 1) + ρ + 2)) = ⟨ph + (n + 1), by omega⟩ :=
         Fin.ext hP
-      rw [e3, Formalism.FourierDecayAlt.P.hat_z_minimum_degree k (ph + (n + 1)) ρ]
+      rw [e3, _root_.Formalism.FourierDecayAlt.P.Ux3.zhDmin k (ph + (n + 1)) ρ]
       show U.DjU k (ph + (n + 1) + 0) ρ g ≠ 0
       rw [hDj]
       exact mul_ne_zero hdh0 hZ0

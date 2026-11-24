@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.DataArith
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

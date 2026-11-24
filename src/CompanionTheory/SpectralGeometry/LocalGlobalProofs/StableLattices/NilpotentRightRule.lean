@@ -1,7 +1,9 @@
 module
 
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.LineFormulas.RightRule
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.UniformSpace.Matrix
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IntegrableComplexContinuousBoundedSupport
 
 @[expose] public section
 
@@ -41,9 +43,6 @@ theorem mul_exp_entry (g Y : Matrix (Fin n) (Fin n) ℂ) (j i : Fin n) :
   exact HasDerivAt.fun_sum (u := Finset.univ) (A := fun l (t : ℝ) => g j l * NormedSpace.exp ((t : ℂ) • Y) l i)
     fun l _ => (exp_entry Y l i).const_mul (g j l)
 
-theorem mul_exp_zero (g Y : Matrix (Fin n) (Fin n) ℂ) : g * NormedSpace.exp (((0 : ℝ) : ℂ) • Y) = g := by
-  simp [NormedSpace.exp_zero]
-
 theorem tens_action (X : GMod n) (Y : Matrix (Fin n) (Fin n) ℂ) (u : Fin n → X.V) (i : Fin n) :
     (∑ a, ∑ b, Y a b • (tens X).E a b u) i = (∑ a, ∑ b, Y a b • X.E a b (u i)) + ∑ b, Y i b • u b := by
   show (∑ a, ∑ b, (Y a b • tensE X a b u : Fin n → X.V)) i = _
@@ -60,7 +59,7 @@ theorem tens_ok {ε : Fin n → Bool} {X : GMod n} {c : X.V →ₗ[ℂ] (Matrix 
       ((g * Y) j i * c (u i) g + g j i * c (∑ a, ∑ b, Y a b • X.E a b (u i)) g) 0 := by
     intro i
     refine ((mul_exp_entry g Y j i).fun_mul (h (u i) Y hY g hg)).congr_deriv ?_
-    simp only [mul_exp_zero]
+    simp only [_root_.Formalism.REAL.mul_exp_zero_smul_eq]
   have h2 := HasDerivAt.fun_sum (u := Finset.univ)
     (A := fun i (t : ℝ) => (g * NormedSpace.exp ((t : ℂ) • Y)) j i * c (u i) (g * NormedSpace.exp ((t : ℂ) • Y)))
     fun i _ => h1 i
@@ -69,8 +68,8 @@ theorem tens_ok {ε : Fin n → Bool} {X : GMod n} {c : X.V →ₗ[ℂ] (Matrix 
       c (∑ a, ∑ b, Y a b • X.E a b (u i)) g + ∑ b, Y i b * c (u b) g := by
     intro i
     refine (congrArg (fun v => c v g) (tens_action X Y u i)).trans ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), Pi.add_apply, map_sum, Finset.sum_apply, map_smul, Pi.smul_apply, smul_eq_mul]
+
+    simp only [map_add (f := _), Pi.add_apply, map_sum, Finset.sum_apply, map_smul, Pi.smul_apply, smul_eq_mul]
   show _ = ∑ i, g j i * c ((∑ a, ∑ b, Y a b • (tens X).E a b u) i) g
   refine Eq.trans ?_ (sum_congr rfl fun i _ => congrArg (g j i * ·) (e i).symm)
   simp only [mul_add, sum_add_distrib, Matrix.mul_apply, Finset.sum_mul, Finset.mul_sum]
@@ -85,8 +84,8 @@ theorem step_ok {ε : Fin n → Bool} {X : GMod n} {c : X.V →ₗ[ℂ] (Matrix 
   let S : (step X z).V →ₗ[ℂ] (tens X).V := (stepSub X z).subtype
   have hS : ∀ a b w, S ((step X z).E a b w) = (tens X).E a b (S w) := fun _ _ _ => rfl
   have e : S (∑ a, ∑ b, Y a b • (step X z).E a b u) = ∑ a, ∑ b, Y a b • (tens X).E a b (S u) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, hS]
+
+    simp only [map_sum, map_smul, hS]
   have h1 := tens_ok h j (S u) Y hY g hg
   refine h1.congr_deriv ?_
   show tensCoef X c j _ g = tensCoef X c j (S _) g

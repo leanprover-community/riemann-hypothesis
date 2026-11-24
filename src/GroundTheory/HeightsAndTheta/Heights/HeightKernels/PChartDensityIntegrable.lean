@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AMassStA
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartDensityIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ChartMassAffine
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

@@ -1,12 +1,53 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDAsm
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatBdd
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BoundedOperatorsSquareIntegrable
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferSquareIntegrableHolds
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDCCLower
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHat
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BoundedOperatorsSquareIntegrable
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutAsm
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDAsm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDCCLower
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatBdd
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDJDJComm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferSquareIntegrableHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutRegFF
 
 @[expose] public section
 
@@ -67,7 +108,7 @@ theorem jDecayTrQQd_of_leaves (h1 : JDHatBdd) (h2 : JDHatOpQQ) (h3 : JDJComm) (h
   refine ⟨8 * C2 + |C3| + |C5|, ?_⟩
   intro E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ hB v e L hFr hGa hQQ hL hJf
   have hmono : ∀ c, c ≤ 8 * C2 + |C3| + |C5| → BuiltOW c S T f χ ν' m₀ top A₀ := fun c hc =>
-    ⟨isBuiltPlace_mono hc hB.1, hB.2⟩
+    ⟨_root_.Formalism.FourierDecayAlt.P.CutMP.isBuiltPlace_mono3 hc hB.1, hB.2⟩
   have hB2 := hmono C2 (by linarith [abs_nonneg C3, abs_nonneg C5])
   have hB3 := hmono C3 (by linarith [le_abs_self C3, abs_nonneg C5])
   have hB5 := hmono C5 (by linarith [le_abs_self C5, abs_nonneg C3])

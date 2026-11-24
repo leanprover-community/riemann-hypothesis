@@ -1,7 +1,17 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsStrictlySemistableAlt
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsMatrixForm
+public import Mathlib.Algebra.Homology.HomotopyCategory.HomComplexCohomology
+public import Mathlib.AlgebraicTopology.AlternatingFaceMapComplex
+public import Mathlib.AlgebraicTopology.CechNerve
+public import Mathlib.AlgebraicTopology.SimplicialSet.Nerve
+public import Mathlib.CategoryTheory.Abelian.Injective.Extend
+public import Mathlib.CategoryTheory.Abelian.Injective.Resolution
+public import Mathlib.CategoryTheory.SingleObj
+public import Mathlib.RingTheory.Henselian
+import Mathlib.Algebra.Category.ModuleCat.AB
+import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
+import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Sheaf
 
 @[expose] public section
 
@@ -158,7 +168,7 @@ theorem _root_.GlobalTheory.EtC.pull_id (E : _root_.GlobalTheory.EtC.Spc)
   obtain ⟨x, rfl⟩ := x.mk_surjective
   simp only [_root_.GlobalTheory.EtC.pull, _root_.GlobalTheory.EtC.HK.pull,
     _root_.GlobalTheory.EtC.HK.pre,
-    _root_.GlobalTheory.EtC.cpre_mk, Functor.map_id]
+    _root_.GlobalTheory.EtC.cpre_mk]
   congr 1
   ext : 1
   simp [_root_.GlobalTheory.EtC.zcomp]

@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -44,26 +84,11 @@ theorem γA_φpow (W : LocWach PD LL O v n) (g : W.Gam) (t : ℕ) (a : LetA O n)
 private lemma mem_AΔ_iff_forall_gammaA_fixed (W : LocWach PD LL O v n) (a : LetA O n) :
     a ∈ W.AΔ ↔ ∀ δ ∈ W.DelF, W.γA δ a = a := Iff.rfl
 
-private lemma gammaA_comm_level_letter_cocycles (W : LocWach PD LL O v n) (g h : W.Gam) (a : LetA O n) :
-    W.γA g (W.γA h a) = W.γA h (W.γA g a) := by
-  funext i
-  simp only [gammaA_apply_eq_gamma0]
-  have e1 : W.γ₀ (g * h) = W.γ₀ (h * g) := by rw [mul_comm]
-  rw [map_mul, map_mul] at e1
-  have e2 := congrArg (fun f : PowerSeries O →ₐ[O] PowerSeries O => f (a i)) e1
-  simpa only [AlgHom.mul_apply] using e2
-
 private lemma phiA_pow_mem_AΔ (W : LocWach PD LL O v n) (t : ℕ) {a : LetA O n} (ha : a ∈ W.AΔ) :
     (W.φA ^ t) a ∈ W.AΔ := by
   rw [mem_AΔ_iff_forall_gammaA_fixed] at ha ⊢
   intro δ hδ
   rw [γA_φpow, ha δ hδ]
-
-private lemma gammaA_mem_AΔ_of_mem (W : LocWach PD LL O v n) (g : W.Gam) {a : LetA O n} (ha : a ∈ W.AΔ) :
-    W.γA g a ∈ W.AΔ := by
-  rw [mem_AΔ_iff_forall_gammaA_fixed] at ha ⊢
-  intro δ hδ
-  rw [gammaA_comm_level_letter_cocycles, ha δ hδ]
 
 private lemma natCast_p_ne_zero_level_letter_cocycles (W : LocWach PD LL O v n) : ((PD.p : ℕ) : O) ≠ 0 := by
   intro h
@@ -173,7 +198,7 @@ theorem psStable_of [IsDomain O] [NeZero n] (W : LocWach PD LL O v n) (hR : Ring
       rw [hγq]
       simp only [ps, pow_zero, AlgHom.one_apply]
     rw [e]
-    exact gammaA_mem_AΔ_of_mem W W.gam hq
+    exact _root_.Formalism.MainNotions.UnusedSlot80.KL.γA_mem W W.gam hq
   intro t
   obtain ⟨U, hU⟩ := isUnit_one_add_mul_pi0 W hR (w : LetA O n)
   have hUm : (U : LetA O n) ∈ W.AΔ := by

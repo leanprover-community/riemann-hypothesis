@@ -1,14 +1,63 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.DataArith
-public import Formalism.FilteredPoleLength.LocalDescentLevels.InvFromBlocksApplyZero
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormDetInnerLeOfDetEqOne
 public import Formalism.PeriodIntegrals.Transference
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.Algebra.Module.StablyFree.Basic
+public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.PairedCharacterCondition
+public import Formalism.FilteredPoleLength.LocalDescentLevels.InvFromBlocksApplyZero
 public import Formalism.LogFactorialIndices.SignedSubspaceIndex.IdxBase
 public import Formalism.LogFactorialIndices.SignedSubspaceIndex.IdxDet
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.PairedCharacterCondition
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -291,58 +340,7 @@ theorem had_onb {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (ρ 
 
 theorem had_inner' {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (ρ : ℕ) (a x : Fin ρ → E) :
     ‖(Matrix.of fun i k => inner ℂ (a i) (x k)).det‖ ≤ (∏ i, ‖a i‖) * ∏ k, ‖x k‖ := by
-  classical
-  by_cases hx : LinearIndependent ℂ x
-  · set w : Fin ρ → E := InnerProductSpace.gramSchmidtNormed ℂ x with hwdef
-    have hw : Orthonormal ℂ w := InnerProductSpace.gramSchmidtNormed_orthonormal hx
-    have hexp : ∀ k, x k = ∑ l, inner ℂ (w l) (x k) • w l := by
-      intro k
-      have hmem : x k ∈ Submodule.span ℂ (Set.range w) := by
-        rw [hwdef, InnerProductSpace.span_gramSchmidtNormed_range, InnerProductSpace.span_gramSchmidt]
-        exact Submodule.subset_span ⟨k, rfl⟩
-      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp hmem
-      have hcl : ∀ l, inner ℂ (w l) (x k) = c l := by
-        intro l
-        rw [← hc]
-        exact hw.inner_right_fintype c l
-      rw [← hc]
-      refine Finset.sum_congr rfl fun l _ => ?_
-      rw [hc, hcl]
-    have hfac : (Matrix.of fun i k => inner ℂ (a i) (x k)) =
-        (Matrix.of fun i l => inner ℂ (a i) (w l)) * (Matrix.of fun l k => inner ℂ (w l) (x k)) := by
-      ext i k
-      rw [Matrix.mul_apply]
-      simp only [Matrix.of_apply]
-      conv_lhs => rw [hexp k]
-      rw [inner_sum]
-      refine Finset.sum_congr rfl fun l _ => ?_
-      rw [inner_smul_right, mul_comm]
-    rw [hfac, Matrix.det_mul, norm_mul]
-    refine mul_le_mul ?_ (had_onb ρ w x hw) (norm_nonneg _) (Finset.prod_nonneg fun _ _ => norm_nonneg _)
-    have h1 : ‖(Matrix.of fun i l => inner ℂ (a i) (w l)).det‖ =
-        ‖(Matrix.of fun l i => inner ℂ (w l) (a i)).det‖ := by
-      have h2 : (Matrix.of fun i l => inner ℂ (a i) (w l)) =
-          ((Matrix.of fun l i => inner ℂ (w l) (a i)) : Matrix (Fin ρ) (Fin ρ) ℂ).conjTranspose := by
-        ext i l
-        simp [Matrix.conjTranspose_apply]
-      rw [h2, Matrix.det_conjTranspose, norm_star]
-    rw [h1]
-    exact had_onb ρ w a hw
-  · have hdet : (Matrix.of fun i k => inner ℂ (a i) (x k)).det = 0 := by
-      rw [← Matrix.exists_mulVec_eq_zero_iff]
-      rw [Fintype.linearIndependent_iff] at hx
-      push Not at hx
-      obtain ⟨g, hg, k0, hk0⟩ := hx
-      refine ⟨g, fun h => hk0 (by rw [h]; rfl), ?_⟩
-      ext i
-      simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]
-      have : ∑ k, inner ℂ (a i) (x k) * g k = inner ℂ (a i) (∑ k, g k • x k) := by
-        rw [inner_sum]
-        refine Finset.sum_congr rfl fun k _ => ?_
-        rw [inner_smul_right, mul_comm]
-      rw [this, hg, inner_zero_right]
-    rw [hdet, norm_zero]
-    exact mul_nonneg (Finset.prod_nonneg fun _ _ => norm_nonneg _) (Finset.prod_nonneg fun _ _ => norm_nonneg _)
+  apply GlobalTheory.PlueckerBound.norm_det_inner_le
 
 theorem had_inner (d ρ : ℕ) (a x : Fin ρ → EuclideanSpace ℂ (Fin d)) :
     ‖(Matrix.of fun i k => inner ℂ (a i) (x k)).det‖ ≤ (∏ i, ‖a i‖) * ∏ k, ‖x k‖ :=
@@ -443,7 +441,7 @@ theorem exists_minor_ne_zero {ρ m : ℕ} (cf : Fin m → (V →ₗ[K] K)) (hcf 
     funext i k
     rw [Finset.sum_apply, Matrix.of_apply, ha i]
     ext β
-    simp [coeff_polyOf, MvPolynomial.coeff_sum]
+    simp [coeff_polyOf]
   rw [h1, det_sum_rows (fun i j => fun k => MvPolynomial.C (a i j) * polyOf (cf j) (z k))
     (fun _ => (Finset.univ : Finset (Fin m)))]
   refine Finset.sum_eq_zero fun J _ => ?_
@@ -576,8 +574,8 @@ theorem core_arch {N2 : (K →+* ℂ) → V → ℝ} {dH : ℕ} (Hm : Herm N2 dH
     obtain ⟨a, ha, _⟩ := h i
     exact (norm_nonneg a).trans ha
   have hN : ∀ f, 0 ≤ N2 σ f := fun f => by rw [← Hm.norm_e]; exact norm_nonneg _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [detPoly_expand, MvPolynomial.coeff_sum, map_sum, Finset.prod_univ_sum, Finset.mul_sum]
+
+  rw [detPoly_expand, MvPolynomial.coeff_sum, map_sum, Finset.prod_univ_sum, Finset.mul_sum]
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun b _ => ?_)
   rw [MvPolynomial.coeff_monomial]
   split_ifs
@@ -984,7 +982,7 @@ theorem tr_traceDual : TrTraceDual := by
   exact ⟨cf, fun f => by simpa using h 1 f⟩
 
 theorem tr_scale : TrScale := by
-  first | exact UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale .. | (apply UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (intros; apply UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (apply @UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (apply @UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> first | assumption | infer_instance)
+  first | (apply UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption)
 
 section TrA
 
@@ -1133,15 +1131,15 @@ theorem tr_iota_mem_span [FiniteDimensional K V] (Hm : Herm N2 dH) (f : V) :
       tr_iota Hm ((Module.finBasis ℚ K p.2) • (Module.finBasis K V p.1))) := by
   set b := Module.finBasis K V
   set ω := Module.finBasis ℚ K
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← b.sum_repr f, map_sum]
+
+  rw [← b.sum_repr f, map_sum]
   refine Submodule.sum_mem _ fun j _ => ?_
   have hcc : b.repr f j = ∑ i, ((ω.repr (b.repr f j) i : ℚ) : K) * ω i := by
     conv_lhs => rw [← ω.sum_repr (b.repr f j)]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Algebra.smul_def, eq_ratCast]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hcc, Finset.sum_smul, map_sum]
+
+  rw [hcc, Finset.sum_smul, map_sum]
   refine Submodule.sum_mem _ fun i _ => ?_
   rw [mul_smul, tr_iota_smul_rat]
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨(j, i), rfl⟩)
@@ -1727,14 +1725,14 @@ theorem len_sat_le {R F : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRi
     rw [Matrix.mul_apply]
     have h1 : z k = ∑ l, w.repr (bz k) l • ((w l : U) : V1) := by
       have h := congrArg U.subtype (w.sum_repr (bz k))
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at h
+
+      rw [map_sum] at h
       rw [← hbz k]
       simpa using h.symm
     simp only [Matrix.of_apply]
     rw [h1]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul]
+
+    simp only [map_sum, map_smul, smul_eq_mul]
     refine Finset.sum_congr rfl fun l _ => ?_
     simp only [C, Wm, RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply,
       LinearMap.toMatrix_apply, hW0]
@@ -1905,8 +1903,8 @@ theorem len_le_gaussC {M : Submodule (𝓞 K) V} (hfgM : M.FG) {ρ : ℕ} {z : F
 
   have hent : ∀ i k, φ1 i (z1 k) = jF (polyOf (φ i) (z k)) := by
     intro i k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz1def, polyOf_eq_sum, map_sum, map_sum]
+
+    rw [hz1def, polyOf_eq_sum, map_sum, map_sum]
     refine Finset.sum_congr rfl fun γ _ => ?_
     rw [map_smul, smul_eq_mul, hφ1, ← map_mul, mul_comm, MvPolynomial.C_mul_monomial, mul_one]
   have hdet : (Matrix.of fun i k => φ1 i (z1 k)).det = jF (detPoly φ z) := by
@@ -1931,8 +1929,8 @@ theorem len_le_gaussC {M : Submodule (𝓞 K) V} (hfgM : M.FG) {ρ : ℕ} {z : F
     have hmv : (Matrix.of fun i k => φ1 i (z1 k)).mulVec g = 0 := by
       funext i
       have := congrArg (φ1 i) hg
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero] at this
+
+      rw [map_sum, map_zero] at this
       simp only [map_smul, smul_eq_mul] at this
       simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]
       rw [← this]

@@ -1,10 +1,42 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.Generic
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.TheoremZeroOfReducedInputs
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.CombBound4Of
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.DescSt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -70,8 +102,8 @@ private lemma algebraMap_mul_mem_Vw (la : HeightOneSpectrum (𝓞 B.KO)) (N : �
 
 theorem toRp_mem (la : HeightOneSpectrum (𝓞 B.KO)) (N : ℕ) (u : WeightFamilies.Wt D j)
     (p : MvPolynomial (Idx D j N) X.Forms) (hp : OfWt X u p) : toRp X la N p ∈ Vw X la N u := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [p.as_sum, map_sum]
+
+  rw [p.as_sum, map_sum]
   refine Submodule.sum_mem _ fun m _ => ?_
   obtain ⟨F, hF⟩ := LinearMap.mem_range.mp (hp m)
   have key : toRp X la N (MvPolynomial.monomial m (p.coeff m)) = emb X la N (p.coeff m) *
@@ -96,8 +128,8 @@ theorem toRp_mem (la : HeightOneSpectrum (𝓞 B.KO)) (N : ℕ) (u : WeightFamil
 
 theorem toFn_mem (R : Rdg X) {N : ℕ} (t : Idx D j N → ℂ) (u : WeightFamilies.Wt D j)
     (p : MvPolynomial (Idx D j N) X.Forms) (hp : OfWt X u p) : R.toFn t p ∈ R.sp u Set.univ := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [p.as_sum, map_sum]
+
+  rw [p.as_sum, map_sum]
   refine Submodule.sum_mem _ fun m _ => ?_
   obtain ⟨F, hF⟩ := LinearMap.mem_range.mp (hp m)
   have key : R.toFn t (MvPolynomial.monomial m (p.coeff m)) = R.ev (p.coeff m) *
@@ -188,19 +220,19 @@ theorem polyDictionary : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : ModuliInt
     fun u p hp => ⟨PolyDict.toRp_mem la N u p hp, PolyDict.toFn_mem R t u p hp⟩,
     fun u u' f hf g hg => PolyDict.sp_mul R u u' f hf g hg,
     fun u s => PolyDict.sp_span R u s, fun u M => PolyDict.sp_finrank R u M⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      unfold Formalism.MainNotions.Gaps.EtaleWeightGaps.sec
-      refine Finset.sum_congr rfl fun k _ => ?_
-      rw [map_mul, PolyDict.toRp_X, PolyDict.toRp_C, Algebra.smul_def,
-        IsScalarTower.algebraMap_apply (Op X la N) (Kp X la N) (Rp X la N)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      unfold Rdg.s
-      refine Finset.sum_congr rfl fun k _ => ?_
-      rw [map_mul, PolyDict.toFn_X, PolyDict.toFn_C]
-      funext y
-      simp [Pi.mul_apply, Pi.smul_apply]
+
+  · rw [map_sum]
+    unfold Formalism.MainNotions.Gaps.EtaleWeightGaps.sec
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [map_mul, PolyDict.toRp_X, PolyDict.toRp_C, Algebra.smul_def,
+      IsScalarTower.algebraMap_apply (Op X la N) (Kp X la N) (Rp X la N)]
+
+  · rw [map_sum]
+    unfold Rdg.s
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [map_mul, PolyDict.toFn_X, PolyDict.toFn_C]
+    funext y
+    simp [Pi.mul_apply, Pi.smul_apply]
   · exact PolyDict.ofWt_sum wL _ _ fun k _ => PolyDict.ofWt_X_mul wL _ _ (PolyDict.ofWt_C wL (w k))
 
 end GlobalTheory.Shares

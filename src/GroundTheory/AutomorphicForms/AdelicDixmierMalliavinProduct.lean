@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.DixmierMalliavin
 public import GroundTheory.AutomorphicForms.TraceFormulaConvolution
+public import GroundTheory.AutomorphicForms.HeckeAlgebra
+public import GroundTheory.AutomorphicForms.RealGroupsLie
+public import GroundTheory.AutomorphicForms.DixmierMalliavin
 public import GroundTheory.AutomorphicForms.GKModules.Garding
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

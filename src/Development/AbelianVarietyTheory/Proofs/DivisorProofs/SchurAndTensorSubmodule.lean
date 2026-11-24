@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
 
 @[expose] public section
 
@@ -99,8 +144,8 @@ theorem exists_highest (M : GKMod p q) [Nontrivial M.V] : ∃ μ v, IsHW M.act �
     exact hcd hab
   have hH : ∀ x ∈ U, M.act H x ∈ U := by
     intro x hx
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [H, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
+
+    simp only [H, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
     exact U.sum_mem fun a _ => U.smul_mem _ (hK _ (hKE a a (by cases a <;> trivial)) x hx)
   let S : Set (Ix p q → ℚ) := {μ | ∃ v ∈ U, v ∈ wtSub M.act μ ∧ v ≠ 0}
   have hfin : (h '' S).Finite := by
@@ -111,9 +156,9 @@ theorem exists_highest (M : GKMod p q) [Nontrivial M.V] : ∃ μ v, IsHW M.act �
     rw [Module.End.mem_eigenspace_iff]
     apply Subtype.ext
     show M.act H v = ((h μ : ℚ) : ℂ) • v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [H, h, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
-      mem_wtSub.1 hv, smul_smul, ← Finset.sum_smul]
+
+    simp only [H, h, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
+    mem_wtSub.1 hv, smul_smul, ← Finset.sum_smul]
     push_cast
     rfl
   obtain ⟨_, ⟨μ, ⟨v, hvU, hv, hv0⟩, rfl⟩, hmax⟩ :=
@@ -122,7 +167,7 @@ theorem exists_highest (M : GKMod p q) [Nontrivial M.V] : ∃ μ v, IsHW M.act �
   simp only [SetLike.mem_coe, Submodule.mem_iInf, LinearMap.mem_ker]
   intro a b hab
   by_contra hne
-  have hs : sameBlock a b := by cases a <;> cases b <;> first | trivial | exact hab
+  have hs : sameBlock a b := by cases a <;> cases b <;> first | trivial
   have hlt : k b < k a := by
     cases a <;> cases b <;> first | exact hab.elim | skip
     all_goals

@@ -1,14 +1,54 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
+public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
+import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.KernelDictionary
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ApplyLayers
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RestrictCrystallineDeRhamFiniteExt
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrystallineCyclotomicLevelOfFinrankInvariants
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGammaLayerPadicCoordinates
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUniqueFits
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrystallineCyclotomicLevelOfFinrankInvariants
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RestrictCrystallineDeRhamFiniteExt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.XiQuotientInvariantsLiftRationally
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -160,7 +200,7 @@ theorem resΓ_one_iff (P : LocPrime l) (K LL : FinExt l) (n : ℕ)
     exact W.χΓ_inj (by rw [map_one]; exact Units.ext h2)
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem push_class {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL) (H : Subgroup ↥(GK K))
     (H' : Subgroup ↥(GK K')) (hm : ∀ g : ↥(GK K'), (⟨(g : GQ l), GK_le hle g.2⟩ : ↥(GK K)) ∈ H)
     (hm' : ∀ g : ↥H, ((g : ↥(GK K)) : GQ l) ∈ GK K') (htop : H' = ⊤)
@@ -204,7 +244,7 @@ def Zf {P : LocPrime l} (AI : LocAinf l P) {K LL : FinExt l} (T : Lt K LL) (H : 
   (1 : RW LL) ⊗ₜ[↥(OL LL)] (⟨(c : ↥H → T.V) g, GlobalTheory.HerrClassMaps.mem_T c g⟩ : ↥T.L.T) +
     (TWact (AI.gRW LL ((g : ↥(GK K)) : GQ l)) T (g : ↥(GK K)) b - b)
 
-set_option maxHeartbeats 1000000 in
+
 theorem push_cocycle {P : LocPrime l} (AI : LocAinf l P) {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL)
     (H : Subgroup ↥(GK K)) (H' : Subgroup ↥(GK K')) (hm : ∀ g : ↥H, ((g : ↥(GK K)) : GQ l) ∈ GK K')
     (htop : H' = ⊤) (c' : ↥(latticeCocycles (resLat (resLt (K := K) (K' := K') (LL := LL) hle T) H'))) : ∃ c : ↥(latticeCocycles (resLat T H)),
@@ -220,7 +260,7 @@ theorem toTW_φ {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL) (b : TW 
 theorem toTW_zero {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL) : toTW hle T 0 = 0 := rfl
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem pull_h1f (P : LocPrime l) {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL)
     (H : Subgroup ↥(GK K)) (H' : Subgroup ↥(GK K'))
     (hm : ∀ g : ↥(GK K'), (⟨(g : GQ l), GK_le hle g.2⟩ : ↥(GK K)) ∈ H)
@@ -233,7 +273,7 @@ theorem pull_h1f (P : LocPrime l) {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T :
     ⟨c, c', hc.2, ⟨c', ⟨c'.2, c'.2.1, x, pull_f P hle T H H' hm _ _ hc' x hx⟩, rfl⟩, hc'⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem cl_fit (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (K : FinExt l) (s : ℕ)
     (LL : FinExt l) (h : Good K s LL) (T : Lt K LL) (y z : ((HW l).W K s LL h).DD T) (hyz : (y, z) ∈ ((HW l).W K s LL h).divisibleCocycles T)
     (b : TW (RW LL) T) (hb : TWmap (φRW LL) T b - b = ((F l).E K s LL h).tie.jD T y) :
@@ -251,7 +291,7 @@ theorem cl_fit (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.lo
     exact sub_add_cancel _ _
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem lam_exists (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL) :
     ∃ lam : ↥((HW l).W K s LL h).GKs →* Multiplicative ℤ_[l], Continuous lam ∧
       (∀ g : ↥((HW l).W K s LL h).GKs, lam g = 1 ↔ ((HW l).W K s LL h).resΓ (g : ↥(GK K)) = 1) ∧

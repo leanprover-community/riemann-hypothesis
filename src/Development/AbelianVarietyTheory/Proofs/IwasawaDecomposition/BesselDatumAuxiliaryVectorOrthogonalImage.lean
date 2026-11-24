@@ -1,12 +1,52 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
+public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.BesselDatum
+public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SymplecticValTauCompat
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemberDatumOfFlagTie
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
 
 @[expose] public section
 
@@ -91,8 +131,8 @@ theorem hA_eq (x y : Fin B.rank → AE D) : hA B x y = (fun i => cA D (y i)) ⬝
   simp only [hA, dotProduct, Matrix.mulVec, Matrix.map_apply, Finset.mul_sum, mul_assoc]
 
 theorem hA_herm (x y : Fin B.rank → AE D) : cA D (hA B x y) = hA B y x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hA, map_sum, RingHom.map_mul, cA_inc, cA_cA, GlobalTheory.LatVac.gram_star]
+
+  simp only [hA, map_sum, RingHom.map_mul, cA_inc, cA_cA, GlobalTheory.LatVac.gram_star]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
 
@@ -208,8 +248,8 @@ theorem hA_iA (hι : HSpace.IsIsomEmb A B ι) (s t : Fin A.rank → AE D) : hA B
   have e : ∀ s, iA ι s = ∑ l, s l • vecA B (ι (A.frame l)) := fun s => by
     rw [iA, GlobalTheory.BesselCompare.frameMat_eq, GlobalTheory.BesselCompare.eMat_mulVec]
   have e2 : ∀ l, hA B (vecA B (ι (A.frame l))) (iA ι t) = ∑ k, cA D (t k) * incA D (A.gram k l) := fun l => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hA_herm, e, GlobalTheory.BesselCompare.hA_sum, map_sum]
+
+    rw [← hA_herm, e, GlobalTheory.BesselCompare.hA_sum, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [hA_smul, RingHom.map_mul, hA_herm, hA_vec]
     congr 2
@@ -222,8 +262,8 @@ theorem hA_iA (hι : HSpace.IsIsomEmb A B ι) (s t : Fin A.rank → AE D) : hA B
   exact Finset.sum_congr rfl fun l _ => by ring
 
 theorem hA_vec_iA {v : B.V} (h : ∀ x, B.hD v (ι x) = 0) (t : Fin A.rank → AE D) : hA B (vecA B v) (iA ι t) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hA_herm, iA, GlobalTheory.BesselCompare.frameMat_eq, GlobalTheory.BesselCompare.eMat_mulVec, GlobalTheory.BesselCompare.hA_sum, map_sum]
+
+  rw [← hA_herm, iA, GlobalTheory.BesselCompare.frameMat_eq, GlobalTheory.BesselCompare.eMat_mulVec, GlobalTheory.BesselCompare.hA_sum, map_sum]
   refine Finset.sum_eq_zero fun k _ => ?_
   rw [hA_smul, RingHom.map_mul, hA_herm, hA_vec, h, map_zero, mul_zero]
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 
 @[expose] public section
 
@@ -160,9 +160,9 @@ variable (Z : LocDat D) (p : PlF D)
 private theorem brS_eq_double_sum_repr_gramV (x y : (VS D).V) :
     brS (VS D) x y = ∑ i, ∑ j, (VS D).frame.repr x i * star ((VS D).frame.repr y j) * gramV D i j := by
   conv_lhs => rw [← (VS D).frame.sum_repr x, ← (VS D).frame.sum_repr y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [brS, gramV, map_sum, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply,
-    smul_eq_mul, starRingEnd_apply, RingHom.id_apply, Finset.mul_sum]
+
+  simp only [brS, gramV, map_sum, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply,
+  smul_eq_mul, starRingEnd_apply, RingHom.id_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
@@ -172,13 +172,13 @@ theorem h_bcP (a b : (D.s.atP p).Ep) (x y : (VS D).V) :
   rw [(locH Z p).h_smul_left, h_smul_right (locH Z p), ← mul_assoc]
   congr 1
   rw [brS_eq_double_sum_repr_gramV]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [locH, locHerm, LocFacts₂, baseChange₂, AddMonoidHom.coe_mk, ZeroHom.coe_mk, cj_iota (Z.hcj p), map_sum, map_mul]
+
+  simp only [locH, locHerm, LocFacts₂, baseChange₂, AddMonoidHom.coe_mk, ZeroHom.coe_mk, cj_iota (Z.hcj p), map_sum, map_mul]
 
 theorem baseChangeAt_sum {ι : Type} (s : Finset ι) (c : ι → D.host.E) (v : ι → (VS D).V) :
     baseChange₂ D p (∑ i ∈ s, c i • v i) = ∑ i ∈ s, (D.s.atP p).ιE (c i) • baseChange₂ D p (v i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   funext j
   simp [baseChange₂, map_mul]

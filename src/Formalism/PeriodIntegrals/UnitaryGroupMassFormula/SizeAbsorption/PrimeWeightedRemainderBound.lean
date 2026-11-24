@@ -1,6 +1,46 @@
 module
 
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.BDivXNonneg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,10 +63,8 @@ theorem card_univ_eq : (Fintype.card (Bool × HH D) : ℝ) = (D.R.f : ℝ) := by
   norm_num [Formalism.BasicNotions.Ranks.f]
 
 theorem card_kindBC_le (p : ℕ) : ((kindBC D p).card : ℝ) ≤ (D.R.f : ℝ) := by
-  have h : (kindBC D p).card ≤ Fintype.card (Bool × HH D) := by
-    exact (Finset.card_filter_le _ _).trans Finset.card_univ.le
-  calc ((kindBC D p).card : ℝ) ≤ (Fintype.card (Bool × HH D) : ℝ) := by exact_mod_cast h
-    _ = (D.R.f : ℝ) := card_univ_eq
+  rw [← card_univ_eq]
+  exact_mod_cast (Finset.card_filter_le _ _).trans Finset.card_univ.le
 
 theorem card_topsBC_le (p : ℕ) : ((topsBC D p).card : ℝ) ≤ (D.R.f : ℝ) := by
   have h : (topsBC D p).card ≤ (kindBC D p).card := by
@@ -38,11 +76,8 @@ theorem card_topsBC_le (p : ℕ) : ((topsBC D p).card : ℝ) ≤ (D.R.f : ℝ) :
   exact h'.trans (card_kindBC_le p)
 
 theorem N_le_Nm (i : ℕ) (hi : i ≤ D.R.m) : (D.R.N i : ℝ) ≤ Nm D := by
-  unfold Formalism.MainNotions.G.Nm
-  have h : D.R.N i ≤ D.R.N D.R.m := by
-    unfold Formalism.BasicNotions.Ranks.N
-    exact Nat.add_le_add_left (Nat.mul_le_mul_right _ hi) _
-  exact_mod_cast h
+  unfold Formalism.MainNotions.G.Nm Formalism.BasicNotions.Ranks.N
+  exact_mod_cast Nat.add_le_add_left (Nat.mul_le_mul_right _ hi) _
 
 theorem one_le_Nm : (1 : ℝ) ≤ Nm D := by
   unfold Formalism.MainNotions.G.Nm

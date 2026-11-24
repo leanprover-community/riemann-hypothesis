@@ -6,7 +6,7 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.ValSetAlgSubset
 public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 public import Formalism.LocalToGlobal.ProjectiveLattices.DatIndep
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
-public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
+import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 
 @[expose] public section
 

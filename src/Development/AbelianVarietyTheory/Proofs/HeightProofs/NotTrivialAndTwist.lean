@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsBlockOrd
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TorusWeightVectorIffCartanWeightVector
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TorusWeightVectorIffCartanWeightVector
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.LogDetSt
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsBlockOrd
 
 @[expose] public section
 
@@ -132,7 +173,7 @@ def twist (R : DSRep T) : DSRep T where
   schur x y := by
     have h1 : ∀ (x y : R.U.H) (g : T.G),
         ‖(inner ℂ y (((T.sq g : ℂˣ) : ℂ)⁻¹ • R.U.π g x) : ℂ)‖ = ‖(inner ℂ y (R.U.π g x) : ℂ)‖ := fun x y g => by
-      simp [inner_smul_right, norm_sq]
+      simp [norm_sq]
     have h2 := R.schur x y
     simp only [← h1 x y] at h2
     exact h2
@@ -205,8 +246,8 @@ theorem sum_weight_eq (R : DSRep T) {μ ν : Ix p q → ℚ} {v w : R.HK.V} (hv 
     apply TorusWt.flow_eq R (TorusWt.torX_mem _)
     have h1 : ∀ a, R.HK.act (Eab a a) v = ((μ a : ℚ) : ℂ) • v := by
       simpa [wtSub, sub_eq_zero] using hv.2.1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [TorusWt.torX_eq_sum, map_sum, LinearMap.sum_apply]
+
+    rw [TorusWt.torX_eq_sum, map_sum, LinearMap.sum_apply]
     simp only [map_smul, LinearMap.smul_apply, h1, smul_smul, ← Finset.sum_smul, ← Finset.mul_sum]
     push_cast
     rfl

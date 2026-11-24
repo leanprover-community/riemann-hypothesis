@@ -1,7 +1,51 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.CoreStar
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -35,15 +79,11 @@ lemma Dx_fd (x : Bool × Mat k r) {f : Mat k r → ℂ} (hf : Differentiable ℝ
 lemma sm_diff {f : Mat k r → ℂ} (hf : ContDiff ℝ ∞ f) : Differentiable ℝ f := by
   first
   | exact hf.differentiable (by simp)
-  | exact hf.differentiable le_top
-  | exact hf.differentiable (by norm_num)
 
 lemma sm_Dx (x : Bool × Mat k r) {f : Mat k r → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (Dx x f) := by
   rw [Dx_fd x (sm_diff hf)]
   first
   | exact (hf.fderiv_right (m := ∞) le_rfl).clm_apply (dirL x).contDiff
-  | exact (hf.fderiv_right (m := ∞) (by simp)).clm_apply (dirL x).contDiff
-  | exact (hf.fderiv_right (m := ∞) (by norm_num)).clm_apply (dirL x).contDiff
 
 lemma sm_Dw (w : List (Bool × Mat k r)) {f : Mat k r → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (Dw w f) := by
   induction w with
@@ -138,13 +178,11 @@ lemma norm_reC (z : ℂ) : ‖reC z‖ ≤ ‖z‖ := by
   rw [reC_apply, Complex.norm_real, Real.norm_eq_abs]
   first
   | exact Complex.abs_re_le_norm z
-  | exact Complex.abs_re_le_abs z
 
 lemma norm_imC (z : ℂ) : ‖imC z‖ ≤ ‖z‖ := by
   rw [imC_apply, Complex.norm_real, Real.norm_eq_abs]
   first
   | exact Complex.abs_im_le_norm z
-  | exact Complex.abs_im_le_abs z
 
 lemma clm_split (L : ℂ →L[ℝ] ℂ) (d : ℂ) : L d = L 1 * reC d + L Complex.I * imC d := by
   have h : d = (d.re : ℝ) • (1 : ℂ) + (d.im : ℝ) • Complex.I := by
@@ -162,8 +200,6 @@ lemma Dx_comp (x : Bool × Mat k r) {χ : ℂ → ℂ} {ψ : Mat k r → ℂ} (h
   have hχd : Differentiable ℝ χ := by
     first
     | exact hχ.differentiable (by simp)
-    | exact hχ.differentiable le_top
-    | exact hχ.differentiable (by norm_num)
   have h1 := hasDx x (sm_diff hψ) g
   have h2 : HasFDerivAt χ (fderiv ℝ χ (ψ g)) (ψ (crv x g 0)) := by
     rw [h0]; exact (hχd (ψ g)).hasFDerivAt
@@ -175,7 +211,5 @@ lemma Dx_comp (x : Bool × Mat k r) {χ : ℂ → ℂ} {ψ : Mat k r → ℂ} (h
 lemma sm_fd {χ : ℂ → ℂ} (hχ : ContDiff ℝ ∞ χ) (v : ℂ) : ContDiff ℝ ∞ (fun z => fderiv ℝ χ z v) := by
   first
   | exact (hχ.fderiv_right (m := ∞) le_rfl).clm_apply contDiff_const
-  | exact (hχ.fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
-  | exact (hχ.fderiv_right (m := ∞) (by norm_num)).clm_apply contDiff_const
 
 end PI.UnitaryCorollaryDerivatives.CCA

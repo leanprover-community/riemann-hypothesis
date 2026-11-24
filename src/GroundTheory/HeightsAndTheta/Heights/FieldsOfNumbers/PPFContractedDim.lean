@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
+public import Mathlib.RingTheory.KrullDimension.Field
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -128,9 +133,9 @@ theorem killBlocks_of_isMultiHomog (T : Finset K) {p : MRing ι F} {b : K → �
 
 theorem killBlocks_mem_of_isMultiHomogIdeal {Q : Ideal (MRing ι F)} (hQ : IsMultiHomogIdeal Q)
     (T : Finset K) {q : MRing ι F} (hq : q ∈ Q) : killBlocks T q ∈ Q := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sum_weightedHomogeneousComponent (blockWeight ι) q,
-    finsum_eq_sum _ (weightedHomogeneousComponent_finsupp q), map_sum]
+
+  rw [← sum_weightedHomogeneousComponent (blockWeight ι) q,
+  finsum_eq_sum _ (weightedHomogeneousComponent_finsupp q), map_sum]
   refine Ideal.sum_mem _ fun b _ => ?_
   rw [killBlocks_of_isMultiHomog T (weightedHomogeneousComponent_isWeightedHomogeneous b q)]
   split_ifs

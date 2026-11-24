@@ -1,11 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.BaseFacts
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.IsAffineSplitTorusLeft
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.CompanionTheory
-public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.UTorsSt
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
@@ -203,8 +240,8 @@ theorem crd_change (hU : (U₀ : Set M.Z).Nonempty) (l l' : Q.Λ) {K : Type} [Fi
   have hval : ∀ c : M.O z, φ (RatModel.valLoc (Y ≫ Q.P.hom) z hc c) = M.val t c := fun c => by
     rw [← RatModel.val_spMap_comp, ← Category.assoc, hφ, hXt]
   rw [hb j]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hu j, map_mul, Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply, hval, ha, Finset.mul_sum]
+
+  simp only [hu j, map_mul, Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply, hval, ha, Finset.mul_sum]
   exact Finset.sum_congr rfl fun k _ => by ring
 
 theorem tors_change (hB : BaseFacts S M U₀ EE) (l l' : Q.Λ) {K : Type} [Field K] (t : Sp K ⟶ M.Z)
@@ -222,8 +259,8 @@ theorem tors_change (hB : BaseFacts S M U₀ EE) (l l' : Q.Λ) {K : Type} [Field
     have e1 : Q.B l' i ⬝ᵥ S.ev h = (Q.B l').mulVec (S.ev h) i := rfl
     rw [e1, hg, ← Matrix.mulVec_mulVec]
     simp [a, Matrix.mulVec, dotProduct, Finset.sum_div, mul_div_assoc]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, ← RatModel.valHom_apply t z' hr, map_sum]
+
+  rw [e, ← RatModel.valHom_apply t z' hr, map_sum]
   simp only [map_mul, RatModel.valHom_apply]
   rfl
 

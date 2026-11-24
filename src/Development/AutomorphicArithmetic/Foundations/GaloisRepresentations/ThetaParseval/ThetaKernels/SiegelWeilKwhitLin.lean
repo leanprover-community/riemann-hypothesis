@@ -1,13 +1,48 @@
 module
 
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.SectionLinearFinsetSum
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilDatumProperties
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.SectionLinearFinsetSum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 200000
+
 
 section
 noncomputable section
@@ -31,13 +66,13 @@ def linRhoL_k (v : Mx F E d.m d.n) : d.Fn →ₗ[ℂ] d.Fn where
     ring
 theorem lin_T_sum_k {ι : Type} (s : Finset ι) (c : ι → ℂ) (Φs : ι → d.Fn) (X : Mx F E d.m d.n) :
     d.T (∑ i ∈ s, c i • Φs i) X = ∑ i ∈ s, c i * d.T (Φs i) X := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    change d.l (linRhoL_k d X (∑ i ∈ s, c i • Φs i)) = ∑ i ∈ s, c i * d.l (linRhoL_k d X (Φs i))
-    simp only [map_sum, map_smul, smul_eq_mul]
+
+  change d.l (linRhoL_k d X (∑ i ∈ s, c i • Φs i)) = ∑ i ∈ s, c i * d.l (linRhoL_k d X (Φs i))
+  simp only [map_sum, map_smul, smul_eq_mul]
 theorem constantTerm_finsetSum {ι : Type} (s : Finset ι) (c : ι → ℂ) (Φs : ι → d.Fn) (x : d.G) :
     d.sec0 (∑ i ∈ s, c i • Φs i) x = ∑ i ∈ s, c i * d.sec0 (Φs i) x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [_root_.PositivityTheory.SiegelWeilFormula.SD_k.sec0, map_sum, map_smul, smul_eq_mul]
+
+  simp only [_root_.PositivityTheory.SiegelWeilFormula.SD_k.sec0, map_sum, map_smul, smul_eq_mul]
 theorem lin_om_mem_k (x : d.G) {Φ : d.Fn} (h : Φ ∈ d.sch) : d.om x Φ ∈ d.sch := d.ok.dbl.weil.2.1.pres x Φ h
 theorem lin_S_mem_k (g : UA σ d.A.J) {Φ : d.Fn} (h : Φ ∈ d.sch) : d.S g Φ ∈ d.sch := d.ok.dbl.lin.pres g Φ h
 theorem lin_sum_mem_k {ι : Type} (s : Finset ι) (c : ι → ℂ) (Φs : ι → d.Fn) (h : ∀ i ∈ s, Φs i ∈ d.sch) :
@@ -56,8 +91,8 @@ theorem lin_I_sum_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TTheta_k) (h
   have e : ∀ g : UA σ d.A.J, thetaSum F (d.om x (d.S g (∑ i ∈ s, c i • Φs i))) =
       ∑ i ∈ s, c i * thetaSum F (d.om x (d.S g (Φs i))) := by
     intro g
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
     simp only [map_smul]
     exact _root_.PositivityTheory.SiegelWeilFormula.KWhit.lin_thetaSum_sum_k d hT s c (fun i => d.om x (d.S g (Φs i))) fun i hi => _root_.PositivityTheory.SiegelWeilFormula.KWhit.lin_om_mem_k d x (_root_.PositivityTheory.SiegelWeilFormula.KWhit.lin_S_mem_k d g (h i hi))
   have hint : ∀ i ∈ s, IntegrableOn (fun g => thetaSum F (d.om x (d.S g (Φs i)))) d.D d.μ :=
@@ -74,8 +109,8 @@ theorem lin_psi_meas_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) (
   have key : ∀ β : nA σ d.Y d.b, d.B.ψ (-d.tt (M * β.1)) =
       ∏ i, ∏ k, d.B.ψ (-(Algebra.trace (AF F) (AE F E) (M i k * β.1 k i))) := by
     intro β
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [_root_.PositivityTheory.SiegelWeilFormula.SD_k.tt, Matrix.trace, Matrix.diag, Matrix.mul_apply, map_sum, ← Finset.sum_neg_distrib, lin_addChar_sum]
+
+    simp only [_root_.PositivityTheory.SiegelWeilFormula.SD_k.tt, Matrix.trace, Matrix.diag, Matrix.mul_apply, map_sum, ← Finset.sum_neg_distrib, lin_addChar_sum]
   rw [show (fun β : nA σ d.Y d.b => d.B.ψ (-d.tt (M * β.1))) = fun β =>
       ∏ i, ∏ k, d.B.ψ (-(Algebra.trace (AF F) (AE F E) (M i k * β.1 k i))) from funext key]
   have : OpensMeasurableSpace (AE F E) := ⟨le_rfl⟩

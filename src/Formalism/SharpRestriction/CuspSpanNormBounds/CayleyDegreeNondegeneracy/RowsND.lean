@@ -1,6 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.RowsLab
+import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
+import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.RowsFibres
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.RowsNum
+import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.RowsSiz
+import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.RowsTrm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -176,7 +219,7 @@ theorem rows_nd_count (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch 
     have h1 : 1 ≤ rows_DeZ D u u' s x y :=
       le_trans (rows_DetGeOne_of h.hH.2.1 p₀ (hS p₀ hp₀).1.1 (hS p₀ hp₀).1.2.1) (hDe_of p₀ hp₀)
     have h2 : rows_DeZ D u u' s x y ≤ (HHZ D large₂.sc.b c x * HHZ D large₂.sc.b c y) ^ (3 : ℝ) := by
-      have := (Formalism.HermitianLatticeCounting.Final.LatticeSumBounds.deNonDegBound D.R.f s (gg D) (wordPairGramProduct D u u' x) (wordPairGramProduct D u u' y)
+      have := (_root_.Formalism.HermitianLatticeCounting.P.nondegenerateFactorBound D.R.f s (gg D) (wordPairGramProduct D u u' x) (wordPairGramProduct D u u' y)
         (HHZ D large₂.sc.b c x) (HHZ D large₂.sc.b c y) hg2 (gramProductG0_pos Y h.hH.1 h.hT gx).le
         (gramProductG0_pos Y h.hH.1 h.hT gy).le (gramProductG0_le_height Y h.hH h.hHH h.hT gx)
         (gramProductG0_le_height Y h.hH h.hHH h.hT gy) (rows_one_le_HHZ D large₂ h.hc x) (rows_one_le_HHZ D large₂ h.hc y)).2
@@ -227,7 +270,7 @@ theorem rows_nd_prod (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch �
     unfold rows_al
     rw [Real.sq_sqrt (div_nonneg (mul_nonneg (rows_l_nonneg D large₂ c C2 Ch q hc Z) hτ0) (rows_nZ_pos Y h hZ).le),
       mul_div_cancel₀ _ (rows_nZ_pos Y h hZ).ne']
-  have n1 := Formalism.HermitianLatticeCounting.Final.LatticeSumBounds.nonDegRow D.R.k D.R.f s (gg D) D.host.v (NT D u) (wordPairGramProduct D u u' x) (wordPairGramProduct D u u' y)
+  have n1 := _root_.Formalism.HermitianLatticeCounting.P.nondegenerateRowBound D.R.k D.R.f s (gg D) D.host.v (NT D u) (wordPairGramProduct D u u' x) (wordPairGramProduct D u u' y)
     (XiS D u (HHZ D large₂.sc.b c x * HHZ D large₂.sc.b c y) c s)
     ((HHZ D large₂.sc.b c x * HHZ D large₂.sc.b c y) ^ pairCountExponent D c s * (c * s * D.R.f) ^ (6 * s * D.R.f))
     (wordSublatticeTripleBound D large₂ u c x y s (rows_DeZ D u u' s x y)) (rows_al D large₂ u u' c C2 Ch δ q x) (rows_al D large₂ u u' c C2 Ch δ q y)

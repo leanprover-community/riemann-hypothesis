@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsTorusEmbedding
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PGramAtData
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MajorantInvolutionDiagonalForm
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

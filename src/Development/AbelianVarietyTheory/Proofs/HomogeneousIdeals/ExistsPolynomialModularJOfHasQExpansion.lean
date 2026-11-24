@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HasQExpansionModularForm
+public import Mathlib.NumberTheory.ModularForms.Discriminant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.ModularForms.LevelOne.GradedRing
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -33,25 +77,13 @@ lemma modularJ_smul (γ : SL(2, ℤ)) (τ : ℍ) : modularJ (γ • τ) = modula
 lemma mdifferentiable_modularJ : MDiff modularJ :=
   (E₄.holo'.pow 3).div CuspForm.discriminant.holo' discriminant_ne_zero
 
-lemma periodic_comp_ofComplex_of_vadd {f : ℍ → ℂ} {h : ℝ} (hf : ∀ τ : ℍ, f (h +ᵥ τ) = f τ) :
-    Periodic (f ∘ ofComplex) (h : ℂ) := by
-  intro w
-  by_cases! hw : 0 < im w
-  · have : 0 < im (w + h) := by simp [hw]
-    simp only [comp_apply, ofComplex_apply_of_im_pos this, ofComplex_apply_of_im_pos hw]
-    convert! hf ⟨w, hw⟩ using 2
-    ext
-    simp [add_comm]
-  · have : im (w + h) ≤ 0 := by simpa using hw
-    simp [ofComplex_apply_of_im_nonpos this, ofComplex_apply_of_im_nonpos hw]
-
 lemma qParam_one_vadd (τ : ℍ) : 𝕢 1 ((1 : ℝ) +ᵥ τ : ℍ) = 𝕢 1 τ := by
   simp [Periodic.qParam, mul_add, Complex.exp_add]
 
 lemma hasQExpansion_qParam_pow_mul {f : ℍ → ℂ} (hinv : ∀ (γ : SL(2, ℤ)) (τ : ℍ), f (γ • τ) = f τ)
     (hhol : MDiff f) {m : ℕ} (hbdd : IsBoundedAtImInfty fun τ : ℍ ↦ 𝕢 1 τ ^ m * f τ) :
     HasQExpansion 1 (fun τ ↦ 𝕢 1 τ ^ m * f τ) (qExpansion 1 fun τ ↦ 𝕢 1 τ ^ m * f τ) := by
-  refine .of_periodic one_pos (periodic_comp_ofComplex_of_vadd fun τ ↦ ?_) ?_ hbdd
+  refine .of_periodic one_pos (UpperHalfPlane.periodic_comp_ofComplex fun τ ↦ ?_) ?_ hbdd
   · rw [qParam_one_vadd, ← modular_T_smul, hinv]
   · exact (((HasQExpansion.qParam 1).mdifferentiable one_pos).pow m).mul hhol
 

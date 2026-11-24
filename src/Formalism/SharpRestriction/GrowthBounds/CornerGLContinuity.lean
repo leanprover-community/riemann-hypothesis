@@ -1,16 +1,44 @@
 module
 
-public import Formalism.LocalRingCardinality.DataParams₂
-public import Formalism.SharpRestriction.ParConsts
-public import Formalism.SharpRestriction.ElevenLe
-public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
-public import Formalism.SharpRestriction.GrowthBounds.IsResidueClassZero
 public import Formalism.SharpRestriction.GrowthBounds.SegRing
-public import Formalism.SharpRestriction.GrowthBounds.SelectionLemmas
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
 public import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas
-public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSa
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -107,14 +135,6 @@ def MertensBound (_D : D7) : Prop :=
   ∀ y : ℝ, 1 ≤ y → ∑ p ∈ (Finset.range ⌈y⌉₊).filter Nat.Prime, Real.log p / p ≤ 2 * Real.log y
 
 
-
-open Classical in
-def OrdersSmallPrimeBound (D : D7) (L : SizeData₂ D) : Prop :=
-  ∑ p ∈ (Finset.range ⌈L.sc.X'' D.R.n⌉₊).filter (fun p => p.Prime ∧ p ≠ 2 ∧
-      (addOrderOf (Formalism.MainNotions.GlobalTheoryTheory.hOf D.R.e p) : ℝ) < L.sc.x ^ (L.sc.eps / 4)), Real.log p / p ≤
-    L.sc.x ^ (-hG L.sc + L.sc.eps)
-
-def GlobalOrderEstimate (D : D7) (C₄ : ℝ) : Prop := Formalism.MainNotions.UnusedSlot33.Conclusion4 D C₄
 
 def FrobeniusClassCompatibility (D : D7) : Prop := ∀ p : ℕ, p.Prime → IsResidueClassZero D p →
   p ≠ 2 ∧ D.R.h (hP D p) = Additive.ofMul (iotaH _ (Formalism.MainNotions.GlobalTheoryTheory.hOf D.R.e p))
@@ -214,8 +234,6 @@ def FamilyOrbitPositionsAndSizeBounds : Prop := ∀ x (i : Fm.Ix x), OrbitPositi
 
 def FamilyLargeScale : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, LargeScaleConditions (Fm.D x i) (Fm.L x i)
 
-def FamilyOrdersSmallPrimeBoundConstant : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, OrdersSmallPrimeBound (Fm.D x i) (Fm.L x i)
-
 def FamilyOrdersLargePrimeBoundConstant : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, OrdersLargePrimeBound (Fm.D x i) (Fm.L x i) Fm.GK
 
 def FamilyWindowLogBound : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, WindowLogBound (Fm.D x i) (Fm.L x i) Fm.GK
@@ -223,8 +241,6 @@ def FamilyWindowLogBound : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, 
 def FamilyInertPrimesLarge : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, EstimatedPrimesExceedScale (Fm.D x i) (Fm.L x i)
 
 def FamilyMertensBound : Prop := ∀ x (i : Fm.Ix x), MertensBound (Fm.D x i)
-
-def FamilyGlobalOrderEstimate (C₄ : ℝ) : Prop := ∀ x (i : Fm.Ix x), GlobalOrderEstimate (Fm.D x i) C₄
 
 def FamilyCutSizes : Prop :=
   ∃ C x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, CutSizes (Fm.D x i) (Fm.L x i) (Fm.Gx x i) Fm.GK C
@@ -236,8 +252,6 @@ def FamilyWeightSumBound : Prop :=
 def FamilyWeightSum : Prop := FamilyMertensBound Fm → FamilyCutSizes Fm → FamilyWeightSumBound Fm
 
 def FamilyLargeScaleOfInertPrimesLarge : Prop := FamilyInertPrimesLarge Fm → FamilyLargeScale Fm
-
-def FamilyOrdersSmallPrimeBound (C₄ : ℝ) : Prop := FamilyGlobalOrderEstimate Fm C₄ → FamilyOrdersSmallPrimeBoundConstant Fm
 
 def FamilyOrdersLargePrimeBound : Prop := FamilyOrbitPositionsAndSizeBounds Fm → FamilyWindowLogBound Fm → FamilyOrdersLargePrimeBoundConstant Fm
 

@@ -2,6 +2,12 @@ module
 
 public import Formalism.LocalToGlobal.Columns.TwQBridge
 public import Formalism.LocalToGlobal.Columns.TwQLev
+import Formalism.LocalToGlobal.Columns.TiedGlLoc
+import Formalism.LocalToGlobal.Columns.TwQSplit
+import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -19,7 +25,7 @@ section Div
 variable {F : Type} [Field F] [NumberField F] {v : HeightOneSpectrum (𝓞 F)} {n : ℕ}
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem qbK_of_div {c : v.adicCompletion F} (hc : c ∈ v.adicCompletionIntegers F) (hc1 : Valued.v c < 1)
     {k : GL (Fin n) (v.adicCompletion F)} (hk : qbDiv c ((k : Matrix (Fin n) (Fin n) (v.adicCompletion F)) - 1)) : k ∈ qbK c := by
   classical
@@ -106,10 +112,10 @@ variable {F E K : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Sta
   (hQ : ∀ P : Q, conjPrime₂ P.1 ≠ P.1) (hΘ : ThetaOpen Θ)
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem qbDF_spec (P : Q) : ∃ D : 𝓞 F, D ≠ 0 ∧ D ∈ (underPl F P.1).asIdeal ∧ ∃ w ∈ ((qv F P.1).adicCompletionIntegers F),
     algebraMap (𝓞 F) ((qv F P.1).adicCompletion F) D = qbF hc hQ P (qbD hc Θ hQ hΘ P) * w := by
-  obtain ⟨b, hb⟩ := qsp_norm_mem hc (qbPi hc hQ P)
+  obtain ⟨b, hb⟩ := _root_.Formalism.L2.Col.rll_norm_mem hc (qbPi hc hQ P)
   have hbP : b ∈ (underPl F P.1).asIdeal := by
     show algebraMap (𝓞 F) (𝓞 E) b ∈ P.1.asIdeal
     rw [hb]; exact Ideal.mul_mem_right _ _ (qbPi_spec hc hQ P).1
@@ -149,7 +155,7 @@ theorem qbDF_prop (P : Q) : qbDF hc Θ hQ hΘ P ≠ 0 ∧ qbDF hc Θ hQ hΘ P �
   Classical.choose_spec (qbDF_spec hc Θ hQ hΘ P)
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem qbOpen : QOpen (qbLoc hc Θ hQ hΘ) := by
   refine { princ := ?_, glob := ?_ }
   · intro P
@@ -168,7 +174,7 @@ theorem qbOpen : QOpen (qbLoc hc Θ hQ hΘ) := by
       (RingHom.fst _ _).comp ((qbLoc hc Θ hQ hΘ).sp P).toRingHom with hf
     have e2 := congrArg f e1
     rw [map_sub, map_mul, map_natCast] at e2
-    refine ⟨algebraMap (𝓞 F) _ t * w * f (z i), Subring.mul_mem _ (Subring.mul_mem _ (glo_algMap_int _ t) hw)
+    refine ⟨algebraMap (𝓞 F) _ t * w * f (z i), Subring.mul_mem _ (Subring.mul_mem _ (_root_.Formalism.UG.P.levelaf_int_mem_v _ t) hw)
       ((((qbLoc hc Θ hQ hΘ).sp_int P (z i)).1 (qsp_locL_entry _ hz i)).1), ?_⟩
     have e3 : ((Ideal.absNorm (Ideal.span {qbDF hc Θ hQ hΘ P}) : ℕ) : (qv F P.1).adicCompletion F) =
         algebraMap (𝓞 F) _ t * (qbF hc hQ P (qbD hc Θ hQ hΘ P) * w) := by
@@ -204,7 +210,7 @@ theorem qbOpen : QOpen (qbLoc hc Θ hQ hΘ) := by
       simp only [hφ]
       rw [← Finset.mul_prod_erase _ _ (Finset.mem_attach Q P), hDw, mul_assoc]
     refine ⟨w * (∏ P' ∈ Q.attach.erase P, algebraMap (𝓞 F) _ (qbDF hc Θ hQ hΘ P')) * f (prV (E := E) (qv F P.1) (sa i j : E ⊗[F] Formalism.L2.Herm.Af F)),
-      Subring.mul_mem _ (Subring.mul_mem _ hw (Subring.prod_mem _ fun P' _ => glo_algMap_int _ _))
+      Subring.mul_mem _ (Subring.mul_mem _ hw (Subring.prod_mem _ fun P' _ => _root_.Formalism.UG.P.levelaf_int_mem_v _ _))
         ((((qbLoc hc Θ hQ hΘ).sp_int P _).1 (afsplit_prV_int (qv F P.1) _ (sa i j).2)).1), ?_⟩
     show f (prV (E := E) (qv F P.1) ((u : Matrix (Fin n) (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) i j)) - (1 : Matrix (Fin n) (Fin n) _) i j = _
     rw [hu i j, map_add (f := _), map_add (f := _), map_mul, map_mul]

@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChartA
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartConeComponent
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialSeparable
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyFrobeniusSep
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.SupersingularPowField
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyFrobenius
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

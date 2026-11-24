@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.UnipBasis
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.ColsDim
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.UnipReal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

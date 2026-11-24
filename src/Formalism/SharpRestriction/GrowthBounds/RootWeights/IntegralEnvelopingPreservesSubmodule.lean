@@ -1,6 +1,56 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
+public import Formalism.SharpRestriction.GrowthBounds.ObjPol
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 
 @[expose] public section
 
@@ -14,26 +64,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 theorem dvr_fraction_field_char_zero_prime {p : ℕ} {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (S : UniformizedDVR p O) (hp : p.Prime) : CharZero (KK O) := by
-  obtain ⟨w, _, p_mem, p_ne, _⟩ := S
-  haveI : CharZero O := by
-    obtain ⟨q, hq⟩ := CharP.exists O
-    rcases CharP.char_is_prime_or_zero O q with hqp | hq0
-    · exfalso
-      by_cases hdvd : q ∣ p
-      · have hqp' : q = p := (Nat.prime_dvd_prime_iff_eq hqp hp).mp hdvd
-        subst hqp'
-        exact p_ne (CharP.cast_eq_zero O q)
-      · have hcop : Nat.Coprime p q := (Nat.coprime_primes hp hqp).mpr (fun h => hdvd (by subst h; exact dvd_rfl))
-        have hu : IsUnit (p : ZMod q) := by
-          rw [← ZMod.coe_unitOfCoprime p hcop]; exact Units.isUnit _
-        have hu' : IsUnit (p : O) := by
-          have h5 := hu.map (ZMod.castHom (dvd_refl q) O)
-          simpa using h5
-        exact (IsLocalRing.mem_maximalIdeal _).mp p_mem hu'
-    · subst hq0
-      exact CharP.charP_to_charZero O
-  unfold KK
-  exact charZero_of_injective_algebraMap (IsFractionRing.injective O (FractionRing O))
+  apply Formalism.MainNotions.G.GLWeightTheory.dvr_fraction_field_charZero_prime <;> assumption
 
 section field
 
@@ -152,8 +183,8 @@ theorem lattice_weight_components_mem [CharZero (KK O)] (E : GLOps n (KK O) V) (
     obtain ⟨T, g', hg1, hg0, hT, hTM⟩ := lattice_stable_weight_separator E hal
     have hlF : lam ∉ F := fun h => hl (Finset.mem_insert_of_mem h)
     have h2 := hTM M hM _ hmem
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), map_sum, Finset.sum_insert ha] at h2
+
+    rw [map_add (f := _), map_sum, Finset.sum_insert ha] at h2
     rw [hT lam y0 hy0, hg1, hT a (f a) (hf a (Finset.mem_insert_self a F)), hg0] at h2
     have h3 : ∀ nu ∈ F, T (f nu) = ((g' nu : ℤ) : KK O) • f nu :=
       fun nu hnu => hT nu (f nu) (hf nu (Finset.mem_insert_of_mem hnu))

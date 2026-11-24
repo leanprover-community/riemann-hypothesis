@@ -1,8 +1,7 @@
 module
 
-public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
+public import Formalism.LocalRingCardinality.DataLevelD
 public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyDefinite
-public import Formalism.LocalToGlobal.HermitianColumns.TiedQC
 
 @[expose] public section
 

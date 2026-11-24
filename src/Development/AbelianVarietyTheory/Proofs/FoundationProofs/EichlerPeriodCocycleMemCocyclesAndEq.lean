@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerIntegralFromISlashChangeOfVariablesStatement
+public import Mathlib.Algebra.Polynomial.Homogenize
+public import Mathlib.NumberTheory.ModularForms.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
+public import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.LeviCivita
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerIntegralFromISlashChangeOfVariables
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -11,13 +57,6 @@ open scoped MatrixGroups ModularForm
 open scoped Manifold
 
 namespace GlobalTheory.HeckeFamilyMatrices.PerCoc
-
-theorem polySlash_apply (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
-    slP w g p = ∑ i ∈ Finset.range (w + 1), p.coeff i •
-      ((C ((g 0 0 : ℤ) : ℂ) * X + C ((g 0 1 : ℤ) : ℂ)) ^ i *
-        (C ((g 1 0 : ℤ) : ℂ) * X + C ((g 1 1 : ℤ) : ℂ)) ^ (w - i)) := by
-  simp only [slP, LinearMap.sum_apply, LinearMap.comp_apply, lcoeff_apply,
-    LinearMap.toSpanSingleton_apply]
 
 theorem homogenize_eq_sum (w : ℕ) (p : ℂ[X]) :
     p.homogenize w = ∑ i ∈ Finset.range (w + 1),
@@ -31,8 +70,8 @@ theorem polySlash_eq_aeval (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X
     slP w g p = MvPolynomial.aeval
       ![C ((g 0 0 : ℤ) : ℂ) * X + C ((g 0 1 : ℤ) : ℂ), C ((g 1 0 : ℤ) : ℂ) * X + C ((g 1 1 : ℤ) : ℂ)]
       (p.homogenize w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [polySlash_apply, homogenize_eq_sum, map_sum]
+
+  rw [_root_.GlobalTheory.EichlerChange.polySlash_apply, homogenize_eq_sum, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, map_mul, map_pow, map_pow, MvPolynomial.aeval_X, MvPolynomial.aeval_X]
   rfl
@@ -55,15 +94,15 @@ theorem homogenize_slP (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
       ((isHomogeneous_lin ((g 1 0 : ℤ) : ℂ) ((g 1 1 : ℤ) : ℂ)).pow (w - i))).C_mul (p.coeff i)
     rwa [one_mul, one_mul, Nat.add_sub_of_le hi'] at h
   · set_option synthInstance.maxHeartbeats 100000 in
-      rw [polySlash_apply, map_sum]
+      rw [_root_.GlobalTheory.EichlerChange.polySlash_apply, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp only [map_mul, map_pow, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X, Matrix.cons_val_zero,
       Matrix.cons_val_one, mul_one, ← C_eq_algebraMap, smul_eq_C_mul]
 
 theorem polySlash_polySlash (w : ℕ) (g h : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
     slP w h (slP w g p) = slP w (g * h) p := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [polySlash_eq_aeval w h, homogenize_slP, polySlash_apply, map_sum]
+
+  rw [polySlash_eq_aeval w h, homogenize_slP, _root_.GlobalTheory.EichlerChange.polySlash_apply, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp only [map_mul, map_pow, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X, Matrix.cons_val_zero,
       Matrix.cons_val_one, ← C_eq_algebraMap, smul_eq_C_mul, Matrix.mul_apply, Fin.sum_univ_two, Int.cast_add,
@@ -72,7 +111,7 @@ theorem polySlash_polySlash (w : ℕ) (g h : Matrix (Fin 2) (Fin 2) ℤ) (p : �
 
 theorem polySlash_mem_degreeLT (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
     slP w g p ∈ degreeLT ℂ (w + 1) := by
-  rw [polySlash_apply]
+  rw [_root_.GlobalTheory.EichlerChange.polySlash_apply]
   refine Submodule.sum_mem _ fun i hi => Submodule.smul_mem _ _ ?_
   have hi' : i ≤ w := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
   rw [mem_degreeLT]
@@ -94,7 +133,7 @@ theorem slash_eq_self {Γ : Subgroup SL(2, ℤ)} {k : ℤ} (f : ModularForm Γ k
 theorem per_eq (Γ : Subgroup SL(2, ℤ)) (k : ℕ) (hk : 2 ≤ k) (f : ModularForm Γ (k : ℤ)) (γ : Γ) (τ : ℍ) :
     per Γ (k - 2) ⇑f γ =
       slP (k - 2) (mat γ) (eichler (k - 2) ⇑f ((γ : SL(2, ℤ)) • τ)) - eichler (k - 2) ⇑f τ := by
-  obtain ⟨c, hc⟩ := GlobalTheory.T.eichlerIntegralFromI_slash_change_of_variables k hk ⇑f f.holo' γ
+  obtain ⟨c, hc⟩ := _root_.GlobalTheory.EichlerChange.polySlash_eichler_smul k hk ⇑f f.holo' γ
   rw [slash_eq_self] at hc
   rw [per, hc, hc, eichler_I]
   ring

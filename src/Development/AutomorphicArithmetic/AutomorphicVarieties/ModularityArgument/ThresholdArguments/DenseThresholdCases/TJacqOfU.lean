@@ -1,13 +1,53 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.DiscreteSeriesCoefficientsCuspidal
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.JacqOfU
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutomorphicFormHyp
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.WeightChange
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.UopSum
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 200000
+
+
 
 section
 noncomputable section
@@ -138,7 +178,7 @@ private theorem iwasawa (O : Subring K) (hO : ∀ x : K, x ∈ O ∨ x⁻¹ ∈ 
       (div_ne_zero (neg_ne_zero.2 hdet) (pow_ne_zero _ h0)), g 0 0 / g 1 0, ⟨_, h1⟩, Or.inl ?_⟩
     apply Units.ext
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [aff, sw, Matrix.mul_apply, Fin.sum_univ_two, Matrix.diagonal_apply] <;> field_simp <;> ring
+    fin_cases i <;> fin_cases j <;> simp [aff, sw, Matrix.mul_apply, Matrix.diagonal_apply] <;> field_simp <;> ring
   · have h0 : g 1 1 ≠ 0 := by
       intro h0
       apply h
@@ -152,7 +192,7 @@ private theorem iwasawa (O : Subring K) (hO : ∀ x : K, x ∈ O ∨ x⁻¹ ∈ 
       (div_ne_zero hdet (pow_ne_zero _ h0)), g 0 1 / g 1 1, ⟨_, h1⟩, Or.inr ?_⟩
     apply Units.ext
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [aff, sw, Matrix.mul_apply, Fin.sum_univ_two, Matrix.diagonal_apply] <;> field_simp <;> ring
+    fin_cases i <;> fin_cases j <;> simp [aff, sw, Matrix.mul_apply, Matrix.diagonal_apply] <;> field_simp <;> ring
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 private theorem act_tor_uni (ρ : Representation ℂ (GL (Fin 2) K) V) (a : Kˣ) (x : K) (y : V) :
     ρ (aff a 0) (ρ (aff 1 x) y) = ρ (aff 1 (a * x)) (ρ (aff a 0) y) := by
@@ -201,8 +241,8 @@ private theorem not_mem_ker (O : Subring K) (π : Kˣ) (hπ : (π : K) ∈ O) (h
     | succ j ih =>
       intro h
       apply ih
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← W.smul_mem_iff lam.ne_zero, ← map_smul, ← hU, map_sum]
+
+      rw [← W.smul_mem_iff lam.ne_zero, ← map_smul, ← hU, map_sum]
       refine sum_mem fun u _ => ?_
       have e : ρ (aff (π ^ j) 0) (ρ (aff π (u : K)) v) = ρ (aff 1 ((π : K) ^ j * u)) (ρ (aff (π ^ (j + 1)) 0) v) := by
         simp only [← Module.End.mul_apply, ← map_mul, aff_mul]
@@ -243,8 +283,8 @@ private theorem gen (O : Subring K) (hO : ∀ x : K, x ∈ O ∨ x⁻¹ ∈ O) (
   have hy : N.mkQ v ≠ 0 := fun h =>
     not_mem_ker O π hπ hπ' ρ htor v hv hf S lam hU ((Submodule.Quotient.mk_eq_zero N).1 h)
   have he : (S.card : ℂ) • τ π (N.mkQ v) = (lam : ℂ) • N.mkQ v := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_smul N.mkQ, ← hU, map_sum]
+
+    rw [← map_smul N.mkQ, ← hU, map_sum]
     simp only [hq, Finset.sum_const, Nat.cast_smul_eq_nsmul]
   have hS : (S.card : ℂ) ≠ 0 := by
     intro h

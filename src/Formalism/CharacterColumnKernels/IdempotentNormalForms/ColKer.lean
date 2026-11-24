@@ -1,9 +1,54 @@
 module
 
 public import Formalism.CharacterColumnKernels.StatementColKer
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerSmulLe
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
 public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthEqKerAddRange
+public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerSmulLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.PUnit
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -54,8 +99,8 @@ lemma map_colGenJ (ψ : ColFreeJ A r χ E ι j →ₗ[A] M) (y : Ymod r χ E) (l
     ψ (colGenJ y l c s c₀) = ψ (y, 0) + c • ψ (fNu l) + ∑ a, s a • ψ (fSig l a) +
       c₀ • ψ (fSig0 l) := by
   rw [colGenJ_decomp]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_add (f := _), map_sum, map_smul]
+
+  simp only [map_add (f := _), map_sum, map_smul]
 
 lemma map_sigRel (ψ : ColFreeJ A r χ E ι j →ₗ[A] M) (l : ι) (a : Fin (j l)) (t : A) :
     ψ (colGenJ 0 l 0 (Pi.single a t) 0) = t • ψ (fSig l a) := by
@@ -82,8 +127,8 @@ lemma eq_zero_of_gens [Fintype ι] {e₁ : A} {δ : T'} {D : ι → Subgroup G}
     let ψ := φ ∘ₗ (colRelJ r χ E e₁ δ D j Kc k0).mkQ
     have : ψ z = 0 := by
       have h0 : ψ ((0 : Ymod r χ E), 0) = 0 := map_zero ψ
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [free_decomp z, map_add (f := _), map_sum]
+
+      rw [free_decomp z, map_add (f := _), map_sum]
       refine (congrArg₂ (· + ·) (hY z.1) (Finset.sum_eq_zero fun l _ => ?_)).trans (add_zero 0)
       rw [map_colGenJ]
       have h1 : ψ (fNu l) = 0 := hν l

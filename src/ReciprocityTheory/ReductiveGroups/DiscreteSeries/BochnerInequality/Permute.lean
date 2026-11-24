@@ -1,6 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
+public import Mathlib.Analysis.Normed.Lp.PiLp
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Mathlib.Order.CompletePartialOrder
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

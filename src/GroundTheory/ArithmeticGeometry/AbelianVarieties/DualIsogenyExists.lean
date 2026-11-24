@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenySeparable
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
+public import Mathlib.Analysis.Normed.Ring.Lemmas
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyFrobeniusSep
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenySeparable
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilTranslate
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyFrobenius
 
 @[expose] public section
 
@@ -151,7 +156,7 @@ theorem comp_mulIsogeny (φ : Isogeny E E') (n : ℤ) (hn : n ≠ 0) :
   Subtype.ext (by rw [comp_mulIsogeny_val, mulIsogeny_comp_val])
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem exists_lift (φ : Isogeny E E') {L : Type u} [Field L] [Algebra F L]
     (P : (E'.baseChange L).toAffine.Point) (hP : IsGenPt E' P) :
     ∃ τ : E.toAffine.FunctionField →ₐ[F] AlgebraicClosure L,

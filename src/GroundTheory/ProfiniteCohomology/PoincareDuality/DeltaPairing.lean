@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
 public import GroundTheory.ProfiniteCohomology.CupProducts.Pairing
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+public import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
 
 @[expose] public section
 

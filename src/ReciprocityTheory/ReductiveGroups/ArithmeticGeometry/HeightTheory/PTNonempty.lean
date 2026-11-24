@@ -1,6 +1,56 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.Algebra.MonoidAlgebra.Cardinal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Encodable
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+public import Mathlib.FieldTheory.IsAlgClosed.Classification
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Complex.Cardinality
 
 @[expose] public section
 
@@ -14,13 +64,6 @@ private lemma countable_of_intermediateField_fg {K Ω : Type} [Field K] [Countab
   haveI : Countable (MvPolynomial (S : Set Ω) K) := by
     first
     | infer_instance
-    | exact Cardinal.mk_le_aleph0_iff.mp (MvPolynomial.cardinal_mk_le_max.trans
-        (max_le (max_le Cardinal.mk_le_aleph0 Cardinal.mk_le_aleph0) le_rfl))
-    | exact Cardinal.mk_le_aleph0_iff.mp (MvPolynomial.cardinalMk_le_max_lift.trans
-        (max_le (max_le (Cardinal.lift_le_aleph0.mpr Cardinal.mk_le_aleph0)
-          (Cardinal.lift_le_aleph0.mpr Cardinal.mk_le_aleph0)) le_rfl))
-    | exact Cardinal.mk_le_aleph0_iff.mp (MvPolynomial.cardinalMk_le_max.trans
-        (max_le (max_le Cardinal.mk_le_aleph0 Cardinal.mk_le_aleph0) le_rfl))
   let f : MvPolynomial (S : Set Ω) K × MvPolynomial (S : Set Ω) K → Ω := fun pq =>
     MvPolynomial.aeval (fun x : (S : Set Ω) => (x : Ω)) pq.1 /
       MvPolynomial.aeval (fun x : (S : Set Ω) => (x : Ω)) pq.2
@@ -40,18 +83,15 @@ theorem exists_embedding_over {K Ω : Type} [Field K] [NumberField K] [Field Ω]
     ∃ P : Ω →+* ℂ, P.comp (algebraMap K Ω) = sg := by
   haveI hKc : Countable K := by
     first
-    | infer_instance
     | exact (Module.finBasis ℚ K).equivFun.injective.countable
   haveI hΩc : Countable Ω := countable_of_intermediateField_fg hfg
   letI : Algebra K ℂ := sg.toAlgebra
   haveI : FaithfulSMul K ℂ := by
     first
     | infer_instance
-    | exact (faithfulSMul_iff_algebraMap_injective K ℂ).mpr sg.injective
   haveI : FaithfulSMul K Ω := by
     first
     | infer_instance
-    | exact (faithfulSMul_iff_algebraMap_injective K Ω).mpr (algebraMap K Ω).injective
   obtain ⟨s, hs⟩ := exists_isTranscendenceBasis K Ω
   obtain ⟨t, ht⟩ := exists_isTranscendenceBasis K ℂ
   have hC : Cardinal.aleph0 < Cardinal.mk ℂ := by
@@ -92,7 +132,6 @@ theorem exists_embedding_over {K Ω : Type} [Field K] [NumberField K] [Field Ω]
       (algebraMap K (Algebra.adjoin K (Set.range (Subtype.val : s → Ω))) k) := by
     first
     | rfl
-    | exact IsScalarTower.algebraMap_apply _ _ _ k
   show g (algebraMap K Ω k) = sg k
   rw [h1, g.commutes]
   exact φ.commutes k

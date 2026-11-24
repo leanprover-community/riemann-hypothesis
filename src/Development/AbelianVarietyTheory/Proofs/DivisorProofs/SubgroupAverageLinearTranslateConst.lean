@@ -1,26 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BernsteinUnitaryProductIrreducible
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StrongMultiplicityOne
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.IsTemperedGLOfIsUnitaryLSeg
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GaloisRepOfPolarizedCuspidal
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RadfordShufflePolynomialHolds
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.ClozelPurity
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.ClozelCohomologicalModel
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LocalLanglandsGL
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ChebotarevDegreeOneIffCheb
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.CuspidalMultiplicityOne
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HeckeLEntireAndNonzeroAtOne
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BorelCasselman
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.QuadraticClassFieldTheory
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsOrthonormalOfUnimodular
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AvgEqOfLeRightStabiliserStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AvgEqOfLeRightStabiliser
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -42,7 +62,7 @@ theorem avg_linear_translate_const : ∀ (H : Type) [Group H] (u v : H → ℂ) 
     simp only [Pi.add_apply]
     rw [hSu hk x, hSv hk x]
   refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [GlobalTheory.T.avg_eq_of_le_rightStabiliser H (u + v) S hSuv hSi, GlobalTheory.T.avg_eq_of_le_rightStabiliser H u S hSu hSi, GlobalTheory.T.avg_eq_of_le_rightStabiliser H v S hSv hSi,
+  · rw [_root_.GlobalTheory.BCT.avg_eq_of_le_rStab H (u + v) S hSuv hSi, _root_.GlobalTheory.BCT.avg_eq_of_le_rStab H u S hSu hSi, _root_.GlobalTheory.BCT.avg_eq_of_le_rStab H v S hSv hSi,
       ← mul_add]
     congr 1
     simp only [Pi.add_apply]
@@ -51,7 +71,7 @@ theorem avg_linear_translate_const : ∀ (H : Type) [Group H] (u v : H → ℂ) 
       intro k hk x
       simp only [Pi.smul_apply, smul_eq_mul]
       rw [hk x]
-    rw [GlobalTheory.T.avg_eq_of_le_rightStabiliser H (c • u) (rStab u) hc hu, GlobalTheory.T.avg_eq_of_le_rightStabiliser H u (rStab u) le_rfl hu]
+    rw [_root_.GlobalTheory.BCT.avg_eq_of_le_rStab H (c • u) (rStab u) hc hu, _root_.GlobalTheory.BCT.avg_eq_of_le_rStab H u (rStab u) le_rfl hu]
     simp only [Pi.smul_apply, smul_eq_mul]
     rw [← mul_finsum]
     ring
@@ -59,7 +79,7 @@ theorem avg_linear_translate_const : ∀ (H : Type) [Group H] (u v : H → ℂ) 
       intro k hk x
       simp only
       rw [← mul_assoc, hk (g * x)]
-    rw [GlobalTheory.T.avg_eq_of_le_rightStabiliser H _ (rStab u) ht hu, GlobalTheory.T.avg_eq_of_le_rightStabiliser H u (rStab u) le_rfl hu]
+    rw [_root_.GlobalTheory.BCT.avg_eq_of_le_rStab H _ (rStab u) ht hu, _root_.GlobalTheory.BCT.avg_eq_of_le_rStab H u (rStab u) le_rfl hu]
     congr 1
     have key : ∀ q : H ⧸ rStab u, u (g * q.out) = u (g • q).out := by
       intro q
@@ -74,7 +94,7 @@ theorem avg_linear_translate_const : ∀ (H : Type) [Group H] (u v : H → ℂ) 
   · have htop : (⊤ : Subgroup H) ≤ rStab (fun _ : H => c) := by
       intro k _ x
       rfl
-    rw [GlobalTheory.T.avg_eq_of_le_rightStabiliser H _ ⊤ htop (by simp)]
+    rw [_root_.GlobalTheory.BCT.avg_eq_of_le_rStab H _ ⊤ htop (by simp)]
     simp only [Subgroup.index_top, Nat.cast_one, inv_one, one_mul]
     rw [finsum_eq_single (fun _ => c) (1 : H ⧸ (⊤ : Subgroup H))]
     intro x hx

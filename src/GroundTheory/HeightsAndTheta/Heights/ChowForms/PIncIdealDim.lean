@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Imports
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsAlt
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -50,8 +52,8 @@ theorem IncIdealDim.proof (h₁ : IncidenceGeneric.Statement) (h₂ : GenericLin
       rw [← map_mul, mul_inv_cancel₀ hξj, map_one]
     have h2 : ψ (∑ m, X (i, m) * C (η m)) =
         -((∑ m, X (i, j.succAbove m) * C (ξ (j.succAbove m))) * C (ξ j)⁻¹) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [ψ, AlgHom.restrictScalars_apply, map_sum, map_mul, rename_X, rename_C, τ]
+
+      simp only [ψ, AlgHom.restrictScalars_apply, map_sum, map_mul, rename_X, rename_C, τ]
       rw [Finset.sum_mul, ← Finset.sum_neg_distrib]
       refine Finset.sum_congr rfl fun m _ => ?_
       rw [C_neg, C_mul]

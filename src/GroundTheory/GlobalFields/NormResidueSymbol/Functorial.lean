@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
+import GroundTheory.GlobalFields.NormResidueSymbol.AbstractUnique
 public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite
 public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialInfinite
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.UnitaryGroupStructuralFacts
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDefs
+import Mathlib.RingTheory.PiTensorProduct
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.UHMulInv
 
 @[expose] public section
@@ -79,11 +80,11 @@ private theorem hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
   rw [Matrix.mul_apply, Finset.sum_eq_single
     (⟨if i.val < r ∨ r + k < i.val then 2 * r + k - i.val else i.val, by split_ifs <;> omega⟩ :
       Fin (2 * r + k + 1))]
-  · simp only [Hpk, Matrix.one_apply, Fin.ext_iff, Fin.val_mk]
+  · simp only [Hpk, Matrix.one_apply, Fin.ext_iff]
     split_ifs <;> first | (norm_num; done) | omega
   · intro l _ hl
     rw [Ne, Fin.ext_iff] at hl
-    simp only [Hpk, Fin.ext_iff, Fin.val_mk] at hl ⊢
+    simp only [Hpk, Fin.ext_iff] at hl ⊢
     split_ifs at hl ⊢ <;> first | (simp; done) | omega
   · intro h
     exact absurd (Finset.mem_univ _) h

@@ -1,6 +1,56 @@
 module
 
 public import Formalism.FormalDegreeBessel.StatementWR
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.Deriv.Inv
 
 @[expose] public section
 
@@ -95,8 +145,7 @@ theorem Wc_comm {g : (Fin m → ℂ) → E} {x : Fin m → ℂ} (hg : ContDiffAt
       Wc u' w' s' (fderiv ℝ (fun y => Wc u w s (fderiv ℝ g y)) x) := by
   have hs := hg.isSymmSndFDerivAt two_le_smooth
   rw [fderiv_Wc hg, fderiv_Wc hg]
-  simp only [Wc_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.coe_smul', Pi.smul_apply, map_add, map_smul]
+  simp only [Wc_apply, ContinuousLinearMap.comp_apply]
   rw [hs u' u, hs u' w, hs w' u, hs w' w]
   module
 
@@ -198,11 +247,11 @@ theorem wirt_coef {k : Fin m} {x : Fin m → ℂ} (hx : x ∈ OmX m) (l : Fin m)
   by_cases hj : (j : ℕ) < 3 <;> by_cases hl : l = k
   · simp only [hl, hj, if_true, and_self, Pi.single_eq_same, smul_eq_mul]
     linear_combination (-(ck k j x) / 2) * Complex.I_sq
-  · simp [hj, hl, Pi.single_eq_of_ne (Ne.symm hl)]
+  · simp [hj, hl]
   · simp only [hl, hj, if_false, false_and, Pi.single_eq_same, smul_eq_mul, star_one,
       Complex.star_def, Complex.conj_I]
     linear_combination (ck k j x / 2) * Complex.I_sq
-  · simp [hj, hl, Pi.single_eq_of_ne (Ne.symm hl)]
+  · simp [hj, hl]
 
 theorem wirtBar_coef {k : Fin m} {x : Fin m → ℂ} (hx : x ∈ OmX m) (l : Fin m) (j : Fin 6) :
     wirtBar l (coef k j) x = if ¬ (j : ℕ) < 3 ∧ l = k then ck k j x else 0 := by
@@ -211,11 +260,11 @@ theorem wirtBar_coef {k : Fin m} {x : Fin m → ℂ} (hx : x ∈ OmX m) (l : Fin
   · simp only [hl, hj, if_true, not_true_eq_false, false_and, if_false, Pi.single_eq_same,
       smul_eq_mul]
     linear_combination (ck k j x / 2) * Complex.I_sq
-  · simp [hj, hl, Pi.single_eq_of_ne (Ne.symm hl)]
+  · simp [hj, hl]
   · simp only [hl, hj, if_false, not_false_eq_true, and_self, if_true, Pi.single_eq_same,
       smul_eq_mul, star_one, Complex.star_def, Complex.conj_I]
     linear_combination (-(ck k j x) / 2) * Complex.I_sq
-  · simp [hj, hl, Pi.single_eq_of_ne (Ne.symm hl)]
+  · simp [hj, hl]
 
 theorem contDiffAt_star_apply (k : Fin m) (x : Fin m → ℂ) :
     ContDiffAt ℝ ∞ (fun y : Fin m → ℂ => star (y k)) x := by

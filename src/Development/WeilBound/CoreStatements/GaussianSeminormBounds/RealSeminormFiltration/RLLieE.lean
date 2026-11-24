@@ -1,11 +1,60 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAdelicAddCharLocalComponentNeOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieB
-public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieD
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLFock
+public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLActs
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
+public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
+import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.EvIHalfTrace
+public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieD
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.EuclideanDist
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAddCharSymplecticLocalLatticeEqOne
 
 @[expose] public section
 
@@ -18,24 +67,15 @@ namespace PositivityTheory.RL.Up
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 
-theorem trace_emb (a : F) : Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (mixedEmbedding F a) =
-    (Algebra.trace ℚ F a : ℚ) := by
-  classical
-  rw [Algebra.trace_eq_matrix_trace (mixedEmbedding.latticeBasis F), Algebra.trace_eq_matrix_trace (integralBasis F), Matrix.trace,
-    Matrix.trace, Rat.cast_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Matrix.diag_apply, Matrix.diag_apply, Algebra.leftMulMatrix_eq_repr_mul, Algebra.leftMulMatrix_eq_repr_mul,
-    mixedEmbedding.latticeBasis_apply, ← map_mul, mixedEmbedding.latticeBasis_repr_apply]
-
 theorem trace_nondeg (l : κ → mixedEmbedding.mixedSpace F)
     (h : ∀ y, Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (l ⬝ᵥ y) = 0) : l = 0 := by
   funext i
   refine (mixedEmbedding.latticeBasis F).ext_elem fun j => ?_
   have := h (Pi.single i (mixedEmbedding F ((integralBasis F).traceDual j)))
   rw [dotProduct_single, ← (mixedEmbedding.latticeBasis F).sum_repr (l i)] at this
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_mul, smul_mul_assoc, map_sum, map_smul, mixedEmbedding.latticeBasis_apply, ← map_mul, trace_emb,
-    Module.Basis.trace_mul_traceDual] at this
+
+  simp only [Finset.sum_mul, smul_mul_assoc, map_sum, map_smul, mixedEmbedding.latticeBasis_apply, ← map_mul, _root_.GlobalTheory.LatVacArith.trace_mixedEmbedding,
+  Module.Basis.trace_mul_traceDual] at this
   simpa [apply_ite] using this
 
 
@@ -148,8 +188,8 @@ theorem eq_zero_of_vec {p : (κ → AF F) × (κ → AF F)} (hp : At (evI F) p) 
 theorem sympl_vec (w w') : sympl (c.vec w) (c.vec w') =
     -Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (evI F (w.1 ⬝ᵥ w'.2 - w'.1 ⬝ᵥ w.2)) := by
   rw [sympl, real_inner_comm, pPart_vec, qPart_vec, pPart_vec, qPart_vec, c.pair, c.pair, ← Fock.evIh_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, map_sub, map_sum, map_mul, Fock.evIh_apply]
+
+  simp only [dotProduct, map_sub, map_sum, map_mul, Fock.evIh_apply]
   ring
 
 theorem schr_P {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {w : (κ → AF F) × (κ → AF F)} (hw : At (evI F) w) (f : Sch l)
@@ -221,7 +261,7 @@ theorem schur2 {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (T : Module.End ℂ ((
         by_contra h
         push Not at h
         exact hi (af_ext fun v => (h v).trans (map_zero _).symm)
-      obtain ⟨y, hy⟩ := DFunLike.ne_iff.1 (GlobalTheory.PsiNontriv.psiV_ne_one ψ hψ v)
+      obtain ⟨y, hy⟩ := DFunLike.ne_iff.1 (Tw.PsiNontriv.psiV_ne_one ψ hψ v)
       refine ⟨_, ⟨⟨i, v, y / evalV F v (u i)⟩, rfl⟩, ?_⟩
       show GlobalTheory.VacAny.psiV ψ v _ ≠ 1
       rwa [mul_div_cancel₀ _ hv]

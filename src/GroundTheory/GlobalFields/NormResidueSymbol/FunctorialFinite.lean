@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialLocal
-public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.CompletionsOverBasisRepr
+public import GroundTheory.GlobalFields.NormResidueSymbol.RangeFiniteLocalNormLeKerLocalSymbol
+import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.CompletionsOverBasisRepr
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
+public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialLocal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

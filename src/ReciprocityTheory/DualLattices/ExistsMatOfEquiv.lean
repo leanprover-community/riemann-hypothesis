@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.DualLattices.MemDualLat
+public import Mathlib.LinearAlgebra.Matrix.ToLin
+public import Mathlib.RingTheory.Valuation.Integers
+public import ReciprocityTheory.DualLattices.TensorSpan
 public import ReciprocityTheory.DualLattices.MapTensorSpan
+public import ReciprocityTheory.DualLattices.MemDualLat
 
 @[expose] public section
 

@@ -1,16 +1,20 @@
 module
 
+public import Mathlib.Analysis.Analytic.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+import Mathlib.Order.CompletePartialOrder
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
+public import Mathlib.Analysis.Analytic.Composition
+public import Mathlib.Analysis.Analytic.Constructions
+public import Mathlib.Analysis.Calculus.FDeriv.Basic
+public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 
 @[expose] public section
 
 namespace ReciprocityTheory.ChartRestriction.G.Geo
 
-def OsgoodStatement : Prop :=
-  ∀ (e : ℕ) (U : Set (Fin e → ℂ)) (f : (Fin e → ℂ) → ℂ), IsOpen U → DifferentiableOn ℂ f U →
-    AnalyticOnNhd ℂ f U
-
-theorem osgood : OsgoodStatement := by
+theorem osgood : _root_.ReciprocityTheory.AnForm.Osgood.OsgoodStatement := by
   intro e U f hU hf z₀ hz₀
   obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 hU z₀ hz₀
   have hs : 0 < r / 2 := half_pos hr

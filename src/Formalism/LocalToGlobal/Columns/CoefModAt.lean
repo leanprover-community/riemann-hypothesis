@@ -1,5 +1,6 @@
 module
 
+public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP
 
 @[expose] public section

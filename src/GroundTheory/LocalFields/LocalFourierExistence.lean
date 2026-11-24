@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.LocalFourier
+public import GroundTheory.LocalFields.LocalFourierChar
+public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

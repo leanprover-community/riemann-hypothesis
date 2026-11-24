@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Nat.Notation
+public import Mathlib.Tactic.Attr.Core
+public import Mathlib.Tactic.ToAdditive
+public import Mathlib.Tactic.ToDual
 
 @[expose] public section
 

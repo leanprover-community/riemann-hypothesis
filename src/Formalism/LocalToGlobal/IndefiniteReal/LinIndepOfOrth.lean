@@ -1,5 +1,6 @@
 module
 
+public import Formalism.LocalToGlobal.IndefiniteReal.CompZeroOfOrth
 public import Formalism.LocalToGlobal.IndefiniteReal.IsotInLeOfIntw
 
 @[expose] public section
@@ -29,7 +30,7 @@ theorem cj_add (f f' : Formalism.AUTREP.GAf L n → ℂ) : cj (f + f') = cj f + 
 
 theorem cj_smul (a : ℂ) (f : Formalism.AUTREP.GAf L n → ℂ) : cj (a • f) = star a • cj f := by
   funext g
-  simp [cj, mul_comm]
+  simp [cj]
 
 def toU {U : Submodule ℂ (Formalism.AUTREP.GAf L n → ℂ)} (f : conjSub U) : U := ⟨cj f.1, f.2⟩
 

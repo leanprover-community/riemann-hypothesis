@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.UnitaryWeightExponentVectorSignatureWeightMuZero
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsRingHomOfIsLieComb
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FinrankEqOfExistsUniqueComb
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsEigenProjectorRingOfIntegers
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsOpenImmersionOfSurj
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsRingHomOfIsLieComb
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsCombAtIffCoordinateCombination
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsEigenvectorIffLieBasisCoordinates
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LieBasisCoordinatesBijectiveTangent
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NonemptyLift
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -57,8 +95,8 @@ theorem initSpan_frVec_top {S : Type} [CommRing S] [Algebra c.F S] (P : FrPt Xo 
     obtain ⟨a, ha⟩ := (P.basis σ w (htan cv w hw) ((heig cv w hw).2 ((vec_mem_eigLie M _ h σ _).1 hv'))).exists
     have h4 := (VecComb.isCombAt_iff_vec E H Dw l Xo c O β Y M S _ P.x Λ _ _ (P.u σ) a w hv).1 ha
     refine mem_initSpan.2 ⟨a, fun j hj => absurd j.2 (not_lt.2 hj), ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← (hco w (htan cv w hw)).unique h4 hw, map_sum]
+
+    rw [← (hco w (htan cv w hw)).unique h4 hw, map_sum]
     simp only [map_smul, LinearEquiv.apply_symm_apply]
 
 def ofFrames (hm : ∀ σ, Dw.mult σ ≤ 1) (F : Frames Y (𝟙 Y.X)) (hF : F.TopEigen) : FlagModel Y where
@@ -136,14 +174,14 @@ def pm (M : MChart Y) (σ : E →+* ℂ) : Matrix (Fin M.n) (Fin M.n) Γ(Y.X, M.
 theorem pm_map (M : MChart Y) (σ : E →+* ℂ) (x : Sp S ⟶ Y.X) (h : ⊤ ≤ x ⁻¹ᵁ M.U) :
     (pm p M σ).map (ev x M.U h) = ∑ k, str x (p.κ σ k) • (M.ρ (p.a σ k)).map (ev x M.U h) := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [pm, Matrix.map_apply, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul, map_sum, map_mul, ev_str]
+
+  simp only [pm, Matrix.map_apply, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul, map_sum, map_mul, ev_str]
 
 theorem vec_pm (M : MChart Y) (σ : E →+* ℂ) (x : Sp S ⟶ Y.X) (h : ⊤ ≤ x ⁻¹ᵁ M.U) (cv : Fin M.n → S) :
     vec M x h (((pm p M σ).map (ev x M.U h)).mulVec cv) =
       ∑ k, str x (p.κ σ k) • actR Y.t.act (p.a σ k) (vec M x h cv) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [pm_map, Matrix.sum_mulVec, map_sum]
+
+  rw [pm_map, Matrix.sum_mulVec, map_sum]
   simp only [Matrix.smul_mulVec, map_smul, actR_vec]
 
 theorem pm_gen [Algebra c.F S] (M : MChart Y) (σ : E →+* ℂ) {y : Sp S ⟶ Xo.XF c}

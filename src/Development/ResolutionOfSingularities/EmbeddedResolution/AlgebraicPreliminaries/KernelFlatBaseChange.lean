@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.IdealSheaf.Functorial
+public import Mathlib.AlgebraicGeometry.Morphisms.Flat
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.FlatImageOfOverFractionFieldOfValuationRing
 
 @[expose] public section
 
@@ -348,35 +392,7 @@ private theorem ker_app_eq_map_ker_of_isPullback_of_flat {Z X X' Z' : Scheme.{u}
 theorem ker_eq_comap_ker_of_isPullback_of_flat {Z X X' Z' : Scheme.{u}} {h : Z ⟶ X} {g : X' ⟶ X}
     {g' : Z' ⟶ Z} {h' : Z' ⟶ X'} (H : IsPullback g' h' h g)
     [QuasiCompact h] [QuasiCompact h'] [AlgebraicGeometry.Flat g] :
-    h'.ker = h.ker.comap g := by
-  classical
-  apply Scheme.IdealSheafData.ext
-  funext V
-  set s : Set Γ(X', (V : X'.Opens)) :=
-    {f | ∃ U : X.affineOpens, X'.basicOpen f ≤ g ⁻¹ᵁ (U : X.Opens)} with hsdef
-  have hs : ∀ f ∈ s, h'.ker.ideal (X'.affineBasicOpen f)
-      = (h.ker.comap g).ideal (X'.affineBasicOpen f) := by
-    rintro f ⟨U, hU⟩
-    have hV' : ((X'.affineBasicOpen f : X'.affineOpens) : X'.Opens) ≤ g ⁻¹ᵁ (U : X.Opens) := hU
-    rw [AlgebraicGeometry.Scheme.IdealSheafData.comap_ideal_eq_map_appLE h.ker g U
-      (X'.affineBasicOpen f) hV', Scheme.Hom.ker_apply, Scheme.Hom.ker_apply]
-    exact ker_app_eq_map_ker_of_isPullback_of_flat H U (X'.affineBasicOpen f) hV'
-  have hspan : Ideal.span s = ⊤ := by
-    refine span_eq_top_of_le_iSup_basicOpen V s ?_
-    intro x hx
-    obtain ⟨y, hy⟩ := X.affineCover.covers (g.base x)
-    have hUaff : IsAffineOpen (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange :=
-      isAffineOpen_opensRange _
-    have hgx : g.base x ∈ (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange := ⟨y, hy⟩
-    have hx2 : x ∈ ((V : X'.Opens) ⊓
-        g ⁻¹ᵁ (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange) := ⟨hx, hgx⟩
-    obtain ⟨f, hfle, hxf⟩ := V.2.exists_basicOpen_le
-      (V := (V : X'.Opens) ⊓ g ⁻¹ᵁ (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange)
-      ⟨x, hx2⟩ hx
-    have hfs : f ∈ s :=
-      ⟨⟨(X.affineCover.f (X.affineCover.idx (g.base x))).opensRange, hUaff⟩,
-        le_trans hfle inf_le_right⟩
-    exact TopologicalSpace.Opens.mem_iSup.mpr ⟨⟨f, hfs⟩, hxf⟩
-  exact ideal_eq_of_ideal_affineBasicOpen_eq _ _ V s hspan hs
+    h'.ker = h.ker.comap g :=
+  GlobalTheory.ker_eq_comap_of_flat h H.flip
 
 end FunctorialResolution.EmbeddedResolution

@@ -1,6 +1,60 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Measure.Hausdorff
+public import Mathlib.NumberTheory.Harmonic.Defs
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.Algebra.MvPolynomial.Division
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,7 +72,7 @@ variable {R : Type*} [CommSemiring R] {k n : ℕ}
 
 def groupWeight (k n : ℕ) : Fin k × Fin n → (Fin k → ℕ) := fun ij => Pi.single ij.1 1
 
-def IsMultiHomog (δ : ℕ) (f : MvPolynomial (Fin k × Fin n) R) : Prop :=
+protected def IsMultiHomog (δ : ℕ) (f : MvPolynomial (Fin k × Fin n) R) : Prop :=
   IsWeightedHomogeneous (groupWeight k n) f (fun _ => δ)
 
 def linForm (u : Fin n → R) : MvPolynomial (Fin n) R := ∑ j, C (u j) * X j
@@ -97,7 +151,7 @@ def IsChowForm (I : Ideal (MvPolynomial (Fin n) F)) (k : ℕ)
     (∀ u ∈ incidence I k, aeval u g = 0) ↔ f ∣ g
 
 def chowDegree (I : Ideal (MvPolynomial (Fin n) F)) (k : ℕ) : ℕ :=
-  sInf {δ | ∃ f, IsChowForm I k f ∧ IsMultiHomog δ f}
+  sInf {δ | ∃ f, IsChowForm I k f ∧ Heights.IsMultiHomog δ f}
 
 def IsChowFormCycle (Z : ProjCycle F n) (k : ℕ) (f : MvPolynomial (Fin k × Fin n) F) : Prop :=
   ∃ c : F, c ≠ 0 ∧ ∃ g : Ideal (MvPolynomial (Fin n) F) → MvPolynomial (Fin k × Fin n) F,
@@ -235,7 +289,7 @@ def ChowFormSwap.Statement : Prop :=
 def MahlerSection.Statement : Prop :=
   ∀ (n e δ : ℕ) (h : HermNorm n) (Z : ProjCycle ℂ n) (f : MvPolynomial (Fin (e + 1) × Fin n) ℂ)
     (u : Fin n → ℂ),
-    (∀ W ∈ Z.support, IsProjPrime W) → IsChowFormCycle Z (e + 1) f → IsMultiHomog δ f →
+    (∀ W ∈ Z.support, IsProjPrime W) → IsChowFormCycle Z (e + 1) f → Heights.IsMultiHomog δ f →
     (∀ W ∈ Z.support, linForm u ∉ W) →
       mahler h e (specFirst f u) =
         mahler h (e + 1) f + δ * (harmonic (n - 1) : ℝ) / 2 + cycleIntegral h Z e (fsLog h u)
@@ -253,7 +307,7 @@ def ChowHeightRecursion.Statement : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n e δ : ℕ) (H : ArchData K n)
     (I : Ideal (MvPolynomial (Fin n) K)) (f : MvPolynomial (Fin (e + 1) × Fin n) K)
     (u : Fin n → 𝓞 K),
-    IsProjPrime I → IsChowForm I (e + 1) f → IsMultiHomog δ f →
+    IsProjPrime I → IsChowForm I (e + 1) f → Heights.IsMultiHomog δ f →
     linForm (fun j => (u j : K)) ∉ I →
       chowHt H (e + 1) δ f =
         chowHt H e δ (specFirst f fun j => (u j : K)) +

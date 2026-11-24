@@ -1,11 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoitouTate.PtCompactDualMapEqZeroOfPtCompactToGlobalEqZero
-public import GroundTheory.ProfiniteCohomology.RealPlaces.DevissageNatural
 public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityDefs
-public import GroundTheory.ProfiniteCohomology.RealPlaces.NormHomotopy
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
+public import GroundTheory.ProfiniteCohomology.RealPlaces.DevissageDefs
+import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.H0IsoHomCohomologyClassZero
 
 @[expose] public section
 

@@ -1,7 +1,58 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
+public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 
@@ -14,8 +65,6 @@ noncomputable section
 
 variable {n : ℕ}
 
-theorem I_pow_three_eq_neg_I : I ^ 3 = -I := by rw [pow_succ, I_sq]; ring
-
 theorem flA_expand (w : V n) : w = ∑ j, w j • bas n j := by
   conv_lhs => rw [← (EuclideanSpace.basisFun (Fin n) ℂ).sum_repr w]
   simp [bas]
@@ -23,15 +72,15 @@ theorem flA_expand (w : V n) : w = ∑ j, w j • bas n j := by
 theorem flA_apply_sum (D : V n →L[ℂ] V n) (ξ : Fin n → ℂ) (a : Fin n) :
     D (WithLp.toLp 2 ξ) a = ∑ j, ξ j * D (bas n j) a := by
   conv_lhs => rw [flA_expand (WithLp.toLp 2 ξ)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, map_smul]
+
+  simp [map_sum, map_smul]
 
 theorem flA_decomp (D : V n →L[ℝ] ℂ) (w : V n) :
     D w = ∑ b, (w b * ((D (bas n b) - I * D (I • bas n b)) / 2) +
       conj (w b) * ((D (bas n b) + I * D (I • bas n b)) / 2)) := by
   conv_lhs => rw [flA_expand w]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
   have hcb : w b • bas n b = (w b).re • bas n b + (w b).im • (I • bas n b) := by
     conv_lhs => rw [← Complex.re_add_im (w b)]
@@ -56,7 +105,7 @@ theorem flA_wdb_comp {U : V n → ℂ} {G : V n → V n} {y : V n}
   simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I]
   rw [Finset.mul_sum, ← Finset.sum_add_distrib, Finset.sum_div]
   refine Finset.sum_congr rfl fun b _ => ?_
-  ring_nf; simp only [I_sq, I_pow_three_eq_neg_I]; ring_nf
+  ring_nf; simp only [I_sq, Complex.I_pow_three]; ring_nf
 
 theorem flA_wd_comp {U : V n → ℂ} {G : V n → V n} {y : V n}
     (hU : DifferentiableAt ℝ U (G y)) (hG : DifferentiableAt ℂ G y) (k : Fin n) :
@@ -68,7 +117,7 @@ theorem flA_wd_comp {U : V n → ℂ} {G : V n → V n} {y : V n}
   simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I]
   rw [Finset.mul_sum, ← Finset.sum_sub_distrib, Finset.sum_div]
   refine Finset.sum_congr rfl fun b _ => ?_
-  ring_nf; simp only [I_sq, I_pow_three_eq_neg_I]; ring_nf
+  ring_nf; simp only [I_sq, Complex.I_pow_three]; ring_nf
 
 theorem sum_four_comm_bis (T : Fin n → Fin n → Fin n → Fin n → ℂ) :
     ∑ a, ∑ b, ∑ j, ∑ k, T a b j k = ∑ j, ∑ k, ∑ b, ∑ a, T a b j k := by
@@ -116,8 +165,8 @@ theorem flA_leviV_comp {U : V n → ℂ} {G : V n → V n} {y : V n}
     simp
   simp only [leviV]
   simp_rw [hwd, flA_apply_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
   conv_rhs => rw [sum_four_comm_bis, Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ =>
     Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => ?_

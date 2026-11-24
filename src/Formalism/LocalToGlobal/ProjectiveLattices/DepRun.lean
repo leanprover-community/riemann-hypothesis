@@ -33,7 +33,6 @@ theorem satDir_of (hS : ChartSaturated Xo c) {T : CDVR} {io : c.F →+* T.Fr} {y
   have hwA : (Matrix.of w) * (Matrix.of A) = 1 := by
     first
       | exact mul_eq_one_comm.mp hAw
-      | exact (Matrix.mul_eq_one_comm_of_equiv (Equiv.refl _)).mp hAw
   refine ⟨fun i j => A j (emb i), fun i i' => ?_⟩
   letI := io.toAlgebra
   have e1 : ∀ j, C.ch.uvec ⟨τ, i'⟩ j * algebraMap T.V T.Fr (A j (emb i)) =
@@ -41,8 +40,8 @@ theorem satDir_of (hS : ChartSaturated Xo c) {T : CDVR} {io : c.F →+* T.Fr} {y
     intro j
     rw [huv, map_mul, hw]
   refine (Finset.sum_congr rfl (fun j _ => e1 j)).trans ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum]
+
+  rw [← map_sum]
   have h3 := congrFun (congrFun hwA (emb i')) (emb i)
   simp only [Matrix.mul_apply, Matrix.of_apply, Matrix.one_apply] at h3
   rw [h3]

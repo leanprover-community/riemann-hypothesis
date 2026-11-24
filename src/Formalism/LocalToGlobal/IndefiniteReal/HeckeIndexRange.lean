@@ -2,7 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.Bridge
 public import Formalism.LocalToGlobal.Divisibility.HeckeRI
-public import Formalism.LocalToGlobal.IndefiniteReal.BridgeTie
+public import Formalism.LocalToGlobal.Divisibility.DefGroup
 
 @[expose] public section
 

@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteMapOpen
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.Field
+public import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

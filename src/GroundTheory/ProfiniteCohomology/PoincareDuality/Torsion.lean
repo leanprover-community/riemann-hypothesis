@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.TorsionDualFinite
+public import GroundTheory.ProfiniteCohomology.TorsionDualDefs
 public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+public import GroundTheory.ProfiniteCohomology.TorsionDualFinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

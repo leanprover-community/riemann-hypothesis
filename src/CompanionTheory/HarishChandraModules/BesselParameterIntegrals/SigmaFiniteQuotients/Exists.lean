@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.MaximalCompactIsCompact
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.UnitaryWeylCompact
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SecondCountableQuotients.ModExists
+public import Mathlib.MeasureTheory.Group.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Measure.Haar.Basic
 
 @[expose] public section
 

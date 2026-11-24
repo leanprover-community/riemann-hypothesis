@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsSnapper
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TildeFiniteESt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistTildeSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TildeShiftSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PClaimVanish
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

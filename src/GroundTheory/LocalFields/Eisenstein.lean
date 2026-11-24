@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
 public import GroundTheory.LocalFields.Integers
-public import GroundTheory.LocalFields.IntermediateField
+public import Mathlib.RingTheory.Polynomial.Eisenstein.Basic
 
 @[expose] public section
 
@@ -21,19 +19,16 @@ variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 theorem eq_zero_of_addVal_lt_of_sum_eq_zero {ι : Type*} [DecidableEq ι] {s : Finset ι} {t : ι → R}
     (hs : ∑ i ∈ s, t i = 0) {j : ι} (hj : j ∈ s)
     (hlt : ∀ i ∈ s, i ≠ j → addVal R (t j) < addVal R (t i)) : t j = 0 := by
-  by_contra h0
-  have htop : addVal R (t j) ≠ ⊤ := fun h => h0 (addVal_eq_top_iff.mp h)
-  have hrest : addVal R (t j) < addVal R (∑ i ∈ s.erase j, t i) :=
-    (addVal R).map_lt_sum htop fun i hi => hlt i (Finset.mem_of_mem_erase hi)
-      (Finset.ne_of_mem_erase hi)
-  have := (addVal R).map_add_eq_of_lt_left hrest
-  rw [Finset.add_sum_erase s t hj, hs, AddValuation.map_zero] at this
-  exact htop this.symm
+  let v := (addVal R).toValuation
+  have h : v (∑ i ∈ s, t i) = v (t j) :=
+    v.map_sum_eq_of_lt hj fun i hi => hlt i (Finset.mem_sdiff.mp hi).1
+      (by simpa only [Finset.mem_singleton] using (Finset.mem_sdiff.mp hi).2)
+  rw [hs, map_zero] at h
+  exact addVal_eq_top_iff.mp h.symm
 
 theorem exists_addVal_eq_coe {x : R} (hx : x ≠ 0) : ∃ k : ℕ, addVal R x = k := by
-  obtain ⟨ϖ, hϖ⟩ := exists_irreducible R
-  obtain ⟨k, u, rfl⟩ := eq_unit_mul_pow_irreducible hx hϖ
-  exact ⟨k, addVal_def' u hϖ k⟩
+  obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.mp (fun h => hx (addVal_eq_top_iff.mp h))
+  exact ⟨k, hk.symm⟩
 
 end DVR
 

@@ -1,6 +1,14 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

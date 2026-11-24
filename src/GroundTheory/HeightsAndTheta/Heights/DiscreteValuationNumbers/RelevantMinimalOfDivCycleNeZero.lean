@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.CutIdentityRightSideCongrOfSubMem
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PRepresentative
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSupSpanMultiHomog
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMinimalPrimeMultiHomog
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PRepresentative
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSupSpanMultiHomog
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

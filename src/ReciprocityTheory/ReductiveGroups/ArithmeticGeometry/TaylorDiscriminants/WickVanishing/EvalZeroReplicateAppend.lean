@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CcTMulQ
+public import Mathlib.Algebra.GroupWithZero.Nat
+public import Mathlib.Algebra.Ring.Defs
+public import Mathlib.Data.Finsupp.Defs
 
 @[expose] public section
 

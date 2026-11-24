@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsHyp
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI
 
 @[expose] public section
 

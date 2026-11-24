@@ -1,8 +1,48 @@
 module
 
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatH
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.ImportsAlt
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReindexDblIncM
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsDualFamilySelfDualHermitianSpace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -14,10 +54,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 namespace PositivityTheory.ThKW
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-
-theorem sig_sig (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  exact τ.injective (by rw [h.2.2.2, h.2.2.2, star_star])
 
 theorem exists_nsmul_mem {n : ℕ} {L : Submodule (𝓞 E) (Fin n → E)} (h : L.IsFullLattice E) (v : Fin n → E) :
     ∃ N : ℕ, 0 < N ∧ N • v ∈ L := by
@@ -97,7 +133,7 @@ theorem latH_of {B : Base F E} (hcm : IsCMExt F E σ) {X : Spc F E n} {W : Spc F
     rw [e1, smul_smul, inv_neg, mul_neg, mul_inv_cancel₀ hξ, neg_one_smul]
   letI : StarRing E :=
     { star := σ
-      star_involutive := sig_sig hcm
+      star_involutive := _root_.GlobalTheory.AdelicU.cm_conj_conj hcm
       star_mul := fun a b => by show σ (a * b) = σ b * σ a; rw [map_mul, mul_comm]
       star_add := fun a b => map_add σ a b }
   obtain ⟨m, u, u', hu, hd⟩ := GlobalTheory.LatVacDual.exists_dual_family X.Jᵀ (fun i j => hX.herm i j)
@@ -144,19 +180,19 @@ theorem latH_of {B : Base F E} (hcm : IsCMExt F E σ) {X : Spc F E n} {W : Spc F
     obtain ⟨c, hc⟩ := Finset.dvd_prod_of_mem N (Finset.mem_univ i)
     rw [← map_nsmul, hc, mul_comm, mul_smul]
     exact hten _ (hu i).1 _ (nsmul_mem (hN' i) c)
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [trace_int_iff, key M', hRat_sum, Finset.mul_sum, map_sum]
-      refine IsIntegral.sum _ fun i _ => ?_
-      rw [hRat_ten X.J W.J _ ξ₀ e2, map_neg]
-      have := (hW.dual _).1 ((hΛ M).1 hM _ (hu i).1) _ ((hΛ M').1 hM' _ (hu i).2) 1
-      simpa using this.neg
+
+  · rw [trace_int_iff, key M', hRat_sum, Finset.mul_sum, map_sum]
+    refine IsIntegral.sum _ fun i _ => ?_
+    rw [hRat_ten X.J W.J _ ξ₀ e2, map_neg]
+    have := (hW.dual _).1 ((hΛ M).1 hM _ (hu i).1) _ ((hΛ M').1 hM' _ (hu i).2) 1
+    simpa using this.neg
   · let o' : 𝓞 E := RingOfIntegers.mapRingHom (σ : E →+* E) o
     have h1 := (trace_int_iff _).1 (H _ (hten t ht _ (W.L.smul_mem o' hx)))
     rw [hRat_ten X.J W.J _ ξ₀ e2, map_neg] at h1
     have h2 : form σ W.J (ctr σ X.J t M) (o' • x) = o * form σ W.J (ctr σ X.J t M) x := by
       have : ∀ i, σ ((o' • x) i) = o * σ (x i) := fun i => by
         show σ (σ o * x i) = _
-        rw [map_mul, sig_sig hcm]
+        rw [map_mul, _root_.GlobalTheory.AdelicU.cm_conj_conj hcm]
       simp only [form, this, dotProduct, Matrix.mulVec, Finset.mul_sum]
       exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
     rw [h2] at h1

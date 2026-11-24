@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
+public import Mathlib.RingTheory.Derivation.Lie
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 
 @[expose] public section
 

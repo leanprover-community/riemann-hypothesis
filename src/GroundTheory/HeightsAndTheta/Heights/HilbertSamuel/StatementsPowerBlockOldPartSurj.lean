@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockMeasure
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlock
 
 @[expose] public section
 

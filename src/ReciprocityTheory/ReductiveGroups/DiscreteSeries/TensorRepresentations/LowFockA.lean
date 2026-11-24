@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFPrimeA
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

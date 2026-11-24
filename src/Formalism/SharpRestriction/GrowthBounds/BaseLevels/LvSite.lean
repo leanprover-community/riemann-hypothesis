@@ -1,9 +1,45 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.BaseLevels.LevelsGEmpty
-public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ClsCharted1AtInTw
-public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.OneChartLev
-public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.BadQNotOver
+public import Formalism.SharpRestriction.GrowthBounds.ChartComparison
+public import Formalism.SharpRestriction.GrowthBounds.TwistedLevelAgreement.StepInTwK
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevelWithoutExtraPlaces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.OrbitOfPts
 
 @[expose] public section
 
@@ -47,7 +83,7 @@ def lbOf (Fo : FormsIn M (i + 1) hi) (β : Fo.Ch) : Submodule (𝓞 D.host.E) (F
   reL (rankN D (i + 1) hi).symm (Fo.K β).lev.Lb
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem sameU_of (Fo : FormsIn M (i + 1) hi) (β : Fo.Ch) : SameUlocJ hi (Fo.K β).lev (ulocOf Fo β) := fun v =>
   (Subgroup.map_comap_eq_self_of_surjective (f := (reGL (rankN D (i + 1) hi) _).toMonoidHom)
     (reGL (rankN D (i + 1) hi) _).surjective ((Fo.K β).lev.Uloc v)).symm
@@ -55,7 +91,7 @@ theorem sameU_of (Fo : FormsIn M (i + 1) hi) (β : Fo.Ch) : SameUlocJ hi (Fo.K �
 end Step
 
 
-set_option maxHeartbeats 1000000 in
+
 structure StepD {i : ℕ} {hi : i + 1 ≤ D.R.m} (Fo : FormsIn M (i + 1) hi) where
 
   B : GL (Fin (D.sp.X (i + 1)).rank) D.host.E
@@ -104,7 +140,7 @@ def lv : Levels Fl :=
     (fun i hi => (Z.Fo i hi).Ch) (fun i hi β => (Z.S i hi).chart β)
 
 
-set_option maxHeartbeats 4000000 in
+
 def loc (i : ℕ) (hi : i + 1 ≤ D.R.m) : LocIn X0 u w hg (Z.lv Fl ht) i (Z.Fo i hi).Ch :=
   haveI := Z.chFin
   haveI : ∀ β, Fintype ((Z.S i hi).chart β).comp := fun β => @Fintype.ofFinite _ ((Z.S i hi).fin β)

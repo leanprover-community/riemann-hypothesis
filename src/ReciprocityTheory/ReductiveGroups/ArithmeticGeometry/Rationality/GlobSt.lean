@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.QuotSt
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

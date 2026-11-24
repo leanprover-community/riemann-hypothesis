@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StokesObjects
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
+public import Mathlib.RingTheory.Nullstellensatz
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 
 @[expose] public section
 

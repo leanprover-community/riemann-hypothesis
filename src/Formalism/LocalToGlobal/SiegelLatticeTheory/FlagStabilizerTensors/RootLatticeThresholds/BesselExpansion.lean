@@ -2,6 +2,7 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.WeightedUniformRotatedOfExpansion
 public import Formalism.SharpRestriction.CuspSpanNormBounds.TheoremBConstants
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

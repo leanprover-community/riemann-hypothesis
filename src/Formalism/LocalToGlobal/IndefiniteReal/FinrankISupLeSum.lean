@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
 public import Formalism.LocalToGlobal.IndefiniteReal.CutTuples2
 public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

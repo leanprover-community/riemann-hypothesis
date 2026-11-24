@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalD
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementI
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.ConstantCoeffSig1S
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.WeierstrassReducedEquations
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -61,8 +63,8 @@ theorem fExp_sum {ι : Type} (s : Finset ι) (f : ι → PowerSeries K)
   | empty => rw [Finset.sum_empty, Finset.prod_empty, fExp_zero]
   | insert a s ha ih =>
     have hs : constantCoeff (∑ i ∈ s, f i) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]; exact Finset.sum_eq_zero fun i _ => hf i
+
+      rw [map_sum]; exact Finset.sum_eq_zero fun i _ => hf i
     rw [Finset.sum_insert ha, Finset.prod_insert ha, fExp_add (hf a) hs, ih]
 
 theorem second_derivative_formal_log {f g : PowerSeries K} (hf : constantCoeff f = 1) (h : HasSecondLogDeriv f g) :
@@ -159,8 +161,8 @@ theorem theta_zero_isogeny_holds : Th0Isogeny := by
     refine derivative.ext (derivative.ext ?_ ?_) ?_
     · show dz (dz _) = dz (dz _)
       have hsum : dz (dz (∑ Q, fLog (wpShift P (c Q)))) = ∑ Q, (2 * P - wp Q - wm Q) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [dz, dz, map_sum, map_sum]
+
+        rw [dz, dz, map_sum, map_sum]
         exact Finset.sum_congr rfl fun Q _ => second_derivative_formal_log (hZ1 _) (hF1 Q)
       have hsum2 : ∑ Q, (2 * P - wp Q - wm Q) =
           (n : PowerSeries K) * (2 * P) - ∑ Q, (wp Q + wm Q) := by
@@ -177,8 +179,8 @@ theorem theta_zero_isogeny_holds : Th0Isogeny := by
       linear_combination (-1 : PowerSeries K) * hF2 - hSC
     · show constantCoeff (dz _) = constantCoeff (dz _)
       have hsum : constantCoeff (dz (∑ Q, fLog (wpShift P (c Q)))) = 0 := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [dz, map_sum, map_sum]
+
+        rw [dz, map_sum, map_sum]
         exact Finset.sum_eq_zero fun Q _ => linear_coeff_log_shifted_weierstrass P _
       have hr : constantCoeff (rescale al (dz abelian₂)) = 0 := by
         rw [← coeff_zero_eq_constantCoeff_apply, coeff_rescale, coeff_zero_eq_constantCoeff_apply,
@@ -186,10 +188,10 @@ theorem theta_zero_isogeny_holds : Th0Isogeny := by
       rw [dz_add, dz_add, map_add (f := _), map_add (f := _), hsum, dz_rescale, map_mul, hr, dz_nsmul, dz_nsmul,
         map_nsmul, map_nsmul, linear_coeff_log_shifted_weierstrass, hL1c]
       simp
-    set_option synthInstance.maxHeartbeats 100000 in
-      · rw [map_add (f := _), map_add (f := _), hR0, map_nsmul, map_nsmul, hZl, hL0, map_sum,
-        Finset.sum_eq_zero fun Q _ => hZl _]
-        simp
+
+    · rw [map_add (f := _), map_add (f := _), hR0, map_nsmul, map_nsmul, hZl, hL0, map_sum,
+      Finset.sum_eq_zero fun Q _ => hZl _]
+      simp
   rw [Sq.rescale_fExp al hL0]
   have e1' : wpShift P e1 ^ n = fExp (n • fLog (wpShift P e1)) := by
     rw [fExp_nsmul (hZl _), fExp_fLog (hZ1 _)]
@@ -199,8 +201,8 @@ theorem theta_zero_isogeny_holds : Th0Isogeny := by
   have hn0 : constantCoeff (n • fLog (wpShift P e1)) = 0 := by rw [map_nsmul, hZl, smul_zero]
   have hn1 : constantCoeff ((2 * n) • abelian₂) = 0 := by rw [map_nsmul, hL0, smul_zero]
   have hn2 : constantCoeff (∑ Q, fLog (wpShift P (c Q))) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]; exact Finset.sum_eq_zero fun Q _ => hZl _
+
+    rw [map_sum]; exact Finset.sum_eq_zero fun Q _ => hZl _
   rw [e1', e2', ← fExp_nsmul hL0, ← fExp_add hR0 hn0, ← fExp_add hn1 hn2, key]
 
 end Formalism.L2.Th1.B.Iso

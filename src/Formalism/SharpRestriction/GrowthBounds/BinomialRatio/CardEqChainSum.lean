@@ -2,6 +2,50 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountDefs
 public import Formalism.SharpRestriction.GrowthBounds.PolBridge
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.GlOperatorPreservesMultidegree
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesStable
+import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -39,7 +83,6 @@ theorem anti_of_step {f : Fin r → ℤ} (h : ∀ (a : Fin r) (ha : a.1 + 1 < r)
       intro a ha hb
       exact le_trans (h ⟨a + d, by omega⟩ hb) (ih a ha (by omega))
   intro a b hab
-  have hab' : a.1 ≤ b.1 := hab
   have hb : b = ⟨a.1 + (b.1 - a.1), by have := b.2; omega⟩ := Fin.ext (by simp; omega)
   rw [hb]
   exact H _ a.1 a.2 _
@@ -172,8 +215,8 @@ theorem clear_den {σ : Type} (F : MvPolynomial σ (KK O)) :
   choose g hg using hc
   refine ⟨sd, ∑ m ∈ F.support, monomial m (g m), nonZeroDivisors.coe_ne_zero sd, ?_⟩
   conv_rhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.smul_sum]
+
+  rw [map_sum, Finset.smul_sum]
   refine Finset.sum_congr rfl fun m hm => ?_
   rw [map_monomial, smul_monomial, hg m hm]
 
@@ -184,8 +227,7 @@ section Zero
 variable {K : Type} [Field K] {N r : ℕ} [NeZero r]
 
 theorem chWt_zero (LL : ChainLetters N) (c : Fin r) (m : Fin N × Fin r →₀ ℕ) : chWt LL 0 c m = 0 := by
-  unfold chWt
-  simp
+  simp [chWt]
 
 theorem ycond_zero_top (LL : ChainLetters N) (M : WithTop ℤ) (h : (0 : WithTop ℤ) ≤ M) :
     YCond K (r := r) LL 0 M = ⊤ := by
@@ -420,8 +462,7 @@ theorem card_eq_chainSum (hSt : StWeylAt) (LL : ChainLetters N) {q : ℕ} (J : F
 theorem dimY_of {D : Formalism.BasicNotions.D7} (hA2 : Formalism.MainNotions.CovariantDegrees.HyperplaneRank D) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) (hSt : StWeylAt) :
     DimYAt := by
   intro p _ O _ _ _ S N r _ LL q J M hJ
-  have hp : p.Prime := Fact.out
-  have hKz : CharZero (KK O) := dvr_fraction_field_charZero S hp
+  have hKz : CharZero (KK O) := dvr_fraction_field_charZero S (Fact.out : p.Prime)
   obtain ⟨hli, hspan⟩ := hA2 O N r (⟨LL.vec⟩ : Letters (Fin N)) LL.deg
   have hli' : LinearIndependent O (psiR (r := r) O LL) := hli
   have hrange : Submodule.span O (Set.range (psiR (r := r) O LL)) = Pol O r LL.deg := by

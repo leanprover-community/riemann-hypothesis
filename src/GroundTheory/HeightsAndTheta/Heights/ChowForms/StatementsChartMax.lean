@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsBis
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Imports
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsIncidenceZeroLocus
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 
 @[expose] public section
 

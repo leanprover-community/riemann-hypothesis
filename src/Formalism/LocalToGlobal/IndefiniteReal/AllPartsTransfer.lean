@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.TransferStatement
 
 @[expose] public section

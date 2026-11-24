@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthCond
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthCondPf
 
 @[expose] public section

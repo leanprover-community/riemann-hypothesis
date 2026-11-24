@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.PfFrom
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.TensCompl
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.TestOfPre
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -131,13 +170,13 @@ theorem powers_abs {R : Type} [CommRing R] [IsDomain R] [ValuationRing R] (p : �
       (∀ (t : T) (y : pfOb (R := R) B hB ⟶ j.obj t), ∃! φ : t₀ ⟶ t, g ≫ j.map φ = y) ∧
       Almost (Ideal.span (Set.range r)) ((tensF p R N).map g).hom) :
     ∃ P : Powers j A, P.Good j (tensF p R N) (Ideal.span (Set.range r)) := by
-  choose K iK aK ι hι using fun n => Leaf.wp_ex A.obj B n
+  choose K iK aK ι hι using fun n => _root_.GlobalTheory.CompanionTheory.AlgCoproduct.exists_isWP A.obj B n
   let _ : ∀ n, Algebra R (K n) := fun n => ((algebraMap A.obj (K n)).comp (algebraMap R A.obj)).toAlgebra
   have _ : ∀ n, IsScalarTower R A.obj (K n) := fun n => IsScalarTower.of_algebraMap_eq fun _ => rfl
-  obtain ⟨h0, h1, δ, hδ⟩ := Leaf.wp_cof A.obj B K ι hι
-  have hrel := Leaf.wp_rel A.obj B K ι δ hι hδ
-  have hK : ∀ n, Pf p (K n) := fun n => Leaf.wp_pf p A.obj B (K n) n (ι n) (hι n) A.property hB
-  obtain ⟨hc1, hc2⟩ := Leaf.cech_tens p R r N A.obj B K ι δ hr hdiv A.property hB hC hι hδ
+  obtain ⟨h0, h1, δ, hδ⟩ := _root_.GlobalTheory.CompanionTheory.Coproduct.coproduct_low_and_coface A.obj B K ι hι
+  have hrel := _root_.GlobalTheory.CompanionTheory.WpCoface.coface_rel A.obj B K ι δ hι hδ
+  have hK : ∀ n, Pf p (K n) := fun n => _root_.GlobalTheory.CompanionTheory.PerfectRing.wp_pf p A.obj B (K n) n (ι n) (hι n) A.property hB
+  obtain ⟨hc1, hc2⟩ := _root_.CrystallineSemistableComparison.D.cech_tens p R r N A.obj B K ι δ hr hdiv A.property hB hC hι hδ
   refine ⟨mkPowers j A B hB K hK ι hι δ hδ hrel h0 h1, H1, fun s hs => ⟨?_, fun n => ?_⟩, H3⟩
   · refine injUpTo_span _ _ (fun s' hs' => ?_) s hs
     obtain ⟨k, rfl⟩ := hs'

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPolyKaehlerFree
+import Mathlib.RingTheory.Smooth.StandardSmoothCotangent
+public import Mathlib.Algebra.Module.Projective
+public import Mathlib.RingTheory.Kaehler.JacobiZariski
 
 @[expose] public section
 

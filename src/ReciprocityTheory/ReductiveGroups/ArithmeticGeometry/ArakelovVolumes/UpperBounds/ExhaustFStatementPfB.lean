@@ -1,5 +1,12 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SignTypeCancelIdentity
 
 @[expose] public section
@@ -219,7 +226,7 @@ theorem psgn_dmin_gt {x : Frame X.Ψ r} (τ : X.Ψ) (hdet : (mat x τ).det ≠ 0
       simp only [Sum.elim_inl, Sum.elim_inr, gr, Fin.coe_castLE, Fin.val_mk] at h1
       omega
     · have h1 := congrArg Fin.val hst
-      simp only [Sum.elim_inl, Sum.elim_inr, gr, Fin.coe_castLE, Fin.val_mk] at h1
+      simp only [Sum.elim_inr, gr, Fin.val_mk] at h1
       exact congrArg Sum.inr (Fin.ext (by omega))
   have hli := hli0.comp _ hg
   have hS : (-(D - α * B)).PosDef := by

@@ -1,5 +1,7 @@
 module
 
+public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthCond
+public import Formalism.LocalToGlobal.ProjectiveLattices.DepLaws
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthTie
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SaturationChartsHolds
 

@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KernelsMatrix
+public import Mathlib.Algebra.Module.ZLattice.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import Mathlib.Dynamics.Ergodic.Action.Regular
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
 public import ReciprocityTheory.ThetaQuasiPeriods.NormInvSmulMemSphere
 
 @[expose] public section

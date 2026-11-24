@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.ReductionMahler
-public import GroundTheory.GlobalFields.TateThesis.AdeleMeasurable
+public import GroundTheory.AutomorphicForms.ReductionHeight
+import GroundTheory.GlobalFields.Adele.Topology
 public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
-public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
+import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

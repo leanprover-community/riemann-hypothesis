@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.Interface
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.Module.ModuleTopology
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 @[expose] public section
 

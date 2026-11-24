@@ -1,25 +1,28 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Statements
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipotentCentral
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipotentHorizontal
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsTorusEmbedding
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsTorusModulus
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Assembly
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.OfUnfolding
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MainOf
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PTorusEmbedding
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PLineEigenvalue
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PTorusModulus
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PSemidirectHaar
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnitsInvHaar
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentCoordProper
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentHorizontal
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentCentral
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PRationalUnipotent
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipRadicalOfRational
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PComplementArchCocompact
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PImaginaryLatticeCocompact
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PLineEigenvalue
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PRadicalTorusModulus
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLevi
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentModulus
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PRationalUnipotent
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PSemidirectHaar
+import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLevi
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PTorusEmbedding
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PTorusModulus
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipRadicalOfRational
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentCentral
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentCoordProper
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentHorizontal
+import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentModulus
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnitsInvHaar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

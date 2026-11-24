@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootGridLower
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Algebra.Field.GeomSum
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.Analysis.Normed.Ring.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section
 

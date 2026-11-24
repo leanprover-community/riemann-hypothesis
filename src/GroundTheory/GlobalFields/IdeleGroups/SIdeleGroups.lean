@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
+public import Mathlib.RingTheory.DedekindDomain.SInteger
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

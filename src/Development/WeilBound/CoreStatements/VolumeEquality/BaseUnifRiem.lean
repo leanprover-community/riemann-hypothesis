@@ -1,6 +1,50 @@
 module
 
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsEigenComponentPolynomial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply
 
 @[expose] public section
 
@@ -44,9 +88,9 @@ theorem span_top (R : RiemLat E g Λ) : Submodule.span ℝ (Set.range R.P) = ⊤
     refine Fintype.linearIndependent_iff.2 fun r hr l => ?_
     obtain ⟨y, hy⟩ := R.unimod.2 (b.coord l)
     have h := congrArg (imB R.Hm (R.P y)) hr
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, map_zero, imB_P, hy, Module.Basis.coord_apply, Module.Basis.repr_self,
-      smul_eq_mul] at h
+
+    simp only [map_sum, map_smul, map_zero, imB_P, hy, Module.Basis.coord_apply, Module.Basis.repr_self,
+    smul_eq_mul] at h
     rw [Finset.sum_eq_single l (fun k _ hk => by simp [Finsupp.single_apply, hk]) (by simp)] at h
     simpa using h
   have hcard : Fintype.card (Fin (2 * g)) = Module.finrank ℝ (Fin g → ℂ) := by
@@ -64,8 +108,8 @@ theorem exists_decomp {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : 𝓞 E �
   choose cs hcs using fun s => exists_coeff (E := E) s
   have hsum : ∑ s, combo (cs s) = 1 := by
     apply evalHom_injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one]
+
+    rw [map_sum, map_one]
     simp only [hcs]
     funext s'
     simp [Finset.sum_apply, Pi.single_apply]
@@ -84,8 +128,8 @@ theorem exists_decomp {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : 𝓞 E �
     rw [map_mul, map_smul, actHom_tmul, one_smul] at h
     exact LinearMap.congr_fun h x
   · have h := congrArg (actHom ρ) hsum
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one] at h
+
+    rw [map_sum, map_one] at h
     have h2 := LinearMap.congr_fun h x
     simpa [LinearMap.sum_apply] using h2
 
@@ -99,8 +143,8 @@ theorem exists_proj {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : 𝓞 E →+
     rw [h₁]
     simp [LinearMap.sum_apply]
   refine ⟨_, e, fun x => e x ▸ h₂ x, fun x hx => e x ▸ h₃ x hx, fun a x => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← e, ← e, ← mem_eigSp_iff.1 (h₂ x) a, h₁, h₁, map_sum]
+
+  rw [← e, ← e, ← mem_eigSp_iff.1 (h₂ x) a, h₁, h₁, map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [map_smul, ← Module.End.mul_apply, ← map_mul, mul_comm, map_mul, Module.End.mul_apply]
 
@@ -112,8 +156,8 @@ theorem sum_eigComp {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : 𝓞 E →+
   conv_rhs => rw [← hs]
   refine Finset.sum_congr rfl fun s _ => ?_
   obtain ⟨p, h₁, -, h₃, h₄⟩ := exists_proj ρ (s.comp (algebraMap (𝓞 E) E))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h₁, ← hs, map_sum, Finset.sum_eq_single s (fun s' _ hne => ?_) (by simp), h₃ _ (hy s)]
+
+  rw [h₁, ← hs, map_sum, Finset.sum_eq_single s (fun s' _ hne => ?_) (by simp), h₃ _ (hy s)]
   by_contra h0
   refine hne (comp_injective (RingHom.ext fun a => ?_))
   have e := h₄ a (y s')
@@ -123,9 +167,9 @@ theorem sum_eigComp {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : 𝓞 E →+
 theorem adj_herm (R : RiemLat E g Λ) (a a' : 𝓞 E) (ha : (a' : E) = IsCMField.complexConj E (a : E)) (z w : Fin g → ℂ) :
     R.B a z ⬝ᵥ R.Hm *ᵥ star w = z ⬝ᵥ R.Hm *ᵥ star (R.B a' w) := by
   have h : (imB R.Hm).comp ((R.B a).restrictScalars ℝ) = (imB R.Hm).compl₂ ((R.B a').restrictScalars ℝ) := by
-    refine LinearMap.ext_on (span_top R) ?_
+    refine LinearMap.ext_on (_root_.LevelTowerAlt.span_top R) ?_
     rintro _ ⟨x, rfl⟩
-    refine LinearMap.ext_on (span_top R) ?_
+    refine LinearMap.ext_on (_root_.LevelTowerAlt.span_top R) ?_
     rintro _ ⟨y, rfl⟩
     show imB R.Hm (R.B a (R.P x)) (R.P y) = imB R.Hm (R.P x) (R.B a' (R.P y))
     rw [← R.act, ← R.act, imB_P, imB_P, R.adj a a' ha]

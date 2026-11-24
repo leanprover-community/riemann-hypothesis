@@ -1,7 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementF
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.MatrixFormDiagBlocksBlockEmbed
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementB
+import Mathlib.Tactic.Lemma
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SqrtInUnramifiedCompletion
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.MatrixFormDiagBlocksBlockEmbed
 
 @[expose] public section
 
@@ -79,8 +82,8 @@ lemma lin_apply {n m : Type} [Fintype n] [DecidableEq n] (T : (n → ℂ) →ₗ
   conv_lhs => rw [show y = ∑ i', y i' • Pi.single i' (1 : ℂ) by
     ext j
     simp [Finset.sum_apply, Pi.single_apply]]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_apply]
+
+  rw [map_sum, Finset.sum_apply]
   simp only [map_smul, Pi.smul_apply, smul_eq_mul]
   exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
 
@@ -89,8 +92,8 @@ lemma gamma_inj {K : Type} [Field K] (ι : ℂ ≃+* K) {Wt : Type} [Fintype Wt]
     (h : ∀ w', ∑ w, ι (g.symm (Pi.single w 1) w') * u w = 0) (w : Wt) : u w = 0 := by
   have h' : ∀ w', ∑ w, g.symm (Pi.single w 1) w' * ι.symm (u w) = 0 := fun w' => by
     have h1 := congrArg ι.symm (h w')
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum, map_mul] using h1
+
+    simpa [map_sum, map_mul] using h1
   have hz : g.symm (fun w => ι.symm (u w)) = 0 := by
     ext w'
     rw [show g.symm (fun w => ι.symm (u w)) w' =
@@ -109,8 +112,8 @@ lemma iota_hOK {K : Type} [Field K] (ι : ℂ ≃+* K) (L : PeriodPair) {n : Typ
       ∑ i, x i * (((Formalism.L2.Th1.F.area L : ℝ) : ℂ) * ∑ i', h i i' * conj (y i')) := by
     simp only [matH, LinearMap.mk₂'ₛₗ_apply, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, map_sum]
+
+  rw [e, map_sum]
   simp only [map_mul]
 
 lemma first_position {K : Type} [Field K] (ι : ℂ ≃+* K) (L : PeriodPair) {n : Type} [Fintype n] (h : Matrix n n ℂ)
@@ -124,8 +127,8 @@ lemma mapVec_comb {K : Type} [Field K] (ι : ℂ ≃+* K) {n : Type} [Fintype n]
     (T : (n → ℂ) →ₗ[ℂ] (n → ℂ)) {J : Type} [Fintype J] (v : J → n → ℂ) (X : J → K) (i : n) :
     mapVec (ι : ℂ →+* K) T (fun i' => ∑ j, ι (v j i') * X j) i = ∑ j, ι (T (v j) i) * X j := by
   have hv : ∀ j, ι (T (v j) i) = ∑ i', ι (T (Pi.single i' 1) i) * ι (v j i') := fun j => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [lin_apply T (v j) i, map_sum]
+
+    rw [lin_apply T (v j) i, map_sum]
     simp only [map_mul]
   unfold mapVec
   simp only [hv, RingEquiv.coe_toRingHom, Finset.mul_sum, Finset.sum_mul]
@@ -156,7 +159,7 @@ theorem GramBasic_of (hG : GramTransfer) (hI : IotaOK) : GramBasic := by
   have hS : ∀ B1 B2 : J → ℂ_[p], ∑ x, ∑ y, ext B1 x * W x y * ext B2 y =
       ∑ j, ∑ k, B1 j * ι (hOK (cmL a b d ha hd lam hlam) h (v j) (v k)) * B2 k := by
     intro B1 B2
-    simp [ext, W, Fintype.sum_prod_type, Fin.sum_univ_four]
+    simp [ext, W, Fintype.sum_prod_type]
   have hbb := fun B1 B2 => bb_eq W q0 D (ι (Complex.I * ((Real.sqrt d : ℝ) : ℂ))) hQ (ext B1) (ext B2)
   have hPn : ∀ B1 B2 : J → ℂ_[p], (∀ j, ‖B1 j‖ ≤ 1) → (∀ j, ‖B2 j‖ ≤ 1) →
       ‖∑ w, (∑ x, ext B1 x * D w x) * (∑ y, ext B2 y * D w y)‖ ≤ 1 := fun B1 B2 h1 h2 =>

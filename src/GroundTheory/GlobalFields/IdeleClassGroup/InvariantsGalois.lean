@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleClassGroup.Invariants
 public import GroundTheory.LocalFields.CompleteTrivial
+public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
+import GroundTheory.GlobalFields.CyclotomicCharacters.Character
 
 @[expose] public section
 

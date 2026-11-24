@@ -1,8 +1,48 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.KatoTwistedClassNormCompatibleCyclotomic
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
+public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.KmapComp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.SCls
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -323,8 +363,8 @@ theorem UpperTheory.V.Z.Kato.Nb.sXiDist :
   obtain ⟨-, -, -, -, a5, -⟩ := sApi Ω ε X l n
   obtain ⟨c1, -, -, c4, -⟩ := sCls Ω ε X l n
   simp only [Xi]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, sub_eq_zero, map_sum, map_sum, eq_comm]
+
+  rw [map_sub, sub_eq_zero, map_sum, map_sum, eq_comm]
   refine Eq.trans ?_ (Finset.sum_fiberwise_of_maps_to (g := red h)
     (t := Finset.univ.filter (fun m : GL (Fin 2) (ZMod (N * M₀)) =>
       Cnd l N g (m : Matrix (Fin 2) (Fin 2) (ZMod (N * M₀))) ∧ P (Matrix.GeneralLinearGroup.det m))) ?_ _)
@@ -343,9 +383,9 @@ theorem UpperTheory.V.Z.Kato.Nb.sXiDist :
       (y ᵥ* cD N (l * M₀) (m' : Matrix (Fin 2) (Fin 2) (ZMod (N * (l * M₀))))) : X.K))) (wt_red dl h m' w u)
     rewrite [map_sub, sub_eq_zero, (Finset.mem_filter.mp hm').2] at e
     exact e)) ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, ← Finset.smul_sum, sum_fibre cop hl h x y hB.2 m hm10 (fun x' y' => clsK X l n (slD X N (a x' y' : X.K))),
-    map_smul, map_smul]
+
+  rw [← map_sum, ← Finset.smul_sum, sum_fibre cop hl h x y hB.2 m hm10 (fun x' y' => clsK X l n (slD X N (a x' y' : X.K))),
+  map_smul, map_smul]
   congr 1
   rw [← sub_eq_zero, ← map_sub]
   refine c4 _ _ _ _ (rep_prod X l n _ _ _ fun x' => rep_prod X l n _ _ _ fun y' =>

@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.TorsionDualDefs
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+public import Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Category.Grp.Injective
+public import Mathlib.Algebra.Module.CharacterModule
 
 @[expose] public section
 

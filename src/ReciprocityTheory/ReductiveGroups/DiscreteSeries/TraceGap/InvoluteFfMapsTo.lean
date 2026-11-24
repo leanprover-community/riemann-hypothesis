@@ -1,6 +1,13 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AlgebraMapInvFf
+public import Mathlib.LinearAlgebra.Trace
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.FockWeights
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFockB
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.IsPhysSet
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.FockTA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFockA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AdMatConjTranspose
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AdPhysDiagSingle
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.MemHighestWeightSubIff
 
 @[expose] public section

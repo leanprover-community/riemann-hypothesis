@@ -1,7 +1,56 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAGroupAdjCut
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaCutoffLimit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnBetaFrame
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnFibMem
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnTrSmooth
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointLeibnizExpansion
 
 @[expose] public section
 
@@ -15,11 +64,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.GA
 open Formalism.FourierDecayAlt.P.CutMP Formalism.FourierDecayAlt.P.CutMP.JA Formalism.FourierDecayAlt.P.CutMP.En
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-theorem hsVec_zero' {V W : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [NormedAddCommGroup W]
-    [InnerProductSpace ℂ W] [FiniteDimensional ℂ W] : B.hsVec (0 : W →L[ℂ] V) = 0 := by
-  change Formalism.FourierDecayAlt.P.JFxI.hsVecL 0 = 0
-  exact map_zero _
 
 theorem group_action_pairing_holds : GAPair := by
   intro Cc E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ hB v e hFr X Y F F' hX hY hF hF' hae
@@ -172,7 +216,7 @@ theorem group_action_pairing_holds : GAPair := by
     have hX0 : X (B.gq Db x) = 0 := by
       by_contra h
       exact hx.2 ⟨hx.1, h⟩
-    rw [hX0, hsVec_zero', inner_zero_right, zero_mul, mul_zero]
+    rw [hX0, _root_.Formalism.FourierDecayAlt.P.JCx1.needs.hsVec_zero, inner_zero_right, zero_mul, mul_zero]
 
   unfold MA.ipA
   simp_rw [hR]
@@ -189,7 +233,7 @@ theorem group_action_pairing_holds : GAPair := by
         exact hxO ⟨hxQ, h⟩
       have hJ0 : B.JF Db F (B.gq Db x) = 0 := by rw [← (hxe hxQ).1]; exact hX0
       change ((W x : ℝ) : ℂ) * inner ℂ (B.hsVec (B.JF Db F' (B.gq Db x))) (B.hsVec (B.JF Db F (B.gq Db x))) = 0
-      rw [hJ0, hsVec_zero', inner_zero_right, mul_zero]
+      rw [hJ0, _root_.Formalism.FourierDecayAlt.P.JCx1.needs.hsVec_zero, inner_zero_right, mul_zero]
     · rcases hx with hx | hx
       · exfalso
         apply hxQ

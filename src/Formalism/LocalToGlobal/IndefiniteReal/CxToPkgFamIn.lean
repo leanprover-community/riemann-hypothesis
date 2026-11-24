@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
-public import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
 public import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement
+public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
 
 @[expose] public section
 

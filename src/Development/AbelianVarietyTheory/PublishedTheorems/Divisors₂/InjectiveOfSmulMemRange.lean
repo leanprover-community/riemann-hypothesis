@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingletonConstGenInjective
 public import Development.AbelianVarietyTheory.Definitions.Divisors.XiMulNu
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.DualLattices.AinfFacts
-public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ValuationCoeEqNorm
 
 @[expose] public section
 
@@ -129,8 +169,8 @@ theorem injective_of_smul_mem_range [IsDomain A] [Module.Free A M] [Module.Finit
   let P : Matrix _ _ A := Matrix.of fun i j => b.repr (φ (b j)) i
   have key : ∀ m i, b.repr (φ m) i = (P.mulVec fun j => σ (b.repr m j)) i := fun m i => by
     have h1 : φ m = ∑ j, σ (b.repr m j) • φ (b j) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        conv_lhs => rw [← b.sum_repr m, map_sum]
+
+      conv_lhs => rw [← b.sum_repr m, map_sum]
       simp only [map_smulₛₗ]
     rw [h1]
     simp [P, Matrix.mulVec, dotProduct, mul_comm]
@@ -167,8 +207,8 @@ theorem free_of_reduction [Nontrivial A] [Nontrivial O] [Module.Free A M] [Modul
   have sp : ⊤ ≤ Submodule.span O (Set.range fun i => r (b i)) := by
     intro y _
     obtain ⟨m, rfl⟩ := hr y
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← b.sum_repr m, map_sum]
+
+    rw [← b.sum_repr m, map_sum]
     exact Submodule.sum_mem _ fun i _ => by
       rw [map_smulₛₗ]; exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
   let c := Module.Basis.mk li sp

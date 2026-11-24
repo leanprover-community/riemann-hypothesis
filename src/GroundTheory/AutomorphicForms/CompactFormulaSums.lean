@@ -1,14 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.QuotientKernel
 public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
-public import GroundTheory.AutomorphicForms.TraceClass
-public import GroundTheory.AutomorphicForms.UnitaryRepresentations
-public import GroundTheory.AutomorphicForms.UnitaryRepresentations.IsInvariantIffCommuteStarProjection
-public import GroundTheory.AutomorphicForms.TraceFormulaGeometric
-public import GroundTheory.AutomorphicForms.TraceFormulaWeil
-public import GroundTheory.AutomorphicForms.TraceFormulaConvolution
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.AutomorphicForms.QuotientMeasure
 
 @[expose] public section
 

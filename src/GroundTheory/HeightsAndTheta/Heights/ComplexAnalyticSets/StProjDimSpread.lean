@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.CategoryTheory.Abelian.Projective.Dimension
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+public import Mathlib.RingTheory.Noetherian.Defs
 
 @[expose] public section
 

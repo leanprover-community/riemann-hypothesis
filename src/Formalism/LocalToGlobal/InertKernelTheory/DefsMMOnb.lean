@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsMM
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
+import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 
 @[expose] public section
 

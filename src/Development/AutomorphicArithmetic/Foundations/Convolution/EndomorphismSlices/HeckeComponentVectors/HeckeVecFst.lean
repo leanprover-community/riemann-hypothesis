@@ -1,7 +1,48 @@
 module
 
-public import Development.AutomorphicArithmetic.Foundations.Convolution.EndomorphismSlices.SphComm2
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.FmTools
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CuspidalSupport.HeckeLocalBlock
+public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.ReadSplit
+public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcDefs
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GlobalTraceComparison.BindPow
+import Development.AutomorphicArithmetic.Foundations.Convolution.EndomorphismSlices.TwTrSum
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.PowerBoundFastDecay
 
 @[expose] public section
 
@@ -14,7 +55,7 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison
 open UpperTheory.V.Af.Bc (cPl)
 open scoped Classical
 
-set_option synthInstance.maxHeartbeats 200000
+
 
 open UpperTheory.Zero.ConvolutionTheory.EB PositivityTheory.Rg.BcB.F.RS
 
@@ -134,9 +175,6 @@ private theorem tj_right {E : Type} [Field E] [NumberField E] (w : Pl E) (n : �
   have := (Tj_mem_hecke (n := n) hϖ i).1 1 ⟨k, hk⟩ g
   simpa using this
 
-private theorem sat_zero (q n : ℕ) (B : Multiset ℂˣ) : satEig q n B 0 = 1 := by
-  simp [satEig, Multiset.esymm]
-
 theorem UpperTheory.Zero.ConvolutionTheory.EB.sat2Slice :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (w : Pl E) (G : H E a b → ℂ) (B₁ B₂ : Multiset ℂˣ), IsSat2 w (pairRt a b w) G B₁ B₂ →
     (∀ (φ : Sm E a) m₂, (φ.1 = fun x => G (x, m₂)) → φ ≠ 0 → IsSatVecGL w (UpperTheory.V.Cj.S.fL a w) φ B₁) ∧
@@ -152,7 +190,7 @@ theorem UpperTheory.Zero.ConvolutionTheory.EB.sat2Slice :
       · exact GlobalTheory.LGrp.mem_fixed.1 hfix _ (Subgroup.mem_prod.2 ⟨hk, one_mem _⟩)
       · have h1 := hT ϖ hϖ i hi 0 (Nat.zero_le _)
         rw [heckeVec_fst _ _ _ hfix _ _ (tj_right w a hϖ i) (tj_zero_not w b ϖ) (tj_zero_mem w b ϖ),
-          sat_zero, mul_one] at h1
+          _root_.GlobalTheory.LFun.ConjPlace.satEig_zero, mul_one] at h1
         exact h1
     let L : (H E a b → ℂ) →ₗ[ℂ] (GA E a → ℂ) :=
       { toFun := fun F x => F (x, m₂), map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
@@ -171,7 +209,7 @@ theorem UpperTheory.Zero.ConvolutionTheory.EB.sat2Slice :
       · exact GlobalTheory.LGrp.mem_fixed.1 hfix _ (Subgroup.mem_prod.2 ⟨one_mem _, hk⟩)
       · have h1 := hT ϖ hϖ 0 (Nat.zero_le _) i hi
         rw [heckeVec_snd _ _ _ hfix _ _ (tj_right w b hϖ i) (tj_zero_not w a ϖ) (tj_zero_mem w a ϖ),
-          sat_zero, one_mul] at h1
+          _root_.GlobalTheory.LFun.ConjPlace.satEig_zero, one_mul] at h1
         exact h1
     let L : (H E a b → ℂ) →ₗ[ℂ] (GA E b → ℂ) :=
       { toFun := fun F x => F (m₁, x), map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }

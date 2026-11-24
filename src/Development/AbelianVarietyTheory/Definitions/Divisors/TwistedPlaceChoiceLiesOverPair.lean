@@ -1,26 +1,47 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.UnitaryNorms.CharGal
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.FunctionalLowerBoundOfConditionsNumeric
 public import Development.AbelianVarietyTheory.Definitions.Divisors.BasePlaceNotMemChiGridBadPlaces
-public import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyGridDataIff
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilOver
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotTeichTrivOfIsDelta
-public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Formalism.LocalToGlobal.HermitianColumns.SymAll
-public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
-public import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
-public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DisjointExceptional
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIffHostBound
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.GoodPairSystems
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatLatSmulLeOfIsIntegral
+public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.TotallyPositiveExponents
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraicHeckeCharValuesInNumberField
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGaloisGe
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmEmbeddingProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -191,7 +212,7 @@ theorem exists_fieldHas (G : GridData Lc sc) :
   have h1 : ∀ a : Fin D.R.m, ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧
       (G.ch.chiH (a.1 + 1)).ValuesIn 0 M.val.toRingHom := fun a => by
     obtain ⟨n, hn, hi⟩ := lamOf_hasInfQ G a
-    have := GlobalTheory.T.algebraicHeckeChar_values_in_numberField D.host.F D.host.E c (D.R.Psi) (embPsi D.host) hcm _ n 0 hi fun g => by
+    have := _root_.GlobalTheory.Mem.ValAlg.values_in_numberField D.host.F D.host.E c (D.R.Psi) (embPsi D.host) hcm _ n 0 hi fun g => by
       have h3 : (n g : ℚ) = 2 * ((lamOf G).c a g : ℚ) := hn g
       have h2 : n g = 2 * (lamOf G).c a g := by exact_mod_cast h3
       exact ⟨(lamOf G).c a g, by rw [h2]; ring⟩

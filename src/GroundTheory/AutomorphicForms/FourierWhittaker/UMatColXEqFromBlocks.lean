@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.FourierWhittaker.IsAddFundamentalDomainImageOfMapVecLattice
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Lean.Elab.MutualDef
+public import Mathlib.LinearAlgebra.Matrix.Block
 
 @[expose] public section
 
@@ -208,13 +254,13 @@ theorem blockMat_blockMat {k : ℕ} (hk : k ≤ j) (hj : j ≤ n) (γ : Matrix (
     blockMat hj (blockMat hk γ) = blockMat (hk.trans hj) γ := by
   ext a b
   simp only [blockMat_apply]
-  split_ifs with h1 h2 h3 h4 h5 h6 <;> first | rfl | omega | simp_all [Fin.ext_iff] | (exfalso; omega)
+  split_ifs with h1 h2 h3 h4 h5 h6 <;> first | rfl | omega | simp_all [Fin.ext_iff]
 
 theorem uMat_colX_eq_blockMat {i : ℕ} (hi : i < j) (hj : j ≤ n) (ξ : Fin i → R) :
     uMat (colX (n := n) i ξ) = blockMat hj (uMat (colX (n := j) i ξ)) := by
   ext a b
   simp only [blockMat_apply, uMat_apply, colX_apply]
-  split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | (simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | simp_all [Fin.ext_iff])
+  split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega))
 
 def colBlock {j m : ℕ} (x : Fin j → R) : Matrix (Fin j) (Fin m) R :=
   Matrix.of fun i c => if c.val = 0 then x i else 0
@@ -229,18 +275,18 @@ theorem uMat_colX_eq_fromBlocks (hj : j < n) (x : Fin j → R) :
     by_cases hb : b.val < j
     · rw [splitIdx_of_lt hj.le b hb, Matrix.fromBlocks_apply₁₁, Matrix.one_apply]
       simp only [colX_apply]
-      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | (simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | simp_all [Fin.ext_iff])
+      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega))
     · rw [splitIdx_of_ge hj.le b (not_lt.1 hb), Matrix.fromBlocks_apply₁₂]
       simp only [colBlock, Matrix.of_apply, colX_apply]
-      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | (simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | simp_all [Fin.ext_iff])
+      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega))
   · rw [splitIdx_of_ge hj.le a (not_lt.1 ha)]
     by_cases hb : b.val < j
     · rw [splitIdx_of_lt hj.le b hb, Matrix.fromBlocks_apply₂₁, Matrix.zero_apply]
       simp only [colX_apply]
-      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | (simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | simp_all [Fin.ext_iff])
+      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega))
     · rw [splitIdx_of_ge hj.le b (not_lt.1 hb), Matrix.fromBlocks_apply₂₂, Matrix.one_apply]
       simp only [colX_apply]
-      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | (simp only [Fin.ext_iff, Fin.lt_def] at *; omega) | simp_all [Fin.ext_iff])
+      split_ifs <;> (first | rfl | (exfalso; simp only [Fin.ext_iff, Fin.lt_def] at *; omega))
 
 theorem mul_colBlock {m : ℕ} (h : Matrix (Fin j) (Fin j) R) (x : Fin j → R) :
     h * colBlock (m := m) x = colBlock (h.mulVec x) := by

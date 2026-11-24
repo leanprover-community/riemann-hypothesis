@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentAverage
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMassOfFibre
 
 @[expose] public section
 

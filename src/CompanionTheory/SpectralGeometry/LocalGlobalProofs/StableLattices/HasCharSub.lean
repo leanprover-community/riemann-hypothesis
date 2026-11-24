@@ -1,11 +1,7 @@
 module
 
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.InfinitesimalCharacterPaths.TensDecomp
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmRowForm
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ConjQdet
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CapelliLowestGelfandConj
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalFiniteIdem
 
 @[expose] public section
 
@@ -97,8 +93,8 @@ theorem qdet_lin {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V']
     unfold Tm
     by_cases hab : a = b <;> simp [hab, h]
   unfold qdet qminor
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.sum_apply, map_sum]
+
+  simp only [LinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   simp only [Module.End.mul_apply, Module.End.intCast_apply, map_zsmul]
   rw [ofFn_lin f _ _ (fun k y => hT _ _ _ y)]

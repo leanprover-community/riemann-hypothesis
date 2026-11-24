@@ -1,7 +1,53 @@
 module
 
+public import Formalism.FormalGroupLog.Statement
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.HomPsSubstMvSubst
-public import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,76 +71,9 @@ private lemma mvPowerSeries_subst_powerSeries_subst_eq_subst_subst {R : Type*} [
   MvPowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.const hb) ha p
 
 theorem homComp : HomComp := by
-  unfold HomComp
-  intro R _ F G H f g hf hg
-  unfold IsHom at hf hg ⊢
-  unfold atX atY at hf hg ⊢
-  have hf1 : MvPowerSeries.constantCoeff f = 0 := hf.1
-  have hfS : PowerSeries.HasSubst f := PowerSeries.HasSubst.of_constantCoeff_zero' hf.1
-  have hFS : PowerSeries.HasSubst F.toPowerSeries :=
-    PowerSeries.HasSubst.of_constantCoeff_zero F.zero_constantCoeff
-  have hGS : PowerSeries.HasSubst G.toPowerSeries :=
-    PowerSeries.HasSubst.of_constantCoeff_zero G.zero_constantCoeff
-  have hX : ∀ i : Fin 2, PowerSeries.HasSubst (MvPowerSeries.X i : MvPowerSeries (Fin 2) R) :=
-    fun i => PowerSeries.HasSubst.X i
-  have hu : ∀ (p : PowerSeries R), PowerSeries.constantCoeff p = 0 → ∀ i : Fin 2,
-      MvPowerSeries.constantCoeff
-        (PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries (Fin 2) R) p) = 0 :=
-    fun p hp i => constantCoeff_powerSeries_subst_eq_zero' (MvPowerSeries.constantCoeff_X i) p hp
-  have haS : MvPowerSeries.HasSubst
-      (![PowerSeries.subst (MvPowerSeries.X 0) f, PowerSeries.subst (MvPowerSeries.X 1) f] :
-        Fin 2 → MvPowerSeries (Fin 2) R) := by
-    apply MvPowerSeries.hasSubst_of_constantCoeff_zero
-    intro i
-    fin_cases i
-    · exact hu f hf.1 0
-    · exact hu f hf.1 1
-  have hbS : MvPowerSeries.HasSubst
-      (![PowerSeries.subst (MvPowerSeries.X 0) g, PowerSeries.subst (MvPowerSeries.X 1) g] :
-        Fin 2 → MvPowerSeries (Fin 2) R) := by
-    apply MvPowerSeries.hasSubst_of_constantCoeff_zero
-    intro i
-    fin_cases i
-    · exact hu g hg.1 0
-    · exact hu g hg.1 1
-  refine ⟨constantCoeff_powerSeries_subst_eq_zero' hf1 g hg.1, ?_⟩
-  rw [PowerSeries.subst_comp_subst_apply hfS hFS, hf.2, ← mvPowerSeries_subst_powerSeries_subst_eq_subst_subst haS hGS, hg.2,
-    MvPowerSeries.subst_comp_subst_apply hbS haS]
-  congr 1
-  funext i
-  fin_cases i
-  · show MvPowerSeries.subst
-        (![PowerSeries.subst (MvPowerSeries.X 0) f, PowerSeries.subst (MvPowerSeries.X 1) f] :
-          Fin 2 → MvPowerSeries (Fin 2) R) (PowerSeries.subst (MvPowerSeries.X 0) g) =
-      PowerSeries.subst (MvPowerSeries.X 0 : MvPowerSeries (Fin 2) R) (PowerSeries.subst f g)
-    rw [mvPowerSeries_subst_powerSeries_subst_eq_subst_subst haS (hX 0), MvPowerSeries.subst_X haS,
-      PowerSeries.subst_comp_subst_apply hfS (hX 0)] <;> rfl
-  · show MvPowerSeries.subst
-        (![PowerSeries.subst (MvPowerSeries.X 0) f, PowerSeries.subst (MvPowerSeries.X 1) f] :
-          Fin 2 → MvPowerSeries (Fin 2) R) (PowerSeries.subst (MvPowerSeries.X 1) g) =
-      PowerSeries.subst (MvPowerSeries.X 1 : MvPowerSeries (Fin 2) R) (PowerSeries.subst f g)
-    rw [mvPowerSeries_subst_powerSeries_subst_eq_subst_subst haS (hX 1), MvPowerSeries.subst_X haS,
-      PowerSeries.subst_comp_subst_apply hfS (hX 1)] <;> rfl
+  apply Formalism.G.homComp_statement
 theorem logIffHomGa : LogIffHomGa := by
-  unfold LogIffHomGa
-  intro R _ F f
-  unfold IsLog IsHom FormalGroup.𝔾ₐ
-  have key : PowerSeries.constantCoeff f = 0 →
-      MvPowerSeries.subst (![atX f, atY f] : Fin 2 → MvPowerSeries (Fin 2) R)
-        (MvPowerSeries.X 0 + MvPowerSeries.X 1 : MvPowerSeries (Fin 2) R) = atX f + atY f := by
-    intro h0
-    have haS : MvPowerSeries.HasSubst (![atX f, atY f] : Fin 2 → MvPowerSeries (Fin 2) R) := by
-      apply MvPowerSeries.hasSubst_of_constantCoeff_zero
-      intro i
-      fin_cases i
-      · exact constantCoeff_powerSeries_subst_eq_zero' (MvPowerSeries.constantCoeff_X (0 : Fin 2)) f h0
-      · exact constantCoeff_powerSeries_subst_eq_zero' (MvPowerSeries.constantCoeff_X (1 : Fin 2)) f h0
-    rw [MvPowerSeries.subst_add haS, MvPowerSeries.subst_X haS, MvPowerSeries.subst_X haS] <;> rfl
-  constructor
-  · rintro ⟨h0, h1, h2⟩
-    exact ⟨⟨h0, h2.trans (key h0).symm⟩, h1⟩
-  · rintro ⟨⟨h0, h2⟩, h1⟩
-    exact ⟨h0, h1, h2.trans (key h0)⟩
-theorem substInjective : SubstInjective := substInjective_statement
+  apply Formalism.G.log_iff_hom_additive
+alias substInjective := _root_.Formalism.G.substInjective_statement
 
 end Formalism.G

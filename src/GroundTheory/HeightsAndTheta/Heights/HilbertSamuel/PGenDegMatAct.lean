@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenDegMatAct
 
 @[expose] public section
@@ -26,9 +25,9 @@ theorem linSubst_comp (B B' : Matrix J J ℚ) :
     (linSubst B).comp (linSubst B') = linSubst (B' * B) := by
   apply MvPolynomial.algHom_ext
   intro i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [linSubst, AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq,
-    Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul, mul_assoc]
+
+  simp only [linSubst, AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq,
+  Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul, mul_assoc]
   exact Finset.sum_comm
 
 theorem linSubst_one [DecidableEq J] : linSubst (1 : Matrix J J ℚ) = AlgHom.id ℚ _ := by

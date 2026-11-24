@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenDegAmple
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenericFibreVar
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMultiDegreePositive
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivPrincipalDegree
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenDegTwist
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PIntersectionRecursion
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
@@ -88,8 +91,8 @@ theorem GenDegAmple.proof (hVar : GenericFibreVar.Statement) (hPos : MultiDegree
     simp [unitDeg, Finset.sum_apply, Pi.single_apply]
   have expand : ∀ b : K → ℤ,
       f (fun _ => b) = ∑ r : Fin D → K, (∏ j, b (r j)) * f (fun j => unitDeg (r j)) := fun b => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hsum b, f.map_sum]
+
+    rw [hsum b, f.map_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     rw [f.map_smul_univ (fun j => b (r j)) (fun j => unitDeg (r j)), smul_eq_mul]
     simp only [RingHom.id_apply]

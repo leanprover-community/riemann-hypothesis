@@ -1,9 +1,18 @@
 module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.ShortIsot
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirVolumeRatios.VolumeClassRepresentatives.DensRat
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.BlockGramReduction.EmbeddingLinearIndependent
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirVolumeRatios.VolumeClassRepresentatives.DensRat
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Algebra.Group.Units
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.Imports
 
 @[expose] public section
 
@@ -28,8 +37,8 @@ theorem star_atV_vecMul (v : InfinitePlace I.F) (u : Fin I.n → I.E) :
     ← vecMul_vecMul]
   congr 1
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [vecMul, dotProduct, map_sum, phi_star]
+
+  simp [vecMul, dotProduct, map_sum, phi_star]
 
 theorem hf_atV (v : InfinitePlace I.F) (u : Fin I.n → I.E) (z : Fin I.n → ℂ) :
     hf (Formalism.REAL.Jm (I.ε v)) (atV I v u) z = (fun i => I.φ v ((star u ᵥ* I.J) i)) ⬝ᵥ (I.P v *ᵥ z) := by
@@ -41,8 +50,8 @@ theorem P_atV (v : InfinitePlace I.F) (u : Fin I.n → I.E) : I.P v *ᵥ atV I v
 theorem hf_atV_atV (v : InfinitePlace I.F) (u u' : Fin I.n → I.E) :
     hf (Formalism.REAL.Jm (I.ε v)) (atV I v u) (atV I v u') = I.φ v (hf I.J u u') := by
   rw [hf_atV, P_atV, hf, dotProduct_mulVec]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [dotProduct, map_sum]
+
+  simp [dotProduct, map_sum]
 
 theorem hf_smul_leftD {K : Type} [Field K] [StarRing K] {n : ℕ} (J : Matrix (Fin n) (Fin n) K) (c : K)
     (x y : Fin n → K) : hf J (c • x) y = star c * hf J x y := by
@@ -109,8 +118,8 @@ theorem atM_mulVec (v : InfinitePlace I.F) (A : Matrix (Fin I.n) (Fin I.n) I.E) 
   rw [atM, ← mulVec_mulVec, P_atV, ← mulVec_mulVec, atV]
   congr 1
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [mulVec, dotProduct, map_sum]
+
+  simp [mulVec, dotProduct, map_sum]
 
 theorem transport_to_standard_form : Transp := by
   intro I
@@ -272,7 +281,6 @@ theorem short_isotropic_vector_of : Transp → ShortIsot := by
     have a2 := (norm_hf_leD (I.ε v) (vecAt I y u v) (vecAt I y u' v)).trans
       (mul_le_mul_of_nonneg_left a1 (Nat.cast_nonneg _))
     refine (mul_le_mul_of_nonneg_left a2 (Nat.cast_nonneg c)).trans ?_
-    have hcp : (0 : ℝ) < c := by exact_mod_cast hc
     have : (c : ℝ) * ((I.n + 1) * s) = 1 / 2 := by simp only [s]; field_simp
     rw [← this]
     gcongr

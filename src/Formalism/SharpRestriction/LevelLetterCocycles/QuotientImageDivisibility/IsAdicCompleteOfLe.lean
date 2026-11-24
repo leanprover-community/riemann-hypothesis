@@ -1,9 +1,48 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.IsAdicCompleteOfIdealPowLe
 public import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocE
+public import Formalism.SharpRestriction.LevelLetterCocycles.ExpRules
+public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.LMemMaxOL
+import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -34,26 +73,7 @@ theorem isAdicComplete_of_le {R : Type} [CommRing R] (I J : Ideal R) (a : ℕ) (
 
 theorem complete_max {l : ℕ} [Fact l.Prime] (LL : FinExt l) :
     IsAdicComplete (IsLocalRing.maximalIdeal ↥(OL LL)) ↥(OL LL) := by
-  have := Formalism.MainNotions.WachCoordinates.Br.complete_OL LL
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible ↥(OL LL)
-  have hlm := Formalism.BasicNotions.Examples₂.LB.l_mem_max LL
-  have hl0 : ((l : ℕ) : ↥(OL LL)) ≠ 0 := by
-    intro h
-    have h' : ((((l : ℕ) : ↥(OL LL)) : ↥LL.1) : Om l) = 0 := by rw [h]; rfl
-    norm_cast at h'
-    exact (Fact.out : l.Prime).ne_zero h'
-  obtain ⟨e, u, hle⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hl0 hϖ
-  have hmax := (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
-  have he : 1 ≤ e := by
-    by_contra h0
-    push Not at h0
-    have : e = 0 := by omega
-    rw [this, pow_zero, mul_one] at hle
-    rw [hle] at hlm
-    exact (IsLocalRing.mem_maximalIdeal _).mp hlm u.isUnit
-  refine isAdicComplete_of_le _ (Ideal.span {((l : ℕ) : ↥(OL LL))}) e he ?_ ?_
-  · rw [hmax, Ideal.span_singleton_pow, hle, Ideal.span_singleton_mul_left_unit u.isUnit]
-  · rw [Ideal.span_le]; rintro _ rfl; exact hlm
+  apply Formalism.MainNotions.N.Ln17.isAdicComplete_integers_local
 
 end Formalism.MainNotions.N.Pv.LocalLengthBound.OLC
 

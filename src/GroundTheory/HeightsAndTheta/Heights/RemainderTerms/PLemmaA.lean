@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 

@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalLengthSum
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreRelDim
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivCycleMinimal
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeLocalLength
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalLength
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivCycleSupport
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree
 
 @[expose] public section
 
@@ -21,7 +22,7 @@ universe u
 
 
 open Classical in
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem SemilocalLength.proof (h1 : SemilocalLengthSum.Statement.{u})
     (h2 : FibreRelDim.Statement.{u}) (h3 : DivCycleMinimal.Statement.{u})
     (h4 : ConeLocalLength.Statement.{u}) : SemilocalLength.Statement.{u} := by

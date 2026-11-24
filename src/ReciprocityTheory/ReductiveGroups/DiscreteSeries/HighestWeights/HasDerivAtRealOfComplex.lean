@@ -1,7 +1,17 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OpEqExp
 public import Formalism.RealPlaceAnalysis.StatementKT
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.Deriv.Linear
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 @[expose] public section
 
@@ -26,9 +36,8 @@ theorem inK_iff' (ε : Fin n → Bool) (X : Matrix (Fin n) (Fin n) ℂ) :
     refine ⟨?_, hC⟩
     have h1 : Xᴴ * Jm ε = -(X * Jm ε) := by
       rw [hC]; exact eq_neg_of_add_eq_zero_left hG
-    have h2 := congrArg (· * Jm ε) h1
-    simp only [Matrix.mul_assoc, Jm_mul_self, Matrix.mul_one, Matrix.neg_mul] at h2
-    exact h2
+    simpa only [Matrix.mul_assoc, Jm_mul_self, Matrix.mul_one, Matrix.neg_mul] using
+      congrArg (· * Jm ε) h1
   · rintro ⟨hH, hC⟩
     refine ⟨?_, hC⟩
     unfold inG
@@ -122,8 +131,7 @@ theorem KType.conj_dτ {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε 
   have hf : (fun y : ℝ => T.op k * NormedSpace.exp ((y : ℂ) • B) * star (T.op k)) =
       fun y : ℝ => NormedSpace.exp ((y : ℂ) • C) := funext key
   simp only [hf] at h1
-  have := h1.unique h2
-  simpa using this
+  simpa using h1.unique h2
 
 section MatDeriv
 
@@ -173,8 +181,7 @@ theorem KType.dτ_bracket {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType 
     (f₁ := fun s : ℝ => T.dτ (NormedSpace.exp ((s : ℂ) • X) * Y * NormedSpace.exp ((s : ℂ) • (-X))))
     (Filter.Eventually.of_forall fun s => (key s).symm)
   have := h1'.unique h2
-  rw [← this]
-  simp [sub_eq_add_neg]
+  simpa [sub_eq_add_neg] using this
 
 theorem single_mul_Jm {ε : Fin n → Bool} {a b : Fin n} (h : ε a = ε b) (c : ℂ) :
     Matrix.single a b c * Jm ε = Jm ε * Matrix.single a b c := by

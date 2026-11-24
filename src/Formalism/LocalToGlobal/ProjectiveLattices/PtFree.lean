@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
 public import Formalism.LocalToGlobal.ProjectiveLattices.RulInst
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

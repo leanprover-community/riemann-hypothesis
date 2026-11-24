@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsValuation
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Isogeny
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsOrd
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsNorm
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsValuation
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

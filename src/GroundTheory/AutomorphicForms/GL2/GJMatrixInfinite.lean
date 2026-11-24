@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.TateThesis.TraceLatticePoisson
+public import GroundTheory.GlobalFields.TateThesis.LatticePoissonBasic
+public import GroundTheory.GlobalFields.TateThesis.TraceDualLattice
+public import GroundTheory.GlobalFields.TateThesis.LatticePoisson
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

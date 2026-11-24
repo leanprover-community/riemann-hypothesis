@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
+import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.JacobiMinorProof
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementA
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementC
-public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.LeIffLtColHeight
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.ActFormContract
+public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.LeIffLtColHeight
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -27,33 +70,17 @@ theorem mem_can {n : ℕ} {μN : Fin n → ℤ} (h : Antitone μN) (c : ℤ) (m 
     rw [← not_le, Paths.le_iff_lt_colHeight h c m, not_lt]
 
 theorem isIndex_can {n : ℕ} (μN : Fin n → ℤ) : IsIndex μN (canIdx μN) := by
-  intro c
-  have hn := Paths.colHeight_le μN c
-  unfold canIdx
-  split_ifs with hc
-  · have : (univ.filter fun m : Fin n => m.val < colHeight μN c) =
-        (Finset.range (colHeight μN c)).attachFin (fun i hi => by
-          rw [Finset.mem_range] at hi; omega) := by
-      ext m; simp
-    rw [this, Finset.card_attachFin, Finset.card_range]
-  · have h1 : (univ.filter fun m : Fin n => colHeight μN c ≤ m.val) =
-        (univ.filter fun m : Fin n => m.val < colHeight μN c)ᶜ := by
-      ext m; simp
-    have h2 : (univ.filter fun m : Fin n => m.val < colHeight μN c) =
-        (Finset.range (colHeight μN c)).attachFin (fun i hi => by
-          rw [Finset.mem_range] at hi; omega) := by
-      ext m; simp
-    rw [h1, Finset.card_compl, h2, Finset.card_attachFin, Finset.card_range, Fintype.card_fin]
+  apply Formalism.InvariantFactorPaths.GelfandTsetlinBases.SignTwistStarLemmas.canIdx_isIndex
 
 theorem map_step {A A' : Type*} [CommRing A] [CommRing A'] (φ : A →+* A') {n : ℕ} (up : Bool)
     (K : Form A n) (K' : Form A' n) (Xv : Fin n → A) (hK : ∀ J, φ (K J) = K' J) (J : Finset (Fin n)) :
     φ (stepF up K Xv J) = stepF up K' (fun a => φ (Xv a)) J := by
   unfold stepF
   cases up
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [Bool.false_eq_true, if_false, contrF, map_sum, map_mul, map_intCast, hK]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [if_true, wedgeF, map_sum, map_mul, map_intCast, hK]
+
+  · simp only [Bool.false_eq_true, if_false, contrF, map_sum, map_mul, map_intCast, hK]
+
+  · simp only [if_true, wedgeF, map_sum, map_mul, map_intCast, hK]
 
 theorem map_pathWord {A A' : Type*} [CommRing A] [CommRing A'] (φ : A →+* A') {n : ℕ}
     (isVec : ℕ → Bool) (μ : ℕ → Fin n → ℤ) (c : ℤ) (Xr : ℕ → Fin n → A) :

@@ -1,12 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueArchimedeanMatrixAdeleExtensionOfComStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealScalarArchimedeanAdeleSmulMatrixRealPlaceStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanTraceSymplecticFormOrthonormalFramesStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.GaussianIsSchwartzFunction
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanTraceSymplecticFormOrthonormalFrames
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueArchimedeanMatrixAdeleExtensionOfCom
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealScalarArchimedeanAdeleSmulMatrixRealPlace
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MetaplecticRepresentation
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -173,7 +216,7 @@ theorem herm_cplx_pos [Fintype ι] (c : ι → Matrix (Ix P Q) (Ix R S) ℂ) (hc
     0 < -2 * (∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (cplx ι P Q R S c w a b)).im := by
   have h : ∀ w a b, (lineSign a b * c w a b * star (cplx ι P Q R S c w a b)).im = -Complex.normSq (c w a b) := by
     intro w a b
-    rcases lineSign_cases a b with h | h <;> simp [cplx_apply, h, Complex.normSq_apply] <;> ring
+    rcases lineSign_cases a b with h | h <;> simp [cplx_apply, h, Complex.normSq_apply]
   simp only [Complex.im_sum, h, Finset.sum_neg_distrib]
   obtain ⟨w, a, b, hw⟩ : ∃ w a b, c w a b ≠ 0 := by
     by_contra h0
@@ -196,7 +239,7 @@ theorem cplx_single [DecidableEq ι] (w : ι) (a : Ix P Q) (b : Ix R S) :
     by_cases hab : a = a' ∧ b = b'
     · obtain ⟨rfl, rfl⟩ := hab
       rcases lineSign_cases a b with h | h <;> simp [h]
-    · simp [Matrix.single_apply, hab]
+    · simp [hab]
   · simp [hw]
 
 end Sign
@@ -217,7 +260,7 @@ theorem exists_vacuum : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Nu
       D u f₀ + (lineSign a b * Complex.I) • D u' f₀ = 0 := by
   intro F E _ _ _ _ _ σ α β κ _ _ _ _ _ P Q R S τ JA JB d a₀ b₀ A C D hCM hFr hD
   have hU := fun c : InfinitePlace F → Matrix (Ix P Q) (Ix R S) ℂ =>
-    GlobalTheory.T.existsUnique_archimedeanMatrix_adeleExtension_of_components σ τ hCM (fun w => A w * c w * (C w)ᵀ)
+    _root_.GlobalTheory.ArchMatCoords.existsUnique_at_map_piInf σ τ hCM (fun w => A w * c w * (C w)ᵀ)
   choose U hU hU' using hU
   have hadd : ∀ c c', U (c + c') = U c + U c' := fun c c' => by
     refine (hU' (c + c') _ ⟨fun u hu => ?_, fun w => ?_⟩).symm
@@ -226,7 +269,7 @@ theorem exists_vacuum : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Nu
   have hsmul : ∀ (r : ℝ) c, U (r • c) = realAd F r • U c := fun r c => by
     refine (hU' (r • c) _ ⟨fun u hu => ?_, fun w => ?_⟩).symm
     · rw [smul_comm, (hU c).1 u hu, smul_zero]
-    · rw [GlobalTheory.T.realScalarArchimedeanAdele_smul_matrix_realPlace σ τ hCM, (hU c).2, Pi.smul_apply, Matrix.mul_smul, Matrix.smul_mul]
+    · rw [_root_.GlobalTheory.RealScalar.realAd_smul_map σ τ hCM, (hU c).2, Pi.smul_apply, Matrix.mul_smul, Matrix.smul_mul]
       ext i j
       simp
   let p : (InfinitePlace F → Matrix (Ix P Q) (Ix R S) ℂ) →ₗ[ℝ] (κ → mixedEmbedding.mixedSpace F) :=
@@ -251,10 +294,10 @@ theorem exists_vacuum : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Nu
         exact evI_realAd_mul r _ }
   have hω : ∀ c c', trPair F κ (p c) (q c') - trPair F κ (p c') (q c) =
       -2 * (∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im := fun c c' => by
-    rw [← GlobalTheory.T.archimedeanTrace_symplecticForm_orthonormalFrames σ τ JA JB a₀ b₀ A C hCM hFr (U c) (U c') c c' (hU c).1 (hU c').1 (hU c).2 (hU c').2, d.form,
+    rw [← _root_.GlobalTheory.SympFrames.symp_frames σ τ JA JB a₀ b₀ A C hCM hFr (U c) (U c') c c' (hU c).1 (hU c').1 (hU c).2 (hU c').2, d.form,
       trPair_apply, trPair_apply, ← map_sub, ← evR_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sub, map_sum, map_mul]
+
+    simp only [dotProduct, map_sub, map_sum, map_mul]
     rfl
   have hs : Function.Surjective (p.prod q) := by
     rintro ⟨v, v'⟩

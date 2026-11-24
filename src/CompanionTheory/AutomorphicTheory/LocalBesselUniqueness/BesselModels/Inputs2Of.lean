@@ -1,7 +1,7 @@
 module
 
-public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.AmplitudeOrbitalIntegral
-public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.DoubleCosetBesselBoundOfGapConstantLe
+public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.AtFormAdmOneOfSteps
+public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.Inputs
 
 @[expose] public section
 

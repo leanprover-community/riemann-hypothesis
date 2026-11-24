@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.KerEntHyp
 
 @[expose] public section

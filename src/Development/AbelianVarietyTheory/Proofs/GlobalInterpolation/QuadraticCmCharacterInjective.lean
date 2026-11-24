@@ -1,6 +1,0 @@
-module
-
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.Imports
-public import CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.RealStructures.Imports
-public import CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.ImportsBis
-public import PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepresentations.IwahoriSphericalTransfer.RangeRes

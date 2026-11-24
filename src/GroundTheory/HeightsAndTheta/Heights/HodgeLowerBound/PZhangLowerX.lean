@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsZhangLowerX
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveAlgebraic
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

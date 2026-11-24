@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.RealGroupsLie
+public import Mathlib.Algebra.Lie.OfAssociative
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.Slope
 
 @[expose] public section
 

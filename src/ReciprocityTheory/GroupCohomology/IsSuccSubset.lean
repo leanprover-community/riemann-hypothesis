@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.GroupCohomology.CupConnRightStatement
-public import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

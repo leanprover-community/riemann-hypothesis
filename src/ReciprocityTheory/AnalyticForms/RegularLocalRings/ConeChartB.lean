@@ -1,7 +1,7 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHyp
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.LocTransfer
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

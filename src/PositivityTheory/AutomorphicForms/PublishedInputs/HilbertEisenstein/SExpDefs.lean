@@ -1,8 +1,11 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SSmooth
-public import GroundTheory.GlobalFields.TateThesis.AdelePoisson
-public import GroundTheory.GlobalFields.TateThesis.TateThetaDecay
+public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhat
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 @[expose] public section
 

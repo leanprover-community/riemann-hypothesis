@@ -1,13 +1,50 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PhiFree
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegersCompleteDVR
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PhiFree
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RingsCyclotomic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemEurOfTeichmullerSeries
 
 @[expose] public section
 
@@ -86,8 +123,8 @@ theorem step_surj (p : ℕ) (π : A) (hπ : IsUnit (ι π)) (φA : A →+* A)
     calc ι a * v ^ m = ι (a * Q ^ m) * φE (v ^ m) := by rw [map_mul, mul_assoc, ← hvm]
       _ = _ := by
         rw [hc]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [comb, map_sum, map_mul, hφ, Finset.sum_mul]
+
+        simp only [comb, map_sum, map_mul, hφ, Finset.sum_mul]
         exact Finset.sum_congr rfl fun j _ => by ring
   rw [← h2]
   exact hx
@@ -160,8 +197,8 @@ theorem step_inj (p : ℕ) (π : A) (hπ : IsUnit (ι π)) (φA : A →+* A)
       comb ι φE e c - (p : E) * comb ι φE e y' := by
     have : c = fun j => ι (a' j) * v ^ M + (p : E) * y' j := funext hca
     rw [this, comb_add_mul ι φE e _ _ _ (by simp), add_sub_cancel_right]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [comb, map_sum, map_mul, hφ, Finset.sum_mul]
+
+    simp only [comb, map_sum, map_mul, hφ, Finset.sum_mul]
     exact Finset.sum_congr rfl fun j _ => by ring
   have hdv : ι (∑ j, e j * φA (a' j)) ∈ Ideal.span {(p : E) ^ 1} := by
     rw [pow_one, Ideal.mem_span_singleton]
@@ -225,7 +262,7 @@ theorem free (p : ℕ) [IsAdicComplete (Ideal.span {(p : E)}) E] (π : A) (φA :
 end Abstract
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem ee_free : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; ∀ x : W.EE, ∃! c : Fin l → W.EE, x = ∑ j : Fin l, algebraMap (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) W.EE ((1 : (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K)))) + (letπ : (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))))) ^ (j : ℕ) * W.φE (c j) := by
   intro D HW F l _ K s LL h W
   obtain ⟨hdvr, hcomp, hl0, hlu, -⟩ := GlobalTheory.Per.integers_completeDVR l LL

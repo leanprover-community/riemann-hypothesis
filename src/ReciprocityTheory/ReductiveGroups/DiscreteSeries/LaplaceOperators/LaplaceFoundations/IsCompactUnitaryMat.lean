@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.UnitaryHaarColumns
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Topology.Algebra.Star.Unitary
 
 @[expose] public section
 

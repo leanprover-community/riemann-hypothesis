@@ -1,7 +1,62 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionRelation
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.HomotheticLatticeIntegralS2
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.FrobeniusExtensionOnInclusion
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TransportFirstLevel
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.NumberTheory.LegendreSymbol.Basic
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 
 @[expose] public section
 
@@ -270,7 +325,7 @@ theorem dense_criterion : DenseOK := by
   obtain ⟨hwm, hws⟩ := sqrt_in_unramified_completion dK hsq h4 l h5 hin ι
   set w : MaximalUnramifiedExtension l := ⟨ι (omegaK dK), hwm⟩ with hwdef
   have hw : σ w = 1 - w := hws σ hσ w rfl
-  have hiso : ∀ a : MaximalUnramifiedExtension l, ‖σ a‖ = ‖a‖ := sigmaIsom (MaximalUnramifiedExtension l) l σ hσ
+  have hiso : ∀ a : MaximalUnramifiedExtension l, ‖σ a‖ = ‖a‖ := _root_.Formalism.L2.Th1.D.sigma_isometry (MaximalUnramifiedExtension l) l σ hσ
 
   have hR2 : (w + w - 1) ^ 2 = ((-(dK : ℤ) : ℤ) : MaximalUnramifiedExtension l) := by
     apply Subtype.ext
@@ -320,8 +375,8 @@ theorem dense_criterion : DenseOK := by
 
   obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one (lt_min hε zero_lt_one) (KF.l_inv_lt_one l)
   rw [inv_pow] at hk
-  obtain ⟨m, hm⟩ := fixedIsLimit (MaximalUnramifiedExtension l) l σ hσ m0 hm01 hσm0 k
-  obtain ⟨n, hn⟩ := fixedIsLimit (MaximalUnramifiedExtension l) l σ hσ n0 hn01 hσn0 k
+  obtain ⟨m, hm⟩ := _root_.Formalism.L2.Th1.D.fixed_is_limit (MaximalUnramifiedExtension l) l σ hσ m0 hm01 hσm0 k
+  obtain ⟨n, hn⟩ := _root_.Formalism.L2.Th1.D.fixed_is_limit (MaximalUnramifiedExtension l) l σ hσ n0 hn01 hσn0 k
   set β : MaximalUnramifiedExtension l := (m : MaximalUnramifiedExtension l) + (n : MaximalUnramifiedExtension l) * w with hβ
   have hβα : ‖β - α‖ ≤ ((l : ℝ) ^ k)⁻¹ := by
     have h0 : β - α = -(m0 - m) + -(n0 - n) * w := by rw [hβ, hm0]; ring

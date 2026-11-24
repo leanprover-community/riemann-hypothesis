@@ -1,8 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PartnerCount
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PairValPf
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumBTup
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StepNormOneOfLeaves
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensAtGoodOf
+import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 
 @[expose] public section
 
@@ -86,7 +89,7 @@ theorem ptT_eq (hN : PairVal.NormRepExists D u u' F0 what₂) (hrows : IsRowReps
   have hn : nrep γ = some hex.choose := dif_pos hex
   obtain ⟨hRep, -, hL, hU, e⟩ := hex.choose_spec
   obtain ⟨F₁, hR₁, -, hc₁⟩ := hat
-  have hw : w = hex.choose.1 := pt_eq_of_cells cell_point_uniqueness (Formalism.L2.SG.Closed.TermFun_holds D u u') hrows γ
+  have hw : w = hex.choose.1 := pt_eq_of_cells cell_point_uniqueness (_root_.term_function_const D u u') hrows γ
     hR₁ hRep hc₁ ⟨_, _, hL, hU, e⟩
   unfold ptT
   rw [hn]

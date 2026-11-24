@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SelfDualCovolume
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.GaussDegenerate
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.RepsProd
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.DifferentialRepresentation
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SelfDualCovolume
 
 @[expose] public section
 
@@ -253,11 +256,11 @@ theorem tripleSum_conj (hT : TripleData H α Λ₁ Λ₂ Λ₃) (m m' r : V →+
   have hreal : ∀ {Λ : AddSubgroup V}, IsSemiChar H Λ α → ∀ x ∈ Λ, conj (α x) = α x := by
     intro Λ hs x hx
     rcases hs.1 x hx with h | h <;> rw [h] <;> simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [tripleSum_eq, tripleSum_eq, Finset.sum_image hi₃, map_sum]
+
+  rw [tripleSum_eq, tripleSum_eq, Finset.sum_image hi₃, map_sum]
   refine Finset.sum_congr rfl fun z hz => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_image hi₂, map_sum]
+
+  rw [Finset.sum_image hi₂, map_sum]
   refine Finset.sum_congr rfl fun y hy => ?_
   have hz3 := hA₃ z hz
   have hy2 := hA₂ y hy

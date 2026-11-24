@@ -1,13 +1,60 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalComponentsNontrivialAdelicCharacterStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSelfDualOfDualSubgroups
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSmallDualLattices
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+public import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdditiveCharConductorExists
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DisjointSpanPerpLat
-public import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSelfDualOfDualSubgroups
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSmallDualLattices
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalComponentsNontrivialAdelicCharacter
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -134,7 +181,7 @@ theorem existsUnique_selfDual (B : V → V → ℂ)
       have : {x | ‖B x y - 1‖ < 1 / 2} ∈ 𝓝 (0 : V) :=
         (isOpen_lt ((hBc y).sub continuous_const).norm continuous_const).mem_nhds (by simp [h0])
       filter_upwards [hU.eventually_subset this] with k hk
-      refine (hN k y).2 fun x hx => GlobalTheory.CharConductor.eq_one_of_pow_near_one fun n => ?_
+      refine (hN k y).2 fun x hx => _root_.GlobalTheory.IterationConvergence.main fun n => ?_
       have e : B x y ^ n = B (n • x) y := by
         induction n with
         | zero => simp [h0]
@@ -195,7 +242,7 @@ theorem existsUnique_of_bilin (ψ : AddChar (Fv F v) ℂ) (hψ : Continuous ψ) 
   letI : NontriviallyNormedField (Fv F v) :=
     Valued.toNontriviallyNormedField (Fv F v) (WithZero (Multiplicative ℤ))
   haveI : IsUltrametricDist (Fv F v) := inferInstance
-  obtain ⟨n, hc⟩ := GlobalTheory.CharConductor.exists_exponent_of_valued ψ hψ hne
+  obtain ⟨n, hc⟩ := _root_.GlobalTheory.CharacterConductorBall.exists_conductor ψ hψ hne
   obtain ⟨c, hcv⟩ := HeightOneSpectrum.valuedAdicCompletion_surjective F v (WithZero.exp n)
   have hc0 : c ≠ 0 := by
     rintro rfl
@@ -265,8 +312,8 @@ theorem sigR_hR (h : IsCMExt F E σ) (hJ : IsHermND σ J) (x y : Fin M → R ⊗
     intro i j
     show (1 : R) ⊗ₜ[F] σ (J j i) = (1 : R) ⊗ₜ[F] J i j
     rw [hJ.1]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hR, Formalism.UG.hform, map_sum, map_mul, sigR_sigR R h]
+
+  simp only [hR, Formalism.UG.hform, map_sum, map_mul, sigR_sigR R h]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [hJ']
@@ -333,7 +380,7 @@ theorem existsUnique_selfDual_finite : ∀ (F E : Type) [Field F] [NumberField F
     rfl
   have hne : ∃ t, χ t ≠ 1 := by
     rw [hχ]
-    exact (GlobalTheory.T.localComponents_nontrivial_adelic_character F ψ hψ).1 v
+    exact (_root_.GlobalTheory.GaugeEx.CharLoc.char_local F ψ hψ).1 v
   constructor
   · simpa only [SdR, ← hχ, LinearMap.mul_apply_apply] using
       (existsUnique_of_bilin v χ hc hu hne (Fv F v) (LinearMap.mul _ _) (fun x y => mul_comm x y)

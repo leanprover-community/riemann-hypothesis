@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PAffineChartTrdeg
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section
 

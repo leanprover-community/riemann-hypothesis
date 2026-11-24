@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 
 @[expose] public section
 

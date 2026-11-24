@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviMatchingWords.MatchLM
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasCompactSupportTj
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingTransferOf
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -113,9 +153,6 @@ section Hecke
 
 variable {G : Type} [Group G] [TopologicalSpace G]
 
-theorem isHecke_zero' (L : Subgroup G) : IsHecke L (fun _ : G => (0 : ℂ)) :=
-  ⟨HasCompactSupport.zero, fun _ _ _ => ⟨rfl, rfl⟩⟩
-
 theorem isHecke_smul' {L : Subgroup G} {f : G → ℂ} (c : ℂ) (h : IsHecke L f) : IsHecke L (c • f) :=
   ⟨HasCompactSupport.mono h.1 (Function.support_const_smul_subset c f), fun k hk x => by
     simp only [Pi.smul_apply, (h.2 k hk x).1, (h.2 k hk x).2, and_self]⟩
@@ -127,7 +164,7 @@ theorem isHecke_diag (d : LocData E n) {a : ℕ} {w : Pl E} {L : Subgroup (GLw a
   unfold LocData.diag
   split_ifs
   · exact hf x
-  · exact isHecke_zero' L
+  · exact GlobalTheory.CompanionTheory.MatchPow.isHecke_zero L
 
 theorem idem_lev (hI : IdemAlg) {d : LocData E n} (hd : d.Ok) {a : ℕ} (ha : a ≤ n) (w : Pl E) :
     IsHecke (d.lev a w) (idem (d.lev a w)) :=

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbFnValueSpan
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 
@@ -70,8 +73,8 @@ theorem coneQ_eq (y : (Σ k, ι k) → Ω) {f : MvPolynomial (Σ k, ι k) ℚ} {
   have hf' := (isWeightedHomogeneous_iff f a).mp hf
   conv_lhs => rw [f.as_sum]
   conv_rhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm => ?_
   have hX : ∏ p : (Σ k, ι k), (MvPolynomial.X p.1 : MvPolynomial K Ω) ^ m p =
       ∏ k, MvPolynomial.X k ^ a k := by
@@ -114,8 +117,8 @@ theorem range_evalForms (y : (Σ k, ι k) → Ω) (a : K → ℕ) :
     have hf' := (isWeightedHomogeneous_iff f a).mp ((mem_weightedHomogeneousSubmodule _ _ _ _).mp hf)
     show aeval y f ∈ valueSpan y a
     conv => arg 2; rw [f.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Submodule.sum_mem _ fun v hv => ?_
     have hmon : aeval y (monomial v (AddMonoidAlgebra.coeff f v)) =
         AddMonoidAlgebra.coeff f v • aeval y (monomial v (1 : ℤ) : MRing ι) := by

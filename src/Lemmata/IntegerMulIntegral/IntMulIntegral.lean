@@ -1,6 +1,47 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteQuotientComap
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -8,8 +49,7 @@ namespace Bl.IntegerMulIntegral
 
 private lemma int_mul_integral {E : Type} [Field E] [NumberField E] (a : E) :
     ∃ d : ℤ, d ≠ 0 ∧ IsIntegral ℤ ((d : E) * a) := by
-  have hx : IsAlgebraic ℤ a := (IsFractionRing.isAlgebraic_iff ℤ ℚ E).mpr (.of_finite ℚ a)
-  obtain ⟨y, hy, hi⟩ := hx.exists_integral_multiple
+  obtain ⟨y, hy, hi⟩ := ((IsFractionRing.isAlgebraic_iff ℤ ℚ E).mpr (.of_finite ℚ a)).exists_integral_multiple
   exact ⟨y, hy, by simpa [zsmul_eq_mul] using hi⟩
 
 theorem goal1 :
@@ -17,29 +57,6 @@ theorem goal1 :
   (L : Submodule.{0, 0} (NumberField.RingOfIntegers.{0} E) (Fin n → E)) (v : Fin n → E),
   Membership.mem.{0, 0} (Submodule.span.{0, 0} E (SetLike.coe.{0, 0} L)) v →
     Exists.{1} fun (m : Int) ↦ And (Ne.{1} m 0) (Membership.mem.{0, 0} L (HSMul.hSMul.{0, 0, 0} m v)) := by
-  intro E _ _ n L v hv
-  induction hv using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
-  | zero => exact ⟨1, one_ne_zero, by simp⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨m1, h1, hm1⟩ := hx
-    obtain ⟨m2, h2, hm2⟩ := hy
-    refine ⟨m1 * m2, mul_ne_zero h1 h2, ?_⟩
-    have e : (m1 * m2) • (x + y) = m2 • (m1 • x) + m1 • (m2 • y) := by
-      rw [smul_add, smul_smul, smul_smul, mul_comm m2 m1]
-    rw [e]
-    exact L.add_mem (L.toAddSubgroup.zsmul_mem hm1 m2) (L.toAddSubgroup.zsmul_mem hm2 m1)
-  | smul a x _ hx =>
-    obtain ⟨m, hm, hmx⟩ := hx
-    obtain ⟨d, hd, hi⟩ := int_mul_integral a
-    refine ⟨d * m, mul_ne_zero hd hm, ?_⟩
-    obtain ⟨r, hr⟩ : ∃ r : NumberField.RingOfIntegers E,
-        algebraMap (NumberField.RingOfIntegers E) E r = (d : E) * a := ⟨⟨_, hi⟩, rfl⟩
-    have hmem := L.smul_mem r hmx
-    convert hmem using 1
-    ext i
-    change (d * m) • (a * x i) = r • ((m • x) i)
-    rw [← algebraMap_smul E r, hr, Pi.smul_apply, smul_eq_mul, zsmul_eq_mul, zsmul_eq_mul, Int.cast_mul]
-    ring
+  apply GlobalTheory.FiniteQuotientComap.exists_int_smul_mem
 
 end Bl.IntegerMulIntegral

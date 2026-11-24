@@ -1,6 +1,50 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.Tactic.Continuity
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,8 +67,8 @@ theorem evL_monomial (φ : (σ →₀ ℕ) → ℝ) (μ : σ →₀ ℕ) (c : �
 theorem evL_eq (φ : (σ →₀ ℕ) → ℝ) (H : MvPolynomial σ ℝ) :
     ∑ μ ∈ H.support, H.coeff μ * φ μ = evL φ H := by
   conv_rhs => rw [H.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl (fun μ _ => (evL_monomial φ μ _).symm)
 
 theorem evL_C_mul (φ : (σ →₀ ℕ) → ℝ) (c : ℝ) (H : MvPolynomial σ ℝ) :
@@ -88,8 +132,8 @@ theorem subst_multiset [AddCommGroup G] [Fintype σ] (d : ℕ) (n : List G → �
     intro l hl k
     let f : G →+ ℝ := AddMonoidHom.mk' (fun b => n (b :: l)) (fun b b' => ha b b' l hl)
     have hf : ∀ b, f b = n (b :: l) := fun _ => rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hf, map_sum]
+
+    rw [← hf, map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_zsmul, zsmul_eq_mul, hf]
   induction s using Multiset.induction_on with
@@ -108,8 +152,8 @@ theorem subst_multiset [AddCommGroup G] [Fintype σ] (d : ℕ) (n : List G → �
     have hlen : ((Multiset.map (fun t => ∑ i, M t i • cls i) s).toList ++ Q).length + 1 = d := by
       rw [List.length_append, Multiset.length_toList, Multiset.card_map]
       omega
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hp _ _ hperm, hlin _ hlen, Multiset.map_cons, Multiset.prod_cons, Finset.sum_mul, map_sum]
+
+    rw [hp _ _ hperm, hlin _ hlen, Multiset.map_cons, Multiset.prod_cons, Finset.sum_mul, map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     have hmid : n (cls i :: ((Multiset.map (fun t => ∑ i, M t i • cls i) s).toList ++ Q)) =
         n ((Multiset.map (fun t => ∑ i, M t i • cls i) s).toList ++ (cls i :: Q)) :=
@@ -127,8 +171,8 @@ theorem subst_abs [AddCommGroup G] [Fintype σ] (d : ℕ) (n : List G → ℝ)
       evL (fun μ => n ((μ.toMultiset.map cls).toList ++ Q))
         (aeval (fun t => ∑ i, (C (M t i : ℝ) * X i : MvPolynomial σ ℝ)) H) := by
   conv_rhs => rw [H.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum]
+
+  rw [map_sum, map_sum]
   refine Finset.sum_congr rfl (fun μ hμ => ?_)
   have hdeg : Multiset.card μ.toMultiset = m := by
     have h := hH (mem_support_iff.mp hμ)

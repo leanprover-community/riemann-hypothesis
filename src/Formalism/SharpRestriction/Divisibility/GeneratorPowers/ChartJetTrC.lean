@@ -1,6 +1,45 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.MvSecValComp
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartJetTrB
+public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartJetTrA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -17,23 +56,16 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem spMap_id' (R : Type) [CommRing R] : spMap (RingHom.id R) = 𝟙 (Sp R) := by
   first
-  | exact spMap_id R
-  | exact spMap_id
   | simp [spMap]
-  | unfold spMap
 
 theorem spMap_alg_self (R : Type) [CommRing R] : spMap (algebraMap R R) = 𝟙 (Sp R) := by
   first
   | exact spMap_id' R
-  | (rw [Algebra.algebraMap_self]; exact spMap_id' R)
 
 theorem spMap_algHom_alg {R A B : Type} [CommRing R] [CommRing A] [CommRing B] [Algebra R A] [Algebra R B]
     (φ : A →ₐ[R] B) : spMap (φ : A →+* B) ≫ spMap (algebraMap R A) = spMap (algebraMap R B) := by
   first
-  | (rw [← spMap_comp]; congr 1; exact φ.comp_algebraMap)
-  | (rw [spMap_comp]; congr 1; exact φ.comp_algebraMap)
   | (simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp, AlgHom.comp_algebraMap])
-  | unfold spMap
 
 theorem jetCoef_substP {V K : Type} [CommRing V] [CommRing K] (f : V →+* K) {κ κ' : Type} (m : ℕ)
     (φ : κ → MvPolynomial κ' V) :
@@ -70,33 +102,7 @@ theorem jetCoef_substP {V K : Type} [CommRing V] [CommRing K] (f : V →+* K) {�
 
 theorem unit_push {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [GrpObj G'] {f : S' ⟶ S}
     {φ : G'.left ⟶ G.left} (h : IsGrpPullback G' G f φ) : η[G'].left ≫ φ = f ≫ η[G].left := by
-  obtain ⟨hpb, hmul⟩ := h
-  let x₀ : Over.mk ((𝟙_ (Over S')).hom ≫ f) ⟶ G := Over.homMk (η[G'].left ≫ φ) (by
-    show (η[G'].left ≫ φ) ≫ G.hom = (𝟙_ (Over S')).hom ≫ f
-    rw [Category.assoc, hpb.w, ← Category.assoc, Over.w η[G']])
-  have hη : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by
-    show toUnit (𝟙_ (Over S')) ≫ η[G'] = η[G']
-    first
-    | rw [toUnit_unit, Category.id_comp]
-    | rw [Subsingleton.elim (toUnit (𝟙_ (Over S'))) (𝟙 _), Category.id_comp]
-  have h2 := hmul (𝟙_ (Over S')) η[G'] η[G'] x₀ x₀ rfl rfl
-  have hidem : x₀ * x₀ = x₀ := by
-    apply Over.OverMorphism.ext
-    rw [h2, ← hη, _root_.one_mul]
-    rfl
-  have h1 : x₀ = 1 := by
-    first
-    | exact mul_eq_left.1 hidem
-    | exact mul_right_eq_self.1 hidem
-  have h3 : x₀.left = (toUnit (Over.mk ((𝟙_ (Over S')).hom ≫ f)) ≫ η[G]).left :=
-    congrArg (fun g => g.left) h1
-  rw [Over.comp_left] at h3
-  have h4 : (toUnit (Over.mk ((𝟙_ (Over S')).hom ≫ f))).left = f := by
-    first
-    | simp
-    | simpa using Over.w (toUnit (Over.mk ((𝟙_ (Over S')).hom ≫ f)))
-  rw [h4] at h3
-  exact h3
+  apply PositivityTheory.UnitarySelfGeneration.Isomove.mv_eta <;> assumption
 
 section Pt
 

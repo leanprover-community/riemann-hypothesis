@@ -1,10 +1,17 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefEmbed
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.ClosGenStable
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOne
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefOfEmb
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.NormSubOneLeOfHsdA
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SigLamMemLpOfNe
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.ClosGenStable
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOneA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RorthFunctionalEqZero
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.MeasurePreservingMulRight
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefEmbed
 
 @[expose] public section
 
@@ -221,8 +228,8 @@ theorem tf_tensGrp_mul (dual : Bool) {ε : Fin n → Bool} {σ : Matrix (Fin n) 
     (hσ : IsURepOn (UJset ε) σ) {g h : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) (hh : h ∈ UJset ε)
     (f : Fin n → H) : tensGrp dual σ (g * h) f = tensGrp dual σ g (tensGrp dual σ h f) := by
   funext c
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [tf_tensGrp_apply, map_sum, map_smul, Finset.smul_sum, smul_smul]
+
+  simp only [tf_tensGrp_apply, map_sum, map_smul, Finset.smul_sum, smul_smul]
   rw [sum_comm]
   refine sum_congr rfl fun d _ => ?_
   rw [← Finset.sum_smul, hσ.1.2 g hg h hh, ContinuousLinearMap.comp_apply]

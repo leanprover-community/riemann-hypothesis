@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ThetaChr
 public import Formalism.LocalToGlobal.JointCharacters.LocEMulLocE
+public import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
+public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
 
 @[expose] public section
 

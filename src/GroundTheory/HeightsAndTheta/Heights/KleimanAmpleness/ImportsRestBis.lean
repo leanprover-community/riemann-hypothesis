@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Eval
 
 @[expose] public section
 

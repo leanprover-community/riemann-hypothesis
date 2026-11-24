@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

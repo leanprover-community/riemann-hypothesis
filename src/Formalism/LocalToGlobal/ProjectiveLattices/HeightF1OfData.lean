@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CompTie
 public import Formalism.LocalToGlobal.ProjectiveLattices.ValSetAlgSubset
+public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
+public import Formalism.LocalToGlobal.ProjectiveLattices.RegularityR2Quotient
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

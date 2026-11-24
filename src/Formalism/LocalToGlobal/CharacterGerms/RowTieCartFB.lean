@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.CoeffAlongCvCongr
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
 
 @[expose] public section
 

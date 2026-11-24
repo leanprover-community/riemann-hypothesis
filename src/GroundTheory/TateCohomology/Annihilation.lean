@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RepresentationTheory.Coinduced
+public import Mathlib.RepresentationTheory.Homological.TateCohomology.Basic
 public import GroundTheory.TateCohomology.DimensionShift
 public import GroundTheory.TateCohomology.TateLow
 

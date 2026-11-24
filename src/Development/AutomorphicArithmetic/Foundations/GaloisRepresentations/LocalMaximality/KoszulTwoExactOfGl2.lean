@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.LiftFactorization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -27,7 +69,7 @@ private theorem wd_single {σ E : Type} [LinearOrder σ] [Fintype σ] [AddCommGr
     refine Finset.sum_congr rfl fun i hi => ?_
     by_cases h : t.erase i = T
     · simp [hi, h]
-    · simp [hi, h, Pi.single_eq_of_ne h]
+    · simp [hi, h]
   have Rr : (∑ i ∈ Tᶜ, (Pi.single (insert i T) (GlobalTheory.cubeSign (insert i T) i • w i v) :
       Finset σ → E)) t =
       ∑ i, if i ∉ T ∧ t = insert i T then GlobalTheory.cubeSign t i • w i v else 0 := by
@@ -37,7 +79,7 @@ private theorem wd_single {σ E : Type} [LinearOrder σ] [Fintype σ] [AddCommGr
     have hi' : i ∉ T := by simpa using hi
     by_cases h : t = insert i T
     · subst h; simp [hi']
-    · simp [hi', h, Pi.single_eq_of_ne h]
+    · simp [hi', h]
   rw [hl, L, Rr]
   refine Finset.sum_congr rfl fun i _ => ?_
   have : (i ∈ t ∧ t.erase i = T) ↔ (i ∉ T ∧ t = insert i T) := by
@@ -146,21 +188,21 @@ theorem koszulTwoExact_of_gl2 : FiltrationCocycleLiftCriterion → SubQEx → Ko
           exact Finset.card_pos.2 ⟨_, hQmem j⟩
         omega
       exact Pi.single_eq_of_ne this _
-    set_option synthInstance.maxHeartbeats 100000 in
-      · rw [wd_single, map_sum]
-        refine Finset.sum_congr rfl fun l hl => ?_
-        have hl' : l ∉ Q := by simpa using hl
-        have hlc : l ∈ Qᶜ := hl
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
-        simp only [hterm l hl']
-        rw [← hsum]
-        congr 1
-        have hw : wOn Qᶜ (fun l => act (r l)) l m = ∑ j, act (r (e j)) (g l j) := by
-          simpa [wOn, hl'] using hg l
-        rw [hw, Finset.smul_sum]
-        refine Finset.sum_congr rfl fun j _ => ?_
-        rw [map_zsmul, smul_smul, mul_comm, mul_assoc, GlobalTheory.cubeSign_mul_self, mul_one]
+
+    · rw [wd_single, map_sum]
+      refine Finset.sum_congr rfl fun l hl => ?_
+      have hl' : l ∉ Q := by simpa using hl
+      have hlc : l ∈ Qᶜ := hl
+
+      rw [map_sum]
+      simp only [hterm l hl']
+      rw [← hsum]
+      congr 1
+      have hw : wOn Qᶜ (fun l => act (r l)) l m = ∑ j, act (r (e j)) (g l j) := by
+        simpa [wOn, hl'] using hg l
+      rw [hw, Finset.smul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [map_zsmul, smul_smul, mul_comm, mul_assoc, GlobalTheory.cubeSign_mul_self, mul_one]
   obtain ⟨c, hc, hlev⟩ := gl2 κ E (fun _ => M) (fun l => act (r l)) Q d d wok qex
     (Pi.single Q m) (single_mem M _ hcard hm)
     (by

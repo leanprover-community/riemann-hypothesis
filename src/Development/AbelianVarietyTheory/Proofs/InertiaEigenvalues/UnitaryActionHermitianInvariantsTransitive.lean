@@ -1,7 +1,56 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryOrbitNormalFormUnitInvariant
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,34 +69,7 @@ def starLin [Unram F E] : E →ₗ[F] E where
     simp only [Algebra.smul_def, RingHom.id_apply, star_mul, star_algebraMap, mul_comm]
 
 theorem fixed_mem_range [Unram F E] {y : E} (hy : star y = y) : ∃ x : F, algebraMap F E x = y := by
-  by_contra hne
-  push_neg at hne
-  have hli : LinearIndependent F ![(1 : E), y] := by
-    rw [LinearIndependent.pair_iff]
-    intro s t hst
-    by_cases ht : t = 0
-    · subst ht
-      simp only [zero_smul, add_zero] at hst
-      exact ⟨(smul_eq_zero.mp hst).resolve_right one_ne_zero, rfl⟩
-    · exfalso
-      apply hne (-(s / t))
-      rw [Algebra.smul_def, Algebra.smul_def, mul_one] at hst
-      have htE : algebraMap F E t ≠ 0 := by simpa using ht
-      rw [map_neg, map_div₀]
-      field_simp
-      linear_combination -hst
-  haveI : FiniteDimensional F E := Module.finite_of_finrank_eq_succ (Unram.finrank_eq (F := F) (E := E))
-  have htop := hli.span_eq_top_of_card_eq_finrank' (by simp [Unram.finrank_eq (F := F) (E := E)])
-  obtain ⟨z, hz⟩ := Unram.star_ne (F := F) (E := E)
-  apply hz
-  have hle : Submodule.span F (Set.range ![(1 : E), y]) ≤ LinearMap.ker (starLin (F := F) (E := E) - LinearMap.id) := by
-    rw [Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    fin_cases i
-    · simp [starLin]
-    · simp [starLin, hy]
-  have := hle (htop ▸ Submodule.mem_top : z ∈ Submodule.span F (Set.range ![(1 : E), y]))
-  simpa [starLin, sub_eq_zero] using this
+  apply GlobalTheory.JR.Step.UNormal.exists_algebraMap_of_star_eq <;> assumption
 
 section Gen
 variable {r : ℕ} {K : Type} [CommRing K]
@@ -134,7 +156,7 @@ theorem Bm_sec (a : Inv r K) : Bm (sec a) = 1 := by
   ext i j
   simp only [Bm, of_apply, sec_snd]
   rw [show (sec a).1 = companion a.1 from rfl, comp_pow_ev a.1 j j.2]
-  simp [ev, Matrix.one_apply, Fin.ext_iff, eq_comm]
+  simp [ev, Matrix.one_apply, Fin.ext_iff]
 
 theorem sec_rec (a : Inv r K) (k : ℕ) :
     mom (sec a) (k + r) = -((fun j : Fin r => mom (sec a) (k + j)) ⬝ᵥ a.1) :=
@@ -273,8 +295,8 @@ theorem mom_map (X : Hn r F E) (a : Inv r F) (h : HasInv X a) (n : ℕ) :
       -((fun j : Fin r => algebraMap F E (mom (sec a) (k + j))) ⬝ᵥ fun i => algebraMap F E (a.1 i)) := by
     intro k
     rw [sec_rec]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [dotProduct, map_sum, map_mul]
+
+    simp [dotProduct, map_sum, map_mul]
   have := seq_eq (u := fun n => mom X.toGl n) (v := fun n => algebraMap F E (mom (sec a) n)) _
     (mom_add_r X.toGl _ hq) hS (fun k hk => by
       have e1 := h2 ⟨k, hk⟩
@@ -476,7 +498,7 @@ theorem part4 [Unram F E] (a : Inv r F) (hΔ : Delta a ≠ 0) :
       exact (congrFun e3 i).symm
     · intro i
       have e4 := congrFun (congrFun G ⟨0, i.pos⟩) i
-      simp only [map_apply, of_apply, hankel, Fin.val_mk, zero_add] at e4
+      simp only [map_apply, of_apply, hankel, zero_add] at e4
       rw [← e4, mom_sec_lt]
 end Four
 

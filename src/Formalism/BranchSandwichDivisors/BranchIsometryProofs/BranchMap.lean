@@ -1,9 +1,65 @@
 module
 
-public import Mathlib
-public import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.BranchSandwichDivisors.StatementW
+public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.DualWeylNonDom
+public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetMinor
+public import Formalism.GradedWeylDivisibility.StatementC
+public import Mathlib.RingTheory.Derivation.Lie
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.MemBranchRangeOfDefectEq
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalC
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.SumIcoTsubTelescope
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -95,7 +151,7 @@ theorem isWeightedHomogeneous_smul {R σ B : Type*} [CommRing R] [AddCommMonoid 
   apply hF
   intro h0
   apply hd
-  rw [coeff_smul, h0, smul_zero]
+  rw [MvPolynomial.coeff_smul, h0, smul_zero]
 
 private theorem bm_whcSame_lemma {R σ B : Type*} [CommRing R] [AddCommMonoid B] {w : σ → B} {m : B}
     {φ : MvPolynomial σ R} (h : IsWeightedHomogeneous w φ m) : weightedHomogeneousComponent w m φ = φ := by
@@ -293,7 +349,7 @@ theorem elemDeriv_lie_bracket (R : Type*) [CommRing R] (n : ℕ) (i j k l : Fin 
       (if j = k then bmE R n i l else 0) - (if i = l then bmE R n k j else 0) := by
   refine MvPolynomial.derivation_ext fun v => ?_
   rw [Derivation.commutator_apply, Derivation.sub_apply, ite_derivation_apply, ite_derivation_apply]
-  simp only [elemDeriv_X, derivation_apply_ite, map_zero]
+  simp only [elemDeriv_X, derivation_apply_ite]
   by_cases h1 : v.2 = l <;> by_cases h2 : v.2 = j <;> by_cases h3 : j = k <;> by_cases h4 : i = l <;>
     by_cases h5 : v.1 = Fin.last n <;> simp_all
   all_goals (try (intros; simp_all))
@@ -302,7 +358,7 @@ theorem lastRowDeriv_elemDeriv_commute (R : Type*) [CommRing R] (n : ℕ) (l j s
     ⁅bmZ R n l j, bmE R n s t⁆ = 0 := by
   refine MvPolynomial.derivation_ext fun v => ?_
   rw [Derivation.commutator_apply]
-  simp only [elemDeriv_X, lastRowDeriv_X, derivation_apply_ite, map_zero, Derivation.zero_apply]
+  simp only [elemDeriv_X, lastRowDeriv_X, derivation_apply_ite, Derivation.zero_apply]
   by_cases h1 : v.1 = Fin.last n <;> simp [h1]
 
 theorem bmEL_rel (R : Type*) [CommRing R] (n : ℕ) (i j k l : Fin n) :
@@ -335,7 +391,7 @@ theorem bm_ndE_self (R : Type*) [CommRing R] (r n : ℕ) (s : Fin n) : ndE R r n
   by_cases h : v.2 = s
   · subst h
     simp
-  · simp [h, Pi.single_apply, Ne.symm h]
+  · simp [h, Ne.symm h]
 
 theorem bm_ndEul_eq (R : Type*) [CommRing R] (n : ℕ) (s : Fin n) :
     ndEul R (n + 1) n s = bmE R n s s + bmZ R n s s := by
@@ -363,8 +419,8 @@ theorem rowAction_X_sum (R : Type*) [CommRing R] {r n : ℕ} (g : Matrix (Fin r)
 theorem rowAction_ext_elemDeriv_X (R : Type*) [CommRing R] (n : ℕ) (g : Matrix (Fin n) (Fin n) R) (s t : Fin n)
     (v : Fin (n + 1) × Fin n) :
     rowAct R (extM R g) (bmE R n s t (X v)) = bmE R n s t (rowAct R (extM R g) (X v)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [elemDeriv_X, rowAction_X_sum, map_sum]
+
+  rw [elemDeriv_X, rowAction_X_sum, map_sum]
   obtain ⟨a, c⟩ := v
   by_cases hc : c = t
   · subst hc
@@ -406,7 +462,7 @@ theorem lastRowDeriv_eq_X_mul_pderiv (R : Type*) [CommRing R] (n : ℕ) (s t : F
     refine MvPolynomial.derivation_ext fun v => ?_
     rw [lastRowDeriv_X, Derivation.smul_apply, pderiv_X, smul_eq_mul]
     obtain ⟨a, b⟩ := v
-    by_cases h1 : b = t <;> by_cases h2 : a = Fin.last n <;> simp [h1, h2, Pi.single_apply]
+    by_cases h1 : b = t <;> by_cases h2 : a = Fin.last n <;> simp [h1, h2]
   rw [this, Derivation.smul_apply, smul_eq_mul]
 
 theorem lastRowDiagDeriv_coeff (R : Type*) [CommRing R] (n : ℕ) (s : Fin n) (F : BP R n)
@@ -434,7 +490,7 @@ theorem lastRowDiagDeriv_coeff (R : Type*) [CommRing R] (n : ℕ) (s : Fin n) (F
 theorem bmZ_euler (R : Type*) [CommRing R] (n : ℕ) (β : Fin n → ℤ) (s : Fin n) (F : BP R n)
     (hF : IsWeightedHomogeneous (zW n) F β) : bmZ R n s s F = ((β s : ℤ) : R) • F := by
   ext m
-  rw [lastRowDiagDeriv_coeff, coeff_smul, smul_eq_mul]
+  rw [lastRowDiagDeriv_coeff, MvPolynomial.coeff_smul, smul_eq_mul]
   by_cases hc : AddMonoidAlgebra.coeff F m = 0
   · rw [hc, mul_zero, mul_zero]
   · have h1 := hF hc
@@ -599,7 +655,7 @@ theorem bmA_two (c X Y : A) (hX : c * X = X * c) (hY : c * Y = Y * c) (P Q : Pro
         ((if Q then c else 0) - Y) * ((if P then c + 1 else 0) - X) =
       (if P then Y else 0) - (if Q then X else 0) + (X * Y - Y * X) := by
   split_ifs <;>
-    (try simp only [mul_sub, sub_mul, mul_add, add_mul, mul_one, one_mul, mul_zero, zero_mul, sub_zero,
+    (try simp only [mul_sub, sub_mul, mul_add, mul_one, sub_zero,
       zero_sub, neg_mul, mul_neg]) <;>
     (try simp only [← hX, ← hY]) <;> abel
 
@@ -935,8 +991,8 @@ theorem bmC_pderiv_colAddGen_X {R : Type*} [CommRing R] {r n : ℕ} {l j : Fin n
     (v : Fin r × Fin n) :
     pderiv none (colAddGen R l j (X v)) = colAddGen R l j (ndE R r n l j (X v)) := by
   by_cases h : v.2 = j
-  · simp [colAddGen, ndE, mkDerivation_X, h, hlj, Derivation.leibniz, pderiv_X, Pi.single_apply]
-  · simp [colAddGen, ndE, mkDerivation_X, h, pderiv_X, Pi.single_apply]
+  · simp [colAddGen, ndE, mkDerivation_X, h, hlj, Derivation.leibniz, pderiv_X]
+  · simp [colAddGen, ndE, mkDerivation_X, h, pderiv_X]
 
 theorem bmC_pderiv_colAddGen {R : Type*} [CommRing R] {r n : ℕ} {l j : Fin n} (hlj : l ≠ j)
     (g : MvPolynomial (Fin r × Fin n) R) :
@@ -990,7 +1046,7 @@ theorem bm_mem_dualWeyl_iff {R : Type} [CommRing R] [IsDomain R] [CharZero R] {r
     · intro m hm
       funext s
       have h1 := congrArg (AddMonoidAlgebra.coeff · m) (heul s)
-      rw [ndEul_coeff, coeff_smul, smul_eq_mul] at h1
+      rw [ndEul_coeff, MvPolynomial.coeff_smul, smul_eq_mul] at h1
       have h2 := mul_right_cancel₀ hm h1
       rw [← nd_weight_apply]
       exact_mod_cast h2
@@ -1596,9 +1652,6 @@ theorem bm_eig {R : Type} [CommRing R] [IsDomain R] [CharZero R] {n : ℕ} (lam 
     exact capDet_eigen (bmEL R n) u (zcomp R n β G) (fun s => (lam s : ℤ) - β s)
       (fun l j hlj => bmD_raise lam G hG β hmax l j hlj) (fun s => bmD_weight lam G hG β s)
 
-theorem bmF_omg_add {n : ℕ} (β β' : Fin n → ℤ) : omg (β + β') = omg β + omg β' := by
-  simp only [omg, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-
 theorem bm_isLow_iff {R : Type*} [CommRing R] {n : ℕ} (D : ℤ) (L : BP R n) :
     IsLow D L ↔ ∀ β, D ≤ omg β → zcomp R n β L = 0 := by
   classical
@@ -1745,7 +1798,7 @@ theorem bmLift_mul {R : Type*} [CommRing R] {n : ℕ} {lam b lam' b' : Fin n →
       have e3 : (fun s => (((b + b') s : ℕ) : ℤ)) = (fun s => (b s : ℤ)) + fun s => (b' s : ℤ) := by
         funext s
         simp
-      rw [e3, bmF_omg_add]
+      rw [e3, _root_.Formalism.BranchingDeterminantCap.bmD_omg_add]
     rw [e1, e2]
     refine bmF_low_add (bmF_fil_mul_low (bmF_fil_of_WH (bmF_lead_WH R n b f)) h'.2.2) ?_
     rw [add_comm (omg _)]
@@ -1808,9 +1861,6 @@ theorem bmF_zmon_single (R : Type*) [CommRing R] (n : ℕ) (t : Fin n) :
   rw [Finset.prod_eq_single t (fun b _ hb => by simp [Pi.single_apply, hb])
     (fun h => absurd (Finset.mem_univ t) h)]
   simp
-
-theorem bmF_omg_single {n : ℕ} (t : Fin n) : omg (Pi.single t 1 : Fin n → ℤ) = ((t : ℕ) : ℤ) + 1 := by
-  simp [omg, Pi.single_apply]
 
 theorem bmF_neg_one_pow_WH {R σ B : Type*} [CommRing R] [AddCommMonoid B] (w : σ → B) (k : ℕ) :
     IsWeightedHomogeneous w ((-1 : MvPolynomial σ R) ^ k) 0 := by
@@ -1884,7 +1934,7 @@ theorem bmLift_minor1 (R : Type*) [CommRing R] (n : ℕ) {s : ℕ} (I : Fin s �
       by_cases ht : t = ⟨s, hs⟩
       · subst ht; simp
       · simp [ht]
-    rw [h2, h3, bmF_omg_single, bmF_omg_single]
+    rw [h2, h3, _root_.Formalism.BranchingDeterminantCap.bmD_omg_single, _root_.Formalism.BranchingDeterminantCap.bmD_omg_single]
     simp
 
 theorem bmF_extM_castSucc (R : Type*) [CommRing R] {n : ℕ} (g : Matrix (Fin n) (Fin n) R) (a b : Fin n) :
@@ -1923,7 +1973,7 @@ theorem bmF_rowAct_emb (R : Type*) [CommRing R] {n : ℕ} (g : Matrix (Fin n) (F
   have : (rowAct R (extM R g)).comp (emb R n) = (emb R n).comp (rowAct R g) := by
     refine MvPolynomial.algHom_ext fun v => ?_
     rw [AlgHom.comp_apply, AlgHom.comp_apply, bmF_emb_X, bmF_rowAct_X_castSucc, rowAction_X_sum]
-    simp [emb, rename_C]
+    simp [emb]
   exact AlgHom.congr_fun this f
 
 theorem bmF_rowAct_var_WH (R : Type*) [CommRing R] {n : ℕ} {B : Type*} [AddCommMonoid B]
@@ -1966,8 +2016,8 @@ theorem bmF_rowAct_WH (R : Type*) [CommRing R] {n : ℕ} {B : Type*} [AddCommMon
     (w : Fin (n + 1) × Fin n → B) (hw : ∀ a b s : Fin n, w (a.castSucc, s) = w (b.castSucc, s))
     (g : Matrix (Fin n) (Fin n) R) (F : BP R n) (β : B) (hF : IsWeightedHomogeneous w F β) :
     IsWeightedHomogeneous w (rowAct R (extM R g) F) β := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [F.as_sum, map_sum]
+
+  rw [F.as_sum, map_sum]
   refine IsWeightedHomogeneous.sum _ _ _ fun d hd => ?_
   have := bmF_rowAct_monomial_WH R w hw g d (AddMonoidAlgebra.coeff F d)
   rwa [hF (mem_support_iff.mp hd)] at this
@@ -1976,8 +2026,8 @@ theorem bmF_rowAct_low (R : Type*) [CommRing R] {n : ℕ} (g : Matrix (Fin n) (F
     (hL : IsLow D L) : IsLow D (rowAct R (extM R g) L) := by
   classical
   intro m' hm'
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [L.as_sum, map_sum] at hm'
+
+  rw [L.as_sum, map_sum] at hm'
   obtain ⟨d, hd, hmd⟩ := Finset.mem_biUnion.mp (MvPolynomial.support_sum hm')
   have hW := bmF_rowAct_monomial_WH R (zW n)
     (fun a b s => by rw [bmF_zW_castSucc, bmF_zW_castSucc]) g d (AddMonoidAlgebra.coeff L d)

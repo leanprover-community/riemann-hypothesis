@@ -1,36 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerSectionOfConst
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMahler
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PDefectAverage
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerAverageSplit
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerIntegrand
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSphereMeanFubini
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PEvalSpecFirst
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PCycleAverage
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeAverage
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFubini
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogAverage
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogPointOf
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBallAverageLinear
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSphereMeanLinearBall
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogMeasurable
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowDegreePos
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBallVolume
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAdmissibleAE
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAdmissibleAENrm
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSpecFirstHomog
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormAssoc
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleAdd
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleSmul
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.RenameProdMapMul
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSpecFirstSwapMahler
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBound
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.OfLeaves
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInj
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInjSet
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaLocal
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChowFormHomog
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Imports
+public import Mathlib.RingTheory.Nullstellensatz
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMass
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaMultiplicityWeight
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBaseChangeAvoid
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartZeroTrdeg
@@ -38,11 +13,10 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormBas
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormExtend
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormReducedRadical
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFiniteFibreDim
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFsLogIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeGraphCover
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeJacMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeKrullDimLe
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapArea
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapAreaOne
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeSmoothLocalGraph
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeTangentDim
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFormsThroughPoint
@@ -54,7 +28,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncIdealSep
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncidenceZeroLocus
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PKernelProjMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPolyLocalGenerators
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProjPrimeHasPoint
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentGaussInvariant
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentJacComp
@@ -65,136 +38,85 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegAdjoin
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegBaseAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAnalyticImplicitChart
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchAwayFromRim
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchContainsNormalPoint
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchFillDimension
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchInverseHolomorphic
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchInverseOffHypersurface
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchLift
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchOffHypersurface
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchProperAtPoint
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.EqZeroOfMemZeroLocusLineOriginIdeal
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGeneralProjection
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceImmersiveGeneral
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchProperAtPoint
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBrouwerFixedPoint
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PChartChangeSheetNull
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeSheetGramLintegral
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeSliceSheetParam
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCriticalFlatNotInjective
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDivisorGeneralPointBranches
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDominantFibreBound
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteGermProjectionCover
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogSmul
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPlaneSliceMass
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPointLine
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGermFiniteProjection
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHolomorphicFibreInfinite
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHolomorphicIsolatedFibreOpen
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PImageDimLe
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PInjectiveHolomorphicInverse
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PInjectiveHolomorphicJacobianNeZero
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PInjectiveHolomorphicOpen
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PInvarianceOfDomain
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIrreducibleGermComplementConnected
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIrreducibleGermRegularConnected
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIsolatedFibreOpenFixed
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIsolatedFibreOpenPolyFull
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIsolatedPointsCount
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIsolatedPointsCountPrime
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLelongLimitAtBranches
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLelongLimitGoodPoints
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLelongLimitOnZero
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLelongMassNearSmall
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLinearNoetherNormalization
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLocalBranchedCovering
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLocalParametrisation
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLocalTrace
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffBoundaryParts
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensChain
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PManifoldZerosComplementConnected
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalComplementConnected
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalGermIrreducible
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalLocallyIrreducible
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalMaximumPrinciple
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelExists
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelOpenMapping
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelProper
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalOpenMapping
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalRiemannExtension
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PParametrisationSheetsConnected
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongRegularise
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongLimit
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PProjectionInjectiveOffHypersurface
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PProperOpenProjectionCover
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegularLocusDense
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegularLocusIdentity
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegularOffHypersurface
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRiemannExtensionAnalytic
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetFormCompare
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetPieceProductAnalytic
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetPieceReachesCentre
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceIdeal
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensLeibniz
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffDominated
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFormIntPos
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffBoundaryBound
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeChartGram
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PTorusInvLevi
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompact
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffGradient
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHessCCompPluri
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLogLogCutHessDeriv
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsPiola
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StMaDensChain
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceMassFinite
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StokesOffDiscriminantWindow
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceImmersiveGeneral
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PChartMassCompact
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLelongRegularise
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StStokesOnChart
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.GraphChartEventuallyEqSheet
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceMassFinite
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartHomogenise
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartDehomog
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PMinimalPrimeHomog
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PLocalMultOrd
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PDehomogOrd
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.POrdPolynomialLocalization
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarIntAdd
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOff
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PStokesOnChart
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeDeepAreaCount
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeDeepMass
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeDeepRankOne
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeEuclMass
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartChangeSheetNull
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPosPartIndependent
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLinearNoetherNormalization
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPosPartSplit
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIntegralIndependent
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarMassNearSmall
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PConormalGenerationGeneric
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFrameGraphGeneric
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFrameImplicitGraph
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFrameJacobianGeneric
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PJacobianRankGeneric
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Imports
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Topology.Separation.CompletelyRegular
+import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Imports
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeBallFinite, GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProjPrimeHasPoint, GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Assembly
+
+-- ===== clump member: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeBallFinite =====
+-- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeBallFinite", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChowFormHomog\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.CStarAlgebra.Classes\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Separation.CompletelyRegular\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory
+
+noncomputable section
+
+theorem ConeBallFinite.proof (hMass : ConeIntegralMass.Statement) : ConeBallFinite.Statement := by
+  intro n e h W f hW hf
+  obtain ⟨δ, hδ1, hδ⟩ := hf.exists_multiHomog hW
+  have hm := hMass n e δ h W f hW hf hδ
+  rw [lt_top_iff_ne_top]
+  intro hinf
+  unfold coneIntegral at hm
+  change (∫ y in coneBall h W, (1 : ℝ) ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ))) / _ =
+    (δ : ℝ) at hm
+  rw [setIntegral_const, measureReal_def, hinf, ENNReal.toReal_top, zero_smul, zero_div] at hm
+  have hδ0 : (δ : ℝ) ≠ 0 := by exact_mod_cast (by omega : δ ≠ 0)
+  exact hδ0 hm.symm
+
+end
+
+end GroundTheory.Heights₂.Heights
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeBallFinite =====
+
+-- ===== clump member: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProjPrimeHasPoint =====
+-- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProjPrimeHasPoint", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Imports\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\npublic import Mathlib.RingTheory.Nullstellensatz\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial
+
+theorem ProjPrimeHasPoint.proof : ProjPrimeHasPoint.Statement := by
+  intro F _ n W hW
+  have := hW.isPrime
+  obtain ⟨j, hj⟩ := hW.isRelevant
+  by_contra hcon
+  push Not at hcon
+  apply hj
+  have hmem : (X j : MvPolynomial (Fin n) F) ∈
+      vanishingIdeal F (zeroLocus (AlgebraicClosure F) W) := by
+    intro x hx
+    by_cases hx0 : x = 0
+    · subst hx0
+      simp
+    · obtain ⟨q, hq, hne⟩ := hcon x hx0
+      exact absurd (hx q hq) hne
+  rwa [IsPrime.vanishingIdeal_zeroLocus] at hmem
+
+end GroundTheory.Heights₂.Heights
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProjPrimeHasPoint =====
+
+-- ===== clump member: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Assembly =====
+-- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Assembly", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Imports\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMass\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaMultiplicityWeight\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBaseChangeAvoid\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartZeroTrdeg\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormBaseChange\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormExtend\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormReducedRadical\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeBallFinite\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFiniteFibreDim\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFsLogIntegrable\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeGraphCover\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeJacMeasurable\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeKrullDimLe\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeSmoothLocalGraph\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeTangentDim\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFormsThroughPoint\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PGraphAreaFibre\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PGraphAreaIntegral\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PHolomorphicImplicitGraph\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncIdealNeBotDim\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncIdealSeparate\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncidenceZeroLocus\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PKernelProjMeasurable\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPolyLocalGenerators\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProjPrimeHasPoint\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentGaussInvariant\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentJacComp\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentJacCompress\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PThroughPointIncIdeal\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PThroughTwoPointsTrdeg\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegAdjoinLe\npublic import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegBaseAlgebraic\npublic import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly\npublic import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly\npublic import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PConormalGenerationGeneric\npublic import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFrameJacobianGeneric\npublic import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PJacobianRankGeneric\nimport GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Imports\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
@@ -217,14 +139,11 @@ theorem ChowFormBaseChange.full : ChowFormBaseChange.Statement :=
           TrdegBaseAlgebraic.proof)
         (IncIdealNeBotDim.proof IncIdealDim.full))))
 
-theorem BaseChangeAvoid.full : BaseChangeAvoid.Statement :=
-  BaseChangeAvoid.proof
+alias BaseChangeAvoid.full := _root_.GroundTheory.Heights₂.Heights.BaseChangeAvoid.proof
 
-theorem ProjPrimeHasPoint.full : ProjPrimeHasPoint.Statement :=
-  ProjPrimeHasPoint.proof
+alias ProjPrimeHasPoint.full := _root_.GroundTheory.Heights₂.Heights.ProjPrimeHasPoint.proof
 
-theorem ChowFormSectionVertical.full : ChowFormSectionVertical.Statement :=
-  Vertical.ChowFormSectionVertical.full
+alias ChowFormSectionVertical.full := _root_.GroundTheory.Heights₂.Heights.Vertical.ChowFormSectionVertical.full
 
 theorem ConeMassOfFibre.full : ConeMassOfFibre.Statement :=
   (ConeMassOfFibre.of_open
@@ -257,3 +176,6 @@ theorem ConeFsLogIntegrable.full : ConeFsLogIntegrable.Statement :=
   (ConeFsLogIntegrable.proof ConeBallFinite.full ConeSlabBound.full)
 
 end GroundTheory.Heights₂.Heights
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Assembly =====

@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperCutObj
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 
 @[expose] public section
 

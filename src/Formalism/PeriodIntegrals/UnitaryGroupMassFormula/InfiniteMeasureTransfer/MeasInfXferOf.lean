@@ -1,8 +1,45 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.MeasInfCut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HaarOn
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -61,9 +98,7 @@ theorem transport (E : I.Ginf ≃ₜ* H) (K : Subgroup H) (S : Set I.Ginf) (hS :
     (hcl : IsClosed S) (μ : Measure I.Ginf) (hμ : IsHaarOnSet I S μ) :
     ∃ ν : Measure K, ν.IsHaarMeasure ∧ Formalism.L2.SG.Measures.amb ν = μ.map E := by
   set S' : Subgroup I.Ginf := K.comap E.toMulEquiv.toMonoidHom with hS'def
-  have hSS : (S' : Set I.Ginf) = S := by
-    ext s
-    exact hS s
+  have hSS : (S' : Set I.Ginf) = S := Set.ext hS
   have hcl' : IsClosed (S' : Set I.Ginf) := hSS ▸ hcl
   have hμ' : IsHaarOnSet I (S' : Set I.Ginf) μ := hSS ▸ hμ
   obtain ⟨hHaar, -, -⟩ := Formalism.L2.SG.Pf.haarOnSet_isHaar_inst I S' hcl' μ hμ'
@@ -119,8 +154,7 @@ theorem measInfXfer_of (h1 : IsoStep) (h2 : NStep) (h3 : HStep) (h4 : NClosed) (
   obtain ⟨ν2, hν2, hamb2⟩ := transport I E _ (Hset I (Set.range e ∪ Set.range f ∪ {z}))
     (fun s => by rw [hE]; exact h3 I hb r e f z s) (h5 I _) muH hH
   have hEfun : (E : I.Ginf → HI I) = Formalism.L2.SG.Pf.MeasInf.toInfL I hb := funext hE
-  refine ⟨ν1, ν2, hν1, hν2, ?_, ?_⟩
-  · rw [hamb1, hEfun]
-  · rw [hamb2, hEfun]
+  exact ⟨ν1, ν2, hν1, hν2, by simpa [hEfun] using hamb1,
+    by simpa [hEfun] using hamb2⟩
 
 end Formalism.L2.SG.Pf.MeasInfW

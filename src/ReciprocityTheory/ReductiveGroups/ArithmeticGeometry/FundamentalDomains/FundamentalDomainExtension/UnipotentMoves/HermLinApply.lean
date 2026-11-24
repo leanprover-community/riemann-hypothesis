@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainExtension.UnipotentMoves.KatoClassHeckeEulerFactorRelation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 
 @[expose] public section
@@ -137,12 +139,12 @@ theorem sDelta_of (hemb : SEmb E) (hext : SExt E) (hdual : SDual E)
         simp only [hermC_sub_left, hermC_sub_right, hermC_smul_left, hermC_smul_right, h1, h2, h3, h4]
         ring
       have hl1 : linF (fun a => τ.1 (cf a)) (Data.emb τ.1 μ) = τ.1 (F μ) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [linF_apply, hFc, map_sum]
+
+        rw [linF_apply, hFc, map_sum]
         simp only [Data.emb, map_mul]
       have hl2 : linF (fun a => τ.1 (cf a)) (Data.emb τ.1 ξ) = 1 := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [linF_apply, show (1 : ℂ) = τ.1 (F ξ) by rw [hFξ, map_one], hFc, map_sum]
+
+        rw [linF_apply, show (1 : ℂ) = τ.1 (F ξ) by rw [hFξ, map_one], hFc, map_sum]
         simp only [Data.emb, map_mul]
       set co := X.Hf z1 τ (Data.emb τ.1 μ) (Data.emb τ.1 ξ) /
         X.Hf z1 τ (Data.emb τ.1 ξ) (Data.emb τ.1 ξ) with hco

@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFSecRed
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFVert
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFIntZero
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFHoriz
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreSum
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 
 @[expose] public section

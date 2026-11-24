@@ -1,7 +1,20 @@
 module
 
+public import Mathlib.Analysis.InnerProductSpace.Subspace
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.HidaSetting
+public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KUnitB
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefBTensSubKStable
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DataGenSubIrred
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefAInnerEqZero
 
 @[expose] public section
 
@@ -127,8 +140,8 @@ theorem adjA_rep (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn 
       funext x
       simp only [Pi.single_apply, Finset.sum_apply]
       split_ifs <;> simp
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum, inner_sum]
+
+    rw [this, map_sum, inner_sum]
     exact Finset.sum_eq_zero fun q hq => hg q hq v hv c
   have hcasP : ∀ y ∈ genSub E V, P y → P (casimirK ε E y) := by
     intro y hy hPy

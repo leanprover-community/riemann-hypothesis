@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThIndep
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThU
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

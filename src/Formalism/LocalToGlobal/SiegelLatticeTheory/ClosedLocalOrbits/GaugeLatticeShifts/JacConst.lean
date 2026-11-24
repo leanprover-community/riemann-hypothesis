@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFrobeniusHolds
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 

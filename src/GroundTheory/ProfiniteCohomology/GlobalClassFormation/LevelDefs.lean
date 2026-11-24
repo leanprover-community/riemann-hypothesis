@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
+public import Mathlib.RepresentationTheory.Coinduced
 
 @[expose] public section
 

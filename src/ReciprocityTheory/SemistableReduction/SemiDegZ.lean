@@ -1,6 +1,9 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.SemiDegW
+public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

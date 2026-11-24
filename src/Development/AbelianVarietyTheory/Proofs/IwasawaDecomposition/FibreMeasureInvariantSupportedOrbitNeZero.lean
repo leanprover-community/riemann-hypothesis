@@ -1,12 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FibreFamilyHermitianQuadraticFormAtUnitPropsStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FibreMeasuresTransportUnitarySimilitudeStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HaarModulusTensorEqModulusNormStatement
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmExtensionLocalFieldProductRingExistsSmulEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousDistribHaarCharUnits
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmExtensionLocalFieldProductRingExistsSmulEqStatement
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FibreFamilyHermitianQuadraticFormAtUnitProps
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FibreMeasuresTransportUnitarySimilitude
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HaarModulusTensorEqModulusNorm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,9 +71,9 @@ theorem form_mulVec {g : Matrix (Fin n) (Fin n) A} (hg : Formalism.UG.cT s g * J
     Formalism.UG.hform s J (g.mulVec x) (g.mulVec y) = Formalism.UG.hform s J x y := by
   have e : (fun i => s (g.mulVec x i)) = Matrix.vecMul (fun i => s (x i)) (Formalism.UG.cT s g) := by
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, Matrix.vecMul, dotProduct, map_sum, map_mul, Formalism.UG.cT, Matrix.transpose_apply,
-      Matrix.map_apply, mul_comm]
+
+    simp only [Matrix.mulVec, Matrix.vecMul, dotProduct, map_sum, map_mul, Formalism.UG.cT, Matrix.transpose_apply,
+    Matrix.map_apply, mul_comm]
   rw [form_eq, form_eq, e, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hg]
 
 theorem form_smul (a : A) (x : Fin n → A) :
@@ -74,8 +118,8 @@ theorem q_rat [CharZero F] (h2 : Module.finrank F E = 2) (x : Fin M → E) (β :
     qR R σ J (fun i => inclR R (x i)) = algebraMap F R β := by
   haveI : FiniteDimensional F E := Module.finite_of_finrank_eq_succ h2
   have e : hR R σ J (fun i => inclR R (x i)) (fun i => inclR R (x i)) = inclR R (hE σ J x x) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hR, hE, Formalism.UG.hform, JR, Matrix.map_apply, sig_incl, map_sum, map_mul]
+
+    simp only [hR, hE, Formalism.UG.hform, JR, Matrix.map_apply, sig_incl, map_sum, map_mul]
     rfl
   have e2 : inclR R (algebraMap F E β) = algebraMap R (R ⊗[F] E) (algebraMap F R β) := by
     rw [← IsScalarTower.algebraMap_apply]
@@ -102,7 +146,7 @@ theorem fibre_invariant_orbit_ne_zero : ∀ (F E : Type) [Field F] [NumberField 
   intro F E _ _ _ _ _ σ hCM R _ _ _ _ _ _ _ _ _ hN M J x β lam ν m hJ hβ hx hlam hν hm
   have hu : IsUnit (algebraMap F R β) := (IsUnit.mk0 β hβ).map _
   have hq : qR R σ J (ratTup (F := F) R x 0) = algebraMap F R β := q_rat R σ J hCM.2.2.1 (x 0) β hx
-  obtain ⟨hsupp, -, huniq⟩ := GlobalTheory.T.fibreFamily_hermitian_quadratic_form_at_unit_props F E σ R hN M J _ ν _ m hν hu hm
+  obtain ⟨hsupp, -, huniq⟩ := _root_.GlobalTheory.GaugeEx.FibBasic.fibAt_basic F E σ R hN M J _ ν _ m hν hu hm
   have h1 : modu R 1 = 1 := (GlobalTheory.GaugeEx.modu_basic R).2.2.1
   refine ⟨fun g => ?_, ?_, ?_⟩
   · set G : Matrix (Fin M) (Fin M) (R ⊗[F] E) := (HA.mat R σ J g).val with hG
@@ -113,8 +157,8 @@ theorem fibre_invariant_orbit_ne_zero : ∀ (F E : Type) [Field F] [NumberField 
       rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]
       exact (IsUnit.mk0 _ hJ.2).map _
     have hm1 : modu (R ⊗[F] E) G.det = 1 := by
-      rw [(GlobalTheory.T.haarModulus_tensor_eq_modulus_norm F E σ hCM R G.det 1 hd (by rw [map_one, det_norm _ _ hJu hg])).2, h1]
-    have := GlobalTheory.T.fibreMeasures_transport_unitary_similitude F E σ R hN M J J lam ν _ 1 m G hlam hν hd isUnit_one
+      rw [(_root_.GlobalTheory.GaugeEx.modu_eq_modu_norm F E σ hCM R G.det 1 hd (by rw [map_one, det_norm _ _ hJu hg])).2, h1]
+    have := _root_.GlobalTheory.GaugeEx.fibAt_similitude F E σ R hN M J J lam ν _ 1 m G hlam hν hd isUnit_one
       (fun z => by rw [one_mul]; unfold qR hR; rw [form_mulVec _ _ hg]) hm
     rw [one_mul, hm1, h1, inv_one, mul_one, one_smul] at this
     have e : lrAct G 1 = fun X : Fin 1 → Fin M → R ⊗[F] E => g • X := by
@@ -122,7 +166,7 @@ theorem fibre_invariant_orbit_ne_zero : ∀ (F E : Type) [Field F] [NumberField 
     rw [e] at this
     exact huniq _ this
   · refine measure_mono_null (fun y hy => ?_) hsupp
-    exact fun h => hy (GlobalTheory.T.cmExtension_localFieldProductRing_exists_smul_eq F E σ hCM R hN M J hJ _ _ y hu hq h)
+    exact fun h => hy (_root_.GlobalTheory.GaugeWittLoc.exists_smul_eq F E σ hCM R hN M J hJ _ _ y hu hq h)
   · rintro rfl
     obtain ⟨-, -, hO, U, hU, h1U, s, -, -, hs⟩ := id hN
     obtain ⟨fib, hfib, -⟩ := id hm
@@ -137,12 +181,12 @@ theorem fibre_invariant_orbit_ne_zero : ∀ (F E : Type) [Field F] [NumberField 
       have hr : r * r = b * (↑w⁻¹ : R) := hs _ hbU
       have hrr : IsUnit (r * r) := hr ▸ IsUnit.mul hb (Units.isUnit _)
       have hru : IsUnit r := isUnit_of_mul_isUnit_left hrr
-      have := GlobalTheory.T.fibreMeasures_transport_unitary_similitude F E σ R hN M J J lam ν _ (r * r) 0
+      have := _root_.GlobalTheory.GaugeEx.fibAt_similitude F E σ R hN M J J lam ν _ (r * r) 0
         (algebraMap R (R ⊗[F] E) r • (1 : Matrix (Fin M) (Fin M) (R ⊗[F] E))) hlam hν
         (by rw [Matrix.det_smul, Matrix.det_one, mul_one]; exact (hru.map _).pow _) hrr
         (fun z => by rw [Matrix.smul_mulVec, Matrix.one_mulVec, q_scale]) hm
       rw [Measure.map_zero, smul_zero, hr, ← hw, Units.inv_mul_cancel_right] at this
-      exact (GlobalTheory.T.fibreFamily_hermitian_quadratic_form_at_unit_props F E σ R hN M J _ ν _ 0 hν hb this).2.2 _ ⟨fib, hfib, rfl⟩
+      exact (_root_.GlobalTheory.GaugeEx.FibBasic.fibAt_basic F E σ R hN M J _ ν _ 0 hν hb this).2.2 _ ⟨fib, hfib, rfl⟩
     let O : Set (Fin 1 → Fin M → R ⊗[F] E) := (fun X => qR R σ J (X 0)) ⁻¹' T
     have hOo : IsOpen O := hT.preimage ((q_cont R σ J).comp (continuous_apply 0))
     have hne : O.Nonempty := ⟨ratTup (F := F) R x, by

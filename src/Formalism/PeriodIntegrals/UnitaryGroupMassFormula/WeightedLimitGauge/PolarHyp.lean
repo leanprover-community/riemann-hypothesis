@@ -1,8 +1,63 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.RhsWLim
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.VolumeLieE
+public import Mathlib.MeasureTheory.Constructions.HaarToSphere
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+public import Mathlib.Analysis.SpecialFunctions.PolarCoord
+public import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.Pow
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 @[expose] public section
 
@@ -37,7 +92,7 @@ theorem lintegral_fun_norm {E : Type*} [NormedAddCommGroup E] [InnerProductSpace
           (f := fun r : Ioi (0 : ℝ) => ENNReal.ofReal ((r : ℝ) ^ (Module.finrank ℝ E - 1))) (by fun_prop)
           (g := fun y : Ioi (0 : ℝ) => F y) (hF.comp measurable_subtype_coe)
         rw [Measure.volumeIoiPow, hw]
-        simp only [Pi.mul_apply, Function.comp_apply]
+        simp only [Pi.mul_apply]
         rw [lintegral_subtype_comap measurableSet_Ioi (fun y : ℝ => ENNReal.ofReal (y ^ (Module.finrank ℝ E - 1)) * F y)]
 
 theorem finrank_ck (k : ℕ) : Module.finrank ℝ (EuclideanSpace ℂ (Fin k)) = 2 * k := by
@@ -64,7 +119,6 @@ theorem lintegral_norm_ck (k : ℕ) (hk : 1 ≤ k) (F : ℝ → ℝ≥0∞) (hF 
   simp only [Nat.add_sub_cancel, Nat.factorial_succ]
   push_cast
   field_simp
-  try ring
 
 theorem shift_pi (K : ℝ → ℝ≥0∞) :
     ∫⁻ φ in Ioo (-Real.pi) Real.pi, K (φ + Real.pi) = ∫⁻ θ in Ioc 0 (2 * Real.pi), K θ := by

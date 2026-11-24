@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.StandardOpenEquiv
+public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

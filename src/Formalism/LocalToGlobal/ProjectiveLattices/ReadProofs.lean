@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.ReadAlg
-public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFDOf
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormLaws
 
 @[expose] public section

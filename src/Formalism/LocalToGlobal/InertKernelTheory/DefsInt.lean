@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.StatementInt
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 
 @[expose] public section
 

@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.Topology.Algebra.Group.Quotient
 public import GroundTheory.ProfiniteCohomology.OpenNormal
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.ProperAction.Basic
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

@@ -1,6 +1,16 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
+public import Mathlib.FieldTheory.PrimitiveElement
 
 @[expose] public section
 
@@ -47,7 +57,7 @@ theorem exists_linear_primitive {K L : Type*} [Field K] [Field L] [Algebra K L] 
     rw [Finset.sum_eq_single j] at hc
     · simpa [sub_eq_zero] using hc
     · intro b _ hb
-      simp [Finsupp.single_apply, show (b : ℕ) ≠ (j : ℕ) from fun h => hb (Fin.ext h)]
+      simp [show (b : ℕ) ≠ (j : ℕ) from fun h => hb (Fin.ext h)]
     · simp
   have hev : ∀ φψ : (L →ₐ[K] A) × (L →ₐ[K] A), ∀ t : A,
       (p φψ).eval t = ∑ j : Fin n, (φψ.1 (x j) - φψ.2 (x j)) * t ^ (j : ℕ) := by
@@ -70,8 +80,8 @@ theorem exists_linear_primitive {K L : Type*} [Field K] [Field L] [Algebra K L] 
   have h1 : ∀ χ : L →ₐ[K] A, χ (∑ j : Fin n, algebraMap K L (ι (t ^ (j : ℕ))) * x j) =
       ∑ j : Fin n, ι' t ^ (j : ℕ) * χ (x j) := by
     intro χ
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, map_mul, AlgHom.commutes, ι', map_pow]
+
+    simp [map_sum, map_mul, AlgHom.commutes, ι', map_pow]
   have h2 := congrArg id hφψ
   simp only [id] at h2
   rw [h1, h1] at h2
@@ -122,8 +132,8 @@ theorem exists_primitive_data {R B : Type*} [CommRing R] [IsDomain R] [IsIntegra
   refine ⟨c, ?_⟩
   set ℓ : B := ∑ j, algebraMap R B (ι (c j)) * x j with hℓ
   have hℓL : algebraMap B L ℓ = ∑ j, algebraMap K L (ιK (c j)) * algebraMap B L (x j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hℓ, map_sum]
+
+    rw [hℓ, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_mul, ← IsScalarTower.algebraMap_apply R B L, IsScalarTower.algebraMap_apply R K L]
     rfl

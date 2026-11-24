@@ -1,6 +1,7 @@
 module
 
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohDefs
+public import Mathlib.NumberTheory.Padics.ValuativeRel
 public import GroundTheory.LocalFields.Examples
 public import GroundTheory.LocalFields.FiniteExtension
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.MainCount

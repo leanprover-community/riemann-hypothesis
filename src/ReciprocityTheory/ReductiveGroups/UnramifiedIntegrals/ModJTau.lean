@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Mathlib.NumberTheory.ModularForms.LevelOne.GradedRing
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGEis
 

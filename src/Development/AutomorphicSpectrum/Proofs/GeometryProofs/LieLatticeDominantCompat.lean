@@ -1,15 +1,60 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.AdelicGroupAlgebraActionInjective
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHTFormOver
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapFromSpecStalk
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeMapStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRingStatement
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeMap
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRing
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -34,7 +79,7 @@ theorem bc {G : Over S} [GrpObj G] (hs : Smooth G.hom) (f : R →+* R') (x : Sp 
     LinearIndependent R' b' ∧ Submodule.span R' (Set.range b') = ⊤ := by
   subst hy
   letI := f.toAlgebra
-  obtain ⟨j, hj, -, hsp⟩ := GlobalTheory.T.lie_model_base_change_map S G R R' x E E' M M'
+  obtain ⟨j, hj, -, hsp⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_baseChange S G R R' x E E' M M'
   have e : (fun k => j (b k)) = b' :=
     funext fun k => M'.inj (Over.OverMorphism.ext ((hj _).trans (hb k).symm))
   have := hsp hs n b
@@ -204,7 +249,7 @@ theorem core [IsLocalRing A] (hs : Smooth G.hom) (hG : IsGrpPullback G' G f φ)
     {e' : V'} {v' : epsAt x' ⟶ G'} (hv' : Ext g' x' M' e' v') :
     ∃ (n : ℕ) (b : Fin n → V) (c : Fin n → A'), (∀ k, ∃ v, Ext g x M (b k) v) ∧
       e' = ∑ k, g' (c k) • j (b k) := by
-  obtain ⟨n, ⟨b⟩⟩ := GlobalTheory.T.lie_model_free_over_local_ring X G hs A x (ExtE hx M) (extModel hg hx M)
+  obtain ⟨n, ⟨b⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.LieFreeSmooth.lieModel_free_of_smooth X G hs A x (ExtE hx M) (extModel hg hx M)
   have up : ∀ k, ∃ u : epsAt x' ⟶ G', Ext g' x' M' (j (val (b k))) u ∧
       u.left ≫ φ = Spec.map (CommRingCat.ofHom (dualMap ρ)) ≫ (vec (b k)).left :=
     fun k => ext_up hG hj hρ hρ' hx' (vec_spec (b k))
@@ -259,7 +304,7 @@ theorem main : ∀ (X X' : Scheme.{0}) (Ω Ω' : Type) [Field Ω] [Field Ω'] (�
   have hbc : ∀ (m : ℕ) (B : Module.Basis (Fin m) Ω V), LinearIndependent Ω' (fun k => j (B k)) ∧
       Submodule.span Ω' (Set.range fun k => j (B k)) = ⊤ := fun m B =>
     bc hs i ξ (ξ' ≫ f) (Eq.symm hd) M (LieMove.pushModel hG M') B (fun k => j (B k)) (fun k => hj _)
-  obtain ⟨m, ⟨b₁⟩⟩ := GlobalTheory.T.lie_model_free_over_local_ring X G hs Ω ξ V M
+  obtain ⟨m, ⟨b₁⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.LieFreeSmooth.lieModel_free_of_smooth X G hs Ω ξ V M
   refine ⟨⟨semilin hG hj, fun n b hb => indep_of_bases b₁ j (fun m B => (hbc m B).1) b hb⟩, ?_, ?_⟩
   · refine top_le_iff.1 ((hbc m b₁).2.symm.le.trans (Submodule.span_mono ?_))
     rintro _ ⟨k, rfl⟩

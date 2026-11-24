@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerTail
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraAlt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestRest
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraLast
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.InterNumRestrictSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BaseComap
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockEqAlt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XMemMIdealOverIff
 
 @[expose] public section

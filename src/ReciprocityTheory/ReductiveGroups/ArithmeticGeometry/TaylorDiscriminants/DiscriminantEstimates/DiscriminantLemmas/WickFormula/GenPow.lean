@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.DiscriminantEstimates.DiscriminantLemmas.WickFormula.GenDefs
+public import Mathlib.RingTheory.Derivation.Lie
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

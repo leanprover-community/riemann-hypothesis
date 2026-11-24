@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Length
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

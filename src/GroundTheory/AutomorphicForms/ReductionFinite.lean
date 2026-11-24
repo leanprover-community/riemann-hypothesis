@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ReductionHeight
 public import GroundTheory.AutomorphicForms.ReductionIdele
-public import GroundTheory.GlobalFields.Adele.Discrete
-public import GroundTheory.GlobalFields.Adele.Compact
-public import GroundTheory.GlobalFields.IdeleGroups.Restricted
-public import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+import GroundTheory.GlobalFields.Adele.Compact
+import GroundTheory.GlobalFields.Adele.Discrete
+import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

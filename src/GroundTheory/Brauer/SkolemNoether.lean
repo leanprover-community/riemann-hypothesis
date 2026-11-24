@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.Brauer.TensorSimple
+public import Mathlib.Algebra.Central.Defs
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import Mathlib.RingTheory.TensorProduct.Maps
+import GroundTheory.Brauer.TensorSimple
+public import Mathlib.RingTheory.SimpleModule.WedderburnArtin
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.Dimension.Finite
+public import Mathlib.RingTheory.Artinian.Defs
+public import Mathlib.RingTheory.Artinian.Module
+public import Mathlib.RingTheory.SimpleModule.Isotypic
 
 @[expose] public section
 
@@ -13,6 +21,20 @@ open TensorProduct
 
 section Modules
 
+theorem exists_linearEquiv_pi_simple_of_nontrivial_prod (R M N : Type*) [Ring R]
+    [IsSimpleRing R] [IsArtinianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M]
+    [AddCommGroup N] [Module R N] [Module.Finite R N] [Nontrivial (M × N)] :
+    ∃ (S : Submodule R (M × N)) (m n : ℕ), IsSimpleModule R S ∧
+      Nonempty (M ≃ₗ[R] (Fin m → S)) ∧ Nonempty (N ≃ₗ[R] (Fin n → S)) := by
+  obtain ⟨S, hS⟩ := IsAtomic.exists_atom (Submodule R (M × N))
+  rw [← isSimpleModule_iff_isAtom] at hS
+  have hT : IsIsotypicOfType R (M × N) S := IsSimpleRing.isIsotypic R (M × N) S
+  obtain ⟨m, eM⟩ :=
+    (hT.of_injective (LinearMap.inl R M N) LinearMap.inl_injective).linearEquiv_fun
+  obtain ⟨n, eN⟩ :=
+    (hT.of_injective (LinearMap.inr R M N) LinearMap.inr_injective).linearEquiv_fun
+  exact ⟨S, m, n, hS, eM, eN⟩
+
 theorem nonempty_linearEquiv_of_finrank_eq {K R : Type*} {M N : Type*} [Field K] [Ring R]
     [Algebra K R] [IsSimpleRing R] [FiniteDimensional K R]
     [AddCommGroup M] [Module K M] [Module R M] [IsScalarTower K R M] [FiniteDimensional K M]
@@ -23,13 +45,10 @@ theorem nonempty_linearEquiv_of_finrank_eq {K R : Type*} {M N : Type*} [Field K]
   · have : Subsingleton M := (Prod.fst_surjective (β := N)).subsingleton
     have : Subsingleton N := (Prod.snd_surjective (α := M)).subsingleton
     exact ⟨LinearEquiv.ofSubsingleton M N⟩
-  have : Module.Finite R (M × N) := Module.Finite.of_restrictScalars_finite K R _
   have : Module.Finite R M := Module.Finite.of_restrictScalars_finite K R _
   have : Module.Finite R N := Module.Finite.of_restrictScalars_finite K R _
-  obtain ⟨k, _, S, hS, -⟩ := (IsSimpleRing.isIsotypic R (M × N)).linearEquiv_fun
-  have hT : IsIsotypicOfType R (M × N) S := IsSimpleRing.isIsotypic R (M × N) S
-  obtain ⟨m, ⟨eM⟩⟩ := (hT.of_injective (LinearMap.inl R M N) LinearMap.inl_injective).linearEquiv_fun
-  obtain ⟨n, ⟨eN⟩⟩ := (hT.of_injective (LinearMap.inr R M N) LinearMap.inr_injective).linearEquiv_fun
+  obtain ⟨S, m, n, hS, ⟨eM⟩, ⟨eN⟩⟩ :=
+    exists_linearEquiv_pi_simple_of_nontrivial_prod R M N
   have : Nontrivial S := IsSimpleModule.nontrivial R S
   have : FiniteDimensional K S :=
     FiniteDimensional.of_injective ((Submodule.subtype S).restrictScalars K) Subtype.val_injective

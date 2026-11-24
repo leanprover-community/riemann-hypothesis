@@ -1,10 +1,12 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThetaFramePf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 
@@ -16,7 +18,7 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 
 
-set_option maxHeartbeats 400000 in
+
 theorem frame_of_gen (Xo : Moduli Dw l) {S : Type} [CommRing S] (x : Sp S ⟶ Xo.X) (t' : SAB H (Sp S))
     (m1 : SABMap t' Xo.univ.t x) (σ' : LB.Sec t'.PP.L)
     (hgen : ∀ s' : LB.Sec t'.PP.L, ∃! a : S, ∀ i, s'.f i = constFn t'.G.hom _ a * σ'.f i) :
@@ -76,7 +78,6 @@ theorem frame_of_gen (Xo : Moduli Dw l) {S : Type} [CommRing S] (x : Sp S ⟶ Xo
       gs_appLE h _ _ _ g y (hj hy) _
     rw [Category.id_comp] at e1
     rw [e1, e2, hgh]
-    all_goals rfl
   · intro s''
     have hle : ∀ j, m1.φ ⁻¹ᵁ Xo.univ.t.PP.L.U j ≤ g0 ⁻¹ᵁ (PPx x).U (fun _ => j) := by
       intro j y hy

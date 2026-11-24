@@ -1,22 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.StepExactNS
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TowerIsChain
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiPinnedWithFinIff
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.StepsOnto
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopMultAndExtVInjective
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsInfFamAndStdChar
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftsAtAndSeedFacts
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfExpMulZero
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTupChars
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnderEqOrSmulUnderEq
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
-public import Formalism.LocalRingCardinality.PosOfIsomEmb
-public import Formalism.LocalToGlobal.IndefiniteReal.IsMultMapUnivZero
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.GoodIdempotentBadPlaces
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeckeCharTameAtOfFactorsThroughResidue
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnderEqOrSmulUnderEq
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntValuationEqOfMem
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTupChars
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfExpMulZero
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftsAtAndSeedFacts
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoInfMulProd
+public import Formalism.LocalRingCardinality.PosOfIsomEmb
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -43,14 +76,6 @@ theorem char_mem {P : Pl D.host.E} {q : ℕ} (h : Nat.card (kP P) = q) : (q : �
   have h1 : Nat.card (kP P) • (1 : kP P) = 0 := card_nsmul_eq_zero'
   rw [h, nsmul_one] at h1
   exact Ideal.Quotient.eq_zero_iff_mem.1 ((map_natCast _ q).trans h1)
-
-theorem nat_mem_of_conj {P P' : Pl D.host.E} (h : Lev.IsConjPl (D := D) P P') {q : ℕ} (hq : (q : 𝓞 D.host.E) ∈ P.asIdeal) :
-    (q : 𝓞 D.host.E) ∈ P'.asIdeal := by
-  obtain ⟨c', hc', e⟩ := h _ hq
-  have : c' = q := by
-    apply RingOfIntegers.ext
-    rw [e]; simp
-  exact this ▸ hc'
 
 theorem g_mem_of_div (C : Formalism.L2.Host.CharFrame D) {k : Fin 2} {PP : Pl D.host.E} (h : C.P.Div k PP) :
     ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
@@ -147,7 +172,7 @@ theorem isUnitAt_of (P : Pl D.host.E) (a : 𝓞 D.host.E) (k : D.host.Eˣ) (u : 
     have : (u : kP P) = 0 := hu.trans (Ideal.Quotient.eq_zero_iff_mem.2 h)
     exact u.ne_zero this
   show Valued.v (algebraMap D.host.E (P.adicCompletion D.host.E) (k : D.host.E)) = 1
-  rw [GlobalTheory.ChainOnto.TameRes.val_alg, hk]
+  rw [_root_.Formalism.UG.P.levelaf_valued_algebraMap, hk]
   exact GlobalTheory.ChainOnto.TameRes.valuation_eq_one_of_not_mem P a ha
 
 theorem under_eq_of_conj {P P' : Pl D.host.E} (h : Lev.IsConjPl (D := D) P' P) :
@@ -205,7 +230,7 @@ theorem com_is (hL : R.toLevCh.Is A.μ0) (hM : R.IsModels) (hC : R.IsChain) (t :
         · obtain ⟨i, hi⟩ := (hL.Pg PP).1 h
           obtain ⟨⟨q, hq, hcard, -, hqg⟩, -⟩ := hL.Q_pl t P' h'
           exact not_two_primes PP.isPrime.ne_top hq (D.host.g_prime i) (hqg i)
-            (nat_mem_of_conj hc (char_mem hcard)) (g_mem_of_div R.C hi)
+            (_root_.GlobalTheory.StepLaw.natCast_mem_of_isConjPl hc (char_mem hcard)) (g_mem_of_div R.C hi)
       have h3 : (R.xiH t).locK PP k = 1 := h2 _ hun
       rw [e, h3, mul_one]
       exact hL.chi j PP h a k u hk hu
@@ -230,7 +255,7 @@ theorem xiR_ne (hL : R.toLevCh.Is A.μ0) (t : T) : ∀ PP ∈ R.Q t, R.xiR t PP 
     rw [hx]; exact hk
   have hv : Valued.v (algebraMap D.host.E (PP.adicCompletion D.host.E) k) = 1 := by
     rw [Valuation.map_eq_of_sub_lt _ hk']; exact hx
-  have hv1 : PP.valuation D.host.E k = 1 := by rw [← GlobalTheory.ChainOnto.TameRes.val_alg]; exact hv
+  have hv1 : PP.valuation D.host.E k = 1 := by rw [← _root_.Formalism.UG.P.levelaf_valued_algebraMap]; exact hv
   have hk0 : k ≠ 0 := by
     rintro rfl
     simp at hv1

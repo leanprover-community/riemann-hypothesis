@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementB
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

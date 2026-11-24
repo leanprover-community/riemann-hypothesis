@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TraceIntegralBasis
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -191,9 +192,9 @@ theorem span_embV {ι : Type} [Fintype ι] (g : Basis ι ℤ X.Λ) :
     have hv : X.embV v = ∑ i, (((qb X g).repr v i : ℚ) : ℝ) • X.embV (g i : Fin r → E) := by
       conv_lhs => rw [← (qb X g).sum_repr v]
       funext τ a
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Data.embV, Data.emb, qb_apply, Finset.sum_apply, Pi.smul_apply, Rat.smul_def,
-        map_sum, map_mul, map_ratCast, Complex.real_smul, Complex.ofReal_ratCast]
+
+      simp only [Data.embV, Data.emb, qb_apply, Finset.sum_apply, Pi.smul_apply, Rat.smul_def,
+      map_sum, map_mul, map_ratCast, Complex.real_smul, Complex.ofReal_ratCast]
     rw [hv]
     exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (subset_span ⟨i, rfl⟩)
   rw [eq_top_iff]

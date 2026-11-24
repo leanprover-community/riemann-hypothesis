@@ -1,7 +1,52 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalDescent.GLDenseRanges.EigBoxE
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.SpecIntIff
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.dvrFinite
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.HeckeFixedLevelSpaces.AddOnePowEqRingHomImageAddPrimeMulZero
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.HeckeFixedLevelSpaces.FreeMap
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.HeckeFixedLevelSpaces.SpIntMulVec
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.CtrlEq
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.CtrlOrd
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.FnIndep
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.OrdBCMapOrd
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.ProdZpowConst
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.UOpNat
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.CopNormLt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -196,8 +241,8 @@ private theorem absSpec2 {A O Ω : Type} [CommRing A] [IsCNL A] [CommRing O] [Is
   · intro K K' κ _ u hyp f hf
     obtain ⟨h1, h2⟩ := hgood K f hf
     refine hsp _ K' _ (sum_clOrd X W _ _ c (U K) (U K') u hyp _ h1) ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.sum_apply, map_sum, LinearMap.sum_apply, map_sum]
+
+    rw [LinearMap.sum_apply, map_sum, LinearMap.sum_apply, map_sum]
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [(ctrlEq Γ Ga Gp X O Ω W m _).1, h2, mapFn_ra]
 
@@ -219,8 +264,8 @@ private theorem tr_uOp {Ω : Type} [Field Ω] {d m : ℕ} (g : Ga) (a : Gp) (ha 
   set f := fun q : ↥X.I.N ⧸ (X.I.Nconj a).subgroupOf X.I.N => X.rpF Ω d m (↑(Quotient.out q) * a) with hf
   by_cases h : (Function.support f).Finite
   · rw [finsum_eq_sum f h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.sum_apply, LinearMap.sum_apply, map_sum]
+
+    rw [LinearMap.sum_apply, LinearMap.sum_apply, map_sum]
     refine Finset.sum_congr rfl fun q _ => ?_
     exact tr_rpF X g _ F
   · rw [finsum_of_infinite_support h]
@@ -287,7 +332,7 @@ end UpperTheory.V.Hi.Sp
 
 attribute [local instance 2000] UpperTheory.V.W.coefLocal
 
-set_option maxHeartbeats 400000 in
+
 theorem UpperTheory.V.Z.Desc.V0.spec2 :
     Spec2 := by
   intro L Ω _ _ _ _ _ l _ n c H hAx A _ _ _ θ hWt ι x lam hAr
@@ -399,8 +444,7 @@ theorem UpperTheory.V.Z.Desc.V0.spec2 :
   have hτ' : H.τC ι = (Matrix.GeneralLinearGroup.map (algebraMap A ℂ)).comp (H.τA A) := by
     refine MonoidHom.ext fun u => Units.ext ?_
     ext i j
-    simp only [HSet.τC, HSet.τA, MonoidHom.comp_apply, Matrix.GeneralLinearGroup.map_apply, RingHom.mapMatrix_apply,
-      Matrix.map_apply, RingHom.coe_comp, Function.comp_apply]
+    simp only [HSet.τC, HSet.τA, MonoidHom.comp_apply, Matrix.GeneralLinearGroup.map_apply]
     show ι _ = ι (x _)
     exact congrArg ι (by rw [← AlgHom.commutes x]; rfl)
   obtain ⟨hfirst, sp, hadd, hsmul, hspan, hind, hUop, hsum, hgood, huniq⟩ :=
@@ -449,7 +493,7 @@ theorem UpperTheory.V.Z.Desc.V0.spec2 :
     have hχa : ((W.χ ⟨alV n H.Sl v ((j : ℕ) + 1), H.X.I.P_le _ (hP v _)⟩ : ℂˣ) : ℂ) =
         H.lowVal ι lam v ((j : ℕ) + 1) :=
       Sp.chi_alV H.Sl ι lam R.χ hχR v ((j : ℕ) + 1)
-    simp only [Frame.UF, HSet.opC, Subtype.coe_mk]
+    simp only [Frame.UF, HSet.opC]
     rw [Units.val_inv_eq_inv_val, hχa]
   have huz : H.uzC ι lam (W.d + 1) = H.X.UF H.m W ⟨H.X.I.z, H.X.I.z_mem⟩ := by
     have hz : ((W.χ ⟨H.X.I.z, H.X.I.P_le _ H.X.I.z_mem⟩ : ℂˣ) : ℂ) =
@@ -458,7 +502,7 @@ theorem UpperTheory.V.Z.Desc.V0.spec2 :
       simp only [Units.coe_prod] at h1
       refine h1.trans (Finset.prod_congr rfl fun v _ => Finset.prod_congr rfl fun j _ => ?_)
       exact Sp.chi_alV H.Sl ι lam R.χ hχR v j
-    simp only [HSet.uzC, Frame.UF, Subtype.coe_mk]
+    simp only [HSet.uzC, Frame.UF]
     rw [Units.val_inv_eq_inv_val, hz]
   have hint : ∀ μ : ℂ, IsIntegral c'.O μ ↔ ‖ι.symm μ‖ ≤ 1 := by
     intro μ

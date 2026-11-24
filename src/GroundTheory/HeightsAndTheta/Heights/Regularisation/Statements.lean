@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -357,9 +358,6 @@ theorem analyticAt_coord_div_add {n : ℕ} (k : Fin n) (c d : ℂ) (w : Fin n �
   rw [h]
   exact ((c⁻¹ • ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin n => ℂ) k).analyticAt w).add
     analyticAt_const
-
-theorem two_pi_I_ne_zero : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
-  simp [Real.pi_ne_zero, Complex.I_ne_zero]
 
 end Inhabitants
 

@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.IdemMulCompl
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.LevelGatherings
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.FiniteClassSetOfLe
 
 @[expose] public section
 

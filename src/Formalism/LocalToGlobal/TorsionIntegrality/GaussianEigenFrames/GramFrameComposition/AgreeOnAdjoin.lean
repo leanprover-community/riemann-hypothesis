@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementE
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

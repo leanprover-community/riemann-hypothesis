@@ -1,6 +1,8 @@
 module
 
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsOrthTransfer
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsIsomScale
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -90,7 +92,6 @@ theorem IsSD.exists_norm' (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.I
   have huf : star u = u := by
     have e : starRingEnd K (h ξ ξ) = h ξ ξ := by
       first
-        | exact hs ξ ξ
         | exact hs.eq ξ ξ
     rw [hξu, starRingEnd_apply] at e
     exact e

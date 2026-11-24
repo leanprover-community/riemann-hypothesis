@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalMaximumPrinciple
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalTrace
+public import Mathlib.Analysis.InnerProductSpace.Defs
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.Analysis.InnerProductSpace.OfNorm
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.FDeriv.Basic
 
 @[expose] public section
 

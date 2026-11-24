@@ -1,10 +1,54 @@
 module
 
 public import Formalism.HarderNarasimhan.DegSupermodZ
-public import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.MuMaxAttained
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ExistsSmulMemOfFinrankEq
+import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
+import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
+import Formalism.LatticeSlopes.LatticeSlopesProofs.MuMaxAttained
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,10 +64,8 @@ variable {R V E : Type*} [Ring R] [AddCommGroup V] [Module R V] [NormedAddCommGr
     [InnerProductSpace ℝ E] (ρ : V →+ E)
 
 theorem satBasic_zl_mono {A B : Submodule R V} (h : A ≤ B) : zl ρ A ≤ zl ρ B := by
-  intro x hx
-  rw [satR_mem_zl] at hx ⊢
-  obtain ⟨y, hy, rfl⟩ := hx
-  exact ⟨y, h hy, rfl⟩
+  rintro x ⟨y, hy, rfl⟩
+  exact (satR_mem_zl ρ B _).mpr ⟨y, h hy, rfl⟩
 
 theorem satBasic_zl_bot : zl ρ (⊥ : Submodule R V) = ⊥ := by
   ext x
@@ -46,20 +88,18 @@ theorem saturation_basic_properties : SatBasic := by
   have hrev : ∀ A B : Submodule R V, A ≤ L → B ≤ L → zl ρ B ≤ zl ρ A → B ≤ A := by
     intro A B hAL hBL h y hy
     obtain ⟨z, hz, hzy⟩ := (satR_mem_zl ρ A _).mp (h ((satR_mem_zl ρ B _).mpr ⟨y, hy, rfl⟩))
-    have := hL.1 (hAL hz) (hBL hy) hzy
-    rw [← this]; exact hz
+    rwa [← hL.1 (hAL hz) (hBL hy) hzy]
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro N h
-    exact ⟨hL.1.mono (fun x hx => h hx), hdisc N h⟩
+    exact ⟨hL.1.mono h, hdisc N h⟩
   · intro A B hAB hBL
     haveI := hdisc B hBL
     haveI := hdisc A (hAB.trans hBL)
     refine ⟨Formalism.F.att_rk_le (satBasic_zl_mono ρ hAB), fun hr => ?_⟩
-    have hc := Formalism.F.covolAntiSameRank E (zl ρ A) (zl ρ B) (hdisc B hBL)
+    have hc := _root_.Formalism.F.covol_anti_same_rank E (zl ρ A) (zl ρ B) (hdisc B hBL)
       (satBasic_zl_mono ρ hAB) hr
-    have hpB := Formalism.F.covol_pos (zl ρ B)
     show -Real.log (Formalism.F.covol (zl ρ A)) ≤ -Real.log (Formalism.F.covol (zl ρ B))
-    have := Real.log_le_log hpB hc
+    have := Real.log_le_log (Formalism.F.covol_pos (zl ρ B)) hc
     linarith
   · intro S N hS hSN hNL hr
     haveI := hdisc N hNL
@@ -94,7 +134,7 @@ theorem saturation_basic_properties : SatBasic := by
       rw [satBasic_zl_bot ρ]
       simp [Formalism.F.rk]
   · show -Real.log (Formalism.F.covol (zl ρ ⊥)) = 0
-    rw [satBasic_zl_bot ρ, (Formalism.F.covolBasic E).1]
+    rw [satBasic_zl_bot ρ, (_root_.Formalism.F.covol_basic_properties E).1]
     simp
   · refine ⟨bot_le, ?_⟩
     rw [satBasic_zl_bot ρ]

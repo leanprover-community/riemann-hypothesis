@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
+public import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.AutomorphicForms.Reduction
+import GroundTheory.GlobalFields.Adele.Topology
+public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.InductiveDimension.Functions
 
 @[expose] public section
 

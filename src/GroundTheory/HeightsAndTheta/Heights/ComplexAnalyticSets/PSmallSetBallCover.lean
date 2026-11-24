@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSmallSetBallCover
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSmallSetTubeVolume
+public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Topology.MetricSpace.CoveringNumbers
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Topology.MetricSpace.Cover
 
 @[expose] public section
 

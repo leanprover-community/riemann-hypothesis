@@ -1,7 +1,62 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
+public import Mathlib.Algebra.Order.Archimedean.Defs
+public import Mathlib.Analysis.Normed.Group.Basic
+public import Mathlib.Analysis.Normed.MulAction
+public import Mathlib.Topology.Algebra.GroupWithZero
+public import Mathlib.Topology.Instances.Matrix
 
 @[expose] public section
 
@@ -11,36 +66,6 @@ open Matrix
 noncomputable section
 
 namespace GlobalTheory.Poinc.SumSq
-
-theorem exists_nat_smul_sub_posDef {ι : Type*} [Fintype ι] {G B : Matrix ι ι ℝ} (hG : G.PosDef)
-    (hB : B.IsHermitian) : ∃ κ₀ : ℕ, ∀ κ : ℕ, κ₀ ≤ κ → ((κ : ℝ) • G - B).PosDef := by
-  have hp : ∀ x : ι → ℝ, x ≠ 0 → 0 < x ⬝ᵥ G *ᵥ x := fun x hx => by
-    simpa using hG.dotProduct_mulVec_pos hx
-  have hne : ∀ x ∈ Metric.sphere (0 : ι → ℝ) 1, x ≠ 0 := by
-    rintro x hx rfl
-    simp at hx
-  have hc : ContinuousOn (fun x : ι → ℝ => (x ⬝ᵥ B *ᵥ x) / (x ⬝ᵥ G *ᵥ x)) (Metric.sphere 0 1) := by
-    refine ContinuousOn.div (Continuous.continuousOn ?_) (Continuous.continuousOn ?_)
-      fun x hx => (hp x (hne x hx)).ne'
-    · exact continuous_id.dotProduct (continuous_const.matrix_mulVec continuous_id)
-    · exact continuous_id.dotProduct (continuous_const.matrix_mulVec continuous_id)
-  obtain ⟨C, hC⟩ := ((isCompact_sphere (0 : ι → ℝ) 1).image_of_continuousOn hc).bddAbove
-  obtain ⟨κ₀, hκ₀⟩ := exists_nat_gt C
-  refine ⟨κ₀, fun κ hκ => ?_⟩
-  have hκ' : C < κ := hκ₀.trans_le (by exact_mod_cast hκ)
-  refine PosDef.of_dotProduct_mulVec_pos ?_ fun x hx => ?_
-  · refine IsHermitian.sub ?_ hB
-    rw [IsHermitian, conjTranspose_smul, hG.isHermitian.eq, star_trivial]
-  · have hn : 0 < ‖x‖ := norm_pos_iff.2 hx
-    have hs : ‖x‖⁻¹ • x ∈ Metric.sphere (0 : ι → ℝ) 1 := by
-      simp [norm_smul, hn.ne']
-    have h1 := hC ⟨_, hs, rfl⟩
-    simp only [mulVec_smul, dotProduct_smul, smul_dotProduct, smul_eq_mul] at h1
-    rw [mul_div_mul_left _ _ (inv_pos.2 hn).ne', mul_div_mul_left _ _ (inv_pos.2 hn).ne',
-      div_le_iff₀ (hp x hx)] at h1
-    have h2 := mul_lt_mul_of_pos_right hκ' (hp x hx)
-    rw [star_trivial, sub_mulVec, smul_mulVec, dotProduct_sub, dotProduct_smul, smul_eq_mul]
-    linarith
 
 theorem posDef_symm {n : Type*} {M : Matrix n n ℝ} (hM : M.PosDef) (i j : n) : M j i = M i j := by
   have := congrFun₂ hM.isHermitian.eq i j
@@ -149,7 +174,7 @@ theorem exists_smul_eq_sum_vecMulVec_span :
       ∃ (D m : ℕ) (a : Fin m → Fin r → ℤ), 1 ≤ D ∧ Submodule.span ℤ (Set.range a) = ⊤ ∧
         (D : ℤ) • L = ∑ i, Matrix.vecMulVec (a i) (a i) := by
   intro r L hL
-  obtain ⟨κ₀, hκ⟩ := exists_nat_smul_sub_posDef hL (isHermitian_one (α := ℝ) (n := Fin r))
+  obtain ⟨κ₀, hκ⟩ := _root_.GlobalTheory.TensorSiegel.exists_posDef_smul_sub hL (isHermitian_one (α := ℝ) (n := Fin r))
   set d := max κ₀ 1 with hdd
   have hd1 : 1 ≤ d := le_max_right _ _
   have hd := hκ d (le_max_left _ _)

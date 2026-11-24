@@ -1,7 +1,21 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Topology.ContinuousMap.Algebra
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Module.Projective
+public import Mathlib.Analysis.Normed.Operator.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
+public import Mathlib.Topology.ContinuousMap.Compact
 
 @[expose] public section
 
@@ -36,12 +50,12 @@ lemma exists_uniform_coeff_bound {E : Type*} [NormedAddCommGroup E] [NormedSpace
       (Finset.sum_nonneg fun _ _ => abs_nonneg _), fun y m => ?_⟩
   have hy : G y = ∑ i, b.repr y i • G (b i) := by
     conv_lhs => rw [← b.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smul]
   rw [hy, coeff_sum, Finset.sum_mul]
   refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ => ?_)
-  rw [coeff_smul, smul_eq_mul, abs_mul]
+  rw [MvPolynomial.coeff_smul, smul_eq_mul, abs_mul]
   have h1 : |b.repr y i| ≤ ‖c i‖ * ‖y‖ := by
     have := (c i).le_opNorm y
     simpa [c, Real.norm_eq_abs] using this

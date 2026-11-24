@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

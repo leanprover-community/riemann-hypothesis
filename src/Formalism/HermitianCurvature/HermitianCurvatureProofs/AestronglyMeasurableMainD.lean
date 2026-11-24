@@ -1,6 +1,56 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TendstoSmulCocompact
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RootPushforwardDensity
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LastBlockDecay
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormOfMemRootSetOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Order.Chebyshev
 
 @[expose] public section
 
@@ -21,14 +71,11 @@ def abar (s : ℕ) (ε : ℂ) (bt : ℂ → H) (D : ℂ) : ℝ := ∑ z ∈ G.ro
 
 theorem abar_nonneg (s : ℕ) (ε : ℂ) (bt : ℂ → H) (D : ℂ) : 0 ≤ abar s ε bt D := Finset.sum_nonneg fun _ _ => norm_nonneg _
 
-private lemma norm_psi_lemma (β w : ℂ) : ‖G.psi β w‖ = 1 := by
-  simp [G.psi, Complex.norm_exp]
-
 theorem norm_mainD_le (s : ℕ) (β ε : ℂ) (bt : ℂ → H) (x D : ℂ) :
     ‖mainD s β ε bt x D‖ ≤ abar s ε bt D := by
   unfold mainD abar
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun z _ => ?_)
-  rw [norm_smul, norm_psi_lemma, one_mul]
+  rw [norm_smul, _root_.Formalism.FourierDecayAlt.P.PBK.norm_psi, one_mul]
 
 theorem mainD_ae_eq {s : ℕ} (hs : s ≠ 0) (β : ℂ) {ε : ℂ} (hε : ε ≠ 0) (bt : ℂ → H) (x : ℂ) :
     mainD s β ε bt x =ᵐ[volume] fun D => ∑ k ∈ Finset.range s,
@@ -47,14 +94,6 @@ theorem abar_ae_eq {s : ℕ} (hs : s ≠ 0) {ε : ℂ} (hε : ε ≠ 0) (bt : �
   unfold abar
   rw [sum_rootSet_eq_range hs (mul_ne_zero hε hD)]
 
-private lemma measurable_R_lemma (s k : ℕ) : Measurable (NthRootMeasurability.R s k) := by
-  unfold NthRootMeasurability.R
-  exact measurable_const.mul (measurable_id.pow_const _)
-
-private lemma continuous_psi_lemma_2 (β : ℂ) : Continuous (G.psi β) := by
-  unfold G.psi
-  fun_prop
-
 theorem aestronglyMeasurable_mainD {s : ℕ} (hs : s ≠ 0) (β : ℂ) {ε : ℂ} (hε : ε ≠ 0) {bt : ℂ → H}
     (hbt : StronglyMeasurable bt) (x : ℂ) : AEStronglyMeasurable (mainD s β ε bt x) volume := by
   refine AEStronglyMeasurable.congr (StronglyMeasurable.aestronglyMeasurable ?_)
@@ -63,9 +102,9 @@ theorem aestronglyMeasurable_mainD {s : ℕ} (hs : s ≠ 0) (β : ℂ) {ε : ℂ
       G.psi β ((s : ℂ) * NthRootMeasurability.R s k (ε * D) * x) • bt (NthRootMeasurability.R s k (ε * D))) := by
     intro k _
     have hR : Measurable fun D : ℂ => NthRootMeasurability.R s k (ε * D) :=
-      (measurable_R_lemma s k).comp (measurable_const.mul measurable_id)
+      (_root_.Formalism.FourierDecayAlt.P.NthRootMeasurability.measurable_R s k).comp (measurable_const.mul measurable_id)
     have hp : Measurable fun D : ℂ => G.psi β ((s : ℂ) * NthRootMeasurability.R s k (ε * D) * x) :=
-      (continuous_psi_lemma_2 β).measurable.comp ((measurable_const.mul hR).mul measurable_const)
+      (_root_.Formalism.FourierDecayAlt.P.PBK.continuous_psi β).measurable.comp ((measurable_const.mul hR).mul measurable_const)
     exact hp.stronglyMeasurable.smul (hbt.comp_measurable hR)
   have := Finset.stronglyMeasurable_sum (Finset.range s) hk
   convert this using 1 <;> ext D <;> simp
@@ -77,7 +116,7 @@ theorem aestronglyMeasurable_abar {s : ℕ} (hs : s ≠ 0) {ε : ℂ} (hε : ε 
   have hk : ∀ k ∈ Finset.range s, StronglyMeasurable (fun D : ℂ => ‖bt (NthRootMeasurability.R s k (ε * D))‖) := by
     intro k _
     have hR : Measurable fun D : ℂ => NthRootMeasurability.R s k (ε * D) :=
-      (measurable_R_lemma s k).comp (measurable_const.mul measurable_id)
+      (_root_.Formalism.FourierDecayAlt.P.NthRootMeasurability.measurable_R s k).comp (measurable_const.mul measurable_id)
     exact (hbt.comp_measurable hR).norm
   have := Finset.stronglyMeasurable_sum (Finset.range s) hk
   convert this using 1 <;> ext D <;> simp

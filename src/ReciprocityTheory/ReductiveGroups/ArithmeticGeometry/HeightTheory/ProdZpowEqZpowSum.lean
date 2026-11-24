@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.BlockDegOfScale
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GoodPrimesProperties
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
 
@@ -37,14 +41,6 @@ private theorem tauFG_sH_X (c : ι) (b : Fin (d.D + 1)) (u : Kˣ) (v : TVar d.D 
     rfl
   have hTC : ∀ a : Ω c, tauPG (Ω := Ω c) (D := d.D) (N := d.N) b u (C a) = C a :=
     fun a => (tauPG (Ω := Ω c) (D := d.D) (N := d.N) b u).commutes a
-  have hconst : ∀ r : K, tauFG (Ω := Ω c) (D := d.D) (N := d.N) b u
-      (algebraMap K (OmS (Ω c) d.D d.N) r) = algebraMap K (OmS (Ω c) d.D d.N) r := by
-    intro r
-    rw [hKC]
-    unfold tauFG
-    rw [IsFractionRing.ringEquivOfRingEquiv_algebraMap]
-    congr 1
-    exact hTC _
   have hTin : ∀ w : SVar d.D d.N, IsBaseBlockVar b w →
       tauPG (Ω := Ω c) (D := d.D) (N := d.N) b u (X w) = C (algebraMap K (Ω c) u) * X w := by
     intro w hw
@@ -83,9 +79,9 @@ private theorem tauFG_sH_X (c : ι) (b : Fin (d.D + 1)) (u : Kˣ) (v : TVar d.D 
             from fun A F => Fin.insertNth_apply_same _ _ _]
         split_ifs with hi0
         · exact hTin _ (hib.symm.trans hi0)
-        set_option synthInstance.maxHeartbeats 100000 in
-          · simp only [map_neg, map_sum, map_mul, hTC, fun k => hTin (Sum.inr (i, k)) hib, mul_neg,
-            Finset.mul_sum, mul_assoc]
+
+        · simp only [map_neg, map_sum, map_mul, hTC, fun k => hTin (Sum.inr (i, k)) hib, mul_neg,
+          Finset.mul_sum, mul_assoc]
       · rw [show ∀ (A : MvPolynomial (SVar d.D d.N) (Ω c)) (F : Fin d.N → MvPolynomial (SVar d.D d.N) (Ω c)),
             Fin.succAboveCases (α := fun _ => MvPolynomial (SVar d.D d.N) (Ω c)) (d.jc c) A F
               ((d.jc c).succAbove k) = F k
@@ -107,8 +103,8 @@ private theorem tauFG_sH_X (c : ι) (b : Fin (d.D + 1)) (u : Kˣ) (v : TVar d.D 
             from fun A F => Fin.insertNth_apply_same _ _ _]
         split_ifs with hi0
         · exact hTout _ (fun hb0 => hib (hi0.trans hb0.symm))
-        set_option synthInstance.maxHeartbeats 100000 in
-          · simp only [map_neg, map_sum, map_mul, hTC, fun k => hTout (Sum.inr (i, k)) hib]
+
+        · simp only [map_neg, map_sum, map_mul, hTC, fun k => hTout (Sum.inr (i, k)) hib]
       · rw [show ∀ (A : MvPolynomial (SVar d.D d.N) (Ω c)) (F : Fin d.N → MvPolynomial (SVar d.D d.N) (Ω c)),
             Fin.succAboveCases (α := fun _ => MvPolynomial (SVar d.D d.N) (Ω c)) (d.jc c) A F
               ((d.jc c).succAbove k) = F k
@@ -137,24 +133,6 @@ theorem tauFG_KTtoS (h : d.S1) (c : ι) (b : Fin (d.D + 1)) (u : Kˣ) (z : KTf K
     rw [IsFractionRing.ringEquivOfRingEquiv_algebraMap]
     congr 1
     exact hTC _
-  have hTin : ∀ w : SVar d.D d.N, IsBaseBlockVar b w →
-      tauPG (Ω := Ω c) (D := d.D) (N := d.N) b u (X w) = C (algebraMap K (Ω c) u) * X w := by
-    intro w hw
-    show (aeval (R := Ω c) (S₁ := MvPolynomial (SVar d.D d.N) (Ω c)) _) (X w) = _
-    rw [aeval_X]
-    try dsimp only
-    rw [if_pos hw]
-    rfl
-  have hTout : ∀ w : SVar d.D d.N, ¬ IsBaseBlockVar b w →
-      tauPG (Ω := Ω c) (D := d.D) (N := d.N) b u (X w) = X w := by
-    intro w hw
-    show (aeval (R := Ω c) (S₁ := MvPolynomial (SVar d.D d.N) (Ω c)) _) (X w) = _
-    rw [aeval_X]
-    try dsimp only
-    rw [if_neg hw]
-  have hsX : ∀ w : TVar d.D d.N, d.sH c (X w) = sImg (d.jc c) (d.x c) w := fun w => by
-    show aeval (sImg (d.jc c) (d.x c)) (X w) = _
-    exact aeval_X _ _
   have hsC : d.sH c (C (u : K)) = algebraMap K _ (u : K) := (d.sH c).commutes _
   have hX : ∀ v : TVar d.D d.N, tauFG (Ω := Ω c) b u (d.sH c (X v)) = d.sH c (sigP b u (X v)) :=
     fun v => tauFG_sH_X d c b u v
@@ -222,8 +200,8 @@ theorem tauFG_w0rat (c : ι) (b : Fin (d.D + 1)) (u : Kˣ) :
     exact (tauPG (Ω := Ω c) (D := d.D) (N := d.N) b u).commutes a
   have hsC : d.sH c (C (u : K)) = algebraMap K _ (u : K) := (d.sH c).commutes _
   unfold rationalBaseRow
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.mul_sum]
+
+  rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul, tauFG_sH_X d c b u (0, j), hΩ]
   by_cases hb : b = 0
@@ -341,7 +319,7 @@ theorem sigF_fZ (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (b : Fin (d.D + 1)) (u : K
   rw [map_mul, sigF_norm_w0rat d hd h c b u, sigF_cMM d hd h c b u]
   show _ = _ * (Algebra.norm (KTf K d.D d.N) (d.rationalBaseRow c) * d.cMM h c)
   split_ifs with hb
-  · simp only [zpow_zero, map_one, mul_one, zpow_natCast]
+  · simp only [zpow_zero, map_one, zpow_natCast]
     ring
   · simp only [one_pow, map_one, one_mul]
     ring
@@ -386,8 +364,8 @@ theorem F_degrees (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (F : KTp K d.D d.N)
     rw [coeff_C_mul] at e
     rw [← e]
     conv_rhs => rw [F.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, coeff_sum]
+
+    rw [map_sum, coeff_sum]
     simp only [sigP_monomial, coeff_monomial]
     rw [Finset.sum_ite_eq']
     split_ifs with hs

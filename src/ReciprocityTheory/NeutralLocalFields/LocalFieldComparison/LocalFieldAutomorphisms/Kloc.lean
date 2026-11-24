@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.Hypotheses.GalCohDefs
+public import Mathlib.NumberTheory.Padics.Complex
 
 @[expose] public section
 

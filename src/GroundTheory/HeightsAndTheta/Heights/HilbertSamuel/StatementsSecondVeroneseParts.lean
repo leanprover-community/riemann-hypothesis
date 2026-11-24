@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithRes
 public import GroundTheory.HeightsAndTheta.Heights.FubiniStudy
 
 @[expose] public section

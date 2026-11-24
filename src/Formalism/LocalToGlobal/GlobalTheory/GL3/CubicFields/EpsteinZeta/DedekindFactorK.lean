@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.Harmonic.EulerMascheroni
+public import Mathlib.NumberTheory.ModularForms.DedekindEta
+public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 

@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormDehomCharpoly
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullFormsGeneric
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullRatiosAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullSectionIntegral
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDehomCharpolyForms
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

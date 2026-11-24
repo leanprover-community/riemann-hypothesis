@@ -1,16 +1,57 @@
 module
 
-public import Mathlib
-public import Formalism.MeanHeightDescent.MuMaxMinkowski
-public import Formalism.MeanHeightDescent.BadRowsNumeric
-public import Formalism.MeanHeightDescent.CombinedAverageDegreeBound
-public import Formalism.QuotientMetricDivisors.StatementK
-public import Formalism.MeanHeightDescent.AverageDegreeBounds.CovolumeAssemblyHolds
-public import Formalism.MeanHeightDescent.AverageDegreeBounds.CovolumeFullAssemblyHolds
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.TheoremDivIneq
-public import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
-public import Formalism.MeanHeightDescent.AverageDegreeBounds.TwistLower
+public import Formalism.HarderNarasimhan.StatementPl
+public import Mathlib.RingTheory.FractionalIdeal.Norm
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.MuMaxMinkowski
+public import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,7 +90,6 @@ theorem mk_lt (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotally
   have hL : minkowskiBound K I ≠ ⊤ := by
     first
     | exact (minkowskiBound_lt_top K I).ne
-    | exact (minkowskiBound_lt_top (K := K) (I := I)).ne
   have hR : volume (convexBodyLT K f) ≠ ⊤ := by
     rw [convexBodyLT_volume]
     simp
@@ -59,8 +99,8 @@ theorem mk_lt (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotally
     rw [← ENNReal.toReal_lt_toReal hL hR, convexBodyLT_volume]
     unfold minkowskiBound
     rw [volume_fundamentalDomain_fractionalIdealLatticeBasis, volume_fundamentalDomain_latticeBasis, hd]
-    simp [hm, hr, convexBodyLTFactor, f, hmx]
-    rw [ENNReal.toReal_ofReal (by first | exact_mod_cast FractionalIdeal.absNorm_nonneg _ | positivity),
+    simp [hr, convexBodyLTFactor, f, hmx]
+    rw [ENNReal.toReal_ofReal (by first | exact_mod_cast FractionalIdeal.absNorm_nonneg _),
       Int.norm_eq_abs]
     have e : ∀ N s : ℝ, N * (((2:ℝ) ^ nrComplexPlaces K)⁻¹ * s) * (2:ℝ) ^ (2 * nrComplexPlaces K) =
         N * 2 ^ nrComplexPlaces K * s := by
@@ -72,7 +112,7 @@ theorem mk_lt (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotally
               (((2:ℝ) ^ nrComplexPlaces K)⁻¹ * (2:ℝ) ^ nrComplexPlaces K) := by ring
         _ = N * 2 ^ nrComplexPlaces K * s := by rw [inv_mul_cancel₀ h2, mul_one]
     rw [e]
-    first | exact h | linarith [h]
+    first | exact h
   obtain ⟨a, ha, ha0, hlt⟩ := exists_ne_zero_mem_ideal_lt K I key
   exact ⟨a, ha, ha0, fun w => lt_of_lt_of_eq (hlt w) (Real.coe_toNNReal _ (hg w).le)⟩
 

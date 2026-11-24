@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolSep
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.InvariantRes
-public import GroundTheory.LocalFields.LocalArtinBaseChange
+import GroundTheory.LocalFields.LocalArtinBaseChange
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalRestriction
 
 @[expose] public section
@@ -92,11 +91,11 @@ theorem continuous_fieldConjHom : Continuous (fieldConjHom Kv L e hL) := by
     have hx' : x = ∑ i, (b.repr ⟨x, hx⟩ i) • (b i : Ωv) := by
       calc x = M.val (∑ i, b.repr ⟨x, hx⟩ i • b i) := by rw [b.sum_repr]; rfl
         _ = ∑ i, (b.repr ⟨x, hx⟩ i) • (b i : Ωv) := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum]
+
+          rw [map_sum]
           exact Finset.sum_congr rfl fun i _ => map_smul M.val _ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hx', map_sum]
+
+    rw [hx', map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, hT]
 

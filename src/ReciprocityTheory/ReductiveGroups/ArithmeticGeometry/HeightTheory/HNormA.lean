@@ -1,6 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
+public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
+public import Mathlib.RingTheory.Valuation.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Polynomial.Monic
 
 @[expose] public section
 

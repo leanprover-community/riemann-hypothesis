@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftHom
+public import Mathlib.CategoryTheory.Abelian.Projective.Resolution
+public import Mathlib.CategoryTheory.Linear.Yoneda
+import Mathlib.Algebra.Category.ModuleCat.Monoidal.Closed
+public import Mathlib.Algebra.Category.ModuleCat.Projective
 
 @[expose] public section
 

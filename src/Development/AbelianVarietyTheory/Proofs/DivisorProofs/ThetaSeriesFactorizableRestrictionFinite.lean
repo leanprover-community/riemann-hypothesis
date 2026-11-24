@@ -1,17 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicRapidDecayOfMemAdelicSchwartzSpace
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtendByZeroMemSchA
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RapidDecayAdelicIntegrablePeriodisationContinuou
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TotallyRealSelfAnnihilatorAdeleCharacter
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfFourierEqZero
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -219,8 +253,8 @@ def idem (S : Finset (Pl (F := F))) : AF F :=
 theorem fstA_idem (S : Finset (Pl (F := F))) : fstA F (idem S) = 1 := by
   have h0 : fstA F (infOne (F := F)) = 1 := rfl
   have hl : ∀ w : Pl (F := F), fstA F (GlobalTheory.LatVac.liftV w 1) = 0 := fun w => rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [idem, map_add (f := _), map_sum, h0, Finset.sum_eq_zero fun w _ => hl w, add_zero]
+
+  rw [idem, map_add (f := _), map_sum, h0, Finset.sum_eq_zero fun w _ => hl w, add_zero]
 
 open Classical in
 theorem evFin_idem (S : Finset (Pl (F := F))) (w : Pl (F := F)) : evFin F w (idem S) = if w ∈ S then 1 else 0 := by
@@ -231,8 +265,8 @@ theorem evFin_idem (S : Finset (Pl (F := F))) (w : Pl (F := F)) : evFin F w (ide
     by_cases hx : w = x
     · subst hx; rw [if_pos rfl, GlobalTheory.LatVac.evFin_liftV]
     · rw [if_neg hx]; exact evalV_singleFin_ne hx _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [idem, map_add (f := _), map_sum, h0, hs, Finset.sum_ite_eq S w (fun _ => (1 : Fv F w)), zero_add]
+
+  rw [idem, map_add (f := _), map_sum, h0, hs, Finset.sum_ite_eq S w (fun _ => (1 : Fv F w)), zero_add]
 
 theorem evI_idem_mul (S : Finset (Pl (F := F))) (t : AF F) : evI F (idem S * t) = evI F t := by
   change InfiniteAdeleRing.ringEquiv_mixedSpace F (fstA F (idem S * t)) =
@@ -301,50 +335,6 @@ theorem pure_split {κ : Type} [Fintype κ] (S : Finset (Pl (F := F))) (f : SInf
       apply hw
       beta_reduce at h ⊢
       rw [h, ite_self]
-
-theorem scalar_of_coeff : GlobalTheory.FunPr.Hypotheses₂ → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
-    (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
-    ∀ (S : Finset (Pl (F := F))) (f : SInf F (Fin a' × Fin (a + a'))) (φ : ∀ w : Pl (F := F), (Fin a' × Fin (a + a') → Fv F w) → ℂ),
-    (∀ w, φ w ∈ SB (Fin a' × Fin (a + a') → Fv F w)) → (∀ w, w ∉ S → φ w = G.M'.vac w) →
-    ∀ (m : ℕ) (f' : Fin m → SInf F (Fin a' × Fin (a + a'))) (φ' : Fin m → ∀ w : Pl (F := F), (Fin a' × Fin (a + a') → Fv F w) → ℂ),
-    (∀ i w, φ' i w ∈ SB (Fin a' × Fin (a + a') → Fv F w)) → (∀ i w, w ∉ S → φ' i w = G.M'.vac w) →
-    (∀ u : Matrix (Fin a') (Fin (a + a')) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)), (∀ t : AF F, evI F t = 0 → (∀ w ∈ S, evFin F w t = 0) → t • u = 0) →
-      ∀ μ : @MeasureTheory.Measure (Fin a' × Fin (a + a') → AF F) (borel _),
-        @MeasureTheory.Measure.IsAddHaarMeasure _ _ _ (borel _) μ →
-        (@MeasureTheory.integral _ ℂ _ _ (borel _) μ fun x =>
-            (∑ i, pure (f' i) (φ' i)) x * starRingEnd ℂ (G.M'.co.rho B.ψ u (∑ i, pure (f' i) (φ' i)) x)) =
-          @MeasureTheory.integral _ ℂ _ _ (borel _) μ fun x => pure f φ x * starRingEnd ℂ (G.M'.co.rho B.ψ u (pure f φ) x)) →
-    ∃ c : ℂ, ∑ i, pure (f' i) (φ' i) = c • pure f φ := by
-  intro _ F E _ _ _ _ _ σ B a a' G X om om' hT S f φ hSB hvac m f' φ' hSB' hvac' h
-  classical
-  letI : MeasurableSpace (Fin a' × Fin (a + a') → AF F) := borel _
-  haveI : BorelSpace (Fin a' × Fin (a + a') → AF F) := ⟨rfl⟩
-  haveI := GlobalTheory.AdelicUnitaryTop.locallyCompact_adele F
-  haveI := GlobalTheory.AdelicUnitaryTop.secondCountable_adele F
-  haveI := GlobalTheory.AdelicUnitaryTop.t2Space_adeleRing_numberField F
-  have hF : IsTotallyReal F := hT.base.cm.1
-  have hψ := GlobalTheory.StdCharFromIsStd.isCharAF hT.base.std
-  have hω := hT.geo.hM'.std
-  have hmem : ∀ (g : SInf F (Fin a' × Fin (a + a'))) (χ : ∀ w : Pl (F := F), (Fin a' × Fin (a + a') → Fv F w) → ℂ),
-      (∀ w, χ w ∈ SB (Fin a' × Fin (a + a') → Fv F w)) → (∀ w, w ∉ S → χ w = G.M'.vac w) →
-      pure g χ ∈ schA F (Fin a' × Fin (a + a')) := fun g χ h1 h2 =>
-    GlobalTheory.TensUniq.pure_mem_schA g χ h1 (by
-      filter_upwards [hω, S.finite_toSet.compl_mem_cofinite] with v hv hvS
-      rw [h2 v hvS, hv])
-  obtain ⟨c1, b1, i1⟩ := schA_facts hF (hmem f φ hSB hvac)
-  obtain ⟨c2, b2, i2⟩ := schA_facts hF
-    (Submodule.sum_mem _ fun i (_ : i ∈ Finset.univ) => hmem (f' i) (φ' i) (hSB' i) (hvac' i))
-  refine proportional_of_coeff B.ψ hψ.1 hψ.2.1 (GlobalTheory.SWQ.Annihilator.self_annihilator F hF B.ψ hψ).1 (idem S)
-    (idem_mul_idem S)
-    (fun z => f (fun i => evI F (z i)) * ∏ w ∈ S, φ w fun i => evFin F w (z i))
-    (fun z => ∑ k, f' k (fun i => evI F (z i)) * ∏ w ∈ S, φ' k w fun i => evFin F w (z i))
-    (fun z => ∏ᶠ w, if w ∈ S then (1 : ℂ) else G.M'.vac w fun i => evFin F w (z i)) _ _
-    (pure_split S f φ G.M'.vac hω hvac) (fun x => ?_) c1 c2 b1 b2 i1 i2 fun x₁ y₁ hx hy μ hμ => ?_
-  · rw [Finset.sum_apply, Finset.sum_mul]
-    exact Finset.sum_congr rfl fun k _ => pure_split S (f' k) (φ' k) G.M'.vac hω (hvac' k) x
-  · have := h (G.M'.co.e.symm (x₁, y₁)) (fun t h1 h2 => by
-      rw [← hx, ← hy, ← Prod.smul_mk, ← map_smul, smul_smul, mul_idem_eq_zero S t h1 h2, zero_smul, map_zero]) μ hμ
-    simpa only [Darboux.rho, LinearEquiv.apply_symm_apply] using this
 
 end GlobalTheory.SplitSvN
 

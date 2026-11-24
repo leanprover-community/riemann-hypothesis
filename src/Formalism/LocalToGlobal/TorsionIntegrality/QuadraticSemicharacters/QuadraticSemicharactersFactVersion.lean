@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.ProductThetaMem
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.TaylorMvLinear
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementN
 
 @[expose] public section
 

@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Tactic.ENatToNat
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
@@ -35,7 +41,7 @@ theorem fromSpecResidueField_appTop_iso (x : S) :
       (homOfLE (le_top : (⊤ : (Spec (S.presheaf.stalk x)).Opens) ≤ ⊤)).op = 𝟙 _ := by
     rw [show (homOfLE (le_top : (⊤ : (Spec (S.presheaf.stalk x)).Opens) ≤ ⊤)).op = 𝟙 _ from rfl,
       CategoryTheory.Functor.map_id]
-  simp [hid]
+  simp
 
 theorem constRes_eq (x : S) (hx : IsClosed ({x} : Set S)) [LocallyOfFiniteType s] :
     constRes s x = (residueFieldIsoBase s x hx).inv.hom := by

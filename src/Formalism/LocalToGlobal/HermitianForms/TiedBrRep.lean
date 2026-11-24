@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
+public import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.BranchingNormalisedOfAdjoint
+public import Formalism.LocalRingCardinality.DataRows
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 
 @[expose] public section
 
@@ -31,8 +33,8 @@ theorem blkRow_rename (K : ι → Matrix (Fin n) (Fin n) ℂ) (τ : ι) (f : MvP
   have h : (blkRow K).comp (rename (Prod.mk τ)) = (rename (Prod.mk τ)).comp (Formalism.GradedWeylDivisibility.rowAct ℂ (K τ)) := by
     apply MvPolynomial.algHom_ext
     intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [blkRow, Formalism.GradedWeylDivisibility.rowAct, rename_X, map_sum]
+
+    simp [blkRow, Formalism.GradedWeylDivisibility.rowAct, rename_X, map_sum]
   exact congrArg (fun F : MvPolynomial (Fin n × Fin n) ℂ →ₐ[ℂ] _ => F f) h
 
 theorem blkRow_mem (K : ι → Matrix (Fin n) (Fin n) ℂ) (lam : ι → DomWeight n) {P : MvPolynomial (ι × Fin n × Fin n) ℂ}

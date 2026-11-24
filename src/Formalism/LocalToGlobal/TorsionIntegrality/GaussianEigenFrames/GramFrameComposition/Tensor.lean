@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementG
+public import Mathlib.Analysis.Normed.Group.Ultra
 
 @[expose] public section
 

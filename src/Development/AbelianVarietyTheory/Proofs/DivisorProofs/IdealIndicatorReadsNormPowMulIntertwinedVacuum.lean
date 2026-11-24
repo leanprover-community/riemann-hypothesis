@@ -1,7 +1,66 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApprox
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndexStandardInfSkewThetaLatticeEqAbsNormPow
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjSmulConjSmul
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergFinitePointReadsClassicalTranslation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSelfDualCOfSd
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AdmissibleAtOfIrreducibleTame
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumUnderAdelicPairModulusOne
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormPeriodSq
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardLatticeQuotIdeal
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfIdem
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentSumInfPartIntegralOneSubMem
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsAdelicWeilRepresentationModel
 
 @[expose] public section
 
@@ -68,22 +127,16 @@ theorem pt_mem (δ : ℂ) {𝔪 : Ideal (𝓞 D.host.E)} {a d : ℕ} {z : Matrix
   rw [GlobalTheory.SkewIndex.La_skew_eq_map]
   exact ⟨z, hz, rfl⟩
 
-theorem ee_int (m : ℤ) : ee (m : ℝ) = 1 := by
-  rw [ee, ← Complex.exp_int_mul_two_pi_mul_I m]
-  congr 1
-  push_cast
-  ring
-
 theorem wd_pt_mul {δ : ℂ} (hc : Crv D ⊤ δ) {𝔪 : Ideal (𝓞 D.host.E)} (h𝔪 : 𝔪 ≠ ⊥) {a d : ℕ}
     {z y : Matrix (Fin d) (Fin a) D.host.E} (hz : z ∈ skewMat D 𝔪 a d) (hy : y ∈ skewMat D 𝔪 a d) (F : VC D a d → ℂ) :
     Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ z) (Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ y) F) =
       Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ (z + y)) F := by
   have h1 := (GlobalTheory.InducedType.induced_type D).1
   obtain ⟨w, -, hw⟩ := GlobalTheory.FinWeil.WdCocycle.wd_cocycle D h1 ⊤ δ hc
-  obtain ⟨m, hm⟩ := (GlobalTheory.T.theta_space_selfDual_pair_at_most_line D h1 ⊤ δ hc a d _ (klat_skew δ h𝔪 a d)).2.2.1 _
+  obtain ⟨m, hm⟩ := (_root_.GlobalTheory.ThetaLine.theta_line D h1 ⊤ δ hc a d _ (klat_skew δ h𝔪 a d)).2.2.1 _
     (pt_mem δ (smul_mem_skewMat w hz)) _ (pt_mem δ hy)
   have h2 := (hw a d ((w : D.host.E) • z) y).1
-  rw [hm, ← Int.cast_neg, ee_int] at h2
+  rw [hm, ← Int.cast_neg, _root_.GlobalTheory.FinWeil.AdelicChar.ee_int] at h2
   rw [(hw a d z y).2.2 F]
   simp only [Matrix.smul_apply, smul_eq_mul] at h2
   rw [← h2, one_smul]
@@ -93,7 +146,7 @@ theorem wdPh_eq_one {δ : ℂ} (hc : Crv D ⊤ δ) {𝔪 : Ideal (𝓞 D.host.E)
     (hm : (m : D.host.E) * D.host.conj m = 4 * k) :
     wdPh D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ ((m : D.host.E) • z)) = 1 := by
   have h1 := (GlobalTheory.InducedType.induced_type D).1
-  have hq := (GlobalTheory.T.theta_space_selfDual_pair_at_most_line D h1 ⊤ δ hc a d _ (klat_skew δ h𝔪 a d)).2.2.2.2.2.2
+  have hq := (_root_.GlobalTheory.ThetaLine.theta_line D h1 ⊤ δ hc a d _ (klat_skew δ h𝔪 a d)).2.2.2.2.2.2
   obtain ⟨n1, hn1⟩ := hq _ (pt_mem δ (smul_mem_skewMat (k + 1) hz))
   obtain ⟨n2, hn2⟩ := hq _ (pt_mem δ (smul_mem_skewMat k hz))
   obtain ⟨n3, hn3⟩ := hq _ (pt_mem δ hz)
@@ -124,7 +177,7 @@ theorem wdPh_eq_one {δ : ℂ} (hc : Crv D ⊤ δ) {𝔪 : Ideal (𝓞 D.host.E)
     rw [← hn1, ← hn2, ← hn3, qH, qH, qH, qH, key]
     simp only [Complex.mul_re, Complex.sub_re, Complex.re_ofNat, Complex.im_ofNat]
     ring
-  rw [wdPh, h2, ee_int]
+  rw [wdPh, h2, _root_.GlobalTheory.FinWeil.AdelicChar.ee_int]
 
 theorem char_sum {M V : Type} [AddCommGroup M] [AddCommGroup V] (p : M →+ V) (hp : Function.Injective p)
     (Y₀ : AddSubgroup M) (A B : AddSubgroup V) (hA : A ≤ Y₀.map p) [Fintype (B ⧸ A.addSubgroupOf B)]
@@ -174,7 +227,7 @@ theorem sdC_std {V : HSp D} (hV : V.gram = 1) : IsSelfDualC V (stdL D V.rank) :=
   isSelfDualC_of_sd hV (GlobalTheory.NormSum.VacMove.sd_of_moves (GlobalTheory.NormSum.VacMove.moves_one D _))
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem term_reads (hc : D.host.ccK = ⊤) (hs : Setup ψ θ S T ⊤ δ 1) {v : WO S T → ℂ}
     (hv : IsLatVac (heisO ψ S T) (latO S T (stdL D S.rank : Set (Fin S.rank → D.host.E))
       (stdL D T.rank : Set (Fin T.rank → D.host.E)) fun _ => True) v)
@@ -263,7 +316,7 @@ theorem term_reads (hc : D.host.ccK = ⊤) (hs : Setup ψ θ S T ⊤ δ 1) {v : 
   rw [h6, h7, one_smul]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem sum_char (hc : D.host.ccK = ⊤) (hs : Setup ψ θ S T ⊤ δ 1) {e : AE D} {𝔪 : Ideal (𝓞 D.host.E)} (h : GoodMod e 𝔪)
     (A B : AddSubgroup (VC D S.rank T.rank)) (hA : A = (stdMat D S.rank T.rank).map (ptHom D ⊤ δ S.rank T.rank))
     (hB : B = (skewMat D 𝔪 S.rank T.rank).map (ptHom D ⊤ δ S.rank T.rank)) [Fintype (B ⧸ A.addSubgroupOf B)]
@@ -326,7 +379,7 @@ theorem reads_sum {ι : Type} (s : Finset ι) {a d : ℕ} {hS : S.rank = a} {hT 
   | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi]; exact (h i).add ih
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem indicator_reads : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d) (δ : ℂ),
   D.host.ccK = ⊤ → Setup ψ θ S T ⊤ δ 1 → ∀ v : WO S T → ℂ, IsVacO ψ θ S T (fun _ => 1) (fun _ => 1) (stdL D S.rank : Set (Fin S.rank → D.host.E)) (stdL D T.rank : Set (Fin T.rank → D.host.E)) v →
   ∀ G ∈ Th D (tor0 D ⊤ δ) (stdL D a) (stdL D d), Reads ψ θ hS hT ⊤ δ 1 G v → ∀ (e : AE D) (𝔪 : Ideal (𝓞 D.host.E)), GoodMod e 𝔪 →
@@ -340,7 +393,7 @@ theorem indicator_reads : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : In
   have hidx := GlobalTheory.SkewIndex.index_inter_skew D δ hs.crv 𝔪 h𝔪 (coprime_conj h) S.rank T.rank
   have hB := GlobalTheory.SkewIndex.La_skew_eq_map D δ 𝔪 S.rank T.rank
   have hA := La0_eq (D := D) δ S.rank T.rank
-  have hW := (GlobalTheory.T.theta_space_selfDual_pair_at_most_line D h1 ⊤ δ hs.crv _ _ _ (klat_skew δ h𝔪 S.rank T.rank)).2.1
+  have hW := (_root_.GlobalTheory.ThetaLine.theta_line D h1 ⊤ δ hs.crv _ _ _ (klat_skew δ h𝔪 S.rank T.rank)).2.1
   have hn : 0 < Ideal.absNorm 𝔪 ^ (S.rank * T.rank) :=
     pow_pos (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.2 h𝔪)) _
   rw [cosV, GlobalTheory.NormSum.VacMove.pt_zero, GlobalTheory.NormSum.VacMove.wd_zero, ← Nat.cast_pow]
@@ -373,12 +426,12 @@ theorem indicator_reads : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : In
   rw [one_smul] at hvac
   have hsum := reads_sum Finset.univ _ _ hr fun q => term_reads hc hs hv.2.lat hG hr h (hz q)
   have hT : ∑ q, heisO ψ S T (cA D e • finTens 1 (-z q)) v = (n : ℂ) • Tm (cosInd e 𝔪 rfl rfl 0) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_smul, ← hcard, show (Fintype.card (B ⧸ A.addSubgroupOf B) : ℂ) • cosInd e 𝔪 rfl rfl 0 =
-      ∑ q, fun t => ψ (symplO S T t (cA D e • finTens 1 (-z q))) * halfInd e
-        (latO S T (stdL D S.rank : Set (Fin S.rank → D.host.E))
-          (stdL D T.rank : Set (Fin T.rank → D.host.E)) fun _ => True) t from
-      funext fun t => by rw [Finset.sum_apply]; exact (sum_char hc hs h A B hA hB z hz hz' t).symm, map_sum]
+
+    rw [← map_smul, ← hcard, show (Fintype.card (B ⧸ A.addSubgroupOf B) : ℂ) • cosInd e 𝔪 rfl rfl 0 =
+    ∑ q, fun t => ψ (symplO S T t (cA D e • finTens 1 (-z q))) * halfInd e
+      (latO S T (stdL D S.rank : Set (Fin S.rank → D.host.E))
+        (stdL D T.rank : Set (Fin T.rank → D.host.E)) fun _ => True) t from
+    funext fun t => by rw [Finset.sum_apply]; exact (sum_char hc hs h A B hA hB z hz hz' t).symm, map_sum]
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [hTm.modul _ hSB _ fun i j => by rw [Matrix.smul_apply, smul_eq_mul, ← mul_assoc, hee], hvac]
   rw [hT] at hsum

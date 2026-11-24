@@ -1,7 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
+public import Formalism.GradedWeylDivisibility.StatementA
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 

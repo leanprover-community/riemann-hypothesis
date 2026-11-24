@@ -1,6 +1,24 @@
 module
 
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Invariant.Defs
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Valuation.ValuationSubring
+import Mathlib.FieldTheory.Galois.Profinite
+public import Mathlib.RingTheory.Invariant.Profinite
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.GaloisValuations.GlobalA
+public import Mathlib.FieldTheory.Finite.Basic
+public import Mathlib.FieldTheory.Galois.Infinite
 
 @[expose] public section
 

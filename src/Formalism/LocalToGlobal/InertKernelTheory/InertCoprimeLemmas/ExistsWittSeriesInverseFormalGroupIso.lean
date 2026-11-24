@@ -1,25 +1,23 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelCondition
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsBeW
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PadicNormTwoHundredSixteenEqOneOfFiveLe
+public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.SecondLevelOfNorm
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.FinalOfNRDense
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.SingleLetterBiextensionRelation
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PadicNormTwoHundredSixteenEqOneOfFiveLe
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.InVarAddInVarNeZero
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ExistsUnitFactorizationBounded
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.Joints
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.FinalFree
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.InVarAddInVarNeZero
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SigmaAlg
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.BeWInertOfSigma
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.BridgeTwoMore
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.TwoTorsionU
+import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FamilyLogGammaSmallHolds
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
 
 @[expose] public section
 
@@ -494,11 +492,6 @@ theorem ips_Cmul {c : K} (hc : ‖c‖ ≤ 1) {f : PowerSeries K} (hf : Integral
   rw [PowerSeries.coeff_C_mul, norm_mul]
   exact mul_le_one₀ hc (norm_nonneg _) (ips hf k)
 
-theorem ips_X : Integral ((PowerSeries.X : PowerSeries K) : MvPowerSeries Unit K) := by
-  apply integral_ps; intro k
-  rw [PowerSeries.coeff_X]
-  split_ifs <;> simp
-
 theorem ips_mul {f g : PowerSeries K} (hf : Integral (f : MvPowerSeries Unit K))
     (hg : Integral (g : MvPowerSeries Unit K)) : Integral ((f * g : PowerSeries K) : MvPowerSeries Unit K) :=
   Formalism.InvariantFactorPaths.G7.LogarithmEquivalence.integral_mul' hf hg
@@ -581,16 +574,16 @@ theorem short_exact_isomorphism : ShortIso := by
   have ha12 : ‖W.a₁ / 2‖ ≤ 1 := by rw [norm_div, h2, div_one]; exact hi1
   have ha32 : ‖W.a₃ / 2‖ ≤ 1 := by rw [norm_div, h2, div_one]; exact hi3
   have hX2 : Integral (((PowerSeries.X : PowerSeries K) ^ 2 : PowerSeries K) : MvPowerSeries Unit K) := by
-    rw [pow_two]; exact ips_mul ips_X ips_X
+    rw [pow_two]; exact ips_mul _root_.Formalism.L2.Th1.D.FormalExponential.integral_X _root_.Formalism.L2.Th1.D.FormalExponential.integral_X
   have hX3 : Integral (((PowerSeries.X : PowerSeries K) ^ 3 : PowerSeries K) : MvPowerSeries Unit K) := by
-    rw [pow_succ]; exact ips_mul hX2 ips_X
+    rw [pow_succ]; exact ips_mul hX2 _root_.Formalism.L2.Th1.D.FormalExponential.integral_X
   have hNI : Integral ((N : PowerSeries K) : MvPowerSeries Unit K) := by
     rw [hN]; exact ips_add hxI (ips_Cmul hb2 hX2)
   have hDI : Integral ((D : PowerSeries K) : MvPowerSeries Unit K) := by
     rw [hD]
-    exact ips_sub (ips_sub hxI (ips_mul (ips_Cmul ha12 ips_X) hxI)) (ips_Cmul ha32 hX3)
+    exact ips_sub (ips_sub hxI (ips_mul (ips_Cmul ha12 _root_.Formalism.L2.Th1.D.FormalExponential.integral_X) hxI)) (ips_Cmul ha32 hX3)
   have hDiI : Integral ((D⁻¹ : PowerSeries K) : MvPowerSeries Unit K) :=
     Formalism.InvariantFactorPaths.G7.LogarithmEquivalence.integral_of_mul_eq_one hDI hD1 hDinv
-  exact ips_mul (ips_mul ips_X hNI) hDiI
+  exact ips_mul (ips_mul _root_.Formalism.L2.Th1.D.FormalExponential.integral_X hNI) hDiI
 
 end Formalism.L2.KerInert.BeCob

@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import GroundTheory.IdeleRoots.ConstantFrames.GaugeExistence.QdetSub
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 @[expose] public section
 
@@ -33,8 +33,8 @@ def fb {M n : ℕ} (d : Fin M → ℕ) (h : ∑ i, d i = n) (Y : ℂ) : FreeAlge
 theorem map_qdet {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (ψ : A →ₐ[ℂ] B) {n : ℕ}
     (X : Fin n → Fin n → A) (u : ℂ) : ψ (qdet X u) = qdet (fun p q => ψ (X p q)) u := by
   unfold qdet qminor
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [map_mul, map_list_prod, List.map_ofFn]
   congr 1

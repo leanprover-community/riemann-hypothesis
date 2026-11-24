@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA
+public import Formalism.FormalGroupLog.Statement
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TrDual
 
 @[expose] public section
 

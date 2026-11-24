@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StUniformiserLocallyInjective
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelPlace
 
 @[expose] public section
 

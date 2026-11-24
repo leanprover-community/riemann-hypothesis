@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.IdeleRoots.TorusPowers.SatakeBoundReps
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
-public import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
+public import GroundTheory.AutomorphicForms.GLnLocal
+public import GroundTheory.AutomorphicForms.MacdonaldHecke
 
 @[expose] public section
 

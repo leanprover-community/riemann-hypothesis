@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimitiveElementFibres
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PrimitiveLinearForm
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Nullstellensatz
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,9 +1,51 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountDefs
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FirstCoefficientFacts
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountUp
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
+public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FirstCoefficientFacts
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -373,42 +415,13 @@ theorem countLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
     _ ≤ KS * Hr := mul_le_mul_of_nonneg_left t2 hKS0
     _ ≤ _ := t0'
 
-private theorem transported_and {P Q : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop} (hP : TransportedAlt P) (hQ : TransportedAlt Q) :
-    TransportedAlt fun a b c d e f g i j l => P a b c d e f g i j l ∧ Q a b c d e f g i j l := by
-  unfold TransportedAlt at hP hQ ⊢
-  intro Cc hCc
-  obtain ⟨T0, hT0, hP1⟩ := hP Cc hCc
-  obtain ⟨U0, _, hQ1⟩ := hQ Cc hCc
-  refine ⟨max T0 U0, lt_max_of_lt_left hT0, fun C0 hC0 => ?_⟩
-  obtain ⟨T1, hT1, hP2⟩ := hP1 C0 (le_trans (le_max_left _ _) hC0)
-  obtain ⟨U1, _, hQ2⟩ := hQ1 C0 (le_trans (le_max_right _ _) hC0)
-  refine ⟨max T1 U1, lt_max_of_lt_left hT1, fun CE1 CE2 Cm e1 e2 e3 => ?_⟩
-  obtain ⟨T2, hT2, hP3⟩ := hP2 CE1 CE2 Cm (le_trans (le_max_left _ _) e1)
-    (le_trans (le_max_left _ _) e2) (le_trans (le_max_left _ _) e3)
-  obtain ⟨U2, _, hQ3⟩ := hQ2 CE1 CE2 Cm (le_trans (le_max_right _ _) e1)
-    (le_trans (le_max_right _ _) e2) (le_trans (le_max_right _ _) e3)
-  refine ⟨max T2 U2, lt_max_of_lt_left hT2, fun CYb Cde Ck CD Cb f1 f2 f3 f4 f5 => ⟨?_, ?_⟩⟩
-  · exact hP3 CYb Cde Ck CD Cb (le_trans (le_max_left _ _) f1) (le_trans (le_max_left _ _) f2)
-      (le_trans (le_max_left _ _) f3) (le_trans (le_max_left _ _) f4) (le_trans (le_max_left _ _) f5)
-  · exact hQ3 CYb Cde Ck CD Cb (le_trans (le_max_right _ _) f1) (le_trans (le_max_right _ _) f2)
-      (le_trans (le_max_right _ _) f3) (le_trans (le_max_right _ _) f4) (le_trans (le_max_right _ _) f5)
-
-private theorem transported_of_imp {P Q : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop}
-    (h : ∀ a b c d e f g i j l, P a b c d e f g i j l → Q a b c d e f g i j l) (hP : TransportedAlt P) : TransportedAlt Q := by
-  unfold TransportedAlt at hP ⊢
-  intro Cc hCc
-  obtain ⟨T0, hT0, h1⟩ := hP Cc hCc
-  refine ⟨T0, hT0, fun C0 hC0 => ?_⟩
-  obtain ⟨T1, hT1, h2⟩ := h1 C0 hC0
-  refine ⟨T1, hT1, fun CE1 CE2 Cm e1 e2 e3 => ?_⟩
-  obtain ⟨T2, hT2, h3⟩ := h2 CE1 CE2 Cm e1 e2 e3
-  exact ⟨T2, hT2, fun CYb Cde Ck CD Cb f1 f2 f3 f4 f5 => h _ _ _ _ _ _ _ _ _ _ (h3 CYb Cde Ck CD Cb f1 f2 f3 f4 f5)⟩
+private alias transported_and := _root_.Formalism.MainNotions.ColumnSystems.Pf.TransportedAlt.and
 
 theorem restCountLow_of (hT : RestTail) (hM : RestMatch) : RestCountLow := by
   unfold RestCountLow
   unfold RestTail at hT
   unfold RestMatch at hM
-  refine transported_of_imp ?_ (transported_and (transported_and threshold_standard_one hT) hM)
+  refine _root_.Formalism.MainNotions.ColumnSystems.Pf.TransportedAlt.mono ?_ (transported_and (transported_and threshold_standard_one hT) hM)
   intro _ _ _ _ _ _ _ _ _ _ h
   exact countLow_of h.1.1 h.1.2 h.2
 
@@ -613,7 +626,7 @@ theorem restMatch_of (hCD : ChainDimAt) (hMU : RestMatchUp) (hML : RestMatchLow)
   unfold RestMatch
   unfold RestMatchUp at hMU
   unfold RestMatchLow at hML
-  refine transported_of_imp ?_ (transported_and hMU hML)
+  refine _root_.Formalism.MainNotions.ColumnSystems.Pf.TransportedAlt.mono ?_ (transported_and hMU hML)
   intro _ _ _ _ _ _ _ _ _ _ h
   exact match_of hCD h.1 h.2
 
@@ -717,7 +730,7 @@ theorem matchLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (h : KeptBlockAt C0 C
 theorem restMatchLow_of (h : KeptBlocksBeyondThreshold) : RestMatchLow := by
   unfold RestMatchLow
   unfold KeptBlocksBeyondThreshold at h
-  refine transported_of_imp ?_ h
+  refine _root_.Formalism.MainNotions.ColumnSystems.Pf.TransportedAlt.mono ?_ h
   intro _ _ _ _ _ _ _ _ _ _ h
   exact matchLow_of h
 

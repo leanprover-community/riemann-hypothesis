@@ -1,9 +1,44 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
-public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingNumericalData
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NormalizedLocalScale
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -30,22 +65,7 @@ structure TermTie (D : D7) : Type 1 where
   lift' : ∀ {u u'} (t : D.s.Term u u'), IsLift (abelian₂ t) (fl' t)
   adm : ∀ {u u'} (t : D.s.Term u u'), IsAdmissible (abelian₂ t) (gS D) (fl t) (fl' t)
 
-  conv' : ∀ {u u'} (t : D.s.Term u u'), IsFixedConv (abelian₂ t) (gS D) (fl' t)
-
-  inS_iff : ∀ {u u'} (t : D.s.Term u u'), D.s.inS t ↔
-    (∀ a : Fin D.R.rS, (fl' t).fl.e a - (fl t).fl.e a ∈ Xflag (fl t) a.val) ∧ (fl' t).fl.z - (fl t).fl.z ∈ Xsp (fl t)
-
-  isId_iff : ∀ {u u'} (t : D.s.Term u u'), D.s.isId t ↔
-    ∃ n ∈ NLam (abelian₂ t) (fl t), (∀ a, n ((fl t).fl.e a) = (fl' t).fl.e a) ∧ n (fl t).fl.z - (fl' t).fl.z ∈ Xsp (fl t)
-
   G_eq : ∀ {u u'} (t : D.s.Term u u'), algebraMap D.host.F D.host.E (D.s.Gterm t) = Gval (fl t) (fl' t)
-
-  rel_iff : ∀ {u u'} (t : D.s.Term u u'), D.s.relevant t ↔ Relevant D.host.F (fl t).fl (fl' t).fl
-
-  FeqF_iff : ∀ {u u'} (t : D.s.Term u u'), D.s.FeqF t ↔
-    ∃ n ∈ NLam (abelian₂ t) (fl t), ∀ a, n (frame (fl t) a) = frame (fl' t) a
-
-  id_G : ∀ {u u'} (t : D.s.Term u u'), D.s.isId t → D.s.Gterm t = 0
 
   gen_iff : ∀ {u u'} (t : D.s.Term u u'), D.s.generic t ↔ IsGeneric (abelian₂ t) (gS D) (fl t) (fl' t)
 
@@ -67,18 +87,11 @@ structure TermTie (D : D7) : Type 1 where
 
   wRow : ∀ {u u'}, D.s.Pair u u' → ℝ
   wRow_pos : ∀ {u u'} (p : D.s.Pair u u'), 0 < wRow p
-  chi : ∀ {u u'}, D.s.Pair u u' → ℂ
-  chi_norm : ∀ {u u'} (p : D.s.Pair u u'), ‖chi p‖ = 1
   Hpi : D.what₂.Word → Type
   [hpN : ∀ u, NormedAddCommGroup (Hpi u)]
   [hpI : ∀ u, InnerProductSpace ℂ (Hpi u)]
   [hpF : ∀ u, FiniteDimensional ℂ (Hpi u)]
-  Hpi_dim : ∀ u, (Module.finrank ℂ (Hpi u) : ℝ) = dimPi (hc := D.hcW) u
   Jt : ∀ {u u'}, D.s.Term u u' → (Hpi u' →L[ℂ] Hpi u)
-  piB : ∀ {u u'}, D.s.Pair u u' → (Hpi u' →L[ℂ] Hpi u')
-  piB_unit : ∀ {u u'} (p : D.s.Pair u u') (x : Hpi u'), ‖piB p x‖ = ‖x‖
-  pval_eq : ∀ {u u'} (p : D.s.Pair u u'), D.s.pval p =
-    (wRow p : ℂ) * chi p * hsInner ((Jt (D.s.pfst p)).comp (piB p)) (Jt (D.s.psnd p))
 
 attribute [instance] TermTie.hpN TermTie.hpI TermTie.hpF
 

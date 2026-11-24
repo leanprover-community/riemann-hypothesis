@@ -1,7 +1,48 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachCoordinates
-public import Formalism.DistinguishedUnitIdeals.FinalArcProps
+public import Formalism.DistinguishedUnitIdeals.StatementE
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -37,23 +78,23 @@ theorem map_smulA {T T' : LocLat G Qp LL O} (f : LatHom T.L T'.L) (a : LetA O n)
 theorem φA_letE (i : ZMod n) : W.φA (letE (i - 1) : LetA O n) = letE i := by
   unfold Formalism.BasicNotions.LocWach.φA letφ letE
   funext j
-  by_cases h : j = i <;> simp [Pi.single_apply, h, sub_left_inj]
+  by_cases h : j = i <;> simp [h, sub_left_inj]
 
 theorem γA_letE (g : W.Gam) (i : ZMod n) : W.γA g (letE i : LetA O n) = letE i := by
   unfold Formalism.BasicNotions.LocWach.γA letγ letE
   funext j
-  by_cases h : j = i <;> simp [Pi.single_apply, h]
+  by_cases h : j = i <;> simp [h]
 
 theorem letE_mul_self (i : ZMod n) : (letE i : LetA O n) * letE i = letE i := by
   unfold letE LetA
   ext j
-  by_cases h : j = i <;> simp [Pi.single_apply, h]
+  by_cases h : j = i <;> simp [h]
 
 theorem letE_mul_ne {i k : ZMod n} (h : i ≠ k) : (letE i : LetA O n) * letE k = 0 := by
   unfold letE LetA
   ext j
   by_cases hj : j = i
-  · subst hj; simp [Pi.single_apply, h]
+  · subst hj; simp [h]
   · simp [Pi.single_apply, hj]
 
 theorem sum_letE [NeZero n] : ∑ i : ZMod n, (letE i : LetA O n) = 1 := by
@@ -245,8 +286,8 @@ theorem tot_smulC (C : Coord W I T) (m : O) (y : ZMod n → C.V) :
 
 theorem tot_Δ (C : Coord W I T) (y : ZMod n → C.V) (δ : W.Gam) (hδ : δ ∈ W.DelF) :
     W.γD T δ (tot C y) = tot C y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [tot, map_sum]
+
+  rw [tot, map_sum]
   exact Finset.sum_congr rfl fun i _ => C.t_Δ i (y i) δ hδ
 
 theorem letE_tot (C : Coord W I T) (y : ZMod n → C.V) (i : ZMod n) :
@@ -274,15 +315,15 @@ theorem tot_surj (C : Coord W I T) (x : W.DD T) (hx : ∀ δ ∈ W.DelF, W.γD T
 
 theorem tot_dφ (C : Coord W I T) (z : ZMod n → C.V) :
     tot C ((latOf C).dφ z) = W.φD T (tot C z) - tot C z := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [tot, Formalism.ExponentWindows.E.Lat.dφ, Coord.t_sub, t_φ, Finset.sum_sub_distrib, map_sum]
+
+  simp only [tot, Formalism.ExponentWindows.E.Lat.dφ, Coord.t_sub, t_φ, Finset.sum_sub_distrib, map_sum]
   congr 1
   exact Fintype.sum_equiv (Equiv.subRight 1) _ _ (fun i => rfl)
 
 theorem tot_dγ (C : Coord W I T) (z : ZMod n → C.V) :
     tot C ((latOf C).dγ z) = W.γD T W.gamK (tot C z) - tot C z := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [tot, Formalism.ExponentWindows.E.Lat.dγ, Coord.t_sub, t_γ, Finset.sum_sub_distrib, map_sum]
+
+  simp only [tot, Formalism.ExponentWindows.E.Lat.dγ, Coord.t_sub, t_γ, Finset.sum_sub_distrib, map_sum]
 
 theorem mem_Z1DΔ (a b : W.DD T) : (a, b) ∈ W.wachCocyclesDelta T ↔
     W.γD T W.gamK a - a = W.φD T b - b ∧ (∀ δ ∈ W.DelF, W.γD T δ a = a) ∧
@@ -355,8 +396,8 @@ theorem tot_map {T T' : LocLat G Qp LL O} {C : Coord W I T} {C' : Coord W I T'} 
     (h : CoordHom C C' F) (y : ZMod n → C.V) :
     tot C' (fun i => (latHomOf h).f (y i)) = W.map F (tot C y) := by
   simp only [tot]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun i _ => h.coord_hom_map_trace i (y i)
 
 def BaseId.Inj (I : BaseId W) : Prop := Function.Injective I.ι

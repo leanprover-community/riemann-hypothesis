@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementK
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementW
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementW
 
 @[expose] public section
 

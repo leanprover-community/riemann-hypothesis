@@ -1,6 +1,55 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.Span.Defs
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
+public import Mathlib.GroupTheory.Coset.Defs
+public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 
@@ -120,16 +169,13 @@ theorem mem_span_translates_vacuum (X M : Type) [AddCommGroup X] [AddCommGroup M
       (QuotientAddGroup.mk x : Λ ⧸ H) = QuotientAddGroup.mk y → A x w = A y w := by
     intro w hw x y hxy
     obtain ⟨u, hu⟩ := QuotientAddGroup.eq.1 hxy
-    have h1 : y = x + K • u := by
-      have : K • u = -x + y := hu
-      rw [this]; abel
+    have h1 : y = x + K • u := by rw [show K • u = -x + y from hu]; abel
     have h3 : A (K • u) w = w := by
       simp only [A, AddSubgroup.coe_nsmul, hεK u u.2, hw u u.2, inv_one, one_smul]
     rw [h1, ← hA, h3]
   have hAsum : ∀ (u : Λ) (f : Λ ⧸ H → M), A u (∑ q, f q) = ∑ q, A u (f q) := by
     intro u f
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [A, map_sum, Finset.smul_sum]
+    simp only [A, map_sum, Finset.smul_sum]
   have hP : ∀ w, (∀ u ∈ Λ, ρ (K • u) w = w) → ∃ c : ℂ, (∑ q : Λ ⧸ H, A q.out w) = c • e := by
     intro w hw
     apply hvac
@@ -140,8 +186,7 @@ theorem mem_span_translates_vacuum (X M : Type) [AddCommGroup X] [AddCommGroup M
       refine Fintype.sum_equiv (Equiv.addLeft (QuotientAddGroup.mk ⟨u, hu⟩ : Λ ⧸ H)) _ _ ?_
       intro q
       rw [hA]
-      apply hwell w hw
-      simp
+      exact hwell w hw _ _ (by simp)
     conv_rhs => rw [← h1]
     simp only [A, smul_smul, mul_inv_cancel₀ (hεne u hu), one_smul]
   let Tg : AddSubgroup X := Λ.comap (nsmulAddMonoidHom K : X →+ X)
@@ -153,8 +198,7 @@ theorem mem_span_translates_vacuum (X M : Type) [AddCommGroup X] [AddCommGroup M
       intro u hu
       rw [hcomm, hvK u hu, hp1, ← hp2, (hΛ u).1 hu _ ((hTg _).1 (Tg.neg_mem ht)), one_smul])
     have h1 := congrArg (ρ t) hc
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_smul] at h1
+    rw [map_sum, map_smul] at h1
     have h3 : c • ρ t e ∈ S := S.smul_mem c (Submodule.subset_span ⟨t, rfl⟩)
     rw [← h1] at h3
     convert h3 using 2 with q
@@ -188,14 +232,10 @@ theorem mem_span_translates_vacuum (X M : Type) [AddCommGroup X] [AddCommGroup M
   intro φ
   have h1 := Fintype.linearIndependent_iff.1 hli (fun q => φ (S.mkQ (A q.out v))) (by
     funext t
-    have h3 := (Submodule.Quotient.mk_eq_zero S).2 (hmem _ (t.toAdd).2)
-    have h4 := congrArg φ h3
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Submodule.mkQ_apply, map_sum, map_sum, map_zero] at h4
-    simp only [map_smul, smul_eq_mul] at h4
-    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply]
-    rw [← h4]
-    exact Finset.sum_congr rfl fun q _ => mul_comm _ _) 0
+    have h4 := congrArg φ ((Submodule.Quotient.mk_eq_zero S).2 (hmem _ (t.toAdd).2))
+    rw [← Submodule.mkQ_apply, map_sum, map_sum, map_zero] at h4
+    simp only [map_smul, smul_eq_mul, Finset.sum_apply, Pi.smul_apply, Pi.zero_apply] at h4 ⊢
+    exact (Finset.sum_congr rfl fun q _ => mul_comm _ _).trans h4) 0
   have h3 : A (0 : Λ ⧸ H).out v = v := by
     rw [hwell v hvK _ 0 (by simp), hA0]
   simpa [h3] using h1

@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepComb
+public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
+public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 
 @[expose] public section
 

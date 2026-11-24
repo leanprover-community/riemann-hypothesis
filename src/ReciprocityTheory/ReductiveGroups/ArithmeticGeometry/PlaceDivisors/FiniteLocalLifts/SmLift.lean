@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Smooth.Basic
+public import Mathlib.RingTheory.Noetherian.Nilpotent
 
 @[expose] public section
 
@@ -20,8 +21,6 @@ theorem exists_lift_nil [Algebra.FormallySmooth R A] [Algebra.FinitePresentation
       (RingHom.ker f.toRingHom).FG := by
     first
     | exact Algebra.FinitePresentation.out
-    | (obtain ⟨n, f, hf, hfg⟩ := Algebra.FinitePresentation.out (R := R) (A := A)
-       exact ⟨n, f, hf, hfg⟩)
   choose w hw using fun i : Fin n => hsurj (φ (f (MvPolynomial.X i)))
   let Φ : MvPolynomial (Fin n) R →ₐ[R] W := MvPolynomial.aeval w
   have hΦ : ρ.comp Φ = φ.comp f := by
@@ -65,7 +64,6 @@ theorem exists_lift_nil [Algebra.FormallySmooth R A] [Algebra.FinitePresentation
       rw [AlgEquiv.symm_apply_eq]
       first
       | rfl
-      | simp
     show (Ideal.Quotient.liftₐ (RingHom.ker f) ((Ideal.Quotient.mkₐ R J).comp Φ) hcond)
       ((Ideal.quotientKerAlgEquivOfSurjective hf).symm (f p)) = _
     rw [e0]

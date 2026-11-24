@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.LatticeSlopes.Statement
-public import Formalism.HarderNarasimhan.Statement
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.DegQuot
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RegularLocalRegularSequence.ExistsIsRegularOfListEqMaximalIdeal
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
+public import Mathlib.LinearAlgebra.CliffordAlgebra.Contraction
+public import Mathlib.NumberTheory.LSeries.DirichletContinuation
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.RingTheory.Regular.RegularSequence
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

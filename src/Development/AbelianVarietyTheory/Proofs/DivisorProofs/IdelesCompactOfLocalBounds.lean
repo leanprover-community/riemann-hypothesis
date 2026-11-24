@@ -1,11 +1,46 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsCompactIsOpenUnitsAt
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFinsetOfEventually
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LintegralFintypeProdEqProd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdemSmulUnitary
+import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
+import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -52,7 +87,7 @@ theorem isCompact_restrictedProduct_forall_mem {ι : Type} (R : ι → Type) [�
 theorem repr_tmul_basis {n : ℕ} {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
     (b : Module.Basis (Fin n) F E) (a : R) (x : E) (j : Fin n) :
     (Algebra.TensorProduct.basis R b).repr (a ⊗ₜ[F] x) j = a * algebraMap F R (b.repr x j) := by
-  simp [Algebra.TensorProduct.basis_repr_tmul, Algebra.smul_def, mul_comm]
+  simp [Algebra.TensorProduct.basis_repr_tmul]
 
 theorem eventually_repr_mem_of_mem_intLoc (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     [Module.Finite F E] (j : Fin (Module.finrank F E)) : ∀ᶠ v in Filter.cofinite, ∀ y ∈ intLoc F E v,
@@ -68,8 +103,8 @@ theorem eventually_repr_mem_of_mem_intLoc (F E : Type) [Field F] [NumberField F]
     have e : (x : E) = ∑ k, (β.repr x k : ℤ) • (β k : E) := by
       conv_lhs => rw [← β.sum_repr x]
       simp
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum, Finsupp.coe_finsetSum, Finset.sum_apply, map_sum]
+
+    rw [e, map_sum, Finsupp.coe_finsetSum, Finset.sum_apply, map_sum]
     refine Subring.sum_mem (v.adicCompletionIntegers F).toSubring fun k _ => ?_
     rw [map_zsmul, Finsupp.smul_apply, map_zsmul]
     exact Subring.zsmul_mem (v.adicCompletionIntegers F).toSubring (hv k) _

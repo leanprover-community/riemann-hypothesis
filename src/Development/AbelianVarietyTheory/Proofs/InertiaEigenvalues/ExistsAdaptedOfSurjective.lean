@@ -1,20 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.DualExactSequence
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AssociatedPowOfUnits
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsComponentEquiv
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AntitoneFiltrationExistsAdaptedLinearIndepSet
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IndepOfLinearIndependentDdRE
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankMulLeFinrankDdROfSpans
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AssociatedPowOfUnits
+public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConcretePeriodDeRhamModuleFinrankLe
+public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamComparisonIsFiltered
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinBasisSubsetOfIsField
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSpanDOfFixed
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamComparisonIsFilteredStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConcretePeriodDeRhamModuleFinrankLeStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankMulLeFinrankDdROfSpans
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IndepOfLinearIndependentDdRE
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InjectiveTensorBcrisToBdR
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSpanDOfFixed
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdemNotMemFilVOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -88,8 +128,8 @@ theorem exists_adapted_of_surjective (hF : IsField F) [FiniteDimensional LL V'] 
     obtain ⟨x, hx, rfl⟩ := exists_ext_mem_FilV PD g hs hy
     obtain ⟨m', k', b, e, he, rfl⟩ := h n x hx
     change q _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
     refine Finset.sum_induction _ q qa q0 fun i _ => ?_
     rw [ext_mulR, ← sm_one_tmul, sm_comm, sm_one_tmul, ← ext_sm]
     refine qm (k' i) (b i) (he i).2.2 _ ((hA (k' i)).le ⟨_, ⟨?_, ?_⟩, rfl⟩)
@@ -151,10 +191,7 @@ theorem sum_conv {ι ι' : Type} [Fintype ι] [Fintype ι'] (k : ι → ℤ) (k'
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} (T : LocTied l P AI)
 include T
 
-theorem isField_dR : IsField P.R.BdR := by
-  obtain ⟨C, -⟩ := GlobalTheory.MemLoc.FitsEx.exists_fits l P AI T
-  obtain ⟨_, _, -, -, -, -, _⟩ := GlobalTheory.MemLoc.BdRDVR.core_dvr l C
-  exact T.eD.toMulEquiv.isField (IsFractionRing.toField (K := Per.BdR l) (Per.BdRp l)).toIsField
+alias isField_dR := _root_.GlobalTheory.Per.FontaineBound.isField_of_tied
 
 theorem inv_t_mem (K : FinExt l) (u : P.R.BdR) (hu : (P.PD K).ι (P.PD K).t * u = 1) :
     u ∈ (P.PD K).Fil (-1) := by
@@ -176,16 +213,16 @@ variable (K LL : FinExt l) {V : Type} [AddCommGroup V] [Module ↥LL.1 V] [Modul
 theorem isDR_of_spans (h : Spans (P.PD K) ρ) : IsDR (P.PD K) ρ := by
   have := K.2
   have := LL.2
-  obtain ⟨h1, h2⟩ := GlobalTheory.T.concretePeriod_deRham_module_finrank_le l P AI T K LL V ρ
+  obtain ⟨h1, h2⟩ := _root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K LL V ρ
   exact le_antisymm h2 (GlobalTheory.DRFil.finrank_mul_le_finrank_DdR_of_spans (P.PD K) ρ h1 h)
 
-theorem filSpans (h : IsDR (P.PD K) ρ) : FilSpans (P.PD K) ρ := GlobalTheory.T.deRham_comparison_isFiltered l P AI T K LL V ρ h
+theorem filSpans (h : IsDR (P.PD K) ρ) : FilSpans (P.PD K) ρ := _root_.GlobalTheory.DRFil.deRham_filtered l P AI T K LL V ρ h
 
 theorem crys (h : IsCrys (P.PD K) ρ) : IsDR (P.PD K) ρ ∧ ∀ y ∈ DdR (P.PD K) ρ,
     ∃ (m : ℕ) (c : Fin m → ↥K.1) (x : Fin m → V ⊗[ℚ_[l]] P.R.B), (∀ i, x i ∈ Dcris (P.PD K) ρ) ∧
       y = ∑ i, mulR ℚ_[l] P.R.BdR ↥LL.1 V (algebraMap ↥K.1 P.R.BdR (c i))
         (ιV (P.PD K) (LL := ↥LL.1) (V := V) (x i)) := by
-  obtain ⟨h1, h2⟩ := GlobalTheory.T.concretePeriod_deRham_module_finrank_le l P AI T K LL V ρ
+  obtain ⟨h1, h2⟩ := _root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K LL V ρ
   exact isDR_of_isCrys (P.PD K) (tensInj T K) ρ h2 h
 
 end Rep
@@ -248,7 +285,7 @@ theorem strictAt : StrictAt P K LL := by
   rintro L₀ L₁ L₂ f g ⟨hf, hg, hi, hex, hs⟩ - h₁ - τ a
   have := K.2
   have := LL.2
-  have := (GlobalTheory.T.concretePeriod_deRham_module_finrank_le l P AI T K LL L₂.V L₂.ρ).1
+  have := (_root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K LL L₂.V L₂.ρ).1
   refine ⟨fun x _ hx => ext_injective f hi (hx.trans (map_zero _).symm), fun y => ⟨?_, ?_⟩, fun z => ?_⟩
   · rintro ⟨x, hx, rfl⟩
     exact ⟨ext_mem_FildR _ _ _ f hf τ hx, (ext_exact f g hex hs _).2 ⟨x, rfl⟩⟩
@@ -263,7 +300,7 @@ theorem dualJumpsAt : DualJumpsAt P K LL := by
   rintro L L' β ⟨hβ, hβ'⟩ h
   have := K.2
   have := LL.2
-  have := (GlobalTheory.T.concretePeriod_deRham_module_finrank_le l P AI T K LL L.V L.ρ).1
+  have := (_root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K LL L.V L.ρ).1
   have hs := filSpans T K LL L.ρ h
   refine ⟨isDR_of_spans T K LL L'.ρ
     (GlobalTheory.DRFil.spans_dual_of_spans (P.PD K) L.ρ L'.ρ β (isField_dR T) hβ hβ' (hs.spans _)), fun τ a => ?_⟩
@@ -276,8 +313,8 @@ theorem tensorJumpsAt : TensorJumpsAt P K LL := by
   intro L₁ L₂ L₃ e he h₁ h₂
   have := K.2
   have := LL.2
-  have := (GlobalTheory.T.concretePeriod_deRham_module_finrank_le l P AI T K LL L₁.V L₁.ρ).1
-  have := (GlobalTheory.T.concretePeriod_deRham_module_finrank_le l P AI T K LL L₂.V L₂.ρ).1
+  have := (_root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K LL L₁.V L₁.ρ).1
+  have := (_root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K LL L₂.V L₂.ρ).1
   have hs₁ := filSpans T K LL L₁.ρ h₁
   have hs₂ := filSpans T K LL L₂.ρ h₂
   refine ⟨isDR_of_spans T K LL L₃.ρ (Spans.tensor _ e he (hs₁.spans _) (hs₂.spans _)), fun τ c => ?_⟩

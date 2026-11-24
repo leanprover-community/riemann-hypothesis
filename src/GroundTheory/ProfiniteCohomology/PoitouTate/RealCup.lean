@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.PoitouTate.RealAbstract
-public import GroundTheory.ProfiniteCohomology.RealPlaces.Induced
+public import GroundTheory.ProfiniteCohomology.RealPlaces.DevissageNatural
+public import GroundTheory.ProfiniteCohomology.RealPlaces.InducedDefs
+import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 @[expose] public section
 
@@ -112,12 +112,12 @@ theorem cochainsMap_normHomotopy {F' : Type u} [Group F'] [TopologicalSpace F'] 
   change g.hom (cochainOf Z (normHomotopy μ h e y) σ) = _
   rw [cochainOf_normHomotopy]
   change g.hom (∑ a : F', Z.ρ a (μ.hom _)) = ∑ a : F', Z'.ρ a (g.hom (μ.hom _))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun a _ => Rep.hom_comm_apply g a _
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem tateCompactCochainsResMap_cup (μ : A ⊗ B ⟶ C) (g : C ⟶ C') {r s n : ℕ} (h : r + s = n)
     (p : (tateCompactCochains φ ψ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _)
       (fun w => Rep.res (ψ w).toMonoidHom A) (fun _ => 𝟙 _)).X r) (z : (cochainsComplex B).X s) :

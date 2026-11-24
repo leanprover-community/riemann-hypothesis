@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
 public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Ring.Ultra
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -148,8 +194,8 @@ lemma shiftPoly_lowPoly (b : κ → Lw → K) (Q : MvPolynomial Lw K) :
   | add f g hf hg => simp only [map_add (f := _), hf, hg]
   | mul_X f x hf =>
     simp only [map_mul, hf]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [ext0, map_sum]
+
+    simp [ext0, map_sum]
 
 lemma hasseDir_topLow (b : κ → Lw → K) (β : κ →₀ ℕ) (e : Tp →₀ ℕ) (Q : MvPolynomial Lw K) :
     hasseDir (ext0 (Tp := Tp) b) β (topMonoP e * lowPoly Q) =
@@ -522,8 +568,8 @@ theorem TermBound_of (h1 : JetPairingHasseIdentity) (h2 : HasseDerivIntegralHomo
         (∑ i ∈ range (D + 1), MvPowerSeries.C (((p : K) ^ i)⁻¹) *
           ((∑ j, ETerm.piece p Z Y aA dA aB dB b j) ^ i * U i)) := by
       refine ETerm.jetPair_congr _ _ _ fun m hm => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hgU m, hsupp m hm, map_sum]
+
+      rw [hgU m, hsupp m hm, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [MvPowerSeries.coeff_C_mul,
         ETerm.agree_mul (ETerm.agree_pow hag i) (ETerm.agree_refl D (U i)) m (hsupp m hm).le]

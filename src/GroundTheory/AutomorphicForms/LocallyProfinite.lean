@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Topology.Algebra.OpenSubgroup
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

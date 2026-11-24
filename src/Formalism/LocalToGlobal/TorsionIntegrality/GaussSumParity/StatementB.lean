@@ -1,9 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA
+public import Formalism.GaussJetBounds.StatementP
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TrDual
 public import Formalism.GaussJetBounds.StatementS
 public import Formalism.GaussJetBounds.StatementU
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementGK
 
 @[expose] public section
 

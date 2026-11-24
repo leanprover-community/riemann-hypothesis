@@ -1,6 +1,53 @@
 module
 
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSSymDefs
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermZeroRight
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.IsUnitDetOfMemGV
 
 @[expose] public section
 
@@ -19,42 +66,19 @@ theorem herm_zero_of_trace {ζ : B.Mat k r} (hζ : B.inLie k r ζ) (u v : Fin (2
   rw [trace_xuv] at h1 h2
   have hs : ∀ w, herm (Hpk k r) (ζ *ᵥ w) u = -star (herm (Hpk k r) (ζ *ᵥ u) w) := by
     intro w
-    rw [herm_skew hζ, herm_swap w]
+    rw [herm_skew hζ, _root_.PI.StabPairsW.herm_swap w]
   rw [hs] at h1 h2
   rw [herm_smul_right] at h2
   set A := herm (Hpk k r) (ζ *ᵥ u) v
-  simp [Complex.ext_iff, Complex.mul_re, Complex.mul_im] at h1 h2 ⊢
+  simp [Complex.ext_iff, Complex.mul_re] at h1 h2 ⊢
   constructor <;> linarith
-
-theorem herm_bvec (x : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
-    herm (Hpk k r) x (bvec i) = (Hpk k r *ᵥ x) i := by
-  rw [herm_eq, Finset.sum_eq_single i]
-  · simp [bvec]
-  · intro j _ hj; simp [bvec, hj]
-  · intro h; exact absurd (Finset.mem_univ _) h
-
-theorem herm_e (x : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
-    herm (Hpk k r) x (bvec (eI k r b)) = x (esI k r b) := by
-  rw [herm_bvec, hpk_mulVec, if_pos (Or.inl (by simp [eI]))]
-  rfl
-
-theorem herm_es (x : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
-    herm (Hpk k r) x (bvec (esI k r b)) = x (eI k r b) := by
-  rw [herm_bvec, hpk_mulVec, if_pos (Or.inr (by simp [esI]; omega))]
-  congr 1
-  apply Fin.ext
-  simp [eI, esI]
-  omega
 
 theorem herm_w (x : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) (h1 : r ≤ i.val) (h2 : i.val ≤ r + k) :
     herm (Hpk k r) x (bvec i) = if i.val = r + k then -x i else x i := by
-  rw [herm_bvec, hpk_mulVec, if_neg (by omega)]
+  rw [_root_.PI.StabPairsW.herm_bvec, hpk_mulVec, if_neg (by omega)]
 
 theorem inWb_sub {u v : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u) (hv : inWb k r v) : inWb k r (u - v) := by
   intro i hi; simp [hu i hi, hv i hi]
-
-theorem inWb_smul (c : ℂ) {u : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u) : inWb k r (c • u) := by
-  intro i hi; simp [hu i hi]
 
 def sg (i : Fin (2 * r + k + 1)) : ℂ := if i.val = r + k then -1 else 1
 
@@ -81,21 +105,17 @@ theorem herm_wb {u : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u) (y : Fin (2 
   rw [Finset.sum_congr rfl this]
   ring
 
-theorem re_star_mul_self (a : ℂ) : (star a * a).re = ‖a‖ ^ 2 := by
-  rw [Complex.sq_norm, Complex.normSq_apply]
-  simp [Complex.mul_re]
-
 theorem wb_definite {z w : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < Tz k r z)
     (hw : inWb k r w) (hwz : herm (Hpk k r) w z = 0) (hww : (herm (Hpk k r) w w).re ≤ 0) : w = 0 := by
   set S := Finset.univ.erase (KI k r)
   set K := KI k r
   have e2 : (herm (Hpk k r) w w).re = ∑ i ∈ S, ‖w i‖ ^ 2 - ‖w K‖ ^ 2 := by
-    rw [herm_wb hw, Complex.sub_re, Complex.re_sum, re_star_mul_self]
-    simp only [re_star_mul_self]
+    rw [herm_wb hw, Complex.sub_re, Complex.re_sum, _root_.Formalism.QuantumDeterminants.ggRe_star_mul]
+    simp only [_root_.Formalism.QuantumDeterminants.ggRe_star_mul]
     rfl
   have eT : Tz k r z = ‖z K‖ ^ 2 - ∑ i ∈ S, ‖z i‖ ^ 2 := by
-    rw [Tz, herm_wb hz, Complex.sub_re, Complex.re_sum, re_star_mul_self]
-    simp only [re_star_mul_self]
+    rw [Tz, herm_wb hz, Complex.sub_re, Complex.re_sum, _root_.Formalism.QuantumDeterminants.ggRe_star_mul]
+    simp only [_root_.Formalism.QuantumDeterminants.ggRe_star_mul]
     ring
   rw [herm_wb hw, sub_eq_zero] at hwz
   have hn : ‖z K‖ * ‖w K‖ ≤ ∑ i ∈ S, ‖z i‖ * ‖w i‖ := by
@@ -110,9 +130,7 @@ theorem wb_definite {z w : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 
   have hP : 0 ≤ P := Finset.sum_nonneg (fun i _ => by positivity)
   have hQ : 0 ≤ Q := Finset.sum_nonneg (fun i _ => by positivity)
   have ha : 0 ≤ ‖w K‖ := norm_nonneg _
-  have hc : 0 ≤ ‖z K‖ := norm_nonneg _
   have h1 : P ≤ ‖w K‖ ^ 2 := by linarith
-  have h2 : Q < ‖z K‖ ^ 2 := by linarith
   have h3 : (‖z K‖ * ‖w K‖) ^ 2 ≤ m ^ 2 := by
     have : 0 ≤ ‖z K‖ * ‖w K‖ := by positivity
     exact pow_le_pow_left₀ this hn 2
@@ -120,7 +138,6 @@ theorem wb_definite {z w : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 
     calc (‖z K‖ * ‖w K‖) ^ 2 ≤ m ^ 2 := h3
       _ ≤ Q * P := hcs
       _ ≤ Q * ‖w K‖ ^ 2 := mul_le_mul_of_nonneg_left h1 hQ
-  have h5 : ‖w K‖ ^ 2 * (‖z K‖ ^ 2 - Q) ≤ 0 := by nlinarith
   have h6 : ‖w K‖ ^ 2 ≤ 0 := by
     by_contra hcon
     push Not at hcon

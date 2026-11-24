@@ -1,6 +1,52 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.PolarizationDividedPowerSumSucc
 public import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -18,13 +64,13 @@ theorem map_exterior_one (φ : P →+* Q) (J : Finset (Fin n)) : φ (extOne J) =
 
 theorem map_right_wedge (φ : P →+* Q) (x : Fin n → P) (K : Finset (Fin n) → P) (J : Finset (Fin n)) :
     φ (wedgeR x K J) = wedgeR (fun m => φ (x m)) (fun J => φ (K J)) J := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [wedgeR, map_sum]
+
+  simp [wedgeR, map_sum]
 
 theorem map_right_contraction (φ : P →+* Q) (x : Fin n → P) (K : Finset (Fin n) → P) (J : Finset (Fin n)) :
     φ (contrR x K J) = contrR (fun m => φ (x m)) (fun J => φ (K J)) J := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [contrR, map_sum]
+
+  simp [contrR, map_sum]
 
 theorem map_column_operator (φ : P →+* Q) (c : ℤ) (hP hN : ℕ) (x : Fin n → P) (K : Finset (Fin n) → P)
     (J : Finset (Fin n)) :
@@ -207,67 +253,14 @@ theorem antidiagonal_sum_reindex {N : Type*} [AddCommMonoid N] (s : Finset ι) (
     (F : (ι →₀ ℕ) → N) :
     ∑ g ∈ Finset.finsuppAntidiag s (k + 1), (g l) • F g =
       ∑ f ∈ Finset.finsuppAntidiag s k, (f l + 1) • F (f + Finsupp.single l 1) := by
-  classical
-  have hone : s.sum (Finsupp.single l 1 : ι →₀ ℕ) = 1 := by
-    simp [Finsupp.single_apply, hl]
-  rw [← Finset.sum_filter_of_ne (p := fun g : ι →₀ ℕ => g l ≠ 0)
-    (fun g _ h h0 => h (by rw [h0, zero_smul]))]
-  refine Finset.sum_nbij' (fun g => g - Finsupp.single l 1) (fun f => f + Finsupp.single l 1) ?_ ?_ ?_ ?_ ?_
-  · intro g hg
-    rw [Finset.mem_filter, Finset.mem_finsuppAntidiag] at hg
-    obtain ⟨⟨hsum, hsup⟩, hne⟩ := hg
-    have hle : Finsupp.single l 1 ≤ g := by
-      rw [Finsupp.single_le_iff]; omega
-    have hg' : g = (g - Finsupp.single l 1) + Finsupp.single l 1 := (tsub_add_cancel_of_le hle).symm
-    rw [Finset.mem_finsuppAntidiag]
-    constructor
-    · have : s.sum g = s.sum (g - Finsupp.single l 1 : ι →₀ ℕ) + s.sum (Finsupp.single l 1 : ι →₀ ℕ) := by
-        conv_lhs => rw [hg', Finsupp.coe_add]
-        exact Finset.sum_add_distrib
-      omega
-    · intro x hx
-      apply hsup
-      rw [Finsupp.mem_support_iff] at hx ⊢
-      intro h0
-      apply hx
-      simp [h0]
-  · intro f hf
-    rw [Finset.mem_finsuppAntidiag] at hf
-    rw [Finset.mem_filter, Finset.mem_finsuppAntidiag]
-    refine ⟨⟨?_, ?_⟩, ?_⟩
-    · have : s.sum (f + Finsupp.single l 1 : ι →₀ ℕ) = s.sum f + s.sum (Finsupp.single l 1 : ι →₀ ℕ) := by
-        rw [Finsupp.coe_add]
-        exact Finset.sum_add_distrib
-      omega
-    · intro x hx
-      by_cases hxl : x = l
-      · rw [hxl]; exact hl
-      · apply hf.2
-        rw [Finsupp.mem_support_iff] at hx ⊢
-        simpa [Finsupp.single_apply, Ne.symm hxl] using hx
-    · simp
-  · intro g hg
-    rw [Finset.mem_filter] at hg
-    have hle : Finsupp.single l 1 ≤ g := by
-      rw [Finsupp.single_le_iff]; have := hg.2; omega
-    exact tsub_add_cancel_of_le hle
-  · intro f _
-    exact add_tsub_cancel_right _ _
-  · intro g hg
-    rw [Finset.mem_filter] at hg
-    have hle : Finsupp.single l 1 ≤ g := by
-      rw [Finsupp.single_le_iff]; have := hg.2; omega
-    have h1 : (g - Finsupp.single l 1 : ι →₀ ℕ) l + 1 = g l := by
-      have := hg.2
-      simp only [Finsupp.tsub_apply, Finsupp.single_eq_same]; omega
-    rw [h1, tsub_add_cancel_of_le hle]
+  apply Formalism.MainNotions.G.GLWeightTheory.finsuppAntidiag_succ_reindex <;> assumption
 
 theorem derivation_sum_divided_power (sg : ι → R) (src dst : ι → σ) (hs : Function.Injective src) (hd : ∀ l l', dst l' ≠ src l)
     (s : Finset ι) (m : σ →₀ ℕ) (k : ℕ) :
     (∑ l ∈ s, dividedPowerDerivation sg src dst l) (dividedPowerSum sg src dst s k m) = (k + 1) • dividedPowerSum sg src dst s (k + 1) m := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.sum_apply, dividedPowerSum, map_sum]
+
+  simp only [LinearMap.sum_apply, dividedPowerSum, map_sum]
   have h1 : ∀ l ∈ s, ∑ f ∈ Finset.finsuppAntidiag s k, dividedPowerDerivation sg src dst l (dividedPowerTerm sg src dst s m f) =
       ∑ g ∈ Finset.finsuppAntidiag s (k + 1), (g l) • dividedPowerTerm sg src dst s m g := by
     intro l hl
@@ -422,8 +415,8 @@ theorem map_divided_power_monomial {R R' : Type*} [CommRing R] [CommRing R'] (φ
     MvPolynomial.map φ (divPowMono R LL S a b k m) = divPowMono R' LL S a b k m := by
   classical
   unfold divPowMono
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun f _ => ?_
   rw [MvPolynomial.map_monomial, map_prod]
   congr 1
@@ -624,8 +617,8 @@ theorem derivation_exterior_induction {n : ℕ} {P : Type*} [CommRing P] (D : P 
   have h := congrFun hc J
   simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, LinearMap.sub_apply, Module.End.mul_apply,
     Pi.sub_apply] at h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_apply, Finset.sum_apply, map_sum]
+
+  rw [map_sum, Finset.sum_apply, Finset.sum_apply, map_sum]
   simp only [Pi.smul_apply, smul_eq_mul, map_smul, hD, ho, hK']
   rw [Finset.sum_add_distrib]
   have h2 : ∑ m, o m K J * D (x m) = ∑ m, D (x m) * o m K J := Finset.sum_congr rfl fun m _ => mul_comm _ _
@@ -840,8 +833,8 @@ theorem gl_action_diag_monomial (S : Set (Fin N)) (a : Fin n) (m : Fin N × Fin 
     glAct ℤ LL S a a (monomial m c) = monomial m (wtS LL S m a * c) := by
   classical
   unfold glAct wtS
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearMap.sum_apply, Finset.sum_mul, map_sum]
+
+  rw [LinearMap.sum_apply, Finset.sum_mul, map_sum]
   refine Finset.sum_congr rfl fun l _ => ?_
   have key := X_mul_pderiv_monomial_bis (R := ℤ) (l, a) m c
   rw [pderiv_monomial] at key
@@ -861,7 +854,7 @@ theorem coeff_gl_action_diag (S : Set (Fin N)) (a : Fin n) (m : Fin N × Fin n �
 theorem weight_eq_of_eigen (S : Set (Fin N)) (a : Fin n) (G : MvPolynomial (Fin N × Fin n) ℤ) (lam : ℤ)
     (h : glAct ℤ LL S a a G = lam • G) (m : Fin N × Fin n →₀ ℕ) (hm : m ∈ G.support) : wtS LL S m a = lam := by
   have h1 := coeff_gl_action_diag LL S a m G
-  rw [h, coeff_smul, smul_eq_mul] at h1
+  rw [h, MvPolynomial.coeff_smul, smul_eq_mul] at h1
   exact (mul_right_cancel₀ (mem_support_iff.1 hm) h1).symm
 
 theorem column_operator_diag {P : Type*} [CommRing P] (a : Fin n) (c : ℤ) (K : Finset (Fin n) → P) (J : Finset (Fin n)) :

@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtA
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrDefs
 public import Lemmata.GeneralBFactUpperTerForm.Imports
+import Mathlib.RingTheory.PiTensorProduct
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.NormSubEqOneOfPowEqOne
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtA
 
 @[expose] public section
 
@@ -15,9 +18,7 @@ namespace UnramifiedExtensions
 
 variable {p}
 
-theorem norm_sum_le_of_le {ι : Type} (s : Finset ι) (g : ι → PadicAlgCl p) {C : ℝ} (hC : 0 ≤ C)
-    (h : ∀ j ∈ s, ‖g j‖ ≤ C) : ‖∑ j ∈ s, g j‖ ≤ C := by
-  first | exact Bl.general_b_fact_upper_ter_form.goal1 .. | (apply Bl.general_b_fact_upper_ter_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_upper_ter_form.goal1 <;> assumption)
+alias norm_sum_le_of_le := _root_.Bl.general_b_fact_upper_ter_form.goal1
 
 theorem norm_sum_eq_one {K : IntermediateField ℚ_[p] (PadicAlgCl p)} {ι : Type} [Fintype ι] (ω : ι → Obar p)
     (hω : LinearIndependent (resK p K) (fun i => IsLocalRing.residue (Obar p) (ω i))) (b : ι → Obar p)
@@ -28,8 +29,8 @@ theorem norm_sum_eq_one {K : IntermediateField ℚ_[p] (PadicAlgCl p)} {ι : Typ
   rw [hs]
   refine le_antisymm (norm_le_one _) (not_lt.1 fun hlt => ?_)
   have h0 := (res_eq_zero_iff _).2 hlt
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum] at h0
+
+  rw [map_sum] at h0
   let c : ι → resK p K := fun j => ⟨res (b j), (mem_resK_iff K _).2 ⟨b j, hb j, rfl⟩⟩
   have h1 : ∑ j, c j • IsLocalRing.residue (Obar p) (ω j) = 0 := by
     rw [← h0]

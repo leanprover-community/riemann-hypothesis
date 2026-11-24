@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
+public import Mathlib.Data.Nat.Factorization.Defs
+public import Mathlib.RingTheory.PowerSeries.Substitution
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+public import Mathlib.Data.Nat.Factorization.Basic
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchPlace
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchInComponent
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StMinimalPrimePlace

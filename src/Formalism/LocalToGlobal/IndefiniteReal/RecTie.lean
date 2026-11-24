@@ -2,8 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.OrthogonalComplementCharacterisation
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
-public import Formalism.LocalRingCardinality.PrincipalHermitianLattice
 public import Formalism.LocalToGlobal.IndefiniteReal.GramCEqTranspose
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

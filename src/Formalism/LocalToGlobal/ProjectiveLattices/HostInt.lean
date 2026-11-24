@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNA
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -205,42 +246,20 @@ theorem trace_rep (D : D7) (g : 𝓞 D.host.E →ₗ[ℤ] ℤ) : ∃ z : D.host.
   have hj : ∀ k, Algebra.trace ℚ D.host.E ((∑ i, ((g (RingOfIntegers.basis D.host.E i) : ℤ) : ℚ) • db i) *
       algebraMap (𝓞 D.host.E) D.host.E (RingOfIntegers.basis D.host.E k)) = g (RingOfIntegers.basis D.host.E k) := by
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← integralBasis_apply, Finset.sum_mul, map_sum]
+
+    rw [← integralBasis_apply, Finset.sum_mul, map_sum]
     simp_rw [smul_mul_assoc, map_smul, key]
     simp
   intro c
   conv_lhs => rw [← (RingOfIntegers.basis D.host.E).sum_repr c]
   conv_rhs => rw [← (RingOfIntegers.basis D.host.E).sum_repr c]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_zsmul, Finset.mul_sum, mul_smul_comm, hj, Int.cast_sum, smul_eq_mul, Int.cast_mul]
+
+  simp only [map_sum, map_zsmul, Finset.mul_sum, mul_smul_comm, hj, Int.cast_sum, smul_eq_mul, Int.cast_mul]
   simp only [zsmul_eq_mul]
 
 theorem riesz {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E) (l : S.V →ₗ[E] E) :
     ∃ x, ∀ v, S.hT x v = l v := by
-  let T : S.V →ₗ[E] (Fin S.rank → E) :=
-    { toFun := fun x i => star (S.hT x (S.frame i))
-      map_add' := by intro x y; ext i; simp [map_add (f := _), star_add]
-      map_smul' := by
-        intro e x; ext i
-        simp [LinearMap.map_smulₛₗ, star_mul', starRingEnd_apply, star_star] }
-  have hT : Function.Injective T := by
-    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-    intro x hx
-    have h0 : ∀ i, S.hT x (S.frame i) = 0 := fun i => by
-      have := congrFun hx i
-      simpa [T] using this
-    have h1 : S.hT x = 0 := S.frame.ext (fun i => by rw [h0 i]; rfl)
-    exact S.nondeg.1 x (fun y => by rw [h1]; rfl)
-  have hfr : Module.finrank E S.V = Module.finrank E (Fin S.rank → E) := by
-    rw [S.rank_eq, Module.finrank_fin_fun]
-  obtain ⟨x, hx⟩ := (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hfr).1 hT
-    (fun i => star (l (S.frame i)))
-  refine ⟨x, fun v => ?_⟩
-  have h2 : S.hT x = l := S.frame.ext (fun i => by
-    have := congrFun hx i
-    simpa [T] using this)
-  rw [h2]
+  apply Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.BwdNA.riesz
 
 end Unimod
 

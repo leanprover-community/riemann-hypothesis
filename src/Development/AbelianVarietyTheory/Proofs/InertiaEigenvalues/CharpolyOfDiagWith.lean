@@ -1,17 +1,59 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.DiagonalQuotientEigen
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompletionLines
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InjectiveOfSpan
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeffEqOfApply
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSubstInvariants
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DvrComplete
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPrimitiveRootCoeffRingOfGood
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemXSmulOfProjective
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBasisAddPiSmul
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMatrixFrobenius
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InjectiveOfSpan
+public import Mathlib.Algebra.Module.Lattice.Full
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Charpoly.BaseChange
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.Module.Lattice.Basic
 
 @[expose] public section
 
@@ -252,8 +294,8 @@ theorem mem_NΔl_iff (hr : ∀ a, (∃ b, J b = a) ↔ ∀ δ ∈ W.DelF, W.γ�
       rw [mul_comm, letE, mul_single, mul_one]
     have hc : ∀ k, ∃ c, J c = a k i := fun k => (hr _).2 fun δ hδ => by
       have h1 := hΔ δ hδ
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hxa, map_sum] at h1
+
+      rw [hxa, map_sum] at h1
       simp only [γD_smulA, γA_single, (hb _).2 δ hδ] at h1
       simpa using congrFun (congrFun (coord_unique W T b _ _ h1) k) i
     choose c hc using hc
@@ -327,8 +369,8 @@ theorem exists_matrix (ζ : LL) {r' : ℕ} (e : ↥(W.N T) →+ (Fin r' → LL�
   have h1 : ∀ a : Fin r → LetA O n, e (∑ k, a k • b k) = M.mulVec fun k => W.lev i ζ (a k) := by
     intro a
     funext u
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [M, map_sum, he, Matrix.mulVec, dotProduct, mul_comm]
+
+    simp [M, map_sum, he, Matrix.mulVec, dotProduct, mul_comm]
   refine ⟨M, fun hs => ?_, fun c => ?_⟩
   · have : Submodule.span LL⟦X⟧ (Set.range e) ≤ LinearMap.range M.mulVecLin := by
       rw [Submodule.span_le]

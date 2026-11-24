@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteProjectionSheetsDense
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.AnalyticGerm
 
 @[expose] public section
 

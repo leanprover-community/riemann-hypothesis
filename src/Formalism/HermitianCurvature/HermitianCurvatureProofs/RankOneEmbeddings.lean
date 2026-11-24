@@ -1,7 +1,58 @@
 module
 
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-public import Formalism.FormalDegreeBessel.FinalG
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Function.FactorsThrough
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 
 @[expose] public section
 
@@ -99,7 +150,6 @@ lemma emb_cont : Continuous (fun μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ => 
   all_goals first
     | exact continuous_const
     | exact (continuous_apply _).comp (continuous_apply _)
-    | fun_prop
 
 lemma lmulM_cont (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) := by
   refine continuous_pi fun i => continuous_pi fun j => ?_
@@ -151,9 +201,7 @@ def mvM (p : Mt k r × Vc k r) : Vc k r := (Matrix.of p.1 : Mat k r) *ᵥ p.2
 theorem mvM_cont : Continuous (mvM (k := k) (r := r)) := by
   refine continuous_pi fun i => ?_
   first
-    | fun_prop
     | (simp only [mvM, Matrix.mulVec, dotProduct, Matrix.of_apply]; fun_prop)
-    | (simp only [mvM, Matrix.mulVec, Matrix.dotProduct, Matrix.of_apply]; fun_prop)
 
 theorem mulM_cont : Continuous (mulM (k := k) (r := r)) := by
   refine continuous_pi fun i => continuous_pi fun j => ?_
@@ -166,11 +214,9 @@ def detF (x : Mt k r) : ℂ := (Matrix.of x : Mat k r).det
 theorem detF_cont : Continuous (detF (k := k) (r := r)) := by
   first
     | exact continuous_id.matrix_det
-    | (unfold detF; fun_prop)
 theorem adjF_cont : Continuous (adjF (k := k) (r := r)) := by
   first
     | exact continuous_id.matrix_adjugate
-    | (unfold adjF; fun_prop)
 
 theorem invM_smul : (invM : Mt k r → Mt k r) = fun x => (detF x)⁻¹ • adjF x := by
   funext x
@@ -445,7 +491,7 @@ theorem nu_hyp (CWb : ClosedWb) (CW : ClosedW) (UF : UWbFacts) (z z' : Vc k r)
   simp only [e1]
   rw [hFG _ hbm]
   congr 1
-  simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc]
+  simp only [Matrix.mulVec_mulVec]
 
 theorem nu_left (CWb : ClosedWb) (CW : ClosedW) (UF : UWbFacts) (HI : HypInv) (z z' : Vc k r)
     {s : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hs : MeasSec s) (hsu : ∀ ζ, (s ζ)ᴴ * Hb k * s ζ = Hb k)
@@ -536,7 +582,6 @@ theorem wd_ball (z z' : Vc k r) (hTT : 0 ≤ Tz k r z * Tz k r z') (ρ : ℝ) :
         unfold zWeight
         split_ifs with h
         · first
-            | exact pow_le_pow_left (by linarith) (by linarith) _
             | exact pow_le_pow_left₀ (by linarith) (by linarith) _
         · positivity
     _ = ENNReal.ofReal ((ρ ^ 2) ^ (k - 1)) * volume (Metric.closedBall (0:ℂ) ρ) := setLIntegral_const _ _
@@ -675,8 +720,6 @@ theorem rank_one_formula_of_parts : Formalism.FourierDecayAlt.B2.AssembleRankOne
     rw [hc, lintegral_smul_measure]
     first
       | rfl
-      | simp [ENNReal.smul_def]
-      | simp
   have e2 : ∫⁻ ζ, ENNReal.ofReal (zWeight k (Tz k r z) (Tz k r z') ζ) *
         ∫⁻ p, f (Phi (secF k r z z' μsec) (ζ, p)) ∂(μW.prod μW') =
       ∫⁻ ζ, ENNReal.ofReal (zWeight k (Tz k r z) (Tz k r z') ζ) *
@@ -715,21 +758,18 @@ private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
   ext i j
   rw [Matrix.mul_apply, Matrix.one_apply]
   have hi := i.isLt
-  have hj := j.isLt
   by_cases hm : r ≤ i.val ∧ i.val ≤ r + k
   · rw [Finset.sum_eq_single i]
     · simp only [Hpk]
       split_ifs <;> (first
-          | (exfalso; (try simp only [Fin.ext_iff, Fin.val_mk, ne_eq, and_true, true_and] at *); omega)
-          | (norm_num; done)
-          | rfl)
+          | (exfalso; (try simp only [Fin.ext_iff, and_true] at *); omega)
+          | (norm_num; done))
     · intro l _ hl
       have : Hpk k r i l = 0 := by
         simp only [Hpk]
         split_ifs <;> (first
-          | (exfalso; (try simp only [Fin.ext_iff, Fin.val_mk, ne_eq, and_true, true_and] at *); omega)
-          | (norm_num; done)
-          | rfl)
+          | (exfalso; (try simp only [Fin.ext_iff, ne_eq] at *); omega)
+          | (norm_num; done))
       rw [this, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ i) h
@@ -737,16 +777,14 @@ private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
     rw [Finset.sum_eq_single ⟨2 * r + k - i.val, hp⟩]
     · simp only [Hpk]
       split_ifs <;> (first
-          | (exfalso; (try simp only [Fin.ext_iff, Fin.val_mk, ne_eq, and_true, true_and] at *); omega)
-          | (norm_num; done)
-          | rfl)
+          | (exfalso; (try simp only [Fin.ext_iff] at *); omega)
+          | (norm_num; done))
     · intro l _ hl
       have : Hpk k r i l = 0 := by
         simp only [Hpk]
         split_ifs <;> (first
-          | (exfalso; (try simp only [Fin.ext_iff, Fin.val_mk, ne_eq, and_true, true_and] at *); omega)
-          | (norm_num; done)
-          | rfl)
+          | (exfalso; (try simp only [Fin.ext_iff, ne_eq] at *); omega)
+          | (norm_num; done))
       rw [this, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ _) h
@@ -905,7 +943,7 @@ theorem cW_nonneg (c : Fin r → ℂ) : 0 ≤ cWeight k r c := by
   exact Finset.prod_nonneg fun a _ => pow_nonneg (norm_nonneg _) _
 
 
-set_option maxHeartbeats 800000 in
+
 theorem engine {μG μN μb μW μW' : Measure (Mt k r)} [SFinite μN] [SFinite μb] [SFinite μW] [SFinite μW'] (T T' : ℝ)
     (G0 : (Fin r → ℂ) → Mt k r) (hG0 : Measurable G0) (ES : ℂ → Mt k r) (hES : Measurable ES) (C1 C2 : ℝ≥0)
     (hIt : ∀ f : Mt k r → ℝ≥0∞, Measurable f → ∫⁻ g, f g ∂μG = (C1 : ℝ≥0∞) * ∫⁻ c : Fin r → ℂ,

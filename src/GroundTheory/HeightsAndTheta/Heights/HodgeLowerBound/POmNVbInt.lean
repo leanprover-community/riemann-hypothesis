@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsOmNVbInt
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTpCuspIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarSmooth

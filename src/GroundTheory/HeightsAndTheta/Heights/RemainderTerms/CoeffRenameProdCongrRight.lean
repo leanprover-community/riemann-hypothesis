@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.AltCoeff
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.IsFlagIntegralOne
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -68,7 +66,7 @@ theorem coeff_rho_antisym {R : Type*} [CommRing R] (P : MvPolynomial (Fin f × F
       ∑ w, ((permSign f N w : ℤ) : R) * AddMonoidAlgebra.coeff P (stairExp f N w) := by
   rw [coeff_sum]
   refine Fintype.sum_equiv (Equiv.inv _) _ _ (fun w => ?_)
-  rw [coeff_smul, smul_eq_mul, coeff_rename_prodCongrRight, Equiv.inv_apply, permSign_inv]
+  rw [MvPolynomial.coeff_smul, smul_eq_mul, coeff_rename_prodCongrRight, Equiv.inv_apply, permSign_inv]
   congr 2
 
 theorem blockVandermonde_eq_sum (f N : ℕ) :
@@ -90,7 +88,7 @@ theorem coeff_blockVandermonde (α : Fin f × Fin N →₀ ℕ) :
     AddMonoidAlgebra.coeff (blockVandermonde f N) α =
       ∑ w, ((permSign f N w : ℤ) : ℚ) * if stairExp f N w = α then 1 else 0 := by
   rw [blockVandermonde_eq_sum, coeff_sum]
-  simp only [coeff_smul, coeff_monomial, smul_eq_mul]
+  simp only [MvPolynomial.coeff_smul, coeff_monomial, smul_eq_mul]
 
 theorem eq_one_of_stairExp_eq (w : Fin f → Equiv.Perm (Fin N)) (h : stairExp f N w = rho f N) :
     w = 1 := by

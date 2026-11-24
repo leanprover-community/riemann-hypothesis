@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPiecesAdditive
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEmbeddingWeight
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
+import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Order.CompletePartialOrder
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 
 @[expose] public section

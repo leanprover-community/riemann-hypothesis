@@ -1,8 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeBoundsOfThreeParts
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
+public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
+import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -73,12 +114,12 @@ theorem frobenius_uniformizer_pow_dvd [IsDomain O] (hR : Formalism.MainNotions.U
     funext i
     by_cases hi : i = c
     · subst hi
-      simp only [Pi.mul_apply, hgdef, if_pos rfl]
+      simp only [Pi.mul_apply, hgdef]
       rw [hf i, hg', subst_mul (hsub i), subst_X (hsub i)]
       simp
     · have : a i = ((letE c : LetA O n) * a) i := by rw [hc]
       rw [this]
-      simp [letE, Pi.single_eq_of_ne hi, hgdef, hi]
+      simp [letE, hgdef, hi]
   refine ⟨g, ?_, hag⟩
   refine Formalism.MainNotions.UnusedSlot80.ToolsR.cancel_AΔ (W := W) hR.1 (fun i => Formalism.MainNotions.UnusedSlot80.ToolsR.π₀₁_ne hR) ?_
   rw [← hag]; exact ha
@@ -86,12 +127,6 @@ theorem frobenius_uniformizer_pow_dvd [IsDomain O] (hR : Formalism.MainNotions.U
 end Div
 
 section Ker
-
-theorem letE_sq (i : ZMod n) : (letE i : LetA O n) * letE i = letE i := by
-  funext j
-  by_cases h : j = i
-  · subst h; simp [letE]
-  · simp [letE, Pi.single_eq_of_ne h]
 
 variable (W : LocWach PD LL O v n) (T : LocLat G Qp LL O)
 
@@ -115,7 +150,7 @@ theorem ker_NDl [IsDomain O] (c : ZMod n) (h3 : Formalism.MainNotions.DeltaInvar
   obtain ⟨a, ⟨ha, hxa⟩, -⟩ := hb.2 x hxi
   have hbN : ∀ k, b k ∈ W.N T := fun k => (hb.1 k).1.1
   have hbl : ∀ k, (letE c : LetA O n) • b k = b k := fun k =>
-    Formalism.MainNotions.UnusedSlot80.ArcF.letter_of_Nl W T c (hb.1 k).2
+    _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c (hb.1 k).2
   have hsum : ∑ k, algebraMap O LL (PowerSeries.constantCoeff ((a k) c)) •
       Formalism.MainNotions.ArcLiftingSetup.cmpD W T (b k) = 0 := by
     rw [← h0, hxa, cmpD_sum W T _ _ (fun k _ => (W.N T).smul_mem _ (hbN k))]
@@ -124,10 +159,10 @@ theorem ker_NDl [IsDomain O] (c : ZMod n) (h3 : Formalism.MainNotions.DeltaInvar
   choose g hgΔ hg using fun k => frobenius_uniformizer_pow_dvd hR (ha k).1 (ha k).2 (hcc k)
   refine ⟨∑ k, g k • b k, Submodule.sum_mem _ fun k _ => (W.N T).smul_mem _ (hbN k),
     fun δ hδ => ?_, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      exact Finset.sum_congr rfl fun k _ =>
-        (Formalism.MainNotions.UnusedSlot80.SatW.smul_mem_NΔ W T (hgΔ k) (hb.1 k).1).2 δ hδ
+
+  · rw [map_sum]
+    exact Finset.sum_congr rfl fun k _ =>
+      (Formalism.MainNotions.UnusedSlot80.SatW.smul_mem_NΔ W T (hgΔ k) (hb.1 k).1).2 δ hδ
   · rw [pow_one, hxa, Finset.smul_sum]
     exact Finset.sum_congr rfl fun k _ => by rw [hg k, mul_smul]
 
@@ -140,7 +175,7 @@ theorem cmpD_mem_NDl (i : ZMod n) (hmod : Formalism.MainNotions.DeltaInvariantLa
   set b' : Fin r → W.DD T := fun j => (letE i : LetA O n) • b j with hb'
   have hb'Δ : ∀ j, b' j ∈ W.NΔ T := fun j => Formalism.MainNotions.UnusedSlot80.SatW.smul_mem_NΔ W T hE (hb j)
   have hb'l : ∀ j, (letE i : LetA O n) • b' j = b' j := fun j => by
-    simp only [hb', smul_smul, letE_sq]
+    simp only [hb', smul_smul, _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq]
   have hxs : x = ∑ j, a j • b' j := by
     conv_lhs => rw [← hxi, ha, Finset.smul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -152,8 +187,8 @@ theorem cmpD_mem_NDl (i : ZMod n) (hmod : Formalism.MainNotions.DeltaInvariantLa
   · rw [hy, Finset.smul_sum]
     exact Finset.sum_congr rfl fun j _ => by rw [smul_comm, hb'l j]
   · intro δ hδ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hy, map_sum]
+
+    rw [hy, map_sum]
     exact Finset.sum_congr rfl fun j _ => by rw [map_smul, (hb'Δ j).2 δ hδ]
   · rw [hxs, cmpD_sum W T _ _ (fun j _ => (W.N T).smul_mem _ (hb'Δ j).1), hy,
       cmpD_sum W T _ _ (fun j _ => hyN j)]

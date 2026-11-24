@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverChart
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverPt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

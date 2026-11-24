@@ -1,6 +1,48 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ArchimedeanCompact.InfEmbGrpEq
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ArchSliceUAction
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -142,8 +184,8 @@ theorem grpEq_mem_archCompact (y : GL (Fin a) (Cinf E)) :
         (fun i => ψ.toRingHom (z i)) ᵥ* y.val.map (fun x => x w) := by
     intro z
     ext j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [vecMul, dotProduct, map_sum, map_mul, Matrix.map_apply]
+
+    simp only [vecMul, dotProduct, map_sum, map_mul, Matrix.map_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [infAt_infGL]
     exact congrArg _ (ψ.apply_symm_apply _)
@@ -160,7 +202,7 @@ private theorem norm_le_ht (y : GL (Fin a) (Cinf E)) :
       GlobalTheory.CuspRep.height y ≤ 1 + ‖toL y.val‖ + ‖toL (y⁻¹).val‖ := by
   have n1 := norm_nonneg (toL y.val)
   have n2 := norm_nonneg (toL (y⁻¹).val)
-  refine ⟨?_, ?_, ?_⟩ <;> first | (unfold GlobalTheory.CuspRep.height; linarith) | fail "height"
+  refine ⟨?_, ?_, ?_⟩ <;> first | (unfold GlobalTheory.CuspRep.height; linarith)
 
 private theorem ent (y : GL (Fin a) (Cinf E)) (w : InfinitePlace E) (i j : Fin a) :
     ‖(Reduction.infAt w (infGL E a y) : Matrix (Fin a) (Fin a) w.Completion) i j‖ ≤ ‖toL y.val‖ := by

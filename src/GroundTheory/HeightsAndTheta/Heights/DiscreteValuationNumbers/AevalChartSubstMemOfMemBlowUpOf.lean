@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsBisAlt
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.LiftFormNotMemBlowUpOf
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -86,7 +88,7 @@ theorem mem_of_aeval_chartSubst_mem {a : J → MRing ι R} {H : Ideal (MRing (ex
   have key : ε.comp (aeval (R := R) (chartSubst a)).toRingHom = q := by
     apply MvPolynomial.ringHom_ext
     · intro r
-      simp [ε, liftForm_C]
+      simp [ε]
     · rintro ⟨_ | k, i⟩
       · have h1 := (hq _).mpr (hrel i)
         rw [map_sub, map_mul, map_mul, sub_eq_zero] at h1

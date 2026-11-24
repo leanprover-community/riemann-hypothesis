@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Ideal.GoingDown
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -45,7 +49,7 @@ theorem BaseChangeAvoid.proof : BaseChangeAvoid.Statement := by
   apply hu
   rw [← hc, Ideal.mem_comap]
   convert h using 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [linForm, map_sum]
+
+  simp [linForm, map_sum]
 
 end GroundTheory.Heights₂.Heights

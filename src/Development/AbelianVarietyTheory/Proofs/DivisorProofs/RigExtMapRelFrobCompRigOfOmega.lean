@@ -1,8 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobTwistBaseChangeHomApp
+public import Development.AbelianVarietyTheory.Definitions.Divisors.PadicActionConstInjective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CobOneEqZeroOfConnecting
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -58,8 +96,8 @@ theorem convPow_prime_apply (h : (p : R) = 0) {B ι : Type} [CommRing B] [Algebr
     rw [ofConv_toConv, hf, ofConv_sum, LinearMap.sum_apply]
     simp only [hj])
   have h0 := natCast_eq_zero_of_algebra h (WithConv (A →ₗ[R] B))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, ← frobRing_apply h0, map_sum, ofConv_sum, LinearMap.sum_apply]
+
+  rw [e, ← frobRing_apply h0, map_sum, ofConv_sum, LinearMap.sum_apply]
   simp only [frobRing_apply, smul_pow, ← map_pow, hj]
 
 end PDiv
@@ -88,8 +126,8 @@ theorem verschiebung_app_eq_sum (n : ℕ) {ι : Type} (s : Finset ι) (φ : ι �
     (e : ι → G.A n) (hs : ∀ a, ∑ i ∈ s, φ i a • e i = a) (a : G.A n) :
     (verschiebung h G).app n a = ∑ i ∈ s, (φ i ^ p) a • (frobProj h G).app n (e i) :=
   frobTwist_ext_dual h n fun χ => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [frobTwistDual_verschiebung, map_sum]
+
+    rw [frobTwistDual_verschiebung, map_sum]
     refine (convPow_prime_apply h s φ (fun i => χ (e i)) χ.ofConv
       (fun a => by simpa only [map_sum, map_smul] using congrArg χ.ofConv (hs a).symm) a).trans
       (Finset.sum_congr rfl fun i _ => ?_)
@@ -98,8 +136,8 @@ theorem verschiebung_app_eq_sum (n : ℕ) {ι : Type} (s : Finset ι) (φ : ι �
 theorem relFrob_app_verschiebung_app (n : ℕ) (a : G.A n) :
     (relFrob h G).app n ((verschiebung h G).app n a) = mulBy R _ p a := by
   obtain ⟨s, hs⟩ := exists_dualSystem R (G.A n)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [verschiebung_app_eq_sum h G n s Prod.fst Prod.snd hs, map_sum]
+
+  rw [verschiebung_app_eq_sum h G n s Prod.fst Prod.snd hs, map_sum]
   simp only [map_smul, relFrob_app_frobProj]
   refine (convPow_prime_apply h s Prod.fst Prod.snd LinearMap.id (fun a => (hs a).symm) a).symm.trans ?_
   exact (congrArg (fun f => f.ofConv a)

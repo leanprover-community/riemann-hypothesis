@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
+public import Mathlib.Basic.Real.Basic
+import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 
 @[expose] public section
 

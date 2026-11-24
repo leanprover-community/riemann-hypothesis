@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -28,13 +33,13 @@ theorem approxB_jForm_smul_left (p : ℕ) {r : ℕ} (x y : Fin r → ℂ) (a : �
 
 theorem approxB_jForm_sum_left (p : ℕ) {r : ℕ} {α : Type*} (s : Finset α) (y : Fin r → ℂ)
     (f : α → Fin r → ℂ) : jForm p (∑ j ∈ s, f j) y = ∑ j ∈ s, jForm p (f j) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [jForm, Finset.sum_apply, map_sum, Finset.sum_mul, Finset.mul_sum]
+
+  simp only [jForm, Finset.sum_apply, map_sum, Finset.sum_mul, Finset.mul_sum]
   exact Finset.sum_comm
 
 theorem approxB_jForm_conj (p : ℕ) {r : ℕ} (x y : Fin r → ℂ) : conj (jForm p x y) = jForm p y x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [jForm, jForm, map_sum]
+
+  rw [jForm, jForm, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   by_cases h : (k : ℕ) < p <;> simp [sgn, h, mul_comm]
 
@@ -83,7 +88,7 @@ theorem approxB_normSq_single {r : ℕ} (j : Fin r) (R : ℝ) :
   rw [Finset.sum_eq_single j]
   · simp [sq_abs]
   · intro b _ hb
-    simp [Pi.single_apply, hb]
+    simp [hb]
   · simp
 
 abbrev ApproxPosIdx (r p : ℕ) := {j : Fin r // (j : ℕ) < p}
@@ -175,7 +180,7 @@ theorem approxB_det_le_of_posSemidef {n : Type*} [Fintype n] [DecidableEq n]
   have hl : ∀ i, 0 ≤ hH.eigenvalues i := hN.eigenvalues_nonneg
   have htr : ∑ i, hH.eigenvalues i = ∑ k, (N k k).re := by
     have h2 := congrArg Complex.re hH.trace_eq_sum_eigenvalues
-    simp only [Matrix.trace, Matrix.diag, Complex.re_sum, Complex.ofReal_re] at h2
+    simp only [Matrix.trace, Matrix.diag, Complex.re_sum] at h2
     exact h2.symm
   have hnorm : ‖N.det‖ = ∏ i, hH.eigenvalues i := by
     rw [hdet, norm_prod]
@@ -187,7 +192,7 @@ theorem approxB_det_le_of_posSemidef {n : Type*} [Fintype n] [DecidableEq n]
       _ = Fintype.card n * c := by simp
   rcases Nat.eq_zero_or_pos (Fintype.card n) with h0 | hpos
   · haveI : IsEmpty n := Fintype.card_eq_zero_iff.mp h0
-    simp [h0]
+    simp
   · have hm : (0 : ℝ) < Fintype.card n := by exact_mod_cast hpos
     have hAM := Real.geom_mean_le_arith_mean_weighted Finset.univ (fun _ => (1 : ℝ) / Fintype.card n)
       hH.eigenvalues (fun i _ => by positivity)

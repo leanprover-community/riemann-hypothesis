@@ -1,9 +1,65 @@
 module
 
 public import Development.WeilBound.CoreStatements.FlagImmersions.Transport
-public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnif
-public import Development.WeilBound.CoreStatements.VolumeEquality.Pieces
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsDifferentiableOnTransfer
+public import Development.AbelianVarietyTheory.Statements.HyperbolicHypotheses.HypothesesInhabitedHyperbolic
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicFamilyConjugate
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.InducedModelMorphismCompStructureMap
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RingOfIntegersHomInjective
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.Rt0NeZero
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugateUniversalFamily
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsRiemannLatticeOfPeriod
+public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifConj
+public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifCoord
+public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifGood
+public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVec
+public import Development.WeilBound.CoreStatements.VolumeEquality.Pieces
+import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifConjA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolPairA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.UnLocal
 
 @[expose] public section
 
@@ -44,9 +100,9 @@ theorem hasPer_good {g : ℕ} (κ : c.F →+* ℂ) (ty : Fin g → (E →+* ℂ)
     exact hty
   have hR : ∀ t, ∃ R : RiemLat E g (FU.Di i).La, R.form = (FU.Di i).EF ∧ (t ∈ V' → R.P = P t) := fun t => by
     by_cases ht : t ∈ V'
-    · obtain ⟨R, h₁, h₂, -⟩ := GlobalTheory.T.exists_riemann_lattice_of_period E H (FU.Di i) g ty _ htyi (hP.1 t ht)
+    · obtain ⟨R, h₁, h₂, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.riemLat_of_period E H (FU.Di i) g ty _ htyi (hP.1 t ht)
       exact ⟨R, h₂, fun _ => h₁⟩
-    · obtain ⟨R, -, h₂, -⟩ := GlobalTheory.T.exists_riemann_lattice_of_period E H (FU.Di i) g ty _ htyi (hP.1 t₀ hm)
+    · obtain ⟨R, -, h₂, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.riemLat_of_period E H (FU.Di i) g ty _ htyi (hP.1 t₀ hm)
       exact ⟨R, h₂, fun h => absurd h ht⟩
   choose R hf hRP using hR
   refine ⟨g, _, inferInstance, inferInstance, R, V', hV', hm, hsub,
@@ -108,7 +164,7 @@ theorem locPer : LocPer := by
       have hs : spMap (((starRingEnd ℂ).comp (κ t₀)).comp (algebraMap (𝓞 c.F) c.F)) =
           spMap (starRingEnd ℂ) ≫ spMap ((κ t₀).comp (algebraMap (𝓞 c.F) c.F)) :=
         Spec.map_comp (CommRingCat.ofHom ((κ t₀).comp (algebraMap (𝓞 c.F) c.F))) (CommRingCat.ofHom (starRingEnd ℂ))
-      refine hasPer_conj 𝔐 (hasPer_good 𝔐 _ ty hty FU (hBo.preimage continuous_star) (GlobalTheory.T.holomorphic_family_conjugate _ _ _ _ hz')
+      refine hasPer_conj 𝔐 (hasPer_good 𝔐 _ ty hty FU (hBo.preimage continuous_star) (_root_.GlobalTheory.CompanionTheory.Ar.Cusp.FamEx.isHolTo_conj _ _ _ _ hz')
         (fun t ht => ?_) (fun t ht => ?_) (by simpa using hε))
       · have h := hi' _ ht
         unfold HodgeCpt.Interior at h ⊢

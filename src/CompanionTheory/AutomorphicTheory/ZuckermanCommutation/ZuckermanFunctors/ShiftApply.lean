@@ -1,7 +1,9 @@
 module
 
-public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.MultOne
+public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.SchurH
+public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.MultOne
+import Std.Tactic.BVDecide.Normalize.Bool
 
 @[expose] public section
 
@@ -87,7 +89,7 @@ theorem shift_shift (b : Bool) (μ : Fin n → ℝ) (s : Fin n) : shift (!b) (sh
 
 theorem shift_apply (b : Bool) (μ : Fin n → ℝ) (s a : Fin n) :
     shift b μ s a = μ a + if a = s then (if b then -1 else 1) else 0 := by
-  cases b <;> by_cases h : a = s <;> simp [shift, h, Pi.single_apply, sub_eq_add_neg]
+  cases b <;> by_cases h : a = s <;> simp [shift, h, sub_eq_add_neg]
 
 theorem gap_shift {ε : Fin n → Bool} {μ : Fin n → ℝ} {h : ℝ} (hg : GapAtLeast ε μ h) (b : Bool) (s : Fin n) :
     GapAtLeast ε (shift b μ s) (h - 1) := by
@@ -267,7 +269,6 @@ theorem decW (S : Steps) (Lb : Lib t) (hk : 1 ≤ k) : ∀ (l : ℕ) {μ : Fin (
     classical
     have C := S.homCat k r
     have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega)
-    have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
     rw [Nat.cast_succ m] at ht hD
     let P := {ν : Fin (2 * r + k + 1) → ℝ // IsHCParam ν ∧ GapAtLeast ε ν (h - ((m + 1 : ℕ) : ℝ))}
     have hex : ∀ ν : P, ∃ V : URep k r, V.R.IsDS ε ν.1 := fun ν => by

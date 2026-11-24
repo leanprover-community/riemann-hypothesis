@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
+public import Mathlib.Topology.LocallyConstant.Algebra
+public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

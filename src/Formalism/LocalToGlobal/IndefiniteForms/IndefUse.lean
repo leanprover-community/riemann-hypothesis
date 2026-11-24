@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-public import Formalism.QuotientMetricDivisors.Statement
-public import Formalism.JacquetSubsetSums.JacquetSubsetSum
 public import Formalism.DivisorInequality.StatementObj
-public import Formalism.QuotientMetricDivisors.DivIntoDualShift
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ImageLcv
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -31,10 +32,6 @@ theorem isUnit_det_of_bij {F : Type} [Field F] {d : ℕ} (φ : Matrix (Fin d) (F
     (h : Function.Bijective φ.mulVec) : IsUnit φ.det := by
   first
   | exact (Matrix.isUnit_iff_isUnit_det φ).mp (Matrix.mulVec_injective_iff_isUnit.mp h.1)
-  | exact (Matrix.isUnit_iff_isUnit_det φ).mp (Matrix.mulVec_surjective_iff_isUnit.mp h.2)
-  | (have hb : Function.Bijective (Matrix.toLin' φ) := h
-     have := LinearEquiv.isUnit_det' (LinearEquiv.ofBijective (Matrix.toLin' φ) hb)
-     rwa [LinearEquiv.coe_ofBijective, LinearMap.det_toLin'] at this)
 
 theorem finrank_map_bij {F : Type} [Field F] {d d' : ℕ} (φ : Matrix (Fin d') (Fin d) F)
     (h : Function.Bijective φ.mulVec) (A : Submodule F (Fin d → F)) :
@@ -49,7 +46,6 @@ theorem sum_finrank {F V Ix : Type} [Field F] [AddCommGroup V] [Module F V] [Fin
   have hint : DirectSum.IsInternal A := by
     first
     | exact DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top hi ht
-    | exact DirectSum.isInternal_submodule_of_independent_of_iSup_eq_top hi ht
   rw [Module.finrank_eq_card_basis (hint.collectedBasis fun p => Module.finBasis F (A p)),
     Fintype.card_sigma]
   simp
@@ -134,7 +130,6 @@ theorem dW_eq (wf : Df.WF) (j : Bs.J) : S.dW j = S.D := by
     (by rw [he]; exact map_iSup_top _ hb0 _ wf.Qp_top)
   first
   | simp only [Module.finrank_fin_fun] at a b
-  | simp at a b
   calc S.dW j = ∑ p, finrank K (S.Wp j p) := a.symm
     _ = ∑ p, finrank K (S.Ep p) := Finset.sum_congr rfl fun p _ => S.l1d j p
     _ = S.D := b
@@ -227,7 +222,6 @@ theorem IndefRows.RR_spec (hG : LatticeGlue) {Bs : DefBase K} {Df : DefSide Bs} 
 theorem vw_one (w : HeightOneSpectrum (𝓞 K)) : vw w (1 : K) = 0 := by
   first
   | simp only [vw, FractionalIdeal.spanSingleton_one, FractionalIdeal.count_one]
-  | simp [vw]
 
 theorem IndefSide.boundsMu [_root_.NumberField.IsTotallyComplex K] (hM : Formalism.DivisorInequality.BoundsMu) (hS : SpecDet) (hR0 : GramDeterminantQuotientMetric)
     (hG : LatticeGlue) (hRam : RamBasic) {Bs : DefBase K} {Df : DefSide Bs} {N : IndefNum Bs} (wf : Df.WF)
@@ -304,8 +298,6 @@ theorem matLat_mul {d d' d'' : ℕ} (A : Matrix (Fin d'') (Fin d') K) (B : Matri
        exact ⟨B.mulVec y, ⟨y, hy, rfl⟩, Matrix.mulVec_mulVec y A B⟩
      · rintro ⟨z, ⟨y, hy, rfl⟩, rfl⟩
        exact ⟨y, hy, (Matrix.mulVec_mulVec y A B).symm⟩)
-  | (ext x
-     simp [matLat, Submodule.mem_map, Matrix.mulVec_mulVec])
 
 theorem matLat_one {d : ℕ} (L : Submodule (𝓞 K) (Fin d → K)) : matLat (1 : Matrix (Fin d) (Fin d) K) L = L := by
   ext x

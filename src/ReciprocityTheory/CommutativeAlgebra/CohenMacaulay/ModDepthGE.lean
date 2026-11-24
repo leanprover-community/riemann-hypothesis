@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
+public import Mathlib.RingTheory.KrullDimension.Module
+public import Mathlib.RingTheory.Regular.RegularSequence
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

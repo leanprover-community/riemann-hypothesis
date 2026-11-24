@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.KummerBasic
+public import Mathlib.FieldTheory.Galois.Basic
+public import Mathlib.GroupTheory.FiniteAbelian.Duality
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Hilbert90
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

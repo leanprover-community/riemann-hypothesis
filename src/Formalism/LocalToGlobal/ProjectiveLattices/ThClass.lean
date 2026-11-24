@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
-public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
 public import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

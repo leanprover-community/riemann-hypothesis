@@ -1,6 +1,51 @@
 module
 
+public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FsvMulFsvNeg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -27,7 +72,6 @@ theorem rdV_smulC (X : Matrix (Fin n) (Fin n) ℂ) : SmulC (E := E) (RdV X) := b
   funext g
   simp only [RdV, Pi.smul_apply]
   first
-    | exact deriv_const_smul' α
     | (by_cases h : DifferentiableAt ℝ (fun t : ℝ => f (g * NormedSpace.exp ((t : ℂ) • X))) 0
        · exact deriv_const_smul α h
        · by_cases hα : α = 0
@@ -144,20 +188,15 @@ theorem hasFDerivAt_fsv_other (t : ℂ) (l : Fin m) (c : Fin m → ℂ) :
   have hlin : Differentiable ℝ (fun z : ℂ => t * z - conj t * conj z) := by
     first
       | fun_prop
-      | (apply Differentiable.sub
-         · exact (differentiable_id (𝕜 := ℝ) (E := ℂ)).const_mul t
-         · exact hconj.const_mul (conj t))
   have hg : DifferentiableAt ℝ (fun z : ℂ => fsv t z) (c l) := by
     unfold fsv
     first
       | exact ((Complex.differentiable_exp (𝕜 := ℝ)).comp hlin) (c l)
-      | exact (hlin (c l)).cexp
-      | fun_prop
   refine ⟨(fderiv ℝ (fun z : ℂ => fsv t z) (c l)).comp (ContinuousLinearMap.proj l), ?_, ?_⟩
   · have h := hg.hasFDerivAt.comp c (hasFDerivAt_apply (𝕜 := ℝ) l c)
     exact h
   · intro l' hl' v
-    simp [Pi.single_apply, Ne.symm hl']
+    simp [Ne.symm hl']
 
 theorem wirt_fsv_smul_other (t : ℂ) {l l' : Fin m} (hl : l' ≠ l) (φ : (Fin m → ℂ) → E) (c : Fin m → ℂ)
     (hφ : DifferentiableAt ℝ φ c) :
@@ -279,7 +318,6 @@ theorem Ts_mem {T : Subalgebra ℂ (Pr V)} (σ : Site (Pr V)) (Y : ℂ) (hp : σ
       | exact T.add_mem (T.algebraMap_mem Y) hp
       | exact hc
       | exact hci
-      | exact T.neg_mem hc
 
 end Cen
 
@@ -320,10 +358,6 @@ theorem waveCommQQAll : WaveCommQQAll := by
   have hW2 : ∀ (Φ : RadSp P.k P.r z z' π π') c g, (Wv' Φ : Fn P.k P.r (Wq →L[ℂ] Wp)) c g =
       fsv (-s) (c l) • (Φ : Fn P.k P.r (Wq →L[ℂ] Wp)) c g := hW'
   set T := cenW Wv Wv' with hT
-  have hop : ∀ l' : Fin P.r, l' ≠ l → ∀ i, mkP (X.op l' i) (X.op l' i) ∈ T ∧ True := by
-    intro l' hl' i
-    exact ⟨mem_cenW_of (mulOp_comm_op X Wv s l hW1 hl' i) (mulOp_comm_op X Wv' (-s) l hW2 hl' i)
-      (mulOp_comm_op X Wv s l hW1 hl' i) (mulOp_comm_op X Wv' (-s) l hW2 hl' i), trivial⟩
   have hcomm : ∀ l' : Fin P.r, l' ≠ l → ∀ i j, mkP (X.op l' i) (X.op l' j) ∈ T := by
     intro l' hl' i j
     exact mem_cenW_of (mulOp_comm_op X Wv s l hW1 hl' i) (mulOp_comm_op X Wv' (-s) l hW2 hl' i)

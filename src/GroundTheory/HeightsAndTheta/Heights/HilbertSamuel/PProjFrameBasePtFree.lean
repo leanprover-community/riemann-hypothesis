@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameBasePtFree
+public import Mathlib.RingTheory.MvPolynomial.Ideal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.LemCone
 
 @[expose] public section
@@ -67,8 +67,8 @@ theorem pow_mem (D : ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (κ : Type) (x : 
     simp only [Polynomial.coeff_zero] at h0
     rw [hmon.as_sum, Polynomial.eval₂_add, Polynomial.eval₂_finsetSum, Polynomial.coeff_add,
       Polynomial.finsetSum_coeff] at h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h0, hFdef, map_add (f := _), map_sum]
+
+    rw [← h0, hFdef, map_add (f := _), map_sum]
     congr 1
     · rw [Polynomial.eval₂_X_pow, mul_pow, ← Polynomial.C_pow, Polynomial.coeff_C_mul_X_pow, if_pos rfl,
         map_pow, aeval_X]

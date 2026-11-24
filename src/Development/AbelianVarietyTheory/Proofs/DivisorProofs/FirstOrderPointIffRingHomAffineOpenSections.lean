@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsDefiniteDatumGoodObj
+public import Mathlib.Algebra.DualNumber
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 @[expose] public section
 
@@ -12,10 +58,6 @@ set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.SchRing
-
-theorem spMap_comp' {R S T : Type} [CommRing R] [CommRing S] [CommRing T] (f : R →+* S) (g : S →+* T) :
-    spMap (g.comp f) = spMap g ≫ spMap f := by
-  simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp]
 
 theorem spMap_inj {R S : Type} [CommRing R] [CommRing S] {a b : R →+* S} (h : spMap a = spMap b) : a = b := by
   have := Spec.map_injective h
@@ -81,7 +123,7 @@ theorem deformation_on_sections : ∀ (B : Type) [CommRing B] (X : Scheme.{0}) (
   have hs : ∀ (D : Type) [CommRing D] (r : Γ(X, V) →+* D),
       spMap r ≫ hV.fromSpec ≫ s = spMap (r.comp (s.appLE U V e).hom) ≫ hU.fromSpec := by
     intro D _ r
-    rw [← key, spMap_comp']
+    rw [← key, _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
     rfl
   have hbase : ∀ (D : Type) [CommRing D] (alg : k →+* D) (r : Γ(X, V) →+* D),
       (spMap r ≫ hV.fromSpec) ≫ s = spMap alg ≫ x ≫ s ↔
@@ -89,14 +131,14 @@ theorem deformation_on_sections : ∀ (B : Type) [CommRing B] (X : Scheme.{0}) (
     intro D _ alg r
     rw [hφ]
     simp only [Category.assoc]
-    rw [hs, ← Category.assoc (spMap alg) (spMap φ), ← spMap_comp', hs]
+    rw [hs, ← Category.assoc (spMap alg) (spMap φ), ← _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, hs]
     constructor
     · intro h; exact spMap_inj ((cancel_mono hU.fromSpec).mp h)
     · intro h; rw [h]
   have hfst : ∀ (D : Type) [CommRing D] (f : D →+* k) (r : Γ(X, V) →+* D),
       spMap f ≫ spMap r ≫ hV.fromSpec = x ↔ f.comp r = φ := by
     intro D _ f r
-    rw [hφ, ← Category.assoc, ← spMap_comp']
+    rw [hφ, ← Category.assoc, ← _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
     constructor
     · intro h; exact spMap_cancel hV.fromSpec h
     · intro h; rw [h]
@@ -108,10 +150,10 @@ theorem deformation_on_sections : ∀ (B : Type) [CommRing B] (X : Scheme.{0}) (
     have h2 := (hbase _ _ _).mpr hv2
     obtain ⟨c, hc, hcu⟩ := huniq _ h1 h2
     refine ⟨c, ?_, ?_⟩
-    · rw [hψ, ← Category.assoc, ← spMap_comp'] at hc
+    · rw [hψ, ← Category.assoc, ← _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp] at hc
       exact spMap_cancel hV.fromSpec hc
     · intro c' hc'
       apply hcu
-      rw [hψ, ← Category.assoc, ← spMap_comp', ← hc']
+      rw [hψ, ← Category.assoc, ← _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, ← hc']
 
 end GlobalTheory.SchRing

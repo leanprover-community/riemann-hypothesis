@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
+public import GroundTheory.GlobalFields.IdeleGroups.InfiniteProjInfiniteEmbeddingOfNe
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

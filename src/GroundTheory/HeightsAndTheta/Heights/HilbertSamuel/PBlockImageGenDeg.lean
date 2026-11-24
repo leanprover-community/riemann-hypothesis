@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageGenDeg
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenericFibreVar
@@ -9,6 +8,8 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenFi
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageHilb
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHeightsirationalHilb
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPolySandwich
+public import Mathlib.Algebra.Group.ForwardDiff
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -75,8 +76,8 @@ theorem natDegree_lineRestr_le {K : Type*} [DecidableEq K] (p : MvPolynomial K �
     (lineRestr p k₀ m).natDegree ≤ p.totalDegree := by
   rw [lineRestr]
   conv_lhs => rw [p.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun s hs => ?_
   rw [MvPolynomial.aeval_monomial, Polynomial.algebraMap_eq]
   refine (Polynomial.natDegree_C_mul_le _ _).trans ?_
@@ -198,7 +199,7 @@ theorem BlockImageGenDeg.proof (hMHP : MultigradedHilbertPolynomial.Statement.{0
 
   apply Int.cast_injective (α := ℚ)
   unfold genDeg GroundTheory.Heights₂.Heights.NumbersDVR.intNum
-  convert key using 6 <;> rfl
+  convert key using 6
 
 end
 

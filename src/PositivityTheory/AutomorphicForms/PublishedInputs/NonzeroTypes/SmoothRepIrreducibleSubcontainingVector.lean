@@ -1,6 +1,8 @@
 module
 
-public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.KIface
+public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RepresentationTheory.Irreducible
 
 @[expose] public section
 

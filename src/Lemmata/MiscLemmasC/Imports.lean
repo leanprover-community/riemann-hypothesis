@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+import Mathlib.Tactic.FieldSimp
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Data.Fintype.Card
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+public import Mathlib.GroupTheory.Index
 
 @[expose] public section
 

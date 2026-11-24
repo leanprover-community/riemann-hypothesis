@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 
 @[expose] public section
@@ -44,16 +47,16 @@ lemma hC_sum_left {ι : Type*} (s : Finset ι) (f : ι → Fin r → ℂ) (v : F
 
 lemma hC_symm (hG : ∀ a b, cc (G a b) = G b a) (u v : Fin r → ℂ) :
     hermC τ G v u = conj (hermC τ G u v) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hermC, map_sum, map_mul, Complex.conj_conj]
+
+  simp only [hermC, map_sum, map_mul, Complex.conj_conj]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [← emb_cc, hG]
   ring
 
 lemma emb_herm (x y : Fin r → E) : τ (herm G x y) = hermC τ G (Data.emb τ x) (Data.emb τ y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [herm, hermC, Data.emb, map_sum, map_mul, emb_cc]
+
+  simp only [herm, hermC, Data.emb, map_sum, map_mul, emb_cc]
 
 end herm
 

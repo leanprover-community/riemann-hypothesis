@@ -1,9 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixSchwartz
+import GroundTheory.AutomorphicForms.ReductionFinite
+import GroundTheory.GlobalFields.TateThesis.AdelePoisson
 public import GroundTheory.GlobalFields.TateThesis.GlobalZetaFinite
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
+import Mathlib.Algebra.Module.ZLattice.Summable
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
+public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -20,16 +28,7 @@ open GroundTheory.Global GJMatrix
 
 variable {K : Type*} [Field K] [NumberField K]
 
-theorem norm_apply_le_norm_homeomorphMixedSpace (x : InfiniteAdeleRing K) (w : InfinitePlace K) :
-    ‖x w‖ ≤ ‖homeomorphMixedSpace K x‖ := by
-  rw [homeomorphMixedSpace_apply, InfiniteAdeleRing.ringEquiv_mixedSpace_apply]
-  by_cases hw : w.IsReal
-  · refine le_trans ?_ (norm_fst_le _)
-    refine le_trans ?_ (norm_le_pi_norm _ ⟨w, hw⟩)
-    simp [(InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal hw).norm_map_of_map_zero]
-  · refine le_trans ?_ (norm_snd_le _)
-    refine le_trans ?_ (norm_le_pi_norm _ ⟨w, InfinitePlace.not_isReal_iff_isComplex.1 hw⟩)
-    simp [(InfinitePlace.Completion.isometry_extensionEmbedding w).norm_map_of_map_zero]
+alias norm_apply_le_norm_homeomorphMixedSpace := _root_.GroundTheory.Automorphic.Reduction.norm_apply_le_norm_homeomorphMixedSpace
 
 theorem norm_homeomorphMixedSpace_le_sum (x : InfiniteAdeleRing K) :
     ‖homeomorphMixedSpace K x‖ ≤ ∑ w, ‖x w‖ := by
@@ -70,8 +69,8 @@ theorem norm_apply_le_infNorm (X : Matrix (Fin n) (Fin n) 𝔸[K]) (i j : Fin n)
 theorem mul_apply_fst_apply (X Y : Matrix (Fin n) (Fin n) 𝔸[K]) (i j : Fin n)
     (w : InfinitePlace K) : ((X * Y) i j).1 w = ∑ k, (X i k).1 w * (Y k j).1 w := by
   change Reduction.infEval w ((X * Y) i j) = ∑ k, Reduction.infEval w (X i k) * Reduction.infEval w (Y k j)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.mul_apply, map_sum]
+
+  rw [Matrix.mul_apply, map_sum]
   simp only [map_mul]
 
 theorem infNorm_mul_le (X Y : Matrix (Fin n) (Fin n) 𝔸[K]) :

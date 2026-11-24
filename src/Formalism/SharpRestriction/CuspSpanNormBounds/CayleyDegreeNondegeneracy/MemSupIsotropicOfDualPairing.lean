@@ -1,7 +1,51 @@
 module
 
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.OrthLatticeIsIntegralOfUnimodular
-public import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -127,8 +171,8 @@ theorem mem_sup_isotropic_of_dual_pairing (hΛ : Submodule.IsFullLattice D.host.
     rw [Fintype.linearIndependent_iff]
     intro c hc a
     have h1 : (hS D).hT (∑ a, star (c a) • F0.e a) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, ← hc]
+
+      rw [map_sum, ← hc]
       refine Finset.sum_congr rfl (fun a _ => ?_)
       rw [map_smulₛₗ, starRingEnd_apply, star_star]
     have h2 : ∑ a, star (c a) • F0.e a = 0 := (hS D).nondeg.1 _ (fun y => by rw [h1]; rfl)
@@ -155,7 +199,7 @@ theorem mem_sup_isotropic_of_dual_pairing (hΛ : Submodule.IsFullLattice D.host.
         rfl
     by_cases h : a = b
     · subst b
-      simp only [if_pos rfl]
+      simp only
     · have hn : idx a ≠ idx b := fun hh => h (hi.mp hh.symm)
       simp only [if_neg h, if_neg hn]
   have DL := Formalism.HermitianLatticesTheory.dualLattice (𝓞 D.host.E) D.host.E (hS D).V (hS D).hT (hS D).herm (hS D).nondeg i_star_int
@@ -205,8 +249,8 @@ theorem mem_sup_isotropic_of_dual_pairing (hΛ : Submodule.IsFullLattice D.host.
       refine ⟨Λ.sub_mem hlΛ hl'Λ, ?_⟩
       show l - l' ∈ orth (hS D) (Submodule.span D.host.E (Set.range F0.e))
       refine a_orth_of_frame _ _ fun b => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, hl', map_sum, sub_eq_zero]
+
+      rw [map_sub, hl', map_sum, sub_eq_zero]
       have : ∀ a, (hS D).hT (F0.e b) (o a • (ε • f a)) =
           if b = a then algebraMap (𝓞 D.host.E) D.host.E (o a) * algebraMap (𝓞 D.host.E) D.host.E ε else 0 := by
         intro a
@@ -218,8 +262,8 @@ theorem mem_sup_isotropic_of_dual_pairing (hΛ : Submodule.IsFullLattice D.host.
     have e : l = (l - l') + l' := by abel
     rw [e, map_add (f := _), LinearMap.add_apply]
     refine Submodule.add_mem _ (hy _ hm) ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hl', map_sum, LinearMap.sum_apply]
+
+    rw [hl', map_sum, LinearMap.sum_apply]
     refine Submodule.sum_mem _ fun a _ => ?_
     rw [← algebraMap_smul D.host.E (o a), map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
     exact mul_mem_one_submodule (star_mem_one_submodule (Submodule.mem_one.2 ⟨o a, rfl⟩)) (hgy a)

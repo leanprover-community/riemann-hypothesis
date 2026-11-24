@@ -1,6 +1,18 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -17,10 +29,6 @@ theorem goal1 :
     (Finset.sum.{u_2, 0} s fun (i : ι) ↦
       DFunLike.coe.{u_1 + 1, u_1 + 1, 1} (IsDiscreteValuationRing.addVal.{u_1} O) (a i)) := by
   intro O _ _ _ ι s a
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp only [Finset.prod_empty, Finset.sum_empty, AddValuation.map_one]
-  | insert i t hi ih =>
-    rw [Finset.prod_insert hi, Finset.sum_insert hi, AddValuation.map_mul, ih]
+  exact map_prod (AddValuation.toValuation (IsDiscreteValuationRing.addVal O)) a s
 
 end Bl.general_b_fact'''''''

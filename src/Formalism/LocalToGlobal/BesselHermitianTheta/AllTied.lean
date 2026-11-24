@@ -1,18 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.Lemmas
-public import Formalism.LocalToGlobal.BesselHermitianTheta.Joints
-public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
-public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
-public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedDef
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedType
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilUnr
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedKfin
-public import Formalism.LocalToGlobal.BesselHermitianTheta.MinfDensity
-public import Formalism.LocalRingCardinality.DataDIV
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedBessel
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedLocW
 
 @[expose] public section
 

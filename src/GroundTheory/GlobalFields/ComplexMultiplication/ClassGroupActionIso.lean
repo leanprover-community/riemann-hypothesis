@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraic
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.KodairaNeron
 public import GroundTheory.GlobalFields.ComplexMultiplication.JInvariantSurjective
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MmatMulVec
+import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ConjugateConjugate
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 
 @[expose] public section
 
@@ -25,7 +28,6 @@ theorem smul_mem_of_int {r : ℕ} (L : Submodule (𝓞 E) (Fin r → E)) {c : E}
     {v : Fin r → E} (hv : v ∈ L) : c • v ∈ L := by
   first
   | exact L.smul_mem (⟨c, hc⟩ : 𝓞 E) hv
-  | simpa using L.smul_mem (⟨c, hc⟩ : 𝓞 E) hv
 
 namespace DataX
 
@@ -126,7 +128,6 @@ theorem cc_c0E : cc X.c0E = X.c0E := by
   unfold c0E cc
   first
   | rw [map_div₀, map_natCast, map_ofNat]
-  | simp
 
 theorem tau_c0E (τ : E →+* ℂ) : τ X.c0E = ((((X.g * dEnat E : ℕ) : ℝ) / 2 : ℝ) : ℂ) := by
   unfold c0E

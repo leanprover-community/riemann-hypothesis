@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.JacquetAdmissible
-public import GroundTheory.AutomorphicForms.IwahoriFactorization
+public import GroundTheory.AutomorphicForms.CuspidalAdmissible
+public import GroundTheory.AutomorphicForms.InductionParabolic
+import GroundTheory.AutomorphicForms.GLnLattice
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Finset.Functor
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -57,10 +61,10 @@ theorem mk_fixedProj_eq (hρ : IsSmooth ρ) (hKc : IsCompact (K : Set G)) (hKo :
     exact Submodule.neg_mem _ (sub_mem_coinvariantsKer (Quotient.out q).2 w)
   rw [hey]
   show Representation.Coinvariants.mk (ρ.comp N.subtype) (c⁻¹ • cosetSum ρ K N' w) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_smul, cosetSum_apply, map_sum,
-    Finset.sum_congr rfl fun q _ => hterm _ (Quotient.out q).2, Finset.sum_const,
-    Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hc, one_smul]
+
+  rw [map_smul, cosetSum_apply, map_sum,
+  Finset.sum_congr rfl fun q _ => hterm _ (Quotient.out q).2, Finset.sum_const,
+  Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hc, one_smul]
 
 end General
 

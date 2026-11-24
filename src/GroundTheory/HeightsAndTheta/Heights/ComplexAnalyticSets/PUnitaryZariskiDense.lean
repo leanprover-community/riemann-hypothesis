@@ -1,7 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StUnitaryZariskiDense
+public import Mathlib.Analysis.Complex.Norm
+import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Star.UnitaryStarAlgAut
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section
 
@@ -75,8 +85,8 @@ theorem UnitaryZariskiDense.proof : UnitaryZariskiDense.Statement := by
       rw [eval_aeval_subst]
       refine congrArg (fun f => eval f p) (funext fun ij => ?_)
       rw [Matrix.mul_apply]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, eval_C, eval_X, Matrix.mul_diagonal]
+
+      simp only [map_sum, map_mul, eval_C, eval_X, Matrix.mul_diagonal]
       exact Finset.sum_congr rfl fun k _ => by ring
     have hr : aeval (fun ij : Fin n × Fin n => ∑ k, C (V ij.1 k * star V k ij.2) * X k) p = 0 :=
       funext_set (fun _ => {z : ℂ | ‖z‖ = 1}) (fun _ => unit_circle_infinite) fun d hd => by

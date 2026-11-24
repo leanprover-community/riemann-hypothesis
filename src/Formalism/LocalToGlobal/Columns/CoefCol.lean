@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 

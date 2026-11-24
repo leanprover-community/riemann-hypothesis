@@ -1,8 +1,17 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.RepresentationTheory.AlgebraRepresentation.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -60,7 +69,7 @@ theorem ev_psi (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V) 
     by_cases h : ε p.1 = ε p.2
     · simp [psi, rho, ev, h]
     · simp [psi, rho, ev, h]
-  | mul a b ha hb => intro s; simp [map_mul, Module.End.mul_apply, ha, hb]
+  | mul a b ha hb => intro s; simp [map_mul, ha, hb]
   | add a b ha hb => intro s; simp [map_add (f := _), ha, hb]
 
 theorem rho_surj (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V) (L : Submodule ℂ V) (hL : KStab ε E L)
@@ -99,8 +108,8 @@ theorem dens : CompanionTheory.D.LK.Dens := by
     refine ⟨∑ i, u i * psi ε (r i), fun s => ?_⟩
     have hu' : ∀ i, ev E (u i) v = φ (b i) := fun i => by simpa using hu i
     conv_rhs => rw [← b.sum_repr s]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply, ev_psi ε E L hL, hr, map_smul]
+
+    simp only [map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply, ev_psi ε E L hL, hr, map_smul]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp [hu']
 

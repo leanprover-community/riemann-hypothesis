@@ -1,9 +1,60 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.DedekindDomain.Basic
+public import Mathlib.RingTheory.PowerSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ImportsBis
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Target
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowLeSpanPowSup
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Target
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.PowerSeries.Trunc
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Filtration
+public import Mathlib.RingTheory.Jacobson.Ring
 
 @[expose] public section
 
@@ -20,7 +71,7 @@ theorem residue_exists (k A : Type) [Field k] [IsAlgClosed k] [CommRing A] [Alge
     (Ideal.Quotient.mk Q c)
   refine ⟨a, ?_⟩
   rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, ← ha]
-  simp [Ideal.Quotient.algebraMap_eq]
+  simp
 
 section Dedekind
 variable {A : Type} [CommRing A] [IsDedekindDomain A]
@@ -28,22 +79,12 @@ variable {A : Type} [CommRing A] [IsDedekindDomain A]
 theorem pow_le_span_sup {Q : Ideal A} [Q.IsPrime] (hQ : Q ≠ ⊥) {π : A} (hπ : π ∈ Q)
     (hπ2 : π ∉ Q ^ 2) : ∀ m : ℕ, Q ^ m ≤ Ideal.span {π ^ m} ⊔ Q ^ (m + 1) := by
   first
-  | exact @_root_.GlobalTheory.SpanPowerSupremum.pow_le_span_pow_sup
-  | exact _root_.GlobalTheory.SpanPowerSupremum.pow_le_span_pow_sup
   | (apply _root_.GlobalTheory.SpanPowerSupremum.pow_le_span_pow_sup <;> assumption)
-  | (intros; apply _root_.GlobalTheory.SpanPowerSupremum.pow_le_span_pow_sup <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.SpanPowerSupremum.pow_le_span_pow_sup <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.SpanPowerSupremum.pow_le_span_pow_sup ..)
 
 theorem pow_not_mem {Q : Ideal A} [Q.IsPrime] (hQ : Q ≠ ⊥) {π : A} (hπ : π ∈ Q)
     (hπ2 : π ∉ Q ^ 2) (m : ℕ) : π ^ m ∉ Q ^ (m + 1) := by
   first
-  | exact @_root_.GlobalTheory.AlgebraicIntegerNormBound.main
-  | exact _root_.GlobalTheory.AlgebraicIntegerNormBound.main
   | (apply _root_.GlobalTheory.AlgebraicIntegerNormBound.main <;> assumption)
-  | (intros; apply _root_.GlobalTheory.AlgebraicIntegerNormBound.main <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.AlgebraicIntegerNormBound.main <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.AlgebraicIntegerNormBound.main ..)
 
 end Dedekind
 
@@ -205,35 +246,19 @@ noncomputable def serHom : A →ₐ[k] PowerSeries k where
 
 end Construction
 
-section Existence
-variable {k A : Type} [Field k] [CommRing A] [Algebra k A] {Q : Ideal A} {π : A}
-
-theorem exists_approx (hπ : π ∈ Q) (hres : ∀ c : A, ∃ a : k, c - algebraMap k A a ∈ Q)
-    (hsup : ∀ m : ℕ, Q ^ m ≤ Ideal.span {π ^ m} ⊔ Q ^ (m + 1)) :
-    ∀ (m : ℕ) (u : A), ∃ p : k[X], u - aeval π p ∈ Q ^ m := by
-  first
-  | exact @_root_.GlobalTheory.IntegralNormBound.target
-  | exact _root_.GlobalTheory.IntegralNormBound.target
-  | (apply _root_.GlobalTheory.IntegralNormBound.target <;> assumption)
-  | (intros; apply _root_.GlobalTheory.IntegralNormBound.target <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.IntegralNormBound.target <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.IntegralNormBound.target ..)
-
-end Existence
-
-theorem exists_completion_embedding : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CharZero k]
+theorem exists_completion_embedding : ∀ (k A : Type) [Field k] [IsAlgClosed k]
     [CommRing A] [IsDedekindDomain A] [Algebra k A] [Algebra.FiniteType k A] (Q : Ideal A),
     Q.IsMaximal → Q ≠ ⊥ → ∃ (σ : A →ₐ[k] PowerSeries k) (π : A), σ π = PowerSeries.X ∧
       Function.Injective σ ∧
       (∀ (m : ℕ) (u : A), u ∈ Q ^ m ↔ (PowerSeries.X : PowerSeries k) ^ m ∣ σ u) ∧
       ∀ (m : ℕ) (φ : PowerSeries k), ∃ u : A,
         (PowerSeries.X : PowerSeries k) ^ m ∣ φ - σ u := by
-  intro k A _ _ _ _ _ _ _ Q hQ hQ0
+  intro k A _ _ _ _ _ _ Q hQ hQ0
   haveI : Q.IsPrime := hQ.isPrime
   obtain ⟨π, hπ1, hπ2⟩ := SetLike.exists_of_lt (Ideal.pow_succ_lt_pow hQ0 1)
   have hπ : π ∈ Q := by simpa using hπ1
   have hnot := pow_not_mem hQ0 hπ hπ2
-  have hex := exists_approx (k := k) hπ (residue_exists k A Q hQ) (pow_le_span_sup hQ0 hπ hπ2)
+  have hex := _root_.GlobalTheory.IntegralNormBound.main (k := k) hπ (residue_exists k A Q hQ) (pow_le_span_sup hQ0 hπ hπ2)
   have hmem : ∀ (m : ℕ) (u : A),
       u ∈ Q ^ m ↔ (PowerSeries.X : PowerSeries k) ^ m ∣ serHom hex hπ hnot u := by
     intro m u

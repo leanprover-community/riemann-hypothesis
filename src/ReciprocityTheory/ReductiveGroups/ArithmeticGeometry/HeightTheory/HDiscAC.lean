@@ -1,7 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraMapOLInjective
-public import ReciprocityTheory.SemistableReduction.AlgAll
+public import Mathlib.RingTheory.DedekindDomain.PID
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Topology.Sheaves.Presheaf
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 
@@ -69,9 +74,7 @@ theorem addv_mem (v : HeightOneSpectrum (integralClosure O L)) : addv L v ∈ Pl
     haveI := v.isMaximal
     apply IsLocalRing.eq_maximalIdeal
     first
-      | exact Ideal.isMaximal_comap_of_isIntegral_of_isMaximal v.asIdeal
       | exact Ideal.IsMaximal.under O v.asIdeal
-      | infer_instance
   simp only [PlacesOver, IsNormDiscrete, Set.mem_setOf_eq]
   refine ⟨⟨fun a ha => ?_, ?_⟩, fun x => ?_⟩
   · rw [hval a ha]
@@ -85,7 +88,6 @@ theorem addv_mem (v : HeightOneSpectrum (integralClosure O L)) : addv L v ∈ Pl
     rw [hval π hπ0, hπ]
     first
       | simp
-      | rfl
   · have hx : algebraMap O L x =
         algebraMap (integralClosure O L) L (algebraMap O (integralClosure O L) x) :=
       IsScalarTower.algebraMap_apply O (integralClosure O L) L x
@@ -108,12 +110,10 @@ theorem addv_mem (v : HeightOneSpectrum (integralClosure O L)) : addv L v ∈ Pl
         rw [hx]
         first
           | exact v.valuation_lt_one_iff_mem _
-          | exact v.valuation_lt_one_iff_mem L _
       have hint : v.valuation L (algebraMap O L x) ≤ 1 := by
         rw [hx]
         first
           | exact v.valuation_le_one _
-          | exact v.valuation_le_one L _
       rw [← hP, Ideal.mem_comap, ← hmem]
       constructor
       · have h3 := hle.2 hint
@@ -165,7 +165,6 @@ theorem mem_integralClosure_iff (y : L) :
     · rw [addv_nonneg_iff v hy0]
       first
         | exact v.valuation_le_one (⟨y, hy⟩ : integralClosure O L)
-        | exact v.valuation_le_one L (⟨y, hy⟩ : integralClosure O L)
   · intro h
     by_cases hy0 : y = 0
     · subst hy0
@@ -175,7 +174,6 @@ theorem mem_integralClosure_iff (y : L) :
       have hr : y ∈ (algebraMap (integralClosure O L) L).range := by
         first
           | exact HeightOneSpectrum.mem_integers_of_valuation_le_one L y hle
-          | exact HeightOneSpectrum.mem_integers_of_valuation_le_one y hle
       obtain ⟨b, hb⟩ := hr
       rw [← hb]
       exact b.2

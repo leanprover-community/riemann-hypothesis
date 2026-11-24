@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.ArithBase
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.OrthogonalFreeOfPerfectAltZmod
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsBasisAdaptedToIdempotents
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AddHomExtSingle
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsBasisAdaptedToIdempotents
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsBasisLatticeNear
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.OrthogonalFreeOfPerfectAltZmod
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -22,9 +63,9 @@ theorem exists_eStd_eq_linear (g n : ℕ) (f : (Fin g ⊕ Fin g → ZMod n) →�
     ∃ b, ∀ y, eStd g n b y = f y := by
   refine ⟨Sum.elim (fun i => f (Pi.single (.inr i) 1)) (fun i => -f (Pi.single (.inl i) 1)),
     fun y => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_rhs => rw [← Finset.univ_sum_single y, map_sum, Fintype.sum_sum_type,
-    ← Finset.sum_add_distrib]
+
+  conv_rhs => rw [← Finset.univ_sum_single y, map_sum, Fintype.sum_sum_type,
+  ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
   have h : ∀ j, f (Pi.single j (y j)) = y j * f (Pi.single j 1) := fun j => by
     rw [← smul_eq_mul, ← map_smul, ← Pi.single_smul, smul_eq_mul, _root_.mul_one]
@@ -95,8 +136,8 @@ theorem exists_proj_ne_zero {α : τ.X} (hα : ∀ v₀, τ.q α ≤ τ.q (α + 
     simp only [ThetaSys.FF, finsum_eq_sum_of_fintype, AddSubmonoidClass.coe_finsetSum, MulMemClass.coe_mul]
     rfl
   rw [h1] at h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, h0, zero_mul, Finset.sum_const_zero, mul_zero, norm_zero] at h
+
+  simp only [map_sum, map_mul, h0, zero_mul, Finset.sum_const_zero, mul_zero, norm_zero] at h
   exact (mul_pos τ.δ_pos (Real.exp_pos _)).ne h
 
 end GlobalTheory.ZH.TestBasis
@@ -139,8 +180,8 @@ theorem exists_adapted_basis_testLattice : ∀ (o Ω : Type) [CommRing o] [Field
   · rw [hwa]
     funext j
     have h1 := congrArg (fun a => y₀ (algebraMap o S.R a)) (congrFun (congrFun (hmul (κ i) (κ i)) j) (col i))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [if_true, Matrix.mul_apply, map_sum, map_mul] at h1
+
+    simp only [if_true, Matrix.mul_apply, map_sum, map_mul] at h1
     exact h1
   · refine le_antisymm (Submodule.span_le.2 ?_) (Submodule.span_mono ?_)
     · rintro _ ⟨α, l, i, hα, hl, rfl⟩

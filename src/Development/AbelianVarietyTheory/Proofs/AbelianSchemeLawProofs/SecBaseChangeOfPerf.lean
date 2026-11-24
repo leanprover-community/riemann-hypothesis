@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
+public import Mathlib.Tactic.ENatToNat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
 
@@ -25,14 +66,10 @@ variable {X X' Y Z : Scheme.{0}}
 
 theorem gs_sum (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) {I : Type} [Fintype I] (a : I → Γ(X, U)) :
     gs r z U (∑ i, a i) = ∑ i, gs r z U (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gs_eq r z U h, map_sum]
 
-theorem sec_ext {M : LB X} {s s' : LB.Sec M} (h : ∀ j, s.f j = s'.f j) : s = s' := by
-  obtain ⟨f, _⟩ := s
-  obtain ⟨f', _⟩ := s'
-  obtain rfl : f = f' := funext h
-  rfl
+  simp only [gs_eq r z U h, map_sum]
+
+alias sec_ext := _root_.ReciprocityTheory.ChartRestriction.G.DVR.SecOps.sec_ext
 
 theorem gs_rp (h : X' ⟶ X) {U : X.Opens} {V : X'.Opens} (le : V ≤ h ⁻¹ᵁ U) (r : Z ⟶ X') (z : Z) (hz : r z ∈ V)
     (a : Γ(X, U)) : gs r z V ((X'.presheaf.map (homOfLE le).op).hom ((h.app U).hom a)) = gs (r ≫ h) z U a :=
@@ -108,9 +145,9 @@ theorem Rep.sum {c : R' →+* Γ(X', ⊤)} {I : Type} [Fintype I] {w : I → Fin
   have hm : r z ∈ LB.wchart L ψ (F.ch i) := (mem_wchart_iff L φ π ψ e _ _).2 (F.le i hi)
   have ht : r z ∈ (⊤ : X'.Opens) := trivial
   rw [gs_sum r z _ hm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, gs_sum r z _ ht, gs_mul r z _ ht, gs_mul r z _ hm, gs_res r z le_top hm,
-    fun l => h l Z r z i hi, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [map_sum, map_mul, gs_sum r z _ ht, gs_mul r z _ ht, gs_mul r z _ hm, gs_res r z le_top hm,
+  fun l => h l Z r z i hi, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => by ring
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherTer
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.OneMemSecOverZero
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockComp
 
 @[expose] public section

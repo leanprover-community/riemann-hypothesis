@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
-public import Development.WeilBound.CoreStatements.SesquilinearFractions.GramDetNeZeroLocalBasisCofinite
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -10,7 +50,7 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
-set_option maxHeartbeats 1000000 in
+
 theorem _root_.GlobalTheory.CompanionTheory.Relay.gram_det_ne_zero_local_basis_cofinite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (I : Type) [Fintype I] [DecidableEq I] (e : I → D.La), Fintype.card I = D.p + D.q → LinearIndependent (𝓞 E) e → (gramE D e).det ≠ 0 ∧ {ℓ : Nat.Primes | ¬ IsLocBasis (𝓞 E) ℓ e}.Finite := by
   classical
   intro E _ _ _ H D I _ _ e hcard hli
@@ -22,13 +62,13 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.gram_det_ne_zero_local_basis_c
       have hterm : ∀ k, Algebra.trace ℚ E (algebraMap (𝓞 E) E (RingOfIntegers.basis E j) * (((D.EF (RingOfIntegers.basis E k • x) y : ℤ) : E) * HT.dualInt E k)) = ((D.EF (RingOfIntegers.basis E k • x) y : ℤ) : ℚ) * (if j = k then 1 else 0) := by
         intro k
         rw [← HT.LatBasic.trace_dualInt k j, ← map_intCast (algebraMap ℚ E), mul_left_comm, ← Algebra.smul_def, map_smul, smul_eq_mul, mul_comm (algebraMap (𝓞 E) E _), ← NumberField.integralBasis_apply]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [sesq, Finset.mul_sum, map_sum, hterm, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+      simp only [sesq, Finset.mul_sum, map_sum, hterm, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
       exact mul_one _
     conv_lhs => rw [← (RingOfIntegers.basis E).sum_repr c]
     conv_rhs => rw [← (RingOfIntegers.basis E).sum_repr c]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, Finset.sum_mul, Finset.sum_smul, LinearMap.sum_apply, Int.cast_sum]
+
+    simp only [map_sum, Finset.sum_mul, Finset.sum_smul, LinearMap.sum_apply, Int.cast_sum]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [map_zsmul, smul_mul_assoc, map_zsmul, key j, smul_assoc, map_zsmul, LinearMap.smul_apply, zsmul_eq_mul, zsmul_eq_mul, Int.cast_mul]
     norm_cast
@@ -99,11 +139,11 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.gram_det_ne_zero_local_basis_c
       intro c n
       have h1 : c • ∑ i, a i • e i = ∑ m, (c * a m) • e m := by simp only [Finset.smul_sum, mul_smul]
       apply Int.cast_injective (α := ℚ)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [h1, map_sum, LinearMap.sum_apply, Int.cast_sum, Int.cast_zero]
+
+      rw [h1, map_sum, LinearMap.sum_apply, Int.cast_sum, Int.cast_zero]
       simp only [← T]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum]
+
+      rw [← map_sum]
       have h2 : ∑ m, algebraMap (𝓞 E) E (c * a m) * sesq D (e m) (e n) = algebraMap (𝓞 E) E c * (algebraMap (𝓞 E) E b * (v ᵥ* gramE D e) n) := by
         simp only [Matrix.vecMul, dotProduct, gramE, Matrix.of_apply, map_mul, ha, Algebra.smul_def, Finset.mul_sum]
         refine Finset.sum_congr rfl (fun m _ => by ring)
@@ -112,8 +152,8 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.gram_det_ne_zero_local_basis_c
       intro y
       obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun (𝓞 E)).mp (hNy y)
       have h2 : D.EF (∑ i, a i • e i) (Ideal.absNorm (Ideal.span {c}) • y) = 0 := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← hg, map_sum]
+
+        rw [← hg, map_sum]
         refine Finset.sum_eq_zero (fun n _ => ?_)
         have := D.adj (H.bar.symm (g n)) (∑ i, a i • e i) (e n)
         rw [RingEquiv.apply_symm_apply] at this

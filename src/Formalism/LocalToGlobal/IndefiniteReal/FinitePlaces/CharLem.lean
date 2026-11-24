@@ -1,8 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumLemmas
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.PHeisThA
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.StdCharExists
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -72,8 +73,8 @@ theorem hO_eq_trace (x y : MO S T) : hO S T x y = (hOM S T x y).trace := by
 
 theorem cA_trace {k : ℕ} (M : Matrix (Fin k) (Fin k) (AE D)) : cA D M.trace = ((M.map (cA D))ᵀ).trace := by
   rw [Matrix.trace_transpose]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.trace, Matrix.diag, Matrix.map_apply, map_sum]
+
+  simp only [Matrix.trace, Matrix.diag, Matrix.map_apply, map_sum]
 
 theorem hO_swap (x y : MO S T) : hO S T y x = cA D (hO S T x y) := by
   have e0 : (y.map (cA D)).map (cA D) = y := by ext i j; simp [cA_cA]

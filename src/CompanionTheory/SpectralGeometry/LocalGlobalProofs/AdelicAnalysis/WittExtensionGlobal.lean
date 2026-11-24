@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 
 @[expose] public section
 
@@ -41,8 +47,7 @@ theorem exists_quasiRefl (B : V →ₛₗ[σ] V →ₗ[E] E) (hσ : ∀ x, σ (�
   · intro z w
     have hzv : B z v = σ (B v z) := (hB v z).symm
     rw [hγ, hγ]
-    simp only [map_sub, LinearMap.sub_apply, map_smulₛₗ, LinearMap.smul_apply, map_smul,
-      smul_eq_mul, map_mul, map_inv₀, hvv, hzv, RingHom.id_apply]
+    simp only [map_sub, LinearMap.sub_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, map_mul, map_inv₀, hvv, hzv, RingHom.id_apply]
     field_simp
     ring
   · rw [hγ, ← ha, inv_mul_cancel₀ h0, one_smul, hv, sub_sub_cancel]
@@ -82,13 +87,13 @@ def lin {n : ℕ} (X : Fin n → V) (c : Fin n → E) : V := ∑ a, c a • X a
 
 theorem form_lin_left (B : V →ₛₗ[σ] V →ₗ[E] E) {n : ℕ} (X : Fin n → V) (c : Fin n → E) (z : V) :
     B (lin X c) z = ∑ a, σ (c a) * B (X a) z := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [lin, map_sum, LinearMap.sum_apply]
+
+  simp [lin, map_sum, LinearMap.sum_apply]
 
 theorem form_lin_right (B : V →ₛₗ[σ] V →ₗ[E] E) {n : ℕ} (X : Fin n → V) (c : Fin n → E) (z : V) :
     B z (lin X c) = ∑ a, c a * B z (X a) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [lin, map_sum]
+
+  simp [lin, map_sum]
 
 theorem lin_single {n : ℕ} (X : Fin n → V) (a : Fin n) : lin X (Pi.single a (1 : E)) = X a := by
   simp [lin, Pi.single_apply, ite_smul]
@@ -120,8 +125,7 @@ theorem exists_norm_ne_zero (B : V →ₛₗ[σ] V →ₗ[E] E) (hB : ∀ x y, �
   have hba : B (X b) (X a) = σ s := (hB _ _).symm
   have h := hc (Pi.single a (1 : E) + s⁻¹ • Pi.single b (1 : E))
   rw [lin_add, lin_smul, lin_single, lin_single] at h
-  simp only [map_add (f := _), map_smulₛₗ, LinearMap.add_apply, LinearMap.smul_apply, map_smul,
-    smul_eq_mul, hu, hv, hba, ← hsdef, map_inv₀, RingHom.id_apply] at h
+  simp only [map_add (f := _), map_smulₛₗ, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul, hu, hv, hba, ← hsdef, map_inv₀, RingHom.id_apply] at h
   have hσs : σ s ≠ 0 := (map_ne_zero σ).2 hs
   simp only [mul_zero, add_zero, zero_add, inv_mul_cancel₀ hs, inv_mul_cancel₀ hσs] at h
   exact h2 (by linear_combination h)
@@ -262,8 +266,8 @@ theorem formB_apply (s : E →+* E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (x 
 theorem formB_conj (s : E →+* E) (hs : ∀ x, s (s x) = x) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
     (hJ : ∀ i j, s (J j i) = J i j) (x y : Fin M → E) :
     s (formB s J x y) = formB s J y x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [formB_apply, hform, map_sum, map_mul, hs, hJ]
+
+  simp only [formB_apply, hform, map_sum, map_mul, hs, hJ]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 

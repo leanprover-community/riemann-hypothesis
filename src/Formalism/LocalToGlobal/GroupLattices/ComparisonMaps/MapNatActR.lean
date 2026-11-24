@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 public import Formalism.SharpRestriction.GrowthBounds.DataG
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -47,17 +48,16 @@ theorem map_substR [CommRing R] [CommRing S] (f : R →+* S)
   | add p q hp hq => simp only [map_add (f := _), hp, hq]
   | mul_X p v hp =>
     rw [map_mul, map_mul, map_mul, hp]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [substR, map_sum, Matrix.map_apply]
+
+    simp [substR, map_sum, Matrix.map_apply]
 
 theorem map_natActR [Field R] [Field S] (f : R →+* S) (g : ∀ v, Fin (P.n' v) → GL (Fin (P.m + 1)) R) (Q : XR P R) :
     MvPolynomial.map f (natActR P R g Q) =
       natActR P S (fun v s => Matrix.GeneralLinearGroup.map f (g v s)) (MvPolynomial.map f Q) := by
-  simp only [natActR, LinearMap.smul_apply, AlgHom.toLinearMap_apply]
-  rw [MvPolynomial.smul_eq_C_mul, MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, map_substR]
-  congr 2
-  · simp only [map_prod, map_zpow₀, RingHom.map_det]
-    rfl
+  simp only [natActR, LinearMap.smul_apply, AlgHom.toLinearMap_apply,
+    MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, map_substR,
+    map_prod, map_zpow₀, RingHom.map_det]
+  rfl
 
 end Map
 
@@ -67,12 +67,10 @@ def reM (h : P.m + 1 = n) (A : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin (P.m + 
   A.submatrix (finCongr h) (finCongr h)
 
 theorem reM_mul (h : P.m + 1 = n) (A B : Matrix (Fin n) (Fin n) ℂ) : reM P h (A * B) = reM P h A * reM P h B := by
-  unfold reM
-  exact (Matrix.submatrix_mul_equiv A B (finCongr h) (finCongr h) (finCongr h)).symm
+  simp [reM]
 
 theorem reM_one (h : P.m + 1 = n) : reM P h (1 : Matrix (Fin n) (Fin n) ℂ) = 1 := by
-  unfold reM
-  exact Matrix.submatrix_one_equiv _
+  simp [reM]
 
 def reG (h : P.m + 1 = n) : GL (Fin n) ℂ →* GL (Fin (P.m + 1)) ℂ :=
   Units.map
@@ -145,8 +143,8 @@ theorem evC_natAct (h : P.m + 1 = n) (pos : (Σ v : Fin P.nV, Fin (P.n' v)) ≃ 
     | mul_X p x hp =>
       rw [map_mul, map_mul, map_mul, hp]
       congr 1
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [substR, MvPolynomial.aeval_X, map_sum, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X]
+
+      simp only [substR, MvPolynomial.aeval_X, map_sum, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X]
       rw [← hz x.1 x.2.1, Matrix.mul_apply]
   have hdet : ∀ v s, (hAt P h pos M g v s : Matrix (Fin (P.m + 1)) (Fin (P.m + 1)) ℂ).det ≠ 0 := fun v s =>
     ((Matrix.isUnit_iff_isUnit_det _).1 (Units.isUnit _)).ne_zero

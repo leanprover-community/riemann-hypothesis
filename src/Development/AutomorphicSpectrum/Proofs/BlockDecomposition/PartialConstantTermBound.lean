@@ -1,8 +1,51 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta
+public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.MapsExist
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsThetaFunctionIsotropicRestrictionNeZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AdelicConjTransposeBlockMatrixTwoByTwoFin
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierZeroHolds
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -89,7 +132,7 @@ theorem lowerUnipotent_mul (hn : ρ + p = n) (c c' : Matrix (Fin p) (Fin ρ) R) 
   congr 1
   · simp
   · simp
-  · simp [add_comm]
+  · simp
   · simp
 
 theorem blockMatrix_twist (hn : ρ + p = n) (z z' : Matrix (Fin ρ) (Fin ρ) R) (x η : Matrix (Fin ρ) (Fin p) R)
@@ -176,15 +219,11 @@ theorem rat_bl' (hn : ρ + p = n) (a : Matrix (Fin ρ) (Fin ρ) D.host.E) (b : M
     (c : Matrix (Fin p) (Fin ρ) D.host.E) (d : Matrix (Fin p) (Fin p) D.host.E) :
     rat (D := D) (bl hn a b c d) = bl hn (rat a) (rat b) (rat c) (rat d) := blockMatrix_map₂ _ _ _ _ _ _
 
-theorem rat_one' {k : ℕ} : rat (D := D) (1 : Matrix (Fin k) (Fin k) D.host.E) = 1 :=
-  Matrix.map_one _ (map_zero _) (map_one _)
+alias rat_one' := _root_.GlobalTheory.MixModel.rat_one
 
-theorem rat_zero' {k l : ℕ} : rat (D := D) (0 : Matrix (Fin k) (Fin l) D.host.E) = 0 :=
-  Matrix.map_zero _ (map_zero _)
+alias rat_zero' := _root_.GlobalTheory.MixModel.rat_zero
 
-theorem rat_neg' {k l : ℕ} (a : Matrix (Fin k) (Fin l) D.host.E) : rat (D := D) (-a) = -rat a := by
-  ext i j
-  exact map_neg (incA D) _
+alias rat_neg' := _root_.GlobalTheory.MixModel.rat_neg
 
 theorem nzx_mat_rat (M : Maps D hn) (z : hermA D ρ) (Z : Matrix (Fin ρ) (Fin ρ) D.host.E)
     (X : Matrix (Fin ρ) (Fin p) D.host.E) (hZ : rat Z = z.1) :

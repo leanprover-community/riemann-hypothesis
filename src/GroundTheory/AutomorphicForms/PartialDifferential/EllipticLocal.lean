@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.PartialDifferential.EllipticOperators
+import GroundTheory.AutomorphicForms.PartialDifferential.SobolevMollifier
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.MetricSpace.Contracting
 
 @[expose] public section
 
@@ -620,8 +624,8 @@ theorem opBound_Q_locM {δ : ℝ} (hδ : 0 < δ) (Q : 𝓢'(E, ℂ) →L[ℂ] �
         Q ∘L (mulRem (locCoeff a x₀ hδ i) (s - m) ∘L iteratedLineDerivOpCLM ℂ 𝓢'(E, ℂ) (w i))) +
       Q ∘L (smulLeftCLM ℂ (bump x₀ hδ : E → ℂ) ∘L N) := by
     ext1 u
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [locM, prinOp, ContinuousLinearMap.comp_apply, add_apply, sum_apply, map_add (f := _), map_sum]
+
+    simp only [locM, prinOp, ContinuousLinearMap.comp_apply, add_apply, sum_apply, map_add (f := _), map_sum]
     congr 1
     refine Finset.sum_congr rfl fun i _ ↦ ?_
     rw [smulLeftCLM_eq_mulPrin_add_mulRem _ (s - m), map_add (f := _)]

@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherRest
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockRatioAlg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingPow
+import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockRatioAlg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleMultiHomogGrad
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -28,8 +30,8 @@ theorem aeval_eq_coordProd_mul {F : Type} [Field F] [Algebra ℤ F] {g : MRing �
   classical
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.mul_sum]
+
+  rw [map_sum, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m hm => ?_
   rw [aeval_monomial, aeval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _),
     Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
@@ -123,17 +125,17 @@ theorem exists_elim {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')} {P' :
         · simp
         · intro j _ hj
           have h : (j : ℕ) ≠ m := fun h => hj (Fin.ext h)
-          simp [Polynomial.coeff_monomial, Finsupp.single_apply, h]
+          simp [Polynomial.coeff_monomial, h]
         · simp
       rw [h0, Polynomial.coeff_zero] at hcoeff
       exact hlead (Ideal.Quotient.eq_zero_iff_mem.mp hcoeff.symm)
     · have h := (hιB _).mpr hrel
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, map_pow] at h
+
+      simp only [map_sum, map_mul, map_pow] at h
       have hne := pow_ne_zero m (hyc q.1)
       apply (mul_left_inj' hne).mp
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [zero_mul, map_sum, Finset.sum_mul, ← h]
+
+      rw [zero_mul, map_sum, Finset.sum_mul, ← h]
       refine Finset.sum_congr rfl fun j _ => ?_
       have hj : (j : ℕ) ≤ m := Nat.lt_succ_iff.mp j.2
       rw [Polynomial.aeval_monomial, halg]
@@ -178,8 +180,8 @@ theorem exists_elim {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')} {P' :
       rw [Polynomial.coeff_map, Algebra.smul_def, halg]
     have hιT : ιB (∏ k', (X ⟨k', c k'⟩ : MRing ι') ^ d k') = ∏ k', y' ⟨k', c k'⟩ ^ d k' := by
       simp only [map_prod, map_pow, y']
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hιB, map_sum]
+
+    rw [← hιB, map_sum]
     calc ∑ i ∈ Finset.range (q₀.natDegree + 1),
           ιB (rename v (q₀.coeff i) * (g ^ i * (∏ k', (X ⟨k', c k'⟩ : MRing ι') ^ d k') ^ (q₀.natDegree - i)))
         = ∑ i ∈ Finset.range (q₀.natDegree + 1), (∏ k', y' ⟨k', c k'⟩ ^ d k') ^ q₀.natDegree *
@@ -212,8 +214,8 @@ theorem exists_elim_homog {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')}
     weightedHomogeneousComponent_isWeightedHomogeneous _ _, ?_⟩
   have hmem := LocRingPow.component_mem hP'.2.1.2.1 hE (D + r • d)
   convert hmem using 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i hi => ?_
   have hi' : i ≤ r := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
   have hgi : IsWeightedHomogeneous (LocRingPow.multiDegWeight ι')
@@ -233,9 +235,9 @@ theorem eval_eq_zero {v : (Σ k, ι k) → (Σ k', ι' k')} {P' : Ideal (MRing �
     eval (fun p => z' (v p)) (map (Int.castRingHom ℂ) (a 0)) = 0 := by
   have h0 := hz'.2 _ hE
   rw [Finset.sum_range_succ'] at h0
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_add (f := _), map_sum, map_mul, map_pow, hgz, ne_eq, Nat.succ_ne_zero, not_false_eq_true, zero_pow,
-    zero_mul, mul_zero, Finset.sum_const_zero, zero_add, pow_zero, one_mul, Nat.sub_zero] at h0
+
+  simp only [map_add (f := _), map_sum, map_mul, map_pow, hgz, ne_eq, Nat.succ_ne_zero, not_false_eq_true, zero_pow,
+  zero_mul, mul_zero, Finset.sum_const_zero, zero_add, pow_zero, one_mul, Nat.sub_zero] at h0
   have hT : eval z' (map (Int.castRingHom ℂ) (∏ k', (X ⟨k', c k'⟩ : MRing ι') ^ d k')) ≠ 0 := by
     rw [map_prod, map_prod]
     exact Finset.prod_ne_zero_iff.mpr fun k' _ => by

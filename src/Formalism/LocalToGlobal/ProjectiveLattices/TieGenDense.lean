@@ -1,19 +1,19 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.TieGenRg
-public import Formalism.LocalToGlobal.ProjectiveLattices.TieGenR
-public import Formalism.LocalToGlobal.ProjectiveLattices.UnifGen
-public import Formalism.LocalToGlobal.ProjectiveLattices.ZeroWeightAlgebraicPart
-public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSupA
-public import Formalism.LocalToGlobal.ProjectiveLattices.ReadProofs
-public import Formalism.LocalToGlobal.ProjectiveLattices.GenSpecDesc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ExpBCChart
-public import Formalism.LocalToGlobal.ProjectiveLattices.CoreProofs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.BcField
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GGConn
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.DivStatementPfLA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
+public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GGConn
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

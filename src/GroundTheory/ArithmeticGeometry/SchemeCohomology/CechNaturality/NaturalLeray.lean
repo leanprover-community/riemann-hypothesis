@@ -1,34 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.CechFunctor
 
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
 
+-- Use `sheafIsAbelian`, the instance Mathlib's `Sheaf.H` API is stated for, instead of the
+-- definitionally equal `TopCat.Sheaf.instAbelian`: the kernel is slow to identify the two.
+attribute [-instance] TopCat.Sheaf.instAbelian
+
 namespace GroundTheory.Arith.SchemeCoh
-
-section
-
-open AlgebraicGeometry CategoryTheory TopologicalSpace
-
-universe c236Ext c236Scheme
-
-private noncomputable def H.linearMapV436 {X : Scheme.{c236Scheme}}
-    [HasExt.{c236Ext} (Sheaf (Opens.grothendieckTopology X.toTopCat) AddCommGrpCat.{c236Scheme})]
-    (A : Type*) [CommRing A] [Algebra A Γ(X, ⊤)]
-    {F G : X.Modules} (φ : F ⟶ G) (n : ℕ) :
-    Sheaf.H.{c236Ext} (modulesAb F) n →ₗ[A] Sheaf.H.{c236Ext} (modulesAb G) n where
-  toFun := Sheaf.H.map.{c236Ext} (modulesAbMap φ) n
-  map_add' := map_add _
-  map_smul' a x := by
-    change Sheaf.H.map.{c236Ext} (modulesAbMap φ) n (a • x) =
-      a • Sheaf.H.map.{c236Ext} (modulesAbMap φ) n x
-    rw [H.smul_def, H.smul_def, ← Sheaf.H.map_comp_apply, ← Sheaf.H.map_comp_apply,
-      ← modulesAbMap_comp, ← modulesAbMap_comp, smulHom_comp]
-
-end
 
 noncomputable section
 
@@ -46,66 +28,24 @@ variable [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] 
   (hS : S.ShortExact) [Injective S.X₂] (hC : IsCechShortExact U S.f.hom S.g.hom)
   (hI : CechAcyclic S.X₂.obj U)
 
-def cechOneProj : S.X₃.obj.obj (op ⊤) →+ cechH S.X₁.obj U 1 :=
-  (hC.delta 0).comp (globalCocycle S.X₃.obj U)
-
-def hOneProj : S.X₃.obj.obj (op ⊤) →+ Sheaf.H.{w'} S.X₁ 1 :=
-  (H.δ hS 0 1 rfl).comp (Sheaf.H.equiv₀ S.X₃ isTerminalTop).symm.toAddMonoidHom
-
-omit [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] [Injective S.X₂] in
-include hU hI in
-lemma cechOneProj_surjective : Function.Surjective (cechOneProj U hC) :=
-  (hC.delta_surjective hI 0).comp (globalCocycle_surjective _ U S.X₃.property hU)
-
-lemma hOneProj_surjective : Function.Surjective (hOneProj hS) := by
-  intro x
-  obtain ⟨y, hy⟩ := H.exact₁ hS rfl x (H.eq_zero_of_injective S.X₂ _)
-  exact ⟨Sheaf.H.equiv₀ S.X₃ isTerminalTop y, by simp [hOneProj, hy]⟩
-
-omit [Injective S.X₂] in
-include hU in
-lemma ker_cechOneProj_eq : (cechOneProj U hC).ker = (hOneProj hS).ker := by
-  ext s
-  rw [AddMonoidHom.mem_ker, AddMonoidHom.mem_ker]
-  have e1 : cechOneProj U hC s = 0 ↔ ∃ t, S.g.hom.app (op ⊤) t = s := by
-    change hC.delta 0 (globalCocycle S.X₃.obj U s) = 0 ↔ _
-    rw [hC.delta_eq_zero_iff]
-    constructor
-    · rintro ⟨κ, hκ, hgκ⟩
-      obtain ⟨t, ht⟩ := globalCocycle_surjective _ U S.X₂.property hU
-        ⟨κ, (mem_cocycles κ).2 hκ⟩
-      refine ⟨t, globalCocycle_injective _ U S.X₃.property hU (Subtype.ext ?_)⟩
-      rw [← push_globalCocycle, ht]
-      exact hgκ
-    · rintro ⟨t, rfl⟩
-      exact ⟨(globalCocycle S.X₂.obj U t).1, (mem_cocycles _).1 (globalCocycle _ U t).2,
-        push_globalCocycle U _ t⟩
-  have e2 : hOneProj hS s = 0 ↔ ∃ t, S.g.hom.app (op ⊤) t = s := by
-    change H.δ hS 0 1 rfl ((Sheaf.H.equiv₀ S.X₃ isTerminalTop).symm s) = 0 ↔ _
-    constructor
-    · intro h
-      obtain ⟨x, hx⟩ := H.exact₃ hS rfl _ h
-      refine ⟨Sheaf.H.equiv₀ S.X₂ isTerminalTop x, ?_⟩
-      apply (Sheaf.H.equiv₀ S.X₃ isTerminalTop).symm.injective
-      rw [← Sheaf.H.equiv₀_symm_naturality, AddEquiv.symm_apply_apply, hx]
-    · rintro ⟨t, rfl⟩
-      rw [← Sheaf.H.equiv₀_symm_naturality]
-      exact H.δ_map_g hS rfl _
-  rw [e1, e2]
-
-def cechHOneEquiv : cechH S.X₁.obj U 1 ≃+ Sheaf.H.{w'} S.X₁ 1 :=
-  (QuotientAddGroup.quotientKerEquivOfSurjective _ (cechOneProj_surjective U hU hC hI)).symm.trans
-    ((QuotientAddGroup.quotientAddEquivOfEq (ker_cechOneProj_eq U hU hS hC)).trans
-      (QuotientAddGroup.quotientKerEquivOfSurjective _ (hOneProj_surjective hS)))
+private lemma quotientKerEquivOfSurjective_trans_apply
+    {A B C : Type*} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
+    (f : A →+ B) (g : A →+ C) (hf : Function.Surjective f) (hg : Function.Surjective g)
+    (h : f.ker = g.ker) (s : A) :
+    ((QuotientAddGroup.quotientKerEquivOfSurjective f hf).symm.trans
+      ((QuotientAddGroup.quotientAddEquivOfEq h).trans
+        (QuotientAddGroup.quotientKerEquivOfSurjective g hg))) (f s) = g s := by
+  let e := QuotientAddGroup.quotientKerEquivOfSurjective f hf
+  have hs : e.symm (f s) = QuotientAddGroup.mk s := e.symm_apply_eq.mpr rfl
+  exact congrArg
+    ((QuotientAddGroup.quotientAddEquivOfEq h).trans
+      (QuotientAddGroup.quotientKerEquivOfSurjective g hg)) hs
 
 lemma cechHOneEquiv_cechOneProj (s : S.X₃.obj.obj (op ⊤)) :
-    cechHOneEquiv U hU hS hC hI (cechOneProj U hC s) = hOneProj hS s := by
-  have h : (QuotientAddGroup.quotientKerEquivOfSurjective _
-      (cechOneProj_surjective U hU hC hI)).symm (cechOneProj U hC s) = QuotientAddGroup.mk s := by
-    rw [AddEquiv.symm_apply_eq]
-    rfl
-  simp only [cechHOneEquiv, AddEquiv.trans_apply, h]
-  rfl
+    cechHOneEquiv U hU hS hC hI (cechOneProj U hC s) = hOneProj hS s :=
+  quotientKerEquivOfSurjective_trans_apply (cechOneProj U hC) (hOneProj hS)
+    (cechOneProj_surjective U hU hC hI) (hOneProj_surjective hS)
+    (ker_cechOneProj_eq U hU hS hC) s
 
 lemma cechHOneEquiv_naturality
     {S' : ShortComplex (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})}
@@ -118,17 +58,23 @@ lemma cechHOneEquiv_naturality
     (congrArg (fun f => f.hom) α.comm₁₂).symm
   have h₂₃ : S.g.hom ≫ α.τ₃.hom = α.τ₂.hom ≫ S'.g.hom :=
     (congrArg (fun f => f.hom) α.comm₂₃).symm
+  let s' := α.τ₃.hom.app (op ⊤) s
+  let z := globalCocycle S.X₃.obj U s
+  have hz : cocyclesMap U α.τ₃.hom 0 z = globalCocycle S'.X₃.obj U s' :=
+    Subtype.ext (push_globalCocycle U α.τ₃.hom s)
   have hmap : cechHMap U α.τ₁.hom 1 (cechOneProj U hC s) =
-      cechOneProj U hC' (α.τ₃.hom.app (op ⊤) s) := by
-    change cechHMap U α.τ₁.hom (0 + 1) (hC.delta 0 (globalCocycle S.X₃.obj U s)) =
-      hC'.delta 0 (globalCocycle S'.X₃.obj U (α.τ₃.hom.app (op ⊤) s))
-    rw [← hC.delta_naturality hC' α.τ₁.hom α.τ₂.hom α.τ₃.hom h₁₂ h₂₃ 0]
-    congr 1
-    exact Subtype.ext (push_globalCocycle U α.τ₃.hom s)
-  rw [hmap, cechHOneEquiv_cechOneProj, cechHOneEquiv_cechOneProj]
-  change H.δ hS' 0 1 rfl ((Sheaf.H.equiv₀ S'.X₃ isTerminalTop).symm (α.τ₃.hom.app (op ⊤) s)) =
-    Sheaf.H.map α.τ₁ 1 (H.δ hS 0 1 rfl ((Sheaf.H.equiv₀ S.X₃ isTerminalTop).symm s))
-  rw [← Sheaf.H.equiv₀_symm_naturality, H.δ_naturality hS hS' α]
+      cechOneProj U hC' s' :=
+    (hC.delta_naturality hC' α.τ₁.hom α.τ₂.hom α.τ₃.hom h₁₂ h₂₃ 0 z).symm.trans
+      (congrArg (hC'.delta 0) hz)
+  calc
+    _ = cechHOneEquiv U hU hS' hC' hI' (cechOneProj U hC' s') :=
+      congrArg (cechHOneEquiv U hU hS' hC' hI') hmap
+    _ = hOneProj hS' s' := cechHOneEquiv_cechOneProj U hU hS' hC' hI' s'
+    _ = Sheaf.H.map α.τ₁ 1 (hOneProj hS s) :=
+      (congrArg (H.δ hS' 0 1 rfl)
+        (Sheaf.H.equiv₀_symm_naturality isTerminalTop α.τ₃ s).symm).trans
+        (H.δ_naturality hS hS' α 0 1 rfl ((Sheaf.H.equiv₀ S.X₃ isTerminalTop).symm s))
+    _ = _ := congrArg (Sheaf.H.map α.τ₁ 1) (cechHOneEquiv_cechOneProj U hU hS hC hI s).symm
 
 end One
 
@@ -143,19 +89,19 @@ def injectiveExtend (φ : F ⟶ G) : Injective.under F ⟶ Injective.under G :=
 lemma ι_injectiveExtend (φ : F ⟶ G) :
     Injective.ι F ≫ injectiveExtend φ = φ ≫ Injective.ι G := by
   have : Mono (Injective.ι F) := Injective.ι_mono F
-  exact Injective.comp_factorThru _ _
+  exact Injective.comp_factorThru (φ ≫ Injective.ι G) (Injective.ι F)
 
 def injectiveSequenceMap (φ : F ⟶ G) : injectiveSequence F ⟶ injectiveSequence G where
   τ₁ := φ
   τ₂ := injectiveExtend φ
-  τ₃ := cokernel.map (Injective.ι F) (Injective.ι G) φ (injectiveExtend φ) (ι_injectiveExtend φ)
+  τ₃ := cokernel.map (Injective.ι F) (Injective.ι G) φ (injectiveExtend φ) (ι_injectiveExtend φ).symm
   comm₁₂ := by
     change φ ≫ Injective.ι G = Injective.ι F ≫ injectiveExtend φ
     exact (ι_injectiveExtend φ).symm
   comm₂₃ := by
     change injectiveExtend φ ≫ cokernel.π (Injective.ι G) =
       cokernel.π (Injective.ι F) ≫ cokernel.map (Injective.ι F) (Injective.ι G) φ
-        (injectiveExtend φ) (ι_injectiveExtend φ)
+        (injectiveExtend φ) (ι_injectiveExtend φ).symm
     exact (cokernel.π_desc _ _ _).symm
 
 end InjectiveMap
@@ -164,12 +110,6 @@ section Step
 
 variable [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] {ι : Type w}
   (U : ι → Opens X) {S S' : ShortComplex (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})}
-
-def cechHEquivStep (hS : S.ShortExact) [Injective S.X₂] (hC : IsCechShortExact U S.f.hom S.g.hom)
-    (hI : CechAcyclic S.X₂.obj U) (m : ℕ)
-    (e : cechH S.X₃.obj U (m + 1) ≃+ Sheaf.H.{w'} S.X₃ (m + 1)) :
-    cechH S.X₁.obj U (m + 2) ≃+ Sheaf.H.{w'} S.X₁ (m + 2) :=
-  ((hC.deltaEquiv hI m).symm.trans e).trans (hDeltaEquiv hS m)
 
 lemma cechHEquivStep_naturality (hS : S.ShortExact) [Injective S.X₂]
     (hC : IsCechShortExact U S.f.hom S.g.hom) (hI : CechAcyclic S.X₂.obj U)
@@ -185,12 +125,19 @@ lemma cechHEquivStep_naturality (hS : S.ShortExact) [Injective S.X₂]
     (congrArg (fun f => f.hom) α.comm₁₂).symm
   have h₂₃ : S.g.hom ≫ α.τ₃.hom = α.τ₂.hom ≫ S'.g.hom :=
     (congrArg (fun f => f.hom) α.comm₂₃).symm
-  obtain ⟨y, rfl⟩ := (hC.deltaEquiv hI m).surjective x
-  have hδ : (hC'.deltaEquiv hI' m).symm (cechHMap U α.τ₁.hom (m + 2) (hC.deltaEquiv hI m y)) =
-      cechHMap U α.τ₃.hom (m + 1) y := by
-    rw [AddEquiv.symm_apply_eq, hC.deltaEquiv_naturality hC' α.τ₁.hom α.τ₂.hom α.τ₃.hom h₁₂ h₂₃]
-  simp only [cechHEquivStep, AddEquiv.trans_apply, AddEquiv.symm_apply_apply, hδ, he]
-  exact hDeltaEquiv_naturality hS hS' α m (e y)
+  let δ := hC.deltaEquiv hI m
+  let δ' := hC'.deltaEquiv hI' m
+  obtain ⟨y, rfl⟩ := δ.surjective x
+  have hδ : δ'.symm (cechHMap U α.τ₁.hom (m + 2) (δ y)) = cechHMap U α.τ₃.hom (m + 1) y :=
+    δ'.symm_apply_eq.mpr
+      (hC.deltaEquiv_naturality hC' α.τ₁.hom α.τ₂.hom α.τ₃.hom h₁₂ h₂₃ hI hI' m y).symm
+  let d := hDeltaEquiv.{w'} hS m
+  let d' := hDeltaEquiv.{w'} hS' m
+  calc
+    _ = d' (e' (cechHMap U α.τ₃.hom (m + 1) y)) := congrArg (fun z => d' (e' z)) hδ
+    _ = d' (Sheaf.H.map α.τ₃ (m + 1) (e y)) := congrArg d' (he y)
+    _ = Sheaf.H.map α.τ₁ (m + 2) (d (e y)) := hDeltaEquiv_naturality hS hS' α m (e y)
+    _ = _ := congrArg (fun z => Sheaf.H.map α.τ₁ (m + 2) (d (e z))) (δ.symm_apply_apply y).symm
 
 end Step
 
@@ -200,36 +147,6 @@ variable [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] 
   {B : Opens X → Prop} {Good : ∀ {κ : Type u}, Opens X → (κ → Opens X) → Prop}
   (hC : IsCoverSystem B Good) (U : ι → Opens X) (hU : iSup U = ⊤)
   (hUB : ∀ {n : ℕ} (i : Fin (n + 1) → ι), B (inter U i))
-
-omit [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
-lemma injectiveSequence_cechAcyclic (G : Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})
-    {κ : Type w} (V : κ → Opens X) : CechAcyclic (injectiveSequence G).X₂.obj V :=
-  @cechAcyclic_of_injective X (injectiveSequence G).X₂
-    (inferInstanceAs (Injective (Injective.under G))) κ V
-
-omit [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
-include hC hUB in
-lemma injectiveSequence_isCechShortExact
-    (G : Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u}) (hG : GoodAcyclic B Good G) :
-    IsCechShortExact U (injectiveSequence G).f.hom (injectiveSequence G).g.hom :=
-  isCechShortExact_of_surjective (injectiveSequence_shortExact G) U
-    fun i => surjective_of_goodAcyclic hC (injectiveSequence_shortExact G) hG _ (hUB i)
-
-omit [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
-include hC in
-lemma injectiveSequence_goodAcyclic (G : Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})
-    (hG : GoodAcyclic B Good G) : GoodAcyclic B Good (injectiveSequence G).X₃ :=
-  goodAcyclic_of_shortExact hC (injectiveSequence_shortExact G) hG
-    fun _ V => injectiveSequence_cechAcyclic G V
-
-def cechHEquiv : ∀ (n : ℕ) (G : Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u}),
-    GoodAcyclic B Good G → (cechH G.obj U n ≃+ Sheaf.H.{w'} G n)
-  | 0, G, _ => cechHZeroEquivH G U hU
-  | 1, G, hG => cechHOneEquiv (S := injectiveSequence G) U hU (injectiveSequence_shortExact G)
-      (injectiveSequence_isCechShortExact hC U hUB G hG) (injectiveSequence_cechAcyclic G U)
-  | m + 2, G, hG => cechHEquivStep (S := injectiveSequence G) U (injectiveSequence_shortExact G)
-      (injectiveSequence_isCechShortExact hC U hUB G hG) (injectiveSequence_cechAcyclic G U) m
-      (cechHEquiv (m + 1) _ (injectiveSequence_goodAcyclic hC G hG))
 
 theorem cechHEquiv_naturality : ∀ (n : ℕ) {G G' : Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u}}
     (hG : GoodAcyclic B Good G) (hG' : GoodAcyclic B Good G') (φ : G ⟶ G') (x : cechH G.obj U n),

@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolyFanFaceCutByIntLinearFormIsCell
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBaryStageStart
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfToRealRel
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfToRealRel
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonnegSumSmulIntBilinFormToRealMemPsdCone
+import Mathlib.Algebra.Order.Star.Int
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
 
 @[expose] public section
 
@@ -43,8 +44,8 @@ theorem isCell_face_of_isFaceCut : ∀ (O : Type) [CommRing O] [IsDedekindDomain
       obtain ⟨k, c, hk, hc⟩ := h3 u hu hp heq.symm
       have e1 : (k : ℤ) * h u = ∑ i, (c i : ℤ) * h (v i) := by
         have := congrArg h hc
-        set_option synthInstance.maxHeartbeats 100000 in
-          simpa [map_sum, map_nsmul, nsmul_eq_mul] using this
+
+        simpa [map_sum, map_nsmul, nsmul_eq_mul] using this
       have hnn : 0 ≤ (k : ℤ) * h u := e1 ▸ Finset.sum_nonneg fun i _ => mul_nonneg (Int.natCast_nonneg _) (hcut.1 i)
       exact ⟨(mul_nonneg_iff_of_pos_left (by exact_mod_cast hk)).1 hnn, heq⟩
     · right
@@ -136,8 +137,8 @@ theorem isCell_face_of_isFaceCut : ∀ (O : Type) [CommRing O] [IsDedekindDomain
     obtain ⟨k, c, hk, hc⟩ := h3 β hβ hp hℓ
     have e1 : (k : ℤ) * h β = ∑ j, (c j : ℤ) * h (v j) := by
       have := congrArg h hc
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa [map_sum, map_nsmul, nsmul_eq_mul] using this
+
+      simpa [map_sum, map_nsmul, nsmul_eq_mul] using this
     rw [hh, mul_zero] at e1
     have hz := (Finset.sum_eq_zero_iff_of_nonneg fun j _ =>
       mul_nonneg (Int.natCast_nonneg (c j)) (hcut.1 j)).1 e1.symm

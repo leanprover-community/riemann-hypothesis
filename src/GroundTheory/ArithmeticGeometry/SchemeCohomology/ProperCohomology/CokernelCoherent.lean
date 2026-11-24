@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.SupportMore
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
+public import Mathlib.AlgebraicGeometry.Modules.Tilde
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,9 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GapCondExample
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeBasisAdaptedToSubspaceStatement
+public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeBasisAdaptedToSubspace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -39,11 +78,11 @@ theorem finite_not_mapsTo {V V' : Type} [AddCommGroup V] [Module K V] [AddCommGr
   intro x hx q
   have hx' : f x = ∑ r, b.repr x r • f (b r) := by
     conv_lhs => rw [← b.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hx', map_sum, Finsupp.finsetSum_apply]
+
+  rw [hx', map_sum, Finsupp.finsetSum_apply]
   refine (C.v i).map_sum_le fun r _ => ?_
   rw [map_smul, Finsupp.smul_apply, smul_eq_mul, (C.v i).map_mul]
   exact mul_le_one' (hx r) (hcon q r)
@@ -58,7 +97,7 @@ theorem isBun_sub_quot : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [Add
   obtain ⟨s, hs⟩ := LinearMap.exists_rightInverse_of_surjective W.mkQ W.range_mkQ
   refine ⟨⟨fun i => ?_, Module.finBasis K W, ?_⟩, ⟨fun i => ?_, Module.finBasis K (V ⧸ W), ?_⟩⟩
   · obtain ⟨b, hb⟩ := hloc i
-    obtain ⟨bW, bQ, b', -, hW, -, -, -⟩ := GlobalTheory.T.lattice_basis_adapted_to_subspace K C V i _ b (L i) W hb
+    obtain ⟨bW, bQ, b', -, hW, -, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Crv.LatAdapted.exists_adapted K C V i _ b (L i) W hb
     exact ⟨bW, hW⟩
   · refine ((hb0.union (finite_not_mapsTo C (Module.finBasis K W) b0 W.subtype)).union
       (finite_not_mapsTo C b0 (Module.finBasis K W) g)).subset ?_
@@ -80,7 +119,7 @@ theorem isBun_sub_quot : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [Add
     · intro hw q
       exact h2 w hw q
   · obtain ⟨b, hb⟩ := hloc i
-    obtain ⟨bW, bQ, b', -, -, hQ, -, -⟩ := GlobalTheory.T.lattice_basis_adapted_to_subspace K C V i _ b (L i) W hb
+    obtain ⟨bW, bQ, b', -, -, hQ, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Crv.LatAdapted.exists_adapted K C V i _ b (L i) W hb
     exact ⟨bQ, hQ⟩
   · refine ((hb0.union (finite_not_mapsTo C b0 (Module.finBasis K (V ⧸ W)) W.mkQ)).union
       (finite_not_mapsTo C (Module.finBasis K (V ⧸ W)) b0 s)).subset ?_

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCochainsFHomApply
+public import Mathlib.Algebra.Lie.OfAssociative
 
 @[expose] public section
 

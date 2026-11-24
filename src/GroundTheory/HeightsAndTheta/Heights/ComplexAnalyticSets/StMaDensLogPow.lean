@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 
 @[expose] public section
 

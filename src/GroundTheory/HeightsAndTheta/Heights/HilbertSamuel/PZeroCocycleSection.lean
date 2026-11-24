@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsZeroCocycleSection
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -141,8 +145,8 @@ variable (y) in
 theorem aeval_div_mem (c : ∀ k, ι k) {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d) :
     aeval y g / ∏ k, y ⟨k, c k⟩ ^ d k ∈ chartRingZ y c := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [g.as_sum, map_sum, Finset.sum_div]
+
+  rw [g.as_sum, map_sum, Finset.sum_div]
   refine Subalgebra.sum_mem _ fun m hm => ?_
   rw [aeval_monomial, mul_div_assoc]
   refine Subalgebra.mul_mem _ (Subalgebra.algebraMap_mem _ _) ?_

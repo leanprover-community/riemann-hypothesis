@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GeometricLemmaUnnormalized
 public import GroundTheory.AutomorphicForms.GeometricLemmaNormal
+public import GroundTheory.AutomorphicForms.GeometricLemmaUnnormalized
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

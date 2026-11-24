@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -100,7 +100,6 @@ theorem exists_isStdInf : ∃ laminf : Measure (Ainf F), IsStdInf laminf := by
       inv_mul_cancel₀ hne, ENNReal.coe_one]
   let E : Ainf F ≃ᵐ mixedSpace F :=
     (Homeomorph.mk e.toEquiv hce hcs).toMeasurableEquiv
-  have hE : ∀ x, E x = e x := fun _ => rfl
   let lam : Measure (Ainf F) := Measure.map e.symm μ₁
   have hlamE : lam = Measure.map E.symm μ₁ := rfl
   have hmp : MeasurePreserving E lam μ₁ := by

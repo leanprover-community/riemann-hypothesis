@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenter
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObjects
 
 @[expose] public section
 

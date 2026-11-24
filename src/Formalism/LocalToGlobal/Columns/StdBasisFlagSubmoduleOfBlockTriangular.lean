@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainOneB
+public import Formalism.LocalToGlobal.Columns.ChainInstS
+import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
 
 @[expose] public section
@@ -39,8 +40,8 @@ theorem linearEquiv_apply_eq_sum_columns {N : ℕ} (φ : Sp E N ≃ₗ[E] Sp E N
     funext i
     simp [Finset.sum_apply, Pi.single_apply]
   conv_lhs => rw [hv]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_apply]
+
+  rw [map_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun l' _ => ?_
   rw [map_smul, Pi.smul_apply, smul_eq_mul, mul_comm]
 
@@ -157,10 +158,6 @@ theorem symIndex_injective {k₀ rS p p' : ℕ} (h : symIdx k₀ rS p = symIdx k
   have := congrArg (symIdxInv k₀ rS) h
   rwa [symIdxInv_symIdx, symIdxInv_symIdx] at this
 
-theorem symIndexInv_lt {k₀ rS r s : ℕ} (hr : k₀ + rS ≤ r) (hs : s < r) : symIdxInv k₀ rS s < r := by
-  unfold symIdxInv
-  split_ifs <;> omega
-
 theorem ob2Beta_lt_of_sym {k₀ rS r t p0 p : ℕ} (hr : k₀ + rS ≤ r) (hp0 : p0 < r) (h : symIdx k₀ rS p0 < symIdx k₀ rS p) :
     betaExponentOfRanks k₀ rS r t p0 < betaExponentOfRanks k₀ rS r t p := by
   unfold betaExponentOfRanks
@@ -265,7 +262,7 @@ theorem stdBasis_flag_submodule_of_blockTriangular (hq : ((q : ℕ) : 𝓞 E) �
     (hC : ∀ l l' : Fin (n + c), LocE.fPos k₀ c n l.1 < k₀ → LocE.fPos k₀ c n l'.1 = k₀ + rS → ob2M P q κ l l' = 0)
     (hs : s < r) : κ (LocE.bvecS E q k₀ rS n c s) - LocE.bvecS E q k₀ rS n c s ∈ LocE.flagS P q k₀ rS n c s := by
   have hq0 := ciQ_ne_zero hu
-  have hp0 : symIdxInv k₀ rS s < r := symIndexInv_lt hr.le hs
+  have hp0 : symIdxInv k₀ rS s < r := _root_.Formalism.L2.Col.symIdxInv_lt hr.le hs
   have hl0 : LocE.fIdx k₀ c n (symIdxInv k₀ rS s) < n + c := symFIdx_lt hk (by omega)
   have hpos0 : LocE.fPos k₀ c n (LocE.fIdx k₀ c n (symIdxInv k₀ rS s)) = symIdxInv k₀ rS s := symFPos_fIdx hk (by omega)
   have hsym0 : symIdx k₀ rS (symIdxInv k₀ rS s) = s := symIdx_symIdxInv k₀ rS s

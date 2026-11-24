@@ -1,7 +1,46 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DimFormC
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -151,8 +190,8 @@ theorem hL_apply (u v : VA I) : hL I u v = hA I u v := rfl
 theorem hA_incl (x y : Fin I.n → I.E) : hA I (incl I x) (incl I y) =
     Formalism.UG.inclE (F := I.F) (Af I.F) (Formalism.UG.hform (starRingEnd I.E) I.J x y) := by
   unfold Formalism.L2.SG.HidaSetting.hA Formalism.UG.hform Formalism.L2.SG.HidaSetting.incl
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.map_apply, map_sum, map_mul, starRingEnd_apply]
+
+  simp only [Matrix.map_apply, map_sum, map_mul, starRingEnd_apply]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [sigA_inclE]
 
@@ -164,62 +203,15 @@ theorem J_conj (i j : Fin I.n) : star (I.J i j) = I.J j i := by
 
 theorem hA_symm (u v : VA I) : hA I v u = sigA I (hA I u v) := by
   unfold Formalism.L2.SG.HidaSetting.hA Formalism.UG.hform
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, Matrix.map_apply]
+
+  simp only [map_sum, map_mul, Matrix.map_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [sigA_sigA, sigA_inclE, J_conj]
   ring
 
 theorem hA_int {u v : VA I} (hu : u ∈ I.Lf) (hv : v ∈ I.Lf) : hA I u v ∈ IntAf I.F I.E := by
-  have gen : ∀ x ∈ I.L, ∀ y ∈ I.L, hA I (incl I x) (incl I y) ∈ IntAf I.F I.E := by
-    intro x hx y hy
-    rw [hA_incl]
-    exact inclE_mem I ((I.L_dual y).1 hy x hx)
-  have h1 : ∀ x ∈ I.L, ∀ w ∈ I.Lf, hA I (incl I x) w ∈ IntAf I.F I.E := by
-    intro x hx w hw
-    let P : Submodule (IntAf I.F I.E) (VA I) :=
-      { carrier := {w | hA I (incl I x) w ∈ IntAf I.F I.E}
-        add_mem' := fun {a b} ha hb => by
-          show hA I (incl I x) (a + b) ∈ IntAf I.F I.E
-          rw [hA_add_right]
-          exact add_mem ha hb
-        zero_mem' := by
-          show hL I (incl I x) 0 ∈ IntAf I.F I.E
-          rw [map_zero]
-          exact zero_mem _
-        smul_mem' := fun c w hw => by
-          show hA I (incl I x) ((c : I.E ⊗[I.F] Af I.F) • w) ∈ IntAf I.F I.E
-          rw [hA_smul_right]
-          exact mul_mem c.2 hw }
-    have hle : I.Lf ≤ P := by
-      show Submodule.span _ _ ≤ P
-      rw [Submodule.span_le]
-      rintro _ ⟨⟨y, hy⟩, rfl⟩
-      exact gen x hx y hy
-    exact hle hw
-  let Q : Submodule (IntAf I.F I.E) (VA I) :=
-    { carrier := {w | hA I w v ∈ IntAf I.F I.E}
-      add_mem' := fun {a b} ha hb => by
-        show hA I (a + b) v ∈ IntAf I.F I.E
-        rw [hA_add_left]
-        exact add_mem ha hb
-      zero_mem' := by
-        show hA I 0 v ∈ IntAf I.F I.E
-        have h0 := hA_smul_left I 0 v 0
-        rw [zero_smul, map_zero, zero_mul] at h0
-        rw [h0]
-        exact zero_mem _
-      smul_mem' := fun c w hw => by
-        show hA I ((c : I.E ⊗[I.F] Af I.F) • w) v ∈ IntAf I.F I.E
-        rw [hA_smul_left]
-        exact mul_mem (sigA_mem I c.2) hw }
-  have hle : I.Lf ≤ Q := by
-    show Submodule.span _ _ ≤ Q
-    rw [Submodule.span_le]
-    rintro _ ⟨⟨y, hy⟩, rfl⟩
-    exact h1 y hy v hv
-  exact hle hu
+  apply Formalism.L2.SG.Pf.unitaryCongruence.hA_int <;> assumption
 
 theorem hA_sub_right (u v w : VA I) : hA I u (v - w) = hA I u v - hA I u w := by
   show hL I u (v - w) = hL I u v - hL I u w

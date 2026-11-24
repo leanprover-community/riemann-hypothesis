@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.ExtendedPointBaseChange
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.WeightedPrimeSumBound
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

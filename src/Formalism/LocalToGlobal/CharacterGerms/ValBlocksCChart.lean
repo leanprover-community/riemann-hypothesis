@@ -1,9 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
-public import Formalism.LocalToGlobal.CharacterGerms.BlockAdmissibleChart
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieAdm
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieJet
+public import Formalism.LocalToGlobal.CharacterGerms.BlockMembershipSelfConjugate
 
 @[expose] public section
 

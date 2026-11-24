@@ -2,8 +2,47 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.LiftBoundOfHypotheses
 public import Formalism.SharpRestriction.GrowthBounds.Lemma5aAt
-public import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
-public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.FockMonomialRight
 
 @[expose] public section
 
@@ -17,15 +56,11 @@ section Gen
 
 theorem geQ_gen (y : WithTop ℚ) (t : ℝ) :
     Formalism.MainNotions.PlaneGramData.geQ y t ↔ ((t : ℝ) : WithTop ℝ) ≤ y.map (fun q : ℚ => (q : ℝ)) := by
-  induction y using WithTop.recTopCoe with
-  | top => simp [Formalism.MainNotions.PlaneGramData.geQ]
-  | coe q => simp [Formalism.MainNotions.PlaneGramData.geQ]
+  cases y using WithTop.recTopCoe <;> simp [Formalism.MainNotions.PlaneGramData.geQ]
 
 theorem leQ_gen (y : WithTop ℚ) (t : ℝ) :
     Formalism.MainNotions.PlaneGramData.leQ y t ↔ y.map (fun q : ℚ => (q : ℝ)) ≤ ((t : ℝ) : WithTop ℝ) := by
-  induction y using WithTop.recTopCoe with
-  | top => simp [Formalism.MainNotions.PlaneGramData.leQ]
-  | coe q => simp [Formalism.MainNotions.PlaneGramData.leQ]
+  cases y using WithTop.recTopCoe <;> simp [Formalism.MainNotions.PlaneGramData.leQ]
 
 theorem map_cast_add (a : WithTop ℚ) (q : ℚ) :
     (a + (q : WithTop ℚ)).map (fun q : ℚ => (q : ℝ)) = a.map (fun q : ℚ => (q : ℝ)) + (((q : ℚ) : ℝ) : WithTop ℝ) := by
@@ -66,10 +101,8 @@ open Formalism.MainNotions.G.GLWeightTheory
 variable {p : ℕ} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
 theorem vK_one' (p : ℕ) : Formalism.MainNotions.G.vK p (1 : Formalism.MainNotions.G.KK O) = 0 := by
-  have h := valuation_algebraMap_eq_alt (O := O) p 1 one_ne_zero
-  rw [map_one] at h
-  rw [h, dvr_order_unit_eq_zero isUnit_one]
-  simp
+  simpa [map_one, dvr_order_unit_eq_zero isUnit_one] using
+    valuation_algebraMap_eq_alt (O := O) p 1 one_ne_zero
 
 def vQ (p : ℕ) (_S : Formalism.MainNotions.G.UniformizedDVR p O) : AddValuation (Formalism.MainNotions.G.KK O) (WithTop ℚ) :=
   AddValuation.of (fun x => Formalism.MainNotions.G.vK p x) (valuation_zero_alt p) (vK_one' p) (fun x y => valuation_add_ge_min p x y)
@@ -79,8 +112,7 @@ theorem vQ_apply (S : Formalism.MainNotions.G.UniformizedDVR p O) (x : Formalism
 
 theorem vQ_nat (hp : p.Prime) (S : Formalism.MainNotions.G.UniformizedDVR p O) (n : ℕ) (hn : n ≠ 0) :
     vQ p S (n : Formalism.MainNotions.G.KK O) = ((padicValNat p n : ℚ) : WithTop ℚ) := by
-  rw [vQ_apply]
-  exact valuation_natCast_padicVal hp S n hn
+  simpa [vQ_apply] using valuation_natCast_padicVal hp S n hn
 
 theorem dvrHyp (S : Formalism.MainNotions.G.UniformizedDVR p O) {n' : ℕ} (hG : Formalism.MainNotions.G.AdmissibleDVR p n' O) : DVRHyp (vQ p S) p := by
   haveI := Fact.mk hG.prime
@@ -90,8 +122,7 @@ theorem dvrHyp (S : Formalism.MainNotions.G.UniformizedDVR p O) {n' : ℕ} (hG :
 
 theorem vQ_nonneg_iff (S : Formalism.MainNotions.G.UniformizedDVR p O) (x : Formalism.MainNotions.G.KK O) :
     0 ≤ vQ p S x ↔ ∃ o : O, x = algebraMap O (Formalism.MainNotions.G.KK O) o := by
-  rw [vQ_apply]
-  exact valuation_nonneg_iff_integral S x
+  simpa [vQ_apply] using valuation_nonneg_iff_integral S x
 
 theorem geQ_iff (S : Formalism.MainNotions.G.UniformizedDVR p O) (x : Formalism.MainNotions.G.KK O) (t : ℝ) :
     Formalism.MainNotions.PlaneGramData.geQ (Formalism.MainNotions.G.vK p x) t ↔ ((t : ℝ) : WithTop ℝ) ≤ vR (vQ p S) x := geQ_gen _ t
@@ -110,13 +141,7 @@ theorem geQ_nat_iff (S : Formalism.MainNotions.G.UniformizedDVR p O) (x : Formal
     constructor <;> intro h <;> exact_mod_cast h
 
 theorem geZ_iff (x : WithTop ℤ) (t : ℝ) : Formalism.MainNotions.PlaneGramData.geZ x t ↔ ((t : ℝ) : WithTop ℝ) ≤ toR x := by
-  induction x using WithTop.recTopCoe with
-  | top => simp [Formalism.MainNotions.PlaneGramData.geZ, toR]
-  | coe k => simp [Formalism.MainNotions.PlaneGramData.geZ, toR]
-
-theorem fact_ne_zero' {σ : Type} (α : σ →₀ ℕ) : fact α ≠ 0 := by
-  unfold fact Finsupp.prod
-  exact Finset.prod_ne_zero_iff.mpr fun _ _ => Nat.factorial_ne_zero _
+  cases x using WithTop.recTopCoe <;> simp [Formalism.MainNotions.PlaneGramData.geZ, toR]
 
 theorem vBB_eq (hp : p.Prime) (S : Formalism.MainNotions.G.UniformizedDVR p O) {σ : Type} (F : MvPolynomial σ (Formalism.MainNotions.G.KK O)) :
     vBB (vQ p S) F = (Formalism.MainNotions.G.vBB (O := O) p F).map (fun q : ℚ => (q : ℝ)) := by

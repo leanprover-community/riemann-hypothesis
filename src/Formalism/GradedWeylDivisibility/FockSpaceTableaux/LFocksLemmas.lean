@@ -2,6 +2,52 @@ module
 
 public import Formalism.GradedWeylDivisibility.StatementA
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ProdFactorialSupportSubSingle
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,7 +65,7 @@ lemma LFocks_C_mul_left (c : ℂ) (f g : MvPolynomial σ ℂ) :
     fockF (C c * f) g = c * fockF f g := by
   rw [C_mul', fischerInner_eq_sum_of_subset (c • f) g f.support support_smul, fockF, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [coeff_smul, smul_eq_mul]
+  rw [AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
   ring
 
 lemma LFocks_C_mul_right (c : ℂ) (f g : MvPolynomial σ ℂ) :
@@ -58,10 +104,10 @@ lemma LFocks_constantCoeff_sub (U : Matrix σ σ ℂ) (g : MvPolynomial σ ℂ) 
 lemma LFocks_sub_comp (A B : Matrix σ σ ℂ) :
     (sub A).comp (sub B) = sub (B * A) := by
   refine MvPolynomial.algHom_ext fun i => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [AlgHom.comp_apply, LFocks_sub_X, LFocks_sub_X, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_mul, LFocks_sub_C, LFocks_sub_X, Finset.mul_sum, Matrix.mul_apply, map_sum, Finset.sum_mul]
+
+  rw [AlgHom.comp_apply, LFocks_sub_X, LFocks_sub_X, map_sum]
+
+  simp only [map_mul, LFocks_sub_C, LFocks_sub_X, Finset.mul_sum, Matrix.mul_apply, map_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => by ring
 
@@ -78,8 +124,8 @@ lemma LFocks_pderiv_sub (V : Matrix σ σ ℂ) (i : σ) (g : MvPolynomial σ ℂ
   next p q hp hq => simp only [map_add (f := _), mul_add, Finset.sum_add_distrib, hp, hq]
   next p k hp =>
     have hS : pderiv i (sub V (X k)) = C (V k i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [LFocks_sub_X, map_sum]
+
+      rw [LFocks_sub_X, map_sum]
       simp [pderiv_X, Pi.single_apply]
     have hT : ∀ j, sub V (pderiv j (X k : MvPolynomial σ ℂ)) = if j = k then 1 else 0 := by
       intro j

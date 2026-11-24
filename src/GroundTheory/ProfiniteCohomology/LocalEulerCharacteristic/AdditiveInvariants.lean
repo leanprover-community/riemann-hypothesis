@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
+public import Mathlib.Algebra.Field.ZMod
+public import Mathlib.RepresentationTheory.Invariants
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Flat.Basic
 
 @[expose] public section
 
@@ -32,8 +38,8 @@ theorem exists_invariant_preimage (hΓ : (Fintype.card Γ : k) ≠ 0) {g : X₂ 
   obtain ⟨x, rfl⟩ := hs y
   refine ⟨(Fintype.card Γ : k)⁻¹ • ρ₂.norm x, fun γ => by rw [map_smul, self_norm_apply], ?_⟩
   have hnorm : g (ρ₂.norm x) = ρ₃.norm (g x) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Representation.norm, LinearMap.sum_apply, map_sum, hg.isIntertwining]
+
+    simp [Representation.norm, LinearMap.sum_apply, map_sum, hg.isIntertwining]
   have hinv : ρ₃.norm (g x) = (Fintype.card Γ : k) • g x := by
     have hy' : ∀ γ, ρ₃ γ (g x) = g x := hy
     simp only [Representation.norm, LinearMap.sum_apply, hy', Finset.sum_const, Finset.card_univ]

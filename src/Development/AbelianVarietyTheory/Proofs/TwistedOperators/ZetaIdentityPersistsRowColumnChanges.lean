@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocIsoRefl
+public import Mathlib.Analysis.Matrix.MeasurableSpace
+public import Formalism.DoubleCosetMeasures.StatementZ
+public import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
+import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
+public import Formalism.DoubleCosetMeasures.Statement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLagrModelOfIsLin
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocIsoRefl
 
 @[expose] public section
 
@@ -50,7 +97,7 @@ theorem shellSum_mul_left {a : ℕ} (μ : Measure (GL (Fin a) k)) [μ.IsHaarMeas
     have hL : ∀ g : GL (Fin a) k, φ (g₀.val * g.val) * (ν (gdet g) : ℂ) * apow (gdet g) z =
         ((ν (gdet g₀) : ℂ))⁻¹ * F (g₀ * g) := by
       intro g
-      simp only [hF, gdet_mul, apow_mul, hz, map_mul, Units.val_mul, one_mul]
+      simp only [hF, apow_mul, hz, map_mul, Units.val_mul, one_mul]
       field_simp
     have hR : ∀ g : GL (Fin a) k, ((ν (gdet g₀) : ℂ))⁻¹ * φ g.val * (ν (gdet g) : ℂ) * apow (gdet g) z =
         ((ν (gdet g₀) : ℂ))⁻¹ * F g := by
@@ -128,7 +175,7 @@ theorem exists_smallF_rows {A A₁ C C₁ : Type} [Fintype A] [DecidableEq A] [F
       apow (gdet g) ((Fintype.card C : ℂ) / 2) = (lam * ((ν (gdet g₀) : ℂ))⁻¹ *
         (apow (gdet g₀) ((Fintype.card C : ℂ) / 2))⁻¹) * F (renum e (g₀ * g)) := by
     intro g
-    simp only [hF, renum_mul_reindex, gdet_renum, gdet_mul, map_mul, Units.val_mul, apow_mul, hCC,
+    simp only [hF, renum_mul_reindex, gdet_renum, map_mul, Units.val_mul, apow_mul, hCC,
       Matrix.mul_assoc]
     field_simp
   have h2 := hint F
@@ -156,7 +203,6 @@ theorem exists_reindex_unit {C C₁ : Type} [Fintype C] [DecidableEq C] [Fintype
       simp [reindex_apply]
     ext
     simp only [gdet, Matrix.GeneralLinearGroup.val_det_apply, Units.val_mul]
-    change det (reindex τ eC u.val) = _
     rw [hsub, det_permute, det_submatrix_equiv_self]
     simp
 

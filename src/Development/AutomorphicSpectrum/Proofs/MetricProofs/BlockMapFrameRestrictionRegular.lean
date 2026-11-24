@@ -1,10 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVApply
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagValuationNormalization
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
+import Mathlib.Basic.Complex.Basic
+import Mathlib.RingTheory.Valuation.ValuationSubring
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ValuationRingExtensionSpecialization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -134,7 +181,7 @@ theorem flag_fwd_kept (M : FlagModel y Ψ N j) (keep : Ψ × Fin N → Prop) {κ
   have hzb : z ∘ v' ∈ mcPts (mCoordIdeal M.x) := comp_mem_mcPts hb' am hx hz
   let O := regRing (y ∘ v) z
   let val : O →+* ℂ := regVal hz
-  obtain ⟨V, hOV, hpl⟩ := GlobalTheory.T.valuation_ring_extension_specialization Φ O val (regVal_local hz)
+  obtain ⟨V, hOV, hpl⟩ := _root_.GlobalTheory.CompanionTheory.Ar.ComplexPlace.exists_valuationSubring_place Φ O val (regVal_local hz)
   have hO : ∀ {s}, RegAt M.x (mCoordIdeal (z ∘ v')) s → am s ∈ O := fun hs => ⟨_, val_lift_of am hb' hx hz hs⟩
   let Ag : Ψ → Matrix (Fin N) (Fin N) Φ := fun τ => (F.T τ)⁻¹.map am * M.g τ
   have hinvD : ∀ τ, ((F.T τ)⁻¹.map am).det ≠ 0 := fun τ => by
@@ -149,7 +196,7 @@ theorem flag_fwd_kept (M : FlagModel y Ψ N j) (keep : Ψ × Fin N → Prop) {κ
   have hAgD : ∀ τ, (Ag τ).det ≠ 0 := fun τ => by
     rw [Matrix.det_mul]
     exact mul_ne_zero (hinvD τ) (M.isUnit_det_g τ).ne_zero
-  choose b hbB hbT hbd hbV hbdet hbinv using fun τ => GlobalTheory.T.block_diag_valuation_normalization Φ V N j (Ag τ) (hAgB τ) (hAgD τ)
+  choose b hbB hbT hbd hbV hbdet hbinv using fun τ => _root_.GlobalTheory.CompanionTheory.Ar.PB.IwBlock.main Φ V N j (Ag τ) (hAgB τ) (hAgD τ)
   let H : Ψ → Matrix (Fin N) (Fin N) Φ := fun τ => Ag τ * b τ
   have hHB : ∀ τ, IsBlockDiag j (H τ) := fun τ => (hAgB τ).mul (hbB τ)
   let wf : ∀ (p : Ψ × Fin N) (k : K), ι k → Φ := fun p k m =>
@@ -181,12 +228,12 @@ theorem flag_fwd_kept (M : FlagModel y Ψ N j) (keep : Ψ × Fin N → Prop) {κ
         ⟨am (detFac j p.2 (F.T p.1)) * (∏ c ∈ stepCols N j p.2, b p.1 c c) / am (∏ k', M.x ⟨k', F.c k'⟩ ^ M.b p k'),
           div_ne_zero (mul_ne_zero hdet hB) hE, fun m => by
             rw [div_mul_eq_mul_div, rel m, mul_div_cancel_left₀ _ hE]⟩
-      obtain ⟨m₀, hm₀, hm₀i⟩ := GlobalTheory.T.step_rows_inverse_nonzero_entry Φ V N j p.2 (H p.1) (ι (κ k₁)) (fun m I => am (F.u ⟨κ k₁, m⟩ I))
+      obtain ⟨m₀, hm₀, hm₀i⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb Φ V N j p.2 (H p.1) (ι (κ k₁)) (fun m I => am (F.u ⟨κ k₁, m⟩ I))
         (fun I m => am (F.u' I ⟨κ k₁, m⟩)) M.j_le (hHB p.1) (hbV p.1) (hbdet p.1) (hbinv p.1)
         (fun I m => hOV _ (hO (hG.2.1 _ I).2)) (fun m I => hOV _ (hO (hG.2.1 _ I).1)) (fun I I' hI hI' => by
           have := congrArg am (hF.2.2.1 p (κ k₁) hp I I' hI hI')
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum] at this
+
+          rw [map_sum] at this
           simp only [map_mul] at this
           rw [this]
           split_ifs <;> simp)
@@ -251,13 +298,13 @@ theorem flag_fwd_kept (M : FlagModel y Ψ N j) (keep : Ψ × Fin N → Prop) {κ
     let rR : R := Subring.inclusion hOR ⟨r, _, hr⟩
     have e1 : ∑ I, uR I * minorIJ (HR p.1) I (stepCols N j p.2) = rR * wR := Subtype.ext (by
       show R.subtype _ = r * wc p
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [map_mul, ← minorIJ_map, hHR]
       exact hw)
     have e2 := congrArg ψ e1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at e2
+
+    rw [map_sum] at e2
     simp only [map_mul, ← minorIJ_map] at e2
     have e3 : ∀ I, ψ (uR I) = valAt M.x (F.u ⟨k, m⟩ I) (z ∘ v') := fun I =>
       (hψ _).trans (regVal_eq hz _ (val_lift_of am hb' hx hz (hG.2.1 _ I).1))

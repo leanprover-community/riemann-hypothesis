@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.MaIntEmpty
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.MahlerSectionBasic
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
+import Mathlib.NumberTheory.Height.NumberField
 
 @[expose] public section
 

@@ -2,6 +2,49 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.ExDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.OnCompSelf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -78,8 +121,8 @@ private def cjL {O : Type} [CommRing O] [IsLocalRing O] [Algebra O B] [IsCO O B]
         Ideal.Quotient.mk (maximalIdeal B ^ N) (r.hom x i j) :=
       Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => (r.cont i j N).eventually_eq x
     filter_upwards [this] with y hy
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [cj_apply, Matrix.mul_apply, map_sum, map_mul, hy]
+
+    simp only [cj_apply, Matrix.mul_apply, map_sum, map_mul, hy]
   red g a b := by
     have : (cj h r.hom g).map (res O B) = (r.hom g).map (res O B) := by
       rw [cj_apply, Matrix.map_mul, Matrix.map_mul, h1, h2, one_mul, mul_one]
@@ -109,7 +152,7 @@ private theorem dU_adj {Y : M4 O} (hY : Y ∈ sp4 O) :
   rw [dU_val, dU_inv]
   ext i j
   · rw [adj_apply]
-    fin_cases i <;> fin_cases j <;> simp [sgn, Fin.rev, Matrix.one_apply]
+    fin_cases i <;> fin_cases j <;> simp [sgn, Fin.rev]
   · have hij := congrFun (congrFun hY' i) j
     rw [adj_apply] at hij
     rw [adj_apply]
@@ -144,13 +187,13 @@ private theorem dU_conj (Y X : M4 O) (X' : M4 (DualNumber O)) (hX : ∀ a b, X' 
     by_cases h : a = b <;> simp [Matrix.one_apply, h]
   have p2 : (1 + Y.map (TrivSqZeroExt.inr : O → DualNumber O)).map TrivSqZeroExt.snd = Y := by
     ext a b
-    by_cases h : a = b <;> simp [Matrix.one_apply, h]
+    by_cases h : a = b <;> simp [h]
   have q1 : (1 - Y.map (TrivSqZeroExt.inr : O → DualNumber O)).map TrivSqZeroExt.fst = 1 := by
     ext a b
     by_cases h : a = b <;> simp [Matrix.one_apply, h]
   have q2 : (1 - Y.map (TrivSqZeroExt.inr : O → DualNumber O)).map TrivSqZeroExt.snd = -Y := by
     ext a b
-    by_cases h : a = b <;> simp [Matrix.one_apply, h]
+    by_cases h : a = b <;> simp [h]
   have x1 : (X.map (TrivSqZeroExt.inl : O → DualNumber O)).map TrivSqZeroExt.fst = X := by
     ext a b
     simp

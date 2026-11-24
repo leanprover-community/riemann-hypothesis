@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFormal
-public import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
 public import GroundTheory.ProfiniteCohomology.PoincareDuality
+public import GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs
+public import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
+import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -159,7 +161,7 @@ theorem gsRootsLocalMor_hom_apply (v : S) (ζ : Additive (rootsOfUnity n (maxUnr
   rfl
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem bijective_gsRootsLocalMor [NeZero n] (hμ : ∀ ζ : ℚ̄, ζ ^ n = 1 → ζ ∈ K.1) (v : S) :
     Function.Bijective (gsRootsLocalMor S ιs n v).hom := by
   obtain ⟨z, hz⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot ℚ̄ n

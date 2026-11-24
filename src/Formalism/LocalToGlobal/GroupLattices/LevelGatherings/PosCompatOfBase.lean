@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.LevelGatherings
 public import Formalism.LocalRingCardinality.DataKerI
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.SecPsiMulPow
 
 @[expose] public section
 

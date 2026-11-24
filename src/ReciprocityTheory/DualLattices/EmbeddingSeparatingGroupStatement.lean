@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.DualLattices.EigenLiftsFrobeniusStatement
+public import ReciprocityTheory.DualLattices.EigenLengthFrobeniusStatement
 
 @[expose] public section
 

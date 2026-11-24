@@ -1,11 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNormalLocusRep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalRep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNmSectionsRational
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.FiniteIntegralClosureCharZero
+public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

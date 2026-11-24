@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.RingTheory.Polynomial.Tower
 
 @[expose] public section
 
@@ -67,8 +69,8 @@ theorem sum_proj [Nonempty ι] (hα : Function.Injective fun τ => χ τ α) : �
   have h := sum_lagr (fun τ => χ τ α) hα
   calc ∑ τ, proj ρ χ α τ
       = aeval (ρ α) ((∑ τ, lagr (fun τ => χ τ α) τ).map (algebraMap K S)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [proj, Polynomial.map_sum, map_sum]
+
+        simp only [proj, Polynomial.map_sum, map_sum]
     _ = 1 := by rw [h, Polynomial.map_one, map_one]
 
 theorem proj_eig_alpha (hα : Function.Injective fun τ => χ τ α) (f : ℤ[X]) (hf : aeval α f = 0)
@@ -114,8 +116,8 @@ theorem eig_of_alpha (hN : ∀ a : O, ∃ (N : ℤ) (g : ℤ[X]), N ≠ 0 ∧ (N
 
 theorem proj_sum_eig (hα : Function.Injective fun τ => χ τ α) (mm : ι → M)
     (hmm : ∀ τ, IsEigV ρ (χ τ) (mm τ)) (τ : ι) : proj ρ χ α τ (∑ τ', mm τ') = mm τ := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   have key : ∀ τ', proj ρ χ α τ (mm τ') = if τ = τ' then mm τ' else 0 := by
     intro τ'
     have hm := hmm τ' α

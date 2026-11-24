@@ -1,21 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
-public import Formalism.LocalToGlobal.HermitianColumns.ColsHerm
-public import Formalism.LocalToGlobal.HermitianForms.FormsTied
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.SuccessiveMinima.StatementMink
-public import Formalism.SharpRestriction.GlobalSchurBounds.IntegrableOfContinuousCircleMeasure
-public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Numeric
-public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Interlace
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LFockbLemmas
-public import Formalism.BranchSandwichDivisors.StatementW
-public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.XiNorm
-public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.BranchMap
+public import Formalism.LocalRingCardinality.DataCoeff
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.BranchScale
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LFocksLemmas
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ClosedEqNabla
+import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

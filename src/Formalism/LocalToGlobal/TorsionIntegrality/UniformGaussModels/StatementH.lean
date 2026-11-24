@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementL
+public import Formalism.GaussJetBounds.StatementI
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementW
 
 @[expose] public section
 

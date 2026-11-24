@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.HostRank
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
+public import Formalism.LocalToGlobal.ProjectiveLattices.HostRank
 
 @[expose] public section
 

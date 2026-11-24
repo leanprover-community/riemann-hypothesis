@@ -1,10 +1,55 @@
 module
 
-public import Mathlib
+import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerMemDeltaInvariants
+public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
+public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
+public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 public import Formalism.SharpRestriction.LevelLetterCocycles.PsCoprimeOf
-public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
+import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -123,31 +168,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
 theorem uniformizer_mem_delta_invariants : W.π₀ ∈ W.AΔ := by
-  intro δ hδ
-  funext i
-  show W.γ₀ δ W.π₀₁ = W.π₀₁
-  have hmem : ∀ {x y : W.Gam}, x ∈ W.DelF → y ∈ W.DelF → x * y ∈ W.DelF := by
-    intro x y hx hy
-    obtain ⟨a, ha, hxa⟩ := (W.DelF_def x).1 hx
-    obtain ⟨b, hb, hyb⟩ := (W.DelF_def y).1 hy
-    refine (W.DelF_def _).2 ⟨a * b, Nat.mul_pos ha hb, ?_⟩
-    rw [mul_pow, pow_mul, hxa, one_pow, pow_mul', hyb, one_pow, one_mul]
-  have hinv : δ⁻¹ ∈ W.DelF := by
-    obtain ⟨a, ha, hxa⟩ := (W.DelF_def δ).1 hδ
-    exact (W.DelF_def _).2 ⟨a, ha, by rw [inv_pow, hxa, inv_one]⟩
-  unfold LocWach.π₀₁
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_add (f := _), map_sub, map_one, map_natCast, map_sum]
-  congr 1
-  have key : ∀ y : W.Gam, W.γ₀ δ (W.γ₀ y (1 + PowerSeries.X)) = W.γ₀ (δ * y) (1 + PowerSeries.X) := by
-    intro y; rw [map_mul, AlgHom.mul_apply]
-  simp only [key]
-  refine Finset.sum_nbij' (fun x => δ * x) (fun x => δ⁻¹ * x) ?_ ?_ ?_ ?_ ?_
-  · intro x hx; exact hmem hδ hx
-  · intro x hx; exact hmem hinv hx
-  · intro x _; simp
-  · intro x _; simp
-  · intro x _; rfl
+  apply Formalism.MainNotions.RamifiedCoefficientChains.S9.LD.uniformizer_mem_delta_invariants
 
 theorem ps_mem (s : ℕ) : Formalism.MainNotions.ArcLiftingSetup.ps W s ∈ W.AΔ :=
   Formalism.MainNotions.UnusedSlot80.PhiPowers.ps_mem_AΔ W (uniformizer_mem_delta_invariants W) s
@@ -214,8 +235,8 @@ theorem dvO_split (T : LocLat G Qp LL O) (e s : ℕ) (hs : s ≤ e) {d : ℕ} (b
       (∑ m, algebraMap O LL (c₀ m) • ((φVB PD (LL := LL) (V := T.V)) ^ (e - s))
         (Formalism.MainNotions.ArcLiftingSetup.cmpD W T (b m))) := by
   unfold Formalism.MainNotions.ArcLiftingSetup.dvO Formalism.MainNotions.ArcLiftingSetup.dv
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [map_smul, ← Module.End.mul_apply, ← pow_add, Nat.add_sub_cancel' hs]
 
@@ -425,8 +446,8 @@ theorem secIn_map (φ : W.EE →+ W.EE)
   obtain ⟨I, g, c₀, α, h, ef⟩ := hf
   refine ⟨I, fun i => φ (g i), c₀, α, fun i => ⟨hI _ _ (h i).1, (h i).2⟩, fun k => ?_⟩
   show φ (f k) = ∑ i, φ (g i) * algebraMap O W.EE (c₀ i k)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ef k, map_sum]
+
+  rw [ef k, map_sum]
   exact Finset.sum_congr rfl fun i _ => hφ _ _
 
 theorem secIn_mulι {c : LetA O n} (hc : c ∈ W.AΔ) {f : Fin d → W.EE} (hf : SecIn W a e cond f) :
@@ -623,7 +644,7 @@ theorem invNL_outside (hCA : Formalism.MainNotions.LiftingTheory.CaseA W) (h5 : 
       funext m
       by_cases h : m = k
       · subst h; simp
-      · simp [Pi.single_apply, h]
+      · simp [h]
     rw [e]
     exact hup k hk s hs bs hbs
   let g : Fin d → W.EE := fun k => if k ∈ Rst then 0 else πi * (W.γE W.gam (F k) - F k)
@@ -636,7 +657,7 @@ theorem invNL_outside (hCA : Formalism.MainNotions.LiftingTheory.CaseA W) (h5 : 
       intro k
       by_cases h : m = k
       · subst h; simp
-      · simp [Pi.single_apply, h]
+      · simp [h]
     simp only [this, Finset.sum_ite_eq, Finset.mem_filter, Finset.mem_univ, true_and, g]
     by_cases hm : m ∈ Rst <;> simp [hm]
   refine ⟨g, ?_, fun k => ?_⟩

@@ -1,6 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.DifferentIdeal.LineR
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.RingTheory.DedekindDomain.Different
+public import Mathlib.RingTheory.FractionalIdeal.Norm
+import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeLocalMass
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeJacMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentDim
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsTangentGaussInvariant
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralLine
+public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 
@@ -32,8 +33,8 @@ theorem mem_coneTangent_self {n : ℕ} (h : HermNorm n) {J : Ideal (MvPolynomial
     _ = ∑ d ∈ Finset.range (q.totalDegree + 1),
           eval (h.pointOf y) (∑ j, X j * pderiv j (homogeneousComponent d q)) := by
         conv_lhs => rw [← sum_homogeneousComponent q]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, Finset.mul_sum]
+
+        simp only [map_sum, Finset.mul_sum]
         exact Finset.sum_comm
     _ = 0 := Finset.sum_eq_zero fun d _ => hd d
 

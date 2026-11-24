@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormalFormAgree
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormOneOfPow
+public import Formalism.LocalToGlobal.HermitianForms.TiedBr
+public import Formalism.LocalToGlobal.HermitianForms.TiedSym
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ArchimedeanSignatureMatchingOfTrivialBranchingSymm
 
 @[expose] public section
 

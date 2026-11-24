@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsQuasiRegularSeqOfIsFreeGen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Presentable.IsDiscrete
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -412,8 +454,8 @@ variable (hL s hO h) in
 theorem hasLead_sum (hM : M.IsLB) (m : MonoDeg ι a → H0 p (tw M L n) O) :
     HasLead hL s hO h (∑ α, mulMono hM hL s α h (m α)) fun α => resTo hO (m α) :=
   fun z i j hi hj => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [LeadIn, map_sum, germ_mulMono hM hL s _ h _ i j _ _ hi hj]
+
+    simp only [LeadIn, map_sum, germ_mulMono hM hL s _ h _ i j _ _ hi hj]
     exact (congrArg (LeadAt _ _ _) (funext fun α =>
       (germ_resTo hO (fun _ => twIdx n i j) z _ (m α)).symm)).mp (leadAt_sum _)
 
@@ -446,8 +488,8 @@ theorem exists_hasLead (hM : M.IsLB) (hq : QuasiRegularAlong hL s)
         (germ (twIdx l _ _) _ (t.2 hz).1 (mem_tw_U.2 ⟨hi t hz, hj t hz⟩) f) fun α =>
           ((cutIdeal hL s).subschemeι.stalkMap z).hom (ger _ hz (μ t α)) := by
     have e := congrArg (ger _ hz) (hμ t)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, smul_eq_mul, map_mul, map_monoVal, ger_resG] at e
+
+    simp only [map_sum, smul_eq_mul, map_mul, map_monoVal, ger_resG] at e
     exact (congrArg (LeadAt _ _ · _) e).mp (leadAt_sum _)
   have cover (z : (cutIdeal hL s).subscheme) : ∃ t : τ, (cutIdeal hL s).subschemeι z ∈ t.1.1.1 := by
     obtain ⟨i, hi⟩ := exists_chart hM ((cutIdeal hL s).subschemeι z)

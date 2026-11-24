@@ -1,8 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LocWSOf
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.DoubleCosetBesselBoundOfBesselUniq
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselNonvanishingFromL2
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselNeZeroOfCyclicOrbit
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ReproducingFormulaReduction
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SigmaContOn
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
+import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyDoubleCosetBesselBoundOfGap
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 
 @[expose] public section
 
@@ -11,7 +16,7 @@ open scoped InnerProductSpace ENNReal ComplexConjugate
 
 noncomputable section
 
-set_option maxHeartbeats 1600000
+
 
 namespace Formalism.MainNotions.BridgeCS3dBOW
 
@@ -223,19 +228,6 @@ theorem bow_core [FiniteDimensional ℂ Wp] {ε : Fin (2 * r + k + 1) → Bool} 
       (by rw [inner_conj_symm, inner_conj_symm]; ring)
     rw [div_mul_eq_mul_div, eq_div_iff hy]
     linear_combination hc
-
-
-variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] in
-theorem besselOfW_of_local_decomposition (hDI : Formalism.FourierDecayAlt.ThreeDimData.DecInf) (hJ : PI.BesselMapUniq.BesselMapUniq) :
-    Formalism.L2.SG.LocWSOf.BesselOfW := by
-  intro k r z c u lam ε h H _ _ _ σ hlam hσ hgap hok hz hT hc Vp _ _ _ π hπ w hw μG μW μN ν hG hW hN hq W hWc hWeq
-    hRe hne hfin
-  have : CompleteSpace Vp := FiniteDimensional.completeSpace ℂ Vp
-  have hS : Side k r ε lam h σ w z c u π μW μN μG ν := ⟨hlam, hσ, hgap, hok, hw, hz, hT, hc, hπ, hW, hN, hG, hq⟩
-  obtain ⟨l, hlB, hla, -⟩ := Formalism.FourierDecayAlt.P.discrete_series_form_one (Formalism.MainNotions.BridgeCS3dClosed.inputs_of hDI hJ)
-    k r ε lam h H σ w Vp z c u π μW μN μG ν hS
-  obtain ⟨κ, hκ⟩ := bow_core hS l hla hWc hWeq hRe
-  exact ⟨fun v => κ • l v, (Formalism.MainNotions.BridgeCS3d.isBesselMapSm_iff _ _ _ _ _).mpr (DDSmoothness.bessel_smul hlB κ), hκ⟩
 
 
 end Formalism.MainNotions.BridgeCS3dBOW

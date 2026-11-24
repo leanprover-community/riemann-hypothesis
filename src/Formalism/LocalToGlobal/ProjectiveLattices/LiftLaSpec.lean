@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.HeckeFr
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 
 @[expose] public section
 

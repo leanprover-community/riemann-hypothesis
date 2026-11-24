@@ -1,7 +1,63 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadingsExistRow
+public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Formalism.LocalRingCardinality.DataHost
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilGramSignature
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadingsExistRow
+import Formalism.LocalRingCardinality.DataTheta
+import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
+import Formalism.LocalToGlobal.Divisibility.CoefMod
+import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
+import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Mathlib.Algebra.Azumaya.Basic
 
 @[expose] public section
 
@@ -77,8 +133,8 @@ theorem rescale_inj {κ : Type} [Finite κ] (b : Module.Basis κ K V) (σ : K �
     (h : LinearIndependent ℂ fun a => c (b a)) : Function.Injective c := by
   haveI := Fintype.ofFinite κ
   refine (injective_iff_map_eq_zero c).2 fun x hx => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← b.sum_repr x, map_sum] at hx
+
+  rw [← b.sum_repr x, map_sum] at hx
   simp only [LinearMap.map_smulₛₗ] at hx
   have := Fintype.linearIndependent_iff.1 h _ hx
   exact b.ext_elem fun a => by simpa using this a
@@ -91,11 +147,11 @@ theorem rescale_span_top {κ : Type} [Finite κ] (b : Module.Basis κ K V) (σ :
   rintro _ ⟨a, rfl⟩
   have : b a = ∑ k, b.repr (φ.symm (b a)) k • φ (b k) := by
     conv_lhs => rw [← φ.apply_symm_apply (b a), ← b.sum_repr (φ.symm (b a))]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul]
+
+    simp only [map_sum, map_smul]
   change c (b a) ∈ Submodule.span ℂ _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [this, map_sum]
+
+  rw [this, map_sum]
   refine Submodule.sum_mem _ fun k _ => ?_
   rw [LinearMap.map_smulₛₗ]
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)

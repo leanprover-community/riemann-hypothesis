@@ -1,7 +1,52 @@
 module
 
+public import Formalism.HermitianCurvature.StatementTL
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChebyshevExtremalPolynomials
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommuteAvrBvrOfCommuteSiteOps
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LagrangeExtraction
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -105,7 +150,7 @@ theorem PT.prod (ε Y : ℂ) (l : List (A × A × A)) :
     refine ⟨((hA.add hB).add (hC.add hD)).congr (fun s => ?_) ?_, hE.congr (fun s => ?_) ?_⟩
     · simp only [List.map_cons, List.prod_cons, Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
         Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.empty_val',
-        Matrix.cons_val_fin_one, Matrix.head_cons, Matrix.head_fin_const]
+        Matrix.cons_val_fin_one]
       rw [Algebra.smul_def, map_add (f := _), mul_comm ε s, map_mul]
       noncomm_ring
     · simp [pow_succ', map_mul]
@@ -244,7 +289,7 @@ theorem basicLift : BasicLift := by
       omega
     have t4 := hS.mul (hS.mul (hS.mul hDb hgI) hx1) t3
     refine hS.mono (by simp) ?_ t4
-    simp only [zero_add, add_zero, Nat.mul_zero]
+    simp only [add_zero, Nat.mul_zero]
     nlinarith
   · rw [ha2]
     have t1 := hS.mul hbM' hDrb
@@ -261,7 +306,7 @@ theorem basicLift : BasicLift := by
     have t5 := hS.smul (-1 : ℂ) t4
     rw [neg_one_smul] at t5
     refine hS.mono (by simp) ?_ t5
-    simp only [zero_add, add_zero, Nat.mul_zero]
+    simp only [add_zero, Nat.mul_zero]
     nlinarith
 
 end Formalism.FourierDecayAlt.TL

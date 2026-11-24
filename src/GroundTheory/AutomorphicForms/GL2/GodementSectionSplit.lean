@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GodementSection
 public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
+public import GroundTheory.GlobalFields.Adele.IntegersLattice
+public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.GL2.SummableNormIffAndTsumEqCoset2
+import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 
 @[expose] public section
 

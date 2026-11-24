@@ -1,7 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.OrdReadOf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.NonemptyIsLimitBaseChange
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.MemIdealOfOfDense
 
 @[expose] public section
 
@@ -14,20 +53,12 @@ open UpperTheory.Gal.crystallineComparison UpperTheory.Gal.crystallineComparison
 
 namespace UpperTheory.Gal.crystallineComparison.Mod
 
-private theorem spMap_comp' {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] (f : R →+* R') (g : R' →+* R'') :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [spMap, spMap, spMap, ← Spec.map_comp]
-  rfl
-
-private theorem spMap_inj' {R R' : Type} [CommRing R] [CommRing R'] {f g : R →+* R'} (h : spMap f = spMap g) : f = g := by
-  have h' := Spec.map_injective h
-  ext x
-  exact congrArg (fun φ => CommRingCat.Hom.hom φ x) h'
+private alias spMap_inj' := _root_.GlobalTheory.ZM.DenseFib.spMap_inj
 
 private theorem spMap_algComp {V B C D : Type} [CommRing V] [CommRing B] [CommRing C] [CommRing D] [Algebra V B] [Algebra V C]
     [Algebra V D] (a : C →ₐ[V] D) (b : B →ₐ[V] C) :
     spMap (a.comp b).toRingHom = spMap a.toRingHom ≫ spMap b.toRingHom := by
-  rw [spMap_comp']; rfl
+  rw [_root_.GlobalTheory.spMap_comp_ring]; rfl
 
 private theorem pt_alg {V B Λ : Type} [CommRing V] [CommRing B] [Algebra V B] [CommRing Λ] [Algebra V Λ]
     (w : algPt V Λ ⟶ algPt V B) : ∃ ν : B →ₐ[V] Λ, w.left = spMap ν.toRingHom := by
@@ -36,7 +67,7 @@ private theorem pt_alg {V B Λ : Type} [CommRing V] [CommRing B] [Algebra V B] [
   have hw := Over.w w
   have key : (Spec.preimage w.left).hom.comp (algebraMap V B) = algebraMap V Λ := by
     apply spMap_inj'
-    rw [← spMap_comp']
+    rw [← _root_.GlobalTheory.spMap_comp_ring]
     change Spec.map (CommRingCat.ofHom (Spec.preimage w.left).hom) ≫ spMap (algebraMap V B) = spMap (algebraMap V Λ)
     rw [e]
     simpa using hw
@@ -46,7 +77,7 @@ private noncomputable def ptOf {V B Λ : Type} [CommRing V] [CommRing B] [Algebr
     (ν : B →ₐ[V] Λ) : algPt V Λ ⟶ algPt V B :=
   Over.homMk (spMap ν.toRingHom) (by
     show spMap ν.toRingHom ≫ spMap (algebraMap V B) = spMap (algebraMap V Λ)
-    rw [spMap_comp']
+    rw [_root_.GlobalTheory.spMap_comp_ring]
     congr 1
     exact ν.comp_algebraMap)
 
@@ -120,7 +151,7 @@ theorem UpperTheory.Gal.crystallineComparison.Mod.infW_of :
       rw [← Category.assoc, ← Mod.spMap_algComp, hv]
       exact hInf0'
     obtain ⟨c, hc⟩ := hv₀ _ ((hiP' _ _).mp ⟨Mod.ptOf v, rfl⟩) hvI
-    rw [hm₀, Over.comp_left, ← Category.assoc, Mod.spMap_comp'] at hc
+    rw [hm₀, Over.comp_left, ← Category.assoc, _root_.GlobalTheory.spMap_comp_ring] at hc
     have hr := Mod.spMap_inj' ((cancel_mono i'.left).mp hc)
     refine ⟨c, fun x => ?_⟩
     have hx := RingHom.congr_fun hr x

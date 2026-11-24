@@ -1,6 +1,13 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.FormalGroupCoeffSecondLinear
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ActLin
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofComm
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.EigenLift
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ExpLaw
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.HStable
 
 @[expose] public section
 
@@ -161,8 +168,8 @@ theorem idem_eig {d : ℕ} {O k : Type} [CommRing O] [CommRing k] (M : O →+* M
     M a * ∑ i, c i • M (b i) = χ a • ∑ i, c i • M (b i) := by
   have h1 : ∀ i, M a * (c i • M (b i)) = ∑ j, (c i * (m i j : k)) • M (b j) := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Matrix.mul_smul, ← map_mul, hb i, map_sum, Finset.smul_sum]
+
+    rw [Matrix.mul_smul, ← map_mul, hb i, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_zsmul, ← Int.cast_smul_eq_zsmul k, smul_smul]
   rw [Finset.mul_sum, Finset.sum_congr rfl fun i _ => h1 i, Finset.sum_comm, Finset.smul_sum]

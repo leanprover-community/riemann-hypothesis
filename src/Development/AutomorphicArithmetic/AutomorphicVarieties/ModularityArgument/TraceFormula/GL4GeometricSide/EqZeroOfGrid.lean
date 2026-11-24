@@ -1,8 +1,54 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4GeometricSide.InnerEq
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CommuteCapOfCommuteEop
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfCharInfCharOfCommute
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.StableEigenspaces.FiniteTypes.FintypeHolds
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLocCompAndIsLocLoc
+import Development.WeilBound.RepresentationTheoryGL.ConstantTermFiniteness.LieInvariants.InvariantOfLieOneLEqZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsSpanFormsNeBot
 
 @[expose] public section
 
@@ -12,20 +58,6 @@ open NumberField GlobalTheory.CuspRep PositivityTheory.RgBcC PositivityTheory.Rg
 open scoped Classical
 
 namespace UpperTheory.V.Z.GSp4Splitting.RealLieFiniteness
-
-private theorem exists_detect {U : Type} (C : Submodule ℂ (U → ℂ)) [FiniteDimensional ℂ C] :
-    ∃ s : Finset U, ∀ f ∈ C, (∀ a ∈ s, f a = 0) → f = 0 := by
-  let ev : U → Module.Dual ℂ C := fun a => (LinearMap.proj a).comp C.subtype
-  have hfg : (Submodule.span ℂ (ev '' Set.univ)).FG := IsNoetherian.noetherian _
-  obtain ⟨t, ht, e⟩ := (Submodule.fg_span_iff_fg_span_finset_subset _).1 hfg
-  obtain ⟨s, -, rfl⟩ := Finset.subset_set_image_iff.1 ht
-  refine ⟨s, fun f hf h0 => funext fun a => ?_⟩
-  have hle : Submodule.span ℂ (ev '' Set.univ) ≤ LinearMap.ker (Module.Dual.eval ℂ C ⟨f, hf⟩) := by
-    rw [e, Submodule.span_le]
-    intro l hl
-    obtain ⟨b, hb, rfl⟩ := Finset.mem_image.1 (Finset.mem_coe.1 hl)
-    exact h0 b hb
-  exact hle (Submodule.subset_span ⟨a, trivial, rfl⟩)
 
 private theorem eq_zero_of_grid {ι U : Type} [Fintype ι] (C : ι → Submodule ℂ (U → ℂ)) (s : ι → Finset U)
     (hs : ∀ i, ∀ f ∈ C i, (∀ a ∈ s i, f a = 0) → f = 0) (F : (ι → U) → ℂ)
@@ -91,7 +123,7 @@ private def box (C : InfinitePlace E → Submodule ℂ (Un n → ℂ)) : Submodu
 
 private theorem box_fin (C : InfinitePlace E → Submodule ℂ (Un n → ℂ)) [∀ w, FiniteDimensional ℂ (C w)] :
     FiniteDimensional ℂ (box C) := by
-  choose s hs using fun w => exists_detect (C w)
+  choose s hs using fun w => _root_.UpperTheory.Reformulated.B.Qp2.exists_finset_separating (C w)
   let L : box C →ₗ[ℂ] ((∀ w, s w) → ℂ) := (LinearMap.funLeft ℂ ℂ fun k => glue fun w => (k w).1).comp (box C).subtype
   refine FiniteDimensional.of_injective L ((injective_iff_map_eq_zero L).2 fun f hf => Subtype.ext (funext fun x => ?_))
   obtain ⟨k, rfl⟩ := glue_surj x

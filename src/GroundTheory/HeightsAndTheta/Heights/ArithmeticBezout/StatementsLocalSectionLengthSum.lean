@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
+public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.RCLike.Basic
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+public import Mathlib.LinearAlgebra.UnitaryGroup
 public import GroundTheory.AutomorphicForms.RealGroupsPolar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

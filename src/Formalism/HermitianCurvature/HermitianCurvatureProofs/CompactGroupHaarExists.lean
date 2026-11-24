@@ -1,7 +1,56 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-public import Formalism.FormalDegreeBessel.FinalG
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 
@@ -12,30 +61,7 @@ open Formalism.FourierDecayAlt.B2 Formalism.FourierDecayAlt.B Formalism.QuantumD
 namespace Formalism.FourierDecayAlt.P.B2x2
 
 theorem hpk_unit (k r : ℕ) : IsUnit (Hpk k r).det := by
-  have hsq : Hpk k r * Hpk k r = 1 := by
-    ext i j
-    rw [Matrix.mul_apply, Matrix.one_apply]
-    have hi := i.isLt
-    have hj := j.isLt
-    let m : Fin (2 * r + k + 1) :=
-      ⟨if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val, by split_ifs <;> omega⟩
-    have hm : m.val = if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val := rfl
-    rw [Finset.sum_eq_single m]
-    · simp only [Hpk, Fin.ext_iff, hm]
-      split_ifs <;> first | omega | norm_num
-    · intro l _ hl
-      have hl' : l.val ≠ m.val := fun h => hl (Fin.ext h)
-      rw [hm] at hl'
-      have hl2 := l.isLt
-      simp only [Hpk, Fin.ext_iff]
-      split_ifs at hl' ⊢ <;> first | omega | norm_num
-    · intro h
-      exact absurd (Finset.mem_univ m) h
-  have h2 := congrArg Matrix.det hsq
-  rw [Matrix.det_mul, Matrix.det_one] at h2
-  refine isUnit_iff_ne_zero.2 fun h0 => ?_
-  rw [h0, zero_mul] at h2
-  exact zero_ne_one h2
+  apply Formalism.FourierDecayAlt.P.B2x3.hpk_unit
 
 theorem closedG : ClosedG := by
   intro k r
@@ -292,13 +318,13 @@ theorem lev_mn (k r' : ℕ) (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1)) (h
   have hp' : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1 := hp
   have hq' : ¬ (1 ≤ q.val ∧ q.val < 2 * r' + k + 1 + 1) := hq
   simp only [ιLev]
-  split_ifs <;> first | rfl | omega
+  split_ifs <;> first | rfl
 
 theorem lev_n (k r' : ℕ) (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1)) (hp : ¬ mid k r' p) :
     ιLev k 1 r' g p q = if p = q then 1 else 0 := by
   have hp' : ¬ (1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1) := hp
   simp only [ιLev]
-  split_ifs <;> first | rfl | omega
+  split_ifs <;> first | rfl
 
 theorem lev_one (k r' : ℕ) : ιLev k 1 r' 1 = 1 := by
   ext p q
@@ -449,60 +475,7 @@ theorem haar_right_of_compact {G : Type*} [Group G] [TopologicalSpace G] [IsTopo
   rw [h, h3, one_smul]
 
 theorem compactHaarExists : CompactHaarExists := by
-  intro k r U hU hc
-  let S : Subgroup (Mat k r)ˣ :=
-    { carrier := {u | (u : Mat k r) ∈ U}
-      mul_mem' := fun {a b} ha hb => hU.mul_mem _ ha _ hb
-      one_mem' := hU.one_mem
-      inv_mem' := fun {a} ha => by
-        show ((a⁻¹ : (Mat k r)ˣ) : Mat k r) ∈ U
-        rw [Matrix.coe_units_inv]; exact hU.inv_mem _ ha }
-  have hcS : IsCompact (S : Set (Mat k r)ˣ) := by
-    have hK : IsCompact (U ×ˢ (MulOpposite.op '' U)) := hc.prod (hc.image MulOpposite.continuous_op)
-    have h := Units.isClosedEmbedding_embedProduct.isCompact_preimage hK
-    have e : (S : Set (Mat k r)ˣ) = (Units.embedProduct (Mat k r)) ⁻¹' (U ×ˢ (MulOpposite.op '' U)) := by
-      ext u
-      constructor
-      · intro hu
-        exact ⟨hu, ⟨_, S.inv_mem hu, rfl⟩⟩
-      · intro hu
-        exact hu.1
-    rw [e]; exact h
-  have : CompactSpace S := isCompact_iff_compactSpace.mp hcS
-  let _ : MeasurableSpace S := borel S
-  have : BorelSpace S := ⟨rfl⟩
-  let μ0 : Measure S := Measure.haar
-  let j : S → Mt k r := fun s => ((s : (Mat k r)ˣ) : Mat k r)
-  have hj0 : Continuous (fun s : S => ((s : (Mat k r)ˣ) : Mat k r)) := Units.continuous_val.comp continuous_subtype_val
-  have hj : Continuous j := hj0
-  have hjm : Measurable j := hj.measurable
-  have lift : ∀ a ∈ U, ∃ s : S, j s = a := by
-    intro a ha
-    obtain ⟨u, hu⟩ := (Matrix.isUnit_iff_isUnit_det a).2 (hU.unit a ha)
-    exact ⟨⟨u, by show (u : Mat k r) ∈ U; rw [hu]; exact ha⟩, hu⟩
-  refine ⟨μ0.map j, ⟨?_, ?_, ?_, ?_, ?_⟩⟩
-  · refine map_compl_null U hU.closed μ0 j hjm ?_
-    have : {x : S | j x ∉ U} = ∅ := by
-      ext s
-      simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_not]
-      exact s.2
-    rw [this, measure_empty]
-  · intro a ha
-    obtain ⟨s, rfl⟩ := lift a ha
-    rw [Measure.map_map (lmulM_cont _).measurable hjm]
-    have : (lmulM (j s) ∘ j : S → Mt k r) = j ∘ (fun x => s * x) := by
-      funext x; rfl
-    rw [this, ← Measure.map_map hjm (measurable_const_mul s), map_mul_left_eq_self]
-  · intro a ha
-    obtain ⟨s, rfl⟩ := lift a ha
-    rw [Measure.map_map (rmulF_cont _).measurable hjm]
-    have : (rmulF (j s) ∘ j : S → Mt k r) = j ∘ (fun x => x * s) := by
-      funext x; rfl
-    rw [this, ← Measure.map_map hjm (measurable_mul_const s), haar_right_of_compact]
-  · intro K hK
-    rw [Measure.map_apply hjm hK.isClosed.measurableSet]
-    exact lt_of_le_of_lt (measure_mono (Set.subset_univ _)) isCompact_univ.measure_lt_top
-  · exact map_ne_zero μ0 j hjm (NeZero.ne μ0)
+  apply Formalism.FourierDecayAlt.P.B2x3.compactHaar
 
 theorem mulM_cont {k r : ℕ} : Continuous (mulM : Mt k r × Mt k r → Mt k r) := by
   have h1 : Continuous (fun p : Mt k r × Mt k r => (Matrix.of p.1 : Mat k r)) := continuous_fst

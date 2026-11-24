@@ -1,6 +1,13 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExp
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdIso
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.AppCompatGeneric
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.BoxLeOfComp
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
 
 @[expose] public section
 
@@ -34,7 +41,7 @@ def boxSecG (pG : IsPowGrp G' G j) (w : LB.Iso LG' (boxLB LG pG.pr)) (hw : w.IsG
     (boxSec LG (fun i => (pG.pr i).left) (k : ℤ) σ) (linCombIso_isGen w hw _ _)
     (linComb_isLB LG' hLG' _ _) (linComb_isLB _ (linComb_isLB LG hLG _ _) _ _)
 
-set_option maxHeartbeats 1000000 in
+
 theorem isBoxSecG_boxSecG (pG : IsPowGrp G' G j) (w : LB.Iso LG' (boxLB LG pG.pr)) (hw : w.IsGen)
     (hLG : LG.IsLB) (hLG' : LG'.IsLB) (k : ℕ) (σ : Fin j → H0 LG k) :
     IsBoxSecG pG w k (boxSecG pG w hw hLG hLG' k σ) σ := by
@@ -82,7 +89,7 @@ def boxSecGenF (σ : ∀ i, LB.Sec (LB.LinComb L (φ i) ε)) (jN : K → (Fin j 
     Γ(Y', LB.wchart (LB.LinComb L pr (fun _ => 1)) φ' jN) :=
   ∏ i, rs (box_le_of_comp L pr φ' (φ i) (p i) i (hφ i) jN) (((p i).app _).hom ((σ i).f (fun a => jN a i)))
 
-set_option maxHeartbeats 1000000 in
+
 include hφ in
 lemma boxGen_g_res (jN jN' : K → (Fin j → L.ι)) {V : Y'.Opens}
     (h : V ≤ LB.wchart (LB.LinComb L pr (fun _ => 1)) φ' jN ⊓ LB.wchart (LB.LinComb L pr (fun _ => 1)) φ' jN') :
@@ -106,7 +113,7 @@ lemma boxGen_g_res (jN jN' : K → (Fin j → L.ι)) {V : Y'.Opens}
   refine Finset.prod_congr rfl fun i _ => ?_
   rw [hφ i a]
 
-set_option maxHeartbeats 1000000 in
+
 lemma g_pull_gen {Z : Scheme.{0}} (h : Z ⟶ Y) (ψ : K → (Y ⟶ X)) (a b : K → L.ι) {W : Z.Opens}
     (hW : W ≤ h ⁻¹ᵁ (LB.wchart L ψ a ⊓ LB.wchart L ψ b)) :
     res hW (pullU h _ ((LB.LinComb L ψ ε).g a b)) = ∏ c, tr L W (h ≫ ψ c) (a c) (b c) ^ ε c := by
@@ -120,7 +127,7 @@ lemma g_pull_gen {Z : Scheme.{0}} (h : Z ⟶ Y) (ψ : K → (Y ⟶ X)) (a b : K 
   erw [e]
   exact tr_pull L h hW hle
 
-set_option maxHeartbeats 1000000 in
+
 lemma boxSecGenF_compat (σ : ∀ i, LB.Sec (LB.LinComb L (φ i) ε)) (jN jN' : K → (Fin j → L.ι)) :
     rs (inf_le_left : LB.wchart (LB.LinComb L pr (fun _ => 1)) φ' jN ⊓
         LB.wchart (LB.LinComb L pr (fun _ => 1)) φ' jN' ≤ LB.wchart (LB.LinComb L pr (fun _ => 1)) φ' jN)

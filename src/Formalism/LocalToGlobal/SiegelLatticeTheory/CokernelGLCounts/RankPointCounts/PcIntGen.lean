@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PartnerCount
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
+import Mathlib.RingTheory.Valuation.Extension
+import Mathlib.RingTheory.Valuation.Integral
 
 @[expose] public section
 

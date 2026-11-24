@@ -1,8 +1,45 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CardNuGZmod
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.HaarIdx
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.MeasBAll
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.GOfPrime
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,7 +86,6 @@ theorem stImA_of (p : TypX X) (h : LevelReductionImage X hb p) : StImA X hb p :=
     have hr : A.map f = (f.comp A.subtype).range := by
       first
       | rw [MonoidHom.range_comp, Subgroup.range_subtype]
-      | rw [MonoidHom.range_comp, Subgroup.subtype_range]
     rw [hr]
     exact Nat.card_congr (QuotientGroup.quotientKerEquivRange (f.comp A.subtype)).toEquiv.symm
   have hk2 : (ρ.comp A.subtype).ker = (ρ₀.comp A.subtype).ker := by
@@ -59,8 +95,6 @@ theorem stImA_of (p : TypX X) (h : LevelReductionImage X hb p) : StImA X hb p :=
   haveI : Fact (gOf p).Prime := ⟨gOf_prime X p⟩
   first
   | exact card_nuG (ZMod (gOf p)) D.R.rS D.R.k
-  | (rw [card_nuG]; unfold nnC ukC; rfl)
-  | (rw [card_nuG]; unfold nnC ukC)
 
 theorem stImB_of (u : D.what₂.Word) (p : TypX X) (h : ParabolicReductionImage X u p) : StImB X u p := by
   obtain ⟨K₀, hK₀, ρ₀, hρ₀, hker₀, A, hA, hkA, c, hc⟩ := h
@@ -78,7 +112,6 @@ theorem stImB_of (u : D.what₂.Word) (p : TypX X) (h : ParabolicReductionImage 
     have hr : A.map f = (f.comp A.subtype).range := by
       first
       | rw [MonoidHom.range_comp, Subgroup.range_subtype]
-      | rw [MonoidHom.range_comp, Subgroup.subtype_range]
     rw [hr]
     exact Nat.card_congr (QuotientGroup.quotientKerEquivRange (f.comp A.subtype)).toEquiv.symm
   have hk2 : (ρ.comp A.subtype).ker = (ρ₀.comp A.subtype).ker := by
@@ -88,7 +121,5 @@ theorem stImB_of (u : D.what₂.Word) (p : TypX X) (h : ParabolicReductionImage 
   haveI : Fact (gOf p).Prime := ⟨gOf_prime X p⟩
   first
   | exact card_sG (ZMod (gOf p)) D.R.rS D.R.k
-  | (rw [card_sG]; unfold glkC nnC; rfl)
-  | (rw [card_sG]; unfold glkC nnC)
 
 end MassDataIdxSteps

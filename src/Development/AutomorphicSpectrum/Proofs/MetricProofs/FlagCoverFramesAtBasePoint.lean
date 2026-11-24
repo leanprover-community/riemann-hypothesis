@@ -1,9 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TransPtBase
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointRegularStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorOfRegularMatrixValueStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointRegular
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJMap
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 
 @[expose] public section
 
@@ -14,20 +52,6 @@ open GlobalTheory.CompanionTheory.Ar.PB.CovGraph
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.CovGraph
-
-theorem regAt_valAt_sum {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
-    {x : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal x)) {α : Type} (s : Finset α)
-    (f : α → Ω) (hf : ∀ a ∈ s, RegAt x (mCoordIdeal z) (f a)) :
-    RegAt x (mCoordIdeal z) (∑ a ∈ s, f a) ∧ valAt x (∑ a ∈ s, f a) z = ∑ a ∈ s, valAt x (f a) z := by
-  obtain ⟨h0, -, v0, -, hst⟩ := GlobalTheory.CompanionTheory.Ar.PB.ValRing.regAt_valAt_ring K ι Ω x z hz
-  induction s using Finset.induction_on with
-  | empty => simpa using ⟨h0, v0⟩
-  | insert a s ha ih =>
-    obtain ⟨ih1, ih2⟩ := ih fun b hb => hf b (Finset.mem_insert_of_mem hb)
-    have hfa := hf a (Finset.mem_insert_self a s)
-    obtain ⟨-, r, -, v⟩ := hst _ _ hfa ih1
-    rw [Finset.sum_insert ha, Finset.sum_insert ha]
-    exact ⟨r, v.trans (by rw [ih2])⟩
 
 theorem coE_regAt_valAt : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (K' : Type) [Fintype K'] (ι' : K' → Type) [∀ k, Fintype (ι' k)] (Φ' : Type) [Field Φ'] (y' : (Σ k, ι' k) → Φ') (M' : FlagModel y' Ψ N j) (Cv : FlagCover M' M) (zb : (Σ k, baseIdx ι' M'.blk k) → ℂ) (F' : FrameData ι' Ψ N M'.Ω M'.blk) (F : FrameData ι Ψ N M.Ω M.blk), zb ∈ mcPts (mCoordIdeal M'.x) → M'.IsFrame F' → M.IsFrame F → M'.GoodAt F' (mCoordIdeal zb) → M.GoodAt F (mCoordIdeal (zb ∘ Cv.v)) → ∀ (p : Ψ × Fin N) (q : Σ k, ι k) (r : Σ k, ι' k), RegAt M'.x (mCoordIdeal zb) (coE Cv F' F p q r) ∧ valAt M'.x (coE Cv F' F p q r) zb = ∑ I, ∑ I' ∈ Finset.univ.filter (IsStepRows N j p.2), valAt M.x (F.u q I) (zb ∘ Cv.v) * minorIJ (Cv.trans F' F zb p.1) I I' * valAt M'.x (F'.u' I' r) zb := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M K' _ ι' _ Φ' _ y' M' Cv zb F' F hz hF' hF hG' hG p q r
@@ -70,9 +94,9 @@ theorem coE_regAt_valAt : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
     refine ⟨r2, v2.trans ?_⟩
     rw [v1, (hu I).2, (hmin I I').2]
     rfl
-  have hin := fun I => regAt_valAt_sum hz (Finset.univ.filter (IsStepRows N j p.2)) _
+  have hin := fun I => _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.reg_sum hz (Finset.univ.filter (IsStepRows N j p.2)) _
     fun I' _ => (hterm I I').1
-  have hout := regAt_valAt_sum hz Finset.univ _ fun I _ => (hin I).1
+  have hout := _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.reg_sum hz Finset.univ _ fun I _ => (hin I).1
   refine ⟨hout.1, ?_⟩
   refine hout.2.trans (Finset.sum_congr rfl fun I _ => ?_)
   rw [(hin I).2]

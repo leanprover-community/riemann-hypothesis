@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreSum
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFHoriz
 
 @[expose] public section
 

@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopologyStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -33,7 +38,7 @@ def OhSub (F : Type) [Field F] [NumberField F] : AddSubgroup (A F) where
 def ι (r : 𝓞 F) : A F := algebraMap F (A F) (r : F)
 
 lemma ι_mem (r : 𝓞 F) : ι r ∈ Oh F :=
-  ((GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F).2.2.2.2.2.2.1 _).2 ⟨r, rfl⟩
+  ((_root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F).2.2.2.2.2.2.1 _).2 ⟨r, rfl⟩
 
 lemma ι_sub (r s : 𝓞 F) : ι r - ι s = ι (r - s) := by
   simp [ι]
@@ -43,7 +48,7 @@ theorem mass_of_subgroup [MeasurableSpace (A F)] [BorelSpace (A F)] (lf : Measur
     (hHo : IsOpen (H : Set (A F))) (hHs : ∀ x ∈ H, x ∈ Oh F) (I : Ideal (𝓞 F))
     (hI : ∀ r : 𝓞 F, r ∈ I ↔ ι r ∈ H) (hI0 : I ≠ ⊥) :
     lf (H : Set (A F)) = ((Ideal.absNorm I : ℝ≥0∞))⁻¹ := by
-  obtain ⟨-, -, -, -, hOo, hd, hint, -⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
+  obtain ⟨-, -, -, -, hOo, hd, hint, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
   haveI : IsTopologicalRing (A F) := inferInstance
   have : Finite (𝓞 F ⧸ I) := Ideal.finiteQuotientOfFreeOfNeBot I hI0
   haveI := Fintype.ofFinite (𝓞 F ⧸ I)
@@ -133,7 +138,7 @@ theorem scale_unit [MeasurableSpace (A F)] [BorelSpace (A F)] (lf : Measure (A F
     (hlf : lf.IsAddHaarMeasure) (h1 : lf (Oh F) = 1) (a : (A F)ˣ) (s : Set (A F))
     (hs : MeasurableSet s) :
     lf ((fun x => (a : A F) * x) '' s) = lf ((fun x => (a : A F) * x) '' Oh F) * lf s := by
-  obtain ⟨hlc, hsc, ht2, -, hOo, -⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
+  obtain ⟨hlc, hsc, ht2, -, hOo, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
   have hμ : (lf.map (mulEquiv a).symm).IsAddHaarMeasure :=
     (mulEquiv a).symm.isAddHaarMeasure_map lf (continuous_mulEquiv_symm a) (continuous_mulEquiv a)
   have hm : Measurable (mulEquiv a).symm := (continuous_mulEquiv_symm a).measurable
@@ -161,7 +166,7 @@ theorem mass_mul_int [MeasurableSpace (A F)] [BorelSpace (A F)] (lf : Measure (A
     (hlf : lf.IsAddHaarMeasure) (h1 : lf (Oh F) = 1) (r : 𝓞 F) (hr : (r : F) ≠ 0) :
     lf ((fun x => algebraMap F (A F) (r : F) * x) '' Oh F) =
       (((Algebra.norm ℤ r).natAbs : ℝ≥0∞))⁻¹ := by
-  obtain ⟨-, -, -, -, hOo, -, hint, -⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
+  obtain ⟨-, -, -, -, hOo, -, hint, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
   have hr0 : r ≠ 0 := fun h => hr (by simp [h])
   let H : AddSubgroup (A F) := (OhSub F).map (AddMonoidHom.mulLeft (ι r))
   have hH : (H : Set (A F)) = (fun x => algebraMap F (A F) (r : F) * x) '' Oh F := rfl
@@ -206,7 +211,7 @@ def denSub (b : F) : AddSubgroup (A F) where
     rw [mul_neg]; exact neg_mem_Oh hx.2⟩
 
 lemma isOpen_denSub (b : F) : IsOpen (denSub b : Set (A F)) := by
-  obtain ⟨-, -, -, -, hOo, -⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
+  obtain ⟨-, -, -, -, hOo, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
   have hc : Continuous (fun x : A F => algebraMap F (A F) b * x) :=
     continuous_const.mul continuous_id
   have h2 : IsOpen ((fun x : A F => algebraMap F (A F) b * x) ⁻¹' Oh F) := hOo.preimage hc
@@ -239,7 +244,7 @@ lemma denI_ne_bot (b : F) : denI b ≠ ⊥ := by
   exact hy0 (by simpa using hmem)
 
 lemma mem_denI_iff_sub (b : F) (r : 𝓞 F) : r ∈ denI b ↔ ι r ∈ denSub b := by
-  have hint := (GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F).2.2.2.2.2.2.1
+  have hint := (_root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F).2.2.2.2.2.2.1
   rw [mem_denI]
   constructor
   · rintro ⟨t, ht⟩
@@ -265,7 +270,7 @@ theorem scale_field [MeasurableSpace (A F)] [BorelSpace (A F)] (lf : Measure (A 
     (hs : MeasurableSet s) :
     lf ((fun x => algebraMap F (A F) c * x) '' s) =
       ENNReal.ofReal (|((Algebra.norm ℚ c : ℚ) : ℝ)|⁻¹) * lf s := by
-  have hOo := (GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F).2.2.2.2.1
+  have hOo := (_root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F).2.2.2.2.1
   obtain ⟨x, y, hy, hxy⟩ := IsFractionRing.div_surjective (A := 𝓞 F) c
   have hxy' : (x : F) / (y : F) = c := hxy
   have hy0 : y ≠ 0 := nonZeroDivisors.ne_zero hy
@@ -304,8 +309,6 @@ theorem scale_field [MeasurableSpace (A F)] [BorelSpace (A F)] (lf : Measure (A 
       have hmulR : ((Algebra.norm ℚ c : ℚ) : ℝ) * ((Algebra.norm ℤ y : ℤ) : ℝ) =
           ((Algebra.norm ℤ x : ℤ) : ℝ) := by
         exact_mod_cast congrArg (fun q : ℚ => (q : ℝ)) hmul
-      have hYp : (0 : ℝ) < ((Algebra.norm ℤ y).natAbs : ℝ) := by
-        exact_mod_cast Nat.pos_of_ne_zero hny
       have hXp : (0 : ℝ) < ((Algebra.norm ℤ x).natAbs : ℝ) := by
         exact_mod_cast Nat.pos_of_ne_zero hnx
       have habs : |((Algebra.norm ℚ c : ℚ) : ℝ)| * ((Algebra.norm ℤ y).natAbs : ℝ) =

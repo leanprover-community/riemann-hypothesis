@@ -1,8 +1,13 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GaussianTailBound
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.CardSupportLeAndSumTwoPowLe
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.IntegrableNormPowMulExpNegMulNormSq
 
 @[expose] public section
@@ -64,8 +69,8 @@ theorem sum_eq_degree (s : ι →₀ ℕ) : (s.sum fun _ e => e) = s.degree := b
 theorem paPF_eq_sum (p : MvPolynomial ι ℂ) :
     paPF p = ∑ m ∈ p.support, p.coeff m • paMono m := by
   funext v
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [paPF, p.as_sum, map_sum]
+
+  conv_lhs => rw [paPF, p.as_sum, map_sum]
   simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, paMono, paPF, MvPolynomial.eval_monomial]
   refine Finset.sum_congr rfl fun m _ => by ring
 
@@ -376,7 +381,7 @@ theorem paPF_diff (p : MvPolynomial ι ℂ) : Differentiable ℂ (paPF p) ∧
       map_mul, MvPolynomial.eval_X, Pi.single_apply]
     by_cases h : j = k
     · subst h; simp <;> ring
-    · simp [h, Ne.symm h] <;> ring
+    · simp [Ne.symm h] <;> ring
 
 theorem paPF_contDiff (p : MvPolynomial ι ℂ) : ContDiff ℂ (⊤ : ℕ∞) (paPF p) := by
   induction p using MvPolynomial.induction_on with

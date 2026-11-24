@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Etale.Basic
+public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.Smooth.IntegralClosure
+public import Mathlib.RingTheory.Ideal.MinimalPrime.Localization
 
 @[expose] public section
 

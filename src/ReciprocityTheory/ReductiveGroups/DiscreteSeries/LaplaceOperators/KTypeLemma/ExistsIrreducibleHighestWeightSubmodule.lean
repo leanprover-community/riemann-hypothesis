@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.QuotientHighestWeightTensorStandard
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KUnitB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerOrth
 
@@ -107,7 +110,7 @@ theorem k3vdTA_isKUnitary (hU : IsKUnitary ε E) : IsKUnitary ε (coordinateTens
       Finset.sum_eq_single a (fun c _ hc => by simp [hc]) (by simp)]
     simp
   simp only [coordinateTensorEndAction, LinearMap.comp_apply, LinearEquiv.coe_coe, PiLp.inner_apply,
-    WithLp.linearEquiv_apply, WithLp.linearEquiv_symm_apply, WithLp.ofLp_toLp]
+    WithLp.linearEquiv_apply, WithLp.linearEquiv_symm_apply]
   exact key _ _
 
 theorem k3vdTA_e (E : Fin n → Fin n → Module.End ℂ D) (a b : Fin n) (z : WithLp 2 (Fin n → D)) :

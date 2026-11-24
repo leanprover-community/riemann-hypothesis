@@ -1,12 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenForallCuspRepTFinOneEq
 public import GroundTheory.AutomorphicForms.L2LocalComponents.CuspSmooth
 public import GroundTheory.AutomorphicForms.L2LocalComponents.Summand
-public import GroundTheory.AutomorphicForms.SupercuspidalCoefficients
 public import GroundTheory.AutomorphicForms.L2LocalComponents.NonEmpty
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

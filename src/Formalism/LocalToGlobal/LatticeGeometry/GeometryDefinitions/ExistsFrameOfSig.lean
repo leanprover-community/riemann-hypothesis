@@ -1,15 +1,7 @@
 module
 
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
-public import Formalism.QuotientMetricDivisors.Statement
-public import Formalism.SatakeDualWeyl.Statement
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
-public import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.SingleFacts
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
+public import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
+public import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.ClsSum
 
 @[expose] public section
 

@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.UnitBracket
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
+import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.UnitBracket
 
 @[expose] public section
 

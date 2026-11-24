@@ -1,9 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 
 @[expose] public section
 

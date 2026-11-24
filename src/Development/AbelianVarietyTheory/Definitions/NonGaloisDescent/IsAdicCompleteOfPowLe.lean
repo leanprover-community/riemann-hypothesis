@@ -1,14 +1,67 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AdicCompleteness.IsAdicCompleteComapConstantCoeff
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NormLeOneOfMemOL
+public import Mathlib.RingTheory.PowerSeries.Expand
+import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
+public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsPolynomialSubMem
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConstantCoeffTeichSub
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedIntegersTensorEqLetterwiseProductAinf
-public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsPolynomialSubMem
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
-public import Development.AbelianVarietyTheory.CrystallinePeriods.AdicMaps
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RootOfUnityPrimeToTeichmullerLift
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Functoriality
+public import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PowerSeries.Ideal
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.RingTheory.WittVector.DiscreteValuationRing
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+public import ReciprocityTheory.AdicCompleteness.IsAdicCompleteComapConstantCoeff
 
 @[expose] public section
 
@@ -634,14 +687,7 @@ theorem coeff_le_one {l : ℕ} [hl : Fact l.Prime]
     nlinarith
   positivity
 
-theorem norm_l_lt' {l : ℕ} [Fact l.Prime] : ‖(l : ℂ_[l])‖ < 1 := by
-  rw [← PadicComplex.coe_natCast, PadicComplex.norm_extends]
-  exact norm_l_lt
-
-theorem mem_int_iff {l : ℕ} [Fact l.Prime] (x : ℂ_[l]) : x ∈ PadicComplexInt l ↔ ‖x‖ ≤ 1 := by
-  rw [PadicComplexInt, Valuation.mem_valuationSubring_iff, PadicComplex.norm_eq_norm,
-    Valuation.norm_def, ← NNReal.coe_one, NNReal.coe_le_coe, (show Valuation.RankLeOne.hom' Valued.v = MonoidWithZeroHom.ValueGroup₀.embedding from rfl),
-    Valuation.embedding_restrict]
+alias mem_int_iff := _root_.GlobalTheory.RingBasics.mem_OC
 
 theorem hom_padicInt {l : ℕ} [Fact l.Prime] (f : ℤ_[l] →+* ℂ_[l]) (hf : ∀ z, ‖f z‖ ≤ 1)
     (z : ℤ_[l]) : f z = algebraMap ℚ_[l] ℂ_[l] (z : ℚ_[l]) := by
@@ -667,7 +713,7 @@ theorem hom_padicInt {l : ℕ} [Fact l.Prime] (f : ℤ_[l] →+* ℂ_[l]) (hf : 
     gcongr
     linarith
   have ht : Filter.Tendsto (fun k : ℕ => 2 * ‖(l : ℂ_[l])‖ ^ k) Filter.atTop (nhds (2 * 0)) :=
-    (tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) norm_l_lt').const_mul 2
+    (tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) _root_.GlobalTheory.RingBasics.norm_p_lt).const_mul 2
   have := ge_of_tendsto' ht hb
   rw [mul_zero] at this
   exact sub_eq_zero.mp (norm_le_zero_iff.mp this)
@@ -743,7 +789,7 @@ theorem unram {l : ℕ} [hl : Fact l.Prime] {W : Type} [CommRing W]
     rw [zpow_sub₀ hp.ne', zpow_natCast, zpow_natCast, hn]
     field_simp
   refine ⟨fun _ => ⟨_, hln ▸ hcz⟩, fun h => ?_⟩
-  rw [hcz, zpow_le_one_iff_right_of_lt_one₀ hp norm_l_lt'] at h
+  rw [hcz, zpow_le_one_iff_right_of_lt_one₀ hp _root_.GlobalTheory.RingBasics.norm_p_lt] at h
   obtain ⟨k, rfl⟩ : ∃ k, m = n + k := ⟨m - n, by omega⟩
   refine ⟨(l : W) ^ k * u, mul_left_cancel₀ (pow_ne_zero n hl0) ?_⟩
   rw [← hw, map_mul, map_pow, map_natCast]
@@ -860,8 +906,8 @@ theorem Bridge.exists_powerSeries_eval_eq : ∀ {l : ℕ} [hl : Fact (Nat.Prime 
   choose w hw using hw
   refine ⟨∑ i ∈ Finset.range e, PowerSeries.C (w i) * PowerSeries.X ^ i, ?_⟩
   apply Subtype.ext
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hx0, hsum, map_sum (algebraMap (PadicAlgCl l) ℂ_[l])]
+
+  rw [hx0, hsum, map_sum (algebraMap (PadicAlgCl l) ℂ_[l])]
   let Θ : PowerSeries (Wq l a) →+* ℂ_[l] :=
     (PadicComplexInt l).subtype.comp ((Formalism.Per.θ l).comp (PiSys.ev a ϖ))
   have hΘX : Θ PowerSeries.X = algebraMap (PadicAlgCl l) ℂ_[l] (ϖ.seq 0) := by
@@ -872,8 +918,8 @@ theorem Bridge.exists_powerSeries_eval_eq : ∀ {l : ℕ} [hl : Fact (Nat.Prime 
       ((Formalism.Per.θ l (wA l a v) : Formalism.Per.OC l) : ℂ_[l])
     rw [hspec.2]
   change Θ _ = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i hi => ?_
   rw [map_mul, map_pow, hΘX, hΘC, hw i (Finset.mem_range.mp hi), map_mul, map_pow]
 end
@@ -889,9 +935,7 @@ variable (e : ℕ) [NeZero e]
 namespace PiSys
 variable {l e} (ϖ : PiSys l e)
 
-theorem exists_theta_ev_eq (x : ↥(OL (ϖ.field a))) :
-    ∃ y, Per.θ l (ϖ.ev a y) = intToOC (ϖ.field a) x := by
-  first | exact Bridge.exists_powerSeries_eval_eq | exact Bridge.exists_powerSeries_eval_eq .. | (intros; apply Bridge.exists_powerSeries_eval_eq <;> assumption)
+alias exists_theta_ev_eq := _root_.Bridge.exists_powerSeries_eval_eq
 
 def quotToOC : ((Wq l a)⟦X⟧ ⧸ Ideal.span {eis l a e}) →+* OC l :=
   Ideal.Quotient.lift _ ((Per.θ l).comp (ϖ.ev a)) fun x hx =>

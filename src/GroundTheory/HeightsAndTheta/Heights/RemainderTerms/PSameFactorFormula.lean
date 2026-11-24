@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.BlockValue
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsCoinv
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsTop
+public import Mathlib.Algebra.CharP.Algebra
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 
@@ -248,7 +249,7 @@ theorem SameFactorFormula.proof (hA : LemmaA.Statement) (hB : LemmaB.Statement)
     ring
   refine ⟨K⁻¹ • S', ?_, ?_⟩
   · rw [map_smul, hPS, smul_smul, inv_mul_cancel₀ hK0, one_smul]
-  · rw [restTerm, hI, coeff_smul, smul_eq_mul]
+  · rw [restTerm, hI, MvPolynomial.coeff_smul, smul_eq_mul]
     rw [hK, hmult]
     have hden : ((r * a + 1).factorial : ℚ) * ((r * a).factorial : ℚ) ^ (f - 1) ≠ 0 := by positivity
     have hnum : ((f * (r * a) + 1).factorial : ℚ) ≠ 0 := by positivity

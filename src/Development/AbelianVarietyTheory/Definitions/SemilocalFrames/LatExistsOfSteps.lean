@@ -1,14 +1,60 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDefs
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsSat
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Saturated
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDiff
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SplitRow
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsSat
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.AdjointActionReduction
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.DualFamilyExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.FrameReduction
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.RetractionReduction
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SecondDualReduction
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SesquilinearRepresentation
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -131,12 +177,12 @@ theorem decomp {r : ℕ} (e f : Fin r → S.V) (hee : ∀ a b, S.hT (e a) (e b) 
       S.hT (f b) (y - ∑ a, S.hT (f a) y • e a - ∑ a, S.hT (e a) y • f a) = 0 := by
   have hfe := hfe_of hef
   constructor
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sub, map_sum, map_smul, hee, hef, smul_eq_mul, mul_zero, Finset.sum_const_zero, sub_zero,
-      mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sub, map_sum, map_smul, hff, hfe, smul_eq_mul, mul_zero, Finset.sum_const_zero,
-      mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+
+  · simp only [map_sub, map_sum, map_smul, hee, hef, smul_eq_mul, mul_zero, Finset.sum_const_zero, sub_zero,
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+
+  · simp only [map_sub, map_sum, map_smul, hff, hfe, smul_eq_mul, mul_zero, Finset.sum_const_zero,
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
 
 theorem key_split (Λ : Submodule (𝓞 E) S.V) {r : ℕ} (e f : Fin r → S.V)
     (P Q : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (hee : ∀ a b, S.hT (e a) (e b) = 0)
@@ -209,9 +255,9 @@ theorem zero_of_dual {r : ℕ} {e f : Fin r → S.V} (hfe : ∀ a b, S.hT (f a) 
   have ht : ∀ b, t b = 0 := by
     intro b
     have h := h0 b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, hfe, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true] at h
+
+    simp only [map_sum, map_smul, hfe, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
+    Finset.mem_univ, if_true] at h
     exact h
   simp [ht]
 
@@ -256,10 +302,6 @@ section GF
 
 open Formalism.L2.SG.Saturated
 
-theorem fi_neg {E : Type} [Field E] [NumberField E] {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E} {u : E}
-    (hu : u ∈ I) : -u ∈ I :=
-  FractionalIdeal.mem_coe.1 (Submodule.neg_mem _ (FractionalIdeal.mem_coe.2 hu))
-
 theorem fi_sum {E : Type} [Field E] [NumberField E] {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E} {r : ℕ}
     (g : Fin r → E) (hg : ∀ k, g k ∈ I) : ∑ k, g k ∈ I :=
   FractionalIdeal.mem_coe.1 (Submodule.sum_mem _ (fun k _ => FractionalIdeal.mem_coe.2 (hg k)))
@@ -291,9 +333,9 @@ theorem genFrame_holds : GenFrame := by
     intro b y hy
     have hy' : y ∈ latSpan c e := by rw [← hX]; exact hy
     obtain ⟨x, hx, rfl⟩ := (mem_latSpan c e y).1 hy'
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, hcf, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+
+    simp only [map_sum, map_smul, hcf, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
+    Finset.mem_univ, if_true]
     exact hx b
   have hw := fun b : Fin n =>
     PI.SRW.sesquilinearRepresentation E S.V S.hT S.nondeg Λ hlat (((cf b).restrictScalars (𝓞 E)).comp ρ)
@@ -350,14 +392,14 @@ theorem genFrame_holds : GenFrame := by
     rw [map_smul, smul_eq_mul] at hm
     rcases lt_trichotomy k b with hkb | hkb | hkb
     · simp only [cc, hkb, ↓reduceIte, star_neg, hconj, neg_mul]
-      exact fi_neg (by rw [mul_comm]; exact hm)
+      exact _root_.Formalism.L2.SG.Pf.LatEx.fi_neg_mem (by rw [mul_comm]; exact hm)
     · subst hkb
       have key : star (cc k k) * S.hT (e k) y = -((s1 : E) * (S.hT (e k) y * S.hT (f0 k) (f0 k))) := by
         simp only [cc, lt_irrefl, ↓reduceIte]
         rw [star_neg, star_mul', hconj, hs1]
         ring
       rw [key]
-      exact fi_neg (fi_intm s1 hm)
+      exact _root_.Formalism.L2.SG.Pf.LatEx.fi_neg_mem (fi_intm s1 hm)
     · have h1 : ¬ k < b := not_lt.2 hkb.le
       have h2 : k ≠ b := hkb.ne'
       simp only [cc, h1, h2, ↓reduceIte, star_zero, zero_mul]
@@ -365,16 +407,16 @@ theorem genFrame_holds : GenFrame := by
   refine ⟨fun b => f0 b + ∑ k, cc k b • e k, ?_, ?_, ?_⟩
   · intro a b
     have h := hsum a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hf0e, hef0, hiso, Finset.sum_ite_eq', starRingEnd_apply]
+
+    simp [map_sum, hf0e, hef0, hiso, Finset.sum_ite_eq', starRingEnd_apply]
     linear_combination h
   · intro a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hiso, hef0]
+
+    simp [map_sum, hiso, hef0]
   · intro b y hy
     have hexp : S.hT (f0 b + ∑ k, cc k b • e k) y = S.hT (f0 b) y + ∑ k, star (cc k b) * S.hT (e k) y := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum, starRingEnd_apply]
+
+      simp [map_sum, starRingEnd_apply]
     rw [hexp]
     exact PI.SRW.fi_add (hf0Λ b y hy) (fi_sum _ (fun k => hterm k b y hy))
 
@@ -386,8 +428,6 @@ noncomputable section
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
-
 end GlobalTheory.St.Lat
 
 noncomputable section
@@ -585,8 +625,8 @@ theorem lat_riesz (φ : (VS D).V →ₗ[D.host.E] D.host.E) : ∃ μ : (VS D).V,
   have key : (VS D).hT (∑ j, star (φ ((VS D).frame j)) • bs j) = φ := by
     apply (VS D).frame.ext
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, LinearMap.sum_apply]
+
+    rw [map_sum, LinearMap.sum_apply]
     have hs : ∀ j, (VS D).hT (star (φ ((VS D).frame j)) • bs j) ((VS D).frame i) =
         φ ((VS D).frame j) * (if i = j then 1 else 0) := by
       intro j
@@ -652,8 +692,8 @@ theorem latExists_of_steps (hSB : SatBasis) (hH : HypRep) (hI : IsoW D) (hDd : D
     have hc : ∀ j : Fin D.R.rS, g (Fin.castSucc j) = 0 := by
       intro j
       have h1 := congrArg ((VS D).hT (D.sp.hypF j)) hg
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero, Fin.sum_univ_castSucc] at h1
+
+      rw [map_sum, map_zero, Fin.sum_univ_castSucc] at h1
       simp only [wf, map_smul, Fin.snoc_castSucc, Fin.snoc_last, (hwo j).2, hfe_hyp, smul_eq_mul, mul_zero,
         add_zero, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h1
       exact h1

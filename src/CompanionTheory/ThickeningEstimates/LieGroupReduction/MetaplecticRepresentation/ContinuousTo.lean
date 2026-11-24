@@ -2,6 +2,50 @@ module
 
 public import CompanionTheory.ThickeningEstimates.LieGroupReduction.MetaplecticRepresentation.ContinuousOm
 public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -78,7 +122,7 @@ theorem ann_gs : Ann (1 : Sp l).1 (gs l) := fun j => by
   have e1 : ((1 : Sp l) : Mat l) = 1 := rfl
   rw [e1, one_mulVec, one_mulVec]
   ext x
-  rw [SchwartzMap.smul_apply, dRho_single_inr, dRho_single_inl, lineDerivOp_apply_eq_fderiv, smul_eq_mul]
+  rw [_root_.smul_apply, dRho_single_inr, dRho_single_inl, lineDerivOp_apply_eq_fderiv, smul_eq_mul]
   linear_combination fderiv_gs j x - (2 * π * (x j : ℂ) * gs l x) * I_sq
 
 theorem gs_zero : gs l 0 = 1 := by simp
@@ -106,7 +150,7 @@ theorem eps_ne : (eps : G l) ≠ 1 := by
   intro h
   let φ : Sch l := gs l
   have h1 : omS (eps : G l) φ = omS (1 : G l) φ := by rw [h]
-  rw [omS_eps, map_one, ContinuousLinearMap.one_apply] at h1
+  rw [omS_eps, map_one, one_apply_eq_self] at h1
   have h2 : -φ 0 = φ 0 := by
     have := congrArg (fun u : Sch l => u 0) h1
     simpa using this
@@ -194,7 +238,7 @@ theorem ker : Ker l := by
     have hc' : ∀ f, omS g f = c • f := hc
     have hn := omS_nrm g 1 (gs l) ann_gs
     have e1 : ((1 : Sp l) : Mat l) = 1 := rfl
-    rw [hpg, e1, Matrix.one_mul, dd_one, hc', SchwartzMap.smul_apply, gs_zero] at hn
+    rw [hpg, e1, Matrix.one_mul, dd_one, hc', _root_.smul_apply, gs_zero] at hn
     have hc2 : (c - 1) * (c + 1) = 0 := by linear_combination hn
     rcases mul_eq_zero.1 hc2 with h | h
     · left

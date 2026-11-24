@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsStabilizerLevi
+public import GroundTheory.AutomorphicForms.QuadraticConj
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Examples
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 
 @[expose] public section
 

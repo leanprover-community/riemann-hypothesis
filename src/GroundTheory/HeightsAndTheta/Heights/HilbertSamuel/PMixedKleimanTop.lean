@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMixedKleimanTop
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsScaledFSHProps
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsZCombExpand

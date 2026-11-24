@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerLast
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.FunFieldLeLocRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsFunFieldMulEq
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

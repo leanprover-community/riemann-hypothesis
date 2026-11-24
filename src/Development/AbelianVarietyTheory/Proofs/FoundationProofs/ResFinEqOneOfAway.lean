@@ -1,16 +1,61 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
-public import Formalism.PairingDivisors.StatementA
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsFinSetSplitPlacesCoprimeConductor
 public import Development.AbelianVarietyTheory.BlockTheory.AdelicCMFields.UnitaryHeckeCharacterIdele
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPlaceOverMoveValConjPl
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedPowSubOneLtOne
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DenseRangeUnits
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdInfMulFinPart
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmData
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitPlOfTwoMem
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeLEntireAndNonzeroAtOneHolds
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPlaceOverMoveValConjPl
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalIdeleSndSelf
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedPowSubOneLtOne
+import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Ideal.Norm.RelNorm
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.GaloisValuations.GlobalB
+import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
@@ -239,7 +284,7 @@ include hcc hinv
 theorem exists_frob_inert {P : HeightOneSpectrum (𝓞 E)} (h : ConjPl c.toRingEquiv P P) {A : ValuationSubring Ω}
     (hA : IsPlaceOver A P) : ∃ g g' : Formalism.ConjugateSelfDual.G E Ω, (∀ x, g' x = cc (g (cc.symm x))) ∧
       IsFrob (F := E) A (normV P) (g * g') := by
-  letI : Algebra F Ω := ((algebraMap E Ω).comp (algebraMap F E)).toAlgebra
+  let : Algebra F Ω := ((algebraMap E Ω).comp (algebraMap F E)).toAlgebra
   have : IsScalarTower F E Ω := IsScalarTower.of_algebraMap_eq fun _ => rfl
   have : Algebra.IsAlgebraic E Ω := IsAlgClosure.isAlgebraic
   have : IsAlgClosure F Ω := ⟨IsAlgClosure.isAlgClosed E, Algebra.IsAlgebraic.trans F E Ω⟩
@@ -257,10 +302,10 @@ theorem exists_frob_inert {P : HeightOneSpectrum (𝓞 E)} (h : ConjPl c.toRingE
     obtain ⟨y, -, hy⟩ := (Nat.card_eq_two_iff' (1 : E ≃ₐ[F] E)).1 hcard
     by_cases h1 : φ.restrictNormal E = 1
     · exfalso
-      haveI := P.isMaximal
-      letI := Ideal.Quotient.field P.asIdeal
-      haveI : Finite (𝓞 E ⧸ P.asIdeal) := P.asIdeal.finiteQuotientOfFreeOfNeBot P.ne_bot
-      letI := Fintype.ofFinite (𝓞 E ⧸ P.asIdeal)
+      have := P.isMaximal
+      let := Ideal.Quotient.field P.asIdeal
+      have : Finite (𝓞 E ⧸ P.asIdeal) := P.asIdeal.finiteQuotientOfFreeOfNeBot P.ne_bot
+      let := Fintype.ofFinite (𝓞 E ⧸ P.asIdeal)
       have hd := (FiniteField.forall_pow_eq_one_iff (𝓞 E ⧸ P.asIdeal) (q - 1)).1 fun u => by
         obtain ⟨x, hx⟩ := Ideal.Quotient.mk_surjective (u : 𝓞 E ⧸ P.asIdeal)
         have h3 := hφ (algebraMap E Ω (x : E)) ((A.valuation_le_one_iff _).2 (mem_of_isIntegral_int A
@@ -303,7 +348,7 @@ theorem exists_frob_inert {P : HeightOneSpectrum (𝓞 E)} (h : ConjPl c.toRingE
     have hxq : A.valuation (x ^ q) ≤ 1 := by rw [map_pow]; exact pow_le_one' hx _
     rw [← sub_add_sub_cancel _ (φ x ^ q), sq, pow_mul]
     exact Valuation.map_add_lt _ (hφ _ hx')
-      ((GlobalTheory.Mem.WildChar.val_pow_sub_pow_le _ hx' hxq q).trans_lt (hφ x hx))
+      ((_root_.GlobalTheory.ValuationPowSubPow.valuation_pow_sub_pow_le _ hx' hxq q).trans_lt (hφ x hx))
 
 theorem resFin_of_anti {art : Ideles E →* Gab E Ω} (ha : IsGlobalArtin art) {r : Formalism.ConjugateSelfDual.G E Ω →* ℂˣ} {χ : HChar E}
     (h : Corr art r χ) (hr : AntiHom cc r) (v : HeightOneSpectrum (𝓞 F)) (k : Fˣ) : χ.resFin v k = 1 := by

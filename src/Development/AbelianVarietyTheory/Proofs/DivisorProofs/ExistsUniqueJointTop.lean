@@ -1,7 +1,68 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowHighestLeSpanColWordComplex
+public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsWeightedHomogeneousOfMemOrbitSpan
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CommuteRowOpRightMixedOp
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.EqZeroOfPartialSumsNonneg
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.Basic.Complex.Basic
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ColumnDegreeLe
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsEqMulProdMinors
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsJointIntEigenvectorOfStable
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowAddGenericRowAddTerm
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Sl2NonnegWeightOfHighestWeightVector
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SumSmulMemOfSumZpowSmulMem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsMemRowHighestTotalDegreeEqTwo
 
 @[expose] public section
 
@@ -22,7 +83,7 @@ theorem row_degree (z : Fin k × Fin m → σ) {P : MvPolynomial σ ℂ} {c : Fi
     (h : rowOp ℂ z c c P = w • P) {s : σ →₀ ℕ} (hs : s ∈ P.support) :
     ((∑ i, s (z (c, i)) : ℕ) : ℂ) = w := by
   have := congrArg (AddMonoidAlgebra.coeff · s) h
-  rw [rowOp_apply, coeff_sum, coeff_smul] at this
+  rw [rowOp_apply, coeff_sum, MvPolynomial.coeff_smul] at this
   simp only [coeff_X_mul_pderiv, ← Finset.sum_mul, smul_eq_mul] at this
   have h2 := mul_right_cancel₀ (mem_support_iff.1 hs) this
   exact_mod_cast h2
@@ -31,7 +92,7 @@ theorem col_degree (z : Fin k × Fin m → σ) (y : Fin l × Fin m → σ) {P : 
     {i : Fin m} {w : ℂ} (h : mixedOp ℂ z y i i P = w • P) {s : σ →₀ ℕ} (hs : s ∈ P.support) :
     ((∑ c, (s (z (c, i)) : ℤ) - ∑ d, (s (y (d, i)) : ℤ) : ℤ) : ℂ) = w := by
   have := congrArg (AddMonoidAlgebra.coeff · s) h
-  rw [mixedOp_apply, coeff_sub, coeff_sum, coeff_sum, coeff_smul] at this
+  rw [mixedOp_apply, MvPolynomial.coeff_sub, coeff_sum, coeff_sum, MvPolynomial.coeff_smul] at this
   simp only [coeff_X_mul_pderiv, ← Finset.sum_mul, ← sub_mul, smul_eq_mul] at this
   have h2 := mul_right_cancel₀ (mem_support_iff.1 hs) this
   exact_mod_cast h2
@@ -86,8 +147,8 @@ theorem jointTop_rename (f : τ → σ) (hf : Function.Injective f) (z : Fin k �
     rename_injective f hf
   have h0 : ∀ R : MvPolynomial τ ℂ, rename f R = 0 ↔ R = 0 := fun R => map_eq_zero_iff _ hi
   simp only [JointTop, mixedOp_apply, rowOp_apply, Function.comp_apply, polar_rename f hf]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [pderiv_rename hf, ← map_sum, ← map_sub, ← map_smul, h0, hi.eq_iff]
+
+  simp only [pderiv_rename hf, ← map_sum, ← map_sub, ← map_smul, h0, hi.eq_iff]
 
 theorem sum_castLE (hp : p ≤ k) {M : Type} [AddCommMonoid M] (f : Fin k → M)
     (hf : ∀ c : Fin k, p ≤ c → f c = 0) : ∑ c : Fin p, f (Fin.castLE hp c) = ∑ c, f c :=

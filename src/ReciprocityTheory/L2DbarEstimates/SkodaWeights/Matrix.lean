@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Data.Matrix.Mul
+import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Basic.Complex.BigOperators
+public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 
 @[expose] public section
 
@@ -33,7 +37,7 @@ theorem star_dotProduct_self (g : Fin p → ℂ) : star g ⬝ᵥ g = ((sqNorm g 
 
 theorem projPerp_apply (g : Fin p → ℂ) (i l : Fin p) :
     projPerp g i l = (if i = l then 1 else 0) - ((sqNorm g : ℝ) : ℂ)⁻¹ * (g i * conj (g l)) := by
-  simp [projPerp, Matrix.sub_apply, Matrix.one_apply, vecMulVec_apply, Complex.star_def]
+  simp [projPerp, Matrix.sub_apply, Matrix.one_apply, vecMulVec_apply]
 
 theorem projPerp_mulVec (g w : Fin p → ℂ) :
     projPerp g *ᵥ w = w - (((sqNorm g : ℝ) : ℂ)⁻¹ * (star g ⬝ᵥ w)) • g := by

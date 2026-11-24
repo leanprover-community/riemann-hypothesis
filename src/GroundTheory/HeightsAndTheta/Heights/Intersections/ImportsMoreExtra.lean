@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerLast
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.LeOfHeightMapEqZero
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
 
 @[expose] public section
 

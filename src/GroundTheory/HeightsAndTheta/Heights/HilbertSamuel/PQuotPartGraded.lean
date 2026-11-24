@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsQuotPartGraded
 
 @[expose] public section
@@ -109,14 +108,14 @@ theorem QuotPartGraded.proof : QuotPartGraded.Statement := by
         · exact ⟨0, fun h => absurd h hc⟩
       choose p hp using hlift
       have hsumV : ∑ c ∈ s, p c ∈ V := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← Ideal.Quotient.eq_zero_iff_mem, map_sum, ← hsum]
+
+        rw [← Ideal.Quotient.eq_zero_iff_mem, map_sum, ← hsum]
         exact Finset.sum_congr rfl fun c hc => (hp c hc).2
       intro c hc
       have hcomp := weightedHomogeneousComponent_mem_of_mem S (QuotPartGraded.blockWeight ι)
         (QuotPartGraded.isHomogeneous hV) hsumV c
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_eq_single c] at hcomp
+
+      rw [map_sum, Finset.sum_eq_single c] at hcomp
       · rw [← (hp c hc).2, Ideal.Quotient.eq_zero_iff_mem]
         rwa [weightedHomogeneousComponent_eq_self (hp c hc).1] at hcomp
       · intro d hd hdc

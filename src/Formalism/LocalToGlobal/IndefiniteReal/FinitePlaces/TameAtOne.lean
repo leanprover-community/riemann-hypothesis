@@ -1,8 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
-public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
-public import Formalism.LocalToGlobal.IndefiniteReal.WeilFull
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 
 @[expose] public section
 

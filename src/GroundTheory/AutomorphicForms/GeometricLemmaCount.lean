@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+import Mathlib.GroupTheory.Index
 public import GroundTheory.AutomorphicForms.GeometricLemmaAverage
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -40,18 +42,8 @@ theorem avgOver_eq_of_forall_mul_eq {K : Subgroup G} {f : G → W} (hf : AvgFini
   rw [hcard, inv_mul_cancel₀ (Nat.cast_ne_zero.2 hf), one_smul]
 
 theorem relIndex_ne_zero_trans {H K K' : Subgroup G} (hKK' : K ≤ K') (hH : H.relIndex K ≠ 0)
-    (hK : K.relIndex K' ≠ 0) : H.relIndex K' ≠ 0 := by
-  have h1 : (H ⊓ K).relIndex K' = (H ⊓ K).relIndex K * K.relIndex K' :=
-    (Subgroup.relIndex_mul_relIndex _ _ _ inf_le_right hKK').symm
-  rw [Subgroup.inf_relIndex_right] at h1
-  have h2 : (H ⊓ K).relIndex K' ≠ 0 := by
-    rw [h1]
-    exact mul_ne_zero hH hK
-  intro h0
-  apply h2
-  have := Subgroup.relIndex_dvd_of_le_left K' (inf_le_left : H ⊓ K ≤ H)
-  rw [h0] at this
-  exact Nat.eq_zero_of_zero_dvd this
+    (hK : K.relIndex K' ≠ 0) : H.relIndex K' ≠ 0 :=
+  Subgroup.relIndex_ne_zero_trans hH hK
 
 variable {A : Subgroup G}
 

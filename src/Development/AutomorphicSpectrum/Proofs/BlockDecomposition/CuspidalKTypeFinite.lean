@@ -1,12 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspDiscreteDecompositionGL
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.NotIsFinitePartOfBot
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryKTypeFiniteStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalConvolutionCompactStatement
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsCompactOperatorOfIsHilbertSchmidt
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsOpenIsCompact
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalConvolutionCompact
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNonnegBump
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
+public import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryKTypeFinite
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
 
 @[expose] public section
 
@@ -349,7 +392,7 @@ theorem enoughCompact_fixedPart {H : Submodule ℂ (L2 (latticeGL E a) μ)} (hHc
   have hR := isUnitaryRep_R (latticeGL E a) μ
   have hτ : IsUnitaryRep ((R (latticeGL E a) μ).comp (infGL E a)) := isUnitaryRep_comp hR continuous_infGL
   refine enoughCompact_of_testFn (μ := μ) hR (infGL E a) hτ (ContAut.continuous_map_pInf E a) (map_one _)
-    ((fixedPart_le H U).trans hHc) (isSubrep_fixedPart hH U) (isSubrep_L2cusp μ) (GlobalTheory.T.cuspidal_convolution_compact E a μ) fun v hv => ?_
+    ((fixedPart_le H U).trans hHc) (isSubrep_fixedPart hH U) (isSubrep_L2cusp μ) (_root_.GlobalTheory.CompanionTheory.CuspidalCompact.isCompactOperator_repOp_Rcusp E a μ) fun v hv => ?_
   have hρ := (isSubrep_fixedPart hH U).isUnitaryRep hτ
   have hcv : Continuous fun x : GL (Fin a) (Cinf E) => (⟪v, (isSubrep_fixedPart hH U).rep x v⟫_ℂ).re :=
     Complex.continuous_re.comp (continuous_const.inner (hρ.continuous_apply v))
@@ -370,7 +413,7 @@ theorem finiteDimensional_isotypic : ∀ (E : Type) [Field E] [NumberField E] [_
     (isUnitaryRep_comp (isUnitaryRep_R (latticeGL E a) μ) continuous_infGL) infGL_comm
     (fun g => ⟨_, _, (infGL_mul_finGL g).symm⟩) hI (fixedPart_le H _) (isSubrep_fixedPart hI.1 (U ⊓ K0))
     (enoughCompact_fixedPart hH hI.1 hU' hU'c) (Unitary.toUnits : Kinf E a →* GL (Fin a) (Cinf E)) ρ
-    (fun P _ _ _ σ h1 h2 => GlobalTheory.T.unitary_K_type_finite E a P σ h1 h2 W ρ)
+    (fun P _ _ _ σ h1 h2 => _root_.GlobalTheory.CompanionTheory.AdmGL.admissible_GL_Cinf E a P σ h1 h2 W ρ)
   have key : ∀ {M : Type} [AddCommGroup M] [Module ℂ M] {S T : Submodule ℂ M}, FiniteDimensional ℂ T → S ≤ T →
       FiniteDimensional ℂ S := fun _ h => Submodule.finiteDimensional_of_le h
   exact key hfd (iSup₂_le fun T hT =>

@@ -1,6 +1,7 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MultivariableReproducingFormula
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 

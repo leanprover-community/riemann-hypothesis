@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
-public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.CuspidalInducedCharacter
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalIdempotentCharacters
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
+public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
+public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
+public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -34,8 +74,8 @@ omit [CharZero K] in
 theorem asAlg_eq_sum (r : Representation K G V) (a : MonoidAlgebra K G) (x : V) :
     r.asAlgebraHom a x = ∑ g : G, a.coeff g • r g x := by
   conv_lhs => rw [eq_sum_single a]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, LinearMap.sum_apply]
+
+  simp [map_sum, LinearMap.sum_apply]
 
 
 
@@ -85,8 +125,8 @@ theorem iC_cpt (t : Bs.Tup) (x : Fin ((lv (fc X.zs) b).dQ t) → K) :
     X.iC cr b t (cpt Bs.v0.embedding x) = X.Θ t (X.jR t (cr.toR X.zs b t x)) := by
   classical
   conv_rhs => rw [← Finset.univ_sum_single x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [CxData.iC, lin_apply, map_sum, map_sum, map_sum]
+
+  rw [CxData.iC, lin_apply, map_sum, map_sum, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   have : (Pi.single k (x k) : Fin _ → K) = x k • Pi.single k 1 := by
     funext i; by_cases hi : i = k <;> simp [hi]
@@ -137,8 +177,8 @@ theorem oneVector_of_whittaker (R : RealDat D A Ks) (F : Face D A) (hW : GlobalT
   rw [← hP] at h
   let e : (R.levR F false).H ≃ F.P0 := R.eG.symm.toEquiv.subtypeEquiv fun _ => Iff.rfl
   apply D.what₂.embLL.injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_natCast, ← Nat.card_congr e, ← h, typeSum, map_sum]
+
+  rw [map_natCast, ← Nat.card_congr e, ← h, typeSum, map_sum]
   unfold GlobalTheory.IndefiniteRowSideFullHecke.CuspidalInducedCharacter.lvlSum
   letI := GlobalTheory.IndefiniteRowSideFullHecke.CuspidalInducedCharacter.fintypeH (R.levR F false)
   refine (Fintype.sum_equiv e _ _ fun x => ?_).symm

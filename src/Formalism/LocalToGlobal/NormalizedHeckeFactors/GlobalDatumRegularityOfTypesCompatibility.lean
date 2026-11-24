@@ -1,14 +1,7 @@
 module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.IrreducibilityOfTheoremThree
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicIrr
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsGal
-public import ReciprocityTheory.GaloisValuations.GlobalA
-public import ReciprocityTheory.GaloisValuations.Global
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.DiscrB
 
 @[expose] public section
 

@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionEval
 public import GroundTheory.GlobalFields.ComplexMultiplication.RespectsAddUniversal
 public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChange
+public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionMap
+public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionEval
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

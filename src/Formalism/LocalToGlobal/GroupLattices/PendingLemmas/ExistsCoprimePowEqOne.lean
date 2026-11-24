@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
+import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
+import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.WittVector.DiscreteValuationRing
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -237,8 +242,8 @@ theorem logF_map : PowerSeries.map (k0ToC p) (Formalism.MainNotions.FormalGroupS
   ext n
   rw [PowerSeries.coeff_map]
   unfold Formalism.MainNotions.FormalGroupSystem.logF Formalism.MainNotions.GL3Theta.logF
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [PowerSeries.coeff_mk, PowerSeries.coeff_mk, map_sum]
+
+  rw [PowerSeries.coeff_mk, PowerSeries.coeff_mk, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   split_ifs <;> simp
 

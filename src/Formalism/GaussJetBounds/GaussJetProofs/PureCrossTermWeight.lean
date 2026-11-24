@@ -2,6 +2,49 @@ module
 
 public import Formalism.GaussJetBounds.GenLogInverse
 public import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Normed.Ring.Ultra
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+public import Mathlib.Data.Nat.Choose.Dvd
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -56,7 +99,6 @@ theorem pow_pair_eq [DecidableEq ι] (i j : ι) (x y : K) (a b : ℕ) :
   first
     | (rw [MvPowerSeries.monomial_mul_monomial, one_mul, ← MvPowerSeries.monomial_zero_eq_C_apply,
         MvPowerSeries.monomial_mul_monomial, zero_add, mul_one])
-    | (simp [MvPowerSeries.monomial_mul_monomial, ← MvPowerSeries.monomial_zero_eq_C_apply])
 
 variable [IsUltrametricDist K]
 
@@ -66,7 +108,6 @@ theorem norm_natCast_le_of_dvd {l k : ℕ} (h : l ∣ k) : ‖(k : K)‖ ≤ ‖
   refine mul_le_of_le_one_right (norm_nonneg _) ?_
   first
     | exact IsUltrametricDist.norm_natCast_le_one K m
-    | exact IsUltrametricDist.norm_natCast_le_one (R := K) m
 
 theorem wtGe_mul_natCast {pi : ℝ} (h0 : 0 < pi) {r : ι → ℝ} {wt : ℝ} {f : MvPowerSeries ι K}
     (hf : WtGe pi r wt f) {k : ℕ} (hk : ‖(k : K)‖ ≤ pi) :
@@ -77,7 +118,6 @@ theorem wtGe_mul_natCast {pi : ℝ} (h0 : 0 < pi) {r : ι → ℝ} {wt : ℝ} {f
   first
     | rw [show (k : MvPowerSeries ι K) = MvPowerSeries.C (k : K) from (map_natCast _ k).symm,
         MvPowerSeries.coeff_mul_C, norm_mul]
-    | rw [← map_natCast (MvPowerSeries.C (σ := ι) (R := K)) k, MvPowerSeries.coeff_mul_C, norm_mul]
   calc _ ≤ pi ^ (wt - dot n r) * pi := mul_le_mul hfn hk (norm_nonneg _) (Real.rpow_nonneg h0.le _)
     _ = pi ^ (wt + 1 - dot n r) := by
       rw [show wt + 1 - dot n r = (wt - dot n r) + 1 by ring, Real.rpow_add_one h0.ne']
@@ -194,8 +234,8 @@ theorem pure_cross_term_weight : PureCross.{u, v} := by
   · intro m hm
     rw [monoWtGe_iff]
     unfold bSum
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (Real.rpow_nonneg h0.le _)
       fun ab _ => ?_
     rw [MvPowerSeries.coeff_subst (hsub ab)]
@@ -235,11 +275,11 @@ theorem pure_cross_term_weight : PureCross.{u, v} := by
           show ((l ^ α : ℕ) : ℝ) * rho l + (((l ^ β : ℕ) : ℝ) * rho l + 1) =
             ((l ^ α : ℕ) : ℝ) * rho l + ((l ^ β : ℕ) : ℝ) * rho l + 1 by ring, min_self]
       have hPP : MvPowerSeries.coeff m (P * P') = 0 := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hP, hP', Finset.sum_mul_sum, map_sum]
+
+        rw [hP, hP', Finset.sum_mul_sum, map_sum]
         refine Finset.sum_eq_zero fun i _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         refine Finset.sum_eq_zero fun j _ => ?_
         rw [pow_pair_eq, MvPowerSeries.coeff_monomial_ne]
         exact fun h => hm ⟨i, j, α, β, h⟩

@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 

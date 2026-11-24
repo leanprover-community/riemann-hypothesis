@@ -1,12 +1,67 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerSlActionRowVector
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitIndexAddIntVector
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularTowerMemAdjoinJOfSlTwoIntInvariantStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelInvarianceImpliesCongruenceStatement
+public import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularTowerMemAdjoinJOfSlTwoIntInvariant
+public import Development.AbelianVarietyTheory.Definitions.Foundations.SgC
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelInvarianceImpliesCongruence
+public import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerSlActionRowVector
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitIndexAddIntVector
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 
 @[expose] public section
 
@@ -118,7 +173,7 @@ theorem finite_range (X : Tower Ω ε) (M : ℕ) (hM : 0 < M) : Finite (rhoF X M
   exact Finite.of_equiv _ (QuotientGroup.quotientKerEquivRange (rhoF X M)).toEquiv
 
 theorem sl_neg_one (X : Tower Ω ε) (f : X.K) : X.sl (ofSL (-1)) f = f := by
-  apply GlobalTheory.KZ.SiegelSL.an_injective X
+  apply _root_.GlobalTheory.KZ.SiegelModel.an_injective X
   obtain ⟨φ, -, hφ, -⟩ := X.an_exp f
   rw [X.an_sl _ _ _ hφ, hφ]
   congr 1
@@ -162,7 +217,7 @@ theorem admissible_of_integral_conj_le (M c : ℕ) (hc : 1 < c) (hc6 : Nat.Copri
     exact hcop.dvd_of_dvd_mul_left ⟨m, h2⟩
   rintro ⟨h0, h1⟩
   apply hab
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at h0 h1
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one] at h0 h1
   exact ⟨key a h0, key b h1⟩
 
 theorem siegel_inv {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε)
@@ -225,7 +280,7 @@ theorem fracGen : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ 
       rw [inv_inv] at h3
       rw [← h3]
       exact h2
-    have hj' := GlobalTheory.T.modularTower_mem_adjoin_j_of_slTwoInt_invariant ε X hj (x : X.K) hinv
+    have hj' := _root_.GlobalTheory.KZ.LevelOneFrac.mem_adjoin_of_sl_inv ε X hj (x : X.K) hinv
     show (algebraMap (FM X M) X.K x) ∈ L
     exact IntermediateField.adjoin.mono Ω _ _ Set.subset_union_left hj'
   have hfix : ∀ g : (rhoF X M).range, (∀ x ∈ Lsub, g • x = x) → ∀ x : FM X M, g • x = x := by
@@ -240,7 +295,7 @@ theorem fracGen : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ 
         exact IntermediateField.subset_adjoin Ω _ (Or.inr ⟨a, b, hab, rfl⟩)
       have := congrArg Subtype.val (hg _ hin)
       exact this
-    rcases GlobalTheory.T.siegel_invariance_implies_congruence ε X M c γ⁻¹ hM hc hc6 hcM hs with h | h
+    rcases _root_.GlobalTheory.SiegSep.fix_siegel_pm_one ε X M c γ⁻¹ hM hc hc6 hcM hs with h | h
     · apply Subtype.ext
       show X.sl (ofSL γ⁻¹) x = x
       exact (mem_FM X M x).1 x.2 _ h

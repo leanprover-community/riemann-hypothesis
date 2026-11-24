@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Places
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Galois
-public import GroundTheory.GlobalFields.IdeleGroups.StandardOpenEquiv
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 

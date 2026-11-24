@@ -2,6 +2,7 @@ module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CountableIdealSummableAbsNormRpow
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

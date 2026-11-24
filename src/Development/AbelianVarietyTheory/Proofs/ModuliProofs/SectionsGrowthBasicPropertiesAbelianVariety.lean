@@ -1,16 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.SectionsHaveFiniteDimension
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SectionsHaveFiniteDimensionInvarianceIsomorphismStatement
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EventuallySectionAndRelAmplePowDivStatement
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CubeTheoremAndSectionsFiniteGrowthAbelianVariety
-public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EventuallySectionAndRelAmplePowDiv
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SectionsHaveFiniteDimensionInvarianceIsomorphism
+import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -91,9 +132,7 @@ theorem res_cst (p : X ⟶ Sp K) {U V : X.Opens} (h : V ≤ U) (a : K) : resG X 
     (Scheme.Hom.appLE_map p (U := ⊤) (V := U) le_top (homOfLE h).op)
   exact this
 
-theorem res_res {U V W : X.Opens} (h : V ≤ U) (h' : W ≤ V) (a : Γ(X, U)) :
-    resG X h' (resG X h a) = resG X (h'.trans h) a := by
-  rw [← RingHom.comp_apply, ← CommRingCat.hom_comp, ← Functor.map_comp]; rfl
+alias res_res := _root_.GlobalTheory.Cartier.resG_resG
 
 theorem exists_h0Is (p : X ⟶ Sp K) (M : LB X)
     (hn : ∃ n : ℕ, ∀ s : Fin n → M.Sec, ∃ c : Fin n → K, c ≠ 0 ∧ ∀ j, ∑ k, cst p _ (c k) * (s k).f j = 0) :
@@ -175,8 +214,8 @@ theorem sectionsDim_le_tensor_of_nonzero_section [IsIntegral X] (p : X ⟶ Sp K)
       have hc' : ∀ l, ∑ i, cst p (A.U j ⊓ B.U k) (c i) * cst p (A.U j ⊓ B.U k) (a i l) = 0 := fun l => by
         have := congrArg (cst p (A.U j ⊓ B.U k)) (congrFun hc l)
         simpa [Finset.sum_apply] using this
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, res_cst, Finset.sum_mul, _root_.mul_assoc, e, Finset.mul_sum]
+
+      simp only [map_sum, map_mul, res_cst, Finset.sum_mul, _root_.mul_assoc, e, Finset.mul_sum]
       rw [Finset.sum_comm]
       refine Finset.sum_eq_zero fun l _ => ?_
       simp only [← _root_.mul_assoc, ← Finset.sum_mul, hc', zero_mul]
@@ -198,7 +237,7 @@ theorem Eff.nsmul [IsIntegral X] {c : Pic X} (hc : Eff c) (n : ℕ) : Eff ((n + 
 
 theorem sectionsDim_congr_of_cechPicardClass_eq (p : X ⟶ Sp K) {A B : LB X} (hA : A.IsLB) (hB : B.IsLB) (h : cls A hA = cls B hB) {r : ℕ}
     (hr : SectionsHaveFiniteDimension p A r) : SectionsHaveFiniteDimension p B r :=
-  ((GlobalTheory.T.sectionsHaveFiniteDimension_invariance_isomorphisms K X p A hA).2.1 B hB ((cls_eq_iff hA hB).1 h)).1 r hr
+  ((_root_.GlobalTheory.SecDim.lbPow_mul_and_pull_and_sectionsFiniteDim_iso_invariant K X p A hA).2.1 B hB ((cls_eq_iff hA hB).1 h)).1 r hr
 
 theorem h0_le [IsIntegral X] (p : X ⟶ Sp K) {A B : LB X} (hA : A.IsLB) (hB : B.IsLB)
     (h : Eff (cls B hB - cls A hA)) {r r' : ℕ} (hr : SectionsHaveFiniteDimension p A r) (hr' : SectionsHaveFiniteDimension p B r') : r ≤ r' := by
@@ -207,7 +246,7 @@ theorem h0_le [IsIntegral X] (p : X ⟶ Sp K) {A B : LB X} (hA : A.IsLB) (hB : B
   rw [cls_tens hA hN, e]
   abel
 
-theorem isLB_pow {L : LB X} (hL : L.IsLB) (n : ℕ) : (lbPow L n).IsLB := LB.isLB_linComb hL _ _
+alias isLB_pow := _root_.GlobalTheory.isLB_lbPow
 
 theorem cls_pow_pow {L : LB X} (hL : L.IsLB) (a e : ℕ) :
     cls _ (isLB_pow (isLB_pow hL a) e) = cls _ (isLB_pow hL (a * e)) := by
@@ -227,7 +266,7 @@ theorem vol_basic : ∀ (K : Type) [Field K] [IsAlgClosed K] (P : Out.PolAV (Sp 
       exact congrArg (P.A.hom.appLE ⊤ (N.U j) le_top).hom
         ((Scheme.ΓSpecIso (CommRingCat.of K)).commRingCatIsoToRingEquiv.symm_apply_apply (c k))
   have uniq : ∀ N : LB P.A.left, N.IsLB → ∀ r r', SectionsHaveFiniteDimension P.A.hom N r → SectionsHaveFiniteDimension P.A.hom N r' → r = r' :=
-    fun N hN => (GlobalTheory.T.sectionsHaveFiniteDimension_invariance_isomorphisms K _ _ N hN).1
+    fun N hN => (_root_.GlobalTheory.SecDim.lbPow_mul_and_pull_and_sectionsFiniteDim_iso_invariant K _ _ N hN).1
   refine ⟨fin M hM, ?_, ?_, ?_, ?_, ?_⟩
   · rintro δ δ' ⟨h, hh, ht⟩ ⟨h', hh', ht'⟩
     obtain rfl : h = h' := funext fun e => uniq _ (isLB_pow hM e) _ _ (hh e) (hh' e)
@@ -249,7 +288,7 @@ theorem vol_basic : ∀ (K : Type) [Field K] [IsAlgClosed K] (P : Out.PolAV (Sp 
     choose h hh using fun e => fin _ (isLB_pow hM e)
     obtain rfl : h' = fun e => h (a * e) := funext fun e =>
       uniq _ (isLB_pow hM (a * e)) _ _ (sectionsDim_congr_of_cechPicardClass_eq _ _ _ (cls_pow_pow hM a e) (hh' e)) (hh _)
-    obtain ⟨c, hc⟩ := eventually_atTop.1 (GlobalTheory.T.eventually_section_and_relAmple_pow_div K P M (lbPow M 0) hM (isLB_pow hM 0) hamp)
+    obtain ⟨c, hc⟩ := eventually_atTop.1 (_root_.GlobalTheory.AmpleDominates.eventually_sec_and_relAmple K P M (lbPow M 0) hM (isLB_pow hM 0) hamp)
     refine ⟨h, hh, tendsto_of_multiples h a g c ha δ (fun e e' he => ?_) ht⟩
     obtain ⟨t, rfl⟩ := Nat.exists_eq_add_of_le (show e ≤ e' by omega)
     refine h0_le _ (isLB_pow hM e) (isLB_pow hM (e + t))

@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ReductionSiegel
-public import GroundTheory.AutomorphicForms.QuotientMeasure
+import GroundTheory.AutomorphicForms.ReductionCore
+import GroundTheory.AutomorphicForms.ReductionFinite
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.StatementsBounds
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 
 @[expose] public section
 

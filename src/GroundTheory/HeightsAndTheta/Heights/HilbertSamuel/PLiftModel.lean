@@ -1,13 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftSpread
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftAtPrime
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftModel
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKleimanScheme
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBridgeFull
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftBirationalAmple
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothMetricOfIsSmoothHerm
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

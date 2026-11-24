@@ -1,7 +1,53 @@
 module
 
 public import Formalism.SharpRestriction.GlobalTheoremInputs
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DegSupermodZ
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ShiftInvariance
+import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Ideal.Int
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.NumberTheory.Primorial
 
 @[expose] public section
 
@@ -54,7 +100,7 @@ theorem mu_smul_ideal (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι �
     simp only [zl, AddSubgroup.toIntSubmodule_toAddSubgroup]
     exact AddSubgroup.relIndex_map_map_of_injective _ _ hinj
   have htw := DualPolygon.twist_index M hM 𝔟 h𝔟
-  have hcM := Formalism.F.covolPos _ (zl ρ M) hlatM.2
+  have hcM := _root_.Formalism.F.covol_pos' _ (zl ρ M) hlatM.2
   have hr : 0 < rkK M := rkK_pos b M hM0
   have hn : 0 < finrank ℚ K := Module.finrank_pos
   have hN : 0 < Ideal.absNorm 𝔟 := Nat.pos_of_ne_zero (fun h => h𝔟 (Ideal.absNorm_eq_zero_iff.1 h))
@@ -510,7 +556,6 @@ theorem Xpp_eq (s : Scale) (n : ℕ) (hn : 0 < n) : s.X'' n = s.X' * s.x * n := 
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   simp only [Scale.X'', Scale.w'', Scale.b']
   field_simp [ha.ne', hX.ne', hx.ne', hn'.ne']
-  try ring
 
 theorem one_le_Xp (s : Scale) : 1 ≤ s.X' := by
   unfold Scale.X'
@@ -586,7 +631,7 @@ theorem log_T_le (hT : SizeTu L) (u : D.what₂.Word) :
     _ ≤ 2 * L.sc.X'' D.R.n := by linarith
 
 
-set_option maxHeartbeats 800000 in
+
 theorem fN_le (hN : SizeN L) (hEta : SizeEta L) (hNodes : SizeNodes L) :
     (D.R.f : ℝ) * D.R.N D.R.m * Real.log ((D.R.f : ℝ) * D.R.N D.R.m) ≤ 10 * L.sc.X'' D.R.n ∧
     0 ≤ (D.R.f : ℝ) * D.R.N D.R.m * Real.log ((D.R.f : ℝ) * D.R.N D.R.m) := by

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.KappaOffDiagonal
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TermAttrConst
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,13 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Metric
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueCentreLocalHom
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsUnitIffUnitAt
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalizationStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueCentreLocalHomStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePointStatement
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 @[expose] public section
 
@@ -292,7 +336,7 @@ theorem exists_local_ext {o : Type} [CommRing o] [Algebra o Ω] {κ : Type} {x :
     · obtain ⟨h0, _, hinv⟩ := hM s
       exact IsUnit.of_mul_eq_one ⟨_, hinv⟩ (Subtype.ext (mul_inv_cancel₀ h0))
     · obtain ⟨s, hsA, hu, hsa⟩ :=
-        (GlobalTheory.T.regAt_iff_chart_localization X Ω ξ o κ x T c p hp a).1 a.2
+        (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ o κ x T c p hp a).1 a.2
       refine ⟨(⟨s * a, hsa⟩, ⟨⟨s, hsA⟩, (hψ ⟨s, hsA⟩).2 hu⟩), Subtype.ext ?_⟩
       exact mul_comm (a : Ω) s
     · have : a = b := Subtype.ext (congrArg (fun q : regAt ξ p => (q : Ω)) e)
@@ -314,7 +358,7 @@ theorem exists_local_ext {o : Type} [CommRing o] [Algebra o Ω] {κ : Type} {x :
   rw [← mul_assoc, ev, mul_inv_cancel₀ b0]
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem existsUnique_point (T : CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩))
     (w : (Σ k, J k) → R) (hu : ∀ k, ∃ c, IsUnit (w ⟨k, c⟩))
     (hk : ∀ g ∈ mCoordIdeal y, aeval w g = 0) :
@@ -385,10 +429,10 @@ theorem existsUnique_point (T : CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏
   haveI hIp : I.IsPrime := Ideal.comap_isPrime ψ _
   have hI : ∀ a, a ∉ I ↔ IsUnit (ψ a) := fun a => by
     simp [I, Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-  obtain ⟨p, ⟨hpc, hpu⟩, hpuniq⟩ := GlobalTheory.T.prime_chart_existsUnique_point X Ω ξ ℤ _ x T c hxc I hIp
+  obtain ⟨p, ⟨hpc, hpu⟩, hpuniq⟩ := _root_.GlobalTheory.CompanionTheory.Ar.chart_point_of_prime X Ω ξ ℤ _ x T c hxc I hIp
   have hψu : ∀ a, IsUnit (ψ a) ↔ unitAt ξ p (a : Ω) := fun a => (hI a).symm.trans (hpu a)
   obtain ⟨φ, hφl, hφ⟩ := exists_local_ext T hpc ψ hψu
-  obtain ⟨z, ⟨hzc, hzv⟩, hzuniq⟩ := GlobalTheory.T.existsUnique_centre_local_hom X Ω ξ hξ p R φ hφl
+  obtain ⟨z, ⟨hzc, hzv⟩, hzuniq⟩ := _root_.GlobalTheory.CompanionTheory.Ar.exists_unique_point_of_local X Ω ξ hξ p R φ hφl
   have hmem : ∀ a : Algebra.adjoin ℤ (Set.range fun j => x j / x c), (a : Ω) ∈ regAt ξ p :=
     fun a => (T.ring c hxc a).1 a.2 p hpc
   have hval : ∀ a : Algebra.adjoin ℤ (Set.range fun j => x j / x c), ValAt ξ z (a : Ω) (ψ a) :=
@@ -463,7 +507,7 @@ theorem existsUnique_point (T : CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏
     refine ⟨congrArg Subtype.val hpp, fun a => ?_⟩
     have ha' : (a : Ω) ∈ regAt ξ ⟨centre z', h'⟩ := hpp ▸ a.2
     obtain ⟨r, hr⟩ := exists_valAt hξ h' ha'
-    obtain ⟨σ, hσA, hσu, hσa⟩ := (GlobalTheory.T.regAt_iff_chart_localization X Ω ξ ℤ _ x T c p hpc a).1 a.2
+    obtain ⟨σ, hσA, hσu, hσa⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ ℤ _ x T c p hpc a).1 a.2
     have e1 := valAt_mul hξ (hval' ⟨σ, hσA⟩) hr
     have e3 : ψ ⟨σ, hσA⟩ * r = ψ ⟨σ * a, hσa⟩ := valAt_unique hξ e1 (hval' ⟨σ * a, hσa⟩)
     have e4 : ψ ⟨σ, hσA⟩ * φ a = ψ ⟨σ * a, hσa⟩ := by

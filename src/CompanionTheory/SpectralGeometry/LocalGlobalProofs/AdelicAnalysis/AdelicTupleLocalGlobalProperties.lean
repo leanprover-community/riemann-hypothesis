@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.HypJ
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 
 @[expose] public section
 
@@ -23,7 +25,7 @@ theorem repr_map {R R' : Type} [CommRing R] [CommRing R'] [Algebra F R] [Algebra
   induction y using TensorProduct.induction_on with
   | zero => simp
   | tmul r e =>
-    simp [Algebra.TensorProduct.basis_repr_tmul, Algebra.smul_def]
+    simp [Algebra.TensorProduct.basis_repr_tmul]
   | add x y hx hy => simp only [map_add (f := _), Finsupp.add_apply, hx, hy]
 
 variable (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R]
@@ -96,7 +98,7 @@ theorem tuple_ext (X Y : Fin n → Fin M → AF F ⊗[F] E) (hinf : projInf X = 
         φ ((Algebra.TensorProduct.basis R b).repr y k) := by
     induction y using TensorProduct.induction_on with
     | zero => simp
-    | tmul r e => simp [Algebra.TensorProduct.basis_repr_tmul, Algebra.smul_def]
+    | tmul r e => simp [Algebra.TensorProduct.basis_repr_tmul]
     | add x y hx hy => simp only [map_add (f := _), Finsupp.add_apply, hx, hy]
   funext a i
   apply (Algebra.TensorProduct.basis (AF F) b).repr.injective

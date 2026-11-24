@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.HilbertRowConditions.AllJoin
 public import Formalism.LocalToGlobal.GlobalTheory.ConcNWeight
-public import Formalism.LocalToGlobal.GlobalTheory.ConcNP
-public import Formalism.LocalToGlobal.ClassRec
 
 @[expose] public section
 

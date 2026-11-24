@@ -1,6 +1,58 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.SpaceMap
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RedIdeal
+public import Mathlib.Algebra.DualNumber
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -17,7 +69,7 @@ private theorem rd_adj_mul (X Y : M4 R) : adj (X * Y) = adj Y * adj X := by
 
 private theorem rd_adj_one : adj (1 : M4 R) = 1 := by
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [adj_apply, sgn, Fin.rev, Matrix.one_apply]
+  fin_cases i <;> fin_cases j <;> simp [adj_apply, sgn, Fin.rev]
 
 private theorem rd_sp {n n' m : M4 R} (h1 : n * m = 1) (h : adj n' * n + adj n * n' = 0) : n' * m ∈ sp4 R := by
   show adj _ = -_
@@ -65,7 +117,7 @@ private theorem rd_gsp {ν : DualNumber k} (hν : ν.snd = 0) {X : M4 (DualNumbe
     adj (X.map TrivSqZeroExt.snd) * X.map TrivSqZeroExt.fst + adj (X.map TrivSqZeroExt.fst) * X.map TrivSqZeroExt.snd = 0 := by
   rw [← rd_snd_adj, ← rd_fst_adj, ← rd_snd_mul, h]
   ext i j
-  by_cases hij : i = j <;> simp [Matrix.one_apply, hij, hν]
+  by_cases hij : i = j <;> simp [hij, hν]
 
 private theorem rd_gsp_one {X : M4 (DualNumber k)} (h : IsGSp 1 X) :
     adj (X.map TrivSqZeroExt.fst) * X.map TrivSqZeroExt.fst = 1 := by
@@ -112,7 +164,7 @@ theorem UpperTheory.V.Ws.redDual :
     rw [hP.kill g hg]
     have : (1 : M4 (DualNumber k)).map TrivSqZeroExt.snd = 0 := by
       ext i j
-      by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
+      by_cases hij : i = j <;> simp [hij]
     rw [this, zero_mul]
   · have d1 : ((Q.r Φ.g0).map TrivSqZeroExt.snd).IsDiag := hP.nrm.map rfl
     have d2 : (c.r Φ.g0).IsDiag := er _ ▸ hP.nrm.map rfl

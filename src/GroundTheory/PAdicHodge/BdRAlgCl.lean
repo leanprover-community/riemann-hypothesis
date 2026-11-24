@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.BdRAlg
 public import GroundTheory.PAdicHodge.BdRGalois
+public import Mathlib.RingTheory.Etale.Basic
+public import Mathlib.RingTheory.Etale.Field
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

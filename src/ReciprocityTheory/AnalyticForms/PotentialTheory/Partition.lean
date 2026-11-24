@@ -1,7 +1,9 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
+public import Mathlib.Topology.OpenPartialHomeomorph.Constructions
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Partition
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

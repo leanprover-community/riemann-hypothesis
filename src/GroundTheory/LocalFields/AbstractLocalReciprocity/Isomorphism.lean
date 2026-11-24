@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.IsoPGroup
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.FunctorialityTransfer
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.Unramified
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TransferOfCompSubtype
+import GroundTheory.LocalFields.AbstractLocalReciprocity.IsoCyclic
+import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

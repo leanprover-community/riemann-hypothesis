@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
+public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
 
 @[expose] public section

@@ -1,17 +1,66 @@
 module
 
-public import Formalism.HermitianCurvature.StatementD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceLastLevel
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PolynomialMapProper
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SectionDecomposition
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarUniquenessConjugation
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PolynomialMapProper
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SectionDecomposition
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceLastLevel
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -35,8 +84,7 @@ def cut (μR : Measure (Mt k r)) (M : ℝ) (p : B.SS k r) : ℝ :=
 end weight
 
 private theorem rpa_lemma {a b z : ℝ} (ha : 0 < a) (hab : a ≤ b) (hz : 0 ≤ z) : b ^ (-z) ≤ a ^ (-z) := by
-  rw [Real.rpow_neg ha.le, Real.rpow_neg (ha.le.trans hab)]
-  gcongr
+  exact Real.rpow_le_rpow_of_nonpos ha hab (by linarith)
 
 theorem key_real {N N' X Y Gg S θv Fv cR cF CP K1 Kγ A bN M : ℝ} {c : ℕ}
     (hN : 1 ≤ N) (hS : 1 ≤ S) (hSX : S ≤ X) (hY : 1 ≤ Y) (hGg : 0 < Gg)
@@ -130,10 +178,9 @@ theorem a_mv_le {m : ℕ} (M : Matrix (Fin m) (Fin m) ℂ) (u : Fin m → ℂ) (
 
 theorem a_gmv_le (g : B.Mat k r) (v : Fin (2 * r + k + 1) → ℂ) (j : Fin (2 * r + k + 1)) :
     ‖(g *ᵥ v) j‖ ≤ B.gN g * ∑ l, ‖v l‖ := by
-  calc ‖(g *ᵥ v) j‖ ≤ ∑ l, ‖g j l‖ * ‖v l‖ := a_mv_le g v j
-    _ ≤ ∑ l, B.gN g * ‖v l‖ :=
-        Finset.sum_le_sum fun l _ => mul_le_mul_of_nonneg_right (entry_le_gN g j l) (norm_nonneg _)
-    _ = B.gN g * ∑ l, ‖v l‖ := by rw [Finset.mul_sum]
+  refine (a_mv_le g v j).trans ?_
+  simpa only [Finset.mul_sum] using
+    Finset.sum_le_sum fun l _ => mul_le_mul_of_nonneg_right (entry_le_gN g j l) (norm_nonneg _)
 
 theorem a_herm_le (H g : B.Mat k r) (v w : Fin (2 * r + k + 1) → ℂ) :
     ‖herm H (g *ᵥ v) w‖ ≤ B.gN g * (∑ i, ‖w i‖ * ∑ j, ‖H i j‖ * ∑ l, ‖v l‖) := by
@@ -182,9 +229,7 @@ theorem UW_bound (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hT : 0 < T
   obtain ⟨C, hC⟩ := (P.weyl_subgroup_compact k r z hz hT).exists_bound_of_continuousOn
     (P.B6.gN_continuous (k := k) (r := r)).continuousOn
   refine ⟨max C 1, le_max_right _ _, fun h hh => ?_⟩
-  have := hC h hh
-  rw [Real.norm_of_nonneg (P.B6.gN_nonneg h)] at this
-  exact this.trans (le_max_left _ _)
+  simpa only [Real.norm_of_nonneg (P.B6.gN_nonneg h)] using (hC h hh).trans (le_max_left _ _)
 
 end norms
 
@@ -346,9 +391,7 @@ theorem intR (D : B.RealPlaceData k r Wp Wq) {γ : B.Mat k r} (hγ : γ ∈ B.GV
 variable {γ : B.Mat k r} {μR : Measure (Mt k r)}
 
 private theorem ae_R_lemma_6 (hR : B.IsHaarOn (C6.Rset γ) μR) : ∀ᵐ x ∂μR, Matrix.of x ∈ C6.Rset γ := by
-  have h0 : μR (@id (Set (Mt k r)) (C6.Rset γ))ᶜ = 0 := hR.conc
-  filter_upwards [mem_ae_iff.mpr h0] with x hx
-  exact hx
+  exact mem_ae_iff.mpr hR.conc
 
 theorem om_bound (hR : B.IsHaarOn (C6.Rset γ) μR) {M : ℝ} (hM : 0 ≤ M) {n : Mt k r}
     (hn : Matrix.of n ∈ B.GV k r) :
@@ -390,8 +433,7 @@ theorem om_int (hR : B.IsHaarOn (C6.Rset γ) μR) {M : ℝ} (hM : 0 ≤ M)
     Integrable (fun x : Mt k r => B.gN (Matrix.of x * Matrix.of n) ^ (-M)) μR := by
   refine (hI.const_mul (B.gN (Matrix.of n)⁻¹ ^ M)).mono' (om_meas_int M n).aestronglyMeasurable ?_
   filter_upwards [om_bound hR hM hn] with x hx
-  rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg (gN_nonneg_lemma_2 _) _)]
-  exact hx
+  simpa only [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg (gN_nonneg_lemma_2 _) _)] using hx
 
 private theorem gv_mul_lemma_5 {a b : B.Mat k r} (ha : a ∈ B.GV k r) (hb : b ∈ B.GV k r) :
     a * b ∈ B.GV k r := by
@@ -454,11 +496,10 @@ theorem om_lower (hR : B.IsHaarOn (C6.Rset γ) μR) {M : ℝ} (hM : 0 ≤ M)
   have hxG : Matrix.of x ∈ B.GV k r := hx.1.1
   have hc := PI.PolynomialProperness.GN.gN_pos hxG
   have hs := PI.PolynomialProperness.GN.gN_pos hσ
-  have ha := PI.PolynomialProperness.GN.gN_pos (gv_mul_lemma_5 hxG hσ)
   have hle := PI.PolynomialProperness.GN.gN_mul_le (Matrix.of x) σ
   show B.gN (Matrix.of x) ^ (-M) * B.gN σ ^ (-M) ≤ B.gN (Matrix.of x * σ) ^ (-M)
   rw [← Real.mul_rpow hc.le hs.le]
-  exact rpa_lemma ha hle hM
+  exact rpa_lemma (PI.PolynomialProperness.GN.gN_pos (gv_mul_lemma_5 hxG hσ)) hle hM
 
 private theorem gNc1_lemma_4 : Continuous fun x : Mt k r => B.gN (Matrix.of x) := by
   unfold B.gN

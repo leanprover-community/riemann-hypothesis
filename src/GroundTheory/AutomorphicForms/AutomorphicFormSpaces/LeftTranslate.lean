@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GKModules.GKModule
-public import GroundTheory.AutomorphicForms.GKModules.Garding
-public import GroundTheory.AutomorphicForms.GKModules.Casimir
+public import GroundTheory.AutomorphicForms.GKModules.RightRegular
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

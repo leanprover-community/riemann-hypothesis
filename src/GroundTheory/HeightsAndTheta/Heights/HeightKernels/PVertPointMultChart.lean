@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointNagata
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointLengthSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertPointResidue
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -50,8 +53,8 @@ theorem aeval_C_mul_X {T : Type} [Fintype T] {S : Type*} [CommRing S] (r : (Σ _
     eval₂ (Int.castRingHom (Polynomial S)) (fun p => Polynomial.C (r p) * Polynomial.X) f =
       Polynomial.C (eval₂ (Int.castRingHom S) r f) * Polynomial.X ^ d := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [eval₂_eq, eval₂_eq, map_sum, Finset.sum_mul]
+
+  rw [eval₂_eq, eval₂_eq, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm => ?_
   have hmd : ∑ i, m ⟨(), i⟩ = d := hf m hm ()
   rw [Finset.prod_subset (Finset.subset_univ m.support) (fun p _ hp => by

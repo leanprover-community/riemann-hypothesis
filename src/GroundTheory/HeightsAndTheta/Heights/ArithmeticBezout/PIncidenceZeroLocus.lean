@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsIncidenceZeroLocus
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.RingTheory.Nullstellensatz
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -89,7 +96,7 @@ theorem proof : IncidenceZeroLocus.Statement := by
       exact fun q hq => hle hq
     obtain ⟨i, hi⟩ := hno y hy0 hyQ
     have h := hy _ (Ideal.subset_span ⟨Sum.inr i, rfl⟩)
-    simp [G, φv, coe_aeval_eq_eval] at h
+    simp [G, φv] at h
     exact hi h
   have hrad : ∀ j, ∃ m, (X j : MvPolynomial (Fin n) Ω) ^ m ∈ Jv := by
     intro j
@@ -120,7 +127,7 @@ theorem proof : IncidenceZeroLocus.Statement := by
   let Mf : Finset (Fin n →₀ ℕ) :=
     (Finset.range (N + 1)).biUnion fun d => (Finset.univ : Finset (Fin n)).finsuppAntidiag d
   have memMf : ∀ m, m ∈ Mf ↔ m.degree ≤ N := fun m => by
-    simp [Mf, Finset.mem_finsuppAntidiag, Finsupp.degree_eq_sum, Nat.lt_succ_iff]
+    simp [Mf, Finset.mem_finsuppAntidiag, Finsupp.degree_eq_sum]
   let c : (S ⊕ Fin k) × Mf → MvPolynomial (Fin n) (MvPolynomial (Fin k × Fin n) F) :=
     fun p => homogeneousComponent N (monomial (p.2 : Fin n →₀ ℕ) 1 * G p.1)
   let Mx : Matrix Rows ((S ⊕ Fin k) × Mf) (MvPolynomial (Fin k × Fin n) F) :=
@@ -158,11 +165,11 @@ theorem proof : IncidenceZeroLocus.Statement := by
     have hJW : ∀ p ∈ Jv, homogeneousComponent N p ∈ W := by
       intro p hp
       obtain ⟨a, rfl⟩ := Ideal.mem_span_range_iff_exists_fun.mp hp
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Submodule.sum_mem _ fun t _ => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [(a t).as_sum, Finset.sum_mul, map_sum]
+
+      rw [(a t).as_sum, Finset.sum_mul, map_sum]
       refine Submodule.sum_mem _ fun m _ => ?_
       have hmon : monomial m (AddMonoidAlgebra.coeff (a t) m) = AddMonoidAlgebra.coeff (a t) m • monomial m (1 : Ω) := by
         rw [smul_monomial, smul_eq_mul, mul_one]

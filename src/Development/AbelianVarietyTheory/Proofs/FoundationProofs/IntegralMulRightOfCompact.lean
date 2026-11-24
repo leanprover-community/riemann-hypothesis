@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsAuxiliaryPlaceNotMemFinset
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIdempotentElemCharIdem
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
+import Aesop.Main
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CentralIdempotentIrreducibleCharacterProps
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIdempotentElemCharIdem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -83,8 +124,8 @@ theorem sum_character_mul [Fintype Q] [FiniteDimensional ℂ W] {τ : Representa
     (h : Q) : ((Module.finrank ℂ W : ℂ) / Fintype.card Q) * ∑ q, τ.character q * τ.character (q⁻¹ * h) =
       τ.character h := by
   have := congrArg (fun T => LinearMap.trace ℂ W (T * τ h)) (charIdem_self hτ)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [charIdem, smul_mul_assoc, Finset.sum_mul, map_smul, map_sum, one_mul, ← map_mul, smul_eq_mul] at this
+
+  simp only [charIdem, smul_mul_assoc, Finset.sum_mul, map_smul, map_sum, one_mul, ← map_mul, smul_eq_mul] at this
   rw [Representation.character, ← this]
   congr 1
   exact Fintype.sum_equiv (Equiv.inv Q) _ _ fun q => by simp [Representation.character]
@@ -220,8 +261,8 @@ theorem conv_typeIdem [Finite Q] (hτ : τ.IsIrreducible) :
         rw [(typeIdem_mul_ker μ r τ hk1 _).2, ← h1]
         simp [mul_assoc]
     simp only [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.mul_sum, ← map_sum, ← Finset.mul_sum, sum_character_mul hτ, typeIdem_coe]
+
+    rw [← Finset.mul_sum, ← map_sum, ← Finset.mul_sum, sum_character_mul hτ, typeIdem_coe]
   · rw [typeIdem_of_notMem μ r τ hy]
     have : ∀ x, typeIdem μ r τ x * typeIdem μ r τ (x⁻¹ * y) = 0 := fun x => by
       by_cases hx : x ∈ K
@@ -289,8 +330,8 @@ theorem proj_of_weak [Finite Q] (hτ : τ.IsIrreducible) {V : Type} [AddCommGrou
   · rw [hP l hl, integral_eq_sum_ker μ ho hr hk (F := fun g => typeIdem μ r τ g * l (ρ g v))
       ((he.1.continuous.mul (hct l hl v)).integrable_of_hasCompactSupport he.2.mul_right)
       fun g hg => by rw [typeIdem_of_notMem μ r τ hg, zero_mul], charIdem_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Submodule.coe_smul, Submodule.coe_sum, map_smul, map_sum, smul_eq_mul, Finset.mul_sum]
+
+    simp only [Submodule.coe_smul, Submodule.coe_sum, map_smul, map_sum, smul_eq_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun q _ => ?_
     have e1 : l (kerRep (ρ.comp K.subtype) hr q ⟨_, h1 v⟩ : V) =
         (μ.real (kerSet r) : ℂ)⁻¹ * ∫ g in kerSet r, l (ρ (Function.surjInv hr q : K) (ρ g v)) ∂μ := by

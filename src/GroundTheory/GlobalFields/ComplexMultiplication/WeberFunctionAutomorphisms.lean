@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.WeberFunction
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

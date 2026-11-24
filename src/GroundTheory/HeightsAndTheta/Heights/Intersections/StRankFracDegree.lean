@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Relrank
 
 @[expose] public section
 

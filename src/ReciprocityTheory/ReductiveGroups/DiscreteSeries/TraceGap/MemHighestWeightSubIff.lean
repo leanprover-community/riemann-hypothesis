@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.GsBasisPhys
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.BlockAnti
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.FockWeights
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFockC
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFPrimeB
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFockA
 
 @[expose] public section
 

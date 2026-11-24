@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcRealPf
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocalJacobianOfDoubleCoset
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselFrame
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHDef
 
 @[expose] public section
 
@@ -24,9 +27,6 @@ theorem hJ_add_l (ε : Fin n → Bool) (x y w : Fin n → ℂ) : hJ ε (x + y) w
 
 theorem hJ_add_r (ε : Fin n → Bool) (x y w : Fin n → ℂ) : hJ ε w (x + y) = hJ ε w x + hJ ε w y := by
   simp only [hJ, mulVec_add, dotProduct_add]
-
-theorem hJ_sub_l (ε : Fin n → Bool) (x y w : Fin n → ℂ) : hJ ε (x - y) w = hJ ε x w - hJ ε y w := by
-  simp only [hJ, star_sub, sub_dotProduct]
 
 theorem hJ_sub_r (ε : Fin n → Bool) (x y w : Fin n → ℂ) : hJ ε w (x - y) = hJ ε w x - hJ ε w y := by
   simp only [hJ, mulVec_sub, dotProduct_sub]
@@ -132,9 +132,9 @@ def negF (e f : Fin r → Fin (2 * r + k + 1) → ℂ) (z0 : Fin (2 * r + k + 1)
 theorem hJ_fe (hF : IsFrameJ ε e f wf z0) (a b : Fin r) : hJ ε (f a) (e b) = if a = b then 1 else 0 := by
   have hs : ∀ x y : Fin (2 * r + k + 1) → ℂ, hJ ε y x = conj (hJ ε x y) := by
     intro x y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
-      Complex.star_def, Complex.conj_conj]
+
+    simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
+    Complex.star_def, Complex.conj_conj]
     refine Finset.sum_congr rfl fun i _ => ?_
     split_ifs <;> simp <;> ring
   rw [hs, hF.ef b a]
@@ -147,9 +147,9 @@ theorem posF_gram (hF : IsFrameJ ε e f wf z0) (i j : Fin r ⊕ Fin k) :
       if i = j then (((Sum.elim (fun _ => (2 : ℝ)) (fun _ => (1 : ℝ))) i : ℝ) : ℂ) else 0 := by
   have hs : ∀ x y : Fin (2 * r + k + 1) → ℂ, hJ ε y x = conj (hJ ε x y) := by
     intro x y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
-      Complex.star_def, Complex.conj_conj]
+
+    simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
+    Complex.star_def, Complex.conj_conj]
     refine Finset.sum_congr rfl fun i _ => ?_
     split_ifs <;> simp <;> ring
   rcases i with a | c <;> rcases j with b | d
@@ -169,17 +169,17 @@ theorem negF_gram (hF : IsFrameJ ε e f wf z0) (i j : Fin r ⊕ Unit) :
       if i = j then (((Sum.elim (fun _ => (-2 : ℝ)) (fun _ => (-1 : ℝ))) i : ℝ) : ℂ) else 0 := by
   have hs : ∀ x y : Fin (2 * r + k + 1) → ℂ, hJ ε y x = conj (hJ ε x y) := by
     intro x y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
-      Complex.star_def, Complex.conj_conj]
+
+    simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
+    Complex.star_def, Complex.conj_conj]
     refine Finset.sum_congr rfl fun i _ => ?_
     split_ifs <;> simp <;> ring
   rcases i with a | u <;> rcases j with b | w
-  · simp only [negF, hJ_sub_l, hJ_sub_r, hF.ee, hF.ff, hF.ef, hJ_fe hF, Sum.inl.injEq]
+  · simp only [negF, _root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_sub_left, hJ_sub_r, hF.ee, hF.ff, hF.ef, hJ_fe hF, Sum.inl.injEq]
     by_cases h : a = b
     · subst h; simp; norm_num
     · simp [h]
-  · simp [negF, hJ_sub_l, hF.ez, hF.fz]
+  · simp [negF, _root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_sub_left, hF.ez, hF.fz]
   · simp [negF, hJ_sub_r, hs (e _) z0, hs (f _) z0, hF.ez, hF.fz]
   · simp [negF, hF.zz]
 
@@ -203,9 +203,9 @@ theorem hJ_Qm_self (hF : IsFrameJ ε e f wf z0) (zB : Fin (2 * r + k + 1) → �
     hJ ε (Qm e f wf z0 *ᵥ zB) (Qm e f wf z0 *ᵥ zB) = -((Tz k r zB : ℝ) : ℂ) := by
   have hs : ∀ x y : Fin (2 * r + k + 1) → ℂ, hJ ε y x = conj (hJ ε x y) := by
     intro x y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
-      Complex.star_def, Complex.conj_conj]
+
+    simp only [hJ, dotProduct, Formalism.REAL.Jm, mulVec_diagonal, map_sum, map_mul, Pi.star_apply,
+    Complex.star_def, Complex.conj_conj]
     refine Finset.sum_congr rfl fun i _ => ?_
     split_ifs <;> simp <;> ring
   have hc1 : ∀ j : Fin (2 * r + k + 1), (hj : j.val < r) → colQ e f wf z0 j = e ⟨j.val, hj⟩ := by
@@ -239,8 +239,8 @@ theorem hJ_Qm_self (hF : IsFrameJ ε e f wf z0) (zB : Fin (2 * r + k + 1) → �
     all_goals first | rw [hc1 i hi] | rw [hc2 i hi1 hi2] | rw [hc3 i hi] | rw [hc4 i hi]
     all_goals first | rw [hc1 j hj] | rw [hc2 j hj1 hj2] | rw [hc3 j hj] | rw [hc4 j hj]
     all_goals simp only [hF.ee, hF.ff, hF.ef, hJ_fe hF, hF.ew, hF.fw, hF.ww, hF.ez, hF.fz, hF.zz, hF.zw,
-      hwe, hwf, hze, hzf, hwz, Fin.ext_iff, Fin.mk.injEq]
-    all_goals split_ifs <;> first | rfl | (exfalso; omega) | norm_num | omega
+      hwe, hwf, hze, hzf, hwz, Fin.ext_iff]
+    all_goals split_ifs <;> first | rfl | (exfalso; omega)
   have hX : hJ ε (Qm e f wf z0 *ᵥ zB) (Qm e f wf z0 *ᵥ zB) = herm (Hpk k r) zB zB := by
     rw [hQ, hJ_sum_l]
     simp only [hJ_sum_r, hG, herm, dotProduct, mulVec, Pi.star_apply, Complex.star_def, Finset.mul_sum]
@@ -278,8 +278,7 @@ theorem e_li (hF : IsFrameJ ε e f wf z0) : LinearIndependent ℂ e := by
   rw [Fintype.linearIndependent_iff]
   intro c hc b
   have h := congrArg (fun v => hJ ε v (f b)) hc
-  simp only [hJ_sum_l, hF.ef, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.sum_ite_eq,
-    Finset.mem_univ, if_true] at h
+  simp only [hJ_sum_l, hF.ef, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
   simpa [hJ] using h
 
 theorem frameX_of (hF : IsFrameJ ε e f wf z0) (hk : 1 ≤ k) {zB zB' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r zB)

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalSpanXb
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

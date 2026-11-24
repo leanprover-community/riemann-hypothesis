@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.IsVerticalCartier
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.IsMultiHomogChartMonomial
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

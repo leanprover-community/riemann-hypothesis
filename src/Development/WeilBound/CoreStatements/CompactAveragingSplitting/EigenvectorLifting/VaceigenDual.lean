@@ -1,10 +1,58 @@
 module
 
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.InertDef
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenAlg
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicCharacterNontrivialAtPlaces
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DualLatticeDifferentIndex
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAddCharSymplecticLocalLatticeEqOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicCharacterNontrivialAtPlaces
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrimeAdditiveCharacterUnramified
+public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenAlg
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -80,9 +128,7 @@ theorem skew_det {B : Base F E} {X : Spc F E n} {r s : ℕ} (h : X.IsSkew σ B r
   refine isUnit_iff_ne_zero.2 fun h0 => this ?_
   rw [Matrix.det_smul, ← RingHom.mapMatrix_apply, ← RingHom.map_det, h0, map_zero, mul_zero]
 
-theorem sigma_sigma (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  exact τ.injective (by rw [h.2.2.2, h.2.2.2, star_star])
+alias sigma_sigma := _root_.GlobalTheory.AdelicU.cm_conj_conj
 
 theorem cA_cA (h : ∀ x, σ (σ x) = x) (x : AE F E) : cA σ (cA σ x) = x := by
   induction x using TensorProduct.induction_on with
@@ -109,8 +155,8 @@ theorem form_eq (J : Matrix (Fin d) (Fin d) E) (y x : Fin d → E) : form σ J y
 
 theorem trF_incV (J : Matrix (Fin d) (Fin d) E) (y x : Fin d → E) :
     trF σ J y (incV x) = algebraMap F (AF F) (Algebra.trace F E (form σ J y x)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← trace_incl, form_eq, map_sum]
+
+  rw [← trace_incl, form_eq, map_sum]
   simp only [map_mul]
   rfl
 
@@ -151,11 +197,11 @@ theorem exists_tr_rep (hσ : ∀ x, σ (σ x) = x) {J : Matrix (Fin d) (Fin d) E
     exact ⟨b, fun e => LinearMap.congr_fun hb e⟩
   choose b hb using h
   refine ⟨b ᵥ* J⁻¹, fun x => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [form_eq, Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ hJ, Matrix.vecMul_one, map_sum]
+
+  rw [form_eq, Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ hJ, Matrix.vecMul_one, map_sum]
   simp only [hb, hσ]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, Finset.univ_sum_single]
+
+  rw [← map_sum, Finset.univ_sum_single]
 
 theorem mem_latW {B : Base F E} (hB : B.IsGood σ) {W : Spc F E d} {r s : ℕ} (hW : W.IsSkew σ B r s) (v : Pl F)
     {w : Fin d → AE F E} (hw : At (evFin F v) w)
@@ -163,8 +209,8 @@ theorem mem_latW {B : Base F E} (hB : B.IsGood σ) {W : Spc F E d} {r s : ℕ} (
   have hσ := sigma_sigma hB.cm
   have : Module.Finite (𝓞 F) (𝓞 E) := Module.Finite.of_restrictScalars_finite ℤ _ _
   have hsk (x y : Fin d → E) : form σ W.J x y = -σ (form σ W.J y x) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [form, dotProduct, Matrix.mulVec, map_sum, map_mul, Finset.mul_sum, hσ, hW.skew, ← Finset.sum_neg_distrib]
+
+    simp only [form, dotProduct, Matrix.mulVec, map_sum, map_mul, Finset.mul_sum, hσ, hW.skew, ← Finset.sum_neg_distrib]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   have hFull : W.L.IsFullLattice E := by
@@ -227,8 +273,8 @@ theorem mem_latW {B : Base F E} (hB : B.IsGood σ) {W : Spc F E d} {r s : ℕ} (
       simp only [trF_incV, ← hu]
       ext j
       conv_lhs => rw [hid x]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [incV, Finset.sum_apply, Pi.smul_apply, map_sum, algebraMap_smul]
+
+      simp only [incV, Finset.sum_apply, Pi.smul_apply, map_sum, algebraMap_smul]
       exact Finset.sum_congr rfl fun i _ =>
         map_smul (Algebra.TensorProduct.includeRight : E →ₐ[F] AF F ⊗[F] E) _ _
     | zero => simp
@@ -277,9 +323,9 @@ theorem symp_vecMulVec (hσ : ∀ x, σ (σ x) = x) (JA : Matrix (Fin n) (Fin n)
   rw [symp, neg_one_mul, map_neg]
   change _ = -Algebra.trace _ _ _
   congr 2
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hTens, incM, incV, Matrix.map_apply, Matrix.vecMulVec_apply, Matrix.vecMul, dotProduct, map_sum, map_mul,
-    cA_incl, hσ, Finset.sum_mul, Finset.mul_sum]
+
+  simp only [hTens, incM, incV, Matrix.map_apply, Matrix.vecMulVec_apply, Matrix.vecMul, dotProduct, map_sum, map_mul,
+  cA_incl, hσ, Finset.sum_mul, Finset.mul_sum]
   symm
   rw [Finset.sum_comm]
   conv_lhs => enter [2, k]; rw [Finset.sum_comm]; enter [2, i]; rw [Finset.sum_comm]
@@ -346,8 +392,8 @@ theorem mem_latAtV {B : Base F E} (hB : B.IsGood σ) {X : Spc F E n} {W : Spc F 
   have huL : ∀ i, u i ∈ X.L := fun i => (hX.dual _).2 fun x hx => by
     obtain ⟨c, hc⟩ := hf i x hx
     have e : form σ X.J (u i) x = σ (f i x) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [form_eq, hu, LinearMap.pi_apply_eq_sum_univ (f i) x, map_sum]
+
+      rw [form_eq, hu, LinearMap.pi_apply_eq_sum_univ (f i) x, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [smul_eq_mul, map_mul, mul_comm]
       have : (fun j => if k = j then (1 : E) else 0) = Pi.single k 1 := funext fun j => by
@@ -360,8 +406,8 @@ theorem mem_latAtV {B : Base F E} (hB : B.IsGood σ) {X : Spc F E n} {W : Spc F 
     have e : ∀ k, ∑ i, incV (F := F) (g i) p * incV (a i) k = (1 : Matrix (Fin n) (Fin n) (AE F E)) p k := fun k => by
       have := congrFun (hid (Pi.single k 1)) p
       simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at this
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [incV, ← map_mul, ← map_sum, mul_comm (g _ p), a, ← this, Pi.single_apply, Matrix.one_apply]
+
+      simp only [incV, ← map_mul, ← map_sum, mul_comm (g _ p), a, ← this, Pi.single_apply, Matrix.one_apply]
       split_ifs <;> simp
     simp only [Matrix.sum_apply, Matrix.vecMulVec_apply, Matrix.vecMul, dotProduct, Finset.mul_sum, ← mul_assoc]
     rw [Finset.sum_comm]

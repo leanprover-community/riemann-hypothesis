@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StGoodChartModel
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartZeroSet
 
 @[expose] public section
 

@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInstSt
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveFr
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.RestrictionEqZeroIffMemVanishingFiltration
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

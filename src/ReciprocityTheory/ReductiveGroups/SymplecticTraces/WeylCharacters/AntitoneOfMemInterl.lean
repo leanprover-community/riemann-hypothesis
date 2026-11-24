@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.AltBranchStatement
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Matrix.Block
 
 @[expose] public section
 

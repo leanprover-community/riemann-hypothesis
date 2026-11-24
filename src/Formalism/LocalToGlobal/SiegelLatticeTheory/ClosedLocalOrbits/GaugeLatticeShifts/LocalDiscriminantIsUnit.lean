@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.GramJoint
-public import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.EFSymmCont
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
+public import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 
 @[expose] public section
 
@@ -298,8 +302,8 @@ theorem bt_span_units {ι : Type*} (u w : ι → (D.s.atP p).Ep) (v : ι → Vp 
 
 theorem bt_bc_sum {ι : Type*} (s : Finset ι) (c : ι → D.host.E) (v : ι → (VS D).V) :
     baseChange₂ D p (∑ i ∈ s, c i • v i) = ∑ i ∈ s, (D.s.atP p).ιE (c i) • baseChange₂ D p (v i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]; simp only [baseChange_smul₂]
+
+  rw [map_sum]; simp only [baseChange_smul₂]
 
 theorem bt_frameAct_comp {n : ℕ} (v : Fin n → (VS D).V) (A B : Matrix (Fin n) (Fin n) (𝓞 D.host.E)) :
     frameAct (frameAct v A) B = frameAct v (A * B) := by
@@ -555,8 +559,8 @@ theorem bt_coord {T : D.host.E} (F : FlagG (VS D) D.R.rS T) (b : Fin D.R.rS) :
     intro x
     show ∑ i, (D.s.atP p).ιE (lam ((VS D).frame i)) * (D.s.atP p).ιE ((VS D).frame.repr x i) = _
     conv_rhs => rw [← (VS D).frame.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, smul_eq_mul, map_mul, mul_comm]
   rw [key, hl a]
@@ -786,7 +790,7 @@ theorem bt_typed_sec (p : PlF D) {T T' : ℕ} (F0 : FlagG (VS D) D.R.rS (T : D.h
   ring
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem bt_typed_O (hD : LocDiffC D Z) (p : PlF D) {T T' : ℕ} (F0 : FlagG (VS D) D.R.rS (T : D.host.E))
     (Λ : Submodule (𝓞 D.host.E) (VS D).V) (F' : LFlag (D.sp.Y 0) D.R.rS (T' : D.host.E)) (Tn T'n : ℕ)
     (hXL : XLam Λ (lf D F0) = XS D F0)
@@ -879,7 +883,7 @@ theorem bt_typed_Ep (p : PlF D) {T T' : ℕ} (F0 : FlagG (VS D) D.R.rS (T : D.ho
         (Submodule.smul_mem _ _ (Submodule.subset_span (Or.inr ⟨a, rfl⟩)))
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem bbTie_core (hE : LocEqC D Z) (hS : LocSatC D Z) (hD : LocDiffC D Z) : BBTie D Z := by
   intro u u' F0 Λ F' hR hPD hMI p
   have hFix := hR.2.1
@@ -1008,13 +1012,13 @@ theorem bt_bc_linIndep {ι : Type*} [Fintype ι] (v : ι → (VS D).V) (hv : Lin
     intro x
     show ∑ k, (D.s.atP p).ιE (lam ((VS D).frame k)) * (D.s.atP p).ιE ((VS D).frame.repr x k) = _
     conv_rhs => rw [← (VS D).frame.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, smul_eq_mul, map_mul, mul_comm]
   have h2 := congrArg Φ hc
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_zero] at h2
+
+  rw [map_sum, map_zero] at h2
   simp only [map_smul, key, hl, smul_eq_mul] at h2
   simpa [apply_ite, Finset.sum_ite_eq'] using h2
 
@@ -1234,8 +1238,8 @@ theorem bt_det_unitri_sub {n l : ℕ} (hl : l ≤ n) {R : Type*} [CommRing R] (U
 theorem bt_brS_frameAct {n : ℕ} (v : Fin n → (VS D).V) (m : Matrix (Fin n) (Fin n) (𝓞 D.host.E)) (b : Fin n)
     (x : (VS D).V) :
     brS (VS D) (frameAct v m b) x = ∑ c, brS (VS D) (v c) x * ((m c b : 𝓞 D.host.E) : D.host.E) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [brS, frameAct, map_sum, map_smul, smul_eq_mul]
+
+  simp only [brS, frameAct, map_sum, map_smul, smul_eq_mul]
   refine Finset.sum_congr rfl fun c _ => ?_
   ring
 
@@ -1345,64 +1349,8 @@ variable (Z : LocDat D)
 theorem bt_selfDual (hDu : LocUnimodC D Z) (p : PlF D) (Λ : Submodule (𝓞 D.host.E) (VS D).V)
     (hL : Submodule.IsLattice D.host.E Λ) (hU : Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ) :
     (locH Z p).IsSelfDual (lattice₂ D Z.M p Λ) := by
-  have hriesz (φ : (VS D).V →ₗ[D.host.E] D.host.E) : ∃ μ : (VS D).V, ∀ v, (VS D).hT μ v = φ v := by
-    classical
-    obtain ⟨bs, hbs⟩ := Formalism.HermitianLatticesTheory.dualLattice_dualBasis (VS D).hT (VS D).nondeg (VS D).frame
-    refine ⟨∑ j, star (φ ((VS D).frame j)) • bs j, fun v => ?_⟩
-    have key : (VS D).hT (∑ j, star (φ ((VS D).frame j)) • bs j) = φ := by
-      apply (VS D).frame.ext
-      intro i
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, LinearMap.sum_apply]
-      have hs : ∀ j, (VS D).hT (star (φ ((VS D).frame j)) • bs j) ((VS D).frame i) =
-          φ ((VS D).frame j) * (if i = j then 1 else 0) := by
-        intro j
-        rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, star_star]
-        congr 1
-        rw [← (VS D).herm.eq ((VS D).frame i) (bs j), hbs]
-        split_ifs <;> simp
-      simp only [hs, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-    rw [key]
-  
-  have hspan : Submodule.span D.host.E (Λ : Set (VS D).V) = ⊤ := by
-    by_contra hspan
-    obtain ⟨φ, hφ₀, hφ⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hspan)
-    obtain ⟨μ, hμ⟩ := hriesz φ
-    have hμ₀ : μ ≠ 0 := by
-      intro h
-      apply hφ₀
-      ext y
-      simpa [h] using (hμ y).symm
-    have hline (a : D.host.E) : a • μ ∈ Λ := by
-      rw [← hU]
-      change a • μ ∈ Formalism.E.hdual (VS D).hT Λ
-      simp only [Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-          LinearMap.restrictScalars_apply]
-      intro y hy
-      have hy₀ := LinearMap.mem_ker.mp (hφ (Submodule.subset_span hy))
-      simp [← (VS D).herm.eq (a • μ) y, LinearMap.map_smulₛₗ, hμ, hy₀]
-    obtain ⟨ψ, hψ, -⟩ := Submodule.exists_le_ker_of_notMem
-      (show μ ∉ (⊥ : Submodule D.host.E (VS D).V) by simpa using hμ₀)
-    let f := ψ.restrictScalars (𝓞 D.host.E)
-    have hmap (x : D.host.E) : x ∈ Λ.map f := by
-      refine ⟨(x / ψ μ) • μ, hline _, ?_⟩
-      change ψ ((x / ψ μ) • μ) = x
-      rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hψ]
-    obtain ⟨d, hd₀, hd⟩ := FractionalIdeal.isFractional_of_fg
-      (S := nonZeroDivisors (𝓞 D.host.E)) (hL.fg.map f)
-    have hinj := IsFractionRing.injective (𝓞 D.host.E) D.host.E
-    have hne {a : 𝓞 D.host.E} (ha : a ≠ 0) : algebraMap (𝓞 D.host.E) D.host.E a ≠ 0 :=
-      fun h => ha (hinj (h.trans (map_zero _).symm))
-    have hinteger (x : D.host.E) : IsLocalization.IsInteger (𝓞 D.host.E) x := by
-      have hx := hd _ (hmap ((algebraMap (𝓞 D.host.E) D.host.E d)⁻¹ * x))
-      rwa [Algebra.smul_def, ← mul_assoc, mul_inv_cancel₀ (hne (nonZeroDivisors.ne_zero hd₀)),
-        one_mul] at hx
-    apply RingOfIntegers.not_isField D.host.E
-    refine ⟨⟨0, 1, zero_ne_one⟩, mul_comm, ?_⟩
-    intro a ha
-    obtain ⟨b, hb⟩ := hinteger ((algebraMap (𝓞 D.host.E) D.host.E a)⁻¹)
-    refine ⟨b, hinj ?_⟩
-    rw [map_mul, hb, map_one, mul_inv_cancel₀ (hne ha)]
+  have hspan : Submodule.span D.host.E (Λ : Set (VS D).V) = ⊤ :=
+    Formalism.HermitianLatticesTheory.IsUnimodular.span_eq_top hU (VS D).herm hL.fg
   refine ⟨?_, ?_, hDu p Λ hL hU⟩
   · obtain ⟨s, hs⟩ := hL.fg
     rw [← hs, latP_span]
@@ -1708,7 +1656,7 @@ theorem bt_isTerm (hE : LocEqC D Z) (hS : LocSatC D Z) (hD : LocDiffC D Z) (hDu 
     exact Submodule.subset_span ⟨_, hmem, rfl⟩
 
 
-set_option maxHeartbeats 800000 in
+
 theorem frameGenLoc_core (hE : LocEqC D Z) (hS : LocSatC D Z) (hD : LocDiffC D Z) (hDu : LocUnimodC D Z)
     {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
     (Λ : Submodule (𝓞 D.host.E) (VS D).V) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E))
@@ -1782,18 +1730,6 @@ end BBTie
 
 open BBTie
 
-theorem bbTie_of (Z : LocDat D) (hE : LocEqC D Z) (hS : LocSatC D Z) (hD : LocDiffC D Z) : BBTie D Z :=
-  bbTie_core Z hE hS hD
-
-theorem frameGenLoc_of (Z : LocDat D) (hE : LocEqC D Z) (hS : LocSatC D Z) (hD : LocDiffC D Z)
-    (hDu : LocUnimodC D Z) {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
-    (Λ : Submodule (𝓞 D.host.E) (VS D).V) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E))
-    (hR : IsRowLat D F0 Λ) (hPD : PD D Λ (lf D F0) u' F') (hMI : MplusIndep Λ (lf D F0) (gS D) F')
-    (hG : Gval (lf D F0) F' ≠ 0) (hD1 : Dr1 (lf D F0) F' ≠ 0) :
-    IsGeneric Λ (gS D) (lf D F0) F' ↔
-      ∀ p : PlF D, (locH Z p).IsGeneric (locTerm Z p Λ (lf D F0) F' (Tu D u) (Tu D u')) :=
-  frameGenLoc_core Z hE hS hD hDu F0 Λ F' hR hPD hMI hG hD1
-
 section Tied
 
 
@@ -1813,7 +1749,7 @@ theorem frameGenLoc_of' (hDN : Formalism.L2.SG.GramJoint.DNeZeroAt) (Z : LocDat 
     IsGeneric Λ (gS D) (lf D F0) F' ↔
       ∀ p : PlF D, (locH Z p).IsGeneric (locTerm Z p Λ (lf D F0) F' (Tu D u) (Tu D u')) := by
   obtain ⟨τ⟩ : Nonempty (D.host.E →+* ℂ) := inferInstance
-  exact frameGenLoc_of Z hE hS hD hDu F0 Λ F' hR hPD hMI hG
+  exact _root_.Formalism.L2.SG.Pf.BBTie.frameGenLoc_core Z hE hS hD hDu F0 Λ F' hR hPD hMI hG
     (hDN D.host.E (VS D) τ (D.sp.cm.cmUnram.2.1 τ) (D.sp.Y_sig 0) D.R.rS (Tu D u) (Tu D u')
       (Formalism.L2.SG.GramJoint.sig_hS D τ) (Formalism.L2.SG.GramJoint.Tu_pos D u) (Formalism.L2.SG.GramJoint.Tu_pos D u') F0 F'.fl hG)
 

@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+public import Mathlib.RingTheory.MvPolynomial
 
 @[expose] public section
 

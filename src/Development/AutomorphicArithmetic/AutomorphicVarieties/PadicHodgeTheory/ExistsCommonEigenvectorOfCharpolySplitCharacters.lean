@@ -1,12 +1,70 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.Distinct
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.WdDefs
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CharAbove
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WdParameterMonodromyZeroIffPotentiallyCrystallin
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalFilDR
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
+import Formalism.ConjugateSelfDual.Statement
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 
@@ -49,11 +107,11 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
     intro q
     obtain ⟨s, rfl⟩ := QuotientGroup.mk_surjective q
     exact ⟨s, (QuotientGroup.kerLift_mk φ s).symm⟩
-  haveI : Finite (I ⧸ φ.ker) := by
-    haveI := hfinU.to_subtype
+  have : Finite (I ⧸ φ.ker) := by
+    have := hfinU.to_subtype
     exact Finite.of_injective (fun q => (⟨_, hr q⟩ : Set.range φ))
       (fun a b hab => QuotientGroup.kerLift_injective φ (congrArg Subtype.val hab))
-  letI : Fintype (I ⧸ φ.ker) := Fintype.ofFinite _
+  let : Fintype (I ⧸ φ.ker) := Fintype.ofFinite _
   let R : I ⧸ φ.ker →* Module.End ℂ W := (Units.coeHom (Module.End ℂ W)).comp (QuotientGroup.kerLift φ)
   let c : Fin n → (I ⧸ φ.ker →* ℂˣ) := fun k => QuotientGroup.lift φ.ker ((μ k).comp i) (hker k)
   have hR : ∀ s : I, R (s : I ⧸ φ.ker) = ρ (i s) := fun s => rfl
@@ -82,7 +140,7 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
       _ = (μ j (i s) : ℂ) • ρ Φ y := by rw [hy t, map_smul, e2]
   have hmain : ∃ y ∈ E, y ≠ 0 ∧ ρ Φ y = (μ j Φ : ℂ) • y := by
     by_contra hno
-    push_neg at hno
+    push Not at hno
     let A : Module.End ℂ E := (ρ Φ).restrict hEinv
     let p := LinearMap.charpoly A
     have hp : p.eval (μ j Φ : ℂ) ≠ 0 := by
@@ -102,7 +160,7 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
     have key : ∀ y (hy : y ∈ E), Polynomial.aeval (ρ Φ) p y = ((Polynomial.aeval A p) ⟨y, hy⟩ : W) := by
       intro y hy
       rw [Polynomial.aeval_eq_sum_range, Polynomial.aeval_eq_sum_range]
-      simp [A, Module.End.pow_restrict, LinearMap.sum_apply]
+      simp [A, LinearMap.sum_apply]
       refine Finset.sum_congr rfl (fun m _ => ?_)
       rw [Module.End.pow_restrict]
       rfl
@@ -131,8 +189,8 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
     have htrq : ∀ s : I, LinearMap.trace ℂ W (Polynomial.aeval (ρ Φ) f * ρ (i s)) =
         ∑ k, f.eval (μ k Φ : ℂ) * (μ k (i s) : ℂ) := by
       intro s
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Polynomial.aeval_eq_sum_range, Finset.sum_mul, map_sum]
+
+      rw [Polynomial.aeval_eq_sum_range, Finset.sum_mul, map_sum]
       simp_rw [smul_mul_assoc, map_smul, ← map_pow, ← map_mul, htr]
       simp only [map_mul, map_pow, Units.val_mul, Units.val_pow_eq_pow_val, Polynomial.eval_eq_sum_range,
         Finset.sum_mul, Finset.mul_sum, smul_eq_mul]
@@ -146,8 +204,8 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
       rfl
     have htot : LinearMap.trace ℂ W (Polynomial.aeval (ρ Φ) f * P) =
         ∑ k, f.eval (μ k Φ : ℂ) * ∑ q : I ⧸ φ.ker, (((c k q : ℂˣ) : ℂ) * (((c j q)⁻¹ : ℂˣ) : ℂ)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [P, Finset.mul_sum, mul_smul_comm, map_sum, map_smul, smul_eq_mul, hq]
+
+      simp only [P, Finset.mul_sum, mul_smul_comm, map_sum, map_smul, smul_eq_mul, hq]
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun q _ => by ring))
     have hψ : ∀ k, ∑ q : I ⧸ φ.ker, (((c k q : ℂˣ) : ℂ) * (((c j q)⁻¹ : ℂˣ) : ℂ)) =

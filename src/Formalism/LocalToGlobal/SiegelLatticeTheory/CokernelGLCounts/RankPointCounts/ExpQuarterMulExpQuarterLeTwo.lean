@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DimFormC
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLoc
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGram
-public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
 
 @[expose] public section
 
@@ -44,7 +43,7 @@ theorem one_factor (k b g : ℝ) (f : ℕ) (hk : 1 ≤ k) (hb : 2 ≤ b) (hg : (
     linarith
   have h0 : 0 ≤ 1 + 3 / g := by positivity
   calc (1 + 3 / g) ^ f ≤ Real.exp (3 / g) ^ f := by gcongr
-    _ = Real.exp (f * (3 / g)) := (Real.exp_nat_mul _ f).symm
+    _ = Real.exp (f * (3 / g)) := (Real.exp_natCast_mul f _).symm
     _ ≤ Real.exp (1 / 4) := by
         apply Real.exp_le_exp.mpr
         have he : (f : ℝ) * (3 / g) = 3 * f / g := by ring

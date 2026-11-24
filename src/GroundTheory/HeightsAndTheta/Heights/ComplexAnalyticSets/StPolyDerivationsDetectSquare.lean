@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFormalFibresRegular
+public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib.RingTheory.Derivation.Basic
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
 
 @[expose] public section
 

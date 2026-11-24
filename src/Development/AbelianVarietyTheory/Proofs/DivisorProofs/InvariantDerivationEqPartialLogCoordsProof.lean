@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralInvariantDerivationLog
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsExpEqOfSubstLg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.MonoVal
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -106,16 +146,16 @@ def logLin (cp : ι → Fin n) (u : ι → Fin d → K) (b : Fin n) : Fin d → 
 omit [CharZero K] in
 theorem cc_logLin (cp : ι → Fin n) (u : ι → Fin d → K) (b : Fin n) (e : Fin d) :
     constantCoeff (logLin cp u b e) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [logLin, map_sum, constantCoeff_smul, constantCoeff_X, smul_zero, Finset.sum_const_zero]
+
+  simp only [logLin, map_sum, constantCoeff_smul, constantCoeff_X, smul_zero, Finset.sum_const_zero]
 
 omit [CharZero K] in
 theorem pderiv_logLin (cp : ι → Fin n) (u : ι → Fin d → K) (b : Fin n) (e : Fin d) (l : ι) :
     pderiv l (logLin cp u b e) = if cp l = b then C (u l e) else 0 := by
   classical
   unfold logLin
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single l]
+
+  rw [map_sum, Finset.sum_eq_single l]
   · rw [Derivation.map_smul, pderiv_X_self, smul_eq_C_mul, mul_one]
     split_ifs <;> simp
   · intro l' _ hl
@@ -151,11 +191,11 @@ theorem pderiv_subst_expPt (F : FGLaw K d) (hF : ∀ a, MvIsInt v (subst (twoVar
   rw [ReciprocityTheory.ChartRestriction.G.TB.LogPf.pderiv_subst hT, Fintype.sum_prod_type, Finset.sum_eq_single (cp l)]
   · unfold DofN
     simp only [key, ite_true]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← coe_substAlgHom hTs, map_sum]
+
+    rw [← coe_substAlgHom hTs, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_mul, map_sum, mul_comm]
+
+    rw [map_mul, map_sum, mul_comm]
     congr 1
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, coe_substAlgHom hTs, subst_C]
@@ -186,8 +226,8 @@ theorem invDer : InvDerSt := by
     | nil => rfl
     | cons a L ih => rw [List.foldr_cons, List.foldr_cons, hit, ih]
   unfold DpolyN derivAt0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [map_mul, constantCoeff_C, mul_assoc, ← constantCoeff_subst_self T hT]
   congr 1

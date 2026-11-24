@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConePairing
 public import GroundTheory.ProfiniteCohomology.MackeyFormula.ConeHomotopy
+import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 @[expose] public section
 

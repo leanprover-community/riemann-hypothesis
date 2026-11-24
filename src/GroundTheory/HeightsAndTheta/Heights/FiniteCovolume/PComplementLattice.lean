@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StComplementLattice
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PLinePairOrbitsFinite
+import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.GroupTheory.IndexNSmul
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCompactHolomorphicFibreFinite
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNonIsolatedFibreCurve
+public import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.Analysis.InnerProductSpace.OfNorm
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Topology.Compactness.CountablyCompact
+public import Mathlib.Topology.DerivedSet
+public import Mathlib.Analysis.Calculus.FDeriv.Add
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.RedTheta
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.FuncSt
+import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 
 @[expose] public section
 

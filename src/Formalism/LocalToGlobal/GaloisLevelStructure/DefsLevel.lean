@@ -2,7 +2,8 @@ module
 
 public import Formalism.LocalRingCardinality.Params
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
+public import Formalism.AlgebraicWeights.IsAlgWeight
+public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
 
 @[expose] public section
 

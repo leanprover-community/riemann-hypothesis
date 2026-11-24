@@ -1,16 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsOverVUnder
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsMoveRight
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemParahoricOfTrivialReduction
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FirstCoupledKernelEquivariantCosets
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormalFormAtPrime
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelGroupModTypePrime
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevQFiniteIndexAndRoot
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowTypeOneAddPrimeSmulEqOne
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelGroupModTypePrime
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FirstCoupledKernelEquivariantCosets
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfPowPred
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntAtNatCast
-public import Formalism.LocalToGlobal.Columns.QthExistsBound
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntAtNatCast
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedK1BlockDecomposition
+public import Formalism.LocalToGlobal.Columns.QthExistsBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEqZeroOfDiv
 
 @[expose] public section
 
@@ -74,8 +114,8 @@ theorem congAt_local {D : D7} {X : Fields} (s : Seam D X) (P : HeightOneSpectrum
   have ex : k x - x = ∑ b, x b • (k (Pi.single b 1) - Pi.single b 1) := by
     conv_lhs => rw [show x = ∑ b, x b • (Pi.single b (1 : X.E) : Sp X.E N) by
       funext m; simp [Finset.sum_apply, Pi.single_apply]]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, ← Finset.sum_sub_distrib, smul_sub]
+
+    simp only [map_sum, map_smul, ← Finset.sum_sub_distrib, smul_sub]
   rw [ex, Pi.smul_apply, Finset.sum_apply, smul_eq_mul, Finset.mul_sum]
   refine intAt_sum _ fun b _ => ?_
   have e2 : (((qOf P ^ n : ℕ) : X.E))⁻¹ * (x b • (k (Pi.single b 1) - Pi.single b 1) : Sp X.E N) l =
@@ -209,7 +249,7 @@ theorem muAt_det_cong {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr 
     congr 1
     ext a b
     rw [LinearMap.toMatrix'_apply, Matrix.of_apply, mul_inv_cancel_left₀ hq]
-    simp [Pi.single_apply, eq_comm]
+    simp [Pi.single_apply]
   have hred : redP P.1 ((LinearEquiv.det κ : X.Eˣ) : X.E) = 1 := by
     rw [hdet, GlobalTheory.LastSteps.redP_det_add_q (fun a b => ?_) hZ]
     · have e2 : (Matrix.of fun a b : Fin N => if a = b then (1 : X.E) else 0) = 1 := by

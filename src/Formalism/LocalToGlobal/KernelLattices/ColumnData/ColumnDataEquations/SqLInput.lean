@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SqFinal
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.MemSmulLat
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseLinkOfNonzeroDelta
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.Reduction
+import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.HenselQuad
 
 @[expose] public section
 

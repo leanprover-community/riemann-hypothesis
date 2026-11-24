@@ -1,8 +1,15 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullFEPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThetaVV
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPowerSectionOfChartFunctions
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.RosatiAdj
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+import Std.Tactic.BVDecide.Normalize.BitVec
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 
 @[expose] public section
 
@@ -20,27 +27,7 @@ variable {A U : Type} [CommGroup A] [CommGroup U]
 
 theorem cubN_right {θ : A → A → A → U} (h : IsCub θ) {k : ℕ} {x : A} (hx : x ^ k = 1) (z y : A) :
     cubN θ k 1 x (z * y) * θ x z y ^ k = cubN θ k 1 x z * cubN θ k 1 x y := by
-  have cyc : ∀ p q r, θ r p q = θ p q r := fun p q r => (h.s01 r p q).trans (h.s12 p r q)
-  have key : ∀ a, θ a x (z * y) * θ x z y = θ a x z * θ a x y * (θ (a * x) z y * (θ a z y)⁻¹) := by
-    intro a
-    have c1 := h.coc x z y a
-    have c2 := h.coc a x z y
-    rw [← cyc x z a, ← cyc (x * z) y a, ← cyc x (z * y) a, ← cyc z y a] at c1
-    rw [← _root_.mul_assoc, eq_mul_inv_iff_mul_eq]
-    calc θ a x (z * y) * θ x z y * θ a z y = θ a x (z * y) * θ a z y * θ x z y := mul_right_comm _ _ _
-      _ = θ a (x * z) y * θ a x z * θ x z y := by rw [← c1]
-      _ = θ a x z * (θ a (x * z) y * θ x z y) := by rw [mul_comm (θ a (x * z) y) (θ a x z), _root_.mul_assoc]
-      _ = θ a x z * (θ (a * x) z y * θ a x y) := by rw [← c2]
-      _ = θ a x z * θ a x y * θ (a * x) z y := by rw [mul_comm (θ (a * x) z y) (θ a x y), _root_.mul_assoc]
-  have htel : ∏ i ∈ Finset.range k, (θ (x ^ i * x) z y * (θ (x ^ i) z y)⁻¹) = 1 := by
-    have := Finset.prod_range_div (fun i => θ (x ^ i) z y) k
-    simp only [pow_succ, div_eq_mul_inv] at this
-    rw [this, hx, pow_zero, mul_inv_cancel]
-  have hG : θ x z y ^ k = ∏ _i ∈ Finset.range k, θ x z y := by simp
-  unfold cubN
-  simp only [_root_.one_mul]
-  rw [hG, ← Finset.prod_mul_distrib, Finset.prod_congr rfl (fun i _ => key (x ^ i)), Finset.prod_mul_distrib,
-    Finset.prod_mul_distrib, htel, _root_.mul_one]
+  apply GlobalTheory.ThetaInValues.cubN_mul <;> assumption
 
 theorem lift_const {k : ℕ} (hk : Odd k) {t d : A} (ht : t ^ k = 1) (hd : d ^ k = 1) (φ' φ β ν' ν κ : A → U) (c e : U)
     (hga : ∀ y, φ (y * d) * β (y * d * t) * β y = φ y * β (y * t) * β (y * d))
@@ -281,7 +268,7 @@ theorem prod_mulN (N : ℕ) {T : Over S} (y : T ⟶ A) {U : Type} [CommGroup U] 
   have e : y.left ≫ (mulA A N).left = (y ^ N).left := by
     rw [← Over.comp_left, mulA, comp_pow, Category.comp_id]
   rw [Fin.prod_univ_two]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Category.comp_id, e, zpow_neg,
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Category.comp_id, e, zpow_neg,
     zpow_one]
   norm_cast
 
@@ -290,11 +277,11 @@ theorem prod_pm (N : ℕ) {T : Over S} (a b : T ⟶ A) {U : Type} [CommGroup U] 
     ∏ i, h ((![a.left, b.left] : Fin 2 → _) i) ^ (![(N : ℤ) ^ 2, -(N : ℤ) ^ 2] : Fin 2 → ℤ) i =
       h a.left ^ (N ^ 2) * (h b.left ^ (N ^ 2))⁻¹ := by
   rw [Fin.prod_univ_two]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, zpow_neg]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, zpow_neg]
   norm_cast
 
 include c in
-set_option maxHeartbeats 1600000 in
+
 theorem vtOver_unique (hG : GlobalFnsSt) (hA : IsAbelianScheme A) (hsym : L.IsSymmetric) {N : ℕ} (hN : Odd N) (f g : A ⟶ A)
     [IsMonHom f] [IsMonHom g] (hr : RosatiAdj A L.L f g) {T : Over S} (ok : (T ⟶ A) → Prop)
     (hf : ∀ x, ok x → x ≫ f = 1) (hg : ∀ x, ok x → x ≫ g = x) (hk : ∀ x, ok x → x ^ (N ^ 2) = 1)

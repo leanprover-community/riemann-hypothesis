@@ -1,20 +1,71 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsGaloisCover
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaOfTranslDiff
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
+public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.ExistsArBaseAway
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueWeilIs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsCommVOfLe
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.WeilIsAlternatingSkewNatural
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.BiadditiveOfTrivAxes
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsGenMovePow
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaOfTranslDiff
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LineBundleIsoLinCombSymmBiadditiveSubstitution
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.BiadditiveOfTrivAxesStatement
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.RelAmpleFormBundlePowerOfPosDefStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Clauses
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.RelAmpleFormBundlePowerOfPosDef
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.TangentLinearity.ConstPullback
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
 
 @[expose] public section
 
@@ -169,8 +220,8 @@ theorem eq_one_of_geometric {S : Scheme.{0}} {k : ℕ} (hk : Odd k) (u : Γ(S, �
       have := congrArg x.appTop.hom hu
       rwa [map_pow, map_one, pow_succ, pow_mul, h₂, one_pow, _root_.one_mul] at this
     have h₄ : IsUnit (x.appTop.hom (∑ i ∈ Finset.range k, u ^ i)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_pow, h₃, one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, _root_.mul_one]
+
+      simp only [map_sum, map_pow, h₃, one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, _root_.mul_one]
       have := (Ne.isUnit h₁).map (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom
       rwa [map_natCast] at this
     have h₅ : x (default : PrimeSpectrum K) = p :=
@@ -346,8 +397,8 @@ theorem existsUnique_coord {Λ I : Type} [AddCommGroup Λ] {m k : ℕ} (hk : k �
       simp [Pi.single_apply]
     apply Additive.ofMul.injective
     show _ = F _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h₁, map_sum, Finset.sum_apply, map_sum, ofMul_prod]
+
+    rw [h₁, map_sum, Finset.sum_apply, map_sum, ofMul_prod]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_nsmul, Pi.smul_apply, map_nsmul, ofMul_pow]
     rfl
@@ -415,8 +466,8 @@ variable {n : ℕ} (pr : Fin n → (G ⟶ A)) (W : Matrix (Fin n) (Fin n) ℤ)
 omit [GrpObj A] [IsCommMonObj A] [GrpObj G] in
 theorem pull_sharp {T : Over S} (a : T ⟶ G) (h : (sharp Pb pr W).IsLB) :
     pull a.left (cls _ h) = quad (bi hP) W (fun u => a ≫ pr u) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [cls_linComb hP, map_sum]
+
+  rw [cls_linComb hP, map_sum]
   refine Finset.sum_congr rfl fun uv _ => ?_
   rw [map_zsmul]
   exact congrArg _ (pull_bi hP a _ _)
@@ -554,7 +605,7 @@ theorem exists_tObj_isSharp : Out.Laws → Out.Laws2 → ∀ (h g : ℕ) (W : Ma
   have hD : c.diag.IsLB := pull_isLB hP _
   have hB : ∀ (T : Over S) (x x' y : T ⟶ c.A), bi hP (x * x') y = bi hP x y + bi hP x' y := fun T x x' y => by
     have e := (cls_eq_zero_iff (LB.isLB_linComb hP _ _)).2
-      (GlobalTheory.T.biadditive_of_trivial_on_axes hG S c.A c.diag c.ab hD hc.1 c.P hP c.rig₁ c.rig₂ T x x' y).1
+      (_root_.GlobalTheory.Biadditive.biadditive_of_triv_axes hG S c.A c.diag c.ab hD hc.1 c.P hP c.rig₁ c.rig₂ T x x' y).1
     rw [cls_linComb hP, Fin.sum_univ_three] at e
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, one_smul, neg_smul] at e
     rw [← sub_eq_zero, ← e]
@@ -566,7 +617,7 @@ theorem exists_tObj_isSharp : Out.Laws → Out.Laws2 → ∀ (h g : ℕ) (W : Ma
   have hLB : (sharp c.P pr W).IsLB := LB.isLB_linComb hP _ _
   have rigid := rigidified_sharp hP pr W hpr hB
   have sym := sym_sharp hP pr W hpr hB hs
-  have ample : Out.RelAmple G (sharp c.P pr W) := GlobalTheory.T.relAmple_formBundle_power_of_posDef hG h k 8 o b.ζ S s c G pr W hpr hu hc.1 hW.1
+  have ample : Out.RelAmple G (sharp c.P pr W) := _root_.GlobalTheory.PosDefAmple.relAmple_linComb_of_posDef hG h k 8 o b.ζ S s c G pr W hpr hu hc.1 hW.1
   have ktriv := kTriv_sharp hP pr W hpr hB hs hu hW.2 hc.2
   have ext : ∀ {T : Over S} {x y : T ⟶ G}, (∀ u, x ≫ pr u = y ≫ pr u) → x = y := fun {T x y} e =>
     (hu T fun u => y ≫ pr u).unique e fun _ => rfl

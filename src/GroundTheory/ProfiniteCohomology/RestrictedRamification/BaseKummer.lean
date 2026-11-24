@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummerDefs
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
-public import GroundTheory.ProfiniteCohomology.Characters
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -81,6 +81,18 @@ theorem compactCohomologyMap_congr {g g' : A ⟶ B} {gᵥ gᵥ' : ∀ v, Aᵥ v 
   subst h2
   rfl
 
+private theorem compactCohomologyMap_comp_eq_id
+    {b₁ : ∀ v, Rep.res (φ v).toMonoidHom A ⟶ Bᵥ v}
+    {gᵥ : ∀ v, Aᵥ v ⟶ Bᵥ v} {gᵥ' : ∀ v, Bᵥ v ⟶ Aᵥ v}
+    (hg : ∀ v, a v ≫ gᵥ v = (Rep.resFunctor (φ v).toMonoidHom).map (𝟙 A) ≫ b₁ v)
+    (hg' : ∀ v, b₁ v ≫ gᵥ' v = (Rep.resFunctor (φ v).toMonoidHom).map (𝟙 A) ≫ a v)
+    (h : ∀ v, gᵥ v ≫ gᵥ' v = 𝟙 (Aᵥ v)) (n : ℕ) :
+    compactCohomologyMap φ (𝟙 A) gᵥ hg n ≫ compactCohomologyMap φ (𝟙 A) gᵥ' hg' n = 𝟙 _ := by
+  refine (compactCohomologyMap_comp φ (a := a) (b := b₁) (c := a) (𝟙 A) gᵥ hg
+    (𝟙 A) gᵥ' hg' n).symm.trans ?_
+  exact (compactCohomologyMap_congr φ (a := a) (b := a) _ _
+    (Category.id_comp (𝟙 A)) (funext h) n).trans (compactCohomologyMap_id φ (a := a) n)
+
 end CompactMap
 
 section ULiftCompare
@@ -115,10 +127,11 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   [NeZero n] (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
 
 
-set_option maxHeartbeats 1600000 in
+
 include hnS in
 theorem bijective_gsRootsOmegaMor (v : S) : Function.Bijective (gsRootsOmegaMor S ιs n v).hom := by
-  obtain ⟨z, hz⟩ := HasEnoughRootsOfUnity.exists_isPrimitiveRoot ℚ̄ n
+  obtain ⟨z, hz⟩ := @HasEnoughRootsOfUnity.exists_isPrimitiveRoot ℚ̄ _ n
+    (AlgebraicClosure.hasEnoughRootsOfUnity ℚ n)
   have hzS : z ∈ maxUnramifiedOutside K.1 ℚ̄ S :=
     mem_maxUnramifiedOutside_of_pow_eq_one S (NeZero.ne n) hnS hz.pow_eq_one
   have hzS' : IsPrimitiveRoot (⟨z, hzS⟩ : maxUnramifiedOutside K.1 ℚ̄ S) n :=
@@ -142,16 +155,23 @@ def gsRootsComparisonInv (m : ℕ) :
         (bijective_gsRootsOmegaMor S ιs n hnS v)).symm_apply_apply x))) m
 
 theorem gsRootsComparison_comp_inv (m : ℕ) :
-    gsRootsComparison S ιs n m ≫ gsRootsComparisonInv S ιs n hnS m = 𝟙 _ :=
-  (compactCohomologyMap_comp (gsFinFamily S ιs) _ _ _ _ _ _ m).symm.trans
-    ((compactCohomologyMap_congr (gsFinFamily S ιs) _ _ (Category.comp_id _)
-      (funext fun _ => comp_repInvOfBijective _ _) m).trans (compactCohomologyMap_id (gsFinFamily S ιs) m))
+    gsRootsComparison S ιs n m ≫ gsRootsComparisonInv S ιs n hnS m = 𝟙 _ := by
+  have h v := comp_repInvOfBijective (gsRootsOmegaMor S ιs n v) (bijective_gsRootsOmegaMor S ιs n hnS v)
+  exact compactCohomologyMap_comp_eq_id (gsFinFamily S ιs) (A := gsRoots S n)
+    (a := fun _ => 𝟙 _) (b₁ := gsRootsOmegaMor S ιs n)
+    (gᵥ := gsRootsOmegaMor S ιs n) (gᵥ' := gsRootsOmegaInv S ιs n hnS)
+    (fun v => (Category.id_comp (gsRootsOmegaMor S ιs n v)).trans (Category.id_comp _).symm)
+    (fun v => (h v).trans (Category.id_comp _).symm) h m
 
 theorem gsRootsComparison_inv_comp (m : ℕ) :
-    gsRootsComparisonInv S ιs n hnS m ≫ gsRootsComparison S ιs n m = 𝟙 _ :=
-  (compactCohomologyMap_comp (gsFinFamily S ιs) _ _ _ _ _ _ m).symm.trans
-    ((compactCohomologyMap_congr (gsFinFamily S ιs) _ _ (Category.comp_id _)
-      (funext fun _ => repInvOfBijective_comp _ _) m).trans (compactCohomologyMap_id (gsFinFamily S ιs) m))
+    gsRootsComparisonInv S ιs n hnS m ≫ gsRootsComparison S ιs n m = 𝟙 _ := by
+  exact compactCohomologyMap_comp_eq_id (gsFinFamily S ιs) (A := gsRoots S n)
+    (a := gsRootsOmegaMor S ιs n) (b₁ := fun _ => 𝟙 _)
+    (gᵥ := gsRootsOmegaInv S ιs n hnS) (gᵥ' := gsRootsOmegaMor S ιs n)
+    (fun v => (comp_repInvOfBijective (gsRootsOmegaMor S ιs n v)
+      (bijective_gsRootsOmegaMor S ιs n hnS v)).trans (Category.id_comp _).symm)
+    (fun v => (Category.id_comp (gsRootsOmegaMor S ιs n v)).trans (Category.id_comp _).symm)
+    (fun v => repInvOfBijective_comp (gsRootsOmegaMor S ιs n v) (bijective_gsRootsOmegaMor S ιs n hnS v)) m
 
 def gsRootsComparisonIso (m : ℕ) :
     compactCohomologyRes (gsFinFamily S ιs) (gsRoots S n) m ≅ gsRootsCompact S ιs n m where
@@ -162,7 +182,7 @@ def gsRootsComparisonIso (m : ℕ) :
 
 include hnS in
 theorem bijective_gsRootsComparison (m : ℕ) : Function.Bijective (gsRootsComparison S ιs n m).hom :=
-  ConcreteCategory.bijective_of_isIso (gsRootsComparisonIso S ιs n hnS m).hom
+  (gsRootsComparisonIso S ιs n hnS m).toLinearEquiv.bijective
 
 end Comparison
 
@@ -189,48 +209,63 @@ theorem gsLocalRes_sUnitsToUnits_eq (v : S) (z : cohomology (galSUnitsMax K.1 �
         ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom z)) =
       (cohomologyMap (uliftUnitsToUnitsZ S v) 2).hom (cohomologyULiftIntAddEquiv _ 2
         ((cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
-          (gsSUnitsLocalMor S ιs v) 2).hom z)) :=
-  (cohomologyMap_uliftInt_cohomologyMapAlong_local (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
+          (gsSUnitsLocalMor S ιs v) 2).hom z)) := by
+  have hres : gsLocalRes S (ιs v) 2 =
+      cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
+        (embUnitsMorZ S (ιs v)) 2 := by
+    unfold gsLocalRes gsFinFamily
+    rfl
+  symm
+  refine (cohomologyMap_uliftInt_cohomologyMapAlong_local (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
     (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) (gsSUnitsLocalMor S ιs v) (uliftUnitsToUnitsZ S v)
-    (embUnitsMorZ S (ιs v)) (fun _ => rfl) 2 z).symm
+    (embUnitsMorZ S (ιs v)) (fun _ => rfl) 2 z).trans ?_
+  rw [hres]
 
 variable (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
 
+private theorem nsmul_addMonoidHom_eq_zero {X Y : Type*} [AddMonoid X] [AddMonoid Y]
+    (f : X →+ Y) {a : ℕ} {x : X} (hx : a • x = 0) : a • f x = 0 :=
+  (map_nsmul f a x).symm.trans ((congrArg f hx).trans f.map_zero)
 
-set_option maxHeartbeats 4000000 in
 include hℓ hS in
 theorem eq_zero_of_gsUnitsCompact_two (hodd : Odd ℓ ∨ IsTotallyComplex K.1) (y : gsUnitsCompact S ιs 2) (j : ℕ)
     (hy : ℓ ^ j • y = 0) : y = 0 := by
   classical
-  have hz : (compactToGlobal (gsFinFamily S ιs) (galSUnitsMax K.1 ℚ̄ S) _ (gsSUnitsLocalMor S ιs) 2).hom y = 0 := by
-    refine eq_zero_of_sUnitsBrauer_eq_zero K S ℓ hℓ hS _ j
-      ((map_nsmul _ _ _).symm.trans ((congrArg _ hy).trans (map_zero _))) ?_
-    refine eq_zero_of_brauerLocal_apply_eq_zero (gsLocalEmbeddings S ιs) _ fun w => ?_
+  let toGlobal := compactToGlobal (gsFinFamily S ιs) (galSUnitsMax K.1 ℚ̄ S) _ (gsSUnitsLocalMor S ιs) 2
+  let z := toGlobal.hom y
+  let embeddings := gsLocalEmbeddings S ιs
+  have hz : z = 0 := by
+    have hzTorsion : ℓ ^ j • z = 0 := nsmul_addMonoidHom_eq_zero toGlobal.hom.toAddMonoidHom hy
+    refine eq_zero_of_sUnitsBrauer_eq_zero K S ℓ hℓ hS z j hzTorsion ?_
+    refine eq_zero_of_brauerLocal_apply_eq_zero embeddings (sUnitsBrauer K S z) fun w => ?_
     rcases w with w | w
     · apply placeInv_injective (K := K) (.inl w)
-      refine (placeInv_inl_eq_zero (ℓ ^ j) (hodd.imp (fun h => h.pow) id) w _ ?_).trans (map_zero _).symm
-      have e : ℓ ^ j • brauerLocal (gsLocalEmbeddings S ιs) (sUnitsBrauer K S
-          ((compactToGlobal (gsFinFamily S ιs) (galSUnitsMax K.1 ℚ̄ S) _ (gsSUnitsLocalMor S ιs) 2).hom y)) = 0 := by
-        rw [← map_nsmul, ← map_nsmul, ← map_nsmul, hy, map_zero, map_zero, map_zero]
-      exact (map_nsmul (DFinsupp.evalAddMonoidHom (β := fun w => localGaloisCohomology K 2 w)
-        (Sum.inl w : Place K.1)) (ℓ ^ j) _).symm.trans
-        ((congrArg (DFinsupp.evalAddMonoidHom (β := fun w => localGaloisCohomology K 2 w) (Sum.inl w : Place K.1)) e).trans
-          (map_zero _))
+      let eval := DFinsupp.evalAddMonoidHom (β := fun w => localGaloisCohomology K 2 w)
+        (Sum.inl w : Place K.1)
+      have hLocal := nsmul_addMonoidHom_eq_zero (brauerLocal embeddings)
+        (nsmul_addMonoidHom_eq_zero (sUnitsBrauer K S) hzTorsion)
+      exact (placeInv_inl_eq_zero (ℓ ^ j) (hodd.imp (fun h => h.pow) id) w _
+        (nsmul_addMonoidHom_eq_zero eval hLocal)).trans (AddMonoidHom.map_zero _).symm
     · by_cases hw : w ∈ S
-      · have h0 : (cohomologyMapAlong (gsFinFamily S ιs ⟨w, hw⟩).toMonoidHom (continuous_toMonoidHom _)
-            (gsSUnitsLocalMor S ιs ⟨w, hw⟩) 2).hom
-            ((compactToGlobal (gsFinFamily S ιs) (galSUnitsMax K.1 ℚ̄ S) _ (gsSUnitsLocalMor S ιs) 2).hom y) = 0 :=
+      · let v : S := ⟨w, hw⟩
+        let res := cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
+          (gsSUnitsLocalMor S ιs v) 2
+        have h0 : res.hom z = 0 :=
           congrFun (ConcreteCategory.congr_hom (compactToGlobal_globalToLocal (gsFinFamily S ιs)
-            (galSUnitsMax K.1 ℚ̄ S) _ (gsSUnitsLocalMor S ιs) 2) y) ⟨w, hw⟩
-        refine (congrArg (fun x => brauerLocal (gsLocalEmbeddings S ιs) x (.inr w)) (sUnitsBrauer_apply K S _)).trans ?_
-        refine (brauerLocal_gsBrauerInfl_inr K S (gsLocalEmbeddings S ιs) w _).trans ?_
-        have hfin : (gsLocalEmbeddings S ιs).fin w = ιs ⟨w, hw⟩ := gsLocalEmbeddings_fin S ιs ⟨w, hw⟩
-        rw [hfin]
-        refine (gsLocalRes_sUnitsToUnits_eq S ιs ⟨w, hw⟩ _).trans ?_
-        rw [h0, map_zero, map_zero]
-        rfl
-      · exact brauerLocal_sUnitsBrauer_inr K S _ _ w hw
+            (galSUnitsMax K.1 ℚ̄ S) _ (gsSUnitsLocalMor S ιs) 2) y) v
+        let t := cohomologyULiftIntAddEquiv _ 2
+          ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom z)
+        refine (brauerLocal_gsBrauerInfl_inr K S embeddings w t).trans ?_
+        refine (congrArg (fun emb => (gsLocalRes S (v := w) emb 2).hom t)
+          (gsLocalEmbeddings_fin S ιs v)).trans ?_
+        refine (gsLocalRes_sUnitsToUnits_eq S ιs v z).trans ?_
+        let _ := isDiscreteRep_uliftIntToIntRep_galUnits_local S v
+        let f := (cohomologyMap (uliftUnitsToUnitsZ S v) 2).hom
+        let e := cohomologyULiftIntAddEquiv
+          (galUnits (w.adicCompletion K.1) (AlgebraicClosure (w.adicCompletion K.1))) 2
+        exact (congrArg (fun x => f (e x)) h0).trans ((congrArg f e.map_zero).trans f.map_zero)
+      · exact brauerLocal_sUnitsBrauer_inr K S embeddings z w hw
   obtain ⟨ξ, hξ⟩ := (ShortComplex.moduleCat_exact_iff_ker_sub_range _).1
     (compactCohomology_exact_compact (gsFinFamily S ιs) (galSUnitsMax K.1 ℚ̄ S) _ (gsSUnitsLocalMor S ιs) 1) hz
   have : ∀ v : S, Subsingleton (cohomology (galUnits ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)

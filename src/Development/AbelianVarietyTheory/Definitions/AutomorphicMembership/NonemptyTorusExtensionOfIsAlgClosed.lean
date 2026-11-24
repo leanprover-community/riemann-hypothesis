@@ -1,28 +1,51 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniformBaseChange.PullGt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LawsProved
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsSchemeTheoreticallyDominantSpecOfInjective
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyOfFinitePresentationDiagMap
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.PowObjGeometricallyConnected
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SplitTorusHomProperTrivialField
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SplitTorusHomProperTrivialLocal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AdmissibleBasePowerSeries
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsPrimitiveRootArcRoot
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.OneAddZeta21PowSevenAddPowFourteenEqZero
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LinearUniformisationTriplesTorsionStatement
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModuliSchemePolarizedAbelianLevelStatement
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CmModuliConsequenceOfAbelianSchemeLawsStatement
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TypeFnPeriodExistModuliNonempty
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLevelGoodAtAllPrimesAndIdx
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CompactifiedModuliPartOne
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsSchemeTheoreticallyDominantSpecOfInjective
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniformBaseChange.PullGt
+import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsUniqueTorusCompat
 
 @[expose] public section
 
@@ -102,24 +125,12 @@ theorem pullTorus_mul (h : IsGrpPullback G' G f φ) (i j : splitTorus S X ⟶ G)
   rw [← MonObj.comp_mul] at k
   exact ((eq_pullTorus_iff h _ _).2 k.symm).symm
 
-theorem bcMap_comp (g : S'' ⟶ S') (f : S' ⟶ S) : bcMap (g ≫ f) X = bcMap g X ≫ bcMap f X := by
-  apply pullback.hom_ext
-  · have h {T U : Scheme.{0}} (a : T ⟶ U) :
-        bcMap a X ≫ Rosenlicht.torusFst U X = Rosenlicht.torusFst T X :=
-      pullback.lift_fst _ _ _
-    have e : (bcMap g X ≫ bcMap f X) ≫ Rosenlicht.torusFst S X = Rosenlicht.torusFst S'' X := by
-      rw [Category.assoc, h f, h g]
-    exact (h (g ≫ f)).trans e.symm
-  · have e : (bcMap g X ≫ bcMap f X) ≫ (splitTorus S X).hom = (splitTorus S'' X).hom ≫ g ≫ f := by
-      rw [Category.assoc, SplitTorus.bcMap_hom, SplitTorus.bcMap_hom_assoc]
-    exact (SplitTorus.bcMap_hom _ _).trans e.symm
-
 theorem pullTorus_pullTorus {g : S'' ⟶ S'} {φ' : G''.left ⟶ G'.left} {f'' : S'' ⟶ S}
     {φ'' : G''.left ⟶ G.left} (h' : IsGrpPullback G'' G' g φ') (h : IsGrpPullback G' G f φ)
     (h'' : IsGrpPullback G'' G f'' φ'') (ef : f'' = g ≫ f) (eφ : φ'' = φ' ≫ φ)
     (i : splitTorus S X ⟶ G) : pullTorus h' (pullTorus h i) = pullTorus h'' i := by
   subst ef eφ
-  rw [eq_pullTorus_iff, ← Category.assoc, pullTorus_left, Category.assoc, pullTorus_left, bcMap_comp,
+  rw [eq_pullTorus_iff, ← Category.assoc, pullTorus_left, Category.assoc, pullTorus_left, _root_.GlobalTheory.UU.bcMap_comp,
     Category.assoc]
 
 theorem pullTorus_torusMap_comp {Y : Type} [AddCommGroup Y] (h : IsGrpPullback G' G f φ)
@@ -167,14 +178,6 @@ abbrev Char (G : Over S) [GrpObj G] [IsCommMonObj G] : Type := Cochar G →+ ℤ
 
 namespace Char
 
-section
-
-variable {G H : Over S} [GrpObj G] [IsCommMonObj G] [GrpObj H] [IsCommMonObj H]
-  {G' : Over S'} [GrpObj G'] [IsCommMonObj G'] {G'' : Over S''} [GrpObj G''] [IsCommMonObj G'']
-  {f : S' ⟶ S} {φ : G'.left ⟶ G.left}
-
-end
-
 end Char
 
 section Triple
@@ -187,13 +190,9 @@ def CharOf (t : SAB H S) : Type := Char t.G
 
 namespace CocharOf
 
-variable {t : SAB H S} {t' : SAB H S'} {f : S' ⟶ S}
-
 end CocharOf
 
 namespace CharOf
-
-variable {t : SAB H S} {t' : SAB H S'} {f : S' ⟶ S}
 
 end CharOf
 
@@ -230,12 +229,6 @@ theorem mem_range_ofTorus [ConnectedSpace S] (i : splitTorus S X ⟶ G) [IsMonHo
 theorem ofTorus_id_bijective [ConnectedSpace S] :
     Function.Bijective (ofTorus (𝟙 (splitTorus S X))) :=
   ⟨ofTorus_injective _, fun l => mem_range_ofTorus _ l l.1 (Category.comp_id _)⟩
-
-section Ext
-
-variable {K : Type} [Field K] {G : Over (Sp K)} [GrpObj G] [IsCommMonObj G]
-
-end Ext
 
 theorem eval_bijective (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] :
     Function.Bijective (AddMonoidHom.eval : X →+ (X →+ ℤ) →+ ℤ) := by
@@ -386,23 +379,5 @@ theorem map_eq_zero_of_isLocalHom [IsLocalRing R] {k : Type} [Field k] (ρ : R �
   exact hx (IsLocalHom.map_nonunit x (Ne.isUnit h))
 
 end Unif
-
-section Spec
-
-variable {V S₁ S₀ : Scheme.{0}} {G : Over V} [GrpObj G] [IsCommMonObj G]
-  {G₁ : Over S₁} [GrpObj G₁] [IsCommMonObj G₁] {G₀ : Over S₀} [GrpObj G₀] [IsCommMonObj G₀]
-  {f₁ : S₁ ⟶ V} {f₀ : S₀ ⟶ V} {φ₁ : G₁.left ⟶ G.left} {φ₀ : G₀.left ⟶ G.left}
-
-variable (h₁ : IsGrpPullback G₁ G f₁ φ₁) (h₀ : IsGrpPullback G₀ G f₀ φ₀)
-  (hb : Function.Bijective (Cochar.pull h₁))
-
-end Spec
-
-section SpecTriple
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {V S₁ S₀ : Scheme.{0}}
-  {t : SAB H V} {t₁ : SAB H S₁} {t₀ : SAB H S₀} {f₁ : S₁ ⟶ V} {f₀ : S₀ ⟶ V}
-
-end SpecTriple
 
 end GlobalTheory.TorusPart

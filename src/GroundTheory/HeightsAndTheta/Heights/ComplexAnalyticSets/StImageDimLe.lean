@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
 
 @[expose] public section
 

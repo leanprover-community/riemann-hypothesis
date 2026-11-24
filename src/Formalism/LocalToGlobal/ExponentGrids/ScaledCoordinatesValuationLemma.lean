@@ -1,12 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.HarderNarasimhan.QuotRealize
-public import Formalism.HarderNarasimhan.StatementMod
 public import Formalism.QuotientMetricDivisors.PassageScaleFree
 public import Formalism.QuotientMetricDivisors.Complement2Normaliser
 public import Formalism.PairingDivisors.StatementX
-public import Formalism.TowerValuationBounds.HermitianSumValuationBound
+public import Mathlib.Analysis.SpecialFunctions.Log.PosLog
 
 @[expose] public section
 

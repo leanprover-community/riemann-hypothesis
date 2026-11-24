@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -28,8 +29,8 @@ theorem hermC_smul_left (a : ℂ) (u v : Fin r → ℂ) : hermC τ G (a • u) v
 theorem hC_sum_left {n : ℕ} (f : Fin n → Fin r → ℂ) (w : Fin n → ℂ) (v : Fin r → ℂ) :
     hermC τ G (∑ b, w b • f b) v = ∑ b, w b * hermC τ G (f b) v := by
   change (hL τ G v) (∑ b, w b • f b) = ∑ b, w b * (hL τ G v) (f b)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_smul, smul_eq_mul]
 
 def gramF {n : ℕ} (f : Fin n → Fin r → ℂ) : Matrix (Fin n) (Fin n) ℂ :=
@@ -111,8 +112,8 @@ variable {τ G} (hG : ∀ a b, τ (G b a) = conj (τ (G a b)))
 include hG
 
 theorem hC_conj (u v : Fin r → ℂ) : hermC τ G v u = conj (hermC τ G u v) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hermC, map_sum, map_mul, Complex.conj_conj]
+
+  simp only [hermC, map_sum, map_mul, Complex.conj_conj]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
   rw [hG x y]
@@ -132,8 +133,8 @@ theorem hermC_smul_right (a : ℂ) (u v : Fin r → ℂ) :
 
 theorem hC_sum_right {n : ℕ} (f : Fin n → Fin r → ℂ) (w : Fin n → ℂ) (v : Fin r → ℂ) :
     hermC τ G v (∑ b, w b • f b) = ∑ b, conj (w b) * hermC τ G v (f b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hC_conj hG (∑ b, w b • f b) v, hC_sum_left, map_sum]
+
+  rw [hC_conj hG (∑ b, w b • f b) v, hC_sum_left, map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [map_mul, hC_conj hG (f b) v]
 
@@ -188,8 +189,8 @@ theorem mt_eq {n : ℕ} (f : Fin n → Fin r → ℂ) (e : Fin r → ℂ) (hA : 
     rw [starRingEnd_apply]
     exact h3
   unfold mt yv
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.vecMul, dotProduct, map_sum, map_mul, hI, Finset.sum_mul]
+
+  simp only [Matrix.vecMul, dotProduct, map_sum, map_mul, hI, Finset.sum_mul]
   refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
   ring
 

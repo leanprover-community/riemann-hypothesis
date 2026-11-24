@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 
@@ -12,14 +17,6 @@ def LeviNonnegOn (n : ℕ) (φ : V n → ℝ) (U : Set (V n)) : Prop :=
   ∀ x ∈ U, ∀ ξ : Fin n → ℂ, 0 ≤ (leviV n (fun y => (φ y : ℂ)) x ξ).re
 
 variable {n : ℕ}
-
-theorem wd_congr {j : Fin n} {f g : V n → ℂ} {x : V n} (h : f =ᶠ[𝓝 x] g) :
-    wd n j f x = wd n j g x := by
-  simp only [wd, h.fderiv_eq]
-
-theorem wdb_congr {j : Fin n} {f g : V n → ℂ} {x : V n} (h : f =ᶠ[𝓝 x] g) :
-    wdb n j f x = wdb n j g x := by
-  simp only [wdb, h.fderiv_eq]
 
 theorem wdb_eventuallyEq {j : Fin n} {f g : V n → ℂ} {x : V n} (h : f =ᶠ[𝓝 x] g) :
     wdb n j f =ᶠ[𝓝 x] wdb n j g := h.eventuallyEq_nhds.mono fun _ hy => wdb_congr hy
@@ -124,7 +121,6 @@ theorem wdb_ofReal {j : Fin n} {v : V n → ℝ} {x : V n} (hv : DifferentiableA
     wdb n j (fun y => (v y : ℂ)) x = conj (wd n j (fun y => (v y : ℂ)) x) := by
   simp only [wdb, wd, fderiv_ofReal_apply hv]
   simp [map_div₀, Complex.conj_ofReal, map_ofNat]
-  all_goals ring
 
 theorem fderiv_conj_apply {f : V n → ℂ} {x : V n} (hf : DifferentiableAt ℝ f x) (w : V n) :
     fderiv ℝ (fun y => conj (f y)) x w = conj (fderiv ℝ f x w) := by
@@ -146,7 +142,6 @@ theorem wdb_conj {j : Fin n} {f : V n → ℂ} {x : V n} (hf : DifferentiableAt 
     wdb n j (fun y => conj (f y)) x = conj (wd n j f x) := by
   simp only [wd, wdb, fderiv_conj_apply hf]
   simp [map_div₀, map_ofNat]
-  all_goals ring
 
 theorem fderiv_real_of_complex {f : V n → ℂ} {x : V n} (hf : DifferentiableAt ℂ f x) (w : V n) :
     fderiv ℝ f x w = fderiv ℂ f x w := by

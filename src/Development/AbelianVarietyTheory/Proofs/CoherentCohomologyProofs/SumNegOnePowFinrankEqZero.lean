@@ -1,8 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.HdimEqZeroOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MapFOneInjectiveOfSectionsSurjective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -123,18 +167,48 @@ variable (U : X.Opens) (n : ℕ)
 
 lemma toH'_δ (x : cohOn S.X₃ U n) :
     toH' S.X₁ U (n + 1) (δ R hS U n x) =
-      SheafLES.δ.{u} (shortExact_toAbSheaf hS) n U (toH' S.X₃ U n x) := rfl
+      SheafLES.δ.{u} (shortExact_toAbSheaf hS) n U (toH' S.X₃ U n x) := by
+  unfold δ toH'
+  apply WithAction.toBase_linearMap
+
+-- Check the conversion to linear maps with the scalar actions and additive maps abstract.
+private theorem exact_withAction {A M₁ M₂ M₃ : Type*} [CommRing A]
+    [AddCommGroup M₁] [AddCommGroup M₂] [AddCommGroup M₃]
+    (ρ₁ : A →+* AddMonoid.End M₁) (ρ₂ : A →+* AddMonoid.End M₂)
+    (ρ₃ : A →+* AddMonoid.End M₃) (R' : Type*) [CommRing R'] [Algebra R' A]
+    (f : M₁ →+ M₂) (g : M₂ →+ M₃)
+    (hf : ∀ a x, f (ρ₁ a x) = ρ₂ a (f x)) (hg : ∀ a x, g (ρ₂ a x) = ρ₃ a (g x))
+    (h : Function.Exact f g) : Function.Exact
+      (WithAction.linearMap ρ₁ ρ₂ R' f hf) (WithAction.linearMap ρ₂ ρ₃ R' g hg) := h
 
 
 include hS in
-theorem exact₂ : Function.Exact (map R S.f U n) (map R S.g U n) :=
-  SheafLES.exact₂.{u} (shortExact_toAbSheaf hS) n U
+theorem exact₂ : Function.Exact (map R S.f U n) (map R S.g U n) := by
+  have h : Function.Exact
+      (SheafLES.map.{u} ((toAbSheaf (X := X)).map S.f) n U)
+      (SheafLES.map.{u} ((toAbSheaf (X := X)).map S.g) n U) :=
+    SheafLES.exact₂.{u} (shortExact_toAbSheaf hS) n U
+  unfold map
+  apply exact_withAction
+  exact h
 
-theorem exact₃ : Function.Exact (map R S.g U n) (δ R hS U n) :=
-  SheafLES.exact₃.{u} (shortExact_toAbSheaf hS) n U
+theorem exact₃ : Function.Exact (map R S.g U n) (δ R hS U n) := by
+  have h : Function.Exact
+      (SheafLES.map.{u} ((toAbSheaf (X := X)).map S.g) n U)
+      (SheafLES.δ.{u} (shortExact_toAbSheaf hS) n U) :=
+    SheafLES.exact₃.{u} (shortExact_toAbSheaf hS) n U
+  unfold map δ
+  apply exact_withAction
+  exact h
 
-theorem exact₁ : Function.Exact (δ R hS U n) (map R S.f U (n + 1)) :=
-  SheafLES.exact₁.{u} (shortExact_toAbSheaf hS) n U
+theorem exact₁ : Function.Exact (δ R hS U n) (map R S.f U (n + 1)) := by
+  have h : Function.Exact
+      (SheafLES.δ.{u} (shortExact_toAbSheaf hS) n U)
+      (SheafLES.map.{u} ((toAbSheaf (X := X)).map S.f) (n + 1) U) :=
+    SheafLES.exact₁.{u} (shortExact_toAbSheaf hS) n U
+  unfold δ map
+  apply exact_withAction
+  exact h
 
 theorem map_zero_injective_of_mono {F G : X.Modules} (φ : F ⟶ G) [Mono φ] :
     Function.Injective (map R φ U 0) :=
@@ -142,8 +216,9 @@ theorem map_zero_injective_of_mono {F G : X.Modules} (φ : F ⟶ G) [Mono φ] :
 
 
 include hS in
-theorem injective_zero : Function.Injective (map R S.f U 0) :=
-  SheafLES.injective_zero.{u} (shortExact_toAbSheaf hS) U
+theorem injective_zero : Function.Injective (map R S.f U 0) := by
+  have := hS.mono_f
+  exact map_zero_injective_of_mono R U S.f
 
 @[simp] lemma δ_map (x : cohOn S.X₂ U n) : δ R hS U n (map R S.g U n x) = 0 :=
   (exact₃ R hS U n).apply_apply_eq_zero x
@@ -155,16 +230,21 @@ theorem map_g_surjective (h : Subsingleton (cohOn S.X₁ U (n + 1))) :
     Function.Surjective (map R S.g U n) :=
   fun x ↦ (exact₃ R hS U n x).1 (Subsingleton.elim _ _)
 
-theorem app_surjective (h : Subsingleton (cohOn S.X₁ U 1)) : Function.Surjective (S.g.app U) :=
-  SheafLES.sections_surjective_of_subsingleton.{u} (shortExact_toAbSheaf hS) U h
+theorem app_surjective (h : Subsingleton (cohOn S.X₁ U 1)) : Function.Surjective (S.g.app U) := by
+  have h₁ : Subsingleton (Sheaf.H'.{u} ((toAbSheaf (X := X)).obj S.X₁) 1 U) := h
+  exact SheafLES.sections_surjective_of_subsingleton.{u} (shortExact_toAbSheaf hS) U h₁
 
 theorem subsingleton₂ (h₁ : Subsingleton (cohOn S.X₁ U n)) (h₃ : Subsingleton (cohOn S.X₃ U n)) :
-    Subsingleton (cohOn S.X₂ U n) :=
-  SheafLES.subsingleton₂.{u} (shortExact_toAbSheaf hS) n U h₁ h₃
+    Subsingleton (cohOn S.X₂ U n) := by
+  refine subsingleton_of_forall_eq 0 fun x ↦ ?_
+  obtain ⟨y, rfl⟩ := (exact₂ ℤ hS U n x).1 (h₃.elim _ _)
+  rw [h₁.elim y 0, map_zero]
 
 theorem subsingleton₃ (h₂ : Subsingleton (cohOn S.X₂ U n))
-    (h₁ : Subsingleton (cohOn S.X₁ U (n + 1))) : Subsingleton (cohOn S.X₃ U n) :=
-  SheafLES.subsingleton₃.{u} (shortExact_toAbSheaf hS) n U h₂ h₁
+    (h₁ : Subsingleton (cohOn S.X₁ U (n + 1))) : Subsingleton (cohOn S.X₃ U n) := by
+  have hg : map ℤ S.g U n = 0 :=
+    LinearMap.ext fun x ↦ (congrArg (map ℤ S.g U n) (h₂.elim x 0)).trans (map_zero _)
+  exact ((LinearMap.injective_iff_eq_zero_of_exact (exact₃ ℤ hS U n)).2 hg).subsingleton
 
 section Finite
 

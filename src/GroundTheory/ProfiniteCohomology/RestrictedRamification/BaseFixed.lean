@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 
 @[expose] public section
 

@@ -1,7 +1,56 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CommuteRowOpRightMixedOp
+public import Formalism.LocalRingCardinality.DataTheta
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsEqMulProdMinors
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ISupEigenspaceEqTop
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LineKroneckerRightMatrixConjTranspose
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -34,11 +83,11 @@ theorem lap_colOp [DecidableEq σ] (z : Fin k × Fin n → σ) (y : Fin l × Fin
     ∑ t, pderiv (z (i, t)) (pderiv (y (j, t)) (colOp ℂ x a b P)) =
       ∑ t, ∑ c, (if z (i, t) = x (c, a) then pderiv (x (c, b)) (pderiv (y (j, t)) P) else 0) +
       ∑ t, ∑ c, (if y (j, t) = x (c, a) then pderiv (z (i, t)) (pderiv (x (c, b)) P) else 0) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [colOp_apply, map_sum, pderiv_pderiv_polar, Finset.sum_add_distrib]
+
+  simp only [colOp_apply, map_sum, pderiv_pderiv_polar, Finset.sum_add_distrib]
   rw [Finset.sum_comm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← Finset.mul_sum, ← map_sum, hP i j]
+
+  simp only [← Finset.mul_sum, ← map_sum, hP i j]
   simp
 
 theorem harmSub_mixedOp {z : Fin k × Fin n → σ} {y : Fin l × Fin n → σ}
@@ -111,7 +160,7 @@ theorem mixed_weight (z : Fin k × Fin n → σ) (y : Fin l × Fin n → σ) {P 
     {t : Fin n} {w : ℚ} (h : mixedOp ℂ z y t t P = (w : ℂ) • P) {m : σ →₀ ℕ} (hm : m ∈ P.support) :
     w = ((∑ i, m (z (i, t)) : ℕ) : ℚ) - (∑ j, m (y (j, t)) : ℕ) := by
   have := congrArg (AddMonoidAlgebra.coeff · m) h
-  rw [mixedOp_apply, coeff_sub, coeff_sum, coeff_sum, coeff_smul] at this
+  rw [mixedOp_apply, MvPolynomial.coeff_sub, coeff_sum, coeff_sum, MvPolynomial.coeff_smul] at this
   simp only [GlobalTheory.Harm.HighestUnique.coeff_X_mul_pderiv, ← Finset.sum_mul, ← sub_mul,
     smul_eq_mul] at this
   have h2 := mul_right_cancel₀ (mem_support_iff.1 hm) this
@@ -210,7 +259,7 @@ theorem IsSide.mem_wtSub (h : IsSide e act) (μ : Ix p q → ℚ) (P : MvPolynom
       ∀ a, mixedOp ℂ (zC e) (zD e) a a P = (shiftNu (cPair r s) μ (.inr a) : ℂ) • P := by
   simp only [wtSub, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
     LinearMap.smul_apply, LinearMap.id_apply, Sum.forall, h.1, h.2, if_true, shiftNu, Rat.cast_sub,
-    Rat.cast_add, sub_smul, add_smul, sub_eq_zero, eq_sub_iff_add_eq, sub_eq_iff_eq_add, zero_add]
+    Rat.cast_add, sub_smul, add_smul, eq_sub_iff_add_eq, sub_eq_iff_eq_add, zero_add]
 
 theorem IsSide.mem_hwSub (h : IsSide e act) (μ : Ix p q → ℚ) (P : MvPolynomial σ ℂ) :
     P ∈ hwSub act μ ↔ P ∈ wtSub act μ ∧
@@ -255,9 +304,9 @@ theorem lowering_iff (e : Ln p q r s → σ) (P : MvPolynomial σ ℂ) :
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Finset.sum_eq_single c₀, Finset.sum_eq_single d₀]
     · split_ifs <;> simp [Eab]
-    · intro d _ hd; simp [Eab, Matrix.single_apply, hd.symm]
+    · intro d _ hd; simp [Eab, hd.symm]
     · simp
-    · intro c _ hc; simp [Eab, Matrix.single_apply, hc.symm]
+    · intro c _ hc; simp [Eab, hc.symm]
     · simp
   have pc : ∀ c₀ d₀ : Ix r s, ¬ sameBlock c₀ d₀ → IsPC (Eab c₀ d₀) := by
     intro c₀ d₀ h a b hab

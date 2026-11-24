@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+public import Formalism.LocalToGlobal.IndefiniteReal.BridgeTie
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 
 @[expose] public section
 

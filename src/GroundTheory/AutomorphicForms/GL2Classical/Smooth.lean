@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2Classical.KFinite
+public import GroundTheory.AutomorphicForms.GL2Classical.IsWeightLevelAdelicLift
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Topology
+public import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.NumberTheory.ModularForms.SlashActions
 
 @[expose] public section
 

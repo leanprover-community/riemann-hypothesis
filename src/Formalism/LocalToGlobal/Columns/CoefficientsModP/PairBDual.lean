@@ -4,6 +4,7 @@ public import Formalism.LocalToGlobal.Columns.CoefModB
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

@@ -1,7 +1,45 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverMorphismRestrictOfRelAmple
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.PullChartIsLB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -34,21 +72,7 @@ theorem compat_res (s : H.Sec) (i j : H.ι) {V : X.Opens} (hi : V ≤ H.U i) (hj
 
 theorem isUnit_res (t : H.Sec) (l : H.ι) {V : X.Opens} (hV : V ≤ Out.nonzeroLocus t)
     (hl : V ≤ H.U l) : IsUnit (resG X hl (t.f l)) := by
-  have hle : V ≤ X.basicOpen (t.f l) := by
-    intro x hx
-    obtain ⟨k, hk⟩ := TopologicalSpace.Opens.mem_iSup.1 (hV hx)
-    have hk' : x ∈ H.U k := X.basicOpen_le _ hk
-    have h1 : x ∈ X.basicOpen (resG X (inf_le_left : H.U k ⊓ H.U l ≤ H.U k) (t.f k)) := by
-      erw [Scheme.basicOpen_res]
-      exact ⟨⟨hk', hl hx⟩, hk⟩
-    rw [compat_res t k l inf_le_left inf_le_right, Scheme.basicOpen_mul] at h1
-    have h2 := h1.2
-    erw [Scheme.basicOpen_res] at h2
-    exact h2.2
-  have hu : IsUnit (resG X (X.basicOpen_le (t.f l)) (t.f l)) :=
-    X.toRingedSpace.isUnit_res_basicOpen (t.f l)
-  have := hu.map (resG X hle)
-  rwa [rr] at this
+  apply GlobalTheory.ProjSpace.isUnit_resG_sec <;> assumption
 
 theorem existsUnique_isRatio (hH : H.IsLB) (s t : H.Sec) (W : X.Opens)
     (hW : W ≤ Out.nonzeroLocus t) : ∃! r : Γ(X, W), IsRatio s t W r := by
@@ -87,8 +111,8 @@ theorem existsUnique_isLin {k : Type} [CommRing k] (p : X ⟶ Sp k) {J : Type} [
     (s : J → H.Sec) (a : J → k) : ∃! φ : H.Sec, IsLin p s a φ := by
   refine ⟨⟨fun l => ∑ j, constFn p (H.U l) (a j) * (s j).f l, fun i j => ?_⟩, fun l => rfl, ?_⟩
   · change resG X inf_le_left _ = _ * resG X inf_le_right _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, Finset.mul_sum]
+
+    rw [map_sum, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [map_mul, map_mul, res_const, res_const]
     have : resG X inf_le_left _ = _ * resG X inf_le_right _ := (s n).compat i j

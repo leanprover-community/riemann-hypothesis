@@ -1,6 +1,21 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Polynomial.Module.AEval
+public import Mathlib.LinearAlgebra.FreeProduct.Basic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+public import Mathlib.Algebra.Module.PID
+public import Mathlib.Algebra.Polynomial.Module.FiniteDimensional
+public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Charpoly.Basic
 
 @[expose] public section
 

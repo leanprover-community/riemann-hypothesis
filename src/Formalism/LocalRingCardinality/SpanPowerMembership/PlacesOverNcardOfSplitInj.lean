@@ -2,10 +2,55 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Formalism.GaloisCohomology.GaloisCohomologyProofs.LdataNonempty
-public import Formalism.FrobeniusOrbits.HostCorollaries
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.RamificationInertia.Inertia
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -66,7 +111,7 @@ structure NHyp (what₂ : Rows.Data R) : Prop where
   hg : ∀ k, (placesOver H.E (H.g k)).ncard = Module.finrank ℚ H.E
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 def ndToy (what₂ : Rows.Data R) (h : NHyp H what₂) : NData R H what₂ where
   Om := AlgC
   plOm := ⟨fun v => placeOf AlgC v, fun v => isPlaceOver_placeOf AlgC v⟩
@@ -173,7 +218,7 @@ theorem isCMConjOm_conjAlgC : IsCMConjOm H.E AlgC conjAlgC := by
   rw [baseEmbedding_conj]
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 def ntwToy {what₂ : Rows.Data R} [NumberField what₂.LL] [StarRing what₂.LL]
     (LL0 : IntermediateField ℚ what₂.LL) (h : NHyp H what₂) :
     NTw R H what₂ LL0 (ndToy H what₂ h) where
@@ -390,7 +435,7 @@ theorem val_toU {z : ℂ} (h : z ≠ 0) : ((toU z : ℂˣ) : ℂ) = z := by
 
 
 open Polynomial in
-set_option synthInstance.maxHeartbeats 400000 in
+
 def nautToy (what₂ : Rows.Data R) (h : NHyp H what₂) : NAut (ndToy H what₂ h) where
   iotaQ i := i.elim
   iotaQC i := i.elim
@@ -653,7 +698,7 @@ theorem g_split_of (hg : ∀ k, H.g k % H.condN = 1) :
   exact placesOver_ncard_of_split H (H.g k) (hg k)
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 def nbcToy (what₂ : Rows.Data R) (h : NHyp H what₂) : NBC (nautToy H what₂ h) where
   AU _ := Empty
   multAU _ π := π.elim
@@ -674,7 +719,7 @@ def nbcToy (what₂ : Rows.Data R) (h : NHyp H what₂) : NBC (nautToy H what₂
   embAV_inf i := i.elim
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 def nexpToy {what₂ : Rows.Data R} [NumberField what₂.LL] [StarRing what₂.LL]
     (LL0 : IntermediateField ℚ what₂.LL) (h : NHyp H what₂) :
     NExp R H what₂ LL0 (ndToy H what₂ h) (ntwToy H LL0 h) where

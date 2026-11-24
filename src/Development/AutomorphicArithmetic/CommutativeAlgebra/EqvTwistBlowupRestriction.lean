@@ -1,30 +1,52 @@
 module
 
 public import Development.AutomorphicArithmetic.BlowupCategories.SpanScale
-public import Development.AutomorphicArithmetic.BlowupCategories.AffC
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoOfBijectiveOnSimplices
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.MonoOfInjectiveOnSimplices
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsPullbackOfUniqueSimplicesPullback
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.SimplicesPullbackExistsUniqueOfMapEq
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.MayerVietorisCoverOfMonoOfZariskiLocal
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.LocallyExistsIsUnitOfSpanRangeEqTop
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoStackProductMapOfBijective
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoStackProductPairOfBijective
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.StackProductIsPullbackOfActionPullback
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.LerayHirschOfIsoSquare
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.LerayHirschOneIffTwistEquiv
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.AffineLineActionFstTwistEquiv
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.MayerVietorisStackProductOfInjectiveOfLocallyCov
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.PullCupPowEqCupPowPull
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.ProjBundleFormulaIffPglForm
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstChernClassTateTwistCocycleUniqueNaturalAddiStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistUnitClassRootClassSpecStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistCupProductGradedCommStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistCupUnitAndPrimitiveRootClassesStatement
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.FirstChernClassEqZeroOfIsTrivialized
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.ProjectiveBundleFormulaRankOneOfHomotopyInvarian
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.ProjectiveBundleFormulaRankTwo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyEquivalenceBasicPropertiesStatement
+public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoStackProductPairOfBijective
+public import Development.AutomorphicArithmetic.CommutativeAlgebra.LerayHirschOneIffTwistEquiv
+public import Development.AutomorphicArithmetic.CommutativeAlgebra.ProjBundleFormulaIffPglForm
+public import Development.AutomorphicArithmetic.CommutativeAlgebra.ProjectiveBundleFormulaRankOneOfHomotopyInvarian
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Development.AutomorphicArithmetic.CupPullbacks.TwoChart
 
 @[expose] public section
 
@@ -48,11 +70,6 @@ private def vec1 {A : Type} [CommRing A] (s : A) (h : IsUnit s) : Um 1 A :=
   ⟨fun _ => s, by
     rw [Set.range_const]
     exact Ideal.span_singleton_eq_top.2 h⟩
-
-private theorem unimodularRow_one_isUnit {A : Type} [CommRing A] (c : Um 1 A) : IsUnit (c.1 0) := by
-  have h := c.2
-  rw [Set.range_unique] at h
-  exact Ideal.span_singleton_eq_top.1 h
 
 private theorem join_inj {N : ℕ} {A : Type} [CommRing A] {x y : Um N A × Um 2 A} (hs : x.2.1 0 = y.2.1 0)
     (hu : IsUnit (x.2.1 0)) (h : Um.join x = Um.join y) : x = y := by
@@ -129,14 +146,14 @@ private theorem pts_bij (N : ℕ) (Q : Pred (XC (N + 1))) (hQ : Q.Le (Q2 N)) (A 
     have e2 : x.2.1 0 = y.2.1 0 := congrArg (fun c : Um 1 A => c.1 0) h2
     exact Subtype.ext (join_inj e2 (s_unit x (hQ A _ hx)) e1)
   · rintro ⟨⟨w, hw⟩, c⟩
-    obtain ⟨x, hx0, hxw⟩ := join_surj w (hQ A w hw) (unimodularRow_one_isUnit c).unit
+    obtain ⟨x, hx0, hxw⟩ := join_surj w (hQ A w hw) (_root_.UpperTheory.P2.unimodularRow_one_isUnit c).unit
     refine ⟨⟨x, ?_⟩, ?_⟩
     · show Q.P A (Um.join x)
       rw [hxw]
       exact hw
     · refine Prod.ext (Subtype.ext hxw) (Subtype.ext (funext fun i => ?_))
       obtain rfl : i = 0 := Subsingleton.elim _ _
-      exact hx0.trans (unimodularRow_one_isUnit c).unit_spec
+      exact hx0.trans (_root_.UpperTheory.P2.unimodularRow_one_isUnit c).unit_spec
 
 private theorem mul_ringHom_units_ratio {G : Type} [CommGroup G] (m c : G) : m * (m * c⁻¹)⁻¹ = c := by
   rw [mul_inv_rev, inv_inv, mul_comm c, mul_inv_cancel_left]
@@ -193,5 +210,5 @@ theorem UpperTheory.eqv_twist_blowupRestriction :
   have hcomp : Sp.pair E ((βC N).sub Q) (sig N Q hQ) ≫ Sp.fst _ (XC 1) = Sp.map E ((βC N).sub Q) := by
     rfl
   rw [← hcomp]
-  obtain ⟨hiso', hcmp, -, -⟩ := GlobalTheory.T.etaleCohomologyEquivalence_basic_properties (ZMod q) (tw q i)
+  obtain ⟨hiso', hcmp, -, -⟩ := _root_.GlobalTheory.EtC.eqv_basic (ZMod q) (tw q i)
   exact (hcmp _ _ _ _ _).1 (hiso' _ _ _ hiso) (hfst i)

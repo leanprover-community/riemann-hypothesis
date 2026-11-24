@@ -1,6 +1,13 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
+public import Mathlib.Analysis.InnerProductSpace.Spectrum
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.CasimirKKhwVec
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.MulMulSubMulMulEqAdd
+public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 @[expose] public section
 
@@ -21,8 +28,8 @@ private theorem re_inner_basis_lemma {E ι : Type*} [NormedAddCommGroup E] [Inne
   have hx : x = ∑ i, (inner ℂ (b i) x) • b i := (b.sum_repr' x).symm
   have hTx : T x = ∑ i, (inner ℂ (b i) x * (lam i : ℂ)) • b i := by
     conv_lhs => rw [hx]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, hb, smul_smul]
   have h1 : inner ℂ (T x) x =

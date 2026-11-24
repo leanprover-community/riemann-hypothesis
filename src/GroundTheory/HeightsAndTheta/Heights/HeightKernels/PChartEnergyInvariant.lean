@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergyInvariant
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergySwap
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ChartMassAffine

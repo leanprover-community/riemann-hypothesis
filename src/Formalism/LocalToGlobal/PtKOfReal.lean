@@ -1,10 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.Divisibility.RecBridgeSel
-public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
 public import Formalism.LocalToGlobal.IndefiniteReal.TrISepWith
-public import Formalism.LocalToGlobal.GroupLattices.BrTied3Hold
-public import Formalism.LocalToGlobal.Divisibility.ConstantGeTwentyEightAlt
+public import Formalism.LocalToGlobal.Divisibility.DivisibilityConstruction.ShiftOfColTie
+public import Formalism.LocalToGlobal.Divisibility.RecBridgeTied
+public import Formalism.LocalToGlobal.IndefiniteReal.PrimitivePackageFullHecke
 
 @[expose] public section
 

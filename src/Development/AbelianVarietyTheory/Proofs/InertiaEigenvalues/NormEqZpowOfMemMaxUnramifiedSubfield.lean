@@ -1,8 +1,58 @@
 module
 
-public import Mathlib
+import Formalism.SharpRestriction.LevelLetterCocycles.ProdOneSubPrimitiveRoots
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.ProperSpace
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 
 @[expose] public section
 
@@ -258,24 +308,7 @@ theorem exists_mul_mem {x : Om l} (hx : x ∈ MaximalUnramifiedExtension l) :
 
 theorem norm_of_mem_Kur {x : Om l} (hx : x ∈ MaximalUnramifiedExtension l) (h0 : x ≠ 0) :
     ∃ n : ℤ, ‖x‖ = (l : ℝ) ^ n := by
-  have hp : l.Prime := Fact.out
-  obtain ⟨m, hm, hlm, c, hc, hmem⟩ := exists_mul_mem hx
-  have hcx : algebraMap ℤ_[l] (Om l) c * x ≠ 0 := by
-    refine mul_ne_zero ?_ h0
-    rw [← norm_ne_zero_iff, norm_algebraMap_int]
-    exact norm_ne_zero_iff.2 hc
-  obtain ⟨n, hn⟩ := norm_rootRing hm hlm hmem hcx
-  rw [norm_mul, norm_algebraMap_int] at hn
-  have hc' : (c : ℚ_[l]) ≠ 0 := fun h => hc (PadicInt.ext (h.trans PadicInt.coe_zero.symm))
-  have hcv : ‖c‖ = (l : ℝ) ^ (-(c : ℚ_[l]).valuation) := by
-    rw [PadicInt.norm_def]
-    exact Padic.norm_eq_zpow_neg_valuation hc'
-  have hl0 : (l : ℝ) ≠ 0 := by exact_mod_cast hp.ne_zero
-  rw [hcv] at hn
-  refine ⟨n + (c : ℚ_[l]).valuation, ?_⟩
-  calc ‖x‖ = (l : ℝ) ^ ((c : ℚ_[l]).valuation) * ((l : ℝ) ^ (-(c : ℚ_[l]).valuation) * ‖x‖) := by
-        rw [← mul_assoc, ← zpow_add₀ hl0, add_neg_cancel, zpow_zero, one_mul]
-    _ = (l : ℝ) ^ (n + (c : ℚ_[l]).valuation) := by rw [hn, zpow_add₀ hl0, mul_comm]
+  apply Formalism.MainNotions.N.PreambleDegrees.Loc.norm_Kur_zpow <;> assumption
 
 theorem norm_of_mem_unramified_subfield : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (x : Om l),
     x ∈ K0 K → x ≠ 0 → ∃ n : ℤ, ‖x‖ = (l : ℝ) ^ n := by

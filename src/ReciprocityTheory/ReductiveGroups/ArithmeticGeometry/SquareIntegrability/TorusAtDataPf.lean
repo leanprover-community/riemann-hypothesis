@@ -1,5 +1,7 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtData
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtDataPfA
 
 @[expose] public section
@@ -97,11 +99,11 @@ theorem norm_sq_eq (X : Data E r) (x : Frame X.Ψ r) (A : TorusAt X x) (v : Fin 
       refine Finset.sum_nbij' (fun σ => ComplexEmbedding.conjugate σ)
         (fun τ => ComplexEmbedding.conjugate τ) ?_ ?_ ?_ ?_ ?_
       · intro σ hσ
-        simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at hσ ⊢
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hσ ⊢
         rw [X.cmType, conj_conj_X]
         exact hσ
       · intro τ hτ
-        simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at hτ ⊢
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hτ ⊢
         exact (X.cmType τ).mp hτ
       · intro σ _; exact conj_conj_X σ
       · intro τ _; exact conj_conj_X τ

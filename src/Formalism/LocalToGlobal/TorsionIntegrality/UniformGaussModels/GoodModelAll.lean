@@ -1,9 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.IsHypPair
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.HomotheticLatticeIntegralS2
-public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementK
-public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementV
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementR
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementA
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementP
 
 @[expose] public section
 

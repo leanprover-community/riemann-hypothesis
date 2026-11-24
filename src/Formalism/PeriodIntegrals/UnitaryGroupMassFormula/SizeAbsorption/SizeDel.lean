@@ -1,6 +1,45 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.Development
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -111,9 +150,6 @@ private lemma fin_lemma_5 (x n T R C0 V e : ℝ) (hx : 0 < x) (hn0 : 0 ≤ n) (h
   have h3 : V ^ 2 ≤ x / e ^ 2 := by
     first
       | (rw [le_div_iff₀ he2]; exact hV)
-      | (rw [le_div_iff he2]; exact hV)
-      | (calc V ^ 2 = V ^ 2 * e ^ 2 / e ^ 2 := by field_simp
-          _ ≤ x / e ^ 2 := by gcongr)
   have h4 : x * x ^ 3 * T * (C0 * T * V ^ 2) ≤ x * x ^ 3 * T * (C0 * T * (x / e ^ 2)) :=
     mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left h3 (mul_nonneg hC0 hT.le))
       (mul_nonneg (mul_nonneg hx.le (pow_nonneg hx.le 3)) hT.le)
@@ -121,7 +157,7 @@ private lemma fin_lemma_5 (x n T R C0 V e : ℝ) (hx : 0 < x) (hn0 : 0 ≤ n) (h
   linarith
 
 
-set_option maxHeartbeats 800000 in
+
 theorem stepA : StepA := by
   unfold StepA
   intro K eps
@@ -166,9 +202,6 @@ theorem stepA : StepA := by
     have h10 : (1:ℝ) ≤ (D.R.m : ℝ) ^ 10 := by
       first
         | exact one_le_pow₀ hm
-        | exact one_le_pow_of_one_le' hm 10
-        | exact one_le_pow_of_one_le hm 10
-        | (have h := pow_le_pow_left zero_le_one hm 10; rwa [one_pow] at h)
     calc Nm D = Nm D * 1 := (mul_one _).symm
       _ ≤ Nm D * (D.R.m : ℝ) ^ 10 := mul_le_mul_of_nonneg_left h10 hNm0
       _ ≤ (D.s.Del : ℝ) := hDel1
@@ -210,7 +243,6 @@ theorem stepA : StepA := by
     have hE0 : Real.exp (L.sc.x ^ (L.sc.eps / 3)) ≠ 0 := (Real.exp_pos _).ne'
     first
       | (field_simp; done)
-      | (field_simp; ring)
 
   have g1 : L.sc.b' ≤ L.sc.b := by
     have hxt : L.sc.x ≤ Real.exp (L.sc.x ^ (L.sc.eps / 3)) := by
@@ -221,7 +253,6 @@ theorem stepA : StepA := by
     have hTp := Real.exp_pos (L.sc.x ^ (L.sc.eps / 3))
     first
       | (rw [div_le_iff₀ hTp]; linarith [mul_le_mul_of_nonneg_left hxt hEp.le])
-      | (rw [div_le_iff hTp]; linarith [mul_le_mul_of_nonneg_left hxt hEp.le])
 
   have hlogXeq : Real.log (L.sc.X'' D.R.n) =
       Real.log L.sc.x + Real.log D.R.n + L.sc.x ^ (L.sc.eps / 3) := by
@@ -254,7 +285,6 @@ theorem stepA : StepA := by
         have h'' : 0 < D.R.N D.R.m := by exact_mod_cast h'
         first
           | exact Nat.one_le_cast.mpr h''
-          | (unfold Nm; exact_mod_cast h'')
       have h8 : (1:ℝ) ≤ 8 * (D.R.n : ℝ) := by linarith
       have h8N : (1:ℝ) ≤ 8 * (D.R.n : ℝ) * Nm D := by
         linarith [mul_nonneg (sub_nonneg.2 h8) (sub_nonneg.2 hNm1)]
@@ -271,7 +301,6 @@ theorem stepA : StepA := by
     have h3 : L.sc.eps * (L.sc.x ^ L.sc.eps / L.sc.eps) = L.sc.x ^ L.sc.eps := by
       first
         | (field_simp; done)
-        | (field_simp; ring)
     by_contra hc
     push_neg at hc
     have h4 := mul_lt_mul_of_pos_left hc he0
@@ -285,7 +314,6 @@ theorem stepA : StepA := by
       rw [hV]
       first
         | (field_simp; done)
-        | (field_simp; ring)
     have h4 : L.sc.eps * V ≤ 1 * V :=
       mul_le_mul_of_nonneg_right (by linarith) hV0.le
     linarith
@@ -294,8 +322,6 @@ theorem stepA : StepA := by
     have h : Real.log (D.R.n : ℝ) ≤ Real.log (L.sc.x ^ 3) := by
       first
         | exact Real.log_le_log hnpos hn3
-        | exact Real.log_le_log_of_le hnpos hn3
-        | exact (Real.log_le_log_iff hnpos (lt_of_lt_of_le hnpos hn3)).2 hn3
     rw [Real.log_pow] at h
     push_cast at h
     linarith
@@ -311,8 +337,6 @@ theorem stepA : StepA := by
         have h' : Real.log (Nm D) ≤ Real.log (Real.exp (L.sc.x ^ (L.sc.eps / 4) / 2)) := by
           first
             | exact Real.log_le_log h hNmE
-            | exact Real.log_le_log_of_le h hNmE
-            | exact (Real.log_le_log_iff h (lt_of_lt_of_le h hNmE)).2 hNmE
         rwa [Real.log_exp] at h'
       linarith [hlogn, hlx, hloga, hqt, htu, huV, hV1]
   have hl2' : Real.log (L.sc.X'' D.R.n) ≤ 5 * V := by
@@ -336,8 +360,6 @@ theorem stepA : StepA := by
       rw [hV]
       first
         | (field_simp; done)
-        | (field_simp; ring)
-        | ring
     rw [h3]; exact hu2
   have hfin := fin_lemma_5 L.sc.x (D.R.n : ℝ) (Real.exp (L.sc.x ^ (L.sc.eps / 3))) (Rt L K)
     (18 + 3 * |K.dl1| + 18 * |K.dl2|) V L.sc.eps hxpos hnpos.le hn3 (Real.exp_pos _) hR he0 hV2

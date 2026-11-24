@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperDiffPolySt
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPolyOfDiffs
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 

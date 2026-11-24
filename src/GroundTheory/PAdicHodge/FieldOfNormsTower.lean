@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.LocalFields.FiniteExtension
 public import GroundTheory.LocalFields.SeparableClosure
+public import Mathlib.Analysis.Normed.Ring.Ultra
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

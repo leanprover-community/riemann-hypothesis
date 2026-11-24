@@ -1,7 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.GlobSt
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Hadamard
+public import Mathlib.NumberTheory.NumberField.ProductFormula
 
 @[expose] public section
 

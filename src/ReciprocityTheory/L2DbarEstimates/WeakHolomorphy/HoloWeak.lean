@@ -2,6 +2,8 @@ module
 
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement
 public import Lemmata.MiscLemmasF.Imports
+public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -9,11 +11,6 @@ namespace ReciprocityTheory.L2DbarEstimates.C
 
 open MeasureTheory Metric Set Filter Topology Complex
 open scoped ENNReal
-
-theorem holoWeak_bound {n : ℕ} {Ω K : Set (V n)} {u : V n → ℂ} (hΩ : IsOpen Ω)
-    (hu : DifferentiableOn ℂ u Ω) (hK : IsCompact K) (hKΩ : K ⊆ Ω) (v : V n) :
-    ∃ C : ℝ, ∀ x ∈ K, ‖fderiv ℝ u x v‖ ≤ C := by
-  first | exact Bl.SecondBlockLemmaG.goal1 .. | (apply Bl.SecondBlockLemmaG.goal1 <;> assumption) | (intros; apply Bl.SecondBlockLemmaG.goal1 <;> assumption)
 
 theorem holoWeak : HoloWeakStatement := by
   intro n Ω u hΩ hu
@@ -38,7 +35,7 @@ theorem holoWeak : HoloWeakStatement := by
   have hgi : Integrable g := hgs.continuous.integrable_of_hasCompactSupport hgc
   have hibp : ∀ w : V n, ∫ x, u x * fderiv ℝ g x w = - ∫ x, fderiv ℝ u x w * g x := by
     intro w
-    obtain ⟨C, hC⟩ := holoWeak_bound hΩ hu hK hgΩ w
+    obtain ⟨C, hC⟩ := _root_.Bl.SecondBlockLemmaG.goal1 hΩ hu hK hgΩ w
     apply integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
     · refine Integrable.mono' (hgi.norm.const_mul C) ?_ (Eventually.of_forall fun x => ?_)
       · exact (measurable_fderiv_apply_const ℝ u w).aestronglyMeasurable.mul

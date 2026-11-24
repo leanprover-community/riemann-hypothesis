@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingChartLoc
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -51,8 +51,8 @@ theorem LocRingChartLoc.proof : LocRingChartLoc.Statement := by
     intro u a hu
     conv_lhs => rw [u.as_sum]
     conv_rhs => rw [u.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, Finset.sum_mul, map_prod]
+
+    rw [map_sum, map_sum, Finset.sum_mul, map_prod]
     refine Finset.sum_congr rfl fun m hm => ?_
     have hT : ∏ k, q (X ⟨k, c k⟩ ^ a k) = ∏ p : Σ k, ι k, q (X ⟨p.1, c p.1⟩) ^ m p := by
       rw [Fintype.prod_sigma]

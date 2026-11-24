@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.PAdicHodge.BCrisRegular
 public import GroundTheory.PAdicHodge.FontaineLemmaInvariants
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 
@@ -47,7 +49,7 @@ theorem algClToBdRField_injective : Function.Injective (algClToBdRField p) :=
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem exists_iotaB_eq_iff {β : PadicAlgCl p} :
     (∃ x : BCris hε, iotaB hε hζ x = algClToBdRField p β) ↔ β ∈ unramifiedClosure p := by
   constructor

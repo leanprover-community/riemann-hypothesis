@@ -1,14 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.AnalyticResolutionHypothesesProjectiveLine
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyCN
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LengthLocalizedModuleQuotient
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LocalMultRadical
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Length
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.MemOfMemSupportDivCycle
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.RingHom.Flat
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
+import GroundTheory.HeightsAndTheta.Heights.Intersections.AnalyticResolutionHypothesesProjectiveLine
+public import Mathlib.RingTheory.LocalRing.Length
 
 @[expose] public section
 

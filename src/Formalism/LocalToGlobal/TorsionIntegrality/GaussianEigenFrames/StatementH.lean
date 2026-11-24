@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementC
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.StatementH
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementW
 
 @[expose] public section
 

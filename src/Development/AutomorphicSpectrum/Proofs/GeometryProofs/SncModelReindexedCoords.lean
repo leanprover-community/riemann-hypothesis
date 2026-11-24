@@ -1,14 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EmbedsGeneric
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatLineGenerator
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.CardComapMulFinsumEqFinsumFibres
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePointStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalizationStatement
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncChartOfSmoothCoords
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -219,7 +256,7 @@ theorem exists_denominator {X X' : Scheme.{0}} {Ω : Type} [Field Ω] [CharZero 
     exact h hb
   let φ : B' →+* S' := (B'.val : B' →+* Ω).codRestrict S' fun b => hB'S' b b.2
   haveI := hq
-  obtain ⟨p', ⟨hpc, hpu⟩, -⟩ := GlobalTheory.T.prime_chart_existsUnique_point X' Ω ξ' ℤ _ (seg y') tie' c' hxc' (q.comap φ) inferInstance
+  obtain ⟨p', ⟨hpc, hpu⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.chart_point_of_prime X' Ω ξ' ℤ _ (seg y') tie' c' hxc' (q.comap φ) inferInstance
   have hu' : ∀ b (hb : b ∈ B'), (⟨b, hB'S' b hb⟩ : S') ∉ q ↔ unitAt ξ' p' b := fun b hb => hpu ⟨b, hb⟩
   have hnot : ∀ (b b' : Ω) (hb : b ∈ S') (hb' : b' ∈ S'), b * b' = 1 → (⟨b, hb⟩ : S') ∉ q :=
     fun b b' hb hb' h hmem => hq.ne_top (Ideal.eq_top_of_isUnit_mem _ hmem
@@ -268,7 +305,7 @@ theorem exists_denominator {X X' : Scheme.{0}} {Ω : Type} [Field Ω] [CharZero 
   have ht : (t : Ω) ∈ regAt ξ ⟨g p'.1, hspec _⟩ := hR ▸ hS'T t.2
   have hp : InChart ξ (seg y) c ⟨g p'.1, hspec _⟩ :=
     ⟨hxc, fun d => hR ▸ hB'reg _ (hBB' (Algebra.subset_adjoin ⟨d, rfl⟩))⟩
-  obtain ⟨s, hs, hsu, hst⟩ := (GlobalTheory.T.regAt_iff_chart_localization X Ω ξ ℤ _ (seg y) tie c _ hp t).1 ht
+  obtain ⟨s, hs, hsu, hst⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ ℤ _ (seg y) tie c _ hp t).1 ht
   refine ⟨⟨s, hBS s hs⟩, ⟨s * t, hBS _ hst⟩, ?_, rfl⟩
   have hsu' : unitAt ξ' p' s := by
     unfold unitAt at *

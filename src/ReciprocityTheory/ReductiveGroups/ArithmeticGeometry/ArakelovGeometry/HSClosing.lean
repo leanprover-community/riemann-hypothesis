@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsSmoothPts
+import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
 
 @[expose] public section
 

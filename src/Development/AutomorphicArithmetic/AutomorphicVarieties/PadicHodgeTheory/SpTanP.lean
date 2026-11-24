@@ -1,7 +1,52 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsFirstOrderDeformationOfRZero
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DvrFacts
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.Places
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -118,7 +163,7 @@ private theorem core [CharZero E] (χ : Fin 4 → H →* Eˣ) (θ : H → E) (I 
       · rcases h3 g with h4 | h4
         · exact hn' _ h4 a b
         · exact hI a b _ h4.1 (h4.2 _ h4.1)
-      · simp [mul_right_comm]
+      · simp
     choose X hX0 hX using hx
     refine ⟨Matrix.of X, ?_, fun g a b h => hX a b h g⟩
     show adj _ = -_
@@ -203,8 +248,8 @@ private theorem al_ine (hD : D.Good) {q : ℕ} (hq : q ∈ D.Sb) {s : G ℚ Ω} 
   have h4 : D.om s = 1 := by
     refine Units.ext (sub_eq_zero.1 ((mul_eq_zero.1 h3).resolve_left fun h => ?_))
     have h5 := congrArg (residue c.O) h
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_pow, h1, one_pow, Finset.sum_const, Finset.card_range, nsmul_one, map_zero] at h5
+
+    simp only [map_sum, map_pow, h1, one_pow, Finset.sum_const, Finset.card_range, nsmul_one, map_zero] at h5
     have h6 := (hu (l - 1) (Nat.not_dvd_of_pos_of_lt (by have := hl.two_le; omega)
       (by have := hl.two_le; omega))).map (residue c.O)
     rw [map_natCast, h5] at h6
@@ -294,4 +339,4 @@ theorem UpperTheory.V.Loc.spTanP :
         have h2 := mul_mem h1 (hn.conj_mem _ (inv_mem h1) g)
         rw [← mul_assoc, ← mul_assoc] at h2
         exact h2
-      · simp [MonoidHom.mem_ker, mul_right_comm]
+      · simp

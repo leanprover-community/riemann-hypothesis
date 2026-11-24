@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs
-public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+public import GroundTheory.ProfiniteCohomology.PoincareDuality
+import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AmpleSt
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.BaseChangeCB
 
 @[expose] public section
 

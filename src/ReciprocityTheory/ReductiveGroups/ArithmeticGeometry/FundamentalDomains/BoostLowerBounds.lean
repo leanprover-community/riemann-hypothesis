@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.RankOneBoostIsometries
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajorantConjugateTransfer
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatrixMajorants
 
 @[expose] public section
 
@@ -82,8 +87,8 @@ private theorem hermC_ppos_right_eq_sum_gramPos_inv (x w : Fin r → ℂ) :
     hermC τ.1 X.Gm x (X.ppos z τ w) = ∑ a, conj (∑ b, hermC τ.1 X.Gm w
       (col (mat z τ) (Fin.castLE X.p0_le b)) * (X.gramPos z τ)⁻¹ b a) *
         hermC τ.1 X.Gm x (col (mat z τ) (Fin.castLE X.p0_le a)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← FD.hermC_conj τ.1 X.Gm_herm (X.ppos z τ w) x, Data.ppos, hermC_Gm_sum_left X τ hz, map_sum]
+
+  rw [← FD.hermC_conj τ.1 X.Gm_herm (X.ppos z τ w) x, Data.ppos, hermC_Gm_sum_left X τ hz, map_sum]
   simp only [hermC_Gm_smul_left X τ hz, map_mul, FD.hermC_conj τ.1 X.Gm_herm]
 
 private theorem hermC_ppos_ppos (u w : Fin r → ℂ) :

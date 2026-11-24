@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+public import Mathlib.Topology.Covering.Basic
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

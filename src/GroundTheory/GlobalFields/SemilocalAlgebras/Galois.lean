@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Finite
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+public import Mathlib.NumberTheory.RamificationInertia.Galois
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 

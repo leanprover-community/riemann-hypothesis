@@ -1,16 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSFull
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSPresentation
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangePlaces
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerFrob
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolSep
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolNorm
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SymbolBridge
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
-public import GroundTheory.GlobalFields.TateThesis.ChebotarevAbelian
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalInvariants
+public import GroundTheory.GlobalFields.CyclotomicCharacters.Character
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangePlaces
 
 @[expose] public section
 

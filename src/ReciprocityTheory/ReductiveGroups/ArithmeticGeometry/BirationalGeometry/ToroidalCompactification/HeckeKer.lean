@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
+public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 
 @[expose] public section
 

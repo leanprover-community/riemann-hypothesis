@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GeometricLemmaGraded
+public import GroundTheory.AutomorphicForms.GeometricLemmaJacquetCell
 public import GroundTheory.AutomorphicForms.GeometricLemmaCellKernel
 public import GroundTheory.AutomorphicForms.GeometricLemmaCellSurjective
+public import GroundTheory.AutomorphicForms.GeometricLemmaGraded
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,11 @@
 module
 
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 
@@ -40,14 +45,6 @@ theorem chart_symm_eventuallyEq {M : Type*} [TopologicalSpace M] (n : ℕ) (z : 
   filter_upwards [t1, t2, t3] with y hy1 hy2 hy3
   apply e₂.injOn hy1 (e₂.map_target hy3)
   rw [e₂.right_inv hy3, ← h₂ hy1, h₁ (e₁.map_target hy2), e₁.right_inv hy2]
-
-theorem wd_congr (n : ℕ) (j : Fin n) (g₁ g₂ : V n → ℂ) (y : V n) (h : g₁ =ᶠ[𝓝 y] g₂) :
-    wd n j g₁ y = wd n j g₂ y := by
-  simp only [wd, h.fderiv_eq]
-
-theorem wdb_congr (n : ℕ) (j : Fin n) (g₁ g₂ : V n → ℂ) (y : V n) (h : g₁ =ᶠ[𝓝 y] g₂) :
-    wdb n j g₁ y = wdb n j g₂ y := by
-  simp only [wdb, h.fderiv_eq]
 
 theorem d_eq_wd {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n)
     (e : OpenPartialHomeomorph M (V n)) (he : IsChart n z e) (j : Fin n) (f : M → ℂ) (x : M)

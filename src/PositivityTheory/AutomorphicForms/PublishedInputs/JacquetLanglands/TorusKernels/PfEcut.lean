@@ -1,6 +1,7 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MultivariableReproducingFormula
+import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 

@@ -1,11 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.DepthPays
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryEmbeddingContinuousMulRational
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsRealFnNeZero
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.AtPlaceIffEqAtTau
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LevelPlusSubgroup
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.DepthPays
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.OffQOfSizeRows
 
 @[expose] public section
 
@@ -39,19 +84,8 @@ theorem antiDiagonalEpsilonGramMatrix_det_ne_zero {K : Type} [Field K] {c : ℕ}
   rw [Matrix.det_mul, h, zero_mul, Matrix.det_diagonal] at this
   exact Finset.prod_ne_zero_iff.2 (fun p _ => by split_ifs <;> simp [hε]) this.symm
 
-theorem incA_inj : Function.Injective (incA D) :=
-  Algebra.TensorProduct.includeRight_injective (NumberField.AdeleRing.algebraMap_injective (𝓞 D.host.F) D.host.F)
-
 theorem map_inj {m n : ℕ} : Function.Injective (fun M : Matrix (Fin m) (Fin n) D.host.E => M.map (incA D)) :=
-  fun _ _ e => Matrix.ext fun i j => incA_inj (congrFun (congrFun e i) j)
-
-theorem mt_inv_mul (V : HSp D) (g : GA D V) : mt V g⁻¹ * mt V g = 1 := by
-  show (matHom V g⁻¹).1 * (matHom V g).1 = 1
-  rw [← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one]
-
-theorem mt_mul_inv (V : HSp D) (g : GA D V) : mt V g * mt V g⁻¹ = 1 := by
-  show (matHom V g).1 * (matHom V g⁻¹).1 = 1
-  rw [← Units.val_mul, ← map_mul, mul_inv_cancel, map_one, Units.val_one]
+  fun _ _ e => Matrix.ext fun i j => _root_.GlobalTheory.MixModel.incA_injective (congrFun (congrFun e i) j)
 
 theorem mem_GfC_iff (V : HSp D) (g : GA D V) : g ∈ GfC V ↔
     (matHom V g).1.map (Algebra.TensorProduct.map (fstA D.host.F) (AlgHom.id D.host.F D.host.E)).toRingHom = 1 := by
@@ -213,14 +247,14 @@ theorem mem_range_of_fix (g : GA D B) (hg : mt B g * d.a.map (incA D) = d.a.map 
   set P' := (frameMat B A d.ι).map (incA D)
   set Q' := (GlobalTheory.UnitaryEmbeddingProperties.qM d).map (incA D)
   have hg' : mt B g⁻¹ * d.a.map (incA D) = d.a.map (incA D) := by
-    conv_lhs => rw [← hg, ← Matrix.mul_assoc, mt_inv_mul, Matrix.one_mul]
+    conv_lhs => rw [← hg, ← Matrix.mul_assoc, _root_.GlobalTheory.MixModel.mt_inv_mul, Matrix.one_mul]
   have e1 : mt B g * P' = P' * (Q' * mt B g * P') := fix_P d hε g hg
   have e2 : mt B g⁻¹ * P' = P' * (Q' * mt B g⁻¹ * P') := fix_P d hε g⁻¹ hg'
   have hQP : Q' * P' = 1 := GlobalTheory.UnitaryEmbeddingProperties.qM_mul_map _ d
   have hXY : Q' * mt B g * P' * (Q' * mt B g⁻¹ * P') = 1 := by
-    rw [Matrix.mul_assoc (Q' * mt B g), ← e2, ← Matrix.mul_assoc, Matrix.mul_assoc Q', mt_mul_inv, Matrix.mul_one, hQP]
+    rw [Matrix.mul_assoc (Q' * mt B g), ← e2, ← Matrix.mul_assoc, Matrix.mul_assoc Q', _root_.GlobalTheory.MixModel.mt_mul_inv, Matrix.mul_one, hQP]
   have hYX : Q' * mt B g⁻¹ * P' * (Q' * mt B g * P') = 1 := by
-    rw [Matrix.mul_assoc (Q' * mt B g⁻¹), ← e1, ← Matrix.mul_assoc, Matrix.mul_assoc Q', mt_inv_mul, Matrix.mul_one, hQP]
+    rw [Matrix.mul_assoc (Q' * mt B g⁻¹), ← e1, ← Matrix.mul_assoc, Matrix.mul_assoc Q', _root_.GlobalTheory.MixModel.mt_inv_mul, Matrix.mul_one, hQP]
   have hJA : A.gram.map (incA D) = Formalism.UG.cT (sigR (AF D.host.F) D.sp.cm.sig) P' * B.gram.map (incA D) * P' := by
     rw [← GlobalTheory.AutFunCounterexample.gram_pull B A d.ι d.isom, Matrix.map_mul, Matrix.map_mul, GlobalTheory.AutFunCounterexample.cT_map_gen]
   have hU : Formalism.UG.cT (sigR (AF D.host.F) D.sp.cm.sig) (mt B g) * B.gram.map (incA D) * mt B g =

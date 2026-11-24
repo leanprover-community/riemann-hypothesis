@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartGram
+public import Mathlib.MeasureTheory.Measure.Hausdorff
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

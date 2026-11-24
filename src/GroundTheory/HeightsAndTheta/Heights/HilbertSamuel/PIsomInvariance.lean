@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChangeOfModel
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

@@ -1,7 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.PolarJmConjTranspose
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 @[expose] public section
 
@@ -24,9 +28,6 @@ lemma lcA_exp_strict :
         Matrix (Fin n) (Fin n) ℂ →L[ℂ] Matrix (Fin n) (Fin n) ℂ)) 0 := by
   first
   | exact hasStrictFDerivAt_exp_zero
-  | exact hasStrictFDerivAt_exp_zero (𝕂 := ℂ)
-  | (rw [ContinuousLinearEquiv.coe_refl]; exact hasStrictFDerivAt_exp_zero)
-  | (rw [ContinuousLinearEquiv.coe_refl]; exact hasStrictFDerivAt_exp_zero (𝕂 := ℂ))
 
 lemma exists_local_matrix_log : ∃ ℓ : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ,
     Tendsto ℓ (𝓝 1) (𝓝 0) ∧ (∀ᶠ k in 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ), NormedSpace.exp (ℓ k) = k) ∧
@@ -44,17 +45,10 @@ lemma continuous_matrix_exp_alt :
     Continuous (NormedSpace.exp : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ) := by
   first
   | exact NormedSpace.exp_continuous
-  | exact NormedSpace.exp_continuous (𝕂 := ℂ)
-  | exact exp_continuous
 
 end LogL
 
-lemma lcA_exists_log : ∃ ℓ : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ,
-    Tendsto ℓ (𝓝 1) (𝓝 0) ∧ (∀ᶠ k in 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ), NormedSpace.exp (ℓ k) = k) ∧
-      (∀ᶠ Y in 𝓝 (0 : Matrix (Fin n) (Fin n) ℂ), ℓ (NormedSpace.exp Y) = Y) := by
-  first
-  | exact exists_local_matrix_log
-  | exact exists_local_matrix_log (n := n)
+alias lcA_exists_log := _root_.ReciprocityTheory.ChartRestriction.DS.S7.exists_local_matrix_log
 
 lemma lcA_exists_klog (ε : Fin n → Bool) : ∃ ℓ : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ,
     Tendsto ℓ (𝓝 1) (𝓝 0) ∧ ∀ᶠ k in 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ),
@@ -106,7 +100,6 @@ lemma lcA_exists_klog (ε : Fin n → Bool) : ∃ ℓ : Matrix (Fin n) (Fin n) �
   rw [hstar, neg_mul, ← hcomm]
   first
   | exact neg_add_cancel _
-  | simp
 
 open scoped Matrix.Norms.L2Operator in
 lemma lcA_polarL_continuousOn (ε : Fin n → Bool) :

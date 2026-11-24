@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualEnergy
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualEnergyCharts
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergy
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartMass
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassGeomDegChart
 
 @[expose] public section

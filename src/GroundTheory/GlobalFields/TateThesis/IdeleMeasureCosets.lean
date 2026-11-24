@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
+import GroundTheory.GlobalFields.Adele.Approximation
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

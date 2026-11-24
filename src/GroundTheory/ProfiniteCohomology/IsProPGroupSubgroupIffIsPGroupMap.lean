@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.OpenNormal
-public import GroundTheory.ProfiniteCohomology.OfNatRelIndexSupAntitone
+public import Mathlib.GroupTheory.PGroup
+public import Mathlib.Topology.Algebra.OpenSubgroup
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

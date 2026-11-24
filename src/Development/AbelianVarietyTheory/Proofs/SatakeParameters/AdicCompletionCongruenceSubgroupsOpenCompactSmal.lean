@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZeroPadic
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Topology.Algebra.Group.Units
+public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
 
 @[expose] public section
@@ -19,9 +64,6 @@ variable {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (
 abbrev cong (t : w.adicCompletionIntegers E) : Subgroup (GL (Fin a) (w.adicCompletion E)) :=
   (Matrix.GeneralLinearGroup.map (n := Fin a) (Ideal.Quotient.mk (Ideal.span {t}))).ker.map
     (Matrix.GeneralLinearGroup.map (algebraMap (w.adicCompletionIntegers E) (w.adicCompletion E)))
-
-theorem isCompact_integers : IsCompact (w.adicCompletionIntegers E : Set (w.adicCompletion E)) :=
-  ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers w
 
 variable {w a}
 
@@ -152,7 +194,7 @@ theorem isCompact_cong (t : w.adicCompletionIntegers E) (ht : (t : w.adicComplet
     IsCompact (cong w a t : Set (GL (Fin a) (w.adicCompletion E))) := by
   have hB : IsCompact (Set.univ.pi fun _ : Fin a => Set.univ.pi fun _ : Fin a =>
       (w.adicCompletionIntegers E : Set (w.adicCompletion E)) : Set (Matrix (Fin a) (Fin a) (w.adicCompletion E))) :=
-    isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_integers w
+    isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => _root_.ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers w
   have hS : IsCompact (Units.embedProduct (Matrix (Fin a) (Fin a) (w.adicCompletion E)) ⁻¹'
       ((Set.univ.pi fun _ : Fin a => Set.univ.pi fun _ : Fin a =>
         (w.adicCompletionIntegers E : Set (w.adicCompletion E)) : Set (Matrix (Fin a) (Fin a) (w.adicCompletion E))) ×ˢ

@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GaloisLevelStructure.NGalTied
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsRowLoc
+public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsFinTyp
+public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedGal
+public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedHecke
 
 @[expose] public section
 

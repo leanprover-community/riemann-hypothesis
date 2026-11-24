@@ -1,8 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPinsRec
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsLevMove
 public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonalBis
+public import Formalism.LocalToGlobal.ProjectiveLattices.RhoWApply
+public import Formalism.LocalToGlobal.ProjectiveLattices.ThClass
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

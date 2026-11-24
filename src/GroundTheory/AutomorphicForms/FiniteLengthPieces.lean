@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GeometricLemma
+public import GroundTheory.AutomorphicForms.GeometricLemmaNormal
+import GroundTheory.AutomorphicForms.GeometricLemmaCellSurjective
 public import GroundTheory.AutomorphicForms.LeviStagesProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

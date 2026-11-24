@@ -1,7 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.SameKindIsometric
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAlgebrasMaxCompactAndLeviInter
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -59,8 +109,8 @@ theorem finrank_commutant {ι : Type} [Fintype ι] (e : ι → Matrix (Fin n) (F
         rw [hX k, ← mul_assoc, (he.idem k).eq]
       simp only [this]
       rw [← Finset.sum_mul, he.complete, one_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hp.trace, map_sum]
+
+  rw [← hp.trace, map_sum]
   simp only [trace_mul_mul, sq]
 
 theorem trace_of_proj (P : Matrix (Fin n) (Fin n) ℂ) (W : Submodule ℂ (Fin n → ℂ))
@@ -90,41 +140,7 @@ theorem exists_orthonormal (G : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ)) (d :
     (hd : Module.finrank ℝ G = d) :
     ∃ E : Fin d → Matrix (Fin n) (Fin n) ℂ,
       (∀ i k, ((E i * (E k)ᴴ).trace).re = if i = k then 1 else 0) ∧ Submodule.span ℝ (Set.range E) = G := by
-  subst hd
-  let c : InnerProductSpace.Core ℝ G :=
-    { inner := fun X Y => (((X : Matrix (Fin n) (Fin n) ℂ) * (Y : Matrix (Fin n) (Fin n) ℂ)ᴴ).trace).re
-      conj_inner_symm := by
-        intro X Y
-        have : (X : Matrix (Fin n) (Fin n) ℂ) * (Y : Matrix (Fin n) (Fin n) ℂ)ᴴ =
-          ((Y : Matrix (Fin n) (Fin n) ℂ) * (X : Matrix (Fin n) (Fin n) ℂ)ᴴ)ᴴ := by simp
-        simp only [conj_trivial]
-        rw [this, Matrix.trace_conjTranspose]
-        simp
-      re_inner_nonneg := by
-        intro X
-        have := (Matrix.posSemidef_self_mul_conjTranspose (X : Matrix (Fin n) (Fin n) ℂ)).trace_nonneg
-        simpa using (Complex.le_def.1 this).1
-      add_left := by
-        intro X Y Z
-        simp [add_mul]
-      smul_left := by
-        intro X Y r
-        simp
-      definite := by
-        intro X hX
-        have h := (Matrix.posSemidef_self_mul_conjTranspose (X : Matrix (Fin n) (Fin n) ℂ)).trace_nonneg
-        have h2 : ((X : Matrix (Fin n) (Fin n) ℂ) * (X : Matrix (Fin n) (Fin n) ℂ)ᴴ).trace = 0 :=
-          Complex.ext hX (Complex.le_def.1 h).2.symm
-        exact Subtype.ext (Matrix.trace_mul_conjTranspose_self_eq_zero_iff.1 h2) }
-  letI : NormedAddCommGroup G := c.toNormedAddCommGroup
-  letI : InnerProductSpace ℝ G := InnerProductSpace.ofCore c.toCore
-  let b := stdOrthonormalBasis ℝ G
-  refine ⟨fun i => b i, fun i k => ?_, ?_⟩
-  · exact orthonormal_iff_ite.1 b.orthonormal i k
-  · have := b.toBasis.span_eq
-    have h2 := congrArg (Submodule.map G.subtype) this
-    rw [Submodule.map_span, Submodule.map_top, Submodule.range_subtype, ← Set.range_comp] at h2
-    exact h2
+  apply GlobalTheory.FlagMeas.CompactAlg.exists_orthonormal <;> assumption
 
 theorem finrank_real_form (ε : Fin n → Bool) (C : Submodule ℂ (Matrix (Fin n) (Fin n) ℂ))
     (hC : ∀ X ∈ C, Formalism.REAL.Jm ε * Xᴴ * Formalism.REAL.Jm ε ∈ C) (G : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ))

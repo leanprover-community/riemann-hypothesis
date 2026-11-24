@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.MemOfPowQKSubOne
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartMass
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 
 @[expose] public section
 

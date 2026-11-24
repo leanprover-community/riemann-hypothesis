@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.IdeleAction
 public import GroundTheory.GlobalFields.Adele.Approximation
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

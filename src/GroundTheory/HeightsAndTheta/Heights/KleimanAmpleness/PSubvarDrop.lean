@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsStepTwo
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.CompactCupEqCompactCupRight
 public import GroundTheory.ProfiniteCohomology.MackeyFormula.CompactSupport
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.NsmulEqZeroOfNonemptyAddEquiv

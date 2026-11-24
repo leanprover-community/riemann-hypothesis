@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.InversionStatement
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

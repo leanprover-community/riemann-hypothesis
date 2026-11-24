@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementA
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementB
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.ConstantCoeffSeriesAtVariable
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

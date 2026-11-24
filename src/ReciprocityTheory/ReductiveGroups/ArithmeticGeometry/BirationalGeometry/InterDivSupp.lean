@@ -1,7 +1,16 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 public import Lemmata.GeneralBFactTerForm.Imports
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.GradedAlgebra.Radical
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppA
+public import Mathlib.RingTheory.Ideal.Height
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.WithBotEqOfAddOne
 
 @[expose] public section
@@ -44,7 +53,7 @@ theorem dim_quot_minimal_add_one (P W : Ideal (MvPolynomial σ ℤ)) [P.IsPrime]
 
 theorem withBot_eq_of_add_one_by_cancellation {x : WithBot ℕ∞} {m : ℕ} (h : x + 1 = ((m + 1 : ℕ) : WithBot ℕ∞)) :
     x = (m : WithBot ℕ∞) := by
-  first | exact Bl.general_b_fact_ter_form.goal1 .. | (apply Bl.general_b_fact_ter_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_ter_form.goal1 <;> assumption)
+  first | (apply Bl.general_b_fact_ter_form.goal1 <;> assumption)
 
 end Dim
 

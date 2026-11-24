@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsEtAlg
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RhoSurjPf
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsTr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowsGoodRed
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsRedKer
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsRMul
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsES
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsEtAlg
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsRMul
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsRedKer
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RhoSurjPf
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsTr
 
 @[expose] public section
 
@@ -212,8 +213,8 @@ theorem finrank_map_sum {ι : Type} [DecidableEq ι] (Q : ι → V →ₗ[ℂ] V
       have := congrArg (fun L : V →ₗ[ℂ] V => L x) (hQ t (Finset.mem_insert_self t F) t (Finset.mem_insert_self t F))
       simpa using this
     have htF : ∀ x, Q t (QF x) = 0 := fun x => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hQF, LinearMap.sum_apply, map_sum]
+
+      rw [hQF, LinearMap.sum_apply, map_sum]
       refine Finset.sum_eq_zero fun i hi => ?_
       have := congrArg (fun L : V →ₗ[ℂ] V => L x)
         (hQ t (Finset.mem_insert_self t F) i (Finset.mem_insert_of_mem hi))
@@ -230,8 +231,8 @@ theorem finrank_map_sum {ι : Type} [DecidableEq ι] (Q : ι → V →ₗ[ℂ] V
       rfl
     have hFF : ∀ x, QF (QF x) = QF x := fun x => by
       rw [hQF]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [LinearMap.sum_apply, map_sum]
+
+      simp only [LinearMap.sum_apply, map_sum]
       refine Finset.sum_congr rfl fun i hi => ?_
       rw [Finset.sum_eq_single i]
       · have := congrArg (fun L : V →ₗ[ℂ] V => L x) (hQ' i hi i hi)

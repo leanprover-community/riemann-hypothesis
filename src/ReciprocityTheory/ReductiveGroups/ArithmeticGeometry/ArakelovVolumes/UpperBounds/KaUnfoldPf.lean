@@ -1,6 +1,13 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPfC
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExtFStatementPfB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPfB
 
 @[expose] public section
 
@@ -118,7 +125,6 @@ namespace ReciprocityTheory.ChartRestriction.G.AR.Up
 
 variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
 
-theorem kaUnfold_of (hMI : MeasInvStatement (E := E)) (hSB : SumBoundStatement) :
-    KaUnfoldStatement (E := E) := KU.kaUnfold_of hMI hSB
+alias kaUnfold_of := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.KU.kaUnfold_of
 
 end ReciprocityTheory.ChartRestriction.G.AR.Up

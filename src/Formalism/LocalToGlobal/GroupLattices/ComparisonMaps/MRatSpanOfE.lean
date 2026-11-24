@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RatActGOf
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ProdMemSpan
+public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 @[expose] public section
 

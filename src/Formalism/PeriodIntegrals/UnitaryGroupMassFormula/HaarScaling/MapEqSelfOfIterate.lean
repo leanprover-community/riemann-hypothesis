@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.CdHaarScale
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -116,8 +160,7 @@ theorem umat_rho {n : ℕ} {ε : Fin n → Bool} (π : Fin n ≃ Fin n) (hπ : �
 
 theorem umat_injective {n : ℕ} {ε : Fin n → Bool} :
     Function.Injective (PI.CdHaarScale.umat (ε := ε)) := by
-  intro a b h
-  exact Subtype.ext (Units.ext h)
+  exact fun a b h => Subtype.ext (Units.ext h)
 
 theorem rho_iterate {n : ℕ} {ε : Fin n → Bool} (π : Fin n ≃ Fin n) (hπ : ∀ i, ε (π i) = ε i)
     (m : ℕ) (a : Formalism.REAL.UJ ε) (i j : Fin n) :
@@ -132,13 +175,10 @@ theorem rho_iterate {n : ℕ} {ε : Fin n → Bool} (π : Fin n ≃ Fin n) (hπ 
 theorem rho_finite_order {n : ℕ} {ε : Fin n → Bool} (π : Fin n ≃ Fin n) (hπ : ∀ i, ε (π i) = ε i) :
     ∃ N : ℕ, N ≠ 0 ∧ ∀ a, (rho π hπ)^[N] a = a := by
   refine ⟨orderOf π, (orderOf_pos π).ne', fun a => ?_⟩
-  have hid : ∀ i, (π.symm)^[orderOf π] i = i := by
-    intro i
-    rw [show π.symm = π⁻¹ from rfl, Equiv.Perm.iterate_eq_pow, inv_pow, pow_orderOf_eq_one, inv_one]
-    rfl
   apply umat_injective
   ext i j
-  rw [rho_iterate, hid, hid]
+  rw [rho_iterate]
+  simp [show π.symm = π⁻¹ from rfl, Equiv.Perm.iterate_eq_pow, inv_pow, pow_orderOf_eq_one]
 
 theorem map_eq_self_of_iterate {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
@@ -185,8 +225,7 @@ theorem card_true {P Q n : ℕ} {ε : Fin n → Bool} (e : Fin P ⊕ Fin Q ≃ F
     obtain ⟨s, rfl⟩ := e.surjective i
     rcases s with a | a <;> simp [h1, h2]
     · exact ⟨a, rfl⟩
-    · intro x hx
-      exact Sum.inl_ne_inr (e.injective hx)
+    · exact fun x hx => Sum.inl_ne_inr (e.injective hx)
   rw [hset, Finset.card_map, Finset.card_univ, Fintype.card_fin]
 
 theorem card_false {P Q n : ℕ} {ε : Fin n → Bool} (e : Fin P ⊕ Fin Q ≃ Fin n)
@@ -197,8 +236,7 @@ theorem card_false {P Q n : ℕ} {ε : Fin n → Bool} (e : Fin P ⊕ Fin Q ≃ 
     ext i
     obtain ⟨s, rfl⟩ := e.surjective i
     rcases s with a | a <;> simp [h1, h2]
-    · intro x hx
-      exact Sum.inr_ne_inl (e.injective hx)
+    · exact fun x hx => Sum.inr_ne_inl (e.injective hx)
     · exact ⟨a, rfl⟩
   rw [hset, Finset.card_map, Finset.card_univ, Fintype.card_fin]
 

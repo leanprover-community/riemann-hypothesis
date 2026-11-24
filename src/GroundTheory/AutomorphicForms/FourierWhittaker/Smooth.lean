@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.FourierWhittaker.PartialCoeffDiagonalBlockGLEqVecCoeff
+public import GroundTheory.AutomorphicForms.FourierWhittaker.AlgebraMapIntegerMemIntegralFiniteAdeles
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Algebra.Module.Torsion.Prod
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -271,7 +278,7 @@ theorem infEmb_expG_dirMat (k : ℕ) (hk : k < n) (p : Fin k × BIdx K) (s : ℝ
     refine Matrix.ext fun a b => ?_
     rw [AdelicGLn.prodEquiv_apply_snd]
     simp only [colGL, coe_uGL, uMat_apply, colX_apply, Units.val_one, Matrix.one_apply]
-    split_ifs <;> first | rfl | simp_all
+    split_ifs <;> first | rfl
   have hinf : archEquiv K n (AdelicGLn.prodEquiv K n (colGL k v)).1 =
       (isExpLieAlgebra K n).expG (s • ⟨dirMat k p, Submodule.mem_top⟩) := by
     apply Subtype.ext

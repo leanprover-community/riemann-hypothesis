@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailExtra
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.IntNumRelabel
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.IntNumRelabel
 
 @[expose] public section
 
@@ -70,8 +69,8 @@ theorem vals_eq_span (y : (Σ k, ι k) → Ω) (d : K → ℕ) :
   apply le_antisymm
   · rintro _ ⟨g, hg, rfl⟩
     rw [SetLike.mem_coe, mem_weightedHomogeneousSubmodule] at hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [AlgHom.toLinearMap_apply, g.as_sum, map_sum]
+
+    rw [AlgHom.toLinearMap_apply, g.as_sum, map_sum]
     refine Submodule.sum_mem _ fun a ha => ?_
     have hw := hg (mem_support_iff.mp ha)
     have hm : monomial a (AddMonoidAlgebra.coeff g a) = AddMonoidAlgebra.coeff g a • monomial a (1 : F) := by
@@ -205,8 +204,8 @@ theorem cone_of_homog [Fintype K] (y : (Σ k, ι k) → Ω) {g : MvPolynomial (�
     mConeMapOver F y g = monomial (Finsupp.equivFunOnFinite.symm d) (aeval y g) := by
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum]
+
+  rw [map_sum, map_sum, map_sum]
   refine Finset.sum_congr rfl fun a ha => ?_
   have hA : a.mapDomain Sigma.fst = Finsupp.equivFunOnFinite.symm d := by
     ext k

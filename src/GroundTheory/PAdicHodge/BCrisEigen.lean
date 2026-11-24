@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.PAdicHodge.BCrisNewton
-public import GroundTheory.PAdicHodge.GalSmulAlgebraMapPadicPlus
 public import GroundTheory.PAdicHodge.BCrisEigenChar
+public import GroundTheory.PAdicHodge.BCrisPlusInvariants
+public import GroundTheory.PAdicHodge.BCrisRegular
 public import GroundTheory.PAdicHodge.BCrisEigenMaps
+import GroundTheory.PAdicHodge.BdRTGalois
+public import GroundTheory.PAdicHodge.GalSmulAlgebraMapPadicPlus
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -32,27 +36,25 @@ theorem exists_eq_zpow_mul_unit {y : 𝔹dR} (hy : y ≠ 0) :
     ∃ (i : ℤ) (u : 𝔹ˣ), y = algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ i * algebraMap 𝔹 𝔹dR (u : 𝔹) := by
   have ht : Irreducible (fontaineT ε hε) :=
     IsDiscreteValuationRing.irreducible_iff_uniformizer _ |>.2 (maximalIdeal_eq_span_fontaineT hε hζ)
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝔹) y
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  have ha0 : a ≠ 0 := by
-    rintro rfl
-    rw [map_zero, zero_div] at hy
-    exact hy rfl
-  obtain ⟨m, u₁, ha⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible ha0 ht
-  obtain ⟨n, u₂, hb'⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hb0 ht
-  refine ⟨(m : ℤ) - n, u₁ * u₂⁻¹, ?_⟩
-  have hT : algebraMap 𝔹 𝔹dR (fontaineT ε hε) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective 𝔹 𝔹dR)).2 ht.ne_zero
-  have hu₂ : algebraMap 𝔹 𝔹dR (u₂ : 𝔹) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective 𝔹 𝔹dR)).2 u₂.ne_zero
-  have hinv : algebraMap 𝔹 𝔹dR ((u₂⁻¹ : 𝔹ˣ) : 𝔹) = (algebraMap 𝔹 𝔹dR (u₂ : 𝔹))⁻¹ :=
-    eq_inv_of_mul_eq_one_left (by rw [← map_mul, Units.inv_mul, map_one])
-  rw [ha, hb', Units.val_mul]
-  simp only [map_mul, map_pow]
-  rw [hinv, zpow_sub₀ hT, zpow_natCast, zpow_natCast]
-  field_simp
+  obtain ⟨i, u, hu⟩ :=
+    IsDiscreteValuationRing.exists_units_eq_smul_zpow_of_irreducible (K := 𝔹dR) ht hy
+  let t : 𝔹dR := algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ i
+  exact ⟨i, u, hu.trans ((Units.smul_def u t).trans
+    ((Algebra.smul_def (u : 𝔹) t).trans (mul_comm _ _)))⟩
 
 variable {L : IntermediateField ℚ_[p] (PadicAlgCl p)}
+
+private theorem cancel_eigen_zpow {F : Type*} [Field F] {t χ q u v : F} (i : ℤ)
+    (ht : t ≠ 0) (hχ : χ ≠ 0) (h : (χ * t) ^ i * v = q * (t ^ i * u)) :
+    v = (q * χ⁻¹ ^ i) * u := by
+  have h' : t ^ i * (χ ^ i * v) = t ^ i * (q * u) := calc
+    _ = (χ * t) ^ i * v := by rw [mul_zpow]; ac_rfl
+    _ = q * (t ^ i * u) := h
+    _ = _ := mul_left_comm q _ u
+  calc
+    v = (χ ^ i)⁻¹ * (q * u) :=
+      (eq_inv_mul_iff_mul_eq₀ (zpow_ne_zero i hχ)).2 (mul_left_cancel₀ (zpow_ne_zero i ht) h')
+    _ = _ := by rw [inv_zpow]; ac_rfl
 
 theorem exists_gal_smul_unit (σ : Gal(PadicAlgCl p/L)) {i : ℤ} {u : 𝔹} {q : ℚ_[p]}
     (h : σ • (algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ i * algebraMap 𝔹 𝔹dR u) =
@@ -60,35 +62,28 @@ theorem exists_gal_smul_unit (σ : Gal(PadicAlgCl p/L)) {i : ℤ} {u : 𝔹} {q 
         (algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ i * algebraMap 𝔹 𝔹dR u))
     (hT : algebraMap 𝔹 𝔹dR (fontaineT ε hε) ≠ 0) :
     ∃ q' : ℚ_[p], σ • u = algebraMap ℚ_[p] 𝔹 q' * u := by
-  set χ : ℚ_[p] := ((cycloChar L σ : ℤ_[p]) : ℚ_[p])
-  have hχ : χ ≠ 0 := by
-    intro h0
-    have := (cycloChar L σ).isUnit.map (PadicInt.Coe.ringHom (p := p))
-    exact this.ne_zero h0
-  refine ⟨q * χ⁻¹ ^ i, IsFractionRing.injective 𝔹 𝔹dR ?_⟩
-  set A := algebraMap 𝔹 𝔹dR
-  have hσT : σ • A (fontaineT ε hε) = A (algebraMap ℚ_[p] 𝔹 χ) * A (fontaineT ε hε) := by
-    rw [gal_smul_algebraMap_bDeRham, gal_smul_fontaineT, map_mul]
-  have hAχ : A (algebraMap ℚ_[p] 𝔹 χ) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective 𝔹 𝔹dR)).2
-      ((map_ne_zero_iff _ (algebraMap ℚ_[p] 𝔹).injective).2 hχ)
-  rw [gal_smul_bDeRham_def, map_mul, map_zpow₀, ← gal_smul_bDeRham_def, ← gal_smul_bDeRham_def,
-    hσT, gal_smul_algebraMap_bDeRham] at h
-  set Aq : ℚ_[p] →+* 𝔹dR := A.comp (algebraMap ℚ_[p] 𝔹) with hAq
-  have eAq : ∀ r : ℚ_[p], A (algebraMap ℚ_[p] 𝔹 r) = Aq r := fun r => rfl
-  rw [map_mul, eAq, map_mul, map_zpow₀, map_inv₀]
-  rw [eAq, eAq] at h
-  rw [eAq] at hAχ
-  have hTi : A (fontaineT ε hε) ^ i ≠ 0 := zpow_ne_zero _ hT
-  have hχi : Aq χ ^ i ≠ 0 := zpow_ne_zero _ hAχ
-  rw [mul_zpow] at h
-  have h2 : A (fontaineT ε hε) ^ i * (Aq χ ^ i * A (σ • u)) =
-      A (fontaineT ε hε) ^ i * (Aq q * A u) := by
-    linear_combination h
-  have h3 := mul_left_cancel₀ hTi h2
-  rw [inv_zpow', zpow_neg]
-  field_simp
-  linear_combination h3
+  let χ : ℚ_[p] := ((cycloChar L σ : ℤ_[p]) : ℚ_[p])
+  let A := algebraMap 𝔹 𝔹dR
+  let P := algebraMap ℚ_[p] 𝔹
+  let Q := A.comp P
+  let t : 𝔹dR := A (fontaineT ε hε)
+  have hA : Function.Injective A := IsFractionRing.injective 𝔹 𝔹dR
+  have hχ : χ ≠ 0 := ((cycloChar L σ).isUnit.map (PadicInt.Coe.ringHom (p := p))).ne_zero
+  have hQχ : Q χ ≠ 0 := (map_ne_zero_iff Q (hA.comp P.injective)).2 hχ
+  have hσt : σ • t = Q χ * t := calc
+    _ = A (σ • fontaineT ε hε) := gal_smul_algebraMap_bDeRham σ _
+    _ = A (P χ * fontaineT ε hε) := congrArg A (gal_smul_fontaineT σ hε)
+    _ = _ := map_mul A _ _
+  have hs : σ • (t ^ i * A u) = (Q χ * t) ^ i * A (σ • u) :=
+    (smul_mul' σ _ _).trans (congrArg₂ (· * ·)
+      ((smul_zpow₀' σ t i).trans (congrArg (· ^ i) hσt)) (gal_smul_algebraMap_bDeRham σ u))
+  have he := cancel_eigen_zpow i hT hQχ (hs.symm.trans h)
+  have hQ : Q (q * χ⁻¹ ^ i) = Q q * (Q χ)⁻¹ ^ i := calc
+    _ = Q q * Q (χ⁻¹ ^ i) := map_mul Q _ _
+    _ = Q q * (Q χ⁻¹) ^ i := congrArg (Q q * ·) (map_zpow₀ Q _ i)
+    _ = _ := congrArg (fun x => Q q * x ^ i) (map_inv₀ Q χ)
+  exact ⟨q * χ⁻¹ ^ i, hA (he.trans
+    ((congrArg (· * A u) hQ.symm).trans (map_mul A _ _).symm))⟩
 
 
 variable (p) in
@@ -110,29 +105,23 @@ theorem exists_twist_of_finite_image {K : IntermediateField ℚ_[p] (PadicAlgCl 
   obtain ⟨E, hE, hEψ⟩ := exists_fixingSubgroup_of_finite_image ψ hψc _ hfin
   have : IsScalarTower ℚ_[p] K E := IsScalarTower.of_algebraMap_eq fun _ => rfl
   have hE' : FiniteDimensional ℚ_[p] E := Module.Finite.trans K E
-  obtain ⟨L, hL⟩ : ∃ L : IntermediateField ℚ_[p] (PadicAlgCl p), L = E.restrictScalars ℚ_[p] :=
-    ⟨_, rfl⟩
-  have hLE : ∀ y, y ∈ L ↔ y ∈ E := fun y => by rw [hL]; exact IntermediateField.mem_restrictScalars _
-  have hKL : K ≤ L := fun k hk => (hLE _).2 (E.algebraMap_mem ⟨k, hk⟩)
-  have : FiniteDimensional ℚ_[p] L := by subst hL; exact hE'
-  have hres : ∀ σ : Gal(PadicAlgCl p/L), galRes hKL σ ∈ E.fixingSubgroup := fun σ =>
+  let L : IntermediateField ℚ_[p] (PadicAlgCl p) := E.restrictScalars ℚ_[p]
+  have hLE (y : PadicAlgCl p) : y ∈ L ↔ y ∈ E := Iff.rfl
+  have hKL : K ≤ L := fun k hk => (hLE k).2 (E.algebraMap_mem ⟨k, hk⟩)
+  have hL : FiniteDimensional ℚ_[p] L := hE'
+  have hres (σ : Gal(PadicAlgCl p/L)) : galRes hKL σ ∈ E.fixingSubgroup :=
     (IntermediateField.mem_fixingSubgroup_iff _ _).2 fun e he => σ.commutes ⟨e, (hLE e).2 he⟩
-  obtain ⟨ψL, -, hψLx⟩ := exists_eigenChar (K := L) hx0 (fun σ => ⟨_, hψx (galRes hKL σ)⟩)
-  have hψL : ∀ σ, ψL σ = ψ (galRes hKL σ) := fun σ =>
-    Units.ext (eq_of_mul_eq hx0 ((hψLx σ).symm.trans (hψx (galRes hKL σ))))
-  obtain ⟨f, hf, c, hc⟩ := exists_twist_of_unramified hx0 ψL hψLx (fun σ hσ => by
+  let ψL := ψ.comp (galRes hKL)
+  have hψLx (σ : Gal(PadicAlgCl p/L)) : σ • x = algebraMap ℚ_[p] ℂ_[p] (ψL σ) * x :=
+    hψx (galRes hKL σ)
+  obtain ⟨f, hf, c, hc⟩ := exists_twist_of_unramified (L := L) hx0 ψL hψLx (fun σ hσ => by
     have h3 := mem_inertia_of_degree hσ
-    rw [hψL]
-    refine hEψ _ (hres σ) fun u hu => ?_
-    rw [galRes_apply]
-    exact h3 u hu)
-  refine ⟨L, hKL, this, f, c, hf, fun σ => ?_⟩
-  obtain ⟨z, hz, hzc⟩ := hc σ
-  exact ⟨z, by rw [hz, hψL], hzc⟩
+    exact hEψ _ (hres σ) fun u hu => (galRes_apply hKL σ u).trans (h3 u hu))
+  exact ⟨L, hKL, hL, f, c, hf, hc⟩
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem exists_unramified_twist (hST : SenTateCharacters p)
     {K : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] K] {y : 𝔹dR}
     (hy0 : y ≠ 0) (hyσ : ∀ σ : Gal(PadicAlgCl p/K), ∃ q : ℚ_[p],
@@ -143,30 +132,32 @@ theorem exists_unramified_twist (hST : SenTateCharacters p)
         (∀ σ : Gal(PadicAlgCl p/L), σ • (u : 𝔹) = algebraMap ℚ_[p] 𝔹 (ψ σ) * u) ∧
         ∀ σ : Gal(PadicAlgCl p/L), ∃ z : ℤ_[p], (z : ℚ_[p]) = ((ψ σ : ℚ_[p]ˣ) : ℚ_[p]) ^ f ∧
           σ • (c : AInf ℂ_[p] p) = IsPerfectoidField.padicIntToWitt p z * (c : AInf ℂ_[p] p) := by
-  classical
   obtain ⟨i, u, hyu⟩ := exists_eq_zpow_mul_unit hε hζ hy0
   have hT : algebraMap 𝔹 𝔹dR (fontaineT ε hε) ≠ 0 :=
     (map_ne_zero_iff _ (IsFractionRing.injective 𝔹 𝔹dR)).2 (fontaineT_ne_zero hε hζ)
   have huσ : ∀ σ : Gal(PadicAlgCl p/K), ∃ q : ℚ_[p], σ • (u : 𝔹) = algebraMap ℚ_[p] 𝔹 q * u :=
     fun σ => by
       obtain ⟨q, hq⟩ := hyσ σ
-      exact exists_gal_smul_unit hε σ (by rw [← hyu]; exact hq) hT
-  have hx0 : thetaAlgHom p (u : 𝔹) ≠ 0 := (u.isUnit.map (thetaAlgHom p)).ne_zero
-  have hθ : ∀ {L : IntermediateField ℚ_[p] (PadicAlgCl p)} (σ : Gal(PadicAlgCl p/L)) (q : ℚ_[p]),
-      σ • (u : 𝔹) = algebraMap ℚ_[p] 𝔹 q * u →
-        σ • thetaAlgHom p (u : 𝔹) = algebraMap ℚ_[p] ℂ_[p] q * thetaAlgHom p (u : 𝔹) := by
-    intro L σ q h
-    rw [thetaAlgHom_apply, ← thetaBDeRhamPlusField_gal_smul, h, ← thetaAlgHom_apply, map_mul,
-      AlgHom.commutes]
-    rfl
-  obtain ⟨ψ, hψc, hψx⟩ := exists_eigenChar hx0 fun σ => (huσ σ).imp fun q h => hθ σ q h
-  obtain ⟨L, hKL, hL, f, c, hf, hc⟩ := exists_twist_of_finite_image hx0 ψ hψc hψx
-    (hST K ψ hψc _ hx0 hψx)
+      exact exists_gal_smul_unit hε σ
+        ((congrArg (σ • ·) hyu.symm).trans (hq.trans (congrArg (_ * ·) hyu))) hT
+  let θ := thetaAlgHom p
+  let P := algebraMap ℚ_[p] 𝔹
+  let x : ℂ_[p] := θ (u : 𝔹)
+  have hx0 : x ≠ 0 := (u.isUnit.map θ).ne_zero
+  have hθ {L : IntermediateField ℚ_[p] (PadicAlgCl p)} (σ : Gal(PadicAlgCl p/L)) (q : ℚ_[p])
+      (h : σ • (u : 𝔹) = P q * u) : σ • x = algebraMap ℚ_[p] ℂ_[p] q * x := calc
+    _ = θ (σ • (u : 𝔹)) := (thetaBDeRhamPlusField_gal_smul σ _).symm
+    _ = θ (P q * u) := congrArg θ h
+    _ = θ (P q) * x := map_mul θ _ _
+    _ = _ := congrArg (· * x) (θ.commutes q)
+  obtain ⟨ψ, hψc, hψx⟩ := exists_eigenChar (K := K) hx0 fun σ => (huσ σ).imp fun q h => hθ σ q h
+  obtain ⟨L, hKL, hL, f, c, hf, hc⟩ := exists_twist_of_finite_image (K := K) hx0 ψ hψc hψx
+    (hST K ψ hψc x hx0 hψx)
   refine ⟨i, u, hyu, L, hKL, hL, f, c, fun σ => ψ (galRes hKL σ), hf, fun σ => ?_, hc⟩
   obtain ⟨q, hq⟩ := huσ (galRes hKL σ)
   have hq' : σ • (u : 𝔹) = algebraMap ℚ_[p] 𝔹 q * u := hq
   have h2 : q = ψ (galRes hKL σ) := eq_of_mul_eq hx0 ((hθ σ q hq').symm.trans (hψx (galRes hKL σ)))
-  rw [hq', h2]
+  exact hq'.trans (congrArg (fun r => P r * (u : 𝔹)) h2)
 
 theorem isUnit_of_fixed_twist {R F G : Type*} [CommRing R] [IsDomain R] [Field F] [Group G]
     [MulSemiringAction G F] (g : R →+* F) (hg : Function.Injective g) (act : G → R → R)
@@ -197,8 +188,22 @@ theorem isUnit_of_fixed_twist {R F G : Type*} [CommRing R] [IsDomain R] [Field F
   exact (isUnit_pow_iff hf.ne').1 hbfu
 
 
+private theorem smul_twisted_pow_eq {F G : Type*} [Field F] [Group G] [MulSemiringAction G F]
+    (σ : G) {t u c q : F} (i : ℤ) (f : ℕ) (ht : t ≠ 0) (hq : q ≠ 0)
+    (hu : σ • u = q * u) (hc : σ • c = q ^ f * c) :
+    σ • ((t ^ i * u) ^ f * c⁻¹ * t ^ (-(i * f))) = (t ^ i * u) ^ f * c⁻¹ * t ^ (-(i * f)) := by
+  have he : (t ^ i * u) ^ f * c⁻¹ * t ^ (-(i * f)) = u ^ f * c⁻¹ := by
+    rw [mul_pow, ← zpow_natCast (t ^ i), ← zpow_mul, zpow_neg]
+    calc
+      _ = t ^ (i * (f : ℤ)) * (t ^ (i * (f : ℤ)))⁻¹ * (u ^ f * c⁻¹) := by ac_rfl
+      _ = _ := by rw [mul_inv_cancel₀ (zpow_ne_zero _ ht), one_mul]
+  rw [he, smul_mul', smul_pow', smul_inv₀', hu, hc, mul_pow, mul_inv_rev]
+  calc
+    _ = q ^ f * (q ^ f)⁻¹ * (u ^ f * c⁻¹) := by ac_rfl
+    _ = _ := by rw [mul_inv_cancel₀ (pow_ne_zero _ hq), one_mul]
+
 include hζ in
-set_option maxHeartbeats 3200000 in
+
 theorem isUnit_of_twist {L : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] L]
     {b : BCris hε} (hb0 : b ≠ 0) {i : ℤ} {u : 𝔹ˣ}
     (hyu : iotaB hε hζ b = algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ i * algebraMap 𝔹 𝔹dR (u : 𝔹))
@@ -208,55 +213,61 @@ theorem isUnit_of_twist {L : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDi
       σ • (c : AInf ℂ_[p] p) = IsPerfectoidField.padicIntToWitt p z * (c : AInf ℂ_[p] p)) :
     IsUnit b := by
   have := isDomain_bCris hε hζ
-  have hT : algebraMap 𝔹 𝔹dR (fontaineT ε hε) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective 𝔹 𝔹dR)).2 (fontaineT_ne_zero hε hζ)
-  obtain ⟨C, hCdef⟩ : ∃ C : 𝔹dR,
-      C = algebraMap 𝔹 𝔹dR (wittToBDeRhamPlus (normInteger ℂ_[p]) p (c : AInf ℂ_[p] p)) := ⟨_, rfl⟩
-  have hC0 : C ≠ 0 := by
-    rw [hCdef]
-    exact (map_ne_zero_iff _ (IsFractionRing.injective 𝔹 𝔹dR)).2
-      ((c.isUnit.map (wittToBDeRhamPlus (normInteger ℂ_[p]) p)).ne_zero)
-  have hCσ : ∀ σ : Gal(PadicAlgCl p/L),
-      σ • C = algebraMap 𝔹 𝔹dR (algebraMap ℚ_[p] 𝔹 (ψ σ)) ^ f * C := fun σ => by
-    obtain ⟨z, hz, hzc⟩ := hc σ
-    rw [hCdef, gal_smul_algebraMap_bDeRham, gal_smul_wittToBDeRhamPlus, hzc, map_mul, map_mul,
-      ← IsPerfectoidField.algebraMap_padic_coe, hz, map_pow, map_pow]
-  obtain ⟨cB, hcBdef⟩ : ∃ cB : BCris hε, cB = aInfToBCris hε (c : AInf ℂ_[p] p) := ⟨_, rfl⟩
-  have hcB : IsUnit cB := by rw [hcBdef]; exact c.isUnit.map _
-  have hιc : iotaB hε hζ ↑hcB.unit = C := by rw [IsUnit.unit_spec, hcBdef, hCdef, iotaB_aInfToBCris]
-  have hιT : iotaB hε hζ ↑(isUnit_periodTCris hε).unit = algebraMap 𝔹 𝔹dR (fontaineT ε hε) := by
-    rw [IsUnit.unit_spec, iotaB_periodTCris_eq]
-  refine isUnit_of_fixed_twist (G := Gal(PadicAlgCl p/L)) (iotaB hε hζ) (iotaB_injective hε hζ)
+  let A := algebraMap 𝔹 𝔹dR
+  let P := algebraMap ℚ_[p] 𝔹
+  let Q := A.comp P
+  let W := wittToBDeRhamPlus (normInteger ℂ_[p]) p
+  let T : 𝔹dR := A (fontaineT ε hε)
+  let C : 𝔹dR := A (W (c : AInf ℂ_[p] p))
+  let ι := iotaB hε hζ
+  have hA : Function.Injective A := IsFractionRing.injective 𝔹 𝔹dR
+  have hT : T ≠ 0 := (map_ne_zero_iff A hA).2 (fontaineT_ne_zero hε hζ)
+  have hCσ (σ : Gal(PadicAlgCl p/L)) : σ • C = Q (ψ σ) ^ f * C :=
+    (hc σ).elim fun z hz => by
+      have hw : W (IsPerfectoidField.padicIntToWitt p z) = P ((ψ σ : ℚ_[p]) ^ f) :=
+        (IsPerfectoidField.algebraMap_padic_coe (K := ℂ_[p]) p z).symm.trans (congrArg P hz.1)
+      calc
+        _ = A (σ • W (c : AInf ℂ_[p] p)) := gal_smul_algebraMap_bDeRham σ _
+        _ = A (W (σ • (c : AInf ℂ_[p] p))) := congrArg A (gal_smul_wittToBDeRhamPlus σ _)
+        _ = A (W (IsPerfectoidField.padicIntToWitt p z * (c : AInf ℂ_[p] p))) :=
+          congrArg (fun y => A (W y)) hz.2
+        _ = A (W (IsPerfectoidField.padicIntToWitt p z)) * C := map_mul (A.comp W) _ _
+        _ = Q ((ψ σ : ℚ_[p]) ^ f) * C := congrArg (fun y => A y * C) hw
+        _ = _ := congrArg (· * C) (map_pow Q _ f)
+  have hcB : IsUnit (aInfToBCris hε (c : AInf ℂ_[p] p)) := c.isUnit.map (aInfToBCris hε)
+  have hιc : ι ↑hcB.unit = C :=
+    (congrArg ι hcB.unit_spec).trans (iotaB_aInfToBCris hε hζ _)
+  have hιT : ι ↑(isUnit_periodTCris hε).unit = T :=
+    (congrArg ι (isUnit_periodTCris hε).unit_spec).trans (iotaB_periodTCris_eq hε hζ)
+  refine isUnit_of_fixed_twist (G := Gal(PadicAlgCl p/L)) ι (iotaB_injective hε hζ)
     (fun σ y => galB hε σ y) (fun σ y => iotaB_galB (K := L) hε hζ σ y)
     (fun B hB0 hB => isUnit_of_galB_fixed hε hζ (L := L) hB0 hB) hb0 hf hcB.unit
     (isUnit_periodTCris hε).unit (-(i * f)) fun σ => ?_
-  rw [hιc, hιT, hyu]
-  have hψ0 : algebraMap 𝔹 𝔹dR (algebraMap ℚ_[p] 𝔹 (ψ σ)) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective 𝔹 𝔹dR)).2
-      ((map_ne_zero_iff _ (algebraMap ℚ_[p] 𝔹).injective).2 (Units.ne_zero _))
-  have hsimp : (algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ i * algebraMap 𝔹 𝔹dR (u : 𝔹)) ^ f * C⁻¹ *
-      algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ (-(i * f)) = algebraMap 𝔹 𝔹dR (u : 𝔹) ^ f * C⁻¹ := by
-    rw [mul_pow, ← zpow_natCast (_ ^ i), ← zpow_mul, zpow_neg]
-    have hTz : algebraMap 𝔹 𝔹dR (fontaineT ε hε) ^ (i * (f : ℤ)) ≠ 0 := zpow_ne_zero _ hT
-    field_simp
-  rw [hsimp, gal_smul_bDeRham_def, map_mul, map_pow, map_inv₀, ← gal_smul_bDeRham_def,
-    ← gal_smul_bDeRham_def, gal_smul_algebraMap_bDeRham, huL σ, hCσ σ, map_mul, mul_pow]
-  field_simp
+  have hψ0 : Q (ψ σ) ≠ 0 := (map_ne_zero_iff Q (hA.comp P.injective)).2 (Units.ne_zero _)
+  have hσu : σ • A (u : 𝔹) = Q (ψ σ) * A (u : 𝔹) :=
+    (gal_smul_algebraMap_bDeRham σ _).trans ((congrArg A (huL σ)).trans (map_mul A _ _))
+  have he : ι b ^ f * (ι ↑hcB.unit)⁻¹ * ι ↑(isUnit_periodTCris hε).unit ^ (-(i * f)) =
+      (T ^ i * A (u : 𝔹)) ^ f * C⁻¹ * T ^ (-(i * f)) :=
+    congrArg₂ (· * ·) (congrArg₂ (· * ·) (congrArg (· ^ f) hyu) (congrArg Inv.inv hιc))
+      (congrArg (· ^ (-(i * f) : ℤ)) hιT)
+  exact (congrArg (σ • ·) he).trans ((smul_twisted_pow_eq σ i f hT hψ0 hσu (hCσ σ)).trans he.symm)
 
 
 include hζ in
-set_option maxHeartbeats 3200000 in
+
 theorem isUnit_of_forall_galB_eq_mul (hST : SenTateCharacters p)
     {K : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] K] {b : BCris hε}
     (hb0 : b ≠ 0)
     (hb : ∀ σ : Gal(PadicAlgCl p/K), ∃ q : ℚ_[p], galB hε σ b = algebraMap ℚ_[p] (BCris hε) q * b) :
     IsUnit b := by
   have hy0 : iotaB hε hζ b ≠ 0 := (map_ne_zero_iff _ (iotaB_injective hε hζ)).2 hb0
-  obtain ⟨i, u, hyu, L, -, hL, f, c, ψ, hf, huL, hc⟩ := exists_unramified_twist hε hζ hST hy0
+  obtain ⟨i, u, hyu, L, -, hL, f, c, ψ, hf, huL, hc⟩ := exists_unramified_twist hε hζ hST (K := K) hy0
     (fun σ => by
       obtain ⟨q, hq⟩ := hb σ
-      refine ⟨q, ?_⟩
-      rw [← iotaB_galB (K := K) hε hζ σ b, hq, map_mul, iotaB_algebraMap_padic_bdRPlus])
+      let ι := iotaB hε hζ
+      exact ⟨q, (iotaB_galB (K := K) hε hζ σ b).symm.trans
+        ((congrArg ι hq).trans ((map_mul ι _ _).trans
+          (congrArg (· * ι b) (iotaB_algebraMap_padic_bdRPlus hε hζ q))))⟩)
   exact isUnit_of_twist hε hζ (L := L) hb0 hyu hf huL hc
 
 

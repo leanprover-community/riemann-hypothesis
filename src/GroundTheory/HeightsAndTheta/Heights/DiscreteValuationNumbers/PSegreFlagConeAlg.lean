@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreFlagConeAlg
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairConeAlg
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSegreFlagClosureModel
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwistedDualGensSpan
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -30,8 +33,8 @@ theorem apply_castLE {Ω : Type*} [Field Ω] {E : Type*} [AddCommGroup E] [Modul
     (ψ : Module.Dual Ω E) :
     ψ v = ∑ j : Fin k, w.repr v (Fin.castLE hkN j) * ψ (w (Fin.castLE hkN j)) := by
   conv_lhs => rw [← w.sum_repr v]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_smul, smul_eq_mul]
   exact sum_castLE hkN _ fun j hj => by rw [hv j hj, zero_mul]
 
@@ -53,8 +56,8 @@ theorem exists_coords {Ω : Type*} [Field Ω] {E : Type*} [AddCommGroup E] [Modu
   have hsk : Matrix.vecMul (Matrix.vecMul sk TΦ⁻¹) TΦ = sk := by
     rw [Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ hTΦ, Matrix.vecMul_one]
   rw [sum_castLE hkN _ fun j hj => by rw [hs j hj, zero_mul]]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [apply_castLE hkN w (u _) (hu _) ψ, map_sum, Finset.mul_sum]
+
+  simp_rw [apply_castLE hkN w (u _) (hu _) ψ, map_sum, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
   have h := congrFun hsk j
@@ -70,8 +73,8 @@ theorem expand_coords {Ω : Type*} [Field Ω] {E : Type*} [AddCommGroup E] [Modu
     (hV : V = ∑ q, s' q * algebraMap Ω Φ (ψ (u q))) (Y Z : Ω) (o : σ) :
     ∑ q, C (algebraMap Ω Φ (ψ (u q) / Z)) * (C (algebraMap Ω Φ Y * s' q) * (X o : MvPolynomial σ Φ)) =
       C (algebraMap Ω Φ (Y / Z) * V) * X o := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hV, Finset.mul_sum, map_sum, Finset.sum_mul]
+
+  rw [hV, Finset.mul_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun q _ => ?_
   rw [← mul_assoc, ← map_mul]
   congr 2

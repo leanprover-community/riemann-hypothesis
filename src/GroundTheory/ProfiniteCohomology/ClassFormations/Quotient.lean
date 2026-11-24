@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.ClassFormationDefs
 public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 
 @[expose] public section

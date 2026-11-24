@@ -1,10 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaussSumNeZeroOfRamified
+import Development.WeilBound.ThetaLifts.WeilDomination.FacNeGauss
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonarchimedeanGroupOfIsCompactIsOpen
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaussSumNeZeroOfRamified
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -103,29 +140,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 theorem exists_condLE {ϖ : kˣ} (hϖ : IsUnif ϖ) (ν : kˣ →* ℂˣ) (hν : Continuous fun x : kˣ => (ν x : ℂ)) :
     ∃ e, CondLE ϖ e ν := by
-  have hopen : IsOpen {x : kˣ | ‖(ν x : ℂ) - 1‖ < 1 / 2} := isOpen_lt (by fun_prop) continuous_const
-  obtain ⟨V, hV, hV'⟩ := (Units.isEmbedding_val₀ (G₀ := k)).isInducing.isOpen_iff.1 hopen
-  have h1 : (1 : k) ∈ V := by
-    have : (1 : kˣ) ∈ Units.val ⁻¹' V := by rw [hV']; simp
-    simpa using this
-  have h2 : (fun z : k => z + 1) ⁻¹' V ∈ 𝓝 (0 : k) :=
-    (hV.preimage (by fun_prop)).mem_nhds (by simpa using h1)
-  obtain ⟨s, hs⟩ := exists_cball_subset h2
-  obtain ⟨p, hp, hp'⟩ := GlobalTheory.LocLanglands.exists_unit_pow k (ord k s).toNat
-  have hsmall : ∀ x ∈ unitCong (ϖ ^ (ord k s).toNat), ‖(ν x : ℂ) - 1‖ < 1 / 2 := fun x hx => by
-    have h3 : (x : k) - 1 ∈ GlobalTheory.SplitWeil.cball s := by
-      simp only [GlobalTheory.SplitWeil.cball, Set.mem_setOf_eq]
-      refine hx.2.trans ?_
-      rw [Units.val_pow_eq_pow_val, map_pow, hϖ, ← hp, GlobalTheory.LocLanglands.valuation_le_iff_ord, hp']
-      exact Int.self_le_toNat _
-    have h4 : x ∈ Units.val ⁻¹' V := by simpa using hs h3
-    rw [hV'] at h4
-    exact h4
-  refine ⟨(ord k s).toNat, fun x hx => Units.ext ?_⟩
-  refine GlobalTheory.Doubling.eq_one_of_forall_norm_pow_sub_one_le (A := ℂ) fun m => ?_
-  have := hsmall (x ^ m) (pow_mem hx m)
-  rw [map_pow, Units.val_pow_eq_pow_val] at this
-  exact this.le
+  apply PositivityTheory.ThK.GaussNe.exists_condLE <;> assumption
 
 end Main
 end GlobalTheory.GaussNonvanish

@@ -1,12 +1,58 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ReductionHeight
-public import GroundTheory.AutomorphicForms.ReductionIdele
-public import GroundTheory.GlobalFields.Adele.Approximation
-public import GroundTheory.GlobalFields.Adele.Discrete
 public import GroundTheory.GlobalFields.Adele.IntegersLattice
+public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureNormOne
+import GroundTheory.GlobalFields.Adele.Discrete
 public import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
+public import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -107,8 +153,8 @@ theorem exists_dirichlet_box : ∃ B : ℝ, 0 < B ∧ ∀ (a : 𝔸[K]) (N : ℕ
   have hlamK : ∀ p, ((lam p : 𝓞 K) : K) = ∑ i, (((p i : ℕ) : ℤ) • ((bZ i : 𝓞 K) : K)) := by
     intro p
     change algebraMap (𝓞 K) K (bZ.equivFun.symm _) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Module.Basis.equivFun_symm_apply, map_sum]
+
+    rw [Module.Basis.equivFun_symm_apply, map_sum]
     simp
   refine ⟨lam m - lam m', sub_ne_zero.2 (hlam_inj.ne hne), ?_, ?_⟩
   · intro w
@@ -126,8 +172,8 @@ theorem exists_dirichlet_box : ∃ B : ℝ, 0 < B ∧ ∀ (a : 𝔸[K]) (N : ℕ
       have : |(((m i : ℕ) : ℤ) - ((m' i : ℕ) : ℤ))| ≤ (N : ℤ) := by
         rw [abs_le]; constructor <;> omega
       exact_mod_cast this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hφ, hcast, map_sum]
+
+    rw [hφ, hcast, map_sum]
     calc ‖∑ i, φ ((((m i : ℕ) : ℤ) - ((m' i : ℕ) : ℤ)) • ((bZ i : 𝓞 K) : K))‖
         ≤ ∑ i, ‖φ ((((m i : ℕ) : ℤ) - ((m' i : ℕ) : ℤ)) • ((bZ i : 𝓞 K) : K))‖ := norm_sum_le _ _
       _ ≤ ∑ i, (N : ℝ) * ‖φ ((bZ i : 𝓞 K) : K)‖ := Finset.sum_le_sum fun i _ => by
@@ -170,8 +216,8 @@ theorem exists_dirichlet_box : ∃ B : ℝ, 0 < B ∧ ∀ (a : 𝔸[K]) (N : ℕ
         change GroundTheory.Global.homeomorphMixedSpace K (algebraMap K (InfiniteAdeleRing K) (F : K)) = _
         rw [GroundTheory.Global.homeomorphMixedSpace_algebraMap]
         change mixedEmbedding K (algebraMap (𝓞 K) K F) = _
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [F, map_sum, map_zsmul, hb, Int.cast_smul_eq_zsmul]
+
+        simp only [F, map_sum, map_zsmul, hb, Int.cast_smul_eq_zsmul]
       have hhom : GroundTheory.Global.homeomorphMixedSpace K
           (e (lam m) - e (lam m') - algebraMap K 𝔸[K] (F : K)).1 =
           ∑ i, (Int.fract (sm i) - Int.fract (sm' i)) • b i := by

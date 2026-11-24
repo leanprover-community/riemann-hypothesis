@@ -1,13 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.PtKOfReal
-public import Mathlib
-public import Formalism.LocalToGlobal.Divisibility.RecBridge
-public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
-public import Formalism.SharpRestriction.ElevenLe
-public import Formalism.SharpRestriction.Divisibility.SlopeExcess.FamilyStatementOfScaledLemmas
-public import Formalism.SharpRestriction.Divisibility.HookProducts.NormAtEqSqrtMajAt
-public import Formalism.SharpRestriction.Divisibility.HookProducts.LambdaZeroLeFourB
+public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
+import Formalism.LocalToGlobal.PtKOfReal
 
 @[expose] public section
 

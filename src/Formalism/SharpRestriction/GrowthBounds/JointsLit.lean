@@ -1,13 +1,52 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeRename
-public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.IndexOffRange
-public import Formalism.ThetaLogCoordinates.JacobiPathWeights.FinalP
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.LocalRingCardinality.Lemmas
 public import Formalism.SharpRestriction.GrowthBounds.CornerGLContinuity
+public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementP
+public import Formalism.PeriodIntegrals.AdmissibleModel.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.AdmissibleIntegers.FirstTermSizeBound
+public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.IndexOffRange
+public import Formalism.ThetaLogCoordinates.JacobiPathWeights.FinalP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -33,7 +72,7 @@ theorem antitone_of_succ {n : ℕ} (μ : Fin n → ℤ) (h : ∀ (a : Fin n) (ha
 theorem stCount_eq_dGT (n : ℕ) (μ : Fin n → ℤ) (hμ : Antitone μ) :
     Formalism.MainNotions.SelectionLemmas.stCount n μ = Formalism.InvariantFactorPaths.GelfandTsetlinBases.dGT n μ := by
   unfold Formalism.MainNotions.SelectionLemmas.stCount
-  rw [← (Formalism.InvariantFactorPaths.GelfandTsetlinBases.Top.stdCountGT n μ hμ).2]
+  rw [← (_root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.standard_count_gt n μ hμ).2]
   exact Nat.card_congr (Equiv.subtypeEquivRight fun I => Formalism.MainNotions.G.ColumnFamilies.restStd n 0 (fun _ => μ) I)
 
 theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.admB3 D := by
@@ -41,7 +80,7 @@ theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Form
   have e : Nat.card {I : ℤ → Finset (Fin n) // IsSt mu I} =
       Nat.card {I : ℤ → Finset (Fin n) // Formalism.InvariantFactorPaths.GelfandTsetlinBases.IsStd (pEnd mu) I} :=
     Nat.card_congr (Equiv.subtypeEquivRight fun I => Formalism.MainNotions.G.ColumnFamilies.restStd n N mu I)
-  rw [e, (Formalism.InvariantFactorPaths.GelfandTsetlinBases.Top.stdCountGT n (pEnd mu) hdom).2]
+  rw [e, (_root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.standard_count_gt n (pEnd mu) hdom).2]
   exact Formalism.L2.G.Model.weylQ n (pEnd mu) hdom
 
 theorem branching_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.ColumnFamilyLowerSet D := by
@@ -71,7 +110,7 @@ theorem strip_down_antitone {n : ℕ} {ν μ : Fin n → ℤ} {b : ℕ} (hν : A
 open Classical in
 theorem pieri_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.GenericProjectionCriterion D := by
   intro m ν b hν
-  obtain ⟨hup, hdown⟩ := Formalism.InvariantFactorPaths.GelfandTsetlinBases.Top.gtPieri (m + 1) ν b hν
+  obtain ⟨hup, hdown⟩ := _root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.gelfand_tsetlin_pieri (m + 1) ν b hν
   have hc : (m + 1 + b - 1).choose b = (b + m).choose m := by
     rw [show m + 1 + b - 1 = b + m by omega, Nat.choose_symm_add]
   rw [stCount_eq_dGT (m + 1) ν hν]
@@ -125,8 +164,8 @@ theorem span_inf_span {A K : Type*} [CommRing A] [IsDedekindDomain A] [Field K] 
     convert h using 1
     funext i
     rcases i with i | i
-    · ext <;> simp [φ', b', Module.Basis.prod_apply_inl_fst, Module.Basis.prod_apply_inl_snd]
-    · ext <;> simp [φ', b', Module.Basis.prod_apply_inr_fst, Module.Basis.prod_apply_inr_snd]
+    · ext <;> simp [φ', b']
+    · ext <;> simp [φ', b']
   let U : Submodule K (V × V) := LinearMap.range ((LinearMap.id : V →ₗ[K] V).prod LinearMap.id)
   have key := (FBC.flat_ext (V := V × V) (W := W × W) w σ hσ φ' hφ' b' hb').2 (L1.prod L2) U
   have hL : ∀ y ∈ Submodule.span O (φ '' (L1 : Set V)), (y, (0 : W)) ∈ Submodule.span O (φ' '' ((L1.prod L2 : Submodule A (V × V)) : Set (V × V))) := by
@@ -257,7 +296,7 @@ theorem foldr_smul {R M ι : Type*} [Semiring R] [AddCommMonoid M] [Module R M] 
   | cons i l ih => simp only [List.map_cons, List.foldr_cons, Function.comp_apply, ih, iter_smul]
 
 
-set_option maxHeartbeats 1000000 in
+
 open Classical in
 theorem NPDesc_of (c : LatCmp D) {L : SizeData₂ D} (hT : GatTies D) (X : Inst D L) (Y : LatInst D) (K : Consts)
     (hv : c.VramDef Y) (hy : YvRat c) : c.NPDesc X Y K := by

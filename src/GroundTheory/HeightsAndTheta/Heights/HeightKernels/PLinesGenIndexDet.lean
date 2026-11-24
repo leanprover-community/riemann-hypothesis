@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLines
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.LinearAlgebra.FreeModule.Finite.CardQuotient
 
 @[expose] public section
 

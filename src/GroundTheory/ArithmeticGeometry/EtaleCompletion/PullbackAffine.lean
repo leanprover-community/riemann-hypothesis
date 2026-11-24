@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.EtaleCompletion.ModulesPullback
+public import Mathlib.AlgebraicGeometry.Modules.Tilde
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.CategoryTheory.Monoidal.Mon
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

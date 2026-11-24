@@ -1,10 +1,59 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.FrameInvMulVecNegativeVector
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.AdaptExists
+public import Formalism.FormalDegreeBessel.StatementG
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.UnitaryOfBlockWMem
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.FrameInvMulVecNegativeVector
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
+import Formalism.HermitianCurvature.BesselNonvanishingReduction
 
 @[expose] public section
 
@@ -54,27 +103,7 @@ lemma exists_isometry (hH : Hᴴ = H) (u v : ι → ℂ)
     (huv : Formalism.QuantumDeterminants.herm H u u = Formalism.QuantumDeterminants.herm H v v) (h0 : Formalism.QuantumDeterminants.herm H u u ≠ 0) :
     ∃ g : Matrix ι ι ℂ, gᴴ * H * g = H ∧ g *ᵥ u = v ∧
       ∀ x, Formalism.QuantumDeterminants.herm H x u = 0 → Formalism.QuantumDeterminants.herm H x v = 0 → g *ᵥ x = x := by
-  by_cases hne : Formalism.QuantumDeterminants.herm H u u = Formalism.QuantumDeterminants.herm H u v
-  swap
-  · exact quasi_reflection H hH u v huv hne
-  have e1 : Formalism.QuantumDeterminants.herm H ((-1 : ℂ) • u) ((-1 : ℂ) • u) = Formalism.QuantumDeterminants.herm H u u := by
-    simp only [herm_smul_left, herm_smul_right]; simp
-  obtain ⟨g₁, h1, h2, h3⟩ := quasi_reflection H hH u ((-1 : ℂ) • u) e1.symm (by
-    rw [herm_smul_right]
-    intro h; apply h0
-    simp only [star_neg, star_one] at h
-    linear_combination h / 2)
-  obtain ⟨g₂, k1, k2, k3⟩ := quasi_reflection H hH ((-1 : ℂ) • u) v (e1.trans huv) (by
-    rw [e1, herm_smul_left, ← hne]
-    intro h; apply h0
-    linear_combination h / 2)
-  refine ⟨g₂ * g₁, ?_, ?_, fun x hxu hxv => ?_⟩
-  · calc (g₂ * g₁)ᴴ * H * (g₂ * g₁) = g₁ᴴ * (g₂ᴴ * H * g₂) * g₁ := by
-          rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = H := by rw [k1, h1]
-  · rw [← Matrix.mulVec_mulVec, h2, k2]
-  · have : Formalism.QuantumDeterminants.herm H x ((-1 : ℂ) • u) = 0 := by rw [herm_smul_right, hxu, mul_zero]
-    rw [← Matrix.mulVec_mulVec, h3 x hxu this, k3 x this hxv]
+  apply GlobalTheory.CompanionTheory.BmuAdapt.exists_move <;> assumption
 
 end forms
 

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremFE
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheorem
-public import GroundTheory.GlobalFields.TateThesis.Nonvanishing
+import Mathlib.Analysis.Complex.RemovableSingularity
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

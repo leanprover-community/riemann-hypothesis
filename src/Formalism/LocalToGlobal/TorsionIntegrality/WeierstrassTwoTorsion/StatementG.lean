@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementZ
-public import Formalism.FormalGroupLog.LogDeterminesLaw
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CompInv
 
 @[expose] public section
 

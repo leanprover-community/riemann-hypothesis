@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LineBundleGlobalSectionsDimCongrPicardClass
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHeightIffOfDegreeEq
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LinearIndependentPullChart
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAffineOpenPreimageOfIsPullback
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DOnEqZeroOfEqOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndepBaseChange
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+public import Development.AbelianVarietyTheory.Definitions.Divisors.SecondCountableTopologyOfIsProjOver
 
 @[expose] public section
 
@@ -186,6 +227,16 @@ instance finiteDimensional_global (j : ℕ) : FiniteDimensional F (G.global j) :
 
 theorem finrank_global (j : ℕ) : Module.finrank F (G.global j) = lbH0 F (G.adj j) :=
   (LinearMap.finrank_range_of_inj (G.restr_injective _)).trans (H0.finrank_top _ _)
+
+private theorem finrank_global_pos_of_hasNonzeroSec (j : ℕ) (h : HasNonzeroSec (G.adj j)) :
+    0 < Module.finrank F (G.global j) := by
+  obtain ⟨s, hs⟩ := h
+  let ofSec := H0.ofSec (B := G.adj j) G.str ⊤
+  let res : H0 G.str (G.adj j) ⊤ →ₗ[F] G.Sec j := H0.restr le_top
+  refine Module.finrank_pos_iff_exists_ne_zero.2 ⟨res.rangeRestrict (ofSec s), fun h => hs ?_⟩
+  have hz : res (ofSec s) = 0 := congrArg (fun x : G.global j => x.val) h
+  have hr : ofSec s = 0 := G.restr_injective (G.adj j) (hz.trans (map_zero res).symm)
+  exact H0.bijective_ofSec_top.1 (hr.trans (map_zero ofSec).symm)
 
 def mulW (j : ℕ) : (Fin G.N → F) →ₗ[F] G.Sec j →ₗ[F] G.Sec (j + 1) :=
   (oneChart (isLB_tens G.K.isLB G.isLBA) G.isLB (Nat.cast_succ j).symm).mul ∘ₗ
@@ -468,6 +519,10 @@ theorem Geo.shortFamily_globalData {F : Type} [Field F] [NumberField F] (G : Geo
     (Module.finBasis F (G.global j)).linearIndependent.comp _ (Fin.cast_injective e),
     fun i σ => (nrm_ofBasis _ σ _).le⟩
 
+private theorem Geo.d_pos_globalData {F : Type} [Field F] [NumberField F] (G : Geo F) {T : ℕ}
+    (hT : G.D + 1 ≤ T) (h : 0 < Module.finrank F (G.global T)) : 0 < (G.globalData T hT).d :=
+  h.trans_eq (G.globalData T hT).d_eq_finrank.symm
+
 namespace Proj
 
 open ProjSpace
@@ -557,22 +612,29 @@ theorem cls_adj {Y : Scheme.{0}} {K L : LB Y} (hK : K.IsLB) (hL : L.IsLB) (M j :
     cls_lbPow hL]
   module
 
+omit [NumberField F] in
+private theorem hasNonzeroSec_jacobian (M : ℕ) [SmoothOfRelativeDimension M (PSpace.str F M)]
+    (K : CanonLB (PSpace.str F M) M) : HasNonzeroSec (K.adj (O1 F M) (M + 1)) := by
+  let s := K.jacSec (coord F M)
+  obtain ⟨c, hc⟩ := exists_chart (K.isLB_adj (O1_isLB F M) (M + 1)) (projSys.gen F M)
+  have hu := (isUnit_jacSec_coord F M K c).map (ger (projSys.gen F M) hc)
+  exact ⟨s, sec_ne_zero_of_mem ((isUnit_ger_iff s hc).1 hu)⟩
+
 theorem finrank_global_pos (j : ℕ) : 0 < Module.finrank F ((geo F hM).global j) := by
-  have hO := O1_isLB F M
   let G := geo F hM
-  obtain ⟨c, hc⟩ := exists_chart (G.K.isLB_adj hO (M + 1)) (projSys.gen F M)
-  have h₁ : HasNonzeroSec (G.K.adj (O1 F M) (M + 1)) := ⟨G.K.jacSec (coord F M), sec_ne_zero_of_mem
-    ((isUnit_ger_iff _ hc).1 ((@isUnit_jacSec_coord F _ M G.smooth G.K c).map _))⟩
-  obtain ⟨s, hs⟩ := HasNonzeroSec.of_cls_eq_add (X := G.Y) h₁ (hasNonzeroSec_pow F M (j + 1)) (G.isLB_adj j)
-    (G.K.isLB_adj hO _) (isLB_lbPow hO _) (cls_adj G.K.isLB hO M j _ _ _)
-  refine Module.finrank_pos_iff_exists_ne_zero.2 ⟨⟨_, H0.ofSec _ ⊤ s, rfl⟩, fun h => hs ?_⟩
-  exact H0.bijective_ofSec_top.1 ((G.restr_injective _ ((congrArg Subtype.val h).trans (map_zero _).symm)).trans
-    (map_zero _).symm)
+  have h₁ : HasNonzeroSec (G.K.adj G.L (M + 1)) :=
+    @hasNonzeroSec_jacobian F _ M G.smooth G.K
+  have h₂ : HasNonzeroSec (lbPow G.L (j + 1)) := hasNonzeroSec_pow F M (j + 1)
+  have hA := G.K.isLB_adj G.isLB (M + 1)
+  have hB := isLB_lbPow G.isLB (j + 1)
+  have hN := G.isLB_adj j
+  have hc : cls (G.adj j) hN = cls _ hA + cls _ hB := cls_adj G.K.isLB G.isLB M j hN hA hB
+  exact G.finrank_global_pos_of_hasNonzeroSec j (h₁.of_cls_eq_add h₂ hN hA hB hc)
 
 def data (T : ℕ) (hT : M + 1 ≤ T) : Data F := (geo F hM).globalData T hT
 
 theorem d_pos (T : ℕ) (hT : M + 1 ≤ T) : 0 < (data F hM T hT).d :=
-  (finrank_global_pos F hM T).trans_eq (data F hM T hT).d_eq_finrank.symm
+  (geo F hM).d_pos_globalData hT (finrank_global_pos F hM T)
 
 end Proj
 

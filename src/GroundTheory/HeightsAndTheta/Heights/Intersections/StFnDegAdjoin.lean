@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StRankAdjoinFrac
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsChartRankAdjoin
 
 @[expose] public section
 

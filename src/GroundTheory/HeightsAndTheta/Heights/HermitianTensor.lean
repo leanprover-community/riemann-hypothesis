@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HermitianEuclidean
+public import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,63 @@
 module
 
 public import ReciprocityTheory.DualLattices.FischerAdjointStatement
+public import Mathlib.Tactic.Continuity
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.GroupTheory.Perm.DomMulAct
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Basic.PEquiv
+public import Mathlib.Data.Matrix.PEquiv
 
 @[expose] public section
 
@@ -39,9 +96,9 @@ theorem leibniz_ofFn {m s : ℕ} (ds : Fin m → Derivation R A A) (P : Fin s �
   | succ m ih =>
     have hce : ∀ x : Fin s × (Fin m → Fin s),
         (Fin.consEquiv fun _ => Fin s) x = Fin.cons x.1 x.2 := fun x => rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [List.ofFn_succ, List.prod_cons, Module.End.mul_apply, ih (fun i => ds i.succ), map_sum,
-      ← (Fin.consEquiv fun _ => Fin s).sum_comp, Fintype.sum_prod_type]
+
+    rw [List.ofFn_succ, List.prod_cons, Module.End.mul_apply, ih (fun i => ds i.succ), map_sum,
+    ← (Fin.consEquiv fun _ => Fin s).sum_comp, Fintype.sum_prod_type]
     simp only [Derivation.coeFn_coe, deriv_finsetProd, hce, List.ofFn_succ, Fin.cons_zero,
       Fin.cons_succ, List.prod_cons, Module.End.mul_apply]
     refine Finset.sum_comm.trans
@@ -56,7 +113,7 @@ theorem prod_map_ite_one {M ι : Type*} [Monoid M] (l : List ι) (p : ι → Pro
     (l.map fun j => if p j then d j else 1).prod = ((l.filter fun j => p j).map d).prod := by
   induction l with
   | nil => simp
-  | cons a l ih => by_cases h : p a <;> simp [List.filter_cons, h, ih]
+  | cons a l ih => by_cases h : p a <;> simp [h, ih]
 
 end General
 
@@ -72,9 +129,8 @@ def linSub (g : Matrix (Fin n) (Fin n) R) :
 
 theorem pderiv_linSub_X (g : Matrix (Fin n) (Fin n) R) (a b : Fin n) (v : Fin n × Fin n) :
     pderiv (a, b) (linSub g (X v)) = if v.2 = b then C (g v.1 a) else 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [linSub, aeval_X, map_sum, Derivation.leibniz, pderiv_C, pderiv_X, smul_zero,
-    add_zero, smul_eq_mul, Pi.single_apply, Prod.mk.injEq]
+
+  simp only [linSub, aeval_X, map_sum, Derivation.leibniz, pderiv_C, pderiv_X, smul_eq_mul, Pi.single_apply, Prod.mk.injEq]
   by_cases hb : v.2 = b
   · subst hb; simp
   · simp [hb]
@@ -122,10 +178,10 @@ theorem dOp_linSub {m : ℕ} (g : Matrix (Fin n) (Fin n) R) (r c : Fin m → Fin
       simp only [dOp, List.ofFn_succ, List.prod_cons, Module.End.mul_apply, Derivation.coeFn_coe]
     have hce : ∀ x : Fin n × (Fin m → Fin n),
         (Fin.consEquiv fun _ => Fin n) x = Fin.cons x.1 x.2 := fun x => rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [key, ih, map_sum, ← (Fin.consEquiv fun _ => Fin n).sum_comp, Fintype.sum_prod_type]
+
+    rw [key, ih, map_sum, ← (Fin.consEquiv fun _ => Fin n).sum_comp, Fintype.sum_prod_type]
     simp only [hce, key, Fin.cons_zero, Fin.cons_succ, Fin.prod_univ_succ, Derivation.leibniz,
-      pderiv_C, smul_zero, smul_eq_mul, mul_zero, add_zero, pderiv_linSub, Finset.mul_sum, map_mul]
+      pderiv_C, smul_eq_mul, mul_zero, add_zero, pderiv_linSub, Finset.mul_sum, map_mul]
     exact Finset.sum_comm.trans
       (Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun τ _ => by ring)
 
@@ -170,14 +226,14 @@ theorem cayOp_linSub (g : Matrix (Fin n) (Fin n) R) (q : MvPolynomial (Fin n × 
     _ = ∑ τ : Fin n → Fin n, C ((g.submatrix τ id).det) * linSub g (dOp τ id q) := by
         rw [Finset.sum_comm]
         refine Finset.sum_congr rfl fun τ _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← hdet, map_sum, Finset.sum_mul]
+
+        rw [← hdet, map_sum, Finset.sum_mul]
     _ = ∑ e : Equiv.Perm (Fin n), C ((g.submatrix e id).det) * linSub g (dOp e id q) :=
         sum_fun_eq_sum_perm _ fun τ hτ => by rw [h0 τ hτ, map_zero, zero_mul]
     _ = C g.det * linSub g (cayOp n R q) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [cayOp, LinearMap.sum_apply, LinearMap.smul_apply, cayMono_eq_dOp, map_sum,
-          Finset.mul_sum, Matrix.det_permute, map_zsmul, map_mul, map_intCast]
+
+        simp only [cayOp, LinearMap.sum_apply, LinearMap.smul_apply, cayMono_eq_dOp, map_sum,
+        Finset.mul_sum, Matrix.det_permute, map_zsmul, map_mul, map_intCast]
         refine Finset.sum_congr rfl fun e _ => ?_
         rw [zsmul_eq_mul]
         ring
@@ -316,7 +372,7 @@ theorem pderiv_yP (σ τ : Fin n → Fin n) (S : Finset (Fin n)) (j : Fin n) (hj
     by_cases hS : b₀ ∈ S
     · simp [hS, apply_ite (⇑(pderiv (σ j, j) : Derivation ℤ (MvPolynomial (Fin n × Fin n) ℤ)
         (MvPolynomial (Fin n × Fin n) ℤ))), Derivation.map_one_eq_zero]
-    · simp [hS, pderiv_X, Pi.single_apply, hb₀]
+    · simp [hS, pderiv_X, hb₀]
   · simp
 
 theorem list_pderiv_yP (σ τ : Fin n → Fin n) (l : List (Fin n)) (hl : l.Nodup)
@@ -353,8 +409,8 @@ theorem eval_fibOp_cayDet (σ : Fin n → Fin n) {s : ℕ} (φ : Fin n → Fin s
   have hS : ((List.finRange n).filter fun j => φ j = k).toFinset =
       Finset.univ.filter fun b => φ b = k := by
     ext b; simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hf, hc, map_sum, map_sum, Matrix.det_apply]
+
+  rw [hf, hc, map_sum, map_sum, Matrix.det_apply]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [map_zsmul, list_pderiv_yP σ τ _ (List.Nodup.filter _ (List.nodup_finRange n)) ∅ (by simp),
     Finset.empty_union, hS, map_zsmul, Units.smul_def]
@@ -362,8 +418,8 @@ theorem eval_fibOp_cayDet (σ : Fin n → Fin n) {s : ℕ} (φ : Fin n → Fin s
   simp only [yP, map_prod]
   refine Finset.prod_congr rfl fun b _ => ?_
   by_cases hb : φ b = k
-  · simp [hb, funMat, onePt, apply_ite (eval onePt)]
-  · simp [hb, funMat, onePt, Matrix.one_apply, apply_ite (eval onePt)]
+  · simp [hb, funMat, apply_ite (eval onePt)]
+  · simp [hb, funMat, onePt, Matrix.one_apply]
 
 theorem cayMono_pow (σ : Equiv.Perm (Fin n)) (s : ℕ) :
     cayMono n ℤ σ (cayDet n ℤ ^ s) = ∑ φ : Fin n → Fin s, ∏ k, fibOp σ φ k (cayDet n ℤ) := by
@@ -426,15 +482,15 @@ theorem eval_one_cayOp_pow (s : ℕ) :
   have h1 : ∀ σ : Equiv.Perm (Fin n), eval onePt (cayMono n ℤ σ (cayDet n ℤ ^ s)) =
       ∑ φ : Fin n → Fin s, if φ ∘ σ = φ then (Equiv.Perm.sign σ : ℤ) else 0 := by
     intro σ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [cayMono_pow, map_sum]
+
+    rw [cayMono_pow, map_sum]
     simp only [map_prod, eval_fibOp_cayDet, prod_det_funMat]
   have hsq : ∀ σ : Equiv.Perm (Fin n),
       (Equiv.Perm.sign σ : ℤ) * (Equiv.Perm.sign σ : ℤ) = 1 := fun σ => by
     rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [cayOp, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_zsmul, h1,
-    Finset.smul_sum, smul_ite, smul_zero, smul_eq_mul, Finset.mul_sum, mul_ite, mul_zero, hsq]
+
+  simp only [cayOp, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_zsmul, h1,
+  smul_eq_mul, Finset.mul_sum, mul_ite, mul_zero, hsq]
   rw [Finset.sum_comm]
   simp only [hstab]
   have h2 := sum_prod_factorial_fibres s n
@@ -460,8 +516,8 @@ theorem cayOp_map (p : MvPolynomial (Fin n × Fin n) ℤ) :
     | cons j l ih =>
       simp only [List.map_cons, List.prod_cons, Module.End.mul_apply, ih, Derivation.coeFn_coe,
         pderiv_map]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [cayOp, cayMono, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_zsmul, hl]
+
+  simp only [cayOp, cayMono, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_zsmul, hl]
 
 theorem cayDet_map : map (Int.castRingHom R) (cayDet n ℤ) = cayDet n R := by
   show map (Int.castRingHom R) (Matrix.mvPolynomialX (Fin n) (Fin n) ℤ).det =

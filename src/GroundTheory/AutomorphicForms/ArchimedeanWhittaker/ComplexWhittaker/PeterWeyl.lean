@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.InstMeasurableSpaceU2
+public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EqZeroOfForallIntegralCoeff
 
 @[expose] public section

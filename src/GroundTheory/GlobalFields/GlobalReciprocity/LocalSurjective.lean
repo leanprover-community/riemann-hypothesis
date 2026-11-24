@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.NormResidueSymbol.RangeFiniteLocalNormLeKerLocalSymbol
 public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite
+import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialLocal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

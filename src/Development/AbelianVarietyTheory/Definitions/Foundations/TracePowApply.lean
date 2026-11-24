@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.GelfA
 public import Formalism.RealPlaceAnalysis.StatementB
+public import Formalism.GradedWeylDivisibility.StatementA
+public import Mathlib.LinearAlgebra.Matrix.Trace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -25,7 +71,7 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_X (R : Type) [CommRing R] (r n : 
   simp only [pderiv_X, Pi.single_apply, Prod.ext_iff]
   split_ifs with hbc
   · subst hbc
-    simp [Finset.sum_ite_eq']
+    simp
   · have hcb : ¬c = b := fun h => hbc h.symm
     simp [hcb]
 
@@ -101,7 +147,7 @@ private theorem gradedWeyl_gen_coeff_one_and_coeff_zero (R : Type) [CommRing R] 
       congr 1
       · ring
       · exact Finset.sum_congr rfl fun _ _ => by ring
-    · simp [Pi.single_apply, Prod.ext_iff, hib, Polynomial.coeff_mul_C, hp0, hp1, Finset.sum_mul]
+    · simp [Prod.ext_iff, hib, Polynomial.coeff_mul_C, hp0, hp1, Finset.sum_mul]
       exact Finset.sum_congr rfl fun _ _ => by ring
 
 open MvPolynomial in
@@ -174,13 +220,13 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.trace_pow_apply (h : _root_.GlobalTheo
     induction k with
     | zero =>
       refine ⟨fun a b hab => ?_, fun a => ?_⟩
-      · simp [Matrix.one_apply, hab.ne]
+      · simp [hab.ne]
       · simp [Matrix.one_apply]
     | succ k ih =>
       obtain ⟨ih1, ih2⟩ := ih
       have expand : ∀ a b, (E ^ (k + 1)) a b v = ∑ m, (E ^ k) a m (E m b v) := by
         intro a b
-        simp [pow_succ, Matrix.mul_apply, LinearMap.sum_apply, Module.End.mul_apply]
+        simp [pow_succ, Matrix.mul_apply, LinearMap.sum_apply]
       have term : ∀ a b m, a ≤ b → (E ^ k) a m (E m b v) =
           if m < b then 0 else if m = b then μ b • (E ^ k) a b v
             else (E ^ k) a b v - (if b = a then (E ^ k) m m v else 0) := by
@@ -191,7 +237,7 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.trace_pow_apply (h : _root_.GlobalTheo
           simp [hw]
         · have hc := congrArg (fun f : Module.End R V => f v)
             (_root_.GlobalTheory.Mem.GelfCheck.pow_cov h k a m m b)
-          simp only [LinearMap.sub_apply, Module.End.mul_apply, if_pos rfl] at hc
+          simp only [LinearMap.sub_apply, Module.End.mul_apply] at hc
           rw [ih1 a m (lt_of_le_of_lt hab hmb), map_zero, zero_sub] at hc
           rw [if_neg (not_lt.mpr hmb.le), if_neg hmb.ne', ← neg_neg ((E ^ k) a m (E m b v)), hc]
           split_ifs <;> simp

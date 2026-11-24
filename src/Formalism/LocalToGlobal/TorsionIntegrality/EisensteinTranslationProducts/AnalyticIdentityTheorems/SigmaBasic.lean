@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.Legendre
+public import Mathlib.Analysis.Complex.LocallyUniformLimit
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

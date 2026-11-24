@@ -1,10 +1,62 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTKLineCut
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ProductIntervalFrames
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieBracketMultiplication
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagonalTransferAction
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieBracketMultiplication
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ProductIntervalFrames
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 public import Lemmata.GeneralBFactSecondAltForm.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -102,19 +154,6 @@ theorem eig_mem {W ι : Type*} [AddCommGroup W] [Module ℂ W] [Fintype ι] [Dec
     rw [h1, smul_smul, inv_mul_cancel₀ hp, one_smul]
   rw [h2]
   exact Submodule.smul_mem _ _ (hmem u)
-
-theorem schur_core {Wq Wp : Type*} [AddCommGroup Wq] [Module ℂ Wq] [FiniteDimensional ℂ Wq]
-    [AddCommGroup Wp] [Module ℂ Wp] [FiniteDimensional ℂ Wp]
-    (S' : Submodule ℂ Wq) (S : Submodule ℂ Wp) (Gq : Set (Module.End ℂ Wq)) (Gp : Set (Module.End ℂ Wp))
-    (hirr' : ∀ K : Submodule ℂ Wq, K ≤ S' → (∀ A ∈ Gq, ∀ v ∈ K, A v ∈ K) → K = ⊥ ∨ K = S')
-    (hirr : ∀ K : Submodule ℂ Wp, K ≤ S → (∀ B ∈ Gp, ∀ w ∈ K, B w ∈ K) → K = ⊥ ∨ K = S)
-    (hst : ∀ A ∈ Gq, ∀ v ∈ S', A v ∈ S')
-    (E Z : Wq →ₗ[ℂ] Wp) (hES : ∀ v ∈ S', E v ∈ S) (hZS : ∀ v ∈ S', Z v ∈ S)
-    (hq : ∀ A ∈ Gq, ∃ B : Module.End ℂ Wp, E ∘ₗ A = B ∘ₗ E ∧ Z ∘ₗ A = B ∘ₗ Z)
-    (hp : ∀ B ∈ Gp, ∃ A ∈ Gq, E ∘ₗ A = B ∘ₗ E)
-    (hne : ∃ v ∈ S', E v ≠ 0) :
-    ∃ c : ℂ, ∀ v ∈ S', Z v = c • E v := by
-  first | exact Bl.general_b_fact_second_alt_form.goal1 .. | (apply Bl.general_b_fact_second_alt_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_second_alt_form.goal1 <;> assumption)
 
 end LinAlg
 
@@ -379,7 +418,7 @@ theorem lie_weight_at_most_holds : KLAtMost := by
     have h2 := smul_right_injective _ hs h1
     exact (add_right_cancel h2).symm
 
-  obtain ⟨c0, hc0⟩ := KLAM.schur_core (S' σ0) (S τ0)
+  obtain ⟨c0, hc0⟩ := _root_.Bl.general_b_fact_second_alt_form.goal1 (S' σ0) (S τ0)
     ((fun h => (π' h : Wq →ₗ[ℂ] Wq)) '' {h | h ∈ UWset P.k P.r z' ∧ h *ᵥ e' = e'})
     ((fun h => (π h : Wp →ₗ[ℂ] Wp)) '' {h | h ∈ UWset P.k P.r z ∧ h *ᵥ (g *ᵥ f) = g *ᵥ f})
     (fun K hK hst => (hirr' σ0).2 K hK (fun h hh he v hv => hst _ ⟨h, ⟨hh, he⟩, rfl⟩ v hv))

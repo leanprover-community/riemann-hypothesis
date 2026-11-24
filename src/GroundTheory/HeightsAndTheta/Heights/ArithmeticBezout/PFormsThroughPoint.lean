@@ -1,12 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsFormsThroughPoint
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsThroughPointIncIdeal
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartZeroTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsThroughTwoPointsTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsTrdegBaseAlgebraic
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsIncidenceZeroLocus
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PComponentOfIncIdeal
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -19,8 +24,8 @@ open MvPolynomial
 theorem aeval_mul_homogeneousComponent {F Ω : Type*} [Field F] [Field Ω] [Algebra F Ω] {n : ℕ}
     (q : MvPolynomial (Fin n) F) (e : ℕ) (t : Ω) (x : Fin n → Ω) :
     aeval (fun m => t * x m) (homogeneousComponent e q) = t ^ e * aeval x (homogeneousComponent e q) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [homogeneousComponent_apply, map_sum, map_sum, Finset.mul_sum]
+
+  rw [homogeneousComponent_apply, map_sum, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun α hα => ?_
   rw [Finset.mem_filter] at hα
   simp only [aeval_monomial, Finsupp.prod, mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
@@ -81,8 +86,8 @@ theorem FormsThroughPoint.proof (hZ : IncidenceZeroLocus.Statement) (hI : Throug
       by_contra h
       push Not at h
       apply hqx
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← sum_homogeneousComponent q, map_sum]
+
+      rw [← sum_homogeneousComponent q, map_sum]
       exact Finset.sum_eq_zero fun e _ => h e
     have ht0 : t ≠ 0 := by
       rintro rfl

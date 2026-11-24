@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 @[expose] public section
 

@@ -1,34 +1,45 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsBiSmooth
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-
-namespace I195MixedCoordinates_234e4f75c563de28cf3cb155
-
-open Formalism.BasicNotions Formalism.BasicNotions.TH
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.MixModel MeasureTheory
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-public noncomputable abbrev source
-    {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (T : HSp D)
-    (ψ : AddChar (AF D.host.F) ℂ) (μ : Measure (Mx D T.rank ρ))
-    (𝓕 : Set (Mx D T.rank ρ)) (f : WO S T → ℂ) (x : Mx D T.rank ρ) : WO S₀ T → ℂ :=
-  fun w₀ => ∫ a in 𝓕, heisO ψ S T (a * d.pY)
-    (heisO ψ S T (x * d.pX) (heisO ψ S T (w₀ * d.p0) f)) 0 ∂μ
-
-public noncomputable abbrev target
-    {D : D7} {T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) (S : HSp D)
-    (ψ : AddChar (AF D.host.F) ℂ) (μ : Measure (Mx D ρ S.rank))
-    (𝓕 : Set (Mx D ρ S.rank)) (f : WO S T → ℂ) (y : Mx D S.rank ρ) : WO S T₀ → ℂ :=
-  fun w₀ => ∫ ξ in 𝓕, heisO ψ S T (d.jX * ξ)
-    (heisO ψ S T (d.jY * (incA D (-D.host.xi0⁻¹) • (adj y * gA S)))
-      (heisO ψ S T (d.j0 * w₀) f)) 0 ∂μ
-
-end I195MixedCoordinates_234e4f75c563de28cf3cb155
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedCoordinates
 
 @[expose] public section
 
@@ -42,17 +53,17 @@ variable {D : D7}
 
 theorem mixS_smul {V V₀ : HSp D} {ρ : ℕ} (d : HypDec V V₀ ρ) (T : HSp D) (ψ : AddChar (AF D.host.F) ℂ)
     (μ : Measure (Mx D T.rank ρ)) (𝓕 : Set (Mx D T.rank ρ)) (a : ℂ) (f : WO V T → ℂ) (x : Mx D T.rank ρ) :
-    (_root_.I195MixedCoordinates_234e4f75c563de28cf3cb155.source d) T ψ μ 𝓕 (a • f) x = a • (_root_.I195MixedCoordinates_234e4f75c563de28cf3cb155.source d) T ψ μ 𝓕 f x := by
+    (_root_.I195MixedCoordinates.source d) T ψ μ 𝓕 (a • f) x = a • (_root_.I195MixedCoordinates.source d) T ψ μ 𝓕 f x := by
   funext w₀
-  simp only [_root_.I195MixedCoordinates_234e4f75c563de28cf3cb155.source, Pi.smul_apply, smul_eq_mul]
+  simp only [_root_.I195MixedCoordinates.source, Pi.smul_apply, smul_eq_mul]
   rw [← integral_const_mul]
   congr 1; funext a'; simp only [heisO, Pi.smul_apply, smul_eq_mul]; ring
 
 theorem mixT_smul {W W₀ : HSp D} {ρ : ℕ} (d : HypDec W W₀ ρ) (S : HSp D) (ψ : AddChar (AF D.host.F) ℂ)
     (μ : Measure (Mx D ρ S.rank)) (𝓕 : Set (Mx D ρ S.rank)) (a : ℂ) (f : WO S W → ℂ) (y : Mx D S.rank ρ) :
-    (_root_.I195MixedCoordinates_234e4f75c563de28cf3cb155.target d) S ψ μ 𝓕 (a • f) y = a • (_root_.I195MixedCoordinates_234e4f75c563de28cf3cb155.target d) S ψ μ 𝓕 f y := by
+    (_root_.I195MixedCoordinates.target d) S ψ μ 𝓕 (a • f) y = a • (_root_.I195MixedCoordinates.target d) S ψ μ 𝓕 f y := by
   funext w₀
-  simp only [_root_.I195MixedCoordinates_234e4f75c563de28cf3cb155.target, Pi.smul_apply, smul_eq_mul]
+  simp only [_root_.I195MixedCoordinates.target, Pi.smul_apply, smul_eq_mul]
   rw [← integral_const_mul]
   congr 1; funext a'; simp only [heisO, Pi.smul_apply, smul_eq_mul]; ring
 
@@ -62,12 +73,12 @@ theorem flatAt_smul (ψ : AddChar (AF D.host.F) ℂ) {V V₀ W W₀ : HSp D} {ρ
     (Ψ : WO V W → ℂ) :
     GlobalTheory.MixPer.flatAt ψ dV dW μS 𝓕S μT 𝓕T νU x y (a • Ψ) = a • GlobalTheory.MixPer.flatAt ψ dV dW μS 𝓕S μT 𝓕T νU x y Ψ := by
   have hS (f : WO V W → ℂ) (z : Mx D W.rank ρ) :
-      _root_.I195MixedCoordinates_14b5fd3aa93c7f4842f1a892.source dV W ψ μS 𝓕S (a • f) z =
-        a • _root_.I195MixedCoordinates_14b5fd3aa93c7f4842f1a892.source dV W ψ μS 𝓕S f z :=
+      _root_.I195MixedCoordinates.source dV W ψ μS 𝓕S (a • f) z =
+        a • _root_.I195MixedCoordinates.source dV W ψ μS 𝓕S f z :=
     mixS_smul dV W ψ μS 𝓕S a f z
   have hT (f : WO V₀ W → ℂ) (z : Mx D V₀.rank σ) :
-      _root_.I195MixedCoordinates_14b5fd3aa93c7f4842f1a892.target dW V₀ ψ μT 𝓕T (a • f) z =
-        a • _root_.I195MixedCoordinates_14b5fd3aa93c7f4842f1a892.target dW V₀ ψ μT 𝓕T f z :=
+      _root_.I195MixedCoordinates.target dW V₀ ψ μT 𝓕T (a • f) z =
+        a • _root_.I195MixedCoordinates.target dW V₀ ψ μT 𝓕T f z :=
     mixT_smul dW V₀ ψ μT 𝓕T a f z
   funext w
   simp only [GlobalTheory.MixPer.flatAt, GlobalTheory.MixPer.flatFun, GlobalTheory.MixPer.evalAt, hS, Pi.smul_apply,

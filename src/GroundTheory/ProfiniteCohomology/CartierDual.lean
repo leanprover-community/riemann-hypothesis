@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CartierDualDefs
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCochainsFHomApply
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

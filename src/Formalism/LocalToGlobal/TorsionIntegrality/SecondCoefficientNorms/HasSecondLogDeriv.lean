@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Algebra.Rat
+public import Mathlib.RingTheory.PowerSeries.Exp
 
 @[expose] public section
 

@@ -1,13 +1,51 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
+public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ApplyLayers
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusSubOneWittTensorLatticeSurjectiveFixed
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleComparisonPiWachLatticeClosedWeak
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGammaLayerPadicCoordinates
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUniqueFits
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleComparisonPiWachLatticeClosedWeakStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusSubOneWittTensorLatticeSurjectiveFixed
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -106,121 +144,142 @@ end GlobalTheory.NL.ZgAll
 
 namespace GlobalTheory.NL.ZgAll
 
+private theorem assemble_zg {l : ℕ} [Fact l.Prime] {G X M C : Type}
+    [Group G] [TopologicalSpace G] [CompactSpace G] [AddCommGroup X] [AddCommGroup M]
+    [TopologicalSpace M] [T2Space M] [IsTopologicalAddGroup M]
+    (lam : G →* Multiplicative ℤ_[l]) (hlam : Continuous lam) (g₀ : G)
+    (hg₀ : lam g₀ = Multiplicative.ofAdd 1)
+    (a : G → M →+ M) (ha : ∀ b, Continuous fun g => a g b)
+    (hamul : ∀ g h b, a (g * h) b = a g (a h b))
+    (j : X →+ M) (hj : Function.Injective j) (δ : G → X → X)
+    (haj : ∀ g w, a g (j w) = j (δ g w)) (hδk : ∀ g, lam g = 1 → ∀ w, δ g w = w)
+    (N : AddSubgroup X) (hN : IsClosed (j '' (N : Set X)))
+    (hstab : ∀ g, Set.MapsTo (δ g) N N) (z : X) (hz : z ∈ N)
+    (u : C → G → M) (huc : ∀ c, Continuous (u c))
+    (hum : ∀ c g h, u c (g * h) = u c g + a g (u c h))
+    (P : M → Prop) (Q : C → Prop) (hP : ∃ b, P b)
+    (hfit : ∀ b, P b → ∃ c, Q c ∧ (∀ g, lam g = 1 → u c g = -(a g b - b)) ∧
+      u c g₀ = j z - (a g₀ b - b)) :
+    ∃ zz : G → X, (∀ g, zz g ∈ N) ∧ (∀ g, δ g₀ (zz g) - zz g = δ g z - z) ∧
+      ∀ b, P b → ∃ c, Q c ∧ ∀ g, u c g = j (zz g) - (a g b - b) := by
+  let J := N.map j
+  have hJ : IsClosed (J : Set M) := hN
+  have hJa : ∀ g, ∀ x ∈ J, a g x ∈ J := by
+    intro g x hx
+    obtain ⟨w, hw, rfl⟩ := AddSubgroup.mem_map.mp hx
+    exact AddSubgroup.mem_map.mpr ⟨δ g w, hstab g hw, (haj g w).symm⟩
+  have hJk : ∀ g, lam g = 1 → ∀ x ∈ J, a g x = x := by
+    intro g hg x hx
+    obtain ⟨w, _, rfl⟩ := AddSubgroup.mem_map.mp hx
+    rw [haj, hδk g hg]
+  let Z (b : M) (c : C) (g : G) := u c g + (a g b - b)
+  have hZc (b : M) (c : C) : Continuous (Z b c) :=
+    (huc c).add ((ha b).sub continuous_const)
+  have hZm (b : M) (c : C) (g h : G) : Z b c (g * h) = Z b c g + a g (Z b c h) := by
+    simp only [Z, hum, hamul, map_add (a g), map_sub (a g)]
+    abel
+  have hZfit (b : M) (hb : P b) : ∃ c, Q c ∧ (∀ g, lam g = 1 → Z b c g = 0) ∧
+      Z b c g₀ = j z := by
+    obtain ⟨c, hc, hk, h₀⟩ := hfit b hb
+    exact ⟨c, hc, fun g hg => (congrArg (· + (a g b - b)) (hk g hg)).trans (neg_add_cancel _),
+      (congrArg (· + (a g₀ b - b)) h₀).trans (sub_add_cancel _ _)⟩
+  obtain ⟨b₀, hb₀⟩ := hP
+  obtain ⟨c₀, _, hk₀, h₀⟩ := hZfit b₀ hb₀
+  have hzJ : j z ∈ J := AddSubgroup.mem_map.mpr ⟨z, hz, rfl⟩
+  obtain ⟨hall, hcomm⟩ := mem_and_comm a lam hlam g₀ hg₀ J hJ hJa hJk _ hzJ
+    (Z b₀ c₀) (hZc b₀ c₀) (hZm b₀ c₀) hk₀ h₀
+  choose zz hzz hzzj using fun g => AddSubgroup.mem_map.mp (hall g)
+  refine ⟨zz, hzz, fun g => hj ?_, fun b hb => ?_⟩
+  · simpa only [map_sub, ← haj, hzzj] using hcomm g
+  · obtain ⟨c, hc, hk, hg⟩ := hZfit b hb
+    refine ⟨c, hc, fun g => ?_⟩
+    have hu := uniq a lam hlam g₀ hg₀ (Z b c) (Z b₀ c₀) (hZc b c) (hZc b₀ c₀)
+      (hZm b c) (hZm b₀ c₀) hk hk₀ (hg.trans h₀.symm) g
+    exact (eq_sub_iff_add_eq.mpr (hu.trans (hzzj g).symm))
+
 
 set_option maxHeartbeats 8000000 in
 theorem zg_formula_let : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ (y z : W.DD T), z ∈ aN W T letπ → ∀ hyz : (y, z) ∈ W.divisibleCocycles T, ∃ zz : ↥W.GKs → W.DD T, (∀ g, zz g ∈ aN W T letπ) ∧ (∀ g, W.γ T (zz g) - zz g = W.γD T (W.resΓ g) z - z) ∧ ∀ b : TW (RW LL) T, TWmap (φRW LL) T b - b = E.jD T y → ∃ c : ↥(latticeCocycles (resLat T W.GKs)), Submodule.Quotient.mk c = W.cl T ⟨(y, z), hyz⟩ ∧ ∀ g : ↥W.GKs, ∃ t : ↥T.L.T, (t : T.V) = (c : ↥W.GKs → T.V) g ∧ (1 : RW LL) ⊗ₜ[↥(OL LL)] t = E.jD T (zz g) - (TWact ((D.locA l).gRW LL ((g : ↥(GK K)) : GQ l)) T g b - b) := by
   set_option synthInstance.maxHeartbeats 40000 in
     intro D HW F l _ K s LL h W E T hT y z hz hyz
     have hc := GlobalTheory.HerrClassMaps.compact_GK K
-    have H2 := GlobalTheory.HWL.Coord.exists_gamma_coordinates l (D.loc l) K s LL h (gamOf W ((HW l).W_s K s LL h))
-    rcases H2 with ⟨⟨lam₀, hlc₀, hl1₀, hlg₀, ⟨g₁, hg₁⟩, hcl⟩, -⟩
+    have hcoords := GlobalTheory.HWL.Coord.exists_gamma_coordinates l (D.loc l) K s LL h
+      (gamOf W ((HW l).W_s K s LL h))
+    refine hcoords.1.elim fun lam hL => hL.2.2.2.1.elim fun g₀ hg₀ => ?_
+    have hlc := hL.1
+    have hl1' := hL.2.1
+    have hlg := hL.2.2.1
+    have hcl := hL.2.2.2.2
     have hcs : CompactSpace ↥W.GKs := isCompact_iff_compactSpace.1 hcl.isCompact
-    have hlamW : ∃ lam : ↥W.GKs →* Multiplicative ℤ_[l], Continuous lam ∧
-        (∀ g : ↥W.GKs, lam g = 1 ↔ W.resΓ (g : ↥(GK K)) = 1) ∧
-        (∀ g : ↥W.GKs, lam g = Multiplicative.ofAdd 1 ↔ W.resΓ (g : ↥(GK K)) = W.gam) ∧
-        ∃ g : ↥W.GKs, lam g = Multiplicative.ofAdd 1 := ⟨lam₀, hlc₀, hl1₀, hlg₀, g₁, hg₁⟩
-    rcases hlamW with ⟨lam, hlc, hl1, hlg, g₀, hg₀⟩
-    have H1 := GlobalTheory.T.etaleComparison_pi_wachLattice_closed_weak D HW F l K s LL h T hT
-    rcases H1 with ⟨τ, hT2, hTG, hact, hemb, hclo⟩
-
-    let a : ↥W.GKs → TW (RW LL) T →+ TW (RW LL) T := fun g =>
-      (TWact ((D.locA l).gRW LL (((g : ↥(GK K))) : GQ l)) T (g : ↥(GK K))).toAddMonoidHom
-    have ha1 : ∀ g x, a g x = TWact ((D.locA l).gRW LL (((g : ↥(GK K))) : GQ l)) T (g : ↥(GK K)) x :=
-      fun g x => rfl
-    have hamul : ∀ g g' x, a (g * g') x = a g (a g' x) := by
-      intro g g' x
-      simp only [ha1]
-      exact GlobalTheory.HerrClassMaps.TWact_mul _ _ _
-        (fun r => GlobalTheory.HerrClassMaps.gRW_mul (D.locA l) LL _ _ r) T _ _ x
-    have ha1t : ∀ g (t : ↥T.L.T), a g ((1 : RW LL) ⊗ₜ[↥(OL LL)] t) =
-        (1 : RW LL) ⊗ₜ[↥(OL LL)] (⟨T.ρ (g : ↥(GK K)) t, T.L.stable _ t t.2⟩ : ↥T.L.T) := fun g t =>
-      GlobalTheory.HerrClassMaps.TWact_one_tmul _ T _ t
-    have haj : ∀ g (w : W.DD T), a g (E.jD T w) = E.jD T (W.γD T (W.resΓ (g : ↥(GK K))) w) := fun g w =>
-      (E.jD_act T (g : ↥(GK K)) w).symm
+    have hl1 (g : ↥W.GKs) : lam g = 1 ↔ W.resΓ (g : ↥(GK K)) = 1 := hl1' g
+    have hg₀γ : W.resΓ (g₀ : ↥(GK K)) = W.gam := (hlg g₀).mp hg₀
+    have htop := _root_.GlobalTheory.WeakClosed.jD_piN_closed D HW F l K s LL h T hT
+    refine htop.elim fun τ hτ => ?_
     letI := τ
-    have hl1' := hl1
-    have hlg' := hlg
-    have hstab : ∀ (γ' : W.Gam) (w : W.DD T), w ∈ aN W T letπ → W.γD T γ' w ∈ aN W T letπ := by
-      intro γ' w hw
+    have hT2 := hτ.1
+    have hTG := hτ.2.1
+    have hact := hτ.2.2.1
+    have hemb := hτ.2.2.2.1
+    have hclo := hτ.2.2.2.2
+    letI : Algebra ↥(OL LL) (RW LL) := inferInstance
+    let M := TW (RW LL) T
+    let gRW (g : ↥(GK K)) := (D.locA l).gRW LL (g : GQ l)
+    let a (g : ↥W.GKs) : M →+ M := (TWact (gRW g) T (g : ↥(GK K))).toAddMonoidHom
+    have ha (b : M) : Continuous fun g : ↥W.GKs => a g b :=
+      (hact b).comp continuous_subtype_val
+    have hamul (g g' : ↥W.GKs) (x : M) : a (g * g') x = a g (a g' x) :=
+      GlobalTheory.HerrClassMaps.TWact_mul (gRW (g * g' : ↥W.GKs)) (gRW g) (gRW g')
+        (GlobalTheory.HerrClassMaps.gRW_mul (D.locA l) LL
+          ((g : ↥(GK K)) : GQ l) ((g' : ↥(GK K)) : GQ l)) T (g : ↥(GK K)) (g' : ↥(GK K)) x
+    let j := E.jD T
+    let δ (g : ↥W.GKs) (w : W.DD T) := W.γD T (W.resΓ (g : ↥(GK K))) w
+    have haj (g : ↥W.GKs) (w : W.DD T) : a g (j w) = j (δ g w) :=
+      (E.jD_act T (g : ↥(GK K)) w).symm
+    have hδk (g : ↥W.GKs) (hg : lam g = 1) (w : W.DD T) : δ g w = w := by
+      change W.γD T (W.resΓ (g : ↥(GK K))) w = w
+      rw [(hl1 g).mp hg, W.γD_one]
+    let π : LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K)) := letπ
+    let N := aN W T π
+    have hstab (g : ↥W.GKs) : Set.MapsTo (δ g) (N : Set (W.DD T)) N := by
+      intro w hw
       obtain ⟨n, hn, rfl⟩ := hw
-      have hx : (letπ : LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) • n ∈ W.N T := (W.N T).smul_mem _ hn
-      obtain ⟨y', hy', e⟩ := W.N_π T γ' _ hx
-      refine ⟨n + y', (W.N T).add_mem hn hy', ?_⟩
-      change (letπ : LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) • (n + y') =
-        W.γD T γ' ((letπ : LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) • n)
-      rw [smul_add, ← e]
-      abel
-    let J : AddSubgroup (TW (RW LL) T) :=
-      (aN W T letπ).toAddSubgroup.map (E.jD T).toAddMonoidHom
-    have hJm : ∀ x, x ∈ J ↔ ∃ w ∈ aN W T letπ, E.jD T w = x := fun x => AddSubgroup.mem_map
-    have hJ : IsClosed (J : Set (TW (RW LL) T)) := by
-      have : (J : Set (TW (RW LL) T)) = E.jD T '' (aN W T letπ : Set (W.DD T)) := by
-        ext x
-        exact (hJm x).trans Iff.rfl
-      rw [this]; exact hclo
-    have hJa : ∀ g, ∀ x ∈ J, a g x ∈ J := by
-      intro g x hx
-      obtain ⟨w, hw, rfl⟩ := (hJm x).1 hx
-      rw [haj]
-      exact (hJm _).2 ⟨_, hstab _ w hw, rfl⟩
-    have hJk : ∀ h' : ↥W.GKs, lam h' = 1 → ∀ x ∈ J, a h' x = x := by
-      intro h' hh x hx
-      obtain ⟨w, -, rfl⟩ := (hJm x).1 hx
-      rw [haj, (hl1' h').1 hh, W.γD_one]
-    haveI hCA : ContinuousAdd (TW (RW LL) T) := hTG.toContinuousAdd
-    haveI hCN : ContinuousNeg (TW (RW LL) T) := hTG.toContinuousNeg
-    haveI hCS : ContinuousSub (TW (RW LL) T) :=
-      ⟨Continuous.congr (continuous_fst.add continuous_snd.neg) (fun p => (sub_eq_add_neg p.1 p.2).symm)⟩
-    let Zf : TW (RW LL) T → ↥(latticeCocycles (resLat T W.GKs)) → ↥W.GKs → TW (RW LL) T := fun b c g =>
-      (1 : RW LL) ⊗ₜ[↥(OL LL)] (⟨(c : ↥W.GKs → T.V) g, GlobalTheory.HerrClassMaps.mem_T c g⟩ : ↥T.L.T) + (a g b - b)
-    have hZc : ∀ b c, Continuous (Zf b c) := fun b c =>
-      (hemb.comp (c.2.1.1.subtype_mk fun g => GlobalTheory.HerrClassMaps.mem_T c g)).add
-        (((hact b).comp continuous_subtype_val).sub continuous_const)
-    have hZm : ∀ b c g g', Zf b c (g * g') = Zf b c g + a g (Zf b c g') := by
-      intro b c g g'
-      have e : (⟨(c : ↥W.GKs → T.V) (g * g'), GlobalTheory.HerrClassMaps.mem_T c (g * g')⟩ : ↥T.L.T) =
-          ⟨(c : ↥W.GKs → T.V) g, GlobalTheory.HerrClassMaps.mem_T c g⟩ +
-            ⟨T.ρ (g : ↥(GK K)) ((c : ↥W.GKs → T.V) g'), T.L.stable _ _ (GlobalTheory.HerrClassMaps.mem_T c g')⟩ :=
+      have hx : π • n ∈ W.N T := (W.N T).smul_mem _ hn
+      obtain ⟨n', hn', e⟩ := W.N_π T (W.resΓ (g : ↥(GK K))) _ hx
+      refine ⟨n + n', (W.N T).add_mem hn hn', ?_⟩
+      change π • (n + n') = W.γD T (W.resΓ (g : ↥(GK K))) (π • n)
+      rw [smul_add]
+      exact (sub_eq_iff_eq_add'.mp e).symm
+    let C := ↥(latticeCocycles (resLat T W.GKs))
+    let cVal (c : C) (g : ↥W.GKs) : ↥T.L.T :=
+      ⟨(c : ↥W.GKs → T.V) g, c.2.2 g (Set.mem_univ _)⟩
+    let i (t : ↥T.L.T) : M := (1 : RW LL) ⊗ₜ[↥(OL LL)] t
+    let u (c : C) (g : ↥W.GKs) := i (cVal c g)
+    have huc (c : C) : Continuous (u c) :=
+      hemb.comp (c.2.1.1.subtype_mk fun g => (cVal c g).2)
+    have hiadd (t t' : ↥T.L.T) : i (t + t') = i t + i t' :=
+      TensorProduct.tmul_add 1 t t'
+    have hai (g : ↥W.GKs) (t : ↥T.L.T) : a g (i t) = i (T.actT (g : ↥(GK K)) t) :=
+      GlobalTheory.HerrClassMaps.TWact_one_tmul (gRW g) T (g : ↥(GK K)) t
+    have hum (c : C) (g g' : ↥W.GKs) : u c (g * g') = u c g + a g (u c g') := by
+      have e : cVal c (g * g') = cVal c g + T.actT (g : ↥(GK K)) (cVal c g') :=
         Subtype.ext (c.2.1.2 g g')
-      simp only [Zf, map_add (a g), map_sub (a g), ha1t, hamul, e, TensorProduct.tmul_add]
-      abel
-    have hfit : ∀ b, TWmap (φRW LL) T b - b = E.jD T y → ∃ c : ↥(latticeCocycles (resLat T W.GKs)),
-        Submodule.Quotient.mk c = W.cl T ⟨(y, z), hyz⟩ ∧ (∀ h' : ↥W.GKs, lam h' = 1 → Zf b c h' = 0) ∧
-          Zf b c g₀ = E.jD T z := by
-      intro b hb
-      have H := E.cl_def T ⟨(y, z), hyz⟩ b hb
-      rcases H with ⟨c, hc1, hc2⟩
-      refine ⟨c, hc1, fun h' hh => ?_, ?_⟩
-      · have e := (hc2 h' ⟨_, GlobalTheory.HerrClassMaps.mem_T c h'⟩ rfl).1 ((hl1' h').1 hh)
-        simp only [Zf]
-        rw [e]
-        exact neg_add_cancel _
-      · have e := (hc2 g₀ ⟨_, GlobalTheory.HerrClassMaps.mem_T c g₀⟩ rfl).2 ((hlg' g₀).1 hg₀)
-        simp only [Zf]
-        simp only [e]
-        exact sub_add_cancel _ _
-    have hb₀ex := (GlobalTheory.WittTensorFixed.main l K LL T).1 (E.jD T y)
-    rcases hb₀ex with ⟨b₀, hb₀⟩
-    have H0 := hfit b₀ hb₀
-    rcases H0 with ⟨c₀, -, hk₀, hg₀'⟩
-    have hzJ : E.jD T z ∈ J := (hJm _).2 ⟨z, hz, rfl⟩
-    have HM := mem_and_comm a lam hlc g₀ hg₀ J hJ hJa hJk _ hzJ (Zf b₀ c₀) (hZc b₀ c₀) (hZm b₀ c₀) hk₀ hg₀'
-    rcases HM with ⟨hall, hcomm⟩
-    choose zz hzz hzzj using fun g => (hJm _).1 (hall g)
-    refine ⟨zz, hzz, fun g => ?_, fun b hb => ?_⟩
-    · apply E.jD_inj T
-      have h1 := hcomm g
-      simp only [← hzzj g, haj, (hlg' g₀).1 hg₀] at h1
-      simp only [map_sub, LocWach.γ]
-      exact h1
-    · have H := hfit b hb
-      rcases H with ⟨c, hc1, hk, hgc⟩
-      refine ⟨c, hc1, fun g => ⟨⟨_, GlobalTheory.HerrClassMaps.mem_T c g⟩, rfl, ?_⟩⟩
-      have hu := uniq a lam hlc g₀ hg₀ (Zf b c) (Zf b₀ c₀) (hZc b c) (hZc b₀ c₀) (hZm b c) (hZm b₀ c₀) hk hk₀
-        (hgc.trans hg₀'.symm) g
-      simp only [hzzj g, ← hu]
-      simp only [Zf]
-      exact (add_sub_cancel_right _ _).symm
+      change i (cVal c (g * g')) = i (cVal c g) + a g (i (cVal c g'))
+      rw [e, hiadd, hai]
+    let p : ↥(W.divisibleCocycles T) := ⟨(y, z), hyz⟩
+    let P (b : M) := TWmap (φRW LL) T b - b = j y
+    let Q (c : C) := Submodule.Quotient.mk c = W.cl T p
+    have hP : ∃ b, P b := (GlobalTheory.WittTensorFixed.main l K LL T).1 (j y)
+    have hfit (b : M) (hb : P b) :
+        ∃ c, Q c ∧ (∀ g, lam g = 1 → u c g = -(a g b - b)) ∧
+          u c g₀ = j z - (a g₀ b - b) := by
+      exact (E.cl_def T p b hb).elim fun c hc =>
+        ⟨c, hc.1, fun g hg => (hc.2 g (cVal c g) rfl).1 ((hl1 g).mp hg), (hc.2 g₀ (cVal c g₀) rfl).2 hg₀γ⟩
+    have H := @assemble_zg l _ ↥W.GKs (W.DD T) M C _ _ hcs _ _ τ hT2 hTG
+      lam hlc g₀ hg₀ a ha hamul j.toAddMonoidHom (E.jD_inj T) δ haj hδk N.toAddSubgroup
+      hclo hstab z hz u huc hum P Q hP hfit
+    refine H.elim fun zz hzz => ⟨zz, hzz.1, fun g => ?_, fun b hb => ?_⟩
+    · exact (congrArg (fun γ' => W.γD T γ' (zz g) - zz g) hg₀γ.symm).trans (hzz.2.1 g)
+    · exact (hzz.2.2 b hb).elim fun c hc => ⟨c, hc.1, fun g => ⟨cVal c g, rfl, hc.2 g⟩⟩
 
 theorem zg_formula : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ (y z : ((HW l).W K s LL h).DD T), z ∈ aN ((HW l).W K s LL h) T letπ → ∀ hyz : (y, z) ∈ ((HW l).W K s LL h).divisibleCocycles T, ∃ zz : ↥((HW l).W K s LL h).GKs → ((HW l).W K s LL h).DD T, (∀ g, zz g ∈ aN ((HW l).W K s LL h) T letπ) ∧ (∀ g, ((HW l).W K s LL h).γ T (zz g) - zz g = ((HW l).W K s LL h).γD T (((HW l).W K s LL h).resΓ g) z - z) ∧ ∀ b : TW (RW LL) T, TWmap (φRW LL) T b - b = ((F l).E K s LL h).tie.jD T y → ∃ c : ↥(latticeCocycles (resLat T ((HW l).W K s LL h).GKs)), Submodule.Quotient.mk c = ((HW l).W K s LL h).cl T ⟨(y, z), hyz⟩ ∧ ∀ g : ↥((HW l).W K s LL h).GKs, ∃ t : ↥T.L.T, (t : T.V) = (c : ↥((HW l).W K s LL h).GKs → T.V) g ∧ (1 : RW LL) ⊗ₜ[↥(OL LL)] t = ((F l).E K s LL h).tie.jD T (zz g) - (TWact ((D.locA l).gRW LL ((g : ↥(GK K)) : GQ l)) T g b - b) :=
   fun D HW F l _ K s LL h => zg_formula_let D HW F l K s LL h

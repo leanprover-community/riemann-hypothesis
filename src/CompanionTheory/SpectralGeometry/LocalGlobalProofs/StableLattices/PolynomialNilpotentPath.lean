@@ -1,13 +1,17 @@
 module
 
-public import Mathlib
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.HilbertSchmidtDecay.AbsoluteL2Bound
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.InfinitesimalCharacterPaths.TensDecomp
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsSpanFormsNeBot
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GlRelationsDerivativePreserved
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantCoefficientsExpansion
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.JacquetBasis
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ConjQdet
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.JacquetBasis
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantCoefficientsExpansion
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
+public import Formalism.RealPlaceAnalysis.StatementE
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliOperatorsCommute
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliPolynomialCoefficientsIdeal
+public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GlRelationsDerivativePreserved
+import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 
 @[expose] public section
 
@@ -96,8 +100,8 @@ theorem exists_monic_trace (n : Fin c → ℕ) (h : ∑ i, n i = N) (Xf : Fin N 
     have : (⟨qdet (Xi i) t, hRmem i t⟩ : Algebra.adjoin ℂ s)
         = ∑ k ∈ Finset.range (n i + 1), t ^ k • (⟨a i k, hamem i k⟩ : Algebra.adjoin ℂ s) :=
       Subtype.ext (by simp [hform])
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum, sumPoly_eval]
+
+    rw [this, map_sum, sumPoly_eval]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, Algebra.smul_def, map_pow, mul_comm]
   let φ : Algebra.adjoin ℂ s →* Module.End ℂ V :=
@@ -118,7 +122,7 @@ theorem exists_monic_trace (n : Fin c → ℕ) (h : ∑ i, n i = N) (Xf : Fin N 
       rw [← map_prod]
     obtain ⟨k, hk⟩ := hP u
     set D := qdet Xf (u + ((N : ℂ) - 1) / 2) with hD
-    have hspan := GlobalTheory.T.capelliDet_block_levi_congr_mod_upperBlockIdeal (Module.End ℂ V) n h Xf hX u
+    have hspan := _root_.GlobalTheory.CapHC.qdet_blocks_congr (Module.End ℂ V) n h Xf hX u
     have hspan' : D - (b : Module.End ℂ V) ∈ Submodule.span ℂ {y : Module.End ℂ V | ∃ (p q : Fin N) (w : Module.End ℂ V),
         blk (stdBlocks n h) p < blk (stdBlocks n h) q ∧ y = Xf p q * w} := by
       rw [hb]
@@ -184,8 +188,8 @@ theorem exists_monic_trace (n : Fin c → ℕ) (h : ∑ i, n i = N) (Xf : Fin N 
       Xf (stdBlocks n h ⟨i, p⟩) (stdBlocks n h ⟨i, p⟩) := by
     simp [Tb, Xi]
   have hint : IsIntegral ℂ (π Tb) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Tb, map_sum, map_smul]
+
+    simp only [Tb, map_sum, map_smul]
     exact IsIntegral.sum _ fun i _ => (hI i).smul _
   obtain ⟨q, hqm, hq0⟩ := hint
   refine ⟨q, hqm, fun x => ?_⟩
@@ -316,8 +320,8 @@ theorem actM_grading (X : GMod n) {A : Matrix (Fin n) (Fin n) ℂ} (B : GradBasi
     show aM X.E A = _
     rw [← actL_apply]
     conv_lhs => rw [A_eq B, hd]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.mul_sum, Finset.sum_mul, map_sum]
+
+    rw [Finset.mul_sum, Finset.sum_mul, map_sum]
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [Matrix.mul_smul, Matrix.smul_mul, map_smul]
     rfl

@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.MeasuresChart
+public import GroundTheory.AutomorphicForms.GLnLocal
+public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.RealGroupsHaar
-public import GroundTheory.AutomorphicForms.Cartan
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+import Mathlib.GroupTheory.DoubleCoset
 
 @[expose] public section
 

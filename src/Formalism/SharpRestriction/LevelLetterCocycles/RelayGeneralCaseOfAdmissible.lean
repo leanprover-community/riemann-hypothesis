@@ -1,7 +1,52 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
+public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
+public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
+public import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
+public import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -23,14 +68,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
 open Formalism.MainNotions.UnusedSlot80.PhiPowers in
-theorem φpow_smul (T : LocLat G Qp LL O) (k : ℕ) (a : LetA O n) (x : W.DD T) :
-    ((W.φD T) ^ k) (a • x) = (W.φA ^ k) a • ((W.φD T) ^ k) x := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [pow_apply_succ, ih, φD_smulA, ← pow_apply_succ]
-    congr 1
-    rw [pow_succ', AlgHom.mul_apply]
+alias φpow_smul := _root_.Formalism.MainNotions.UnusedSlot80.SatPW.φD_pow_smulA
 
 open Formalism.MainNotions.UnusedSlot80.PhiPowers in
 theorem γ_φpow (T : LocLat G Qp LL O) (g : W.Gam) (k : ℕ) (x : W.DD T) :
@@ -43,14 +81,9 @@ theorem γD_comm (T : LocLat G Qp LL O) (g h : W.Gam) (x : W.DD T) :
     W.γD T g (W.γD T h x) = W.γD T h (W.γD T g x) := by
   rw [← W.γD_mul, mul_comm, W.γD_mul]
 
-theorem InNΔi_smul (T : LocLat G Qp LL O) (c : ZMod n) {a : LetA O n} (ha : a ∈ W.AΔ) {x : W.DD T}
-    (hx : Formalism.MainNotions.LiftingTheory.InNΔi W T c x) : Formalism.MainNotions.LiftingTheory.InNΔi W T c (a • x) :=
-  ⟨SatW.smul_mem_NΔ W T ha hx.1, (W.Nl T c).smul_mem a hx.2⟩
+alias InNΔi_smul := _root_.Formalism.MainNotions.LiftingTheory.frame_smul_mem
 
-theorem InNΔi_add (T : LocLat G Qp LL O) (c : ZMod n) {x y : W.DD T}
-    (hx : Formalism.MainNotions.LiftingTheory.InNΔi W T c x) (hy : Formalism.MainNotions.LiftingTheory.InNΔi W T c y) :
-    Formalism.MainNotions.LiftingTheory.InNΔi W T c (x + y) :=
-  ⟨(W.NΔ T).add_mem hx.1 hy.1, (W.Nl T c).add_mem hx.2 hy.2⟩
+alias InNΔi_add := _root_.Formalism.MainNotions.LiftingTheory.frame_add_mem
 
 theorem InNΔi_osmul (T : LocLat G Qp LL O) (c : ZMod n) (o : O) {x : W.DD T}
     (hx : Formalism.MainNotions.LiftingTheory.InNΔi W T c x) : Formalism.MainNotions.LiftingTheory.InNΔi W T c (o • x) := by
@@ -85,7 +118,7 @@ theorem InNΔi_γ (T : LocLat G Qp LL O) (c : ZMod n) {x : W.DD T}
     rw [γD_comm, hx.1.2 δ hδ]
   · show (letE c : LetA O n) • W.γD T W.gam x = W.γD T W.gam x
     conv_rhs => rw [← InNΔi_letter W T c hx]
-    rw [Formalism.MainNotions.LiftingTheory.frame_γD_smul, Formalism.MainNotions.LiftingTheory.frame_γA_letE]
+    rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent]
 
 theorem Pp_gen (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) {a : LetA O n} (ha : a ∈ W.AΔ) {x : W.DD T}
     (hx : Formalism.MainNotions.LiftingTheory.InNΔi W T c x) : a • ((W.φD T) ^ e) x ∈ Formalism.MainNotions.ArcLiftingSetup.Pp W T c e :=
@@ -136,7 +169,7 @@ theorem Pp_Δ (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) :
     (fun x y hx hy δ hδ => by rw [map_add (f := _), hx δ hδ, hy δ hδ])
     (fun x hx δ hδ => by rw [map_neg, hx δ hδ]) ?_
   intro a ha x hx δ hδ
-  rw [Formalism.MainNotions.LiftingTheory.frame_γD_smul, ha δ hδ, φD_pow_Δ W T hx.1.2 e δ hδ]
+  rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, ha δ hδ, φD_pow_Δ W T hx.1.2 e δ hδ]
 
 theorem Pp_γ (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) :
     ∀ y ∈ Formalism.MainNotions.ArcLiftingSetup.Pp W T c e, W.γ T y ∈ Formalism.MainNotions.ArcLiftingSetup.Pp W T c e := by
@@ -145,12 +178,10 @@ theorem Pp_γ (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) :
     (fun x hx => by rw [map_neg]; exact (Formalism.MainNotions.ArcLiftingSetup.Pp W T c e).neg_mem hx) ?_
   intro a ha x hx
   show W.γD T W.gam (a • ((W.φD T) ^ e) x) ∈ _
-  rw [Formalism.MainNotions.LiftingTheory.frame_γD_smul, γ_φpow]
+  rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, γ_φpow]
   exact Pp_gen W T c e (Formalism.MainNotions.LiftingTheory.tr_γA_mem W W.gam ha) (InNΔi_γ W T c hx)
 
-theorem mapA_smul {T T' : LocLat G Qp LL O} (f : LatHom T.L T'.L) (a : LetA O n) (x : W.DD T) :
-    W.map f (a • x) = a • W.map f x := by
-  rw [← algebraMap_smul W.EE a x, LinearMap.map_smul, algebraMap_smul]
+alias mapA_smul := _root_.Formalism.MainNotions.LiftingTheory.wmap_map_smul
 
 theorem map_φpow {T T' : LocLat G Qp LL O} (f : LatHom T.L T'.L) (k : ℕ) (x : W.DD T) :
     W.map f (((W.φD T) ^ k) x) = ((W.φD T') ^ k) (W.map f x) := by
@@ -231,7 +262,7 @@ theorem InFP_γ (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) {f : LetA O n}
   obtain ⟨u, hu, huΔ⟩ := hf
   refine ⟨u • W.γ T y, Pp_smul W T c e huΔ _ (Pp_γ W T c e y hy), ?_⟩
   show W.γD T W.gam (f • y) = _
-  rw [Formalism.MainNotions.LiftingTheory.frame_γD_smul, hu, mul_comm, mul_smul]
+  rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, hu, mul_comm, mul_smul]
   rfl
 
 theorem inMultiple_map {T T' : LocLat G Qp LL O} (f : LatHom T.L T'.L) (hT : IsCrys PD T.ρ)
@@ -911,11 +942,11 @@ theorem tau_exists [IsDomain O] (T : LocLat G Qp LL O) (hC : Ctx W T) (h9 : Form
   set S := ∑ r ∈ Finset.range M, W.π₀ ^ r • Formalism.MainNotions.LiftingTheory.vecB W T b (y r) with hSdef
   have hφS : ((W.φD T) ^ A.j) S = ∑ r ∈ Finset.range M, ∑ m,
       (((W.φA ^ A.j) W.π₀) ^ r * algebraMap O (LetA O n) (y r m)) • β m := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hSdef, map_sum]
+
+    rw [hSdef, map_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [φpow_smul, map_pow, Formalism.MainNotions.LiftingTheory.vecB, map_sum, Finset.smul_sum]
+
+    rw [φpow_smul, map_pow, Formalism.MainNotions.LiftingTheory.vecB, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     rw [map_smul, ← algebraMap_smul (LetA O n) (y r m), smul_smul]
   have key : Formalism.MainNotions.ArcLiftingSetup.lA W ^ 0 • (Formalism.MainNotions.ArcLiftingSetup.lA W ^ κ • τ - Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • ((W.φD T) ^ A.j) S) =

@@ -1,9 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.StdCharExists
-public import Formalism.LocalToGlobal.IndefiniteReal.PublishedAut
-public import Formalism.LocalToGlobal.IndefiniteReal.ExistsGADet
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Formalism.LocalToGlobal.IndefiniteReal.InjectiveDecompositionAction
+import Formalism.LocalToGlobal.IndefiniteReal.DeterminantProjection
 
 @[expose] public section
 

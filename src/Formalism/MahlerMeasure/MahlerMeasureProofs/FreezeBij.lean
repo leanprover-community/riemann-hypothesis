@@ -1,6 +1,52 @@
 module
 
 public import Formalism.MahlerMeasure.IsFrozenInv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -92,8 +138,8 @@ lemma coeff_ev (ρ : Fin r) (n : ℕ) (F : MvPolynomial (Fin (N + 1) × Fin r) �
     AddMonoidAlgebra.coeff (ev p ρ F) m' = AddMonoidAlgebra.coeff F (ext n ρ m') := by
   classical
   conv_lhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, MvPolynomial.coeff_sum]
+
+  rw [map_sum, MvPolynomial.coeff_sum]
   simp only [ev_monomial]
   rw [Finset.sum_eq_single (ext n ρ m')]
   · rw [if_pos (fun c hc => by rw [ext_last, if_neg hc]), res_ext, MvPolynomial.coeff_monomial, if_pos rfl]
@@ -145,7 +191,7 @@ lemma glAct_X {M : ℕ} (LL : Letters M) (c d : Fin r) (j : Fin M) (a : Fin r) :
   · by_cases hv : LL.vec j <;> by_cases ha : a = d <;> by_cases hc : a = c <;>
       simp [hv, ha, hc, MvPolynomial.pderiv_X, Pi.single_apply, j.isLt] <;> split_ifs <;> simp_all
   · intro i _ hij
-    split_ifs <;> simp [MvPolynomial.pderiv_X, Pi.single_apply, Ne.symm hij]
+    split_ifs <;> simp [MvPolynomial.pderiv_X, Ne.symm hij]
   · intro h
     exact absurd (Finset.mem_univ j) h
 
@@ -167,9 +213,9 @@ lemma glAct_freezeSub (LL : Letters N) (n : ℕ) (ρ c : Fin r) (hc : c ≠ ρ) 
     glAct p (LL.snoc n) (N + 1) c ρ (freezeSub p LL ρ v) = 0 := by
   rcases v with ⟨i, c0⟩
   by_cases hv : LL.vec i <;> by_cases hc0 : c0 = ρ <;>
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [freezeSub, hv, hc0, glAct_mul, glAct_X, map_sum, map_sub, Ne.symm hc, hc, mul_ite,
-      Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.sum_ite_eq] <;> ring
+
+    simp [freezeSub, hv, hc0, glAct_mul, glAct_X, map_sum, map_sub, Ne.symm hc, mul_ite,
+    Finset.sum_add_distrib, Finset.sum_ite_eq'] <;> ring
 
 lemma glAct_aeval_freezeSub (LL : Letters N) (n : ℕ) (ρ c : Fin r) (hc : c ≠ ρ)
     (f : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
@@ -233,8 +279,8 @@ lemma hom_aeval (LL : Letters N) (ρ : Fin r) (f : MvPolynomial (Fin N × Fin r)
     (hf : f ∈ Pol p r LL) :
     IsWeightedHomogeneous (wL N r) (aeval (freezeSub p LL ρ) f) LL.total := by
   have hsupp := (MvPolynomial.mem_restrictSupport_iff ℚ_[p]).1 hf
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum, ← MvPolynomial.mem_weightedHomogeneousSubmodule]
+
+  rw [f.as_sum, map_sum, ← MvPolynomial.mem_weightedHomogeneousSubmodule]
   refine Submodule.sum_mem _ fun m hm => ?_
   rw [MvPolynomial.mem_weightedHomogeneousSubmodule, MvPolynomial.aeval_monomial]
   have hdeg : MultiDeg LL m := hsupp (Finset.mem_coe.2 hm)
@@ -347,7 +393,7 @@ theorem vanish (LL : Letters N) (n : ℕ) (ρ : Fin r) (G : MvPolynomial (Fin (N
   · have hl : ((Fin.last N : Fin (N + 1)) : ℕ) < N + 1 := (Fin.last N).isLt
     rw [if_pos hl] at hc0
     simp only [snoc_vec_last, Bool.false_eq_true, ↓reduceIte, LinearMap.neg_apply, LinearMap.comp_apply,
-      LinearMap.mulLeft_apply, coeff_neg, neg_eq_zero] at hc0
+      LinearMap.mulLeft_apply, MvPolynomial.coeff_neg, neg_eq_zero] at hc0
     rw [MvPolynomial.coeff_X_mul', if_pos (by simp [hm'])] at hc0
     erw [MvPolynomial.coeff_pderiv] at hc0
     have e1 : m' - Finsupp.single (Fin.last N, ρ) 1 + Finsupp.single (Fin.last N, c) 1 = m := by
@@ -369,7 +415,7 @@ theorem vanish (LL : Letters N) (n : ℕ) (ρ : Fin r) (G : MvPolynomial (Fin (N
     split_ifs
     · simp only [LinearMap.comp_apply, LinearMap.mulLeft_apply]
       exact coeff_X_pderiv_castSucc ρ G m' hG' i c ρ
-    · simp only [LinearMap.neg_apply, LinearMap.comp_apply, LinearMap.mulLeft_apply, coeff_neg, neg_eq_zero]
+    · simp only [LinearMap.neg_apply, LinearMap.comp_apply, LinearMap.mulLeft_apply, MvPolynomial.coeff_neg, neg_eq_zero]
       exact coeff_X_pderiv_castSucc ρ G m' hG' i ρ c
 
 end Formalism.GM.M.FB

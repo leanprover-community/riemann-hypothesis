@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -51,7 +52,7 @@ theorem FlagAltTopDegree.proof (h1 : FlagCoeffBlockPermute.Statement)
       MvPolynomial.algebraMap_eq]
   have hQhom : Q.IsHomogeneous (topDegree f N) := hhom.sub ((h5 f N).C_mul e)
   have hQα₁ : AddMonoidAlgebra.coeff Q α₁ = 0 := by
-    simp only [hQ, coeff_sub, coeff_C_mul, e]
+    simp only [hQ, MvPolynomial.coeff_sub, coeff_C_mul, e]
     field_simp
     ring
   have hQ0 : Q = 0 := by
@@ -63,7 +64,7 @@ theorem FlagAltTopDegree.proof (h1 : FlagCoeffBlockPermute.Statement)
     have hα₁eq : (Finsupp.equivFunOnFinite.symm fun p : Fin f × Fin N => α (p.1, w p.1 p.2)) = α₁ := by
       ext p; simp [hw]
     have hc := h1 f N w Q α
-    rw [hα₁eq, hQα₁, hQalt w, coeff_smul, smul_eq_mul] at hc
+    rw [hα₁eq, hQα₁, hQalt w, MvPolynomial.coeff_smul, smul_eq_mul] at hc
     have hs : blockSign f N w ≠ 0 := by
       intro h0; have := Flag.blockSign_mul_self f N w; rw [h0, zero_mul] at this; exact zero_ne_one this
     exact hα ((mul_eq_zero.mp hc).resolve_left hs)

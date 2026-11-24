@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.GoodPartLeTypeSubspace
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 
 @[expose] public section
 
@@ -94,7 +94,6 @@ def jbc (jj : ∀ τ : L0 →+* ℂ, WL →ₛₗ[τ] W τ) (σ : L →+* ℂ) :
     | zero => rw [smul_zero, map_zero, smul_zero]
     | tmul a x =>
       rw [TensorProduct.smul_tmul', jAdd_tmul, jAdd_tmul, smul_eq_mul, map_mul, mul_smul]
-      try rfl
     | add x y hx hy => rw [smul_add, map_add (f := _), map_add (f := _), hx, hy, smul_add]
 
 theorem jbc_tmul (jj : ∀ τ : L0 →+* ℂ, WL →ₛₗ[τ] W τ) (σ : L →+* ℂ) (a : L) (x : WL) :

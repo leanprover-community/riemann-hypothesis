@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.QuotientHighestWeightTensorStandard
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -30,7 +31,7 @@ theorem eeVd_apply' (E : Fin n → Fin n → Module.End ℂ M) (f : Fin n → M)
 
 theorem casimir_apply' (E : Fin n → Fin n → Module.End ℂ M) (x : M) :
     casimir E x = ∑ a, ∑ b, E a b (E b a x) := by
-  simp [casimir, LinearMap.sum_apply, Module.End.mul_apply]
+  simp [casimir, LinearMap.sum_apply]
 
 theorem isGlRep_tensV (E : Fin n → Fin n → Module.End ℂ M) (hE : IsGlRep E) : IsGlRep (tensV E) := by
   intro a b c d

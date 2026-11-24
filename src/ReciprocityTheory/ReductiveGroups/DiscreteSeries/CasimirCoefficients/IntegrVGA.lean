@@ -1,8 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IntegrableOfDecayVG
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.SignedIdentityColumns
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -26,11 +26,9 @@ lemma exists_signVG (ε : Fin n → Bool) : ∃ s : Bool, Fintype.card (SgIxV ε
     rw [min_eq_left h]
     first
     | (rw [pOf, Fintype.card_subtype])
-    | simp [SgIxV, pOf, Fintype.card_subtype]
   · refine ⟨false, ?_⟩
     rw [min_eq_right h]
     first
     | (rw [qOf, Fintype.card_subtype])
-    | simp [SgIxV, qOf, Fintype.card_subtype]
 
 end ReciprocityTheory.ChartRestriction.DS.S7

@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.PoitouTate.RealEvenCoind
-public import GroundTheory.ProfiniteCohomology.PoitouTate.RealEvenLevel
-public import GroundTheory.ProfiniteCohomology.PoitouTate.RealTraceMap
-public import GroundTheory.ProfiniteCohomology.RealPlaces.Vanishing
-public import GroundTheory.ProfiniteCohomology.RealPlaces.Devissage
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseMain
+public import GroundTheory.ProfiniteCohomology.PoitouTate.RealOdd
+public import GroundTheory.ProfiniteCohomology.RealPlaces.Induced
+public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityPlace
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFixed
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseInv
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.BijectiveGsLocalInvRootsOfPlaces
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -143,7 +144,7 @@ variable [Fintype S] {N : ℕ} [NeZero N]
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((N : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S) (hev : Even N)
 
 
-set_option maxHeartbeats 1000000 in
+
 include hS in
 theorem surjective_of_localToCompact_two [hne : Nonempty S]
     (t : tateCompactCohomologyRes (gsFinFamily S ιs) (gsRealFamily S ιr) (gsRoots S N) 3 →+ ZMod N)

@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMParameterQuotient
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMRegularElement
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.CMDepthAssoc
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.Regular
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 
 @[expose] public section
 

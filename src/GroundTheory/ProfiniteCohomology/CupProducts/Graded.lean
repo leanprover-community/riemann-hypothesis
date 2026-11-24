@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CupProducts.GroupCohomology
+public import GroundTheory.ProfiniteCohomology.ColimitDefs
+public import GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
+public import GroundTheory.TateCohomology.CupProduct
 public import GroundTheory.ProfiniteCohomology.Colimit
+public import GroundTheory.ProfiniteCohomology.CupProducts.GroupCohomology
 public import GroundTheory.TateCohomology.CupGraded
 
 @[expose] public section

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementU
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
 
 @[expose] public section
 

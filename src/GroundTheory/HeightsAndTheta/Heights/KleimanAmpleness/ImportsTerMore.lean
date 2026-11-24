@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellHOfCellSec
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellMeets
 
 @[expose] public section
 

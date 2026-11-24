@@ -1,7 +1,9 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 

@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
+public import Mathlib.Analysis.InnerProductSpace.Laplacian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

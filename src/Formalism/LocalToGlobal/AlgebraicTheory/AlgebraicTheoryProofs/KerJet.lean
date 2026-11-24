@@ -2,6 +2,10 @@ module
 
 public import Formalism.LocalToGlobal.AlgebraicTheory.DefsKer
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.IteratedDerivLine
+public import Mathlib.Analysis.Analytic.IteratedFDeriv
+public import Mathlib.GroupTheory.Perm.DomMulAct
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

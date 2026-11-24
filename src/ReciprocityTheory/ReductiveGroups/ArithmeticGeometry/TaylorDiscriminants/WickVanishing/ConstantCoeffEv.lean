@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -46,8 +49,8 @@ theorem ev_neg {a : Fin m → Pt k n d} (ha : CZ a) (f : PS k m d) : ev a (-f) =
 
 theorem ev_sum {a : Fin m → Pt k n d} (ha : CZ a) {ι : Type} (s : Finset ι) (f : ι → PS k m d) :
     ev a (∑ x ∈ s, f x) = ∑ x ∈ s, ev a (f x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← evHom_apply ha, map_sum]
+
+  rw [← evHom_apply ha, map_sum]
   exact Finset.sum_congr rfl (fun x _ => evHom_apply ha (f x))
 
 theorem ev_C {a : Fin m → Pt k n d} (ha : CZ a) (c : k) : ev a (C c : PS k m d) = C c := by

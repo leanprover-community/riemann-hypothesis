@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.TargetSt
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 
 @[expose] public section
 

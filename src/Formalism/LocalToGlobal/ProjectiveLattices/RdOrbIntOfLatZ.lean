@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntegrableOnIntegrand
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -40,7 +42,7 @@ theorem cM_one : cM (1 : Matrix (Fin r) (Fin r) ℂ) = 1 := by
   ext i j
   by_cases h : i = j
   · subst h; simp [cM]
-  · simp [cM, Matrix.one_apply, h]
+  · simp [cM, h]
 
 theorem unitary_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin ρ) ℂ)
     (β : Matrix (Fin ρ) (Fin ρ) ℂ) (hg : (cM g)ᵀ = g) (hiso : Fᵀ * g * cM F = 0)
@@ -55,7 +57,7 @@ theorem unitary_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin �
   simp only [Matrix.transpose_add, Matrix.transpose_one, Matrix.transpose_mul, Matrix.transpose_transpose,
     cM_add, cM_one, cM_mul, cM_transpose, cM_cM, hg', hsk]
   simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, Matrix.mul_assoc,
-    Matrix.mul_neg, Matrix.neg_mul, key, neg_zero, Matrix.mul_zero, add_zero, neg_neg]
+    Matrix.mul_neg, Matrix.neg_mul, key, Matrix.mul_zero, add_zero]
   abel
 
 theorem det_ne_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin ρ) ℂ)
@@ -69,8 +71,8 @@ theorem det_ne_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin ρ
     intro X
     rw [← Matrix.mul_assoc, hT, Matrix.zero_mul]
   have hinv : (1 + F * β * H) * (1 - F * β * H) = 1 := by
-    simp only [add_mul, mul_sub, one_mul, mul_one, Matrix.mul_assoc, key, Matrix.mul_zero, sub_zero]
-    first | abel | skip
+    simp only [add_mul, mul_sub, one_mul, mul_one, Matrix.mul_assoc, key, Matrix.mul_zero]
+    first | abel
   intro h0
   have := congrArg Matrix.det hinv
   rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at this
@@ -117,8 +119,8 @@ theorem iso_F (X : Data E r) (cu : CuspFD X ρ) (τ : E →+* ℂ) :
     Matrix.zero_apply, Finset.sum_mul]
   have h := congrArg τ (cu.3 a b)
   unfold ReciprocityTheory.ChartRestriction.G.FD.herm at h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_zero, emb_cc'] at h
+
+  simp only [map_sum, map_mul, map_zero, emb_cc'] at h
   rw [Finset.sum_comm]
   exact h
 
@@ -128,9 +130,9 @@ theorem skew_beta (X : Data E r) (cu : CuspFD X ρ) (hb : ∀ k, IsSkew (zBas X 
   have h' := hb
   unfold IsSkew at h'
   ext a b
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [cM, Matrix.map_apply, Matrix.neg_apply, Matrix.transpose_apply, Matrix.sum_apply, Matrix.smul_apply,
-    smul_eq_mul, map_sum, map_mul, Complex.conj_ofReal, ← emb_cc', h', map_neg, mul_neg, Finset.sum_neg_distrib]
+
+  simp only [cM, Matrix.map_apply, Matrix.neg_apply, Matrix.transpose_apply, Matrix.sum_apply, Matrix.smul_apply,
+  smul_eq_mul, map_sum, map_mul, Complex.conj_ofReal, ← emb_cc', h', map_neg, mul_neg, Finset.sum_neg_distrib]
 
 theorem zBas_skew (X : Data E r) (cu : CuspFD X ρ) (h : ∃ bs, IsZBasis X cu bs) (k : Fin (nZ X ρ)) :
     IsSkew (zBas X cu k) := by

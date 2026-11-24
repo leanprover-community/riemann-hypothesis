@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.CupDecompositionGlobal
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ClassLevels
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ResLocal
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.NatCardGroupCohomologyTwoIdeleClassRepDvd
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LevelCyclic
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LevelDefs
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ClassLevels
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LevelCyclic
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.NatCardGroupCohomologyTwoIdeleClassRepDvd
+import GroundTheory.ProfiniteCohomology.InflationRestriction.Higher
 
 @[expose] public section
 

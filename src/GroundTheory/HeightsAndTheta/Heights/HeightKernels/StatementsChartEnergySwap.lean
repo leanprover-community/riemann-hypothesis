@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergy
+public import Mathlib.LinearAlgebra.Matrix.Permutation
 
 @[expose] public section
 

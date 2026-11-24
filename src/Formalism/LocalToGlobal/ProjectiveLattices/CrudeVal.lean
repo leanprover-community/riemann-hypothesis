@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
+public import Mathlib.Data.Nat.Prime.Factorial
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

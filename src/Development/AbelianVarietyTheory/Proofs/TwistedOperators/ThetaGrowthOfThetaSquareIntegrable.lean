@@ -1,11 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ThetaKernelGrowth
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HermitianSymplecticScalars
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LintegralCompactLe
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsModGrowthExpLeNormInfPow
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSumHeisenbergTranslatesDistinctChars
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModerateGrowthOfHasCompactSupport
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CmTypeRestrictRealSubfieldInfinitePlaceBijective
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfHeisenbergLevelAndSmooth
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundamentalDomainOfCocompact
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLatticeDenominatorHeightBoundProof
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsModGrowthExpLeNormInfPow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -79,7 +127,7 @@ theorem exists_compact_denom : ∃ C : Set (AF F ⊗[F] E), IsCompact C ∧ ∀ 
   let e := (Algebra.TensorProduct.basis (AF F) b.traceDual).equivFun
   have he : Continuous e.symm := IsModuleTopology.continuous_of_linearMap e.symm.toLinearMap
   refine ⟨e.symm '' Set.pi Set.univ fun _ => C, (isCompact_univ_pi fun _ => hC).image he, fun H h1 hf => ?_⟩
-  obtain ⟨d, hd, hdc, hv⟩ := GlobalTheory.SmoothForms.denom_global H h1 hf
+  obtain ⟨d, hd, hdc, hv⟩ := _root_.GlobalTheory.AdicNormZpowEstimates.exists_denominator H h1 hf
   refine ⟨d, hd, hdc, fun z h0 hz k => ⟨e (k • d • z), fun i _ => ?_, e.symm_apply_apply _⟩⟩
   rw [map_nsmul, map_nsmul, Pi.smul_apply, Pi.smul_apply]
   refine hC' _ (fun w => ?_) 1 one_pos (by simp) fun v => ?_
@@ -91,7 +139,7 @@ theorem exists_compact_denom : ∃ C : Set (AF F ⊗[F] E), IsCompact C ∧ ∀ 
     rw [map_nsmul, map_nsmul, h3]
     simp
   · rw [Nat.cast_one, one_mul, map_nsmul, map_nsmul, nsmul_eq_mul, nsmul_eq_mul, norm_mul]
-    refine mul_le_one₀ (GlobalTheory.SmoothForms.denom_norm_natCast_le_one v k) (norm_nonneg _) (hv v _ ?_)
+    refine mul_le_one₀ (_root_.GlobalTheory.AdicNatCastNorm.norm_natCast_adicCompletion_le_one v k) (norm_nonneg _) (hv v _ ?_)
     exact (congrArg nnnorm (repr_map b.traceDual (evFin F v) z i)).symm.trans_le
       ((nnnorm_repr_le_absFin b hb' v _ i).trans (hz v))
 
@@ -228,8 +276,8 @@ theorem sobO_dvL_le (hc : Chart θ σ) (hψ : IsStdChar D ψ (-1)) (p : ℕ) {ρ
     (m : thetaSub ψ S T) : sobO ψ θ μ 𝓕 p (dvL hc hψ S T z m).1 ≤
       (Fintype.card (D.what₂.Tau × Fin T.rank × Fin S.rank × Bool) * ρ : ℝ≥0) * sobO ψ θ μ 𝓕 (p + 1) m.1 := by
   obtain ⟨c, h1, rfl⟩ := exists_coord z
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, LinearMap.sum_apply]
+
+  rw [map_sum, LinearMap.sum_apply]
   refine (Finset.le_sum_of_subadditive (fun m : thetaSub ψ S T => sobO ψ θ μ 𝓕 p m.1) ?_
     (fun x y => sobO_add_le hψ hc.inf x.2 y.2 p) _ _).trans ((Finset.sum_le_card_nsmul _ _
       (ρ * sobO ψ θ μ 𝓕 (p + 1) m.1) fun a _ => ?_).trans_eq ?_)
@@ -323,8 +371,8 @@ theorem cube_dilate_bound (hψ : IsStdChar D ψ (-1)) (hc : Chart θ σ) {N : �
   have hsum : ∀ t : Fin N → ℝ, 0 + ∑ i, iotaW σ T S (t i • n • b i) = e (ι t) := fun t => by
     rw [he]
     show _ = n • iotaW σ T S (b.equivFun.symm t)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [zero_add, Module.Basis.equivFun_symm_apply, ← map_nsmul, Finset.smul_sum, map_sum]
+
+    rw [zero_add, Module.Basis.equivFun_symm_apply, ← map_nsmul, Finset.smul_sum, map_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [smul_comm]
   have en : ∀ z : ℂ, ENNReal.ofReal (‖z‖ ^ 2) = ‖z‖ₑ ^ 2 := fun z => by
     rw [ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm_eq_enorm]

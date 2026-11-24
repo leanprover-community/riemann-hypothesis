@@ -1,6 +1,53 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdicNeighbourhood
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -83,53 +130,12 @@ theorem I_compact {R : Subring K} (hc : IsCompact (R : Set K)) (a : K) : IsCompa
   exact hc.image (continuous_const.mul continuous_id)
 
 theorem I_nhds {R : Subring K} (ho : IsOpen (R : Set K)) (a : Kˣ) : I R (a : K) ∈ 𝓝 (0 : K) := by
-  have : I R (a : K) = (fun x => ((a⁻¹ : Kˣ) : K) * x) ⁻¹' (R : Set K) := by
-    ext x; constructor
-    · rintro ⟨r, hr, rfl⟩
-      show ((a⁻¹ : Kˣ) : K) * ((a : K) * r) ∈ R
-      simpa using hr
-    · intro hx
-      exact ⟨_, hx, by simp⟩
-  rw [this]
-  refine (ho.preimage (continuous_const.mul continuous_id)).mem_nhds ?_
-  show ((a⁻¹ : Kˣ) : K) * 0 ∈ R
-  simp
+  apply Formalism.FourierDecayAlt.P.AdicNeighbourhood.I_nhds <;> assumption
 
 theorem inter_zero {R : Subring K} [T2Space K] [IsReduced K] (hc : IsCompact (R : Set K))
     (hn : ∀ n : ℕ, n ≠ 0 → IsUnit (n : K)) (ϖ : K) (hu : ∀ x : K, ∃ m : ℕ, ϖ ^ m * x ∈ R)
     (x : K) (hx : ∀ n, x ∈ I R (ϖ ^ n)) : x = 0 := by
-  by_contra hx0
-  have hx2 : x ^ 2 ≠ 0 := fun h => hx0 (IsNilpotent.eq_zero ⟨2, h⟩)
-  have hI : ∀ y : K, y * x ∈ R := by
-    intro y
-    obtain ⟨m, hm⟩ := hu y
-    obtain ⟨r, hr, e⟩ := hx m
-    have : y * x = ϖ ^ m * y * r := by rw [e]; ring
-    rw [this]; exact R.mul_mem hm hr
-  have hW : ({x ^ 2}ᶜ : Set K) ∈ 𝓝 (0 : K) := isOpen_compl_singleton.mem_nhds (by
-    simpa using hx2.symm)
-  obtain ⟨U, hU, hUR⟩ := small_mul hc hW
-  obtain ⟨U', hU', hsub⟩ := exists_nhds_half_neg hU
-  obtain ⟨a, -, ha⟩ := hc.exists_mapClusterPt (f := (atTop : Filter ℕ)) (u := fun n : ℕ => (n : K) * x)
-    (le_principal_iff.2 (mem_map.2 (Filter.univ_mem' fun n : ℕ => hI (n : K))))
-  have hN : {y | y - a ∈ U'} ∈ 𝓝 a := by
-    have : ContinuousAt (fun y : K => y - a) a := (continuous_id.sub continuous_const).continuousAt
-    exact this.preimage_mem_nhds (by simpa using hU')
-  have hf := frequently_atTop.1 (ha.frequently hN)
-  obtain ⟨n, -, h1⟩ := hf 0
-  obtain ⟨m, hm, h2⟩ := hf (n + 1)
-  have h3 := hsub _ h2 _ h1
-  obtain ⟨d, rfl⟩ : ∃ d, m = n + 1 + d := ⟨m - (n + 1), by omega⟩
-  have e : ((n + 1 + d : ℕ) : K) * x - a - ((n : K) * x - a) = ((d + 1 : ℕ) : K) * x := by
-    push_cast; ring
-  rw [e] at h3
-  obtain ⟨v, hv⟩ := hn (d + 1) (by omega)
-  have h4 := hUR _ h3 _ (hI ((v⁻¹ : Kˣ) : K))
-  apply h4
-  show ((d + 1 : ℕ) : K) * x * (((v⁻¹ : Kˣ) : K) * x) = x ^ 2
-  rw [← hv]
-  have : (v : K) * ((v⁻¹ : Kˣ) : K) = 1 := by simp
-  linear_combination x ^ 2 * this
+  apply Formalism.FourierDecayAlt.P.AdicNeighbourhood.inter_zero <;> assumption
 
 structure Adic (R : Subring K) (ϖ : Kˣ) : Prop where
   t2 : T2Space K
@@ -463,12 +469,12 @@ theorem cutSame : CutSame := by
 
 end Formalism.FourierDecayAlt.P.A6x8
 
-theorem Formalism.FourierDecayAlt.P.gramKernelHermitian : Formalism.FourierDecayAlt.A6.KpHerm := Formalism.FourierDecayAlt.P.A6x8.kpHerm
+alias Formalism.FourierDecayAlt.P.gramKernelHermitian := _root_.Formalism.FourierDecayAlt.P.A6x8.kpHerm
 
-theorem Formalism.FourierDecayAlt.P.shiftUnit_statement : Formalism.FourierDecayAlt.A6.ShiftUnit := Formalism.FourierDecayAlt.P.A6x8.shiftUnit
+alias Formalism.FourierDecayAlt.P.shiftUnit_statement := _root_.Formalism.FourierDecayAlt.P.A6x8.shiftUnit
 
-theorem Formalism.FourierDecayAlt.P.shiftSmall_statement : Formalism.FourierDecayAlt.A6.ShiftSmall := Formalism.FourierDecayAlt.P.A6x8.shiftSmall
+alias Formalism.FourierDecayAlt.P.shiftSmall_statement := _root_.Formalism.FourierDecayAlt.P.A6x8.shiftSmall
 
-theorem Formalism.FourierDecayAlt.P.rootCutStable : Formalism.FourierDecayAlt.A6.CutSame := Formalism.FourierDecayAlt.P.A6x8.cutSame
+alias Formalism.FourierDecayAlt.P.rootCutStable := _root_.Formalism.FourierDecayAlt.P.A6x8.cutSame
 
-theorem Formalism.FourierDecayAlt.P.rootCorrection : Formalism.FourierDecayAlt.A6.RootCorr := Formalism.FourierDecayAlt.P.A6x8.rootCorr
+alias Formalism.FourierDecayAlt.P.rootCorrection := _root_.Formalism.FourierDecayAlt.P.A6x8.rootCorr

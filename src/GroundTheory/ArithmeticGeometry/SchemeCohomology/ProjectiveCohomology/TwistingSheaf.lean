@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleSheaf
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjSpace
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjTwist

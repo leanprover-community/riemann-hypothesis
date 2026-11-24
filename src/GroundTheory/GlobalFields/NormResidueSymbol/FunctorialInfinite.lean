@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.CompletionsOverBasisRepr
+public import GroundTheory.GlobalFields.NormResidueSymbol.Infinite
+import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.CompletionsOverBasisRepr
 public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

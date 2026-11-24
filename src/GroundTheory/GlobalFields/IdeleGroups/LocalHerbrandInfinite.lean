@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrand
 public import GroundTheory.GlobalFields.InfiniteNormIndex.LocalSymbol
+public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
+public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrand
+import GroundTheory.GlobalFields.SemilocalAlgebras.Infinite
+import Mathlib.NumberTheory.NumberField.Completion.Ramification
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

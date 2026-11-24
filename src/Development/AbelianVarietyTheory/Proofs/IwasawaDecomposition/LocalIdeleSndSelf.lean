@@ -1,11 +1,58 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalToGlobal.Divisibility.Tuples
-public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
+import Development.AbelianVarietyTheory.Definitions.Foundations.AbsCharNotUnitary
+public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
@@ -33,17 +80,9 @@ theorem localIdele_snd_ne (v w : HeightOneSpectrum (𝓞 L)) (h : w ≠ v) (x : 
 theorem localIdele_fst (v : HeightOneSpectrum (𝓞 L)) (x : (v.adicCompletion L)ˣ) :
     ((localIdele L v x : Ideles L) : AdeleRing (𝓞 L) L).1 = 1 := rfl
 
-theorem infIdele_fst_self (w : InfinitePlace L) (x : (w.Completion)ˣ) :
-    ((infIdele L w x : Ideles L) : AdeleRing (𝓞 L) L).1 w = x := by
-  classical
-  show (Pi.mulSingle w (x : w.Completion) : ∀ u : InfinitePlace L, u.Completion) w = x
-  convert Pi.mulSingle_eq_same w (x : w.Completion)
+alias infIdele_fst_self := _root_.ReciprocityTheory.Neutral.Bridge.HCFR.infIdele_fst_self
 
-theorem infIdele_fst_ne (w u : InfinitePlace L) (h : u ≠ w) (x : (w.Completion)ˣ) :
-    ((infIdele L w x : Ideles L) : AdeleRing (𝓞 L) L).1 u = 1 := by
-  classical
-  show (Pi.mulSingle w (x : w.Completion) : ∀ u : InfinitePlace L, u.Completion) u = 1
-  convert Pi.mulSingle_eq_of_ne h (x : w.Completion)
+alias infIdele_fst_ne := _root_.ReciprocityTheory.Neutral.Bridge.HCFR.infIdele_fst_ne
 
 end Comp
 
@@ -93,28 +132,7 @@ def cut (a : FiniteAdeleRing (𝓞 F) F) (T : Finset (HeightOneSpectrum (𝓞 F)
     exact one_mem _⟩
 
 theorem tendsto_cut (a : FiniteAdeleRing (𝓞 F) F) : Filter.Tendsto (cut a) Filter.atTop (nhds a) := by
-  classical
-  let S : Set (HeightOneSpectrum (𝓞 F)) := {v | a v ∈ v.adicCompletionIntegers F}
-  have hle : (Filter.cofinite : Filter (HeightOneSpectrum (𝓞 F))) ≤ Filter.principal S := by
-    rw [Filter.le_principal_iff]; exact a.2
-  let P := RestrictedProduct (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletion F)
-      (fun w => (w.adicCompletionIntegers F : Set (w.adicCompletion F))) (Filter.principal S)
-  let f : Finset (HeightOneSpectrum (𝓞 F)) → P := fun T => ⟨fun v => if v ∈ T then a v else 1, by
-    rw [Filter.eventually_principal]
-    intro w hw
-    by_cases h : w ∈ T
-    · simp only [h, if_true]; exact hw
-    · simp only [h, if_false]; exact one_mem _⟩
-  let a' : P := ⟨fun v => a v, by rw [Filter.eventually_principal]; exact fun w hw => hw⟩
-  have hf : Filter.Tendsto f Filter.atTop (nhds a') := by
-    rw [RestrictedProduct.isEmbedding_coe_of_principal.tendsto_nhds_iff, tendsto_pi_nhds]
-    intro v
-    refine tendsto_const_nhds.congr' ?_
-    filter_upwards [Filter.eventually_ge_atTop ({v} : Finset _)] with T hT
-    have : v ∈ T := hT (Finset.mem_singleton_self v)
-    change a v = if v ∈ T then a v else 1
-    rw [if_pos this]
-  exact ((RestrictedProduct.continuous_inclusion hle).tendsto a').comp hf
+  apply GlobalTheory.Mem.Chr.CharModel.tendsto_cut
 
 theorem prod_local (k : Fˣ) (T : Finset (HeightOneSpectrum (𝓞 F))) :
     ((infDiag k * ∏ v ∈ T, localIdele F v (atFin v k) : Ideles F) : AdeleRing (𝓞 F) F) =
@@ -142,33 +160,11 @@ theorem prod_local (k : Fˣ) (T : Finset (HeightOneSpectrum (𝓞 F))) :
 theorem tendsto_prod_local (k : Fˣ) :
     Filter.Tendsto (fun T : Finset (HeightOneSpectrum (𝓞 F)) => infDiag k * ∏ v ∈ T, localIdele F v (atFin v k))
       Filter.atTop (nhds (diagUnits F k)) := by
-  have h : ∀ k : Fˣ, Filter.Tendsto (fun T : Finset (HeightOneSpectrum (𝓞 F)) =>
-      ((infDiag k * ∏ v ∈ T, localIdele F v (atFin v k) : Ideles F) : AdeleRing (𝓞 F) F))
-      Filter.atTop (nhds ((diagUnits F k : Ideles F) : AdeleRing (𝓞 F) F)) := fun k => by
-    simp only [prod_local]
-    exact tendsto_const_nhds.prodMk_nhds (tendsto_cut _)
-  rw [Units.isEmbedding_embedProduct.tendsto_nhds_iff]
-  refine (h k).prodMk_nhds ?_
-  refine (MulOpposite.continuous_op.tendsto _).comp ?_
-  have h2 := h k⁻¹
-  simp only [map_inv, Finset.prod_inv_distrib, ← mul_inv] at h2
-  exact h2
+  apply GlobalTheory.Mem.Chr.CharModel.tendsto_prod_local
 
 theorem locK_unr (χ : HChar F) {v : HeightOneSpectrum (𝓞 F)} (h : χ.UnrAt v) (k : Fˣ) :
     χ.locK v k = χ.val v ^ ordF v k := by
-  have hu : IsUnitAt v (atFin v (k * (unif v ^ ordF v k)⁻¹)) := by
-    have h2 := unif_spec v
-    have hk : Valued.v ((atFin v k : (v.adicCompletion F)ˣ) : v.adicCompletion F) = v.valuation F (k : F) :=
-      HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v (k : F)
-    have h0 : v.valuation F (k : F) ≠ 0 := by simp
-    unfold IsUnitAt IsUnifAt at *
-    rw [map_mul, map_inv, map_zpow, Units.val_mul, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val, map_mul,
-      map_inv₀, map_zpow₀, h2, hk, ← WithZero.exp_zsmul, ordF]
-    simp only [smul_eq_mul, mul_neg, mul_one, neg_neg]
-    rw [WithZero.exp_log h0, mul_inv_cancel₀ h0]
-  have h3 : χ.locK v (k * (unif v ^ ordF v k)⁻¹) = 1 := h _ hu
-  rw [map_mul, map_inv, map_zpow, mul_inv_eq_one] at h3
-  exact h3
+  apply GlobalTheory.Mem.Chr.CharModel.locK_unr <;> assumption
 
 theorem finite_ordF (k : Fˣ) : {v : HeightOneSpectrum (𝓞 F) | ordF v k ≠ 0}.Finite := by
   have h := Filter.eventually_cofinite.1 (GlobalTheory.Idele.ord_vw_eventually_zero (FiniteAdeleRing.unitEmbedding (𝓞 F) F k))
@@ -180,24 +176,7 @@ theorem finite_ordF (k : Fˣ) : {v : HeightOneSpectrum (𝓞 F) | ordF v k ≠ 0
   exact h0
 
 theorem productRule (χ : HChar F) : χ.ProductRule := by
-  classical
-  intro S hS k
-  have h1 := (χ.2.1.tendsto _).comp (tendsto_prod_local k)
-  rw [χ.2.2 k] at h1
-  refine tendsto_nhds_unique (tendsto_const_nhds.congr' ?_) h1
-  filter_upwards [Filter.eventually_ge_atTop (S ∪ (finite_ordF k).toFinset)] with T hT
-  have hST : S ⊆ T := Finset.subset_union_left.trans hT
-  change _ = χ.1 (infDiag k * ∏ v ∈ T, localIdele F v (atFin v k))
-  rw [map_mul, map_prod, mul_assoc, ← Finset.prod_sdiff hST, mul_comm (∏ v ∈ T \ S, _)]
-  refine congrArg₂ (· * ·) rfl (congrArg₂ (· * ·) rfl ?_)
-  rw [finprod_cond_eq_prod_of_cond_iff (fun v => χ.val v ^ ordF v k) (p := fun v => v ∉ S) (t := T \ S)]
-  · exact Finset.prod_congr rfl fun v hv => (locK_unr χ (hS v (Finset.mem_sdiff.1 hv).2) k).symm
-  · intro v hv
-    rw [Finset.mem_sdiff]
-    refine ⟨fun h => ⟨hT (Finset.mem_union_right _ ?_), h⟩, fun h => h.2⟩
-    rw [Set.Finite.mem_toFinset]
-    intro h0
-    exact hv (by rw [h0, zpow_zero])
+  apply GlobalTheory.Mem.Chr.CharModel.productRule
 
 end Product
 

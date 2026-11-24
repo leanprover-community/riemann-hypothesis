@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

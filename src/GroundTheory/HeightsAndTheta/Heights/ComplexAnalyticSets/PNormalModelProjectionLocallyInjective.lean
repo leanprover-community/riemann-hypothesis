@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelProjectionLocallyInjective
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.NormalModelGraph
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelProper
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCurveProperClosedFinite
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelProper
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

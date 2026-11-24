@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Ideal.Height
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

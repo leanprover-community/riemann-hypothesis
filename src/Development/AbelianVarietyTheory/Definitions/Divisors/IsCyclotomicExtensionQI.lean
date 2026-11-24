@@ -1,6 +1,72 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Matrix.Spectrum
+public import Mathlib.LinearAlgebra.Semisimple
+public import Mathlib.NumberTheory.NumberField.CMField
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.NumberTheory.Padics.PadicIntegers
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.Padics.Hensel
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.Central.Matrix
+public import Mathlib.RingTheory.SimpleRing.Matrix
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -471,8 +537,8 @@ instance finiteDimensional_Fw (i : Fin G.m) : FiniteDimensional ℚ_[p] (G.Fw i)
   have hle : G.Fw i ≤ IntermediateField.adjoin ℚ_[p] (Set.range (fun k => G.emb i (b k))) := by
     rw [Fw, FwOf, IntermediateField.adjoin_le_iff]
     rintro _ ⟨x, rfl⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← b.sum_repr x, map_sum]
+
+    rw [← b.sum_repr x, map_sum]
     refine sum_mem fun k _ => ?_
     have : G.emb i (b.repr x k • b k) = algebraMap ℚ_[p] (PadicAlgCl p) ((b.repr x k : ℚ) : ℚ_[p]) * G.emb i (b k) := by
       rw [Rat.smul_def, map_mul, map_ratCast, map_ratCast]
@@ -673,7 +739,7 @@ theorem hK_QI : Module.finrank ℚ (⊤ : Subfield QI) = 2 ∧ ∀ τ : QI →+*
   · intro τ
     refine ⟨IsCyclotomicExtension.zeta 4 ℚ QI, Subfield.mem_top _, fun h => ?_⟩
     have h3 := congrArg (fun z => (τ z).re) zeta_sq
-    simp only [map_pow, map_neg, map_one, pow_two, map_mul, Complex.mul_re, h, Complex.neg_re, Complex.one_re] at h3
+    simp only [map_neg, map_one, pow_two, map_mul, Complex.mul_re, h, Complex.neg_re, Complex.one_re] at h3
     nlinarith [mul_self_nonneg (τ (IsCyclotomicExtension.zeta 4 ℚ QI)).re]
 
 instance fact_prime_five : Fact (Nat.Prime 5) := ⟨by norm_num⟩
@@ -727,7 +793,7 @@ theorem eig_Hc (c : ℚ) (τ : QI →+* ℂ) (i : Fin 1) :
   simp only [Fin.prod_univ_one, gramAt, Hc, Matrix.det_unique, Matrix.transpose_apply, Matrix.map_apply,
     Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_fin_one, map_ratCast] at h
   have h' : ((isHermitian_gramAt (herm_Hc c) τ).eigenvalues 0 : ℂ) = ((c : ℝ) : ℂ) := by
-    rw [Complex.ofReal_ratCast]; first | exact h | exact h.symm
+    rw [Complex.ofReal_ratCast]; first | exact h.symm
   exact_mod_cast h'
 
 theorem sig_Hc (c : ℚ) (hc : c ≠ 0) (τ : QI →+* ℂ) :

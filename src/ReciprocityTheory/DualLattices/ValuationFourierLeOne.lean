@@ -1,6 +1,13 @@
 module
 
+public import Mathlib.Algebra.Group.AddChar
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.RingTheory.Valuation.Integers
+public import ReciprocityTheory.DualLattices.TensorSpan
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
 public import ReciprocityTheory.DualLattices.ValuationDetEqOfSpanEq
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 @[expose] public section
 

@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConst
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationInvarianceEverySetting
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LongWeylElement
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
+import Mathlib.Analysis.Matrix.MeasurableSpace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -390,6 +395,6 @@ end Formalism.L2.SG.Pf.Jac
 
 namespace Formalism.L2.SG.Pf
 
-theorem jacGauge_of (hB : BruhatHaar) (hW : WbHaar) (hE : GaugeExists) : JacGauge := Jac.jacGauge_of hB hW hE
+alias jacGauge_of := _root_.Formalism.L2.SG.Pf.Jac.jacGauge_of
 
 end Formalism.L2.SG.Pf

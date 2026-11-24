@@ -1,7 +1,55 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasSubstEv
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChgPfTP
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -165,8 +213,8 @@ private theorem cc_d_ev_lemma_4 {m n : ℕ} {a : Fin m → Pt R n d} (ha : ZZ a)
     simp [map_add (f := _), Finsupp.degree_single]
   have hR : coeff e (∑ p : Fin m × Fin d,
       ev a (pderiv p (f - (P : PS R m d))) * pderiv t (a p.1 p.2)) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_eq_zero fun p _ => ?_
     rw [coeff_mul]
     refine Finset.sum_eq_zero fun x hx => ?_
@@ -190,8 +238,8 @@ private theorem cc_d_ev_lemma_4 {m n : ℕ} {a : Fin m → Pt R n d} (ha : ZZ a)
 theorem cc_d_ev {m n : ℕ} {a : Fin m → Pt R n d} (ha : ZZ a) (t : Fin n × Fin d) (f : PS R m d) :
     constantCoeff (pderiv t (ev a f)) =
       ∑ p : Fin m × Fin d, constantCoeff (pderiv p f) * constantCoeff (pderiv t (a p.1 p.2)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [cc_d_ev_lemma_4 ha t f, map_sum]
+
+  rw [cc_d_ev_lemma_4 ha t f, map_sum]
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [map_mul, cc_ev ha]
 
@@ -201,8 +249,8 @@ theorem cc_dd_ev {m n : ℕ} {a : Fin m → Pt R n d} (ha : ZZ a) (s t : Fin n �
       ∑ p : Fin m × Fin d, (∑ q : Fin m × Fin d, constantCoeff (pderiv q (pderiv p f)) *
         constantCoeff (pderiv s (a q.1 q.2))) * constantCoeff (pderiv t (a p.1 p.2)) := by
   have hchain := cc_d_ev_lemma_4 ha t f
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hchain, map_sum, map_sum]
+
+  rw [hchain, map_sum, map_sum]
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul, map_add (f := _), map_mul, map_mul, cc_ev ha, hf, zero_mul, zero_add,
     cc_d_ev ha, mul_comm]

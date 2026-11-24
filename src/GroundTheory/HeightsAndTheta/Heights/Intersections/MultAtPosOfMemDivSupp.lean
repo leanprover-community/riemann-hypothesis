@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.InhDivCycleOfSuppEmpty
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.SwapLoc
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermTensor
 
 @[expose] public section
 

@@ -1,13 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ThetaSeriesTies
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TwistTrivialOnRational
+public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.OrientationExclusive
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDetOfMemSt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeightOnDatum
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed
-public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.OrientationExclusive
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.WeightedPrimeSumBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 
@@ -42,8 +76,8 @@ theorem mem_eig_iff {y : Z} : y ∈ eig ρ U ψ ↔ ∀ u : U, ρ (u : P) y = ((
 
 theorem trace_mem_eig (hψ : ∀ a ∈ U, ∀ b ∈ U, ψ (a * b) = ψ a * ψ b) (y : Z) : trace ρ U ψ y ∈ eig ρ U ψ := by
   refine mem_eig_iff.2 fun a => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [trace, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, Finset.smul_sum]
+
+  simp only [trace, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, Finset.smul_sum]
   refine (Fintype.sum_equiv (Equiv.mulRight a) _ _ fun u => ?_).symm
   have e : ρ (a : P) (ρ ((u : P) * a)⁻¹ y) = ρ (u : P)⁻¹ y := by
     rw [← Module.End.mul_apply, ← map_mul, mul_inv_rev, mul_inv_cancel_left]
@@ -165,8 +199,8 @@ theorem trace_gen_mem (hT : LawsFull T) (hj : InR D j) (hxi : TwistTrivialOnRati
     fun u => ⟨hx u, by simpa [hn] using ax u, (hf u).2.2⟩⟩, rfl⟩
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
+
+
 theorem trace_mem_thetaEig (hT : LawsFull T) (hj : InR D j) (hxi : TwistTrivialOnRational T j) (hn : w.n = D.R.nV)
     (hl : w.LastPos) (hρ : ∀ g F, ρ g (z.symm (1 ⊗ₜ F)) = z.symm (1 ⊗ₜ act g F)) (hact : IsLevAct T.toTop h j w ℓ act)
     (hdet : ∀ u ∈ U, DetOne (ℓ u)) {y : Fin n → K} (hy : y ∈ spanK z ((recPJ h j hj).shortTh w : Set _)) :

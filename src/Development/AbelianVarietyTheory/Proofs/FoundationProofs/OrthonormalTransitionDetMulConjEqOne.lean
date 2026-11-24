@@ -1,8 +1,46 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Formalism.PairingDivisors.StatementH
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 
 @[expose] public section
 
@@ -28,8 +66,8 @@ theorem hYY_herm (D : D7) (h : TraceMapNormalisation D) {N N' : ℕ} (x y : Matr
     fun φ z => D.host.conjE_apply φ z
   unfold hYY
   rw [← h, ← h]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, hc, Complex.conj_conj]
+
+  simp only [map_sum, map_mul, hc, Complex.conj_conj]
   refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
@@ -40,8 +78,8 @@ theorem onB_expand (D : D7) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N
   have h1 : ∀ k, hYY D x (b k) = c k := by
     intro k
     change hYYLeft D (b k) x = c k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hc, map_sum]
+
+    rw [← hc, map_sum]
     have h2 : ∀ i, hYYLeft D (b k) (c i • b i) = if i = k then c i else 0 := by
       intro i
       rw [map_smul]
@@ -61,14 +99,14 @@ theorem onB_parseval (D : D7) (h : TraceMapNormalisation D) {N N' r : ℕ} (b : 
   have h1 : hYY D x y = ∑ i, hYY D x (b i) * hYY D (b i) y := by
     change hYYLeft D y x = _
     conv_lhs => rw [onB_expand D b hb x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul]
     rfl
   have h2 := congrArg (D.host.φ₀.comp (algebraMap D.host.K D.host.E)) h1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum] at h2
+
+  rw [map_sum] at h2
   refine h2.trans (Finset.sum_congr rfl fun i _ => ?_)
   rw [map_mul, ← hYY_herm D h y (b i)]
   rfl

@@ -1,16 +1,63 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Formalism.PairingDivisors.StatementH
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddThetaFunctionExistenceUniqueness
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatumStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegerMapEqHalfOneAddSqrtStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeCovolumePosAndSelfDualStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HermitianPairingRationalValuesStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmThetaTaylorCoeffAlgebraicAndConjugateStatement
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmThetaTaylorCoeffAlgebraicAndConjugate
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegerMapEqHalfOneAddSqrt
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HermitianPairingRationalValues
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeCovolumePosAndSelfDual
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddThetaFunctionExistenceUniqueness
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 
 @[expose] public section
 
@@ -146,8 +193,8 @@ theorem sq_add_left (z z' w : VC D N N') : sq (z + z') w = sq z w + sq z' w := b
   simp [sq, add_mul, Finset.sum_add_distrib]
 
 theorem sq_conj (z w : VC D N N') : sq w z = (starRingEnd ℂ) (sq z w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [sq, map_sum, mul_comm]
+
+  simp [sq, map_sum, mul_comm]
 
 theorem sq_smul_right (c : ℂ) (z w : VC D N N') : sq z (c • w) = sq z w * (starRingEnd ℂ) c := by
   rw [sq_conj, sq_smul_left, map_mul, ← sq_conj, mul_comm]
@@ -168,8 +215,8 @@ theorem sq_sum_left {α : Type} (s : Finset α) (x : α → VC D N N') (w : VC D
 
 theorem sq_sum_right {α : Type} (s : Finset α) (x : α → VC D N N') (w : VC D N N') :
     sq w (∑ a ∈ s, x a) = ∑ a ∈ s, sq w (x a) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [sq_conj, sq_sum_left, map_sum]
+
+  rw [sq_conj, sq_sum_left, map_sum]
   exact Finset.sum_congr rfl fun a _ => (sq_conj _ _).symm
 
 theorem Hf_eq (T : Tor D) (z w : VC D N N') : Hf D T z w = sq z w / (area T.abelian₂ : ℂ) := rfl
@@ -217,8 +264,8 @@ theorem sq_embV (hG : admG1 D) (x y : Matrix (Fin N') (Fin N) D.host.E) :
       D.host.φ₀ ((hYY D x y : D.host.K) : D.host.E) := by
   rw [hYY, ← hG.2]
   refine Finset.sum_congr rfl fun τ _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, embV_apply]
+
+  simp only [map_sum, map_mul, embV_apply]
   refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
   rw [Formalism.HC.HostAx.conjE_apply D.host.toHostAx]
 
@@ -375,7 +422,7 @@ theorem U_pullB (hG : admG1 D) (hb : OnB D b) (c : Fin r → ℂ) (g : ℂ → �
 
 theorem exists_pair (hG : admG1 D) (hC : Crv D cc δ) :
     ∃ P : PeriodPair, ∀ z, z ∈ lamOf D cc δ ↔ z ∈ P.lattice :=
-  GlobalTheory.OddTheta.exists_periodPair _ (GlobalTheory.T.idealPeriodLattice_of_curveDatum D hG cc δ hC).1
+  GlobalTheory.OddTheta.exists_periodPair _ (_root_.GlobalTheory.CurveLattice.lattice_of_curve D hG cc δ hC).1
 
 theorem im_Hf (T : Tor D) (z w : VC D N N') : (Hf D T z w).im = (sq z w).im / area T.abelian₂ := by
   rw [Hf_eq, Complex.div_ofReal_im]
@@ -389,7 +436,7 @@ theorem integral_of_gen (hG : admG1 D) (hC : Crv D cc δ)
     (∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D (tor0 D cc δ) x y).im = m) ∧
       ∀ x ∈ A, ∃ m : ℤ, qH D (tor0 D cc δ) x = m := by
   obtain ⟨L, hL⟩ := exists_pair cc δ hG hC
-  obtain ⟨-, hdual⟩ := GlobalTheory.T.latticeCovolume_pos_and_selfDual L _ hL
+  obtain ⟨-, hdual⟩ := _root_.GlobalTheory.PlaneLattice.area_pos_and_selfDual L _ hL
   have hLam : (tor0 D cc δ).abelian₂ = lamOf D cc δ := rfl
   have hsq : ∀ z ∈ A, ∀ x ∈ S, sq z (embV D (tor0 D cc δ) x) ∈ lamOf D cc δ := by
     intro z hz x hx
@@ -423,7 +470,7 @@ theorem integral_of_gen (hG : admG1 D) (hC : Crv D cc δ)
       have e : sq z (-a) = -sq z a := by simp [sq]
       exact ⟨-m, by rw [e, Complex.neg_im, neg_div, hm, Int.cast_neg]⟩
   refine ⟨fun x hx => hint x (hsq x hx), fun x hx => ?_⟩
-  obtain ⟨a, ha⟩ := GlobalTheory.T.exists_integer_map_eq_halfOneAddSqrt D
+  obtain ⟨a, ha⟩ := _root_.GlobalTheory.NormSum.exists_integer_map_eq_w0 D
   obtain ⟨m, hm⟩ := hint (w0 D • x) (fun y hy => by
     rw [sq_smul_left, ← ha]
     exact lam_mul cc δ a (hsq x hx _ hy)) x hx
@@ -452,7 +499,7 @@ theorem integral_la (hG : admG1 D) (hC : Crv D cc δ)
     {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} (hL : SD D L) (hL' : SD D L') :
     ∀ x ∈ La D (tor0 D cc δ) L L', ∃ m : ℤ, qH D (tor0 D cc δ) x = m :=
   (integral_of_gen cc δ hG hC {x | x ∈ YYl D L L'}
-    (fun x hx y hy => GlobalTheory.T.hermitian_pairing_integral_values D N N' L L' hL hL' x hx y hy) _ rfl).2
+    (fun x hx y hy => _root_.GlobalTheory.NormSum.TraceInt.hYY_integral D N N' L L' hL hL' x hx y hy) _ rfl).2
 
 def Good (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (G : VC D N N' → ℂ) : Prop :=
   ∀ x ∈ sat (LaB D (tor0 D cc δ) b), Gen (coordV D) (U D (tor0 D cc δ) x G)
@@ -589,10 +636,10 @@ theorem pow_smul_liftY (hG : admG1 D) {L : Submodule (𝓞 D.host.E) (Fin N → 
     simp only [← Nat.cast_smul_eq_nsmul ℂ]
     funext τ i j
     have hp' : (p : ℂ) ≠ 0 := by exact_mod_cast hp
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [liftY, Pi.smul_apply, embV_apply, Finset.sum_apply, Matrix.smul_apply,
-      Matrix.sum_apply, smul_eq_mul, map_mul, map_sum, map_div₀, map_pow,
-      map_natCast, hG.1 τ, Finset.mul_sum]
+
+    simp only [liftY, Pi.smul_apply, embV_apply, Finset.sum_apply, Matrix.smul_apply,
+    Matrix.sum_apply, smul_eq_mul, map_mul, map_sum, map_div₀, map_pow,
+    map_natCast, hG.1 τ, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     push_cast
     field_simp
@@ -602,7 +649,7 @@ theorem pow_smul_liftY (hG : admG1 D) {L : Submodule (𝓞 D.host.E) (Fin N → 
 theorem taylor_algebraic : ∀ D : D7, useAlg D := by
   intro D cc δ hC t0 ht N N' L L' hL hL' _ G hE
   have hG : admG1 D := (GlobalTheory.InducedType.induced_type D).1
-  have hU : use1 D := GlobalTheory.T.forall_use1 D
+  have hU : use1 D := _root_.GlobalTheory.ThetaConj.cmTheta_taylorCoeff_algebraic_and_conjugate D
   obtain ⟨b, κ, hb, hκ, rfl⟩ := hE
   have hg := ((good_theta hG hU hC hb ht).iop hG hC hb (LaB D (tor0 D cc δ) b) _
     (la_le cc δ hG hb L L')).const_mul hκ.1

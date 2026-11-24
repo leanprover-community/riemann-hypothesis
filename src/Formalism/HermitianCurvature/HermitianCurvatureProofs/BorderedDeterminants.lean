@@ -1,12 +1,51 @@
 module
 
 public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainRecursionFromSingleDescent
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuantumMinorCommutation
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -73,9 +112,7 @@ theorem qdet_sub {n : ℕ} (E : Fin (n + 1) → Fin (n + 1) → A) (u : ℂ) :
 
 theorem bS_id (n : ℕ) : bS (Fin.castSucc : Fin n → Fin (n + 1)) (Fin.last n) = id := by
   funext i
-  induction i using Fin.lastCases with
-  | last => simp [bS]
-  | cast j => simp [bS]
+  induction i using Fin.lastCases <;> simp [bS]
 
 theorem borderS' {n m : ℕ} (E : Fin n → Fin n → A) (es : Fin n) (v : Fin m → Fin n) (hE : GlRel E)
     (hvs : ∀ j, v j ≠ es) (u : ℂ) :
@@ -144,7 +181,6 @@ theorem icast_apply (z : ℤ) (f : Module.End ℂ V) (v : V) :
   rw [Module.End.mul_apply]
   first
   | (simp [Int.cast_smul_eq_zsmul]; done)
-  | (simp; exact (Int.cast_smul_eq_zsmul ℂ z (f v)).symm)
 
 theorem sumBorder {n : ℕ} (Y H : Fin n → Module.End ℂ V) (M : Fin n → Fin n → Module.End ℂ V)
     (Ψ : Fin n → Fin n → V) (c : Fin n → ℂ) (v : V) (h1 : ∀ x, ∑ i, Ψ i x = H x v)
@@ -155,13 +191,13 @@ theorem sumBorder {n : ℕ} (Y H : Fin n → Module.End ℂ V) (M : Fin n → Fi
       Y x (∑ i, ((-1 : ℂ) ^ ((w : ℕ) + (x : ℕ))) • M w x (Ψ i w)) := by
     intro w x
     rw [icast_apply, Module.End.mul_apply, Module.End.mul_apply, ← h1 w]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finset.smul_sum, Int.cast_pow, Int.cast_neg, Int.cast_one]
+
+    simp only [map_sum, map_smul, Finset.smul_sum, Int.cast_pow, Int.cast_neg, Int.cast_one]
   simp only [LinearMap.sum_apply, key]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun x _ => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum (Y x), Finset.sum_comm]
+
+  rw [← map_sum (Y x), Finset.sum_comm]
   congr 1
   exact Finset.sum_congr rfl (fun i _ => h3 i x)
 
@@ -197,7 +233,7 @@ theorem comm_last {n : ℕ} (E : Fin (n + 1) → Fin (n + 1) → Module.End ℂ 
   refine Commute.sum_right _ _ _ (fun σ _ => ?_)
   refine Commute.mul_right (Int.cast_commute _ _).symm ?_
   refine Commute.list_prod_right _ _ (fun y hy => ?_)
-  simp only [List.mem_ofFn, Set.mem_range] at hy
+  simp only [List.mem_ofFn] at hy
   obtain ⟨k, rfl⟩ := hy
   exact hT _ _ _
 

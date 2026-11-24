@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarPinCellS
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.HaarTrHolds
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsBij
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuBesselLoc
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsBij
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
 
 @[expose] public section
 
@@ -30,7 +32,7 @@ theorem y_inv_mem (τ : D.what₂.Tau) : (C.y τ)⁻¹ ∈ Formalism.QuantumDete
           Matrix.mul_nonsing_inv _ hu, Matrix.one_mul, Matrix.mul_one]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem quotTr_holds (u u' : D.what₂.Word) (τ : D.what₂.Tau) : QuotTr C u u' τ := by
   intro γ μRv ν hH hq
   obtain ⟨hσ, -, -, -⟩ := hH

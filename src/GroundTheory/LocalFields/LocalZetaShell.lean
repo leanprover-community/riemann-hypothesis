@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LocalFourier
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

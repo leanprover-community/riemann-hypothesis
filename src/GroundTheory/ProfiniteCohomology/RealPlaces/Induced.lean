@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.InducedDropOut
 public import GroundTheory.ProfiniteCohomology.RealPlaces.ConeMap
-public import GroundTheory.ProfiniteCohomology.MackeyFormula
 public import GroundTheory.ProfiniteCohomology.MackeyFormula.CompactSupport
+public import GroundTheory.ProfiniteCohomology.Shapiro
+import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
+import GroundTheory.ProfiniteCohomology.MackeyFormula
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.IsDiscreteRepResHomCoindRes
-public import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
 
 @[expose] public section
 

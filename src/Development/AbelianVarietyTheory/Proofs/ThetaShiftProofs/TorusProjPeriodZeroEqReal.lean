@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.DegeneratingToriPeriodMapEqBaseOfYEqZero
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Star.Real
 
 @[expose] public section
 
@@ -97,9 +142,9 @@ theorem lattice_of_im {L W : Type} [AddCommGroup L] [Module.Free ℤ L] [Module.
     have : c ᵥ* M.map (Int.cast : ℤ → ℝ) = 0 := by
       funext j
       have h1 := congrArg (fun v => (S (P (b j)) v).im) hc
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, ← algebraMap_smul ℂ (c _) (P _), map_smul, map_zero, Complex.im_sum, smul_eq_mul,
-        Complex.coe_algebraMap, Complex.im_ofReal_mul, hS, Complex.zero_im] at h1
+
+      simp only [map_sum, ← algebraMap_smul ℂ (c _) (P _), map_smul, map_zero, Complex.im_sum, smul_eq_mul,
+      Complex.coe_algebraMap, Complex.im_ofReal_mul, hS, Complex.zero_im] at h1
       simpa [M, vecMul, dotProduct] using h1
     exact congrFun (eq_zero_of_vecMul_eq_zero hdet' this)
   have hcard : Fintype.card (Module.Free.ChooseBasisIndex ℤ L) = Module.finrank ℝ W := by
@@ -248,9 +293,9 @@ theorem exists_BwMat_posDef : ∃ T₀ : ℝ, ∀ w : ℂ, T₀ < w.im → (A.Bw
       hx (funext (Fintype.linearIndependent_iff.1 b.linearIndependent x h))
     have := A.be_pos _ h0
     convert this using 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [M, dotProduct, mulVec, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
-      Finset.mul_sum, Matrix.of_apply]
+
+    simp only [M, dotProduct, mulVec, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+    Finset.mul_sum, Matrix.of_apply]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   have hC : (A.BwMat 0).IsHermitian := by
@@ -264,8 +309,8 @@ theorem exists_BwMat_posDef : ∃ T₀ : ℝ, ∀ w : ℂ, T₀ < w.im → (A.Bw
 theorem map_eq_sum_repr {M : Type} [Ring M] (f : A.X →+ M) (y : A.X) :
     f y = ∑ i, ((Module.Free.chooseBasis ℤ A.X).repr y i : M) * f (Module.Free.chooseBasis ℤ A.X i) := by
   conv_lhs => rw [← (Module.Free.chooseBasis ℤ A.X).sum_repr y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_zsmul, zsmul_eq_mul]
+
+  simp only [map_sum, map_zsmul, zsmul_eq_mul]
 
 
 open Classical in
@@ -287,9 +332,9 @@ theorem dualForm_conj (w : ℂ) (r r' : A.X →+ ℂ) : starRingEnd ℂ (A.dualF
   have hC : (A.BwMat w).IsHermitian := by
     ext i j; simp [BwMat_apply, A.Bw_symm w (Module.Free.chooseBasis ℤ A.X i)]
   have h : ∀ i k, (A.BwMat w)⁻¹ i k = (A.BwMat w)⁻¹ k i := fun i k => by simpa using hC.inv.apply k i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dualForm_apply, dotProduct, mulVec, map_sum, map_mul, Finset.mul_sum, Pi.star_apply,
-    RCLike.star_def, Complex.conj_conj, Matrix.map_apply, Complex.conj_ofReal]
+
+  simp only [dualForm_apply, dotProduct, mulVec, map_sum, map_mul, Finset.mul_sum, Pi.star_apply,
+  RCLike.star_def, Complex.conj_conj, Matrix.map_apply, Complex.conj_ofReal]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => by rw [h k i]; ring
 
@@ -377,7 +422,7 @@ theorem im_Hw_Pw {w : ℂ} (hw : (A.BwMat w).PosDef) (a b : A.La) :
   simp only [map_sub, map_smul, LinearMap.map_smulₛₗ, LinearMap.sub_apply, LinearMap.smul_apply,
     A.dualForm_BwC hw, h2, smul_eq_mul] at h1
   simp only [Complex.sub_im, Complex.sub_re, Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.I_re,
-    Complex.I_im, RingHom.id_apply, torusProj_Pw_re, torusProj_Pw_im, BwC_apply, Complex.ofReal_re,
+    Complex.I_im, torusProj_Pw_re, torusProj_Pw_im, BwC_apply, Complex.ofReal_re,
     Complex.ofReal_im] at h1
   rw [Hw_apply, Complex.add_im, EF_apply, Pw_snd, Pw_snd]
   simp only [H_add_left, H_add_right, Complex.add_im]
@@ -401,14 +446,13 @@ theorem HwMat_isHermitian (w : ℂ) {g : ℕ} (h : A.V ≃ₗ[ℂ] (Fin g → �
 theorem hermForm_HwMat (w : ℂ) {g : ℕ} (h : A.V ≃ₗ[ℂ] (Fin g → ℂ)) (v v' : A.V) :
     hermForm (A.HwMat w h) (h v) (h v') = A.Hw w v v' := by
   have e : ∀ v : A.V, v = ∑ i, h v i • h.symm (Pi.single i 1) := fun v => h.injective <| by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearEquiv.apply_symm_apply]
+
+    simp only [map_sum, map_smul, LinearEquiv.apply_symm_apply]
     exact pi_eq_sum_univ' _
   conv_rhs => rw [e v, e v']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hermForm, HwMat, dotProduct, mulVec, map_sum, map_smul, LinearMap.map_smulₛₗ, LinearMap.sum_apply,
-    LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum, Matrix.of_apply, Pi.star_apply, RCLike.star_def,
-    RingHom.id_apply]
+
+  simp only [hermForm, HwMat, dotProduct, mulVec, map_sum, map_smul, LinearMap.map_smulₛₗ, LinearMap.sum_apply,
+  LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum, Matrix.of_apply, Pi.star_apply, RCLike.star_def]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 

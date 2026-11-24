@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootsLiftToZeros
+public import Mathlib.RingTheory.Ideal.Maps
+public import Mathlib.RingTheory.IntegralClosure.Algebra.Defs
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsMoreRest
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -11,11 +13,6 @@ set_option maxSynthPendingDepth 1
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open MvPolynomial
-
-theorem RootsLiftToZeros.exists_extend {R A : Type*} [CommRing R] [CommRing A] [Algebra R A]
-    [Algebra.IsIntegral R A] (ev : R →+* ℂ) (hker : RingHom.ker (algebraMap R A) ≤ RingHom.ker ev) :
-    ∃ χ : A →+* ℂ, χ.comp (algebraMap R A) = ev :=
-  _root_.UpperTheory.Reformulated.B.Qi28.exists_extend ev hker
 
 theorem RootsLiftToZeros.proof : RootsLiftToZeros.Statement := by
   intro σ P e ℓ u G hint hG y t ht
@@ -45,7 +42,7 @@ theorem RootsLiftToZeros.proof : RootsLiftToZeros.Statement := by
     rw [RingHom.mem_ker, map_mul]
     change Polynomial.eval₂ (aeval y).toRingHom t G * ev H = 0
     rw [ht, zero_mul]
-  obtain ⟨ψ, hψ⟩ := RootsLiftToZeros.exists_extend ev hker
+  obtain ⟨ψ, hψ⟩ := _root_.UpperTheory.Reformulated.B.Qi28.exists_extend ev hker
   let χ : MvPolynomial σ ℚ →+* ℂ := ψ.comp (Ideal.Quotient.mk P)
   have hχ : χ = (aeval fun i => χ (X i)).toRingHom :=
     MvPolynomial.ringHom_ext

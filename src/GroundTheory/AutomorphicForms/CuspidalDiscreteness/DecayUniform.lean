@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelCount
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

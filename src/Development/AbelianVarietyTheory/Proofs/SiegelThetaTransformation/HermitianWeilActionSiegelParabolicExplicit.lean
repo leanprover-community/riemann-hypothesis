@@ -1,11 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThHEqThSDictionary
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.UnitaryActHalfSpace
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.QuadCocycle
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionUnitaryGroupTestFunctionsStatement
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.FirstCoordinateAdmissible
+public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionUnitaryGroupTestFunctions
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.QuadCocycle
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThHEqThSDictionary
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.UnitaryActHalfSpace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -60,8 +103,8 @@ private lemma map_trace_mul_mul_ccT_eq_trace_conjTranspose {E : Type} [Field E] 
     (τ : E →+* ℂ) (M P : Matrix (Fin n) (Fin N) E) (β : Matrix (Fin N) (Fin N) E) :
     τ (M * β * _root_.GlobalTheory.SW.ccT P).trace = (M.map τ * β.map τ * (P.map τ)ᴴ).trace := by
   rw [← _root_.GlobalTheory.SW.HAct.map_ccT, ← Matrix.map_mul, ← Matrix.map_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.trace, Matrix.diag, map_sum, Matrix.map_apply]
+
+  simp only [Matrix.trace, Matrix.diag, map_sum, Matrix.map_apply]
 
 open Matrix Complex NumberField Filter Topology in
 open scoped ComplexConjugate ComplexOrder Real in
@@ -89,7 +132,7 @@ private lemma trace_quadratic_form_shift_expand {n N : ℕ} (X Y : Matrix (Fin n
       Matrix.mul_assoc]
   simp only [conjTranspose_add, conjTranspose_smul, Matrix.add_mul, Matrix.mul_add, Matrix.smul_mul,
     Matrix.mul_smul, trace_add, trace_smul, smul_eq_mul, star_add, star_mul', star_natCast, star_ofNat,
-    star_pow, Nat.cast_mul, Nat.cast_ofNat, ha, hb, star_star]
+    star_pow, Nat.cast_mul, Nat.cast_ofNat, ha, hb]
   ring
 
 
@@ -265,9 +308,9 @@ private lemma map_trace_mul_mul_ccT_self_eq_sum_dotProduct {E : Type} [Field E] 
       ∑ k, (x.map τ) k ⬝ᵥ (β.map τ) *ᵥ star ((x.map τ) k) := by
   have hc : ∀ a k, τ (_root_.GlobalTheory.SW.ccT x a k) = star (τ (x k a)) := fun a k =>
     congrFun (congrFun (_root_.GlobalTheory.SW.HAct.map_ccT τ x) a) k
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, map_sum, map_mul, hc, dotProduct, mulVec,
-    Matrix.map_apply, Pi.star_apply, Finset.sum_mul, Finset.mul_sum, mul_assoc]
+
+  simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, map_sum, map_mul, hc, dotProduct, mulVec,
+  Matrix.map_apply, Pi.star_apply, Finset.sum_mul, Finset.mul_sum, mul_assoc]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Finset.sum_comm]
 
@@ -359,13 +402,13 @@ private lemma transH_chiH_mul_comp_of_toBlocks₂₁_eq_zero {E : Type} [Field E
       change τ.1.mapMatrix (-(B * _root_.GlobalTheory.SW.ccT A)) = _
       rw [map_neg, map_mul, RingHom.mapMatrix_apply, RingHom.mapMatrix_apply,
         _root_.GlobalTheory.SW.HAct.map_ccT]
-    simp only [of_apply, hadj, hden]
+    simp only [hadj, hden]
     have := hermitian_parabolic_exponent_rows_eq (y.map τ.1) (z τ) (z' τ) (A.map τ.1) (B.map τ.1) (D.map τ.1) (Z τ)
       (map_toBlocks₁₁_conjTranspose_mul_toBlocks₂₂_eq_one hγ h0 τ.1).1 (map_toBlocks₁₁_conjTranspose_mul_toBlocks₂₂_eq_one hγ h0 τ.1).2 k
     rw [← hey, ← hβ] at this
     exact this
   rw [← hkey]
-  simp only [hden, h0, Matrix.map_zero _ (map_zero _), Matrix.mul_zero, Matrix.zero_mulVec, dotProduct_zero,
+  simp only [hden, h0, Matrix.map_zero _ (map_zero _), Matrix.zero_mulVec, dotProduct_zero,
     Finset.sum_const_zero, mul_zero, Complex.exp_zero, mul_one]
   rw [hyA]
   have hdet : ∀ τ : Ψ, (D.map τ).det = τ.1 D.det := fun τ => by
@@ -403,7 +446,7 @@ private lemma hFac_eq_prod_det_pow_of_toBlocks₂₁_eq_zero {E : Type} [Field E
     (Z : _root_.GlobalTheory.SW.CM Ψ N N) (z z' : _root_.GlobalTheory.SW.CM Ψ n N) :
     _root_.GlobalTheory.SW.hFac Ψ γ Z z z' = ∏ τ : Ψ, τ.1 γ.toBlocks₂₂.det ^ n := by
   unfold _root_.GlobalTheory.SW.hFac _root_.GlobalTheory.SW.hDen
-  simp only [h0, Matrix.map_zero _ (map_zero _), Matrix.zero_mul, zero_add, Matrix.mul_zero, Matrix.zero_mulVec,
+  simp only [h0, Matrix.map_zero _ (map_zero _), Matrix.zero_mul, zero_add, Matrix.zero_mulVec,
     dotProduct_zero, Finset.sum_const_zero, mul_zero, Complex.exp_zero, mul_one]
   refine Finset.prod_congr rfl fun τ _ => ?_
   rw [RingHom.map_det]

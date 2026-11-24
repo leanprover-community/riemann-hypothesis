@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreFlagCutForms
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSegreFlagCutTools
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagBundleSectionFormsTools
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDivisor
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSegreFlagCutTools
+import Mathlib.LinearAlgebra.Dimension.OrzechProperty
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagBundleForms
 
 @[expose] public section
 
@@ -56,7 +59,7 @@ theorem exists_flag_dual (y : (Σ k, ι k) → Ω) (B : ChartBundle R (segreVec 
     apply hm
     rcases hjm.lt_or_eq with h | h
     · have hne : j ≠ m := fun h' => (ne_of_lt h) (congrArg Fin.val h')
-      simp [heT j m h, Finsupp.single_apply, hne]
+      simp [heT j m h, hne]
     · have : m = j := Fin.ext h.symm
       subst this
       simp [heD]
@@ -202,8 +205,8 @@ theorem genVal_flag (w w' e : Module.Basis (Fin N) Ω E) (hsame : ∀ i j : Fin 
   by_cases hj : (j : ℕ) < k + 1
   · have hχ : χ (w j) = w'.repr (w j) ⟨k, hk⟩ := by
       conv_lhs => rw [← w'.sum_repr (w j)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_eq_single ⟨k, hk⟩]
+
+      rw [map_sum, Finset.sum_eq_single ⟨k, hk⟩]
       · rw [map_smul, htop, smul_eq_mul, mul_one]
       · intro m _ hm
         rcases lt_or_gt_of_ne hm with hlt | hgt
@@ -305,7 +308,7 @@ theorem chart_pair (y : (Σ k, ι k) → Ω) (B' : ChartBundle O (segreVec y) N 
       · simp [vdeg]
       · have h3 := hdeg j
         have h4 := hβ j
-        simp [vdeg, Pi.single_apply]
+        simp [vdeg]
         omega
     rw [hd]
     exact h2
@@ -323,8 +326,8 @@ theorem chart_pair (y : (Σ k, ι k) → Ω) (B' : ChartBundle O (segreVec y) N 
         (∑ l, X ⟨none, l⟩ * G l : MRing (bundleIdx (bundleIdx ι M) M') O) =
         ∑ l, aeval (pairProjCoord y w φ φ' (flagCoord w e t (k + 1))) (G l) *
           genVal w (flagCoord w e t (k + 1)) (φ' l) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_congr rfl fun l _ => by rw [map_mul, aeval_X, mul_comm]; rfl
     rw [hpt, map_mul, hs, ← hval, hm, map_mul]
     ring
@@ -435,7 +438,7 @@ theorem SegreFlagCutForms.proof : SegreFlagCutForms.Statement := by
   · simp [vdeg, zetaSecond, liftPairDeg]
   · simp [vdeg, zetaSecond, liftPairDeg]
   · have := hβD j
-    simp [vdeg, zetaSecond, liftPairDeg, Pi.single_apply]
+    simp [vdeg, zetaSecond, liftPairDeg]
     omega
 
 end

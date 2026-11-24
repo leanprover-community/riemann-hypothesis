@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CintTranslate
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CintTranslate
 
 @[expose] public section
 
@@ -119,16 +164,6 @@ private lemma finsum_out_div_relIndex_eq_inf_of_fine {A B₁ B₂ : AddSubgroup 
 
 open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
-private lemma cint_eq_finsum_div_relIndex_of_fine {A B : AddSubgroup W} {φ : W → ℂ}
-    (hB : _root_.GlobalTheory.IdxInt.Fine A φ B) :
-    _root_.GlobalTheory.IdxInt.cint A φ = (∑ᶠ c : W ⧸ B, φ (Quotient.out c)) / (B.relIndex A : ℂ) := by
-  have hnice : _root_.GlobalTheory.IdxInt.Nice A φ := ⟨B, hB⟩
-  unfold _root_.GlobalTheory.IdxInt.cint
-  rw [dite_eq_left hnice, finsum_out_div_relIndex_eq_inf_of_fine hnice.choose_spec hB,
-    finsum_out_div_relIndex_eq_inf_of_fine hB hnice.choose_spec, inf_comm]
-
-open scoped Pointwise Classical in
-variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 private lemma Fine_inf_of_relIndex_ne_zero {A A' B : AddSubgroup W} {φ : W → ℂ}
     (hB : _root_.GlobalTheory.IdxInt.Fine A φ B) (h₂ : A'.relIndex A ≠ 0) (h₁ : A.relIndex A' ≠ 0) :
     _root_.GlobalTheory.IdxInt.Fine A φ (B ⊓ A') ∧ _root_.GlobalTheory.IdxInt.Fine A' φ (B ⊓ A') := by
@@ -169,7 +204,7 @@ theorem _root_.GlobalTheory.IdxInt.Transport.cint_map_and_change : ∀ {W : Type
     refine ⟨hiff, ?_⟩
     by_cases hN : _root_.GlobalTheory.IdxInt.Nice A (fun w => φ (e w))
     · obtain ⟨B, hB⟩ := hN
-      rw [cint_eq_finsum_div_relIndex_of_fine hB, cint_eq_finsum_div_relIndex_of_fine (Fine_map_addEquiv_and_finsum_eq e hB).1,
+      rw [_root_.GlobalTheory.IdxInt.Model.cint_eq hB, _root_.GlobalTheory.IdxInt.Model.cint_eq (Fine_map_addEquiv_and_finsum_eq e hB).1,
         (Fine_map_addEquiv_and_finsum_eq e hB).2, AddSubgroup.relIndex_map_map_of_injective _ _ e.injective]
     · unfold _root_.GlobalTheory.IdxInt.cint
       rw [dite_eq_right hN, dite_eq_right (hiff.not.mpr hN)]
@@ -188,7 +223,7 @@ theorem _root_.GlobalTheory.IdxInt.Transport.cint_map_and_change : ∀ {W : Type
         have h := hC.1.2.1
         rw [← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A hCD inf_le_left] at h
         exact left_ne_zero_of_mul h
-      rw [cint_eq_finsum_div_relIndex_of_fine hC.1, cint_eq_finsum_div_relIndex_of_fine hC.2,
+      rw [_root_.GlobalTheory.IdxInt.Model.cint_eq hC.1, _root_.GlobalTheory.IdxInt.Model.cint_eq hC.2,
         ← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A' hCD inf_le_right,
         ← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A hCD inf_le_left,
         AddSubgroup.inf_relIndex_right, AddSubgroup.inf_relIndex_left]

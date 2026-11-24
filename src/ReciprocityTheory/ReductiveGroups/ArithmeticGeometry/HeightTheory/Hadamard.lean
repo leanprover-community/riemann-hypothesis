@@ -1,6 +1,56 @@
 module
 
-public import Mathlib
+import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SchurAverage
+public import Mathlib.Analysis.Complex.Order
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Complex.Exponential
 
 @[expose] public section
 
@@ -17,14 +67,13 @@ theorem psd_det_re_le_one_of_diag (N : ℕ) (H : Matrix (Fin N) (Fin N) ℂ) (hH
     have h2 : H.trace = N := by simp [Matrix.trace, hd]
     rw [h2] at h
     have h4 := congrArg (RCLike.re : ℂ → ℝ) h
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, RCLike.ofReal_re, RCLike.natCast_re] at h4
+
+    simp only [map_sum, RCLike.ofReal_re, RCLike.natCast_re] at h4
     linarith
   have hre : H.det.re = ∏ i, hHerm.eigenvalues i := by
     rw [hHerm.det_eq_prod_eigenvalues]
     first
       | (norm_cast)
-      | simp [← Complex.ofReal_prod]
   rw [hre]
   calc ∏ i, hHerm.eigenvalues i ≤ ∏ i, Real.exp (hHerm.eigenvalues i - 1) :=
         Finset.prod_le_prod₀ (fun i _ => hH.eigenvalues_nonneg i)
@@ -92,28 +141,6 @@ theorem psd_det_re_le_prod_diag (N : ℕ) (G : Matrix (Fin N) (Fin N) ℂ) (hG :
 
 theorem hadamard_det_le {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) :
     ‖A.det‖ ≤ ∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2) := by
-  have hdet : (A * Aᴴ).det.re = ‖A.det‖ ^ 2 := by
-    rw [Matrix.det_mul, Matrix.det_conjTranspose]
-    rw [show star A.det = (starRingEnd ℂ) A.det from rfl, Complex.mul_conj, Complex.ofReal_re,
-      Complex.normSq_eq_norm_sq]
-  have hdiag : ∀ i, ((A * Aᴴ) i i).re = ∑ j, ‖A i j‖ ^ 2 := fun i => by
-    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Complex.re_sum]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [show star (A i j) = (starRingEnd ℂ) (A i j) from rfl, Complex.mul_conj, Complex.ofReal_re,
-      Complex.normSq_eq_norm_sq]
-  have key := psd_det_re_le_prod_diag n (A * Aᴴ) (Matrix.posSemidef_self_mul_conjTranspose A)
-  rw [hdet] at key
-  simp only [hdiag] at key
-  have hs : ∀ i, 0 ≤ ∑ j, ‖A i j‖ ^ 2 := fun i => Finset.sum_nonneg fun j _ => by positivity
-  calc ‖A.det‖ = Real.sqrt (‖A.det‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
-    _ ≤ Real.sqrt ((∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2)) ^ 2) := by
-        apply Real.sqrt_le_sqrt
-        rw [← Finset.prod_pow]
-        have h : ∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2) ^ 2 = ∏ i, ∑ j, ‖A i j‖ ^ 2 :=
-          Finset.prod_congr rfl fun i _ => Real.sq_sqrt (hs i)
-        rw [h]
-        exact key
-    _ = ∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2) :=
-        Real.sqrt_sq (Finset.prod_nonneg fun i _ => Real.sqrt_nonneg _)
+  apply Formalism.HermitianLatticeCounting.P.norm_det_le_prod_row_norms
 
 end ReciprocityTheory.ChartRestriction.G.T0

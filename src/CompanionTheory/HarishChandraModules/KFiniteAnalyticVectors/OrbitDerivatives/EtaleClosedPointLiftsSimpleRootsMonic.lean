@@ -1,12 +1,23 @@
 module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.OrbitDerivatives.HasDerivAtMatrixExpZero
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.PoulsenSmoothVectorsDense
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.AdmissibleOfIwasawa
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerSmoothStability.ExistsFinStableOfMemSSup
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.ExistsIsBump
+public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.SchurH
+import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.IntegralMemOfIsClosed
+import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.AdmissibleOfIwasawa
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.GardingAvg
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.ExistsOpOfForm
+public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.PoulsenSmoothVectorsDense
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerSmoothStability.ExistsFinStableOfMemSSup
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.MaximalCompactIsCompact
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -125,16 +136,16 @@ theorem etaleClosed_point_lifts_simple_roots_monic : Lift := by
           rw [act_coe X hg, Finset.sum_eq_single c (fun d _ hd => by simp [Pi.single_eq_of_ne hd]) (by simp),
             Finset.sum_apply, Finset.sum_eq_single e (fun d _ hd => by simp [Pi.single_eq_of_ne' hd]) (by simp)]
           simp
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [e, _root_.map_sum]
+
+        rw [e, _root_.map_sum]
         refine Finset.sum_congr rfl fun d _ => ?_
         rw [map_smul, ← ht] }
   have hM : ∀ c d, SmOn (GG k r) fun g => X.1.ρ g d c := fun c d => hX.smooth d c
   have hM1 : ∀ c d, X.1.ρ 1 d c = if c = d then 1 else 0 := fun c d => by
     rw [hX.one, Matrix.one_apply]; exact if_congr eq_comm rfl rfl
   have hfx : ∀ x : M X, f x = ∑ c, t c (x c) := fun x => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [← Finset.univ_sum_single x, _root_.map_sum]
+
+    conv_lhs => rw [← Finset.univ_sum_single x, _root_.map_sum]
     exact Finset.sum_congr rfl fun c _ => (ht c (x c)).symm
   have hsum : ∀ (x : M X) (W : List (Mx k r)), LieWd k r W → ∀ s : Finset X.1.ι,
       IsSm (GG k r) T.R.σ (∑ c ∈ s, t c (x c)) ∧
@@ -284,7 +295,6 @@ theorem cf_bound {X : Obj k r} (hX : X.1.OK) {m : ℕ} (hD : Decay X.2 m) (hm : 
   have a5 : N ^ m * ‖⟪w, X.2.R.σ (g⁻¹).mat (x d)⟫_ℂ‖ ≤ |C| * nu X.2.R.σ Ws w * nu X.2.R.σ Ws (x d) :=
     a2.trans (by rw [mul_right_comm]; gcongr; exact le_abs_self _)
   set q := ‖⟪w, X.2.R.σ (g⁻¹).mat (x d)⟫_ℂ‖
-  have hq : 0 ≤ q := norm_nonneg _
   calc ‖X.1.ρ (g⁻¹).mat c d‖ * q * N ^ ((2 * r + k + 1) ^ 2 + 1)
       ≤ |C'| * N ^ X.1.deg * q * N ^ ((2 * r + k + 1) ^ 2 + 1) := by gcongr
     _ = |C'| * ((N ^ X.1.deg * N ^ ((2 * r + k + 1) ^ 2 + 1)) * q) := by ring
@@ -297,9 +307,9 @@ theorem act_mul {X : Obj k r} (hX : X.1.OK) {g h : Mx k r} (hg : g ∈ GG k r) (
   funext c
   refine Subtype.ext ?_
   rw [act_coe X (X.2.repOn.mul_mem _ hg _ hh), act_coe X hg]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [act_coe X hh, hX.mul g hg h hh, Matrix.mul_apply, _root_.map_sum, map_smul, Finset.smul_sum, smul_smul,
-    Finset.sum_smul, X.2.repOn.apply_mul hg hh]
+
+  simp only [act_coe X hh, hX.mul g hg h hh, Matrix.mul_apply, _root_.map_sum, map_smul, Finset.smul_sum, smul_smul,
+  Finset.sum_smul, X.2.repOn.apply_mul hg hh]
   exact Finset.sum_comm
 
 theorem exists_pr [(haar : Measure (GM k r)).IsInvInvariant] {X : Obj k r} (hX : X.1.OK) {m : ℕ} (hD : Decay X.2 m)

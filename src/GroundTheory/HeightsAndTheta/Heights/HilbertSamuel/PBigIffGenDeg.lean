@@ -1,15 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.FirstPointNeSecondPoint
-public import GroundTheory.HeightsAndTheta.Heights.FubiniStudy
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
-public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyCharts
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ExistsNatMulMemConeRingIntFin
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartLatRank
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodairaGeneric
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PKodairaSection
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

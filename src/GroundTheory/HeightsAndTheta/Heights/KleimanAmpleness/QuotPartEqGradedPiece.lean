@@ -1,12 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraSide
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideFurther
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PQuotPartGraded
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PQuotPartGraded
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

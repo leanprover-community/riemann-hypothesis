@@ -1,12 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.RigFrame
+public import Formalism.LocalToGlobal.ProjectiveLattices.UnFree
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CmTypeLetterFrameColumnDictionary
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TriangularFrameMovesPeriodBlockTriangular
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.EqOfImHermFormEq
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameMulTriangularOrthonormal
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TriangularFrameMovesPeriodBlockTriangular
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
+import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
 
 @[expose] public section
 
@@ -15,12 +57,6 @@ open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.
 open scoped Matrix nonZeroDivisors
 
 namespace GlobalTheory.FrameSign
-
-private theorem hermC_emb_eq_map_herm' {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (τ : E →+* ℂ)
-    (Gm : Matrix (Fin r) (Fin r) E) (v w : Fin r → E) :
-    hermC τ Gm (Data.emb τ v) (Data.emb τ w) = τ (herm Gm v w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hermC, herm, Data.emb, cc, map_sum, map_mul, IsCMField.complexEmbedding_complexConj]
 
 private theorem re_emb' {E : Type} [Field E] [NumberField E] [IsCMField E] (τ : E →+* ℂ) (ξ : E)
     (hξ : cc ξ = -ξ) : (τ ξ).re = 0 := by
@@ -54,7 +90,7 @@ theorem im_hermForm_signed {E : Type} [Field E] [NumberField E] [IsCMField E] {r
   refine Finset.sum_congr rfl fun τ _ => ?_
   have hsum := GlobalTheory.UnitFrame.im_sum_periods q τ.1 Gm (mat x τ) (hx τ) (Data.emb τ.1 v) (Data.emb τ.1 w)
   simp only [hP, Equiv.apply_symm_apply]
-  rw [← Finset.mul_sum, ← Complex.im_sum, hsum, hermC_emb_eq_map_herm', map_mul, Complex.mul_re, re_emb' τ.1 ξ hξ]
+  rw [← Finset.mul_sum, ← Complex.im_sum, hsum, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_emb, map_mul, Complex.mul_re, re_emb' τ.1 ξ hξ]
   ring
 
 theorem pos_of_pullback_pos {g : ℕ} (d : Fin g → ℝ) (h : Matrix (Fin g) (Fin g) ℂ)

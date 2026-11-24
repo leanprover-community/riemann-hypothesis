@@ -2,6 +2,49 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.MemPolKIff
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MapCastMono
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -33,17 +76,6 @@ theorem vge_zero' (a : ℝ) : vge v a (0 : K) := by
 theorem vge_mono' {a b : ℝ} {x : K} (hab : b ≤ a) (h : vge v a x) : vge v b x := by
   rw [vge_iff'] at *; intro n hn; exact hab.trans (h n hn)
 
-theorem vge_add' {a : ℝ} {x y : K} (hx : vge v a x) (hy : vge v a y) : vge v a (x + y) := by
-  rw [vge_iff'] at *
-  intro n hn
-  have h := v.map_add x y
-  rw [hn] at h
-  rcases min_le_iff.mp h with h1 | h1
-  · obtain ⟨m, hm, hmn⟩ := WithTop.le_coe_iff.mp h1
-    exact (hx m hm).trans (by exact_mod_cast hmn)
-  · obtain ⟨m, hm, hmn⟩ := WithTop.le_coe_iff.mp h1
-    exact (hy m hm).trans (by exact_mod_cast hmn)
-
 theorem vge_mul' {a b : ℝ} {x y : K} (hx : vge v a x) (hy : vge v b y) : vge v (a + b) (x * y) := by
   rw [vge_iff'] at *
   intro n hn
@@ -61,7 +93,7 @@ theorem vge_mul' {a b : ℝ} {x y : K} (hx : vge v a x) (hy : vge v b y) : vge v
 
 theorem vge_sum' {ι : Type} {a : ℝ} (s : Finset ι) (f : ι → K) (h : ∀ i ∈ s, vge v a (f i)) :
     vge v a (∑ i ∈ s, f i) := by
-  first | exact UpperTheory.Reformulated.B.Qh31.vge_sum .. | (apply UpperTheory.Reformulated.B.Qh31.vge_sum <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qh31.vge_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh31.vge_sum <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qh31.vge_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh31.vge_sum <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K ‹_› v ι a s f h | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K ‹_› v ι a s f | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K ‹_› v ι a s | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K ‹_› v ι a | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K ‹_› v ι | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K ‹_› v | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K ‹_› | exact @UpperTheory.Reformulated.B.Qh31.vge_sum K
+  first | (apply UpperTheory.Reformulated.B.Qh31.vge_sum <;> assumption)
 
 theorem fact_ne_zero' {σ : Type} (α : σ →₀ ℕ) : fact α ≠ 0 := by
   unfold fact Finsupp.prod
@@ -126,7 +158,7 @@ theorem fock_add_right (F G G' : MvPolynomial σ K) : fock F (G + G') = fock F G
 theorem fock_smul_left (c : K) (F G : MvPolynomial σ K) : fock (c • F) G = c * fock F G := by
   rw [fock_eq_sum (c • F) G G.support (Or.inr (Finset.Subset.refl _)),
     fock_eq_sum F G G.support (Or.inr (Finset.Subset.refl _)), Finset.mul_sum]
-  exact Finset.sum_congr rfl fun α _ => by rw [coeff_smul, smul_eq_mul]; ring
+  exact Finset.sum_congr rfl fun α _ => by rw [MvPolynomial.coeff_smul, smul_eq_mul]; ring
 
 theorem fock_smul_right (c : K) (F G : MvPolynomial σ K) : fock F (c • G) = c * fock F G := by
   rw [fock_comm, fock_smul_left, fock_comm]
@@ -166,8 +198,8 @@ theorem fock_eq_sum_right (F G : MvPolynomial σ K) :
 theorem dg_eq_sum_f (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K) :
     dg f F = ∑ α ∈ F.support, monomial α (f α * F.coeff α) := by
   conv_lhs => rw [← support_sum_monomial_coeff F]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun α _ => dg_monomial f α _
 
 theorem support_dg_subset (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K) :
@@ -175,10 +207,6 @@ theorem support_dg_subset (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K) :
   intro α hα
   rw [mem_support_iff, coeff_dg] at hα
   exact mem_support_iff.mpr (right_ne_zero_of_mul hα)
-
-theorem gaAct_eq_dg (D : TwistData K) (G : MvPolynomial (D.OL × Fin D.r) K) :
-    D.gaAct G = dg D.ga G := by
-  rw [dg_eq_sum_f]; rfl
 
 end Fock
 

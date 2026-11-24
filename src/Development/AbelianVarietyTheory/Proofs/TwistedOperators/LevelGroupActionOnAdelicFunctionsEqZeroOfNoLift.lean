@@ -1,17 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicityInnerProductUnitTwistedRightTranslat
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultValueLeftContLevel
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormLevChiFlagLEqOne
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCompactParahoricLevelAndContainsLifts
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HaarMapMulRightOfMemCompactSubgroup
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlockDetSingleBlockSecondEqOneOfLe
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyCompactSecondCountableBorelCountable
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultiplicativeInnerProductModel
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlockDetSingleBlockSecondEqOneOfLe
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HaarMapMulRightOfMemCompactSubgroup
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCompactParahoricLevelAndContainsLifts
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyCompactSecondCountableBorelCountable
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultValueLeftContLevel
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicityInnerProductUnitTwistedRightTranslat
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormLevChiFlagLEqOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -170,8 +206,8 @@ theorem sum_gE (hE : R.models_HE) (hg : R.models_gE) (x : R.HE.H) :
     ∑ g, RealDat.eC (A := A) D.what₂.embLL g • R.gE g x = x := by
   refine hE.1 (MultilinearMap.ext fun v => ?_)
   have h := ((mem_goodPart R.θ (R.MY 0) _ _ R.e0 _).1 (e_mem_EE hE x)).2 v
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h, goodRowsProjector_apply_eq_sum, map_sum, MultilinearMap.sum_apply]
+
+  rw [← h, goodRowsProjector_apply_eq_sum, map_sum, MultilinearMap.sum_apply]
   refine Finset.sum_congr rfl fun g _ => ?_
   rw [map_smul, MultilinearMap.smul_apply, e_gE hg]
 
@@ -217,8 +253,8 @@ theorem schurConstant_goodRow_projector_invariant (hM : R.IsModels) (hS : Global
   have h1 : IsMultIP (R.MY 0) R.ν0 R.fd0 (R.HE.e x) U (∑ g, RealDat.eC (A := A) D.what₂.embLL g * b g) := by
     refine ip_sum _ _ _ hb fun v v' h => ?_
     conv_lhs => rw [← sum_adjoint_eq R.gE (norm_gE hM) _ (sum_gE hM.HE hM.gE) x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, MultilinearMap.sum_apply, Finset.sum_apply, star_sum, Finset.sum_mul]
+
+    rw [map_sum, MultilinearMap.sum_apply, Finset.sum_apply, star_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun g _ => ?_
     rw [map_smul, MultilinearMap.smul_apply, Pi.smul_apply, smul_eq_mul, star_mul', star_star, mul_assoc]
   rw [ip_unique _ ha h1]

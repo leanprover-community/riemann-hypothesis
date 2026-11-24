@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SignsCup
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SymbolBridgeCyclotomic
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
 public import GroundTheory.GlobalFields.NormResidueSymbol.CyclotomicCompositum
 public import GroundTheory.GlobalFields.NormResidueSymbol.Rational
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SymbolBridgeCyclotomic
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalSymbol
 
 @[expose] public section
 

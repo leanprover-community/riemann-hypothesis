@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PFourSq
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.IsometryLinkageTrivialLevel
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.ProvisionExtensionLink
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.RecursiveLatticeMembership.MemLamOfIff
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

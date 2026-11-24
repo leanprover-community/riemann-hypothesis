@@ -1,11 +1,68 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ModelsAt
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsSubspaceIsometric
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TorusProjPeriodZeroEqReal
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.NonemptyGtAnOfToric
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.AppellHumbertTrivialOfNowhereVanishing
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.AppellHumbertUnifTangentWeilPairing
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.FamilyUniformisationFibreTheta
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsBigOPowIffIteratedFDerivEqZero
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsIsDerivAt0NotIsDerivAlong
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ArcModelWitnessExtension
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsEntireUnitAppellHumbertFrameRatio
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsNeZeroIff
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsSubspaceIsometric
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsUniqueLinearLiftOfHolomorphicAbelianVariet
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsPowEqOfBaseChange
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Calculus.FDeriv.Defs
+import Mathlib.Analysis.Complex.Exponential
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FactorCommutatorEqOfNonvanishing
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HolArcNilpotent
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SmulPeriodMapMkZeroFstEqNegForm
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ThetaCharOffNeZeroDifferentiableQuasiPeriodic
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TopLeWchartNsmul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -107,7 +164,7 @@ theorem exists_linear (hT : ThetaUnifAV) {g : ℕ} (ex : (Fin g → ℂ) → Out
     simp
   let L : d.A.X → (Fin g → ℂ) →L[ℂ] ℂ := fun x => fderiv ℂ (fun z => eTwoPi (l z x)) 0
   have hL : ∀ x z, eTwoPi (l z x) = Complex.exp (L x z) := fun x =>
-    Doubling.eq_cexp_fderiv_of_map_add (hd x) (AnArc.e_ne_zero _) (hmul x)
+    _root_.GlobalTheory.ExpOfFrechetDerivative.eq_exp_fderiv (hd x) (AnArc.e_ne_zero _) (hmul x)
   have hadd : ∀ x x' z, L (x + x') z = L x z + L x' z := fun x x' z => by
     rw [← sub_eq_zero]
     refine eq_zero_of_forall_smul_mem_countable
@@ -160,8 +217,8 @@ theorem form_eq_zero (D : A.V →ₗ[ℝ] A.V →ₗ[ℝ] ℝ) (alt : ∀ a b, D
     have e : a = ∑ i, a.1 (b i) • A.P0 (AnArc.La.mk 0 (b.coord i).toAddMonoidHom 0) := by
       refine Prod.ext (A.coord.injective (funext fun k => ?_)) (by simp [ha, Prod.snd_sum])
       simp [Prod.fst_sum, AnArc.coord_apply, b, Finsupp.single_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum]
+
+    rw [e, map_sum]
     exact Finset.sum_eq_zero fun i _ => hc _ _ (h₁ _)
   let s : Set A.V := {a | a.2 = 0} ∪ Set.range fun l => A.P0 (AnArc.La.mk 0 0 l)
   have hs : Submodule.span ℝ s = ⊤ := by
@@ -246,15 +303,15 @@ theorem im_hermForm_eq (hL : Out.Laws) (hL2 : Out.Laws2) (hP : ∀ w v, Ha.y v =
     rw [← (Fu.sig Ha.i).1, ← (Fu.sig Ha.i).2]
     exact PeriodCompare.isTypeFn_of_isPeriod (Ha.period _ hw)
   obtain ⟨th, hth⟩ := (ThetaOverField.nonzero_generates hL hL2 ℂ a.D₀ ⟨fun _ => 0, fun _ _ => by simp⟩).2.2
-  obtain ⟨Θ⟩ := T.arc_model_witness_extension hL hL2 E H Dw l Xo c σ O β Y a χ W g ty Fu Ha hty th hth
+  obtain ⟨Θ⟩ := _root_.GlobalTheory.ArcTheta.nonempty_thetaDat hL hL2 E H Dw l Xo c σ O β Y a χ W g ty Fu Ha hty th hth
   let p : (Fin g ⊕ Fin g → ℤ) →+ (Fin g → ℂ) := (Ha.Pw w).comp Θ.bas.toAddMonoidHom
   have hp : ∀ v, p v = Ha.Pw w (Θ.bas v) := fun _ => rfl
   obtain ⟨wL, hwL⟩ : LBIso a.D₀.P.L (a.D₀.P.L.pull (𝟙 _)) :=
     LBIso.chartPull (chartPullId _) (Geo.Tor.chartPullPull _ _ _ rfl) (PolBaseChange.lbIso_refl a.D₀.P.isLB)
   obtain ⟨fr, f₁, f₂, f₃, -, f₅⟩ := Θ.onB w hw
-  obtain ⟨ρ, r₁, r₂, r₃⟩ := T.exists_entire_unit_appellHumbert_frame_ratio a.D₀.P.A _ a.D₀.P.L a.D₀.P.L a.D₀.P.isLB a.D₀.P.isLB (𝟙 _) wL hwL g _ u Hm χ' hAH
+  obtain ⟨ρ, r₁, r₂, r₃⟩ := _root_.GlobalTheory.FrameCompare.exists_entire_unit_automorphy a.D₀.P.A _ a.D₀.P.L a.D₀.P.L a.D₀.P.isLB a.D₀.P.isLB (𝟙 _) wL hwL g _ u Hm χ' hAH
     _ F (fun z => (Category.comp_id _).trans (hF z)) fr th _ f₁ f₂ f₃ f₅
-  obtain ⟨t₁, t₂, t₃⟩ := T.thetaCharOff_ne_zero_differentiable_quasiPeriodic' g Θ.S (Θ.τ w) Θ.c₁ Θ.c₂ (Θ.pos w hw).1 (Θ.pos w hw).2 Θ.half₁ Θ.half₂ Θ.c₁_S
+  obtain ⟨t₁, t₂, t₃⟩ := _root_.GlobalTheory.ThetaBlock.thetaCharOff_ne_zero_differentiable_quasiPeriodic g Θ.S (Θ.τ w) Θ.c₁ Θ.c₂ (Θ.pos w hw).1 (Θ.pos w hw).2 Θ.half₁ Θ.half₂ Θ.c₁_S
   have hfac : ∀ v, Ha.y (Θ.bas v) = 0 → ∃ a₁ b₁ : ℂ, a₁ ≠ 0 ∧
       (∀ z, Θ.κ * thetaCharOff Θ.S (Θ.τ w) Θ.c₁ Θ.c₂ (Θ.h.mulVec (z + p v)) =
         a₁ * Complex.exp (dotForm Θ.h (fun i => (v (.inr i) : ℂ)) z) *
@@ -282,7 +339,7 @@ theorem im_hermForm_eq (hL : Out.Laws) (hL2 : Out.Laws2) (hP : ∀ w v, Ha.y v =
   obtain ⟨v₂, rfl⟩ := Θ.bas.surjective v₂
   obtain ⟨a₁, b₁, ha₁, e₁, e₁'⟩ := hfac v₁ h₁
   obtain ⟨a₂, b₂, ha₂, e₂, e₂'⟩ := hfac v₂ h₂
-  have hc := T.factor_exponent_commutator_eq_of_quasiPeriodic g _ ρ _ _ _ _ _ _ a₁ a₂ b₁ b₂ hθd hθ r₁ r₂ ha₁ ha₂ e₁ e₂ e₁' e₂'
+  have hc := _root_.GlobalTheory.factor_commutator_eq_of_nonvanishing g _ ρ _ _ _ _ _ _ a₁ a₂ b₁ b₂ hθd hθ r₁ r₂ ha₁ ha₂ e₁ e₂ e₁' e₂'
   simp only [piHerm, dotForm, LinearMap.coe_mk, AddHom.coe_mk, mulVec_period Θ.h (Θ.τ w) p (Θ.per w)] at hc
   rw [hermForm_swap hAH.1] at hc
   rw [← hP w _ h₁, ← hP w _ h₂, Θ.sympl]
@@ -291,7 +348,7 @@ theorem im_hermForm_eq (hL : Out.Laws) (hL2 : Out.Laws2) (hP : ∀ w v, Ha.y v =
 end ThetaShiftProofs
 
 
-set_option maxHeartbeats 800000 in
+
 theorem holArc_agrees : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] (σ : c.F →+* ℂ) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (a : ArcIn Dw l β ℂ (σ.comp β)) (χ : Sp (PowerSeries ℂ) ⟶ Y.X) (W : Wit Y a χ) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (Fu : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) ty) (Ha : HolArc Y σ a χ W Fu) (Λ : GtAn₀ a), letI := H.starRing; ∃ (gam : (Fu.Di Ha.i).La ≃ₗ[𝓞 E] Λ.A.La) (h : (Fin g → ℂ) ≃ₗ[ℂ] Λ.A.V), (∀ z, Λ.ex₀ (h z) = Ha.ex₀ z) ∧ (∀ v, Λ.y (gam v) = Ha.y v) ∧ (∀ w v, h (Ha.Pw w v) = Λ.A.Pw w (gam v)) ∧ ∀ v v', Λ.A.EF (gam v) (gam v') = (Fu.Di Ha.i).EF v v' := by
   intro hK E _ _ _ H Dw l Xo c _ _ σ O _ β Y a χ W g ty Fu Ha Λ
   letI := H.starRing

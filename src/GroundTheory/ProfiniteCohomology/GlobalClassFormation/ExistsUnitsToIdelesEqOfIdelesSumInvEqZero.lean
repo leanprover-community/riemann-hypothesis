@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ABHNPrep
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ClassSplit
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleRestriction.ExistsInfIdelesLocalResIdelesResFieldEqZeroOfInf
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
 
 @[expose] public section
 

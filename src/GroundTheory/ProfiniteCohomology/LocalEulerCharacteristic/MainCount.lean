@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.RepresentationTheory.Coinduced
 public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.LubinTateTorsion
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PiMapMulRight
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
@@ -49,7 +49,7 @@ theorem measurePreserving_piProd (μ : ∀ i, Measure (α i)) (ν : ∀ i, Measu
   have hpre : (piProdEquiv (α := α) (β := β)) ⁻¹' (Set.univ.pi A ×ˢ Set.univ.pi B) =
       Set.univ.pi fun i => A i ×ˢ B i := by
     ext x
-    simp [piProdEquiv, Set.mem_univ_pi, forall_and]
+    simp [piProdEquiv, forall_and]
   rw [Measure.map_apply hf ((MeasurableSet.univ_pi hA').prod (MeasurableSet.univ_pi hB')), hpre,
     Measure.pi_pi, Measure.pi_pi, Measure.pi_pi, ← Finset.prod_mul_distrib]
   exact Finset.prod_congr rfl fun i _ => Measure.prod_prod _ _

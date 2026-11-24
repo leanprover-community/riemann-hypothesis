@@ -1,15 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussNormEqCoeffGaussNorm
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartGram
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralMass
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFibre
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeChartArea
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 
 @[expose] public section
 

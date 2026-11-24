@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
+import Mathlib.Topology.Separation.CompletelyRegular
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 
 @[expose] public section
 

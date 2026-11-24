@@ -1,10 +1,13 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.LeviForms.RegChart
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShift
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
+public import Mathlib.Analysis.InnerProductSpace.Calculus
 
 @[expose] public section
 

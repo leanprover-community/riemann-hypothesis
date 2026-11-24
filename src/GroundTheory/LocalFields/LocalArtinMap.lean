@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.MaximalAbelianExtension
 public import GroundTheory.LocalFields.LocalReciprocityUniversal
 public import GroundTheory.LocalFields.Existence
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

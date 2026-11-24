@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Constructions.Pi
 
 @[expose] public section
 

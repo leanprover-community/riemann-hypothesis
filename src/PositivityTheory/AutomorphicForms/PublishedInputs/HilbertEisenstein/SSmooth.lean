@@ -1,8 +1,12 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.Hilbert
-public import GroundTheory.GlobalFields.TateThesis.GlobalZetaSplit
 public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatDual
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.IsCondAt
+public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureQuotient
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 @[expose] public section
 

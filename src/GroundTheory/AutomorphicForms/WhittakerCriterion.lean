@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.HeckeAlgebra
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
+public import Mathlib.RepresentationTheory.Irreducible
 public import GroundTheory.AutomorphicForms.SmoothRepSchur
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

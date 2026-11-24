@@ -1,6 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.UnitaryNorms.RealCyclotomicTwoPower
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

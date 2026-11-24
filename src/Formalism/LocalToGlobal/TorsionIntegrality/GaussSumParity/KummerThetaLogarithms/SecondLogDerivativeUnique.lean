@@ -1,9 +1,24 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionRelation
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.HomotheticLatticeIntegralS2
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveJetsUnitBall
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinS2LimitFormula
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveEndoAll
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinRecursion
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.IsogenyFormulaInstance
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionRelation
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.LubinTateLogIsArtinHasse
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstFirstCoboundaryThree
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TransportFirstLevel
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveSecondLogDerivative
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.FirstLevelFromUniversalLaw
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.PhNormFromDatum
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.TwoTorsionU
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -108,8 +123,8 @@ theorem endoCurve_of_endoZ [CharZero K] [CharZero K'] (W : WeierstrassCurve K) {
     apply mul_left_cancel₀ h2'
     linear_combination h4
   apply PowerSeries.map_injective φ φ.injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_mul, PowerSeries.map_C, map_pow, map_rescale, h3, map_add (f := _), map_sum]
+
+  rw [map_mul, PowerSeries.map_C, map_pow, map_rescale, h3, map_add (f := _), map_sum]
   simp only [map_sub, PowerSeries.map_C, Finset.sum_sub_distrib]
   rw [hsum]
 
@@ -243,7 +258,7 @@ theorem curveNorm {K : Type} [NormedField K] [IsUltrametricDist K] [CharZero K]
   have h := Formalism.L2.Th1.C.phNormFromDatum K (Formalism.G.unitBall K) (wpReg (shortW g2 g3)) s2
     (logSer (shortW g2 g3)) (expSer (shortW g2 g3)) _ (xS (shortW g2 g3)) _ ι neg xP _ _ al albar
     hLP hPh hXW hA h2inv hR (by rw [hs, hb2]; simp)
-  have h' := (Formalism.L2.Th1.C.simeqIffCong K Unit _ _).2 h
+  have h' := (_root_.Formalism.L2.Th1.C.simeq_iff_congruence K Unit _ _).2 h
   rw [MvPowerSeries.smul_eq_C_mul] at h'
   exact h'
 
@@ -252,7 +267,7 @@ theorem wpReg_eq {K : Type} [Field K] [CharZero K] (g2 g3 : K) :
   have h := Formalism.L2.Th1.A.bridgeWp K (shortW g2 g3)
   obtain ⟨-, e2, e3, -⟩ := Formalism.L2.Th1.A.shortInv K g2 g3
   rw [e2, e3] at h
-  exact Formalism.L2.Th1.F.isWpUnique K g2 g3 _ _ h (Formalism.L2.Th1.F.pOfIsWp K g2 g3)
+  exact _root_.Formalism.L2.Th1.F.weierstrass_series_unique K g2 g3 _ _ h (_root_.Formalism.L2.Th1.F.weierstrass_p_of_series K g2 g3)
 
 theorem cc_mulBy {K : Type} [Field K] [CharZero K] (g2 g3 α : K) :
     PowerSeries.constantCoeff
@@ -400,20 +415,20 @@ theorem NRDense_of (hSq : SqrtKur) : NRDense := by
       have := CurveNormEndomorphisms.norm_natCast_eq_one (K := MaximalUnramifiedExtension l) hU.1 hU.2.2.1 hlN
       push_cast at this
       exact this
-    rw [norm_mul, sigmaIsom (MaximalUnramifiedExtension l) l σ hU α] at h1
+    rw [norm_mul, _root_.Formalism.L2.Th1.D.sigma_isometry (MaximalUnramifiedExtension l) l σ hU α] at h1
     exact (mul_self_eq_one_iff.mp h1).resolve_right (by have := norm_nonneg α; linarith)
   have hs : α * (α - σ α) * s2 = ∑ P, xP P := by
     apply Subtype.ext
     have h := congrArg ι hs2C
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_mul, map_add (f := _), map_sub, map_intCast, map_one, map_sum] at h
+
+    simp only [map_mul, map_add (f := _), map_sub, map_intCast, map_one, map_sum] at h
     rw [hσα, hαw]
     push_cast
     rw [hwc, hs2, h]
     exact Finset.sum_congr rfl (fun P _ => (hxP P).symm)
   have hsim := CurveNormEndomorphisms.curveNorm h2 s2 hn2 hn3 hEC hxn hyn hNK hal hs
-  exact transportNorm (MaximalUnramifiedExtension l) l σ hU (thetaS l g2 g3 ε) (phCurve g2 g3 s2) (phFF l g2 g3 s2 ε)
+  exact _root_.Formalism.L2.Th1.D.transport_norm_relation (MaximalUnramifiedExtension l) l σ hU (thetaS l g2 g3 ε) (phCurve g2 g3 s2) (phFF l g2 g3 s2 ε)
     _ α (EAux.cc_theta hl g2 g3 ε) hθ (CurveNormEndomorphisms.cc_mulBy g2 g3 α) hal.le hσσ
-    (CurveNormEndomorphisms.theta_comm hl g2 g3 ε α) hsim (phCompare (MaximalUnramifiedExtension l) l hU.1 g2 g3 s2 ε hε hθ)
+    (CurveNormEndomorphisms.theta_comm hl g2 g3 ε α) hsim (_root_.Formalism.L2.Th1.D.phi_comparison (MaximalUnramifiedExtension l) l hU.1 g2 g3 s2 ε hε hθ)
 
 end Formalism.L2.Th1.D

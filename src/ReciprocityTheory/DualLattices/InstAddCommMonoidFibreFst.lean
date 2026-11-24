@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.DualLattices.SqZeroOfSpan
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

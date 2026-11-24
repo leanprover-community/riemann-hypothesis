@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Imports
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularCurve
+import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularLocalDomain
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCMRegularElement
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFlatNormalFibres
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularCurve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

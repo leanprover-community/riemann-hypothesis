@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.Adele.IntegersLattice
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Analysis.Fourier.Notation
 
 @[expose] public section
 

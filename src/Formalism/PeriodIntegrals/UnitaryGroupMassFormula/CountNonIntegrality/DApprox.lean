@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.LGDefs
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.TraceOfKer
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.DSurjDef
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.TraceOfKer
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -89,8 +130,8 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
     have hc0 : ∀ j, BA.repr γ j = 0 := by
       intro j
       have h := hγ j
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hexp, Finset.sum_mul, map_sum] at h
+
+      rw [← hexp, Finset.sum_mul, map_sum] at h
       simpa only [smul_mul_assoc, map_smul, hBA, htb, smul_eq_mul, mul_ite, mul_one, mul_zero,
         Finset.sum_ite_eq, Finset.mem_univ, if_true] using h
     rw [← hexp]
@@ -104,9 +145,9 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
       apply Bb.ext
       intro j
       rw [hBb, LinearMap.comp_apply, LinearMap.mulLeft_apply]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [β, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, htb, smul_eq_mul, mul_ite, mul_one,
-        mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+      simp only [β, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, htb, smul_eq_mul, mul_ite, mul_one,
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
     intro x
     exact congrArg (fun L => L x) hL
   have hker : ∀ x, piMap K ℓ Fp ι x = 0 → β * x = 0 := by
@@ -146,19 +187,19 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
   refine ⟨t, ?_, -(∑ i, algebraMap ℚ_[ℓ] Fp (e i : ℚ_[ℓ]) * ((ℓ : Fp) ^ N i * ι (bd i))), ?_, ?_⟩
   · have htj : ∀ j, Algebra.trace ℚ K (t * b j) = (n j : ℚ) := by
       intro j
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [t, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, hdb, smul_eq_mul, mul_ite, mul_one,
-        mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+      simp only [t, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, hdb, smul_eq_mul, mul_ite, mul_one,
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
     intro a
     have ha : (a : K) = ∑ j, ((RingOfIntegers.basis K).repr a j) • b j := by
       have h := congrArg (algebraMap (𝓞 K) K) ((RingOfIntegers.basis K).sum_repr a)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at h
+
+      rw [map_sum] at h
       simp only [map_zsmul, ← NumberField.integralBasis_apply] at h
       exact h.symm
     refine ⟨∑ j, (RingOfIntegers.basis K).repr a j * (n j : ℤ), ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [ha, Finset.mul_sum, map_sum]
+
+    rw [ha, Finset.mul_sum, map_sum]
     push_cast
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [mul_smul_comm, map_zsmul, htj, zsmul_eq_mul]
@@ -166,8 +207,8 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
       Subring.mul_mem _ (zp_memK hc (e i)) ((Valuation.mem_integer_iff _ _).2 (hN i).le))
   · have hz' : z = ∑ i, algebraMap ℚ_[ℓ] Fp (w i : ℚ_[ℓ]) * ι (bd i) := by
       rw [← hπβ]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [β, map_sum]
+
+      simp only [β, map_sum]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [map_smul, hπ1, Algebra.smul_def]
     have hw : ∀ i, algebraMap ℚ_[ℓ] Fp (w i : ℚ_[ℓ]) =
@@ -178,8 +219,8 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
         map_natCast, map_sub] at h
       linear_combination -h
     have hιt : ι t = ∑ i, (n i : Fp) * ι (bd i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [t, map_sum]
+
+      simp only [t, map_sum]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [Rat.smul_def, map_mul, map_ratCast, Rat.cast_natCast]
     rw [hιt, hz']

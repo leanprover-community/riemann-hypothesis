@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.CmpHyp0P
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.LatticeComparisonCompatible
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ValUniqOf
 
 @[expose] public section
 

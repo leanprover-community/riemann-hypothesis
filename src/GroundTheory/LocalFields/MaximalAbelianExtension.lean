@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Galois.Abelian
+public import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
+public import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
 
 @[expose] public section
 

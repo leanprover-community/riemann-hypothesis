@@ -1,8 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
-public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
-public import ReciprocityTheory.SemistableReduction.AlgAll
+public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib.Algebra.MvPolynomial.CommRing
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
 
 @[expose] public section
 
@@ -39,7 +39,7 @@ def intPoly (σ : Type) (W : Subring Ω) : Subring (MvPolynomial σ Ω) where
     exact W.zero_mem
   neg_mem' := by
     intro P hP e
-    rw [coeff_neg]
+    rw [MvPolynomial.coeff_neg]
     exact W.neg_mem (hP e)
 
 theorem C_mem_intPoly {σ : Type} {W : Subring Ω} {a : Ω} (ha : a ∈ W) : (C a : MvPolynomial σ Ω) ∈ intPoly σ W := by

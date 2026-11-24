@@ -1,7 +1,8 @@
 module
 
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -231,8 +232,8 @@ theorem lowKMultOneP_of (hM : MultAlg) (hE : KModExists) (hD : CycDense) (hO : O
     · rw [← Module.End.mul_apply, commute_E_cas_of_glRel E hGl a b, Module.End.mul_apply, hv.2 a b hab h, map_zero]
   have hcc : Cas E v ∈ Cyc E v := by
     refine mem_cyc.2 ⟨∑ a, ∑ b, FreeAlgebra.ι ℂ (a, b) * FreeAlgebra.ι ℂ (b, a), ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [CompanionTheory.D.LK.ev, map_sum, map_mul, FreeAlgebra.lift_ι_apply, Formalism.REAL.Cas]
+
+    simp only [CompanionTheory.D.LK.ev, map_sum, map_mul, FreeAlgebra.lift_ι_apply, Formalism.REAL.Cas]
   obtain ⟨c, hc⟩ := hmult _ hcv hcc
   have hdense := hD N ε H σ D E hUR hIR hK v c hv0 hc
   set u : D := inner ℂ v v • v' - inner ℂ v v' • v with hu_def

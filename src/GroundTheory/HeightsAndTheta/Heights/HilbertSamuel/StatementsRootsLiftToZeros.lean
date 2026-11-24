@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Algebra.Rat
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.Ideal.Defs
 
 @[expose] public section
 

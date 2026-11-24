@@ -1,6 +1,57 @@
 module
 
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.StatementD
+public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.StatementC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -36,7 +87,7 @@ theorem fock_smul_right' (c : ℚ_[p]) (F G : MvPolynomial σ ℚ_[p]) : fock p 
   unfold fock
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [coeff_smul, smul_eq_mul]
+  rw [MvPolynomial.coeff_smul, smul_eq_mul]
   ring
 
 theorem fock_add_left' (F F' G : MvPolynomial σ ℚ_[p]) : fock p (F + F') G = fock p F G + fock p F' G := by
@@ -86,7 +137,7 @@ theorem facProd_add_single (m : σ →₀ ℕ) (i : σ) :
       exact Finset.mem_insert_self _ _
     · apply Finset.mem_insert_of_mem
       rw [Finsupp.mem_support_iff] at hx ⊢
-      have h1 : (Finsupp.single i 1 : σ →₀ ℕ) x = 0 := by simp [Finsupp.single_apply, Ne.symm h]
+      have h1 : (Finsupp.single i 1 : σ →₀ ℕ) x = 0 := by simp [Ne.symm h]
       simpa [h1] using hx
   have hs2 : m.support ⊆ insert i m.support := Finset.subset_insert _ _
   rw [Finsupp.prod_of_support_subset _ hs1 _ (by simp),
@@ -97,7 +148,7 @@ theorem facProd_add_single (m : σ →₀ ℕ) (i : σ) :
   · simp [Nat.factorial_succ]
   · refine Finset.prod_congr rfl fun x hx => ?_
     have hx' : x ≠ i := Finset.ne_of_mem_erase hx
-    have h1 : (Finsupp.single i 1 : σ →₀ ℕ) x = 0 := by simp [Finsupp.single_apply, Ne.symm hx']
+    have h1 : (Finsupp.single i 1 : σ →₀ ℕ) x = 0 := by simp [Ne.symm hx']
     rw [Finsupp.add_apply, h1, add_zero]
 
 theorem fock_X_mul' (i : σ) (g h : MvPolynomial σ ℚ_[p]) :
@@ -137,8 +188,8 @@ theorem intPol_iff_norm (x : MvPolynomial σ ℚ_[p]) : x ∈ IntPol p σ ↔ �
     exact PadicInt.norm_le_one _
   · intro h
     refine ⟨∑ m ∈ x.support, monomial m (⟨x.coeff m, h m⟩ : ℤ_[p]), ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.toLinearMap_apply, map_sum, mapAlgHom_apply, map_monomial]
+
+    simp only [AlgHom.toLinearMap_apply, map_sum, mapAlgHom_apply]
     conv_rhs => rw [x.as_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     erw [map_monomial]
@@ -184,8 +235,8 @@ theorem divPow_mul (D : A →ₗ[K] A) (hD : ∀ a b, D (a * b) = a * D b + b * 
     have hk : ((k + 1 : ℕ) : K) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero k
     have hL : dd (k + 1) (f * g) = ((k + 1 : ℕ) : K)⁻¹ • D (dd k (f * g)) := by
       rw [hD1, smul_smul, inv_mul_cancel₀ hk, one_smul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hL, ih, map_sum]
+
+    rw [hL, ih, map_sum]
     simp only [hD, hD1, mul_smul_comm, Finset.sum_add_distrib]
     rw [inv_smul_eq_iff₀ hk]
     have hsplit : ((k + 1 : ℕ) : K) • ∑ ij ∈ antidiagonal (k + 1), dd ij.1 f * dd ij.2 g
@@ -217,18 +268,6 @@ private theorem glAct_eq_sum_X_mul_pderiv (LL : Letters N) (j : ℕ) (c d : Fin 
   refine Finset.sum_congr rfl fun i _ => ?_
   split_ifs <;> simp
 
-private theorem glAct_X_apply (LL : Letters N) (j : ℕ) (c d : Fin r) (i : Fin N) (e : Fin r) :
-    glAct p LL j c d (X (i, e)) = if (i : ℕ) < j then
-      (if LL.vec i = true then (if e = d then X (i, c) else 0)
-        else (if e = c then -X (i, d) else 0)) else 0 := by
-  classical
-  rw [glAct_eq_sum_X_mul_pderiv, Finset.sum_eq_single i]
-  · split_ifs <;> simp_all [pderiv_X, Pi.single_apply]
-  · intro k _ hk
-    split_ifs <;> simp [pderiv_X, Pi.single_apply, hk, Ne.symm hk]
-  · intro h
-    exact absurd (Finset.mem_univ i) h
-
 theorem glAct_C' (LL : Letters N) (j : ℕ) (c d : Fin r) (a : ℚ_[p]) : glAct p LL j c d (C a) = 0 := by
   rw [glAct_eq_sum_X_mul_pderiv]
   refine Finset.sum_eq_zero fun i _ => ?_
@@ -237,8 +276,8 @@ theorem glAct_C' (LL : Letters N) (j : ℕ) (c d : Fin r) (a : ℚ_[p]) : glAct 
 theorem glAct_glAct_X (LL : Letters N) (j : ℕ) (c d : Fin r) (hcd : c ≠ d) (v : Fin N × Fin r) :
     glAct p LL j c d (glAct p LL j c d (X v)) = 0 := by
   obtain ⟨i, e⟩ := v
-  rw [glAct_X_apply]
-  split_ifs <;> simp_all [glAct_X_apply, hcd, Ne.symm hcd]
+  rw [_root_.Formalism.GM.DimensionMonotonicity.glAct_X_gen]
+  split_ifs <;> simp_all [_root_.Formalism.GM.DimensionMonotonicity.glAct_X_gen, Ne.symm hcd]
 
 private theorem X_mem_intPol (w : Fin N × Fin r) :
     (X w : MvPolynomial (Fin N × Fin r) ℚ_[p]) ∈ IntPol p (Fin N × Fin r) :=
@@ -247,7 +286,7 @@ private theorem X_mem_intPol (w : Fin N × Fin r) :
 theorem glAct_X_int (LL : Letters N) (j : ℕ) (c d : Fin r) (v : Fin N × Fin r) :
     glAct p LL j c d (X v) ∈ IntPol p (Fin N × Fin r) := by
   obtain ⟨i, e⟩ := v
-  rw [glAct_X_apply]
+  rw [_root_.Formalism.GM.DimensionMonotonicity.glAct_X_gen]
   split_ifs <;> first
     | exact X_mem_intPol _
     | exact Submodule.zero_mem _

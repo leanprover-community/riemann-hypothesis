@@ -1,9 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.GridTestLatticeLargestSlopeBound
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemHatIffOfSelfDual
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsEquiv
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Ideal.Int
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -159,7 +202,7 @@ theorem eq_one_of_conj_mem (hH : IsHerm (hc.sig : E →+* E) J) (hd : IsUnit J.d
     (h : g⁻¹ * bc ιA γ * g ∈ congLev hc J Λ 𝔪) : γ = 1 := by
   have hL := P.csGlob_lattice Λ (Module.Finite.iff_fg.2 hΛ.fg)
     (Submodule.IsFullLattice.span_eq_top (self := hΛ)) g
-  have hfin := Formalism.UG.Final.StabFinite F E (Fin n) hc.sig J (Formalism.L2.G.sig_conj hc) hH hd hdef _
+  have hfin := _root_.Formalism.UG.P.UG_stabilizer_finite F E (Fin n) hc.sig J (Formalism.L2.G.sig_conj hc) hH hd hdef _
     (Module.Finite.iff_fg.2 hL.fg) (Submodule.IsFullLattice.span_eq_top (self := hL))
   obtain ⟨N, hN, h1⟩ := isOfFinOrder_iff_pow_eq_one.1 (isOfFinOrder_of_finite
     (⟨γ, hγ, (cong_of_conj_mem hΛ h𝔪 h).1⟩ : level (hc.sig : E →+* E) J (CS.globLat g Λ)))

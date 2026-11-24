@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.SmoothKZ
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Translation
+public import GroundTheory.AutomorphicForms.GKModules.GKModule
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

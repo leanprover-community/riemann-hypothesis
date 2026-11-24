@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalRingCardinality.SpanPowerMembership.GatRing
+public import Mathlib.Algebra.QuadraticAlgebra.Basic
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
 
 @[expose] public section
 

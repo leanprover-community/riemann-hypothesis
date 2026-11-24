@@ -1,11 +1,70 @@
 module
 
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IntegrableComplexContinuousBoundedSupport
 public import Formalism.RealPlaceAnalysis.SmoothVectorGrowthBound
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Aesop.Main
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.Deriv.Shift
+public import Mathlib.Analysis.Calculus.ParametricIntegral
+public import Mathlib.Analysis.Complex.RealDeriv
+public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 
@@ -125,7 +184,6 @@ lemma hasDerivAt_frobenius_curve {n : ℕ} (g X : Matrix (Fin n) (Fin n) ℂ) :
       (2 * inner ℝ (g i j) ((g * X) i j)) 0 := by
     intro i j
     convert (hentry i j).norm_sq using 1
-    beta_reduce
     rw [mul_exp_zero_smul]
   have hS := HasDerivAt.sum (u := Finset.univ)
     (fun i _ => HasDerivAt.sum (u := Finset.univ) (fun j _ => hE i j))
@@ -193,16 +251,9 @@ lemma continuous_frobenius_exp_neg_smul {n : ℕ} (X : Matrix (Fin n) (Fin n) �
   have h1 : Continuous (hs : Matrix (Fin n) (Fin n) ℂ → ℝ) := contDiff_frobenius.continuous
   exact h1.comp (continuous_exp_neg_smul X)
 
-private lemma Jm_mul_Jm_self {n : ℕ} (ε : Fin n → Bool) : Jm ε * Jm ε = 1 := by
-  unfold Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
-
 private lemma inUJ_exp_real_smul_of_inG {n : ℕ} {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ}
     (hX : inG ε X) (u : ℝ) : inUJ ε (NormedSpace.exp ((u : ℂ) • X)) := by
-  have hJ := Jm_mul_Jm_self ε
+  have hJ := _root_.Formalism.REAL.Jm_mul_self ε
   have h1 : Xᴴ * Jm ε = -(Jm ε * X) := by
     unfold inG at hX
     exact eq_neg_of_add_eq_zero_left hX
@@ -211,7 +262,7 @@ private lemma inUJ_exp_real_smul_of_inG {n : ℕ} {ε : Fin n → Bool} {X : Mat
       _ = -(Jm ε * X * Jm ε) := by rw [h1, Matrix.neg_mul]
   have hYc : ((u : ℂ) • X)ᴴ = Jm ε * (-((u : ℂ) • X)) * Jm ε := by
     rw [Matrix.conjTranspose_smul, h2]
-    simp [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_assoc]
+    simp [Matrix.mul_assoc]
   let U : (Matrix (Fin n) (Fin n) ℂ)ˣ := ⟨Jm ε, Jm ε, hJ, hJ⟩
   have hU : ((u : ℂ) • X)ᴴ = (U : Matrix (Fin n) (Fin n) ℂ) * (-((u : ℂ) • X)) *
       ((U⁻¹ : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ) := hYc
@@ -304,52 +355,8 @@ lemma continuous_smooth_on_group {n : ℕ} {ε : Fin n → Bool} {f : Matrix (Fi
     exact (hfF _ hg' g'.2).symm
   exact ContinuousAt.congr ((hF.continuousOn.continuousAt (hU.mem_nhds hgU)).comp hc.continuousAt) hev
 
-private lemma Jm_mul_conjTranspose_mul_Jm_mul_eq_one_of_inUJ {n : ℕ} {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ}
-    (hg : inUJ ε g) : Jm ε * gᴴ * Jm ε * g = 1 := by
-  have hg' : gᴴ * Jm ε * g = Jm ε := hg
-  rw [Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc gᴴ, hg', Jm_mul_Jm_self]
-
 lemma isCompact_frobenius_sublevel {n : ℕ} (ε : Fin n → Bool) (r : ℝ) : IsCompact {g : UJ ε | hsG g ≤ r} := by
-  haveI : ProperSpace (Matrix (Fin n) (Fin n) ℂ) := FiniteDimensional.proper ℝ _
-  have hhs : Continuous (hs : Matrix (Fin n) (Fin n) ℂ → ℝ) := contDiff_frobenius.continuous
-  have hSc : IsCompact {g : Matrix (Fin n) (Fin n) ℂ | inUJ ε g ∧ hs g ≤ r} := by
-    apply Metric.isCompact_of_isClosed_isBounded
-    · show IsClosed ({g : Matrix (Fin n) (Fin n) ℂ | gᴴ * Jm ε * g = Jm ε} ∩ {g | hs g ≤ r})
-      have hcJ : Continuous (fun g : Matrix (Fin n) (Fin n) ℂ => gᴴ * Jm ε * g) :=
-        (continuous_id.matrix_conjTranspose.mul continuous_const).mul continuous_id
-      exact (isClosed_eq hcJ continuous_const).inter (isClosed_le hhs continuous_const)
-    · rw [Metric.isBounded_iff_subset_closedBall 0]
-      refine ⟨Real.sqrt r, fun g hg => ?_⟩
-      rw [Metric.mem_closedBall, dist_zero_right]
-      refine (Matrix.norm_le_iff (Real.sqrt_nonneg r)).2 fun i j => ?_
-      have h1 : ‖g i j‖ ^ 2 ≤ hs g := by
-        unfold hs
-        calc ‖g i j‖ ^ 2 ≤ ∑ j', ‖g i j'‖ ^ 2 :=
-              Finset.single_le_sum (f := fun j' => ‖g i j'‖ ^ 2) (fun _ _ => by positivity)
-                (Finset.mem_univ j)
-          _ ≤ ∑ i', ∑ j', ‖g i' j'‖ ^ 2 :=
-              Finset.single_le_sum (f := fun i' => ∑ j', ‖g i' j'‖ ^ 2) (fun _ _ => by positivity)
-                (Finset.mem_univ i)
-      calc ‖g i j‖ = Real.sqrt (‖g i j‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
-        _ ≤ Real.sqrt r := Real.sqrt_le_sqrt (h1.trans hg.2)
-  haveI := isCompact_iff_compactSpace.mp hSc
-  let ψ : {g : Matrix (Fin n) (Fin n) ℂ | inUJ ε g ∧ hs g ≤ r} → UJ ε := fun p =>
-    ⟨⟨p.1, Jm ε * (p.1)ᴴ * Jm ε, mul_eq_one_comm.mp (Jm_mul_conjTranspose_mul_Jm_mul_eq_one_of_inUJ p.2.1), Jm_mul_conjTranspose_mul_Jm_mul_eq_one_of_inUJ p.2.1⟩, p.2.1⟩
-  have hψ : Continuous ψ := by
-    apply Continuous.subtype_mk
-    rw [Units.continuous_iff]
-    constructor
-    · exact continuous_subtype_val
-    · exact (continuous_const.mul continuous_subtype_val.matrix_conjTranspose).mul continuous_const
-  have key : {g : UJ ε | hsG g ≤ r} = Set.range ψ := by
-    ext g
-    constructor
-    · intro hg
-      exact ⟨⟨toM g, show inUJ ε (toM g) ∧ hs (toM g) ≤ r from ⟨g.2, hg⟩⟩, Subtype.ext (Units.ext rfl)⟩
-    · rintro ⟨p, rfl⟩
-      exact p.2.2
-  rw [key]
-  exact isCompact_range hψ
+  apply Formalism.REAL.isCompact_frobenius_ball_group
 
 theorem integral_right_derivative_zero : IntRdZero := by
   intro n ε φ X R hφ hX hsupp

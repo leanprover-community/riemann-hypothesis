@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
-public import Formalism.FlagUnipotentLattices.PairingOrthogonalComplement
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SuperdiagonalAdditionInvariance
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NormAdditiveCharacterTypePrimeEqOne
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellDef
+import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
 
 @[expose] public section
 

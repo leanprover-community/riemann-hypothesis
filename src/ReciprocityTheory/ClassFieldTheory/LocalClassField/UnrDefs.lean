@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.NeutralLocalFields.Duality
 
 @[expose] public section

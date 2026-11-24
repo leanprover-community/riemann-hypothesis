@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
+public import Mathlib.RingTheory.DedekindDomain.SInteger
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import GroundTheory.GlobalFields.SUnits
+public import Mathlib.GroupTheory.IndexNSmul
+public import Mathlib.LinearAlgebra.Dimension.Torsion.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

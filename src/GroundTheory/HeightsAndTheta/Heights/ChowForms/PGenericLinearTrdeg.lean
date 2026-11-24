@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Imports
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -69,8 +72,8 @@ theorem algebraicIndependent_pair_linear {R A : Type*} [CommRing R] [CommRing A]
     if μ 0 + μ 1 = D then Polynomial.C (p.coeff μ) * Polynomial.X ^ (μ 1) else 0
   have hg : Polynomial.aeval η g = ((Q.coeff D : B') : A) := by
     rw [hcoeff]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [g, map_sum, AddSubmonoidClass.coe_finsetSum]
+
+    simp only [g, map_sum, AddSubmonoidClass.coe_finsetSum]
     refine Finset.sum_congr rfl fun μ _ => ?_
     split_ifs <;> simp [η']
   have hg0 : g ≠ 0 := by

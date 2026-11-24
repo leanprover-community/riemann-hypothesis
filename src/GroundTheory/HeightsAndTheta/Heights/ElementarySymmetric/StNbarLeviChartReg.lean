@@ -1,10 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.EqZeroOfIsIsoSub
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesGeo
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarChartSemipos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarLeviChart
 
 @[expose] public section

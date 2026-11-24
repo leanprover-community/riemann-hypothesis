@@ -2,7 +2,51 @@ module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDVal
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -55,34 +99,6 @@ variable {t x0 d x}
 variable {F : Fin d → MvPowerSeries (Fin 2 × Fin d) S} {act : 𝓞 E → Fin d → MvPowerSeries (Fin 1 × Fin d) S}
   {κ : Type} [Fintype κ] {tg : κ → (Sp (DualNumber S) ⟶ t.G.left)} {uvec : κ → Fin d → S}
 
-private lemma formEq_eL_lemma (m : ℕ) (g : Fin d → MvPowerSeries (Fin 1 × Fin d) S) :
-    (sL m g).comp (jetCopy d m (0 : Fin 2)) = AlgHom.id S _ := by
-  apply Ideal.Quotient.algHom_ext
-  apply MvPolynomial.algHom_ext
-  rintro ⟨i, j⟩
-  fin_cases i
-  simp [sL, jetCopy, jetMap, jetSubstP, liftJet, Ideal.Quotient.liftₐ_apply]
-  erw [Ideal.Quotient.lift_mk]
-  simp
-
-private lemma formEq_eL_lemma_2 (m : ℕ) (g : Fin d → MvPowerSeries (Fin 1 × Fin d) S) :
-    (sL m g).comp (jetCopy d m (1 : Fin 2)) = jetSubstP m fun p : Fin 1 × Fin d => psTrunc m (g p.2) := by
-  have hq : ∀ q : MvPolynomial (Fin 1 × Fin d) S,
-      MvPolynomial.rename (fun p : Fin 1 × Fin d => ((0 : Fin 1), p.2)) q = q := by
-    intro q
-    rw [show (fun p : Fin 1 × Fin d => ((0 : Fin 1), p.2)) = id from
-      funext fun p => Prod.ext (Subsingleton.elim _ _) rfl]
-    simp
-  apply Ideal.Quotient.algHom_ext
-  apply MvPolynomial.algHom_ext
-  rintro ⟨i, j⟩
-  fin_cases i
-  simp [sL, jetCopy, jetMap, jetSubstP, liftJet, Ideal.Quotient.liftₐ_apply]
-  erw [Ideal.Quotient.lift_mk]
-  simp [psIn, hq]
-  erw [Ideal.Quotient.lift_mk]
-  simp [psIn, hq]
-
 theorem formEq_eL (hch : IsChartG t x0 d F act tg uvec x) (m : ℕ) (I : ULift (Finset (Fin 2))) :
     (x m).left ≫ cφG t ![𝟙 t.G, t.act.act H.w0] I =
       (homAt x0 (sL m (act H.w0))).left ≫ cφG t ![jptG t x0 d x m (0 : Fin 2), jptG t x0 d x m (1 : Fin 2)] I := by
@@ -109,8 +125,8 @@ theorem formEq_eL (hch : IsChartG t x0 d F act tg uvec x) (m : ℕ) (I : ULift (
   congr 1
   funext i
   fin_cases i
-  · simp [jptG, ← Category.assoc, Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.homAt_comp, formEq_eL_lemma, Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.homAt_id]
-  · simp [jptG, ← Category.assoc, Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.homAt_comp, formEq_eL_lemma_2, hch.act m H.w0]
+  · simp [jptG, ← Category.assoc, Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.homAt_comp, _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.sL_copy0, Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.homAt_id]
+  · simp [jptG, ← Category.assoc, Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.homAt_comp, _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.sL_copy1, hch.act m H.w0]
 
 theorem val_eL_trunc (hch : IsChartG t x0 d F act tg uvec x) (e : ∀ m, FrTyG t x0 d x m) (wP : PrimTyG t)
     (htr : FrTrunc t x0 d x e) (m : ℕ) (y : (jOG x0 d m 1).left) (J : ((jOG x0 d m 1).left ⟶ t.G.left) → t.PP.L.ι)

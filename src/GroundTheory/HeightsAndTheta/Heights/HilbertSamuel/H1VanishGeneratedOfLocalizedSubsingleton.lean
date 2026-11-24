@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsSide
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGradedSubquot
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenSESStep
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgFiltSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt
+public import Mathlib.Algebra.Order.PUnit
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 
 @[expose] public section
 

@@ -1,16 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FormalGroupLawLogarithm
 public import Development.AbelianVarietyTheory.Definitions.Jets.TwoPlaces
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NonemptyClosedValuedExtensionOfCDVR
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ChartLocalDepthLeOfValuedExtensionBound
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ProdDetMemHaO
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
-public import Formalism.LocalToGlobal.ProjectiveLattices.SatLeaves
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompSplitPfB
 public import Formalism.LocalToGlobal.ProjectiveLattices.TowerOfAt
+public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsFormalBiextMap
+public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.PderivSecondEvFirstPointEqZero
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ChartLocalDepthLeOfValuedExtensionBound
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NonemptyClosedValuedExtensionOfCDVR
+public import Formalism.LocalToGlobal.ProjectiveLattices.SatLeaves
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntAllProof
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -365,13 +408,6 @@ theorem polyT_mem_FFV {T : CDVR} {io : c.F →+* T.Fr} {p n : ℕ} {a : (E →+*
     subst h3
     exact hcc _ h.symm
   · convert sum_gap_row (Dw := Dw) ha τ i
-
-theorem nuLocC_le_nuLocOf [StarRing (𝓞 E)] {T : CDVR} {io : c.F →+* T.Fr} {y : IntFr Xo c T io}
-    (Ch : IntegralChartA3 Xo c T io y) (e k : ℕ) {p n : ℕ} {a : (E →+* ℂ) × ℕ → ℕ}
-    (ha : ∀ τ, Antitone fun i => a (τ, i)) {B : ∀ f : Lt1 Dw, Fin (rk f) → Fin n → T.V}
-    (hB : IsCols c T io p (gap Dw a) B) : nuLocC Ch e k a n ≤ nuLocOf Ch e k (polyT B (gap Dw a)) := by
-  rw [nuLocC_eq_iInf]
-  exact iInf₂_le _ (polyT_mem_FFV ha hB)
 
 end Columns
 

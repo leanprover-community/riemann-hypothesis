@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftDegreePolynomial
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PGenericFibreDim
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+import Mathlib.Order.CompletePartialOrder
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
 
 @[expose] public section

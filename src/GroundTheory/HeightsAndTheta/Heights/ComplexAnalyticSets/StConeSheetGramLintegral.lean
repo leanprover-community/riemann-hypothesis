@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartGram
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralMass
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

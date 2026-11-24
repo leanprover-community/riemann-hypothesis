@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.IntAllProof
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 
 @[expose] public section
 

@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageArith
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -89,8 +93,8 @@ theorem aeval_mul_pow_of_block (y w : (Σ k, ι k) → Ω) (k₀ : K) (z : Ω)
   classical
   conv_rhs => rw [f.as_sum]
   conv_lhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm ↦ ?_
   rw [aeval_monomial, aeval_monomial, mul_assoc]
   congr 1

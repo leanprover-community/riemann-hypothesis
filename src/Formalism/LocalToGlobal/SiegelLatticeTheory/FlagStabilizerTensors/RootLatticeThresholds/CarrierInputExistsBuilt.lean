@@ -1,13 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
 public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveDensityModerateGrowth
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelsOfBuiltSetting
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
 
 @[expose] public section
 

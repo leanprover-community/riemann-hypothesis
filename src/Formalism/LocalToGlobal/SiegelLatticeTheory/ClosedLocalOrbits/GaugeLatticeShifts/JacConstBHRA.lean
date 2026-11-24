@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConstBHR
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 

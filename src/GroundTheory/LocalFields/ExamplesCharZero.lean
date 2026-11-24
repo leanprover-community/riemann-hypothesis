@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.NumberTheory.Padics.ValuativeRel
+public import Mathlib.NumberTheory.Padics.WithVal
 public import GroundTheory.LocalFields.Examples
+public import Mathlib.NumberTheory.Padics.RingHoms
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 @[expose] public section
 

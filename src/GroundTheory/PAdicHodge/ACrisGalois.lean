@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.FactorizationFactorialLe
 public import GroundTheory.PAdicHodge.AInfGalois
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

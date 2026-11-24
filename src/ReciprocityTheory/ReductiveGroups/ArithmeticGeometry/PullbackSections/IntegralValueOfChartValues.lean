@@ -1,9 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
-public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
-public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.GermSC
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
 
 @[expose] public section
 

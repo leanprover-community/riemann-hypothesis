@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.CoveringMap
+public import Mathlib.Analysis.Convex.Contractible
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Homotopy.Lifting
 
 @[expose] public section
 
@@ -221,7 +228,7 @@ theorem exp_quadratic_tau_shifted (v : Fin g → ℤ) (hnn : ∀ i, 0 ≤ intQua
     refine Finset.prod_congr rfl fun i _ => ?_
     rw [expCover_castLE, ← Complex.exp_nat_mul, hk i]
     congr 1
-    field_simp [two_pi_I_ne_zero]
+    field_simp [Complex.two_pi_I_ne_zero]
   rw [quadratic_tau_shifted, mul_sub, Complex.exp_sub, hw, hsum]
   field_simp
 
@@ -264,11 +271,11 @@ theorem exists_quad_ext (h0 : ExpQuadMonomial.Statement) (v : Fin g → ℤ) :
       field_simp [hh0 _ (hmaps hw₀)])
     hw₀ (by rw [hc]; ring)
   refine ⟨fun z => (G z + c) / (2 * Real.pi * Complex.I),
-    (hGa.add analyticOnNhd_const).div analyticOnNhd_const fun _ _ => two_pi_I_ne_zero,
+    (hGa.add analyticOnNhd_const).div analyticOnNhd_const fun _ _ => Complex.two_pi_I_ne_zero,
     fun w hw => ?_⟩
   simp only
   rw [← key w hw, hFdef]
-  field_simp [two_pi_I_ne_zero]
+  field_simp [Complex.two_pi_I_ne_zero]
 
 end PeriodPolydisc
 

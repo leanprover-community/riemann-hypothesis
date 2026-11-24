@@ -1,5 +1,13 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GaussianTailBound
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.PropABSt
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.SmoothSeries
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.PropAB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.RCauchy
 
@@ -20,7 +28,7 @@ theorem paSum_all (hP : Ext.PackingCount) (hA : Ext.GaussianTailBound) (Y : GT �
     (hlat : ∀ γ ∈ lat Y.b, γ ≠ 0 → R0 ≤ Real.sqrt (q * Real.pi) * ‖γ‖)
     (hR : 16 * (2 * (Fintype.card ι : ℝ) + 1) ≤ R0 ^ 2) :
     Summable (fun γ : lat Y.b => Real.exp (-(q * Real.pi) * ‖(γ : EuclideanSpace ℂ ι)‖ ^ 2 / 16)) := by
-  obtain ⟨hT, -⟩ := paTail hP hA Y hq hR0 hlat hR
+  obtain ⟨hT, -⟩ := _root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.paTail hP hA Y hq hR0 hlat hR
   have h0 : Summable (fun γ : lat Y.b => if (γ : EuclideanSpace ℂ ι) = 0 then (1 : ℝ) else 0) := by
     refine summable_of_ne_finset_zero (s := {0}) fun γ hγ => ?_
     have : (γ : EuclideanSpace ℂ ι) ≠ 0 := by
@@ -126,8 +134,8 @@ theorem pa_opNorm_le (L : EuclideanSpace ℂ ι →L[ℂ] ℂ) :
     simp [Pi.single_apply, mul_ite, Finset.sum_ite_eq]
   calc ‖L v‖ = ‖∑ j, v j • L (EuclideanSpace.single j 1)‖ := by
         conv_lhs => rw [hv]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         simp only [map_smul]
     _ ≤ ∑ j, ‖v j‖ * ‖L (EuclideanSpace.single j 1)‖ :=
         (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun j _ => norm_smul _ _))
@@ -245,15 +253,12 @@ theorem paD_tsum {κ : Type} (G : κ → EuclideanSpace ℂ ι → ℂ) (hG : �
   exact hasSum_sum fun m _ => (pa_iter_tsum _ G hG hb
     (fun i => (Finsupp.toMultiset m).toList.get (i.cast (Multiset.length_toList _).symm)) 0).mul_left _
 
-theorem Hf_add_left (a b c : EuclideanSpace ℂ ι) : Hf (a + b) c = Hf a c + Hf b c := by
-  simp [Hf, add_mul, Finset.sum_add_distrib]
-
 theorem Hf_add_right (a b c : EuclideanSpace ℂ ι) : Hf a (b + c) = Hf a b + Hf a c := by
   simp [Hf, mul_add, Finset.sum_add_distrib]
 
 theorem Hf_swap (a b : EuclideanSpace ℂ ι) : Hf b a = (starRingEnd ℂ) (Hf a b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Hf, map_sum, mul_comm]
+
+  simp [Hf, map_sum, mul_comm]
 
 theorem pa_factor (q : ℕ) (v g g' : EuclideanSpace ℂ ι) (kk : ℤ) (hkk : (Hf g' g).im = kk) :
     cexp (-(Real.pi * q * (Hf g g').im) * I) *
@@ -271,7 +276,7 @@ theorem pa_factor (q : ℕ) (v g g' : EuclideanSpace ℂ ι) (kk : ℤ) (hkk : (
     linarith
   rw [← Complex.exp_add, ← Complex.exp_add]
   refine Complex.exp_eq_exp_iff_exists_int.2 ⟨q * kk, ?_⟩
-  rw [Hf_add_left, Hf_add_right, Hf_add_right, Hf_add_left, Hf_add_right, Hf_add_right, hconj]
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.Hf_add_left, Hf_add_right, Hf_add_right, _root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.Hf_add_left, Hf_add_right, Hf_add_right, hconj]
   push_cast
   rw [him]
   push_cast

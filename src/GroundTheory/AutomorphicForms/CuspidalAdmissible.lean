@@ -1,9 +1,16 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.Cartan
+public import GroundTheory.AutomorphicForms.InductionParabolicGroups
+public import GroundTheory.AutomorphicForms.SmoothRep
+public import Mathlib.RepresentationTheory.Irreducible
+public import GroundTheory.AutomorphicForms.AdmissibleInduction
+import GroundTheory.AutomorphicForms.GLnLattice
 public import GroundTheory.AutomorphicForms.LeviCartan
 public import GroundTheory.AutomorphicForms.SmoothRepSchur
-public import GroundTheory.AutomorphicForms.MeasuresModulus
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Finset.Functor
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -292,7 +299,7 @@ theorem isAdmissible_of_isCuspidal {σ : Representation ℂ (levi F n β) W} [σ
       intro g
       refine Submodule.span_le.2 ?_
       rintro _ ⟨h, rfl⟩
-      exact Submodule.subset_span ⟨g * h, by simp [map_mul, Module.End.mul_apply]⟩
+      exact Submodule.subset_span ⟨g * h, by simp [map_mul]⟩
     let Wsub : Subrepresentation σ :=
       ⟨Submodule.span ℂ (Set.range fun h : levi F n β => σ h v), fun g _ hx => hstable g hx⟩
     have hW : Wsub = ⊤ := (eq_bot_or_eq_top Wsub).resolve_left fun h => hv0 (by

@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

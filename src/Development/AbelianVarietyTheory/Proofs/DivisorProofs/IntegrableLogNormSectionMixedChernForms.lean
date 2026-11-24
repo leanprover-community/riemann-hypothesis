@@ -1,38 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DensConst
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ContinuousBcPt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAmbOfIsArithVar
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalSectionDivisorPullbackGeneric
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShift
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.GreenSt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Measure
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
+public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableOnOfNormLeSumAbsLogAddLogLog
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchIntegrableRegularVariety
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOnMixedChernFormDensityInChartStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernFormSignedPartMeasureComplOpenGenericPStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernFormSignedPartMeasureChartApplyStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOnMixedChernFormDensityInChart
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernFormSignedPartMeasureChartApply
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernFormSignedPartMeasureComplOpenGenericP
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtLevi
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 
 @[expose] public section
 
@@ -66,7 +79,7 @@ theorem exists_integrableOn {k : Type} [CommRing k] {X : Scheme.{0}} [IsIntegral
   obtain ⟨δ, hδ, -, hint⟩ := exists_integrableOn_log_norm_of_frequently_ne_zero volume hd hfr
   obtain ⟨η, hη, hηs⟩ := nhds_basis_closedBall.mem_iff.1 (inter_mem hT' (ball_mem_nhds _ hδ))
   have hcont : ContinuousOn (fun v => dens L c (c.e.symm v)) c.e.target :=
-    (GlobalTheory.T.continuousOn_mixedChernFormDensityInChart k X p σ D L c).comp c.e.continuousOn_symm c.e.mapsTo_symm
+    (_root_.GlobalTheory.Mix.continuousOn_dens k X p σ D L c).comp c.e.continuousOn_symm c.e.mapsTo_symm
   obtain ⟨C, hC⟩ := (isCompact_closedBall (c.e y) η).exists_bound_of_continuousOn
     (hcont.mono fun v hv => (hηs hv).1.1)
   set O := c.e.source ∩ c.e ⁻¹' ball (c.e y) η
@@ -88,7 +101,7 @@ theorem exists_integrableOn {k : Type} [CommRing k] {X : Scheme.{0}} [IsIntegral
     ring
   have hm := measurableSet_image c.e hS.measurableSet hSs
   refine ⟨O, hO.mem_nhds ⟨hy, by exact Set.mem_preimage.mpr (mem_ball_self hη)⟩, LogNormInt.integrableOn_of_chart c.e
-    (fun A hA hAs => GlobalTheory.T.mixedChernFormSignedPartMeasure_chart_apply k X p σ D L ε c A hA hAs) hS.measurableSet hSs
+    (fun A hA hAs => _root_.GlobalTheory.Mix.part_apply k X p σ D L ε c A hA hAs) hS.measurableSet hSs
     (C := ENNReal.ofReal C) ENNReal.ofReal_ne_top (fun v hv => ENNReal.ofReal_le_ofReal ?_) ?_ ?_⟩
   · have h := hC v (him hv)
     rw [Real.norm_eq_abs, abs_le] at h
@@ -123,7 +136,7 @@ theorem intg_logSec : ∀ (F : Type) [Field F] (X : Scheme.{0}) [IsIntegral X] [
       obtain ⟨y, hy, hz'⟩ := mem_iUnion₂.1 (ht (mem_univ z))
       exact mem_iUnion₂.2 ⟨y, hy, hz, hz'⟩
     rwa [IntegrableOn, Measure.restrict_eq_self_of_ae_mem (s := ptsIn p σ (nonzeroLocus s))
-      (mem_ae_iff.2 (GlobalTheory.T.mixedChernFormSignedPartMeasure_compl_open_genericPoint_eq_zero F X p σ σ.injective hp D L ε _ hs))] at h₁
+      (mem_ae_iff.2 (_root_.GlobalTheory.MixNull.part_compl_null F X p σ σ.injective hp D L ε _ hs))] at h₁
   exact ⟨key 1, key (-1)⟩
 
 end GlobalTheory.MixLogSec

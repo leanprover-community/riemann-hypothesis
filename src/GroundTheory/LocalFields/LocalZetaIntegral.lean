@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LocalZetaChar
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 @[expose] public section
 

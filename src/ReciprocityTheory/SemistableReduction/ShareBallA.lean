@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.ShareSt
-public import ReciprocityTheory.SemistableReduction.Unipotent
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.Matrix.Order
 
 @[expose] public section
 
@@ -63,7 +64,6 @@ theorem sb_ballRatio_le {r : ℕ} (hr : 0 < r) : ballRatio r ≤ Real.exp (1 / (
   have hx : 0 < 1 / (7 * (r : ℝ)) := by positivity
   have he : 1 / (3 * (r : ℝ)) = 7 * (1 / (7 * (r : ℝ))) / 3 := by
     field_simp
-    try ring
 
   have key : ballRatio r ≤ 7 * (1 / (7 * (r : ℝ))) / 3 + 1 := by
     unfold ballRatio

@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.Morphisms.Affine
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 
@@ -65,10 +67,10 @@ theorem bijective_liftNC_of_isPushout (hP : IsPushout qa ba ga qa')
   let Mp : AddMonoidAlgebra R X →+* AddMonoidAlgebra R' X := AddMonoidAlgebra.mapRingHom X ba.hom
   have he : ∀ (x : X) (r : R), e (AddMonoidAlgebra.single x r) = qa.hom r * φ (Multiplicative.ofAdd x) := by
     intro x r
-    simp [e, AddMonoidAlgebra.liftNC_single]
+    simp [e]
   have hF : ∀ (x : X) (r : R'), F (AddMonoidAlgebra.single x r) = qa'.hom r * φ' (Multiplicative.ofAdd x) := by
     intro x r
-    simp [F, AddMonoidAlgebra.liftNC_single]
+    simp [F]
   have hM : ∀ (x : X) (r : R), Mp (AddMonoidAlgebra.single x r) = AddMonoidAlgebra.single x (ba.hom r) := by
     intro x r
     simp [Mp]

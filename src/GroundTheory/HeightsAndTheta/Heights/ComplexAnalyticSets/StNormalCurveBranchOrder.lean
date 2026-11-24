@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelPlace
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchLift
+public import Mathlib.Analysis.Analytic.Order
 
 @[expose] public section
 

@@ -1,10 +1,52 @@
 module
 
-public import Mathlib
 public import Formalism.DegreeFormula.FlagDegFormula
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHeightIffOfDegreeEq
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IrreducibleOfIrreducibleMap
+public import Mathlib.Analysis.SpecialFunctions.Log.ENNRealLog
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinSubstLinSubst
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -31,8 +73,8 @@ theorem coneMap_of_isHomogeneous (y : Fin N → Ω) {d : ℕ} {g : MvPolynomial 
     coneMap K y g = Polynomial.X ^ d * Polynomial.C (aeval y g) := by
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [coneMap, map_sum, aeval_monomial, Finset.mul_sum, map_mul]
+
+  simp only [coneMap, map_sum, aeval_monomial, Finset.mul_sum, map_mul]
   refine Finset.sum_congr rfl fun a ha => ?_
   have : a.degree = d := by rw [Finsupp.degree_eq_weight_one]; exact hg (mem_support_iff.1 ha)
   simp only [Finsupp.prod, mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, map_prod, map_pow]
@@ -45,8 +87,8 @@ theorem mem_coneIdeal_of_isHomogeneous (y : Fin N → Ω) {d : ℕ} {g : MvPolyn
 
 theorem coeff_coneMap (y : Fin N → Ω) (g : MvPolynomial (Fin N) K) (d : ℕ) :
     (coneMap K y g).coeff d = aeval y (homogeneousComponent d g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [← g.sum_homogeneousComponent, map_sum]
+
+  conv_lhs => rw [← g.sum_homogeneousComponent, map_sum]
   simp only [coneMap_of_isHomogeneous y (homogeneousComponent_isHomogeneous _ g), Polynomial.finsetSum_coeff,
     Polynomial.X_pow_mul_C, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, mul_ite, mul_one, mul_zero,
     Finset.sum_ite_eq, Finset.mem_range]
@@ -72,8 +114,8 @@ theorem isHomogeneous_coneIdeal (y : Fin N → Ω) :
 
 theorem aeval_eq_zero_of_mem_coneIdeal {y : Fin N → Ω} {g : MvPolynomial (Fin N) K} (hg : g ∈ coneIdeal K y) :
     aeval y g = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← g.sum_homogeneousComponent, map_sum]
+
+  rw [← g.sum_homogeneousComponent, map_sum]
   exact Finset.sum_eq_zero fun d _ => (mem_coneIdeal_iff y g).1 hg d
 
 theorem coneIdeal_smul {a : Ω} (ha : a ≠ 0) (y : Fin N → Ω) : coneIdeal K (a • y) = coneIdeal K y := by
@@ -95,9 +137,9 @@ theorem mem_coneIdeal_coord {N' : ℕ} (M : Matrix (Fin N) (Fin N') K) (y : Fin 
     g ∈ coneIdeal K (fun k => ∑ j, algebraMap K Ω (M j k) * y j) ↔ coordSubst M g ∈ coneIdeal K y := by
   have e : coneMap K (fun k => ∑ j, algebraMap K Ω (M j k) * y j) = (coneMap K y).comp (coordSubst M) := by
     refine MvPolynomial.algHom_ext fun k => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [coneMap, coordSubst, aeval_X, AlgHom.comp_apply, map_sum, map_mul, aeval_C, Finset.mul_sum,
-      Polynomial.algebraMap_apply]
+
+    simp only [coneMap, coordSubst, aeval_X, AlgHom.comp_apply, map_sum, map_mul, aeval_C, Finset.mul_sum,
+    Polynomial.algebraMap_apply]
     exact Finset.sum_congr rfl fun _ _ => mul_left_comm _ _ _
   rw [coneIdeal, coneIdeal, RingHom.mem_ker, RingHom.mem_ker, e, AlgHom.comp_apply]
 
@@ -118,13 +160,13 @@ theorem coordSubst_coordSubst {M : Matrix (Fin N) (Fin N') K} {P : Matrix (Fin N
     (g : MvPolynomial (Fin N) K) : coordSubst M (coordSubst P g) = g := by
   rw [← AlgHom.comp_apply]
   have e : (coordSubst M).comp (coordSubst P) = AlgHom.id K _ := MvPolynomial.algHom_ext fun j => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [coordSubst, AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq, Finset.mul_sum,
-      AlgHom.id_apply]
+
+    simp only [coordSubst, AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq, Finset.mul_sum,
+    AlgHom.id_apply]
     rw [Finset.sum_comm]
     have : ∀ i, ∑ k, C (P k j) * (C (M i k) * X i) = (C ((M * P) i j) * X i : MvPolynomial (Fin N) K) := fun i => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mul_apply, map_sum, map_mul, Finset.sum_mul]
+
+      simp only [Matrix.mul_apply, map_sum, map_mul, Finset.sum_mul]
       exact Finset.sum_congr rfl fun _ _ => by ring
     simp [this, h, Matrix.one_apply, apply_ite C]
   rw [e, AlgHom.id_apply]
@@ -190,8 +232,8 @@ theorem isChowFormInt_basis (ev : V →ₗ[K] Ω) {N N' : ℕ} (b : Basis (Fin N
   refine isChowFormInt_linSubst (b.toMatrix_mul_toMatrix_flip b') (b'.toMatrix_mul_toMatrix_flip b) (fun g => ?_) hf
   rw [imageIdeal, imageIdeal, ← mem_coneIdeal_coord]
   congr! with k
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← congrArg ev (b.sum_toMatrix_smul_self b' k), map_sum]
+
+  rw [← congrArg ev (b.sum_toMatrix_smul_self b' k), map_sum]
   simp only [map_smul, Algebra.smul_def]
 
 def IsImageDeg (ev : V →ₗ[K] Ω) (D δ : ℕ) : Prop :=

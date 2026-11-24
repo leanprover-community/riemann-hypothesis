@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwistIntersectionAnyDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEmbeddingPieces
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwistIntersection
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwistIntersection
 
 @[expose] public section
 

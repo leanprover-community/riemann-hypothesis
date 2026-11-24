@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsPointVertRSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLogCardLength
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

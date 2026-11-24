@@ -1,9 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.FamColC
 public import Formalism.PadicSubsetSums.CentralIdempotents.StretchedExponentialDominance
 public import Formalism.SharpRestriction.GlobalTheoremInputs
-public import Formalism.SharpRestriction.LevelLetterCocycles.CylinderCountFamily
+public import Formalism.LocalToGlobal.GlobalTheory.FamCol
+public import Formalism.PadicSubsetSums.CentralIdempotents.EigenbasisOfDistinctRoots
+public import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
+public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
+public import Formalism.SizeWindowBrackets.SlopesFromSizeAndCount
 
 @[expose] public section
 

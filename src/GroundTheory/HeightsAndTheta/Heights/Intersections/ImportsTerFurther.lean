@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsFunFieldMulEq
 
 @[expose] public section
 

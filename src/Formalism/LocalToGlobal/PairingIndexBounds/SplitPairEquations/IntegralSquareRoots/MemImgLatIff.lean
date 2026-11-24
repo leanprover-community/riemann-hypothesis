@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SelfDualCovolume
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.UnitaryConstant
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

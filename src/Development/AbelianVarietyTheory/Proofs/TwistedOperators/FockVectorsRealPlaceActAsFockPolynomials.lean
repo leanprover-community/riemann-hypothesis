@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AtPlaceIffEqAtTau
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -36,7 +77,7 @@ theorem dI_mem {p q : ℕ} (x : Ix p q → ℝ) : dI x ∈ upq p q := by
   ext a b
   simp only [dI, Matrix.diagonal_conjTranspose, Matrix.diagonal_mul_diagonal, Matrix.add_apply,
     Matrix.diagonal_apply, Matrix.zero_apply]
-  split_ifs <;> simp [Complex.ext_iff]
+  split_ifs <;> simp
 
 theorem dI_eq_sum {p q : ℕ} (x : Ix p q → ℝ) : dI x = ∑ j, ((x j : ℂ) * Complex.I) • Eab j j := by
   ext a b
@@ -76,8 +117,8 @@ private theorem a_dI_add_trace_smul_of_weight {p q : ℕ} {V : Type} [AddCommGro
     a (dI x) v + ((c : ℂ) * (dI x).trace) • v =
       (((∑ j, ((μ j + c : ℚ) : ℝ) * x j : ℝ) : ℂ) * Complex.I) • v := by
   have htr : (dI x).trace = ∑ j, (x j : ℂ) * Complex.I := Matrix.trace_diagonal _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [htr, dI_eq_sum x, map_sum, LinearMap.sum_apply]
+
+  rw [htr, dI_eq_sum x, map_sum, LinearMap.sum_apply]
   simp only [map_smul, LinearMap.smul_apply, hw, smul_smul, ← Finset.sum_smul, ← add_smul]
   congr 1
   push_cast
@@ -94,7 +135,7 @@ private theorem a_Eab_diag_of_dI_add_trace_smul {p q : ℕ} {V : Type} [AddCommG
     rw [dI_eq_sum, Finset.sum_eq_single j]
     · simp
     · intro b _ hb
-      simp [Pi.single_apply, hb]
+      simp [hb]
     · intro hj
       exact absurd (Finset.mem_univ j) hj
   have h1 := h (Pi.single j (1 : ℝ) : Ix p q → ℝ)
@@ -302,8 +343,8 @@ theorem trace_bar {p q : ℕ} {Y : Mat p q} (hY : Y ∈ upq p q) : (Y.map (starR
     rw [← Matrix.trace_neg, ← h1, Matrix.trace_mul_comm, ← Matrix.mul_assoc, hJJ, Matrix.one_mul,
       Matrix.trace_conjTranspose]
   have h3 : (Y.map (starRingEnd ℂ)).trace = starRingEnd ℂ Y.trace := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Matrix.trace, map_sum]
+
+    simp [Matrix.trace, map_sum]
   rw [h3, h2]
   rfl
 
@@ -313,7 +354,7 @@ theorem phi_diagonal {p q n : ℕ} (e : Ix p q ≃ Fin n) (br : Bool) (d : Ix p 
     simp only [phi, cjc, GlobalTheory.IndefiniteRowSideFullHecke.BarMatrix.plainMat, GlobalTheory.IndefiniteRowSideFullHecke.BarMatrix.barMat, Bool.false_eq_true, ite_false,
       ite_true, Matrix.reindex_apply] <;>
     ext a b <;>
-    simp [Matrix.diagonal_apply, Matrix.submatrix_apply, Matrix.map_apply, apply_ite] <;>
+    simp [Matrix.diagonal_apply, Matrix.submatrix_apply, apply_ite] <;>
     split_ifs <;> simp_all
 
 theorem phiFr_exp {p q n : ℕ} {fr : Mn n} (hf : IsUnit fr) (e : Ix p q ≃ Fin n) (br : Bool) (x : Ix p q → ℝ) (t : ℝ) :

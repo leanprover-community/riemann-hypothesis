@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemRangeOfIsIntegral
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvFilD
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemFilPIffEvPt
+public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
+import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.MapEqPadicPowCyclotomicCharacter
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.AdicCompletion.Topology
+public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 
 @[expose] public section
 
@@ -40,11 +81,11 @@ theorem ev_sub {L A : Type*} [Field L] [CommRing A] (t : A) (ι : L →+* A)
       f - ∑ k ∈ Finset.range M, PowerSeries.C (PowerSeries.coeff k f) * PowerSeries.X ^ k := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro m hm
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow, hm]
+
+    simp [map_sum, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow, hm]
   have := map_dvd ev h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa [map_sum, hC, hX] using this
+
+  simpa [map_sum, hC, hX] using this
 
 theorem ev_dvd_iff {L A : Type*} [Field L] [CommRing A] [IsDomain A] (t : A) (ht0 : t ≠ 0)
     (htu : ¬ IsUnit t) (ι : L →+* A)
@@ -103,8 +144,8 @@ theorem main (l : ℕ) [Fact l.Prime] {B L : Type*} [CommRing B] [Field L]
   · have := (key M _).2 (ev_sub π ι₀ ev hC hX f M)
     rw [hF]
     convert this using 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hj', ht]
+
+    simp [map_sum, hj', ht]
   · rw [hF, ← ev_dvd_iff π hirr.ne_zero hirr.not_isUnit ι₀ ev hC hX, ← key]
     simp
   · have := (h0.isUnit).map e.symm
@@ -310,7 +351,7 @@ theorem exists_ev_tied (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l
       IsUnit (tS P s) ∧
       (∀ (a : ℤ) (b : P.R.BdR), tS P s * b ∈ (P.PD K).Fil (a + 1) ↔ b ∈ (P.PD K).Fil a) ∧
       ∀ b : P.R.BdR, (∀ a : ℤ, b ∈ (P.PD K).Fil a) → b = 0 := by
-  first | exact Bridge.exists_power_series_evaluation | exact Bridge.exists_power_series_evaluation .. | (intros; apply Bridge.exists_power_series_evaluation <;> assumption)
+  first | (intros; apply Bridge.exists_power_series_evaluation <;> assumption)
 
 theorem exists_ev_dR : ∀ (D : Formalism.BasicNotions.D7) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (s : ℕ) (ι : ↥LL.1 →ₐ[ℚ_[l]] (D.loc l).R.BdR), ∃ ev : PowerSeries ↥LL.1 →+* (D.loc l).R.BdR, (∀ (f : PowerSeries ↥LL.1) (M : ℕ), ev f - ∑ k ∈ Finset.range M, ι (PowerSeries.coeff k f) * tS (D.loc l) s ^ k ∈ ((D.loc l).PD K).Fil (M : ℤ)) ∧ (∀ (f : PowerSeries ↥LL.1) (M : ℕ), ev f ∈ ((D.loc l).PD K).Fil (M : ℤ) ↔ PowerSeries.X ^ M ∣ f) ∧ IsUnit (tS (D.loc l) s) ∧ (∀ (a : ℤ) (b : (D.loc l).R.BdR), tS (D.loc l) s * b ∈ ((D.loc l).PD K).Fil (a + 1) ↔ b ∈ ((D.loc l).PD K).Fil a) ∧ ∀ b : (D.loc l).R.BdR, (∀ a : ℤ, b ∈ ((D.loc l).PD K).Fil a) → b = 0 :=
   fun D l _ K LL s ι => exists_ev_tied l _ _ (D.locT l) K LL s ι

@@ -1,6 +1,26 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Data.Finsupp.Weight
+public import Mathlib.RingTheory.Bialgebra.Basic
+public import Mathlib.RingTheory.Ideal.Maps
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Ideal.BigOperators
 
 @[expose] public section
 
@@ -243,8 +263,8 @@ theorem coeff_eq_zero_of_stable (ε : A →ₐ[R] R) (x : Fin d → A) (hx : ∀
       set Q' : MvPolynomial (Fin d) R := ∑ j, pderiv j Q * T j with hQ'def
       have hQ' : aeval x Q' ∈ K := by
         have e : aeval x Q' = D i (aeval x Q) := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_aeval_of_leibniz (D i) (hD i), hQ'def, map_sum]
+
+          rw [map_aeval_of_leibniz (D i) (hD i), hQ'def, map_sum]
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [map_mul, hT]
         rw [e]; exact hKD i _ hQ

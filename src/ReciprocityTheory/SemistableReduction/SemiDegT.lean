@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.SemiDegG
+public import ReciprocityTheory.SemistableReduction.SemiDegF
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

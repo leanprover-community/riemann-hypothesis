@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.QuotientMeasure
+public import GroundTheory.AutomorphicForms.ReductionMahler
+public import GroundTheory.AutomorphicForms.ReductionMeasure
+public import Mathlib.MeasureTheory.Group.ModularCharacter
 public import GroundTheory.AutomorphicForms.Reduction
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
 
 @[expose] public section
 

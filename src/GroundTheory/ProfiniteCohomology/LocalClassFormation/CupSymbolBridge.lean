@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CupProducts
-public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.IntScalars
+public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 
 @[expose] public section
 

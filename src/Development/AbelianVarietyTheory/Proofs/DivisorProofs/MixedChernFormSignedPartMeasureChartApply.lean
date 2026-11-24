@@ -1,34 +1,48 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernFormDensityChangeOfChart
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DensConst
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ContinuousBcPt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAmbOfIsArithVar
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalSectionDivisorPullbackGeneric
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShift
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.GreenSt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Measure
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.CmpaCHessComp
+import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.CmpbHessAtAddConst
+import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 
 @[expose] public section
 
@@ -47,61 +61,9 @@ variable {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} {σ : k →+*
 def colSum (H : Fin D → Matrix (Fin D) (Fin D) ℂ) : ℂ :=
   ∑ τ : Equiv.Perm (Fin D), (Matrix.of fun j l => H (τ l) j l).det
 
-theorem colSum_mul_left (A : Matrix (Fin D) (Fin D) ℂ) (H : Fin D → Matrix (Fin D) (Fin D) ℂ) :
-    colSum (fun a => A * H a) = A.det * colSum H := by
-  simp only [colSum, Finset.mul_sum, ← Matrix.det_mul]
-  refine Finset.sum_congr rfl fun τ _ => congrArg _ ?_
-  ext j l
-  simp [Matrix.mul_apply]
-
-theorem colSum_transpose (H : Fin D → Matrix (Fin D) (Fin D) ℂ) :
-    colSum (fun a => (H a).transpose) = colSum H := by
-  simp only [colSum, Matrix.det_apply', Matrix.of_apply, Matrix.transpose_apply]
-  rw [Finset.sum_comm, Finset.sum_comm (f := fun (τ ρ : Equiv.Perm (Fin D)) => ((Equiv.Perm.sign ρ : ℤ) : ℂ) * ∏ i, H (τ i) (ρ i) i)]
-  refine Fintype.sum_equiv (Equiv.inv _) _ _ fun ρ => ?_
-  refine Fintype.sum_equiv (Equiv.mulRight ρ⁻¹) _ _ fun τ => ?_
-  simp only [Equiv.inv_apply, Equiv.Perm.sign_inv, Equiv.coe_mulRight]
-  congr 1
-  refine Fintype.prod_equiv ρ _ _ fun i => ?_
-  simp
-
-theorem colSum_mul (A B : Matrix (Fin D) (Fin D) ℂ) (H : Fin D → Matrix (Fin D) (Fin D) ℂ) :
-    colSum (fun a => A * H a * B) = A.det * B.det * colSum H := by
-  have e : colSum (fun a => H a * B) = B.det * colSum H := by
-    rw [← colSum_transpose, ← colSum_transpose H, ← Matrix.det_transpose B, ← colSum_mul_left]
-    simp only [Matrix.transpose_mul]
-  simp only [Matrix.mul_assoc]
-  rw [colSum_mul_left A fun a => H a * B, e, mul_assoc]
-
-theorem dens_eq (L : Fin D → MLine p σ) (c : AlgChart p σ D) (y : CxPts p σ) :
-    dens L c y = (Real.pi ^ D)⁻¹ * (colSum fun a => c.hess (L a).φ (pick (L a).φ.isLB y) y).re := rfl
-
 theorem dens_trans (L : Fin D → MLine p σ) (c c' : AlgChart p σ D) {y : CxPts p σ} (hy : y ∈ c.e.source)
     (hy' : y ∈ c'.e.source) : dens L c y = ‖transDet c.e c'.e y‖ ^ 2 * dens L c' y := by
-  have ho := isOpen_over c.e c'.e.open_source
-  have hm := mem_over c.e hy hy'
-  have e₂ : (c'.e ∘ c.e.symm) (c.e y) = c'.e y := congrArg c'.e (c.e.left_inv hy)
-  let J : Matrix (Fin D) (Fin D) ℂ :=
-    Matrix.of fun l j => (fderiv ℂ (c'.e ∘ c.e.symm) (c.e y) (ReciprocityTheory.L2DbarEstimates.bas D j)) l
-  have h (a) : c.hess (L a).φ (pick (L a).φ.isLB y) y =
-      J.transpose * c'.hess (L a).φ (pick (L a).φ.isLB y) y * J.map (starRingEnd ℂ) := by
-    have e : (fun v => ((L a).φ.φ (pick (L a).φ.isLB y) (c.e.symm v) : ℂ)) =ᶠ[𝓝 (c.e y)]
-        (fun v => ((L a).φ.φ (pick (L a).φ.isLB y) (c'.e.symm v) : ℂ)) ∘ c'.e ∘ c.e.symm :=
-      eventually_of_mem (ho.mem_nhds hm) fun v hv => by
-        simp only [Function.comp_apply, c'.e.left_inv hv.2]
-    rw [AlgChart.hess, AlgChart.hess, ReciprocityTheory.L2DbarEstimates.Y.cmpb_cHess_congr e,
-      ReciprocityTheory.L2DbarEstimates.Y.cmpa_cHess_comp ho hm (c.holo_trans c') (e₂ ▸
-        Complex.ofRealCLM.contDiff.contDiffAt.comp _ ((L a).cInf.contDiffAt c' hy' (mem_pick _ y))), e₂]
-  have hJ : J.det = transDet c.e c'.e y := ReciprocityTheory.L2DbarEstimates.Y.cmpa_det_jac _
-  have hd : J.transpose.det * (J.map (starRingEnd ℂ)).det = ((‖transDet c.e c'.e y‖ ^ 2 : ℝ) : ℂ) := by
-    have hm' : (J.map (starRingEnd ℂ)).det = starRingEnd ℂ J.det := (RingHom.map_det (starRingEnd ℂ) J).symm
-    rw [hm', Matrix.det_transpose, hJ, Complex.mul_conj']
-    push_cast
-    rfl
-  rw [dens_eq, dens_eq]
-  simp only [h]
-  rw [colSum_mul, hd, Complex.re_ofReal_mul]
-  ring
+  apply _root_.GlobalTheory.Mix.ChartChange.dens_trans <;> assumption
 
 end GlobalTheory.Mix.PartApply
 

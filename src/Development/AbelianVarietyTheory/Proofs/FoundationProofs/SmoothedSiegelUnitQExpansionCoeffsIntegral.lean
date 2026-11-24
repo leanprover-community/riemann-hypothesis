@@ -1,12 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasQExpansionOfLevelLinearOperations
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasQExpansionOfLevelMulOfPosLevel
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasQExpansionOfLevelCoeffAndFunctionUnique
+public import Development.AbelianVarietyTheory.Definitions.Foundations.CthFac
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MultipliableAndSgNeZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Complex.LocallyUniformLimit
+public import Mathlib.Analysis.Complex.TaylorSeries
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.MetricSpace.ProperSpace.Lemmas
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Geometry.Manifold.StructureGroupoid
 
 @[expose] public section
 
@@ -501,7 +547,7 @@ theorem _root_.GlobalTheory.SiegQ.cth_eq {c M a : ℕ} (hM : 0 < M) (ha : a < M)
   rw [_root_.GlobalTheory.Sieg.cth, hF.tprod_eq, Finset.prod_congr rfl hfin, Finset.prod_mul_distrib,
     Finset.prod_pow_eq_pow_sum, hu, e4, _root_.GlobalTheory.SiegQ.expo, _root_.GlobalTheory.SiegQ.unitPart,
     zpow_add₀ hz0, zpow_add₀ hz0, zpow_natCast, zpow_natCast, ← pow_mul]
-  simp only [_root_.GlobalTheory.SiegQ.kk, Nat.cast_mul]
+  simp only [_root_.GlobalTheory.SiegQ.kk]
   ring
 
 open scoped UpperHalfPlane MatrixGroups Manifold Topology in
@@ -692,7 +738,7 @@ theorem _root_.GlobalTheory.SiegQ.sg_expansion_int : ∀ (c M a : ℕ), 0 < M �
   have hint : M ∣ c * a → ¬ ∃ n : ℤ, (n : ℚ) = (c : ℚ) * ((b : ℚ) / M) := by
     intro hdvd hex
     apply hnot
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
     obtain ⟨t, ht⟩ := hdvd
     refine ⟨⟨(t : ℤ), ?_⟩, hex⟩
     have hq : (c : ℚ) * a = t * M := by exact_mod_cast (by rw [ht, mul_comm] : c * a = t * M)
@@ -729,7 +775,7 @@ theorem _root_.GlobalTheory.SiegQ.sg_expansion_int : ∀ (c M a : ℕ), 0 < M �
       rw [hzdef, _root_.GlobalTheory.SiegQ.qv, ← Complex.exp_nat_mul, hvdef, _root_.GlobalTheory.Sieg.ee,
         _root_.GlobalTheory.Sieg.ee, ← Complex.exp_add, _root_.GlobalTheory.Sieg.pt]
       congr 1
-      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
       push_cast
       ring
     have e3 : _root_.GlobalTheory.Sieg.ee (-((_root_.GlobalTheory.SiegQ.expo c M a : ℂ) / M) * (τ : ℂ)) =

@@ -1,9 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -97,7 +140,7 @@ private theorem lminor_neg_diagonal_neg_sgn_eq_psgn (q : ℕ) (i : Fin (n + 1)) 
       = ((ReciprocityTheory.ChartRestriction.G.FD.psgn q i : ℝ) : ℂ) := by
   unfold ReciprocityTheory.ChartRestriction.G.FD.lminor ReciprocityTheory.ChartRestriction.G.FD.psgn
   rw [← Matrix.diagonal_neg, neg_neg, Matrix.submatrix_diagonal _ _ (Fin.castLE_injective _), Matrix.det_diagonal]
-  simp only [Function.comp_apply, Pi.neg_apply, neg_neg, Fin.coe_castLE]
+  simp only [Function.comp_apply, Fin.coe_castLE]
   rw [Complex.ofReal_prod]
   exact Fin.prod_univ_eq_prod_range (fun a => ((ReciprocityTheory.ChartRestriction.G.FD.sgn q a : ℝ) : ℂ)) i
 
@@ -318,7 +361,7 @@ theorem derC_eq {Hm : ι → Mt n} {q : ι → ℕ} {x₀ : ι → Mt n}
   obtain ⟨c1, c2⟩ := conj_facts (herm_of_orth (h τ)) hH Z
   have s1 : star (1 / 2 : ℂ) = 1 / 2 := by simp
   have s2 : star (1 / (2 * Complex.I)) = -(1 / (2 * Complex.I)) := by
-    simp [Complex.star_def, Complex.conj_I, div_neg]
+    simp [Complex.conj_I]
   have l1 : (1 / 2 : ℂ) • (Z + conjH (Hm τ) Z) ∈ lieH (Hm τ) := by
     show ((1 / 2 : ℂ) • (Z + conjH (Hm τ) Z))ᴴ * Hm τ + Hm τ * ((1 / 2 : ℂ) • (Z + conjH (Hm τ) Z)) = 0
     rw [Matrix.conjTranspose_smul, Matrix.conjTranspose_add, Matrix.smul_mul, Matrix.mul_smul,
@@ -420,10 +463,10 @@ theorem killed_of_holFn {Hm : ι → Mt n} {q : ι → ℕ} {x₀ : ι → Mt n}
     · subst hh
       rw [Finset.prod_eq_single a (fun a' _ ha' => by
         simp [hE, Matrix.single_apply, Ne.symm ha']) (by simp)]
-      simp [hE, Matrix.single_apply]
+      simp [hE]
     · refine Finset.prod_eq_one fun a' _ => ?_
       have hn : ¬ (a = a' ∧ c = a') := fun hh2 => hh (hh2.1.trans hh2.2.symm)
-      simp [hE, Matrix.single_apply, hn]
+      simp [hE, hn]
   have hcont : Continuous fun t : ℝ => ((1 : Mt n) + (t : ℂ) • E).det :=
     (continuous_const.add (Complex.continuous_ofReal.smul continuous_const)).matrix_det
   have hev : ∀ᶠ t : ℝ in nhds (0 : ℝ), ((1 : Mt n) + (t : ℂ) • E).det ≠ 0 :=
@@ -438,7 +481,7 @@ theorem killed_of_holFn {Hm : ι → Mt n} {q : ι → ℕ} {x₀ : ι → Mt n}
       have h1 : HasDerivAt (fun s : ℂ => (1 + s) ^ w τ a) (w τ a : ℂ) ((0 : ℝ) : ℂ) := by
         rw [Complex.ofReal_zero]
         convert h0 using 1
-        all_goals first | rfl | simp [Function.comp_def]
+        all_goals first | rfl | simp
       exact h1.comp_ofReal
     · exact hasDerivAt_const _ _
   have hL : HasDerivAt (fun t : ℝ => P (fun σ a b => ((u σ * x₀ σ) *

@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Integral.Prod
 
 @[expose] public section
 
@@ -94,7 +100,6 @@ theorem abs_sub_le_of_sqrt {a b d δ : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hd : 
   have hz : d = z ^ 2 := (Real.sq_sqrt hd).symm
   have hx0 : 0 ≤ x := Real.sqrt_nonneg _
   have hy0 : 0 ≤ y := Real.sqrt_nonneg _
-  have hz0 : 0 ≤ z := Real.sqrt_nonneg _
   have e : |a - b| = |x - y| * (x + y) := by
     rw [hx, hy, show x ^ 2 - y ^ 2 = (x - y) * (x + y) by ring, abs_mul, abs_of_nonneg (add_nonneg hx0 hy0)]
   rw [e, hx, hy, hz]

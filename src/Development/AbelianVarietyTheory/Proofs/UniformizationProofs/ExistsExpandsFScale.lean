@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
 public import Development.AbelianVarietyTheory.BlockTheory.UniformisationCharts.BaseChangeCharts
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExpansionBijectiveOverFields
-public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ProdSumReindex
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.GlobalFnsHolds
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ProdSumReindex
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -36,8 +76,8 @@ theorem sum_regroup {M M' : Type} [AddCommGroup M] [Module K M] [AddCommGroup M'
     (a : M →ₛₗ[algebraMap K F] M') {n N : ℕ} (c : Fin n → F) (e : Fin N → F) (m : Fin N → Fin n → K)
     (hc : ∀ i, c i = ∑ l, m l i • e l) (x : Fin n → M) :
     ∑ i, c i • a (x i) = ∑ l, e l • a (∑ i, m l i • x i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smulₛₗ, Finset.smul_sum, smul_smul]
+
+  simp only [map_sum, map_smulₛₗ, Finset.smul_sum, smul_smul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [hc, Finset.sum_smul]
@@ -72,8 +112,8 @@ theorem comb_iff (X : Submodule R (V₀ × ∀ j, P₀ j))
     choose Λ hΛ using fun l j => (hb j).coord (B.coord (q l))
     choose w hw using fun l => desc _ (Λ l) (hΛ l)
     have hw' : ∀ l j, π j (w l) = ∑ i, B.coord (q l) (c i) • ρ' j ((x i).2 j) := fun l j => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hw, e₂, map_sum]
+
+      rw [hw, e₂, map_sum]
       exact Finset.sum_congr rfl fun i _ => hΛ l j _ _
     refine ⟨S.card, fun l => B (q l), fun l => ∑ i, B.coord (q l) (c i) • ρ (x i).1, w, fun l => ?_,
       e₁.trans (sum_regroup a c _ _ hc _), fun j => ?_⟩
@@ -125,8 +165,8 @@ theorem famComb_iff (k : ℕ) {n : ℕ} (c : Fin n → F) (f : Fin n → Fam D (
         ((DegPre.BF D F).left.presheaf.map (homOfLE (IndefiniteRowSideFullHecke.BaseChangeCharts.chart_le_bcB D F α j)).op).hom
           (((IndefiniteRowSideFullHecke.BaseChangeCharts.bcB D F).left.app (LB.wchart D.P.L (DegPre.famφ D (FractionRing R) α) j)).hom
             (((f i).s α).f j)) := fun j => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul]
     refine congrArg (DegPre.constBF D F (c i) (LB.wchart D.P.L (DegPre.famφ D F α) j) * ·)

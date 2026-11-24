@@ -1,6 +1,12 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.SemiDegBA
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.LinearAlgebra.FreeModule.Finite.CardQuotient
+public import Mathlib.RingTheory.Norm.Basic
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
 public import Formalism.LocalRingCardinality.DataTheta
+public import Formalism.LocalRingCardinality.DataNChoice
+public import Formalism.LocalToGlobal.UnitaryNorms.CharHost
 public import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 

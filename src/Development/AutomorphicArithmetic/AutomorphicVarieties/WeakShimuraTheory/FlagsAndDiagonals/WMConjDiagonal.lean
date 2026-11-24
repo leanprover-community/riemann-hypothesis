@@ -2,7 +2,46 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.SgnMulSelf
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.SpaceMap
 
 @[expose] public section
 
@@ -29,8 +68,6 @@ theorem adj_adj (X : M4 R) : adj (adj X) = X := (grp R).2.1 X
 
 theorem adj_one : adj (1 : M4 R) = 1 := (grp R).2.2.2.2.1
 
-theorem adj_map (f : R →+* R') (X : M4 R) : adj (X.map f) = (adj X).map f := (grp R).2.2.2.2.2.1 R' f X
-
 theorem gsp_mul {ν ν' : R} {g g' : M4 R} (h : IsGSp ν g) (h' : IsGSp ν' g') : IsGSp (ν * ν') (g * g') :=
   (grp R).2.2.2.2.2.2.2.1 ν ν' g g' h h'
 
@@ -50,14 +87,14 @@ theorem gsp_conj {ν : R} {m g : M4 R} (hm : IsGSp 1 m) (h : IsGSp ν g) : IsGSp
 theorem gsp_map (f : R →+* R') {ν : R} {g : M4 R} (h : IsGSp ν g) : IsGSp (f ν) (g.map f) := by
   rw [IsGSp, adj_map, ← Matrix.map_mul, h]
   ext i j
-  by_cases e : i = j <;> simp [e, Matrix.one_apply]
+  by_cases e : i = j <;> simp [e]
 
 theorem wM_sp (pr : Bool) : IsGSp 1 (wM R pr) := by
   cases pr
   · simp [IsGSp, wM, adj_one]
   · unfold IsGSp
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [wM, adj, sgn, Matrix.mul_apply, Fin.sum_univ_four, Matrix.one_apply, Fin.rev]
+    fin_cases i <;> fin_cases j <;> simp [wM, adj, sgn, Matrix.mul_apply, Fin.sum_univ_four, Fin.rev]
 
 theorem wM_map (f : R →+* R') (pr : Bool) : (wM R pr).map f = wM R' pr := by
   cases pr
@@ -69,7 +106,7 @@ theorem wM_par (pr : Bool) : Par (wM R pr) := by
   cases pr
   · intro i j hij
     have : i ≠ j := by rintro rfl; exact lt_irrefl _ hij
-    simp [wM, Matrix.one_apply, this]
+    simp [wM, this]
   · intro i j hij
     fin_cases i <;> fin_cases j <;> simp_all [wM, lamW]
 
@@ -96,7 +133,7 @@ theorem Par.mul {X Y : M4 R} (hX : Par X) (hY : Par Y) : Par (X * Y) := by
 theorem Par.adj {X : M4 R} (hX : Par X) : Par (adj X) := by
   intro i j hij
   have key : lamW i.rev < lamW j.rev := by
-    fin_cases i <;> fin_cases j <;> simp_all [lamW] <;> decide
+    fin_cases i <;> fin_cases j <;> simp_all [lamW]
   simp [_root_.UpperTheory.V.GradeZeroInterpolatingElement.adj, hX _ _ key]
 
 variable {I : Ideal R}
@@ -187,7 +224,7 @@ theorem sg_sep {D : Raw Ω c} (hD : D.Good) (𝔞 : Amb l) (pr : Bool) : D.sg l 
     exact Units.ext this
   have hal : U (D.al s) = U (D.ξ s) := by
     unfold Raw.al
-    simp only [MonoidHom.mul_apply, MonoidHom.inv_apply, map_mul, map_inv, hchi, hom', map_one, inv_one, one_mul]
+    simp only [MonoidHom.mul_apply, MonoidHom.inv_apply, map_mul, map_inv, hchi, hom', inv_one, one_mul]
   have hth : U (D.th s) = U (D.ξ s) * U (D.Psi s) := by
     unfold Raw.th
     rw [MonoidHom.mul_apply, map_mul, hal]

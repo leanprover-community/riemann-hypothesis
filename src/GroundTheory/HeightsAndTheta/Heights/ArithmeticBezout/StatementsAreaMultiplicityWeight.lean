@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.MeasureTheory.Group.Measure
+public import Mathlib.Topology.Algebra.Module.Determinant
 
 @[expose] public section
 

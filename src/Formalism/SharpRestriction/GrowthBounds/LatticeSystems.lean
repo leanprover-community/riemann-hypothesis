@@ -1,8 +1,63 @@
 module
 
-public import Formalism.SubspaceCounting.ChoiceOfTopsRefined
-public import Formalism.GradedWeylDivisibility.FinalD
+import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemFunMod
 public import Formalism.SharpRestriction.GrowthBounds.SelectionLemmas
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalD
+public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLTwist
+public import Formalism.SubspaceCounting.ChoiceOfTopsRefined
+public import Formalism.SubspaceCounting.SubspaceCountingProofs.LengthLayers
+public import Formalism.SubspaceCounting.SubspaceCountingProofs.ManyOrbits
+public import Formalism.SubspaceCounting.SubspaceCountingProofs.ManyOrbitsRefined
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Bool
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -344,8 +399,8 @@ theorem kp_indep {O Kf V : Type*} [CommRing O] [Field Kf] [Algebra O Kf] [AddCom
   rw [Fintype.linearIndependent_iff]
   intro c hc k
   have h1 := congrArg (fun z => ((u (Pi.single k 1) : A) : Module.Dual Kf V) z) hc
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, smul_eq_mul, map_zero] at h1
+
+  simp only [map_sum, map_smul, smul_eq_mul, map_zero] at h1
   have h2 : ∀ j, ∑ i, algebraMap O Kf (M j i) * ((u (Pi.single k 1) : A) : Module.Dual Kf V) (y i) =
       algebraMap O Kf (π ^ D * (Pi.single k 1 : Fin n → O) j) := fun j => hu _ j
   simp only [h2] at h1
@@ -1220,8 +1275,8 @@ theorem nt_equiv (G : GAtP p) (v : Fin G.P.nV) : RestEquiv G v := by
         congrArg (fun s => ((p : G.Kf) ^ G.P.ArV v) • s) hsum.symm
     _ = ((G.lev i).χ γ : G.O) • (G.lev i).actX γ (((p : G.Kf) ^ G.P.ArV v) •
           ∑ A ∈ ef_E G.P v (L v), F (Function.update (β := fun v => Submodule (G.P.W v) (Fin (G.P.m + 1) → G.P.Qq v)) L v A)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_smul, map_sum]
+
+        rw [map_smul, map_sum]
         simp only [Finset.smul_sum]
         apply Finset.sum_congr rfl
         intro A _
@@ -2011,14 +2066,14 @@ theorem smith_normal_form_card {W : Type} [CommRing W] [IsDomain W] [IsPrincipal
     have hmem := hpN (bT i)
     have h1 : (p : W) • bT i = ∑ j, (bB.repr ⟨_, hmem⟩ j) • (a j • bT j) := by
       have h2 := congrArg N.subtype (bB.sum_repr ⟨_, hmem⟩)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, Submodule.subtype_apply, hsnf] at h2
+
+      simp only [map_sum, map_smul, Submodule.subtype_apply, hsnf] at h2
       exact h2.symm
     have h3 := congrArg (fun z => bT.repr z i) h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_smul, map_sum, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply,
-      Finsupp.coe_finsetSum, Finset.sum_apply, smul_eq_mul, if_true, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ] at h3
+
+    simp only [map_smul, map_sum, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply,
+    Finsupp.coe_finsetSum, Finset.sum_apply, smul_eq_mul, if_true, mul_ite, mul_one, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ] at h3
     exact ⟨bB.repr ⟨_, hmem⟩ i, h3.trans (mul_comm _ _)⟩
   · rw [Nat.card_congr (Submodule.quotientEquivPiSpan N (Pi.basisFun W (Fin k)) hrank).toEquiv, Nat.card_pi, ha]
 
@@ -2217,10 +2272,6 @@ open Formalism.MainNotions.G Formalism.GradedWeylDivisibility MvPolynomial
 
 variable {p : ℕ}
 
-theorem fn_inj (G : GAtP p) (v : Fin G.P.nV) : Function.Injective (algebraMap G.O G.Kf) :=
-  have := (G.P.setting v).frac_O
-  IsFractionRing.injective G.O G.Kf
-
 theorem fn_prod_fg {R A ι : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A] (s : Finset ι)
     (N : ι → Submodule R A) (h : ∀ i ∈ s, (N i).FG) : (∏ i ∈ s, N i).FG := by
   classical
@@ -2252,7 +2303,7 @@ theorem H0_le_finitely_generated (G : GAtP p) (v : Fin G.P.nV) (s : Fin (G.P.n' 
   obtain ⟨g, hg, rfl⟩ := hLv
   rw [la_extO_G]
   have hg' := la_tw_det (G.P.ι v) (G.P.σ v) s.val g hg
-  obtain ⟨B, -, hB, -, -⟩ := la_basis (fn_inj G v) G.P.m (lamAt (G.P.lam0 v) s) _ hg'
+  obtain ⟨B, -, hB, -, -⟩ := la_basis (_root_.Formalism.MainNotions.G.LatticeSystems.lb_inj G v) G.P.m (lamAt (G.P.lam0 v) s) _ hg'
   refine ⟨nablaLTw G.O G.Kf G.P.m (lamAt (G.P.lam0 v) s) (la_tw (G.P.ι v) (G.P.σ v) s.val g), ?_, ?_⟩
   · rw [← hB]
     have : Finite ↥(ssIdx (G.P.m + 1) (G.P.m + 1) (nuOf (lamAt (G.P.lam0 v) s))) :=
@@ -2332,7 +2383,7 @@ theorem mna_finite (G : GAtP p) (h2 : G.FinClasses) : Module.Finite G.O G.Mna :=
   mna_finite_of G (restHfin G) h2
 
 theorem fn_torsion (G : GAtP p) (v : Fin G.P.nV) (c : G.O) (hc : c ≠ 0) (F : G.Fn) (h : c • F = 0) : F = 0 := by
-  have ha : algebraMap G.O G.Kf c ≠ 0 := fun h0 => hc (fn_inj G v (by rw [h0, map_zero]))
+  have ha : algebraMap G.O G.Kf c ≠ 0 := fun h0 => hc (_root_.Formalism.MainNotions.G.LatticeSystems.lb_inj G v (by rw [h0, map_zero]))
   funext i L
   have h1 : c • F i L = 0 := congrFun (congrFun h i) L
   rw [← algebraMap_smul G.Kf c (F i L)] at h1
@@ -2367,6 +2418,26 @@ def RemainingCountingStatement (G : GAtP p) : Prop :=
 theorem esymmOn_nonneg {ι : Type} (VV : Finset ι) (κ : ι → ℝ) (hκ : ∀ v ∈ VV, 0 ≤ κ v) (k : ℕ) :
     0 ≤ esymmOn VV κ k :=
   Finset.sum_nonneg fun _ hB => Finset.prod_nonneg fun v hv => hκ v ((Finset.mem_powersetCard.1 hB).1 hv)
+
+/-- Bound the natural floor of a scaled elementary symmetric sum by a power of the full sum. -/
+theorem floor_scaled_esymmOn_le_sum_pow {ι : Type} (VV : Finset ι) (κ : ι → ℝ)
+    (hκ : ∀ v ∈ VV, 0 ≤ κ v) (m d k : ℕ) :
+    (⌊(d : ℝ) * (m : ℝ) ^ k * esymmOn VV κ k⌋₊ : ℝ) ≤
+      (d : ℝ) * ((m : ℝ) * ∑ v ∈ VV, κ v) ^ k := by
+  have h0 : (0 : ℝ) ≤ (d : ℝ) * (m : ℝ) ^ k * esymmOn VV κ k :=
+    mul_nonneg (by positivity) (esymmOn_nonneg VV κ hκ k)
+  have hs0 : 0 ≤ (m : ℝ) * ∑ v ∈ VV, κ v :=
+    mul_nonneg (Nat.cast_nonneg m) (Finset.sum_nonneg hκ)
+  have hpw : 0 ≤ (d : ℝ) * ((m : ℝ) * ∑ v ∈ VV, κ v) ^ k :=
+    mul_nonneg (Nat.cast_nonneg d) (pow_nonneg hs0 k)
+  have hf : (1 : ℝ) ≤ (k.factorial : ℝ) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero k)
+  calc
+    (⌊(d : ℝ) * (m : ℝ) ^ k * esymmOn VV κ k⌋₊ : ℝ) ≤
+        (d : ℝ) * (m : ℝ) ^ k * esymmOn VV κ k := Nat.floor_le h0
+    _ ≤ (d : ℝ) * ((m : ℝ) * ∑ v ∈ VV, κ v) ^ k / (k.factorial : ℝ) :=
+      esymm_clause VV κ hκ m d k
+    _ ≤ (d : ℝ) * ((m : ℝ) * ∑ v ∈ VV, κ v) ^ k := div_le_self hpw hf
 
 theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hR : RemainingCountingStatement G)
     (hfin : Module.Finite G.O G.Mna) (hfree : Fin G.P.nV → Module.Free G.O G.Mna) : Conclusion1 D G := by
@@ -2411,16 +2482,10 @@ theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (G : GA
     · intro β _
       obtain ⟨C, hCM, hcard, hx⟩ := hthm β
       refine ⟨C, hCM, ?_, hx⟩
-      have h0 : (0 : ℝ) ≤ (d : ℝ) * (m : ℝ) ^ (β + 1) * esymmOn VV κ (β + 1) :=
-        mul_nonneg (by positivity) (esymmOn_nonneg VV κ hκ _)
-      have hf : (1 : ℝ) ≤ (β + 1).factorial := by
-        exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero _)
-      have hpw : 0 ≤ (d : ℝ) * Sig ^ (β + 1) := by positivity
       calc (C.card : ℝ) ≤ (⌊(d : ℝ) * (m : ℝ) ^ (β + 1) * esymmOn VV κ (β + 1)⌋₊ : ℝ) := by
             exact_mod_cast hcard
-        _ ≤ (d : ℝ) * (m : ℝ) ^ (β + 1) * esymmOn VV κ (β + 1) := Nat.floor_le h0
-        _ ≤ (d : ℝ) * Sig ^ (β + 1) / ((β + 1).factorial : ℝ) := esymm_clause VV κ hκ m d (β + 1)
-        _ ≤ (d : ℝ) * Sig ^ (β + 1) := div_le_self hpw hf
+        _ ≤ (d : ℝ) * Sig ^ (β + 1) :=
+          floor_scaled_esymmOn_le_sum_pow VV κ hκ m d (β + 1)
     · refine ManyOrbitsP.allBut_mono (allLE G VV m Sv M) le_rfl ?_
       calc ∑ v ∈ VV, Sv v ≤ ∑ _v ∈ VV, S := Finset.sum_le_sum hS
         _ = VV.card * S := by simp
@@ -2583,9 +2648,9 @@ theorem jd_subst_comp (M N : ∀ v, Fin (P.n' v) → Matrix (Fin (P.m + 1)) (Fin
   apply MvPolynomial.algHom_ext
   intro x
   unfold Places.subst
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [AlgHom.comp_apply, aeval_X, map_sum, map_mul, algHom_C, Matrix.mul_apply, Finset.sum_mul,
-    Finset.mul_sum]
+
+  simp only [AlgHom.comp_apply, aeval_X, map_sum, map_mul, algHom_C, Matrix.mul_apply, Finset.sum_mul,
+  Finset.mul_sum]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl
   intro c _
@@ -2706,22 +2771,7 @@ theorem jd_fmem (G : GAtP p) (Hv : G.P.Tup → Submodule G.O G.P.Xsp) (F : G.Fn)
       (∀ L, G.P.IsLatTup L → F i L ∈ Hv L) ∧ (∀ L, ¬ G.P.IsLatTup L → F i L = 0) ∧
       ∀ (γ : (G.lev i).Γ) (L : G.P.Tup),
         F i ((G.lev i).smul γ L) = ((G.lev i).χ γ : G.O) • (G.lev i).actX γ (F i L) := by
-  unfold GAtP.funMod
-  rw [Submodule.mem_pi]
-  constructor
-  · intro hF i
-    have h : F i ∈ (G.lev i).funMod Hv := hF i (Set.mem_univ i)
-    unfold Level.funMod at h
-    simp only [Submodule.mem_inf, Submodule.mem_iInf, Submodule.mem_comap, LinearMap.mem_ker,
-      LinearMap.proj_apply, LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.smul_apply,
-      LinearMap.restrictScalars_apply, sub_eq_zero] at h
-    exact ⟨h.1.1, h.1.2, fun γ L => h.2 γ L⟩
-  · intro hF i _
-    unfold Level.funMod
-    simp only [Submodule.mem_inf, Submodule.mem_iInf, Submodule.mem_comap, LinearMap.mem_ker,
-      LinearMap.proj_apply, LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.smul_apply,
-      LinearMap.restrictScalars_apply, sub_eq_zero]
-    exact ⟨⟨(hF i).1, (hF i).2.1⟩, fun γ L => (hF i).2.2 γ L⟩
+  apply Formalism.L2.G.Cmp.mem_funMod_iff
 
 theorem jd_mem (G : GAtP p) (h1 : G.TrivStab) (Hv : G.P.Tup → Submodule G.O G.P.Xsp) (hE : EquivSys G Hv)
     (i : G.comp) (L0 : G.P.Tup) (hL0 : G.P.IsLatTup L0) (ξ : G.P.Xsp) (hξ : ξ ∈ Hv L0) :
@@ -2981,8 +3031,8 @@ theorem je_twist (G : GAtP p) (v : Fin G.P.nV) (A : GL (Fin (G.P.m + 1)) (G.P.Qq
     twistVec (G.P.ι v) (G.P.σ v) s.val (nt_phi (G.P.W v) A x) =
       (je_g G v A s).mulVec (twistVec (G.P.ι v) (G.P.σ v) s.val x) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [twistVec, nt_phi, Matrix.mulVec, dotProduct, je_g, Places.gPos, map_sum, map_mul]
+
+  simp [twistVec, nt_phi, Matrix.mulVec, dotProduct, je_g, Places.gPos, map_sum, map_mul]
 
 theorem je_extO (G : GAtP p) (v : Fin G.P.nV) (A : GL (Fin (G.P.m + 1)) (G.P.Qq v)) (s : Fin (G.P.n' v))
     (Lv : Lat G v) :
@@ -3119,8 +3169,8 @@ theorem je_subst_vEmb (G : GAtP p)
   have h : (G.P.subst Gm).comp (G.P.vEmb v) = (G.P.vEmb v).comp (blockAct G.Kf (Gm v)) := by
     apply MvPolynomial.algHom_ext
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Places.subst, Places.vEmb, blockAct, map_sum]
+
+    simp [Places.subst, Places.vEmb, blockAct, map_sum]
   exact congrArg (fun f => f F) h
 
 theorem je_gPos_inv (G : GAtP p) (v : Fin G.P.nV) (A : GL (Fin (G.P.m + 1)) (G.P.Qq v)) (s : Fin (G.P.n' v)) :
@@ -3137,8 +3187,8 @@ theorem je_gPos_inv (G : GAtP p) (v : Fin G.P.nV) (A : GL (Fin (G.P.m + 1)) (G.P
       G.P.ι v ((G.P.σ v ^ s.val) ((((A⁻¹ : GL (Fin (G.P.m + 1)) (G.P.Qq v)) :
         Matrix (Fin (G.P.m + 1)) (Fin (G.P.m + 1)) (G.P.Qq v)) *
         (A : Matrix (Fin (G.P.m + 1)) (Fin (G.P.m + 1)) (G.P.Qq v))) a b)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Places.gPos, je_g, Matrix.mul_apply, map_sum, map_mul]
+
+    simp only [Places.gPos, je_g, Matrix.mul_apply, map_sum, map_mul]
   rw [h2, h1]
   by_cases hab : a = b
   · subst hab; simp
@@ -3191,29 +3241,6 @@ open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
-theorem js_mem (G : GAtP p) (Hv : G.P.Tup → Submodule G.O G.P.Xsp) (F : G.Fn) :
-    F ∈ G.funMod Hv ↔ ∀ i : G.comp, (∀ L, G.P.IsLatTup L → F i L ∈ Hv L) ∧
-      (∀ L, ¬ G.P.IsLatTup L → F i L = 0) ∧
-      ∀ (γ : (G.lev i).Γ) (L : G.P.Tup),
-        F i ((G.lev i).smul γ L) = ((G.lev i).χ γ : G.O) • (G.lev i).actX γ (F i L) := by
-  have key : ∀ i : G.comp, F i ∈ (G.lev i).funMod Hv ↔ ((∀ L, G.P.IsLatTup L → F i L ∈ Hv L) ∧
-      (∀ L, ¬ G.P.IsLatTup L → F i L = 0) ∧
-      ∀ (γ : (G.lev i).Γ) (L : G.P.Tup),
-        F i ((G.lev i).smul γ L) = ((G.lev i).χ γ : G.O) • (G.lev i).actX γ (F i L)) := by
-    intro i
-    unfold Level.funMod
-    simp only [Submodule.mem_inf, Submodule.mem_iInf, Submodule.mem_comap, LinearMap.mem_ker,
-      LinearMap.proj_apply, LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.smul_apply,
-      LinearMap.restrictScalars_apply, sub_eq_zero]
-    exact and_assoc
-  unfold GAtP.funMod
-  rw [Submodule.mem_pi]
-  constructor
-  · intro h i
-    exact (key i).1 (h i (Set.mem_univ i))
-  · intro h i _
-    exact (key i).2 (h i)
-
 theorem js_div (G : GAtP p) (v0 : Fin G.P.nV) (T : G.P.Tup → Submodule G.O G.P.Xsp) (E : ℕ) (W : G.Fn)
     (hW : W ∈ G.funMod T)
     (hpt : ∀ i L, G.P.IsLatTup L → W i L ∈ sc G ((p : G.O) ^ E) (T L)) :
@@ -3229,9 +3256,9 @@ theorem js_div (G : GAtP p) (v0 : Fin G.P.nV) (T : G.P.Tup → Submodule G.O G.P
     intro x
     rw [smul_comm, hq]
   refine ⟨fun i L => (((p : G.Kf) ^ E)⁻¹) • W i L, ?_, ?_⟩
-  · rw [SetLike.mem_coe, js_mem]
+  · rw [SetLike.mem_coe, _root_.Formalism.MainNotions.G.LatticeSystems.jd_fmem]
     intro i
-    obtain ⟨_, b, c⟩ := (js_mem G T W).1 hW i
+    obtain ⟨_, b, c⟩ := (_root_.Formalism.MainNotions.G.LatticeSystems.jd_fmem G T W).1 hW i
     refine ⟨fun L hL => ?_, fun L hL => ?_, fun γ L => ?_⟩
     · obtain ⟨z, hz, hzW⟩ := hpt i L hL
       have hzW' : (p : G.O) ^ E • z = W i L := hzW
@@ -3607,15 +3634,15 @@ theorem jm_core {I : Type} [Finite I] (b0 : Module.Basis I Kf V) (c : O) (hc : c
     have e1 := hu (Pi.single k 1) j
     have e2 : ∑ i, algebraMap O Kf (M j i) * (u (Pi.single k 1) : Module.Dual Kf V) (f i) =
         (u (Pi.single k 1) : Module.Dual Kf V) (∑ i, M j i • f i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       apply Finset.sum_congr rfl
       intro i _
       rw [LinearMap.map_smul_of_tower, Algebra.smul_def]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e2, hcc, map_sum] at e1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [e2, hcc, map_sum] at e1
+
+    rw [map_sum]
     have e3 : algebraMap O Kf (q * (Pi.single k (1 : O) : Fin n → O) j) =
         algebraMap O Kf (if j = k then q else 0) := by
       congr 1
@@ -3842,13 +3869,6 @@ theorem jl_mem_tenV (G : GAtP p) (v : Fin G.P.nV) (M : ∀ u, Submodule G.O (Pol
   · rw [Function.update_of_ne h]
     exact hf u h
 
-theorem jl_upd_self (G : GAtP p) (L : G.P.Tup) (v : Fin G.P.nV) (A : Lat G v) : upd G L v A v = A :=
-  Function.update_self (β := fun v => Lat G v) v A L
-
-theorem jl_upd_ne (G : GAtP p) (L : G.P.Tup) (v : Fin G.P.nV) (A : Lat G v) (u : Fin G.P.nV) (h : u ≠ v) :
-    upd G L v A u = L u :=
-  Function.update_of_ne (β := fun v => Lat G v) h A L
-
 theorem jl_delta_zero (G : GAtP p) (hD : JDelta G) (i : G.comp) (L : G.P.Tup) : delta G i L 0 = 0 := by
   have := hD.2.1 i L 0 0
   rw [zero_smul, zero_smul] at this
@@ -3877,10 +3897,10 @@ theorem jl_good (G : GAtP p) (t : Fin G.P.nV → ℕ) (B : Finset (Fin G.P.nV)) 
     refine hS1 v hv i L hL (src k) (h1 k) _ ?_ ?_
     · refine jl_mem_tenV G v (fun u => piLattice₂ G u (t u) (Function.update (vertexLabel B) v Slot.ball u)
         (upd G L v (src k) u)) f (F k) ?_ ?_
-      · simp only [Function.update_self, jl_upd_self]
+      · simp only [Function.update_self, _root_.Formalism.MainNotions.G.LatticeSystems.js_upd_self]
         exact h2 k
       · intro u hu
-        simp only [Function.update_of_ne hu, jl_upd_ne G L v _ u hu]
+        simp only [Function.update_of_ne hu, _root_.Formalism.MainNotions.G.LatticeSystems.js_upd_ne G L v _ u hu]
         exact hf u hu
     · intro L' he hne
       obtain ⟨y, hy, hyE⟩ := h3 k L' he hne
@@ -3890,10 +3910,10 @@ theorem jl_good (G : GAtP p) (t : Fin G.P.nV → ℕ) (B : Finset (Fin G.P.nV)) 
       · apply Submodule.smul_mem
         refine jl_mem_tenV G v (fun u => piLattice₂ G u (t u) (vertexLabel B u) (upd G L v L' u)) f y ?_ ?_
         · have hs : vertexLabel B v = Slot.dual := by simp [vertexLabel, hv]
-          simp only [jl_upd_self, hs]
+          simp only [_root_.Formalism.MainNotions.G.LatticeSystems.js_upd_self, hs]
           exact hy
         · intro u hu
-          simp only [jl_upd_ne G L v _ u hu]
+          simp only [_root_.Formalism.MainNotions.G.LatticeSystems.js_upd_ne G L v _ u hu]
           exact hf u hu
       · show (p : G.O) ^ (Dd + 1) • (G.P.w ^ (cStar - 2 * (Dd + 1)) •
           (G.P.vEmb v y * ∏ u ∈ Finset.univ \ {v}, G.P.vEmb u (f u))) = _
@@ -4402,7 +4422,5 @@ theorem theta_kernel_expansion (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA 
 end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
-
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas
 
 end Formalism.MainNotions.G.LatticeSystems

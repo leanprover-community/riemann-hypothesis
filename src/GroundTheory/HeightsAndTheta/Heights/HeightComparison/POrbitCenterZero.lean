@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterZero
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterLe
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterMemIff

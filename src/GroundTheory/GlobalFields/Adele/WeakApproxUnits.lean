@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import GroundTheory.GlobalFields.Adele.WeakApprox
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 

@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicEvaluationSubstCompatibleThickening
 
 @[expose] public section
 
@@ -15,30 +57,10 @@ namespace GlobalTheory.QLog.ValEx
 
 theorem nat_bound (p N m : ℕ) (hp : 2 ≤ p) :
     ∃ M : ℕ, 1 ≤ M ∧ ∀ a v : ℕ, M ≤ a → p ^ v ≤ a → N * (m + v) ≤ a := by
-  set T := 2 * N + m + 1 with hT
-  have hT2 : T < 2 ^ T := Nat.lt_two_pow_self
-  have hA : ∀ v, 2 * T ≤ v → N * (m + v) ≤ 2 ^ v := by
-    intro v hv
-    induction v, hv using Nat.le_induction with
-    | base =>
-      have hNT : N ≤ T := by omega
-      have h1 : N * (m + 2 * T) ≤ T * T := by nlinarith [Nat.mul_le_mul_right m hNT]
-      have h2 : T * T ≤ 2 ^ T * 2 ^ T := Nat.mul_le_mul hT2.le hT2.le
-      calc N * (m + 2 * T) ≤ T * T := h1
-        _ ≤ 2 ^ T * 2 ^ T := h2
-        _ = 2 ^ (2 * T) := by rw [← pow_add, two_mul]
-    | succ v hv ih =>
-      have h3 : N ≤ 2 ^ v := by
-        have : 2 ^ T ≤ 2 ^ v := Nat.pow_le_pow_right (by norm_num) (by omega)
-        omega
-      rw [pow_succ]; nlinarith
-  refine ⟨N * (m + 2 * T) + 1, by omega, fun a v ha hv => ?_⟩
-  by_cases hvK : 2 * T ≤ v
-  · calc N * (m + v) ≤ 2 ^ v := hA v hvK
-      _ ≤ p ^ v := Nat.pow_le_pow_left hp v
-      _ ≤ a := hv
-  · have : N * (m + v) ≤ N * (m + 2 * T) := Nat.mul_le_mul_left _ (by omega)
-    omega
+  obtain ⟨M, hM⟩ := VSubArith.add_mul_le_of_pow_le p N m hp
+  refine ⟨max 1 M, Nat.le_max_left .., fun a v ha hv => ?_⟩
+  simpa only [Nat.mul_comm N, Nat.add_comm m] using
+    hM a v (Nat.le_trans (Nat.le_max_right 1 M) ha) hv
 
 def img (B : Type) {Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] (p m : ℕ) : AddSubgroup Q where
   carrier := {x | ∃ b : B, x = algebraMap B Q ((p : B) ^ m * b)}
@@ -60,8 +82,8 @@ def psum (z : σ → B) (f : MvPowerSeries σ Q) (n : ℕ) : Q :=
 theorem psum_eq (z : σ → B) (f : MvPowerSeries σ Q) (n : ℕ) :
     psum z f n = ∑ α ∈ Finset.Iic (box σ n),
       coeff α f * algebraMap B Q (α.prod fun i e => z i ^ e) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [psum, trunc', truncFinset_apply, map_sum, MvPolynomial.eval_monomial]
+
+  simp only [psum, trunc', truncFinset_apply, map_sum, MvPolynomial.eval_monomial]
   refine Finset.sum_congr rfl fun α _ => ?_
   rw [map_finsuppProd]
   simp [map_pow]

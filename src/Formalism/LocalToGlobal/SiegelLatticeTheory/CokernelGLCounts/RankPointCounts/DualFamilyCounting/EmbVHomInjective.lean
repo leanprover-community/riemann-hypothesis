@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcRealXCC
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateWords
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.DiscrB
+public import Mathlib.Algebra.AffineMonoid.Basic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MeasurablePhiInv
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LintegralFinProd
 
 @[expose] public section
 

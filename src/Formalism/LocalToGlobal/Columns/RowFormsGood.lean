@@ -1,9 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.HeckeSpCount
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
+public import Formalism.LocalToGlobal.Columns.RowForms
+public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP
+public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
+public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 
 @[expose] public section
 

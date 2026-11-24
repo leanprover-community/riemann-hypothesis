@@ -1,7 +1,49 @@
 module
 
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.KFiniteVectors.KFinOfMem
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AuxiliaryPrimeFunction
+public import Development.AutomorphicSpectrum.Proofs.TwistedProofs.EqZeroOfPiInf
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ExistsIsGauss
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -16,12 +58,6 @@ namespace PositivityTheory.SiegelWeilFormula.KK
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
 def jE (n : ℕ) (ε : ℤˣ) : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) ℂ := Matrix.fromBlocks 0 1 (((ε : ℤ) : ℂ) • 1) 0
-
-def thB (d : SD σ) (ε : ℤˣ) (w : InfinitePlace F) : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n ⊕ Fin d.n) ℂ :=
-  d.b.1.map (d.B.emb w).1 * (jE d.n ε)ᵀ * (d.b⁻¹).1.map (d.B.emb w).1
-
-def thA {d : SD σ} (R : RD d) (w : InfinitePlace F) : Matrix (Fin d.m) (Fin d.m) ℂ :=
-  (-(Complex.I * ((((R.ε : ℤ) : ℂ) * ((R.sg w : ℤ) : ℂ)) * R.ζ))) • 1
 
 theorem map_incM' {w : InfinitePlace F} (τ : EmbOver E w) {ι ι' : Type} (J : Matrix ι ι' E) :
     (incM F J).map (piInf τ) = J.map τ.1 := by
@@ -43,7 +79,7 @@ theorem commute_of_unitary_conjugate {ι : Type} [Fintype ι] [DecidableEq ι] {
     calc _ = bwᵀ * kwᵀ * (biwᵀ * bwᵀ) * Dw * (bw.map star * biw.map star) * kw.map star * bw.map star := by
           simp only [Matrix.mul_assoc]
       _ = bwᵀ * (kwᵀ * Dw * kw.map star) * bw.map star := by
-          rw [e1t, e1']; simp only [Matrix.mul_one, Matrix.one_mul, Matrix.mul_assoc]
+          rw [e1t, e1']; simp only [Matrix.mul_one, Matrix.mul_assoc]
       _ = bwᵀ * Dw * bw.map star := by rw [hk2]
   have hc1 : M.map star * Mᵀ = 1 := by
     have : M.map star * Mᵀ = (M * Mᴴ)ᵀ := by rw [Matrix.transpose_mul]; rfl
@@ -64,42 +100,6 @@ theorem commute_of_unitary_conjugate {ι : Type} [Fintype ι] [DecidableEq ι] {
     _ = bw * (Jᵀ * M) * biw := by rw [e2, Matrix.mul_one, hcomm']
     _ = bw * Jᵀ * biw * (bw * M * biw) := by
         simp only [Matrix.mul_assoc]; rw [← Matrix.mul_assoc biw bw, e2, Matrix.one_mul]
-
-theorem commute_thB {d : SD σ} (R : RD d) {k : d.G} (hk : k ∈ d.K) (w : InfinitePlace F) :
-    Commute ((mat2 k).map (piInf (d.B.emb w))) (thB d R.ε w) := by
-  have h := d.ok.good.cm
-  have e1 : d.b.1.map (d.B.emb w).1 * (d.b⁻¹).1.map (d.B.emb w).1 = 1 := by
-    rw [← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
-  have e2 : (d.b⁻¹).1.map (d.B.emb w).1 * d.b.1.map (d.B.emb w).1 = 1 := by
-    rw [← Matrix.map_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
-  have hMk : (inFrame d.b k).map (piInf (d.B.emb w)) =
-      (d.b⁻¹).1.map (d.B.emb w).1 * (mat2 k).map (piInf (d.B.emb w)) * d.b.1.map (d.B.emb w).1 := by
-    rw [inFrame, Matrix.map_mul, Matrix.map_mul, map_incM', map_incM']
-  have hu := ((d.ok.stdK k).1 hk).1 w
-  have cst : ∀ x : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n ⊕ Fin d.n) E, (x.map σ).map (d.B.emb w).1 =
-      (x.map (d.B.emb w).1).map star := fun x => by
-    ext i j; exact h.2.2.2 (d.B.emb w).1 (x i j)
-  have cstA : ∀ x : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n ⊕ Fin d.n) (AE F E),
-      (x.map (cA σ)).map (piInf (d.B.emb w)) = (x.map (piInf (d.B.emb w))).map star :=
-    fun x => by ext i j; exact GlobalTheory.ThK.Dbl.Dense.piInf_cA h (d.B.emb w) (x i j)
-  have hDw : (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) = (dbl d.Y.J).map (d.B.emb w).1 := by
-    rw [← map_incM']
-    congr 1
-    ext (i | i) (j | j) <;> simp [dbl, incM, Matrix.fromBlocks]
-  have hJ : (d.b.1.map (d.B.emb w).1)ᵀ * (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) *
-      (d.b.1.map (d.B.emb w).1).map star = jE d.n R.ε := by
-    have := congrArg (fun x => x.map (d.B.emb w).1) R.hε
-    simp only [Matrix.map_mul, Matrix.transpose_map, cst] at this
-    rw [hDw, this]
-    ext (i | i) (j | j) <;> by_cases hij : i = j <;> simp [jE, Matrix.fromBlocks, Matrix.smul_apply, Matrix.one_apply, hij]
-  have hk2 : ((mat2 k).map (piInf (d.B.emb w)))ᵀ * (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) *
-      ((mat2 k).map (piInf (d.B.emb w))).map star = (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) := by
-    have hk0 : (k.1 : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n ⊕ Fin d.n) (AE F E))ᵀ * dbl (incM F d.Y.J) *
-        (k.1 : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n ⊕ Fin d.n) (AE F E)).map (cA σ) = dbl (incM F d.Y.J) := k.2
-    have := congrArg (fun x => x.map (piInf (d.B.emb w))) hk0
-    simp only [Matrix.map_mul, Matrix.transpose_map, cstA] at this
-    exact this
-  exact commute_of_unitary_conjugate e1 e2 hMk hu hJ hk2
 
 end PositivityTheory.SiegelWeilFormula.KK
 

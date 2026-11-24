@@ -1,6 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocOrbSumPf
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalOrbitGerms
+import Formalism.DoubleCosetMeasures.LatticeCoset
+import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.ExistsContinuousLowerUpperEntry
+import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsOpenIsIntSet
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Topology.Algebra.Group.Units
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DataCut
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumB
 
 @[expose] public section
 
@@ -156,7 +164,7 @@ theorem bb_eq_sum (M : Loc.Model F E) (hOK : M.OK) {m : ℕ} (a : Loc.Pt E (m + 
   haveI := hi2
   haveI := hs1
   haveI := hs2
-  have hcs := Formalism.DoubleCosetMeasures.Final.suppCompact E M.R hD.isOpen hD.isCompact (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1
+  have hcs := _root_.Formalism.DoubleCosetMeasures.P.suppCompact E M.R hD.isOpen hD.isCompact (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1
     (Formalism.MainNotions.LocalModelPeriodLattices.tr a).2 M.psiR (M.Cok (Quotient.out c)) (M.eCls (Quotient.out c))
     (Formalism.MainNotions.LocalOrbitGerms.Cls.lamK M (Quotient.out c))
   have hval : ∀ q, valQ M a c q = Formalism.DoubleCosetMeasures.phi M.R (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1 (Formalism.MainNotions.LocalModelPeriodLattices.tr a).2 M.psiR

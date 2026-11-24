@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.CechFunctor
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -44,8 +44,8 @@ lemma cochain_apply (Φ : CechFamily U P P') (n : ℕ) (σ : Cochain P U n) (i :
 lemma cochain_d (Φ : CechFamily U P P') (n : ℕ) (σ : Cochain P U n) :
     Φ.cochain (n + 1) (d P U n σ) = d P' U n (Φ.cochain n σ) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [cochain_apply, d_apply, d_apply, map_sum]
+
+  rw [cochain_apply, d_apply, d_apply, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_zsmul, Φ.res_comm]
   rfl

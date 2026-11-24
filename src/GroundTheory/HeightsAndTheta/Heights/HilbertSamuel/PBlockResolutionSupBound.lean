@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockResolutionImageSup
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNonvanishingDense
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

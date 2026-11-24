@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowDictCore
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RedBasicsPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictAll
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictGen
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictLat
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 
 @[expose] public section
 
@@ -19,26 +25,14 @@ section Form
 
 variable {A : Type} [CommRing A] {n : Type} [Fintype n] (σ : A →+* A) (J : Matrix n n A)
 
-theorem hform_smul_left (s : A) (x y : n → A) : Formalism.UG.hform σ J (s • x) y = σ s * Formalism.UG.hform σ J x y := by
-  simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
-
 theorem hform_smul_right (s : A) (x y : n → A) : Formalism.UG.hform σ J x (s • y) = s * Formalism.UG.hform σ J x y := by
   simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-theorem hform_add_left (x x' y : n → A) :
-    Formalism.UG.hform σ J (x + x') y = Formalism.UG.hform σ J x y + Formalism.UG.hform σ J x' y := by
-  simp only [Formalism.UG.hform, Pi.add_apply, map_add (f := _), add_mul, Finset.sum_add_distrib]
-
 theorem hform_add_right (x y y' : n → A) :
     Formalism.UG.hform σ J x (y + y') = Formalism.UG.hform σ J x y + Formalism.UG.hform σ J x y' := by
   simp only [Formalism.UG.hform, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-
-theorem hform_zero_left (y : n → A) : Formalism.UG.hform σ J 0 y = 0 := by
-  simp [Formalism.UG.hform]
 
 theorem hform_zero_right (x : n → A) : Formalism.UG.hform σ J x 0 = 0 := by
   simp [Formalism.UG.hform]
@@ -58,8 +52,8 @@ theorem hform_unit [DecidableEq n] (M : Matrix n n A) (hM : Formalism.UG.cT σ M
     simp only [Formalism.UG.hform, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
   have hσ : (fun i => σ ((M *ᵥ x) i)) = M.map σ *ᵥ (fun i => σ (x i)) := by
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
+
+    simp only [mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
   rw [key, key, hσ, dotProduct_comm, dotProduct_mulVec, ← mulVec_transpose, dotProduct_comm,
     mulVec_mulVec, mulVec_mulVec, show (M.map σ)ᵀ * J * M = J from hM]
 
@@ -163,9 +157,9 @@ theorem stepA {w : HeightOneSpectrum (𝓞 I.E)} {p : ℕ} (hp : p.Prime) (hcard
         (∑ k, ((c k : ℤ) : I.E ⊗[I.F] Af I.F) • (fun i => Formalism.UG.inclE (F := I.F) (Af I.F) (b k i))) +
           (fun i => Formalism.UG.inclE (F := I.F) (Af I.F) ((l - ∑ k, (c k : I.E) • b k) i)) := by
       funext i
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Pi.add_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.sub_apply, map_sub, map_sum,
-        map_mul, map_intCast]
+
+      simp only [Pi.add_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.sub_apply, map_sub, map_sum,
+      map_mul, map_intCast]
       ring
     rw [hdec, Matrix.mulVec_add, Matrix.mulVec_sum]
     refine add_mem (Submodule.sum_mem _ fun k _ => ?_) ?_
@@ -217,21 +211,21 @@ theorem hform_wLat0 {w : HeightOneSpectrum (𝓞 I.E)} {u : Fin I.n → I.E} (hu
     obtain ⟨a, ha, y, hy, rfl⟩ := hz
     obtain ⟨b, hb⟩ := hv' y hy
     refine ⟨sigO I a * b, Ideal.mul_mem_right _ _ (sig_mem_wc I ha), ?_⟩
-    rw [hform_smul_left, ← hb]
+    rw [_root_.Formalism.UG.P.csDual_hform_smul_left, ← hb]
     show _ = algebraMap (𝓞 I.E) I.E (sigO I a * b)
     rw [map_mul]
     exact congrArg₂ (· * ·) (sigO_coe I a).symm rfl
   | zero =>
-    exact ⟨0, Ideal.zero_mem _, by rw [hform_zero_left]; exact (map_zero (algebraMap (𝓞 I.E) I.E)).symm⟩
+    exact ⟨0, Ideal.zero_mem _, by rw [_root_.Formalism.UG.P.csDual_hform_zero_left]; exact (map_zero (algebraMap (𝓞 I.E) I.E)).symm⟩
   | add x y _ _ hx hy =>
     obtain ⟨c1, hc1, e1⟩ := hx
     obtain ⟨c2, hc2, e2⟩ := hy
     exact ⟨c1 + c2, Ideal.add_mem _ hc1 hc2, by
-      rw [hform_add_left, e1, e2]; exact (map_add (algebraMap (𝓞 I.E) I.E) c1 c2).symm⟩
+      rw [_root_.Formalism.UG.P.csDual_hform_add_left, e1, e2]; exact (map_add (algebraMap (𝓞 I.E) I.E) c1 c2).symm⟩
   | smul r x _ hx =>
     obtain ⟨c, hc, e⟩ := hx
     refine ⟨sigO I r * c, Ideal.mul_mem_left _ _ hc, ?_⟩
-    rw [← algebraMap_smul I.E r x, hform_smul_left, e]
+    rw [← algebraMap_smul I.E r x, _root_.Formalism.UG.P.csDual_hform_smul_left, e]
     show _ = algebraMap (𝓞 I.E) I.E (sigO I r * c)
     rw [map_mul]
     exact congrArg₂ (· * ·) (sigO_coe I r).symm rfl
@@ -273,10 +267,7 @@ theorem hhat_sub_left (y y' z : Fin I.n → I.E ⊗[I.F] Af I.F) : hhat I (y - y
   unfold hhat
   exact hform_sub_left _ _ y y' z
 
-theorem hhat_fmat (x : I.Gf) (y z : Fin I.n → I.E ⊗[I.F] Af I.F) :
-    hhat I (I.fmat x *ᵥ y) (I.fmat x *ᵥ z) = hhat I y z := by
-  unfold hhat
-  exact hform_unit _ _ (I.fmat x) x.2 y z
+alias hhat_fmat := _root_.PIW.AdelClassFin.dictTop_hhat_unit
 
 theorem hhat_Lq {w : HeightOneSpectrum (𝓞 I.E)} {t β : 𝓞 I.E}
     (hβ : ∀ a ∈ (wc I w).asIdeal, ∃ g, β * a = t * g) {u : Fin I.n → I.E ⊗[I.F] Af I.F} (hu : u ∈ Lq I w)
@@ -287,7 +278,6 @@ theorem hhat_Lq {w : HeightOneSpectrum (𝓞 I.E)} {t β : 𝓞 I.E}
     intro e
     first
       | rfl
-      | simp [Formalism.UG.sigR, Formalism.UG.inclE, Formalism.BasicNotions.CMData.sig]
   have hInt : ∀ s ∈ IntAf I.F I.E, Formalism.UG.sigR I.cm.sig (Af I.F) s ∈ IntAf I.F I.E := by
     have hle : IntAf I.F I.E ≤ (IntAf I.F I.E).comap (Formalism.UG.sigR I.cm.sig (Af I.F)) := by
       show Subring.closure _ ≤ _
@@ -297,7 +287,6 @@ theorem hhat_Lq {w : HeightOneSpectrum (𝓞 I.E)} {t β : 𝓞 I.E}
         refine Subring.subset_closure (Or.inl ⟨⟨_, sigO I a, rfl⟩, ?_⟩)
         first
           | rfl
-          | simp [Formalism.UG.sigR, Formalism.BasicNotions.CMData.sig, sigO_coe]
       · rw [SetLike.mem_coe, Subring.mem_comap]
         refine Subring.subset_closure (Or.inr ⟨⟨y, hy⟩, ?_⟩)
         simp [Formalism.UG.sigR]
@@ -312,7 +301,7 @@ theorem hhat_Lq {w : HeightOneSpectrum (𝓞 I.E)} {t β : 𝓞 I.E}
       hhat I (r • y) z = Formalism.UG.sigR I.cm.sig (Af I.F) r * hhat I y z := by
     intro r y z
     show Formalism.UG.hform _ _ ((r : I.E ⊗[I.F] Af I.F) • y) z = _ * Formalism.UG.hform _ _ y z
-    exact hform_smul_left _ _ _ _ _
+    exact _root_.Formalism.UG.P.csDual_hform_smul_left _ _ _ _ _
   have hsr : ∀ (r : IntAf I.F I.E) (y z : Fin I.n → I.E ⊗[I.F] Af I.F),
       hhat I y (r • z) = r * hhat I y z := by
     intro r y z
@@ -336,8 +325,8 @@ theorem hhat_Lq {w : HeightOneSpectrum (𝓞 I.E)} {t β : 𝓞 I.E}
     have e : hhat I (fun i => Formalism.UG.inclE (F := I.F) (Af I.F) (x i))
         (fun i => Formalism.UG.inclE (F := I.F) (Af I.F) (y i)) =
         Formalism.UG.inclE (F := I.F) (Af I.F) (Formalism.UG.hform (starRingEnd I.E) I.J x y) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hhat, Formalism.UG.hform, map_sum, map_mul, Matrix.map_apply, hincl, starRingEnd_apply]
+
+      simp only [hhat, Formalism.UG.hform, map_sum, map_mul, Matrix.map_apply, hincl, starRingEnd_apply]
     refine ⟨iE I g, iE_int I g, ?_⟩
     rw [e, hcv]
     show Formalism.UG.inclE (F := I.F) (Af I.F) (β : I.E) * Formalism.UG.inclE (F := I.F) (Af I.F) (c : I.E) =

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsTop
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 
 @[expose] public section
 
@@ -40,9 +40,9 @@ theorem SchurSignCoefficient.aeval_smul_powerSumHom (N : ℕ) (s : ℚ)
       (powerSumHom N).comp (aeval (fun i : Fin N => C (s ^ ((i : ℕ) + 1)) * X i)) := by
     apply MvPolynomial.algHom_ext
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, powerSumHom, aeval_X, map_mul, aeval_C, algebraMap_eq, psum,
-      map_sum, map_pow, mul_pow, Finset.mul_sum]
+
+    simp only [AlgHom.comp_apply, powerSumHom, aeval_X, map_mul, aeval_C, algebraMap_eq, psum,
+    map_sum, map_pow, mul_pow, Finset.mul_sum]
   exact DFunLike.congr_fun key S
 
 theorem SchurSignCoefficient.proof (h : SchurPowerSumCoefficient.Statement) :

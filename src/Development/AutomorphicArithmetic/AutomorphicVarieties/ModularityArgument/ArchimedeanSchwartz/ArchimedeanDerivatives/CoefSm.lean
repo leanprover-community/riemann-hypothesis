@@ -1,6 +1,53 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ArchimedeanSchwartz.HodgeTateFromSandwich
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SiegelHeights.MultiCentre
+import Formalism.DoubleCosetMeasures.Statement
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
+public import GroundTheory.AutomorphicForms.GL2.GJGlobalMellin
+public import GroundTheory.AutomorphicForms.GL2.GJStandardLPartial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.BaseChangeUnits.CycCOfCyclic
+
+set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 
@@ -33,7 +80,7 @@ private theorem abs_deriv (hU : IsOpen U) (hA : ∀ b, ContinuousOn (A b) U)
     refine Filter.inter_mem (hU.mem_nhds hy) (Filter.eventually_all.2 fun b => ?_)
     exact ((hA b).continuousAt (hU.mem_nhds hy)).norm.eventually (gt_mem_nhds (lt_add_one _))
   have hL : ∀ b, Integrable (fun x => (A b y).smulRight (f (D b v) y x)) ν := fun b =>
-    (ContinuousLinearMap.smulRightL ℝ P ℂ (A b y)).integrable_comp (hi _)
+    (StrongDual.smulRightL ℝ P ℂ (A b y)).integrable_comp (hi _)
   have key := hasFDerivAt_integral_of_dominated_of_fderiv_le (𝕜 := ℝ) (μ := ν) (F := f v)
     (F' := fun z x => ∑ b, (A b z).smulRight (f (D b v) z x))
     (bound := fun _ => ∑ b, (‖A b y‖ + 1) * C (D b v)) hs
@@ -45,7 +92,7 @@ private theorem abs_deriv (hU : IsOpen U) (hA : ∀ b, ContinuousOn (A b) U)
     (integrable_const _) (Filter.Eventually.of_forall fun x z hz => hd v x z hz.1)
   rw [integral_finsetSum _ fun b _ => hL b] at key
   refine key.congr_fderiv (Finset.sum_congr rfl fun b _ => ?_)
-  exact ((ContinuousLinearMap.smulRightL ℝ P ℂ (A b y)).integral_comp_comm (hi _))
+  exact ((StrongDual.smulRightL ℝ P ℂ (A b y)).integral_comp_comm (hi _))
 
 private theorem abs_smooth {G : V → P → ℂ} (hU : IsOpen U) (hA : ∀ b, ContDiffOn ℝ ∞ (A b) U)
     (hd : ∀ v, ∀ y ∈ U, HasFDerivAt (G v) (∑ b, (A b y).smulRight (G (D b v) y)) y) (v : V) :
@@ -106,9 +153,9 @@ private theorem chart_deriv (φ : Sm K n) (g : GA K n) {y : Lie K n} (hy : y ∈
     exact chart_lieD φ.2 Y g hy
   have e2 : ∀ b, cf K n b y (e X) = (Module.finBasis ℝ (Lie K n)).repr X b := fun b => by
     simp [cf, ← he]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [sum_apply, ContinuousLinearMap.smulRight_apply, e1, e2, ← map_smul, ← map_sum,
-    Module.Basis.sum_repr]
+
+  simp only [sum_apply, ContinuousLinearMap.smulRight_apply, e1, e2, ← map_smul, ← map_sum,
+  Module.Basis.sum_repr]
 
 omit [_root_.NumberField.IsTotallyComplex K] in
 private theorem cf_one (b : Fin (Module.finrank ℝ (Lie K n))) (X : Lie K n) :
@@ -209,17 +256,17 @@ private theorem coefMap_lie (hn : 1 ≤ n) (μ : Measure (Reduction.normOneGL (K
     rw [Submodule.coe_sum]
     change lie K n X φ.1 = ∑ b, (((Module.finBasis ℝ (Lie K n)).repr X b : ℝ) : ℂ) • lie K n (Module.finBasis ℝ (Lie K n) b) φ.1
     conv_lhs => rw [← (Module.finBasis ℝ (Lie K n)).sum_repr X]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, Complex.coe_smul]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, Complex.coe_smul]
   refine Subtype.ext (funext fun g => ?_)
   have h1 : oneL K n ∈ invSet K n := val_mem_invSet (1 : GL (Fin n) (Cinf K))
   have hc : ∀ F : GA K n → ℂ, chart F g (oneL K n) = F g := fun F =>
     (chart_val F g 1).trans (by rw [map_one, mul_one])
   have h2 := congrArg (fun L : Lie K n →L[ℝ] ℂ => L X) (coef_deriv hn μ h φ₂ g φ h1).fderiv
   refine Eq.trans ?_ h2.symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [e, map_sum, map_smul, sum_apply, ContinuousLinearMap.smulRight_apply, cf_one, hc,
-    Submodule.coe_sum, Finset.sum_apply, Submodule.coe_smul, Pi.smul_apply, Complex.real_smul, smul_eq_mul]
+
+  simp only [e, map_sum, map_smul, sum_apply, ContinuousLinearMap.smulRight_apply, cf_one, hc,
+  Submodule.coe_sum, Finset.sum_apply, Submodule.coe_smul, Pi.smul_apply, Complex.real_smul, smul_eq_mul]
   rfl
 
 private theorem cap_comm {σ : CuspSub K n} (T : σ.V →ₗ[ℂ] Sm K n)

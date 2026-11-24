@@ -1,13 +1,67 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerSlActionRowVectorStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitQExpansionCoefficientsStatement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitQExpansionCoeffsIntegral
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitIndexAddIntVector
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AdmissibleOfSl2Action
+public import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
+public import Development.AbelianVarietyTheory.Definitions.Foundations.SgC
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasQExpansionOfLevelCoeffAndFunctionUnique
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerSlActionRowVector
+public import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitQExpansionCoefficients
+public import Mathlib.RingTheory.RootsOfUnity.Complex
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitJPolynomialBoundedDenominators
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitIndexAddIntVector
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
+import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 
 @[expose] public section
 
@@ -76,36 +130,15 @@ theorem hasQ_expo (c M a b : ℕ) (hM : 0 < M) (ha : a < M) (hadm : admitted c !
   · rw [tc_zero]
     exact unitPart_zero_ne hc hM ha (pow_ne_zero _ hζ0) hne
 
-theorem ee_add (x y : ℂ) : ee (x + y) = ee x * ee y := by
-  rw [ee, ee, ee, ← Complex.exp_add]; ring_nf
-
 theorem hasQ_shift {M : ℕ} {f : ℍ → ℂ} {α : ℕ → ℂ} (h : HasQ M f α) (d : ℕ) :
     HasQ M (fun τ => f τ * ee (((d : ℂ) / M) * (τ : ℂ))) (fun n => if d ≤ n then α (n - d) else 0) := by
-  intro τ
-  have h1 := (h τ).mul_right (ee (((d : ℂ) / M) * (τ : ℂ)))
-  have e : ∀ n : ℕ, α n * Complex.exp (2 * Real.pi * Complex.I * n * τ / M) * ee (((d : ℂ) / M) * (τ : ℂ)) =
-      α n * Complex.exp (2 * Real.pi * Complex.I * ((n + d : ℕ) : ℂ) * τ / M) := fun n => by
-    rw [mul_assoc, ee, ← Complex.exp_add]; push_cast; ring_nf
-  simp only [e] at h1
-  have h2 := (hasSum_extend_zero (f := fun n : ℕ => α n * Complex.exp (2 * Real.pi * Complex.I * ((n + d : ℕ) : ℂ) * τ / M))
-    (g := fun n : ℕ => n + d) (add_left_injective d)).mpr h1
-  convert h2 using 1
-  funext n
-  by_cases hn : d ≤ n
-  · obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
-    dsimp only
-    rw [if_pos hn, show d + m = m + d by ring, (add_left_injective d).extend_apply]
-    simp
-  · dsimp only
-    rw [if_neg hn, zero_mul, Function.extend_apply']
-    · rfl
-    · rintro ⟨m, rfl⟩; omega
+  apply GlobalTheory.FracBd.shift_hasQ <;> assumption
 
 theorem exp_siegel_ord {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (T : Tower Ω ε)
     (c M a b : ℕ) (hM : 0 < M) (ha : a < M) (hadm : admitted c ![(a : ℚ) / M, (b : ℚ) / M]) :
     (T.exp (siegel T c ![(a : ℚ) / M, (b : ℚ) / M])).coeff ((expo c M a : ℚ) / M) ≠ 0 ∧
     ∀ r : ℚ, (T.exp (siegel T c ![(a : ℚ) / M, (b : ℚ) / M])).coeff r ≠ 0 → (expo c M a : ℚ) / M ≤ r := by
-  obtain ⟨k, A, hA, hco, hz⟩ := GlobalTheory.T.siegel_unit_q_expansion_coefficients Ω ε T c M a b hM ha hadm
+  obtain ⟨k, A, hA, hco, hz⟩ := _root_.GlobalTheory.KExp.siegel_exp Ω ε T c M a b hM ha hadm
   obtain ⟨B, hB, hB0⟩ := hasQ_expo c M a b hM ha hadm
   set e := expo c M a with he
   set f := sg c ![(a : ℚ) / M, (b : ℚ) / M] with hf
@@ -114,7 +147,7 @@ theorem exp_siegel_ord {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ
         fun τ => f τ * ee (-((v : ℂ) / M) * (τ : ℂ)) := by
     intro u v d hd
     funext τ
-    rw [mul_assoc, ← ee_add]
+    rw [mul_assoc, ← _root_.GlobalTheory.Sieg.Model.ee_add]
     congr 2
     have hd' : (d : ℂ) = (u : ℂ) - v := by exact_mod_cast hd
     rw [hd']; ring
@@ -337,7 +370,7 @@ theorem fix_siegel_pm_one : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgCl
   have hfix : ∀ a b : ℤ, ¬ ((M : ℤ) ∣ a ∧ (M : ℤ) ∣ b) →
       siegel X c ![((a * en γ 0 0 + b * en γ 1 0 : ℤ) : ℚ) / M, ((a * en γ 0 1 + b * en γ 1 1 : ℤ) : ℚ) / M] =
       siegel X c ![(a : ℚ) / M, (b : ℚ) / M] := fun a b hab => by
-    rw [← act_int, ← GlobalTheory.T.siegelUnitInTower_sl_action_rowVector Ω ε X c _ γ (isAdmissibleSmoothingFactor_of_int_index hM hc h6 hcM hab)]; exact H a b hab
+    rw [← act_int, ← _root_.GlobalTheory.KZ.SiegelSL.sl_siegel Ω ε X c _ γ (isAdmissibleSmoothingFactor_of_int_index hM hc h6 hcM hab)]; exact H a b hab
   have hM1' : ¬ ((M : ℤ) ∣ 1) := by
     intro h; have := Int.le_of_dvd one_pos h; omega
   have p01 : ¬ ((M : ℤ) ∣ 0 ∧ (M : ℤ) ∣ 1) := fun h => hM1' h.2
@@ -345,8 +378,8 @@ theorem fix_siegel_pm_one : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgCl
   have hr := siegel_eq_imp ε X hM hc h6 hcM (prim_act p01 γ) p01 (hfix 0 1 p01)
   have hp := siegel_eq_imp ε X hM hc h6 hcM (prim_act p10 γ) p10 (hfix 1 0 p10)
   have hS := congrArg (X.sl (ofSL ModularGroup.S)) (hfix 1 0 p10)
-  rw [GlobalTheory.T.siegelUnitInTower_sl_action_rowVector Ω ε X c _ _ (isAdmissibleSmoothingFactor_of_int_index hM hc h6 hcM (prim_act p10 γ)),
-    GlobalTheory.T.siegelUnitInTower_sl_action_rowVector Ω ε X c _ _ (isAdmissibleSmoothingFactor_of_int_index hM hc h6 hcM p10), act_int, act_int] at hS
+  rw [_root_.GlobalTheory.KZ.SiegelSL.sl_siegel Ω ε X c _ _ (isAdmissibleSmoothingFactor_of_int_index hM hc h6 hcM (prim_act p10 γ)),
+    _root_.GlobalTheory.KZ.SiegelSL.sl_siegel Ω ε X c _ _ (isAdmissibleSmoothingFactor_of_int_index hM hc h6 hcM p10), act_int, act_int] at hS
   have hq := siegel_eq_imp ε X hM hc h6 hcM (prim_act (prim_act p10 γ) ModularGroup.S) (prim_act p10 ModularGroup.S) hS
   have hd : en γ 0 0 * en γ 1 1 - en γ 0 1 * en γ 1 0 = 1 := by
     have := γ.det_coe; rw [Matrix.det_fin_two] at this; simpa [en] using this

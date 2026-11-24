@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.TriDens
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.VolUFactProdMulLe
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.LocalA
 
 @[expose] public section
@@ -94,10 +96,5 @@ theorem volU_ball_sub_triPos {ρ : ℝ} (hρ : ρ ≤ 1) : Metric.ball (volUOne 
   have h2 : (t - volUOne N).1 j = t.1 j - 1 := by simp [volUOne]
   rw [h2, Real.norm_eq_abs] at h1
   linarith [neg_le_abs (t.1 j - 1)]
-
-theorem volU_measurableSet_triPos : MeasurableSet (triPos N) := by
-  simp only [triPos, Set.ofPred_forall]
-  exact MeasurableSet.iInter fun j =>
-    measurableSet_lt measurable_const ((measurable_pi_apply j).comp measurable_fst)
 
 end ReciprocityTheory.ChartRestriction.DS

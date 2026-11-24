@@ -1,12 +1,15 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FrameInt
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemFin
 public import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.ConjPurelyImaginaryGenerator
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 100000
+
 
 noncomputable section
 
@@ -20,7 +23,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
 
-set_option maxHeartbeats 800000 in
+
 theorem infPart_splitIdem {e : AE D} (he : IsSplitIdem D e) : infPart D e = 0 := by
   obtain ⟨h1, -, v, ε, hε, h3⟩ := he
   obtain ⟨α, hα, -, -⟩ := hε
@@ -45,8 +48,8 @@ theorem infPart_splitIdem {e : AE D} (he : IsSplitIdem D e) : infPart D e = 0 :=
 
 theorem infPart_idemSum {P : Finset (Formalism.L2.DIV.Pl D.host.E)} {e : AE D} (he : IsIdemSum e P) : infPart D e = 0 := by
   obtain ⟨es, hes, hsum, -⟩ := idemSum_orth P e he
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hsum, map_sum]
+
+  rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun PP hPP => infPart_splitIdem (hes PP hPP)
 
 theorem idemSum_mul_self {P : Finset (Formalism.L2.DIV.Pl D.host.E)} {e : AE D} (he : IsIdemSum e P) : e * e = e := by

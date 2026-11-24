@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraicConverse
 
 @[expose] public section

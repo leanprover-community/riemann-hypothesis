@@ -1,10 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FockVacuumAnnihilationEquationRealCoordinates
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulEqZeroOfInf
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergSmoothOfWeakDerivativeClosedSetStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOscillatorActionUnitaryGroupHermitianStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousFourierGau
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOscillatorActionUnitaryGroupHermitian
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergSmoothOfWeakDerivativeClosedSet
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSumHeisenbergTranslatesDistinctChars
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfHeisenbergLevelAndSmooth
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundamentalDomainOfCocompact
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothIffRealCoordinatesAndRealLines
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -107,8 +156,8 @@ theorem fderiv_vac (h : Chart θ σ) (hψ : IsStdChar D ψ (-1)) (F : BB ψ S T)
     rfl
   have h2 : ∀ x : Ix S T → ℂ, x = ∑ τ, vecL (Pi.single τ (cpt x τ) : RW T S) := by
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum]
+
+    rw [← map_sum]
     exact (congrArg vecL (Finset.univ_sum_single (unvecL x))).symm
   have h3 : ∀ τ, cpt (Complex.I • blk sT sS *ᵥ z) τ = cplxO (sS τ) (sT τ) (cpt z τ) := fun τ => by
     unfold cplxO
@@ -166,7 +215,7 @@ theorem sm_of_theta (h : Chart θ σ) (hψ : IsStdChar D ψ (-1)) (F : BB ψ S T
     rw [im_HM x y]
     rfl
   have hH : IsHeis (fun x y => om x y) (rhoV hψ σ S T) := e ▸ isHeis_rhoB h hψ
-  exact GlobalTheory.T.heisenberg_smooth_of_weak_derivative_closed_set _ _ om _ hH (WO S T) (ev _ _) norm_ev_le (fun b C => norm_QB_le b)
+  exact _root_.GlobalTheory.RealWeil.sm_of_weak_deriv_closed _ _ om _ hH (WO S T) (ev _ _) norm_ev_le (fun b C => norm_QB_le b)
     (fun x v => ⟨ψ (symplOH S T x (iotaV σ S T v)), x + iotaV σ S T v, fun b => congrFun (coe_rhoV hψ v b) x⟩)
     {F | IsThetaFunO ψ S T F.1} (differentiable_ev h hψ) (exists_deriv h hψ) F hF
 
@@ -268,7 +317,7 @@ theorem exists_isInfWeil : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdC
   intro D ψ hψ θ hθ S T
   obtain ⟨σ, h⟩ := GlobalTheory.RealLineAt.exists_inverse_chart hθ
   obtain ⟨Ω, ⟨hadd, hsmul, hsm, hone, hmul, hheis, hcomm, hunit⟩, htriv, hcont, hvac⟩ :=
-    GlobalTheory.T.exists_oscillatorAction_unitaryGroup_hermitian (Ix S T) (HM S T) HM_herm HM_det (BB ψ S T) (rhoV hψ σ S T) (isHeis_rhoB h hψ) (GA D S × GA D T)
+    _root_.GlobalTheory.RealWeil.UnitaryOsc.exists_osc (Ix S T) (HM S T) HM_herm HM_det (BB ψ S T) (rhoV hψ σ S T) (isHeis_rhoB h hψ) (GA D S × GA D T)
       (mM θ S T) (mM_unitary hθ)
   have sm := sm_of_theta (S := S) (T := T) h hψ
   have hfin : ∀ p {u : WO S T}, u.map (infPart D) = 0 → ∀ F, GlobalTheory.RealWeil.Sm (rhoV hψ σ S T) F →

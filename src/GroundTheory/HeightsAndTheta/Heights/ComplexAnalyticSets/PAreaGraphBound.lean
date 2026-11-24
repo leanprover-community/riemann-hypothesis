@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaGraphBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaGraphPiece
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaGraphPartition
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGraphJacContinuous
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

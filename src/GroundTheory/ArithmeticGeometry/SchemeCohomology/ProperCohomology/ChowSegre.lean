@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ChowProduct
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.AppLEFromOfGlobalSectionsChartHom
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.SegreGlue
+import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.AppLEFromOfGlobalSectionsChartHom
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,31 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.CMLattices.ExistsIsThetaDegOfIsLocalModel
-public import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CmCurveLieCharacterOfAdjoinGenerator
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsPosKeyArchAt
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ThetaUniformisationComplexAbelianVariety
-public import Development.AbelianVarietyTheory.Statements.PrincipalLattices.LogHermFormOfUnitDiscriminant
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CmCurveBaseChangeComp
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsCmEllipticCurveIntegersWithPeriod
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CmActionPolarisedCurveAdjointConj
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RingOfIntegersSqrtNegThreeModFour
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.EqZeroOfSumEmbeddingSmul
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsLieBasisBaseChange
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsHolUnifReparam
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PolPull
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TheoremOfCubePolAbelianSchemeStatement
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CubeLineBundleAdjointIffHermFormAdjoint
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.AdjointEndomorphismsCubeLBOfDenseFibres
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SemiAbelianHomExtensionDvr
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsConjAction
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniformisationOfPoint
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.T2SpacePtsOverOfIsSeparated
+public import Development.AbelianVarietyTheory.Statements.PrincipalLattices.FiniteDimensionalBase
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsIsDerivAt0NotIsDerivAlong
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsEquivOfSumEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.BlockTheory.CMModuli.PeriodMapPresentation
+public import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
+import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 
 @[expose] public section
 
@@ -77,10 +104,7 @@ theorem principal_root_re_zero_im_sq (H : Host E) : H.rt0.re = 0 ∧ H.rt0.im �
     nlinarith [mul_self_nonneg H.rt0.re]
   exact ⟨mul_right_cancel₀ him (by linarith), him⟩
 
-theorem bar_rt (H : Host E) : H.bar H.rt = -H.rt := by
-  have h : H.rt = 2 * H.w0 - 1 := by rw [H.two_weight_eq_one_add_root]; ring
-  rw [h, map_sub, map_mul, map_one, HostModel.cmHost_bar_halfIntegerGenerator, map_ofNat]
-  ring
+alias bar_rt := _root_.GlobalTheory.HostModel.bar_rt
 
 theorem orth_of_pure (hP : IsPeriod D ty Pe) {x y : D.La} (hx : x ∈ PureType.lat hP H.rt0)
     (hy : y ∈ PureType.lat hP (-H.rt0)) : D.EF x y = 0 := by
@@ -112,9 +136,9 @@ theorem nonneg_span {M : Type} [AddCommGroup M] (B : LinearMap.BilinForm ℤ M) 
   simp only [← e]
   have key : ∀ c : Fin n → ℝ, B.baseChange ℝ (∑ i, c i • (1 : ℝ) ⊗ₜ[ℤ] m i) (∑ i, c i • (1 : ℝ) ⊗ₜ[ℤ] m i) =
       ∑ i, ∑ j, c i * c j * B (m j) (m i) := fun c => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.BilinForm.baseChange_tmul,
-      smul_eq_mul, zsmul_eq_mul, Finset.mul_sum]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.BilinForm.baseChange_tmul,
+    smul_eq_mul, zsmul_eq_mul, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   rw [key]
   have hd : DenseRange (Pi.map fun (_ : Fin n) (a : ℚ) => (a : ℝ)) := DenseRange.piMap fun _ => Rat.denseRange_cast
@@ -129,8 +153,8 @@ theorem nonneg_span {M : Type} [AddCommGroup M] (B : LinearMap.BilinForm ℤ M) 
   have h₁ := h (∑ i, k i • m i) (N.sum_mem fun i _ => N.smul_mem _ (hm i))
   have h₂ : ((B (∑ i, k i • m i) (∑ i, k i • m i) : ℤ) : ℝ) =
       ((b : ℤ) : ℝ) ^ 2 * ∑ i, ∑ j, (a i : ℝ) * a j * (B (m j) (m i) : ℝ) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
     push_cast
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by rw [hk', hk']; ring
   rw [h₂, mul_left_comm] at h₁

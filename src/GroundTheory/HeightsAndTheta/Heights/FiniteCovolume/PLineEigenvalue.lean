@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsLineEigenvalue
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MajorantInvolutionDiagonalForm
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PVecAtNeZero
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

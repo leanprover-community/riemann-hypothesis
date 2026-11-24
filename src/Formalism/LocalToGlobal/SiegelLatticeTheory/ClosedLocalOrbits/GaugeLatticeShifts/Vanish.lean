@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TermDefPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOpInhab
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -170,10 +170,10 @@ private theorem norm_exp_sum_conj_lemma {ι : Type*} (s : Finset ι) (w : ι →
   rw [Complex.norm_exp]
   have hS : (∑ a ∈ s, (w a + star (w a))).im = 0 := by
     rw [Complex.im_sum]
-    exact Finset.sum_eq_zero fun a _ => by simp [Complex.star_def]
+    exact Finset.sum_eq_zero fun a _ => by simp
   have hT : ((∑ a ∈ s, (w a + star (w a))) / (gg : ℂ)).im = 0 := by
     rw [Complex.div_natCast_im, hS, zero_div]
-  simp [Complex.mul_re, hT]
+  simp [Complex.mul_re]
 
 theorem psiR_norm1 {n r : ℕ} (ε : Fin n → Bool) (gg : ℕ) (e f : Fin r → Fin n → ℂ) (z : Fin n → ℂ)
     (g : Matrix (Fin n) (Fin n) ℂ) : ‖psiR ε gg e f z g‖ = 1 := by
@@ -546,13 +546,11 @@ theorem ooVanish_of (hA : AvgCore) (hU : GinfUnimod) (hN : NLamNinf) (hC : ChiTr
     obtain ⟨hr1, hr2⟩ := hr
     obtain ⟨hr1', hr2'⟩ := hr'
     have e : t.pt.1⁻¹ * (r * r') * t.pt.1 = (t.pt.1⁻¹ * r * t.pt.1) * (t.pt.1⁻¹ * r' * t.pt.1) := by group
-    beta_reduce
     rw [((hG D X u).2.1 r hr1 r' hr1').2, e, ((hG D X u').2.1 _ hr2 _ hr2').2, map_mul]
     ring
   · intro s hs
     have hψ := hC D X Y u u' t.lam t.lam' t.mem t.mem' t.rep s hs
     have ept : t.pt = t.rep.1.1 := rfl
-    beta_reduce
     rw [ept, hψ, mul_comm]
     exact hpsi u' _
   · obtain ⟨r, hr, hne⟩ := h4 D X Y u u' t ht
@@ -561,7 +559,6 @@ theorem ooVanish_of (hA : AvgCore) (hU : GinfUnimod) (hN : NLamNinf) (hC : ChiTr
     linear_combination (X.psiInfU u' (t.pt.1⁻¹ * r * t.pt.1)) * h - (X.psiInfU u r) * hn
   · intro r hr x
     obtain ⟨hr1, hr2⟩ := hr
-    beta_reduce
     rw [wu_N X u hr1 x, show t.pt.1⁻¹ * (r * x) = (t.pt.1⁻¹ * r * t.pt.1) * (t.pt.1⁻¹ * x) by group,
       wu_N X u' hr2, rankOneInnerOperator_smul_smul]
 

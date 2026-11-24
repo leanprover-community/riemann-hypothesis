@@ -1,11 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelConditionEquivalent
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.ThetaInZIsThetaLog
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementG
-public import Formalism.GaussJetBounds.OneLetterGaussJets.OddLevelGainSum
 public import Formalism.GaussJetBounds.StatementS
-public import Formalism.GaussJetBounds.StatementU
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Formalism.GaussJetBounds.OneLetterGaussJets.OddLevelGainSum
+public import Formalism.GrowthSums.StatementA
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementAB
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementG
 
 @[expose] public section
 

@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Localization.AsSubring
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

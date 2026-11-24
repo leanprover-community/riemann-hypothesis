@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.Divisibility.HeckeRI
+public import Formalism.LocalToGlobal.Divisibility.LiftLatInst
+public import Formalism.LocalToGlobal.Columns.HeckeInert
 public import Formalism.LocalToGlobal.Divisibility.HeckeCSDICommTrRep
 
 @[expose] public section

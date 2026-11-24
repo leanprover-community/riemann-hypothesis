@@ -1,8 +1,51 @@
 module
 
+public import Formalism.GL3MeanSquares.InvariantSeriesBidegreeOneOne
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.LetterShift
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.BimultiplicativeDivisibleTorsion
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.GL3MeanSquares.HookFormulaTorsion.BimultiplicativeDivisibleTorsion, Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstZeroOfConstantCoeff
+
+-- ===== clump member: Formalism.GL3MeanSquares.HookFormulaTorsion.BimultiplicativeDivisibleTorsion =====
+-- clump-header: {"m": "Formalism.GL3MeanSquares.HookFormulaTorsion.BimultiplicativeDivisibleTorsion", "h": "module\n\npublic import Formalism.GL3MeanSquares.InvariantSeriesBidegreeOneOne\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Int\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace Formalism.HermitianLattices.IntegralLatticeDensity
+
+open Finset
+
+theorem no_form_of_bidegree_one_one : PowerCongruenceIffEqual := by
+  unfold PowerCongruenceIffEqual
+  intro l d s s' hl hs hs' hdiv
+  have h1 : l ^ s < l ^ d := Nat.pow_lt_pow_right (by omega) hs
+  have h2 : l ^ s' < l ^ d := Nat.pow_lt_pow_right (by omega) hs'
+  have h3 : 1 ≤ l ^ s := Nat.one_le_pow _ _ (by omega)
+  have h4 : 1 ≤ l ^ s' := Nat.one_le_pow _ _ (by omega)
+  have h5 : 1 ≤ l ^ d := Nat.one_le_pow _ _ (by omega)
+  rw [Nat.cast_sub h5, Nat.cast_pow, Nat.cast_one] at hdiv
+  have h1' : (l : ℤ) ^ s < (l : ℤ) ^ d := by exact_mod_cast h1
+  have h2' : (l : ℤ) ^ s' < (l : ℤ) ^ d := by exact_mod_cast h2
+  have h3' : (1 : ℤ) ≤ (l : ℤ) ^ s := by exact_mod_cast h3
+  have h4' : (1 : ℤ) ≤ (l : ℤ) ^ s' := by exact_mod_cast h4
+  have hz := Int.eq_zero_of_abs_lt_dvd hdiv (by rw [abs_lt]; constructor <;> linarith)
+  have h6 : (l : ℤ) ^ s = (l : ℤ) ^ s' := by linarith
+  have h7 : l ^ s = l ^ s' := by exact_mod_cast h6
+  exact Nat.pow_right_injective hl h7
+
+end Formalism.HermitianLattices.IntegralLatticeDensity
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.GL3MeanSquares.HookFormulaTorsion.BimultiplicativeDivisibleTorsion =====
+
+-- ===== clump member: Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstZeroOfConstantCoeff =====
+-- clump-header: {"m": "Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstZeroOfConstantCoeff", "h": "module\n\npublic import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.LetterShift\npublic import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA\npublic import Formalism.GL3MeanSquares.HookFormulaTorsion.BimultiplicativeDivisibleTorsion\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -37,8 +80,8 @@ theorem hasSubst_scale {τ : Type} [Finite τ] (a : τ → K) :
 theorem subst_sum {σ' τ α : Type} {a : σ' → MvPowerSeries τ K} (ha : MvPowerSeries.HasSubst a)
     (S : Finset α) (F : α → MvPowerSeries σ' K) :
     MvPowerSeries.subst a (∑ i ∈ S, F i) = ∑ i ∈ S, MvPowerSeries.subst a (F i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom ha, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom ha, map_sum]
 
 theorem subst_C_mul {σ' τ : Type} {a : σ' → MvPowerSeries τ K} (ha : MvPowerSeries.HasSubst a)
     (c : K) (f : MvPowerSeries σ' K) :
@@ -162,16 +205,16 @@ variable {d : ℕ} [NeZero d]
 theorem constantCoeff_linE (σ : K →+* K) (c : K) :
     MvPowerSeries.constantCoeff (linE (d := d) σ c) = 0 := by
   unfold linE
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun s _ => ?_
   split_ifs <;> simp
 
 theorem constantCoeff_linO (σ : K →+* K) (c : K) :
     MvPowerSeries.constantCoeff (linO (d := d) σ c) = 0 := by
   unfold linO
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun s _ => ?_
   split_ifs <;> simp
 
@@ -258,8 +301,8 @@ theorem coeff_beMean {ι : Type} [Fintype ι] (l : ℕ) (σ : K →+* K) (be0 : 
       (((l ^ d - 1 : ℕ) : K)⁻¹) * ((∑ k ∈ Finset.range (l ^ d - 1), wt l ζ n ^ k) *
         MvPowerSeries.coeff n (beTil l σ be0 om oms)) := by
   unfold beMean
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPowerSeries.coeff_C_mul, map_sum, Finset.sum_mul]
+
+  rw [MvPowerSeries.coeff_C_mul, map_sum, Finset.sum_mul]
   congr 1
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [torus_coefficient]
@@ -443,15 +486,19 @@ theorem third_mean_condition : MeanNoLowBidegreeTerms := by
   refine ⟨?_, ?_, ?_⟩
   · refine Nat.pos_of_ne_zero fun h => hT ?_
     unfold beTil
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_eq_zero fun r _ => coeff_pair_degE hG σ _ _ h
   · refine Nat.pos_of_ne_zero fun h => hT ?_
     unfold beTil
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_eq_zero fun r _ => coeff_pair_degO hG σ _ _ h
   · rintro ⟨hE, hO⟩
     exact hS (geom_zero (wt_pow hζ.pow_eq_one n) (wt_ne_one hl hζ hE hO))
 
 end Formalism.L2.Th1.D
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstZeroOfConstantCoeff =====

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrass
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

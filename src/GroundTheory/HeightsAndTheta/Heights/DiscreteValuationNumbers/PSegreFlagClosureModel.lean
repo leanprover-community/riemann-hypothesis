@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreFlagClosure
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreFlagClosureTrdeg
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDvrConeDimTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDim
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDivisor
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwistedDualGensExpress
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwistedDualGensSpan
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -38,8 +39,8 @@ theorem exists_flag_ne_zero {Ω : Type*} [Field Ω] {E : Type*} [AddCommGroup E]
     refine e.ext fun i => ?_
     have key := Fintype.linearIndependent_iff.1 ht (fun i => θ l (e i)) (by
       rw [← h0 l]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hθe, Algebra.smul_def, map_sum, Finset.sum_mul]
+
+      simp only [hθe, Algebra.smul_def, map_sum, Finset.sum_mul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun j _ => ?_
       simp only [flagCoord]

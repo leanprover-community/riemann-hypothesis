@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.DifferentLatIndex
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PDifferentExtNorm
+public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.EigenLatDifferent
+public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.RecordEigenInputs
 
 @[expose] public section
 
@@ -91,9 +90,9 @@ theorem diffLat_span (s : Em →+* K) (w : Fin ρ → Fin N → Em) :
     refine ⟨fun a => RingOfIntegers.mapRingHom s (x * c a),
       fun a _ => Ideal.mem_map_of_mem _ (Ideal.mul_mem_right _ _ hx), ?_⟩
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Fintype.linearCombination_apply, Finset.sum_apply, map_sum, Algebra.smul_def, mul_assoc,
-      Finset.mul_sum]
+
+    simp [Fintype.linearCombination_apply, Finset.sum_apply, map_sum, Algebra.smul_def, mul_assoc,
+    Finset.mul_sum]
   · rw [idealLat, Submodule.map_le_iff_le_comap]
     intro c hc
     simp only [Submodule.mem_comap, Fintype.linearCombination_apply]

@@ -1,5 +1,7 @@
 module
 
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideDef
+public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSide
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FormCoreSK
 

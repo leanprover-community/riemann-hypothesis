@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreRelDim
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

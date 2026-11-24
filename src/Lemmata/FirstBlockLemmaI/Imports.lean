@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Jacobson.Ideal
 
 @[expose] public section
 

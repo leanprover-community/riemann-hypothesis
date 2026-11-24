@@ -1,10 +1,51 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalVal
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDivisor
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
+import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
+import GroundTheory.ProfiniteCohomology.Colimit
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ExistsUnitsToIdelesEqOfIdelesSumInvEqZero
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -17,6 +58,17 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 noncomputable section
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
+
+private theorem map_nsmul_eq_zero_of {A B F : Type*} [AddMonoid A] [AddMonoid B]
+    [FunLike F A B] [AddMonoidHomClass F A B] (f : F) (n : ℕ) (x : A) (hx : n • x = 0) :
+    n • f x = 0 :=
+  (map_nsmul f n x).symm.trans ((congrArg f hx).trans (map_zero f))
+
+private theorem linearMap_apply_apply_eq_zero {R A B C : Type*} [Semiring R]
+    [AddCommMonoid A] [AddCommMonoid B] [AddCommMonoid C]
+    [Module R A] [Module R B] [Module R C]
+    (f : A →ₗ[R] B) (g : B →ₗ[R] C) {x : A} (hx : x = 0) : g (f x) = 0 :=
+  (congrArg (fun z => g (f z)) hx).trans ((congrArg g f.map_zero).trans g.map_zero)
 
 theorem eq_zero_of_coprime_nsmul_eq_zero {A : Type*} [AddCommGroup A] {ℓ N k : ℕ} (hN : N.Coprime ℓ)
     {x : A} (h1 : N • x = 0) (h2 : ℓ ^ k • x = 0) : x = 0 := by
@@ -94,8 +146,7 @@ theorem eq_zero_of_mem_range_δ_of_coprime (i j : ℕ) (hij : i + 1 = j) {x : co
     x = 0 := by
   obtain ⟨y, rfl⟩ := hx
   obtain ⟨N, hN, hNy⟩ := hM y
-  refine eq_zero_of_coprime_nsmul_eq_zero hN ?_ hk
-  rw [← map_nsmul, hNy, map_zero]
+  exact eq_zero_of_coprime_nsmul_eq_zero hN (map_nsmul_eq_zero_of (δ hS i j hij).hom N y hNy) hk
 
 
 omit hS in
@@ -149,7 +200,7 @@ abbrev sUnitsH2Map : cohomology (sUnitsQuotSequence K.1 ℚ̄ S).X₁ 2 ⟶
 variable (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
 
-set_option maxHeartbeats 1000000 in
+
 include hℓ hS in
 theorem eq_zero_of_sUnitsH2Map_eq_zero_of_localEmbeddings (ιs : LocalEmbeddings K)
     (y : cohomology (sUnitsQuotSequence K.1 ℚ̄ S).X₁ 2) (k : ℕ)
@@ -195,14 +246,16 @@ theorem gsQuotMor_comp_sUnitsQuotDiv : gsQuotMor K S ≫ sUnitsQuotDiv K S ιs =
 theorem gsQuotMor_sUnitsToUnits_apply (y : cohomology (galSUnitsMax K.1 ℚ̄ S) 2) :
     (cohomologyMap (gsQuotMor K S) 2).hom
       ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom y) = 0 := by
-  have h := cohomologyMap_f_comp_g (S := sUnitsQuotSequence K.1 ℚ̄ S) 2
-  exact congrArg (fun m => ModuleCat.Hom.hom m y) h
+  have h : cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2 ≫
+      cohomologyMap (gsQuotMor K S) 2 = 0 :=
+    cohomologyMap_f_comp_g (S := sUnitsQuotSequence K.1 ℚ̄ S) 2
+  rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, h, ModuleCat.hom_zero, LinearMap.zero_apply]
 
 theorem exists_sUnitsToUnits_eq_of_gsQuotMor (x : cohomology (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2)
     (hx : (cohomologyMap (gsQuotMor K S) 2).hom x = 0) :
     ∃ y : cohomology (galSUnitsMax K.1 ℚ̄ S) 2,
       (cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom y = x :=
-  exists_cohomologyMap_f_eq_of_cohomologyMap_g_eq_zero (sUnitsQuotSequence_shortExact K.1 ℚ̄ S) 2 x hx
+  _root_.GroundTheory.ProfCoh.exists_cohomologyMap_f_eq (sUnitsQuotSequence_shortExact K.1 ℚ̄ S) 2 x hx
 
 theorem exists_δ_pic_eq (p : cohomology (galUnitsModSUnits K.1 ℚ̄ S) 2)
     (hp : (cohomologyMap (sUnitsQuotDiv K S ιs) 2).hom p = 0) :
@@ -217,12 +270,13 @@ theorem divFunEval_sUnitsQuotDiv_apply (v : {v : HeightOneSpectrum (𝓞 K.1) //
       (cohomologyMapAlong (decompHomS (v.1.adicCompletion K.1) S (ιs.fin v.1))
         (continuous_decompHomS (Kv := v.1.adicCompletion K.1) S (ιs.fin v.1))
         (ordEmbMor S (ιs.fin v.1) v.2) 2).hom x := by
+  let ev := divFunEval (gsDecomp K S ιs) ℤ v
   have e : (cohomologyMap (sUnitsQuotDiv K S ιs) 2).hom ((cohomologyMap (gsQuotMor K S) 2).hom x) =
       (cohomologyMap (unitsDiv K S ιs) 2).hom x := by
     rw [← gsQuotMor_comp_sUnitsQuotDiv K S ιs, cohomologyMap_comp]
     rfl
   have hm : (Rep.resFunctor (gsDecomp K S ιs v)).map (unitsDiv K S ιs) ≫
-      divFunEval (gsDecomp K S ιs) ℤ v = (ordEmbMor S (ιs.fin v.1) v.2 :
+      ev = (ordEmbMor S (ιs.fin v.1) v.2 :
         Rep.res (gsDecomp K S ιs v) (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) ⟶
           trivRep Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1) ℤ) := by
     apply Rep.hom_ext
@@ -230,11 +284,9 @@ theorem divFunEval_sUnitsQuotDiv_apply (v : {v : HeightOneSpectrum (𝓞 K.1) //
     apply LinearMap.ext
     intro y
     exact (divFunEval_unitsDiv K S ιs v y).trans (ordEmbMor_hom_apply S (ιs.fin v.1) v.2 y).symm
-  refine (congrArg (fun z => (cohomologyMapAlong (gsDecomp K S ιs v) (continuous_gsDecomp K S ιs v)
-    (divFunEval (gsDecomp K S ιs) ℤ v) 2).hom z) e).trans ?_
-  exact (cohomologyMapAlong_cohomologyMap_apply (gsDecomp K S ιs v) (continuous_gsDecomp K S ιs v)
-    (unitsDiv K S ιs) (divFunEval (gsDecomp K S ιs) ℤ v) 2 x).trans
-    (congrArg (fun m => (cohomologyMapAlong (gsDecomp K S ιs v) (continuous_gsDecomp K S ιs v) m 2).hom x) hm)
+  rw [e, cohomologyMapAlong_cohomologyMap_apply (gsDecomp K S ιs v)
+    (continuous_gsDecomp K S ιs v) (unitsDiv K S ιs) ev 2 x, hm]
+  rfl
 
 theorem gsLocalRes_sUnitsToUnits_eq_zero (y : cohomology (galSUnitsMax K.1 ℚ̄ S) 2)
     (v : HeightOneSpectrum (𝓞 K.1)) (hv : v ∉ S) :
@@ -242,13 +294,8 @@ theorem gsLocalRes_sUnitsToUnits_eq_zero (y : cohomology (galSUnitsMax K.1 ℚ̄
       (cohomologyULiftIntAddEquiv (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2
         ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom y)) = 0 := by
   refine (gsLocalRes_eq_zero_iff S (ιs.fin v) hv _).2 ?_
-  refine (divFunEval_sUnitsQuotDiv_apply K S ιs ⟨v, hv⟩ _).symm.trans ?_
-  refine (congrArg (fun z => (cohomologyMapAlong (gsDecomp K S ιs ⟨v, hv⟩)
-    (continuous_gsDecomp K S ιs ⟨v, hv⟩) (divFunEval (gsDecomp K S ιs) ℤ ⟨v, hv⟩) 2).hom
-      ((cohomologyMap (sUnitsQuotDiv K S ιs) 2).hom z)) (gsQuotMor_sUnitsToUnits_apply K S y)).trans ?_
-  exact (congrArg (fun z => (cohomologyMapAlong (gsDecomp K S ιs ⟨v, hv⟩)
-    (continuous_gsDecomp K S ιs ⟨v, hv⟩) (divFunEval (gsDecomp K S ιs) ℤ ⟨v, hv⟩) 2).hom z)
-      (LinearMap.map_zero _)).trans (LinearMap.map_zero _)
+  rw [← divFunEval_sUnitsQuotDiv_apply K S ιs ⟨v, hv⟩ _, gsQuotMor_sUnitsToUnits_apply,
+    map_zero, map_zero]
 
 variable (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
@@ -266,8 +313,7 @@ theorem exists_sUnitsToUnits_eq (x : cohomology (galUnits K.1 (maxUnramifiedOuts
       ((cohomologyMap (sUnitsQuotDiv K S ιs) 2).hom ((cohomologyMap (gsQuotMor K S) 2).hom x))
       fun v => (divFunEval_sUnitsQuotDiv_apply K S ιs v x).trans
         ((gsLocalRes_eq_zero_iff S (ιs.fin v.1) v.2 x).1 (hloc v.1 v.2))
-  have hpk : ℓ ^ k • (cohomologyMap (gsQuotMor K S) 2).hom x = 0 := by
-    rw [← map_nsmul, hx, map_zero]
+  have hpk := map_nsmul_eq_zero_of (cohomologyMap (gsQuotMor K S) 2).hom (ℓ ^ k) x hx
   have hp0 : (cohomologyMap (gsQuotMor K S) 2).hom x = 0 :=
     eq_zero_of_mem_range_δ_of_coprime (picSequence_shortExact K S ιs) 1 2 rfl
       (exists_δ_pic_eq K S ιs _ hd) ℓ
@@ -287,14 +333,18 @@ include hℓ hS in
 theorem eq_zero_of_sUnitsBrauer_eq_zero (y : cohomology (galSUnitsMax K.1 ℚ̄ S) 2) (k : ℕ)
     (hy : ℓ ^ k • y = 0) (h : sUnitsBrauer K S y = 0) : y = 0 := by
   refine eq_zero_of_sUnitsH2Map_eq_zero K S ℓ hℓ hS y k hy ?_
-  have h1 := gsBrauerInfl_injective K S (h.trans (map_zero _).symm)
-  exact (cohomologyULiftIntAddEquiv _ 2).injective (h1.trans (map_zero _).symm)
+  let f := (gsBrauerInfl K S 2).hom
+  let e := cohomologyULiftIntAddEquiv (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2
+  have hf := (sUnitsBrauer_apply K S y).symm.trans (h.trans f.map_zero.symm)
+  have he := (gsBrauerInfl_injective K S hf).trans (map_zero e).symm
+  exact e.injective he
 
 variable (ιs : LocalEmbeddings K)
 
 theorem brauerLocal_sUnitsBrauer_inr (y : cohomology (galSUnitsMax K.1 ℚ̄ S) 2)
-    (v : HeightOneSpectrum (𝓞 K.1)) (hv : v ∉ S) : brauerLocal ιs (sUnitsBrauer K S y) (.inr v) = 0 :=
-  (brauerLocal_gsBrauerInfl_inr K S ιs v _).trans (gsLocalRes_sUnitsToUnits_eq_zero K S ιs y v hv)
+    (v : HeightOneSpectrum (𝓞 K.1)) (hv : v ∉ S) : brauerLocal ιs (sUnitsBrauer K S y) (.inr v) = 0 := by
+  refine (congrArg (fun z => brauerLocal ιs z (.inr v)) (sUnitsBrauer_apply K S y)).trans ?_
+  exact (brauerLocal_gsBrauerInfl_inr K S ιs v _).trans (gsLocalRes_sUnitsToUnits_eq_zero K S ιs y v hv)
 
 
 include hℓ hS in
@@ -306,17 +356,16 @@ theorem exists_sUnitsBrauer_eq_iff (x : cohomology (unitsLimitRep K) 2) (k : ℕ
     exact brauerLocal_sUnitsBrauer_inr K S ιs y v hv
   · intro hloc
     obtain ⟨z, rfl⟩ := exists_gsBrauerInfl_eq K S ℓ hℓ hS x k hx
+    let f := (gsBrauerInfl K S 2).hom
+    let e := cohomologyULiftIntAddEquiv (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2
     have hz0 : ℓ ^ k • z = 0 := gsBrauerInfl_injective K S
-      ((map_nsmul (gsBrauerInfl K S 2).hom (ℓ ^ k) z).trans (hx.trans (map_zero _).symm))
-    have hz : ℓ ^ k • (cohomologyULiftIntAddEquiv (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2).symm z = 0 :=
-      (map_nsmul (cohomologyULiftIntAddEquiv (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2).symm
-        (ℓ ^ k) z).symm.trans ((congrArg _ hz0).trans (map_zero _))
-    obtain ⟨y, hy⟩ := exists_sUnitsToUnits_eq K S ιs ℓ hℓ hS _ k hz fun v hv =>
-      (congrArg (gsLocalRes S (ιs.fin v) 2).hom (AddEquiv.apply_symm_apply _ z)).trans
+      ((map_nsmul f (ℓ ^ k) z).trans (hx.trans f.map_zero.symm))
+    have hz := map_nsmul_eq_zero_of e.symm (ℓ ^ k) z hz0
+    have he := e.apply_symm_apply z
+    obtain ⟨y, hy⟩ := exists_sUnitsToUnits_eq K S ιs ℓ hℓ hS (e.symm z) k hz fun v hv =>
+      (congrArg (gsLocalRes S (ιs.fin v) 2).hom he).trans
         ((brauerLocal_gsBrauerInfl_inr K S ιs v z).symm.trans (hloc v hv))
-    exact ⟨y, (congrArg (fun t => (gsBrauerInfl K S 2).hom
-      ((cohomologyULiftIntAddEquiv (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2) t)) hy).trans
-        (congrArg (gsBrauerInfl K S 2).hom (AddEquiv.apply_symm_apply _ z))⟩
+    exact ⟨y, (sUnitsBrauer_apply K S y).trans (congrArg f ((congrArg e hy).trans he))⟩
 
 def brauerPrimaryOutside : AddSubgroup (cohomology (unitsLimitRep K) 2) where
   carrier := {x | (∃ k : ℕ, ℓ ^ k • x = 0) ∧
@@ -338,6 +387,7 @@ def brauerPrimaryOutside : AddSubgroup (cohomology (unitsLimitRep K) 2) where
 def sUnitsBrauerPrimary :
     AddCommGroup.primaryComponent (cohomology (galSUnitsMax K.1 ℚ̄ S) 2) ℓ →+ brauerPrimaryOutside K S ℓ ιs :=
   ((sUnitsBrauer K S).comp (AddCommGroup.primaryComponent _ ℓ).subtype).codRestrict _ fun y => by
+    rw [AddMonoidHom.comp_apply, AddSubgroup.coe_subtype]
     obtain ⟨k, hk⟩ := y.2
     refine ⟨⟨k, ?_⟩, fun v hv => brauerLocal_sUnitsBrauer_inr K S ιs y.1 v hv⟩
     exact (map_nsmul (sUnitsBrauer K S) (ℓ ^ k) y.1).symm.trans ((congrArg _ hk).trans (map_zero _))
@@ -347,19 +397,24 @@ theorem coe_sUnitsBrauerPrimary_apply (y : AddCommGroup.primaryComponent (cohomo
   rfl
 
 
-set_option maxHeartbeats 2000000 in
+
 include hℓ hS in
 theorem sUnitsBrauerPrimary_bijective : Function.Bijective (sUnitsBrauerPrimary K S ℓ ιs) := by
-  refine ⟨fun a b hab => ?_, fun x => ?_⟩
-  · obtain ⟨m, hm⟩ := a.2
+  constructor
+  · intro a b hab
+    obtain ⟨m, hm⟩ := a.2
     obtain ⟨n, hn⟩ := b.2
+    have h := congrArg (fun x : brauerPrimaryOutside K S ℓ ιs => x.1) hab
+    have he := (coe_sUnitsBrauerPrimary_apply K S ℓ ιs a).symm.trans
+      (h.trans (coe_sUnitsBrauerPrimary_apply K S ℓ ιs b))
     have hab' : sUnitsBrauer K S (a.1 - b.1) = 0 := by
-      rw [map_sub, ← coe_sUnitsBrauerPrimary_apply, ← coe_sUnitsBrauerPrimary_apply, hab, sub_self]
+      exact (map_sub (sUnitsBrauer K S) a.1 b.1).trans (sub_eq_zero.2 he)
     have h1 : ℓ ^ (m + n) • a.1 = 0 := by rw [pow_add, mul_comm (ℓ ^ m), mul_smul, hm, smul_zero]
     have h2 : ℓ ^ (m + n) • b.1 = 0 := by rw [pow_add, mul_smul, hn, smul_zero]
     have hk : ℓ ^ (m + n) • (a.1 - b.1) = 0 := by rw [smul_sub, h1, h2, sub_zero]
     exact Subtype.ext (sub_eq_zero.1 (eq_zero_of_sUnitsBrauer_eq_zero K S ℓ hℓ hS _ (m + n) hk hab'))
-  · obtain ⟨⟨k, hk⟩, hx⟩ := x.2
+  · intro x
+    obtain ⟨⟨k, hk⟩, hx⟩ := x.2
     obtain ⟨y, hy⟩ := (exists_sUnitsBrauer_eq_iff K S ℓ hℓ hS ιs x.1 k hk).2 hx
     obtain ⟨y', ⟨j, hj⟩, hy'⟩ := exists_primary_map_eq (sUnitsBrauer K S) hℓ
       (isTorsion_cohomology _ (by norm_num) y) (k := k) (by rw [hy]; exact hk)
@@ -399,20 +454,27 @@ def localPrimaryKernel : AddSubgroup (⨁ v : Place K.1, localGaloisCohomology K
 
 def brauerLocalPrimary : brauerPrimaryOutside K S ℓ ιs →+ localPrimaryKernel K S ℓ :=
   ((brauerLocal ιs).comp (brauerPrimaryOutside K S ℓ ιs).subtype).codRestrict _ fun x => by
+    rw [AddMonoidHom.comp_apply, AddSubgroup.coe_subtype]
     obtain ⟨⟨k, hk⟩, hx⟩ := x.2
     refine ⟨⟨k, ?_⟩, hx, brauerSumInv_eq_zero ιs x.1⟩
     exact (map_nsmul (brauerLocal ιs) (ℓ ^ k) x.1).symm.trans ((congrArg _ hk).trans (map_zero _))
 
 theorem brauerLocalPrimary_bijective : Function.Bijective (brauerLocalPrimary K S ℓ ιs) := by
-  refine ⟨fun a b hab => Subtype.ext (brauerLocal_injective ιs (congrArg Subtype.val hab)), fun t => ?_⟩
-  obtain ⟨⟨k, hk⟩, ht, ht'⟩ := t.2
-  obtain ⟨x, hx⟩ := (sumPlaceInv_eq_zero_iff ιs t.1).1 ht'
-  have hxk : ℓ ^ k • x = 0 := brauerLocal_injective ιs
-    ((map_nsmul (brauerLocal ιs) (ℓ ^ k) x).trans ((congrArg _ hx).trans (hk.trans (map_zero _).symm)))
-  refine ⟨⟨x, ⟨k, hxk⟩, fun v hv => (congrArg (fun s => s (.inr v)) hx).trans (ht v hv)⟩, Subtype.ext hx⟩
+  constructor
+  · intro a b hab
+    have h := congrArg (fun t : localPrimaryKernel K S ℓ => t.1) hab
+    exact Subtype.ext (brauerLocal_injective ιs h)
+  · intro t
+    obtain ⟨⟨k, hk⟩, ht, ht'⟩ := t.2
+    obtain ⟨x, hx⟩ := (sumPlaceInv_eq_zero_iff ιs t.1).1 ht'
+    let f := brauerLocal ιs
+    have hxk : ℓ ^ k • x = 0 := brauerLocal_injective ιs
+      ((map_nsmul f (ℓ ^ k) x).trans
+        ((congrArg (fun s => ℓ ^ k • s) hx).trans (hk.trans f.map_zero.symm)))
+    refine ⟨⟨x, ⟨k, hxk⟩, fun v hv => (congrArg (fun s => s (.inr v)) hx).trans (ht v hv)⟩, Subtype.ext hx⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 noncomputable def sUnitsH2PrimaryEquiv :
     AddCommGroup.primaryComponent (cohomology (galSUnitsMax K.1 ℚ̄ S) 2) ℓ ≃+ localPrimaryKernel K S ℓ :=
   (sUnitsBrauerPrimaryEquiv K S ℓ hℓ hS ιs).trans

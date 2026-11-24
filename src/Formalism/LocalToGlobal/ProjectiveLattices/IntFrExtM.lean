@@ -1,12 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CoreProofs
-public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Clauses
-public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
-public import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
-public import Formalism.LocalToGlobal.ProjectiveLattices.ExistsOfValILeOne
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
+public import Mathlib.AlgebraicGeometry.ValuativeCriterion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
@@ -37,7 +35,6 @@ theorem valCrit_proj {R : Type} [CommRing R] {X : Scheme.{0}} (f : X ⟶ Sp R) (
   haveI : ValuationRing V := by
     first
       | exact inferInstance
-      | exact ValuationRing.of_isDiscreteValuationRing V
   let S : ValuativeCommSq f := ⟨V, K, y, spMap b, ⟨hy⟩⟩
   obtain ⟨l⟩ := (hE S).exists_lift
   exact ⟨l.l, l.fac_right, l.fac_left⟩
@@ -64,7 +61,6 @@ theorem exists_family {D : Datum H} {l : Level H} (X0 : Moduli D l) (hN : ∀ l'
     | (beta_reduce
        rw [dite_eq_left rfl]
        rfl)
-    | simp
 
 end Proofs
 

@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section
 

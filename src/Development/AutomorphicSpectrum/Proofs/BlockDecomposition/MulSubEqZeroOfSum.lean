@@ -1,8 +1,49 @@
 module
 
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.MapUSharp
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.ValuationOfValuationModSquare
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLocallyConstantToZModPow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -36,15 +77,6 @@ theorem mem_span_pi_pow (A : PAlg l) (k : ℕ) (f : (A.cont ℤ_[l]).A) :
     f ∈ Ideal.span {(A.cont ℤ_[l]).pi ^ k} ↔ ∀ z, Hom.f (A.evCont z) f ∈ Ideal.span {A.pi ^ k} :=
   (RL.cont_ex A ℤ_[l]).2.2.2 k f
 
-theorem sharp_zero (A : PAlg l) : A.sharp 0 = 0 := by
-  have h : WittVector.teichmuller l (0 : A.A) = 0 := by
-    ext n
-    cases n with
-    | zero => simp [WittVector.teichmuller_coeff_zero]
-    | succ n => simp [WittVector.teichmuller_coeff_pos]
-  change A.th (WittVector.teichmuller l (0 : A.A)) = 0
-  rw [h, map_zero]
-
 theorem sharp_add (A : PAlg l) {e f : A.A} (he : IsIdempotentElem e) (hf : IsIdempotentElem f)
     (h : e * f = 0) : A.sharp (e + f) = A.sharp e + A.sharp f := by
   have hs : IsIdempotentElem (e + f) := by
@@ -56,7 +88,7 @@ theorem sharp_add (A : PAlg l) {e f : A.A} (he : IsIdempotentElem e) (hf : IsIde
   have h4 : (1 - (e + f)) = (1 - e) * (1 - f) := by
     have : (1 - e) * (1 - f) = 1 - e - f + e * f := by ring
     rw [this, h]; ring
-  have h5 : A.sharp e * A.sharp f = 0 := by rw [← map_mul, h, sharp_zero]
+  have h5 : A.sharp e * A.sharp f = 0 := by rw [← map_mul, h, _root_.GlobalTheory.CompanionTheory.RootsLC.sharp_zero]
   rw [h4, map_mul, h2, h3] at h1
   have : (1 - A.sharp e) * (1 - A.sharp f) = 1 - A.sharp e - A.sharp f + A.sharp e * A.sharp f := by ring
   rw [this, h5] at h1
@@ -69,7 +101,7 @@ theorem sharp_sum (A : PAlg l) {I : Type} (s : Finset I) (e : I → A.A)
     A.sharp (∑ i ∈ s, e i) = ∑ i ∈ s, A.sharp (e i) ∧ IsIdempotentElem (∑ i ∈ s, e i) := by
   classical
   induction s using Finset.induction_on with
-  | empty => exact ⟨by simpa using sharp_zero A, by simp [IsIdempotentElem]⟩
+  | empty => exact ⟨by simpa using _root_.GlobalTheory.CompanionTheory.RootsLC.sharp_zero A, by simp [IsIdempotentElem]⟩
   | insert a s ha ih =>
     obtain ⟨h1, h2⟩ := ih (fun i h => hi i (Finset.mem_insert_of_mem h))
       (fun i h j h' => ho i (Finset.mem_insert_of_mem h) j (Finset.mem_insert_of_mem h'))
@@ -105,8 +137,8 @@ theorem ind_orth (A : PAlg l) (m : ℕ) {c c' : ZMod (l ^ m)} (h : c ≠ c') :
 
 theorem sum_ind (A : PAlg l) (m : ℕ) : ∑ c, ind A m c = 1 := by
   refine cont_ext fun z => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_one]
+
+  rw [map_sum, map_one]
   simp only [ev_ind]
   rw [Finset.sum_ite_eq]
   simp

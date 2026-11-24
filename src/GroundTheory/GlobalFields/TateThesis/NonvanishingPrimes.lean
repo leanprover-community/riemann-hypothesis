@@ -1,8 +1,56 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
+public import GroundTheory.GlobalFields.TateThesis.HeckeLFunction
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
+public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremScaling
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -120,12 +168,8 @@ theorem one_le_norm_euler_comb {a : ℝ} (ha₀ : 0 ≤ a) (ha₁ : a < 1) {z w 
     rw [norm_mul, ha]
     calc a * ‖u‖ ≤ a * 1 := by gcongr
       _ < 1 := by rwa [mul_one]
-  have hpos : ∀ u : ℂ, ‖u‖ ≤ 1 → 0 < ‖1 - (a : ℂ) * u‖ := fun u hu ↦ by
-    refine norm_pos_iff.2 fun h0 ↦ ?_
-    have h1 : (a : ℂ) * u = 1 := (sub_eq_zero.1 h0).symm
-    have h2 := hlt u hu
-    rw [h1, norm_one] at h2
-    exact lt_irrefl _ h2
+  have hpos : ∀ u : ℂ, ‖u‖ ≤ 1 → 0 < ‖1 - (a : ℂ) * u‖ :=
+    fun u hu ↦ norm_pos_iff.mpr (IsUnit.one_sub_of_norm_lt_one (hlt u hu)).ne_zero
   have h0 : ‖(1 : ℂ) - a‖ = 1 - a := by
     rw [← ofReal_one, ← ofReal_sub, Complex.norm_of_nonneg (by linarith)]
   have hA : 0 < ‖(1 : ℂ) - a‖ := by rw [h0]; linarith

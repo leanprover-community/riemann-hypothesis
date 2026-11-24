@@ -1,9 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SndSectionValueTranslateProdFirstOrderLinear
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CechGluingOfKodairaSpencerRelation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.NonemptyIsLimitBaseChange
 
 @[expose] public section
 
@@ -59,7 +98,7 @@ theorem valR_mul_comb : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
 
   have hg₀ : g₀ ≫ t.G.hom = spMap φ ≫ chart U := by
     have h1 : a.left ≫ spMap (algebraMap Γ(X, U.1) (DualNumber Γ(X, U.1))) ≫ chart U = g₀ ≫ t.G.hom := Over.w a
-    rw [← h1, ha, ← Category.assoc, GlobalTheory.KSLin.spMap_comp_spMap, hφ]
+    rw [← h1, ha, ← Category.assoc, _root_.GlobalTheory.spMap_comp_ring, hφ]
   choose g'' v'' hg'' hv'' hw'' using hw
   let g' : tEpsG (g₀ ≫ t.G.hom) ⟶ t.G :=
     Over.homMk (spMap (algebraMap S (DualNumber S)) ≫ g₀) (Category.assoc _ _ _)
@@ -76,8 +115,8 @@ theorem valR_mul_comb : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     have e1 : (epsMul (0 : S)).comp (dualMap φ) = ((algebraMap S (DualNumber S)).comp φ).comp
         (TrivSqZeroExt.fstHom Γ(X, U.1) Γ(X, U.1) Γ(X, U.1)).toRingHom := by
       apply RingHom.ext; intro z; ext <;> simp [epsMul, dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-    rw [h1, hv'' b, ← Category.assoc, GlobalTheory.KSLin.spMap_comp_spMap, e1, ← GlobalTheory.KSLin.spMap_comp_spMap,
-      ← GlobalTheory.KSLin.spMap_comp_spMap, Category.assoc, Category.assoc, (hv b).2]
+    rw [h1, hv'' b, ← Category.assoc, _root_.GlobalTheory.spMap_comp_ring, e1, ← _root_.GlobalTheory.spMap_comp_ring,
+      ← _root_.GlobalTheory.spMap_comp_ring, Category.assoc, Category.assoc, (hv b).2]
     have h2 : (h ≫ (1 : Over.mk (chart U) ⟶ t.G)).left = (1 : tEpsG (g₀ ≫ t.G.hom) ⟶ t.G).left :=
       congrArg (fun k : tEpsG (g₀ ≫ t.G.hom) ⟶ t.G => k.left) (MonObj.comp_one h)
     have h3 : (spMap (algebraMap S (DualNumber S)) ≫ spMap φ) ≫ (1 : Over.mk (chart U) ⟶ t.G).left =
@@ -96,7 +135,7 @@ theorem valR_mul_comb : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     simp [epsMul, dualMap, hφs]
     ring
   have hsp : spMap ρ ≫ spMap (algebraMap S (DualNumber S)) = 𝟙 _ := by
-    rw [GlobalTheory.KSLin.spMap_comp_spMap]
+    rw [_root_.GlobalTheory.spMap_comp_ring]
     have : ρ.comp (algebraMap S (DualNumber S)) = RingHom.id S := by
       ext s; simp [ρ, evalSq_apply, TrivSqZeroExt.algebraMap_eq_inl]
     rw [this]; simp [spMap]
@@ -111,7 +150,7 @@ theorem valR_mul_comb : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     simp only [Over.comp_left]
     rw [h1, hv'' b, hu b, ha]
     show spMap ψ ≫ spMap (epsMul (c b)) ≫ v b = spMap ρ ≫ spMap (epsMul (φ (c b))) ≫ spMap (dualMap φ) ≫ v b
-    simp only [← Category.assoc, GlobalTheory.KSLin.spMap_comp_spMap, hρψ]
+    simp only [← Category.assoc, _root_.GlobalTheory.spMap_comp_ring, hρψ]
   have hg'eq : (Over.homMk g₀ rfl : Over.mk (g₀ ≫ t.G.hom) ⟶ t.G) = ρh ≫ g' := by
     apply Over.OverMorphism.ext
     show g₀ = spMap ρ ≫ spMap (algebraMap S (DualNumber S)) ≫ g₀

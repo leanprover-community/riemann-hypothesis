@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
+public import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas
+import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.NcardEqTwoIff
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.PointsPropertyOfD7
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,15 +69,12 @@ private theorem unram_part (D : D7) (𝔭 : Ideal (𝓞 D.host.F)) (h𝔭 : 𝔭
   haveI : IsGalois D.host.F D.host.E := by
     first
     | infer_instance
-    | exact IsGalois.tower_top_of_isGalois ℚ D.host.F D.host.E
   have h3 : Module.finrank D.host.F D.host.E = 2 := by
     first
-    | exact IsQuadraticExtension.finrank_eq_two _ _
     | (have h4 := Module.finrank_mul_finrank ℚ D.host.F D.host.E; have h5 : 0 < Module.finrank ℚ D.host.F := Module.finrank_pos; rw [D.host.der.finrank_E] at h4; rw [D.host.der.finrank_F] at h4 h5; exact Nat.eq_of_mul_eq_mul_left h5 (by linarith))
   have h2 : Nat.card (D.host.E ≃ₐ[D.host.F] D.host.E) = 2 := by
     first
     | rw [IsGalois.card_aut_eq_finrank, h3]
-    | rw [Nat.card_eq_fintype_card, IsGalois.card_aut_eq_finrank, h3]
   have h1 := Ideal.ncard_primesOver_mul_ramificationIdxIn_mul_inertiaDegIn 𝔭 (𝓞 D.host.E)
     (D.host.E ≃ₐ[D.host.F] D.host.E)
   rw [h2] at h1
@@ -73,7 +110,6 @@ private theorem split_part (D : D7) (p : ℕ) (hpp : p.Prime) (hp : p ∣ D.host
     haveI : P.LiesOver (span {(p : ℤ)}) := by
       first
       | exact Ideal.LiesOver.trans P 𝔭 (span {(p : ℤ)})
-      | infer_instance
     have h1 := D.host.der.eta.2.2 p hp P
     have hc : P.comap (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) = 𝔭 :=
       (Ideal.LiesOver.over (P := P) (p := 𝔭)).symm

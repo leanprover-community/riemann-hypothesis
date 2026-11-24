@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.RenameProdMapMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -55,8 +102,8 @@ theorem component_mul_of_unique (p q : MvPolynomial σ R) (a b : ℕ)
   classical
   conv_lhs => rw [← sum_weightSet_component (w := w) p, ← sum_weightSet_component (w := w) q,
     Finset.sum_mul_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   have hterm : ∀ a' ∈ weightSet w p, ∀ b' ∈ weightSet w q,
       weightedHomogeneousComponent w (a + b)
         (weightedHomogeneousComponent w a' p * weightedHomogeneousComponent w b' q) =
@@ -72,8 +119,8 @@ theorem component_mul_of_unique (p q : MvPolynomial σ R) (a b : ℕ)
       rw [if_neg]
       rintro ⟨rfl, rfl⟩
       exact hs rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_congr rfl fun a' ha' => map_sum _ _ _]
+
+  rw [Finset.sum_congr rfl fun a' ha' => map_sum _ _ _]
   rw [Finset.sum_congr rfl fun a' ha' => Finset.sum_congr rfl fun b' hb' => hterm a' ha' b' hb']
   by_cases ha : a ∈ weightSet w p
   · by_cases hb : b ∈ weightSet w q
@@ -172,7 +219,7 @@ theorem weight_groupWeight_apply (d : Fin k × Fin n →₀ ℕ) (i : Fin k) :
 variable {R : Type*} [CommRing R]
 
 theorem isMultiHomog_iff (δ : ℕ) (f : MvPolynomial (Fin k × Fin n) R) :
-    IsMultiHomog δ f ↔ ∀ i : Fin k, IsWeightedHomogeneous (inGroup i) f δ := by
+    Heights.IsMultiHomog δ f ↔ ∀ i : Fin k, IsWeightedHomogeneous (inGroup i) f δ := by
   constructor
   · intro h i d hd
     rw [← weight_groupWeight_apply, h hd]
@@ -223,7 +270,7 @@ section Cycle
 variable {k n : ℕ} {F : Type} [Field F]
 
 theorem isWeightedHomogeneous_inGroup_of_dvd {f g : MvPolynomial (Fin k × Fin n) F} {δ : ℕ}
-    (hf : IsMultiHomog δ f) (hf0 : f ≠ 0) (hgf : g ∣ f) (i : Fin k) :
+    (hf : Heights.IsMultiHomog δ f) (hf0 : f ≠ 0) (hgf : g ∣ f) (i : Fin k) :
     ∃ a, IsWeightedHomogeneous (inGroup i) g a := by
   obtain ⟨r, rfl⟩ := hgf
   exact isWeightedHomogeneous_of_mul_left ((isMultiHomog_iff δ _).mp hf i) (left_ne_zero_of_mul hf0)
@@ -232,11 +279,11 @@ theorem isWeightedHomogeneous_inGroup_of_dvd {f g : MvPolynomial (Fin k × Fin n
 theorem exists_degrees_of_chowFormCycle (hk : 0 < k) (Z : ProjCycle F n) (c : F)
     (g : Ideal (MvPolynomial (Fin n) F) → MvPolynomial (Fin k × Fin n) F)
     (hg : ∀ W ∈ Z.support, IsChowForm W k (g W)) {δ : ℕ}
-    (hf : IsMultiHomog δ (C c * ∏ W ∈ Z.support, g W ^ Z W)) (hf0 : C c * ∏ W ∈ Z.support, g W ^ Z W ≠ 0) :
-    ∃ δW : Ideal (MvPolynomial (Fin n) F) → ℕ, (∀ W ∈ Z.support, IsMultiHomog (δW W) (g W)) ∧
+    (hf : Heights.IsMultiHomog δ (C c * ∏ W ∈ Z.support, g W ^ Z W)) (hf0 : C c * ∏ W ∈ Z.support, g W ^ Z W ≠ 0) :
+    ∃ δW : Ideal (MvPolynomial (Fin n) F) → ℕ, (∀ W ∈ Z.support, Heights.IsMultiHomog (δW W) (g W)) ∧
       ∑ W ∈ Z.support, Z W * δW W = δ := by
   classical
-  have hdeg : ∀ W ∈ Z.support, ∃ d, IsMultiHomog d (g W) := by
+  have hdeg : ∀ W ∈ Z.support, ∃ d, Heights.IsMultiHomog d (g W) := by
     intro W hW
     have hdvd : g W ∣ C c * ∏ W ∈ Z.support, g W ^ Z W := by
       apply Dvd.dvd.mul_left
@@ -250,12 +297,12 @@ theorem exists_degrees_of_chowFormCycle (hk : 0 < k) (Z : ProjCycle F n) (c : F)
     exact ha i
   choose! δW hδW using hdeg
   refine ⟨δW, hδW, ?_⟩
-  have hprod : IsMultiHomog (∑ W ∈ Z.support, Z W * δW W) (C c * ∏ W ∈ Z.support, g W ^ Z W) := by
+  have hprod : Heights.IsMultiHomog (∑ W ∈ Z.support, Z W * δW W) (C c * ∏ W ∈ Z.support, g W ^ Z W) := by
     have h1 : IsWeightedHomogeneous (groupWeight k n) (∏ W ∈ Z.support, g W ^ Z W)
         (∑ W ∈ Z.support, Z W • fun _ : Fin k => δW W) :=
       IsWeightedHomogeneous.prod _ _ _ fun W hW => (hδW W hW).pow (Z W)
     have h2 := h1.C_mul c
-    unfold IsMultiHomog
+    unfold Heights.IsMultiHomog
     convert h2 using 1
     funext i
     simp [Finset.sum_apply]

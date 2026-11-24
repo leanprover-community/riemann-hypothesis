@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+public import GroundTheory.GlobalFields.LocalAtPlace
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.Statements
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

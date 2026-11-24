@@ -1,7 +1,51 @@
 module
 
 public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerParabolicCoordinates
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,9 +73,8 @@ lemma upto_succ {ρ : ι → ℕ} {F : (ι → ℂ) → ι → ℂ} (hF : ShearC
   funext x q
   show (if ρ q < n + 1 then F x q else x q) =
     (if ρ q < n then F (lvl ρ F n x) q else lvl ρ F n x q)
-  have hlv : ∀ p, ρ p ≠ n → lvl ρ F n x p = x p := fun p hp => by
-    simp only [lvl]
-    rw [if_neg hp]
+  have hlv : ∀ p, ρ p ≠ n → lvl ρ F n x p = x p :=
+    fun p hp => by simp [lvl, hp]
   by_cases h1 : ρ q < n
   · rw [if_pos (by omega), if_pos h1]
     have h2 := hF q x (lvl ρ F n x) (fun p hp => (hlv p (by omega)).symm)
@@ -169,10 +212,7 @@ lemma shearMap_apply (x : C2.Lidx m → ℂ) (q : C2.Lidx m) :
       intro t _
       rw [if_neg]
       intro e
-      apply h
-      have h2 := t.2
-      rw [e] at h2
-      exact h2
+      exact h (by simpa [e] using t.2)
   have hB : ∀ k j, (∑ t : C2.Lstidx w, if t.1 = (k, j) then x ⟨t.1, t.2.1⟩ else 0) = bX w x k j := by
     intro k j
     unfold bX
@@ -188,10 +228,7 @@ lemma shearMap_apply (x : C2.Lidx m → ℂ) (q : C2.Lidx m) :
       intro t _
       rw [if_neg]
       intro e
-      apply h
-      have h2 := t.2
-      rw [e] at h2
-      exact h2
+      exact h (by simpa [e] using t.2)
   have hexp : ∀ i j, (C2.lowOf (fun t : C2.LPidx w => t.1) (fun t => x ⟨t.1, t.2.1⟩) *
       C2.lowOf (fun t : C2.Lstidx w => t.1) (fun t => x ⟨t.1, t.2.1⟩)) i j =
       (1 : Matrix (Fin m) (Fin m) ℂ) i j + bX w x i j + aX w x i j + ∑ k, aX w x i k * bX w x k j := by
@@ -238,13 +275,9 @@ lemma shear_cond : ShearCond (gap (m := m)) (fun x => mulMap w (eSplit w x)) := 
           omega
         · rfl
       rw [ea, eb]
-    · have h0 : ∀ z, aX w z q.1.1 k = 0 := fun z => by
-        unfold aX
-        rw [dif_neg (fun h => h2 h.1)]
+    · have h0 : ∀ z, aX w z q.1.1 k = 0 := fun z => by simp [aX, h2]
       rw [h0, h0, zero_mul, zero_mul]
-  · have h0 : ∀ z, bX w z k q.1.2 = 0 := fun z => by
-      unfold bX
-      rw [dif_neg (fun h => h1 h.1)]
+  · have h0 : ∀ z, bX w z k q.1.2 = 0 := fun z => by simp [bX, h1]
     rw [h0, h0, mul_zero, mul_zero]
 
 lemma shear_meas : Measurable (fun x => mulMap w (eSplit w x)) := by

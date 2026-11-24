@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
 @[expose] public section
 

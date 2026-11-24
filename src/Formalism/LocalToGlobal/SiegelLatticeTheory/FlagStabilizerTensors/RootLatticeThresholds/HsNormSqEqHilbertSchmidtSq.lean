@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.OOCore
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointPf
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LocWSOf
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ThmBUse
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.EnergyCut
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.InfCut
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RankOneTensors
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RelPtR
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -25,9 +29,7 @@ theorem hsNormSq_eq_hilbertSchmidt_sq {V V' : Type*} [NormedAddCommGroup V] [Inn
   rw [Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   first
-    | exact inner_self_eq_norm_sq _
     | (rw [inner_self_eq_norm_sq_to_K]; norm_cast)
-    | (rw [inner_self_eq_norm_sq_to_K]; simp [sq])
 
 variable {D : D7} {X : HidaSetting D} (u u' : D.what₂.Word)
 

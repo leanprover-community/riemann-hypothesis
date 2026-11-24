@@ -1,11 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
-public import Formalism.RealPlaceAnalysis.StatementE
-public import Formalism.RealPlaceAnalysis.StatementKT
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QdetTopThreeOrders
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Formalism.HermitianCurvature.BesselNonvanishingReduction
+import Formalism.HermitianCurvature.StatementI
+public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 
@@ -175,16 +221,16 @@ theorem cas_of_capelli : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (n : ℕ
             = (∏ s, (Y + (mu s : ℂ))) • (1 : Module.End ℂ M) := by
           ext w; simpa using h Y w
         have h2 := congrArg φ ((hR _).symm.trans h1)
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, add_sub_assoc] at h2
+
+        simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, add_sub_assoc] at h2
         exact h2)
   have e1 : ∑ i, E i i = (∑ l, (mu l : ℂ)) • (1 : Module.End ℂ M) := by
     rw [← sub_eq_zero, ← Module.forall_dual_apply_eq_zero_iff ℂ]
     intro φ
     have := (core φ).1
     rw [hρ0] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, map_smul, smul_eq_mul]
+
+    simp only [map_sub, map_sum, map_smul, smul_eq_mul]
     linear_combination this
   have e2 : Formalism.REAL.Cas E = (casG mu : ℂ) • (1 : Module.End ℂ M) := by
     rw [← sub_eq_zero, ← Module.forall_dual_apply_eq_zero_iff ℂ]
@@ -193,8 +239,8 @@ theorem cas_of_capelli : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (n : ℕ
     have h3 := congrArg φ (sq_sub_cas E hE)
     rw [e1, smul_mul_smul_comm, mul_one] at h3
     simp only [sum_erase_eq_sub (mem_univ _), hρ0] at h2
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub φ, map_sum, map_smul, smul_eq_mul] at h3 h2 ⊢
+
+    simp only [map_sub φ, map_sum, map_smul, smul_eq_mul] at h3 h2 ⊢
     have h4 : (casG mu : ℂ) = ∑ l, (mu l : ℂ) ^ 2 - ∑ l, ρ l ^ 2 := by
       simp [casG, Formalism.QuantumDeterminants.rhoStd, hρ]
     have h5 : ∑ i : Fin n, ((n : ℂ) - 1 - 2 * (i : ℕ)) * φ (E i i)

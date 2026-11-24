@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.ThetaInZIsThetaLog
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementC
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementB
 
 @[expose] public section
 

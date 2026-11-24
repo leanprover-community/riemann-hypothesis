@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.PartialDifferential.EllipticLocal
+import Aesop.Main
+import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
+import GroundTheory.AutomorphicForms.PartialDifferential.SobolevMollifier
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.MetricSpace.Contracting
 
 @[expose] public section
 

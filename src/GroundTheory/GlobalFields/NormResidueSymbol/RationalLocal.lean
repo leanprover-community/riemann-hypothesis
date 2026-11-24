@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.NormResidueSymbol.RangeFiniteLocalNormLeKerLocalSymbol
+public import GroundTheory.LocalFields.Examples
+public import GroundTheory.LocalFields.MaximalAbelianExtension
+public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+public import Mathlib.NumberTheory.Padics.RingHoms
 public import GroundTheory.LocalFields.ExplicitQp
 public import GroundTheory.LocalFields.LocalArtinTransport
+import Mathlib.NumberTheory.Padics.Complex
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.LocalFields.LocalArtinMap
 
 @[expose] public section
 

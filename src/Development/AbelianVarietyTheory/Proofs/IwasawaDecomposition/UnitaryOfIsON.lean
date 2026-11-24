@@ -1,11 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeightLawGoodOfFieldEmbedding
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LawNormClassSumFock
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
+import Formalism.LocalToGlobal.Columns.PolyFnLemmas
+import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
+import Formalism.LocalToGlobal.Divisibility.FramesLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -33,15 +72,15 @@ theorem majAt_classSum {K : Type} [Field K] [NumberField K] [StarRing K] (C : CS
   have hc : ∀ i j, v.embedding (C.H i j) =
       ∑ c, ((C.wt c : ℂ))⁻¹ * B (ψ ((C.basis i : C.Cl → C.V) c)) (ψ ((C.basis j : C.Cl → C.V) c)) := by
     intro i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [CSD.H, Matrix.of_apply, CSD.csum, map_sum, map_mul, map_inv₀, map_natCast]
+
+    simp only [CSD.H, Matrix.of_apply, CSD.csum, map_sum, map_mul, map_inv₀, map_natCast]
     exact Finset.sum_congr rfl fun c _ => congrArg _ (hs _ _ (C.basis_rat hb i c))
   rw [h1, Formalism.L2.DIV.majAt_eq, hm, hI]
   generalize C.basis.equivFun x = a
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, Matrix.mulVec, Matrix.map_apply, hc, map_sum, LinearMap.sum_apply, Finset.sum_apply, Pi.smul_apply,
-    LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul, Finset.mul_sum, Finset.sum_mul, Pi.star_apply,
-    starRingEnd_apply, RingHom.id_apply]
+
+  simp only [dotProduct, Matrix.mulVec, Matrix.map_apply, hc, map_sum, LinearMap.sum_apply, Finset.sum_apply, Pi.smul_apply,
+  LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul, Finset.mul_sum, Finset.sum_mul, Pi.star_apply,
+  starRingEnd_apply]
   rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -56,8 +95,8 @@ variable {ι : Type} [Fintype ι] {n : ℕ}
 theorem fockF_conj {τ : Type} (f g : MvPolynomial τ ℂ) :
     Formalism.REAL.fockF (MvPolynomial.map (starRingEnd ℂ) f) (MvPolynomial.map (starRingEnd ℂ) g) =
       starRingEnd ℂ (Formalism.REAL.fockF f g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [fockF_eq_sum _ _ f.support (MvPolynomial.support_map_subset _ _), Formalism.REAL.fockF, map_sum]
+
+  rw [fockF_eq_sum _ _ f.support (MvPolynomial.support_map_subset _ _), Formalism.REAL.fockF, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [MvPolynomial.coeff_map, MvPolynomial.coeff_map, map_mul, map_mul, map_natCast]
   rfl
@@ -198,7 +237,7 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem GlobalTheory.Mem.Col2.MetricTie.ipV_norm_tie : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (a : I.ι) (i : ℕ) (hi : i ≤ B.R.m) (eY : (I.chain l u a).Y i ≃ Formalism.L2.Forms.Fr (I.rec7 l Z) i hi), I.IdY l Z u a i hi eY → IpVTieG (D := (I.rec7 l Z)) (I.fm l u a) eY ∧ NormTieG (D := (I.rec7 l Z)) (I.fm l u a) eY := by
   intro B X I hI hp l Z u a i hi eY hY
   have hg : gramN (I.rec7 l Z) i hi = 1 := ((GlobalTheory.Mem.Col2.TC.spaces_in_coordinates I hI hp l Z).2.2.2 i hi).1

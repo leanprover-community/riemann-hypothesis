@@ -1,11 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullFormsGeneric
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullRatiosAlgebraic
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.FibreNormCharpolyFalse
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 

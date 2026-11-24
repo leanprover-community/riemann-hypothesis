@@ -1,16 +1,70 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.IsScalarTowerFiniteSubfieldAlgebraicClosure
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Unramified
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.BrauerInflation
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolUnramified
-public import GroundTheory.ProfiniteCohomology.FilteredHomology
 public import GroundTheory.ProfiniteCohomology.CupProducts
+import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+import GroundTheory.ProfiniteCohomology.GaloisCohomology.BrauerInflation
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Unramified
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolUnramified
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
+
+-- Prune dead-end `Units.instSMul` / `Units.instMulAction` (which search for `SMulCommClass G R R`,
+-- false for Galois actions) and short-circuit `SMul` on unit groups via `MulDistribMulAction`.
+attribute [-instance] Units.instSMul Units.instMulAction
+
+@[reducible] local instance (priority := high) instSMulUnitsOfMulDistrib {G M : Type*} [Monoid G] [Monoid M]
+    [inst : MulDistribMulAction G Mˣ] : SMul G Mˣ :=
+  inst.toSMul
+
+@[reducible] local instance (priority := high) instMulDistribMulActionOfMulSemiring {G R : Type*} [Monoid G]
+    [Semiring R] [inst : MulSemiringAction G R] : MulDistribMulAction G R :=
+  inst.toMulDistribMulAction
 
 namespace GroundTheory.ProfCoh
 
@@ -151,7 +205,6 @@ theorem decompHom_smul_placeOfEmbedding'
   calc τ • w₀ = τ • (τ⁻¹ • w₀) := by rw [h]
     _ = w₀ := smul_inv_smul τ w₀
 
-set_option synthInstance.maxHeartbeats 400000 in
 def placeDecompHom :
     Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →*
       MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal :=
@@ -319,23 +372,23 @@ theorem isMulCoboundary₂_of_valuation (he : w.asIdeal.ramificationIdx (𝓞 K)
     (hg : ∀ a b, Valued.v (α (a, b) : w.adicCompletion L) = WithZero.exp (-(g b - g (a * b) + g a))) :
     IsMulCoboundary₂ α := by
   obtain ⟨ϖ, hϖ⟩ := v.valuation_exists_uniformizer K
-  set π0 : w.adicCompletion L := algebraMap L (w.adicCompletion L) (algebraMap K L ϖ) with hπ0def
+  let π0 : w.adicCompletion L := algebraMap L (w.adicCompletion L) (algebraMap K L ϖ)
   have hπv : Valued.v π0 = WithZero.exp (-1) := by
-    rw [hπ0def, show algebraMap L (w.adicCompletion L) (algebraMap K L ϖ) =
-      ((algebraMap K L ϖ : L) : w.adicCompletion L) from rfl, w.valuedAdicCompletion_eq_valuation',
-      ← HeightOneSpectrum.valuation_liesOver L v w ϖ, he, pow_one, hϖ]
-  have hπ0 : π0 ≠ 0 := by
-    intro h
-    rw [h, map_zero] at hπv
-    exact WithZero.exp_ne_zero hπv.symm
+    calc
+      Valued.v π0 = w.valuation L (algebraMap K L ϖ) :=
+        w.valuedAdicCompletion_eq_valuation' (algebraMap K L ϖ)
+      _ = (v.valuation K ϖ) ^ w.asIdeal.ramificationIdx (𝓞 K) :=
+        (HeightOneSpectrum.valuation_liesOver L v w ϖ).symm
+      _ = WithZero.exp (-1) := ((congrArg ((v.valuation K ϖ) ^ ·) he).trans (pow_one _)).trans hϖ
+  have hπ0 : π0 ≠ 0 := fun h =>
+    WithZero.exp_ne_zero (hπv.symm.trans ((congrArg (fun x => Valued.v x) h).trans (map_zero Valued.v)))
   set π : (w.adicCompletion L)ˣ := Units.mk0 π0 hπ0
   have hπinv : ∀ (a : MulAction.stabilizer Gal(L/K) w.asIdeal) (n : ℤ), a • π ^ n = π ^ n := by
     intro a n
-    rw [smul_zpow']
-    congr 1
-    apply Units.ext
-    show decompositionAlgEquiv v w a π0 = π0
-    rw [hπ0def, decompositionAlgEquiv_algebraMap, AlgEquiv.commutes]
+    have h : a • π = π := Units.ext
+      ((decompositionAlgEquiv_algebraMap v w a (algebraMap K L ϖ)).trans
+        (congrArg (algebraMap L (w.adicCompletion L)) ((a : Gal(L/K)).commutes ϖ)))
+    exact (smul_zpow' a π n).trans (congrArg (· ^ n) h)
   have hπpow : ∀ n : ℤ, Valued.v (((π ^ n : (w.adicCompletion L)ˣ)) : w.adicCompletion L) =
       WithZero.exp (-n) := by
     intro n
@@ -385,7 +438,8 @@ theorem isMulCoboundary₂_of_valuation (he : w.asIdeal.ramificationIdx (𝓞 K)
     Units.map (w.adicCompletionIntegers L).subtype.toMonoidHom
   have htoFw_inj : Function.Injective toFw := fun x y h =>
     Units.ext (Subtype.ext (congrArg Units.val h))
-  have htoFw_smul : ∀ (a : MulAction.stabilizer Gal(L/K) w.asIdeal) y, toFw (a • y) = a • toFw y :=
+  have htoFw_smul : ∀ (a : MulAction.stabilizer Gal(L/K) w.asIdeal) (y : (w.adicCompletionIntegers L)ˣ),
+      toFw (a • y) = a • toFw y :=
     fun _ _ => rfl
   have hu_coe : ∀ p, toFw (u p) = α₁ p := fun p => Units.ext rfl
   have hu : IsMulCocycle₂ u := by
@@ -394,13 +448,13 @@ theorem isMulCoboundary₂_of_valuation (he : w.asIdeal.ramificationIdx (𝓞 K)
     rw [map_mul, map_mul, htoFw_smul, hu_coe, hu_coe, hu_coe, hu_coe]
     exact hα₁ a b c
 
-  have hz := isZero_groupCohomology_decomposition_integerUnits v w he (n := 2) (by norm_num)
-  have h0 : (ConcreteCategory.hom (groupCohomology.H2π
-      (Rep.ofMulDistribMulAction (MulAction.stabilizer Gal(L/K) w.asIdeal)
-        (w.adicCompletionIntegers L)ˣ))) (groupCohomology.cocyclesOfIsMulCocycle₂ hu) = 0 :=
+  have hz := isZero_groupCohomology_decomposition_integerUnits v w he (n := 2)
+    (Nat.le_succ 1)
+  let z := groupCohomology.cocyclesOfIsMulCocycle₂ hu
+  have h0 : H2π _ z = 0 :=
     (ModuleCat.isZero_iff_subsingleton.1 hz).elim _ _
-  rw [groupCohomology.H2π_eq_zero_iff] at h0
-  obtain ⟨x, hx⟩ := groupCohomology.isMulCoboundary₂_of_mem_coboundaries₂ _ h0
+  obtain ⟨x, hx⟩ := groupCohomology.isMulCoboundary₂_of_mem_coboundaries₂ _
+    ((groupCohomology.H2π_eq_zero_iff z).1 h0)
   refine ⟨fun a => toFw (x a) * π ^ g a, fun a b => ?_⟩
   have hxab : a • x b / x (a * b) * x a = u (a, b) := hx a b
   have hxab' := congrArg toFw hxab
@@ -423,7 +477,7 @@ variable {K : FiniteSubfield} {v : HeightOneSpectrum (𝓞 K.1)}
   (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
   (F : FiniteSubfield) [Fact (K ≤ F)] [Normal K.1 F.1]
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 instance mulDistribMulAction_gal_units_finiteSubfield :
     MulDistribMulAction Gal(F.1/K.1) F.1ˣ :=
   AlgEquiv.instMulDistribMulActionUnits
@@ -432,7 +486,7 @@ def ordPlace (f : F.1ˣ) : ℤ :=
   -WithZero.log ((placeOfEmbedding ι F).1.valuation F.1 (f : F.1))
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem placeDecompHom_surjective : Function.Surjective (placeDecompHom ι F) := by
   intro d
   obtain ⟨τ, hτ⟩ : ∃ τ : compField ι F ≃ₐ[v.adicCompletion K.1] compField ι F, ∀ y,
@@ -440,19 +494,30 @@ theorem placeDecompHom_surjective : Function.Surjective (placeDecompHom ι F) :=
     ⟨(compEquiv ι F).symm.trans ((decompositionAlgEquiv v (placeOfEmbedding ι F).1 d).trans
       (compEquiv ι F)), fun _ => rfl⟩
   refine ⟨τ.liftNormal (AlgebraicClosure (v.adicCompletion K.1)), Subtype.ext ?_⟩
-  rw [coe_placeDecompHom, decompHom_eq_iff]
+  refine (coe_placeDecompHom ι F _).trans ((decompHom_eq_iff (embedLevel ι F) _ d).2 ?_)
   intro x
-  have e : ∀ y : F.1, embedLevel ι F y = algebraMap (compField ι F) (AlgebraicClosure (v.adicCompletion K.1))
-      (compEquiv ι F (algebraMap F.1 ((placeOfEmbedding ι F).1.adicCompletion F.1) y)) := by
-    intro y
-    rw [IntermediateField.algebraMap_apply, coe_compEquiv_apply, completionEmbedding_algebraMap,
-      embedLevel_apply]
-  rw [e, e, AlgEquiv.liftNormal_commutes, hτ, AlgEquiv.symm_apply_apply,
-    decompositionAlgEquiv_algebraMap]
+  let lift := τ.liftNormal (AlgebraicClosure (v.adicCompletion K.1))
+  let i := algebraMap F.1 ((placeOfEmbedding ι F).1.adicCompletion F.1)
+  let e := compEquiv ι F
+  let j := algebraMap (compField ι F) (AlgebraicClosure (v.adicCompletion K.1))
+  have hi (y : F.1) : j (e (i y)) = embedLevel ι F y :=
+    (coe_compEquiv_apply ι F (i y)).trans
+      ((completionEmbedding_algebraMap ι F y).trans (embedLevel_apply ι F y).symm)
+  have hτx : τ (e (i x)) = e (i ((d : Gal(F.1/K.1)) x)) :=
+    (hτ (e (i x))).trans (congrArg e
+      ((congrArg (decompositionAlgEquiv v (placeOfEmbedding ι F).1 d)
+        (e.symm_apply_apply (i x))).trans (decompositionAlgEquiv_algebraMap v (placeOfEmbedding ι F).1 d x)))
+  exact (hi _).symm.trans ((congrArg j hτx.symm).trans
+    ((τ.liftNormal_commutes _ (e (i x))).symm.trans (congrArg lift (hi x))))
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 4000000 in
+private theorem map_coboundary₂ {G H M N : Type} [Monoid G] [Monoid H]
+    [Group M] [Group N] [SMul H M] [SMul G N] (r : G →* H) (j : M →* N)
+    (β : H → M) (hj : ∀ a x, a • j x = j (r a • x)) (a b : G) :
+    a • j (β (r b)) / j (β (r (a * b))) * j (β (r a)) =
+      j (r a • β (r b) / β (r a * r b) * β (r a)) := by
+  rw [hj, ← map_div, ← map_mul, map_mul r]
+
 theorem exists_mulCoboundary_of_ord (he : (placeOfEmbedding ι F).1.asIdeal.ramificationIdx (𝓞 K.1) = 1)
     (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : IsMulCocycle₂ c)
     (h : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) → ℤ) (hh : IsLocallyConstant h)
@@ -474,13 +539,9 @@ theorem exists_mulCoboundary_of_ord (he : (placeOfEmbedding ι F).1.asIdeal.rami
 
   let alg : F.1ˣ →* ((placeOfEmbedding ι F).1.adicCompletion F.1)ˣ :=
     Units.map (algebraMap F.1 ((placeOfEmbedding ι F).1.adicCompletion F.1)).toMonoidHom
-  have halg_smul : ∀ (a : MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal) y,
-      alg ((a : Gal(F.1/K.1)) • y) = a • alg y := by
-    intro a y
-    apply Units.ext
-    change algebraMap F.1 _ ((a : Gal(F.1/K.1)) (y : F.1)) =
-      decompositionAlgEquiv v (placeOfEmbedding ι F).1 a (algebraMap F.1 _ (y : F.1))
-    rw [decompositionAlgEquiv_algebraMap]
+  have halg_smul (a : MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal) (y : F.1ˣ) :
+      alg ((a : Gal(F.1/K.1)) • y) = a • alg y :=
+    Units.ext ((decompositionAlgEquiv_algebraMap v (placeOfEmbedding ι F).1 a (y : F.1)).symm)
   let α : MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal ×
       MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal →
       ((placeOfEmbedding ι F).1.adicCompletion F.1)ˣ :=
@@ -504,92 +565,94 @@ theorem exists_mulCoboundary_of_ord (he : (placeOfEmbedding ι F).1.asIdeal.rami
 
   let j : ((placeOfEmbedding ι F).1.adicCompletion F.1)ˣ →* (AlgebraicClosure (v.adicCompletion K.1))ˣ :=
     Units.map (completionEmbedding ι F).toRingHom.toMonoidHom
-  have hj_smul : ∀ σ y, σ • j y = j (placeDecompHom ι F σ • y) := by
-    intro σ y
-    apply Units.ext
-    exact (completionEmbedding_placeDecompHom_smul ι F σ (y : (placeOfEmbedding ι F).1.adicCompletion F.1)).symm
+  have hj_smul (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1))
+      (y : ((placeOfEmbedding ι F).1.adicCompletion F.1)ˣ) :
+      σ • j y = j (placeDecompHom ι F σ • y) :=
+    Units.ext (completionEmbedding_placeDecompHom_smul ι F σ y).symm
   refine ⟨fun σ => j (β (placeDecompHom ι F σ)),
     (IsLocallyConstant.of_discrete (fun d => j (β d))).comp_continuous (continuous_placeDecompHom ι F),
     fun σ τ => ?_⟩
-  rw [hj_smul, ← map_div, ← map_mul, map_mul (placeDecompHom ι F), hβ]
-  apply Units.ext
-  change completionEmbedding ι F (algebraMap F.1 _ _) = _
-  rw [completionEmbedding_algebraMap]
-  rfl
+  refine (map_coboundary₂ (placeDecompHom ι F) j β hj_smul σ τ).trans
+    ((congrArg j (hβ (placeDecompHom ι F σ) (placeDecompHom ι F τ))).trans ?_)
+  exact Units.ext (completionEmbedding_algebraMap ι F _)
 
 def ordComp (y : Additive (compField ι F)ˣ) : ℤ :=
   -WithZero.log (Valued.v (((compEquiv ι F).symm (y.toMul : compField ι F)) :
     (placeOfEmbedding ι F).1.adicCompletion F.1))
 
+private theorem neg_log_valuation_mul {R S : Type} [Field R] [Field S]
+    (f : R →+* S) (val : Valuation S (WithZero (Multiplicative ℤ))) (x y : Rˣ) :
+    -WithZero.log (val (f ↑(x * y))) =
+      -WithZero.log (val (f x)) + -WithZero.log (val (f y)) := by
+  have h (z : Rˣ) : val (f z) ≠ 0 := (map_ne_zero val).2 ((map_ne_zero f).2 z.ne_zero)
+  rw [Units.val_mul, map_mul f, map_mul val, WithZero.log_mul (h x) (h y), neg_add]
+
 omit [Normal K.1 F.1] in
-set_option maxHeartbeats 2000000 in
+
 theorem ordComp_add (y y' : Additive (compField ι F)ˣ) :
-    ordComp ι F (y + y') = ordComp ι F y + ordComp ι F y' := by
-  have h0 : ∀ z : Additive (compField ι F)ˣ, Valued.v (((compEquiv ι F).symm (z.toMul : compField ι F)) :
-      (placeOfEmbedding ι F).1.adicCompletion F.1) ≠ 0 := fun z =>
-    (map_ne_zero _).2 ((map_ne_zero _).2 (z.toMul).ne_zero)
-  unfold ordComp
-  rw [toMul_add, Units.val_mul, map_mul, map_mul, WithZero.log_mul (h0 y) (h0 y'), neg_add]
+    ordComp ι F (y + y') = ordComp ι F y + ordComp ι F y' :=
+  neg_log_valuation_mul (compEquiv ι F).symm.toRingHom Valued.v y.toMul y'.toMul
 
 omit [Normal K.1 F.1] in
 theorem ordComp_neg (y : Additive (compField ι F)ˣ) : ordComp ι F (-y) = -ordComp ι F y := by
-  have := ordComp_add ι F y (-y)
-  rw [add_neg_cancel] at this
   have h1 : ordComp ι F 0 = 0 := by
-    simp [ordComp]
-  linarith
+    change -WithZero.log (Valued.v ((compEquiv ι F).symm 1)) = 0
+    simp only [map_one, WithZero.log_one, neg_zero]
+  exact eq_neg_of_add_eq_zero_right ((ordComp_add ι F y (-y)).symm.trans
+    ((congrArg (ordComp ι F) (add_neg_cancel y)).trans h1))
 
 omit [Normal K.1 F.1] in
 theorem ordComp_sub (y y' : Additive (compField ι F)ˣ) :
-    ordComp ι F (y - y') = ordComp ι F y - ordComp ι F y' := by
-  rw [sub_eq_add_neg, ordComp_add, ordComp_neg, ← sub_eq_add_neg]
+    ordComp ι F (y - y') = ordComp ι F y - ordComp ι F y' :=
+  (congrArg (ordComp ι F) (sub_eq_add_neg y y')).trans
+    ((ordComp_add ι F y (-y')).trans
+      ((congrArg (ordComp ι F y + ·) (ordComp_neg ι F y')).trans (sub_eq_add_neg _ _).symm))
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 4000000 in
+
+
 theorem ordComp_smul (γ : Gal(compField ι F/v.adicCompletion K.1)) (y : (compField ι F)ˣ) :
     ordComp ι F (Additive.ofMul (Units.map (γ : compField ι F →* compField ι F) y)) =
       ordComp ι F (Additive.ofMul y) := by
+  let e := compEquiv ι F
+  let z := e.symm (y : compField ι F)
   obtain ⟨d, hd⟩ := (decompositionToLocal_bijective v (placeOfEmbedding ι F).1).2
-    ((compEquiv ι F).trans (γ.trans (compEquiv ι F).symm))
-  have key : (compEquiv ι F).symm (γ (y : compField ι F)) =
-      decompositionAlgEquiv v (placeOfEmbedding ι F).1 d ((compEquiv ι F).symm (y : compField ι F)) := by
-    have := DFunLike.congr_fun hd ((compEquiv ι F).symm (y : compField ι F))
-    rw [AlgEquiv.trans_apply, AlgEquiv.trans_apply, AlgEquiv.apply_symm_apply] at this
-    exact this.symm
-  simp only [ordComp, toMul_ofMul]
-  change -WithZero.log (Valued.v ((compEquiv ι F).symm (γ (y : compField ι F)))) = _
-  rw [key, valued_decompositionAlgEquiv]
+    (e.trans (γ.trans e.symm))
+  have h : decompositionAlgEquiv v (placeOfEmbedding ι F).1 d z = e.symm (γ (e z)) :=
+    DFunLike.congr_fun hd z
+  have key := (congrArg (fun t => e.symm (γ t)) (e.apply_symm_apply (y : compField ι F))).symm.trans h.symm
+  exact congrArg (fun t : WithZero (Multiplicative ℤ) => -WithZero.log t)
+    ((congrArg (fun t => Valued.v t) key).trans (valued_decompositionAlgEquiv v (placeOfEmbedding ι F).1 d z))
 
 theorem ordComp_embedComp (f : F.1ˣ) :
     ordComp ι F (Additive.ofMul (Units.map (embedComp ι F).toRingHom.toMonoidHom f)) = ordPlace ι F f := by
   have h : (compEquiv ι F).symm (embedComp ι F (f : F.1)) =
-      algebraMap F.1 ((placeOfEmbedding ι F).1.adicCompletion F.1) (f : F.1) := by
-    apply (compEquiv ι F).injective
-    rw [AlgEquiv.apply_symm_apply]
-    apply Subtype.ext
-    rw [coe_compEquiv_apply, completionEmbedding_algebraMap, coe_embedComp_apply]
-  simp only [ordComp, ordPlace, toMul_ofMul]
-  change -WithZero.log (Valued.v ((compEquiv ι F).symm (embedComp ι F (f : F.1)))) = _
-  rw [h]
-  change -WithZero.log (Valued.v ((f : F.1) : (placeOfEmbedding ι F).1.adicCompletion F.1)) = _
-  rw [HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
+      algebraMap F.1 ((placeOfEmbedding ι F).1.adicCompletion F.1) (f : F.1) :=
+    (compEquiv ι F).symm_apply_eq.mpr (Subtype.ext
+      ((coe_embedComp_apply ι F (f : F.1)).trans
+        (((coe_compEquiv_apply ι F _).trans (completionEmbedding_algebraMap ι F (f : F.1))).symm)))
+  exact congrArg (fun t : WithZero (Multiplicative ℤ) => -WithZero.log t)
+    ((congrArg (fun t => Valued.v t) h).trans
+      ((placeOfEmbedding ι F).1.valuedAdicCompletion_eq_valuation' (f : F.1)))
 
 abbrev compDecomp : Gal(compField ι F/v.adicCompletion K.1) →* Gal(F.1/K.1) :=
   decompHom (v.adicCompletion K.1) (embedComp ι F)
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem compDecomp_restrictNormalHom
     (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
     compDecomp ι F (AlgEquiv.restrictNormalHom (compField ι F) σ) =
       decompHom (v.adicCompletion K.1) (embedLevel ι F) σ := by
-  symm
-  rw [decompHom_eq_iff]
-  intro x
-  rw [embedLevel_apply, embedLevel_apply, ← coe_embedComp_apply, ← coe_embedComp_apply,
-    decompHom_apply]
-  exact AlgEquiv.restrictNormal_commutes σ (compField ι F) (embedComp ι F x)
+  refine ((decompHom_eq_iff (embedLevel ι F) σ _).2 fun x => ?_).symm
+  let E := compField ι F
+  let γ := AlgEquiv.restrictNormalHom E σ
+  let y := compDecomp ι F γ x
+  have h (z : F.1) : embedLevel ι F z = (embedComp ι F z : AlgebraicClosure (v.adicCompletion K.1)) :=
+    (embedLevel_apply ι F z).trans (coe_embedComp_apply ι F z).symm
+  exact (h y).trans ((congrArg (fun t : E => (t : AlgebraicClosure (v.adicCompletion K.1)))
+    (decompHom_apply (embedComp ι F) γ x)).trans
+      ((AlgEquiv.restrictNormal_commutes σ E (embedComp ι F x)).trans (congrArg σ (h x).symm)))
 
 theorem units_embedComp_galUnitsHom (γ : Gal(compField ι F/v.adicCompletion K.1)) (f : F.1ˣ) :
     Units.map (embedComp ι F).toRingHom.toMonoidHom (galUnitsHom K.1 F.1 (compDecomp ι F γ) f) =
@@ -604,8 +667,6 @@ def compCocycleFun (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) :
   fun p => Additive.ofMul (Units.map (embedComp ι F).toRingHom.toMonoidHom
     (c (compDecomp ι F p.1, compDecomp ι F p.2)))
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem compCocycleFun_mem (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : IsMulCocycle₂ c) :
     compCocycleFun ι F c ∈ groupCohomology.cocycles₂ (galUnits.{0} (v.adicCompletion K.1) (compField ι F)) := by
   have hc' : ∀ g h j, c (g * h, j) * c (g, h) = galUnitsHom K.1 F.1 g (c (h, j)) * c (g, h * j) := hc
@@ -630,8 +691,6 @@ theorem compCocycleFun_mem (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : Is
   exact congrArg Additive.ofMul (mm1.symm.trans (key.trans (mm2.trans (congrArg (· * _) s))))
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 4000000 in
 theorem exists_compCocycle_coboundary
     (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : IsMulCocycle₂ c)
     (b : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →
@@ -650,7 +709,7 @@ theorem exists_compCocycle_coboundary
   obtain ⟨z, hz1, hz2⟩ := h
   have hz0 : cohomologyπ _ 2 z = 0 := by
     refine cohomologyπ_galUnits_eq_zero_of_coboundary z b hb fun u => ?_
-    rw [hz2 u]
+    refine (hz2 u).trans ?_
     apply Additive.toMul.injective
     apply Units.ext
     have q0 := compDecomp_restrictNormalHom ι F (u 0)
@@ -664,17 +723,15 @@ theorem exists_compCocycle_coboundary
           decompHom (v.adicCompletion K.1) (embedLevel ι F) (u 1)) : F.1) : ℚ̄) :=
       congrArg (fun p => ι ((c p : F.1) : ℚ̄)) (Prod.ext q0 q1)
     exact e3
-  have hc'0 : (ConcreteCategory.hom (groupCohomology.H2π _))
-      (⟨compCocycleFun ι F c, compCocycleFun_mem ι F c hc⟩ :
-        groupCohomology.cocycles₂ (galUnits.{0} (v.adicCompletion K.1) (compField ι F))) = 0 := by
-    apply brauerInflation_injective (compField ι F)
-    rw [hz1, hz0, map_zero]
-  rw [groupCohomology.H2π_eq_zero_iff] at hc'0
-  exact hc'0
+  let E := compField ι F
+  let φ := (brauerInflation E).hom
+  have hφ := hz1.trans hz0
+  have hc'0 := brauerInflation_injective E (hφ.trans (map_zero φ).symm)
+  exact (groupCohomology.H2π_eq_zero_iff _).1 hc'0
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 4000000 in
+
+
 theorem ordComp_coboundary_eq (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ)
     (β' : Gal(compField ι F/v.adicCompletion K.1) → Additive (compField ι F)ˣ)
     (hβ' : (groupCohomology.d₁₂ (galUnits.{0} (v.adicCompletion K.1) (compField ι F))).hom β' =
@@ -712,10 +769,11 @@ theorem ordComp_coboundary_eq (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ)
         decompHom (v.adicCompletion K.1) (embedLevel ι F) τ)) :=
     (ordComp_embedComp ι F _).trans (congrArg (fun p => ordPlace ι F (c p))
       (Prod.ext (compDecomp_restrictNormalHom ι F σ) (compDecomp_restrictNormalHom ι F τ)))
-  rw [hmul, k1, k2]
+  exact (congrArg (fun γ => ordComp ι F (β' (AlgEquiv.restrictNormalHom (compField ι F) τ)) -
+    ordComp ι F (β' γ) + ordComp ι F (β' (AlgEquiv.restrictNormalHom (compField ι F) σ))) hmul).trans
+    (k1.trans k2)
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem exists_ord_coboundary_of_mulCoboundary
     (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : IsMulCocycle₂ c)
     (b : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →

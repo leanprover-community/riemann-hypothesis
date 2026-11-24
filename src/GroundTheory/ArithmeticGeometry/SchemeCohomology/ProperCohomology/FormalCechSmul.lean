@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalCechLemmas
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalDegreeCech
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -31,8 +32,8 @@ lemma cls_sum {α : Type*} (s : Finset α) (f : α → Cochain P 𝔘 p) (hf : �
     exact (cls_congr 𝔘 (Finset.sum_empty) h (map_zero _)).trans cls_zero
   | insert a s ha ih =>
     have hs : d P 𝔘 p (∑ b ∈ s, f b) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_eq_zero fun b _ => hf b
     conv_rhs => rw [Finset.sum_insert ha, ← ih hs]
     exact (cls_congr 𝔘 (Finset.sum_insert ha) h (by rw [map_add (f := _), hf a, hs, add_zero])).trans
@@ -55,7 +56,7 @@ variable {ι : Type u} (𝔘 : ι → X.Opens)
   (hU : ∀ (m : ℕ) (t : Fin (m + 1) → ι), IsAffineOpen (⨅ a, 𝔘 (t a))) (p : ℕ)
 
 
-set_option maxHeartbeats 4000000 in
+
 lemma reesCoefFam_reesMul (r : reesAlgebra I) (N : ℕ) (x : cechH (reesPre I F) 𝔘 p) :
     (reesCoefFam I hF 𝔘 hU N).cechH p (cechHMap 𝔘 (modulesAbMap (reesMul I F r)).hom p x) =
       ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal N,

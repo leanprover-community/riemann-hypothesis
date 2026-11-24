@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreIncomp
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.OneNotMemOfIsPrime
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRing
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 
 @[expose] public section
 

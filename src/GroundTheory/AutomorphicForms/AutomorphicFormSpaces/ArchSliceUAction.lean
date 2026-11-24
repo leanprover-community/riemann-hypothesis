@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.LeftTranslate
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

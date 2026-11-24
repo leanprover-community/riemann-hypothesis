@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowsMeanC
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagFramesSameGradedDefinitePartLatticeEq
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RatIota
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -68,13 +110,6 @@ theorem frF_Xa {T : E} (F : Formalism.MainNotions.S.FlagG S r T) (hT : T ≠ 0) 
   show Submodule.span E ((fun b : Fin r => F.fvec b.castSucc) '' {b | b.val < a}) = _
   rw [h]; rfl
 
-theorem Xa_r {T : E} (F : Formalism.MainNotions.S.FlagG S r T) : F.Xa r = F.X := by
-  unfold Formalism.MainNotions.S.FlagG.X Formalism.MainNotions.S.FlagG.Xa
-  congr 1
-  ext x; constructor
-  · rintro ⟨i, -, rfl⟩; exact ⟨i, rfl⟩
-  · rintro ⟨i, rfl⟩; exact ⟨i, i.2, rfl⟩
-
 theorem frame_gen {T : E} (G : Formalism.MainNotions.S.Lat.LFlag S r T) (hT : T ≠ 0) (𝔡 : Ideal (𝓞 E))
     (Λ : Submodule (𝓞 E) S.V) (f : Fin r → S.V)
     (hfe : ∀ a b, S.hT (f a) (G.fl.e b) = if a = b then 1 else 0)
@@ -126,7 +161,7 @@ theorem frame_gen {T : E} (G : Formalism.MainNotions.S.Lat.LFlag S r T) (hT : T 
     constructor
     · intro ht
       obtain ⟨y, hy, x, hx, hxy⟩ := Submodule.mem_sup.1 ht
-      have hxX : x ∈ G.fl.X := by rw [← Xa_r]; exact hx
+      have hxX : x ∈ G.fl.X := by rw [← _root_.Formalism.L2.SG.Pf.Xa_r']; exact hx
       have hzo : ∀ w ∈ G.fl.X, S.hT w (t • G.fl.z) = 0 := by
         intro w hw
         have hle : G.fl.X ≤ LinearMap.ker (S.hT.flip (t • G.fl.z)) := by
@@ -252,8 +287,8 @@ theorem admissibleFrame_congruent_mod_unitriangular {T T' : E} (G : Formalism.Ma
     obtain ⟨s, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 hy
     refine Finset.sum_congr rfl fun c _ => ?_
     congr 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hfe']
+
+    simp [map_sum, hfe']
   have hloc : ∀ P : IsDedekindDomain.HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ y ∈ Λ, y ∈ G'.fl.X →
       ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ ∀ b, ∃ o : 𝓞 E, (o : E) = (s : E) * S.hT (f' b) y := by
     intro P hg y hy hyX

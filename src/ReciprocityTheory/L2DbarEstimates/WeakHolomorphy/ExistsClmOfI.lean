@@ -1,6 +1,13 @@
 module
 
+public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloContDiffStatement
+public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.MollifyEqConvolution
+public import Mathlib.Analysis.Calculus.FDeriv.CompCLM
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 
 @[expose] public section
 

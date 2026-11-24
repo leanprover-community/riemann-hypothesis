@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
 public import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundColumns
 public import Formalism.LocalToGlobal.Columns.HeckeInert
-public import Formalism.LocalToGlobal.Columns.HeckeInertLemmas
+public import Formalism.LocalToGlobal.Divisibility.HeckeRI
 public import Formalism.LocalToGlobal.Columns.HeckeInertTr
+import Formalism.LocalToGlobal.Columns.RowFormsGood
+import Formalism.LocalToGlobal.Columns.RowFormsRat
+import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 
 @[expose] public section
 
@@ -95,8 +96,7 @@ private theorem iSup_maxGenEigenspace_conj_eq_whole {K0 V0 W0 : Type} [Field K0]
   exact hmap ⟨e.symm y, hy, by simp⟩
 
 theorem heckeCSDI_split (hs : Col.HeckeFieldsInI c S0) : Col.SplitOver (heckeCSDI S h c SG S0) := by
-  intro i
-  exact iSup_maxGenEigenspace_conj_eq_whole _ _ (hs (offSubI.lev i.1, i.2))
+  exact fun i => iSup_maxGenEigenspace_conj_eq_whole _ _ (hs (offSubI.lev i.1, i.2))
 
 end OffI
 

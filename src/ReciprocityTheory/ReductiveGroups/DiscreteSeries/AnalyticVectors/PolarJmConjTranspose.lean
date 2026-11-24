@@ -1,6 +1,14 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+public import Mathlib.Analysis.CStarAlgebra.Matrix
+public import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
+public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
+public import Mathlib.Analysis.Matrix.PosDef
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

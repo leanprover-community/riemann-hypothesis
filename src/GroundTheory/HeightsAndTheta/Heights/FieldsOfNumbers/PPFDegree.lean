@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivPushForward
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PExistsForm
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRational
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PExistsForm
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsExamples
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

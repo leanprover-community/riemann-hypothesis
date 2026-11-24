@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerSide
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerExtra
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerRest
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.CardLength
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.KrullDimQuotientEqOneIffEqBot
 
 @[expose] public section

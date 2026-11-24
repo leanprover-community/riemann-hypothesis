@@ -1,8 +1,55 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TensFun
+public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.HopBasic
+public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb
+public import GroundTheory.AutomorphicForms.HeckeIrreducible
 public import GroundTheory.AutomorphicForms.SphericalCommutative
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import GroundTheory.AutomorphicForms.HeckeAlgebra
+public import GroundTheory.AutomorphicForms.HeckeAlgebraLevel
 
 @[expose] public section
 
@@ -112,8 +159,8 @@ private theorem act_eq_sum (hJc : IsCompact (J : Set G)) (hJo : IsOpen (J : Set 
       have h1 := ((dcF_mem (ν := ν) hJc hJo x) k hk g).2
       have h2 : ρ k v = v := hv k hk
       simp only [h1, map_mul, Module.End.mul_apply, h2])
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [key, hfs, map_smul, map_sum, Complex.real_smul, smul_eq_mul]
+
+  rw [key, hfs, map_smul, map_sum, Complex.real_smul, smul_eq_mul]
   congr 1
   refine Finset.sum_congr rfl fun c hc => ?_
   rw [dcF_apply, Set.indicator_of_mem (hout c hc), one_mul]
@@ -251,7 +298,6 @@ private theorem rhoL_comm {w w' : Pl K} (h : w ≠ w') (g : GL (Fin n) (w.adicCo
   have hc := (UpperTheory.ConvolutionTheory.Tf.locEmb K n w).2.2.2.1 w' h.symm g g'
   change rhoF μ _ ∘L rhoF μ _ = rhoF μ _ ∘L rhoF μ _
   rw [← hm, ← hm]
-  unfold rhoL at *
   rw [hc]
 
 end Concrete

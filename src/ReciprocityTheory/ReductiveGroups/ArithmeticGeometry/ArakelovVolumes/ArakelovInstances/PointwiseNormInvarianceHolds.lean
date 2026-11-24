@@ -1,8 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.PnormInvStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
 
 @[expose] public section
 
@@ -28,9 +31,6 @@ theorem normFactor_rightBorel_holds : NfacRmulStatement (E := E) := by
   have hbc : ‖bchar la b‖ = ∏ τ, ∏ i, ‖b τ i i‖ ^ la τ i := by
     simp only [bchar, norm_prod, norm_zpow]
   simp only [Data.nfac, key, Finset.prod_mul_distrib, Finset.prod_inv_distrib, hbc]
-
-private theorem ringHom_cc_eq_conj (τ : E →+* ℂ) (y : E) : τ (cc y) = starRingEnd ℂ (τ y) :=
-  NumberField.IsCMField.complexEmbedding_complexConj E τ y
 
 private theorem sum_mul_gram_mul_cc_of_isUStab {r : ℕ} (G : Matrix (Fin r) (Fin r) E)
     (Λ : Submodule (𝓞 E) (Fin r → E)) (γ : GL (Fin r) E) (hγ : IsUStab G Λ γ) (j l : Fin r) :
@@ -74,16 +74,16 @@ private theorem hermC_mulVec_map_of_isUStab {r : ℕ} (τ : E →+* ℂ) (G : Ma
       starRingEnd ℂ (τ ((γ : Matrix (Fin r) (Fin r) E) b l)) = τ (G j l) := by
     intro j l
     rw [← sum_mul_gram_mul_cc_of_isUStab G Λ γ hγ j l]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, ringHom_cc_eq_conj]
+
+    simp only [map_sum, map_mul, _root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc]
   have hmv : ∀ (M : Matrix (Fin r) (Fin r) ℂ) (w : Fin r → ℂ) (i : Fin r),
       Matrix.mulVec M w i = ∑ j, M i j * w j := fun _ _ _ => rfl
   have lhs : hermC τ G (Matrix.mulVec ((γ : Matrix (Fin r) (Fin r) E).map τ) u)
         (Matrix.mulVec ((γ : Matrix (Fin r) (Fin r) E).map τ) v)
       = ∑ a, ∑ b, ∑ j, ∑ l, u j * (τ ((γ : Matrix (Fin r) (Fin r) E) a j) * τ (G a b) *
           starRingEnd ℂ (τ ((γ : Matrix (Fin r) (Fin r) E) b l))) * starRingEnd ℂ (v l) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hermC, hmv, Matrix.map_apply, map_sum, map_mul]
+
+    simp only [hermC, hmv, Matrix.map_apply, map_sum, map_mul]
     simp only [Finset.sum_mul]
     simp only [Finset.mul_sum]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ =>

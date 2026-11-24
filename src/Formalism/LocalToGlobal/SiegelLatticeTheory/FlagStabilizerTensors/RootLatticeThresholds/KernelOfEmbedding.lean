@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ParametersTermRelations
+public import Mathlib.Analysis.InnerProductSpace.Trace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

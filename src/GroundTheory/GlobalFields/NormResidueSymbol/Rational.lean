@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.NormResidueSymbol.RationalDiagonal
 public import GroundTheory.GlobalFields.NormResidueSymbol.RationalCyclotomic
+public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
+public import GroundTheory.GlobalFields.NormResidueSymbol.RationalLocal
+public import GroundTheory.GlobalFields.NormResidueSymbol.RationalDiagonal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSumMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsSumMeasurableA
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 
 @[expose] public section
 

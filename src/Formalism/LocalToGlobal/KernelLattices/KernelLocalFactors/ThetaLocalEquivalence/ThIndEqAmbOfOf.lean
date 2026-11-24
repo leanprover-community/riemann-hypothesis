@@ -1,9 +1,14 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPAmbOf
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.Outright
+public import Formalism.LocalToGlobal.KernelLattices.ColInst
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPOf
+public import Formalism.LocalToGlobal.KernelLattices.ThEquiv
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThIndep
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ChiLawAmbOf
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.GMConjTranspose
+public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.Outright
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 
 @[expose] public section
 

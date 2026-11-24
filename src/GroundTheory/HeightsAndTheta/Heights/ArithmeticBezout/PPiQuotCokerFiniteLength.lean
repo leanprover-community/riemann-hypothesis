@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsPiQuotCokerFiniteLength
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+public import Mathlib.Algebra.Module.Torsion.Basic
 
 @[expose] public section
 
@@ -58,8 +61,8 @@ theorem PiQuotCokerFiniteLength.proof : PiQuotCokerFiniteLength.Statement := by
     choose x hx using fun P => Ideal.Quotient.mk_surjective (v P)
     refine ⟨Submodule.Quotient.mk (∑ P, a P * x P), ?_⟩
     funext Q
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hfac, Pi.smul_apply, ← hx Q, map_sum, Finset.sum_eq_single Q]
+
+    rw [hfac, Pi.smul_apply, ← hx Q, map_sum, Finset.sum_eq_single Q]
     · rw [← hab Q, Algebra.smul_def, Ideal.Quotient.algebraMap_eq, map_add (f := _), map_mul,
         Ideal.Quotient.eq_zero_iff_mem.mpr (hb Q), add_zero]
     · intro P _ hPQ

@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GeometricLemmaCells
 public import GroundTheory.AutomorphicForms.InductionParabolic
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

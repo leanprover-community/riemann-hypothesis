@@ -1,10 +1,49 @@
 module
 
-public import Mathlib
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.HermitianCharacters.SelfDualLatticeFiltrationCharacter
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -107,8 +146,8 @@ theorem hO_herm (x y : WO S T) : cA D (hO S T x y) = hO S T y x := by
     rw [hG] at this
     exact congrFun (congrFun this b) a
   unfold hO
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, GlobalTheory.DualPairCheck.cA_cA, cA_incA, hI, gram_star]
+
+  simp only [map_sum, map_mul, GlobalTheory.DualPairCheck.cA_cA, cA_incA, hI, gram_star]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
   rw [Finset.sum_comm]
@@ -144,8 +183,8 @@ theorem symplOH_real_fin {u v : WO S T} (hu : u.map (infPart D) = 0) (hv : v.map
 variable (S T)
 
 theorem continuous_symplOH (u : WO S T) : Continuous fun w : WO S T => symplOH S T w u := by
-  haveI : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
-  haveI : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
+  have : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
+  have : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
   have ht : Continuous (Algebra.trace (AF D.host.F) (AE D)) := IsModuleTopology.continuous_of_linearMap _
   unfold symplOH symplO hO
   refine continuous_const.mul (ht.comp (continuous_const.mul ?_))
@@ -155,29 +194,7 @@ theorem continuous_symplOH (u : WO S T) : Continuous fun w : WO S T => symplOH S
 
 theorem ker_mem_nhds {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ} (hc : Continuous ψ)
     (hn : ∀ x, ‖ψ x‖ = 1) : {a : Af F | ψ (pairA F 0 a) = 1} ∈ 𝓝 (0 : Af F) := by
-  let χ : Af F → Circle := fun a => ⟨ψ (pairA F 0 a), by simpa [Submonoid.unitSphere] using hn _⟩
-  have hχ : Continuous χ := (hc.comp (continuous_const.prodMk continuous_id)).subtype_mk _
-  have h0 : χ 0 = 1 := Subtype.ext ψ.map_zero_eq_one
-  have hV : χ ⁻¹' Circle.centeredArc (Real.pi / 2) ∈ 𝓝 (0 : Af F) := by
-    refine ((Circle.isOpen_centeredArc _).preimage hχ).mem_nhds ?_
-    rw [Set.mem_preimage, h0, Circle.mem_centeredArc (by linarith [Real.pi_pos])]
-    simp [Real.pi_pos]
-  obtain ⟨N, hN, hNV⟩ := GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F _ hV
-  refine Filter.mem_of_superset (GlobalTheory.AdLat.OpenLat.nsmul_integral_mem_nhds F N hN) ?_
-  rintro _ ⟨a, ha, rfl⟩
-  have : χ (N • a) = 1 := by
-    refine Circle.eq_one_of_forall_pow_mem_centeredArc_pi_div_two fun n _ => ?_
-    have h1 := hNV (n • a) fun v => nsmul_mem (ha v) n
-    have h2 : χ (N • n • a) = χ (N • a) ^ n := by
-      apply Subtype.ext
-      show ψ (pairA F 0 (N • n • a)) = ((χ (N • a) ^ n : Circle) : ℂ)
-      rw [Circle.coe_pow, smul_comm]
-      show _ = ψ (pairA F 0 (N • a)) ^ n
-      rw [← AddChar.map_nsmul_eq_pow]
-      congr 1
-      exact Prod.ext (smul_zero n).symm rfl
-    rwa [Set.mem_preimage, h2] at h1
-  exact congrArg Subtype.val this
+  apply GlobalTheory.CompanionTheory.AdeleCharLocal.ker_mem_nhds <;> assumption
 
 variable (ψ : AddChar (AF D.host.F) ℂ)
 
@@ -196,8 +213,8 @@ variable {S T ψ}
 
 theorem isThetaFunO_heisO (hc : Continuous ψ) (hn : ∀ x, ‖ψ x‖ = 1) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f)
     {u : WO S T} (hu : u.map (infPart D) = 0) : IsThetaFunO ψ S T (heisO ψ S T u f) := by
-  haveI : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
-  haveI : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
+  have : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
+  have : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
   refine ⟨fun γ w => ?_, ?_, ?_, fun k L hL hLf w => ?_⟩
   · simp only [heisO]
     rw [add_assoc, hf.quasi, symplOH_add_left, symplOH_add_right, ← mul_assoc, ← mul_assoc, ← AddChar.map_add_eq_mul,

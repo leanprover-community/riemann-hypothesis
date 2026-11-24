@@ -1,10 +1,47 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -12,9 +49,6 @@ noncomputable section
 namespace PIW.AdelClassFin
 open Formalism.MainNotions.S PI.AdelClassFin NumberField
 open scoped TensorProduct Matrix
-
-theorem dictTop_sig (I : AutInst) : ((I.cm.sig : I.E →ₐ[I.F] I.E) : I.E →+* I.E) = starRingEnd I.E :=
-  RingHom.ext fun _ => rfl
 
 theorem dictTop_mul_inv (I : AutInst) (x : I.Gf) : I.fmat x * I.fmat x⁻¹ = 1 := by
   simp [Formalism.MainNotions.S.AutInst.fmat]
@@ -57,8 +91,8 @@ private theorem inclE_hform (I : AutInst) (w v : Fin I.n → I.E) :
     Formalism.UG.inclE (F := I.F) (Af I.F) (Formalism.UG.hform (starRingEnd I.E) I.J w v) =
       hhat I (iv I w) (iv I v) := by
   unfold hhat iv
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Formalism.UG.hform, map_sum, map_mul, Matrix.map_apply, sigR_inclE']
+
+  simp only [Formalism.UG.hform, map_sum, map_mul, Matrix.map_apply, sigR_inclE']
 
 private theorem sigR_mem_intAf (I : AutInst) (c : I.E ⊗[I.F] Af I.F) (hc : c ∈ IntAf I.F I.E) :
     Formalism.UG.sigR I.cm.sig (Af I.F) c ∈ IntAf I.F I.E := by
@@ -147,7 +181,7 @@ theorem mInj_of (hG : MGen) : MInj := by
     exact dictTop_into hG I x y h z hz
   · intro hz
     have h2 := dictTop_into hG I y x h.symm _ hz
-    simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc] at h2
+    simp only [Matrix.mulVec_mulVec] at h2
     rwa [← Matrix.mul_assoc (I.fmat x), dictTop_mul_inv, Matrix.one_mul, dictTop_inv_mul,
       Matrix.one_mulVec] at h2
 

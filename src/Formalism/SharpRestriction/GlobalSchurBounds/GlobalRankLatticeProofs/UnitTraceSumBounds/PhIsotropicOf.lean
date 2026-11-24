@@ -1,8 +1,44 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CubeOfTwoIdentities
-public import Formalism.SharpRestriction.GlobalSchurBounds.StatementTranslationInvariantSeventh
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TestVectorMemSchwartzBruhat
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -69,7 +105,7 @@ theorem okpNeg_holds (D : D7) : OkpNeg D := by
   have hl : lamC lam (-1 : ℂ) = -1 := by
     unfold lamC
     rw [dite_eq_left hQ]
-    have e : (⟨-1, hQ⟩ : Qbar) = -1 := Subtype.ext (by first | rfl | simp | norm_num)
+    have e : (⟨-1, hQ⟩ : Qbar) = -1 := Subtype.ext (by first | rfl)
     rw [e, map_neg, map_one]
   have hc : D.host.conj (-1 : D.host.E) = -1 := by simp
   unfold OKp
@@ -81,34 +117,26 @@ theorem okpTwo_holds (D : D7) : OkpTwo D := by
   have hQ : (2 : ℂ) ∈ Qbar := by
     first
       | norm_num
-      | simp
-      | (have h := add_mem (one_mem Qbar) (one_mem Qbar); rwa [one_add_one_eq_two] at h)
   have hl : lamC lam (2 : ℂ) = 2 := by
     unfold lamC
     rw [dite_eq_left hQ]
     have e : (⟨2, hQ⟩ : Qbar) = 1 + 1 := Subtype.ext (by
       first
-        | (show (2 : ℂ) = ((1 : Qbar) : ℂ) + ((1 : Qbar) : ℂ); norm_num)
-        | (push_cast; norm_num)
-        | rfl)
+        | (show (2 : ℂ) = ((1 : Qbar) : ℂ) + ((1 : Qbar) : ℂ); norm_num))
     rw [e, map_add (f := _), map_one] <;> norm_num
   have hc : D.host.conj (2 : D.host.E) = 2 := by
     first
       | (rw [show (2 : D.host.E) = 1 + 1 by norm_num, map_add (f := _), map_one])
-      | exact map_ofNat _ 2
   have hz : (((2 : NumberField.RingOfIntegers D.host.K) : D.host.K) : D.host.E) = 2 := by
     rw [show (2 : NumberField.RingOfIntegers D.host.K) = 1 + 1 by norm_num]
     first
       | (push_cast; norm_num)
-      | simp
-      | norm_num
   have hφ : D.host.φ₀ (2 : D.host.E) = 2 := by
     first
       | (rw [show (2 : D.host.E) = 1 + 1 by norm_num, map_add (f := _), map_one]; norm_num)
-      | simp
   unfold OKp
   refine subset_closure ⟨2, ?_⟩
-  simp only [tauK, tauKc, hz, hc, hφ, hl, Prod.mk.injEq, and_self]
+  simp only [tauK, tauKc, hz, hc, hφ, hl]
 
 theorem cube_of (H : CubeOfTwoIdentities) (D : D7) (h2 : cube2 D) (h3 : cube3 D) : cube D := by
   intro p _ cc δ g hA

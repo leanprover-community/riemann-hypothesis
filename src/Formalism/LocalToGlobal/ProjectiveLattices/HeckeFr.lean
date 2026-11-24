@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsLevMove
-public import Formalism.LocalToGlobal.ProjectiveLattices.HeckeStabSet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 
 @[expose] public section
 

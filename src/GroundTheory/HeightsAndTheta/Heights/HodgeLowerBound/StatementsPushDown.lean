@@ -1,12 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHodgeFlag
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFStep
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFHoriz
 
 @[expose] public section
 

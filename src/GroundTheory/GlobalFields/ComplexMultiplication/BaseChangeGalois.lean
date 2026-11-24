@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDescent
-public import GroundTheory.GlobalFields.ComplexMultiplication.AutCFixed
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilGaloisFunctionField
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
+public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChange
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
+public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDescent
 
 @[expose] public section
 

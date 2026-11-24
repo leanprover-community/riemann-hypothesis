@@ -1,8 +1,52 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsMemRowHighestTotalDegreeEqTwo
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -32,7 +76,7 @@ theorem exists_eq_sum_basisComponent (b : Module.Basis ι R S) (P : MvPolynomial
   classical
   refine ⟨P.support.biUnion fun m => (b.repr (AddMonoidAlgebra.coeff P m)).support, ?_⟩
   ext m
-  simp only [coeff_sum, coeff_smul, coeff_map, coeff_basisComponent, smul_eq_mul]
+  simp only [coeff_sum, MvPolynomial.coeff_smul, coeff_map, coeff_basisComponent, smul_eq_mul]
   conv_lhs => rw [← b.linearCombination_repr (AddMonoidAlgebra.coeff P m), Finsupp.linearCombination_apply]
   rw [Finsupp.sum_of_support_subset (s := P.support.biUnion fun m => (b.repr (AddMonoidAlgebra.coeff P m)).support)]
   · exact Finset.sum_congr rfl fun i _ => by rw [Algebra.smul_def, mul_comm]
@@ -46,10 +90,10 @@ theorem basisComponent_sum (b : Module.Basis ι R S) (J : Finset ι) (Q : ι →
     basisComponent b i (∑ j ∈ J, b j • MvPolynomial.map (algebraMap R S) (Q j)) = Q i := by
   classical
   ext m
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [coeff_basisComponent, coeff_sum, coeff_smul, coeff_map, smul_eq_mul, mul_comm (b _),
-    ← Algebra.smul_def, map_sum, map_smul, Module.Basis.repr_self, Finsupp.coe_finsetSum,
-    Finset.sum_apply, Finsupp.smul_apply, Finsupp.single_apply]
+
+  simp only [coeff_basisComponent, coeff_sum, MvPolynomial.coeff_smul, coeff_map, smul_eq_mul, mul_comm (b _),
+  ← Algebra.smul_def, map_sum, map_smul, Module.Basis.repr_self, Finsupp.coe_finsetSum,
+  Finset.sum_apply, Finsupp.smul_apply, Finsupp.single_apply]
   rw [Finset.sum_eq_single i] <;> simp +contextual [hi]
 
 variable {T : Type*} {p q : ℕ} {κ : Type*} [Fintype κ] {c : T → Fin p → ℕ} {c' : T → Fin q → ℕ}
@@ -73,8 +117,8 @@ theorem basisComponent_mem_rowHighest (b : Module.Basis ι R S) (i : ι) {P : Po
   refine mem_rowHighest_iff_rowAdd.2 ⟨fun t a b' => ?_, fun t r m hm => h₂ t r fun e => hm ?_,
     fun t r r' hr s => ?_⟩
   · have := h₁ t a b'
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hJ, map_sum] at this
+
+    rw [hJ, map_sum] at this
     simp only [map_smul, ← map_laplacian] at this
     rw [← basisComponent_sum b J (fun j => laplacian t a b' (basisComponent b j P)) hi, this]
     simp [basisComponent]

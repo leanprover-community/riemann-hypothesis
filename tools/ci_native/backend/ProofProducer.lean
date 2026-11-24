@@ -29,7 +29,7 @@ public def main (args : List String) : IO UInt32 := do
   let jobs ← mkJobQueue
   let mctx ← mkMonitorContext config jobs
   let bctx ← mkBuildContext ws config jobs
-  let store ← IO.mkRef ({} : BuildStore)
+  let store ← BuildStoreRef.new
   let requested ← IO.mkRef (#[] : Array OpaqueJob)
   let specs ← (parseTargetSpecs ws (names.toList.map ("+" ++ ·))).toIO fun e => IO.userError e.toString
   let build : FetchM (Job Unit) := do

@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementA
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementS
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EndoZInstance
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
+public import Mathlib.NumberTheory.Padics.Complex
 
 @[expose] public section
 

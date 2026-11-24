@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDegLTGrowth
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFiltrationHilbSum
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyCN
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 

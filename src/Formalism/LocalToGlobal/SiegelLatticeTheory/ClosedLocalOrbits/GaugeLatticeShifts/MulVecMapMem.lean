@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacExGoodOfN
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -73,9 +75,8 @@ lemma mulVec_map_mem (P : Mk k r) (hP : IsUnit P.det) (S : Submodule ℂ (Vk k r
   constructor
   · rintro ⟨y, hy, hyw⟩
     rw [Matrix.mulVecLin_apply] at hyw
-    have h2 : P⁻¹ *ᵥ (P *ᵥ y) = P⁻¹ *ᵥ (P *ᵥ w) := by rw [hyw]
-    rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hP, Matrix.one_mulVec,
-      Matrix.one_mulVec] at h2
+    have h2 : y = w := by
+      simpa [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hP, Matrix.one_mulVec] using congrArg (fun v => P⁻¹ *ᵥ v) hyw
     exact h2 ▸ hy
   · intro hw
     exact ⟨w, hw, by simp⟩
@@ -116,9 +117,7 @@ lemma fixX (A : Mk k r) (hA : ∀ b, A *ᵥ stdX k r b = stdX k r b) (v : Vk k r
     rw [Submodule.span_le]
     rintro _ ⟨b, _, rfl⟩
     simp [hA b]
-  have := hle hv
-  rw [LinearMap.mem_ker, Matrix.mulVecLin_apply, Matrix.sub_mulVec, Matrix.one_mulVec, sub_eq_zero] at this
-  exact this
+  simpa [LinearMap.mem_ker, Matrix.mulVecLin_apply, Matrix.sub_mulVec, Matrix.one_mulVec, sub_eq_zero] using hle hv
 
 lemma Hpk_apply' (i j : Fin (2 * r + k + 1)) : Formalism.QuantumDeterminants.Hpk k r i j =
     if i.val < r ∧ i.val + j.val = 2 * r + k then 1

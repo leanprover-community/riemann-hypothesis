@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.BaseCh
 
 @[expose] public section
 

@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHolomorphicOnSubset
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalOpenMapping
+public import Mathlib.RingTheory.KrullDimension.Basic
 
 @[expose] public section
 

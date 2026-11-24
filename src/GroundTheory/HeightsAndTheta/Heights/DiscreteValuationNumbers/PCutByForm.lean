@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsCN
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -20,8 +22,8 @@ theorem weightedHomogeneousComponent_mem_span_of_isMultiHomog {R : Type*} [CommR
     {t : MRing ι R} (ht : t ∈ Ideal.span {s}) (b : K → ℕ) :
     weightedHomogeneousComponent (blockWeight ι) b t ∈ Ideal.span {s} := by
   obtain ⟨a, rfl⟩ := Ideal.mem_span_singleton'.mp ht
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [a.as_sum, Finset.sum_mul, map_sum]
+
+  rw [a.as_sum, Finset.sum_mul, map_sum]
   refine Ideal.sum_mem _ fun d _ => ?_
   have hd : IsWeightedHomogeneous (blockWeight ι) (monomial d (AddMonoidAlgebra.coeff a d) * s)
       (Finsupp.weight (blockWeight ι) d + c) :=

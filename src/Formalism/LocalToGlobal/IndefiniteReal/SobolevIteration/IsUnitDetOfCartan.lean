@@ -1,9 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfA
-public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfAs
-public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfK
-public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.HasFDerivAtIntegralPIter
+public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfSt
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 @[expose] public section
 

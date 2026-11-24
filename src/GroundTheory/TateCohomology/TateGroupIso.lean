@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.CohTrivialBasic
+import GroundTheory.TateCohomology.DimensionShift
+import GroundTheory.TateCohomology.InducedNorm
 public import GroundTheory.TateCohomology.TateLow
+import Mathlib.RepresentationTheory.FiniteIndex
 
 @[expose] public section
 

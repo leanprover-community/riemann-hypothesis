@@ -1,6 +1,53 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliAbstractCharacter
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -58,8 +105,8 @@ theorem th_proj (hE : GlRel E) (hq : ∀ u v, qdet E u v = (∏ j, (u + m j)) �
     (Y : ι → Fin (N + 1) → V) (κ : ι → ℂ) (hκ : Set.InjOn κ S) (hY : ∀ t ∈ S, EE E (Y t) = κ t • Y t) {s : ι} (hs : s ∈ S)
     (i : Fin (N + 1)) (hi : κ s = N + m i) :
     Th E (-m i) (∑ t ∈ S, Y t) = (∏ j ∈ univ.erase i, (-m i + m j)) • Y s := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single_of_mem s hs fun t ht hts => ?_]
+
+  rw [map_sum, Finset.sum_eq_single_of_mem s hs fun t ht hts => ?_]
   · exact th_eig hE hq i (hi ▸ hY s hs) _
   · have h := th_mul hE hq (hY t ht) (-m i)
     rw [Finset.prod_eq_zero (mem_univ i) (by ring), zero_smul, smul_eq_zero] at h
@@ -96,8 +143,8 @@ theorem qdet_int {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V']
     | nil => simp
     | cons p L ih => simp only [List.map_cons, List.prod_cons, mul_apply_eq_comp, tm, ih]
   unfold qdet qminor
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearMap.sum_apply, LinearMap.sum_apply, map_sum]
+
+  rw [LinearMap.sum_apply, LinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [mul_apply_eq_comp, mul_apply_eq_comp, intCast_apply_eq_smul, intCast_apply_eq_smul, map_zsmul]
   have := hl (List.ofFn fun k : Fin n => (u - (k : ℂ), σ k, k)) x

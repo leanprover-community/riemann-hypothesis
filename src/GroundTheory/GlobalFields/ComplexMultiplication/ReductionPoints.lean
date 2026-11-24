@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FormalGroupReduction
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

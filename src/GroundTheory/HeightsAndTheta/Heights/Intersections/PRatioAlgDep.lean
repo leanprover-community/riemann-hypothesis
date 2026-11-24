@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StRatioAlgDep
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBirationalModelExists
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
+public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -32,10 +37,10 @@ theorem aeval_homog {F : Type} [Field F] [Algebra ℤ F] (c : ∀ k, ι k) (p : 
   have hsum : aeval (fun j ↦ w (p j) / w ⟨(p j).1, c (p j).1⟩) f =
       ∑ m ∈ f.support, aeval (fun j ↦ w (p j) / w ⟨(p j).1, c (p j).1⟩) (monomial m (AddMonoidAlgebra.coeff f m)) := by
     conv_lhs => rw [f.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hsum, Finset.mul_sum, homog, map_sum]
+
+    rw [map_sum]
+
+  rw [hsum, Finset.mul_sum, homog, map_sum]
   refine Finset.sum_congr rfl fun m hm ↦ ?_
   have hle : ∀ j, m j ≤ f.totalDegree := fun j ↦
     (monomial_le_degreeOf j hm).trans (degreeOf_le_totalDegree f j)

@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.IdealSheaf.Functorial
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.AdicCompletion.Algebra
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 

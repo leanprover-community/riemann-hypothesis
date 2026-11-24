@@ -1,12 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPotential
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.OneSubPhiOntoOfFilZero
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeCrystallineLattices
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ConductorExponents
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinLatticeExponentsAinfComparisonStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TeichmullerSubOneAinfPropertiesCompatibleRootsStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinLatticeExponentsAinfComparison
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TeichmullerSubOneAinfPropertiesCompatibleRoots
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -77,8 +111,8 @@ theorem galOCr_iC_of_covers {h : GQ l} {γ : TameGal K l e a} (hc : Covers K t �
     simp only [Pi.mul_apply, Pi.single_eq_same, one_mul]
     rfl
   change F f = F' f
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hx, map_sum, map_sum]
+
+  rw [hx, map_sum, map_sum]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [map_mul, map_mul, hs, ← RingHom.comp_apply F d, hd]
   rfl
@@ -185,10 +219,10 @@ theorem actB_jB_of_mem_L {ι : Type} [Fintype ι] [DecidableEq ι] {P : PhiMod O
     rw [← hW, ← hW']
     exact hdesc g γ hc _ _ hvv
   obtain ⟨α, β, hα, hβ⟩ := P.exists_exponents
-  obtain ⟨ε, hε⟩ := (GlobalTheory.T.teichmullerSubOneAinf_properties_compatibleRoots l).1
+  obtain ⟨ε, hε⟩ := (_root_.GlobalTheory.MuOfEps.main l).1
   obtain ⟨δ, hδ, -⟩ := hε.2
-  obtain ⟨-, -, -, hunit, -, -, -⟩ := (GlobalTheory.T.teichmullerSubOneAinf_properties_compatibleRoots l).2 ε δ hε hδ
-  obtain ⟨z, hz⟩ := (GlobalTheory.T.breuilKisin_lattice_exponents_ainf_comparison l a e O K t ϖ ι P T I α β hα hβ ε δ hε hδ).2.2.2 _ ⟨c, rfl⟩
+  obtain ⟨-, -, -, hunit, -, -, -⟩ := (_root_.GlobalTheory.MuOfEps.main l).2 ε δ hε hδ
+  obtain ⟨z, hz⟩ := (_root_.GlobalTheory.BKExp.exponents l a e O K t ϖ ι P T I α β hα hβ ε δ hε hδ).2.2.2 _ ⟨c, rfl⟩
   set m : OA l O := 1 ⊗ₜ (muOf ε ^ α) with hm_def
   have key : ∀ (r : OA l O) (d : ι → OA l O), inclL t ϖ P (r • d) = inclO l O r • inclL t ϖ P d := fun r d => by
     rw [inclL_apply, inclL_apply, ← Matrix.mulVec_smul]
@@ -266,13 +300,13 @@ theorem actB_jB_toBcris {ι : Type} [Fintype ι] [DecidableEq ι] {P : PhiMod O 
     apply Subtype.ext
     rw [Submodule.coe_sum, hσ]
     conv_lhs => rw [P.eq_sum_phi_bas σ.1]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Δ.act_smul_tot]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e1, e2, map_sum, map_sum, map_sum, map_sum, map_sum]
+
+  rw [e1, e2, map_sum, map_sum, map_sum, map_sum, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   have hL := actB_jB_of_mem_L hcmp hdesc hc (hw i) (hw' i) rfl (hwS i) (hwS' i)
   rw [toBcris_smul P (f i) (w i) (hwS i), toBcris_smul P (f' i) (w' i) (hwS' i), jB.map_smul, jB.map_smul]

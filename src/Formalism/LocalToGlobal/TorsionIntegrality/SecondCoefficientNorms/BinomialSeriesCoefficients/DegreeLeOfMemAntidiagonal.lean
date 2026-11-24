@@ -1,6 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.IntBinomScalar
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Polynomial.Derivation
 
 @[expose] public section
 

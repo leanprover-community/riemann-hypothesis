@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.EulerCharDefs
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
 public import GroundTheory.ProfiniteCohomology.Shapiro
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

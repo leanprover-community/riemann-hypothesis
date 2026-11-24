@@ -1,12 +1,55 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Proportional
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.ContinuousAtOfClosedRel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedB
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.FsMetricFinIsSemipositive
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.FsMetricFinIsSemipositive
 
 @[expose] public section
 
@@ -101,13 +144,13 @@ private theorem deriv_deriv_half_log_quadratic_at_zero (N P C : ℝ) (hN : 0 < N
       fun t => (P + C * t) / (N + 2 * t * P + t ^ 2 * C) := by
     filter_upwards [hev] with t ht
     rw [(((hq t).log ht).div_const 2).deriv]
-    field_simp <;> ring
+    field_simp
   rw [hd.deriv_eq]
   have h4 := (((hasDerivAt_id' (0 : ℝ)).const_mul C).const_add P).div (hq 0) hq0
   rw [show (fun t : ℝ => (P + C * t) / (N + 2 * t * P + t ^ 2 * C)) =
     (fun x => P + C * x) / (fun s => N + 2 * s * P + s ^ 2 * C) from rfl, h4.deriv]
   simp only [mul_zero, zero_mul, add_zero, mul_one, zero_pow two_ne_zero]
-  field_simp <;> ring
+  field_simp
 
 theorem levi_fs_zero {κ : Type} [Fintype κ] {z : κ → ℂ} (hz : z ≠ 0) (w : κ → ℂ)
     (h : levi (fun z => Real.log ((fsMetric (ι := κ)).ρ z)) z w = 0) : ∃ c : ℂ, w = c • z := by
@@ -405,7 +448,6 @@ theorem g_pos : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι
     rw [levi_congr hev, levi_add_smul 1 hΦy hRe]
     have h0 : levi (fun u => (G ((R.A.chart j).symm u)).re) v w = 0 := levi_re_analytic hGa w
     rw [h0, mul_zero, add_zero, levi_comp w hτ ((contDiffAt_log_prod_fsMetric_rho_blk hblk).of_le h2)]
-    beta_reduce
     rw [levi_log_prod_fsMetric_eq_sum hblk]
     have hnn : ∀ k, 0 ≤ levi (fun z : ι k → ℂ => Real.log ((fsMetric (ι := ι k)).ρ z))
         (blk k (R.lift ((R.A.chart j).symm v) ((R.A.chart j).symm v)))

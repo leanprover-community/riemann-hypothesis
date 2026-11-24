@@ -1,11 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProdPartialZpow
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommuteGelfandInvariantMatrixUnitsOfGlRel
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.HWDiag
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.TrPowSumFilterZero
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProdPartialZpow
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.HWDiag
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -22,8 +66,8 @@ private lemma trace_conj_map_algebraMap {A : Type} [Ring A] [Algebra ℂ A] (N :
     ∑ c, (P.map (algebraMap ℂ A) * N * Q.map (algebraMap ℂ A)) c c = ∑ c, N c c := by
   have key : ∀ j i : Fin n, ∑ c, algebraMap ℂ A (Q j c * P c i) = if j = i then 1 else 0 := by
     intro j i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum]
+
+    rw [← map_sum]
     have hji := congrFun (congrFun h j) i
     rw [Matrix.mul_apply] at hji
     rw [hji, Matrix.one_apply]
@@ -275,12 +319,11 @@ lemma of_conj {U : Set (Matrix (Fin n) (Fin n) ℂ)} (hU : IsOpen U) (k k' : Mat
     simp [Matrix.mul_apply, Matrix.single_apply, Matrix.sum_apply, ite_and, ite_mul, Finset.sum_ite_eq,
       Finset.sum_ite_eq']
   simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.map_apply, Matrix.transpose_apply,
-    Finset.sum_mul, Algebra.algebraMap_eq_smul_one, smul_mul_assoc, one_mul, mul_smul_comm, mul_one,
-    smul_smul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hk, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, Finset.smul_sum, smul_smul]
+    Algebra.algebraMap_eq_smul_one, smul_mul_assoc, one_mul, mul_smul_comm, mul_one]
+
+  rw [hk, map_sum]
+
+  simp only [map_sum, map_smul, Finset.smul_sum, smul_smul]
   refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun i _ => ?_
   rw [mul_comm]
 

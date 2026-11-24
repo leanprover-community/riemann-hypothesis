@@ -1,15 +1,60 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
+import Formalism.SharpRestriction.LevelLetterCocycles.LocalTheoremOfUnramifiedLifting
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExpStar
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamFilQuotientXiPowerAinf
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankCyclotomicExtAndCyclotomicCharSurjective
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
+public import Mathlib.Algebra.Lie.OfAssociative
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamFilQuotientXiPowerAinf
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankCyclotomicExtAndCyclotomicCharSurjective
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.LocalField
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -54,8 +99,8 @@ theorem mem_range_iff (S : Submodule R M) (x : T ⊗[R] M) :
     exact Submodule.sum_mem _ fun k _ => ⟨b k ⊗ₜ[R] ⟨_, h k⟩, rfl⟩
 
 theorem co_sum [DecidableEq ι] (m : ι → M) (k : ι) : co b k (∑ j, b j ⊗ₜ[R] m j) = m k := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, co_tmul, Finsupp.single_apply]
+
+  simp [map_sum, co_tmul, Finsupp.single_apply]
 
 end Coord
 
@@ -83,8 +128,8 @@ theorem co_Phi {ι : Type} [Fintype ι] (bT : Basis ι R T) (bV : Basis ι F V)
     (x : T ⊗[R] M) (k : ι) : co bV k (Phi i hi β hβ x) = β (co bT k x) := by
   classical
   conv_lhs => rw [← sum_co bT x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [Phi_tmul, hb]
   exact co_sum bV _ k
 
@@ -408,8 +453,8 @@ theorem exists_bases {R F T V : Type} [CommRing R] [IsDomain R] [IsPrincipalIdea
     rw [← hsp, Submodule.span_le]
     rintro _ ⟨t, rfl⟩
     change j t ∈ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← bT.sum_repr t, map_sum]
+
+    rw [← bT.sum_repr t, map_sum]
     refine Submodule.sum_mem _ fun k _ => ?_
     rw [map_smul]
     exact Submodule.smul_of_tower_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
@@ -526,22 +571,7 @@ theorem goodO : GoodO (Qp := ℚ_[l]) ℚ_[l] ℤ_[l] := by
   exact PadicInt.isOpenEmbedding_coe.isOpen_range
 
 theorem finKs (K : FinExt l) (s : ℕ) : FiniteDimensional ℚ_[l] ↥(Ks K s) := by
-  classical
-  haveI := K.2
-  haveI : FiniteDimensional ℚ_[l] ↥(K0 K) := FiniteDimensional.of_injective
-    (IntermediateField.inclusion (inf_le_left : K0 K ≤ K.1)).toLinearMap
-    (IntermediateField.inclusion_injective (inf_le_left : K0 K ≤ K.1))
-  have hpos : 0 < l ^ s := pow_pos (Fact.out : l.Prime).pos s
-  haveI : Finite {x : Om l | x ^ (l ^ s) = 1} := by
-    refine Set.Finite.to_subtype (Set.Finite.subset
-      (Polynomial.nthRoots (l ^ s) (1 : Om l)).toFinset.finite_toSet ?_)
-    intro x hx
-    simpa [Polynomial.mem_nthRoots hpos] using hx
-  haveI : FiniteDimensional ℚ_[l]
-      ↥(IntermediateField.adjoin ℚ_[l] {x : Om l | x ^ (l ^ s) = 1}) :=
-    IntermediateField.finiteDimensional_adjoin fun x _ =>
-      (Algebra.IsAlgebraic.isAlgebraic x).isIntegral
-  exact IntermediateField.finiteDimensional_sup _ _
+  apply Formalism.MainNotions.WachCoordinates.Br.fd_Ks
 
 def lev (K : FinExt l) (j : ℕ) : FinExt l := ⟨Ks K j, finKs K j⟩
 

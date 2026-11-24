@@ -1,13 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.ColForms
-public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
+public import Formalism.PeriodIntegrals.FlagSubmonoid
 public import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
 public import Formalism.LocalToGlobal.Columns.RowForms
-public import Formalism.LocalToGlobal.Columns.RowFormsSym
 public import Formalism.LocalToGlobal.Columns.CoefModB
-public import Formalism.SizeWindowBrackets.SlopesHypothesisFinitePlaces
+public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
+public import Formalism.LocalToGlobal.Columns.LevGSym
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -317,8 +360,8 @@ def CplKer.comp {S₀ S S₁ : GSD K} {Y : Cpl S} (A : CplKer S₀ S S₁ Y) (h 
       rw [this]
       rfl
     ext x
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [e1, e2, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply, map_sum, map_smul]
+
+    simp only [e1, e2, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply, map_sum, map_smul]
 
 def colCpl {F : ℕ → GFam K} (kk : KerFam F) (hF : ∀ j, (F j).Ok) (n : ℕ) {S S₁ : GSD K} {Y : Cpl S}
     (A : ∀ b : (F n).β, CplKer ((F n).mem b) S S₁ Y) (h : S.Ok) : (F 0).Forms →ₗ[K] S₁.EqFun :=
@@ -474,34 +517,18 @@ def inX : (Fin n → k) →ₗ[k] (Fin (n + c) → k) :=
   LinearMap.pi fun l => if h : l.1 < n then LinearMap.proj ⟨l.1, h⟩ else 0
 
 def R1cond (r : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) : Prop :=
-  (∀ i, ∀ v ∈ Ufl k n c i, r v ∈ Ufl k n c i) ∧ r (eN k (n + c) n) = eN k (n + c) n ∧
-    ∀ i, r (eN k (n + c) (n + i)) - eN k (n + c) (n + i) ∈ Ufl k n c i
+  r ∈ PI.flagSubmonoid (Ufl k n c) (eN k (n + c)) n
 
 variable {k n c} in
 theorem R1cond.mul {r s : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)} (hr : R1cond k n c r) (hs : R1cond k n c s) :
-    R1cond k n c (r * s) := by
-  refine ⟨fun i v hv => hr.1 i _ (hs.1 i v hv), ?_, fun i => ?_⟩
-  · show r (s _) = _
-    rw [hs.2.1, hr.2.1]
-  · have h1 : (r * s) (eN k (n + c) (n + i)) - eN k (n + c) (n + i) =
-        r (s (eN k (n + c) (n + i)) - eN k (n + c) (n + i)) + (r (eN k (n + c) (n + i)) - eN k (n + c) (n + i)) := by
-      rw [map_sub]
-      show r (s _) - _ = _
-      abel
-    rw [h1]
-    exact add_mem (hr.1 i _ (hs.2.2 i)) (hr.2.2 i)
+    R1cond k n c (r * s) :=
+  (PI.flagSubmonoid (Ufl k n c) _ _).mul_mem hr hs
 
 theorem R1cond_one : R1cond k n c 1 :=
-  ⟨fun _ _ hv => hv, rfl, fun i => by
-    show eN k (n + c) (n + i) - eN k (n + c) (n + i) ∈ _
-    rw [sub_self]
-    exact zero_mem _⟩
+  (PI.flagSubmonoid (Ufl k n c) _ _).one_mem
 
-def R1 : Subgroup ((Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) where
-  carrier := {r | R1cond k n c r ∧ R1cond k n c r⁻¹}
-  one_mem' := ⟨R1cond_one k n c, by rw [inv_one]; exact R1cond_one k n c⟩
-  mul_mem' := fun {a b} ha hb => ⟨ha.1.mul hb.1, by rw [mul_inv_rev]; exact hb.2.mul ha.2⟩
-  inv_mem' := fun {a} ha => ⟨ha.2, by rw [inv_inv]; exact ha.1⟩
+def R1 : Subgroup ((Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) :=
+  (PI.flagSubmonoid (Ufl k n c) (eN k (n + c)) n).mulSupport
 
 def fixX : Subgroup ((Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) where
   carrier := {r | ∀ x, r (inX k n c x) = inX k n c x}

@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.TwistedConjugationNorms.OneCoset
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmFieldStatement
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
+public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriAndMaximalCompactCriteria
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryIwahoriFacts
+import GroundTheory.LocalFields.PadicLogSeries
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralCongruenceLevelEqCount
 
 @[expose] public section
 
@@ -47,12 +87,6 @@ theorem iwf_le_one_of_pow_mul {a b : WithZero (Multiplicative ℤ)} (hb : b ≠ 
   have h1 : (m.natAbs : ℤ) = |m| := Int.natCast_natAbs m
   rw [h1] at h2
   nlinarith [neg_abs_le m, abs_nonneg m]
-
-theorem iwf_cj_continuous (w : Pl E) : Continuous (cj w) := by
-  unfold cj
-  split_ifs with h
-  · exact h.choose_spec.1
-  · exact continuous_id
 
 theorem iwf_lt_one {w : Pl E} (σ : w.adicCompletion E →+* w.adicCompletion E) (hσ : Continuous σ)
     {x : w.adicCompletion E} (hx : Valued.v x < 1) : Valued.v (σ x) < 1 := by
@@ -122,7 +156,7 @@ theorem iwf_v_sign {w : Pl E} (i j : ℕ) (x : w.adicCompletion E) :
 
 theorem iwf_theta_KGL (w : Pl E) (n : ℕ) (g : GLw n w) (hg : g ∈ GlobalTheory.LFun.KGL w (n := n)) :
     GlobalTheory.CuspRep.thetaGL n (cj w) g ∈ GlobalTheory.LFun.KGL w (n := n) := by
-  have hc := iwf_cj_continuous w
+  have hc := _root_.GlobalTheory.KapOrb.CptInt.continuous_cj w
   rw [GlobalTheory.CompanionTheory.IwEntries.mem_KGL_iff] at hg ⊢
   refine ⟨fun i j => ?_, fun i j => ?_⟩
   · rw [iwf_theta_apply, iwf_v_sign]
@@ -133,7 +167,7 @@ theorem iwf_theta_KGL (w : Pl E) (n : ℕ) (g : GLw n w) (hg : g ∈ GlobalTheor
 
 theorem iwf_theta_iwGL (w : Pl E) (n : ℕ) (g : GLw n w) (hg : g ∈ iwGL n w) :
     GlobalTheory.CuspRep.thetaGL n (cj w) g ∈ iwGL n w := by
-  have hc := iwf_cj_continuous w
+  have hc := _root_.GlobalTheory.KapOrb.CptInt.continuous_cj w
   have hg' : g⁻¹ ∈ iwGL n w := inv_mem hg
   rw [(GlobalTheory.CompanionTheory.IwEntries.iwGL_KGL_entries E w n g).1] at hg
   rw [(GlobalTheory.CompanionTheory.IwEntries.iwGL_KGL_entries E w n g⁻¹).1] at hg'
@@ -176,7 +210,7 @@ theorem iwf_relIndex_ne_zero {G : Type} [Group G] [TopologicalSpace G] [IsTopolo
 
 theorem iwf_isClosed_UL {w : Pl E} (hw : ¬ IsSplitAt w) (n : ℕ) : IsClosed (UL n w : Set (GLw n w)) := by
   rw [GlobalTheory.CompanionTheory.UnitaryWitt.UL_eq_of_not_split hw]
-  exact GlobalTheory.CompanionTheory.UnitaryWitt.isClosed_UJ_one n (iwf_cj_continuous w)
+  exact GlobalTheory.CompanionTheory.UnitaryWitt.isClosed_UJ_one n (_root_.GlobalTheory.KapOrb.CptInt.continuous_cj w)
 
 theorem iw_facts_pf (w : Pl E) (hw : ¬ IsSplitAt w) (a : ℕ) (t : GLw a w) :
     IsOpen (GlobalTheory.LFun.KGL w (n := a) : Set (GLw a w)) ∧ IsCompact (GlobalTheory.LFun.KGL w (n := a) : Set (GLw a w)) ∧
@@ -215,7 +249,7 @@ theorem iwU_facts_pf (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw n w) (h
     IsOpen (KL n w : Set (UL n w)) ∧ IsCompact (KL n w : Set (UL n w)) ∧
     IsLevel (MonoidHom.id _) (KL n w) (iwU n w b) ∧ (iwU n w b).relIndex (KL n w) ≠ 0 ∧
     IsCompact {g : UL n w | fU n w b ϖ l g ≠ 0} := by
-  have hc := iwf_cj_continuous w
+  have hc := _root_.GlobalTheory.KapOrb.CptInt.continuous_cj w
   have hKc : IsCompact (KL n w : Set (UL n w)) :=
     (iwf_isClosed_UL hw n).isClosedEmbedding_subtypeVal.isCompact_preimage (iwf_isCompact_KGL w n)
   have hKo : IsOpen (KL n w : Set (UL n w)) :=

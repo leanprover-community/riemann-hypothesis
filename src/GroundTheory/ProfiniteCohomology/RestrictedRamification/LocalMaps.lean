@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.InnerConj
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import Mathlib.Algebra.Lie.OfAssociative
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.InnerConj
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -65,12 +69,12 @@ theorem continuous_decompHom [Normal K E] (ι : E →ₐ[K] Ωv) : Continuous (d
   intro y hy
   have hy' : y = ∑ i, b.repr ⟨y, hy⟩ i • (b i : E) := by
     have := congrArg L.val (b.sum_repr ⟨y, hy⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     simp only [map_smul] at this
     exact this.symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hy', map_sum]
+
+  rw [hy', map_sum]
   simp only [map_smul, hb]
 
 theorem exists_eq_comp_of_normal [Normal K E] (ι ι' : E →ₐ[K] Ωv) :

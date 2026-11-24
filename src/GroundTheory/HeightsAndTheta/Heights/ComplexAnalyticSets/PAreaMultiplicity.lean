@@ -1,7 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaMultiplicity
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.InnerProductSpace.NormDet
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Analysis.Calculus.FDeriv.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Linear
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
+public import Mathlib.MeasureTheory.Function.Jacobian
 
 @[expose] public section
 
@@ -50,7 +60,6 @@ theorem lintegral_abs_det_eq_lintegral_encard {E : Type*} [NormedAddCommGroup E]
         (aemeasurable_fderivWithin μ hA hf')
     refine (hA.inter (hdm (measurableSet_singleton 0).compl)).nullMeasurableSet.congr ?_
     filter_upwards [(ae_restrict_iff' hA).1 hfd] with x hx
-    change (x ∈ A ∩ d ⁻¹' {0}ᶜ) ↔ (x ∈ B)
     by_cases hxA : x ∈ A
     · simp [B, hxA, hx hxA]
     · simp [B, hxA]

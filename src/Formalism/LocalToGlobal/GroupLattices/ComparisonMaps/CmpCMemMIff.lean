@@ -1,8 +1,9 @@
 module
 
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.FramesTr
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.LatticeComparisonCompatible
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ValUniqOf
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemFunMod
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecThm
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.SpanImageOfSurj
 
 @[expose] public section
 

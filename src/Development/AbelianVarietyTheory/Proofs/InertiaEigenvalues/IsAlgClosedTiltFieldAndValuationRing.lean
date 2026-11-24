@@ -1,8 +1,55 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.InstIsAdicCompleteOCSpanSingletonSetCast
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Mathlib.RingTheory.Perfectoid.Untilt
+import Formalism.LocalRingCardinality.AdicCompletionLocal.InstIsAdicCompleteOCSpanSingletonSetCast
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.Order.KonigLemma
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 
 @[expose] public section
 
@@ -114,14 +161,14 @@ theorem exists_root_preTilt {P : (PreTilt O p)[X]} (hP : P.Monic) (hd0 : P.natDe
     ∃ x, P.eval x = 0 := by
   classical
   set d := P.natDegree with hd
-  haveI : Nontrivial (ModP O p) := CharP.nontrivial_of_char_ne_one (Fact.out : p.Prime).ne_one
+  have : Nontrivial (ModP O p) := CharP.nontrivial_of_char_ne_one (Fact.out : p.Prime).ne_one
   have key := fun n => roots_modP K (hP.map (PreTilt.coeff (O := O) (p := p) n))
     (hP.natDegree_map _) hd0
   simp only [Polynomial.eval_map] at key
   let α : ℕ → Type _ := fun n =>
     {y : ModP O p | ∃ x, P.eval₂ (PreTilt.coeff (n + d)) x = 0 ∧ y = x ^ p ^ d}
-  haveI hfin : ∀ n, Finite (α n) := fun n => (key (n + d)).2.to_subtype
-  haveI : ∀ n, Nonempty (α n) := fun n => by
+  have hfin : ∀ n, Finite (α n) := fun n => (key (n + d)).2.to_subtype
+  have : ∀ n, Nonempty (α n) := fun n => by
     obtain ⟨x, hx⟩ := (key (n + d)).1
     exact ⟨⟨_, x, hx, rfl⟩⟩
   let π : {i j : ℕ} → (hij : i ≤ j) → α j → α i := fun {i j} hij b =>
@@ -249,7 +296,7 @@ theorem isAlgClosed_tilt_and_valuationRing :
   intro l _
   refine ⟨isAlgClosed_of_monic_root (OCb l) (Cb l) fun P hP hd =>
     exists_root_preTilt (PadicComplex l) hP hd, ?_⟩
-  haveI : IsAdicComplete (span {((l : ℕ) : OC l)}) (OC l) := by
+  have : IsAdicComplete (span {((l : ℕ) : OC l)}) (OC l) := by
     open scoped Formalism.Per in infer_instance
   rw [ValuationRing.iff_dvd_total]
   exact ⟨fun x y => dvd_total_preTilt x y⟩

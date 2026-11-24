@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChart
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.Analysis.CStarAlgebra.Classes
 
 @[expose] public section
 

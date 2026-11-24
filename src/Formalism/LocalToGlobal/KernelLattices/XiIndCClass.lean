@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.ProductThetaMem
 public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.GoodLat
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.IsBichar
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

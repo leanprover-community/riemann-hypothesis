@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.LinearAlgebra.SymplecticGroup
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

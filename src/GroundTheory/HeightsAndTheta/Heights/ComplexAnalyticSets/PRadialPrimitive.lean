@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRadialPrimitive
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 
 @[expose] public section
 

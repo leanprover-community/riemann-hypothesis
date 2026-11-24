@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
 public import Formalism.FormalDegreeBessel.StatementG
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -67,11 +112,9 @@ theorem Sset_UH {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
     {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hs : s ∈ Sset k r z) :
     sᴴ * Hpk k r * s = Hpk k r := by
   obtain ⟨h, hh, m, hm, rfl⟩ := hs
-  have h1 : hᴴ * Hpk k r * h = Hpk k r := hh.1
-  have h2 : mᴴ * Hpk k r * m = Hpk k r := hm.1
   rw [conjTranspose_mul]
   calc mᴴ * hᴴ * Hpk k r * (h * m) = mᴴ * (hᴴ * Hpk k r * h) * m := by simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [h1, h2]
+    _ = Hpk k r := by rw [hh.1, hm.1]
 
 theorem UW_F {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
     {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z) :
@@ -99,7 +142,7 @@ theorem fvec_apply_lt {k r : ℕ} (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k
     fvec k r z c i = if c.val = i.val then 1 else 0 := by
   unfold fvec
   split_ifs with hc h1 h1
-  · simp [bvec, eI, Pi.single_apply, Fin.ext_iff, h1]
+  · simp [bvec, eI, Pi.single_apply, h1]
   · simp [bvec, eI, Pi.single_apply, Fin.ext_iff] <;> omega
   · omega
   · exact hz i (Or.inl hi)
@@ -127,14 +170,14 @@ theorem N_F {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
       change fvec k r z c i = _
       rw [fvec_apply_lt z hz c i hi]
       simp [Fin.ext_iff]
-    simp only [hF, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq',
+    simp only [hF, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
       Finset.mem_univ, if_true]
     simp [Uof, hi, eI]
   · have hF : ∀ c, Fm k r z i c = if c = Fin.last r then z i else 0 := fun c => by
       change fvec k r z c i = _
       rw [fvec_apply_ge z c i (by omega)]
       simp [Fin.ext_iff]
-    simp only [hF, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq',
+    simp only [hF, ite_mul, zero_mul, Finset.sum_ite_eq',
       Finset.mem_univ, if_true]
     have hU : Uof k r z m (Fin.last r) a = if Fin.last r = a then 1 else 0 := by simp [Uof]
     rw [hU]
@@ -207,9 +250,6 @@ theorem diagonal_inverse_holds : DInv := by
   have hH : sᴴ * Hpk k r * s = Hpk k r := Sset_UH hs
   have hFs : (Fm k r z)ᴴ * sᴴ = Uᴴ * (Fm k r z)ᴴ := by
     rw [← conjTranspose_mul, hsF, conjTranspose_mul]
-  have hL0 : ∀ i j : Fin (r + 1), i < j → Uᴴ i j = 0 := fun i j hij => by
-    simp [conjTranspose_apply, hU0 j i hij]
-  have hL1 : ∀ i, Uᴴ i i = 1 := fun i => by simp [conjTranspose_apply, hU1 i]
   have hmul : Uᴴ * Zhat k r z z' (s * g * s') = Zhat k r z z' g * U' := by
     rw [Zhat_eq, Zhat_eq]
     calc Uᴴ * ((Fm k r z)ᴴ * Hpk k r * (s * g * s') * Fm k r z')
@@ -221,7 +261,8 @@ theorem diagonal_inverse_holds : DInv := by
       _ = (Fm k r z)ᴴ * Hpk k r * g * Fm k r z' * U' := by
           rw [hH, hsF']
           simp only [Matrix.mul_assoc]
-  exact minor_eq_of_mul Uᴴ U' _ _ hL0 hL1 hU0' hU1' hmul l.val _
+  exact minor_eq_of_mul Uᴴ U' _ _ (fun i j hij => by simp [conjTranspose_apply, hU0 j i hij])
+    (fun i => by simp [conjTranspose_apply, hU1 i]) hU0' hU1' hmul l.val _
 
 theorem group_inverse_holds : GInv := by
   intro k r z z' hz hz' s hs s' hs' g

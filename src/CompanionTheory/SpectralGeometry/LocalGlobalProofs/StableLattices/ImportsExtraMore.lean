@@ -1,9 +1,0 @@
-module
-
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import Formalism.PeriodIntegrals.DSInfCharCap
-public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CapelliOperatorOnUnitaryCoefficientEqDerived
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MapQdetEtr
-
-@[expose] public section

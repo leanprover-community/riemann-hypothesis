@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
-public import GroundTheory.AutomorphicForms.RealGroupsPolar
+import GroundTheory.AutomorphicForms.RealGroupsPolar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -39,9 +39,9 @@ theorem mem_archCompact_of_unitary (x : archGroup K n)
           Matrix (Fin n) (Fin n) w.Completion)) i)) =
           (fun i => ψ (y i)) ᵥ* realCompM ⟨w, hw⟩ ((x : (ArchMatrix K n)ˣ) : ArchMatrix K n) := by
         ext j
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [vecMul, dotProduct, map_sum, map_mul, realCompM_apply, Matrix.map_apply,
-          realComp_apply]
+
+        simp only [vecMul, dotProduct, map_sum, map_mul, realCompM_apply, Matrix.map_apply,
+        realComp_apply]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [infAt_infEmb_apply, extensionEmbeddingOfIsReal_symm]
       rw [e, euclidNorm_vecMul_unitary hU]
@@ -56,9 +56,9 @@ theorem mem_archCompact_of_unitary (x : archGroup K n)
           Matrix (Fin n) (Fin n) w.Completion)) i)) =
           (fun i => ψ (y i)) ᵥ* complexCompM ⟨w, hcw⟩ ((x : (ArchMatrix K n)ˣ) : ArchMatrix K n) := by
         ext j
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [vecMul, dotProduct, map_sum, map_mul, complexCompM_apply, Matrix.map_apply,
-          complexComp_apply]
+
+        simp only [vecMul, dotProduct, map_sum, map_mul, complexCompM_apply, Matrix.map_apply,
+        complexComp_apply]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [infAt_infEmb_apply, extensionEmbedding_symm _ hcw]
       rw [e, euclidNorm_vecMul_unitary hU]

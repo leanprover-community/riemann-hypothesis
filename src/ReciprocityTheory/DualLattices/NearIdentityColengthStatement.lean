@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Algebra.ZMod
+public import Mathlib.NumberTheory.MulChar.Basic
+public import Mathlib.RingTheory.Trace.Defs
 
 @[expose] public section
 

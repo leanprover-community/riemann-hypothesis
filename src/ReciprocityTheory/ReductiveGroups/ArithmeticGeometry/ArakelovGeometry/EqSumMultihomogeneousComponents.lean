@@ -115,7 +115,7 @@ theorem mem_mHom_iff (s : MRing ι) (a : K → ℕ) : s ∈ mHom ι a ↔ IsMult
     | smul n x _ hx =>
       rw [isMultiHomog_iff_coeff] at hx ⊢
       intro m hm
-      rw [coeff_smul] at hm
+      rw [MvPolynomial.coeff_smul] at hm
       exact hx m (fun h0 => hm (by rw [h0, smul_zero]))
   · intro hs
     exact Submodule.subset_span hs

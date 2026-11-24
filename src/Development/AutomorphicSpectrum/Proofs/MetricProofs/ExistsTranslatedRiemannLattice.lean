@@ -1,12 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
-public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 public import GroundTheory.HeightsAndTheta.Theta.CMDatum
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -73,7 +112,7 @@ theorem sum_embeddings_cm {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (f
         rw [hr, hτ, hcc]
   rw [← (Equiv.ofBijective m hm).sum_comp, Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun τ _ => ?_
-  simp [m, Fintype.sum_bool, add_comm]
+  simp [m, add_comm]
 
 theorem trace_eq_sum_re {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (z : E) :
     ((Algebra.trace ℚ E z : ℚ) : ℝ) = ∑ τ, 2 * (embOf (σ τ) z).re := by
@@ -99,9 +138,9 @@ theorem emb_sesq (τ : Ψ) (w v : Fin (j + j') → E) :
     embOf (F.σ τ) (C.h.toSesq w v) =
       star (fun i => embOf (F.σ τ) (w i)) ⬝ᵥ (C.gr τ *ᵥ fun i => embOf (F.σ τ) (v i)) := by
   rw [sesq_eq_sum C.h.toSesq (Pi.basisFun E (Fin (j + j'))) w v]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, dotProduct, mulVec, Finset.mul_sum, LatEmb.gr, Matrix.map_apply, Pi.star_apply,
-    Pi.basisFun_repr, GroundTheory.Heights₂.Theta.embedding_conj (maximalRealSubfield E) E, mul_assoc]
+
+  simp only [map_sum, map_mul, dotProduct, mulVec, Finset.mul_sum, LatEmb.gr, Matrix.map_apply, Pi.star_apply,
+  Pi.basisFun_repr, GroundTheory.Heights₂.Theta.embedding_conj (maximalRealSubfield E) E, mul_assoc]
   rfl
 
 theorem Fm_vec (x y : Λ) : C.Fm (C.vec x) (C.vec y) = F.form x y := by

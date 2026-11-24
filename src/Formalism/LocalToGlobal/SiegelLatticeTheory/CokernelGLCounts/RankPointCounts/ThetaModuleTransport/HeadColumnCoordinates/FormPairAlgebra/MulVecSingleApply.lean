@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormPairAlgebra.BRawHeadColsRight
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.AlgDefs
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.LamStarCMulVec
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -130,8 +132,8 @@ theorem formC_eqG (Y W : Ix r → O) :
       simp only [Pi.sub_apply, mulVec_single_apply']
     have hL : cj (lamStarC cj Ze (fun j => (W (Sum.inr j) : E))) =
         ∑ j, Ze⁻¹ j (Fin.last r) * cj (W (Sum.inr j) : E) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [lamStarC, map_sum, map_mul, hcj]
+
+      simp only [lamStarC, map_sum, map_mul, hcj]
     rw [hB, hL, Finset.mul_sum, ← Finset.sum_add_distrib]
     exact Finset.sum_congr rfl fun j _ => by ring
 
@@ -145,8 +147,8 @@ theorem formC_eqG (Y W : Ix r → O) :
       intro a
       have := congrFun h2 a
       rw [← this]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
     have hy' : ∀ k, ∑ a, c (Sum.inl a) * cj (Ze a k) =
         (Y (Sum.inr k) : E) + if k = Fin.last r then T' * c (Sum.inr (Fin.last r)) else 0 := by
       intro k
@@ -159,8 +161,8 @@ theorem formC_eqG (Y W : Ix r → O) :
         ∑ k, (Y (Sum.inr k) : E) * cj (pw k) := by
       unfold bRaw
       rw [← hZe, ← hpw]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, hcj]
+
+      simp only [map_sum, map_mul, hcj]
     calc ∑ a, c (Sum.inl a) * cj (W (Sum.inl a) : E)
         = ∑ k, cj (pw k) * ∑ a, c (Sum.inl a) * cj (Ze a k) := by
           simp only [hw, Finset.mul_sum]
@@ -217,8 +219,8 @@ theorem uniq_core (d d' : E)
       have e1 := congrFun (congrFun hPZ (Fin.last r)) b
       rw [Matrix.mul_apply, Matrix.one_apply] at e1
       have : ∑ a, c (Sum.inl a) * cj (Ze a b) = cj (∑ a, P (Fin.last r) a * Ze a b) * (T' * d) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.sum_mul]
+
+        rw [map_sum, Finset.sum_mul]
         exact Finset.sum_congr rfl fun a _ => by simp only [c, Sum.elim_inl, map_mul]; ring
       rw [this, e1]
       simp only [c, Sum.elim_inr, Pi.zero_apply]

@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -30,27 +72,10 @@ theorem norm_le_one_of_isIntegral {C : Type} [NormedField C] [IsUltrametricDist 
   exact_mod_cast h
 
 theorem not_dvd_den_of_norm_le_one (l : ℕ) [hl : Fact l.Prime] (q : ℚ) (h : ‖(q : ℚ_[l])‖ ≤ 1) : ¬ l ∣ q.den := by
-  intro hd
-  have hnum : ‖(q.num : ℚ_[l])‖ = 1 := by
-    have hc : l.Coprime q.num.natAbs := (Nat.Prime.coprime_iff_not_dvd hl.out).2 fun hn =>
-      hl.out.one_lt.ne' (Nat.eq_one_of_dvd_coprimes q.reduced hn hd)
-    rcases Int.natAbs_eq q.num with e | e
-    · rw [e, Int.cast_natCast]; exact Padic.norm_natCast_eq_one_iff.2 hc
-    · rw [e, Int.cast_neg, Int.cast_natCast, norm_neg]; exact Padic.norm_natCast_eq_one_iff.2 hc
-  have hden : ‖(q.den : ℚ_[l])‖ < 1 := by
-    refine lt_of_le_of_ne ?_ fun e => ?_
-    · exact_mod_cast Padic.norm_int_le_one (q.den : ℤ)
-    · have := Padic.norm_natCast_eq_one_iff.1 e
-      exact hl.out.one_lt.ne' (Nat.Coprime.eq_one_of_dvd this hd)
-  have e : (q : ℚ_[l]) * (q.den : ℚ_[l]) = q.num := by exact_mod_cast Rat.mul_den_eq_num q
-  have e2 := congrArg norm e
-  rw [norm_mul, hnum] at e2
-  have : ‖(q : ℚ_[l])‖ * ‖(q.den : ℚ_[l])‖ < 1 :=
-    (mul_le_of_le_one_left (norm_nonneg _) h).trans_lt hden
-  exact this.ne e2
+  apply GlobalTheory.LocalData.not_dvd_den <;> assumption
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem norm_root_le_one (l : ℕ) [Fact l.Prime] (α : algebraicClosure ℚ ℂ)
     (h : ∀ lam : algebraicClosure ℚ ℂ →+* ℂ_[l], ‖lam α‖ ≤ 1) (β : ℂ_[l]) (hβ : β ∈ (minpoly ℚ α).aroots ℂ_[l]) :
     ‖β‖ ≤ 1 := by

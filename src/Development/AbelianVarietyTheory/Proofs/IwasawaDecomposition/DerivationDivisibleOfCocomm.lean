@@ -1,10 +1,52 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.IsOpenPart
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.MemPrimitiveTensorsIffIsPrimitiveElem
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsIntegralOfDivisibleCharactersStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSmulLeOneOfPrimitiveBoundedPowersStatement
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsIntegralOfDivisibleCharacters
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.Topology.MetricSpace.Ultra.Basic
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSmulLeOneOfPrimitiveBoundedPowers
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 
 @[expose] public section
 
@@ -226,12 +268,12 @@ theorem dvd_mul_of_groupLike (C : Type) [NontriviallyNormedField C] [IsUltrametr
   set y : WithConv (A →ₗ[↥(intO C)] C) := (q : C)⁻¹ • extendHom ↥(intO C) C A (toConv D) with hy
   have hya : ∀ a, y.ofConv a = (q : C)⁻¹ * (D a : C) := fun _ => rfl
   have hint : IsIntegral ↥(intO C) y :=
-    GlobalTheory.T.isIntegral_of_divisible_characters C (CartierDual ↥(intO C) A) _ (extendHom ↥(intO C) C A) (toConv D) q hq
+    _root_.GlobalTheory.IntegralOfPointValues.isIntegral_inv_smul C (CartierDual ↥(intO C) A) _ (extendHom ↥(intO C) C A) (toConv D) q hq
       fun χ => by
         obtain ⟨u, h1, h2⟩ := exists_isGroupLikeElem χ
         rw [← h2]
         exact hu u h1
-  have key := GlobalTheory.T.norm_smul_le_one_of_primitive_bounded_powers C p hp _ _ supNorm supNorm (mulHom ↥(intO C) C A)
+  have key := _root_.GlobalTheory.NearlyPrimitive.norm_smul_le_one C p hp _ _ supNorm supNorm (mulHom ↥(intO C) C A)
     (inlHom ↥(intO C) C A) (inrHom ↥(intO C) C A) supNorm_smul supNorm_smul supNorm_nonneg
     supNorm_nonneg supNorm_add_le supNorm_mul_le
     (fun f => supNorm_le fun t => le_supNorm f _)

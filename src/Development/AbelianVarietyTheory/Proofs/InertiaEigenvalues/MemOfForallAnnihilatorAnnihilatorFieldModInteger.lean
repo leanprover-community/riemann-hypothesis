@@ -1,12 +1,57 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Formalism.GaloisCohomology.LocalTateDualityK
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicPropertiesStatement
+public import Mathlib.Algebra.Module.Injective
+public import Mathlib.NumberTheory.Padics.PadicNumbers
+public import Mathlib.NumberTheory.Padics.PadicIntegers
+public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
@@ -118,7 +163,7 @@ theorem mem_of_forall_annihilator_annihilator :
           ∀ c, (∀ d, (∀ s ∈ S, β d s = 0) → β d c = 0) → c ∈ S := by
   intro l _ LL _ _ _ O _ _ hO M N _ _ _ _ _ β S hker c hc
   classical
-  obtain ⟨-, hRc, -, hAd⟩ := GlobalTheory.T.coefficient_ring_integers_compact_adic_properties l LL O hO
+  obtain ⟨-, hRc, -, hAd⟩ := _root_.GlobalTheory.GoodCoeff.good_coeff_integers l LL O hO
   obtain ⟨⟨hD, hDVR, hFr⟩, -, -, hTR, hOpen⟩ := hO
   haveI := hD; haveI := hDVR; haveI := hFr; haveI := hTR
   have hinj : Function.Injective (algebraMap O LL) := IsFractionRing.injective O LL
@@ -146,8 +191,8 @@ theorem mem_of_forall_annihilator_annihilator :
   have hexp : ∀ (a : Fin r → O) (s : N), β (∑ i, a i • v i) s =
       Submodule.Quotient.mk (∑ i, algebraMap O LL (a i) * y s i) := by
     intro a s
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Submodule.mkQ_apply, map_sum, map_sum, LinearMap.sum_apply]
+
+    rw [← Submodule.mkQ_apply, map_sum, map_sum, LinearMap.sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, LinearMap.smul_apply, ← hy, Submodule.mkQ_apply, ← Submodule.Quotient.mk_smul,
       Algebra.smul_def]
@@ -224,8 +269,8 @@ theorem mem_of_forall_annihilator_annihilator :
     choose k hk using h5
     refine ⟨Finset.univ.sup k, fun d => ?_⟩
     obtain ⟨a, rfl⟩ := hspan d
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, LinearMap.sum_apply, Finset.smul_sum]
+
+    rw [map_sum, LinearMap.sum_apply, Finset.smul_sum]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [map_smul, LinearMap.smul_apply, smul_comm, hk i _ (Finset.le_sup (Finset.mem_univ i)),
       smul_zero]
@@ -239,8 +284,8 @@ theorem mem_of_forall_annihilator_annihilator :
   choose cs hcs using hcoef
   have hkey : ∀ d, β d c = β d (∑ s : F, cs s • s.1.1) := by
     intro d
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hφG d, ← Finset.univ_sum_single (τ d), map_sum, map_sum]
+
+    rw [hφG d, ← Finset.univ_sum_single (τ d), map_sum, map_sum]
     refine Finset.sum_congr rfl fun s _ => ?_
     rw [hτ, hcs s _ (hn _ d), map_smul]
   have hdiff : c - ∑ s : F, cs s • s.1.1 ∈ S :=

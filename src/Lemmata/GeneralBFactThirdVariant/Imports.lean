@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
+public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 
 @[expose] public section
 
@@ -33,8 +34,8 @@ theorem goal1 :
         by_contra hc
         exact hσ ((hΨ σ).mpr hc)
       have h2 := congrArg (starRingEnd Complex) (hx _ hc)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero] at h2
+
+      rw [map_sum, map_zero] at h2
       simpa only [map_mul, Complex.conj_ofReal, NumberField.ComplexEmbedding.conjugate_coe_eq,
         Complex.conj_conj] using h2
   have hli := (NumberField.canonicalEmbedding.latticeBasis E).linearIndependent

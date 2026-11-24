@@ -1,9 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.IsScalarTowerOfAlgebraMapEq
-public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.ExistsAwayFracOfMemHomLoc
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CubeTotalComplexAcyclicOfSlicesInductionOnCard
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.RingTheory.Jacobson.Artinian
+public import Mathlib.RingTheory.LocalRing.Length
 
 @[expose] public section
 
@@ -17,8 +65,8 @@ open TensorProduct in
 theorem _root_.GlobalTheory.PointSupport.exists_algHom_ker_eq (K : Type) [Field K] [IsAlgClosed K] (R : Type)
     [CommRing R] [Algebra K R] [Algebra.FiniteType K R] (M : Ideal R) [M.IsMaximal] :
     ∃ χ : R →ₐ[K] K, RingHom.ker χ = M := by
-  letI : Field (R ⧸ M) := Ideal.Quotient.field M
-  haveI : Module.Finite K (R ⧸ M) := finite_of_finite_type_of_isJacobsonRing K (R ⧸ M)
+  let : Field (R ⧸ M) := Ideal.Quotient.field M
+  have : Module.Finite K (R ⧸ M) := finite_of_finite_type_of_isJacobsonRing K (R ⧸ M)
   let e : K ≃ₐ[K] R ⧸ M :=
     AlgEquiv.ofBijective (Algebra.ofId K (R ⧸ M)) IsAlgClosed.algebraMap_bijective_of_isIntegral
   refine ⟨e.symm.toAlgHom.comp (Ideal.Quotient.mkₐ K M), ?_⟩
@@ -39,9 +87,9 @@ theorem _root_.GlobalTheory.PointSupport.finiteLength_and_finrank_eq_length :
         (Module.finrank K H : ℕ∞) = Module.length O (O ⊗[R] H) := by
   intro K _ _ R _ _ _ χ₀ O _ _ _ _ H _ _ _ _ _ hsupp
   classical
-  haveI : IsJacobsonRing R := isJacobsonRing_of_finiteType (A := K)
+  have : IsJacobsonRing R := isJacobsonRing_of_finiteType (A := K)
   have hχ₀ : Function.Surjective χ₀ := fun k => ⟨algebraMap K R k, χ₀.commutes k⟩
-  haveI hP : (RingHom.ker χ₀).IsMaximal := RingHom.ker_isMaximal_of_surjective _ hχ₀
+  have hP : (RingHom.ker χ₀).IsMaximal := RingHom.ker_isMaximal_of_surjective _ hχ₀
 
   have hmax : ∀ M : Ideal R, M.IsMaximal → Module.annihilator R H ≤ M → M = RingHom.ker χ₀ := by
     intro M hM hle
@@ -62,35 +110,35 @@ theorem _root_.GlobalTheory.PointSupport.finiteLength_and_finrank_eq_length :
       exact sInf_le ⟨hQJ, hJ⟩
     · exact le_sInf fun J hJ => (hmax J hJ.2 (hle.trans hJ.1)).ge
 
-  letI : Module (R ⧸ Module.annihilator R H) H := Module.quotientAnnihilator
+  let : Module (R ⧸ Module.annihilator R H) H := Module.quotientAnnihilator
   have hmk : ∀ (r : R) (z : H), (Ideal.Quotient.mk (Module.annihilator R H) r) • z = r • z :=
     fun _ _ => rfl
-  haveI : IsScalarTower R (R ⧸ Module.annihilator R H) H :=
+  have : IsScalarTower R (R ⧸ Module.annihilator R H) H :=
     ⟨fun r a z => by
       obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective a
       rw [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, ← map_mul, hmk, hmk, mul_smul]⟩
-  haveI : IsScalarTower K (R ⧸ Module.annihilator R H) H :=
+  have : IsScalarTower K (R ⧸ Module.annihilator R H) H :=
     ⟨fun k a z => by
       obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective a
       rw [Algebra.smul_def, ← Ideal.Quotient.mk_algebraMap, ← map_mul, hmk, hmk, ← Algebra.smul_def,
         smul_assoc]⟩
-  haveI : Module.Finite (R ⧸ Module.annihilator R H) H :=
+  have : Module.Finite (R ⧸ Module.annihilator R H) H :=
     Module.Finite.of_restrictScalars_finite R _ H
   have hprimeq : ∀ Q : Ideal (R ⧸ Module.annihilator R H), Q.IsPrime →
       Q.comap (Ideal.Quotient.mk _) = RingHom.ker χ₀ := fun Q hQ =>
     hprime _ (Ideal.comap_isPrime _ Q) fun r hr => by
       rw [Ideal.mem_comap, Ideal.Quotient.eq_zero_iff_mem.mpr hr]
       exact Q.zero_mem
-  haveI : Ring.KrullDimLE 0 (R ⧸ Module.annihilator R H) := Ring.KrullDimLE.mk₀ fun Q hQ => by
+  have : Ring.KrullDimLE 0 (R ⧸ Module.annihilator R H) := Ring.KrullDimLE.mk₀ fun Q hQ => by
     rw [← Ideal.map_comap_of_surjective _ Ideal.Quotient.mk_surjective Q, hprimeq Q hQ]
     refine Ideal.IsMaximal.map_of_surjective_of_ker_le Ideal.Quotient.mk_surjective ?_
     rw [Ideal.mk_ker, ← hprimeq Q hQ]
     intro r hr
     rw [Ideal.mem_comap, Ideal.Quotient.eq_zero_iff_mem.mpr hr]
     exact Q.zero_mem
-  haveI : Module.Finite K (R ⧸ Module.annihilator R H) :=
+  have : Module.Finite K (R ⧸ Module.annihilator R H) :=
     (Module.finite_iff_krullDimLE_zero K _).mpr inferInstance
-  haveI hfin : Module.Finite K H := Module.Finite.trans (R ⧸ Module.annihilator R H) H
+  have hfin : Module.Finite K H := Module.Finite.trans (R ⧸ Module.annihilator R H) H
 
   have hunit : ∀ s : (RingHom.ker χ₀).primeCompl, IsUnit (algebraMap R (Module.End R H) s) := by
     intro s
@@ -106,22 +154,22 @@ theorem _root_.GlobalTheory.PointSupport.finiteLength_and_finrank_eq_length :
     · rw [Module.algebraMap_end_apply, Module.algebraMap_end_apply, ← hmk, ← hmk] at hxy
       exact ha.smul_left_cancel.mp hxy
     · rw [Module.algebraMap_end_apply, ← hmk, smul_smul, hb, one_smul]
-  haveI : IsLocalizedModule (RingHom.ker χ₀).primeCompl (LinearMap.id : H →ₗ[R] H) :=
+  have : IsLocalizedModule (RingHom.ker χ₀).primeCompl (LinearMap.id : H →ₗ[R] H) :=
     IsLocalizedModule.mk hunit (fun y => ⟨⟨y, 1⟩, one_smul _ _⟩)
       (fun {x₁ x₂} h => ⟨1, by simpa using h⟩)
   let e : H ≃ₗ[R] O ⊗[R] H := IsLocalizedModule.linearEquiv (RingHom.ker χ₀).primeCompl
     LinearMap.id (TensorProduct.mk R O H 1)
 
-  letI : Algebra K O := ((algebraMap R O).comp (algebraMap K R)).toAlgebra
-  haveI : IsScalarTower K R O := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  let : Algebra K O := ((algebraMap R O).comp (algebraMap K R)).toAlgebra
+  have : IsScalarTower K R O := IsScalarTower.of_algebraMap_eq fun _ => rfl
   let eK : H ≃ₗ[K] O ⊗[R] H := e.restrictScalars K
-  haveI : IsLocalRing O := IsLocalization.AtPrime.isLocalRing O (RingHom.ker χ₀)
-  haveI : IsLocalHom (algebraMap K O) := ⟨fun k hk => by
+  have : IsLocalRing O := IsLocalization.AtPrime.isLocalRing O (RingHom.ker χ₀)
+  have : IsLocalHom (algebraMap K O) := ⟨fun k hk => by
     by_cases h0 : k = 0
     · rw [h0, map_zero] at hk
       exact absurd hk not_isUnit_zero
     · exact isUnit_iff_ne_zero.mpr h0⟩
-  haveI : Module.Finite K (O ⊗[R] H) := Module.Finite.equiv eK
+  have : Module.Finite K (O ⊗[R] H) := Module.Finite.equiv eK
 
   have hsurj : Function.Surjective
       (algebraMap (IsLocalRing.ResidueField K) (IsLocalRing.ResidueField O)) := by
@@ -156,7 +204,7 @@ theorem _root_.GlobalTheory.PointSupport.finiteLength_and_finrank_eq_length :
   have hfr : Module.finrank K H = Module.finrank K (O ⊗[R] H) := eK.finrank_eq
   refine ⟨?_, hfin, ?_⟩
   · rw [← Module.length_ne_top_iff, ← hlen]
-    exact ENat.coe_ne_top _
+    exact ENat.natCast_ne_top _
   · rw [hfr]
     exact hlen
 

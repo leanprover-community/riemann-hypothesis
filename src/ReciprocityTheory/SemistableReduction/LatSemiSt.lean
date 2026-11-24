@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 
 @[expose] public section
 

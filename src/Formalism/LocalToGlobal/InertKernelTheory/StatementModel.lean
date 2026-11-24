@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsBeW
+public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 
 @[expose] public section
 

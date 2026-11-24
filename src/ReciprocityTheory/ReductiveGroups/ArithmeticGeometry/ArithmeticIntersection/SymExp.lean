@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Data.Nat.Choose.Sum
 
 @[expose] public section
 

@@ -1,11 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.ThPinsR
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGram
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionRationalPointsAndApproximation
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGram
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stdform
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -37,8 +74,8 @@ theorem OrthFrame.mem_iff {V : HSpace E} (h : OrthFrame V) (x : Fin V.rank → E
       rw [V.baseLattice_isUnimodular]; exact hx
     simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap] at hd
     have h1 : V.hT (V.frame a) (∑ b, x b • V.frame b) ∈ (1 : Submodule (𝓞 E) E) := hd _ (h.2 a)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum, map_smul, h.1] using h1
+
+    simpa [map_sum, map_smul, h.1] using h1
   · intro hx
     refine Submodule.sum_mem _ fun a _ => ?_
     obtain ⟨o, ho⟩ := Submodule.mem_one.1 (hx a)
@@ -92,11 +129,6 @@ theorem vStd_of_frameChoice : ∀ (D : D7) (i : Fin D.R.m), FrameChoice D i → 
   rw [SetLike.mem_coe, Submodule.mem_pi]
   exact (h.mem_iff x).trans ⟨fun k a _ => k a, fun k a => k a trivial⟩
 
-theorem nV_pos (R : Ranks) : 0 < R.nV := by
-  have := R.rank_add_five_le
-  unfold Ranks.nV
-  omega
-
 theorem neg_eq_false_of_vStd (D : D7) (i : Fin D.R.m) (h : VStd D i) : D.sp.Vneg ((i : ℕ) + 1) = false := by
   by_contra hneg
   rw [Bool.not_eq_false] at hneg
@@ -109,7 +141,7 @@ theorem neg_eq_false_of_vStd (D : D7) (i : Fin D.R.m) (h : VStd D i) : D.sp.Vneg
     rw [h0, Matrix.map_one _ (map_zero _) (map_one _)]
     simpa using Formalism.UG.P.stdform_sig_one (n := Fin (Vc D i).rank)
   have h2 := (sig_family (Vc D i) τ (D.sp.cm.cmUnram.2.1 τ) _ h1 hs).1
-  have := nV_pos D.R
+  have := _root_.Formalism.L2.Col.nV_pos D.R
   simp only at h2
   omega
 
@@ -120,6 +152,6 @@ theorem neg_eq_false_of_posDef (D : D7) (i : Fin D.R.m) (h : (Vc D i).IsPosDef) 
   have h1 := factVSig _ _ D.sp ((i : ℕ) + 1) (by omega) (by omega) D.host.φ₀
   rw [if_pos hneg] at h1
   have h2 := congrArg Prod.snd ((h D.host.φ₀).symm.trans h1)
-  exact (nV_pos D.R).ne h2
+  exact (_root_.Formalism.L2.Col.nV_pos D.R).ne h2
 
 end GlobalTheory.StdFrame

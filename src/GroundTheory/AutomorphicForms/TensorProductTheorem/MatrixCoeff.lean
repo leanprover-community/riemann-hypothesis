@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RepresentationTheory.Irreducible
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPairingStdP
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.TrSumOf
+public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -21,12 +63,12 @@ variable {F : Type} [Field F] [NumberField F]
 private theorem trace_pi_real_eq_sum' {ι : Type} [Fintype ι] (f : ι → ℝ) :
     Algebra.trace ℝ (ι → ℝ) f = ∑ i, f i := by
   rw [Algebra.trace_eq_matrix_trace (Pi.basisFun ℝ ι)]
-  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul, Pi.single_apply]
+  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul]
 
 private theorem trace_pi_complex_eq_sum_two_mul_re {ι : Type} [Fintype ι] (f : ι → ℂ) :
     Algebra.trace ℝ (ι → ℂ) f = ∑ i, 2 * (f i).re := by
   rw [Algebra.trace_eq_matrix_trace (Pi.basis fun _ : ι => Complex.basisOneI)]
-  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul, Fintype.sum_sigma, Pi.single_apply, Fin.sum_univ_two,
+  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul, Fintype.sum_sigma, Fin.sum_univ_two,
     Complex.coe_basisOneI, Complex.coe_basisOneI_repr]
   refine Finset.sum_congr rfl fun i _ => ?_
   ring
@@ -102,7 +144,6 @@ theorem lift_add (x y : κ → mixedEmbedding.mixedSpace F) : liftV (x + y) = li
   simp only [liftV, Pi.add_apply, map_add (f := _)]
   first
     | exact Prod.ext rfl (add_zero 0).symm
-    | exact Prod.ext (by simp) (by simp)
 
 theorem lift_smul (c : ℝ) (x : κ → mixedEmbedding.mixedSpace F) : liftV (c • x) = realAd F c • liftV x := by
   funext i
@@ -111,7 +152,6 @@ theorem lift_smul (c : ℝ) (x : κ → mixedEmbedding.mixedSpace F) : liftV (c 
   rw [Algebra.smul_def, map_mul]
   first
     | exact Prod.ext rfl (mul_zero 0).symm
-    | exact Prod.ext (by simp) (by simp)
 
 theorem lift_loc (x : κ → AF F) : liftV (locV x) = realAd F 1 • x := by
   funext i
@@ -163,8 +203,6 @@ theorem incM_gram {p q k : Type} [Fintype k] (P : Matrix k p E) (J : Matrix k k 
     simp only [incM, Matrix.map_apply]
     first
       | simp [cA, inclR]
-      | rfl
-      | simp [cA]
   rw [hQ, hinc, hinc, hincT]
 
 theorem gram_apply {p q : Type} {m : ℕ} (P : Matrix (Fin m) p E) (J : Matrix (Fin m) (Fin m) E)
@@ -183,13 +221,11 @@ def coordI (u : Matrix (Fin n) (Fin d) (AE F E)) :
 theorem coordI_add (u u' : Matrix (Fin n) (Fin d) (AE F E)) : coordI M (u + u') = coordI M u + coordI M u' := by
   first
     | simp only [coordI, map_add (f := _), Prod.fst_add, Prod.snd_add, loc_add, Prod.mk_add_mk]
-    | simp [coordI, loc_add]
 
 theorem coordI_smul (c : ℝ) (u : Matrix (Fin n) (Fin d) (AE F E)) :
     coordI M (realAd F c • u) = c • coordI M u := by
   first
     | simp only [coordI, map_smul, Prod.smul_fst, Prod.smul_snd, loc_smul, Prod.smul_mk]
-    | simp [coordI, loc_smul]
 
 theorem coordI_one (u : Matrix (Fin n) (Fin d) (AE F E)) : coordI M (realAd F 1 • u) = coordI M u := by
   rw [coordI_smul, one_smul]
@@ -198,13 +234,11 @@ theorem coordI_lift (v : (Fin n × Fin d → mixedEmbedding.mixedSpace F) × (Fi
     coordI M (M.co.e.symm (liftV v.1, liftV v.2)) = v := by
   first
     | simp [coordI, loc_lift]
-    | simp only [coordI, LinearEquiv.apply_symm_apply, loc_lift, Prod.mk.eta]
 
 theorem lift_coordI (u : Matrix (Fin n) (Fin d) (AE F E)) :
     M.co.e.symm (liftV (coordI M u).1, liftV (coordI M u).2) = realAd F 1 • u := by
   first
     | (rw [coordI, lift_loc, lift_loc, ← Prod.smul_mk, Prod.mk.eta, ← map_smul, LinearEquiv.symm_apply_apply])
-    | simp [coordI, lift_loc, ← map_smul]
 
 abbrev sympM (X : Spc F E n) (W : Spc F E d) := symp (R := AF F) (cA σ) (-1) (incM F X.J) (incM F W.J)
 
@@ -212,8 +246,8 @@ theorem omega_coordI (u u' : Matrix (Fin n) (Fin d) (AE F E)) :
     omega (trP F (Fin n × Fin d)) (coordI M u) (coordI M u') =
       Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (evH F (sympM (σ := σ) X W u u')) := by
   rw [show sympM (σ := σ) X W u u' = _ from M.co.form u u']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [omega, trP, coordI, locV, dotProduct, map_sub, map_sum, map_mul, evI_eq]
+
+  simp only [omega, trP, coordI, locV, dotProduct, map_sub, map_sum, map_mul, evI_eq]
 
 theorem sympM_eq_zero {p q : Type} [Fintype p] [Fintype q] (P : Matrix (Fin d) p E) (Q : Matrix (Fin d) q E)
     (h : Pᵀ * W.J * Q.map σ = 0) (a : Matrix (Fin n) p (AE F E)) (b : Matrix (Fin n) q (AE F E)) :
@@ -233,14 +267,12 @@ variable {n d d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {W₁ : Spc F E d₁}
 theorem incM_one' : incM F (1 : Matrix (Fin n) (Fin n) E) = 1 := by
   first
     | exact Matrix.map_one _ (map_zero _) (map_one _)
-    | (ext i j; simp [incM, Matrix.one_apply]; split_ifs <;> simp)
 
 theorem vecMulVec_eq_mul (y : Fin n → AE F E) (x : Fin d → E) :
     Matrix.vecMulVec y (incV F x) = Matrix.replicateCol Unit y * (incM F (Matrix.replicateCol Unit x))ᵀ := by
   ext i j
   first
     | simp [Matrix.vecMulVec_apply, Matrix.mul_apply, incM, incV]
-    | simp [Matrix.vecMulVec_apply, Matrix.mul_apply, incM]
 
 variable {B : Base F E} {r' s' i₀ i₁ : ℕ} {H' : Plane E d d₁}
 
@@ -297,8 +329,6 @@ theorem decomp (hS : W.IsSkew σ B r' s') (hA : H'.IsAdapted σ B W W₁ i₀ i�
     rw [e1, h]
     first
       | (congr 2; exact Finset.sum_congr rfl fun k _ => mul_comm _ _)
-      | simp only [mul_comm]
-      | ring
   refine ⟨Matrix.of (fun i (_ : Unit) => s i), Matrix.of (fun i k => u i k), Matrix.of (fun i (_ : Unit) => t i), fun w => ?_⟩
   have hinc : ∀ {p q r : Type} [Fintype q] (A : Matrix p q E) (B : Matrix q r E), incM F (A * B) = incM F A * incM F B :=
     fun A B => Matrix.map_mul

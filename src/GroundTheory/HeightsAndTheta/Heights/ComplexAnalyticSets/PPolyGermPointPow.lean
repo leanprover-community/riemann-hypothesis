@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StZariskiObjects
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPolyGermPointPow
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.GradientAtPoint
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EvalSmulOfIsHomogeneous
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.GradientAtPoint
+public import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.Analysis.Calculus.FDeriv.Analytic
+public import Mathlib.Topology.Algebra.Polynomial
 
 @[expose] public section
 
@@ -42,10 +47,6 @@ theorem coeff_eq_zero_of_isBigO {P : Polynomial ℂ} {k : ℕ}
     have h3 : Tendsto (fun t : ℂ => c * ‖t‖) (𝓝[≠] 0) (𝓝 0) := by
       simpa using ((continuous_norm.tendsto (0 : ℂ)).const_mul c).mono_left nhdsWithin_le_nhds
     exact norm_le_zero_iff.mp (le_of_tendsto_of_tendsto h2 h3 h1)
-
-theorem eval_smul_of_isHomogeneous {σ : Type} [Fintype σ] {h : MvPolynomial σ ℂ} {d : ℕ}
-    (hh : h.IsHomogeneous d) (t : ℂ) (v : σ → ℂ) : eval (t • v) h = t ^ d * eval v h :=
-  _root_.UpperTheory.Reformulated.B.HomogeneousEvalSmul.eval_smul_of_isHomogeneous hh t v
 
 variable {σ : Type} [Fintype σ] (w : σ → ℂ)
 
@@ -120,10 +121,10 @@ theorem mem_pow_ker_of_isBigO {k : ℕ} {q : MvPolynomial σ ℂ}
       intro t
       rw [← hev]
       conv_rhs => rw [← sum_homogeneousComponent q']
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [P, Polynomial.eval_finsetSum, Polynomial.eval_monomial, map_sum]
+
+      simp only [P, Polynomial.eval_finsetSum, Polynomial.eval_monomial, map_sum]
       refine Finset.sum_congr rfl fun e _ => ?_
-      rw [eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous e q'), mul_comm]
+      rw [_root_.UpperTheory.Reformulated.B.HomogeneousEvalSmul.eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous e q'), mul_comm]
     have hT : Tendsto (fun t : ℂ => t • v + w) (𝓝 0) (𝓝 w) := by
       simpa using ((continuous_id.smul continuous_const).add continuous_const).tendsto (0 : ℂ)
         (f := fun t : ℂ => t • v + w)
@@ -141,7 +142,10 @@ theorem mem_pow_ker_of_isBigO {k : ℕ} {q : MvPolynomial σ ℂ}
     simpa [coeff_homogeneousComponent, AddMonoidAlgebra.coeff] using this
   have hback : bind₁ (fun i => X i - C (w i)) q' = q := by
     rw [hq'def, bind₁_bind₁]
-    simp [bind₁_X_right]
+    have hfun : (fun i => bind₁ (fun i => X i - C (w i)) (X i + C (w i) : MvPolynomial σ ℂ)) = X := by
+      funext i
+      rw [map_add, bind₁_X_right, bind₁_C_right, sub_add_cancel]
+    rw [hfun, bind₁_X_left, AlgHom.id_apply]
   have := Ideal.mem_map_of_mem (bind₁ (fun i => (X i - C (w i) : MvPolynomial σ ℂ))) hmem
   rw [Ideal.map_pow, idealOfVars, Ideal.map_span, ← Set.range_comp, hback] at this
   rw [GroundTheory.Heights₂.Heights.GradientAtPoint.ker_eval_eq_span]

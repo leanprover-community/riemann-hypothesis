@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffTube
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTubeFormCompare
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTubeEuclMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

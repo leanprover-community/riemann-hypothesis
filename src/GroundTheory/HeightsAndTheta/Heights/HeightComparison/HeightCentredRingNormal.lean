@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChart
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPlacesRing
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

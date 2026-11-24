@@ -1,6 +1,49 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Quotient.Defs
+public import Mathlib.RingTheory.Finiteness.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
 
 @[expose] public section
 
@@ -19,12 +62,9 @@ theorem finite_quotient_of_complete_nakayama : ∀ {R : Type} [CommRing R] (ϖ :
     | zero => simp
     | succ n ih =>
       refine ih.trans ?_
-      rw [Finset.sum_range_succ, Function.iterate_succ_apply']
-      simp only [Finset.sum_range_succ]
-      set e := C^[n] c with he
-      conv_lhs => rw [hACX e]
-      simp only [add_smul, Finset.sum_add_distrib, smul_add, map_add (f := _), map_smul, Finset.smul_sum,
-        mul_smul, pow_succ]
+      rw [hACX (C^[n] c), Function.iterate_succ_apply']
+      simp only [Finset.sum_range_succ, add_smul, Finset.sum_add_distrib, smul_add, map_add,
+        map_smul, Finset.smul_sum, mul_smul, pow_succ]
       abel
   have hfin : ∀ c : Z, c - (∑ i ∈ s, limR (fun j => A (C^[j] c) i) • i
       + d (limT (fun j => X (C^[j] c)))) = 0 := by
@@ -35,27 +75,22 @@ theorem finite_quotient_of_complete_nakayama : ∀ {R : Type} [CommRing R] (ϖ :
     choose b hb using fun i => hlimR (fun j => A (C^[j] c) i) n
     obtain ⟨z, hz⟩ := hlimT (fun j => X (C^[j] c)) n
     refine ⟨C^[n] c - ∑ i ∈ s, b i • i - d z, ?_⟩
-    have hα : ∀ i, limR (fun j => A (C^[j] c) i)
-        = (∑ j ∈ Finset.range n, ϖ ^ j * A (C^[j] c) i) + ϖ ^ n * b i :=
-      fun i => sub_eq_iff_eq_add'.mp (hb i)
+    have hα := fun i => sub_eq_iff_eq_add'.mp (hb i)
     have hY := sub_eq_iff_eq_add'.mp hz
     simp only [hα, hY]
     rw [sub_eq_iff_eq_add]
     refine hk.trans ?_
-    simp only [add_smul, Finset.sum_add_distrib, smul_sub, map_add (f := _), map_smul, Finset.smul_sum,
+    simp only [add_smul, Finset.sum_add_distrib, smul_sub, map_add, map_smul, Finset.smul_sum,
       mul_smul]
     abel
-  have h0 : ∀ y : T, N.mkQ (d y) = 0 := by
-    intro y
-    rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-    exact hdN ⟨y, rfl⟩
+  have h0 : ∀ y : T, N.mkQ (d y) = 0 := fun y =>
+    (Submodule.Quotient.mk_eq_zero N).mpr (hdN ⟨y, rfl⟩)
   refine ⟨⟨s.image N.mkQ, ?_⟩⟩
   rw [eq_top_iff]
   rintro q -
   obtain ⟨c, rfl⟩ := N.mkQ_surjective q
   have hc := sub_eq_zero.mp (hfin c)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hc, map_add (f := _), h0, add_zero, map_sum]
+  rw [hc, map_add, h0, add_zero, map_sum]
   refine Submodule.sum_mem _ fun i hi => ?_
   rw [map_smul]
   exact Submodule.smul_mem _ _ (Submodule.subset_span (Finset.mem_coe.2 (Finset.mem_image_of_mem _ hi)))

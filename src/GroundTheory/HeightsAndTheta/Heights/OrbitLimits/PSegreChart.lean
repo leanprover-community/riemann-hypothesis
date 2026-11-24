@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChart
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartDim
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegral
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 
 @[expose] public section
 

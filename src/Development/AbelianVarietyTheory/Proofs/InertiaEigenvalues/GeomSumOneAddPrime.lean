@@ -1,8 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemEurOfTeichmullerSeries
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLaws
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 
 @[expose] public section
 
@@ -58,8 +101,8 @@ theorem algHom_sub_dvd {O : Type} [CommRing O] (f : O⟦X⟧ →ₐ[O] O⟦X⟧)
     obtain ⟨r, hr⟩ := hr N
     have h1 : f a = ∑ n ∈ Finset.range N, C (coeff n a) * y ^ n + y ^ N * f r := by
       conv_lhs => rw [hr]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_add (f := _), map_sum, map_mul, map_pow, ← hy]
+
+      simp only [map_add (f := _), map_sum, map_mul, map_pow, ← hy]
       congr 1
       refine Finset.sum_congr rfl fun n _ => ?_
       congr 1
@@ -98,18 +141,16 @@ theorem geom_sum_one_add_prime {R : Type} [CommRing R] {p : ℕ} (hp : p.Prime) 
     linear_combination h
   refine ⟨Polynomial.aeval x r, ?_⟩
   have := congrArg (Polynomial.aeval x) h1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa [map_sum] using this
+
+  simpa [map_sum] using this
 
 variable (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O]
-
-theorem act_X_eq (c : ℤ_[l]) : act l O c PowerSeries.X = cyc l O c := (GlobalTheory.Cyc.act_laws l O).1 c
 
 theorem act_comm' (c c' : ℤ_[l]) (a) : act l O c (act l O c' a) = act l O c' (act l O c a) := by
   rw [(GlobalTheory.Cyc.act_laws l O).2.1, (GlobalTheory.Cyc.act_laws l O).2.1, mul_comm]
 
 theorem act_nat_X (k : ℕ) : act l O (k : ℤ_[l]) PowerSeries.X = (1 + PowerSeries.X) ^ k - 1 := by
-  rw [act_X_eq, (GlobalTheory.Cyc.act_laws l O).2.2.2.1]
+  rw [_root_.GlobalTheory.Cyc.Series.act_X, (GlobalTheory.Cyc.act_laws l O).2.2.2.1]
 
 theorem cyc_eq_X_mul (c : ℤ_[l]) :
     ∃ b, cyc l O c = PowerSeries.X * (PowerSeries.C (algebraMap ℤ_[l] O c) + PowerSeries.X * b) := by
@@ -152,7 +193,7 @@ theorem act_QQ_one (c : ℤ_[l]ˣ) :
     rw [act_nat_X]
     simpa [XX] using this
   have h2 := act_comm' l O c l PowerSeries.X
-  rw [← h1, map_mul, act_X_eq, hb] at h2
+  rw [← h1, map_mul, _root_.GlobalTheory.Cyc.Series.act_X, hb] at h2
   simp only [map_mul, map_add (f := _), act_C, ← h1] at h2
   have hU : IsUnit (PowerSeries.C (algebraMap ℤ_[l] O c) + PowerSeries.X * b) := by
     rw [PowerSeries.isUnit_iff_constantCoeff]
@@ -172,15 +213,15 @@ theorem XX_QQ_properties : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] 
   have hψ : act l O ((l ^ (s - 1) : ℕ) : ℤ_[l]) PowerSeries.X = XX l O s := act_nat_X l O _
   have hψQ : act l O ((l ^ (s - 1) : ℕ) : ℤ_[l]) (QQ l O 1) = QQ l O s := by
     have : XX l O 1 = PowerSeries.X := by simp [XX]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [QQ, this, map_sum, map_pow, map_add (f := _), map_one, hψ]
+
+    simp only [QQ, this, map_sum, map_pow, map_add (f := _), map_one, hψ]
   have h0 : PowerSeries.constantCoeff (XX l O s) = 0 := by simp [XX]
   refine ⟨?_, phi_pow_X l O _, ?_, ?_, ?_, fun c => ⟨?_, ?_⟩, ?_⟩
   · rw [XX_mul_QQ' l O s hs, XX]
     simp only [map_sub, map_pow, map_add (f := _), map_one, phi, act_nat_X]
     rw [add_sub_cancel, ← pow_mul, ← pow_succ', Nat.sub_add_cancel hs]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp [QQ, map_sum, h0]
+
+  · simp [QQ, map_sum, h0]
   · obtain ⟨r, hr⟩ := geom_sum_one_add_prime hp (XX l O s)
     obtain ⟨t, ht⟩ := exists_add_pow_prime_pow_eq hp (PowerSeries.X : PowerSeries O) 1 (s - 1)
     have h1 : (l : PowerSeries O) ∣ XX l O s - PowerSeries.X ^ l ^ (s - 1) :=
@@ -199,7 +240,7 @@ theorem XX_QQ_properties : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] 
     exact ⟨b, by linear_combination hb⟩
   · obtain ⟨b, hb⟩ := cyc_eq_X_mul l O c
     refine ⟨act l O ((l ^ (s - 1) : ℕ) : ℤ_[l]) b, ?_⟩
-    conv_lhs => rw [← hψ, act_comm', act_X_eq, hb]
+    conv_lhs => rw [← hψ, act_comm', _root_.GlobalTheory.Cyc.Series.act_X, hb]
     simp only [map_mul, map_add (f := _), act_C, hψ]
   · obtain ⟨b, hb⟩ := act_QQ_one l O c
     refine ⟨act l O ((l ^ (s - 1) : ℕ) : ℤ_[l]) b, ?_⟩
@@ -207,12 +248,12 @@ theorem XX_QQ_properties : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] 
     simp only [map_mul, map_add (f := _), map_one, hψ, hψQ]
   · intro u w hu a
     have hX : PowerSeries.X ∣ act l O u PowerSeries.X := by
-      rw [act_X_eq, PowerSeries.X_dvd_iff]; exact cyc_const l O u
+      rw [_root_.GlobalTheory.Cyc.Series.act_X, PowerSeries.X_dvd_iff]; exact cyc_const l O u
     refine Dvd.dvd.trans ?_ (algHom_sub_dvd (act l O u) hX a)
     obtain ⟨b, hb⟩ := cyc_eq_X_mul l O w
     have h1 : cyc l O (((l ^ s : ℕ) : ℤ_[l]) * w) = XX l O s * QQ l O s *
         act l O ((l ^ s : ℕ) : ℤ_[l]) (PowerSeries.C (algebraMap ℤ_[l] O w) + PowerSeries.X * b) := by
-      rw [← act_X_eq, ← (GlobalTheory.Cyc.act_laws l O).2.1, act_X_eq l O w, hb, map_mul, act_nat_X,
+      rw [← _root_.GlobalTheory.Cyc.Series.act_X, ← (GlobalTheory.Cyc.act_laws l O).2.1, _root_.GlobalTheory.Cyc.Series.act_X l O w, hb, map_mul, act_nat_X,
         XX_mul_QQ' l O s hs]
     have h2 : cyc l O u + 1 = (cyc l O ((1 : ℕ) : ℤ_[l]) + 1) * (cyc l O (((l ^ s : ℕ) : ℤ_[l]) * w) + 1) := by
       simp only [cyc, sub_add_cancel]
@@ -220,7 +261,7 @@ theorem XX_QQ_properties : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] 
       push_cast
       rfl
     rw [(GlobalTheory.Cyc.act_laws l O).2.2.2.1, h1] at h2
-    rw [act_X_eq]
+    rw [_root_.GlobalTheory.Cyc.Series.act_X]
     exact ⟨(1 + PowerSeries.X) * act l O ((l ^ s : ℕ) : ℤ_[l])
       (PowerSeries.C (algebraMap ℤ_[l] O w) + PowerSeries.X * b), by linear_combination h2⟩
 

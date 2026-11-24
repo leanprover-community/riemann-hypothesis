@@ -1,8 +1,64 @@
 module
 
 public import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
+public import Formalism.HyperbolicPlaceProducts.Statement
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
+public import Formalism.GelfandTransference.HadamardGelfand.Hadamard
 public import Formalism.HyperbolicPlaceProducts.SecondLevelArithmeticNorm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
+import Formalism.HyperbolicPlaceProducts.SubgroupIndexCounts.CountO
+import Formalism.HyperbolicPlaceProducts.SecondLevelArithmeticNorm
 
 @[expose] public section
 
@@ -34,7 +90,7 @@ theorem coefficient_field_bound : Formalism.HermitianLatticeCounting.S6.CfBound 
   intro f x k hf hx
   have hx1 : (1:ℝ) ≤ x := by exact_mod_cast hx
   have hx0 : (0:ℝ) < x := by linarith
-  have h1 := Formalism.SLP.Final.omegaPow (2 * f) x (by omega) hx
+  have h1 := _root_.Formalism.SLP.P.pow_primeFactors_length_le (2 * f) x (by omega) hx
   have e : (((2 * f : ℕ) : ℝ)) = 2 * (f : ℝ) := by push_cast; ring
   rw [e] at h1 ⊢
   calc (2 * (f:ℝ)) ^ (Nat.primeFactorsList x).length * (x : ℝ) ^ k
@@ -60,22 +116,13 @@ lemma sublatticeCount_of (hS : Formalism.SLP.SubmoduleIndexCountO) (hC : Formali
   exact le_trans h3 (hC f x _ hf hx)
 
 theorem sublattice_count_alt : Formalism.HermitianLatticeCounting.S6.SublatticeCount :=
-  sublatticeCount_of Formalism.SLP.Final.submoduleIndexCountO coefficient_field_bound
+  sublatticeCount_of _root_.Formalism.SLP.P.card_submodules_of_index_le coefficient_field_bound
 
 lemma prod_primepow_dvd (s : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (e : ℕ → ℕ) (n : ℕ)
     (h : ∀ p ∈ s, p ^ e p ∣ n) : ∏ p ∈ s, p ^ e p ∣ n := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert p s hp ih =>
-    rw [Finset.prod_insert hp]
-    apply Nat.Coprime.mul_dvd_of_dvd_of_dvd _ (h p (Finset.mem_insert_self _ _))
-      (ih (fun q hq => hs q (Finset.mem_insert_of_mem hq)) (fun q hq => h q (Finset.mem_insert_of_mem hq)))
-    apply Nat.Coprime.prod_right
-    intro q hq
-    apply Nat.Coprime.pow
-    exact (Nat.coprime_primes (hs p (Finset.mem_insert_self _ _)) (hs q (Finset.mem_insert_of_mem hq))).2
-      (fun hpq => hp (hpq ▸ hq))
+  refine Finset.prod_dvd_of_isRelPrime (fun p hp q hq hpq => ?_) h
+  exact Nat.coprime_iff_isRelPrime.mp
+    (((Nat.coprime_primes (hs p hp) (hs q hq)).2 hpq).pow (e p) (e q))
 
 theorem minkowski_number_dvd_factorial : Formalism.HermitianLatticeCounting.S6.MinkowskiDvdFactorial := by
   intro N
@@ -83,21 +130,20 @@ theorem minkowski_number_dvd_factorial : Formalism.HermitianLatticeCounting.S6.M
   apply prod_primepow_dvd _ (fun p hp => (Finset.mem_filter.1 hp).2)
   intro p hp
   have hpp : p.Prime := (Finset.mem_filter.1 hp).2
-  have := Fact.mk hpp
   have hp2 : 2 ≤ p := hpp.two_le
-  rw [(by simpa only [_root_.Nat.padicValNat_def] using @_root_.multiplicity_dvd_iff_le : ∀ {p : _root_.Nat} [hp : _root_.Fact (_root_.Nat.Prime p)] {a n : _root_.Nat} (ha : a ≠ 0), p ^ n ∣ a ↔ n ≤ _root_.padicValNat p a) (Nat.factorial_ne_zero _)]
   have hlog : Nat.log p (2 * N) < N + 2 := by
-    by_cases h0 : 2 * N = 0
-    · simp [h0]
-    · apply Nat.log_lt_of_lt_pow h0
-      have h1 : N < 2 ^ N := Nat.lt_two_pow_self
-      have h2 : 2 ^ (N + 2) = 4 * 2 ^ N := by ring
-      have h3 : 2 ^ (N + 2) ≤ p ^ (N + 2) := Nat.pow_le_pow_left hp2 _
+    by_cases hN : N = 0
+    · simp [hN]
+    · apply Nat.log_lt_of_lt_pow (by omega)
+      have hpow := Nat.pow_le_pow_left hp2 (N + 2)
+      rw [pow_add] at hpow
+      norm_num at hpow
+      have := Nat.lt_two_pow_self (n := N)
       omega
-  rw [Nat.padicValNat_def, multiplicity_factorial hlog, Finset.sum_Ico_eq_sum_range]
+  rw [hpp.pow_dvd_iff_le_factorization (Nat.factorial_ne_zero _), Nat.factorization_factorial hpp hlog,
+    Finset.sum_Ico_eq_sum_range]
   unfold minkowskiExp
-  have e : N + 2 - 1 = N + 1 := by omega
-  rw [e]
+  rw [show N + 2 - 1 = N + 1 by omega]
   apply Finset.sum_le_sum
   intro i _
   have hpos : 0 < p ^ (1 + i) := pow_pos (by omega) _
@@ -147,26 +193,18 @@ theorem exterior_power_bound : Formalism.HermitianLatticeCounting.S6.ExtPowerBou
       simpa using this.symm.le
   have hB : ∀ x y, ‖B x y‖ ≤ 2 * ‖x‖ * ‖y‖ := by
     intro x y
-    by_cases hx : x = 0
-    · simp [hx]
-    by_cases hy : y = 0
-    · simp [hy]
-    have hx0 : ‖x‖ ≠ 0 := norm_ne_zero_iff.2 hx
-    have hy0 : ‖y‖ ≠ 0 := norm_ne_zero_iff.2 hy
-    have h1 := hB1 (((‖x‖ : ℂ))⁻¹ • x) (((‖y‖ : ℂ))⁻¹ • y)
-      (by rw [norm_smul, norm_inv, Complex.norm_real, norm_norm, inv_mul_cancel₀ hx0])
-      (by rw [norm_smul, norm_inv, Complex.norm_real, norm_norm, inv_mul_cancel₀ hy0])
-    have e0 : B (((‖x‖ : ℂ))⁻¹ • x) (((‖y‖ : ℂ))⁻¹ • y) = (((‖x‖ : ℂ))⁻¹ * ((‖y‖ : ℂ))⁻¹) * B x y := by
-      simp only [map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, map_inv₀, Complex.conj_ofReal,
-        RingHom.id_apply]
-      ring
-    rw [e0, norm_mul, norm_mul, norm_inv, norm_inv, Complex.norm_real, Complex.norm_real, norm_norm,
-      norm_norm] at h1
-    have hxp : 0 < ‖x‖ := norm_pos_iff.2 hx
-    have hyp' : 0 < ‖y‖ := norm_pos_iff.2 hy
-    have e : ‖x‖⁻¹ * ‖y‖⁻¹ * ‖B x y‖ = ‖B x y‖ / (‖x‖ * ‖y‖) := by field_simp
-    rw [e, div_le_iff₀ (by positivity)] at h1
-    linarith
+    have hRight (z : EuclideanSpace ℂ (Fin m)) (hz : ‖z‖ = 1) : ‖B z y‖ ≤ 2 * ‖y‖ := by
+      let f : EuclideanSpace ℂ (Fin m) →ₗ[ℂ] ℂ :=
+        ⟨⟨fun t => star (B z t), by simp⟩, by simp [map_smulₛₗ, smul_eq_mul]⟩
+      have h := f.bound_of_sphere_bound (r := 1) zero_lt_one 2
+        (fun t ht => by
+          simpa [f, norm_star] using hB1 z t hz (mem_sphere_zero_iff_norm.mp ht)) y
+      simpa [f, norm_star] using h
+    let f : EuclideanSpace ℂ (Fin m) →ₗ[ℂ] ℂ :=
+      ⟨⟨fun t => B t y, by simp⟩, by simp⟩
+    have h := f.bound_of_sphere_bound (r := 1) zero_lt_one (2 * ‖y‖)
+      (fun t ht => hRight t (mem_sphere_zero_iff_norm.mp ht)) x
+    simpa [f, mul_right_comm] using h
   let u : Fin j → EuclideanSpace ℂ (Fin m) := fun i => WithLp.toLp 2 (fun l => star (A i l))
   let w : Fin j → EuclideanSpace ℂ (Fin m) := fun i => WithLp.toLp 2 (fun l => star (A' i l))
   have hgram : ∀ (M : Matrix (Fin j) (Fin m) ℂ),
@@ -188,7 +226,7 @@ theorem exterior_power_bound : Formalism.HermitianLatticeCounting.S6.ExtPowerBou
     simp only [Matrix.mul_apply (M := (A * Aᴴ)ᵀ), Matrix.transpose_apply, Matrix.conjTranspose_apply,
       Finset.sum_mul]
     rw [Finset.sum_comm]
-  have h := Formalism.SLP.Final.sesqDet _ _ B 2 hB j u w
+  have h := _root_.Formalism.SLP.P.sesquilinear_determinant_holds _ _ B 2 hB j u w
   rw [hmat, hgram A, hgram A', Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, Matrix.det_transpose,
     Matrix.det_conjTranspose, norm_mul, norm_mul, norm_star] at h
   set p := ‖(A * Aᴴ).det‖ with hp
@@ -394,9 +432,9 @@ lemma gsK (h : U →ₗ[K] U →ₗ⋆[K] K) (herm : ∀ x y : U, star (h x y) =
     have hLll : L (Fin.last s) (Fin.last s) = 1 := by simp [L]
     have hglo : ∀ b, h gl (g₀ b) = 0 := by
       intro b
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [gl, map_sub, map_sum, map_smul, LinearMap.sub_apply, LinearMap.sum_apply,
-        LinearMap.smul_apply, smul_eq_mul]
+
+      simp only [gl, map_sub, map_sum, map_smul, LinearMap.sub_apply, LinearMap.sum_apply,
+      LinearMap.smul_apply, smul_eq_mul]
       rw [Finset.sum_eq_single b]
       · by_cases h0 : h (g₀ b) (g₀ b) = 0
         · have := haniso _ h0
@@ -432,10 +470,10 @@ lemma bmatK (h' : U →ₗ[K] U →ₗ⋆[K] K) {m : ℕ} (e f : Fin m → U) (A
     (u w : Fin m → U) (hu : ∀ i, u i = ∑ k, A i k • e k) (hw : ∀ j, w j = ∑ l, C j l • f l) :
     (Matrix.of fun i j => h' (u i) (w j)) = A * (Matrix.of fun k l => h' (e k) (f l)) * Cᴴ := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.of_apply, hu, hw, map_sum, map_smul, LinearMap.sum_apply,
-    LinearMap.smul_apply, map_smulₛₗ, smul_eq_mul, Matrix.mul_apply,
-    Matrix.conjTranspose_apply, Finset.sum_mul, Finset.mul_sum, starRingEnd_apply]
+
+  simp only [Matrix.of_apply, hu, hw, map_sum, map_smul, LinearMap.sum_apply,
+  LinearMap.smul_apply, map_smulₛₗ, smul_eq_mul, Matrix.mul_apply,
+  Matrix.conjTranspose_apply, Finset.sum_mul, Finset.mul_sum, starRingEnd_apply]
   exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun k _ => by ring
 
 lemma herm_real (σ : K →+* ℂ) (h : U →ₗ[K] U →ₗ⋆[K] K) (hσ : ∀ x : K, σ (star x) = star (σ x))
@@ -452,21 +490,21 @@ lemma besselK (σ : K →+* ℂ) (h : U →ₗ[K] U →ₗ⋆[K] K) (hσ : ∀ x
   set y' : U := y - ∑ a, c a • g a with hy'
   have h1 : ∀ b, h y' (g b) = 0 := by
     intro b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hy', map_sub, map_sum, map_smul, LinearMap.sub_apply, LinearMap.sum_apply,
-      LinearMap.smul_apply, smul_eq_mul]
+
+    simp only [hy', map_sub, map_sum, map_smul, LinearMap.sub_apply, LinearMap.sum_apply,
+    LinearMap.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_single b]
     · simp only [c]; rw [div_mul_cancel₀ _ (hd b), sub_self]
     · intro a _ ha; rw [horth a b ha, mul_zero]
     · intro hb; exact absurd (Finset.mem_univ b) hb
   have h2 : h y' y' = h y' y := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [hy', (h y').map_sub, map_sum]
+
+    conv_lhs => rw [hy', (h y').map_sub, map_sum]
     simp [h1]
   have h3 : h y' y = h y y - ∑ a, c a * h (g a) y := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hy', map_sub, map_sum, map_smul, LinearMap.sub_apply, LinearMap.sum_apply,
-      LinearMap.smul_apply, smul_eq_mul]
+
+    simp only [hy', map_sub, map_sum, map_smul, LinearMap.sub_apply, LinearMap.sum_apply,
+    LinearMap.smul_apply, smul_eq_mul]
   have h4 : ∀ a, (σ (c a * h (g a) y)).re = ‖σ (h (g a) y)‖ ^ 2 / (σ (h (g a) (g a))).re := by
     intro a
     simp only [c]
@@ -480,8 +518,8 @@ lemma besselK (σ : K →+* ℂ) (h : U →ₗ[K] U →ₗ⋆[K] K) (hσ : ∀ x
     rw [e2, Complex.ofReal_re]
     simp
   have h5 := hnn y'
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h2, h3, map_sub, map_sum, Complex.sub_re, Complex.re_sum] at h5
+
+  rw [h2, h3, map_sub, map_sum, Complex.sub_re, Complex.re_sum] at h5
   simp only [h4] at h5
   linarith
 
@@ -570,7 +608,7 @@ theorem det_form_bound_field : Formalism.HermitianLatticeCounting.S6.DetBBoundK 
       rw [h2] at h1
       have := hnn (x + η x)
       linarith
-    have hH := Formalism.HadamardInequality.P.hadamard_inequality_holds s N'ᵀ
+    have hH := _root_.Bl.DetNormLeProdRows.goal1 s N'ᵀ
     rw [Matrix.det_transpose] at hH
     have hrow : ∀ b, ∑ a, ‖N'ᵀ b a‖ ^ 2 ≤ 4 * (σ (h (g' b) (g' b))).re := by
       intro b

@@ -1,6 +1,47 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.WeakApproximationFinitePlace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -87,20 +128,17 @@ variable {S}
 theorem evalV_finOf (c : ∀ v : S, Fv F v.1) (u : HeightOneSpectrum (𝓞 F)) (h : u ∈ S) :
     evalV F u (finOf S c) = c ⟨u, h⟩ := by
   unfold finOf
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single (⟨u, h⟩ : S)
-    (fun b _ hb => evalV_singleFin_ne (fun e => hb (Subtype.ext e.symm)) _) (by simp)]
+
+  rw [map_sum, Finset.sum_eq_single (⟨u, h⟩ : S)
+  (fun b _ hb => evalV_singleFin_ne (fun e => hb (Subtype.ext e.symm)) _) (by simp)]
   exact evalV_singleFin_self u _
 
 theorem evalV_finOf_not (c : ∀ v : S, Fv F v.1) (u : HeightOneSpectrum (𝓞 F)) (h : u ∉ S) :
     evalV F u (finOf S c) = 0 := by
   unfold finOf
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
-  exact Finset.sum_eq_zero fun b _ => evalV_singleFin_ne (fun e => h (by rw [e]; exact b.2)) _
 
-theorem af_ext {x y : Af F} (h : ∀ u, evalV F u x = evalV F u y) : x = y :=
-  by first | exact RestrictedProduct.ext _ _ h | exact Subtype.ext (funext h)
+  rw [map_sum]
+  exact Finset.sum_eq_zero fun b _ => evalV_singleFin_ne (fun e => h (by rw [e]; exact b.2)) _
 
 variable (S)
 
@@ -125,7 +163,7 @@ theorem pS_sS (r : RS S) : pS S (sS S r) = r := by
   exact evalV_finOf r.2 v.1 v.2
 
 theorem sS_mul (r r' : RS S) : sS S (r * r') = sS S r * sS S r' := by
-  refine Prod.ext rfl (af_ext fun u => ?_)
+  refine Prod.ext rfl (_root_.GlobalTheory.AdelicU.af_ext fun u => ?_)
   change evalV F u (finOf S (r.2 * r'.2)) = evalV F u (finOf S r.2 * finOf S r'.2)
   rw [map_mul]
   by_cases h : u ∈ S
@@ -133,7 +171,7 @@ theorem sS_mul (r r' : RS S) : sS S (r * r') = sS S r * sS S r' := by
   · rw [evalV_finOf_not _ u h, evalV_finOf_not _ u h, zero_mul]
 
 theorem sS_pS (a : AF F) : sS S (pS S a) = sS S 1 * a := by
-  refine Prod.ext (one_mul _).symm (af_ext fun u => ?_)
+  refine Prod.ext (one_mul _).symm (_root_.GlobalTheory.AdelicU.af_ext fun u => ?_)
   change evalV F u (finOf S fun v : S => evalV F v.1 a.2) = evalV F u (finOf S 1 * a.2)
   rw [map_mul]
   by_cases h : u ∈ S

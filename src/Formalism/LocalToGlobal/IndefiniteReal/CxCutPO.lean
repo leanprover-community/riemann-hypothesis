@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.CxCutEP
+import Formalism.LocalToGlobal.Divisibility.FramesLemmas
+import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.CommutingTwist
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ConjugateWeightLatticeOfGeneral
 
 @[expose] public section
 

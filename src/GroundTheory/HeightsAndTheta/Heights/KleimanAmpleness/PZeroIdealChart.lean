@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsZeroIdealChart
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 

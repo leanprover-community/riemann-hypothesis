@@ -2,11 +2,17 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TensorActionApplyDual
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.IndicatorRholMem
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ToMKMulInv
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsEquivB
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OpEqExp
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.EqZeroOfCoef
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.SASingle
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.Transfer
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsEquivB
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OpEqExp
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ToMKMulInv
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.DerivEntries
 
 @[expose] public section
 
@@ -24,8 +30,8 @@ variable {n : ℕ}
 def submoduleEvaluationFunctional {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {D : Submodule ℂ H} (V : Submodule ℂ D)
     (w0 : V) : V →ₗ[ℂ] ℂ where
   toFun v := ⟪((w0 : D) : H), ((v : D) : H)⟫_ℂ
-  map_add' x y := by simp [inner_add_right]
-  map_smul' c x := by simp [inner_smul_right]
+  map_add' x y := by simp
+  map_smul' c x := by simp
 
 theorem lowestKType_vector_exists (ε : Fin n → Bool) (lam : Fin n → ℝ)
     {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -104,8 +110,8 @@ theorem lowestKType_trace_integral (ε : Fin n → Bool) (lam : Fin n → ℝ)
   funext c
   set w0 : H := (((ι.symm T.w : V) : D) : H) with hw0
   have hsT : sT E V x c = ∑ p ∈ x.support, if p.2 = c then wordE E p.1 (x p : D) else 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [← Finsupp.sum_single x, Finsupp.sum, map_sum, Finset.sum_apply]
+
+    conv_lhs => rw [← Finsupp.sum_single x, Finsupp.sum, map_sum, Finset.sum_apply]
     refine sum_congr rfl fun p _ => ?_
     rw [show p = (p.1, p.2) from rfl, sT_single, Pi.single_apply]
     simp only [eq_comm]
@@ -136,8 +142,8 @@ theorem lowestKType_trace_integral (ε : Fin n → Bool) (lam : Fin n → ℝ)
     rw [hsum fun p => ⟪ι v', rWord ε (p.1.map fun q =>
       (Matrix.single q.1 q.2 1 : Matrix (Fin n) (Fin n) ℂ)) (PsiM T μ) g
         (if p.2 = c then ι (x p) else 0)⟫_ℂ] at h2
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hsT, ← h2, Submodule.coe_sum, map_sum, inner_sum]
+
+    rw [hsT, ← h2, Submodule.coe_sum, map_sum, inner_sum]
     refine sum_congr rfl fun p _ => ?_
     split_ifs
     · rw [TRA.rWord_coef hσ hD ι _ hcoef _ g hg, hword]
@@ -172,8 +178,8 @@ theorem lowestKType_trace_integral (ε : Fin n → Bool) (lam : Fin n → ℝ)
     hWord (adW ε k (p.1.map fun q => (Matrix.single q.1 q.2 1 : Matrix (Fin n) (Fin n) ℂ))) (PhiP μ) z
   have hXa : ∀ c', ∑ p ∈ x.support, TRA.ei X 1 c' p.2 * a p = 0 := fun c' => by
     rw [← hXi c']
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_rhs => rw [← Finsupp.sum_single x, Finsupp.sum, map_sum]
+
+    conv_rhs => rw [← Finsupp.sum_single x, Finsupp.sum, map_sum]
     refine sum_congr rfl fun p _ => ?_
     have e1 : TRA.evZ μ z (TRA.wB (eMM μ) (phiMM μ) X 1 p.1) = hWord (adW ε k (p.1.map fun q =>
         (Matrix.single q.1 q.2 1 : Matrix (Fin n) (Fin n) ℂ))) (PhiP μ) z := by

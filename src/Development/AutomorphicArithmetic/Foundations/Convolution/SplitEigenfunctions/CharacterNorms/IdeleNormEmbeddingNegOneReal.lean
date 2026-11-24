@@ -2,6 +2,46 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.Entire
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.SplitA
+public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.IsotypicQuotients.NormWfLe
 
 @[expose] public section
 
@@ -47,13 +87,7 @@ theorem mkE_rat (D : Dat ℚ E) (x y : ℚ) :
   simp only [Dat.mkE, UpperTheory.ConvolutionTheory.R2.rt, AdeleBaseChange.adeleMap_algebraMap, map_add (f := _), map_mul]
 
 theorem nE_add (D : Dat ℚ E) (x c : Fin 2 → A ℚ) : nE D (x + c) = nE D x * nE D c := by
-  simp only [nE, Pi.add_apply, mkE_add, n_add]
-
-theorem rat_n (k : E) : ∃ γ : GL (Fin 2) E, ratGL E 2 γ = gl (nU (rt k)) := by
-  refine ⟨Matrix.SpecialLinearGroup.toGL ⟨!![1, k; 0, 1], by simp [Matrix.det_fin_two]⟩, Units.ext ?_⟩
-  ext i j
-  change algebraMap E (A E) (!![1, k; 0, 1] i j) = (!![1, rt k; 0, 1] : Matrix (Fin 2) (Fin 2) (A E)) i j
-  fin_cases i <;> fin_cases j <;> simp [UpperTheory.ConvolutionTheory.R2.rt]
+  simp only [nE, Pi.add_apply, mkE_add, _root_.UpperTheory.ConvolutionTheory.R2.Pp.n_add]
 
 theorem Wo_right (D : Dat ℚ E) (φ : GL (Fin 2) (A E) → ℂ) (x h : GL (Fin 2) (A E)) :
     Wo D (fun g => φ (g * x)) h = Wo D φ (h * x) := by
@@ -66,7 +100,7 @@ theorem Wo_shift (D : Dat ℚ E) {φ : GL (Fin 2) (A E) → ℂ} (hL : ∀ γ g,
   have hper : ∀ ξ ∈ vecLattice ℚ (Fin 2), ∀ x, J (ξ + x) = J x := by
     intro ξ hξ x
     obtain ⟨η, rfl⟩ := mem_vecLattice.1 hξ
-    obtain ⟨γ, hγ⟩ := rat_n (algebraMap ℚ E (η 0) + algebraMap ℚ E (η 1) * D.θ)
+    obtain ⟨γ, hγ⟩ := _root_.UpperTheory.ConvolutionTheory.R2.Pp.rat_n (algebraMap ℚ E (η 0) + algebraMap ℚ E (η 1) * D.θ)
     have e1 : nE D ((fun i => algebraMap ℚ (A ℚ) (η i)) + x) = ratGL E 2 γ * nE D x := by
       rw [nE_add, hγ, ← mkE_rat]
       rfl

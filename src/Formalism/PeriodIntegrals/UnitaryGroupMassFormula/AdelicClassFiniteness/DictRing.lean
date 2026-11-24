@@ -1,8 +1,51 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StrongApproximation.DedekindLFunctions
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,9 +66,7 @@ theorem nonempty_places : Nonempty (HeightOneSpectrum (𝓞 F)) := by
 
 theorem nontrivial : Nontrivial (Af F) := by
   obtain ⟨v⟩ := nonempty_places (F := F)
-  refine ⟨⟨0, 1, fun h => ?_⟩⟩
-  have h2 : (0 : v.adicCompletion F) = 1 := congrArg (fun a : Af F => a v) h
-  exact zero_ne_one h2
+  exact ⟨⟨0, 1, fun h => zero_ne_one (congrArg (fun a : Af F => a v) h)⟩⟩
 
 theorem comp_algebraMap (r : 𝓞 F) (v : HeightOneSpectrum (𝓞 F)) :
     (algebraMap (𝓞 F) (Af F) r) v = algebraMap (𝓞 F) (v.adicCompletion F) r := by
@@ -49,8 +90,7 @@ theorem val_int (v : HeightOneSpectrum (𝓞 F)) (r : 𝓞 F) :
   rw [IsScalarTower.algebraMap_apply (𝓞 F) F (v.adicCompletion F), val_alg]
 
 theorem cancel {Γ : Type*} [LinearOrderedCommGroupWithZero Γ] {ν x : Γ} (hν : ν ≠ 0) (h : ν * x ≤ ν) : x ≤ 1 := by
-  have h1 : ν * x ≤ ν * 1 := by rwa [mul_one]
-  exact le_of_mul_le_mul_left h1 (zero_lt_iff.mpr hν)
+  exact le_of_mul_le_mul_left (by simpa using h) (zero_lt_iff.mpr hν)
 
 theorem af_denom (a : Af F) : ∃ m : ℕ, 0 < m ∧ (m : Af F) * a ∈ Formalism.UG.intAd F := by
   classical

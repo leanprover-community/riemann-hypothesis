@@ -1,10 +1,51 @@
 module
 
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.ReadLimit
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PackOf
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.FaceMapCompSuccAboveCastSucc
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.InfinitesimalCharacterGlue
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LimitbDefs
+public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.CompatFub
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -110,19 +151,19 @@ theorem isKer_zero_rank {n : ℕ} (hn : n = 0) [MeasurableSpace (G n)] (μ : Mea
   simp [PositivityTheory.RgBcC.act, zOp, gel]
 
 theorem ent_smul {n : ℕ} (M : KMod n) (c : ℂ) (A : M.V →L[ℂ] M.V) (i j : Ix M) : ent M (c • A) i j = c * ent M A i j := by
-  simp [ent, inner_smul_right]
+  simp [ent]
 
 theorem tens_update_smul {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ} {Ma : Mods E a} {Mb : Mods E b}
     {κ : Type} (ka : Kers Ma) (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ)) (v : InfinitePlace E) (c : ℂ) :
     tens (Function.update ka v (c • ka v)) kb ψ = c • tens ka kb ψ := by
   funext i j y
-  simp only [tens, entA, Pi.smul_apply, smul_eq_mul]
+  simp only [tens, entA]
   have e : ∀ w, ent (Ma w) (Function.update ka v (c • ka v) w (gInf w y.1).val) (i.1.1 w) (j.1.1 w) =
       (if w = v then c else 1) * ent (Ma w) (ka w (gInf w y.1).val) (i.1.1 w) (j.1.1 w) := by
     intro w
     by_cases h : w = v
     · subst h; simp [ent_smul]
-    · simp [Function.update_of_ne h, h]
+    · simp [h]
   simp only [e, Finset.prod_mul_distrib, Finset.prod_ite_eq', Finset.mem_univ, if_true]
   simp only [Matrix.smul_apply, Pi.smul_apply, smul_eq_mul, tens, entA]
   ring
@@ -131,13 +172,13 @@ theorem tens_update_smul_b {E : Type} [Field E] [NumberField E] [IsCMField E] {a
     {Mb : Mods E b} {κ : Type} (ka : Kers Ma) (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ)) (v : InfinitePlace E)
     (c : ℂ) : tens ka (Function.update kb v (c • kb v)) ψ = c • tens ka kb ψ := by
   funext i j y
-  simp only [tens, entA, Pi.smul_apply, smul_eq_mul]
+  simp only [tens, entA]
   have e : ∀ w, ent (Mb w) (Function.update kb v (c • kb v) w (gInf w y.2).val) (i.1.2 w) (j.1.2 w) =
       (if w = v then c else 1) * ent (Mb w) (kb w (gInf w y.2).val) (i.1.2 w) (j.1.2 w) := by
     intro w
     by_cases h : w = v
     · subst h; simp [ent_smul]
-    · simp [Function.update_of_ne h, h]
+    · simp [h]
   simp only [e, Finset.prod_mul_distrib, Finset.prod_ite_eq', Finset.mem_univ, if_true]
   simp only [Matrix.smul_apply, Pi.smul_apply, smul_eq_mul, tens, entA]
   ring

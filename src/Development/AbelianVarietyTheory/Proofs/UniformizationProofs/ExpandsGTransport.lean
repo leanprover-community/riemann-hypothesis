@@ -1,13 +1,51 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistBasisOffPrime
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpandsAtTransport
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueSecPull
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegExpF
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifBaseChangeSt
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsExtensionPullOver
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueSecPull
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpandsAtTransport
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -28,8 +66,8 @@ variable {X X' Y Y' Y₁ Y₁' Z : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' �
 
 private theorem gs_sum_lemma {Y Z : Scheme.{0}} (f : Z ⟶ Y) (z : Z) (U : Y.Opens) (h : f z ∈ U) {n : ℕ}
     (a : Fin n → Γ(Y, U)) : gs f z U (∑ i, a i) = ∑ i, gs f z U (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gs_eq _ _ _ h, map_sum]
+
+  simp only [gs_eq _ _ _ h, map_sum]
 
 theorem secLin_val {φ₁ : K' → (Y₁ ⟶ X)} {ε₁ : K' → ℤ} {s₁ : LB.Sec (LB.LinComb L φ₁ ε₁)} {φ : K → (Y ⟶ X)}
     {ε : K → ℤ} {n : ℕ} {s : Fin n → LB.Sec (LB.LinComb L φ ε)} {h : Y₁ ⟶ Y} {c : Fin n → Γ(Y₁, ⊤)}
@@ -147,35 +185,7 @@ theorem famφ_eq (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F
 theorem famφB_pull (hD : IsPullDeg φ D D') (x : D'.X) (κ : Fin 4) :
     D'.famφB x κ ≫ (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) =
       (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) ≫ D.famφB (hD.xe x) κ := by
-  obtain ⟨G1, G2⟩ := pull_grp hD
-  have he := hD.he
-  unfold eSec at he
-  have k2 : (toUnit D'.P.A ≫ D'.c x).left ≫ (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) =
-      (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) ≫ (toUnit D.P.A ≫ D.c (hD.xe x)).left := by
-    dsimp
-    rw [← Category.assoc _ D.P.A.hom, G1.w, Category.assoc, Category.assoc, hD.c_pr x]
-  have k3 : (toUnit D'.P.A ≫ η).left ≫ (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) =
-      (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) ≫ (toUnit D.P.A ≫ η).left := by
-    dsimp
-    rw [← Category.assoc _ D.P.A.hom, G1.w, Category.assoc, Category.assoc, he]
-  let x₀ : Over.mk (D'.P.A.hom ≫ spMap φ) ⟶ D.P.A :=
-    Over.homMk (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) G1.w
-  have h1 := G2 D'.P.A (𝟙 _) (toUnit _ ≫ D'.c x) x₀ (x₀ ≫ toUnit D.P.A ≫ D.c (hD.xe x))
-    (Category.id_comp _).symm k2.symm
-  have h2 : x₀ * (x₀ ≫ toUnit D.P.A ≫ D.c (hD.xe x)) =
-      x₀ ≫ padd D.P.A (𝟙 _) (toUnit D.P.A ≫ D.c (hD.xe x)) := by
-    unfold padd
-    rw [Hom.mul_def, CartesianMonoidalCategory.comp_lift_assoc, Category.comp_id]
-  have h3 : (𝟙 D'.P.A) * (toUnit _ ≫ D'.c x) = padd D'.P.A (𝟙 _) (toUnit _ ≫ D'.c x) := by
-    unfold padd
-    rw [Hom.mul_def]
-  rw [h2, h3, Over.comp_left] at h1
-  unfold DegPre.famφB
-  fin_cases κ
-  · simp
-  · exact h1.symm
-  · exact k2
-  · exact k3
+  apply GlobalTheory.TwistLoc.fam_comm
 
 end Fam
 
@@ -185,7 +195,7 @@ namespace GlobalTheory
 
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ExpGTrans in
-set_option maxHeartbeats 1600000 in
+
 theorem expandsG_transport : ∀ (R R' : Type) [CommRing R] [IsDomain R] [CommRing R'] [IsDomain
     R'] (I : Ideal R) (I' : Ideal R') (φ : R →+* R') (D : DegData R I) (D' : DegData R' I') (hD
     : IsPullDeg φ D.toPre D'.toPre) (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (A'

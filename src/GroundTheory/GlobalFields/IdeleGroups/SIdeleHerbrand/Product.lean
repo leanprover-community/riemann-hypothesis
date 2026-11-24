@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.HerbrandQuotients.CycTateNegOneOrbitEquivSymmMk
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

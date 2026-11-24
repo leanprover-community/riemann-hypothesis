@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
+public import Mathlib.MeasureTheory.Group.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Measure.Haar.Basic
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 

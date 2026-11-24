@@ -1,6 +1,14 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.SemiDegT
+public import ReciprocityTheory.SemistableReduction.SemiDegSt
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import ReciprocityTheory.SemistableReduction.SemiDegE
 
 @[expose] public section
 

@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.ConeDefs
+public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.Pairing
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
 
 @[expose] public section
 

@@ -1,14 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsBaseClassLevelAdapted
-public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.AnChartAsm
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.CmHostUnitAddConjEqOne
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HalvesFreeAndAdjoint
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.GeneralLinearGroupCharEqOneOfDetEqOne
+public import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ZeroNotAdmissibleOfRankPos
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelStructureProperties
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.GeneralLinearGroupCharEqOneOfDetEqOne
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HalvesFreeAndAdjoint
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+public import Mathlib.LinearAlgebra.Span.TensorProduct
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.CmHostUnitAddConjEqOne
 
 @[expose] public section
 
@@ -31,8 +77,8 @@ variable {R Q : Type} [CommRing R] [AddCommGroup Q] [Module R Q] {I : Ideal R} {
 
 theorem equiv_col (e : (Fin r → R ⧸ I) ≃ₗ[R] Q) (c : Fin r → R) :
     e (fun j => Ideal.Quotient.mk I (c j)) = ∑ j, c j • e (Pi.single j 1) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← map_smul, ← map_sum]
+
+  simp only [← map_smul, ← map_sum]
   congr 1
   funext i
   simp [Finset.sum_apply, Pi.single_apply, Algebra.smul_def]
@@ -143,8 +189,8 @@ theorem exists_frame (X : Data E r) (I : Ideal (𝓞 E)) (hI : I ≠ ⊥) : ∃ 
   have : Submodule.Quotient.mk (⟨v, hv⟩ : X.Λ) = (Submodule.Quotient.mk (∑ i, c i • b i) :
       X.Λ ⧸ (I • ⊤ : Submodule (𝓞 E) X.Λ)) := by
     rw [← hc]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [← hb, ← Submodule.mkQ_apply, map_sum, map_smul]
+
+    simp only [← hb, ← Submodule.mkQ_apply, map_sum, map_smul]
   have h2 := mem_smul_top.1 ((Submodule.Quotient.eq _).1 this)
   have h3 : v = ∑ i, c i • (b i : Fin r → E) + ((⟨v, hv⟩ - ∑ i, c i • b i : X.Λ) : Fin r → E) := by simp
   rw [h3]
@@ -223,8 +269,8 @@ theorem mem_of_cong {J : Ideal (𝓞 E)} (hJ : J ≠ ⊥)
 
 theorem mk_comb {K : Submodule (𝓞 E) La} (c : Fin r → 𝓞 E) (z : Fin r → La) :
     (Submodule.Quotient.mk (∑ j, c j • z j) : La ⧸ K) = ∑ j, c j • Submodule.Quotient.mk (z j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← Submodule.mkQ_apply, map_sum, map_smul]
+
+  simp only [← Submodule.mkQ_apply, map_sum, map_smul]
 
 theorem tie_core (D : SW.Level X) {𝔐 J : Ideal (𝓞 E)} (hprod : D.𝔪 = 𝔐 * J) (hcop : IsCoprime 𝔐 J)
     (hgrp : ∀ k : GL (Fin r) (𝓞 E ⧸ D.𝔪), (∀ i j, ∃ a ∈ 𝔐,
@@ -262,8 +308,8 @@ theorem tie_core (D : SW.Level X) {𝔐 J : Ideal (𝓞 E)} (hprod : D.𝔪 = �
       (Submodule.smul_mem _ _ (Submodule.smul_mem_smul hm (D.β_mem i)))
   choose z hz using hz
   have hcomb : ∀ a : Fin r → 𝓞 E, Cong X J (δ (∑ j, a j • z j)) (∑ j, a j • D.β j) := fun a => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa only [map_sum, map_smul] using cong_sum hz a
+
+    simpa only [map_sum, map_smul] using cong_sum hz a
   have hsp : Submodule.span (𝓞 E) (Set.range fun i =>
       (Submodule.Quotient.mk (z i) : La ⧸ (J • ⊤ : Submodule (𝓞 E) La))) = ⊤ := by
     refine eq_top_iff.2 fun q _ => ?_
@@ -479,8 +525,8 @@ theorem exists_levTie : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
           rw [← ha, Matrix.map_map]; rfl)
         simp only [he₀] at h1
         have h2 := hfg (g * rho e₀ (Matrix.GeneralLinearGroup.map (Ideal.Quotient.factor hle) k.1))
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [LinearEquiv.mul_apply, h1, map_sum, map_smul] at h2
+
+        simp only [LinearEquiv.mul_apply, h1, map_sum, map_smul] at h2
         rw [← funext hg, hfg]
         exact h2.trans (by rw [map_mul, Units.val_mul]; rfl)) hL δ hδ hLδ hn
     exact ⟨t, ht, fun xs y h1 h2 => (hf _).trans (H _ y h1 h2)⟩

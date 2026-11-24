@@ -1,7 +1,10 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.UnipotentCoefficientShift
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajorantOperators
 
 @[expose] public section
 
@@ -51,8 +54,8 @@ theorem iso_threshold (X : Data E r) : ∃ δ0 : ℝ, 0 < δ0 ∧ ∀ x ∈ X.do
   have hemb : ∀ τ : E →+* ℂ,
       hermC τ X.Gm (Data.emb τ v) (Data.emb τ v) = τ (herm X.Gm v v) := by
     intro τ
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hermC, herm, Data.emb, map_sum, map_mul, emb_cc]
+
+    simp only [hermC, herm, Data.emb, map_sum, map_mul, emb_cc]
   have ha : IsIntegral ℤ ((X.den : E) * herm X.Gm v v) := X.Λ_int v hv v hv
   have hzero := UnipotentCoefficientShift.eq_zero_of_conj_lt_one ha (fun σ => by
     obtain ⟨τ, h1, h2⟩ : ∃ τ : X.Ψ, ‖σ (herm X.Gm v v)‖ = ‖τ.1 (herm X.Gm v v)‖ ∧

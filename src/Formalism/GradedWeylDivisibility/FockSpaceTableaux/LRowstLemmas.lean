@@ -1,6 +1,48 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -32,8 +74,8 @@ theorem isWH_algHom_monomial (φ : MvPolynomial σ R →ₐ[R] MvPolynomial τ R
 theorem isWH_algHom (φ : MvPolynomial σ R →ₐ[R] MvPolynomial τ R) (w : σ → M) (w' : τ → M)
     (hφ : ∀ v, IsWeightedHomogeneous w' (φ (X v)) (w v)) {f : MvPolynomial σ R} {d : M}
     (hf : IsWeightedHomogeneous w f d) : IsWeightedHomogeneous w' (φ f) d := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum]
+
+  rw [f.as_sum, map_sum]
   refine IsWeightedHomogeneous.sum _ _ _ fun s hs => ?_
   have h := isWH_algHom_monomial φ w w' hφ s (AddMonoidAlgebra.coeff f s)
   rwa [hf (mem_support_iff.mp hs)] at h
@@ -65,8 +107,8 @@ theorem algHom_weightedHomogeneousComponent (φ : MvPolynomial σ R →ₐ[R] Mv
     φ (weightedHomogeneousComponent w μ f) = weightedHomogeneousComponent w' μ (φ f) := by
   conv_lhs => rw [f.as_sum]
   conv_rhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum]
+
+  simp only [map_sum]
   refine Finset.sum_congr rfl fun s _ => ?_
   have hs := isWH_algHom_monomial φ w w' hφ s (AddMonoidAlgebra.coeff f s)
   have hm : IsWeightedHomogeneous w (monomial s (AddMonoidAlgebra.coeff f s)) (Finsupp.weight w s) :=
@@ -97,9 +139,9 @@ theorem colAddGen_rowAct {R : Type*} [CommRing R] {r n : ℕ} (g : Matrix (Fin r
       (rowActO R g).comp (colAddGen R (r := r) l j) := by
     apply MvPolynomial.algHom_ext
     rintro ⟨a, t⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, colAddGen, rowAct, rowActO, aeval_X, map_sum,
-      map_mul, aeval_C, MvPolynomial.algebraMap_eq]
+
+    simp only [AlgHom.comp_apply, colAddGen, rowAct, rowActO, aeval_X, map_sum,
+    map_mul, aeval_C, MvPolynomial.algebraMap_eq]
     by_cases h : t = j
     · simp only [h, if_true, aeval_X, map_add (f := _), map_mul, Option.elim]
       rw [Finset.mul_sum, ← Finset.sum_add_distrib]

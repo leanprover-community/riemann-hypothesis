@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.IsCompactSpanRange
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.UnifExHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.OmLocU
 
 @[expose] public section
 
@@ -57,22 +97,19 @@ theorem hR_add_left (x x' y : Fin n → R ⊗[F] E) :
     hR R σ J (x + x') y = hR R σ J x y + hR R σ J x' y := by
   unfold hR
   simp only [Formalism.UG.hform]
-  simp [Finset.sum_add_distrib, add_mul, mul_add, map_add (f := _), Pi.add_apply, Matrix.mulVec_add,
-    Matrix.add_mulVec, dotProduct_add, add_dotProduct]
+  simp [Finset.sum_add_distrib, add_mul, map_add (f := _), Pi.add_apply]
 
 theorem hR_add_right (x y y' : Fin n → R ⊗[F] E) :
     hR R σ J x (y + y') = hR R σ J x y + hR R σ J x y' := by
   unfold hR
   simp only [Formalism.UG.hform]
-  simp [Finset.sum_add_distrib, add_mul, mul_add, map_add (f := _), Pi.add_apply, Matrix.mulVec_add,
-    Matrix.add_mulVec, dotProduct_add, add_dotProduct]
+  simp [Finset.sum_add_distrib, mul_add, Pi.add_apply]
 
 theorem gramR_add {a : ℕ} (x W : Fin a → Fin n → R ⊗[F] E) :
     gramR R σ J (x + W) = gramR R σ J x + crossM σ J x W + gramR R σ J W := by
   ext i j
   first
-  | (simp only [gramR, crossM, Matrix.add_apply, Pi.add_apply, Matrix.of_apply, hR_add_left, hR_add_right]; abel)
-  | (simp [gramR, crossM, hR_add_left, hR_add_right]; abel)
+  | (simp only [gramR, crossM, Matrix.add_apply, Pi.add_apply, hR_add_left, hR_add_right]; abel)
 
 theorem crossM_add_left {a : ℕ} (x x' W : Fin a → Fin n → R ⊗[F] E) :
     crossM σ J (x + x') W = crossM σ J x W + crossM σ J x' W := by
@@ -94,7 +131,6 @@ section Rem
 theorem sigR_sc (r : Fv F v) : sigR (Fv F v) σ (sc (E := E) v r) = sc (E := E) v r := by
   first
   | (simp [sigR, sc]; done)
-  | (unfold sigR sc; done)
 
 theorem hR_smul_smul (r t : Fv F v) (x y : Fin n → Fv F v ⊗[F] E) :
     hR (Fv F v) σ J (r • x) (t • y) = sc (E := E) v (r * t) * hR (Fv F v) σ J x y := by
@@ -113,8 +149,6 @@ theorem sc_mul_mem_oEv {r : Fv F v} (hr : r ∈ v.adicCompletionIntegers F) {o :
     first
     | (rw [Algebra.smul_def, IsScalarTower.algebraMap_apply (v.adicCompletionIntegers F) (Fv F v)
         (Fv F v ⊗[F] E)]; rfl)
-    | (rw [Algebra.smul_def]; rfl)
-    | rfl
   rw [h]
   exact Submodule.smul_mem _ _ ho
 
@@ -261,9 +295,6 @@ theorem fibHens_of (a : ℕ) (Y : TupV (E := E) v n a) (h : HensOnto σ J v Λ �
     rw [hϖ]
     first
     | (exact WithZero.coe_le_one.2 (by decide))
-    | decide
-    | simp
-    | (norm_num [← WithZero.coe_one])
   have hPO : ∀ i j, gramR (Fv F v) σ J y i j - gramR (Fv F v) σ J Y i j ∈ PO (E := E) v ϖ := by
     intro i j
     obtain ⟨c, hc, e⟩ := (mem_hN σ v ϖ h0 a 0 _).1 hyY i j

@@ -1,12 +1,10 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.CuspGenericWhittaker.CuspGeneric
-public import CompanionTheory.AutomorphicTheory.TemperedLocalSpectra.ZelevinskyClassification.Imports
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.SegmentCuspLines.ProdIrrFiniteLength
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.LeibnizDerivatives.GenericProdIff
-public import GroundTheory.AutomorphicForms.ContragredientTranspose
+public import GroundTheory.AutomorphicForms.WhittakerCriterion
+public import GroundTheory.AutomorphicForms.WhittakerGroups
 public import CompanionTheory.AutomorphicTheory.TemperedLocalSpectra.BernsteinZelevinsky.TopAdm
+public import GroundTheory.AutomorphicForms.ContragredientTranspose
 
 @[expose] public section
 

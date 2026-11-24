@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.FiniteLengthSubquotient
-public import GroundTheory.AutomorphicForms.GeometricLemma
+public import GroundTheory.AutomorphicForms.InductionParabolic
+import GroundTheory.LocalFields.PadicLogSeries
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

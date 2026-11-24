@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIntegralSplitIdempotentOverTwo
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmSplitHalves
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -46,22 +85,6 @@ theorem compFin_e_ne {v w : Pl D} (h : w ≠ v) :
     compFin D w (singleV D.host.F v 1 ⊗ₜ[D.host.F] (1 : D.host.E)) = 0 := by
   change evalV D.host.F w (singleV D.host.F v 1) ⊗ₜ[D.host.F] (1 : D.host.E) = 0
   rw [evalV_sv_ne h]; exact TensorProduct.zero_tmul _ _
-
-theorem infPart_pair (x : Af D.host.F) (c : D.host.E) :
-    infPart D (pairA D.host.F 0 x ⊗ₜ[D.host.F] c) = 0 :=
-  TensorProduct.zero_tmul _ _
-
-theorem finPart_pair (x : Af D.host.F) (c : D.host.E) :
-    finPart D (pairA D.host.F 0 x ⊗ₜ[D.host.F] c) = x ⊗ₜ[D.host.F] c := rfl
-
-theorem exists_fin_lift (b : Af D.host.F ⊗[D.host.F] D.host.E) : ∃ a : AE D, infPart D a = 0 ∧ finPart D a = b := by
-  induction b using TensorProduct.induction_on with
-  | zero => exact ⟨0, (infPart D).map_zero, (finPart D).map_zero⟩
-  | tmul x c => exact ⟨pairA D.host.F 0 x ⊗ₜ c, infPart_pair x c, finPart_pair x c⟩
-  | add x y hx hy =>
-    obtain ⟨a, ha1, ha2⟩ := hx
-    obtain ⟨b, hb1, hb2⟩ := hy
-    exact ⟨a + b, by rw [(infPart D).map_add, ha1, hb1, add_zero], by rw [(finPart D).map_add, ha2, hb2]⟩
 
 end GlobalTheory.KStabBridge
 
@@ -111,9 +134,9 @@ theorem exists_lift_latV (S : HSp D) (L : Lat S) (v : Pl D) {z : Fin S.rank → 
     obtain ⟨a, ha, x, hx, rfl⟩ := hz
     refine ⟨fun i => pairA D.host.F 0 (singleV D.host.F v 1 * a) ⊗ₜ[D.host.F] (1 * x i),
       AddSubgroup.subset_closure ⟨_, intAf_mul (sv_int v) ha, fun w hw => ?_, 1, rfl, x, hx, rfl⟩,
-      fun i => infPart_pair _ _, fun i => ?_⟩
+      fun i => _root_.GlobalTheory.LatVac.infPart_pair _ _, fun i => ?_⟩
     · rw [map_mul, evalV_sv_ne hw, zero_mul]
-    · rw [finPart_pair, one_mul, Algebra.TensorProduct.tmul_mul_tmul, one_mul]
+    · rw [_root_.GlobalTheory.LatVac.finPart_pair, one_mul, Algebra.TensorProduct.tmul_mul_tmul, one_mul]
   | zero =>
     refine ⟨0, zero_mem (latV S L (· = v)), fun i => (infPart D).map_zero, fun i => ?_⟩
     show finPart D 0 = (singleV D.host.F v 1 ⊗ₜ[D.host.F] (1 : D.host.E)) * 0
@@ -171,7 +194,7 @@ open scoped Matrix
 variable {D : D7}
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem keeps_of_core (v : Pl D) {n : ℕ} (Ls : Set (Fin n → D.host.E))
     (M : Matrix (Fin n) (Fin n) (Af D.host.F ⊗[D.host.F] D.host.E))
     (hN : ∀ i j, (singleV D.host.F v 1 ⊗ₜ[D.host.F] (1 : D.host.E)) * (M i j - (1 : Matrix (Fin n) (Fin n) _) i j) =
@@ -225,7 +248,7 @@ theorem mem_latHat_iff_lift (S : HSp D) (L : Lat S) (v : Pl D) (z : Fin S.rank �
   constructor
   · intro hzL
     obtain ⟨y', hy', h1', h2'⟩ := exists_lift_latV S L v hzL
-    have : y' = y := funext fun i => GlobalTheory.VacStabFixed.parts_ext (by rw [h1', h1])
+    have : y' = y := funext fun i => _root_.GlobalTheory.SplitScalar.adele_ext (by rw [h1', h1])
       (by rw [h2', h2]; exact congrFun hz i)
     rwa [← this]
   · intro hy
@@ -234,7 +257,7 @@ theorem mem_latHat_iff_lift (S : HSp D) (L : Lat S) (v : Pl D) (z : Fin S.rank �
     funext i; exact (h2 i).symm
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem inStabAt_of_inK (D : D7) (S : HSp D) (L : Lat S) (v : Pl D) (κ : GA D S) (_hL : IsSelfDualC S L)
     (hκ : InK S L (· = v) κ) : GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.InStabAt S L v κ := by
   obtain ⟨hg, hmv⟩ := hκ
@@ -264,7 +287,7 @@ theorem inStabAt_of_inK (D : D7) (S : HSp D) (L : Lat S) (v : Pl D) (κ : GA D S
   refine keeps_of_core v _ _ (fun i j => by
     rw [← hfin]; exact e_mul_of_supp v _ fun w hw => hcomp w hw i j) ?_
   intro z hz
-  choose lift hl1 hl2 using exists_fin_lift (D := D)
+  choose lift hl1 hl2 using _root_.GlobalTheory.VacInert.exists_lift (D := D)
   let y : Fin S.rank → AE D := fun i => lift (z i)
   have hsupp : ∀ i, y i ∈ idAt D (· = v) := fun i => Ideal.mem_inf.2 ⟨RingHom.mem_ker.2 (hl1 _),
     Ideal.mem_iInf.2 fun w => RingHom.mem_ker.2 (by

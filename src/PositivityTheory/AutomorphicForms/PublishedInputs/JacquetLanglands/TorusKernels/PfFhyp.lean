@@ -1,6 +1,7 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MultivariableReproducingFormula
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 @[expose] public section
 

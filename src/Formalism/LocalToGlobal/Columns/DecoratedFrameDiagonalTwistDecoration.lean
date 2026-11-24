@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecChainYUnfPol
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

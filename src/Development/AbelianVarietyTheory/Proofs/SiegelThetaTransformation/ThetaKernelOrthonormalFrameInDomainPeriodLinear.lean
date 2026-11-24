@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.MeasurePreservingMulLeft
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
+public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.MeasurePreservingMulLeft
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -195,8 +233,8 @@ theorem zR_single {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau) (z : Matrix (F
       rw [Matrix.diagonal_mul]
       simp [ReciprocityTheory.ChartRestriction.G.FD.sgn, hj]
     · rw [inv_map_conj hu]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [Matrix.mulVec, dotProduct, Matrix.mul_apply, map_sum, map_mul]
+
+      simp [Matrix.mulVec, dotProduct, Matrix.mul_apply, map_sum, map_mul]
   · rw [if_neg hσ, Pi.single_eq_of_ne hσ]
     split_ifs <;> simp [ReciprocityTheory.ChartRestriction.G.FD.hermC]
 
@@ -297,9 +335,9 @@ theorem sB_mvB {B : C.Bas} (hB : C.IsB B) (g : GA D T) (τ : D.what₂.Tau) :
 theorem xB_mvB (B : C.Bas) (g : GA D T) : C.xB (C.mvB g B) =
     C.X.lmulC (fun σ => (compAt C.θ (C.m.e.symm σ) (mt T g)).map conj) (C.xB B) := by
   funext σ a b
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [GlobalTheory.Ker.Ctx.xB, GlobalTheory.Ker.Ctx.mvB, ReciprocityTheory.ChartRestriction.G.FD.Data.lmulC, ReciprocityTheory.ChartRestriction.G.FD.mat, Matrix.mul_apply,
-    map_sum, map_mul]
+
+  simp [GlobalTheory.Ker.Ctx.xB, GlobalTheory.Ker.Ctx.mvB, ReciprocityTheory.ChartRestriction.G.FD.Data.lmulC, ReciprocityTheory.ChartRestriction.G.FD.mat, Matrix.mul_apply,
+  map_sum, map_mul]
 
 theorem xB_rat (B : C.Bas) {g : GA D T} {ga : GL (Fin T.rank) D.host.E} (h : IsRatOf T ga g) :
     C.xB (C.mvB g B) = lact ga (C.xB B) := by

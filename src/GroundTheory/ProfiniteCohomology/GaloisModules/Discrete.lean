@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.DiscreteModules
 public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.FieldTheory.KrullTopology
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+public import Mathlib.Topology.Algebra.OpenSubgroup
 
 @[expose] public section
 

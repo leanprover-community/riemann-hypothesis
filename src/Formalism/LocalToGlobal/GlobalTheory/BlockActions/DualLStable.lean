@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.StabiliserBijectiveOfFinite
+import Formalism.LocalToGlobal.GlobalTheory.BlockActions.MulLatMulLat
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 
 @[expose] public section
 

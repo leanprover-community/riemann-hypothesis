@@ -1,6 +1,13 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.ValuationEqPairOfLogUnitGerm
+public import Formalism.IncomingBounds.StatementThmP
+public import Mathlib.RingTheory.MvPowerSeries.Derivative
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
+public import Formalism.IncomingBounds.FlowDegreeBounds.ThmPJet
+public import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
+public import Formalism.LocalToGlobal.CharacterGerms.LemmaMJet
+import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
+import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 
 @[expose] public section
 

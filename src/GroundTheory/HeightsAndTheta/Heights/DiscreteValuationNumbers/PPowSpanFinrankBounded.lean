@@ -1,8 +1,19 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.KrullDimQuotientEqOneIffEqBot
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsPowReductionCut
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
+public import Mathlib.Algebra.Module.SpanRankOperations
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.KrullDimQuotientEqOneIffEqBot
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
 
 @[expose] public section
 

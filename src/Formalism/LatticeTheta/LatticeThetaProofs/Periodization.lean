@@ -1,6 +1,55 @@
 module
 
 public import Formalism.LatticeTheta.LatticeSummableDecay
+public import Mathlib.Algebra.Module.ZLattice.Summable
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 
 @[expose] public section
 
@@ -21,7 +70,6 @@ lemma exists_global_bound {f : V → ℂ} (hf : Continuous f) {b : ℝ} (hb : 0 
   obtain ⟨c, hc⟩ := hO.bound
   first
     | rw [← cobounded_eq_cocompact] at hc
-    | rw [← Metric.cobounded_eq_cocompact] at hc
   rw [← comap_norm_atTop, Filter.eventually_comap, Filter.eventually_atTop] at hc
   obtain ⟨r, hr⟩ := hc
   set r' := max r 1 with hr'
@@ -93,7 +141,7 @@ lemma summable_one_add_norm (Λ : Submodule ℤ V) [DiscreteTopology Λ] [IsZLat
     (hs.add (hasSum_ite_eq (0 : Λ) (1 : ℝ)).summable)
   by_cases h : l = 0
   · subst h
-    simp only [if_pos rfl, ZeroMemClass.coe_zero, norm_zero, add_zero, Real.one_rpow, if_true, ↓reduceIte]
+    simp only [ZeroMemClass.coe_zero, norm_zero, add_zero, Real.one_rpow, ↓reduceIte]
     linarith [Real.rpow_nonneg (le_refl (0 : ℝ)) (-b)]
   · have hl : 0 < ‖(l : V)‖ := norm_pos_iff.mpr (by simpa using h)
     rw [if_neg h, add_zero]
@@ -124,8 +172,6 @@ theorem poisson_periodization (V : Type*) [NormedAddCommGroup V] [InnerProductSp
   · intro x
     first
       | exact Summable.of_norm_bounded (hS.mul_left (C * (1 + ‖x‖) ^ b))
-          (fun l => hbound ‖x‖ (norm_nonneg _) l x le_rfl)
-      | exact Summable.of_norm_bounded _ (hS.mul_left (C * (1 + ‖x‖) ^ b))
           (fun l => hbound ‖x‖ (norm_nonneg _) l x le_rfl)
   · refine continuous_iff_continuousAt.mpr (fun x₀ => ?_)
     have hcont : ContinuousOn (fun x => ∑' l : Λ, f (↑l + x)) (Metric.ball (0 : V) (‖x₀‖ + 1)) := by

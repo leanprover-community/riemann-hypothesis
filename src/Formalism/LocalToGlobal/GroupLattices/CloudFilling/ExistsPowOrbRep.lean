@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.SecPsiMulPow
-public import Formalism.SharpRestriction.InertJacobiLevels.VVEqEmptyOfNotIsResidueClassZero
 
 @[expose] public section
 

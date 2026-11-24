@@ -1,7 +1,5 @@
 module
 
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedHecke
 public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedLevel
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.ExpDefs
 public import Formalism.SharpRestriction.LevelLetterCocycles.TWSet

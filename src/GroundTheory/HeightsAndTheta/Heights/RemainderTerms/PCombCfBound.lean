@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsComb
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 

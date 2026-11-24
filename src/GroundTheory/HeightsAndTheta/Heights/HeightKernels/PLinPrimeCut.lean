@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcLinear
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -68,8 +71,8 @@ theorem subst_ellForm {n : ℕ} (M : T → Fin (n + 2) → k) (c : T) (j₀ : Fi
       · subst hj
         simp only [AlgHom.comp_apply, subst, aeval_X, Option.elim, Fin.insertNth_apply_same]
         rw [Ideal.Quotient.mkₐ_eq_mk, Ideal.Quotient.eq, Ideal.mem_span_singleton']
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [liftBack, map_neg, map_sum, map_mul, rename_C, rename_X, Option.map_some]
+
+        simp only [liftBack, map_neg, map_sum, map_mul, rename_C, rename_X, Option.map_some]
         refine ⟨-C (M c j)⁻¹, ?_⟩
         have e : ∀ j' : Fin (n + 1), C (M c (j.succAbove j') / M c j) * X (some (j.succAbove j')) =
             C (M c j)⁻¹ * (C (M c (j.succAbove j')) * X (some (j.succAbove j'))) := by
@@ -138,8 +141,8 @@ theorem X_some_eq {m : ℕ} (M : T → Fin m → k) (hM : LinFormsIndep M) (j : 
     _ = ∑ j', C (∑ t, g (fun t' => if t = t' then 1 else 0) j * M t j') * X (some j') := by
         simp_rw [hcoef]
     _ = ∑ t, C (g (fun t' => if t = t' then 1 else 0) j) * ellForm M t := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [ellForm, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum, mul_assoc]
+
+        simp only [ellForm, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum, mul_assoc]
         exact Finset.sum_comm
 
 theorem mul_mem_range {m : ℕ} (α : T → k) (M : T → Fin m → k) (hα : Submodule.span ℤ (Set.range α) = ⊤)

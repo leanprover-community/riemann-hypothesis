@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology
 public import GroundTheory.ProfiniteCohomology.CupProducts
+public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomApplyHomApplyEqOfCompEq
 
 @[expose] public section
 

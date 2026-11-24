@@ -1,7 +1,46 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
-public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
+public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
+public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -191,11 +230,6 @@ theorem prod_q_eq (hR : Formalism.MainNotions.DeltaInvariantLattices.wachRingRel
     rw [map_mul, mul_pow]
     rfl
 
-private theorem letE_mul_self_level_letter_cocycles (c : ZMod n) : (letE c : LetA O n) * letE c = letE c := by
-  funext k
-  simp only [letE, Pi.mul_apply, Pi.single_apply]
-  split_ifs <;> simp
-
 theorem prodPs_mem (hs : W.s = 1) (hR : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations W 1 (PD.p - 1) W.π₀
       (fun _ => Polynomial.X + Polynomial.C ((PD.p : ℕ) : O))) (T : LocLat G Qp LL O)
     {M h : ZMod n → ℕ} (h5 : Formalism.MainNotions.DeltaInvariantLattices.p5 W T M h) (c : ZMod n) (Gb j : ℕ)
@@ -210,7 +244,7 @@ theorem prodPs_mem (hs : W.s = 1) (hR : Formalism.MainNotions.DeltaInvariantLatt
   have hxl : x ∈ W.Nl T c := hx.2
   have hxc : (letE c : LetA O n) • x = x := by
     obtain ⟨y, _, hy⟩ := Submodule.mem_map.1 hxl
-    rw [← hy, LinearMap.smul_apply, LinearMap.id_apply, smul_smul, letE_mul_self_level_letter_cocycles]
+    rw [← hy, LinearMap.smul_apply, LinearMap.id_apply, smul_smul, _root_.Formalism.MainNotions.WachCoordinates.Br.letE_mul_self]
   have hch := chain W hs T h5 c Gb j hM x hxN hxc j le_rfl
   obtain ⟨u, hu, hueq⟩ := prod_q_eq W hR j Gb
   rw [hueq, mul_smul] at hch

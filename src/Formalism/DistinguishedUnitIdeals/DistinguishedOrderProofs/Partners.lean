@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import Formalism.DistinguishedUnitIdeals.GammaCongruentArcFromStart
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GoodOf
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Graded
+import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.RhoMapFunctorial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -277,8 +323,8 @@ theorem it_sub (f : PowerSeries O →ₐ[O] PowerSeries O) (k : ℕ) (a b : Powe
 
 theorem it_sum (f : PowerSeries O →ₐ[O] PowerSeries O) (k : ℕ) {ι : Type} (s : Finset ι)
     (g : ι → PowerSeries O) : (⇑f)^[k] (∑ t ∈ s, g t) = ∑ t ∈ s, (⇑f)^[k] (g t) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [it_eq, map_sum]
+
+  rw [it_eq, map_sum]
 
 theorem it_lc (B : Base O) (k K : ℕ) : (⇑B.φ)^[k] (B.lc ^ K) = B.lc ^ K := by
   rw [lc_pow, it_C]
@@ -525,8 +571,8 @@ theorem XDivisibilityOfActions.partner_gen {O : Type} [CommRing O] {B : Base O} 
         apply Subtype.ext
         simpa using hid
       have h1 := congrArg (fun p => S.loc s (θ p)) hid'
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_add (f := _), map_smul, map_sum] at h1
+
+      simp only [map_add (f := _), map_smul, map_sum] at h1
       apply flSat_pow S hS hs (K + K₀)
       have hZ : S.locL s Z = ∑ k, Z k • S.locL s (bv O k) :=
         LinearMap.pi_apply_eq_sum_univ (S.locL s) Z
@@ -557,8 +603,8 @@ theorem XDivisibilityOfActions.partner_gen {O : Type} [CommRing O] {B : Base O} 
       simpa using hcf.symm
     refine ⟨∑ m, cf m • z m, fun s hs => ?_⟩
     rw [hwe]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finset.smul_sum]
+
+    simp only [map_sum, map_smul, Finset.smul_sum]
     rw [← Finset.sum_sub_distrib]
     refine Submodule.sum_mem _ fun m _ => ?_
     rw [smul_comm, ← smul_sub]
@@ -588,8 +634,8 @@ theorem XDivisibilityOfActions.partner_gen {O : Type} [CommRing O] {B : Base O} 
     have hy : S.locL s y = ∑ k, y k • S.locL s (bv O k) :=
       LinearMap.pi_apply_eq_sum_univ (S.locL s) y
     rw [hy]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finset.smul_sum]
+
+    simp only [map_sum, map_smul, Finset.smul_sum]
     rw [← Finset.sum_sub_distrib]
     refine Submodule.sum_mem _ fun k _ => ?_
     rw [smul_comm, ← smul_sub]
@@ -864,9 +910,9 @@ theorem height_inverse_holds : HinvOf := by
       have hsw : ∑ l, G₁ m l • nn l = ∑ k₀, (∑ l, G₁ m l * Y k₀ l) • D k₀ := by
         simp only [hnn, Finset.smul_sum, Finset.sum_smul, smul_smul]
         exact Finset.sum_comm
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hsw, Finset.smul_sum, Finset.smul_sum, ← Finset.sum_add_distrib,
-        ← Finset.sum_add_distrib, map_sum]
+
+      rw [hsw, Finset.smul_sum, Finset.smul_sum, ← Finset.sum_add_distrib,
+      ← Finset.sum_add_distrib, map_sum]
       refine Finset.sum_congr rfl fun k₀ _ => ?_
       have := hYτ k₀ m
       change B.γ (Y k₀ m) = Y k₀ m + X * ∑ l, G₁ m l * Y k₀ l + X ^ (k + 1) * τ k₀ m at this
@@ -1020,8 +1066,8 @@ lemma coeffs_zero {r : ℕ} (lam : Fin r → D) (h : LinearIndependent LL lam) (
     (h0 : ∑ k, x k • ((1 : Ks) ⊗ₜ[LL] lam k) = 0) (k : Fin r) : x k = 0 := by
   obtain ⟨f, hf⟩ := exists_dual lam h k
   have h1 := congrArg ((TensorProduct.rid LL Ks).toLinearMap ∘ₗ LinearMap.lTensor Ks f) h0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_zero] at h1
+
+  rw [map_sum, map_zero] at h1
   rw [Finset.sum_eq_single k] at h1
   · simpa [TensorProduct.smul_tmul', hf] using h1
   · intro j _ hj

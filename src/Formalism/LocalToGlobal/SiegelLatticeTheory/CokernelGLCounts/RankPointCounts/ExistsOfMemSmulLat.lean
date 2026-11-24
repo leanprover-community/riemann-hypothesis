@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LinQRawRange
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumA
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 
 @[expose] public section
 

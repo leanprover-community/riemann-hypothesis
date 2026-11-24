@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.Bdy
+public import GroundTheory.IdeleRoots.ConstantFrames.GaugeExistence.QdetSub
+public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
+import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
+import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.IsSimpleTriv
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 @[expose] public section
 
@@ -29,8 +37,8 @@ theorem poly_eq_zero_of_evU (Q : A[X]) (h : ∀ u : ℂ, evU u Q = 0) : Q = 0 :=
   have hR : R = 0 := by
     refine Polynomial.funext fun u => ?_
     have h1 := congrArg φ (h u)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [evU_apply, eval₂_eq_sum_range, map_sum, map_zero] at h1
+
+    rw [evU_apply, eval₂_eq_sum_range, map_sum, map_zero] at h1
     rw [eval_zero, ← h1]
     simp only [R, eval_finsetSum, eval_monomial, RingHom.id_apply, ← map_pow]
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -111,9 +119,9 @@ theorem capelli_coef_commute : ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (M
   · intro i hi
     obtain ⟨-, -, hsub⟩ := prod_linear (d i) fun k => X i k k - algebraMap ℂ (Module.End ℂ W) ((k : ℕ) : ℂ)
     show (qdetPoly (X i)).coeff (d i - 1) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [coeff_qdetPoly_top _ _ (by omega), hsub (d i - 1) (by omega), Finset.sum_sub_distrib,
-      ← map_sum, sum_fin_cast, Algebra.algebraMap_eq_smul_one]
+
+    rw [coeff_qdetPoly_top _ _ (by omega), hsub (d i - 1) (by omega), Finset.sum_sub_distrib,
+    ← map_sum, sum_fin_cast, Algebra.algebraMap_eq_smul_one]
   · intro i j a b
     have hm := coeff_qdetPoly_mem (X j) (Subalgebra.centralizer ℂ {(qdetPoly (X i)).coeff a})
       (fun p q => by

@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
+public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

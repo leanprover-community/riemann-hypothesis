@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.PadicExp
-public import GroundTheory.LocalFields.UnitsPowers
-public import GroundTheory.LocalFields.PrincipalUnitsModule
 public import GroundTheory.PAdicHodge.FieldOfNormsRam
-public import GroundTheory.LocalFields.Examples
+public import Mathlib.NumberTheory.Padics.ValuativeRel
+import GroundTheory.LocalFields.Examples
+import GroundTheory.LocalFields.PadicLogHom
+public import GroundTheory.LocalFields.PrincipalUnitsModule
+import GroundTheory.LocalFields.UnitsPowers
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

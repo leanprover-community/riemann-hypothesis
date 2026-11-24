@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
+public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ScalarPairOrthogonal.XLeOrthXplus
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittExtensionTheorem
 
 @[expose] public section
 
@@ -18,7 +17,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E)
 
 def SD (Λ : Submodule (𝓞 E) S.V) : Prop := ∀ x, x ∈ Λ ↔ ∀ y ∈ Λ, IsIntegral ℤ (S.hT y x)
 
-theorem hsw (x y : S.V) : S.hT y x = star (S.hT x y) := PI.ScalarPairDr.W.hT_swap S x y
+alias hsw := _root_.PI.PairCorankPos.W.hT_swap
 
 theorem hT_smulL (a : E) (x v : S.V) : S.hT (a • x) v = star a * S.hT x v := by
   rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
@@ -55,8 +54,8 @@ theorem riesz (F : S.V →ₗ[E] E) : ∃ w, ∀ v, S.hT w v = F v := by
   have key : S.hT (∑ j, star (F (b j)) • bs j) = F := by
     apply b.ext
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, LinearMap.sum_apply]
+
+    rw [map_sum, LinearMap.sum_apply]
     simp only [LinearMap.map_smulₛₗ, LinearMap.smul_apply, starRingEnd_apply, star_star, smul_eq_mul]
     rw [Finset.sum_eq_single i]
     · rw [hsw S (b i) (bs i), hbs i i]; simp

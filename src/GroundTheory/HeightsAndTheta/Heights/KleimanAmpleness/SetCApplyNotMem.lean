@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.DoubleSumEqZero
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellPosExact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -37,74 +81,21 @@ theorem rem_apply_subset (I : ∀ k, Finset (ι k)) (p : Σ k, ι k) (l : K) : r
   · subst hl; rw [rem_apply_self]; exact Finset.erase_subset _ _
   · rw [rem_apply_of_ne i hl]
 
-
-omit [∀ k, LinearOrder (ι k)] in
-theorem offset_update (I : ∀ k, Finset (ι k)) (k : K) (X : Finset (ι k)) :
-    ∑ l ∈ Finset.univ.filter (· < k), ((Function.update I k X l).card - 1) =
-      ∑ l ∈ Finset.univ.filter (· < k), ((I l).card - 1) :=
-  Finset.sum_congr rfl fun l hl => by
-    rw [Function.update_of_ne (ne_of_lt (Finset.mem_filter.1 hl).2)]
-
 theorem sign_swap_same {I : ∀ k, Finset (ι k)} {k : K} {i i' : ι k} (hi : i ∈ I k) (hlt : i < i') :
     faceSign I k i' * faceSign (rem I ⟨k, i'⟩) k i = -(faceSign I k i * faceSign (rem I ⟨k, i⟩) k i') := by
-  have h1 : ((I k).erase i').filter (· < i) = (I k).filter (· < i) := by
-    ext z
-    simp only [Finset.mem_filter, Finset.mem_erase]
-    constructor
-    · rintro ⟨⟨-, hz⟩, hzi⟩; exact ⟨hz, hzi⟩
-    · rintro ⟨hz, hzi⟩; exact ⟨⟨(hzi.trans hlt).ne, hz⟩, hzi⟩
-  have h3 : i ∈ (I k).filter (· < i') := Finset.mem_filter.2 ⟨hi, hlt⟩
-  have h2 : (((I k).erase i).filter (· < i')).card + 1 = ((I k).filter (· < i')).card := by
-    rw [Finset.filter_erase, Finset.card_erase_add_one h3]
-  unfold faceSign rem
-  simp only [Function.update_self, offset_update]
-  rw [h1, ← h2]
-  ring
+  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.sign_swap_same <;> assumption
 
 theorem sign_swap_lt {I : ∀ k, Finset (ι k)} {k k' : K} (i : ι k) (i' : ι k') (hi : i ∈ I k)
     (hk : k < k') (h2 : 2 ≤ (I k).card) :
     faceSign I k' i' * faceSign (rem I ⟨k', i'⟩) k i =
       -(faceSign I k i * faceSign (rem I ⟨k, i⟩) k' i') := by
-  have hmem : k ∈ Finset.univ.filter (· < k') := Finset.mem_filter.2 ⟨Finset.mem_univ _, hk⟩
-  have hoff : ∑ l ∈ Finset.univ.filter (· < k'), ((Function.update I k ((I k).erase i) l).card - 1) + 1 =
-      ∑ l ∈ Finset.univ.filter (· < k'), ((I l).card - 1) := by
-    rw [← Finset.add_sum_erase _ _ hmem, ← Finset.add_sum_erase _ _ hmem, Function.update_self,
-      Finset.sum_congr rfl fun l hl => by rw [Function.update_of_ne (Finset.ne_of_mem_erase hl)],
-      Finset.card_erase_of_mem hi]
-    omega
-  have hlow : ∑ l ∈ Finset.univ.filter (· < k), ((Function.update I k' ((I k').erase i') l).card - 1) =
-      ∑ l ∈ Finset.univ.filter (· < k), ((I l).card - 1) :=
-    Finset.sum_congr rfl fun l hl => by
-      rw [Function.update_of_ne (ne_of_lt ((Finset.mem_filter.1 hl).2.trans hk))]
-  unfold faceSign rem
-  simp only [Function.update_of_ne hk.ne, Function.update_of_ne hk.ne', hlow]
-  rw [← hoff]
-  ring
-
-omit [Fintype K] [LinearOrder K] in
-theorem two_le_card {I : ∀ k, Finset (ι k)} {k : K} {i : ι k} (hi : i ∈ I k)
-    (h : ((I k).erase i).Nonempty) : 2 ≤ (I k).card := by
-  have := h.card_pos
-  rw [Finset.card_erase_of_mem hi] at this
-  omega
+  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.sign_swap_lt <;> assumption
 
 theorem sign_swap {I : ∀ k, Finset (ι k)} {p q : Σ k, ι k} (hp : p.2 ∈ I p.1) (hq : q.2 ∈ I q.1)
     (hne : q ≠ p) (hJ : ∀ l, (rem (rem I p) q l).Nonempty) :
     faceSign I p.1 p.2 * faceSign (rem I p) q.1 q.2 =
       -(faceSign I q.1 q.2 * faceSign (rem I q) p.1 p.2) := by
-  obtain ⟨k, i⟩ := p
-  obtain ⟨k', i'⟩ := q
-  rcases lt_trichotomy k k' with h | rfl | h
-  · have hb := hJ k
-    rw [rem_apply_of_ne _ h.ne, rem_apply_self] at hb
-    rw [sign_swap_lt i i' hp h (two_le_card hp hb), neg_neg]
-  · have hii : i' ≠ i := fun e => hne (by rw [e])
-    rcases lt_or_gt_of_ne hii with h | h
-    · exact sign_swap_same hq h
-    · rw [sign_swap_same hp h, neg_neg]
-  · have hb := hJ k'
-    rw [rem_apply_self, rem_apply_of_ne _ h.ne] at hb
-    exact sign_swap_lt i' i hq h (two_le_card hq hb)
+  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.sign_swap <;> assumption
 
 theorem faceSign_mul_self (I : ∀ k, Finset (ι k)) (k : K) (i : ι k) :
     faceSign I k i * faceSign I k i = 1 := by
@@ -372,7 +363,7 @@ theorem dif_coneOp (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {f : (∀ k, Finset (ι k)
     · have hnin : c k ∉ rem I ⟨k, c k⟩ k := by rw [rem_apply_self]; exact Finset.notMem_erase _ _
       rw [coneOp_of_good (good_rem hI hne) hnin, addC_rem hck, smul_smul, faceSign_mul_self, one_smul]
       have hP : projOp y c {k} f I = 0 := projOp_of_not fun h => by
-        have h1 := two_le_card hck hne
+        have h1 := GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.two_le_card hck hne
         have h2 := h.2 k (Finset.mem_singleton_self k)
         omega
       rw [hP, sub_zero]
@@ -650,7 +641,7 @@ def extC (m : ℕ) (t : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH
 
 theorem deg_rem {J : ∀ k, Finset (ι k)} {k : K} {i : ι k} (hi : i ∈ J k) (hne : ((J k).erase i).Nonempty) :
     ∑ l, ((rem J ⟨k, i⟩ l).card - 1) + 1 = ∑ l, ((J l).card - 1) := by
-  have hk := two_le_card hi hne
+  have hk := GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.two_le_card hi hne
   rw [← Finset.add_sum_erase _ _ (Finset.mem_univ k), ← Finset.add_sum_erase _ _ (Finset.mem_univ k),
     rem_apply_self, Finset.card_erase_of_mem hi,
     Finset.sum_congr rfl fun l hl => by rw [rem_apply_of_ne i (Finset.ne_of_mem_erase hl)]]

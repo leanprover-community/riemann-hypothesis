@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 
 @[expose] public section
 
@@ -16,15 +16,7 @@ private lemma fiber_eq {E : Type} [Field E] (w : InfinitePlace E) [DecidableEq (
   ext φ
   simp only [mem_filter, mem_univ, true_and, mem_insert, mem_singleton]
   conv_lhs => rw [← InfinitePlace.mk_embedding w, InfinitePlace.mk_eq_iff]
-  constructor
-  · rintro (h | h)
-    · exact Or.inl h
-    · right
-      rw [← h, ComplexEmbedding.involutive_conjugate E φ]
-  · rintro (h | h)
-    · exact Or.inl h
-    · right
-      rw [h, ComplexEmbedding.involutive_conjugate E]
+  exact or_congr Iff.rfl (ComplexEmbedding.involutive_conjugate E).toPerm.eq_symm_apply.symm
 
 theorem goal1 (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (x : E) :
     ((Algebra.trace ℚ E x : ℚ) : ℝ) = ∑ w : InfinitePlace E, 2 * (w.embedding x).re := by

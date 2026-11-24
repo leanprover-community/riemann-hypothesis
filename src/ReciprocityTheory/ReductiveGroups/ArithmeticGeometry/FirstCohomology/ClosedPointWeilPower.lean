@@ -1,8 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCHyp
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.RosatiAdj
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -98,7 +100,7 @@ theorem gen_local {V : Type} [CommRing V] [IsLocalRing V]
     intro W h0 z
     have h1 : homOfLE h0 = 𝟙 W := rfl
     ext
-    simp [res, h1]
+    simp [res]
 
   refine ⟨⟨fun i => res (le_inf le_rfl (hle _) : M.U i ≤ M.U i ⊓ M.U i0) (M.g i i0)⟩, ?_⟩
   intro i j
@@ -114,13 +116,7 @@ theorem gen_local_linComb {V : Type} [CommRing V] [IsLocalRing V] {X : Scheme.{0
     ∃ e : LB.Gen (LB.LinComb L φ ε), e.IsGen :=
   gen_local _ (by
     first
-      | exact linComb_isLB
-      | exact linComb_isLB hL
-      | exact linComb_isLB (hL := hL)
-      | exact linComb_isLB hL φ ε
-      | exact linComb_isLB L hL φ ε
-      | exact linComb_isLB (L := L) (φ := φ) (ε := ε) hL
-      | exact linComb_isLB L φ ε hL)
+      | exact linComb_isLB L hL φ ε)
 
 end Gen
 

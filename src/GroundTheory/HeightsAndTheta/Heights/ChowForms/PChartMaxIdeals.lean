@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartMax
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProperSymm
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsBis
+public import Mathlib.Order.CompletePartialOrder
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

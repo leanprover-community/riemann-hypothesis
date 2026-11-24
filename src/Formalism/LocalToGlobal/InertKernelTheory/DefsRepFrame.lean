@@ -1,6 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsRep
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
+import Formalism.LocalToGlobal.InertKernelTheory.FirstKernelGeneratorOfOrthogonal
+import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TrDual
+import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.IsHypPair
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.IsLawOfLog
 
 @[expose] public section
 

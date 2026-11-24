@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.Statement
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+import Mathlib.NumberTheory.NumberField.ClassNumber
+public import Mathlib.RingTheory.ClassGroup.Basic
 
 @[expose] public section
 

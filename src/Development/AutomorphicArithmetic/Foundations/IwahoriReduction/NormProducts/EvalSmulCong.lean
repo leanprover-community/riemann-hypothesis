@@ -1,9 +1,54 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.NormProducts.LUnH
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
+public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.NormProducts.InvMod
+public import Mathlib.RingTheory.AdicCompletion.Noetherian
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ActWBOfInvariant
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalPowerUnitsTowerClosurePropertiesStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFunctionTowerUnitGroupStableSlashGaloisStatement
+public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalPowerUnitsTowerClosureProperties
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFunctionTowerUnitGroupStableSlashGalois
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.Foundations.LiftSLMapMulInvMem
 
 @[expose] public section
 
@@ -35,8 +80,8 @@ private theorem cg_sum {X : Tower Ω ε} {l : ℕ} [Fact l.Prime] {n : ℕ} {ι 
     (h : ∀ i ∈ s, CgF X l n (f i) (g i)) : CgF X l n (∑ i ∈ s, f i) (∑ i ∈ s, g i) := by
   rw [cgF_iff]
   intro u
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_apply, map_sum]
+
+  simp only [Finset.sum_apply, map_sum]
   exact Finset.sum_congr rfl fun i hi => (cgF_iff X l n _ _).1 (h i hi) u
 
 private theorem eval_kmap_eq (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) (φ : X.K ≃+* X.K) {y y' : X.Khat l}
@@ -59,12 +104,6 @@ private theorem rep_kmap {X : Tower Ω ε} {l : ℕ} [Fact l.Prime] {n : ℕ} {a
   rw [e, h]
   rfl
 
-private theorem cls_mul (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) (a b : X.Kˣ) :
-    X.cls l n (a * b) = X.cls l n a + X.cls l n b := by
-  unfold Tower.cls
-  rw [← Submodule.Quotient.mk_add, ← TensorProduct.tmul_add]
-  rfl
-
 private theorem cls_one (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) : X.cls l n 1 = 0 := by
   unfold Tower.cls
   rw [ofMul_one, TensorProduct.tmul_zero]
@@ -75,7 +114,7 @@ private theorem cls_prod (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) {�
   classical
   induction s using Finset.induction_on with
   | empty => simpa using cls_one X l n
-  | insert i s hi ih => rw [Finset.prod_insert hi, Finset.sum_insert hi, cls_mul, ih]
+  | insert i s hi ih => rw [Finset.prod_insert hi, Finset.sum_insert hi, _root_.GlobalTheory.K4.cls_mul, ih]
 
 private theorem cls_zpow (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) (a : X.Kˣ) (z : ℤ) :
     X.cls l n (a ^ z) = (z : ℤ_[l]) • X.cls l n a := by
@@ -166,7 +205,7 @@ private theorem act_coset {X : Tower Ω ε} {l : ℕ} [Fact l.Prime] {n w : ℕ}
   have e : Units.map (X.sl (ofSL h)).toRingEquiv.toMonoidHom a = a * t ^ l ^ n := Units.ext (by simpa using ht)
   have h1 := rep_kmap hx' (X.sl (ofSL h)).toRingEquiv
   unfold Rep at h1 hx
-  rw [h1, e, cls_mul, cls_pow, add_zero, hx]
+  rw [h1, e, _root_.GlobalTheory.K4.cls_mul, cls_pow, add_zero, hx]
 
 private theorem tr_cg {X : Tower Ω ε} {l : ℕ} [Fact l.Prime] {n w : ℕ} {H G : Subgroup SL(2, ℤ)}
     (hH : H ≤ CongruenceSubgroup.Gamma (l ^ n)) {a : X.Kˣ} (ha : InvH X H (l ^ n) a) {x x' : X.Khat l}
@@ -246,13 +285,13 @@ private theorem tr_comp {X : Tower Ω ε} {l : ℕ} [Fact l.Prime] {n w : ℕ} {
   rw [Fintype.sum_prod_type_right]
   refine cg_sum _ fun i _ => ?_
   simp only [← act_act_SL]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum]
+
+  rw [← map_sum]
   refine act_cg X l n _ ?_
   rw [cgF_iff]
   intro u
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_apply, map_sum]
+
+  rw [Finset.sum_apply, map_sum]
   set r : ℤ_[l] := ((lam 0 : ℤ_[l]) * u 0 + (lam 1 : ℤ_[l]) * u 1) ^ w with hr
   have hk : ∀ k, AdicCompletion.eval (idl l) (X.Kl l) n
       (X.act l (δ k : Matrix (Fin 2) (Fin 2) ℤ) (sec X l w lam x') u) =
@@ -266,7 +305,7 @@ private theorem tr_comp {X : Tower Ω ε} {l : ℕ} [Fact l.Prime] {n w : ℕ} {
   rw [Finset.sum_congr rfl fun k _ => hk k, ← Finset.smul_sum, ← cls_prod]
   have e : ∏ k, Units.map (X.sl (ofSL (δ k))).toRingEquiv.toMonoidHom a' = a * h ^ l ^ n :=
     Units.ext (by simpa [Units.coe_prod] using hp)
-  rw [e, cls_mul, cls_pow, add_zero]
+  rw [e, _root_.GlobalTheory.K4.cls_mul, cls_pow, add_zero]
   show _ = AdicCompletion.eval (idl l) (X.Kl l) n (r • x)
   rw [map_smul, hx]
 
@@ -276,9 +315,9 @@ private theorem jHol (X : Tower Ω ε) : ∃ φ : ℂ → ℂ, DifferentiableOn 
 
 private def unS [IsAlgClosure ℚ Ω] (X : Tower Ω ε) (m : ℕ) : Subgroup X.Kˣ where
   carrier := X.Un m
-  mul_mem' := fun {f g} hf hg => (GlobalTheory.T.localPowerUnitsTower_closure_properties ε X ε.injective (jHol X) m).2.1 f g hf hg
-  one_mem' := (GlobalTheory.T.localPowerUnitsTower_closure_properties ε X ε.injective (jHol X) m).1
-  inv_mem' := fun {f} hf => (GlobalTheory.T.localPowerUnitsTower_closure_properties ε X ε.injective (jHol X) m).2.2.1 f hf
+  mul_mem' := fun {f g} hf hg => (_root_.GlobalTheory.KZ.UnClosure.un_closure ε X ε.injective (jHol X) m).2.1 f g hf hg
+  one_mem' := (_root_.GlobalTheory.KZ.UnClosure.un_closure ε X ε.injective (jHol X) m).1
+  inv_mem' := fun {f} hf => (_root_.GlobalTheory.KZ.UnClosure.un_closure ε X ε.injective (jHol X) m).2.2.1 f hf
 
 private theorem polMod_tr [IsAlgClosure ℚ Ω] {X : Tower Ω ε} {l : ℕ} [Fact l.Prime] {n w : ℕ} {a : X.Kˣ}
     {x : X.Khat l} (hx : Rep X l n a x) (ha : a ∈ X.Un (l ^ n)) (lam : Fin 2 → ℤ) {ι : Type} [Fintype ι]
@@ -289,14 +328,14 @@ private theorem polMod_tr [IsAlgClosure ℚ Ω] {X : Tower Ω ε} {l : ℕ} [Fac
   let q : ι → ℤ := fun i => lam 0 * γ i 0 1 + lam 1 * γ i 1 1
   let z : ι → ℕ → ℤ := fun i k => p i ^ k * q i ^ (w - k) * (w.choose k : ℤ)
   have hb : ∀ i, b i ∈ X.Un (l ^ n) := fun i =>
-    (GlobalTheory.T.modularFunctionTower_unitGroup_stable_slash_galois ε X ε.injective (jHol X) (l ^ n) a ha).1 (ofSL (γ i)) (b i) rfl
+    (_root_.GlobalTheory.KZ.Tower.Un_sl_gal ε X ε.injective (jHol X) (l ^ n) a ha).1 (ofSL (γ i)) (b i) rfl
   have hr : ∀ i, Rep X l n (b i) (X.kmap l (X.sl (ofSL (γ i))).toRingEquiv x) := fun i => rep_kmap hx _
   refine ⟨fun k => ∑ i, ((z i k : ℤ) : ℤ_[l]) • X.kmap l (X.sl (ofSL (γ i))).toRingEquiv x,
     fun k => ⟨∏ i, b i ^ z i k, ?_, ?_⟩, fun u => ?_⟩
   · exact (unS X (l ^ n)).prod_mem fun i _ => (unS X (l ^ n)).zpow_mem (hb i) _
   · unfold Rep
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, cls_prod]
+
+    rw [map_sum, cls_prod]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, cls_zpow, hr i]
   · unfold trH
@@ -342,8 +381,8 @@ theorem UpperTheory.Kd.K4.trc :
     fun H' κ _ δ hHH hδ => ⟨isTr_comp hHH hH2 hγ hδ, fun a' h x' hx' hp => tr_comp hH1 hx hx' lam γ hδ hp⟩⟩
   have e : X.act l (g : Matrix (Fin 2) (Fin 2) ℤ) (trH X l w γ lam x) = trH X l w (fun i => γ i * g) lam x := by
     unfold trH
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => act_act_SL X l _ _ _
   rw [e]
   exact tr_cg hH1 hi hx hx lam (isTr_mul hγ hg) hγ

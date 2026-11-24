@@ -1,10 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LubinTateReciprocity.Descent
 public import GroundTheory.LocalFields.LocalAxiom
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ReciprocityMap
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
+public import GroundTheory.LocalFields.LubinTateTower
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Topology.Sheaves.Presheaf
+import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
+import GroundTheory.LocalFields.Eisenstein
+import GroundTheory.LocalFields.LubinTateReciprocity.TwistedPoint
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -165,7 +171,7 @@ theorem norm_neg_gen_eq_coeff_zero {x : Ω} (hint : IsIntegral K x) :
 
 
 include hπ hf in
-set_option maxHeartbeats 1000000 in
+
 theorem reciprocity_frobenius_lubinTate (m : ℕ) (U : OpenSubgroup (Ω ≃ₐ[K] Ω))
     [((U : Subgroup (Ω ≃ₐ[K] Ω)).subgroupOf
       ((⊤ : OpenSubgroup (Ω ≃ₐ[K] Ω)) : Subgroup (Ω ≃ₐ[K] Ω))).Normal]

@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHilbDegBound
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegreeBound
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -24,21 +28,7 @@ attribute [local instance] MvPolynomial.weightedGradedAlgebra
 
 theorem isHomogeneous_of_isMultiHomogIdeal {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I) :
     I.IsHomogeneous (weightedHomogeneousSubmodule F (blockWeight ι)) := by
-  classical
-  have e : I = Ideal.span
-      {g | ∃ f ∈ I, ∃ b, g = weightedHomogeneousComponent (blockWeight ι) b f} := by
-    apply le_antisymm
-    · intro f hf
-      rw [← sum_weightedHomogeneousComponent (blockWeight ι) f,
-        finsum_eq_sum _ (weightedHomogeneousComponent_finsupp f)]
-      exact Ideal.sum_mem _ fun b _ => Ideal.subset_span ⟨f, hf, b, rfl⟩
-    · rw [Ideal.span_le]
-      rintro g ⟨f, hf, b, rfl⟩
-      exact hI f hf b
-  rw [e]
-  refine Ideal.homogeneous_span _ _ fun x hx => ?_
-  obtain ⟨f, -, b, rfl⟩ := hx
-  exact ⟨b, weightedHomogeneousComponent_isWeightedHomogeneous b f⟩
+  apply GroundTheory.Heights₂.Heights.NumbersDVR.HilbDegBound.isHomogeneous_of_isMultiHomogIdeal <;> assumption
 
 theorem isMultiHomogIdeal_sup_span {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I)
     {s : MRing ι F} {c : K → ℕ} (hs : IsMultiHomog s c) :
@@ -182,8 +172,8 @@ theorem totalDegree_add_card_le_ringKrullDim (h1 : HilbEventuallyPoly.Statement.
       have hall : ∀ᶠ m in Filter.atTop, ∀ j, (hilbFn (Q j) (m - fun k => (c j k : ℤ)) : ℚ) =
           eval (fun k => (m k : ℚ)) (q j) := Filter.eventually_all.mpr hq
       filter_upwards [hall, hsum] with m hm hm'
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hm', map_sum]
+
+      rw [hm', map_sum]
       push_cast
       exact Finset.sum_congr rfl fun j _ => hm j
     have hpq := hU K _ p _ hp hsumP

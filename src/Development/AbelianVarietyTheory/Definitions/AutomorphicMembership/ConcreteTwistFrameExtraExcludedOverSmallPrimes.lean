@@ -1,15 +1,46 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicIrr
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TwDefs
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingSpecSidedEmbeddingFixedField
-public import Formalism.LocalToGlobal.UnitaryNorms.CharGal
-public import Formalism.LocalRingCardinality.DataIdx
 public import Formalism.SharpRestriction.LevelLetterCocycles.TwGood
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BlocksUnique
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TwistBaseCoefficientRingResidueFieldFinite
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.ChiDefs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -74,7 +105,7 @@ end
 abbrev Big (D : D7) : Type := ∀ (l : ℕ) [Fact l.Prime], (↥D.LL0 →+* PadicAlgCl l) → Loc.FinExt l
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure RingSpec (D : D7) (cf : CharFrame D) (b0 b1 : Big D) (Sx : Finset (PlE D.host)) (T : TwR D.LL0 D.nd) where
   eTw : T.Tw ≃ HeightOneSpectrum (𝓞 ↥D.LL0)
   pl_emb : ∀ i, ((T.l i : ℕ) : 𝓞 ↥D.LL0) ∈ (eTw i).asIdeal ∧
@@ -133,7 +164,7 @@ structure RingSpec (D : D7) (cf : CharFrame D) (b0 b1 : Big D) (Sx : Finset (PlE
         algebraMap (T.O0 s) (FractionRing (T.O0 s)) ((T.delta s σ : (T.O0 s)ˣ) : T.O0 s) = T.emb0 s x
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure TwFrameC (D : D7) where
   K0 : ∀ i, Loc.FinExt (D.ntw.l i)
   eO0 : ∀ i, D.ntw.O0 i ≃+* intOf (D.ntw.l i) (K0 i).1
@@ -145,7 +176,7 @@ structure TwFrameC (D : D7) where
   S0x : D.ntw.Tw → Finset (HeightOneSpectrum (𝓞 D.host.E))
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure TwistFrameLowIndexCompatibility (D : D7) (F : TwFrameC D) (low : Finset ℕ) : Prop where
   pl_emb : ∀ i, ∃ w : HeightOneSpectrum (𝓞 ↥D.LL0), ((D.ntw.l i : ℕ) : 𝓞 ↥D.LL0) ∈ w.asIdeal ∧
     ∀ x : 𝓞 ↥D.LL0, x ∈ w.asIdeal ↔ ∃ y ∈ IsLocalRing.maximalIdeal (D.ntw.O0 i),

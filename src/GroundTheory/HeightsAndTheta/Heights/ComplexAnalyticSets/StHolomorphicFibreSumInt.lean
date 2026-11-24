@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 
 @[expose] public section

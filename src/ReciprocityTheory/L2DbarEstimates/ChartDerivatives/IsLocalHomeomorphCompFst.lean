@@ -1,7 +1,11 @@
 module
 
+public import Mathlib.Topology.Connected.Separation
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
 
 @[expose] public section
 

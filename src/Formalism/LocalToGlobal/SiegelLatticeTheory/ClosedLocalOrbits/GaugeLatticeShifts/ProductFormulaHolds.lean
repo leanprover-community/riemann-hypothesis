@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.FrameLocX
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.MeasurePreservingPiProd
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NinfGClosed
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PiMapMulRight
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ProdFormula
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ProductExactness
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
@@ -21,9 +28,6 @@ theorem good_eq {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' :
   ext y
   first
   | (simp only [Good, GoodLoc, Set.mem_pi, Set.mem_univ, true_implies, Set.mem_setOf_eq])
-  | (simp only [Good, Set.mem_pi, Set.mem_univ, true_implies, Set.mem_setOf_eq]; rfl)
-  | (simp [Good, GoodLoc])
-  | (show _ ↔ _; exact Iff.rfl)
 
 theorem product_formula_holds : P5 := by
   intro hJac hDC hSM hU hNH hR D X u u' sc hsc
@@ -34,7 +38,7 @@ theorem product_formula_holds : P5 := by
   have hzp : ∀ w v b, hJ (X.B.I.ε v) (zV X w v) (pV X v b) = 0 := fun w v b => by
     have h0 : hJ (X.B.I.ε v) (pV X v b) (zV X w v) = 0 :=
       (hJ_X X v _ _).trans (by rw [(X.zu_orth w b).2]; simp)
-    rw [hJ_cj, h0, map_zero]
+    rw [_root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj, h0, map_zero]
   have hSH : ∀ w v, IsHaarS (SLoc (X.B.I.ε v) (eV X v) (zV X w v)) (muSv X w v) := fun w v =>
     hNH _ _ _ _ _ _ _ _ _ _ (frameLoc_X X w u v) (hep v) (hpp v) (hzp w v) _ _ (muNv_haar X w v) (muHv_haar X w v)
   haveI : ∀ w v, SigmaFinite (muSv X w v) := fun w v => (hSH w v).1.1

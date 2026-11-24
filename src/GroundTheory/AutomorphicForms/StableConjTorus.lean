@@ -1,8 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.HermitianOrthogonal
+public import GroundTheory.AutomorphicForms.HermitianSpaces
+public import Mathlib.FieldTheory.Separable
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.RingTheory.Flat.TorsionFree
 public import GroundTheory.AutomorphicForms.StableConjCyclic
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

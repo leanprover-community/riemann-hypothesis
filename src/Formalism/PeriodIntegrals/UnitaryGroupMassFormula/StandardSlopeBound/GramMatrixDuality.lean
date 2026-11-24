@@ -1,6 +1,53 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardSlopeBound.NablaBasis
+public import Formalism.GradedWeylDivisibility.StatementE
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FinalB
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Matrix.Rank
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,8 +96,8 @@ theorem expand {N r : ℕ} {M : Submodule ℤ (MvPolynomial (Fin N × Fin N) ℤ
     (p : MvPolynomial (Fin N × Fin N) ℤ) (hp : p ∈ M) :
     intQ N N p = ∑ k, ((e.repr ⟨p, hp⟩ k : ℤ) : ℚ) • intQ N N (e k : MvPolynomial (Fin N × Fin N) ℤ) := by
   have h := congrArg (fun x : M => intQ N N (x : MvPolynomial (Fin N × Fin N) ℤ)) (e.sum_repr ⟨p, hp⟩)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, map_zsmul] at h
+
+  simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, map_zsmul] at h
   rw [← h]
   simp only [Int.cast_smul_eq_zsmul]
 
@@ -89,16 +136,16 @@ theorem gram_matrix_duality : GramDual := by
       intro k
       have hk := congrFun hv k
       simp only [Matrix.mulVec, dotProduct, hG'_def, Matrix.of_apply, Pi.zero_apply] at hk
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hy, map_sum]
+
+      rw [hy, map_sum]
       rw [← hk]
       exact Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_eq_mul, mul_comm]
     have e2 : ∀ l, B y (u l) = 0 := fun l => by rw [hB, fqB_symm, ← hB]; exact hx l
     have hxx : B y y = 0 := by
       calc B y y = B y (∑ l, v l • u l) := by rw [← hy]
         _ = ∑ l, v l * B y (u l) := by
-            set_option synthInstance.maxHeartbeats 100000 in
-              rw [map_sum]; exact Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_eq_mul]
+
+            rw [map_sum]; exact Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_eq_mul]
         _ = 0 := by simp [e2]
     have hy0 : ∑ l, v l • u l = 0 := by rw [← hy]; exact fqB_self_eq_zero hne _ hxx
     exact hv0 (funext (Fintype.linearIndependent_iff.mp hu_ind v hy0))
@@ -110,8 +157,8 @@ theorem gram_matrix_duality : GramDual := by
     intro j l
     have hjl := congrFun (congrFun hGiG j) l
     rw [Matrix.mul_apply, Matrix.one_apply] at hjl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hjl, hf_def, map_sum, LinearMap.sum_apply]
+
+    rw [← hjl, hf_def, map_sum, LinearMap.sum_apply]
     exact Finset.sum_congr rfl fun k _ => by
       rw [map_smul, LinearMap.smul_apply, smul_eq_mul, hG'_def, Matrix.of_apply]
   have hf_mem : ∀ j, f j ∈ (weyl ℤ N N le_rfl ν).map (intQ N N) := by
@@ -121,8 +168,8 @@ theorem gram_matrix_duality : GramDual := by
     rintro Q ⟨p, hp, rfl⟩
     refine ⟨e'.repr ⟨p, hp⟩ j, ?_⟩
     have hB1 : B (f j) (∑ l, ((e'.repr ⟨p, hp⟩ l : ℤ) : ℚ) • u l) = (e'.repr ⟨p, hp⟩ j : ℚ) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [map_smul, smul_eq_mul, hfu, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
         Finset.mem_univ, if_true]
     rw [hB, fqB_apply, div_eq_iff hne] at hB1
@@ -138,8 +185,8 @@ theorem gram_matrix_duality : GramDual := by
   have hNM : Nm * M = 1 := by
     ext j l
     have h1 := hfu j l
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hNm j, map_sum, LinearMap.sum_apply] at h1
+
+    rw [hNm j, map_sum, LinearMap.sum_apply] at h1
     simp only [map_smul, LinearMap.smul_apply, smul_eq_mul, hM] at h1
     rw [Matrix.mul_apply, Matrix.one_apply]
     exact_mod_cast h1
@@ -150,8 +197,8 @@ theorem gram_matrix_duality : GramDual := by
     apply fqB_self_eq_zero hne
     calc B y y = B y (∑ l, d l • u l) := by rw [hd]
       _ = ∑ l, d l * B y (u l) := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum]; exact Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_eq_mul]
+
+          rw [map_sum]; exact Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_eq_mul]
       _ = 0 := by simp [hyl]
   have hw_span : ∀ i, w i ∈ Submodule.span ℚ (Set.range u) := by
     intro i
@@ -168,8 +215,8 @@ theorem gram_matrix_duality : GramDual := by
     · exact Submodule.sub_mem _ (hw_span i)
         (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hf_span j))
     · intro l
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, LinearMap.sub_apply, hM, map_sum, LinearMap.sum_apply]
+
+      rw [map_sub, LinearMap.sub_apply, hM, map_sum, LinearMap.sum_apply]
       simp only [map_smul, LinearMap.smul_apply, smul_eq_mul, hfu, mul_ite, mul_one, mul_zero,
         Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
   have hMN : M * Nm = 1 := by
@@ -199,8 +246,8 @@ theorem gram_matrix_duality : GramDual := by
 
   have hBwf : ∀ i j, B (w i) (f j) = ∑ k, Gi j k * (M i k : ℚ) := by
     intro i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hf_def, map_sum]
+
+    rw [hf_def, map_sum]
     exact Finset.sum_congr rfl fun k _ => by rw [map_smul, smul_eq_mul, hM]
   set Mq : Matrix (Fin r) (Fin r) ℚ := M.map (Int.castRingHom ℚ) with hMq
   have hGw : gramOf ν (fun i => (e i : MvPolynomial (Fin N × Fin N) ℤ)) = Mq * Matrix.transpose Gi * Matrix.transpose Mq := by
@@ -208,8 +255,8 @@ theorem gram_matrix_duality : GramDual := by
     have e1 : gramOf ν (fun i => (e i : MvPolynomial (Fin N × Fin N) ℤ)) i i' = B (w i) (w i') := rfl
     rw [e1]
     conv_lhs => rw [hwf i']
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smul, smul_eq_mul, hBwf, Matrix.mul_apply, Matrix.transpose_apply, hMq, Matrix.map_apply,
       eq_intCast, Finset.sum_mul, Finset.mul_sum]
     exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring

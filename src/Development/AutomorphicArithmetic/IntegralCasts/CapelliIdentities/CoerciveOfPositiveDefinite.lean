@@ -1,41 +1,62 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Complex.Order
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
+open scoped ComplexOrder in
 theorem UpperTheory.Reformulated.B.CoerciveOfPositiveDefinite.exists_coercive_of_posDef.{u_1} :
-    ∀ {ι : Type u_1} [inst : Fintype ι] {P : Matrix ι ι Complex},
-      @Matrix.PosDef ι Complex Complex.instRing Complex.partialOrder Complex.instStarRing P →
-        ∃ (c : Real),
-          And (@LT.lt Real Real.instLT (@OfNat.ofNat Real (nat_lit 0) (@Zero.toOfNat0 Real Real.instZero)) c)
-            (∀ (z : ι → Complex) (j : ι),
-              @LE.le Real Real.instLE
-                (@HMul.hMul Real Real Real (@instHMul Real Real.instMul) c
-                  (@HPow.hPow Real Nat Real (@instHPow Real Nat (@NPow.toPow Real (@Monoid.toNPow Real Real.instMonoid)))
-                    (@Norm.norm Complex Complex.instNorm (z j)) (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))
-                (@dotProduct ι Complex inst Complex.instMul Complex.instAddCommMonoid
-                    (@Star.star (ι → Complex)
-                      (@Pi.instStarForall ι (fun (a : ι) ↦ Complex) fun (i : ι) ↦
-                        @InvolutiveStar.toStar Complex
-                          (@StarAddMonoid.toInvolutiveStar Complex
-                            (@AddCommMonoid.toAddMonoid Complex
-                              (@NonUnitalNonAssocSemiring.toAddCommMonoid Complex
-                                (@NonUnitalNonAssocRing.toNonUnitalNonAssocSemiring Complex
-                                  (@NonUnitalNonAssocCommRing.toNonUnitalNonAssocRing Complex
-                                    (@NonUnitalCommRing.toNonUnitalNonAssocCommRing Complex
-                                      Complex.instNonUnitalCommRing)))))
-                            (@StarRing.toStarAddMonoid Complex
-                              (@NonUnitalNonAssocRing.toNonUnitalNonAssocSemiring Complex
-                                (@NonUnitalNonAssocCommRing.toNonUnitalNonAssocRing Complex
-                                  (@NonUnitalCommRing.toNonUnitalNonAssocCommRing Complex Complex.instNonUnitalCommRing)))
-                              Complex.instStarRing)))
-                      z)
-                    (@Matrix.mulVec ι ι Complex
-                      (@NonUnitalNonAssocRing.toNonUnitalNonAssocSemiring Complex
-                        (@NonUnitalNonAssocCommRing.toNonUnitalNonAssocRing Complex
-                          (@NonUnitalCommRing.toNonUnitalNonAssocCommRing Complex Complex.instNonUnitalCommRing)))
-                      inst P z)).re) := by
+    ∀ {ι : Type u_1} [inst : Fintype ι] {P : Matrix ι ι ℂ},
+      P.PosDef → ∃ (c : ℝ), 0 < c ∧
+        ∀ (z : ι → ℂ) (j : ι), c * ‖z j‖ ^ 2 ≤ (star z ⬝ᵥ P.mulVec z).re := by
   intro ι _ P hP
   rcases isEmpty_or_nonempty ι with hι | hι
   · exact ⟨1, one_pos, fun _ j => (hι.false j).elim⟩

@@ -1,6 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.LeviBlockInduction.GxMulti
+public import GroundTheory.AutomorphicForms.GL2.GJFELevi
 
 @[expose] public section
 

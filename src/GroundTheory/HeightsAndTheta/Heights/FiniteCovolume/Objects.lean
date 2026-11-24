@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups
+public import GroundTheory.AutomorphicForms.HermitianSpaces
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
+public import GroundTheory.AutomorphicForms.UnitaryGroupScheme
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

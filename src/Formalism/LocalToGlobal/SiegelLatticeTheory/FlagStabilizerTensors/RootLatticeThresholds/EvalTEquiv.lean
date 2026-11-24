@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfVec
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.DensLow
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousSplitInv
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GEqBase
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.InfFam
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousSplitInv
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.DensLow
+import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AtTauExUniqueHolds
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ProjRows
 
 @[expose] public section
 

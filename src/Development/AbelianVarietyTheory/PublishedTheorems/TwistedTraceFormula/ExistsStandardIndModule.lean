@@ -1,16 +1,61 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsAuxiliaryPlaceNotMemFinset
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsAdmissibleSubOfFiniteDimensional
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaDecompositionUnitaryIsotropicFlag
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsMapMulRightEqSmul
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicSplitTorusIwasawaUnitaryGroup
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagUnipotentRadicalClosedSubgroupKeeps
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagLeviMaxCompactClosedSubgroups
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagUnipotentRadicalClosedSubgroupKeeps
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaDecompositionUnitaryIsotropicFlag
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocSizeBlocks
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -447,18 +492,6 @@ def parab : Subgroup (UJ ε) where
 
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)}
 
-theorem isClosed_leviOne (hW : IsIsoFlag ε j W) (hj : ∀ i, 1 ≤ j i) : IsClosed (leviOne ε W : Set (UJ ε)) := by
-  obtain ⟨h, hc, h1, -, hh⟩ := exists_height hW hj
-  have h0 : (1 : UJ ε) ∈ flagN ε W := ⟨fun i y _ => by simp [uMat_one], fun y _ => by simp [uMat_one]⟩
-  convert (isClosed_flagM W).inter (isClosed_eq hc (continuous_const (y := 0))) using 1
-  ext l
-  refine ⟨fun hl => ⟨hl.1, by simpa [h1] using hh 1 h0 l hl 0 1 isSplit_one 1⟩, fun hl => ?_⟩
-  obtain ⟨m, hm, x, t, ht, rfl⟩ := exists_leviOne_mul hW hj hl.1
-  have := hh 1 h0 m hm x t ht 1
-  rw [one_mul, mul_one, h1, add_zero, show h (m * t) = 0 from hl.2] at this
-  rw [(existsUnique_isSplit hW x).unique ht (this ▸ isSplit_one), mul_one]
-  exact hm
-
 end Model
 
 section Models
@@ -494,10 +527,6 @@ theorem IsIndModel.unique [CompleteSpace H] [CompleteSpace H'] (h : IsIndModel S
   refine h.dense.induction_on v (isClosed_eq (by fun_prop) (by fun_prop)) fun f => ?_
   rw [h.transl y hy f ⟨_, hR _ f.2 y hy⟩ fun _ => rfl, e, e]
   exact (h'.transl y hy _ _ fun _ => rfl).symm
-
-theorem leviOne_zero {j : Fin 0 → ℕ} {W : Flag n 0} (hW : IsIsoFlag ε j W) : leviOne ε W = ⊤ := by
-  have h : ∀ i, W i = ⊥ := fun i => by rw [Fin.eq_zero i, hW.1]
-  exact eq_top_iff.2 fun g _ => ⟨fun i y hy => by rw [h] at hy ⊢; simp_all, fun i => by rw [h, detOn_bot]⟩
 
 end Models
 

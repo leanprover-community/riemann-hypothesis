@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.PoincarePairs
+public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
+public import GroundTheory.ProfiniteCohomology.PoincarePairs.IsDiscreteRepResHomCoindRes
 
 @[expose] public section
 

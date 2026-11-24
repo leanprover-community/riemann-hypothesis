@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.PowerSeries.Exp
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -46,8 +47,6 @@ def DpolyOf (F : Fin d → PS R 2 d) {ι : Type} [Fintype ι] (u : ι → Fin d 
     have h := (Classical.choose_spec H).trans MvPolynomial.coe_one.symm
     first
     | exact MvPolynomial.coe_inj.mp h
-    | exact MvPolynomial.coe_injective _ _ h
-    | exact MvPolynomial.coe_injective _ h
   first
   | (simp [ev]; done)
   | (simp only [ev, MvPowerSeries.subst, MvPowerSeries.eval₂];

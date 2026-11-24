@@ -1,7 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.PullbackLogCoordsEvalZero
+import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
+import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
+import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 
 @[expose] public section
 
@@ -132,7 +136,7 @@ def J (m k : Fin dd) : MvPowerSeries (Fin dd) C := MvPowerSeries.subst (e Y) (Mv
 theorem pderiv_l_zero (m i : Fin dd) :
     MvPowerSeries.constantCoeff (MvPowerSeries.pderiv (R := C) i (l Y m)) = if m = i then 1 else 0 := by
   rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, MvPowerSeries.coeff_pderiv]
-  simp only [Finsupp.coe_zero, Pi.zero_apply, zero_add, Nat.cast_zero, Nat.cast_one, one_mul, mul_one]
+  simp only [Finsupp.coe_zero, Pi.zero_apply, zero_add, Nat.cast_zero, mul_one]
   change MvPowerSeries.coeff (Finsupp.mapDomain (fun x : Fin dd => ((0 : Fin 1), x)) (Finsupp.single i 1))
     (Y.lg m) = _
   rw [Finsupp.mapDomain_single, Y.lg_lin m _ (by simp), MvPowerSeries.coeff_X]
@@ -160,7 +164,6 @@ theorem eqA (m i : Fin dd) :
     hs (fun k => MvPowerSeries.constantCoeff_X _)
   have h := congrArg (MvPowerSeries.pderiv (R := C) ((1 : Fin 2), i)) (l_add Y m)
   rw [map_add (f := _), pderiv_subst hF, pderiv_subst (hX 0), pderiv_subst (hX 1)] at h
-  beta_reduce at h
   have s0 : ∑ w : Fin dd, MvPowerSeries.pderiv (R := C) ((1 : Fin 2), i) (MvPowerSeries.X ((0 : Fin 2), w) : PS C 2 dd) *
       MvPowerSeries.subst (fun k : Fin dd => (MvPowerSeries.X ((0 : Fin 2), k) : PS C 2 dd))
         (MvPowerSeries.pderiv (R := C) w (l Y m)) = 0 :=
@@ -175,8 +178,8 @@ theorem eqA (m i : Fin dd) :
       MvPowerSeries.pderiv_X_self, one_mul]
   rw [s0, s1, zero_add] at h
   have h2 := congrArg (MvPowerSeries.subst (exZero Y)) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom hz, map_sum] at h2
+
+  rw [← MvPowerSeries.coe_substAlgHom hz, map_sum] at h2
   simp only [map_mul, MvPowerSeries.coe_substAlgHom] at h2
   rw [MvPowerSeries.subst_comp_subst_apply hsX1 hz] at h2
   simp only [MvPowerSeries.subst_comp_subst_apply hsF hz, F_exZero, MvPowerSeries.subst_X hz] at h2
@@ -197,8 +200,8 @@ theorem eqK (n k : Fin dd) :
     rw [MvPowerSeries.subst_self]
     rfl
   have h := congrArg (MvPowerSeries.subst (e Y)) (congrArg (MvPowerSeries.pderiv (R := C) k) (exlg Y n))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [pderiv_subst hl k, ← MvPowerSeries.coe_substAlgHom hsE, map_sum] at h
+
+  rw [pderiv_subst hl k, ← MvPowerSeries.coe_substAlgHom hsE, map_sum] at h
   simp only [map_mul, MvPowerSeries.coe_substAlgHom, key] at h
   refine h.trans ?_
   by_cases hnk : n = k

@@ -1,7 +1,50 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaximalCompactOneParameterLinesOfLieLines
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -36,15 +79,7 @@ end GlobalTheory.RealLift.OneParam
 namespace GlobalTheory.RealLift.OneParam
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem exists_moved {σ : E →ₐ[F] E} (h : IsCMExt F E σ) : ∃ ξ : E, σ ξ ≠ ξ := by
-  by_contra hc
-  push Not at hc
-  have := h.2.1
-  let τ : E →+* ℂ := (IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := E)).toRingHom
-  refine (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex (InfinitePlace.mk τ)))
-    (InfinitePlace.isReal_mk_iff.2 (ComplexEmbedding.isReal_iff.2 (RingHom.ext fun x => ?_)))
-  change star (τ x) = τ x
-  rw [← h.2.2.2 τ x, hc x]
+alias exists_moved := _root_.GlobalTheory.AdelicU.exists_cm_conj_ne
 
 theorem im_ne_zero {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {ξ : E} (hξ : σ ξ ≠ ξ) (τ : E →+* ℂ) : (τ ξ).im ≠ 0 := by
   intro h0
@@ -64,7 +99,7 @@ theorem piInf_liftC [IsTotallyReal F] (τ : ∀ w : InfinitePlace F, EmbOver E w
     (c : InfinitePlace F → ℂ) (w : InfinitePlace F) : piInf (τ w) (liftC τ ξ c) = c w := by
   rw [liftC, map_add (f := _), piInf_tmul, piInf_tmul, evInf_liftR, evInf_liftR, map_one, mul_one]
   have := hξ w
-  apply Complex.ext <;> simp <;> field_simp <;> ring
+  apply Complex.ext <;> simp <;> field_simp
 
 theorem continuous_liftC [IsTotallyReal F] (τ : ∀ w : InfinitePlace F, EmbOver E w) (ξ : E) :
     Continuous (liftC τ ξ) := by
@@ -129,57 +164,7 @@ theorem linInd_one {σ : E →ₐ[F] E} {ξ : E} (hξ : σ ξ ≠ ξ) : LinearIn
 
 theorem eq_zero_of_at {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
     {z : AE F E} (hz : At (evI F) z) (h0 : ∀ w, piInf (τ w) z = 0) : z = 0 := by
-  have := h.1
-  obtain ⟨ξ, hξ⟩ := exists_moved h
-  have hcard : Fintype.card (Fin 2) = Module.finrank F E := by rw [h.2.2.1]; rfl
-  let bE := basisOfLinearIndependentOfCardEqFinrank (linInd_one hξ) hcard
-  let B := Algebra.TensorProduct.basis (AF F) bE
-  have hB : ∀ i, B i = (1 : AF F) ⊗ₜ[F] ![(1 : E), ξ] i := fun i => by
-    simp [B, bE, Algebra.TensorProduct.basis_apply]
-  set a := B.repr z with ha_def
-  have hz' : z = a 0 ⊗ₜ[F] (1 : E) + a 1 ⊗ₜ[F] ξ := by
-    conv_lhs => rw [← B.sum_repr z]
-    rw [Fin.sum_univ_two, hB, hB, TensorProduct.smul_tmul', TensorProduct.smul_tmul', smul_eq_mul, smul_eq_mul,
-      mul_one, mul_one]
-    rfl
-  let u : AF F := LinearMap.inr F (Ainf F) (Af F) 1
-  have hu : evI F u = 0 := by
-    change InfiniteAdeleRing.ringEquiv_mixedSpace F 0 = 0
-    exact map_zero _
-  have hfin : ∀ i, u * a i = 0 := fun i => by
-    have e := congrArg (fun y => B.repr y i) (hz u hu)
-    simpa [ha_def] using e
-  have hinf : ∀ w, evInf F w (a 0) = 0 ∧ evInf F w (a 1) = 0 := fun w => by
-    have e := h0 w
-    rw [hz', map_add (f := _), piInf_tmul, piInf_tmul, map_one, mul_one,
-      ← InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply (IsTotallyReal.isReal w),
-      ← InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply (IsTotallyReal.isReal w)] at e
-    set x := InfinitePlace.Completion.extensionEmbeddingOfIsReal (IsTotallyReal.isReal w) (evInf F w (a 0)) with hx
-    set y := InfinitePlace.Completion.extensionEmbeddingOfIsReal (IsTotallyReal.isReal w) (evInf F w (a 1)) with hy
-    have hne := im_ne_zero h hξ (τ w).1
-    have him := congrArg Complex.im e
-    have hre := congrArg Complex.re e
-    simp at him hre
-    have y0 : y = 0 := by
-      rcases him with h1 | h1
-      · exact h1
-      · exact absurd h1 hne
-    rw [y0, zero_mul, add_zero] at hre
-    constructor
-    · exact (map_eq_zero _).1 (hx ▸ hre)
-    · exact (map_eq_zero _).1 (hy ▸ y0)
-  have ha : ∀ i, a i = 0 := fun i => by
-    refine Prod.ext ?_ ?_
-    · funext w
-      change evInf F w (a i) = 0
-      fin_cases i
-      · exact (hinf w).1
-      · exact (hinf w).2
-    · have e := congrArg Prod.snd (hfin i)
-      change (1 : Af F) * (a i).2 = 0 at e
-      rw [one_mul] at e
-      exact e
-  rw [hz', ha 0, ha 1, TensorProduct.zero_tmul, TensorProduct.zero_tmul, add_zero]
+  apply GlobalTheory.RealLift.KLineProof.eq_zero_of_piInf <;> assumption
 end GlobalTheory.RealLift.OneParam
 
 namespace GlobalTheory.RealLift.OneParam

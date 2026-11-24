@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertRIndexSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCurveCharts
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertRIndex
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PSectionIndexNorm
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

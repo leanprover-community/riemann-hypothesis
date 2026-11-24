@@ -1,24 +1,43 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsQuasiFam
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.TransvectionAction
-
-namespace I195MixedCoordinates_f1b992d3c44b213cc9f27f15
-
-open Formalism.BasicNotions Formalism.BasicNotions.TH
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.MixModel MeasureTheory
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-public noncomputable abbrev source
-    {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (T : HSp D)
-    (ψ : AddChar (AF D.host.F) ℂ) (μ : Measure (Mx D T.rank ρ))
-    (𝓕 : Set (Mx D T.rank ρ)) (f : WO S T → ℂ) (x : Mx D T.rank ρ) : WO S₀ T → ℂ :=
-  fun w₀ => ∫ a in 𝓕, heisO ψ S T (a * d.pY)
-    (heisO ψ S T (x * d.pX) (heisO ψ S T (w₀ * d.p0) f)) 0 ∂μ
-
-end I195MixedCoordinates_f1b992d3c44b213cc9f27f15
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedCoordinates
 
 @[expose] public section
 
@@ -62,7 +81,7 @@ def Nfix (j : Fin ρ) : Subgroup (GA D V) :=
   flagN d ⊓ ⨅ i : {i : Fin ρ // i ≤ j}, fixer V (d.jX.submatrix id fun _ : Fin 1 => i.1)
 
 def term (v : VolM D W.rank ρ) (Ψ : WO V W → ℂ) (x : Matrix (Fin W.rank) (Fin ρ) D.host.E) : ℂ :=
-  (_root_.I195MixedCoordinates_f1b992d3c44b213cc9f27f15.source d) W ψ v.μ v.𝓕 Ψ (rat x) 0
+  (_root_.I195MixedCoordinates.source d) W ψ v.μ v.𝓕 Ψ (rat x) 0
 
 structure IsTh (x₀ : Matrix (Fin W.rank) (Fin ρ) D.host.E) (Th : GA D V → ℂ) : Prop where
   cont : Continuous fun n : flagN d => Th n.1
@@ -80,7 +99,7 @@ def IsBase (x₀ : Matrix (Fin W.rank) (Fin ρ) D.host.E) : Prop :=
 
 def flFun (v : VolM D W.rank ρ) (Th : GA D V → ℂ) (x : Mx D W.rank ρ) (Ψ : WO V W → ℂ) (u : UX D ρ)
     (b : Mx D ρ V₀.rank) : ℂ :=
-  Th (d.nB b * d.levi u.1) * (_root_.I195MixedCoordinates_f1b992d3c44b213cc9f27f15.source d) W ψ v.μ v.𝓕 Ψ (x ⬝ u.1.1) (x ⬝ b)
+  Th (d.nB b * d.levi u.1) * (_root_.I195MixedCoordinates.source d) W ψ v.μ v.𝓕 Ψ (x ⬝ u.1.1) (x ⬝ b)
 
 def fl (v : VolM D W.rank ρ) (vb : VolM D ρ V₀.rank) (vU : VolU D ρ) (Th : GA D V → ℂ) (x : Mx D W.rank ρ)
     (Ψ : WO V W → ℂ) : ℂ :=

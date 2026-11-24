@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockVeronese
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerHeightsirational
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockArith

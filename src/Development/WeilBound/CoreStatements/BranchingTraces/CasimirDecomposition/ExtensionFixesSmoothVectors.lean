@@ -1,11 +1,47 @@
 module
 
-public import Development.WeilBound.CoreStatements.BranchingTraces.CasimirDecomposition.CasApply
 public import Development.WeilBound.CoreStatements.BranchingTraces.HeBranching
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SmoothVectorsComplexDerivedActionCayleyTransport
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DerivedActionExpandMatrixUnitsStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CasimirDiagonalSum
-public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.NumericSettingWithGapSatisfiable
+public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeries₂.Poulsen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.CoreStatements.BranchingTraces.CasimirDecomposition.CasApply
 
 @[expose] public section
 
@@ -23,12 +59,6 @@ open Formalism.REAL (Jm UJ)
 section Lin
 
 variable {m : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-theorem Jm_sq (ε : Fin m → Bool) : Jm ε * Jm ε = 1 := by
-  rw [Jm, diagonal_mul_diagonal, ← diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
 
 theorem formT_mat (ε : Fin m → Bool) (A : Matrix (Fin m) (Fin m) ℂ) (hA : A * Jm ε * Aᴴ = Jm ε) (y x : Fin m → H) :
     formT ε (fun c => ∑ d, A d c • y d) (fun c => ∑ d, A d c • x d) = formT ε y x := by
@@ -138,10 +168,10 @@ theorem cay_two {P Q : Mx k r} (hP : IsCayleyU k r ε P) (hQ : IsCayleyU k r ε 
 
 theorem act_coe (U : URep k r) {g : Mx k r} (hg : g ∈ GG k r) (x : M (vr k r true, U)) (c : Fin (2 * r + k + 1)) :
     (CompanionTheory.Zuck.act (vr k r true, U) g x c : U.R.H) = ∑ d, g⁻¹ d c • U.R.σ g (x d) := by
-  simp only [CompanionTheory.Zuck.act, CompanionTheory.Zuck.mAct, CompanionTheory.Zuck.dOp, vr, if_true, ite_true, BranchingSupport.dualM, CompanionTheory.Zuck.URep.sig, dif_pos hg,
+  simp only [CompanionTheory.Zuck.act, CompanionTheory.Zuck.mAct, CompanionTheory.Zuck.dOp, vr, if_true, BranchingSupport.dualM, CompanionTheory.Zuck.URep.sig, dif_pos hg,
     LinearMap.comp_apply, LinearMap.pi_apply, LinearMap.compLeft_apply, LinearMap.sum_apply,
     LinearMap.smul_apply, LinearMap.proj_apply, Function.comp_apply, transpose_apply, Submodule.coe_sum,
-    Submodule.coe_smul, LinearMap.restrict_coe_apply, ContinuousLinearMap.coe_coe]
+    Submodule.coe_smul]
   rfl
 
 theorem act_one_coe (U : URep k r) {g : Mx k r} (hg : g ∈ GG k r) (x : M (one U)) :
@@ -149,7 +179,7 @@ theorem act_one_coe (U : URep k r) {g : Mx k r} (hg : g ∈ GG k r) (x : M (one 
   simp only [CompanionTheory.Zuck.act, CompanionTheory.Zuck.mAct, CompanionTheory.Zuck.dOp, CompanionTheory.Zuck.one, CompanionTheory.Zuck.triv, CompanionTheory.Zuck.URep.sig, dif_pos hg,
     LinearMap.comp_apply, LinearMap.pi_apply, LinearMap.compLeft_apply, LinearMap.sum_apply,
     LinearMap.smul_apply, LinearMap.proj_apply, Function.comp_apply, Submodule.coe_sum,
-    Submodule.coe_smul, LinearMap.restrict_coe_apply, ContinuousLinearMap.coe_coe]
+    Submodule.coe_smul]
   simp only [Fintype.univ_unit, Finset.sum_singleton, Matrix.one_apply_eq, one_smul]
   rfl
 
@@ -227,7 +257,7 @@ theorem invForm {U T T' : URep k r} {P : Mx k r} (hP : IsCayleyU k r ε P) (i : 
     (i' : M (one T') →ₗ[ℂ] M (vr k r true, U)) (hi : IsHom (one T) (vr k r true, U) i)
     (hi' : IsHom (one T') (vr k r true, U) i') :
     IsInvForm T.R T'.R fun x y => formT ε (dn U P (i' (ext1 T' y))) (dn U P (i (ext1 T x))) := by
-  have hJ : (Jm ε)⁻¹ = Jm ε := Matrix.inv_eq_left_inv (Jm_sq ε)
+  have hJ : (Jm ε)⁻¹ = Jm ε := Matrix.inv_eq_left_inv (_root_.Formalism.REAL.Jm_mul_self ε)
   have hdet : IsUnit P.det := (Matrix.isUnit_iff_isUnit_det P).mp hP.1.1
   unfold BranchingSupport.IsInvForm
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
@@ -258,8 +288,8 @@ theorem invForm {U T T' : URep k r} {P : Mx k r} (hP : IsCayleyU k r ε P) (i : 
       funext c
       show ∑ d, P⁻¹ d c • ((CompanionTheory.Zuck.act (vr k r true, U) g w d : U.R.H)) =
         ∑ d, (P * g * P⁻¹)⁻¹ d c • U.R.σ g (∑ e, P⁻¹ e d • (w e : U.R.H))
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [act_coe U hg, map_sum, map_smul]
+
+      simp only [act_coe U hg, map_sum, map_smul]
       rw [sum_comp, sum_comp, eB]
     have hB : (P * g * P⁻¹)⁻¹ * Jm ε * ((P * g * P⁻¹)⁻¹)ᴴ = Jm ε := by
       have hC := cay_mem' hP hg

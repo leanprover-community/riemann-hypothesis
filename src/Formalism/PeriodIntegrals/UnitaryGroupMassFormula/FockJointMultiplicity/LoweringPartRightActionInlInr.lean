@@ -1,6 +1,56 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.JointMultOfSteps
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Derivation.Lie
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -16,7 +66,6 @@ private theorem omAct_eq_sum_smul_omE (p q r s : ℕ)
   first
   | (simp only [FockH1Action.omAct, LinearMap.sum_apply, LinearMap.smulRight_apply,
       Matrix.entryLinearMap_apply]; done)
-  | simp [FockH1Action.omAct]
 
 private theorem fockAct1_eq_omAct_kronecker_one (p q r s : ℕ) (Z : FockH1Action.Mat p q) :
     FockH1Action.fockAct1 p q r s Z =
@@ -33,7 +82,7 @@ theorem fockAct1_eq (p q r s : ℕ) (Z : Mat p q) :
   rw [Fintype.sum_eq_single c]
   · simp
   · intro d hd
-    simp [Matrix.one_apply, Ne.symm hd]
+    simp [Ne.symm hd]
 
 private theorem fockAct2_eq_omAct_one_kronecker (p q r s : ℕ) (Y : FockH1Action.Mat r s) :
     FockH1Action.fockAct2 p q r s Y =
@@ -48,7 +97,7 @@ theorem fockAct2_eq (p q r s : ℕ) (Y : Mat r s) :
   rw [Fintype.sum_eq_single a]
   · simp
   · intro b hb
-    simp [Matrix.one_apply, Ne.symm hb]
+    simp [Ne.symm hb]
 
 end PI.WFJM
 
@@ -73,11 +122,9 @@ theorem pderiv_X_mul_monomial {σ : Type*} (i : σ) (α : σ →₀ ℕ) (c : �
   have hX : pderiv i (X i : MvPolynomial σ ℂ) = 1 := by
     first
     | exact pderiv_X_self i
-    | simp [pderiv_X]
   first
   | rw [Derivation.leibniz, hX, smul_eq_mul, smul_eq_mul, X_mul_pderiv_monomial, mul_one,
       add_smul, one_smul]
-  | (simp only [Derivation.leibniz, hX, smul_eq_mul, X_mul_pderiv_monomial, mul_one]; module)
 
 private theorem pderiv_toLinearMap_apply {σ : Type*} (i : σ) (P : MvPolynomial σ ℂ) :
     (pderiv i).toLinearMap P = pderiv i P := rfl
@@ -123,12 +170,10 @@ theorem omE_self_monomial {p q r s : ℕ} (l : Ln p q r s) (α : Ln p q r s →�
       LinearMap.mulLeft_apply, pderiv_toLinearMap_apply, h2]
     first
     | module
-    | (rw [← neg_smul, ← add_smul]; congr 1; ring)
   · rw [raiB_eq_mulLeft_X_of_linePos hl, lowB_eq_pderiv_of_linePos hl, sgnL_eq_one_of_linePos hl, pderiv_toLinearMap_apply,
       LinearMap.mulLeft_apply, h1]
     first
     | module
-    | (rw [← add_smul]; congr 1; ring)
 
 theorem omE_ne {p q r s : ℕ} {l l' : Ln p q r s} (h : l ≠ l') : omE l l' = raiB l * lowB l' := by
   rw [FockH1Action.omE, if_neg h, add_zero]
@@ -138,22 +183,22 @@ open PI.FJM
 theorem fockAct1_Eab (p q r s : ℕ) (a b : Ix p q) :
     fockAct1 p q r s (Eab a b) = ∑ c : Ix r s, omE (p := p) (q := q) (r := r) (s := s) (a, c) (b, c) := by
   rw [fockAct1_eq, Fintype.sum_eq_single a, Fintype.sum_eq_single b]
-  · simp [FockH1Action.Eab, Matrix.single_apply]
+  · simp [FockH1Action.Eab]
   · intro x hx
-    simp [FockH1Action.Eab, Matrix.single_apply, Ne.symm hx]
+    simp [FockH1Action.Eab, Ne.symm hx]
   · intro x hx
-    simp [FockH1Action.Eab, Matrix.single_apply, Ne.symm hx]
+    simp [FockH1Action.Eab, Ne.symm hx]
 
 theorem fockAct2_Eab (p q r s : ℕ) (c d : Ix r s) :
     fockAct2 p q r s (Eab c d) = ∑ a : Ix p q, omE (p := p) (q := q) (r := r) (s := s) (a, c) (a, d) := by
   rw [fockAct2_eq]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Fintype.sum_eq_single c, Fintype.sum_eq_single d]
-  · simp [FockH1Action.Eab, Matrix.single_apply]
+  · simp [FockH1Action.Eab]
   · intro x hx
-    simp [FockH1Action.Eab, Matrix.single_apply, Ne.symm hx]
+    simp [FockH1Action.Eab, Ne.symm hx]
   · intro x hx
-    simp [FockH1Action.Eab, Matrix.single_apply, Ne.symm hx]
+    simp [FockH1Action.Eab, Ne.symm hx]
 
 theorem leftOffDiagonalActionFormula : FormRaise1 := by
   intro p q r s a b hab
@@ -279,7 +324,6 @@ variable {σ : Type*}
 private theorem isHomogeneous_X_one (k : σ) : (X k : MvPolynomial σ ℂ).IsHomogeneous 1 := by
   first
   | exact isHomogeneous_X ℂ k
-  | exact isHomogeneous_X k
 
 private theorem homogeneousComponent_monomial_of_isHomogeneous {v : σ →₀ ℕ} {b : ℂ} {N : ℕ}
     (h : (monomial v b).IsHomogeneous N) (e : ℕ) :
@@ -338,7 +382,6 @@ theorem eq_zero_of_hc (x : MvPolynomial σ ℂ) (h : ∀ e, homogeneousComponent
   have hx : x = ∑ i ∈ Finset.range (x.totalDegree + 1), homogeneousComponent i x := by
     first
     | exact (sum_homogeneousComponent x).symm
-    | exact sum_homogeneousComponent.symm
   rw [hx]
   exact Finset.sum_eq_zero fun i _ => h i
 
@@ -361,8 +404,8 @@ theorem minusPart_smul (c : ℂ) (A : Module.End ℂ (MvPolynomial σ ℂ)) (P :
 
 theorem minusPart_sum {ι : Type*} (t : Finset ι) (A : ι → Module.End ℂ (MvPolynomial σ ℂ))
     (P : MvPolynomial σ ℂ) : minusPart (∑ i ∈ t, A i) P = ∑ i ∈ t, minusPart (A i) P := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [minusPart_eq_sum, LinearMap.sum_apply, map_sum]
+
+  simp only [minusPart_eq_sum, LinearMap.sum_apply, map_sum]
   exact Finset.sum_comm
 
 theorem minusPart_raise (A : Module.End ℂ (MvPolynomial σ ℂ))
@@ -377,12 +420,11 @@ private theorem homogeneousComponent_minusPart (A : Module.End ℂ (MvPolynomial
     (P : MvPolynomial σ ℂ) (e : ℕ) :
     homogeneousComponent e (FockH1Action.minusPart A P) =
       homogeneousComponent e (A (homogeneousComponent (e + 2) P)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [minusPart_eq_sum, map_sum]
+
+  rw [minusPart_eq_sum, map_sum]
   simp only [hc_hc]
   first
   | rw [Finset.sum_ite_eq]
-  | rw [Finset.sum_ite_eq']
   by_cases h : e ∈ Finset.range (P.totalDegree + 1)
   · rw [if_pos h]
   · rw [if_neg h]
@@ -585,7 +627,7 @@ theorem coeff_fockAct1_diag (a : Ix p q) (P : Pol p q r s) (m : Ln p q r s →�
       (((wt1 m a : ℚ) + sh1 p q r s a : ℚ) : ℂ) * AddMonoidAlgebra.coeff P m := by
   induction P using MvPolynomial.induction_on' with
   | monomial u c =>
-    rw [fockAct1_Eab_diag_monomial, coeff_smul, smul_eq_mul, coeff_monomial]
+    rw [fockAct1_Eab_diag_monomial, MvPolynomial.coeff_smul, smul_eq_mul, coeff_monomial]
     split_ifs with h
     · rw [h]
     · simp
@@ -596,7 +638,7 @@ theorem coeff_fockAct2_diag (c : Ix r s) (P : Pol p q r s) (m : Ln p q r s →�
       (((wt2 m c : ℚ) + sh2 p q r s c : ℚ) : ℂ) * AddMonoidAlgebra.coeff P m := by
   induction P using MvPolynomial.induction_on' with
   | monomial u b =>
-    rw [fockAct2_Eab_diag_monomial, coeff_smul, smul_eq_mul, coeff_monomial]
+    rw [fockAct2_Eab_diag_monomial, MvPolynomial.coeff_smul, smul_eq_mul, coeff_monomial]
     split_ifs with h
     · rw [h]
     · simp
@@ -609,11 +651,11 @@ theorem mem_wtSub1 (μ : Ix p q → ℚ) (P : Pol p q r s) :
   constructor
   · intro h m hm a
     have hc := congrArg (AddMonoidAlgebra.coeff · m) (h a)
-    rw [coeff_fockAct1_diag, coeff_smul, smul_eq_mul] at hc
+    rw [coeff_fockAct1_diag, MvPolynomial.coeff_smul, smul_eq_mul] at hc
     exact_mod_cast mul_right_cancel₀ (MvPolynomial.mem_support_iff.mp hm) hc
   · intro h a
     ext m
-    rw [coeff_fockAct1_diag, coeff_smul, smul_eq_mul]
+    rw [coeff_fockAct1_diag, MvPolynomial.coeff_smul, smul_eq_mul]
     by_cases hm : m ∈ P.support
     · rw [h m hm a]
     · have h0 : AddMonoidAlgebra.coeff P m = 0 := by simpa [MvPolynomial.mem_support_iff] using hm
@@ -626,11 +668,11 @@ theorem mem_wtSub2 (μ : Ix r s → ℚ) (P : Pol p q r s) :
   constructor
   · intro h m hm c
     have hc := congrArg (AddMonoidAlgebra.coeff · m) (h c)
-    rw [coeff_fockAct2_diag, coeff_smul, smul_eq_mul] at hc
+    rw [coeff_fockAct2_diag, MvPolynomial.coeff_smul, smul_eq_mul] at hc
     exact_mod_cast mul_right_cancel₀ (MvPolynomial.mem_support_iff.mp hm) hc
   · intro h c
     ext m
-    rw [coeff_fockAct2_diag, coeff_smul, smul_eq_mul]
+    rw [coeff_fockAct2_diag, MvPolynomial.coeff_smul, smul_eq_mul]
     by_cases hm : m ∈ P.support
     · rw [h m hm c]
     · have h0 : AddMonoidAlgebra.coeff P m = 0 := by simpa [MvPolynomial.mem_support_iff] using hm
@@ -641,7 +683,6 @@ theorem ne_of_posC {n k : ℕ} {a b : Ix n k} (h : posC a b) : a ≠ b := by
   rcases a with i | i <;>
     first
     | exact lt_irrefl i h
-    | simp [FockH1Action.posC] at h
 
 theorem mem_hwSub1 (μ : Ix p q → ℚ) (P : Pol p q r s) :
     P ∈ hwSub (fockAct1 p q r s) μ ↔
@@ -669,15 +710,10 @@ end PI.WFJM
 
 namespace PI.FJM
 
-theorem jointHarmonicsIffLaplacians : FormJ := by
-  exact PI.WFJM.jointHarmonicsIffLaplacians
-theorem leftDiagonalActionFormula : FormWt1 := by
-  exact PI.WFJM.leftDiagonalActionFormula
-theorem rightDiagonalActionFormula : FormWt2 := by
-  exact PI.WFJM.rightDiagonalActionFormula
-theorem leftOffDiagonalActionFormula : FormRaise1 := by
-  exact PI.WFJM.leftOffDiagonalActionFormula
-theorem rightOffDiagonalActionFormula : FormRaise2 := by
-  exact PI.WFJM.rightOffDiagonalActionFormula
+alias jointHarmonicsIffLaplacians := _root_.PI.WFJM.jointHarmonicsIffLaplacians
+alias leftDiagonalActionFormula := _root_.PI.WFJM.leftDiagonalActionFormula
+alias rightDiagonalActionFormula := _root_.PI.WFJM.rightDiagonalActionFormula
+alias leftOffDiagonalActionFormula := _root_.PI.WFJM.leftOffDiagonalActionFormula
+alias rightOffDiagonalActionFormula := _root_.PI.WFJM.rightOffDiagonalActionFormula
 
 end PI.FJM

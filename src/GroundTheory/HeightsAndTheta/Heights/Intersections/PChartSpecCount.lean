@@ -1,9 +1,18 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StChartPrimElt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocAwaySpec
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StChartSpecCount
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.MvPolynomial.CommRing
+public import Mathlib.Algebra.Polynomial.Lifts
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 @[expose] public section
 

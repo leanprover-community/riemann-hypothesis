@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.AdjointFrobeniusPreservesRamified
+public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP
-public import Formalism.LocalToGlobal.Columns.AtTOwedS
+import Formalism.LogVandermondeBounds.FinrankFiberSumZero
 
 @[expose] public section
 

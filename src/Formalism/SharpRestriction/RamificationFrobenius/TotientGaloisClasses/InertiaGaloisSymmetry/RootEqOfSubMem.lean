@@ -1,6 +1,56 @@
 module
 
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcEqOfPowEqOne
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycBasic
+public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
+public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycLift
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,36 +65,7 @@ open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
 
 theorem root_eq_of_sub_mem {S : Type*} [CommRing S] [IsDomain S] (P : Ideal S) [hP : P.IsPrime] {m : ℕ}
     (hm : (m : S) ∉ P) {x y : S} (hx : x ^ m = 1) (hy : y ^ m = 1) (hxy : x - y ∈ P) : x = y := by
-  have hm0 : m ≠ 0 := by
-    rintro rfl
-    exact hm (by simp)
-  have hgeom := geom_sum₂_mul x y m
-  rw [hx, hy, sub_self] at hgeom
-  rcases mul_eq_zero.1 hgeom with hG | hG
-  · exfalso
-    have hq : Ideal.Quotient.mk P x = Ideal.Quotient.mk P y := Ideal.Quotient.eq.2 hxy
-    have h1 := congrArg (Ideal.Quotient.mk P) hG
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero] at h1
-    simp only [map_mul, map_pow, hq] at h1
-    have h2 : ∀ i ∈ Finset.range m, (Ideal.Quotient.mk P y) ^ i * (Ideal.Quotient.mk P y) ^ (m - 1 - i) =
-        (Ideal.Quotient.mk P y) ^ (m - 1) := by
-      intro i hi
-      rw [← pow_add]
-      congr 1
-      rw [Finset.mem_range] at hi
-      omega
-    rw [Finset.sum_congr rfl h2, Finset.sum_const, Finset.card_range, nsmul_eq_mul] at h1
-    rcases mul_eq_zero.1 h1 with h3 | h3
-    · apply hm
-      rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
-      exact h3
-    · have h4 : (Ideal.Quotient.mk P y) ^ m = 1 := by rw [← map_pow, hy, map_one]
-      have h5 : (Ideal.Quotient.mk P y) ^ m = 0 := by
-        rw [show m = m - 1 + 1 by omega, pow_succ, h3, zero_mul]
-      rw [h4] at h5
-      exact one_ne_zero h5
-  · exact sub_eq_zero.1 hG
+  apply (config := { allowSynthFailures := true }) Formalism.HC.Der.kc_eq_of_pow_eq_one <;> assumption
 
 theorem val_modEq_iff {M N : ℕ} [NeZero N] (h : M ∣ N) (u : (ZMod N)ˣ) (x : ℕ) :
     (u : ZMod N).val ≡ x [MOD M] ↔ ((ZMod.unitsMap h u : (ZMod M)ˣ) : ZMod M) = (x : ZMod M) := by
@@ -101,7 +122,7 @@ theorem charP_quot : CharP (𝓞 (Cond.Cyc N) ⧸ Q) l := by
   rw [hu, Ideal.mem_span_singleton, Int.natCast_dvd_natCast]
 
 theorem zO_sub_mem_iff (a b : ℕ) : zO N ^ a - zO N ^ b ∈ Q ↔ a ≡ b [MOD ordCompl[l] N] := by
-  haveI := charP_quot N l Q
+  have := charP_quot N l Q
   have hl : l.Prime := Fact.out
   have hN0 : N ≠ 0 := NeZero.ne N
   have hnN : ordProj[l] N * ordCompl[l] N = N := Nat.ordProj_mul_ordCompl_eq_self N l
@@ -173,7 +194,7 @@ theorem tauN_inertia_iff (u : (ZMod N)ˣ) :
       exact Ideal.Quotient.eq.2 h1
 
 theorem tauN_frob (u : (ZMod N)ˣ) (hu : (u : ZMod N).val ≡ l [MOD ordCompl[l] N]) : IsArithFrobAt ℤ (tauN N u) Q := by
-  haveI := charP_quot N l Q
+  have := charP_quot N l Q
   have hcard : Nat.card (ℤ ⧸ Q.under ℤ) = l := by
     rw [← Ideal.LiesOver.over (P := Q) (p := span {(l : ℤ)}),
       Nat.card_congr (Int.quotientSpanNatEquivZMod l).toEquiv, Nat.card_zmod]
@@ -211,8 +232,8 @@ private lemma lift_lemma' (l : ℕ) [Fact l.Prime] (P : Ideal (𝓞 H.E)) [P.IsP
     ∃ Q : Ideal (𝓞 (Cond.Cyc H.condN)), Q.IsPrime ∧ Q.LiesOver (span {(l : ℤ)}) ∧
       Q.comap (RingOfIntegers.mapRingHom (emb H).toRingHom) = P := by
   classical
-  letI : Algebra (𝓞 H.E) (𝓞 (Cond.Cyc H.condN)) := (RingOfIntegers.mapRingHom (emb H).toRingHom).toAlgebra
-  haveI : Algebra.IsIntegral (𝓞 H.E) (𝓞 (Cond.Cyc H.condN)) :=
+  let : Algebra (𝓞 H.E) (𝓞 (Cond.Cyc H.condN)) := (RingOfIntegers.mapRingHom (emb H).toRingHom).toAlgebra
+  have : Algebra.IsIntegral (𝓞 H.E) (𝓞 (Cond.Cyc H.condN)) :=
     ⟨fun y => (RingOfIntegers.isIntegral y).tower_top⟩
   have hinj : Function.Injective (RingOfIntegers.mapRingHom (emb H).toRingHom) := by
     intro x y hxy
@@ -238,8 +259,8 @@ theorem frob_of_modEq (l : ℕ) [Fact l.Prime] (P : Ideal (𝓞 H.E)) [P.IsPrime
     (σ : H.E ≃ₐ[ℚ] H.E) (u : (ZMod H.condN)ˣ) (hu : (u : ZMod H.condN).val ≡ l [MOD ordCompl[l] H.condN])
     (h : H.gal σ = H.art u) : IsArithFrobAt ℤ σ P := by
   obtain ⟨Q, hQp, hQl, hQ⟩ := lift_lemma' H l P
-  haveI := hQp
-  haveI := hQl
+  have := hQp
+  have := hQl
   have hτ := tauN_frob H.condN l Q u hu
   have hact : ∀ x : 𝓞 H.E, RingOfIntegers.mapRingHom (emb H).toRingHom (σ • x) =
       tauN H.condN u • RingOfIntegers.mapRingHom (emb H).toRingHom x := by

@@ -1,12 +1,59 @@
 module
 
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelNonzeroModulusDeterminantEq
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelPropertiesOfHypotheses
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelNonzeroModulusDeterminantEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option maxHeartbeats 400000
+
 
 noncomputable section
 
@@ -31,9 +78,8 @@ theorem psd_add {X : Type} {F : Finset X} {k k' : X → X → ℂ} (hk : IsPSD F
       ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k x y + ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k' x y := by
     simp only [mul_add, Finset.sum_add_distrib]
   rw [this]
-  obtain ⟨h1, h2⟩ := hk a
-  obtain ⟨h3, h4⟩ := hk' a
-  exact ⟨by rw [Complex.add_im, h1, h3, add_zero], by rw [Complex.add_re]; exact add_nonneg h2 h4⟩
+  exact ⟨by rw [Complex.add_im, (hk a).1, (hk' a).1, add_zero],
+    by rw [Complex.add_re]; exact add_nonneg (hk a).2 (hk' a).2⟩
 
 theorem psd_sum {X ι : Type} {F : Finset X} (T : Finset ι) (k : ι → X → X → ℂ)
     (h : ∀ i ∈ T, IsPSD F (k i)) : IsPSD F (fun x y => ∑ i ∈ T, k i x y) := by
@@ -48,28 +94,21 @@ theorem psd_sum {X ι : Type} {F : Finset X} (T : Finset ι) (k : ι → X → X
 theorem psd_scale {X : Type} {F : Finset X} {k : X → X → ℂ} (c : X → ℝ) (hk : IsPSD F k) :
     IsPSD F (fun x y => ((c x * c y : ℝ) : ℂ) * k x y) := by
   intro a
-  have : ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * (((c x * c y : ℝ) : ℂ) * k x y) =
-      ∑ x ∈ F, ∑ y ∈ F, (a x * (c x : ℂ)) * conj (a y * (c y : ℂ)) * k x y :=
-    Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => by
-      rw [map_mul, Complex.conj_ofReal]; push_cast; ring
-  rw [this]; exact hk _
+  simpa only [Complex.ofReal_mul, map_mul, Complex.conj_ofReal, mul_assoc, mul_left_comm,
+    mul_comm] using hk (fun x => a x * (c x : ℂ))
 
 theorem finite_cosets {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
     (Λ : AddSubgroup K) (hΛ : IsOpen (Λ : Set K)) (C : Set K) (hC : IsCompact C) :
     {y : K ⧸ Λ | (Quotient.out y : K) ∈ C}.Finite := by
   have : DiscreteTopology (K ⧸ Λ) := QuotientAddGroup.discreteTopology hΛ
-  have h1 : (((↑) : K → K ⧸ Λ) '' C).Finite :=
-    (hC.image QuotientAddGroup.continuous_mk).finite_of_discrete
-  refine h1.subset ?_
+  refine ((hC.image QuotientAddGroup.continuous_mk).finite_of_discrete).subset ?_
   intro y hy
   exact ⟨Quotient.out y, hy, QuotientAddGroup.out_eq' y⟩
 
 theorem out_sub_mem {K : Type} [CommRing K] (Λ : AddSubgroup K) (z : K) :
     (Quotient.out ((z : K) : K ⧸ Λ) : K) - z ∈ Λ := by
-  have h : ((Quotient.out ((z : K) : K ⧸ Λ) : K) : K ⧸ Λ) = (z : K ⧸ Λ) := QuotientAddGroup.out_eq' _
-  rw [QuotientAddGroup.eq] at h
-  have := Λ.neg_mem h
-  simpa [sub_eq_add_neg, add_comm] using this
+  simpa [sub_eq_add_neg, add_comm] using
+    Λ.neg_mem (QuotientAddGroup.eq.mp (QuotientAddGroup.out_eq' ((z : K) : K ⧸ Λ)))
 
 open Classical in
 theorem uGram_eq_sum {K : Type} [CommRing K] (R : Subring K) (ψ : AddChar K ℂ) (m : ℕ)
@@ -85,10 +124,7 @@ theorem uGram_eq_sum {K : Type} [CommRing K] (R : Subring K) (ψ : AddChar K ℂ
   rw [finsum_eq_sum_of_support_subset (s := T), Finset.sum_filter]
   intro x hx
   by_contra hxT
-  apply hx
-  simp only [Finset.mem_coe] at hxT
-  show (if (cr x : K) ∈ S then Kp R ψ (pt2 h m t (cr x)) (pt2 h' m t' (cr x)) else 0) = 0
-  rw [hT x hxT]; simp
+  exact hx (by simp [hT x (by simpa only [Finset.mem_coe] using hxT)])
 
 theorem cutPSD_main : CutPSD := by
   intro hG hP hM K _ _ _ R ψ hD m cr S F hcr hsz
@@ -316,8 +352,7 @@ theorem intLat_eq_sum {K : Type} [CommRing K] (R : Subring K) (Λ : AddSubgroup 
   · intro y hy
     by_contra hyT
     apply hy
-    simp only [Finset.mem_coe, Set.Finite.mem_toFinset] at hyT
-    exact if_neg hyT
+    exact if_neg (by simpa [Finset.mem_coe, Set.Finite.mem_toFinset] using hyT)
 
 open Classical in
 theorem mean_prod {K : Type} [CommRing K] (hCM : CharMean) (R : Subring K) (ψ : AddChar K ℂ)
@@ -336,8 +371,7 @@ theorem mean_prod {K : Type} [CommRing K] (hCM : CharMean) (R : Subring K) (ψ :
   by_cases hR : a ∈ perp ψ R.toAddSubgroup
   · rw [if_pos hR, mul_one, hCM K ψ R.toAddSubgroup L₂ A le₂ hA a hR]
   · rw [if_neg hR, mul_zero, if_neg]
-    intro h2
-    exact hR fun l hl => h2 l (le₂ hl)
+    exact fun h2 => hR (fun l hl => h2 l (le₂ hl))
 
 theorem cutNormEval_main : CutNormEval := by
   intro hCM hPL K _ _ _ R ψ hD hn s F Om Lc D hOc z₁ hz₁ h hh h' hh'
@@ -389,8 +423,8 @@ theorem cutNormEval_main : CutNormEval := by
     rw [Finset.sum_congr rfl fun p _ => Finset.sum_comm, Finset.sum_comm]
     apply Finset.sum_congr rfl
     intro y _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_mul_sum]
+
+    rw [map_sum, Finset.sum_mul_sum]
     simp only [Finset.mul_sum]
   rw [swap]
   have ind : ∀ y ∈ T, c * ∑ p ∈ D.A ×ˢ D.B, ψ (((Quotient.out y : K) - z₁) * (p.1 + p.2)) =
@@ -440,14 +474,14 @@ theorem cutNormEval_main : CutNormEval := by
 
 end PositiveSemidefiniteClosure
 
-theorem averaged_vector_norm_bound : Formalism.FourierDecayAlt.A6.UNormBound := PositiveSemidefiniteClosure.uNormBound_main
+alias averaged_vector_norm_bound := _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.uNormBound_main
 
-theorem cut_posSemidef : Formalism.FourierDecayAlt.A6.CutPSD := PositiveSemidefiniteClosure.cutPSD_main
+alias cut_posSemidef := _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.cutPSD_main
 
-theorem heads_distinct_determinant_orthogonal : Formalism.FourierDecayAlt.A6.UBlock := PositiveSemidefiniteClosure.uBlock_main
+alias heads_distinct_determinant_orthogonal := _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.uBlock_main
 
-theorem averaged_vector_choices_exist : Formalism.FourierDecayAlt.A6.AvgDataExists := PositiveSemidefiniteClosure.avgDataExists_main
+alias averaged_vector_choices_exist := _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.avgDataExists_main
 
-theorem truncated_average_norm_formula : Formalism.FourierDecayAlt.A6.CutNormEval := PositiveSemidefiniteClosure.cutNormEval_main
+alias truncated_average_norm_formula := _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.cutNormEval_main
 
 end Formalism.FourierDecayAlt.P

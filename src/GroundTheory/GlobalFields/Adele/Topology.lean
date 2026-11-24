@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.LocalAtPlace
-public import GroundTheory.GlobalFields.Adele.Approximation
 public import GroundTheory.GlobalFields.IdeleGroups.InfiniteProjInfiniteEmbeddingOfNe
-public import GroundTheory.GlobalFields.IdeleGroups.Restricted
+import GroundTheory.GlobalFields.Adele.Approximation
+public import GroundTheory.GlobalFields.LocalAtPlace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

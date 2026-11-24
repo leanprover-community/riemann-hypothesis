@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Examples
+public import Mathlib.NumberTheory.LocalField.Basic
+import Mathlib.Tactic.TypeStar
+import Mathlib.RingTheory.LaurentSeries
 
 @[expose] public section
 

@@ -1,16 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.Brauer.SkolemNoether
-public import GroundTheory.Brauer.IsBrauerEquivalentIffNonemptyAlgEquiv
-public import GroundTheory.Brauer.TensorSimple
-public import GroundTheory.Brauer.BaseChangeCSA
-public import GroundTheory.Brauer.DoubleCentralizer
-public import GroundTheory.Brauer.Degree
-public import GroundTheory.ProfiniteCohomology.Colimit
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCochainsFHomApply
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import Mathlib.FieldTheory.IsSepClosed
+public import GroundTheory.ProfiniteCohomology.DiscreteModules
+import GroundTheory.ProfiniteCohomology.OpenNormal
+import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
+public import Mathlib.Topology.Algebra.Group.Defs
 
 @[expose] public section
 

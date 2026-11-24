@@ -1,7 +1,58 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.ArithmeticGapBounds.Arith
-public import Mathlib
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -231,7 +282,7 @@ private theorem mem_Kg_one_inf_Kg_two_iff_transpose_dvd_pi_of_dg_two {L : Type} 
     simp only [map_mul]
     by_cases hj0 : j = k0
     · subst hj0
-      simp only [true_or, if_true, or_true, hne.symm, if_false, mul_one, one_mul] at hz
+      simp only [true_or, if_true, or_true, hne.symm, if_false, one_mul] at hz
       apply mul_left_cancel₀ hπ
       linear_combination hz
     · simp only [hj0, hj, or_self, if_false, or_true, if_true, hne.symm, one_mul, mul_one] at hz
@@ -273,7 +324,7 @@ private theorem transvection_mem_Kg_of_same_side {L : Type} [Field L] [NumberFie
     (show Matrix.SpecialLinearGroup (Fin N) L from ⟨Matrix.transvection a b (x : L), Matrix.det_transvection_of_ne a b hab _⟩) ∈ Kg L N π r := by
   refine (mem_Kg_iff_scaled_entries_integral π hπ r _).mpr ?_
   intro p q
-  simp only [Matrix.SpecialLinearGroup.coe_mk]
+  simp only
   refine ⟨Matrix.transvection a b x p q, ?_⟩
   simp only [Matrix.transvection, Matrix.add_apply, Matrix.one_apply, Matrix.single, Matrix.of_apply]
   by_cases hpq : p = q
@@ -283,7 +334,6 @@ private theorem transvection_mem_Kg_of_same_side {L : Type} [Field L] [NumberFie
   · by_cases h : a = p ∧ b = q
     · obtain ⟨rfl, rfl⟩ := h
       simp only [hab, if_false, if_true, and_self, zero_add]
-      push_cast
       by_cases ha : (a : ℕ) < r
       · simp [ha, hr.mp ha, mul_comm]
       · have hb : ¬ (b : ℕ) < r := fun h => ha (hr.mpr h)
@@ -426,8 +476,8 @@ private theorem sl_mul_col_off_diag_zero_of_both {R : Type} [CommRing R] {F : Ty
     (hY : ∀ i, i ≠ k → q ((Y : Matrix (Fin N) (Fin N) R) i k) = 0) :
     ∀ i, i ≠ k → q (((X * Y : Matrix.SpecialLinearGroup (Fin N) R) : Matrix (Fin N) (Fin N) R) i k) = 0 := by
   intro i hi
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, map_sum]
+
+  rw [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, map_sum]
   rw [Finset.sum_eq_single k]
   · rw [map_mul, hX i hi, zero_mul]
   · intro j _ hj
@@ -453,7 +503,7 @@ private theorem exists_col_fixing_mul_entry_ne_zero {R : Type} [CommRing R] {F :
     · intro i hi
       have hki : k ≠ p := fun h => hpk h.symm
       rw [hε]
-      simp [Matrix.transvection, Matrix.one_apply_ne hi, Matrix.single_apply, hki.symm, Ne.symm hki]
+      simp [Matrix.transvection, Matrix.one_apply_ne hi, Ne.symm hki]
     · rw [Matrix.SpecialLinearGroup.coe_mul, hε]
       simp only [Matrix.transvection_mul_apply_same, one_mul, map_add (f := _), hm, zero_add]
       exact hp

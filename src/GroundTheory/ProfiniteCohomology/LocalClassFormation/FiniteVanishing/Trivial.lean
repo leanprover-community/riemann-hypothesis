@@ -1,9 +1,18 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.KummerOpen
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Devissage
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.FieldTheory.IsSepClosed
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.ProfiniteCohomology.CartierDual
+public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Devissage
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.KummerOpen
+import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveSnake
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,6 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CyclicBaseChange.SConjSpaceC
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StrongMultiplicityOne
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RTwist
 
 @[expose] public section
 

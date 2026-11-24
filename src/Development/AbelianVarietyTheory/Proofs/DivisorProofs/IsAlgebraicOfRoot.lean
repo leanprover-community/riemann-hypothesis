@@ -1,18 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LevelOfOfSameBut
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInvOfRoot
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToRatHyp0
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndependentRowsMap
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsKsFormOfAlgebraicFormsIso
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRingEquivComplexCompEq
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistingCharacterAdmissibleGaloisTwistGood
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ToUnitsCompToCircle
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GoodScalarOfIsAdelicScalar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodBaseDataWeightEqLiftCoeffModuleWeight
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndependentRowsMap
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistingCharacterAdmissibleGaloisTwistGood
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRingEquivComplexCompEq
+import Formalism.SharpRestriction.LevelLetterCocycles.CommutingEndomorphismPreservesInvariants
+public import Mathlib.Algebra.AlgebraicCard
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -23,8 +54,8 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries
 open scoped TensorProduct
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.BigOn.Exp.TwConj
@@ -72,8 +103,8 @@ theorem exists_fns (hU : Rl.toRealDat.LUnif) (hW : Rl.toRealDat.models_HW) (hv :
       hLL.map' (YS.fi j).e.toLinearMap (YS.fi j).e.ker
     exact ((hU j (sg0 D A3.A)).1 m _ h1).map' L hL
   · conv_lhs => rw [← bK.sum_repr g]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Submodule.coe_sum, map_sum]
+
+    rw [Submodule.coe_sum, map_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Submodule.coe_smul, ← algebraMap_smul D.what₂.LL, evW_smul, hbK, ← S.kKs_spec]
     rfl
@@ -178,8 +209,8 @@ theorem eq_smul_of_conj (hU : Rl.toRealDat.LUnif) (hW : Rl.toRealDat.models_HW)
   have e1 := Fintype.linearIndependent_iffₛ.1 hφ _ _ h1
   have e2 := Fintype.linearIndependent_iffₛ.1 hφ _ _ h2
   have e3 : ∀ a, ρ'.ek i b k (A a) = c * ν * ν'⁻¹ * ρ'.ek i b k (A' a) := fun a => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← e2, ← hτ _ (Or.inr ⟨a, rfl⟩), e1, map_sum]
+
+    rw [← e2, ← hτ _ (Or.inr ⟨a, rfl⟩), e1, map_sum]
     exact Finset.sum_congr rfl fun l _ => by rw [map_mul, hfix]
   have hinj := (realRd_faithful _ _ _ _ _ _ _ Rl cG S YS v₀ ρ' hρ' i j b ν' hν' hU hW hv hK).injective_rdK hρ' k
   have e4 : rdK (realRd YS v₀ hρ' i j b ν') hρ' k y = (c * ν * ν'⁻¹) • rdK (realRd YS v₀ hρ' i j b ν') hρ' k y' := by

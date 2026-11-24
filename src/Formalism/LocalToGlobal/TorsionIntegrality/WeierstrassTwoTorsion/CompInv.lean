@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.EllipticTorsion.FormalGroupPointsNoTorsion
+public import Mathlib.RingTheory.LaurentSeries
 
 @[expose] public section
 

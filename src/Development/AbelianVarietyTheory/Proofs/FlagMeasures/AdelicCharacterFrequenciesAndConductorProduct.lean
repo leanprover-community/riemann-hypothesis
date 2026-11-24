@@ -1,11 +1,61 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GaugeUnfold
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumPlacesEqTrace
+public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddCharTrivialIntegralFiniteAdeleMul
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EventuallyFinEqOne
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StdCharFinitePartRationalEqExpTrace
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumPlacesEqTrace
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Complex.CoveringMap
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Homotopy.Lifting
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GaugeUnfold
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 
 @[expose] public section
 
@@ -39,8 +89,8 @@ theorem exists_freq {ι : Type} [Fintype ι] (f : (ι → ℝ) → ℂ) (hf : Co
   refine ⟨fun v => (L (Pi.single v 1)).im / (2 * Real.pi), fun y => ?_⟩
   rw [← hG', ← hL]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [pi_eq_sum_univ' y, map_sum]
+
+  conv_lhs => rw [pi_eq_sum_univ' y, map_sum]
   push_cast
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun v _ => ?_
@@ -155,7 +205,7 @@ theorem exists_scaling [IsTotallyReal F] {ψ : AddChar (AF F) ℂ} (h : IsCharAF
       ((∑ w : InfinitePlace F, (w.embedding a).re *
         (InfinitePlace.Completion.extensionEmbedding w (x w)).re : ℝ) : ℂ)) := by
   obtain ⟨lam, hlam⟩ := exists_psiInf_eq h
-  obtain ⟨N, hN, hU⟩ := GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F _ (GlobalTheory.FinTranslate.eventually_fin_eq_one h)
+  obtain ⟨N, hN, hU⟩ := _root_.GlobalTheory.LocalNormBound.main F _ (GlobalTheory.FinTranslate.eventually_fin_eq_one h)
   obtain ⟨a, ha⟩ := exists_eq_embedding lam fun r => by
     have h1 : ψ (pairA F 0 (N • algebraMap F (Af F) (r : F))) = 1 :=
       hU _ ((GlobalTheory.SnMass.Inhab.integral_iff _).2 ⟨r, rfl⟩)

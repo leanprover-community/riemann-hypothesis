@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchNormalisation
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchOffHypersurface
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
 
 @[expose] public section
 

@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.HeckeChar
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureNormOne
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

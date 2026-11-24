@@ -1,9 +1,58 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ThetaQuasiPeriods.Change
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ContinuousRl
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsEventuallyNormRiemannThetaTermLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ContinuousRl
+public import ReciprocityTheory.ThetaQuasiPeriods.Change
+public import ReciprocityTheory.ThetaQuasiPeriods.Transl
 
 @[expose] public section
 
@@ -427,10 +476,6 @@ theorem finrank_thetaLevelChar (hτ : τ ∈ SiegelH ι) (hN : 0 < N) :
       (⟨_, levelTheta_mem hτ hN fun i => ((c i).val : ℤ)⟩ : thetaLevelChar a b N τ) :=
     LinearIndependent.of_comp (thetaLevelChar a b N τ).subtype h
   simpa using h'.fintype_card_le_finrank
-
-theorem finrank_thetaLevel (hτ : τ ∈ SiegelH ι) (hN : 0 < N) :
-    Module.finrank ℂ (thetaLevel N τ) = N ^ Fintype.card ι :=
-  thetaLevelChar_zero N τ ▸ finrank_thetaLevelChar hτ hN
 
 theorem span_levelTheta (hτ : τ ∈ SiegelH ι) (hN : 0 < N) {κ : Type*}
     {r : κ → ι → ℤ} (hr : Function.Bijective fun k i => (r k i : ZMod N)) :

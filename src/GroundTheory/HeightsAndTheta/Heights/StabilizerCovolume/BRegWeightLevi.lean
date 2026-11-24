@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.CpRegPhRegOfNonneg
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PBoundedGlue
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

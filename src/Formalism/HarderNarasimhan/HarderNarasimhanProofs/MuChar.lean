@@ -1,10 +1,54 @@
 module
 
 public import Formalism.HarderNarasimhan.DegSupermodZ
-public import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ExistsSmulMemOfFinrankEq
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.RatioMax
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
+import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -13,13 +57,6 @@ open Module Submodule
 noncomputable section
 
 namespace Formalism.HN
-
-theorem muChar_zl_mono {R V E : Type*} [Ring R] [AddCommGroup V] [Module R V]
-    [NormedAddCommGroup E] [InnerProductSpace ℝ E] (ρ : V →+ E) {A B : Submodule R V}
-    (h : A ≤ B) : zl ρ A ≤ zl ρ B := by
-  intro y hy
-  obtain ⟨x, hx, rfl⟩ : ∃ x ∈ A, ρ x = y := hy
-  exact (⟨x, h hx, rfl⟩ : ∃ x' ∈ B, ρ x' = ρ x)
 
 universe u v w in
 theorem muChar_of (h1 : SatR.{u, v, w}) (h2 : SatBasic.{u, v, w}) (h3 : RatioMax.{u, v, w}) :
@@ -42,7 +79,7 @@ theorem muChar_of (h1 : SatR.{u, v, w}) (h2 : SatBasic.{u, v, w}) (h3 : RatioMax
     simp [Formalism.F.rk]
   obtain ⟨c, hc⟩ := Formalism.F.slopesBdd E (zl ρ L) hdisc
   have hsc : ∀ N : Submodule R V, N ≤ L → N ≠ ⊥ → slope ρ N ≤ c := fun N hN hN0 =>
-    hc ⟨zl ρ N, muChar_zl_mono ρ hN, hzlne N hN hN0, rfl⟩
+    hc ⟨zl ρ N, _root_.Formalism.HN.satBasic_zl_mono ρ hN, hzlne N hN hN0, rfl⟩
   have hdegbd : ∀ N : Submodule R V, N ≤ L → deg ρ N ≤ max c 0 * rk ρ L := by
     intro N hN
     by_cases hN0 : N = ⊥
@@ -127,7 +164,7 @@ theorem muChar_of (h1 : SatR.{u, v, w}) (h2 : SatBasic.{u, v, w}) (h3 : RatioMax
     · intro h N hN
       obtain ⟨N', hNN', hN'L, hzl⟩ := h1 R V E ρ L N hL hN
       obtain ⟨hsat, -, hrkeq⟩ :=
-        Formalism.F.saturProps E (zl ρ L) (zl ρ N) hdisc (muChar_zl_mono ρ hN)
+        Formalism.F.saturProps E (zl ρ L) (zl ρ N) hdisc (_root_.Formalism.HN.satBasic_zl_mono ρ hN)
       have hN'sat : IsSat ρ L N' := ⟨hN'L, by rw [hzl]; exact hsat⟩
       have hrk' : rk ρ N' = rk ρ N := by
         show Formalism.F.rk (zl ρ N') = Formalism.F.rk (zl ρ N)

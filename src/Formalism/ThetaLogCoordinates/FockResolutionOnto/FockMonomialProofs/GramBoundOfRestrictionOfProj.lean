@@ -1,9 +1,54 @@
 module
 
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementC
-public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.PartnerDeterminantHolds
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FiltrationBotHolds
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.RestrictionMinMaxIntHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -15,20 +60,6 @@ section Gen
 
 variable {p : ℕ} [Fact p.Prime] {σ : Type}
 
-private theorem coeff_initPart_eq_ite (v : σ) (e : ℕ) (f : MvPolynomial σ ℚ_[p]) (n : σ →₀ ℕ) :
-    AddMonoidAlgebra.coeff (initPart v e f) n = if n v = e then AddMonoidAlgebra.coeff f n else 0 := by
-  classical
-  unfold initPart
-  rw [coeff_sum]
-  simp only [apply_ite (AddMonoidAlgebra.coeff · n), coeff_monomial, AddMonoidAlgebra.coeff_zero, Pi.zero_apply]
-  rw [Finset.sum_eq_single n]
-  · by_cases h : n v = e <;> simp [h]
-  · intro b _ hb
-    simp [hb]
-  · intro hn
-    have h0 : AddMonoidAlgebra.coeff f n = 0 := by simpa [mem_support_iff] using hn
-    simp [h0]
-
 theorem p_pow_ne_zero (n : ℕ) : ((p : ℚ_[p]) ^ n) ≠ 0 :=
   pow_ne_zero _ (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero)
 
@@ -38,13 +69,13 @@ noncomputable def strip (p : ℕ) [Fact p.Prime] (v : σ) (e : ℕ) :
   map_add' x y := by
     rw [initPart_add]; ext m; simp only [coeff_divMonomial, MvPolynomial.coeff_add]
   map_smul' a x := by
-    rw [initPart_smul]; ext m; simp only [coeff_divMonomial, coeff_smul, RingHom.id_apply]
+    rw [initPart_smul]; ext m; simp only [coeff_divMonomial, MvPolynomial.coeff_smul, RingHom.id_apply]
 
 theorem coeff_strip (v : σ) (e : ℕ) (n : σ →₀ ℕ) (f : MvPolynomial σ ℚ_[p]) :
     AddMonoidAlgebra.coeff (strip p v e f) n = if n v = 0 then AddMonoidAlgebra.coeff f (Finsupp.single v e + n) else 0 := by
   classical
   show AddMonoidAlgebra.coeff ((initPart v e f).divMonomial (Finsupp.single v e)) n = _
-  rw [coeff_divMonomial, coeff_initPart_eq_ite]
+  rw [coeff_divMonomial, _root_.Formalism.GM.MeanGammaLemmas.coeff_initPart]
   by_cases h : n v = 0 <;> simp [h]
 
 theorem strip_monomial_ne (v : σ) (e : ℕ) (m : σ →₀ ℕ) (hm : m v ≠ e) :
@@ -94,14 +125,6 @@ private theorem prod_factorial_single_add_eq_mul (v : σ) (e : ℕ) (m : σ →�
     exact (Finsupp.mem_support_iff.mp hb) hm
   rw [Finsupp.prod_add_index_of_disjoint hdisj, Finsupp.prod_single_index (by simp)]
 
-private theorem fock_eq_sum_coeff_mul_factorial (F G : MvPolynomial σ ℚ_[p]) (S : Finset (σ →₀ ℕ)) (hS : F.support ⊆ S) :
-    fock p F G = ∑ m ∈ S, F.coeff m * G.coeff m * (m.prod fun _ k => (k.factorial : ℚ_[p])) := by
-  unfold fock
-  refine Finset.sum_subset hS ?_
-  intro m _ hm
-  have h0 : F.coeff m = 0 := by simpa [mem_support_iff] using hm
-  rw [h0, zero_mul, zero_mul]
-
 theorem fock_eq_zero_of (F G : MvPolynomial σ ℚ_[p]) (h : ∀ m, AddMonoidAlgebra.coeff F m = 0 ∨ AddMonoidAlgebra.coeff G m = 0) : fock p F G = 0 := by
   unfold fock
   refine Finset.sum_eq_zero fun m _ => ?_
@@ -143,7 +166,7 @@ theorem fock_pow_mul (v : σ) (e : ℕ) (y z : MvPolynomial σ ℚ_[p]) (hy : y 
       refine ⟨m - Finsupp.single v e, mem_support_iff.mpr (by simpa using hm), ?_⟩
       exact add_tsub_cancel_of_le h
     · exact absurd rfl hm
-  rw [fock_eq_sum_coeff_mul_factorial _ _ _ hsub, Finset.sum_image (fun a _ b _ h => add_left_cancel h)]
+  rw [_root_.Formalism.GM.TM.fock_eq_sum _ _ _ hsub, Finset.sum_image (fun a _ b _ h => add_left_cancel h)]
   unfold fock
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun m hm => ?_

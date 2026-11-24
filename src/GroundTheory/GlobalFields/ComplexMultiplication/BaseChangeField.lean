@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeGalois
+public import GroundTheory.GlobalFields.ComplexMultiplication.AutCFixed
+public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDegree
+import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDescent
+import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstantField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

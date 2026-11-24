@@ -1,28 +1,71 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HzUnit
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergCombinationDisjointPlacesCommuteVacuaStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MatrixSupportedAtPlaceOfIsHalfSplitPointStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaConstMul
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntIndFromCols
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceDoubleStepKernelLocalModelsStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AtMostOneHolds
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapBesselToFourierJacobiLocalModelStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatThetaMapsConvergeThetaFunctionsStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsSatisfyFlatLawsFinitePlacesStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumLocalModelFormulaStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegralIndicatorGivesLocalVacuumSplitPlaceStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatContrIntIndicator
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselFourierJacobiNormalFramesExistSplitPlace
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsPreserveSchwartzBruhatAndSurjective
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumTransportSourceRationalIsometry
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatContrIntIndicator
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsUnitarySupportedAtPlaceOfMulEqIdem
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PlacesToAdeles
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapBesselToFourierJacobiLocalModel
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsSatisfyFlatLawsFinitePlacesStatement
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergCombinationDisjointPlacesCommuteVacuaStatement
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntIndFromCols
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCombAt
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegralIndicatorGivesLocalVacuumSplitPlace
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsThetaFunOConstMul
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.T2SpaceMatrixOfIsNonarchimedeanLocalField
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MatrixSupportedAtPlaceOfIsHalfSplitPoint
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceDoubleStepKernelLocalModels
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaConstMul
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumLocalModelFormula
+import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsPreserveSchwartzBruhatAndSurjective
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatThetaMapsConvergeThetaFunctionsStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.T2SpaceMatrixOfIsNonarchimedeanLocalField
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaFunctionProductsSlicesOrthogonalDecompositi
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumTransportSourceRationalIsometry
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -100,8 +143,8 @@ theorem splitLocalPlace_up_wittExtendByZero_rankZero {S S₀ T : HSp D} (d : Hyp
   refine Eq.trans ?_ (congrArg (fun M : Matrix (Fin T.rank) (Fin S.rank) k => M.map p.ι) h4.symm)
   ext i j
   show ((FT.β * x * F₀.γ).map p.ι * (d.q0.map (incA D)) : Matrix _ _ (AE D)) i j = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.map_apply, Matrix.mul_apply, Matrix.mul_apply, map_sum]
+
+  rw [Matrix.map_apply, Matrix.mul_apply, Matrix.mul_apply, map_sum]
   exact Finset.sum_congr rfl fun l _ => iota_mul p _ _
 
 theorem splitLocalPlace_isModel_wittExtendByZero_rankZero (ψ : AddChar (AF D.host.F) ℂ) {S S₀ T : HSp D} (d : HypDec S S₀ 0) (F₀ : GlobalTheory.LocMod.Frame k S₀.rank n)
@@ -168,7 +211,7 @@ theorem lst_theta (hc : c.Is) (j : ℕ) (h : j + 2 * 0 + 2 = D.R.m)
       (GlobalTheory.LastSeeSaw.isThetaFunO_kap (v.τ j h) hτ (c.X (j + 1)) (GlobalTheory.BoxSlice.isThetaFunO_slice_right (c.bes j 0 h).o hΞ u))
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem one_place (hc : c.Is) (hv : v.Is) (G : GLoc v) (j : ℕ) (h : j + 2 * 0 + 2 = D.R.m) (hr : c.Lz.rank = 1)
     (hτ : (v.τ j h)ᴴ * ((c.bes j 0 h).L.gram * v.τ j h) = (-(D.host.xi0 * star D.host.xi0)) • c.Lz.gram)
     (s₁ : StepBF c.ψ (c.B j 0 h) (c.J j 0 h)) (e : WO (c.V (j + 1)) c.T →₀ ℂ) (he : HEq e G.egT) {X₁ X₂}
@@ -180,14 +223,14 @@ theorem one_place (hc : c.Is) (hv : v.Is) (G : GLoc v) (j : ℕ) (h : j + 2 * 0 
   have hs := G.hs
   have hsc : G.sc G.s ≠ 0 := fun h0 => by simpa [h0] using G.sc_unit G.s
   have hreg : (G.S.T (Fin D.R.t)).Regular := Chain.ofType_regular _ _ _ _ _
-  obtain ⟨T₁, hT₁, hX₁⟩ := (GlobalTheory.T.integralIndicator_gives_localVacuum_splitPlace D G.k G.q G.unit _ _ _ _ (G.FY G.s (0 + 1) (by omega)) (G.FY (G.s + 1) 0 rfl) c.ψ G.S.ψ
+  obtain ⟨T₁, hT₁, hX₁⟩ := (_root_.GlobalTheory.LocMod.indicator_vac D G.k G.q G.unit _ _ _ _ (G.FY G.s (0 + 1) (by omega)) (G.FY (G.s + 1) 0 rfl) c.ψ G.S.ψ
     hc.std G.char G.S.cond _ _ (hv.sd G.s (by omega)) (hv.sd (G.s + 1) (by omega)) (G.latY _ _ _) (G.latY _ _ _)).2 X₁ h₁
-  obtain ⟨T₂, hT₂, hX₂⟩ := (GlobalTheory.T.integralIndicator_gives_localVacuum_splitPlace D G.k G.q G.unit _ _ _ _ (G.FY (G.s + 1) 0 rfl) G.FT c.ψ G.S.ψ
+  obtain ⟨T₂, hT₂, hX₂⟩ := (_root_.GlobalTheory.LocMod.indicator_vac D G.k G.q G.unit _ _ _ _ (G.FY (G.s + 1) 0 rfl) G.FT c.ψ G.S.ψ
     hc.std G.char G.S.cond _ _ (hv.sd (G.s + 1) (by omega)) hv.sdT (G.latY _ _ _) G.latT).2 X₂ h₂
   obtain ⟨F₀, hF₀⟩ := ((GlobalTheory.LocMod.normalFrames_exist D G.k (ofSplit G.q) _ 0 (G.sc G.s) hsc).1 (c.B G.s 0 h)
     (G.FX G.s (by omega))).1
   have hjac := G.jac G.s 0 h 0 rfl
-  obtain ⟨U₁, hU₁, hfl⟩ := GlobalTheory.T.flatMap_besselToFourierJacobi_localModel D (GlobalTheory.T.flatThetaMaps_converge_thetaFunctions D) (GlobalTheory.T.flatMapsSatisfyFlatLaws_finitePlaces D) (GlobalTheory.T.weilDatum_localModel_formula D) G.k (ofSplit G.q) G.ν G.unitVol.1
+  obtain ⟨U₁, hU₁, hfl⟩ := _root_.GlobalTheory.FlatBFLoc.flatBF_of_laws D (GlobalTheory.T.flatThetaMaps_converge_thetaFunctions D) (GlobalTheory.T.flatMapsSatisfyFlatLaws_finitePlaces D) (_root_.GlobalTheory.LocOm.omLoc D) G.k (ofSplit G.q) G.ν G.unitVol.1
     c.ψ G.S.ψ G.char 0 (c.B G.s 0 h) (c.J G.s 0 h) s₁ (G.sc G.s) hsc _ _ 0 (G.FX G.s (by omega)) F₀
     (G.FY G.s (0 + 1) (by omega)) (G.FX (G.s + 1) le_rfl) (G.FY (G.s + 1) 0 rfl) hF₀ (G.bes G.s 0 h (0 + 1) (by omega)) hjac T₁ hT₁
   obtain ⟨U₂, hU₂, hres, hext⟩ := splitLocalPlace_isModel_wittExtendByZero_rankZero (ofSplit G.q) c.ψ (c.jac G.s 0 h).d (G.FX (G.s + 1) le_rfl) (G.FY (G.s + 1) 0 rfl)
@@ -227,7 +270,7 @@ theorem one_place (hc : c.Is) (hv : v.Is) (G : GLoc v) (j : ℕ) (h : j + 2 * 0 
       · exact q.elim0
     classical
     simp only [O₂, O₂', Set.indicator_apply, Set.mem_setOf_eq, hx]
-  have key := GlobalTheory.LastTwoSteps.gLast D (GlobalTheory.T.splitPlace_doubleStep_kernel_localModels D) GlobalTheory.SymChain.atMostOne_holds G.k G.ν G.unitVol (ofSplit G.q) G.s D.R.k G.S
+  have key := GlobalTheory.LastTwoSteps.gLast D (_root_.GlobalTheory.LastKerLoc.lastLoc D) GlobalTheory.SymChain.atMostOne_holds G.k G.ν G.unitVol (ofSplit G.q) G.s D.R.k G.S
     (Fin D.R.t) c.ψ hc.std G.char 0 (c.B G.s 0 h) (c.X (G.s + 1)) (c.X (G.s + 1 + 1)) c.T c.Lz (c.oT (G.s + 1 + 1) h) (v.τ G.s h)
     hr hτ (G.sc G.s) G.z₀ hsc (G.tau h) (G.FX G.s (by omega)) F₀ (G.FX (G.s + 1) le_rfl) G.FT G.FM hF₀ G.last
     (G.cg G.s) (G.cg (G.s + 1)) G.cg_pen G.cg_top U₁ U₂ hU₁ hU₂ Ψ₁ Ψ₂ O₁' O₂'
@@ -268,11 +311,11 @@ theorem last_value : ∀ (D : D7) (c : Comm D) (v : VCom c) (n : ℕ) (G : Fin n
   refine ⟨1, one_ne_zero, fun s₁ Ψ₁ Ψ₂ h₁ h₂ => ?_⟩
   obtain ⟨e, he, hE⟩ := hG.eGT j h
   have c₁ : ∀ i, CombAt (· = (G i).q.v) ((G i).eg j) := fun i u hu =>
-    GlobalTheory.T.matrixSupportedAtPlace_of_isHalf_splitPoint D _ (G i).q _ _ u (((G i).eg_is j 0 (by have := (G i).hs; omega)).1 u hu)
+    _root_.GlobalTheory.FinPl.SplitHalfSupp.mxAt_of_isHalf_above D _ (G i).q _ _ u (((G i).eg_is j 0 (by have := (G i).hs; omega)).1 u hu)
   have c₂ : ∀ i, CombAt (· = (G i).q.v) (e i) := fun i => by
     obtain rfl : j = (G i).s := by have := (G i).hs; omega
     rw [eq_of_heq (he i)]
-    exact fun u hu => GlobalTheory.T.matrixSupportedAtPlace_of_isHalf_splitPoint D _ (G i).q _ _ u ((G i).egT_is.1 u hu)
+    exact fun u hu => _root_.GlobalTheory.FinPl.SplitHalfSupp.mxAt_of_isHalf_above D _ (G i).q _ _ u ((G i).egT_is.1 u hu)
   have v₁ := fun i => vac_at hc.std (hv.sd j (by omega)) (hv.sd (j + 1) (by omega)) ((hG.places (G i).q.v).2 ⟨i, rfl⟩) h₁
   have v₂ := fun i => vac_at hc.std (hv.sd (j + 1) (by omega)) hv.sdT ((hG.places (G i).q.v).2 ⟨i, rfl⟩) h₂
   have key : ∀ l : List (Fin n), l.Nodup →

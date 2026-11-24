@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ONLeaves
+public import Mathlib.RepresentationTheory.Coinduced
+public import Mathlib.RepresentationTheory.Irreducible
+import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.Mirabolic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -114,10 +160,6 @@ theorem isCuspidal_iff_twoBlocks {V : Type} [AddCommGroup V] [Module ℂ V] (ρ 
     · simp only [hi, if_false]
       split_ifs <;> omega
 
-theorem not_isCuspidal_trivial (hN : 2 ≤ N) : ¬ IsCuspidal (Representation.trivial ℂ (GL (Fin N) k) ℂ) := by
-  intro h
-  exact one_ne_zero ((isCuspidal_iff_twoBlocks _).mp h 1 one_pos (by omega) (1 : ℂ) fun u _ => by simp)
-
 end Radical
 
 section Generic
@@ -177,32 +219,6 @@ theorem lineRep_isIrreducible {G : Type} [Group G] (χ : G →* ℂ) : (lineRep 
   · rcases hs.eq_bot_or_eq_top W.toSubmodule with h | h
     · exact Or.inl (Subrepresentation.toSubmodule_injective h)
     · exact Or.inr (Subrepresentation.toSubmodule_injective h)
-
-def signGL₂ : GL (Fin 2) (ZMod 2) →* ℂ :=
-  ((Int.castRingHom ℂ).toMonoidHom.comp (Units.coeHom ℤ)).comp
-    (Equiv.Perm.sign.comp (MulAction.toPermHom (GL (Fin 2) (ZMod 2)) (Fin 2 → ZMod 2)))
-
-def transvGL₂ : GL (Fin 2) (ZMod 2) := ⟨!![1, 1; 0, 1], !![1, 1; 0, 1], by decide, by decide⟩
-
-theorem signGL₂_transv : signGL₂ transvGL₂ = -1 := by
-  have h : Equiv.Perm.sign (MulAction.toPerm transvGL₂ : Equiv.Perm (Fin 2 → ZMod 2)) = -1 := by
-    decide
-  simp [signGL₂, h]
-
-theorem signGL₂_cuspidal : (lineRep signGL₂).IsIrreducible ∧ IsCuspidal (lineRep signGL₂) := by
-  refine ⟨lineRep_isIrreducible _, (isCuspidal_iff_twoBlocks _).mpr fun a ha0 ha2 v hv => ?_⟩
-  obtain rfl : a = 1 := by omega
-  have hmem : transvGL₂ ∈ unipRadical (ZMod 2) (twoBlocks 2 1) := by
-    rw [mem_unipRadical]
-    intro i j hij
-    fin_cases i <;> fin_cases j <;> simp_all [twoBlocks, transvGL₂]
-  have h := hv transvGL₂ hmem
-  rw [lineRep_apply, signGL₂_transv] at h
-  funext i
-  have hi := congrFun h i
-  simp only [Pi.smul_apply, smul_eq_mul, neg_one_mul] at hi
-  simp only [Pi.zero_apply]
-  linear_combination (-1 / 2 : ℂ) * hi
 
 end Examples
 

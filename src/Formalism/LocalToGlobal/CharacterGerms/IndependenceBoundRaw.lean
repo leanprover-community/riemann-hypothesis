@@ -1,6 +1,60 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
+import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
+public import Formalism.LocalToGlobal.CharacterGerms.Interface
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+public import Mathlib.Data.Nat.Choose.Dvd
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 
@@ -74,41 +128,9 @@ theorem valuation_nonneg_div {x y : C} (hy : y ≠ 0) (h : V.v y ≤ V.v x) : V.
   have h4 : r ≤ s + r := by exact_mod_cast h
   linarith
 
-private theorem v_natCast_nonneg' (n : ℕ) : 0 ≤ V.v (n : C) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [Nat.cast_succ]
-    refine le_trans (le_min ih ?_) (V.v.map_add _ _)
-    rw [V.v.map_one]
-
 theorem frob2 {a b : C} (ha : V.Ge 0 a) (hb : V.Ge 0 b) :
     V.MM ((a + b) ^ V.l - a ^ V.l - b ^ V.l) := by
-  have hl := V.l_prime
-  obtain ⟨k, hk⟩ : ∃ k, V.l = k + 2 := ⟨V.l - 2, by have := hl.two_le; omega⟩
-  have hl' : (k + 2).Prime := hk ▸ hl
-  have hint : ∀ m n : ℕ, V.Ge 0 (a ^ m * b ^ n) := by
-    intro m n
-    rw [valuation_nonneg_iff, V.v.map_mul, V.v.map_pow, V.v.map_pow]
-    exact add_nonneg (nsmul_nonneg (valuation_nonneg_iff.mp ha) m) (nsmul_nonneg (valuation_nonneg_iff.mp hb) n)
-  have hch : ∀ m ∈ Finset.range (k + 1),
-      V.MM (a ^ (m + 1) * b ^ (k + 2 - (m + 1)) * ((k + 2).choose (m + 1) : C)) := by
-    intro m hm
-    rw [Finset.mem_range] at hm
-    apply mm_mul_int (hint _ _)
-    obtain ⟨t, ht⟩ : (k + 2) ∣ (k + 2).choose (m + 1) := hl'.dvd_choose_self (by omega) (by omega)
-    rw [ht, Nat.cast_mul, ← hk]
-    unfold VF.MM
-    rw [V.v.map_mul, V.v_l]
-    exact lt_of_lt_of_le (by exact_mod_cast one_pos) (le_add_of_nonneg_right (v_natCast_nonneg' t))
-  have hexp : (a + b) ^ V.l - a ^ V.l - b ^ V.l =
-      ∑ m ∈ Finset.range (k + 1), a ^ (m + 1) * b ^ (k + 2 - (m + 1)) * ((k + 2).choose (m + 1) : C) := by
-    rw [hk, add_pow, Finset.sum_range_succ, Finset.sum_range_succ']
-    simp only [pow_zero, one_mul, mul_one, Nat.sub_zero, Nat.choose_zero_right, Nat.choose_self,
-      Nat.cast_one, Nat.sub_self]
-    ring
-  rw [hexp]
-  exact mm_sum hch
+  apply Formalism.L2.FormalSeriesBounds.MaximalIdealCongruence.mm_add_pow <;> assumption
 
 theorem frob_sum {ι : Type*} (s : Finset ι) (f : ι → C) (hf : ∀ i ∈ s, V.Ge 0 (f i)) :
     V.MM ((∑ i ∈ s, f i) ^ V.l - ∑ i ∈ s, f i ^ V.l) := by

@@ -1,10 +1,58 @@
 module
 
-public import Mathlib
 public import Formalism.FrobeniusOrbits.Statement
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.FrobMulInertia
-public import Formalism.TameInertiaTowers.TowerFieldFoundations
+public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
+import Formalism.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
+import Formalism.TameInertiaTowers.TowerFieldFoundations
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Ideal.Int
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -42,8 +90,6 @@ theorem mu_le_ram (p : ℕ) [hp : Fact p.Prime] (Q : Ideal (𝓞 L)) [Q.IsPrime]
     exact Ideal.IsPrime.ne_top ‹_›
   first
     | exact (FiniteMultiplicity.of_not_isUnit hQ hne).le_multiplicity_of_pow_dvd hdvd
-    | exact (multiplicity_finite_of_not_isUnit hQ hne).le_multiplicity_of_pow_dvd hdvd
-    | exact ((pow_dvd_iff_le_multiplicity (FiniteMultiplicity.of_not_isUnit hQ hne)).mp hdvd)
 
 theorem mu_mem_pow (p : ℕ) [hp : Fact p.Prime] (Q : Ideal (𝓞 L)) [Q.IsPrime]
     [Q.LiesOver (span {(p : ℤ)})] (η : L) (hη : IsPrimitiveRoot η p) :
@@ -55,7 +101,6 @@ theorem mu_mem_pow (p : ℕ) [hp : Fact p.Prime] (Q : Ideal (𝓞 L)) [Q.IsPrime
   have hinj : Function.Injective (algebraMap (𝓞 L) L) := by
     first
       | exact FaithfulSMul.algebraMap_injective (𝓞 L) L
-      | exact NumberField.RingOfIntegers.coe_injective
   have hη' : IsPrimitiveRoot η' p := by
     refine ⟨hinj ?_, fun l hl => hη.dvd_of_pow_eq_one l ?_⟩
     · rw [map_pow, hmapη, map_one]
@@ -77,8 +122,6 @@ theorem mu_mem_pow (p : ℕ) [hp : Fact p.Prime] (Q : Ideal (𝓞 L)) [Q.IsPrime
   obtain ⟨μ0, hμ0mem, hμ0Q⟩ : ∃ μ ∈ primitiveRoots p (𝓞 L), 1 - μ ∈ Q := by
     first
       | exact Ideal.IsPrime.prod_mem_iff.mp hmemQ
-      | exact (Ideal.IsPrime.prod_mem_iff_exists_mem ‹Q.IsPrime›).mp hmemQ
-      | exact (Ideal.IsPrime.prod_mem_iff ‹Q.IsPrime›).1 hmemQ
   have hall : ∀ μ ∈ primitiveRoots p (𝓞 L), 1 - μ ∈ Q := by
     intro μ hμ
     have hμ0p : IsPrimitiveRoot μ0 p := (mem_primitiveRoots hp0).mp hμ0mem
@@ -101,7 +144,7 @@ theorem mu_card_le_two {G : Type*} [One G] (f : Gal(L/ℚ) → G) (hinj : Functi
   let g : H → ({1, t} : Set G) := fun ρ => ⟨f ρ, by rcases hH ρ ρ.2 with h | h <;> simp [h]⟩
   have hg : Function.Injective g := fun x y hxy => Subtype.ext (hinj (congrArg Subtype.val hxy))
   calc Nat.card H ≤ Nat.card ({1, t} : Set G) := Nat.card_le_card_of_injective g hg
-    _ = ({1, t} : Set G).ncard := by first | exact Nat.card_coe_set_eq _ | exact Set.Nat.card_coe_set_eq _
+    _ = ({1, t} : Set G).ncard := by first | exact Nat.card_coe_set_eq _
     _ ≤ 2 := (Set.ncard_insert_le 1 {t}).trans (by simp)
 
 variable {e q d : ℕ} {ζ a b : L}
@@ -128,7 +171,6 @@ theorem mu_ram_bound (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (p : �
       have h3 := hinjF heq
       first
         | exact mul_eq_right.mp h3
-        | exact mul_left_eq_self.mp h3
     have hsub : Subsingleton (Q.inertia Gal(L/ℚ)) := by
       constructor
       rintro ⟨ρ, hρ⟩ ⟨ρ', hρ'⟩
@@ -138,7 +180,6 @@ theorem mu_ram_bound (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (p : �
       subst e2
       rfl
     first
-      | exact Nat.card_le_one_iff_subsingleton.mpr hsub
       | exact Finite.card_le_one_iff_subsingleton.mpr hsub
   have tame := Formalism.TwoAdicCyclotomicDecomposition.layerInertiaTame (e + 2) q d (by omega) hqd L ζ a b h
   have two_of : ∀ t : GalL (e + 2), t ^ 2 = 1 →
@@ -196,7 +237,6 @@ theorem mu_no_four (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (y : L)
     have hspec : ζ ^ ((hζ.autToPow ℚ (Galois.tau0 hqd h) : ZMod (2 ^ (e + 2))).val) = Galois.tau0 hqd h ζ := by
       first
         | exact hζ.autToPow_spec ℚ (Galois.tau0 hqd h)
-        | exact hζ.autToPow_spec (Galois.tau0 hqd h)
     rw [← hspec, hau]
     set v := (((-1 : (ZMod (2 ^ (e + 2)))ˣ) : ZMod (2 ^ (e + 2)))).val with hvdef
     have hz : ((v + 1 : ℕ) : ZMod (2 ^ (e + 2))) = 0 := by
@@ -204,9 +244,7 @@ theorem mu_no_four (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (y : L)
       simp
     have hv : 2 ^ (e + 2) ∣ v + 1 := by
       first
-        | exact (ZMod.natCast_zmod_eq_zero_iff_dvd _ _).mp hz
         | exact (ZMod.natCast_eq_zero_iff _ _).mp hz
-        | exact (ZMod.natCast_self_eq_zero_iff _ _).mp hz
     have h1 := (hζ.pow_eq_one_iff_dvd _).mpr hv
     rw [pow_succ] at h1
     exact eq_inv_of_mul_eq_one_left h1

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.RegularLocus
 

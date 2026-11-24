@@ -1,14 +1,53 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingInputs
-public import Formalism.SharpRestriction.LevelLetterCocycles.RamifiedCoefficientChains
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
-public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusIterateUniformizerUnitProducts
 public import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkFilLetter
+import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GoodOf
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HodgeFontaineExactness.OneNotMemFilOne
+public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusIterateUniformizerUnitProducts
+public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkFilLetter
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
 
 @[expose] public section
 
@@ -30,18 +69,8 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     (ρ : Representation LL G V)
 
-theorem filV_succ_le (a : ℤ) : FilV PD (LL := LL) (V := V) (a + 1) ≤ FilV PD (LL := LL) (V := V) a := by
-  have hle : (PD.Fil (a + 1)).restrictScalars Qp ≤ (PD.Fil a).restrictScalars Qp := PD.Fil_anti a
-  have hcomp : AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) ((PD.Fil (a + 1)).restrictScalars Qp).subtype =
-      (AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) ((PD.Fil a).restrictScalars Qp).subtype).comp
-        (AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) (Submodule.inclusion hle)) := by
-    rw [← AlgebraTensorModule.map_comp, LinearMap.id_comp, Submodule.subtype_comp_inclusion]
-  unfold FilV
-  rw [hcomp]
-  exact LinearMap.range_comp_le_range _ _
-
 theorem fildR_succ_le (τ : K →ₐ[Qp] LL) (a : ℤ) : FildR PD ρ τ (a + 1) ≤ FildR PD ρ τ a :=
-  inf_le_inf_left _ (filV_succ_le PD a)
+  inf_le_inf_left _ (_root_.Formalism.MainNotions.N.Pv.LocalLengthBound.rk_filV_succ PD a)
 
 theorem jumps_bdd (τ : K →ₐ[Qp] LL) [FiniteDimensional LL ↥(DdRE PD ρ τ)] :
     ∃ h : ℕ, ∀ a : ℤ, IsJumpV PD ρ τ a → a ≤ h := by
@@ -330,8 +359,8 @@ theorem lin_id {T : LocLat G Qp LL O} (f : W.DD T →ₗ[O] W.DD T)
         (((PD.p : ℕ) : LetA O n) ^ J • w - ∑ y ∈ Finset.range K, ((PD.p : ℕ) : LetA O n) ^ a y • B y) =
       ((PD.p : ℕ) : LetA O n) ^ J • (f w - w) -
         ∑ y ∈ Finset.range K, ((PD.p : ℕ) : LetA O n) ^ a y • (f (B y) - B y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, hf, map_sum]
+
+  rw [map_sub, hf, map_sum]
   simp only [hf, smul_sub, Finset.sum_sub_distrib]
   abel
 
@@ -377,9 +406,9 @@ theorem key_id {T : LocLat G Qp LL O} (σ J K : ℕ) (e : ℕ → ℕ) (he : ∀
       _ = ((PD.p : ℕ) : LetA O n) ^ (σ + (J - e y)) * r y := by
           rw [hrs, pow_add]
           ring
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lO_smul, map_sub, map_sum, φ_lA]
-  simp only [φ_lA, φD_smulA, map_pow, map_natCast]
+
+  rw [lO_smul, map_sub, map_sum, φ_lA]
+  simp only [φD_smulA, map_pow, map_natCast]
   rw [smul_sub, smul_sub, Finset.smul_sum, Finset.smul_sum, smul_smul, smul_smul,
     mul_comm (((PD.p : ℕ) : LetA O n) ^ J), sub_add, sub_right_inj, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun y hy => ?_
@@ -459,8 +488,8 @@ theorem clause5 [IsDomain O] (hA : Formalism.MainNotions.LiftingTheory.CaseA W) 
     rw [hrs' y]; exact W.AΔ.mul_mem (W.AΔ.pow_mem (W.AΔ.natCast_mem _) _) (hrΔ y))
   have hzΔ : ∀ δ ∈ W.DelF, W.γD T δ z = z := by
     intro δ hδ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz', map_sub, map_sum, map_smul]
+
+    rw [hz', map_sub, map_sum, map_smul]
     congr 1
     · rw [← W.φγ_comm, hDL.2 δ hδ]
     · refine Finset.sum_congr rfl fun y _ => ?_
@@ -526,8 +555,8 @@ theorem clause5 [IsDomain O] (hA : Formalism.MainNotions.LiftingTheory.CaseA W) 
       fun x => by rw [γ'_lA, hγφ, ← smul_sub, ← map_sub]
     have eS : ∀ (f : ℕ → W.DD T), W.γ T (∑ y ∈ Finset.range K, f y) - ∑ y ∈ Finset.range K, f y =
         ∑ y ∈ Finset.range K, (W.γ T (f y) - f y) := fun f => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_sub_distrib]
+
+      rw [map_sum, Finset.sum_sub_distrib]
     have e2 : ∀ a b : W.DD T, W.γ T (a + b) - (a + b) = (W.γ T a - a) + (W.γ T b - b) := fun a b => by
       rw [map_add (f := _)]; abel
     rw [e1, hz', key_id σ J K (eY PD.p) hJ w cc r s hrs', e2, eA, eS, hφ]
@@ -591,8 +620,8 @@ theorem clause5 [IsDomain O] (hA : Formalism.MainNotions.LiftingTheory.CaseA W) 
       · refine Submodule.smul_mem _ _ (Submodule.sub_mem _ (Submodule.smul_mem _ _ hw')
           (Submodule.sum_mem _ fun y _ => Submodule.smul_mem _ _ (Submodule.smul_mem _ _ (hcc y).2)))
       · intro δ hδ
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [γ_lA, map_sub, γ_lA, hw'Δ δ hδ, map_sum]
+
+        rw [γ_lA, map_sub, γ_lA, hw'Δ δ hδ, map_sum]
         congr 2
         refine Finset.sum_congr rfl fun y _ => ?_
         rw [γ_lA, γD_smulA, (W.AΔ.pow_mem hR.1 _) δ hδ, (hcc y).1.2 δ hδ]

@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

@@ -1,6 +1,46 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfL
+public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfA
+import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
+import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -58,7 +98,7 @@ theorem framepf_vec_mem (H : Matrix (Fin Bs.r) (Fin Bs.r) (PowerSeries O)) (k : 
   rw [mem_NcS]
   obtain ⟨hN, hΔ⟩ := Bs.mem m
   refine ⟨(W.N T).smul_mem _ hN, fun δ hδ => ?_, ?_⟩
-  · rw [gradNPf_γD_smul, framepf_ι_Δ π' hπ0 hΔπ γ0 _ _ δ hδ, hΔ δ hδ]
+  · rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, framepf_ι_Δ π' hπ0 hΔπ γ0 _ _ δ hδ, hΔ δ hδ]
   · rw [smul_smul, framepf_letE_ι π' (c - 1) hπ0]
 
 include hπ0 hΔπ γ0 in
@@ -108,7 +148,7 @@ theorem framepf_Ψα_toLA (H : Matrix (Fin Bs.r) (Fin Bs.r) (PowerSeries O))
       exact ⟨_, hN, rfl⟩
     · rw [mem_DelS]
       intro δ hδ
-      rw [gradNPf_γD_smul, map_mul, ← W.φγ_comm, hΔ δ hδ, a.2 δ hδ, Formalism.MainNotions.LiftingTheory.wmap_γA_letE]
+      rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, map_mul, ← W.φγ_comm, hΔ δ hδ, a.2 δ hδ, _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent]
     · rw [mem_letS, smul_smul, ← mul_assoc]
       unfold letE
       rw [← Pi.single_mul, mul_one]
@@ -129,7 +169,7 @@ theorem framepf_Lam_cancel {y : W.DD T} (hΔ : ∀ δ ∈ W.DelF, W.γD T δ (E�
   · rw [← sub_eq_zero]
     apply gradNPf_tf W T _ hu'
     have h1 := hΔ δ hδ
-    rw [gradNPf_γD_smul, map_pow, hEΔ δ hδ] at h1
+    rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, map_pow, hEΔ δ hδ] at h1
     rw [smul_sub, h1, sub_self]
   · rw [← sub_eq_zero]
     apply gradNPf_tf W T _ hu'

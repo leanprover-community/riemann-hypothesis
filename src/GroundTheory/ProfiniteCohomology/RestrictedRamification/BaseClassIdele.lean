@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseClass
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSDefs
+import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
+import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSPresentation
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.SPicFinite
+import Mathlib.Data.Finsupp.Pointwise
 
 @[expose] public section
 

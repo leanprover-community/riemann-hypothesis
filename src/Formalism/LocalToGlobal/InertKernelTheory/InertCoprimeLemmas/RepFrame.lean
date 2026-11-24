@@ -1,9 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.FrameLatMap
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.LocalLevelIsKOneAtT
-public import Formalism.LocalToGlobal.InertKernelTheory.StatementJets
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsRep
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepFrame
+public import Formalism.LocalToGlobal.InertKernelTheory.FrameInt
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.LocalLevelIsKOneAtT
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -197,15 +199,15 @@ theorem linFrame_subGen (M : ∀ j, X.Lt j → ∀ v : X.Pl, Matrix (Fin ((X.Pj 
       (Eq.trans (sum4 _ _ _ _ _) ?_)
     refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
     rw [map_mul, ← mAt_mul_left, ← mAt_mul_right]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul]
+
+    simp only [map_sum, map_mul]
   · simp only [if_neg hodd, stdLin, Pi, Qi, Matrix.transpose_apply]
     refine Eq.trans (Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => by rw [map_mul])
       (Eq.trans (sum4' _ _ _ _ _) ?_)
     refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
     rw [map_mul, ← mAt_mul_left, ← mAt_mul_right]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul]
+
+    simp only [map_sum, map_mul]
 
 end Formalism.L2.KerInert.RepFrame
 
@@ -249,8 +251,8 @@ theorem isLin_sum {ι : Type} [Fintype ι] (L : ι → MvPowerSeries σ K) (h : 
     IsLin (∑ i, L i) := by
   choose w hw using h
   refine ⟨fun y => ∑ i, w i y, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hw, map_sum, Finset.sum_mul]
+
+  simp only [hw, map_sum, Finset.sum_mul]
   exact Finset.sum_comm
 
 theorem IsLin.repr {L : MvPowerSeries σ K} (h : IsLin L) :
@@ -375,8 +377,8 @@ theorem cols_of_trace (D : D7) (hT : TraceTau D) {p : ℕ} [Fact p.Prime] (lam :
       = ∑ τ : D.what₂.Tau, lam (embQ D τ Y) := by
         rw [Fintype.sum_prod_type]
         refine Finset.sum_congr rfl fun τ _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [lamB, lamBc, lamC_embT, hY, map_sum, map_mul]
+
+        simp only [lamB, lamBc, lamC_embT, hY, map_sum, map_mul]
         exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
     _ = lam (∑ τ : D.what₂.Tau, embQ D τ Y) := (map_sum lam _ _).symm
     _ = if i = i' then 1 else 0 := by
@@ -436,8 +438,7 @@ theorem frVec_inl_same {j : ℕ} {L0 : X.Lt j} {La' : X.Lt (j + 1)} (φ : Frm X 
     simp
   · simp only [if_neg hs, zOfX, Finset.mul_sum, ← mul_assoc, map_sum, coeff_CC_mul_X]
     obtain ⟨v, r, a, b⟩ := e
-    simp only [Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, if_neg hs, if_false, Finset.sum_const_zero,
-        Sigma.mk.inj_iff, heq_eq_eq, Prod.mk.injEq, true_and]
+    simp only [Sum.inl.injEq, Sigma.mk.inj_iff, heq_eq_eq, Prod.mk.injEq, true_and]
     rw [Finset.sum_eq_single a (fun x _ hx => by simp [hx]) (by simp),
       Finset.sum_eq_single b (fun x _ hx => by simp [hx]) (by simp),
       Finset.sum_eq_single r (fun x _ hx => by simp [hx]) (by simp)]
@@ -460,8 +461,7 @@ theorem frVec_inr_same {j : ℕ} {L0 : X.Lt j} {La' : X.Lt (j + 1)} (φ : Frm X 
   by_cases hs : IsOddPos s
   · simp only [if_pos hs, zOfX, Finset.mul_sum, ← mul_assoc, map_sum, coeff_CC_mul_X]
     obtain ⟨v, r, a, b⟩ := e
-    simp only [Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, if_pos hs, if_false, Finset.sum_const_zero,
-        Sigma.mk.inj_iff, heq_eq_eq, Prod.mk.injEq, true_and]
+    simp only [Sum.inr.injEq, Sigma.mk.inj_iff, heq_eq_eq, Prod.mk.injEq, true_and]
     rw [Finset.sum_eq_single a (fun x _ hx => by simp [hx]) (by simp),
       Finset.sum_eq_single b (fun x _ hx => by simp [hx]) (by simp),
       Finset.sum_eq_single r (fun x _ hx => by simp [hx]) (by simp)]
@@ -754,29 +754,29 @@ variable (σ : MaximalUnramifiedExtension p →+* MaximalUnramifiedExtension p)
 include hσtw hσw hev hconj in
 theorem sigma_fK (e : X.EA j) (i : Fin r) :
     σ (fK X D M φ b ρ twK wK e i) = ∑ k, LB X D b ρ twK e.1 k i * ZX X M φ twK wK e k := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [fK, map_sum, map_mul, sigma_LBc X D b ρ twK σ hσtw hev hconj, sigma_YX X M φ twK wK σ hσtw hσw hev]
+
+  simp only [fK, map_sum, map_mul, sigma_LBc X D b ρ twK σ hσtw hev hconj, sigma_YX X M φ twK wK σ hσtw hσw hev]
   exact Equiv.sum_comp (rotP X e.1) (fun k => LB X D b ρ twK e.1 k i * ZX X M φ twK wK e k)
 
 include hσtw hσw hev hconj in
 theorem sigma_fK' (e : X.EA j) (i : Fin r) :
     σ (fK' X D M φ b ρ twK wK e i) = ∑ k, LB X D b ρ twK e.1 k i * ZX' X M φ twK wK e k := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [fK', map_sum, map_mul, sigma_LBc X D b ρ twK σ hσtw hev hconj, sigma_YX' X M φ twK wK σ hσtw hσw hev]
+
+  simp only [fK', map_sum, map_mul, sigma_LBc X D b ρ twK σ hσtw hev hconj, sigma_YX' X M φ twK wK σ hσtw hσw hev]
   exact Equiv.sum_comp (rotP X e.1) (fun k => LB X D b ρ twK e.1 k i * ZX' X M φ twK wK e k)
 
 include hσtw hσw hev hconj in
 theorem sigma2_fK (e : X.EA j) (i : Fin r) : σ (σ (fK X D M φ b ρ twK wK e i)) = fK X D M φ b ρ twK wK e i := by
   rw [sigma_fK X D M φ b ρ twK wK σ hσtw hσw hev hconj]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, sigma_LB X D b ρ twK σ hσtw hev hconj, sigma_ZX X M φ twK wK σ hσtw hσw hev]
+
+  simp only [map_sum, map_mul, sigma_LB X D b ρ twK σ hσtw hev hconj, sigma_ZX X M φ twK wK σ hσtw hσw hev]
   exact Equiv.sum_comp (rotP X e.1) (fun k => LBc X D b ρ twK e.1 k i * YX X M φ twK wK e k)
 
 include hσtw hσw hev hconj in
 theorem sigma2_fK' (e : X.EA j) (i : Fin r) : σ (σ (fK' X D M φ b ρ twK wK e i)) = fK' X D M φ b ρ twK wK e i := by
   rw [sigma_fK' X D M φ b ρ twK wK σ hσtw hσw hev hconj]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, sigma_LB X D b ρ twK σ hσtw hev hconj, sigma_ZX' X M φ twK wK σ hσtw hσw hev]
+
+  simp only [map_sum, map_mul, sigma_LB X D b ρ twK σ hσtw hev hconj, sigma_ZX' X M φ twK wK σ hσtw hσw hev]
   exact Equiv.sum_comp (rotP X e.1) (fun k => LBc X D b ρ twK e.1 k i * YX' X M φ twK wK e k)
 
 theorem pos_delta_same (v : X.Pl) (k k' : PIx X (j := j) v) :
@@ -891,8 +891,8 @@ theorem dual_fK (hL : LamONB D lam b) (hM : ∀ v, IsUnit (M j L0 v).det) (hM' :
       · simp only [ZX, YX', if_pos hs]
         rw [Fintype.sum_prod_type]
         dsimp only
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [sum2x, map_mul, Matrix.mul_apply, Matrix.mul_apply, map_sum, map_sum]
+
+        rw [sum2x, map_mul, Matrix.mul_apply, Matrix.mul_apply, map_sum, map_sum]
         simp only [map_mul]
       · simp [ZX, hs]
     simp only [key, Gmi_mul_Gm X M φ hM, Gpi_mul_Gp X M φ hM', Matrix.one_apply, Fin.cast_inj]
@@ -902,8 +902,8 @@ theorem dual_fK (hL : LamONB D lam b) (hM : ∀ v, IsUnit (M j L0 v).det) (hM' :
         subst hb
         simp only [if_true, mul_one, map_one, one_mul]
         rw [← Finset.sum_filter]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [← map_mul, ← map_sum]
+
+        simp only [← map_mul, ← map_sum]
         rw [dualT (X.om v) (hev v) 1 (by norm_num) IsOddPos (fun s => Iff.rfl) r0 r1]
         by_cases hr : r0 = r1
         · subst hr; simp
@@ -1064,11 +1064,7 @@ namespace Formalism.L2.KerInert.RepFrame
 open Formalism.MainNotions.FormalGroupSystem
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
-theorem conj_conj (D : D7) (x : D.host.E) : D.host.conj (D.host.conj x) = x := by
-  apply D.host.φ₀.injective
-  show D.host.φ₀ (D.host.conj (D.host.conj x)) = D.host.φ₀ x
-  rw [Formalism.HC.HostAx.conjE_apply, Formalism.HC.HostAx.conjE_apply]
-  simp
+alias conj_conj := _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.CU.conj_conj
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
   (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau)
@@ -1097,7 +1093,7 @@ theorem entry_int {W Qq : Type} [CommRing W] [Field Qq] [Algebra W Qq] {k l : �
   have h2 : A.mulVec (fun y => Gs y c) = Gt.mulVec (fun d => algebraMap W Qq (w d)) := by
     rw [← hw]
     funext i
-    simp only [Finset.sum_apply, Pi.smul_apply, Algebra.smul_def, Matrix.mulVec, dotProduct]
+    simp only [Finset.sum_apply, Algebra.smul_def, Matrix.mulVec, dotProduct]
     exact Finset.sum_congr rfl fun d _ => mul_comm _ _
   rw [h1, h2, Matrix.mulVec_mulVec, hG, Matrix.one_mulVec]
 

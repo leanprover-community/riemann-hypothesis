@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterMemIff
+import Mathlib.Algebra.Order.Sub.Prod
 
 @[expose] public section
 

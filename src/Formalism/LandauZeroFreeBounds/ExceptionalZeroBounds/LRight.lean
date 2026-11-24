@@ -1,8 +1,51 @@
 module
 
 public import Formalism.LandauZeroFreeBounds.NoZeroComplexOf
-public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ZetaInvBound
+public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.NormLogDerivLeLamF
 public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LogDerivRight
+public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ZetaInvBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.Analysis.SumIntegralComparisons
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -28,44 +71,8 @@ theorem inverseBound : LInvBound := by
   intro q _ χ s hs
   have hσ1 : 0 < s.re - 1 := by linarith
   have hshift : ∑' n : ℕ, ((n : ℝ) + 1) ^ (-(s.re - 1) - 1) ≤ s.re / (s.re - 1) := by
-    apply Real.tsum_le_of_sum_range_le
-    · intro n
-      positivity
-    · intro m
-      rcases m with _ | k
-      · simp only [Finset.range_zero, Finset.sum_empty]
-        positivity
-      · rw [Finset.sum_range_succ']
-        have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-        have hanti : AntitoneOn (fun x : ℝ => x ^ (-s.re)) (Set.Icc (1 : ℝ) (1 + k)) := by
-          intro x hx y _ hxy
-          exact Real.rpow_le_rpow_of_nonpos (by linarith [hx.1]) hxy (by linarith)
-        have hsum := hanti.sum_le_integral
-        have hint : ∫ x in (1 : ℝ)..(1 + k), x ^ (-s.re) =
-            ((1 + k : ℝ) ^ (-s.re + 1) - 1 ^ (-s.re + 1)) / (-s.re + 1) := by
-          apply integral_rpow
-          refine Or.inr ⟨by linarith, ?_⟩
-          rw [Set.uIcc_of_le (by linarith)]
-          intro h
-          linarith [h.1]
-        have hpos : 0 ≤ (1 + k : ℝ) ^ (-s.re + 1) := by positivity
-        have hb : ((1 + k : ℝ) ^ (-s.re + 1) - 1 ^ (-s.re + 1)) / (-s.re + 1) ≤ 1 / (s.re - 1) := by
-          rw [Real.one_rpow, show -s.re + 1 = -(s.re - 1) by ring, div_neg, ← neg_div]
-          have hpos' : 0 ≤ (1 + k : ℝ) ^ (-(s.re - 1)) := by positivity
-          gcongr
-          linarith
-        have e : ∑ i ∈ Finset.range k, (((i + 1 : ℕ) : ℝ) + 1) ^ (-(s.re - 1) - 1) =
-            ∑ i ∈ Finset.range k, (fun x : ℝ => x ^ (-s.re)) (1 + ((i + 1 : ℕ) : ℝ)) :=
-          Finset.sum_congr rfl fun i _ => by
-            show (((i + 1 : ℕ) : ℝ) + 1) ^ (-(s.re - 1) - 1) = (1 + ((i + 1 : ℕ) : ℝ)) ^ (-s.re)
-            congr 1 <;> ring
-        rw [e]
-        have e2 : s.re / (s.re - 1) = 1 / (s.re - 1) + 1 := by
-          field_simp
-          ring
-        simp only [Nat.cast_zero, zero_add, Real.one_rpow]
-        rw [hint] at hsum
-        linarith
+    calc _ ≤ 1 + 1 / (s.re - 1) := tsum_rpow_le hσ1
+      _ = s.re / (s.re - 1) := by field_simp; ring
   have hp : -(s.re - 1) - 1 < -1 := by linarith
   have hfun : (fun n : ℕ => ‖term (1 : ℕ → ℂ) s (n + 1)‖) = fun n : ℕ => ((n : ℝ) + 1) ^ (-(s.re - 1) - 1) :=
     funext (norm_term_one_succ s)

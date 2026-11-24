@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+import Mathlib.LinearAlgebra.Eigenspace.Minpoly
+public import Mathlib.Algebra.Polynomial.AlgebraMap
 
 @[expose] public section
 
@@ -18,17 +19,6 @@ theorem goal1 :
           (DFunLike.coe.{max (u_4 + 1) (u_3 + 1), u_3 + 1, u_4 + 1} (Polynomial.aeval.{u_3, u_4} T) p) y)
         (HSMul.hSMul.{u_3, u_4, u_4} (Polynomial.eval.{u_3} a p) y) := by
   intro LL M _ _ _ T a y h p
-  induction p using Polynomial.induction_on with
-  | C c =>
-    simp only [Polynomial.aeval_C, Polynomial.eval_C, Module.algebraMap_end_apply]
-  | add p q hp hq =>
-    simp only [map_add (f := _), LinearMap.add_apply, hp, hq, Polynomial.eval_add, add_smul]
-  | monomial n c ih =>
-    have e : (Polynomial.C c * Polynomial.X ^ (n + 1) : Polynomial LL)
-        = (Polynomial.C c * Polynomial.X ^ n) * Polynomial.X := by ring
-    rw [e, map_mul, Polynomial.aeval_X, Module.End.mul_apply, h, map_smul, ih, smul_smul]
-    congr 1
-    simp only [Polynomial.eval_mul, Polynomial.eval_X]
-    ring
+  exact Module.End.aeval_apply_of_mem_apply_eq_smul h
 
 end Bl.general_b_fact_upper_variant

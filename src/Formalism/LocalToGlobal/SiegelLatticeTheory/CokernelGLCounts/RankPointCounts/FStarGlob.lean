@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarSteps
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.UnipotentFrameFixers
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TermDefPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarGramPair
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarIsomG
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarMinors
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarFrame
 
 @[expose] public section
 
@@ -142,8 +147,8 @@ theorem starGlob (γ : TermDef.Term D u u' F0 what₂) (Z : PairVal.MatR D) (hC 
     rw [← hZ]
     rfl
   have homh : FsLA.om (VS D) F₂.fvec h = g (starOmL f f₁) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [FsLA.om, starOmL, map_sum, map_smul]
+
+    simp only [FsLA.om, starOmL, map_sum, map_smul]
     have e : FsLA.gram (VS D) h F₂.fvec = Z₁ᴴ := hZ3
     rw [e]
     refine Finset.sum_congr rfl fun a _ => ?_

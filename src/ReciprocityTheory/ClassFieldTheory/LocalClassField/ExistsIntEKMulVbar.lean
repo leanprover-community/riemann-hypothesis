@@ -1,13 +1,10 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.NeutralLocalFields.Duality
 public import ReciprocityTheory.GroupCohomology.InfRes
-public import ReciprocityTheory.GroupCohomology.CardLenStatement
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.KbarRepContAction
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.Herbrand
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrDefs
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.QZDefs
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
 
 @[expose] public section
 
@@ -140,13 +137,13 @@ theorem resGK_continuous (h : K ≤ L) : Continuous (resGK h) := by
   intro x hx
   have hx' : x = ∑ i, b.repr ⟨x, hx⟩ i • (b i : PadicAlgCl p) := by
     have := congrArg E.val (b.sum_repr ⟨x, hx⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     exact this.symm
   rw [hx']
   show resGK h σ _ = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Algebra.smul_def, map_mul, AlgEquiv.commutes]
   exact congrArg _ (Set.mem_iInter.1 hσ i)

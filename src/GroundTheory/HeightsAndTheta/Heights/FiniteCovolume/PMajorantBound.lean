@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MajorantInvolutionDiagonalForm
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

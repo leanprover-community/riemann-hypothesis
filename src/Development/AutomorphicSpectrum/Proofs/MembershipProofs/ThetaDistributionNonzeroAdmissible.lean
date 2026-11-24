@@ -1,8 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
+public import GroundTheory.GlobalFields.Adele.Compact
+public import GroundTheory.GlobalFields.Adele.Discrete
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Homotopy.Lifting
+import Mathlib.Topology.Sheaves.Init
+public import GroundTheory.GlobalFields.Adele.Approximation
 
 @[expose] public section
 
@@ -137,8 +187,8 @@ theorem pure_mem {κ : Type} [Fintype κ] (ψ : AddChar (AdeleRing (𝓞 F) F) �
   funext x
   have k1 : x ⬝ᵥ y = a (fun i => e (x i).1) + GroundTheory.Global.finiteAdeleInr ((fun i => (x i).2) ⬝ᵥ fun i => (y i).2) := by
     show _ = (∑ i, _) + _
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sum, ← Finset.sum_add_distrib]
+
+    simp only [dotProduct, map_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     have : GroundTheory.Global.mixedToInfinite F (e (x i).1) = (x i).1 := e.symm_apply_apply _
     rw [this]
@@ -178,7 +228,7 @@ theorem schr_mem_and_thetaSum : ∀ (F : Type) [Field F] [NumberField F] [Locall
     | smul c Φ _ h =>
       convert (schA F κ).smul_mem c h using 1
       funext x
-      simp [schr, mul_comm, mul_left_comm, mul_assoc]
+      simp [schr, mul_comm, mul_left_comm]
   · have h2 : ⅟(2 : AdeleRing (𝓞 F) F) = algebraMap F _ 2⁻¹ := by
       apply invOf_eq_right_inv
       rw [← map_ofNat (algebraMap F (AdeleRing (𝓞 F) F)) 2, ← map_mul, mul_inv_cancel₀ two_ne_zero, map_one]
@@ -186,8 +236,8 @@ theorem schr_mem_and_thetaSum : ∀ (F : Type) [Field F] [NumberField F] [Locall
     rw [← (Equiv.addRight w.1).tsum_eq fun ξ : κ → F => Φ fun i => algebraMap F (AdeleRing (𝓞 F) F) (ξ i)]
     refine tsum_congr fun ξ => ?_
     have := hF (ξ ⬝ᵥ w.2 + 2⁻¹ * (w.1 ⬝ᵥ w.2))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_add (f := _), map_mul, map_sum] at this
+
+    simp only [dotProduct, map_add (f := _), map_mul, map_sum] at this
     simp only [schr, dotProduct, h2]
     rw [this, one_mul]
     congr 1

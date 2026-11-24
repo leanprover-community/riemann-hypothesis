@@ -1,12 +1,60 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HausdorffOfModuleTopologyFiniteDimensional
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExpStar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCyclotomicTowerLevelGeneratorProperties
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.NumberTheory.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.LocalField
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Flat.Equalizer
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -366,23 +414,7 @@ theorem norm_le_of_v_le (P : LocPrime l) (LL : FinExt l) (a b : ℚ_[l])
 
 theorem algebraMap_RW_injective (LL : FinExt l) :
     Function.Injective (algebraMap ↥(OL LL) (RW LL)) := by
-  have hinj : Function.Injective (algebraMap ℤ_[l] ↥(OL LL)) := by
-    intro a b hab
-    have h1 : algebraMap ℚ_[l] ↥LL.1 (a : ℚ_[l]) = algebraMap ℚ_[l] ↥LL.1 (b : ℚ_[l]) :=
-      congrArg Subtype.val hab
-    exact Subtype.ext ((algebraMap ℚ_[l] ↥LL.1).injective h1)
-  haveI : Module.IsTorsionFree ℤ_[l] ↥(OL LL) :=
-    Module.isTorsionFree_iff_algebraMap_injective.2 hinj
-  haveI : Module.Flat ℤ_[l] ↥(OL LL) := by
-    rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout]
-    first
-      | exact Submodule.isTorsionFree_iff_torsion_eq_bot.1 inferInstance
-      | exact Submodule.torsion_eq_bot ..
-      | simp
-  have h : Function.Injective (algebraMap ℤ_[l] (WCb l)) :=
-    (WittVector.map_injective _ (ZMod.castHom_injective (Cb l))).comp
-      (WittVector.equiv l).symm.injective
-  exact Algebra.TensorProduct.includeLeft_injective (R := ℤ_[l]) (S := ℤ_[l]) h
+  apply GlobalTheory.HerrNatural.ol_rw_injective
 
 end Cyc
 

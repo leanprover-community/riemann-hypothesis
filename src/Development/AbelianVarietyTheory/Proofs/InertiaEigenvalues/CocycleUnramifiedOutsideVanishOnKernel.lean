@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.PoitouTateNineTermTransgressionZeroApply
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ContinuousCycMod
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedOfAttached
 public import Formalism.GaloisCohomology.Statement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ContinuousCycMod
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.PoitouTateNineTermTransgressionZeroApply
 
 @[expose] public section
 
@@ -15,32 +60,7 @@ namespace GlobalTheory.UnramCocycle
 theorem conj_mem_ine_of_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     (A : ValuationSubring Ω) (g σ : G F Ω) (hσ : σ ∈ Ine (F := F) (g • A)) :
     g⁻¹ * σ * g ∈ Ine (F := F) A := by
-  rw [mem_Ine] at hσ ⊢
-  obtain ⟨hdec, hval⟩ := hσ
-
-  have hmem : ∀ y : Ω, y ∈ g • A ↔ g⁻¹ y ∈ A := fun y =>
-    ValuationSubring.mem_pointwise_smul_iff_inv_smul_mem
-  have hgg : ∀ y : Ω, g⁻¹ (g y) = y := fun y => by
-    rw [← AlgEquiv.mul_apply, inv_mul_cancel, AlgEquiv.one_apply]
-  refine ⟨?_, fun x hx => ?_⟩
-  · have h' : σ • (g • A) = g • A := hdec
-    show (g⁻¹ * σ * g) • A = A
-    rw [mul_smul, mul_smul, h', inv_smul_smul]
-  · have hx' : (g • A).valuation (g x) ≤ 1 := by
-      rw [ValuationSubring.valuation_le_one_iff, hmem, hgg]
-      exact (ValuationSubring.valuation_le_one_iff A x).1 hx
-    have hy := hval (g x) hx'
-    have e : (g⁻¹ * σ * g) x - x = g⁻¹ (σ (g x) - g x) := by
-      rw [map_sub, hgg, AlgEquiv.mul_apply, AlgEquiv.mul_apply]
-    rw [e]
-    rw [valuation_lt_one_iff'] at hy ⊢
-    obtain ⟨hy1, hy2⟩ := hy
-    refine ⟨(hmem _).1 hy1, ?_⟩
-    rcases hy2 with h0 | h0
-    · left
-      rw [h0, map_zero]
-    · right
-      rwa [← map_inv₀, ← hmem]
+  apply GlobalTheory.TripleUnramified.conj_mem_Ine_of_smul <;> assumption
 
 def kerSub {Γ R M : Type} [Group Γ] [TopologicalSpace Γ] [CommRing R] [AddCommGroup M]
     [Module R M] [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation R Γ M)

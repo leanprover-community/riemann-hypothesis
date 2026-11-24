@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.QuadraticConj
+public import Mathlib.NumberTheory.NumberField.CMField
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,51 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SupportPhiZeroSubset
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,32 +70,28 @@ section lin
 variable {r : ℕ} (T' : ℝ)
 
 theorem hco_add_left (c c' d : Co r) : hco T' (c + c') d = hco T' c d + hco T' c' d := by
-  simp only [hco, Prod.fst_add, Prod.snd_add, Pi.add_apply, map_add (f := _), add_mul, mul_add,
+  simp only [hco, Prod.fst_add, Prod.snd_add, Pi.add_apply, add_mul, mul_add,
     Finset.sum_add_distrib]
   ring
 
 theorem hco_add_right (c d d' : Co r) : hco T' c (d + d') = hco T' c d + hco T' c d' := by
-  simp only [hco, Prod.fst_add, Prod.snd_add, Pi.add_apply, map_add (f := _), add_mul, mul_add,
+  simp only [hco, Prod.fst_add, Prod.snd_add, Pi.add_apply, map_add (f := _), mul_add,
     Finset.sum_add_distrib]
   ring
 
 theorem hco_sub_left (c c' d : Co r) : hco T' (c - c') d = hco T' c d - hco T' c' d := by
-  simp only [hco, Prod.fst_sub, Prod.snd_sub, Pi.sub_apply, map_sub, sub_mul, mul_sub,
+  simp only [hco, Prod.fst_sub, Prod.snd_sub, Pi.sub_apply, sub_mul, mul_sub,
     Finset.sum_sub_distrib]
   ring
 
 theorem hco_sub_right (c d d' : Co r) : hco T' c (d - d') = hco T' c d - hco T' c d' := by
-  simp only [hco, Prod.fst_sub, Prod.snd_sub, Pi.sub_apply, map_sub, sub_mul, mul_sub,
+  simp only [hco, Prod.fst_sub, Prod.snd_sub, Pi.sub_apply, map_sub, mul_sub,
     Finset.sum_sub_distrib]
   ring
 
 theorem hco_smul_left (x : ℂ) (c d : Co r) : hco T' (x • c) d = x * hco T' c d := by
-  simp only [hco, Prod.smul_fst, Prod.smul_snd, Pi.smul_apply, smul_eq_mul]
-  have e1 : ∑ a, x * c.1 a * conj (d.2.1 a) = x * ∑ a, c.1 a * conj (d.2.1 a) := by
-    rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun _ _ => by ring
-  have e2 : ∑ a, x * c.2.1 a * conj (d.1 a) = x * ∑ a, c.2.1 a * conj (d.1 a) := by
-    rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun _ _ => by ring
-  rw [e1, e2]
+  simp only [hco, Prod.smul_fst, Prod.smul_snd, Pi.smul_apply, smul_eq_mul, mul_add, mul_sub,
+    Finset.mul_sum, mul_assoc]
   ring
 
 theorem hco_smul_right (x : ℂ) (c d : Co r) : hco T' c (x • d) = conj x * hco T' c d := by
@@ -77,8 +118,8 @@ theorem hco_sum_right {ι : Type*} (s : Finset ι) (c : Co r) (f : ι → Co r) 
   rw [Finset.sum_insert ha, Finset.sum_insert ha, hco_add_right, ih]
 
 theorem hco_symm (c d : Co r) : hco T' d c = conj (hco T' c d) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hco, map_add (f := _), map_sub, map_mul, map_sum, Complex.conj_conj, Complex.conj_ofReal]
+
+  simp only [hco, map_add (f := _), map_sub, map_mul, map_sum, Complex.conj_conj, Complex.conj_ofReal]
   have e1 : ∑ a, d.1 a * conj (c.2.1 a) = ∑ a, conj (c.2.1 a) * d.1 a :=
     Finset.sum_congr rfl fun _ _ => mul_comm _ _
   have e2 : ∑ a, d.2.1 a * conj (c.1 a) = ∑ a, conj (c.1 a) * d.2.1 a :=
@@ -112,14 +153,14 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
     herm (Hpk k r) (cvec k z' ν' c) (cvec k z' ν' d) = hco (Tz k r z') c d := by
   have hH : ∀ i j, conj (Hpk k r j i) = Hpk k r i j := by
     intro i j
-    simp only [Hpk, Matrix.of_apply]
+    simp only [Hpk]
     split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega | rfl | simp
   have hsym : ∀ v w : Fin (2 * r + k + 1) → ℂ,
       herm (Hpk k r) v w = conj (herm (Hpk k r) w v) := by
     intro v w
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [herm, dotProduct, Matrix.mulVec, Pi.star_apply, map_sum, map_mul, Finset.mul_sum,
-      Finset.sum_mul, Complex.star_def, Complex.conj_conj]
+
+    simp only [herm, dotProduct, Matrix.mulVec, Pi.star_apply, map_sum, map_mul, Finset.mul_sum,
+    Complex.star_def, Complex.conj_conj]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [← hH j i]
@@ -146,7 +187,7 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
     intro p; ext i; simp [Matrix.mulVec, dotProduct, Pi.single_apply]
   have hst : ∀ q : Fin (2 * r + k + 1),
       star (Pi.single q (1 : ℂ) : Fin (2 * r + k + 1) → ℂ) = (Pi.single q (1 : ℂ) : Fin (2 * r + k + 1) → ℂ) := by
-    intro q; ext i; by_cases h : i = q <;> simp [Pi.single_apply, h]
+    intro q; ext i; by_cases h : i = q <;> simp [h]
   have hsing : ∀ p q : Fin (2 * r + k + 1),
       herm (Hpk k r) (Pi.single p 1) (Pi.single q 1) = Hpk k r q p := by
     intro p q; simp only [herm, hmv, hst]; simp [dotProduct, Pi.single_apply]
@@ -158,8 +199,8 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
     by_cases hi : i.val < r ∨ r + k < i.val
     · rw [hw i hi]; simp
     · have h0 : Hpk k r i p = 0 := by
-        simp only [Hpk, Matrix.of_apply]
-        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega | rfl | simp
+        simp only [Hpk]
+        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
       rw [h0, mul_zero]
   have hpw' : ∀ (p : Fin (2 * r + k + 1)) (w : Fin (2 * r + k + 1) → ℂ), (p.val < r ∨ r + k < p.val) →
       inWb k r w → herm (Hpk k r) w (Pi.single p 1) = 0 := by
@@ -169,20 +210,20 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
     fun a => rfl
   have hee : ∀ a b : Fin r, herm (Hpk k r) (ee k r a) (ee k r b) = 0 := by
     intro a b; rw [hEe, hEe, hsing]; have := a.isLt; have := b.isLt
-    simp only [Hpk, Matrix.of_apply]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega | rfl | simp
+    simp only [Hpk]
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
   have hss : ∀ a b : Fin r, herm (Hpk k r) (es k r a) (es k r b) = 0 := by
     intro a b; rw [hEs, hEs, hsing]; have := a.isLt; have := b.isLt
-    simp only [Hpk, Matrix.of_apply]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega | rfl | simp
+    simp only [Hpk]
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
   have hes : ∀ a b : Fin r, herm (Hpk k r) (ee k r a) (es k r b) = if a = b then 1 else 0 := by
     intro a b; rw [hEe, hEs, hsing]; have := a.isLt; have := b.isLt
-    simp only [Hpk, Matrix.of_apply]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega | rfl | simp
+    simp only [Hpk]
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
   have hse : ∀ a b : Fin r, herm (Hpk k r) (es k r a) (ee k r b) = if a = b then 1 else 0 := by
     intro a b; rw [hEs, hEe, hsing]; have := a.isLt; have := b.isLt
-    simp only [Hpk, Matrix.of_apply]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega | rfl | simp
+    simp only [Hpk]
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
   have hez : ∀ (a : Fin r) (w : Fin (2 * r + k + 1) → ℂ), inWb k r w →
       herm (Hpk k r) (ee k r a) w = 0 ∧ herm (Hpk k r) w (ee k r a) = 0 ∧
         herm (Hpk k r) (es k r a) w = 0 ∧ herm (Hpk k r) w (es k r a) = 0 := by
@@ -206,8 +247,8 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
   obtain ⟨tz, htz⟩ : ∃ t : ℝ, herm (Hpk k r) z' z' = t :=
     ⟨(herm (Hpk k r) z' z').re, (Complex.conj_eq_iff_re.mp (hsym z' z').symm).symm⟩
   simp only [cvec, a1, a2, s1, s2, m1, m2, hee, hss, hes, hse, hz1, hz2, hz3, hz4, hn1, hn2, hn3, hn4,
-    hzν, hνz, hνν, htz, mul_zero, zero_mul, Finset.sum_const_zero, add_zero, zero_add, mul_one, mul_ite,
-    ite_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    hzν, hνz, hνν, htz, mul_zero, Finset.sum_const_zero, add_zero, zero_add, mul_one, mul_ite,
+    Finset.sum_ite_eq, Finset.mem_univ, if_true]
   simp only [hco, Tz, htz, Complex.ofReal_re, Complex.ofReal_neg]
   ring
 

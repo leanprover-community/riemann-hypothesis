@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
-public import Formalism.HermitianCurvature.StatementJCT
+public import Formalism.HermitianCurvature.StatementMA
 
 @[expose] public section
 

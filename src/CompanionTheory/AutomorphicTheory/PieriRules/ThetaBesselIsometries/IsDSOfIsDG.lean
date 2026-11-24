@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.Imports
-public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.ImportsBisTer
+public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 
 @[expose] public section
 

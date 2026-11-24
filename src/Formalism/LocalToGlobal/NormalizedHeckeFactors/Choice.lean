@@ -1,10 +1,8 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.TwGood
-public import Formalism.SharpRestriction.LevelLetterCocycles.CommutingEndomorphismPreservesInvariants
-public import Formalism.LocalToGlobal.UnitaryNorms.LeastSplitAuxiliaryPrimeThetaChainSpec
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.WittCoreInclusionMulVecMemLatticeCompletionAtPla
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsGoodPlacesEveryConjugate
+public import Formalism.SharpRestriction.Divisibility.AbsolutelyIrreducibleSpan
+public import Formalism.LocalToGlobal.UnitaryNorms.LeastSplitAuxiliaryPrimeThetaChainSpec
 
 @[expose] public section
 

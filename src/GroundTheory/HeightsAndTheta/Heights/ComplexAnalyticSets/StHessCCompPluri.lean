@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ComplexHessianIsHermitianOfContDiffAt
 
 @[expose] public section
 

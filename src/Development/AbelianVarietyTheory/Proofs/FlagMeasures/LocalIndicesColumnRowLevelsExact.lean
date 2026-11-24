@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.LogVandermondeBounds.LogVandermondeProofs.CardStabilizerVector
 
 @[expose] public section
 
@@ -80,20 +122,6 @@ private theorem card_pattern_GL_eq_card_pow {F : Type} [Field F] [Fintype F] {n 
   rw [Nat.card_congr (e1.trans e2)]
   exact Nat.card_fun
 
-private theorem card_lt_pairs_eq_choose_two (k : ℕ) :
-    Nat.card {p : Fin k × Fin k // p.1 < p.2} = k * (k - 1) / 2 := by
-  classical
-  have h : ∀ j : Fin k, (∑ i : Fin k, if i < j then 1 else 0) = (j : ℕ) := by
-    intro j
-    rw [← Finset.card_filter, ← Fin.card_Iio j]
-    congr 1
-    ext i
-    simp
-  rw [Nat.card_eq_fintype_card, Fintype.card_subtype, Finset.card_filter, Fintype.sum_prod_type]
-  simp only
-  rw [Finset.sum_comm, Finset.sum_congr rfl (fun j _ => h j), Fin.sum_univ_eq_sum_range (fun i => i) k,
-    Finset.sum_range_id]
-
 private theorem blk_mono' (s k : ℕ) {a b : ℕ} (hab : a ≤ b) : StandardLattice.blk s k a ≤ StandardLattice.blk s k b := by
   unfold StandardLattice.blk
   split_ifs <;> omega
@@ -145,7 +173,7 @@ private theorem card_not_excluded_pairs_eq (s k : ℕ) :
     (s := Finset.univ.filter (fun p : Fin (k + 2 * s + 1) × Fin (k + 2 * s + 1) => p.1 < p.2))
     (fun p => p.2.val = s + k ∧ StandardLattice.blk s k p.1.val = s)
   rw [Finset.filter_filter, Finset.filter_filter] at hsplit
-  have hall := card_lt_pairs_eq_choose_two (k + 2 * s + 1)
+  have hall := _root_.Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs (k + 2 * s + 1)
   have hex := card_excluded_pairs_eq_k s k
   rw [Nat.card_eq_fintype_card, Fintype.card_subtype] at hall hex ⊢
   rw [hex, hall] at hsplit
@@ -182,7 +210,7 @@ theorem idxColLoc_idxRowLoc_exact : ∀ (D : D7) (i : Fin 2), StandardLattice.id
           exact ⟨h2, fun a b hab hlt => h1 a b (lt_of_le_of_ne (not_lt.mp hlt) (Ne.symm hab))⟩
         · rintro ⟨h1, h2⟩
           exact ⟨fun a b hba => h2 a b (ne_of_gt hba) (not_lt.mpr hba.le), h1⟩)
-    rw [card_lt_pairs_eq_choose_two, Nat.card_zmod] at hcard
+    rw [_root_.Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs, Nat.card_zmod] at hcard
     unfold StandardLattice.idxColLoc StandardLattice.idxLoc
     rw [hcard, natCard_GL_zmod_real _ _ hg, prod_pow_sub_pow_eq_mul_prod_Icc, Nat.cast_pow,
       mul_div_cancel_left₀ _ (pow_ne_zero _ hpos.ne')]

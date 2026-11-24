@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.Linear
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.WeilDivisorSheaf
+public import Mathlib.AlgebraicGeometry.FunctionField
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

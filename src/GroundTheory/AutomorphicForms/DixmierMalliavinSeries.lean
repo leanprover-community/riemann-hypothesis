@@ -1,8 +1,17 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.RealGroupsLie
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
 public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+public import Mathlib.Analysis.Calculus.SmoothSeries
+public import Mathlib.Geometry.Manifold.ContMDiff.Atlas
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 
 @[expose] public section
 

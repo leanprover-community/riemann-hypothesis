@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MeanSquareHypWIff
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.GenericFramesLetters
+public import Formalism.GL3MeanSquares.SecondEstimateOfIntervalHypothesis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.NumberTheory.Primorial
 
 @[expose] public section
 
@@ -117,7 +160,7 @@ lemma dA_sum_vM_le (N : ℕ) : ∑ n ∈ Icc 1 N, vonMangoldt n ≤ dA_KC * N :=
   intro N ih
   rcases Nat.eq_zero_or_pos N with h0 | hpos
   · subst h0
-    simp [Finset.Icc_eq_empty_of_lt (show (0:ℕ) < 1 by norm_num)]
+    simp
   have hN2 : N / 2 < N := Nat.div_lt_self hpos (by norm_num)
   have ih2 := ih (N / 2) hN2
   have hcast : ((N / 2 : ℕ) : ℝ) ≤ (N : ℝ) / 2 := Nat.cast_div_le
@@ -134,7 +177,7 @@ lemma dA_vM_major (g : ℕ → ℝ) (hg0 : ∀ n, 0 ≤ g n) (hg : ∀ n, 1 ≤ 
       ≤ dA_KC * ((∑ n ∈ Icc 1 M, g n) - (M : ℝ) * g M) := by
     intro M
     induction M with
-    | zero => simp [Finset.Icc_eq_empty_of_lt (show (0:ℕ) < 1 by norm_num)]
+    | zero => simp
     | succ M ih =>
       rw [Finset.sum_Icc_succ_top (show 1 ≤ M + 1 by omega),
         Finset.sum_Icc_succ_top (show 1 ≤ M + 1 by omega),
@@ -143,7 +186,7 @@ lemma dA_vM_major (g : ℕ → ℝ) (hg0 : ∀ n, 0 ≤ g n) (hg : ∀ n, 1 ≤ 
           ≤ dA_KC * M * (g M - g (M + 1)) := by
         rcases Nat.eq_zero_or_pos M with h | h
         · subst h
-          simp [Finset.Icc_eq_empty_of_lt (show (0:ℕ) < 1 by norm_num)]
+          simp
         · exact mul_le_mul_of_nonneg_right (dA_sum_vM_le M) (by linarith [hg M h])
       push_cast
       linarith
@@ -153,24 +196,7 @@ lemma dA_vM_major (g : ℕ → ℝ) (hg0 : ∀ n, 0 ≤ g n) (hg : ∀ n, 1 ≤ 
   linarith
 
 lemma dA_sum_inv_le (N : ℕ) (hN : 1 ≤ N) : ∑ n ∈ Icc 1 N, (1 : ℝ) / n ≤ 1 + Real.log N := by
-  induction N with
-  | zero => omega
-  | succ M ih =>
-    rcases Nat.eq_zero_or_pos M with h | h
-    · subst h
-      simp
-    · rw [Finset.sum_Icc_succ_top (show 1 ≤ M + 1 by omega)]
-      have ih' := ih (by omega)
-      have hM : (0:ℝ) < M := Nat.cast_pos.mpr h
-      have hM1 : (M:ℝ) + 1 ≠ 0 := by positivity
-      have hlog : Real.log ((M:ℝ) / ((M:ℝ) + 1)) ≤ (M:ℝ) / ((M:ℝ) + 1) - 1 :=
-        Real.log_le_sub_one_of_pos (by positivity)
-      rw [Real.log_div hM.ne' hM1] at hlog
-      have e : (M:ℝ) / ((M:ℝ) + 1) - 1 = -(1 / ((M:ℝ) + 1)) := by
-        rw [div_sub_one hM1]
-        ring
-      push_cast
-      linarith
+  apply Formalism.MainNotions.UnusedSlot33.PrimeReciprocalSums.sum_inv_le <;> assumption
 
 lemma dA_sum_split (u : ℕ → ℝ) (hu : ∀ n, 0 ≤ u n) (hu1 : ∀ n, u n ≤ 1) (T : ℕ) (B : ℝ)
     (hB : ∀ M, T ≤ M → ∑ n ∈ Ioc T M, u n ≤ B) (M : ℕ) : ∑ n ∈ Icc 1 M, u n ≤ T + B := by

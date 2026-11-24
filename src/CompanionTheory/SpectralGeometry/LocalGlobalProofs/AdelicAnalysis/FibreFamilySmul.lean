@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section

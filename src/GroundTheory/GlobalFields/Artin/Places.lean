@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.Artin.LogCharpoly
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

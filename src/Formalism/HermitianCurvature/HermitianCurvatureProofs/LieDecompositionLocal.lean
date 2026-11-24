@@ -2,6 +2,56 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliWordSumExpansion
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,9 +73,7 @@ theorem rdV_eq_fderiv {Φ Φ' : Mat k r → E} {U : Set (Mat k r)} {m : ℕ∞} 
     (he : ∀ x ∈ U, x ∈ GV k r → Φ x = Φ' x) (hX : inLie k r X) :
     RdV X Φ g = fderiv ℝ Φ' g (g * X) := by
   have hd : DifferentiableAt ℝ Φ' g :=
-    (hc.differentiableOn (by
-      have : m ≠ 0 := by rintro rfl; simp at hm
-      exact_mod_cast this)).differentiableAt (hU.mem_nhds hgU)
+    (hc.differentiableOn (by exact_mod_cast (ne_of_gt (lt_of_lt_of_le (zero_lt_one : (0 : ℕ∞) < 1) hm)))).differentiableAt (hU.mem_nhds hgU)
   exact (hasDerivAt_of_ext hU hgU hgG hX hd he).deriv
 
 theorem inLie_comm {X Y : Mat k r} (hX : inLie k r X) (hY : inLie k r Y) : inLie k r (X * Y - Y * X) := by
@@ -117,8 +165,6 @@ theorem hpart2_dec {P Q : Mat k r} (hP : inLie k r P) (hQ : inLie k r Q) :
   simp only [Matrix.smul_apply, Matrix.add_apply, Matrix.neg_apply, smul_eq_mul]
   field_simp
   ring_nf
-  try simp [Complex.I_sq]
-  try ring
 
 theorem dec (Z : Mat k r) : Z = hpart1 (Hpk k r) Z + Complex.I • hpart2 (Hpk k r) Z := by
   unfold hpart1 hpart2
@@ -134,9 +180,8 @@ theorem rdV_fun_add {Φ₁ Φ₂ : Mat k r → E} {g X : Mat k r} (h₁ : Loc 1 
 
 theorem rdV_sub' {Φ : Mat k r → E} {g X Y : Mat k r} (hloc : Loc 1 Φ g) (hgG : g ∈ GV k r)
     (hX : inLie k r X) (hY : inLie k r Y) : RdV (X - Y) Φ g = RdV X Φ g - RdV Y Φ g := by
-  have hY' : inLie k r (((-1 : ℝ) : ℂ) • Y) := B4.inLie_rsmul hY (-1)
   have e : X - Y = X + ((-1 : ℝ) : ℂ) • Y := by simp [sub_eq_add_neg]
-  rw [e, rdV_add hloc hgG hX hY', rdV_rsmul hloc hgG hY]
+  rw [e, rdV_add hloc hgG hX (B4.inLie_rsmul hY (-1)), rdV_rsmul hloc hgG hY]
   simp [sub_eq_add_neg]
 
 theorem loc_add {m : ℕ∞} {Φ₁ Φ₂ : Mat k r → E} {g : Mat k r} (h₁ : Loc m Φ₁ g) (h₂ : Loc m Φ₂ g) (c : ℂ) :
@@ -226,11 +271,9 @@ theorem EZ_rsmul {Φ : Mat k r → E} {g : Mat k r} (hloc : Loc 1 Φ g) (hgG : g
     rw [smul_add, smul_comm (a : ℂ) Complex.I]
   have hP := B4.inLie_rsmul (hermitian_part_mem_lie Z) a
   have hQ := B4.inLie_rsmul (antihermitian_part_mem_lie Z) a
-  have e : EZ ((a : ℂ) • Z) Φ g = RdV ((a : ℂ) • hpart1 (Hpk k r) Z) Φ g +
-      Complex.I • RdV ((a : ℂ) • hpart2 (Hpk k r) Z) Φ g := by
-    unfold EZ; rw [hd, hpart1_dec hP hQ, hpart2_dec hP hQ]
-  rw [e, rdV_rsmul hloc hgG (hermitian_part_mem_lie Z), rdV_rsmul hloc hgG (antihermitian_part_mem_lie Z)]
   unfold EZ
+  rw [hd, hpart1_dec hP hQ, hpart2_dec hP hQ]
+  rw [rdV_rsmul hloc hgG (hermitian_part_mem_lie Z), rdV_rsmul hloc hgG (antihermitian_part_mem_lie Z)]
   rw [← Complex.coe_smul, ← Complex.coe_smul, smul_add, smul_comm (a : ℂ) Complex.I]
 
 theorem EZ_I {Φ : Mat k r → E} {g : Mat k r} (hloc : Loc 1 Φ g) (hgG : g ∈ GV k r) (Z : Mat k r) :
@@ -239,21 +282,16 @@ theorem EZ_I {Φ : Mat k r → E} {g : Mat k r} (hloc : Loc 1 Φ g) (hgG : g ∈
     conv_lhs => rw [dec Z]
     rw [smul_add, smul_smul, Complex.I_mul_I, neg_one_smul]; abel
   have hP := B4.inLie_neg (antihermitian_part_mem_lie Z)
-  have e : EZ (Complex.I • Z) Φ g = RdV (-hpart2 (Hpk k r) Z) Φ g +
-      Complex.I • RdV (hpart1 (Hpk k r) Z) Φ g := by
-    unfold EZ; rw [hd, hpart1_dec hP (hermitian_part_mem_lie Z), hpart2_dec hP (hermitian_part_mem_lie Z)]
   have hneg : RdV (-hpart2 (Hpk k r) Z) Φ g = -RdV (hpart2 (Hpk k r) Z) Φ g := by
-    have := rdV_rsmul hloc hgG (antihermitian_part_mem_lie Z) (-1)
-    simpa using this
-  rw [e, hneg]
+    simpa using rdV_rsmul hloc hgG (antihermitian_part_mem_lie Z) (-1)
   unfold EZ
+  rw [hd, hpart1_dec hP (hermitian_part_mem_lie Z), hpart2_dec hP (hermitian_part_mem_lie Z), hneg]
   rw [smul_add, smul_smul, Complex.I_mul_I, neg_one_smul]; abel
 
 theorem EZ_smul {Φ : Mat k r → E} {g : Mat k r} (hloc : Loc 1 Φ g) (hgG : g ∈ GV k r) (c : ℂ)
     (Z : Mat k r) : EZ (c • Z) Φ g = c • EZ Z Φ g := by
   have hc : c • Z = (c.re : ℂ) • Z + (c.im : ℂ) • (Complex.I • Z) := by
-    conv_lhs => rw [← Complex.re_add_im c]
-    rw [add_smul, mul_smul]
+    conv_lhs => rw [← Complex.re_add_im c, add_smul, mul_smul]
   rw [hc, EZ_add hloc hgG, EZ_rsmul hloc hgG, EZ_rsmul hloc hgG, EZ_I hloc hgG, smul_smul,
     ← add_smul]
   rw [Complex.re_add_im]
@@ -263,10 +301,7 @@ theorem EZ_sum {Φ : Mat k r → E} {g : Mat k r} (hloc : Loc 1 Φ g) (hgG : g �
     EZ (∑ i ∈ s, c i • Z i) Φ g = ∑ i ∈ s, c i • EZ (Z i) Φ g := by
   classical
   induction s using Finset.induction_on with
-  | empty =>
-    simp only [Finset.sum_empty]
-    have := EZ_rsmul hloc hgG 0 (0 : Mat k r)
-    simpa using this
+  | empty => simpa using EZ_rsmul hloc hgG 0 (0 : Mat k r)
   | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha, EZ_add hloc hgG, EZ_smul hloc hgG, ih]
 

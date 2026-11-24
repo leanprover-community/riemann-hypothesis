@@ -1,8 +1,43 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsGaloisCover
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -58,8 +93,8 @@ private theorem Wit.loc {B B' : Type} [CommRing B] [CommRing B'] [Algebra ℂ B]
       fun i => u • KaehlerDifferential.map ℂ ℂ B B' (ω₁ i), fun i => ?_, ?_⟩
     · rw [he]; exact hb i
     · have : ω = u • (algebraMap B B' (c : B) • ω) := by rw [smul_smul, hu, one_smul]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [this, hc'', map_sum, Finset.smul_sum]
+
+      rw [this, hc'', map_sum, Finset.smul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_smul, ← algebraMap_smul B' (b i), smul_comm]
 
@@ -69,18 +104,10 @@ private theorem Wit.equiv {B B' : Type} [CommRing B] [CommRing B'] [Algebra ℂ 
     Wit d e' (fun l => ρ (τ₁ l)) (fun l => ρ (τ₂ l)) A := by
   letI : Algebra B B' := ρ.toAlgHom.toRingHom.toAlgebra
   haveI : IsScalarTower ℂ B B' := .of_algebraMap_eq fun a => (ρ.commutes a).symm
-  haveI : IsLocalization (⊥ : Submonoid B) B' :=
-    { map_units := fun c => by
-        obtain ⟨c, hc'⟩ := c
-        rw [Submonoid.mem_bot] at hc'
-        subst hc'
-        simp
-      surj := fun z => ⟨(ρ.symm z, 1), by
-        change z * ρ 1 = ρ (ρ.symm z)
-        simp⟩
-      exists_of_eq := fun {x y} h => ⟨1, by
-        have : x = y := ρ.injective h
-        rw [this]⟩ }
+  have : IsLocalization (⊥ : Submonoid B) B := IsLocalization.self bot_le
+  have : IsLocalization (⊥ : Submonoid B) B' :=
+    IsLocalization.isLocalization_of_algEquiv (S := B) (⊥ : Submonoid B)
+      { ρ.toRingEquiv with commutes' := fun _ => rfl }
   exact Wit.loc ⊥ e e' he hc h
 
 section Geo
@@ -145,20 +172,12 @@ private theorem isAffineOpen_ι_preimage_iff {X : Scheme.{0}} (O : X.Opens) {U :
     IsAffineOpen (O.ι ⁻¹ᵁ U) ↔ IsAffineOpen U := by
   rw [← Scheme.Hom.isAffineOpen_iff_of_isOpenImmersion O.ι, image_preimage_ι O h]
 
-private theorem isIso_ι_app {X : Scheme.{0}} (O : X.Opens) {U : X.Opens} (h : U ≤ O) : IsIso (O.ι.app U) := by
-  rw [Scheme.Opens.ι_app]
-  have key : ∀ {A B : X.Opens} (f : A ⟶ B), A = B → IsIso (X.presheaf.map f.op) := by
-    rintro A B f rfl
-    rw [Subsingleton.elim f (𝟙 A), op_id, CategoryTheory.Functor.map_id]
-    infer_instance
-  exact key _ (image_preimage_ι O h)
-
 private def appAlg {X : Scheme.{0}} (p : X ⟶ Sp ℂ) (O : X.Opens) {U : X.Opens} (h : U ≤ O) :
     Sec p U ≃ₐ[ℂ] Sec (O.ι ≫ p) (O.ι ⁻¹ᵁ U) :=
   AlgEquiv.ofBijective
     { appSec p (O.ι ≫ p) O.ι U with
       commutes' := fun r => (semiHom_appSec (rfl : O.ι ≫ p = O.ι ≫ p) U).map_algebraMap r }
-    (haveI := isIso_ι_app O h
+    (haveI := O.ι.isIso_app U (by rw [Scheme.Opens.opensRange_ι]; exact h)
      ConcreteCategory.bijective_of_isIso (O.ι.app U))
 
 private theorem le_down {Z₂ Y₂ : Scheme.{0}} (i : Z₂ ⟶ Z) (j : Y₂ ⟶ Y) (c : Y ⟶ Z) (c' : Y₂ ⟶ Z₂) (e : c' ≫ i = j ≫ c)

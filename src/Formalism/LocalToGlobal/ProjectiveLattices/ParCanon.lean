@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
 public import Formalism.LocalToGlobal.ProjectiveLattices.DatumOfRecordSignature
+public import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
+import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 
 @[expose] public section
 

@@ -1,7 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLDefs
+import Aesop.Main
+import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
+import GroundTheory.AutomorphicForms.MeasuresGL
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.TripMem
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnramifiedSameDiagonal.SameCommon
+public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.NatTr0Sum
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PDnDil
+import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -53,8 +56,8 @@ def IsCompMv (T : Forms0 D u) (v : (D.mem u).A.vT) (c c1 : (D.mem u).C.cls 0) (w
     (D.fm u).fv 0 v c1 (T.lv0.pr v c1 x) = g (T.lv0.prk v c ⟨_, hx⟩)
 
 
-set_option maxHeartbeats 8000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem comp_of_moves (T : Forms0 D u) (v : (D.mem u).A.vT) (c : (D.mem u).C.cls 0)
     (g : Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk 0 v c))
     (γ : UJ (sigD D : D.host.E →+* D.host.E) (gramN D 0 (Nat.zero_le _)))

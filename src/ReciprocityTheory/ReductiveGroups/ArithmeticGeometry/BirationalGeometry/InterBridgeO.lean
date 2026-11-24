@@ -1,7 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeJ
-public import ReciprocityTheory.AnalyticForms.AnalyticCharts.NullZero
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 
@@ -23,8 +25,8 @@ theorem eval_smul_of_isHomogeneous {n : ℕ} {c : MvPolynomial (Fin n) ℂ} {m :
     eval (fun i => t * v i) c = t ^ m * eval v c := by
   conv_lhs => rw [c.as_sum]
   conv_rhs => rw [c.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finset.mul_sum, eval_monomial]
+
+  simp only [map_sum, Finset.mul_sum, eval_monomial]
   refine Finset.sum_congr rfl fun d hd => ?_
   have hdeg : ∑ i ∈ d.support, d i = m := by
     have h1 := hc (mem_support_iff.mp hd)

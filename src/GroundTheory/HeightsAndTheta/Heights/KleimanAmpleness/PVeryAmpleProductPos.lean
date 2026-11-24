@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleProductPosSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PointDegreePosSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutComponentSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutMultPosSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistBundleToSubSystem
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

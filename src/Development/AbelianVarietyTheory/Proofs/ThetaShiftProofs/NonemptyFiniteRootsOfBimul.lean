@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.GlActionMemBalFormsOfSemilinear
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.RingTheory.DedekindDomain.Basic
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Module.FinitePresentation
+public import Mathlib.Analysis.SpecialFunctions.Complex.Log
+public import Mathlib.RingTheory.Flat.EquationalCriterion
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -76,8 +123,8 @@ theorem exists_universal_pi {w : O} (hw : w + star w = 1) [Module.Finite O X]
   let e : Fin n → X := fun i => f (Pi.single i 1)
   have he (x : X) : ∑ i, c i x • e i = x := by
     have h1 : f (g x) = x := congr($hfg x)
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_rhs => rw [← h1, pi_eq_sum_univ' (g x), map_sum]
+
+    conv_rhs => rw [← h1, pi_eq_sum_univ' (g x), map_sum]
     simp [c, e]
   let Φ : Bil X (Fin n × Fin n → O) :=
     LinearMap.mk₂ ℤ (fun y x ij => pairForm (c ij.1) (c ij.2) y x)
@@ -91,11 +138,11 @@ theorem exists_universal_pi {w : O} (hw : w + star w = 1) [Module.Finite O X]
   have key (y x : X) : ∑ ij : Fin n × Fin n,
       τ ((w * (c ij.1 y * star (c ij.2 x))) • e ij.1) (e ij.2) = τ (w • y) x := by
     conv_rhs => rw [← he y, ← he x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Fintype.sum_prod_type, Finset.smul_sum, map_sum τ, LinearMap.sum_apply]
+
+    rw [Fintype.sum_prod_type, Finset.smul_sum, map_sum τ, LinearMap.sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [hτ.2.right, smul_smul, smul_smul]
     congr 3

@@ -1,7 +1,59 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AnalyticDeterminants.SingToDiffAlt
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 @[expose] public section
 
@@ -317,8 +369,8 @@ theorem Lr_mX (Q R : Matrix (Fin n) (Fin n) ℂ) :
     rw [CmI, Matrix.mul_smul, Matrix.fromCols_mul_fromBlocks]
     ext a b
     rcases b with b | b
-    · simp only [Matrix.smul_apply, Matrix.fromCols_apply_inl, Matrix.add_apply, Matrix.smul_mul, Matrix.mul_smul,
-        Matrix.one_mul, Matrix.mul_one, Matrix.mul_neg, Matrix.neg_apply, Matrix.sub_apply, smul_eq_mul]
+    · simp only [Matrix.smul_apply, Matrix.fromCols_apply_inl, Matrix.add_apply, Matrix.mul_smul,
+        Matrix.mul_one, Matrix.mul_neg, Matrix.neg_apply, Matrix.sub_apply, smul_eq_mul]
       by_cases hab : a = b
       · subst hab
         simp only [Matrix.one_apply_eq]
@@ -326,7 +378,7 @@ theorem Lr_mX (Q R : Matrix (Fin n) (Fin n) ℂ) :
       · simp only [Matrix.one_apply_ne hab]
         linear_combination (- Q a b) * hI
     · simp only [Matrix.smul_apply, Matrix.fromCols_apply_inr, Matrix.add_apply, Matrix.smul_mul, Matrix.mul_smul,
-        Matrix.one_mul, Matrix.mul_one, smul_eq_mul]
+        Matrix.mul_one, smul_eq_mul]
       by_cases hab : a = b
       · subst hab
         simp only [Matrix.one_apply_eq]
@@ -355,8 +407,8 @@ theorem inverse_first_block_unipotent_formula {x : M2 n} (hx : InG x) (Q R : Mat
     Matrix.fromBlocks_mul_fromRows, Matrix.fromCols_mul_fromRows]
   simp only [u1, u2, Matrix.conjTranspose_add, Matrix.conjTranspose_neg, Matrix.conjTranspose_smul,
     Complex.star_def, Complex.conj_I, Matrix.mul_one, Matrix.mul_zero, add_zero, sub_neg_eq_add, neg_neg,
-    Matrix.add_mul, Matrix.sub_mul, Matrix.mul_add, Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul,
-    Matrix.mul_neg, Matrix.neg_mul, neg_smul, smul_neg]
+    Matrix.add_mul, Matrix.mul_add, Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul,
+    Matrix.mul_neg, Matrix.neg_mul, neg_smul]
   module
 
 end cm

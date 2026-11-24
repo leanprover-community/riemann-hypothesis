@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.CoordinateChangeComp1IntertwinesAction
+public import Formalism.LocalToGlobal.CharacterGerms.ConstantCoeffTripleSubstitution
+public import Formalism.LocalToGlobal.CharacterGerms.ValuationEqPairOfUnitGerm
+public import Formalism.LocalToGlobal.CharacterGerms.ConstantCoeffSinglePointZero
+import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
+public import Formalism.LocalToGlobal.CharacterGerms.TripleSubstSecondCoordinate
 
 @[expose] public section
 

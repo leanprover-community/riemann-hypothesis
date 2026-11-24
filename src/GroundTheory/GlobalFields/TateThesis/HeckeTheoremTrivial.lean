@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremConj
+public import GroundTheory.GlobalFields.TateThesis.EulerFactors
+public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureQuotient
+public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInverse
+public import GroundTheory.GlobalFields.TateThesis.TateTheta
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,51 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
-public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.AntitoneOfAppend
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -142,10 +185,9 @@ lemma psi_eq_prod_superset (R : Type*) [CommRing R] {N n : ℕ} (mu : Fin (N + 1
     (I : ℤ → Finset (Fin n)) (hI : ∀ c, c ∉ colRange mu → I c = ∅) (s : Finset ℤ) (hs : colRange mu ⊆ s) :
     Psi R mu I = ∏ c ∈ s, Kcol R mu c N (I c) := by
   unfold Psi
-  apply Finset.prod_subset hs
-  intro c _ hc
-  rw [kcol_of_notMem R mu c hc, hI c hc]
-  simp [extOne]
+  exact Finset.prod_subset hs fun c _ hc => by
+    rw [kcol_of_notMem R mu c hc, hI c hc]
+    simp [extOne]
 
 lemma plPart_join {N r K : ℕ} (nu : Fin (N + 1) → Fin r → ℤ) (ka : Fin (N + 1) → Fin K → ℤ) :
     plPart (joinPT nu ka) = nu := by
@@ -235,9 +277,8 @@ lemma sat_of_subbasis {O M ι : Type*} [CommRing O] [IsDomain O] [AddCommGroup M
 
 lemma pol_of_smul {O : Type*} [CommRing O] [IsDomain O] {ι : Type*} {n : ℕ} (d : ι → ℕ)
     (f : MvPolynomial (ι × Fin n) O) (a : O) (ha : a ≠ 0) (h : a • f ∈ Pol O n d) : f ∈ Pol O n d := by
-  unfold Pol at h ⊢
-  rw [MvPolynomial.mem_restrictSupport_iff] at h ⊢
-  rwa [MvPolynomial.support_smul_eq ha] at h
+  simpa [Pol, MvPolynomial.mem_restrictSupport_iff,
+    MvPolynomial.support_smul_eq ha] using h
 
 abbrev PIdx {N : ℕ} (r K : ℕ) (LL : Letters (Fin N)) (B : Fin N → ℕ) :=
   {x : ((Fin (N + 1) → Fin r → ℤ) × (ℤ → Finset (Fin r))) × ((Fin (N + 1) → Fin K → ℤ) × (ℤ → Finset (Fin K))) //

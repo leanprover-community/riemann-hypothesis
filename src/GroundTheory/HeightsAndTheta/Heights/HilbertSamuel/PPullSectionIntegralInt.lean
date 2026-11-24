@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogXpow
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullSectionIntegralInt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullSectionIntegral
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Valuation.LocalSubring
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.LengthLocQuotEqZero
 
 @[expose] public section
 
@@ -90,7 +96,7 @@ theorem proof : PullSectionIntegralInt.Statement := by
     intro i
     convert ha i using 1
     ext k
-    simp [Pi.smul_apply, smul_eq_mul, add_mul]
+    simp [add_mul]
   have hg : aeval y (xpow c ((w + 1) • e)) = Mc ^ (w + 1) := by
     simp only [xpow, map_prod, map_pow, aeval_X, Mc, ← Finset.prod_pow]
     refine Finset.prod_congr rfl fun k _ => ?_

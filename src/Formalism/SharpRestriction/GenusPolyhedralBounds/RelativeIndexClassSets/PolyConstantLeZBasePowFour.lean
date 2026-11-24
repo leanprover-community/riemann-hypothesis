@@ -1,16 +1,51 @@
 module
 
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.WeightedPrimeSumBound
-public import Formalism.SharpRestriction.InertJacobiLevels.HostFam
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-public import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.WeightFamilies
-public import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.SubsingletonRankIndicatorIff
-public import Formalism.SharpRestriction.ElevenLe
-public import Formalism.LocalRingCardinality.DataParamsT
-public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
-public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.TwoFmLeRdE
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.CondLam
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FourMulQLeCondN
+public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.TwoFmLeRdE
+import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.EqZeroOfNegEq
+public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -168,7 +203,9 @@ theorem x_le_fr (S : SizesAt L) : L.sc.x ≤ (D.R.f : ℝ) * D.R.r := by
   have h3 := six_le_r D
   have h4 := one_le_n D
   rw [f_eq]
-  nlinarith
+  have h5 : (D.R.n : ℝ) ≤ (2 * (D.R.n : ℝ)) * D.R.r :=
+    le_trans (by linarith) (le_mul_of_one_le_right (by linarith) (by linarith))
+  linarith
 
 theorem fr_le_Z (L : SizeData₂ D) : (D.R.f : ℝ) * D.R.r ≤ zBase L := by
   have hL := one_le_L L
@@ -178,13 +215,13 @@ theorem fr_le_Z (L : SizeData₂ D) : (D.R.f : ℝ) * D.R.r ≤ zBase L := by
 theorem one_le_fr (D : D7) : (1 : ℝ) ≤ (D.R.f : ℝ) * D.R.r := by
   have h1 := two_le_f D
   have h2 := six_le_r D
-  nlinarith
+  exact one_le_mul_of_one_le_of_one_le (by linarith) (by linarith)
 
 theorem L_le_Z (L : SizeData₂ D) : L.sc.L ≤ zBase L := by
   have h1 := one_le_fr D
   have h2 := one_le_L L
   show L.sc.L ≤ (D.R.f : ℝ) * D.R.r * L.sc.L
-  nlinarith
+  exact le_mul_of_one_le_left (by linarith) h1
 
 theorem Z_ge (S : SizesAt L) (hx : (10 : ℝ) ^ 60 ≤ L.sc.x) : (10 : ℝ) ^ 60 ≤ zBase L := le_trans hx (le_trans (x_le_fr S) (fr_le_Z L))
 
@@ -262,10 +299,13 @@ theorem parA_of (P : ParameterChoice' D L) (S : SizesAt L) (hg : ∀ i, Real.log
     have e : (20 : ℝ) * ((D.R.f : ℝ) * D.R.r * L.sc.L) = 20 * D.R.r * ((D.R.f : ℝ) * L.sc.L) := by ring
     show logdE D ≤ _
     rw [e]
-    nlinarith
+    have hmul : 2 * ((D.R.f : ℝ) * L.sc.L) ≤ 20 * (D.R.r : ℝ) * ((D.R.f : ℝ) * L.sc.L) :=
+      mul_le_mul_of_nonneg_right (by linarith) hf
+    have heq : 2 * (D.R.f : ℝ) * L.sc.L = 2 * ((D.R.f : ℝ) * L.sc.L) := by ring
+    linarith
   · exact (logOm_le P).trans (by linarith)
 
-theorem one_le_Z (L : SizeData₂ D) : 1 ≤ zBase L := one_le_mul_of_one_le_of_one_le (one_le_fr D) (one_le_L L)
+alias one_le_Z := _root_.Formalism.MainNotions.WeightFamilies.one_le_zBase
 
 theorem Zpow_le (L : SizeData₂ D) {a n : ℕ} (h : a ≤ n) : zBase L ^ a ≤ zBase L ^ n := pow_le_pow_right₀ (one_le_Z L) h
 
@@ -273,8 +313,8 @@ theorem PO_le (L : SizeData₂ D) : PO D L ≤ 217 * zBase L ^ 2 := by
   have hf : (2 : ℝ) ≤ D.R.f := two_le_f D
   have hr : (6 : ℝ) ≤ D.R.r := six_le_r D
   have hL : 1 ≤ L.sc.L := one_le_L L
-  have hfL : 1 ≤ (D.R.f : ℝ) * L.sc.L := by nlinarith
-  have hrL : 1 ≤ (D.R.r : ℝ) ^ 2 * L.sc.L := by nlinarith
+  have hfL : 1 ≤ (D.R.f : ℝ) * L.sc.L := one_le_mul_of_one_le_of_one_le (by linarith) hL
+  have hrL : 1 ≤ (D.R.r : ℝ) ^ 2 * L.sc.L := one_le_mul_of_one_le_of_one_le (one_le_pow₀ (by linarith)) hL
   have hA : 0 ≤ (D.R.f : ℝ) * (D.R.r : ℝ) ^ 2 * L.sc.L := by positivity
   have hB : 0 ≤ (D.R.f : ℝ) ^ 2 * L.sc.L := by positivity
   have h1 : (D.R.f : ℝ) * (D.R.r : ℝ) ^ 2 * L.sc.L ≤ ((D.R.f : ℝ) * D.R.r * L.sc.L) ^ 2 :=
@@ -450,7 +490,9 @@ theorem polyConstant_le_zBase_pow_four (P : ParameterChoice' D L) (T : ParamsT D
     linarith
   · linarith [nW_le_Z P T hCnW]
   · rw [genusConstant_cast]
-    have : (D.R.r : ℝ) * 2 ≤ (D.R.f : ℝ) * D.R.r := by nlinarith
+    have : (D.R.r : ℝ) * 2 ≤ (D.R.f : ℝ) * D.R.r := by
+      rw [mul_comm]
+      exact mul_le_mul_of_nonneg_right hf (by linarith)
     linarith
   · linarith
   · linarith
@@ -511,9 +553,11 @@ theorem domAt_of (P : ParameterChoice' D L) (T : ParamsT D L P) (S : SizesAt L) 
     simp only [pow_one, pow_zero, mul_one, one_mul] at m1
     have h3 : (3 : ℝ) ≤ zBase L := le_trans (by norm_num) hZ
     have h0 : 0 ≤ zBase L ^ 2 := by positivity
+    have hZ2 : 1 ≤ zBase L ^ 2 := one_le_pow₀ hZ1
+    have hmul : 3 * zBase L ^ 2 ≤ zBase L * zBase L ^ 2 := mul_le_mul_of_nonneg_right h3 h0
     have e : zBase L ^ 3 = zBase L * zBase L ^ 2 := by ring
     rw [e]
-    nlinarith
+    linarith
 
 theorem finrank_E (D : D7) : (Module.finrank ℚ D.host.E : ℝ) = 2 * (D.R.f : ℝ) := by
   have h : Module.finrank ℚ D.host.E = 4 * D.R.ord := D.host.der.finrank_E
@@ -529,7 +573,9 @@ theorem log_two_f_le (L : SizeData₂ D) : Real.log (2 * (D.R.f : ℝ)) ≤ zBas
   have h1 := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 * (D.R.f : ℝ) by linarith)
   have h2 : (D.R.f : ℝ) * D.R.r ≤ (D.R.f : ℝ) * D.R.r * L.sc.L :=
     le_mul_of_one_le_right (by positivity) hL
-  have h3 : 6 * (D.R.f : ℝ) ≤ (D.R.f : ℝ) * D.R.r := by nlinarith
+  have h3 : 6 * (D.R.f : ℝ) ≤ (D.R.f : ℝ) * D.R.r := by
+    rw [mul_comm]
+    exact mul_le_mul_of_nonneg_left hr (by linarith)
   show Real.log (2 * (D.R.f : ℝ)) ≤ (D.R.f : ℝ) * D.R.r * L.sc.L
   linarith
 
@@ -542,8 +588,10 @@ theorem growthZero_le_thirty_zBase (P : ParameterChoice' D L) : WeightFamilies.P
   have h4 := logOm_le P
   have h5 : 2 * (D.R.f : ℝ) * L.sc.L ≤ zBase L := by
     unfold zBase
-    have : 0 ≤ (D.R.f : ℝ) * L.sc.L := by positivity
-    nlinarith
+    have hfL : 0 ≤ (D.R.f : ℝ) * L.sc.L := by positivity
+    calc 2 * (D.R.f : ℝ) * L.sc.L = 2 * ((D.R.f : ℝ) * L.sc.L) := by ring
+      _ ≤ (D.R.r : ℝ) * ((D.R.f : ℝ) * L.sc.L) := mul_le_mul_of_nonneg_right (by linarith) hfL
+      _ = (D.R.f : ℝ) * D.R.r * L.sc.L := by ring
   unfold WeightFamilies.PP0v
   rw [Real.rpow_one, one_mul]
   linarith

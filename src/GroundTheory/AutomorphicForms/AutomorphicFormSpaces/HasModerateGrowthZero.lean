@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ArchSliceUAction
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

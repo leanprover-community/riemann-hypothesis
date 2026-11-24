@@ -1,17 +1,23 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CcARatioZero
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Decomp
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Weighted
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Transported
+public import Formalism.PeriodIntegrals.IsLowUnitH
+public import Mathlib.Analysis.InnerProductSpace.Positive
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumEmbeddingMemHlam
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefOfEmb
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExistsMu
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiGelfand
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PsiPos
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EquivSigLamOfIsDS
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeExpK
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CompactIsDSUniqueOfCas
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumIrr
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.InfChar
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeExpK
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PsiPos
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Exists
-public import Formalism.PeriodIntegrals.ZuckTensor
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CcARatioZero
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Weighted
 
 @[expose] public section
 
@@ -102,7 +108,7 @@ theorem cns_kfin (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v�
   refine ⟨S, hSf, ⟨y, hk, hx.symm⟩, ?_⟩
   intro g hg v hv
   obtain ⟨u, hu, huv⟩ := hv
-  have hgU : g ∈ UJset ε := cf_kset_sub hg
+  have hgU : g ∈ UJset ε := _root_.ReciprocityTheory.ChartRestriction.DS.UnitaryGroupOfForm.K_mem_UJ hg
   obtain ⟨w, hw, hwe⟩ := hS0K g hg u hu
   refine ⟨w, hw, ?_⟩
   show (w : L2 ε) = ((sigLam ε Ψ v₀ g v : Hlam ε Ψ v₀) : L2 ε)
@@ -254,8 +260,8 @@ theorem cns_shift_inj (dual : Bool) (μ : Fin n → ℝ) {s s' : Fin n} (h : shi
   have heval : shiftF dual μ s s = shiftF dual μ s' s := congrFun h s
   delta shiftF at heval
   cases dual
-  · simp [Pi.single_apply, hne] at heval
-  · simp [Pi.single_apply, hne] at heval
+  · simp [hne] at heval
+  · simp [hne] at heval
 
 theorem cns_coefV {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (g : Matrix (Fin n) (Fin n) ℂ) (a b : H) (x y : Fin n → ℂ) :
@@ -307,8 +313,8 @@ theorem cns_tens_sum {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H
     ∑ c, inner ℂ (η c) (tensGrp dual σ g (fun d => (((∑ b ∈ B, F b) d : D) : H)) c) =
       ∑ b ∈ B, ∑ c, inner ℂ (η c) (tensGrp dual σ g (fun d => ((F b d : D) : H)) c) := by
   delta tensGrp
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_apply, Submodule.coe_sum, map_sum, Finset.smul_sum, inner_sum]
+
+  simp only [Finset.sum_apply, Submodule.coe_sum, map_sum, Finset.smul_sum, inner_sum]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [Finset.sum_comm]
@@ -321,7 +327,7 @@ theorem cns_kfin_map {H₁ H₂ : Type*} [NormedAddCommGroup H₁] [InnerProduct
   obtain ⟨S, hSf, hxS, hSK⟩ := hx
   refine ⟨S.map U.toLinearIsometry.toLinearMap, Module.Finite.map _ _, ⟨x, hxS, rfl⟩, ?_⟩
   rintro g hg _ ⟨v, hv, rfl⟩
-  exact ⟨σ₁ g v, hSK g hg v hv, hU g (cf_kset_sub hg) v⟩
+  exact ⟨σ₁ g v, hSK g hg v hv, hU g (_root_.ReciprocityTheory.ChartRestriction.DS.UnitaryGroupOfForm.K_mem_UJ hg) v⟩
 
 theorem cns_symm_intertw {H₁ H₂ : Type*} [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [NormedAddCommGroup H₂]
     [InnerProductSpace ℂ H₂] {ε : Fin n → Bool} {σ₁ : Matrix (Fin n) (Fin n) ℂ → (H₁ →L[ℂ] H₁)}

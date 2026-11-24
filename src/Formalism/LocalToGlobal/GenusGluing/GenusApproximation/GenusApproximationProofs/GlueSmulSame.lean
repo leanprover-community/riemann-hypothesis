@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GenusGluing.GenusApproximation.GlueExists
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

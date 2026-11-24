@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreCoordGoodProj
 
 @[expose] public section
 

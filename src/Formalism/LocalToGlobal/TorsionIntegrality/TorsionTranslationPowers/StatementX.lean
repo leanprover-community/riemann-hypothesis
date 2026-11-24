@@ -1,8 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementV
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementW
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementW
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementE
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementA
 
 @[expose] public section
 

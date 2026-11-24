@@ -1,14 +1,54 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DenseFrobeniusSplitPlaces
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.JumpDictionary
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
-public import Formalism.SharpRestriction.ParamsHeightRankConstant
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.BlockComplementLattice
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GaloisSideTwistedSelmerAuxiliaryPrimes
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AbsNormPrimeIffInertiaDegEqOneAndFiniteRamified
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -31,19 +71,11 @@ theorem embOver_true_apply (ρ : D.what₂.Tau) (x : D.host.E) :
     embOver D ρ true x = starRingEnd ℂ (embOver D ρ false x) :=
   D.host.conjE_apply (embOver D ρ false) x
 
-theorem conj_ne {R : Ranks} (H : Host R) :
-    starRingEnd ℂ (Complex.I * (Real.sqrt H.d : ℂ)) ≠ Complex.I * (Real.sqrt H.d : ℂ) := by
-  intro h
-  have h1 := congrArg Complex.im h
-  have : 0 < Real.sqrt H.d := Real.sqrt_pos.2 (by exact_mod_cast H.hyp.2.1.pos)
-  simp at h1
-  linarith
-
 theorem embOver_true_ne (ρ ρ' : D.what₂.Tau) : embOver D ρ true ≠ embOver D ρ' false := by
   intro h
   have h1 := DFunLike.congr_fun h D.host.sqrtMinusD
   rw [embOver_true_apply, embOver_false_sqrt, embOver_false_sqrt] at h1
-  exact conj_ne D.host h1
+  exact GlobalTheory.FrobDense.conj_ne D.host h1
 
 theorem sqrt_sq {R : Ranks} (H : Host R) : H.sqrtMinusD ^ 2 = -(H.d : H.E) := by
   have h0 : (Complex.I * (Real.sqrt H.d : ℂ)) ^ 2 = -(H.d : ℂ) := by
@@ -82,49 +114,7 @@ variable {R : Ranks} (H : Host R)
 
 theorem exists_finite_split : ∃ A : Set (HeightOneSpectrum (𝓞 H.E)), A.Finite ∧
     ∀ v, v ∉ A → v.asIdeal.inertiaDeg ℤ = 1 → IsSplitPl H v := by
-  have hint : IsIntegral ℤ H.sqrtMinusD := by
-    apply IsIntegral.of_pow (n := 2) (by norm_num)
-    rw [sqrt_sq]
-    have := (isIntegral_algebraMap (R := ℤ) (A := H.E) (x := (H.d : ℤ))).neg
-    simpa using this
-  let c : 𝓞 H.E →+* 𝓞 H.E := RingOfIntegers.mapRingHom (H.conj : H.E →+* H.E)
-  let b : 𝓞 H.E := ⟨_, hint⟩
-  have hb : c b - b ≠ 0 := by
-    intro h
-    have h1 : H.conj H.sqrtMinusD = H.sqrtMinusD := congrArg (fun y : 𝓞 H.E => (y : H.E)) (sub_eq_zero.1 h)
-    have h2 := H.conjE_apply H.φ₀ H.sqrtMinusD
-    have h3 : H.φ₀ H.sqrtMinusD = Complex.I * (Real.sqrt H.d : ℂ) := H.φ₀_mem
-    have h4 : H.φ₀ (H.conj H.sqrtMinusD) = starRingEnd ℂ (H.φ₀ H.sqrtMinusD) := h2
-    rw [h1, h3] at h4
-    exact conj_ne H h4.symm
-  refine ⟨{v | v.asIdeal ∣ Ideal.span {c b - b}},
-    Ideal.finite_factors (by simpa [Ideal.span_singleton_eq_bot] using hb), fun v hv hd => ?_⟩
-  by_contra hs
-  apply hv
-  have hp := ((GlobalTheory.absNorm_prime_iff_inertiaDeg_eq_one_and_finite_ramified H.E).1 v).2 hd
-  have hst : ∀ x ∈ v.asIdeal, c x ∈ v.asIdeal := by
-    intro x hx
-    by_contra hx'
-    refine hs ⟨x, hx, fun y hy => ?_⟩
-    have : y = c x := RingOfIntegers.ext hy
-    rwa [this]
-  have : Fact (Ideal.absNorm v.asIdeal).Prime := ⟨hp⟩
-  have hcard : Nat.card (𝓞 H.E ⧸ v.asIdeal) = Ideal.absNorm v.asIdeal :=
-    (Ideal.absNorm_eq_natCard v.asIdeal).symm
-  have := v.isPrime
-  have htop : AddSubgroup.zmultiples (1 : 𝓞 H.E ⧸ v.asIdeal) = ⊤ :=
-    zmultiples_eq_top_of_prime_card hcard one_ne_zero
-  have hmem : Ideal.Quotient.mk v.asIdeal b ∈ AddSubgroup.zmultiples (1 : 𝓞 H.E ⧸ v.asIdeal) := by
-    rw [htop]; trivial
-  obtain ⟨n, hn⟩ := AddSubgroup.mem_zmultiples_iff.1 hmem
-  have h1 : b - (n : 𝓞 H.E) ∈ v.asIdeal := by
-    rw [← Ideal.Quotient.eq, ← hn]; simp
-  have h2 := hst _ h1
-  rw [map_sub, map_intCast] at h2
-  show v.asIdeal ∣ _
-  rw [Ideal.dvd_span_singleton]
-  have := v.asIdeal.sub_mem h2 h1
-  simpa using this
+  apply GlobalTheory.FrobDense.exists_finite_split
 
 variable {H} {what₂ : Rows.Data R} (N : NData R H what₂)
 
@@ -262,7 +252,6 @@ theorem inf_block (hB : BlockCharParam D) (i : D.nd.Loc) (k : ℕ) (ρ : D.what�
     push_cast
     simp
     ring
-
 
 open Classical in
 def shift (φ : D.host.E →+* ℂ) : ℤ :=

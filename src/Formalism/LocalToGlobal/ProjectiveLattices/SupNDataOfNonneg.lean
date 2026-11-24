@@ -1,7 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
-public import Formalism.LocalToGlobal.ProjectiveLattices.EtArch
+public import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAt
+public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
 
 @[expose] public section
 
@@ -25,8 +28,6 @@ theorem htI2et_of_pt (d : Data K ι Ω WT A)
   have hN : (0 : ℝ) < (Fintype.card (K →+* ℂ) : ℝ) := by
     first
     | exact_mod_cast Fintype.card_pos
-    | (haveI : Nonempty (K →+* ℂ) := ⟨(IsAlgClosed.lift : K →ₐ[ℚ] ℂ).toRingHom⟩
-       exact_mod_cast Fintype.card_pos)
   rw [div_right_comm, Finset.sum_div, div_le_iff₀ hN]
   calc ∑ sg, (fun sg => Real.log (d.supN sg (d.n1 • d.wde) d.et)) sg / (d.i : ℝ)
       ≤ ∑ _sg : K →+* ℂ, d.Pet := Finset.sum_le_sum (fun sg _ => hpt sg)
@@ -80,7 +81,6 @@ theorem supN_dataOf_nonneg (h : GenFrEx Xo c)
   dsimp only
   first
   | positivity
-  | exact (rfl : (0 : ℕ) = 0)
 
 theorem htI2be_of (h : GenFrEx Xo c)
     (δ : ∀ Z : Comp Xo c, AddValuation (Om Z) (WithTop ℤ) → Ix Dw → ℤ)

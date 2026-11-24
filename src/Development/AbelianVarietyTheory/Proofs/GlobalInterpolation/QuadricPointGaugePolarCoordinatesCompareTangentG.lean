@@ -1,10 +1,51 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.DataCD
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.PerpendicularEmbedding
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ContinuousMatrixEntryAbsSum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 @[expose] public section
 
@@ -40,14 +81,6 @@ theorem norm_exp_eq (θ : ℝ) :
   rw [mul_comm, Complex.norm_exp_I_mul_ofReal_sub_one]
   simp
 
-theorem abs_sin_eq (x : ℝ) (h : |x| ≤ Real.pi) : |Real.sin x| = Real.sin |x| := by
-  rcases le_total 0 x with h0 | h0
-  · rw [abs_of_nonneg h0] at h ⊢
-    exact abs_of_nonneg (Real.sin_nonneg_of_nonneg_of_le_pi h0 h)
-  · rw [abs_of_nonpos h0] at h ⊢
-    rw [← abs_neg, ← Real.sin_neg]
-    exact abs_of_nonneg (Real.sin_nonneg_of_nonneg_of_le_pi (by linarith) h)
-
 theorem exp_bounds (θ : ℝ) (h : |θ| ≤ Real.pi) :
     ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ≤ |θ| ∧
     |θ| ≤ 2 * ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ∧
@@ -55,7 +88,7 @@ theorem exp_bounds (θ : ℝ) (h : |θ| ≤ Real.pi) :
   have hp := Real.pi_pos
   have h0 := abs_nonneg θ
   have e1 : |θ / 2| = |θ| / 2 := by rw [abs_div]; norm_num
-  rw [norm_exp_eq, abs_sin_eq _ (by rw [e1]; linarith), e1]
+  rw [norm_exp_eq, Real.abs_sin_eq_sin_abs_of_abs_le_pi (by rw [e1]; linarith), e1]
   set T := |θ|
   refine ⟨?_, ?_, fun h2 => ?_⟩
   · have := Real.sin_le (x := T / 2) (by linarith)

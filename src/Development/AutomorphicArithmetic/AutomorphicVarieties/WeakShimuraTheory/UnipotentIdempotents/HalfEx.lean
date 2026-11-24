@@ -2,8 +2,44 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.UnipotentIdempotents.TCont
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.FrobeniusDensity.RootChar
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.AutomorphicCharacters.AuChi
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.dvrFinite
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -18,7 +54,7 @@ private theorem norm_le_one_of_isIntegral_padicInt' {l : ℕ} [Fact l.Prime] (x 
     ‖x‖ ≤ 1 := by
   obtain ⟨p, hm, hp⟩ := hx
   by_contra h
-  push_neg at h
+  push Not at h
   have hd0 : p.natDegree ≠ 0 := by
     intro h0
     have h1 := Polynomial.eq_one_of_monic_natDegree_zero hm h0
@@ -52,18 +88,15 @@ private theorem norm_le_one_of_isIntegral_padicInt' {l : ℕ} [Fact l.Prime] (x 
 
 private theorem norm_coe_padicAlgCl_coefO_le_one {l : ℕ} [Fact l.Prime] (c : Coef l) (x : c.O) :
     ‖(x : PadicAlgCl l)‖ ≤ 1 := by
-  haveI := c.fin
-  haveI : Algebra.IsIntegral ℤ_[l] c.O := Algebra.IsIntegral.of_finite ℤ_[l] c.O
+  have := c.fin
+  have : Algebra.IsIntegral ℤ_[l] c.O := Algebra.IsIntegral.of_finite ℤ_[l] c.O
   exact norm_le_one_of_isIntegral_padicInt' _ ((Algebra.IsIntegral.isIntegral x).map c.O.val)
-
-private theorem norm_natCast_prime_padicAlgCl_eq_inv {l : ℕ} [Fact l.Prime] : ‖(l : PadicAlgCl l)‖ = (l : ℝ)⁻¹ := by
-  rw [← map_natCast (algebraMap ℤ_[l] (PadicAlgCl l)) l, norm_algebraMap_padicInt_padicAlgCl, PadicInt.norm_p]
 
 private theorem norm_coe_lt_one_of_mem_maximalIdeal_coefO {l : ℕ} [Fact l.Prime] (c : Coef l) (x : c.O)
     (hx : x ∈ IsLocalRing.maximalIdeal c.O) : ‖(x : PadicAlgCl l)‖ < 1 := by
-  haveI := c.dvr
+  have := c.dvr
   have hcast : ((l : c.O) : PadicAlgCl l) = (l : PadicAlgCl l) := by simp
-  have hl : ‖((l : c.O) : PadicAlgCl l)‖ = (l : ℝ)⁻¹ := by rw [hcast, norm_natCast_prime_padicAlgCl_eq_inv]
+  have hl : ‖((l : c.O) : PadicAlgCl l)‖ = (l : ℝ)⁻¹ := by rw [hcast, _root_.GlobalTheory.CycTrace.norm_l]
   have hlt : (l : ℝ)⁻¹ < 1 :=
     inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
   have hl0 : (l : c.O) ≠ 0 := by
@@ -148,8 +181,8 @@ private theorem norm_natCast_prime_sub_one_padicAlgCl_eq_one {l : ℕ} [Fact l.P
     inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
   rw [Nat.cast_sub hl1, Nat.cast_one, sub_eq_neg_add,
     IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm
-      (by rw [norm_neg, norm_one, norm_natCast_prime_padicAlgCl_eq_inv]; exact hlt.ne'),
-    norm_neg, norm_one, norm_natCast_prime_padicAlgCl_eq_inv]
+      (by rw [norm_neg, norm_one, _root_.GlobalTheory.CycTrace.norm_l]; exact hlt.ne'),
+    norm_neg, norm_one, _root_.GlobalTheory.CycTrace.norm_l]
   exact max_eq_left hlt.le
 
 private theorem sq_mul_eq_of_pow_two_mul_pred_eq_of_norm_sub_lt_one {l : ℕ} [Fact l.Prime] (b w y : PadicAlgCl l) (hb : ‖b - 1‖ < 1)

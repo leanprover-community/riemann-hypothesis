@@ -1,10 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+public import Formalism.SatakeDualWeyl.StatementC
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCompactLatticeStabilizerBoundedReal
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Ipindep
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Transport
 
 @[expose] public section
 
@@ -236,7 +282,7 @@ theorem swapTens_sig (x : R ⊗[F] E) :
 
 theorem exists_swapPts : ∃ e : HA R σ J ≃* UPts σ J R,
     ∀ g, (e g : GL (Fin M) (E ⊗[F] R)) = bc (swapTens F E R : R ⊗[F] E →+* E ⊗[F] R) (HA.mat R σ J g) :=
-  Formalism.UG.Final.UJTransport _ _ (Fin M) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ) (Formalism.UG.sigR σ R) (swapTens F E R)
+  _root_.Formalism.UG.P.unitary_group_transport _ _ (Fin M) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ) (Formalism.UG.sigR σ R) (swapTens F E R)
     (RingHom.ext (swapTens_sig R σ)) (JR R J)
 
 def swapPts : HA R σ J ≃* UPts σ J R := (exists_swapPts R σ J).choose
@@ -429,7 +475,7 @@ theorem finiteClasses_unitary (hσ : IsCMExt F E σ) (hJ : IsHermND σ J) (hd : 
   rw [stdLevel, finiteClasses_comap _ _ _ (swapPts (Af F) σ J).surjective (swapPts (Af F) σ J).injective.injOn,
     map_swapPts_rat]
   exact ⟨Formalism.UG.Final.ClassSetFinite F E _ σ J hτ hH hJ.2.isUnit hd,
-    Formalism.UG.Final.AdelicStabFinite F E _ σ J hτ hH hJ.2.isUnit hd⟩
+    _root_.Formalism.UG.P.adelic_stabilizer_finite_holds F E _ σ J hτ hH hJ.2.isUnit hd⟩
 
 theorem finiteClasses_lattice (hσ : IsCMExt F E σ) (hJ : IsHermND σ J) (hd : IsTotDef σ J)
     (Λ : Submodule (𝓞 E) (Fin M → E)) (hΛ : Module.Finite (𝓞 E) Λ)
@@ -441,8 +487,8 @@ theorem finiteClasses_lattice (hσ : IsCMExt F E σ) (hJ : IsHermND σ J) (hd : 
   have hH : IsHerm (σ : E →+* E) J := Matrix.ext fun i j => hJ.1 i j
   rw [finiteClasses_comap _ _ _ (swapPts (Af F) σ J).surjective (swapPts (Af F) σ J).injective.injOn,
     map_swapPts_rat]
-  exact ⟨Formalism.UG.Final.ClassSetFiniteL F E _ σ J hτ hH hJ.2.isUnit hd Λ hΛ hsp,
-    Formalism.UG.Final.AdelicStabFiniteL F E _ σ J hτ hH hJ.2.isUnit hd Λ hΛ hsp⟩
+  exact ⟨_root_.Formalism.UG.P.lattice_class_set_finite_local_holds F E _ σ J hτ hH hJ.2.isUnit hd Λ hΛ hsp,
+    _root_.Formalism.UG.P.adelic_stabilizer_finite_lattice_holds F E _ σ J hτ hH hJ.2.isUnit hd Λ hΛ hsp⟩
 
 theorem unitaryMass_pos (hσ : IsCMExt F E σ) (hJ : IsHermND σ J) (hd : IsTotDef σ J)
     {K : Subgroup (HA (Af F) σ J)} (hc : IsCompact (K : Set (HA (Af F) σ J)))

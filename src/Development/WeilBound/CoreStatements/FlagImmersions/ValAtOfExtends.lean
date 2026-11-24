@@ -2,11 +2,52 @@ module
 
 public import Development.WeilBound.CoreStatements.FlagImmersions.FibSandwich
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelActionBaseChangeStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFrameIffEigenspaceBasisStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModelBaseChange
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteProjective
+public import Development.WeilBound.CoreStatements.SesquilinearFractions.GModel
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LawsProved
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 
 @[expose] public section
 
@@ -87,7 +128,7 @@ theorem exists_coords {X : Scheme.{0}} (t : SAB H X) {Ω : Type} [Field Ω] {ξ 
   classical
   let R : Type := X.presheaf.stalk (centre z)
   let fV : R →+* V := (Scheme.stalkClosedPointTo z).hom
-  obtain ⟨g, MR, ρR, -, hbc⟩ := GlobalTheory.T.lie_model_action_base_change E H X t R (X.fromSpecStalk (centre z))
+  obtain ⟨g, MR, ρR, -, hbc⟩ := _root_.PositivityTheory.Xgf.lie_model_action_base_change E H X t R (X.fromSpecStalk (centre z))
   have hz : spMap fV ≫ X.fromSpecStalk (centre z) = z := spec_centre z
   obtain ⟨MV, ρV, aV, hV, -⟩ := hbc V fV z hz.symm
   obtain ⟨MC, ρC, aC, hC, -⟩ := hbc L ((algebraMap V L).comp fV) (Spec.map (CommRingCat.ofHom (algebraMap V L)) ≫ z)
@@ -95,9 +136,9 @@ theorem exists_coords {X : Scheme.{0}} (t : SAB H X) {Ω : Type} [Field Ω] {ξ 
       (congrArg (· ≫ X.fromSpecStalk (centre z)) (spec_comp fV (algebraMap V L)))))
   obtain ⟨j, hj, hjs⟩ := exists_bc (algebraMap V L) rfl MV MC
   have sV : ∀ i : Fin g, (fV ∘ (Pi.single i 1 : Fin g → R)) = Pi.single i 1 := fun i => by
-    ext k; by_cases h : k = i <;> simp [Pi.single_apply, h]
+    ext k; by_cases h : k = i <;> simp [h]
   have sC : ∀ i : Fin g, (((algebraMap V L).comp fV) ∘ (Pi.single i 1 : Fin g → R)) = Pi.single i 1 := fun i => by
-    ext k; by_cases h : k = i <;> simp [Pi.single_apply, h]
+    ext k; by_cases h : k = i <;> simp [h]
   have hj1 : ∀ i : Fin g, j (Pi.single i 1) = Pi.single i 1 := fun i => MC.inj (Over.OverMorphism.ext (by
     rw [hj, ← sC, hC, ← sV]
     refine (congrArg (Spec.map (CommRingCat.ofHom (dualMap (algebraMap V L))) ≫ ·) (hV (Pi.single i 1))).trans ?_
@@ -106,8 +147,8 @@ theorem exists_coords {X : Scheme.{0}} (t : SAB H X) {Ω : Type} [Field Ω] {ξ 
     have e : u = ∑ i, u i • (Pi.single i 1 : Fin g → V) := by
       ext k; simp [Finset.sum_apply, Pi.single_apply]
     conv_lhs => rw [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [hjs, hj1]
     ext k; simp [Finset.sum_apply, Pi.single_apply, Algebra.smul_def]
   have hpt : ∀ u, MC.pt (algebraMap V L ∘ u) = epsBase (algebraMap V L) rfl ≫ MV.pt u := fun u => by

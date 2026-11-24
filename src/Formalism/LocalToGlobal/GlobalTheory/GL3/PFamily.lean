@@ -1,12 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.Statement
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CardTrivialFirstComponent
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThU
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 
 @[expose] public section
 

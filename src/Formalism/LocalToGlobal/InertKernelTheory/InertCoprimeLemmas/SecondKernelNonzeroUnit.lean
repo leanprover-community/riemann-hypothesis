@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.K2OfAgreements
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
+import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IntermediateMapWittQuadratic
 
 @[expose] public section
 

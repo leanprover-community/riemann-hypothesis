@@ -1,10 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountIntegrals
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMinkowskiCount
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLattice
+public import Mathlib.Analysis.InnerProductSpace.GramMatrix
 public import GroundTheory.HeightsAndTheta.Heights.CovolumeGram
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMinkowskiCount
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeStB
+public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 
@@ -73,14 +80,14 @@ theorem coeff_eq_zero {y : (Σ k, ι k) → Ω} {r : ℕ} {f : Fin r → MRing �
   refine coeff_eq_zero_of_vanish hs fun z hz => ?_
   have hsec : ∀ k, secFun (b k) z = eval z (map (Int.castRingHom ℂ) (f k)) * eval z (map (Int.castRingHom ℂ) u) := by
     intro k
-    simp only [secFun, b, eval_map_int_rat, map_mul, eval_mul]
+    simp only [secFun, b, eval_map_int_rat, map_mul]
   simp only [hsec, ← mul_assoc, ← Finset.sum_mul]
   by_cases hz' : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0
   · rw [h z ⟨hz', fun g hg => hz g (mCoordIdeal_le_coordIdeal y hg)⟩, zero_mul]
   · push_neg at hz'
     obtain ⟨k, hk⟩ := hz'
     refine mul_eq_zero_of_right _ ?_
-    simp only [u, map_prod, map_X, eval_prod, eval_X]
+    simp only [u, map_prod, map_X, eval_X]
     exact Finset.prod_eq_zero (Finset.mem_univ k) (hk (i₀ k))
 
 variable {D : ℕ}
@@ -315,7 +322,7 @@ theorem exists_gram {r : ℕ} {G : Matrix (Fin r) (Fin r) ℝ} (hG : G.PosDef) :
   have hMM : star M * M = G := by
     conv_rhs => rw [hG.1.spectral_theorem]
     rw [Unitary.conjStarAlgAut_apply]
-    simp only [M, U, star_mul, star_star, Matrix.star_eq_conjTranspose, diagonal_conjTranspose, star_trivial,
+    simp only [M, U, star_mul, Matrix.star_eq_conjTranspose, diagonal_conjTranspose, star_trivial,
       conjTranspose_conjTranspose, Matrix.mul_assoc]
     rw [← Matrix.mul_assoc (diagonal _) (diagonal _), diagonal_mul_diagonal]
     congr 3
@@ -343,7 +350,7 @@ theorem count_of_gram {r : ℕ} {G : Matrix (Fin r) (Fin r) ℝ} (hG : G.PosDef)
   have hnorm : ∀ m, ‖e m‖ ^ 2 = (fun k => (m k : ℝ)) ⬝ᵥ (G *ᵥ fun k => (m k : ℝ)) := by
     intro m
     rw [← real_inner_self_eq_norm_sq, ← hB]
-    simp only [e, sum_inner, inner_sum, dotProduct, mulVec, Matrix.gram_apply, Finset.mul_sum, zsmul_eq_mul]
+    simp only [e, sum_inner, inner_sum, dotProduct, mulVec, Matrix.gram_apply, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
     rw [← Int.cast_smul_eq_zsmul ℝ (m l), ← Int.cast_smul_eq_zsmul ℝ (m k), real_inner_smul_left,
       real_inner_smul_right, real_inner_comm (B l) (B k)]
@@ -445,8 +452,8 @@ theorem exists_isSecBasisM (y : (Σ k, ι k) → Ω) (k₀ : K) (n : ℕ) :
   have hle : N ≤ Submodule.span ℤ T := by
     refine Submodule.span_le.2 ?_
     rintro _ ⟨g, hg, rfl⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [g.as_sum, map_sum]
+
+    rw [g.as_sum, map_sum]
     refine Submodule.sum_mem _ fun m hm => ?_
     rw [← mul_one (AddMonoidAlgebra.coeff g m), ← smul_eq_mul, ← smul_monomial, map_zsmul]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨m, fun k => hg m hm k, rfl⟩)

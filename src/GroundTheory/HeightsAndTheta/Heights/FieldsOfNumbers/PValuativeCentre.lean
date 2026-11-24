@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsValuativeCentre
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PMChartDehomog
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -41,8 +45,8 @@ theorem coeff_blockSpecial (ρ : MRing ι F →+* κ) (f : MRing ι F) (e : K �
     AddMonoidAlgebra.coeff (blockSpecial ρ f) e = ρ (weightedHomogeneousComponent (blockWeight ι) (⇑e) f) := by
   classical
   conv_lhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [weightedHomogeneousComponent_apply, map_sum, coeff_sum, map_sum, Finset.sum_filter]
+
+  rw [weightedHomogeneousComponent_apply, map_sum, coeff_sum, map_sum, Finset.sum_filter]
   refine Finset.sum_congr rfl fun d _ => ?_
   rw [blockSpecial_monomial, coeff_C_mul, coeff_monomial]
   have hiff : Finsupp.equivFunOnFinite.symm (Finsupp.weight (blockWeight ι) d) = e ↔

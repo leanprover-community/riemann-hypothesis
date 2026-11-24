@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Algebra.Basic
+public import Mathlib.LinearAlgebra.TensorProduct.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

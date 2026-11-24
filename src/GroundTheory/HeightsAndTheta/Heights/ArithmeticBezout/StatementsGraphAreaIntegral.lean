@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGraphAreaHolomorphic
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaMultiplicity
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

@@ -1,12 +1,48 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeGermPrimitivePresentation
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeGermFiniteProjection
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHolGermsIntegrallyClosed
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermCentredIntegralEquation
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PrimitiveLinearForm
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermNullstellensatz
+import Mathlib.RingTheory.PiTensorProduct
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermCentredIntegralEquation, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermPrimitivePresentation
+
+-- ===== clump member: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermCentredIntegralEquation =====
+-- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermCentredIntegralEquation", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeGermPrimitivePresentation\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
+
+open Topology Filter
+
+def CentredIntegralEquation.Statement : Prop :=
+  ∀ (σ : Type) [Fintype σ] (w : σ → ℂ) (k : ℕ) (p : Fin k → (σ → ℂ) → ℂ) (d : ℕ)
+    (A : (σ → ℂ) →L[ℂ] (Fin d → ℂ)),
+    (∀ i, AnalyticAt ℂ (p i) w) →
+    (∀ i : σ, ∃ (n : ℕ) (b : Fin n → (Fin d → ℂ) → ℂ), (∀ j, AnalyticAt ℂ (b j) (A w)) ∧
+      IsGermCombination w p (fun z => z i ^ n + ∑ j, b j (A z) * z i ^ (j : ℕ))) →
+    (∀ g : (σ → ℂ) → ℂ, AnalyticAt ℂ g w →
+      ∃ (s : Finset (σ → ℕ)) (a : (σ → ℕ) → (Fin d → ℂ) → ℂ), (∀ m ∈ s, AnalyticAt ℂ (a m) (A w)) ∧
+        IsGermCombination w p (fun z => g z - ∑ m ∈ s, a m (A z) * ∏ i, z i ^ m i)) →
+    ∀ g : (σ → ℂ) → ℂ, AnalyticAt ℂ g w →
+      ∃ (n : ℕ) (b : Fin n → (Fin d → ℂ) → ℂ), (∀ j, AnalyticAt ℂ (b j) (A w)) ∧
+        IsGermCombination w p (fun z => g z ^ n + ∑ j, b j (A z) * g z ^ (j : ℕ)) ∧
+        ∀ T : ℂ, T ^ n + ∑ j, b j (A w) * T ^ (j : ℕ) = (T - g w) ^ n
+
+end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermCentredIntegralEquation =====
+
+-- ===== clump member: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermPrimitivePresentation =====
+-- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermPrimitivePresentation", "h": "module\n\nimport GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermNullstellensatz\npublic import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeGermFiniteProjection\npublic import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHolGermsIntegrallyClosed\npublic import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermCentredIntegralEquation\npublic import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PrimitiveLinearForm\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
@@ -81,37 +117,7 @@ theorem exists_of_mem_holGermIdeal {w : σ → ℂ} {k : ℕ} (p : Fin k → (σ
     (hφ : φ ∈ holGermIdeal w p) :
     ∃ h : Fin k → (σ → ℂ) → ℂ, (∀ i, AnalyticAt ℂ (h i) w) ∧
       (φ : Germ (𝓝 w) ℂ) = ((fun z => ∑ i, h i z * p i z : (σ → ℂ) → ℂ) : Germ (𝓝 w) ℂ) := by
-  induction hφ using Submodule.span_induction with
-  | mem φ hφ =>
-    obtain ⟨i, hi⟩ := hφ
-    refine ⟨fun j _ => if j = i then 1 else 0, fun j => analyticAt_const, ?_⟩
-    rw [hi]
-    congr 1
-    funext z
-    simp
-  | zero =>
-    refine ⟨fun _ _ => 0, fun _ => analyticAt_const, ?_⟩
-    rw [show (fun z => ∑ i, (fun (_ : Fin k) (_ : σ → ℂ) => (0 : ℂ)) i z * p i z) = (0 : (σ → ℂ) → ℂ) by
-      funext z; simp]
-    rfl
-  | add x y _ _ hx hy =>
-    obtain ⟨h₁, hh₁, e₁⟩ := hx
-    obtain ⟨h₂, hh₂, e₂⟩ := hy
-    refine ⟨fun i z => h₁ i z + h₂ i z, fun i => (hh₁ i).add (hh₂ i), ?_⟩
-    show (x : Germ (𝓝 w) ℂ) + y = _
-    rw [e₁, e₂, ← Germ.coe_add]
-    congr 1
-    funext z
-    simp [add_mul, Finset.sum_add_distrib]
-  | smul a x _ hx =>
-    obtain ⟨h, hh, e⟩ := hx
-    obtain ⟨fa, hfa, efa⟩ : ∃ f : (σ → ℂ) → ℂ, AnalyticAt ℂ f w ∧ (f : Germ (𝓝 w) ℂ) = a := a.2
-    refine ⟨fun i z => fa z * h i z, fun i => hfa.mul (hh i), ?_⟩
-    show (a : Germ (𝓝 w) ℂ) * x = _
-    rw [e, ← efa, ← Germ.coe_mul]
-    congr 1
-    funext z
-    simp [Finset.mul_sum, mul_assoc]
+  apply _root_.GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets.PrimeGermNullstellensatz.exists_of_mem_holGermIdeal <;> assumption
 
 theorem toGerm_mem_iff {w : σ → ℂ} {k : ℕ} {p : Fin k → (σ → ℂ) → ℂ} (hp : ∀ i, AnalyticAt ℂ (p i) w)
     (u : anFun w) : toGerm w u ∈ holGermIdeal w p ↔ IsGermCombination w p u.1 := by
@@ -121,8 +127,8 @@ theorem toGerm_mem_iff {w : σ → ℂ} {k : ℕ} {p : Fin k → (σ → ℂ) �
     exact ⟨h, hh, Germ.coe_eq.1 e⟩
   · rintro ⟨h, hh, hev⟩
     have hsum : toGerm w u = ∑ i, toGerm w (mkA (h i) (hh i)) * toGerm w (mkA (p i) (hp i)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [← map_mul, ← map_sum]
+
+      simp only [← map_mul, ← map_sum]
       apply Subtype.ext
       change ((u.1 : (σ → ℂ) → ℂ) : Germ (𝓝 w) ℂ) =
         (((∑ i, mkA (h i) (hh i) * mkA (p i) (hp i) : anFun w) : (σ → ℂ) → ℂ) : Germ (𝓝 w) ℂ)
@@ -132,7 +138,7 @@ theorem toGerm_mem_iff {w : σ → ℂ} {k : ℕ} {p : Fin k → (σ → ℂ) �
     refine Ideal.sum_mem _ fun i _ => Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨i, rfl⟩)
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegrallyClosed.Statement)
     (hCE : CentredIntegralEquation.Statement) : PrimeGermPrimitivePresentation.Statement := by
   classical
@@ -197,8 +203,8 @@ theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegra
       refine Finset.sum_congr rfl fun m hm => ?_
       simp [a', hm, compA, mkA, crd]
     have h0 := (hcl0 _).2 (by rw [hU]; exact hc)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, sub_eq_zero, map_sum] at h0
+
+    rw [map_sub, sub_eq_zero, map_sum] at h0
     show cl u ∈ _
     rw [h0]
     refine Subalgebra.sum_mem _ fun m _ => ?_
@@ -218,8 +224,8 @@ theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegra
       funext z
       simp [compA, mkA, crd, Finset.sum_apply]
     have h0 := (hcl0 _).2 (by rw [hV]; exact hc)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), map_pow, map_sum] at h0
+
+    rw [map_add (f := _), map_pow, map_sum] at h0
     simp only [map_mul, map_pow, hcompA] at h0
     rw [eval₂_add, eval₂_X_pow, eval₂_finsetSum]
     simpa [eval₂_mul, eval₂_C, eval₂_X_pow] using h0
@@ -239,16 +245,16 @@ theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegra
       apply Subtype.ext
       funext z
       simp [lA, mkA, ℓ, compA, cst, crd, Finset.sum_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum]
+
+    rw [this, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_mul, hcompA]
     rfl
   have haev : ∀ (q : R[X]) (K : ℕ), q.natDegree < K →
       aeval ℓB q = cl (∑ j : Fin K, compA A w (rep (q.coeff j)) * lA ^ (j : ℕ)) := by
     intro q K hq
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [aeval_eq_sum_range' hq, ← Fin.sum_univ_eq_sum_range (fun i => q.coeff i • ℓB ^ i) K, map_sum]
+
+    rw [aeval_eq_sum_range' hq, ← Fin.sum_univ_eq_sum_range (fun i => q.coeff i • ℓB ^ i) K, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_mul, map_pow, hlA, hcomp, Algebra.smul_def]
   set N := m.natDegree with hN
@@ -266,9 +272,9 @@ theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegra
       simp [lA, mkA, compA, cf, Finset.sum_apply]
     have hcm : cl (lA ^ N + ∑ j : Fin N, compA A w (rep (m.coeff j)) * lA ^ (j : ℕ)) = aeval ℓB m := by
       conv_rhs => rw [hmon.as_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_add (f := _), map_pow, hlA, map_sum, map_add (f := _), map_pow, aeval_X, map_sum,
-        ← Fin.sum_univ_eq_sum_range (fun i => aeval ℓB (C (m.coeff i) * X ^ i)) N]
+
+      rw [map_add (f := _), map_pow, hlA, map_sum, map_add (f := _), map_pow, aeval_X, map_sum,
+      ← Fin.sum_univ_eq_sum_range (fun i => aeval ℓB (C (m.coeff i) * X ^ i)) N]
       congr 1
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [map_mul, map_pow, hlA, hcomp, map_mul, aeval_C, map_pow, aeval_X]
@@ -284,8 +290,8 @@ theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegra
         funext z
         simp [lA, mkA, compA, Finset.sum_apply]
       have h := (hcl0 _).2 (by rw [hU]; exact hc')
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← h, map_sum, map_sum]
+
+      rw [← h, map_sum, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_mul, map_pow, aeval_C, aeval_X, map_mul, map_pow, hlA, hcompA]
     have hq0 : q = 0 := by
@@ -320,9 +326,9 @@ theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegra
     let Fm : ((Fin d → ℂ) → ℂ)[X] := X ^ N + ∑ j : Fin N, C (cf j) * X ^ (j : ℕ)
     have hFm : Fm.map G = m.map ιR := by
       conv_rhs => rw [hmon.as_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Fm, Polynomial.map_add (f := _), Polynomial.map_pow, map_X, Polynomial.map_sum, Polynomial.map_mul,
-        map_C, cf, hGrep]
+
+      simp only [Fm, Polynomial.map_add (f := _), Polynomial.map_pow, map_X, Polynomial.map_sum, Polynomial.map_mul,
+      map_C, cf, hGrep]
       rw [← Fin.sum_univ_eq_sum_range (fun i => C (ιR (m.coeff i)) * X ^ i) N]
     let E : ((Fin d → ℂ) → ℂ)[X] := lift a * Fm + lift b * derivative Fm - C δ
     have hE : E.map G = 0 := by
@@ -345,8 +351,8 @@ theorem proof (hFP : PrimeGermFiniteProjection.Statement) (hIC : HolGermsIntegra
       · rw [hi, map_zero]
       · exact hy i (mem_support_iff.2 hi)
     have hFy : Fm.map ev = monicOfCoeffs fun j => cf j y := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [Fm, monicOfCoeffs, Polynomial.map_sum, ev]
+
+      simp [Fm, monicOfCoeffs, Polynomial.map_sum, ev]
     rw [separable_def, ← hFy]
     simp only [E, Polynomial.map_sub, Polynomial.map_add (f := _), Polynomial.map_mul, map_C, ← derivative_map,
       sub_eq_zero] at hE0
@@ -407,3 +413,6 @@ end PrimeGermPrimitivePresentation
 end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermPrimitivePresentation =====

@@ -1,8 +1,11 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
+import Mathlib.Algebra.Order.Star.Int
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HcParamGapGeIndex
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelTau
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelTwist
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelFun
 
 @[expose] public section
 

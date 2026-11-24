@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.SmoothRep
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Operators
+public import Mathlib.RepresentationTheory.Irreducible
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

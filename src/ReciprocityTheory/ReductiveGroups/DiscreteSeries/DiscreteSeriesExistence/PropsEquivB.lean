@@ -1,8 +1,16 @@
 module
 
+public import Formalism.RealPlaceAnalysis.StatementKT
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ExistsExpEqOfMemKset
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Taylor
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeExpK
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.UniqueA
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Taylor
 
 @[expose] public section
 
@@ -237,8 +245,8 @@ theorem phi_K (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) {V : S
     · simp only [resE_of_ne h, LinearMap.zero_apply, map_zero]
   have hZc : ∀ v, φ (resZ E V hst Z v) = resZ E₂ V₂ hst₂ Z (φ v) := by
     intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [resZ, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, hc]
+
+    simp only [resZ, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, hc]
   have hZp : ∀ m v, φ (((resZ E V hst Z) ^ m) v) = ((resZ E₂ V₂ hst₂ Z) ^ m) (φ v) := by
     intro m
     induction m with

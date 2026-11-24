@@ -1,7 +1,19 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.DiracSquareMemLayer
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOne
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.MeasurePreservingMulRight
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsKfin
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SmoothDefs
+public import Formalism.RealPlaceAnalysis.Complexify
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 
 @[expose] public section
 
@@ -105,8 +117,8 @@ theorem range_one_layer {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ
     rw [SetLike.mem_coe, mem_restrictTotalDegree] at hQ
     have hsum : Xu u Q = ∑ m ∈ Q.support, AddMonoidAlgebra.coeff Q m • Xu u (monomial m 1) := by
       conv_lhs => rw [Q.as_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun m _ => ?_
       rw [← map_smul, smul_monomial, smul_eq_mul, mul_one]
     have horth : ∀ m ∈ Q.support, inner ℂ (Xu u Q) (Xu u (monomial m 1)) = 0 := by

@@ -1,6 +1,10 @@
 module
 
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulVbar
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtC
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsA
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsB
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtA
 
 @[expose] public section
 

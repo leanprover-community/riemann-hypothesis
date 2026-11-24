@@ -1,9 +1,56 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSection
-public import Formalism.HermitianCurvature.StatementNF
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreCut
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,7 +96,7 @@ private theorem vec_lemma_4 {h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hh : h
   by_cases hij : i = j
   · subst hij
     simp
-  · simp [hij, Pi.single_apply, Ne.symm hij]
+  · simp [hij, Ne.symm hij]
 
 theorem commute_nu {h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hh : h ∈ UH (Hb k))
     (h0 : h *ᵥ Pi.single 0 1 = Pi.single 0 1) (hl : h *ᵥ Pi.single (Fin.last k) 1 = Pi.single (Fin.last k) 1)
@@ -133,13 +180,11 @@ private theorem nu_unit_lemma_5 (hk : 1 ≤ k) (w s : ℂ) (hs : star s = s)
     rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
     · by_cases hj0 : j = 0
       · subst hj0
-        simp only [h0L, h0L.symm, hs, star_star, eq_self_iff_true, if_true, if_false,
-          ↓reduceIte, mul_one, one_mul, mul_neg, neg_mul]
+        simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
         linear_combination hws
       · by_cases hjL : j = Fin.last k
         · subst hjL
-          simp only [h0L, h0L.symm, hs, star_star, eq_self_iff_true, if_true, if_false,
-            ↓reduceIte, mul_one, one_mul, mul_neg, neg_mul]
+          simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
           ring
         · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
     · intro x hx
@@ -149,29 +194,27 @@ private theorem nu_unit_lemma_5 (hk : 1 ≤ k) (w s : ℂ) (hs : star s = s)
       rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
       · by_cases hj0 : j = 0
         · subst hj0
-          simp only [h0L, h0L.symm, hs, star_star, eq_self_iff_true, if_true, if_false,
-            ↓reduceIte, mul_one, one_mul, mul_neg, neg_mul]
+          simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
           ring
         · by_cases hjL : j = Fin.last k
           · subst hjL
-            simp only [h0L, h0L.symm, hs, star_star, eq_self_iff_true, if_true, if_false,
-              ↓reduceIte, mul_one, one_mul, mul_neg, neg_mul]
+            simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
             linear_combination (-1 : ℂ) * hws
           · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
       · intro x hx
         simp [hx.1, hx.2]
     · rw [Fintype.sum_eq_single i]
-      · simp only [hi0, hiL, if_false, if_true, ↓reduceIte, eq_self_iff_true, star_one, one_mul]
+      · simp only [hi0, hiL, ↓reduceIte, star_one, one_mul]
         by_cases hj0 : j = 0
         · subst hj0
-          simp [hi0, hiL]
+          simp [hi0]
         · by_cases hjL : j = Fin.last k
           · subst hjL
-            simp [hi0, hiL]
+            simp [hiL]
           · by_cases hij : i = j
             · subst hij
               simp [hi0, hiL]
-            · simp [hj0, hjL, hij, Ne.symm hij]
+            · simp [hj0, hjL, hij]
       · intro x hx
         simp [hi0, hiL, hx]
 

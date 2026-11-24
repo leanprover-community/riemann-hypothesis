@@ -1,10 +1,56 @@
 module
 
-public import Formalism.LatticeSlopes.Statement
 public import Formalism.LatticeSlopes.CovolAntiSameRank
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.CovolEqGram
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.SlopeInequality
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LatticeSlopes.LatticeSlopesProofs.SlopeInequality
 
 @[expose] public section
 
@@ -55,18 +101,6 @@ theorem saturation_properties : SaturProps := by
     haveI : DiscreteTopology N := DiscreteTopology.of_subset (s := (L : Set E)) hL hNL
     rw [rank_eq_finrank_span, rank_eq_finrank_span, hspan]
 
-private theorem linearIndependent_coe_basis_of_discrete {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    [FiniteDimensional ℝ E] (L : Submodule ℤ E) [DiscreteTopology L] {ι : Type*} [Fintype ι]
-    (e : Basis ι ℤ L) : LinearIndependent ℝ (fun i => (e i : E)) := by
-  have hspanZ : span ℤ (Set.range fun i => (e i : E)) = L := by
-    have : (Set.range fun i => (e i : E)) = L.subtype '' Set.range e := Set.range_comp _ _
-    rw [this, ← Submodule.map_span, e.span_eq, Submodule.map_subtype_top]
-  have hspanR : span ℝ (Set.range fun i => (e i : E)) = span ℝ (L : Set E) := by
-    rw [← Submodule.span_span_of_tower ℤ ℝ (Set.range fun i => (e i : E)), hspanZ]
-  rw [linearIndependent_iff_card_eq_finrank_span, Set.finrank, hspanR,
-    ← rank_eq_finrank_span L]
-  exact (Module.finrank_eq_card_basis e).symm
-
 theorem covol_anti_same_rank : CovolAntiSameRank := by
   intro E _ _ _ N N' hN' hle hrk
   haveI := hN'
@@ -98,9 +132,9 @@ theorem covol_anti_same_rank : CovolAntiSameRank := by
     rw [hgram, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hdetM]
     ring
   have hfpos : 0 < (Matrix.gram ℝ (fun j => (f j : E))).det :=
-    (Matrix.posDef_gram_of_linearIndependent (linearIndependent_coe_basis_of_discrete N f)).det_pos
+    (Matrix.posDef_gram_of_linearIndependent (_root_.Formalism.F.linearIndependent_coe_basis'' N f)).det_pos
   have hepos : 0 < (Matrix.gram ℝ (fun i => (e i : E))).det :=
-    (Matrix.posDef_gram_of_linearIndependent (linearIndependent_coe_basis_of_discrete N' e)).det_pos
+    (Matrix.posDef_gram_of_linearIndependent (_root_.Formalism.F.linearIndependent_coe_basis'' N' e)).det_pos
   have hM0 : M.det ≠ 0 := by
     intro h0
     rw [hdet, h0] at hfpos

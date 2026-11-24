@@ -1,6 +1,20 @@
 module
 
 public import CompanionTheory.ThickeningEstimates.LieGroupReduction.IsoOfIntegral
+public import CompanionTheory.ThickeningEstimates.LieGroupReduction.HasDerivAtSchwartzToL2
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import CompanionTheory.ThickeningEstimates.InnerProductFactorization.EqOfInner
 
 @[expose] public section
 
@@ -91,7 +105,6 @@ theorem ld_dil_one {H : ℝ → Eu l →L[ℝ] Eu l} {H' : Eu l →L[ℝ] Eu l} 
       have := (H t - H t₀).le_opNorm x
       rw [ContinuousLinearMap.sub_apply] at this
       simpa only [h0, ContinuousLinearMap.one_apply] using this
-    have hw : 0 < 1 + ‖x‖ := by positivity
     have hm := (convex_closedBall x (‖x‖ / 2)).norm_image_sub_le_of_norm_fderiv_le (𝕜 := ℝ) (f := f)
       (C := 2 ^ (N + 1) * C / (1 + ‖x‖) ^ (N + 1)) (x := x) (y := H t x) (fun y _ => f.differentiableAt) (fun y hy => by
         rw [le_div_iff₀ (by positivity)]

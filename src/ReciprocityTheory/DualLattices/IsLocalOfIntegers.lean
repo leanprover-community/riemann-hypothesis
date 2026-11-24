@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.DualLattices.CotangentSurjective
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.RingTheory.Ideal.BigOperators
 
 @[expose] public section
 
@@ -45,8 +49,8 @@ theorem det_mem_span_prod {R : Type*} [CommRing R] [IsLocalRing R] :
         (∀ i, Ideal.Quotient.mk (Ideal.span {c 0}) (a i) = q i 0) →
         (∑ i, r i • q i) 0 = Ideal.Quotient.mk (Ideal.span {c 0}) (∑ i, r i * a i) := by
       intro r a ha
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Finset.sum_apply, map_sum]
+
+      rw [Finset.sum_apply, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Pi.smul_apply, ← ha i, map_mul, Algebra.smul_def, Ideal.Quotient.algebraMap_eq]
     by_cases hc0 : IsUnit (c 0)
@@ -55,8 +59,8 @@ theorem det_mem_span_prod {R : Type*} [CommRing R] [IsLocalRing R] :
           LinearMap.range_eq_top.2 htl_surj]
       have h := ih (fun j => c j.succ) n (tl ∘ q) hgen T (fun k => by
         have := congrArg tl (hT k)
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_zero] at this
+
+        rw [map_sum, map_zero] at this
         simpa only [map_smul, Function.comp_apply] using this)
       rw [hprod, Ideal.span_singleton_mul_left_unit hc0]
       exact h
@@ -121,8 +125,8 @@ theorem det_mem_span_prod {R : Type*} [CommRing R] [IsLocalRing R] :
         have := hcomb (T k) (t k) (ht k)
         rw [hT k] at this
         have h2 := congrArg tl this
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_zero] at h2
+
+        rw [map_sum, map_zero] at h2
         simpa only [T'', Matrix.of_apply, map_smul, Function.comp_apply] using h2
       have hgen : Submodule.span R (Set.range (tl ∘ q'')) = ⊤ := by
         rw [eq_top_iff]
@@ -140,8 +144,8 @@ theorem det_mem_span_prod {R : Type*} [CommRing R] [IsLocalRing R] :
         have hx := hcomb r (w' * ai) hw
         rw [hr] at hx
         have htx : tl x = tl x0 := funext fun j => rfl
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [htx, ← hx, map_sum]
+
+        rw [htx, ← hx, map_sum]
         exact Submodule.sum_mem _ fun i _ => by
           rw [map_smul]
           exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
@@ -200,10 +204,9 @@ theorem prod_le_of_gen {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} 
   have hrelT : ∀ k, ∑ i, T k i • q i = 0 := by
     intro k
     have h := congrArg e (ha k)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_smul, map_sum, ite_smul, zero_smul] at h
-    simp only [hT, hqdef, sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+
+    simp only [map_smul, map_sum, ite_smul, zero_smul] at h
+    simp only [hT, hqdef, sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rw [h, sub_eq_zero]
     refine Finset.sum_congr rfl fun j _ => ?_
     split_ifs <;> simp

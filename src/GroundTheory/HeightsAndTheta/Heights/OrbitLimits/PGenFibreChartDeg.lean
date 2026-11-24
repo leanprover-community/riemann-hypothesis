@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GenFibreChartDeg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StChartScalingIndep
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StAdjoinIndepRelfinrank
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PFinrankAdjoinRange
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodB
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PFinrankAdjoinRange
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

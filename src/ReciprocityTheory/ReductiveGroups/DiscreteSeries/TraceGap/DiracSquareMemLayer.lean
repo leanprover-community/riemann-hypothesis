@@ -1,8 +1,20 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsKfin
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOne
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,8 +35,8 @@ theorem totalDegree_bind_le_of_linear {ι : Type*} (f : ι → MvPolynomial ι �
     (Q : MvPolynomial ι ℂ) : (bind₁ f Q).totalDegree ≤ Q.totalDegree := by
   classical
   conv_lhs => rw [Q.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine (totalDegree_finsetSum _ _).trans (Finset.sup_le fun m hm => ?_)
   rw [bind₁_monomial]
   refine (totalDegree_mul _ _).trans ?_

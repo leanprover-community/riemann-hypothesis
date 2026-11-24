@@ -1,6 +1,51 @@
 module
 
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ZsmulGeneratorEqZeroOfProjection
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.RingTheory.DedekindDomain.Different
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -200,13 +245,10 @@ theorem galE_bE (σ : H.E ≃ₐ[ℚ] H.E) : σ H.sqd = ((((H.galE σ).1.2 : ℤ
 
 theorem sqd_ne_zero : H.sqd ≠ 0 := by
   intro h
-  have h1 := H.sqd_sq
-  rw [h] at h1
-  have hd : H.d = 0 := by simpa using h1.symm
-  exact H.hyp.2.1.ne_zero hd
+  have hd : (H.d : H.E) = 0 := by simpa [h] using H.sqd_sq.symm
+  exact H.hyp.2.1.ne_zero (Nat.cast_eq_zero.mp hd)
 
 theorem galE_mem_Psi_iff (σ : H.E ≃ₐ[ℚ] H.E) : H.galE σ ∈ φ.Psi ↔ σ H.sqd = H.sqd := by
-  have hs := H.sqd_ne_zero
   rw [H.galE_bE σ]
   change (H.galE σ).1.2 = 1 ↔ _
   rcases Int.units_eq_one_or (H.galE σ).1.2 with h | h <;> rw [h]
@@ -216,10 +258,9 @@ theorem galE_mem_Psi_iff (σ : H.E ≃ₐ[ℚ] H.E) : H.galE σ ∈ φ.Psi ↔ �
       exact absurd h2 (by decide)
     · intro h2
       exfalso
-      apply hs
-      have h4 : ((((-1 : ℤˣ) : ℤ) : H.E)) = -1 := by simp
-      rw [h4] at h2
-      have h3 : (2 : H.E) * H.sqd = 0 := by linear_combination -h2
+      apply H.sqd_ne_zero
+      have h2' : - H.sqd = H.sqd := by simpa using h2
+      have h3 : (2 : H.E) * H.sqd = 0 := by linear_combination -h2'
       exact (mul_eq_zero.1 h3).resolve_left two_ne_zero
 
 end HostAx

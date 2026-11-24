@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.TransportedFrame
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.IpTheta
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousSplitInv
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AtTauExUniqueHolds
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousTensMap
 
 @[expose] public section
 

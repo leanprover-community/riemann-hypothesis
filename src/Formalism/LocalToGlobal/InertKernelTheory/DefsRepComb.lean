@@ -1,7 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsRep
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsInt
 public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.KerTh
 public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
 

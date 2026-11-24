@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceReducedGeneral
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceObjects
+public import Mathlib.RingTheory.Ideal.AssociatedPrime.Basic
 
 @[expose] public section
 

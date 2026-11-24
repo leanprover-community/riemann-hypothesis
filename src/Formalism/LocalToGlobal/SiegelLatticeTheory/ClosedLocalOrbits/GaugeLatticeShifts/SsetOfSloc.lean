@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.MeasurableSetNotUH
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.MulVecMapMem
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuDecayAll
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.EnergyIntLoc
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.Choice
 
 @[expose] public section
 
@@ -42,16 +44,15 @@ theorem uw_fix {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1
     ext j
     simp [Finset.sum_apply, Pi.single_apply]
   conv_lhs => rw [hw']
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show h *ᵥ (∑ i, w i • Pi.single i (1:ℂ)) = ∑ i, w i • (h *ᵥ Pi.single i (1:ℂ)) by
-      simp only [← Matrix.mulVecLin_apply, map_sum, map_smul]]
+
+  rw [show h *ᵥ (∑ i, w i • Pi.single i (1:ℂ)) = ∑ i, w i • (h *ᵥ Pi.single i (1:ℂ)) by
+    simp only [← Matrix.mulVecLin_apply, map_sum, map_smul]]
   rw [Finset.sum_congr rfl (fun i _ => key i), ← hw']
 
 private theorem mulVec_single_one_apply_gauge_lattice_shifts {n : ℕ} (m : Matrix (Fin n) (Fin n) ℂ) (j i : Fin n) :
     (m *ᵥ Pi.single j (1:ℂ)) i = m i j := by
   first
   | simp [Matrix.mulVec, dotProduct, Pi.single_apply]
-  | simp [Pi.single_apply]
 
 theorem sset_col {z : Fin (2 * r + k + 1) → ℂ} {M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hM : M ∈ Sset k r z) (a : Fin r) (i : Fin (2 * r + k + 1)) (hi : a.val ≤ i.val) :
@@ -124,7 +125,7 @@ theorem sum_low {n : ℕ} (Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ) (a : �
           rw [hv] at this
           simp only [Fin.val_mk]
           omega))
-        simp [bvec, Pi.single_apply, hne]
+        simp [bvec, hne]
       · intro h
         exact absurd (Finset.mem_univ _) h
     · rw [hw j (by omega)]
@@ -134,11 +135,11 @@ theorem sum_low {n : ℕ} (Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ) (a : �
           have := congrArg Fin.val h
           rw [hv] at this
           omega)
-        simp [bvec, Pi.single_apply, hne]
+        simp [bvec, hne]
       · simp
   conv_lhs => rw [hw']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← Matrix.mulVecLin_apply, map_sum, map_smul]
+
+  simp only [← Matrix.mulVecLin_apply, map_sum, map_smul]
 
 end Model
 

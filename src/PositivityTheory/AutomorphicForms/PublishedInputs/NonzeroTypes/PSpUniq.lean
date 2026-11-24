@@ -1,6 +1,8 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.NonzeroBasicTwistOfSpecialForm
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSubquotient
 
 @[expose] public section
@@ -103,8 +105,8 @@ theorem avg_apply (ρ : Representation ℂ (LG G) W) (w : W) :
 theorem avg_intertwine {W' : Type} [AddCommGroup W'] [Module ℂ W'] {ρ : Representation ℂ (LG G) W}
     {ρ' : Representation ℂ (LG G) W'} (F : ρ.IntertwiningMap ρ') (w : W) :
     F (avg G U ρ w) = avg G U ρ' (F w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [avg_apply, avg_apply, map_sum]
+
+  rw [avg_apply, avg_apply, map_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [map_smul, F.isIntertwining]
 
@@ -141,8 +143,8 @@ theorem avg_mem_etaSp (ρ : Representation ℂ (LG G) W) {w : W}
     have h2 := eta_ne_zero G m
     have h3 := eta_ne_zero G (c.out : LG G)
     field_simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [avg_apply, map_sum, Finset.sum_congr rfl fun c _ => key c, ← Finset.smul_sum]
+
+  rw [avg_apply, map_sum, Finset.sum_congr rfl fun c _ => key c, ← Finset.smul_sum]
   congr 1
   exact Fintype.sum_equiv (MulAction.toPerm m') _ _ (fun c => rfl)
 

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsJoinIntNum
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PEventualValueFacts
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -23,14 +23,14 @@ theorem isWeightedHomogeneous_algHom {R : Type*} [CommRing R] {σ τ M N : Type*
     (hφ : ∀ s, IsWeightedHomogeneous w' (φ (X s)) (L (w s)))
     {f : MvPolynomial σ R} {m : M} (hf : IsWeightedHomogeneous w f m) :
     IsWeightedHomogeneous w' (φ f) (L m) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum]
+
+  rw [f.as_sum, map_sum]
   refine IsWeightedHomogeneous.sum _ _ _ fun d hd => ?_
   have hw : Finsupp.weight w d = m := hf (mem_support_iff.mp hd)
   rw [monomial_eq, map_mul, algHom_C, algebraMap_eq, map_finsuppProd]
   have h1 : IsWeightedHomogeneous w' (d.prod fun s e => φ (X s ^ e)) (L m) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hw, Finsupp.weight_apply, Finsupp.sum, map_sum]
+
+    rw [← hw, Finsupp.weight_apply, Finsupp.sum, map_sum]
     unfold Finsupp.prod
     refine IsWeightedHomogeneous.prod _ _ _ fun s _ => ?_
     show IsWeightedHomogeneous w' (φ (X s ^ d s)) (L (d s • w s))
@@ -126,8 +126,8 @@ theorem rename_dropPt_of_homog {g : MRing (Sum.elim ι ptIdx) F} {M : K ⊕ Unit
     rename (liftVar (ι := ι) ptIdx) (aeval (dropPt F) g) * X newVar ^ (M (.inr ())) = g := by
   conv_rhs => rw [g.as_sum]
   conv_lhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun d hd => ?_
   have hw : Finsupp.weight (blockWeight (Sum.elim ι ptIdx)) d = M := hg (mem_support_iff.mp hd)
   have ht : M (.inr ()) = d newVar := by rw [← hw, weight_newBlock]

@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RepresentationTheory.Coinduced
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.LongExactSequence
 
 @[expose] public section
 

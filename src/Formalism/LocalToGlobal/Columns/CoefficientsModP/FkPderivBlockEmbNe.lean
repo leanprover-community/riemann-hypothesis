@@ -1,6 +1,11 @@
 module
 
+public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.LocalRingCardinality.Params
 
 @[expose] public section
 
@@ -172,15 +177,15 @@ theorem fk_descent {σ κ : Type} [Fintype κ] (v : κ → MvPolynomial σ K) (h
   have key : ∑ i, (c i - (π (c i) : K)) • v i = 0 := by
     ext m
     rw [coeff_sum, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
-    simp only [coeff_smul, smul_eq_mul, sub_mul, Finset.sum_sub_distrib]
+    simp only [MvPolynomial.coeff_smul, smul_eq_mul, sub_mul, Finset.sum_sub_distrib]
     rw [sub_eq_zero]
     have h1 : AddMonoidAlgebra.coeff (∑ i, c i • v i) m = ∑ i, c i * AddMonoidAlgebra.coeff (v i) m := by
       rw [coeff_sum]
-      simp only [coeff_smul, smul_eq_mul]
+      simp only [MvPolynomial.coeff_smul, smul_eq_mul]
     have h2 : ((π (AddMonoidAlgebra.coeff (∑ i, c i • v i) m) : K0) : K) = AddMonoidAlgebra.coeff (∑ i, c i • v i) m :=
       congrArg (fun a : K0 => (a : K)) (hπ' ⟨_, fk_coeff_mem K0 hx m⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h1, ← h2, h1, map_sum]
+
+    rw [← h1, ← h2, h1, map_sum]
     push_cast
     refine Finset.sum_congr rfl fun i _ => ?_
     have := hmul ⟨_, fk_coeff_mem K0 (hv0 i) m⟩ (c i)

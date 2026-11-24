@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.FieldTheory.Separable
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

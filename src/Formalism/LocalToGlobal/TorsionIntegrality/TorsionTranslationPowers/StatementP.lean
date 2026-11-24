@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementT
 public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.IsotropicVanish
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementB
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
 
 @[expose] public section
 

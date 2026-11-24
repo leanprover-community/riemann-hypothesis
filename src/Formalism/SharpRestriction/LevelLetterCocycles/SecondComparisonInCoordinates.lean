@@ -2,9 +2,50 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExponentWindowSubsetShort
-public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 public import Lemmata.FirstBlockLemmaI.Imports
 public import Lemmata.GeneralBFactRightForm.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -176,8 +217,8 @@ theorem mem_DelF_mul {δ' : W.Gam} (hδ' : δ' ∈ W.DelF) (δ : W.Gam) :
 
 theorem sum_γA_mem (c : LetA O n) : ∑ δ ∈ W.DelF, W.γA δ c ∈ W.AΔ := by
   intro δ' hδ'
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_equiv (Equiv.mulLeft δ') (fun δ => ?_) (fun δ _ => ?_)
   · exact mem_DelF_mul hδ' δ
   · rw [← γA_mul]
@@ -192,8 +233,8 @@ theorem average (hΔ : IsUnit ((W.DelF.card : ℕ) : O)) {r : ℕ} (c : Fin r �
     fun j => W.AΔ.smul_mem (sum_γA_mem (c j)) _, ?_⟩
   have h1 : ∀ δ ∈ W.DelF, z = ∑ j, W.γA δ (c j) • w j := by
     intro δ hδ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hz δ hδ, h, map_sum]
+
+    rw [← hz δ hδ, h, map_sum]
     exact Finset.sum_congr rfl fun j _ => by rw [γD_smulA, hw j δ hδ]
   have h2 : ((W.DelF.card : ℕ) : O) • z = ∑ j, (∑ δ ∈ W.DelF, W.γA δ (c j)) • w j := by
     simp only [Finset.sum_smul]
@@ -212,8 +253,8 @@ theorem φspan_le {r : ℕ} (b : Fin r → W.DD T)
   obtain ⟨a, ha⟩ := hb x hx
   have e : W.φD T (((letE (i - 1) : LetA O n) • (LinearMap.id : W.DD T →ₗ[LetA O n] W.DD T)) x) =
       ∑ j, W.φA (a j) • W.φD T ((letE (i - 1) : LetA O n) • b j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.smul_apply, LinearMap.id_apply, ha, Finset.smul_sum, map_sum]
+
+    rw [LinearMap.smul_apply, LinearMap.id_apply, ha, Finset.smul_sum, map_sum]
     exact Finset.sum_congr rfl fun j _ => by rw [smul_comm, φD_smulA]
   rw [SetLike.mem_coe, e]
   exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
@@ -294,7 +335,7 @@ theorem invX_of (hR : RingA W) (C : Coord W I T) : (latOf C).Inv PowerSeries.X :
 
 theorem isUnit_add_of_mem_jacobson {R : Type} [CommRing R] {u z : R} (hu : IsUnit u)
     (hz : z ∈ (⊥ : Ideal R).jacobson) : IsUnit (u + z) := by
-  first | exact Bl.FirstBlockLemmaI.goal1 .. | (apply Bl.FirstBlockLemmaI.goal1 <;> assumption) | (intros; apply Bl.FirstBlockLemmaI.goal1 <;> assumption) | (apply @Bl.FirstBlockLemmaI.goal1 <;> assumption) | (intros; apply @Bl.FirstBlockLemmaI.goal1 <;> assumption) | (apply @Bl.FirstBlockLemmaI.goal1 <;> first | assumption | infer_instance) | exact @Bl.FirstBlockLemmaI.goal1 R ‹_› u z hu hz | exact @Bl.FirstBlockLemmaI.goal1 R ‹_› u z hu | exact @Bl.FirstBlockLemmaI.goal1 R ‹_› u z | exact @Bl.FirstBlockLemmaI.goal1 R ‹_› u | exact @Bl.FirstBlockLemmaI.goal1 R ‹_› | exact @Bl.FirstBlockLemmaI.goal1 R
+  first | (apply Bl.FirstBlockLemmaI.goal1 <;> assumption)
 
 theorem isUnit_pS (hR : RingA W) (hT : ToolsAlg W) (s : ℕ) :
     IsUnit (algebraMap (LetA O n) W.EE (pS W s)) := by
@@ -374,12 +415,6 @@ theorem ltors_of [IsDomain O] (hp0 : ((PD.p : ℕ) : O) ≠ 0) (C : Coord W I T)
 
 section Abstract
 
-theorem linIndep_of_mutual {R V : Type} [CommRing R] [IsDomain R] [AddCommGroup V] [Module R V]
-    {r : ℕ} (e w : Fin r → V) (he : LinearIndependent R e) {α β : R} (hα : α ≠ 0) (hβ : β ≠ 0)
-    (h1 : ∀ a, β • w a ∈ Submodule.span R (Set.range e))
-    (h2 : ∀ l, α • e l ∈ Submodule.span R (Set.range w)) : LinearIndependent R w := by
-  first | exact Bl.general_b_fact_right_form.goal1 .. | (apply Bl.general_b_fact_right_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_right_form.goal1 <;> assumption) | (apply @Bl.general_b_fact_right_form.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_right_form.goal1 <;> assumption) | (apply @Bl.general_b_fact_right_form.goal1 <;> first | assumption | infer_instance) | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w he α β hα hβ h1 h2 | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w he α β hα hβ h1 | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w he α β hα hβ | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w he α β hα | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w he α β | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w he α | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w he | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e w | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r e | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› r | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› ‹_› | exact @Bl.general_b_fact_right_form.goal1 R V ‹_› | exact @Bl.general_b_fact_right_form.goal1 R V | exact @Bl.general_b_fact_right_form.goal1 R
-
 variable {O' : Type} [CommRing O'] {B' : Formalism.ExponentWindows.E.Base O'} {n' : ℕ} {V : Type} [AddCommGroup V]
   [Module (PowerSeries O') V]
 
@@ -437,8 +472,8 @@ theorem pull_mutual (L : Formalism.ExponentWindows.E.Lat B' n' V) (m h : ZMod n'
         rintro _ ⟨y, hy, rfl⟩
         rw [SetLike.mem_coe, hi] at hy
         obtain ⟨cf, hcf⟩ := (Submodule.mem_span_range_iff_exists_fun (PowerSeries O')).1 (h2 y hy)
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.lsmul_apply, ← L.φ_semi, ← hcf, map_sum]
+
+        rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.lsmul_apply, ← L.φ_semi, ← hcf, map_sum]
         refine Submodule.sum_mem _ fun a _ => ?_
         rw [L.φ_semi]
         exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
@@ -454,7 +489,7 @@ theorem pullback_free_of_comparison [IsDomain O'] (L : Formalism.ExponentWindows
   obtain ⟨e, -, he⟩ := hfree c
   obtain ⟨e', hli, he'⟩ := hfree (c + ((k : ℕ) : ZMod n'))
   obtain ⟨α, hα, β, hβ, h1, h2⟩ := pull_mutual L m h hM hh c e he k
-  refine ⟨r, e, he, linIndep_of_mutual e' _ hli (Pp_ne_zero hp hα) (Pp_ne_zero hp hβ)
+  refine ⟨r, e, he, _root_.Bl.general_b_fact_right_form.goal1 e' _ hli (Pp_ne_zero hp hα) (Pp_ne_zero hp hβ)
     (fun a => by rw [he']; exact h1 a)
     (fun l => h2 _ (by rw [← he']; exact Submodule.subset_span ⟨l, rfl⟩))⟩
 
@@ -669,13 +704,5 @@ theorem primUnit_of (hInj : I.Inj) (hFull : I.Full) {e : W.DD W.one} (he : UnitG
 
 theorem unram_of (h : Function.Bijective (algebraMap K₀ K)) : Module.finrank K₀ K = 1 := by
   rw [← (AlgEquiv.ofBijective (Algebra.ofId K₀ K) h).toLinearEquiv.finrank_eq, Module.finrank_self]
-
-theorem p_ne_zero_of (W : LocWach PD LL O v n) : ((PD.p : ℕ) : O) ≠ 0 := by
-  intro h
-  have h1 : ((PD.p : ℕ) : LL) = 0 := by
-    rw [← map_natCast (algebraMap O LL), h, map_zero]
-  have h2 := W.v_l
-  rw [h1, AddValuation.map_zero] at h2
-  exact WithTop.top_ne_one h2
 
 end Formalism.MainNotions.WachCoordinates.Br

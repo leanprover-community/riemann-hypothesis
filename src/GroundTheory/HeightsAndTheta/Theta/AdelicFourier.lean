@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Theta.AdelicFourierCoord
-public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
+import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
 
 @[expose] public section
 

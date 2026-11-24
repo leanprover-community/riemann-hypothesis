@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.HasModerateGrowthZero
+public import GroundTheory.AutomorphicForms.GKModules.ZKFinite
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Translation
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

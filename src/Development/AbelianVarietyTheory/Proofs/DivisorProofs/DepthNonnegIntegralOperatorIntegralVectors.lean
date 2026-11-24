@@ -1,14 +1,54 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.TypicalCurveStructureConstants
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.RootStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.FactorialWeightedSumBound
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.OmBStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.WtSubOneLe
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsExpEqOfSubstLg
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralInvariantDerivationLogStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralInvariantDerivationLog
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsExpEqOfSubstLg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -55,8 +95,8 @@ theorem mvIsInt_mul {σ : Type} {g h : MvPowerSeries σ C} (hg : MvIsInt v g) (h
 theorem mvIsInt_sum {σ ι : Type} (s : Finset ι) {g : ι → MvPowerSeries σ C}
     (hg : ∀ i, MvIsInt v (g i)) : MvIsInt v (∑ i ∈ s, g i) := by
   intro α
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← mem_intSub, map_sum]
+
+  rw [← mem_intSub, map_sum]
   exact Subring.sum_mem _ fun i _ => hg i α
 
 theorem hurInt_zero {σ : Type} : HurInt v (0 : MvPowerSeries σ C) := fun α => by simp
@@ -72,8 +112,8 @@ theorem hurInt_one {σ : Type} : HurInt v (1 : MvPowerSeries σ C) := by
 theorem hurInt_sum {σ ι : Type} (s : Finset ι) {g : ι → MvPowerSeries σ C}
     (hg : ∀ i ∈ s, HurInt v (g i)) : HurInt v (∑ i ∈ s, g i) := by
   intro α
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.mul_sum]
+
+  rw [map_sum, Finset.mul_sum]
   exact Subring.sum_mem _ fun i hi => hg i hi α
 
 theorem hurInt_mul {σ : Type} [Fintype σ] {g h : MvPowerSeries σ C} (hg : HurInt v g)
@@ -150,7 +190,7 @@ theorem mvIsInt_X {σ : Type} (s : σ) : MvIsInt v (X s : MvPowerSeries σ C) :=
 theorem hurInt_subst_expOf {d : ℕ} (G : LogFGL v d) {f : MvPowerSeries (Fin d) C}
     (hf : MvIsInt v f) : HurInt v (subst (expOf G) f) := by
   classical
-  obtain ⟨D, hD, hJ⟩ := GlobalTheory.T.exists_integral_invariant_derivation_log C v d G
+  obtain ⟨D, hD, hJ⟩ := _root_.GlobalTheory.LogJacobian.exists_integral_invariant_derivation C v d G
   have hS : HasSubst (expOf G) := hasSubst_of_constantCoeff_zero (isExp_expOf G).1
   suffices h : ∀ n, ∀ α : Fin d →₀ ℕ, ∑ i, α i = n → ∀ f : MvPowerSeries (Fin d) C,
       MvIsInt v f → (mfact α : C) * coeff α (subst (expOf G) f) ∈ intSub v from
@@ -187,7 +227,7 @@ theorem hurInt_subst_expOf {d : ℕ} (G : LogFGL v d) {f : MvPowerSeries (Fin d)
       have : ∀ i ∈ Finset.univ.erase k,
           (((β + Finsupp.single k 1 : Fin d →₀ ℕ) i).factorial : C) = ((β i).factorial : C) := by
         intro i hi
-        simp [Finsupp.single_apply, Ne.symm (Finset.ne_of_mem_erase hi)]
+        simp [Ne.symm (Finset.ne_of_mem_erase hi)]
       rw [Finset.prod_congr rfl this]
       simp [Nat.factorial_succ]
       ring

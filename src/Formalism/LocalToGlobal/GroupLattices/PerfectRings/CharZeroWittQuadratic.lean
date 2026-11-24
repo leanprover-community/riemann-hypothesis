@@ -1,9 +1,15 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.JOInjective
-public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IsLocalRingOfComplete
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.StdSubPlacesConst
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+import Formalism.LocalRingCardinality.SpanPowerMembership.GatRing
+import Formalism.LocalToGlobal.GroupLattices.PerfectRings.AlgebraMapFinite
+public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IsLocalRingOfComplete
+import Mathlib.RingTheory.WittVector.Complete
 
 @[expose] public section
 
@@ -73,7 +79,7 @@ theorem range_le_simple (θ : LL) (hθ : ℚ⟮θ⟯ = ⊤) (x : LL) : τ x ∈ 
 
   let T : Subfield LL := ((KO p n)⟮τ θ⟯).toSubfield.comap τ
   have hQ : ∀ q : ℚ, algebraMap ℚ LL q ∈ T := fun q => by
-    simp [T, Subfield.mem_comap, eq_ratCast, map_ratCast, SubfieldClass.ratCast_mem]
+    simp [T, eq_ratCast, SubfieldClass.ratCast_mem]
   have key : ℚ⟮θ⟯ ≤ T.toIntermediateField hQ := by
     rw [IntermediateField.adjoin_simple_le_iff]
     exact IntermediateField.mem_adjoin_simple_self _ _
@@ -110,8 +116,7 @@ variable {p n} {LL : Type} [Field LL] [NumberField LL] (τ : LL →+* Om p n)
 theorem embL_integral (x : 𝓞 LL) :
     ((embL τ).comp (algebraMap (𝓞 LL) LL)) x ∈ integralClosure (OO p n) (Lt τ) := by
   rw [mem_integralClosure_iff]
-  have h : IsIntegral ℤ (algebraMap (𝓞 LL) LL x) := RingOfIntegers.isIntegral_coe x
-  exact (h.map (((embL τ).comp (RingHom.id LL)).toIntAlgHom)).tower_top
+  exact ((RingOfIntegers.isIntegral_coe x).map (((embL τ).comp (RingHom.id LL)).toIntAlgHom)).tower_top
 
 def embO : 𝓞 LL →+* Ot τ :=
   ((embL τ).comp (algebraMap (𝓞 LL) LL)).codRestrict (integralClosure (OO p n) (Lt τ)) (embL_integral τ)
@@ -133,8 +138,7 @@ theorem wU_mem_max : wU p n ∈ maximalIdeal (OO p n) := by
   have h1 : (1 : W2 p n) ∈ Ideal.span {(p : W2 p n)} := by
     rw [← Ideal.Quotient.eq_zero_iff_mem, map_one]
     exact h0.symm
-  rw [Ideal.mem_span_singleton] at h1
-  have hpu : IsUnit (p : W2 p n) := isUnit_of_dvd_one h1
+  have hpu : IsUnit (p : W2 p n) := isUnit_of_dvd_one (Ideal.mem_span_singleton.mp h1)
   have h2 : IsUnit ((p : W2 p n).coeff 0) := hpu.map (WittVector.constantCoeff (p := p) (R := F2 p n))
   rw [WittVector.coeff_p_zero] at h2
   exact not_isUnit_zero h2
@@ -149,13 +153,10 @@ theorem p_mem_max (L : Type) [Field L] [Algebra (KO p n) L] [FiniteDimensional (
   have hw2 : wU p n * wU p n = (p : OO p n) := by
     ext <;> simp [wU]
   have h1 : (p : OO p n) ∈ maximalIdeal (OO p n) := hw2 ▸ Ideal.mul_mem_left _ _ wU_mem_max
-  rw [← under_max L, Ideal.mem_comap, map_natCast] at h1
-  exact h1
+  simpa [← under_max L, Ideal.mem_comap, map_natCast] using h1
 
 theorem p_mem_placeIdeal : (p : 𝓞 LL) ∈ placeIdeal τ := by
-  show embO τ (p : 𝓞 LL) ∈ maximalIdeal (Ot τ)
-  rw [map_natCast]
-  exact p_mem_max (Lt τ)
+  simpa [placeIdeal, Ideal.mem_comap, map_natCast] using p_mem_max (Lt τ)
 
 def placeOf : HeightOneSpectrum (𝓞 LL) where
   asIdeal := placeIdeal τ

@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMahler
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 
 @[expose] public section
 
@@ -29,8 +28,8 @@ theorem eval_smul_of_isHomogeneous {φ : MvPolynomial (Fin n) ℂ} {m : ℕ} (h�
 theorem smul_mem_zeroSet {W : Ideal (MvPolynomial (Fin n) ℂ)} (hW : IsHomogIdeal W)
     {x : Fin n → ℂ} (hx : ∀ q ∈ W, eval x q = 0) (t : ℂ) : ∀ q ∈ W, eval (t • x) q = 0 := by
   intro q hq
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sum_homogeneousComponent q, map_sum]
+
+  rw [← sum_homogeneousComponent q, map_sum]
   refine Finset.sum_eq_zero fun d _ => ?_
   rw [eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous d q), hx _ (hW q hq d), mul_zero]
 

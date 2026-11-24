@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.RealGroupsLie
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

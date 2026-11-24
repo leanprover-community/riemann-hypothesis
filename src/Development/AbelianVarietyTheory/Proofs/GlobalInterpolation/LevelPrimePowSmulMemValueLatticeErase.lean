@@ -1,10 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.FormsStable
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalC
+public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLTwist
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
 
 @[expose] public section
 
@@ -110,8 +156,8 @@ theorem rowDiv_shift (R : Type) [CommRing R] {r n : ℕ} (H : Fin r → ℤ) (a 
     IsWeightedHomogeneous (rowZ r n) (rowDiv R a b k f) (H + k • (Pi.single a 1 - Pi.single b 1)) := by
   unfold rowDiv
   nth_rw 1 [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Polynomial.finsetSum_coeff]
+
+  rw [map_sum, Polynomial.finsetSum_coeff]
   refine IsWeightedHomogeneous.sum _ _ _ fun d hd => ?_
   have := shift_rowGen_monomial R a b d (AddMonoidAlgebra.coeff f d) k
   rwa [hf (mem_support_iff.mp hd)] at this
@@ -124,19 +170,6 @@ theorem weight_rowZ {r n : ℕ} (d : Fin r × Fin n →₀ ℕ) (a : Fin r) :
   | add f g hf hg => simp only [map_add (f := _), Pi.add_apply, Nat.cast_add, hf, hg]
   | single v c =>
     simp [Finsupp.weight_apply, rowZ, rowW, Pi.single_apply, Finsupp.sum_single_index]
-
-theorem weight_rowW {r n : ℕ} (d : Fin r × Fin n →₀ ℕ) (a : Fin r) :
-    Finsupp.weight (rowW r n) d a = rowDeg d a := by
-  classical
-  induction d using Finsupp.induction_linear with
-  | zero => simp [rowDeg]
-  | add f g hf hg => simp only [map_add (f := _), Pi.add_apply, hf, hg, rowDeg, Finsupp.add_apply, Finset.sum_add_distrib]
-  | single v c =>
-    obtain ⟨b, s⟩ := v
-    by_cases h : a = b
-    · subst h
-      simp [Finsupp.weight_apply, rowDeg, rowW, Finsupp.sum_single_index, Finsupp.single_apply]
-    · simp [Finsupp.weight_apply, rowDeg, rowW, Finsupp.sum_single_index, Finsupp.single_apply, h, Ne.symm h]
 
 theorem word_homog (R : Type) [CommRing R] {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone ν)
     (w : List (Fin n × Fin n × ℕ)) :
@@ -172,7 +205,7 @@ theorem word_weight {n : ℕ} (hn : 0 < n) (ν : Fin n → ℕ) (hν : Antitone 
     have hs : (Finset.univ.filter fun a : Fin n => a.val < 1) = {⟨0, hn⟩} := by
       ext a; simp [Fin.ext_iff]
     rw [hs, Finset.sum_singleton, Finset.sum_singleton] at hd
-    rw [weight_rowW]
+    rw [_root_.Formalism.GradedWeylDivisibility.ldrow_weight_rowW]
     simpa [rowNu, hn] using hd
   · funext a
     have := congrFun ((hH hd).trans (hH hm).symm) a
@@ -207,7 +240,7 @@ theorem roundAct_map {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {n 
 theorem roundAct_mem (R : Type) [CommRing R] {n : ℕ} (lam : DomWeight n)
     (k : GL (Fin n) R) (g : MvPolynomial (Fin n × Fin n) R) (hg : g ∈ delSq R n lam) :
     roundAct R n lam k g ∈ delSq R n lam :=
-  Submodule.smul_mem _ _ (Formalism.UG.Final.WeylGLStable R n n le_rfl _ _ g hg)
+  Submodule.smul_mem _ _ (_root_.Formalism.UG.P.wlocal_global R n n le_rfl _ _ g hg)
 
 theorem diag_step {R : Type} [CommRing R] (φ : R →+* ℂ) {n : ℕ} (hn : 0 < n) (lam : DomWeight n) (T : ℕ)
     (t : ℂˣ) (ht : (t : ℂ) = T) (g : MvPolynomial (Fin n × Fin n) R) (hg : g ∈ delSq R n lam) :
@@ -314,7 +347,7 @@ theorem f_expand (p : LocF.PP Lc n) {h : GL (Fin n) Lc.K} (hh : Lc.IsFrame n h p
   have e : (h : Matrix (Fin n) (Fin n) Lc.K).mulVec (fun a => (x a : Lc.K)) =
       ∑ a, x a • (h : Matrix (Fin n) (Fin n) Lc.K).mulVec (Pi.single a 1) := by
     funext b
-    simp [Matrix.mulVec, dotProduct, Finset.sum_apply, Pi.single_apply, Subring.smul_def, mul_comm]
+    simp [Matrix.mulVec, dotProduct, Finset.sum_apply, Subring.smul_def, mul_comm]
   rw [e]
   have hm : ∀ a, (h : Matrix (Fin n) (Fin n) Lc.K).mulVec (Pi.single a 1) ∈ p.1.L :=
     fun a => (hh _).2 (single_std a)

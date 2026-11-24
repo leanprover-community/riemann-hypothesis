@@ -1,8 +1,8 @@
 module
 
-public import ReciprocityTheory.ThetaQuasiPeriods.Change
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.StTransl
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.SpGenStatement
+public import Mathlib.LinearAlgebra.SymplecticGroup
+public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 
 @[expose] public section
 

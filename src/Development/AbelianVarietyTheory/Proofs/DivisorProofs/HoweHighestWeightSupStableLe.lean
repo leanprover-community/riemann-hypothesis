@@ -1,8 +1,42 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ActAtApply
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHighestWeightLiftModStableSubspaceStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHighestWeightLiftModStableSubspace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,17 +53,6 @@ theorem isKC_Eab_of_posC {p q : ℕ} {c d : Ix p q} (h : posC c d) : IsKC (Eab c
   split_ifs with h1
   · obtain ⟨rfl, rfl⟩ := h1
     exact absurd hcd hab
-  · rfl
-
-theorem sameBlock_refl {p q : ℕ} (a : Ix p q) : sameBlock a a := by
-  cases a <;> trivial
-
-theorem isKC_Eab_diag {p q : ℕ} (c : Ix p q) : IsKC (Eab c c) := by
-  intro a b hab
-  simp only [Eab, Matrix.single_apply]
-  split_ifs with h1
-  · rcases h1 with ⟨rfl, rfl⟩
-    exact absurd (sameBlock_refl _) hab
   · rfl
 
 theorem mem_hwSub_iff {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
@@ -49,23 +72,23 @@ theorem hw_sup_le (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (act : 
     Submodule.mem_inf.2 ⟨hN X hX w (Submodule.mem_inf.1 hw').1, hN' X hX w (Submodule.mem_inf.1 hw').2⟩
   have h1 : ∀ c, act (Eab c c) n - ((μ c : ℚ) : ℂ) • n ∈ N ⊓ N' := by
     intro c
-    refine Submodule.mem_inf.2 ⟨N.sub_mem (hN _ (isKC_Eab_diag c) n hn) (N.smul_mem _ hn), ?_⟩
+    refine Submodule.mem_inf.2 ⟨N.sub_mem (hN _ (_root_.GlobalTheory.FockAlg.MinFirst.isKC_diag c) n hn) (N.smul_mem _ hn), ?_⟩
     have e : act (Eab c c) n - ((μ c : ℚ) : ℂ) • n = -(act (Eab c c) n' - ((μ c : ℚ) : ℂ) • n') := by
       have := hw c
       rw [map_add (f := _), smul_add] at this
       rw [neg_sub, sub_eq_sub_iff_add_eq_add, this, add_comm]
     rw [e]
-    exact N'.neg_mem (N'.sub_mem (hN' _ (isKC_Eab_diag c) n' hn') (N'.smul_mem _ hn'))
+    exact N'.neg_mem (N'.sub_mem (hN' _ (_root_.GlobalTheory.FockAlg.MinFirst.isKC_diag c) n' hn') (N'.smul_mem _ hn'))
   have h2 : ∀ c d, posC c d → act (Eab c d) n ∈ N ⊓ N' := by
     intro c d hcd
-    refine Submodule.mem_inf.2 ⟨hN _ (isKC_Eab_of_posC hcd) n hn, ?_⟩
+    refine Submodule.mem_inf.2 ⟨hN _ (_root_.GlobalTheory.CommonQuot.isKC_pos' hcd) n hn, ?_⟩
     have e : act (Eab c d) n = -(act (Eab c d) n') := by
       have := hpos c d hcd
       rw [map_add (f := _)] at this
       exact eq_neg_of_add_eq_zero_left this
     rw [e]
     exact N'.neg_mem (hN' _ (isKC_Eab_of_posC hcd) n' hn')
-  obtain ⟨n1, hn1N, hn1h, hd⟩ := GlobalTheory.T.exists_highestWeight_lift_mod_stable_subspace p q V act hG (N ⊓ N') N hI hN μ n hn h1 h2
+  obtain ⟨n1, hn1N, hn1h, hd⟩ := _root_.GlobalTheory.HoweR.LiftMod.lift_mod p q V act hG (N ⊓ N') N hI hN μ n hn h1 h2
   have hdN' : n + n' - n1 ∈ N' := by
     have : n + n' - n1 = (n - n1) + n' := by abel
     rw [this]

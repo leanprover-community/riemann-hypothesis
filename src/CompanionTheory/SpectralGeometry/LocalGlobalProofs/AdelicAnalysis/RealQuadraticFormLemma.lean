@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LatticeFundamentalDomainVolumeStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ThetaAverageExpectedCountStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopologyStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LatticeFundamentalDomainVolume
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ThetaAverageExpectedCount
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -314,11 +318,11 @@ theorem fourier_coefficient : ∀ (F : Type) [Field F] [NumberField F], ∀ [Mea
   haveI : Countable F := countable_field
   obtain ⟨hTR, -, -, -, hρ, -, -⟩ := id hQ
   obtain ⟨hprob, -, -, hOrth, -⟩ := id hC
-  obtain ⟨-, -, hT2, hOc, hOo, -, hmem, -, -, -⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
-  obtain ⟨-, -, -, hfd⟩ := GlobalTheory.T.lattice_fundamental_domain_volume F hTR ρ hρ N hN
+  obtain ⟨-, -, hT2, hOc, hOo, -, hmem, -, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
+  obtain ⟨-, -, -, hfd⟩ := _root_.GlobalTheory.CompanionTheory.SW.FD.main F hTR ρ hρ N hN
   obtain ⟨hvol, horth⟩ := hfd D hD
   have hsb : SB (indL a : (ι → A F) → ℂ) := sb_indL hT2 hOc hOo ha
-  obtain ⟨C, hCb⟩ := GlobalTheory.T.weighted_theta_average_le_of_countData F ι M B ρ P hQ Ω Pr gf gi hC (indL a) hsb 1 1 one_pos one_pos
+  obtain ⟨C, hCb⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.ThetaBound.theta_integral_bound F ι M B ρ P hQ Ω Pr gf gi hC (indL a) hsb 1 1 one_pos one_pos
   obtain ⟨hmeas, hbound⟩ := hCb (fun _ => Complex.I) (by simp) (by simp)
   set s : (ι → F) → Ω → ℂ :=
     fun z ω => thTerm B ρ P (gf ω) (gi ω) (indL a) (fun _ => Complex.I) z with hs
@@ -363,7 +367,7 @@ theorem fourier_coefficient : ∀ (F : Type) [Field F] [NumberField F], ∀ [Mea
         intro x
         rw [ph_neg, ph_mul, hz', add_neg_cancel, ph_zero]
       simp_rw [this]
-      simp [setIntegral_const, Measure.real])
+      simp [Measure.real])
     (by
       intro z hz
       by_cases hall : ∀ ω, s z ω = 0

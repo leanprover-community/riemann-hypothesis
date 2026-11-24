@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataInst
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.LatTop
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -26,12 +68,9 @@ theorem exists_common_mult {ι : Type} [Fintype ι] (L : Submodule (𝓞 E) (Fin
     (hL : Submodule.span E (L : Set (Fin n → E)) = ⊤) (x : ι → Fin n → E) :
     ∃ N : ℤ, N ≠ 0 ∧ ∀ q, N • x q ∈ L := by
   classical
-  have hN : ∀ q, ∃ N : ℤ, N ≠ 0 ∧ N • x q ∈ L := fun q => exists_int_smul_mem L hL _
-  choose Nf hNf hNm using hN
+  choose Nf hNf hNm using fun q => exists_int_smul_mem L hL (x q)
   refine ⟨∏ q, Nf q, Finset.prod_ne_zero_iff.2 fun q _ => hNf q, fun q => ?_⟩
-  have hq : ∏ q, Nf q = (∏ q' ∈ Finset.univ.erase q, Nf q') * Nf q :=
-    (Finset.prod_erase_mul _ _ (Finset.mem_univ q)).symm
-  rw [hq, mul_smul]
+  rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ q), mul_smul]
   exact zsmul_mem (hNm q) _
 
 theorem isOpen_latLoc (L : Submodule (𝓞 E) (Fin n → E))
@@ -193,10 +232,7 @@ theorem isCompact_kloc :
     · rintro ⟨h1, h2⟩
       exact ⟨h1, ⟨_, h2, rfl⟩⟩
     · rintro ⟨h1, y, hy, hyg⟩
-      refine ⟨h1, ?_⟩
-      have hy' : y = (((g⁻¹ : GL (Fin n) (Fv F v ⊗[F] E)) : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E))) :=
-        MulOpposite.op_injective hyg
-      rwa [hy'] at hy
+      exact ⟨h1, (MulOpposite.op_injective hyg) ▸ hy⟩
   rw [e]
   exact Units.isClosedEmbedding_embedProduct.isCompact_preimage
     (hSc.prod (hSc.image MulOpposite.continuous_op))

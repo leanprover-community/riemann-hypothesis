@@ -1,5 +1,9 @@
 module
 
+public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloContDiffStatement
+public import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.ExistsClmOfI
 
 @[expose] public section

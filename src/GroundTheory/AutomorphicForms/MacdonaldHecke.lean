@@ -1,11 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.MacdonaldAlternant
 public import GroundTheory.AutomorphicForms.SatakeNormalized
 public import GroundTheory.AutomorphicForms.WhittakerGroups
 public import GroundTheory.AutomorphicForms.AffineBruhat
-public import GroundTheory.AutomorphicForms.MeasuresGL
+import GroundTheory.AutomorphicForms.HaarCosets
+import GroundTheory.AutomorphicForms.MacdonaldRecursion
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 
@@ -174,8 +179,8 @@ omit [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)] in
 theorem evalAt_esymmL (z : Fin n → ℂˣ) (r : ℕ) :
     evalAt z (esymmL n r) = ∑ S ∈ (Finset.univ : Finset (Fin n)).powersetCard r,
       monomialChar (lamS S) z := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [esymmL, map_sum]
+
+  rw [esymmL, map_sum]
   simp only [monomial, evalAt_single, one_mul]
 
 theorem evalAt_satakeTransform_minusculeHecke (z : Fin n → ℂˣ) {r : ℕ} (hr : r ≤ n) :
@@ -184,8 +189,8 @@ theorem evalAt_satakeTransform_minusculeHecke (z : Fin n → ℂˣ) {r : ℕ} (h
         evalAt z (esymmL n r) := by
   classical
   rw [satakeTransform_apply, satake_minusculeHecke]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_smul, map_sum, smul_eq_mul, evalAt_esymmL]
+
+  simp only [map_smul, map_sum, smul_eq_mul, evalAt_esymmL]
   rw [mul_assoc]
   congr 1
   rw [Finset.mul_sum]

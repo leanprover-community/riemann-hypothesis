@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 
 @[expose] public section
 

@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHasCls
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHasCls
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 
@@ -35,26 +79,6 @@ theorem mapH_diagH' {A : Type} [Field A] [Algebra F A] (τ : A →ₐ[F] A) {m :
   simp [inclR]
 
 variable {A : Type} [CommRing A] {ι : Type} [Fintype ι] (s : A →+* A) (G : Matrix ι ι A)
-
-theorem hform_add_left (u u' v : ι → A) :
-    Formalism.UG.hform s G (u + u') v = Formalism.UG.hform s G u v + Formalism.UG.hform s G u' v := by
-  simp only [Formalism.UG.hform, Pi.add_apply, map_add (f := _), add_mul, Finset.sum_add_distrib]
-
-theorem hform_add_right (u v v' : ι → A) :
-    Formalism.UG.hform s G u (v + v') = Formalism.UG.hform s G u v + Formalism.UG.hform s G u v' := by
-  simp only [Formalism.UG.hform, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-
-theorem hform_zero_left (v : ι → A) : Formalism.UG.hform s G 0 v = 0 := by simp [Formalism.UG.hform]
-
-theorem hform_zero_right (u : ι → A) : Formalism.UG.hform s G u 0 = 0 := by simp [Formalism.UG.hform]
-
-theorem hform_smul_left (c : A) (u v : ι → A) : Formalism.UG.hform s G (c • u) v = s c * Formalism.UG.hform s G u v := by
-  simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-
-theorem hform_smul_right (c : A) (u v : ι → A) : Formalism.UG.hform s G u (c • v) = c * Formalism.UG.hform s G u v := by
-  simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
 end Gen
 
@@ -173,8 +197,8 @@ theorem hx_map (x y y' : k ⊗[F] Fld P) :
 theorem map_hform (J : Matrix (Fin n) (Fin n) E) (u v : Fin n → k ⊗[F] E) :
     mapE ψ (Formalism.UG.hform (sigR k σ) (JR k J) u v) =
       Formalism.UG.hform (sigR k' σ) (JR k' J) (fun i => mapE ψ (u i)) (fun i => mapE ψ (v i)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Formalism.UG.hform, map_sum, map_mul]
+
+  simp only [Formalism.UG.hform, map_sum, map_mul]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [← sigR_map]
   congr 2
@@ -203,16 +227,16 @@ theorem isIsom_map {J : Matrix (Fin n) (Fin n) E} {x : k ⊗[F] Fld P}
     rw [e l, e l', hφ', hφ', ← map_hform, h, hx_map]
   intro y y'
   induction y using TensorProduct.induction_on with
-  | zero => simp [hx, hform_zero_right]
+  | zero => simp [hx, _root_.Formalism.UG.P.csScale_hform_zero_right]
   | add y₁ y₂ h₁ h₂ =>
-    rw [map_add (f := _), hform_add_right, h₁, h₂]; simp only [hx, add_mul, mul_add, map_add (f := _)]
+    rw [map_add (f := _), _root_.Formalism.UG.P.csScale_hform_add_right, h₁, h₂]; simp only [hx, add_mul, mul_add, map_add (f := _)]
   | tmul a l =>
     induction y' using TensorProduct.induction_on with
-    | zero => simp [hx, hform_zero_left]
+    | zero => simp [hx, _root_.Formalism.UG.P.csDual_hform_zero_left]
     | add y₁ y₂ h₁ h₂ =>
-      rw [map_add (f := _), hform_add_left, h₁, h₂]; simp only [hx, add_mul, mul_add, map_add (f := _)]
+      rw [map_add (f := _), _root_.Formalism.UG.P.csDual_hform_add_left, h₁, h₂]; simp only [hx, mul_add, map_add (f := _)]
     | tmul a' l' =>
-      rw [tmul_eq_smul P a l, tmul_eq_smul P a' l', map_smul, map_smul, hform_smul_left, hform_smul_right, base]
+      rw [tmul_eq_smul P a l, tmul_eq_smul P a' l', map_smul, map_smul, _root_.Formalism.UG.P.csDual_hform_smul_left, _root_.Formalism.UG.P.csScale_hform_smul_right, base]
       simp only [hx, Algebra.smul_def, RingHom.algebraMap_toAlgebra]
       have s1 : sigR k' σ (a' ⊗ₜ[F] (1 : E)) = a' ⊗ₜ 1 := by simp [sigR]
       rw [s1]
@@ -242,7 +266,7 @@ theorem torEmb_map {J : Matrix (Fin n) (Fin n) E} {x : k ⊗[F] Fld P} {x' : k' 
     rw [LinearEquiv.apply_symm_apply]
     by_cases hij : i = j
     · subst hij; simp
-    · simp [Pi.single_apply, hij]
+    · simp [hij]
   rw [hs, ← hφ', mulMat_mulVec, ht, ← map_mul, hφ']
   funext i
   rw [← mulMat_mulVec φ, LinearEquiv.apply_symm_apply]

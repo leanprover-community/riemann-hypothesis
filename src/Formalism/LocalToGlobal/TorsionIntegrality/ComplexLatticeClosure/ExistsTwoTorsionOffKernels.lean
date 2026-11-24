@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.LinkTiesTh
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.CMQuasiPeriodConst
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.ThetaZeroTranslateProduct
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+import Formalism.LocalToGlobal.GlobalTheory.LinkTiesOm
 
 @[expose] public section
 

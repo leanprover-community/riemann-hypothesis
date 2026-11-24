@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
 
 @[expose] public section
 

@@ -1,6 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ValAtLem
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Calculus.FDeriv.Basic
+public import Mathlib.Analysis.Complex.Liouville
 
 @[expose] public section
 
@@ -53,8 +58,8 @@ theorem exists_compact_reps {La : Type} [AddCommGroup La] (P : La →+ (Fin N �
     refine ⟨∑ j, Int.fract (r j) • (j : Fin N → ℂ),
       ⟨fun j => Int.fract (r j), fun j _ => ⟨Int.fract_nonneg _, (Int.fract_lt_one _).le⟩, rfl⟩, ?_⟩
     refine ⟨∑ j, ⌊r j⌋ • a j, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     conv_rhs => rw [← hz]
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_

@@ -1,9 +1,17 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorDefs
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TchOfIntegral
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.KurDefs
+import Mathlib.NumberTheory.Padics.RingHoms
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormEqOfNormSubLt
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TchOfIntegral
+import Formalism.EllipticTorsion.IsoExpand
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementK
+import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 @[expose] public section
 
@@ -51,8 +59,8 @@ theorem exists_nat_poly_near (y : PadicAlgCl l) (hy : ‖y‖ ≤ 1) :
   have hPsum : aeval z P = z ^ P.natDegree +
       ∑ i ∈ range P.natDegree, algebraMap ℚ_[l] ℂ_[l] (P.coeff i) * z ^ i := by
     conv_lhs => rw [hmon.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_add (f := _), map_sum, aeval_X, aeval_C]
+
+    simp [map_add (f := _), map_sum, aeval_X, aeval_C]
   have he : (X ^ P.natDegree + ∑ i ∈ range P.natDegree, C ((c i : ℕ) : ℂ_[l]) * X ^ i).eval z =
       ∑ i ∈ range P.natDegree, algebraMap ℚ_[l] ℂ_[l] ((c i : ℚ_[l]) - P.coeff i) * z ^ i := by
     have : (X ^ P.natDegree + ∑ i ∈ range P.natDegree, C ((c i : ℕ) : ℂ_[l]) * X ^ i).eval z =
@@ -96,8 +104,8 @@ theorem res_full (x : ℂ_[l]) (hx : ‖x‖ ≤ 1) : ∃ ξ ∈ Tch l, ‖x - �
   have hmon : Q'.Monic := ReciprocityTheory.ChartRestriction.PadicPolynomialApproximation.monic_X_pow_add_sum d (fun i => ((c i : ℕ) : Rmu l))
   have hmap : Q'.map (algebraMap (Rmu l) ℂ_[l]) =
       X ^ d + ∑ i ∈ Finset.range d, C ((c i : ℕ) : ℂ_[l]) * X ^ i := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hQ', Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum]
+
+    rw [hQ', Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum]
     congr 1
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, map_natCast]

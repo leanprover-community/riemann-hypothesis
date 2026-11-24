@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.Frames
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Rerealize
 
 @[expose] public section
 
@@ -227,8 +225,8 @@ theorem weightMet_form (pr : Ix → Matrix (Fin n) (Fin n) K) (t : Ix → Infini
 theorem sum_map_eq_one (pr : Ix → Matrix (Fin n) (Fin n) K) (hsum : ∑ p, pr p = 1) (σ : K →+* ℂ) :
     ∑ p, (pr p).map σ = 1 := by
   have := congrArg σ.mapMatrix hsum
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa [map_sum, RingHom.mapMatrix_apply] using this
+
+  simpa [map_sum, RingHom.mapMatrix_apply] using this
 
 theorem weightMet_posDef (pr : Ix → Matrix (Fin n) (Fin n) K) (t : Ix → InfinitePlace K → ℝ)
     (X : InfinitePlace K → Matrix (Fin n) (Fin n) ℂ) (hX : ∀ v, IsUnit (X v).det)

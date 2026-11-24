@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.LowerIndex
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -96,14 +144,6 @@ def herbrandPhi (u : ℝ) : ℝ :=
     ((lowerRamificationGroupReal K L t).relIndex (lowerRamificationGroup K L 0) : ℝ)⁻¹
 
 
-omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
-theorem relIndex_mul_card_inf {G : Type*} [Group G] (H K : Subgroup G) :
-    H.relIndex K * Nat.card ↥(H ⊓ K) = Nat.card K := by
-  rw [Subgroup.relIndex, mul_comm, ← Subgroup.card_mul_index (H.subgroupOf K)]
-  congr 1
-  rw [← Subgroup.inf_subgroupOf_right]
-  exact (Nat.card_congr (Subgroup.subgroupOfEquivOfLe inf_le_right).toEquiv).symm
-
 
 open Classical in
 theorem inv_relIndex_eq_sum (t : ℝ) :
@@ -111,7 +151,7 @@ theorem inv_relIndex_eq_sum (t : ℝ) :
       (Nat.card (lowerRamificationGroup K L 0) : ℝ)⁻¹ *
         ∑ σ : L ≃ₐ[K] L, if σ ∈ lowerRamificationGroup K L 0 ∧
           σ ∈ lowerRamificationGroupReal K L t then (1 : ℝ) else 0 := by
-  have hmul := relIndex_mul_card_inf (lowerRamificationGroupReal K L t)
+  have hmul := Subgroup.relIndex_mul_card (lowerRamificationGroupReal K L t)
     (lowerRamificationGroup K L 0)
   have hcount : (∑ σ : L ≃ₐ[K] L, if σ ∈ lowerRamificationGroup K L 0 ∧
       σ ∈ lowerRamificationGroupReal K L t then (1 : ℝ) else 0) =
@@ -333,7 +373,7 @@ theorem herbrandPsi_zero : herbrandPsi K L 0 = 0 :=
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
 theorem relIndex_pos_of_finite {G : Type*} [Group G] [Finite G] (H K : Subgroup G) :
     (0 : ℝ) < H.relIndex K := by
-  have h := relIndex_mul_card_inf H K
+  have h := Subgroup.relIndex_mul_card H K
   have hK : 0 < Nat.card K := Nat.card_pos
   have : 0 < H.relIndex K := by
     rcases Nat.eq_zero_or_pos (H.relIndex K) with h0 | h0

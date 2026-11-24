@@ -1,12 +1,75 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CartFrSgn
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIntegralForm
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockVectorsOfThetaDatumInjective
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtYAndItYOfPair
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.UnifModGrowthOfIsUnifModerate
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteSupport
+import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryUnimodularExistsFundamentalDomain
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffDerivSnoc
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EquivariantMapCarriesGelfandInvariantToFunction
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNonzeroFockVacuumOfNonzeroThetaFunction
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteVolumeAdelicUnitaryQuotient
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockVectorsOfThetaDatumInjective
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegrationByPartsRightDerivativeAdelicQuotient
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtYAndItYOfPair
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsIrrOfEquiv
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CoverKerOfDown
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesPureInnerProductsTensorProduct
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfContr
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEmbeddingSkew
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFockPolynomialIsoUnitaryPair
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIntegralForm
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsKActOfStable
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsUnitaryImage
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteSupportOfAdmissible
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InclTprodUpdate
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableOnMulRight
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCuspGrowOfMemSpan
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ItEqSumKMean
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.KMeanMemKFinOfCoefFam
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocKerOfCoverKer
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NoIntertwinerSmallerFockToDiscreteSeries
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SignBlockDeterminantNeZeroOfMemMaxCompact
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubstitutionTotalDegreeLe
+import Development.AbelianVarietyTheory.Statements.HaarFundamentalDomain.ExistsHaarFundDom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.Deriv.Star
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -145,8 +208,8 @@ theorem exists_factor_kFin (hdec : GlobalTheory.Published.CuspRapidDecay) {θ : 
     fun τ L hL p y hne => ⟨fun L' hL' p' y' => hker τ _ _ _ _ (pI τ L hL p y) (pI τ L' hL' p' y') hne,
       fun p' y' n x z h => by
         refine (hE0 _ (GlobalTheory.Chain.CuspGrowSpace.isCuspGrow_of_mem_span D θ V _ (sum_mem fun i _ => Submodule.subset_span (hBg _ _)))).2 ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         exact hker τ _ _ _ _ (pI τ L hL p y) (pB τ p' y') hne n x z h⟩
   refine ⟨⟨T, fun φ y => ?_⟩, eq_top_iff.2 (hs ▸ Submodule.span_mono ?_)⟩
   · have := span_multi (I.compr₂ T - B) fun p y => sub_eq_zero.2 (hT p y)
@@ -271,7 +334,7 @@ theorem compact_transfer {V W : HSp D} {S S' : D.what₂.Tau → SPar} {ψ : Add
     signBlockDeterminant_zpow_eq_of_agree (M'.ε τ) _ hy hy₀, signBlockDeterminant_zpow_eq_of_agree (M'.ε τ) _ hy hy₀]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem pairLifts (D : D7) (X : ProvA) (hI : Inputs D X) (hC : CuspAll D X) : PairLifts D X := by
   intro S S' aS aT hR V W M M' θ ψ hθ ω hω f₀ It hf₀ hIt ν 𝓕 hν h𝓕 f hf F hF
   obtain ⟨χS, χT, hω', he⟩ := hω
@@ -367,8 +430,8 @@ theorem pairLifts (D : D7) (X : ProvA) (hI : Inputs D X) (hC : CuspAll D X) : Pa
         (hpt φ) (fun κ => ?_) (hcl v).1.toIsAutFun (fun i x => apply_kMean (hM Fc) τ (hc.1 i) v _ rfl x) g
         (hint Fc _ _ g) fun i => hint Fc _ _ g
       rw [hφ, hp]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul]
+
+      simp only [map_sum, map_smul]
   obtain ⟨u, hu, hue⟩ := GlobalTheory.PairLift.RuleLift.exists_mult hI.ext.1 hI.decay hθ h h' ha ha' hirr hker It BF
     (J := ∅) (χ := 1)
     (by

@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.DimOfMinimal
+import Mathlib.Algebra.Order.Star.Real
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogIdealChain
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.MultAtEqCount
 
 @[expose] public section
@@ -52,7 +55,7 @@ theorem main_step {L : ℝ} {m p : ℕ} (hp : p.Prime) {W : Ideal (MRing ι)} (h
       · subst hk
         have : 1 ≤ a k := by omega
         simp [x, uv, Nat.cast_sub this]
-      · simp [x, uv, Pi.single_apply, hk]
+      · simp [x, uv, hk]
     have h2 := geoNum_diff_est m W hSW x b
     rw [show nrm x = tdeg a from nrm_natCast a] at h2
     have hfs : ((m + 1).factorial : ℝ) = (m + 1) * m.factorial := by

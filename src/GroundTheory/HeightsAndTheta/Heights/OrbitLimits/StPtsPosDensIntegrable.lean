@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosPartProjIndep
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StokesObjects
 
 @[expose] public section
 

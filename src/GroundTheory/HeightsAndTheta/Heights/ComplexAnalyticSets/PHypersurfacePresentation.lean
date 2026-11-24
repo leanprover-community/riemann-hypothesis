@@ -1,9 +1,21 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHypersurfacePresentation
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGenericPrimitive
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
+public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGenericPrimitive
+import Mathlib.Algebra.MvPolynomial.Division
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
+public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 @[expose] public section
 
@@ -100,8 +112,8 @@ theorem exists_integral_primitive [FaithfulSMul R A] [Algebra.IsAlgebraic R A] {
   have hθ₁ : IntermediateField.adjoin E {algebraMap A L θ₁} = ⊤ := by
     have h := hDc c hcD
     have he : ∑ j, c j • algebraMap A L (x j) = algebraMap A L θ₁ := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hθ₁def, map_sum, map_zsmul, ← hz, Int.cast_smul_eq_zsmul]
+
+      simp only [hθ₁def, map_sum, map_zsmul, ← hz, Int.cast_smul_eq_zsmul]
     rwa [he] at h
   obtain ⟨a, ha, hai⟩ := (Algebra.IsAlgebraic.isAlgebraic (R := R) θ₁).exists_integral_multiple
   refine ⟨a • θ₁, hai, eq_top_iff.2 (hθ₁ ▸ IntermediateField.adjoin_simple_le_iff.2 ?_)⟩

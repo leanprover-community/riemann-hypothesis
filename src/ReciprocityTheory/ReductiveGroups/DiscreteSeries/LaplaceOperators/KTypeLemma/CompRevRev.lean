@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.QuotientHighestWeightTensorStandard
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

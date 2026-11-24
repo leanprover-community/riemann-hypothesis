@@ -1,8 +1,57 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.RingTheory.FractionalIdeal.Norm
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsIsKroneckerCharOfDiscr
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsVariableChangeEqLatticeCurve
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -56,9 +105,8 @@ theorem discr_pos : (0 : ℝ) < d := by
   exact_mod_cast (by omega : 0 < d)
 
 theorem norm_eq_sq (x : K) : (Algebra.norm ℚ x : ℝ) = ‖σ x‖ ^ 2 := by
-  obtain ⟨b, t, h0, -, hi⟩ := exists_basis_embedding h2 hD σ
-  have hd := discr_pos h2 hD
-  have hi0 : (σ (b 1)).im ≠ 0 := fun h => by rw [h] at hi; linarith
+  obtain ⟨b, -, h0, -, hi⟩ := exists_basis_embedding h2 hD σ
+  have hi0 : (σ (b 1)).im ≠ 0 := fun h => by rw [h] at hi; linarith [discr_pos h2 hD]
   let b' : Basis (Fin 2) ℚ K := b.localizationLocalization ℚ ℤ⁰ K
   have e0 : b' 0 = 1 := by simp [b', h0]
   have e1 : b' 1 = b 1 := by simp [b']
@@ -77,11 +125,7 @@ theorem absNorm_mul_sqrt (I : FractionalIdeal (𝓞 K)⁰ K)
     (absNorm I : ℝ) * (√d / 2) = |(σ (bI 1) * conj (σ (bI 0))).im| := by
   obtain ⟨b, t, h0, -, hi⟩ := exists_basis_embedding h2 hD σ
   let b' : Basis (Fin 2) ℚ K := b.localizationLocalization ℚ ℤ⁰ K
-  have e0 : b' 0 = 1 := by simp [b', h0]
-  have e1 : b' 1 = b 1 := by simp [b']
-  rw [← det_mul_im σ b' e0, ← abs_det_basis_change b I bI, abs_mul, e1, ← hi,
-    show 4 * (σ (b 1)).im ^ 2 = (2 * (σ (b 1)).im) ^ 2 by ring, Real.sqrt_sq_eq_abs, abs_mul,
-    show Subtype.val ∘ bI = ![(bI 0 : K), bI 1] by ext i; fin_cases i <;> rfl]
+  rw [← det_mul_im σ b' (by simp [b', h0]), ← abs_det_basis_change b I bI, abs_mul, show b' 1 = b 1 by simp [b'], ← hi, show 4 * (σ (b 1)).im ^ 2 = (2 * (σ (b 1)).im) ^ 2 by ring, Real.sqrt_sq_eq_abs, abs_mul, show Subtype.val ∘ bI = ![(bI 0 : K), bI 1] by ext i; fin_cases i <;> rfl]
   push_cast
   rw [abs_two]
   ring
@@ -131,7 +175,7 @@ theorem hasSum_ideal (hd : 4 < d) (𝔞 : (FractionalIdeal (𝓞 K)⁰ K)ˣ) {s 
   have hmem : ∀ x I, x ∈ Φ ⁻¹' {I} ↔
       (I * 𝔞 : FractionalIdeal (𝓞 K)⁰ K) = spanSingleton _ (x : K) := fun x I => by
     rw [← hΦ, Units.mul_left_inj, coeIdeal_inj, Set.mem_preimage, Set.mem_singleton_iff, eq_comm]
-  have hN : (absNorm 𝔞.1 : ℝ) ≠ 0 := by simp [absNorm_eq_zero_iff]
+  have hN : (absNorm 𝔞.1 : ℝ) ≠ 0 := by simp
   refine (h.tsum_fiberwise Φ).congr_fun fun I => ?_
   have hval : ∀ x : Φ ⁻¹' {I}, (‖σ x.1‖ ^ 2 / absNorm 𝔞.1) ^ (-s)
       = (Ideal.absNorm I : ℝ) ^ (-s) := fun x => by
@@ -227,7 +271,6 @@ theorem hasSum_ideal_of_image (hd : 4 < d) (𝔞 : (FractionalIdeal (𝓞 K)⁰ 
       ((2 / √d) ^ s * ∑' p : {p : ℤ × ℤ // p ≠ 0},
         τ.im ^ s / ‖(p.1.1 * τ + p.1.2 : ℂ)‖ ^ (2 * s)) := by
   have hω := ne_zero_of_image σ 𝔞.ne_zero h
-  have hd0 := discr_pos h2 hD
   have hy := τ.im_pos
   obtain ⟨b, e0, e1⟩ := exists_basis_of_image σ hω h
   refine hasSum_ideal h2 hD σ hd 𝔞 (by linarith) ?_
@@ -256,7 +299,7 @@ theorem exists_periodPair (𝔞 : (FractionalIdeal (𝓞 K)⁰ K)ˣ) :
   have hd0 := discr_pos h2 hD
   have h0 : (σ (b 1) * conj (σ (b 0))).im ≠ 0 := by
     rw [← abs_ne_zero, ← absNorm_mul_sqrt h2 hD σ]
-    have : (absNorm 𝔞.1 : ℝ) ≠ 0 := by simp [absNorm_eq_zero_iff]
+    have : (absNorm 𝔞.1 : ℝ) ≠ 0 := by simp
     positivity
   refine ⟨⟨σ (b 0), σ (b 1), ?_⟩, ?_⟩
   · rw [LinearIndependent.pair_iff]

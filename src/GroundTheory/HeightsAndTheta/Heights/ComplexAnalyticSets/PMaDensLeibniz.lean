@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsPiola
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffBoundaryParts
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsPiola
 
 @[expose] public section
 

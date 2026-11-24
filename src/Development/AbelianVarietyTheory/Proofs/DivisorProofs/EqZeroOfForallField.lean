@@ -1,24 +1,68 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 public import Development.AbelianVarietyTheory.Definitions.Divisors.RigidForFan
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTranslateOfTangentVectorFibreToGroupScheme
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentCombinationPreservedByBaseChange
+public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTransl
+public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TangentBijectionOfValues
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualMapCompDualMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLogDerivationExtensionBasicOpen
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAffineHomOfField
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTranslateOfTangentVectorFibreToGroupScheme
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerConditionRestrictBasicOpenOfAffine
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentCombinationPreservedByBaseChange
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartFrameBaseHolds
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFlagModelBaseChangeIntegralFramedPoint
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.InvariantVectorFieldsBasisVerticalDerivations
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsFiniteAffineCharts
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSymmOfKsCoc
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.MatrixIntertwinesAdjoint
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TheoremOfCubePolAbelianScheme
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabComp
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsLinearHomPull
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsFiniteAffineCharts
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSymmOfKsCoc
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueInvariantVectorFieldOfTangent
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LeISupInfPreimage
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LogDerivativePrincipalPolarisationIndependent
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.MatrixIntertwinesAdjoint
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PreimageTranslate
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TheoremOfCubePolAbelianScheme
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -277,12 +321,12 @@ theorem exists_ksCoc {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Hos
         ← map_mul, Units.mul_inv, map_one, _root_.one_mul, valR_eq y hy₁]
     simp only [k₁, k₂] at key
     rw [valR_eq _ hy₂, map_sub, ← valR_eq, ← valR_eq, ← valR_pbT _ _ (hpre O) hy, ← valR_pbT _ _ (hpre O) hy] at key
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [valR_eq y hy, valR_eq y hy, map_sub, map_sum, ← valR_eq, ← valR_eq, ← neg_sub, key, ← Finset.sum_neg_distrib]
+
+    rw [valR_eq y hy, valR_eq y hy, map_sub, map_sum, ← valR_eq, ← valR_eq, ← neg_sub, key, ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun c _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_mul, ← valR_eq, ← valR_eq, valR_rsT y hab hy, lc, valR_eq y hy₁, map_sum, Finset.sum_mul,
-      ← Finset.sum_neg_distrib]
+
+    rw [map_mul, ← valR_eq, ← valR_eq, valR_rsT y hab hy, lc, valR_eq y hy₁, map_sum, Finset.sum_mul,
+    ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun c' _ => ?_
     rw [map_mul, ← valR_eq, ← valR_eq, valR_constFn A.hom y hy₁ e, map_neg, RingHom.comp_apply]
     ring
@@ -329,7 +373,7 @@ theorem map_mem_balanced {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
     (i₂.chartPull (Geo.Tor.chartPullPull _ _ _ rfl) (Geo.Tor.chartPullPull _ _ _ rfl))
   obtain ⟨⟨φ, hφ⟩, hφ'⟩ := GlobalTheory.KS.DlogPol.dlog_independent K (GlobalTheory.Obj.toPolAV o₀) n u dd hbas hdd _ _ L hL hI
   obtain ⟨Θ', hs, hΘ'⟩ := GlobalTheory.KS.Sym.exists_symm_of_ksCoc GlobalTheory.abelianSchemeLaws_all.1 GlobalTheory.abelianSchemeLaws_all.2
-    GlobalTheory.T.theorem_of_cube_polAbelianScheme K (GlobalTheory.Obj.toPolAV o₀) n u dd hbas hdd _ x₀ (GlobalTheory.Obj.toPolAV o) _ L _ d _ φ hm hL haff hI (hd φ hφ) hφ
+    _root_.GlobalTheory.Moduli.cube_of_isLB K (GlobalTheory.Obj.toPolAV o₀) n u dd hbas hdd _ x₀ (GlobalTheory.Obj.toPolAV o) _ L _ d _ φ hm hL haff hI (hd φ hφ) hφ
   have e : Θ' = -Θ.map x₀ := by
     rw [eq_comm, ← sub_eq_zero]
     funext b

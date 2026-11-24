@@ -1,8 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
-public import ReciprocityTheory.SemistableReduction.GaussValExists
-public import Mathlib
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
 public import ReciprocityTheory.SemistableReduction.GaussIndepOfLeTrdeg
 public import ReciprocityTheory.SemistableReduction.IntegralClosureRankAndResidueTrdegLe
 

@@ -1,5 +1,7 @@
 module
 
+public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.NormOneUnitIdealAlt
+public import Formalism.LocalRingCardinality.SpanPowerMembership.RelDet
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.CharacterFactorUnitaryAction
 
 @[expose] public section

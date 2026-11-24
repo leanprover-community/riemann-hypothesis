@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.EulerCharDefs
+public import GroundTheory.ProfiniteCohomology.DiscreteModules
 
 @[expose] public section
 

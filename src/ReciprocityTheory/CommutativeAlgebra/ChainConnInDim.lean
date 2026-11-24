@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Regular.RegularSequence
+public import Mathlib.RingTheory.Spectrum.Prime.Topology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

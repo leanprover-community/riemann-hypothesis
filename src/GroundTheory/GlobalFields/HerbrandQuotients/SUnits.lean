@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.SUnits
-public import GroundTheory.GlobalFields.HerbrandQuotients.Lattice
-public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsExact
-public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsPerm
 public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsRep
+import GroundTheory.GlobalFields.HerbrandQuotients.Lattice
+public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsExact
 public import GroundTheory.GlobalFields.HerbrandQuotients.UnitsHerbrandValue
+public import GroundTheory.GlobalFields.SUnits
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

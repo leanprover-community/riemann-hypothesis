@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdDefs
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Residue
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.ProdSubLtEqFactorial
 
 @[expose] public section

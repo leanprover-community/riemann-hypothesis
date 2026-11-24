@@ -1,14 +1,52 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadsZero
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenBasisSameVec
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FramesOnEqModel
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsBijectiveKappa
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ModelBaseTrivModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemConeIdeal
 
 @[expose] public section
 
@@ -86,7 +124,7 @@ theorem eq_zero_of_span {r : ℕ} (τ : E →+* ℂ) (Λ : Set (Fin r → E)) (h
     show f _ = 0
     convert this using 2
     funext m
-    by_cases e : m = n <;> simp [e, Pi.single_apply]
+    by_cases e : m = n <;> simp [e]
   exact this
 
 theorem det_sum_elim {p q r : ℕ} (ε : Fin q ⊕ Fin p ≃ Fin r) (Γ : Matrix (Fin r) (Fin r) ℂ)
@@ -169,9 +207,9 @@ theorem flatCoord_eq {p q r g : ℕ} (ε : Fin q ⊕ Fin p ≃ Fin r) (τ : E �
       have h2 : conjEmb τ (herm G (φ a) (φ b₀)) = hermC τ G (Data.emb τ (φ b₀)) (Data.emb τ (φ a)) := by
         have h3 : ∀ a b, conj (τ (G a b)) = τ (G b a) := fun a b => by
           rw [← hG a b, cc, IsCMField.complexEmbedding_complexConj]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [conjEmb, RingHom.comp_apply, herm, hermC, Data.emb, cc, map_sum, map_mul, h3,
-          IsCMField.complexEmbedding_complexConj, Complex.conj_conj]
+
+        simp only [conjEmb, RingHom.comp_apply, herm, hermC, Data.emb, cc, map_sum, map_mul, h3,
+        IsCMField.complexEmbedding_complexConj, Complex.conj_conj]
         rw [Finset.sum_comm]
         exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
       rw [map_mul, h2] at h1

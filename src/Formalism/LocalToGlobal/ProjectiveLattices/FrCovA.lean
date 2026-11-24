@@ -1,9 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
-public import Formalism.LocalToGlobal.ProjectiveLattices.LocFrLoc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBCFrameR
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Spread
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.BcField
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCSt
 
 @[expose] public section
 

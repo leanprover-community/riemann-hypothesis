@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.HarderNarasimhan.QuotRealize
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.RepresentationTheory.Basic
+public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 

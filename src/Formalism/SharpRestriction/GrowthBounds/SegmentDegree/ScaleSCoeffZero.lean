@@ -1,6 +1,48 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CardFinRange
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeight
+public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -86,9 +128,9 @@ theorem li_of_kill {ι : Type} (m : ι → σ →₀ ℕ) (w : ι → MvPolynomi
       exact hq' (Finset.mem_filter.mpr ⟨hq, hh⟩)
     rw [this, zero_smul]
   have hΘ := congrArg (fun P => (scaleS S P).coeff δ) hsum'
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, map_mul, scaleS_monomial, Polynomial.finsetSum_coeff, Polynomial.coeff_smul,
-    map_zero, Polynomial.coeff_zero] at hΘ
+
+  simp only [map_sum, map_smul, map_mul, scaleS_monomial, Polynomial.finsetSum_coeff, Polynomial.coeff_smul,
+  map_zero, Polynomial.coeff_zero] at hΘ
   have hterm : ∀ q ∈ s', (Polynomial.C (monomial (m q) (1 : R)) * Polynomial.X ^ offDeg S (m q) *
       scaleS S (w q)).coeff δ = if offDeg S (m q) = δ then monomial (m q) (1 : R) * kill S (w q) else 0 := by
     intro q hq
@@ -113,11 +155,9 @@ namespace Dat
 
 variable {n' r : ℕ} [NeZero n'] (X : Dat n' r) (K : ℕ)
 
-
 omit [NeZero n'] in
 def offSet (j : ℤ) : Set (ℤ × Fin (r + K)) :=
   {v | ∃ t c : Fin r, c ≠ Fin.rev t ∧ v = (X.F.fr j t.val, Fin.castAdd K c)}
-
 
 omit [NeZero n'] in
 def monTau (j : ℤ) (u : Fin r × Fin r → ℕ) : ℤ × Fin (r + K) →₀ ℕ :=
@@ -137,26 +177,8 @@ def RestKey (C₀ : ℝ) : Prop :=
         monomial (X.monTau K j q.1.2.2) (1 : O) * kill (X.offSet K j) (X.wordEl K O j q.1)
 
 theorem fr_injective {n' r : ℕ} [NeZero n'] (F : Frames n' r) {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j : ℤ) :
-    Function.Injective fun a : Fin r => F.fr j a.val := by
-  obtain ⟨-, -, h3, -⟩ := hV
-  have key : ∀ d a : ℕ, a + d + 1 < r → F.fr j a < F.fr j (a + d + 1) := by
-    intro d
-    induction d with
-    | zero => intro a h; exact h3 j a h
-    | succ d ih => intro a h; exact lt_trans (ih a (by omega)) (h3 j (a + d + 1) (by omega))
-  intro a b hab
-  have hab' : F.fr j a.val = F.fr j b.val := hab
-  by_contra hne
-  have hne' : a.val ≠ b.val := fun h => hne (Fin.ext h)
-  have ha := a.isLt
-  have hb := b.isLt
-  rcases lt_or_gt_of_ne hne' with h | h
-  · have := key (b.val - a.val - 1) a.val (by omega)
-    rw [show a.val + (b.val - a.val - 1) + 1 = b.val by omega] at this
-    exact absurd hab' (ne_of_lt this)
-  · have := key (a.val - b.val - 1) b.val (by omega)
-    rw [show b.val + (a.val - b.val - 1) + 1 = a.val by omega] at this
-    exact absurd hab'.symm (ne_of_lt this)
+    Function.Injective fun a : Fin r => F.fr j a.val :=
+  fun a b hab => Fin.ext (TE.fr_inj hV j a.val b.val a.isLt b.isLt hab)
 
 theorem plEmb_injective (O : Type) [CommRing O] (r K : ℕ) : Function.Injective (plEmb O r K) := by
   apply rename_injective

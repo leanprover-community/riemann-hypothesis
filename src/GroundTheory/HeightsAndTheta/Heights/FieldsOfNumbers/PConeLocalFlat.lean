@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConePolyLocalization
+public import Mathlib.RingTheory.Flat.Localization
 
 @[expose] public section
 

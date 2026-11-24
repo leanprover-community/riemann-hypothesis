@@ -1,13 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsGenIsUnitSub
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
-public import Development.AbelianVarietyTheory.CrystallinePeriods.CrisMaps
+public import Mathlib.Topology.Sheaves.Presheaf
 public import Development.AbelianVarietyTheory.CrystallinePeriods.CrisMapsLoc
-public import Development.AbelianVarietyTheory.CrystallinePeriods.AdicMaps
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltWittEqZeroOfPrimeMulEqZero
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTeichmullerTiltMinusOnePowDivEnvelope
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PeriodRingsGaloisActionLawsFrobeniusComm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -28,9 +73,9 @@ omit [IsUltrametricDist K] in
 theorem eq_sum_monomial_add (x : K⟦X⟧) (N : ℕ) : x = ∑ n ∈ Finset.range N, monomial n (coeff n x) +
     X ^ N * PowerSeries.mk fun n => coeff (n + N) x := by
   ext n
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_add (f := _), map_sum, coeff_monomial, coeff_X_pow_mul', coeff_mk, Finset.sum_ite_eq,
-    Finset.mem_range]
+
+  simp only [map_add (f := _), map_sum, coeff_monomial, coeff_X_pow_mul', coeff_mk, Finset.sum_ite_eq,
+  Finset.mem_range]
   split_ifs with h1 h2 h2
   · omega
   · simp
@@ -57,8 +102,8 @@ theorem exists_sum_monomial_add {x : K⟦X⟧} (hx : x ∈ S O K e) (m : ℕ) : 
     rw [coeff_mk, if_neg (by omega), norm_mul, mul_assoc]
   · ext n
     rw [← map_natCast (C : K →+* K⟦X⟧), ← map_pow]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, coeff_monomial, coeff_C_mul, coeff_mk, Finset.sum_ite_eq, Finset.mem_range]
+
+    simp only [map_add (f := _), map_sum, coeff_monomial, coeff_C_mul, coeff_mk, Finset.sum_ite_eq, Finset.mem_range]
     split_ifs with h
     · simp
     · rw [zero_add, mul_inv_cancel_left₀ h0]
@@ -160,8 +205,8 @@ theorem exists_extend_S (htf : ∀ x : R, (l : R) * x = 0 → x = 0) [IsAdicComp
           uIn _ ^ (e * l ^ k) * ⟨_, k, hk'⟩ := Subtype.ext (by
       simpa using eq_sum_monomial_add x (e * l ^ k))
     change F ⟨x, k, hk⟩ ∈ j.range
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h3, map_add (f := _), map_sum]
+
+    rw [h3, map_add (f := _), map_sum]
     refine add_mem (sum_mem fun n _ => h1 n _ (hx.1 n)) ?_
     obtain ⟨d, hd⟩ := hd (l ^ k)
     obtain ⟨m, hm⟩ := Nat.dvd_factorial (pow_pos hl.out.pos k) le_rfl
@@ -299,7 +344,7 @@ theorem PiSys.exists_dpow_teich {e : ℕ} (ϖ : PiSys l e) (q : ℕ) :
     ∃ d : Per.Acris l, (q.factorial : Per.Acris l) * d = ainfToAcris l ϖ.teich ^ (e * q) := by
   have hE : Per.θ l (ϖ.teich ^ e + l) = 0 := by
     rw [map_add (f := _), map_pow, ϖ.theta_teich, ϖ.seqO_zero, map_natCast, neg_add_cancel]
-  choose c hc using GlobalTheory.RingBasics.exists_pow_div_factorial l
+  choose c hc using _root_.Reformulated.AutPerF.exists_factorial_mul_eq_pow l
   have hc' : ∀ n : ℕ, (n.factorial : Per.Acris l) * algebraMap ℤ_[l] _ (c n) = (l : Per.Acris l) ^ n :=
     fun n => by simpa only [map_mul, map_natCast, map_pow] using congrArg (algebraMap ℤ_[l] (Per.Acris l)) (hc n)
   have h1 : ainfToAcris l ϖ.teich ^ e = ainfToAcris l (ϖ.teich ^ e + l) + -(l : Per.Acris l) := by
@@ -518,8 +563,8 @@ theorem taylor_S (g : ↥(GK (ϖ.field a))) (f : S O K e) (r : ℕ) : ∃ M₀, 
     have h3 : (l : K⟦X⟧) ^ r = C ((l : K) ^ r) := by simp
     have h4 : ∀ n : ℕ, (n : K⟦X⟧) = C (n : K) := fun n => by simp
     change descN K i f = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [hf, map_add (f := _), map_sum, h3, ← smul_eq_C_mul, map_smul, smul_eq_C_mul, ← h3]
+
+    conv_lhs => rw [hf, map_add (f := _), map_sum, h3, ← smul_eq_C_mul, map_smul, smul_eq_C_mul, ← h3]
     simp only [AddMemClass.coe_add, MulMemClass.coe_mul, SubmonoidClass.coe_pow, SubringClass.coe_natCast,
       AddSubmonoidClass.coe_finsetSum, m]
     congr 1
@@ -532,8 +577,8 @@ theorem taylor_S (g : ↥(GK (ϖ.field a))) (f : S O K e) (r : ℕ) : ∃ M₀, 
     ∑ i ∈ Finset.range M, ϖ.muDiv a O g i * ϖ.iS O K ⟨descN K i h, descN_mem_S e i hh⟩, ?_⟩
   have h5 : galOCr O g (ϖ.iS O K (∑ n ∈ Finset.range N, m n)) = ∑ i ∈ Finset.range M, ϖ.muDiv a O g i *
       ϖ.iS O K (∑ n ∈ Finset.range N, (n.descFactorial i : S O K e) * m n) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_natCast, Finset.mul_sum]
+
+    simp only [map_sum, map_mul, map_natCast, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun n hn => ?_
     rw [galOCr_iS_monomial, ← ϖ.sum_muDiv_descFactorial a O g ((Finset.mem_range.1 hn).trans_le hM),

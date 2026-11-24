@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.ThetaLine
+public import Mathlib.Analysis.Meromorphic.NormalForm
+import Mathlib.Tactic.Lemma
+public import Mathlib.Analysis.Complex.Liouville
 
 @[expose] public section
 

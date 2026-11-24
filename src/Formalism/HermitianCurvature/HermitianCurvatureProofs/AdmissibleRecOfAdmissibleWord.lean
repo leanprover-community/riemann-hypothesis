@@ -1,7 +1,57 @@
 module
 
 public import Formalism.HermitianCurvature.StatementFr
+public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -371,11 +421,6 @@ theorem cPos : CPos := by
     · exact pos_div (qw_pos q0 w _ (by simp [hl]) q2 dm) (xs_pos x0 w e _ (by simp [hl]) x3 dm)
     · exact xs_pos x0 w e _ hl x1 d0
 
-section
-variable {S : Type} [Fintype S] [DecidableEq S]
-
-end
-
 lemma q_core' (k : ℕ) (u u' ρ : ℕ → ℝ) (l : ℕ) (Y : ℝ) (hl1 : 1 ≤ l) (hlk : l ≤ k)
     (h : Interlaces k u u' ρ) (hA : u l + 2 ≤ -Y ∧ -Y ≤ u' l - 2) :
     ∏ i ∈ Icc 1 k, ((Y - 1 + 1/2 + u i) * (Y - 1 + 1/2 + u' i)) < 0 := by
@@ -451,17 +496,5 @@ end Formalism.FourierDecayAlt.P.Fr2
 namespace Formalism.FourierDecayAlt.P
 
 theorem frame_of_steps : Formalism.FourierDecayAlt.Fr.FrameAssemble := Fr2.frameAssemble
-
-theorem c_diagonal : Formalism.FourierDecayAlt.Fr.CDiag := Fr2.cDiag
-
-theorem cPos_true : Formalism.FourierDecayAlt.Fr.CPos := Fr2.cPos
-
-theorem q_positive_shift : Formalism.FourierDecayAlt.Fr.QPositiveShift := Fr2.qPositiveShift
-
-theorem c_pos_truncated : Formalism.FourierDecayAlt.Fr.CPosCut := Fr2.cPosCut
-
-theorem admissible_rec_of_admissible : Formalism.FourierDecayAlt.Fr.AdmRecOfAdm := Fr2.admissible_rec_of_admissible_word
-
-theorem frame_rec_of_steps : Formalism.FourierDecayAlt.Fr.FrameRecAssemble := Fr2.frameRecAssemble
 
 end Formalism.FourierDecayAlt.P

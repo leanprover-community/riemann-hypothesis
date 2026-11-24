@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.Scheme
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
 
 @[expose] public section
 

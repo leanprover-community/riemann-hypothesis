@@ -1,6 +1,64 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PermutationSigns.MatDefs
+public import Mathlib.Algebra.MvPolynomial.Degrees
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+public import Mathlib.Combinatorics.Nullstellensatz
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section
 
@@ -37,8 +95,8 @@ open MvPolynomial in
 theorem eval_polyOf {K : Type} [Fintype K] [DecidableEq K]
     (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ →ₗ[ℂ] ℂ) (M : K → Matrix ι ι ℂ) (c : K → ℂ) :
     eval c (polyOf φ M) = φ (tp q (∑ k, c k • M k)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [tp_sum, map_sum, polyOf, map_sum]
+
+  rw [tp_sum, map_sum, polyOf, map_sum]
   refine Finset.sum_congr rfl fun f _ => ?_
   rw [map_smul, smul_eq_mul, map_mul, eval_C, map_prod]
   simp only [eval_X]
@@ -129,7 +187,7 @@ theorem herm_of_unit (φ : Matrix (Fin q → Ix W m) (Fin q → Ix W m) ℂ →�
       ← diagonal_one]
     congr 1
     funext a
-    simp only [Pi.star_apply, Pi.one_apply]
+    simp only [Pi.star_apply]
     rw [Complex.star_def, Complex.mul_conj', hc (w, a)]
     simp
   have hq : 0 < q + 1 := Nat.succ_pos q
@@ -177,7 +235,7 @@ theorem all_of_herm (φ : Matrix (Fin q → Ix W m) (Fin q → Ix W m) ℂ →�
     funext w
     ext i j
     simp only [Pi.add_apply, Pi.smul_apply, H, K, Matrix.add_apply, Matrix.smul_apply, Matrix.sub_apply,
-      smul_eq_mul, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+      smul_eq_mul, Matrix.cons_val_zero, Matrix.cons_val_one]
     linear_combination (2 : ℂ)⁻¹ * (d w i j - (d w)ᴴ i j) * Complex.I_sq
   rw [e]
   exact this
@@ -340,8 +398,8 @@ theorem sym_zero (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ →ₗ[ℂ] ℂ)
       nu_iff]
     exact ⟨fun h => ⟨Equiv.ofBijective f h, rfl⟩, fun ⟨σ, hσ⟩ => hσ ▸ σ.bijective⟩
   rw [hfil, Finset.sum_map] at hc
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa only [map_sum, Function.Embedding.coeFn_mk] using hc
+
+  simpa only [map_sum, Function.Embedding.coeFn_mk] using hc
 
 end Sym
 
@@ -364,8 +422,8 @@ theorem sw2 : PlacePermOperatorCommutantSpan := by
   apply hφZ
   have hfac : ((Nat.factorial q : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (Nat.factorial_ne_zero q)
   have hdec := congrArg φ (decomp Z (sym_of_comm Z hZ))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_smul, smul_eq_mul, map_sum] at hdec
+
+  rw [map_smul, smul_eq_mul, map_sum] at hdec
   have hterm : ∀ I J, φ (Z I J • symU I J) = 0 := by
     intro I J
     rw [map_smul, smul_eq_mul]
@@ -385,8 +443,8 @@ theorem sw2 : PlacePermOperatorCommutantSpan := by
       have hs := sym_zero φ (fun j => Matrix.single (I j) (J j) (1 : ℂ)) h0
       rw [sum_perm_mt _ I J fun _ => rfl] at hs
       rw [hs, mul_zero]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, hterm, Finset.sum_const_zero] at hdec
+
+  simp only [map_sum, hterm, Finset.sum_const_zero] at hdec
   exact (mul_eq_zero.1 hdec).resolve_left hfac
 
 end PositivityTheory.KB.BlockInvariants

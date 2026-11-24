@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanProjectiveVolume
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
 
 @[expose] public section
 

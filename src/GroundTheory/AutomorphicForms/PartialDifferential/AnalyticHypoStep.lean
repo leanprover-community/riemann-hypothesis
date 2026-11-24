@@ -1,8 +1,189 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.PartialDifferential.SqrtSumPdTMulSubLe
+public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoBasic
+public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCalc
+public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCutoff
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: GroundTheory.AutomorphicForms.PartialDifferential.SqrtSumPdTMulSubLe, GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoStep
+
+-- ===== clump member: GroundTheory.AutomorphicForms.PartialDifferential.SqrtSumPdTMulSubLe =====
+-- clump-header: {"m": "GroundTheory.AutomorphicForms.PartialDifferential.SqrtSumPdTMulSubLe", "h": "module\n\npublic import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoBasic\npublic import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCalc\npublic import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCutoff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.LocallyConvex.AbsConvexOpen\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace GroundTheory.Automorphic.Sobolev
+
+open scoped ContDiff
+open Finset
+
+noncomputable section
+
+variable {n : ℕ}
+
+local notation "𝔼" => EuclideanSpace ℝ (Fin n)
+
+theorem pd_mul {f g : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) (i : Fin n) :
+    pd i (fun y ↦ f y * g y) = fun y ↦ pd i f y * g y + f y * pd i g y := by
+  funext y
+  have h := ((hf.differentiable (by simp) y).hasFDerivAt).mul
+    ((hg.differentiable (by simp) y).hasFDerivAt)
+  rw [pd]
+  change (fderiv ℝ (f * g) y) (ev i) = _
+  rw [h.fderiv]
+  simp only [add_apply, smul_apply, smul_eq_mul, pd]
+  ring
+
+theorem hsD_mul_le (k : ℕ) : ∀ {f g : 𝔼 → ℂ}, ContDiff ℝ ∞ f → ContDiff ℝ ∞ g → ∀ x : 𝔼,
+    hsD k (fun y ↦ f y * g y) x ≤
+      ∑ ij ∈ antidiagonal k, (k.choose ij.1 : ℝ) * hsD ij.1 f x * hsD ij.2 g x := by
+  induction k with
+  | zero =>
+    intro f g hf hg x
+    simp [hsD_zero]
+  | succ k ih =>
+    intro f g hf hg x
+    have hfg : ContDiff ℝ ∞ (fun y ↦ f y * g y) := hf.mul hg
+    set S : ℕ × ℕ → Fin n → ℝ := fun ij i ↦ (k.choose ij.1 : ℝ) *
+      (hsD ij.2 g x * hsD ij.1 (pd i f) x + hsD ij.1 f x * hsD ij.2 (pd i g) x) with hS
+    have hi : ∀ i, |hsD k (pd i (fun y ↦ f y * g y)) x| ≤
+        ∑ ij ∈ antidiagonal k, 1 * S ij i := by
+      intro i
+      rw [abs_of_nonneg (hsD_nonneg _ _ _), pd_mul hf hg i]
+      calc hsD k (fun y ↦ pd i f y * g y + f y * pd i g y) x
+          ≤ hsD k (fun y ↦ pd i f y * g y) x + hsD k (fun y ↦ f y * pd i g y) x :=
+            hsD_add_le ((contDiff_pd hf i).mul hg) (hf.mul (contDiff_pd hg i)) k x
+        _ ≤ (∑ ij ∈ antidiagonal k, (k.choose ij.1 : ℝ) * hsD ij.1 (pd i f) x * hsD ij.2 g x) +
+            ∑ ij ∈ antidiagonal k, (k.choose ij.1 : ℝ) * hsD ij.1 f x * hsD ij.2 (pd i g) x :=
+            add_le_add (ih (contDiff_pd hf i) hg x) (ih hf (contDiff_pd hg i) x)
+        _ = ∑ ij ∈ antidiagonal k, 1 * S ij i := by
+            rw [← sum_add_distrib]
+            refine sum_congr rfl fun ij _ ↦ ?_
+            simp only [hS]
+            ring
+    have hsucc : ∀ h : 𝔼 → ℂ, ContDiff ℝ ∞ h → ∀ j,
+        Real.sqrt (∑ i, hsD j (pd i h) x ^ 2) = hsD (j + 1) h x :=
+      fun h hh j ↦ by rw [← hsD_succ_sq hh, Real.sqrt_sq (hsD_nonneg _ _ _)]
+    rw [← hsucc _ hfg k]
+    calc Real.sqrt (∑ i, hsD k (pd i (fun y ↦ f y * g y)) x ^ 2)
+        ≤ ∑ ij ∈ antidiagonal k, 1 * Real.sqrt (∑ i, S ij i ^ 2) :=
+          sqrt_sum_sq_le_sum _ _ _ _ (fun _ _ ↦ zero_le_one) hi
+      _ ≤ ∑ ij ∈ antidiagonal k, (k.choose ij.1 : ℝ) *
+            (hsD ij.2 g x * hsD (ij.1 + 1) f x + hsD ij.1 f x * hsD (ij.2 + 1) g x) := by
+          refine sum_le_sum fun ij _ ↦ ?_
+          rw [one_mul]
+          simp only [hS]
+          rw [sqrt_sum_sq_const_mul, abs_of_nonneg (by positivity)]
+          gcongr
+          calc Real.sqrt (∑ i, (hsD ij.2 g x * hsD ij.1 (pd i f) x +
+                hsD ij.1 f x * hsD ij.2 (pd i g) x) ^ 2)
+              ≤ Real.sqrt (∑ i, (hsD ij.2 g x * hsD ij.1 (pd i f) x) ^ 2) +
+                Real.sqrt (∑ i, (hsD ij.1 f x * hsD ij.2 (pd i g) x) ^ 2) :=
+                sqrt_sum_sq_add_le _ _
+            _ = hsD ij.2 g x * hsD (ij.1 + 1) f x + hsD ij.1 f x * hsD (ij.2 + 1) g x := by
+                rw [sqrt_sum_sq_const_mul, sqrt_sum_sq_const_mul, hsucc f hf, hsucc g hg,
+                  abs_of_nonneg (hsD_nonneg _ _ _), abs_of_nonneg (hsD_nonneg _ _ _)]
+      _ = ∑ ij ∈ antidiagonal (k + 1), ((k + 1).choose ij.1 : ℝ) * hsD ij.1 f x * hsD ij.2 g x := by
+          have e := sum_antidiagonal_choose_succ_mul (R := ℝ) (fun i j ↦ hsD i f x * hsD j g x) k
+          simp_rw [mul_assoc]
+          rw [e]
+          have e2 : ∀ ij ∈ antidiagonal k, (k.choose ij.2 : ℝ) = (k.choose ij.1 : ℝ) := by
+            intro ij hij
+            rw [HasAntidiagonal.mem_antidiagonal] at hij
+            rw [← hij, Nat.choose_symm_add]
+          have e3 : ∑ ij ∈ antidiagonal k, (k.choose ij.2 : ℝ) * (hsD (ij.1 + 1) f x * hsD ij.2 g x) =
+              ∑ ij ∈ antidiagonal k, (k.choose ij.1 : ℝ) * (hsD (ij.1 + 1) f x * hsD ij.2 g x) :=
+            sum_congr rfl fun ij hij ↦ by rw [e2 ij hij]
+          rw [e3, ← sum_add_distrib]
+          refine sum_congr rfl fun ij _ ↦ ?_
+          ring
+
+theorem hsD_sub_const {f : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (c : ℂ) {k : ℕ} (hk : 0 < k)
+    (x : 𝔼) : hsD k (fun y ↦ f y - c) x = hsD k f x := by
+  have h : ∀ J : Fin k → Fin n, pdT J (fun y ↦ f y - c) x = pdT J f x := fun J ↦ by
+    rw [pdT, pdT, dT_sub hf contDiff_const]
+    simp [dT, iteratedFDeriv_const_of_ne hk.ne']
+  simp only [hsD, h]
+
+theorem hsD_mul_sub_le {f g : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) (k : ℕ)
+    (x : 𝔼) :
+    hsD k (fun y ↦ f y * g y - f x * g y) x ≤
+      ∑ ij ∈ (antidiagonal k).filter (fun ij ↦ 0 < ij.1),
+        (k.choose ij.1 : ℝ) * hsD ij.1 f x * hsD ij.2 g x := by
+  have hf' : ContDiff ℝ ∞ (fun y ↦ f y - f x) := hf.sub contDiff_const
+  have e : (fun y ↦ f y * g y - f x * g y) = fun y ↦ (f y - f x) * g y := by
+    funext y
+    ring
+  rw [e]
+  refine (hsD_mul_le k hf' hg x).trans (le_of_eq ?_)
+  rw [sum_filter]
+  refine sum_congr rfl fun ij _ ↦ ?_
+  split_ifs with h
+  · rw [hsD_sub_const hf _ h]
+  · have h0 : ij.1 = 0 := by omega
+    rw [h0, hsD_zero]
+    simp
+
+theorem norm_mul_hsD_le {f g : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) (k : ℕ)
+    (x : 𝔼) :
+    ‖f x‖ * hsD k g x ≤ hsD k (fun y ↦ f y * g y) x +
+      ∑ ij ∈ (antidiagonal k).filter (fun ij ↦ 0 < ij.1),
+        (k.choose ij.1 : ℝ) * hsD ij.1 f x * hsD ij.2 g x := by
+  have hfg : ContDiff ℝ ∞ (fun y ↦ f y * g y) := hf.mul hg
+  have hr : ContDiff ℝ ∞ (fun y ↦ f y * g y - f x * g y) := hfg.sub (contDiff_const.mul hg)
+  have e : (fun y ↦ f x * g y) = fun y ↦ f y * g y - (f y * g y - f x * g y) := by
+    funext y
+    ring
+  rw [← hsD_const_mul hg, e]
+  exact (hsD_sub_le hfg hr k x).trans (add_le_add le_rfl (hsD_mul_sub_le hf hg k x))
+
+theorem norm_pderiv_mul_sub_le {f g : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g)
+    (α : Fin n → ℕ) (x : 𝔼) :
+    ‖pderiv α (fun y ↦ f y * g y) x - f x * pderiv α g x‖ ≤
+      ∑ ij ∈ (antidiagonal (mabs α)).filter (fun ij ↦ 0 < ij.1),
+        ((mabs α).choose ij.1 : ℝ) * hsD ij.1 f x * hsD ij.2 g x := by
+  have e : pderiv α (fun y ↦ f y * g y) x - f x * pderiv α g x =
+      pderiv α (fun y ↦ f y * g y - f x * g y) x := by
+    rw [pderiv_eq_dT', pderiv_eq_dT', pderiv_eq_dT', dT_sub (hf.mul hg) (contDiff_const.mul hg),
+      dT_const_mul hg]
+  rw [e]
+  exact ((norm_pderiv_le _ α x).trans (norm_iteratedFDeriv_le_hsD _ _ x)).trans
+    (hsD_mul_sub_le hf hg _ x)
+
+theorem sqrt_sum_pdT_mul_sub_le {f g : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g)
+    (k : ℕ) (x : 𝔼) :
+    Real.sqrt (∑ I : Fin k → Fin n, ‖pdT I (fun y ↦ f y * g y) x - f x * pdT I g x‖ ^ 2) ≤
+      ∑ ij ∈ (antidiagonal k).filter (fun ij ↦ 0 < ij.1),
+        (k.choose ij.1 : ℝ) * hsD ij.1 f x * hsD ij.2 g x := by
+  have e : ∀ I : Fin k → Fin n, pdT I (fun y ↦ f y * g y) x - f x * pdT I g x =
+      pdT I (fun y ↦ f y * g y - f x * g y) x := fun I ↦ by
+    rw [pdT, pdT, pdT, dT_sub (hf.mul hg) (contDiff_const.mul hg), dT_const_mul hg]
+  simp_rw [e]
+  exact hsD_mul_sub_le hf hg k x
+
+theorem hsD_pderiv_le {f : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (α : Fin n → ℕ) (j : ℕ) (x : 𝔼) :
+    hsD j (pderiv α f) x ≤ hsD (mabs α + j) f x := by
+  refine (pow_le_pow_iff_left₀ (hsD_nonneg _ _ _) (hsD_nonneg _ _ _) two_ne_zero).1 ?_
+  rw [hsD_sq, hsD_add_sq hf]
+  refine sum_le_sum fun J _ ↦ pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+  rw [pdT_pderiv_comm hf]
+  exact (norm_pderiv_le _ α x).trans (norm_iteratedFDeriv_le_hsD _ _ x)
+
+end
+
+end GroundTheory.Automorphic.Sobolev
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.AutomorphicForms.PartialDifferential.SqrtSumPdTMulSubLe =====
+
+-- ===== clump member: GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoStep =====
+-- clump-header: {"m": "GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoStep", "h": "module\n\npublic import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoBasic\npublic import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCalc\npublic import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCutoff\npublic import GroundTheory.AutomorphicForms.PartialDifferential.SqrtSumPdTMulSubLe\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.Order.CompletePartialOrder\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\nimport Mathlib.Topology.UniformSpace.Uniformizable\n\n"}
+section -- clump:auto
 @[expose] public section
 
 namespace GroundTheory.Automorphic.Sobolev
@@ -23,8 +204,6 @@ theorem powMul_bound_le {B L : ℝ} (hB : 0 ≤ B) (hL : 1 ≤ L) {p q i : ℕ} 
   have h2 : (p : ℝ) ^ i * (p : ℝ) ^ q ≤ (p : ℝ) ^ p := by
     rw [← pow_add]; exact pow_le_pow_right₀ hp' (by omega)
   have h3 : L ^ q ≤ L ^ (p - 1) := pow_le_pow_right₀ hL (by omega)
-  have hpi : 0 ≤ (p : ℝ) ^ i := by positivity
-  have hqq : 0 ≤ (q : ℝ) ^ q := by positivity
   calc (p : ℝ) ^ i * (B * L ^ q * (q : ℝ) ^ q) = B * L ^ q * ((p : ℝ) ^ i * (q : ℝ) ^ q) := by ring
     _ ≤ B * L ^ (p - 1) * ((p : ℝ) ^ i * (p : ℝ) ^ q) := by gcongr
     _ ≤ B * L ^ (p - 1) * (p : ℝ) ^ p := by gcongr
@@ -33,7 +212,6 @@ theorem coefTerm_le {B L Ma : ℝ} (hB : 0 ≤ B) (hL : 1 ≤ L) (hMa : 0 ≤ Ma
     (hp : 1 ≤ p) (hk : k ≤ p) (hqi : q + i ≤ p) :
     (k.choose i : ℝ) * (Ma ^ i * i.factorial) * (B * L ^ q * (q : ℝ) ^ q) ≤
       B * L ^ p * (p : ℝ) ^ p * (Ma / L) ^ i := by
-  have hL0 : 0 < L := by linarith
   have hp' : (1 : ℝ) ≤ p := by exact_mod_cast hp
   have hc : (k.choose i : ℝ) * i.factorial ≤ (p : ℝ) ^ i := by
     have : k.choose i * i.factorial ≤ p ^ i := by
@@ -49,12 +227,7 @@ theorem coefTerm_le {B L Ma : ℝ} (hB : 0 ≤ B) (hL : 1 ≤ L) (hMa : 0 ≤ Ma
     rw [← pow_add]; exact pow_le_pow_right₀ hp' (by omega)
   have h3 : L ^ q ≤ L ^ (p - i) := pow_le_pow_right₀ hL (by omega)
   have hLp : L ^ p = L ^ (p - i) * L ^ i := by rw [← pow_add, Nat.sub_add_cancel hiq]
-  have hLi : 0 < L ^ i := by positivity
   rw [div_pow, hLp]
-  have hqq : 0 ≤ (q : ℝ) ^ q := by positivity
-  have hMi : 0 ≤ Ma ^ i := by positivity
-  have hfac : 0 ≤ (i.factorial : ℝ) := by positivity
-  have hch : 0 ≤ (k.choose i : ℝ) := by positivity
   calc (k.choose i : ℝ) * (Ma ^ i * i.factorial) * (B * L ^ q * (q : ℝ) ^ q)
       = Ma ^ i * B * L ^ q * (((k.choose i : ℝ) * i.factorial) * (q : ℝ) ^ q) := by ring
     _ ≤ Ma ^ i * B * L ^ (p - i) * ((p : ℝ) ^ i * (p : ℝ) ^ q) := by gcongr
@@ -586,15 +759,11 @@ theorem sum_choose_weight_le {j P k : ℕ} {S : Finset (ℕ × ℕ)} (hS : S ⊆
     (hidx : ∀ ij ∈ S, ij.2 + k + 1 ≤ P ∧ ij.2 + k + ij.1 ≤ P) :
     ∑ ij ∈ S, (j.choose ij.1 : ℝ) * (K * (P : ℝ) ^ ij.1) * w (ij.2 + k) ≤
       2 ^ j * K * (B * L ^ (P - 1) * (P : ℝ) ^ P) := by
-  have hT : 0 ≤ B * L ^ (P - 1) * (P : ℝ) ^ P := by
-    have : (0 : ℝ) ≤ L := by linarith
-    positivity
   calc ∑ ij ∈ S, (j.choose ij.1 : ℝ) * (K * (P : ℝ) ^ ij.1) * w (ij.2 + k)
       ≤ ∑ ij ∈ S, (j.choose ij.1 : ℝ) * K * (B * L ^ (P - 1) * (P : ℝ) ^ P) := by
         refine Finset.sum_le_sum fun ij hij ↦ ?_
         obtain ⟨h1, h2⟩ := hidx ij hij
         have hb := powMul_bound_le hB0 hL1 (p := P) (q := ij.2 + k) (i := ij.1) hP1 h1 h2
-        have hPi : 0 ≤ (P : ℝ) ^ ij.1 := by positivity
         calc (j.choose ij.1 : ℝ) * (K * (P : ℝ) ^ ij.1) * w (ij.2 + k)
             ≤ (j.choose ij.1 : ℝ) * (K * (P : ℝ) ^ ij.1) *
                 (B * L ^ (ij.2 + k) * ((ij.2 + k : ℕ) : ℝ) ^ (ij.2 + k)) := by
@@ -619,7 +788,6 @@ theorem sum_coef_weight_le {k P d : ℕ} (hP1 : 1 ≤ P) (hdk : d + k ≤ P) {Ca
   have hL0 : 0 < L := by linarith
   have hr0 : 0 ≤ Ma / L := div_nonneg hMa hL0.le
   have hr : Ma / L ≤ 1 / 2 := by rw [div_le_iff₀ hL0]; linarith
-  have hT : 0 ≤ B * L ^ P * (P : ℝ) ^ P := by positivity
   calc ∑ ij ∈ (antidiagonal k).filter (fun ij ↦ 0 < ij.1),
         (k.choose ij.1 : ℝ) * (Ca * Ma ^ ij.1 * ij.1.factorial) * w (d + ij.2)
       ≤ ∑ ij ∈ (antidiagonal k).filter (fun ij ↦ 0 < ij.1),
@@ -764,3 +932,6 @@ theorem weighted_derivative_bound {m : ℕ} (hm : 1 ≤ m) {A : Finset (Fin n �
 end
 
 end GroundTheory.Automorphic.Sobolev
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoStep =====

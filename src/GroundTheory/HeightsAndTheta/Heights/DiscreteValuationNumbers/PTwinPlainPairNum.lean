@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.BundleObjects
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ClassListMapDomainPerm
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsVerticalDivOfIsVerticalDivisor
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -83,9 +83,9 @@ theorem rename_divDiff_eq_sum {r : ℕ} (l : Fin r) (G : MvPolynomial (Fin r) �
     rename finSumFinEquiv.symm (IndefiniteRowSideFullHecke.NumbersDVR.Bundles.divDiff l G) =
       ∑ μ ∈ S, C (G.coeff μ) * term l μ := by
   unfold IndefiniteRowSideFullHecke.NumbersDVR.Bundles.divDiff
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_prod, map_pow, rename_X, rename_C,
-    finSumFinEquiv_symm_apply_castAdd, finSumFinEquiv_symm_apply_natAdd]
+
+  simp only [map_sum, map_mul, map_prod, map_pow, rename_X, rename_C,
+  finSumFinEquiv_symm_apply_castAdd, finSumFinEquiv_symm_apply_natAdd]
   refine (Finset.sum_subset hS ?_).trans (Finset.sum_congr rfl fun μ _ => ?_)
   · intro μ _ hμ
     rw [mem_support_iff, not_not] at hμ

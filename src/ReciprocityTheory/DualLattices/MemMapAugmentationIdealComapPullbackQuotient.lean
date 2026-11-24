@@ -1,6 +1,9 @@
 module
 
-public import ReciprocityTheory.DualLattices.ExistsFamilyValuationDetEqOne
+public import ReciprocityTheory.DualLattices.ValuationDetLeOneOfEntriesIntegral
+import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.DualLattices.IsUnitDetOfSpanEq
+public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
 @[expose] public section
 

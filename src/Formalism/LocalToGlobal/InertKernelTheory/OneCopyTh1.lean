@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsMM
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelConditionEquivalent
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelCondition
 
 @[expose] public section
 

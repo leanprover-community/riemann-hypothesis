@@ -1,6 +1,47 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.CoefProd
+public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.WeylComplementInDetCoeffSpan
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.ProdBlockEmbMonomial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -70,8 +111,8 @@ lemma rename_prod_expand [DecidableEq B] (em : B → σ → τ) (F : B → MvPol
       = ∏ b, ∑ m ∈ (F b).support, rename (em b) (monomial m (AddMonoidAlgebra.coeff (F b) m)) := by
         refine Finset.prod_congr rfl fun b _ => ?_
         conv_lhs => rw [(F b).as_sum]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
     _ = ∑ p ∈ Fintype.piFinset (fun b => (F b).support),
           ∏ b, rename (em b) (monomial (p b) (AddMonoidAlgebra.coeff (F b) (p b))) := Finset.prod_univ_sum _ _
     _ = _ := Finset.sum_congr rfl fun p _ => by
@@ -83,8 +124,8 @@ end disjointProducts
 theorem fock_product_holds : FockProd := by
   intro K B σ τ _ _ em hem F G
   classical
-  rw [rename_prod_expand em F, rename_prod_expand em G, fockR_sum_left]
-  simp_rw [fockR_sum_right, fockR_expand (F _) (G _)]
+  simp_rw [rename_prod_expand em F, rename_prod_expand em G, FockPairing.pair_sum_left]
+  simp_rw [FockPairing.pair_sum_right, fockR_expand (F _) (G _)]
   rw [Finset.prod_univ_sum]
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [Finset.prod_univ_sum]

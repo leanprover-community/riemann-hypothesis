@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

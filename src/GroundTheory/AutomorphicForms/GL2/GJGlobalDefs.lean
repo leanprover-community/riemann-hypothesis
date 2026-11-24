@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJMatrixSchwartz
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness
+public import GroundTheory.AutomorphicForms.Reduction
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

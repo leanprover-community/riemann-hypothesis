@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingNumericalData
-public import Formalism.HermitianCurvature.StatementJCT
+public import Formalism.HermitianCurvature.StatementC
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SupremumAIsMajorant
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

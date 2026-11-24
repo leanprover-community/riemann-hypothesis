@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
+public import Mathlib.FieldTheory.Separable
 
 @[expose] public section
 

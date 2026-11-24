@@ -1,10 +1,43 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.LevelLetterCocycles.GammaSemisimpleLocalOfConsequences
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LagrangeIdealLifts.Statement
-public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -167,16 +200,14 @@ def coreLiftB (W : LocWach PD LL O v n) : Prop :=
     Sur W F → JumpsLet W T₁ Mi hi →
       F.LiftF PD (ePB PD.p W.s (Mmax n Mi) (Hmax n Mi hi) (jumpSet W T₁ (Mmax n Mi) (Mmax n hi)))
 
-def uγ (W : LocWach PD LL O v n) : Oˣ := W.χΓ W.gam
-
 def coreLiftR (W : LocWach PD LL O v n) : Prop :=
   ∀ (T₁ : LocLat G Qp LL O) (Mi hi : ZMod n → ℕ), IsCrys PD T₁.ρ → JumpsLet W T₁ Mi hi →
     (CaseB W → ∃ k : ℕ, Associated
       (∏ j ∈ JSet (jumpSet W T₁ (Mmax n Mi) (Mmax n hi)) (Mmax n Mi),
-        (1 - (((uγ W) ^ (-j) : Oˣ) : O))) (((PD.p : ℕ) : O) ^ k)) ∧
+        (1 - (((_root_.Formalism.MainNotions.DeltaInvariantLattices.uU W) ^ (-j) : Oˣ) : O))) (((PD.p : ℕ) : O) ^ k)) ∧
     (CaseA W → ∃ (w : Oˣ) (k : ℤ),
       (∏ j ∈ JSet (jumpSet W T₁ (Mmax n Mi) (Mmax n hi)) (Mmax n Mi),
-        (-(algebraMap O LL (1 - (((uγ W) ^ (-j) : Oˣ) : O)) / (PD.p : LL)))) =
+        (-(algebraMap O LL (1 - (((_root_.Formalism.MainNotions.DeltaInvariantLattices.uU W) ^ (-j) : Oˣ) : O)) / (PD.p : LL)))) =
         algebraMap O LL (w : O) * (PD.p : LL) ^ k)
 
 def coreLiftO (W : LocWach PD LL O v n) (CA CB CK : ℝ) : Prop :=
@@ -218,7 +249,7 @@ def coreL (_W : LocWach PD LL O v n) : Prop :=
         Ideal.span ({∏ b ∈ S₁, (Polynomial.X - Polynomial.C (c b)),
           ∏ b ∈ S₂, (Polynomial.X - Polynomial.C (c b))} : Set (Polynomial O))
 
-def u₁ (W : LocWach PD LL O v n) : O := ((uγ W : Oˣ) : O) ^ (PD.p - 1)
+def u₁ (W : LocWach PD LL O v n) : O := ((_root_.Formalism.MainNotions.DeltaInvariantLattices.uU W : Oˣ) : O) ^ (PD.p - 1)
 
 def InNΔi (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (i : ZMod n) (x : W.DD T) : Prop :=
   x ∈ W.NΔ T ∧ x ∈ W.Nl T i

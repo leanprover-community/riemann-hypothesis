@@ -1,7 +1,20 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.SAOpenStatement
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -72,8 +85,8 @@ theorem hf_symm (hσ : ∀ x, σ (σ x) = x) (hJ : Jᵀ = J.map σ) (x y : ι �
     have := congrFun (congrFun hJ i) j
     simp only [transpose_apply, map_apply] at this
     exact this.symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hf, map_sum, map_mul, hσ, hJ']
+
+  simp only [hf, map_sum, map_mul, hσ, hJ']
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl; intro i _
   apply Finset.sum_congr rfl; intro j _
@@ -87,8 +100,8 @@ theorem hf_mulVec (g : Matrix ι ι R) (x y : ι → R) :
     rw [hf_eq, dotProduct_comm]
   have hs : σ ∘ (g *ᵥ y) = g.map σ *ᵥ (σ ∘ y) := by
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [mulVec, dotProduct, map_sum]
+
+    simp [mulVec, dotProduct, map_sum]
   rw [key, key, hs, ← mulVec_mulVec, ← mulVec_mulVec]
   conv_rhs => rw [dotProduct_mulVec, vecMul_transpose]
 
@@ -99,8 +112,8 @@ theorem hf_single (M : Matrix ι ι R) (i j : ι) :
     intro k
     by_cases h : k = j
     · subst h; simp
-    · simp [Pi.single_apply, h]
-  simp [hf, hs, Pi.single_apply]
+    · simp [h]
+  simp [hf, Pi.single_apply]
 
 theorem eq_of_hf (M M' : Matrix ι ι R) (h : ∀ x y, hf σ M x y = hf σ M' x y) : M = M' := by
   ext i j
@@ -181,9 +194,9 @@ theorem eich_det {e u : ι → R} {c : R} (he : hf σ J e e = 0) (hue : hf σ J 
   have hAB : vecMulVec u α * vecMulVec e β = 0 := by
     rw [vecMulVec_mul_vecMulVec, hαe, zero_smul]; ext i j; simp [vecMulVec_apply]
   have hAC : vecMulVec u α * (c • vecMulVec e α) = 0 := by
-    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hαe, zero_smul]; ext i j; simp [vecMulVec_apply]
+    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hαe, zero_smul]; ext i j; simp
   have hBC : vecMulVec e β * (c • vecMulVec e α) = 0 := by
-    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hβe, zero_smul]; ext i j; simp [vecMulVec_apply]
+    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hβe, zero_smul]; ext i j; simp
   have hfac : eich σ J e u c
       = (1 + vecMulVec u α) * (1 - vecMulVec e β) * (1 + c • vecMulVec e α) := by
     have h3 : ∀ A B C : Matrix ι ι R, (1 + A) * (1 - B) * (1 + C)

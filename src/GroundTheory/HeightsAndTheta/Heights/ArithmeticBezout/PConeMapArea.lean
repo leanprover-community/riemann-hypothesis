@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMapArea
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMapAreaOne
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

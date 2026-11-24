@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFibreAverage
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMassOfFibre
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralMass
+public import Mathlib.Analysis.InnerProductSpace.NormDet
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

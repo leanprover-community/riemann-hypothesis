@@ -1,7 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SemiCharBasic
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.QuasiPeriodConstUnique
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstUniqueOf
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 @[expose] public section
 
@@ -148,10 +151,10 @@ theorem matH_apply {n : Type*} [Fintype n] (h : Matrix n n ℂ) (z w : n → ℂ
 theorem matrixFormBasic : MatHBasic := by
   intro n _ h
   refine ⟨fun z w => rfl, fun hh x y => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [matH_apply, matH_apply, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [map_sum, map_mul, Complex.conj_conj]
+
+  rw [matH_apply, matH_apply, map_sum]
+
+  simp_rw [map_sum, map_mul, Complex.conj_conj]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   have hc : conj (h i j) = h j i := by

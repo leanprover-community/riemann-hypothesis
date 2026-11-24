@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.PAdicHodge.FontaineLemma
 public import GroundTheory.PAdicHodge.BCrisRegular
+public import GroundTheory.PAdicHodge.BCrisPlusInvariants
+import GroundTheory.PAdicHodge.ACrisFrobFixed
+import GroundTheory.PAdicHodge.ACrisPhi
+public import GroundTheory.PAdicHodge.FontaineLemma
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -90,8 +95,8 @@ theorem homogEval_mul {A : Type*} [CommRing A] (f : A →+* S) (P : A[X]) (s z :
 theorem map_homogEval {A : Type*} [CommRing A] (f : A →+* S) (P : A[X]) (y s : S) (g : S →+* T)
     (f' : A →+* T) (hf : ∀ a, g (f a) = f' a) :
     g (homogEval f P y s) = homogEval f' P (g y) (g s) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [homogEval, map_sum, map_mul, map_pow, hf]
+
+  simp only [homogEval, map_sum, map_mul, map_pow, hf]
 
 theorem Localization.Away.exists_algebraMap_eq_pow_mul (t : R) (x : Localization.Away t) :
     ∃ (m : ℕ) (y : R), algebraMap R (Localization.Away t) y =
@@ -110,6 +115,50 @@ theorem map_eq_zero_of_pow_mul_eq_zero [IsDomain T] (g : S →+* T) {c z : S} {d
   have h1 := congrArg g h
   rw [map_mul, map_pow, map_zero] at h1
   exact (mul_eq_zero.1 h1).resolve_left (pow_ne_zero _ hc)
+
+private theorem map_pow_mul_of_map_eq (g : S →+* T) {t u : S} {v : T}
+    (h : g t = v) (n : ℕ) : g (t ^ n * u) = v ^ n * g u := by
+  rw [map_mul, map_pow, h]
+
+private theorem aeval_eq_zero_of_homogEval_iterate {A B : Type*} [CommRing A] [CommRing B]
+    [Algebra A S] [Algebra A T] [Algebra A B] [IsDomain T]
+    (ι : S →ₐ[A] T) (hι : Function.Injective ι) (j : B →ₐ[A] T) (hj : Function.Injective j)
+    (φ : S →ₐ[A] S) (P : A[X]) (m : ℕ) {t c y x₁ : S} {τ : T} {β β₁ : B}
+    (hφc : φ c = c) (hφt : φ t = c * t) (hτ : ι t = τ)
+    (hy : ι y = τ ^ m * j β) (hx₁ : ι x₁ = j β₁)
+    (hφy : φ^[m] y = (c ^ m * t) ^ m * x₁) (hc : ι c ≠ 0) (ht : τ ≠ 0)
+    (hP : aeval β P = 0) : aeval β₁ P = 0 := by
+  let f := algebraMap A S
+  let g := algebraMap A T
+  let d := t ^ m
+  let a := homogEval f P y d
+  have hd : ι d = τ ^ m := (map_pow ι t m).trans (congrArg (· ^ m) hτ)
+  have ha : ι a = 0 := by
+    calc
+      ι a = homogEval g P (ι y) (ι d) := map_homogEval f P y d ι.toRingHom g ι.commutes
+      _ = 0 := by rw [hy, hd, homogEval_mul, ← aeval_def, aeval_algHom_apply, hP, map_zero, mul_zero]
+  have ha₀ : a = 0 := hι (ha.trans (map_zero ι).symm)
+  let Φ := φ ^ m
+  let b := (c ^ m * t) ^ m
+  have hΦy : Φ y = b * x₁ := (congrFun (AlgHom.coe_pow φ m) y).trans hφy
+  have hΦt : Φ t = c ^ m * t := (congrFun (AlgHom.coe_pow φ m) t).trans
+    (iterate_map_eq_pow_mul φ.toRingHom hφc hφt m)
+  have hΦd : Φ d = b := (map_pow Φ t m).trans (congrArg (· ^ m) hΦt)
+  have hab : b ^ P.natDegree * P.eval₂ f x₁ = 0 := by
+    calc
+      _ = homogEval f P (Φ y) (Φ d) := by rw [hΦy, hΦd, homogEval_mul]
+      _ = Φ a := (map_homogEval f P y d Φ.toRingHom f Φ.commutes).symm
+      _ = 0 := (congrArg Φ ha₀).trans (map_zero Φ)
+  have hb : ι b ≠ 0 := by
+    dsimp only [b]
+    rw [map_pow, map_mul, map_pow, hτ]
+    exact pow_ne_zero _ (mul_ne_zero (pow_ne_zero _ hc) ht)
+  have hx : ι (aeval x₁ P) = 0 := map_eq_zero_of_pow_mul_eq_zero ι.toRingHom hab hb
+  exact hj (calc
+    j (aeval β₁ P) = aeval (j β₁) P := (aeval_algHom_apply j β₁ P).symm
+    _ = ι (aeval x₁ P) := by rw [← hx₁, aeval_algHom_apply]
+    _ = 0 := hx
+    _ = j 0 := (map_zero j).symm)
 
 end Abstract
 
@@ -155,24 +204,29 @@ variable [CharZero F]
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem exists_algebraMap_eq_periodTCris_pow_mul_phiB {x : BCris hε} {m : ℕ} {y : BCrisPlus F p}
     (hy : algebraMap (BCrisPlus F p) (BCris hε) y = periodTCris hε ^ (m + 1) * x)
     (hθ : ∀ n : ℕ, IsPerfectoidField.thetaBDeRhamPlusField (K := F) p
       (iotaPlus F p ((phiPlus F p)^[n] y)) = 0) :
     ∃ z : BCrisPlus F p, algebraMap (BCrisPlus F p) (BCris hε) z =
       periodTCris hε ^ m * phiB hε x := by
-  obtain ⟨w, hw⟩ := Ideal.mem_span_singleton'.1 (phiPlus_mem_span_periodT hε hζ hθ)
+  refine (Ideal.mem_span_singleton'.1 (phiPlus_mem_span_periodT hε hζ (y := y) hθ)).elim ?_
+  intro w hw
   have hp1 : IsUnit (p : BCrisPlus F p) := by
     have := IsLocalization.Away.algebraMap_isUnit (S := BCrisPlus F p) (p : ACris F p)
     simpa only [map_natCast] using this
-
-  have h : algebraMap (BCrisPlus F p) (BCris hε) w * periodTCris hε =
+  let g := algebraMap (BCrisPlus F p) (BCris hε)
+  let t := algebraMap (ACris F p) (BCrisPlus F p) (periodT hε)
+  have h : g w * periodTCris hε =
       ((p : BCris hε) * periodTCris hε) ^ (m + 1) * phiB hε x :=
-    (map_mul _ w _).symm.trans ((congrArg _ hw).trans ((phiB_algebraMap hε y).symm.trans
-      ((congrArg (phiB hε) hy).trans (iterate_pow_mul_eq_of_map_eq (phiB hε) (map_natCast _ p)
-        (phiB_periodTCris hε) x (m + 1) 1) |>.trans (by rw [pow_one]; rfl))))
-  exact exists_map_eq_pow_mul_of_mul_eq _ (isUnit_periodTCris hε) hp1 (map_natCast _ p) h
+    calc
+      _ = g (w * t) := (map_mul g w t).symm
+      _ = g (phiPlus F p y) := congrArg g hw
+      _ = phiB hε (g y) := (phiB_algebraMap hε y).symm
+      _ = phiB hε (periodTCris hε ^ (m + 1) * x) := congrArg (phiB hε) hy
+      _ = _ := map_pow_mul_of_map_eq (phiB hε) (u := x) (phiB_periodTCris hε) (m + 1)
+  exact exists_map_eq_pow_mul_of_mul_eq g (isUnit_periodTCris hε) hp1 (map_natCast g p) h
 
 end Generic
 
@@ -213,45 +267,56 @@ theorem thetaField_iota_periodT :
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem exists_bCrisPlus_fixed_eq_of_mem_maxUnramified {x : BCris hε} {k : PadicAlgCl p}
     (hk : k ∈ maxUnramified p K) (hx : iotaB hε hζ x = algebraMap 𝔹 𝔹dR (algClToBdR p k)) :
     ∃ y' : BCrisPlus ℂ_[p] p, (∀ σ : Gal(PadicAlgCl p/K), σ • y' = y') ∧
       algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y' = x := by
-  obtain ⟨y', hyfix, hy'⟩ := exists_bCrisPlus_fixed hk
-  exact ⟨y', hyfix, iotaB_injective hε hζ
-    ((iotaB_algebraMap hε hζ y').trans ((congrArg _ hy').trans hx.symm))⟩
+  refine (exists_bCrisPlus_fixed (K := K) (k := k) hk).elim fun y' hy' => ?_
+  exact ⟨y', hy'.1, iotaB_injective hε hζ
+    ((iotaB_algebraMap hε hζ y').trans ((congrArg (algebraMap 𝔹 𝔹dR) hy'.2).trans hx.symm))⟩
 
 variable [FiniteDimensional ℚ_[p] K]
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem thetaField_iotaPlus_iterate_eq_zero {x : BCris hε}
     (hx : ∀ σ : Gal(PadicAlgCl p/K), galB hε σ x = x) {m : ℕ} {y : BCrisPlus ℂ_[p] p}
     (hy : algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y = periodTCris hε ^ (m + 1) * x) (n : ℕ) :
     IsPerfectoidField.thetaBDeRhamPlusField (K := ℂ_[p]) p
       (iotaPlus ℂ_[p] p ((phiPlus ℂ_[p] p)^[n] y)) = 0 := by
-  obtain ⟨k, hk⟩ := bCris_fixed hε hζ ((phiB hε)^[n] x) fun σ => galB_iterate_phiB hε σ (hx σ) n
+  refine (bCris_fixed (K := K) hε hζ ((phiB hε)^[n] x)
+    (fun σ => galB_iterate_phiB (K := K) hε σ (hx σ) n)).elim ?_
+  intro k hk
   exact map_eq_zero_of_eq_pow_mul (iotaB hε hζ) (algebraMap 𝔹 𝔹dR)
     (IsFractionRing.injective 𝔹 𝔹dR) (IsPerfectoidField.thetaBDeRhamPlusField (K := ℂ_[p]) p)
-    ((iotaB_algebraMap hε hζ _).symm.trans (congrArg _ (algebraMap_iterate_phiPlus_eq hε hy n)))
-    ((map_natCast _ p).trans (map_natCast _ p).symm) (iotaB_periodTCris hε hζ)
+    ((iotaB_algebraMap hε hζ _).symm.trans (congrArg (iotaB hε hζ) (algebraMap_iterate_phiPlus_eq hε hy n)))
+    ((map_natCast (iotaB hε hζ) p).trans (map_natCast (algebraMap 𝔹 𝔹dR) p).symm)
+    (iotaB_periodTCris hε hζ)
     (hk.trans (algebraMap_intermediateField_bDeRham K k)) (thetaField_iota_periodT hε)
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem exists_iterate_phiB_eq (m : ℕ) (x : BCris hε)
     (hx : ∀ σ : Gal(PadicAlgCl p/K), galB hε σ x = x)
     (hxy : ∃ y : BCrisPlus ℂ_[p] p,
       algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y = periodTCris hε ^ m * x) :
-    ∃ z : BCrisPlus ℂ_[p] p, algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) z = (phiB hε)^[m] x :=
-  exists_eq_iterate_of_step (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε)) (phiB hε) (periodTCris hε)
-    (fun x => ∀ σ : Gal(PadicAlgCl p/K), galB hε σ x = x)
-    (fun x hx σ => (phiB_galB hε σ x).symm.trans (congrArg (phiB hε) (hx σ)))
-    (fun _ _ hx ⟨_, hy⟩ => exists_algebraMap_eq_periodTCris_pow_mul_phiB hε hζ hy
-      (thetaField_iotaPlus_iterate_eq_zero hε hζ hx hy)) m x hx hxy
+    ∃ z : BCrisPlus ℂ_[p] p, algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) z = (phiB hε)^[m] x := by
+  let g := algebraMap (BCrisPlus ℂ_[p] p) (BCris hε)
+  let φ := phiB hε
+  let t := periodTCris hε
+  let fixed (z : BCris hε) : Prop := ∀ σ : Gal(PadicAlgCl p/K), galB hε σ z = z
+  have hfixed (z : BCris hε) (hz : fixed z) : fixed (φ z) := fun σ =>
+    (phiB_galB (K := K) hε σ z).symm.trans (congrArg φ (hz σ))
+  have hstep (d : ℕ) (z : BCris hε) (hz : fixed z)
+      (hzy : ∃ y : BCrisPlus ℂ_[p] p, g y = t ^ (d + 1) * z) :
+      ∃ w : BCrisPlus ℂ_[p] p, g w = t ^ d * φ z :=
+    hzy.elim fun y hy =>
+      exists_algebraMap_eq_periodTCris_pow_mul_phiB hε hζ (x := z) (m := d) (y := y) hy
+        (thetaField_iotaPlus_iterate_eq_zero hε hζ (K := K) (x := z) hz (m := d) (y := y) hy)
+  exact exists_eq_iterate_of_step g φ t fixed hfixed hstep m x hx hxy
 
 theorem iterate_phiPlus_algebraMap_padic (n : ℕ) (q : ℚ_[p]) :
     (phiPlus ℂ_[p] p)^[n] (algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q) =
@@ -271,12 +336,11 @@ theorem algebraMap_bCrisPlus_bCris_injective :
 
 include hζ in
 theorem iota_periodT_ne_zero : iota ℂ_[p] p (periodT hε) ≠ 0 := by
-  rw [iota_periodT]
-  exact fontaineT_ne_zero hε hζ
+  exact fun h => fontaineT_ne_zero hε hζ ((iota_periodT hε).symm.trans h)
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem aeval_minpoly_eq_zero_of_iterate {y x₁ : BCrisPlus ℂ_[p] p} {m : ℕ}
     {β β₁ : PadicAlgCl p}
     (hιy : iotaPlus ℂ_[p] p y = iota ℂ_[p] p (periodT hε) ^ m * algClToBdR p β)
@@ -284,96 +348,39 @@ theorem aeval_minpoly_eq_zero_of_iterate {y x₁ : BCrisPlus ℂ_[p] p} {m : ℕ
     (hφy : (phiPlus ℂ_[p] p)^[m] y = ((p : BCrisPlus ℂ_[p] p) ^ m *
       algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) (periodT hε)) ^ m * x₁) :
     aeval β₁ (minpoly ℚ_[p] β) = 0 := by
-  obtain ⟨t', ht'⟩ : ∃ t', algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) (periodT hε) = t' :=
-    ⟨_, rfl⟩
-  obtain ⟨τ, hτdef⟩ : ∃ τ, iota ℂ_[p] p (periodT hε) = τ := ⟨_, rfl⟩
-  rw [ht'] at hφy
-  rw [hτdef] at hιy
-  have hτ : iotaPlus ℂ_[p] p t' = τ := by rw [← ht', ← hτdef]; exact iotaPlus_algebraMap _
-  obtain ⟨P, hP⟩ : ∃ P, minpoly ℚ_[p] β = P := ⟨_, rfl⟩
-  rw [hP]
-  obtain ⟨f, hf⟩ : ∃ f, algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) = f := ⟨_, rfl⟩
-  obtain ⟨R, hR⟩ : ∃ R, homogEval f P y (t' ^ m) = R := ⟨_, rfl⟩
-
-  have hιf (q : ℚ_[p]) :
-      iotaPlus ℂ_[p] p (algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q) = algebraMap ℚ_[p] 𝔹 q := by
-    have h : (iotaPlus ℂ_[p] p).comp padicToBCrisPlus = algebraMap ℚ_[p] 𝔹 := by
-      refine IsLocalization.ringHom_ext (nonZeroDivisors ℤ_[p]) (RingHom.ext fun x => ?_)
-      simp only [RingHom.comp_apply, padicToBCrisPlus, IsLocalization.lift_eq, padicIntToBCrisPlus,
-        iotaPlus_algebraMap]
-      exact iota_padicInt x
-    exact RingHom.congr_fun h q
-  have hιs : iotaPlus ℂ_[p] p (t' ^ m) = τ ^ m := (map_pow _ _ _).trans (congrArg (· ^ m) hτ)
-  have hιR : iotaPlus ℂ_[p] p R = 0 := by
-    have e1 : iotaPlus ℂ_[p] p R = homogEval (algebraMap ℚ_[p] 𝔹) P (iotaPlus ℂ_[p] p y)
-        (iotaPlus ℂ_[p] p (t' ^ m)) := by
-      rw [← hR]
-      exact map_homogEval f P y (t' ^ m) (iotaPlus ℂ_[p] p) (algebraMap ℚ_[p] 𝔹)
-        (fun q => by rw [← hf]; exact hιf q)
-    have e2 : aeval (algClToBdR p β) P = 0 := by
-      rw [aeval_algHom_apply, ← hP, minpoly.aeval, map_zero]
-    rw [e1, hιy, hιs, homogEval_mul, ← aeval_def, e2, mul_zero]
-  have hR0 : R = 0 := iotaPlus_injective (K := ℂ_[p]) (p := p) (hιR.trans (map_zero _).symm)
-
-  obtain ⟨c, hc⟩ : ∃ c, ((p : BCrisPlus ℂ_[p] p) ^ m * t') ^ m = c := ⟨_, rfl⟩
-  rw [hc] at hφy
-  obtain ⟨Φ, hΦ⟩ : ∃ Φ, phiPlus ℂ_[p] p ^ m = Φ := ⟨_, rfl⟩
-  have hΦf : ∀ q, Φ (f q) = f q := fun q => by
-    rw [← hΦ, ← hf]
-    exact (congrFun (RingHom.coe_pow (phiPlus ℂ_[p] p) m) _).trans
-      (iterate_phiPlus_algebraMap_padic m q)
-  have hΦy : Φ y = c * x₁ := by
-    rw [← hΦ]
-    exact (congrFun (RingHom.coe_pow (phiPlus ℂ_[p] p) m) y).trans hφy
-  have hφt : (phiPlus ℂ_[p] p)^[m] t' = (p : BCrisPlus ℂ_[p] p) ^ m * t' := by
-    rw [← ht']
-    exact iterate_map_eq_pow_mul (phiPlus ℂ_[p] p) (map_natCast _ p)
-      ((phiPlus_algebraMap _).trans ((congrArg _ (phi_periodT_eq_mul hε)).trans
-        (by simp only [map_mul, map_natCast]))) m
-  have hΦs : Φ (t' ^ m) = c := by
-    rw [← hΦ, ← hc]
-    exact (congrFun (RingHom.coe_pow (phiPlus ℂ_[p] p) m) _).trans
-      ((iterate_map_pow (phiPlus ℂ_[p] p) m t' m).trans (congrArg (· ^ m) hφt))
-  have hΦR : c ^ P.natDegree * P.eval₂ f x₁ = 0 := by
-    have e1 : Φ R = homogEval f P (Φ y) (Φ (t' ^ m)) := by
-      rw [← hR]
-      exact map_homogEval f P y (t' ^ m) Φ f hΦf
-    rw [hΦy, hΦs, homogEval_mul, hR0, map_zero] at e1
-    exact e1.symm
-
-  have hιc : iotaPlus ℂ_[p] p c ≠ 0 := by
-    rw [← hc, map_pow_mul_pow (iotaPlus ℂ_[p] p) (map_natCast _ p) m m t', hτ]
-    exact pow_ne_zero _ (mul_ne_zero (pow_ne_zero _ (IsPerfectoidField.isUnit_natCast_p_bDeRhamPlus
-      (K := ℂ_[p]) p).ne_zero) (by rw [← hτdef]; exact iota_periodT_ne_zero hε hζ))
-  have h1 : iotaPlus ℂ_[p] p (aeval x₁ P) = 0 := by
-    rw [aeval_def, hf]
-    exact map_eq_zero_of_pow_mul_eq_zero (iotaPlus ℂ_[p] p) hΦR hιc
-  let ι : BCrisPlus ℂ_[p] p →ₐ[ℚ_[p]] 𝔹 :=
-    { iotaPlus ℂ_[p] p with commutes' := hιf }
-  have h2 : aeval (iotaPlus ℂ_[p] p x₁) P = iotaPlus ℂ_[p] p (aeval x₁ P) :=
-    aeval_algHom_apply ι x₁ P
-  rw [hιx₁, h1, aeval_algHom_apply] at h2
-  exact (injective_algClToBdR p) (h2.trans (map_zero _).symm)
+  let t := algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) (periodT hε)
+  have hφt : phiPlus ℂ_[p] p t = (p : BCrisPlus ℂ_[p] p) * t :=
+    (phiPlus_algebraMap (periodT hε)).trans
+      ((congrArg (algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p))
+        (phi_periodT_eq_mul hε)).trans (by rw [map_mul, map_natCast]))
+  have hp₀ : (p : 𝔹) ≠ 0 :=
+    (IsPerfectoidField.isUnit_natCast_p_bDeRhamPlus (K := ℂ_[p]) p).ne_zero
+  exact aeval_eq_zero_of_homogEval_iterate (iotaPlusAlg (p := p)) iotaPlus_injective
+    (algClToBdR p) (injective_algClToBdR p) (phiPlusAlg (p := p)) (minpoly ℚ_[p] β) m
+    (map_natCast (phiPlus ℂ_[p] p) p) hφt (iotaPlus_algebraMap (periodT hε)) hιy hιx₁ hφy
+    (fun h => hp₀ ((map_natCast (iotaPlus ℂ_[p] p) p).symm.trans h))
+    (iota_periodT_ne_zero hε hζ) (minpoly.aeval ℚ_[p] β)
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem exists_bCrisPlus_fixed_eq_of_iterate {x : BCris hε}
     (hx : ∀ σ : Gal(PadicAlgCl p/K), galB hε σ x = x) {m : ℕ} {y x₁ : BCrisPlus ℂ_[p] p}
     (hy : algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y = periodTCris hε ^ m * x)
     (hx₁ : algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) x₁ = (phiB hε)^[m] x) :
     ∃ y' : BCrisPlus ℂ_[p] p, (∀ σ : Gal(PadicAlgCl p/K), σ • y' = y') ∧
       algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y' = x := by
-  obtain ⟨k, hk⟩ := bCris_fixed hε hζ x hx
-  obtain ⟨k₁, hk₁⟩ := bCris_fixed hε hζ ((phiB hε)^[m] x) fun σ => galB_iterate_phiB hε σ (hx σ) m
+  refine (bCris_fixed (K := K) hε hζ x hx).elim fun k hk => ?_
+  refine (bCris_fixed (K := K) hε hζ ((phiB hε)^[m] x)
+    (fun σ => galB_iterate_phiB (K := K) hε σ (hx σ) m)).elim fun k₁ hk₁ => ?_
   have hk' := hk.trans (algebraMap_intermediateField_bDeRham K k)
   have hk₁' := hk₁.trans (algebraMap_intermediateField_bDeRham K k₁)
   have hιy : iotaPlus ℂ_[p] p y = iota ℂ_[p] p (periodT hε) ^ m * algClToBdR p k :=
     eq_pow_mul_of_map_eq (iotaB hε hζ) (algebraMap 𝔹 𝔹dR) (IsFractionRing.injective 𝔹 𝔹dR)
-      ((iotaB_algebraMap hε hζ y).symm.trans (congrArg _ hy)) (iotaB_periodTCris hε hζ) hk'
+      ((iotaB_algebraMap hε hζ y).symm.trans (congrArg (iotaB hε hζ) hy)) (iotaB_periodTCris hε hζ) hk'
   have hιx₁ : iotaPlus ℂ_[p] p x₁ = algClToBdR p k₁ :=
     IsFractionRing.injective 𝔹 𝔹dR
-      ((iotaB_algebraMap hε hζ x₁).symm.trans ((congrArg _ hx₁).trans hk₁'))
+      ((iotaB_algebraMap hε hζ x₁).symm.trans ((congrArg (iotaB hε hζ) hx₁).trans hk₁'))
   have hφy : (phiPlus ℂ_[p] p)^[m] y = ((p : BCrisPlus ℂ_[p] p) ^ m *
       algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) (periodT hε)) ^ m * x₁ :=
     algebraMap_bCrisPlus_bCris_injective hε hζ ((algebraMap_iterate_phiPlus_eq hε hy m).trans
@@ -387,30 +394,31 @@ theorem exists_bCrisPlus_fixed_eq_of_iterate {x : BCris hε}
   have hk0 : (k : PadicAlgCl p) ∈ maxUnramified p K :=
     mem_maxUnramified.2 ⟨k.2, mem_unramifiedClosure_of_minpoly_eq hmin
       (mem_unramifiedClosure_of_iotaPlus_eq hιx₁)⟩
-  exact exists_bCrisPlus_fixed_eq_of_mem_maxUnramified hε hζ hk0 hk'
+  exact exists_bCrisPlus_fixed_eq_of_mem_maxUnramified hε hζ (K := K) (x := x) hk0 hk'
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem exists_bCrisPlus_fixed_eq (x : BCris hε)
     (hx : ∀ σ : Gal(PadicAlgCl p/K), galB hε σ x = x) :
     ∃ y : BCrisPlus ℂ_[p] p, (∀ σ : Gal(PadicAlgCl p/K), σ • y = y) ∧
       algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y = x := by
-  obtain ⟨m, a, hs'⟩ := exists_algebraMap_eq_periodTCris_pow_mul hε x
-  obtain ⟨x₁, hx₁⟩ := exists_iterate_phiB_eq hε hζ m x hx ⟨a, hs'⟩
-  exact exists_bCrisPlus_fixed_eq_of_iterate hε hζ hx hs' hx₁
+  refine (exists_algebraMap_eq_periodTCris_pow_mul hε x).elim fun m hxy => ?_
+  refine (exists_iterate_phiB_eq hε hζ (K := K) m x hx hxy).elim fun x₁ hx₁ => ?_
+  exact hxy.elim fun y hy =>
+    exists_bCrisPlus_fixed_eq_of_iterate hε hζ (K := K) (x := x) hx (m := m) (y := y) (x₁ := x₁) hy hx₁
 
 
 
 include hζ in
-set_option maxHeartbeats 1600000 in
+
 theorem bCris_fixed_mem_maxUnramified (x : BCris hε)
     (hx : ∀ σ : Gal(PadicAlgCl p/K), galB hε σ x = x) :
     ∃ k ∈ maxUnramified p K, iotaB hε hζ x = algebraMap 𝔹 𝔹dR (algClToBdR p k) := by
-  obtain ⟨y, hy, hyx⟩ := exists_bCrisPlus_fixed_eq hε hζ x hx
-  obtain ⟨k, hk, hyk⟩ := bCrisPlus_fixed y hy
-  exact ⟨k, hk, (congrArg (iotaB hε hζ) hyx).symm.trans
-    ((iotaB_algebraMap hε hζ y).trans (congrArg _ hyk))⟩
+  refine (exists_bCrisPlus_fixed_eq hε hζ (K := K) x hx).elim fun y hy => ?_
+  refine (bCrisPlus_fixed (K := K) y hy.1).elim fun k hk => ?_
+  exact ⟨k, hk.1, (congrArg (iotaB hε hζ) hy.2).symm.trans
+    ((iotaB_algebraMap hε hζ y).trans (congrArg (algebraMap 𝔹 𝔹dR) hk.2))⟩
 
 end ACris
 

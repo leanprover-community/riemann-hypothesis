@@ -1,37 +1,45 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SameForm
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsOkPins
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteDetermining
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResCharConj
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevOkTwists
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNonnegShaOK
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodChi
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRealPD
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEq
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocalPrimeAinf
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnramifiedDataCharacter
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCmConjugationOmega
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodTupleConditionOfIdempotentZero
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseChangeNonempty
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsExponentThetaData
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTypesIdempotentCoefficients
-public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FrobeniusTorusMinpolyDegreeRootPowerSum
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CentralBinomLePowCardPrimesBetween
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteBaseDataAdmissible
-public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
-public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
-public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
-public import Formalism.LocalToGlobal.Columns.GenericUnipotentCharacter
-public import Formalism.LocalToGlobal.Columns.CoefCol
-public import Formalism.LocalToGlobal.Columns.DecorationStabilizerTrivialUnipotent
-public import Formalism.LocalToGlobal.Divisibility.CoefMod
-public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
-public import Formalism.LocalToGlobal.Columns.CoefColLemmas
-public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
-public import Formalism.LocalToGlobal.Columns.BaseLemmas
-public import Formalism.LocalToGlobal.Columns.RowForms
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AssembleLattice
+public import Formalism.LocalRingCardinality.DataKap
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BaseDataEmbeddingConj
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ModelLamPDef
 
 @[expose] public section
 

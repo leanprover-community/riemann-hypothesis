@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Formalism.PairingDivisors.StatementH
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Principal
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcDiffSmulMem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 
 @[expose] public section
 
@@ -74,7 +112,7 @@ def twist (σ : E ≃ₐ[ℚ] E) (C : Set E) {N : ℕ} (L : Submodule (𝓞 E) (
     have := L.add_mem (hv c hc) (hw c hc)
     convert this using 1
     funext i
-    simp [mul_add]
+    simp
   zero_mem' := by
     intro c hc
     have h : (σ.symm ∘ (star c • 0) : Fin N → E) = 0 := by
@@ -114,9 +152,9 @@ theorem isSDLat_twist (σ : E ≃ₐ[ℚ] E) (hs : ∀ x, σ (star x) = star (σ
   have hH : ∀ (a : E) (u y : Fin N → E), stdH E N (a • (σ ∘ u : Fin N → E)) y =
       σ (stdH E N u (σ.symm ∘ (star a • y))) := by
     intro a u y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [stdH, map_sum, map_mul, hs, Function.comp, Pi.smul_apply, smul_eq_mul,
-      AlgEquiv.apply_symm_apply, star_mul]
+
+    simp only [stdH, map_sum, map_mul, hs, Function.comp, Pi.smul_apply, smul_eq_mul,
+    AlgEquiv.apply_symm_apply, star_mul]
     exact Finset.sum_congr rfl fun i _ => by ring
   obtain ⟨⟨s, hs'⟩, hspan, hdual⟩ := hL
   refine ⟨?_, ?_, fun y => ⟨fun hy x hx => ?_, fun hy a ha => ?_⟩⟩
@@ -325,8 +363,8 @@ theorem exists_conjugate_pair : ∀ (D : D7) (σ : D.host.E ≃ₐ[ℚ] D.host.E
       refine map_mem_YYl D σ.symm (fun a ha A hA => ?_) hA
       have e : (a • A).map σ.symm = ∑ i, σ.symm (a * d i) • (star (c i) • A).map σ.symm := by
         ext p q
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, ← map_mul, ← map_sum]
+
+        simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, ← map_mul, ← map_sum]
         conv_lhs => rw [← mul_one (a * A p q), ← h2, Finset.mul_sum]
         rw [Finset.sum_congr rfl fun i _ =>
           (by ring : a * A p q * (star (c i) * d i) = a * d i * (star (c i) * A p q))]

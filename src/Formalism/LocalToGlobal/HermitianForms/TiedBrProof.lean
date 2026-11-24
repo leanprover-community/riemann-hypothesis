@@ -1,7 +1,11 @@
 module
 
+public import Formalism.LocalToGlobal.HermitianForms.TiedBr
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrCo
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrRep
+public import Formalism.LocalToGlobal.KernelLattices.InterlaceAll
 public import Formalism.LocalToGlobal.HermitianForms.TiedBrCl
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LowerTieChain
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
 
 @[expose] public section
 

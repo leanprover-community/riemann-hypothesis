@@ -1,7 +1,50 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvBasisPhi
+public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.DistinguishedUnitIdeals.ExistsConstOfInvariantMod
+public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 
 @[expose] public section
 
@@ -34,10 +77,6 @@ theorem lvBasis_cmp_add {a b : W.DD T} (ha : a ∈ W.N T) (hb : b ∈ W.N T) (ha
 theorem lvBasis_letE_idem (i : ZMod n) (x : W.DD T) :
     (letE i : LetA O n) • (letE i : LetA O n) • x = (letE i : LetA O n) • x := by
   rw [smul_smul, letE_mul_self]
-
-theorem lvBasis_sum_letE : ∑ i : ZMod n, (letE i : LetA O n) = 1 := by
-  funext j
-  simp [letE, Finset.sum_apply, Pi.single_apply]
 
 theorem lvBasis_cmp_of_eq {w z y : W.DD T} (hw : w ∈ W.N T) (hz : z ∈ W.N T) (hy : y ∈ W.N T)
     (o : O) (h : y = o • w + (letπ : LetA O n) • z) :
@@ -132,8 +171,8 @@ theorem lvBasis_letter_span (hspan : Submodule.span LL (Set.range (W.cmp T)) = D
     simp only [z, Finsupp.sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun x _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.smul_sum, ← map_sum, ← Finset.sum_smul, lvBasis_sum_letE, one_smul]
+
+    rw [← Finset.smul_sum, ← map_sum, ← Finset.sum_smul, _root_.Formalism.MainNotions.WachCoordinates.Br.sum_letE, one_smul]
   have key := lvBasis_indep W.emb W.emb_bij.1
     (fun i => z i - if i = j then (f.sum fun x a => a • W.cmp T x) else 0) (fun i c => by
       have h1 := ((lvBasis_mem_DcrisL PD T.ρ _ _).1 (hzi i)).2 c

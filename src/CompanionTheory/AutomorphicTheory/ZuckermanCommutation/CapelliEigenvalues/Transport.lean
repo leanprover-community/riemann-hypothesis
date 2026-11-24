@@ -1,7 +1,12 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.Smooth
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.CoreDefs
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.SmRight
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.CapelliHighestWeightConjugated
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
+public import Formalism.RealPlaceAnalysis.FinalF
+import Formalism.RealPlaceAnalysis.QuotientSettingHolds
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -39,8 +44,8 @@ theorem qminorOp_rel
     {t : ℕ} (a b : Fin t → Fin n) (u : ℂ) :
     φ (qminorOp Eop a b u f g) = qminorOp Eop' a b u f' g := by
   unfold qminorOp
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_apply, Pi.smul_apply, map_sum, map_smul]
+
+  simp only [Finset.sum_apply, Pi.smul_apply, map_sum, map_smul]
   refine Finset.sum_congr rfl fun σ _ => ?_
   congr 1
   exact hg _ _ (foldr_rel Rel hT h t (fun k => u - ((k : ℕ) : ℂ)) (fun k => a (σ k)) b)

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalizationAtPrimeQuotient
+public import Mathlib.RingTheory.Localization.LocalizationLocalization
 
 @[expose] public section
 

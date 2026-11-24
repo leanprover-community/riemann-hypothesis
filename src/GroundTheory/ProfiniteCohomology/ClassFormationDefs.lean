@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 public import GroundTheory.ProfiniteCohomology.TorsionDualDefs
+public import Mathlib.GroupTheory.Torsion
 
 @[expose] public section
 

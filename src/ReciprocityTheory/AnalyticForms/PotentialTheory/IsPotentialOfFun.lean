@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.MeasureTheory.Integral.IntegrableOn
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.NormalDecomposition.DecompOfNormalStatement
-public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage
-public import Formalism.LocalToGlobal.IndefiniteReal.LiftCoordinatesInGoodPartFamily
 public import Formalism.LocalToGlobal.IndefiniteReal.LiftGoodPartComplexEqRangeFamily
+import Formalism.LocalToGlobal.IndefiniteReal.CxPass
 
 @[expose] public section
 

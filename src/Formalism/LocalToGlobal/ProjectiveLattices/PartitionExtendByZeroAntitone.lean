@@ -74,9 +74,7 @@ theorem wtA_wadd {j : ℕ} (w w' : WeightFamilies.Wt D j) : wtA (WeightAlgebra.w
   funext x
   simp only [wtA, Pi.add_apply, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun t _ => ?_
-  have h1 : ext0 ((WeightAlgebra.wadd w w').aP t) x.2 = ext0 (w.aP t) x.2 + ext0 (w'.aP t) x.2 := matrixExtendByZero_add _ _ _
-  have h2 : ext0 ((WeightAlgebra.wadd w w').aM t) x.2 = ext0 (w.aM t) x.2 + ext0 (w'.aM t) x.2 := matrixExtendByZero_add _ _ _
-  rw [h1, h2]
+  simp only [WeightAlgebra.wadd, matrixExtendByZero_add]
   split_ifs <;> omega
 
 theorem n_wadd {j : ℕ} (w w' : WeightFamilies.Wt D j) : (WeightAlgebra.wadd w w').n = w.n + w'.n := rfl

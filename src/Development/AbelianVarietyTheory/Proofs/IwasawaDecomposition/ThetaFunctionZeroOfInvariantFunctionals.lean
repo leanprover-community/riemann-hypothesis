@@ -1,11 +1,65 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqTopOfTranslates
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalSymplecticPointsSelfAnnihilator
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
+public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceAnnihilatorRelativelyCompact
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SymplecticAdelicFormBiadditiveAlternatingRationa
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ImportsAlt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalSymplecticPointsSelfAnnihilator
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceAnnihilatorRelativelyCompact
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StandardAdelicCharacterLocalComponentNeOne
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.MetricSpace.Ultra.Pi
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqTopOfTranslates
+import Formalism.LocalToGlobal.Divisibility.CoefMod
+import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
+import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 
@@ -107,8 +161,8 @@ theorem exists_char_form {G V : Type} [AddCommGroup G] [AddCommGroup V] [Module 
   have hmem : ρ u f - χ u • f ∈ S := by
     refine ⟨∑ i ∈ Finset.range (N * N₀), x u ^ i * algebraMap ℂ A (χ u) ^ (N * N₀ - 1 - i), ?_, ?_⟩
     · have h1 : c (x u) = χ u := rfl
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, map_pow, AlgHom.commutes, h1, Algebra.algebraMap_self, RingHom.id_apply]
+
+      simp only [map_sum, map_mul, map_pow, AlgHom.commutes, h1, Algebra.algebraMap_self, RingHom.id_apply]
       rw [geom_sum₂_self]
       exact mul_ne_zero (Nat.cast_ne_zero.2 hM.ne') (pow_ne_zero _ hz0)
     · have h2 : ρ u f - χ u • f = π (x u - algebraMap ℂ A (χ u)) f := by
@@ -132,14 +186,7 @@ theorem eq_top_of_separates {Q : Type} [AddCommGroup Q] [Finite Q] (H : AddSubgr
   · obtain ⟨φ, hφ, hφx⟩ := h x hx0
     exact hφx (by rw [hev, (QuotientAddGroup.eq_zero_iff _).2 hφ, AddChar.map_zero_eq_one])
 
-theorem eq_one_of_pow_near {z : ℂ} (h : ∀ n : ℕ, ‖z ^ n - 1‖ < 1 / 2) : z = 1 := by
-  first
-  | exact @_root_.GlobalTheory.KeyLemmaTwo.main
-  | exact _root_.GlobalTheory.KeyLemmaTwo.main
-  | (apply _root_.GlobalTheory.KeyLemmaTwo.main <;> assumption)
-  | (intros; apply _root_.GlobalTheory.KeyLemmaTwo.main <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.KeyLemmaTwo.main <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.KeyLemmaTwo.main ..)
+alias eq_one_of_pow_near := _root_.GlobalTheory.KeyLemmaTwo.main
 
 theorem exists_nsmul_mem_open {G : Type} [NormedAddCommGroup G] [IsUltrametricDist G] [ProperSpace G]
     (U : AddSubgroup G) (hU : IsOpen (U : Set G)) (x : G) : ∃ N, 0 < N ∧ N • x ∈ U := by
@@ -278,7 +325,7 @@ theorem exists_hO_eq (S T : HSp D) (i : Fin T.rank) (j : Fin S.rank) (e : D.host
 end Heis
 
 
-set_option maxHeartbeats 1000000 in
+
 open GlobalTheory.IdemModTwo in
 theorem eq_zero_of_invariant_forms : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (e : AE D), IsSplitIdem D e → ∀ g, IsThetaFunO ψ S T g → (∀ ℓ : (WO S T → ℂ) →ₗ[ℂ] ℂ, (∀ u, IsHalf (cA D e) u → ∀ f, IsThetaFunO ψ S T f → ℓ (heisO ψ S T u f) = ℓ f) → ∀ t, IsHalf e t → ℓ (heisO ψ S T t g) = 0) → g = 0 := by
   intro D ψ hψ S T e hε g hg H
@@ -348,8 +395,8 @@ theorem eq_zero_of_invariant_forms : ∀ (D : D7) (ψ : AddChar (AF D.host.F) �
         mul_inv_cancel₀ (GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D), map_one, one_mul, map_mul (cA D), cA_fj]
       exact GlobalTheory.SplitAnnihilator.trace_split he' _ _
     have h2 : symplO S T (J y) t = ∑ p, ι (a p * y p) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Finset.sum_congr rfl fun p _ => h1 p, ← map_sum]
+
+      rw [← Finset.sum_congr rfl fun p _ => h1 p, ← map_sum]
       rfl
     conv_lhs => rw [← Finset.univ_sum_single y]
     rw [h2]

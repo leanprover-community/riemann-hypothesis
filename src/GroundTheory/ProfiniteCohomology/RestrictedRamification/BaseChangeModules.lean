@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SInvariantToInvariantsEqZeroIff
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnitsDefs
 public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SInvariantToInvariantsEqZeroIff
+import Mathlib.Algebra.Lie.OfAssociative
 
 @[expose] public section
 

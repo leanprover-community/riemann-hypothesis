@@ -1,7 +1,65 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.XSmulMemWeightedHomogeneousSubmodule
+public import Mathlib.Data.Rat.Floor
+public import Mathlib.LinearAlgebra.Projectivization.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Order.Filter.AtTopBot.Archimedean
+public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
+public import Mathlib.Topology.Algebra.Order.Polynomial
 
 @[expose] public section
 
@@ -126,14 +184,14 @@ theorem weightedHomogeneousComponent_one_mem {I : Ideal (MvPolynomial ι k)}
 
 instance finite_homogeneousSubmodule' [Finite ι] (n : ℕ) :
     Module.Finite k (homogeneousSubmodule ι k n) := by
-  letI := weightedDecomposition k (fun _ : ι => (1 : ℤ))
+  let := weightedDecomposition k (fun _ : ι => (1 : ℤ))
   rw [← weightedHomogeneousSubmodule_one_natCast]
   exact GradedHilbert.finite_piece _ (X_smul_mem_weightedHomogeneousSubmodule ι k) _
 
 theorem exists_isHilbertPoly_quotPiece [Fintype ι] {I : Ideal (MvPolynomial ι k)}
     (hI : I.IsHomogeneous (homogeneousSubmodule ι k)) :
     ∃ P : ℚ[X], IsHilbertPoly (quotPiece I) P ∧ P.degree < (Fintype.card ι : ℕ) := by
-  letI := weightedDecomposition k (fun _ : ι => (1 : ℤ))
+  let := weightedDecomposition k (fun _ : ι => (1 : ℤ))
   have hfin := GradedHilbert.finite_piece _ (X_smul_mem_weightedHomogeneousSubmodule ι k)
   obtain ⟨P, hP, h⟩ := GradedHilbert.exists_polynomial_subquotient _
     (X_smul_mem_weightedHomogeneousSubmodule ι k) Finset.univ I ⊤ le_top
@@ -142,11 +200,11 @@ theorem exists_isHilbertPoly_quotPiece [Fintype ι] {I : Ideal (MvPolynomial ι 
       have := weightedHomogeneousComponent_one_mem hI n hm
       rwa [← weightedDecomposition.decompose'_apply] at this) (by simp) (by simp)
   refine ⟨P, ⟨fun n => ?_, ?_⟩, hP⟩
-  · haveI := hfin n
+  · have := hfin n
     unfold quotPiece
     infer_instance
   · filter_upwards [h] with n hn
-    haveI := hfin n
+    have := hfin n
     have e := GradedHilbert.finrank_map_add_finrank_inf_ker (Ideal.Quotient.mkₐ k I).toLinearMap
       (weightedHomogeneousSubmodule k (fun _ : ι => (1 : ℤ)) n)
     have e2 : LinearMap.ker (Ideal.Quotient.mkₐ k I).toLinearMap = I.restrictScalars k := by

@@ -1,13 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedDegree
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualLatticeIndex
+public import Mathlib.Algebra.Module.Lattice.Full
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopLatticeChange
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PLinesGenIndexTrans
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PLinesGenIndexDet
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PLinesLatticeBasis
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PLinesGenIndexTrans
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PLinesIsLattice
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PLinesLatticeBasis
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopStacked
 
 @[expose] public section
 

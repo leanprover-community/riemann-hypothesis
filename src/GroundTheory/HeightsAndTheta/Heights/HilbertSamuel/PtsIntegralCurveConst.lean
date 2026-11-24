@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.WhittakerFunctional
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArithKleiman
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsCurvePointsFinite
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PPtsIntegralPoints
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.WhittakerFunctional
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDerived
 
 @[expose] public section
 

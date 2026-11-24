@@ -1,7 +1,7 @@
 module
 
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
+public import Mathlib.Algebra.Homology.HomotopyCategory.KInjective
 
 @[expose] public section
 
@@ -16,8 +16,8 @@ variable (R : Type) [CommRing R]
 def resHom {F G : Shv R} (φ : F ⟶ G) :
     InjectiveResolution.Hom (injectiveResolution F) (injectiveResolution G) φ :=
   ⟨InjectiveResolution.desc φ (injectiveResolution G) (injectiveResolution F),
-    congrArg (fun f => HomologicalComplex.Hom.f f 0)
-      (InjectiveResolution.desc_commutes φ (injectiveResolution G) (injectiveResolution F))⟩
+    HomologicalComplex.congr_hom
+      (InjectiveResolution.desc_commutes φ (injectiveResolution G) (injectiveResolution F)) 0⟩
 
 theorem mono_ι_f_zero (F : Shv R) : Mono ((injectiveResolution F).ι.f 0) :=
   mono_of_isLimit_fork (injectiveResolution F).isLimitKernelFork

@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiamondPreservesRationalFormZero
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.AdelicFunctionRightTranslateDiamond
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.CharacterFiniteLevelZeroOfForms
+public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
 
 @[expose] public section
@@ -42,7 +41,7 @@ end Gen
 variable {D : D7} {u : D.what₂.Word}
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem diamond_comm_distinct_places (Tf : Forms0 D u) (hE : DiamondElementsExist Tf) (i : ℕ) (hi : i ≤ D.R.m) (h0 : i = 0) (v v' : (D.mem u).A.vT)
     (hvv : v ≠ v') (a : ((D.mem u).A.Fv v')ˣ) (b : ((D.mem u).A.Fv v)ˣ) (φ : Formalism.MainNotions.product_first_zeroth_parts.Fn D u i)
     (hφ : φ ∈ (D.fm u).Fi i) :

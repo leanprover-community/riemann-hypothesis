@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLoc
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.Localization.AsSubring
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

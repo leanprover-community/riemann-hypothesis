@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+public import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -22,7 +27,7 @@ theorem isFractionRing_of_subalgebra {A K : Type*} [CommRing A] [IsDomain A] [Fi
   · simpa using Subtype.ext h
 
 
-set_option maxHeartbeats 400000 in
+
 theorem DominatingDVR.proof (hKA : KrullAkizuki.Statement) (hBU : BlowUpChart.Statement) :
     DominatingDVR.Statement := by
   intro A _ _ _ _ hAf K _ _ _

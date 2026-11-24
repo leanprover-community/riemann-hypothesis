@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartDim
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothMetricOfIsSmoothHerm
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChart
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.BaseChangeC
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.MemConePtsIffChartIdeal
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothMetricOfIsSmoothHerm
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChartA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgDim
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 
 @[expose] public section
 
@@ -86,7 +88,7 @@ theorem ringKrullDim_le_of_mem_minimalPrimes_sup_span {F : Type} [Field F] {τ :
       subst hmin
       exact h1.trans (add_le_add le_rfl
         (show (s.card : WithBot ℕ∞) ≤ (s.card : WithBot ℕ∞) + 1 by exact_mod_cast Nat.le_succ s.card))
-    · have h2 := ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.dimPIT F τ W' W a hW'p haW' hmin
+    · have h2 := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.KrullDimensionPrincipalIdeal.dimPIT' F τ W' W a hW'p haW' hmin
       rw [← h2] at h1
       calc ringKrullDim (MvPolynomial τ F ⧸ V) ≤ ringKrullDim (MvPolynomial τ F ⧸ W) + 1 + (s.card : WithBot ℕ∞) := h1
         _ = ringKrullDim (MvPolynomial τ F ⧸ W) + ((s.card : WithBot ℕ∞) + 1) := by rw [add_assoc, add_comm 1]

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedBr
+public import Formalism.LocalToGlobal.HermitianForms.LastCoordinateUniformizerVectorSpansOrthogonalLi
 
 @[expose] public section
 

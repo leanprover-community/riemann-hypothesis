@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.SingleMemDualLatticeStandard
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar
 
@@ -48,10 +47,10 @@ theorem aeval_linForm (b : Module.Basis T ℤ (dualLattice (HermLattice.standard
     aeval (dualLatticeCoord b) (linForm (ι₂ := PBlk i) (dualStdCoordMat b) q) = genPt K i q := by
   obtain ⟨⟨⟩, j⟩ := q
   have hs := congrArg (evalForm (K := K) i) (dualStdCoordMat_sum b j)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, evalForm, Fintype.linearCombination_apply_single, one_smul, ← evalForm] at hs
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [genPt, ← hs, linForm, map_sum]
+
+  rw [map_sum, evalForm, Fintype.linearCombination_apply_single, one_smul, ← evalForm] at hs
+
+  rw [genPt, ← hs, linForm, map_sum]
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [map_mul, aeval_C, aeval_X, map_zsmul, ← dualLatticeCoord_eq, zsmul_eq_mul, eq_intCast]
 

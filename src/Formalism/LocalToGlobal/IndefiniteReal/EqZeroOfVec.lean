@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
+public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
 
 @[expose] public section

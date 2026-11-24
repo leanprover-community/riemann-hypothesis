@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.DataAtPointN3
+import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 
 @[expose] public section
 

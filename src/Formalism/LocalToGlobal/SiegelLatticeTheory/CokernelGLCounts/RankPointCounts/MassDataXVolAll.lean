@@ -1,11 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.TheoremSRecursion
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.MassDataVolumesS
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.MassDataLevelS
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXMasses
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.InVolumesAtOfSWS
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXColumns
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXMasses
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassDataXRed
+public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.MassDataLevelS
 
 @[expose] public section
 
@@ -17,13 +17,8 @@ theorem massDataVolAll_of (hSW : PI.VolStabS.MassDataS.SWXS) :
   refine ⟨PI.VolStabS.MassDataS.inVolumesAt_of_SWS hSW _ _ _ _ _ _ _ _ _ _, ?_, ?_, ?_, ?_⟩
   · first
       | apply level_s_at_instance
-      | apply PI.Final.level_s_at_instance
-      | apply PI.level_s_at_instance
-      | apply MassDataLevelSSteps.inLevelSAt_holds
-      | apply PI.MassDataLevelSSteps.inLevelSAt_holds
-      | apply PI.UnitaryGroupMassFormula.MassDataLevelSSteps.inLevelSAt_holds
   · apply inMassesAt_holds
   · apply inColumnsAt_holds
-  · apply inIndicesAt_holds
+  · apply _root_.local_indices_at_instance
 
 end Formalism.L2.SG.Pf.MassDataX

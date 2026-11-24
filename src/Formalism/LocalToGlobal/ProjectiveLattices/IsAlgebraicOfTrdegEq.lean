@@ -3,6 +3,9 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInstSt
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Tactic.TypeStar
+import Mathlib.RingTheory.MvPolynomial
 
 @[expose] public section
 

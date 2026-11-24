@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.Statements
+public import Mathlib.LinearAlgebra.Dimension.Finrank
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
+public import Mathlib.Algebra.Module.Projective
+public import Mathlib.LinearAlgebra.Dimension.Finite
+public import Mathlib.LinearAlgebra.Dimension.Localization
+public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 

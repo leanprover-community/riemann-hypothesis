@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastFurther
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherRest
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailTail
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistModNatMul
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

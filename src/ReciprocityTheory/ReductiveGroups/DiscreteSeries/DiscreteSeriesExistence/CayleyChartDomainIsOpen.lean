@@ -1,6 +1,16 @@
 module
 
 public import Formalism.RealPlaceAnalysis.Complexify
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.Matrix.Normed
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.MeasureTheory.Integral.Prod
 
 @[expose] public section
 

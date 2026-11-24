@@ -1,9 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.TateCohomology.HerbrandAbstract
 public import GroundTheory.GlobalFields.HerbrandQuotients.Cyclic
+public import Mathlib.Basic.Real.Basic
 public import GroundTheory.GlobalFields.HerbrandQuotients.RationalForm
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Matrix.Nondegenerate
+public import Mathlib.RingTheory.TensorProduct.Free
 
 @[expose] public section
 

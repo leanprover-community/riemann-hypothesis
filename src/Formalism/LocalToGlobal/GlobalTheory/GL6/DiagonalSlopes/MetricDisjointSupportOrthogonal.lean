@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.SlopeRamifiedInducedPrimeField
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.CharacterFiniteLevelZeroOfForms
+import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
+import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
 
 @[expose] public section
 
@@ -51,8 +52,8 @@ theorem majAt_swap_eq_conj {V ι : Type} [AddCommGroup V] [Module D.what₂.LL V
     (X : InfinitePlace D.what₂.LL → Matrix ι ι ℂ) (v : InfinitePlace D.what₂.LL) (x y : V) :
     majAt b X v y x = starRingEnd ℂ (majAt b X v x y) := by
   unfold majAt
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp only [map_mul, RCLike.star_def, Complex.conj_conj]
   ring

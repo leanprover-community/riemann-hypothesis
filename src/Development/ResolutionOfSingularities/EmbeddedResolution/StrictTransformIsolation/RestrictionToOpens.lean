@@ -1,10 +1,46 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
-public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.GenericPointImage
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.PrincipalizationCertificate
+public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.GenericPointImage
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -535,23 +571,16 @@ theorem orderOneCentersIsolated_of_principalizationCertificate {V : VanishingAss
     {k : Type u} [Field k] {W : Scheme.{u}} {p : W ⟶ Spec (CommRingCat.of k)}
     {I : W.IdealSheafData} {m : ℕ} {Mem : Set ↥W} {Z : W.IdealSheafData}
     (h : PrincipalizationCertificate W p I m Mem Z) : OrderOneCentersIsolated V W p I m Mem Z := by
-  refine PrincipalizationCertificate.rec
-    (motive_1 := fun W' p' I' m' Mem' Z' _ => OrderOneCentersIsolated V W' p' I' m' Mem' Z')
-    (motive_2 := fun W' p' N' μ' Mem' Z' _ => OrderOneCentersIsolated V W' p' N' μ' Mem' Z')
-    ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ h
-  · intro W' p' I' m' Mem' Z' hmem
+  refine ResolutionCertificate.rec
+    (motive := fun _ W' p' I' m' Mem' Z' _ => OrderOneCentersIsolated V W' p' I' m' Mem' Z')
+    ?_ ?_ ?_ ?_ ?_ h
+  · intro _ W' p' I' m' Mem' Z' hmem
     exact orderOneCentersIsolated_of_support_subset I' m' hmem
-  · intro W' p' I' m' Mem' Z' hm
+  · intro _ W' p' I' m' Mem' Z' hm
     exact orderOneCentersIsolated_of_two_le I' m' hm
   · intro W' p' I' m' Mem' Z' M' N' μ' hI' hM' hmu' hZ' hcert' ihc
     exact orderOneCentersIsolated_of_eq_mul_of_subset_orderAtLeastLocus hV M' N' μ' hI' hM' hmu' hZ' ihc
-  · intro W' p' I' m' Mem' Z' U' hU' hcert' ihc
-    exact orderOneCentersIsolated_of_forall_opens hV U' hU' ihc
-  · intro W' p' N' μ' Mem' Z' hmem
-    exact orderOneCentersIsolated_of_support_subset N' μ' hmem
-  · intro W' p' N' μ' Mem' Z' hmu
-    exact orderOneCentersIsolated_of_two_le N' μ' hmu
-  · intro W' p' N' μ' Mem' Z' U' hU' hcert' ihc
+  · intro _ W' p' I' m' Mem' Z' U' hU' hcert' ihc
     exact orderOneCentersIsolated_of_forall_opens hV U' hU' ihc
   · intro W' p' N' μ' Mem' Z' U' hU' H' hH' hNH' hZH' J' hJnone' hJcomp' hJloc' hJcert' ihc
     exact orderOneCentersIsolated_of_isSmoothDivisor hV U' hU' H' hH' hNH' hZH' J' hJnone' hJcomp' hJloc' ihc

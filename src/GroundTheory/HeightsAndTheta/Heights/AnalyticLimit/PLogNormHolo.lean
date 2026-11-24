@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StRegSectionParts
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 @[expose] public section
 

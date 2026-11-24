@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqSum2
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
+public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
+public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
+import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqOf
 
 @[expose] public section
 
@@ -88,8 +92,8 @@ theorem pderiv_uncurry (f : PS C 1 dd) (i : Fin dd) :
 theorem uncurry_linear_combination (r : Fin dd → C) (f : Fin dd → PS C 1 dd) :
     un1 (∑ i, MvPowerSeries.C (r i) * f i) = ∑ i, MvPowerSeries.C (r i) * un1 (f i) := by
   simp only [uncurry_eq_subst]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom hasSubst_snd, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom hasSubst_snd, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, MvPowerSeries.coe_substAlgHom, MvPowerSeries.subst_C]
 
@@ -111,8 +115,8 @@ theorem ev_pt_dF (Y : FBChart C V O dd) (v : Fin dd → C) (g' : Fin 2) (j : Fin
 theorem pderiv_lin {κ : Type} [Fintype κ] (X : RawChart C d I κ) (g : Fin 2) (k : I g) (i : κ) :
     MvPowerSeries.pderiv (R := C) k (∑ c : I g, X.u g c i • (MvPowerSeries.X c : MvPowerSeries (I g) C)) =
       MvPowerSeries.C (X.u g k i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single k]
+
+  rw [map_sum, Finset.sum_eq_single k]
   · rw [Derivation.map_smul, MvPowerSeries.pderiv_X_self, MvPowerSeries.smul_eq_C_mul, mul_one]
   · intro c _ hc
     rw [Derivation.map_smul, MvPowerSeries.pderiv_X_of_ne hc, smul_zero]

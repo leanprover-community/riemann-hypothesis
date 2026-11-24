@@ -1,7 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsMMOnb
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsMM
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.IsometryLinkageTrivialLevel
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfTrace
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
+import Mathlib.NumberTheory.SumFourSquares
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -126,7 +133,7 @@ theorem homL_le_intS (N N' : ℕ) : homL D (Formalism.MainNotions.StandardLattic
     intro i
     by_cases h : i = c
     · subst h; simpa using (isInt_one (D := D))
-    · simp [Pi.single_apply, h]
+    · simp [h]
   have h2 := (mem_stdL _).1 (hA _ h1) a
   simpa [Matrix.mulVec, dotProduct, Pi.single_apply] using h2
 
@@ -276,8 +283,7 @@ theorem smul_bq {m : ℕ} (e : Fin m → Matrix (Fin 1) (Fin 1) D.host.E) (n : F
   have hn : (n ik.1 : D.host.E) ≠ 0 := by exact_mod_cast hn0 ik.1
   refine Matrix.ext fun a c => ?_
   rw [Matrix.sum_apply, Finset.sum_eq_single (pos (a, c))]
-  · simp only [bq, plc, LinearMap.coe_mk, AddHom.coe_mk, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, if_pos rfl,
-      zsmul_eq_mul, ite_true, if_true]
+  · simp only [bq, plc, LinearMap.coe_mk, AddHom.coe_mk, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, zsmul_eq_mul, ite_true]
     rw [Nat.cast_mul]
     field_simp
   · intro j _ hj
@@ -339,8 +345,8 @@ theorem span_bq {m : ℕ} (p : ℕ) (e : Fin m → Matrix (Fin 1) (Fin 1) D.host
   rw [Matrix.smul_apply, Matrix.sum_apply, Fintype.sum_prod_type]
   simp only [Matrix.smul_apply, smul_eq_mul, bq, Matrix.of_apply]
   simp only [hφ]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_natCast, map_intCast]
+
+  simp only [map_sum, map_mul, map_natCast, map_intCast]
   have key : ∀ i, ∑ k, (∑ pc, (((∏ pc', s pc') / s pc * ((∏ i', dn i') / dn i) : ℕ) : D.host.E) *
       ((Q i k (pos pc) : ℤ) : D.host.E) * φ (c pc i)) *
       (((Q i k (pos (a, c')) : ℤ) : D.host.E) / (n i : D.host.E) * e i 0 0) =
@@ -594,8 +600,8 @@ theorem oneCopyOrth_of (hU : UnitVec) : OneCopyOrth := by
         Algebra.trace D.host.K D.host.E (y 0 0 * D.host.conj (e j)) := by
       intro j
       have h1 := congrArg (fun x => (G0.herm D).hl (e j) x) hexp
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, smul_eq_mul] at h1
+
+      simp only [map_sum, map_smul, smul_eq_mul] at h1
       show _ = (G0.herm D).hl (e j) (y 0 0)
       rw [h1, Finset.sum_eq_single j]
       · show _ = bs.repr (y 0 0) j * G0.hK D (e j) (e j)
@@ -930,8 +936,8 @@ theorem oprj_orth (h2 : ∀ i j, i ≠ j → Algebra.trace D.host.K D.host.E (e 
     (hu : ∀ i, 0 < u i ∧ Algebra.trace D.host.K D.host.E (e i * D.host.conj (e i)) = ((u i : ℚ) : D.host.K))
     (w : D.host.E) (j : Fin k) : Algebra.trace D.host.K D.host.E (oprj D e u w * D.host.conj (e j)) = 0 := by
   unfold oprj
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [sub_mul, map_sub, Finset.sum_mul, map_sum]
+
+  rw [sub_mul, map_sub, Finset.sum_mul, map_sum]
   have h1 : ∀ i, Algebra.trace D.host.K D.host.E ((cf D e u w i : D.host.E) * e i * D.host.conj (e j)) =
       cf D e u w i * Algebra.trace D.host.K D.host.E (e i * D.host.conj (e j)) := by
     intro i; rw [mul_assoc, trace_K_mul]
@@ -943,8 +949,8 @@ theorem oprj_orth (h2 : ∀ i j, i ≠ j → Algebra.trace D.host.K D.host.E (e 
 theorem oprj_pair {x : D.host.E} (hxo : ∀ i, Algebra.trace D.host.K D.host.E (x * D.host.conj (e i)) = 0) (w : D.host.E) :
     Algebra.trace D.host.K D.host.E (x * D.host.conj w) = Algebra.trace D.host.K D.host.E (x * D.host.conj (oprj D e u w)) := by
   unfold oprj
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, mul_sub, map_sub, map_sum, Finset.mul_sum, map_sum]
+
+  rw [map_sub, mul_sub, map_sub, map_sum, Finset.mul_sum, map_sum]
   have h1 : ∀ i, Algebra.trace D.host.K D.host.E (x * D.host.conj ((cf D e u w i : D.host.E) * e i)) = 0 := by
     intro i
     have e1 : x * D.host.conj ((cf D e u w i : D.host.E) * e i) =

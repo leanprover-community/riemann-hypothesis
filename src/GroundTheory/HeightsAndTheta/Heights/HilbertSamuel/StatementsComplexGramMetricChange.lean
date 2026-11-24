@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ResolutionMetricObjects
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDefectMetricChange
 
 @[expose] public section
 

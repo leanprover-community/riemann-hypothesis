@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.AllRowsOf
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SphericalFunctionConvolutionIdentity
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AllRowsRMul
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BunExists
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SphericalFunctionConvolutionIdentity
 
 @[expose] public section
 
@@ -58,8 +58,8 @@ theorem rowsGood_of (G : GoodOp X) (ι : D.s.HH ≃ₗᵢ[ℂ] Formalism.L2.SG.P
     rw [linearIndependent_iff']
     intro s g hs i hi
     have h0 : conjL (muX X) (∑ i ∈ s, (starRingEnd ℂ (g i)) • ((j (D.what₂.onb i) : EEC X G) : L2X X)) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       rw [← hs]
       refine Finset.sum_congr rfl fun σ _ => ?_
       rw [LinearIsometryEquiv.map_smulₛₗ, conjL_apply, hb σ]
@@ -73,8 +73,8 @@ theorem rowsGood_of (G : GoodOp X) (ι : D.s.HH ≃ₗᵢ[ℂ] Formalism.L2.SG.P
     intro φ hφ
     obtain ⟨F, hF⟩ := (range_sEE X hT' ⟨φ, hφ.1⟩).1 hφ
     have e : φ = ((ι (D.sEE F) : Formalism.L2.SG.PoincareInHH.PoincareSetting.HHX X) : L2X X) := by rw [hF]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, ← D.what₂.onb.sum_repr F, map_sum, map_sum, Submodule.coe_sum]
+
+    rw [e, ← D.what₂.onb.sum_repr F, map_sum, map_sum, Submodule.coe_sum]
     refine Submodule.sum_mem _ fun σ _ => ?_
     rw [map_smulₛₗ, map_smul, Submodule.coe_smul]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨σ, rfl⟩)
@@ -160,7 +160,7 @@ theorem etEmpty : EtEmpty X := by
 
 theorem invInvariant_muf : X.B.μf.IsInvInvariant := by
   have : X.B.μf.IsMulRightInvariant := Formalism.L2.SG.Closed.GfUnimod_holds X.B.I X.B.μf
-  have hK := Formalism.L2.SG.Closed.level_subgroup_is_group X
+  have hK := _root_.Formalism.L2.SG.Pf.level_subgroup_character_unitary X
   have hL := Formalism.L2.SG.Closed.level_subgroup_properties X
   have he1 : X.B.e 1 ≠ 0 := by
     rw [X.e_eq]

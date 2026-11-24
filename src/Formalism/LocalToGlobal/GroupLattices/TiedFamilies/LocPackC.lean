@@ -1,8 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.StdSubAtOfRing
 public import Formalism.LocalToGlobal.GroupLattices.CloudFilling.FillInstRecEqWj
-public import Formalism.LocalRingCardinality.SpanPowerMembership.GatTies
+public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ExtWRec
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
+import Mathlib.RingTheory.Ideal.Int
 
 @[expose] public section
 

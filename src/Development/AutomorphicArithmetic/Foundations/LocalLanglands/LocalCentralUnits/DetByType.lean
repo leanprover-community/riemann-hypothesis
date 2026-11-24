@@ -1,13 +1,56 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.RecTTransport
-public import Development.WeilBound.RepresentationTheoryGL.GaloisPermutationReps.SubquotientEquivalence.ConjTorusSubApply
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdmissibleLabelWeightsOfGreenCuspidalParametrisa
+public import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SimpleIffIrreducible
 public import Development.DiscreteGroups.GlobalIrreducibility.DzIsoKO
 public import Development.DiscreteGroups.GlobalIrreducibility.DzIsoRes
-public import Development.DiscreteGroups.GlobalIrreducibility.DzLCusp
 public import Development.DiscreteGroups.GlobalIrreducibility.DzKSchur
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdmissibleLabelWeightsOfGreenCuspidalParametrisa
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SimpleIffIrreducibleStatement
+public import Development.DiscreteGroups.GlobalIrreducibility.DzLcFin
+public import Development.DiscreteGroups.GlobalIrreducibility.DzLcPerm
+public import Development.WeilBound.RepresentationTheoryGL.GaloisPermutationReps.SubquotientEquivalence.ConjTorusSubApply
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemTwKerOfNormalizer
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -266,7 +309,7 @@ private theorem isTypeMap_of {n : ℕ} (τ : FDRep ℂ (Gn g n)) (hτ : IsCusp �
     IsTypeMap (τ.ρ.comp (glMap i hi n)) π φ := by
   constructor
   · have hsimp := DiscreteGroups.sglob.DzType.Kon.simple_of_isIrr τ hτ.2.1
-    have hirr := (GlobalTheory.T.simple_iff_irreducible.1 _ τ).mp hsimp
+    have hirr := (_root_.GlobalTheory.CompanionTheory.TyFin.simpleIffIrr.1 _ τ).mp hsimp
     rcases hirr.2 (LinearMap.ker φ) (by
         intro γ v hv
         obtain ⟨κ, rfl⟩ := GlobalTheory.GLp.Model.red_surjective n γ
@@ -294,9 +337,9 @@ theorem UpperTheory.Zero.LLC.detByType :
   haveI := DiscreteGroups.sglob.DzType.Kon.simple_of_isIrr τ hτ.2.1
   haveI := DiscreteGroups.sglob.DzType.Kon.simple_of_isIrr τ' hirr'
   have hiso : Nonempty (τ ≅ τ') := GlobalTheory.Top.Lq.iso_of_char τ τ' (fun x => by rw [hττ'])
-  obtain ⟨e, he⟩ := (GlobalTheory.T.simple_iff_irreducible.2 _ τ τ').mp hiso
+  obtain ⟨e, he⟩ := (_root_.GlobalTheory.CompanionTheory.TyFin.simpleIffIrr.2 _ τ τ').mp hiso
   have hτc : IsCusp τ'.character := hττ' ▸ hτ
-  haveI : Nontrivial τ.V := ((GlobalTheory.T.simple_iff_irreducible.1 _ τ).mp inferInstance).1
+  haveI : Nontrivial τ.V := ((_root_.GlobalTheory.CompanionTheory.TyFin.simpleIffIrr.1 _ τ).mp inferInstance).1
   let ψ : τ →ₗ[ℂ] σ'.V := φ'.comp e.toLinearMap
   have hψ0 : ψ ≠ 0 := by
     intro h

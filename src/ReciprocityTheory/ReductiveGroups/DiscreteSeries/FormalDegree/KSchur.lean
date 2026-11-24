@@ -1,7 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KinstSecondCountable
+public import Mathlib.Analysis.InnerProductSpace.Trace
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KinstSecondCountable
 
 @[expose] public section
 

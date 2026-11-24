@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftAtPrime
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedPow
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreSectionLift

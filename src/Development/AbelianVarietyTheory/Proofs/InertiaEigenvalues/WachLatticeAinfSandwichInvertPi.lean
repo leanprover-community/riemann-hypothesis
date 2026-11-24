@@ -1,12 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SandZero
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeSandwichAinf
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusIntegralityTensorAinfCoefficients
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeFreeOfCrystallineStatement
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeFreeOfCrystalline
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeSandwichAinf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -100,15 +135,15 @@ theorem sand_of {E : WEt I} (Mo : WN E zl)
     intro y hy
     refine ⟨fun j => b.repr ⟨y, hy⟩ j, ?_⟩
     have := congrArg (Mo.N T).subtype (b.sum_repr ⟨y, hy⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     exact this.symm
   have hj : ∀ (c : Fin (Module.finrank O ↥T.L.T) → LetA O n)
       (w : Fin (Module.finrank O ↥T.L.T) → E.DD T),
       E.jD T (∑ j, c j • w j) = ∑ j, inclR (I.io (c j)) • E.jD T (w j) := by
     intro c w
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun j _ => jD_smulA E T _ _
   have hsp : ⊤ ≤ Submodule.span RW (Set.range fun i => E.jD T (b i : E.DD T)) := by
     rw [← E.jD_span T, Submodule.span_le]
@@ -164,8 +199,8 @@ theorem sand_of {E : WEt I} (Mo : WN E zl)
         refine Submodule.span_le.mpr ?_
         rintro _ ⟨z, hz, rfl⟩
         obtain ⟨c, rfl⟩ := hexp z hz
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         refine Submodule.sum_mem _ fun j _ => ?_
         rw [φD_smulA]
         exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
@@ -214,10 +249,10 @@ theorem x_eq {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (LL : 
     LocAinf.π₁, TensorProduct.tmul_sub, Algebra.TensorProduct.one_def]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem sandwich : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R), IoW I → ∀ (E : WEt I) (Mo : NS E) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)), IsCrys (P.PD K) T.ρ → ∃ m : ℕ, Sand Mo T ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (AI.π₁ ^ m) : RA LL) := by
   intro l _ P AI K s LL hg Γ R I hI E Mo T hT
-  obtain ⟨b⟩ := GlobalTheory.T.wach_lattice_free_of_crystalline l P AI K s LL hg Γ R I hI E Mo T hT
+  obtain ⟨b⟩ := _root_.GlobalTheory.HWL.lattice_free l P AI K s LL hg Γ R I hI E Mo T hT
   have hp : (P.PD K).p = l := P.PD_p K
   have hx := frobenius_inclusion_X_eq_mul_Q I (by rw [hp]; exact GlobalTheory.Sandwich.φRW_teichmuller LL _)
   rw [hp, x_eq AI LL s Γ.s_pos] at hx

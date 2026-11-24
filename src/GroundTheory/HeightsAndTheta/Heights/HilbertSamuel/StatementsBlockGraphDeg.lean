@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockGraphImage
 
 @[expose] public section

@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCBase
+public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
+public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNd
 
 @[expose] public section
 

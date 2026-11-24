@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFlatNormalFibres
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSerreConditions
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSerreCriterion
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSerreRFlatAscent
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSerreSFlatAscent
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

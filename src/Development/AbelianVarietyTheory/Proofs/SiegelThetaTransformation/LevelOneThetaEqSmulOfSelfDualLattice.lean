@@ -1,14 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianFormAtFrameLaws
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
-public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.FourierCoeffUnitCubeTranslateOfEntirePeriodic
-public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.EntirePeriodicEqZeroOfFourierCoeffEqZero
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.CardLePowOfLinearIndependent
-public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsUnitOfLagrangian
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.CardLePowOfLinearIndependentThetaPrincipal
+public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.EntirePeriodicEqZeroOfFourierCoeffEqZero
+public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.FourierCoeffUnitCubeTranslateOfEntirePeriodic
+public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsUnitOfLagrangian
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DifferentiableOnLeftInverse
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.DifferentiableOnDetHMat
 
 @[expose] public section
 
@@ -78,8 +126,8 @@ private theorem exists_mem_bilinForm_eq_of_selfDual {V : Type} [AddCommGroup V] 
   have hexp : ∀ (x : V) (y : L), B x y = ∑ j, (b.repr y j : ℚ) * B x (b j) := by
     intro x y
     conv_lhs => rw [← b.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Submodule.coe_sum, map_sum]
+
+    rw [Submodule.coe_sum, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Submodule.coe_smul, map_zsmul, zsmul_eq_mul]
   let G : Matrix _ _ ℤ := fun i j => ⌊B (b i) (b j)⌋
@@ -95,9 +143,9 @@ private theorem exists_mem_bilinForm_eq_of_selfDual {V : Type} [AddCommGroup V] 
       rw [show y = ((⟨y, hy⟩ : L) : V) from rfl, hexp]
       refine Finset.sum_eq_zero fun j _ => ?_
       have hj : B xL (b j) = ((∑ i, v i * G i j : ℤ) : ℚ) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [xL, Submodule.coe_sum, Submodule.coe_smul, map_sum, map_zsmul,
-          LinearMap.sum_apply, LinearMap.smul_apply, zsmul_eq_mul]
+
+        simp only [xL, Submodule.coe_sum, Submodule.coe_smul, map_sum, map_zsmul,
+        LinearMap.sum_apply, LinearMap.smul_apply, zsmul_eq_mul]
         push_cast
         simp [hG]
       have hz : (∑ i, v i * G i j) = 0 := by
@@ -123,16 +171,16 @@ private theorem exists_mem_bilinForm_eq_of_selfDual {V : Type} [AddCommGroup V] 
   have hxb : ∀ j, B x (b j) = ψv j := by
     intro j
     rw [← hc]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [x, map_sum, LinearMap.map_smul₂, LinearMap.sum_apply,
-      LinearMap.smul_apply, smul_eq_mul, Matrix.vecMul, dotProduct, Gq, Matrix.map_apply, hG]
+
+    simp only [x, map_sum, LinearMap.map_smul₂, LinearMap.sum_apply,
+    smul_eq_mul, Matrix.vecMul, dotProduct, Gq, Matrix.map_apply, hG]
   have hxy : ∀ y : L, B x y = ψ y := by
     intro y
     rw [hexp]
     simp only [hxb, ψv]
     conv_rhs => rw [← b.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     push_cast
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_zsmul, zsmul_eq_mul]; push_cast; ring
@@ -287,7 +335,7 @@ theorem exists_eq_smul_of_isTheta1 : ∀ (E : Type) [Field E] [NumberField E] [I
     simp only [pv, per, Function.comp_apply, Pi.add_apply]
     split_ifs
     · simp only [Data.emb, hermC]
-      simp [map_add (f := _), Finset.sum_add_distrib, mul_add, add_mul, dotProduct_add]
+      simp [map_add (f := _), Finset.sum_add_distrib, mul_add]
     · first | unfold Data.emb | skip
       simp [Matrix.mulVec, dotProduct, mul_add, Finset.sum_add_distrib]
   let p : (Fin r → E) →ₗ[ℤ] (Fin g → ℂ) := (AddMonoidHom.mk' (pv X idx x) hadd).toIntLinearMap

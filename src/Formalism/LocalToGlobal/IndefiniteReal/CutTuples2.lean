@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
-public import Formalism.LocalToGlobal.IndefiniteReal.HeckeTupleStatement
-public import Formalism.LocalToGlobal.GlobalTheory.DivPassage
 
 @[expose] public section
 

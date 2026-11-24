@@ -1,10 +1,16 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
+import GroundTheory.LocalFields.IntermediateField
+public import GroundTheory.LocalFields.RamificationStructure
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderCyclic
 public import GroundTheory.TateCohomology.InfRes
-public import GroundTheory.LocalFields.RamificationStructure
-public import GroundTheory.LocalFields.IntermediateField
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

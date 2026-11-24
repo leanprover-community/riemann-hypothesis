@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StModelLocalizationMaximalPoint
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Nullstellensatz
 
 @[expose] public section
 

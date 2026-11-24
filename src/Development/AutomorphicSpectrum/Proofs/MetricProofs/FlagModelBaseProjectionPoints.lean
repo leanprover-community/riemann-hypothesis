@@ -1,20 +1,68 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishingStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.FiniteEtaleSurjectiveOfPullback
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartNormPtsA
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagValuationNormalization
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericFlagAlgebraicallyIndependent
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorSumIdentityBaseChange
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.Valuation.ValuationSubring
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ValuationRingExtensionSpecialization
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorSumIdentityBaseChangeStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagValuationNormalizationStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ValuationRingExtensionSpecializationStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntryStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericFlagAlgebraicallyIndependentStatement
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartNormPtsA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointRegular
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -35,29 +83,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 theorem sum_mapDomain_block {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hv : ∀ p, (v p).1 = κ p.1)
     (m : (Σ k, ι k) →₀ ℕ) (k' : K') :
     ∑ i, (Finsupp.mapDomain v m) ⟨k', i⟩ = ∑ p : Σ k, ι k, if κ p.1 = k' then m p else 0 := by
-  induction m using Finsupp.induction_linear with
-  | zero => simp
-  | add f g hf hg =>
-    rw [Finsupp.mapDomain_add]
-    simp only [Finsupp.add_apply, Finset.sum_add_distrib, hf, hg]
-    rw [← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    split_ifs <;> simp
-  | single p n =>
-    have hR : (∑ q : Σ k, ι k, if κ q.1 = k' then (Finsupp.single p n) q else 0) =
-        if κ p.1 = k' then n else 0 := by
-      rw [Finset.sum_eq_single p]
-      · simp
-      · intro q _ hq
-        simp [Finsupp.single_apply, Ne.symm hq]
-      · simp
-    have hL : ∀ q : Σ k, ι' k, ∑ i, (Finsupp.single q n) ⟨k', i⟩ = if q.1 = k' then n else 0 := by
-      rintro ⟨kq, iq⟩
-      by_cases h : kq = k'
-      · subst h
-        simp [Finsupp.single_apply]
-      · simp [Finsupp.single_apply, h]
-    rw [Finsupp.mapDomain_single, hL, hR, hv]
+  apply GlobalTheory.CompanionTheory.Ar.PB.CovGraph.RegPhi.sum_mapDomain_block <;> assumption
 
 theorem isMultiHomog_rename_block {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hb : IsBlockMap κ v) {f : MRing ι}
     {b : K → ℕ} (hf : IsMultiHomog f b) : IsMultiHomog (rename v f) (Function.extend κ b 0) := by
@@ -235,12 +261,7 @@ section Mat
 
 variable {R S : Type} [CommRing R] [CommRing S] {N : ℕ}
 
-theorem minorIJ_map (f : R →+* S) (A : Matrix (Fin N) (Fin N) R) (I J : Finset (Fin N)) :
-    minorIJ (A.map f) I J = f (minorIJ A I J) := by
-  unfold minorIJ
-  split_ifs with e
-  · rw [RingHom.map_det]; rfl
-  · rw [map_zero]
+alias minorIJ_map := _root_.GlobalTheory.CompanionTheory.Ar.PB.MinorAny.minorIJ_map
 
 theorem minorIJ_mem {L : Type} [Field L] (P : Subring L) {A : Matrix (Fin N) (Fin N) L} (hA : ∀ a b, A a b ∈ P)
     (I J : Finset (Fin N)) : minorIJ A I J ∈ P := by
@@ -254,9 +275,7 @@ theorem det_mem {L : Type} [Field L] (P : Subring L) {A : Matrix (Fin N) (Fin N)
   rw [e, ← RingHom.mapMatrix_apply, ← RingHom.map_det]
   exact Subtype.coe_prop _
 
-theorem minorIJ_one (I : Finset (Fin N)) : minorIJ (1 : Matrix (Fin N) (Fin N) R) I I = 1 := by
-  unfold minorIJ
-  rw [dite_eq_left rfl, Matrix.submatrix_one _ (I.orderEmbOfFin rfl).injective, Matrix.det_one]
+alias minorIJ_one := _root_.GlobalTheory.CompanionTheory.Ar.PB.UnitComb.minorIJ_one_diag
 
 theorem detFac_one (j : ℕ) (i : Fin N) : detFac j i (1 : Matrix (Fin N) (Fin N) R) = 1 := by
   simp only [detFac, minorIJ_one]
@@ -274,7 +293,7 @@ theorem stepCols_nonempty {j : ℕ} (hj : j ≤ N) (i : Fin N) : (stepCols N j i
 theorem detFac_ne_zero {L : Type} [Field L] {j : ℕ} (hj : j ≤ N) (i : Fin N) {T : Matrix (Fin N) (Fin N) L}
     (hT : IsBlockDiag j T) (hd : T.det ≠ 0) : detFac j i T ≠ 0 := by
   have hu : IsUnit T.det := hd.isUnit
-  have h := ((GlobalTheory.T.block_diagonal_minor_vanishing L N j i hj).2.2.2 T T⁻¹ hT (hT.inv hu)).2
+  have h := ((_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main L N j i hj).2.2.2 T T⁻¹ hT (hT.inv hu)).2
   rw [Matrix.mul_nonsing_inv _ hu, detFac_one] at h
   exact left_ne_zero_of_mul_eq_one h.symm
 
@@ -338,17 +357,17 @@ theorem frame_gen {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {S : Typ
         ∑ I, f (algebraMap M.Ω Φ (F.u ⟨k, m⟩ I)) * minorIJ G I (stepCols N j p.2) := by
   haveI : Infinite M.Ω := Infinite.of_injective (Nat.cast : ℕ → M.Ω) Nat.cast_injective
   letI : Algebra M.Ω S := (f.comp (algebraMap M.Ω Φ)).toAlgebra
-  have h1 := GlobalTheory.T.minor_sum_identity_base_change M.Ω N j (F.T p.1) _ _ (M.coef ⟨k, m⟩) (F.u ⟨k, m⟩) (stepCols N j p.2)
+  have h1 := _root_.GlobalTheory.CompanionTheory.Ar.PB.MinorAny.minor_any M.Ω N j (F.T p.1) _ _ (M.coef ⟨k, m⟩) (F.u ⟨k, m⟩) (stepCols N j p.2)
     (hF.2.1 p k hp m) S G hG
   have e' : (F.T p.1).map (algebraMap M.Ω S) * G = (M.g p.1).map f * bb := e
   rw [e'] at h1
   have h2 : ∀ I, minorIJ ((M.g p.1).map f * bb) I (stepCols N j p.2) =
       f (minorIJ (M.g p.1) I (stepCols N j p.2)) * ∏ c ∈ stepCols N j p.2, bb c c := fun I => by
-    rw [(GlobalTheory.T.block_diagonal_minor_vanishing S N j p.2 M.j_le).2.2.1 _ bb I hbb hbt, minorIJ_map]
+    rw [(_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main S N j p.2 M.j_le).2.2.1 _ bb I hbb hbt, minorIJ_map]
   simp only [h2] at h1
   have h3 : f (y ⟨k, m⟩) = ∑ I, algebraMap M.Ω S (M.coef ⟨k, m⟩ I) * f (minorIJ (M.g p.1) I (stepCols N j p.2)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [M.y_step p k hp m, map_sum]
+
+    rw [M.y_step p k hp m, map_sum]
     exact Finset.sum_congr rfl fun I _ => by rw [map_mul]; rfl
   have ha : algebraMap M.Ω S (detFac j p.2 (F.T p.1)) = f (algebraMap M.Ω Φ (detFac j p.2 (F.T p.1))) := rfl
   rw [h3, Finset.mul_sum]
@@ -386,12 +405,12 @@ theorem flag_nonzero {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : 
         have := hF.2.2.1 p k hp I I' hI hI'
         split_ifs at this ⊢ <;> simpa [uA, vA] using this
       have e' := congrArg val e
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at e'
+
+      rw [map_sum] at e'
       simp only [map_mul] at e'
       rw [e']
       split_ifs <;> simp
-    obtain ⟨m, hm, -⟩ := GlobalTheory.T.step_rows_inverse_nonzero_entry ℂ ⊤ N j p.2 (h p.1) (ι k) (fun m I => val (uA ⟨k, m⟩ I))
+    obtain ⟨m, hm, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb ℂ ⊤ N j p.2 (h p.1) (ι k) (fun m I => val (uA ⟨k, m⟩ I))
       (fun I m => val (vA I ⟨k, m⟩)) M.j_le (H.2.1 p.1).1 (fun _ _ => ValuationSubring.mem_top _) (H.2.1 p.1).2
       (ValuationSubring.mem_top _) (fun _ _ => ValuationSubring.mem_top _) (fun _ _ => ValuationSubring.mem_top _) rel
     refine ⟨m, ?_⟩
@@ -408,7 +427,7 @@ theorem flag_back {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ
   let L := FractionRing S
   let G' : Ψ → Matrix (Fin N) (Fin N) S := fun τ =>
     ((F.T τ)⁻¹.map (algebraMap M.Ω S)) * ((M.g τ).map (C : Φ →+* S) * genUp Φ N j τ)
-  have indep := GlobalTheory.T.generic_flag_algebraically_independent M.Ω Φ Ψ N j M.g F.T M.g_block M.g_indep hF.1
+  have indep := _root_.GlobalTheory.CompanionTheory.Ar.PB.IsGenericFlag.indep_twist_mul_genUp M.Ω Φ Ψ N j M.g F.T M.g_block M.g_indep hF.1
   let iS : MvPolynomial (inertBlockIndex Ψ N j) A →+* S :=
     eval₂Hom ((algebraMap M.Ω S).comp A.subtype) fun q => G' q.1.1 q.1.2.1 q.1.2.2
   have eS : ∀ r, iS r = aeval (fun q : inertBlockIndex Ψ N j => G' q.1.1 q.1.2.1 q.1.2.2) (MvPolynomial.map A.subtype r) := by
@@ -466,8 +485,8 @@ theorem flag_back {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ
           algebraMap S L (∑ I, C (algebraMap M.Ω Φ (F.u ⟨k, m⟩ I)) * minorIJ (G' p.1) I (stepCols N j p.2)) := fun m => by
         show algebraMap S L (iS _) = _
         congr 1
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         refine Finset.sum_congr rfl fun I _ => ?_
         rw [map_mul, ← minorIJ_map, hiG]
         congr 1
@@ -519,7 +538,7 @@ theorem flag_fwd {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ 
   let am := algebraMap M.Ω Φ
   let O := regRing y z
   let v : O →+* ℂ := regVal hz
-  obtain ⟨V, hOV, hpl⟩ := GlobalTheory.T.valuation_ring_extension_specialization Φ O v (regVal_local hz)
+  obtain ⟨V, hOV, hpl⟩ := _root_.GlobalTheory.CompanionTheory.Ar.ComplexPlace.exists_valuationSubring_place Φ O v (regVal_local hz)
   have hO : ∀ {s}, RegAt M.x (mCoordIdeal (basePart M.blk z)) s → am s ∈ O := fun hs => ⟨_, val_lift M hz hs⟩
   let Ag : Ψ → Matrix (Fin N) (Fin N) Φ := fun τ => (F.T τ)⁻¹.map am * M.g τ
   have hinvD : ∀ τ, ((F.T τ)⁻¹.map am).det ≠ 0 := fun τ => by
@@ -534,7 +553,7 @@ theorem flag_fwd {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ 
   have hAgD : ∀ τ, (Ag τ).det ≠ 0 := fun τ => by
     rw [Matrix.det_mul]
     exact mul_ne_zero (hinvD τ) (M.isUnit_det_g τ).ne_zero
-  choose b hbB hbT hbd hbV hbdet hbinv using fun τ => GlobalTheory.T.block_diag_valuation_normalization Φ V N j (Ag τ) (hAgB τ) (hAgD τ)
+  choose b hbB hbT hbd hbV hbdet hbinv using fun τ => _root_.GlobalTheory.CompanionTheory.Ar.PB.IwBlock.main Φ V N j (Ag τ) (hAgB τ) (hAgD τ)
   let H : Ψ → Matrix (Fin N) (Fin N) Φ := fun τ => Ag τ * b τ
   have hHB : ∀ τ, IsBlockDiag j (H τ) := fun τ => (hAgB τ).mul (hbB τ)
   let wf : ∀ (p : Ψ × Fin N) (k : K), ι k → Φ := fun p k m =>
@@ -562,12 +581,12 @@ theorem flag_fwd {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ 
         ⟨am (detFac j p.2 (F.T p.1)) * (∏ c ∈ stepCols N j p.2, b p.1 c c) / am (∏ k', M.x ⟨k', F.c k'⟩ ^ M.b p k'),
           div_ne_zero (mul_ne_zero hdet hB) hE, fun m => by
             rw [div_mul_eq_mul_div, rel m, mul_div_cancel_left₀ _ hE]⟩
-      obtain ⟨m₀, hm₀, hm₀i⟩ := GlobalTheory.T.step_rows_inverse_nonzero_entry Φ V N j p.2 (H p.1) (ι k) (fun m I => am (F.u ⟨k, m⟩ I))
+      obtain ⟨m₀, hm₀, hm₀i⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb Φ V N j p.2 (H p.1) (ι k) (fun m I => am (F.u ⟨k, m⟩ I))
         (fun I m => am (F.u' I ⟨k, m⟩)) M.j_le (hHB p.1) (hbV p.1) (hbdet p.1) (hbinv p.1)
         (fun I m => hOV _ (hO (hG.2.1 _ I).2)) (fun m I => hOV _ (hO (hG.2.1 _ I).1)) (fun I I' hI hI' => by
           have := congrArg am (hF.2.2.1 p k hp I I' hI hI')
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum] at this
+
+          rw [map_sum] at this
           simp only [map_mul] at this
           rw [this]
           split_ifs <;> simp)
@@ -632,13 +651,13 @@ theorem flag_fwd {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ 
     let rR : R := Subring.inclusion hOR ⟨r, _, hr⟩
     have e1 : ∑ I, uR I * minorIJ (HR p.1) I (stepCols N j p.2) = rR * wR := Subtype.ext (by
       show R.subtype _ = r * wc p
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [map_mul, ← minorIJ_map, hHR]
       exact hw)
     have e2 := congrArg ψ e1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at e2
+
+    rw [map_sum] at e2
     simp only [map_mul, ← minorIJ_map] at e2
     have e3 : ∀ I, ψ (uR I) = valAt M.x (F.u ⟨k, m⟩ I) (basePart M.blk z) := fun I =>
       (hψ _).trans (regVal_eq hz _ (val_lift M hz (hG.2.1 _ I).1))

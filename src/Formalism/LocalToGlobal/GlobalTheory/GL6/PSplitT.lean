@@ -1,8 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.AdmissibleOfSplitAndRoundTrips
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -217,7 +223,7 @@ theorem host_conj_involutive (x : D.host.E) : D.host.conj (D.host.conj x) = x :=
   exact D.host.conj_conj x
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem splitAtT_of_tied (A : AtTTied u) : SplitAtT A := by
   intro v
   obtain ⟨pb, hpb⟩ : ∃ pb : 𝓞 D.host.E, (pb : D.host.E) = D.host.conj (A.piU : D.host.E) :=

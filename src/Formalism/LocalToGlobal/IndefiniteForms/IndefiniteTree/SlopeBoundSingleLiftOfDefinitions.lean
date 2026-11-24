@@ -1,13 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefExample
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
-public import Formalism.MeanHeightDescent.DivisionInequalityWithCovolume
-public import Formalism.MeanHeightDescent.AverageDegreeBounds.GlobalBoundRefinements
-public import Formalism.ThetaSupremumBounds.LiftOperatorBoundOfFockJet
+public import Mathlib.NumberTheory.ModularForms.DedekindEta
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
+import Formalism.HarderNarasimhan.Statement
 
 @[expose] public section
 

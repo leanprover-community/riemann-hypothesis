@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.AlgebraicityClass
+import GroundTheory.GlobalFields.ComplexMultiplication.AutCFixed
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

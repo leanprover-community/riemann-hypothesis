@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.SmoothRep
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -184,8 +185,8 @@ theorem exists_fixedVectors_mk_eq_of_fixed (hρ : IsSmooth ρ) (hKc : IsCompact 
   set y : V := ∑ c : K ⧸ S.subgroupOf K, ρ ((Quotient.out c : K) : G) w with hy
   have hyK : y ∈ fixedVectors ρ K := by
     intro k hk
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hy, map_sum]
+
+    rw [hy, map_sum]
     simp only [← Module.End.mul_apply, ← map_mul]
     calc ∑ c : K ⧸ S.subgroupOf K, ρ (k * ((Quotient.out c : K) : G)) w
         = ∑ c : K ⧸ S.subgroupOf K,
@@ -196,9 +197,9 @@ theorem exists_fixedVectors_mk_eq_of_fixed (hρ : IsSmooth ρ) (hKc : IsCompact 
             (fun c => by rw [MulAction.toPerm_apply])
   have hyq : Representation.Coinvariants.mk (ρ.comp N.subtype) y =
       n • Representation.Coinvariants.mk (ρ.comp N.subtype) w := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hy, map_sum, Finset.sum_congr rfl fun c _ => hterm _ (Quotient.out c).2,
-      Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ]
+
+    rw [hy, map_sum, Finset.sum_congr rfl fun c _ => hterm _ (Quotient.out c).2,
+    Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ]
   refine ⟨n⁻¹ • y, Submodule.smul_mem _ _ hyK, ?_⟩
   rw [map_smul, hyq, smul_smul, inv_mul_cancel₀ hn, one_smul]
 

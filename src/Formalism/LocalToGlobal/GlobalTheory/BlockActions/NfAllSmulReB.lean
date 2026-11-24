@@ -1,7 +1,53 @@
 module
 
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ArchimedeanSignatureMatchingOfTrivialBranchingSymm
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrProof
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.BrExistsOfRestS
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ExistsOnOfPosDef
+import Formalism.LocalToGlobal.GlobalTheory.BlockActions.HformSmulRightB
 public import Formalism.LocalToGlobal.GlobalTheory.NfAllSmulSelfRe
+import Formalism.LocalToGlobal.HermitianForms.TiedBrCl
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LowerTieChain
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -37,7 +83,7 @@ theorem cspan_lamTr : Formalism.MainNotions.product_first_zeroth_parts.CSpan (la
   simp only [Formalism.MainNotions.product_first_zeroth_parts.CSpan, lamTr, delSq_wSh]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem val_of_trEv (Tf : FormsTiedSym D u Ch chOf) (c : (D.fm u).clsP) (f : (D.mem u).C.Y D.R.m → ℂ)
     (M : D.what₂.Tau → Matrix (Fin (D.R.N D.R.m)) (Fin (D.R.N D.R.m)) ℂ) (Q : MvPolynomial (D.what₂.Tau × Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) ℂ)
     (hq : trEvS Tf c f = fnOf _ (shiftOf (lamT u D.R.m)) M Q) (z : (D.mem u).C.Y D.R.m) :
@@ -79,9 +125,9 @@ theorem lastGL_eq (a : ℂˣ) : ((Formalism.MainNotions.PrimeDegreeVariant.lastG
   rcases p with i | i <;> rcases q with j | j
   · have hi' : ¬ ((i : ℕ) + 1 = D.R.N D.R.m) := by have := i.isLt; omega
     by_cases hij : i = j
-    · subst hij; simp [Matrix.diagonal_apply, hi']
+    · subst hij; simp [hi']
     · have hne : (eN D) (Sum.inl i) ≠ (eN D) (Sum.inl j) := fun h => hij (Sum.inl_injective ((eN D).injective h))
-      simp [Matrix.diagonal_apply, hne, Matrix.one_apply, hij]
+      simp [hij]
   · have := i.isLt
     simp [Matrix.diagonal_apply, Fin.ext_iff]; omega
   · have := j.isLt
@@ -89,7 +135,7 @@ theorem lastGL_eq (a : ℂˣ) : ((Formalism.MainNotions.PrimeDegreeVariant.lastG
   · have hi : i = 0 := Subsingleton.elim _ _
     have hj : j = 0 := Subsingleton.elim _ _
     subst hi hj
-    simp [Matrix.diagonal_apply, hN]
+    simp [hN]
 
 def dOT (u : D.what₂.Word) (o' : Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) ℂ) :
     Matrix (Fin (D.R.N D.R.m)) (Fin (D.R.N D.R.m)) ℂ :=
@@ -187,7 +233,7 @@ theorem gram_bZ_map (Tf : FormsTiedSym D u Ch chOf) (τ : D.what₂.Tau) :
     Matrix.map_zero _ (map_zero _), Matrix.map_zero _ (map_zero _)]
   congr 2
   ext i j
-  simp [gramC, map_inv₀, map_natCast]
+  simp [map_inv₀, map_natCast]
 
 theorem frame_on (Tf : FormsTiedSym D u Ch chOf) (c : (D.fm u).clsP) (τ : D.what₂.Tau)
     (o' : Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) ℂ) (ho : o'ᴴ * gramC (gramP D) (embT D) τ * o' = 1) :

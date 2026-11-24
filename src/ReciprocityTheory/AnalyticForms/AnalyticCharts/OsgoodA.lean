@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.MeasureTheory.Integral.TorusIntegral
+public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

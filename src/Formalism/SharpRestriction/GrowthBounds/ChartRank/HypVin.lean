@@ -1,9 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.IntAtJIffN
-public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescentHolds
-public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.SelfDualCongr
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.ColSpanMulUnit
+public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.SelfDualCongr
+public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescentHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,8 +59,8 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem le_dual_chart {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} {i : ℕ} {hi : i ≤ D.R.m} {cl : Type}
     {stab : cl → Type} [∀ c, Group (stab c)] {lat : cl → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)}
     (K : LevelChart D T bad i hi stab lat) (c : cl) :
@@ -73,7 +113,7 @@ structure LatIn (S : StepIn M i hi G) (w : D.what₂.places.Pl) (β : S.Ch) : Pr
     D.what₂.embLL r = ((S.K β).lev.chi κ : ℂ)
 
 
-set_option maxHeartbeats 8000000 in
+
 theorem valIntN_of (S : StepIn M i hi G) (e : D.what₂.LL →+* G.Kf) (w : D.what₂.places.Pl)
     (H : ∀ β, S.Core e β) (hS : BlockRationalityField) (hfrac : IsFractionRing G.O G.Kf)
     (hR0 : ∀ x, x ∈ intW D.what₂.places w ↔ e x ∈ Set.range (algebraMap G.O G.Kf))
@@ -83,32 +123,31 @@ theorem valIntN_of (S : StepIn M i hi G) (e : D.what₂.LL →+* G.Kf) (w : D.wh
   have hpw := (L β).resChar
   subst hpw
   have : Fact (D.what₂.places.resChar w).Prime := ⟨D.what₂.places.resChar_prime w⟩
-  have hblk : BlockRational G.P (S.loc β).rk S.pos (gramC (gramN D i hi) (embT D))
-      (crdB (embT D) (S.loc β).B) D.what₂.embLL (M.lam i) := by
-    refine hS G.P (S.loc β).rk S.pos _ _ D.what₂.embLL (M.lam i) (H β).wt fun τ => ⟨bc (tEL D τ) ((S.loc β).B)⁻¹, ?_⟩
-    ext a b
-    exact (tEL_emb D τ _).symm
-  exact valIntAt_of (S := (S.K β).lev) (emb := embT D) (embLL := D.what₂.embLL) (G := S.charts.gat β)
+  have hCore := H β
+  have hLat := L β
+  have hEx := (hCore.toHyp hS).ex
+  have hσ : ∀ x : D.host.E, sigD D (sigD D x) = x := by
+    intro x
+    rw [Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.forms_involution_eq_host_conj,
+      Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.forms_involution_eq_host_conj,
+      Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.host_conj_involutive]
+  refine valIntAt_of (S := (S.K β).lev) (emb := embT D) (embLL := D.what₂.embLL) (G := S.charts.gat β)
     (e := e) (A := S.loc β) (pos := S.pos) (embV := S.embN β) (yc := (S.K β).y) weylLatticeDescent_holds hfrac (tEL D) (tEL_emb D)
-    (intW D.what₂.places w) hR0 (M.lam i) (H β).wt (valEx_of_rep' (tEL D) (tEL_emb D) (embT_conj D) (H β).std (S.adExt β)
-      (ptEx_of (H β).good (S.K β).lev (S.K β).y (S.K β).y_bij.2)
-      (ptOne_of (S.K β).lev (H β).int (H β).hypP (H β).bad_p)
-      (S.evRatRep β (H β).chRat hblk) (H β).chiRat)
+    (intW D.what₂.places w) hR0 (M.lam i) hCore.wt hEx
     (fun cl B' => IsLocBasis (D.what₂.places.resChar w)
       (dualSet (sigD D : D.host.E →+* D.host.E) (gramN D i hi) (S.lat cl.1)) B')
-    (fun cl => exB_of_lat hi (D.what₂.places.resChar w) (S.lat cl.1) ((L β).lat cl))
-    (fun a Lt cl g γ κ hg hγ hpt B' hB' v s => by
-      exact latO_of (tEL D) (H β).pos_emb
-        (fun x => by rw [Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.forms_involution_eq_host_conj, Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.forms_involution_eq_host_conj, Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.host_conj_involutive])
-        (H β).std γ hγ B' Lt
-        (fun v => by
-          rw [hg v]
-          exact latW_gen (S.K β).lev (S.loc β) (H β).int hp (L β).siteGood_prime_torsion (L β).alg (L β).base (S.lat cl.1) ((S.K β).y cl)
-            ((S.K β).y_lat cl) (le_dual_chart (S.K β) cl) B' hB' a g γ κ hpt v)
-        (fun v a b => gramW_gen (S.K β).lev (S.loc β) (H β).int hp (L β).siteGood_prime_torsion (L β).alg
-          (Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwB_gramN_det D i hi) (S.lat cl.1) ((S.K β).y cl) ((S.K β).y_lat cl) (le_dual_chart (S.K β) cl)
-          B' hB' v a b) v s)
-    (L β).chi
+    (fun cl => exB_of_lat hi (D.what₂.places.resChar w) (S.lat cl.1) (hLat.lat cl)) ?_ hLat.chi
+  intro a Lt cl g γ κ hg hγ hpt B' hB' v s
+  have hDual := le_dual_chart (S.K β) cl
+  refine latO_of (G := S.charts.gat β) (e := e) (A := S.loc β) (pos := S.pos)
+    (σ := sigD D) (J := gramN D i hi) (tEL D) hCore.pos_emb hσ hCore.std γ hγ B' Lt ?_ ?_ v s
+  · intro v
+    exact (hg v).trans (latW_gen (S.K β).lev (S.loc β) hCore.int hp hLat.siteGood_prime_torsion
+      hLat.alg hLat.base (S.lat cl.1) ((S.K β).y cl) ((S.K β).y_lat cl) hDual B' hB' a g γ κ hpt v)
+  · intro v a b
+    exact gramW_gen (S.K β).lev (S.loc β) hCore.int hp hLat.siteGood_prime_torsion hLat.alg
+      (Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwB_gramN_det D i hi)
+      (S.lat cl.1) ((S.K β).y cl) ((S.K β).y_lat cl) hDual B' hB' v a b
 
 end Formalism.MainNotions.G.CmpJ.PValIntN
 

@@ -1,13 +1,61 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.UnitNorm.UnrealifyRealify
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Topology.UniformSpace.Matrix
+public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
-public import Formalism.FormalDegreeBessel.FinalBF
-public import Formalism.FormalDegreeBessel.FinalDS
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
-public import Formalism.RealPlaceAnalysis.FinalF
-public import Formalism.FlagUnipotentLattices.AlgebraicIdentityHigherDegree
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 
 @[expose] public section
 
@@ -197,13 +245,6 @@ section Grp
 
 variable {k r : ℕ}
 
-theorem Hpk_unit (k r : ℕ) : IsUnit (Hpk k r).det := by
-  rw [isUnit_iff_ne_zero]
-  intro h0
-  have h := congrArg Matrix.det (Formalism.MainNotions.BesselShellMomentBounds.Hpk_sq' k r)
-  rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at h
-  exact zero_ne_one h
-
 theorem UH_one (k r : ℕ) : (1 : Mx k r) ∈ UH (Hpk k r) := by
   show (1 : Mx k r)ᴴ * Hpk k r * 1 = Hpk k r
   simp
@@ -219,7 +260,7 @@ theorem UH_inv {a : Mx k r} (ha : a ∈ UH (Hpk k r)) : a⁻¹ ∈ UH (Hpk k r) 
   have hd : IsUnit a.det := by
     have h := congrArg Matrix.det ha'
     rw [Matrix.det_mul, Matrix.det_mul] at h
-    have hu := Hpk_unit k r
+    have hu := _root_.Formalism.MainNotions.BesselShellMomentBounds.Hpk_det_unit k r
     rw [isUnit_iff_ne_zero]
     intro h0
     rw [h0, mul_zero] at h
@@ -232,7 +273,7 @@ theorem UH_det {a : Mx k r} (ha : a ∈ UH (Hpk k r)) : IsUnit a.det := by
   have ha' : aᴴ * Hpk k r * a = Hpk k r := ha
   have h := congrArg Matrix.det ha'
   rw [Matrix.det_mul, Matrix.det_mul] at h
-  have hu := Hpk_unit k r
+  have hu := _root_.Formalism.MainNotions.BesselShellMomentBounds.Hpk_det_unit k r
   rw [isUnit_iff_ne_zero]
   intro h0
   rw [h0, mul_zero] at h
@@ -240,30 +281,7 @@ theorem UH_det {a : Mx k r} (ha : a ∈ UH (Hpk k r)) : IsUnit a.det := by
 
 theorem exp_mem_UH {X : Mx k r} (hX : InLieHpk k r X) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • X) ∈ UH (Hpk k r) := by
-  have hH2 := (hpkFacts k r).2.1
-  have hinv : (Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_right_inv hH2
-  have hXs : Xᴴ = Hpk k r * (-X) * (Hpk k r)⁻¹ := by
-    rw [hinv]
-    have h1 : Xᴴ * Hpk k r = -(Hpk k r * X) := eq_neg_of_add_eq_zero_left hX
-    calc Xᴴ = Xᴴ * (Hpk k r * Hpk k r) := by rw [hH2, Matrix.mul_one]
-      _ = (Xᴴ * Hpk k r) * Hpk k r := by rw [Matrix.mul_assoc]
-      _ = Hpk k r * (-X) * Hpk k r := by rw [h1]; simp
-  show (NormedSpace.exp ((t : ℂ) • X))ᴴ * Hpk k r * NormedSpace.exp ((t : ℂ) • X) = Hpk k r
-  rw [← Matrix.exp_conjTranspose, Matrix.conjTranspose_smul, hXs]
-  have hst : star (t : ℂ) = (t : ℂ) := Complex.conj_ofReal t
-  rw [hst]
-  have e1 : (t : ℂ) • (Hpk k r * (-X) * (Hpk k r)⁻¹) = Hpk k r * (-((t : ℂ) • X)) * (Hpk k r)⁻¹ := by
-    simp
-  rw [e1, Matrix.exp_conj _ _ ((Matrix.isUnit_iff_isUnit_det _).2 (Hpk_unit k r)), hinv]
-  have e2 : NormedSpace.exp (-((t : ℂ) • X)) * NormedSpace.exp ((t : ℂ) • X) = 1 := by
-    rw [← Matrix.exp_add_of_commute _ _ ((Commute.refl ((t : ℂ) • X)).neg_left)]
-    simp
-  calc Hpk k r * NormedSpace.exp (-((t : ℂ) • X)) * Hpk k r * Hpk k r * NormedSpace.exp ((t : ℂ) • X)
-      = Hpk k r * NormedSpace.exp (-((t : ℂ) • X)) * (Hpk k r * Hpk k r) * NormedSpace.exp ((t : ℂ) • X) := by
-        simp only [Matrix.mul_assoc]
-    _ = Hpk k r * (NormedSpace.exp (-((t : ℂ) • X)) * NormedSpace.exp ((t : ℂ) • X)) := by
-        rw [hH2, Matrix.mul_one, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [e2, Matrix.mul_one]
+  apply PI.WUN.exp_mem_UH <;> assumption
 
 end Grp
 
@@ -784,45 +802,7 @@ theorem exp_mem_N {X : Mx k r} (hX : InLieN k r X) : NormedSpace.exp X ∈ Nset 
       exact h.2 i j h1 h2 h3
 
 theorem lieN_of_lieOf {X : Mx k r} (hX : X ∈ lieOf (Nset k r)) : InLieN k r X := by
-  have hent : ∀ (i j : Fin (2 * r + k + 1)) (c : ℂ), (∀ t : ℝ, (NormedSpace.exp ((t : ℂ) • X)) i j = c) → X i j = 0 := by
-    intro i j c hc
-    have h1 := exp_entry X i j
-    have h2 : HasDerivAt (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)) i j) 0 0 := by
-      have : (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)) i j) = fun _ => c := funext hc
-      rw [this]; exact hasDerivAt_const _ _
-    exact h1.unique h2
-  refine ⟨?_, ?_, ?_⟩
-  · have hH2 := (hpkFacts k r).2.1
-    have hf : HasDerivAt (fun t : ℝ => NormedSpace.exp ((t : ℂ) • Xᴴ)) Xᴴ 0 := exp_deriv _
-    have hg : HasDerivAt (fun t : ℝ => Hpk k r * NormedSpace.exp ((t : ℂ) • (-X)) * Hpk k r)
-        (Hpk k r * (-X) * Hpk k r) 0 :=
-      (mulR (Hpk k r)).hasFDerivAt.comp_hasDerivAt (0 : ℝ)
-        ((mulL (Hpk k r)).hasFDerivAt.comp_hasDerivAt (0 : ℝ) (exp_deriv (-X)))
-    have hfg : (fun t : ℝ => NormedSpace.exp ((t : ℂ) • Xᴴ)) =
-        fun t : ℝ => Hpk k r * NormedSpace.exp ((t : ℂ) • (-X)) * Hpk k r := by
-      funext t
-      have hU : (NormedSpace.exp ((t : ℂ) • X))ᴴ * Hpk k r * NormedSpace.exp ((t : ℂ) • X) = Hpk k r := (hX t).1
-      have hst : star (t : ℂ) = (t : ℂ) := Complex.conj_ofReal t
-      rw [← Matrix.exp_conjTranspose, Matrix.conjTranspose_smul, hst] at hU
-      have e2 : NormedSpace.exp ((t : ℂ) • X) * NormedSpace.exp ((t : ℂ) • (-X)) = 1 := by
-        rw [smul_neg, ← Matrix.exp_add_of_commute _ _ ((Commute.refl ((t : ℂ) • X)).neg_right)]
-        simp
-      calc NormedSpace.exp ((t : ℂ) • Xᴴ)
-          = NormedSpace.exp ((t : ℂ) • Xᴴ) * Hpk k r * (NormedSpace.exp ((t : ℂ) • X) * NormedSpace.exp ((t : ℂ) • (-X)))
-              * Hpk k r := by
-            rw [e2, Matrix.mul_one, Matrix.mul_assoc, hH2, Matrix.mul_one]
-        _ = (NormedSpace.exp ((t : ℂ) • Xᴴ) * Hpk k r * NormedSpace.exp ((t : ℂ) • X)) * NormedSpace.exp ((t : ℂ) • (-X))
-              * Hpk k r := by simp only [Matrix.mul_assoc]
-        _ = _ := by rw [hU]
-    rw [hfg] at hf
-    have e := hf.unique hg
-    show Xᴴ * Hpk k r + Hpk k r * X = 0
-    rw [e, Matrix.mul_assoc, hH2]
-    simp
-  · intro a i hai
-    exact hent i _ _ (fun t => (hX t).2.1 a i hai)
-  · intro i j h1 h2 h3
-    exact hent i j _ (fun t => (hX t).2.2 i j h1 h2 h3)
+  apply PI.WUN.lieN_of_lieOf <;> assumption
 
 theorem InLieN.add {X Y : Mx k r} (hX : InLieN k r X) (hY : InLieN k r Y) : InLieN k r (X + Y) := by
   unfold InLieN InA InLieHpk at *
@@ -866,20 +846,7 @@ theorem unrealify_smul (c : ℝ) (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) ×
 
 theorem lieN_of_lieE (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool))
     (hx : x ∈ lieE (Nset k r)) : InLieN k r (unrealify x) := by
-  unfold lieE at hx
-  induction hx using Submodule.span_induction with
-  | mem x h =>
-    obtain ⟨X, hX, rfl⟩ := h
-    simp only
-    rw [unrealify_realify]
-    exact lieN_of_lieOf hX
-  | zero =>
-    have : unrealify (0 : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)) = (0 : Mx k r) := by
-      ext i j
-      apply Complex.ext <;> simp [unrealify]
-    rw [this]; exact InLieN.zero
-  | add x y _ _ hx hy => rw [unrealify_add]; exact hx.add hy
-  | smul c x _ hx => rw [unrealify_smul]; exact hx.smul c
+  apply PI.WUN.lieN_of_lieE <;> assumption
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -928,29 +895,10 @@ theorem continuous_expM : Continuous (fun X : Mx k r => NormedSpace.exp X) := No
 
 theorem continuous_expLie (S : Set (Mx k r)) :
     Continuous (fun x : lieE S => (fun i j => NormedSpace.exp (unrealify (x : EuclideanSpace ℝ _)) i j : Mt k r)) := by
-  have h1 : Continuous (fun x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool) => unrealify x) :=
-    (unrealL k r).continuous_of_finiteDimensional
-  have h0 : Continuous (fun x : lieE S =>
-      (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool))) := continuous_subtype_val
-  have h2 : Continuous (fun x : lieE S => NormedSpace.exp (unrealify (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)) : Mx k r)) :=
-    by
-      have h3 : Continuous (fun x : lieE S => (unrealify (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)) : Mx k r)) := by
-        exact Continuous.comp (g := fun x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool) => unrealify x) h1 h0
-      exact Continuous.comp (g := fun X : Mx k r => NormedSpace.exp X) continuous_expM h3
-  exact h2
+  apply PI.WUN.continuous_expLie
 
 theorem muN_conc (κ : ENNReal) : (haarLie (Nset k r) κ) {x : Mt k r | Matrix.of x ∉ Nset k r} = 0 := by
-  have hs : MeasurableSet {x : Mt k r | Matrix.of x ∉ Nset k r} :=
-    (((isClosed_N k r).preimage continuous_of).measurableSet).compl
-  unfold haarLie
-  rw [Measure.smul_apply, Measure.map_apply (continuous_expLie _).measurable hs]
-  have : (fun x : lieE (Nset k r) => (fun i j => NormedSpace.exp (unrealify (x : EuclideanSpace ℝ _)) i j : Mt k r)) ⁻¹'
-      {x : Mt k r | Matrix.of x ∉ Nset k r} = ∅ := by
-    ext x
-    simp only [Set.mem_preimage, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_not]
-    exact exp_mem_N (lieN_of_lieE _ x.2)
-  rw [this]
-  simp
+  apply PI.WUN.muN_conc
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -958,81 +906,17 @@ end
 
 end PieceB2
 
-section PieceB3
-
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ContDiff
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions
-
-variable {k r : ℕ}
-
-section Integrand
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
-
-end Integrand
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end
-
-end PieceB3
-
-section PieceB4
-
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ContDiff
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions
-
-variable {k r : ℕ}
-
-section Gen
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [FiniteDimensional ℂ Wp] [NormedAddCommGroup Wq]
-  [NormedSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-
-end Gen
-
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end
-
-end PieceB4
-
-section PieceC1
-
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ContDiff
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.BesselShellMomentBounds
-
-section Shift
-
-variable {n : ℕ}
-
-end Shift
-
 end Formalism.MainNotions.LowestKTypeMultiplicity
-
-end
-
-end PieceC1
 
 section PieceC2
 
@@ -1084,49 +968,13 @@ end
 
 end PieceL0
 
-section PieceL1
-
-open MeasureTheory
-open scoped InnerProductSpace ENNReal
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.MainNotions.BridgeCSchur
-
-section Avg
-
-variable {G : Type*} [Group G] [TopologicalSpace G] [MeasurableSpace G] [BorelSpace G] [MeasurableMul G] [MeasurableInv G]
-  {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
-  {μ : Measure G} {ρ : G → (V →L[ℂ] V)}
-
-end Avg
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end
-
-end PieceL1
-
-section PieceL2
-
-open MeasureTheory Matrix
-open scoped InnerProductSpace ENNReal
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions
-
-variable {k r : ℕ}
-
 end Formalism.MainNotions.LowestKTypeMultiplicity
-
-end
-
-end PieceL2
 
 section PieceL3
 
@@ -1161,59 +1009,13 @@ end
 
 end PieceL3
 
-section PieceL4
-
-open MeasureTheory Matrix
-open scoped InnerProductSpace ENNReal
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions
-
-variable {k r : ℕ}
-
-section KInv
-
-variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-  {ε : Fin (2 * r + k + 1) → Bool} {P : Mx k r} {σ : Mx k r → (H →L[ℂ] H)}
-
-end KInv
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end
-
-end PieceL4
-
-section PieceL5
-
-open MeasureTheory Matrix
-open scoped InnerProductSpace ENNReal
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions
-
-variable {k r : ℕ}
-
-section KInv
-
-variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-  {ε : Fin (2 * r + k + 1) → Bool} {P : Mx k r} {σ : Mx k r → (H →L[ℂ] H)}
-
-end KInv
-
 end Formalism.MainNotions.LowestKTypeMultiplicity
-
-end
-
-end PieceL5
 
 section PieceL6
 
@@ -1335,69 +1137,19 @@ end
 
 end PieceL7
 
-section PieceL8
-
-open Matrix
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end
-
-end PieceL8
-
-section PieceL9
-
-open Matrix
-open scoped InnerProductSpace
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S
-
-section KT
-
-variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-end KT
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end
-
-end PieceL9
-
-section PieceL10
-
-open Matrix
-
-noncomputable section
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S
-
-variable {k r : ℕ}
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end
-
-end PieceL10
-
-section PieceZ
-
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-open Formalism.BasicNotions
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
-end PieceZ

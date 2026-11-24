@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+public import Mathlib.Analysis.Complex.Isometry
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

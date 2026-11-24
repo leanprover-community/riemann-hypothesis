@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLelongWeightLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLelongWeightDiff
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongLimit
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffDominated
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 
 @[expose] public section
 

@@ -1,8 +1,16 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.RingTheory.Valuation.ValuationSubring
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.NumberTheory.NumberField.CMField
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 
 @[expose] public section
 
@@ -21,7 +29,6 @@ theorem mem_range_jK {k : Type} [Field k] (x : Sp (PowerSeries k)) (hx : PowerSe
   have hXu : ¬ IsUnit (PowerSeries.X : PowerSeries k) := by
     intro hu
     first
-      | (have h1 := hu.map (PowerSeries.constantCoeff k); simp at h1)
       | (have h1 := hu.map (PowerSeries.constantCoeff (R := k)); simp at h1)
   have hbot : x.asIdeal = ⊥ := by
     by_contra hne

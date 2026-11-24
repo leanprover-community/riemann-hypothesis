@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+public import Mathlib.Analysis.InnerProductSpace.ProdL2
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Linear
 
 @[expose] public section
 
@@ -41,7 +46,7 @@ theorem sop_comp (A A' : H₁ →L[ℂ] H₁) (B B' : H₂ →L[ℂ] H₂) :
 
 theorem sop_neg_comm (A : H₁ →L[ℂ] H₁) (B : H₂ →L[ℂ] H₂) (x : WithLp 2 (H₁ × H₂)) :
     sop 1 (-1) (sop A B x) = sop A B (sop 1 (-1) x) := by
-  simp only [sop_apply, WithLp.ofLp_toLp]
+  simp only [sop_apply]
   simp
 
 theorem inner_sum (x y : WithLp 2 (H₁ × H₂)) :
@@ -95,8 +100,8 @@ theorem actM_sE (E₁ : Fin n → Fin n → Module.End ℂ D₁) (E₂ : Fin n �
   have h : ∀ a b, X a b • sE E₁ E₂ a b = liftL (X a b • (E₁ a b, E₂ a b)) := by
     intro a b; rw [map_smul]; rfl
   unfold actM
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [h, ← map_sum]
+
+  simp only [h, ← map_sum]
   rw [liftL_apply]
   congr 1
   · simp [Prod.fst_sum]
@@ -107,8 +112,8 @@ theorem casimir_sE (E₁ : Fin n → Fin n → Module.End ℂ D₁) (E₂ : Fin 
   have h : ∀ a b, sE E₁ E₂ a b * sE E₁ E₂ b a = liftL (E₁ a b * E₁ b a, E₂ a b * E₂ b a) := by
     intro a b; rw [liftL_apply]; exact (lift_mul _ _ _ _).symm
   unfold casimir
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [h, ← map_sum]
+
+  simp only [h, ← map_sum]
   rw [liftL_apply]
   congr 1
   · simp [Prod.fst_sum]

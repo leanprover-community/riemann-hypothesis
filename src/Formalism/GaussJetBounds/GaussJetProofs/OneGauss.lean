@@ -1,14 +1,63 @@
 module
 
 public import Formalism.GaussJetBounds.StatementU
-public import Formalism.GaussJetBounds.OneLetterRadius
-public import Formalism.GaussJetBounds.MonoShapeTop
-public import Formalism.GaussJetBounds.GaussJetProofs.GField
-public import Formalism.GaussJetBounds.GaussJetProofs.Transfer
-public import Formalism.GaussJetBounds.GaussJetProofs.FJEval
+public import Formalism.GaussJetBounds.StatementI
 public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
+public import Formalism.GaussJetBounds.GaussJetProofs.FJEval
+public import Formalism.GaussJetBounds.GaussJetProofs.GField
 public import Formalism.GaussJetBounds.GaussJetProofs.Labels
-public import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
+import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
+public import Formalism.GaussJetBounds.GaussJetProofs.Transfer
+import Formalism.GaussJetBounds.OneLetterRadius
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -39,8 +88,8 @@ lemma cc_expo (v : τ → MvPowerSeries ι K) (hv : ∀ x, MvPowerSeries.constan
     MvPowerSeries.constantCoeff (expo v sgn ep be) = 0 := by
   unfold expo
   refine cc_smul _ ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun x _ => ?_
   exact MvPowerSeries.constantCoeff_subst_eq_zero
     (MvPowerSeries.hasSubst_of_constantCoeff_zero fun s => cc_smul _ (hv x))
@@ -52,8 +101,8 @@ lemma subst_expo {ι' : Type} {a : ι → MvPowerSeries ι' K} (hs : MvPowerSeri
     MvPowerSeries.subst a (expo v sgn ep be) =
       expo (fun x => MvPowerSeries.subst a (v x)) sgn ep be := by
   unfold expo
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPowerSeries.subst_smul hs, ← MvPowerSeries.substAlgHom_apply hs, map_sum]
+
+  rw [MvPowerSeries.subst_smul hs, ← MvPowerSeries.substAlgHom_apply hs, map_sum]
   congr 1
   refine Finset.sum_congr rfl fun x _ => ?_
   have h : ∀ s : ZMod 2,
@@ -75,8 +124,8 @@ lemma map_expo {F : Type} [Field F] (φ : F →+* K) (v : τ → MvPowerSeries �
       MvPowerSeries.map φ (c • f) = φ c • MvPowerSeries.map φ f := by
     intro c f
     rw [MvPowerSeries.smul_eq_C_mul, map_mul, MvPowerSeries.map_C, MvPowerSeries.smul_eq_C_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hs, map_sum, map_div₀, map_ofNat]
+
+  rw [hs, map_sum, map_div₀, map_ofNat]
   congr 1
   refine Finset.sum_congr rfl fun x _ => ?_
   have h : ∀ s : ZMod 2,
@@ -96,8 +145,8 @@ lemma map_oneLog {F K : Type} [Field F] [Field K] (φ : F →+* K) {τ : Type} [
   ext n
   rw [MvPowerSeries.coeff_map]
   change φ (oneLog (K := F) l x n) = oneLog (K := K) l x n
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [oneLog, map_sum, apply_ite]
+
+  simp [oneLog, map_sum, apply_ite]
 
 section Theta
 

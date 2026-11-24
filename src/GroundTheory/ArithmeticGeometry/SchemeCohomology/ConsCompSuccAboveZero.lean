@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Category.Grp.Preadditive
+public import Mathlib.AlgebraicTopology.AlternatingFaceMapComplex
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Topology.Category.TopCat.Basic
+public import Mathlib.Topology.Sets.Opens
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.BigOperators.Pi
 
 @[expose] public section
 
@@ -100,8 +106,8 @@ variable {P} in
 lemma push_d {P' : (Opens X)ᵒᵖ ⥤ AddCommGrpCat.{u}} (φ : P ⟶ P') (n : ℕ) (σ : Cochain P U n) :
     push U φ (n + 1) (d P U n σ) = d P' U n (push U φ n σ) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [push, AddMonoidHom.coe_mk, ZeroHom.coe_mk, d_apply, map_sum, map_zsmul, app_res]
+
+  simp only [push, AddMonoidHom.coe_mk, ZeroHom.coe_mk, d_apply, map_sum, map_zsmul, app_res]
 
 variable {P} in
 lemma push_comp {P' P'' : (Opens X)ᵒᵖ ⥤ AddCommGrpCat.{u}} (φ : P ⟶ P') (ψ : P' ⟶ P'')
@@ -167,8 +173,8 @@ lemma ev_d {n : ℕ} (σ : Cochain (discPresheaf A) U n) (i : Fin (n + 2) → ι
     (hx : x ∈ inter U i) :
     ev A x hx (d (discPresheaf A) U n σ i) = ∑ k : Fin (n + 2), ((-1 : ℤ) ^ (k : ℕ)) •
       ev A x (inter_le_comp U i k.succAbove hx) (σ (i ∘ k.succAbove)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [d_apply, map_sum]
+
+  rw [d_apply, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_zsmul, ev_res]
 

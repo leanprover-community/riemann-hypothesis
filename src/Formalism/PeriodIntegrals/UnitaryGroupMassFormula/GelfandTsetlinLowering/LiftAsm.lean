@@ -1,8 +1,58 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinLowering.LiftDefs
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalC
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.LocalRingCardinality.Params
 
 @[expose] public section
 
@@ -18,29 +68,10 @@ theorem lm_natW_anti {k : ℕ} (mu : DomWeight k) : Antitone mu.natW := by
   unfold DomWeight.natW
   exact Int.toNat_le_toNat (by omega)
 
-theorem lm_fockF_eq_sum {σ : Type*} (f g : MvPolynomial σ ℂ) (s : Finset (σ →₀ ℕ)) (hs : f.support ⊆ s) :
-    Formalism.REAL.fockF f g =
-      ∑ m ∈ s, f.coeff m * star (g.coeff m) * ((∏ k ∈ m.support, (m k).factorial : ℕ) : ℂ) := by
-  unfold Formalism.REAL.fockF
-  apply Finset.sum_subset hs
-  intro m _ hm
-  rw [MvPolynomial.notMem_support_iff.mp hm]
-  simp
-
-theorem lm_fockF_add {σ : Type*} (f1 f2 g : MvPolynomial σ ℂ) :
-    Formalism.REAL.fockF (f1 + f2) g = Formalism.REAL.fockF f1 g + Formalism.REAL.fockF f2 g := by
-  classical
-  rw [lm_fockF_eq_sum (f1 + f2) g (f1.support ∪ f2.support) MvPolynomial.support_add,
-    lm_fockF_eq_sum f1 g _ Finset.subset_union_left, lm_fockF_eq_sum f2 g _ Finset.subset_union_right,
-    ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [MvPolynomial.coeff_add]
-  ring
-
 theorem lm_fockF_smul {σ : Type*} (a : ℂ) (f g : MvPolynomial σ ℂ) :
     Formalism.REAL.fockF (a • f) g = a * Formalism.REAL.fockF f g := by
   classical
-  rw [lm_fockF_eq_sum (a • f) g f.support MvPolynomial.support_smul, Formalism.REAL.fockF, Finset.mul_sum]
+  rw [_root_.Formalism.REAL.fischerInner_eq_sum_of_subset (a • f) g f.support MvPolynomial.support_smul, Formalism.REAL.fockF, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [MvPolynomial.coeff_smul, smul_eq_mul]
   ring
@@ -55,7 +86,7 @@ theorem lm_fockF_finsum {σ ι : Type*} (s : Finset ι) (y : ι → MvPolynomial
   induction s using Finset.induction_on with
   | empty => simp [Formalism.REAL.fockF]
   | insert i s hi ih =>
-    rw [Finset.sum_insert hi, lm_fockF_add, h0 i (Finset.mem_insert_self _ _),
+    rw [Finset.sum_insert hi, _root_.Formalism.REAL.fischerInner_add_left, h0 i (Finset.mem_insert_self _ _),
       ih (fun j hj => h0 j (Finset.mem_insert_of_mem hj)), add_zero]
 
 theorem lm_rowDiv_sub {R : Type*} [CommRing R] {r m : ℕ} (a b : Fin r) (k : ℕ)
@@ -256,15 +287,15 @@ theorem liftMod_asm (hZ : CapelliZ) (hV : ZScalarVanish) (hN : Numbers) (hX : Xi
       rw [← hΔu]
       have e1 : applyWord ℂ (liftWord h w) (Z (map (Int.castRingHom ℂ) (M I))) =
           d.sum fun J k => k • Z (map (Int.castRingHom ℂ) (M J)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← (hZW w hw _ (hMm I)).2, ← Formalism.UG.P.wlocal_map_applyWord, hd2, Finsupp.sum, Finsupp.sum,
-          map_sum, map_sum]
+
+        rw [← (hZW w hw _ (hMm I)).2, ← Formalism.UG.P.wlocal_map_applyWord, hd2, Finsupp.sum, Finsupp.sum,
+        map_sum, map_sum]
         simp only [map_zsmul]
       have e2 : applyWord ℂ (liftWord h w) (io0 (map (Int.castRingHom ℂ) (bideterminant ℤ sz hsz I))) =
           d.sum fun J k => k • io0 (map (Int.castRingHom ℂ) (bideterminant ℤ sz hsz J)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← (hIoW w hw _ (hbm I)).2, ← Formalism.UG.P.wlocal_map_applyWord, hd1, Finsupp.sum, Finsupp.sum,
-          map_sum, map_sum]
+
+        rw [← (hIoW w hw _ (hbm I)).2, ← Formalism.UG.P.wlocal_map_applyWord, hd1, Finsupp.sum, Finsupp.sum,
+        map_sum, map_sum]
         simp only [map_zsmul]
       have e3 : applyWord ℂ (liftWord h w) (Δ I) = ∑ J ∈ d.support, d J • Δ J := by
         simp only [hΔ]

@@ -1,8 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SymplecticSiegelActionMemUpperHalfSpaceAndCocyclStatement
+public import Mathlib.LinearAlgebra.SymplecticGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SymplecticSiegelActionMemUpperHalfSpaceAndCocycl
 
 @[expose] public section
 
@@ -21,26 +69,10 @@ theorem isUnit_det_im_of_mem_siegel {ι : Type} [Fintype ι] [DecidableEq ι] {�
 open Matrix Complex in
 open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
-private lemma qm_add' {α β : Type} (M N : Matrix α β ℚ) :
-    _root_.GlobalTheory.SW.qm (M + N) = _root_.GlobalTheory.SW.qm M + _root_.GlobalTheory.SW.qm N := by
-  ext i j
-  simp [_root_.GlobalTheory.SW.qm]
-
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_neg' {α β : Type} (M : Matrix α β ℚ) :
     _root_.GlobalTheory.SW.qm (-M) = -_root_.GlobalTheory.SW.qm M := by
   ext i j
   simp [_root_.GlobalTheory.SW.qm]
-
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-variable {ι : Type} [Fintype ι] [DecidableEq ι] in
-private lemma qm_mul_siegel_theta_transformation {α β γ : Type} [Fintype β] (M : Matrix α β ℚ) (N : Matrix β γ ℚ) :
-    _root_.GlobalTheory.SW.qm (M * N) = _root_.GlobalTheory.SW.qm M * _root_.GlobalTheory.SW.qm N := by
-  ext i j
-  simp [_root_.GlobalTheory.SW.qm, Matrix.mul_apply]
 
 open Matrix Complex in
 open scoped ComplexConjugate Real in
@@ -116,7 +148,7 @@ theorem _root_.GlobalTheory.SW.canon_exponent_invariant : ∀ (ι : Type) [Finty
   replace r2 := congrArg _root_.GlobalTheory.SW.qm r2
   replace r3 := congrArg _root_.GlobalTheory.SW.qm r3
   replace r4 := congrArg _root_.GlobalTheory.SW.qm r4
-  simp only [qm_add', qm_neg', qm_mul_siegel_theta_transformation, qm_transpose',
+  simp only [_root_.GlobalTheory.SiegelAction.qm_add, qm_neg', _root_.GlobalTheory.SiegelAction.qm_mul, qm_transpose',
     qm_zero', qm_one'] at r1 r2 r3 r4
   set A := _root_.GlobalTheory.SW.qm σ.toBlocks₁₁ with hA
   set B := _root_.GlobalTheory.SW.qm σ.toBlocks₁₂ with hB

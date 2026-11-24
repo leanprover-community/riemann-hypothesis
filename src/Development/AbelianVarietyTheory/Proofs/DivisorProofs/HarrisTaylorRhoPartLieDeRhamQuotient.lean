@@ -1,9 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrysActApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QActMSubAlgebraMap
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorModOfTmul
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeFirstDeRhamStructure
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorLieConditionModHodgeFiltration
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Divisors.InfUniv
 
 @[expose] public section
 
@@ -118,9 +162,9 @@ theorem lie_rho_decomp (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k) 
     have := hw j c
     rw [← HL.ker_toLie (o₀.act.toF D), LinearMap.mem_ker, map_sub, map_smul, toLie_crys', sub_eq_zero] at this
     exact this
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [← HL.ker_toLie (o₀.act.toF D), LinearMap.mem_ker, map_sub, map_sum, sub_eq_zero] at hs
-      exact hs
+
+  · rw [← HL.ker_toLie (o₀.act.toF D), LinearMap.mem_ker, map_sub, map_sum, sub_eq_zero] at hs
+    exact hs
 
 theorem lie_decomp (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k) (ht : t = spMap β) (HL : LieExact o₀.A)
     (v : Lie (o₀.act.toF D)) :
@@ -197,8 +241,8 @@ theorem jSub_le (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k) (ht : t
       simp_rw [← Finset.sum_smul, hc', zero_smul, Finset.sum_const_zero]
     calc HL.toLie (o₀.act.toF D) (∑ l, lam l • GlobalTheory.HTCount.crysAct o₀ (algebraMap (𝓞 D.F) D.O (c l)) x)
         = ∑ l, lam l • c l • HL.toLie (o₀.act.toF D) x := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp only [map_sum, map_smul, toLie_crys]
+
+          simp only [map_sum, map_smul, toLie_crys]
       _ = ∑ l, lam l • c l • u + ∑ l, lam l • ∑ j, β (b.t j (c l)) • w j := by
           rw [hs, ← Finset.sum_add_distrib]
           refine Finset.sum_congr rfl fun l _ => ?_

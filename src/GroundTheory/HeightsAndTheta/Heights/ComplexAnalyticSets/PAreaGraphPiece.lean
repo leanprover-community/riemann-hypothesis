@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaGraphPiece
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.RingKrullDimQuotBotOne
+public import Mathlib.Analysis.InnerProductSpace.NormDet
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

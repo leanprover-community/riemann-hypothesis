@@ -1,6 +1,48 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoUpperBoundOfEdgeCount
+public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundLargeConductor
+public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -22,13 +64,8 @@ theorem mem_colSpan_iff (h : Matrix (Fin k) (Fin k) Qq) (x : Fin k → Qq) :
     x ∈ colSpan W h ↔ ∃ y : Fin k → W, x = fun i => ∑ c, h i c * algebraMap W Qq (y c) := by
   unfold colSpan
   rw [Submodule.mem_span_range_iff_exists_fun]
-  constructor
-  · rintro ⟨y, rfl⟩
-    refine ⟨y, funext fun i => ?_⟩
-    simp [Finset.sum_apply, Algebra.smul_def, mul_comm]
-  · rintro ⟨y, rfl⟩
-    refine ⟨y, funext fun i => ?_⟩
-    simp [Finset.sum_apply, Algebra.smul_def, mul_comm]
+  constructor <;> rintro ⟨y, rfl⟩ <;> exact ⟨y, funext fun i => by
+    simp [Finset.sum_apply, Algebra.smul_def, mul_comm]⟩
 
 theorem colSpan_mul_le (h : Matrix (Fin k) (Fin k) Qq) (N : Matrix (Fin k) (Fin k) W) :
     colSpan W (h * mapM N) ≤ colSpan W h := by
@@ -57,9 +94,8 @@ theorem dj_det (j : Fin k) (c : Qq) : (dj j c).det = c := by
   simp [dj, Matrix.det_diagonal]
 
 theorem dj_mul (j : Fin k) (c d : Qq) : dj j c * dj j d = dj j (c * d) := by
-  simp only [dj, Matrix.diagonal_mul_diagonal]
-  congr 1
-  funext i
+  funext i l
+  simp only [dj, Matrix.diagonal_mul_diagonal, Matrix.diagonal_apply]
   split_ifs <;> simp
 
 theorem dj_one (j : Fin k) : dj j (1 : Qq) = 1 := by
@@ -76,9 +112,8 @@ theorem RS.injW : Function.Injective (algebraMap R.W R.Qq) := by
   exact IsFractionRing.injective R.W R.Qq
 
 theorem RS.pQ_ne : (p : R.Qq) ≠ 0 := by
-  have h1 : (p : R.W) ≠ 0 := R.std.1.p_unif.ne_zero
   rw [← map_natCast (algebraMap R.W R.Qq)]
-  exact fun h => h1 ((map_eq_zero_iff _ (RS.injW R)).1 h)
+  exact fun h => R.std.1.p_unif.ne_zero ((map_eq_zero_iff _ (RS.injW R)).1 h)
 
 def embLin (R : RS p n') (k : ℕ) : (Fin k → R.W) →ₗ[R.W] (Fin k → R.Qq) where
   toFun := emb
@@ -87,19 +122,13 @@ def embLin (R : RS p n') (k : ℕ) : (Fin k → R.W) →ₗ[R.W] (Fin k → R.Qq
 
 theorem embLin_inj : Function.Injective (embLin R k) := by
   intro x y hxy
-  funext i
-  exact RS.injW R (congrFun hxy i)
+  exact funext fun i => RS.injW R (congrFun hxy i)
 
 theorem colSpan_one_eq : colSpan R.W (1 : Matrix (Fin k) (Fin k) R.Qq) = LinearMap.range (embLin R k) := by
   ext x
   rw [mem_colSpan_iff, LinearMap.mem_range]
-  constructor
-  · rintro ⟨y, rfl⟩
-    refine ⟨y, funext fun i => ?_⟩
-    simp [embLin, emb, Matrix.one_apply]
-  · rintro ⟨y, rfl⟩
-    refine ⟨y, funext fun i => ?_⟩
-    simp [embLin, emb, Matrix.one_apply]
+  constructor <;> rintro ⟨y, rfl⟩ <;> exact ⟨y, funext fun i => by
+    simp [embLin, emb, Matrix.one_apply]⟩
 
 theorem mem_dj_iff (j : Fin k) (x : Fin k → R.Qq) :
     x ∈ colSpan R.W (dj j (p : R.Qq)) ↔ ∃ y : Fin k → R.W, x = emb (fun i => (if i = j then (p : R.W) else 1) * y i) := by
@@ -123,7 +152,7 @@ theorem baseEdge (j : Fin k) :
     constructor
     · rintro ⟨y, rfl⟩
       refine ⟨_, rfl, ?_⟩
-      simp only [if_pos rfl]
+      simp only
       exact Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _)
     · rintro ⟨y, rfl, hy⟩
       obtain ⟨z, hz⟩ := Ideal.mem_span_singleton'.1 hy

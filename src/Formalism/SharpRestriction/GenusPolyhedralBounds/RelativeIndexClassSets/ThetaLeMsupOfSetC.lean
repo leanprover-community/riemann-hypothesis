@@ -1,6 +1,45 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -105,16 +144,14 @@ theorem theta_first_le (X : PJ D B P j) (S : Scal B) {ka wL wF : WeightFamilies.
     (hW : X.WWc S.sW wL ≤ B.Mlat j wL) (hT : X.Thc S.sF wF ≤ B.Mlat j wF)
     (hF : IsF' ka wL wF T nP) (hL : wL.n = nW) (hn : ka.n = nP + T * nW) :
     X.emb wL (X.WWc S.sW wL) ^ T * X.emb wF (X.Thc S.sF wF) ≤ X.Msup ka := by
-  have h := emb_pow_mul_le X wL wF T hW hT
-  rwa [wt_first hF hL hn] at h
+  simpa [wt_first hF hL hn] using emb_pow_mul_le X wL wF T hW hT
 
 theorem theta_second_le (X : PJ D B P j) (S : Scal B) {ka wL wF : WeightFamilies.Wt D j} {T nP nW : ℕ}
     (hW : X.WWc S.sW wL ≤ B.Mlat j wL) (hT : X.Thc S.s0 (X.wF0 wL wF) ≤ B.Mlat j (X.wF0 wL wF))
     (hF : IsF' ka wL wF T nP) (hL : wL.n = nW) (hn : ka.n = nP + T * nW) (hD : WeightFamilies.dimY D j ≤ T) :
     X.emb wL (X.WWc S.sW wL) ^ (T - WeightFamilies.dimY D j) * X.emb (X.wF0 wL wF) (X.Thc S.s0 (X.wF0 wL wF)) ≤
       X.Msup ka := by
-  have h := emb_pow_mul_le X wL (X.wF0 wL wF) (T - WeightFamilies.dimY D j) hW hT
-  rwa [wt_second X hF hL hn hD] at h
+  simpa only [wt_second X hF hL hn hD] using emb_pow_mul_le X wL (X.wF0 wL wF) (T - WeightFamilies.dimY D j) hW hT
 
 theorem theta_third_le (X : PJ D B P j) (S : Scal B) {ka : WeightFamilies.Wt D j}
     (hT : X.Thc S.sK ka ≤ B.Mlat j ka) : X.emb ka (X.Thc S.sK ka) ≤ X.Msup ka :=

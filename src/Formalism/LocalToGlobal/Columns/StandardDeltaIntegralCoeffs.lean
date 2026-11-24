@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.SummandSlopeOfThreeLemmas
-public import Formalism.LocalToGlobal.Columns.MaxSlopeOrthogonalNegLog
+public import Formalism.LocalToGlobal.Divisibility.CoefMod
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FinalD
+public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+import Mathlib.Data.Finsupp.Interval
+import Formalism.LocalToGlobal.GlobalTheory.HLatOps
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
@@ -106,7 +110,7 @@ theorem coefficient_space_support (K : Type) [Field K] (lam : ι → DomWeight n
     · exact hx m h
   | smul c x _ hx =>
     intro m hm
-    rw [coeff_smul] at hm
+    rw [MvPolynomial.coeff_smul] at hm
     exact hx m (fun h => hm (by rw [h, smul_zero]))
 
 variable {K : Type} [Field K]
@@ -171,8 +175,8 @@ theorem mem_locRing (w : HeightOneSpectrum (𝓞 K)) (x : K) : x ∈ locRing w �
 theorem mem_range_of_coeff_mem {σ : Type} (R0 : Subring K) {P : MvPolynomial σ K} (h : ∀ m, AddMonoidAlgebra.coeff P m ∈ R0) :
     P ∈ (map (σ := σ) R0.subtype).range := by
   refine ⟨∑ m ∈ P.support, monomial m ⟨AddMonoidAlgebra.coeff P m, h m⟩, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_monomial, Subring.coe_subtype]
   exact P.support_sum_monomial_coeff
 

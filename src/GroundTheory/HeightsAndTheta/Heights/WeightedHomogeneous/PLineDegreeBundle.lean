@@ -1,14 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Examples
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.DualModel
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Points
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 

@@ -1,7 +1,44 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.BlockBoundAlt
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteBasisAlgebraicForms
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -33,7 +70,7 @@ theorem UpperTheory.Gal.Gen.latFacts_pf :
             calc (v : MvPolynomial σ ℂ) = ((∑ j, B.repr v j • B j : V) : MvPolynomial σ ℂ) := by rw [B.sum_repr v]
               _ = _ := by rw [Submodule.coe_sum]; rfl
           rw [hv', coeff_sum]
-          simp only [coeff_smul, ZeroMemClass.coe_zero, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
+          simp only [MvPolynomial.coeff_smul, ZeroMemClass.coe_zero, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
           refine Finset.sum_eq_zero fun j _ => ?_
           have : m ∉ ((B j : V) : MvPolynomial σ ℂ).support := fun h =>
             hm (Finset.mem_biUnion.2 ⟨j, Finset.mem_univ _, h⟩)
@@ -55,19 +92,19 @@ theorem UpperTheory.Gal.Gen.latFacts_pf :
       fun R x hx => ?_⟩
     have e : φ x = ∑ i, B.repr x i * φ (B i) := by
       have h := congrArg φ (B.sum_repr x)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at h
+
+      rw [map_sum] at h
       rw [← h]
       exact Finset.sum_congr rfl fun i _ => by rw [map_smul, smul_eq_mul]
     have h1 : ∀ i, ‖ι.symm (B.repr x i)‖ ≤ (∑ m : s i, ‖ι.symm (a i m)‖) * R := by
       intro i
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [ha i x, map_sum, Finset.sum_mul]
+
+      rw [ha i x, map_sum, Finset.sum_mul]
       refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun m _ => ?_)
       rw [map_mul, norm_mul]
       exact mul_le_mul_of_nonneg_left (hx _) (norm_nonneg _)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum, Finset.sum_mul]
+
+    rw [e, map_sum, Finset.sum_mul]
     refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun i _ => ?_)
     rw [map_mul, norm_mul, Finset.sum_mul]
     calc _ ≤ (∑ m : s i, ‖ι.symm (a i m)‖) * R * ‖ι.symm (φ (B i))‖ :=

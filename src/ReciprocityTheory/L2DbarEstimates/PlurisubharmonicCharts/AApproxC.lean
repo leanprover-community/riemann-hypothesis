@@ -1,7 +1,14 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.AApproxB
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
+public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FamilyLeCoords
 
 @[expose] public section
 

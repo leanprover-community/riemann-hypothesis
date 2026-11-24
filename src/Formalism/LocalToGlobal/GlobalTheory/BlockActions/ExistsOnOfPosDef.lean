@@ -1,6 +1,9 @@
 module
 
+public import Formalism.LocalToGlobal.HermitianForms.TiedSym
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.HformSmulRightB
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
+import Mathlib.Analysis.Matrix.PosDef
 
 @[expose] public section
 

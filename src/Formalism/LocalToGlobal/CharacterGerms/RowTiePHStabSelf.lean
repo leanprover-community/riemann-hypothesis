@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePHStab
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCartSelfSt
+import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 
 @[expose] public section
 
@@ -45,12 +46,12 @@ theorem coeff_hCol (h : PS C 2 dd) (col c1 c2 : Fin 2) (i j : Fin dd) :
   · by_cases h1 : c1 = col
     · have h2 : c2 ≠ col := fun h2 => hc ⟨h1, h2⟩
       refine coeff_rename_outside _ h (E2 _ _) (s := ((1 : Fin 2), (c2, j))) ?_ ?_
-      · simp [E2, Finsupp.single_apply]
+      · simp [E2]
       · intro x hx
         simp only [Prod.mk.injEq] at hx
         exact h2 hx.2.1.symm
     · refine coeff_rename_outside _ h (E2 _ _) (s := ((0 : Fin 2), (c1, i))) ?_ ?_
-      · simp [E2, Finsupp.single_apply]
+      · simp [E2]
       · intro x hx
         simp only [Prod.mk.injEq] at hx
         exact h1 hx.2.1.symm
@@ -64,8 +65,8 @@ variable [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
 theorem coeff_E2_sum_hCol_eq_ite (h : PS C 2 dd) (c1 c2 : Fin 2) (i j : Fin dd) :
     coeff (E2 ((0 : Fin 2), (c1, i)) ((1 : Fin 2), (c2, j))) (∑ col, hCol col h) =
       if c1 = c2 then coeff (E2 ((0 : Fin 2), i) ((1 : Fin 2), j)) h else 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [coeff_hCol]
   rw [Fin.sum_univ_two]
   by_cases h12 : c1 = c2

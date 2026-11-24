@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FrameExistence.InitialDataUntwistedOfModelChoice
+public import Formalism.LocalToGlobal.Divisibility.HeckeRI
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

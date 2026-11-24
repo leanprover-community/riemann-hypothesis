@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalEmbedding
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
 
 @[expose] public section
 

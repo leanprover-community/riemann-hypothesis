@@ -1,11 +1,6 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChart
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.BaseChangeC
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
-public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChartA
 
 @[expose] public section
 

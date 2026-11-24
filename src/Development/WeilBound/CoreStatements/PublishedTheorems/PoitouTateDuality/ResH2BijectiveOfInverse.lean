@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.PtfsDefs
-public import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohCmp
-public import GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateNineTermGs
+public import GroundTheory.ProfiniteCohomology.PoitouTate.PtCompactDualMapEqZeroOfPtCompactToGlobalEqZero
+public import ReciprocityTheory.Hypotheses.GalCohDefs
+public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -54,7 +94,8 @@ theorem resH2_bijective_of_inverse {G H : Type} [Group G] [TopologicalSpace G] [
         change z.1 (χ (ψ p.1), χ (ψ p.2)) = z.1 p
         rw [h2, h2]
 
-theorem resCmp2B {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
+/-- Cohomology comparison, with explicit compatibility on cocycle representatives. -/
+theorem resCmp2_with_representatives {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
     [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H) {ι : Type} {Lv Hv : ι → Type}
     [∀ v, Group (Lv v)] [∀ v, TopologicalSpace (Lv v)] [∀ v, IsTopologicalGroup (Lv v)]
     [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)] [∀ v, IsTopologicalGroup (Hv v)]
@@ -66,14 +107,20 @@ theorem resCmp2B {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     (hM : ∀ g m, eM (rho g m) = A.ρ (θ g) (eM m)) :
     ∃ (E : H2 rho ≃+ cohomology A 2)
       (Ev : ∀ v, H2 (rho.comp (lam v)) ≃+ cohomology (Rep.res (φ v).toMonoidHom A) 2),
-      ∀ v x, Ev v (resH2 rho (lam v) (hlam v) x) = ptRes φ A v 2 (E x) := by
+      (∀ v x, Ev v (resH2 rho (lam v) (hlam v) x) = ptRes φ A v 2 (E x)) ∧
+      (∀ (z : ↥(Z2 rho)) (x : cocycles A 2),
+        (∀ s : Fin 2 → H, cochainOf A (cocycleι A 2 x) s = eM (z.1 (θ.symm (s 0), θ.symm (s 1)))) →
+        E (Submodule.Quotient.mk z) = cohomologyπ A 2 x) ∧
+      (∀ v (z : ↥(Z2 (rho.comp (lam v)))) (x : cocycles (Rep.res (φ v).toMonoidHom A) 2),
+        (∀ s : Fin 2 → Hv v, cochainOf _ (cocycleι _ 2 x) s = eM (z.1 (ev v (s 0), ev v (s 1)))) →
+        Ev v (Submodule.Quotient.mk z) = cohomologyπ _ 2 x) := by
   have hθs : Continuous (θ.symm : H ≃* G).toMonoidHom := θ.symm.continuous
   let rho' : Representation R H M := rho.comp (θ.symm : H ≃* G).toMonoidHom
   have hM' : ∀ h m, eM (rho' h m) = A.ρ h (eM m) := fun h m => by
     show eM (rho (θ.symm h) m) = _
     rw [hM]
     exact congrArg (fun t => A.ρ t (eM m)) (θ.apply_symm_apply h)
-  obtain ⟨e2, he2a, he2b⟩ := PositivityTheory.LocalTateOrthogonality.Gcoh.gc2 H R M rho' A eM hM'
+  obtain ⟨e2, he2a, he2b⟩ := CompanionTheory.LocalTateOrthogonality.Gcoh.gc2 H R M rho' A eM hM'
   have bij := resH2_bijective_of_inverse rho (θ.symm : H ≃* G).toMonoidHom hθs
     (θ : G ≃* H).toMonoidHom θ.continuous (fun g => θ.symm_apply_apply g)
     (fun h => θ.apply_symm_apply h)
@@ -82,14 +129,14 @@ theorem resCmp2B {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
       (Rep.res (φ v).toMonoidHom A).ρ σ (eM m) := fun v σ m => by
     show eM (rho (lam v (ev v σ)) m) = A.ρ (φ v σ) (eM m)
     rw [hM, hev]
-  choose ev2 hev2a hev2b using fun v => PositivityTheory.LocalTateOrthogonality.Gcoh.gc2 (Hv v) R M
+  choose ev2 hev2a hev2b using fun v => CompanionTheory.LocalTateOrthogonality.Gcoh.gc2 (Hv v) R M
     ((rho.comp (lam v)).comp (ev v).toMonoidHom) (Rep.res (φ v).toMonoidHom A) eM (hloc v)
   have bijv := fun v => resH2_bijective_of_inverse (rho.comp (lam v)) (ev v).toMonoidHom (hev1 v)
     (ev v).symm.toMonoidHom (hev2 v) (fun g => (ev v).apply_symm_apply g)
     (fun h => (ev v).symm_apply_apply h)
   let rv : ∀ v, H2 (rho.comp (lam v)) ≃ₗ[R] H2 ((rho.comp (lam v)).comp (ev v).toMonoidHom) :=
     fun v => LinearEquiv.ofBijective _ (bijv v)
-  refine ⟨r2.toAddEquiv.trans e2, fun v => (rv v).toAddEquiv.trans (ev2 v), fun v x => ?_⟩
+  refine ⟨r2.toAddEquiv.trans e2, fun v => (rv v).toAddEquiv.trans (ev2 v), fun v x => ?_, fun z x hx => ?_, fun v z x hx => ?_⟩
   induction x using Submodule.Quotient.induction_on with
   | H z =>
     obtain ⟨y, hy⟩ := he2a (restrictCocycles2 rho (θ.symm : H ≃* G).toMonoidHom hθs z)
@@ -113,5 +160,25 @@ theorem resCmp2B {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     rw [← hev, ← hev]
     exact congrArg (fun t => eM (z.1 t))
       (Prod.ext (θ.symm_apply_apply _) (θ.symm_apply_apply _))
+  · show e2 (r2 (Submodule.Quotient.mk z)) = _
+    exact he2b (restrictCocycles2 rho (θ.symm : H ≃* G).toMonoidHom hθs z) x (fun s => by rw [hx s]; rfl)
+  · show ev2 v (rv v (Submodule.Quotient.mk z)) = _
+    exact hev2b v (restrictCocycles2 (rho.comp (lam v)) (ev v).toMonoidHom (hev1 v) z) x (fun s => by rw [hx s]; rfl)
+
+theorem resCmp2B {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
+    [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H) {ι : Type} {Lv Hv : ι → Type}
+    [∀ v, Group (Lv v)] [∀ v, TopologicalSpace (Lv v)] [∀ v, IsTopologicalGroup (Lv v)]
+    [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)] [∀ v, IsTopologicalGroup (Hv v)]
+    (lam : ∀ v, Lv v →* G) (hlam : ∀ v, Continuous (lam v)) (φ : ∀ v, Hv v →ₜ* H)
+    (ev : ∀ v, Hv v ≃* Lv v) (hev1 : ∀ v, Continuous (ev v)) (hev2 : ∀ v, Continuous (ev v).symm)
+    (hev : ∀ v σ, θ (lam v (ev v σ)) = φ v σ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
+    [TopologicalSpace M] [DiscreteTopology M] (rho : Representation R G M) (hc : ContAction rho)
+    (A : Rep.{0} (ULift.{0} ℤ) H) [IsDiscreteRep A] (eM : M ≃+ A.V)
+    (hM : ∀ g m, eM (rho g m) = A.ρ (θ g) (eM m)) :
+    ∃ (E : H2 rho ≃+ cohomology A 2)
+      (Ev : ∀ v, H2 (rho.comp (lam v)) ≃+ cohomology (Rep.res (φ v).toMonoidHom A) 2),
+      ∀ v x, Ev v (resH2 rho (lam v) (hlam v) x) = ptRes φ A v 2 (E x) := by
+  obtain ⟨E, Ev, h, -, -⟩ := resCmp2_with_representatives θ lam hlam φ ev hev1 hev2 hev rho hc A eM hM
+  exact ⟨E, Ev, h⟩
 
 end PositivityTheory.Lit1.PTN

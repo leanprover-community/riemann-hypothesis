@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.MainCoind
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.PowDefs
+import GroundTheory.ProfiniteCohomology.EulerChar
 
 @[expose] public section
 

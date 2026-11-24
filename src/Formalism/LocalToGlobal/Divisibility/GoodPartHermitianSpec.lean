@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.ClassSum
+public import Mathlib.RepresentationTheory.Character
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

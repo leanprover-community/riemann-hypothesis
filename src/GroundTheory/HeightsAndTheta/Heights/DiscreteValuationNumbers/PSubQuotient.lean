@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBundles
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section
 
@@ -34,8 +36,8 @@ theorem classNum_rename {σ τ : Type*} (e : σ → τ) (he : Function.Injective
 
 theorem rename_psumExpansion {M N : ℕ} (e : Fin M → Fin N) (k : ℕ) (i : Fin M) :
     rename (Sum.map e e) (psumExpansion M k i) = psumExpansion N k (e i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [psumExpansion, map_sum, rename_X]
+
+  simp [psumExpansion, map_sum, rename_X]
 
 theorem pairNum_join {r m N : ℕ} (P : Ideal (MRing ι O)) (e : Fin r ⊕ Fin m ≃ Fin N)
     (xU xU' : Fin r → K → ℤ) (xV xV' : Fin m → K → ℤ) (fU gU : Fin r → MRing ι O)

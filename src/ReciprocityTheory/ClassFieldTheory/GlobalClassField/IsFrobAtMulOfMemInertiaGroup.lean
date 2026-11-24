@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.NeutralLocalFields.Reciprocity
-public import Mathlib
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.NumberTheory.RamificationInertia.Galois
 
 @[expose] public section
 

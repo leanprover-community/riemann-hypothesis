@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GaussHeights.GaussUniqueness.GaussUniquenessStatements.GaussUniquenessLemmas.KernelLineArguments.ExistsSmulOfLine
 
 @[expose] public section
@@ -35,8 +38,8 @@ theorem imgR_map {R R' : Type*} [CommRing R] [CommRing R'] {D N : ℕ} (φ : R �
   · rw [imgR_same, imgR_same]
     split_ifs
     · exact MvPolynomial.map_X φ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [map_neg, map_sum, map_mul, MvPolynomial.map_X, MvPolynomial.map_C]
+
+    · simp only [map_neg, map_sum, map_mul, MvPolynomial.map_X, MvPolynomial.map_C]
   · rw [imgR_succAbove, imgR_succAbove, MvPolynomial.map_X]
 
 section Ker

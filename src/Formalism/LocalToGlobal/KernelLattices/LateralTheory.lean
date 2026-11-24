@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.ProductThetaMem
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

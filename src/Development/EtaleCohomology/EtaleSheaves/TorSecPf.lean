@@ -1,6 +1,50 @@
 module
 
 public import Development.EtaleCohomology.EtaleSheaves.LCSplitPf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -192,7 +236,7 @@ lemma liftF (k : ZMod q) : ∃ (N : ℕ) (t : Tor f g hε),
   show algebraMap S _ f ^ (∑ m, n m) * x j = _
   by_cases h : j = k
   · subst h; simp [x]
-  · simp [x, Pi.single_apply, h]
+  · simp [x, h]
 
 lemma liftG (k : ZMod q) : ∃ (N : ℕ) (t : Tor f g hε),
     (t : Amb f g q).2 = Pi.single k (algebraMap S (Localization.Away g) g ^ N) := by
@@ -216,7 +260,7 @@ lemma liftG (k : ZMod q) : ∃ (N : ℕ) (t : Tor f g hε),
   show algebraMap S _ g ^ (∑ m, n m) * y j = _
   by_cases h : j = k
   · subst h; simp [y]
-  · simp [y, Pi.single_apply, h]
+  · simp [y, h]
 end Main
 
 section IF
@@ -257,7 +301,7 @@ lemma uniformF : ∃ (N : ℕ) (t : ZMod q → Tor f g hε),
   rw [ht k]
   by_cases h : i = k
   · subst h; simp only [Pi.single_eq_same, map_pow]; rw [← pow_add, Nat.sub_add_cancel (hle i)]
-  · simp [Pi.single_apply, h]
+  · simp [h]
 
 lemma uniformG : ∃ (N : ℕ) (t : ZMod q → Tor f g hε),
     ∀ k, (t k : Amb f g q).2 = Pi.single k (algebraMap S (Localization.Away g) g ^ N) := by
@@ -270,7 +314,7 @@ lemma uniformG : ∃ (N : ℕ) (t : ZMod q → Tor f g hε),
   rw [ht k]
   by_cases h : i = k
   · subst h; simp only [Pi.single_eq_same, map_pow]; rw [← pow_add, Nat.sub_add_cancel (hle i)]
-  · simp [Pi.single_apply, h]
+  · simp [h]
 
 lemma coe_sum_tor (t : ZMod q → Tor f g hε) : ((∑ k, t k : Tor f g hε) : Amb f g q) = ∑ k, (t k : Amb f g q) :=
   map_sum (Tor f g hε).subtype _ _
@@ -303,8 +347,8 @@ lemma sheetF (s : Tor f g hε →+* S) (hs : ∀ a, s (torMap f g hε a) = a) :
         show ((∑ k, t k : Tor f g hε) : Amb f g q).1 - (fun _ => algebraMap S _ (f ^ N)) = 0
         rw [coe_sum_tor, Prod.fst_sum]; simp only [ht]; funext i
         simp [Finset.sum_apply, Pi.single_apply])
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, hs, map_sub, map_sum, map_sum, map_pow, sub_eq_zero] at this
+
+      rw [map_sub, hs, map_sub, map_sum, map_sum, map_pow, sub_eq_zero] at this
       exact this)
   exact ⟨N, t, δ, hδ, ht, hσ⟩
 
@@ -335,8 +379,8 @@ lemma sheetG (s : Tor f g hε →+* S) (hs : ∀ a, s (torMap f g hε a) = a) :
         show ((∑ k, t k : Tor f g hε) : Amb f g q).2 - (fun _ => algebraMap S _ (g ^ N)) = 0
         rw [coe_sum_tor, Prod.snd_sum]; simp only [ht]; funext i
         simp [Finset.sum_apply, Pi.single_apply])
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, hs, map_sub, map_sum, map_sum, map_pow, sub_eq_zero] at this
+
+      rw [map_sub, hs, map_sub, map_sum, map_sum, map_pow, sub_eq_zero] at this
       exact this)
   refine ⟨δ, hδ, fun x m => ?_⟩
   obtain ⟨j, b, hb⟩ := IsLocalization.Away.surj g ((x : Amb f g q).2 m)
@@ -346,7 +390,7 @@ lemma sheetG (s : Tor f g hε →+* S) (hs : ∀ a, s (torMap f g hε a) = a) :
     rw [ht m]; funext i
     by_cases h : i = m
     · subst h; simp only [Pi.sub_apply, Pi.mul_apply, Pi.single_eq_same, Pi.zero_apply, map_pow, ← hb]; ring
-    · simp [Pi.single_apply, h])
+    · simp [h])
   simp only [map_sub, map_mul, hs, map_pow] at e1
   rw [hσ m] at e1
   have hu : IsUnit (algebraMap S (Localization.Away g) g ^ j * algebraMap S (Localization.Away g) g ^ N) :=

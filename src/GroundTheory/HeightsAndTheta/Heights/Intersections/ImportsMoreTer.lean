@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.TwoMemRegRingSpecZ
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.CardLeRingKrullDim
 
 @[expose] public section
 

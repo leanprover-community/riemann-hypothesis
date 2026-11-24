@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETailLog
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETailMass
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StTailLogOfMass
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

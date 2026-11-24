@@ -1,7 +1,49 @@
 module
 
 public import Formalism.AdmissibleDesigns.FiniteClassesContinuousLattice
-public import Formalism.AdmissibleDesigns.RankReductionIdempotentOne
+public import Formalism.SharpRestriction.LevelLetterCocycles.GoodCongruenceDataOf
+public import Formalism.WachLatticeTwists.RamifiedBlockRings.DistinctEigenvalueCornerPerturbation
+public import Formalism.WachLatticeTwists.RealDisplaySplitting.RealDisplayProofs.SurjectionOfRankOneIdempotent
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -77,8 +119,8 @@ theorem mem_image_of_tensor_sum (tens : L →ₗ[O] KO O →ₗ[O] M)
     exact Zf.sum_mem (fun a _ => Zf.smul_mem _ (hκ a))
   · funext g
     show qV ((∑ a, y a • (fun g => iL (κ a g))) g) = (z : Γ → M) g
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz g, Finset.sum_apply, map_sum]
+
+    rw [hz g, Finset.sum_apply, map_sum]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [← hy a, htens]
     rfl
@@ -121,8 +163,6 @@ theorem kapG_mem' (j : ℕ) (a : Fin j) : Submodule.mkQ _ (kapG ρL iL Zf j a) �
   rw [Submodule.mem_comap, Submodule.restrictScalars_mem]
   exact kapG_fin ρL iL Zf j a
 
-theorem kapG_mem (j : ℕ) (a : Fin j) : Submodule.mkQ _ (kapG ρL iL Zf j a) ∈ FfG ρL iL Zf := kapG_mem' ρL iL Zf j a
-
 theorem latBasisG_of [IsPrincipalIdealRing O] (j : ℕ) (hfg : Module.Finite O ↥(FfG ρL iL Zf))
     (hrk : Module.finrank O (↥(FfG ρL iL Zf) ⧸ Submodule.torsion O ↥(FfG ρL iL Zf)) = j) :
     LatBasisG ρL iL Zf j := by
@@ -131,7 +171,6 @@ theorem latBasisG_of [IsPrincipalIdealRing O] (j : ℕ) (hfg : Module.Finite O �
   haveI hfree : Module.Free O (↥(FfG ρL iL Zf) ⧸ Submodule.torsion O ↥(FfG ρL iL Zf)) := by
     first
       | exact Module.free_of_finite_type_torsion_free'
-      | infer_instance
   let e := Module.finBasisOfFinrankEq _ _ hrk
   choose f hf using fun a => Submodule.Quotient.mk_surjective (Submodule.torsion O ↥(FfG ρL iL Zf)) (e a)
   have hw : ∀ a, ∃ w : ↥(coZ1s ρL), w ∈ (finPreG iL Zf).comap (coZ1s ρL).subtype ∧
@@ -154,8 +193,8 @@ theorem latBasisG_of [IsPrincipalIdealRing O] (j : ℕ) (hfg : Module.Finite O �
     let b := e.repr (Submodule.Quotient.mk zF)
     refine ⟨fun a => b a, ?_⟩
     have hmem : zF - ∑ a, b a • f a ∈ Submodule.torsion O ↥(FfG ρL iL Zf) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Submodule.Quotient.mk_eq_zero, ← Submodule.mkQ_apply, map_sub, map_sum]
+
+      rw [← Submodule.Quotient.mk_eq_zero, ← Submodule.mkQ_apply, map_sub, map_sum]
       simp only [map_smul, Submodule.mkQ_apply, hf]
       rw [sub_eq_zero]
       exact (e.sum_repr _).symm
@@ -163,7 +202,6 @@ theorem latBasisG_of [IsPrincipalIdealRing O] (j : ℕ) (hfg : Module.Finite O �
     refine ⟨(c : O), ?_, ?_⟩
     · first
         | exact nonZeroDivisors.coe_ne_zero c
-        | exact nonZeroDivisors.ne_zero c.2
     · have h2 := congrArg Subtype.val hc
       simpa [zF, Submonoid.smul_def, Submodule.coe_smul, Submodule.coe_sub, Submodule.coe_sum, ← hwf] using h2
   · intro b c hc hsum
@@ -175,8 +213,8 @@ theorem latBasisG_of [IsPrincipalIdealRing O] (j : ℕ) (hfg : Module.Finite O �
     have h0 : (Submodule.torsion O ↥(FfG ρL iL Zf)).mkQ (∑ a, b a • f a) = 0 := by
       rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
       exact hT
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at h0
+
+    rw [map_sum] at h0
     simp only [map_smul, Submodule.mkQ_apply, hf] at h0
     exact funext (Fintype.linearIndependent_iff.1 e.linearIndependent b h0)
 
@@ -193,8 +231,8 @@ theorem iLM_smul (a : A) (u : LatM O O n ρ) : iLM O n ρ (a • u) = a • iLM 
   funext k
   show algebraMap O (FractionRing O) (∑ j, (ρ a) k j • u j) =
     ∑ j, (ρ a) k j • algebraMap O (FractionRing O) (u j)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [smul_eq_mul, map_mul, Algebra.smul_def]
 
@@ -309,14 +347,14 @@ theorem iL_equiv (l : K.Col i dc) (g : ↥(Γc i dc l)) (m : Lr i Dd) :
     iLr i Dd (ρL i dc Dd l g m) = ρV i dc Dd l g (iLr i Dd m) := iLM_smul (D.nd.O i) _ (Dd.ρk 0).toRingHom (Formalism.NG.uElt Dd.r Dd.χ (g : D.nd.Om ≃ₐ[D.host.E] D.nd.Om)) m
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem finRhoAt (l : K.Col i dc) (hB : CobFin i dc Dd l) (hL : LatBasis i dc Dd ρ π l) :
     KHf.FinRhoAt i dc Dd.r Dd.χ (Ffr i dc Dd) (jr i dc ρ π) (κ i dc Dd ρ π) (κz i dc Dd ρ π) l := by
   unfold KHf.FinRhoAt
   refine ⟨fun a g => (κ_mem i dc Dd ρ π l a g).symm, ?_, fun a => ?_, ?_, ?_⟩
   · intro c z hc hz
     exact FfG_sat _ _ _ _ hB (iL_equiv i dc Dd l) c z hc hz
-  · exact kapG_mem _ _ _ _ a
+  · exact _root_.Formalism.MainNotions.N.KFin.kapG_mem' _ _ _ _ a
   · exact (kapG_basis (ρL i dc Dd l) (iLr i Dd) (Zf i dc Dd l) hL).1
   · exact (kapG_basis (ρL i dc Dd l) (iLr i Dd) (Zf i dc Dd l) hL).2
 

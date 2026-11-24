@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Int.Interval
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

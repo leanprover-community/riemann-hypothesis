@@ -1,17 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeLatticeFlagBound
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.TrivFlagOnHodge
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatDegree
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.PadicIntegersHenselianFiniteResidue
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeComparisonCompatibility
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.CmpSt
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.NumberField
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.LocalAtPlaces
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuadraticFieldDiscPrimeThreeModFour
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PsiCover
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.TowerOrigin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 
 @[expose] public section
 
@@ -134,28 +172,7 @@ theorem two_le_hostRd (H : Host E) : 2 ≤ hostRd E := by
     _ ≤ _ := Real.rpow_le_rpow (by positivity) h' (by positivity)
 
 theorem rt0_conj_neg_ne_zero (H : Host E) : starRingEnd ℂ H.rt0 = -H.rt0 := by
-  have h := H.sqrt_neg_disc_sq
-  rw [pow_two] at h
-  have hd : (7:ℝ) ≤ H.d := by exact_mod_cast seven_le_d H
-  have hre : H.rt0.re * H.rt0.re - H.rt0.im * H.rt0.im = -(H.d:ℝ) := by
-    have h1 := congrArg Complex.re h
-    simp only [Complex.mul_re, Complex.neg_re, Complex.natCast_re] at h1
-    exact h1
-  have him : H.rt0.re * H.rt0.im + H.rt0.im * H.rt0.re = 0 := by
-    have h1 := congrArg Complex.im h
-    simp only [Complex.mul_im, Complex.neg_im, Complex.natCast_im, neg_zero] at h1
-    exact h1
-  have h1 : H.rt0.re * H.rt0.im = 0 := by linear_combination (1/2 : ℝ) * him
-  have h2 : H.rt0.re * H.rt0.re * (H.rt0.re * H.rt0.re + H.d) = 0 := by
-    linear_combination (H.rt0.re * H.rt0.re) * hre + (H.rt0.re * H.rt0.im) * h1
-  have h3 : H.rt0.re * H.rt0.re = 0 := by
-    rcases mul_eq_zero.mp h2 with h4 | h4
-    · exact h4
-    · nlinarith [mul_self_nonneg H.rt0.re]
-  have ha : H.rt0.re = 0 := mul_self_eq_zero.mp h3
-  apply Complex.ext
-  · simp only [Complex.conj_re, Complex.neg_re, ha, neg_zero]
-  · simp only [Complex.conj_im, Complex.neg_im]
+  apply Formalism.MainNotions.ModuliIntegralCharts.H1.rt0_conj_neg_ne_zero
 
 theorem rt0_ne_zero (H : Host E) : H.rt0 ≠ 0 := by
   intro h

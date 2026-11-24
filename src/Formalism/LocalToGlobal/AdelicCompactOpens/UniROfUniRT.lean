@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsLevel
-public import Mathlib
+public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 
 @[expose] public section
 

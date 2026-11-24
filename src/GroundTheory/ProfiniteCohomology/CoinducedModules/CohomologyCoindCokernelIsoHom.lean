@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
+public import GroundTheory.ProfiniteCohomology.CoinducedModules
+public import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
 
 @[expose] public section
 

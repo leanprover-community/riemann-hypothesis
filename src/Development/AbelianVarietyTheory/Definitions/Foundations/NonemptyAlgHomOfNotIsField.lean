@@ -1,10 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemStabLocStdLatticeIffHtFinEqOne
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotIsFieldAdicCompletionTensorOfSplit
-public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.RamificationInertia.Basic
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.Automorphisms.PlaceA
 
 @[expose] public section
 
@@ -297,8 +339,8 @@ theorem splitPrime_injective (h : IsCMExt F E σ) :
 
 theorem ncard_primesOver_le_two (h : IsCMExt F E σ) (v : HeightOneSpectrum (𝓞 F)) :
     (v.asIdeal.primesOver (𝓞 E)).ncard ≤ 2 := by
-  haveI := v.isMaximal
-  haveI : NoZeroSMulDivisors (𝓞 F) (𝓞 E) := ⟨fun {c x} e => by
+  have := v.isMaximal
+  have : NoZeroSMulDivisors (𝓞 F) (𝓞 E) := ⟨fun {c x} e => by
     rw [Algebra.smul_def, mul_eq_zero, map_eq_zero_iff _ (FaithfulSMul.algebraMap_injective (𝓞 F) (𝓞 E))] at e
     exact e⟩
   have h1 := Ideal.card_primesOverFinset_le_finrank (𝓞 E) F E v.ne_bot
@@ -306,7 +348,7 @@ theorem ncard_primesOver_le_two (h : IsCMExt F E σ) (v : HeightOneSpectrum (�
 
 theorem primesOver_eq_split (h : IsCMExt F E σ) (τ : E →ₐ[F] Fv F v) :
     v.asIdeal.primesOver (𝓞 E) = {(splitPrime τ).asIdeal, (splitPrime (τ.comp σ)).asIdeal} := by
-  haveI := v.isMaximal
+  have := v.isMaximal
   have h1 := ncard_primesOver_le_two h v
   refine (Set.eq_of_subset_of_ncard_le ?_ ?_ (IsDedekindDomain.primesOver_finite _ _)).symm
   · rintro _ (rfl | rfl) <;> exact ⟨HeightOneSpectrum.isPrime _, inferInstance⟩
@@ -314,14 +356,14 @@ theorem primesOver_eq_split (h : IsCMExt F E σ) (τ : E →ₐ[F] Fv F v) :
 
 theorem nonempty_algHom_of_not_isField {K A : Type} [Field K] [CommRing A] [Algebra K A]
     (h2 : Module.finrank K A = 2) (hf : ¬ IsField A) : Nonempty (A →ₐ[K] K) := by
-  haveI : Module.Finite K A := Module.finite_of_finrank_pos (by omega)
-  haveI : Nontrivial A := Module.nontrivial_of_finrank_pos (R := K) (by omega)
+  have : Module.Finite K A := Module.finite_of_finrank_pos (by omega)
+  have : Nontrivial A := Module.nontrivial_of_finrank_pos (R := K) (by omega)
   obtain ⟨m, hm⟩ := Ideal.exists_maximal A
   have h0 := Ring.ne_bot_of_isMaximal_of_not_isField hm hf
   have h3 := Submodule.finrank_quotient_add_finrank (m.restrictScalars K)
   have h4 : Module.finrank K (m.restrictScalars K) ≠ 0 := fun e =>
     h0 ((Submodule.restrictScalars_eq_bot_iff K A A).1 (Submodule.finrank_eq_zero.1 e))
-  haveI : Nontrivial (A ⧸ m) := Ideal.Quotient.nontrivial_iff.2 hm.ne_top
+  have : Nontrivial (A ⧸ m) := Ideal.Quotient.nontrivial_iff.2 hm.ne_top
   have h5 : 0 < Module.finrank K (A ⧸ m) := Module.finrank_pos
   have h6 : Module.finrank K (A ⧸ m) = 1 := by
     change Module.finrank K (A ⧸ m) + _ = _ at h3
@@ -339,7 +381,7 @@ theorem nonempty_split_iff (h : IsCMExt F E σ) :
 
 theorem existsUnique_splitPrime_eq (h : IsCMExt F E σ) {w w' : HeightOneSpectrum (𝓞 E)} (hne : w ≠ w')
     (hw : w.under (𝓞 F) = v) (hw' : w'.under (𝓞 F) = v) : ∃! τ : E →ₐ[F] Fv F v, splitPrime τ = w := by
-  haveI := v.isMaximal
+  have := v.isMaximal
   have hm : ∀ u : HeightOneSpectrum (𝓞 E), u.under (𝓞 F) = v → u.asIdeal ∈ v.asIdeal.primesOver (𝓞 E) :=
     fun u hu => ⟨u.isPrime, ⟨hu ▸ rfl⟩⟩
   have h1 := ncard_primesOver_le_two h v

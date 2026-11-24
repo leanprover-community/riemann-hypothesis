@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETailMass
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETrunc
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETruncMass
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETruncTail
+public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETailLog
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

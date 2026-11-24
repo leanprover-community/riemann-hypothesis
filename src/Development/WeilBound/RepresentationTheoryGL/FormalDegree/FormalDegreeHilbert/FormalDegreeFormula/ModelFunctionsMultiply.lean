@@ -1,10 +1,50 @@
 module
 
+import CompanionTheory.RealGroups.FormalDegrees.ArchimedeanFormalDegrees.FormalDegreeFormula.ModelFunctionsMultiply
 public import Development.WeilBound.RepresentationTheoryGL.FormalDegree.FormalDegreeHilbert.HlamStable
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelTau
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.ProdSubLtEqFactorial
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Exists
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HcParamGapGeIndex
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Unique
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.RhoNSubNab
 
 @[expose] public section
 
@@ -47,17 +87,7 @@ theorem cK_eq_f0K (hM : CkModel) (hT : CkTwist) {ε : Fin n → Bool} {Λ : Fin 
 theorem exists_shift {ε : Fin n → Bool} {Λ : Fin n → ℝ} (hint : ∀ a, ∃ m : ℤ, Λ a = m)
     (hdom : ∀ a b, a < b → ε a = ε b → Λ b ≤ Λ a) :
     ∃ (m : Fin n → ℤ) (c : ℤ), NonnegDom ε m ∧ ∀ a, Λ a = (m a : ℝ) + c := by
-  choose m hm using hint
-  refine ⟨fun a => m a + ∑ b, |m b|, -∑ b, |m b|, ⟨fun a b hab he => ?_, fun a => ?_⟩, fun a => ?_⟩
-  · have h := hdom a b hab he
-    rw [hm a, hm b] at h
-    have : m b ≤ m a := by exact_mod_cast h
-    simp only; linarith
-  · have h1 : |m a| ≤ ∑ b, |m b| :=
-      Finset.single_le_sum (f := fun b => |m b|) (fun b _ => abs_nonneg _) (Finset.mem_univ a)
-    have h2 := neg_abs_le (m a)
-    simp only; linarith
-  · rw [hm a]; push_cast; ring
+  apply CompanionTheory.RgFd.exists_shift <;> assumption
 
 theorem coefMul_dom (hM : CkModel) (hT : CkTwist) (hF : ModelFunctionsMultiply) {ε : Fin n → Bool} {Λ₁ Λ₂ : Fin n → ℝ}
     (h1 : (∀ a, ∃ m : ℤ, Λ₁ a = m) ∧ ∀ a b, a < b → ε a = ε b → Λ₁ b ≤ Λ₁ a)
@@ -81,21 +111,6 @@ theorem dvec_int_dom (ε : Fin n → Bool) :
   linarith
 
 theorem coefPow_of (hM : CkModel) (hT : CkTwist) (hF : ModelFunctionsMultiply) : CoefPow := by
-  intro n ε lam hl T TD t
-  induction t with
-  | zero =>
-    intro Tt k
-    have e : lowK ε (lamT lam 0) = lowK ε lam := by rw [lowK_lamT]; simp
-    rw [pow_zero, mul_one]
-    revert Tt; rw [e]; intro Tt
-    exact cK_transport Tt T k
-  | succ t ih =>
-    intro Tt k
-    obtain ⟨Ts⟩ := kType_exists ε (lamT lam t) (isHCParam_lamT hl t)
-    have e : lowK ε (lamT lam (t + 1)) = lowK ε (lamT lam t) + Dvec n := by
-      rw [lowK_lamT, lowK_lamT]; push_cast; rw [add_smul, one_smul, add_assoc]
-    revert Tt; rw [e]; intro Tt
-    rw [coefMul_dom hM hT hF (lowK_int_dom ε _ (isHCParam_lamT hl t)) (dvec_int_dom ε) Ts TD Tt k, ih Ts k, pow_succ,
-      mul_assoc]
+  apply CompanionTheory.RgFd.coefPow_of <;> assumption
 
 end PositivityTheory.RgFd

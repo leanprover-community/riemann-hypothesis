@@ -1,10 +1,58 @@
 module
 
-public import Mathlib
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogResolutionPotentialPullback
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogResolutionReindexed
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyReindexed
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphicStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemAbLocusIff
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
 
 @[expose] public section
 
@@ -50,13 +98,6 @@ theorem birational_of_block {y₀ : (Σ k, ι₀ k) → Ω} {y : (Σ k, ι k) �
   exact ⟨Function.extend κ d 0, rename v g, rename v h, DegBlock.isMultiHomog_rename' hv hg,
     DegBlock.isMultiHomog_rename' hv hh, by rw [hc]; exact hne, by rw [hc, hc]; exact he⟩
 
-theorem ne_zero_of_arith {y : (Σ k, ι k) → Ω} {d : ℕ} (hA : IsArithVar (mCoordIdeal y) d) (k : K) :
-    ∃ a, y ⟨k, a⟩ ≠ 0 := by
-  obtain ⟨a, ha⟩ := hA.2.1.2.2 k
-  refine ⟨a, fun h0 => ha ?_⟩
-  show mConeMap y (X ⟨k, a⟩) = 0
-  simp [mConeMap, h0]
-
 theorem relfinrank_restr [CharZero Ω₀] [CharZero Ω] (i : Ω₀ →+* Ω) {y₀ : (Σ k, ι₀ k) → Ω₀} {y : (Σ k, ι k) → Ω}
     (hy : ∀ p, y (v p) = i (y₀ p)) (h₀ : blockFnField y₀ = ⊤) (h : blockFnField y = ⊤) :
     IntermediateField.relfinrank (blockFnField (y ∘ v)) (blockFnField y) =
@@ -83,17 +124,6 @@ theorem relfinrank_restr [CharZero Ω₀] [CharZero Ω] (i : Ω₀ →+* Ω) {y�
   obtain ⟨z, rfl⟩ := (IntermediateField.equivMap ⊤ φ).surjective x
   simp [e, φ, RingHom.algebraMap_toAlgebra]
   rfl
-
-theorem exists_chart (hv : IsBlockMap κ v) (c : ∀ k, ι k) : ∃ c₀ : ∀ k, ι₀ k, ∀ k, v ⟨k, c₀ k⟩ = ⟨κ k, c (κ k)⟩ := by
-  have : ∀ k, ∃ a : ι₀ k, v ⟨k, a⟩ = ⟨κ k, c (κ k)⟩ := by
-    intro k
-    obtain ⟨p, hp⟩ := hv.2.2.2 ⟨κ k, c (κ k)⟩ ⟨k, rfl⟩
-    have h1 : κ p.1 = κ k := by rw [← hv.2.2.1 p, hp]
-    obtain ⟨k₁, a⟩ := p
-    obtain rfl : k₁ = k := hv.1 h1
-    exact ⟨a, hp⟩
-  choose c₀ hc₀ using this
-  exact ⟨c₀, hc₀⟩
 
 theorem prod_pullDeg (hκ : Function.Injective κ) (w : K → Ω) (a : K₀ → ℤ) :
     ∏ k, w k ^ pullDeg κ a k = ∏ k, w (κ k) ^ a k := by

@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsJumpVIffOfExactCrystallineLatticesStatement
+public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsJumpVIffOfExactCrystallineLattices
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OfShortExact
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,12 +65,6 @@ theorem fil_anti {a b : ℤ} (h : a ≤ b) : PD.Fil b ≤ PD.Fil a := by
   induction b, h using Int.leInduction with
   | base => exact le_rfl
   | succ n _ ih => exact (PD.Fil_anti n).trans ih
-
-theorem one_not_mem_fil_one : (1 : BdR) ∉ PD.Fil 1 := by
-  intro h
-  have := PD.Fil_mul 1 1 _ _ PD.mem_filtration_one h
-  rw [mul_one] at this
-  exact PD.not_mem_filtration_two this
 
 theorem ddR_of_trivial {V : Type} [AddCommGroup V] [Module Qp V] [Module LL V]
     [IsScalarTower Qp LL V] [FiniteDimensional Qp V] (ρ : Representation LL G V)
@@ -92,7 +124,7 @@ theorem ddR_of_trivial {V : Type} [AddCommGroup V] [Module Qp V] [Module LL V]
     by_cases h0 : k = 0
     · rw [← hk, h0]; simp
     · exfalso
-      apply one_not_mem_fil_one PD
+      apply _root_.GlobalTheory.DRFil.one_notMem_fil_one PD
       have h1 := Submodule.smul_mem _ k⁻¹ (fil_anti PD ha (hF' i x hF))
       rwa [← hk, Algebra.algebraMap_eq_smul_one, smul_smul, inv_mul_cancel₀ h0, one_smul] at h1
 
@@ -121,7 +153,7 @@ theorem jumps_ses_and_one : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc
     have h2 : IsCrys ((D.loc l).PD K) T₂.ρ :=
       ((GlobalTheory.Per.CrysSubQuot.crys_sub_quot l _ _ (D.locT l) K LL T₁.V T₁.ρ T₂.V T₂.ρ π.f π.equiv).2
         hS.2.1 hc).1
-    exact GlobalTheory.T.isJumpV_iff_of_exact_crystalline_lattices l _ _ (D.locT l) K LL T₀ T₁ T₂ ι π hS h0 hc h2 τ a
+    exact _root_.GlobalTheory.Per.SESJumps.isJumpV_iff_of_isSESLat l _ _ (D.locT l) K LL T₀ T₁ T₂ ι π hS h0 hc h2 τ a
   · haveI := LL.2
     haveI : FiniteDimensional ℚ_[l] W.one.V := Module.Finite.trans ↥LL.1 W.one.V
     exact jumps_of_trivial _ W.one.ρ W.one_triv τ a ha

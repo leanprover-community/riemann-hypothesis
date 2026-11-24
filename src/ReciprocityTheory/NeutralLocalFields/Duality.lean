@@ -1,7 +1,61 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.NeutralLocalFields.Reciprocity
+public import Formalism.ConjugateSelfDual.Statement
+public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Valuation.RamificationGroup
+public import Mathlib.Topology.Instances.ZMod
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -397,20 +451,9 @@ def LocalInvariantIsomorphism : Prop := ∀ (p : ℕ) [Fact p.Prime] (K : Interm
 
 section Global
 
-abbrev G (F Ω : Type*) [Field F] [Field Ω] [Algebra F Ω] := Ω ≃ₐ[F] Ω
+open Formalism.ConjugateSelfDual (G IsPlaceOver Inertia)
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
-
-def IsPlaceOver (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 F)) : Prop :=
-  ∀ x : 𝓞 F, A.valuation (algebraMap F Ω (x : F)) < 1 ↔ x ∈ v.asIdeal
-
-
-variable (F) in
-abbrev Dec (A : ValuationSubring Ω) : Subgroup (G F Ω) := A.decompositionSubgroup F
-
-def Inertia (A : ValuationSubring Ω) : Set (G F Ω) :=
-  {σ | σ ∈ Dec F A ∧ ∀ x, A.valuation x ≤ 1 → A.valuation (σ x - x) < 1}
-
 
 variable (F) in
 def DecInf (j : Ω →+* ℂ) : Subgroup (G F Ω) where
@@ -502,7 +545,7 @@ structure GData [IsAlgClosure F Ω] (S : Finset (HeightOneSpectrum (𝓞 F))) (n
 variable [IsAlgClosure F Ω] {S : Finset (HeightOneSpectrum (𝓞 F))} {n : ℕ} [NeZero n]
 
 def locGrp (D : GData F Ω S n) : S ⊕ InfinitePlace F → Subgroup (G F Ω) :=
-  Sum.elim (fun v => Dec F (D.A v)) (fun w => DecInf F (D.J w))
+  Sum.elim (fun v => (D.A v).decompositionSubgroup F) (fun w => DecInf F (D.J w))
 
 def locHom (D : GData F Ω S n) (i : S ⊕ InfinitePlace F) :
     locGrp D i →* GS Ω (S : Set (HeightOneSpectrum (𝓞 F))) :=

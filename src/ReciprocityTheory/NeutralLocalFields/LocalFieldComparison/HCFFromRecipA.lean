@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.NeutralLocalFields.Reciprocity
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HilbertClassFieldA
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

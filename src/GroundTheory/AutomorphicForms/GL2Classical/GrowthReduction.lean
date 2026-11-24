@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.Reduction
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
-public import GroundTheory.AutomorphicForms.GL2Classical.ConstantTerm
-public import GroundTheory.AutomorphicForms.GL2Classical.Growth
-public import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
-public import GroundTheory.AutomorphicForms.GL2Classical.KFinite
+public import GroundTheory.AutomorphicForms.ReductionHeight
+public import GroundTheory.GlobalFields.IdeleGroups.Rational
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
+import Mathlib.Geometry.Manifold.StructureGroupoid
+import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
+import Mathlib.NumberTheory.ModularForms.SlashActions
 
 @[expose] public section
 

@@ -1,17 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToGAdMat
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsGenericIffIsGenericFor
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StrongMultiplicityOne
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSplitChartSplitChart
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureFundDomLtTop
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsBlockEmb
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
+import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactUnipFlag
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToGAdMat
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSplitChartSplitChart
 
 @[expose] public section
 
@@ -107,8 +142,8 @@ theorem map_star_of_continuous {ι : Type} [Fintype ι] (ψ : (ι → ℂ) →+*
     by_contra hc
     push_neg at hc
     have h1 : ψ 1 = ∑ i, ψ (Pi.single i 1) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum]
+
+      rw [← map_sum]
       congr 1
       exact (Finset.univ_sum_single (1 : ι → ℂ)).symm
     rw [map_one, Finset.sum_eq_zero fun i _ => hc i] at h1
@@ -124,7 +159,7 @@ theorem map_star_of_continuous {ι : Type} [Fintype ι] (ψ : (ι → ℂ) →+*
       funext k
       by_cases hk : k = i
       · subst hk; simp
-      · simp [Pi.single_apply, hk]
+      · simp [hk]
     calc ψ y = ψ y * ψ (Pi.single i 1) := by rw [he, mul_one]
       _ = ψ (y * Pi.single i 1) := (map_mul _ _ _).symm
       _ = φ (y i) * ψ (Pi.single i 1) := by rw [h3, map_mul]; rfl
@@ -171,9 +206,9 @@ theorem evTens_pi_bijective : Function.Bijective (Pi.ringHom fun w : InfinitePla
   refine ⟨fun z z' h => GlobalTheory.AutFunCompare.infTens_ext fun w => congrFun h w, fun t => ?_⟩
   refine ⟨∑ w, LinearMap.rTensor E (GlobalTheory.AutFunCompare.sgW w) (t w), funext fun u => ?_⟩
   change evTens u (∑ w, LinearMap.rTensor E (GlobalTheory.AutFunCompare.sgW w) (t w)) = t u
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single u (fun w _ hw => evTens_rTensor_ne (Ne.symm hw) _) (by simp),
-    evTens_rTensor_self]
+
+  rw [map_sum, Finset.sum_eq_single u (fun w _ hw => evTens_rTensor_ne (Ne.symm hw) _) (by simp),
+  evTens_rTensor_self]
 
 variable [_root_.NumberField.IsTotallyComplex E]
 

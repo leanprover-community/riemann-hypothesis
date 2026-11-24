@@ -1,6 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.LatticeVectorsBoundedBelow
+public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.Imports
 
 @[expose] public section
 
@@ -88,9 +93,9 @@ theorem embedding_linear_independent (I : AutInst) :
       rw [hv]
       exact this
     · have := congrArg (starRingEnd ℂ) (congrFun hg v)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Finset.sum_apply, Pi.smul_apply, Pi.zero_apply, Complex.real_smul, map_sum, map_mul,
-        Complex.conj_ofReal, map_zero] at this
+
+      simp only [Finset.sum_apply, Pi.smul_apply, Pi.zero_apply, Complex.real_smul, map_sum, map_mul,
+      Complex.conj_ofReal, map_zero] at this
       rw [hv]
       simp only [RingHom.coe_comp, Function.comp_apply]
       exact this

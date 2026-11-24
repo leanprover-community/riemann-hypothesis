@@ -1,11 +1,12 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepFrame
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FrLocB
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfTrace
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThU
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FrLocB
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.BaseEx
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

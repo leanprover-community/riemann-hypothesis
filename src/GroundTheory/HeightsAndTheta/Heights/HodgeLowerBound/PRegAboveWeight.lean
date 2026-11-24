@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsRegAboveWeight
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsBdPtsNull
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsDivisorPreimageNull
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncPsh
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartMollifiedBounds
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.ChartFun
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartMollifiedBounds
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncPsh
 
 @[expose] public section
 

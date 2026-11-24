@@ -1,9 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowsMeanC
-public import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilySeparationBoundOfNorms
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilySeparationBoundOfNorms
+import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 
 @[expose] public section
 
@@ -91,15 +129,6 @@ theorem finrank_eq : Module.finrank ℚ D.host.E = 2 * D.R.f := by
   simp only [Formalism.BasicNotions.Ranks.f, Formalism.BasicNotions.Ranks.n]
   ring
 
-theorem fDeg_eq : Formalism.HermitianLatticesTheory.fDeg D.host.E = D.R.f := by
-  have := D.host.toHostAx.isCMField_hostE
-  have h1 := NumberField.IsTotallyComplex.finrank (K := D.host.E)
-  have h2 := GlobalTheory.TypeAsm.HostArith.finrank_eq D
-  unfold Formalism.HermitianLatticesTheory.fDeg
-  rw [NumberField.InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces,
-    NumberField.IsTotallyComplex.nrRealPlaces_eq_zero, zero_add]
-  omega
-
 end GlobalTheory.TypeAsm.HostArith
 
 namespace GlobalTheory.TypeAsm.HostArith
@@ -107,14 +136,6 @@ namespace GlobalTheory.TypeAsm.HostArith
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
-
-theorem vInv_eq : Formalism.HermitianLatticesTheory.vInv D.host.E = D.host.v := by
-  have h1 := GlobalTheory.TypeAsm.HostArith.fDeg_eq D
-  have h2 := GlobalTheory.TypeAsm.HostArith.finrank_eq D
-  unfold Formalism.HermitianLatticesTheory.vInv Formalism.BasicNotions.Host.v Formalism.BasicNotions.Host.rdE
-  rw [h1, h2]
-  push_cast
-  rfl
 
 theorem finrank_O : Module.finrank (𝓞 D.host.F) (𝓞 D.host.E) = 2 := by
   have := D.host.toHostAx.isCMField_hostE
@@ -188,13 +209,6 @@ theorem two_le_gS : 2 ≤ gS D := by
   show 2 ≤ D.host.g 0 * D.host.g 1
   nlinarith
 
-private theorem card_Tau_eq_f : Fintype.card D.what₂.Tau = D.R.f := by
-  have hP := (HostArith.places D).2
-  have hb : Function.Bijective (fun τ => NumberField.InfinitePlace.mk (embS D τ)) :=
-    ⟨fun a b h => (hP _).unique h rfl, fun w => (hP w).exists⟩
-  rw [Fintype.card_of_bijective hb]
-  exact HostArith.fDeg_eq D
-
 end GlobalTheory.TypeAsm.HostArith
 
 namespace GlobalTheory.TypeAsm
@@ -207,8 +221,8 @@ theorem hostC : HostC := by
   obtain ⟨⟨-, hD0, -⟩, -⟩ := hK
   obtain ⟨-, -, -, -, -, -, -, -, hsplit, -⟩ := hD0
   have hd : NumberField.discr D.host.E = NumberField.discr D.host.F ^ 2 := D.host.toHostAx.der.discr_sq
-  exact ⟨D.sp.cm.cmUnram, HostArith.places D, HostArith.vInv_eq D, HostArith.one_le_host_v D,
-    HostArith.fDeg_eq D, HostArith.card_Tau_eq_f D, HostArith.finrank_eq D, HostArith.dI_ne_bot D hd,
+  exact ⟨D.sp.cm.cmUnram, HostArith.places D, _root_.Formalism.MainNotions.StandardLattice.vInv_host D, HostArith.one_le_host_v D,
+    _root_.Formalism.MainNotions.StandardLattice.fDeg_host D, _root_.Formalism.MainNotions.BridgeLemma.szf_card_Tau D, HostArith.finrank_eq D, HostArith.dI_ne_bot D hd,
     HostArith.dI_star D, HostArith.absNorm_dI D hd, HostArith.rank_VS D, HostArith.two_le_gS D,
     fun u => ⟨(D.mem u).A.T_prime, (hsplit u).1⟩⟩
 

@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.JoinCoordAssocVar
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ExSub
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBridgeFull
 
 @[expose] public section
 

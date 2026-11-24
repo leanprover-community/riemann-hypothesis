@@ -1,9 +1,16 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.IntegrableOfContinuousCompact
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.JacobianLeExp
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdScale
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
+import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
+import Mathlib.CategoryTheory.Countable
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.IntegrableOfContinuousCompact
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KinstSecondCountable
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PBridge
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.AdKMeasurePreserving
 
 @[expose] public section
 
@@ -22,17 +29,12 @@ theorem fdl_inner_continuous {ε : Fin n → Bool} (lam : Fin n → ℝ) {Λ : F
     Continuous (fun z : PCoord ε → ℂ => ⟪u, fF ε lam T (pmat z) v⟫_ℂ) := by
   have hpm : Continuous (fun z : PCoord ε → ℂ => pmat z) := by
     first
-    | exact (JacB.pmatLin ε).continuous_of_finiteDimensional
-    | exact (dpbE ε).continuous_of_finiteDimensional
     | (refine continuous_pi fun a => continuous_pi fun b => ?_
        unfold pmat
        split_ifs <;> fun_prop)
   have hmk : Continuous fun k : KG ε => toMK k := by
     first
     | fun_prop
-    | (unfold toMK; fun_prop)
-    | exact Units.continuous_val.comp (continuous_subtype_val.comp continuous_subtype_val)
-    | (unfold toMK toM; fun_prop)
   have hM : Continuous fun p : (PCoord ε → ℂ) × KG ε => toMK p.2⁻¹ * pmat p.1 * toMK p.2 :=
     ((hmk.comp continuous_snd.inv).matrix_mul (hpm.comp continuous_fst)).matrix_mul
       (hmk.comp continuous_snd)

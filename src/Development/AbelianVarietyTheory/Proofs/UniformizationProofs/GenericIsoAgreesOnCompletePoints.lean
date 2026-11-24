@@ -1,16 +1,60 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ToStkAInjective
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DataRigidTorsionOfDataRigid
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HomExtOfSecPullEq
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsIsoOfCompatibleAbelianThickenings
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IntegralSectionsCorrespond
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueIsPointOfDualNumber
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUnitLevels
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsUniqueFactorCompletedStalkOfMap
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsIsoOfSectionRing
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifBaseChangeSt
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsSecKIsUnit
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpansionOfIntegralSectionIsIntegral
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueIsPointOfDualNumber
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsIsoOfCompatibleAbelianThickenings
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HomExtOfSecPullEq
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IntegralSectionsCorrespond
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.QuasiAffine
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.RingHom
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
 
@@ -62,22 +106,7 @@ theorem fn_ext_germs [IsHausdorff J B] {a b : Γ(Spec (CommRingCat.of B), ⊤)}
 theorem exists_fn_levels [IsAdicComplete J B] (a : ∀ e : ℕ, Γ(Spec (CommRingCat.of (B ⧸ J ^ (e + 1))), ⊤))
     (h : ∀ e, (adicLevelMap J (Nat.le_succ (e + 1))).appTop.hom (a (e + 1)) = a e) :
     ∃ A : Γ(Spec (CommRingCat.of B), ⊤), ∀ e, (adicLevelι J (e + 1)).appTop.hom A = a e := by
-  choose b hb using fun e => (inv_bijective (B ⧸ J ^ (e + 1))).2 (a e)
-  have ha : StrictMono fun n : ℕ => n + 1 := strictMono_id.add_const 1
-  let φ : ∀ e : ℕ, Polynomial ℤ →+* B ⧸ J ^ (e + 1) := fun e => Polynomial.eval₂RingHom (Int.castRingHom _) (b e)
-  have hφ : ∀ e, φ e Polynomial.X = b e := fun e => Polynomial.eval₂_X _ _
-  have hc : ∀ {m : ℕ}, (Ideal.Quotient.factorPow J (ha.monotone m.le_succ)).comp (φ (m + 1)) = φ m := by
-    intro m
-    refine Polynomial.ringHom_ext' (RingHom.ext_int _ _) ?_
-    rw [RingHom.comp_apply, hφ, hφ]
-    have := h m
-    rw [← hb, ← hb, appTop_spec] at this
-    exact (inv_bijective _).1 this
-  refine ⟨(Scheme.ΓSpecIso (CommRingCat.of B)).inv.hom
-    (IsAdicComplete.StrictMono.liftRingHom J ha φ hc Polynomial.X), fun e => ?_⟩
-  rw [appTop_spec, ← hb, ← hφ]
-  exact congrArg _ (congrArg (fun q => q Polynomial.X)
-    (IsAdicComplete.StrictMono.mk_comp_liftRingHom J ha φ hc (n := e)))
+  apply GlobalTheory.RedTotal.exists_fn_levels <;> assumption
 
 theorem exists_unit_levels [IsAdicComplete J B] (v : ∀ e : ℕ, Γ(Spec (CommRingCat.of (B ⧸ J ^ (e + 1))), ⊤)ˣ)
     (h : ∀ e z, gm (adicLevelMap J (Nat.le_succ (e + 1))) z ⊤ (v (e + 1)) = gm (𝟙 _) z ⊤ (v e)) :

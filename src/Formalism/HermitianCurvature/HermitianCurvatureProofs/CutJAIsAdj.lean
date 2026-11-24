@@ -2,6 +2,45 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -48,37 +87,37 @@ variable (hτ : 0 ≤ P.TT) {L : LevelData (A P (DQ P)) P.r} (hL : IsModelLevel 
 include hτ hL
 
 theorem lv_p (l : Fin P.r) : L.p l ∈ MSa P := by
-  rw [hL.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.1]; exact sc_memMS P hτ (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩)))
 theorem lv_pb (l : Fin P.r) : L.pb l ∈ MSa P := by
-  rw [hL.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.1]; exact sc_memMS P hτ (Or.inl (Or.inr ⟨l, rfl⟩))
 theorem lv_c (l : Fin P.r) : L.c l ∈ MSa P := by
-  rw [hL.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.1]; exact sc_memMS P hτ (Or.inl (Or.inl (Or.inl (Or.inl (Or.inl (Or.inl ⟨l, rfl⟩))))))
 theorem lv_ci (l : Fin P.r) : L.ci l ∈ MSa P := by
-  rw [hL.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.1]; exact sc_memMS P hτ (Or.inl (Or.inl (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩))))))
 theorem lv_cb (l : Fin P.r) : L.cb l ∈ MSa P := by
-  rw [hL.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.1]; exact sc_memMS P hτ (Or.inl (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩)))))
 theorem lv_cbi (l : Fin P.r) : L.cbi l ∈ MSa P := by
-  rw [hL.2.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.2.1]; exact sc_memMS P hτ (Or.inl (Or.inl (Or.inl (Or.inr ⟨l, rfl⟩))))
 theorem zeta_mem_self_adjoint : L.ζ ∈ MSa P := by
-  rw [hL.2.2.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.2.2.1]; exact sc_memMS P hτ (Or.inr (Or.inl rfl))
 theorem lv_zi : L.ζi ∈ MSa P := by
-  rw [hL.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (Or.inr (Or.inr (Or.inl rfl)))
 theorem lv_zb : L.ζb ∈ MSa P := by
-  rw [hL.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
 theorem lv_zbi : L.ζbi ∈ MSa P := by
-  rw [hL.2.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))
 theorem lv_gg : L.GG ∈ MSa P := by
-  rw [hL.2.2.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))
 theorem lv_ggi : L.GGi ∈ MSa P := by
-  rw [hL.2.2.2.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (by simp [DAlg.gens])
+  rw [hL.2.2.2.2.2.2.2.2.2.2.2.1]; exact sc_memMS P hτ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))))
 theorem lv_nab : L.nab ∈ MSa P := by
   rw [hL.2.2.2.2.2.2.2.2.2.2.2.2.1]
-  refine Formalism.FourierDecayAlt.P.MAx2.Jet.diag_mem _ _ fun π => add_mem (gen_adj P hτ (by simp [DAlg.gens]))
-    (Subalgebra.smul_mem _ (mul_mem (gen_adj P hτ (by simp [DAlg.gens])) (gen_adj P hτ (by simp [DAlg.gens]))) _)
+  refine Formalism.FourierDecayAlt.P.MAx2.Jet.diag_mem _ _ fun π => add_mem (gen_adj P hτ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))))))
+    (Subalgebra.smul_mem _ (mul_mem (gen_adj P hτ (Or.inr (Or.inr (Or.inr (Or.inl rfl))))) (gen_adj P hτ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))) _)
 theorem lv_nabs : L.nabs ∈ MSa P := by
   rw [hL.2.2.2.2.2.2.2.2.2.2.2.2.2.1]
-  refine Formalism.FourierDecayAlt.P.MAx2.Jet.diag_mem _ _ fun π => add_mem (neg_mem (gen_adj P hτ (by simp [DAlg.gens])))
-    (Subalgebra.smul_mem _ (mul_mem (gen_adj P hτ (by simp [DAlg.gens])) (gen_adj P hτ (by simp [DAlg.gens]))) _)
+  refine Formalism.FourierDecayAlt.P.MAx2.Jet.diag_mem _ _ fun π => add_mem (neg_mem (gen_adj P hτ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))))))))
+    (Subalgebra.smul_mem _ (mul_mem (gen_adj P hτ (Or.inr (Or.inl rfl))) (gen_adj P hτ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))))))) _)
 
 theorem lv_Dr : L.Dr ∈ MSa P := by
   unfold LevelData.Dr

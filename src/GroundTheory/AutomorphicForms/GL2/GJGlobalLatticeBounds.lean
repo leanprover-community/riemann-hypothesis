@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalLattice
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -126,7 +172,6 @@ theorem exists_tsum_norm_le_siegel {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
   obtain ⟨Q, hQ, hQmem⟩ := exists_isCompact_finMat_siegelSet (K := K) (n := n) hω t₀
   obtain ⟨S, hS0, hS⟩ := exists_tsum_twistedWeight_le hQ I hM
   set c : ℝ := 1 + n * n * Fintype.card (InfinitePlace K) with hc
-  have hc0 : 0 ≤ c := by positivity
   refine ⟨C₁ * c ^ (2 * M) * S, by positivity, fun x hx y hy t => ?_⟩
   obtain ⟨hsum, hle⟩ := hS x y (hQmem x hx).1 (hQmem y hy).2
   have hpt := norm_le_twistedWeight hC₁ hmaj t x y
@@ -142,7 +187,6 @@ theorem exists_tsum_norm_le_siegel {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
   have hy1 := one_add_infNorm_le_height (K := K) (y⁻¹)
   rw [AutomorphicForm.height_inv] at hy1
   have hxh := AutomorphicForm.one_le_height x
-  have hyh := AutomorphicForm.one_le_height y
   have h0x : 0 ≤ 1 + infNorm (x : Matrix (Fin n) (Fin n) 𝔸[K]) := by
     linarith [infNorm_nonneg (x : Matrix (Fin n) (Fin n) 𝔸[K])]
   have h0y : 0 ≤ 1 + infNorm ((y⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) := by
@@ -277,7 +321,6 @@ theorem exists_bound_tsum {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
   have hhx := AutomorphicForm.height_pos x'
   have hhy := AutomorphicForm.height_pos y'
   set m := (max 1 (centralScale (K := K) n t)⁻¹) ^ M
-  have hm0 : 0 ≤ m := pow_nonneg (zero_le_one.trans (le_max_left _ _)) M
   set T := ∑' ξ : Matrix (Fin n) (Fin n) K, ‖Φ (((Reduction.centralSection K n t * x'⁻¹ :
     AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) * ratMat ξ *
       (y' : Matrix (Fin n) (Fin n) 𝔸[K]))‖
@@ -311,7 +354,6 @@ theorem exists_bound_tsum_one {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
   obtain ⟨γ₁, hγ₁⟩ := hsieg y₁⁻¹
   set x' := AdelicGLn.diagonal K n γ₁ * y₁⁻¹
   set m := (max 1 (centralScale (K := K) n s)⁻¹) ^ M
-  have hm0 : 0 ≤ m := pow_nonneg (zero_le_one.trans (le_max_left _ _)) M
   refine ⟨max C₁ 0 * C * m * AutomorphicForm.height x' ^ M, fun g hg => ?_⟩
   obtain ⟨γ₂, hγ₂⟩ := hsieg g
   have hγ₂1 : AdelicGLn.diagonal K n γ₂ * g ∈ Reduction.normOneGL (K := K) (n := n) :=
@@ -370,7 +412,6 @@ theorem exists_decay_siegel (hn : 0 < n) {Φ : Matrix (Fin n) (Fin n) 𝔸[K] �
   obtain ⟨Q, hQ, hQmem⟩ := exists_isCompact_finMat_siegelSet (K := K) (n := n) hω t₀
   obtain ⟨S, hS0, hS⟩ := exists_tsum_twistedWeight_le hQ I hM
   set c : ℝ := 1 + n * n * Fintype.card (InfinitePlace K) with hc
-  have hc0 : 0 ≤ c := by positivity
   refine ⟨C₁ * (c₀ ^ M')⁻¹ * c ^ (2 * M) * S, by positivity,
     fun x hx hx1 y hy hy1 t ht => ?_⟩
   obtain ⟨hsum, hle⟩ := hS x y (hQmem x hx).1 (hQmem y hy).2
@@ -433,8 +474,6 @@ theorem exists_decay_siegel (hn : 0 < n) {Φ : Matrix (Fin n) (Fin n) 𝔸[K] �
   have h0y : 0 ≤ 1 + infNorm ((y⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) := by
     linarith [infNorm_nonneg ((y⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K])]
   have hxh := AutomorphicForm.one_le_height x
-  have hyh := AutomorphicForm.one_le_height y
-  have hρc : 0 < ρ * c₀ := mul_pos (zero_lt_one.trans_le hρ1) hc₀
   calc ∑' γ : GL (Fin n) K, ‖Φ ((Reduction.centralSection K n t * x⁻¹ *
         AdelicGLn.diagonal K n γ * y : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K])‖
       ≤ ∑' γ : GL (Fin n) K, C₁ * ((ρ * c₀) ^ M')⁻¹ *
@@ -503,7 +542,6 @@ theorem exists_decay_tsum (hn : 0 < n) {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → 
   have hy' := hC₁ y' hγ₂ hγ₂1
   have hhx := AutomorphicForm.height_pos x'
   have hhy := AutomorphicForm.height_pos y'
-  have htN : 0 ≤ (t : ℝ) ^ (-N) := (Real.rpow_pos_of_pos t.2 _).le
   have hpx : ‖ψ₂ x'‖ ≤ max C₂ 0 * (AutomorphicForm.height x' ^ M)⁻¹ :=
     hx'.trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (inv_nonneg.2 (pow_nonneg hhx.le _)))
   have hpy : ‖ψ₁ y'‖ ≤ max C₁ 0 * (AutomorphicForm.height y' ^ M)⁻¹ :=

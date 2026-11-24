@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.FunctorialityNorm
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.Functoriality
+public import Mathlib.GroupTheory.Abelianization.Defs
+public import Mathlib.GroupTheory.Transfer
+public import Mathlib.Topology.Sheaves.Presheaf
+import GroundTheory.LocalFields.AbstractLocalReciprocity.CoeNormEqProdSmulNorm
+import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -72,8 +118,8 @@ theorem emb_uniq {w : (𝓞 E →+* ℂ) → W} (h : ∀ a, ∑ s : 𝓞 E →+*
   refine Fintype.linearIndependent_iff.mp hli (fun t => φ (w t)) ?_ s
   funext a
   have h1 := congrArg φ (h a)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, smul_eq_mul, map_zero] at h1
+
+  simp only [map_sum, map_smul, smul_eq_mul, map_zero] at h1
   simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, MonoidHom.coe_coe]
   rw [← h1]
   exact Finset.sum_congr rfl fun t _ => mul_comm _ _
@@ -91,8 +137,8 @@ theorem conj_of_real {h : (𝓞 E →+* ℂ) → ℂ} (hr : ∀ a, (∑ s : 𝓞
     have hc : conj (∑ t : 𝓞 E →+* ℂ, t a * h t) = ∑ t : 𝓞 E →+* ℂ, t a * h t :=
       Complex.conj_eq_iff_im.mpr (hr a)
     simp only [smul_eq_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hc, map_sum]
+
+    rw [← hc, map_sum]
     simp only [map_mul]
     exact Fintype.sum_equiv (cjEquiv E) _ _ (fun t => by simp [cjEquiv, cj_cj])
   rw [key ((starRingEnd ℂ).comp s), cj_cj]
@@ -106,8 +152,8 @@ theorem exists_coef : ∃ d : Module.Free.ChooseBasisIndex ℤ (𝓞 E) → (�
   have hs : ∀ (s : 𝓞 E →+* ℂ) (a : 𝓞 E), s a = ∑ j, ((b.repr a j : ℤ) : ℂ) * s (b j) := by
     intro s a
     conv_lhs => rw [← b.sum_repr a]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [zsmul_eq_mul, map_mul, map_intCast]
   have hexp : ∀ (w : (𝓞 E →+* ℂ) → ℂ) (a : 𝓞 E),
@@ -155,8 +201,8 @@ theorem dec_spec (f : 𝓞 E →+ W) (a : 𝓞 E) :
   rw [Finset.sum_comm]
   simp_rw [← Finset.sum_smul, ← coef_spec]
   conv_lhs => rw [← (RingOfIntegers.basis E).sum_repr a]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_zsmul, Int.cast_smul_eq_zsmul]
 
@@ -194,8 +240,8 @@ theorem sum_proj (x : W) : ∑ s : 𝓞 E →+* ℂ, proj ρ s x = x := by
 theorem act_proj (s : 𝓞 E →+* ℂ) (a : 𝓞 E) (x : W) : ρ a (proj ρ s x) = s a • proj ρ s x := by
   refine emb_uniq₂ (w := fun t => ρ a (proj ρ t x)) (w' := fun t => t a • proj ρ t x) (fun c => ?_) s
   calc ∑ t : 𝓞 E →+* ℂ, t c • ρ a (proj ρ t x) = ρ a (∑ t : 𝓞 E →+* ℂ, t c • proj ρ t x) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp [map_sum, map_smul]
+
+        simp [map_sum, map_smul]
     _ = ρ (c * a) x := by
         rw [← act_apply, mul_comm, map_mul]
         rfl
@@ -204,8 +250,8 @@ theorem act_proj (s : 𝓞 E →+* ℂ) (a : 𝓞 E) (x : W) : ρ a (proj ρ s x
         exact Finset.sum_congr rfl fun t _ => by rw [map_mul, mul_smul]
 
 theorem proj_act (s : 𝓞 E →+* ℂ) (a : 𝓞 E) (x : W) : proj ρ s (ρ a x) = s a • proj ρ s x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← act_proj, proj_apply, proj_apply, map_sum]
+
+  rw [← act_proj, proj_apply, proj_apply, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_smul]
   congr 1
@@ -265,9 +311,9 @@ theorem ip_smul_right (c : ℂ) (x y : Fin g → ℂ) : R.ip x (c • y) = c * R
   smul_dotProduct _ _ _
 
 theorem ip_conj (x y : Fin g → ℂ) : conj (R.ip x y) = R.ip y x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [RiemLat.ip, dotProduct, Matrix.mulVec, map_sum, map_mul, Pi.star_apply, RCLike.star_def,
-    Complex.conj_conj, Finset.mul_sum]
+
+  simp only [RiemLat.ip, dotProduct, Matrix.mulVec, map_sum, map_mul, Pi.star_apply, RCLike.star_def,
+  Complex.conj_conj, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
   have hh : conj (R.Hm i j) = R.Hm j i := by simpa [RCLike.star_def] using R.herm.apply j i
@@ -290,8 +336,8 @@ theorem ip_sum_right {A : Type} (t : Finset A) (f : A → Fin g → ℂ) (x : Fi
 
 theorem ip_sum_left {A : Type} (t : Finset A) (f : A → Fin g → ℂ) (y : Fin g → ℂ) :
     R.ip (∑ i ∈ t, f i) y = ∑ i ∈ t, R.ip (f i) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← ip_conj R y, ip_sum_right, map_sum]
+
+  rw [← ip_conj R y, ip_sum_right, map_sum]
   exact Finset.sum_congr rfl fun i _ => ip_conj R y (f i)
 
 theorem ip_zero_right (x : Fin g → ℂ) : R.ip x 0 = 0 := map_zero (ipR R x)
@@ -331,9 +377,9 @@ theorem basis_indep {ι : Type} [Fintype ι] (e : Module.Basis ι ℤ Λ) :
   intro r hr j
   obtain ⟨f, hf⟩ := R.unimod.2 (e.coord j)
   have h := congrArg (fun z => imB R z (R.P f)) hr
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, imB_P, hf, map_zero,
-    LinearMap.zero_apply] at h
+
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, imB_P, hf, map_zero,
+  LinearMap.zero_apply] at h
   simpa [Finsupp.single_apply] using h
 
 theorem span_top : Submodule.span ℝ (Set.range R.P) = ⊤ := by
@@ -362,8 +408,8 @@ theorem real_indep {ι : Type} {v : ι → Λ} (h : LinearIndependent ℤ v) :
     rw [LinearMap.ker_eq_bot']
     intro z hz
     rw [← bR.sum_repr z] at hz
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at hz
+
+    rw [map_sum] at hz
     simp only [map_smul, bR, Algebra.TensorProduct.basis_apply, hL, one_smul] at hz
     have h0 := Fintype.linearIndependent_iff.mp hli _ hz
     rw [← bR.sum_repr z]
@@ -452,9 +498,9 @@ private theorem ker_conj_lemma_2 {I : Submodule (𝓞 E) Λ} (hI : IsIsoSub R.fo
     fun a b => gram_conj R hI s (hv a) (hv b)
   have h1 : conj (R.ip (∑ a, c a • proj R.B s (R.P (v a))) (∑ a, c a • proj R.B s (R.P (v a)))) = 0 := by
     rw [hc, ip_zero_left, map_zero]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [ip_sum_left, ip_sum_right, ip_smul_left, ip_smul_right, map_sum, map_mul,
-    Complex.conj_conj] at h1
+
+  simp only [ip_sum_left, ip_sum_right, ip_smul_left, ip_smul_right, map_sum, map_mul,
+  Complex.conj_conj] at h1
   simp only [ip_sum_left, ip_sum_right, ip_smul_left, ip_smul_right, hG, Complex.conj_conj]
   rw [h1, Complex.zero_re]
 
@@ -472,8 +518,8 @@ theorem proj_indep {I : Submodule (𝓞 E) Λ} (hI : IsIsoSub R.form I) (s : �
     let x : Fin r → Module.Free.ChooseBasisIndex ℤ (𝓞 E) → ℂ := fun a j => ∑ t, γ a t * coef j t
     have hxreal : ∀ a j, conj (x a j) = x a j := by
       intro a j
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [x, map_sum, map_mul]
+
+      simp only [x, map_sum, map_mul]
       exact Fintype.sum_equiv (cjEquiv E) _ _ (fun t => by simp [cjEquiv, hγ, coef_conj])
     have hop : ∀ a (y : Fin g → ℂ), ∑ t, γ a t • proj R.B t y =
         ∑ j, x a j • R.B (RingOfIntegers.basis E j) y := by

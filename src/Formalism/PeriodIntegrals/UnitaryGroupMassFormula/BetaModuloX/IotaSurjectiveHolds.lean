@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.Skeleton
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Lemmata.GeneralBFactThirdSide.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,9 +59,7 @@ section Copied
 variable {E : Type} [Field E] [NumberField E] {V : Type} [AddCommGroup V] [Module E V]
   [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V]
 
-theorem exists_smul_mem (Λ : Submodule (𝓞 E) V) (hsp : Submodule.span E (Λ : Set V) = ⊤) (x : V) :
-    ∃ d : 𝓞 E, d ≠ 0 ∧ d • x ∈ Λ := by
-  first | exact Bl.general_b_fact_third'''''.goal1 .. | (apply Bl.general_b_fact_third'''''.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_third'''''.goal1 <;> assumption)
+alias exists_smul_mem := _root_.Bl.general_b_fact_third'''''.goal1
 
 variable [StarRing E]
 
@@ -156,8 +192,7 @@ theorem unitri_mem {M : Type} [AddCommGroup M] [Module (𝓞 E) M] (Q : Submodul
       · have hlt' : a.val < k := by rw [← hbk]; exact Fin.lt_def.mp hlt
         exact Q.smul_mem _ (ih a.val hlt' a rfl (fun b' hb' => hb b' (le_trans hb' hlt.le)))
       · rw [h1 a b hgt, zero_smul]; exact Q.zero_mem
-    have := Q.sub_mem hs hrest
-    simpa using this
+    simpa using Q.sub_mem hs hrest
 
 end Loc
 
@@ -165,8 +200,8 @@ section Main
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-theorem herm'' (x y : S.V) : S.hT y x = star (S.hT x y) := by
-  rw [← S.herm.eq x y, starRingEnd_apply]
+theorem herm'' (x y : S.V) : S.hT y x = star (S.hT x y) :=
+  (S.herm.eq x y).symm
 
 theorem mem_orth'' {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ x ∈ U, S.hT x v = 0 := by
   simp [orth, Submodule.mem_iInf]
@@ -174,8 +209,7 @@ theorem mem_orth'' {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ x �
 theorem int_val {Λ : Submodule (𝓞 E) S.V} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) {x y : S.V} (hx : x ∈ Λ)
     (hy : y ∈ Λ) : ∃ o : 𝓞 E, algebraMap (𝓞 E) E o = S.hT x y := by
   have hU' : Formalism.HermitianLatticesTheory.dual S.hT Λ = Λ := hU
-  have hy' : y ∈ Formalism.HermitianLatticesTheory.dual S.hT Λ := by rw [hU']; exact hy
-  exact Submodule.mem_one.1 ((Formalism.HermitianLatticesTheory.dualBasic_mem_dual S.hT Λ y).1 hy' x hx)
+  exact Submodule.mem_one.1 ((Formalism.HermitianLatticesTheory.dualBasic_mem_dual S.hT Λ y).1 (hU'.symm ▸ hy) x hx)
 
 theorem loc_div (Λ : Submodule (𝓞 E) S.V) (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (g : ℕ) {T T' : E}
     (F : LFlag S r T) (F' : LFlag S r T') (hadm : IsAdmissible Λ g F F') (w : S.V) (hwΛ : w ∈ Λ)
@@ -203,8 +237,8 @@ theorem loc_div (Λ : Submodule (𝓞 E) S.V) (hU : Formalism.HermitianLatticesT
   have hsum : S.hT w (frameAct (frame F) ξ (Fin.castSucc c)) =
       ∑ a, ξ a (Fin.castSucc c) • S.hT w (frame F a) := by
     unfold frameAct
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [LinearMap.map_smul, smul_eq_mul, Algebra.smul_def]
   refine ⟨s, hs, ?_⟩
@@ -226,8 +260,7 @@ theorem glob_div (Λ : Submodule (𝓞 E) S.V) (hU : Formalism.HermitianLattices
   apply mem_of_local _ _ (g : 𝓞 E) hg'
   · obtain ⟨o, ho⟩ := int_val hU hwΛ heΛ
     rw [Submodule.mem_span_singleton]
-    refine ⟨o, ?_⟩
-    rw [← ho, Algebra.smul_def, Algebra.smul_def, mul_comm]
+    exact ⟨o, by rw [← ho, Algebra.smul_def, Algebra.smul_def, mul_comm]⟩
   intro P hgP
   have := P.isPrime
   obtain ⟨c, _, hc1, hloc⟩ := hfix.1 P

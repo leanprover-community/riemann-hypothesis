@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpLApply
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ColSpanMap
 
 @[expose] public section
 

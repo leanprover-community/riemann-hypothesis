@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.LatticeGeometry.DegFlLApply
+public import Formalism.LocalRingCardinality.DataDIV
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsCN
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 @[expose] public section
 

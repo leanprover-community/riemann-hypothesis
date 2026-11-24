@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CommAlgFunctorCoboundaryZeroMemCocyclesOne
+public import Mathlib.Order.Filter.AtTopBot.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Monoidal.Mon
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Order.Filter.AtTopBot.Basic
+public import Mathlib.Order.Filter.Finite
 
 @[expose] public section
 
@@ -383,8 +427,8 @@ theorem glue_std : Glue F fun S (u : T ⟶ S) ↦ ∃ i, IsUnit (mp F u (b i)) :
       fun S u _ hl ↦ by rw [hh' l S u trivial hl, sub_self]).exists
   obtain ⟨r, hr⟩ := exists_partition hb (M + N)
   refine ⟨∑ l, r l * b l ^ M * h l T (𝟙 T), fun S u ⟨i, hi⟩ ↦ ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← one_mul (s S u), ← hr S u, Finset.sum_mul, map_sum]
+
+  rw [← one_mul (s S u), ← hr S u, Finset.sum_mul, map_sum]
   refine Finset.sum_congr rfl fun l _ ↦ ?_
   rw [map_mul, map_mul, map_pow, ← hh l _ _ _ u trivial, Category.id_comp]
   linear_combination -mp F u (r l) * hM l i S u hi
@@ -414,8 +458,8 @@ theorem cech1 (c : ι → ι → ∀ S, (T ⟶ S) → F.obj S)
   obtain ⟨r, hr⟩ := exists_partition hb (M + N)
   refine ⟨fun i S u ↦ ∑ l, mp F u (r l * b l ^ M) * h l i S u, fun i S S' u ψ hu ↦ ?_,
     fun i j S u hi hj ↦ ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sum, map_mul, mp_comp, fun l ↦ hh l i S S' u ψ hu]
+
+  · simp only [map_sum, map_mul, mp_comp, fun l ↦ hh l i S S' u ψ hu]
   · rw [← one_mul (c i j S u), ← hr S u, Finset.sum_mul, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun l _ ↦ ?_
     rw [map_mul, map_pow]
@@ -452,8 +496,8 @@ theorem cech2 (c : ι → ι → ι → ∀ S, (T ⟶ S) → F.obj S)
   obtain ⟨r, hr⟩ := exists_partition hb (M + N)
   refine ⟨fun i j S u ↦ ∑ l, mp F u (r l * b l ^ M) * h l i j S u, fun i j S S' u ψ hu ↦ ?_,
     fun i j k S u hi hj hk ↦ ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sum, map_mul, mp_comp, fun l ↦ hh l i j S S' u ψ hu]
+
+  · simp only [map_sum, map_mul, mp_comp, fun l ↦ hh l i j S S' u ψ hu]
   · rw [← one_mul (c i j k S u), ← hr S u, Finset.sum_mul, ← Finset.sum_sub_distrib,
       ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun l _ ↦ ?_

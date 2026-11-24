@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalNormalIndex
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PLocalQuotCard
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PLocalQuotCentred
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartResidue
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.FiniteIntegralClosureCharZero
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,8 +1,50 @@
 module
 
 public import Formalism.TruncatedSeriesCounting.RamifiedValuationInequality
-public import Formalism.WindowSums.PowerSeriesRelationList
 public import Formalism.LagrangeIdealLifts.LiftLagrangeIdealInt
+public import Formalism.WindowSums.PowerSeriesRelationList
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -25,7 +67,7 @@ private theorem winDiff (ℓ : ℕ) [Fact ℓ.Prime] (j₀ lo : ℤ) (L D : ℕ)
       ∑ i ∈ T.image (fun j : ℤ => j₀ - j), padicValInt ℓ i :=
     (Finset.sum_image hinj).symm
   rw [hre]
-  apply Formalism.WindowSums.arc_WindowSum ℓ lo L D
+  apply _root_.Formalism.WindowSums.sum_padicValInt_le ℓ lo L D
   · intro i hi
     obtain ⟨j, hj, rfl⟩ := Finset.mem_image.1 hi
     have := hT j hj
@@ -52,7 +94,7 @@ theorem g_ideal_valuation_statement : LemmaGIdeal := by
     rw [hS₁def, Finset.mem_Icc] at hr1
     have := m2 r hr2
     omega
-  have hlag := Formalism.LIFT.lift_LagrangeIdealInt ℓ R S₁ S₂ c hdisj
+  have hlag := _root_.Formalism.LIFT.lagrangian_ideal_integral_holds ℓ R S₁ S₂ c hdisj
     (fun x _ y _ hxy => hc x y hxy)
   refine ⟨S₁.sup fun j₀ => (∑ j ∈ S₂, padicValInt ℓ (j₀ - j)) +
       ∑ j ∈ S₁.erase j₀, padicValInt ℓ (j₀ - j), ?_, hlag⟩

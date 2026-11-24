@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.MinimalSolutionStatement
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.InnerProductSpace.Dual
+public import Mathlib.Analysis.Normed.Module.HahnBanach
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

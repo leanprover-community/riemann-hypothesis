@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Formalism.SharpRestriction.Divisibility.InnerProductFormulaField
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 
 @[expose] public section
 

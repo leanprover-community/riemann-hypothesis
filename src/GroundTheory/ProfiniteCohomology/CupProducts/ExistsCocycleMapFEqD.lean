@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CupProducts
-public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
+import Mathlib.Algebra.Homology.HomologicalComplexAbelian
+import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 @[expose] public section
 

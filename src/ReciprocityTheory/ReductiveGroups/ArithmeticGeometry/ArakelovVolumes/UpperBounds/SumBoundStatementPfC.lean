@@ -1,5 +1,9 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.SumBoundStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.SumBoundStatementPfA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.SumBoundStatementPfB
 
 @[expose] public section
@@ -35,7 +39,6 @@ theorem sumBd_w_le_one {M : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ} (h :
   have hinv : (Complex.normSq (det M.toBlocks₂₂))⁻¹ ≤ 1 := by
     first
       | exact inv_le_one_of_one_le₀ hN
-      | exact inv_le_one hN
   exact ⟨Real.rpow_nonneg (inv_nonneg.2 hpos.le) _, Real.rpow_le_one (inv_nonneg.2 hpos.le) hinv hs⟩
 
 theorem sumBd_w_le_big {M : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ} (h : IsUpq M) {s R : ℝ} (hs : 0 ≤ s)

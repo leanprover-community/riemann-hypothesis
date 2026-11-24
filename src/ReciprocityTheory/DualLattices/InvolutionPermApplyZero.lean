@@ -1,8 +1,16 @@
 module
 
-public import ReciprocityTheory.DualLattices.MatEquivApply
 public import ReciprocityTheory.DualLattices.CokernelLengthComparisonOf
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.DualLattices.IsLocalOfIntegers
+public import ReciprocityTheory.DualLattices.MatEquivApply
+import ReciprocityTheory.DualLattices.ProdDvdOfIso
 public import ReciprocityTheory.DualLattices.StdJForm
+public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
+public import Mathlib.RingTheory.LocalRing.Module
+public import ReciprocityTheory.DualLattices.LenIdStatement
 
 @[expose] public section
 
@@ -28,14 +36,11 @@ lemma idem_free {R : Type} [CommRing R] [IsLocalRing R] {g : ℕ} (P : Matrix (F
     apply Subtype.ext
     first
     | exact hff y
-    | simp [hff]
   haveI : Module.Projective R (LinearMap.range f) :=
     Module.Projective.of_split (LinearMap.range f).subtype f.rangeRestrict hsplit
   haveI : Module.Free R (LinearMap.range f) := by
     first
     | exact Module.free_of_flat_of_isLocalRing
-    | exact Module.free_of_flat_of_localRing
-    | infer_instance
   exact ⟨Module.finrank R (LinearMap.range f), ⟨(Module.finBasis R (LinearMap.range f)).equivFun⟩⟩
 
 lemma hasLen_subsingleton {C : Type} [Field C] (v : Valuation C NNReal) (R : Type) [CommRing R]
@@ -199,8 +204,8 @@ theorem wdetLen : WdetLenStatement := by
   have hTs : ∑ a, εT a = 1 := by
     rw [Fin.sum_univ_succ]
     simp only [hεT, Fin.cons_zero, Fin.cons_succ]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum ι (fun i => H.ρ (e i)) Finset.univ, ← map_add (f := _), add_comm, hsT, map_one]
+
+    rw [← map_sum ι (fun i => H.ρ (e i)) Finset.univ, ← map_add (f := _), add_comm, hsT, map_one]
   have hLs : ∑ a, εL a = 1 := by
     rw [Fin.sum_univ_succ]
     simp only [hεL, Fin.cons_zero, Fin.cons_succ]

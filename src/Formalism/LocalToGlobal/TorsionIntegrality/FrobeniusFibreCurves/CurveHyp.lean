@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.IsLawOfLog
+public import Mathlib.RingTheory.PowerSeries.Log
 
 @[expose] public section
 

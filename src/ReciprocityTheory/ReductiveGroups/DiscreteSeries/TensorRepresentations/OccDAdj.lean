@@ -1,6 +1,15 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.OccDAdjB
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.OccCExistsPs
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DataGenSubIrred
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumIrr
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.OccDAdjA
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.OccDTensKStable
 
 @[expose] public section
 
@@ -30,7 +39,7 @@ theorem adjB_K (dual : Bool) (hσ : IsURepOn (UJset ε) σ) {M : Submodule ℂ D
     adjR ε M ps x'' f' := by
   classical
   refine ⟨hf', fun c y hy => ?_⟩
-  have hkh := adjB_star_Kset hk
+  have hkh := _root_.ReciprocityTheory.ChartRestriction.DS.rq_KH hk
   obtain ⟨y', hy'M, hy'⟩ := hMK kᴴ hkh y hy
   have hL : inner ℂ (f' c) y = ∑ d, (starRingEnd ℂ) (cond dual (star (k c d)) (k c d)) * inner ℂ (u d) y' := by
     rw [Submodule.coe_inner, show ((f' c : D) : H) = kDiag dual σ k (fun c => ((u c : D) : H)) c from congrFun hff c]
@@ -53,8 +62,8 @@ theorem adjB_K (dual : Bool) (hσ : IsURepOn (UJset ε) σ) {M : Submodule ℂ D
     simp [g, Finset.sum_apply, Pi.single_apply]
   have hR : inner ℂ x'' (ps (Pi.single c y)) =
       ∑ d, (starRingEnd ℂ) (cond dual (star (k c d)) (k c d)) * (adjSg ε d * inner ℂ (u d) y') := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Submodule.coe_inner, hxx, adjB_inner hσ hk, ← hps, ← Submodule.coe_inner, hgsum, map_sum, inner_sum]
+
+    rw [Submodule.coe_inner, hxx, adjB_inner hσ hk, ← hps, ← Submodule.coe_inner, hgsum, map_sum, inner_sum]
     refine Finset.sum_congr rfl fun d _ => ?_
     rw [map_smul, inner_smul_right, adjR_inv h d hy'M]
   rw [hL, hR, Finset.mul_sum]
@@ -136,8 +145,8 @@ theorem adjB_emb (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn 
     apply hps0
     rw [← inner_self_eq_zero (𝕜 := ℂ)]
     calc inner ℂ (ps f₀) (ps f₀) = ∑ c, inner ℂ (ps f₀) (ps (Pi.single c (f₀ c))) := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [← inner_sum, ← map_sum, Finset.univ_sum_single]
+
+          rw [← inner_sum, ← map_sum, Finset.univ_sum_single]
       _ = 0 := Finset.sum_eq_zero fun c _ => h0 c
 
 end Amb

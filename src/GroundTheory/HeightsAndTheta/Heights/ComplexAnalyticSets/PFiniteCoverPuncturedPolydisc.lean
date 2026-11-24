@@ -1,7 +1,20 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteCoverPuncturedPolydisc
+public import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Topology.Connected.LocallyPathConnected
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.Convex
+public import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.CategoryTheory.Shift.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Homotopy.Lifting
+public import Mathlib.Analysis.Normed.Module.Convex
+public import Mathlib.Analysis.SpecialFunctions.Complex.Log
+public import Mathlib.Data.ZMod.QuotientGroup
 
 @[expose] public section
 

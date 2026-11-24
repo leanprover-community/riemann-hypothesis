@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.QuotientKernel
+public import GroundTheory.AutomorphicForms.HilbertSchmidt
+public import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
 public import GroundTheory.AutomorphicForms.TraceFormulaConvolution
+public import Mathlib.MeasureTheory.Function.AEEqOfIntegral
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
+public import Mathlib.MeasureTheory.Integral.Prod
 
 @[expose] public section
 

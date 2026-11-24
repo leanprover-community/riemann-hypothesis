@@ -1,8 +1,44 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SerFixOne
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ConcreteLevelAdelicSubset
+public import Formalism.LocalToGlobal.IndefiniteReal.ConjSubConjSub
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ConcreteLevelAdelicSubset
+import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 
 @[expose] public section
 
@@ -158,8 +194,8 @@ theorem fix_sum_of_mem {ρ : Formalism.AUTREP.GAf L n →* Module.End ℂ A} {σ
     · exact sub_eq_zero.1 h0
     · rw [Finset.sum_sub_distrib]
       have e : ∑ j ∈ t, j.1 ⟨Formalism.L2.NG.rt L n κ (ψ j), σ.stable κ _ (ψ j).2⟩ = ρ κ x := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hx', map_sum]
+
+        rw [hx', map_sum]
         exact Finset.sum_congr rfl fun j _ => j.2.1 κ (ψ j)
       rw [e, hU κ hκ, ← hx', sub_self]
   have hterm : ∀ j ∈ t, ∑ i, b i • ρ (lf i) (j.1 (ψ j)) = j.1 (ψ j) := by
@@ -175,14 +211,14 @@ theorem fix_sum_of_mem {ρ : Formalism.AUTREP.GAf L n →* Module.End ℂ A} {σ
         simpa using hH
       calc ∑ i, b i • ρ (lf i) (j.1 (ψ j))
           = j.1 (∑ i, b i • (⟨Formalism.L2.NG.rt L n (lf i) (ψ j), σ.stable (lf i) _ (ψ j).2⟩ : σ.S)) := by
-            set_option synthInstance.maxHeartbeats 100000 in
-              rw [map_sum]
+
+            rw [map_sum]
             exact Finset.sum_congr rfl fun i _ => by rw [map_smul, j.2.1 (lf i) (ψ j)]
         _ = j.1 (ψ j) := by rw [e]
   calc ∑ i, b i • ρ (lf i) x = ∑ j ∈ t, ∑ i, b i • ρ (lf i) (j.1 (ψ j)) := by
         rw [hx']
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, Finset.smul_sum]
+
+        simp only [map_sum, Finset.smul_sum]
         exact Finset.sum_comm
     _ = x := by
         rw [Finset.sum_congr rfl hterm, ← hx']

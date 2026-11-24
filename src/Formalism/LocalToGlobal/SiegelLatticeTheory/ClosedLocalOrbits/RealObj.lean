@@ -1,13 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
-public import Formalism.HermitianCurvature.MemParahoricTimesPrincipalCongruenceIff
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.PtEquivApply
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
-public import Formalism.HermitianCurvature.StatementC
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.DataInst
 public import Formalism.HermitianCurvature.StatementD
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

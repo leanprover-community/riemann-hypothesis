@@ -1,6 +1,12 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.SemiDegSt
+public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -25,8 +31,8 @@ theorem waR_apply {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K
 theorem wa_symm {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
     (x y : Fin r → K) : S.h y x = S.c (S.h x y) := by
   unfold HermForm.h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, S.c_invol, S.G_herm]
+
+  simp only [map_sum, map_mul, S.c_invol, S.G_herm]
   conv_rhs => rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
@@ -55,15 +61,15 @@ theorem wa_smul_left {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermFor
 theorem wa_sum_right {K : Type} [Field K] [NumberField K] {r n : ℕ} (S : HermForm K r)
     (x : Fin r → K) (t : Fin n → K) (b : Fin n → Fin r → K) :
     S.h x (∑ i, t i • b i) = ∑ i, t i * S.h x (b i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← waR_apply S x, map_sum]
+
+  rw [← waR_apply S x, map_sum]
   simp only [map_smul, smul_eq_mul, waR_apply]
 
 theorem wa_sum_left {K : Type} [Field K] [NumberField K] {r n : ℕ} (S : HermForm K r)
     (y : Fin r → K) (t : Fin n → K) (b : Fin n → Fin r → K) :
     S.h (∑ i, t i • b i) y = ∑ i, S.c (t i) * S.h (b i) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [wa_symm S y, wa_sum_right, map_sum]
+
+  rw [wa_symm S y, wa_sum_right, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, ← wa_symm S y (b i)]
 

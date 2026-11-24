@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Localization.Away.Basic
 
 @[expose] public section
 

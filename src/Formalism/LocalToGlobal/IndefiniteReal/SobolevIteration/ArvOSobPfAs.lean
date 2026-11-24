@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfSt
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 

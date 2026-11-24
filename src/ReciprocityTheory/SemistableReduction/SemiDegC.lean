@@ -2,6 +2,8 @@ module
 
 public import ReciprocityTheory.SemistableReduction.SemiDegSt
 public import ReciprocityTheory.SemistableReduction.SemiDegCE
+import Mathlib.RingTheory.PiTensorProduct
+import ReciprocityTheory.SemistableReduction.SemiDegCC
 
 @[expose] public section
 
@@ -48,8 +50,8 @@ theorem coordForm_h {K : Type} [Field K] [NumberField K] {r k : ℕ} (S : HermFo
     S.h (combMap b s) (combMap b t) = (coordForm S b).h s t := by
   have key : ∀ j, S.h (combMap b s) (b j) = ∑ i, S.c (s i) * S.h (b i) (b j) := by
     intro j
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hermForm_conj S (b j), combMap_apply, hermForm_sum_right, map_sum]
+
+    rw [← hermForm_conj S (b j), combMap_apply, hermForm_sum_right, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hermForm_smul_right, map_mul, hermForm_conj]
   show _ = ∑ i, ∑ j, S.c (s i) * S.h (b i) (b j) * t j

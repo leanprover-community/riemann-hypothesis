@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.OneMemSecOverZero
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraMore
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockComp
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

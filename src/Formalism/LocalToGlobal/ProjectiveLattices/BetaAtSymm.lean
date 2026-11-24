@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
 
 @[expose] public section
 

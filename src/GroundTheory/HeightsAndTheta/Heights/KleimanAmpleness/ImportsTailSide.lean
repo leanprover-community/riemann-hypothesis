@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BlockVecSegreJoin
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SegreJoin
 
 @[expose] public section
 

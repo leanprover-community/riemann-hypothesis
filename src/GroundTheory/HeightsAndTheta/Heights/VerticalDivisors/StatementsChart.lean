@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.IntToFracInjective
+public import Mathlib.RingTheory.RingHom.Flat
 
 @[expose] public section
 

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.JoinSI
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Formalism.LocalRingCardinality.DataDIV
+public import Formalism.LocalRingCardinality.DataExtra
+public import Formalism.LocalToGlobal.ClassOfRecordOfChoice
 public import Formalism.LocalToGlobal.IndefiniteRealisationChoice
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.TheoremSRecursion
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.JoinSI
+import Formalism.LocalToGlobal.SiegelLatticeTheory.PtEquivApply
 
 @[expose] public section
 

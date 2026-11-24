@@ -2,6 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.Columns.TiedCrd
 public import Formalism.LocalToGlobal.Columns.RecLevelStep
+public import Formalism.LocalToGlobal.Columns.RecLevelAsm
+public import Formalism.LocalToGlobal.Columns.RecLevelLocP
 
 @[expose] public section
 

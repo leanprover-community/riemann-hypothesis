@@ -1,24 +1,66 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVApply
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFromOrbitCharts
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HoloMapOfLocalProductCharts
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionRegular
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalIntegrability
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalDegreeBound
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalNormComparison
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PRhoContinuous
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMapFrameRestriction
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionOpen
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CardPIdxEqChoose
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalDegreeEstimate
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVSmul
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorMulSelf
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartImmersion
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalDegreeBound
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalDegreeEstimate
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalIntegrability
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalNormComparison
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionOpen
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionRegular
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HoloMapOfLocalProductCharts
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFromOrbitCharts
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphic
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorMulSelf
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PRhoContinuous
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCompactEmbedded
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVSmul
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 
 @[expose] public section
 
@@ -54,10 +96,7 @@ theorem exists_res {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι 
       fun h => mem_O_of_orbit C hP h (Proj.orbit_symm (ho x)) (hm x)⟩
   · exact Proj.orbit_trans (C.φ_ρ _ hx) (Proj.orbit_symm (ho x))
 
-theorem not_mem_top {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (z : (Σ k, ι k) → ℂ) :
-    z ∉ mcPts (⊤ : Ideal (MRing ι)) := fun h => by
-  have := h.2 1 trivial
-  simp at this
+alias not_mem_top := _root_.GlobalTheory.CompanionTheory.Ar.PB.Proj.not_mem_mcPts_top
 
 theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n), d = n + Fintype.card Ψ * (j.choose 2 + (N - j).choose 2) → ∀ (keep : Ψ × Fin N → Prop) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)), IsBlockMap κ v → (∀ k, k ∈ Set.range κ ↔ ((∀ p, M.blk p ≠ some k) ∨ ∃ p, keep p ∧ M.blk p = some k)) → ∃ (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e), ((∀ p, keep p) → e = d) ∧ ∃ pr : R.X → Rb.X, HoloMap R.A Rb.A pr ∧ (∀ x, ∃ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x ∧ SameOrbit (basePart M.blk z) (Rb.lift (pr x) (pr x))) ∧ ∀ x, ∃ (ψ : OpenPartialHomeomorph R.X (Fin e → ℂ)) (kb : Fin Rb.A.n) (σ : Fin n ↪ Fin e), IsCompatChart R.A ψ ∧ x ∈ ψ.source ∧ (∀ x' ∈ ψ.source, pr x' ∈ (Rb.A.chart kb).source ∧ ∀ i, Rb.A.chart kb (pr x') i = ψ x' (σ i)) := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n d Rb hd keep Kk _ ιk _ κ v hb hrng

@@ -1,7 +1,57 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTRRotCut
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCHolPhaseRel
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGaugeA
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -30,9 +80,7 @@ theorem exists_ann (P : M.Par) : ∃ ζ : ℂ, P.TT < Complex.normSq ζ := by
   rw [Complex.normSq_ofReal]
   nlinarith [abs_nonneg P.TT, le_abs_self P.TT]
 
-theorem hsVec_zero {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] : B.hsVec (0 : Wq →L[ℂ] Wp) = 0 := by
-  simpa using VLem.hsV_smul (Wp := Wp) (Wq := Wq) 0 0
+alias hsVec_zero := _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.VLem.hsV_zero
 
 section
 
@@ -45,8 +93,8 @@ def rotA (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (φ : ℝ) (X : Wq →
 theorem rotA_sum (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (φ : ℝ) {ι : Type} (s : Finset ι) (a : ι → ℂ)
     (X : ι → (Wq →L[ℂ] Wp)) : rotA P Bs φ (∑ i ∈ s, a i • X i) = ∑ i ∈ s, a i • rotA P Bs φ (X i) := by
   ext v
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [rotA, map_sum, map_smul]
+
+  simp [rotA, map_sum, map_smul]
 
 theorem rotA_smul (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (φ : ℝ) (a : ℂ) (X : Wq →L[ℂ] Wp) :
     rotA P Bs φ (a • X) = a • rotA P Bs φ X := by

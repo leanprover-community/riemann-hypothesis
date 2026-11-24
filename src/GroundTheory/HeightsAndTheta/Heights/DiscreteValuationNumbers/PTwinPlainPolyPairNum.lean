@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InhabitMore
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinPlainPairNum
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ClassListMapDomainPerm
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -59,8 +60,8 @@ theorem term_tail {N q : ℕ} (i : Fin N) (μ : Fin N →₀ ℕ) (t : Fin q →
     simp only [hgt, if_true, hcc, hc, hn]
   unfold term
   rw [h1, h3, hc i]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_mul, map_prod, map_pow, map_sum, rename_X, Sum.map_inl, Sum.map_inr]
+
+  simp only [map_mul, map_prod, map_pow, map_sum, rename_X, Sum.map_inl, Sum.map_inr]
   ring
 
 theorem rename_monomial_tail {N q : ℕ} (t : Fin q →₀ ℕ) (c : ℤ) :
@@ -93,10 +94,10 @@ theorem rename_divDiff_castAdd_monomial {N q : ℕ} (i : Fin N) (G : MvPolynomia
       obtain ⟨μ, hμ, he⟩ := hmem
       exact Finset.mem_image.mpr ⟨μ, hμ, by rw [he, tsub_add_cancel_of_le hle]⟩
     · exact absurd rfl hν
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [rename_monomial, ← hT, rename_divDiff_eq_sum (Fin.castAdd q i) _ hsub,
-    Finset.sum_image fun a _ b _ h => hinj h, rename_divDiff_eq_sum i G subset_rfl, map_sum,
-    Finset.sum_mul, rename_monomial_tail]
+
+  rw [rename_monomial, ← hT, rename_divDiff_eq_sum (Fin.castAdd q i) _ hsub,
+  Finset.sum_image fun a _ b _ h => hinj h, rename_divDiff_eq_sum i G subset_rfl, map_sum,
+  Finset.sum_mul, rename_monomial_tail]
   refine Finset.sum_congr rfl fun μ _ => ?_
   have hc : ∀ j, (Finsupp.mapDomain (Fin.castAdd q) μ + T) (Fin.castAdd q j) = μ j := by
     intro j
@@ -141,8 +142,8 @@ theorem classNum_mul_tail {σ : Type*} [DecidableEq σ] {q : ℕ} (cls : σ → 
     classNum cls (A * rename z Q) [] W = ∑ μ ∈ Q.support, Q.coeff μ * classNum cls A (classList L μ) W := by
   have hadd : ∀ H : MvPolynomial σ ℤ, classNum cls H [] W = classNumAddHom cls [] W H := fun _ => rfl
   conv_lhs => rw [Q.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.mul_sum, hadd, map_sum]
+
+  rw [map_sum, Finset.mul_sum, hadd, map_sum]
   refine Finset.sum_congr rfl fun μ _ => ?_
   rw [rename_monomial, show monomial (μ.mapDomain z) (Q.coeff μ) =
       Q.coeff μ • monomial (μ.mapDomain z) (1 : ℤ) by rw [smul_monomial, smul_eq_mul, mul_one],

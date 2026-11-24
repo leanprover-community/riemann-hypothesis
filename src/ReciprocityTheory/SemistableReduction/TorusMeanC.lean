@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.TorusMeanB
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

@@ -1,7 +1,55 @@
 module
 
 public import Formalism.SatakeDualWeyl.StatementW
-public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -35,9 +83,9 @@ lemma wlocal_rowAct_mul {r n : ℕ} (A B : Matrix (Fin r) (Fin r) R) :
     rowAct R (n := n) (A * B) = (rowAct R B).comp (rowAct R A) := by
   apply MvPolynomial.algHom_ext
   intro v
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [rowAct, AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, MvPolynomial.algebraMap_eq,
-    Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [rowAct, AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, MvPolynomial.algebraMap_eq,
+  Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun c _ => ?_
   ring
@@ -179,7 +227,7 @@ lemma wlocal_L_insert {r : ℕ} (k a : Fin r) (c : Fin r → R) (s : Finset (Fin
     by_cases hj : j = k
     · rw [hj]
       simp [hak, ha]
-    · simp [hak, ha, hj, Ne.symm hj]
+    · simp [hak, hj, Ne.symm hj]
   · simp [hi]
 
 lemma wlocal_good_L {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ) (k : Fin r) (c : Fin r → R) :
@@ -525,7 +573,6 @@ lemma wlocal_loc (P : Ideal R) [P.IsPrime] {r n : ℕ} (hn : n ≤ r) (ν : Fin 
         rw [hφ]
         first
         | exact IsLocalization.mk'_spec' (S := Localization.AtPrime P) b s'
-        | simp
       rw [wlocal_map_smul, ← e, ← hbs, ← hspec, map_mul, smul_smul, smul_smul]
       congr 1
       ring
@@ -558,7 +605,6 @@ theorem wlocal_global : Formalism.UG.WeylGLStable := by
         (g⁻¹ : GL (Fin r) R).val.map (algebraMap R (Localization.AtPrime P)) := by
       first
       | rfl
-      | simp [Units.coe_map_inv, RingHom.mapMatrix_apply]
     have hmem : map (algebraMap R (Localization.AtPrime P)) (dwAct R r n g f) ∈
         weyl (Localization.AtPrime P) r n hn ν := by
       unfold dwAct at hloc ⊢
@@ -574,8 +620,6 @@ theorem wlocal_global : Formalism.UG.WeylGLStable := by
     exact Submodule.mem_top
   rw [hJdef, Submodule.mem_comap, LinearMap.toSpanSingleton_apply, one_smul] at h1
   exact h1
-
-theorem weyl_module_GL_stable_local : Formalism.UG.WeylGLStableLocal := wlocal_local
 
 theorem weyl_module_GL_stable : Formalism.UG.WeylGLStable := wlocal_global
 

@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsSchur
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.JacobiTrudi
+import Mathlib.Analysis.CStarAlgebra.Classes
 
 @[expose] public section
 

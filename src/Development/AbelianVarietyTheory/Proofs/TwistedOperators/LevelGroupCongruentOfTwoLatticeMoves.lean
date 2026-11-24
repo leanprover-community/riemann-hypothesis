@@ -1,22 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelThetaSpan
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsVacuaAndMultipliers
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsAdelicMatrix
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.WeilPairLevelTrivialMapsLevelVectorStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelDatumVectorEqThetaOfTestFunctionStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsTrivialAtLevelUnitaryTransportSelfDualStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SelfDualLatticesAtLevelStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorTestThetaZeroEqThetaSeriesStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaKernelOrthonormalFrameInDomainPeriodLinearStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.AdelicZakThetaExistsUniqueStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorLawsStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.CompAtOfFin
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelTestFunctionFiniteSumEquivariantStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FiniteAdelicLatticeTransportLaws
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IdempotentAdelesAndSmallAdelicMatrices
+public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FiniteAdelicLatticeTransportLaws
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos
+import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmegaFormSignIndependent
 
 @[expose] public section
 
@@ -145,8 +171,8 @@ theorem mem_of_vanish (L : Submodule (𝓞 E) (Fin n → E)) (𝔪 : Ideal (𝓞
   choose ind hind1 hind0 using (exists_ind (F := F))
   set e₁ : FiniteAdeleRing (𝓞 F) F := ∑ v ∈ P, ind v with he₁
   have hev : ∀ w, evalV F w e₁ = if w ∈ P then 1 else 0 := fun w => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [he₁, map_sum]
+
+    rw [he₁, map_sum]
     split_ifs with hw
     · rw [Finset.sum_eq_single w (fun b _ hb => hind0 b w (Ne.symm hb)) (fun h => absurd hw h), hind1]
     · exact Finset.sum_eq_zero fun b hb => hind0 b w (fun h => hw (h ▸ hb))
@@ -177,10 +203,6 @@ variable {D : D7}
 
 theorem fmt_mul' (V : HSp D) (g g' : GA D V) : fmt V (g * g') = fmt V g * fmt V g' := by
   simp only [fmt, Formalism.L2.Theta.mt, map_mul, Units.val_mul, Matrix.map_mul]
-
-theorem fmt_one' (V : HSp D) : fmt V 1 = 1 := by
-  simp only [fmt, Formalism.L2.Theta.mt, map_one, Units.val_one]
-  exact Matrix.map_one _ (map_zero _) (map_one _)
 
 theorem smul_fmt_sub_one {T : HSp D} {I : Ideal (𝓞 D.host.F)} {g : GA D T} (h : TrivAt T I g)
     {v : HeightOneSpectrum (𝓞 D.host.F)} (hv : I ≤ v.asIdeal) {α : Af D.host.F} (h1 : evalV D.host.F v α = 1)
@@ -221,9 +243,9 @@ theorem GlobalTheory.Ker.LevMove.levK_of_two_moves : ∀ (D : D7) (S T : HSp D) 
   have hfull : C.X.Λ.FG ∧ Submodule.span D.host.E (C.X.Λ : Set (Fin T.rank → D.host.E)) = ⊤ :=
     ⟨C.X.Λ_fg, C.X.Λ_span⟩
   have e1 : fmt T g₁ * fmt T g₁⁻¹ = 1 := by
-    rw [← GlobalTheory.Ker.LevMove.fmt_mul', mul_inv_cancel, GlobalTheory.Ker.LevMove.fmt_one']
+    rw [← GlobalTheory.Ker.LevMove.fmt_mul', mul_inv_cancel, _root_.GlobalTheory.Ker.LevEig.fmt_one]
   have e2 : fmt T g₂ * fmt T g₂⁻¹ = 1 := by
-    rw [← GlobalTheory.Ker.LevMove.fmt_mul', mul_inv_cancel, GlobalTheory.Ker.LevMove.fmt_one']
+    rw [← GlobalTheory.Ker.LevMove.fmt_mul', mul_inv_cancel, _root_.GlobalTheory.Ker.LevEig.fmt_one]
   obtain ⟨-, -, -, laws⟩ := GlobalTheory.Ker.isMov_laws D T.rank C.X.Λ hfull
   obtain ⟨-, hb1, -, -, -⟩ := (laws _ _ e1).2 L hL m1
   obtain ⟨-, -, -, hcomp, -⟩ := (laws _ _ e2).2 L hL m2

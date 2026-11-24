@@ -1,6 +1,53 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogInv
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
 
 @[expose] public section
 
@@ -20,10 +67,7 @@ private theorem cc_subst_lemma {σ τ : Type} [Fintype σ] {L : σ → MvPowerSe
   classical
   have hL : MvPowerSeries.HasSubst L := by
     first
-      | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hL0
       | exact MvPowerSeries.hasSubst_of_constantCoeff_zero hL0
-      | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun p => by rw [hL0 p]; exact IsNilpotent.zero)
-      | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent (fun p => by rw [hL0 p]; exact IsNilpotent.zero)
   rw [MvPowerSeries.constantCoeff_subst hL, finsum_eq_single _ 0]
   · simp [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   · intro e he
@@ -62,7 +106,7 @@ theorem cc_jac (i b : Fin d) : constantCoeff (Jac G i b) = if i = b then 1 else 
   by_cases hib : i = b
   · subst hib
     simp
-  · simp [hib, Ne.symm hib]
+  · simp [hib]
 
 def JM : Matrix (Fin d) (Fin d) (PS k 1 d) := Matrix.of (Jac G)
 
@@ -101,7 +145,6 @@ theorem cc_om : (Om G).map constantCoeff = 1 := by
   simp only [Matrix.map_mul] at h
   first
     | (rw [jm_map_cc, mul_one, Matrix.map_one _ (map_zero _) (map_one _)] at h; exact h)
-    | (simpa [jm_map_cc] using h)
 
 theorem om_Q (i b : Fin d) : ∑ j, ev (n := 2) ![G.F] (Om G i j) * Ar G j b = ev (n := 2) ![pt k d 1] (Om G i b) := by
   have hF : CZ (![G.F] : Fin 1 → Pt k 2 d) := by
@@ -135,7 +178,6 @@ theorem om_Q (i b : Fin d) : ∑ j, ev (n := 2) ![G.F] (Om G i j) * Ar G j b = e
   rw [Matrix.mul_apply] at h4
   first
     | exact h4
-    | simpa using h4
 
 theorem czSw : CZ (![pt k (n := 2) d 1, pt k d 0] : Fin 2 → Pt k 2 d) := by
   intro j i
@@ -167,8 +209,6 @@ theorem sw_y (h : PS k 1 d) :
   fin_cases j
   first
     | exact ev_X czSw 1 i
-    | (simp only [Matrix.cons_val_zero]; exact ev_X czSw 1 i)
-    | simp [pt, ev_X czSw]
 
 theorem sw_dF (j b : Fin d) :
     ev (n := 2) ![pt k d 1, pt k d 0] (pderiv (R := k) ((1 : Fin 2), b) (G.F j)) = pderiv (R := k) ((0 : Fin 2), b) (G.F j) := by
@@ -177,7 +217,6 @@ theorem sw_dF (j b : Fin d) :
   simp [pt, MvPowerSeries.pderiv_X, Pi.single_apply] at h
   first
     | exact h
-    | simpa using h
 
 theorem om_P (i a : Fin d) :
     ∑ j, ev (n := 2) ![G.F] (Om G i j) * pderiv (R := k) ((0 : Fin 2), a) (G.F j) = ev (n := 2) ![pt k d 0] (Om G i a) := by
@@ -204,62 +243,26 @@ theorem d_evF (h : PS k 1 d) (v : Fin 2 × Fin d) :
   rw [pderiv_ev hF, Fintype.sum_prod_type]
   simp
 
-private theorem CZ_pt_vector : CZ (![pt k (n := 1) d 0, 0] : Fin 2 → Pt k 1 d) := by
-  intro j i
-  fin_cases j <;> simp [pt]
-
-private theorem CZ_singleton_F : CZ (![G.F] : Fin 1 → Pt k 2 d) := by
-  intro j i
-  fin_cases j
-  simpa using G.const i
-
-private theorem ev_coordinate_F (i : Fin d) :
-    ev (n := 1) ![pt k d 0, 0] (G.F i) = (X ((0 : Fin 1), i) : PS k 1 d) := by
-  rw [← G.comm i, ev_ev CZ_pt_vector czSw]
-  have e : (fun j i' => ev (n := 1) ![pt k d 0, 0] ((![pt k d 1, pt k d 0] : Fin 2 → Pt k 2 d) j i')) =
-      (![0, pt k d 0] : Fin 2 → Pt k 1 d) := by
-    funext j i'
-    fin_cases j
-    · first
-        | exact ev_X CZ_pt_vector 1 i'
-        | simp [pt, ev_X CZ_pt_vector]
-    · first
-        | exact ev_X CZ_pt_vector 0 i'
-        | simp [pt, ev_X CZ_pt_vector]
-  rw [e, G.unit i]
+private alias CZ_pt_vector := _root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.cz1
 
 theorem ez_F (h : PS k 1 d) : ev (n := 1) ![pt k d 0, 0] (ev (n := 2) ![G.F] h) = h := by
-  rw [ev_ev CZ_pt_vector (CZ_singleton_F G)]
+  rw [ev_ev CZ_pt_vector (_root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.czFF G)]
   have e : (fun j i => ev (n := 1) ![pt k d 0, 0] ((![G.F] : Fin 1 → Pt k 2 d) j i)) =
       fun j => pt k (n := 1) d j := by
     funext j i
     fin_cases j
-    exact ev_coordinate_F G i
+    exact _root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.formalGroupLaw_ev_x_zero G i
   rw [e, ev_pt]
 
 theorem ez_dx (j a : Fin d) :
     ev (n := 1) ![pt k d 0, 0] (pderiv (R := k) ((0 : Fin 2), a) (G.F j)) = if j = a then 1 else 0 := by
-  have h := congrArg (pderiv (R := k) ((0 : Fin 1), a)) (ev_coordinate_F G j)
+  have h := congrArg (pderiv (R := k) ((0 : Fin 1), a)) (_root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.formalGroupLaw_ev_x_zero G j)
   rw [pderiv_ev CZ_pt_vector, Fintype.sum_prod_type, Fin.sum_univ_two] at h
   simp [pt, MvPowerSeries.pderiv_X, Pi.single_apply] at h
   first
     | exact h
-    | simpa [eq_comm] using h
 
 theorem ez_dy (c b : Fin d) : ev (n := 1) ![pt k d 0, 0] (pderiv (R := k) ((1 : Fin 2), b) (G.F c)) = Jac G c b := rfl
-
-private theorem mvPowerSeries_pderiv_comm {σ : Type} (i j : σ) (f : MvPowerSeries σ k) :
-    pderiv (R := k) i (pderiv (R := k) j f) = pderiv (R := k) j (pderiv (R := k) i f) := by
-  classical
-  ext n
-  rw [MvPowerSeries.coeff_pderiv, MvPowerSeries.coeff_pderiv, MvPowerSeries.coeff_pderiv,
-    MvPowerSeries.coeff_pderiv]
-  by_cases hij : i = j
-  · subst hij
-    rfl
-  · rw [add_right_comm n (Finsupp.single i 1) (Finsupp.single j 1)]
-    simp only [Finsupp.coe_add, Pi.add_apply, Finsupp.single_apply, if_neg hij, if_neg (Ne.symm hij), add_zero]
-    ring
 
 theorem om_key (i a b : Fin d) :
     ∑ j, Jac G j b * pderiv (R := k) ((0 : Fin 1), a) (Om G i j) = ∑ c, pderiv (R := k) ((0 : Fin 1), c) (Om G i a) * Jac G c b := by
@@ -282,14 +285,14 @@ theorem om_key (i a b : Fin d) :
     simp [pt, MvPowerSeries.pderiv_X, Pi.single_apply]
   have hR : pderiv (R := k) ((1 : Fin 2), b) (ev (n := 2) ![pt k d 0] (Om G i a)) = 0 := by
     rw [pderiv_ev czX, Fintype.sum_prod_type]
-    simp [pt, MvPowerSeries.pderiv_X, Pi.single_apply]
+    simp [pt]
   have hP := congrArg (⇑(pderiv (R := k) ((1 : Fin 2), b))) (om_P G i a)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hR, map_sum] at hP
+
+  rw [hR, map_sum] at hP
   simp only [Derivation.leibniz, smul_eq_mul, d_evF] at hP
   have hP2 := congrArg (ev (n := 1) ![pt k d 0, 0]) hP
   simp only [hsE, hz0, ev_mul hE, ev_add hE, ez_F, ez_dx, ez_dy,
-    mvPowerSeries_pderiv_comm ((1 : Fin 2), b) ((0 : Fin 2), a), ← hdJ] at hP2
+    _root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.pderiv_comm ((1 : Fin 2), b) ((0 : Fin 2), a), ← hdJ] at hP2
   rw [Finset.sum_add_distrib] at hP2
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at hP2
   have hM := congrFun (congrFun (om_mul G) i) b
@@ -299,8 +302,8 @@ theorem om_key (i a b : Fin d) :
   have hone : pderiv (R := k) ((0 : Fin 1), a) ((1 : Matrix (Fin d) (Fin d) (PS k 1 d)) i b) = 0 := by
     rw [Matrix.one_apply]
     split_ifs <;> simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hone, map_sum] at hM2
+
+  rw [hone, map_sum] at hM2
   simp only [Derivation.leibniz, smul_eq_mul] at hM2
   rw [Finset.sum_add_distrib] at hM2
   linear_combination hM2 - hP2

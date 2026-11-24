@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.BasisChangeSt
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Normed.Group.Ultra
 
 @[expose] public section
 
@@ -82,8 +85,8 @@ theorem basisChange_holds : BasisChangeStatement := by
     fun i => cb_lin A hC0 hA i
   have key : CB (MvPolynomial.bind₁ (fun i => ∑ k, MvPolynomial.C (A i k) * MvPolynomial.X k) P) (C ^ d) := by
     conv => arg 1; rw [P.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine cb_sum _ _ (pow_nonneg hC0 d) (fun v hv => ?_)
     rw [MvPolynomial.bind₁_monomial]
     have hdeg : v.degree = d := by

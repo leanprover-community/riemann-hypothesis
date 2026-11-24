@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSup
-public import Formalism.LocalToGlobal.ProjectiveLattices.SupNDataOfNonneg
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
+public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 
 @[expose] public section

@@ -1,13 +1,47 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.DiscreteSeriesCoefficientsCuspidal
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.LocCompR
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutomorphicFormHyp
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.LocIsotypic
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EquivOfISupRange
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLocCompAndIsLocLoc
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RTwist
 
 @[expose] public section
 
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 200000
+
+
 
 section
 noncomputable section
@@ -19,8 +53,8 @@ variable {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V]
 private def orb (κ : Representation ℂ K V) (x : V) : (K →₀ ℂ) →ₗ[ℂ] V := Finsupp.linearCombination ℂ fun k => κ k x
 private theorem orb_comm (κ : Representation ℂ K V) (T : Module.End ℂ V) (hT : ∀ k x, T (κ k x) = κ k (T x)) (x : V)
     (c : K →₀ ℂ) : orb κ (T x) c = T (orb κ x c) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [orb, Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, hT]
+
+  simp only [orb, Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, hT]
 private theorem orb_act (κ : Representation ℂ K V) (x : V) (k : K) (c : K →₀ ℂ) :
     orb κ x (c.mapDomain (k * ·)) = κ k (orb κ x c) := by
   induction c using Finsupp.induction_linear with
@@ -70,12 +104,6 @@ private theorem exists_type (κ : Representation ℂ K V) (φ : V)
     simp [orb]
 end Gen
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {n : ℕ}
-private theorem smooth_fin (π : TR.CuspSub F n) : IsSmooth π.finPart := fun v => by
-  convert (π.cusp v.1 v.2).1.level using 1
-  ext k
-  exact Subtype.ext_iff
-private theorem smooth_loc (π : TR.CuspSub F n) (w : HeightOneSpectrum (𝓞 F)) : IsSmooth (π.locRep w) := fun v =>
-  (smooth_fin π v).preimage (GlobalTheory.CuspRep.CuspSub.continuous_locGL w)
 private theorem cpt_fin (π : TR.CuspSub F n) (k : TR.Kinf F n) (g : GL (Fin n) (Af F)) (y : π.V) :
     π.op (.cpt k) (π.finPart g y) = π.finPart g (π.op (.cpt k) y) := by
   refine Subtype.ext ?_
@@ -127,7 +155,7 @@ private theorem exists_comp (h : UpperTheory.V.Published.AdmissibleReal) (π : T
   set φ : π.V := ⟨φ₀, hφ⟩
   have h0' : φ ≠ 0 := fun e => h0 (congrArg Subtype.val e)
   set L := stab π.finPart φ
-  have hL : IsOpen (L : Set (GL (Fin n) (Af F))) := smooth_fin π _
+  have hL : IsOpen (L : Set (GL (Fin n) (Af F))) := _root_.UpperTheory.V.TR.CuspSub.isSmooth_finPart π _
   obtain ⟨K, ho, hc, hK⟩ := exists_compact_open w _ hL
   have hfd : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => cptPart π k φ)) := by
     have := (π.cusp φ₀ hφ).1.kfin
@@ -141,11 +169,11 @@ private theorem exists_comp (h : UpperTheory.V.Published.AdmissibleReal) (π : T
   have hcomm : ∀ g k x, π.finPart g (cptPart π k x) = cptPart π k (π.finPart g x) := fun g k x => (cpt_fin π k g x).symm
   let U : Submodule ℂ π.V := annPart (cptPart π) φ ⊓
     fixed π.finPart (L ⊓ (GeneralLinearGroup.map (n := Fin n) (pLoc F w)).ker)
-  obtain ⟨σ, hσ, -⟩ := exists_irred (smooth_loc π w) ho (fun W hW e => by
+  obtain ⟨σ, hσ, -⟩ := exists_irred (_root_.UpperTheory.V.TR.CuspSub.isSmooth_locRep π w) ho (fun W hW e => by
       rcases bot_or_top π w (nullPart (π.locRep w) K) (fun g x hx => nullPart_act _ K g hx)
         (fun T hT x hx => nullPart_comm _ K T hT hx) with h2 | h2
-      · exact le_bot_iff.1 (h2 ▸ le_nullPart (smooth_loc π w) hc W hW e)
-      · exact absurd (eq_zero_of_mem_nullPart (smooth_loc π w) hc (mem_fix.2 hK) (h2 ▸ Submodule.mem_top)) h0')
+      · exact le_bot_iff.1 (h2 ▸ le_nullPart (_root_.UpperTheory.V.TR.CuspSub.isSmooth_locRep π w) hc W hW e)
+      · exact absurd (eq_zero_of_mem_nullPart (_root_.UpperTheory.V.TR.CuspSub.isSmooth_locRep π w) hc (mem_fix.2 hK) (h2 ▸ Submodule.mem_top)) h0')
     U (fun g x hx => ⟨fun c hc => by
         rw [TR.CuspSub.locRep, MonoidHom.comp_apply, orb_comm _ _ (hcomm _), hx.1 c hc, map_zero],
       mem_fix.2 fun k hk => by rw [fin_loc π w hk.2, mem_fix.1 hx.2 k hk]⟩)

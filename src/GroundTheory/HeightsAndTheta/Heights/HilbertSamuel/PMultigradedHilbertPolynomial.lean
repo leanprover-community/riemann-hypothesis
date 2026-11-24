@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEventualPolynomial
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyCN
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

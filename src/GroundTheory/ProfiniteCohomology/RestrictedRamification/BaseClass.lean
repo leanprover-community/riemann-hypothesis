@@ -1,14 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummerDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SInvariantToInvariantsEqZeroIff
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SPicFinite
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSPresentation
-public import GroundTheory.ProfiniteCohomology.CyclicCupProf
-public import GroundTheory.ProfiniteCohomology.LocalTateDuality.Bockstein
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SDivisor
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConePairing
+import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
+import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
 
 @[expose] public section
 

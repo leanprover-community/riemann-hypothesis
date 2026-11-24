@@ -1,7 +1,23 @@
 module
 
 public import ReciprocityTheory.DualLattices.TensorSpan
+public import Mathlib.LinearAlgebra.FreeModule.Basic
+public import Mathlib.RingTheory.Valuation.ValuationRing
 public import Lemmata.MiscLemmasL.Imports
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.LocalRing.Module
 
 @[expose] public section
 
@@ -13,11 +29,7 @@ open Module
 
 variable {C : Type} [Field C] {R : Type} [CommRing R] [Algebra R C]
 
-theorem exists_smul_mem_of_mem_span [IsDomain R] [IsFractionRing R C]
-    {V : Type} [AddCommGroup V] [Module C V] [Module R V] [IsScalarTower R C V]
-    (S : Submodule R V) {x : V} (hx : x ∈ Submodule.span C (S : Set V)) :
-    ∃ r : R, r ≠ 0 ∧ r • x ∈ S := by
-  exact Bl.SecondBlockLemmaM.goal1 (C := C) S hx
+alias exists_smul_mem_of_mem_span := _root_.Bl.SecondBlockLemmaM.goal1
 
 theorem free_of_finite_torsionFree [IsDomain R] [ValuationRing R] (P : Type) [AddCommGroup P]
     [Module R P] [Module.Finite R P] (h : ∀ (r : R) (x : P), r ≠ 0 → r • x = 0 → x = 0) :

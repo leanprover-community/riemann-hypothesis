@@ -1,12 +1,43 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExtId
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MumfordBundleIsoNormalisedRespectsLaws
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMumfordBundleIsoValueOneOriginPolarised
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MumfordBundleIsoValueOneZeroFirstFactor
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RefinesPolarisedDataBaseChangeSymmetric
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.Divisors.GalRigidOfSurjective
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -19,13 +50,6 @@ open GlobalTheory.TInj
 
 namespace GlobalTheory.TInj
 
-theorem degPre_c_zero {V : Type} [CommRing V] [IsDomain V] (D : DegPre V) : D.c 0 = 1 := by
-  have h : D.c 0 * D.c 0 = D.c 0 := by
-    have := D.c_add 0 0
-    rw [add_zero] at this
-    exact this.symm
-  exact mul_eq_left.1 h
-
 theorem val_tau_zero_zero {V : Type} [CommRing V] [IsDomain V] (D : DegPre V) (hT : D.TauBimult)
     (z : (TK V).left) (J : ((TK V).left ⟶ D.P.A.left) → D.P.L.ι) (hJ : Good D.P.L z J) :
     val (D.tau 0 0) (𝟙 _) z J = 1 := by
@@ -37,19 +61,16 @@ theorem val_tau_zero_zero {V : Type} [CommRing V] [IsDomain V] (D : DegPre V) (h
     refine (val_pull hJ _ _ _).trans ?_
     rw [Category.id_comp]
     show cubV D.cub z J (toUnit (TK V) ≫ D.c 0) (toUnit (TK V) ≫ D.c 0) (toUnit (TK V) ≫ D.c 0) = 1
-    rw [degPre_c_zero, MonObj.comp_one]
+    rw [_root_.GlobalTheory.IndivisibleSection.c_zero_eq_one, MonObj.comp_one]
     exact (isCub_cubV D.cub hJ).face _ _
   rw [f, _root_.mul_one] at h
   exact mul_eq_left.1 h.symm
-
-theorem tautBase_c₀_zero {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] (T : TautBase o W) : T.c₀ 0 = 1 :=
-  mul_eq_left.1 ((T.c₀_add 0 0).symm.trans (by rw [add_zero]))
 
 theorem val_τ₀_zero_zero {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] (T : TautBase o W)
     (z : (𝟙_ (Over (Sp W))).left) (J) (hJ : Good T.M.L z J) : val (T.τ₀ 0 0) (𝟙 _) z J = 1 := by
   have h := T.τ₀_add 0 0 0 z J hJ
   have f : cubV T.cub z J (T.c₀ 0) (T.c₀ 0) (T.c₀ 0) = 1 := by
-    rw [tautBase_c₀_zero]; exact (isCub_cubV T.cub hJ).face _ _
+    rw [_root_.GlobalTheory.PolDeg.TautBase.c₀_zero]; exact (isCub_cubV T.cub hJ).face _ _
   rw [f, _root_.mul_one, add_zero] at h
   exact mul_eq_left.1 h.symm
 
@@ -69,7 +90,7 @@ theorem lamVal_origin_of_from : ∀ {o W : Type} [CommRing o] [CommRing W] [IsLo
     rw [hk]
     simp
   have e0 : ((n : ℤ) • e 0) = 0 := by rw [map_zero, smul_zero]
-  rw [k1, val_tau_zero_zero D hT z J' hJ', e0, val_τ₀_zero_at T _ z J hJ, degPre_c_zero, MonObj.comp_one] at h
+  rw [k1, val_tau_zero_zero D hT z J' hJ', e0, val_τ₀_zero_at T _ z J hJ, _root_.GlobalTheory.IndivisibleSection.c_zero_eq_one, MonObj.comp_one] at h
   have u1 : unitOn (1 : (FractionRing V)ˣ) = 1 := map_one _
   simp only [u1, map_one, _root_.one_mul, _root_.mul_one] at h
   exact h.symm

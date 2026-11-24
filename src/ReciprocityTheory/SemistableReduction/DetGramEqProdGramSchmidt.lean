@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.GramMatrix
+public import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

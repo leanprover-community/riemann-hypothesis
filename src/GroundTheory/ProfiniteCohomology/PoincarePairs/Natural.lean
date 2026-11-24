@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.IsDiscreteRepResHomCoindRes
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.Devissage
+public import GroundTheory.ProfiniteCohomology.PoincareDuality.CupPairingEvalPairingCohomologyMap
+import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -298,10 +300,10 @@ theorem bijective_compactDualityMap_of_sum {J : Type*} [Fintype J] (X : J → Re
       (χ.comp (compactCohomologyResMap φ (dualMap D (p j)) s).hom.toAddMonoidHom)
     refine ⟨∑ j, (cohomologyMap (i j) r).hom (a j), ?_⟩
     ext y
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, AddMonoidHom.finsetSum_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_rhs => rw [← hdual y, map_sum]
+
+    rw [map_sum, AddMonoidHom.finsetSum_apply]
+
+    conv_rhs => rw [← hdual y, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [compactDualityMap_cohomologyMap, ha j]
     rfl

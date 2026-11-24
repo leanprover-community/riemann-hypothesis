@@ -1,14 +1,21 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDiagonalSectionDifference
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionsDimZero
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSerreGraded
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMultigradedHilbertPolynomial
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSerreGraded
+public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.GradedSpanProducts
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEventualPolynomial
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbFnValueSpan
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMultigradedHilbertPolynomial
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSerreGraded
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftDegreePolynomial
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.GradedSpanProducts
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirstCoordinateLine
 
 @[expose] public section
 

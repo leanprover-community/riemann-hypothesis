@@ -1,7 +1,13 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.FrecAt
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepRec
+public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
+import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.IsComplRatCompl
+import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
+import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
+public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.GramLevelZeroEqReindex
+public import Formalism.SharpRestriction.GrowthBounds.ChartComparison
+import Formalism.SharpRestriction.GrowthBounds.ChartComparison.NrmAMemAdForms
+import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CoeffProdRename
 
 @[expose] public section
 

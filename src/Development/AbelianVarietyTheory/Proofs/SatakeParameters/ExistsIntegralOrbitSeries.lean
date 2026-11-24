@@ -1,12 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.StdBases
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.BeData
-public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementB
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.FirstMomentIdempotentLaw
+public import Formalism.GaussJetBounds.GaussJetProofs.Transfer
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.BiextensionOfExpSpec
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.BiextensionPointsOfExpSpec
+import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstFirstCoboundaryThree
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.OneLetterJetKernel
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ScalingSwapLemmas
 
 @[expose] public section
 
@@ -61,8 +105,8 @@ theorem xOfZ_eq (l : ℕ) (j : K0 →+* K) (σ : K0 →+* K0) (om oms : ι → K
 theorem cc_linP (j : K0 →+* K) (σ : K0 →+* K0) (om oms : ι → K0) (a : Fin N0) (b : Fin N1)
     (x : Bool × ι) : constantCoeff (linP (d := d) j σ om oms a b x) = 0 := by
   unfold linP
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun s _ => ?_
   simp
 
@@ -88,8 +132,8 @@ theorem map_inVar {τ : Type} (j : K0 →+* K) (x : τ) (f : PowerSeries K0) :
 
 theorem map_zXY [Fintype ι] (l : ℕ) (j : K0 →+* K) (σ : K0 →+* K0) (om oms : ι → K0) (s : ZMod d) :
     map j (zXY l σ om oms s) = ∑ x : Bool × ι, C (j (mXY σ om oms s x)) * at1 x (lgF K l) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [zXY_eq, map_sum]
+
+  rw [zXY_eq, map_sum]
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [map_mul, map_C, map_inVar, BiextensionSums.map_lgF']
 
@@ -99,8 +143,8 @@ theorem map_letLog (l : ℕ) (j : K0 →+* K) (s : ZMod d) :
   rw [coeff_map]
   show j (letLog (K := K0) l s n) = letLog (K := K) l s n
   unfold letLog
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun e _ => ?_
   split_ifs <;> simp
 
@@ -169,8 +213,8 @@ theorem subst_xOfZ_zXY [Fintype ι] [DecidableEq ι] {l : ℕ} (hl : 2 ≤ l) (h
         ∑ s' : ZMod d, C (j (pXY σ om oms x s')) * (X (s', a, b) : MvPowerSeries (ZV d N0 N1) K)) =
       ∑ s' : ZMod d, C (j (∑ x : Bool × ι, mXY σ om oms s x * pXY σ om oms x s')) *
         (X (s', a, b) : MvPowerSeries (ZV d N0 N1) K) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Finset.mul_sum, map_sum, Finset.sum_mul]
+
+    simp only [Finset.mul_sum, map_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun y _ => Finset.sum_congr rfl fun s' _ => ?_
     rw [map_mul, map_mul, mul_assoc]
@@ -192,8 +236,8 @@ theorem sum_subst_rho_beXY [Fintype ι] (j : K0 →+* K) (be0 : MvPowerSeries (F
     intro ab
     have hρ := hasSubst_rho (K := K) (ι := ι) ab.1 ab.2
     unfold beXY
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, subst_sum hρ]
+
+    rw [map_sum, subst_sum hρ]
     refine Finset.sum_congr rfl fun r _ => ?_
     rw [map_subst (hs2 (constantCoeff_X _) (constantCoeff_X _)),
       subst_comp_subst_apply (hasSubst_of_constantCoeff_zero (by
@@ -272,7 +316,7 @@ theorem exists_cofactor (l d N0 N1 : ℕ) [NeZero d] (σ : K0 →+* K0) (j : K0 
     exact subst_xOfZ_zXY hl hd j σ hfix hTr s a b
   have hlg : HasSubst (entLog (K := K) (d := d) (N0 := N0) (N1 := N1) l) :=
     hasSubst_of_constantCoeff_zero fun v =>
-      ((Formalism.L2.Th1.D.letterShift K l d (RingHom.id K) hU.1).2.2 N0 N1 v.2.1 v.2.2 v.1).1
+      ((_root_.Formalism.L2.Th1.D.letter_shift K l d (RingHom.id K) hU.1).2.2 N0 N1 v.2.1 v.2.2 v.1).1
   have hinv : ∀ f : MvPowerSeries (ZV d N0 N1) K, subst g (subst (entLog (K := K) l) f) = f := by
     intro f
     rw [subst_comp_subst_apply hlg hgs]
@@ -282,7 +326,7 @@ theorem exists_cofactor (l d N0 N1 : ℕ) [NeZero d] (σ : K0 →+* K0) (j : K0 
 
   obtain ⟨B, hB⟩ : ∃ B : MvPowerSeries (Bool × ι × Fin N0 × Fin N1) K, B = ∑ ab : Fin N0 × Fin N1,
       subst (rho ab.1 ab.2) (map j (subst (zXY l σ om oms) (beMean (d := d) l σ be0 om oms ζ))) := ⟨_, rfl⟩
-  have hSm := (Formalism.InvariantFactorPaths.G7.Top.mapSimeq K0 K _ j hj).1 _ _ hS
+  have hSm := (_root_.Formalism.InvariantFactorPaths.G7.mapSimeq_statement K0 K _ j hj).1 _ _ hS
   have hR := Formalism.InvariantFactorPaths.G7.Top.simeqRules K (Bool × ι × Fin N0 × Fin N1)
   have hBS : Simeq B (sumE (ι := ι) (N0 := N0) (N1 := N1) (map j be0)) := by
     rw [hB, ← sum_subst_rho_beXY]
@@ -293,8 +337,8 @@ theorem exists_cofactor (l d N0 N1 : ℕ) [NeZero d] (σ : K0 →+* K0) (j : K0 
     have h0 : constantCoeff (map j be0) = 0 := by
       rw [constantCoeff_map, ← coeff_zero_eq_constantCoeff_apply, hF1.1 0 (Or.inl rfl), map_zero]
     unfold sumE
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_eq_zero fun e _ => ?_
     exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero fun c => constantCoeff_X _)
       (fun c => constantCoeff_X _) h0

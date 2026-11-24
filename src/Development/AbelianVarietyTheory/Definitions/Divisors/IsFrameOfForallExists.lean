@@ -1,10 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LineBundleGlobalSectionsDimCongrPicardClass
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallySubsingletonCohTwistZOfIsProjOver
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFrobGBaseChange
+public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.HdimEqZeroOfSubsingleton
+public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.PreservesFiniteColimitsTwistFunctor
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExactAndSurjectiveAppOfExactOfEpi
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RestrictPullbackIsoHomAppPullbackSections
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -30,8 +71,8 @@ theorem resM_linearCombination (e : ι → Γ(F, U)) (h : V ≤ U) (h' : W ≤ V
     resM F h' (Fintype.linearCombination Γ(X, V) (fun i => resM F h (e i)) a) =
       Fintype.linearCombination Γ(X, W) (fun i => resM F (h'.trans h) (e i))
         fun i => resG X h' (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Fintype.linearCombination_apply, map_sum, resM_smul, resM_resM]
+
+  simp only [Fintype.linearCombination_apply, map_sum, resM_smul, resM_resM]
 
 namespace IsFrame
 
@@ -58,11 +99,11 @@ theorem coe_basis (he : IsFrame e) (h : V ≤ U) : ⇑(he.basis h) = fun i => re
 theorem repr_resM (he : IsFrame e) (h : V ≤ U) (h' : W ≤ V) (s : Γ(F, V)) (i : ι) :
     (he.basis (h'.trans h)).repr (resM F h' s) i = resG X h' ((he.basis h).repr s i) := by
   conv_lhs => rw [← (he.basis h).sum_repr s]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, resM_smul, basis_apply, resM_resM]
+
+  simp only [map_sum, resM_smul, basis_apply, resM_resM]
   simp only [← he.basis_apply (h'.trans h)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, Module.Basis.repr_sum_self]
+
+  rw [← map_sum, Module.Basis.repr_sum_self]
 
 theorem res (he : IsFrame e) (h : V ≤ U) : IsFrame fun i => resM F h (e i) := fun W h' => by
   simpa only [resM_resM] using he W (h'.trans h)
@@ -143,8 +184,8 @@ theorem bijective_stalk (he : IsFrame e) (x : X) (hx : x ∈ U) :
         Fintype.linearCombination (X.presheaf.stalk x)
           (fun i => (F.presheaf.germ U x hx (e i) : (F.presheaf.stalk x :)))
           fun i => X.presheaf.germ V x hxV (a i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Fintype.linearCombination_apply, map_sum, QCoh.germ_smul, germ_resM]
+
+    simp only [Fintype.linearCombination_apply, map_sum, QCoh.germ_smul, germ_resM]
   constructor
   · refine (injective_iff_map_eq_zero _).2 fun a ha => ?_
     choose W hW b hb using fun i => X.presheaf.exists_germ_eq (a i)
@@ -215,9 +256,9 @@ theorem equiv_resM_frame (he : IsFrame e) (he' : IsFrame e') (h : V ≤ U) (i : 
 theorem equiv_resM (he : IsFrame e) (he' : IsFrame e') (h : V ≤ U) (h' : W ≤ V) (s : Γ(F, V)) :
     he.equiv he' (h'.trans h) (resM F h' s) = resM G h' (he.equiv he' h s) := by
   obtain ⟨a, rfl⟩ := (he V h).2 s
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Fintype.linearCombination_apply, map_sum, resM_smul, resM_resM, map_smul,
-    equiv_resM_frame]
+
+  simp only [Fintype.linearCombination_apply, map_sum, resM_smul, resM_resM, map_smul,
+  equiv_resM_frame]
 
 def restrictIso (he : IsFrame e) (he' : IsFrame e') (g : Y ⟶ X) [IsOpenImmersion g]
     (hg : g.opensRange ≤ U) : F.restrict g ≅ G.restrict g :=

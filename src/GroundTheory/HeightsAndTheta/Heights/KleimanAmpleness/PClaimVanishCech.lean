@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
+import Mathlib.Algebra.Lie.OfAssociative
 
 @[expose] public section
 
@@ -58,8 +58,8 @@ theorem d_one_d_zero
       ρ K.1 J.1 h (w K) = ρ K'.1 J.1 h' (w K') := by
     rintro K _ h h' rfl; rfl
   rw [d_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [d_apply, map_sum, map_zsmul, hρ, Finset.smul_sum, smul_smul]
+
+  simp only [d_apply, map_sum, map_zsmul, hρ, Finset.smul_sum, smul_smul]
   rw [Pi.zero_apply, Finset.sum_sigma']
   refine Finset.sum_involution
     (fun p _ => ⟨⟨p.2.1, Finset.mem_of_mem_erase p.2.2⟩,
@@ -95,7 +95,7 @@ theorem d_one_d_zero (F : SubSystem S x E) (w : Cech.Cochain (fun I => F.sub I) 
   Cech.d_one_d_zero (fun _ _ _ _ _ _ => rfl) w
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem subsingleton_H_one_of_quot (F G : SubSystem S x E)
     (hGF : ∀ I, ∀ y ∈ G.sub I, y ∈ F.sub I) (hG : Subsingleton (G.H 1))
     (hQ : Subsingleton (quotH F G 1)) : Subsingleton (F.H 1) := by

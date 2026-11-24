@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsConeAvoid
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHomogDimZeroPow
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLinearFormCut
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHomogDimZeroPow
+public import Mathlib.Algebra.Module.Submodule.Union
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 
 @[expose] public section
 

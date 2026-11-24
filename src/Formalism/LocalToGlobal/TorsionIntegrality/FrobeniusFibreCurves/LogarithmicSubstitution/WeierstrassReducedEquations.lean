@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementA
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -55,7 +57,7 @@ theorem dz_cube (f : PowerSeries K) : dz (f ^ 3) = 3 * f ^ 2 * dz f := by
 
 theorem dz_X_pow (n : ℕ) : dz ((X : PowerSeries K) ^ (n + 1)) = ((n : PowerSeries K) + 1) * X ^ n := by
   induction n with
-  | zero => simp [dz_X]
+  | zero => simp
   | succ n ih =>
     rw [pow_succ, dz_mul, ih, dz_X]
     push_cast

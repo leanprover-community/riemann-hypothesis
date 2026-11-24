@@ -1,6 +1,10 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowFixesComplementOfIsotropic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatMulVec
 
 @[expose] public section
 
@@ -188,7 +192,5 @@ theorem unitaryComplementMove_of_isotropic : UnitaryComplementMove (E := E) := b
     rw [Matrix.mulVec_smul, Matrix.mulVec_sub, Matrix.mulVec_smul]
 
 end Data
-
-theorem unitaryComplementMove : UnitaryComplementMove (E := E) := Data.unitaryComplementMove_of_isotropic
 
 end ReciprocityTheory.ChartRestriction.G.FD

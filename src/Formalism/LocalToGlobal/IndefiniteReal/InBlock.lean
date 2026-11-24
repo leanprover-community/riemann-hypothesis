@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.CutPassage3S
 public import Formalism.LocalToGlobal.GlobalTheory.DivPassage
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelAmbTransfer
+public import Formalism.LocalToGlobal.IndefiniteReal.CxPass
+public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage
 
 @[expose] public section
 

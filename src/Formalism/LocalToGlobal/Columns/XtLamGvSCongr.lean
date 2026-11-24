@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainInstY
-public import Formalism.LocalToGlobal.Columns.ChainInstS
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+public import Formalism.LocalToGlobal.Columns.ChainInst
+import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

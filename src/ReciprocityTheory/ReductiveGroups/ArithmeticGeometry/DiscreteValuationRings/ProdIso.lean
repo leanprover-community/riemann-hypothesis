@@ -1,7 +1,52 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.AppCompatGeneric
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubicalPullBaseChangeSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBTransport
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.AppCompatGeneric
 
 @[expose] public section
 
@@ -29,17 +74,7 @@ lemma tu_def {V : Y.Opens} {ψ : Y ⟶ X} {p : ι} (h : V ≤ ψ ⁻¹ᵁ U p) :
   unfold tu
   exact dif_pos h
 
-private lemma rs_rs' {T : Scheme.{0}} {O1 O2 O3 : T.Opens} (h1 : O2 ≤ O1) (h2 : O3 ≤ O2)
-    (x : Γ(T, O1)) : rs h2 (rs h1 x) = rs (h2.trans h1) x := by
-  first
-    | (simp only [rs]; rw [← CommRingCat.comp_apply, ← Functor.map_comp]; rfl)
-    | (change _ = (T.presheaf.map ((homOfLE h1).op ≫ (homOfLE h2).op)).hom x
-       rw [Functor.map_comp]; rfl)
-
-private lemma res_res_eq_res_trans' {T : Scheme.{0}} {O1 O2 O3 : T.Opens} (h1 : O2 ≤ O1) (h2 : O3 ≤ O2)
-    (z : Γ(T, O1)ˣ) : res h2 (res h1 z) = res (h2.trans h1) z := by
-  ext1
-  exact rs_rs' h1 h2 (z : Γ(T, O1))
+private alias rs_rs' := _root_.ReciprocityTheory.ChartRestriction.G.DVR.rs_rs
 
 private lemma app_rs_eq_rs_app' {T S : Scheme.{0}} (f : S ⟶ T) {O1 O2 : T.Opens} (e : O2 ≤ O1)
     (x : Γ(T, O1)) :
@@ -57,11 +92,9 @@ lemma tu_pull (h : Z ⟶ Y) {W : Y.Opens} {V : Z.Opens} (hV : V ≤ h ⁻¹ᵁ W
     (hW : W ≤ ψ ⁻¹ᵁ U p) :
     res hV (pullU h W (tu U u W ψ p)) = tu U u V (h ≫ ψ) p := by
   have hV' : V ≤ (h ≫ ψ) ⁻¹ᵁ U p := fun x hx => hW (hV hx)
-  rw [tu_def hW, tu_def hV', pullU_res_eq_res_map_homOfLE, res_res_eq_res_trans']
+  rw [tu_def hW, tu_def hV', pullU_res_eq_res_map_homOfLE, _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res']
   first
     | rfl
-    | (ext1; rfl)
-    | (ext1; simp only [res, pullU, Units.coe_map, MonoidHom.coe_coe, Scheme.comp_app]; rfl)
 
 end TU
 
@@ -97,7 +130,7 @@ lemma linCombIso_res (w : LB.Iso L M) {K : Type} [Fintype K] (φ : K → (Y ⟶ 
   have c : V ≤ φ k ⁻¹ᵁ (LB.div M L).U (p.1 k, p.2 k) :=
     h.trans (le_inf (inf_le_left.trans (LB.wchart_le M φ p.1 k))
       (inf_le_right.trans (LB.wchart_le L φ p.2 k)))
-  refine (res_res_eq_res_trans' _ _ _).trans ?_
+  refine (_root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res' _ _ _).trans ?_
   exact (tu_def (U := (LB.div M L).U) (u := w.s) c).symm
 
 private lemma preimage_le_preimage_of_le {T S : Scheme.{0}} (f : S ⟶ T) {O1 O2 : T.Opens} (e : O2 ≤ O1) :
@@ -112,7 +145,7 @@ private lemma res_pullU_mul_inv_mul_of_res_eq {T S : Scheme.{0}} (f : S ⟶ T) {
         (res (hV.trans (preimage_le_preimage_of_le f hC)) (pullU f C l))⁻¹ *
         res (hV.trans (preimage_le_preimage_of_le f hD)) (pullU f D s') := by
   have H2 := congrArg (fun z => res hV (pullU f O z)) H
-  simp only [map_mul, map_inv, pullU_res_eq_res_map_homOfLE, res_res_eq_res_trans'] at H2
+  simp only [map_mul, map_inv, pullU_res_eq_res_map_homOfLE, _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res'] at H2
   exact H2
 
 lemma wu_gen (w : LB.Iso L M) (hw : w.IsGen) {V : Y.Opens} {ψ : Y ⟶ X} {a a' : M.ι} {b b' : L.ι}
@@ -141,25 +174,12 @@ lemma wu_gen (w : LB.Iso L M) (hw : w.IsGen) {V : Y.Opens} {ψ : Y ⟶ X} {a a' 
     _ = _ := K
     _ = tr M V ψ a a' * (tr L V ψ b b')⁻¹ * wu w V ψ a' b' := by
       rw [e2, e3, e4]
-      all_goals exact rfl
 
 end IsoUnits
 
 section LinCombIsoGen
 
 variable {X Y : Scheme.{0}} {L M : LB X}
-
-private lemma res_linComb_g_eq_prod_tr_zpow (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ)
-    (a b : K → L.ι) {V : Y.Opens} (h : V ≤ LB.wchart L φ a ⊓ LB.wchart L φ b) :
-    res h ((LB.LinComb L φ ε).g a b) = ∏ k, tr L V (φ k) (a k) (b k) ^ ε k := by
-  refine (map_prod (res h) _ Finset.univ).trans (Finset.prod_congr rfl (fun k _ => ?_))
-  refine (map_zpow (res h) _ (ε k)).trans ?_
-  congr 1
-  have c : V ≤ φ k ⁻¹ᵁ (L.U (a k) ⊓ L.U (b k)) :=
-    h.trans (le_inf (inf_le_left.trans (LB.wchart_le L φ a k)) (inf_le_right.trans (LB.wchart_le L φ b k)))
-  refine (res_res_eq_res_trans' _ _ _).trans ?_
-  simp only [tr, dif_pos c]
-  all_goals exact rfl
 
 theorem linCombIso_isGen (w : LB.Iso L M) (hw : w.IsGen) {K : Type} [Fintype K] (φ : K → (Y ⟶ X))
     (ε : K → ℤ) : (LB.linCombIso w φ ε).IsGen := by
@@ -180,10 +200,10 @@ theorem linCombIso_isGen (w : LB.Iso L M) (hw : w.IsGen) {K : Type} [Fintype K] 
     (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U i ⊓
       (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U j ≤
       (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U j)
-  have e3 := res_linComb_g_eq_prod_tr_zpow M φ ε i.1 j.1 (V := (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U i ⊓
+  have e3 := _root_.ReciprocityTheory.ChartRestriction.G.DVR.linComb_g_res M φ ε i.1 j.1 (V := (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U i ⊓
       (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U j)
     (le_inf (inf_le_left.trans inf_le_left) (inf_le_right.trans inf_le_left))
-  have e4 := res_linComb_g_eq_prod_tr_zpow L φ ε i.2 j.2 (V := (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U i ⊓
+  have e4 := _root_.ReciprocityTheory.ChartRestriction.G.DVR.linComb_g_res L φ ε i.2 j.2 (V := (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U i ⊓
       (LB.div (LB.LinComb M φ ε) (LB.LinComb L φ ε)).U j)
     (le_inf (inf_le_left.trans inf_le_right) (inf_le_right.trans inf_le_right))
   have e5 := fun k => wu_gen w hw (hW k)
@@ -205,13 +225,12 @@ variable {Y : Scheme.{0}} {A B : LB Y} (u : LB.Iso A B) (t : LB.Sec B)
 
 lemma g_self_res (hA : A.IsLB) (a : A.ι) {V : Y.Opens} (h : V ≤ A.U a ⊓ A.U a) : res h (A.g a a) = 1 := by
   have h1 := congrArg (res (h.trans inf_le_left)) (hA.g_self a)
-  rw [res_res_eq_res_trans', map_one] at h1
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res', map_one] at h1
   exact h1
 
 lemma divLe (a : A.ι) (b : B.ι) : A.U a ⊓ B.U b ≤ (LB.div B A).U (b, a) := by
   first
     | exact le_inf inf_le_right inf_le_left
-    | (show A.U a ⊓ B.U b ≤ B.U b ⊓ A.U a; exact le_inf inf_le_right inf_le_left)
 
 def isoCand (a : A.ι) (b : B.ι) : Γ(Y, A.U a ⊓ B.U b) :=
   (((res (divLe a b) (u.s (b, a)))⁻¹ : Γ(Y, A.U a ⊓ B.U b)ˣ) : Γ(Y, A.U a ⊓ B.U b)) *
@@ -223,7 +242,7 @@ lemma isoCand_rs (a : A.ι) (b : B.ι) {V : Y.Opens} (hV : V ≤ A.U a ⊓ B.U b
   have hm : ∀ x y : Γ(Y, A.U a ⊓ B.U b), rs hV (x * y) = rs hV x * rs hV y :=
     fun x y => map_mul _ x y
   have e : res hV ((res (divLe a b) (u.s (b, a)))⁻¹) = (res (hV.trans (divLe a b)) (u.s (b, a)))⁻¹ := by
-    rw [map_inv, res_res_eq_res_trans']
+    rw [map_inv, _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res']
   unfold isoCand
   rw [hm, rs_rs']
   congr 1
@@ -238,7 +257,7 @@ private lemma res_trans_eq_mul_of_res_eq_one_right {T : Scheme.{0}} {O P Q R S' 
     (hl : res (hW.trans hR) l = 1) :
     res (hW.trans hP) s = res (hW.trans hQ) m * res (hW.trans hS) s' := by
   have H2 := congrArg (res hW) H
-  simp only [map_mul, map_inv, res_res_eq_res_trans', hl, inv_one, mul_one] at H2
+  simp only [map_mul, map_inv, _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res', hl, inv_one, mul_one] at H2
   exact H2
 
 private lemma rs_trans_eq_res_mul_rs_of_rs_eq {T : Scheme.{0}} {P Q R W : T.Opens} (hP : Q ≤ P) (hR : Q ≤ R) (hW : W ≤ Q)
@@ -283,7 +302,7 @@ lemma inf_le_iSup_inf_cover (hB : B.IsLB) (a a' : A.ι) : A.U a ⊓ A.U a' ≤ �
   calc A.U a ⊓ A.U a' = (A.U a ⊓ A.U a') ⊓ ⨆ b, B.U b := by rw [hB.cover, inf_top_eq]
     _ ≤ ⨆ b, (A.U a ⊓ A.U a') ⊓ B.U b := (inf_iSup_eq _ _).le
 
-set_option maxHeartbeats 1000000 in
+
 private lemma res_trans_eq_inv_mul_of_res_eq_one_left {T : Scheme.{0}} {O P Q R S' W : T.Opens}
     (hP : O ≤ P) (hQ : O ≤ Q) (hR : O ≤ R) (hS : O ≤ S') (hW : W ≤ O)
     (s : Γ(T, P)ˣ) (m : Γ(T, Q)ˣ) (l : Γ(T, R)ˣ) (s' : Γ(T, S')ˣ)
@@ -291,7 +310,7 @@ private lemma res_trans_eq_inv_mul_of_res_eq_one_left {T : Scheme.{0}} {O P Q R 
     (hm : res (hW.trans hQ) m = 1) :
     res (hW.trans hP) s = (res (hW.trans hR) l)⁻¹ * res (hW.trans hS) s' := by
   have H2 := congrArg (res hW) H
-  simp only [map_mul, map_inv, res_res_eq_res_trans', hm, one_mul] at H2
+  simp only [map_mul, map_inv, _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res', hm, one_mul] at H2
   exact H2
 
 lemma secOfIsoF_compat (hu : u.IsGen) (hA : A.IsLB) (hB : B.IsLB) (a a' : A.ι) :
@@ -336,9 +355,7 @@ lemma secOfIsoF_compat (hu : u.IsGen) (hA : A.IsLB) (hB : B.IsLB) (a a' : A.ι) 
       (rs (inf_le_left : A.U a ⊓ A.U a' ≤ A.U a) (secOfIsoF t hu hA hB a)))
     (fun b b' => by
       first
-        | (simp only [rs_rs']; done)
-        | (simp only [rs_rs']; rfl)
-        | rfl)
+        | (simp only [rs_rs']; done))
   exact (huniq (rs (inf_le_left : A.U a ⊓ A.U a' ≤ A.U a) (secOfIsoF t hu hA hB a)) (fun b => rfl)).trans
     (huniq (((A.g a a' : Γ(Y, A.U a ⊓ A.U a')ˣ) : Γ(Y, A.U a ⊓ A.U a')) *
       rs (inf_le_right : A.U a ⊓ A.U a' ≤ A.U a') (secOfIsoF t hu hA hB a')) key).symm
@@ -370,15 +387,13 @@ def boxSecF (σ : Fin j → LB.Sec (LB.LinComb L (K := Fin 1) (fun _ => 𝟙 X) 
     Γ(X', LB.wchart (LB.LinComb L pr (fun _ => 1)) (fun _ : Fin 1 => 𝟙 X') jN) :=
   ∏ i, rs (box_le_pr L pr jN i) (((pr i).app _).hom ((σ i).f (fun _ => jN 0 i)))
 
-set_option maxHeartbeats 1000000 in
+
 private lemma res_pullU_res_pullU_id {T S : Scheme.{0}} (h : S ⟶ T) {O Q : T.Opens} {W : S.Opens}
     (e : O ≤ (𝟙 T) ⁻¹ᵁ Q) (hW : W ≤ h ⁻¹ᵁ O) (c : W ≤ h ⁻¹ᵁ Q) (z : Γ(T, Q)ˣ) :
     res hW (pullU h O (res e (pullU (𝟙 T) Q z))) = res c (pullU h Q z) := by
-  rw [pullU_res_eq_res_map_homOfLE, res_res_eq_res_trans']
+  rw [pullU_res_eq_res_map_homOfLE, _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res']
   first
     | rfl
-    | (ext1; rfl)
-    | (ext1; simp [res, pullU, Scheme.id_app])
 
 private lemma linComb_fin_one_g (L : LB X) (k : ℤ) (a b : Fin 1 → L.ι) :
     (LB.LinComb L (K := Fin 1) (fun _ => 𝟙 X) (fun _ => k)).g a b =
@@ -394,13 +409,11 @@ private lemma res_pullU_id_eq_res {T : Scheme.{0}} {Q W : T.Opens} (c : W ≤ (�
     res c (pullU (𝟙 T) Q z) = res (c : W ≤ Q) z := by
   first
     | rfl
-    | (ext1; rfl)
-    | (ext1; simp [res, pullU, Scheme.id_app])
 
 private lemma res_zpow_res_pullU_id {T : Scheme.{0}} {O Q V : T.Opens} (hV : V ≤ O) (e : O ≤ (𝟙 T) ⁻¹ᵁ Q)
     (c : V ≤ Q) (z : Γ(T, Q)ˣ) (k : ℤ) :
     res hV ((res e (pullU (𝟙 T) Q z)) ^ k) = (res c z) ^ k := by
-  rw [map_zpow, res_res_eq_res_trans', res_pullU_id_eq_res]
+  rw [map_zpow, _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res', res_pullU_id_eq_res]
   all_goals rfl
 
 lemma box_g_res (jN jN' : Fin 1 → (Fin j → L.ι)) {V : X'.Opens}
@@ -414,10 +427,10 @@ lemma box_g_res (jN jN' : Fin 1 → (Fin j → L.ι)) {V : X'.Opens}
       (inf_le_right.trans (LB.wchart_le (LB.LinComb L pr (fun _ => 1)) (fun _ : Fin 1 => 𝟙 X') jN' 0)))
   refine (congrArg (res h) (linComb_fin_one_g (LB.LinComb L pr (fun _ => 1)) k jN jN')).trans ?_
   refine (res_zpow_res_pullU_id h _ c0 _ k).trans ?_
-  refine (congrArg (· ^ k) (res_linComb_g_eq_prod_tr_zpow L pr (fun _ => 1) (jN 0) (jN' 0) c0)).trans ?_
+  refine (congrArg (· ^ k) (_root_.ReciprocityTheory.ChartRestriction.G.DVR.linComb_g_res L pr (fun _ => 1) (jN 0) (jN' 0) c0)).trans ?_
   simp only [zpow_one, Finset.prod_zpow]
 
-set_option maxHeartbeats 1000000 in
+
 lemma g_pull_one {Z : Scheme.{0}} (h : Z ⟶ X) (a b : Fin 1 → L.ι) {W : Z.Opens}
     (hW : W ≤ h ⁻¹ᵁ (LB.wchart L (fun _ : Fin 1 => 𝟙 X) a ⊓ LB.wchart L (fun _ : Fin 1 => 𝟙 X) b)) :
     res hW (pullU h _ ((LB.LinComb L (K := Fin 1) (fun _ => 𝟙 X) (fun _ => k)).g a b)) =
@@ -433,7 +446,7 @@ lemma g_pull_one {Z : Scheme.{0}} (h : Z ⟶ X) (a b : Fin 1 → L.ι) {W : Z.Op
   congr 1
   exact (res_pullU_res_pullU_id h _ hW c _).trans e3.symm
 
-set_option maxHeartbeats 1000000 in
+
 lemma boxSecF_compat (σ : Fin j → LB.Sec (LB.LinComb L (K := Fin 1) (fun _ => 𝟙 X) (fun _ => k)))
     (jN jN' : Fin 1 → (Fin j → L.ι)) :
     rs (inf_le_left : LB.wchart (LB.LinComb L pr (fun _ => 1)) (fun _ : Fin 1 => 𝟙 X') jN ⊓

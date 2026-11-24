@@ -2,9 +2,57 @@ module
 
 public import Development.WeilBound.ThetaLifts.LatticeBasics.MemLam
 public import Development.WeilBound.ThetaLifts.LatticeBasics.BadStmt
-public import Development.WeilBound.ThetaLifts.LatticeBasics.LocMeas
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.PfDict
+public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictDef
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompactOpenAddSubgroup
+public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.PfDict
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictAd
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
+public import Development.WeilBound.ThetaLifts.LatticeBasics.LocMeas
+import GroundTheory.GlobalFields.LocalFieldAtPlace
+import GroundTheory.LocalFields.LocalFourierHaar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
+import Mathlib.Topology.Sheaves.Init
+public import Development.WeilBound.ThetaLifts.LatticeBasics.EulerProd
 
 @[expose] public section
 
@@ -123,7 +171,6 @@ theorem bump : Bump := by
   have hopen : IsOpen (Euler.intGrp σ X v : Set (UA σ X.J)) := by
     first
     | exact Euler.isOpen_int (Euler.herm_full hp.herm) v
-    | exact Euler.isOpen_int hp.herm.lat v
   have n1 := near_UA h hG.uA (hopen.mem_nhds (one_mem _))
   have hv1 : ∀ᶠ y in 𝓝 (1 : Fv F v), ValuativeRel.valuation (Fv F v) y = 1 := by
     simpa [Filter.Eventually] using (ValuativeRel.valuation (Fv F v)).locally_const (x := 1) (by simp)
@@ -179,8 +226,8 @@ theorem bump : Bump := by
     let u₀ : Matrix (Fin n) (Fin d) (Fv F v) := of fun i j => -l (single i j 1)
     have el : ∀ Y, trace (Yᵀ * -u₀) = l Y := fun Y => by
       conv_rhs => rw [matrix_eq_sum_single Y]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [← dot_ofM, dotProduct, ofM, Fintype.sum_prod_type, map_sum, u₀, Matrix.neg_apply, of_apply, neg_neg]
+
+      simp only [← dot_ofM, dotProduct, ofM, Fintype.sum_prod_type, map_sum, u₀, Matrix.neg_apply, of_apply, neg_neg]
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by rw [← smul_eq_mul, ← map_smul]; simp
     refine Or.inr ⟨secM sec u₀ 0, psiV B.ψ v (l Y₀), psiV B.ψ v (l (g₀.1ᵀ * Y₀)), h.atM _ _, fun H => h2 ?_,
       mult _ (h.atM _ _) (h.sndM _ _) _ fun Y hY => ?_,

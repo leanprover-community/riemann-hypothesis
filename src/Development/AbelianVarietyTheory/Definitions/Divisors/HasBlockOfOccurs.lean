@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.PieriBlockIdeals.LatticeInclusionRealSettingAlt
 public import Formalism.LocalToGlobal.Divisibility.RowLat
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GaloisRepOfPolarizedCuspidal
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterAboveIff
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CharAbove
+public import Formalism.PieriBlockIdeals.LocalFaithfullyFlat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -109,12 +147,21 @@ def setting (jK : F.K →* alg F.O N lam)
     [sT : @IsScalarTower F.O F.T (Forms F.O (A := alg F.O N lam) F.Γ jK (NablaT F.O N lam)) _ mT.toSMul _]
     (m : Ideal F.T) [m.IsPrime] : HidaSetting ι N lam where
   O := F.O
+  cO := F.cO
+  dO := F.dO
+  zO := F.zO
   A := alg F.O N lam
+  rA := (alg F.O N lam).toRing
+  aA := (alg F.O N lam).algebra
   G := F.G
+  gG := F.gG
   Γ := F.Γ
   K := F.K
   jK := jK
+  mA := (alg F.O N lam).moduleLeft
   T := F.T
+  cT := AddMonoidAlgebra.commRing
+  aT := AddMonoidAlgebra.algebra
   mT := mT
   sT := sT
   S := m.primeCompl
@@ -170,16 +217,6 @@ def Reads.Occurs {w : HeightOneSpectrum (𝓞 K)} (R : Reads F lam B w) (Z : Sub
 
 def Reads.HasBlock {w : HeightOneSpectrum (𝓞 K)} (R : Reads F lam B w) (θ : F.I → PadicAlgCl l) : Prop :=
   ∃ x : B.Pl × ℕ → K, (∀ P, x (P, 0) = 1) ∧ Formalism.L2.Col.HasBlocks B.n B.q B.t B.bl x ∧ ∀ i, θ i = R.e0 (x (R.ix i))
-
-theorem eq_one_of_occurs {L V J : Type} [Field L] [AddCommGroup V] [Module L V] {op : J → Module.End L V} {x : J → L}
-    (hx : Formalism.L2.Col.Occurs op x) {j : J} (hj : op j = 1) : x j = 1 := by
-  obtain ⟨v, hv, hv0⟩ := (Submodule.ne_bot_iff _).1 hx
-  have h := Formalism.L2.Col.eigAt_le op x j hv
-  rw [Module.End.mem_maxGenEigenspace, hj] at h
-  obtain ⟨k, hk⟩ := h
-  have e : (1 : Module.End L V) - x j • 1 = (1 - x j) • 1 := by rw [sub_smul, one_smul]
-  rw [e, smul_pow, one_pow, LinearMap.smul_apply, Module.End.one_apply, smul_eq_zero] at hk
-  exact (sub_eq_zero.1 (eq_zero_of_pow_eq_zero (hk.resolve_right hv0))).symm
 
 end Reading
 
@@ -286,8 +323,8 @@ theorem Reads.HasBlock.dvd {l : ℕ} [Fact l.Prime] {ι : Type} [DecidableEq ι]
     refine List.map_congr_left fun ν _ => ?_
     simp [blockPoly, Polynomial.map_prod]
   have e2 : (heckePoly B.n B.q x Q).map R.e0 = heckePolyOf B.n (B.q Q) (sysOf B.n pt θ P) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [heckePoly, heckePolyOf, heckePolyOf, Polynomial.map_sum]
+
+    rw [heckePoly, heckePolyOf, heckePolyOf, Polynomial.map_sum]
     refine Finset.sum_congr rfl fun k hk => ?_
     have : R.e0 (x (Q, k)) = sysOf B.n pt θ P k := by
       rcases k with _ | k

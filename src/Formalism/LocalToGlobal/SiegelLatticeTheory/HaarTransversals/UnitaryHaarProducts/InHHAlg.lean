@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHCut
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -171,16 +171,16 @@ theorem sigA_inclE (e : X.B.I.E) :
 theorem hA_incl (x y : Fin X.B.I.n → X.B.I.E) :
     hA X.B.I (incl X.B.I x) (incl X.B.I y) =
       Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hA, Formalism.UG.hform, incl, Matrix.map_apply, map_sum, map_mul, sigA_inclE]
+
+  simp only [hA, Formalism.UG.hform, incl, Matrix.map_apply, map_sum, map_mul, sigA_inclE]
 
 theorem hform_crd (v w : (VS D).V) :
     X.ιE (Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.crd v) (X.crd w)) = (VS D).hT v w := by
   conv_rhs => rw [← X.bas.sum_repr v, ← X.bas.sum_repr w]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
-    Formalism.UG.hform, map_mul, HidaSetting.crd, crdOf, starRingEnd_apply, X.ιE_conj, RingEquiv.apply_symm_apply,
-    X.J_eq, Finset.mul_sum]
+
+  simp only [map_sum, LinearMap.map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+  Formalism.UG.hform, map_mul, HidaSetting.crd, crdOf, starRingEnd_apply, X.ιE_conj, RingEquiv.apply_symm_apply,
+  X.J_eq, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   simp only [← Formalism.BasicNotions.bridge_star_holds D.R D.host, RingHom.id_apply]
@@ -282,7 +282,7 @@ theorem nfin_inv_pres {n : X.B.I.Gf} (hn : n ∈ X.NfinU u) :
 theorem mul_sub_one_mulVec (a b : X.B.I.Gf) (y : VA X.B.I) :
     (X.B.I.fmat (a * b) - 1) *ᵥ y = X.B.I.fmat a *ᵥ ((X.B.I.fmat b - 1) *ᵥ y) + (X.B.I.fmat a - 1) *ᵥ y := by
   rw [fmat_mul]
-  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec, Matrix.mul_sub, Matrix.mul_one]
+  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec]
   abel
 
 theorem inv_sub_one_mulVec (a : X.B.I.Gf) (y : VA X.B.I) :
@@ -448,7 +448,7 @@ theorem mulVec_inverse_mem_SpL_of_C1 {M M' : Matrix (Fin n) (Fin n) R} (hM : C1 
 
 theorem mul_sub_one_mulVec' (M N : Matrix (Fin n) (Fin n) R) (y : Fin n → R) :
     (M * N - 1) *ᵥ y = M *ᵥ ((N - 1) *ᵥ y) + (M - 1) *ᵥ y := by
-  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec, Matrix.mul_sub, Matrix.mul_one]
+  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec]
   abel
 
 theorem inv_sub_one_mulVec' (M M' : Matrix (Fin n) (Fin n) R) (hMM : M' * M = 1) (y : Fin n → R) :

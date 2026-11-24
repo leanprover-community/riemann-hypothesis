@@ -1,23 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.CohomologyResMemCohomologyConjInvariants
-public import GroundTheory.ProfiniteCohomology.Factor
-public import GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateInfinite.Restrict
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerFrob
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSUnram
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Ramified
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
-public import GroundTheory.ProfiniteCohomology.Procyclic
-public import GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
-public import GroundTheory.ProfiniteCohomology.CupProducts.Pairing
-public import GroundTheory.LocalFields.TameExtension
-public import GroundTheory.ProfiniteCohomology.IsProPGroupSubgroupIffIsPGroupMap
-public import GroundTheory.ProfiniteCohomology.NotDvdSuperIndexIffMap
-public import GroundTheory.ProfiniteCohomology.GaloisModules.FixedField
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.HighDecomp
+public import GroundTheory.ProfiniteCohomology.DiscreteModules
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+import GroundTheory.GlobalFields.HerbrandQuotients.RationalForm
+public import Mathlib.Topology.Basic
 
 @[expose] public section
 

@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StCriticalFibreInfinite
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHolomorphicFibreInfinite
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PImplicitCurve
+import Mathlib.Analysis.Calculus.ImplicitContDiff
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -81,8 +88,8 @@ theorem CriticalFibreInfinite.proof : CriticalFibreInfinite.Statement := by
     simp [A']
   have hLA : ∀ p : ℂ × (Fin r → ℂ), Λ (fderiv ℂ f s (A' p)) = p.2 := by
     intro p
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hA', map_add (f := _), map_add (f := _), map_smul, map_smul, hw', smul_zero, zero_add, map_sum, map_sum]
+
+    rw [hA', map_add (f := _), map_add (f := _), map_smul, map_smul, hw', smul_zero, zero_add, map_sum, map_sum]
     simp only [map_smul, hΛv]
     ext i
     simp [Finset.sum_apply, Pi.single_apply]

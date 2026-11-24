@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.ZLattice.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+public import Mathlib.MeasureTheory.Integral.Average
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 

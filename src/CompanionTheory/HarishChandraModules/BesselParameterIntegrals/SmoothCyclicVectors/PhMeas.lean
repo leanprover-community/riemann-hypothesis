@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.PhMeasCore
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothVec
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
+import Formalism.PeriodIntegrals.PhMeasCore
 
 @[expose] public section
 

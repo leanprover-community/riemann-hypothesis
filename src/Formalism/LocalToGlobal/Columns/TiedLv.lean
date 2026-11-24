@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.Columns.TiedAtT
 public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
+public import Formalism.LocalToGlobal.Columns.TiedCls
 
 @[expose] public section
 
@@ -308,7 +309,7 @@ theorem lv_Pv_eq (hH : HostHyp d) (u : d.what₂.Word) (v : d.Pr.vT u) : (atTTie
   exact Ideal.mk_ker
 
 
-set_option maxHeartbeats 1000000 in
+
 def levelAgreement (hS : SpStd d.toColBase) (hH : HostHyp d) (u : d.what₂.Word) (i : ℕ) (hi : i ≤ d.R.m) :
     CF.LvTied (D := d.colRec a) u (atTTied a hH u) i hi where
   pr := fun v c => tiePr d.sp.cm d.hPr d.σ₀ u (d.repr u i) (stepCrd a hS hH u i hi) v c

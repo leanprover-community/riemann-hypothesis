@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsElem
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Elementary
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 @[expose] public section
 

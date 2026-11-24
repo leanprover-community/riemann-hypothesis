@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.LatticeInclusionFormsInjective
-public import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
-public import Formalism.LocalToGlobal.CharacterGerms.CoeffIterateZero
+public import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
+public import Mathlib.RingTheory.MvPowerSeries.Basic
 
 @[expose] public section
 

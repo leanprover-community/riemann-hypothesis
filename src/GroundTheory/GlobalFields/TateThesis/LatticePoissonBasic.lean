@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.ZLattice.Basic
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
+public import Mathlib.LinearAlgebra.BilinearForm.DualLattice
+public import Mathlib.Algebra.Module.ZLattice.Summable
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+import Mathlib.Analysis.Fourier.Notation
 
 @[expose] public section
 

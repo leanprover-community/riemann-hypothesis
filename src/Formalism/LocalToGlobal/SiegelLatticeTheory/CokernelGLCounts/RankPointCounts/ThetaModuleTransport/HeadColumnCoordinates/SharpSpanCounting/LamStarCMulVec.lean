@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.ThetaC
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.ModularBoundZeroHolds
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -26,8 +26,8 @@ theorem lamStarC_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (hu : IsUnit 
     intro a
     have := congrFun (congrFun (Matrix.mul_nonsing_inv Z hu) a) (Fin.last r)
     rw [Matrix.mul_apply, Matrix.one_apply] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_one cj, ← map_zero cj, ← apply_ite cj, ← this, map_sum]
+
+    rw [← map_one cj, ← map_zero cj, ← apply_ite cj, ← this, map_sum]
     exact Finset.sum_congr rfl fun b _ => by rw [map_mul, mul_comm]
   simp only [lamStarC, Finset.mul_sum]
   rw [Finset.sum_comm]

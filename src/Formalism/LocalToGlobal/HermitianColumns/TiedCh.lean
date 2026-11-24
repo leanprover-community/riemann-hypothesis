@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianColumns.HermCols
+public import Formalism.LocalRingCardinality.DataLevelD
+public import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
 
 @[expose] public section
 

@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.Interface
+public import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
+public import Mathlib.Algebra.Field.ZMod
 
 @[expose] public section
 

@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KerStd
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactAltForm
 
 @[expose] public section
 

@@ -1,11 +1,66 @@
 module
 
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapArea
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapAreaOne
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeSheetArea
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartGram
+public import Mathlib.MeasureTheory.Measure.Hausdorff
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChartGramPolar
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInj
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInjSet
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaLocal
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartGramMA
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapArea
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapAreaOne
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.ContDiff.WithLp
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Constructions.HaarToSphere
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.CmpbHessAtAddConst
 
 @[expose] public section
@@ -54,18 +109,7 @@ theorem integral_ball_pow (e : ℕ) {R : ℝ} (hR : 0 ≤ R) :
 
 theorem gram_nonneg {e n : ℕ} (v : (Fin e → ℂ) → (Fin n → ℂ)) (y : Fin e → ℂ) :
     0 ≤ gramVol v y := by
-  unfold gramVol
-  dsimp only
-  set w : Fin (e + 1) → Fin n → ℂ := Fin.cons (v y) fun j => fderiv ℂ v y (Pi.single j 1)
-  have hM : (Matrix.of fun a b => ∑ i, star (w a i) * w b i) =
-      (Matrix.of fun (i : Fin n) (a : Fin (e + 1)) => w a i)ᴴ *
-        Matrix.of fun (i : Fin n) (a : Fin (e + 1)) => w a i := by
-    ext a b
-    simp [Matrix.mul_apply, Matrix.conjTranspose_apply]
-  have h := (Matrix.posSemidef_conjTranspose_mul_self
-    (Matrix.of fun (i : Fin n) (a : Fin (e + 1)) => w a i)).det_nonneg
-  rw [← hM] at h
-  exact (Complex.nonneg_iff.1 h).1
+  apply _root_.GroundTheory.Heights₂.Heights.gramVol_nonneg
 
 def fsDens {e n : ℕ} (v : (Fin e → ℂ) → (Fin n → ℂ)) (x : Fin e → ℂ) : ℝ :=
   (e.factorial : ℝ) / Real.pi ^ e * gramVol v x / ‖WithLp.toLp 2 (v x)‖ ^ (2 * (e + 1))

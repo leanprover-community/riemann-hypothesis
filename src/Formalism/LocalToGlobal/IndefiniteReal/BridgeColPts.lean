@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.BridgeCol
-public import Formalism.LocalToGlobal.Columns.RowFormsAdelic
+public import Formalism.LocalToGlobal.Columns.AdelicLemmas
 
 @[expose] public section
 

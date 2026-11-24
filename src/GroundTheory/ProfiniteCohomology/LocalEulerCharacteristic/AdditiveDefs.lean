@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.FreeModule.ModN
+public import Mathlib.RepresentationTheory.Intertwining
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

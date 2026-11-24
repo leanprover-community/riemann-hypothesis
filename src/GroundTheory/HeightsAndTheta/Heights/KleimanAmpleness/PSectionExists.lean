@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmplePowSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LeadingCoeffPosSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

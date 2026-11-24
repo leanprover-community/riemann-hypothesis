@@ -1,13 +1,58 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PeriodRingsGaloisActionLawsFrobeniusCommStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRFiltrationLawsStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BcrisFrobeniusFixedFilZeroEqQpStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRGaloisInvariantsEqFinExtStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalPeriodRingsDataUnramifiedLawsStatement
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BcrisFrobeniusFixedFilZeroEqQp
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRGaloisInvariantsEqFinExt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PeriodRingsGaloisActionLawsFrobeniusComm
+import Formalism.LocalRingCardinality.AdicCompletionLocal.InstIsAdicCompleteOCSpanSingletonSetCast
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRFiltrationLaws
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalPeriodRingsDataUnramifiedLaws
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -87,8 +132,8 @@ theorem mem_range (hu : ∀ c : U, ι (u c) = O c) (hφ : ∀ c : U, φ (u c) = 
     intro n
     obtain ⟨c, hc⟩ := fund (∑ i ∈ Finset.range N, u ((σ^[i] ζ) ^ n) * φ^[i] b)
       (∑ i ∈ Finset.range N, (((σ^[i] ζ) ^ n : U) : Ω) * y i) (by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         have e : ∀ i, φ (u ((σ^[i] ζ) ^ n) * φ^[i] b) = u ((σ^[i + 1] ζ) ^ n) * φ^[i + 1] b := by
           intro i
           rw [map_mul, hφ, map_pow σ, Function.iterate_succ_apply', Function.iterate_succ_apply']
@@ -97,8 +142,8 @@ theorem mem_range (hu : ∀ c : U, ι (u c) = O c) (hφ : ∀ c : U, φ (u c) = 
         have h2 := Finset.sum_range_succ' (fun i => u ((σ^[i] ζ) ^ n) * φ^[i] b) N
         rw [h1, hζ, hb] at h2
         exact (add_right_cancel h2).symm) (by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_sum]
+
+        rw [map_sum, map_sum]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [map_mul, map_mul, hu, hy])
     exact ⟨_, hc⟩
@@ -170,9 +215,9 @@ attribute [local irreducible] Per.Acris Per.Bcris
 theorem invariants_Bcris : ∀ (l : ℕ) [Fact l.Prime], ∀ (C : Core l) (K : FinExt l) (b : Per.Bcris l),
     (∀ g ∈ GK K, Per.σB g b = b) → ∃ c : ↥(MaximalUnramifiedExtension l), (c : Om l) ∈ K.1 ∧ C.u c = b := by
   intro l _ C K b hb
-  obtain ⟨hφ, -, -, hι, hσ, -⟩ := GlobalTheory.T.localPeriodRingsData_unramified_laws l C
-  have hcomm := (GlobalTheory.T.periodRings_galoisAction_laws_frobenius_comm l).2.2.2.2.1
-  have hfil := (GlobalTheory.T.bdR_filtration_laws l).2.2.2.2.2.2 0
+  obtain ⟨hφ, -, -, hι, hσ, -⟩ := _root_.GlobalTheory.MemLoc.ULaws.u_laws l C
+  have hcomm := (_root_.GlobalTheory.MemLoc.ActLaws.act_laws l).2.2.2.2.1
+  have hfil := (_root_.GlobalTheory.MemLoc.filD_laws l).2.2.2.2.2.2 0
   rcases subsingleton_or_nontrivial (Per.BdR l) with hs | hs
   · exact ⟨0, zero_mem _, hι (Subsingleton.elim _ _)⟩
   let O : Om l →+* Per.BdR l := (algebraMap (Per.BdRp l) (Per.BdR l)).comp C.o
@@ -185,17 +230,17 @@ theorem invariants_Bcris : ∀ (l : ℕ) [Fact l.Prime], ∀ (C : Core l) (K : F
   have hS : ∀ x ∈ S, Per.φB l x ∈ S := fun x hx g hg => by rw [← hcomm, hx g hg]
   have hO' : ∀ x ∈ S, ∃ y ∈ K.1, C.ι x = O y := by
     intro x hx
-    obtain ⟨y, hy, e⟩ := GlobalTheory.T.bdR_galois_invariants_eq_finExt l C K (C.ι x) (fun g hg => by rw [← hσ, hx g hg])
+    obtain ⟨y, hy, e⟩ := _root_.GlobalTheory.MemLoc.InvDR.invariants_BdR l C K (C.ι x) (fun g hg => by rw [← hσ, hx g hg])
     exact ⟨y, hy, e.symm⟩
   have hO : ∀ x ∈ S, ∃ y, C.ι x = O y := fun x hx => (hO' x hx).imp fun _ h => h.2
   have fund : ∀ (x : Per.Bcris l) (y : Om l), Per.φB l x = x → C.ι x = O y →
       ∃ c : ℚ_[l], C.u (algebraMap ℚ_[l] ↥(MaximalUnramifiedExtension l) c) = x := by
     intro x y h1 h2
-    refine GlobalTheory.T.bcris_frobenius_fixed_fil_zero_eq_qp l C x h1 ?_
+    refine _root_.GlobalTheory.MemLoc.fundamental_exact l C x h1 ?_
     rw [h2]
     refine (hfil (C.o y)).2 ?_
     have hone : (1 : Per.BdRp l) ∈ Per.FilP l 0 :=
-      (hfil 1).1 (by rw [map_one]; exact (GlobalTheory.T.bdR_filtration_laws l).2.1)
+      (hfil 1).1 (by rw [map_one]; exact (_root_.GlobalTheory.MemLoc.filD_laws l).2.1)
     simpa using Ideal.mul_mem_left _ (C.o y) hone
   have hbS : b ∈ S := hb
   obtain ⟨N, hN, hper⟩ := periodic hι hu hφ S hS hO hbS

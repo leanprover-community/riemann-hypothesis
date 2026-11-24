@@ -1,12 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
 public import GroundTheory.GlobalFields.TateThesis.TracePairing
+public import GroundTheory.GlobalFields.Adele.IntegersLattice
+public import GroundTheory.GlobalFields.Adele.Discrete
+public import GroundTheory.GlobalFields.Adele.IdeleBasis
 public import GroundTheory.GlobalFields.TateThesis.ArchChars
 public import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
-public import GroundTheory.GlobalFields.Adele.IdeleBasis
-public import GroundTheory.GlobalFields.Adele.Compact
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -100,19 +104,19 @@ theorem exists_mixedSpace_char_eq (χ : AddChar (mixedSpace K) Circle) (hχ : Co
     have : ∀ j, Algebra.trace ℚ K (ωd j * ω i) = if i = j then 1 else 0 := fun j => by
       rw [← Algebra.traceForm_apply]
       exact LinearMap.BilinForm.apply_dualBasis_left _ _ _ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [ξ, neg_mul, map_neg, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, this,
-      smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+    simp only [ξ, neg_mul, map_neg, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, this,
+    smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   refine ⟨ξ, fun a => ?_, fun m => ?_⟩
   · have ha : algebraMap (𝓞 K) K a = ∑ i, ((RingOfIntegers.basis K).repr a i : ℤ) • ω i := by
       conv_lhs => rw [← (RingOfIntegers.basis K).sum_repr a]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_zsmul, hω]
     refine ⟨-∑ i, ((RingOfIntegers.basis K).repr a i : ℤ) * n i, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [eq_intCast, ha, Finset.mul_sum, map_sum]
+
+    rw [eq_intCast, ha, Finset.mul_sum, map_sum]
     push_cast
     rw [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -124,8 +128,8 @@ theorem exists_mixedSpace_char_eq (χ : AddChar (mixedSpace K) Circle) (hχ : Co
     rw [addChar_map_finsetSum]
     have hT : mixedTrace K (mixedEmbedding K ξ * ∑ i, b.repr m i • b i) =
         -∑ i, b.repr m i * n i := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Finset.mul_sum, map_sum]
+
+      rw [Finset.mul_sum, map_sum]
       simp only [mul_smul_comm, map_smul, hbω, ← map_mul, mixedTrace_mixedEmbedding, hξω,
         smul_eq_mul, Rat.cast_neg, Rat.cast_intCast, mul_neg, Finset.sum_neg_distrib]
     conv_rhs => rw [← b.sum_repr m, hT, neg_neg, addChar_map_finsetSum]
@@ -280,8 +284,7 @@ theorem exists_eq_adelicChar_mul_of_integral (χ : AddChar 𝔸[K] Circle) (hχ 
     conv_lhs => rw [← infiniteAdeleInl_add_finiteAdeleInr x]
     rw [← infiniteAdeleInl_add_finiteAdeleInr x,
       ← infiniteAdeleInl_add_finiteAdeleInr (algebraMap K 𝔸[K] k)]
-    simp only [map_sub, infiniteAdeleInl_fst, infiniteAdeleInl_snd,
-      finiteAdeleInr_fst, finiteAdeleInr_snd, adeleRing_algebraMap_fst,
+    simp only [map_sub, adeleRing_algebraMap_fst,
       adeleRing_algebraMap_snd]
     abel
   have hinf : ∀ z, χ (infiniteAdeleInl z) =

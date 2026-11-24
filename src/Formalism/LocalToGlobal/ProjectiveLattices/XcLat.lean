@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
+public import Formalism.LocalToGlobal.ProjectiveLattices.RdOrbIntOfLatZ
+public import Formalism.LocalToGlobal.ProjectiveLattices.SpanRatSmulMem
 
 @[expose] public section
 

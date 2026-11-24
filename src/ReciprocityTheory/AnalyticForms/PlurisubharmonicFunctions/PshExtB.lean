@@ -1,7 +1,9 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExtA
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExtA
 
 @[expose] public section
 

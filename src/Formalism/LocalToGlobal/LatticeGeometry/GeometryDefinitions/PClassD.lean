@@ -1,7 +1,8 @@
 module
 
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 
 @[expose] public section
 
@@ -98,8 +99,8 @@ theorem unit_away (D : 𝓞 F) (hD : D ≠ 0) :
   have hsum : (∑ v ∈ (levelaf_finite_places D hD).toFinset, afsplitI v 1 : 𝔸) w =
       if w ∈ (levelaf_finite_places D hD).toFinset then 1 else 0 := by
     change evalV F w (∑ v ∈ (levelaf_finite_places D hD).toFinset, afsplitI v 1 : 𝔸) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     split_ifs with h
     · rw [Finset.sum_eq_single_of_mem w h]
       · exact afsplitI_self w 1

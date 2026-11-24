@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.RowSideTie
 public import Formalism.LocalToGlobal.Divisibility.HeckeRI
 

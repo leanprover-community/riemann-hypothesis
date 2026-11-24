@@ -1,8 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 public import Formalism.LocalToGlobal.IndefiniteReal.EvalTieTOne
-public import Formalism.LocalToGlobal.IndefiniteReal.MeasurableMulGA
 
 @[expose] public section
 

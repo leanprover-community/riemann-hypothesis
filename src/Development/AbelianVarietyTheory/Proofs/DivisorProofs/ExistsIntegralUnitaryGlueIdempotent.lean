@@ -1,11 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjSmulNeBot
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockUpperOfMulEqOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryCongruentOneDetSubOneMemIdealMulConj
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CongLevRelIndexLe
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfIdem
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RationalPointsIntegralPointsMembership
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -45,7 +84,7 @@ theorem st_one {R : Type*} [CommRing R] {n : Type*} [DecidableEq n] (s : R →+*
     (((1 : Matrix n n R)).map s).transpose = 1 := by
   ext i j; by_cases h : i = j
   · subst h; simp
-  · simp [Matrix.one_apply, h, Ne.symm h]
+  · simp [h, Ne.symm h]
 
 theorem st_st {R : Type*} [CommRing R] {n : Type*} (s : R →+* R) (hs : ∀ y, s (s y) = y)
     (A : Matrix n n R) : ((((A.map s).transpose).map s).transpose) = A := by
@@ -86,13 +125,13 @@ theorem glue_unitary : ∀ (D : D7) (𝔫 : Ideal (𝓞 D.host.E)) (a : ℕ) (Z 
     ext i j
     by_cases h : i = j
     · subst h; simp [Matrix.smul_apply, hφapp, mul_comm]
-    · simp [Matrix.smul_apply, Matrix.one_apply, h]
+    · simp [Matrix.smul_apply, h]
   let X : Matrix (Fin a) (Fin a) (AE D) := f • Zi + fb • st P + g • 1
   let X' : Matrix (Fin a) (Fin a) (AE D) := f • P + fb • st Zi + g • 1
   have hXX' : X * X' = 1 := by
     simp only [X, X']
     rw [tri_mul f fb g hffb hfg hfbg, ← st_mul s Zi P, hZP]
-    simp only [st, st_smul, st_one, hff, hfbfb, hgg, Matrix.mul_one, smul_smul]
+    simp only [st_smul, st_one, hff, hfbfb, hgg, Matrix.mul_one, smul_smul]
     rw [← hfb, hfbfb, ← add_smul, ← add_smul, hg]; simp
   have hstX' : st X' = X := by
     simp only [X, X', st, st_add, st_smul, st_one, hsg]
@@ -113,7 +152,7 @@ theorem glue_unitary : ∀ (D : D7) (𝔫 : Ideal (𝓞 D.host.E)) (a : ℕ) (Z 
   have h1O : ∀ i j, (1 : Matrix (Fin a) (Fin a) (AE D)) i j ∈ OhE D := by
     intro i j; by_cases h : i = j
     · subst h; simp [one_mem]
-    · simp [Matrix.one_apply, h, zero_mem]
+    · simp [h, zero_mem]
   have hXO : ∀ i j, X i j ∈ OhE D := by
     intro i j
     simp only [X, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]

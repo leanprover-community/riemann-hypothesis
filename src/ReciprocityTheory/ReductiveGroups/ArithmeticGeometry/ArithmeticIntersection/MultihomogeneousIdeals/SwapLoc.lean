@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.LocalLengthAdditivityTorsionFree
+public import Mathlib.RingTheory.Ideal.Height
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

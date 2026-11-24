@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StJacobianRankOffHypersurface
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
+public import Mathlib.Algebra.MvPolynomial.PDeriv
 
 @[expose] public section
 

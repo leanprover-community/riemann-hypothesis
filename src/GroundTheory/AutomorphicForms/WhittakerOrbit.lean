@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.WhittakerLSpace
+import GroundTheory.AutomorphicForms.LocallyProfinite
 public import GroundTheory.AutomorphicForms.SmoothRep
-public import GroundTheory.AutomorphicForms.LocallyProfinite
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Group.OpenMapping
+import Mathlib.Topology.Baire.LocallyCompactRegular
 
 @[expose] public section
 

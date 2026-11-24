@@ -1,7 +1,52 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeExp
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofDApply
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.WickOperatorVanishing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -44,7 +89,6 @@ private theorem Dof_add' (v : Fin d → k) (f g : PS k 1 d) :
     Dof F v (f + g) = Dof F v f + Dof F v g := by
   first
   | simp only [Dof, map_add (f := _), mul_add, Finset.sum_add_distrib]
-  | simp [Dof, mul_add, Finset.sum_add_distrib]
 
 theorem foldr_add (L : List ι) (m : ι →₀ ℕ) (f g : PS k 1 d) :
     L.foldr (fun l h => (Dof F (u l))^[m l] h) (f + g) =
@@ -58,10 +102,8 @@ theorem foldr_add (L : List ι) (m : ι →₀ ℕ) (f g : PS k 1 d) :
 private theorem Dof_C_mul (v : Fin d → k) (r : k) (f : PS k 1 d) :
     Dof F v (C r * f) = C r * Dof F v f := by
   first
-  | (simp only [Dof, ← MvPowerSeries.smul_eq_C_mul, map_smul, mul_smul_comm, Finset.smul_sum]; done)
+  | (simp only [Dof, ← MvPowerSeries.smul_eq_C_mul, Finset.smul_sum]; done)
   | (simp only [Dof, ← MvPowerSeries.smul_eq_C_mul, Derivation.map_smul, mul_smul_comm, Finset.smul_sum]; done)
-  | (simp only [Dof, Finset.mul_sum, Derivation.leibniz, smul_eq_mul, mul_add, Finset.sum_add_distrib]; done)
-  | (have hp := (pderiv : Unit))
 
 theorem foldr_Cmul (L : List ι) (m : ι →₀ ℕ) (r : k) (f : PS k 1 d) :
     L.foldr (fun l h => (Dof F (u l))^[m l] h) (C r * f) =
@@ -162,8 +204,8 @@ theorem degLt_pderiv {n : ℕ} {P : MvPolynomial ι k} (h : DegLt (n + 1) P) (l 
     DegLt n (MvPolynomial.pderiv l P) := by
   classical
   intro m hm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPolynomial.as_sum P, map_sum, MvPolynomial.coeff_sum]
+
+  rw [MvPolynomial.as_sum P, map_sum, MvPolynomial.coeff_sum]
   refine Finset.sum_eq_zero fun s hs => ?_
   rw [MvPolynomial.pderiv_monomial, MvPolynomial.coeff_monomial]
   by_cases hsm : s - Finsupp.single l 1 = m
@@ -175,7 +217,6 @@ theorem degLt_pderiv {n : ℕ} {P : MvPolynomial ι k} (h : DegLt (n + 1) P) (l 
       have hle : Finsupp.single l 1 ≤ s := by
         first
         | (rw [Finsupp.single_le_iff]; exact hpos)
-        | exact Finsupp.single_le_iff.mpr hpos
       have hs' : m + Finsupp.single l 1 = s := by
         rw [← hsm]
         exact tsub_add_cancel_of_le hle
@@ -183,8 +224,6 @@ theorem degLt_pderiv {n : ℕ} {P : MvPolynomial ι k} (h : DegLt (n + 1) P) (l 
         first
         | rw [← hs', Finsupp.degree_add, Finsupp.degree_single]
         | rw [← hs', map_add (f := _), Finsupp.degree_single]
-        | (rw [← hs']; simp [Finsupp.degree_add])
-        | (rw [← hs']; simp)
       exact hc (h s (by omega))
   · rw [if_neg hsm]
 
@@ -202,10 +241,10 @@ theorem degLt_secondOrder (c : ι → ι → k) {n : ℕ} {P : MvPolynomial ι k
 theorem degLt_iterate (c : ι → ι → k) (n j : ℕ) {P : MvPolynomial ι k} (h : DegLt (n + j) P) :
     DegLt n ((secondOrder k c)^[j] P) := by
   induction j generalizing P with
-  | zero => first | exact h | simpa using h
+  | zero => first | exact h
   | succ j ih =>
     rw [Function.iterate_succ_apply]
-    exact ih (degLt_secondOrder c (n := n + j) (by first | exact h | simpa [Nat.add_assoc] using h))
+    exact ih (degLt_secondOrder c (n := n + j) (by first | exact h))
 
 theorem eq_zero_of_degLt_zero {P : MvPolynomial ι k} (h : DegLt 0 P) : P = 0 := by
   ext m
@@ -219,7 +258,6 @@ theorem degLt_totalDegree (P : MvPolynomial ι k) : DegLt (P.totalDegree + 1) P 
   have h1 : m.degree ≤ P.totalDegree := by
     first
     | exact MvPolynomial.le_totalDegree hmem
-    | simpa [Finsupp.degree, Finsupp.sum] using MvPolynomial.le_totalDegree hmem
   omega
 
 theorem iterate_eq_zero (c : ι → ι → k) (P : MvPolynomial ι k) :
@@ -262,7 +300,6 @@ theorem exp_cut (t : k) (q : PS k 1 d) (hq0 : constantCoeff q = 0) (N : ℕ) :
     first
     | (simp only [map_sub, map_sum, map_smul, PowerSeries.coeff_exp, PowerSeries.coeff_X_pow, smul_eq_mul,
         mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, hm', if_true, sub_self]; done)
-    | (simp [PowerSeries.coeff_exp, PowerSeries.coeff_X_pow, hm']; done)
   obtain ⟨R, hR⟩ := hdvd
   have hexp : PowerSeries.exp k = (∑ n ∈ Finset.range (N + 1),
       algebraMap ℚ k (1 / (n.factorial : ℚ)) • (PowerSeries.X : PowerSeries k) ^ n) +
@@ -274,26 +311,21 @@ theorem exp_cut (t : k) (q : PS k 1 d) (hq0 : constantCoeff q = 0) (N : ℕ) :
   have hs : PowerSeries.HasSubst (t • q) := by
     first
     | exact PowerSeries.HasSubst.of_constantCoeff_zero hc
-    | exact PowerSeries.HasSubst.of_constantCoeff_zero' hc
-    | (show IsNilpotent _; rw [hc]; exact IsNilpotent.zero)
   have key : ∀ f : PowerSeries k, PowerSeries.subst (t • q) f = PowerSeries.substAlgHom hs f := by
     intro f
     first
     | rw [PowerSeries.coe_substAlgHom]
-    | rfl
   have hX : PowerSeries.substAlgHom hs (PowerSeries.X : PowerSeries k) = t • q := by
     first
     | exact PowerSeries.substAlgHom_X hs
-    | (rw [← key]; exact PowerSeries.subst_X hs)
   refine ⟨C (t ^ (N + 1)) * PowerSeries.subst (t • q) R, ?_⟩
   unfold FB.expS
   rw [hexp]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [key, map_add (f := _), map_sum, map_mul, map_pow, map_smul, hX]
-  simp only [smul_pow, smul_smul, MvPowerSeries.smul_eq_C_mul, map_mul, map_pow]
+
+  simp only [key, map_add (f := _), map_sum, map_mul, map_pow, map_smul, hX]
+  simp only [MvPowerSeries.smul_eq_C_mul]
   congr 1
   all_goals first
-    | rfl
     | ring1
     | (refine Finset.sum_congr rfl fun n _ => ?_; ring1)
 
@@ -304,11 +336,11 @@ theorem wickExp_of (hH : HalfSt) : WickExpSt := by
     rw [show G * (q ^ (P.totalDegree + 1) * Y) = (G * Y) * q ^ (P.totalDegree + 1) by ring,
       half_pow hH F u c q hc hq0 hq1 hq2 (P.totalDegree + 1) P (G * Y), iterate_eq_zero,
       dpolyOf_zero_P, map_zero, mul_zero]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hY, mul_add, dpolyOf_add_f, map_add (f := _), hrem, add_zero, Finset.mul_sum, dpolyOf_sum_f, map_sum]
+
+  rw [hY, mul_add, dpolyOf_add_f, map_add (f := _), hrem, add_zero, Finset.mul_sum, dpolyOf_sum_f, map_sum]
   unfold expSecond
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [dpolyOf_sum_P, map_sum]
+
+  rw [dpolyOf_sum_P, map_sum]
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [mul_left_comm G, dpolyOf_Cmul_f, map_mul, MvPowerSeries.constantCoeff_C,
     half_pow hH F u c q hc hq0 hq1 hq2 n P G, dpolyOf_smul_P, map_mul, MvPowerSeries.constantCoeff_C]
@@ -325,13 +357,11 @@ theorem gauge_exp_identity (hA : ExpAddZeroConstant) (hE : ConstantCoeffSubstitu
     fin_cases j
     first
     | exact MvPowerSeries.constantCoeff_X _
-    | simp [pt]
   have hpz : ∀ (j : Fin 2) (i : Fin d), constantCoeff ((![pt k d 0, 0] : Fin 2 → Pt k 1 d) j i) = 0 := by
     intro j i
     fin_cases j
     · first
       | exact MvPowerSeries.constantCoeff_X _
-      | simp [pt]
     · show constantCoeff (0 : PS k 1 d) = 0
       exact map_zero _
   have ha : ∀ (j : Fin 2) (i : Fin d),
@@ -340,13 +370,11 @@ theorem gauge_exp_identity (hA : ExpAddZeroConstant) (hE : ConstantCoeffSubstitu
     fin_cases j
     · first
       | exact MvPowerSeries.constantCoeff_X _
-      | simp [pt]
     · show constantCoeff (ev ![pt k d 0] (B.actK k w0 i)) = 0
       rw [hE k d 1 1 ![pt k d 0] (B.actK k w0 i) hpt]
       show constantCoeff (MvPowerSeries.map (algebraMap R k) (B.A.act w0 i)) = 0
       first
       | rw [MvPowerSeries.constantCoeff_map, B.A.const w0 i, map_zero]
-      | simp [B.A.const w0 i]
   have hh0 : constantCoeff h = 0 := by
     rw [← hE k d 2 1 ![pt k d 0, 0] h hpz, hh.ax1, map_zero]
   obtain ⟨hq0, hq1, hq2⟩ := hQ R d O k B (h' - h) (hG R d O k B h h' hh hh') w0
@@ -356,17 +384,9 @@ theorem gauge_exp_identity (hA : ExpAddZeroConstant) (hE : ConstantCoeffSubstitu
     have hs : MvPowerSeries.HasSubst (fun p : Fin 2 × Fin d => a p.1 p.2) := by
       first
       | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => hz p.1 p.2)
-      | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent
-          (fun p => by rw [hz p.1 p.2]; exact IsNilpotent.zero)
-      | exact ⟨fun p => by rw [hz p.1 p.2]; exact IsNilpotent.zero, fun e => Set.toFinite _⟩
-      | exact MvPowerSeries.HasSubst.of_constantCoeff_zero (fun p => hz p.1 p.2)
-      | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun p => hz p.1 p.2)
-      | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent
-          (fun p => by rw [hz p.1 p.2]; exact IsNilpotent.zero)
     unfold ev
     first
     | exact MvPowerSeries.subst_add hs f g
-    | (rw [← MvPowerSeries.coe_substAlgHom hs]; exact map_add _ f g)
   have hsplit : B.hL k h' w0 =
       B.hL k h w0 + ev (n := 1) ![pt k d 0, comp1 (B.actK k w0) (pt k d 0)] (h' - h) := by
     unfold FB.hL

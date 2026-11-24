@@ -1,9 +1,61 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.AlgVring
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.Imports
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.CoB
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.Integral
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ClSub
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.AlgVring
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.CoB
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -137,20 +189,6 @@ private theorem tri_of_bar {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP 
         exact hq (by linear_combination e)
       · linear_combination e1
       · linear_combination e2
-    have hB : ∀ g h : F.G0, ρ.r g 1 0 * ρ.r h 0 1 = 0 ∧ ρ.r g 1 2 * ρ.r h 2 1 = 0 := by
-      intro g h
-      have e1 := hE g h 1
-      have e2 := hT g h 1
-      simp only [Matrix.mul_apply, Fin.sum_univ_three, hX 0 1 (by decide), hX 0 2 (by decide),
-        hX 1 0 (by decide), hX 1 2 (by decide), hX 2 0 (by decide), hX 2 1 (by decide)] at e1 e2
-      refine two_zero (s := X 0 0) (t := X 2 2) ?_ ?_ ?_
-      · rw [hX0, hX2]
-        intro e
-        apply h2
-        have : (2 : K) * (f ↑p - f ↑p⁻¹) = 0 := by linear_combination e
-        exact (mul_eq_zero.1 this).resolve_right hq
-      · linear_combination e1
-      · linear_combination e2
     have s01 : ∀ g, ρ.r (F.star g) 0 1 = ρ.r g 1 2 := fun g => hst.2.2.2.2 ρ g 0 1
     have s10 : ∀ g, ρ.r (F.star g) 1 0 = ρ.r g 2 1 := fun g => hst.2.2.2.2 ρ g 1 0
     have t12 : (∀ g : F.G0, ρ.r g 0 1 = 0) → ∀ g : F.G0, ρ.r g 1 2 = 0 := fun h g => by
@@ -181,7 +219,7 @@ private theorem tri_of_bar {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP 
       · have hC : ∀ g h : F.G0, ρ.r g 0 2 * ρ.r h 2 1 = 0 := by
           intro g h
           have e := congrFun (congrFun (hP g h) 0) 1
-          simp only [Matrix.mul_apply, Fin.sum_univ_three, a01, a01 h] at e
+          simp only [Matrix.mul_apply, Fin.sum_univ_three, a01] at e
           linear_combination e
         rcases or_zero hC with a02 | a21
         · exact Or.inr (hR a01 a02 a12)
@@ -191,7 +229,7 @@ private theorem tri_of_bar {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP 
       · have hC : ∀ g h : F.G0, ρ.r g 2 0 * ρ.r h 0 1 = 0 := by
           intro g h
           have e := congrFun (congrFun (hP g h) 2) 1
-          simp only [Matrix.mul_apply, Fin.sum_univ_three, a21, a21 h] at e
+          simp only [Matrix.mul_apply, Fin.sum_univ_three, a21] at e
           linear_combination e
         rcases or_zero hC with a20 | a01
         · exact Or.inl (hL a10 a20 a21)

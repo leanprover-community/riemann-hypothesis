@@ -1,6 +1,18 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Category.ModuleCat.Presheaf.Monoidal
+public import Mathlib.Algebra.Category.ModuleCat.Presheaf.Sheafification
+public import Mathlib.CategoryTheory.Localization.Monoidal.Braided
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Algebra.Category.ModuleCat.Sheaf.Localization
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Colimit.TensorProduct
+public import Mathlib.Algebra.Exact.Basic
+public import Mathlib.LinearAlgebra.TensorProduct.RightExactness
+public import Mathlib.RingTheory.TensorProduct.Finite
+public import Mathlib.Algebra.Category.Ring.Limits
 
 @[expose] public section
 

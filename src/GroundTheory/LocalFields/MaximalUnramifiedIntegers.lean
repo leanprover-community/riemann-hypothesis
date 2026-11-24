@@ -1,13 +1,20 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.MaximalUnramified
+public import GroundTheory.LocalFields.IntermediateField
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.LocalFields.SeparableClosureValuation
+import GroundTheory.LocalFields.UnramifiedGalois
+import GroundTheory.LocalFields.UnramifiedRootsOfUnity
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option maxHeartbeats 4000000
-set_option synthInstance.maxHeartbeats 400000
+
+
 
 noncomputable section
 

@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartFirstGroup
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOrder
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormSection
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

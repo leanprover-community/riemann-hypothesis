@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
 
 @[expose] public section
 

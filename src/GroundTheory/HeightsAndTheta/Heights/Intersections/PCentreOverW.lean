@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StValCentreZ
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRing
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogOfPullWeight
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

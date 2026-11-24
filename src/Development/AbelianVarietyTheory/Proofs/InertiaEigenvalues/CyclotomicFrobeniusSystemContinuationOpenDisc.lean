@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemEurOfTeichmullerSeries
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GeomSumOneAddPrime
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLaws
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAddValuationFinExt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvariantBasis
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GeomSumOneAddPrime
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -39,8 +85,8 @@ theorem norm_sum_mul_le {ι : Type} (s : Finset ι) (f : ι → K) {x c : ℝ} (
 
 theorem Bd.sum {ι : Type} (s : Finset ι) (f : ι → K⟦X⟧) {r c : ℝ} (hr : 0 < r) (hc : 0 ≤ c)
     (h : ∀ i ∈ s, Bd r c (f i)) : Bd r c (∑ i ∈ s, f i) := fun k => by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact norm_sum_mul_le _ _ (by positivity) hc fun i hi => h i hi k
 
 theorem Bd.add {r c : ℝ} (hr : 0 < r) {a b : K⟦X⟧} (ha : Bd r c a) (hb : Bd r c b) : Bd r c (a + b) := by
@@ -176,7 +222,7 @@ theorem phi_log_series (K : Type) [Field K] [CharZero K] [Algebra ℤ_[l] K] (t 
   · have e : derivative (phi l K t) = phi l K (derivative t) * derivative ((1 + X) ^ l - 1) := by
       rw [phi, act_apply, act_apply, derivative_subst hs, cyc_natCast]
     have e2 := congrArg (phi l K) h1
-    rw [map_mul, map_add (f := _), map_one, phi_X, add_sub_cancel] at e2
+    rw [map_mul, map_add (f := _), map_one, _root_.GlobalTheory.Cyc.Series.phi_X, add_sub_cancel] at e2
     have e3 : derivative ((1 + X : K⟦X⟧) ^ l - 1) = (l : K⟦X⟧) * (1 + X : K⟦X⟧) ^ (l - 1) := by
       simp [Derivation.leibniz_pow]
     have e4 : derivative ((l : K⟦X⟧) * t) = (l : K⟦X⟧) * derivative t := by
@@ -187,7 +233,7 @@ theorem phi_log_series (K : Type) [Field K] [CharZero K] [Algebra ℤ_[l] K] (t 
     rw [e, e3, e4]
     linear_combination (l : K⟦X⟧) * e2 - (l : K⟦X⟧) * h1
   · obtain ⟨a, rfl⟩ := X_dvd_iff.2 h0
-    simp [phi_X]
+    simp [_root_.GlobalTheory.Cyc.Series.phi_X]
 
 theorem inv_le_norm_nat (k : ℕ) (hk : k ≠ 0) : 1 ≤ k * ‖(k : ℤ_[l])‖ := by
   have h1 : (0 : ℝ) < l := by exact_mod_cast hl.out.pos
@@ -237,7 +283,7 @@ theorem bd_phi_X (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
       PowerSeries.map (algebraMap ↥(OL LL) ↥LL.1) b := by
     have := congrArg (PowerSeries.map (algebraMap ↥(OL LL) ↥LL.1)) hb
     simp only [map_add (f := _), map_pow, map_mul, map_one, map_X, map_natCast] at this
-    rw [phi_X, map_natCast, add_comm 1 X, this]
+    rw [_root_.GlobalTheory.Cyc.Series.phi_X, map_natCast, add_comm 1 X, this]
     ring
   rw [e]
   refine Bd.add hr (((bd_X hr).pow hr l).mono ?_)
@@ -249,7 +295,7 @@ theorem bd_phi_X (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
     exact mul_le_mul_of_nonneg_right (le_max_left _ _) hr.le
 
 theorem phi_X_const (O : Type) [CommRing O] [Algebra ℤ_[l] O] : constantCoeff (phi l O X) = 0 := by
-  simp [phi_X]
+  simp [_root_.GlobalTheory.Cyc.Series.phi_X]
 
 theorem inv_lt_one : (l : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ (by exact_mod_cast hl.out.one_lt)
 

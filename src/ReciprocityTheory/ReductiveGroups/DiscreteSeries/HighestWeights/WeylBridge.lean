@@ -1,7 +1,9 @@
 module
 
-public import Formalism.PeriodIntegrals.ExplicitFormulaCounts.WeylForK
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalBesselAndTopKernel
+public import Formalism.PeriodIntegrals.ExplicitFormulaCounts.WeylForK
+import Formalism.PeriodIntegrals.ExplicitFormulaCounts.WeylForU
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -56,8 +58,7 @@ theorem hw_rhoC_allPos (k : ℕ) (a : Fin k) :
   ring
 
 theorem weyl_dimension_formula_unitary : Formalism.MainNotions.LocalBesselAndTopKernel.AdmittedWeylDimension := by
-  intro k' u H _ _ π _ hT
-  obtain ⟨_, _, hU, hK⟩ := hT
+  rintro k' u H _ _ π _ ⟨_, _, hU, hK⟩
   have hUK : Formalism.MainNotions.S.IsURepOn (Formalism.REAL.Kset (Formalism.MainNotions.S.allPos k')) π :=
     hw_isURepOn_mono (hw_kset_subset _) hU
   have hW := weylForU_closed k' (Formalism.QuantumDeterminants.lowK (Formalism.MainNotions.S.allPos k') u) H π ⊤ hUK hK

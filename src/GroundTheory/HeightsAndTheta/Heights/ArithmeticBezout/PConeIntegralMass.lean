@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMass
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenForallCuspRepTFinOneEq
+public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCusp
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
+public import GroundTheory.AutomorphicForms.GKModules.KernelCalculus
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCuspSplit
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspFinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -101,7 +104,7 @@ theorem isSmoothVector_cuspToL2 {φ : cuspForms K n} (hφ : φ ∈ centralCuspFo
   exact (isExpLieAlgebra K n).isSmoothVector_integrated (archRepT μ) Measure.haar hκ _
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem uAction_cuspToL2 {φ : cuspForms K n} (hφ : φ ∈ centralCuspForms K n) (u : UEnv K n) :
     ((isExpLieAlgebra K n).uAction (archRepT μ) u
         ⟨cuspVecL μ φ, isSmoothVector_cuspToL2 μ hφ⟩ : CuspL2 μ) =
@@ -156,7 +159,7 @@ theorem toOne_eq_retractOne (g : AdelicGLn.AdelicGL K n) : toOne g = retractOne 
   rw [coe_toOne, coe_retractOne]
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem cuspToL2_sigma (k : archCompact K n) {φ : cuspForms K n} (hφ : φ ∈ centralCuspForms K n) :
     cuspVecL μ ((gkModuleCusp K n).σ k φ) =
       archRepT μ (k : archGroup K n) (cuspVecL μ φ) := by
@@ -170,7 +173,7 @@ theorem cuspToL2_sigma (k : archCompact K n) {φ : cuspForms K n} (hφ : φ ∈ 
   exact h2
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem cuspToL2_finRepCusp (h : AdelicGLn.FiniteAdelicGL K n) {φ : cuspForms K n}
     (hφ : φ ∈ centralCuspForms K n) :
     cuspVecL μ (finRepCusp K n h φ) =

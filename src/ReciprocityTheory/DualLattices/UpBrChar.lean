@@ -1,8 +1,10 @@
 module
 
-public import ReciprocityTheory.DualLattices.FrobeniusOfGroupDivisorsRank
-public import ReciprocityTheory.DualLattices.KilledGen
-public import ReciprocityTheory.DualLattices.IdemGen
+public import ReciprocityTheory.DualLattices.CotangentSurjective
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.DualLattices.HasLenCokerDet
+public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
 @[expose] public section
 
@@ -110,7 +112,7 @@ lemma char_step (hv : v.Integers R) {g N : ℕ} (M : Matrix (Fin g) (Fin N) R) (
     funext a
     have h1 := hl (ι j) a
     simp only [Matrix.mulVec, dotProduct, hA, Matrix.of_apply, Pi.single_apply, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rw [h1]
     exact Finset.sum_congr rfl fun i _ => mul_comm _ _
   set μ : Fin N → R := fun b => T b (Fin.last s) - ∑ i, l b i * T (ι i) (Fin.last s) with hμ

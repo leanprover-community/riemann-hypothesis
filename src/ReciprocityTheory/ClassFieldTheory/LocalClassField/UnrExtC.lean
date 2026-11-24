@@ -1,5 +1,8 @@
 module
 
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtA
+public import Mathlib.FieldTheory.Relrank
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.PowPowSuccSub
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtB
 
 @[expose] public section

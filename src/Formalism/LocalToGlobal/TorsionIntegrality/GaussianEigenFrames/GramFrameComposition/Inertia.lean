@@ -2,6 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementE
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

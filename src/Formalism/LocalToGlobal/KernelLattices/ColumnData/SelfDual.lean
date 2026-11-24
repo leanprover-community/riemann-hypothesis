@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.HfTrace
-public import Formalism.FrobeniusOrbits.HostCorollaries
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.DiscrB
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IopNorm
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExportFamilies
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.HfTrace
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThIndep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.Algebra.Polynomial.SpecificDegree
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -393,8 +433,8 @@ theorem SelfDualRec_of_curve (hC : CurveSelfDualRec) : SelfDualRec := by
       unfold hYY
       rw [← FL.sum_tau_trace, Finset.mul_sum]
       refine Finset.sum_congr rfl fun τ _ => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, FL.emb_conj, Finset.mul_sum, Matrix.of_apply, hXv]
+
+      simp only [map_sum, map_mul, FL.emb_conj, Finset.mul_sum, Matrix.of_apply, hXv]
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
       ring
     rw [e1] at hcY
@@ -484,7 +524,7 @@ theorem d_pos : (0 : ℚ) < D.host.d := by exact_mod_cast D.host.hyp.2.1.pos
 
 theorem K_repr (x : D.host.E) (hx : x ∈ D.host.K) :
     ∃ p q : ℚ, x = (p : D.host.E) + (q : D.host.E) * D.host.sqd := by
-  first | exact UpperTheory.Reformulated.B.ExportFamilies.K_repr .. | (apply UpperTheory.Reformulated.B.ExportFamilies.K_repr <;> assumption) | (intros; apply UpperTheory.Reformulated.B.ExportFamilies.K_repr <;> assumption) | (apply @UpperTheory.Reformulated.B.ExportFamilies.K_repr <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.ExportFamilies.K_repr <;> assumption) | (apply @UpperTheory.Reformulated.B.ExportFamilies.K_repr <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.ExportFamilies.K_repr D x hx | exact @UpperTheory.Reformulated.B.ExportFamilies.K_repr D x | exact @UpperTheory.Reformulated.B.ExportFamilies.K_repr D
+  first | (apply UpperTheory.Reformulated.B.ExportFamilies.K_repr <;> assumption)
 
 theorem embedding_sqrt_neg_d : D.host.φ₀ (D.host.sqd) = Complex.I * (Real.sqrt D.host.d : ℂ) :=
   D.host.φ₀_mem
@@ -602,8 +642,8 @@ theorem curve_lattice_self_dual : CurveSelfDualRec := by
     rw [e, hw1, hw2, map_add (f := _), map_mul, map_mul, map_intCast, map_intCast]
     ring
   have hD : (starRingEnd ℂ w1 * w2).im ≠ 0 := by
-    obtain ⟨p1, q1, e1⟩ := CS.K_repr D _ (c1 : D.host.K).2
-    obtain ⟨p2, q2, e2⟩ := CS.K_repr D _ (c2 : D.host.K).2
+    obtain ⟨p1, q1, e1⟩ := _root_.UpperTheory.Reformulated.B.ExportFamilies.K_repr D _ (c1 : D.host.K).2
+    obtain ⟨p2, q2, e2⟩ := _root_.UpperTheory.Reformulated.B.ExportFamilies.K_repr D _ (c2 : D.host.K).2
     have hφ1 : D.host.φ₀ ((c1 : D.host.K) : D.host.E) =
         (p1 : ℂ) + (q1 : ℂ) * (Complex.I * (Real.sqrt D.host.d : ℂ)) := by
       rw [e1, map_add (f := _), map_mul, map_ratCast, map_ratCast, CS.embedding_sqrt_neg_d]

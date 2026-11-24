@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrLenRestrictSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrictionLocal
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationRestrict
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -138,13 +140,13 @@ theorem d_mk (F₁ F₂ : SubSystem S x E) (u : Cech.Idx (support x) 0 → E) (h
       ∑ j : J.1.1, Cech.sgn J.1.1 j • F₁.res _ J.1 (Cech.face_subset J j) ⟨u (Cech.face J j), hu _⟩ := by
     apply Subtype.ext
     simp [SubSystem.res]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [this, ← Submodule.mkQ_apply, map_sum]
+
+  rw [this, ← Submodule.mkQ_apply, map_sum]
   simp only [map_zsmul]
   rfl
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_toCochain_eq (F₁ F₂ : SubSystem S x E)
     (hlift : ∀ s : Chart x → E, (∀ I, s I ∈ F₁.sub I) →
       (∀ I₁ I₂ : Chart x, I₁.1 ⊆ I₂.1 → s I₁ - s I₂ ∈ F₂.sub I₂) →
@@ -235,7 +237,7 @@ theorem exists_toCochain_eq (F₁ F₂ : SubSystem S x E)
   exact hts _
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem length_secs_eq (F₁ F₂ : SubSystem S x E)
     (hlift : ∀ s : Chart x → E, (∀ I, s I ∈ F₁.sub I) →
       (∀ I₁ I₂ : Chart x, I₁.1 ⊆ I₂.1 → s I₁ - s I₂ ∈ F₂.sub I₂) →
@@ -365,7 +367,7 @@ theorem exists_residue {k : Type u} [Field k] {R : Type w} [CommRing R] [Algebra
     (IsFractionRing.injective (R ⧸ P) (FractionRing (R ⧸ P))).eq_iff, Ideal.Quotient.eq_zero_iff_mem]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem proof (hSC : SurjectiveClosed.Statement.{u, w})
     (hRQ : PrimeFiltration.RestrictQuot.Statement.{u, w}) : RestrLenRestrict.Statement.{u, w} := by
   intro k _ Ω _ _ N x K' _ _ y hxy hsp pp e hW Q Q' r hr

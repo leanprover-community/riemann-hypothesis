@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 

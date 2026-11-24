@@ -2,6 +2,44 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.SliceShift
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CapPoly
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,8 +58,8 @@ theorem UpperTheory.ConvolutionTheory.BW.zSpec :
       rw [Finset.card_univ, Fintype.card_fin]
       exact Polynomial.degree_le_natDegree.trans_lt (by exact_mod_cast Nat.lt_succ_of_le h1)
     conv_rhs => rw [Lagrange.eq_interpolate hinj hd]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Lagrange.interpolate_apply, Polynomial.finsetSum_coeff, zC, map_sum]
+
+    rw [Lagrange.interpolate_apply, Polynomial.finsetSum_coeff, zC, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Polynomial.coeff_C_mul, h4, map_smul, smul_eq_mul, mul_comm]
     rfl
@@ -33,9 +71,9 @@ theorem UpperTheory.ConvolutionTheory.BW.zSpec :
   · rw [← sub_eq_zero]
     refine (Module.forall_dual_apply_eq_zero_iff ℂ _).1 fun ℓ => ?_
     obtain ⟨p, h1, -, h3, h4⟩ := key ℓ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, sub_eq_zero, ← h3, map_sum, Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le h1),
-      ← Finset.sum_range_reflect]
+
+    rw [map_sub, sub_eq_zero, ← h3, map_sum, Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le h1),
+    ← Finset.sum_range_reflect]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, h4, smul_eq_mul, mul_comm]
     simp

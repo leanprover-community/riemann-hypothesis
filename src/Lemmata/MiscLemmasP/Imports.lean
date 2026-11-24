@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.LinearMap.End
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Data.Matrix.Mul
 
 @[expose] public section
 

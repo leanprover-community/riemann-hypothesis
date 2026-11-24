@@ -1,7 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExp
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifPowOf3
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Splits
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
 
@@ -228,7 +230,7 @@ def omB {Z : Scheme.{0}} (y : Z) (J : (Z ⟶ D.toPre.P.A.left) → D.toPre.P.L.�
 theorem box_q (P : UnifPowOf3 pD pA pG U' U) (e : ℕ) (i : Fin j) :
     pGl U'.toUnifPre e ≫ (pD.pw.pr i).left = rhoE I pG e i ≫ pGl U.toUnifPre e := (P.t_pr e 0).choose i 2
 
-set_option maxHeartbeats 800000 in
+
 theorem box_F (P : UnifPowOf3 pD pA pG U' U) {e : ℕ} {y : (thickObj R I e G').left} {J : ((thickObj R I e G').left ⟶ D.toPre.P.A.left) → D.toPre.P.L.ι}
     {J' : ((thickObj R I e G').left ⟶ D'.toPre.P.A.left) → D'.toPre.P.L.ι}
     (hJ : Good D.toPre.P.L y J) (hJ' : Good D'.toPre.P.L y J') {k : ℕ} {f : Fin j → ∀ α : D.toPre.X, D.toPre.SecB k α}
@@ -240,7 +242,7 @@ theorem box_F (P : UnifPowOf3 pD pA pG U' U) {e : ℕ} {y : (thickObj R I e G').
   simp only [box_q P] at this
   exact this
 
-set_option maxHeartbeats 800000 in
+
 theorem box_product_transition_identity (P : UnifPowOf3 pD pA pG U' U) {e : ℕ} {y : (thickObj R I e G').left} {J : ((thickObj R I e G').left ⟶ D.toPre.P.A.left) → D.toPre.P.L.ι}
     {J' : ((thickObj R I e G').left ⟶ D'.toPre.P.A.left) → D'.toPre.P.L.ι}
     (hJ : Good D.toPre.P.L y J) (hJ' : Good D'.toPre.P.L y J') (α' : D'.toPre.X) :
@@ -267,7 +269,7 @@ theorem box_om {e : ℕ} {y : (thickObj R I e G').left} {J : ((thickObj R I e G'
   simp only [ofMul_mul, ofMul_zpow, ofMul_pow, DegPre.famε, Oinvε, Matrix.cons_val]
   module
 
-set_option maxHeartbeats 800000 in
+
 theorem box_product_weight_identity (P : UnifPowOf3 pD pA pG U' U) {e : ℕ} {y : (thickObj R I e G').left} {J : ((thickObj R I e G').left ⟶ D.toPre.P.A.left) → D.toPre.P.L.ι}
     {J' : ((thickObj R I e G').left ⟶ D'.toPre.P.A.left) → D'.toPre.P.L.ι}
     (hJ : Good D.toPre.P.L y J) (hJ' : Good D'.toPre.P.L y J') {jL : Fin j → U.LG.L.ι} {jL' : U'.LG.L.ι}
@@ -299,7 +301,7 @@ theorem box_product_weight_identity (P : UnifPowOf3 pD pA pG U' U) {e : ℕ} {y 
         ((map_mul _ _ _).trans (congrArg₂ (· * ·) ((map_prod _ _ _).trans (Finset.prod_congr rfl fun i _ =>
           gm_rp₁ (rhoE I pG e i) y _ _ _ hm _)) (gm_rp₁ (fGl I G' e) y _ _ _ hm _))))
 
-set_option maxHeartbeats 800000 in
+
 theorem box_S (P : UnifPowOf3 pD pA pG U' U) {e k : ℕ} {y : (thickObj R I e G').left} {σ : Fin j → H0 U.LG.L k} {σ' : H0 U'.LG.L k}
     (hσ' : IsBoxSecG pG P.wL k σ' σ) {jL : Fin j → U.LG.L.ι} {jL' : U'.LG.L.ι}
     (hL : ∀ i, (pG.pr i).left (fGl I G' e y) ∈ U.LG.L.U (jL i)) (hL' : fGl I G' e y ∈ U'.LG.L.U jL') :

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ProdEApproxGen
+public import Mathlib.Algebra.Group.End
+public import Mathlib.Data.Matrix.Mul
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

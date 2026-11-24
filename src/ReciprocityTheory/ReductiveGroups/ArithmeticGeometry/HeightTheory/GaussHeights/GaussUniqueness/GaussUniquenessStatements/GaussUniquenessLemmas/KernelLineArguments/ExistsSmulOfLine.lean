@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtLeafSt
+public import Mathlib.RingTheory.Ideal.Height
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

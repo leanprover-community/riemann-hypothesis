@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RepresentationTheory.Coinduced
+public import Mathlib.Topology.Defs.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

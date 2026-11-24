@@ -1,6 +1,56 @@
 module
 
 public import Formalism.MahlerMeasure.LevelLattice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -41,12 +91,10 @@ lemma mem_support_mul {f g : MvPolynomial σ K} {m : σ →₀ ℕ} (hm : m ∈ 
 omit [Nontrivial K] in
 lemma mem_support_add {f g : MvPolynomial σ K} {m : σ →₀ ℕ} (hm : m ∈ (f + g).support) :
     m ∈ f.support ∨ m ∈ g.support := by
-  have := support_add hm
-  simpa [Finset.mem_union] using this
+  simpa [Finset.mem_union] using support_add hm
 
 lemma mem_support_monomial_one {s m : σ →₀ ℕ} (hm : m ∈ (monomial s (1 : K)).support) : m = s := by
-  have := support_monomial_subset hm
-  simpa using this
+  simpa using support_monomial_subset hm
 
 lemma Good.mul {f g : MvPolynomial σ K} {a b : ι → ℕ} {s s' : σ →₀ ℕ}
     (hf : Good sv f a s) (hg : Good sv g b s') : Good sv (f * g) (a + b) (s + s') := by
@@ -108,9 +156,7 @@ lemma SFree.mul {f g : MvPolynomial σ K} (hf : SFree sv f) (hg : SFree sv g) : 
 omit [Nontrivial K] in
 lemma SFree.add {f g : MvPolynomial σ K} (hf : SFree sv f) (hg : SFree sv g) : SFree sv (f + g) := by
   intro m hm
-  rcases mem_support_add hm with h | h
-  · exact hf m h
-  · exact hg m h
+  exact (mem_support_add hm).elim (hf m) (hg m)
 
 omit [Nontrivial K] in
 lemma SFree.C (c : K) : SFree sv (C c : MvPolynomial σ K) := by
@@ -270,7 +316,7 @@ theorem absSat (V : ι' → Submodule K (MvPolynomial σ K)) (a : ι' → ι →
     apply ih (s.erase L) (Finset.erase_ssubset hL) (fun i hi => hv i (mem_of_mem_erase hi))
     intro m
     have : ∑ i ∈ s.erase L, v i = ∑ i ∈ s, v i - v L := by rw [← hsplit]; ring
-    rw [this, coeff_sub]
+    rw [this, MvPolynomial.coeff_sub]
     exact C.sub_mem (hC m) (hT _ key m)
   rw [← hsplit]
   exact T.add_mem key hrest
@@ -306,7 +352,7 @@ lemma kap_add (F : (τ →₀ ℕ) → (σ →₀ ℕ)) (hF : Function.Injective
 
 lemma kap_smul (F : (τ →₀ ℕ) → (σ →₀ ℕ)) (hF : Function.Injective F) (c : K) (Q : MvPolynomial σ K) :
     kap F hF (c • Q) = c • kap F hF Q := by
-  ext n; simp only [coeff_kap, coeff_smul]
+  ext n; simp only [coeff_kap, MvPolynomial.coeff_smul]
 
 lemma kap_zero (F : (τ →₀ ℕ) → (σ →₀ ℕ)) (hF : Function.Injective F) :
     kap F hF (0 : MvPolynomial σ K) = 0 := by
@@ -354,7 +400,7 @@ lemma kap_gen (he : Function.Injective e) (zm μ : σ →₀ ℕ) (hμ : ∀ x, 
     (g : MvPolynomial σ K) (hg : ∀ w ∈ g.support, ∀ x, w (e x) = 0) :
     kap _ (F_inj e he zm μ) (monomial zm 1 * rename e y * g) = AddMonoidAlgebra.coeff g μ • y := by
   ext n
-  rw [coeff_kap, coeff_smul, smul_eq_mul, mul_assoc, add_assoc, coeff_monomial_mul, one_mul,
+  rw [coeff_kap, MvPolynomial.coeff_smul, smul_eq_mul, mul_assoc, add_assoc, coeff_monomial_mul, one_mul,
     coeff_rename_mul e he n μ hμ y g hg, mul_comm]
 
 end Kap
@@ -451,8 +497,7 @@ lemma good_tie (i : Fin (t + 1)) (e : MvPolynomial (BVar N r t) ℚ_[p]) (he : S
     intro m hm
     rw [he m hm]
     refine ⟨fun k => Nat.zero_le _, fun h => ?_⟩
-    have := congrFun h i
-    simp at this
+    exact absurd (congrFun h i) (by simp)
 
 lemma sfree_pair (u w : Fin r → Fin (N + 1) × Fin r) :
     SFree (scalS N r t) (∑ c, X (Sum.inl (u c)) * X (Sum.inl (w c)) : MvPolynomial (BVar N r t) ℚ_[p]) :=
@@ -465,7 +510,7 @@ lemma lv_castSucc (j : Fin t → ℕ) (jp : ℕ) (k : Fin t) : lv j jp (Fin.cast
   simp [lv, Finset.sum_apply, Pi.single_apply, Fin.castSucc_inj, Fin.castSucc_ne_last]
 
 lemma lv_last (j : Fin t → ℕ) (jp : ℕ) : lv j jp (Fin.last t) = jp := by
-  simp [lv, Finset.sum_apply, Pi.single_apply, (Fin.castSucc_ne_last _).symm]
+  simp [lv, Finset.sum_apply, (Fin.castSucc_ne_last _).symm]
 
 lemma lv_inj {j j' : Fin t → ℕ} {jp jp' : ℕ} (h : lv j jp = lv j' jp') : j = j' ∧ jp = jp' := by
   refine ⟨funext fun k => ?_, ?_⟩
@@ -495,7 +540,7 @@ lemma intPol_iff_isInt (f : MvPolynomial σ ℚ_[p]) : f ∈ IntPol p σ ↔ IsI
 
 lemma intPol_iff' (F : MvPolynomial σ ℚ_[p]) :
     F ∈ IntPol p σ ↔ ∃ F₀ : MvPolynomial σ ℤ_[p], map (algebraMap ℤ_[p] ℚ_[p]) F₀ = F := by
-  simp [IntPol, LinearMap.mem_range, MvPolynomial.mapAlgHom_apply, Algebra.ofId_apply]
+  simp [IntPol, LinearMap.mem_range, MvPolynomial.mapAlgHom_apply]
 
 lemma intPol_mul' {F G : MvPolynomial σ ℚ_[p]} (hF : F ∈ IntPol p σ) (hG : G ∈ IntPol p σ) :
     F * G ∈ IntPol p σ := by
@@ -561,8 +606,7 @@ def Bset (j : Fin D.T.t → ℕ) (jp : ℕ) : Set (MvPolynomial (BVar N r D.T.t)
 lemma gens_sub (j : Fin D.T.t → ℕ) (jp : ℕ) (x : MvPolynomial (BVar N r D.T.t) ℚ_[p])
     (hx : x ∈ D.gens p (r := r) j jp) : ∃ b ∈ Bset (p := p) D j jp, x = pre D j jp * b := by
   obtain ⟨y, hy, g, hg, rfl⟩ := hx
-  refine ⟨_, ⟨y, hy, g, hg, rfl⟩, ?_⟩
-  rw [pre, ← zmon_eq]; ring
+  exact ⟨_, ⟨y, hy, g, hg, rfl⟩, by rw [pre, ← zmon_eq]; ring⟩
 
 lemma memV (j : Fin D.T.t → ℕ) (jp : ℕ) (v : MvPolynomial (BVar N r D.T.t) ℚ_[p])
     (hv : v ∈ Submodule.span ℚ_[p] (D.gens p (r := r) j jp)) :
@@ -701,10 +745,7 @@ lemma SSZ_int (x : MvPolynomial (BVar N r D.T.t) ℚ_[p]) (hx : x ∈ D.SSZ p (r
 
 lemma chainEmb_inj : Function.Injective (chainEmb N r D.T.t) := by
   rintro ⟨a, c⟩ ⟨b, d⟩ h
-  simp only [chainEmb, Sum.inl.injEq, Prod.mk.injEq] at h
-  obtain ⟨h1, h2⟩ := h
-  rw [Fin.castSucc_inj] at h1
-  rw [h1, h2]
+  simpa only [chainEmb, Sum.inl.injEq, Prod.mk.injEq, Fin.castSucc_inj] using h
 
 lemma xiVar_inj : Function.Injective (xiVar N r D.T.t) := by
   intro a b h; simpa [xiVar] using h

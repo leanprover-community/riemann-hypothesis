@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCodimOneCompleteIntersection
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.RingTheory.KrullDimension.Basic
 
 @[expose] public section
 

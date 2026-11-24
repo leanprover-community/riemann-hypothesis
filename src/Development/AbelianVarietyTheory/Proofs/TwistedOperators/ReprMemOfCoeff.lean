@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -33,7 +72,7 @@ theorem coeff_mem_of_repr {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → Forma
   rw [val_eq_sum_repr, coeff_sum, ← RingHom.coe_fieldRange]
   refine Subfield.sum_mem _ fun a _ => ?_
   obtain ⟨P, hP⟩ := bVVfun_int ℂ lam a
-  rw [coeff_smul, hP, coeff_map, smul_eq_mul]
+  rw [MvPolynomial.coeff_smul, hP, coeff_map, smul_eq_mul]
   obtain ⟨x, hx⟩ := h a
   exact ⟨x * P.coeff m, by simp [hx]⟩
 
@@ -58,14 +97,14 @@ theorem repr_mem_of_coeff {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → Forma
       rw [val_eq_sum_repr, coeff_sum]; simp [c]
     have e2 : φ (AddMonoidAlgebra.coeff v.1 m) = AddMonoidAlgebra.coeff v.1 m := hφ1 ⟨_, RingHom.mem_fieldRange.2 (h m)⟩
     have e3 : φ (AddMonoidAlgebra.coeff v.1 m) = ∑ b, φ (c b) * AddMonoidAlgebra.coeff (bVVfun ℂ lam b) m := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [e1, map_sum]
+
+      rw [e1, map_sum]
       refine Finset.sum_congr rfl fun b _ => ?_
       have : c b * AddMonoidAlgebra.coeff (bVVfun ℂ lam b) m = (⟨_, hK b m⟩ : K') • c b := by
         rw [Subfield.smul_def, smul_eq_mul, mul_comm]
       rw [this, map_smul, Subfield.smul_def, smul_eq_mul, mul_comm]
     rw [coeff_sum, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
-    simp only [coeff_smul, smul_eq_mul, sub_mul, Finset.sum_sub_distrib]
+    simp only [MvPolynomial.coeff_smul, smul_eq_mul, sub_mul, Finset.sum_sub_distrib]
     rw [← e1, ← e3, e2, sub_self]
   have hz := Fintype.linearIndependent_iff.1 (bVVfun_spec ℂ lam).1 _ key a
   rw [sub_eq_zero] at hz
@@ -84,11 +123,11 @@ theorem coeff_map_mem {ι : Type} [Fintype ι] {n n' : ℕ} {σ : ι → Formali
   refine coeff_mem_of_repr σ' κ _ (fun a => ?_) m
   have e : f v = ∑ b, (bVV ℂ σ).repr v b • f (bVV ℂ σ b) := by
     conv_lhs => rw [← (bVV ℂ σ).sum_repr v]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul]
+
+    simp only [map_sum, map_smul]
   rw [e]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply, smul_eq_mul]
+
+  simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply, smul_eq_mul]
   rw [← RingHom.coe_fieldRange]
   refine Subfield.sum_mem _ fun b _ => ?_
   exact Subfield.mul_mem _ (RingHom.mem_fieldRange.2 (repr_mem_of_coeff σ κ v hv b)) (RingHom.mem_fieldRange.2 (hf a b))

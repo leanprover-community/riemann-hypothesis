@@ -1,14 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecMRankBound
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenericFibreVar
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenericFibreVar
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionLatticeFinite
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDegLTGrowth
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyCN
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PGradedFinite
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDegLTGrowth
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenericFibreVar
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionLatticeFinite
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

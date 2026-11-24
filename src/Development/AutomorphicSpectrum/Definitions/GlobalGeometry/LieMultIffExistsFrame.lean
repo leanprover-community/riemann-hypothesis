@@ -1,12 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LeftEqIffLieVecSmul
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaLevelAbelianSchemeGlueAffineCover
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ThetaUniformisationComplexAbelianVariety
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsGrpObjPolarised
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -101,10 +139,6 @@ def torusModel (x : Sp R ⟶ S) (X : Type) [AddCommGroup X] : LieModel (splitTor
 
 end Frames
 
-section Gram
-
-end Gram
-
 section Form
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
@@ -120,8 +154,8 @@ theorem trace_basis_mul_sesq (D : Datum H) (x y : D.La) (j) :
     convert this
     unfold HT.dualInt
     congr!
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [sesq, Finset.mul_sum, map_sum]
+
+  simp only [sesq, Finset.mul_sum, map_sum]
   have : ∀ k, Algebra.trace ℚ E ((RingOfIntegers.basis E j : E) *
       ((D.EF (RingOfIntegers.basis E k • x) y : E) * HT.dualInt E k)) =
       (D.EF (RingOfIntegers.basis E k • x) y : ℚ) * if j = k then 1 else 0 := by
@@ -149,10 +183,6 @@ theorem eq_of_trace {s t : E} (h : ∀ a : 𝓞 E, Algebra.trace ℚ E ((a : E) 
     rw [Algebra.traceForm_apply, integralBasis_apply, sub_mul, map_sub, mul_comm s, mul_comm t]
     exact sub_eq_zero.2 (h _)
   simp [this]
-
-theorem sesq_smul_left (D : Datum H) (c : 𝓞 E) (x y : D.La) : sesq D (c • x) y = c * sesq D x y :=
-  eq_of_trace fun a => by
-    rw [trace_mul_sesq, ← _root_.mul_assoc, ← mul_smul, ← trace_mul_sesq]; simp
 
 theorem sesq_smul_right (D : Datum H) (c : 𝓞 E) (x y : D.La) : sesq D x (H.bar c • y) = c * sesq D x y :=
   eq_of_trace fun a => by

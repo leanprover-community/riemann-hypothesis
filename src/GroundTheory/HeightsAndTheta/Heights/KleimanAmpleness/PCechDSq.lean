@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsCechDSq
 
 @[expose] public section
@@ -75,8 +74,8 @@ theorem CechDSq.proof : CechDSq.Statement := by
   have step : ∀ k : K.1.1, Cech.sgn K.1.1 k • ρ (Cech.face K k).1 K.1 (Cech.face_subset K k)
       (Cech.d G ρ i s (Cech.face K k)) = ∑ j ∈ K.1.1.erase k, f ⟨k, j⟩ := by
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Cech.d_apply, map_sum, Finset.smul_sum]
+
+    rw [Cech.d_apply, map_sum, Finset.smul_sum]
     refine Eq.trans ?_ (Finset.sum_coe_sort (K.1.1.erase k) (fun j => f ⟨k, j⟩))
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_zsmul, smul_smul, hcomp, ← restrictTo_eq]

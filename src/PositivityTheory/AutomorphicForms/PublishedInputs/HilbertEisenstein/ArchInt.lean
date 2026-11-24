@@ -1,10 +1,13 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SExpDefs
-public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
-public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
-public import GroundTheory.LocalFields.LocalZetaGauss
-public import GroundTheory.LocalFields.LocalZeta
+public import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
+public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
+public import GroundTheory.LocalFields.LocalZetaShell
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 @[expose] public section
 

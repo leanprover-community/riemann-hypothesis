@@ -1,6 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,18 +74,15 @@ theorem norm_det_bottom_block_sq :
   have hs : s * s * ‖η‖ = 1 := by
     rw [hss, Real.rpow_neg_one, inv_mul_cancel₀ hn.ne']
   have hs0 : s ≠ 0 := by
-    intro h0
-    rw [h0] at hs
-    simp at hs
+    rw [hsdef]
+    positivity
   have hinv : s⁻¹ = s * ‖η‖ := inv_eq_of_mul_eq_one_right (by linear_combination hs)
   have nsq : ∀ z : ℂ, ((‖z‖ ^ 2 : ℝ) : ℂ) = z * star z := by
     intro z
     rw [← Complex.normSq_eq_norm_sq]
     exact (Complex.mul_conj z).symm
-  have hsstar : star (s : ℂ) = s := by
-    exact Complex.conj_ofReal s
-  have hsinvstar : star ((s : ℂ)⁻¹) = (s : ℂ)⁻¹ := by
-    rw [star_inv₀, hsstar]
+  have hsstar : star (s : ℂ) = s := Complex.conj_ofReal s
+  have hsinvstar : star ((s : ℂ)⁻¹) = (s : ℂ)⁻¹ := by rw [star_inv₀, hsstar]
   have hee : e * star e = 1 := by
     rw [← nsq e, he]
     norm_num
@@ -47,32 +91,18 @@ theorem norm_det_bottom_block_sq :
   have hsa : star (-(η * (s : ℂ))) = -(star η * (s : ℂ)) := by
     rw [star_neg, star_mul', hsstar]
   have ha : -(η * (s : ℂ)) * star (-(η * (s : ℂ))) = (s : ℂ)⁻¹ * (s : ℂ)⁻¹ := by
-    rw [hsa]
-    have e1 : -(η * (s : ℂ)) * -(star η * (s : ℂ)) = (η * star η) * ((s : ℂ) * (s : ℂ)) := by
-      ring
-    rw [e1, ← nsq η]
-    have e2 : ‖η‖ ^ 2 * (s * s) = s⁻¹ * s⁻¹ := by
+    have h : ‖η‖ ^ 2 * (s * s) = s⁻¹ * s⁻¹ := by
       rw [hinv]
       ring
-    have e3 : ((‖η‖ ^ 2 : ℝ) : ℂ) * ((s : ℂ) * (s : ℂ)) = ((‖η‖ ^ 2 * (s * s) : ℝ) : ℂ) := by
-      first | (push_cast; ring) | push_cast | simp
-    rw [e3, e2]
-    first | (push_cast; ring) | push_cast | simp
+    rw [hsa, neg_mul_neg,
+      show η * ↑s * (star η * ↑s) = (η * star η) * (↑s * ↑s) by ring, ← nsq]
+    exact_mod_cast h
   have ha' : star (-(η * (s : ℂ))) * -(η * (s : ℂ)) = (s : ℂ)⁻¹ * (s : ℂ)⁻¹ := by
     rw [mul_comm]; exact ha
-  have hs_ij : ∀ i j, star (h i j) = h j i := by
-    intro i j
-    have hx := congrArg (fun X : Matrix n n ℂ => X j i) hh
-    simp only [Matrix.conjTranspose_apply] at hx
-    exact hx
   have hT : h.map star = hᵀ := by
-    ext i j
-    simp only [Matrix.map_apply, Matrix.transpose_apply]
-    exact hs_ij i j
+    rw [← Matrix.conjTranspose_transpose, hh]
   have hTH : hᵀᴴ = hᵀ := by
-    ext i j
-    simp only [Matrix.conjTranspose_apply, Matrix.transpose_apply]
-    exact hs_ij i j
+    rw [Matrix.transpose_conjTranspose, hT]
   have hgg : g * g⁻¹ = 1 := Matrix.mul_nonsing_inv g hgdet
   have hgg' : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul g hgdet
   have hMH : Mᴴ = M := by
@@ -80,13 +110,9 @@ theorem norm_det_bottom_block_sq :
       Matrix.conjTranspose_conjTranspose, hTH, mul_assoc]
   have hgM : g * M = hᵀ * g⁻¹ᴴ := by
     rw [hM, hT, ← mul_assoc, ← mul_assoc, hgg, one_mul]
-  have hut : uᴴ * t = 1 := by
-    have hx := congrArg Matrix.conjTranspose htu
-    rwa [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose,
-      Matrix.conjTranspose_one] at hx
+  have hut : uᴴ * t = 1 := by simpa using congrArg Matrix.conjTranspose htu
   have huH : uᴴ = (s : ℂ) • g⁻¹ := by
-    calc uᴴ = g⁻¹ * (g * uᴴ) := by rw [← mul_assoc, hgg', one_mul]
-      _ = (s : ℂ) • g⁻¹ := by rw [hg, mul_smul_comm, mul_one]
+    rw [← one_mul uᴴ, ← hgg', mul_assoc, hg, mul_smul_comm, mul_one]
   have hu : u = (s : ℂ) • g⁻¹ᴴ := by
     calc u = uᴴᴴ := (Matrix.conjTranspose_conjTranspose u).symm
       _ = (s : ℂ) • g⁻¹ᴴ := by rw [huH, Matrix.conjTranspose_smul, hsstar]
@@ -112,15 +138,12 @@ theorem norm_det_bottom_block_sq :
     congr 1
     simp only [Matrix.conjTranspose_mul, hMH, mul_add, add_mul, mul_one, mul_assoc]
   have hdet : D.det * star D.det = t.det * star t.det * (1 + M * M).det := by
-    have lhs : D.det * star D.det = (D * Dᴴ).det := by
-      rw [Matrix.det_mul, Matrix.det_conjTranspose]
-    rw [lhs, hmain, Matrix.det_smul, Matrix.det_mul, Matrix.det_mul, Matrix.det_conjTranspose,
-      ht, Matrix.det_smul, star_mul', star_pow, hsinvstar]
+    rw [← Matrix.det_conjTranspose, ← Matrix.det_mul, hmain, Matrix.det_smul, Matrix.det_mul,
+      Matrix.det_mul, Matrix.det_conjTranspose, ht, Matrix.det_smul, star_mul', star_pow,
+      hsinvstar]
     ring
   rw [← nsq, ← nsq] at hdet
   have hre := congrArg Complex.re hdet
-  first
-    | (rw [Complex.ofReal_re, Complex.re_ofReal_mul] at hre; exact hre)
-    | (simpa [Complex.mul_re] using hre)
+  simpa only [Complex.ofReal_re, Complex.re_ofReal_mul] using hre
 
 end GlobalTheory.CompanionTheory.KWhit

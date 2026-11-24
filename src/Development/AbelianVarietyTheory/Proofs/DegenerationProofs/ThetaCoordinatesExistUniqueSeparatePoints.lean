@@ -1,15 +1,66 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissibleBaseOfCompleteDvr
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.HomExtSt
-public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsThetaPtOverOfSubsingleton
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfMemChart
+public import Development.AbelianVarietyTheory.Definitions.Degenerations.CharZeroOfIsPrimitiveRoot
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpanEqTopOfFunctionals
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ThetaGrpActsLinearly
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CubeTheoremAndSectionsFiniteGrowthAbelianVariety
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfAssociated
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfLocalOnBase
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfMemChart
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSecValueIsUnit
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ForallGeometricallyIntegralOfSmoothOfGeometrical
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LocGenOfTrivial
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SecMInvariantEqBotOrUnivAtGeometricPoint
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSecValueIsUnit
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfAssociated
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CubeTheoremAndSectionsFiniteGrowthAbelianVariety
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SymmetricLiftOddOrderExistsUnique
+public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsThetaPtOverOfSubsingleton
+import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.ExistsGeneratorOfIsField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.WeilIsIffCommIsOfAndLiftSubsingleton
 
 @[expose] public section
 
@@ -200,7 +251,7 @@ theorem isThetaPt_iff [Subsingleton T.left] [Nonempty T.left] {k : ℕ} (hk : Od
     refine ⟨hk, hu, fun p => ⟨⊤, trivial, ?_⟩⟩
     obtain ⟨h, hh⟩ := exists_section (T := T) (V := ⊤) (p := p) trivial
     have hi : overResι (T := T) ⊤ ≫ h = 𝟙 _ := by
-      haveI : Mono (overResι (T := T) ⊤) :=
+      have : Mono (overResι (T := T) ⊤) :=
         Over.mono_of_mono_left _ (hk := inferInstanceAs (Mono (⊤ : T.left.Opens).ι))
       rw [← cancel_mono (overResι (T := T) ⊤), Category.assoc, hh, Category.comp_id, Category.id_comp]
     exact isThetaPtOver_pull P ⟨th, s1, α, τ, U, t, v, 1, h1, h2, h3, h4, h5, h6, h7,
@@ -234,7 +285,7 @@ theorem exists_isThetaFam {k : ℕ} (hk : Odd k) {I : Type} (x : I → (Over.mk 
   have hL := P.isLB
   let T : Over S := Over.mk s
   let e := (Scheme.ΓSpecIso (CommRingCat.of K)).commRingCatIsoToRingEquiv.symm
-  haveI : Subsingleton T.left := inferInstanceAs (Subsingleton (PrimeSpectrum K))
+  have : Subsingleton T.left := inferInstanceAs (Subsingleton (PrimeSpectrum K))
   obtain ⟨p⟩ : Nonempty T.left := inferInstanceAs (Nonempty (PrimeSpectrum K))
   obtain ⟨t, -, ht⟩ : ∃ t : SecM P.A P.L 1 T, t ≠ 0 ∧ ∀ s, ∃ r : Γ(T.left, ⊤), r • t = s :=
     ThetaPtExist.exists_generator_of_isField (MulEquiv.isField (Field.toIsField K) e.symm.toMulEquiv)
@@ -270,7 +321,7 @@ theorem IsThetaFam.span_eq_top {k N : ℕ} (hk : 1 ≤ k) (hN : 4 ≤ N) (hK : (
   obtain ⟨th, s₁, α, U, hth, -, hs₁, hU, ht⟩ := H
   obtain ⟨ρ, k₁, -, k₃, k₄⟩ := thetaGrp_acts_linearly hLaw.globalFns S P N (Over.mk s)
   obtain ⟨h0, irr⟩ := secM_invariant_eq_bot_or_univ_at_geometric_point hLaw.polBaseChange
-  haveI : Nonempty I := let ⟨i, _⟩ := hx 1 (one_pow _); ⟨i⟩
+  have : Nonempty I := let ⟨i, _⟩ := hx 1 (one_pow _); ⟨i⟩
   have e : ∀ i, SecM.ofSec P.A (t i) = ρ (U i) (SecM.ofSec P.A s₁) := fun i => ((k₁ _ _ _).1 (ht i)).symm
   simp only [e]
   refine span_translates_eq_top P.A (irr hLaw.irred S P K s N (Or.inr hN) hK) ρ k₁ k₃ k₄ U (fun θ => ?_) _ fun hz => ?_
@@ -320,7 +371,7 @@ theorem eq_of_span {N : ℕ} (hN : 3 ≤ N) {I : Type} {t : I → LB.Sec (LPow P
     {z z' : Over.mk s ⟶ P.A} {τ : Frame P.L N z} {τ' : Frame P.L N z'} (hτ : τ.IsGen) (hτ' : τ'.IsGen)
     {v : I → Γ((Over.mk s).left, ⊤)} (hv : ∀ i, IsValueAt P.A P.L N (t i) z τ (v i))
     (hv' : ∀ i, IsValueAt P.A P.L N (t i) z' τ' (v i)) : z = z' := by
-  haveI : IsLocallyNoetherian (Over.mk s).left := inferInstanceAs (IsLocallyNoetherian (Spec (CommRingCat.of K)))
+  have : IsLocallyNoetherian (Over.mk s).left := inferInstanceAs (IsLocallyNoetherian (Spec (CommRingCat.of K)))
   refine SepPoints.eq_of_forall_value_eq forall_geometricallyIntegral_of_smooth_of_geometricallyConnected
     AbLaw.CubeAssembly.cube_gen hLaw.secBaseChange (fun S _ P n hn => let h := hLaw.mulN S P n hn;
       ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1⟩) S P N hN _ z z' τ τ' hτ hτ' fun T' _ h w a a' ha ha' => ?_
@@ -368,8 +419,8 @@ theorem coord_exists_unique_separate : Laws → ∀ (K : Type) [Field K] [IsAlgC
   intro hLaw K _ _ S _ P s m hm hK Ix x hx
   let e : Γ((Over.mk s).left, ⊤) ≃+* K := (Scheme.ΓSpecIso (CommRingCat.of K)).commRingCatIsoToRingEquiv
   have he : ∀ a : K, fnOf a = e.symm a := fun _ => rfl
-  haveI : Subsingleton (Over.mk s).left := inferInstanceAs (Subsingleton (PrimeSpectrum K))
-  haveI : Nonempty (Over.mk s).left := inferInstanceAs (Nonempty (PrimeSpectrum K))
+  have : Subsingleton (Over.mk s).left := inferInstanceAs (Subsingleton (PrimeSpectrum K))
+  have : Nonempty (Over.mk s).left := inferInstanceAs (Nonempty (PrimeSpectrum K))
   have hu : IsUnit (m : Γ((Over.mk s).left, ⊤)) := by
     rw [← map_natCast e.symm]
     exact (IsUnit.mk0 _ hK).map e.symm

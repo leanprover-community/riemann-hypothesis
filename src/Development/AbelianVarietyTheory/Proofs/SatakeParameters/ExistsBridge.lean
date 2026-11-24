@@ -1,10 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RestrictsSelf
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeilDeligneParamAboveLIndependentLocalEmbedding
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FiniteDimensionalLetter
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalAdjoinRange
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalIndepBridge
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RestrictsSelf
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
+import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
+import ReciprocityTheory.NeutralLocalFields.Reciprocity
 
 @[expose] public section
 
@@ -49,26 +93,33 @@ variable {l : ℕ} [Fact l.Prime] {K L Ω : Type} [Field Ω] [Field K] [NumberFi
 
 theorem exists_bridge (Bw : LocBridge l K Ω (Dec (F := K) A) O) (hj : Induces Bw) (S : FinExt l) :
     ∃ (LL' : FinExt l) (Bw' : LocBridge l L Ω (Dec (F := L) A) ↥(OL LL')), Bw'.j = Bw.j ∧ S.1 ≤ Bw'.LL.1 ∧ Bw.Kw.1 ≤ Bw'.Kw.1 := by
-  let K' : FinExt l := ⟨IntermediateField.adjoin ℚ_[l] (Set.range fun x : L => Bw.j (algebraMap L Ω x)),
-    GlobalTheory.PlaceBridge.finiteDimensional_adjoin_range (Bw.j.comp (algebraMap L Ω))⟩
+  let jL := Bw.j.comp (algebraMap L Ω)
+  let K' : FinExt l := ⟨IntermediateField.adjoin ℚ_[l] (Set.range jL),
+    GlobalTheory.PlaceBridge.finiteDimensional_adjoin_range jL⟩
   have := K'.2
-  obtain ⟨e, he, he', hec⟩ := GlobalTheory.PlaceBridge.exists_mulEquiv (E := L) hj K' rfl
-  refine ⟨_, {
+  let N : FinExt l := ⟨IntermediateField.normalClosure ℚ_[l] ↥K'.1 (PadicAlgCl l),
+    normalClosure.is_finiteDimensional ℚ_[l] ↥K'.1 (PadicAlgCl l)⟩
+  let LL' : FinExt l := supExt S N
+  have hN : N.1 ≤ LL'.1 := le_sup_right
+  have hS : S.1 ≤ LL'.1 := le_sup_left
+  obtain ⟨e, he, he', hec⟩ :=
+    GlobalTheory.PlaceBridge.exists_mulEquiv (E := L) (j := Bw.j) hj K' rfl
+  let B : LocBridge l L Ω (Dec (F := L) A) ↥(OL LL') := {
     Kw := K'
     j := Bw.j
-    j_E := fun x => IntermediateField.subset_adjoin _ _ ⟨x, rfl⟩
-    j_dense := GlobalTheory.PlaceBridge.adjoin_range_subset_closure (Bw.j.comp (algebraMap L Ω))
+    j_E := fun x => IntermediateField.subset_adjoin ℚ_[l] (Set.range jL) (Set.mem_range_self x)
+    j_dense := GlobalTheory.PlaceBridge.adjoin_range_subset_closure jL
     e := e
     e_cont := he
     e_symm_cont := he'
     e_comm := hec
-    LL := supExt S ⟨IntermediateField.normalClosure ℚ_[l] K'.1 (PadicAlgCl l), inferInstance⟩
-    LL_split := fun τ x => (le_sup_right : _ ≤ (supExt S ⟨IntermediateField.normalClosure ℚ_[l] K'.1 (PadicAlgCl l),
-      inferInstance⟩).1) (AlgHom.fieldRange_le_normalClosure τ ⟨x, rfl⟩)
-    eO := RingEquiv.refl _
+    LL := LL'
+    LL_split := fun τ x => hN (τ.fieldRange_le_normalClosure ⟨x, rfl⟩)
+    eO := RingEquiv.refl ↥(OL LL')
     eO_alg := fun _ => rfl
     eO_cont := continuous_id
-    eO_symm_cont := continuous_id }, rfl, le_sup_left, ?_⟩
+    eO_symm_cont := continuous_id }
+  refine ⟨LL', B, rfl, hS, ?_⟩
   show Bw.Kw.1 ≤ K'.1
   rw [BridgeInd.kw_eq_adjoin Bw, IntermediateField.adjoin_le_iff]
   rintro _ ⟨x, rfl⟩

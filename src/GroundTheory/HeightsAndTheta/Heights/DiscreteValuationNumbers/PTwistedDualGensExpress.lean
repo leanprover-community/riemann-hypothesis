@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsTwistedDualGensExpress
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section
 
@@ -86,8 +87,8 @@ theorem TwistedDualGensExpress.proof : TwistedDualGensExpress.Statement := by
         exact mul_mem (pow_mem hwA _) he)
     refine ⟨e, ?_⟩
     have : w ^ n * ψ v = ∑ q, a'' q * (w ^ n * ψ (b l q)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hrep, map_sum, Finset.mul_sum]
+
+      rw [hrep, map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun q _ => ?_
       rw [map_smul, smul_eq_mul]
       ring

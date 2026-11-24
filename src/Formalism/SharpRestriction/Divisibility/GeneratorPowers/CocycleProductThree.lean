@@ -1,6 +1,47 @@
 module
 
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetSubstPSTrunc
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsExpChart
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -23,9 +64,6 @@ theorem act_zero : Xo.univ.t.act.act 0 = 1 := by
   rw [add_zero] at h
   first
     | exact mul_eq_left.mp h.symm
-    | exact mul_right_eq_self.mp h.symm
-    | exact self_eq_mul_right.mp h
-    | simpa using h
 
 private theorem comp_psum_lemma {T T' : Over Xo.X} (f : T' ⟶ T) {n : ℕ} (xs : Fin n → (T ⟶ Xo.univ.t.G))
     (S : Finset (Fin n)) :
@@ -37,14 +75,12 @@ private theorem comp_psum_lemma {T T' : Over Xo.X} (f : T' ⟶ T) {n : ℕ} (xs 
     simp only [List.foldr_nil, pzero]
     first
       | simp
-      | rw [← Category.assoc, CartesianMonoidalCategory.comp_toUnit]
   | cons k L ih =>
     simp only [List.foldr_cons]
     rw [← ih]
     simp only [padd]
     first
       | rw [CartesianMonoidalCategory.comp_lift_assoc]
-      | simp
 
 theorem comp_cφ {T T' : Over Xo.X} (f : T' ⟶ T) {n : ℕ} (xs : Fin n → (T ⟶ Xo.univ.t.G)) (I : ULift (Finset (Fin n))) :
     f.left ≫ cφ xs I = cφ (fun i => f ≫ xs i) I := by
@@ -62,7 +98,7 @@ private theorem padd_eq_lemma_2 {T : Over Xo.X} (a b : T ⟶ Xo.univ.t.G) :
 private theorem pzero_eq_lemma_3 (T : Over Xo.X) : pzero Xo.univ.t.G T = 1 := rfl
 
 
-set_option maxHeartbeats 800000 in
+
 theorem prod_cφ2 {T : Over Xo.X} {U : Type} [CommGroup U] (h : (T.left ⟶ Xo.univ.t.G.left) → U)
     (xs : Fin 2 → (T ⟶ Xo.univ.t.G)) :
     ∏ I : ULift (Finset (Fin 2)), h (cφ xs I) ^ cε 2 I =
@@ -82,12 +118,12 @@ theorem prod_cφ2 {T : Over Xo.X} {U : Type} [CommGroup U] (h : (T.left ⟶ Xo.u
     pzero_eq_lemma_3, Finset.card_empty, Finset.card_singleton]
   clear hsum hU f0 f1 f2 f3 c3
   try norm_num only
-  try simp only [zpow_one, zpow_neg, zpow_neg_one]
+  try simp only [zpow_one, zpow_neg]
   rw [mul_assoc (h (Over.Hom.left (1 : T ⟶ Xo.univ.t.G))),
     mul_assoc (h (Over.Hom.left (1 : T ⟶ Xo.univ.t.G))), mul_assoc (h (xs 0 * 1).left)⁻¹]
 
 
-set_option maxHeartbeats 800000 in
+
 theorem cocycle_product_three {T : Over Xo.X} {U : Type} [CommGroup U] (h : (T.left ⟶ Xo.univ.t.G.left) → U)
     (xs : Fin 3 → (T ⟶ Xo.univ.t.G)) :
     ∏ I : thK, h (thφ Xo.univ.t.G xs I) ^ thε I =
@@ -117,14 +153,13 @@ theorem cocycle_product_three {T : Over Xo.X} {U : Type} [CommGroup U] (h : (T.l
     List.foldr_nil, padd_eq_lemma_2, pzero_eq_lemma_3, Finset.card_empty, Finset.card_singleton]
   clear hsum hU f0 f1 f2 f3 f4 f5 f6 f7 c4 c5 c6 c7
   try norm_num only
-  try simp only [zpow_one, zpow_neg, zpow_neg_one]
+  try simp only [zpow_one, zpow_neg]
   repeat rw [mul_assoc (h (1 : T ⟶ Xo.univ.t.G).left)⁻¹]
   repeat rw [mul_assoc (h (xs 0 * 1).left)]
   repeat rw [mul_assoc (h (xs 1 * 1).left)]
   repeat rw [mul_assoc (h (xs 2 * 1).left)]
   repeat rw [mul_assoc (h (xs 0 * (xs 1 * 1)).left)⁻¹]
   repeat rw [mul_assoc (h (xs 0 * (xs 2 * 1)).left)⁻¹]
-  all_goals exact (rfl : (0 : ℕ) = 0)
 
 abbrev AdTy (Xo : Moduli Dw l) (a : 𝓞 E) : Type :=
   LB.Gen (LB.LinComb Xo.univ.t.PP.L
@@ -185,9 +220,9 @@ theorem exists_betaRaw (wP : PrimTy H Xo) (hwP : wP.IsGen) (a : 𝓞 E) (hbb : H
   intro U _ hU
   unfold betaφ betaε
   simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, Fin.prod_univ_one, Fin.prod_univ_four,
-    comp_cφ, comp_thφ, Category.comp_id, zpow_neg, zpow_one, neg_neg, Finset.prod_inv_distrib, prod_cφ2, cocycle_product_three,
+    comp_cφ, comp_thφ, Category.comp_id, zpow_neg, zpow_one, Finset.prod_inv_distrib, prod_cφ2, cocycle_product_three,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three, Matrix.head_cons,
-    Matrix.tail_cons, x3, lift_fst, lift_snd_assoc, lift_snd, lift_fst_assoc, Category.id_comp]
+    Matrix.tail_cons, x3, lift_fst, lift_snd_assoc, lift_snd, lift_fst_assoc]
   have h1 : ∀ p q : 𝓞 E, Xo.univ.t.act.act p * Xo.univ.t.act.act q = Xo.univ.t.act.act (p + q) :=
     fun p q => (Xo.univ.t.act.add p q).symm
   have h2 : ∀ p q : 𝓞 E, Xo.univ.t.act.act p ≫ Xo.univ.t.act.act q = Xo.univ.t.act.act (p * q) :=
@@ -198,7 +233,7 @@ theorem exists_betaRaw (wP : PrimTy H Xo) (hwP : wP.IsGen) (a : 𝓞 E) (hbb : H
   simp only [h3, h1, h2, hbb, h4, h5]
   ring_nf
   apply Additive.ofMul.injective
-  simp only [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]
+  simp only [ofMul_mul, ofMul_inv, ofMul_zpow]
   abel
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGC

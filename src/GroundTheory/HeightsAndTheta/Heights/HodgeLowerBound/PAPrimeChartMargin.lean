@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartLevi
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StChartVelLift
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartMargin
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

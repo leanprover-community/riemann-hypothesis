@@ -1,11 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AdmissibleInduction
+public import GroundTheory.AutomorphicForms.InductionParabolic
 public import GroundTheory.AutomorphicForms.CuspidalAdmissible
-public import GroundTheory.AutomorphicForms.JacquetAdmissible
-public import GroundTheory.AutomorphicForms.SupercuspidalCoefficients
 public import GroundTheory.AutomorphicForms.IwahoriFactorization
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

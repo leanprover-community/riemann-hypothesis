@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsDehomogOrd
-public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocalOrder
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
+public import Mathlib.Order.CompletePartialOrder
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocDomain
+public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocalOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -81,8 +83,8 @@ theorem aeval_smul_hom {B : Type*} [CommSemiring B] [Algebra F B] (π : MvPolyno
   have key : aeval (fun m => c * π (X m)) g = c ^ d * aeval (fun m => π (X m)) g := by
     conv_lhs => rw [g.as_sum]
     conv_rhs => rw [g.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, Finset.mul_sum]
+
+    rw [map_sum, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun s hs => ?_
     have hd := hg (mem_support_iff.mp hs)
     simp only [aeval_monomial, mul_pow]
@@ -92,16 +94,15 @@ theorem aeval_smul_hom {B : Type*} [CommSemiring B] [Algebra F B] (π : MvPolyno
     ring
   rw [key]
   congr 1
-  rw [← comp_aeval_apply]
-  simp
+  exact (DFunLike.congr_fun (MvPolynomial.aeval_unique π) g).symm
 
 theorem map_eq_zero_of_components {B G : Type*} [CommRing B] [FunLike G (MvPolynomial (Fin n) F) B]
     [RingHomClass G (MvPolynomial (Fin n) F) B] (f : G)
     {K : Ideal (MvPolynomial (Fin n) F)}
     (hf : ∀ g ∈ K, ∀ k, f (homogeneousComponent k g) = 0) {g : MvPolynomial (Fin n) F} (hg : g ∈ K) :
     f g = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sum_homogeneousComponent g, map_sum]
+
+  rw [← sum_homogeneousComponent g, map_sum]
   exact Finset.sum_eq_zero fun k _ => hf g hg k
 
 abbrev chartIdealOf : Ideal (MvPolynomial (Fin n) F) := I ⊔ Ideal.span {linForm t - 1}
@@ -306,8 +307,8 @@ theorem DehomogOrd.proof (h₁ : OrdPolynomialLocalization.Statement) : DehomogO
     intro r hr
     obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective r
     have ha : a ∈ W := (hmemP a).mp hr
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [toPolyR_mk, ← sum_homogeneousComponent a, map_sum]
+
+    rw [toPolyR_mk, ← sum_homogeneousComponent a, map_sum]
     refine Ideal.sum_mem _ fun k _ => ?_
     rw [toPoly_hom I t (homogeneousComponent_isHomogeneous k a)]
     exact Ideal.mul_mem_left _ _ (Ideal.mem_map_of_mem _ (Ideal.mem_map_of_mem _ (hW a ha k)))
@@ -316,9 +317,9 @@ theorem DehomogOrd.proof (h₁ : OrdPolynomialLocalization.Statement) : DehomogO
         (P.map (algebraMap _ (Localization.Away (linClass I t)))) := by
       rw [hPQdef, Ideal.map_le_iff_le_comap, Ideal.comap_comap]
       intro w hw
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Ideal.mem_comap, RingHom.comp_apply, RingHom.comp_apply, fromPoly_C_mk, ← sum_homogeneousComponent w,
-        map_sum]
+
+      rw [Ideal.mem_comap, RingHom.comp_apply, RingHom.comp_apply, fromPoly_C_mk, ← sum_homogeneousComponent w,
+      map_sum]
       refine Ideal.sum_mem _ fun k _ => ?_
       rw [fromChart_hom I t (homogeneousComponent_isHomogeneous k w)]
       exact Ideal.mul_mem_left _ _ (Ideal.mem_map_of_mem _ ((hmemP _).mpr (hW w hw k)))

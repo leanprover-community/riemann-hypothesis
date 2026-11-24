@@ -1,6 +1,14 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SmulFinsum
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FourModel
+public import Mathlib.Algebra.Module.Pi
+public import Mathlib.GroupTheory.QuotientGroup.Defs
+public import Mathlib.LinearAlgebra.Span.Defs
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
+public import Mathlib.Algebra.Module.Submodule.Basic
 
 @[expose] public section
 
@@ -259,8 +267,8 @@ theorem T_indk (T : (W → ℂ) →ₗ[ℂ] V)
     rw [Finset.sum_apply]
     simp only [Pi.smul_apply, smul_eq_mul]
     rw [indk_eq hχl hχr hχ0 hLL hdX hdivX hdivY hfinY htf hk t, finsum_eq_sum_of_fintype, Finset.mul_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hfun, map_sum]
+
+  rw [hfun, map_sum]
   simp only [map_smul]
   unfold Pk
   rw [finsum_eq_sum_of_fintype, Finset.smul_sum]
@@ -353,8 +361,8 @@ theorem T_formula (T : (W → ℂ) →ₗ[ℂ] V)
     simp only [h0, zero_smul]
   rw [finsum_eq_sum_of_support_subset _ hsub]
   conv_lhs => rw [hdec]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl (fun q hq => ?_)
   rw [map_smul, htr _ (isSB_indk hk) _ (hX q hq),
     T_indk hχl hχr hχ0 hLL hdX hdivX hdivY hfinY htf T hmo hva hk]
@@ -395,8 +403,8 @@ theorem model_mem_span (T : (W → ℂ) →ₗ[ℂ] V)
     exact Submodule.zero_mem _
   · apply Submodule.smul_mem
     unfold Pk
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, finsum_eq_sum_of_fintype, map_sum]
+
+    rw [map_smul, finsum_eq_sum_of_fintype, map_sum]
     apply Submodule.smul_mem
     apply Submodule.sum_mem
     intro g _

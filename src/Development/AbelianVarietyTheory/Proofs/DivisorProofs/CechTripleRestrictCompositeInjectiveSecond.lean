@@ -1,9 +1,74 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ComparisonMemCechHodgeFiltration
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CocycleOneFormsCoboundaryOfRestrict
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommaDescentInjectiveStatement
+public import Development.AbelianVarietyTheory.Definitions.Divisors.CommAlgFunctorCoboundaryZeroMemCocyclesOne
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommaDescentRestrictionEquiv
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommaFirstOrderCocycleLiftStatement
+public import Development.AbelianVarietyTheory.Definitions.Divisors.CechDeRhamCoefMapOneFormsRestrictAlongFunctor
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommaSecondOrderCocycleLift
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompatFamilyExtend
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitMpOmjExtIff
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompatibleHigherFormsExtendAlongFunctor
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocalizationOfData
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOneFormsCocycleRestrictSubCoboundary
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueIsPullForm
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasLocalisationAtElementsTrivSqZeroExtFormsStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HigherFormsOneCocycleCoboundaryOfRestrictStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneFormsTwoCocycleCoboundaryOfRestrict
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PairResBijectiveTwo
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormPowSmulEqZeroOfResBasicOpen
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GlueCommaOfBasis
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasLocOAff
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneCocycleCoboundaryCommaLocalBasis
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Pull1RestrictSurjectiveOfComma
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PullHyp1RestrictInjective
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PullHyp1RestrictSurjective
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictGlob1Bijective
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictPull1InjectiveOfSepGlue
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SepOfFactoringCover
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VanishingH1InvertingMorphisms
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoCocycleCoboundaryOfBasisFunctor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoFormExistsPowSmulEqZeroOfIsLocalization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -29,7 +94,7 @@ theorem restrict_bijective_one_of_basis {R' : Type} [CommRing R'] {X' : Scheme.{
   have H := _root_.GlobalTheory.CechDR.hasLoc_OAff s'
   have hs := _root_.GlobalTheory.sep_of_factoring_cover (OAff s') G H hcov
   have hg := _root_.GlobalTheory.CatCoh.Desc.glue_comma_of_basis (OAff s') G H hcov hdir
-  have hv := _root_.GlobalTheory.CatCoh.Desc.Basis.oneCocycle_vanishing_comma_of_basis (OAff s') G H hcov hdir
+  have hv := _root_.GlobalTheory.CatCoh.Desc.Basis.oneCocycle_coboundary_comma_localBasis (OAff s') G H hcov hdir
   have hs1 := _root_.GlobalTheory.CechDR.form_eq_zero_of_basis_cover s' G hcov
   have hg1 := _root_.GlobalTheory.CechDR.FormExt.glue_one_forms s' G hcov hdir
   have hs2 := _root_.GlobalTheory.CechDR.twoForm_sep_of_basis s' G hcov
@@ -55,7 +120,7 @@ theorem restrict_bijective_two_of_basis {R' : Type} [CommRing R'] {X' : Scheme.{
   have hs := _root_.GlobalTheory.sep_of_factoring_cover (OAff s') G H hcov
   have hg := _root_.GlobalTheory.CatCoh.Desc.glue_comma_of_basis (OAff s') G H hcov hdir
   have hv := _root_.GlobalTheory.CatCoh.Desc.Basis.oneCocycle_vanishing_comma_of_basis (OAff s') G H hcov hdir
-  have hv2 := GlobalTheory.T.twoCocycle_coboundary_of_basisFunctor (OAff s') G H hcov hdir
+  have hv2 := _root_.GlobalTheory.CatCoh.Desc.VandermondeTwoBasis.twoCocycle_coboundary_of_basisFunctor_alt (OAff s') G H hcov hdir
   have hs1 := _root_.GlobalTheory.CechDR.form_eq_zero_of_basis_cover s' G hcov
   have hg1 := _root_.GlobalTheory.CechDR.FormExt.glue_one_forms s' G hcov hdir
   have hs2 := _root_.GlobalTheory.CechDR.twoForm_sep_of_basis s' G hcov
@@ -86,7 +151,7 @@ theorem restrict_bijective_two_of_basis {R' : Type} [CommRing R'] {X' : Scheme.{
         fun i S' u hu ↦ h i S' u (unitE u _ hu)⟩
   have hsE := _root_.GlobalTheory.sep_of_factoring_cover (omExt (OAff s')) G HE hcovE
   have hgE := _root_.GlobalTheory.CatCoh.Desc.glue_comma_of_basis (omExt (OAff s')) G HE hcovE hdirE
-  have hvE := _root_.GlobalTheory.CatCoh.Desc.Basis.oneCocycle_vanishing_comma_of_basis (omExt (OAff s')) G HE hcovE hdirE
+  have hvE := _root_.GlobalTheory.CatCoh.Desc.Basis.oneCocycle_coboundary_comma_localBasis (omExt (OAff s')) G HE hcovE hdirE
   have hcovJ : ∀ j : ℕ, ∀ T : AffOp X', ∃ (n : ℕ) (b : Fin n → (omjExt (OAff s') j).obj T),
       Ideal.span (Set.range b) = ⊤ ∧ ∀ (i : Fin n) (S : AffOp X') (u : T ⟶ S),
         IsUnit (mp (omjExt (OAff s') j) u (b i)) →
@@ -105,9 +170,9 @@ theorem restrict_bijective_two_of_basis {R' : Type} [CommRing R'] {X' : Scheme.{
       exact ⟨n, fun i ↦ TrivSqZeroExt.inl (b i), span_inlJ_eq_top (OAff s') j hb,
         fun i S' u hu ↦ h i S' u ((isUnit_mp_omjExt_iff (OAff s') j u _).1 hu)⟩
   have hsJ := fun j ↦ _root_.GlobalTheory.sep_of_factoring_cover (omjExt (OAff s') j) G
-    (GlobalTheory.T.hasLocalisationAtElements_trivSqZeroExtForms (OAff s') j H) (hcovJ j)
+    (_root_.GlobalTheory.CechDR.FormExtJ.hasLoc_omjExt (OAff s') j H) (hcovJ j)
   have hgJ := fun j ↦ _root_.GlobalTheory.CatCoh.Desc.glue_comma_of_basis (omjExt (OAff s') j) G
-    (GlobalTheory.T.hasLocalisationAtElements_trivSqZeroExtForms (OAff s') j H) (hcovJ j) (hdirJ j)
+    (_root_.GlobalTheory.CechDR.FormExtJ.hasLoc_omjExt (OAff s') j H) (hcovJ j) (hdirJ j)
   have hs3 : ∀ (T : AffOp X') (x : Om R' ((OAff s').obj T) 3),
       (∀ t (u : T ⟶ G.obj t), pOm (OAff s') 3 u x = 0) → x = 0 := by
     intro T x hx
@@ -116,11 +181,11 @@ theorem restrict_bijective_two_of_basis {R' : Type} [CommRing R'] {X' : Scheme.{
     simpa using congrArg TrivSqZeroExt.snd h0
   exact ⟨GlobalTheory.T.comma_first_order_cocycle_lift _ _ (GlobalTheory.T.comma_descent_injective _ _ hs hg hv) b1.2
       (_root_.GlobalTheory.cocycle_one_forms_coboundary_of_restrict _ _ hs1 hg1) bg.2 hs2,
-    GlobalTheory.T.comma_second_order_cocycle_lift _ _ (GlobalTheory.T.comma_descent_restriction_equiv _ _ hs hg hv hv2)
-      (GlobalTheory.T.oneForms_twoCocycle_coboundary_of_restrict _ _ (GlobalTheory.T.comma_descent_injective _ _ hsE hgE hvE))
-      (GlobalTheory.T.exists_oneForms_cocycle_restrict_sub_coboundary _ _ (_root_.GlobalTheory.CatCoh.pull1_restrict_surjective_of_comma _ _ hsE hgE hvE))
+    _root_.GlobalTheory.CechDR.pullHyp2_restrict_surjective _ _ (_root_.GlobalTheory.CatCoh.Desc.pull2_surjective_of_comma _ _ hs hg hv hv2)
+      (_root_.GlobalTheory.CechDR.FormExt.coboundary_of_restrict_forms _ _ (GlobalTheory.T.comma_descent_injective _ _ hsE hgE hvE))
+      (_root_.GlobalTheory.CechDR.FormExt.exists_cocycle_restrict_sub_eq_coboundary _ _ (_root_.GlobalTheory.CatCoh.pull1_restrict_surjective_of_comma _ _ hsE hgE hvE))
       (GlobalTheory.T.higherForms_oneCocycle_coboundary_of_restrict _ _ 2 (_root_.GlobalTheory.CatCoh.CoefMap.restrict_pull1_injective_of_sep_glue _ _ (hsJ 2) (hgJ 2)))
-      (GlobalTheory.T.compatible_higherForms_extend_along_functor _ _ 2 (hsJ 2) (hgJ 2)) hs3⟩
+      (_root_.GlobalTheory.compat_forms_extend _ _ 2 (hsJ 2) (hgJ 2)) hs3⟩
 
 section Triple
 

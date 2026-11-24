@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsAtlas
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
+public import Mathlib.MeasureTheory.Function.Jacobian
 
 @[expose] public section
 
@@ -14,10 +19,7 @@ variable {n : ℕ}
 
 theorem eval_bind_one {m : ℕ} (y : Fin m → ℂ) {τ : Type} (g : τ → MvPolynomial (Fin m) ℂ)
     (φ : MvPolynomial τ ℂ) : eval y (bind₁ g φ) = eval (fun q => eval y (g q)) φ := by
-  induction φ using MvPolynomial.induction_on
-  · simp
-  · simp [*]
-  · simp [*]
+  exact MvPolynomial.eval₂Hom_bind₁ (RingHom.id ℂ) y g φ
 
 noncomputable def locEvalPt (I : Ideal (MvPolynomial (Fin n) ℂ)) (p : Fin n → ℂ)
     (hp : ∀ g ∈ I, eval p g = 0) : locRing I p →+* ℂ :=
@@ -82,7 +84,7 @@ theorem prod_reindex_option {e rc : ℕ} (J : Finset (Fin e)) (σ : Fin e → Op
     intro l
     cases h : σ l with
     | none => simp
-    | some k0 => simp [Finset.prod_ite_eq, Finset.prod_ite_eq']
+    | some k0 => simp [Finset.prod_ite_eq]
   have hR : ∀ k, Option.elim (σ' k) 1 (fun i => w i ^ m k) =
       ∏ l ∈ J, if σ l = some k then w l ^ m k else 1 := by
     intro k

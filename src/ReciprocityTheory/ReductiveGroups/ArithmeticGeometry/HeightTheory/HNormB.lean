@@ -1,9 +1,13 @@
 module
 
+public import Mathlib.RingTheory.Ideal.Height
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValNorm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValUFD
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormA
-public import ReciprocityTheory.SemistableReduction.AlgAll
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraMapOLInjective
 
 @[expose] public section
 
@@ -83,7 +87,6 @@ theorem local_norm [FiniteDimensional F L] [Algebra.IsSeparable F L]
   · rw [hset]
     first
     | exact ValPl.placesOver_finite (O := Localization.AtPrime p) (F := F) (L := L)
-    | exact ValPl.placesOver_finite (O := Localization.AtPrime p) (L := L)
   · rw [hset, hN, e1, mul_assoc, e2]
     rfl
 

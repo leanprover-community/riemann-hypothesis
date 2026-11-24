@@ -1,14 +1,58 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PsiEDef
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCommonStabiliserEqPairingMatrixStabiliser
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalExtend
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -109,9 +153,9 @@ theorem locM_unitri (s : Matrix (Fin (r + 1)) (Fin (r + 1)) E)
 theorem mat_entry (s s' : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (a b : Fin (r + 1)) :
     (cT (A.L p) (locM G p s) * (G.S p).Zh * locM G p s') a b =
       sc G p a * sc G p b * (A.loc p).ιE (((s.map sig).transpose * G.Zh * s') a b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mul_apply, cT, locM, Matrix.of_apply, Zh_scale, Matrix.transpose_apply, Matrix.map_apply,
-    map_sum, map_mul, cj_sc, cj_sci, cj_ι, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [Matrix.mul_apply, cT, locM, Matrix.of_apply, Zh_scale, Matrix.transpose_apply, Matrix.map_apply,
+  map_sum, map_mul, cj_sc, cj_sci, cj_ι, Finset.mul_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun i _ => ?_
   have h1 := sc_mul_sci G p i
   have h2 := sc_mul_sci G p l
@@ -147,8 +191,8 @@ theorem mat_iff (s s' : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
 
 theorem bc_sum (s : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (v : Fin (r + 1) → G.V) (j : Fin (r + 1)) :
     A.bc p (∑ i, s i j • v i) = ∑ i, (A.loc p).ιE (s i j) • A.bc p (v i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← bcL_apply, map_sum, map_smulₛₗ]
+
+  simp only [← bcL_apply, map_sum, map_smulₛₗ]
 
 theorem loc_of_glob (u : Fin (r + 1) → Fin (k + 2 * r + 1) → (A.loc p).Ep) (v : Fin (r + 1) → G.V)
     (hu : ∀ a, u a = sc G p a • A.bc p (v a)) (s : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (h : G.GLV)
@@ -223,8 +267,8 @@ theorem decomp : LinearIndependent E (gg G) ∧ IsCompl (Submodule.span E (Set.r
     rw [Fintype.linearIndependent_iff]
     intro c hc i
     have h1 := congrArg (bcL A p _) hc
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smulₛₗ, map_zero, bcL_apply, bc_gg, smul_smul] at h1
+
+    simp only [map_sum, map_smulₛₗ, map_zero, bcL_apply, bc_gg, smul_smul] at h1
     have h2 := Fintype.linearIndependent_iff.1 hli _ h1 i
     apply (A.loc p).ιE.injective
     rw [map_zero]

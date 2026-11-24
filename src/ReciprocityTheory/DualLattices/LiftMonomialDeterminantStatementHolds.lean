@@ -2,7 +2,10 @@ module
 
 public import ReciprocityTheory.DualLattices.LiftMonomialDeterminantStatement
 public import ReciprocityTheory.DualLattices.ProdEraseUpdate
-public import ReciprocityTheory.DualLattices.IsLocalOfIntegers
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 
 @[expose] public section
 
@@ -53,8 +56,8 @@ theorem residue_uR (hv : v.Integers R) [IsLocalRing R] [CharP (IsLocalRing.Resid
   have hm := mem_max_of_lt hv h
   rw [← IsLocalRing.residue_eq_zero_iff, map_sub, sub_eq_zero] at hm
   rw [hm, lam]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_natCast, Matrix.map_apply]
+
+  simp only [map_sum, map_mul, map_natCast, Matrix.map_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [xc, ZMod.castHom_apply, ZMod.natCast_val]
 

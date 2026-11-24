@@ -1,15 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MorphismsSpreadOutToFgSubalgebra
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SemistableExtensionMultiplesOfSemistable
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsAbelianSchemeAndExtendOfGenericHoms
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinitePointsOfIsOpenImmersion
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSubgroupEqRangeOfLists
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIsoIffBijectiveOverAlgClosed
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.OActDescendOfGenerators
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -25,9 +67,6 @@ theorem eta_pullback_fst {S S' : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonO
     [IsCommMonObj ((Over.pullback j).obj G)] :
     η[(Over.pullback j).obj G].left ≫ pullback.fst G.hom j = j ≫ η[G].left := by
   simp
-  all_goals first
-  | (simp only [pullback.lift_fst]; rw [← Category.assoc, ← pullback.condition, Category.comp_id])
-  | (erw [pullback.lift_fst]; rw [← Category.assoc, ← pullback.condition, Category.comp_id])
 
 theorem eta_left_hom {S : Scheme.{0}} (G : Over S) [GrpObj G] :
     η[G].left ≫ G.hom = 𝟙 _ := by
@@ -76,7 +115,7 @@ private theorem bcMap_comp_pullback_map {k₀ K : Type} [Field k₀] [Field K] [
     rw [Category.assoc, e1, Category.assoc, bcMap_snd, bcMap_snd, ← Category.assoc, e2]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_endo_spread_specialise : ∀ (k₀ K : Type) [Field k₀] [IsAlgClosed k₀] [Field K] [Algebra k₀ K]
     (B : Over (Sp k₀)) [GrpObj B], IsAbelianScheme B →
     ∀ f : (Over.pullback (spMap (algebraMap k₀ K))).obj B ⟶ (Over.pullback (spMap (algebraMap k₀ K))).obj B,
@@ -109,7 +148,6 @@ theorem exists_endo_spread_specialise : ∀ (k₀ K : Type) [Field k₀] [IsAlgC
   have hgc : spMap g.toRingHom ≫ spMap (algebraMap k₀ R) = 𝟙 _ := by
     first
     | (rw [spMap_algHom_comp, Algebra.algebraMap_self]; simp [spMap])
-    | (rw [spMap_algHom_comp]; simp [spMap])
   let σ : B.left ⟶ pullback B.hom (spMap (algebraMap k₀ R)) :=
     pullback.lift (𝟙 _) (B.hom ≫ spMap g.toRingHom)
       (by rw [Category.id_comp, Category.assoc, hgc, Category.comp_id])
@@ -244,13 +282,13 @@ theorem exists_endo_spread_specialise : ∀ (k₀ K : Type) [Field k₀] [IsAlgC
   have hησ : η[B].left ≫ σ = spMap g.toRingHom ≫ η[((Over.pullback (spMap (algebraMap k₀ R))).obj B)].left := by
     apply pullback.hom_ext
     · rw [Category.assoc, hσfst, Category.comp_id, Category.assoc, hηR, ← Category.assoc, hgc]
-      first | exact (Category.id_comp _).symm | simp
+      first | exact (Category.id_comp _).symm
     · rw [Category.assoc, hσsnd, ← Category.assoc, eta_left_hom, Category.id_comp, Category.assoc, hηRs,
         Category.comp_id]
   have hf0one : η[B] ≫ f₀ = η[B] := by
     apply Over.OverMorphism.ext
     rw [Over.comp_left, hf0l, ← Category.assoc, hησ, Category.assoc, hone, hηR, ← Category.assoc, hgc]
-    first | exact Category.id_comp _ | simp
+    first | exact Category.id_comp _
   have hτc : (pullback.fst B.hom B.hom ≫ σ) ≫ pullback.snd B.hom (spMap (algebraMap k₀ R)) =
       (pullback.snd B.hom B.hom ≫ σ) ≫ pullback.snd B.hom (spMap (algebraMap k₀ R)) := by
     rw [Category.assoc, Category.assoc, hσsnd, ← Category.assoc, ← Category.assoc, pullback.condition]
@@ -269,15 +307,15 @@ theorem exists_endo_spread_specialise : ∀ (k₀ K : Type) [Field k₀] [IsAlgC
     · rw [Category.assoc]
       erw [pullback.lift_fst]
       rw [← Category.assoc, hτ1, Category.assoc, hσfst, Category.comp_id]
-      first | exact (Category.id_comp _).symm | simp
+      first | exact (Category.id_comp _).symm
     · rw [Category.assoc]
       erw [pullback.lift_snd]
       rw [← Category.assoc, hτ2, Category.assoc, hσfst, Category.comp_id]
-      first | exact (Category.id_comp _).symm | simp
+      first | exact (Category.id_comp _).symm
   have hμσ : μ[B].left ≫ σ = τ ≫ μ[((Over.pullback (spMap (algebraMap k₀ R))).obj B)].left := by
     apply pullback.hom_ext
     · rw [Category.assoc, hσfst, Category.comp_id, Category.assoc, pullback_mu_fst_eq, ← Category.assoc, hτl]
-      first | exact (Category.id_comp _).symm | simp
+      first | exact (Category.id_comp _).symm
     · rw [Category.assoc, hσsnd, ← Category.assoc, e2, Category.assoc, Category.assoc τ, e4,
         ← Category.assoc τ, hτ1, Category.assoc (pullback.fst B.hom B.hom) σ, hσsnd]
   have hf0fst : (f₀ ⊗ₘ f₀).left ≫ (fst B B).left = (fst B B).left ≫ f₀.left := by

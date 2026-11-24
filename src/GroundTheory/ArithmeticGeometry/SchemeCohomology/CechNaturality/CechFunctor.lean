@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.Linear
 
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
+
+-- Use `sheafIsAbelian`, the instance Mathlib's `Sheaf.H` API is stated for, instead of the
+-- definitionally equal `TopCat.Sheaf.instAbelian`: the kernel is slow to identify the two.
+attribute [-instance] TopCat.Sheaf.instAbelian
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -135,10 +138,8 @@ variable [HasExt.{w'} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})]
   (hS : S.ShortExact) (hS' : S'.ShortExact) (α : S ⟶ S')
 
 lemma H.δ_naturality (n₀ n₁ : ℕ) (h : n₀ + 1 = n₁) (x : Sheaf.H.{w'} S.X₃ n₀) :
-    H.δ hS' n₀ n₁ h (Sheaf.H.map α.τ₃ n₀ x) = Sheaf.H.map α.τ₁ n₁ (H.δ hS n₀ n₁ h x) := by
-  rw [H.δ_apply, H.δ_apply, Sheaf.H.map_apply, Sheaf.H.map_apply,
-    Ext.comp_assoc_of_second_deg_zero, Ext.comp_assoc_of_third_deg_zero,
-    ShortComplex.ShortExact.extClass_naturality hS hS' α]
+    H.δ hS' n₀ n₁ h (Sheaf.H.map α.τ₃ n₀ x) = Sheaf.H.map α.τ₁ n₁ (H.δ hS n₀ n₁ h x) :=
+  Sheaf.H.δ_naturality n₀ n₁ h hS hS' α x
 
 lemma hDeltaEquiv_naturality [Injective S.X₂] [Injective S'.X₂] (m : ℕ)
     (x : Sheaf.H.{w'} S.X₃ (m + 1)) :

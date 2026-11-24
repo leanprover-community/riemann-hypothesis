@@ -1,8 +1,49 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
+public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
+public import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,7 +70,6 @@ theorem φD_pow_smulA (T : LocLat G Qp LL O) (e : ℕ) (a : LetA O n) (x : W.DD 
   | zero =>
     first
     | rfl
-    | simp
   | succ e ih =>
     rw [pow_succ', pow_succ']
     show (W.φD T) (((W.φD T) ^ e) (a • x)) = (W.φA) ((W.φA ^ e) a) • (W.φD T) (((W.φD T) ^ e) x)
@@ -55,8 +95,8 @@ theorem span_φ_pow (T : LocLat G Qp LL O) {r : ℕ} (b : Fin r → W.DD T)
         rw [ih]; trivial
       obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun W.EE).1 hbi
       show W.φD T (b i) ∈ _
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hg, map_sum]
+
+      rw [← hg, map_sum]
       refine Submodule.sum_mem _ fun m _ => ?_
       rw [W.φD_smul, ← pow_apply_succ]
       exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨m, rfl⟩)
@@ -122,8 +162,8 @@ theorem linInd_φ_pow (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) (hs : W.s = 1
       rw [Submodule.span_le]
       rintro _ ⟨y, hy, rfl⟩
       obtain ⟨a, ha, _⟩ := huniq y hy
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [ha, map_sum]
+
+      rw [ha, map_sum]
       refine Submodule.sum_mem _ fun i _ => ?_
       rw [φD_smulA, ← algebraMap_smul W.EE]
       rw [Submodule.restrictScalars_mem]
@@ -175,8 +215,8 @@ theorem Pp_coords (T : LocLat G Qp LL O) {r : ℕ} (b : Fin r → W.DD T)
       rw [← hyx, LinearMap.smul_apply, LinearMap.id_apply, smul_smul, letE_mul_self]
     obtain ⟨a0, ha0, hx0⟩ := hΔ x hxΔ
     refine ⟨fun j => a * (W.φA ^ e) (a0 j), fun j => W.AΔ.mul_mem ha (φA_pow_mem_AΔ W (ha0 j) e), ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [← hxc, hx0, Finset.smul_sum, map_sum, Finset.smul_sum]
+
+    conv_lhs => rw [← hxc, hx0, Finset.smul_sum, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [smul_comm (letE c : LetA O n) (a0 j), φD_pow_smulA, smul_smul]
   exact (AddSubgroup.closure_le S).2 hgen hy

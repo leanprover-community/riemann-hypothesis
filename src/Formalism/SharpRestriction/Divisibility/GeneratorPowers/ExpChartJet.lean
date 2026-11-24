@@ -1,8 +1,51 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTie
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpChartJetA
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -25,10 +68,10 @@ variable {R : Type} [CommRing R]
 private lemma cc_psTrunc_lemma {κ : Type} [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPowerSeries κ R) :
     MvPolynomial.constantCoeff (psTrunc m f) = MvPowerSeries.constantCoeff f := by
   unfold psTrunc
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single 0]
+
+  rw [map_sum, Finset.sum_eq_single 0]
   · rw [MvPolynomial.constantCoeff_monomial, if_pos rfl]
-    first | rfl | simp
+    first | rfl
   · intro e _ he
     rw [MvPolynomial.constantCoeff_monomial, if_neg he]
   · intro h0
@@ -43,11 +86,7 @@ private lemma cc_psTrunc_lemma {κ : Type} [Fintype κ] [DecidableEq κ] (m : �
 theorem const_coeff_coe_zero {κ : Type} (P : MvPolynomial κ R) (hP : MvPolynomial.constantCoeff P = 0) :
     MvPowerSeries.constantCoeff (P : MvPowerSeries κ R) = 0 := by
   first
-  | (rw [MvPolynomial.constantCoeff_coe]; exact hP)
   | exact hP
-  | (show MvPowerSeries.coeff 0 (P : MvPowerSeries κ R) = 0
-     rw [MvPolynomial.coeff_coe]; exact hP)
-  | simpa using hP
 
 private lemma mono_mem_lemma_2 {κ : Type} (m : ℕ) (e : κ →₀ ℕ) (c : R) (he : m + 1 ≤ e.sum fun _ k => k) :
     MvPolynomial.monomial e c ∈ orig R κ ^ (m + 1) := by
@@ -100,8 +139,6 @@ theorem jetSubstPS_eq {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : ℕ) 
   unfold jetSubstPS jetMap
   first
   | (simp only [e]; done)
-  | (congr 1; simp only [e]; done)
-  | (congr; funext i; exact e i)
 
 theorem jetSubstPS_psJet {κ κ' : Type} [Fintype κ] [DecidableEq κ] [Fintype κ'] [DecidableEq κ'] (m : ℕ)
     (g : κ → MvPowerSeries κ' R) (hg : ∀ i, MvPowerSeries.constantCoeff (g i) = 0) (f : MvPowerSeries κ R) :
@@ -127,7 +164,7 @@ theorem jetSubstP_eq_jetSubstPS {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] 
   rw [Ideal.Quotient.eq]
   apply mem_of_coeff_lemma_3
   intro e he
-  simp [MvPolynomial.coeff_sub, coeff_psTrunc_lemma_4, (mem_degLE_lemma_5 m e).mpr he, MvPolynomial.coeff_coe,
+  simp [coeff_psTrunc_lemma_4, (mem_degLE_lemma_5 m e).mpr he, MvPolynomial.coeff_coe,
     cc_psTrunc_lemma, hP, fun i => const_coeff_coe_zero _ (hP i)]
 
 private lemma jetSubstPS_X_lemma_6 {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : ℕ) (g : κ → MvPowerSeries κ' R)
@@ -150,11 +187,9 @@ theorem jetSubstPS_trunc' {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : �
   rw [jetSubstPS_X_lemma_6]
   first
   | (simp only [Ideal.Quotient.factorₐ_apply_mk]; rw [jetSubstPS_X_lemma_6, Ideal.Quotient.eq])
-  | (simp only [Ideal.Quotient.factorₐ_mk]; rw [jetSubstPS_X_lemma_6, Ideal.Quotient.eq])
-  | (erw [Ideal.Quotient.factor_mk, Ideal.Quotient.factor_mk]; rw [jetSubstPS_X_lemma_6, Ideal.Quotient.eq])
   apply mem_of_coeff_lemma_3
   intro e he
-  simp [MvPolynomial.coeff_sub, coeff_psTrunc_lemma_4, (mem_degLE_lemma_5 m e).mpr he,
+  simp [coeff_psTrunc_lemma_4, (mem_degLE_lemma_5 m e).mpr he,
     (mem_degLE_lemma_5 (m + 1) e).mpr (by omega)]
 
 theorem aug_psJet {κ : Type} [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPowerSeries κ R) :
@@ -162,8 +197,6 @@ theorem aug_psJet {κ : Type} [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPow
   unfold psJet jetAug
   first
   | (simp [liftJet, cc_psTrunc_lemma, MvPolynomial.coe_aeval_eq_eval, MvPolynomial.eval_zero']; done)
-  | (simp [liftJet])
-  | unfold liftJet
 
 theorem aug_comp_jetSubstPS {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : ℕ) (g : κ → MvPowerSeries κ' R)
     (hg : ∀ i, MvPowerSeries.constantCoeff (g i) = 0) :
@@ -198,8 +231,6 @@ theorem actS_eq (a : 𝓞 E) :
   rw [MvPolynomial.coe_mul, MvPolynomial.coe_C, MvPolynomial.coe_X]
   first
   | rw [MvPowerSeries.smul_eq_C_mul]
-  | (rw [Algebra.smul_def, MvPowerSeries.algebraMap_apply, Algebra.id.map_eq_self])
-  | (ext e; simp [MvPowerSeries.coeff_C_mul, MvPowerSeries.coeff_smul])
 
 theorem cc_atPt {n : ℕ} (b : Fin n) {g : MvPowerSeries (Fin 1 × Fin (dL Dw)) S}
     (hg : MvPowerSeries.constantCoeff g = 0) : MvPowerSeries.constantCoeff (atPt (Dw := Dw) b g) = 0 := by
@@ -208,8 +239,6 @@ theorem cc_atPt {n : ℕ} (b : Fin n) {g : MvPowerSeries (Fin 1 × Fin (dL Dw)) 
       (fun q : Fin 1 × Fin (dL Dw) => (MvPowerSeries.X (b, q.2) : MvPowerSeries (Fin n × Fin (dL Dw)) S)) := by
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero fun _ => MvPowerSeries.constantCoeff_X _
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero fun _ => MvPowerSeries.constantCoeff_X _
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero fun _ => by simp
   rw [MvPowerSeries.constantCoeff_subst hS]
   apply finsum_eq_zero_of_forall_eq_zero
   intro d

@@ -1,6 +1,55 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Nat.PadicValNat
+public import Mathlib.Data.Nat.Prime.Defs
+public import Mathlib.RingTheory.Valuation.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Ring.GeomSum
+public import Mathlib.Data.Nat.Prime.Basic
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 
 @[expose] public section
 
@@ -23,8 +72,6 @@ theorem gradNPf_isUnit_of_v (a : O) (ha : v (ι a) = 0) : IsUnit a := by
     rw [h0, v.map_zero] at ha
     first
       | simp at ha
-      | exact WithTop.top_ne_zero ha
-      | exact absurd ha (by decide)
   have hinv : v (ι a)⁻¹ = 0 := by
     have h1 : v (ι a * (ι a)⁻¹) = 0 := by rw [mul_inv_cancel₀ hne, v.map_one]
     rwa [v.map_mul, ha, zero_add] at h1
@@ -32,8 +79,6 @@ theorem gradNPf_isUnit_of_v (a : O) (ha : v (ι a) = 0) : IsUnit a := by
   have hab : a * b = 1 := hι (by rw [_root_.map_mul, _root_.map_one, hb, mul_inv_cancel₀ hne])
   first
     | exact isUnit_iff_exists_inv.2 ⟨b, hab⟩
-    | exact IsUnit.of_mul_eq_one b hab
-    | exact isUnit_of_mul_eq_one_right hab
 
 private theorem exists_one_add_pow_eq_one_add_mul_add_sq (a : O) (i : ℕ) :
     ∃ b : O, (1 + a) ^ i = 1 + (i : O) * a + a ^ 2 * b := by
@@ -80,9 +125,6 @@ private theorem val_add_eq_left_of_val_lt (x y : L) (h : v x < v y) : v (x + y) 
 theorem gradNPf_zero_lt_one : (0 : WithTop ℚ) < 1 := by
   first
     | exact WithTop.coe_lt_coe.2 zero_lt_one
-    | exact_mod_cast (zero_lt_one : (0 : ℚ) < 1)
-    | norm_num
-    | simp
 
 include hι hR in
 theorem gradNPf_unit_one_add (lO d : O) (hl : v (ι lO) = 1) : IsUnit (1 + lO * d) := by
@@ -92,7 +134,6 @@ theorem gradNPf_unit_one_add (lO d : O) (hl : v (ι lO) = 1) : IsUnit (1 + lO * 
   have hle : (1 : WithTop ℚ) ≤ 1 + v (ι d) := by
     first
       | exact le_add_of_nonneg_right h0
-      | simpa using add_le_add_left h0 1
   have hlt : v (1 : L) < v (ι lO * ι d) := by
     rw [v.map_one, hy]
     exact lt_of_lt_of_le gradNPf_zero_lt_one hle
@@ -122,8 +163,6 @@ theorem gradNPf_sub_one (lO x : O) (hl : v (ι lO) = 1) (hx : v (ι x - 1) = 1) 
     rw [h0, v.map_zero] at hl
     first
       | simp at hl
-      | exact WithTop.top_ne_one hl
-      | exact absurd hl (by decide)
   have hinv : 1 + v (ι lO)⁻¹ = 0 := by
     have h1 : v (ι lO * (ι lO)⁻¹) = 0 := by rw [mul_inv_cancel₀ hne, v.map_one]
     rwa [v.map_mul, hl] at h1

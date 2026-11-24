@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.ZMod.Basic
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.RingTheory.Valuation.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

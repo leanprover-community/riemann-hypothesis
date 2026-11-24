@@ -2,6 +2,7 @@ module
 
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.ZuckermanDuality.ZuckDualTOfZuckDual
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.HeckeMultiplication
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

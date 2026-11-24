@@ -1,12 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TorusProjPeriodZeroEqReal
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HasSumLocallyUniformlyOnTerm
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FormalThetaSumShiftPeriodDiv
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SmulPeriodMapMkZeroFstEqNegForm
+public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
+public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EqZeroOfSemicharacterMultiplier
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsEqMulCanonicalThetaOfSignMultiplier
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SmulPeriodMapMkZeroFstEqNegForm
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TwoDvdMultiplierOfThetaZActEqUnitMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Star.Real
+import ReciprocityTheory.ThetaQuasiPeriods.Transl
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HasSumPolyDerivMulProdAddMatrix
 
 @[expose] public section
 
@@ -173,9 +223,9 @@ theorem IsConvLine.BwMat_posDef {T₀ : ℝ} (hT : A.IsConvLine T₀) {w : ℂ} 
       hx (funext (Fintype.linearIndependent_iff.1 b.linearIndependent x h))
     have := A.be_pos _ h0
     convert this using 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [M, dotProduct, mulVec, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
-      Finset.mul_sum, Matrix.of_apply]
+
+    simp only [M, dotProduct, mulVec, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+    Finset.mul_sum, Matrix.of_apply]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   have hC : (A.BwMat (T₀ * Complex.I)).PosSemidef := by
@@ -188,9 +238,9 @@ theorem IsConvLine.BwMat_posDef {T₀ : ℝ} (hT : A.IsConvLine T₀) {w : ℂ} 
         simp only [Complex.mul_im, Complex.ofReal_re, Complex.I_im, Complex.ofReal_im, Complex.I_re]
         linarith
       refine h1.trans_eq ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [dotProduct, mulVec, map_sum, map_zsmul, AddMonoidHom.finsetSum_apply, AddMonoidHom.smul_apply,
-        zsmul_eq_mul, Finset.mul_sum, BwMat_apply, b]
+
+      simp only [dotProduct, mulVec, map_sum, map_zsmul, AddMonoidHom.finsetSum_apply, AddMonoidHom.smul_apply,
+      zsmul_eq_mul, Finset.mul_sum, BwMat_apply, b]
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   have := (hM.smul (sub_pos.2 hw)).add_posSemidef hC
@@ -208,8 +258,8 @@ theorem coord_Pw_of_basis (Φ : A.V →ₗ[ℂ] (Fin g → ℂ)) {w : ℂ} {τ :
       Φ (A.Pw w (bas (Pi.single (.inr k) 1))) = τ *ᵥ Pi.single k 1) (u : Fin g ⊕ Fin g → ℤ) :
     Φ (A.Pw w (bas u)) = τ *ᵥ ofIntVec (fun k => u (.inr k)) + ofIntVec (fun k => u (.inl k)) := by
   conv_lhs => rw [pi_eq_sum_univ' u]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Fintype.sum_sum_type, map_add (f := _), map_sum, map_zsmul, fun k => (hP k).1, fun k => (hP k).2]
+
+  simp only [Fintype.sum_sum_type, map_add (f := _), map_sum, map_zsmul, fun k => (hP k).1, fun k => (hP k).2]
   funext i
   simp [ofIntVec, mulVec, dotProduct, Pi.single_apply, mul_comm, add_comm]
 

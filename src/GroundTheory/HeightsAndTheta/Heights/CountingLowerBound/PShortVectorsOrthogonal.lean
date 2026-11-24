@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Statements
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 @[expose] public section
 

@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevelsOfCh
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteCompG
+public import Formalism.SharpRestriction.GrowthBounds.DataGChain
 
 @[expose] public section
 

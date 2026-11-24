@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.Adele.Compact
 public import GroundTheory.GlobalFields.Adele.Discrete
-public import GroundTheory.GlobalFields.Adele.Topology
 public import GroundTheory.GlobalFields.TateThesis.TraceFourier
 public import GroundTheory.GlobalFields.TateThesis.AdeleMeasurable
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

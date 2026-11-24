@@ -1,5 +1,6 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DualMapSCompScaleS
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ScalePowMono
 
 @[expose] public section
@@ -18,17 +19,14 @@ attribute [local instance] Over.cartesianMonoidalCategory
 theorem away_ext {S : Type} [CommRing S] (u : S) {B : Type} [CommRing B] [Algebra S B]
     (f g : Localization.Away u →ₐ[S] B) : f = g := by
   first
-  | exact Subsingleton.elim f g
   | exact (IsLocalization.algHom_subsingleton (Submonoid.powers u)).elim f g
-  | exact AlgHom.coe_ringHom_injective (IsLocalization.ringHom_ext (Submonoid.powers u)
-      (by ext x; simp))
 
 abbrev Rv {S : Type} [CommRing S] (a b c : S) : Type := Localization.Away (algebraMap S (Qv a b) c)
 
 variable {S : Type} [CommRing S] {G : Over (Spec (CommRingCat.of S))} [GrpObj G] [∀ s : S, Smooth (Gs G s).hom]
 
 
-set_option maxHeartbeats 800000 in
+
 theorem pair_compat (a b t : S) (C : Chart (Gs G a)) {y₀ : sp (R₀ := S) (DualNumber (Localization.Away t)) ⟶ G}
     {za : sp (R₀ := S) (DualNumber (Localization.Away a)) ⟶ G} {zb : sp (R₀ := S) (DualNumber (Localization.Away b)) ⟶ G}
     (ha : TanS za) (hb : TanS zb) (N₁ : ℕ)
@@ -57,7 +55,7 @@ theorem pair_compat (a b t : S) (C : Chart (Gs G a)) {y₀ : sp (R₀ := S) (Dua
       ← res_res, hbr, res_scale, map_pow, AlgHom.commutes, res_res]
   rw [e1, e2, show ρa.comp (qR a t) = ρb.comp (qR b t) from away_ext _ _ _]
 
-set_option maxHeartbeats 800000 in
+
 theorem tan_extend {n : ℕ} (s : Fin n → S) (hs : Ideal.span (Set.range s) = ⊤) (C : ∀ k, Chart (Gs G (s k)))
     (k0 : Fin n) {y₀ : sp (R₀ := S) (DualNumber (Localization.Away (s k0))) ⟶ G} (hy₀ : TanS y₀) :
     ∃ N : ℕ, ∃ w : sp (R₀ := S) (DualNumber S) ⟶ G, TanS w ∧

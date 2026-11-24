@@ -2,11 +2,8 @@ module
 
 public import Formalism.PeriodIntegrals.ZuckTensor
 public import Formalism.PeriodIntegrals.KFinSmooth
-public import Formalism.PeriodIntegrals.DSInfCharCap
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.CoreDefs
-public import Formalism.HermitianCurvature.BesselNonvanishingReduction
-public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.HermitianCurvature.StatementQ
+public import Formalism.PeriodIntegrals.CapelliEig
 
 @[expose] public section
 

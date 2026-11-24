@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Divisibility.LinkDef
+public import Formalism.LocalToGlobal.Divisibility.Inputs
+public import Formalism.LocalToGlobal.Divisibility.LiftLat
+public import Formalism.LocalToGlobal.Divisibility.Numbers
 public import Formalism.LocalToGlobal.Divisibility.NumbersLink
 
 @[expose] public section

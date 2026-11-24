@@ -1,13 +1,60 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FunEqZeroOfAffine
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FlatAndSurjectiveOfIsFiniteAbelianEnd
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ForallGeometricallyIntegralOfSmoothOfGeometrical
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsAffineHomFromSpecResidueField
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FlatAndSurjectiveOfIsFiniteAbelianEnd
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.MulAFiniteFlatSurjectiveEtale
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.TangentLinearity.ConstPullback
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
 
@@ -122,49 +169,13 @@ theorem sv_of_isTwistPull {s : LB.Sec (LPow A L b T)} {s' : LB.Sec (LPow A L a T
     (H : IsTwistPull A L ψ m hm a b α s s') {Z : Scheme.{0}} (r : Z ⟶ (T ⊗ A).left) (z : Z)
     {J : (Z ⟶ A.left) → L.ι} (hJ : Good L z J) :
     sv A s' r z J = (val α r z J).val * sv A s (r ≫ ψ.left) z J := by
-  have e : ψ.left ≫ (snd T A).left = m.left := by rw [← Over.comp_left, hm]
-  have hz := hJ.mem ![(snd T A).left, m.left] r
-  have key : ∀ j : Fin 2 → L.ι, r z ∈ LB.wchart L ![(snd T A).left, m.left] j →
-      gs r z (LB.wchart L (fun _ : Fin 1 => (snd T A).left) (fun _ => j 0)) (s'.f (fun _ => j 0)) =
-        (gm r z (LB.wchart L ![(snd T A).left, m.left] j) (α.s j)).val *
-          gs (r ≫ ψ.left) z (LB.wchart L (fun _ : Fin 1 => (snd T A).left) (fun _ => j 1))
-            (s.f (fun _ => j 1)) := fun j hz =>
-    (gs_res r z _ hz _).symm.trans ((congrArg (gs r z _) (H j)).trans ((gs_mul r z _ hz _ _).trans
-      (congrArg₂ (· * ·) (gs_unit r z _ hz _) ((gs_res r z _ hz _).trans
-        (gs_pull r ψ.left z (LB.wchart L (fun _ : Fin 1 => (snd T A).left) (fun _ => j 1))
-          (chart_le_pull A L ψ m hm j hz) _)))))
-  have e₁ := sval_of (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => b) s (r ≫ ψ.left) z J
-    (fun _ => J (r ≫ m.left)) (fun _ => by rw [Category.assoc, e])
-  exact (key _ hz).trans (congrArg _ e₁.symm)
+  apply GlobalTheory.VVCompare.sv_of_isTwistPull <;> assumption
 
 theorem isTwistPull_of_sv (hL : L.IsLB) (hα : α.IsGen) {s : LB.Sec (LPow A L b T)}
     {s' : LB.Sec (LPow A L a T)}
     (H : ∀ y J, Good L y J → sv A s' (𝟙 _) y J = (val α (𝟙 _) y J).val * sv A s (𝟙 _ ≫ ψ.left) y J) :
     IsTwistPull A L ψ m hm a b α s s' := by
-  intro j
-  have e : ψ.left ≫ (snd T A).left = m.left := by rw [← Over.comp_left, hm]
-  refine fn_ext fun y hy => ?_
-  choose J hJ using fun χ : (T ⊗ A).left ⟶ A.left => exists_chart hL (χ y)
-  have h0 := chart_le_zero A L m j hy
-  have h1 := chart_le_pull A L ψ m hm j hy
-  refine (gs_res _ y _ hy _).trans (Eq.trans ?_ ((gs_mul _ y _ hy _ _).trans
-    (congrArg₂ (· * ·) (gs_unit _ y _ hy _) ((gs_res _ y _ hy _).trans
-      (gs_pull _ ψ.left y _ h1 _)))).symm)
-  refine (sec_trans (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => a) s' (𝟙 _) y h0
-    (Good.mem hJ _ _)).trans ?_
-  refine Eq.trans ?_ (congrArg₂ (· * ·) (congrArg Units.val (gen_trans hα (𝟙 _) y hy (Good.mem hJ _ _)))
-    (sec_trans (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => b) s (𝟙 _ ≫ ψ.left) y h1
-    (Good.mem hJ _ _))).symm
-  refine (congrArg _ (H y J hJ)).trans ?_
-  rw [Units.val_mul]
-  refine Eq.trans ?_ (_root_.mul_mul_mul_comm _ _ _ _)
-  rw [← Units.val_mul]
-  refine congrArg₂ (· * ·) (congrArg Units.val ?_) rfl
-  have e' : (𝟙 _ ≫ ψ.left) ≫ (snd T A).left = 𝟙 _ ≫ m.left := by rw [Category.assoc, e]
-  simp only [trF, Fin.prod_univ_two, Fin.prod_univ_one, Matrix.cons_val_zero,
-    Matrix.cons_val_one, zpow_neg]
-  rw [e']
-  exact (inv_mul_cancel_right _ _).symm
+  apply GlobalTheory.VVCompare.isTwistPull_of_sv <;> assumption
 
 theorem exists_isTwistPull (hL : L.IsLB) (hα : α.IsGen) (s : LB.Sec (LPow A L b T)) :
     ∃ s' : LB.Sec (LPow A L a T), IsTwistPull A L ψ m hm a b α s s' := by
@@ -253,9 +264,9 @@ theorem functional_mem_of_span {R R' M M' I κ : Type} [CommRing R] [CommRing R'
   have key : ∀ x, l' (φ x) = σ (l x) := fun x => by
     have := Fintype.ofFinite κ
     rw [← b.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.map_smulₛₗ, ← hb, l', Module.Basis.constr_basis, smul_eq_mul,
-      RingHom.id_apply, map_mul]
+
+    simp only [map_sum, LinearMap.map_smulₛₗ, ← hb, l', Module.Basis.constr_basis, smul_eq_mul,
+    RingHom.id_apply, map_mul]
   have h0 : l' = 0 := LinearMap.ext_on_range ht fun c => (key _).trans (hl c)
   rw [← key, h0, LinearMap.zero_apply]
 
@@ -295,16 +306,16 @@ theorem exists_basis (P : PolAV S) (n : ℕ) {V : S.Opens} {κ : Type} [Fintype 
   · rw [Fintype.linearIndependent_iff] at h₁ ⊢
     intro g hg i
     have := congrArg (pullM P.A P.L n u) hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.map_smulₛₗ, map_zero, e] at this
+
+    simp only [map_sum, LinearMap.map_smulₛₗ, map_zero, e] at this
     exact hσ.1 ((h₁ _ this i).trans (map_zero _).symm)
   · intro x _
     obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun _).1
       (h₂.ge (Submodule.mem_top (x := pullM P.A P.L n u x)))
     choose g' hg' using fun i => hσ.2 (g i)
     refine (Submodule.mem_span_range_iff_exists_fun _).2 ⟨g', hφ ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.map_smulₛₗ, e, hg', hg]
+
+    simp only [map_sum, LinearMap.map_smulₛₗ, e, hg', hg]
 
 theorem surjective_mulA (P : PolAV S) (n : ℕ) (hn : n ≠ 0)
     (α : LB.Gen (LB.LinComb P.L (K := Fin 2) ![𝟙 P.A.left, (mulA P.A n).left] ![((n ^ 2 : ℕ) : ℤ), -1]))

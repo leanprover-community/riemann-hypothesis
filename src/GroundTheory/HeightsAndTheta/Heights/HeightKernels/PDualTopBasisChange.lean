@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopBasisChange
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsIntCoordChange
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Assembly
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLineSemipositive
 
 @[expose] public section
 
@@ -40,8 +42,8 @@ theorem subst_subst {A : Matrix T T₂ ℤ} {B : Matrix T₂ T ℤ} (hAB : A * B
     congr 1
     obtain ⟨⟨⟩, t⟩ := p
     have hC : ∀ a : ℤ, (C a : MRing (dualBlocks T)) = (a : MRing (dualBlocks T)) := fun a => map_intCast C a
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [intCoordSubst, aeval_X, map_sum, map_mul, eq_intCast, hC, map_intCast, Finset.mul_sum]
+
+    simp only [intCoordSubst, aeval_X, map_sum, map_mul, eq_intCast, hC, map_intCast, Finset.mul_sum]
     rw [Finset.sum_comm]
     simp_rw [← mul_assoc, ← Int.cast_mul, ← Finset.sum_mul, ← Int.cast_sum]
     have h1 : ∀ x : T, ∑ s, B s t * A x s = (A * B) x t := by
@@ -69,14 +71,14 @@ theorem coord_change {A : Matrix T T₂ ℤ} {b : Module.Basis T ℤ (dualLattic
     dualLatticeCoord b₂ ⟨(), s⟩ = ∑ t, (A t s : ProjField K i) * dualLatticeCoord b ⟨(), t⟩ := by
   have h : (∑ j, C ((b₂ s : Fin i → K) j) * X j : MvPolynomial (Fin i) K) =
       ∑ t, (A t s : MvPolynomial (Fin i) K) * ∑ j, C ((b t : Fin i → K) j) * X j := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hA, map_sum, map_mul, map_intCast, Finset.sum_mul, Finset.mul_sum]
+
+    simp only [hA, map_sum, map_mul, map_intCast, Finset.sum_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun t _ => ?_
     ring
   simp only [dualLatticeCoord]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, map_sum]
+
+  rw [h, map_sum]
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [map_mul, map_intCast]
 
@@ -97,9 +99,9 @@ theorem coneMap_subst {A : Matrix T T₂ ℤ} {b : Module.Basis T ℤ (dualLatti
     congr 1
     obtain ⟨⟨⟩, s⟩ := p
     have hC : ∀ a : ℤ, (C a : MRing (dualBlocks T)) = (a : MRing (dualBlocks T)) := fun a => map_intCast C a
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [intCoordSubst, aeval_X, map_sum, map_mul, hC, map_intCast, mConeMap, coord_change hA s,
-      Finset.sum_mul]
+
+    simp only [intCoordSubst, aeval_X, map_sum, map_mul, hC, map_intCast, mConeMap, coord_change hA s,
+    Finset.sum_mul]
     refine Finset.sum_congr rfl fun t _ => ?_
     rw [mul_assoc]
 
@@ -122,8 +124,8 @@ theorem embMatrix_apply {A : Matrix T T₂ ℤ} {b : Module.Basis T ℤ (dualLat
     (hA : ∀ s j, (b₂ s : Fin i → K) j = ∑ t, (A t s : K) * (b t : Fin i → K) j)
     (s : T₂) (p : (K →+* ℂ) × Fin i) :
     dualEmbMatrix b₂ s p = ∑ t, (A t s : ℂ) * dualEmbMatrix b t p := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dualEmbMatrix, hA, map_sum, map_mul, map_intCast]
+
+  simp only [dualEmbMatrix, hA, map_sum, map_mul, map_intCast]
 
 
 omit [DecidableEq T] [Fintype T₂] [DecidableEq T₂] in

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.GrothendieckRingPolynomial.ProdList
+import Mathlib.Tactic.TypeStar
+import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyInterleaving.LInjective
 
 @[expose] public section
 
@@ -9,7 +10,7 @@ noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.M Zc.Cos
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 namespace CompanionTheory.Groth
 

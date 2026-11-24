@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.SmoothRep
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
+public import Mathlib.Topology.Algebra.RestrictedProduct.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

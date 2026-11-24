@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatFinite
-public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
+import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,52 @@
 module
 
 public import Formalism.RealPlaceAnalysis.StatementE
+public import Mathlib.GroupTheory.Perm.Fin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,14 +62,14 @@ theorem prod_ofFn_update_eq_mul {A : Type*} [Ring A] : ∀ {t : ℕ} (F : Fin t 
   | t + 1, F, k => by
     refine Fin.cases ?_ (fun k' => ?_) k
     · refine ⟨1, (List.ofFn fun i : Fin t => F i.succ).prod, fun x => ?_⟩
-      simp [List.ofFn_succ, Function.update_apply, Fin.succ_ne_zero]
+      simp [List.ofFn_succ, Fin.succ_ne_zero]
     · obtain ⟨L, R, h⟩ := prod_ofFn_update_eq_mul (fun i : Fin t => F i.succ) k'
       refine ⟨F 0 * L, R, fun x => ?_⟩
       have hf : (fun i : Fin t => Function.update F k'.succ x i.succ) =
           Function.update (fun i : Fin t => F i.succ) k' x := by
         funext i; simp [Function.update_apply, Fin.succ_inj]
       rw [List.ofFn_succ, List.prod_cons, hf, h]
-      simp [Function.update_apply, (Fin.succ_ne_zero k').symm, mul_assoc]
+      simp [(Fin.succ_ne_zero k').symm, mul_assoc]
 
 theorem prod_ofFn_update_sub {A : Type*} [Ring A] {t : ℕ} (F : Fin t → A) (k : Fin t) (x y : A) :
     (List.ofFn (Function.update F k (x - y))).prod =
@@ -50,7 +96,7 @@ theorem commutator_prod_ofFn_eq_sum_update {A : Type*} [Ring A] (X : A) : ∀ {t
     rw [Fin.sum_univ_succ]
     have h0 : (List.ofFn (Function.update F 0 (X * F 0 - F 0 * X))).prod =
         (X * F 0 - F 0 * X) * (List.ofFn fun i : Fin t => F i.succ).prod := by
-      simp [List.ofFn_succ, Function.update_apply, Fin.succ_ne_zero]
+      simp [List.ofFn_succ, Fin.succ_ne_zero]
     have hs : ∀ k : Fin t, (List.ofFn (Function.update F k.succ (X * F k.succ - F k.succ * X))).prod =
         F 0 * (List.ofFn (Function.update (fun i : Fin t => F i.succ) k
           (X * F k.succ - F k.succ * X))).prod := by
@@ -59,7 +105,7 @@ theorem commutator_prod_ofFn_eq_sum_update {A : Type*} [Ring A] (X : A) : ∀ {t
           Function.update (fun i : Fin t => F i.succ) k (X * F k.succ - F k.succ * X) := by
         funext i; simp [Function.update_apply, Fin.succ_inj]
       rw [List.ofFn_succ, List.prod_cons, hf]
-      simp [Function.update_apply, (Fin.succ_ne_zero k).symm]
+      simp [(Fin.succ_ne_zero k).symm]
     rw [h0, Finset.sum_congr rfl (fun k _ => hs k), ← Finset.mul_sum, ← ih, List.ofFn_succ,
       List.prod_cons]
     noncomm_ring

@@ -1,7 +1,19 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ArchInt
+public import GroundTheory.GlobalFields.TateThesis.EulerFactorsFourierFinite
+public import GroundTheory.LocalFields.LocalZetaChar
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdInfMulFinPart
+import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
+import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
+import GroundTheory.LocalFields.LocalZeta
+import GroundTheory.LocalFields.PadicLogHom
+import Mathlib.Tactic.TypeStar
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 @[expose] public section
 

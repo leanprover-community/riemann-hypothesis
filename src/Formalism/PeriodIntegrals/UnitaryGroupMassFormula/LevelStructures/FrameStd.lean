@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.HostStarConj
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.GlobLevelSOf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -14,45 +54,14 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem host_star_conj : Formalism.BasicNotions.bridge_star := by
-  intro R H x
-  haveI : NumberField.IsCMField H.E := H.isCMField_hostE
-  have hemb : ∀ y : H.E, H.φ₀ (star y) = starRingEnd ℂ (H.φ₀ y) := by
-    intro y
-    first
-      | exact NumberField.IsCMField.complexEmbedding_complexConj H.φ₀ y
-      | exact NumberField.IsCMField.complexEmbedding_complexConj (K := H.E) H.φ₀ y
-      | (show H.φ₀ (NumberField.IsCMField.complexConj H.E y) = _
-         simp)
-      | done
-  have h1 : ∀ y, H.φ₀ (H.conj y) = starRingEnd ℂ (H.φ₀ y) :=
-    (H.der.conj_iff H.φ₀ H.conj).mpr (by
-      unfold Formalism.HC.HostRaw.conj
-      exact MulEquiv.apply_symm_apply _ _)
-  exact H.φ₀.injective ((hemb x).trans (h1 x).symm)
+  apply Formalism.L2.SG.Pf.NcVal.OmVSt.OmW.host_star_conj
 
 theorem sig_apply {D : D7} (X : HidaSetting D) (a : X.B.I.E) : X.B.I.cm.sig a = star a := rfl
 
 theorem hE_crdOf {D : D7} (X : HidaSetting D) (x y : (VS D).V) :
     hE X.B.I.cm.sig X.B.I.J (crdOf X.B.I X.ιE X.bas x) (crdOf X.B.I X.ιE X.bas y) =
       X.ιE.symm ((VS D).hT x y) := by
-  unfold hE crdOf
-  apply X.ιE.injective
-  rw [RingEquiv.apply_symm_apply]
-  conv_rhs => rw [← X.bas.sum_repr x, ← X.bas.sum_repr y]
-  have hs : ∀ a : D.host.E,
-      X.ιE ((X.B.I.cm.sig : X.B.I.E →+* X.B.I.E) (X.ιE.symm a)) = star a := by
-    intro a
-    show X.ιE (star (X.ιE.symm a)) = _
-    rw [X.ιE_conj, RingEquiv.apply_symm_apply]
-    exact (host_star_conj _ D.host a).symm
-  unfold Formalism.UG.hform
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, RingEquiv.apply_symm_apply, hs, X.J_eq, LinearMap.map_smulₛₗ,
-    LinearMap.sum_apply, LinearMap.smul_apply, map_smul, smul_eq_mul, starRingEnd_apply]
-  simp only [Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-  ring
+  apply Formalism.L2.SG.Pf.NcVal.OmVSt.OmW.hE_crdOf
 
 theorem frameOf_isStd {D : D7} (X : HidaSetting D) (u : D.what₂.Word) :
     (frameOf X u).IsStd X.B.I.cm.sig X.B.I.J (((D.mem u).A.T : ℕ) : X.B.I.F) := by

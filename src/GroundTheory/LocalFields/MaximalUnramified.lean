@@ -1,18 +1,20 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
-public import GroundTheory.LocalFields.FiniteExtension
-public import GroundTheory.LocalFields.Uniqueness
-public import GroundTheory.LocalFields.Integers
-public import GroundTheory.LocalFields.UnitsPowers
-public import GroundTheory.LocalFields.UnramifiedRootsOfUnity
-public import GroundTheory.LocalFields.UnramifiedGalois
 public import GroundTheory.LocalFields.UnramifiedExistence
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.ProfiniteInteger
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsEqNsmulOfProjEqZero
+public import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsOpenSubgroupMemFixedModule
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.RamificationInertia.Inertia
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Frobenius
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.Valuation
+import GroundTheory.LocalFields.AbstractLocalReciprocity.Valuation
+import GroundTheory.LocalFields.FiniteExtension
+import GroundTheory.LocalFields.UnitsPowers
+import GroundTheory.LocalFields.UnramifiedGalois
+public import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Topology.LocallyConstant.Basic
 
 @[expose] public section
 

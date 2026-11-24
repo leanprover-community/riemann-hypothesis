@@ -1,15 +1,68 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ProperLeftVariablesDomain
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHB2
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AsmCastMCastM
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CornerBlockActionInvariant
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EmbeddingMapApplyFirstBlock
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentRankOne
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowVLift
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbSplitPt
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RhsInt
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentRankOne
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AsmCastVCastV
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CornerBlockActionInvariant
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PsiNormalization
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PsiNormalization
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RhsInt
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Tower
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -40,16 +93,13 @@ theorem block_three_zero_size_eq {n : ℕ} (e : 0 + ρ = n) (A11 : Matrix (Fin 0
   rw [hp, hq, Ux3.block3_apply]
   simp
 
-theorem castM_one {a b : ℕ} (h : a = b) : D.castM h (1 : B.Mat k a) = 1 := by
-  subst h; exact Formalism.FourierDecayAlt.P.Dx2.MN.castM_rfl 1
-
 theorem rn_zero0 (x : U.RC k 0 ρ) : U.Rn k 0 ρ x = 1 := by
   have h1 : D.castM (Nat.zero_add ρ) (U.Rn k 0 ρ x) = 1 := by
     unfold U.Rn
     rw [block_three_zero_size_eq]
-    exact castM_one _
+    exact _root_.Formalism.FourierDecayAlt.P.Dx2.Tower.castM_one _
   have h2 := Formalism.FourierDecayAlt.P.PBH.asm_castM_symm (Nat.zero_add ρ) (U.Rn k 0 ρ x)
-  rw [h1, castM_one] at h2
+  rw [h1, _root_.Formalism.FourierDecayAlt.P.Dx2.Tower.castM_one] at h2
   exact h2.symm
 
 theorem embG_zero0 {n : ℕ} (e : 0 + ρ = n) (y : B.Mat k ρ) :
@@ -147,7 +197,7 @@ theorem point_level_zero_eq_embedding (P : M.Par) (hj : 0 + 1 ≤ P.r) (Z : Matr
     rw [LevelPointCoordinates.zfull_apply]
     have hi : i.val = 0 := by have := i.isLt; omega
     have hl : l.val = 0 := by have := l.isLt; omega
-    simp [hi]
+    simp
   unfold LevelPointCoordinates.x0 LevelPointCoordinates.mLev
   rw [hz]
 
@@ -168,7 +218,7 @@ theorem jfZero {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     have hm := Formalism.FourierDecayAlt.P.PBH.mcOm P.k (P.r - (0 + 1)) (p.T.bs (0 + 1)).z (p.T.bs (0 + 1)).z'
       (p.T.bs (0 + 1)).z_mem (p.T.bs (0 + 1)).z'_mem τ hτ γ hγ hΩ
     have hm2 := Formalism.FourierDecayAlt.P.PBH.om_cast (by omega : P.r - (0 + 1) + 1 = P.r - 0) _ _ _ hm
-    rw [Formalism.FourierDecayAlt.P.PBH.castM_castM', Formalism.FourierDecayAlt.P.PBH.asm_castV_castV, Formalism.FourierDecayAlt.P.PBH.asm_castV_castV,
+    rw [_root_.Formalism.FourierDecayAlt.P.Dx2.SplitF.castM_castM, Formalism.FourierDecayAlt.P.PBH.asm_castV_castV, Formalism.FourierDecayAlt.P.PBH.asm_castV_castV,
       ← Formalism.FourierDecayAlt.P.PBH.levTower_bs_z_eq_castV_liftVec p.T 0 hj, ← Formalism.FourierDecayAlt.P.PBH.levTower_bs_z'_eq_castV_liftVec p.T 0 hj] at hm2
     exact hm2
   have hCpt : KB.CptCoef (p.T.bs 0) H := hH
@@ -205,7 +255,7 @@ theorem side0Zero_of (hW : PartialBesselProperness.PbWords) (hPr : ProperLeftVar
     have hm := Formalism.FourierDecayAlt.P.PBH.mcOm P.k (P.r - (0 + 1)) (p.T.bs (0 + 1)).z (p.T.bs (0 + 1)).z'
       (p.T.bs (0 + 1)).z_mem (p.T.bs (0 + 1)).z'_mem τ hτ γ hγ hΩ
     have hm2 := Formalism.FourierDecayAlt.P.PBH.om_cast (by omega : P.r - (0 + 1) + 1 = P.r - 0) _ _ _ hm
-    rw [Formalism.FourierDecayAlt.P.PBH.castM_castM', Formalism.FourierDecayAlt.P.PBH.asm_castV_castV, Formalism.FourierDecayAlt.P.PBH.asm_castV_castV,
+    rw [_root_.Formalism.FourierDecayAlt.P.Dx2.SplitF.castM_castM, Formalism.FourierDecayAlt.P.PBH.asm_castV_castV, Formalism.FourierDecayAlt.P.PBH.asm_castV_castV,
       ← Formalism.FourierDecayAlt.P.PBH.levTower_bs_z_eq_castV_liftVec p.T 0 hj, ← Formalism.FourierDecayAlt.P.PBH.levTower_bs_z'_eq_castV_liftVec p.T 0 hj] at hm2
     exact hm2
 

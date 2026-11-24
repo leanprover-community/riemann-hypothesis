@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
+public import Formalism.LocalToGlobal.Divisibility.ClassSum
 
 @[expose] public section
 
@@ -375,8 +374,8 @@ def appOf (h : S.Ok) (s : S.Sec) (φ : S.D → S.V) (d' : S'.D) : S'.V :=
 def opOf (h : S.Ok) (s : S.Sec) : S.EqFun →ₗ[K] S'.EqFun where
   toFun φ := ⟨A.appOf h s φ, fun g' d' => by
     unfold appOf
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun c _ => ?_
     have h1 := A.equiv 1 g' (s.rep c) d'
     rw [one_smul, inv_one, map_one] at h1

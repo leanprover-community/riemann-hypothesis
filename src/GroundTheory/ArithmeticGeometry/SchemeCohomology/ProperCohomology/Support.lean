@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.Modules.Sheaf
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Order.CompletePartialOrder
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,13 +1,11 @@
 module
 
-public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.AsmDiff
-public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.GridsText
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.ZuckermanDuality.Assemble
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Cut_BPEq
-public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.LettersPoly
-public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.CoefFacts
+public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.PStarTie
 public import CompanionTheory.AutomorphicTheory.KFiniteVectors.KDecay
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BaseCutoffIsTruncation
+import CompanionTheory.AutomorphicTheory.BesselWaveGrids.CoefFacts
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Cut_BPEq
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSqLeShifted
 
 @[expose] public section
 

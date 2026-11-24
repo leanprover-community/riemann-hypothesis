@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCircleArgumentPrinciple
+public import Mathlib.Analysis.Analytic.Order
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

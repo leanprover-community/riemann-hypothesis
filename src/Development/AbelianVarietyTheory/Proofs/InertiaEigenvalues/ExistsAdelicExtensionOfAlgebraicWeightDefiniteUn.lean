@@ -1,12 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FinIso
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RecProdRecSatakeLL
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StandardCosocleGL
-public import Formalism.SharpRestriction.LevelLetterCocycles.SphericalInertData
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
+public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DefiniteUnitaryAutFormEqZeroOfFinitePoints
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFinUMulInfU
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FinIso
 
 @[expose] public section
 
@@ -84,23 +120,13 @@ theorem polyMat_rat {ι : Type} (P : ι → ι → MvPolynomial ((E →+* ℂ) �
   rfl
 
 
-omit [NumberField E] [IsCMField E] in
-theorem continuous_coord' (τ : E →+* ℂ) : Continuous (coord τ) := by
-  unfold coord
-  split_ifs
-  · exact continuous_apply _
-  · exact Complex.continuous_conj.comp (continuous_apply _)
-
-theorem continuous_pInf' : Continuous (pInf E) :=
-  continuous_pi fun w =>
-    ((InfinitePlace.Completion.isometryEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)).continuous.comp
-      (continuous_apply w)).comp continuous_fst
+alias continuous_pInf' := _root_.GlobalTheory.DefU.continuous_pInfComp
 
 theorem continuous_polyMat {ι : Type} (P : ι → ι → MvPolynomial ((E →+* ℂ) × Fin n × Fin n) ℂ) :
     Continuous (polyMat P) := by
   refine continuous_pi fun i => continuous_pi fun j => ?_
   refine (MvPolynomial.continuous_eval (P i j)).comp (continuous_pi fun p => ?_)
-  refine (continuous_coord' p.1).comp (continuous_pInf'.comp
+  refine (_root_.GlobalTheory.CuspRep.InfType.continuous_coord p.1).comp (continuous_pInf'.comp
     (f := fun g : UA E n => (g.1 : Matrix (Fin n) (Fin n) (Ad E)) p.2.1 p.2.2) ?_)
   exact (Units.continuous_val.comp continuous_subtype_val).matrix_elem _ _
 
@@ -161,8 +187,8 @@ theorem exists_extension : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L
     rw [hrat γ γQ γ₀ h1 h2, Matrix.toLin_toMatrix]
   · change Continuous fun g : UA L n => μ (Matrix.toLin b b (polyMat P g) v)
     have hc := continuous_polyMat P
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.toLin_apply, map_sum, map_smul, smul_eq_mul]
+
+    simp only [Matrix.toLin_apply, map_sum, map_smul, smul_eq_mul]
     refine continuous_finsetSum _ fun j _ => Continuous.mul ?_ continuous_const
     exact (continuous_apply j).comp (hc.matrix_mulVec continuous_const)
 

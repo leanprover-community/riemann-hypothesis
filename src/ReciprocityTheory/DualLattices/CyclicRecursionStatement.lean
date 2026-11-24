@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.Perfectoid.FontaineTheta
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 
 @[expose] public section
 

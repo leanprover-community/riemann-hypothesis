@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StConeAvoidsOpen
 
 @[expose] public section
@@ -46,7 +45,7 @@ theorem originIdeal_pow_le_span (N : ℕ) :
     refine (Ideal.mul_mono_left ih).trans ?_
     rw [originIdeal, Ideal.span_mul_span', Ideal.span_le]
     rintro _ ⟨_, ⟨m, hm, rfl⟩, _, ⟨i, rfl⟩, rfl⟩
-    exact Ideal.subset_span ⟨m + Finsupp.single i 1, by simp [hm], by simp [X, monomial_mul]⟩
+    exact Ideal.subset_span ⟨m + Finsupp.single i 1, by simp [hm], by simp [X]⟩
 
 theorem originIdeal_pow_le {N : ℕ} {I : Ideal (MvPolynomial (Fin n) ℂ)}
     (h : ∀ m : Fin n →₀ ℕ, m.degree = N → monomial m (1 : ℂ) ∈ I) : originIdeal n ^ N ≤ I := by
@@ -94,9 +93,9 @@ theorem ConeAvoidsOpen.proof : ConeAvoidsOpen.Statement := by
         AddMonoidAlgebra.coeff (T A m) (m' : Fin n →₀ ℕ) := by
     intro A m' m
     show eval _ (P m' m) = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [P, T, linPoly, map_add (f := _), map_sum, map_mul, eval_C, eval_X, MvPolynomial.coeff_add, coeff_sum,
-      Finset.mul_sum]
+
+    simp only [P, T, linPoly, map_add (f := _), map_sum, map_mul, eval_C, eval_X, MvPolynomial.coeff_add, coeff_sum,
+    Finset.mul_sum]
     congr 1
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
     rw [mul_left_comm, coeff_C_mul, mul_comm]

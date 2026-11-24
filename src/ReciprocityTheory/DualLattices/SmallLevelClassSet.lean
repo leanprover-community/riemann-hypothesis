@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.ExteriorAlgebra.Basic
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.Tactic.Continuity
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

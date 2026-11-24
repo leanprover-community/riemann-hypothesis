@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+import Mathlib.Data.Nat.Factors
+import Mathlib.RingTheory.Ideal.Operations
+public import Mathlib.Data.Nat.Prime.Defs
+public import Mathlib.RingTheory.Ideal.Prime
 
 @[expose] public section
 
@@ -14,28 +17,15 @@ theorem goal1 :
     Membership.mem.{u_1, u_1} P (Nat.cast.{u_1} n) →
       Exists.{1} fun (p : Nat) ↦
         And (Nat.Prime p) (And (Dvd.dvd.{0} p n) (Membership.mem.{u_1, u_1} P (Nat.cast.{u_1} p))) := by
-  intro R _ P hP n
-  induction n using Nat.strong_induction_on with
-  | _ n ih =>
-    intro hn hmem
-    by_cases h1 : n = 1
-    · subst h1
-      rw [Nat.cast_one] at hmem
-      exact absurd ((Ideal.eq_top_iff_one P).2 hmem) hP.ne_top
-    · have hp := Nat.minFac_prime h1
-      obtain ⟨m, hm⟩ := Nat.minFac_dvd n
-      have hmem' : ((n.minFac : R) * (m : R)) ∈ P := by
-        rw [← Nat.cast_mul, ← hm]
-        exact hmem
-      rcases hP.mem_or_mem hmem' with h | h
-      · exact ⟨_, hp, Nat.minFac_dvd n, h⟩
-      · have hm0 : m ≠ 0 := by
-          rintro rfl
-          exact hn (by simpa using hm)
-        have hpos : 0 < m := Nat.pos_of_ne_zero hm0
-        have h2 := hp.two_le
-        have hlt : m < n := by nlinarith
-        obtain ⟨p, pp, pd, pm⟩ := ih m hlt hm0 h
-        exact ⟨p, pp, Dvd.dvd.trans pd ⟨n.minFac, hm.trans (Nat.mul_comm _ _)⟩, pm⟩
+  intro R _ P hP n hn hmem
+  let factors : Multiset ℕ := n.primeFactorsList
+  have hprod : factors.prod = n := Nat.prod_primeFactorsList hn
+  have hmemProd : (factors.map (Nat.castRingHom R)).prod ∈ P := by
+    rw [← map_multiset_prod (Nat.castRingHom R), hprod]
+    exact hmem
+  obtain ⟨x, hx, hxP⟩ := (hP.multiset_prod_mem_iff_exists_mem _).mp hmemProd
+  obtain ⟨p, hp, rfl⟩ := Multiset.mem_map.mp hx
+  obtain ⟨hpp, hpd⟩ := (Nat.mem_primeFactorsList hn).mp hp
+  exact ⟨p, hpp, hpd, hxP⟩
 
 end Bl.general_b_fact_right_variant

@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
+public import Mathlib.FieldTheory.IntermediateField.Basic
+public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.LocalFields.Uniqueness
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

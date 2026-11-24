@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBTransport
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegExpF
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsExtensionPullOver
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBTransport
 
 @[expose] public section
 
@@ -114,7 +154,6 @@ theorem exists_move (hL₁ : L₁.IsLB) (hL₂ : L₂.IsLB) {w : LB.Iso (L₁.pu
       ((gs_res r z _ hz _).trans (gs_pull r h₁ z _ (l₂ i₂ i₁ hz) _)))
   · have c₁ : g₁ ((𝟙 Y' ≫ h₁) y) ∈ L₁.U i₁ := (pt y).symm ▸ a₁
     have c₂ : g₁ ((𝟙 Y' ≫ h₁) y) ∈ L₁.U j₁ := (pt y).symm ▸ b₁
-    beta_reduce
     rw [isoVal_trans hw (𝟙 Y' ≫ m) y a₂ a₂ a₁ b₁, powVal_trans a (𝟙 Y' ≫ h₁) y c₁ c₂,
       gm_self hL₂ ((𝟙 Y' ≫ m) ≫ f₂) y a₂, Category.assoc, Category.assoc, e₁, ← mul_assoc, ← Units.val_mul]
     congr 2
@@ -150,13 +189,11 @@ theorem exists_move_back (hL₁ : L₁.IsLB) (hL₂ : L₂.IsLB) {w : LB.Iso (L�
     (fun y i₁ i₂ j₂ a₁ a₂ b₂ => by
       have c₁ : g₂ ((𝟙 Y' ≫ h₂) y) ∈ L₂.U i₂ := (pt y).symm ▸ a₂
       have c₂ : g₂ ((𝟙 Y' ≫ h₂) y) ∈ L₂.U j₂ := (pt y).symm ▸ b₂
-      beta_reduce
       rw [isoVal_trans hw (𝟙 Y' ≫ m) y a₂ b₂ a₁ a₁, powVal_trans b (𝟙 Y' ≫ h₂) y c₁ c₂,
         gm_self hL₁ ((𝟙 Y' ≫ m) ≫ f₁) y a₁, Category.assoc, Category.assoc, e₂, ← mul_assoc, ← Units.val_mul]
       congr 2
       rw [inv_one, mul_one, mul_zpow, zpow_neg, mul_comm, mul_inv_cancel_left])
     (fun y i₁ j₁ i₂ a₁ b₁ a₂ => by
-      beta_reduce
       rw [isoVal_trans hw (𝟙 Y' ≫ m) y a₂ a₂ a₁ b₁, gm_self hL₂ ((𝟙 Y' ≫ m) ≫ f₂) y a₂, one_mul,
         mul_zpow, inv_zpow', neg_neg, Units.val_mul, mul_assoc, Category.assoc])
   refine ⟨a, fun Z r z i₂ i₁ a₂ a₁ => ?_⟩

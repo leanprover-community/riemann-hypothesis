@@ -1,10 +1,12 @@
 module
 
 public import CompanionTheory.RealGroups.FormalDegrees.ArchimedeanFormalDegrees.HlamStable
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelTau
+import Mathlib.Algebra.Order.Star.Int
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.ProdSubLtEqFactorial
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Exists
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HcParamGapGeIndex
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Unique
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.RhoNSubNab
 
 @[expose] public section
 

@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.Topology.Algebra.ConstMulAction
+public import Mathlib.Topology.Algebra.Group.Defs
 
 @[expose] public section
 
@@ -227,11 +229,8 @@ variable {G' : Type*} [Group G'] [TopologicalSpace G']
   (u : M →ₗ[R] M') (hu : Continuous u) (hcompat : ∀ g m, u (rho (phi g) m) = rho' g (u m))
 include hphi hu hcompat
 
-def compatiblePairCocycles1 : Z1 rho →ₗ[R] Z1 rho' where
-  toFun f := ⟨fun g => u (f.1 (phi g)), hu.comp (f.2.1.comp hphi), fun g h => by
-    simp only [map_mul, f.2.2, map_add (f := _), hcompat]⟩
-  map_add' f f' := Subtype.ext (funext fun g => map_add u _ _)
-  map_smul' r f := Subtype.ext (funext fun g => map_smul u _ _)
+def compatiblePairCocycles1 : Z1 rho →ₗ[R] Z1 rho' :=
+  (cocycles1MapOfEquivariant (rho.comp phi) rho' u hu hcompat).comp (restrictCocycles1 rho phi hphi)
 
 def pairH1DecompositionMap : H1 rho →ₗ[R] H1 rho' :=
   Submodule.mapQ _ _ (compatiblePairCocycles1 rho rho' phi hphi u hu hcompat) fun f hf => by
@@ -242,14 +241,8 @@ def pairH1DecompositionMap : H1 rho →ₗ[R] H1 rho' :=
     change u (f.1 (phi g)) = _
     rw [e, map_sub, hcompat]
 
-def compatiblePairCocycles2 : Z2 rho →ₗ[R] Z2 rho' where
-  toFun f := ⟨fun p => u (f.1 (phi p.1, phi p.2)), hu.comp (f.2.1.comp (hphi.prodMap hphi)),
-    fun g h k => by
-      have e := congrArg u (f.2.2 (phi g) (phi h) (phi k))
-      simp only [map_sub, map_add (f := _), map_zero, hcompat] at e
-      simpa only [map_mul] using e⟩
-  map_add' f f' := Subtype.ext (funext fun g => map_add u _ _)
-  map_smul' r f := Subtype.ext (funext fun g => map_smul u _ _)
+def compatiblePairCocycles2 : Z2 rho →ₗ[R] Z2 rho' :=
+  (cocycles2Map (rho.comp phi) rho' u hu hcompat).comp (restrictCocycles2 rho phi hphi)
 
 def compatiblePairH2 : H2 rho →ₗ[R] H2 rho' :=
   Submodule.mapQ _ _ (compatiblePairCocycles2 rho rho' phi hphi u hu hcompat) fun f hf => by

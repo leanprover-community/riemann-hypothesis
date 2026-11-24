@@ -1,6 +1,56 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.PolynomialDerivatives.BfSmulRight
+public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.PolynomialDerivatives.CoreSt
+import Aesop.BuiltinRules
+import Aesop.Frontend.Tactic
+import Aesop.Main
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Bool
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -39,7 +89,7 @@ theorem wt_step (c : ℝ) (s : Fin m × Fin n × Bool →₀ ℕ) (k : Fin m × 
         ∏ j ∈ Finset.univ.erase k, ((s j).factorial : ℝ) * (2 * c) ^ (s j) := by
       refine Finset.prod_congr rfl fun j hj => ?_
       have hjk : j ≠ k := Finset.ne_of_mem_erase hj
-      simp [Finsupp.single_apply, Ne.symm hjk]
+      simp [Ne.symm hjk]
     rw [hrest]
     simp only [Finsupp.add_apply, Finsupp.single_eq_same]
     rw [add_comm 1 (s k), Nat.factorial_succ, pow_succ]
@@ -65,7 +115,7 @@ theorem rdeg_single (ε : Fin m → Bool) (k : Fin m × Fin n × Bool) (hk : inF
   · subst ha
     rw [if_pos rfl, Finset.sum_eq_single i0]
     · simp
-    · intro i _ hi; simp [Finsupp.single_apply, Ne.symm hi]
+    · intro i _ hi; simp [Ne.symm hi]
     · simp
   · rw [if_neg ha]
     refine Finset.sum_eq_zero fun i _ => ?_
@@ -128,7 +178,7 @@ theorem symW_step (u : (Fin m × Fin n × Bool) ⊕ (Fin m × Fin n × Bool) →
       ∏ j ∈ Finset.univ.erase k, ((u j).factorial : ℂ) := by
     refine Finset.prod_congr rfl fun j hj => ?_
     have hjk : j ≠ k := Finset.ne_of_mem_erase hj
-    simp [Finsupp.single_apply, Ne.symm hjk]
+    simp [Ne.symm hjk]
   rw [hrest]
   simp only [Finsupp.add_apply, Finsupp.single_eq_same]
   rw [add_comm 1 (u k), Nat.factorial_succ]
@@ -136,7 +186,7 @@ theorem symW_step (u : (Fin m × Fin n × Bool) ⊕ (Fin m × Fin n × Bool) →
 
 theorem coeff_smul_X {τ : Type} [DecidableEq τ] (c : ℂ) (w0 u : τ) :
     (c • X w0 : MvPolynomial τ ℂ).coeff (Finsupp.single u 1) = if w0 = u then c else 0 := by
-  rw [coeff_smul, coeff_X']
+  rw [MvPolynomial.coeff_smul, coeff_X']
   by_cases h : w0 = u
   · subst h; simp
   · rw [if_neg (fun e => h ((Finsupp.single_left_inj one_ne_zero).mp e)), if_neg h]; simp
@@ -164,7 +214,7 @@ theorem symK_tr (ε : Fin m → Bool) (i j : Fin n) (v u) :
     (symK ε j i (X u : Sym m n)).coeff (Finsupp.single v 1) = star ((symK ε i j (X v : Sym m n)).coeff (Finsupp.single u 1)) := by
   rcases v with ⟨a, i', b⟩ | ⟨a, i', b⟩ <;> rcases u with ⟨a', i'', b'⟩ | ⟨a', i'', b'⟩ <;>
     simp only [symK, mkDerivation_X, Sum.elim_inl, Sum.elim_inr] <;>
-    split_ifs <;> simp_all [coeff_X', Finsupp.single_left_inj, coeff_neg] <;> aesop
+    split_ifs <;> simp_all [coeff_X', Finsupp.single_left_inj] <;> aesop
 
 end CoreC
 

@@ -1,8 +1,19 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
+public import Mathlib.Analysis.Normed.Ring.Lemmas
+public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.ConvexCones.RatFormPosOfIntPos
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Data.Pi.Interval
+import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsStrictIff
+public import Mathlib.Analysis.Normed.MulAction
+public import Mathlib.Topology.Instances.Matrix
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 
 @[expose] public section
 
@@ -60,9 +71,9 @@ theorem sublevel_finite : ∀ (X : Type) [AddCommGroup X] [Module.Finite ℤ X] 
   have hval : ∀ v : Fin n → ℤ, β (∑ i, v i • b i) (∑ i, v i • b i)
       = ∑ i, ∑ j, β (b i) (b j) * v i * v j := by
     intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul,
-      Finset.mul_sum]
+
+    simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul,
+    Finset.mul_sum]
     refine Finset.sum_comm.trans ?_
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring

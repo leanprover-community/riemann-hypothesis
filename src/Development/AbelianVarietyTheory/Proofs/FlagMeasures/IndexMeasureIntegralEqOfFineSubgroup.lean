@@ -1,8 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CintTranslate
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumRefine
 
 @[expose] public section
 
@@ -17,21 +61,6 @@ private lemma quotientEquivProdOfLE_apply_fst {W : Type} [AddCommGroup W] {C B :
     (c : W ⧸ C) : ((AddSubgroup.quotientEquivProdOfLE h) c).1 = ((Quotient.out c : W) : W ⧸ B) := by
   conv_lhs => rw [← QuotientAddGroup.out_eq' c]
   rfl
-
-open scoped Pointwise Classical in
-open Function in
-private lemma finsum_prod_fst_eq_card_mul {X Y : Type} [Finite Y] (g : X → ℂ) (hg : (support g).Finite) :
-    ∑ᶠ p : X × Y, g p.1 = (Nat.card Y : ℂ) * ∑ᶠ x, g x := by
-  have := Fintype.ofFinite Y
-  rw [finsum_eq_sum_of_support_subset (s := hg.toFinset ×ˢ Finset.univ),
-    finsum_eq_sum_of_support_subset (s := hg.toFinset), Finset.sum_product, Finset.mul_sum]
-  · refine Finset.sum_congr rfl fun x _ => ?_
-    show ∑ _y : Y, g x = _
-    rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Nat.card_eq_fintype_card]
-  · intro x hx
-    simpa using hx
-  · intro p hp
-    simpa using hp
 
 open scoped Pointwise Classical in
 open Function in
@@ -56,7 +85,7 @@ private lemma finsum_quotient_out_eq_relIndex_mul_of_le {W : Type} [AddCommGroup
       exact QuotientAddGroup.leftRel_apply.mp (Quotient.exact' (QuotientAddGroup.out_eq' _).symm)
     rw [hb.2, hinv _ _ hb.1]
   rw [finsum_congr hcls, finsum_comp_equiv (AddSubgroup.quotientEquivProdOfLE hCB)
-      (f := fun p => φ (Quotient.out p.1)), finsum_prod_fst_eq_card_mul _ (support_quotient_out_finite_of_image_finite φ hφ)]
+      (f := fun p => φ (Quotient.out p.1)), _root_.GlobalTheory.SumRefinement.finsum_fst _ (support_quotient_out_finite_of_image_finite φ hφ)]
   rfl
 
 open scoped Pointwise Classical in

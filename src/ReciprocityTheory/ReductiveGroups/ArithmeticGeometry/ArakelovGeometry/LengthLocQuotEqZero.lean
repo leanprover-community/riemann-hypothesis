@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Length
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+public import Mathlib.Algebra.Module.LocalizedModule.Exact
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

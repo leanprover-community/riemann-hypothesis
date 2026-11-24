@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Polynomial.AlgebraMap
 
 @[expose] public section
 
@@ -18,16 +18,7 @@ theorem goal1 :
         Membership.mem.{u_4, u_4} W
           (DFunLike.coe.{u_4 + 1, u_4 + 1, u_4 + 1}
             (DFunLike.coe.{max (u_4 + 1) (u_3 + 1), u_3 + 1, u_4 + 1} (Polynomial.aeval.{u_3, u_4} T) p) x) := by
-  intro LL M _ _ _ T W hW p
-  refine Polynomial.induction_on p ?_ ?_ ?_
-  · intro a x hx
-    rw [Polynomial.aeval_C, Module.algebraMap_end_apply]
-    exact W.smul_mem a hx
-  · intro p q hp hq x hx
-    rw [map_add (f := _), LinearMap.add_apply]
-    exact W.add_mem (hp x hx) (hq x hx)
-  · intro n a h x hx
-    rw [pow_succ, ← mul_assoc, map_mul, Polynomial.aeval_X, Module.End.mul_apply]
-    exact h (T x) (hW x hx)
+  intro LL M _ _ _ T W hW p x hx
+  exact Polynomial.aeval_apply_smul_mem_of_le_comap hx p T hW
 
 end Bl.general_b_fact_upper_form

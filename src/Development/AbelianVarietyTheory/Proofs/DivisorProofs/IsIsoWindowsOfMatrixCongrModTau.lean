@@ -1,8 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfFrobeniusSemilinearEquationExistsUniqueStatement
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfFrobeniusSemilinearEquationExistsUnique
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 @[expose] public section
 
@@ -31,8 +74,8 @@ theorem iter_vec (σ : B →+* B) (M : Matrix ι ι B) (n : ℕ) (w : ι → B) 
     rw [Function.iterate_succ_apply', ih, lft, ← Matrix.mulVec_mulVec]
     congr 1
     funext j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Matrix.mulVec, dotProduct, map_sum, map_mul, Function.iterate_succ_apply']
+
+    simp [Matrix.mulVec, dotProduct, map_sum, map_mul, Function.iterate_succ_apply']
 
 theorem iter_mat (σ : B →+* B) (M N : Matrix ι ι B) (n : ℕ) (Y : Matrix ι ι B) :
     (fun Y : Matrix ι ι B => M * Y.map σ * N)^[n] Y =
@@ -95,8 +138,8 @@ theorem isNil_kron {B O ι : Type} [CommRing B] [CommRing O] [IsLocalRing O] [Fi
   refine ⟨n, fun v x => ?_⟩
   rw [kron_iter]
   refine (IsLocalRing.mem_maximalIdeal _).1 ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mul_apply, map_sum, map_mul]
+
+  simp only [Matrix.mul_apply, map_sum, map_mul]
   exact Ideal.sum_mem _ fun m _ => Ideal.mul_mem_right _ _ (Ideal.sum_mem _ fun j _ =>
     Ideal.mul_mem_right _ _ (hL _ _))
 
@@ -117,8 +160,8 @@ theorem isNil_lift {A B O ι : Type} [CommRing A] [CommRing B] [CommRing O] [Fin
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
       set w := (fun w : ι → B => K.mulVec fun j => σB (w j))^[m] (fun j => a (v j))
       set u := (fun w : ι → A => KA.mulVec fun j => φ (w j))^[m] v
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, ← Finset.sum_sub_distrib]
+
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, ← Finset.sum_sub_distrib]
       refine Ideal.sum_mem _ fun j _ => ?_
       have e : K i j * σB (w j) - a (KA i j) * a (φ (u j)) =
           (K i j - a (KA i j)) * σB (w j) + a (KA i j) * σB (w j - a (u j)) := by
@@ -192,7 +235,7 @@ theorem window_iso : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClo
   have hPP : Pd * P = (p : F.B) • 1 := by
     ext i j
     rcases i with i | i <;> rcases j with j | j <;>
-      simp [hP, hPd, blk, Matrix.diagonal_mul_diagonal, Matrix.diagonal_apply, Matrix.one_apply]
+      simp [hP, hPd, blk, Matrix.diagonal_apply, Matrix.one_apply]
   have hUi : U⁻¹ * U = 1 := Matrix.nonsing_inv_mul U ((Matrix.isUnit_iff_isUnit_det U).1 hU)
   choose E hE using hUU'
   set M := U * P with hM
@@ -221,15 +264,15 @@ theorem window_iso : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClo
   have hnilA : IsNil (WittVector.fontaineTheta O p) (WittVector.frobenius : Ainf p O →+* Ainf p O) KA :=
     isNil_lift F.θ F.σ _ _ F.a I F.θ_a F.σ_a hθI hσI K KA (fun i j => hgI _)
       (isNil_kron F.θ F.σ M N hnil)
-  obtain ⟨vA, hvA⟩ := (GlobalTheory.T.ainf_frobenius_semilinear_equation_existsUnique p C v O hv ε hε _ KA hnilA).1 (fun y => g (c y.1 y.2))
+  obtain ⟨vA, hvA⟩ := (_root_.GlobalTheory.WSolve.main p C v O hv ε hε _ KA hnilA).1 (fun y => g (c y.1 y.2))
   set Z : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B := Matrix.of fun j m => F.a (vA (j, m)) with hZ
   have hΔ : ∀ i l, (Z - M * Z.map F.σ * N - c) i l ∈ I := by
     intro i l
     have h1 := congrArg F.a (hvA (i, l))
     have h2 : F.a ((KA.mulVec fun j => WittVector.frobenius (vA j)) (i, l)) =
         (KA.map F.a).mulVec (fun j => F.σ (F.a (vA j))) (i, l) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [Matrix.mulVec, dotProduct, map_sum, map_mul, F.σ_a]
+
+      simp [Matrix.mulVec, dotProduct, map_sum, map_mul, F.σ_a]
     have h3 : (M * Z.map F.σ * N) i l = K.mulVec (fun y => F.σ (F.a (vA y))) (i, l) :=
       (kron_mulVec F.σ M N Z (i, l)).symm
     rw [map_sub, h2] at h1

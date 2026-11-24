@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.Procyclic
-public import GroundTheory.ProfiniteCohomology.Characters
+public import GroundTheory.ProfiniteCohomology.TorsionDualDefs
+public import Mathlib.GroupTheory.Torsion
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

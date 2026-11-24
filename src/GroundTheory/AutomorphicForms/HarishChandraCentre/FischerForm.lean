@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+public import Mathlib.Algebra.Star.BigOperators
 
 @[expose] public section
 
@@ -43,7 +49,7 @@ theorem fischer_add_left (f f' g : MvPolynomial σ ℂ) :
 
 theorem fischer_smul_left (c : ℂ) (f g : MvPolynomial σ ℂ) :
     fischer (c • f) g = star c * fischer f g := by
-  simp only [fischer, coeff_smul, smul_eq_mul, star_mul', Finset.mul_sum]
+  simp only [fischer, MvPolynomial.coeff_smul, smul_eq_mul, star_mul', Finset.mul_sum]
   exact Finset.sum_congr rfl fun _ _ => by ring
 
 theorem fischer_add_right (f g g' : MvPolynomial σ ℂ) :
@@ -57,7 +63,7 @@ theorem fischer_add_right (f g g' : MvPolynomial σ ℂ) :
 theorem fischer_smul_right (c : ℂ) (f g : MvPolynomial σ ℂ) :
     fischer f (c • g) = c * fischer f g := by
   rw [fischer_eq_sum f (c • g) g.support (MvPolynomial.support_smul), fischer, Finset.mul_sum]
-  simp only [coeff_smul, smul_eq_mul]
+  simp only [MvPolynomial.coeff_smul, smul_eq_mul]
   exact Finset.sum_congr rfl fun _ _ => by ring
 
 @[simp] theorem fischer_zero_left (g : MvPolynomial σ ℂ) : fischer 0 g = 0 := by simp [fischer]

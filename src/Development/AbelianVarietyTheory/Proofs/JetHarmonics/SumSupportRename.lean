@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TwistBCPf
-public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.InvariantDerivationsCommuteFormalConnection
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
+public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.EqCOfPderivZero
+public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.InvariantDerivationsCommuteFormalConnection
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -124,11 +162,11 @@ theorem ev_axis (b : Fin n) (g : PS k 2 d) :
 theorem dofN_inCol (F : Fin d → PS k 2 d) (b : Fin n) (u : Fin d → k) (f : PS k 1 d) :
     DofN F b u (inCol b f) = inCol b (Dof F u f) := by
   unfold DofN Dof
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← inColHom_apply b (∑ _, _), map_sum]
+
+  rw [← inColHom_apply b (∑ _, _), map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_mul, map_sum, pderiv_inCol, if_pos rfl, inColHom_apply]
+
+  rw [map_mul, map_sum, pderiv_inCol, if_pos rfl, inColHom_apply]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, inColHom_apply, inColHom_apply, inCol_C, ev_axis]
@@ -215,8 +253,8 @@ theorem cc_inCol (b : Fin n) (f : PS k 1 d) : constantCoeff (inCol b f) = consta
 
 theorem sum_support_eq {ι : Type} (φ : (ι →₀ ℕ) → k) (P : MvPolynomial ι k) :
     ∑ m ∈ P.support, P.coeff m * φ m = (MvPolynomial.basisMonomials ι k).constr k φ P := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_rhs => rw [P.as_sum, map_sum]
+
+  conv_rhs => rw [P.as_sum, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   have : MvPolynomial.monomial m (P.coeff m) = P.coeff m • MvPolynomial.basisMonomials ι k m := by
     simp [MvPolynomial.smul_monomial]
@@ -226,8 +264,8 @@ theorem sum_support_rename {ι κ : Type} (e : ι → κ) (φ : (κ →₀ ℕ) 
     ∑ m ∈ (MvPolynomial.rename e P).support, (MvPolynomial.rename e P).coeff m * φ m =
       ∑ m ∈ P.support, P.coeff m * φ (Finsupp.mapDomain e m) := by
   rw [sum_support_eq]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [P.as_sum, map_sum, map_sum]
+
+  conv_lhs => rw [P.as_sum, map_sum, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   have : MvPolynomial.monomial (Finsupp.mapDomain e m) (P.coeff m) =
       P.coeff m • MvPolynomial.basisMonomials κ k (Finsupp.mapDomain e m) := by
@@ -277,8 +315,8 @@ theorem nabValN_boxSer : NabColSt := by
     exact (gt_ev_expS _ (gp b) _ hq0).symm
   unfold nabValN DpolyN
   rw [hprod]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, constantCoeff_C]
+
+  simp only [map_sum, map_mul, constantCoeff_C]
   rw [sum_support_rename e (fun m => constantCoeff (DmonN (B.FK k) cp u' m
     (∏ b, inCol b (f b * FB.expS k ((q : k) • B.hL k h w0)))))]
   refine Finset.sum_congr rfl fun mo _ => ?_
@@ -287,8 +325,8 @@ theorem nabValN_boxSer : NabColSt := by
   refine Finset.prod_congr rfl fun b _ => ?_
   rw [cc_inCol, fo_col (B.FK k) (fun v w g => FormalConnection.invariantDerivations_commute_formal_connection R d O k B v w g) e cp u u' hcp hu]
   unfold FB.nabVal DpolyOf
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, constantCoeff_C]
+
+  simp only [map_sum, map_mul, constantCoeff_C]
   rw [sum_support_eq (fun m => constantCoeff (DmonOf (B.FK k) u m (f b * FB.expS k ((q : k) • B.hL k h w0))))]
   have hb : (MvPolynomial.monomial (colM mo b) 1 : MvPolynomial Λ k) = MvPolynomial.basisMonomials Λ k (colM mo b) := by
     simp

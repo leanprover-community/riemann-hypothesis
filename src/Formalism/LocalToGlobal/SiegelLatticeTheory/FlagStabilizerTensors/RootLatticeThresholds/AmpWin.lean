@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocNorm
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LoopTerm
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.NormalizingConstantEq
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.L2SGPhiOfNeZeroAndLtInfty
 
 @[expose] public section
 
@@ -116,11 +114,7 @@ theorem ampWin_of (hM : MassU Y u C hB) (hM' : MassU Y u' C hB)
 theorem poincareConstant_nonneg (w : D.what₂.Word) : 0 ≤ c0X X w (Y.FN w) := by
   unfold c0X
   first
-    | positivity
-    | (have := X.levelVolume_pos; positivity)
-    | (have := X.volK2_nonneg; positivity)
     | (unfold HidaSetting.volK2; positivity)
-    | (unfold Formalism.L2.SG.HidaSetting.HidaSetting.volK2; done)
 
 theorem K0_eq_covN_of_ampWin (hA : AmpWinP Y u u' C hB) (hV : 0 < X.volK2) :
     Formalism.L2.SG.Pf.LocNorm.K0 Y u u' C hB =
@@ -148,8 +142,6 @@ theorem K0_eq_covN_of_ampWin (hA : AmpWinP Y u u' C hB) (hV : 0 < X.volK2) :
     have hden : (√(a * b))⁻¹ * V * ((√(a * b))⁻¹ * V) = V ^ 2 / (a * b) := by
       first
         | rw [inv_mul_eq_div, div_mul_div_comm, ← sq, ← sq, hs]
-        | (field_simp; rw [hs]; ring)
-        | (field_simp; rw [Real.mul_self_sqrt h0.le]; ring)
     rw [hden, div_div_eq_mul_div, div_eq_iff (pow_pos hV 2).ne']
     linarith [hA]
 
@@ -165,8 +157,6 @@ theorem K0_mem_covWin_of_ampWin (hA : AmpWinP Y u u' C hB) (hV : 0 < X.volK2) {l
   rw [K0_eq_covN_of_ampWin Y u u' C hB hA hV]
   first
     | exact hW
-    | (unfold Formalism.L2.SG.LoopTerm.CovWinN at hW; exact hW)
-    | (unfold Formalism.L2.SG.LoopTerm.CovWinN at hW; done)
 
 end Main
 

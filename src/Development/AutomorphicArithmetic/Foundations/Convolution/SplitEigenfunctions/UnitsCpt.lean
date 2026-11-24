@@ -1,10 +1,50 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.ThetaLiftEqAnisotropicPart
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.IsotypicQuotients.NormWfLe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CmBridge
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
-public import GroundTheory.AutomorphicForms.ReductionIdele
+public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.IsotypicQuotients.NormWfLe
+import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
+import GroundTheory.AutomorphicForms.ReductionIdele
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -23,34 +63,13 @@ private theorem vn (q : A F) : (nU q).val = !![1, q; 0, 1] := rfl
 
 private theorem vm (a : (A F)ˣ) : (mD a).val = !![(a : A F), 0; 0, ((a⁻¹ : (A F)ˣ) : A F)] := rfl
 
-private theorem gmul (x y : G1 F) : gl (x * y) = gl x * gl y := map_mul _ _ _
-
-private theorem cont_n : Continuous fun q : A F => gl (nU q) := by
-  refine Units.continuous_iff.2 ⟨?_, ?_⟩
-  · refine continuous_matrix fun i j => ?_
-    fin_cases i <;> fin_cases j <;> simp [vn] <;> fun_prop
-  · have e : ∀ q : A F, (gl (nU q))⁻¹ = gl (nU (-q)) := fun q => inv_eq_of_mul_eq_one_right (Units.ext (by
-      ext i j; fin_cases i <;> fin_cases j <;> simp [vn, Matrix.mul_apply, Fin.sum_univ_two]))
-    simp only [e]
-    refine continuous_matrix fun i j => ?_
-    fin_cases i <;> fin_cases j <;> simp [vn] <;> fun_prop
+private alias cont_n := _root_.UpperTheory.ConvolutionTheory.R2.Pp.cont_n
 
 private theorem tri (Y : GL (Fin 2) (A F)) (t₀ t₁ : (A F)ˣ) (h0 : Y.val 0 0 = t₀) (h1 : Y.val 1 1 = t₁) (h : Y.val 1 0 = 0) :
     Y = gl (nU (Y.val 0 1 * ((t₁⁻¹ : (A F)ˣ) : A F))) * diagUnits 2 ![t₀, t₁] := by
   refine Units.ext ?_
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [vn, Matrix.mul_apply, Fin.sum_univ_two, Matrix.diagonal, h0, h1, h]
-
-private theorem n_add (x y : A F) : gl (nU (x + y)) = gl (nU x) * gl (nU y) := by
-  refine Units.ext ?_
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [vn, Matrix.mul_apply, Fin.sum_univ_two, add_comm]
-
-private theorem rat_n (k : F) : ∃ γ : GL (Fin 2) F, ratGL F 2 γ = gl (nU (rt k)) := by
-  refine ⟨Matrix.SpecialLinearGroup.toGL ⟨!![1, k; 0, 1], by simp [Matrix.det_fin_two]⟩, Units.ext ?_⟩
-  ext i j
-  change algebraMap F (A F) (!![1, k; 0, 1] i j) = _
-  fin_cases i <;> fin_cases j <;> simp [vn]
+  fin_cases i <;> fin_cases j <;> simp [vn, Matrix.mul_apply, Matrix.diagonal, h0, h1, h]
 
 private theorem rat_m (c : Fˣ) : ∃ γ : GL (Fin 2) F, ratGL F 2 γ = gl (mD (IdeleGroup.diagonal F c)) := by
   refine ⟨Matrix.SpecialLinearGroup.toGL ⟨!![(c : F), 0; 0, ((c⁻¹ : Fˣ) : F)], by simp [Matrix.det_fin_two]⟩, Units.ext ?_⟩
@@ -58,8 +77,8 @@ private theorem rat_m (c : Fˣ) : ∃ γ : GL (Fin 2) F, ratGL F 2 γ = gl (mD (
   change algebraMap F (A F) (!![(c : F), 0; 0, ((c⁻¹ : Fˣ) : F)] i j) = _
   fin_cases i <;> fin_cases j
   · rfl
-  · simp [vm]
-  · simp [vm]
+  · simp
+  · simp
   · rfl
 
 private theorem units_cpt {C : Set (GL (Fin 2) (A F))} (hC : IsCompact C) :
@@ -113,12 +132,12 @@ private theorem siegel {C : Set (GL (Fin 2) (A F))} (hC : IsCompact C) :
   set g : (A F)ˣ := IdeleGroup.diagonal F c with hg
   set Y := gl (mD g) * (gl (nU b * mD a) * β) with hY
   have hY' := tri Y (g * a * u₀) ((g * a)⁻¹ * u₁)
-    (by simp [hY, gmul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1, ← e₀, mul_assoc])
-    (by simp [hY, gmul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, ← e₁, mul_assoc, mul_left_comm])
-    (by simp [hY, gmul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1])
+    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1, ← e₀, mul_assoc])
+    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, ← e₁, mul_assoc, mul_left_comm])
+    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1])
   set e := Y.val 0 1 * ((((g * a)⁻¹ * u₁)⁻¹ : (A F)ˣ) : A F)
   obtain ⟨ξ, hξ⟩ := hQ e
-  obtain ⟨γ, hγ⟩ := rat_n ξ
+  obtain ⟨γ, hγ⟩ := _root_.UpperTheory.ConvolutionTheory.R2.Pp.rat_n ξ
   obtain ⟨γ', hγ'⟩ := rat_m c
   refine ⟨γ, γ'⁻¹, _, ⟨(e - rt ξ, g * (a * p⁻¹), u₀, u₁), ⟨hξ, hc, hu₀, hu₁⟩, rfl⟩, kk, hkk, ?_⟩
   have hd : diagUnits 2 ![g * a * u₀, (g * a)⁻¹ * u₁] =
@@ -128,7 +147,7 @@ private theorem siegel {C : Set (GL (Fin 2) (A F))} (hC : IsCompact C) :
     funext i
     fin_cases i <;> simp [mul_assoc, mul_comm, mul_left_comm]
   rw [map_inv, eq_inv_mul_iff_mul_eq, hγ, hγ', ← hg, ← mul_assoc _ β, ← mul_assoc, ← hY, hY', hd]
-  have : gl (nU e) = gl (nU (rt ξ)) * gl (nU (e - rt ξ)) := by rw [← n_add]; congr 2; ring
+  have : gl (nU e) = gl (nU (rt ξ)) * gl (nU (e - rt ξ)) := by rw [← _root_.UpperTheory.ConvolutionTheory.R2.Pp.n_add]; congr 2; ring
   rw [this]
   simp only [P, mul_assoc]
 
@@ -159,7 +178,7 @@ private theorem arith {C H M τ s s₀ h : ℝ} {e N d r : ℕ} (hs₀ : 0 < s�
 
 end SlopeTestRemainingChoices
 
-set_option maxHeartbeats 800000 in
+
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.decE :
     DecE := by
   intro F _ _ _ π f hf

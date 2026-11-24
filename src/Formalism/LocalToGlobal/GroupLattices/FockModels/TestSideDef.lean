@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
+public import Formalism.SharpRestriction.GrowthBounds.ObjPol
+public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 
 @[expose] public section
 

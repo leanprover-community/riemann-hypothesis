@@ -1,7 +1,45 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.PtStep0
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -31,8 +69,8 @@ theorem bc_mulVec (γ : GL (Fin N) E) (x : Fin N → E) :
       Matrix (Fin N) (Fin N) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) *ᵥ (fun a => inclE (F := F) (FiniteAdeleRing (𝓞 F) F) (x a)) =
       fun a => inclE (F := F) (FiniteAdeleRing (𝓞 F) F) (((γ : Matrix (Fin N) (Fin N) E) *ᵥ x) a) := by
   funext a
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [bc, Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+  simp [bc, Matrix.mulVec, dotProduct, map_sum, map_mul]
 
 theorem latAd_rat (γ : GL (Fin N) E) (y : GL (Fin N) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) (Lb : Submodule (𝓞 E) (Fin N → E)) :
     latAd (bc (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) γ * y) Lb = mvL γ (latAd y Lb) := by
@@ -77,8 +115,8 @@ private lemma hform_eq_lemma (σ : E →+* E) (J : Matrix (Fin N) (Fin N) E) (x 
 private lemma ringHom_mulVec_eq_map_mulVec (σ : E →+* E) (M : Matrix (Fin N) (Fin N) E) (x : Fin N → E) :
     (fun i => σ ((M *ᵥ x) i)) = (M.map σ) *ᵥ (fun i => σ (x i)) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+  simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
 
 private lemma hform_mulVec_eq_of_cT_mul_mul_eq' (σ : E →+* E) (J : Matrix (Fin N) (Fin N) E) (M : Matrix (Fin N) (Fin N) E)
     (hM : cT σ M * J * M = J) (x y : Fin N → E) :
@@ -87,7 +125,7 @@ private lemma hform_mulVec_eq_of_cT_mul_mul_eq' (σ : E →+* E) (J : Matrix (Fi
   unfold cT at hM
   rw [Matrix.mul_assoc] at hM
   conv_lhs => rw [dotProduct_comm, Matrix.dotProduct_mulVec, ← Matrix.mulVec_transpose, dotProduct_comm]
-  simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc, hM]
+  simp only [Matrix.mulVec_mulVec, hM]
 
 theorem dualSet_mvL (σ : E →+* E) (J : Matrix (Fin N) (Fin N) E) (γ : GL (Fin N) E) (hγ : γ ∈ UJ σ J)
     (Λ : Submodule (𝓞 E) (Fin N → E)) : dualSet σ J (mvL γ Λ) = toLE γ '' dualSet σ J Λ := by

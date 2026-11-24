@@ -1,6 +1,46 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KappaOK
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ToRingActOpOfRingAct
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoLeFinrankLa
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -68,13 +108,7 @@ section Hom
 
 variable {S : Scheme.{0}}
 
-theorem isMonHom_of_mul_comp {G H : Over S} [GrpObj G] [GrpObj H] (f : G ⟶ H)
-    (h : ∀ (T : Over S) (x y : T ⟶ G), (x * y) ≫ f = (x ≫ f) * (y ≫ f)) : IsMonHom f := by
-  refine ⟨?_, ?_⟩
-  · rw [MonObj.one_eq_one G, MonObj.one_eq_one H]
-    exact map_one (MonoidHom.mk' (fun x : 𝟙_ (Over S) ⟶ G ↦ x ≫ f) (h _))
-  · rw [MonObj.mul_eq_mul G, MonObj.mul_eq_mul H, MonObj.comp_mul, tensorHom_fst, tensorHom_snd]
-    exact h _ _ _
+alias isMonHom_of_mul_comp := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.isMonHom_of_mul
 
 def preHom {T T' G : Over S} [GrpObj G] (p : T' ⟶ T) : (T ⟶ G) →* (T' ⟶ G) :=
   MonoidHom.mk' (fun a => p ≫ a) fun a b => MonObj.comp_mul p a b
@@ -145,7 +179,7 @@ theorem actZ_pb_mu [IsMonHom mu] (hla : la ≫ mu = 𝟙 A ^ d) (N : ord d) (i :
   rw [← Category.assoc, actZ_pb, E_comp]
   have e : ∀ k, (pa A B k ≫ la) ≫ mu = pa A B k ^ d := fun k => by
     rw [Category.assoc, hla, MonObj.comp_pow, Category.comp_id]
-  simp only [e, Category.assoc]
+  simp only [e]
   exact E_pow_left (fun k => pa A B k) _ d _ _
 
 theorem actZ_pa_la [IsMonHom la] (hml : mu ≫ la = 𝟙 B ^ d) (N : ord d) (i : Fin 4) :
@@ -179,7 +213,7 @@ theorem actZ_add (N N' : ord d) : actZ A B d la mu (N + N') = actZ A B d la mu N
     funext j
     exact Int.add_ediv_of_dvd_left (N.2 j i)
   · rw [MonObj.mul_comp, actZ_pb, actZ_pb, actZ_pb, ← E_add]
-    congr 1 <;> funext j <;> simp
+    congr 1
 
 theorem actZ_mul [IsMonHom la] [IsMonHom mu] (hla : la ≫ mu = 𝟙 A ^ d) (hml : mu ≫ la = 𝟙 B ^ d) (hd : 0 < d)
     (N N' : ord d) : actZ A B d la mu (N * N') = actZ A B d la mu N ≫ actZ A B d la mu N' := by

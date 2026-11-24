@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.LatticePoissonBasic
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Fourier.AddCircleMulti
+public import Mathlib.Analysis.Fourier.FourierTransform
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

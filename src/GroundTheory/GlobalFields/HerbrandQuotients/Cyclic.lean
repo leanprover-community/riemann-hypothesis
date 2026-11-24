@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.HerbrandAbstract
+public import Mathlib.RepresentationTheory.Basic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CyclicSubtraction
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Data.ZMod.QuotientGroup
 
 @[expose] public section
 

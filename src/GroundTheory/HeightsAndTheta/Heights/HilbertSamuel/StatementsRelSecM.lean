@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRelLatticeFinite
+public import Mathlib.Data.Fintype.Sigma
+public import Mathlib.RingTheory.Noetherian.Defs
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.RingTheory.FiniteType
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section
 

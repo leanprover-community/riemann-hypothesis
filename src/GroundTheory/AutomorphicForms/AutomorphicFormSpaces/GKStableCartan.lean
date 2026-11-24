@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStructure
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
+public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
 public import GroundTheory.AutomorphicForms.HarishChandraRegularity.CartanBasis
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -76,8 +81,8 @@ theorem mixedTraceL_star_mul_self_pos {x : mixedSpace K} (hx : x ≠ 0) :
 theorem mixedTraceL_trace_conjTranspose_mul_self_pos {A : Matrix (Fin n) (Fin n) (mixedSpace K)}
     (hA : A ≠ 0) : 0 < mixedTraceL K (trace (Aᴴ * A)) := by
   have e : mixedTraceL K (trace (Aᴴ * A)) = ∑ i, ∑ j, mixedTraceL K (star (A j i) * A j i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [trace, diag_apply, Matrix.mul_apply, conjTranspose_apply, map_sum]
+
+    simp only [trace, diag_apply, Matrix.mul_apply, conjTranspose_apply, map_sum]
   rw [e]
   obtain ⟨j, i, hji⟩ : ∃ j i, A j i ≠ 0 := by
     by_contra hc
@@ -463,9 +468,9 @@ theorem expG_mem_archCompact_of_skew (Z : archLie K n)
           Matrix (Fin n) (Fin n) w.Completion)) i)) =
           (fun i => ψ (y i)) ᵥ* realCompM ⟨w, hw⟩ ((x : (ArchMatrix K n)ˣ) : ArchMatrix K n) := by
         ext j
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [vecMul, dotProduct, map_sum, map_mul, realCompM_apply, Matrix.map_apply,
-          realComp_apply]
+
+        simp only [vecMul, dotProduct, map_sum, map_mul, realCompM_apply, Matrix.map_apply,
+        realComp_apply]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [infAt_infEmb_apply, extensionEmbeddingOfIsReal_symm]
       rw [e, euclidNorm_vecMul_unitary hU]
@@ -481,9 +486,9 @@ theorem expG_mem_archCompact_of_skew (Z : archLie K n)
           Matrix (Fin n) (Fin n) w.Completion)) i)) =
           (fun i => ψ (y i)) ᵥ* complexCompM ⟨w, hc⟩ ((x : (ArchMatrix K n)ˣ) : ArchMatrix K n) := by
         ext j
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [vecMul, dotProduct, map_sum, map_mul, complexCompM_apply, Matrix.map_apply,
-          complexComp_apply]
+
+        simp only [vecMul, dotProduct, map_sum, map_mul, complexCompM_apply, Matrix.map_apply,
+        complexComp_apply]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [infAt_infEmb_apply, extensionEmbedding_symm _ hc]
       rw [e, euclidNorm_vecMul_unitary hU]

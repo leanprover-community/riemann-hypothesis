@@ -1,76 +1,121 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionCountDropHilbWSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleEmbedNumbersSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.InterNumPointSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.QuotSectionsFiniteSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionCountDropFiltFiniteSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionCountDropFiltSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionCountDropTermSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionCountTopSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperDevissageSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperHyperplaneSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsAmple
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsTildeTail
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TildeFiniteSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleCechSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleDegreeSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleHilbertSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleSnapperSt
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.Imports
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PInterNumTieX
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRestrictQuotX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperDevissage
+import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRestrictQuotX
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSnapperQuotDevissageX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperHyperplane
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperHyperplaneMid
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapper
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSnapperSectionX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperDiffPoly
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFinite
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZExtend
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZChartSpan
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZChartRing
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZFamilySt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZFiniteSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZTwistSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SubFamilyTwistPowSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechHdegOfSubSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechDoubleSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZColumnsSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZRowsSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFamily
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PVeryAmpleZTwistX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSubFamilyTwistPow
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechHdegOfSub
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechDouble
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZColumns
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PVeryAmpleZRowsX
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleVanish
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PExtension
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleSnapper
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LineBundleTwistVanish
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleHilbert
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleDegree
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleDim
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleSecs
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountTop
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTildeTail
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PFiniteSections
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropFiltFinite
+public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PVeryAmpleZTwistX
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsMemSupport
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FiniteHZeroOfExact
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LineBundleTwistVanish
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleCover
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleVanish
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechDouble
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechHdegOfSub
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PExtension
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PFiniteSections
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PGeneratedAmple
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PHilbertPoint
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PIdealTwistFamily
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PInterNumPoint
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PQuotSectionsFinite
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestrictTwist
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestriction
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropFilt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropFiltFinite
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropFiltKernel
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropFiltStep
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PGeneratedAmple
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleCover
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropTerm
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountTop
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapper
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperDevissage
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperDiffPoly
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperHyperplane
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperHyperplaneMid
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSubFamilyTwistPow
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTildeFinite
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PQuotSectionsFinite
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PIdealTwistFamily
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FiniteHZeroOfExact
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropTerm
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleDegree
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleDim
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleEmbedNumbers
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PInterNumPoint
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PHilbertPoint
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SectionCountDropHilbWSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsStepTwo
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.InterNumRestrictSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleEmbedSectionsSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleEmbedNumbersSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechH0SectionsHypothesesLine
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.InterNumPointSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestriction
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestrictTwist
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleEmbedSections
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.Imports
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleHilbert
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleSecs
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleSnapper
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZChartRing
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZChartSpan
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZColumns
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZExtend
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFamily
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFinite
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistBundleToSubSystem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -123,7 +168,7 @@ theorem a34 :
       rw [hG, ← VeryAmpleZTwist.proof_closed S Ω N x E F H r h hH a J]
       congr 2
       ext z
-      simp only [Set.mem_setOf_eq, SubSystem.twist, twistSys, hmem]
+      simp only [Set.mem_setOf_eq, twistSys, hmem]
     obtain ⟨e1⟩ := CechHdegOfSub.proof S Ω N x E G.toSubSystem i
     obtain ⟨e2⟩ := CechDouble.proof S Ω N r x h E (fun I => Submodule.restrictScalars S (G.sub I))
       (fun J => secsOnZ G.toSubSystem H.toSubSystem h J)

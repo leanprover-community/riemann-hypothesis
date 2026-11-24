@@ -1,15 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.PAdicHodge.FieldOfNormsResidue
-public import GroundTheory.PAdicHodge.CyclotomicTower
-public import GroundTheory.PAdicHodge.TiltValuation
-public import GroundTheory.PAdicHodge.TiltAlgebra
-public import GroundTheory.PAdicHodge.UntiltIndep
-public import GroundTheory.PAdicHodge.PerfectoidField
-public import GroundTheory.PAdicHodge.AxLemma
-public import GroundTheory.PAdicHodge.TiltAlgClosed
-public import GroundTheory.LocalFields.KroneckerWeber
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.NumberTheory.Padics.ValuativeRel
+public import GroundTheory.LocalFields.Examples
 
 @[expose] public section
 

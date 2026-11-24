@@ -1,9 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.SelSide
-public import Formalism.LocalToGlobal.IndefiniteReal.TrISepWith
-public import Formalism.LocalToGlobal.IndefiniteReal.RealRec
-public import Formalism.LocalToGlobal.UnitaryNorms.DatumS
+public import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
 
 @[expose] public section
 

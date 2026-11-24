@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLogCardLength
+public import Mathlib.Algebra.Module.LocalizedModule.Exact
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

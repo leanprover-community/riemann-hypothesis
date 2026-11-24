@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.RingTheory.Localization.FractionRing
+public import Mathlib.RingTheory.Ideal.Maps
 
 @[expose] public section
 
@@ -64,32 +66,25 @@ theorem xv_of_not {j₀ : Fin m} {p : Fin (D + 1) × Fin m} (h : ¬ Zs j₀ p) :
     xv (Ω := Ω) j₀ p = X ⟨p, h⟩ := by
   first
   | (rw [xv, dif_neg h])
-  | simp [xv, h]
 
 theorem xv_of_Z {j₀ : Fin m} {p : Fin (D + 1) × Fin m} (h : Zs j₀ p) :
     xv (Ω := Ω) j₀ p = 0 := by
   first
   | (rw [xv, dif_pos h])
-  | simp [xv, h]
 
 theorem psi_X (x : Fin m → Ω) (j₀ : Fin m) (p : Fin (D + 1) × Fin m) :
     psi x j₀ (X p) = gs x j₀ p := by
   first
   | (rw [psi, aeval_X])
-  | simp [psi]
 
 theorem psi_C (x : Fin m → Ω) (j₀ : Fin m) (a : Ω) :
     psi (D := D) x j₀ (C a) = C a := by
   first
   | (rw [psi, aeval_C, MvPolynomial.algebraMap_eq])
-  | simp [psi]
-  | exact (psi x j₀).commutes a
 
 theorem incl_C (j₀ : Fin m) (a : Ω) : incl (D := D) j₀ (C a) = C a := by
   first
   | (rw [incl, rename_C])
-  | simp [incl]
-  | exact (incl j₀).commutes a
 
 theorem gs_succ (x : Fin m → Ω) (j₀ : Fin m) (i : Fin D) (j : Fin m) :
     gs x j₀ (i.succ, j) = xv j₀ (i.succ, j) +
@@ -99,7 +94,6 @@ theorem gs_succ (x : Fin m → Ω) (j₀ : Fin m) (i : Fin D) (j : Fin m) :
       unfold Zs
       exact ⟨Fin.succ_ne_zero i, h⟩
     rw [gs, if_pos hz, xv_of_Z hz, if_pos h, zero_add]
-    try rfl
   · have hz : ¬ Zs j₀ (i.succ, j) := by
       unfold Zs
       exact fun hz => h hz.2
@@ -113,9 +107,7 @@ theorem psi_sec (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (i : Fi
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [mul_assoc, ← C_mul, rr]
     congr 2
-    first
-    | exact div_mul_cancel₀ (x k) hx₀
-    | field_simp
+    exact div_mul_cancel₀ (x k) hx₀
   have hI : ∑ j : Fin m, (if j = j₀ then -∑ k, xv (Ω := Ω) j₀ (i.succ, k) * C (rr x j₀ k) else 0) * C (x j) =
       -(∑ k, xv (Ω := Ω) j₀ (i.succ, k) * C (rr x j₀ k)) * C (x j₀) := by
     rw [Finset.sum_eq_single j₀]
@@ -125,14 +117,13 @@ theorem psi_sec (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (i : Fi
     · intro h
       exact absurd (Finset.mem_univ j₀) h
   have h1 : psi x j₀ (sec x i) = ∑ j, gs x j₀ (i.succ, j) * C (x j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [sec, map_sum, map_mul, psi_X, psi_C]
+
+    simp only [sec, map_sum, map_mul, psi_X, psi_C]
   rw [h1]
   simp only [gs_succ, add_mul]
   rw [Finset.sum_add_distrib, hI, neg_mul, hS]
   first
   | exact add_neg_cancel _
-  | exact add_right_neg _
   | abel
 
 theorem incl_xv_succ (j₀ : Fin m) (i : Fin D) (k : Fin m) :
@@ -146,7 +137,6 @@ theorem incl_xv_succ (j₀ : Fin m) (i : Fin D) (k : Fin m) :
       unfold Zs
       exact fun hz => h hz.2
     rw [xv_of_not hz, if_neg h, incl, rename_X]
-    try rfl
 
 theorem X_sub_incl_gs (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (i : Fin D) :
     X (i.succ, j₀) - incl j₀ (gs x j₀ (i.succ, j₀)) = C (x j₀)⁻¹ * sec x i := by
@@ -154,8 +144,8 @@ theorem X_sub_incl_gs (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (
     unfold Zs
     exact ⟨Fin.succ_ne_zero i, rfl⟩
   rw [gs, if_pos hz]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_neg, map_sum, map_mul, incl_C, incl_xv_succ, sub_neg_eq_add, sec, Finset.mul_sum]
+
+  simp only [map_neg, map_sum, map_mul, incl_C, incl_xv_succ, sub_neg_eq_add, sec, Finset.mul_sum]
   have hX : (X (i.succ, j₀) : ΩT Ω D m) = ∑ j : Fin m, if j = j₀ then (X (i.succ, j₀) : ΩT Ω D m) else 0 := by
     simp
   rw [hX, ← Finset.sum_add_distrib]
@@ -178,13 +168,11 @@ theorem sub_incl_psi_mem (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0
       obtain ⟨i, rfl⟩ : ∃ i : Fin D, i.succ = i' := by
         first
         | exact Fin.exists_succ_eq.mpr hp'.1
-        | exact ⟨i'.pred hp'.1, Fin.succ_pred i' hp'.1⟩
       rw [hp'.2, X_sub_incl_gs x j₀ hx₀ i]
       exact Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨i, rfl⟩)
     · first
       | (rw [gs, if_neg hp, xv_of_not hp, incl, rename_X, sub_self]
          exact Ideal.zero_mem _)
-      | simp [gs, hp, xv_of_not hp, incl]
   induction f using MvPolynomial.induction_on
   next a =>
     rw [psi_C, incl_C, sub_self]
@@ -238,8 +226,8 @@ theorem pderiv_gs (x : Fin m → Ω) (j₀ : Fin m) (q : {p : Fin (D + 1) × Fin
   · have hne : p ≠ q.1 := fun h => q.2 (h ▸ hp)
     rw [gs, if_pos hp, if_neg hne, zero_sub, map_neg]
     congr 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, Derivation.leibniz, pderiv_C, smul_zero, smul_eq_mul, pderiv_xv, mul_zero, zero_add]
+
+    simp only [map_sum, Derivation.leibniz, pderiv_C, smul_eq_mul, pderiv_xv, mul_zero, zero_add]
     rw [Finset.sum_eq_single q.1.2]
     · by_cases h1 : p.1 = q.1.1
       · have e : (p.1, q.1.2) = q.1 := Prod.ext h1 rfl
@@ -263,7 +251,6 @@ theorem pderiv_aeval {ι : Type*} [Fintype ι] [DecidableEq ι] (j₀ : Fin m) (
     first
     | (rw [aeval_C, MvPolynomial.algebraMap_apply, pderiv_C]
        simp only [pderiv_C, map_zero, zero_mul, Finset.sum_const_zero])
-    | simp
   next G₁ G₂ h₁ h₂ =>
     simp only [map_add (f := _), h₁, h₂, add_mul, Finset.sum_add_distrib]
   next G i h =>
@@ -276,8 +263,6 @@ theorem pderiv_aeval {ι : Type*} [Fintype ι] [DecidableEq ι] (j₀ : Fin m) (
         have h0 : pderiv b (X i : MvPolynomial ι K) = 0 := by
           first
           | exact pderiv_X_of_ne (Ne.symm hb)
-          | exact pderiv_X_of_ne hb
-          | simp [pderiv_X, Pi.single_apply, hb, Ne.symm hb]
         rw [h0, mul_zero, map_zero, zero_mul]
       · intro hi
         exact absurd (Finset.mem_univ i) hi

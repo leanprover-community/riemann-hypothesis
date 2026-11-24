@@ -1,5 +1,9 @@
 module
 
+public import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
+public import Formalism.LocalToGlobal.CharacterGerms.MemVarsProdAll
+public import Formalism.LocalToGlobal.ProjectiveLattices.RowDeg
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieAdm
 public import Formalism.LocalToGlobal.CharacterGerms.BlockMembershipNormOne
 
 @[expose] public section

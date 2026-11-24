@@ -1,9 +1,12 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.StdGapOfGapLap
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FormulaF
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.PsiDatumStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiFor
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumInj
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumIrr
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FormulaF
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.StdGapOfGapLap
 
 @[expose] public section
 
@@ -27,7 +30,7 @@ theorem psiDatum : PsiDatumStatement := by
     nlinarith [Real.sqrt_nonneg (2 * (S7.q0 ε : ℝ))]
   have hP := S7.isPsiFor_psiM ε lam h T μ hlam hμ hgap hq h8
   set Ψ := S7.PsiM T μ with hΨ
-  replace hP : IsPsiFor ε lam T Ψ := by first | exact hP | exact hP.1
+  replace hP : IsPsiFor ε lam T Ψ := by first | exact hP.1
   have hv₀ : T.w ≠ 0 := fun h0 => by
     have h1 := T.w_norm
     rw [h0, norm_zero] at h1

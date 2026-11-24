@@ -1,10 +1,18 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbExactDivide
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumAdd
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbExactDivide
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+public import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Sheaves.Presheaf
+public import Mathlib.Order.Filter.AtTopBot.Group
 
 @[expose] public section
 
@@ -93,7 +101,7 @@ theorem mem_of_block_le {I : Ideal (MRing ι F)} {k : K}
     refine Finset.sum_eq_zero fun v _ => ?_
     by_cases hv : v.1 = k
     · simp [hno v hv]
-    · simp [blockWeight, Pi.single_apply, Ne.symm hv]
+    · simp [blockWeight, Ne.symm hv]
   rw [hw] at h0
   omega
 

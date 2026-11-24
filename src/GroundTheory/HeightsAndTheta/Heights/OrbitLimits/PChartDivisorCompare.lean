@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisor
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegral
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisorComponents
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisorLength
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegralPoints
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 
 @[expose] public section
 

@@ -1,9 +1,63 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.PluriharmonicCharts.IsBlockMapInitialVertex
+public import Development.WeilBound.CoreStatements.PluriharmonicCharts.MCoordIdealLeOfHomog
+public import Mathlib.FieldTheory.RatFunc.AsPolynomial
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ElementaryFactorCommutation
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
+public import Development.WeilBound.CoreStatements.PluriharmonicCharts.IsBlockMapInitialVertex
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverTransferIdealEq
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -65,7 +119,7 @@ theorem minor_elementary_column_op (h : Matrix (Fin N) (Fin N) R) (S I : Finset 
       rw [hi₀, Matrix.mul_single_apply_same]
       simp [mul_comm]
     · have hne : f x ≠ ca := fun h' => ex (f.injective (h'.trans hi₀.symm))
-      rw [show (h * single cb ca t) (g r) (f x) = 0 by simp [Matrix.mul_apply, Matrix.single_apply, hne.symm], add_zero]
+      rw [show (h * single cb ca t) (g r) (f x) = 0 by simp [Matrix.mul_apply, hne.symm], add_zero]
       rfl
   rw [e1, Matrix.det_updateCol_add, Matrix.det_updateCol_smul]
   congr 2
@@ -167,8 +221,8 @@ theorem wCo_eq (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ)
   rcases q with ⟨_ | k, m⟩
   · simp only [FlagModel.wCo, penCo, vecB]
     rw [Finset.sum_congr rfl fun I _ => by rw [minor_elem M.j_le hb hab hca hcb], M.y_step _ _ hk m]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [CPts.minorIJ_map, mul_add, Finset.sum_add_distrib, map_sum, map_mul, Finset.mul_sum, mul_left_comm t]
+
+    simp only [CPts.minorIJ_map, mul_add, Finset.sum_add_distrib, map_sum, map_mul, Finset.mul_sum, mul_left_comm t]
   · rfl
 
 theorem charZero_of_model (M : FlagModel y Ψ N j) : CharZero Φ :=
@@ -188,13 +242,13 @@ theorem blocks_of_model (M : FlagModel y Ψ N j) (k : K) : ∃ i, y ⟨k, i⟩ �
     have hH : (F.T p.1).map am * H = M.g p.1 := CPts.map_mul_inv_map am (hF.1 p.1).2 _
     have hHb : IsBlockDiag j H := (((hF.1 p.1).1.inv (hF.1 p.1).2.isUnit).map am).mul (M.g_block p.1)
     have hHd : H.det ≠ 0 := fun h0 => (M.isUnit_det_g p.1).ne_zero (by rw [← hH, det_mul, h0, mul_zero])
-    obtain ⟨m, hm, -⟩ := GlobalTheory.T.step_rows_inverse_nonzero_entry Φ ⊤ N j p.2 H (ι k) (fun m I => am (F.u ⟨k, m⟩ I))
+    obtain ⟨m, hm, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb Φ ⊤ N j p.2 H (ι k) (fun m I => am (F.u ⟨k, m⟩ I))
       (fun I m => am (F.u' I ⟨k, m⟩)) M.j_le hHb (fun _ _ => ValuationSubring.mem_top _) hHd
       (ValuationSubring.mem_top _) (fun _ _ => ValuationSubring.mem_top _) (fun _ _ => ValuationSubring.mem_top _)
       (fun I I' hI hI' => by
           have := congrArg am (hF.2.2.1 p k hp I I' hI hI')
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum] at this
+
+          rw [map_sum] at this
           simp only [map_mul] at this
           rw [this]
           split_ifs <;> simp)
@@ -312,8 +366,8 @@ theorem image_snd (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : �
         rfl
       · simp only [Function.comp, h1 ⟨k, m⟩ e]
         show φ (y ⟨k, m⟩) = _
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [M.y_step p k hp m, map_sum]
+
+        rw [M.y_step p k hp m, map_sum]
         refine Finset.sum_congr rfl fun I _ => ?_
         rw [map_mul]
         congr 1

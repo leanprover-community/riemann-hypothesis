@@ -1,16 +1,58 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedSubfieldLeCyclotomicExt
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamComponentWachLetterBasisFiltrationStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachImageDeRhamPlusComponentLevelStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionsSpanFullLatticeStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamComponentWachLetterBasisFiltration
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerSeriesEvaluation
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionBasisDivisibilityStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionBasisDivisibility
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionLatticeGradedOfLevelLe
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionsSpanFullLattice
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedSubfieldLeCyclotomicExt
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachImageDeRhamPlusComponentLevel
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -156,8 +198,8 @@ theorem Rep.conv (anti : Antitone Fil) (exh : ∀ b, ∃ a, b ∈ Fil a)
         ι (PowerSeries.coeff k e) * (t ^ k * (t ^ r * p (f ((r : ℤ) - a)))) := by
     rw [← Finset.sum_range_diag_flip]
     refine Finset.sum_congr rfl fun q _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [conv_eq_sum e f a hf, map_sum, Finset.mul_sum]
+
+    rw [conv_eq_sum e f a hf, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j hj => ?_
     have : j ≤ q := Nat.lt_succ_iff.1 (Finset.mem_range.1 hj)
     rw [hp, ← mul_assoc (t ^ j), ← pow_add, Nat.add_sub_cancel' this]
@@ -174,13 +216,7 @@ section Core
 
 variable {LL M R K N : Type} [Field LL] [AddCommGroup M] [Module LL M] [CommRing R] [Ring K] [Module K R]
 
-theorem conv_one (f : ℤ → M) : conv (1 : PowerSeries LL) f = f := by
-  funext k
-  unfold conv
-  rw [finsum_eq_single _ 0]
-  · simp
-  · intro j hj
-    simp [PowerSeries.coeff_one, hj]
+alias conv_one := _root_.GlobalTheory.NL.Model.conv_one
 
 theorem single_mem_iff {Fil : ℤ → Submodule K R} {t : R} (anti : Antitone Fil) (exh : ∀ b, ∃ a, b ∈ Fil a)
     (sep : ∀ b, (∀ a, b ∈ Fil a) → b = 0)
@@ -332,9 +368,6 @@ def crd (lam : T.V →ₗ[LL] LL) : T.V ⊗[Qp] BdR →ₗ[Qp] BdR :=
 theorem crd_tmul (lam : T.V →ₗ[LL] LL) (x : T.V) (b : BdR) : crd T ι lam (x ⊗ₜ b) = ι (lam x) * b := by
   simp [crd]
 
-theorem mulVR_tmul (c : BdR) (x : T.V) (b : BdR) : mulVR T c (x ⊗ₜ[Qp] b) = x ⊗ₜ (c * b) := by
-  simp [mulVR]
-
 theorem crd_smul (lam : T.V →ₗ[LL] LL) (c : LL) (z : T.V ⊗[Qp] BdR) :
     crd T ι lam (c • z) = ι c * crd T ι lam z := by
   induction z using TensorProduct.induction_on with
@@ -346,7 +379,7 @@ theorem crd_mulVR (lam : T.V →ₗ[LL] LL) (c : BdR) (z : T.V ⊗[Qp] BdR) :
     crd T ι lam (mulVR T c z) = c * crd T ι lam z := by
   induction z using TensorProduct.induction_on with
   | zero => simp
-  | tmul x b => rw [mulVR_tmul, crd_tmul, crd_tmul]; ring
+  | tmul x b => rw [_root_.GlobalTheory.NL.PerS.mulVR_tmul, crd_tmul, crd_tmul]; ring
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), map_add (f := _), hx, hy, mul_add]
 
 theorem crd_compKer (lam : T.V →ₗ[LL] LL) {z : T.V ⊗[Qp] BdR} (hz : z ∈ compKer T ι) : crd T ι lam z = 0 := by
@@ -382,8 +415,8 @@ theorem sum_tmul_mem_filV (a : ℤ) (y : Fin n → BdR) (hy : ∀ α, y α ∈ P
 
 theorem crd_sum_tmul (y : Fin n → BdR) (α : Fin n) :
     crd T ι (bV.coord α) (∑ β, bV β ⊗ₜ[Qp] y β) = y α := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single α]
+
+  rw [map_sum, Finset.sum_eq_single α]
   · simp [crd_tmul]
   · intro β _ hβ
     simp [crd_tmul, hβ]
@@ -400,7 +433,7 @@ theorem sub_sum_mem_compKer (z : T.V ⊗[Qp] BdR) :
     nth_rewrite 1 [this]
     rw [← Finset.sum_sub_distrib]
     refine sum_mem fun α _ => Submodule.subset_span ⟨bV.repr x α, bV α ⊗ₜ b, ?_⟩
-    rw [mulVR_tmul, crd_tmul]
+    rw [_root_.GlobalTheory.NL.PerS.mulVR_tmul, crd_tmul]
     rfl
   | add x y hx hy =>
     convert add_mem hx hy using 1
@@ -425,16 +458,16 @@ theorem finrank_le [IsFractionRing O LL] [Nontrivial O] :
 end Coord
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem lat_eq_fil : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let _W := (HW l).W K s LL h; let _E := ((F l).E K s LL h).tie; let C := Cm l; ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ (i : Let K) (ζ : ↥LL.1) τ, Pt (HW l) h i ζ τ → ∀ f : ℤ → T.V ⊗[ℚ_[l]] (D.loc l).R.B, f ∈ Lat C h T i ζ ↔ (∃ m : ℤ, ∀ k < m, f k = 0) ∧ ∀ k : ℤ, f k ∈ Di (HW l) h T i ∧ ιV ((D.loc l).PD K) (LL := ↥LL.1) (V := T.V) (f k) ∈ FilAt ((D.loc l).PD K) T τ (-k) := by
   intro D HW F Cm l _ K s LL h W E C T hT i ζ τ hpt f
   obtain ⟨hprim, hτ, ι, hcomp⟩ := (@GlobalTheory.NL.Points.points D HW l _ K s LL h).2.1 i ζ τ hpt
-  have hfull := GlobalTheory.T.wach_expansions_span_full_lattice D HW F Cm l K s LL h T hT i ζ hprim
+  have hfull := _root_.GlobalTheory.NL.FullLevel.full_lat D HW F Cm l K s LL h T hT i ζ hprim
   have hgr := @GlobalTheory.NL.GradedLat.graded_of_level_le D HW F Cm l _ K s LL h T hT i ζ hprim.pow_eq_one hfull
   obtain ⟨nb⟩ := @GlobalTheory.NL.N_basis D HW F l _ K s LL h T hT
-  have hgen := ((GlobalTheory.T.wachExpansion_basis_divisibility D HW F Cm l K s LL h T hT i ζ ⟨s, hprim⟩ hfull).2 _ nb).2.1
+  have hgen := ((_root_.GlobalTheory.NL.LevInj.expansion_basis D HW F Cm l K s LL h T hT i ζ ⟨s, hprim⟩ hfull).2 _ nb).2.1
   obtain ⟨ev, hev, hdiv, htu, ht, sep⟩ := @GlobalTheory.NL.EvdR.exists_ev_dR D l _ K LL s ι
-  obtain ⟨Ψ, hΨ0, hΨs, hΨr⟩ := GlobalTheory.T.wach_image_deRham_plus_component_level D HW F Cm l K s LL h T hT i ζ τ ι hcomp
+  obtain ⟨Ψ, hΨ0, hΨs, hΨr⟩ := _root_.GlobalTheory.NL.PerS.image D HW F Cm l K s LL h T hT i ζ τ ι hcomp
   have hfil := by
     obtain ⟨-, -, -, hc, hc0⟩ := Points.points D HW l K s LL h
     exact (GlobalTheory.NL.CompD.component_tied (D.locT l) K LL T hc hc0 hT τ ι hcomp.2.2 _ hτ).2.1
@@ -471,14 +504,14 @@ theorem lat_eq_fil : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : 
     · obtain ⟨m, b, x, hb, hx⟩ := hΨs _ (sum_tmul_mem_filV _ T bV 0 z hz)
       refine ⟨m, b, x, hb, fun α => ?_⟩
       have := crd_compKer T ι (bV.coord α) hx
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, crd_sum_tmul, map_sum, sub_eq_zero] at this
+
+      rw [map_sub, crd_sum_tmul, map_sum, sub_eq_zero] at this
       simpa only [crd_mulVR] using this
     · obtain ⟨c, hc⟩ := hΨr x a ha
       refine ⟨c, fun M => ?_⟩
       have := crd_sup _ T ι hι (bV.coord α) _ (hc M)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, map_sum] at this
+
+      rw [map_sub, map_sum] at this
       simp only [crd_mulVR] at this
       exact this
     · by_cases hr : r = k

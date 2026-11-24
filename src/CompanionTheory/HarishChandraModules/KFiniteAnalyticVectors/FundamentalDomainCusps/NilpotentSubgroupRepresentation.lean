@@ -1,6 +1,30 @@
 module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.NilpAlg
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.Dimension.Finite
+public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 @[expose] public section
 
@@ -128,8 +152,8 @@ theorem nilpotent_lie_algebra : NilpAlg := by
     have b := hY.2
     rw [second_order_exp_mul a b]
     simp only [ex2, mul_add, add_mul, mul_sub, sub_mul, smul_mul_assoc, mul_smul_comm, Matrix.mul_assoc,
-      a.triple a a, a.triple a b, a.triple b a, a.triple b b, b.triple a a, b.triple a b, b.triple b a,
-      b.triple b b, Matrix.mul_zero, smul_zero, sub_zero, add_zero, sub_self]
+      a.triple a b, a.triple b a, a.triple b b, b.triple a a, b.triple a b, b.triple b a,
+      Matrix.mul_zero, smul_zero, add_zero, sub_self]
     module
   · rw [conjTranspose_neg, Matrix.neg_mul, Matrix.mul_neg, ← neg_add, hZ.1, neg_zero]
   · rw [neg_mulVec, hZ.2.1 z hz, neg_zero]
@@ -222,8 +246,8 @@ theorem exists_dual (hJ : Jᴴ = J) (hd : IsUnit J.det) {κ : Type} [Fintype κ]
   have h3 : v j = ∑ k, v j k • (Pi.single k 1 : Fin n → K) := by
     ext l; simp [Finset.sum_apply, Pi.single_apply]
   have h4 := congrFun h1 i
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h3, map_sum, Finset.sum_apply] at h4
+
+  rw [h3, map_sum, Finset.sum_apply] at h4
   rw [Pi.single_apply] at h4
   rw [← h4]
   simp only [dotProduct, map_smul, Pi.smul_apply, smul_eq_mul, mul_comm]

@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CTUnitsLeft
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -73,8 +115,10 @@ theorem finrank_ker_map (A : Matrix (Fin n) (Fin n) K) :
   have h1 := LinearMap.finrank_range_add_finrank_ker (Matrix.toLin' (A.map φ))
   have h2 := LinearMap.finrank_range_add_finrank_ker (Matrix.toLin' A)
   have h3 : (A.map φ).rank = A.rank := GlobalTheory.Core.Rk.rank_map_field φ A
-  change (A.map φ).rank + _ = _ at h1
-  change A.rank + _ = _ at h2
+  have hr1 : Module.finrank L (LinearMap.range (Matrix.toLin' (A.map φ))) = (A.map φ).rank := Matrix.finrank_range_mulVecLin (A.map φ)
+  have hr2 : Module.finrank K (LinearMap.range (Matrix.toLin' A)) = A.rank := Matrix.finrank_range_mulVecLin A
+  rw [hr1] at h1
+  rw [hr2] at h2
   simp only [Module.finrank_fin_fun] at h1 h2
   omega
 
@@ -83,17 +127,6 @@ end BC
 section Val
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
-theorem ordL_mul {x y : L} (hx : x ≠ 0) (hy : y ≠ 0) : ordL (x * y) = ordL x + ordL y := by
-  have hx' : Valued.v x ≠ 0 := (Valuation.ne_zero_iff _).2 hx
-  have hy' : Valued.v y ≠ 0 := (Valuation.ne_zero_iff _).2 hy
-  have hxy' : Valued.v (x * y) ≠ 0 := (Valuation.ne_zero_iff _).2 (mul_ne_zero hx hy)
-  unfold ordL
-  rw [dite_eq_right hx', dite_eq_right hy', dite_eq_right hxy']
-  have : WithZero.unzero hxy' = WithZero.unzero hx' * WithZero.unzero hy' := by
-    apply WithZero.coe_injective
-    rw [WithZero.coe_mul, WithZero.coe_unzero, WithZero.coe_unzero, WithZero.coe_unzero, map_mul]
-  rw [this, toAdd_mul]; ring
-
 theorem sign_conj_mul {τ : L →+* L} (hv : ∀ x, Valued.v (τ x) = Valued.v x) {t : L} (ht : t ≠ 0) (a : L) :
     (-1 : ℂ) ^ ordL (τ t * a * t) = (-1) ^ ordL a := by
   by_cases ha : a = 0
@@ -101,7 +134,7 @@ theorem sign_conj_mul {τ : L →+* L} (hv : ∀ x, Valued.v (τ x) = Valued.v x
   have hτ : τ t ≠ 0 := (map_ne_zero τ).2 ht
   have ho : ordL (τ t) = ordL t := by
     unfold ordL; simp only [hv]
-  rw [ordL_mul (mul_ne_zero hτ ha) ht, ordL_mul hτ ha, ho,
+  rw [_root_.Formalism.UG.P.fSatake_ord_mul (mul_ne_zero hτ ha) ht, _root_.Formalism.UG.P.fSatake_ord_mul hτ ha, ho,
     show ordL t + ordL a + ordL t = ordL a + 2 * ordL t by ring, zpow_add₀ (by norm_num : (-1 : ℂ) ≠ 0), _root_.zpow_mul]
   norm_num
 
@@ -139,9 +172,9 @@ theorem gram_det_map (hφ : ∀ x, τ (φ x) = φ (σ x)) (H A : Matrix (Fin n) 
   have e2 : (Matrix.of fun i j => hform τ (H.map φ) (c i).1 (c j).1) =
       ((gramOn σ H V).map φ).submatrix (finCongr hk) (finCongr hk) := by
     ext i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.of_apply, hc, v, Matrix.submatrix_apply, Matrix.map_apply, gramOn, hform, map_sum, map_mul,
-      Function.comp_apply, hφ, finCongr_apply]
+
+    simp only [Matrix.of_apply, hc, v, Matrix.submatrix_apply, Matrix.map_apply, gramOn, hform, map_sum, map_mul,
+    Function.comp_apply, hφ, finCongr_apply]
     rfl
   rw [e2, Matrix.det_submatrix_equiv_self,
     show ((gramOn σ H V).map φ).det = φ (gramOn σ H V).det from (RingHom.map_det φ _).symm]

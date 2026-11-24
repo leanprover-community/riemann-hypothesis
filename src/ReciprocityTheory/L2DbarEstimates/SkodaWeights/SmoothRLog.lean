@@ -1,7 +1,15 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.HlinVsqPos
-public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.LeviVA
+public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.SkodaWeightStatement
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.CommFderivApply
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivApplyEqZero
+import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
+public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 
@@ -129,9 +137,9 @@ theorem skodaDbar (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M] :
         (starRingEnd ℂ) (g i x) *
           (∑ l, g l x * ∑ j, (starRingEnd ℂ) (d n z j (g l) x) * (starRingEnd ℂ) (ξ j)) /
             ((vsq (gv g x) : ℝ) : ℂ) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [perp, jacM, gv, map_sub, map_mul, map_sum, map_div₀, Complex.conj_ofReal,
-      Complex.conj_conj]
+
+    simp only [perp, jacM, gv, map_sub, map_mul, map_sum, map_div₀, Complex.conj_ofReal,
+    Complex.conj_conj]
     ring
   rw [hL, hsplit, hswap, hconj]
   ring
@@ -152,7 +160,7 @@ private theorem db_log_eq_inv_mul_db {M : Type*} [TopologicalSpace M] (n : ℕ) 
       have h := Complex.reCLM.contDiff.comp_contDiffOn (hph e hs.1)
       simpa [Function.comp_def] using h
     have hd : DifferentiableAt ℝ (fun w => ph (e.symm w)) (e y) :=
-      (hc.differentiableOn (by first | simp | exact WithTop.coe_le_coe.mpr le_top | norm_num)
+      (hc.differentiableOn (by first | simp)
         ).differentiableAt (e.open_target.mem_nhds hp)
     have hne : ph (e.symm (e y)) ≠ 0 := (hpos _).ne'
     have h1 := (Complex.ofRealCLM.hasFDerivAt.comp (e y) (hd.hasFDerivAt.log hne)).fderiv
@@ -188,8 +196,8 @@ private theorem ofReal_vsq_perp_eq {p : ℕ} (g w : Fin p → ℂ) (hS : vsq g �
       ((∑ j, g j * (starRingEnd ℂ) (w j)) / ((vsq g : ℝ) : ℂ)) *
         ((∑ j, (starRingEnd ℂ) (g j) * w j) / ((vsq g : ℝ) : ℂ)) * ((starRingEnd ℂ) (g l) * g l) := by
     intro l
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [perp, map_sub, map_mul, map_div₀, map_sum, Complex.conj_ofReal, Complex.conj_conj]
+
+    simp only [perp, map_sub, map_mul, map_div₀, map_sum, Complex.conj_ofReal, Complex.conj_conj]
     ring
   rw [e1, Finset.sum_congr rfl (fun l _ => e2 l), Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum, hgg]
@@ -210,14 +218,14 @@ private theorem levi_form_expand_eq_neg_sq_mul_add_sum {n p : ℕ} (a : Fin n �
     exact Finset.sum_congr rfl (fun _ _ => Finset.sum_congr rfl (fun _ _ => by ring))
   have h2 : ∑ l, G l * (starRingEnd ℂ) (∑ j, a j l * ξ j) =
       ∑ k, (∑ l, (starRingEnd ℂ) (a k l) * G l) * (starRingEnd ℂ) (ξ k) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
+
+    simp only [map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
     refine (Finset.sum_comm).trans ?_
     exact Finset.sum_congr rfl (fun _ _ => Finset.sum_congr rfl (fun _ _ => by ring))
   have h3 : ∑ l, (∑ j, a j l * ξ j) * (starRingEnd ℂ) (∑ j, a j l * ξ j) =
       ∑ j, ∑ k, (∑ l, (starRingEnd ℂ) (a k l) * a j l) * ξ j * (starRingEnd ℂ) (ξ k) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, Finset.sum_mul_sum]
+
+    simp only [map_sum, map_mul, Finset.sum_mul_sum]
     simp only [Finset.sum_mul]
     refine (Finset.sum_comm).trans ?_
     refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -302,7 +310,6 @@ theorem skodaLevi (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M] :
       ((vsq (gv g x) : ℝ) : ℂ)⁻¹ * ∑ l, (starRingEnd ℂ) (d n z k (g l) x) * d n z j (g l) x := by
     intro j k
     rw [d_mul n z _ _ hSi (hE k) j x, hdSi j, hdS j, hdEk j k]
-    all_goals ring
   have hG : ∀ k, db n z k (fun y => ((Real.log (vsq (gv g y)) : ℝ) : ℂ)) =
       fun y => (((vsq (gv g y) : ℝ) : ℂ))⁻¹ * ∑ l, (starRingEnd ℂ) (d n z k (g l) y) * g l y := by
     intro k
@@ -445,7 +452,7 @@ theorem skodaHyp (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M] :
         gcongr
     _ = ‖u x‖ ^ 2 * (1 - ‖w i‖ ^ 2 / vsq w) / (t * vsq w) *
           (t * (vsq (perp w a) / vsq w)) := by
-        field_simp <;> ring
+        field_simp
     _ ≤ ‖u x‖ ^ 2 * (1 - ‖w i‖ ^ 2 / vsq w) / (t * vsq w) * L :=
         mul_le_mul_of_nonneg_left hW (div_nonneg (mul_nonneg hU hc) (mul_pos ht hWp).le)
 

@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeModules
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangePlaces
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.IsScalarTowerFiniteSubfieldAlgebraicClosure
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
 
 @[expose] public section
 

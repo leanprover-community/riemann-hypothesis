@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.DualLattices.TangentPairingStatement
+public import ReciprocityTheory.DualLattices.SqZeroOfSpan
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

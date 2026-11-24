@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -80,8 +83,8 @@ theorem sub_linPart_mem_sq [Fintype σ] {p : MvPolynomial σ ℂ}
   rw [ker_eval_eq_span] at hp
   obtain ⟨a, rfl⟩ := (Ideal.mem_span_range_iff_exists_fun).1 hp
   have hg : grad w (∑ i, a i * (X i - C (w i))) = fun i => eval w (a i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp_rw [grad_mul, grad_X_sub_C, map_sub, eval_X, eval_C, sub_self, zero_smul, add_zero]
     ext i
     simp [Finset.sum_apply, Pi.single_apply]

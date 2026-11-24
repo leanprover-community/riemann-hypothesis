@@ -1,22 +1,99 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.DataForms
+public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
+public import Formalism.LocalToGlobal.Columns.CoefCol
+public import Formalism.LocalToGlobal.Columns.ColForms
+public import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
 public import Formalism.LocalToGlobal.Columns.ToHLat
-public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 public import Formalism.LocalToGlobal.Columns.PolyFn
-public import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 public import Formalism.LocalToGlobal.Columns.AtTOwedC
 public import Formalism.LocalToGlobal.Columns.AtTOwedS
-public import Formalism.LocalToGlobal.Columns.AdjointFrobeniusPreservesRamified
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.Columns.RecLevel
-public import Formalism.LocalToGlobal.Columns.InputsLemmas
-public import Formalism.LocalToGlobal.Columns.CmUnramifiedOfFieldConditions
 public import Formalism.LocalToGlobal.Columns.DGamAut
-public import Formalism.LocalRingCardinality.MinkMEqMinkowskiNumber
+public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
+public import Formalism.LocalToGlobal.Columns.AdjointFrobeniusPreservesRamified
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
+public import Formalism.LocalToGlobal.Columns.RowFormsGood
+public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 import Formalism.LocalToGlobal.Columns.HeckeSpCount
+import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Formalism.LocalToGlobal.Columns.CoefColLemmas
+import Formalism.LocalToGlobal.Columns.PolyFnLemmas
+import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
+import Mathlib.RingTheory.PiTensorProduct
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.LocalToGlobal.Columns.DiamondPreservesRamified, Formalism.LocalToGlobal.Columns.Record
+
+-- ===== clump member: Formalism.LocalToGlobal.Columns.DiamondPreservesRamified =====
+-- clump-header: {"m": "Formalism.LocalToGlobal.Columns.DiamondPreservesRamified", "h": "module\n\npublic import Formalism.LocalToGlobal.Columns.StdLatUnimodular\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\npublic import Formalism.LocalToGlobal.Columns.CoefCol\npublic import Formalism.LocalToGlobal.Columns.ColForms\npublic import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open NumberField IsDedekindDomain Module
+
+noncomputable section
+
+namespace Formalism.L2.Col
+
+open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV
+
+section Moves
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
+  {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
+
+
+theorem Deco.L_dia (d : Deco E n ST SG) (c : DiaG (E := E) (ST := ST)) : (d.dia c).L = d.L := by
+  unfold Deco.L
+  congr 1
+  ext x
+  show (x ∈ d.N ∧ ∀ P : ST, (c P).1 * d.f P x = 0) ↔ (x ∈ d.N ∧ ∀ P : ST, d.f P x = 0)
+  simp only [Units.mul_right_eq_zero]
+
+theorem Deco.Lsh_dia (d : Deco E n ST SG) (c : DiaG (E := E) (ST := ST)) : (d.dia c).Lsh = d.Lsh := by
+  unfold Deco.Lsh
+  rw [Deco.L_dia]
+
+end Moves
+
+section Ops
+
+variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
+  (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
+
+end Ops
+
+section Cols
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m) (Ps : CharT X Pr)
+
+end Cols
+
+section Adj
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end Adj
+
+section AtW
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end AtW
+
+end Formalism.L2.Col
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.Columns.DiamondPreservesRamified =====
+
+-- ===== clump member: Formalism.LocalToGlobal.Columns.Record =====
+-- clump-header: {"m": "Formalism.LocalToGlobal.Columns.Record", "h": "module\n\npublic import Formalism.LocalToGlobal.Columns.ToHLat\npublic import Formalism.LocalToGlobal.Columns.PolyFn\npublic import Formalism.LocalToGlobal.Columns.AtTOwedC\npublic import Formalism.LocalToGlobal.Columns.AtTOwedS\npublic import Formalism.LocalToGlobal.Columns.RecLevel\npublic import Formalism.LocalToGlobal.Columns.DGamAut\nimport Formalism.LocalToGlobal.Columns.HeckeSpCount\npublic import Formalism.LocalToGlobal.Columns.SmulMemTrpSet\nimport Formalism.LocalToGlobal.Columns.AdelicLemmas\npublic import Formalism.LocalToGlobal.Columns.AdjointFrobeniusPreservesRamified\nimport Formalism.LocalToGlobal.Columns.CoefColLemmas\npublic import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds\npublic import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds\npublic import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds\npublic import Formalism.LocalToGlobal.Columns.DiamondPreservesRamified\nimport Formalism.LocalToGlobal.Columns.PolyFnLemmas\npublic import Formalism.LocalToGlobal.Columns.RowFormsGood\npublic import Formalism.LocalToGlobal.Columns.ToHLatLemmas\nimport Formalism.LocalToGlobal.Divisibility.ClassSumLemmas\nimport Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Module Matrix
@@ -42,8 +119,8 @@ theorem rec_li_semilin {K V M ι κ : Type} [Field K] [AddCommGroup V] [Module K
     intro x
     conv_lhs => rw [← b.linearCombination_repr x]
     conv_rhs => rw [← b.linearCombination_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finsupp.linearCombination_apply, Finsupp.sum, TensorProduct.tmul_sum, map_sum, map_sum]
+
+    rw [Finsupp.linearCombination_apply, Finsupp.sum, TensorProduct.tmul_sum, map_sum, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [LinearMap.map_smulₛₗ, TensorProduct.tmul_smul, ← algebraMap_smul ℂ (b.repr x i), map_smul, hLb]
     rfl
@@ -136,7 +213,7 @@ theorem opOn_id (hf : S.Free) : E.opOn (fun d => d) = LinearMap.id := by
   funext c
   show E.atPt (S.outSec.rep c) F = F c
   rw [E.atPt_eq hf F (S.outSec.rep c) c 1 (one_smul _ _), map_one]
-  all_goals first | rfl | simp
+  all_goals first | rfl
 
 theorem opOn_comp (hf : S.Free) (δ δ' : S.D → S.D) (hδ' : ∀ (g : S.G) (d : S.D), δ' (g • d) = g • δ' d) :
     E.opOn δ ∘ₗ E.opOn δ' = E.opOn fun d => δ' (δ d) := by
@@ -145,7 +222,7 @@ theorem opOn_comp (hf : S.Free) (δ δ' : S.D → S.D) (hδ' : ∀ (g : S.G) (d 
     have h1 : (g * S.outSec.mv x) • S.outSec.rep (S.cls x) = g • x := by
       rw [mul_smul, S.outSec.mv_smul]
     rw [E.atPt_eq hf F (g • x) (S.cls x) _ h1, map_mul]
-    all_goals first | rfl | simp [GSD.Ev.atPt, GSD.Ev.trPt]
+    all_goals first | rfl
   apply LinearMap.ext
   intro F
   funext c
@@ -158,9 +235,7 @@ def lin : (S.ιV → ℂ) →ₗ[ℂ] (E.Y → ℂ) := Fintype.linearCombination
 
 theorem lin_ker : LinearMap.ker E.lin = ⊥ := by
   first
-  | exact Fintype.linearIndependent_iff_ker.mp E.li
   | exact LinearMap.ker_eq_bot.mpr E.li.fintypeLinearCombination_injective
-  | exact LinearMap.ker_eq_bot.mpr (Fintype.linearIndependent_iff_injective.mp E.li)
 
 def gram : Matrix S.ιV S.ιV ℂ := Matrix.of fun i j => E.ip (E.ev (S.bV i)) (E.ev (S.bV j))
 
@@ -185,7 +260,6 @@ theorem ipCl_apply (h : S.Ok) (F G : S.Cl → E.Y → ℂ) :
       ∑ c : S.Cl, ((Nat.card (MulAction.stabilizer S.G (S.outSec.rep c)) : ℕ) : ℂ)⁻¹ * E.ip (F c) (G c)) := by
   first
   | simp [ipCl, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.compl₂_apply, smul_eq_mul]
-  | rfl
 
 def Fi : Submodule ℂ (S.Cl → E.Y → ℂ) := Submodule.span ℂ (Set.range E.emb)
 
@@ -214,8 +288,8 @@ theorem span_basis {ι : Type} [Fintype ι] (b : Basis ι K S.EqFun) :
   · show Submodule.span ℂ (Set.range E.emb) ≤ _
     rw [Submodule.span_le]
     rintro _ ⟨φ, rfl⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← b.sum_repr φ, map_sum]
+
+    rw [← b.sum_repr φ, map_sum]
     refine Submodule.sum_mem _ fun a _ => ?_
     rw [LinearMap.map_smulₛₗ]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
@@ -229,9 +303,9 @@ theorem pairAt_mk (S : GSD K) (σ : K →+* ℂ) (hσ : ∀ x : K, σ (star x) =
       ∑ i, ∑ j, starRingEnd ℂ (σ (S.bV.repr x i)) * σ (S.gramV i j) * σ (S.bV.repr y j) := by
     intro x y
     conv_lhs => rw [← S.bV.sum_repr x, ← S.bV.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, map_mul,
-      Finset.mul_sum]
+
+    simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, map_mul,
+    Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     have h1 : σ ((starRingEnd K) (S.bV.repr x i)) = starRingEnd ℂ (σ (S.bV.repr x i)) := hσ _
@@ -245,8 +319,8 @@ theorem pairAt_mk (S : GSD K) (σ : K →+* ℂ) (hσ : ∀ x : K, σ (star x) =
   · right
     intro x y
     rw [key, pairAt, h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, ComplexEmbedding.conjugate_coe_eq]
+
+    simp only [map_sum, map_mul, ComplexEmbedding.conjugate_coe_eq]
 
 theorem Ev.norm_eq {S : GSD K} {σ : K →+* ℂ} (E : S.Ev σ) (h : S.Ok) (R : S.Rat)
     (hσ : ∀ x : K, σ (star x) = starRingEnd ℂ (σ x)) (φ : S.EqFun) :
@@ -268,8 +342,8 @@ theorem Ev.norm_eq {S : GSD K} {σ : K →+* ℂ} (E : S.Ev σ) (h : S.Ok) (R : 
   · simp only [hp]
     rw [← Complex.conj_re]
     congr 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_inv₀, map_natCast, Complex.conj_conj]
+
+    simp only [map_sum, map_mul, map_inv₀, map_natCast, Complex.conj_conj]
 
 end GSD
 
@@ -653,7 +727,6 @@ theorem diagonalTwist_mul (P : ST) (a b : (𝓞 X.E ⧸ P.1.asIdeal)ˣ) (d : Dec
   unfold DecoSet.dia1
   first
   | rw [← DecoSet.dia_smul_def, ← DecoSet.dia_smul_def, ← DecoSet.dia_smul_def, Pi.mulSingle_mul, mul_smul]
-  | simp only [← DecoSet.dia_smul_def, Pi.mulSingle_mul, mul_smul]
 
 theorem diagonalTwist_injective (P : ST) (a : (𝓞 X.E ⧸ P.1.asIdeal)ˣ) {d d' : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)} (h : d.dia1 P a = d'.dia1 P a) :
     d = d' := by
@@ -725,7 +798,6 @@ theorem dilD_fv (P : ST) (a : (𝓞 X.E ⧸ P.1.asIdeal)ˣ) (c : (formGSD C Λ).
   rw [he, functional_diagonalTwist]
   first
   | rfl
-  | (ext x; rfl)
 
 theorem stabilizer_diagonalTwist (P : ST) (a : (𝓞 X.E ⧸ P.1.asIdeal)ˣ) (d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)) :
     MulAction.stabilizer (formGSD C Λ).G (d.dia1 P a) = MulAction.stabilizer (formGSD C Λ).G d := by
@@ -818,8 +890,6 @@ theorem muAt_unit {σ₀ : X.K →+* ℂ} (h : Dc.Unit σ₀) (i : ℕ) (x : (Fo
   · exact h.1 _ x
   · first
     | simp
-    | rfl
-    | (show ‖σ₀ ((1 : X.Kˣ) : X.K)‖ = 1; simp)
 
 end DetChr
 
@@ -889,8 +959,6 @@ variable {W Λ}
 theorem recDGamAll_eq {σ₀ : X.K →+* ℂ} (hX : X.Ok) (G : ChainGlob W σ₀) : recDGamAll W Λ hX G = dGamAut X R := by
   first
   | (unfold recDGamAll; rfl)
-  | (delta recDGamAll; rfl)
-  | rfl
 
 theorem recDGamAll_pos {σ₀ : X.K →+* ℂ} (hX : X.Ok) (G : ChainGlob W σ₀) : 0 < recDGamAll W Λ hX G := by
   rw [recDGamAll_eq hX G]
@@ -900,8 +968,7 @@ theorem recDGamAll_dvd {σ₀ : X.K →+* ℂ} (hX : X.Ok) (G : ChainGlob W σ�
     (c : StCl W Λ u j) : Nat.card (StStab W Λ u j c) ∣ recDGamAll W Λ hX G := by
   rw [recDGamAll_eq hX G]
   exact formGSD_stab_dvd_dGamAut hX (by first
-      | (show R.k + j * (R.t + 1) ≤ R.k + R.m * (R.t + 1); exact Nat.add_le_add_left (Nat.mul_le_mul_right _ hj) _)
-      | (unfold Ranks.N; nlinarith)) _ _ _
+      | (show R.k + j * (R.t + 1) ≤ R.k + R.m * (R.t + 1); exact Nat.add_le_add_left (Nat.mul_le_mul_right _ hj) _)) _ _ _
 
 
 variable (W Λ) in
@@ -1352,7 +1419,6 @@ theorem tilR_smulF (hPr : Pr.Ok) (u : Pr.Word) (hpi : ∀ w : SG', Pr.piT u ∉ 
     tilR hSG u (a • d) = extF hSG hL u a • tilR hSG u d := by
   first
   | exact tilR_smul hSG hPr u hpi (a.1, a.2.1) d
-  | exact tilR_smul hSG hPr u hpi _ d
 
 
 variable (W Λ ΛM) in
@@ -1530,3 +1596,7 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {σ₀ :
 end TwMinkS
 
 end Formalism.L2.Col
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.Columns.Record =====

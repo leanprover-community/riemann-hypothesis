@@ -1,9 +1,17 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DvrData
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GtBaseChangeSt
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SABBaseChangeSt
 
 @[expose] public section
 
@@ -52,7 +60,6 @@ private theorem pullU_comp_lemma {X Y Z : Scheme.{0}} (b : Z ⟶ Y) (a : Y ⟶ X
   first
     | (simp [pullU]; done)
     | (simp [pullU]; rfl)
-    | rfl
 
 private theorem res_pullU_eq_mul_of_eq_of_eq {T Y P : Scheme.{0}} (W : Y.Opens) (u : Γ(Y, W)ˣ) (c : Γ(T, ⊤)ˣ) (F : P ⟶ T)
     (A S A' S' : P ⟶ Y) (hA : A = A') (hS : S = S')
@@ -76,11 +83,9 @@ theorem equivL {T Y Z P₁ P₂ : Scheme.{0}} (act₁ s₁ : P₁ ⟶ Y) (f₁ :
     (b.preimage_mono le₁) (b.preimage_mono t₁)
     (by
       first
-        | exact h'
-        | (rw [pullU_comp_lemma, pullU_comp_lemma, pullU_comp_lemma] at h'; exact h')) le₂ t₂
+        | exact h') le₂ t₂
   first
     | exact key
-    | (rw [pullU_comp_lemma, pullU_comp_lemma]; exact key)
 
 theorem normL {S Y Z : Scheme.{0}} (e₁ : S ⟶ Y) (e₂ : S ⟶ Z) (a : Z ⟶ Y) (he : e₂ ≫ a = e₁) (W : Y.Opens) (V : S.Opens)
     (u : Γ(Y, W)ˣ) (r : Γ(S, V)ˣ)
@@ -89,8 +94,6 @@ theorem normL {S Y Z : Scheme.{0}} (e₁ : S ⟶ Y) (e₂ : S ⟶ Z) (a : Z ⟶ 
   subst he
   first
     | exact h
-    | (rw [pullU_comp_lemma]; exact h)
-    | (convert h using 4; exact pullU_comp_lemma e₂ a W u)
 
 theorem liftNC_comp₀ {A B C X : Type} [CommRing A] [CommRing B] [CommRing C] [AddCommGroup X] (f : A →+* B)
     (ρ : B →+* C) (g : Multiplicative X →* B) :
@@ -124,9 +127,8 @@ theorem liftNC_comp {A B C X ι' : Type} [CommRing A] [CommRing B] [CommRing C] 
   ext x
   first
     | exact (key (Multiplicative.toAdd x)).symm
-    | simpa using (key x).symm
 
-set_option maxHeartbeats 800000 in
+
 theorem isGt_of_iso (e : G₁ ≅ G₂) [IsMonHom e.hom] (h : E.IsGt G₁) : E.IsGt G₂ := by
   obtain ⟨d⟩ := h
   have := d.q_hom
@@ -219,8 +221,8 @@ theorem splitsAt (hC : Out.CubePullSt) (hU : Out.UnramExtSt) (hB : Out.GtBaseCha
   have : Algebra.IsSeparable (ResidueField P.V) k' :=
     (IntermediateField.isSeparable_adjoin_iff_isSeparable _ _).2 (by rintro _ ⟨i, rfl⟩; exact sepσ _)
   have hmem : ∀ z : k, σ z ∈ k' := fun z => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← bs.sum_repr z, map_sum]
+
+    rw [← bs.sum_repr z, map_sum]
     refine sum_mem fun i _ => ?_
     rw [map_smul, Algebra.smul_def, IsScalarTower.algebraMap_apply (Y.X.residueField x) (ResidueField P.V) Ω]
     exact mul_mem (k'.algebraMap_mem _) (IntermediateField.subset_adjoin _ _ ⟨i, rfl⟩)

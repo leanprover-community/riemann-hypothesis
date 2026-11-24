@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceS
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 
 @[expose] public section

@@ -1,6 +1,47 @@
 module
 
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,8 +62,7 @@ private theorem HWC_le_restrictSupport_wt_le [NeZero r] (LL : Letters N) (j : �
   intro m hm
   have hm' := hw hm
   simp only [Set.mem_setOf_eq] at hm' ⊢
-  rw [hm' 0 h0]
-  exact hla
+  rwa [hm' 0 h0]
 
 private theorem glAct_mem_restrictSupport_wt_le_of_ne [NeZero r] (LL : Letters N) (j : ℕ) (Mt : WithTop ℤ) (c d : Fin r)
     (hcd : c ≠ 0 ∨ d = 0) (x : MvPolynomial (Fin N × Fin r) ℚ_[p])
@@ -76,17 +116,12 @@ theorem isoC_le_ycondC [NeZero r] (LL : Letters N) (j : ℕ) (Cs : Finset (Fin r
           simp only [HWC, Submodule.mem_inf, Submodule.mem_iInf] at hh
           exact hh.2 0 e ⟨h0, he, (Fin.pos_iff_ne_zero' e).2 he0⟩
         rw [LinearMap.mem_ker] at hk
-        rw [hk]
-        exact L.zero_mem
+        simp [hk]
       · intro c hc d hd hcd x hx
         rw [hmem] at hx ⊢
         refine ⟨hLst c hc d hd hcd x hx.1, fun e he he0 => ?_⟩
         have hcomm := Formalism.CountingSumsFrames.glAct_comm (p := p) LL j 0 e c d x
-        have hsplit : glAct p LL j 0 e (glAct p LL j c d x) = glAct p LL j c d (glAct p LL j 0 e x) +
-            ((if e = c then glAct p LL j 0 d x else 0) - if d = 0 then glAct p LL j c e x else 0) := by
-          rw [← hcomm]
-          abel
-        rw [hsplit]
+        rw [sub_eq_iff_eq_add'.mp hcomm]
         refine L.add_mem (hLst c hc d hd hcd _ (hx.2 e he he0)) (L.sub_mem ?_ ?_)
         · split_ifs with hec
           · by_cases hd0 : d = 0
@@ -110,7 +145,7 @@ theorem isoC_le_ycondC [NeZero r] (LL : Letters N) (j : ℕ) (Cs : Finset (Fin r
     intro c hc d hd x hx
     by_cases hA : c ≠ 0 ∨ d = 0
     · exact hLst c hc d hd hA x hx
-    · push_neg at hA
+    · push Not at hA
       rw [hA.1]
       exact hraise x hx d hd hA.2
   exact le_ycondC LL j Cs Mt _ (hIL.trans hLB)

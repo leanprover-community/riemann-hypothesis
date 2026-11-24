@@ -1,12 +1,99 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismTensorEquiv
+public import Mathlib.Algebra.Algebra.Defs
+public import Mathlib.LinearAlgebra.LinearIndependent.Defs
+public import Mathlib.Algebra.Algebra.Basic
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.OneSubPhiOntoOfFilZero
+public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.CrystallineSubrepresentation
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRPlusIsDomainBdRIsField
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfFixed
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismTensorEquiv
+public import Mathlib.LinearAlgebra.Dual.BaseChange
+public import Mathlib.LinearAlgebra.Matrix.Rank
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRPlusIsDomainBdRIsField
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfFixed, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfFixed =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfFixed", "h": "module\n\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant\npublic import Mathlib.Algebra.Algebra.Defs\npublic import Mathlib.LinearAlgebra.LinearIndependent.Defs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\npublic import Mathlib.Algebra.Algebra.Basic\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace GlobalTheory.LinearIndependentFixed
+
+theorem linearIndepOn_of_fixed {K B W G ι : Type} [Field K] [CommRing B] [IsDomain B]
+    [Algebra K B] [AddCommGroup W] [Module B W] [Module K W] [IsScalarTower K B W]
+    [Module.IsTorsionFree B W] (a : G → B → B) (σ : G → W →+ W)
+    (hσ : ∀ (g : G) (b : B) (w : W), σ g (b • w) = a g b • σ g w)
+    (hK : ∀ (b b' : B), b ≠ 0 → (∀ g : G, b * a g b' = a g b * b') →
+      ∃ c : K, b' = algebraMap K B c * b)
+    (v : ι → W) (hv : ∀ (g : G) (i : ι), σ g (v i) = v i)
+    (s : Finset ι) (hs : LinearIndepOn K v (↑s : Set ι)) :
+    LinearIndepOn B v (↑s : Set ι) := by
+  apply (config := { allowSynthFailures := true }) GlobalTheory.Per.FontaineBound.linearIndepOn_of_invariant <;> assumption
+
+end GlobalTheory.LinearIndependentFixed
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfFixed =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.OneSubPhiOntoOfFilZero\npublic import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.CrystallineSubrepresentation\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismTensorEquiv\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfFixed\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRPlusIsDomainBdRIsField\nimport Mathlib.Algebra.Module.StablyFree.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\npublic import Mathlib.LinearAlgebra.Dual.BaseChange\nimport Mathlib.LinearAlgebra.Matrix.FiniteDimensional\npublic import Mathlib.LinearAlgebra.Matrix.Rank\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.HopfAlgebra.Basic\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.TotallySplit\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -15,21 +102,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.Weakl
 open scoped Formalism.Per
 
 namespace GlobalTheory.RegularRing
-
-theorem linearIndepOn_of_invariant {K B W G ι : Type} [Field K] [CommRing B] [IsDomain B] [Algebra K B]
-    [AddCommGroup W] [Module B W] [Module K W] [IsScalarTower K B W] [Module.IsTorsionFree B W]
-    (a : G → B → B) (σ : G → W →+ W) (hσ : ∀ g b w, σ g (b • w) = a g b • σ g w)
-    (hreg : ∀ b b' : B, b ≠ 0 → (∀ g, b * a g b' = a g b * b') → ∃ c : K, b' = algebraMap K B c * b)
-    (v : ι → W) (hv : ∀ g i, σ g (v i) = v i)
-    (s : Finset ι) (h : LinearIndepOn K v s) : LinearIndepOn B v s := by
-  first
-  | (rename_i h_5 h_6 h_7 h_8 h_9 h_10 h_11 h_12 h_13; revert K B W G ι h_5 h_6 h_7 h_8 h_9 h_10 h_11 h_12 h_13 a σ hσ hreg v hv s h; exact @_root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed)
-  | exact @_root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed
-  | exact _root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed
-  | (apply _root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed <;> assumption)
-  | (intros; apply _root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed ..)
 
 section Generic
 
@@ -115,7 +187,7 @@ theorem indepB (hf : FracInv PD) (ρ : Representation LL G V) {ι : Type} (d : �
     hd.map' (DcrisK₀ PD ρ).subtype (DcrisK₀ PD ρ).ker_subtype
   rw [linearIndependent_iff_finset_linearIndependent]
   intro s
-  exact linearIndepOn_of_invariant (fun g b => PD.actB g b) (fun g => (sig PD ρ g).toAddMonoidHom)
+  exact _root_.GlobalTheory.LinearIndependentFixed.linearIndepOn_of_fixed (fun g b => PD.actB g b) (fun g => (sig PD ρ g).toAddMonoidHom)
     (sig_smul PD ρ) hf _ (fun g i => (mem_DcrisK₀ PD ρ _).1 (d i).2 g) s (h1.linearIndepOn _)
 
 theorem finite_le₀ (hf : FracInv PD) [FiniteDimensional Qp V] (ρ : Representation LL G V) :
@@ -168,18 +240,18 @@ theorem span_eq_top_of_invariant (hu : LineUnit PD) [FiniteDimensional Qp V] (ρ
     ext j
     have := congrFun hc0 j
     simp only [Matrix.mulVec, dotProduct, A, Basis.toMatrix_apply, Pi.zero_apply] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply,
-      smul_eq_mul, map_zero, Finsupp.zero_apply]
+
+    simp only [map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply,
+    smul_eq_mul, map_zero, Finsupp.zero_apply]
     rw [← this]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
   have hrep : ∀ g (w : B ⊗[Qp] V) k, e.repr (sig PD ρ g w) k =
       ∑ j, algebraMap Qp B (v.repr (ρ g (v j)) k) * PD.actB g (e.repr w j) := by
     intro g w k
     conv_lhs => rw [← e.sum_repr w]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, sig_smul, map_smul, Finset.sum_apply', Finsupp.smul_apply,
-      smul_eq_mul]
+
+    simp only [map_sum, sig_smul, map_smul, Finset.sum_apply', Finsupp.smul_apply,
+    smul_eq_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [mul_comm]
     congr 1
@@ -550,7 +622,7 @@ theorem finrank_eq_sum_letters [FiniteDimensional Qp K₀] [Fintype (K₀ →ₐ
     rw [← LinearMap.range_eq_top]
     apply Submodule.eq_top_of_finrank_eq
     have := hA.rank_matrix
-    rw [Matrix.rank] at this
+    rw [← Matrix.finrank_range_mulVecLin] at this
     rw [this, finrank_fintype_fun_eq_card]
   have hinj : Function.Injective A.mulVecLin :=
     (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (by simp [hc])).2 hsurj
@@ -561,16 +633,16 @@ theorem finrank_eq_sum_letters [FiniteDimensional Qp K₀] [Fintype (K₀ →ₐ
     intro c x
     let f : K₀ →+ M := AddMonoidHom.mk' (fun a => m a x) fun a b => hadd a b x
     change f c = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [← v.sum_repr c, map_sum]
+
+    conv_lhs => rw [← v.sum_repr c, map_sum]
     rw [hμ]
     refine Finset.sum_congr rfl fun i _ => ?_
     change m _ x = _
     rw [Algebra.smul_def, hmul, hq]
   have hev : ∀ (c : K₀) τ, A.mulVecLin (fun i => algebraMap Qp LL (v.repr c i)) τ = τ c := by
     intro c τ
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_rhs => rw [← v.sum_repr c, map_sum]
+
+    conv_rhs => rw [← v.sum_repr c, map_sum]
     change ∑ i, τ (v i) * algebraMap Qp LL (v.repr c i) = _
     exact Finset.sum_congr rfl fun i _ => by rw [map_smul, Algebra.smul_def, mul_comm]
   choose e he using fun τ : K₀ →ₐ[Qp] LL => hsurj (Pi.single τ 1)
@@ -579,11 +651,11 @@ theorem finrank_eq_sum_letters [FiniteDimensional Qp K₀] [Fintype (K₀ →ₐ
     have h1 : ∑ τ, e τ = fun i => algebraMap Qp LL (v.repr 1 i) := by
       apply hinj
       funext τ
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hev, map_sum]
+
+      rw [hev, map_sum]
       simp [he, Pi.single_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← LinearMap.sum_apply, ← map_sum, h1, ← hsum]
+
+    rw [← LinearMap.sum_apply, ← map_sum, h1, ← hsum]
     simpa using hq 1 x
   have heig : ∀ τ c x, m c (μ (e τ) x) = τ c • μ (e τ) x := by
     intro τ c x
@@ -591,8 +663,8 @@ theorem finrank_eq_sum_letters [FiniteDimensional Qp K₀] [Fintype (K₀ →ₐ
       apply hinj
       funext τ'
       have h2 : ∑ i, τ' (v i) * e τ i = (Pi.single τ 1 : _ → LL) τ' := congrFun (he τ) τ'
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_smul, he]
+
+      rw [map_sum, map_smul, he]
       simp only [map_smul, Finset.sum_apply, Pi.smul_apply, hev, map_mul, smul_eq_mul]
       have h3 : ∑ i, e τ i * (τ' c * τ' (v i)) = τ' c * ∑ i, τ' (v i) * e τ i := by
         rw [Finset.mul_sum]
@@ -601,8 +673,8 @@ theorem finrank_eq_sum_letters [FiniteDimensional Qp K₀] [Fintype (K₀ →ₐ
       by_cases h : τ' = τ
       · rw [h]
       · simp [h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← LinearMap.smul_apply, ← map_smul, ← h1, map_sum, LinearMap.sum_apply, hμ, map_sum]
+
+    rw [← LinearMap.smul_apply, ← map_smul, ← h1, map_sum, LinearMap.sum_apply, hμ, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_smul, map_smul, LinearMap.smul_apply, ← hsum, hmul]
   have hon : ∀ τ τ', ∀ x ∈ L τ', μ (e τ) x = (Pi.single τ 1 : _ → LL) τ' • x := by
@@ -625,8 +697,8 @@ theorem finrank_eq_sum_letters [FiniteDimensional Qp K₀] [Fintype (K₀ →ₐ
       refine ⟨⟨∑ τ, (y τ : M), D.sum_mem fun τ _ => ((hL τ _).1 (y τ).2).1⟩, ?_⟩
       funext τ
       apply Subtype.ext
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hF, map_sum, Finset.sum_congr rfl fun τ' _ => hon τ τ' _ (y τ').2]
+
+      rw [hF, map_sum, Finset.sum_congr rfl fun τ' _ => hon τ τ' _ (y τ').2]
       simp [Pi.single_apply]
   haveI : ∀ τ, Module.Finite LL (L τ) := fun τ =>
     Submodule.finiteDimensional_of_le (S₂ := D) fun x hx => ((hL τ x).1 hx).1
@@ -750,3 +822,7 @@ theorem fontaineFormalism (hF : GlobalTheory.Published.FontaineBcris) (l : ℕ) 
   fontaineFormalism_of_regular l P AI (fun C => ⟨hF.tensorInj C, hF.regular C⟩) hs
 
 end GlobalTheory.RegularRing
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular =====

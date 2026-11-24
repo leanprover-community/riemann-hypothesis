@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionSupBound
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 

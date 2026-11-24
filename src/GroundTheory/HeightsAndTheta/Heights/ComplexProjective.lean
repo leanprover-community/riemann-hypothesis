@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjSpace
-public import GroundTheory.HeightsAndTheta.Heights.ProjTopology
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.Projectivization.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+import GroundTheory.ArithmeticGeometry.SchemeCohomology.ConsCompSuccAboveZero
 
 @[expose] public section
 

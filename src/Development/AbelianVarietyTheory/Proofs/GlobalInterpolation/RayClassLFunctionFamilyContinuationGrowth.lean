@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExpSumBounds
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LamIdealOfNotPrimePow
+public import Mathlib.NumberTheory.LSeries.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Function.Floor
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+public import Mathlib.NumberTheory.LSeries.SumCoeff
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -99,22 +146,7 @@ theorem res_eq : 𝓕.res χ = ∑ g, χ g * (𝓕.κ : ℂ) := by
 
 theorem norm_rem_le (x : ℝ) (hx : 1 ≤ x) :
     ‖(∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.aChi χ n) - 𝓕.res χ * x‖ ≤ 10 * 𝓕.B * Real.sqrt x := by
-  have h : (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.aChi χ n) - 𝓕.res χ * x =
-      ∑ g, χ g * ((∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.a g n - 𝓕.κ * x : ℝ) : ℂ) := by
-    simp only [LFam.aChi, res_eq]
-    rw [Finset.sum_comm, Finset.sum_mul, ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun g _ => ?_
-    push_cast
-    rw [← Finset.mul_sum]
-    ring
-  rw [h]
-  refine (norm_sum_le _ _).trans ?_
-  refine (Finset.sum_le_sum (g := fun _ => 10 * Real.sqrt x) fun g _ => ?_).trans ?_
-  · rw [norm_mul, AddChar.norm_apply, one_mul, norm_real, Real.norm_eq_abs]
-    exact 𝓕.count g x hx
-  · simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-    have := mul_le_mul_of_nonneg_right 𝓕.card_le (by positivity : 0 ≤ 10 * Real.sqrt x)
-    linarith
+  apply GlobalTheory.Hk.LFam.norm_sum_aChi_sub_le <;> assumption
 
 theorem measurable_rem :
     Measurable fun x : ℝ => (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.aChi χ n) - 𝓕.res χ * x :=
@@ -186,8 +218,8 @@ theorem conj_res : (starRingEnd ℂ) (𝓕.res χ) = 𝓕.res χ := by
   · exact map_zero _
 
 theorem conj_aChi (h : χ * χ = 1) (n : ℕ) : (starRingEnd ℂ) (𝓕.aChi χ n) = 𝓕.aChi χ n := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LFam.aChi, map_sum]
+
+  rw [LFam.aChi, map_sum]
   refine Finset.sum_congr rfl fun g _ => ?_
   have h1 : χ g * χ g = 1 := by
     have := DFunLike.congr_fun h g
@@ -207,8 +239,8 @@ theorem mel_conj (h : χ * χ = 1) (s : ℂ) :
     have := cpow_conj (t : ℂ) (-s - 1) harg
     rw [conj_ofReal, map_sub, map_neg, map_one] at this
     exact this
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_mul, map_sub, map_sum, conj_aChi 𝓕 χ h, conj_res, conj_ofReal, h1]
+
+  simp only [map_mul, map_sub, map_sum, conj_aChi 𝓕 χ h, conj_res, conj_ofReal, h1]
 
 theorem continuation_growth : ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ), AnalyticOnNhd ℂ (𝓕.F χ) {s | 1 / 2 < s.re} ∧ (∀ s : ℂ, 1 < s.re → LSeriesSummable (𝓕.aChi χ) s ∧ 𝓕.F χ s = (if χ = 1 then s - 1 else 1) * LSeries (𝓕.aChi χ) s) ∧ (∀ s : ℂ, 11 / 20 ≤ s.re → ‖𝓕.F χ s‖ ≤ 300 * 𝓕.B * (‖s‖ + 1) ^ 2) ∧ (χ * χ = 1 → ∀ s : ℂ, 𝓕.F χ ((starRingEnd ℂ) s) = (starRingEnd ℂ) (𝓕.F χ s)) := by
   intro 𝓕 χ

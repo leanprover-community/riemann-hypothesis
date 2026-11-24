@@ -1,13 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.EndDeterminedOnTorsion
-public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
-public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.AppLESurjective
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.CardZerosOnTorsionCosetLe
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsHeckeQuotientTriple
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueDescendOfTorsionInvariant
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemNonzeroLocusIffPowFn
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueDescendOfTorsionInvariant
+public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.AppLESurjective
+public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
 
 @[expose] public section
 
@@ -193,8 +235,8 @@ theorem lam_rosati {f g : P.A ⟶ P.A} (h : RosatiAdj P.A P.L f g) {T : Over (Sp
   have h₁ := congrArg (pull ((lift x y).left ≫ inv ((P.A ⊗ P.A).hom ⁻¹ᵁ ⊤).ι))
     ((cls_linComb P.isLB _ _ _).symm.trans ((cls_eq_zero_iff (LB.isLB_linComb P.isLB _ _)).2 ht))
   have e : ∀ u v : P.A ⊗ P.A ⟶ P.A, padd P.A u v = u * v := fun _ _ => rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_zsmul, map_zero, ← pull_comp, Category.assoc, IsIso.inv_hom_id_assoc] at h₁
+
+  simp only [map_sum, map_zsmul, map_zero, ← pull_comp, Category.assoc, IsIso.inv_hom_id_assoc] at h₁
   simp only [Fin.sum_univ_succ, rosatiφ, rosatiε, Matrix.cons_val_zero, Matrix.cons_val_succ, ← Over.comp_left, e,
     MonObj.comp_mul, lift_fst, lift_snd, lift_fst_assoc, lift_snd_assoc, Fin.sum_univ_zero] at h₁
   rw [← sub_eq_zero, ← h₁, lam, lam]
@@ -218,8 +260,8 @@ theorem sum_pull_act (hm : MulPullSt) (hc : CubeSt) {r c : ℕ} (a : O) (b : Fin
     rw [map_nsmul, show 4 = 2 * 2 from rfl, mul_nsmul, two_nsmul_pull_act P ρ hm]
     rfl
   simp only [h₂]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Finset.smul_sum, ← smul_add, ← map_sum, ← map_add (f := _), h, ← nsmul_one, map_nsmul, h₁]
+
+  rw [← Finset.smul_sum, ← smul_add, ← map_sum, ← map_add (f := _), h, ← nsmul_one, map_nsmul, h₁]
   module
 
 end Classes
@@ -323,8 +365,8 @@ theorem endDeterminedOnTorsion : Out.Laws →
         fun l => φ.hom.left ≫ (ρ'.act (b l)).left) ?_ fun x h => ?_
     · have h₁ := sum_pull_act P ρ laws.mulPull laws.cube _ b hb
       have h₂ := congrArg (pull φ.hom.left) (sum_pull_act P' ρ' laws.mulPull laws.cube _ b hb)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_add (f := _), map_sum, map_nsmul _ (4 * c), hl] at h₂
+
+      rw [map_add (f := _), map_sum, map_nsmul _ (4 * c), hl] at h₂
       simp only [Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr, Over.comp_left, pull_comp,
         map_nsmul (pull φ.hom.left) 4 (cls P'.L P'.isLB), hl]
       rw [add_add_add_comm, h₁, h₂]

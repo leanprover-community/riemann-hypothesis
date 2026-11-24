@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.PolynomialDimension.WeylDim
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
 
 @[expose] public section
 

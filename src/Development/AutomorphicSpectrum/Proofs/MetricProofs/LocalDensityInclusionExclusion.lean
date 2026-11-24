@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.LeviForms.ConvExpandStatement
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 
 @[expose] public section
 
@@ -23,7 +68,7 @@ theorem locDens_expand_ofFun : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A 
     have hopen : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' W) :=
       (A.chart j).isOpen_inter_preimage_symm hW
     have h1 := (hg j).contDiffAt (hopen.mem_nhds hyW)
-    exact h1.of_le (by first | exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤) | exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤) | decide | simp)
+    exact h1.of_le (by first | exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤))
   have hsP : ∀ k, ContDiffAt ℝ 2
       (fun y' => (P k).φ ((A.chart j).symm y) ((A.chart j).symm y')) y := fun k =>
     smooth_at ((P k).φ ((A.chart j).symm y)) ((P k).U ((A.chart j).symm y)) ((P k).isOpen_U _)
@@ -39,11 +84,11 @@ theorem locDens_expand_ofFun : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A 
     have hev : ∀ χ : (Fin e → ℂ) → ℝ, ContDiffAt ℝ 2 χ y → ∀ᶠ w in 𝓝 y, DifferentiableAt ℝ χ w := by
       intro χ hχ
       obtain ⟨f', u, hu, -, hder⟩ :=
-        contDiffAt_one_iff.1 (hχ.of_le (by first | norm_num | exact one_le_two))
+        contDiffAt_one_iff.1 (hχ.of_le (by first | norm_num))
       exact Filter.mem_of_superset hu fun w hw => (hder w hw).differentiableAt
     have hd2 : ∀ χ : (Fin e → ℂ) → ℝ, ContDiffAt ℝ 2 χ y → DifferentiableAt ℝ (fderiv ℝ χ) y := by
       intro χ hχ
-      exact (hχ.fderiv_right (m := 1) (by first | norm_num | exact le_of_eq one_add_one_eq_two)).differentiableAt one_ne_zero
+      exact (hχ.fderiv_right (m := 1) (by first | norm_num)).differentiableAt one_ne_zero
     have hfd : fderiv ℝ (fun w => φ w + ψ w) =ᶠ[𝓝 y] fun w => fderiv ℝ φ w + fderiv ℝ ψ w := by
       filter_upwards [hev φ hφ, hev ψ hψ] with w h1 h2
       exact fderiv_add h1 h2

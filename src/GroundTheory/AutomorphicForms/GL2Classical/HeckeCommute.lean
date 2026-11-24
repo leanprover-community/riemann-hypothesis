@@ -1,15 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2Classical.Adelic
-public import GroundTheory.AutomorphicForms.GL2Classical.ConstantTerm
-public import GroundTheory.AutomorphicForms.GL2Classical.Smooth
-public import GroundTheory.AutomorphicForms.HarishChandraCentre
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.SmoothKZ
-public import GroundTheory.AutomorphicForms.GL2Classical.CuspConverse
-public import GroundTheory.AutomorphicForms.GL2Classical.GrowthReduction
-public import GroundTheory.AutomorphicForms.GL2Classical.KFinite
-public import GroundTheory.AutomorphicForms.HeckeAlgebraLevel
+public import Mathlib.Algebra.GroupWithZero.Nat
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import GroundTheory.AutomorphicForms.AdelicGLn
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
+public import Lean.Elab.MutualDef
+import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
+import Mathlib.NumberTheory.ModularForms.SlashActions
 
 @[expose] public section
 

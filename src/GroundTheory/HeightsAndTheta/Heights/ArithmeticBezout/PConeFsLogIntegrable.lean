@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeSlab
+import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.MeasureTheory.Integral.Layercake
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.MeasureTheory.Integral.ExpDecay
 
 @[expose] public section
 

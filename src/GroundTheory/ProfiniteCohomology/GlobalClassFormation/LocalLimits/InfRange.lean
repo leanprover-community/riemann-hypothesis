@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfLiesOver
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfDefs
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.ApplyCompletionEmbeddingOfLocalDecompHomEqOne
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

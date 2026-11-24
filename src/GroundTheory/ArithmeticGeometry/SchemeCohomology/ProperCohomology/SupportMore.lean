@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.Support
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.CohFinite
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

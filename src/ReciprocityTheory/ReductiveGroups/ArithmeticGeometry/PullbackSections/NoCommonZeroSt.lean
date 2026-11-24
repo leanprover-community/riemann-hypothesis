@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThetaWeightBounds
+public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
 
 @[expose] public section
 

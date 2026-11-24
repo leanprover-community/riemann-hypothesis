@@ -1,8 +1,16 @@
 module
 
-public import Mathlib
 public import Formalism.HermitianLattices.StatementLat
 public import Formalism.SizeWindowBrackets.SlopesHypothesisFinitePlaces
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+public import Mathlib.RingTheory.RamificationInertia.Ramification
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Ideal.Int
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

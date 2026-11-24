@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixCoord
-public import GroundTheory.AutomorphicForms.GL2.GJMatrixLocal
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,19 @@
 module
 
+public import Mathlib.RingTheory.AlgebraicIndependent.Basic
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Ideal.Height
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.KrullDimension.Polynomial
+public import Mathlib.RingTheory.NoetherNormalization
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.PolyCM
 public import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
+public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 @[expose] public section
 

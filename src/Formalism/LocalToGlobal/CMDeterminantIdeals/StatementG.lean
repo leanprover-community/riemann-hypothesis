@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import ReciprocityTheory.SemistableReduction.LatSemiSt
 
 @[expose] public section
 

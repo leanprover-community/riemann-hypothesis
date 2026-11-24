@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.IndependenceBoundRaw
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
+public import Formalism.LocalToGlobal.CharacterGerms.IndependenceBoundRaw
 
 @[expose] public section
 

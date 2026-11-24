@@ -1,6 +1,55 @@
 module
 
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.StatementA
+public import Mathlib.CategoryTheory.Category.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -19,14 +68,14 @@ theorem Om_nat (E : ι → ι → Module.End K W) (E' : ι → ι → Module.End
   | zero => intro x; simp [Om]
   | succ q ih =>
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Om, LinearMap.sum_apply, map_sum, Module.End.mul_apply, ih, h]
+
+    simp only [Om, LinearMap.sum_apply, map_sum, Module.End.mul_apply, ih, h]
 
 theorem Pstep_nat (E : ι → ι → Module.End K W) (E' : ι → ι → Module.End K W') (θ : W →ₗ[K] W')
     (h : ∀ a b x, θ (E a b x) = E' a b (θ x)) (S : Finset ι) (z : ι) (l : ℕ) (x : W) :
     θ (Pstep E S z l x) = Pstep E' S z l (θ x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Pstep, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, Om_nat E E' θ h]
+
+  simp only [Pstep, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, Om_nat E E' θ h]
 
 theorem invariant_natural_holds : InvNat := by
   intro K W W' ι _ _ _ _ _ _ E E' θ h l L
@@ -254,8 +303,7 @@ theorem Om_mem {NN : Submodule K W} (hN : ∀ a b, ∀ x ∈ NN, E a b x ∈ NN)
 theorem Pstep_mem {NN : Submodule K W} (hN : ∀ a b, ∀ x ∈ NN, E a b x ∈ NN) (S : Finset ι) (z : ι) (l : ℕ) :
     ∀ x ∈ NN, Pstep E S z l x ∈ NN := by
   intro x hx
-  simp only [Pstep, LinearMap.sum_apply, LinearMap.smul_apply]
-  exact Submodule.sum_mem _ (fun q _ => Submodule.smul_mem _ _ (Om_mem hN S z q x hx))
+  simpa only [Pstep, LinearMap.sum_apply, LinearMap.smul_apply] using Submodule.sum_mem _ (fun q _ => Submodule.smul_mem _ _ (Om_mem hN S z q x hx))
 
 theorem Om_vanish (h : GlRel E) {NN : Submodule K W} (hN : ∀ a b, ∀ x ∈ NN, E a b x ∈ NN) {l : ℕ}
     (hev : ∀ (z : ι) (k : ℤ), ∀ x ∈ NN, E z z x = (k : K) • x → (l : ℤ) < |k| → x = 0)
@@ -274,8 +322,8 @@ theorem Om_vanish (h : GlRel E) {NN : Submodule K W} (hN : ∀ a b, ∀ x ∈ NN
     have hiz : i ≠ z := fun e => hz (e ▸ hi)
     have hw : E z z (E i z x) = -((k + 1 : ℕ) : K) • E i z x := by
       have e1 := DFunLike.congr_fun (h.sw z z i z) x
-      simp only [Module.End.mul_apply, LinearMap.add_apply, LinearMap.sub_apply, if_neg (Ne.symm hiz),
-        if_pos (rfl : z = z), LinearMap.zero_apply, zero_sub, LinearMap.neg_apply] at e1
+      simp only [Module.End.mul_apply, LinearMap.add_apply, if_neg (Ne.symm hiz),
+        zero_sub, LinearMap.neg_apply] at e1
       rw [e1, hk, map_smul]
       push_cast
       module
@@ -299,8 +347,7 @@ theorem cc_rec [CharZero K] (m q : ℕ) : cc K m q + cc K m (q + 1) * (((q : K) 
   ring
 
 theorem cc_zero [CharZero K] (m : ℕ) : cc K m 0 = 1 := by
-  have : (m.factorial : K) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
-  simp [cc, this]
+  simp [cc, Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero m)]
 
 theorem Pstep_eq (S : Finset ι) (z : ι) (l : ℕ) :
     Pstep E S z l = ∑ q ∈ range (l + 1), cc K S.card q • Om E S z q := rfl
@@ -429,9 +476,7 @@ theorem Pstep_inv [CharZero K] (h : GlRel E) {NN : Submodule K W} (hN : ∀ a b,
     have hjz : j ≠ z := fun e => hz (e ▸ hj)
     have hw : E z z (E j z u) = -((1 : ℕ) : K) • E j z u := by
       have e1 := DFunLike.congr_fun (h.sw z z j z) u
-      simp only [Module.End.mul_apply, LinearMap.add_apply, LinearMap.sub_apply,
-        if_neg (show ¬ z = j from fun e => hjz e.symm), if_pos (rfl : z = z), ↓reduceIte, LinearMap.zero_apply,
-        zero_sub, LinearMap.neg_apply, hzz, map_zero, zero_add] at e1
+      simp only [Module.End.mul_apply, LinearMap.add_apply, if_neg (show ¬ z = j from fun e => hjz e.symm), ↓reduceIte, zero_sub, LinearMap.neg_apply, hzz, map_zero, zero_add] at e1
       rw [e1, Nat.cast_one, neg_one_smul]
     rw [E_Pstep_apply h hz hj hS hzz l,
       Om_vanish h hN hev hz l 1 (E j z u) (hN _ _ _ hu) hw (by omega), smul_zero]

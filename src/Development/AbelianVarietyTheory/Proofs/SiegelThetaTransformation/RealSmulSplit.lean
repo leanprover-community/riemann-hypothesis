@@ -1,11 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeisenbergDerivativeThetaFunctionLaws
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorLawsStatement
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorTestThetaZeroEqThetaSeriesStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeisenbergDerivativeThetaFunctionLaws
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 
 @[expose] public section
 
@@ -152,8 +191,8 @@ theorem compAt_unitary (C : Ctx S T) (h : GA D S) (τ : D.what₂.Tau) :
   unfold compAt
   ext i j
   have e := congrArg (fun A => C.θ τ (infPart D (A i j))) hm
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mul_apply, map_sum, map_mul, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply, hc] at e
+
+  simp only [Matrix.mul_apply, map_sum, map_mul, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply, hc] at e
   simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.map_apply, Complex.star_def]
   refine e.trans ?_
   by_cases hij : i = j
@@ -180,9 +219,9 @@ theorem toH_sub (C : Ctx S T) (h : GA D S) : C.toH.comp (sub C h) = (Harm.colAct
   apply MvPolynomial.algHom_ext
   intro v
   obtain ⟨σ, i, k⟩ := v
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [AlgHom.comp_apply, sub, MvPolynomial.aeval_X, Ctx.toH, map_sum, MvPolynomial.smul_eq_C_mul, map_mul,
-    MvPolynomial.aeval_C]
+
+  simp only [AlgHom.comp_apply, sub, MvPolynomial.aeval_X, Ctx.toH, map_sum, MvPolynomial.smul_eq_C_mul, map_mul,
+  MvPolynomial.aeval_C]
   have hσ : C.m.e.symm (C.m.e σ) = σ := C.m.e.symm_apply_apply σ
   rcases hi : (rowIdx C.hr).symm i with a | b
   · have hlt : ¬ ((i : ℕ) < C.X.p0) := by
@@ -261,9 +300,9 @@ theorem col_change : ∀ (D : D7) (S T : HSp D) (C : Ctx S T), ∀ h : GA D S, �
           MvPolynomial.X (v.1, v.2.1, l) := by
         unfold sub
         rw [MvPolynomial.aeval_X]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [mul_comm, (hL (fun τ => compAt C.θ τ (Formalism.L2.Theta.mt S h)) f hf p).2.1 v, hp, map_mul, hsX,
-        Finset.sum_mul, map_sum]
+
+      rw [mul_comm, (hL (fun τ => compAt C.θ τ (Formalism.L2.Theta.mt S h)) f hf p).2.1 v, hp, map_mul, hsX,
+      Finset.sum_mul, map_sum]
       simp only [smul_mul_assoc, map_smul, (hL (fun _ => 1) f hf (sub C h p)).2.1]
       unfold aPlusAll aPlus
       dsimp only

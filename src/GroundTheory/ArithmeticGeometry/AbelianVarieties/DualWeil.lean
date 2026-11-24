@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyRamification
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilPairing
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
 
 @[expose] public section
 

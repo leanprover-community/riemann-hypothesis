@@ -1,13 +1,10 @@
 module
 
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TwChrOne
-public import Formalism.LocalToGlobal.Columns.ThetaOpenTwLevQ
-public import Formalism.LocalToGlobal.Columns.ChainTwFin
-public import Formalism.LocalToGlobal.Columns.UnfoldingNonvanishingDoubleCosetHolds
 public import Formalism.LocalToGlobal.Columns.RecLevelSym
-public import Formalism.LocalToGlobal.Columns.Record
-public import Formalism.LocalToGlobal.Columns.StabMapRLInjective
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+public import Formalism.LocalToGlobal.Columns.ChainInst
+public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TwChrOne
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

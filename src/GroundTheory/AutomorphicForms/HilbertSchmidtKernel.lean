@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.HilbertSchmidt
+public import Mathlib.MeasureTheory.Function.LpSeminorm.Defs
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Basic.Real.ConjExponents
+public import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
 @[expose] public section
 

@@ -1,7 +1,56 @@
 module
 
-public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneGen
+public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneAd
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+import Development.WeilBound.ThetaLifts.CTKernel
+import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
 
 @[expose] public section
 
@@ -57,7 +106,7 @@ theorem mid_eq (ι : Matrix (Fin n) (Fin n₁) S) (ι' : Matrix (Fin d) (Fin d�
     Matrix.transpose_apply, Matrix.mulVec, dotProduct, Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by
-    simp [Pi.single_apply, mul_comm, mul_left_comm]
+    simp [mul_comm, mul_left_comm]
 
 theorem hT_vm {ι : Matrix (Fin n) (Fin n₁) S} {ι' : Matrix (Fin d) (Fin d₁) S} {a : Fin n → S} {b : Fin d → S}
     (h : (∀ z, bf c.toRingHom J a (ι *ᵥ z) = 0) ∨ ∀ z, bf c.toRingHom J' b (ι' *ᵥ z) = 0) (w : Matrix (Fin n₁) (Fin d₁) S) :
@@ -116,8 +165,8 @@ theorem tr_inc (e : E) : Algebra.trace (AF F) (AE F E) (inclR (F := F) (AF F) e)
 
 theorem hT_inc (x y : Matrix (Fin n) (Fin d) E) : hTens (cA σ) (incM F X.J) (incM F W.J) (incM F x) (incM F y) =
     inclR (F := F) (AF F) (hTens σ X.J W.J x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hTens, incM, Matrix.map_apply, cA_inc, map_mul, map_sum]
+
+  simp only [hTens, incM, Matrix.map_apply, cA_inc, map_mul, map_sum]
 
 theorem sy_inc (x y : Matrix (Fin n) (Fin d) E) :
     sy σ X W (incM F x) (incM F y) = algebraMap F (AF F) (Algebra.trace F E (-hTens σ X.J W.J x y)) := by
@@ -172,11 +221,11 @@ theorem pg_of (hB : B.IsGood σ) {Y : Spc F E n} {Y₁ : Spc F E n₁} {H : Plan
       obtain ⟨s, t, u, rfl⟩ := hb
       exact ⟨a * s, a * t, a • u, by rw [Matrix.mulVec_smul]; module⟩
   refine ⟨⟨conj_conj hB, by rw [← Int.cast_mul, ← Units.val_mul, Int.units_mul_self]; simp, map_intCast _ _, hJ, hH.xx, hH.yy, hH.xy,
-    fun z => (hH.orth z).1, fun z => (hH.orth z).2, sp, fun v hv => ?_⟩, (by first | exact planeOK hB hH ε hJ hd hL | exact planeOK hB hH ε hJ hd hL.toIsLattice), fun u hu => ?_, hH.gram⟩
+    fun z => (hH.orth z).1, fun z => (hH.orth z).2, sp, fun v hv => ?_⟩, (by first | exact planeOK hB hH ε hJ hd hL), fun u hu => ?_, hH.gram⟩
   · refine Matrix.eq_zero_of_vecMul_eq_zero hd (funext fun j => ?_)
     have := hv (Pi.single j 1)
     have e : (fun l => σ.toRingHom ((Pi.single j 1 : Fin n → E) l)) = Pi.single j 1 := funext fun l => by
-      by_cases h : l = j <;> simp [Pi.single_apply, h]
+      by_cases h : l = j <;> simp [h]
     rw [bf, e, Matrix.dotProduct_mulVec] at this
     simpa using this
   · let L : (E × (Fin n₁ → E) × E) →ₗ[E] (Fin n → E) :=
@@ -251,8 +300,8 @@ theorem polar_of {T : Type} [AddCommGroup T] [Module E T] [Module F T] [IsScalar
   · rw [sy, sy, symp, symp, hT_mm, incM_gram g, incM_gram g']
   · obtain ⟨s, t, x₁, rfl⟩ := span x
     refine ⟨b.repr s, (β.dualBasis hβ b).repr t, x₁, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [← LinearMap.map_smul_of_tower, ← map_sum, Module.Basis.sum_repr]
+
+    simp only [← LinearMap.map_smul_of_tower, ← map_sum, Module.Basis.sum_repr]
 
 end PositivityTheory.ThKCT.Ker
 

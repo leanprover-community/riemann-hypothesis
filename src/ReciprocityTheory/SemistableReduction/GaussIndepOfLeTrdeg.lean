@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.AlgebraicIndependent.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Data.Set.Card
+public import Mathlib.RingTheory.Algebraic.Basic
+public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 @[expose] public section
 

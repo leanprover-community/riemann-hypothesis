@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
+import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 

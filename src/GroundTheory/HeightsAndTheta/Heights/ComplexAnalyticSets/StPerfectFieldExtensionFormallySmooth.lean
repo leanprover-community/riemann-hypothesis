@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Perfect
+public import Mathlib.RingTheory.Smooth.Basic
 
 @[expose] public section
 

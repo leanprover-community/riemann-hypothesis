@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.Analysis.Normed.Field.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.Topology.MetricSpace.Ultra.Basic
 
 @[expose] public section
 

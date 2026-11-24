@@ -1,7 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.NormOrderStatement
-public import Mathlib
+public import Mathlib.RingTheory.Valuation.ValuationSubring
+public import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.LocalRing.LocalSubring
 
 @[expose] public section
 
@@ -46,9 +48,6 @@ theorem exists_val_of_prime {Kf : Type*} [Field Kf] (A : Subring Kf) (P : Ideal 
       first
       | (convert h'' using 1
          exact (e.symm_apply_apply _).symm)
-      | (rwa [show (e.symm : (LocalSubring.ofPrime A P).toSubring →+* Localization.AtPrime P)
-            (e (algebraMap A (Localization.AtPrime P) a)) = algebraMap A (Localization.AtPrime P) a from
-            e.symm_apply_apply _] at h'')
     by_contra hge
     push_neg at hge
     have hv1 : B.valuation (a : Kf) = 1 := le_antisymm ((B.valuation_le_one_iff _).2 (hmem a)) hge

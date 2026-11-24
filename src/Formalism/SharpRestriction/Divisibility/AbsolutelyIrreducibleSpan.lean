@@ -1,20 +1,47 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.DataParams₂
 public import Formalism.LocalRingCardinality.DataParams
-public import Formalism.LocalRingCardinality.DataDIV
-public import Formalism.LocalRingCardinality.DataDIVDefs
-public import Formalism.LocalRingCardinality.DataTheta
-public import Formalism.LocalRingCardinality.PrincipalHermitianLattice
 public import Formalism.LocalRingCardinality.DataKap
 public import Formalism.LocalRingCardinality.DataAmbForm
-public import Formalism.HarderNarasimhan.StatementPl
-public import Formalism.HermitianLattices.StatementMaj
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-public import Formalism.SharpRestriction.ParConsts
-public import Formalism.SharpRestriction.ParamsHeightRankConstant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.PrimesCongruentOne
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -69,37 +96,27 @@ theorem sharp_downTo (D : D7) (μ : D.what₂.Tup) :
 theorem sharp_iota (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).iota μ = D.what₂.iota μ := by
   first
   | (unfold RowSide.iota Rows.Data.iota; rw [sharp_downTo D μ D.R.m]; try rfl; done)
-  | (simp only [RowSide.iota, Rows.Data.iota, sharp_downTo]; try rfl; done)
-  | rfl
 
 theorem sharp_Usp (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).Usp μ = D.what₂.Usp μ := by
   first
   | (unfold RowSide.Usp Rows.Data.Usp; rw [sharp_iota]; try rfl; done)
-  | (simp only [RowSide.Usp, Rows.Data.Usp, sharp_iota]; try rfl; done)
-  | rfl
 
 theorem sharp_Qsp (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).Qsp μ = D.what₂.Qsp μ := by
   first
   | (unfold RowSide.Qsp Rows.Data.Qsp; rw [sharp_Usp]; try rfl; done)
-  | (simp only [RowSide.Qsp, Rows.Data.Qsp, sharp_Usp]; try rfl; done)
-  | rfl
 
 theorem sharp_LamSet (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).LamSet μ = D.what₂.LamSet μ := by
   first
   | (unfold RowSide.LamSet Rows.Data.LamSet; rw [sharp_Qsp]; try rfl; done)
   | (simp only [RowSide.LamSet, Rows.Data.LamSet, sharp_Qsp]; try rfl; done)
-  | rfl
 
 theorem sharp_RRset (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).RRset μ = D.what₂.RRset μ := by
   first
   | (unfold RowSide.RRset Rows.Data.RRset; rw [sharp_iota, sharp_LamSet]; try rfl; done)
-  | (simp only [RowSide.RRset, Rows.Data.RRset, sharp_iota, sharp_LamSet]; try rfl; done)
-  | rfl
 
 theorem sharp_RRDef (D : D7) : (RowSide.sharp D).RRDef ↔ DV.RRDef D := by
   first
   | (unfold RowSide.RRDef DV.RRDef; simp only [sharp_RRset]; try exact Iff.rfl; done)
-  | exact Iff.rfl
 
 section Derived
 
@@ -140,7 +157,6 @@ theorem condE_pos : 0 < LevelStarExponents.condE D := by
 theorem absNorm_ccK_pos : 0 < Ideal.absNorm D.host.ccK := by
   first
   | exact Nat.pos_of_ne_zero (fun h => D.host.ccK_ne_bot (Ideal.absNorm_eq_zero_iff.mp h))
-  | (rw [Nat.pos_iff_ne_zero, Ne, Ideal.absNorm_eq_zero_iff]; exact D.host.ccK_ne_bot)
 
 theorem rPr_mem : (rPr D).Prime ∧
     ¬ rPr D ∣ LevelStarExponents.condE D * (D.host.pde - 1) * (D.host.pde' - 1) * Ideal.absNorm D.host.ccK := by
@@ -431,7 +447,6 @@ theorem auxiliary_prime_odd (D : D7) : q0 D % 2 = 1 := by
     exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_left h2 _) _
   have h2k : 2 ∣ rPr D * LevelStarExponents.condE D := dvd_mul_of_dvd_right h2c _
   rw [← Nat.mod_mod_of_dvd (q0 D) h2k, (auxiliary_prime_mem D).2.1]
-  all_goals norm_num
 
 def covR {n : ℕ} (Λ : Submodule ℤ (EuclideanSpace ℝ (Fin n))) : ℝ :=
   sSup (Set.range fun x : EuclideanSpace ℝ (Fin n) => Metric.infDist x (Λ : Set (EuclideanSpace ℝ (Fin n))))

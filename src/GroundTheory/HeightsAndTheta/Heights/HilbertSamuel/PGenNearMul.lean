@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenNearMul
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
+import Mathlib.Order.Interval.Finset.Box
 
 @[expose] public section
 
@@ -357,8 +357,8 @@ theorem GenNearMul.proof : GenNearMul.Statement := by
       congr 1
       ring
     rw [key, hwu, hyz]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, Finset.smul_sum, smul_smul]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, Finset.smul_sum, smul_smul]
     rw [← Equiv.sum_comp finProdFinEquiv]
     simp only [Equiv.symm_apply_apply, Fintype.sum_prod_type, GenNearMul.prodCochain]
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_

@@ -1,9 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SpanGlue
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFormsFiniteDimensionalOf
-public import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
 
 @[expose] public section
 

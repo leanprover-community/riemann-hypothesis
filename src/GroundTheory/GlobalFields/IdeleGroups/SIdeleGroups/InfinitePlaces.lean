@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Places
-public import GroundTheory.GlobalFields.SemilocalAlgebras.Infinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

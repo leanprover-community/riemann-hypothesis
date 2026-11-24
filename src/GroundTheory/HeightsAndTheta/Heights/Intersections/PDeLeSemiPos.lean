@@ -1,16 +1,15 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.NoCommonComponentCoordinatesPlane
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.RegLine
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAddFirst
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsRegLimit
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsMonoSemiPos
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StRegCurvBound
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StHorizNotMem
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowIsotropicPairs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PackingSeparation
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TraceIntegralBasis
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -84,9 +87,7 @@ theorem card_Psi : Fintype.card X.Ψ = fdeg E := by
   have h := NumberField.InfinitePlace.card_add_two_mul_card_eq_rank E
   have h0 : NumberField.InfinitePlace.nrRealPlaces E = 0 := by
     first
-    | exact NumberField.IsTotallyComplex.nrRealPlaces_eq_zero
     | exact NumberField.nrRealPlaces_eq_zero_iff.2 inferInstance
-    | simp
   rw [h0, zero_add] at h
   rw [← h]
   unfold NumberField.InfinitePlace.nrComplexPlaces
@@ -98,7 +99,6 @@ theorem card_Psi_pos : 0 < Fintype.card X.Ψ := by
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := by
     first
     | exact inferInstance
-    | exact ⟨(Classical.arbitrary (InfinitePlace E)).embedding⟩
   rw [Fintype.card_pos_iff]
   by_cases h : φ ∈ X.Ψ
   · exact ⟨⟨φ, h⟩⟩
@@ -121,7 +121,6 @@ theorem one_le_prod_norm (γ : E) (hint : IsIntegral ℤ γ) (hγ : γ ≠ 0) :
   have hI : IsIntegral ℤ (Algebra.norm ℚ γ) := by
     first
     | exact Algebra.isIntegral_norm ℚ hint
-    | exact Algebra.isIntegral_norm hint
   obtain ⟨n, hn⟩ := IsIntegrallyClosed.isIntegral_iff.1 hI
   have hN : Algebra.norm ℚ γ ≠ 0 := Algebra.norm_ne_zero_iff.2 hγ
   rw [← hn] at hN ⊢

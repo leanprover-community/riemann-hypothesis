@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.TateCohomology.HerbrandTate
+public import GroundTheory.TateCohomology.TateLow
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.FiniteCyclic
+public import Mathlib.RepresentationTheory.Homological.GroupHomology.FiniteCyclic
+public import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
@@ -93,11 +95,11 @@ noncomputable def tateCohomologyNegOneIsoHomology :
     (subCompNormHom A σ).moduleCatHomologyIso.symm
 
 theorem odd_of_even_negSucc {i : ℕ} (h : Even (Int.negSucc i)) : Odd i := by
-  rw [Int.negSucc_eq, even_neg, ← Nat.cast_succ, Int.even_coe_nat, Nat.even_add_one] at h
+  rw [Int.negSucc_eq, even_neg, ← Nat.cast_succ, Int.even_natCast, Nat.even_add_one] at h
   exact Nat.not_even_iff_odd.1 h
 
 theorem even_of_odd_negSucc {i : ℕ} (h : Odd (Int.negSucc i)) : Even i := by
-  rw [Int.negSucc_eq, odd_neg, ← Nat.cast_succ, Int.odd_coe_nat, Nat.odd_add_one] at h
+  rw [Int.negSucc_eq, odd_neg, ← Nat.cast_succ, Int.odd_natCast, Nat.odd_add_one] at h
   exact Nat.not_odd_iff_even.1 h
 
 variable [DecidableEq G]
@@ -107,7 +109,7 @@ noncomputable def tateCohomologyIsoEven :
   | .ofNat 0, _ => tateCohomologyZeroIsoHomology A hσ
   | .ofNat (i + 1), hn =>
       (TateCohomology.isoGroupCohomology (i + 1)).app A ≪≫
-        groupCohomologyIsoEven A σ hσ (i + 1) ((Int.even_coe_nat (i + 1)).1 hn)
+        groupCohomologyIsoEven A σ hσ (i + 1) ((Int.even_natCast (i + 1)).1 hn)
   | .negSucc i, hn =>
       haveI : NeZero i := ⟨fun h => by
         have := odd_of_even_negSucc hn
@@ -121,7 +123,7 @@ noncomputable def tateCohomologyIsoOdd :
   | .ofNat 0, hn => absurd hn (by decide)
   | .ofNat (i + 1), hn =>
       (TateCohomology.isoGroupCohomology (i + 1)).app A ≪≫
-        groupCohomologyIsoOdd A σ hσ (i + 1) ((Int.odd_coe_nat (i + 1)).1 hn)
+        groupCohomologyIsoOdd A σ hσ (i + 1) ((Int.odd_natCast (i + 1)).1 hn)
   | .negSucc 0, _ => tateCohomologyNegOneIsoHomology A hσ
   | .negSucc (i + 1), hn =>
       (TateCohomology.isoGroupHomology (Int.negSucc (i + 1)) (i + 1)

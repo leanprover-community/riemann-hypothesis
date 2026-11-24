@@ -1,8 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionRelation
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.HomotheticLatticeIntegralS2
+public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinRecursion
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ExistsUnitFactorizationBounded
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -75,8 +79,8 @@ theorem homothetic_lattice_integral_of : HomotheticLatticeIntegralS2 := by
   have key : lam ^ 2 * ι (Formalism.L2.Th1.F.s2 L)
       = -(((2 * dK : ℕ) : ℂ_[l])⁻¹ * ∑ P ∈ S, lam ^ 2 * ι (L.weierstrassP P)) := by
     have h := congrArg ι hsum'
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_mul, map_neg, map_mul, map_sum, map_ofNat, map_natCast] at h
+
+    rw [map_mul, map_neg, map_mul, map_sum, map_ofNat, map_natCast] at h
     rw [← Finset.mul_sum, ← h]
     push_cast
     push_cast at hN0

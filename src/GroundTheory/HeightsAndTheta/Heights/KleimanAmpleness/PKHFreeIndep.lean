@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.KHFreeIndepSt
 
 @[expose] public section
@@ -100,8 +99,8 @@ theorem eq_zero_of_sum_smul_monoFrac (I : ∀ k, Finset (ι k)) (A : Finset ((Σ
         (∑ b ∈ A, monomial (c b) (g b))) (1 : KH.cellMon S I) =
         ∑ b ∈ A, LocalizedModule.mk (Ideal.Quotient.mk (⊥ : Ideal (MRingOver S ι))
           (monomial (c b) (g b))) (1 : KH.cellMon S I) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact map_sum (LocalizedModule.mkLinearMap (KH.cellMon S I) _) _ _
     rw [e1, ← Finset.sum_congr rfl hterm, ← Finset.smul_sum, h, smul_zero]
   intro a ha

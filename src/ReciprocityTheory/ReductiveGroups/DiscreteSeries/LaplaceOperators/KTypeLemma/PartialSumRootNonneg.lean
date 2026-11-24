@@ -1,8 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.QuotientHighestWeightTensorStandard
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.SchPhiOneApply
-public import Mathlib
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KhwWeightEqOfIrr
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.LinearAlgebra.Eigenspace.Minpoly
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -49,17 +53,6 @@ theorem partialSum_root_nonneg {a b : Fin n} (hab : a < b) (k : ℕ) : 0 ≤ kir
   · norm_num
   · exfalso; omega
   · norm_num
-
-theorem partialSum_single_bounds {β : Fin n → ℝ} (hβ : InRootCone β) (k : ℕ) : 0 ≤ kirrPs k β := by
-  obtain ⟨m, rfl⟩ := hβ
-  rw [partialSum_finset_sum_eq]
-  refine Finset.sum_nonneg fun a _ => ?_
-  rw [partialSum_finset_sum_eq]
-  refine Finset.sum_nonneg fun b _ => ?_
-  split_ifs with h
-  · rw [partialSum_smul]
-    exact mul_nonneg (Nat.cast_nonneg _) (partialSum_root_nonneg h k)
-  · simp [kirrPs]
 
 theorem partialSum_add_eq {ι : Type*} (s : Finset ι) (f : ι → Fin n → ℝ) :
     kUnitWtLin (∑ i ∈ s, f i) = ∑ i ∈ s, kUnitWtLin (f i) := by
@@ -138,8 +131,6 @@ theorem highestWeight_dominant {N : Type*} [NormedAddCommGroup N] [InnerProductS
   have key' : (ν a - ν b) * ‖y‖ ^ 2 = ‖A b a y‖ ^ 2 := by
     norm_cast at key
     first
-    | exact Complex.ofReal_injective key
-    | exact RCLike.ofReal_injective key
     | exact (Complex.ofReal_injective (by simpa using key))
   have hpos : 0 < ‖y‖ ^ 2 := pow_pos (norm_pos_iff.mpr hy0) 2
   by_contra hlt
@@ -296,12 +287,12 @@ theorem exists_kIrreducible_highestWeight {N : Type*} [NormedAddCommGroup N] [In
     by_cases h1 : c = a <;> by_cases h2 : c = b
     · subst h1; subst h2; simp
     · subst h1; simp [h2, Ne.symm h2]
-    · subst h2; simp [h1, Ne.symm h1]
-    · simp [h1, h2, Ne.symm h1, Ne.symm h2]
+    · subst h2; simp [h1]
+    · simp [h1, h2, Ne.symm h2]
   have hHr : ∀ a b x, H (A a b x) = A a b (H x) + (((b : ℕ) : ℂ) - ((a : ℕ) : ℂ)) • A a b x := by
     intro a b x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sub_eq_iff_eq_add', hH, hH, map_sum, ← Finset.sum_sub_distrib]
+
+    rw [← sub_eq_iff_eq_add', hH, hH, map_sum, ← Finset.sum_sub_distrib]
     simp only [map_smul, ← smul_sub, hcomm1]
     simp only [smul_sub, smul_ite, smul_zero, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rw [← sub_smul]

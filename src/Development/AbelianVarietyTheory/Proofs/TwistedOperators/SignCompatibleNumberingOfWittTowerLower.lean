@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsFundamentalDomainOfHaar
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSignatureFromBlocks
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FrameExistsSignCompat
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSignatureFromBlocks
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Upqcpt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 
 @[expose] public section
@@ -56,26 +96,15 @@ theorem hasSignature_of_signCompat {n p q : ℕ} {ε : Fin n → Bool} {P : Matr
         simp [Matrix.mul_apply, Formalism.REAL.Jm, Matrix.diagonal_apply, Matrix.one_apply, e.injective.eq_iff]
         rcases a with a | a <;> split_ifs <;> subst_vars <;> simp_all
 
-private theorem hT_eq_sum_frame_repr {D : D7} (T : HSp D) (x y : T.V) :
-    T.hT x y = ∑ j, ∑ j', star (T.frame.repr x j) * T.gram j j' * T.frame.repr y j' := by
-  conv_lhs => rw [← T.frame.sum_repr x, ← T.frame.sum_repr y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
-    Finset.mul_sum]
-  conv_lhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun j' _ => ?_
-  simp only [Formalism.BasicNotions.HSpace.gram, starRingEnd_apply, RingHom.id_apply]
-  ring
-
 private theorem gram_tauE_frame_repr_eq_hT {D : D7} (T : HSp D) (τ : D.what₂.Tau) {κ κ' : Type} (w : κ → T.V) (w' : κ' → T.V) :
     (Matrix.of fun j k => tauE D τ (T.frame.repr (w k) j))ᴴ * gramAt D T τ *
       (Matrix.of fun j k => tauE D τ (T.frame.repr (w' k) j)) =
       Matrix.of fun k l => tauE D τ (T.hT (w k) (w' l)) := by
   ext k l
-  rw [Matrix.of_apply, hT_eq_sum_frame_repr]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply, map_sum, map_mul,
-    GlobalTheory.FockCompare.tauE_star, Finset.sum_mul]
+  rw [Matrix.of_apply, _root_.GlobalTheory.AutFunCounterexample.hT_coord]
+
+  simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply, map_sum, map_mul,
+  GlobalTheory.FockCompare.tauE_star, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun j' _ => ?_
   simp [gramAt, Matrix.map_apply]
@@ -156,12 +185,12 @@ private theorem submatrix_inl_gram_eq_one_and_inr_eq_neg_one {n : Type} [Fintype
     have h := congrFun (congrFun hQ (Sum.inl a)) (Sum.inl b)
     simp only [Matrix.mul_apply, Matrix.submatrix_apply, Matrix.conjTranspose_apply, id] at h ⊢
     rw [h]
-    by_cases hab : a = b <;> simp [hab, Matrix.diagonal_apply, Matrix.one_apply]
+    by_cases hab : a = b <;> simp [hab, Matrix.one_apply]
   · ext a b
     have h := congrFun (congrFun hQ (Sum.inr a)) (Sum.inr b)
     simp only [Matrix.mul_apply, Matrix.submatrix_apply, Matrix.conjTranspose_apply, id] at h ⊢
     rw [h]
-    by_cases hab : a = b <;> simp [hab, Matrix.diagonal_apply, Matrix.one_apply]
+    by_cases hab : a = b <;> simp [hab]
 
 theorem hasSignature_of_isWittLower {D : D7} {T T' : HSp D} {i : ℕ} (h : IsWittLower T T' i) (τ : D.what₂.Tau)
     {p q : ℕ} (hs : Formalism.UG.HasSignature (gramAt D T' τ) p q) :
@@ -175,7 +204,7 @@ theorem hasSignature_of_isWittLower {D : D7} {T T' : HSp D} {i : ℕ} (h : IsWit
     exact h1
   have hcc : ∀ k l, T.hT (c k) (c l) = 0 := by
     intro k l
-    rw [hT_eq_sum_frame_repr]
+    rw [_root_.GlobalTheory.AutFunCounterexample.hT_coord]
     simp only [hrc]
     have h0 := congrFun (congrFun hCiso k) l
     rw [Matrix.zero_apply] at h0
@@ -185,7 +214,7 @@ theorem hasSignature_of_isWittLower {D : D7} {T T' : HSp D} {i : ℕ} (h : IsWit
     rfl
   have hcu : ∀ a k, T.hT (ι (T'.frame a)) (c k) = 0 := by
     intro a k
-    rw [hT_eq_sum_frame_repr]
+    rw [_root_.GlobalTheory.AutFunCounterexample.hT_coord]
     simp only [hrc]
     have h0 := congrFun (congrFun hFC a) k
     rw [Matrix.zero_apply] at h0

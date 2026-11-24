@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.AlgebraicTheory.StatementC
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.UnitaryConstant
+public import Formalism.LocalToGlobal.AlgebraicTheory.StatementB
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementC
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

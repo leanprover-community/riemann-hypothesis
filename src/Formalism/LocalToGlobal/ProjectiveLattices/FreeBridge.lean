@@ -1,10 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.L2DefiniteCuspForms
-public import Formalism.LocalToGlobal.ProjectiveLattices.NonnegIffOfLiesTotal
 public import Formalism.LocalToGlobal.ProjectiveLattices.ValSetAlgSubset
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
-public import Formalism.LocalToGlobal.ProjectiveLattices.PtFree
 public import Formalism.LocalToGlobal.ProjectiveLattices.RegPFree
 
 @[expose] public section

@@ -1,13 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Jets.ColValMonomial
-public import Development.AbelianVarietyTheory.Definitions.Jets.SurjectiveAppTopSqCube
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.VRatioGtStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TwistBC
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ThreePointSeriesExponentialOfDefect
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsExtensionPullOver
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullExp
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifBaseChangeSt
+public import Development.AbelianVarietyTheory.Definitions.Jets.SurjectiveAppTopSqCube
+import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsGoodConst
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowerSeriesExpIntegralCanonGaugeAdditiveSecond
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.StalkMapInjectiveOfFlat
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ThreePointSeriesExponentialOfDefect
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpansionCommutesPullbackCmEndoFourLeStatement
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.PullAlLinearCombinationStatement
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SecLinIffComb
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullUUnitsCompatGeneric
 
 @[expose] public section
 
@@ -55,7 +102,7 @@ theorem exists_norm {S : Scheme.{0}} {G : Over S} [GrpObj G] (Lr : RigLB G) (f :
     (LB.pullGen Lr.L _ _ mu (eSec G)) (DVR.pullGen_isGen _ _ _ _ hmu _)
   obtain ⟨c, hc, vc⟩ := FrameGeo.exists_ratio Lr.isLB (𝟙 _) (𝟙 _) (Category.comp_id _)
     (by rw [Scheme.Hom.id_appTop]; exact Function.surjective_id)
-    (FrameGeo.powGen_isGen Lr.L _ _ Lr.rig Lr.rigGen (N - 1)) ht
+    (_root_.ReciprocityTheory.ChartRestriction.G.DVR.powGen_isGen Lr.L _ _ Lr.rig Lr.rigGen (N - 1)) ht
   refine ⟨scaleGen (hc.map G.hom.appTop.hom).unit mu, scaleGen_isGen _ _ hmu, fun Z r z J hJ => Units.ext ?_⟩
   refine Eq.trans ?_ (vc Z r z J hJ).symm
   rw [vt Z r z J hJ, val_pull hJ]
@@ -88,7 +135,7 @@ theorem exists_generic (Lr : RigLB G) (f : G ⟶ G) (N k : ℕ)
       simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Category.comp_id, endK_gK, Nat.cast_mul, mul_neg,
         _root_.mul_one])
     (LB.pullGen Lr.L _ _ (GeneratorPullback.powGen Lr.L _ _ mu k) gK)
-    (DVR.pullGen_isGen _ _ _ _ (FrameGeo.powGen_isGen _ _ _ _ hmu k) _)
+    (DVR.pullGen_isGen _ _ _ _ (_root_.ReciprocityTheory.ChartRestriction.G.DVR.powGen_isGen _ _ _ _ hmu k) _)
   have vu' : ∀ (Z : Scheme.{0}) (r : Z ⟶ pullback G.hom (jK V)) (z : Z) (J), Good Lr.L z J →
       val u r z J = val mu (r ≫ gK) z J ^ k := fun Z r z J hJ => by
     rw [vu Z r z J hJ, val_pull hJ, FrameGeo.val_powGen]
@@ -108,7 +155,7 @@ theorem sval_of_generic [Flat G.hom] {L : LB G.left} (hL : L.IsLB) (f : G ⟶ G)
         (sval σ ((r ≫ endK f) ≫ gK) z J * (val mu (r ≫ gK) z J ^ k).val))
     (Z : Scheme.{0}) (r : Z ⟶ G.left) (z : Z) (J) (hJ : Good L z J) :
     sval σ' r z J = constVal (r ≫ G.hom) z t * (sval σ (r ≫ f.left) z J * (val mu r z J).val ^ k) := by
-  have hk := FrameGeo.powGen_isGen _ _ _ _ hmu k
+  have hk := _root_.ReciprocityTheory.ChartRestriction.G.DVR.powGen_isGen _ _ _ _ hmu k
   obtain ⟨τ, hτ⟩ := exists_sec hL (φ' := fun _ : Fin 1 => 𝟙 G.left) (ε' := fun _ => ((k * N : ℕ) : ℤ))
     (fun W _ g => by
       simp only [Fintype.prod_sum_type, Fin.prod_univ_two, Sum.elim_inl, Sum.elim_inr, Finset.univ_unique,
@@ -149,11 +196,6 @@ theorem gs_eq_germ_fnVal {A : Type} [CommRing A] {X : Scheme.{0}} (r : Spec (Com
 
 variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))} [GrpObj G] {d : ℕ}
 
-theorem ev_pt_zero (s : PS R 1 d) : ev (n := 1) ![pt R d 0] s = s := by
-  have : (![pt R d 0] : Fin 1 → Pt R 1 d) = fun j => pt R d j := by
-    funext j; fin_cases j; rfl
-  rw [this, FBOf.ev_self]
-
 theorem exists_evHom {m n : ℕ} {a : Fin m → Pt R n d} (ha : ∀ j i, MvPowerSeries.constantCoeff (a j i) = 0) :
     ∃ Ψ : PS R m d →+* PS R n d, (∀ f, ev a f = Ψ f) ∧ ∀ c, Ψ (MvPowerSeries.C c) = MvPowerSeries.C c :=
   ⟨(MvPowerSeries.substAlgHom (R := R) (FramePull.hasSubst_points ha)).toRingHom,
@@ -168,7 +210,7 @@ theorem isSer1_unique (hJet : JetAlgSt) (hRep : RepSt) {x : JetSer.Fam G (Fin d)
   obtain ⟨Y, hY, -⟩ := r1 (pt R (n := 1) d 0) (TB.WickVanishing.gp_pt 0)
   refine j3 g g' fun m => ?_
   have := (h 1 _ _ hY m).2.symm.trans (h' 1 _ _ hY m).2
-  rwa [ev_pt_zero, ev_pt_zero] at this
+  rwa [_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.gt_ev_pt_self, _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.gt_ev_pt_self] at this
 
 theorem series_pull (hJet : JetAlgSt) (hRep : RepSt) {x : JetSer.Fam G (Fin d)} (hx : IsUnivChart G d x)
     {L : LB G.left} (hL : L.IsLB) (j : L.ι) {f : G ⟶ G} {α : Pt R 1 d} (hα : IsMapOf x x f α) {N k q : ℕ}
@@ -212,7 +254,7 @@ theorem series_pull (hJet : JetAlgSt) (hRep : RepSt) {x : JetSer.Fam G (Fin d)} 
     have a₂ := congrArg (fun q => q.hom t) (Scheme.ΓSpecIso_inv_naturality
       (CommRingCat.ofHom (algebraMap R (JetR R (Fin 1 × Fin d) m))))
     exact congrArg _ ((congrArg _ a₁).trans a₂)
-  rw [ev_pt_zero] at e₁ e₃
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.gt_ev_pt_self] at e₁ e₃
   show Φ S' = Φ _
   rw [map_mul, map_mul, map_pow, e₁, e₂, e₃, e₄]
   exact H _ _ z J hJ
@@ -298,8 +340,8 @@ theorem germ_pullback : Laws → Laws4 → TwistBCSpanStatement → JetSer.JetAl
   · have eV : TWO.algVF (V := V) (F := F) = algebraMap V F := (IsScalarTower.algebraMap_eq V _ F).symm
     have czK := FramePull.cz1 (FramePull.constantCoeff_actK (k := F) y.B a)
     obtain ⟨Θ, hΘ, hΘ'⟩ := exists_evHom czK
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hΘ, map_sum, Finset.sum_mul, Finset.mul_sum]
+
+    rw [hΘ, map_sum, Finset.sum_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     have e : (fun j i => MvPowerSeries.map (algebraMap V F) ((![y.B.A.act a] : Fin 1 → Pt V 1 y.d) j i)) =
         ![y.B.actK F a] := by

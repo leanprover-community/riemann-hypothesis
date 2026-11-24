@@ -1,10 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ValRat
-public import Formalism.LocalToGlobal.HermitianForms.RankEqFirstLevel
 public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 public import Formalism.LocalToGlobal.HermitianColumns.BaseModelLevelEq
-public import Formalism.LocalRingCardinality.DataLatDefs
 
 @[expose] public section
 
@@ -26,8 +24,6 @@ theorem tEL_emb (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : D.what₂.embLL (
   simp only [tEL, embT, Formalism.BasicNotions.Host.emb, RingHom.comp_apply]
   first
     | exact RingHom.congr_fun D.embE_φ₀ _
-    | exact D.embE_φ₀ _
-    | (rw [← D.embE_φ₀]; rfl)
 
 def locAt (X : Formalism.L2.Herm.Herm0 D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E) :
@@ -56,7 +52,7 @@ def StdB (D : D7) (B : GL (Fin D.R.k) D.host.E) : Prop :=
       (algebraMap (𝓞 D.host.E) D.host.E).range
 
 
-set_option maxHeartbeats 1000000 in
+
 structure CmpTied (D : D7) (X : Formalism.L2.Herm.Herm0 D) (T : ∀ u : D.what₂.Word, Forms0 D u) (Gt : GatTies D)
     (c : LatCmp D) where
 

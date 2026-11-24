@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaGraphPartition
+public import Mathlib.Analysis.Calculus.MeanValue
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
 
 @[expose] public section
 

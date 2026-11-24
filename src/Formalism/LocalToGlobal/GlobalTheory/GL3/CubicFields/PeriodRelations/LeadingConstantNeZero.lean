@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.Bridge
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

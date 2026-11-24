@@ -1,8 +1,10 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CarSumSqZeroOfAnti
+public import Formalism.RealPlaceAnalysis.StatementKT
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.WeylPos
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CarSumSqZeroOfAnti
 
 @[expose] public section
 
@@ -95,7 +97,7 @@ theorem lf_dom {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam : StrictAnti la
       exact h2.trans h1
     · simp only [not_exists, not_and] at hmid
       have hC := HW.rhoC_consec ε hab he hmid
-      obtain ⟨m, hm⟩ := HW.kIrrHW_int ε hF hV a b hab he
+      obtain ⟨m, hm⟩ := _root_.ReciprocityTheory.ChartRestriction.DS.HW.kIrrHW_int' ε hF hV a b hab he
       obtain ⟨k, hk⟩ := lf_rhoN_sub_nat ε hab he
       have hH := lf_rhoHol_eq ε he
       have hl := hlam hab

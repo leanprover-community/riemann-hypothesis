@@ -1,12 +1,62 @@
 module
 
-public import Mathlib
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FirstMinimumAndCuspWeightBounds
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
-public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustStatementPfA
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PMahlerCompactness
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Constructions.Polish.EmbeddingReal
+public import Mathlib.MeasureTheory.Function.Floor
+public import Mathlib.MeasureTheory.Function.SpecialFunctions.Arctan
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustStatementPfA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 @[expose] public section
 
@@ -85,34 +135,7 @@ theorem RiemLat.form_antisymm (R : RiemLat E g Λ) (x y : Λ) : R.form y x = - R
 
 theorem RiemLat.form_sq_le (R : RiemLat E g Λ) (x y : Λ) :
     ((R.form x y : ℤ) : ℝ) ^ 2 ≤ R.normSq x * R.normSq y := by
-  set z := R.P x
-  set w := R.P y
-  have key : ∀ s : ℝ, 0 ≤ R.normSq y * (s * s) + (2 * (R.form x y : ℤ) : ℝ) * s + R.normSq x := by
-    intro s
-    have h := R.quad_nonneg (z + ((s : ℂ) * Complex.I) • w)
-    have e1 : (z ⬝ᵥ R.Hm *ᵥ star z).re = R.normSq x := rfl
-    have e2 : (w ⬝ᵥ R.Hm *ᵥ star w).re = R.normSq y := rfl
-    have e3 : (z ⬝ᵥ R.Hm *ᵥ star w).im = (R.form x y : ℤ) := R.im x y
-    have e4 : (w ⬝ᵥ R.Hm *ᵥ star z).im = (R.form y x : ℤ) := R.im y x
-    rw [R.form_antisymm x y] at e4
-    have hexp : (z + ((s : ℂ) * Complex.I) • w) ⬝ᵥ R.Hm *ᵥ star (z + ((s : ℂ) * Complex.I) • w) =
-        (z ⬝ᵥ R.Hm *ᵥ star z) + (-(s : ℂ) * Complex.I) * (z ⬝ᵥ R.Hm *ᵥ star w) +
-          ((s : ℂ) * Complex.I) * (w ⬝ᵥ R.Hm *ᵥ star z) + (s : ℂ) ^ 2 * (w ⬝ᵥ R.Hm *ᵥ star w) := by
-      simp only [star_add, star_smul, mulVec_add, mulVec_smul, add_dotProduct, dotProduct_add,
-        smul_dotProduct, dotProduct_smul, smul_eq_mul, star_mul', Complex.star_def, Complex.conj_ofReal,
-        Complex.conj_I]
-      have hI := Complex.I_mul_I
-      ring_nf
-      simp only [Complex.I_sq]
-      ring
-    rw [hexp] at h
-    simp only [Complex.add_re, Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.mul_im, e1, e2, e3, e4, sq] at h
-    push_cast at h
-    nlinarith [h]
-  have hd := discrim_le_zero key
-  rw [discrim] at hd
-  nlinarith [hd]
+  apply GlobalTheory.CompanionTheory.Ar.Cusp.RiemLat.integral_form_sq_le_mul_normSq
 
 theorem RiemLat.finite_normSq_le (R : RiemLat E g Λ) (c : ℝ) : {x | R.normSq x ≤ c}.Finite := by
   haveI := R.free

@@ -1,6 +1,45 @@
 module
 
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.LatticeSumBounds
+public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -9,69 +48,192 @@ open scoped BigOperators ComplexConjugate
 
 namespace Formalism.HermitianLatticeCounting.P
 
+private lemma four_mul_le_scaled_log (K F lk : ℝ) (hK : 0 ≤ K) (hF : 4 ≤ F) (hlk : 1 ≤ lk) :
+    4 * K ≤ K * F * lk := calc
+  4 * K = K * 4 * 1 := by ring
+  _ ≤ K * F * lk := by gcongr
+
+private lemma exponentScaleBounds (C K F M L lk lg : ℝ)
+    (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hL : 0.69 ≤ L) (hlk : 1 ≤ lk)
+    (hlg : 8 * (lk + L) ≤ lg) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) :
+    40000 ≤ K ∧ 32 * K ≤ K * F * lg ∧
+      ∀ i j : ℕ, i ≤ 32 → j ≤ 5 → 16 * (C ^ i * M ^ j * F * L) ≤ K := by
+  have hF : 4 ≤ F := h4M.trans hMF
+  have hM5 : 1024 ≤ M ^ 5 := by
+    have := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 4) h4M 5
+    norm_num at this
+    exact this
+  have hY : 1024 * 4 * 0.69 ≤ M ^ 5 * F * L := by
+    gcongr
+  have hZ : M ^ 5 * F * L ≤ C ^ 32 * (M ^ 5 * F * L) :=
+    le_mul_of_one_le_left (by positivity) (one_le_pow₀ hC)
+  have hK : 40000 ≤ K := by linarith
+  have hFg : 4 * 8 ≤ F * lg := by
+    gcongr
+    linarith
+  refine ⟨hK, ?_, ?_⟩
+  · have := mul_le_mul_of_nonneg_left hFg (by linarith : 0 ≤ K)
+    linarith
+  · intro i j hi hj
+    have hCi := pow_le_pow_right₀ hC hi
+    have hMj := pow_le_pow_right₀ (by linarith : 1 ≤ M) hj
+    calc
+      16 * (C ^ i * M ^ j * F * L) ≤ 16 * (C ^ 32 * (M ^ 5 * F * L)) := by
+        rw [← mul_assoc (C ^ 32) (M ^ 5 * F), ← mul_assoc (C ^ 32) (M ^ 5)]
+        gcongr
+      _ ≤ K := by linarith only [hX]
+
+private lemma exponentCommonRowBound (C K F M L lk lg lC l2 S : ℝ)
+    (hF : 4 ≤ F) (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
+    (hlC : 32 * lC ≤ lk) (hl2 : l2 ≤ L) (hS : 2 ≤ S) (hK : 40000 ≤ K)
+    (h32 : 32 * K ≤ K * F * lg)
+    (hY4 : 16 * (C ^ 2 * M ^ 4 * F * L) ≤ K)
+    (hY5 : 16 * (C ^ 2 * M ^ 5 * F * L) ≤ K) :
+    (S - 2) * K * F * (l2 - lg) + (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) +
+      6 * S * F * (lC + 2 * lk) ≤
+      (-(S - 2) * K * F * lg * 9 + K * F * lk) / 12 := by
+  have hQ : 0 ≤ S - 2 := by linarith
+  have hK0 : 0 ≤ K := by linarith
+  have hF0 : 0 ≤ F := by linarith
+  have hlk0 : 0 ≤ lk := by linarith
+  have hlg0 : 0 ≤ lg := by linarith
+  have hU : 0 ≤ (S - 2) * K * F * lg := by positivity
+  have hP := four_mul_le_scaled_log K F lk hK0 hF hlk
+  have hA := mul_le_mul_of_nonneg_left hY4 (by linarith : 0 ≤ S)
+  have hB := mul_le_mul_of_nonneg_left h32 hQ
+  have h1 : 6 * S * F * (lC + 2 * lk) ≤ 6 * S * F * (3 * lk) := by
+    gcongr
+    linarith
+  have h2 := mul_le_mul_of_nonneg_left (show 8 * lk ≤ lg by linarith)
+    (show 0 ≤ (S - 2) * F by positivity)
+  have h3 : 36 * ((S - 2) * F * lg) ≤ K * ((S - 2) * F * lg) := by
+    gcongr
+    linarith
+  have h4 : 36000 * (F * lk) ≤ K * (F * lk) := by
+    gcongr
+    linarith
+  have hD := mul_le_mul_of_nonneg_left (show 8 * (l2 - lg) ≤ -7 * lg by linarith)
+    (show 0 ≤ (S - 2) * K * F by positivity)
+  have hP0 : 0 ≤ K * F * lk := by positivity
+  linarith only [hU, hP0, hP, hA, hB, hY5, h1, h2, h3, h4, hD]
+
+private lemma exponentTopRowBound (C K F M L lk lg lC S : ℝ) (hF : 4 ≤ F)
+    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlg : 8 * (lk + L) ≤ lg) (hlC : 32 * lC ≤ lk)
+    (hK : 40000 ≤ K) (hKS : K - 1 ≤ S) (h32 : 32 * K ≤ K * F * lg)
+    (hY3 : 16 * (C ^ 3 * M ^ 3 * F * L) ≤ K) (hY1 : 16 * (C ^ 2 * M ^ 1 * F * L) ≤ K) :
+    K * F * (lk + L) + (K * F * (lC + lk) +
+        ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K)) ≤
+      (S - 2) * K * F * lg / 16 := by
+  have hK0 : 0 ≤ K := by linarith
+  have hF0 : 0 ≤ F := by linarith
+  have hlg0 : 0 ≤ lg := by linarith
+  have hKF0 : 0 ≤ K * F := by positivity
+  have hTop := mul_le_mul_of_nonneg_left hlg hKF0
+  have hLog := mul_le_mul_of_nonneg_left (show 256 * (lC + lk) ≤ 33 * lg by linarith) hKF0
+  have hA := mul_le_mul_of_nonneg_left hY3 hK0
+  have hB := mul_le_mul_of_nonneg_left hY1 hK0
+  have hC := mul_le_mul (show K ≤ 2 * (S - 2) by linarith) h32 (by positivity)
+    (show 0 ≤ 2 * (S - 2) by linarith)
+  have hD := mul_le_mul_of_nonneg_right (show 100 ≤ S - 2 by linarith)
+    (show 0 ≤ K * F * lg by positivity)
+  have hU : 0 ≤ (S - 2) * K * F * lg := mul_nonneg
+    (mul_nonneg (mul_nonneg (by linarith) hK0) hF0) hlg0
+  linarith only [hA, hB, hC, hD, hTop, hLog, hU]
+
+private lemma sixthPowerBound (C K F M L lk : ℝ) (hK : 0 ≤ K) (hF : 0 ≤ F)
+    (hC : 1 ≤ C) (hM : 4 ≤ M) (hL : 0.69 ≤ L) (hMF : M ≤ F) (hlk : 1 ≤ lk)
+    (hY : 16 * (C * M ^ 5 * F * L) ≤ K) :
+    C * M ^ 6 * F * L ≤ K * F * lk / 16 := by
+  have hA := mul_le_mul_of_nonneg_right hY hF
+  have hB := mul_le_mul_of_nonneg_right hMF (show 0 ≤ C * M ^ 5 * F * L by positivity)
+  have hD := mul_le_mul_of_nonneg_left hlk (show 0 ≤ K * F by positivity)
+  linarith only [hA, hB, hD]
+
+/-- Bounds the shared terms of the row estimates after bounding the leading contribution. -/
+private lemma exponentWindowBounds (C K F M L lk lg lC l2 S lGam front : ℝ)
+    (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hL : 0.69 ≤ L) (hlk : 1 ≤ lk)
+    (hlg : 8 * (lk + L) ≤ lg) (hlC : 32 * lC ≤ lk) (hl2 : l2 ≤ L) (hS : 2 ≤ S)
+    (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (hG : lGam ≤ C * M ^ 5 * F * L)
+    (hFront : 40000 ≤ K → 32 * K ≤ K * F * lg →
+      (∀ i j : ℕ, i ≤ 32 → j ≤ 5 → 16 * (C ^ i * M ^ j * F * L) ≤ K) →
+      front ≤ (S - 2) * K * F * lg / 16 + K * F * lk / 12) :
+    (((S - 1) * K * F) * (l2 - lg) + front + K * F * lC +
+      (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam ≤
+      -(K * F * lg) / 2 - lk) ∧
+    (((S - 2) * K * F) * (l2 - lg) + front + K * F * lC +
+      (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam +
+      C * M ^ 6 * F * L + K * F * (lC - lk) ≤ -(K * F * lk) / 2 - 2 * lGam - lk) := by
+  obtain ⟨hK, h32, hY⟩ := exponentScaleBounds C K F M L lk lg hC h4M hMF hL hlk hlg hX
+  have hF : 4 ≤ F := h4M.trans hMF
+  have hK0 : 0 ≤ K := by linarith
+  have hF0 : 0 ≤ F := by linarith
+  have hlk0 : 0 ≤ lk := by linarith
+  have hlg0 : 0 ≤ lg := by linarith
+  have hU : 0 ≤ (S - 2) * K * F * lg := by positivity
+  have hP0 : 0 ≤ K * F * lk := by positivity
+  have hP := four_mul_le_scaled_log K F lk hK0 hF hlk
+  have hY1 : 16 * (C * M ^ 5 * F * L) ≤ K := by
+    simpa only [pow_one] using hY 1 5 (by decide) (by decide)
+  have hGam : 16 * lGam ≤ K := by linarith only [hG, hY1]
+  have hM6 := sixthPowerBound C K F M L lk hK0 hF0 hC h4M hL hMF hlk hY1
+  have hRow := exponentCommonRowBound C K F M L lk lg lC l2 S hF hL hlk hlg hlC hl2 hS hK h32
+    (hY 2 4 (by decide) (by decide)) (hY 2 5 (by decide) (by decide))
+  have hFront' := hFront hK h32 hY
+  have hKF0 : 0 ≤ K * F := by positivity
+  have hLog := mul_le_mul_of_nonneg_left hlC hKF0
+  have hD := mul_le_mul_of_nonneg_left (show 8 * (l2 - lg) ≤ -7 * lg by linarith) hKF0
+  have hW := mul_le_mul_of_nonneg_left (show 8 * lk ≤ lg by linarith) hKF0
+  have hKF : 1000 ≤ K * F := calc
+    1000 ≤ (40000 : ℝ) * 4 := by norm_num
+    _ ≤ K * F := by gcongr
+  have hSmall := mul_le_mul_of_nonneg_right hKF hlk0
+  constructor
+  · linarith only [hRow, hFront', hD, hW, hU, hP0, hLog, hSmall, hGam, hP]
+  · linarith only [hRow, hFront', hU, hP0, hLog, hSmall, hGam, hP, hM6]
+
+private lemma exponentMidTermsBound (C K F M L lk lg lC S : ℝ)
+    (hF : 4 ≤ F) (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
+    (hlC : 32 * lC ≤ lk) (hS : 2 ≤ S) (hK : 40000 ≤ K)
+    (hY : 16 * (C ^ 2 * M ^ 2 * F * L) ≤ K) :
+    C * M ^ 2 * F * L * C + S * K * F * lC ≤
+      (S - 2) * K * F * lg / 16 + K * F * lk / 12 := by
+  have hK0 : 0 ≤ K := by linarith
+  have hF0 : 0 ≤ F := by linarith
+  have hlk0 : 0 ≤ lk := by linarith
+  have hlg0 : 0 ≤ lg := by linarith
+  have hU : 0 ≤ (S - 2) * K * F * lg := by positivity
+  have hP0 : 0 ≤ K * F * lk := by positivity
+  have hP := four_mul_le_scaled_log K F lk hK0 hF hlk
+  have hA := mul_le_mul_of_nonneg_left hlC (show 0 ≤ K * F by positivity)
+  have hB := mul_le_mul_of_nonneg_left (show 256 * lC ≤ lg by linarith)
+    (show 0 ≤ (S - 2) * K * F by positivity)
+  linarith only [hY, hA, hB, hP, hP0, hU]
+
 lemma exponent_inequality_single (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
     (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
     (hl20 : 0 ≤ l2) (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (R lGam : ℝ) (hR : 1 ≤ R) (hMR : M = 2 * R + 2)
     (hG : lGam ≤ C * M ^ 5 * F * L) :
     F * lC + (C * M ^ 2 * F * L) * (C * M ^ 3) + lGam + C * M ^ 6 * F * L +
       (K * F) * (lC - (2 * R + 1) * lg - R * lk) / 2 ≤ -(K * F * lk) := by
-  have hM0 : 0 ≤ M := by linarith
-  have hM1 : 1 ≤ M := by linarith
-  have hF0 : 0 ≤ F := by linarith
+  have hF : 4 ≤ F := h4M.trans hMF
   have hK0 : 0 ≤ K := by linarith
-  have hL0 : 0 ≤ L := by linarith
+  have hF0 : 0 ≤ F := by linarith
   have hlk0 : 0 ≤ lk := by linarith
   have hlg0 : 0 ≤ lg := by linarith
-  have hC0 : 0 ≤ C := by linarith
-  have hC32 : C ≤ C ^ 32 := le_self_pow₀ hC (by norm_num)
-  have hC2 : C ^ 2 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hC3 : C ^ 3 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hY0 : 0 ≤ M ^ 5 * F * L := mul_nonneg (mul_nonneg (pow_nonneg hM0 5) hF0) hL0
-  have hZ0 : 0 ≤ C ^ 32 * (M ^ 5 * F * L) := mul_nonneg (pow_nonneg hC0 32) hY0
-  have hM5 : 1024 ≤ M ^ 5 := by
-    have h := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 4) h4M 5
-    norm_num at h
-    linarith
-  have hF4 : 4 ≤ F := by linarith
-  have hM5F : 1024 * 4 ≤ M ^ 5 * F := mul_le_mul hM5 hF4 (by norm_num) (by linarith)
-  have hY : 1024 * 4 * 0.69 ≤ M ^ 5 * F * L := mul_le_mul hM5F hL (by norm_num) (by linarith)
-  have hYC : M ^ 5 * F * L ≤ C ^ 32 * (M ^ 5 * F * L) := le_mul_of_one_le_left hY0 (one_le_pow₀ hC)
-  have hC1Y : C * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC32 hY0
-  have hC2Y : C ^ 2 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC2 hY0
-  have hC3Y : C ^ 3 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC3 hY0
-  have hKbig : 40000 ≤ K := by linarith
-  have hFlk : 4 * 1 ≤ F * lk := mul_le_mul hF4 hlk (by norm_num) hF0
-  have hKP : K * (4 * 1) ≤ K * (F * lk) := mul_le_mul_of_nonneg_left hFlk hK0
-  have hKF0 : 0 ≤ K * F := mul_nonneg hK0 hF0
-  have hKF1000 : 40000 * 4 ≤ K * F := mul_le_mul hKbig hF4 (by norm_num) hK0
-  have hFKP : K * F * 1 ≤ K * F * lk := mul_le_mul_of_nonneg_left hlk hKF0
-  have hPlk : (40000 * 4) * lk ≤ K * F * lk := mul_le_mul_of_nonneg_right hKF1000 hlk0
-  have hlg8 : 8 ≤ lg := by linarith
-  have hFlg : 4 * 8 ≤ F * lg := mul_le_mul hF4 hlg8 (by norm_num) hF0
-  have h32' : K * (4 * 8) ≤ K * (F * lg) := mul_le_mul_of_nonneg_left hFlg hK0
-  have h32 : 32 * K ≤ K * F * lg := by linarith
-  have hW0 : 0 ≤ K * F * lg := mul_nonneg hKF0 hlg0
-  have hlgW : 1 * lg ≤ K * F * lg := mul_le_mul_of_nonneg_right (by linarith) hlg0
-  have hMY : ∀ j : ℕ, j ≤ 5 → M ^ j * F * L ≤ M ^ 5 * F * L := fun j hj =>
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hM1 hj) hF0) hL0
-  have hM1Y : M * F * L ≤ M ^ 5 * F * L :=
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_self_pow₀ hM1 (by norm_num)) hF0) hL0
-  have hlClk : lC ≤ lk / 32 := by linarith
-  have hlklg : lk ≤ lg / 8 := by linarith
-  have hLlg : L ≤ lg / 8 := by linarith
-  have hlClg : lC ≤ lg / 256 := by linarith
-  have hG1 : lGam ≤ C * (M ^ 5 * F * L) := by linarith
-  have f1 : F * lC ≤ F * (lk / 32) := mul_le_mul_of_nonneg_left hlClk hF0
-  have f1b : 1 * (F * lk) ≤ K * (F * lk) :=
-    mul_le_mul_of_nonneg_right (by linarith : (1 : ℝ) ≤ K) (mul_nonneg hF0 hlk0)
-  have f4a : M * (C * (M ^ 5 * F * L)) ≤ M * (C ^ 32 * (M ^ 5 * F * L)) := mul_le_mul_of_nonneg_left hC1Y hM0
-  have f4b : M * (C ^ 32 * (M ^ 5 * F * L)) ≤ F * (C ^ 32 * (M ^ 5 * F * L)) := mul_le_mul_of_nonneg_right hMF hZ0
-  have f4c : F * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ F * K := mul_le_mul_of_nonneg_left hX hF0
+  obtain ⟨hK, _, hY⟩ := exponentScaleBounds C K F M L lk lg hC h4M hMF hL hlk hlg hX
+  have hP := four_mul_le_scaled_log K F lk hK0 hF hlk
+  have hY1 : 16 * (C * M ^ 5 * F * L) ≤ K := by
+    simpa only [pow_one] using hY 1 5 (by decide) (by decide)
+  have hGam : lGam ≤ K / 16 := by linarith only [hG, hY1]
+  have hM6 := sixthPowerBound C K F M L lk hK0 hF0 hC h4M hL hMF hlk hY1
+  have hLk := mul_le_mul_of_nonneg_left hlC hF0
+  have hKF : F * lk ≤ K * (F * lk) := le_mul_of_one_le_left (by positivity) (by linarith)
   have hR1 : 0 ≤ (R - 1) * lg := mul_nonneg (by linarith) hlg0
   have hR2 : 0 ≤ (R - 1) * lk := mul_nonneg (by linarith) hlk0
   have hD : lC - (2 * R + 1) * lg - R * lk ≤ -23 * lk := by linarith
-  have f5 : K * F * (lC - (2 * R + 1) * lg - R * lk) ≤ K * F * (-23 * lk) := mul_le_mul_of_nonneg_left hD hKF0
-  linarith
+  have hNeg := mul_le_mul_of_nonneg_left hD (show 0 ≤ K * F by positivity)
+  have hC25 := hY 2 5 (by decide) (by decide)
+  linarith only [hGam, hM6, hLk, hKF, hNeg, hC25, hP, hK0]
 
 lemma exponent_inequality_nondegenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
     (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
@@ -80,76 +242,13 @@ lemma exponent_inequality_nondegenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 
     ((S - 1) * K * F) * (l2 - lg) + (C * M ^ 2 * F * L * C + S * K * F * lC) + K * F * lC +
       (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam ≤
       -(K * F * lg) / 2 - lk := by
-  have hM0 : 0 ≤ M := by linarith
-  have hM1 : 1 ≤ M := by linarith
-  have hF0 : 0 ≤ F := by linarith
-  have hK0 : 0 ≤ K := by linarith
-  have hL0 : 0 ≤ L := by linarith
-  have hlk0 : 0 ≤ lk := by linarith
-  have hlg0 : 0 ≤ lg := by linarith
-  have hC0 : 0 ≤ C := by linarith
-  have hC32 : C ≤ C ^ 32 := le_self_pow₀ hC (by norm_num)
-  have hC2 : C ^ 2 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hC3 : C ^ 3 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hY0 : 0 ≤ M ^ 5 * F * L := mul_nonneg (mul_nonneg (pow_nonneg hM0 5) hF0) hL0
-  have hZ0 : 0 ≤ C ^ 32 * (M ^ 5 * F * L) := mul_nonneg (pow_nonneg hC0 32) hY0
-  have hM5 : 1024 ≤ M ^ 5 := by
-    have h := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 4) h4M 5
-    norm_num at h
-    linarith
-  have hF4 : 4 ≤ F := by linarith
-  have hM5F : 1024 * 4 ≤ M ^ 5 * F := mul_le_mul hM5 hF4 (by norm_num) (by linarith)
-  have hY : 1024 * 4 * 0.69 ≤ M ^ 5 * F * L := mul_le_mul hM5F hL (by norm_num) (by linarith)
-  have hYC : M ^ 5 * F * L ≤ C ^ 32 * (M ^ 5 * F * L) := le_mul_of_one_le_left hY0 (one_le_pow₀ hC)
-  have hC1Y : C * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC32 hY0
-  have hC2Y : C ^ 2 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC2 hY0
-  have hC3Y : C ^ 3 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC3 hY0
-  have hKbig : 40000 ≤ K := by linarith
-  have hFlk : 4 * 1 ≤ F * lk := mul_le_mul hF4 hlk (by norm_num) hF0
-  have hKP : K * (4 * 1) ≤ K * (F * lk) := mul_le_mul_of_nonneg_left hFlk hK0
-  have hKF0 : 0 ≤ K * F := mul_nonneg hK0 hF0
-  have hKF1000 : 40000 * 4 ≤ K * F := mul_le_mul hKbig hF4 (by norm_num) hK0
-  have hFKP : K * F * 1 ≤ K * F * lk := mul_le_mul_of_nonneg_left hlk hKF0
-  have hPlk : (40000 * 4) * lk ≤ K * F * lk := mul_le_mul_of_nonneg_right hKF1000 hlk0
-  have hlg8 : 8 ≤ lg := by linarith
-  have hFlg : 4 * 8 ≤ F * lg := mul_le_mul hF4 hlg8 (by norm_num) hF0
-  have h32' : K * (4 * 8) ≤ K * (F * lg) := mul_le_mul_of_nonneg_left hFlg hK0
-  have h32 : 32 * K ≤ K * F * lg := by linarith
-  have hW0 : 0 ≤ K * F * lg := mul_nonneg hKF0 hlg0
-  have hlgW : 1 * lg ≤ K * F * lg := mul_le_mul_of_nonneg_right (by linarith) hlg0
-  have hMY : ∀ j : ℕ, j ≤ 5 → M ^ j * F * L ≤ M ^ 5 * F * L := fun j hj =>
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hM1 hj) hF0) hL0
-  have hM1Y : M * F * L ≤ M ^ 5 * F * L :=
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_self_pow₀ hM1 (by norm_num)) hF0) hL0
-  have hlClk : lC ≤ lk / 32 := by linarith
-  have hlklg : lk ≤ lg / 8 := by linarith
-  have hLlg : L ≤ lg / 8 := by linarith
-  have hlClg : lC ≤ lg / 256 := by linarith
-  have hG1 : lGam ≤ C * (M ^ 5 * F * L) := by linarith
-  have hS0 : 0 ≤ S := by linarith
-  have g2 : C ^ 2 * (M ^ 2 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 2 (by norm_num)) (pow_nonneg hC0 2)
-  have g5a : C ^ 2 * (M ^ 4 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 4 (by norm_num)) (pow_nonneg hC0 2)
-  have g5b : S * (C ^ 2 * (M ^ 4 * F * L)) ≤ S * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (g5a.trans hC2Y) hS0
-  have g5c : S * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ S * K := mul_le_mul_of_nonneg_left hX hS0
-  have g5d : S * (32 * K) ≤ S * (K * F * lg) := mul_le_mul_of_nonneg_left h32 hS0
-  have hSF0 : 0 ≤ S * F := mul_nonneg hS0 hF0
-  have g6a : 6 * S * F * (lC + 2 * lk) ≤ 6 * S * F * (3 * lk) :=
-    mul_le_mul_of_nonneg_left (by linarith) (mul_nonneg (mul_nonneg (by norm_num) hS0) hF0)
-  have g6b : S * F * lk ≤ S * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hSF0
-  have g6c : 36 * (S * F * lg) ≤ K * (S * F * lg) :=
-    mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hSF0 hlg0)
-  have g4 : K * F * lC ≤ K * F * (lg / 256) := mul_le_mul_of_nonneg_left hlClg hKF0
-  have hS1K : 0 ≤ (S - 1) * K * F := mul_nonneg (mul_nonneg (by linarith) hK0) hF0
-  have g1 : ((S - 1) * K * F) * (l2 - lg) ≤ ((S - 1) * K * F) * (-(7 / 8) * lg) :=
-    mul_le_mul_of_nonneg_left (by linarith) hS1K
-  have g3 : S * K * F * lC ≤ S * K * F * (lg / 256) :=
-    mul_le_mul_of_nonneg_left hlClg (mul_nonneg (mul_nonneg hS0 hK0) hF0)
-  have g8a : 1 * (K * F * lg) ≤ (S - 1) * (K * F * lg) := mul_le_mul_of_nonneg_right (by linarith) hW0
-  have g8b : 0 ≤ (S - 2) * (K * F * lg) := mul_nonneg (by linarith) hW0
-  linarith
+  have hF : 4 ≤ F := h4M.trans hMF
+  refine (exponentWindowBounds C K F M L lk lg lC l2 S lGam
+    (C * M ^ 2 * F * L * C + S * K * F * lC)
+    hC h4M hMF hL hlk hlg hlC hl2 hS2 hX hG ?_).1
+  intro hK _ hY
+  exact exponentMidTermsBound C K F M L lk lg lC S hF hL hlk hlg hlC hS2 hK
+    (hY 2 2 (by decide) (by decide))
 
 lemma exponent_inequality_nondegenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
     (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
@@ -159,85 +258,16 @@ lemma exponent_inequality_nondegenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 
         ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K))) + K * F * lC +
       (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam ≤
       -(K * F * lg) / 2 - lk := by
-  have hM0 : 0 ≤ M := by linarith
-  have hM1 : 1 ≤ M := by linarith
-  have hF0 : 0 ≤ F := by linarith
-  have hK0 : 0 ≤ K := by linarith
-  have hL0 : 0 ≤ L := by linarith
-  have hlk0 : 0 ≤ lk := by linarith
-  have hlg0 : 0 ≤ lg := by linarith
-  have hC0 : 0 ≤ C := by linarith
-  have hC32 : C ≤ C ^ 32 := le_self_pow₀ hC (by norm_num)
-  have hC2 : C ^ 2 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hC3 : C ^ 3 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hY0 : 0 ≤ M ^ 5 * F * L := mul_nonneg (mul_nonneg (pow_nonneg hM0 5) hF0) hL0
-  have hZ0 : 0 ≤ C ^ 32 * (M ^ 5 * F * L) := mul_nonneg (pow_nonneg hC0 32) hY0
-  have hM5 : 1024 ≤ M ^ 5 := by
-    have h := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 4) h4M 5
-    norm_num at h
-    linarith
-  have hF4 : 4 ≤ F := by linarith
-  have hM5F : 1024 * 4 ≤ M ^ 5 * F := mul_le_mul hM5 hF4 (by norm_num) (by linarith)
-  have hY : 1024 * 4 * 0.69 ≤ M ^ 5 * F * L := mul_le_mul hM5F hL (by norm_num) (by linarith)
-  have hYC : M ^ 5 * F * L ≤ C ^ 32 * (M ^ 5 * F * L) := le_mul_of_one_le_left hY0 (one_le_pow₀ hC)
-  have hC1Y : C * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC32 hY0
-  have hC2Y : C ^ 2 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC2 hY0
-  have hC3Y : C ^ 3 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC3 hY0
-  have hKbig : 40000 ≤ K := by linarith
-  have hFlk : 4 * 1 ≤ F * lk := mul_le_mul hF4 hlk (by norm_num) hF0
-  have hKP : K * (4 * 1) ≤ K * (F * lk) := mul_le_mul_of_nonneg_left hFlk hK0
-  have hKF0 : 0 ≤ K * F := mul_nonneg hK0 hF0
-  have hKF1000 : 40000 * 4 ≤ K * F := mul_le_mul hKbig hF4 (by norm_num) hK0
-  have hFKP : K * F * 1 ≤ K * F * lk := mul_le_mul_of_nonneg_left hlk hKF0
-  have hPlk : (40000 * 4) * lk ≤ K * F * lk := mul_le_mul_of_nonneg_right hKF1000 hlk0
-  have hlg8 : 8 ≤ lg := by linarith
-  have hFlg : 4 * 8 ≤ F * lg := mul_le_mul hF4 hlg8 (by norm_num) hF0
-  have h32' : K * (4 * 8) ≤ K * (F * lg) := mul_le_mul_of_nonneg_left hFlg hK0
-  have h32 : 32 * K ≤ K * F * lg := by linarith
-  have hW0 : 0 ≤ K * F * lg := mul_nonneg hKF0 hlg0
-  have hlgW : 1 * lg ≤ K * F * lg := mul_le_mul_of_nonneg_right (by linarith) hlg0
-  have hMY : ∀ j : ℕ, j ≤ 5 → M ^ j * F * L ≤ M ^ 5 * F * L := fun j hj =>
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hM1 hj) hF0) hL0
-  have hM1Y : M * F * L ≤ M ^ 5 * F * L :=
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_self_pow₀ hM1 (by norm_num)) hF0) hL0
-  have hlClk : lC ≤ lk / 32 := by linarith
-  have hlklg : lk ≤ lg / 8 := by linarith
-  have hLlg : L ≤ lg / 8 := by linarith
-  have hlClg : lC ≤ lg / 256 := by linarith
-  have hG1 : lGam ≤ C * (M ^ 5 * F * L) := by linarith
-  have hS0 : 0 ≤ S := by linarith
-  have g2 : C ^ 2 * (M ^ 2 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 2 (by norm_num)) (pow_nonneg hC0 2)
-  have g5a : C ^ 2 * (M ^ 4 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 4 (by norm_num)) (pow_nonneg hC0 2)
-  have g5b : S * (C ^ 2 * (M ^ 4 * F * L)) ≤ S * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (g5a.trans hC2Y) hS0
-  have g5c : S * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ S * K := mul_le_mul_of_nonneg_left hX hS0
-  have g5d : S * (32 * K) ≤ S * (K * F * lg) := mul_le_mul_of_nonneg_left h32 hS0
-  have hSF0 : 0 ≤ S * F := mul_nonneg hS0 hF0
-  have g6a : 6 * S * F * (lC + 2 * lk) ≤ 6 * S * F * (3 * lk) :=
-    mul_le_mul_of_nonneg_left (by linarith) (mul_nonneg (mul_nonneg (by norm_num) hS0) hF0)
-  have g6b : S * F * lk ≤ S * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hSF0
-  have g6c : 36 * (S * F * lg) ≤ K * (S * F * lg) :=
-    mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hSF0 hlg0)
-  have g4 : K * F * lC ≤ K * F * (lg / 256) := mul_le_mul_of_nonneg_left hlClg hKF0
-  have t1 : K * F * lk ≤ K * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hKF0
-  have t1b : K * F * L ≤ K * F * (lg / 8) := mul_le_mul_of_nonneg_left hLlg hKF0
-  have t2a : C ^ 3 * (M ^ 3 * F * L) ≤ C ^ 3 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 3 (by norm_num)) (pow_nonneg hC0 3)
-  have t2b : K * (C ^ 3 * (M ^ 3 * F * L)) ≤ K * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (t2a.trans hC3Y) hK0
-  have t2c : C ^ 2 * (M * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_left hM1Y (pow_nonneg hC0 2)
-  have t2d : K * (C ^ 2 * (M * F * L)) ≤ K * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (t2c.trans hC2Y) hK0
-  have t2e : K * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ K * K := mul_le_mul_of_nonneg_left hX hK0
-  have hS1K : 0 ≤ (S - 1) * K * F := mul_nonneg (mul_nonneg (by linarith) hK0) hF0
-  have g1 : ((S - 1) * K * F) * (l2 - lg) ≤ ((S - 1) * K * F) * (-(7 / 8) * lg) :=
-    mul_le_mul_of_nonneg_left (by linarith) hS1K
-  have g8b : 0 ≤ (S - 2) * (K * F * lg) := mul_nonneg (by linarith) hW0
-  have t3 : (K / 2) * (32 * K) ≤ (S - 1) * (K * F * lg) := mul_le_mul (by linarith) h32 (by linarith) (by linarith)
-  have t4 : 100 * (K * F * lg) ≤ (S - 1) * (K * F * lg) := mul_le_mul_of_nonneg_right (by linarith) hW0
-  linarith
+  have hF : 4 ≤ F := h4M.trans hMF
+  refine (exponentWindowBounds C K F M L lk lg lC l2 S lGam
+    (K * F * (lk + L) + (K * F * (lC + lk) +
+        ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K)))
+    hC h4M hMF hL hlk hlg hlC hl2 hS2 hX hG ?_).1
+  intro hK h32 hY
+  have hTop := exponentTopRowBound C K F M L lk lg lC S hF hL hlk hlg hlC hK hKS h32
+    (hY 3 3 (by decide) (by decide)) (hY 2 1 (by decide) (by decide))
+  have hP0 : 0 ≤ K * F * lk := by positivity
+  linarith only [hTop, hP0]
 
 lemma exponent_inequality_degenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
     (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
@@ -246,97 +276,13 @@ lemma exponent_inequality_degenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 �
     ((S - 2) * K * F) * (l2 - lg) + (C * M ^ 2 * F * L * C + S * K * F * lC) + K * F * lC +
       (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam +
       C * M ^ 6 * F * L + K * F * (lC - lk) ≤ -(K * F * lk) / 2 - 2 * lGam - lk := by
-  have hM0 : 0 ≤ M := by linarith
-  have hM1 : 1 ≤ M := by linarith
-  have hF0 : 0 ≤ F := by linarith
-  have hK0 : 0 ≤ K := by linarith
-  have hL0 : 0 ≤ L := by linarith
-  have hlk0 : 0 ≤ lk := by linarith
-  have hlg0 : 0 ≤ lg := by linarith
-  have hC0 : 0 ≤ C := by linarith
-  have hC32 : C ≤ C ^ 32 := le_self_pow₀ hC (by norm_num)
-  have hC2 : C ^ 2 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hC3 : C ^ 3 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hY0 : 0 ≤ M ^ 5 * F * L := mul_nonneg (mul_nonneg (pow_nonneg hM0 5) hF0) hL0
-  have hZ0 : 0 ≤ C ^ 32 * (M ^ 5 * F * L) := mul_nonneg (pow_nonneg hC0 32) hY0
-  have hM5 : 1024 ≤ M ^ 5 := by
-    have h := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 4) h4M 5
-    norm_num at h
-    linarith
-  have hF4 : 4 ≤ F := by linarith
-  have hM5F : 1024 * 4 ≤ M ^ 5 * F := mul_le_mul hM5 hF4 (by norm_num) (by linarith)
-  have hY : 1024 * 4 * 0.69 ≤ M ^ 5 * F * L := mul_le_mul hM5F hL (by norm_num) (by linarith)
-  have hYC : M ^ 5 * F * L ≤ C ^ 32 * (M ^ 5 * F * L) := le_mul_of_one_le_left hY0 (one_le_pow₀ hC)
-  have hC1Y : C * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC32 hY0
-  have hC2Y : C ^ 2 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC2 hY0
-  have hC3Y : C ^ 3 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC3 hY0
-  have hKbig : 40000 ≤ K := by linarith
-  have hFlk : 4 * 1 ≤ F * lk := mul_le_mul hF4 hlk (by norm_num) hF0
-  have hKP : K * (4 * 1) ≤ K * (F * lk) := mul_le_mul_of_nonneg_left hFlk hK0
-  have hKF0 : 0 ≤ K * F := mul_nonneg hK0 hF0
-  have hKF1000 : 40000 * 4 ≤ K * F := mul_le_mul hKbig hF4 (by norm_num) hK0
-  have hFKP : K * F * 1 ≤ K * F * lk := mul_le_mul_of_nonneg_left hlk hKF0
-  have hPlk : (40000 * 4) * lk ≤ K * F * lk := mul_le_mul_of_nonneg_right hKF1000 hlk0
-  have hlg8 : 8 ≤ lg := by linarith
-  have hFlg : 4 * 8 ≤ F * lg := mul_le_mul hF4 hlg8 (by norm_num) hF0
-  have h32' : K * (4 * 8) ≤ K * (F * lg) := mul_le_mul_of_nonneg_left hFlg hK0
-  have h32 : 32 * K ≤ K * F * lg := by linarith
-  have hW0 : 0 ≤ K * F * lg := mul_nonneg hKF0 hlg0
-  have hlgW : 1 * lg ≤ K * F * lg := mul_le_mul_of_nonneg_right (by linarith) hlg0
-  have hMY : ∀ j : ℕ, j ≤ 5 → M ^ j * F * L ≤ M ^ 5 * F * L := fun j hj =>
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hM1 hj) hF0) hL0
-  have hM1Y : M * F * L ≤ M ^ 5 * F * L :=
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_self_pow₀ hM1 (by norm_num)) hF0) hL0
-  have hlClk : lC ≤ lk / 32 := by linarith
-  have hlklg : lk ≤ lg / 8 := by linarith
-  have hLlg : L ≤ lg / 8 := by linarith
-  have hlClg : lC ≤ lg / 256 := by linarith
-  have hG1 : lGam ≤ C * (M ^ 5 * F * L) := by linarith
-  have hS0 : 0 ≤ S := by linarith
-  have g2 : C ^ 2 * (M ^ 2 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 2 (by norm_num)) (pow_nonneg hC0 2)
-  have g5a : C ^ 2 * (M ^ 4 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 4 (by norm_num)) (pow_nonneg hC0 2)
-  have g5b : S * (C ^ 2 * (M ^ 4 * F * L)) ≤ S * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (g5a.trans hC2Y) hS0
-  have g5c : S * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ S * K := mul_le_mul_of_nonneg_left hX hS0
-  have g5d : S * (32 * K) ≤ S * (K * F * lg) := mul_le_mul_of_nonneg_left h32 hS0
-  have hSF0 : 0 ≤ S * F := mul_nonneg hS0 hF0
-  have g6a : 6 * S * F * (lC + 2 * lk) ≤ 6 * S * F * (3 * lk) :=
-    mul_le_mul_of_nonneg_left (by linarith) (mul_nonneg (mul_nonneg (by norm_num) hS0) hF0)
-  have g6b : S * F * lk ≤ S * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hSF0
-  have g6c : 36 * (S * F * lg) ≤ K * (S * F * lg) :=
-    mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hSF0 hlg0)
-  have g4 : K * F * lC ≤ K * F * (lg / 256) := mul_le_mul_of_nonneg_left hlClg hKF0
-  have hS2K : 0 ≤ (S - 2) * K * F := mul_nonneg (mul_nonneg (by linarith) hK0) hF0
-  have d1 : ((S - 2) * K * F) * (l2 - lg) ≤ ((S - 2) * K * F) * (-(7 / 8) * lg) :=
-    mul_le_mul_of_nonneg_left (by linarith) hS2K
-  have d4 : K * F * lC ≤ K * F * (lk / 32) := mul_le_mul_of_nonneg_left hlClk hKF0
-  have d5d : (S - 2) * (32 * K) ≤ (S - 2) * (K * F * lg) := mul_le_mul_of_nonneg_left h32 (by linarith)
-  have hS2F : 0 ≤ (S - 2) * F := mul_nonneg (by linarith) hF0
-  have d6b : (S - 2) * F * lk ≤ (S - 2) * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hS2F
-  have d6c : 36 * ((S - 2) * F * lg) ≤ K * ((S - 2) * F * lg) :=
-    mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hS2F hlg0)
-  have d6d : 36000 * (F * lk) ≤ K * (F * lk) := mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hF0 hlk0)
-  have f4a : M * (C * (M ^ 5 * F * L)) ≤ M * (C ^ 32 * (M ^ 5 * F * L)) := mul_le_mul_of_nonneg_left hC1Y hM0
-  have f4b : M * (C ^ 32 * (M ^ 5 * F * L)) ≤ F * (C ^ 32 * (M ^ 5 * F * L)) := mul_le_mul_of_nonneg_right hMF hZ0
-  have f4c : F * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ F * K := mul_le_mul_of_nonneg_left hX hF0
-  have d9 : K * F * (lC - lk) ≤ K * F * (lk / 32 - lk) := mul_le_mul_of_nonneg_left (by linarith) hKF0
-  have d3a : S * K * F * lC ≤ S * K * F * (lk / 32) :=
-    mul_le_mul_of_nonneg_left hlClk (mul_nonneg (mul_nonneg hS0 hK0) hF0)
-  have d3b : (S - 2) * K * F * lk ≤ (S - 2) * K * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hS2K
-  have B3 : S * K * F * lC ≤ (S - 2) * K * F * lg / 256 + K * F * lk / 16 := by linarith
-  have hU : 0 ≤ (S - 2) * K * F * lg := mul_nonneg hS2K hlg0
-  have B2 : C * M ^ 2 * F * L * C ≤ K * F * lk / 64 := by linarith
-  have B4 : K * F * lC ≤ K * F * lk / 32 := by linarith
-  have B5 : C * M ^ 2 * F * L * (C * (S + M) * M ^ 2) ≤
-      (S - 2) * K * F * lg / 512 + K * F * lk / 32 + K * F * lk / 64 := by linarith
-  have B6 : 6 * S * F * (lC + 2 * lk) ≤ (S - 2) * K * F * lg / 16 + K * F * lk / 1000 := by linarith
-  have B7 : 3 * lGam ≤ 3 * (K * F * lk) / 64 := by linarith
-  have BetaSesquilinearity : C * M ^ 6 * F * L ≤ K * F * lk / 16 := by linarith
-  have B9 : lk ≤ K * F * lk / 1000 := by linarith
-  have lowerOffDiagonalCoeff : K * F * (lC - lk) ≤ K * F * lk / 32 - K * F * lk := by linarith
-  linarith
+  have hF : 4 ≤ F := h4M.trans hMF
+  refine (exponentWindowBounds C K F M L lk lg lC l2 S lGam
+    (C * M ^ 2 * F * L * C + S * K * F * lC)
+    hC h4M hMF hL hlk hlg hlC hl2 hS2 hX hG ?_).2
+  intro hK _ hY
+  exact exponentMidTermsBound C K F M L lk lg lC S hF hL hlk hlg hlC hS2 hK
+    (hY 2 2 (by decide) (by decide))
 
 lemma exponent_inequality_degenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
     (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
@@ -346,107 +292,16 @@ lemma exponent_inequality_degenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 1 �
         ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K))) + K * F * lC +
       (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam +
       C * M ^ 6 * F * L + K * F * (lC - lk) ≤ -(K * F * lk) / 2 - 2 * lGam - lk := by
-  have hM0 : 0 ≤ M := by linarith
-  have hM1 : 1 ≤ M := by linarith
-  have hF0 : 0 ≤ F := by linarith
-  have hK0 : 0 ≤ K := by linarith
-  have hL0 : 0 ≤ L := by linarith
-  have hlk0 : 0 ≤ lk := by linarith
-  have hlg0 : 0 ≤ lg := by linarith
-  have hC0 : 0 ≤ C := by linarith
-  have hC32 : C ≤ C ^ 32 := le_self_pow₀ hC (by norm_num)
-  have hC2 : C ^ 2 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hC3 : C ^ 3 ≤ C ^ 32 := pow_le_pow_right₀ hC (by norm_num)
-  have hY0 : 0 ≤ M ^ 5 * F * L := mul_nonneg (mul_nonneg (pow_nonneg hM0 5) hF0) hL0
-  have hZ0 : 0 ≤ C ^ 32 * (M ^ 5 * F * L) := mul_nonneg (pow_nonneg hC0 32) hY0
-  have hM5 : 1024 ≤ M ^ 5 := by
-    have h := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 4) h4M 5
-    norm_num at h
-    linarith
-  have hF4 : 4 ≤ F := by linarith
-  have hM5F : 1024 * 4 ≤ M ^ 5 * F := mul_le_mul hM5 hF4 (by norm_num) (by linarith)
-  have hY : 1024 * 4 * 0.69 ≤ M ^ 5 * F * L := mul_le_mul hM5F hL (by norm_num) (by linarith)
-  have hYC : M ^ 5 * F * L ≤ C ^ 32 * (M ^ 5 * F * L) := le_mul_of_one_le_left hY0 (one_le_pow₀ hC)
-  have hC1Y : C * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC32 hY0
-  have hC2Y : C ^ 2 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC2 hY0
-  have hC3Y : C ^ 3 * (M ^ 5 * F * L) ≤ C ^ 32 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_right hC3 hY0
-  have hKbig : 40000 ≤ K := by linarith
-  have hFlk : 4 * 1 ≤ F * lk := mul_le_mul hF4 hlk (by norm_num) hF0
-  have hKP : K * (4 * 1) ≤ K * (F * lk) := mul_le_mul_of_nonneg_left hFlk hK0
-  have hKF0 : 0 ≤ K * F := mul_nonneg hK0 hF0
-  have hKF1000 : 40000 * 4 ≤ K * F := mul_le_mul hKbig hF4 (by norm_num) hK0
-  have hFKP : K * F * 1 ≤ K * F * lk := mul_le_mul_of_nonneg_left hlk hKF0
-  have hPlk : (40000 * 4) * lk ≤ K * F * lk := mul_le_mul_of_nonneg_right hKF1000 hlk0
-  have hlg8 : 8 ≤ lg := by linarith
-  have hFlg : 4 * 8 ≤ F * lg := mul_le_mul hF4 hlg8 (by norm_num) hF0
-  have h32' : K * (4 * 8) ≤ K * (F * lg) := mul_le_mul_of_nonneg_left hFlg hK0
-  have h32 : 32 * K ≤ K * F * lg := by linarith
-  have hW0 : 0 ≤ K * F * lg := mul_nonneg hKF0 hlg0
-  have hlgW : 1 * lg ≤ K * F * lg := mul_le_mul_of_nonneg_right (by linarith) hlg0
-  have hMY : ∀ j : ℕ, j ≤ 5 → M ^ j * F * L ≤ M ^ 5 * F * L := fun j hj =>
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hM1 hj) hF0) hL0
-  have hM1Y : M * F * L ≤ M ^ 5 * F * L :=
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_self_pow₀ hM1 (by norm_num)) hF0) hL0
-  have hlClk : lC ≤ lk / 32 := by linarith
-  have hlklg : lk ≤ lg / 8 := by linarith
-  have hLlg : L ≤ lg / 8 := by linarith
-  have hlClg : lC ≤ lg / 256 := by linarith
-  have hG1 : lGam ≤ C * (M ^ 5 * F * L) := by linarith
-  have hS0 : 0 ≤ S := by linarith
-  have g2 : C ^ 2 * (M ^ 2 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 2 (by norm_num)) (pow_nonneg hC0 2)
-  have g5a : C ^ 2 * (M ^ 4 * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 4 (by norm_num)) (pow_nonneg hC0 2)
-  have g5b : S * (C ^ 2 * (M ^ 4 * F * L)) ≤ S * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (g5a.trans hC2Y) hS0
-  have g5c : S * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ S * K := mul_le_mul_of_nonneg_left hX hS0
-  have g5d : S * (32 * K) ≤ S * (K * F * lg) := mul_le_mul_of_nonneg_left h32 hS0
-  have hSF0 : 0 ≤ S * F := mul_nonneg hS0 hF0
-  have g6a : 6 * S * F * (lC + 2 * lk) ≤ 6 * S * F * (3 * lk) :=
-    mul_le_mul_of_nonneg_left (by linarith) (mul_nonneg (mul_nonneg (by norm_num) hS0) hF0)
-  have g6b : S * F * lk ≤ S * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hSF0
-  have g6c : 36 * (S * F * lg) ≤ K * (S * F * lg) :=
-    mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hSF0 hlg0)
-  have g4 : K * F * lC ≤ K * F * (lg / 256) := mul_le_mul_of_nonneg_left hlClg hKF0
-  have t1 : K * F * lk ≤ K * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hKF0
-  have t1b : K * F * L ≤ K * F * (lg / 8) := mul_le_mul_of_nonneg_left hLlg hKF0
-  have t2a : C ^ 3 * (M ^ 3 * F * L) ≤ C ^ 3 * (M ^ 5 * F * L) :=
-    mul_le_mul_of_nonneg_left (hMY 3 (by norm_num)) (pow_nonneg hC0 3)
-  have t2b : K * (C ^ 3 * (M ^ 3 * F * L)) ≤ K * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (t2a.trans hC3Y) hK0
-  have t2c : C ^ 2 * (M * F * L) ≤ C ^ 2 * (M ^ 5 * F * L) := mul_le_mul_of_nonneg_left hM1Y (pow_nonneg hC0 2)
-  have t2d : K * (C ^ 2 * (M * F * L)) ≤ K * (C ^ 32 * (M ^ 5 * F * L)) :=
-    mul_le_mul_of_nonneg_left (t2c.trans hC2Y) hK0
-  have t2e : K * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ K * K := mul_le_mul_of_nonneg_left hX hK0
-  have hS2K : 0 ≤ (S - 2) * K * F := mul_nonneg (mul_nonneg (by linarith) hK0) hF0
-  have d1 : ((S - 2) * K * F) * (l2 - lg) ≤ ((S - 2) * K * F) * (-(7 / 8) * lg) :=
-    mul_le_mul_of_nonneg_left (by linarith) hS2K
-  have d4 : K * F * lC ≤ K * F * (lk / 32) := mul_le_mul_of_nonneg_left hlClk hKF0
-  have d5d : (S - 2) * (32 * K) ≤ (S - 2) * (K * F * lg) := mul_le_mul_of_nonneg_left h32 (by linarith)
-  have hS2F : 0 ≤ (S - 2) * F := mul_nonneg (by linarith) hF0
-  have d6b : (S - 2) * F * lk ≤ (S - 2) * F * (lg / 8) := mul_le_mul_of_nonneg_left hlklg hS2F
-  have d6c : 36 * ((S - 2) * F * lg) ≤ K * ((S - 2) * F * lg) :=
-    mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hS2F hlg0)
-  have d6d : 36000 * (F * lk) ≤ K * (F * lk) := mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hF0 hlk0)
-  have f4a : M * (C * (M ^ 5 * F * L)) ≤ M * (C ^ 32 * (M ^ 5 * F * L)) := mul_le_mul_of_nonneg_left hC1Y hM0
-  have f4b : M * (C ^ 32 * (M ^ 5 * F * L)) ≤ F * (C ^ 32 * (M ^ 5 * F * L)) := mul_le_mul_of_nonneg_right hMF hZ0
-  have f4c : F * (16 * C ^ 32 * (M ^ 5 * F * L)) ≤ F * K := mul_le_mul_of_nonneg_left hX hF0
-  have d9 : K * F * (lC - lk) ≤ K * F * (lk / 32 - lk) := mul_le_mul_of_nonneg_left (by linarith) hKF0
-  have u3 : (K / 2) * (32 * K) ≤ (S - 2) * (K * F * lg) := mul_le_mul (by linarith) h32 (by linarith) (by linarith)
-  have u4 : 100 * (K * F * lg) ≤ (S - 2) * (K * F * lg) := mul_le_mul_of_nonneg_right (by linarith) hW0
-  have B1 : K * F * (lk + L) + (K * F * (lC + lk) + ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K)) ≤
-      (S - 2) * K * F * lg / 100 + (S - 2) * K * F * lg / 64 := by linarith
-  have hU : 0 ≤ (S - 2) * K * F * lg := mul_nonneg hS2K hlg0
-  have B2 : C * M ^ 2 * F * L * C ≤ K * F * lk / 64 := by linarith
-  have B4 : K * F * lC ≤ K * F * lk / 32 := by linarith
-  have B5 : C * M ^ 2 * F * L * (C * (S + M) * M ^ 2) ≤
-      (S - 2) * K * F * lg / 512 + K * F * lk / 32 + K * F * lk / 64 := by linarith
-  have B6 : 6 * S * F * (lC + 2 * lk) ≤ (S - 2) * K * F * lg / 16 + K * F * lk / 1000 := by linarith
-  have B7 : 3 * lGam ≤ 3 * (K * F * lk) / 64 := by linarith
-  have BetaSesquilinearity : C * M ^ 6 * F * L ≤ K * F * lk / 16 := by linarith
-  have B9 : lk ≤ K * F * lk / 1000 := by linarith
-  have lowerOffDiagonalCoeff : K * F * (lC - lk) ≤ K * F * lk / 32 - K * F * lk := by linarith
-  linarith
+  have hF : 4 ≤ F := h4M.trans hMF
+  refine (exponentWindowBounds C K F M L lk lg lC l2 S lGam
+    (K * F * (lk + L) + (K * F * (lC + lk) +
+        ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K)))
+    hC h4M hMF hL hlk hlg hlC hl2 hS2 hX hG ?_).2
+  intro hK h32 hY
+  have hTop := exponentTopRowBound C K F M L lk lg lC S hF hL hlk hlg hlC hK hKS h32
+    (hY 3 3 (by decide) (by decide)) (hY 2 1 (by decide) (by decide))
+  have hP0 : 0 ≤ K * F * lk := by positivity
+  linarith only [hTop, hP0]
 
 lemma pow_eq_exp_mul_log (x : ℝ) (hx : 0 < x) (n : ℕ) : x ^ n = Real.exp ((n:ℝ) * Real.log x) := by
   rw [← Real.rpow_natCast, Real.rpow_def_of_pos hx, mul_comm]

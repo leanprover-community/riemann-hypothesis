@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.InterNumRestrictSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrLenRestrictSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestrictTwist

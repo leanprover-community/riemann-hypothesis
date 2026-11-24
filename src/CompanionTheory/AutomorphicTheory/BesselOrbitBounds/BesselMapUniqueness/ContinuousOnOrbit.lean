@@ -1,6 +1,8 @@
 module
 
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

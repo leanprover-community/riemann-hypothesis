@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

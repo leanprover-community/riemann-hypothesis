@@ -1,6 +1,52 @@
 module
 
 public import Formalism.PadicSubsetSums.CentralIdempotents.GaloisIrreducibility
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,11 +95,6 @@ theorem schur_scalar [Nontrivial V] (ρ : Representation ℂ G V)
   · exfalso
     first
       | exact Module.End.hasEigenvalue_iff.1 hμ h0
-      | exact hμ h0
-      | (obtain ⟨v, hv⟩ := hμ.exists_hasEigenvector
-         have hv1 := hv.1
-         rw [h0] at hv1
-         exact hv.2 ((Submodule.mem_bot ℂ).1 hv1))
   · refine LinearMap.ext fun x => ?_
     have hx : x ∈ Module.End.eigenspace T μ := by
       rw [h0]
@@ -69,8 +110,8 @@ theorem conv_char [Nontrivial V] (ρ : Representation ℂ G V)
   obtain ⟨μ, hμ⟩ := schur_scalar ρ h a ha
   refine ⟨μ, fun k => ?_⟩
   have h2 := congrArg (fun T : Module.End ℂ V => LinearMap.trace ℂ V (T * ρ k)) hμ
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_mul, smul_mul_assoc, ← map_mul, map_sum, map_smul, one_mul, smul_eq_mul] at h2
+
+  simp only [Finset.sum_mul, smul_mul_assoc, ← map_mul, map_sum, map_smul, one_mul, smul_eq_mul] at h2
   exact h2
 
 theorem sum_of_mul_sum_of (A B : G → ℂ) :
@@ -101,7 +142,6 @@ theorem centralIdem_mul {G V W : Type} [Group G] [Fintype G] [AddCommGroup V] [M
   have hone : σ.character 1 = (Module.finrank ℂ W : ℂ) := by
     first
       | exact σ.char_one
-      | (unfold Representation.character; simp)
   refine ⟨μ, ?_, ?_⟩
   · have h1 := hconv 1
     simp only [mul_one, hone] at h1
@@ -133,7 +173,6 @@ theorem centralIdem_comm_of {G V : Type} [Group G] [Fintype G] [AddCommGroup V] 
   have hc : ∀ h : G, ρ.character (k⁻¹ * (h * k)) = ρ.character h := by
     first
       | exact fun h => by simpa [mul_assoc] using ρ.char_conj h k⁻¹
-      | (intro h; unfold Representation.character; done)
   unfold centralIdem
   rw [Finset.sum_mul, Finset.mul_sum]
   refine Fintype.sum_equiv (MulAut.conj k⁻¹).toEquiv _ _ (fun g => ?_)

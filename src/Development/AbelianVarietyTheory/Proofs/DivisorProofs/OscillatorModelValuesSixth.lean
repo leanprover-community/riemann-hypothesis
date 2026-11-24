@@ -1,21 +1,71 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.GenReads
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelFormCompatBaseEmbedding
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldingFrameDeltaChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetReducedBlockEqResidueDet
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DatEqOfPhiHat
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCuspIsThClsDUnique
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPsiTieOfValues
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitCOfCXiAt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjSmulEntry
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RedMUMatMove
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowZeroMulRightIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMemOfFrame
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CXiValIff
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsOpenCongruenceIdelesAndRealFiniteParts
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsQuotEquiv
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterAtDetRootCongOneOddEqOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCoversOfHalves
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntValuationEqOfMem
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.DetSubMemOfConj
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsIsometryAgreeing
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPsiTieOfValues
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MarkedIsometryHalf
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjSmulEntry
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowZeroMulRightIff
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RedMUMatMove
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsAdelicUnitaryOfLatticeIsometries
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCompletedIsometryInducingHalfLevelAutomorp
+public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DatEqOfPhiHat
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicElementLatticeFullAndCompletionStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeRationalTranslateInvariance
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DetOneAddSubOne
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsComponentWeight
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLevelSubgroup
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HalvesFreeAndAdjoint
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.Divisors.PerCEmb
 
 @[expose] public section
 
@@ -125,7 +175,7 @@ theorem unswap_det {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)} {u : GA D V} {
   rw [← det_frGL β y, hy, ← h2, unswap_swap]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_root_value {T0 : Type} {L : LevCh D T0} {μ0 : T0} (hL : L.Is μ0) (t : T0) {V : HSp D}
     {u : GA D V} (hu : u ∈ GfC V)
     (U : Formalism.L2.Herm.intAf D.host.F D.host.E) (hU : unswap D U = (finHom V u).1.det) {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} (l : Level H)
@@ -161,7 +211,6 @@ theorem exists_root_value {T0 : Type} {L : LevCh D T0} {μ0 : T0} (hL : L.Is μ0
     obtain rfl : b' = b := RingOfIntegers.ext (eb.trans hb.symm)
     obtain rfl : m' = (m : 𝓞 D.host.E) := RingOfIntegers.ext (by
       rw [em]
-      change star ((m : 𝓞 D.host.E) : D.host.E) = ((m : 𝓞 D.host.E) : D.host.E)
       rw [show ((m : 𝓞 D.host.E) : D.host.E) = (m : D.host.E) from
         map_natCast (algebraMap (𝓞 D.host.E) D.host.E) m, star_natCast])
     exact Or.inr (resS_sum_right P U p' hs hm' hb')
@@ -257,7 +306,7 @@ theorem latGHat_one_eq {V : HSp D} {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank
   rw [(GlobalTheory.T.adelicElementLattice_full_and_completion D V 1).2.2.2.2.1, ← hι.2, LinearMap.coe_range]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem factor_det_eq {V : HSp D} {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E)} (hι : LatEmb V ι)
     {I J : Ideal (𝓞 D.host.E)} (hIJ : IsCoprime I J) {M : ℕ} (hM : (M : 𝓞 D.host.E) ∈ I)
     (e : (Dw.La ⧸ (I • ⊤ : Submodule (𝓞 D.host.E) Dw.La)) ≃ₗ[𝓞 D.host.E] (Fin V.rank → 𝓞 D.host.E ⧸ I))
@@ -281,8 +330,8 @@ theorem factor_det_eq {V : HSp D} {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank 
       rw [← latGHat_one_eq hι]
       exact h _ (hv₁ j))
   have hdet := hδ a fun j => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hv₂, ← hk, (Submodule.Quotient.eq _).2 (ha₁ j), ← Submodule.mkQ_apply, map_sum]
+
+    rw [← hv₂, ← hk, (Submodule.Quotient.eq _).2 (ha₁ j), ← Submodule.mkQ_apply, map_sum]
     simp only [map_smul, Submodule.mkQ_apply, hv₂]
   rw [hdet, Ideal.Quotient.factor_mk]
   exact (resS_eq_of_sub_mem P hP U _ (by rw [hU]; exact ha₂)).symm
@@ -308,7 +357,7 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.L
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem datum_move {l₂ : Level H} {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin (Wc D i).rank → D.host.E)} (hι : LatEmb (Wc D i) ι)
     {K' : Type} [Field K'] {σ' : K' →+* ℂ} {φ : (Fin (Vc D i).rank → LevQc Dw l₂) → K'}
     (hφ : PhiIs R i σ' t ι (Mfr l₂ • ⊤) φ) (hPg : ∀ P ∈ R.Pg, l.Mb ≤ P.asIdeal) (hQ : ∀ P ∈ R.Q t, l₂.Mb ≤ P.asIdeal)
@@ -340,7 +389,7 @@ theorem datum_move {l₂ : Level H} {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin (Wc D
   rw [(he x).2, (he fun b => f (x b)).2, h1, h2, h3, mul_left_comm]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_char {μ0 : T0} (hL : R.toLevCh.Is μ0) (d : DeltaDat Xo c (Vc D i).rank) (hd : d.IsLev)
     {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin (Wc D i).rank → D.host.E)} (hι : GlobalTheory.Member.IotaOK Dw (Wc D i) ι)
     (hr : Dw.p + Dw.q = (Wc D i).rank) (hpq : 1 ≤ Dw.p + Dw.q) (hh : HalfIs R t l.Mb d.I)
@@ -425,7 +474,7 @@ theorem xi_laws {μ0 : T0} (hL : R.toLevCh.Is μ0) {xi : (Af D.host.F ⊗[D.host
   exact ⟨fun γ hγ => (e γ).trans (h3 γ hγ), n, hn, fun g => by rw [e, h4]⟩
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem psiTie_of_values (V : HSp D) {n r : ℕ} (d : DeltaDat Xo c n) (hr : V.rank = r)
     (ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E)) (hι : GlobalTheory.Member.IotaOK Dw V ι) (hpq : 1 ≤ Dw.p + Dw.q)
     (x₀ : (D.host.E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ)

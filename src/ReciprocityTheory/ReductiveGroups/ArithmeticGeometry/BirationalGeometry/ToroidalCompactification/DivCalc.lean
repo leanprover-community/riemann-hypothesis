@@ -2,6 +2,9 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -87,8 +90,8 @@ theorem dvd_of_tensor {V F A : Type} [CommRing V] [IsDomain V] [IsDiscreteValuat
   let b' : Fin n → R := fun i => ⟨b i, (hb i).le⟩
   have hR : a ⊗ₜ[V] (1 : R) = ∑ i, c i ⊗ₜ[V] b' i := by
     apply Module.Flat.lTensor_preserves_injective_linearMap (M := A) incl hincl
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.lTensor_tmul]
+
+    simp only [map_sum, LinearMap.lTensor_tmul]
     exact h
   have hmu1 : mu 1 = 1 := by
     show lam (Ideal.Quotient.mk mI 1) = 1
@@ -99,9 +102,9 @@ theorem dvd_of_tensor {V F A : Type} [CommRing V] [IsDomain V] [IsDiscreteValuat
     rw [Ideal.Quotient.eq_zero_iff_mem.mpr (hb i), map_zero]
   have hk : a ⊗ₜ[V] (1 : V ⧸ (Ideal.span {ϖ} : Ideal V)) = 0 := by
     have e := congrArg (LinearMap.lTensor A mu) hR
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.lTensor_tmul, hmu1, hmub, TensorProduct.tmul_zero,
-      Finset.sum_const_zero] at e
+
+    simp only [map_sum, LinearMap.lTensor_tmul, hmu1, hmub, TensorProduct.tmul_zero,
+    Finset.sum_const_zero] at e
     exact e
   have hq : (Submodule.Quotient.mk a : A ⧸ (Ideal.span {ϖ} : Ideal V) • (⊤ : Submodule V A)) = 0 := by
     rw [← (TensorProduct.tensorQuotEquivQuotSMul A (Ideal.span {ϖ})).apply_symm_apply
@@ -124,9 +127,6 @@ private lemma germ_app_presheaf_map_eq_germ_app {A B : Scheme.{0}} (f : A ⟶ B)
   rw [nat]
   first
     | exact TopCat.Presheaf.germ_res_apply _ _ _ _ _
-    | exact TopCat.Presheaf.germ_res_apply _ _ _ _ _ _
-    | (erw [TopCat.Presheaf.germ_res_apply])
-    | (simp; done)
 
 private lemma germ_app_app_eq_germ_app_comp {A B C : Scheme.{0}} (r : A ⟶ B) (h : B ⟶ C) (y : A) (W : C.Opens)
     (hy : h (r y) ∈ W) (a : Γ(C, W)) :
@@ -134,8 +134,6 @@ private lemma germ_app_app_eq_germ_app_comp {A B C : Scheme.{0}} (r : A ⟶ B) (
       (A.presheaf.germ ((r ≫ h) ⁻¹ᵁ W) y hy).hom (((r ≫ h).app W).hom a) := by
   first
     | rfl
-    | (simp only [Scheme.Hom.comp_app, CommRingCat.hom_comp, RingHom.comp_apply]; rfl)
-    | (simp [Scheme.Hom.comp_app]; done)
 
 theorem gs_appLE {Y : Scheme.{0}} (q : Y ⟶ X) (U : X.Opens) (W : Y.Opens) (e : W ≤ q ⁻¹ᵁ U) (r : Z ⟶ Y) (z : Z)
     (hz : r z ∈ W) (f : Γ(X, U)) : gs r z W ((q.appLE U W e).hom f) = gs (r ≫ q) z U f := by
@@ -148,8 +146,6 @@ theorem gs_constFn (p : X ⟶ Sp V) (W : X.Opens) (r : Z ⟶ X) (z : Z) (hz : r 
     gs r z W (constFn p W a) = cst (r ≫ p) z a := by
   first
     | (unfold constFn cst; exact gs_appLE p ⊤ W le_top r z hz _)
-    | (unfold constFn cst; rw [← gs_appLE p ⊤ W le_top r z hz]; rfl)
-    | (simp only [constFn, cst]; exact gs_appLE p ⊤ W le_top r z hz _)
 
 theorem gs_stalkMap (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) (f : Γ(X, U)) :
     gs r z U f = (r.stalkMap z).hom (gs (𝟙 X) (r z) U f) := by
@@ -158,7 +154,6 @@ theorem gs_stalkMap (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) (f : Γ(
   rw [← Scheme.Hom.germ_stalkMap_apply]
   first
   | rfl
-  | (congr 1; simp)
 
 theorem dvd_descend (r : Z ⟶ X) [Flat r] (z : Z) {a b : X.presheaf.stalk (r z)}
     (h : (r.stalkMap z).hom a ∣ (r.stalkMap z).hom b) : a ∣ b := by

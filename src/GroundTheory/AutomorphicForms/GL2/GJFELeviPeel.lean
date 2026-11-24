@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJFELeviConv
-public import GroundTheory.AutomorphicForms.GL2.GJFEBlock
-public import GroundTheory.AutomorphicForms.LeviStagesProduct
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixLocal
+public import GroundTheory.AutomorphicForms.SmoothRepContragredient
+public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
+public import GroundTheory.AutomorphicForms.GL2.IsAddHaarMeasureMatrixMeasureFinSq
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -77,13 +79,13 @@ theorem eq_sum_of_invariant (hρ : IsSmooth ρ) {K : Subgroup G} (hKc : IsCompac
       simp only [SetLike.val_smul, LinearMap.smul_apply, smul_eq_mul, hℓv _ v hv]
       conv_lhs => rw [show v = ((⟨v, hv⟩ : fixedVectors ρ K) : W) from rfl,
         ← b.sum_repr ⟨v, hv⟩]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Submodule.coe_sum, _root_.map_sum]
+
+      rw [Submodule.coe_sum, _root_.map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [SetLike.val_smul, map_smul, smul_eq_mul, Module.Basis.coord_apply, mul_comm]
   conv_lhs => rw [hdec]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [_root_.map_sum]
+
+  rw [_root_.map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, smul_eq_mul]
 

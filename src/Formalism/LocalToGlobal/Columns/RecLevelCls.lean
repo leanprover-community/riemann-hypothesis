@@ -1,7 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.RecLevel
+public import Formalism.LocalToGlobal.Columns.AdelicLemmas
+public import Formalism.LocalToGlobal.Columns.DecoFin
 public import Formalism.LocalToGlobal.Columns.CoefColLemmas
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

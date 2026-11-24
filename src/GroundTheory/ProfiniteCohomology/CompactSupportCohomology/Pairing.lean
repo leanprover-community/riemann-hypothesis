@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Homology.ConcreteCategory
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomApplyHomApplyEqOfCompEq
 public import GroundTheory.ProfiniteCohomology.FilteredHomology
+public import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 
 @[expose] public section
 

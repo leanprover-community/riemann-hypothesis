@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Trace
+public import Mathlib.RepresentationTheory.Basic
 
 @[expose] public section
 
-open Module NumberField
+open Module
 
 namespace Bl.RankOneOrbitForms
 
@@ -12,26 +13,17 @@ variable {K : Type} [Field K] {G : Type} [Group G] {T : Type} [AddCommGroup T] [
 
 private lemma rank_one_form (f : T →ₗ[K] T) (h1 : finrank K (LinearMap.range f) = 1) :
     ∃ (φ : T →ₗ[K] K) (v : T), v ≠ 0 ∧ φ ≠ 0 ∧ f = φ.smulRight v := by
-  obtain ⟨v, hv, hw⟩ := finrank_eq_one_iff'.mp h1
-  choose a ha using fun x => hw ⟨f x, LinearMap.mem_range_self f x⟩
-  have hv' : (v : T) ≠ 0 := fun h => hv (Subtype.ext h)
-  have hav : ∀ x, a x • (v : T) = f x := fun x => congrArg Subtype.val (ha x)
-  have inj := smul_left_injective K hv'
-  let φ : T →ₗ[K] K :=
-    { toFun := a
-      map_add' := fun x y => inj (by simp only [add_smul, hav, map_add (f := _)])
-      map_smul' := fun c x => inj (by
-        simp only [smul_eq_mul, mul_smul, hav, map_smul, RingHom.id_apply]) }
-  refine ⟨φ, v, hv', ?_, ?_⟩
-  · intro h0
-    obtain ⟨y, hy⟩ := LinearMap.mem_range.mp v.2
-    apply hv'
-    rw [← hy, ← hav y]
-    have : a y = 0 := LinearMap.congr_fun h0 y
-    rw [this, zero_smul]
-  · ext x
-    simp only [LinearMap.smulRight_apply]
-    exact (hav x).symm
+  let e : LinearMap.range f ≃ₗ[K] K := LinearEquiv.ofFinrankEq _ _ (by simpa using h1)
+  let φ := e.toLinearMap.comp f.rangeRestrict
+  let v := e.symm (1 : K)
+  have hv : v ≠ 0 := by
+    simpa only [v, map_zero] using e.symm.injective.ne (one_ne_zero : (1 : K) ≠ 0)
+  have hφ : Function.Surjective φ := e.surjective.comp f.surjective_rangeRestrict
+  refine ⟨φ, v, fun h => hv (Subtype.ext h), LinearMap.ne_zero_of_surjective hφ, ?_⟩
+  ext x
+  change f x = ((e (f.rangeRestrict x) • e.symm 1 : LinearMap.range f) : T)
+  rw [← e.symm.map_smul, smul_eq_mul, mul_one, e.symm_apply_apply]
+  rfl
 
 private lemma span_orbit (τ : Representation K G T)
     (hirr : ∀ W : Submodule K T, (∀ g : G, ∀ w ∈ W, τ g w ∈ W) → W = ⊥ ∨ W = ⊤)
@@ -57,26 +49,13 @@ private lemma span_orbit (τ : Representation K G T)
 private lemma orbit_ker (τ : Representation K G T)
     (hirr : ∀ W : Submodule K T, (∀ g : G, ∀ w ∈ W, τ g w ∈ W) → W = ⊥ ∨ W = ⊤)
     (φ : T →ₗ[K] K) (hφ : φ ≠ 0) (x : T) (hx : ∀ g, φ (τ g x) = 0) : x = 0 := by
-  let W : Submodule K T := ⨅ g : G, LinearMap.ker (φ ∘ₗ τ g)
-  have memW : ∀ y, y ∈ W ↔ ∀ g, φ (τ g y) = 0 := by
-    intro y
-    simp [W, Submodule.mem_iInf]
-  have hinvar : ∀ g : G, ∀ w ∈ W, τ g w ∈ W := by
-    intro g w hw
-    rw [memW] at hw ⊢
-    intro h
-    have := hw (h * g)
-    rwa [map_mul, Module.End.mul_apply] at this
-  rcases hirr W hinvar with h | h
-  · have : x ∈ W := (memW x).2 hx
-    rw [h, Submodule.mem_bot] at this
-    exact this
-  · exfalso
-    apply hφ
-    ext y
-    have hy : y ∈ W := h ▸ Submodule.mem_top
-    have := (memW y).1 hy 1
-    simpa using this
+  by_contra hx0
+  have hle : Submodule.span K (Set.range fun g => τ g x) ≤ LinearMap.ker φ := by
+    rw [Submodule.span_le]
+    rintro _ ⟨g, rfl⟩
+    exact hx g
+  rw [span_orbit τ hirr x hx0] at hle
+  exact hφ (LinearMap.ker_eq_top.mp (top_le_iff.mp hle))
 
 private lemma select {ι M : Type} [AddCommGroup M] [Module K M] [FiniteDimensional K M]
     (f : ι → M) (r : ℕ) (hr : finrank K (Submodule.span K (Set.range f)) = r) :
@@ -125,8 +104,8 @@ theorem goal1 (τ : Representation K G T)
     have hx : ∑ j, b j • ε (τ (γ j) v) = 0 := by
       apply orbit_ker τ hirr φ hφ
       intro g
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, smul_eq_mul]
+
+      simp only [map_sum, map_smul, smul_eq_mul]
       have := key g
       simp only [w, smul_eq_mul] at this
       rw [← this]
@@ -160,8 +139,8 @@ theorem goal1 (τ : Representation K G T)
     have hcoef : ∀ i, φ (τ (δ i) (ε x)) = ∑ k, c i k * a k := by
       intro i
       rw [← ha]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [c, map_sum, map_smul, mul_comm]
+
+      simp [c, map_sum, map_smul, mul_comm]
     have hinv : ∀ j, ∑ i, c⁻¹ j i * ∑ k, c i k * a k = a j := by
       intro j
       have := congrFun (show Matrix.mulVec c⁻¹ (Matrix.mulVec c a) = a by

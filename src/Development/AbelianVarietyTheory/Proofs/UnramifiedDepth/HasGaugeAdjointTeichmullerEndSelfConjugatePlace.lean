@@ -1,15 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.CharacterGerms.NondegenerateCharts
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
-public import Formalism.LocalToGlobal.CharacterGerms.BlockAdmissibleChart
-public import Formalism.LocalToGlobal.CharacterGerms.NegMem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
 public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
-public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsIntegralEndOfLadicActionLimitStatement
-public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FrobeniusLiftEmbeddingsUnitStatement
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
+public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsIntegralEndOfLadicActionLimit
+public import Formalism.LocalToGlobal.CharacterGerms.Interface
+public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FrobeniusLiftEmbeddingsUnit
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IntSOfMulEqOne
+import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -66,21 +107,7 @@ theorem teichSelf_intS_subst {V : VF C} {σ τ : Type} [Finite σ] (a : σ → M
 
 theorem teichSelf_mvExp_eq [CharZero C] {τ : Type} {f : MvPowerSeries τ C} (hf : constantCoeff f = 0) :
     mvExp f = PowerSeries.subst f (PowerSeries.exp C) := by
-  ext m
-  rw [PowerSeries.coeff_subst (PowerSeries.HasSubst.of_constantCoeff_zero hf),
-    finsum_eq_sum_of_support_subset (s := Finset.range (m.degree + 1))]
-  · show ∑ k ∈ Finset.range (m.degree + 1), coeff m (f ^ k) / (k.factorial : C) = _
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [PowerSeries.coeff_exp, smul_eq_mul]
-    simp [div_eq_inv_mul]
-  · intro k hk
-    rw [Function.mem_support] at hk
-    rw [Finset.coe_range, Set.mem_Iio]
-    by_contra hc
-    apply hk
-    rw [coeff_of_lt_order, smul_zero]
-    refine lt_of_lt_of_le ?_ (le_order_pow_of_constantCoeff_eq_zero k hf)
-    exact_mod_cast (by omega : m.degree < k)
+  apply GlobalTheory.RowVal.mvExp_eq_subst <;> assumption
 
 theorem teichSelf_subst_mvExp [CharZero C] {σ τ : Type} (b : σ → MvPowerSeries τ C) [Finite σ]
     (hb : ∀ s, constantCoeff (b s) = 0) {f : MvPowerSeries σ C} (hf : constantCoeff f = 0) :
@@ -108,8 +135,8 @@ variable {d d' dd : ℕ} {I I' : Fin 2 → Type}
 theorem teichSelf_cc_lin {κ τ : Type} [Fintype κ] (X : RawChart C d I κ) (hlg : ∀ i, constantCoeff (X.lg i) = 0)
     (M : Matrix κ κ C) (a : κ → MvPowerSeries τ C) (ha : ∀ i, constantCoeff (a i) = 0) (x : κ) :
     constantCoeff (∑ y, M x y • subst a (X.lg y)) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun y _ => ?_
   rw [← coeff_zero_eq_constantCoeff_apply, coeff_smul, coeff_zero_eq_constantCoeff_apply,
     constantCoeff_subst_zero ha (hlg y), mul_zero]
@@ -130,8 +157,8 @@ theorem teichSelf_subst_endP {κ τ υ : Type} [Fintype κ] [Finite τ] (X : Raw
   rw [subst_comp_subst_apply (hasSubst_of_constantCoeff_zero (teichSelf_cc_lin X hlg M a ha)) hB]
   congr 1
   funext z
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← coe_substAlgHom hB, map_sum]
+
+  rw [← coe_substAlgHom hB, map_sum]
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [map_smul, coe_substAlgHom hB, subst_comp_subst_apply (hasSubst_of_constantCoeff_zero ha) hB]
 
@@ -195,8 +222,8 @@ theorem teichSelf_hAt_col [CharZero C] {τ : Type} (X : RawChart C d I (Fin dd))
     hAt X' a b = ∑ col : Fin 2, hAt X (fun y => a (col, y)) (fun y => b (col, y)) := by
   have hA := hasSubst_of_constantCoeff_zero (teichSelf_cc_pair a b ha hb)
   unfold hAt
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e3, ← coe_substAlgHom hA, map_sum]
+
+  rw [e3, ← coe_substAlgHom hA, map_sum]
   refine Finset.sum_congr rfl fun col _ => ?_
   rw [coe_substAlgHom hA]
   unfold hCol
@@ -304,11 +331,11 @@ theorem teichSelf_mulVec {C : Type} [Field C] {dd : ℕ} (M : Matrix (Fin dd) (F
 
 theorem hasTeich_selfData : ∀ (C : Type) [Field C] [CharZero C] (V : VF C) (O : Type) [CommRing O] [StarRing O] (dd : ℕ) (Y : FBChart C V O dd) (d : ℕ) [NeZero d] (I0 : Type) [Fintype I0] (p : SelfData Y d I0), ∀ g, HasTeich (Y.rawSelf p) V g := by
   intro C _ _ V O _ _ dd Y d _ I0 _ p g
-  obtain ⟨N, ζ, s, hN, hζ, hinj, hfr, hs, hlim⟩ := GlobalTheory.T.frobenius_lift_embeddings_unit C V Y.cpl O d p.em p.em_int p.em_frob p.em_sep p.em_unr
+  obtain ⟨N, ζ, s, hN, hζ, hinj, hfr, hs, hlim⟩ := _root_.GlobalTheory.exists_teichmueller_sequence C V Y.cpl O d p.em p.em_int p.em_frob p.em_sep p.em_unr
   let X : RawChart C d (fun _ => I0) (Fin dd) :=
     { lg := fun i => un1 (Y.lg i), ex := fun i => un1 (Y.ex i), h := Y.h, k := 0, u := fun _ => p.e,
       ty := fun _ => p.ty0, n := 0, j := 0, j' := 0, big := fun _ _ => True }
-  obtain ⟨M, M', h1, h2, h3, h4⟩ := GlobalTheory.T.exists_integralEnd_of_ladic_action_limit C V O dd Y d _ X rfl rfl rfl s hs
+  obtain ⟨M, M', h1, h2, h3, h4⟩ := _root_.GlobalTheory.ActionLimit.exists_isEnd_of_limit_raw C V O dd Y d _ X rfl rfl rfl s hs
   have hlg : ∀ i, MvPowerSeries.constantCoeff (X.lg i) = 0 := by
     intro i
     show MvPowerSeries.constantCoeff (un1 (Y.lg i)) = 0

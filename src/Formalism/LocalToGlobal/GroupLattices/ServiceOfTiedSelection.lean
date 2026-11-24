@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ThresholdSelection
-public import Formalism.SharpRestriction.SmoothDesignExistence.SumOverPrimesHypotheses
+public import Formalism.SharpRestriction.ParamsHeightRankConstant
+import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 
 @[expose] public section
 

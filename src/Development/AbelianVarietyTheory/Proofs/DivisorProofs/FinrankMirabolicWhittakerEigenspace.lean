@@ -1,7 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SplitDoublingNBlock
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -59,8 +108,8 @@ theorem card_mul_finrank_eig [FiniteDimensional ℂ V] [Finite G] (τ : Represen
     · intro v
       rw [mem_eig]
       intro g hg
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [he, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum]
+
+      simp only [he, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum]
       rw [smul_comm]
       congr 1
       rw [Finset.smul_sum]
@@ -75,8 +124,8 @@ theorem card_mul_finrank_eig [FiniteDimensional ℂ V] [Finite G] (τ : Represen
       rw [Finset.sum_congr rfl (g := fun _ => v) fun k _ => by
         rw [hv k k.2, smul_smul, ← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one, one_smul]]
       rw [Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hc, one_smul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hp.trace, he, map_smul, map_sum, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hc, one_mul]
+
+  rw [← hp.trace, he, map_smul, map_sum, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hc, one_mul]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_smul, smul_eq_mul]
 
@@ -520,7 +569,7 @@ theorem dm_perm_le (σ : Equiv.Perm (Fin n))
     · exact Or.inr (Or.inl h)
     · exact Or.inr (Or.inr ⟨hz _ _ h, hz _ _ h⟩)
 
-set_option maxHeartbeats 1000000 in
+
 theorem dm_perm (hψ : ψ ≠ 1) (hU : unip F n ≤ P) {a m : Fin n} {c : ℕ} (h : m.val = a.val + 1 + c)
     (hσ : ∀ σ : Equiv.Perm (Fin n), (∀ i, m ≤ i → σ i = i) →
       ∀ g : GL (Fin n) F, (∀ a j, (g : Matrix (Fin n) (Fin n) F) a j = if a = σ j then 1 else 0) → g ∈ P) :

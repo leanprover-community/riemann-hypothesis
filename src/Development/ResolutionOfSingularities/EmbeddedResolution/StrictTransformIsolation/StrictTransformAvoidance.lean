@@ -1,30 +1,54 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.ClopenRestriction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossingsOpenImmersion
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.EmbeddedResolutionRule
-public import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
-public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.GenericPointImage
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformIsolation.ChartIsolation
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformIsolation.RestrictionToOpens
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheaf
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReductionProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MaxContactReduction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.FunctorialPrincipalization
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.BlowupSequenceData
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequence
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.GenericPointsAvoidCenter
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.DetachedLocus
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.EmbeddedBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.EmbeddedStrictTransform
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
+import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.GenericPointImage
+public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossingsOpenImmersion
+import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -86,12 +110,7 @@ private theorem forall_avoidsCenters_strictTransformι_of_isGenericPoint [Algebr
     · rw [← key]
       exact ih (Nat.le_of_succ_le hi) C' hC' _ hη'
 
-theorem avoidsCenters_strictTransformι_of_isGenericPoint [AlgebraicGeometry.IsReduced Y] (S : EmbeddedBlowupSequence k Y pY)
-    (hN : ∀ j ≤ S.length, AlgebraicGeometry.IsNoetherian (S.schemeAt j)) (i : ℕ) (hi : i ≤ S.length)
-    (C : Set ↥(S.strictTransform i)) (hC : C ∈ irreducibleComponents ↥(S.strictTransform i))
-    (ξ : ↥(S.strictTransform i)) (hξ : IsGenericPoint ξ C) :
-    S.AvoidsCenters i ((S.strictTransformι i).base ξ) :=
-  forall_avoidsCenters_strictTransformι_of_isGenericPoint S hN i hi C hC ξ hξ
+alias avoidsCenters_strictTransformι_of_isGenericPoint := _root_.FunctorialResolution.EmbeddedResolution.EmbeddedBlowupSequence.forall_avoidsCenters_strictTransformι_of_isGenericPoint
 
 theorem isOpenImmersion_ι_comp_blowdown (S : EmbeddedBlowupSequence k Y pY) (i : ℕ) (hi : i < S.length)
     (U : (S.schemeAt (i + 1)).Opens)
@@ -353,14 +372,7 @@ private theorem forall_not_avoidsCenters_of_mem_boundary_support (D : EmbeddingD
             ((principalizationOfEmbedding k Y pY D A).center i) x hx
         exact hcl'.1 hmem2
 
-theorem not_avoidsCenters_of_mem_boundary_support (D : EmbeddingDatum k Y pY) (A : PrincipalizationAlgorithm.{u})
-    (i : ℕ) (hi : i ≤ (D.toEmbeddedBlowupSequence A).length)
-    (E : ((principalizationOfEmbedding k Y pY D A).schemeAt i).IdealSheafData)
-    (hE : E ∈ (principalizationOfEmbedding k Y pY D A).boundary i)
-    (x : ↥((D.toEmbeddedBlowupSequence A).schemeAt i))
-    (hx : x ∈ (E.support : Set ↥((principalizationOfEmbedding k Y pY D A).schemeAt i))) :
-    ¬ (D.toEmbeddedBlowupSequence A).AvoidsCenters i x :=
-  forall_not_avoidsCenters_of_mem_boundary_support D A i hi E hE x hx
+alias not_avoidsCenters_of_mem_boundary_support := _root_.FunctorialResolution.EmbeddedResolution.OpenImmersionRestriction.forall_not_avoidsCenters_of_mem_boundary_support
 
 private theorem ker_congr {A B : Scheme.{u}} {f g : A ⟶ B}
     [AlgebraicGeometry.QuasiCompact f] [AlgebraicGeometry.QuasiCompact g] (h : f = g) :

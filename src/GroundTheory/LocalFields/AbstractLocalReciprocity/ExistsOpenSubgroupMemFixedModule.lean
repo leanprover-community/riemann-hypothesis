@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ProfiniteInteger
+public import Mathlib.Topology.Algebra.OpenSubgroup
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
 
 @[expose] public section
 

@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverEta
+public import Formalism.AlgebraicWeights.IsAlgWeight
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
+public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedHecke
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

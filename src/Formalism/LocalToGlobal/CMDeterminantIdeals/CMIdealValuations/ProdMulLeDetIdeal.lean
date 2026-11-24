@@ -1,6 +1,15 @@
 module
 
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementA
+public import ReciprocityTheory.SemistableReduction.LatSemiSt
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Analysis.Matrix.Hermitian
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 

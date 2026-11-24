@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.Automorphisms.Unitary
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.Automorphisms.PlaceA
 
 @[expose] public section
@@ -20,7 +24,6 @@ theorem SplitPlace.split_le_one (s : SplitPlace L) (x : 𝓞 L) : Valued.v (s.i 
   have h1 : IsIntegral ℤ (s.i (x : L)) := by
     first
       | exact hx.map (s.i.restrictScalars ℤ)
-      | convert hx.map (s.i : L →+* s.v.adicCompletion L⁺).toIntAlgHom
   have h2 : IsIntegral (Valued.v : Valuation (s.v.adicCompletion L⁺) _).integer (s.i (x : L)) :=
     h1.tower_top
   exact (Valuation.mem_integer_iff _ _).mp ((Valuation.integer.integers _).mem_of_integral h2)
@@ -33,7 +36,6 @@ theorem SplitPlace.split_val_alg (s : SplitPlace L) (a : 𝓞 L⁺) :
   rw [split_coe_algebraMap, s.i.commutes]
   first
     | exact HeightOneSpectrum.valuedAdicCompletion_eq_valuation' s.v (a : L⁺)
-    | simp [HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
 
 def SplitPlace.ideal (s : SplitPlace L) : Ideal (𝓞 L) where
   carrier := {x | Valued.v (s.i (x : L)) < 1}

@@ -1,8 +1,60 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.FinitePresentation
+public import Mathlib.RingTheory.Discriminant
+public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
+public import Mathlib.RingTheory.MvPowerSeries.Derivative
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.CoeffEqZeroOfMemSpanPow
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.DiscrMulDetEqNormOfAnnihilator
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Ideal.GoingUp
+public import Mathlib.RingTheory.Nakayama
 
 @[expose] public section
 
@@ -186,11 +238,11 @@ theorem _root_.GlobalTheory.DiscrJacobian.isUnit_det_of_productMap_ne_zero [IsLo
         (IsScalarTower.toAlgHom R (ResidueField R) C) (ev (b j))) =
         ρ (b i) * (IsScalarTower.toAlgHom R (ResidueField R) C) (ev (∑ j, M i j • b j)) := by
       intro i
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum, Finset.mul_sum, mul_smul_comm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Algebra.TensorProduct.productMap_apply_tmul, AlgHom.comp_apply,
-      hrow, hcon, map_zero, mul_zero, Finset.sum_const_zero]
+
+      simp [map_sum, Finset.mul_sum]
+
+    simp only [map_sum, map_smul, Algebra.TensorProduct.productMap_apply_tmul, AlgHom.comp_apply,
+    hrow, hcon, map_zero, mul_zero, Finset.sum_const_zero]
   set w := ∑ j, M i0 j • b j with hw
   have hwunit : IsUnit w := by
     obtain ⟨c, hc⟩ := hgen w
@@ -225,7 +277,7 @@ theorem _root_.GlobalTheory.DiscrJacobian.isUnit_det_of_productMap_ne_zero [IsLo
     have hr : ∑ i, ∑ j, (M i j * b.coord i0 (b i)) • (b j * u) = ∑ j, t j • b j := by
       have : w * u = ∑ j, t j • b j := by rw [hu, ← mul_assoc, hw', one_mul]
       rw [← this, hw, Finset.sum_mul]
-      simp [Module.Basis.coord_apply, Finsupp.single_apply, smul_mul_assoc]
+      simp [Module.Basis.coord_apply, Finsupp.single_apply]
     apply b.equivFun.symm.injective
     simp only [Module.Basis.equivFun_symm_apply]
     rw [← hr, ← hs]
@@ -321,8 +373,8 @@ private theorem tensorMap_det_mul_tmul_sub_eq_zero {g : ℕ} [Module.Finite R B]
       algebraMap S B s ⊗ₜ[R] (1 : B) - (1 : B) ⊗ₜ[R] algebraMap S B s := by
     simp [π]
   rw [← hπs, ← map_mul, ← hc, Finset.mul_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun l _ => ?_
   rw [mul_left_comm, map_mul, RingHom.mem_ker.mp (hker l), mul_zero]
 
@@ -335,8 +387,8 @@ private theorem algebraMap_derivation_eq_sum_mu_mul {g : ℕ} (D : Derivation R 
       ∑ j, a i j * (x j ⊗ₜ[R] (1 : B) - (1 : S) ⊗ₜ[R] algebraMap S B (x j))) (i : Fin g) :
     algebraMap S B (D (f i)) = ∑ j, _root_.GlobalTheory.DiscrJacobian.mu R S B (a i j) * algebraMap S B (D (x j)) := by
   have := congrArg (_root_.GlobalTheory.DiscrJacobian.der D) (ha i)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [_root_.GlobalTheory.DiscrJacobian.der_tmul, mul_one, map_sum] at this
+
+  rw [_root_.GlobalTheory.DiscrJacobian.der_tmul, mul_one, map_sum] at this
   rw [this]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [_root_.GlobalTheory.DiscrJacobian.der_mul, map_sub, map_sub]
@@ -361,15 +413,14 @@ private theorem norm_sum_mul_eq_discr_mul_det {R B : Type} [CommRing R] [CommRin
       M.transpose * Algebra.traceMatrix R b := by
     ext j l
     rw [Algebra.leftMulMatrix_eq_repr_mul, hmul]
-    simp [Matrix.mul_apply, Algebra.traceMatrix_apply, Module.Basis.repr_sum_self,
-      Finsupp.single_apply]
+    simp [Matrix.mul_apply, Algebra.traceMatrix_apply, Finsupp.single_apply]
   rw [Algebra.norm_eq_matrix_det b, hmat, Matrix.det_mul, Matrix.det_transpose,
     Algebra.discr_def, mul_comm]
 
 
 open MvPowerSeries IsLocalRing in
 open scoped TensorProduct in
-set_option maxHeartbeats 800000 in
+
 theorem _root_.GlobalTheory.DiscrJacobian.associated_discr_norm_jacobian (R : Type) [CommRing R] [IsLocalRing R]
     (g d : ℕ) (f : Fin g → MvPowerSeries (Fin g) R)
     (b : Module.Basis (Fin d) R (MvPowerSeries (Fin g) R ⧸ Ideal.span (Set.range f)))
@@ -444,8 +495,8 @@ theorem _root_.GlobalTheory.DiscrJacobian.associated_discr_norm_jacobian (R : Ty
       rw [Finset.sum_eq_single j (fun k _ hk => by rw [pderiv_X_of_ne hk, map_zero, mul_zero])
         (by simp), pderiv_X_self, map_one, mul_one]
     calc ∑ i, ∑ j, M i j • (b i * b j) = Algebra.TensorProduct.lmul' R De := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [hDe]; simp [map_sum, Algebra.TensorProduct.lmul'_apply_tmul]
+
+          rw [hDe]; simp [map_sum, Algebra.TensorProduct.lmul'_apply_tmul]
       _ = _root_.GlobalTheory.DiscrJacobian.mu R (MvPowerSeries (Fin g) R)
           (MvPowerSeries (Fin g) R ⧸ Ideal.span (Set.range f)) (Matrix.of a).det := hlm _
       _ = _ := by
@@ -507,8 +558,8 @@ theorem _root_.GlobalTheory.DiscrJacobian.associated_discr_norm_jacobian (R : Ty
       obtain ⟨s, rfl⟩ := Ideal.Quotient.mk_surjective w
       obtain ⟨c, u, hu⟩ := hgen s
       refine ⟨c, ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hu, map_add (f := _), Ideal.Quotient.mk_algebraMap, add_sub_cancel_left, map_sum]
+
+      rw [hu, map_add (f := _), Ideal.Quotient.mk_algebraMap, add_sub_cancel_left, map_sum]
       exact Ideal.sum_mem _ fun j _ => by
         rw [map_mul]; exact Ideal.mul_mem_right _ _ (Ideal.subset_span ⟨j, rfl⟩)
     have hmB : ∀ w ∈ (maximalIdeal R).map
@@ -557,9 +608,9 @@ theorem _root_.GlobalTheory.DiscrJacobian.associated_discr_norm_jacobian (R : Ty
         hev _ (Ideal.subset_span (Set.mem_range_self
           (f := fun j => Ideal.Quotient.mk (Ideal.span (Set.range f)) (X j)) j))
       have := congrArg Φ (ha i)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Φ, map_sum, map_mul, map_sub, Algebra.TensorProduct.productMap_apply_tmul,
-        map_one, mul_one, one_mul] at this
+
+      simp only [Φ, map_sum, map_mul, map_sub, Algebra.TensorProduct.productMap_apply_tmul,
+      map_one, mul_one, one_mul] at this
       rw [← hred, this]
       refine Finset.sum_congr rfl fun j _ => ?_
       congr 1

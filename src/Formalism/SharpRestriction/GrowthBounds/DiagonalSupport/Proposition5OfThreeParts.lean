@@ -1,7 +1,103 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ManyEdges
+public import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
+public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.DecompositionOfThreeParts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Tactic.ReduceModChar
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.SharpRestriction.GrowthBounds.DualFockLinear.ValLeOfVK, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.Proposition5OfThreeParts
+
+-- ===== clump member: Formalism.SharpRestriction.GrowthBounds.DualFockLinear.ValLeOfVK =====
+-- clump-header: {"m": "Formalism.SharpRestriction.GrowthBounds.DualFockLinear.ValLeOfVK", "h": "module\n\npublic import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ManyEdges\npublic import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open MvPolynomial
+
+namespace Formalism.MainNotions.TestSideCounting
+
+open Formalism.MainNotions.G Formalism.MainNotions.Pf14 Formalism.MainNotions.G.Joints
+
+variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+
+theorem valLe_of_vK {p : ℕ} (S : UniformizedDVR p O) (D : ℕ) (a : O)
+    (h : Formalism.MainNotions.PlaneGramData.leQ (vK p (algebraMap O (KK O) a)) (D : ℝ)) :
+    ValLe (Kf := KK O) (p : O) D (algebraMap O (KK O) a) := by
+  obtain ⟨q, hq, hqD⟩ := h
+  have ha : a ≠ 0 := by
+    rintro rfl
+    have h0 : vK p (algebraMap O (KK O) 0) = ⊤ := by simp [vK, ordW]
+    rw [h0] at hq
+    exact WithTop.top_ne_coe hq
+  rw [vK_alg p a ha] at hq
+  have hq' : (nv a : ℚ) / (ramE p O : ℚ) = q := WithTop.coe_injective hq
+  have hr : (0 : ℝ) < (ramE p O : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero (ramE_ne_zero S)
+  have hle : nv a ≤ D * ramE p O := by
+    rw [← hq'] at hqD
+    push_cast at hqD
+    rw [div_le_iff₀ hr] at hqD
+    exact_mod_cast hqD
+  have hne : IsDiscreteValuationRing.addVal O a ≠ ⊤ := fun h0 =>
+    ha (IsDiscreteValuationRing.addVal_eq_top_iff.mp h0)
+  have hne' : IsDiscreteValuationRing.addVal O (p : O) ≠ ⊤ := fun h0 =>
+    S.p_ne (IsDiscreteValuationRing.addVal_eq_top_iff.mp h0)
+  have e1 : IsDiscreteValuationRing.addVal O a = (nv a : ℕ∞) := (ENat.coe_toNat hne).symm
+  have e2 : IsDiscreteValuationRing.addVal O (p : O) = (ramE p O : ℕ∞) := (ENat.coe_toNat hne').symm
+  have hdvd : a ∣ (p : O) ^ D := by
+    rw [← IsDiscreteValuationRing.addVal_le_iff_dvd, IsDiscreteValuationRing.addVal_pow, e1, e2,
+      nsmul_eq_mul]
+    exact_mod_cast hle
+  obtain ⟨b, hb⟩ := hdvd
+  exact ⟨a, b, rfl, hb.symm⟩
+
+end Formalism.MainNotions.TestSideCounting
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.SharpRestriction.GrowthBounds.DualFockLinear.ValLeOfVK =====
+
+-- ===== clump member: Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.Proposition5OfThreeParts =====
+-- clump-header: {"m": "Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.Proposition5OfThreeParts", "h": "module\n\npublic import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct\npublic import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.DecompositionOfThreeParts\npublic import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.ValLeOfVK\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -53,8 +149,8 @@ theorem ph_coefGe (Dt : SignedChainData p O r J) {R : MvPolynomial (ML J Dt.nL r
 theorem ph_mem_pol (Dt : SignedChainData p O r J) (F : MvPolynomial (ML J Dt.nL r × Fin r) (KK O))
     (h : ∀ mo ∈ F.support, Dt.ph (monomial mo 1) ∈ Pol (KK O) r Dt.d) : Dt.ph F ∈ Pol (KK O) r Dt.d := by
   have hF : Dt.ph F = Dt.ph (∑ mo ∈ F.support, monomial mo (F.coeff mo)) := by rw [← F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hF, map_sum]
+
+  rw [hF, map_sum]
   refine Submodule.sum_mem _ fun mo hmo => ?_
   have : (monomial mo (F.coeff mo) : MvPolynomial (ML J Dt.nL r × Fin r) (KK O)) = F.coeff mo • monomial mo 1 := by
     rw [smul_monomial, smul_eq_mul, mul_one]
@@ -194,3 +290,7 @@ theorem proposition5_of_three_parts (D : Formalism.BasicNotions.D7) (CLa Ck Crk 
   exact proposition5_at_of_three_parts C CDn CDm CLa h1.le h4.le (by linarith) (hP' C c1) (hM' C c2) (hN' C c3)
 
 end Formalism.MainNotions.Proposition5Numerics
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.Proposition5OfThreeParts =====

@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TwQLat
+public import Formalism.LocalToGlobal.Columns.TwQDCls
+public import Formalism.LocalToGlobal.Columns.TwQRec
+import Formalism.LocalToGlobal.Columns.RecLevelCls
+import Formalism.LocalToGlobal.Columns.TwQOrb
 
 @[expose] public section
 

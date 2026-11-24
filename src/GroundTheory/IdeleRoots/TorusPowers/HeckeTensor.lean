@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.UnipotentAdelicQuotients.ThmBInHecke
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
 public import GroundTheory.GlobalFields.Adele.Approximation
-public import GroundTheory.GlobalFields.Adele.BaseChange.FiniteTensor
 
 @[expose] public section
 
@@ -93,8 +91,8 @@ theorem finEquiv_symm_eq_sum {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Mod
     (t : FiniteAdeleRing (𝓞 E) E) :
     (finEquiv F E).symm t = ∑ i, finiteCoord b i t ⊗ₜ b i := by
   change (Algebra.TensorProduct.comm F (Af F) E).symm ((finiteTensorEquiv F E).symm t) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [finiteTensorEquiv_symm_apply b, map_sum]
+
+  rw [finiteTensorEquiv_symm_apply b, map_sum]
   rfl
 
 theorem algebraMap_mem_integralFiniteAdeles (x : 𝓞 E) :
@@ -108,15 +106,13 @@ theorem finiteAdeleMap_mem_integralFiniteAdeles {a : Af F} (ha : a ∈ intAf F) 
 
 theorem finEquiv_mem_of_mem_intAE {y : Af F ⊗[F] E} (hy : y ∈ intAE F E) :
     finEquiv F E y ∈ integralFiniteAdeles (𝓞 E) E := by
-  induction hy using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨a, ha, x, rfl⟩ := hy
-    rw [finEquiv_tmul]
-    exact Subring.mul_mem _ (algebraMap_mem_integralFiniteAdeles x)
-      (finiteAdeleMap_mem_integralFiniteAdeles ha)
-  | zero => rw [map_zero]; exact Subring.zero_mem _
-  | add _ _ _ _ h1 h2 => rw [map_add (f := _)]; exact Subring.add_mem _ h1 h2
-  | neg _ _ h => rw [map_neg]; exact Subring.neg_mem _ h
+  change y ∈ (integralFiniteAdeles (𝓞 E) E).toAddSubgroup.comap (finEquiv F E).toAddMonoidHom
+  refine ((AddSubgroup.closure_le _).2 ?_) hy
+  rintro _ ⟨a, ha, x, rfl⟩
+  change finEquiv F E (a ⊗ₜ (x : E)) ∈ integralFiniteAdeles (𝓞 E) E
+  rw [finEquiv_tmul]
+  exact Subring.mul_mem _ (algebraMap_mem_integralFiniteAdeles x)
+    (finiteAdeleMap_mem_integralFiniteAdeles ha)
 
 theorem exists_basis_isIntegral :
     ∃ b : Module.Basis (Fin (Module.finrank F E)) F E, ∀ i, IsIntegral ℤ (b i) := by

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitLocalSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartRing
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartMax
@@ -10,6 +9,9 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalL
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterChart
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPlaceCentredSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartTerm
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

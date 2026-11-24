@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
+import Mathlib.Analysis.Matrix.Order
 
 @[expose] public section
 

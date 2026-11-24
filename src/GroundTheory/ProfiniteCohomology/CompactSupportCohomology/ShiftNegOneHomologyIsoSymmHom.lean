@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomApplyHomApplyEqOfCompEq
+public import Mathlib.CategoryTheory.Monoidal.Mon
+public import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 
 @[expose] public section
 

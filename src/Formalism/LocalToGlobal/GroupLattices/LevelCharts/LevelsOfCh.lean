@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteCompG
-public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.CompletionIntegersIff
 public import Formalism.SharpRestriction.GrowthBounds.DataGChain
+public import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

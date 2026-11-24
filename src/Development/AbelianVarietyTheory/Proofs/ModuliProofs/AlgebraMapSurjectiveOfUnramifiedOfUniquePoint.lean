@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.RingTheory.Support
+public import Mathlib.RingTheory.Unramified.Basic
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsGaloisCover
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -65,36 +111,6 @@ private lemma algebraMap_injective_of_denseP_unique_lift {R B : Type} [CommRing 
   rw [← hx, RingHom.mem_ker, ← hy, RingHom.comp_apply, ha, map_zero]
 
 open scoped TensorProduct in
-private lemma algebraMap_surjective_of_unique_algHom (K A : Type) [Field K] [IsAlgClosed K] [CommRing A]
-    [Algebra K A] [Module.Finite K A] [Algebra.FormallyUnramified K A]
-    (φ₀ : A →ₐ[K] K) (hφ₀ : ∀ φ : A →ₐ[K] K, φ = φ₀) : Function.Surjective (algebraMap K A) := by
-  haveI := Algebra.FormallyUnramified.isReduced_of_field K A
-  haveI : IsArtinianRing A := IsArtinianRing.of_finite K A
-  have hφ₀s : Function.Surjective φ₀ := fun c => ⟨algebraMap K A c, by simp⟩
-  have hmax : ∀ m : Ideal A, m.IsMaximal → m = RingHom.ker φ₀ := by
-    intro m hm
-    letI := Ideal.Quotient.field m
-    have hs : Function.Surjective (algebraMap K (A ⧸ m)) := IsSepClosed.algebraMap_surjective K (A ⧸ m)
-    let e : K ≃ₐ[K] A ⧸ m := AlgEquiv.ofBijective (Algebra.ofId K (A ⧸ m))
-      ⟨(algebraMap K (A ⧸ m)).injective, hs⟩
-    have h := hφ₀ ((e.symm : (A ⧸ m) →ₐ[K] K).comp (Ideal.Quotient.mkₐ K m))
-    rw [← h]
-    ext a
-    simp [RingHom.mem_ker, Ideal.Quotient.eq_zero_iff_mem]
-  haveI : IsLocalRing A := IsLocalRing.of_unique_max_ideal
-    ⟨RingHom.ker φ₀, RingHom.ker_isMaximal_of_surjective _ hφ₀s, fun m hm => hmax m hm⟩
-  have hfield := IsArtinianRing.isField_of_isReduced_of_isLocalRing A
-  have hinj : Function.Injective φ₀ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-    intro a ha
-    by_contra hne
-    obtain ⟨b, hb⟩ := hfield.mul_inv_cancel hne
-    have := congrArg φ₀ hb
-    simp [ha] at this
-  intro a
-  exact ⟨φ₀ a, hinj (by simp)⟩
-
-open scoped TensorProduct in
 private lemma exists_smul_mem_range_algebraMap_of_unique_lift {R B : Type} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Finite R B] [Algebra.FormallyUnramified R B] {K : Type} [Field K] [IsAlgClosed K]
     (x : R →+* K) (hy : ∃! y : B →+* K, y.comp (algebraMap R B) = x) :
@@ -116,7 +132,7 @@ private lemma exists_smul_mem_range_algebraMap_of_unique_lift {R B : Type} [Comm
     apply Algebra.TensorProduct.ext (Subsingleton.elim _ _)
     apply AlgHom.coe_ringHom_injective
     exact h1.trans h2.symm
-  have hsurj := algebraMap_surjective_of_unique_algHom K (K ⊗[R] B) φ₀ hΦ
+  have hsurj := _root_.GlobalTheory.algebraMap_surjective_of_unramified_of_unique_point K (K ⊗[R] B) φ₀ hΦ
   let N : Submodule R B := LinearMap.range (Algebra.linearMap R B)
   have hsub : Subsingleton (K ⊗[R] (B ⧸ N)) := by
     refine ⟨fun u v => ?_⟩

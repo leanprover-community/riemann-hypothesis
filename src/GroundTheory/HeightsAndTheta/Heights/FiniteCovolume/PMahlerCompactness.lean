@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StBoundedGenerators
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StLenCauchySchwarz
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StGramDetermines
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StBoundedInverseCompact
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Statements
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ReductionHeight
 public import GroundTheory.AutomorphicForms.Iwasawa
 public import GroundTheory.AutomorphicForms.RealGroupsIwasawa
-public import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -91,8 +92,8 @@ theorem exists_upper_mul_of_ringEquiv (φ : E ≃+* 𝕜) (hφ : ∀ x, ‖φ x�
         GL (Fin n) E) : Matrix (Fin n) (Fin n) E)) i)) =
         (fun i => φ.toRingHom (y i)) ᵥ* ((kU⁻¹ : GL (Fin n) 𝕜) : Matrix (Fin n) (Fin n) 𝕜) := by
       ext j
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [vecMul, dotProduct, map_sum, map_mul, Matrix.GeneralLinearGroup.map]
+
+      simp [vecMul, dotProduct, map_sum, map_mul, Matrix.GeneralLinearGroup.map]
     rw [this, euclidNorm_vecMul_unitary hk']
   · rw [← map_mul, hb'', mul_assoc, mul_inv_cancel, mul_one, hh']
     ext i j

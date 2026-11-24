@@ -1,6 +1,52 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PSpecB
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -54,7 +100,6 @@ theorem shc_bounds (u : ℝ) : 1 ≤ shc u ∧ shc u ≤ Real.exp (u ^ 2 / 6) �
       rw [← pow_mul, pow_succ]
       first
         | (field_simp; done)
-        | (field_simp; ring)
     rw [hfun]
     exact h
   refine ⟨?_, ?_, ?_⟩
@@ -142,8 +187,8 @@ private theorem sum_pev_sq_le_hs_pmat {ε : Fin n → Bool} (z : PCoord ε → �
       = ∑ i : Fin n, ∑ j : Fin n, A i j * star (A i j) := by
     rw [← hAA, hAA2, hD]
   have hre := congrArg (fun w : ℂ => RCLike.re w) hmain
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, RCLike.star_def, RCLike.mul_conj] at hre
+
+  simp only [map_sum, RCLike.star_def, RCLike.mul_conj] at hre
   simp only [← RCLike.ofReal_pow, RCLike.ofReal_re] at hre
   simp only [hpev]
   unfold S7.hs
@@ -198,12 +243,12 @@ private theorem pmat_eq_zero_of_sign_eq {ε : Fin n → Bool} (z : PCoord ε →
 
 private theorem matrix_rank_add_le' (P Q : Matrix (Fin n) (Fin n) ℂ) :
     (P + Q).rank ≤ P.rank + Q.rank := by
-  unfold Matrix.rank
+  simp only [← Matrix.finrank_range_mulVecLin]
   have hle : LinearMap.range (P + Q).mulVecLin
       ≤ LinearMap.range P.mulVecLin ⊔ LinearMap.range Q.mulVecLin := by
     rintro _ ⟨v, rfl⟩
     have e : (P + Q).mulVecLin v = P.mulVecLin v + Q.mulVecLin v := by
-      simp [Matrix.mulVecLin_apply, Matrix.add_mulVec]
+      simp
     rw [e]
     exact Submodule.add_mem_sup (LinearMap.mem_range_self _ v) (LinearMap.mem_range_self _ v)
   exact (Submodule.finrank_mono hle).trans (Submodule.finrank_add_le_finrank_add_finrank _ _)

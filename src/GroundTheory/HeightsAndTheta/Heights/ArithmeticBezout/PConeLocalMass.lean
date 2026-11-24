@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeLocalMass
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFiniteFibreDim
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
+public import Mathlib.Topology.Separation.CompletelyRegular
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralLine
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentAverage
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

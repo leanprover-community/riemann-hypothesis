@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BirationalYPt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsFurther
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PConstantShift
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsSemipositiveRelConstShift
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PConstantShift
 
 @[expose] public section
 

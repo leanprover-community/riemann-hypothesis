@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.BridgeLemmas
-public import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
+public import Formalism.LocalToGlobal.IndefiniteReal.Bridge
 
 @[expose] public section
 

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionLatticeFinite
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionSpanStep
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionRing
 
 @[expose] public section
 

@@ -1,6 +1,60 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
+public import Mathlib.Algebra.Module.ZLattice.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -55,8 +109,8 @@ theorem _root_.GlobalTheory.appellHumbert_normal_form_of_linear_exponent :
     intro l z
     rw [hF0]
     conv_lhs => rw [show z = ∑ j, z j • (Pi.single j (1 : ℂ) : Fin g → ℂ) by ext i; simp [Pi.single_apply]]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, dotProduct, b, mul_comm]
+
+    simp [map_sum, dotProduct, b, mul_comm]
   have hskew : ∀ l m : Λ, ∃ n : ℤ, B l m = B m l + n * (2 * π * I) := by
     intro l m
     have h := hcoc l m
@@ -98,9 +152,9 @@ theorem _root_.GlobalTheory.appellHumbert_normal_form_of_linear_exponent :
   have hFMN : ∀ u, F u = u ᵥ* M + star u ᵥ* N := by
     intro u; ext j
     conv_lhs => rw [_root_.GlobalTheory.AppellHumbert.eq_sum_re_im u]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_add (f := _), map_smul, Finset.sum_apply, Pi.add_apply, Pi.smul_apply, vecMul,
-      dotProduct, ← Finset.sum_add_distrib]
+
+    simp only [map_sum, map_add (f := _), map_smul, Finset.sum_apply, Pi.add_apply, Pi.smul_apply, vecMul,
+    dotProduct, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
     apply Complex.ext <;> simp [M, N, Complex.mul_re, Complex.mul_im] <;> ring
   have hsym : ∀ k j, (F (Pi.single k 1) j).re = (F (Pi.single j 1) k).re ∧
@@ -110,7 +164,7 @@ theorem _root_.GlobalTheory.appellHumbert_normal_form_of_linear_exponent :
     have h1 := hD (Pi.single k 1) (Pi.single j 1)
     have h2 := hD (Pi.single k I) (Pi.single j I)
     have h3 := hD (Pi.single k I) (Pi.single j 1)
-    simp only [dotProduct_single, mul_one, Complex.sub_re, Complex.mul_re, Complex.I_re, Complex.I_im, mul_zero, zero_sub, sub_zero] at h1 h2 h3
+    simp only [dotProduct_single, mul_one, Complex.sub_re, Complex.mul_re, Complex.I_re, Complex.I_im, mul_zero, zero_sub] at h1 h2 h3
     refine ⟨by linarith, by linarith, by linarith⟩
   have hMsym : Mᵀ = M := by
     ext k j
@@ -137,9 +191,9 @@ theorem _root_.GlobalTheory.appellHumbert_normal_form_of_linear_exponent :
     rw [hF, hFMN, add_dotProduct, dotProduct_mulVec, mulVec_transpose, dotProduct_comm z]
   have hKherm : ∀ u v, K v u = (starRingEnd ℂ) (K u v) := by
     intro u v
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [K, dotProduct, mulVec, transpose_apply, map_sum, map_mul, Pi.star_apply,
-      Complex.star_def, Complex.conj_conj, hNherm, Finset.mul_sum]
+
+    simp only [K, dotProduct, mulVec, transpose_apply, map_sum, map_mul, Pi.star_apply,
+    Complex.star_def, Complex.conj_conj, hNherm, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring
@@ -211,8 +265,8 @@ theorem _root_.GlobalTheory.appellHumbert_normal_form_of_linear_exponent :
   have hc : ∀ u, (c ⬝ᵥ u).re = φ u := by
     intro u
     conv_rhs => rw [_root_.GlobalTheory.AppellHumbert.eq_sum_re_im u]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_add (f := _), map_smul, smul_eq_mul, dotProduct, Complex.re_sum]
+
+    simp only [map_sum, map_add (f := _), map_smul, smul_eq_mul, dotProduct, Complex.re_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     simp [c, Complex.mul_re]
     ring

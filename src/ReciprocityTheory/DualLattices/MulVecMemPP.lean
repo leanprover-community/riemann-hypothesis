@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.DualLattices.HasLenLeOfSurj
+public import ReciprocityTheory.DualLattices.LiftMonomialDeterminantStatement
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,9 +1,47 @@
 module
 
-public import Mathlib
 public import Development.ResolutionOfSingularities.Foundations.Blowup.StrictTransform
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -15,18 +53,15 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-def imageIdealSheaf {S X : Scheme.{u}} (σ : S ⟶ X) (I : S.IdealSheafData) : X.IdealSheafData :=
-  (I.subschemeι ≫ σ).ker
-
 theorem map_eq_imageIdealSheaf {S X : Scheme.{u}} (f : S ⟶ X) (I : S.IdealSheafData) :
-    I.map f = imageIdealSheaf f I := rfl
+    I.map f = _root_.FunctorialResolution.Blowup.schemeImageIdeal f I := rfl
 
 theorem imageIdealSheaf_comp {W A B : Scheme.{u}} (g : W ⟶ A) (w : A ⟶ B) (I : W.IdealSheafData) :
-    imageIdealSheaf (g ≫ w) I = imageIdealSheaf w (imageIdealSheaf g I) := by
+    _root_.FunctorialResolution.Blowup.schemeImageIdeal (g ≫ w) I = _root_.FunctorialResolution.Blowup.schemeImageIdeal w (_root_.FunctorialResolution.Blowup.schemeImageIdeal g I) := by
   simp only [← map_eq_imageIdealSheaf, Scheme.IdealSheafData.map_comp]
 
 theorem imageIdealSheaf_eq_ker {S X : Scheme.{u}} (σ : S ⟶ X) (I : S.IdealSheafData) :
-    imageIdealSheaf σ I = (I.subschemeι ≫ σ).ker := rfl
+    _root_.FunctorialResolution.Blowup.schemeImageIdeal σ I = (I.subschemeι ≫ σ).ker := rfl
 
 def SequenceOfBlowups.Isomorphic {X : Scheme.{u}} (B B' : SequenceOfBlowups X) : Prop :=
   B.length = B'.length ∧
@@ -49,7 +84,7 @@ def IsPushforwardBlowupSeq {S X : Scheme.{u}} (j : S ⟶ X) [IsClosedImmersion j
       (∀ i : ℕ, ∀ hi : i < BS.length,
         σ (i + 1) hi ≫ B.transitionMapSucc i = BS.transitionMapSucc i ≫ σ i hi.le) ∧
       (∀ i : ℕ, ∀ hi : i < BS.length,
-        B.center i = imageIdealSheaf (σ i hi.le) (BS.center i)) ∧
+        B.center i = _root_.FunctorialResolution.Blowup.schemeImageIdeal (σ i hi.le) (BS.center i)) ∧
       (∀ i : ℕ, ∀ hi : i < BS.length,
         (σ (i + 1) hi).ker =
           Blowup.strictTransform (B.transitionMapSucc i) (B.center i) (σ i hi.le).ker)

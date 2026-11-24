@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExt
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 
 @[expose] public section
 

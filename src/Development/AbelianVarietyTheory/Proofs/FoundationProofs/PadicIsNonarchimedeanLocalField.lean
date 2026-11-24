@@ -1,7 +1,68 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
+public import Mathlib.NumberTheory.Padics.ValuativeRel
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Aesop.Main
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.LocalField
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.Module.CharacterModule
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+public import Mathlib.NumberTheory.Padics.LocalField
 
 @[expose] public section
 
@@ -24,28 +85,6 @@ theorem padic_valuation_lt_iff (x y : ℚ_[p]) :
   · simp [hx, hy, zero_lt_iff]
   rw [Padic.norm_eq_zpow_log_mulValuation hx, Padic.norm_eq_zpow_log_mulValuation hy,
     zpow_lt_zpow_iff_right₀ hp, WithZero.log_lt_log (by simpa using hx) (by simpa using hy)]
-
-instance padic_isValuativeTopology : IsValuativeTopology ℚ_[p] := by
-  refine IsValuativeTopology.of_zero fun s => ?_
-  rw [Metric.mem_nhds_iff]
-  constructor
-  · rintro ⟨ε, hε, hs⟩
-    obtain ⟨y, hy0, hy⟩ := NormedField.exists_norm_lt ℚ_[p] hε
-    refine ⟨Units.mk0 (valuation ℚ_[p] y) (by simpa using norm_pos_iff.mp hy0), fun z hz => hs ?_⟩
-    rw [mem_ball_zero_iff]
-    exact ((padic_valuation_lt_iff p z y).mp hz).trans hy
-  · rintro ⟨γ, hs⟩
-    obtain ⟨y, hy⟩ := ValuativeRel.valuation_surjective (γ : ValueGroupWithZero ℚ_[p])
-    have hy0 : y ≠ 0 := by
-      rintro rfl
-      exact γ.ne_zero (by simpa using hy.symm)
-    refine ⟨‖y‖, norm_pos_iff.mpr hy0, fun z hz => hs ?_⟩
-    rw [mem_ball_zero_iff] at hz
-    show valuation ℚ_[p] z < γ
-    rw [← hy]
-    exact (padic_valuation_lt_iff p z y).mpr hz
-
-instance padic_isNonarchimedeanLocalField : IsNonarchimedeanLocalField ℚ_[p] where
 
 end Padic
 
@@ -240,46 +279,7 @@ theorem ratCircle_eq_zero {x : AddCircle (1 : ℚ)} (h : ratCircle x = 0) : x = 
 
 variable (k) in
 theorem exists_hasConductor_one : ∃ ψ : AddChar k Circle, HasConductor ψ 1 := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[k]
-  have h0 : (ϖ : k) ≠ 0 := by simpa using hϖ.ne_zero
-  have hlt : ∀ y : 𝒪[k], y ∈ 𝓂[k] ↔ valuation k (y : k) < 1 := fun y => by
-    rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-    exact Valuation.Integer.not_isUnit_iff_valuation_lt_one
-  have hϖ1 : valuation k (ϖ : k) < 1 := (hlt ϖ).mp hϖ.not_isUnit
-  let A := (𝒪[k]).toAddSubgroup
-  have hne : (QuotientAddGroup.mk (ϖ : k)⁻¹ : k ⧸ A) ≠ 0 := by
-    rw [Ne, QuotientAddGroup.eq_zero_iff]
-    intro h
-    have h' : valuation k (ϖ : k)⁻¹ ≤ 1 := (Valuation.mem_integer_iff _ _).mp h
-    rw [map_inv₀, inv_le_one₀ (by simp [zero_lt_iff, h0])] at h'
-    exact absurd hϖ1 (not_lt.mpr h')
-  obtain ⟨c, hc⟩ := CharacterModule.exists_character_apply_ne_zero_of_ne_zero hne
-  let χ : k →+ AddCircle (1 : ℝ) := ratCircle.comp (AddMonoidHom.comp c (QuotientAddGroup.mk' A))
-  refine ⟨AddCircle.toCircle_addChar.compAddMonoidHom χ, fun x => ⟨fun h => ?_, fun h y hy => ?_⟩⟩
-  · by_contra hx
-    rw [Units.val_one, map_one, not_le] at hx
-    have hx0 : x ≠ 0 := by
-      rintro rfl
-      simp at hx
-    have hxi : valuation k x⁻¹ < 1 := by
-      rw [map_inv₀]; exact inv_lt_one_of_one_lt₀ hx
-    have h1 := (mem_cball_uniformiser hϖ (x := Units.mk0 _ h0) rfl
-      ⟨x⁻¹, (Valuation.mem_integer_iff _ _).mpr hxi.le⟩).mpr ((hlt _).mpr hxi)
-    have h2 : valuation k x⁻¹ ≤ valuation k (ϖ : k) := h1
-    have h3 := h (ϖ : k)⁻¹ (by
-      rw [map_inv₀] at h2 ⊢
-      exact inv_le_of_inv_le₀ (by simp [zero_lt_iff, hx0]) h2)
-    have h4 : AddCircle.toCircle (χ (ϖ : k)⁻¹) = AddCircle.toCircle (0 : AddCircle (1 : ℝ)) := by
-      rw [AddCircle.toCircle_zero]; exact h3
-    exact hc (ratCircle_eq_zero (AddCircle.injective_toCircle one_ne_zero h4))
-  · have hy' : (QuotientAddGroup.mk y : k ⧸ A) = 0 := by
-      rw [QuotientAddGroup.eq_zero_iff]
-      exact (Valuation.mem_integer_iff _ _).mpr (by simpa using hy.trans h)
-    have : χ y = 0 := by
-      show ratCircle (c (QuotientAddGroup.mk y)) = 0
-      rw [hy', map_zero, map_zero]
-    show AddCircle.toCircle (χ y) = 1
-    rw [this, AddCircle.toCircle_zero]
+  apply GlobalTheory.SplitWeil.Model.exists_hasConductor
 
 variable {ψ : AddChar k Circle} {c : kˣ}
 

@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
+public import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieTop
 
 @[expose] public section

@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementA
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementA
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinS2LimitFormula
+public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
+import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.IsHypPair
 
 @[expose] public section
 

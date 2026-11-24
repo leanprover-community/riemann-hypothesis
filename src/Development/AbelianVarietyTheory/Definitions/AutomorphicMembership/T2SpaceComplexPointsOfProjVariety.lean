@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemRiemannRochSpaceIffRegularAtEverywhere
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SecondCountableTopologyOfIsProjOver
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -49,9 +89,6 @@ theorem of_algebraMap (a : F) : of σ (algebraMap F A a) = algebraMap ℂ (CxExt
   letI := σ.toAlgebra
   first
   | exact (Algebra.TensorProduct.includeRight (R := F) (A := ℂ) (B := A)).commutes a
-  | (show (1 : ℂ) ⊗ₜ[F] algebraMap F A a = σ a ⊗ₜ[F] (1 : A)
-     rw [Algebra.algebraMap_eq_smul_one, ← TensorProduct.smul_tmul, Algebra.smul_def, mul_one]
-     rfl)
 
 theorem of_smul (a : F) (x : A) : of σ (a • x) = σ a • of σ x := by
   rw [Algebra.smul_def, map_mul, of_algebraMap, ← Algebra.smul_def]
@@ -62,8 +99,6 @@ private theorem complex_smul_of_eq (c : ℂ) (a : A) :
   first
   | (show c • ((1 : ℂ) ⊗ₜ[F] a) = c ⊗ₜ[F] a
      rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one])
-  | (show c • ((1 : ℂ) ⊗ₜ[F] a) = c ⊗ₜ[F] a
-     simp [TensorProduct.smul_tmul'])
 
 
 variable {σ} in
@@ -96,9 +131,6 @@ variable {σ} in
   first
   | (change (Algebra.ofId ℂ B) 1 * φ a = φ a
      rw [map_one, one_mul])
-  | (simp only [lift, of]
-     erw [Algebra.TensorProduct.includeRight_apply, Algebra.TensorProduct.lift_tmul]
-     simp)
 
 def map (f : A →ₐ[F] A') : CxExt σ A →ₐ[ℂ] CxExt σ A' :=
   lift ((of σ).comp f.toRingHom) fun a => (congrArg (of σ) (f.commutes a)).trans (of_algebraMap σ a)
@@ -106,7 +138,6 @@ def map (f : A →ₐ[F] A') : CxExt σ A →ₐ[ℂ] CxExt σ A' :=
 @[simp] theorem map_of (f : A →ₐ[F] A') (a : A) : map σ f (of σ a) = of σ (f a) := by
   first
   | exact lift_of _ _ a
-  | simp [map, lift_of]
 
 theorem map_injective {f : A →ₐ[F] A'} (hf : Function.Injective f) :
     Function.Injective (map σ f) := by
@@ -149,7 +180,6 @@ theorem exists_components (f : A →ₐ[F] A') (x : CxExt σ A) :
         TensorProduct.equivFinsuppOfBasisLeft_apply_tmul_apply]
       first
       | exact (map_smul f _ _).symm
-      | simp
     · have e1 : TensorProduct.equivFinsuppOfBasisLeft (N := A') b (map σ f (y + z)) = TensorProduct.equivFinsuppOfBasisLeft (N := A') b (map σ f y) + TensorProduct.equivFinsuppOfBasisLeft (N := A') b (map σ f z) := by
         rw [map_add (f := _)]
         exact map_add _ _ _
@@ -379,8 +409,8 @@ theorem regC_cx_iff {g : Y.Fn} : RegC y (Y.cx σ g) ↔ RegAt (base y) g := by
       have hk := key i
       rw [← hu] at hk
       rw [map_mul, ← hk, ← mul_assoc, ← map_mul, Units.inv_mul, map_one, one_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hx, map_sum]
+
+    rw [hx, map_sum]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [map_smul]
     simp only [germEv, CxExt.lift_of]

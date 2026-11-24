@@ -1,6 +1,15 @@
 module
 
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+public import Mathlib.Analysis.Calculus.FDeriv.WithLp
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.DifferentiableAtChart
+import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FlatCalcA
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 
 @[expose] public section
 
@@ -24,7 +33,7 @@ theorem gc_wdb_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (J : V n →
   rw [fc_clm_decomp d D c, fc_clm_decomp d D (Complex.I • c), Finset.mul_sum,
     ← Finset.sum_add_distrib, Finset.sum_div]
   refine Finset.sum_congr rfl fun a _ => ?_
-  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wdb, wd]
+  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wdb]
   linear_combination ((D (bas d a) - Complex.I * D (Complex.I • bas d a)) / 2 * c a / 2 -
     (D (bas d a) + Complex.I * D (Complex.I • bas d a)) / 2 * (starRingEnd ℂ) (c a) / 2) *
       Complex.I_sq
@@ -42,7 +51,7 @@ theorem gc_wd_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (J : V n →L
   rw [fc_clm_decomp d D c, fc_clm_decomp d D (Complex.I • c), Finset.mul_sum,
     ← Finset.sum_sub_distrib, Finset.sum_div]
   refine Finset.sum_congr rfl fun a _ => ?_
-  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wdb, wd]
+  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wd]
   linear_combination (-(D (bas d a) - Complex.I * D (Complex.I • bas d a)) / 2 * c a / 2 +
     (D (bas d a) + Complex.I * D (Complex.I • bas d a)) / 2 * (starRingEnd ℂ) (c a) / 2) *
       Complex.I_sq
@@ -52,8 +61,8 @@ theorem gc_toLp_apply (n d : ℕ) (J : V n →L[ℂ] V d) (ξ : Fin n → ℂ) (
   have h : WithLp.toLp 2 ξ = ∑ j, ξ j • bas n j := by
     ext k
     simp [bas, Pi.single_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, map_sum]
+
+  rw [h, map_sum]
   simp [map_smul]
 
 theorem gc_sum_wd_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (J : V n →L[ℂ] V d) (v : V n)
@@ -113,7 +122,7 @@ theorem gc_leviV_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (U : Set (
       wd d b (wdb d a g) (F v) * fderiv ℂ F v (bas n j) b *
         (starRingEnd ℂ) (fderiv ℂ F v (bas n k) a) := by
     intro j k
-    rw [wd_congr n j _ _ v (hwdb k),
+    rw [@wd_congr n j _ _ v (hwdb k),
       fc_wd_sum n j Finset.univ (fun a y => wdb d a g (F y) *
         (starRingEnd ℂ) (fderiv ℂ F y (bas n k) a)) v (fun a _ => (hWa a).mul (hCa k a))]
     refine Finset.sum_congr rfl fun a _ => ?_
@@ -122,8 +131,8 @@ theorem gc_leviV_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (U : Set (
     have := gc_wd_comp n d (wdb d a g) F (fderiv ℂ F v) v (hWg a) (hFd v hv) j
     rw [show (fun y => wdb d a g (F y)) = wdb d a g ∘ F from rfl, this, Finset.sum_mul]
   unfold leviV
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [step, gc_toLp_apply, Finset.sum_mul, map_sum, map_mul, Finset.mul_sum]
+
+  simp only [step, gc_toLp_apply, Finset.sum_mul, map_sum, map_mul, Finset.mul_sum]
   rw [sum_four_indices_comm]
   refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.sum_comm]

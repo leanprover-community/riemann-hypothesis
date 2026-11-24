@@ -1,9 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleSheaf
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.WeilDivisor
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
+public import Mathlib.AlgebraicGeometry.FunctionField
+public import Mathlib.AlgebraicGeometry.Noetherian
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
+public import Mathlib.RingTheory.DedekindDomain.Basic
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import GroundTheory.ArithmeticGeometry.SchemeCohomology.ModulesTensor
 
 @[expose] public section
 

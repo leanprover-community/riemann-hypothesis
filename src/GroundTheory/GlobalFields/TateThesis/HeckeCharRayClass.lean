@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.HeckeChar
-public import GroundTheory.GlobalFields.TateThesis.ArchCharsUnitary
 public import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

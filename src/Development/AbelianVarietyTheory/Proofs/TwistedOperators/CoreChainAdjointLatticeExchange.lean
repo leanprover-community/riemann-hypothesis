@@ -1,25 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsCoreLat
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianAdjointLawsStandardCharacter
-public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.UnifModGrowthOfIsUnifModerate
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.EisRegularAtOfEisPoleLE
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.WeilSiegelFormulaUnitary
-public import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.SiegelWeilUnitaryConvergent
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DiscreteSeriesUpqExistsIffDsExists
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
+import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -43,9 +65,6 @@ abbrev FI (D : D7) : Type := FractionalIdeal (𝓞 D.host.E)⁰ D.host.E
 
 def StarLE (I J : FI D) : Prop := ∀ x ∈ I, star x ∈ J
 
-theorem star_int (c : 𝓞 D.host.E) : ∃ c' : 𝓞 D.host.E, (c' : D.host.E) = star (c : D.host.E) :=
-  ⟨NumberField.RingOfIntegers.mapRingHom (starRingEnd D.host.E) c, rfl⟩
-
 theorem starLE_AA : StarLE (D := D) D.host.AA D.host.AAbar := fun x hx => by
   rw [bridge_star_holds D.R D.host x]; exact Formalism.L2.Pj.conj_mem_AAbar D hx
 
@@ -62,7 +81,7 @@ theorem starLE_mul {I I' J J' : FI D} (h : StarLE I I') (h' : StarLE J J') : Sta
 theorem starLE_one : StarLE (D := D) 1 1 := by
   intro x hx
   obtain ⟨c, rfl⟩ := (FractionalIdeal.mem_one_iff _).1 hx
-  obtain ⟨c', hc'⟩ := star_int c
+  obtain ⟨c', hc'⟩ := _root_.GlobalTheory.LevSplit.exists_conj c
   exact (FractionalIdeal.mem_one_iff _).2 ⟨c', hc'⟩
 
 theorem starLE_pow {I J : FI D} (h : StarLE I J) (n : ℕ) : StarLE (I ^ n) (J ^ n) := by
@@ -76,7 +95,7 @@ theorem starLE_inv {I J : FI D} (hI : I ≠ 0) (hJ : J ≠ 0) (h : StarLE J I) :
   intro y hy
   rw [FractionalIdeal.mem_inv_iff hI] at hx
   obtain ⟨c, hc⟩ := (FractionalIdeal.mem_one_iff _).1 (hx (star y) (h y hy))
-  obtain ⟨c', hc'⟩ := star_int c
+  obtain ⟨c', hc'⟩ := _root_.GlobalTheory.LevSplit.exists_conj c
   refine (FractionalIdeal.mem_one_iff _).2 ⟨c', ?_⟩
   have e1 : algebraMap (𝓞 D.host.E) D.host.E c' = (c' : D.host.E) := rfl
   have e2 : algebraMap (𝓞 D.host.E) D.host.E c = (c : D.host.E) := rfl
@@ -231,7 +250,7 @@ theorem fi_mul_int {I : FI D} {x : D.host.E} (hx : x ∈ I) (c : 𝓞 D.host.E) 
   rwa [Algebra.smul_def, mul_comm] at h
 
 theorem fi_mul_star_int {I : FI D} {x : D.host.E} (hx : x ∈ I) (c : 𝓞 D.host.E) : x * star (c : D.host.E) ∈ I := by
-  obtain ⟨c', hc'⟩ := star_int c
+  obtain ⟨c', hc'⟩ := _root_.GlobalTheory.LevSplit.exists_conj c
   rw [← hc']; exact fi_mul_int hx c'
 
 theorem smul_int_eq {n : ℕ} (c : 𝓞 D.host.E) (v : Fin n → D.host.E) : c • v = (c : D.host.E) • v := by

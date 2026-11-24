@@ -1,13 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipotentCentral
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StRationalUnipotent
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipRadicalOfRational
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StImaginaryLatticeCocompact
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PScalingLaw
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PGramAtData
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PScalingLaw
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

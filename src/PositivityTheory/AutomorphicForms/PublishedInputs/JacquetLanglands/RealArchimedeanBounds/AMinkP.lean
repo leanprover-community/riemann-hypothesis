@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.RealArchimedeanBounds.ATrans
+public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
+import Mathlib.Tactic.Lemma
+import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 
 @[expose] public section
 
@@ -262,7 +264,7 @@ theorem core (F : Type) [Field F] [NumberField F] [IsTotallyReal F] : ∃ C : �
     generalize r ⟨v, IsTotallyReal.isReal v⟩ = R at hrv hr2v h1' h2'
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.add_im, Complex.mul_im, zero_mul, sub_zero, add_zero, mul_zero]
+      Complex.add_im, Complex.mul_im, zero_mul, sub_zero, add_zero]
     have e1 : (A * (z v).re + Bb) ^ 2 ≤ (t * R) ^ 2 := by
       rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) h2' 2
     have e2 : A ^ 2 ≤ (t / R) ^ 2 := by

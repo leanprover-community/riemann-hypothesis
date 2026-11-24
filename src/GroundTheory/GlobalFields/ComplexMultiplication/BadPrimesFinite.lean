@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.GoodReductionAlmostAll
-public import GroundTheory.GlobalFields.ComplexMultiplication.PrimeLocalization
-public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionGauss
-public import GroundTheory.GlobalFields.TateThesis.DegreeOneDensity
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
+import Mathlib.Tactic.TypeStar
+import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 
 @[expose] public section
 

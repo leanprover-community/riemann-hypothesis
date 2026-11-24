@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Ideal.Height
+public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Etale.Weakly
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -38,7 +45,6 @@ theorem exists_prime_colon [IsNoetherianRing R] (s a : R) (ha : a ∉ Ideal.span
       colonI s a ≤ colonI s b ∧ colonI s b = J} : Set (Ideal R)), ¬ M < I := by
     first
     | exact set_has_maximal_iff_noetherian.mpr inferInstance _ hS
-    | exact WellFounded.has_min (wellFounded_submodule_gt R R) _ hS
   obtain ⟨b, hb, hab, rfl⟩ := hM
   refine ⟨b, hb, hab, fun q1 q2 h => ?_⟩
   by_cases h1 : q1 ∈ colonI s b
@@ -131,18 +137,14 @@ theorem mem_of_mem_heightOne_localizations {R K : Type*} [CommRing R] [IsDomain 
         simp only [Algebra.linearMap_apply, smul_eq_mul]
         first
         | (rw [div_mul_eq_mul_div, eq_div_iff hbK]; linear_combination hv2)
-        | (field_simp; linear_combination hv2)
-        | (field_simp; linear_combination -hv2)
     obtain ⟨r, hr⟩ : ∃ r : R, algebraMap R K r = algebraMap R K c / algebraMap R K b := by
       first
       | exact IsIntegrallyClosed.isIntegral_iff.1 hint
-      | exact IsIntegrallyClosed.algebraMap_eq_of_integral hint
     have hrc : r * b = c := by
       apply IsFractionRing.injective R K
       rw [map_mul, hr]
       first
       | exact div_mul_cancel₀ _ hbK
-      | field_simp
     exact Ideal.mem_span_singleton'.2 ⟨r, hrc⟩
   obtain ⟨q0, hq0, u, hu, huq⟩ := key
   have huP : ∀ q ∈ colonI b c, u * q ∈ Ideal.span {q0} := by

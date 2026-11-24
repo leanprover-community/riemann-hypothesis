@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGDict
+public import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
+import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 
 @[expose] public section
 

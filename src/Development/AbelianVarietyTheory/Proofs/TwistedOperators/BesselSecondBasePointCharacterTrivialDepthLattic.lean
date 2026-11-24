@@ -1,11 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsAuxiliaryVectorWittDec
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FinitePartTraceCharacterIdempotentInverseDiffere
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUnimod
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalBlockDetBlockTriangular
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdempotentSumAuxiliaryPlaces
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
+import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -107,8 +144,8 @@ theorem coef_mem_bnd {m n : ℕ} (r : Fin m → D.host.E) (z : Fin n → D.host.
     obtain ⟨α, hα, x, hx, rfl⟩ := hw
     have e : ratV r ⬝ᵥ (Matrix.of fun i j => (pairA D.host.F 0 α) ⊗ₜ[D.host.F] x i j : Mx D m n) *ᵥ ratV z =
         (pairA D.host.F 0 α) ⊗ₜ[D.host.F] (r ⬝ᵥ x *ᵥ z) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [GlobalTheory.IdeleAA.tmul_eq, dotProduct, mulVec, ratV, Matrix.of_apply, map_sum, map_mul, Finset.mul_sum]
+
+      simp only [GlobalTheory.IdeleAA.tmul_eq, dotProduct, mulVec, ratV, Matrix.of_apply, map_sum, map_mul, Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
     rw [e]
     exact tmul_mem_bnd hα (hM hx)
@@ -331,7 +368,7 @@ theorem exists_AA {μ₀ : T} (hL : L.Is μ₀) (hq : OffQ D) (G : GridData L sc
   rwa [mul_one] at h3
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem ychar : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ u ∈ latRow G (2 * ρ + 1), W.ψ (symplO (F.V₀ ρ) (G.V (.grid (2 * ρ + 1) 0)) ((F.dJ ρ h).incAdj (F.V₀ ρ) (yBF F ρ h)) ((F.dJ ρ h).incX (F.V₀ ρ) ((F.dJ ρ h).pX ⬝ (u ⬝ (F.dB ρ h).j0)))) = 1 := by
   intro D hq T L μ₀ hL sc G W M _ F hF ρ h u hu
   refine (congrArg W.ψ (symplO_yZero (F.dJ ρ h) _ _)).trans ?_

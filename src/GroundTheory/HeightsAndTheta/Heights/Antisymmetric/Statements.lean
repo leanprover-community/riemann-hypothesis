@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

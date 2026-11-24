@@ -1,14 +1,12 @@
 module
 
-public import Mathlib.AlgebraicGeometry.Group.Abelian
 public import Mathlib.AlgebraicGeometry.Group.Affine
-public import Mathlib.AlgebraicGeometry.AffineSpace
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import Mathlib.AlgebraicGeometry.Morphisms.Separated
-public import Mathlib.AlgebraicGeometry.Morphisms.Flat
-public import Mathlib.AlgebraicGeometry.Geometrically.Connected
 public import Mathlib.RingTheory.HopfAlgebra.MonoidAlgebra
-public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Basic.NNReal.Defs
+public import Mathlib.CategoryTheory.Limits.Constructions.Over.Basic
+import Mathlib.Combinatorics.Matroid.Init
+import Mathlib.Data.Nat.Totient
 
 @[expose] public section
 

@@ -1,24 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2Classical.Adelic
-public import GroundTheory.AutomorphicForms.GL2Classical.ConstantTerm
-public import GroundTheory.AutomorphicForms.GL2Classical.Smooth
-public import GroundTheory.AutomorphicForms.HarishChandraCentre
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.SmoothKZ
-public import GroundTheory.AutomorphicForms.GL2Classical.CuspConverse
-public import GroundTheory.AutomorphicForms.GL2Classical.GrowthReduction
-public import GroundTheory.AutomorphicForms.GL2Classical.KFinite
-public import GroundTheory.AutomorphicForms.HeckeAlgebraLevel
-public import GroundTheory.AutomorphicForms.GL2Classical.HeckeCommute
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Unimodular
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
-public import GroundTheory.AutomorphicForms.Satake
-public import GroundTheory.AutomorphicForms.MacdonaldWhittakerHecke
-public import GroundTheory.AutomorphicForms.StrongApproximationSLDense
-public import GroundTheory.GlobalFields.LocalAtPlace
-public import GroundTheory.AutomorphicForms.HeckeIrreducible
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
+public import GroundTheory.AutomorphicForms.ReductionDirichlet
+public import GroundTheory.GlobalFields.IdeleGroups.Rational
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
+import Mathlib.Geometry.Manifold.StructureGroupoid
+import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
+import Mathlib.NumberTheory.ModularForms.SlashActions
 
 @[expose] public section
 

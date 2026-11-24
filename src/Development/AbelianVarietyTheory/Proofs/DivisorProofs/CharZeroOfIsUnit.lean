@@ -1,11 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsTjCorrDiagModel
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.ChainOfKernelsUnique
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionSubgroupSchemes
+public import Development.AbelianVarietyTheory.Definitions.Divisors.CompEqOneIffPush
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramRightMulActionLaws
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OverSchemeGrpObjOfMonoFactor
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionSubgroupSchemes
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Limits.Shapes.Connected
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.BaseChangeTestOfSurjectiveMulAbelianVariety
 
 @[expose] public section
 
@@ -74,9 +121,6 @@ section Grp
 
 variable {S : Scheme.{0}}
 
-theorem comp_mulN {A T : Over S} [GrpObj A] (x : T ⟶ A) (n : ℕ) : x ≫ mulN A n = x ^ n := by
-  rw [GlobalTheory.GrpTangent.mulN_eq_pow, MonObj.comp_pow, Category.comp_id]
-
 theorem exists_zeroLocus {B Z : Over S} [GrpObj B] [IsCommMonObj B] (hB : IsAbelianScheme B) {n : ℕ}
     (hn : IsUnit (n : Γ(S, ⊤))) (g : Z ⟶ B) (hg : g ^ n = 1) :
     ∃ (Y : Over S) (j : Y ⟶ Z), Mono j ∧ IsOpenImmersion j.left ∧ IsClosedImmersion j.left ∧
@@ -88,7 +132,7 @@ theorem exists_zeroLocus {B Z : Over S} [GrpObj B] [IsCommMonObj B] (hB : IsAbel
   have := GlobalTheory.HTTorsRep.mono_ι (A := B) n
   have hEta : GlobalTheory.HTTorsRep.torsEta n ≫ torsion.ι B n = η[B] :=
     pullback.lift_fst _ _ _
-  let g' : Z ⟶ torsion B n := pullback.lift g (toUnit Z) (by rw [comp_mulN, hg]; rfl)
+  let g' : Z ⟶ torsion B n := pullback.lift g (toUnit Z) (by rw [_root_.GlobalTheory.ZJ.OmTest.comp_mulN, hg]; rfl)
   have hg' : g' ≫ torsion.ι B n = g := pullback.lift_fst _ _ _
   have hP := (IsPullback.of_hasPullback g' (GlobalTheory.HTTorsRep.torsEta n)).map (Over.forget S)
   refine ⟨pullback g' (GlobalTheory.HTTorsRep.torsEta n), pullback.fst _ _, inferInstance,
@@ -109,7 +153,7 @@ theorem exists_subgroup {A B C : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj B] 
       ∀ (T : Over S) (x : T ⟶ A), InSub i x ↔ x ^ n = 1 ∧ x ≫ f = 1 ∧ x ≫ g = 1 := by
   obtain ⟨-, hf, he⟩ := GlobalTheory.GrpTangent.finiteEtale_mulN_torsion A hn
   have := GlobalTheory.HTTorsRep.mono_ι (A := A) n
-  have h0 : torsion.ι A n ^ n = 1 := by rw [← comp_mulN, GlobalTheory.HTTorsRep.ι_mulN]; rfl
+  have h0 : torsion.ι A n ^ n = 1 := by rw [← _root_.GlobalTheory.ZJ.OmTest.comp_mulN, GlobalTheory.HTTorsRep.ι_mulN]; rfl
   obtain ⟨Y, j, hj, hjo, hjc, hY⟩ := exists_zeroLocus hB hn (torsion.ι A n ≫ f)
     (by rw [← MonObj.pow_comp, h0, MonObj.one_comp])
   obtain ⟨K, k, hk, hko, hkc, hK⟩ := exists_zeroLocus hC hn (j ≫ torsion.ι A n ≫ g)
@@ -125,7 +169,7 @@ theorem exists_subgroup {A B C : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj B] 
       · simpa only [Category.assoc] using (hY T (z ≫ k ≫ j)).1 ⟨z ≫ k, Category.assoc _ _ _⟩
       · simpa only [Category.assoc] using (hK T (z ≫ k)).1 ⟨z, rfl⟩
     · rintro ⟨h1, h2, h3⟩
-      let y : T ⟶ torsion A n := pullback.lift x (toUnit T) (by rw [comp_mulN, h1]; rfl)
+      let y : T ⟶ torsion A n := pullback.lift x (toUnit T) (by rw [_root_.GlobalTheory.ZJ.OmTest.comp_mulN, h1]; rfl)
       have hy : y ≫ torsion.ι A n = x := pullback.lift_fst _ _ _
       obtain ⟨z, hz⟩ := (hY T y).2 (by rw [← Category.assoc, hy, h2])
       obtain ⟨u, hu⟩ := (hK T z).2 (by rw [← Category.assoc, hz, ← Category.assoc, hy, h3])

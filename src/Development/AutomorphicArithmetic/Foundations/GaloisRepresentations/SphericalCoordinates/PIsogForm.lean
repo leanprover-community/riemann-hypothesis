@@ -1,8 +1,50 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.LevelChange
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntAfIntCast
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDvdOfEqNatMulIntegralAdeleAwayFromP
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntAfIntCast
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.AppellHumbertTrivialOfNowhereVanishing
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TransportThetaLevelUniformisationCoordinates
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.AppellHumbertDataOfIsoCube
 
 @[expose] public section
 
@@ -11,22 +53,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKGeo Polynomial
 open scoped Matrix TensorProduct Classical
 open UpperTheory.Gal.W2
-
-private theorem herm_add_right {g : ℕ} (M : Matrix (Fin g) (Fin g) ℂ) (x a b : Fin g → ℂ) :
-    hermForm M x (a + b) = hermForm M x a + hermForm M x b := by
-  simp [hermForm, Matrix.mulVec_add, dotProduct_add]
-
-private theorem herm_add_left {g : ℕ} (M : Matrix (Fin g) (Fin g) ℂ) (a b y : Fin g → ℂ) :
-    hermForm M (a + b) y = hermForm M a y + hermForm M b y := by
-  simp [hermForm, add_dotProduct]
-
-private theorem herm_smul_right {g : ℕ} (M : Matrix (Fin g) (Fin g) ℂ) (c : ℂ) (x a : Fin g → ℂ) :
-    hermForm M x (c • a) = star c * hermForm M x a := by
-  simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
-
-private theorem herm_smul_left {g : ℕ} (M : Matrix (Fin g) (Fin g) ℂ) (c : ℂ) (a y : Fin g → ℂ) :
-    hermForm M (c • a) y = c * hermForm M a y := by
-  simp only [hermForm, smul_dotProduct, smul_eq_mul]
 
 private theorem herm_sub_smul {g : ℕ} (H₁ H₂ : Matrix (Fin g) (Fin g) ℂ) (t : ℂ) (x y : Fin g → ℂ) :
     hermForm (H₁ - t • H₂) x y = hermForm H₁ x y - t * hermForm H₂ x y := by
@@ -44,19 +70,19 @@ private theorem herm_im_zero {g : ℕ} (M : Matrix (Fin g) (Fin g) ℂ) (s : Set
     induction hz using Submodule.span_induction with
     | mem x hx => exact h x hx w hw
     | zero => simp [hermForm]
-    | add a b _ _ ha hb => rw [herm_add_left]; simp [ha, hb]
-    | smul c a _ ha => rw [real_smul_eq, herm_smul_left]; simp [ha]
+    | add a b _ _ ha hb => rw [_root_.GlobalTheory.AppellHumbertTrivial.hermForm_add_left]; simp [ha, hb]
+    | smul c a _ ha => rw [real_smul_eq, _root_.GlobalTheory.AppellHumbertTrivial.hermForm_smul_left]; simp [ha]
   have hw : w ∈ Submodule.span ℝ s := by rw [hs]; trivial
   induction hw using Submodule.span_induction with
   | mem y hy => exact key y hy z
   | zero => simp [hermForm]
-  | add a b _ _ ha hb => rw [herm_add_right]; simp [ha, hb]
-  | smul c a _ ha => rw [real_smul_eq, herm_smul_right]; simp [ha]
+  | add a b _ _ ha hb => rw [_root_.GlobalTheory.SelfCube.herm_add_right]; simp [ha, hb]
+  | smul c a _ ha => rw [real_smul_eq, _root_.GlobalTheory.UnifTransport.hermForm_smul_right]; simp [ha]
 
 private theorem bil_dvd {M : Type} [AddCommGroup M] (Bf : LinearMap.BilinForm ℤ M) (n : ℕ) (x y e e' : M) :
     (n : ℤ) ∣ Bf (x + n • e) (y + n • e') - Bf x y := by
   refine ⟨Bf x e' + Bf e y + n * Bf e e', ?_⟩
-  simp [map_add (f := _), map_nsmul, LinearMap.add_apply, nsmul_eq_mul]
+  simp [map_add (f := _), map_nsmul, LinearMap.add_apply]
   ring
 
 private theorem form_step {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} (L : Link D G) (h : G.GAf) (n : ℕ)
@@ -180,7 +206,7 @@ theorem UpperTheory.Gal.W2.isogForm_of :
     intro z w
     apply Complex.ext
     · have := hzero (Complex.I • z) w
-      rw [herm_smul_left] at this
+      rw [_root_.GlobalTheory.AppellHumbertTrivial.hermForm_smul_left] at this
       simpa using this
     · simpa using hzero z w
   have hu3 : P u₃ ≠ 0 := by

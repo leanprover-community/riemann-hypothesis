@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartTop
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieGermI
+public import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
+import Formalism.IncomingBounds.IncomingBound
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.EvenBlockRowActionEval
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.NatActRVtupR
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.LatticeComparisonCompatible
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.EvenBlockRowActionEval
 
 @[expose] public section
 
@@ -99,7 +100,7 @@ def BlockRationalityAtPlace (X : Formalism.L2.Herm.Herm0 D) (Gt : GatTies D) (u 
     (crdB (embT D) (locAt X u w hg B).B) D.what₂.embLL ((D.fm u).lam 0)
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem evRatRep_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (Gt : GatTies D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E)
     (hb : BlockRationalityAtPlace X Gt u w hg B) :

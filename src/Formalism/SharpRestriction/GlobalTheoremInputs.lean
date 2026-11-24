@@ -1,11 +1,43 @@
 module
 
-public import Formalism.SharpRestriction.ParConsts
 public import Formalism.LocalRingCardinality.DataParamsS
-public import Formalism.SharpRestriction.GlobalSchurBounds.Chosen
 public import Formalism.SharpRestriction.GlobalSchurBounds.TieGlobal
-public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocsCoverTw
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -134,6 +166,11 @@ def LinkG {eps : ℝ} (Fm : FamP eps) : Prop :=
 def hsDiagFull (D : D7) (u : D.what₂.Word) : ℝ :=
   S.hsNormSq (S.KD D u u - ContinuousLinearMap.id ℂ (D.s.Cu u))
 
+/-- Per-scale near-orthogonality of words (`LinkS_at`): assuming every word `u` has comparable
+normalized multiplicity `C0⁻¹ ≤ du(u) * Gam² / D* ≤ C0`, the Hilbert-Schmidt Gram matrix satisfies:
+1. off-diagonal: `‖K(u, u')‖²_HS ≤ (1 + eta0) * du(u) * du(u') / D*` for `u ≠ u'`;
+2. diagonal: `‖K(u, u) - id‖²_HS ≤ e0 * du(u)`;
+3. total dimension: `Dall ≤ (1 + eta1) * D*`. -/
 def LinkS_at {D : D7} (L : SizeData₂ D) (C0 Gam eta0 eta1 e0 : ℝ) : Prop :=
   (∀ u, C0⁻¹ ≤ (D.duS u : ℝ) * Gam ^ 2 / D.what₂.Dstar ∧ (D.duS u : ℝ) * Gam ^ 2 / D.what₂.Dstar ≤ C0) →
   (∀ u u', u ≠ u' → L.hsSq u u' ≤ (1 + eta0) * (D.duS u : ℝ) * (D.duS u' : ℝ) / D.what₂.Dstar) ∧
@@ -141,12 +178,18 @@ def LinkS_at {D : D7} (L : SizeData₂ D) (C0 Gam eta0 eta1 e0 : ℝ) : Prop :=
 
 def GamOf {D : D7} (L : SizeData₂ D) : ℝ := Real.exp (L.CGam * (D.R.m : ℝ) ^ 5 * D.R.f * L.sc.L)
 
+/-- Family-level near-orthogonality of words: for all sufficiently large `x`, `LinkS_at` holds at
+scale `GamOf L = exp (CGam * m^5 * f * L)` with exponentially small errors
+`eta0, eta1, √e0 ≤ exp (-x^(eps / 8))`. -/
 def LinkS {eps : ℝ} (Fm : FamP eps) (C0 : ℝ) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, ∃ eta0 eta1 e0 : ℝ, 0 ≤ e0 ∧
     eta0 ≤ Real.exp (-(x ^ (eps / 8))) ∧ eta1 ≤ Real.exp (-(x ^ (eps / 8))) ∧
     Real.sqrt e0 ≤ Real.exp (-(x ^ (eps / 8))) ∧
     LinkS_at (Fm.L x i) C0 (GamOf (Fm.L x i)) eta0 eta1 e0
 
+/-- The five global arithmetic inputs assembled for a family `Fm`: local gain (`LinkG`),
+near-orthogonality of words (`LinkS`), irreducibility (`LinkIRR`), divisibility (`LinkDIV`),
+and lattice-measure comparison (`LinkMu`). -/
 def GlobalTheoremInputs {eps : ℝ} (Fm : FamP eps) (Cabs CH C0 : ℝ) : Prop :=
   LinkG Fm ∧ LinkS Fm C0 ∧ LinkIRR Fm ∧ LinkDIV Fm Cabs CH ∧
   LinkMu Fm

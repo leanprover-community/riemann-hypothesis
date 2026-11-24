@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ToCellSurj
+public import Mathlib.Algebra.Group.Subgroup.Ker
+import Mathlib.NumberTheory.Height.NumberField
 
 @[expose] public section
 

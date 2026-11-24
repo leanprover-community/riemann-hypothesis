@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConstBHVolS
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -151,7 +153,7 @@ theorem cpow_step (r : ℕ) : ∀ (m : ℕ) (F : ℝ → ℝ≥0∞), Measurable
         ‖p.1‖ ^ 2 + ∑ a, ‖p.2 a‖ ^ 2 := by
       intro p
       rw [Fin.sum_univ_succ]
-      simp [MeasurableEquiv.piFinSuccAbove, Fin.insertNth_zero']
+      simp [MeasurableEquiv.piFinSuccAbove]
     simp_rw [hsplit]
     rw [lintegral_prod _ ?meas]
     · have inner : ∀ w : ℂ, ∫⁻ u' : Fin r → ℂ, ∫⁻ x : EuclideanSpace ℝ (Fin m),

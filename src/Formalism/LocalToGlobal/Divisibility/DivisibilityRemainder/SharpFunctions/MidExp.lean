@@ -1,6 +1,7 @@
 module
 
-public import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
+public import Formalism.SharpRestriction.ParamsHeightRankConstant
+import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 
 @[expose] public section
 

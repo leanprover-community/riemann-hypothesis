@@ -1,19 +1,50 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletedLatticeStabilizerCompactOpen
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
-public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
-public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
-public import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
-public import Formalism.LocalToGlobal.ProjectiveLattices.NormLaws
-public import Formalism.LocalToGlobal.ProjectiveLattices.VolProofs
-public import Formalism.LocalToGlobal.ProjectiveLattices.DatProofs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
-public import Development.AbelianVarietyTheory.PublishedTheorems.Landherr₂.ExistsNormTensor
+public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -57,75 +88,7 @@ theorem congr_mem_nhds (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
     {m : Matrix (Fin n) (Fin n) (Af F ⊗[F] E) | ∀ z ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)),
       ∃ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), m.mulVec z - z = N • y} ∈
       𝓝 (1 : Matrix (Fin n) (Fin n) (Af F ⊗[F] E)) := by
-  have : IsModuleTopology (Af F) (Af F ⊗[F] E) := ⟨rfl⟩
-  have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  have : IsTopologicalRing (Af F ⊗[F] E) := IsModuleTopology.isTopologicalRing (Af F) _
-  have ho : IsOpen {z : Fin n → Af F ⊗[F] E | ∃ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), z = N • y} :=
-    (GlobalTheory.AdLat.OpenLat.isOpen_nsmul_hat F E n L hL).1 N hN
-  have hfz : (L.restrictScalars ℤ).FG := by
-    have : Module.Finite (𝓞 E) L := Module.Finite.iff_fg.mpr hfg
-    have : Module.Finite ℤ L := Module.Finite.trans (𝓞 E) L
-    exact (Module.Finite.iff_fg (N := L.restrictScalars ℤ)).mp (inferInstanceAs (Module.Finite ℤ L))
-  obtain ⟨s, hs⟩ := hfz
-  have hev : ∀ᶠ m : Matrix (Fin n) (Fin n) (Af F ⊗[F] E) in 𝓝 1, ∀ x ∈ s,
-      ∃ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)),
-        m.mulVec (GlobalTheory.AdLat.fv F x) - GlobalTheory.AdLat.fv F x = N • y := by
-    rw [Filter.eventually_all_finset]
-    intro x _
-    have hc : Continuous fun m : Matrix (Fin n) (Fin n) (Af F ⊗[F] E) =>
-        m.mulVec (GlobalTheory.AdLat.fv F x) - GlobalTheory.AdLat.fv F x :=
-      (continuous_id.matrix_mulVec continuous_const).sub continuous_const
-    exact (ho.preimage hc).mem_nhds ⟨0, zero_mem _, by simp⟩
-  refine Filter.mem_of_superset hev fun m hm => ?_
-  have hsm : ∀ a : Af F, (∀ v, a v ∈ v.adicCompletionIntegers F) →
-      ∀ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), a • y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)) := by
-    intro a ha y hy
-    induction hy using AddSubgroup.closure_induction with
-    | mem x hx =>
-      obtain ⟨b, hb, x, hx, rfl⟩ := hx
-      exact AddSubgroup.subset_closure ⟨a * b, fun v => mul_mem (ha v) (hb v), x, hx, rfl⟩
-    | zero => rw [smul_zero]; exact zero_mem _
-    | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-    | neg x _ hx => rw [smul_neg]; exact neg_mem hx
-  have hadd : ∀ z w : Fin n → Af F ⊗[F] E,
-      (∃ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), m.mulVec z - z = N • y) →
-      (∃ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), m.mulVec w - w = N • y) →
-      ∃ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), m.mulVec (z + w) - (z + w) = N • y := by
-    rintro z w ⟨y, hy, h⟩ ⟨y', hy', h'⟩
-    exact ⟨y + y', add_mem hy hy', by rw [smul_add, ← h, ← h', Matrix.mulVec_add]; abel⟩
-  have hx : ∀ x ∈ Submodule.span ℤ (s : Set (Fin n → E)), ∃ y ∈ GlobalTheory.AdLat.hat F (L : Set (Fin n → E)),
-      m.mulVec (GlobalTheory.AdLat.fv F x) - GlobalTheory.AdLat.fv F x = N • y := by
-    intro x hx
-    induction hx using Submodule.span_induction with
-    | mem x hx => exact hm x hx
-    | zero =>
-      have : GlobalTheory.AdLat.fv F (0 : Fin n → E) = 0 := funext fun i => TensorProduct.tmul_zero _ _
-      exact ⟨0, zero_mem _, by simp [this]⟩
-    | add x y _ _ hx hy =>
-      have : GlobalTheory.AdLat.fv F (x + y) = GlobalTheory.AdLat.fv F x + GlobalTheory.AdLat.fv F y :=
-        funext fun i => TensorProduct.tmul_add _ _ _
-      rw [this]; exact hadd _ _ hx hy
-    | smul c x _ hx =>
-      obtain ⟨y, hy, h⟩ := hx
-      have : GlobalTheory.AdLat.fv F (c • x) = c • GlobalTheory.AdLat.fv F x :=
-        funext fun i => map_zsmul (TensorProduct.mk F (Af F) E 1) c (x i)
-      refine ⟨c • y, zsmul_mem hy c, ?_⟩
-      rw [this, Matrix.mulVec_smul, ← smul_sub, h, smul_comm]
-  intro z hz
-  induction hz using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨a, ha, x, hxL, rfl⟩ := hz
-    obtain ⟨y, hy, h⟩ := hx x (by rw [hs]; exact hxL)
-    have : (fun i => a ⊗ₜ[F] x i) = a • GlobalTheory.AdLat.fv F x := by
-      funext i
-      simp [GlobalTheory.AdLat.fv, TensorProduct.smul_tmul']
-    refine ⟨a • y, hsm a ha y hy, ?_⟩
-    rw [this, Matrix.mulVec_smul, ← smul_sub, h, smul_comm]
-  | zero => exact ⟨0, zero_mem _, by simp⟩
-  | add z w _ _ hz hw => exact hadd z w hz hw
-  | neg z _ hz =>
-    obtain ⟨y, hy, h⟩ := hz
-    exact ⟨-y, neg_mem hy, by rw [smul_neg, ← h, Matrix.mulVec_neg]; abel⟩
+  apply GlobalTheory.Mem.Vol.StabGroup.congr_mem_nhds <;> assumption
 
 theorem continuous_fin (F E : Type) [Field F] [NumberField F] [Field E] [Algebra F E] :
     Continuous (Algebra.TensorProduct.map (sndA F) (AlgHom.id F E) : AF F ⊗[F] E → Af F ⊗[F] E) := by

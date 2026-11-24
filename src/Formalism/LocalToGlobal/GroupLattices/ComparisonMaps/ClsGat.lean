@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsMain
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.RepTie
 
 @[expose] public section
 
@@ -37,7 +38,7 @@ theorem class_eq_iff_translate_level_one (i i' : compL L p) (y : GL (Fin R.k) (E
   exact class_eq_iff_translate_level_zero hk I hdet hH i i' Lt Lt' h h'
 
 
-set_option maxHeartbeats 2000000 in
+
 include hH in
 theorem clsC_iff (i i' : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).comp)
     (Lt Lt' : (gatOfLevelP L hS nV r lam0 dom hk I ψ e).P.Tup)

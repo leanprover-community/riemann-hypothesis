@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.GroupCohomology.ContinuousContractNth
+public import Mathlib.RingTheory.AdicCompletion.Basic
 
 @[expose] public section
 

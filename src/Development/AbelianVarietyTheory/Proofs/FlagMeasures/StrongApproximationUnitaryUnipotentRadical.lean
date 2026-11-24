@@ -1,10 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-public import Formalism.HarderNarasimhan.ShiftInvariance
+public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TwoStepUnipotentCompactModSubring
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
 
 @[expose] public section
 
@@ -244,16 +292,11 @@ theorem continuous_adj [TopologicalSpace A] [IsTopologicalRing A] {s : A →+* A
     (J K : Matrix n n A) : Continuous (adj s J K) :=
   (continuous_const.matrix_mul (continuous_id.matrix_map hs).matrix_transpose).matrix_mul continuous_const
 
-omit [DecidableEq n] in
-theorem hform_eq (s : A →+* A) (J : Matrix n n A) (x y : n → A) :
-    hform s J x y = (s ∘ x) ⬝ᵥ (J *ᵥ y) := by
-  simp [hform, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
-
 theorem forall_hform_iff (s : A →+* A) {J K : Matrix n n A} (hJK : J * K = 1) (e : Matrix n n A) (y : n → A) :
     (∀ x, hform s J (e *ᵥ x) y = 0) ↔ adj s J K e *ᵥ y = 0 := by
   have key : ∀ x, hform s J (e *ᵥ x) y = (s ∘ x) ⬝ᵥ ((cT s e * J) *ᵥ y) := fun x => by
     have : s ∘ (e *ᵥ x) = (e.map s) *ᵥ (s ∘ x) := funext fun i => RingHom.map_mulVec s e x i
-    rw [hform_eq, this, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec (s ∘ x), cT, Matrix.vecMul_transpose]
+    rw [_root_.Formalism.UG.P.hform_eq_dot, this, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec (s ∘ x), cT, Matrix.vecMul_transpose]
   constructor
   · intro h
     have : (cT s e * J) *ᵥ y = 0 := by
@@ -750,7 +793,7 @@ theorem strong_approximation : ∀ (I : AutInst) (W : Submodule I.E (Fin I.n →
     intro A _ ι x
     have : ι.mapMatrix ((2⁻¹ : I.E) • (1 : Matrix (Fin I.n) (Fin I.n) I.E)) = ι 2⁻¹ • 1 := by
       ext i j
-      by_cases h : i = j <;> simp [h, Matrix.one_apply]
+      by_cases h : i = j <;> simp [h]
     rw [this, smul_mul_assoc, mul_smul_comm, one_mul, mul_one]
   refine ⟨⟨⟨⟨⟨I.NA W, fun {a b} ha hb => ?_⟩, hone⟩, fun {a} ha => ?_⟩, rfl⟩, ?_,
     fun m hm => ⟨⟨hm.1, hone.2⟩, ⟨hone.1, hm.2⟩⟩, fun V hV m hm => ?_, ?_⟩

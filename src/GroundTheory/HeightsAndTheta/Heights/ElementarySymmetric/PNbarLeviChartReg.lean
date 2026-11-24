@@ -1,13 +1,16 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StRefChartDisc
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StNbarLeviChartReg
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsProjSmoothAlong
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuRegSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PNbarSmooth
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorSmooth
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.RegularizedCurvature
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 

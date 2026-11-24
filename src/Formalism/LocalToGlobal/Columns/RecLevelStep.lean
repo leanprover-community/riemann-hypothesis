@@ -1,8 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecLevelAsm
-public import Formalism.LocalToGlobal.Columns.RecLevelLocP
 public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
+public import Formalism.LocalToGlobal.Columns.RecLevelCls
+public import Formalism.LocalToGlobal.Columns.RecLevelLocF
+import Formalism.LocalToGlobal.Columns.BaseLemmas
+import Formalism.LocalToGlobal.Columns.RecLevelLocK
+public import Formalism.LocalToGlobal.Columns.RecLevelLocP
+public import Formalism.LocalToGlobal.Columns.RecLevelTop
 
 @[expose] public section
 

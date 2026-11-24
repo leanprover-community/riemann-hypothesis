@@ -1,6 +1,7 @@
 module
 
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

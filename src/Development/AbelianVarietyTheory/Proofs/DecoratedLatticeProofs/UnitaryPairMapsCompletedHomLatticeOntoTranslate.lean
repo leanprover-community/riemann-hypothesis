@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPart
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsRatDatum
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualSplitComponentIsLatticeStabilizerEq
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StrongApproximationDecomposition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 
 @[expose] public section
 
@@ -19,22 +57,6 @@ namespace GlobalTheory.LatMoveStd
 
 variable {D : D7}
 
-theorem mt_mul'' (V : HSp D) (g g' : GA D V) : mt V (g * g') = mt V g * mt V g' := by
-  show (matHom V (g * g')).1 = (matHom V g).1 * (matHom V g').1
-  rw [map_mul, Units.val_mul]
-
-theorem mt_one'' (V : HSp D) : mt V 1 = 1 := by
-  show (matHom V 1).1 = 1
-  rw [map_one, Units.val_one]
-
-theorem cA_cA'' (x : AE D) : cA D (cA D x) = x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
-  | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  | tmul a e =>
-    show (a ⊗ₜ[D.host.F] D.sp.cm.sig (D.sp.cm.sig e)) = _
-    rw [show D.sp.cm.sig (D.sp.cm.sig e) = e from star_star e]
-
 theorem unitary (V : HSp D) (hg : V.gram = 1) (g : GA D V) :
     ((mt V g).map (cA D))ᵀ * mt V g = 1 := by
   have h : ((mt V g).map (cA D))ᵀ * V.gram.map (incA D) * mt V g = V.gram.map (incA D) :=
@@ -44,12 +66,12 @@ theorem unitary (V : HSp D) (hg : V.gram = 1) (g : GA D V) :
 
 theorem mt_inv_eq (V : HSp D) (hg : V.gram = 1) (g : GA D V) : mt V g⁻¹ = ((mt V g).map (cA D))ᵀ := by
   have h1 := unitary V hg g
-  have h2 : mt V g * mt V g⁻¹ = 1 := by rw [← mt_mul'', mul_inv_cancel, mt_one'']
+  have h2 : mt V g * mt V g⁻¹ = 1 := by rw [← _root_.GlobalTheory.BesselCompare.mt_mul, mul_inv_cancel, _root_.GlobalTheory.BesselCompare.mt_one]
   calc mt V g⁻¹ = (((mt V g).map (cA D))ᵀ * mt V g) * mt V g⁻¹ := by rw [h1, Matrix.one_mul]
     _ = _ := by rw [Matrix.mul_assoc, h2, Matrix.mul_one]
 
 
-set_option synthInstance.maxHeartbeats 200000 in
+
 theorem int_of_moves (V : HSp D) (g : GA D V) (N : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
     (hM : Moves V rfl g N) (x : Fin V.rank → D.host.E) (hx : x ∈ N) (i : Fin V.rank) :
     finPart D ((mt V g⁻¹ *ᵥ fun k => incA D (x k)) i) ∈ intAE D := by
@@ -57,8 +79,8 @@ theorem int_of_moves (V : HSp D) (g : GA D V) (N : Submodule (𝓞 D.host.E) (Fi
   have := (hM x).1 hx i
   have e : toEAf D ((mt V g⁻¹ *ᵥ fun k => incA D (x k)) i) = (finM V rfl g⁻¹ *ᵥ fun j => eToEAf D (x j)) i := by
     simp only [Matrix.mulVec, dotProduct]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_mul]
     rfl
@@ -75,17 +97,17 @@ namespace GlobalTheory.LatMoveStd
 variable {D : D7}
 
 
-set_option synthInstance.maxHeartbeats 200000 in
+
 theorem int_conj (V : HSp D) (hg : V.gram = 1) (g : GA D V) (N : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
     (hM : Moves V rfl g N) (s : Fin V.rank → D.host.E) (hs : s ∈ N) (j : Fin V.rank) :
     finPart D (∑ l, cA D (incA D (s l)) * mt V g l j) ∈ intAE D := by
   rw [← GlobalTheory.FinPl.FrameLat.cA_int_iff]
   have e : cA D (∑ l, cA D (incA D (s l)) * mt V g l j) = (mt V g⁻¹ *ᵥ fun k => incA D (s k)) j := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [mt_inv_eq V hg g, map_sum]
+
+    rw [mt_inv_eq V hg g, map_sum]
     simp only [Matrix.mulVec, dotProduct, Matrix.transpose_apply, Matrix.map_apply]
     refine Finset.sum_congr rfl fun l _ => ?_
-    rw [map_mul, cA_cA'', mul_comm]
+    rw [map_mul, _root_.Formalism.L2.Theta.cA_cA, mul_comm]
   rw [e]; exact int_of_moves V g N hM s hs j
 
 theorem single_mem (S T : HSp D) (hgS : S.gram = 1) (α : Af D.host.F) (hα : α ∈ intAf D.host.F) (c : D.host.E)
@@ -129,7 +151,7 @@ theorem row_one {n : ℕ} (s : Fin n → D.host.E) (l : Fin n) :
     (fun h => absurd (Finset.mem_univ l) h), Matrix.one_apply_eq, mul_one]
 
 
-set_option synthInstance.maxHeartbeats 200000 in
+
 theorem gen_mem (S T : HSp D) (hgS : S.gram = 1) (hgT : T.gram = 1) (g : GA D S) (h : GA D T)
     (N : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (N' : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E))
     (hN : Moves S rfl g N) (hN' : Moves T rfl h N') (α : Af D.host.F) (hα : α ∈ intAf D.host.F) (c : D.host.E)
@@ -173,7 +195,7 @@ theorem latO_moved_onto : ∀ (D : D7) (S T : HSp D) (a b : ℕ) (hS : S.rank = 
       exact gen_mem S T hgS hgT g h N N' hN hN' α hα c hc s hs t ht
     exact key hu'
   · simp only [actO]
-    rw [inv_inv, Matrix.mul_assoc (mt T h), Matrix.mul_assoc (mt T h⁻¹ * u'), ← mt_mul'', mul_inv_cancel, mt_one'', Matrix.mul_one,
-      ← Matrix.mul_assoc, ← mt_mul'', mul_inv_cancel, mt_one'', Matrix.one_mul]
+    rw [inv_inv, Matrix.mul_assoc (mt T h), Matrix.mul_assoc (mt T h⁻¹ * u'), ← _root_.GlobalTheory.BesselCompare.mt_mul, mul_inv_cancel, _root_.GlobalTheory.BesselCompare.mt_one, Matrix.mul_one,
+      ← Matrix.mul_assoc, ← _root_.GlobalTheory.BesselCompare.mt_mul, mul_inv_cancel, _root_.GlobalTheory.BesselCompare.mt_one, Matrix.one_mul]
 
 end GlobalTheory.LatMoveStd

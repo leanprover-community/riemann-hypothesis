@@ -1,8 +1,57 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.OfDetToDet
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.HomTwo
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
+public import Mathlib.Algebra.FreeAlgebra
+public import Mathlib.Algebra.MvPolynomial.Supported
 
 @[expose] public section
 
@@ -108,8 +157,8 @@ private theorem am_univ (k N : ℕ) :
       obtain ⟨c, w, hw', rfl⟩ := hu
       rw [map_zsmul, hw, hx w (by omega), smul_zero]
   have := congrArg (FreeAlgebra.lift ℤ x) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_add (f := _), map_add (f := _), h0, add_zero, map_one, map_sum, amP, map_list_prod, List.map_map] at this
+
+  rw [map_add (f := _), map_add (f := _), h0, add_zero, map_one, map_sum, amP, map_list_prod, List.map_map] at this
   simp only [FreeAlgebra.lift_ι_apply] at this
   rw [this, amP]
   congr 1
@@ -231,15 +280,15 @@ theorem UpperTheory.V.CA.d_amitsur :
       Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.subset_span ⟨amWt w, by simpa [amWt_degree] using hw, rfl⟩)
     rw [am_lift, this, zero_tmul]
   have h2 : π (D.D (MvPolynomial (Fin k) A) (1 + Det.gen x)) = π (MvPolynomial.map φ (L.map (amF n)).prod) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← D.nat, map_add (f := _), map_one, Det.gen, map_sum]
+
+    rw [← D.nat, map_add (f := _), map_one, Det.gen, map_sum]
     simp only [Algebra.TensorProduct.map_tmul, AlgHom.id_apply]
     rw [h1, amP, map_list_prod, map_list_prod, map_list_prod, List.map_map, List.map_map, List.map_map]
     congr 1
     refine List.map_congr_left fun p _ => ?_
     simp only [Function.comp]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [am_lift, smul_tmul', am_one, amF, map_add (f := _), map_add (f := _), map_one (MvPolynomial.map φ), map_one π, map_sum, map_sum]
+
+    rw [am_lift, smul_tmul', am_one, amF, map_add (f := _), map_add (f := _), map_one (MvPolynomial.map φ), map_one π, map_sum, map_sum]
     congr 1
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← map_zsmul, ← map_pow, ← π.commutes, ← map_mul]

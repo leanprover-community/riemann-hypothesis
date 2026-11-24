@@ -1,8 +1,14 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspidalExponentialDecay
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PeriodicSchwarzLemma
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.EmbeddingHermitianPairs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FinrankEqTwoMulHalfDegree
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowDomainCriterionHolds
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.M3bNormHolds
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajPos
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MaximumBoundField
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PeriodicSchwarzLemma
 
 @[expose] public section
 
@@ -240,7 +246,7 @@ theorem maxBound_holds : MaxBoundStatement (E := E) := by
 
   have hkey : ((fdeg E : ℝ) * w + 2) * Real.log 2 ≤ 2 * π * t / M := by
     have he : 2 * π * t / M = π / (M * X.k0 * ε) := by
-      rw [ht]; field_simp <;> ring
+      rw [ht]; field_simp
     rw [he, le_div_iff₀ (by positivity)]
     calc ((fdeg E : ℝ) * w + 2) * Real.log 2 * (M * X.k0 * ε)
         = ε * (M * ((fdeg E : ℝ) * w + 2) * X.k0 * Real.log 2) := by ring

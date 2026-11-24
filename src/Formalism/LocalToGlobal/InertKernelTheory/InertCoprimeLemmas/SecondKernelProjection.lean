@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.ProjRSurj
+import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IsUnitDetBlockPreimage
+import Mathlib.Algebra.Module.StablyFree.Basic
 
 @[expose] public section
 

@@ -1,6 +1,47 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AutomorphicRankinSelberg.StripInt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -37,7 +78,7 @@ private lemma kd_pow {a b t m : ℝ} (hm : 1 ≤ m) (hb : m / 2 ≤ b) (hab : b 
         apply mul_le_mul_of_nonneg_left _ (by linarith)
         rw [one_sub_div ha0.ne']
         exact div_le_div_of_nonneg_left (by linarith) hb0 hab
-      nlinarith
+      linarith
     rw [h1]
     exact div_le_div_of_nonneg_right h2 hBpos.le
   have hbB : m ^ 3 / 32 ≤ b * B := by
@@ -56,7 +97,7 @@ private lemma kd_pow {a b t m : ℝ} (hm : 1 ≤ m) (hb : m / 2 ≤ b) (hab : b 
       have hm3 : 0 ≤ m ^ 3 := by positivity
       rw [← e7] at hm3 ⊢
       rw [e6] at e5
-      nlinarith
+      linarith [mul_le_mul e4 e5 h2pos.le (hm3.trans e4)]
     linarith
   have hm3pos : 0 < m ^ 3 := by positivity
   have hmneg : m ^ (-3 : ℝ) = (m ^ 3)⁻¹ := by
@@ -67,7 +108,7 @@ private lemma kd_pow {a b t m : ℝ} (hm : 1 ≤ m) (hb : m / 2 ≤ b) (hab : b 
   have hbBpos : 0 < b * B := by positivity
   rw [div_le_iff₀ hbBpos]
   have hab' : 0 ≤ a - b := by linarith
-  have : t * (a - b) ≤ 4 * (a - b) := by nlinarith
+  have : t * (a - b) ≤ 4 * (a - b) := mul_le_mul_of_nonneg_right ht' hab'
   have h32 : 128 * (a - b) * (m ^ 3)⁻¹ * (m ^ 3 / 32) = 4 * (a - b) := by
     field_simp
     ring
@@ -98,7 +139,7 @@ private lemma kd_fd {z : ℍ} (hz : z ∈ ModularGroup.fd) :
   rw [Complex.normSq_apply] at h1
   simp only [UpperHalfPlane.coe_re, UpperHalfPlane.coe_im] at h1 h2
   rw [abs_le] at h2
-  refine ⟨by nlinarith, h2.1, h2.2, by nlinarith⟩
+  refine ⟨by linarith, h2.1, h2.2, (sq_le_sq₀ (by norm_num) hy.le).mp (by linarith)⟩
 
 private lemma kd_low (x : Fin 2 → ℤ) {z : ℍ} (hz : z ∈ ModularGroup.fd) :
     ‖x‖ / 2 ≤ ‖(x 0 : ℂ) * z + (x 1 : ℂ)‖ := by
@@ -121,10 +162,10 @@ private lemma kd_low (x : Fin 2 → ℤ) {z : ℍ} (hz : z ∈ ModularGroup.fd) 
     rcases le_max_iff.mp hmax with h | h
     · have : ‖x‖ ^ 2 ≤ |c| ^ 2 := pow_le_pow_left₀ hN0 h 2
       rw [sq_abs] at this
-      nlinarith
+      linarith [sq_nonneg d]
     · have : ‖x‖ ^ 2 ≤ |d| ^ 2 := pow_le_pow_left₀ hN0 h 2
       rw [sq_abs] at this
-      nlinarith
+      linarith [sq_nonneg c]
   have hcd : |2 * c * d * z.re| ≤ |c * d| := by
     rw [show 2 * c * d * z.re = (c * d) * (2 * z.re) by ring, abs_mul]
     have : |2 * z.re| ≤ 1 := by rw [abs_le]; constructor <;> linarith
@@ -133,17 +174,16 @@ private lemma kd_low (x : Fin 2 → ℤ) {z : ℍ} (hz : z ∈ ModularGroup.fd) 
   have hcd2 : 2 * |c * d| ≤ c ^ 2 + d ^ 2 := by
     rw [abs_mul]
     have := sq_nonneg (|c| - |d|)
-    nlinarith [sq_abs c, sq_abs d]
+    linarith [sq_abs c, sq_abs d]
   have hlow : (‖x‖ / 2) ^ 2 ≤ ‖(x 0 : ℂ) * z + (x 1 : ℂ)‖ ^ 2 := by
     rw [hsq]
     have e : (c * z.re + d) ^ 2 + (c * z.im) ^ 2 = c ^ 2 * (z.re ^ 2 + z.im ^ 2) + 2 * c * d * z.re + d ^ 2 := by ring
     rw [e]
     have := neg_abs_le (2 * c * d * z.re)
-    have hc2 : c ^ 2 ≤ c ^ 2 * (z.re ^ 2 + z.im ^ 2) := by
-      nlinarith [sq_nonneg c]
-    nlinarith
+    have hc2 : c ^ 2 ≤ c ^ 2 * (z.re ^ 2 + z.im ^ 2) := le_mul_of_one_le_right (sq_nonneg c) h1
+    linarith [sq_nonneg ‖x‖]
   have hw0 := norm_nonneg ((x 0 : ℂ) * z + (x 1 : ℂ))
-  nlinarith [norm_nonneg x]
+  exact (sq_le_sq₀ (by positivity) hw0).mp hlow
 
 private lemma kd_up (x : Fin 2 → ℤ) {z : ℍ} (hz : z ∈ ModularGroup.fd) :
     ‖(x 0 : ℂ) * z + (x 1 : ℂ)‖ ≤ 4 * ‖x‖ * z.im := by
@@ -161,9 +201,8 @@ private lemma kd_up (x : Fin 2 → ℤ) {z : ℍ} (hz : z ∈ ModularGroup.fd) :
         rw [Complex.norm_intCast, Complex.norm_intCast]
         have a0 := kd_abs x 0
         have a1 := kd_abs x 1
-        have := norm_nonneg (z : ℂ)
-        nlinarith [abs_nonneg ((x 0 : ℤ) : ℝ)]
-    _ ≤ 4 * ‖x‖ * z.im := by nlinarith
+        linarith [mul_le_mul a0 hz' (norm_nonneg (z : ℂ)) hN0]
+    _ ≤ 4 * ‖x‖ * z.im := by linarith [mul_le_mul_of_nonneg_left h4 hN0]
 
 private lemma kd_ker (s : ℝ) (x : Fin 2 → ℤ) (z : ℍ) :
     ker s x z = z.im ^ s * ‖(x 0 : ℂ) * z + (x 1 : ℂ)‖ ^ (-(2 * s)) := by
@@ -224,10 +263,10 @@ theorem UpperTheory.V.Af.Rs.kerDiff :
     rcases le_total z.im 1 with h | h
     · have h1 : z.im ^ s ≤ z.im ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_ge hy h hs1
       rw [Real.rpow_one] at h1
-      nlinarith
+      linarith [mul_nonneg hy.le (show 0 ≤ 2 * z.im - 1 by linarith)]
     · have h1 : z.im ^ s ≤ z.im ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le h hs2
       rw [Real.rpow_two] at h1
-      nlinarith
+      linarith [sq_nonneg z.im]
   have hyspos : 0 ≤ z.im ^ s := Real.rpow_nonneg hy.le _
   rw [← mul_sub, abs_mul, abs_of_nonneg hyspos]
   calc z.im ^ s * |‖w‖ ^ (-(2 * s)) - ‖w'‖ ^ (-(2 * s))|

@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.DiffProd
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.Tactic.Lemma
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
+import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataConc
 
 @[expose] public section
 

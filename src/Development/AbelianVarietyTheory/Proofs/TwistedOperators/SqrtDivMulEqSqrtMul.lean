@@ -1,17 +1,67 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RealPoints
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentMulAddOneSubInverse
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TameAtOfUnrAt
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilLatticeVacuumStabilizerSplittingCharacters
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsUnramifiedEtaTildeOfOddExponentSum
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DetTwoDiagBlocksProperties
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLocalHomLatticeOfKeepsCompletedLattices
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsDetInt
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NotMemSpanOfCommute
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmVacuumEqSplitFacSmulSum
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PlacewiseToAdelicDecompositionForall
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryGroupCharacterOfHeckeChar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinPartMulIncAMem
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModulusUnramifiedCharDetHeckeDoubleCosetSplit
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvolutionSphericalHeckeAnti
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLocalHomLatticeOfKeepsCompletedLattices
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DetTwoDiagBlocksProperties
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeCharTrivialOnIdempotentIntegralUnitsStatement
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentMulAddOneSubInverse
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsUnramifiedEtaTildeOfOddExponentSum
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelCharactersRamificationLevelPlacesStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmEqSumLattice
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TameAtOfUnrAt
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilLatticeVacuumStabilizerSplittingCharacters
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SplitLinearModelNorm
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPlaceModelPlaceMap
 
 @[expose] public section
 
@@ -23,8 +73,8 @@ open Formalism.L2.NTheta (IsIdemAt IsHeckeElt)
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 namespace GlobalTheory.HeckeVacuum
 
@@ -82,8 +132,7 @@ theorem smul_actO_mem (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank
 theorem act_mul (h h' : GA D T) (u : WO S T) : actO S T 1 (h * h') u = actO S T 1 h (actO S T 1 h' u) := by
   rw [← GlobalTheory.SplitLinear.actO_mul, one_mul]
 
-theorem act_one (u : WO S T) : actO S T 1 1 u = u := by
-  simp only [actO, inv_one, mt_one, Matrix.mul_one, Matrix.one_mul]
+alias act_one := _root_.GlobalTheory.RatAut.act_one
 
 theorem act_sub (h : GA D T) (u u' : WO S T) : actO S T 1 h (u - u') = actO S T 1 h u - actO S T 1 h u' :=
   map_sub (GlobalTheory.SplitHecke.actAdd S T 1 h) u u'
@@ -280,9 +329,9 @@ theorem om_coset {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
   refine ⟨by rw [← hc]; convert card_halfReps hS hT hL hP hϖ hϖ2 hα h, ?_⟩
   have h3 := om_elt hW hS hT hL hP.1 hα hf hv h
   rw [Finset.card_image_of_injective Δ (act_inj k₁⁻¹), Finset.sum_image fun _ _ _ _ h => act_inj k₁⁻¹ h] at h3
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show ((1 : GA D S), k₁ * α * k₂) = (1, k₁) * (1, α) * (1, k₂) by simp, map_mul, map_mul, Module.End.mul_apply,
-    Module.End.mul_apply, f₂, h3, map_smul, map_sum]
+
+  rw [show ((1 : GA D S), k₁ * α * k₂) = (1, k₁) * (1, α) * (1, k₂) by simp, map_mul, map_mul, Module.End.mul_apply,
+  Module.End.mul_apply, f₂, h3, map_smul, map_sum]
   congr 1
   refine Finset.sum_congr rfl fun u _ => ?_
   rw [hW.om_heis _ _ _ _ hf, f₁, ← act_mul, mul_inv_cancel, act_one]

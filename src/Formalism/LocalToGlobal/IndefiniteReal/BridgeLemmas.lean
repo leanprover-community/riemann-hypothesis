@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.Bridge
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.NoncompactArrFiniteDimensional
 
 @[expose] public section
 
@@ -20,8 +23,8 @@ def clsAvg (S : CSD K) (c : S.Cl) (x : S.V) : S.V := ((S.wt c : K))⁻¹ • ∑
 
 theorem clsAvg_fixed (S : CSD K) (c : S.Cl) (x : S.V) (g : S.Gam c) : S.ρ c g (clsAvg S c x) = clsAvg S c x := by
   unfold clsAvg
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_smul, map_sum]
+
+  rw [map_smul, map_sum]
   congr 1
   have hm : ∀ g' : S.Gam c, S.ρ c g (S.ρ c g' x) = S.ρ c (g * g') x := by
     intro g'
@@ -49,9 +52,6 @@ variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {S : CSD K} {σ : K →+* ℂ} {ρ : Γ →* Module.End ℂ W} {J : Subgroup G} {χ : J →* ℂˣ}
   (P : ClassPres ι S σ ρ J χ)
-
-private theorem eq_decG_mul_y_decC_mul_decK (h : G) : h = ι (P.decG h) * P.y (P.decC h) * (P.decK h : G) :=
-  (P.reps h).exists.choose_spec.choose_spec.choose_spec
 
 theorem decC_eq (γ : Γ) (c : S.Cl) (k : J) : P.decC (ι γ * P.y c * k) = c := by
   exact (P.reps (ι γ * P.y c * k)).unique (P.reps (ι γ * P.y c * k)).exists.choose_spec ⟨γ, k, rfl⟩
@@ -96,7 +96,7 @@ private theorem coef_smul_eq_of_double_coset_eq (f : S.Forms) (γ γ' : Γ) (c :
 theorem ext_eq (f : S.Forms) (γ : Γ) (c : S.Cl) (k : J) :
     P.ext f (ι γ * P.y c * k) = (χ k : ℂ) • ρ γ (P.coef ((f : S.Cl → S.V) c)) := by
   have hc := P.decC_eq γ c k
-  have hs := eq_decG_mul_y_decC_mul_decK P (ι γ * P.y c * k)
+  have hs := _root_.Formalism.IndefR.Bridge.ClassPres.dec_spec P (ι γ * P.y c * k)
   unfold ClassPres.ext
   rw [hc] at hs ⊢
   exact coef_smul_eq_of_double_coset_eq P f γ _ c k _ hs
@@ -124,8 +124,8 @@ theorem ext_rep (f : S.Forms) (c : S.Cl) : P.ext f (P.y c) = P.coef ((f : S.Cl �
 theorem sigma_csum (f f' : S.Forms) :
     σ (S.csum f f') = ∑ c, ((S.wt c : ℂ))⁻¹ *
       inner ℂ (P.coef ((f : S.Cl → S.V) c)) (P.coef ((f' : S.Cl → S.V) c)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [CSD.csum, map_sum, map_mul, map_inv₀, map_natCast, P.coef_pair]
+
+  simp only [CSD.csum, map_sum, map_mul, map_inv₀, map_natCast, P.coef_pair]
 
 theorem isom_holds (P : ClassPres ι S σ ρ J χ) : P.Isom := by
   unfold ClassPres.Isom
@@ -139,8 +139,8 @@ theorem coef_inj {x : S.V} (hx : P.coef x = 0) : x = 0 := by
   have h1 : ∑ i, σ (S.bV.repr x i) • P.coef (S.bV i) = 0 := by
     rw [← hx]
     conv_rhs => rw [← S.bV.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smulₛₗ]
   have h2 := Fintype.linearIndependent_iff.1 P.coef_li _ h1
   apply S.bV.repr.injective
@@ -150,14 +150,11 @@ theorem coef_inj {x : S.V} (hx : P.coef x = 0) : x = 0 := by
 private theorem re_natCast_inv_mul' (n : ℕ) (z : ℂ) : (((n : ℂ))⁻¹ * z).re = ((n : ℝ))⁻¹ * z.re := by
   rw [← Complex.ofReal_natCast, ← Complex.ofReal_inv, Complex.re_ofReal_mul]
 
-private theorem inner_self_re_eq_norm_sq (x : W) : (inner ℂ x x).re = ‖x‖ ^ 2 :=
-  inner_self_eq_norm_sq (𝕜 := ℂ) x
-
 theorem eq_zero_of_wsum {w : S.Cl → W}
     (h : ∑ c, ((S.wt c : ℂ))⁻¹ * inner ℂ (w c) (w c) = 0) (c : S.Cl) : w c = 0 := by
   have hr := congrArg Complex.re h
   rw [Complex.re_sum, Complex.zero_re] at hr
-  simp only [re_natCast_inv_mul', inner_self_re_eq_norm_sq] at hr
+  simp only [re_natCast_inv_mul', _root_.Formalism.REAL.re_inner_self_eq_norm_sq] at hr
   have hnn : ∀ c ∈ Finset.univ, 0 ≤ ((S.wt c : ℝ))⁻¹ * ‖w c‖ ^ 2 := fun c _ => by positivity
   have h0 := (Finset.sum_eq_zero_iff_of_nonneg hnn).1 hr c (Finset.mem_univ c)
   have hw : (S.wt c : ℝ) ≠ 0 := by
@@ -197,8 +194,8 @@ theorem det_ne (P : ClassPres ι S σ ρ J χ) : (S.H.map σ).det ≠ 0 := by
       funext j
       have h3 : σ ((S.H.mulVec v) j) = ((S.H.map σ).mulVec (fun i => σ (v i))) j := by
         show σ (∑ i, S.H j i * v i) = ∑ i, σ (S.H j i) * σ (v i)
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         simp only [map_mul]
       rw [← h3, congrFun hmul j]
       simp
@@ -208,8 +205,8 @@ theorem det_ne (P : ClassPres ι S σ ρ J χ) : (S.H.map σ).det ≠ 0 := by
       funext c
       show ((∑ i, v i • S.basis i : S.Forms) : S.Cl → S.V) c = 0
       apply P.coef_inj
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply, Pi.smul_apply, map_sum, map_smulₛₗ]
+
+      simp only [Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply, Pi.smul_apply, map_sum, map_smulₛₗ]
       exact hc c
     funext i
     exact Fintype.linearIndependent_iff.1 S.basis.linearIndependent v hzero i
@@ -236,8 +233,8 @@ theorem linInd (P : ClassPres ι S σ ρ J χ) : LinearIndependent ℂ (fun i =>
 theorem coef_avg (c : S.Cl) (x : S.V) :
     P.coef (clsAvg S c x) = ((S.wt c : ℂ))⁻¹ •
       ∑ g : S.Gam c, (χ (stabK ι (P.stabI c g)) : ℂ) • ρ (P.stabI c g : Γ) (P.coef x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [clsAvg, map_smulₛₗ, map_inv₀, map_natCast, map_sum, P.coef_act]
+
+  simp only [clsAvg, map_smulₛₗ, map_inv₀, map_natCast, map_sum, P.coef_act]
 
 theorem adForms_fixed {F : G → W} (hF : F ∈ AdForms ι ρ J χ) (c : S.Cl) (g : S.Gam c) :
     (χ (stabK ι (P.stabI c g)) : ℂ) • ρ (P.stabI c g : Γ) (F (P.y c)) = F (P.y c) := by
@@ -251,7 +248,7 @@ theorem adForms_fixed {F : G → W} (hF : F ∈ AdForms ι ρ J χ) (c : S.Cl) (
 theorem adForms_val {F : G → W} (hF : F ∈ AdForms ι ρ J χ) (h : G) :
     F h = (χ (P.decK h) : ℂ) • ρ (P.decG h) (F (P.y (P.decC h))) := by
   have hm : ∀ (γ : Γ) (h : G) (k : J), F (ι γ * h * k) = (χ k : ℂ) • ρ γ (F h) := hF
-  conv_lhs => rw [eq_decG_mul_y_decC_mul_decK P h]
+  conv_lhs => rw [_root_.Formalism.IndefR.Bridge.ClassPres.dec_spec P h]
   exact hm _ _ _
 
 theorem adForms_ext {F F' : G → W} (hF : F ∈ AdForms ι ρ J χ) (hF' : F' ∈ AdForms ι ρ J χ)
@@ -289,7 +286,7 @@ theorem span_eq (P : ClassPres ι S σ ρ J χ) : Submodule.span ℂ (Set.range 
       intro c' hc l
       rw [hL, P.ext_rep]
       classical
-      simp [clsSingle, Pi.single_apply, hc, Ne.symm hc]
+      simp [clsSingle, Ne.symm hc]
     have hs : ∀ l, P.extL (clsSingle S c (S.bV l)) (P.y c) = P.coef (clsAvg S c (S.bV l)) := by
       intro l
       rw [hL, P.ext_rep]
@@ -313,8 +310,8 @@ theorem span_eq (P : ClassPres ι S σ ρ J χ) : Submodule.span ℂ (Set.range 
       rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hwt, one_smul]
     have hB : ∑ l, β c l • P.coef (clsAvg S c (S.bV l)) = ((S.wt c : ℂ))⁻¹ •
         ∑ g : S.Gam c, (χ (stabK ι (P.stabI c g)) : ℂ) • ρ (P.stabI c g : Γ) (∑ l, β c l • P.coef (S.bV l)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [P.coef_avg, map_sum, map_smul, Finset.smul_sum, smul_smul]
+
+      simp only [P.coef_avg, map_sum, map_smul, Finset.smul_sum, smul_smul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun g _ => Finset.sum_congr rfl fun l _ => ?_
       congr 1
@@ -405,7 +402,6 @@ theorem lift_independent_action_holds (ι : Γ →* G) (ρ : Γ →* Module.End 
     simp [mul_assoc]
   have e2 : χ ⟨((κ⁻¹ * κ' : Q) : G), hk⟩ = (ch κ)⁻¹ * ch κ' := by
     rw [← hch, ← map_inv, ← map_mul]
-    try rfl
   rw [e1, hm, e2, map_one]
   change _ = (((ch κ')⁻¹ : ℂˣ) : ℂ) • (((ch κ)⁻¹ * ch κ' : ℂˣ) : ℂ) • F (h * (κ : G))
   rw [smul_smul, ← Units.val_mul, mul_comm ((ch κ')⁻¹), mul_inv_cancel_right]
@@ -464,8 +460,8 @@ theorem adInner_smul_left (s : ℂ) (F F' : G → W) :
 
 theorem adInner_conj (F F' : G → W) :
     starRingEnd ℂ (adInner ι J y F F') = adInner ι J y F' F := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [adInner, map_sum, map_mul, map_inv₀, map_natCast, inner_conj_symm]
+
+  simp only [adInner, map_sum, map_mul, map_inv₀, map_natCast, inner_conj_symm]
 
 theorem re_natCast_inv_mul (n : ℕ) (z : ℂ) : (((n : ℂ))⁻¹ * z).re = ((n : ℝ))⁻¹ * z.re := by
   rw [← Complex.ofReal_natCast, ← Complex.ofReal_inv, Complex.re_ofReal_mul]

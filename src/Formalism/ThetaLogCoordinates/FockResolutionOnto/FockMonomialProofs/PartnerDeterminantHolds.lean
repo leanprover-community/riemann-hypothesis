@@ -1,10 +1,94 @@
 module
 
-public import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementA
-public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.SmithZp
+public import Formalism.ThetaLogCoordinates.FockResolutionOnto.ShiftLastLetterThresholds
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.SmithZp
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM
+public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.Style
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementA, Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.PartnerDeterminantHolds
+
+-- ===== clump member: Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementA =====
+-- clump-header: {"m": "Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementA", "h": "module\n\npublic import Formalism.ThetaLogCoordinates.FockResolutionOnto.ShiftLastLetterThresholds\npublic import Mathlib.Analysis.SpecialFunctions.Pow.Real\npublic import Mathlib.LinearAlgebra.Matrix.Determinant.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace Formalism.InvariantFactorPaths.L4
+
+open Formalism.GM.M MvPolynomial Finset
+
+def PartnerDet : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (Vs : Type) [AddCommGroup Vs] [Module ℚ_[p] Vs] [Module ℤ_[p] Vs]
+    [IsScalarTower ℤ_[p] ℚ_[p] Vs]
+    (be : Vs →ₗ[ℚ_[p]] Vs →ₗ[ℚ_[p]] ℚ_[p]) (k : ℕ) (g : Fin k → Vs) (D : ℝ),
+    LinearIndependent ℤ_[p] g →
+    (∀ u ∈ Submodule.span ℤ_[p] (Set.range g),
+      (∀ (a : ℤ_[p]) (x : Vs), x ∈ Submodule.span ℤ_[p] (Set.range g) → u = a • x → IsUnit a) →
+      ∃ u' ∈ Submodule.span ℤ_[p] (Set.range g), (p : ℝ) ^ (-D) ≤ ‖be u u'‖) →
+    (p : ℝ) ^ (-(D * k)) ≤ ‖(Matrix.of fun a b => be (g a) (g b)).det‖
+
+def GradedPieceBound : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (K r : ℕ) [NeZero r] (LLw : Letters (K + 1)) {q : ℕ} (J : Fin q → ℕ)
+    (M : Fin q → WithTop ℤ) (ρ : Fin r) (w : Fin r → ℤ) (e D c : ℕ) (κ : ℝ),
+    ProjAt p LLw J M ρ w e D → SatAt p LLw J M ρ w e c → ((D + 2 * c : ℕ) : ℝ) ≤ κ →
+    ∀ (k : ℕ) (g : Fin k → MvPolynomial (Fin (K + 1) × Fin r) ℚ_[p]),
+      LinearIndependent ℤ_[p] g → Submodule.span ℤ_[p] (Set.range g) = grLat p LLw J M ρ w (Fin.last K, ρ) e →
+      (p : ℝ) ^ (-(κ * k)) ≤
+        ‖(Matrix.of fun a b => fock p (g a) (g b) / ∏ i, ((LLw.deg i).factorial : ℚ_[p])).det‖
+
+end Formalism.InvariantFactorPaths.L4
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementA =====
+
+-- ===== clump member: Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.PartnerDeterminantHolds =====
+-- clump-header: {"m": "Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.PartnerDeterminantHolds", "h": "module\n\npublic import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementA\npublic import Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam\npublic import Formalism.MahlerMeasure.MahlerMeasureProofs.SmithZp\npublic import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM\npublic import Formalism.PolynomialDimension.MultinomialDepth.PartnerM\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 namespace Formalism.InvariantFactorPaths.L4
@@ -55,8 +139,8 @@ theorem partner_determinant_holds : PartnerDet := by
     have hWG : ∀ b, be u (g b) = dg i * V i b := by
       intro b
       have e1 : be u (g b) = ((W.map φ) * G) i b := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [Matrix.mul_apply, hu, map_sum, LinearMap.sum_apply]
+
+        rw [Matrix.mul_apply, hu, map_sum, LinearMap.sum_apply]
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hsm, map_smul, LinearMap.smul_apply, smul_eq_mul]; rfl
       have e2 : (W.map φ) * U = 1 := by
@@ -64,8 +148,8 @@ theorem partner_determinant_holds : PartnerDet := by
         exact Matrix.map_one φ (map_zero φ) (map_one φ)
       rw [e1, hGUV, ← Matrix.mul_assoc, ← Matrix.mul_assoc, e2, Matrix.one_mul, Matrix.diagonal_mul]
     have hval : be u (∑ b, c b • g b) = dg i * ((∑ b, c b * V' i b : ℤ_[p]) : ℚ_[p]) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, PadicInt.coe_sum, Finset.mul_sum]
+
+      rw [map_sum, PadicInt.coe_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun b _ => ?_
       rw [hsm, map_smul, smul_eq_mul, hWG b, PadicInt.coe_mul]
       show _ = dg i * ((c b : ℚ_[p]) * V i b)
@@ -150,13 +234,13 @@ theorem graded_piece_bound_holds : GradedPieceBound := by
   set u0 := a⁻¹ • u with hu0def
   have hu0I : u0 ∈ IntPol p (Fin (K + 1) × Fin r) := by
     refine Formalism.GM.TM.mem_intPol_of_norm _ fun m' => ?_
-    rw [hu0def, coeff_smul, smul_eq_mul, norm_mul, norm_inv, inv_mul_le_iff₀ han, mul_one]
+    rw [hu0def, MvPolynomial.coeff_smul, smul_eq_mul, norm_mul, norm_inv, inv_mul_le_iff₀ han, mul_one]
     by_cases hm' : m' ∈ u.support
     · exact hmax m' hm'
     · rw [notMem_support_iff.mp hm', norm_zero]; exact han.le
   have hu0X : u0 ∈ XX := XX.smul_mem _ (hGX u hu)
   have hu0c : ‖AddMonoidAlgebra.coeff u0 m‖ = 1 := by
-    rw [hu0def, coeff_smul, smul_eq_mul, ← ha, inv_mul_cancel₀ ha0, norm_one]
+    rw [hu0def, MvPolynomial.coeff_smul, smul_eq_mul, ← ha, inv_mul_cancel₀ ha0, norm_one]
   have huu0 : u = a • u0 := by rw [hu0def, smul_smul, mul_inv_cancel₀ ha0, one_smul]
   have hy : ((p : ℚ_[p]) ^ c) • u0 ∈ Gr := hSat u0 hu0X hu0I
   have hpc : ((p : ℚ_[p]) ^ c) ≠ 0 := pow_ne_zero _ hpQ
@@ -204,3 +288,6 @@ theorem graded_piece_bound_holds : GradedPieceBound := by
     gcongr
 
 end Formalism.InvariantFactorPaths.L4
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.PartnerDeterminantHolds =====

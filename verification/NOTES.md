@@ -15,7 +15,8 @@ The first commit of this repository, `40e56bab`, is the archive's `lean/` direct
 published. Later commits add `src/Challenge.lean`, `comparator.json`, `export-targets.txt`, the
 README, this folder, the CI workflow and, since
 [#7](https://github.com/leanprover-community/riemann-hypothesis/pull/7), the build cache in
-`scripts/`.
+`scripts/`. A second Comparator setup, in `comparator/`, is described
+[below](#formal-conjectures).
 
 Merged pull requests have since changed the submission's own files under `src/`, mainly by
 deleting files the proof does not use and by shortening proofs.
@@ -27,15 +28,15 @@ The manual `mirror` job in CI downloads the archive again, compares it with comm
 byte for byte, and prints that list. The sections below on size, the static scan and the build
 describe the original 175,187 files, not the current tree.
 
-`lakefile.toml` is the original with two additions:
+`lakefile.toml` started as the original with two additions:
 
 - three lines at the top, which set `platformIndependent = true` for the build cache;
 - a marked block at the end, which registers the `Challenge` library, the `cache` executable and
   the cache server.
 
-CI checks that the original file sits unchanged between the two. Neither addition makes Lake
-treat an existing build as out of date; that was tested on a small Lean `v4.33.1` project, not
-on this one.
+Later pull requests have changed the original part between them too, so the `mirror` job no
+longer compares it with the archive. Neither addition makes Lake treat an existing build as out
+of date; that was tested on a small Lean `v4.33.1` project, not on this one.
 
 The build cache is described in [CACHE.md](CACHE.md). The steps in the README's "Checking it" do
 not use it.
@@ -107,6 +108,264 @@ The statements were read by hand:
   the hypotheses exclude.
 - Every `1 / 2` is compared with `s.re`, so it is real division.
 - Dedekind zeta functions and other L-functions are not covered.
+
+## formal-conjectures
+
+The five statements above were written for this repository, after the announcement. The second
+Comparator setup, in [`comparator/`](../comparator/), judges the proof against
+statements written elsewhere and earlier:
+[`FormalConjectures/Millennium/RiemannHypothesis.lean`](https://github.com/google-deepmind/formal-conjectures/blob/d8d031d4998c78575159ccab9a7a9e95ce043883/FormalConjectures/Millennium/RiemannHypothesis.lean)
+in google-deepmind/formal-conjectures, at commit `d8d031d4` (2026-11-19). It follows
+[issue #34](https://github.com/leanprover-community/riemann-hypothesis/issues/34), which proved
+the equivalence used here against that commit.
+
+`comparator/` holds this setup: a challenge, a config, a list of export targets, and three
+files for the solution side. The first setup's files stay where `lake comparator` looks for
+them: `comparator.json` at the root, and `Challenge` as a library in `src/`.
+
+**The statements.**
+
+- `RiemannHypothesis.riemannHypothesis` is Mathlib's `RiemannHypothesis`, as our
+  `riemannHypothesis` is.
+- `GRH.generalized_riemann_hypothesis` says: for every modulus q ≥ 1, every primitive character
+  χ mod q and every s in ℂ, if L(χ, s) = 0 and s is not in `GRH.trivialZeros χ`, then
+  Re s = 1/2. The trivial zeros are −2(n+1) for q = 1, −2n−1 for odd χ, and −2n for even χ with
+  q ≠ 1, n ranging over ℕ.
+- On its face that is more than `PrimitiveDirichletLZerosOnLine`, which speaks only of
+  0 < Re s < 1: none of our three Dirichlet statements says anything about zeros with
+  Re s ≤ 0. The bridge below shows that nothing is lost.
+- The statement of the theorem has had the same text since it was added on 2025-11-06, and the
+  definition of `trivialZeros` since 2025-11-07; only its docstring changed after that. We
+  compared every commit that has touched the file.
+
+**Credit.** These statements are the work of the formal-conjectures authors, and what is copied
+from them here is under their Apache 2.0 license.
+
+| Date | Who | What, with the formal-conjectures pull request |
+|---|---|---|
+| 2025-11-06 | Salvatore Mercuri | wrote `GRH.trivialZeros`, `GRH.generalized_riemann_hypothesis`, the test that GRH for the character mod 1 is Mathlib's `RiemannHypothesis`, and the `Decidable` instances for odd and even characters ([#1176](https://github.com/google-deepmind/formal-conjectures/pull/1176)) |
+| 2025-11-07 | Salvatore Mercuri | corrected the sign in the odd case of `trivialZeros` ([#1184](https://github.com/google-deepmind/formal-conjectures/pull/1184)) |
+| 2026-01-15 | mirefek | corrected the docstring of `trivialZeros` ([#1677](https://github.com/google-deepmind/formal-conjectures/pull/1677)) |
+| 2026-03-01 | franzhusch | added `riemannHypothesis`, stated with Mathlib's `RiemannHypothesis` ([#2378](https://github.com/google-deepmind/formal-conjectures/pull/2378)) |
+| 2026-04-24 | Moritz Firsching | put it in the namespace `RiemannHypothesis` ([#3827](https://github.com/google-deepmind/formal-conjectures/pull/3827)) |
+
+Between and after these, Yaël Dillies, Moritz Firsching, Robert Joseph, Felix Pernegger and
+Sylvester Kaczmarek moved, restructured or extended the two files the declarations are in.
+
+**A copy, not an import.** Comparator needs the challenge and the solution to be built against
+the same Mathlib ([Limits](#limits)). When this setup was first written both projects were on
+Lean `v4.33.1` and Mathlib `0df444a360ea`, and the challenge was exported from a clean clone of
+formal-conjectures itself. [#66](https://github.com/leanprover-community/riemann-hypothesis/pull/66)
+then moved this project to Lean and Mathlib `v4.36.0`, and formal-conjectures stayed where it
+was. Its text does not compile on `v4.36.0` unchanged, either.
+
+So the challenge is now
+[`FormalConjecturesChallenge.lean`](../comparator/FormalConjecturesChallenge.lean), a copy that
+imports only Mathlib and is built against this project's pins. It differs from
+formal-conjectures' text at commit `d8d031d4` in three ways:
+
+- The instance has no name there. The name Lean generates for it there ends in
+  `_formalConjecturesForMathlib`, and the copy writes that name out, because Comparator matches
+  constants by name.
+- `trivialZeros` is marked `noncomputable`, which Lean `v4.36.0` requires. It does not change
+  the definition the kernel sees.
+- formal-conjectures' own `category` and `AMS` attributes are left out.
+
+Two declarations of those files are not copied, because the statements do not use them: the
+test `GRH.implies_riemannHypothesis` and the `Decidable` instance for even characters.
+
+Two things tie the copy to the original:
+
+- CI fetches the two formal-conjectures files at that commit and checks that each copied
+  declaration is their text, with those three differences and no others. It also checks that
+  the copy holds nothing else but comments, its import, and the `module`, `section` and
+  `namespace` lines: no `open`, no option, no declaration of its own.
+- Built on formal-conjectures' own pins, Lean `v4.33.1` and Mathlib `0df444a360ea`, the copy was
+  judged against the export of formal-conjectures' own file, which is 350,866,107 bytes with
+  sha256 `75aa4a26e43ba9ea2998ba28ebdec4d72c43b43944e6c333963c4cfeda08c2c1`. `lake comparator`
+  took that export as the challenge and the copy's as the solution, with `sorryAx` permitted,
+  since both prove by `sorry`. It accepts: the two statements and every constant they use are
+  the same. Without `sorryAx` permitted it rejects with that axiom and nothing else. This was
+  run once, on our machine. CI does not repeat it, because it means building 272 modules of
+  formal-conjectures.
+
+**What the solution has to copy.** Comparator compares, by name, every constant that the
+challenge's statements use. For `GRH.generalized_riemann_hypothesis` that is about 53,000
+constants, and three of them are not in Mathlib:
+
+| Constant | Where formal-conjectures defines it |
+|---|---|
+| `GRH.trivialZeros` | `FormalConjectures/Millennium/RiemannHypothesis.lean` |
+| `DirichletCharacter.instDecidablePredOddOfDecidableEq_formalConjecturesForMathlib` | `FormalConjecturesForMathlib/NumberTheory/DirichletCharacter/Basic.lean`; the `if χ.Odd` in `trivialZeros` uses it |
+| the same name with `._proof_1` | generated by Lean for the `by rfl` in that instance |
+
+The solution cannot import the challenge, which declares the theorems it has to prove. So
+[`FormalConjecturesStatement.lean`](../comparator/FormalConjecturesStatement.lean) repeats the
+first two, as the challenge has them. Both files are `module`s, as the upstream files are, and
+that matters: in a `module`, Lean states `_proof_1` as `ψ (-1) = -1 ↔ ψ.Odd`, and in an ordinary
+file as `ψ (-1) = -1 ↔ ψ (-1) = -1`. A first version of the copy was an ordinary file, and
+`lake comparator` rejected it:
+`Const does not match between challenge and target '…_formalConjecturesForMathlib._proof_1'`.
+
+**Where the solution states the theorem.** The solution must state the theorem as the challenge
+does. On its side the statement is written once, in the signature of
+`FormalConjecturesBridge.generalized_riemann_hypothesis_of_primitive`, and
+`FormalConjecturesSolution.lean` takes it from there with `type_of%`.
+
+- It is not written in `FormalConjecturesSolution.lean`, because that file imports the
+  submission. Lean would elaborate the statement with every instance of the submission in
+  scope, and one of those could be chosen in place of Mathlib's. Comparator would reject that,
+  but only after the build. `Statements.lean` is safe from this for the same reason the bridge
+  is: no proof of the submission is imported.
+- It is not a definition that the solution unfolds, either. The `2` in `1 / 2` carries a proof
+  of `Nat.AtLeastTwo 2`. In the body of a definition Lean moves that proof into a constant of
+  its own, and in the statement of a theorem it leaves it in place. `lake comparator` rejected
+  that version too:
+  `Challenge and solution theorem statement do not match: 'GRH.generalized_riemann_hypothesis'`.
+
+Nobody has to trust the solution's copies. Comparator rejects a solution in which the statement
+or any of the three constants differs from the challenge.
+
+**The bridge.**
+[`FormalConjecturesBridge.lean`](../comparator/FormalConjecturesBridge.lean) proves
+`PrimitiveDirichletLZerosOnLine ↔` formal-conjectures' GRH. It imports `Statements.lean` and
+Mathlib, and none of the submission's proofs.
+
+- Re s ≥ 1: `DirichletCharacter.LFunction_ne_zero_of_one_le_re`, and `riemannZeta_one_ne_zero`
+  for q = 1 and s = 1.
+- 0 < Re s < 1: the submission's statement.
+- Re s ≤ 0: χ⁻¹ is primitive too. The functional equation and L(χ⁻¹, 1 − s) ≠ 0 give
+  Λ(χ, s) ≠ 0, so L(χ, s) = 0 only at a pole of the Gamma factor, and those are the trivial
+  zeros. The root number is not needed.
+- The converse holds because the trivial zeros are integers ≤ 0.
+
+[`FormalConjecturesSolution.lean`](../comparator/FormalConjecturesSolution.lean) then
+proves the two theorems, under formal-conjectures' names, by applying the bridge to
+`LFunction_eq_zero_re_of_isPrimitive` and by `riemannHypothesis`, both from `Main.lean`.
+
+**No Lake library.** The files in `comparator/` are in no library of `lakefile.toml` and not
+under `src/`. The build cache is selected by the Git tree of `src/` and the bytes of
+`lakefile.toml` ([CACHE.md](CACHE.md)), so adding them there would leave `lake exe cache get`
+without a match until CI had rebuilt, and the CI build accepts no library outside `src/`. So
+this setup cannot use plain `lake comparator`, which has Lake build both modules. It compiles
+the files with `lake env lean`, into `.lake/comparator/`, and gives Comparator exports. The
+`[leanOptions]` of the lakefile do not apply to files compiled this way.
+
+**Checking it.** These steps go with the second route in the README, the one that exports the
+modules by hand, and use the same environment variables.
+
+```bash
+# in the clone where the submission has not been compiled
+mkdir -p .lake/comparator
+lake env lean --root=comparator \
+  -o .lake/comparator/FormalConjecturesChallenge.olean comparator/FormalConjecturesChallenge.lean
+LEAN_PATH="$PWD/.lake/comparator" lake env leanexport FormalConjecturesChallenge -- \
+  $(cat comparator/formal-conjectures-export-targets.txt) > fc-challenge.export
+
+# wherever you build the submission, after `lake build Main`
+mkdir -p .lake/comparator
+for m in FormalConjecturesStatement FormalConjecturesBridge FormalConjecturesSolution; do
+  LEAN_PATH="$PWD/.lake/comparator" lake env lean --root=comparator \
+    -o ".lake/comparator/$m.olean" "comparator/$m.lean"
+done
+LEAN_PATH="$PWD/.lake/comparator" lake env leanexport FormalConjecturesSolution -- \
+  $(cat comparator/formal-conjectures-export-targets.txt) > fc-solution.export
+
+# from an empty directory, with the same Lean release and the config from the first clone
+lake comparator --config formal-conjectures.json \
+  --challenge-from-export fc-challenge.export --solution-from-export fc-solution.export
+```
+
+The export of `FormalConjecturesSolution` contains the whole proof, as the export of `Main`
+does, plus the bridge. Making it and judging it cost what exporting and judging `Main` cost.
+
+**Rehearsal.** The real run needs the built submission. Without it, the steps above were run
+on Lean and Mathlib `v4.36.0` with a placeholder `Main.lean`, which states
+`riemannHypothesis` and `LFunction_eq_zero_re_of_isPrimitive` and proves them by `sorry`. This
+was on macOS, which has no bubblewrap, so with `--inadvisably-no-sandbox`.
+
+| Config | Verdict |
+|---|---|
+| `formal-conjectures.json` | rejected, with `Illegal axiom detected: 'sorryAx'` and nothing else |
+| the same, with `sorryAx` permitted | Lean paranoid, nanoda and Lean's kernel accept: `Your solution is okay!` |
+
+So the solution's statement and its three constants match the challenge's, and the kernels
+accept the bridge. The bridge and the solution needed no change for `v4.36.0`. `#print axioms`
+on the bridge's theorems gives `propext`, `Classical.choice` and `Quot.sound`. The challenge
+export is 356,115,533 bytes, with sha256
+`0977ecc3ea2a1abd7b9b3356a4643574dd65c3b4c8a98ca25b18f5629efe0218`, which CI checked until #185
+changed the pins (see below); the placeholder's solution export is 426,481,210 bytes.
+
+The `formal-conjectures` job in CI repeats the rehearsal. It runs when something it reads
+changes: `comparator/`, `src/Statements.lean`, the first setup's `src/Challenge.lean` and
+`export-targets.txt`, `lakefile.toml`, the two pins in `lake-manifest.json` and
+`lean-toolchain`, or the workflow itself. No other change can alter its result, so pull
+requests that touch only the proof, the scripts or the documentation do not run it. GitHub
+looks at the first 3,000 changed files only, so a larger pull request that changes one of these
+needs a manual run.
+
+The rehearsal does not compile `FormalConjecturesSolution.lean` against the real `Main.lean`.
+That needs the two theorems named above, which `Main.lean` has, and no declaration in the
+submission under a name the files here use. A text search of the 164,464 `.lean` files at commit
+`f1f6d654`, before #66, found no `GRH` or `RiemannHypothesis` namespace and none of the other
+names.
+
+**Frozen files.** Six files say what the proof is judged against: `src/Challenge.lean`,
+`comparator.json` and `export-targets.txt` for the first setup, and
+`FormalConjecturesChallenge.lean`, `formal-conjectures.json` and
+`formal-conjectures-export-targets.txt` in `comparator/` for this one. A pull request may not
+change them. `challenge-files.yml` compares each one where the pull request branched off and at
+its head, and fails if they differ. It runs the base branch's copy of the workflow and nothing
+from the pull request, so a pull request cannot switch it off. For that reason CI no longer
+builds `Challenge` on every push: with the file and the pins unchanged, what it states cannot
+change.
+
+The pins are not frozen. So the `formal-conjectures` job, which runs when a pin changes, also
+makes `challenge.export` the way the README makes it, and checks its checksum. On Lean and
+Mathlib `v4.36.0` that is sha256
+`ccaa35047adcb2b493ad0ca36abfdd02633b56f5afad009d027b4570ee0f2194`, first measured on our
+machine.
+
+#185 moved the pins to Lean `v4.37.0-rc1` and Mathlib `31ce06ea`, which changes both exports.
+CI now checks sha256 `bb37c4bb518fe68a13f12aa3929dd62dfecb663f0c063ad8c338e39601f28a60` for
+`challenge.export` and `d08f9a601253ac28f09d7a64f674fd4227e665d573eae437a582f41f0ecb262c` for
+`fc-challenge.export`. Both were computed by this job on the merge of #185
+([run 45130338483](https://github.com/leanprover-community/riemann-hypothesis/actions/runs/45130338483)),
+which failed because it still checked the `v4.36.0` values. They have not yet been reproduced
+outside CI.
+
+**On a real build, on the earlier pins.** Before #66, ishaan2006 ran the same steps against a
+build of the published archive on Lean `v4.33.1`, and reported the results on the pull request
+([first](https://github.com/leanprover-community/riemann-hypothesis/pull/88#issuecomment-7078205608),
+[second](https://github.com/leanprover-community/riemann-hypothesis/pull/88#issuecomment-7079766889),
+[script](https://github.com/ishaan2006/rh-lean-reproduction/blob/83b8c511b39f7b646fa4443a9d68b54369fa0b4a/scripts/12_formal_conjectures.sh)).
+The measurements are theirs, not ours. The challenge then was the export of formal-conjectures'
+own file, and the files were those of commit `c018a709`. Since then `trivialZeros` has gained
+`noncomputable` and the challenge has become the copy described above. The bridge is
+byte-identical, and the solution file differs only in a path in its module docstring. Nobody
+has repeated this on `v4.36.0`.
+
+- All three files compile against the real `Main.lean`, with warnings as errors. `#print axioms`
+  gives `propext`, `Classical.choice` and `Quot.sound` for both theorems.
+- On Linux (Debian 13, x86_64) the export of formal-conjectures' file is 350,866,107 bytes with
+  sha256 `75aa4a26e43ba9ea2998ba28ebdec4d72c43b43944e6c333963c4cfeda08c2c1`, as on macOS and as
+  in CI at the time.
+- The solution export is 61,570,614,651 bytes, sha256
+  `17719b54c91e0f5c3f89a1741fd074b5b86f15f26ac57b443ef965f4ccd72f70`, in 5,712 s.
+- `con-leche --compare` on the two exports exits 0, in 182 s on 94 cores:
+
+  ```
+  con-leche: accepted 51688 declarations, 2 axioms justified by the solution fc-solution.export (1468413 declarations accepted) (--verified)
+  con-leche: theorem RiemannHypothesis.riemannHypothesis justified by the solution
+  con-leche: theorem GRH.generalized_riemann_hypothesis justified by the solution
+  ```
+
+  This is con-leche's `compare` branch at `274f0138`, built with Lean `v4.36.0`. The con-leche
+  bundled with Lean `v4.36.0` cannot check this project ([Checkers](#checkers)).
+- `lake comparator` has not been run on this export, so Lean's kernel, Lean paranoid and nanoda
+  have not judged it.
+- On 94 cores, `lake exe cache get` in the formal-conjectures clone failed with
+  `No file descriptors available (os error 24)`. `ulimit -n 65536` beforehand fixed it.
 
 ## Dependencies
 
@@ -184,20 +443,24 @@ swapped inside the export was rejected by every kernel.
 ## Checkers
 
 `lake comparator --paranoid` adds five checkers to Lean's kernel: Lean paranoid, nanoda,
-con-leche, con-ron and lean4lean. Three of them cannot check this project, for reasons that
-have nothing to do with whether the proof is right, and `lake comparator` counts any non-zero
-exit from a checker as a rejection. So `comparator.json` names only Lean paranoid and nanoda.
+con-leche, con-ron and lean4lean. Three of them, as bundled with Lean `v4.36.0`, cannot check
+this project, for reasons that have nothing to do with whether the proof is right, and
+`lake comparator` counts any non-zero exit from a checker as a rejection. So the configs in
+`comparator/` name only Lean paranoid and nanoda.
 
-- **con-leche and con-ron** refuse a mutual inductive block that has a reflexive member. The
-  submission has one in the proof's dependencies:
+- **con-leche and con-ron**, as bundled with Lean `v4.36.0`, refuse a mutual inductive block
+  that has a reflexive member. The submission has one in the proof's dependencies:
   `FunctorialResolution.EmbeddedResolution.PrincipalizationCertificate`, declared mutually with
   `OrderCertificate`, has a constructor argument `hcert : ∀ z hz, PrincipalizationCertificate …`,
-  a function into the type being defined. An independent run (Andrew Sutherland, on the Lean Zulip) reports
-  that both exit 2 on the real export, in `--verified` and `--trusted` modes, with
+  a function into the type being defined. An independent run (Andrew Sutherland, on the Lean Zulip) reported
+  that both bundled binaries exit 2 on the real export, in `--verified` and `--trusted` modes, with
   `in-process model of …PrincipalizationCertificate: reflexive member`. We reproduced this on
   a small project with a mutual reflexive pair: both exit 2 with the same message, which makes
   `lake comparator` exit 1, while Lean's kernel, Lean paranoid and nanoda accept. They did
-  accept the Mathlib-sized smoke test above, and a non-mutual reflexive inductive.
+  accept the Mathlib-sized smoke test above, and a non-mutual reflexive inductive. Built from
+  `master` on GitHub, both accept the full export: Andrew Sutherland's page
+  (<https://math.mit.edu/~drew/grh/>) has con-leche `cd2eceab` accepting all 1,468,418
+  declarations in `--verified` mode, and con-ron `3f22699b` accepting them under `--compare`.
 - **lean4lean** from Lean 4.36 rejects every export made by Lean 4.33.1 with
   `unknown constant 'Decidable.intro'`, because 4.36 redefined `Decidable` in the core library.
 
@@ -240,7 +503,8 @@ on one thread.
   - The challenge export given to the judge is made in a new folder, created after the
     container has exited, from a fresh clone and a fresh download of Mathlib's official cache.
     A build that altered the compiled Mathlib in its own folder cannot change what the
-    challenge means. CI's `challenge-export` artifact is a second, independent copy.
+    challenge means. The files it is made from are frozen in CI
+    ([formal-conjectures](#formal-conjectures)).
   - The exporter and the other tools in the work directory are rebuilt after the build.
   - Every compiled dependency file in the build folder is compared with a clean official copy.
     A first comparison during the build found all 121,742 files identical.

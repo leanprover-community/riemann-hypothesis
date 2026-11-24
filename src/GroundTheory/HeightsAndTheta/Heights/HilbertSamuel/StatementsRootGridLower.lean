@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Degrees
+public import Mathlib.Analysis.Complex.Norm
 
 @[expose] public section
 

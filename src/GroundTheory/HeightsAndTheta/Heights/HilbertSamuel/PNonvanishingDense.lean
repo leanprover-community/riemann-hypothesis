@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNonvanishingDense
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRatPrimeDense
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

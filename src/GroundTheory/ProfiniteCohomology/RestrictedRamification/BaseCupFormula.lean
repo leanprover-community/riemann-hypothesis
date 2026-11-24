@@ -1,11 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseLocal
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MkFiniteEmbeddingGlobalUniformizer
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupKummer
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummer
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupGlob
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFormal
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupNat
 
 @[expose] public section
 

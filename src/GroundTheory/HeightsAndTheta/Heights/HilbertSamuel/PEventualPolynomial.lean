@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEventualPolynomial
+public import Mathlib.Algebra.Group.ForwardDiff
+public import Mathlib.RingTheory.Polynomial.Pochhammer
 
 @[expose] public section
 
@@ -103,8 +104,8 @@ theorem newton (c : ℕ) (s : Finset K) : ∀ (n : ℕ) (g : (K → ℕ) → ℚ
       have h2 := hPdeg j
       omega
     · intro x y hxy
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul]
+
+      simp only [map_sum, map_mul]
       refine sum_congr rfl fun j _ => ?_
       rw [hPloc j x y fun i hi => hxy i (mem_insert_of_mem hi)]
       congr 1
@@ -135,8 +136,8 @@ theorem newton (c : ℕ) (s : Finset K) : ∀ (n : ℕ) (g : (K → ℕ) → ℚ
         simp
       have e2 : eval (fun i => (t i : ℚ) + c) (∑ j ∈ range (n + 1), binomPoly c k j * P j)
           = ∑ j ∈ range (n + t k + 1), ((t k).choose j : ℚ) * (Δ_[(Pi.single k 1 : K → ℕ)])^[j] g y := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         refine Eq.trans ?_ (sum_subset (s₁ := range (n + 1)) (fun j hj => by rw [mem_range] at hj ⊢; omega) fun j _ hj => ?_)
         · refine sum_congr rfl fun j _ => ?_
           rw [map_mul, eval_binomPoly c k j _ (t k) rfl, hPval j y hys,

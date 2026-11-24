@@ -1,9 +1,12 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.MeasInvStatementPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPfC
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.DivStartPf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExtFStatementPfB
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPfB
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.MeasInvStatementPf
 
 @[expose] public section
 
@@ -239,8 +242,7 @@ namespace ReciprocityTheory.ChartRestriction.G.AR.Up
 
 open NumberField
 
-theorem FundSetMeasStatement_holds {E : Type} [Field E] [NumberField E] [IsCMField E] :
-    FundSetMeasStatement (E := E) := FSM.fundSetMeasStatement_of_isCMField
+alias FundSetMeasStatement_holds := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.FSM.fundSetMeasStatement_of_isCMField
 
 theorem DivStartStatement_holds {E : Type} [Field E] [NumberField E] [IsCMField E] :
     DivStartStatement (E := E) := DivSt.divStart_of FundSetMeasStatement_holds

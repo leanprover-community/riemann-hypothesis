@@ -2,6 +2,7 @@ module
 
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FamilyLeCoords
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

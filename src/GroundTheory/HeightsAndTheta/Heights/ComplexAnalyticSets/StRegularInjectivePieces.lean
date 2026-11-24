@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamChartInt
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.NumberTheory.Height.NumberField
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 
 @[expose] public section
 

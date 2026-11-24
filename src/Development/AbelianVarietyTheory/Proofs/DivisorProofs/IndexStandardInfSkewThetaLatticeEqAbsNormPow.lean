@@ -1,9 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVecEq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PtHomInjective
+public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmThetaLatticePointMemThetaLatticeOfAdelic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardLatticeQuotIdeal
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVecEq
 
 @[expose] public section
 
@@ -33,7 +76,7 @@ theorem one_inf_div {E : Type} [Field E] [NumberField E] (𝔪 𝔫 : Ideal (�
     have hs : 𝔪 ⊔ 𝔫 = ⊤ := Ideal.isCoprime_iff_sup_eq.1 hc
     calc I = I * (𝔪 ⊔ 𝔫) := by rw [hs, Ideal.mul_top]
       _ = I * 𝔪 ⊔ I * 𝔫 := Ideal.mul_sup _ _ _
-      _ ≤ 𝔪 := sup_le (by first | exact Ideal.mul_le_right | exact Ideal.mul_le_left) h2
+      _ ≤ 𝔪 := sup_le (by first | exact Ideal.mul_le_right) h2
   · refine le_inf FractionalIdeal.coeIdeal_le_one ?_
     rw [FractionalIdeal.le_div_iff_mul_le h𝔫']
     calc (𝔪 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) * 𝔫 ≤ 𝔪 * 1 := mul_le_mul' le_rfl FractionalIdeal.coeIdeal_le_one
@@ -80,7 +123,7 @@ theorem mem_YYl_skew_iff (𝔪 : Ideal (𝓞 D.host.E)) (a d : ℕ) (x : Matrix 
             intro k
             by_cases hk : k = j
             · subst hk; simp [Submodule.one_eq_range]
-            · simp [Pi.single_apply, hk]
+            · simp [hk]
           have h := (mem_skewLat_iff D 𝔪 d _).1 (hA _ hj) i
           simpa [Matrix.mulVec_single] using h
         | zero => intro i j; simp
@@ -113,7 +156,7 @@ theorem mem_YYl_skew_iff (𝔪 : Ideal (𝓞 D.host.E)) (a d : ℕ) (x : Matrix 
           rw [← ho, mul_comm, ← Algebra.smul_def]
           exact Submodule.smul_mem _ o hn
         · have hk' : i ≠ k := Ne.symm hk
-          simp [Matrix.mulVec, dotProduct, Matrix.single_apply, hk']
+          simp [Matrix.mulVec, dotProduct, hk']
       · rw [Matrix.smul_single, smul_eq_mul]
     · intro x y hx hy
       simpa [Matrix.single_add] using add_mem hx hy

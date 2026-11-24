@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitaryGroupFiniteVolume
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SiegelDensitiesOfHermitianFormStatement
+public import Formalism.UnipotentAdelicQuotients.SiegelWeilUnitaryConvergent
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SiegelDensitiesOfHermitianForm
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitaryGroupFiniteVolume
 
 @[expose] public section
 
@@ -14,6 +13,6 @@ namespace GlobalTheory.CompanionTheory.SW
 
 theorem siegelWeilUnitaryConvergent : HeckeCharacterZeroLocus.SiegelWeilU.SiegelWeilUnitaryConvergent :=
   fun F E _ _ _ _ _ σ hσ M J hJ =>
-    ⟨finVol_unitaryGroup F E σ hσ M J hJ, GlobalTheory.T.siegel_densities_of_hermitian_form F E σ hσ M J hJ⟩
+    ⟨finVol_unitaryGroup F E σ hσ M J hJ, _root_.GlobalTheory.CompanionTheory.SW.TopDens.siegelDensities F E σ hσ M J hJ⟩
 
 end GlobalTheory.CompanionTheory.SW

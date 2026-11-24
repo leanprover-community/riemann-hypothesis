@@ -38,7 +38,7 @@ theorem castMt_castMtInv (D : D7) {j : ℕ} {w : D.what₂.places.Pl} {i : D.nd.
   exact cast_cast _ _ y
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure NLocBase (D : D7) (M : MtFam D) where
 
   Oc : ℕ → D.what₂.places.Pl → Type
@@ -96,7 +96,7 @@ abbrev heckeAlg {D : D7} {M : MtFam D} (B : NLocBase D M) (j : ℕ) (w : D.what�
   Algebra.adjoin (B.Oc j w) (heckeGens B j w)
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure NormalizedLocalCompatibility (D : D7) (M : MtFam D) where
   B : NLocBase D M
 

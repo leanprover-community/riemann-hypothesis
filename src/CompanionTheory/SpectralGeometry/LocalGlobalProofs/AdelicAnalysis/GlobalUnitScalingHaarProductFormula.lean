@@ -1,9 +1,16 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+public import GroundTheory.GlobalFields.LocalAtPlace
+public import GroundTheory.GlobalFields.LocalFieldAtPlace
+public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianType.BoxMulA
+public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import GroundTheory.GlobalFields.TateThesis.AdeleMeasurable
+public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
 
 @[expose] public section
 

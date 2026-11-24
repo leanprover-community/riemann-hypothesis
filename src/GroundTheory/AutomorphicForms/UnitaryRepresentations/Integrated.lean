@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.UnitaryRepresentations.IsInvariantIffCommuteStarProjection
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Topology.ContinuousMap.CompactlySupported
+public import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Group.Integral
 
 @[expose] public section
 

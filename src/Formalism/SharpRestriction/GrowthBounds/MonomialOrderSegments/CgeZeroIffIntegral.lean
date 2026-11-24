@@ -1,6 +1,54 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.MemPolKIff
+public import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 
 @[expose] public section
 
@@ -19,8 +67,7 @@ private lemma map_ratCast_le_map_ratCast_iff {u w : WithTop ℚ} :
 private lemma vR_le_vR_iff {x y : K} : vR v x ≤ vR v y ↔ v x ≤ v y := map_ratCast_le_map_ratCast_iff
 
 theorem vge_zero (a : ℝ) : vge v a (0 : K) := by
-  unfold vge vR
-  simp
+  simp [vge, vR]
 
 theorem vge_mono {a b : ℝ} {x : K} (h : b ≤ a) (hx : vge v a x) : vge v b x := by
   unfold vge at *
@@ -39,8 +86,7 @@ theorem vge_zero_iff (x : K) : vge v 0 x ↔ 0 ≤ v x := by
   cases h : v x <;> simp
 
 theorem vge_natCast_bound (c : ℕ) (x : K) : vge v (c : ℝ) x ↔ ((c : ℕ) : WithTop ℚ) ≤ v x := by
-  have := vge_rat_iff v (c : ℚ) x
-  simpa using this
+  simpa using vge_rat_iff v (c : ℚ) x
 
 theorem vge_add {a : ℝ} {x y : K} (hx : vge v a x) (hy : vge v a y) : vge v a (x + y) := by
   unfold vge at *
@@ -56,8 +102,7 @@ theorem vge_neg {a : ℝ} {x : K} (hx : vge v a x) : vge v a (-x) := by
   rwa [AddValuation.map_neg]
 
 theorem vge_sub {a : ℝ} {x y : K} (hx : vge v a x) (hy : vge v a y) : vge v a (x - y) := by
-  rw [sub_eq_add_neg]
-  exact vge_add v hx (vge_neg v hy)
+  simpa [sub_eq_add_neg] using vge_add v hx (vge_neg v hy)
 
 theorem vge_sum {ι : Type*} {a : ℝ} (s : Finset ι) (f : ι → K) (h : ∀ i ∈ s, vge v a (f i)) :
     vge v a (∑ i ∈ s, f i) := Finset.sum_induction f (vge v a) (fun _ _ => vge_add v) (vge_zero v a) h
@@ -65,12 +110,8 @@ theorem vge_sum {ι : Type*} {a : ℝ} (s : Finset ι) (f : ι → K) (h : ∀ i
 theorem vR_mul (x y : K) : vR v (x * y) = vR v x + vR v y := by
   unfold vR
   rw [AddValuation.map_mul]
-  cases h1 : v x <;> cases h2 : v y
-  · simp
-  · simp
-  · simp
-  · rw [← WithTop.coe_add, WithTop.map_coe, WithTop.map_coe, WithTop.map_coe, Rat.cast_add,
-      WithTop.coe_add]
+  cases h1 : v x <;> cases h2 : v y <;> simp
+  rw [← WithTop.coe_add, WithTop.map_coe, Rat.cast_add, WithTop.coe_add]
 
 theorem vge_mul {a b : ℝ} {x y : K} (hx : vge v a x) (hy : vge v b y) : vge v (a + b) (x * y) := by
   unfold vge at *
@@ -83,8 +124,7 @@ theorem vle_mul {a b : ℝ} {x y : K} (hx : vle v a x) (hy : vle v b y) : vle v 
   exact add_le_add hx hy
 
 theorem vge_one : vge v 0 (1 : K) := by
-  unfold vge vR
-  simp
+  simp [vge, vR]
 
 theorem vle_add_of_lt {a b : ℝ} {x y : K} (hx : vle v a x) (hy : vge v b y) (hab : a < b) :
     vle v a (x + y) := by
@@ -101,8 +141,7 @@ theorem vle_add_of_lt {a b : ℝ} {x y : K} (hx : vle v a x) (hy : vge v b y) (h
 
 theorem cge_zero {σ : Type} (a : ℝ) : cge v a (0 : MvPolynomial σ K) := by
   intro α
-  rw [MvPolynomial.coeff_zero]
-  exact vge_zero v a
+  simpa [MvPolynomial.coeff_zero] using vge_zero v a
 
 theorem cge_mono {σ : Type} {a b : ℝ} {F : MvPolynomial σ K} (h : b ≤ a) (hF : cge v a F) :
     cge v b F := fun α => vge_mono v h (hF α)
@@ -110,20 +149,17 @@ theorem cge_mono {σ : Type} {a b : ℝ} {F : MvPolynomial σ K} (h : b ≤ a) (
 theorem cge_add {σ : Type} {a : ℝ} {F G : MvPolynomial σ K} (hF : cge v a F) (hG : cge v a G) :
     cge v a (F + G) := by
   intro α
-  rw [MvPolynomial.coeff_add]
-  exact vge_add v (hF α) (hG α)
+  simpa [MvPolynomial.coeff_add] using vge_add v (hF α) (hG α)
 
 theorem cge_sum {σ ι : Type} {a : ℝ} (s : Finset ι) (f : ι → MvPolynomial σ K)
     (h : ∀ i ∈ s, cge v a (f i)) : cge v a (∑ i ∈ s, f i) := by
   intro α
-  rw [MvPolynomial.coeff_sum]
-  exact vge_sum v s _ fun i hi => h i hi α
+  simpa [MvPolynomial.coeff_sum] using vge_sum v s _ fun i hi => h i hi α
 
 theorem cge_smul {σ : Type} {a b : ℝ} {c : K} {F : MvPolynomial σ K} (hc : vge v a c)
     (hF : cge v b F) : cge v (a + b) (c • F) := by
   intro α
-  rw [MvPolynomial.coeff_smul, smul_eq_mul]
-  exact vge_mul v hc (hF α)
+  simpa [MvPolynomial.coeff_smul, smul_eq_mul] using vge_mul v hc (hF α)
 
 theorem cge_monomial {σ : Type} {a : ℝ} {c : K} (α : σ →₀ ℕ) (hc : vge v a c) :
     cge v a (monomial α c) := by
@@ -136,26 +172,10 @@ theorem cge_monomial {σ : Type} {a : ℝ} {c : K} (α : σ →₀ ℕ) (hc : vg
 
 theorem cge_zero_iff_Integral {σ : Type} (F : MvPolynomial σ K) : cge v 0 F ↔ Integral v F := forall_congr' fun α => vge_zero_iff v _
 
-private lemma coeff_dg_eq_mul_coeff {σ : Type} (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K) (β : σ →₀ ℕ) :
-    (dg f F).coeff β = f β * F.coeff β := by
-  classical
-  induction F using MvPolynomial.induction_on' with
-  | monomial α c =>
-    have e : monomial α c = c • (basisMonomials σ K) α := by
-      rw [coe_basisMonomials, smul_monomial, smul_eq_mul, mul_one]
-    unfold dg
-    rw [e, map_smul, Module.Basis.constr_basis, coe_basisMonomials]
-    simp only [coeff_smul, coeff_monomial, smul_eq_mul]
-    split_ifs with h
-    · subst h
-      ring
-    · simp
-  | add F G hF hG => rw [map_add (f := _), MvPolynomial.coeff_add, MvPolynomial.coeff_add, hF, hG, mul_add]
-
 theorem cge_dg {σ : Type} {a b : ℝ} {f : (σ →₀ ℕ) → K} {F : MvPolynomial σ K}
     (hf : ∀ α, vge v a (f α)) (hF : cge v b F) : cge v (a + b) (dg f F) := by
   intro β
-  rw [coeff_dg_eq_mul_coeff]
+  rw [_root_.Formalism.MainNotions.PlaneGram.coeff_dg]
   exact vge_mul v (hf β) (hF β)
 
 theorem cge_mul {σ : Type} {a b : ℝ} {F G : MvPolynomial σ K} (hF : cge v a F) (hG : cge v b G) :
@@ -293,8 +313,7 @@ theorem vN_prod (hD : DVRHyp v p) {ι : Type*} (s : Finset ι) (f : ι → ℕ) 
       ih fun j hj => hf j (by simp [hj])]
 
 theorem vge_p_pow (hD : DVRHyp v p) (n : ℕ) : vge v (n : ℝ) ((p : K) ^ n) := by
-  have := (vge_rat_iff v (n : ℚ) ((p : K) ^ n)).mpr (le_of_eq (v_p_pow hD n).symm)
-  simpa using this
+  simpa using (vge_rat_iff v (n : ℚ) ((p : K) ^ n)).mpr (le_of_eq (v_p_pow hD n).symm)
 
 theorem vle_p_pow (hD : DVRHyp v p) (n : ℕ) : vle v (n : ℝ) ((p : K) ^ n) := by
   unfold vle vR

@@ -1,12 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsChartMember
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpanEqTopOfFunctionals
+public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ValuationThetaRatioEqBilinear
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UnivIdentity
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfMemChart
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ForallGeometricallyIntegralOfSmoothOfGeometrical
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SecMInvariantEqBotOrUnivAtGeometricPoint
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SymmetricLiftOddOrderExistsUnique
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaCoordinatesExistUniqueSeparatePoints
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDominantToUnitLeft
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaCoordinatesExistUniqueSeparatePoints
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabComp
+import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsThetaPtOverOfSubsingleton
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFrameRatio
+import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.ExistsGeneratorOfIsField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -252,7 +300,6 @@ theorem kap_rel {N : ℕ} {κ : LB.Gen (kapLB D (𝟙 D.P.A ^ N) (N ^ 2) 1)} (h�
       push_cast
       module)
     (fun y J hJ => by
-      beta_reduce
       rw [comp_id_pow, comp_id_pow, one_pow, one_pow, Category.comp_id, normd_one hκ hJ, normd_one hκ' hJ]
       simp) T b z J hJ
   beta_reduce at key
@@ -326,7 +373,6 @@ theorem exists_psi [IsLocalRing V] [IsNoetherianRing V] [IsIntegrallyClosed V] {
       val Ψ (1 : T ⟶ D.P.A).left z J = (gm T.hom z ⊤ a * val t T.hom z J) ^ N := fun T z J hJ => by
     have C : IsCub (cubV D.cub (T := T) z J) := isCub_cubV D.cub hJ
     rw [vΨ T 1 z J hJ]
-    beta_reduce
     rw [Over.w, Category.comp_id, Finset.prod_eq_one fun i _ => C.face _ _, _root_.one_mul]
   refine ⟨Ψ, hΨ, fun κ hκ T z J hJ => ?_, fun χ z J hJ => ?_⟩
   · obtain ⟨x, hx⟩ := grep_const hL (B := 𝟙_ (Over (Sp V))) (𝟙 _) (Category.id_comp _) (fun a => ⟨a, rfl⟩)
@@ -354,7 +400,6 @@ theorem exists_psi [IsLocalRing V] [IsNoetherianRing V] [IsIntegrallyClosed V] {
   · have d := Frames.charVal_nsmul g χ hJ N
     rw [hgN, zero_val χ hJ, _root_.one_mul] at d
     rw [vΨ _ _ z J hJ, mul_pow (val (g.s χ) _ z J), ha z J hJ]
-    beta_reduce
     rw [Over.w]
     refine congrArg₂ (· * ·) (Eq.trans (Finset.prod_congr rfl fun i _ => ?_) d) rfl
     rw [Category.comp_id, MonObj.comp_pow, ← Category.assoc, comp_toUnit, ← hgb]
@@ -385,7 +430,7 @@ theorem exists_vals [IsLocalRing V] {θ : Th D.P} (hθ : GenAll D.P θ) (N : ℕ
           h ((D.c χ).left ≫ ((toUnit D.P.A ≫ b c) * 𝟙 D.P.A).left) ^ (-(N : ℤ)) * _ = _
         rw [comp_transl, Category.comp_id, Category.id_comp, toUnit_unit, Category.id_comp]
         apply Additive.ofMul.injective
-        simp only [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow, ofMul_one, ← natCast_zsmul]
+        simp only [ofMul_mul, ofMul_zpow, ofMul_pow, ← natCast_zsmul]
         module)
     obtain ⟨s', hs'⟩ := exists_powSec hL θ (b c * D.c χ).left N u hu (K' := PEmpty) PEmpty.elim PEmpty.elim
       (fun U _ f => by simp)
@@ -421,7 +466,7 @@ theorem exists_vals [IsLocalRing V] {θ : Th D.P} (hθ : GenAll D.P θ) (N : ℕ
       show (_ ^ (((1 : ℕ) : ℤ) - 1) * _ ^ (1 : ℤ) * _ ^ (-1 : ℤ) * _ ^ (1 : ℤ)) ^ 1 *
         (h (toUnit (T₁ ⊗ D.P.A) ≫ D.c χ).left ^ (1 : ℤ) * h (1 : T₁ ⊗ D.P.A ⟶ D.P.A).left ^ (-1 : ℤ)) = _
       apply Additive.ofMul.injective
-      simp only [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow, ofMul_one]
+      simp only [ofMul_mul, ofMul_zpow, ofMul_pow]
       module)
   obtain ⟨lam, hlam⟩ := hθ (FractionRing V) T₁.hom t
   obtain ⟨z⟩ := exists_pt (R := V) (F := FractionRing V)

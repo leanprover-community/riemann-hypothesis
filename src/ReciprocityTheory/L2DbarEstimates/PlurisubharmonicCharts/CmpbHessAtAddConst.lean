@@ -1,9 +1,58 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.DetUpdateColEq
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.CmpaCHessComp
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDerivNonposOfIsLocalMax
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.CommFderivApply
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.Matrix.Hermitian
 
 @[expose] public section
 
@@ -22,9 +71,6 @@ private theorem contDiffAt_ofReal_comp' {f : V n → ℝ} {x : V n} {m : WithTop
     ContDiffAt ℝ m (fun v => ((f v : ℝ) : ℂ)) x := by
   first
   | exact Complex.ofRealCLM.contDiff.contDiffAt.comp x hf
-  | exact (Complex.ofRealCLM.contDiff.contDiffAt.comp x hf).congr_of_eventuallyEq
-      (Filter.Eventually.of_forall fun v => by simp)
-  | fun_prop
 
 private theorem fderiv_wdb_apply_of_hasFDerivAt_flip {g : V n → ℂ} {x : V n} (k : Fin n)
     (hlin : ∀ v : V n, HasFDerivAt (fun y => fderiv ℝ g y v) ((fderiv ℝ (fderiv ℝ g) x).flip v) x)
@@ -42,7 +88,6 @@ private theorem fderiv_wdb_apply_of_hasFDerivAt_flip {g : V n → ℂ} {x : V n}
   first
   | rw [(show HasFDerivAt (𝕜 := ℝ) (fun y => (fderiv ℝ g y (bas n k) +
       Complex.I * fderiv ℝ g y (Complex.I • bas n k)) * (2 : ℂ)⁻¹) _ x from h3).fderiv]
-  | erw [h3.fderiv]
   simp [div_eq_mul_inv]
   try ring
 
@@ -52,13 +97,11 @@ theorem cmpb_det_nonneg {f : V n → ℝ} {x : V n} (hf : ContDiffAt ℝ 2 f x)
   set g : V n → ℂ := fun v => ((f v : ℝ) : ℂ) with hgeq
   have hg2 : ContDiffAt ℝ 2 g x := contDiffAt_ofReal_comp' hf
   have hD : DifferentiableAt ℝ (fderiv ℝ g) x :=
-    (hg2.fderiv_right (m := 1) (by first | exact one_add_one_eq_two.le | norm_num)).differentiableAt (by first | exact one_ne_zero | exact le_rfl)
+    (hg2.fderiv_right (m := 1) (by first | exact one_add_one_eq_two.le)).differentiableAt (by first | exact one_ne_zero)
   have hsym : ∀ u v : V n, fderiv ℝ (fderiv ℝ g) x u v = fderiv ℝ (fderiv ℝ g) x v u := by
     have hs : IsSymmSndFDerivAt ℝ g x := by
       first
       | exact hg2.isSymmSndFDerivAt (by simp [minSmoothness_of_isRCLikeNormedField])
-      | exact hg2.isSymmSndFDerivAt (by simp [minSmoothness])
-      | exact hg2.isSymmSndFDerivAt le_rfl
     exact fun u v => hs u v
   have hlin : ∀ v : V n, HasFDerivAt (fun y => fderiv ℝ g y v)
       ((fderiv ℝ (fderiv ℝ g) x).flip v) x := by
@@ -66,7 +109,6 @@ theorem cmpb_det_nonneg {f : V n → ℝ} {x : V n} (hf : ContDiffAt ℝ 2 f x)
     have h := hD.hasFDerivAt.clm_apply (hasFDerivAt_const v x)
     first
     | simpa using h
-    | (convert h using 1; simp)
   have hval : ∀ u v : V n, fderiv ℝ (fun y => fderiv ℝ g y v) x u = fderiv ℝ (fderiv ℝ g) x u v := by
     intro u v
     rw [(hlin v).fderiv, ContinuousLinearMap.flip_apply]
@@ -124,14 +166,11 @@ theorem cmpb_det_nonneg {f : V n → ℝ} {x : V n} (hf : ContDiffAt ℝ 2 f x)
     have him : (dotProduct (star v) (Matrix.mulVec (cHess n g x) v)).im = 0 := by
       first
       | simpa using hHerm.im_star_dotProduct_mulVec_self v
-      | exact hHerm.im_star_dotProduct_mulVec_self v
     have hre : 0 ≤ (dotProduct (star v) (Matrix.mulVec (cHess n g x) v)).re := by
       rw [hq v]; exact hL (star v)
     exact Complex.le_def.2 ⟨by simpa using hre, by simpa using him.symm⟩
   have hPSD : (cHess n g x).PosSemidef := by
     first
-    | exact ⟨hHerm, hnn⟩
-    | exact ⟨hHerm, fun v => hnn v⟩
     | refine ⟨hHerm, fun v => ?_⟩
       have h := hnn ⇑v
       convert h using 1
@@ -152,7 +191,6 @@ theorem cmpb_cHess_congr {g₁ g₂ : V n → ℂ} {x : V n} (h : g₁ =ᶠ[𝓝
     have hn : ∀ᶠ y in 𝓝 x, g₁ =ᶠ[𝓝 y] g₂ := by
       first
       | exact h.eventuallyEq_nhds
-      | exact h.eventually_nhds
     filter_upwards [hn] with y hy
     simp only [wdb, hy.fderiv_eq]
   ext j k

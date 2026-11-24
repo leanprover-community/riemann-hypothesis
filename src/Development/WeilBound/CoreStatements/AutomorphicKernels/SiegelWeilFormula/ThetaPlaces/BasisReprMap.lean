@@ -1,6 +1,48 @@
 module
 
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaPlaces.RelReal
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,7 +63,7 @@ theorem basis_repr_map' {J : Type} (b : Module.Basis J k B) (ρ : R →ₐ[k] S)
       ρ ((Algebra.TensorProduct.basis R b).repr x i) := by
   induction x using TensorProduct.induction_on with
   | zero => simp
-  | tmul a m => simp [Algebra.TensorProduct.basis_repr_tmul, Algebra.smul_def]
+  | tmul a m => simp [Algebra.TensorProduct.basis_repr_tmul]
   | add x y hx hy => simp [hx, hy]
 
 end Repr
@@ -59,8 +101,8 @@ theorem ev_int_F (f : F) :
 theorem intV_sum (bs : Module.Basis (Fin 2) F E) (v : HeightOneSpectrum (𝓞 F)) {ι : Type} (s : Finset ι)
     (z : ι → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) (h : ∀ i ∈ s, IntV bs v (z i)) : IntV bs v (∑ i ∈ s, z i) := by
   intro k
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply]
+
+  rw [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply]
   exact sum_mem fun i hi => h i hi k
 
 theorem ev_mul_int (bs : Module.Basis (Fin 2) F E) (c : HeckeCharacterZeroLocus.SiegelWeilU.AF F ⊗[F] E) :
@@ -84,10 +126,10 @@ theorem ev_mul_int (bs : Module.Basis (Fin 2) F E) (c : HeckeCharacterZeroLocus.
     rw [hc]
     conv_lhs => rw [hzz]
     rw [Finset.sum_mul_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [smul_mul_smul_comm, map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
-      smul_eq_mul, bV, Algebra.TensorProduct.basis_apply, Algebra.TensorProduct.tmul_mul_tmul, mul_one,
-      Algebra.TensorProduct.basis_repr_tmul, Finsupp.mapRange_apply, one_smul]
+
+    simp only [smul_mul_smul_comm, map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
+    smul_eq_mul, bV, Algebra.TensorProduct.basis_apply, Algebra.TensorProduct.tmul_mul_tmul, mul_one,
+    Algebra.TensorProduct.basis_repr_tmul, Finsupp.mapRange_apply, one_smul]
   rw [hprod]
   exact sum_mem fun k _ => sum_mem fun j _ => mul_mem (mul_mem (hv1 k) (hz j)) (hv2 k j l)
 

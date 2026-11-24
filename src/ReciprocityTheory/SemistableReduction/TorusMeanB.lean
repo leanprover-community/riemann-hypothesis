@@ -2,6 +2,9 @@ module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
 public import ReciprocityTheory.SemistableReduction.TorusMeanA
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 
@@ -24,10 +27,6 @@ def tmUpd (i : ι) : (ι → ℝ) × ℝ → (ι → ℝ) := fun p => update p.1
 lemma measurable_tmUpd (i : ι) : Measurable (tmUpd i) := by
   first
   | exact measurable_update' (a := i)
-  | exact measurable_pi_iff.mpr fun j => by
-      by_cases h : j = i
-      · subst h; simpa [tmUpd] using measurable_snd
-      · simpa [tmUpd, Function.update_of_ne h] using (measurable_pi_apply j).comp measurable_fst
 
 lemma tmUpd_preimage_pi (i : ι) (s : ι → Set ℝ) :
     tmUpd i ⁻¹' (Set.univ.pi s) = (Set.univ.pi (update s i Set.univ)) ×ˢ s i := by
@@ -85,18 +84,18 @@ def tmSlice (i : ι) (x : ι → ℂ) (f : MvPolynomial ι ℂ) : Polynomial ℂ
 
 lemma tmSlice_coeff (i : ι) (x : ι → ℂ) (f : MvPolynomial ι ℂ) (k : ℕ) :
     (tmSlice i x f).coeff k = MvPolynomial.eval x (coeffIn i k f) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [tmSlice, coeffIn, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial_apply, map_sum,
-    Finset.sum_filter]
+
+  simp only [tmSlice, coeffIn, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial_apply, map_sum,
+  Finset.sum_filter]
   refine Finset.sum_congr rfl fun s _ => ?_
   split_ifs <;> simp
 
 lemma tm_eval_update (i : ι) (x : ι → ℂ) (z : ℂ) (f : MvPolynomial ι ℂ) :
     MvPolynomial.eval (update x i z) f = (tmSlice i x f).eval z := by
   conv_lhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [tmSlice, map_sum, Polynomial.eval_finsetSum, Polynomial.eval_monomial,
-    MvPolynomial.eval_monomial]
+
+  simp only [tmSlice, map_sum, Polynomial.eval_finsetSum, Polynomial.eval_monomial,
+  MvPolynomial.eval_monomial]
   refine Finset.sum_congr rfl fun s _ => ?_
   rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Finsupp.prod_fintype _ _ (fun _ => pow_zero _),
     Fintype.prod_eq_mul_prod_compl i, Fintype.prod_eq_mul_prod_compl i, Function.update_self,

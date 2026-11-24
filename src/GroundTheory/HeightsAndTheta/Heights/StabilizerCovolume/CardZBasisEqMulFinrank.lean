@@ -1,13 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Covolume
+public import Mathlib.NumberTheory.NumberField.EquivReindex
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
 public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.GaussCM
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.DataHodge
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section
 

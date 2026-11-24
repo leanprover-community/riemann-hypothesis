@@ -1,17 +1,54 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DataRigidSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DvrLem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThetaVV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsNsmulIffEq
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsAddEquivOfSplitTorusIso
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FlatQuotientIsoOfSameKernel
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SecEqZeroAndHomEqOfThickenings
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceThickening
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniformizationEndomorphismOfLinear
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SecEqZeroAndHomEqOfThickenings
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsNsmulIffEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.CancelSecAct
 
 @[expose] public section
@@ -30,7 +67,7 @@ variable {R : Type} [CommRing R] [IsDomain R]
 
 section Rep
 
-open FreeAbelianGroup
+open FreeAddCommGroup
 
 variable {D : DegPre R} {T₀ : Over (Spec (CommRingCat.of R))}
 
@@ -38,10 +75,10 @@ abbrev Vals (D : DegPre R) (T₀ : Over (Spec (CommRingCat.of R))) :=
   ∀ (T : Over (Spec (CommRingCat.of R))) (_ : T ⟶ T₀) (z : T.left) (_ : (T.left ⟶ D.P.A.left) → D.P.L.ι),
     (T.left.presheaf.stalk z)ˣ
 
-def Rep (s : FreeAbelianGroup (T₀ ⟶ D.P.A)) (v : Vals D T₀) : Prop :=
+def Rep (s : FreeAddCommGroup (T₀ ⟶ D.P.A)) (v : Vals D T₀) : Prop :=
   ∃ (K : Type) (_ : Fintype K) (φ : K → (T₀.left ⟶ D.P.A.left)) (ε : K → ℤ) (t : LB.Gen (LB.LinComb D.P.L φ ε)),
     t.IsGen ∧ (∀ (U : Type) [CommGroup U] (h : (T₀.left ⟶ D.P.A.left) → U),
-      ∏ k, h (φ k) ^ ε k = (FreeAbelianGroup.lift (fun q : T₀ ⟶ D.P.A => Additive.ofMul (h q.left)) s).toMul) ∧
+      ∏ k, h (φ k) ^ ε k = (FreeAddCommGroup.lift (fun q : T₀ ⟶ D.P.A => Additive.ofMul (h q.left)) s).toMul) ∧
     ∀ T (ρ : T ⟶ T₀) z J, Good D.P.L z J → val t ρ.left z J = v T ρ z J
 
 theorem Rep.one : Rep (D := D) (T₀ := T₀) 0 fun _ _ _ _ => 1 :=
@@ -49,7 +86,7 @@ theorem Rep.one : Rep (D := D) (T₀ := T₀) 0 fun _ _ _ _ => 1 :=
     fun i j => (map_one _).trans ((congrArg₂ (· * ·) (Fintype.prod_empty _) (map_one _)).trans (_root_.mul_one _)).symm,
     fun U _ h => by simp, fun _ _ _ _ _ => val_one _⟩
 
-theorem Rep.mul {s s' : FreeAbelianGroup (T₀ ⟶ D.P.A)} {v v' : Vals D T₀} (h : Rep s v) (h' : Rep s' v') :
+theorem Rep.mul {s s' : FreeAddCommGroup (T₀ ⟶ D.P.A)} {v v' : Vals D T₀} (h : Rep s v) (h' : Rep s' v') :
     Rep (s + s') fun T ρ z J => v T ρ z J * v' T ρ z J := by
   obtain ⟨K, _, φ, ε, t, ht, f, e⟩ := h
   obtain ⟨K', _, φ', ε', t', ht', f', e'⟩ := h'
@@ -84,7 +121,7 @@ theorem Rep.cmp {a : D.P.A ⟶ D.P.A} {p χ : D.X} {u : CmpGen D a p χ} (hu : N
   simp only [map_add (f := _), map_sub, lift_apply_of, ofMul_mul, ofMul_inv, ofMul_toMul]
   abel
 
-theorem Rep.unique {s s' : FreeAbelianGroup (T₀ ⟶ D.P.A)} {v v' : Vals D T₀} (h : Rep s v) (h' : Rep s' v')
+theorem Rep.unique {s s' : FreeAddCommGroup (T₀ ⟶ D.P.A)} {v v' : Vals D T₀} (h : Rep s v) (h' : Rep s' v')
     (hs : Function.Surjective T₀.hom.appTop.hom) (e : 𝟙_ _ ⟶ T₀) (hF : s = s')
     (h₀ : ∀ y J, Good D.P.L y J → v _ e y J = v' _ e y J) {T} (ρ : T ⟶ T₀) {z J} (hJ : Good D.P.L z J) :
     v T ρ z J = v' T ρ z J := by

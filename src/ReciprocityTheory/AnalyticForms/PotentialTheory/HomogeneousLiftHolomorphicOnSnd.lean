@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactification.OnePoint.Basic
 
 @[expose] public section
 

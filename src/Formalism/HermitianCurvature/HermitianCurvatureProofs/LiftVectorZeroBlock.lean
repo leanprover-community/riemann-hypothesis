@@ -1,9 +1,54 @@
 module
 
 public import Formalism.HermitianCurvature.StatementHeads
-public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelsOfBuiltSetting
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelImageArithmetic.GlevImageOf
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelLiftBasics.LevelGroupUnitaryHermitian
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.SecondCapelliMinorLevel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -45,23 +90,22 @@ def trF {E : Type*} (t : ℂ) (Φ : Fn k (1 + ρ) E) : Fn k ρ E := fun c g => �
 theorem ιLev_comp (g : Mx k 0) : ιLev k 1 ρ (ιLev k ρ 0 g) = ιLev k (1 + ρ) 0 g := by
   ext p q
   simp only [ιLev]
-  split_ifs <;> (try simp only [Fin.ext_iff, Fin.val_mk] at *) <;> first | rfl | omega | (congr 1 <;> ext <;> simp only [Fin.val_mk] <;> omega)
+  split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | rfl | omega | (congr 1 <;> ext <;> simp only <;> omega)
 
 theorem liftVec_comp (v : Fin (2 * 0 + k + 1) → ℂ) : liftVec k 1 ρ (liftVec k ρ 0 v) = liftVec k (1 + ρ) 0 v := by
   funext p
   simp only [liftVec]
-  split_ifs <;> (try simp only [Fin.ext_iff, Fin.val_mk] at *) <;> first | rfl | omega | (congr 1 <;> ext <;> simp only [Fin.val_mk] <;> omega)
+  split_ifs <;> (try simp only at *) <;> first | rfl | omega | (congr 1 <;> ext <;> simp only <;> omega)
 
 def blk0 (z : Fin (2 * ρ + k + 1) → ℂ) : Fin (2 * 0 + k + 1) → ℂ := fun j => z ⟨ρ + j.val, by omega⟩
 
 theorem lift_vector_zero_block {z : Fin (2 * ρ + k + 1) → ℂ} (hz : inWb k ρ z) : liftVec k ρ 0 (blk0 z) = z := by
   funext p
-  have hp := p.isLt
   unfold liftVec blk0
   split_ifs with h
   · congr 1
     ext
-    simp only [Fin.val_mk]
+    simp only
     omega
   · exact (hz p (by omega)).symm
 

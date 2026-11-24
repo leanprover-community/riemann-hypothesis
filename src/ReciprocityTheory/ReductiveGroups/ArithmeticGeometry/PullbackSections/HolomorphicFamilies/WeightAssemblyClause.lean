@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
+public import Formalism.LocalToGlobal.ProjectiveLattices.VAddIntNonneg
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

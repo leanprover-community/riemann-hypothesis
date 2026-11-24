@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
+public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -47,7 +50,7 @@ theorem trace_sig (hcm : IsCMExt F E σ) (y : E) :
     have h2 : ∀ w, e.toLinearEquiv w = σ w := fun _ => rfl
     have h3 : ∀ w, e w = σ w := fun _ => rfl
     have h4 : ∀ w, e.symm w = σ w := fun _ => rfl
-    simp [LinearEquiv.conj_apply, h1, h2, h3, h4, sig_sig hcm]
+    simp [LinearEquiv.conj_apply, h3, h4, sig_sig hcm]
   rw [Algebra.trace_apply, Algebra.trace_apply]
   show LinearMap.trace F E (Algebra.lmul F E (σ y)) = LinearMap.trace F E (Algebra.lmul F E y)
   rw [← h, LinearMap.trace_conj']

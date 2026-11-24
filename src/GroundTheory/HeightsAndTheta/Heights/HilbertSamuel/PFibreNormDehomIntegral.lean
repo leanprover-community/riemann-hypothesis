@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormDehomIntegral
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormBadPrimesFinite
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormGoodPrimeIntegral
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormPrimeBound
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 
@@ -77,7 +78,7 @@ theorem FibreNormDehomIntegral.proof (hF : FibreNormBadPrimesFinite.Statement)
     intro a ha
     obtain ⟨m, -, rfl⟩ := mem_coeffs_iff.mp ha
     refine ⟨(((M₀ : ℚ) ^ τ) * (c (Module.finrank (pullField y L) Ω)).coeff m).num, ?_⟩
-    rw [coeff_smul, smul_eq_mul, eq_intCast]
+    rw [MvPolynomial.coeff_smul, smul_eq_mul, eq_intCast]
     exact Rat.coe_int_num_of_den_eq_one (hcoef m)
   obtain ⟨F, hF'⟩ := hmem
   exact ⟨F, hF'⟩

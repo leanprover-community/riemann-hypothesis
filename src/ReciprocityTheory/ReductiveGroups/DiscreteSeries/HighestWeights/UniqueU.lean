@@ -1,7 +1,11 @@
 module
 
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.FromHC
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Unique
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
 
 @[expose] public section
 

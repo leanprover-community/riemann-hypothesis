@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
+public import GroundTheory.GlobalFields.TateThesis.ConductorIdeal
+public import GroundTheory.GlobalFields.TateThesis.HeckeChar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

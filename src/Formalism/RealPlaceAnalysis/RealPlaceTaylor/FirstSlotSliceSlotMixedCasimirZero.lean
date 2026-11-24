@@ -1,6 +1,50 @@
 module
 
 public import Formalism.RealPlaceAnalysis.StatementU
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -136,8 +180,6 @@ theorem compactCasimir_apply (ε : Fin n → Bool) (T : Fin n → Fin n → Modu
     CasK ε T x = ∑ a, ∑ b, if ε a = ε b then T a b (T b a x) else 0 := by
   first
     | simp only [CasK, LinearMap.sum_apply]
-    | simp only [CasK, LinearMap.coe_sum, Finset.sum_apply]
-    | simp only [CasK, LinearMap.coe_fn_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   split_ifs <;> rfl
 
@@ -247,9 +289,7 @@ theorem casArr_of (hk : KCasSpan) : CasArr := by
     · rw [← inner_totalPositionAction]
       have hre : (⟪positionsE V n j b a F, positionsE V n j b a F⟫_ℂ).re = ‖positionsE V n j b a F‖ ^ 2 := by
         first
-          | exact inner_self_eq_norm_sq _
           | exact inner_self_eq_norm_sq (𝕜 := ℂ) _
-          | simpa using inner_self_eq_norm_sq (𝕜 := ℂ) (positionsE V n j b a F)
       rw [hre]
       positivity
     · simp
@@ -266,7 +306,7 @@ theorem update_comp_perm {X : Type*} (σ : Equiv.Perm (Fin j)) (α : Fin j → X
   · subst hk
     simp
   · have hk' : σ k ≠ i := fun h => hk (by rw [← h, Equiv.symm_apply_apply])
-    simp [Function.update_apply, hk, hk']
+    simp [hk, hk']
 
 theorem factorAction_mul_permuteFactors (σ : Equiv.Perm (Fin j)) (i : Fin j) (c d : Fin n) :
     factorAction (V := V) i c d * permArr V n σ = permArr V n σ * factorAction (σ.symm i) c d := by
@@ -319,8 +359,6 @@ theorem firstPositionSlice_positionMixedCasimir_zero (ε : Fin n → Bool) (E : 
     sliceLin V n α' (OmS ε E 0 F) = OmS ε E 0 (sliceLin V n α' F) := by
   first
     | simp only [OmS, LinearMap.sum_apply, map_sum]
-    | simp only [OmS, LinearMap.coe_sum, Finset.sum_apply, map_sum]
-    | simp only [OmS, LinearMap.coe_fn_sum, Finset.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
   split_ifs
   · change sliceLin V n α' (factorAction 0 c d (ptE E d c F)) = factorAction 0 c d (ptE E d c (sliceLin V n α' F))
@@ -404,7 +442,7 @@ theorem factorAction_mem_admissibleArrays {ε : Fin n → Bool} {E : Fin n → F
         · rw [hki] at hk hk'
           simp at hk'
           exact hk' (by rw [← hab, ← h1, hk])
-        · simp [Function.update_apply, hki] at hk'
+        · simp [hki] at hk'
           exact hk' hk
       · rfl
     have t2 : (if (α i).2 = b then F (Function.update α i ((α i).1, a)) else 0) = 0 := by
@@ -415,7 +453,7 @@ theorem factorAction_mem_admissibleArrays {ε : Fin n → Bool} {E : Fin n → F
         · rw [hki] at hk hk'
           simp at hk'
           exact hk' (by rw [hk, h2, hab])
-        · simp [Function.update_apply, hki] at hk'
+        · simp [hki] at hk'
           exact hk' hk
       · rfl
     rw [t1, t2, sub_zero]
@@ -436,8 +474,6 @@ theorem admissibleArrays_invariant (ε : Fin n → Bool) (E : Fin n → Fin n �
   intro a b hab F hF
   first
     | simp only [arrE, LinearMap.add_apply, LinearMap.sum_apply]
-    | simp only [arrE, LinearMap.add_apply, LinearMap.coe_sum, Finset.sum_apply]
-    | simp only [arrE, LinearMap.add_apply, LinearMap.coe_fn_sum, Finset.sum_apply]
   exact Submodule.add_mem _ (Submodule.sum_mem _ fun i _ => factorAction_mem_admissibleArrays hF i hab) (pointwiseAction_mem_admissibleArrays hF hab)
 
 theorem firstPositionSlice_indexArrayAction (E : Fin n → Fin n → Module.End ℂ V) (α' : Fin j → Fin n × Fin n) (a b : Fin n)
@@ -507,9 +543,7 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {n j : ℕ
 
 theorem re_inner_self_indexArray (F : Arr V n j) : (⟪F, F⟫_ℂ).re = ‖F‖ ^ 2 := by
   first
-    | exact inner_self_eq_norm_sq F
     | exact inner_self_eq_norm_sq (𝕜 := ℂ) F
-    | simpa using inner_self_eq_norm_sq (𝕜 := ℂ) F
 
 theorem norm_sq_eq_sum_firstPositionSlice (F : Arr V n (j+1)) :
     ‖F‖ ^ 2 = ∑ α' : Fin j → Fin n × Fin n, ‖sliceLin V n α' F‖ ^ 2 := by
@@ -531,7 +565,6 @@ theorem nPos_of (hca : CasArr) (hs : OmSymSlice) (hp : OmPlus) : NPos := by
       _ = _ := by
           first
             | simp
-            | (rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]; push_cast; ring)
   have hom : (g - 2 * (n:ℝ)) * ‖F‖ ^ 2 ≤ (⟪F, OmS ε E 0 F⟫_ℂ).re := by
     rw [(hs V n ε E j F).2, Complex.re_sum, norm_sq_eq_sum_firstPositionSlice, Finset.mul_sum]
     exact Finset.sum_le_sum fun α' _ => hp V n ε E lam g u hgl hu hk hfd hg _ (hv α')

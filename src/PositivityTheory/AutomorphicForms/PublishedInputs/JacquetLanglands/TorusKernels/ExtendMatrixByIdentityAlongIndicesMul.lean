@@ -1,6 +1,14 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ComplexMinusRealLineMeasureCoordinates
+public import Mathlib.Analysis.Calculus.DiffContOnCl
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.MeanValue
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.Pow
 
 @[expose] public section
 

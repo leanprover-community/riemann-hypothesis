@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StIrreducibleGermRegularConnected
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalParametrisation
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParametrisationSheetsConnected
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

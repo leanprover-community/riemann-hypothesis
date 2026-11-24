@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
+public import GroundTheory.AutomorphicForms.HilbertSchmidtCompact
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,45 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.LGDefs
+public import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
 
 @[expose] public section
 
@@ -16,7 +54,6 @@ theorem oneFI_ne_zero (D : Formalism.BasicNotions.D7) :
     (1 : FractionalIdeal (nonZeroDivisors (𝓞 D.host.F)) D.host.F) ≠ 0 := by
   first
   | exact one_ne_zero
-  | exact FractionalIdeal.one_ne_zero
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -58,20 +95,16 @@ theorem dual_mul_different_integral (D : Formalism.BasicNotions.D7) (t : D.host.
   rw [← hy]
   first
   | exact RingOfIntegers.isIntegral_coe y
-  | exact y.2
 
 theorem differentF_ne_bot (D : Formalism.BasicNotions.D7) : differentIdeal ℤ (𝓞 D.host.F) ≠ ⊥ := by
   first
   | exact differentIdeal_ne_bot
-  | exact differentIdeal_ne_bot (K := ℚ) (L := D.host.F)
 
 theorem dual_lattice_powers : DualPow := by
   intro D t ht m
   have hinj : Function.Injective (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) := by
     first
     | exact FaithfulSMul.algebraMap_injective _ _
-    | exact NoZeroSMulDivisors.algebraMap_injective _ _
-    | exact (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)).injective
   have hne : ddS D ≠ 0 := by
     unfold ddS
     rw [Ne, FractionalIdeal.coeIdeal_eq_zero, Ideal.map_eq_bot_iff_of_injective hinj]
@@ -89,8 +122,6 @@ theorem dual_lattice_powers : DualPow := by
       refine ⟨⟨_, hint⟩, ?_⟩
       first
       | rfl
-      | (simp [map_mul]; done)
-      | (simp only [RingHom.toIntAlgHom_apply, map_mul]; rfl)
     | zero =>
       exact (FractionalIdeal.mem_one_iff _).mpr ⟨0, by simp⟩
     | add x y _ _ hx hy =>
@@ -113,7 +144,6 @@ theorem dual_lattice_powers : DualPow := by
     rw [pow_zero, pow_zero]
     first
     | exact FractionalIdeal.one_mem_one _
-    | exact FractionalIdeal.one_mem_one
   | succ n ih =>
     rw [pow_succ, pow_succ]
     exact FractionalIdeal.mul_mem_mul ih h1

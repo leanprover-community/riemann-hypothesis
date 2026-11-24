@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.SumBoundStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

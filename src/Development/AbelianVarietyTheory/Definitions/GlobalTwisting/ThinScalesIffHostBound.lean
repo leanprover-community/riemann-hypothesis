@@ -1,14 +1,45 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 public import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
-public import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
-public import Formalism.CyclotomicNorms.StatementI
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DisjointExceptional
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.Analytic
 public import Development.AutomorphicArithmetic.PrimeDiscriminants.Scales
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -62,13 +93,6 @@ theorem isCharH_iff (H : Host R) {N : ℕ} (χ : DirichletCharacter ℂ N) : IsC
   · rintro ⟨ψ, h1, h2⟩
     exact ⟨h1, ψ, fun a ha => (h2 a ha).trans (key ψ a ha)⟩
 
-def ThinOK (s : Scale) (c : ℝ) (H : Host R) : Prop :=
-  ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), IsCharH H χ →
-    ∀ y : ℝ, Real.exp (s.x ^ (s.eps / 3)) / 3 ≤ y → ‖GlobalTheoryTheory.gChi χ y‖ ≤ y * Real.exp (-(c * s.x ^ (s.eps / 8)))
-
-theorem thinScales_iff_hostBound (s : Scale) (c : ℝ) (H : Host R) : ThinOK s c H ↔ H.ChebyshevCharacterBound s.x s.eps c :=
-  forall_congr' fun _ => forall_congr' fun _ => forall_congr' fun χ => imp_congr (isCharH_iff H χ) Iff.rfl
-
 def BoxH (H : Host R) (Y eps : ℝ) : Prop :=
   ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), IsCharH H χ → GlobalTheoryTheory.IsRealChar χ →
     (H.d ∣ N → GlobalTheoryTheory.GoodFor (8 * ((ordCompl[2] H.QS : ℕ) : ℝ) * GlobalTheoryTheory.X1 Y eps * GlobalTheoryTheory.X2 Y eps) χ) ∧
@@ -89,7 +113,7 @@ theorem BoxW.qdRowsW {s : Scale} {D : D7} (h : BoxW s D.host) : QDRowsW D s := h
 
 def HostGood (s : Scale) (C8 C5 c6 Cb : ℝ) (H : Host R) (q0 : ℕ) : Prop :=
   HostVal s C8 H ∧ HostArith H ∧ H.secondSet_card_lower_bound ∧ 4 * H.Lw * H.T2.card ≤ R.n0 ∧
-  QDq s.x s.eps C5 H.q H.d ∧ BoxW s H ∧ |dlogH H| ≤ s.x ^ s.eps ∧ ThinOK s c6 H ∧ BadOK s Cb H ∧
+  QDq s.x s.eps C5 H.q H.d ∧ BoxW s H ∧ |dlogH H| ≤ s.x ^ s.eps ∧ BadOK s Cb H ∧
   Disjoint (Formalism.CyclotomicNorms.BB R.r (H.g 0)) (Formalism.CyclotomicNorms.BB R.r (H.g 1)) ∧
   (∀ i, ∃ π : 𝓞 H.E, (π : H.E) ∈ H.K ∧ (π : H.E) * H.conj (π : H.E) = (H.g i : H.E) ∧
     (π - 1) ∈ Ideal.span {((H.QS * H.q * H.d : ℕ) : 𝓞 H.E)}) ∧
@@ -139,9 +163,8 @@ theorem Pt.From.field (h : p.From H a b c u0) : HEq p.D.host.toHostAx H.toHostAx
 
 theorem Pt.From.congr_field (h : p.From H a b c u0) {α : Sort*} (f : ∀ φ : Formalism.HC.Frame, Formalism.HC.HostAx φ → α) :
     f p.D.R.toFrame p.D.host.toHostAx = f R.toFrame H.toHostAx := by
-  have h1 := h.1
   have h2 := h.field
-  subst h1
+  cases h.1
   rw [eq_of_heq h2]
 
 theorem Pt.From.QS_eq (h : p.From H a b c u0) : p.D.host.QS = H.QS := h.congr_field fun _ X => X.QS
@@ -161,21 +184,16 @@ theorem Pt.From.isCharED_iff (h : p.From H a b c u0) {N : ℕ} (χ : DirichletCh
 
 theorem Pt.From.boxE (h : p.From H a b c u0) {Y eps : ℝ} (hB : BoxH H Y eps) : GlobalTheoryTheory.BoxE p.D Y eps := by
   intro N _ χ hχ hr
-  have := hB N χ ((h.isCharED_iff χ).1 hχ) hr
-  unfold GlobalTheoryTheory.oddQS
-  rw [h.QS_eq, h.2.2.2.1, h.2.2.2.2.1]
-  exact this
+  simpa [GlobalTheoryTheory.oddQS, h.QS_eq, h.2.2.2.1, h.2.2.2.2.1] using
+    hB N χ ((h.isCharED_iff χ).1 hχ) hr
 
 theorem Pt.From.pairRow (h : p.From H a b c u0) {Y eps : ℝ} (hr : PairRow Y eps H) : PairRow Y eps p.D.host := by
-  unfold PairRow
-  rw [h.QS_eq, h.2.2.2.1, h.2.2.2.2.1]
-  exact hr
+  simpa [PairRow, h.QS_eq, h.2.2.2.1, h.2.2.2.2.1] using hr
 
 theorem Pt.From.boxW (h : p.From H a b c u0) {s : Scale} (hB : BoxW s H) : BoxW s p.D.host := by
   obtain ⟨Y, h1, h2, h3, h4⟩ := hB
   refine ⟨Y, h1, h.pairRow h2, ?_, h.boxE h4⟩
-  rw [h.2.2.2.1, h.2.2.2.2.1]
-  exact h3
+  simpa [h.2.2.2.1, h.2.2.2.2.1] using h3
 
 theorem Pt.From.boxesW (h : p.From H a b c u0) {s : Scale} (hB : BoxW s H) : BoxesW p.D s := (h.boxW hB).boxesW
 

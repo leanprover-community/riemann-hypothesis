@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -12,8 +52,8 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option synthInstance.maxHeartbeats 200000
-set_option maxHeartbeats 1000000
+
+
 
 namespace GlobalTheory.FinPlLoc
 
@@ -227,7 +267,7 @@ theorem mem_congGrp {V : HSp D} (I : Ideal (AE D)) (x : GA D V) :
   rw [← Matrix.map_one (Ideal.Quotient.mk I) (map_zero _) (map_one _), ← Matrix.ext_iff]
   simp only [Matrix.map_apply, Ideal.Quotient.eq]
 
-theorem mt_mul (V : HSp D) (a b : GA D V) : mt V (a * b) = mt V a * mt V b := rfl
+alias mt_mul := _root_.GlobalTheory.BesselCompare.mt_mul
 
 theorem mt_inj {V : HSp D} {a b : GA D V} (h : mt V a = mt V b) : a = b := Subtype.ext (Units.ext h)
 
@@ -237,7 +277,7 @@ def mixGA (P : Pl D → Prop) {V : HSp D} (g h : GA D V) : GA D V :=
 theorem mt_mixGA (P : Pl D → Prop) {V : HSp D} (g h : GA D V) :
     mt V (mixGA P g h) = mix (idem D P) (mt V g) (mt V h) := rfl
 
-theorem mt_one (V : HSp D) : mt V 1 = 1 := rfl
+alias mt_one := _root_.GlobalTheory.BesselCompare.mt_one
 
 theorem mem_grpAt_iff (P : Pl D → Prop) {V : HSp D} (x : GA D V) :
     x ∈ grpAt V P ↔ mix (idem D P) (mt V x) 1 = mt V x := by
@@ -508,14 +548,14 @@ theorem part_lat (P : Pl D → Prop) (S : HSp D) (L : Lat S) (y : Fin S.rank →
         simp only [infPart_pair, Finset.sum_const_zero, sub_zero]
         exact infPart_of_idAt (hid i)
       · intro w
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sub, map_sum]
+
+        rw [map_sub, map_sum]
         simp only [compAt_pair, hβ]
         by_cases hw : P w
         · have h1 : compAt D w (y i) = compAt D w ((idem D (· = w) • y) i) := by
             rw [Pi.smul_apply, smul_eq_mul, map_mul, compAt_idem, if_pos rfl, one_mul]
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [h1, hBy w hw, map_sum]
+
+          rw [h1, hBy w hw, map_sum]
           simp only [compAt_pair, if_pos hw, sub_self]
         · rw [compAt_of_idAt (hid i) hw]
           simp only [if_neg hw, TensorProduct.zero_tmul, Finset.sum_const_zero, sub_zero]

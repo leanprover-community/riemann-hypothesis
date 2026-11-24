@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.JoinCoordMidVar
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ExSubAlt
 
 @[expose] public section
 

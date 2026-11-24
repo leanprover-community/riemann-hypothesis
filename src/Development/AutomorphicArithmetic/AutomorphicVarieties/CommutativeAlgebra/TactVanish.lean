@@ -2,6 +2,49 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueFixedPointOfAdicContraction
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,8 +66,8 @@ private theorem tact_aeval {O X σ S : Type} [CommRing O] [AddCommGroup X] [Comm
     (hp : ∀ d, Finsupp.weight wt d ≠ j → AddMonoidAlgebra.coeff p d = 0) :
     MvPolynomial.aeval (fun i => (t (Multiplicative.ofAdd (wt i)) : S) * x i) p =
       (t (Multiplicative.ofAdd j) : S) * MvPolynomial.aeval x p := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [p.as_sum, map_sum, map_sum, Finset.mul_sum]
+
+  rw [p.as_sum, map_sum, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun d hd => ?_
   have hd' : Finsupp.weight wt d = j := by
     by_contra h
@@ -37,8 +80,8 @@ private theorem tact_approx {O X σ : Type} [CommRing O] [AddCommGroup X] [Finit
     ∃ s : Finset X, (n : ℕ∞) ≤ (F - ∑ j ∈ s, wcomp O wt j F).order := by
   classical
   refine ⟨(truncTotal n F).support.image (Finsupp.weight wt), nat_le_order fun d hd => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, map_sum]
+
+  rw [map_sub, map_sum]
   simp only [coeff_wcomp]
   rw [Finset.sum_ite_eq]
   split_ifs with h
@@ -56,8 +99,8 @@ private theorem tact_vanish {O X σ S : Type} [CommRing O] [AddCommGroup X] [Fin
   intro n
   obtain ⟨s, hs⟩ := tact_approx wt F n
   have hm := GlobalTheory.algHom_mem_pow_of_le_order φ hφ hs
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, map_sum] at hm
+
+  rw [map_sub, map_sum] at hm
   simpa [h] using hm
 
 theorem UpperTheory.V.Alg.tact :

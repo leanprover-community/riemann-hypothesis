@@ -1,6 +1,47 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ObjPol
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -65,8 +106,8 @@ theorem matrixSubst_comp (φ : R →+* B) (m1 m1' m2 m2' : Matrix (Fin n) (Fin n
           simp only [h1]
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl fun a _ => ?_
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [Matrix.mul_apply, map_sum, Finset.sum_mul]
+
+          rw [Matrix.mul_apply, map_sum, Finset.sum_mul]
         · rw [if_pos hS, if_neg hv, if_pos hS, if_neg hv, map_sum]
           have h1 : ∀ b : Fin n, matrixSubst LL S (RingHom.id B) m1 m1' (C (m2' v.2 b) * X (v.1, b)) =
               ∑ a : Fin n, C (m2' v.2 b * m1' b a) * X (v.1, a) := by
@@ -77,8 +118,8 @@ theorem matrixSubst_comp (φ : R →+* B) (m1 m1' m2 m2' : Matrix (Fin n) (Fin n
           simp only [h1]
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl fun a _ => ?_
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [Matrix.mul_apply, map_sum, Finset.sum_mul]
+
+          rw [Matrix.mul_apply, map_sum, Finset.sum_mul]
       · rw [if_neg hS, if_neg hS, matrixSubst_X, if_neg hS]
   exact congrArg (fun f => f F) this
 
@@ -86,26 +127,24 @@ theorem map_matrixSubst (φ : R →+* B) (ψ : B →+* B') (m m' : Matrix (Fin n
     (F : MvPolynomial (ι × Fin n) R) :
     MvPolynomial.map ψ (matrixSubst LL S φ m m' F) = matrixSubst LL S (ψ.comp φ) (m.map ψ) (m'.map ψ) F := by
   classical
-  have : (MvPolynomial.map ψ).comp (matrixSubst LL S φ m m') = matrixSubst LL S (ψ.comp φ) (m.map ψ) (m'.map ψ) := by
-    apply MvPolynomial.ringHom_ext
-    · intro c
-      simp [matrixSubst_C]
-    · intro v
-      simp only [RingHom.comp_apply, matrixSubst_X]
-      split_ifs <;> simp
-  exact congrArg (fun f => f F) this
+  refine congrArg (fun f : MvPolynomial (ι × Fin n) R →+* MvPolynomial (ι × Fin n) B' => f F) (show (MvPolynomial.map ψ).comp (matrixSubst LL S φ m m') = matrixSubst LL S (ψ.comp φ) (m.map ψ) (m'.map ψ) from ?_)
+  apply MvPolynomial.ringHom_ext
+  · intro c
+    simp [matrixSubst_C]
+  · intro v
+    simp only [RingHom.comp_apply, matrixSubst_X]
+    split_ifs <;> simp
 
 theorem matrixSubst_one (φ : R →+* B) (F : MvPolynomial (ι × Fin n) R) :
     matrixSubst LL S φ 1 1 F = MvPolynomial.map φ F := by
   classical
-  have : matrixSubst LL S φ (1 : Matrix (Fin n) (Fin n) B) 1 = MvPolynomial.map φ := by
-    apply MvPolynomial.ringHom_ext
-    · intro c
-      simp [matrixSubst_C]
-    · intro v
-      simp only [matrixSubst_X, map_X]
-      split_ifs <;> simp [Matrix.one_apply]
-  exact congrArg (fun f => f F) this
+  refine congrArg (fun f : MvPolynomial (ι × Fin n) R →+* MvPolynomial (ι × Fin n) B => f F) ?_
+  apply MvPolynomial.ringHom_ext
+  · intro c
+    simp [matrixSubst_C]
+  · intro v
+    simp only [matrixSubst_X, map_X]
+    split_ifs <;> simp [Matrix.one_apply]
 
 theorem matrixSubst_map (φ : R →+* B) (m m' : Matrix (Fin n) (Fin n) B) (F : MvPolynomial (ι × Fin n) R) :
     matrixSubst LL S (RingHom.id B) m m' (MvPolynomial.map φ F) = matrixSubst LL S φ m m' F := by

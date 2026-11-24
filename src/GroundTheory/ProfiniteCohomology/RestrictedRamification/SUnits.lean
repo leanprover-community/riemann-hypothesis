@@ -1,11 +1,19 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.SUnits
-public import GroundTheory.GlobalFields.KummerTheory.Unramified
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnitsDefs
+public import GroundTheory.GlobalFields.KummerTheory.Unramified
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Ramification
 
 @[expose] public section
 

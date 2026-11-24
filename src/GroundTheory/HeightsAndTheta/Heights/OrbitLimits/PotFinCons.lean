@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PoincareLelongRegularised
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsRegLimit
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAbsIntegrable
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsRegLimit
 
 @[expose] public section
 

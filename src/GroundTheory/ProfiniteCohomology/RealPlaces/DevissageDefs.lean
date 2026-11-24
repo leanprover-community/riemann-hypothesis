@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RealPlaces.CupSequence
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.Devissage
+public import GroundTheory.ProfiniteCohomology.RealPlaces.ConeMap
+public import GroundTheory.ProfiniteCohomology.RealPlaces.HomologyMapProdFstProdLeftHomology
+import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.UnramifiedDefs
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
-public import GroundTheory.LocalFields.FilteredSurj
 public import GroundTheory.GlobalFields.KummerTheory.LocalIndex
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.Finite.GaloisField
 
 @[expose] public section
 
@@ -41,8 +41,8 @@ theorem residue_eq_sum_repr (y : 𝒪[L]) :
     residue 𝒪[L] y = ∑ i, residue 𝒪[K] ((Module.Free.chooseBasis 𝒪[K] 𝒪[L]).repr y i) •
       residue 𝒪[L] (Module.Free.chooseBasis 𝒪[K] 𝒪[L] i) := by
   conv_lhs => rw [← (Module.Free.chooseBasis 𝒪[K] 𝒪[L]).sum_repr y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ ↦ ?_
   rw [Algebra.smul_def, map_mul, Algebra.smul_def]
   rfl

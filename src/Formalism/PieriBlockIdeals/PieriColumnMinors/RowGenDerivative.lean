@@ -1,10 +1,51 @@
 module
 
-public import Formalism.GradedWeylDivisibility.FinalD
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQHW
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQWordAdj
-public import Formalism.PieriBlockIdeals.PieriColumnMinors.BinaryFormsExample
+public import Formalism.GradedWeylDivisibility.StatementB
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Derivation.Lie
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -63,7 +104,7 @@ theorem der_comm {r n : ℕ} (a b c d : Fin r) (f : MvPolynomial (Fin r × Fin n
         · subst h4; simp [der_X, h1]
         · have h4' : ¬ a = d := fun h => h4 h.symm
           simp [der_X, h1, h4, h4']
-      · simp [der_X, h1, h2]
+      · simp [h1, h2]
   have h' := congrArg (fun D => D f) h
   simp only [Derivation.commutator_apply, Derivation.sub_apply] at h'
   rw [h']
@@ -82,7 +123,7 @@ theorem rowGen_derivative {r n : ℕ} (a b : Fin r) (f : MvPolynomial (Fin r × 
     (1 + if a = b then Polynomial.X else 0) * Polynomial.derivative (rowGen ℚ a b f) =
       rowGen ℚ a b (der r n a b f) := by
   induction f using MvPolynomial.induction_on with
-  | C c => simp [rowGen_C', ← MvPolynomial.algebraMap_eq]
+  | C c => simp [← MvPolynomial.algebraMap_eq]
   | add p q hp hq => rw [map_add (f := _), map_add (f := _), map_add (f := _), map_add (f := _), mul_add, hp, hq]
   | mul_X p v hp =>
     rw [map_mul, Polynomial.derivative_mul, Derivation.leibniz, map_add (f := _), smul_eq_mul, smul_eq_mul, map_mul, map_mul,
@@ -95,7 +136,7 @@ theorem rowGen_derivative {r n : ℕ} (a b : Fin r) (f : MvPolynomial (Fin r × 
         simp
         ring
       · have h3 : ¬ ((a, v.2) : Fin r × Fin n).1 = b := h2
-        simp only [h1, h2, if_true, if_false, rowGen_X', h3]
+        simp only [h1, h2, if_true, if_false, rowGen_X']
         simp
         ring
     · simp only [h1, if_false, map_zero]
@@ -105,7 +146,7 @@ theorem rowGen_derivative {r n : ℕ} (a b : Fin r) (f : MvPolynomial (Fin r × 
 theorem rowDiv_zero' {r n : ℕ} (a b : Fin r) (f : MvPolynomial (Fin r × Fin n) ℚ) : rowDiv ℚ a b 0 f = f := by
   unfold rowDiv
   induction f using MvPolynomial.induction_on with
-  | C c => simp [rowGen_C']
+  | C c => simp
   | add p q hp hq => rw [map_add (f := _), Polynomial.coeff_add, hp, hq]
   | mul_X p v hp =>
     rw [map_mul, Polynomial.mul_coeff_zero, hp, rowGen_X']
@@ -121,7 +162,7 @@ theorem rowDiv_succ {r n : ℕ} (a b : Fin r) (k : ℕ) (f : MvPolynomial (Fin r
   by_cases hab : a = b
   · simp only [hab, if_true]
     cases k with
-    | zero => simp [MvPolynomial.smul_eq_C_mul, mul_comm]
+    | zero => simp [mul_comm]
     | succ k =>
       rw [Polynomial.coeff_X_mul, Polynomial.coeff_derivative]
       simp only [MvPolynomial.smul_eq_C_mul]

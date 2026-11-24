@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.BridgeOrbVecAt
+public import Formalism.HermitianCurvature.StatementD
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZero
 
 @[expose] public section
 

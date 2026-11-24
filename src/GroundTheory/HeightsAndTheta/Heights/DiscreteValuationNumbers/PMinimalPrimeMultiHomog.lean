@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsMultiHomogIdealSpanSingleton
+public import Mathlib.RingTheory.GradedAlgebra.Radical
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

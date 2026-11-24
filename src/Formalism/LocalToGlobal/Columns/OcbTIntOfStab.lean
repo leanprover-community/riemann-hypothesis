@@ -1,5 +1,8 @@
 module
 
+public import Formalism.LocalToGlobal.Columns.ChainOneB
+public import Formalism.LocalToGlobal.Columns.OcbBEntEntB
+import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.FirstUnfoldingEqZeroOfNotIntegral
 
 @[expose] public section

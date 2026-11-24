@@ -1,8 +1,8 @@
 module
 
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.CompletionIntegersIff
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.SecPsiMulPow
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.FiniteClassSetOfLe
-public import Formalism.LocalRingCardinality.DataGatTies
-public import Formalism.LocalRingCardinality.DataLevelD
 
 @[expose] public section
 

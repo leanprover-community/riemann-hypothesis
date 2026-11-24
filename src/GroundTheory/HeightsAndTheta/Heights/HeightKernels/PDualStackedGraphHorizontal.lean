@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedGraph
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopSimpleStacked
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

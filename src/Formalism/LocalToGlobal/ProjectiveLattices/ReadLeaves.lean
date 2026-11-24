@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonal
-public import Formalism.LocalToGlobal.ProjectiveLattices.ChiProofs
+public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
+public import Formalism.LocalToGlobal.ProjectiveLattices.ReadProofs
+public import Formalism.LocalToGlobal.ProjectiveLattices.UnitIndepOfCharts
+import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonal
 
 @[expose] public section
 

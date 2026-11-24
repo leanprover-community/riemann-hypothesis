@@ -1,6 +1,6 @@
 module
 
-public import Formalism.SatakeDualWeyl.StatementC
+public import Formalism.SatakeDualWeyl.Statement
 
 @[expose] public section
 

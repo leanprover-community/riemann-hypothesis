@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Kaehler.Basic
 
 @[expose] public section
 

@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.Padics.RingHoms
+import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Data.Nat.Choose.Dvd
+import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.GroupTheory.SpecificGroups.Cyclic.Subgroup
 
 @[expose] public section
 

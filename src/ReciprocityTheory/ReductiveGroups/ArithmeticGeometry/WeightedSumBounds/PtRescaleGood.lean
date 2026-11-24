@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PtSolveMapFixedIff
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

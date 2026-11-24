@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SobolevContinuousFormGardingVector
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocallyCompactSecondCountableT2
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HilbertSchurUnitaryIrreducibleScalar
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SobolevContinuousFormGardingVector
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicitySpaceEqZeroOfApplyNonzeroTensorZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffDerivSnoc
 
 @[expose] public section
 
@@ -102,14 +145,14 @@ theorem density {G H ι : Type} [Group G] [Fintype ι] [NormedAddCommGroup H] [I
         rw [WithLp.ofLp_sum, Finset.sum_apply]
         simp [Pi.single_apply]
       conv_lhs => rw [hz]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, WithLp.ofLp_sum, Finset.sum_apply]
+
+      rw [map_sum, WithLp.ofLp_sum, Finset.sum_apply]
       exact Finset.sum_congr rfl fun j _ => hc i j _
     have hPT : ∀ z, S.starProjection (amp T z) = amp T (S.starProjection z) := by
       intro z
       refine (WithLp.ext_iff 2).2 (funext fun i => ?_)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hPz, hamp, hPz, map_sum]
+
+      rw [hPz, hamp, hPz, map_sum]
       simp only [hamp, map_smul]
     have hξS : ξ ∈ S := S0.le_topologicalClosure (Submodule.subset_span ⟨1, hone ξ⟩)
     have hTξ : amp T ξ ∈ S := by
@@ -315,28 +358,6 @@ private theorem sobCont_zero_twisted_operators {n : ℕ} {H : Type} [NormedAddCo
     Sobolev₂ Lie σ (0 : H →ₗ[ℂ] ℂ) :=
   ⟨[], 0, by simp, fun w _ => by simp⟩
 
-private theorem sobCont_add_twisted_operators {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    {Lie : Set (Matrix (Fin n) (Fin n) ℂ)} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {ℓ ℓ' : H →ₗ[ℂ] ℂ}
-    (h : Sobolev₂ Lie σ ℓ) (h' : Sobolev₂ Lie σ ℓ') : Sobolev₂ Lie σ (ℓ + ℓ') := by
-  obtain ⟨S, C, hS, hC⟩ := h
-  obtain ⟨S', C', hS', hC'⟩ := h'
-  refine ⟨S ++ S', |C| + |C'|, fun l hl => ?_, fun w hw => ?_⟩
-  · rcases List.mem_append.1 hl with hl | hl
-    · exact hS l hl
-    · exact hS' l hl
-  · have e1 := hC w hw
-    have e2 := hC' w hw
-    have p1 : 0 ≤ (S.map fun l => ‖l.foldr (dRep σ) w‖).sum := List.sum_nonneg fun y hy => by
-      obtain ⟨l, _, rfl⟩ := List.mem_map.1 hy
-      exact norm_nonneg _
-    have p2 : 0 ≤ (S'.map fun l => ‖l.foldr (dRep σ) w‖).sum := List.sum_nonneg fun y hy => by
-      obtain ⟨l, _, rfl⟩ := List.mem_map.1 hy
-      exact norm_nonneg _
-    rw [List.map_append, List.sum_append, LinearMap.add_apply]
-    have e3 := norm_add_le (ℓ w) (ℓ' w)
-    nlinarith [mul_le_mul_of_nonneg_right (le_abs_self C) p1, mul_le_mul_of_nonneg_right (le_abs_self C') p2,
-      mul_nonneg (abs_nonneg C) p2, mul_nonneg (abs_nonneg C') p1]
-
 private theorem sobCont_smul_twisted_operators {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {Lie : Set (Matrix (Fin n) (Fin n) ℂ)} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {ℓ : H →ₗ[ℂ] ℂ}
     (h : Sobolev₂ Lie σ ℓ) (c : ℂ) : Sobolev₂ Lie σ (c • ℓ) := by
@@ -363,7 +384,7 @@ private theorem equivariant_and_sobCont_slice {T : MMap M} (hT : T ∈ Mult θ M
       rfl
     · obtain ⟨ℓ, h1, h2⟩ := hT.2 τ v y
       obtain ⟨ℓ', h1', h2'⟩ := hT'.2 τ v y
-      exact ⟨ℓ + ℓ', sobCont_add_twisted_operators h1 h1', fun w => by simp [h2, h2']⟩
+      exact ⟨ℓ + ℓ', _root_.GlobalTheory.MultMem.sobCont_add h1 h1', fun w => by simp [h2, h2']⟩
   | smul c T _ hT =>
     refine ⟨fun τ g hg v w hw => ?_, fun τ v y => ?_⟩
     · rw [MultilinearMap.smul_apply, MultilinearMap.smul_apply, hT.1 τ g hg v w hw]
@@ -389,8 +410,8 @@ theorem multT_eq_zero {u : (⨂[ℂ] τ, M.sm τ) →ₗ[ℂ] (GA D V → ℂ)} 
   have hxsum : x = ∑ a : f.support, f a • PiTensorProduct.tprod ℂ (a : M.Vec) := by
     rw [← hf, Finsupp.sum, ← Finset.sum_coe_sort]
   have h0 : ∑ a : f.support, f a • T a = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxsum, map_sum] at h
+
+    rw [hxsum, map_sum] at h
     simpa only [map_smul, huT] using h
   obtain ⟨w', hw'⟩ : ∃ w' : M.Vec, tprodInnerFun w' x ≠ 0 := by
     by_contra hne
@@ -408,8 +429,8 @@ theorem multT_eq_zero {u : (⨂[ℂ] τ, M.sm τ) →ₗ[ℂ] (GA D V → ℂ)} 
     MultilinearMap.map_smul_univ T (fun τ => ⟪w' τ, (a : M.Vec) τ⟫_ℂ) w
   simp only [hA, smul_smul, ← Finset.sum_smul] at h1
   have hs : ∑ a : f.support, f a * ∏ τ, ⟪w' τ, (a : M.Vec) τ⟫_ℂ = tprodInnerFun w' x := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxsum, map_sum]
+
+    rw [hxsum, map_sum]
     simp only [map_smul, tprodInnerFun_tprod, smul_eq_mul]
   rw [hs] at h1
   exact (smul_eq_zero.1 h1).resolve_left hw'

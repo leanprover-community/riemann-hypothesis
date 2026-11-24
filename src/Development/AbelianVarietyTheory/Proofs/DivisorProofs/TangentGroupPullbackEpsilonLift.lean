@@ -1,11 +1,46 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueIsTanFrameOfIsEmpty
 public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerMatrixUnique
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolarizationFormIsotropicFiltration
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsUniqueIsConnOfLift
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolarizationFormIsotropicFiltration
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsChernExistsUniqueAndIso
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerMatrixUnique
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -170,7 +205,7 @@ theorem exists_wedge (P : AbelianDeRham.Free) {A : Over (Sp R)} [GrpObj A] {g : 
   simp [wedgeDual, ex, ey]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem snd_polForm (P : AbelianDeRham) {A : Over (Sp R)} [GrpObj A] {n : ℕ} (hA : IsAbelianScheme A)
     (hn : SmoothOfRelativeDimension n A.hom) {A' : Over (Sp (DualNumber R))} [GrpObj A'] {i : A.left ⟶ A'.left}
     (h : IsGrpPullback A A' (DeRham.epsRed R) i) {Y : Scheme.{0}} {L : LB Y} (hL : L.IsLB) {π' : A'.left ⟶ Y}
@@ -199,9 +234,9 @@ theorem snd_polForm (P : AbelianDeRham) {A : Over (Sp R)} [GrpObj A] {n : ℕ} (
   have hz' : (constMor A).isMor.pull2 (∑ j, cup _ (u j).1 (w j).1 - ∑ j, cup _ (a j).1 (b j).1) +
       (DualNumber.eps : DualNumber R) •
         (constMor A).isMor.pull2 (∑ j, (cup _ (u j).1 (x j).1 + cup _ (v j).1 (w j).1)) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, ← hz, sub_add_eq_add_sub, sub_eq_zero, map_sum, map_sum, map_sum, Finset.smul_sum,
-      ← Finset.sum_add_distrib]
+
+    rw [map_sub, ← hz, sub_add_eq_add_sub, sub_eq_zero, map_sum, map_sum, map_sum, Finset.smul_sum,
+    ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ ↦ ?_
     have e₁ : (liftMor (epsDP R) h).isMor.pull1 (a' j).1 = (constMor A).isMor.pull1 (u j).1 +
       (DualNumber.eps : DualNumber R) • (constMor A).isMor.pull1 (v j).1 := congrArg Subtype.val (huv j)
@@ -218,8 +253,8 @@ theorem snd_polForm (P : AbelianDeRham) {A : Over (Sp R)} [GrpObj A] {n : ℕ} (
   have t₁ := congrArg Λ₁ (sub_eq_zero.1 z₀)
   have t₂ := congrArg Λ₂ (sub_eq_zero.1 z₀)
   have t₃ := congrArg Λ₃ z₁
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_add (f := _), map_zero, e₁, e₂, e₃] at t₁ t₂ t₃
+
+  simp only [map_sum, map_add (f := _), map_zero, e₁, e₂, e₃] at t₁ t₂ t₃
   rw [wedgeForm_apply, wedgeForm_apply, wedgeForm_apply, ← t₁, ← t₂, ← add_zero (_ + _ : R), ← t₃,
     ← Finset.sum_add_distrib, ← Finset.sum_add_distrib, snd_sum]
   refine Finset.sum_congr rfl fun j _ ↦ ?_

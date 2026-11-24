@@ -1,12 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocLengthSum
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocResidueDeg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreDivSupp
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StFibreOverFinite
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsLocRingDimOne
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocFinite
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PFiniteAlgebraLengthSum
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.OneNotMemOfIsPrime
+import Mathlib.Data.ENat.BigOperators
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 
 @[expose] public section
 

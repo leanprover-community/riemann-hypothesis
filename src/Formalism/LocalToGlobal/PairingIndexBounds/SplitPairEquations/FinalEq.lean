@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.Outright
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
+public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.Outright
 
 @[expose] public section
 

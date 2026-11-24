@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.GroupWithZero.Indicator
+public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 
 @[expose] public section
 

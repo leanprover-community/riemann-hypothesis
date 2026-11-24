@@ -1,11 +1,48 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.DataParams₂
 public import Formalism.LocalRingCardinality.DataParams
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.CyclotomicTotient.NuInf
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Ideal.Int
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -82,9 +119,7 @@ def TwLoc (D : D7) (i : D.nd.Loc) : Prop := TwPl D (D.nd.w i)
 
 theorem TwPl.twLoc {D : D7} {w : D.what₂.places.Pl} (h : TwPl D w) {j : ℕ} {i : D.nd.Loc}
     (hi : i ∈ D.nd.locs j w) : TwLoc D i := by
-  unfold TwLoc
-  rw [((D.nd.locs_mem j w i).1 hi).2]
-  exact h
+  simpa only [TwLoc, ((D.nd.locs_mem j w i).1 hi).2] using h
 
 structure Tab (L : SizeData₂ D) where
   s : ∀ i : D.nd.Loc, D.nd.X i → ℝ
@@ -109,8 +144,7 @@ def twAt (L : SizeData₂ D) (l : ℕ) : Finset D.what₂.places.Pl :=
 open Classical in
 theorem mem_twAt {L : SizeData₂ D} {l : ℕ} {w : D.what₂.places.Pl} :
     w ∈ twAt L l ↔ w ∈ L.supp ∧ TwPl D w ∧ D.what₂.places.resChar w = l := by
-  unfold twAt TwPl
-  exact Finset.mem_filter
+  simp only [twAt, TwPl, Finset.mem_filter]
 
 def etaAt (L : SizeData₂ D) (j l : ℕ) : ℝ :=
   ∑ w ∈ twAt L l, SizeData₂.lwP w * (D.what₂.places.ramIdx w : ℝ) * (D.what₂.etaJ j w : ℝ)
@@ -271,8 +305,7 @@ theorem liesOver_resChar (D : D7) (w : D.what₂.places.Pl) :
   have := (D.plEq w).isPrime
   constructor
   apply hmax.eq_of_le (Ideal.IsPrime.under ℤ (D.plEq w).asIdeal).ne_top
-  rw [Ideal.span_singleton_le_iff_mem, Ideal.under_def, Ideal.mem_comap]
-  simpa using h5
+  simpa [Ideal.under_def, Ideal.mem_comap, Ideal.span_singleton_le_iff_mem] using h5
 
 theorem admissibleMeanCondition_holds (L : SizeData₂ D) : TwistedWeightMeanBound L := by
   classical
@@ -283,8 +316,7 @@ theorem admissibleMeanCondition_holds (L : SizeData₂ D) : TwistedWeightMeanBou
   rw [RingOfIntegers.rank] at hsum
   have hsum' : ∑ q ∈ ((Ideal.span {(l : ℤ)}).primesOver (𝓞 D.what₂.LL)).toFinset,
       q.ramificationIdx ℤ * q.inertiaDeg ℤ = Module.finrank ℚ D.what₂.LL := by
-    rw [← hsum]
-    exact (Finset.sum_set_coe (f := fun q : Ideal (𝓞 D.what₂.LL) => q.ramificationIdx ℤ * q.inertiaDeg ℤ) _).symm
+    simpa only [← hsum] using (Finset.sum_set_coe (f := fun q : Ideal (𝓞 D.what₂.LL) => q.ramificationIdx ℤ * q.inertiaDeg ℤ) _).symm
   have hn : (0 : ℝ) < (Module.finrank ℚ D.what₂.LL : ℝ) := by exact_mod_cast Module.finrank_pos
   have hlog : 0 ≤ Real.log (l : ℝ) := Real.log_natCast_nonneg l
   set G : Ideal (𝓞 D.what₂.LL) → ℝ := fun q =>
@@ -293,7 +325,6 @@ theorem admissibleMeanCondition_holds (L : SizeData₂ D) : TwistedWeightMeanBou
   have hterm : ∀ w ∈ S, SizeData₂.lwP w * (D.what₂.places.ramIdx w : ℝ) = G (D.plEq w).asIdeal := by
     intro w hw
     have hwl : D.what₂.places.resChar w = l := (mem_twAt.1 hw).2.2
-    have := (D.plEq w).isPrime
     have : (D.plEq w).asIdeal.LiesOver (Ideal.span {(l : ℤ)}) := hwl ▸ liesOver_resChar D w
     have hN := Ideal.pow_inertiaDeg l (D.plEq w).asIdeal
     simp only [hG, SizeData₂.lwP, lw, D.ram_eq w, eWL, ← hN]

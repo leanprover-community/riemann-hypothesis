@@ -1,12 +1,57 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LawsFieldsSeparately
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ChartCoverFOfSecBaseChange
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FrameChangeComposeInvertBaseChangeTriangular
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
 set_option autoImplicit false
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 
@@ -56,7 +101,7 @@ theorem lowerTriangularTwoBlock_mul_weylTwoBlock_eq_transvection (a b : n) (hab 
   have h2 : ∀ (c d : S) (i l : n), single i b c * single a l d = 0 := fun c d i l =>
     single_mul_single_of_ne c i b a hab.symm d
   simp only [lowerTriangularTwoBlockMatrix, weylTwoBlockMatrix, trv, add_mul, mul_add, sub_mul, mul_sub, one_mul, mul_one,
-    single_mul_single_same, h1, h2, zero_add, add_zero]
+    single_mul_single_same, h1, h2, add_zero]
   ext r c
   simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.single_apply, Matrix.one_apply]
   by_cases hr : a = r <;> by_cases hc : a = c <;> by_cases hr' : b = r <;> by_cases hc' : b = c <;>
@@ -68,11 +113,11 @@ theorem weylTwoBlockMatrix_mul_weylTwoBlockMatrixInv (a b : n) (hab : a ≠ b) (
   have h2 : ∀ (c d : S) (i l : n), single i b c * single a l d = 0 := fun c d i l =>
     single_mul_single_of_ne c i b a hab.symm d
   simp only [weylTwoBlockMatrixInv, weylTwoBlockMatrix, add_mul, mul_add, sub_mul, mul_sub, one_mul, mul_one,
-    single_mul_single_same, h1, h2, zero_add, add_zero]
+    single_mul_single_same, h1, h2, add_zero]
   ext r c
   simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.single_apply, Matrix.one_apply, Matrix.zero_apply]
   by_cases hr : a = r <;> by_cases hc : a = c <;> by_cases hr' : b = r <;> by_cases hc' : b = c <;>
-    simp_all <;> ring
+    simp_all
 
 theorem isUnit_det_trv (a b : n) (hab : a ≠ b) (x : S) : IsUnit (trv a b x).det := by
   have : trv a b x = transvection a b x := rfl
@@ -96,9 +141,9 @@ theorem lowerTriangularTwoBlockMatrix_diag_apply {n : Type} [Fintype n] [Decidab
     (s y : S) (i : n) : lowerTriangularTwoBlockMatrix a b s y i i = if i = a then s else if i = b then y else 1 := by
   simp only [lowerTriangularTwoBlockMatrix, Matrix.add_apply, Matrix.single_apply, Matrix.one_apply]
   by_cases hia : i = a
-  · subst hia; simp [hab, Ne.symm hab]
+  · subst hia; simp [Ne.symm hab]
   · by_cases hib : i = b
-    · subst hib; simp [hia, hab, Ne.symm hab]
+    · subst hib; simp [hia, hab]
     · simp [hia, hib, Ne.symm hia, Ne.symm hib]
 
 theorem lowerTriangularTwoBlockMatrix_apply_of_ne {n : Type} [Fintype n] [DecidableEq n] {S : Type} [CommRing S] (a b : n)
@@ -290,7 +335,7 @@ theorem eq_zero_of_lt {e : Ix Dw → ℤ} {f : Rul Xo c} (hf : f ∈ secZ Xo c e
       by_cases hia : i = a
       · subst hia; simp [Tu]
       · by_cases hib : i = b
-        · subst hib; simp [hne, Ne.symm hne, Tu]
+        · subst hib; simp [Ne.symm hne, Tu]
         · simp [hia, hib]
     · simp [Bf, famU_of_ne _ hτ, t, hτ]
   have hlow : ∀ (τ : E →+* ℂ) (i j : Fin (Dw.mult τ)), i < j → Bf τ i j = 0 := by
@@ -301,7 +346,7 @@ theorem eq_zero_of_lt {e : Ix Dw → ℤ} {f : Rul Xo c} (hf : f ∈ secZ Xo c e
       refine lowerTriangularTwoBlockMatrix_apply_of_ne a b (LaurentPolynomial.T 1 : LaurentPolynomial L) (LaurentPolynomial.T (-1)) i j (ne_of_lt hij) ?_
       rintro ⟨rfl, rfl⟩
       exact hba hij
-    · simp [Bf, famU_of_ne _ hτ, Matrix.one_apply, ne_of_lt hij]
+    · simp [Bf, famU_of_ne _ hτ, ne_of_lt hij]
   have hbor : FrBor t z2 z1 := ((calc4 (LaurentPolynomial L)).2.2.2 t z2 z1).2 ⟨Bf, hdiag, hlow, by simpa [t] using c3⟩
   have hw := evR_frBor_univ hj ⟨⟨hX, huniv⟩, u₀, hu₀, hchg⟩ hf hz2 hz1 hbor
   rw [GlobalTheory.FlagTan.evR_eq hf.1 hz1, GlobalTheory.FlagTan.evR_eq hf.1 hz2] at hw

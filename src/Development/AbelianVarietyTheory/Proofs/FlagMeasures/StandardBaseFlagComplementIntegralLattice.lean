@@ -1,14 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLocalizedModuleSubtype
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLatticeLatIn
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLatticeLatIn
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLocalizedModuleSubtype
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.FrobeniusOrbits.HostCorollaries
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
+import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 
 @[expose] public section
 
@@ -46,47 +92,7 @@ variable [FiniteDimensional K V]
 theorem span_eq_top_of_unimodular (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm)
     (hn : h.Nondegenerate) {Λ : Submodule (𝓞 K) V} (hL : Submodule.IsLattice K Λ)
     (hU : IsUnimodular h Λ) : Submodule.span K (Λ : Set V) = ⊤ := by
-  classical
-  by_contra hspan
-  obtain ⟨φ, hφ₀, hφ⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hspan)
-  let H : Formalism.HermitianLatticeCounting.S6.HermSpace K V :=
-    { B := h.flip, herm := fun x y => hs.eq y x, nondeg := fun x hx => hn.2 x hx }
-  obtain ⟨μ, hμ⟩ := GlobalTheory.UnimodQuot.exists_rep H φ
-  have hμ₀ : μ ≠ 0 := by
-    intro e
-    apply hφ₀
-    ext y
-    simpa [H, e] using (hμ y).symm
-  have hline (a : K) : a • μ ∈ Λ := by
-    rw [← hU]
-    apply (dualBasic_mem_dual _ _ _).2
-    intro y hy
-    have hy₀ := LinearMap.mem_ker.mp (hφ (Submodule.subset_span hy))
-    have hm : h μ y = φ y := hμ y
-    have hz : h y μ = 0 := by rw [← hs.eq, hm, hy₀, map_zero]
-    simp [map_smul, hz]
-  obtain ⟨ψ, hψ, -⟩ := Submodule.exists_le_ker_of_notMem
-    (show μ ∉ (⊥ : Submodule K V) by simpa using hμ₀)
-  let f := ψ.restrictScalars (𝓞 K)
-  have hmap (x : K) : x ∈ Λ.map f := by
-    refine ⟨(x / ψ μ) • μ, hline _, ?_⟩
-    change ψ ((x / ψ μ) • μ) = x
-    rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hψ]
-  obtain ⟨d, hd₀, hd⟩ := FractionalIdeal.isFractional_of_fg
-    (S := nonZeroDivisors (𝓞 K)) (hL.fg.map f)
-  have hinj := IsFractionRing.injective (𝓞 K) K
-  have hne {a : 𝓞 K} (ha : a ≠ 0) : algebraMap (𝓞 K) K a ≠ 0 :=
-    fun e => ha (hinj (e.trans (map_zero _).symm))
-  have hinteger (x : K) : IsLocalization.IsInteger (𝓞 K) x := by
-    have hx := hd _ (hmap ((algebraMap (𝓞 K) K d)⁻¹ * x))
-    rwa [Algebra.smul_def, ← mul_assoc, mul_inv_cancel₀ (hne (nonZeroDivisors.ne_zero hd₀)),
-      one_mul] at hx
-  apply RingOfIntegers.not_isField K
-  refine ⟨⟨0, 1, zero_ne_one⟩, mul_comm, ?_⟩
-  intro a ha
-  obtain ⟨b, hb⟩ := hinteger ((algebraMap (𝓞 K) K a)⁻¹)
-  refine ⟨b, hinj ?_⟩
-  rw [map_mul, hb, map_one, mul_inv_cancel₀ (hne ha)]
+  exact Formalism.HermitianLatticesTheory.IsUnimodular.span_eq_top hU hs hL.fg
 
 theorem exists_rep (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm) (hn : h.Nondegenerate) {Λ : Submodule (𝓞 K) V}
     (hL : Submodule.IsLattice K Λ) (hU : IsUnimodular h Λ) (U : Submodule K V) (f : V →ₗ[K] K)
@@ -123,7 +129,7 @@ theorem exists_rep (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm) (hn : h.No
 variable {W : Type} [AddCommGroup W] [Module K W] [Module (𝓞 K) W] [IsScalarTower (𝓞 K) K W] [FiniteDimensional K W]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem perp_lattice (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm) (hn : h.Nondegenerate) {Λ : Submodule (𝓞 K) V}
     (hL : Submodule.IsLattice K Λ) (hU : IsUnimodular h Λ)
     (hW : W →ₗ⋆[K] W →ₗ[K] K) (hsW : hW.IsSymm) (hnW : hW.Nondegenerate) (ι : W →ₗ[K] V)
@@ -283,8 +289,8 @@ theorem baseFlagComplement_posDef (D : D7) : IsPosDef (D.sp.X 0).hT := by
   rw [Formalism.BasicNotions.hT_expand]
   change Complex.re _ = _
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, Matrix.mulVec, map_sum, map_mul, hτ, Finset.mul_sum, Matrix.map_apply, Pi.star_apply, mul_assoc]
+
+  simp only [dotProduct, Matrix.mulVec, map_sum, map_mul, hτ, Finset.mul_sum, Matrix.map_apply, Pi.star_apply, mul_assoc]
   rfl
 
 theorem main : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → WHyp D (lf D F0) (Wsp D) ∧ Function.Injective (D.sp.iXY 0) ∧ IsPosDef (D.sp.X 0).hT ∧ Submodule.IsLattice D.host.E (L0X D Λ (lf D F0)) ∧ Formalism.HermitianLatticesTheory.IsIntegralLat (D.sp.X 0).hT (L0X D Λ (lf D F0)) ∧ detW D (L0X D Λ (lf D F0)) = NT D u ∧ Wb D = Wsp D ⊔ Submodule.span D.host.E {D.zmOf u} := by

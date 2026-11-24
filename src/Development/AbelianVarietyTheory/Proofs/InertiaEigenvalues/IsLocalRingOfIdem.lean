@@ -1,9 +1,59 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnitBasePointAdjoinTwistedSigma
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
+public import Mathlib.RingTheory.Idempotents
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EqZeroOfNotPrimary
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FiniteAlgebraLocalCompletion
+public import Mathlib.RingTheory.Polynomial.GaussLemma
+public import Mathlib.RingTheory.Trace.Basic
 
 @[expose] public section
 
@@ -197,11 +247,11 @@ theorem eta_gram (B : InvAlg K) (x : B.A) (b : Module.Basis (Fin (Module.finrank
     ext i j
     simp only [Matrix.mul_apply, Matrix.of_apply, Matrix.transpose_apply, RingHom.mapMatrix_apply,
       Matrix.map_apply, InvAlg.herm, RingHom.coe_coe]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hb i, hb j, map_sum, Finset.mul_sum, map_sum]
+
+    rw [hb i, hb j, map_sum, Finset.mul_sum, map_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.mul_sum, Finset.sum_mul, map_sum, Finset.sum_mul]
+
+    rw [Finset.mul_sum, Finset.sum_mul, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Algebra.smul_def (M l j), map_mul B.σ, B.σ_alg, ← Algebra.smul_def, mul_smul_comm, mul_smul_comm,
       smul_mul_assoc, map_smul, map_smul]
@@ -415,38 +465,6 @@ theorem cut_integral (B : InvAlg K) (e : B.A) (he : B.σ e = e) (h : IsIntegral 
 
 theorem adjoin_stable (B : InvAlg K) (hu : B.g * B.σ B.g = 1) (hi : IsIntegral K.O B.g) {y : B.A}
     (hy : y ∈ Algebra.adjoin K.O ({B.g} : Set B.A)) : B.σ y ∈ Algebra.adjoin K.O ({B.g} : Set B.A) := by
-  have hO : ∀ a : K.O, ∃ b : K.O, B.σ (algebraMap K.O B.A a) = algebraMap K.O B.A b := by
-    intro a
-    obtain ⟨b, hb⟩ := K.c_int a
-    exact ⟨b, by rw [IsScalarTower.algebraMap_apply K.O K.E B.A, B.σ_alg, hb, ← IsScalarTower.algebraMap_apply]⟩
-  have hσi : IsIntegral K.O (B.σ B.g) := by
-    have hinj : Function.Injective (algebraMap K.O K.E) := IsFractionRing.injective _ _
-    choose τ' hτ' using K.c_int
-    let cO : K.O →+* K.O :=
-      { toFun := τ'
-        map_one' := hinj (by rw [← hτ']; simp)
-        map_mul' := fun a b => hinj (by simp [← hτ'])
-        map_zero' := hinj (by rw [← hτ']; simp)
-        map_add' := fun a b => hinj (by simp [← hτ']) }
-    refine IsIntegral.map_of_comp_eq cO (B.σ : B.A →+* B.A) ?_ hi
-    ext a
-    change algebraMap K.O B.A (τ' a) = B.σ (algebraMap K.O B.A a)
-    rw [IsScalarTower.algebraMap_apply K.O K.E B.A a, B.σ_alg, hτ', ← IsScalarTower.algebraMap_apply]
-  have hg : B.σ B.g ∈ Algebra.adjoin K.O ({B.g} : Set B.A) := by
-    obtain ⟨p, hp, h0⟩ := hσi
-    let i : Invertible (B.σ B.g) := ⟨B.g, hu, by rw [mul_comm, hu]⟩
-    have h1 : eval₂ (algebraMap K.O B.A) B.g p.reverse = 0 :=
-      (eval₂_reverse_eq_zero_iff (algebraMap K.O B.A) (B.σ B.g) p).2 h0
-    rw [← X_mul_divX_add p.reverse, coeff_zero_reverse, hp.leadingCoeff, ← aeval_def] at h1
-    simp only [map_add (f := _), map_mul, aeval_X, map_one] at h1
-    have h2 : B.σ B.g = -aeval B.g p.reverse.divX := by
-      linear_combination B.σ B.g * h1 - aeval B.g p.reverse.divX * hu
-    rw [h2]
-    exact neg_mem (aeval_mem_adjoin_singleton _ _)
-  induction hy using Algebra.adjoin_induction with
-  | mem x hx => rw [Set.mem_singleton_iff.1 hx]; exact hg
-  | algebraMap a => obtain ⟨b, hb⟩ := hO a; rw [hb]; exact Subalgebra.algebraMap_mem _ _
-  | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
-  | mul x y _ _ hx hy => rw [map_mul]; exact mul_mem hx hy
+  apply GlobalTheory.UnitLemma.UnitBase.σ_mem_adjoin <;> assumption
 
 end GlobalTheory.UnitLemma.Orbit

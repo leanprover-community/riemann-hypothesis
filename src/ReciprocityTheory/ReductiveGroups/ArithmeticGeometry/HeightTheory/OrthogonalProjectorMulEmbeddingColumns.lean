@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.LatSemiSt
+public import Mathlib.LinearAlgebra.Matrix.Rank
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -122,8 +124,8 @@ theorem normSqSum_add_of_orthogonal {r : ℕ} (a c : Fin r → ℂ) (h : star a 
   unfold hns
   have h' : ∑ i, (a i * (starRingEnd ℂ) (c i)).re = 0 := by
     have h1 : ∑ i, a i * (starRingEnd ℂ) (c i) = (starRingEnd ℂ) (star a ⬝ᵥ c) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [dotProduct, map_sum, map_mul, Pi.star_apply, Complex.star_def, Complex.conj_conj]
+
+      simp only [dotProduct, map_sum, map_mul, Pi.star_apply, Complex.star_def, Complex.conj_conj]
     rw [← Complex.re_sum, h1, h, map_zero, Complex.zero_re]
   simp only [Pi.add_apply, ← Complex.normSq_eq_norm_sq, Complex.normSq_add, Finset.sum_add_distrib,
     ← Finset.mul_sum, h', mul_zero, add_zero]
@@ -158,8 +160,8 @@ theorem orthogonalProjector_mulVec_eq_zero (σ : K →+* ℂ) {b : Fin k → Fin
   have h1 : (fun i => σ ((∑ j, c j • b j) i)) = hBm σ b *ᵥ fun j => σ (c j) := by
     rw [embeddingColumns_mulVec]
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Finset.sum_apply, map_sum, map_mul]
+
+    simp [Finset.sum_apply, map_sum, map_mul]
   rw [h1, Matrix.mulVec_mulVec, orthogonalProjector_mul_embeddingColumns σ hb, Matrix.zero_mulVec]
 
 end Proj
@@ -194,8 +196,7 @@ theorem quotientGram_eq_projector (σ : K →+* ℂ) {b : Fin k → Fin r → K}
     unfold ReciprocityTheory.MultiplicativeHeights.quotGramC
     rw [gramMatrix_eq_embeddingColumns, gramMatrix_eq_embeddingColumns, crossGram_eq_embeddingColumns, crossGram_eq_embeddingColumns]
     unfold hPm
-    simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.conjTranspose_mul,
-      Matrix.conjTranspose_conjTranspose, Matrix.mul_assoc]
+    simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_assoc]
   rw [hq, key, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, orthogonalProjector_conjTranspose,
     orthogonalProjector_mul_self σ hb]
   rfl

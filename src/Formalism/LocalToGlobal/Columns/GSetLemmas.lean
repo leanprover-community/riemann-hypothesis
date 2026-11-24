@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
-public import Formalism.ThetaLiftIndependence.Statement
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.DoubleCosetDecompositionAll
 
 @[expose] public section
 
@@ -303,8 +301,8 @@ theorem rat_comp {ι ι' ι'' V V' V'' : Type} [Fintype ι'] [AddCommGroup V] [M
     (f : V →ₗ[K] V') (f' : V' →ₗ[K] V'') (F : Subfield K) (h : ∀ i j, b'.repr (f (b j)) i ∈ F)
     (h' : ∀ i j, b''.repr (f' (b' j)) i ∈ F) (i : ι'') (j : ι) : b''.repr (f' (f (b j))) i ∈ F := by
   rw [← b'.sum_repr (f (b j))]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply, smul_eq_mul]
+
+  simp only [map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply, smul_eq_mul]
   exact sum_mem fun k _ => mul_mem (h k j) (h' i k)
 
 def trans {S'' : GSD K} (e' : GSD.Iso S' S'') : GSD.Iso S S'' where

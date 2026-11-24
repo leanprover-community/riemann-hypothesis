@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.HeckeInert
-public import Formalism.LocalToGlobal.Columns.GSetLemmas
-public import Formalism.LocalToGlobal.Columns.UnipotentRightActionFunctionsW
 
 @[expose] public section
 

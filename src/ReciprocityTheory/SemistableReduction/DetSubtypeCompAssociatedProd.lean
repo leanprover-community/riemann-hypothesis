@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
-public import Lemmata.GeneralBFactLast.Imports
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.GeneralBFactAlt
 public import Lemmata.GeneralBFactTail.Imports
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+public import Mathlib.RingTheory.OrderOfVanishing.Noetherian
+import Mathlib.Tactic.TypeStar
+public import Lemmata.GeneralBFactLast.Imports
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
 
 @[expose] public section
 
@@ -11,19 +15,11 @@ namespace ReciprocityTheory.MultiplicativeHeights
 
 open Module Submodule
 
-theorem det_subtype_comp_associated_prod {R M : Type*} [CommRing R] [IsDomain R]
-    [IsPrincipalIdealRing R] [AddCommGroup M] [Module R M] {ι : Type*} [Fintype ι]
-    [DecidableEq ι] (b : Basis ι R M) (N : Submodule R M)
-    (h : finrank R N = finrank R M) (e : M ≃ₗ[R] N) :
-    Associated (LinearMap.det (N.subtype ∘ₗ (e : M →ₗ[R] N)))
-      (∏ i, smithNormalFormCoeffs b h i) := by
-  first | exact Bl.general_b_fact_tail.goal1 .. | (apply Bl.general_b_fact_tail.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_tail.goal1 <;> assumption)
-
 theorem addVal_prod {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     {ι : Type*} (s : Finset ι) (a : ι → O) :
     IsDiscreteValuationRing.addVal O (∏ i ∈ s, a i) =
       ∑ i ∈ s, IsDiscreteValuationRing.addVal O (a i) := by
-  first | exact Bl.general_b_fact'''''''.goal1 .. | (apply Bl.general_b_fact'''''''.goal1 <;> assumption) | (intros; apply Bl.general_b_fact'''''''.goal1 <;> assumption)
+  first | exact Bl.general_b_fact'''''''.goal1 ..
 
 theorem gaugeSplitting_holds : NormLengthStatement := by
   intro O B _ _ _ _ _ _ _ _ g hg
@@ -41,7 +37,7 @@ theorem gaugeSplitting_holds : NormLengthStatement := by
     rfl
   have hdet : Associated (Algebra.norm O g) (∏ i, smithNormalFormCoeffs b h i) := by
     rw [Algebra.norm_apply]
-    have key := det_subtype_comp_associated_prod b (I.restrictScalars O) h
+    have key := _root_.Bl.general_b_fact_tail.goal1 b (I.restrictScalars O) h
       (b.equiv (Ideal.basisSpanSingleton b hg) (Equiv.refl _))
     convert key using 2
     refine b.ext fun i => ?_

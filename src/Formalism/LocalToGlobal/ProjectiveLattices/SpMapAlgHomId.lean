@@ -75,7 +75,6 @@ theorem evalAt_actL (hL : ActLaws pts mapR borR actR) (hWD : EvalWD pts mapR)
       have h2 := hL.mul g g⁻¹ _ _ _ _ (hm g y) (hm g⁻¹ (mvPt pts actR g y))
       first
         | rw [mul_inv_cancel] at h2
-        | rw [mul_right_inv] at h2
       have h3 := hL.func 1 _ _ _ _ h2 (hL.one _ y)
       exact ⟨p, φ, _, hTr _ _ φ _ _ _ h1 h3⟩
     unfold evalAt
@@ -107,7 +106,6 @@ theorem spMap_algHom_id (K : Type) [Field K] (T : Type) [CommRing T] [Algebra K 
   unfold spMap
   have h : CommRingCat.ofHom (AlgHom.id K T).toRingHom = 𝟙 (CommRingCat.of T) := rfl
   rw [h, Spec.map_id]
-  try rfl
 
 theorem dualMap_id (T : Type) [CommRing T] : dualMap (RingHom.id T) = RingHom.id _ := by
   refine RingHom.ext fun x => ?_
@@ -125,7 +123,6 @@ theorem frMap_trans_id {c : Coeff l} :
     unfold spMap
     have h0 : CommRingCat.ofHom (RingHom.id (TrivSqZeroExt T T)) = 𝟙 (CommRingCat.of (TrivSqZeroExt T T)) := rfl
     rw [h0, Spec.map_id]
-    try rfl
   refine ⟨?_, ?_, pm2 ≫ pm1, ?_, ?_, ?_⟩
   · rw [hx2, e1, Category.id_comp, hx1]
   · intro τ i
@@ -134,8 +131,6 @@ theorem frMap_trans_id {c : Coeff l} :
   · rw [Category.assoc, hf1, ← Category.assoc, hf2, Category.assoc, e1]
     first
       | erw [Category.id_comp]
-      | simp
-      | rfl
   · intro i h
     have h2 := ppx_le pm2 hs2 i
     have h1 := ppx_le pm1 hs1 i
@@ -212,8 +207,8 @@ theorem evR_sum_smul {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) {
   unfold evR
   by_cases h : FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) y
   · simp only [evalAt, dif_pos h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Finset.sum_apply, map_sum, Algebra.smul_def]
+
+    simp [Finset.sum_apply, map_sum, Algebra.smul_def]
   · simp only [evalAt, dif_neg h]
     simp
 
@@ -228,8 +223,8 @@ theorem isBC_regroup [Algebra c.F c'.F] (halg : algebraMap c.F c'.F = incF c c' 
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => ?_
   conv_lhs => rw [← B.sum_repr (as i)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_mul]
+
+  rw [map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Algebra.smul_def, halg, map_mul]
   ring
@@ -261,7 +256,6 @@ theorem goodEmb_ext {σ : c.F →+* ℂ} (hσ : GoodEmb c σ) {σ' : c'.F →+* 
   rw [← hσ, ← h]
   first
     | rfl
-    | simp [incF]
 
 theorem cuspBC_of (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (hS : SecBC Xo hle) : CuspBC hle U := by
   classical

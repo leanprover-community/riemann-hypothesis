@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.IsBichar
+public import Mathlib.GroupTheory.Index
 
 @[expose] public section
 

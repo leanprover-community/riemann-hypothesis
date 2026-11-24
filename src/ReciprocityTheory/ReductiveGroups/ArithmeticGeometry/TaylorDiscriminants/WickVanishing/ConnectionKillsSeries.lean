@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -28,8 +29,8 @@ theorem vf_sub (c : τ → MvPowerSeries τ k) (f G : MvPowerSeries τ k) : vf c
 
 theorem vf_sum {ι : Type} (s : Finset ι) (c : τ → MvPowerSeries τ k) (f : ι → MvPowerSeries τ k) :
     vf c (∑ i ∈ s, f i) = ∑ i ∈ s, vf c (f i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [vf, map_sum, Finset.mul_sum]
+
+  simp only [vf, map_sum, Finset.mul_sum]
   exact Finset.sum_comm
 
 theorem vf_C (c : τ → MvPowerSeries τ k) (a : k) : vf c (C a) = 0 := by
@@ -69,8 +70,8 @@ theorem liftX_mul (f g : PS k 1 d) : liftX k (f * g) = liftX k f * liftX k g := 
 
 theorem liftX_sum {ι : Type} (s : Finset ι) (f : ι → PS k 1 d) :
     liftX k (∑ i ∈ s, f i) = ∑ i ∈ s, liftX k (f i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← liftHom_apply, map_sum]
+
+  simp only [← liftHom_apply, map_sum]
 
 theorem pderiv_inl_liftX (f : PS k 1 d) (j : Fin d) :
     pderiv (R := k) (Sum.inl j) (liftX k f) = liftX k (pderiv (R := k) ((0 : Fin 1), j) f) := by

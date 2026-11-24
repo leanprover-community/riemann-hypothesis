@@ -1,11 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsBasis
-public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.OrderOfSignGroupDvdTwo
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CardTrivialFirstComponent
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.IsometryLinkageTrivialLevel
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntRing
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsInt
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.IsometryLinkageTrivialLevel
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -60,28 +60,6 @@ theorem integral_subst {σ τ : Type*} [Finite σ] (a : σ → MvPowerSeries τ 
   rw [MvPowerSeries.map_subst hs]
   simp only [ha']
 
-theorem galE_sigmaOf (D : D7) (g : D.R.GG) :
-    D.host.galE (D.host.sigmaOf g) = g := by
-  exact D.host.gal.apply_symm_apply _
-
-theorem embT_K (D : D7) (τ : D.what₂.Tau) (x : D.host.E) (hx : x ∈ D.host.K) :
-    embT D τ x = D.host.φ₀ x := by
-  set σ := D.host.sigmaOf ((D.eTau τ : D.R.Psi) : D.R.GG)
-  have hb : σ (D.host.sqd) = D.host.sqd := by
-    rw [← D.host.galE_mem_Psi_iff, galE_sigmaOf]
-    exact (D.eTau τ).2
-  have hfix : σ x = x := by
-    have hx' : x ∈ IntermediateField.adjoin ℚ {D.host.sqd} := hx
-    clear hx
-    induction hx' using IntermediateField.adjoin_induction with
-    | mem y hy => rw [Set.mem_singleton_iff.mp hy]; exact hb
-    | algebraMap r => rw [eq_ratCast (algebraMap ℚ D.host.E) r]; exact map_ratCast σ r
-    | add y z _ _ h1 h2 => rw [map_add (f := _), h1, h2]
-    | inv y _ h1 => rw [map_inv₀, h1]
-    | mul y z _ _ h1 h2 => rw [map_mul, h1, h2]
-  show D.host.φ₀ (σ x) = _
-  rw [hfix]
-
 theorem emb_mem (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : embT D τ x ∈ Qbar := by
   rw [mem_algebraicClosure_iff']
   exact (Algebra.IsIntegral.isIntegral x).map (embT D τ).toRatAlgHom
@@ -129,28 +107,28 @@ theorem atLog_change (D : D7) {N N' r : ℕ} (lam : Qbar →+* ℂ_[p]) (Λ : Ad
         PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries (Fin r) ℂ_[p]) (flog (C • wModel lam Λ) wq)) := by
     apply MvPowerSeries.hasSubst_of_constantCoeff_zero
     intro k
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hX]
+
+    simp [map_sum, hX]
   have hSs : MvPowerSeries.HasSubst S := MvPowerSeries.hasSubst_of_constantCoeff_zero hS0
   unfold atLog
   simp only []
   rw [MvPowerSeries.subst_comp_subst_apply hY hSs]
   congr 1
   funext k
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom hSs, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom hSs, map_sum]
   simp only [map_mul, AlgHom.commutes, MvPowerSeries.coe_substAlgHom, subst_subst_X S hSs, hSl]
   have hx : ∀ j, lamC lam (embT D k.1 (b' j k.2.1 k.2.2)) =
       ∑ i, lam (embQ D k.1 (A i j)) * lam (embQ D k.1 (b i k.2.1 k.2.2)) := by
     intro j
     rw [lamC_embT, hb' j, Matrix.sum_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.smul_apply, smul_eq_mul, map_sum, map_mul]
+
+    simp only [Matrix.smul_apply, smul_eq_mul, map_sum, map_mul]
   have hy : ∀ i j, lamC lam (D.host.φ₀ (A i j)) = lam (embQ D k.1 (A i j)) := by
     intro i j
-    rw [← embT_K D k.1 _ (hAK i j), lamC_embT]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hx, hy, lamC_embT, Finset.mul_sum, map_sum, Finset.sum_mul]
+    rw [← _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.embT_K D k.1 _ (hAK i j), lamC_embT]
+
+  simp only [hx, hy, lamC_embT, Finset.mul_sum, map_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   simp only [map_mul]
@@ -227,9 +205,9 @@ theorem hYY_comb (D : D7) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) 
     mul_mem (hx i) (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.G0.conj_mem D ⟨y i', hy i'⟩)
   have e1 : (∑ a, ∑ c, (∑ i, x i • b i) a c * D.host.conj ((∑ i, y i • b i) a c)) =
       ∑ i, ∑ i', (x i * D.host.conj (y i')) * ∑ a, ∑ c, b i a c * D.host.conj (b i' a c) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.sum_mul,
-      Finset.mul_sum]
+
+    simp only [Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.sum_mul,
+    Finset.mul_sum]
     rw [sum4, Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun i' _ =>
       Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
@@ -241,8 +219,8 @@ theorem hYY_comb (D : D7) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) 
     rfl
   unfold hYY
   rw [e1]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [e2, map_sum, map_smul, smul_eq_mul, IntermediateField.coe_sum, IntermediateField.coe_mul]
+
+  simp only [e2, map_sum, map_smul, smul_eq_mul, IntermediateField.coe_sum, IntermediateField.coe_mul]
 
 theorem orthChange_core : OrthChange := by
   intro D p hp N N' L L' r r' b b' hbL hbO hb'L hb'O
@@ -260,7 +238,6 @@ theorem orthChange_core : OrthChange := by
     IntermediateField.coe_zero, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
   first
   | exact h.symm
-  | (rw [← h]; split_ifs <;> simp)
 
 end IntegralOrthonormalChange
 
@@ -279,8 +256,6 @@ theorem basisInv_of (hO : OrthChange) (hU : UnitSubst) : BasisInv := by
   rw [key, hPV, ← mul_assoc, ← MvPowerSeries.subst_mul hSs]
   exact integral_mul (integral_subst S hS0 hSI (hI C wq hC hW)) hV
 
-theorem orthonormal_change_unitary_integral : OrthChange := IntegralOrthonormalChange.orthChange_core
-
-theorem basisInv_of_unitSubst (hU : UnitSubst) : BasisInv := basisInv_of orthonormal_change_unitary_integral hU
+theorem basisInv_of_unitSubst (hU : UnitSubst) : BasisInv := basisInv_of _root_.Formalism.L2.KerInert.IntegralOrthonormalChange.orthChange_core hU
 
 end Formalism.L2.KerInert

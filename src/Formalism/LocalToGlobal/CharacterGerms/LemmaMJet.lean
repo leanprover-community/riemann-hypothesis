@@ -1,7 +1,8 @@
 module
 
+public import Formalism.FrobeniusBaseCase.Statement
+public import Formalism.LocalToGlobal.CharacterGerms.Interface
 public import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
-public import Formalism.IncomingBounds.FlowDegreeBounds.ThmPJet
 
 @[expose] public section
 
@@ -25,8 +26,8 @@ theorem jet_smul_right (P : MvPolynomial σ C) (a : C) (G : MvPowerSeries σ C) 
 
 theorem jet_sum_right {ι : Type} (s : Finset ι) (P : MvPolynomial σ C)
     (G : ι → MvPowerSeries σ C) : jetAt0 P (∑ j ∈ s, G j) = ∑ j ∈ s, jetAt0 P (G j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [jetAt0, map_sum, Finset.mul_sum]
+
+  simp only [jetAt0, map_sum, Finset.mul_sum]
   exact Finset.sum_comm
 
 theorem jet_C (a : C) (G : MvPowerSeries σ C) :
@@ -54,7 +55,7 @@ theorem mfact_add_single (m : σ →₀ ℕ) (x : σ) :
   have hrest : ∏ y ∈ s.erase x, ((m + Finsupp.single x 1 : σ →₀ ℕ) y).factorial = ∏ y ∈ s.erase x, (m y).factorial :=
     Finset.prod_congr rfl fun y hy => by
       rw [Finset.mem_erase] at hy
-      simp [Finsupp.single_apply, Ne.symm hy.1]
+      simp [Ne.symm hy.1]
   rw [hrest]
   simp [Nat.factorial_succ]
   ring
@@ -96,8 +97,8 @@ theorem coeff_mvExp_partial {h : MvPowerSeries σ C} (hh : OrdGE 1 h) (N : ℕ) 
     have := ordGE_finset_prod (Finset.range k) (fun _ => 1) (fun _ => h) (fun _ _ => hh)
     simpa [Finset.prod_const, Finset.card_range] using this
   show (∑ k ∈ Finset.range (m.degree + 1), coeff m (h ^ k) / (k.factorial : C)) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_smul, smul_eq_mul]
   rw [Finset.sum_subset (Finset.range_mono (by omega : m.degree + 1 ≤ N + 1)) ?_]
   · exact Finset.sum_congr rfl fun k _ => by rw [div_eq_inv_mul]
@@ -114,8 +115,8 @@ theorem subst_mvExp [Finite σ] {a : σ → MvPowerSeries τ C} (ha : ∀ s, Ord
       (fun d hd => coeff_mvExp_partial hh e.degree d hd) e le_rfl,
     coeff_mvExp_partial hsh e.degree e le_rfl]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom (hasSubst_of_ordGE ha), map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom (hasSubst_of_ordGE ha), map_sum]
   simp only [map_smul, map_pow]
 
 end Formalism.L2.FormalSeriesBounds

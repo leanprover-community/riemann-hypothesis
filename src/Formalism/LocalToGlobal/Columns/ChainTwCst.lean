@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.ChainTwOk
+import Formalism.LocalToGlobal.Columns.ChainOneOk
 
 @[expose] public section
 

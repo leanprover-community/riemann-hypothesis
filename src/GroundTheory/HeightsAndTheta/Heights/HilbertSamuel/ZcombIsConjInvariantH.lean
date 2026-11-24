@@ -1,13 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodairaSection
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionProduct
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturbSemipos
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefAmpleGeneric
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefAmpleFibre
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsZCombLimit
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

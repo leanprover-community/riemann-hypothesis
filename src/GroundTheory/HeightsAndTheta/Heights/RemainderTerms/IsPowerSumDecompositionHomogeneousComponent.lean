@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.IsFlagIntegralOne
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHomogeneousComponentMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.LinearAlgebra.Vandermonde
 
 @[expose] public section
 
@@ -81,27 +126,25 @@ theorem rootRingToReal_blockPowerSum (f N j k : ℕ) (h : N = j + k) (m : ℕ) (
 theorem rootRingToReal_smallPowerSum_last (f r a m : ℕ) (τ : Fin f) :
     rootRingToReal f (r + a) a r (Nat.add_comm r a) (smallPowerSum f r a .last m τ) =
       IndefiniteRowSideFullHecke.RestTerms.smallPsum f a r true m τ := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [smallPowerSum, yRoot, SmallBlock.sign, yIndex, map_sum, map_pow, map_mul,
-    rootRingToReal_C, rootRingToReal_X, IndefiniteRowSideFullHecke.RestTerms.smallPsum, if_true, Rat.cast_one, C_1, one_mul]
+
+  simp only [smallPowerSum, yRoot, SmallBlock.sign, yIndex, map_sum, map_pow, rootRingToReal_X, IndefiniteRowSideFullHecke.RestTerms.smallPsum, if_true, C_1, one_mul]
   refine sum_congr rfl fun i _ => ?_
   rfl
 
 theorem rootRingToReal_smallPowerSum_first (f r a m : ℕ) (τ : Fin f) :
     rootRingToReal f (r + a) r a rfl (smallPowerSum f r a .first m τ) =
       IndefiniteRowSideFullHecke.RestTerms.smallPsum f r a false m τ := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [smallPowerSum, yRoot, SmallBlock.sign, yIndex, map_sum, map_pow, map_mul,
-    rootRingToReal_C, rootRingToReal_X, IndefiniteRowSideFullHecke.RestTerms.smallPsum, Bool.false_eq_true, if_false,
-    Rat.cast_neg, Rat.cast_one, C_neg, C_1, neg_one_mul, map_neg]
+
+  simp only [smallPowerSum, yRoot, SmallBlock.sign, yIndex, map_sum, map_pow, rootRingToReal_X, IndefiniteRowSideFullHecke.RestTerms.smallPsum, Bool.false_eq_true, if_false,
+  C_1, neg_one_mul, map_neg]
   refine sum_congr rfl fun i _ => ?_
   rfl
 
 theorem rootRingToReal_smallBlockMu_last (f r a : ℕ) :
     rootRingToReal f (r + a) a r (Nat.add_comm r a) (smallBlockMu f r a .last) =
       IndefiniteRowSideFullHecke.RestTerms.muClass f a r true := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [IndefiniteRowSideFullHecke.RestTerms.muClass, smallBlockMu, map_sum]
+
+  rw [IndefiniteRowSideFullHecke.RestTerms.muClass, smallBlockMu, map_sum]
   refine sum_congr rfl fun τ _ => ?_
   rw [← rootRingToReal_smallPowerSum_last]
   simp [smallPowerSum]
@@ -109,8 +152,8 @@ theorem rootRingToReal_smallBlockMu_last (f r a : ℕ) :
 theorem rootRingToReal_smallBlockMu_first (f r a : ℕ) :
     rootRingToReal f (r + a) r a rfl (smallBlockMu f r a .first) =
       IndefiniteRowSideFullHecke.RestTerms.muClass f r a false := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [IndefiniteRowSideFullHecke.RestTerms.muClass, smallBlockMu, map_sum]
+
+  rw [IndefiniteRowSideFullHecke.RestTerms.muClass, smallBlockMu, map_sum]
   refine sum_congr rfl fun τ _ => ?_
   rw [← rootRingToReal_smallPowerSum_first]
   simp [smallPowerSum]
@@ -123,8 +166,7 @@ theorem rootRingToReal_fibreClass_last (f r a : ℕ) :
   rw [vandermondeOf_eq_vandermonde, vandermondeOf_eq_vandermonde]
   congr 2
   · funext i
-    simp only [yRoot, SmallBlock.sign, yIndex, map_mul, rootRingToReal_C, rootRingToReal_X, Rat.cast_one,
-      C_1, one_mul] <;> rfl
+    simp only [yRoot, SmallBlock.sign, yIndex, rootRingToReal_X, C_1, one_mul] <;> rfl
   · funext i
     simp only [zRoot, zIndex, rootRingToReal_X] <;> rfl
 
@@ -137,8 +179,7 @@ theorem rootRingToReal_fibreClass_first (f r a : ℕ) :
   rw [vandermondeOf_eq_vandermonde, vandermondeOf_eq_vandermonde]
   congr 2
   · funext i
-    simp only [yRoot, SmallBlock.sign, yIndex, map_mul, rootRingToReal_C, rootRingToReal_X, Rat.cast_neg,
-      Rat.cast_one, C_neg, C_1, neg_one_mul, map_neg] <;> rfl
+    simp only [yRoot, SmallBlock.sign, yIndex, rootRingToReal_X, C_1, neg_one_mul, map_neg] <;> rfl
   · funext i
     simp only [zRoot, zIndex, rootRingToReal_X] <;> rfl
 
@@ -197,8 +238,8 @@ theorem isPowerSumDecomposition_homogeneousComponent (f N : ℕ) (F : RootRing f
   have hcomp : homogeneousComponent (topDegree f N + 1) F = F := by
     rw [homogeneousComponent_of_mem ((mem_homogeneousSubmodule _ _).2 hF), if_pos rfl]
   conv_lhs => rw [← hcomp, hQ]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum]
+
+  simp only [map_sum]
   refine sum_congr rfl fun m hm => sum_congr rfl fun τ _ => ?_
   rw [HomogeneousComponentMul.proof _ _ _ _ _ _ (blockPowerSum_isHomogeneous f N m τ),
     if_pos (hle m (Finset.mem_Icc.1 hm).2 τ)]

@@ -1,14 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartAbsIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartSheetCompare
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsPosDensMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceMassFinite
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffGradient
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOff
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffGradient
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarIntAdd
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsPosDensMeasurable
 
 @[expose] public section
 

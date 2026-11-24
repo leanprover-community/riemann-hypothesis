@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.Adm3OfExtension
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAt
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
+public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
 
 @[expose] public section
 

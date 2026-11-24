@@ -1,8 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.LatPAddRight
 public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+public import Formalism.LocalToGlobal.ProjectiveLattices.TowerOfAt
+import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 
 @[expose] public section
 

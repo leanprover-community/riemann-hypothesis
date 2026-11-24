@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.LocalAtPlace
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+import GroundTheory.GlobalFields.LocalAtPlace
 
 @[expose] public section
 
@@ -15,10 +16,6 @@ section Discrete
 
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Algebra R K]
   [IsFractionRing R K] (v : HeightOneSpectrum R)
-
-theorem valued_adicCompletion_surjective :
-    Function.Surjective (Valued.v : v.adicCompletion K → ℤᵐ⁰) :=
-  valuedAdicCompletion_surjective K v
 
 theorem valued_of_irreducible {ϖ : v.adicCompletionIntegers K} (hϖ : Irreducible ϖ) :
     Valued.v (ϖ : v.adicCompletion K) = exp (-1 : ℤ) := by

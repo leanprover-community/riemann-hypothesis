@@ -1,8 +1,50 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
+public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
 public import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
-public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
+public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 
 @[expose] public section
 
@@ -57,30 +99,7 @@ theorem arith_h (p h : ℕ) (hp : 2 ≤ p) : h < (p - 1) * (2 * h / (p - 1) + 1)
 
 theorem jumpsLe_of_win (A : ArcP n) (hA : A.OK) (T : LocLat G Qp LL O)
     (hT : Win W A T) : JumpsLe PD T A.h := by
-  intro τ a ha
-  obtain ⟨i, hi⟩ := W.emb_bij.2 (τ.comp (IsScalarTower.toAlgHom Qp K₀ K))
-  have hw := hT.2 i τ hi.symm a ha
-  have hok := hA.2.2.2.2.1 i
-  have hGh := hA.2.2.2.2.2.1
-  have hth := hA.2.2.2.2.2.2.2.1 i
-  revert hw hok hth
-  cases A.ty i with
-  | thin =>
-    intro hw _ _
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_Icc] at hw
-    rw [abs_le]; constructor <;> omega
-  | up b =>
-    intro hw hok hth
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_union, Set.mem_Icc] at hw
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.thick, Formalism.MainNotions.LocalTheoryWindows.LT.size, forall_const] at hth
-    rw [abs_le]; constructor <;> omega
-  | down b =>
-    intro hw hok hth
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_union, Set.mem_Icc] at hw
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.thick, Formalism.MainNotions.LocalTheoryWindows.LT.size, forall_const] at hth
-    rw [abs_le]; constructor <;> omega
+  apply Formalism.MainNotions.UnusedSlot80.Relay2.jumpsLe_of_win <;> assumption
 
 theorem lA_pow_smul (T : LocLat G Qp LL O) (k : ℕ) (x : W.DD T) :
     lA W ^ k • x = (((PD.p : ℕ) : O) ^ k) • x := by
@@ -468,8 +487,6 @@ theorem map_φpow {T T' : LocLat G Qp LL O} (f : LatHom T.L T'.L) (k : ℕ) (x :
     rw [PhiPowers.pow_apply_succ, PhiPowers.pow_apply_succ, ← ih]
     first
     | exact W.map_φ f _
-    | exact (W.map_φ f _).symm
-    | simp [W.map_φ]
 
 theorem φpow_smulA (T : LocLat G Qp LL O) (k : ℕ) (a : LetA O n) (x : W.DD T) :
     ((W.φD T) ^ k) (a • x) = (W.φA ^ k) a • ((W.φD T) ^ k) x := by
@@ -490,13 +507,6 @@ theorem φpow_smulO (T : LocLat G Qp LL O) (k : ℕ) (r : O) (x : W.DD T) :
     rw [PhiPowers.pow_apply_succ, ih, PhiPowers.pow_apply_succ]
     first
     | exact map_smul (W.φD T) r _
-    | exact W.φD_smulO T r _
-    | (rw [← algebraMap_smul (LetA O n) r, φD_smulA, ← algebraMap_smul (LetA O n) r]
-       congr 1
-       first
-       | exact AlgHom.commutes _ r
-       | exact W.φA_alg r
-       | simp)
 
 theorem φ_letE_e (e : W.DD W.one) (he : W.φD W.one e = e) (i : ZMod n) (k : ℕ) :
     ((W.φD W.one) ^ k) ((letE i : LetA O n) • e) = (letE (i + (k : ZMod n)) : LetA O n) • e := by
@@ -515,9 +525,6 @@ theorem γ_φpow (T : LocLat G Qp LL O) (k : ℕ) (x : W.DD T) :
     rw [PhiPowers.pow_apply_succ, PhiPowers.pow_apply_succ, ← ih]
     first
     | exact (W.φγ_comm _ _ _).symm
-    | exact W.φγ_comm _ _ _
-    | (simp only [LocWach.γ]; exact (W.φγ_comm _ _ _).symm)
-    | (simp only [LocWach.γ]; exact W.φγ_comm _ _ _)
 
 theorem φpow_add (T : LocLat G Qp LL O) (a b : ℕ) (x : W.DD T) :
     ((W.φD T) ^ a) (((W.φD T) ^ b) x) = ((W.φD T) ^ (b + a)) x := by
@@ -557,8 +564,8 @@ theorem InFN_φpow (T : LocLat G Qp LL O) (M : ℕ) (hq : qA W ∈ W.AΔ)
 theorem tele (T : LocLat G Qp LL O) (L : ℕ) (v : W.DD T) :
     W.φD T (∑ k ∈ Finset.range L, ((W.φD T) ^ k) v) - ∑ k ∈ Finset.range L, ((W.φD T) ^ k) v =
       ((W.φD T) ^ L) v - v := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   rw [Finset.sum_congr rfl fun k _ => (PhiPowers.pow_apply_succ W T k v).symm]
   rw [← Finset.sum_sub_distrib, Finset.sum_range_sub (fun k => ((W.φD T) ^ k) v), pow_zero]
   rfl
@@ -613,8 +620,8 @@ theorem splitLift_of [NeZero n] (h9 : Formalism.MainNotions.DeltaInvariantLattic
   have hxtπ : W.map π xt = cb • e := by
     calc W.map π xt = ∑ c ∈ A.cuts, ∑ k ∈ Finset.range (A.len c),
           cb • ((letE (c - ((A.len c : ℕ) : ZMod n) + (k : ZMod n) + (A.j : ZMod n)) : LetA O n) • e) := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [hxt, map_sum]
+
+          rw [hxt, map_sum]
           exact Finset.sum_congr rfl fun c hc =>
             (map_sum _ _ _).trans (Finset.sum_congr rfl fun k _ => hterm c hc k)
       _ = ∑ i, cb • ((letE (i + (A.j : ZMod n)) : LetA O n) • e) :=
@@ -632,21 +639,21 @@ theorem splitLift_of [NeZero n] (h9 : Formalism.MainNotions.DeltaInvariantLattic
   have hz' : W.map ι z = W.γD Y W.gam xt - xt := hz
   have hxtΔ : ∀ δ ∈ W.DelF, W.γD Y δ xt = xt := by
     intro δ hδ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxt, map_sum]
+
+    rw [hxt, map_sum]
     refine Finset.sum_congr rfl fun c hc => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     exact PhiPowers.φD_pow_Δ W Y (hcut _ (hpv c hc)).2.2.2.1 k δ hδ
   set Z : W.DD T₂ := ∑ c ∈ A.cuts, ∑ k ∈ Finset.range (A.len c),
     ((W.φD T₂) ^ k) (W.π₀ ^ A.M PD.p • m (c - ((A.len c : ℕ) : ZMod n))) with hZ
   have hιZ : W.map ι Z = W.γD Y W.gam xt - xt := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hZ, hxt, map_sum, map_sum, ← Finset.sum_sub_distrib]
+
+    rw [hZ, hxt, map_sum, map_sum, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun c hc => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, ← Finset.sum_sub_distrib]
+
+    rw [map_sum, map_sum, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_φpow, ← (hcut _ (hpv c hc)).2.2.2.2.2.1, map_sub]
     have := γ_φpow W Y k (X (c - ((A.len c : ℕ) : ZMod n)))
@@ -678,8 +685,8 @@ theorem splitLift_of [NeZero n] (h9 : Formalism.MainNotions.DeltaInvariantLattic
       exact sub_eq_zero.1 (hinj _ h0)
   have hφxt : W.φD Y xt - xt = ∑ c ∈ A.cuts, (((W.φD Y) ^ A.len c) (X (c - ((A.len c : ℕ) : ZMod n))) -
       X (c - ((A.len c : ℕ) : ZMod n))) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxt, map_sum, ← Finset.sum_sub_distrib]
+
+    rw [hxt, map_sum, ← Finset.sum_sub_distrib]
     exact Finset.sum_congr rfl fun c _ => tele W Y _ _
   have hR : ∑ c ∈ A.cuts, (((W.φD Y) ^ A.len c) (X (c - ((A.len c : ℕ) : ZMod n))) -
       X (c - ((A.len c : ℕ) : ZMod n))) =
@@ -695,8 +702,8 @@ theorem splitLift_of [NeZero n] (h9 : Formalism.MainNotions.DeltaInvariantLattic
   · beta_reduce
     have key : W.map ι (∑ c ∈ A.cuts, (lA W ^ σ • ((W.φD T₂) ^ A.j) (w c) - -(lA W ^ σ • τ₂ c))) =
         W.map ι (lA W ^ σ • y) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Formalism.MainNotions.WachCoordinates.Br.map_smulA, hy, hφxt, hR, Finset.smul_sum, map_sum]
+
+      rw [Formalism.MainNotions.WachCoordinates.Br.map_smulA, hy, hφxt, hR, Finset.smul_sum, map_sum]
       refine Finset.sum_congr rfl fun c hc => ?_
       rw [map_sub, map_neg, Formalism.MainNotions.WachCoordinates.Br.map_smulA, Formalism.MainNotions.WachCoordinates.Br.map_smulA, map_φpow, hwι c hc,
         map_sub, φpow_smulA, φA_pow_lA, φpow_add, Nat.sub_add_cancel (hA.2.2.2.1 c hc)]

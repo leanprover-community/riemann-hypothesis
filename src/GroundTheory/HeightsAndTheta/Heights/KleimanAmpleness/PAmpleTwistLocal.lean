@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsAmple
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsAmpleAffine
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

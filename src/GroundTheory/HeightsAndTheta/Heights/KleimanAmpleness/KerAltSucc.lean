@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.Submodule.Range
+public import Mathlib.LinearAlgebra.Quotient.Defs
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 
 @[expose] public section
 

@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartFirstGroupDvd
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsNormOfDividedForm
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -39,8 +41,8 @@ theorem chartLin_eq_sum (u : Fin n → F) :
     algebraMap (ChartInc I t e) (ChartLoc I t e p) (chartLin I t e u) =
       ∑ m, algebraMap F (Localization.AtPrime p) (u m) •
         algebraMap (ChartInc I t e) (ChartLoc I t e p) (chartX I t e (X m)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [chartLin, linForm, map_sum, map_mul, Algebra.smul_def]
+
+  simp only [chartLin, linForm, map_sum, map_mul, Algebra.smul_def]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [← algebraMap_localization_C p, chartLoc_algebraMap_tower, chartX_C]
 
@@ -168,8 +170,8 @@ theorem ChartNorm.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFirstMemInc
     RingHom.ext fun x => (chartLoc_algebraMap_tower I t p x).symm
   have hdvd := map_dvd (MvPolynomial.map (algebraMap (ChartInc I t e) (ChartLoc I t e p)))
     (h₇ F n e I f t hI hf htI)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_X, map_C, map_map, hcomp] at hdvd
+
+  simp only [map_sum, map_mul, map_X, map_C, map_map, hcomp] at hdvd
   rw [← map_map] at hdvd
   have key := h₈ (Localization.AtPrime p) (ChartLoc I t e p) n _ _ _ (chartLoc_adjoin_eq_top I t p) hsum
     (h₆ F n e I f p hI hf) hdvd (fun m => algebraMap F (Localization.AtPrime p) (u m))

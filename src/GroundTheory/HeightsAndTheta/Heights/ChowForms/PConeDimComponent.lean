@@ -1,9 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.GradedAlgebra.Radical
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

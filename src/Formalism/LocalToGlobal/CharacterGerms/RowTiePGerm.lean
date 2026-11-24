@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

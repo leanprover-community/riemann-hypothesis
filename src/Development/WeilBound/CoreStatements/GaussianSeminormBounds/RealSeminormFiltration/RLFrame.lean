@@ -1,6 +1,50 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartanEigenOrthonormalFrameExists
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -225,31 +269,6 @@ namespace PositivityTheory.RL
 open _root_.PositivityTheory.RL.Frame
 
 theorem frameEx : GlobalTheory.RealLift.FrameEx := by
-  rintro n r s M θ ⟨hn, B, hB⟩ ⟨hθ, hiso, hpos⟩
-  have ct : ∀ {α β : Type} (X : Matrix α β ℂ), (X.map star)ᴴ = Xᵀ := by
-    intro α β X; ext i j; simp
-  have mm : ∀ {α β : Type} (X : Matrix α β ℂ), (X.map star).map star = X := by
-    intro α β X; ext i j; simp
-  have mul : ∀ {α β γ : Type} [Fintype β] (X : Matrix α β ℂ) (Y : Matrix β γ ℂ),
-      (X * Y).map star = X.map star * Y.map star := by
-    intro α β γ _ X Y
-    exact Matrix.map_mul (f := starRingEnd ℂ)
-  have one : (1 : Matrix (Fin n) (Fin n) ℂ).map star = 1 := Matrix.map_one _ (star_zero _) (star_one _)
-  obtain ⟨C, hC, ⟨C', hC'⟩, hφ⟩ := frame_conj hn M (θ.map star) (B.map star) (by rw [ct, hB, blocks_eq])
-    (by rw [← mul, hθ, one]) (by rw [ct, hiso]) (by
-      intro x hx
-      have h1 := hpos (star x) (by simpa using hx)
-      rw [star_star, ← Matrix.vecMul_transpose, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec] at h1
-      rw [ct]
-      exact h1)
-  refine ⟨C.map star, ⟨?_, C'.map star, ?_⟩, ?_⟩
-  · rw [← ct, mm, hC, Jm_eq]
-  · rw [← mul, hC', one]
-  · have h1 := congrArg (fun X => Matrix.map X star) hφ
-    simp only [mul, mm] at h1
-    rw [h1, Jm_eq]
-    congr 1
-    ext a b
-    by_cases h : a = b <;> simp [h]
+  apply GlobalTheory.RealLift.frameEx_holds
 
 end PositivityTheory.RL

@@ -1,10 +1,16 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenter
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PHeightRecR
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterMemIff
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightSubringPrimeMaximal
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PHeightRecR
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
+import Mathlib.Algebra.MvPolynomial.Nilpotent
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

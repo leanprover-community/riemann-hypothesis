@@ -1,7 +1,10 @@
 module
 
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
+public import Formalism.SatakeDualWeyl.StatementC
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.ClifMod
+public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.RealTrOfAll
 public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.SkewExp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -94,11 +139,11 @@ private theorem single_dX {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (
   rw [Finset.sum_eq_single a, Finset.sum_eq_single b]
   · simp
   · intro d _ hd
-    simp [Matrix.single_apply, hd.symm]
+    simp [hd.symm]
   · simp
   · intro c _ hc
     refine Finset.sum_eq_zero fun d _ => ?_
-    simp [Matrix.single_apply, hc.symm]
+    simp [hc.symm]
   · simp
 
 open UpperTheory.RealTr.DerivativeAtIdentity in
@@ -183,10 +228,10 @@ theorem UpperTheory.RealTr.derAt :
         have h1 := hcomp (X := X) x 0 _ (der0 hF' hγ x)
         simp only [hk] at h1
         have h2 := h1.unique (der0 hF hγ (t x))
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [dX_apply, dX_apply, map_sum] at h2
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul] at h2
+
+        rw [dX_apply, dX_apply, map_sum] at h2
+
+        simp only [map_sum, map_smul] at h2
         simp only [smul_sub, Finset.sum_sub_distrib]
         exact sub_eq_zero.2 h2) a b
       exact sub_eq_zero.1 this
@@ -194,10 +239,10 @@ theorem UpperTheory.RealTr.derAt :
       obtain ⟨X, hX, hkX⟩ := (skewExp n).2 k
       obtain ⟨γ, hγ, hm, h0⟩ := gam X hX
       have hI : ∀ y : N, t (dX F' X y) = dX F X (t y) := fun y => by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [dX_apply, dX_apply, map_sum]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul]
+
+        rw [dX_apply, dX_apply, map_sum]
+
+        simp only [map_sum, map_smul]
         exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by rw [ht a b y]
       have hz := zero_of hF hγ h0 (fun s => t (σ' (γ s) x) - σ (γ s) (t x))
         (fun s => by

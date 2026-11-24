@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
 public import GroundTheory.LocalFields.Integers
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

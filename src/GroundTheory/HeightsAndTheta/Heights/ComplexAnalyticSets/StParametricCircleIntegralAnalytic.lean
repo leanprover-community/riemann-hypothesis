@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.MeasureTheory.Integral.CircleIntegral
 
 @[expose] public section
 

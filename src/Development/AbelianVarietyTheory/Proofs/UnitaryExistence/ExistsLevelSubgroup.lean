@@ -1,19 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
-public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
-public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
-public import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
-public import Formalism.LocalToGlobal.ProjectiveLattices.NormLaws
-public import Formalism.LocalToGlobal.ProjectiveLattices.VolProofs
-public import Formalism.LocalToGlobal.ProjectiveLattices.DatProofs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
-public import Development.AbelianVarietyTheory.PublishedTheorems.Landherr₂.ExistsNormTensor
+public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CramerMemAdelicCompletionOfElementSet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
+import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -37,11 +65,11 @@ theorem det_gram_ne_zero {E : Type} [Field E] [NumberField E] [StarRing E] (S : 
     have hi : ∀ i, S.hT (S.frame i) (S.frame.equivFun.symm v) = 0 := by
       intro i
       have := congrFun h0 i
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Module.Basis.equivFun_symm_apply, map_sum]
+
+      rw [Module.Basis.equivFun_symm_apply, map_sum]
       simpa [Matrix.mulVec, dotProduct, Formalism.BasicNotions.HSpace.gram, mul_comm] using this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← S.frame.sum_repr x, map_sum, LinearMap.sum_apply]
+
+    rw [← S.frame.sum_repr x, map_sum, LinearMap.sum_apply]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hi, smul_zero]
   exact S.frame.equivFun.symm.map_eq_zero_iff.1 hy

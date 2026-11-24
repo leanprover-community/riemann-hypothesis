@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AnisotropicOrbit
+public import GroundTheory.AutomorphicForms.ReductionHeight
 public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,14 +1,70 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtData
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivity
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.NormalisedThetaNormInvariant
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FirstMinimumPrincipalTorusAtOrthonormalFrame
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.PeriodTorusConstantEqBase
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.TorusAtEpsIndep
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsBasisSpanEqOfCommensurable
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IntegrableOnFundamentalDomainOfContinuous
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.NormalisedThetaNormInvariant
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.UnimodularSymplecticCoordinatesAndLatticeRank
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LatDen
+public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.EqTopOfForallEmbAllMem
+public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsTorusCoordinates
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.ContDiff.WithLp
+public import Mathlib.Analysis.Calculus.FDeriv.Star
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpCStatementPfA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.L2NormFundamentalDomain
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.LemmaNA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtDataPf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -100,11 +156,6 @@ section Conj
 variable {E : Type} [Field E] [NumberField E] (T : PT E) {ι : Type} [Fintype ι]
   (e : ι ≃ Idx T.dim)
 
-theorem Hf_self' (v : EuclideanSpace ℂ ι) : Hf v v = ((‖v‖ ^ 2 : ℝ) : ℂ) := by
-  rw [EuclideanSpace.norm_sq_eq, Hf]
-  push_cast
-  exact Finset.sum_congr rfl fun i _ => mul_conj' _
-
 def cj : Vsp T.dim ≃ₗ[ℝ] EuclideanSpace ℂ ι where
   toFun y := WithLp.toLp 2 fun i => conj (y (e i))
   invFun z := WithLp.toLp 2 fun j => conj (z (e.symm j))
@@ -116,8 +167,8 @@ def cj : Vsp T.dim ≃ₗ[ℝ] EuclideanSpace ℂ ι where
 theorem cj_apply (y : Vsp T.dim) (i : ι) : cj T e y i = conj (y (e i)) := rfl
 
 theorem Hf_cj (v w : Vsp T.dim) : Hf (cj T e v) (cj T e w) = conj (Hf v w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Hf, cj_apply, map_sum, map_mul]
+
+  simp only [Hf, cj_apply, map_sum, map_mul]
   exact e.sum_comp fun j => conj (v j) * conj (conj (w j))
 
 variable (Y : GT ι) (F : EuclideanSpace ℂ ι → ℂ)
@@ -127,7 +178,7 @@ def cjFn (w : Fin 1 → Vsp T.dim) : ℂ := conj (F (cj T e (w 0)))
 theorem pointwiseNorm_conjugateFunctionOnConjugateSpace (y : Vsp T.dim) :
     T.ptN2 1 (cjFn T e F) (fun _ => y) = Y.ptN2 1 F (cj T e y) := by
   have h := congrArg Complex.re (Hf_cj T e y y)
-  rw [Hf_self', ofReal_re, conj_re] at h
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.DimC.Hf_self, ofReal_re, conj_re] at h
   simp only [PT.ptN2, GT.ptN2, cjFn, HC, Fin.sum_univ_one, Complex.norm_conj, h]
 
 variable {T e Y F} (hL : ∀ y, y ∈ T.L ↔ cj T e y ∈ lat Y.b)
@@ -303,7 +354,7 @@ theorem pointwiseNorm_canonicalTheta_eq_sq_thetaConstant (hs : IsSympl X bas) {x
   have h := congrArg norm (canTh_translate (tauMat_isSymm idx hs hx) (tauMat_im_posDef idx hs hx)
     a b a' b' hz 0)
   have h1 := Hf_eq_normCoord idx hs ho (scaleUp X idx z) (scaleUp X idx z)
-  rw [normCoord_scaleUp, Hf_self'] at h1
+  rw [normCoord_scaleUp, _root_.ReciprocityTheory.ChartRestriction.G.I2.DimC.Hf_self] at h1
   rw [← h1, norm_mul, norm_mul, norm_translConst, one_mul, zero_add, Complex.norm_exp] at h
   have h2 : canTh (tauMat X bas idx x) (a + a') (b + b') 0 =
       thetaChar (tauMat X bas idx x) (fun i => ((a + a') i : ℂ)) (fun i => ((b + b') i : ℂ)) 0 := by

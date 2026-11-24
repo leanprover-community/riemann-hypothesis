@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.AnalyticGerm
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGermMinimalPolynomialDivides
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteFibreGermIntegral
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHolGermsIntegrallyClosed
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 
 @[expose] public section
 
@@ -174,9 +174,9 @@ theorem proof (hF : FiniteFibreGermIntegral.Statement) (hH : HolGermsIntegrallyC
     have h1 := hmon.as_sum
     rw [← Fin.sum_univ_eq_sum_range (fun i => C (m.coeff i) * Polynomial.X ^ i)] at h1
     conv_rhs => rw [h1]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [P, bt, Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum,
-      Polynomial.map_mul, Polynomial.map_C, germOf_germRep]
+
+    simp only [P, bt, Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum,
+    Polynomial.map_mul, Polynomial.map_C, germOf_germRep]
   have hPz : ∀ z, eval₂ (preLinear w A) g P z = g z ^ m.natDegree + ∑ j, (bt j).1 (A z) * g z ^ (j : ℕ) :=
     fun z => eval₂_monic_apply w A g bt z
   refine ⟨m.natDegree, fun j => (bt j).1, fun j => (bt j).2, ?_, ?_⟩
@@ -228,8 +228,8 @@ theorem proof (hF : FiniteFibreGermIntegral.Statement) (hH : HolGermsIntegrallyC
       rw [← map_toSubring E (analyticAtRing (A w)) hcoeffs, Polynomial.map_map]
     have hP' : P.map ev =
         Polynomial.X ^ m.natDegree + ∑ j, C ((bt j).1 y) * Polynomial.X ^ (j : ℕ) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [P, ev, Polynomial.map_sum]
+
+      simp [P, ev, Polynomial.map_sum]
     refine ⟨Q.map ev, ?_⟩
     rw [← hE', ← hP', ← Polynomial.map_mul, ← sub_eq_zero, ← Polynomial.map_sub]
     exact hD0

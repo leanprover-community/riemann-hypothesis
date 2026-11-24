@@ -1,7 +1,64 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.VecPairApply
+public import Mathlib.RingTheory.AdjoinRoot
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Ideal.Quotient.Index
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+public import Mathlib.FieldTheory.PrimitiveElement
+public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 
 @[expose] public section
 
@@ -56,8 +113,8 @@ theorem aeval_C_mul_X_coeff {ι L : Type} [Fintype ι] [CommRing L] (F : MvPolyn
       ∑ m ∈ F.support, if m.degree = d then F.coeff m * ∏ q, b q ^ m q else 0 := by
   classical
   conv_lhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Polynomial.finsetSum_coeff]
+
+  rw [map_sum, Polynomial.finsetSum_coeff]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [MvPolynomial.aeval_monomial, Finsupp.prod_fintype _ _ (fun i => pow_zero _)]
   have hprod : (∏ q, (C (b q) * X : L[X]) ^ m q) = C (∏ q, b q ^ m q) * X ^ m.degree := by
@@ -105,8 +162,8 @@ theorem exists_point {ι L : Type} [Fintype ι] [Field L] [Infinite L] (K : Set 
     fun q hq => by simp [hq, hxq q hq], ?_⟩
   have key : MvPolynomial.eval x H = ∑ m' ∈ F.support, if m'.degree = m.degree then
       F.coeff m' * ∏ q, (if q ∈ K then 0 else x q) ^ m' q else 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [H, Finset.sum_filter, map_sum]
+
+    simp only [H, Finset.sum_filter, map_sum]
     refine Finset.sum_congr rfl fun m' _ => ?_
     by_cases hd : m'.degree = m.degree
     · by_cases hz : ∀ q ∈ K, m' q = 0
@@ -245,7 +302,7 @@ theorem exists_truncation {R L : Type} [CommRing R] [Finite R] [Field L] (ψ : R
   have hA'coeff : ∀ j, A'.coeff j = if j < d0 then c j else 0 := by
     intro j
     rw [hA', Polynomial.finsetSum_coeff]
-    simp [Polynomial.coeff_C_mul_X_pow]
+    simp
   have hQ : X ^ d0 ∣ P - C π * A' := by
     rw [Polynomial.X_pow_dvd_iff]
     intro j hj

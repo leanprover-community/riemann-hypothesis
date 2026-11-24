@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegBallMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegFixedBallMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegLelongMono
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegDensNonneg
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjectionCluster
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

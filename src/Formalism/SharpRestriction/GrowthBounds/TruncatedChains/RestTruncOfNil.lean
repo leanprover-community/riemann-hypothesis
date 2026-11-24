@@ -1,6 +1,54 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.RestPair
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.NontrivialIsotypicWeightZeroKilled
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 
 @[expose] public section
 
@@ -23,7 +71,7 @@ theorem pf_apply (E : GLOps n K V) (a b : Fin n) (c T : ℕ) (x : V) :
   unfold pf
   rw [LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
-  simp [divPowE, Module.End.mul_apply]
+  simp [divPowE]
 
 theorem pow_mem_stable (f : Module.End K W) (S : Submodule K W) (h : ∀ w ∈ S, f w ∈ S) (k : ℕ) (w : W)
     (hw : w ∈ S) : (f ^ k) w ∈ S := by
@@ -51,8 +99,8 @@ theorem pow_intertw (f : Module.End K W) (g : Module.End K V) (π : W →ₗ[K] 
 theorem pf_intertw (A : GLOps n K W) (E : GLOps n K V) (π : W →ₗ[K] V) (S : Submodule K W) (x y : Fin n)
     (hS : ∀ w ∈ S, A x y w ∈ S) (h1 : ∀ w ∈ S, π (A x y w) = E x y (π w)) (h2 : ∀ w, π (A y x w) = E y x (π w))
     (c T : ℕ) (w : W) (hw : w ∈ S) : π (pf A x y c T w) = pf E x y c T (π w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [pf_apply, pf_apply, map_sum]
+
+  rw [pf_apply, pf_apply, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_smul, map_smul, pow_intertw (A y x) (E y x) π ⊤ (fun _ _ => Submodule.mem_top)
     (fun w _ => h2 w) k _ Submodule.mem_top, map_smul, pow_intertw (A x y) (E x y) π S hS h1 k w hw]
@@ -112,13 +160,11 @@ theorem tens_rel {E : GLOps n K V} (hE : IsGLRep E) (a b c d : Fin n) :
   simp only [LinearMap.sub_apply, Module.End.mul_apply] at hc
   simp only [LinearMap.sub_apply, Module.End.mul_apply, Pi.sub_apply, tensOps_apply, map_add (f := _)]
   split_ifs at hc ⊢ <;> subst_vars <;>
-    (try simp only [tensOps_apply, LinearMap.zero_apply, Pi.zero_apply, map_zero, add_zero, zero_add,
-      sub_zero, LinearMap.sub_apply] at hc ⊢) <;>
+    (try simp only [tensOps_apply, LinearMap.zero_apply, Pi.zero_apply, map_zero, add_zero, sub_zero] at hc ⊢) <;>
     (try split_ifs at hc ⊢) <;> (try subst_vars) <;>
     first
     | abel1
     | (rw [sub_eq_iff_eq_add] at hc; rw [hc]; abel1)
-    | skip
   all_goals done
 
 theorem tens_single_wt (E : GLOps n K V) (ν : Fin n → ℤ) (i : Fin n) (x : V) (hx : x ∈ weightSp E ν) :

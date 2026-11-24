@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
+public import Formalism.LocalToGlobal.HermitianForms.FormsTied
 
 @[expose] public section
 

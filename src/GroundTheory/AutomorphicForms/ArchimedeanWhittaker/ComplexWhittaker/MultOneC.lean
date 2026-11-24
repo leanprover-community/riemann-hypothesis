@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.IsClosedDivisorComponent
+import GroundTheory.AutomorphicForms.RealGroupsIwasawa
+import GroundTheory.AutomorphicForms.RealGroupsKAK
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Star.Unitary
+import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.FiltrationCocycleLiftCriterion
+public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.MultOne
 
 @[expose] public section
 
@@ -134,8 +140,8 @@ theorem inner_Q_map_dC_eq_zero (n : ℕ) (q : ℤ) {i j : ℕ} (hi : i ≤ n) (h
 theorem inner_sum_smul_sum {ι : Type*} (s : Finset ι) (a b : ι → ℂ) (u v : ι → H) (T : H →L[ℂ] H) :
     ⟪∑ j ∈ s, a j • u j, T (∑ i ∈ s, b i • v i)⟫_ℂ =
       ∑ j ∈ s, ∑ i ∈ s, conj (a j) * b i * ⟪u j, T (v i)⟫_ℂ := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, sum_inner]
+
+  rw [map_sum, sum_inner]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [inner_sum]
   refine Finset.sum_congr rfl fun i _ => ?_

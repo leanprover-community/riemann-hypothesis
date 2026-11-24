@@ -1,6 +1,43 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.FinalLevelsOf
+public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -46,12 +83,9 @@ variable {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L)
 abbrev pfMapFl_Fb : T₁.V ⊗[Qp] B →ₗ[LL] T₂.V ⊗[Qp] B :=
   AlgebraTensorModule.map F.f (LinearMap.id : B →ₗ[Qp] B)
 
-abbrev pfMapFl_FdR : T₁.V ⊗[Qp] BdR →ₗ[LL] T₂.V ⊗[Qp] BdR :=
-  AlgebraTensorModule.map F.f (LinearMap.id : BdR →ₗ[Qp] BdR)
-
 theorem pfMapFl_ιV (z : T₁.V ⊗[Qp] B) :
     ιV PD (LL := LL) (V := T₂.V) (pfMapFl_Fb F z) =
-      pfMapFl_FdR F (ιV PD (LL := LL) (V := T₁.V) z) :=
+      _root_.Formalism.MainNotions.N.Ln03.Pf.pfMapFl_Fb F (ιV PD (LL := LL) (V := T₁.V) z) :=
   (pfMapFl_map_comm F.f (PD.ι.toLinearMap.restrictScalars Qp) z).symm
 
 theorem pfMapFl_φ (z : T₁.V ⊗[Qp] B) :
@@ -97,7 +131,7 @@ theorem pfMapFl_dcrisL (τ₀ : K₀ →ₐ[Qp] LL) (z : T₁.V ⊗[Qp] B) (hz :
   rw [h3, h2 c, map_smul]
 
 theorem pfMapFl_filV (a : ℤ) (z : T₁.V ⊗[Qp] BdR) (hz : z ∈ FilV PD (LL := LL) (V := T₁.V) a) :
-    pfMapFl_FdR F z ∈ FilV PD (LL := LL) (V := T₂.V) a := by
+    _root_.Formalism.MainNotions.N.Ln03.Pf.pfMapFl_Fb F z ∈ FilV PD (LL := LL) (V := T₂.V) a := by
   obtain ⟨w, rfl⟩ := hz
   exact ⟨AlgebraTensorModule.map F.f LinearMap.id w,
     (pfMapFl_map_comm F.f ((PD.Fil a).restrictScalars Qp).subtype w).symm⟩
@@ -185,14 +219,14 @@ theorem cMap_holds (hD : MemD W F c) (kind : ℕ → Kind) (b : ℕ → ℕ) (η
   have hmap := pfMapFl_filD F hD s _ _ hw'
   have hsum : dmapOf hD (∑ k, algebraMap O LL (w k) • lam₁ k) =
       ∑ l, algebraMap O LL (P w l) • lam₂ l := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smul, hLamP, Finset.smul_sum, smul_smul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [← Finset.sum_smul, ← LinearMap.toMatrix'_mulVec P w]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, dotProduct, map_sum]
+
+    simp only [Matrix.mulVec, dotProduct, map_sum]
     refine congrArg (· • lam₂ l) (Finset.sum_congr rfl fun k _ => ?_)
     rw [map_mul]
     ring

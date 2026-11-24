@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ResolutionMetricObjects
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AMixSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AParamStA
 
 @[expose] public section
 

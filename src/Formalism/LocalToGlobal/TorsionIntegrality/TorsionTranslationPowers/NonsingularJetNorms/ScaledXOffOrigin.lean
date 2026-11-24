@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementT
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementU
+import Mathlib.Analysis.Normed.Ring.Ultra
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

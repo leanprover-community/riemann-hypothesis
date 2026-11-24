@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.MacdonaldFormula
+public import GroundTheory.AutomorphicForms.MacdonaldAlternant
+public import GroundTheory.AutomorphicForms.SatakeNormalized
+public import GroundTheory.AutomorphicForms.WhittakerGroups
+public import GroundTheory.AutomorphicForms.AffineBruhat
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,14 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Deriv
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 
@@ -99,8 +105,8 @@ theorem chain (n : ℕ) (M : Type*) [TopologicalSpace M] : ChainStatement n M :=
   unfold leviV
   try beta_reduce
   simp only [key, hx']
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_mul]
   rw [Finset.sum_mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun j _ => ?_

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRankAdjoin
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRing
+public import Mathlib.FieldTheory.Relrank
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 
 @[expose] public section
 

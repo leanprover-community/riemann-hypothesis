@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
 public import Formalism.LocalToGlobal.Columns.GoodXgFin
 
 @[expose] public section

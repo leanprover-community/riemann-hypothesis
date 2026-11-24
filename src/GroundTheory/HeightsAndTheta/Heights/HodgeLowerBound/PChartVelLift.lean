@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StChartVelLift
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StProjHoloLocal
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.MCoordIdealGenericPointEq
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

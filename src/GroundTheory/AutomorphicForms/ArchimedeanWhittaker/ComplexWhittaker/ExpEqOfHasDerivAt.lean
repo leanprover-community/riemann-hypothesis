@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.Density
-public import GroundTheory.AutomorphicForms.RealGroupsIwasawa
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.LinearAlgebra.UnitaryGroup
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Analysis.CStarAlgebra.Matrix
 
 @[expose] public section
 

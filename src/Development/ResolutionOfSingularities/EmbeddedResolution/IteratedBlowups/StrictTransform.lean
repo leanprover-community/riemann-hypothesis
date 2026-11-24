@@ -1,18 +1,55 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupIsoOffCenter
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.ClopenRestriction
 public import Development.ResolutionOfSingularities.Foundations.Blowup.StrictTransform
-public import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
+public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
+public import Mathlib.AlgebraicGeometry.Noetherian
 public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.OpenImmersionAppLE
 public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.ReducedSubscheme
+public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
+public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupIsoOffCenter
+import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
+import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 public import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Morphisms.Immersion
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -49,11 +86,6 @@ private theorem ker_ideal_eq_ker_app {W Z : Scheme.{u}} (g : W ⟶ Z) [QuasiComp
     (U : Z.affineOpens) :
     (Scheme.Hom.ker g).ideal U = RingHom.ker (CommRingCat.Hom.hom (g.app U.1)) := by
   simp
-
-private theorem range_comp_eq_image_range {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C) :
-    Set.range ⇑(f ≫ g) = ⇑g '' Set.range ⇑f := by
-  ext x
-  simp [Set.range_comp]
 
 theorem ker_eq_ker_of_isIso_comp {A B T : Scheme.{u}} (f : A ⟶ T) (g : B ⟶ T) (e : A ⟶ B)
     [IsIso e] (h : e ≫ g = f) : f.ker = g.ker := by
@@ -146,7 +178,7 @@ theorem support_strictTransform_eq_closure_preimage {X X₁ : Scheme.{u}} (π : 
     rw [Scheme.IdealSheafData.support_comap]; rfl
   rw [strictTransform_eq_ker_strictTransformι, Scheme.Hom.support_ker]
   congr 1
-  rw [strictTransformι_eq_ι_comp_subschemeι, range_comp_eq_image_range, Scheme.Opens.range_ι,
+  rw [strictTransformι_eq_ι_comp_subschemeι, _root_.AlgebraicGeometry.Scheme.Hom.range_comp_base, Scheme.Opens.range_ι,
     coe_strictTransformOpens, Set.image_preimage_eq_inter_range,
     Scheme.IdealSheafData.range_subschemeι, h1, h2]
   ext x
@@ -165,13 +197,7 @@ theorem support_strictTransform_eq_closure_sdiff {X X₁ : Scheme.{u}} (π : X�
     rw [Scheme.IdealSheafData.support_comap]; rfl
   rw [support_strictTransform_eq_closure_preimage π Z D, h1, h2, Set.preimage_sdiff]
 
-theorem comap_le_strictTransform {X X₁ : Scheme.{u}} (π : X₁ ⟶ X)
-    (Z D : X.IdealSheafData) :
-    D.comap π ≤ Blowup.strictTransform π Z D := by
-  rw [strictTransform_eq_ker_strictTransformι, strictTransformι_eq_ι_comp_subschemeι]
-  calc D.comap π = (D.comap π).subschemeι.ker :=
-        (Scheme.IdealSheafData.ker_subschemeι _).symm
-    _ ≤ _ := Scheme.Hom.le_ker_comp _ _
+alias comap_le_strictTransform := _root_.FunctorialResolution.Blowup.comap_le_strictTransform
 
 theorem strictTransform_top {X' X : Scheme.{u}} (f : X' ⟶ X) (Z : X.IdealSheafData) :
     Blowup.strictTransform f Z (⊤ : X.IdealSheafData) = ⊤ := by

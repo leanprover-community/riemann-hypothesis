@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

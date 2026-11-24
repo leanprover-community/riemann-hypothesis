@@ -1,8 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.KExpCut
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHNeat
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.Tactic.TypeStar
+
+set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 
@@ -325,7 +330,7 @@ theorem oo_eq (μG μN μH ν : Measure G) [SFinite μN] [IsFiniteMeasure μH]
   set F : G → (V →L[ℂ] V) := fun x => (innerSL ℂ (W x)).smulRight (W x) with hFdef
   have hFc : Continuous F := by
     have h1 : Continuous fun x => innerSL ℂ (W x) := (innerSL ℂ).continuous.comp hWc
-    exact ((ContinuousLinearMap.smulRightL ℂ V V).continuous.comp h1).clm_apply hWc
+    exact ((StrongDual.smulRightL ℂ V V).continuous.comp h1).clm_apply hWc
   set b := stdOrthonormalBasis ℂ V
   have hpar : ∀ w : V, ‖w‖ₑ ^ 2 = ∑ i, ‖⟪w, b i⟫_ℂ‖ₑ ^ 2 := by
     intro w
@@ -671,7 +676,7 @@ theorem rk1_smul_right {V V' : Type*} [NormedAddCommGroup V] [InnerProductSpace 
     [NormedAddCommGroup V'] [InnerProductSpace ℂ V'] (v : V) (c : ℂ) (w : V') :
     rk1 v (c • w) = starRingEnd ℂ c • rk1 v w := by
   ext ξ
-  simp [rankOneInnerOperator_apply, inner_smul_left, smul_smul, mul_comm]
+  simp [rankOneInnerOperator_apply, smul_smul, mul_comm]
 
 theorem oot_eq {u : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
     {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)} (t : GTerm X u u F0 F0 what₂ what₂)

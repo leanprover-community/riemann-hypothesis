@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
+import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
 public import GroundTheory.ProfiniteCohomology.FilteredHomology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

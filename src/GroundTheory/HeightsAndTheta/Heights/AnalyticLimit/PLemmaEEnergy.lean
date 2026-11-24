@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaEEnergy
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.EnergyStep
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
+import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesA
 
 @[expose] public section
 

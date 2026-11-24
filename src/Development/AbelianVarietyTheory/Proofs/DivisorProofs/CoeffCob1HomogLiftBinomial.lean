@@ -1,10 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalGroupLawLinearCoeffAdditive
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoboundaryEqAdditiveLeadingTerms
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveFormalGroupCoboundaryHomogeneous
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoboundaryEqAdditiveLeadingTerms
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalGroupLawLinearCoeffAdditive
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.CoeffSingleLawAdd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 @[expose] public section
 
@@ -34,14 +76,14 @@ theorem sumElim_sub_inl {d : ℕ} (a e : Fin d →₀ ℕ) (j : Fin d) :
   ext k
   rcases k with k | k
   · simp [Finsupp.single_apply]
-  · simp [Finsupp.single_apply]
+  · simp
 
 theorem sumElim_sub_inr {d : ℕ} (a e : Fin d →₀ ℕ) (j : Fin d) :
     Finsupp.sumElim a e - Finsupp.single (Sum.inr j) 1 =
       Finsupp.sumElim a (e - Finsupp.single j 1) := by
   ext k
   rcases k with k | k
-  · simp [Finsupp.single_apply]
+  · simp
   · simp [Finsupp.single_apply]
 
 theorem sub_add_iff {d : ℕ} (a e α : Fin d →₀ ℕ) (j : Fin d) (h : 1 ≤ a j) :
@@ -144,7 +186,7 @@ theorem coeff_prod_addLaw (d n : ℕ) : ∀ α : Fin d →₀ ℕ, α.degree = n
       have e1 : ∏ s, (α s).choose ((a - Finsupp.single j 1 : Fin d →₀ ℕ) s) =
           (α j).choose (a j - 1) * ∏ s ∈ Finset.univ.erase j, (α s).choose (a s) := by
         rw [prod_split (fun s => (α s).choose ((a - Finsupp.single j 1 : Fin d →₀ ℕ) s))
-          (fun s => (α s).choose (a s)) j fun s hs => by simp [Finsupp.single_apply, Ne.symm hs]]
+          (fun s => (α s).choose (a s)) j fun s hs => by simp [Ne.symm hs]]
         simp
       have e2 : ∏ s, (α s).choose (a s) =
           (α j).choose (a j) * ∏ s ∈ Finset.univ.erase j, (α s).choose (a s) :=
@@ -152,7 +194,7 @@ theorem coeff_prod_addLaw (d n : ℕ) : ∀ α : Fin d →₀ ℕ, α.degree = n
       have e3 : ∏ s, ((α + Finsupp.single j 1 : Fin d →₀ ℕ) s).choose (a s) =
           (α j + 1).choose (a j) * ∏ s ∈ Finset.univ.erase j, (α s).choose (a s) := by
         rw [prod_split (fun s => ((α + Finsupp.single j 1 : Fin d →₀ ℕ) s).choose (a s))
-          (fun s => (α s).choose (a s)) j fun s hs => by simp [Finsupp.single_apply, Ne.symm hs]]
+          (fun s => (α s).choose (a s)) j fun s hs => by simp [Ne.symm hs]]
         simp
       rw [e3, ← key, add_mul]
       by_cases h1 : 1 ≤ a j <;> by_cases h2 : 1 ≤ e j

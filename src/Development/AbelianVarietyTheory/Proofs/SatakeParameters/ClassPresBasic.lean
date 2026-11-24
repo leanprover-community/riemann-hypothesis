@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.Bridge
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -65,8 +105,8 @@ theorem extMem : P.ExtMem := by
 theorem isom : P.Isom := by
   intro f f'
   unfold adInner CSD.csum
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [ext_y, ext_y, P.coef_pair, map_mul, map_inv₀, map_natCast, CSD.wt,
     ← Nat.card_congr (P.stabI c).toEquiv, Nat.card_eq_fintype_card]
@@ -78,8 +118,8 @@ theorem bW_apply (j : S.ιV) : bW P j = P.coef (S.bV j) := by simp [bW]
 theorem repr_coef (x : S.V) (j : S.ιV) : (bW P).repr (P.coef x) j = σ (S.bV.repr x j) := by
   have : P.coef x = ∑ i, σ (S.bV.repr x i) • bW P i := by
     conv_lhs => rw [← S.bV.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smulₛₗ, bW_apply]
   rw [this, Module.Basis.repr_sum_self]
 
@@ -139,8 +179,8 @@ def avgForm (S : CSD K) (c : S.Cl) (x : S.V) : S.Forms :=
     intro c' γ
     by_cases h : c' = c
     · subst h
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Pi.single_eq_same, map_sum]
+
+      simp only [Pi.single_eq_same, map_sum]
       simp only [← Module.End.mul_apply, ← map_mul]
       exact Fintype.sum_equiv (Equiv.mulLeft γ) _ _ fun _ => rfl
     · simp [Pi.single_eq_of_ne h]⟩
@@ -166,11 +206,11 @@ theorem ext_span : Submodule.span ℂ (Set.range P.extL) = AdForms ι ρ J χ :=
           have h1 := hF (P.stabI c g : Γ) (P.y c) (stabK ι (P.stabI c g))
           rw [stabK_spec] at h1
           conv_rhs => rw [h1, ← (bW P).sum_repr (F (P.y c))]
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp only [P.coef_act, map_sum, map_smul, Finset.smul_sum, bW_apply]
+
+          simp only [P.coef_act, map_sum, map_smul, Finset.smul_sum, bW_apply]
           exact Finset.sum_congr rfl fun j _ => smul_comm _ _ _
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [avgForm, Pi.single_eq_same, map_sum, mul_smul, ← Finset.smul_sum]
+
+        simp only [avgForm, Pi.single_eq_same, map_sum, mul_smul, ← Finset.smul_sum]
         simp only [Finset.smul_sum (s := (Finset.univ : Finset (S.Gam c)))]
         rw [Finset.sum_comm]
         simp only [hg, Finset.sum_const, Finset.card_univ]

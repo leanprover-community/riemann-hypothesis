@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.BdRSeries
+public import Mathlib.RingTheory.Nilpotent.Exp
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

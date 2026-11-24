@@ -1,11 +1,50 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.KatoTwistedClassNormCompatibleCyclotomic
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.CoeffSlD
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.KmapComp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.SCls
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.CdFacts
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.CoeffSlD
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.SCycZ
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -37,7 +76,7 @@ private theorem term {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ �
     rfl
   rw [heq] at hB
   have hc : Cgr (l ^ n) (U (galU X s f ^ c)) (U (galU X s f ^ c)) := by
-    first | rfl | exact ⟨1, by simp⟩ | simp [Cgr]
+    first | exact ⟨1, by simp⟩
   have hz := hUniq _ _ _ _ hA hB hc
   rw [map_smul]
   have hsplit : k • clsK X l n (slD X N ((galU X s f ^ c : X.Kˣ) : X.K)) -
@@ -96,11 +135,11 @@ theorem UpperTheory.V.Z.Kato.Nb.sXiTw :
   unfold Xi UpperTheory.Kd.K4.CgF
   intro u
   simp only [Tower.galB, LinearMap.coe_mk, AddHom.coe_mk]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_filter, Finset.sum_filter, map_sum, map_sub, sub_eq_zero]
+
+  rw [Finset.sum_filter, Finset.sum_filter, map_sum, map_sub, sub_eq_zero]
   conv_rhs => rw [← Fintype.sum_equiv (Equiv.mulRight (dg d⁻¹)) _ _ (fun _ => rfl)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sub_eq_zero, ← map_sub, ← Finset.sum_sub_distrib, map_sum]
+
+  rw [← sub_eq_zero, ← map_sub, ← Finset.sum_sub_distrib, map_sum]
   apply Finset.sum_eq_zero
   intro m _
   simp only [Equiv.coe_mulRight]
@@ -128,7 +167,7 @@ theorem UpperTheory.V.Z.Kato.Nb.sXiTw :
     rw [hgr x m, hgr y m]
     refine term X l n N hN s _ _ _ _ ?_
     rw [dvd_iff]
-    simp only [map_sub, map_mul, map_pow, map_add (f := _), map_natCast, (hent 0).1, (hent 0).2]
+    simp only [map_mul, map_pow, map_add (f := _), map_natCast, (hent 0).1, (hent 0).2]
     have hdl : Units.map (ZMod.castHom hlM (ZMod (l ^ n)) : ZMod M →* ZMod (l ^ n)) d = cycM (l ^ n) s :=
       (hcyc M s).2.2.2.2 (l ^ n) hlM
     have hχ : PadicInt.toZModPow n (((cyclotomicCharacter Ω l) s.toRingEquiv : ℤ_[l]ˣ) : ℤ_[l]) =
@@ -138,10 +177,10 @@ theorem UpperTheory.V.Z.Kato.Nb.sXiTw :
     have hc : (((cyc (l ^ n) s).val : ℕ) : ZMod (l ^ n)) = ZMod.castHom hlM (ZMod (l ^ n)) (d : ZMod M) := by
       rw [ZMod.natCast_zmod_val, (hcyc (l ^ n) s).1, ← hdl]
       rfl
-    simp only [hc, hχ, val_cast hlM, Units.val_mul, mul_inv_rev, inv_inv, map_mul]
+    simp only [hc, val_cast hlM, Units.val_mul, mul_inv_rev, inv_inv, map_mul]
     clear hcyc hgr hcd hC hP hdl hone hinv hent hdet h
     set φ := ZMod.castHom hlM (ZMod (l ^ n))
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, Matrix.head_cons, map_mul, hχ]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, map_mul, hχ]
     have hdd : φ ((d⁻¹ : (ZMod M)ˣ) : ZMod M) * φ (d : ZMod M) = 1 := by
       rw [← map_mul, Units.inv_mul, map_one]
     have key : φ ((m : Matrix (Fin 2) (Fin 2) (ZMod M)) 0 1) * φ ((d⁻¹ : (ZMod M)ˣ) : ZMod M) *

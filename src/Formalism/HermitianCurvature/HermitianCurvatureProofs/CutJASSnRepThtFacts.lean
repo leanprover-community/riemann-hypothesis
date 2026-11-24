@@ -1,9 +1,61 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnRepCut
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsFrameTwo
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_TypeNormMeas_TC
+public import Formalism.HermitianCurvature.FrameExists2
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsFrameTwo
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieBracketMultiplication
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ParametersUPrimeForULower
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_TypeNormMeas_TC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EHcChange
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
 
 @[expose] public section
 
@@ -22,9 +74,6 @@ variable {k r : ℕ}
 
 def InW (k r : ℕ) (z x : Fin (2 * r + k + 1) → ℂ) : Prop := inWb k r x ∧ herm (Hpk k r) x z = 0
 
-theorem herm_swap (v w : Fin (2 * r + k + 1) → ℂ) : herm (Hpk k r) w v = star (herm (Hpk k r) v w) :=
-  (P.Qx2.herm_star v w).symm
-
 theorem herm_alt {z : Fin (2 * r + k + 1) → ℂ} : herm (Hpk k r) z z = ((-(Tz k r z) : ℝ) : ℂ) := by
   have h := P.Qx2.herm_star (k := k) (r := r) z z
   apply Complex.ext
@@ -33,10 +82,6 @@ theorem herm_alt {z : Fin (2 * r + k + 1) → ℂ} : herm (Hpk k r) z z = ((-(Tz
     simp only [Complex.star_def, Complex.conj_im] at this
     simp only [Complex.ofReal_im]
     linarith
-
-theorem herm_zz_ne {z : Fin (2 * r + k + 1) → ℂ} (hT : 0 < Tz k r z) : herm (Hpk k r) z z ≠ 0 := by
-  rw [herm_alt]
-  exact_mod_cast (neg_ne_zero.2 hT.ne')
 
 theorem herm_wbP {y w : Fin (2 * r + k + 1) → ℂ} (hw : inWb k r w) :
     herm (Hpk k r) y w = herm (Hpk k r) (SSn.wbP k r y) w := by
@@ -77,15 +122,12 @@ theorem prWv_smul (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (x : Fin (2 * r + 
   unfold SSn.prWv
   rw [blockProjection_smul, P.Qx8.herm_smul_left', smul_add, smul_smul, mul_div_assoc]
 
-theorem inWb_add {x y : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (hy : inWb k r y) : inWb k r (x + y) := by
-  intro i hi; simp [hx i hi, hy i hi]
-
 theorem inWb_smul (c : ℂ) {x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) : inWb k r (c • x) := by
   intro i hi; simp [hx i hi]
 
 theorem prWv_inW {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < Tz k r z) (y : Fin (2 * r + k + 1) → ℂ) :
     InW k r z (SSn.prWv k r z y) := by
-  refine ⟨inWb_add (blockProjection_mem_block y) (inWb_smul _ hz), ?_⟩
+  refine ⟨_root_.Formalism.FourierDecayAlt.P.Qx8.inWb_add (blockProjection_mem_block y) (inWb_smul _ hz), ?_⟩
   unfold SSn.prWv
   rw [P.Qx8.herm_add_left', P.Qx8.herm_smul_left', herm_alt]
   have : ((Tz k r z : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hT.ne'
@@ -94,7 +136,7 @@ theorem prWv_inW {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < T
   ring
 
 theorem herm_z_w {z w : Fin (2 * r + k + 1) → ℂ} (hw : InW k r z w) : herm (Hpk k r) z w = 0 := by
-  rw [herm_swap, hw.2, star_zero]
+  rw [_root_.Formalism.FourierDecayAlt.P.Dx2.DF.herm_symm', hw.2, star_zero]
 
 theorem herm_prWv {z y w : Fin (2 * r + k + 1) → ℂ} (hw : InW k r z w) :
     herm (Hpk k r) y w = herm (Hpk k r) (SSn.prWv k r z y) w := by
@@ -104,7 +146,7 @@ theorem herm_prWv {z y w : Fin (2 * r + k + 1) → ℂ} (hw : InW k r z w) :
 theorem eq_sum_herm_smul_frame_of_inW {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < Tz k r z)
     {F : Fin k → Fin (2 * r + k + 1) → ℂ} (hF : Q.IsFrameOf k r [z] F) {v : Fin (2 * r + k + 1) → ℂ}
     (hv : InW k r z v) : v = ∑ p, herm (Hpk k r) v (F p) • F p := by
-  conv_lhs => rw [P.SkewHermitianParts.complete hz (herm_zz_ne hT) hF hv.1]
+  conv_lhs => rw [P.SkewHermitianParts.complete hz (_root_.Formalism.FourierDecayAlt.P.C2x5.hzz_ne hT) hF hv.1]
   rw [hv.2, zero_mul, zero_smul, add_zero]
 
 theorem frame_inW {z : Fin (2 * r + k + 1) → ℂ} {m : ℕ} {F : Fin m → Fin (2 * r + k + 1) → ℂ}
@@ -207,28 +249,14 @@ theorem GW_ebM {z v b : Fin (2 * r + k + 1) → ℂ} (hv : InW k r z v) (hb : In
   · rw [P.Qx8.hpart1_unitB, Matrix.smul_mulVec, Matrix.sub_mulVec, z1, z2]; simp
   · rw [P.Qx8.hpart2_unitB, Matrix.smul_mulVec, Matrix.add_mulVec, z1, z2]; simp
 
-theorem hpart1_add (Z Z' : B.Mat k r) :
-    hpart1 (Hpk k r) (Z + Z') = hpart1 (Hpk k r) Z + hpart1 (Hpk k r) Z' := by
-  unfold hpart1; rw [Matrix.conjTranspose_add, Matrix.mul_add, Matrix.add_mul, ← smul_add]; congr 1; abel
-
-theorem hpart2_add (Z Z' : B.Mat k r) :
-    hpart2 (Hpk k r) (Z + Z') = hpart2 (Hpk k r) Z + hpart2 (Hpk k r) Z' := by
-  unfold hpart2; rw [Matrix.conjTranspose_add, Matrix.mul_add, Matrix.add_mul, ← smul_add]; congr 1; abel
-
-theorem inv_two_I : (1 / (2 * Complex.I) : ℂ) = -Complex.I / 2 := by
-  field_simp; simp [Complex.I_sq]
-
 theorem hermitian_adjoint_smul (c : ℂ) (Z : B.Mat k r) :
     (Hpk k r)⁻¹ * (c • Z)ᴴ * Hpk k r = star c • ((Hpk k r)⁻¹ * Zᴴ * Hpk k r) := by
   rw [Matrix.conjTranspose_smul, Matrix.mul_smul, Matrix.smul_mul]
 
-theorem star_re_im (c : ℂ) : star c = (c.re : ℂ) - (c.im : ℂ) * Complex.I := by
-  rw [Complex.star_def]; apply Complex.ext <;> simp
-
 theorem hpart1_smul (c : ℂ) (Z : B.Mat k r) :
     hpart1 (Hpk k r) (c • Z) = (c.re : ℂ) • hpart1 (Hpk k r) Z + ((-c.im : ℝ) : ℂ) • hpart2 (Hpk k r) Z := by
   unfold hpart1 hpart2
-  rw [hermitian_adjoint_smul, inv_two_I, star_re_im]
+  rw [hermitian_adjoint_smul, _root_.PI.QnHermHaar.HermitianAdjointLemmas.two_I_inv, _root_.PI.QnHermHaar.HermitianAdjointLemmas.star_re_im]
   have hc : c = (c.re : ℂ) + (c.im : ℂ) * Complex.I := (Complex.re_add_im c).symm
   ext i j
   simp only [Matrix.smul_apply, Matrix.sub_apply, Matrix.add_apply, smul_eq_mul]
@@ -238,7 +266,7 @@ theorem hpart1_smul (c : ℂ) (Z : B.Mat k r) :
 theorem hpart2_smul (c : ℂ) (Z : B.Mat k r) :
     hpart2 (Hpk k r) (c • Z) = (c.re : ℂ) • hpart2 (Hpk k r) Z + (c.im : ℂ) • hpart1 (Hpk k r) Z := by
   unfold hpart1 hpart2
-  rw [hermitian_adjoint_smul, inv_two_I, star_re_im]
+  rw [hermitian_adjoint_smul, _root_.PI.QnHermHaar.HermitianAdjointLemmas.two_I_inv, _root_.PI.QnHermHaar.HermitianAdjointLemmas.star_re_im]
   have hc : c = (c.re : ℂ) + (c.im : ℂ) * Complex.I := (Complex.re_add_im c).symm
   ext i j
   simp only [Matrix.smul_apply, Matrix.sub_apply, Matrix.add_apply, smul_eq_mul]
@@ -248,8 +276,8 @@ theorem hpart2_smul (c : ℂ) (Z : B.Mat k r) :
 theorem GW_add {z : Fin (2 * r + k + 1) → ℂ} {Z Z' : B.Mat k r} (h : GW k r z Z) (h' : GW k r z Z') :
     GW k r z (Z + Z') := by
   refine ⟨?_, ?_⟩
-  · rw [hpart1_add]; exact P.LieBracketMultiplication.lie_add h.1 h'.1
-  · rw [hpart2_add]; exact P.LieBracketMultiplication.lie_add h.2 h'.2
+  · rw [_root_.Formalism.FourierDecayAlt.P.JFxE.hpart1_add']; exact P.LieBracketMultiplication.lie_add h.1 h'.1
+  · rw [_root_.Formalism.FourierDecayAlt.P.JFxE.hpart2_add']; exact P.LieBracketMultiplication.lie_add h.2 h'.2
 
 theorem GW_smul {z : Fin (2 * r + k + 1) → ℂ} (c : ℂ) {Z : B.Mat k r} (h : GW k r z Z) : GW k r z (c • Z) := by
   refine ⟨?_, ?_⟩
@@ -266,7 +294,7 @@ variable {k r : ℕ} {W : Type} [NormedAddCommGroup W] [NormedSpace ℂ W] [Fini
 theorem ecOp_add (hR : Qr.IsRepW k r z π) {Z Z' : B.Mat k r} (h : GW k r z Z) (h' : GW k r z Z') :
     P.QrD.ecOp π (Z + Z') = P.QrD.ecOp π Z + P.QrD.ecOp π Z' := by
   unfold P.QrD.ecOp
-  rw [hpart1_add, hpart2_add, (P.differential_operator_linear W k r z π hR _ _ h.1 h'.1).1,
+  rw [_root_.Formalism.FourierDecayAlt.P.JFxE.hpart1_add', _root_.Formalism.FourierDecayAlt.P.JFxE.hpart2_add', (P.differential_operator_linear W k r z π hR _ _ h.1 h'.1).1,
     (P.differential_operator_linear W k r z π hR _ _ h.2 h'.2).1, smul_add]
   abel
 
@@ -378,7 +406,7 @@ theorem frame_gram {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 <
       herm (Hpk k r) (G u) (∑ q, herm (Hpk k r) (G t) (F q) • F q) := by
     rw [herm_sum_right]
     refine Finset.sum_congr rfl fun q _ => ?_
-    rw [herm_swap (F q) (G t), herm_swap (F q) (G u), star_star, mul_comm]
+    rw [_root_.Formalism.FourierDecayAlt.P.Dx2.DF.herm_symm' (F q) (G t), _root_.Formalism.FourierDecayAlt.P.Dx2.DF.herm_symm' (F q) (G u), star_star, mul_comm]
   rw [e, ← eq_sum_herm_smul_frame_of_inW hz hT hF (frame_inW hG t)]
   exact hG.2.1 u t
 
@@ -465,14 +493,14 @@ theorem trace_move (U V : Wq →L[ℂ] Wp) (B₁ B₂ : Wq →L[ℂ] Wq) (hB : �
       = ∑ i, ∑ j, inner ℂ (b j) (B₁ (b i)) * inner ℂ (U (b i)) (V (b j)) := by
         refine Finset.sum_congr rfl fun i _ => ?_
         conv_lhs => rw [hexp (B₁ (b i))]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul, inner_sum, inner_smul_right]
+
+        simp only [map_sum, map_smul, inner_sum, inner_smul_right]
     _ = ∑ j, ∑ i, inner ℂ (b j) (B₁ (b i)) * inner ℂ (U (b i)) (V (b j)) := Finset.sum_comm
     _ = ∑ j, inner ℂ (U (B₂ (b j))) (V (b j)) := by
         refine Finset.sum_congr rfl fun j _ => ?_
         conv_rhs => rw [hexp (B₂ (b j))]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul, sum_inner, inner_smul_left]
+
+        simp only [map_sum, map_smul, sum_inner, inner_smul_left]
         refine Finset.sum_congr rfl fun i _ => ?_
         congr 1
         rw [← inner_conj_symm, hB, inner_conj_symm]
@@ -494,9 +522,6 @@ theorem hs_sum_right {ι : Type*} (s : Finset ι) (X : Wq →L[ℂ] Wp) (T : ι 
     B.hsInner X (∑ i ∈ s, T i) = ∑ i ∈ s, B.hsInner X (T i) := by
   simp only [P.Topx1.hsInner_eq, ContinuousLinearMap.sum_apply, sum_inner]
   exact Finset.sum_comm
-
-theorem hs_smul_left (c : ℂ) (T Y : Wq →L[ℂ] Wp) : B.hsInner (c • T) Y = c * B.hsInner T Y := by
-  simp only [P.Topx1.hsInner_eq, ContinuousLinearMap.smul_apply, inner_smul_right, Finset.mul_sum]
 
 theorem hs_smul_right (c : ℂ) (X T : Wq →L[ℂ] Wp) : B.hsInner X (c • T) = star c * B.hsInner X T := by
   simp only [P.Topx1.hsInner_eq, ContinuousLinearMap.smul_apply, inner_smul_left, Finset.mul_sum, Complex.star_def]
@@ -614,11 +639,11 @@ theorem tht_eqv (hz : inWb k r z) (hT : 0 < Tz k r z) (hR : Qr.IsRepW k r z π)
   rw [tht_indep hz hT hR hz' hT' hR' hF (frame_uw hh hF) hF' (frame_uw hh' hF')]
   conv_rhs => rw [← sandw_apply (π h) (π' h'⁻¹)]
   unfold tht
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
+
+  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun p _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
+
+  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply, map_smul]
   congr 1
@@ -638,11 +663,11 @@ theorem thtA_eqv (hz : inWb k r z) (hT : 0 < Tz k r z) (hR : Qr.IsRepW k r z π)
   rw [thtA_indep hz hT hR hz' hT' hR' hF (frame_uw hh hF) hF' (frame_uw hh' hF')]
   conv_rhs => rw [← sandw_apply (π h) (π' h'⁻¹)]
   unfold thtA
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
+
+  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun p _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
+
+  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply, map_smul]
   congr 1
@@ -770,7 +795,7 @@ theorem tht_adj (hz : inWb k r z) (hT : 0 < Tz k r z) (hR : Qr.IsRepW k r z π)
     B.hsInner (tht k r z z' π π' F F' a a' ι A) B' = B.hsInner A (thtA k r z z' π π' F F' a a' ι B') := by
   rw [tht_expand hz hT hR hz' hT' hR' hF hF', thtA_expand hz hT hR hz' hT' hR' hF hF']
   simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, hs_sum_left, hs_sum_right,
-    hs_smul_left, hs_smul_right]
+    _root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hs_smul_right]
   refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ =>
     Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun t _ => ?_
   rw [hs_sandw_adj _ (P.QrD.ecOp π (Q.unitB (Hpk k r) F s p)) _ (P.QrD.ecOp π' (Q.unitB (Hpk k r) F' q t))
@@ -799,6 +824,6 @@ end Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.TF
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep
 
-theorem theta_facts_hold : ThtFacts := TF.theta_facts_hold
+alias theta_facts_hold := _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.TF.theta_facts_hold
 
 end Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep

@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StRegCurvBound
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StTorusInvLevi
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.RegularizedCurvature
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
 @[expose] public section
 

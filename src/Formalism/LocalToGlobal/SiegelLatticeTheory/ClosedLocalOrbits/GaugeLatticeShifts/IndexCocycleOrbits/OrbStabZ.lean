@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.GroupTheory.Index
+public import Formalism.LocalRingCardinality.DataHost
+public import Formalism.LocalRingCardinality.DataRows
+public import Formalism.LocalRingCardinality.DataSpaces
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
+public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 
 @[expose] public section
 

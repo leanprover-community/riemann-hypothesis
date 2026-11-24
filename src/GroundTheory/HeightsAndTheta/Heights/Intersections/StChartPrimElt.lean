@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.FieldTheory.Minpoly.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 
 @[expose] public section
 

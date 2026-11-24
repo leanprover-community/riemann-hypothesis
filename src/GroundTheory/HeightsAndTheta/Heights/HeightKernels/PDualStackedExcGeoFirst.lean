@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExc
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -135,8 +140,8 @@ theorem isLinAt_linD {F' : HermLattice K i} (b' : Module.Basis T ℤ (dualLattic
     IsLinAt b' (linD m) (∑ s, m s • (b' s : Fin i → K)) := by
   have h := isLinAt_X b'
   unfold IsLinAt at h ⊢
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [linD, map_sum, map_sum, map_sum, Finset.sum_mul]
+
+  rw [linD, map_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun s _ => ?_
   rw [← smul_eq_C_mul (X ⟨(), s⟩ : MRing (dualBlocks T)) (m s), map_zsmul, h s, map_zsmul, map_zsmul,
     smul_mul_assoc]

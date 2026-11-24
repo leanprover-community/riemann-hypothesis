@@ -1,9 +1,45 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartFormalBiext
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectors
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartFormalBiext
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -34,11 +70,6 @@ theorem constantCoeff_gauge {R K O : Type} [CommRing R] [CommRing K] [Algebra �
   rw [ev, hdec, MvPowerSeries.subst_add hsub, map_add (f := _),
     MvPowerSeries.constantCoeff_subst_eq_zero hsub hz hrest] at key
   simpa using key
-
-theorem toK_self {K : Type} [CommRing K] {σ : Type} (f : MvPowerSeries σ K) :
-    MvPowerSeries.map (algebraMap K K) f = f := by
-  ext m
-  simp
 
 theorem nabValN_congr {R R' K O : Type} [CommRing R] [CommRing R'] [CommRing K] [Algebra ℚ K] [Algebra R K] [Algebra R' K]
     [CommRing O] [StarRing O] {d : ℕ} (B : FB R d O) (B' : FB R' d O) (hF : B.FK K = B'.FK K)
@@ -87,7 +118,7 @@ theorem GlobalTheory.PlaceInt.integralBiext_gauge_eig_bound : ∀ (E : Type) [Fi
     GlobalTheory.FBDescent.gauge_iff B BT T.Fr eFK eAK (by rw [hB1, h1]) (by rw [hB2, h2]) (by rw [hBs, hs])
       (fun a => by rw [hBa, had]) (gaugeOf C)
   have hgT : BT.IsCanonGauge T.Fr (gaugeOf C) := by
-    rw [GlobalTheory.ChartBiext.toK_self] at hC
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.gt_map_id] at hC
     exact (hG _).2 hC
   have hgauge : B.IsCanonGauge T.Fr (gaugeOf C) := hgB.2 hgT
   refine ⟨hgauge, GlobalTheory.ChartBiext.constantCoeff_gauge B hgauge, ?_⟩

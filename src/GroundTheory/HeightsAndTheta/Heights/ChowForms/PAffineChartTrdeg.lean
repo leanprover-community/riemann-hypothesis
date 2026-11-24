@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsAlt
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -92,15 +97,15 @@ theorem transcendental (hP : IsHomogIdeal P) (j : Fin n) (hj : X j ∉ P) :
       rw [Polynomial.aeval_eq_sum_range]
       rfl
     calc aeval ξ G = ξ j ^ M * ∑ e ∈ Finset.range N, (p.coeff e : _) * ξ j ^ e := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp only [G, map_sum, map_mul, map_pow, aeval_X, heval, Finset.mul_sum]
+
+          simp only [G, map_sum, map_mul, map_pow, aeval_X, heval, Finset.mul_sum]
           refine Finset.sum_congr rfl fun e _ => by ring
       _ = 0 := by rw [← h0, hpe, mul_zero]
   have hcoeff : ∀ e < N, p.coeff e = 0 := by
     intro e he
     have hcomp : homogeneousComponent (M + e) G = h e * X j ^ e := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [G, map_sum]
+
+      simp only [G, map_sum]
       rw [Finset.sum_eq_single e]
       · exact homogeneousComponent_eq_self ((hhom e).mul (isHomogeneous_X_pow j e))
       · intro b _ hb
@@ -170,7 +175,7 @@ theorem proof : AffineChartTrdeg.Statement := by
       simp only [Polynomial.coeff_sub, Polynomial.coeff_C_mul_X, Polynomial.coeff_C, ↓reduceIte,
         one_ne_zero, Polynomial.coeff_zero] at this
       have h' := congrArg Subtype.val this
-      simp only [Subalgebra.coe_sub, Subalgebra.coe_zero, sub_zero] at h'
+      simp only [Subalgebra.coe_zero, sub_zero] at h'
       exact h'
     · simp only [map_sub, map_mul, Polynomial.aeval_C, Polynomial.aeval_X]
       show algebraMap R K b * (algebraMap R K a / algebraMap R K b) - algebraMap R K a = 0

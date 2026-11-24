@@ -1,9 +1,14 @@
 module
 
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Permute
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigRep
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerOrth
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.PositionPrependMemNoncompactPositionSubmodule
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Weights
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerOrth
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KUnitB
 
 @[expose] public section
 

@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.ResChPrime
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
 
 @[expose] public section
 

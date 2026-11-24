@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsG
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.GalBasic
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.FinCoh
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsD
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.Inertia
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.ModelF
 
 @[expose] public section
 

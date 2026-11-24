@@ -1,10 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.PeterssonHilbertSpace
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.Garding
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.DenseWeakVectors
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedType
+public import Formalism.PeriodIntegrals.UpqRep
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BesselDerivatives.ExpSup
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.Garding
+import Mathlib.Tactic.Lemma
+import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 

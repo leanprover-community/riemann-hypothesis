@@ -1,12 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMapAreaOne
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsAreaFormulaInj
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralMass
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFrameJacobianSum
-public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.VolumePreservingUncurry
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFrameJacobianSum
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.MetricSpace.HausdorffDimension
+public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 
 @[expose] public section
 

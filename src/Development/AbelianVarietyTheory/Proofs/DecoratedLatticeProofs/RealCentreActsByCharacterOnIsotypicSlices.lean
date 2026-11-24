@@ -1,14 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsBiSmooth
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RapidVal
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ApplyAddInfRat
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SqNormIntegralFundamentalDomainEqL2NormSq
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PureTensorLIntertwine
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SqNormIntegralFundamentalDomainEqL2NormSq
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTensorOOfFinite
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -31,13 +69,13 @@ theorem mulVec_eq_smul (σ : R →+* R) (J : Matrix (Fin n) (Fin n) R) (hJ : ∀
     ∃ c : R, b *ᵥ v = c • v := by
   obtain ⟨u, hu⟩ := hq.exists_left_inv
   have hw : ∀ i, σ ((v ᵥ* J) i) = (J *ᵥ v) i := fun i => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [vecMul, mulVec, dotProduct, map_sum, map_mul, hv, hJ]
+
+    simp only [vecMul, mulVec, dotProduct, map_sum, map_mul, hv, hJ]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
   have hσq : σ ((v ᵥ* J) ⬝ᵥ v) = (v ᵥ* J) ⬝ᵥ v := by
     conv_rhs => rw [← dotProduct_mulVec, dotProduct_comm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sum, map_mul, hv, hw]
+
+    simp only [dotProduct, map_sum, map_mul, hv, hw]
   have hσu : σ u = u := by
     have h := congrArg σ hu
     rw [map_mul, hσq, map_one] at h
@@ -148,15 +186,8 @@ theorem norm_unit {V : HSp D} {x : DefSp V} (hx : x.Is) (v : Fin V.rank → ℚ)
     IsUnit (((fun i => incA D (v i)) ᵥ* JR (AF D.host.F) V.gram) ⬝ᵥ fun i => incA D (v i)) := by
   have := (norm_ne_zero hx v hv).isUnit.map (incA D)
   convert this using 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, vecMul, map_sum, map_mul, JR, map_apply]
 
-theorem sigR_inclR {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E)
-    (e : E) : sigR R σ (inclR R e) = inclR R (σ e) := by
-  simp [sigR, inclR]
-
-theorem cA_incA (e : D.host.E) : cA D (incA D e) = incA D (star e) := by
-  exact sigR_inclR _ _ e
+  simp only [dotProduct, vecMul, map_sum, map_mul, JR, map_apply]
 
 theorem mt_central {V : HSp D} {x : DefSp V} (hx : x.Is) {b : GA D V} (hb : b ∈ Subgroup.center (GA D V))
     (i₀ : Fin V.rank) : Formalism.L2.Theta.mt V b = Formalism.L2.Theta.mt V b i₀ i₀ • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) := by
@@ -165,12 +196,12 @@ theorem mt_central {V : HSp D} {x : DefSp V} (hx : x.Is) {b : GA D V} (hb : b �
     refine mulVec_eq_smul (cA D) (JR (AF D.host.F) V.gram) (fun i j => ?_) _ (fun g hg => ?_) ?_ _ (fun i => ?_)
       (norm_unit hx v hv)
     · show cA D (incA D (V.gram i j)) = incA D (V.gram j i)
-      rw [cA_incA]
+      rw [_root_.GlobalTheory.DualPairCheck.cA_incA]
       exact congrArg _ (V.herm.eq _ _)
     · exact congrArg (Formalism.L2.Theta.mt V) (Subgroup.mem_center_iff.1 hb (⟨g, hg⟩ : HR (AF D.host.F) D.sp.cm.sig V.gram))
     · have := (two_ne_zero : (2 : D.host.E) ≠ 0).isUnit.map (incA D)
       rwa [map_ofNat] at this
-    · rw [cA_incA, star_ratCast]
+    · rw [_root_.GlobalTheory.DualPairCheck.cA_incA, star_ratCast]
   refine eq_smul_one _ (fun i => ?_) (fun i j hij => ?_) i₀
   · have := key (Pi.single i 1) (by simp)
     have e : (fun k => incA D ((Pi.single i 1 : Fin V.rank → ℚ) k : ℚ)) = Pi.single i 1 := by
@@ -185,8 +216,7 @@ theorem mt_central {V : HSp D} {x : DefSp V} (hx : x.Is) {b : GA D V} (hb : b �
         Rat.cast_zero, apply_ite (incA D), map_one, map_zero]
     rwa [e] at this
 
-theorem mt_mul (V : HSp D) (g g' : GA D V) :
-    Formalism.L2.Theta.mt V (g * g') = Formalism.L2.Theta.mt V g * Formalism.L2.Theta.mt V g' := rfl
+alias mt_mul := _root_.GlobalTheory.BesselCompare.mt_mul
 
 theorem mt_inj (V : HSp D) {g g' : GA D V} (h : Formalism.L2.Theta.mt V g = Formalism.L2.Theta.mt V g') : g = g' :=
   Subtype.ext (Units.ext h)

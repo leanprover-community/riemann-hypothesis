@@ -1,7 +1,45 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfA
+public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
+public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,14 +87,7 @@ theorem γLA_smulLA (a : LetA O n) (x : LA W T π' c) :
     rfl
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-theorem γA_comm (g h : W.Gam) (a : LetA O n) : W.γA g (W.γA h a) = W.γA h (W.γA g a) := by
-  funext i
-  show W.γ₀ g (W.γ₀ h (a i)) = W.γ₀ h (W.γ₀ g (a i))
-  rw [← AlgHom.mul_apply, ← map_mul, mul_comm g h, map_mul, AlgHom.mul_apply]
-
-theorem γA_mem_AΔ (g : W.Gam) {a : LetA O n} (ha : a ∈ W.AΔ) : W.γA g a ∈ W.AΔ := by
-  intro δ hδ
-  rw [γA_comm, ha δ hδ]
+alias γA_mem_AΔ := _root_.Formalism.MainNotions.LiftingTheory.tr_γA_mem
 
 theorem range_rep (u : LA W T π' c) (hu : u ∈ LinearMap.range (toLA W T π' c ⊤)) :
     ∃ (m : ℕ) (a : Fin m → ↥W.AΔ) (y : Fin m → W.DD T) (hy : ∀ j, y j ∈ NcS W T (c - 1)),
@@ -73,8 +104,8 @@ theorem range_rep (u : LA W T π' c) (hu : u ∈ LinearMap.range (toLA W T π' c
   choose x hx using fun j =>
     Submodule.Quotient.mk_surjective _ ((s j : ↥(⊤ : Submodule O (LcQ W T π' c))) : LcQ W T π' c)
   refine ⟨m, fun j => f j • a j, fun j => (x j : W.DD T), fun j => (x j).2, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hfg, map_sum]
+
+  rw [← hfg, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← hs j, TensorProduct.smul_tmul', toLA_tmul]
   congr 1
@@ -90,8 +121,8 @@ theorem rep_mem {m : ℕ} (a : Fin m → LetA O n) (ha : ∀ j, a j ∈ W.AΔ) (
 theorem smulLA_rep (b : LetA O n) {m : ℕ} (a : Fin m → LetA O n) (z : Fin m → LcQ W T π' c) :
     smulLA W T π' c b (∑ j, algebraMap (LetA O n) W.EE ((letE c : LetA O n) * a j) ⊗ₜ z j) =
       ∑ j, algebraMap (LetA O n) W.EE ((letE c : LetA O n) * (b * a j)) ⊗ₜ z j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [smulLA_tmul, ← map_mul]
   congr 2
@@ -100,13 +131,13 @@ theorem smulLA_rep (b : LetA O n) {m : ℕ} (a : Fin m → LetA O n) (z : Fin m 
 theorem γLA_rep {m : ℕ} (a : Fin m → LetA O n) (z : Fin m → LcQ W T π' c) :
     γLA W T π' c (∑ j, algebraMap (LetA O n) W.EE ((letE c : LetA O n) * a j) ⊗ₜ z j) =
       ∑ j, algebraMap (LetA O n) W.EE ((letE c : LetA O n) * W.γA W.gamK (a j)) ⊗ₜ z j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [γLA_tmul, W.γE_ext]
   congr 2
   show W.γA W.gamK ((letE c : LetA O n) * a j) = _
-  rw [map_mul, Formalism.MainNotions.LiftingTheory.wmap_γA_letE]
+  rw [map_mul, _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent]
 
 theorem range_smul {b : LetA O n} (hb : b ∈ W.AΔ) {u : LA W T π' c}
     (hu : u ∈ LinearMap.range (toLA W T π' c ⊤)) :
@@ -160,7 +191,7 @@ theorem φspan_γ (g : W.Gam) {z : W.DD T} (hz : z ∈ Formalism.MainNotions.Del
     exact ⟨W.γD T g x₀, W.N_Γ T g x₀ hx₀, rfl⟩
   | zero => rw [map_zero]; exact Submodule.zero_mem _
   | add x y _ _ hx hy => rw [map_add (f := _)]; exact Submodule.add_mem _ hx hy
-  | smul a x _ hx => rw [Formalism.MainNotions.LiftingTheory.wmap_γD_smul]; exact Submodule.smul_mem _ _ hx
+  | smul a x _ hx => rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear]; exact Submodule.smul_mem _ _ hx
 
 theorem DelS_γ (g : W.Gam) {x : W.DD T} (hx : x ∈ DelS W T) : W.γD T g x ∈ DelS W T := by
   rw [mem_DelS] at hx ⊢
@@ -174,7 +205,7 @@ theorem LamPS_γ {u u' : LetA O n} (huu : u' * u = 1) (hγE : W.γA W.gamK Eπ =
   refine ⟨?_, ?_, ?_⟩
   · have e : Eπ ^ h' = u' ^ h' * W.γA W.gamK (Eπ ^ h') := by
       rw [map_pow, hγE, mul_pow, ← mul_assoc, ← mul_pow, huu, one_pow, one_mul]
-    rw [e, mul_smul, ← Formalism.MainNotions.LiftingTheory.wmap_γD_smul]
+    rw [e, mul_smul, ← _root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear]
     exact Submodule.smul_mem _ _ (φspan_γ W T c _ h1)
   · exact (mem_DelS W T _).1 (DelS_γ W T _ ((mem_DelS W T y).2 h2))
   · rw [← γD_letE, h3]
@@ -187,7 +218,7 @@ theorem LamPS_smul {a : LetA O n} (ha : a ∈ W.AΔ) {y : W.DD T} (hy : y ∈ La
   · rw [smul_comm]
     exact Submodule.smul_mem _ _ h1
   · intro δ hδ
-    rw [Formalism.MainNotions.LiftingTheory.wmap_γD_smul, ha δ hδ, h2 δ hδ]
+    rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, ha δ hδ, h2 δ hδ]
   · rw [smul_comm, h3]
 
 theorem Eπ_φspan {w : LetA O n} {w' : LetA O n} (hww : w' * w = 1) (hQ : W.Q = w * Eπ)

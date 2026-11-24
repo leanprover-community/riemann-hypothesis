@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteModuloIntegral
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StZariskiAnalyticNormality
+public import Mathlib.RingTheory.Ideal.BigOperators
 
 @[expose] public section
 
@@ -53,8 +53,8 @@ theorem FiniteModuloIntegral.proof : FiniteModuloIntegral.Statement := by
     obtain ⟨b, h, hb, hh, hev⟩ := hrep u hu
     have hq : Ideal.Quotient.mk I ⟨u, u, hu, rfl⟩ = ∑ m, (⟨b m, b m, hb m, rfl⟩ : holGerms (L x)) •
         Ideal.Quotient.mk I ⟨e m, e m, he m, rfl⟩ := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hsmul, ← map_sum]
+
+      simp only [hsmul, ← map_sum]
       rw [Ideal.Quotient.eq]
       have hmem : ∑ i, (⟨h i, h i, hh i, rfl⟩ : holGerms x) * ⟨f i, f i, hf i, rfl⟩ ∈ I :=
         Ideal.sum_mem _ fun i _ => Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨i, rfl⟩)
@@ -63,13 +63,13 @@ theorem FiniteModuloIntegral.proof : FiniteModuloIntegral.Statement := by
       have e1 : (holGerms x).subtype ((⟨u, u, hu, rfl⟩ : holGerms x) -
           ∑ m, φ ⟨b m, b m, hb m, rfl⟩ * ⟨e m, e m, he m, rfl⟩) =
           Germ.coeRingHom (𝓝 x) (u - ∑ m, (b m ∘ L) * e m) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sub, map_sum, map_mul]
+
+        simp only [map_sub, map_sum, map_mul]
         rfl
       have e2 : (holGerms x).subtype (∑ i, (⟨h i, h i, hh i, rfl⟩ : holGerms x) * ⟨f i, f i, hf i, rfl⟩) =
           Germ.coeRingHom (𝓝 x) (∑ i, h i * f i) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_mul]
+
+        simp only [map_sum, map_mul]
         rfl
       rw [e1, e2]
       refine Germ.coe_eq.2 ?_
@@ -99,8 +99,8 @@ theorem FiniteModuloIntegral.proof : FiniteModuloIntegral.Statement := by
   have hgerm : Germ.coeRingHom (𝓝 x) (∑ i, h i * f i) = Germ.coeRingHom (𝓝 x)
       (g ^ p.natDegree + ∑ j ∈ Finset.range p.natDegree, (a j ∘ L) * g ^ j) := by
     have := congrArg (holGerms x).subtype hc
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, map_mul, map_pow, hcI, hφI] at this ⊢
+
+    simp only [map_add (f := _), map_sum, map_mul, map_pow, hcI, hφI] at this ⊢
     exact this
   filter_upwards [Germ.coe_eq.1 hgerm] with z hz
   simp only [Finset.sum_apply, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_apply] at hz

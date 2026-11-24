@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 public import Formalism.LocalToGlobal.ProjectiveLattices.NonnegIffOfLiesTotal
-public import Formalism.LocalToGlobal.ProjectiveLattices.RegularityR2Quotient
+public import Formalism.LocalToGlobal.ProjectiveLattices.CompData
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
 
 @[expose] public section
 

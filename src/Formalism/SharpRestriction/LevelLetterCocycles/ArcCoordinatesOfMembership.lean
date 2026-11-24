@@ -2,6 +2,55 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
+public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
+import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
+import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
+import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
+import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -87,9 +136,9 @@ theorem dcrisL_sum_zero (T : LocLat G Qp LL O) :
         rw [hf, LinearMap.sub_apply, mulVB_of_mem T _ (hd j hj), LinearMap.smul_apply,
           LinearMap.id_apply, sub_smul]
       have h1 := congrArg f hsum
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero, Finset.sum_congr rfl hfj, Finset.sum_insert ha, sub_self, zero_smul,
-        zero_add] at h1
+
+      rw [map_sum, map_zero, Finset.sum_congr rfl hfj, Finset.sum_insert ha, sub_self, zero_smul,
+      zero_add] at h1
       have := ih (fun j => (W.emb j c - W.emb a c) • d j)
         (fun j hj => (DcrisL PD T.ρ (W.emb j)).smul_mem _ (hd j (Finset.mem_insert_of_mem hj))) h1 i hi
       rcases smul_eq_zero.1 this with h | h
@@ -152,11 +201,7 @@ theorem φVB_inj (T : LocLat G Qp LL O) : Function.Injective (φVB PD (LL := LL)
   exact h hxy
 
 include W in
-theorem p_ne_zero : (PD.p : LL) ≠ 0 := by
-  intro h
-  have := W.v_l
-  rw [h, AddValuation.map_zero] at this
-  exact absurd this (by simp)
+alias p_ne_zero := _root_.Formalism.MainNotions.LiftingTheory.tr_pLL_ne
 
 
 include W in
@@ -205,18 +250,13 @@ theorem cmp_sum_letter (T : LocLat G Qp LL O) (i : ZMod n) {d : ℕ} (b : Fin d 
       ∑ m, algebraMap O LL (PowerSeries.constantCoeff (β m i)) • W.cmp T ⟨b m, hbN m⟩ := by
   have e : (⟨∑ m, β m • b m, h⟩ : ↥(W.N T)) =
       ∑ m, (⟨β m • b m, (W.N T).smul_mem _ (hbN m)⟩ : ↥(W.N T)) := Subtype.ext (by simp)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, map_sum]
+
+  rw [e, map_sum]
   exact Finset.sum_congr rfl fun m _ => cmp_smul_letter W T i (β m) (b m) (hbN m) (hbl m)
 
 theorem cmpD_of_mem (T : LocLat G Qp LL O) {x : W.DD T} (hx : x ∈ W.N T) :
     Formalism.MainNotions.ArcLiftingSetup.cmpD W T x = W.cmp T ⟨x, hx⟩ := by
   unfold Formalism.MainNotions.ArcLiftingSetup.cmpD; rw [dite_eq_left hx]
-
-theorem letter_of_Nl (T : LocLat G Qp LL O) (i : ZMod n) {x : W.DD T} (hx : x ∈ W.Nl T i) :
-    (letE i : LetA O n) • x = x := by
-  obtain ⟨z, -, rfl⟩ := hx
-  simp only [LinearMap.smul_apply, LinearMap.id_apply, smul_smul, letE_mul_self]
 
 theorem cmp_mem_letter (T : LocLat G Qp LL O) (i : ZMod n) {x : W.DD T} (hx : x ∈ W.N T)
     (hxi : (letE i : LetA O n) • x = x) : W.cmp T ⟨x, hx⟩ ∈ DcrisL PD T.ρ (W.emb i) := by
@@ -234,8 +274,8 @@ theorem dcrisL_le_span [NeZero n] (T : LocLat G Qp LL O) (h3 : Formalism.MainNot
     Submodule.span_le.2 (by rintro _ ⟨x, rfl⟩; exact W.cmp_letter T j x)
   have hcmp : ∀ x : ↥(W.N T), W.cmp T x = ∑ j : ZMod n, W.cmp T ((letE j : LetA O n) • x) := by
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum, ← Finset.sum_smul, sum_letE, one_smul]
+
+    rw [← map_sum, ← Finset.sum_smul, sum_letE, one_smul]
   have hrange : Set.range (W.cmp T) ⊆ ((⨆ j, S j : Submodule LL (T.V ⊗[Qp] B)) : Set _) := by
     rintro _ ⟨x, rfl⟩
     rw [hcmp]
@@ -293,15 +333,15 @@ theorem cmp_indepO (T : LocLat G Qp LL O) (h3 : Formalism.MainNotions.DeltaInvar
     (cc : Fin d → O) (h0 : ∑ k, algebraMap O LL (cc k) • Formalism.MainNotions.ArcLiftingSetup.cmpD W T (b k) = 0) :
     ∀ k, cc k = 0 := by
   have hbN : ∀ k, b k ∈ W.N T := fun k => (hb.1 k).1.1
-  have hbl : ∀ k, (letE c' : LetA O n) • b k = b k := fun k => letter_of_Nl W T c' (hb.1 k).2
+  have hbl : ∀ k, (letE c' : LetA O n) • b k = b k := fun k => _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' (hb.1 k).2
   set X : W.DD T := ∑ k, cc k • b k with hXdef
   have hXN : X ∈ W.N T := Submodule.sum_mem _ fun k _ => by
     rw [← algebraMap_smul (LetA O n) (cc k) (b k)]; exact (W.N T).smul_mem _ (hbN k)
   have hcX : W.cmp T ⟨X, hXN⟩ = 0 := by
     have e : (⟨X, hXN⟩ : ↥(W.N T)) = ∑ k, cc k • (⟨b k, hbN k⟩ : ↥(W.N T)) :=
       Subtype.ext (by simp [hXdef])
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum, ← h0]
+
+    rw [e, map_sum, ← h0]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [W.cmp_smul, cmpD_of_mem W T (hbN k)]
   obtain ⟨y, hyN, hyX⟩ := h3.1 ⟨X, hXN⟩ hcX
@@ -322,8 +362,8 @@ theorem cmp_indepO (T : LocLat G Qp LL O) (h3 : Formalism.MainNotions.DeltaInvar
   have hev0 : ∀ j, ∑ k, cc k * ev c' (α' k j) = 0 := by
     intro j
     have := congrArg (ev c') (congrFun hcoef j)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum, map_mul, ev_alg, ev_π] using this
+
+    simpa [map_sum, map_mul, ev_alg, ev_π] using this
   choose α hα using fun j => (hb.2 ((letE c' : LetA O n) • b' j)
     ⟨smul_mem_NΔ W T (SatPW.letE_mem_AΔ W c') (hb'Δ j),
       ⟨b' j, (hb'Δ j).1, by rw [LinearMap.smul_apply, LinearMap.id_apply]⟩⟩).exists
@@ -356,8 +396,8 @@ theorem cmp_indepO (T : LocLat G Qp LL O) (h3 : Formalism.MainNotions.DeltaInvar
   have hevδ : ∀ k m, ∑ j, ev c' (α' k j) * ev c' (α j m) = if m = k then 1 else 0 := by
     intro k m
     have := congrArg (ev c') (hδ k m)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     simp only [map_mul] at this
     rw [this]
     split_ifs
@@ -377,7 +417,7 @@ theorem dcrisL_le_spanB [NeZero n] (T : LocLat G Qp LL O) (h3 : Formalism.MainNo
     DcrisL PD T.ρ (W.emb c') ≤
       Submodule.span LL (Set.range fun k => Formalism.MainNotions.ArcLiftingSetup.cmpD W T (b k)) := by
   have hbN : ∀ k, b k ∈ W.N T := fun k => (hb.1 k).1.1
-  have hbl : ∀ k, (letE c' : LetA O n) • b k = b k := fun k => letter_of_Nl W T c' (hb.1 k).2
+  have hbl : ∀ k, (letE c' : LetA O n) • b k = b k := fun k => _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' (hb.1 k).2
   refine (dcrisL_le_span W T h3 c').trans (Submodule.span_le.2 ?_)
   rintro _ ⟨x, rfl⟩
   obtain ⟨⟨r, b', hb'Δ, hU, -⟩, -⟩ := hmod
@@ -425,7 +465,7 @@ theorem dcrisL_succ_le [NeZero n] (hs : W.s = 1) (T : LocLat G Qp LL O) (h3 : Fo
     | mem z hz =>
       obtain ⟨w, hw, rfl⟩ := hz
       have hwN : w ∈ W.N T := Formalism.MainNotions.UnusedSlot80.ArcC.Nl_le_N W T _ hw
-      have hwl : (letE (i + 1 - 1) : LetA O n) • w = w := letter_of_Nl W T _ hw
+      have hwl : (letE (i + 1 - 1) : LetA O n) • w = w := _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T _ hw
       have hφl : (letE (i + 1) : LetA O n) • W.φD T w = W.φD T w := by
         have := φD_pow_letter W T (i + 1 - 1) w hwl 1
         simpa using this
@@ -454,7 +494,7 @@ theorem dcrisL_succ_le [NeZero n] (hs : W.s = 1) (T : LocLat G Qp LL O) (h3 : Fo
   have hyN : (letE (i + 1) : LetA O n) • (x : W.DD T) ∈ W.N T := (W.N T).smul_mem _ x.2
   have hyl : (letE (i + 1) : LetA O n) • (x : W.DD T) ∈ W.Nl T (i + 1) :=
     ⟨x, x.2, by rw [LinearMap.smul_apply, LinearMap.id_apply]⟩
-  have hyl' := letter_of_Nl W T _ hyl
+  have hyl' := _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T _ hyl
   obtain ⟨-, hmem, hc⟩ := key _ (h5.2.1 (i + 1) _ hyl)
   have e : (⟨W.Q ^ k • (W.Q ^ (h (i + 1)) • ((letE (i + 1) : LetA O n) • (x : W.DD T))), hmem⟩ :
       ↥(W.N T)) = ⟨(W.Q ^ (k + h (i + 1))) • ((letE (i + 1) : LetA O n) • (x : W.DD T)),
@@ -497,7 +537,7 @@ theorem frame_basis [NeZero n] (hs : W.s = 1) (hV : ValRing (LL := LL) O v) (T :
       Submodule.span LL (Set.range fun k : Fin d => Formalism.MainNotions.ArcLiftingSetup.dv W T e b (Pi.single k 1)) =
         DcrisL PD T.ρ (W.emb (c' + (e : ZMod n))) := by
   have hbN : ∀ k, b k ∈ W.N T := fun k => (hb.1 k).1.1
-  have hbl : ∀ k, (letE c' : LetA O n) • b k = b k := fun k => letter_of_Nl W T c' (hb.1 k).2
+  have hbl : ∀ k, (letE c' : LetA O n) • b k = b k := fun k => _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' (hb.1 k).2
   simp only [dv_single W T e b]
   have hcl : ∀ k, Formalism.MainNotions.ArcLiftingSetup.cmpD W T (b k) ∈ DcrisL PD T.ρ (W.emb c') := fun k => by
     rw [cmpD_of_mem W T (hbN k)]; exact cmp_mem_letter W T c' (hbN k) (hbl k)
@@ -537,13 +577,13 @@ theorem phi_trunc (T : LocLat G Qp LL O) (e R : ℕ) {d : ℕ} (b : Fin d → W.
     ((W.φD T) ^ e) (∑ r ∈ Finset.range R, W.π₀ ^ r • Formalism.MainNotions.LiftingTheory.vecB W T b (y r)) =
       ∑ m, (∑ r ∈ Finset.range R, ((W.φA ^ e) W.π₀) ^ r * algebraMap O (LetA O n) (y r m)) •
         ((W.φD T) ^ e) (b m) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   have h1 : ∀ r ∈ Finset.range R, ((W.φD T) ^ e) (W.π₀ ^ r • Formalism.MainNotions.LiftingTheory.vecB W T b (y r)) =
       ∑ m, (((W.φA ^ e) W.π₀) ^ r * algebraMap O (LetA O n) (y r m)) • ((W.φD T) ^ e) (b m) := by
     intro r _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Formalism.MainNotions.UnusedSlot80.Relay2.φpow_smul, map_pow, Formalism.MainNotions.LiftingTheory.vecB, map_sum, Finset.smul_sum]
+
+    rw [Formalism.MainNotions.UnusedSlot80.Relay2.φpow_smul, map_pow, Formalism.MainNotions.LiftingTheory.vecB, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     rw [map_smul, ← algebraMap_smul (LetA O n) (y r m), smul_smul]
   rw [Finset.sum_congr rfl h1, Finset.sum_comm]
@@ -734,8 +774,8 @@ theorem Pp_repr (T : LocLat G Qp LL O) (c' : ZMod n) (e : ℕ) {d : ℕ} (b : Fi
   · intro a ha x hx
     obtain ⟨α, hα, hxα⟩ := (hb.2 x hx).exists
     refine ⟨fun m => a * (W.φA ^ e) (α m), fun m => W.AΔ.mul_mem ha (φA_pow_mem_AΔ W (hα m).1 e), ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxα, map_sum, Finset.smul_sum]
+
+    rw [hxα, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     rw [Formalism.MainNotions.UnusedSlot80.Relay2.φpow_smul, smul_smul]
 
@@ -757,7 +797,7 @@ theorem frame_inv_poly (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
     have h1 : (PowerSeries.constantCoeff : PowerSeries LL →+* LL).mapMatrix Hps = 1 := by
       ext i k
       simp only [RingHom.mapMatrix_apply, Matrix.map_apply, hHps, Matrix.of_apply,
-        PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.constantCoeff_mk, hsol0,
+        PowerSeries.constantCoeff_mk, hsol0,
         Matrix.one_apply, Pi.single_apply]
     rw [h1, Matrix.det_one]
     exact isUnit_one
@@ -766,9 +806,9 @@ theorem frame_inv_poly (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
       if t = 0 ∧ m = m' then 1 else 0 := by
     intro t
     have h := congrArg (fun Q : Matrix (Fin d) (Fin d) (PowerSeries LL) => PowerSeries.coeff t (Q m m')) hinv
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mul_apply, map_sum, PowerSeries.coeff_mul, hHps, Matrix.of_apply,
-      PowerSeries.coeff_mk] at h
+
+    simp only [Matrix.mul_apply, map_sum, PowerSeries.coeff_mul, hHps, Matrix.of_apply,
+    PowerSeries.coeff_mk] at h
     rw [h, Matrix.one_apply]
     by_cases hm : m = m'
     · by_cases ht : t = 0
@@ -794,14 +834,14 @@ theorem frame_inv_poly (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
   have hQ : ∀ t < M, Q.coeff t = 0 := by
     intro t ht
     apply hinj
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_zero, hQdef, Polynomial.coeff_sub, Polynomial.finsetSum_coeff, Polynomial.coeff_C, map_sub,
-      map_sum]
+
+    rw [map_zero, hQdef, Polynomial.coeff_sub, Polynomial.finsetSum_coeff, Polynomial.coeff_C, map_sub,
+    map_sum]
     have hk : ∀ k, algebraMap O LL ((HP k * GP k).coeff t) = (PD.p : LL) ^ (2 * κ) *
         ∑ x ∈ Finset.HasAntidiagonal.antidiagonal t, sol k x.1 m * PowerSeries.coeff x.2 (Hps⁻¹ k m') := by
       intro k
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Polynomial.coeff_mul, map_sum, Finset.mul_sum]
+
+      rw [Polynomial.coeff_mul, map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun x hx => ?_
       have hx' := Finset.HasAntidiagonal.mem_antidiagonal.1 hx
       rw [hHPc, hGPc, if_pos (by omega), if_pos (by omega), map_mul, hyy k x.1 (by omega),
@@ -815,9 +855,8 @@ theorem frame_inv_poly (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
   obtain ⟨ρ, hρ⟩ := (Polynomial.X_pow_dvd_iff).2 hQ
   refine ⟨ρ, ?_⟩
   have h := congrArg (Polynomial.aeval Y) hρ
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hQdef, map_sub, map_sum, map_mul, Polynomial.aeval_C, Polynomial.aeval_X_pow, HP, GP,
-    Polynomial.aeval_X] at h
+
+  simp only [hQdef, map_sub, map_sum, map_mul, Polynomial.aeval_C, Polynomial.aeval_X_pow, HP, GP] at h
   rw [← h]
   ring
 
@@ -837,7 +876,7 @@ theorem secOfP [IsDomain O] (hinj : Function.Injective (algebraMap O LL))
   obtain ⟨yP, hyP, hyx⟩ := hx
   rw [one_smul] at hyx
   obtain ⟨β₀, hβ₀, hyβ⟩ := Pp_repr W T c' e b hb.1 yP hyP
-  have hbl : ∀ m, (letE c' : LetA O n) • b m = b m := fun m => letter_of_Nl W T c' (hb.1.1 m).2
+  have hbl : ∀ m, (letE c' : LetA O n) • b m = b m := fun m => _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' (hb.1.1 m).2
   have hφl : ∀ m, (letE (c' + (e : ZMod n)) : LetA O n) • ((W.φD T) ^ e) (b m) = ((W.φD T) ^ e) (b m) :=
     fun m => φD_pow_letter W T c' (b m) (hbl m) e
   let β : Fin d → LetA O n := fun m => letE (c' + (e : ZMod n)) * β₀ m

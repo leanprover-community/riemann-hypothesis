@@ -1,6 +1,51 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToZero
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -112,31 +157,7 @@ lemma flag_iff {R W : Type} [CommRing R] [AddCommGroup W] [Module R W] (A : ℕ 
     (h0 : A 0 = ⊥) (hm : ∀ j, A j ≤ A (j + 1)) (r : ℕ) (g : W ≃ₗ[R] W)
     (hg : ∀ j, j < r → ∀ v ∈ A (j + 1), g v - v ∈ A j) :
     ∀ j, j ≤ r → ∀ v, g v ∈ A j ↔ v ∈ A j := by
-  have hs : ∀ j, j ≤ r → ∀ w ∈ A j, ∃ v ∈ A j, g v = w := by
-    intro j
-    induction j with
-    | zero =>
-      intro _ w hw
-      rw [h0] at hw ⊢
-      exact ⟨0, by simp, by simpa using hw.symm⟩
-    | succ j ih =>
-      intro hj w hw
-      obtain ⟨u, hu, hgu⟩ := ih (by omega) _ (hg j (by omega) w hw)
-      refine ⟨w - u, (A (j + 1)).sub_mem hw (hm j hu), ?_⟩
-      rw [map_sub, hgu]; abel
-  intro j hj v
-  constructor
-  · intro h
-    obtain ⟨u, hu, hgu⟩ := hs j hj _ h
-    rwa [← g.injective hgu]
-  · intro h
-    cases j with
-    | zero =>
-      rw [h0] at h ⊢
-      simpa using h
-    | succ j =>
-      have h1 := (A (j + 1)).add_mem (hm j (hg j (by omega) v h)) h
-      simpa using h1
+  apply GlobalTheory.HL.CoordUnip.flag_iff <;> assumption
 
 section Frame
 variable {H} {r : ℕ} (Fr : FrameD H r)

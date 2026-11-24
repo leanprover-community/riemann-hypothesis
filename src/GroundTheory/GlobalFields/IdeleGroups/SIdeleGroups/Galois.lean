@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Places
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

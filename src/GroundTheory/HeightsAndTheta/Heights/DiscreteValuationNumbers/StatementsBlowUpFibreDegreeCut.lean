@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpFibreDegree
+public import Mathlib.RingTheory.RamificationInertia.Inertia
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

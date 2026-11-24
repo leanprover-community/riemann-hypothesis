@@ -1,10 +1,15 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.DivPassage
-public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
-public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Transfer
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.MapScale
+public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Transfer
+public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 public import Lemmata.GeneralBFactThirdAlt.Imports
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Formalism.LocalRingCardinality.DataArith
+public import Formalism.LocalToGlobal.GlobalTheory.HLatOps
 
 @[expose] public section
 
@@ -26,7 +31,7 @@ theorem ok_smul_eq {n : ℕ} (c : 𝓞 K) (x : Fin n → K) : c • x = (algebra
 
 theorem exists_smul_mem {n : ℕ} (R : Submodule (𝓞 K) (Fin n → K)) (x : Fin n → K)
     (hx : x ∈ Submodule.span K (R : Set (Fin n → K))) : ∃ d : 𝓞 K, d ≠ 0 ∧ d • x ∈ R := by
-  first | exact Bl.general_b_fact_third_alt.goal1 .. | (apply Bl.general_b_fact_third_alt.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_third_alt.goal1 <;> assumption)
+  first | (apply Bl.general_b_fact_third_alt.goal1 <;> assumption)
 
 namespace LevelAmb
 

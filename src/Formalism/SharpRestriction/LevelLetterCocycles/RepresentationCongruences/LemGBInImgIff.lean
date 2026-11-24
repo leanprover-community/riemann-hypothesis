@@ -1,6 +1,45 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -41,7 +80,6 @@ theorem lemGB_q : ∃ w : LetA O n, W.q = letπ ^ (PD.p - 1) + ((PD.p : ℕ) : L
   funext j
   first
     | (simp only [LocWach.q, letπ, Pi.add_apply, Pi.mul_apply, Pi.pow_apply, Pi.natCast_apply]; exact hw)
-    | exact hw
 
 theorem lemGB_q_unit : IsUnit (algebraMap (LetA O n) W.EE W.q) := by
   obtain ⟨w, hw⟩ := lemGB_q W
@@ -88,7 +126,7 @@ theorem lemG_units (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : 
   have hvp : v (PD.p : LL) = 1 := W.v_l
   have hv1 : v (-1 : LL) = 0 := by rw [AddValuation.map_neg, AddValuation.map_one]
   have h01 : (0 : WithTop ℚ) < 1 := by
-    first | exact zero_lt_one | exact WithTop.coe_lt_coe.mpr zero_lt_one | norm_num
+    first | exact zero_lt_one
   have hge : 0 ≤ v ((PD.p : LL) - 1) := by
     rw [sub_eq_add_neg]
     exact le_trans (le_min (by rw [hvp]; exact h01.le) (le_of_eq hv1.symm)) (AddValuation.map_add v _ _)
@@ -115,9 +153,6 @@ theorem lemG_units (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : 
     rw [map_mul, map_one, hy, hxmap, mul_inv_cancel₀ hxne]
   first
     | exact IsUnit.of_mul_eq_one _ hcy
-    | exact IsUnit.of_mul_eq_one _ _ hcy
-    | exact isUnit_of_mul_eq_one _ _ hcy
-    | exact ⟨⟨_, y, hcy, by rw [mul_comm]; exact hcy⟩, rfl⟩
 
 def InImg {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (i : ZMod n) (z : W.DD T₂) : Prop :=
   ∃ x₁, Formalism.MainNotions.LiftingTheory.InNΔi W T₁ i x₁ ∧ W.map F x₁ = z
@@ -166,8 +201,6 @@ theorem inImg_smulA {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (i
   refine (lemGB_inImg_iff W).mpr ⟨a • x, inNΔi_smulA W T₁ i ha hx, ?_⟩
   first
     | exact LinearMap.map_smul_of_tower _ _ _
-    | exact map_smul _ _ _
-    | rw [← algebraMap_smul W.EE a x, map_smul, algebraMap_smul]
 
 theorem inImg_smulO {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (i : ZMod n) (c : O)
     {z : W.DD T₂} (hz : InImg W F i z) : InImg W F i (c • z) := by
@@ -175,9 +208,6 @@ theorem inImg_smulO {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (i
   refine (lemGB_inImg_iff W).mpr ⟨c • x, inNΔi_smulO W T₁ i c hx, ?_⟩
   first
     | exact LinearMap.map_smul_of_tower _ _ _
-    | exact map_smul _ _ _
-    | rw [← algebraMap_smul (LetA O n) c x, ← algebraMap_smul W.EE (algebraMap O (LetA O n) c) x, map_smul,
-        algebraMap_smul, algebraMap_smul]
 
 def imgSub {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (i : ZMod n) : Submodule O (W.DD T₂) where
   carrier := {z | InImg W F i z}
@@ -200,8 +230,8 @@ theorem qA_mem_AΔ (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : 
   have h1 : ∀ δ' ∈ W.DelF, W.γ₀ δ' W.π₀₁ = W.π₀₁ := by
     intro δ' hδ'
     simp only [LocWach.π₀₁]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), map_sub, map_one, map_natCast, map_sum]
+
+    rw [map_add (f := _), map_sub, map_one, map_natCast, map_sum]
     congr 1
     refine Finset.sum_equiv (Equiv.mulLeft δ') (fun δ => ⟨fun h => mul_mem_delF W hδ' h, fun h => ?_⟩)
       (fun δ _ => ?_)
@@ -215,8 +245,6 @@ theorem qA_mem_AΔ (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : 
     funext j
     first
       | exact h1 δ hδ
-      | (show W.γ₀ δ W.π₀₁ = W.π₀₁; exact h1 δ hδ)
-      | (simp [LocWach.γA, letγ, LocWach.π₀]; exact h1 δ hδ)
   refine ⟨hπ, ?_⟩
   show W.π₀ + ((PD.p : ℕ) : LetA O n) ∈ W.AΔ
   exact W.AΔ.add_mem hπ (Subalgebra.natCast_mem _ _)
@@ -226,8 +254,8 @@ theorem lemGB_letγ_letE (g₀ : PowerSeries O →ₐ[O] PowerSeries O) (i : ZMo
   funext j
   by_cases h : j = i
   · subst h
-    first | simp [letγ, letE] | (show g₀ _ = _; simp [letE])
-  · first | simp [letγ, letE, h] | (show g₀ _ = _; simp [letE, h])
+    first | simp [letγ, letE]
+  · first | simp [letγ, letE, h]
 
 theorem lemGB_γD_letE (T : LocLat G Qp LL O) (δ : W.Gam) (i : ZMod n) (w : W.DD T) :
     W.γD T δ ((letE i : LetA O n) • w) = (letE i : LetA O n) • W.γD T δ w := by
@@ -240,9 +268,6 @@ theorem lemGB_Nl_γ (T : LocLat G Qp LL O) (i : ZMod n) (δ : W.Gam) {x : W.DD T
   refine ⟨W.γD T δ y, ?_, (lemGB_γD_letE W T δ i y).symm⟩
   first
     | exact W.N_Γ T δ y hy
-    | exact W.N_Γ T δ hy
-    | exact W.N_Γ T hy δ
-    | exact W.N_Γ
 
 theorem lemGB_Nl_le_N (T : LocLat G Qp LL O) (i : ZMod n) {x : W.DD T} (hx : x ∈ W.Nl T i) :
     x ∈ W.N T := by
@@ -250,27 +275,17 @@ theorem lemGB_Nl_le_N (T : LocLat G Qp LL O) (i : ZMod n) {x : W.DD T} (hx : x �
   obtain ⟨y, hy, rfl⟩ := hx
   exact (W.N T).smul_mem _ hy
 
-theorem lemGB_DelF_mul {δ δ' : W.Gam} (h : δ ∈ W.DelF) (h' : δ' ∈ W.DelF) : δ * δ' ∈ W.DelF := by
-  obtain ⟨k, hk, hk1⟩ := (W.DelF_def δ).mp h
-  obtain ⟨m, hm, hm1⟩ := (W.DelF_def δ').mp h'
-  refine (W.DelF_def _).mpr ⟨k * m, Nat.mul_pos hk hm, ?_⟩
-  rw [mul_pow, pow_mul, hk1, one_pow, one_mul, mul_comm k m, pow_mul, hm1, one_pow]
-
-theorem lemGB_DelF_inv {δ : W.Gam} (h : δ ∈ W.DelF) : δ⁻¹ ∈ W.DelF := by
-  obtain ⟨k, hk, hk1⟩ := (W.DelF_def δ).mp h
-  exact (W.DelF_def _).mpr ⟨k, hk, by rw [inv_pow, hk1, inv_one]⟩
-
 theorem lemGB_sum_inv (T : LocLat G Qp LL O) (x : W.DD T) (δ' : W.Gam) (h' : δ' ∈ W.DelF) :
     W.γD T δ' (∑ δ ∈ W.DelF, W.γD T δ x) = ∑ δ ∈ W.DelF, W.γD T δ x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   have hm : ∀ δ, W.γD T δ' (W.γD T δ x) = W.γD T (δ' * δ) x := by
     intro δ
     exact (W.γD_mul T δ' δ x).symm
   simp_rw [hm]
-  refine Finset.sum_equiv (Equiv.mulLeft δ') (fun δ => ⟨fun h => lemGB_DelF_mul W h' h, fun h => ?_⟩)
+  refine Finset.sum_equiv (Equiv.mulLeft δ') (fun δ => ⟨fun h => _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.mul_mem_delF W h' h, fun h => ?_⟩)
     (fun δ _ => rfl)
-  have h2 := lemGB_DelF_mul W (lemGB_DelF_inv W h') h
+  have h2 := _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.mul_mem_delF W (_root_.Formalism.MainNotions.N.FrobeniusPowerSeries.inv_mem_delF W h') h
   rwa [Equiv.coe_mulLeft, inv_mul_cancel_left] at h2
 
 theorem inImg_of_Nimg (hΔ : IsUnit ((W.DelF.card : ℕ) : O)) {T₁ T₂ : LocLat G Qp LL O}
@@ -288,16 +303,14 @@ theorem inImg_of_Nimg (hΔ : IsUnit ((W.DelF.card : ℕ) : O)) {T₁ T₂ : LocL
       intro δ hδ
       first
         | (rw [W.map_γ]; exact hzΔ δ hδ)
-        | exact W.map_γ
     have hmapS : W.map F (∑ δ ∈ W.DelF, W.γD T₁ δ y) = ((W.DelF.card : ℕ) : O) • W.map F y := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_congr rfl hfix, Finset.sum_const]
+
+      rw [map_sum, Finset.sum_congr rfl hfix, Finset.sum_const]
       exact (Nat.cast_smul_eq_nsmul O _ _).symm
     have hc : W.map F ((↑u⁻¹ : O) • ∑ δ ∈ W.DelF, W.γD T₁ δ y) =
         (↑u⁻¹ : O) • W.map F (∑ δ ∈ W.DelF, W.γD T₁ δ y) := by
       first
         | exact LinearMap.map_smul_of_tower _ _ _
-        | exact map_smul _ _ _
     rw [hc, hmapS, smul_smul, ← hu, Units.inv_mul, one_smul]
 
 theorem q_pow_inImg (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) {T₁ T₂ : LocLat G Qp LL O}
@@ -328,7 +341,6 @@ theorem q_pow_inImg (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 :
     have h := congrArg Subtype.val hab
     first
       | simpa [qA, lA, Formalism.MainNotions.LiftingTheory.lp] using h.symm
-      | (push_cast at h; rw [← h]; rfl)
   rw [hq, add_smul, mul_smul, mul_smul]
   exact inImg_add W F i (inImg_smulA W F i a.2 (key _ (pow_mem hπ _) hA))
     (inImg_smulA W F i b.2 (key _ (pow_mem hpA _) hr))

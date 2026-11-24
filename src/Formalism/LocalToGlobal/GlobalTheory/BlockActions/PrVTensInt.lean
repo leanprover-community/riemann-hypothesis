@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.DualLStable
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.LatSOfMem
+public import Formalism.LocalToGlobal.HermitianForms.TiedSym
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.DualLStable
+import Formalism.LocalToGlobal.GlobalTheory.BlockActions.MulLatMulLat
 
 @[expose] public section
 
@@ -70,7 +72,7 @@ theorem clsCrd_fin (u : D.what₂.Word) (c : (D.mem u).C.cls D.R.m) :
   exact (D.clsLat_lat u D.R.m c).fg.map _
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem stab_lat_le (Tf : FormsTiedSym D u Ch chOf) (hLG : LatLocGlob) (hAL : AdLocLat) (c : (D.fm u).clsP)
     (γ : UJ (sigD D : D.host.E →+* D.host.E) (gramN D D.R.m le_rfl))
     (hγ : γ ∈ ((Tf.cls D.R.m le_rfl (Or.inr rfl)).stabI ((D.fm u).til c)).range) :

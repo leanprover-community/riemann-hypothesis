@@ -1,8 +1,22 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMRegularElement
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.CMDepthAssoc
+public import Mathlib.Algebra.Category.Grp.Zero
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Depth.Rees
+import Mathlib.RingTheory.Etale.Weakly
+public import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.KrullDimension.Regular
+public import Mathlib.RingTheory.Regular.Category
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Category.ModuleCat.Basic
+public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic
+public import Mathlib.Algebra.Homology.DerivedCategory.Ext.ExactSequences
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 

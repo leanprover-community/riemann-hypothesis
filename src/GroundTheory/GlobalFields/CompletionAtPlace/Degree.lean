@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.CompletionAtPlace
+public import GroundTheory.LocalFields.Interface
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

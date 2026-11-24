@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementG
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementP
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementV
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EndoZInstance
+public import Mathlib.NumberTheory.Padics.Complex
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 

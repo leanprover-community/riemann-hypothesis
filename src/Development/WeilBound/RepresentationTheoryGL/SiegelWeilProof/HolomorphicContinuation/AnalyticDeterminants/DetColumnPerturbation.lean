@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AnalyticDeterminants.DetDFin
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Normed
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -48,7 +96,7 @@ theorem phiF_single (k : Fin N) (j : Fin (N + 1)) :
     phiF (Matrix.single k j (1 : ℂ)) = Matrix.single k.succ j 1 := by
   ext i l
   refine Fin.cases ?_ (fun m => ?_) i
-  · simp [Matrix.single_apply, (Fin.succ_ne_zero k).symm]
+  · simp
   · simp [Matrix.single_apply, Fin.succ_inj]
 
 theorem piF_single_succ (k : Fin N) (j : Fin N) :
@@ -70,13 +118,13 @@ theorem det_corner_perturbation (X : Matrix (Fin N) (Fin (N + 1)) ℂ) (s : ℂ)
     (1 + phiF X + s • Matrix.single 0 0 1).det = (1 + s) * (1 + piF X).det := by
   have hsub : (1 + phiF X + s • Matrix.single 0 0 1).submatrix Fin.succ Fin.succ = 1 + piF X := by
     ext k l
-    simp [piF, Matrix.one_apply, Matrix.single_apply, Fin.succ_inj, Fin.succ_ne_zero]
+    simp [piF, Matrix.one_apply, Matrix.single_apply, Fin.succ_inj]
     intro h; exact absurd h.symm (Fin.succ_ne_zero k)
   rw [det_first_row_expansion _ (1 + s), hsub]
   intro j
   refine Fin.cases ?_ (fun m => ?_) j
-  · simp [Matrix.one_apply, Matrix.single_apply]
-  · simp [Matrix.one_apply, Matrix.single_apply, Fin.succ_ne_zero, (Fin.succ_ne_zero m).symm]
+  · simp
+  · simp [Fin.succ_ne_zero, (Fin.succ_ne_zero m).symm]
 
 theorem det_column_perturbation (X : Matrix (Fin N) (Fin (N + 1)) ℂ) (s : ℂ) (c : Fin N) :
     (1 + phiF X + s • Matrix.single 0 c.succ 1).det = (1 + piF X - s • colQ X c).det := by
@@ -91,20 +139,20 @@ theorem det_column_perturbation (X : Matrix (Fin N) (Fin (N + 1)) ℂ) (s : ℂ)
     ext k l
     by_cases hl : l = c
     · subst hl
-      simp [A, Matrix.updateCol_apply, piF, colQ, Matrix.one_apply, Matrix.single_apply, Fin.succ_inj,
+      simp [A, piF, colQ, Matrix.one_apply, Matrix.single_apply, Fin.succ_inj,
         Fin.succ_ne_zero, hz]
       ring
     · have hl' : l.succ ≠ c.succ := fun h => hl (Fin.succ_inj.mp h)
-      simp [A, Matrix.updateCol_apply, piF, colQ, Matrix.one_apply, Matrix.single_apply, Fin.succ_inj,
+      simp [A, piF, colQ, Matrix.one_apply, Matrix.single_apply, Fin.succ_inj,
         hl, hl', Fin.succ_ne_zero, hz]
   · intro j
     by_cases hj : j = c.succ
     · subst hj
-      simp [A, Matrix.updateCol_apply, Matrix.one_apply, Matrix.single_apply, Fin.succ_ne_zero, hz]
+      simp [A, Matrix.one_apply, Matrix.single_apply, Fin.succ_ne_zero, hz]
     · rcases Fin.eq_zero_or_eq_succ j with rfl | ⟨m, rfl⟩
-      · simp [A, Matrix.updateCol_apply, Matrix.one_apply, Matrix.single_apply, hne.symm, hz]
+      · simp [A, Matrix.one_apply, Matrix.single_apply, hne.symm]
       · have hm : m ≠ c := fun h => hj (by rw [h])
-        simp [A, Matrix.updateCol_apply, Matrix.one_apply, Matrix.single_apply, hm, Fin.succ_ne_zero, hz,
+        simp [A, Matrix.one_apply, Matrix.single_apply, hm, Fin.succ_ne_zero, hz,
           Fin.succ_inj, Ne.symm hm]
 
 end PositivityTheory.Rg.Sw.LVs.CK

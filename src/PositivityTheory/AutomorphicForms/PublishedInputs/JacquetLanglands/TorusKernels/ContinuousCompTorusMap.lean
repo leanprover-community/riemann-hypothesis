@@ -2,6 +2,9 @@ module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ComplexMinusRealLineMeasureCoordinates
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import ReciprocityTheory.AnalyticForms.AnalyticCharts.OsgoodA
 
 @[expose] public section
 

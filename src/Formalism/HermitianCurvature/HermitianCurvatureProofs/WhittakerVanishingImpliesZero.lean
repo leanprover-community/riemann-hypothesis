@@ -2,6 +2,57 @@ module
 
 public import Formalism.HermitianCurvature.StatementG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RemainderNormLeStrictUpper
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.ContDiff.Bounds
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -38,9 +89,8 @@ theorem cutM_le_one {s : ℕ} (τ : ℝ) (Z : Mat s) : cutM τ Z ≤ 1 :=
 
 theorem cutM_eq_one {s : ℕ} {τ : ℝ} {Z : Mat s} (hτ : 0 < τ) (h : ‖Z‖ ≤ τ) : cutM τ Z = 1 := by
   refine Finset.prod_eq_one fun i _ => Finset.prod_eq_one fun j _ => extendedCharacter_one ?_
-  have h1 : ‖Z i j‖ ≤ τ := ((norm_le_pi_norm (Z i) j).trans (norm_le_pi_norm Z i)).trans h
   rw [div_le_one (by positivity)]
-  exact pow_le_pow_left₀ (norm_nonneg _) h1 2
+  exact pow_le_pow_left₀ (norm_nonneg _) (((norm_le_pi_norm (Z i) j).trans (norm_le_pi_norm Z i)).trans h) 2
 
 theorem cutM_eq_zero {s : ℕ} {τ : ℝ} {Z : Mat s} (hτ : 0 < τ) (h : 2 * τ ≤ ‖Z‖) : cutM τ Z = 0 := by
   by_contra hne
@@ -50,9 +100,8 @@ theorem cutM_eq_zero {s : ℕ} {τ : ℝ} {Z : Mat s} (hτ : 0 < τ) (h : 2 * τ
     by_contra hge
     exact hne (Finset.prod_eq_zero (Finset.mem_univ i)
       (Finset.prod_eq_zero (Finset.mem_univ j) (smooth_cutoff_eq_zero_of_two_le (not_lt.mp hge))))
-  have h2 : ‖Z‖ < 2 * τ :=
-    (pi_norm_lt_iff (by positivity)).mpr fun i => (pi_norm_lt_iff (by positivity)).mpr (h1 i)
-  exact absurd h (not_le.mpr h2)
+  exact absurd h (not_le.mpr ((pi_norm_lt_iff (by positivity)).mpr fun i =>
+    (pi_norm_lt_iff (by positivity)).mpr (h1 i)))
 
 theorem cutM_contDiff {s : ℕ} (τ : ℝ) {n : ℕ∞} : ContDiff ℝ n (cutM (s := s) τ) := by
   show ContDiff ℝ n (fun Z : Mat s => ∏ i, ∏ j, chi0 (‖Z i j‖ ^ 2 / τ ^ 2))
@@ -103,9 +152,8 @@ theorem critCut_le_one {n : ℕ} (δ : ℝ) (z : ℂ) (x : Fin n → ℂ) : crit
 theorem critCut_eq_one {n : ℕ} {δ : ℝ} {z : ℂ} {x : Fin n → ℂ} (hδ : 0 < δ)
     (h : ‖x - fun _ => z‖ ≤ δ) : critCut δ z x = 1 := by
   refine Finset.prod_eq_one fun k _ => extendedCharacter_one ?_
-  have h1 : ‖x k - z‖ ≤ δ := (norm_le_pi_norm (x - fun _ => z) k).trans h
   rw [div_le_one (by positivity)]
-  exact pow_le_pow_left₀ (norm_nonneg _) h1 2
+  exact pow_le_pow_left₀ (norm_nonneg _) ((norm_le_pi_norm (x - fun _ => z) k).trans h) 2
 
 theorem lt_of_critCut_ne_zero {n : ℕ} {δ : ℝ} {z : ℂ} {x : Fin n → ℂ} (hδ : 0 < δ)
     (h : critCut δ z x ≠ 0) (k : Fin n) : ‖x k - z‖ < 2 * δ := by
@@ -116,9 +164,7 @@ theorem lt_of_critCut_ne_zero {n : ℕ} {δ : ℝ} {z : ℂ} {x : Fin n → ℂ}
 theorem critCut_eq_zero {n : ℕ} {δ : ℝ} {z : ℂ} {x : Fin n → ℂ} (hδ : 0 < δ)
     (h : 2 * δ ≤ ‖x - fun _ => z‖) : critCut δ z x = 0 := by
   by_contra hne
-  have h2 : ‖x - fun _ => z‖ < 2 * δ :=
-    (pi_norm_lt_iff (by positivity)).mpr fun k => lt_of_critCut_ne_zero hδ hne k
-  exact absurd h (not_le.mpr h2)
+  exact absurd h (not_le.mpr ((pi_norm_lt_iff (by positivity)).mpr (lt_of_critCut_ne_zero hδ hne)))
 
 theorem critCut_contDiff {d : ℕ} (δ : ℝ) (z : ℂ) {n : ℕ∞} : ContDiff ℝ n (critCut (n := d) δ z) := by
   show ContDiff ℝ n (fun x : Fin d → ℂ => ∏ k, chi0 (‖x k - z‖ ^ 2 / δ ^ 2))
@@ -135,9 +181,7 @@ theorem exists_norm_iteratedFDeriv_critCut_le (d : ℕ) {δ : ℝ} (hδ : 0 < δ
   have hc : HasCompactSupport (critCut (n := d) δ 0) :=
     HasCompactSupport.intro (isCompact_closedBall 0 (2 * δ)) fun x hx => critCut_eq_zero hδ (by
       rw [Metric.mem_closedBall, dist_zero_right, not_le] at hx
-      have e : (x - fun _ => (0 : ℂ)) = x := by funext k; simp
-      rw [e]
-      exact hx.le)
+      simpa only [show (fun _ : Fin d => (0 : ℂ)) = (0 : Fin d → ℂ) from rfl, sub_zero] using hx.le)
   exact ((critCut_contDiff δ 0 (n := j)).continuous_iteratedFDeriv le_rfl).bounded_above_of_compact_support
     (hc.iteratedFDeriv j)
 
@@ -167,8 +211,7 @@ theorem one_le_mul_of_root {s : ℕ} {ζ : ℂ} (hs : 0 < s) (h : ζ ^ s = 1) (h
       _ ≤ _ := Finset.sum_le_sum fun i hi => (norm_pow_sub_one_le hn i).trans
           (mul_le_mul_of_nonneg_right (by exact_mod_cast (Finset.mem_range.mp hi).le) (norm_nonneg _))
   rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul] at h2
-  have hs' : (0 : ℝ) < s := by exact_mod_cast hs
-  exact le_of_mul_le_mul_left (by linarith) hs'
+  exact le_of_mul_le_mul_left (by simpa using h2) ((by exact_mod_cast hs) : (0 : ℝ) < s)
 
 theorem root_sep {s : ℕ} (hs : 0 < s) {z z' : ℂ} (h : z ^ s = z' ^ s) (hne : z ≠ z') :
     ‖z‖ ≤ (s : ℝ) * ‖z - z'‖ := by
@@ -181,8 +224,7 @@ theorem root_sep {s : ℕ} (hs : 0 < s) {z z' : ℂ} (h : z ^ s = z' ^ s) (hne :
   have h3 := one_le_mul_of_root hs h1 h2
   have e : z - z' = -(z * (z' / z - 1)) := by field_simp; ring
   rw [e, norm_neg, norm_mul]
-  have hz' : 0 < ‖z‖ := norm_pos_iff.mpr hz
-  nlinarith
+  nlinarith [norm_pos_iff.mpr hz]
 
 theorem exists_lower {Kc : Set ℂ} (hK : IsCompact Kc) (h0 : (0 : ℂ) ∉ Kc) :
     ∃ d : ℝ, 0 < d ∧ ∀ D ∈ Kc, d ≤ ‖D‖ := by
@@ -239,7 +281,6 @@ theorem critical_cutoff_spec : Formalism.FourierDecayAlt.G.CritCutSpec := by
       have e : z - z' = -(x 0 - z) + (x 0 - z') := by ring
       rw [e]
       exact (norm_add_le _ _).trans (by rw [norm_neg])
-    have h5 : 2 * δ ≤ ‖x 0 - z'‖ := by linarith
     refine Finset.prod_eq_zero (Finset.mem_univ (0 : Fin (m + 1))) (smooth_cutoff_eq_zero_of_two_le ?_)
     rw [le_div_iff₀ (by positivity)]
     nlinarith
@@ -255,9 +296,7 @@ theorem cutoff_phase_bound : Formalism.FourierDecayAlt.G.CutPhiBound := by
     exact Complex.coe_smul _ _
   have e2 : cutPhiC τ Φ = Φ - cutPhi τ Φ := by
     funext Z
-    simp only [cutPhiC, cutPhi, Pi.sub_apply]
-    push_cast
-    rw [sub_smul, one_smul]
+    simp [cutPhiC, cutPhi, sub_smul]
   have hbd : ∀ Z, detM Z ∈ Kd → 0 ≤ bd Z := fun Z hZ =>
     (norm_nonneg _).trans ((hΦ Z hZ).2 0 (Nat.zero_le _))
   have hsm : ∀ Z, detM Z ∈ Kd → ContDiffAt ℝ k (cutPhi τ Φ) Z := by
@@ -314,8 +353,7 @@ theorem exists_small_delta : Formalism.FourierDecayAlt.G.SmallDeltaExists := by
   have h1 : ‖z‖ ^ (m + 2) = ‖D‖ := by
     rw [← norm_pow, hz, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
   have h2 : ‖z‖ ^ (m + 2) ≤ ‖z‖ := pow_le_of_le_one (norm_nonneg _) hlt.1.le (by omega)
-  have h3 := hD D hDK
-  linarith [hlt.2]
+  linarith [hD D hDK, hlt.2]
 
 end Formalism.FourierDecayAlt.P
 
@@ -341,9 +379,7 @@ theorem norm_cof_rest_le {m : ℕ} {X : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ} 
     ‖∑ j ∈ Finset.range m, ((-X) ^ j *ᵥ B) 0 * t ^ (m - j)‖ ≤
       ((m : ℝ) * ((m : ℝ) + 1) ^ m) * (L ^ (m + 1) * ‖t‖) := by
   have hL0 : 0 ≤ L := le_trans zero_le_one hL
-  have hm1 : (1 : ℝ) ≤ (m : ℝ) + 1 := by
-    have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-    linarith
+  have hm1 : (1 : ℝ) ≤ (m : ℝ) + 1 := le_add_of_nonneg_left (Nat.cast_nonneg m)
   calc ‖∑ j ∈ Finset.range m, ((-X) ^ j *ᵥ B) 0 * t ^ (m - j)‖
       ≤ ∑ j ∈ Finset.range m, ‖((-X) ^ j *ᵥ B) 0 * t ^ (m - j)‖ := norm_sum_le _ _
     _ ≤ ∑ _j ∈ Finset.range m, (((m : ℝ) + 1) ^ m * L ^ (m + 1)) * ‖t‖ := by
@@ -369,7 +405,6 @@ theorem product_lower_bound : Formalism.FourierDecayAlt.G.ProdLower := by
   obtain ⟨d, hd, hD⟩ := exists_lower hK h0
   set R' : ℝ := max R 1 with hR'
   have hR1 : 1 ≤ R' := le_max_right _ _
-  have hR0 : 0 < R' := lt_of_lt_of_le one_pos hR1
   set Cm : ℝ := ((m : ℝ) + 1) * ((m : ℝ) * ((m : ℝ) + 1) ^ m) with hCm
   have hCm0 : 0 ≤ Cm := by positivity
   set Ce : ℝ := (m : ℝ) * ((m : ℝ) + 1) ^ m with hCe
@@ -428,7 +463,6 @@ theorem product_lower_bound : Formalism.FourierDecayAlt.G.ProdLower := by
   have h5 : d / 2 ≤ ‖P‖ * L := by
     have := hD D hDK
     linarith
-  have hRpow : 0 < R' ^ (m + 1) := by positivity
   constructor
   · have hinv : ‖t‖ ^ ε = W⁻¹ := by rw [hW, Real.rpow_neg hT.le, inv_inv]
     rw [hinv, ← div_eq_mul_inv, div_le_iff₀ hW0, div_le_iff₀ (by positivity)]

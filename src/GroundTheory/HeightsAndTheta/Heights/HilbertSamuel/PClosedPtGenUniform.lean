@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsClosedPtGenUniform
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGradedSubmodules
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsClosedPtFibreLift
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartNakayamaGen
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenNearMul
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PQuotPartGraded
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
@@ -133,8 +135,7 @@ theorem ClosedPtGenUniform.proof (hG : GradedSubmodules.Statement) (hF : ClosedP
   have htw : e + cM • N + a • (0 + n₁ • N) + s • (0 + (n₁ + 1) • N) = e + c • N := by
     rw [hca]
     funext k
-    simp only [Pi.add_apply, Pi.smul_apply, Pi.zero_apply, smul_eq_mul, zero_add]
-    push_cast
+    simp only [Pi.add_apply, Pi.smul_apply, zero_add]
     ring
   rw [htw] at hB
   refine genNear_of_mul_eq_pow hB

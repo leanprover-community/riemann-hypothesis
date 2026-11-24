@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.QuotientMetricDivisors.Statement
 public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
 public import Formalism.QuotientMetricDivisors.ClassSumDualLe
 public import Formalism.LocalRingCardinality.DataArith
+public import Mathlib.Analysis.Matrix.Order
 
 @[expose] public section
 

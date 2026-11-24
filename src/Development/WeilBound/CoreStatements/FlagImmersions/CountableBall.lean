@@ -1,11 +1,55 @@
 module
 
 public import Development.WeilBound.CoreStatements.FlagImmersions.Transport
-public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnif
-public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifRiem
-public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVecA
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.InteriorPointLatticeData
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EqZeroOfFderivEqZero
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FibreLatticeLinearEquiv
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentSpaceEquivHolUnif
+public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnif
+import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifConjA
+import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifRiem
+import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVecA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply
 
 @[expose] public section
 
@@ -36,7 +80,7 @@ theorem countable_hom (R : RiemLat E g Λ) (R' : RiemLat E g' Λ') : Countable (
 theorem exists_hom (R : RiemLat E g Λ) (R' : RiemLat E g' Λ') (φ : (Fin g → ℂ) ≃ₗ[ℂ] (Fin g' → ℂ))
     (h : φ '' Set.range R.P = Set.range R'.P) :
     ∃ ga : Λ →+ Λ', Function.Surjective ga ∧ ∀ a, R'.P (ga a) = φ (R.P a) := by
-  have hi := SheetDecomposition.Riem.inj R'
+  have hi := _root_.LevelTowerAlt.precomp_injective R'
   have h1 : ∀ a, ∃ a', R'.P a' = φ (R.P a) := fun a => by
     have : φ (R.P a) ∈ Set.range R'.P := h ▸ ⟨_, ⟨a, rfl⟩, rfl⟩
     exact this
@@ -47,7 +91,7 @@ theorem exists_hom (R : RiemLat E g Λ) (R' : RiemLat E g' Λ') (φ : (Fin g →
 
 theorem ext_of_P (R : RiemLat E g Λ) {φ φ' : (Fin g → ℂ) ≃ₗ[ℂ] (Fin g' → ℂ)} (h : ∀ a, φ (R.P a) = φ' (R.P a)) : φ = φ' := by
   have : (φ : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)).restrictScalars ℝ = (φ' : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)).restrictScalars ℝ :=
-    LinearMap.ext_on_range (SheetDecomposition.Riem.span_top R) h
+    LinearMap.ext_on_range (_root_.LevelTowerAlt.span_top R) h
   exact LinearEquiv.ext fun a => LinearMap.congr_fun this a
 
 theorem countable_aut (R : RiemLat E g Λ) :

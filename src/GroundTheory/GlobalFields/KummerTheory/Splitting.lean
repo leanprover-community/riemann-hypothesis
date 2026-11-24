@@ -1,8 +1,19 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.SemilocalAlgebras.Finite
+public import GroundTheory.GlobalFields.SemilocalAlgebras.ContinuousCompletionMap
+public import Mathlib.RingTheory.RamificationInertia.Inertia
+public import Mathlib.RingTheory.TotallySplit
+public import GroundTheory.GlobalFields.SemilocalAlgebras.Approximation
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.NumberTheory.RamificationInertia.Galois
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import GroundTheory.GlobalFields.SemilocalAlgebras.Finite
 
 @[expose] public section
 

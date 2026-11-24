@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
+public import Mathlib.Algebra.Module.Lattice.Full
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

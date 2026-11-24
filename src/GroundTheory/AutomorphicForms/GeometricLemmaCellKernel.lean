@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GeometricLemmaJacquetCell
-public import GroundTheory.AutomorphicForms.InductionJacquet
+import GroundTheory.AutomorphicForms.GeometricLemmaCount
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

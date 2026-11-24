@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
-public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.GJGlobalModulus
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
-public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.GJGlobalModulus
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

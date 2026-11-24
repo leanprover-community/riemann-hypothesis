@@ -1,7 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePOActLog
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
+import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+import Formalism.LocalToGlobal.CharacterGerms.RowTiePLogSt
 
 @[expose] public section
 
@@ -173,8 +175,8 @@ theorem sg_act (Y : FBChart C V O dd) (α : O) (v : Fin dd → C) (hv : ∀ i, V
   have e : ∑ j, MvPowerSeries.C (linAct ψ v j) * ev (n := 1) ![pt C dd 0, 0] (pderiv (R := C) ((1 : Fin 2), j) Y.h) =
       ∑ i, MvPowerSeries.C (v i) *
         ∑ j, ev (n := 1) ![pt C dd 0, 0] (pderiv (R := C) ((1 : Fin 2), j) Y.h) * MvPowerSeries.C (linM ψ j i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hl, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
+
+    simp only [hl, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   have key : ev (n := 1) ![φ] (Y.sgP v) - Y.sgP (linAct ψ v) =

@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Formula
 
 @[expose] public section
 

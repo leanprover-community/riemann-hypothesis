@@ -1,10 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTransportF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsContOnOfLocal
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransportedWeilDatumCMPreservesSchwartzHeisenberStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSubgroupAddCharDotProductTrivialOnCompactStatement
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.Algebra.Nonarchimedean.Basic
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSubgroupAddCharDotProductTrivialOnCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
 
 @[expose] public section
 
@@ -19,30 +58,11 @@ namespace GlobalTheory.SchrFixFin
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem nonarch_of_inducing {G S : Type} [AddGroup G] [TopologicalSpace G] [NonarchimedeanAddGroup G]
-    [AddGroup S] [TopologicalSpace S] [IsTopologicalAddGroup S] (f : S →+ G) (hf : Topology.IsInducing f) :
-    NonarchimedeanAddGroup S where
-  is_nonarchimedean U hU := by
-    rw [hf.nhds_eq_comap, map_zero, Filter.mem_comap] at hU
-    obtain ⟨t, ht, hsub⟩ := hU
-    obtain ⟨V, hV⟩ := NonarchimedeanAddGroup.is_nonarchimedean t ht
-    exact ⟨V.comap f hf.continuous, fun x hx => hsub (hV hx)⟩
-
-theorem nonarch_pi' {ι : Type} {G : ι → Type} [∀ i, AddGroup (G i)] [∀ i, TopologicalSpace (G i)]
-    [∀ i, NonarchimedeanAddGroup (G i)] : NonarchimedeanAddGroup (∀ i, G i) where
-  is_nonarchimedean U hU := by
-    rw [nhds_pi, Filter.mem_pi] at hU
-    obtain ⟨I, hI, t, ht, hs⟩ := hU
-    choose K hK using fun i => NonarchimedeanAddGroup.is_nonarchimedean (G := G i) (t i) (ht i)
-    exact ⟨⟨AddSubgroup.pi I fun i => (K i : AddSubgroup (G i)), isOpen_set_pi hI fun i _ => (K i).isOpen⟩,
-      fun x hx => hs fun i hi => hK i (hx i hi)⟩
-
-
 variable (F) in
 theorem nonarch_finAdeles : NonarchimedeanAddGroup (FiniteAdeleRing (𝓞 F) F) := by
   haveI : ∀ v : HeightOneSpectrum (𝓞 F), NonarchimedeanAddGroup (v.adicCompletionIntegers F) := fun v =>
-    nonarch_of_inducing (v.adicCompletionIntegers F).subtype.toAddMonoidHom Topology.IsInducing.subtypeVal
-  haveI := nonarch_pi' (G := fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletionIntegers F)
+    _root_.GlobalTheory.HeisSchA.nonarch_of_isInducing (v.adicCompletionIntegers F).subtype.toAddMonoidHom Topology.IsInducing.subtypeVal
+  haveI := _root_.GlobalTheory.HeisSchA.nonarch_pi (G := fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletionIntegers F)
   let f : (∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletionIntegers F) →+ FiniteAdeleRing (𝓞 F) F :=
     { toFun := RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
         (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) Filter.cofinite
@@ -95,19 +115,19 @@ theorem dot_adeleJoin_zero {κ : Type} [Fintype κ] (v : κ → AdeleRing (𝓞 
   have e1 : ∀ s : AdeleRing (𝓞 F) F, s.1 = p1 s := fun _ => rfl
   have e2 : ∀ s : AdeleRing (𝓞 F) F, s.2 = p2 s := fun _ => rfl
   refine Prod.ext ?_ ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [e1, dotProduct, map_sum]
-      change (∑ i, p1 (v i * GlobalTheory.WeilCont.adeleJoin F 0 y i)) = 0
-      refine Finset.sum_eq_zero fun i _ => ?_
-      rw [map_mul, adeleJoin_zero]
-      exact mul_zero _
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [e2, dotProduct, map_sum]
-      change (∑ i, p2 (v i * GlobalTheory.WeilCont.adeleJoin F 0 y i)) = _
-      unfold dotProduct
-      refine Finset.sum_congr rfl fun i _ => ?_
-      rw [map_mul, adeleJoin_zero]
-      rfl
+
+  · rw [e1, dotProduct, map_sum]
+    change (∑ i, p1 (v i * GlobalTheory.WeilCont.adeleJoin F 0 y i)) = 0
+    refine Finset.sum_eq_zero fun i _ => ?_
+    rw [map_mul, adeleJoin_zero]
+    exact mul_zero _
+
+  · rw [e2, dotProduct, map_sum]
+    change (∑ i, p2 (v i * GlobalTheory.WeilCont.adeleJoin F 0 y i)) = _
+    unfold dotProduct
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_mul, adeleJoin_zero]
+    rfl
 
 theorem exists_fix_pure (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ) (hψ : Continuous ψ) (κ : Type) [Fintype κ]
     (f : SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ) (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ)
@@ -120,7 +140,7 @@ theorem exists_fix_pure (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ) (hψ : Continu
   let χ : AddChar (FiniteAdeleRing (𝓞 F) F) ℂ :=
     ψ.compAddMonoidHom (AddMonoidHom.inr (InfiniteAdeleRing F) (FiniteAdeleRing (𝓞 F) F))
   have hχ : Continuous χ := hψ.comp (continuous_const.prodMk continuous_id)
-  obtain ⟨H, hH⟩ := GlobalTheory.T.exists_subgroup_addChar_dotProduct_trivial_on_compact χ hχ κ (tsupport g) hg.2.isCompact
+  obtain ⟨H, hH⟩ := _root_.GlobalTheory.CharDotKill.charDot_kill χ hχ κ (tsupport g) hg.2.isCompact
   let c : FiniteAdeleRing (𝓞 F) F := (⅟(2 : AdeleRing (𝓞 F) F)).2
   refine ⟨transFix g ⊓ (H : AddSubgroup (κ → FiniteAdeleRing (𝓞 F) F)).comap
     (DistribSMul.toAddMonoidHom (κ → FiniteAdeleRing (𝓞 F) F) c), H, ?_, H.isOpen, ?_⟩

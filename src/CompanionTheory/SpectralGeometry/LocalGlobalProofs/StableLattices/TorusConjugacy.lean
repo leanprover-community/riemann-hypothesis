@@ -1,10 +1,6 @@
 module
 
-public import Mathlib
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
 
 @[expose] public section
 
@@ -43,7 +39,6 @@ theorem exists_scale (r : ℕ) (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) :
 theorem hpk_row (k r : ℕ) (p q : Fin (2 * r + k + 1)) (hpq : p.val + q.val = 2 * r + k)
     (h : p.val < r ∨ q.val < r) (j : Fin (2 * r + k + 1)) :
     Hpk k r p j = if j = q then 1 else 0 := by
-  have hp := p.isLt
   have hq := q.isLt
   unfold Hpk
   by_cases hjq : j = q

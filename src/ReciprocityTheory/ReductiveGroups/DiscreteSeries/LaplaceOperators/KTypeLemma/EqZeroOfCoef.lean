@@ -1,10 +1,14 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.DerivEntries
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.IndicatorRholMem
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferA
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferB
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.DerivEntries
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.TransferB
 
 @[expose] public section
 
@@ -79,10 +83,10 @@ theorem inner_deriv {U : Type*} [NormedAddCommGroup U] [InnerProductSpace ℂ U]
     funext t
     ext x
     conv_lhs => rw [← e.sum_repr' (f t x), ← e.sum_repr' x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, inner_sum, inner_smul_right, sum_smul,
-      _root_.sum_apply, _root_.smul_apply,
-      ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_smul]
+
+    simp only [map_sum, map_smul, inner_sum, inner_smul_right, sum_smul,
+    _root_.sum_apply, _root_.smul_apply,
+    ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_smul]
     exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by rw [mul_comm]
   have hd : DifferentiableAt ℝ f 0 := by
     rw [hf]
@@ -125,10 +129,6 @@ end Coef
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem omegaP_mem_nhds {x : Matrix (Fin n) (Fin n) ℂ} (hx : x ∈ OmegaP n) : OmegaP n ∈ 𝓝 x :=
-  (tb_inv_hasFDerivAt (tb_isUnit_of_omegaP hx)).choose_spec.1.continuousAt.preimage_mem_nhds
-    (isOpen_omega.mem_nhds hx)
-
 def evZ (μ : Fin n → ℤ) (z : Matrix (Fin n) (Fin n) ℂ) : MMT μ →ₗ[ℂ] ℂ :=
   (LinearMap.proj z : (Matrix (Fin n) (Fin n) ℂ → ℂ) →ₗ[ℂ] ℂ) ∘ₗ (cOm n).subtype ∘ₗ (mmSub μ).subtype
 
@@ -142,7 +142,7 @@ theorem evZ_word (μ : Fin n → ℤ) (L : List (Matrix (Fin n) (Fin n) ℂ)) : 
     have h1 : ∀ a b, evZ μ z (eMM μ a b F) =
         fderiv ℂ (hWord L (PhiP μ)) z (z * Matrix.single a b 1) := fun a b => by
       have e : ((F : cOm n) : Matrix (Fin n) (Fin n) ℂ → ℂ) =ᶠ[𝓝 z] hWord L (PhiP μ) :=
-        eventually_of_mem (omegaP_mem_nhds hz) ih
+        eventually_of_mem (_root_.ReciprocityTheory.ChartRestriction.DS.Lap.LemK.positiveOmega_mem_nhds hz) ih
       rw [← e.fderiv_eq]
       exact Set.indicator_of_mem hz _
     rw [List.map_cons, List.prod_cons, Module.End.mul_apply, ← hF]
@@ -151,7 +151,7 @@ theorem evZ_word (μ : Fin n → ℤ) (L : List (Matrix (Fin n) (Fin n) ℂ)) : 
       conv_lhs => rw [Matrix.matrix_eq_sum_single Z]
       simp only [Matrix.mul_sum, ← Matrix.mul_smul, Matrix.smul_single, smul_eq_mul, mul_one]
     rw [hZ]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [actM, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, h1]
+
+    simp only [actM, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, h1]
 
 end ReciprocityTheory.ChartRestriction.DS.Lap.LemK.TRA

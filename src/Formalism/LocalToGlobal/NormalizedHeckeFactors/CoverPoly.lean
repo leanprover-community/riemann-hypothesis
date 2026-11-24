@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.LinearAlgebra.FreeModule.PID
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -17,14 +22,12 @@ theorem repr_transport (σ : K₁ →+* K₂) (ι : V₁ →ₛₗ[σ] V₂) {n 
     (Module.Basis.mk hli hsp.ge).repr (ι x) r = σ (b.repr x r) := by
   have hx : ι x = ∑ i, σ (b.repr x i) • (Module.Basis.mk hli hsp.ge) i := by
     conv_lhs => rw [← b.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Module.Basis.mk_apply, Function.comp_apply]
     first
       | exact LinearMap.map_smulₛₗ ι (b.repr x i) (b i)
-      | exact map_smulₛₗ ι (b.repr x i) (b i)
-      | simp
   rw [hx, Module.Basis.repr_sum_self]
 
 theorem charpoly_transport_basis [Module.Finite K₁ V₁] [Module.Finite K₂ V₂] (σ : K₁ →+* K₂) (ι : V₁ →ₛₗ[σ] V₂) {n : Type*} [Fintype n] [DecidableEq n]

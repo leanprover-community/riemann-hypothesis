@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftInSt
-public import Formalism.LocalToGlobal.ProjectiveLattices.LiftLoc
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
 
 @[expose] public section
 

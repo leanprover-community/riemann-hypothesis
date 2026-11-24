@@ -1,17 +1,14 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsOther
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonGenericAndKTwoTheorems
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHNeat
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataConc
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocalAdditiveCharContinuous
+public import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.IntegralClosure.Algebra.Defs
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.RingTheory.Spectrum.Prime.RingHom
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Ideal.GoingUp
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

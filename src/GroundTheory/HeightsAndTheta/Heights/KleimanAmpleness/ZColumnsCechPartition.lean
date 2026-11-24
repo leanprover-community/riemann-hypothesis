@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsSerrePoly
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechCone
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleCechObj
 
 @[expose] public section
 

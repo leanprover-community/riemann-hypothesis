@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ResolutionMetricObjects
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergman
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

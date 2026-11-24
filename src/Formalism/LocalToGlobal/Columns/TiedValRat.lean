@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.TiedVal
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 
 @[expose] public section
 

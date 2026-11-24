@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PEvalKerKrullDim
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFibreMultiHomog
+public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

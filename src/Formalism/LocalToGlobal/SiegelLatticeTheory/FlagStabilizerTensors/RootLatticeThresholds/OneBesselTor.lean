@@ -1,6 +1,6 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceExpansion
+public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPtRepTrDat
 
 @[expose] public section
 

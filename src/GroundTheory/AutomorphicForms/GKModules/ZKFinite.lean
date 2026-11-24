@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GKModules.RightRegular
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -218,8 +221,8 @@ theorem finiteDimensional_zkSpan (f : h.smoothFuns (F := F))
     rw [Submodule.coe_sum]
     simp only [Submodule.coe_smul]
   simp only [SetLike.mem_coe]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, map_sum]
+
+  rw [e, map_sum]
   refine Submodule.sum_mem _ fun i _ => ?_
   rw [map_smul]
   exact Submodule.smul_mem _ _

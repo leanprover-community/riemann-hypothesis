@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -42,7 +43,7 @@ private lemma mul_inv_rearrange_of_two_relations (Q G' G0 P R S T V W : U) (c1 :
   have hP : P = T * V * R⁻¹ := by rw [← c1, mul_inv_cancel_right]
   subst hS hP
   apply Additive.ofMul.injective
-  simp only [ofMul_mul, ofMul_inv, inv_inv]
+  simp only [ofMul_mul, ofMul_inv]
   abel
 
 theorem hv_term (h : IsCub θ) (k : ℕ) (a M b x : A) :

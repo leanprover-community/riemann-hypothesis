@@ -2,10 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Divisibility.Numbers
 public import Formalism.LocalRingCardinality.DataErr
-public import Formalism.LocalRingCardinality.DataMink
-public import Formalism.SharpRestriction.GrowthBounds.DefsInst
-public import Formalism.SizeWindowBrackets.GaloisToProductIsIso
-public import Formalism.SizeWindowBrackets.Chain2aCoreNoAnalytic
 
 @[expose] public section
 

@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.BCrisNewtonNorm
+public import GroundTheory.PAdicHodge.ACrisBdR
 public import GroundTheory.PAdicHodge.ACrisBdRInj
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -125,7 +127,7 @@ theorem exists_iotaQ_ne_zero {a : ACris K p} (ha : a ≠ 0) : ∃ m, iotaQ K p (
   · exact h m
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_lower_bound {a : ACris K p} (ha : a ≠ 0) :
     ∃ (B : ℝ) (N₀ : ℕ), 0 < B ∧ ∀ N ≥ N₀, ∀ c : ACrisZero K p,
       a - algebraMap _ (ACris K p) c ∈ Ideal.span {(p : ACris K p) ^ N} →
@@ -204,7 +206,7 @@ theorem exists_lower_bound {a : ACris K p} (ha : a ≠ 0) :
   ring
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_stable {a : ACris K p} (ha : a ≠ 0) :
     ∃ (ρ₂ : ℝ) (N₀ : ℕ) (c₀ : ACrisZero K p), ‖(p : K)‖ < ρ₂ ∧ ρ₂ < 1 ∧
       a - algebraMap _ (ACris K p) c₀ ∈ Ideal.span {(p : ACris K p) ^ N₀} ∧

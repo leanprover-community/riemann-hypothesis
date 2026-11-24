@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
+public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
+import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 public import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeCoproduct
-public import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -61,12 +102,6 @@ theorem ker_comp_coprod_inl_comap_inr {X Y Z : Scheme.{u}} (f : Z ⟶ X)
   rw [range_coprod_inr_eq_compl X Y] at h2
   exact h2 (hsub hy')
 
-private theorem map_ker_comp_of_surjective {A B C : Type u} [CommRing A] [CommRing B] [CommRing C]
-    (φ : A →+* B) (ψ : B →+* C) (hφ : Function.Surjective φ) :
-    Ideal.map φ (RingHom.ker (ψ.comp φ)) = RingHom.ker ψ := by
-  rw [RingHom.ker_eq_comap_bot (ψ.comp φ), ← Ideal.comap_comap, ← RingHom.ker_eq_comap_bot]
-  exact Ideal.map_comap_of_surjective φ hφ _
-
 private theorem surjective_of_isIso {A B : CommRingCat.{u}} (φ : A ⟶ B) (hφ : IsIso φ) :
     Function.Surjective (CommRingCat.Hom.hom φ) := by
   have := hφ
@@ -89,47 +124,10 @@ private theorem ker_ideal_eq_ker_app {T W : Scheme.{u}} (f : T ⟶ W) [QuasiComp
     f.ker.ideal U = RingHom.ker (CommRingCat.Hom.hom (f.app (U : W.Opens))) := by
   simp
 
-private theorem map_appLE_ker_comp {T W Z : Scheme.{u}} (f : T ⟶ W) (g : W ⟶ Z)
-    (U : Z.Opens) (V : W.Opens) (hUV : g ⁻¹ᵁ U = V) (e : V ≤ g ⁻¹ᵁ U)
-    (hsurj : Function.Surjective (CommRingCat.Hom.hom (g.app U))) :
-    Ideal.map (CommRingCat.Hom.hom (g.appLE U V e))
-        (RingHom.ker (CommRingCat.Hom.hom ((f ≫ g).app U)))
-      = RingHom.ker (CommRingCat.Hom.hom (f.app V)) := by
-  subst hUV
-  have hid : g.appLE U (g ⁻¹ᵁ U) e = g.app U := by
-    show g.app U ≫ W.presheaf.map (homOfLE e).op = g.app U
-    have h1 : (homOfLE e).op = 𝟙 (Opposite.op (g ⁻¹ᵁ U)) := rfl
-    rw [h1, W.presheaf.map_id, Category.comp_id]
-  have hcomp : CommRingCat.Hom.hom ((f ≫ g).app U)
-      = RingHom.comp (CommRingCat.Hom.hom (f.app (g ⁻¹ᵁ U)))
-          (CommRingCat.Hom.hom (g.app U)) := rfl
-  rw [hid, hcomp]
-  exact map_ker_comp_of_surjective _ _ hsurj
-
-private theorem ker_comap_of_isOpenImmersion {T W Z : Scheme.{u}} (f : T ⟶ W) (g : W ⟶ Z)
-    [IsOpenImmersion g] [QuasiCompact f] [QuasiCompact (f ≫ g)] :
-    (f ≫ g).ker.comap g = f.ker := by
-  have key : ∀ V : W.affineOpens, ((f ≫ g).ker.comap g).ideal V = f.ker.ideal V := by
-    intro V
-    have hU : IsAffineOpen (g ''ᵁ (V : W.Opens)) := isAffineOpen_image g (V : W.Opens) V.2
-    have hpre : g ⁻¹ᵁ (g ''ᵁ (V : W.Opens)) = (V : W.Opens) :=
-      preimage_image_opens g (V : W.Opens)
-    have e : (V : W.Opens) ≤ g ⁻¹ᵁ (g ''ᵁ (V : W.Opens)) := hpre.ge
-    have h1 : ((f ≫ g).ker.comap g).ideal V
-        = Ideal.map (CommRingCat.Hom.hom (g.appLE (g ''ᵁ (V : W.Opens)) (V : W.Opens) e))
-            ((f ≫ g).ker.ideal ⟨g ''ᵁ (V : W.Opens), hU⟩) :=
-      Scheme.IdealSheafData.comap_ideal_eq_map_appLE ((f ≫ g).ker) g
-        ⟨g ''ᵁ (V : W.Opens), hU⟩ V e
-    rw [h1, ker_ideal_eq_ker_app (f ≫ g) ⟨g ''ᵁ (V : W.Opens), hU⟩, ker_ideal_eq_ker_app f V]
-    exact map_appLE_ker_comp f g (g ''ᵁ (V : W.Opens)) (V : W.Opens) hpre e
-      (surjective_of_isIso (g.app (g ''ᵁ (V : W.Opens))) inferInstance)
-  ext V
-  rw [key V]
-
 theorem ker_comp_coprod_inl_comap_inl {X Y Z : Scheme.{u}} (f : Z ⟶ X)
     [QuasiCompact f] [QuasiCompact (f ≫ (coprod.inl : X ⟶ X ⨿ Y))] :
     (f ≫ (coprod.inl : X ⟶ X ⨿ Y)).ker.comap (coprod.inl : X ⟶ X ⨿ Y) = f.ker :=
-  ker_comap_of_isOpenImmersion f (coprod.inl : X ⟶ X ⨿ Y)
+  _root_.FunctorialResolution.Blowup.comap_ker_comp_of_isOpenImmersion f (coprod.inl : X ⟶ X ⨿ Y)
 
 private theorem ideal_eq_of_map_eq_of_bijective {A B : Type u} [CommRing A] [CommRing B]
     (φ : A →+* B) (hφ : Function.Bijective φ) {K L : Ideal A}

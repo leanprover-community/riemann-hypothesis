@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremScaling
-public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInverse
+public import GroundTheory.GlobalFields.TateThesis.EulerFactors
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

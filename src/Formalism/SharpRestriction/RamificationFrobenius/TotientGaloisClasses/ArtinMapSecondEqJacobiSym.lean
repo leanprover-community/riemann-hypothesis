@@ -1,8 +1,50 @@
 module
 
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameCyclicGenerator
-public import Formalism.FrobeniusOrbits.HostCorollaries
+public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.EqZeroOfNegEq
+public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
+public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CoprimeTwoPow
+import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -52,8 +94,8 @@ theorem gs_act {K : Type*} [Field K] [CharZero K] {p : ℕ} [Fact p.Prime] {x : 
   have hχ : ∀ a : ZMod p, σ (Cond.chi p K a) = Cond.chi p K a := by
     intro a; simp [Cond.chi, MulChar.ringHomComp_apply]
   have h1 : σ (Cond.gs p hx) = gaussSum (Cond.chi p K) (AddChar.mulShift (AddChar.zmodChar p hx) (w : ZMod p)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Cond.gs, gaussSum, map_sum, map_mul, hψ, hχ, AddChar.mulShift_apply]
+
+    simp only [Cond.gs, gaussSum, map_sum, map_mul, hψ, hχ, AddChar.mulShift_apply]
   have h2 := gaussSum_mulShift (Cond.chi p K) (AddChar.zmodChar p hx) w
   have h3 : Cond.chi p K (w : ZMod p) = ((jacobiSym (v : ℤ) p : ℤ) : K) := by
     rw [← jacobiSym.legendreSym.to_jacobiSym, legendreSym, Int.cast_natCast, hwv]
@@ -74,12 +116,11 @@ theorem sqrt_act {p N : ℕ} [NeZero N] (hp : p.Prime) (hp4 : p % 4 = 3) (h : p 
     rw [← pow_mul, mul_comm, pow_mul, (Cond.z_spec N).pow_eq_one, one_pow]
   have hg := gs_act hx.pow_eq_one (τ : Cond.Cyc N →+* Cond.Cyc N) _ (hτ _ hxN)
     ((ZMod.val_coe_unit_coprime u).coprime_dvd_right h)
-  have hg' : τ (Cond.gs p hx.pow_eq_one) = _ := hg
   rw [sgnN_val]
   have hsq : y ^ 2 = Cond.gs p hx.pow_eq_one ^ 2 := by rw [hy, Cond.gs_sq hp4 hx]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with h1 | h1
-  · rw [h1, hg']
-  · rw [h1, map_neg, hg']; ring
+  · rw [h1]; exact hg
+  · rw [h1, map_neg, mul_neg]; exact congrArg Neg.neg hg
 
 variable (φ : Frame) (hinj : Function.Injective φ.h)
 
@@ -140,8 +181,7 @@ theorem artinMap_dyadic_eq (u : (ZMod (2 ^ (e + 2) * q * d))ˣ) (v : (ZMod (2 ^ 
     (hv : (v : ZMod (2 ^ (e + 2))) = (((u : ZMod (2 ^ (e + 2) * q * d)).val : ℕ) : ZMod (2 ^ (e + 2)))) :
     (art0 e hH u).2 = hcl e v := by
   have := neZeroN e hH
-  have h1 : v = ZMod.unitsMap (two_dvd e q d) u := Units.ext (by rw [hv, unitsMap_val])
-  rw [h1]; rfl
+  exact (show v = ZMod.unitsMap (two_dvd e q d) u from Units.ext (by rw [hv, unitsMap_val])).symm ▸ rfl
 
 theorem artinMap_first_eq_one (u : (ZMod (2 ^ (e + 2) * q * d))ˣ) (hu : (u : ZMod (2 ^ (e + 2) * q * d)).val ≡ 1 [MOD q]) :
     (art0 e hH u).1.1 = 1 := by
@@ -167,9 +207,8 @@ theorem artinMap_neg_one : art0 e hH (-1) = cc e := by
   have hq4 : q % 4 = 3 := by have := hH.2.2.1; omega
   have hd4 : d % 4 = 3 := by have := hH.2.2.2.1; omega
   refine Prod.ext (Prod.ext (sgnN_neg_one hH.1 hq4 _) (sgnN_neg_one hH.2.1 hd4 _)) ?_
-  have h1 : ZMod.unitsMap (two_dvd e q d) (-1) = -1 := unitsMap_neg_one _
   show hcl e (ZMod.unitsMap (two_dvd e q d) (-1)) = 1
-  rw [h1, hcl_neg_one]
+  rw [unitsMap_neg_one, hcl_neg_one]
 
 variable {e} {L : Type} [Field L] [NumberField L] {ζ a b : L} (h : IsLayer (e + 2) q d ζ a b)
 

@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementC
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
+public import ReciprocityTheory.SemistableReduction.LatSemiSt
 
 @[expose] public section
 

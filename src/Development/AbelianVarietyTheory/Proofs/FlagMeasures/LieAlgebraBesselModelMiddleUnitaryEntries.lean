@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.Dchart
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDensityAtIdentityLieAlgebraOfOmegaDensity
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
+public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.Dchart
 
 @[expose] public section
 
@@ -45,38 +90,7 @@ theorem mem_lieE_iff {m : ℕ} {S : Set (Matrix (Fin m) (Fin m) ℂ)} (P : Submo
 open scoped Matrix.Norms.Operator in
 theorem mem_lieOf_UH {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ) (hH : H * H = 1) (X : Matrix (Fin N) (Fin N) ℂ) :
     X ∈ lieOf (UH H) ↔ Xᴴ * H + H * X = 0 := by
-  constructor
-  · intro h
-    have hc : (fun t : ℝ => NormedSpace.exp (t • Xᴴ) * H * NormedSpace.exp (t • X)) = fun _ => H := by
-      funext t
-      have h1 : (NormedSpace.exp ((t : ℂ) • X))ᴴ * H * NormedSpace.exp ((t : ℂ) • X) = H := h t
-      rw [← Matrix.exp_conjTranspose, Complex.coe_smul, Matrix.conjTranspose_smul, star_trivial] at h1
-      exact h1
-    have hd : HasDerivAt (fun t : ℝ => NormedSpace.exp (t • Xᴴ) * H * NormedSpace.exp (t • X)) _ 0 :=
-      ((hasDerivAt_exp_smul_const (𝕂 := ℝ) Xᴴ 0).mul_const H).mul (hasDerivAt_exp_smul_const (𝕂 := ℝ) X 0)
-    rw [hc] at hd
-    have := hd.unique (hasDerivAt_const _ _)
-    simpa using this
-  · intro hX t
-    set Y : Matrix (Fin N) (Fin N) ℂ := (t : ℂ) • X with hYdef
-    have hY : Yᴴ * H + H * Y = 0 := by
-      rw [hYdef, Matrix.conjTranspose_smul, Complex.star_def, Complex.conj_ofReal, Matrix.smul_mul,
-        Matrix.mul_smul, ← smul_add, hX, smul_zero]
-    have hinv : H⁻¹ = H := Matrix.inv_eq_right_inv hH
-    have hu : IsUnit H := (Matrix.isUnit_iff_isUnit_det _).2 (Matrix.isUnit_det_of_left_inverse hH)
-    have hYh : Yᴴ = H * (-Y) * H⁻¹ := by
-      have e : Yᴴ * H = -(H * Y) := eq_neg_of_add_eq_zero_left hY
-      calc Yᴴ = Yᴴ * (H * H) := by rw [hH, Matrix.mul_one]
-        _ = (Yᴴ * H) * H := by rw [Matrix.mul_assoc]
-        _ = _ := by rw [e, hinv, Matrix.mul_neg]
-    have hexp : (NormedSpace.exp Y)ᴴ = H * NormedSpace.exp (-Y) * H := by
-      rw [← Matrix.exp_conjTranspose, hYh, Matrix.exp_conj _ _ hu, hinv]
-    have hc : NormedSpace.exp (-Y) * NormedSpace.exp Y = 1 := by
-      rw [← Matrix.exp_add_of_commute _ _ (Commute.neg_left (Commute.refl Y)), neg_add_cancel,
-        NormedSpace.exp_zero]
-    show (NormedSpace.exp Y)ᴴ * H * NormedSpace.exp Y = H
-    rw [hexp, Matrix.mul_assoc (H * NormedSpace.exp (-Y)) H H, hH,
-      Matrix.mul_one, Matrix.mul_assoc, hc, Matrix.mul_one]
+  apply GlobalTheory.OmegaFrobenius.mem_lieOf_UH <;> assumption
 
 open scoped Matrix.Norms.Operator in
 theorem exp_mul_eq_iff {N : ℕ} (X E : Matrix (Fin N) (Fin N) ℂ) :

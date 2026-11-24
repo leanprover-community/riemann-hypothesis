@@ -68,7 +68,6 @@ theorem resV_eq_subst [Finite ι] {f : κ → ι} (hf : Function.Injective f) (g
     simp only [resFam_apply hf]
     rw [prod_X_pow_lemma, MvPowerSeries.coeff_monomial, if_pos rfl, smul_eq_mul, mul_one]
   · intro d hd
-    beta_reduce
     by_cases hsub : ↑d.support ⊆ Set.range f
     · obtain ⟨d', rfl⟩ : ∃ d', Finsupp.mapDomain f d' = d :=
         ⟨_, Finsupp.mapDomain_comapDomain f hf d hsub⟩
@@ -108,10 +107,6 @@ theorem resV_pow [Finite ι] {f : κ → ι} (hf : Function.Injective f) (a : Mv
   | zero => rw [pow_zero, pow_zero, resV_one_lemma hf]
   | succ k ih => rw [pow_succ, pow_succ, resV_mul hf, ih]
 
-theorem resV_one [Finite ι] {f : κ → ι} (hf : Function.Injective f) :
-    resV f (1 : MvPowerSeries ι R) = 1 :=
-  resV_one_lemma hf
-
 theorem resV_add (f : κ → ι) (a b : MvPowerSeries ι R) : resV f (a + b) = resV f a + resV f b := rfl
 
 theorem resV_neg (f : κ → ι) (a : MvPowerSeries ι R) : resV f (-a) = -resV f a := rfl
@@ -121,8 +116,8 @@ theorem resV_sub (f : κ → ι) (a b : MvPowerSeries ι R) : resV f (a - b) = r
 theorem resV_sum {α : Type} (f : κ → ι) (s : Finset α) (a : α → MvPowerSeries ι R) :
     resV f (∑ x ∈ s, a x) = ∑ x ∈ s, resV f (a x) := by
   ext n
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [resV_coeff, map_sum]
+
+  simp only [resV_coeff, map_sum]
 
 theorem cc_resV (f : κ → ι) (a : MvPowerSeries ι R) :
     MvPowerSeries.constantCoeff (resV f a) = MvPowerSeries.constantCoeff a := by
@@ -224,14 +219,10 @@ end Res
 
 variable {p : ℕ} [Fact p.Prime]
 
-private theorem cc_logF_lemma : PowerSeries.constantCoeff (logF p) = 0 := by
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, logF, PowerSeries.coeff_mk]
-  simp
-
 theorem cc_logF' (K1 : Type) [Field K1] [Algebra (K0 p) K1] :
     PowerSeries.constantCoeff (PowerSeries.map (algebraMap (K0 p) K1) (logF p)) = 0 := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_map,
-    PowerSeries.coeff_zero_eq_constantCoeff_apply, cc_logF_lemma, map_zero]
+    PowerSeries.coeff_zero_eq_constantCoeff_apply, _root_.Formalism.L2.PairingIndexBounds.PowerSeriesNecessity.cc_logF, map_zero]
 
 theorem resV_inParamK {ι κ : Type} [Finite ι] [Finite κ] {f : κ → ι} (hf : Function.Injective f)
     (K1 : Type) [Field K1] [Algebra (K0 p) K1] (g : MvPowerSeries ι K1) :
@@ -242,7 +233,7 @@ theorem resV_inParamK {ι κ : Type} [Finite ι] [Finite κ] {f : κ → ι} (hf
 theorem resV_inParam {ι κ : Type} [Finite ι] [Finite κ] {f : κ → ι} (hf : Function.Injective f)
     (g : MvPowerSeries ι (K0 p)) : resV f (inParam p g) = inParam p (resV f g) := by
   rw [inParam, inParam]
-  exact resV_diag hf _ cc_logF_lemma g
+  exact resV_diag hf _ _root_.Formalism.L2.PairingIndexBounds.PowerSeriesNecessity.cc_logF g
 
 theorem resV_expS {ι κ : Type} [Finite ι] {f : κ → ι} (hf : Function.Injective f) (g : MvPowerSeries ι (K0 p)) :
     resV f (expS p g) = expS p (resV f g) := by
@@ -258,7 +249,7 @@ theorem simeq_resV {ι κ : Type} [Finite ι] [Finite κ] {f : κ → ι} (hf : 
   rw [Simeq] at h ⊢
   obtain ⟨h0, c, hc0, hc⟩ := h
   refine ⟨by rw [← resV_sub, cc_resV, h0], resV f c, by rw [cc_resV, hc0], ?_⟩
-  rw [← resV_sub, ← resV_inParam hf, ← resV_expS hf, hc, resV_add, resV_one hf, resV_map]
+  rw [← resV_sub, ← resV_inParam hf, ← resV_expS hf, hc, resV_add, _root_.Formalism.L2.KerInert.Loc.resV_one_lemma hf, resV_map]
 
 theorem hasSubst_pair {τ : Type} {x y : MvPowerSeries τ (K0 p)} (hx : MvPowerSeries.constantCoeff x = 0)
     (hy : MvPowerSeries.constantCoeff y = 0) : MvPowerSeries.HasSubst ![x, y] :=

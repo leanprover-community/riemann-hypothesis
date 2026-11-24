@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormStepsB
 
 @[expose] public section
@@ -68,9 +67,9 @@ theorem matE_crd (M : GL (Fin X.B.I.n) X.B.I.E) (y : (VS D).V) :
   funext i
   simp only [Formalism.L2.SG.HidaSetting.HidaSetting.crd, Formalism.L2.SG.HidaSetting.crdOf]
   rw [← Module.Basis.equivFun_apply, matE_repr]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, RingHom.mapMatrix_apply, Matrix.map_apply, map_sum, map_mul,
-    RingEquiv.coe_toRingHom, RingEquiv.symm_apply_apply, Module.Basis.equivFun_apply]
+
+  simp only [Matrix.mulVec, dotProduct, RingHom.mapMatrix_apply, Matrix.map_apply, map_sum, map_mul,
+  RingEquiv.coe_toRingHom, RingEquiv.symm_apply_apply, Module.Basis.equivFun_apply]
   rfl
 
 theorem matE_incl (M : GL (Fin X.B.I.n) X.B.I.E) (y : (VS D).V) :
@@ -78,16 +77,16 @@ theorem matE_incl (M : GL (Fin X.B.I.n) X.B.I.E) (y : (VS D).V) :
       (M : Matrix _ _ _).map (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F)) *ᵥ incl X.B.I (X.crd y) := by
   rw [matE_crd]
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Formalism.L2.SG.HidaSetting.incl, Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul]
+
+  simp only [Formalism.L2.SG.HidaSetting.incl, Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul]
 
 theorem hT_expand (x y : (VS D).V) :
     (VS D).hT x y =
       ∑ i, ∑ j, star (X.bas.equivFun x i) * (X.bas.equivFun y j * (VS D).hT (X.bas i) (X.bas j)) := by
   conv_lhs => rw [← X.bas.sum_equivFun x, ← X.bas.sum_equivFun y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply,
-    smul_eq_mul, starRingEnd_apply, Finset.mul_sum]
+
+  simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply,
+  smul_eq_mul, starRingEnd_apply, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
   simp only [RingHom.id_apply]
@@ -137,8 +136,6 @@ theorem af_nontriv (F : Type) [Field F] [NumberField F] : Nontrivial (Af F) := b
   have h1 := congrArg (fun x : Af F => x v) h
   first
   | exact one_ne_zero h1
-  | (simp only [RestrictedProduct.one_apply, RestrictedProduct.zero_apply] at h1
-     exact one_ne_zero h1)
 
 theorem inclE_inj :
     Function.Injective (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) : X.B.I.E → X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) := by

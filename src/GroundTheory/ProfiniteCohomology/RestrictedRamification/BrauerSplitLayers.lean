@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees.Layers
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+public import GroundTheory.GlobalFields.CyclotomicCharacters.DegreeDecomposition
 
 @[expose] public section
 

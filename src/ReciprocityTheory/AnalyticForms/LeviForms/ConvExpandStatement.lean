@@ -1,10 +1,7 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.LeviForms.TailBound
+public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import ReciprocityTheory.AnalyticForms.LeviForms.MixedIntegralInclusionExclusion
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
 
 @[expose] public section
 

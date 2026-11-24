@@ -1,6 +1,9 @@
 module
 
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatOpA
 public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.OpLocal
+import Formalism.FormalDegreeBessel.FinalG
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
 
 @[expose] public section

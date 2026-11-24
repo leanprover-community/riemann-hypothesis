@@ -1,11 +1,58 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwpairAlg
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteOpenHopfOrder
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFinOpenSubOfFinite
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDenominatorRegular
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Valuation.ValuationRing
+public import Mathlib.Tactic.ENatToNat
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinitePartLePreimageOfClosedFibreSubset
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFinOpenSubOfFinite
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwpairAlg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.Proper
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -18,20 +65,12 @@ namespace PositivityTheory.HtPt.Twpair
 
 variable {R : Type} [CommRing R] [IsDomain R] {T : Type} [CommGroup T]
 
-omit [IsDomain R] in
-theorem mem_of_finite [IsLocalRing R] {X : Over (Spec (CommRingCat.of R))} (W : X.left.Opens)
-    (hW : ∀ x : X.left, X.hom x = IsLocalRing.closedPoint R → x ∈ W)
-    (Y : Over (Spec (CommRingCat.of R))) (hY : IsFinite Y.hom) (h : Y ⟶ X) (z : Y.left) :
-    h.left z ∈ W := by
-  have : IsFinite (h.left ≫ X.hom) := by rw [Over.w h]; exact hY
-  exact (GlobalTheory.preimage_eq_top_of_closedFibre_subset (R := CommRingCat.of R) X.hom W hW h.left).ge (Set.mem_univ z)
-
 theorem isFinOpenSub [IsLocalRing R] (Γ : QFGroup R T) (U : Γ.G.left.Opens) (hfin : IsFinite (U.ι ≫ Γ.G.hom))
     (hU : ∀ x : Γ.G.left, Γ.G.hom x = IsLocalRing.closedPoint R → x ∈ U) : Γ.IsFinOpenSub U := by
   have hV : IsFinite (openOver Γ.G U).hom := hfin
   refine ⟨hfin, ?_, ?_, ?_⟩
   · intro x
-    refine mem_of_finite U hU (𝟙_ _) ?_ η[Γ.G] x
+    refine _root_.GlobalTheory.CompanionTheory.Ar.BT.mem_of_finite_of_closedFibre U hU (𝟙_ _) ?_ η[Γ.G] x
     show IsFinite (𝟙 _)
     infer_instance
   · intro S x y hx hy z
@@ -40,7 +79,7 @@ theorem isFinOpenSub [IsLocalRing R] (Γ : QFGroup R T) (U : Γ.G.left.Opens) (h
     have hP : IsFinite (openOver Γ.G U ⊗ openOver Γ.G U).hom := by
       rw [Over.tensorObj_hom]
       infer_instance
-    have key := mem_of_finite U hU _ hP
+    have key := _root_.GlobalTheory.CompanionTheory.Ar.BT.mem_of_finite_of_closedFibre U hU _ hP
       ((fst _ _ ≫ openIncl Γ.G U) * (snd _ _ ≫ openIncl Γ.G U))
     have heq : x' ≫ openIncl Γ.G U * y' ≫ openIncl Γ.G U =
         lift x' y' ≫ ((fst _ _ ≫ openIncl Γ.G U) * (snd _ _ ≫ openIncl Γ.G U)) := by
@@ -50,7 +89,7 @@ theorem isFinOpenSub [IsLocalRing R] (Γ : QFGroup R T) (U : Γ.G.left.Opens) (h
     simpa using key ((lift x' y').left z)
   · intro S x hx z
     obtain ⟨x', rfl⟩ := exists_factor_openIncl U x hx
-    have key := mem_of_finite U hU _ hV (openIncl Γ.G U)⁻¹
+    have key := _root_.GlobalTheory.CompanionTheory.Ar.BT.mem_of_finite_of_closedFibre U hU _ hV (openIncl Γ.G U)⁻¹
     have heq : (x' ≫ openIncl Γ.G U)⁻¹ = x' ≫ (openIncl Γ.G U)⁻¹ := by
       simp [Hom.inv_def]
     rw [heq]

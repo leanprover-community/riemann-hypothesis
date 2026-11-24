@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanProjectiveVolume
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.Tactic.Lemma
+import GroundTheory.HeightsAndTheta.Heights.ComplexProjective
 
 @[expose] public section
 

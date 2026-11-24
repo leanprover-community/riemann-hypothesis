@@ -1,9 +1,49 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceS
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -13,7 +53,7 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Datum
 open scoped TensorProduct
 
-set_option synthInstance.maxHeartbeats 160000
+
 
 namespace Formalism.IndefR.Fin.LevelGroupLemmas.Lat
 
@@ -84,7 +124,7 @@ theorem eq_lift_of_infPart (x : AE D) (hx : infPart D x = 0) : x = lift (finPart
   conv_lhs => rw [eq_liftI_add_lift x]
   rw [hx, liftI_zero, zero_add]
 
-set_option maxHeartbeats 1000000 in
+
 theorem lift_mul (y : Af D.host.F ⊗[D.host.F] D.host.E) (z : AE D) : lift y * z = lift (y * finPart D z) := by
   induction y using TensorProduct.inductionOn with
   | add y y' hy hy' => rw [lift_add, add_mul, hy, hy', ← lift_add, add_mul]
@@ -182,7 +222,7 @@ theorem cT_gram (V : HSp D) (g : GA D V) :
     _ = V.gram.map (incA D) * mt V g⁻¹ := by rw [← Matrix.mul_assoc, hu]
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem adjO_actO (S T : HSp D) (g : GA D S) (h : GA D T) (x : WO S T) :
     adjO S T (actO S T g h x) = mt S g * adjO S T x * mt T h⁻¹ := by
   have hS := cT_gram S g⁻¹
@@ -336,8 +376,8 @@ theorem liftE_neg (y : EAf D) : liftE (D := D) (-y) = -liftE y := by
   simp only [liftE, map_neg, lift_neg]
 
 theorem liftE_sum {ι : Type} (s : Finset ι) (f : ι → EAf D) : liftE (D := D) (∑ i ∈ s, f i) = ∑ i ∈ s, liftE (f i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [liftE, map_sum, lift_sum]
+
+  simp only [liftE, map_sum, lift_sum]
 
 theorem liftE_smul_mem {z : EAf D} (hz : z ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) :
     ∀ u ∈ latAll S T ΛS ΛT, liftE z • u ∈ latAll S T ΛS ΛT := by
@@ -420,9 +460,9 @@ theorem genL_eq_genE (α : Af D.host.F) (a : D.host.E) (s : Fin S.rank → D.hos
     Matrix.of_apply, smul_eq_mul, sR_eTo]
   rw [← liftE_eTo_mul]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show ∑ k, eToEAf D (star (s k)) * eToEAf D (S.gram k j) = eToEAf D (∑ k, star (s k) * S.gram k j) by
-    rw [map_sum]; exact Finset.sum_congr rfl fun k _ => (map_mul _ _ _).symm]
+
+  rw [show ∑ k, eToEAf D (star (s k)) * eToEAf D (S.gram k j) = eToEAf D (∑ k, star (s k) * S.gram k j) by
+  rw [map_sum]; exact Finset.sum_congr rfl fun k _ => (map_mul _ _ _).symm]
   rw [map_mul, map_mul]
   ring
 
@@ -483,7 +523,7 @@ theorem genE_smul_left (c z : EAf D) (τ : Fin T.rank → EAf D) (σ : Fin S.ran
 
 theorem genE_zero_left (c : EAf D) (σ : Fin S.rank → EAf D) : genE (T := T) c 0 σ = 0 := by
   ext i j
-  simp [genE, Matrix.vecMulVec_apply, liftE_zero]
+  simp [genE, liftE_zero]
 
 theorem genE_add_right (c : EAf D) (τ : Fin T.rank → EAf D) (σ σ' : Fin S.rank → EAf D) :
     genE c τ (σ + σ') = genE (S := S) c τ σ + genE c τ σ' := by
@@ -509,7 +549,7 @@ theorem genE_zero_right (c : EAf D) (τ : Fin T.rank → EAf D) : genE (S := S) 
     simp
   ext i j
   simp only [genE, hs]
-  simp [Matrix.vecMulVec_apply, liftE_zero]
+  simp [liftE_zero]
 
 theorem genE_mem {α : Af D.host.F} (hα : α ∈ intAf D.host.F) {a : D.host.E} (ha : a ∈ D.host.AA)
     {τ : Fin T.rank → EAf D} (hτ : τ ∈ Formalism.L2.Herm.hatL (F := D.host.F) ΛT)
@@ -536,7 +576,7 @@ theorem genE_mem {α : Af D.host.F} (hα : α ∈ intAf D.host.F) {a : D.host.E}
     exact liftE_smul_mem r.2 _ hx
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem St_mulVec_mem {n : ℕ} {β : GL (Fin n) (EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
     (hf : Formalism.L2.DIV.IsFrame β Λ) {x : GL (Fin n) (EAf D)} (hx : x ∈ Formalism.L2.DIV.St β) {v : Fin n → EAf D}
     (hv : v ∈ Formalism.L2.Herm.hatL (F := D.host.F) Λ) :
@@ -620,7 +660,7 @@ theorem col_mem_hatL {n : ℕ} {β : GL (Fin n) (EAf D)} {Λ : Submodule (𝓞 D
   · rw [Pi.single_eq_of_ne hij]; exact zero_mem _
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem hform_int {V : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)} (hΛ : IsSelfDualC V Λ)
     {s : Fin V.rank → D.host.E} (hs : s ∈ Λ) {v : Fin V.rank → EAf D} (hv : v ∈ Formalism.L2.Herm.hatL (F := D.host.F) Λ) :
     (fun k => sR D (eToEAf D (s k))) ⬝ᵥ (V.gram.map (eToEAf D) *ᵥ v) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by
@@ -630,8 +670,8 @@ theorem hform_int {V : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.
     obtain ⟨b, hb⟩ := (hΛ.2 s₂).1 hs₂ s hs
     have e : (fun k => sR D (eToEAf D (s k))) ⬝ᵥ (V.gram.map (eToEAf D) *ᵥ fun i => eToEAf D (s₂ i)) =
         eToEAf D (∑ i, ∑ j, star (s i) * V.gram i j * s₂ j) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [dotProduct, Matrix.mulVec, Matrix.map_apply, sR_eTo, map_sum, map_mul, Finset.mul_sum]
+
+      simp only [dotProduct, Matrix.mulVec, Matrix.map_apply, sR_eTo, map_sum, map_mul, Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
     show (fun k => sR D (eToEAf D (s k))) ⬝ᵥ (V.gram.map (eToEAf D) *ᵥ fun i => eToEAf D (s₂ i)) ∈ _
     rw [e, ← hb]
@@ -681,8 +721,8 @@ theorem infPart_of_splitIdem {e : AE D} (he : IsSplitIdem D e) : infPart D e = 0
 
 theorem infPart_of_idemSum {e : AE D} {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e P) : infPart D e = 0 := by
   obtain ⟨⟨es, hes, rfl⟩, _⟩ := he
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_eq_zero fun PP hPP => infPart_of_splitIdem (hes PP hPP).1
 
 theorem comm_comm' (y : Af D.host.F ⊗[D.host.F] D.host.E) :
@@ -795,7 +835,7 @@ theorem isSplitIdem_cA {e : AE D} (he : IsSplitIdem D e) : IsSplitIdem D (cA D e
   refine ⟨by rw [← map_mul, h1], by rw [cA_cA, mul_comm, h2], v, ε, hv, by rw [cA_cA, add_comm, hε]⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem heisO_fix_of_latVac (ψ : AddChar (AF D.host.F) ℂ) {f₀ : WO S T → ℂ}
     (hL : IsLatVac (heisO ψ S T) (latAll S T ΛS ΛT) f₀) {P : Finset (Formalism.L2.DIV.Pl D.host.E)} {e : AE D}
     (he : IsIdemSum e P) : ∀ u ∈ latAll S T ΛS ΛT, (IsHalf e u ∨ IsHalf (cA D e) u) → heisO ψ S T u f₀ = f₀ := by
@@ -814,8 +854,8 @@ theorem heisO_fix_of_latVac (ψ : AddChar (AF D.host.F) ℂ) {f₀ : WO S T → 
       rw [← mul_assoc, (hes PP hPP).1.1]
   · have hec' : cA D (∑ PP ∈ P, es PP) * cA D (cA D (∑ PP ∈ P, es PP)) = 0 := by rw [cA_cA, mul_comm, hec]
     have hu' : u = ∑ PP ∈ P, cA D (es PP) • u := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Finset.sum_smul, ← map_sum]; ext i j; simp only [Matrix.smul_apply, smul_eq_mul, hh i j]
+
+      rw [← Finset.sum_smul, ← map_sum]; ext i j; simp only [Matrix.smul_apply, smul_eq_mul, hh i j]
     rw [hu']
     refine heisO_fix_sum ψ hec' P _ f₀ (fun PP _ i j => ?_) (fun PP hPP => ?_)
     · simp only [Matrix.smul_apply, smul_eq_mul]
@@ -870,7 +910,7 @@ theorem map_smul_vecMulVec {m n : ℕ} (c : EAf D) (x : Fin m → EAf D) (y : Fi
   ext i j; simp only [Matrix.map_apply, Matrix.smul_apply, Matrix.vecMulVec_apply, smul_eq_mul, map_mul]
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem frMapAdj_genE {βS : GL (Fin S.rank) (EAf D)} {βT : GL (Fin T.rank) (EAf D)} (c : EAf D)
     (τ : Fin T.rank → EAf D) (σ : Fin S.rank → EAf D) :
     frMapAdj S T βS βT (genE c τ σ) = sR D c • Matrix.vecMulVec
@@ -905,8 +945,8 @@ theorem frMapAdj_neg {βS : GL (Fin S.rank) (EAf D)} {βT : GL (Fin T.rank) (EAf
 theorem infPart_cA_idemSum {e : AE D} {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e P) :
     infPart D (cA D e) = 0 := by
   obtain ⟨⟨es, hes, rfl⟩, _⟩ := he
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum]
+
+  rw [map_sum, map_sum]
   exact Finset.sum_eq_zero fun PP hPP => infPart_of_splitIdem (isSplitIdem_cA (hes PP hPP).1)
 
 

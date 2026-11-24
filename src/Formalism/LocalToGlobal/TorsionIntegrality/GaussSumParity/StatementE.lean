@@ -1,10 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementC
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementJ
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementK
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementB
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.CurveHyp
 
 @[expose] public section
 

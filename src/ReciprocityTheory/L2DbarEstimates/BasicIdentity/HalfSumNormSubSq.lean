@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Complex.Norm
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Normed.Ring.Basic
+public import Mathlib.Basic.Complex.BigOperators
 
 @[expose] public section
 

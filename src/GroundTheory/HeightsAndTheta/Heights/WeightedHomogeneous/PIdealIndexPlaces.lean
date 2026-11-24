@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsPointHeight
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FieldChange
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

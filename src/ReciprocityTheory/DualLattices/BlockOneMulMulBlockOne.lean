@@ -1,5 +1,10 @@
 module
 
+public import Mathlib.Basic.NNReal.Defs
+public import Mathlib.Data.Matrix.PEquiv
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.RingTheory.Valuation.Integers
+public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import ReciprocityTheory.DualLattices.UpSmith
 
 @[expose] public section

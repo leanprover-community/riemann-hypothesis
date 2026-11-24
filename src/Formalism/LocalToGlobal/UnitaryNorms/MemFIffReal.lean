@@ -1,8 +1,7 @@
 module
 
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LocalRingCardinality.DataNChoice
 public import Formalism.LocalToGlobal.UnitaryNorms.AdjoinCycZeta
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 
 @[expose] public section
 

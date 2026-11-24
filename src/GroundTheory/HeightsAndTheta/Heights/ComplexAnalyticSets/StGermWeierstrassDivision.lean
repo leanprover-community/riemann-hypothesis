@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAnalyticGermsNoetherian
+public import Mathlib.Analysis.Analytic.Order
+public import Mathlib.Analysis.CStarAlgebra.Classes
 
 @[expose] public section
 

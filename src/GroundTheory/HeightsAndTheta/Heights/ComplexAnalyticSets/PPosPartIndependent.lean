@@ -1,12 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPosPartIndependent
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSheetOnlyNull
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPosPartLocal
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPosPartSplit
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PIntegralIndependent
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
 
 @[expose] public section
 

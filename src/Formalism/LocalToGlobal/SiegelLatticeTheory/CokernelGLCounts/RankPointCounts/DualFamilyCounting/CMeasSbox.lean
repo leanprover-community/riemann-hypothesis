@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcRealXCC
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcRealXLeb
+import Mathlib.CategoryTheory.Countable
 
 @[expose] public section
 
@@ -57,9 +58,9 @@ theorem Φc_Ψc (y : ι × LsNc5.CIdx r k → ℝ) : Φc (Ψc y) = y := by
   rcases i with ⟨v, ((⟨p, t⟩ | ⟨b, t⟩) | (⟨b, j, t⟩ | (⟨p, t⟩ | a)))⟩
   · cases t <;> rfl
   · have hj : ¬ (Fin.last k).val < k := by simp
-    cases t <;> simp [Φc, Ψc, hj, LsNc5.reim]
+    cases t <;> simp [Φc, Ψc, LsNc5.reim]
   · have hj : (Fin.castSucc j).val < k := j.isLt
-    cases t <;> simp [Φc, Ψc, hj, LsNc5.reim]
+    cases t <;> simp [Φc, Ψc, LsNc5.reim]
   · cases t <;> rfl
   · rfl
 

@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.NormOneUnitIdealAlt
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.DetIdealsKernelNormOne
+import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.HenselQuad
 
 @[expose] public section
 

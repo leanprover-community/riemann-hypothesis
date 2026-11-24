@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.DualLattices.CotangentSurjective
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

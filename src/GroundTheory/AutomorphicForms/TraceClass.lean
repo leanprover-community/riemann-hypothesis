@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.HilbertSchmidt
+public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.StarOrder
+public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+public import Mathlib.Analysis.Normed.Operator.Extend
 
 @[expose] public section
 

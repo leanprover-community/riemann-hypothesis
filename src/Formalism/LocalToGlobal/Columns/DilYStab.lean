@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.DecoratedFrameDiagonalTwistDecoration
+public import Formalism.LocalToGlobal.Columns.RecChainYUnfPol
 
 @[expose] public section
 

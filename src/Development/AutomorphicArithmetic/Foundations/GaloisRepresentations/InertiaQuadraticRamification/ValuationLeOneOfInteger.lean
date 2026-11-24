@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.InertiaQuadraticRamification.InertiaGenAlt
-public import ReciprocityTheory.GaloisValuations.Global
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinitePlacesInertiaNotFixingFiniteExtension
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilGroupRestriction
+import Formalism.LocalToGlobal.Columns.StdLatUnimodular
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrobeniusRestrictScalarsPowModInertia
 
 @[expose] public section
 
@@ -12,38 +53,6 @@ open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual 
 open scoped Pointwise
 
 namespace UpperTheory.Gal.UnramifiedFromSplittingCriterion
-
-private theorem isFrob_pow' {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
-    {A : ValuationSubring Ω} {q : ℕ} {φ : G F Ω} (h : IsFrob A q φ) (n : ℕ) :
-    IsFrob A (q ^ n) (φ ^ n) := by
-  induction n with
-  | zero =>
-    refine ⟨one_mem _, ?_⟩
-    intro x _
-    simp
-  | succ n ih =>
-    refine ⟨pow_mem h.1 _, ?_⟩
-    intro x hx
-    have hy : A.valuation (φ x) ≤ 1 := by
-      rw [ValuationSubring.valuation_le_one_iff] at hx ⊢
-      exact (apply_mem_iff_of_mem_Dec h.1 x).2 hx
-    have h1 := ih.2 (φ x) hy
-    have h2 := h.2 x hx
-    have hz : A.valuation (x ^ q) ≤ 1 := by
-      rw [map_pow]; exact pow_le_one' hx q
-    have hc1 : A.valuation (∑ i ∈ Finset.range (q ^ n), (φ x) ^ i * (x ^ q) ^ (q ^ n - 1 - i)) ≤ 1 := by
-      refine Valuation.map_sum_le _ (fun i _ => ?_)
-      rw [map_mul, map_pow, map_pow]
-      exact mul_le_one' (pow_le_one' hy _) (pow_le_one' hz _)
-    have h3 : A.valuation ((φ x) ^ (q ^ n) - (x ^ q) ^ (q ^ n)) < 1 := by
-      rw [← geom_sum₂_mul (φ x) (x ^ q) (q ^ n), map_mul]
-      exact (mul_le_of_le_one_left' hc1).trans_lt h2
-    have e : (φ ^ (n + 1)) x - x ^ (q ^ (n + 1))
-        = ((φ ^ n) (φ x) - (φ x) ^ (q ^ n)) + ((φ x) ^ (q ^ n) - (x ^ q) ^ (q ^ n)) := by
-      rw [pow_succ, AlgEquiv.mul_apply, pow_succ', pow_mul]
-      ring
-    rw [e]
-    exact Valuation.map_add_lt _ h1 h3
 
 private theorem one_lt_normV_inertia_quadratic_ramification {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) :
     1 < normV w := by
@@ -63,7 +72,7 @@ theorem degOf : DegOf := by
     haveI : Algebra.IsAlgebraic M Ω := Algebra.IsAlgebraic.tower_top (K := K) (A := Ω) M
     haveI : IsAlgClosure M Ω := ⟨IsAlgClosure.isAlgClosed K, inferInstance⟩
     obtain ⟨σ, hσ⟩ := exists_isFrob (F := M) hw
-    have hφf := isFrob_pow' hφ f
+    have hφf := _root_.GlobalTheory.FrobRestrict.isFrob_pow hφ f
     rw [← hf] at hφf
     set ρ := GlobalTheory.WeilRestrict.resG K σ with hρ
     have hρD : ρ ∈ Dec A := GlobalTheory.WeilRestrict.resG_mem_Dec hσ.1
@@ -103,7 +112,7 @@ theorem degOf : DegOf := by
       rw [← hw]
       have hint : A.valuation (algebraMap M Ω (x : M)) ≤ 1 :=
         GlobalTheory.InertiaAlmostAll.val_le_one_of_isIntegral A (x.isIntegral_coe.map (IsScalarTower.toAlgHom ℤ M Ω))
-      have hφd := (isFrob_pow' hφ d).2 _ hint
+      have hφd := (_root_.GlobalTheory.FrobRestrict.isFrob_pow hφ d).2 _ hint
       rw [(hfix d).2 dvd_rfl x] at hφd
       have e : algebraMap M Ω (((x ^ (normV v ^ d) - x : 𝓞 M)) : M)
           = -(algebraMap M Ω (x : M) - (algebraMap M Ω (x : M)) ^ (normV v ^ d)) := by

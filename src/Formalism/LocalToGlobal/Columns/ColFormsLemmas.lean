@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.ColForms
-public import Formalism.LocalToGlobal.Columns.GSetLemmas
-public import Formalism.LocalToGlobal.Columns.DecoFin
 public import Formalism.LocalToGlobal.Columns.CoefColLemmas
-public import Formalism.LocalToGlobal.Columns.DecorationStabilizerTrivialUnipotent
+public import Formalism.LocalToGlobal.Columns.DecoFin
 
 @[expose] public section
 

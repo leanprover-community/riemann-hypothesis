@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMinimalPrimeComap
+public import Mathlib.RingTheory.Flat.Basic
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Ideal.GoingDown
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Flat.Stability
 
 @[expose] public section
 

@@ -1,12 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevOkTwists
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExtUHInjective
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemClosureIff
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PlacesOverConjPrimes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBasisAtOfIsLocBasis
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPointOfRationalUnitaryAdelicMul
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevOkTwists
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Formalism.LocalRingCardinality.Lemmas
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
+import Formalism.LocalToGlobal.Columns.PolyFnLemmas
+import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -394,7 +444,7 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Ho
 open GlobalTheory.Mem.Col2.BwLat GlobalTheory.LvT.Built.ValLat Formalism.HermitianLatticesTheory GlobalTheory.Mem.Col2.ValTie
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem val_tied : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (a : I.ι) (i : ℕ) (hi : i ≤ B.R.m) (bad : Set (HeightOneSpectrum (𝓞 B.host.F))) (Ch : Type) (chOf : (I.stp u a i).Cl → Ch) (K : ∀ β : Ch, LevelChart (I.rec7 l Z) (B.T u) bad i hi (fun c : {c // chOf c = β} => (I.chain l u a).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u a i c.1))) (eY : (I.chain l u a).Y i ≃ Formalism.L2.Forms.Fr (I.rec7 l Z) i hi), I.ReadsK l Z u a i hi chOf K → I.IdY l Z u a i hi eY → ValuationCompatibleChart (D := (I.rec7 l Z)) (I.fm l u a) eY (fun _ => True) chOf (lat := fun c => latCrd (I.rec7 l Z) i hi (I.latAt u a i c)) K := by
   intro B X I hI hP l Z u a i hi bad Ch chOf K eY hK hY
   obtain ⟨k, hR⟩ := hK
@@ -485,7 +535,7 @@ theorem val_tied : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.P
     have hbel : ∀ τ, (((I.rec7 l Z).what₂.places.resChar w : ℕ) : 𝓞 B.fields.E) ∈ (bcBelow (B.fields.emb τ) w).asIdeal := fun τ => by
       show bcO (B.fields.emb τ) _ ∈ w.asIdeal
       rw [map_natCast]
-      exact GlobalTheory.LvT.Inh.resChar_mem_plEq (I.rec7 l Z) w
+      exact _root_.Formalism.BasicNotions.resChar_mem (I.rec7 l Z) w
     have key : ∀ Bm : GL (Fin (B.R.N i)) B.host.E,
         Formalism.L2.Forms.IsLocBasis ((I.rec7 l Z).what₂.places.resChar w) (((I.stp u a i).rep c).1.1.deco.1.Lsh : Set _) Bm →
         (x.1 c ∈ localization₂ w.asIdeal
@@ -494,7 +544,7 @@ theorem val_tied : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.P
           fnOf _ (shiftOf (lamTG (D := I.rec7 l Z) (I.fm l u a) i))
             (atInf (Formalism.L2.Forms.embT (I.rec7 l Z)) (Bm⁻¹ : GL (Fin (B.R.N i)) B.host.E).1) P (eY z)) := by
       intro Bm hB
-      refine (mem_localization_delAtr_fn B.fields.emb B.embLL (GlobalTheory.Mem.Col2.lamT (B.hcW u) i) w (by first | exact l1 | exact l1.toIsLattice) (fun _ => Bm)
+      refine (mem_localization_delAtr_fn B.fields.emb B.embLL (GlobalTheory.Mem.Col2.lamT (B.hcW u) i) w (by first | exact l1) (fun _ => Bm)
         (fun τ => isBasisAt_of_isLocBasis hp _ (hbel τ) hB) (x.1 c)).trans ?_
       constructor
       · rintro ⟨z, hz, e⟩

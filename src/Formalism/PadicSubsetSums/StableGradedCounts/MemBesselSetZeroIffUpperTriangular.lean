@@ -1,7 +1,61 @@
 module
 
+public import Formalism.PadicSubsetSums.CentralIdempotents.EigenbasisOfDistinctRoots
 public import Formalism.PadicSubsetSums.StableGradedCounts.LocalEstimateIVOfTypeSetWeight
 public import Lemmata.TwistedIdempotents.TwistedIdem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -48,11 +102,7 @@ theorem idem_sandwich_zero (J : Subgroup G) (χ : J →* ℂˣ) (u u' : J) (g : 
   have h2 : ((1 : ℂ) - ((χ u * χ u' : ℂˣ) : ℂ)) • X = 0 := by
     rw [sub_smul, one_smul, ← h1, sub_self]
   rcases smul_eq_zero.mp h2 with h3 | h3
-  · exfalso
-    apply hne
-    apply Units.ext
-    rw [Units.val_one]
-    exact (sub_eq_zero.mp h3).symm
+  · exact absurd (Units.ext (by simpa using (sub_eq_zero.mp h3).symm)) hne
   · exact h3
 
 noncomputable def antiLift (σ : G → G) (hσ : ∀ x y, σ (x * y) = σ y * σ x) :
@@ -82,11 +132,11 @@ theorem antiLift_idem (σ : G → G) (hσ : ∀ x y, σ (x * y) = σ y * σ x) (
       invFun := fun u => ⟨σ u, (hJ u).1⟩
       left_inv := fun u => Subtype.ext (hσσ u)
       right_inv := fun u => Subtype.ext (hσσ u) }
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [twistedIdem_def, map_sum]
+
+  rw [twistedIdem_def, map_sum]
   show _ = MulOpposite.opAddEquiv _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Fintype.sum_equiv s _ _ (fun u => ?_)
   rw [map_smul, antiLift_of, MulOpposite.opAddEquiv_apply, MulOpposite.op_smul]
   have : χ (s u) = χ u := (hJ u).2
@@ -131,16 +181,6 @@ theorem hecke_comm (σ : G → G) (hσ : ∀ x y, σ (x * y) = σ y * σ x) (hσ
         MonoidAlgebra.of ℂ G g') * twistedIdem J χ := by simp only [mul_assoc]
   rw [h', fix, ← h'] at h
   exact MulOpposite.op_injective h
-
-theorem gelfand_trick {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
-    (ρ : Representation ℂ G V) (J : Subgroup G) (χ : J →* ℂˣ)
-    (hcomm : ∀ g g' : G, (twistedIdem J χ * MonoidAlgebra.of ℂ G g * twistedIdem J χ) *
-        (twistedIdem J χ * MonoidAlgebra.of ℂ G g' * twistedIdem J χ) =
-      (twistedIdem J χ * MonoidAlgebra.of ℂ G g' * twistedIdem J χ) *
-        (twistedIdem J χ * MonoidAlgebra.of ℂ G g * twistedIdem J χ))
-    (hirr : IsIrr ρ) :
-    Module.finrank ℂ (eqvSpace ρ (fun u : J => (u : G)) (fun u => ((χ u : ℂˣ) : ℂ))) ≤ 1 := by
-  first | exact Bl.CyclicComponents.goal1 .. | (apply Bl.CyclicComponents.goal1 <;> assumption) | (intros; apply Bl.CyclicComponents.goal1 <;> assumption) | (apply @Bl.CyclicComponents.goal1 <;> assumption) | (intros; apply @Bl.CyclicComponents.goal1 <;> assumption) | (apply @Bl.CyclicComponents.goal1 <;> first | assumption | infer_instance)
 
 end GelfandTrick
 
@@ -240,9 +280,8 @@ theorem IsUT.inv_val (u : GL (Fin N) K) (h : IsUT (u : Matrix (Fin N) (Fin N) K)
   have hlow : ∀ i j, j < i → ((u⁻¹ : GL (Fin N) K) : Matrix (Fin N) (Fin N) K) i j = 0 := by
     intro i j hij
     rw [Matrix.coe_units_inv]
-    have : Invertible (u : Matrix (Fin N) (Fin N) K) := u.invertible
-    have hb : Matrix.BlockTriangular (u : Matrix (Fin N) (Fin N) K) id := fun i j hij => h.2 i j hij
-    exact Matrix.blockTriangular_inv_of_blockTriangular hb hij
+    exact Matrix.blockTriangular_inv_of_blockTriangular
+      (fun i j hij => h.2 i j hij) hij
   refine ⟨fun i => ?_, hlow⟩
   have h1 : ((u * u⁻¹ : GL (Fin N) K) : Matrix (Fin N) (Fin N) K) i i = 1 := by
     rw [mul_inv_cancel]; simp
@@ -252,7 +291,7 @@ theorem IsUT.inv_val (u : GL (Fin N) K) (h : IsUT (u : Matrix (Fin N) (Fin N) K)
     rcases lt_or_gt_of_ne hm with h' | h'
     · rw [h.2 i m h', zero_mul]
     · rw [hlow m i h', mul_zero]
-  · intro h'; exact absurd (Finset.mem_univ _) h'
+  · simp
 
 def uniSub (K : Type) [Field K] (N : ℕ) : Subgroup (GL (Fin N) K) where
   carrier := {u | IsUT (u : Matrix (Fin N) (Fin N) K)}
@@ -291,16 +330,11 @@ theorem besselSpace_zero_eq_equivariant {V : Type} [AddCommGroup V] [Module ℂ 
   ext x
   constructor
   · intro h u
-    have := h ⟨u.1, (mem_besselSet_zero_iff_upper_triangular _).mpr u.2⟩
-    show ρ (u : GL (Fin N) K) x = ((uniChar ψ₀ N u : ℂˣ) : ℂ) • x
-    rw [uniChar_val, ← besselChar_zero_eq_edge_sum]
-    exact this
+    simpa [uniChar_val, besselChar_zero_eq_edge_sum] using
+      h ⟨u.1, (mem_besselSet_zero_iff_upper_triangular _).mpr u.2⟩
   · intro h u
-    have : ρ (u : GL (Fin N) K) x =
-        ((uniChar ψ₀ N ⟨u.1, (mem_besselSet_zero_iff_upper_triangular _).mp u.2⟩ : ℂˣ) : ℂ) • x :=
+    simpa [uniChar_val, besselChar_zero_eq_edge_sum] using
       h ⟨u.1, (mem_besselSet_zero_iff_upper_triangular _).mp u.2⟩
-    rw [uniChar_val, ← besselChar_zero_eq_edge_sum] at this
-    exact this
 
 end GG
 end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
@@ -797,8 +831,7 @@ theorem flip_char (ψ₀ : AddChar K ℂ) (u : uniSub K N) :
   refine ⟨IsUT.flip u.2, ?_⟩
   apply Units.ext
   rw [uniChar_val, uniChar_val]
-  show ψ₀ (edgeSum (flipM _)) = _
-  rw [edgeSum_flip]
+  exact congrArg (fun z => ψ₀ z) (edgeSum_flip ((u : GL (Fin N) K) : Matrix (Fin N) (Fin N) K))
 
 end Flip
 
@@ -970,7 +1003,7 @@ theorem gelfand_graev_multiplicity_one : GelfandGraevMultOne := by
   classical
   have : Fintype (GL (Fin N) K) := Fintype.ofFinite _
   rw [besselSpace_zero_eq_equivariant]
-  refine gelfand_trick ρ (uniSub K N) (uniChar ψ₀ N) ?_ hirr
+  refine _root_.Bl.CyclicComponents.goal1 ρ (uniSub K N) (uniChar ψ₀ N) ?_ hirr
   refine hecke_comm flipG flipG_mul flipG_flipG (uniSub K N) (uniChar ψ₀ N) (flip_char ψ₀) ?_
   intro g
   obtain ⟨u, u', hu, hu', π, t, ht, hn⟩ := bruhat_exists g

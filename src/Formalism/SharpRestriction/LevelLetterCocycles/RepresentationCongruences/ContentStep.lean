@@ -1,9 +1,54 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
-public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.RingDataOfCaseAOfP9
+public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.QuotientDistinguishedTorsionFree
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.DvdCoeffsOfMemSpanDistinguished
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.FormalSeriesValueAtTwoPointsGenericPoints
+public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.RingDataOfCaseAOfP9
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.GammaPi0EqPi0MulUnit
 
 @[expose] public section
 
@@ -165,7 +210,6 @@ theorem letE_idem (c : ZMod n) : (letE (O := O) c : LetA O n) * letE c = letE c 
   unfold letE
   first
   | (rw [← Pi.single_mul, mul_one])
-  | (ext i; by_cases h : i = c <;> simp [Pi.single_apply, h])
 
 theorem content_step (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)
     (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x)) (c : ZMod n) (b₀ y κ : ℕ) (hy : 1 ≤ y) (f : W.EE) (x : O)
@@ -191,7 +235,7 @@ theorem content_step (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.Li
   have hG : letE c * (lA W ^ κ * u₀ - qA W ^ b₀ * algebraMap O (LetA O n) x) =
       letE c * ps W 1 ^ y * u₁ := by
     apply W.EE_inj
-    simp only [map_mul, map_sub, map_one, mul_one, hlE, hxE] at e1 e2 ⊢
+    simp only [map_mul, map_sub, mul_one, hlE, hxE] at e1 e2 ⊢
     linear_combination e2 - lE W κ * e1
 
   have hGc := congrFun hG c
@@ -241,7 +285,7 @@ theorem content_step (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.Li
     have hsplit : lE W (deA PD.p b₀ y) = lE W (deA PD.p b₀ y - κ) * lE W κ := by
       rw [lE, lE, lE, ← pow_add, Nat.sub_add_cancel hκ]
     rw [← hxE, hlA, hsplit]
-    simp only [map_mul, map_sub, map_one, mul_one, hlE, hxE] at e2 ⊢
+    simp only [map_mul, hlE, hxE] at e2 ⊢
     linear_combination lE W (deA PD.p b₀ y - κ) * e2
   · have hκ' : κ = (κ - deA PD.p b₀ y) + deA PD.p b₀ y := by omega
     have hLmem : (letE (O := O) c : LetA O n) ∈ W.AΔ := fun δ _ => GS.γA_letE W δ c
@@ -260,7 +304,7 @@ theorem content_step (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.Li
     refine ⟨x', y', hy', ?_⟩
     have hid := congrArg (algebraMap (LetA O n) W.EE) (letE_idem (O := O) c)
     have hzE := congrArg (algebraMap (LetA O n) W.EE) hz
-    simp only [map_mul, map_sub, map_one, map_pow, mul_one, hlE, hxE] at e1 hid hzE ⊢
+    simp only [map_mul, map_sub, map_pow, mul_one, hlE, hxE] at e1 hid hzE ⊢
     linear_combination lE W (deA PD.p b₀ y) * e1 +
       algebraMap (LetA O n) W.EE (letE c) * hzE -
       (lE W (deA PD.p b₀ y) * algebraMap (LetA O n) W.EE u₀ -

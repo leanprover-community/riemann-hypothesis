@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspCompact
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.DecayUniform
-public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

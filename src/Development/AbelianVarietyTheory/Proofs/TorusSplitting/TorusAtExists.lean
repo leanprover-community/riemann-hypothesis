@@ -1,13 +1,59 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtData
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
-public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.EqTopOfForallEmbAllMem
-public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.SumCMulImHermCEqSignMulTrace
-public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsTorusCoordinates
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.CoeffEqZeroOfOrthonormal
+public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.EqTopOfForallEmbAllMem
+public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsTorusCoordinates
+public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.SumCMulImHermCEqSignMulTrace
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.TorusAtExistsOfParts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ProdCastLESucc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TraceFormIndependence
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtDataPfA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCoefficientSplitting
 
 @[expose] public section
 
@@ -87,7 +133,7 @@ private lemma im_hermC_emb_eq_sign_mul_trace (E : Type) [Field E] [NumberField E
       linarith
     have hre := _root_.GlobalTheory.re_map_xi_eq_zero X τ.1
     rw [_root_.GlobalTheory.c_eq_two_mul_abs_im, abs_of_neg hy,
-      _root_.GlobalTheory.hermC_emb_eq_map_herm, map_mul, Complex.mul_re, hre]
+      _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_emb, map_mul, Complex.mul_re, hre]
     ring
   · refine ⟨-1, Or.inr rfl, fun u v => ?_⟩
     rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.TraceFormIndependence.trace_re X, neg_one_mul, ← Finset.sum_neg_distrib]
@@ -99,7 +145,7 @@ private lemma im_hermC_emb_eq_sign_mul_trace (E : Type) [Field E] [NumberField E
       linarith
     have hre := _root_.GlobalTheory.re_map_xi_eq_zero X τ.1
     rw [_root_.GlobalTheory.c_eq_two_mul_abs_im, abs_of_pos hy,
-      _root_.GlobalTheory.hermC_emb_eq_map_herm, map_mul, Complex.mul_re, hre]
+      _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_emb, map_mul, Complex.mul_re, hre]
     ring
 
 

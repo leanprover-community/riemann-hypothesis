@@ -1,7 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.LogResStC
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 

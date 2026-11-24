@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementK
-public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementV
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementN
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementS
 
 @[expose] public section
 

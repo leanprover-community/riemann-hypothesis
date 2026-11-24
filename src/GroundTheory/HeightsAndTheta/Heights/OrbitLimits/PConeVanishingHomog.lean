@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StConeVanishingHomog
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartZeroSet
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -26,11 +26,11 @@ theorem ConeVanishingHomog.proof : ConeVanishingHomog.Statement := by
   have hroot : ∀ a : ℂ, a ≠ 0 → p.IsRoot a := by
     intro a ha
     have h0 := hf (a • c) (hC c hc a ha)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sum_homogeneousComponent f, map_sum] at h0
+
+    rw [← sum_homogeneousComponent f, map_sum] at h0
     rw [Polynomial.IsRoot, hp, Polynomial.eval_finsetSum, ← h0]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [GoodChartZeroSet.eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous i f)]
+    rw [_root_.UpperTheory.Reformulated.B.Ydc1.eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous i f)]
     rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X, mul_comm]
   have hinf : Set.Infinite {x | p.IsRoot x} := by
     refine Set.Infinite.mono (s := ({0} : Set ℂ)ᶜ) ?_

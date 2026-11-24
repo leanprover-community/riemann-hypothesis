@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpOverLocMaxCut
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -58,8 +58,8 @@ theorem aeval_blowUpSubst_eq_C_blowUpEval_mul_X_pow (P : Ideal (MRing ι R)) (u 
     aeval (blowUpSubst P u) G = Polynomial.C (blowUpEval P u G) * Polynomial.X ^ b none := by
   conv_lhs => rw [G.as_sum]
   conv_rhs => rw [G.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun d hd => ?_
   rw [aeval_blowUpSubst_monomial, hG (mem_support_iff.mp hd)]
 
@@ -105,7 +105,7 @@ theorem exists_eq_div_of_mem_blowUpLocRing {P : Ideal (MRing ι R)} [P.IsPrime] 
     simp only [RingHom.map_add, RingHom.map_mul]
   | neg x _ hx =>
     obtain ⟨b, F, G, hF, hG, hGQ, rfl⟩ := hx
-    refine ⟨b, -F, G, fun d hd => hF (by rwa [coeff_neg, neg_ne_zero] at hd), hG, hGQ, ?_⟩
+    refine ⟨b, -F, G, fun d hd => hF (by rwa [MvPolynomial.coeff_neg, neg_ne_zero] at hd), hG, hGQ, ?_⟩
     rw [RingHom.map_neg, RingHom.map_neg, neg_div]
   | mul x y _ _ hx hy =>
     obtain ⟨b₁, F₁, G₁, hF₁, hG₁, hG₁Q, rfl⟩ := hx

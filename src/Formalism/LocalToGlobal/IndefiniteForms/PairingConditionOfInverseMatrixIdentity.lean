@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
+public import Formalism.QuotientMetricDivisors.DivIntoDualShift
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
 
 @[expose] public section

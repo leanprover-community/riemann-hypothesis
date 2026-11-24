@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatMulVec
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -25,16 +27,16 @@ lemma trace_re (X : Data E r) (z : E) :
     rw [← h', h]
     exact Fintype.sum_equiv (RingHom.equivRatAlgHom E ℂ).symm _ _ (fun σ => rfl)
   have hcc : ∀ σ : E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate σ) = σ :=
-    fun σ => RingHom.ext fun x => by simp [ComplexEmbedding.conjugate_coe_eq]
+    fun σ => RingHom.ext fun x => by simp
   have hconj : ∑ σ ∈ X.Ψᶜ, σ z = ∑ σ ∈ X.Ψ, conj (σ z) := by
     apply Finset.sum_nbij' (fun σ => ComplexEmbedding.conjugate σ)
       (fun σ => ComplexEmbedding.conjugate σ)
     · intro σ hσ
-      simp only [Finset.mem_compl, Finset.mem_coe] at hσ ⊢
+      simp only [Finset.mem_compl] at hσ ⊢
       rw [X.cmType, hcc]
       exact hσ
     · intro σ hσ
-      simp only [Finset.mem_compl, Finset.mem_coe] at hσ ⊢
+      simp only [Finset.mem_compl] at hσ ⊢
       exact (X.cmType σ).mp hσ
     · intro σ _
       exact hcc σ

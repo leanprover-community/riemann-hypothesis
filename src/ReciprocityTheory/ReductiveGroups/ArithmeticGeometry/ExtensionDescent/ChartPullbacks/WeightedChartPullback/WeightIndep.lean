@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifBaseChangeSt
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.CancelSecAct
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.WchartPullLe
 
 @[expose] public section
 
@@ -40,7 +43,7 @@ theorem comp_base_eq {A B C : Scheme.{0}} {a b : A ⟶ B} {ψ : B ⟶ C} (h : a 
     ψ (a z) = ψ (b z) := by
   rw [← Scheme.Hom.comp_apply, h, Scheme.Hom.comp_apply]
 
-set_option maxHeartbeats 1000000 in
+
 theorem weightIndep : WeightIndepSt := by
   intro R _ _ I D A G _ _ U e k σ f hσ hexp α j
   classical

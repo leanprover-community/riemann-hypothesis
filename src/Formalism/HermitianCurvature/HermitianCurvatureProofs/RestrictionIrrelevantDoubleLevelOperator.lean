@@ -1,21 +1,71 @@
 module
 
 public import Formalism.HermitianCurvature.StatementQ
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferRtt
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-public import Formalism.FormalDegreeBessel.FinalWR
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MulIntegralStatement
 public import Formalism.FormalDegreeBessel.FinalG
-public import Formalism.YangianSpanCharacter.YangianRelationFirst
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstEmbeddingOne
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GammaFamilyCommuteGenerators
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MulIntegralStatement
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferRtt
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -434,10 +484,6 @@ end Eigen
 end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end Formalism.FourierDecayAlt.P
 
@@ -1585,14 +1631,6 @@ theorem cd_tL (hU₀ : IsOpen U₀) (z z' : Fin (2 * r + k + 1) → ℂ) (Y : �
 
 end CDentries
 
-section Germ
-
-open Topology
-
-variable {m : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-end Germ
-
 section FamMod
 
 open Topology
@@ -1639,17 +1677,6 @@ theorem tl_comb (hT : TLinLoc) {E : Type} [NormedAddCommGroup E] [NormedSpace �
 
 end FamRing
 
-section Step
-
-open Topology Formalism.YangianSpanCharacter.T
-
-variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
-  [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
-
-variable {i : Fin (r + 1)} {Dc : (Fin r → ℂ) → Set (Mx k r)}
-
-end Step
-
 section Final
 
 open Topology Formalism.YangianSpanCharacter.T
@@ -1679,10 +1706,6 @@ end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Qx8
@@ -1690,18 +1713,6 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-section OneParam
-
-open Topology intervalIntegral
-
-variable {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W] [CompleteSpace W]
-
-theorem oneParam_diff (φ : ℝ → (W →L[ℂ] W)) (hc : Continuous φ) (h0 : φ 0 = 1)
-    (hadd : ∀ s t, φ (s + t) = φ s * φ t) : DifferentiableAt ℝ φ 0 :=
-  _root_.UpperTheory.Reformulated.B.OneParameterGroupDifferentiableAtZero.main φ hc h0 hadd
-
-end OneParam
 
 section RepDer
 
@@ -1775,8 +1786,8 @@ theorem qmF_intertwine {W W' : Type*} [AddCommGroup W] [Module ℂ W] [AddCommGr
     (h : ∀ a b v, A (Eop' a b v) = Eop a b (A v)) (a b : Fin t → Fin n) (u : ℂ) (v : W') :
     A (qmF Eop' a b u v) = qmF Eop a b u (A v) := by
   unfold qmF
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [_root_.map_smul]
   congr 1
@@ -1810,7 +1821,7 @@ theorem rep_hasDeriv {U : Set (Mx k r)} {π : Mx k r → (Wp →L[ℂ] Wp)} (hre
   have hce : Continuous fun t : ℝ => NormedSpace.exp ((t : ℂ) • X) := by
     have := lcurve_cont X (1 : Mx k r)
     simpa only [Matrix.mul_one] using this
-  have hφ := oneParam_diff (fun t : ℝ => π (NormedSpace.exp ((t : ℂ) • X)))
+  have hφ := _root_.UpperTheory.Reformulated.B.OneParameterGroupDifferentiableAtZero.main (fun t : ℝ => π (NormedSpace.exp ((t : ℂ) • X)))
     (hcont.comp_continuous hce hX) (by simp [NormedSpace.exp_zero, hrep.1])
     (fun s t => by
       have e := B5.exp_add' X s t
@@ -2322,29 +2333,8 @@ theorem frame_sub {k r m : ℕ} {vs vs' : List (Fin (2 * r + k + 1) → ℂ)} {B
 
 end Spectral
 
-section Core
-
-open Formalism.FourierDecayAlt.M
-
-variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
-  [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
-
-end Core
-
-section Core2
-
-open Formalism.FourierDecayAlt.M
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
-
-end Core2
-
 end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end Formalism.FourierDecayAlt.P

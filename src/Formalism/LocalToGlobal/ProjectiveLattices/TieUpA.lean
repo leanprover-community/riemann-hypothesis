@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveComp
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.PublishedIntClosHolds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SpanSteps
+public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.AlgebraMapOlInjective
 
 @[expose] public section
 

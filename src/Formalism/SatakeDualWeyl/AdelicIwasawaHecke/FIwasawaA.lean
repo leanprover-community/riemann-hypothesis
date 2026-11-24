@@ -1,8 +1,50 @@
 module
 
 public import Formalism.SatakeDualWeyl.StatementF
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SphericalA
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -30,12 +72,12 @@ theorem fIwasawa_antiJ (i j : Fin n) : antiJ L n i j = if j = Fin.rev i then 1 e
   · rw [if_neg h, if_neg (fun h' => h (hiff.mp h'))]
 
 private theorem cT_apply' (M : Matrix (Fin n) (Fin n) L) (i j : Fin n) : cT σ M i j = σ (M j i) := by
-  first | rfl | simp [cT] | (unfold cT; simp)
+  first | rfl
 
 private theorem cT_mul_adelic_iwasawa_hecke (A B : Matrix (Fin n) (Fin n) L) : cT σ (A * B) = cT σ B * cT σ A := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [cT_apply', Matrix.mul_apply, map_sum, map_mul]
+
+  simp only [cT_apply', Matrix.mul_apply, map_sum, map_mul]
   exact Finset.sum_congr rfl (fun k _ => mul_comm _ _)
 
 theorem fIwasawa_gram (M : Matrix (Fin n) (Fin n) L) (a b : Fin n) :
@@ -57,7 +99,7 @@ theorem fIwasawa_H_single_left (p : Fin n) (w : Fin n → L) :
   · simp
   · intro j _ hj
     have : Fin.rev j ≠ p := fun h => hj (by rw [← h, Fin.rev_rev])
-    simp [Pi.single_apply, this]
+    simp [this]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem fIwasawa_un_of_isometry (M : Matrix (Fin n) (Fin n) L)
@@ -69,7 +111,7 @@ theorem fIwasawa_un_of_isometry (M : Matrix (Fin n) (Fin n) L)
   rw [fIwasawa_gram, hc a, hc b, h, fIwasawa_H_single_left, fIwasawa_antiJ]
   by_cases hb : b = Fin.rev a
   · subst hb; simp
-  · simp [Pi.single_apply, hb, Ne.symm hb]
+  · simp [hb, Ne.symm hb]
 
 theorem fIwasawa_un_mul (A B : Matrix (Fin n) (Fin n) L) (hA : fIwasawaUn σ A) (hB : fIwasawaUn σ B) :
     fIwasawaUn σ (A * B) := by
@@ -83,7 +125,7 @@ theorem fIwasawa_antiJ_mul_antiJ : antiJ L n * antiJ L n = 1 := by
   · rw [fIwasawa_antiJ, fIwasawa_antiJ, Fin.rev_rev]
     by_cases h : i = j
     · subst h; simp
-    · simp [Matrix.one_apply, h, Ne.symm h]
+    · simp [h, Ne.symm h]
   · intro k _ hk
     simp [fIwasawa_antiJ, hk]
   · intro h; exact absurd (Finset.mem_univ _) h
@@ -103,7 +145,6 @@ theorem fIwasawa_mul_inv (M : Matrix (Fin n) (Fin n) L) (hM : fIwasawaUn σ M) :
   have h := fIwasawa_inv_mul σ M hM
   first
   | exact mul_eq_one_comm.mp h
-  | (rw [← Matrix.inv_eq_left_inv h]; exact Matrix.mul_nonsing_inv _ (Matrix.isUnit_det_of_left_inverse h))
 
 def fIwasawaMk (M : Matrix (Fin n) (Fin n) L) (hM : fIwasawaUn σ M) : GU σ n :=
   ⟨⟨M, fIwasawaInv σ M, fIwasawa_mul_inv σ M hM, fIwasawa_inv_mul σ M hM⟩, hM⟩

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsBase
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness
+public import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.Paracompact
 
 @[expose] public section
 

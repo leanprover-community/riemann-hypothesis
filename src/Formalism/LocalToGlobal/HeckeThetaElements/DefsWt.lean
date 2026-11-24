@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 

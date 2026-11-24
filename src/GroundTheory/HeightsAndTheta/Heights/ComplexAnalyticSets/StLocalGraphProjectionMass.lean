@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalGraphMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarietyProjectionMass
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

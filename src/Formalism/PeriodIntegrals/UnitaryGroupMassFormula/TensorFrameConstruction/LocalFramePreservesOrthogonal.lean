@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.ScPiExists
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,19 +65,19 @@ section Basic
 variable {n : ℕ} (ε : Fin n → Bool)
 
 lemma hJ_add_left (x x' y : Fin n → ℂ) : hJ ε (x + x') y = hJ ε x y + hJ ε x' y := by
-  first | simp only [hJ, star_add, add_dotProduct] | simp [hJ, add_dotProduct]
+  first | simp only [hJ, star_add, add_dotProduct]
 
 lemma hJ_add_right (x y y' : Fin n → ℂ) : hJ ε x (y + y') = hJ ε x y + hJ ε x y' := by
-  first | simp only [hJ, Matrix.mulVec_add, dotProduct_add] | simp [hJ, Matrix.mulVec_add, dotProduct_add]
+  first | simp only [hJ, Matrix.mulVec_add, dotProduct_add]
 
 lemma hJ_sub_right (x y y' : Fin n → ℂ) : hJ ε x (y - y') = hJ ε x y - hJ ε x y' := by
-  first | simp only [hJ, Matrix.mulVec_sub, dotProduct_sub] | simp [hJ, Matrix.mulVec_sub, dotProduct_sub]
+  first | simp only [hJ, Matrix.mulVec_sub, dotProduct_sub]
 
 lemma hJ_smul_left (c : ℂ) (x y : Fin n → ℂ) : hJ ε (c • x) y = star c * hJ ε x y := by
-  first | simp only [hJ, star_smul, smul_dotProduct, smul_eq_mul] | simp [hJ, smul_dotProduct]
+  first | simp only [hJ, star_smul, smul_dotProduct, smul_eq_mul]
 
 lemma hJ_smul_right (c : ℂ) (x y : Fin n → ℂ) : hJ ε x (c • y) = c * hJ ε x y := by
-  first | simp only [hJ, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul] | simp [hJ, Matrix.mulVec_smul, dotProduct_smul]
+  first | simp only [hJ, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
 
 lemma hJ_zero_left (y : Fin n → ℂ) : hJ ε 0 y = 0 := by
   simp [hJ]
@@ -59,12 +105,10 @@ lemma hJ_nondeg_right (y : Fin n → ℂ) (h : ∀ x, hJ ε x y = 0) : y = 0 := 
     by_cases hj : j = i
     · subst hj
       simp
-    · simp [Pi.single_apply, hj]
+    · simp [hj]
   have e : hJ ε (Pi.single i 1) y = (if ε i then 1 else -1) * y i := by
     first
       | rw [hJ, hs, single_dotProduct, one_mul, Formalism.REAL.Jm, Matrix.mulVec_diagonal]
-      | rw [hJ, hs, Matrix.single_dotProduct, one_mul, Formalism.REAL.Jm, Matrix.mulVec_diagonal]
-      | simp [hJ, hs, Formalism.REAL.Jm, Matrix.mulVec_diagonal]
   rw [e] at h1
   simp only [Pi.zero_apply]
   split_ifs at h1 <;> simpa using h1
@@ -141,7 +185,6 @@ lemma pair (x : Fin n → ℂ) (g : (Fin r ⊕ Fin r) ⊕ (Unit ⊕ Fin k) → �
         (g (.inr (.inl ())) * hJ ε x L.z + ∑ c, g (.inr (.inr c)) * hJ ε x (L.w c)) := by
   rw [hJ_sum_right]
   simp only [Fintype.sum_sum_type, fam, Sum.elim_inl, Sum.elim_inr, Fintype.sum_unique]
-  all_goals rfl
 
 lemma fam_li : LinearIndependent ℂ L.fam := by
   rw [Fintype.linearIndependent_iff]

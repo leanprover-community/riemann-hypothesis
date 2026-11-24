@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
+public import GroundTheory.GlobalFields.Adele.Approximation
 
 @[expose] public section
 

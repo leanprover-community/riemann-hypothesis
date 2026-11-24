@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantEqualityStatement
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.WhittakerZeroStatement
 
 @[expose] public section
 
@@ -42,8 +42,8 @@ theorem omMinor : OmMinor := by
   simp only [LinearMap.compLeft_apply, Function.comp_apply, ← h]
   simp only [Module.End.mul_apply, LinearMap.add_apply, LinearMap.smul_apply, Module.End.one_apply,
     Pi.add_apply, Pi.smul_apply, om_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [minorOp, LinearMap.coe_mk, AddHom.coe_mk, map_sum, map_smul]
+
+  simp only [minorOp, LinearMap.coe_mk, AddHom.coe_mk, map_sum, map_smul]
   refine (add_comm _ _).trans ?_
   congr 1
   · exact sum_comm

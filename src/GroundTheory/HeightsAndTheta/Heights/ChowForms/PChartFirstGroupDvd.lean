@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartFirstGroupDvd
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartIncDomain
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormSection
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncidenceGeneric
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

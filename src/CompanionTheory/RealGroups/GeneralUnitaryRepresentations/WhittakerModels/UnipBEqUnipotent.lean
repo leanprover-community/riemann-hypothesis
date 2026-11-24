@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.CuspGenericWhittaker.CuspGeneric
-public import GroundTheory.AutomorphicForms.ContragredientTranspose
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
+public import GroundTheory.AutomorphicForms.SmoothRep
+public import GroundTheory.AutomorphicForms.WhittakerGroups
 
 @[expose] public section
 

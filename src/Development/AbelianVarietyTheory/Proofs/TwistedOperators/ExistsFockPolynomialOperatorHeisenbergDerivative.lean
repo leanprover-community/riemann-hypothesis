@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfPderivStable
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealSymplecticFormAlternatingInvariantDefinite
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomialVectorMaximalCompactBasisSubstitut
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Bool
 
 @[expose] public section
 
@@ -29,16 +75,7 @@ section Mat
 
 variable {m n : ℕ}
 
-theorem Jm_mul_Jm (ε : Fin n → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  unfold Formalism.REAL.Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1; funext a; split_ifs <;> simp
-
-theorem Jm_herm (ε : Fin n → Bool) : (Formalism.REAL.Jm ε)ᴴ = Formalism.REAL.Jm ε := by
-  unfold Formalism.REAL.Jm
-  rw [Matrix.diagonal_conjTranspose]
-  congr 1; funext a; simp only [Pi.star_apply]; split_ifs <;> simp
-
+alias Jm_mul_Jm := _root_.Formalism.REAL.Jm_mul_self
 
 open scoped ComplexOrder in
 theorem isCartanInv_of_isFrameOf {G s fr : Mn n} {ε : Fin n → Bool} (h : IsFrameOf G s ε fr) : IsCartanInv G s := by
@@ -54,7 +91,7 @@ theorem isCartanInv_of_isFrameOf {G s fr : Mn n} {ε : Fin n → Bool} (h : IsFr
       _ = _ := by rw [h1, Matrix.mul_one, Jm_mul_Jm, Matrix.mul_one, h2]
   refine ⟨hs, ?_, ?_⟩
   · have hGh : (frᴴ * Formalism.REAL.Jm ε * fr)ᴴ = frᴴ * Formalism.REAL.Jm ε * fr := by
-      simp [Matrix.conjTranspose_mul, Jm_herm, Matrix.mul_assoc]
+      simp [Matrix.conjTranspose_mul, _root_.Formalism.REAL.Jm_conjTranspose, Matrix.mul_assoc]
     have h3 := congrArg Matrix.conjTranspose hG
     rw [Matrix.conjTranspose_mul, hGh, Matrix.conjTranspose_mul frᴴ fr, Matrix.conjTranspose_conjTranspose] at h3
     rw [h3, ← hG, Matrix.mul_assoc _ (fr⁻¹ * Formalism.REAL.Jm ε * fr), hs, Matrix.mul_one]
@@ -324,8 +361,8 @@ theorem exists_dRho_ptAt : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : I
   have h2 : aPlus (heisO ψ S T) θ τ (cplxO sS sT) z (pureTensorL A f P) =
       pureTensorL A f (∑ k, α k • (MvPolynomial.X k * P)) := by
     conv_lhs => rw [eq_sum_unitMap hfS.1 hfT.1 z]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [GlobalTheory.FockSubst.aPlus_dir_sum hψ hθ τ sS sT hm, map_sum]
+
+    rw [GlobalTheory.FockSubst.aPlus_dir_sum hψ hθ τ sS sT hm, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [GlobalTheory.FockSubst.aPlus_dir_smul hψ hθ τ sS sT hm _ _ (cplxO_unitMap hfS hfT k.1 k.2), map_smul,
       pure_X_mul hadd hsm hA hc Aadd Asm hf]

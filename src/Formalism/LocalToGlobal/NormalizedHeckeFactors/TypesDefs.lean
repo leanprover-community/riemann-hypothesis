@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.UnitaryNorms.RealCyclotomicTwoPower
 public import Formalism.CyclotomicNorms.StatementT
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

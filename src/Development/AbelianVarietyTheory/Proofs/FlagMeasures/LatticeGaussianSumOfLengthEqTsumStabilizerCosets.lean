@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsFinEmb
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatticeIntersectionSelfDualProperties
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnitaryMulVecEqOfFormEqStatement
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnitaryMulVecEqOfFormEq
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImageRationalOrthComplementUnitaryEqRationalStab
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -19,8 +62,8 @@ theorem map_mulVec_incl {E A : Type} [CommRing E] [CommRing A] (ι : E →+* A) 
     (M : Matrix (Fin n) (Fin n) E) (w : Fin n → E) :
     M.map ι *ᵥ (fun i => ι (w i)) = fun i => ι ((M *ᵥ w) i) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul]
+
+  simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul]
 
 theorem unitary_map {E A : Type} [CommRing E] [CommRing A] (σ : E →+* E) (s : A →+* A)
     (ι : E →+* A) (hι : ∀ e, s (ι e) = ι (σ e)) {n : ℕ} (J g : Matrix (Fin n) (Fin n) E)
@@ -40,60 +83,7 @@ variable (I : AutInst)
 
 theorem exists_isImage (γ : GL (Fin I.n) I.E) (hγ : γ ∈ Formalism.UG.UJ (starRingEnd I.E) I.J) :
     ∃ a, IsImage I (γ : Matrix (Fin I.n) (Fin I.n) I.E) a := by
-  classical
-  have hu : Formalism.UG.cT (starRingEnd I.E) (γ : Matrix (Fin I.n) (Fin I.n) I.E) * I.J * γ = I.J := hγ
-  obtain ⟨-, hconj, -⟩ := I.cm.cmUnram
-  have hinf : ∀ v, ∃ u : Formalism.REAL.UJ (I.ε v),
-      uMat u = (I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v := by
-    intro v
-    have hQu : IsUnit (I.P v) := I.P_unit v
-    have hQQ : I.P v * (I.P v)⁻¹ = 1 :=
-      Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 hQu)
-    have hQQ' : ((I.P v)⁻¹)ᴴ * (I.P v)ᴴ = 1 := by
-      rw [← Matrix.conjTranspose_mul, hQQ, Matrix.conjTranspose_one]
-    have hNu : IsUnit ((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v)) :=
-      γ.isUnit.map (I.φ v).mapMatrix
-    have hM : IsUnit ((I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v) :=
-      ((Matrix.isUnit_nonsing_inv_iff.2 hQu).mul hNu).mul hQu
-    have hφ : ((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v))ᴴ * I.J.map (I.φ v) *
-        (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) = I.J.map (I.φ v) := by
-      rw [← cT_star]
-      refine unitary_map (starRingEnd I.E) (starRingEnd ℂ) (I.φ v) (fun e => ?_) I.J _ hu
-      rw [starRingEnd_apply (x := e)]
-      exact (hconj (I.φ v) e).symm
-    have hin : ((I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v)ᴴ *
-        Formalism.REAL.Jm (I.ε v) * ((I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v) =
-        Formalism.REAL.Jm (I.ε v) := by
-      rw [← I.P_spec v]
-      simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      rw [← Matrix.mul_assoc ((I.P v)⁻¹ᴴ) ((I.P v)ᴴ), hQQ', Matrix.one_mul,
-        ← Matrix.mul_assoc (I.P v) ((I.P v)⁻¹), hQQ, Matrix.one_mul]
-      rw [show ∀ X : Matrix (Fin I.n) (Fin I.n) ℂ, ((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v))ᴴ *
-          (I.J.map (I.φ v) * ((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * X)) =
-          (((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v))ᴴ * I.J.map (I.φ v) *
-            (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v)) * X from
-          fun X => by simp only [Matrix.mul_assoc], hφ]
-    refine ⟨⟨hM.unit, ?_⟩, hM.unit_spec⟩
-    show Formalism.REAL.inUJ (I.ε v) (hM.unit : Matrix (Fin I.n) (Fin I.n) ℂ)
-    unfold Formalism.REAL.inUJ
-    rw [hM.unit_spec]
-    exact hin
-  have hsig : ∀ e : I.E, Formalism.UG.sigR I.cm.sig (Af I.F) (Formalism.UG.inclE (F := I.F) (Af I.F) e) =
-      Formalism.UG.inclE (F := I.F) (Af I.F) (starRingEnd I.E e) := by
-    intro e
-    first
-    | rfl
-    | simp [Formalism.UG.sigR, Formalism.UG.inclE, Formalism.BasicNotions.CMData.sig]
-  have hfin : ∃ h : I.Gf, I.fmat h =
-      (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (Formalism.UG.inclE (F := I.F) (Af I.F)) := by
-    refine ⟨⟨Matrix.GeneralLinearGroup.map (Formalism.UG.inclE (F := I.F) (Af I.F)) γ, ?_⟩, rfl⟩
-    exact unitary_map (starRingEnd I.E) (Formalism.UG.sigR I.cm.sig (Af I.F))
-      (Formalism.UG.inclE (F := I.F) (Af I.F)) hsig I.J _ hu
-  choose u hu' using hinf
-  obtain ⟨h, hh⟩ := hfin
-  refine ⟨(u, h), ?_⟩
-  unfold IsImage
-  exact ⟨hu', hh⟩
+  apply GlobalTheory.StabUnfold.RatPts.exists_isImage <;> assumption
 
 theorem afVec_injective {m : ℕ} : Function.Injective (afVec I (m := m)) := by
   have hhalf : (2 : I.E)⁻¹ ∉ (algebraMap (𝓞 I.E) I.E).range := by
@@ -220,7 +210,7 @@ theorem gaussSum_cosets : ∀ (I : AutInst) (s : Bool) (x : Fin I.n → I.E), st
   have hW : ∀ y : {y : Fin I.n → I.E // star y ⬝ᵥ (I.J *ᵥ y) = sgn I.E s}, ∃ δ : GL (Fin I.n) I.E,
       δ ∈ Formalism.UG.UJ (starRingEnd I.E) I.J ∧ (δ : Matrix (Fin I.n) (Fin I.n) I.E) *ᵥ x = y.1 := by
     intro y
-    obtain ⟨m, hm, hmx⟩ := GlobalTheory.T.exists_unitary_mulVec_eq_of_form_eq' I.E I.n I.J hJ I.J_det x y.1 (hx.trans y.2.symm) hne
+    obtain ⟨m, hm, hmx⟩ := _root_.GlobalTheory.exists_unitary_mulVec_eq_of_form_eq I.E I.n I.J hJ I.J_det x y.1 (hx.trans y.2.symm) hne
     have hdet : IsUnit m.det := by
       have hd := congrArg Matrix.det hm
       rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_conjTranspose] at hd

@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.PowerSeries.Log
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Data.Nat.Cast.Field
 
 @[expose] public section
 

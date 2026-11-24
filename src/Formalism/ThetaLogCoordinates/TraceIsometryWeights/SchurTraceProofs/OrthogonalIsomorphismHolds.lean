@@ -2,6 +2,53 @@ module
 
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.WeightCompApply
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.FischerAdjointnessHolds
+public import Formalism.PolynomialDimension.MultinomialDepth.MonoCount
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -112,8 +159,8 @@ private theorem le_iSup_gS_highestWeight_of_stable_of_finW {K V : Type} [Field K
     intro a b hab
     have hsh := G.shift a b (μ + dl a b) (G.cprod cs v)
     rw [add_sub_cancel_right] at hsh
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hsh, G.E_cprod, ← hf2 a b hab, Finsupp.sum, map_sum, map_sum]
+
+    rw [← hsh, G.E_cprod, ← hf2 a b hab, Finsupp.sum, map_sum, map_sum]
     refine Finset.sum_eq_zero fun i hi => ?_
     have hi1 := hf1 a b i
     have hCasi : G.Cas (f a b i) = ((GlW.casI i.2.2.2.choose : ℤ) : K) • f a b i :=
@@ -157,9 +204,8 @@ theorem pol_le_iSup (LL L2 : Letters N) (j : ℕ) (Cs : Finset (Fin r)) :
   refine iSup_le fun i => ?_
   refine le_iSup_of_le (Function.extend (⇑(enumC Cs)) i.2.2.2.choose 0) ?_
   rw [isoC_eq]
-  have hcomp : Function.extend (⇑(enumC Cs)) i.2.2.2.choose 0 ∘ ⇑(enumC Cs) = i.2.2.2.choose := by
-    funext a
-    exact (enumC Cs).injective.extend_apply _ _ a
+  have hcomp : Function.extend (⇑(enumC Cs)) i.2.2.2.choose 0 ∘ ⇑(enumC Cs) = i.2.2.2.choose :=
+    funext fun a => (enumC Cs).injective.extend_apply _ _ a
   rw [hcomp]
   refine (GAe p LL j (enumC Cs)).gS_le ?_ ((GAe p LL j (enumC Cs)).gS_stable _)
   rw [Set.singleton_subset_iff]
@@ -170,8 +216,7 @@ theorem span_isomorphism_holds : SpanIso := by
   rw [eq_top_iff]
   intro x _
   rw [x.as_sum]
-  refine Submodule.sum_mem _ fun m _ => ?_
-  exact pol_le_iSup LL _ j Cs (monomial_mem_pol LL m _)
+  exact Submodule.sum_mem _ fun m _ => pol_le_iSup LL _ j Cs (monomial_mem_pol LL m _)
 
 theorem fock_wt_ne (LL : Letters N) (j : ℕ) (e : Fin n ↪o Fin r) {μ ν : Fin n → ℤ} (hne : μ ≠ ν)
     {x y : MvPolynomial (Fin N × Fin r) ℚ_[p]} (hx : (GAe p LL j e).IsWt μ x) (hy : (GAe p LL j e).IsWt ν y) :
@@ -180,9 +225,7 @@ theorem fock_wt_ne (LL : Letters N) (j : ℕ) (e : Fin n ↪o Fin r) {μ ν : Fi
   apply fock_disjoint
   intro m hmx hmy
   obtain ⟨a, ha⟩ := Function.ne_iff.mp hne
-  have h1 : wt LL j (e a) m = μ a := hx hmx a
-  have h2 : wt LL j (e a) m = ν a := hy hmy a
-  exact ha (h1.symm.trans h2)
+  exact ha ((hx hmx a).symm.trans (hy hmy a))
 
 theorem gS_le_perpV (LL : Letters N) (j : ℕ) (e : Fin n ↪o Fin r) {μ ν : Fin n → ℤ} (hne : μ ≠ ν)
     {h h' : MvPolynomial (Fin N × Fin r) ℚ_[p]} (hh : (GAe p LL j e).IsHW μ h) (hh' : (GAe p LL j e).IsHW ν h') :
@@ -238,8 +281,7 @@ theorem orthogonal_isomorphism_holds : OrthIso := by
   have hne' : la ∘ (enumC Cs) ≠ mu ∘ (enumC Cs) := by
     obtain ⟨c, hc, hlc⟩ := hne
     obtain ⟨a, rfl⟩ := enumC_surj Cs hc
-    intro h
-    exact hlc (congrFun h a)
+    exact fun h => hlc (congrFun h a)
   have hB : (GAe p LL j (enumC Cs)).Stable
       ((GAe p LL j (enumC Cs)).gS {v | (GAe p LL j (enumC Cs)).IsHW (mu ∘ enumC Cs) v}) :=
     (GAe p LL j (enumC Cs)).gS_stable _

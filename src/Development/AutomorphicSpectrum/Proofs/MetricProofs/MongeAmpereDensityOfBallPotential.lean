@@ -1,11 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
-public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsFundSet
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Matrix.Normed
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ComplexHessianTransposeIsHermitian
+import Std.Tactic.BVDecide.Normalize.Prop
+import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentModulusMatrix
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 @[expose] public section
 
@@ -181,7 +225,7 @@ theorem hP_eq {a b : Type} [Fintype a] [Fintype b] [DecidableEq a] [DecidableEq 
   unfold hP
   rw [← hAi]
   simp only [Matrix.add_mul, Matrix.mul_add, Matrix.trace_add, Complex.add_re, Matrix.mul_assoc, Matrix.mul_one,
-    Matrix.one_mul, ha, hb, he, hc]
+    ha, hb, he, hc]
   ring
 
 theorem inv_push {a b : Type} [Fintype a] [Fintype b] [DecidableEq a] [DecidableEq b]
@@ -190,7 +234,7 @@ theorem inv_push {a b : Type} [Fintype a] [Fintype b] [DecidableEq a] [Decidable
   apply Matrix.inv_eq_right_inv
   have h1 := Matrix.mul_nonsing_inv _ h
   have h2 : Z * ((1 - Zᴴ * Z) * (1 - Zᴴ * Z)⁻¹) * Zᴴ = Z * Zᴴ := by rw [h1, Matrix.mul_one]
-  simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, Matrix.mul_one, Matrix.add_mul, Matrix.mul_add,
+  simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, Matrix.mul_one, Matrix.mul_add,
     Matrix.mul_assoc] at h2 ⊢
   rw [← h2]
   abel
@@ -224,7 +268,7 @@ theorem levi_eq {a b : Type} [Fintype a] [Fintype b] [DecidableEq a] [DecidableE
   rw [r1, r2, r3, r4, r5, r6]
   set s := trace (Ai * Zᴴ * U * Ai * Zᴴ * V)
   set l := trace (Ai * Vᴴ * Bi * U)
-  apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im, Complex.div_re, Complex.div_im] <;> ring
+  apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im] <;> ring
 
 theorem det_blocks {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {j j' n : ℕ} (q : Ψ × Fin j × Fin j' ≃ Fin n)
     (P : Ψ → Matrix (Fin j) (Fin j) ℂ) (Q : Ψ → Matrix (Fin j') (Fin j') ℂ) :
@@ -285,7 +329,7 @@ theorem hess_sum {ι E : Type} [Fintype ι] [NormedAddCommGroup E] [NormedSpace 
   have h4 : HasFDerivAt (fun x => c • ∑ i, fderiv ℝ (f i) x) (c • ∑ i, fderiv ℝ (fderiv ℝ (f i)) t) t :=
     (HasFDerivAt.fun_sum fun i _ => (h2 i).hasFDerivAt).const_smul c
   rw [h4.fderiv]
-  simp [ContinuousLinearMap.sum_apply]
+  simp
 
 theorem det_pos_of_posDef {m : Type} [Fintype m] [DecidableEq m] {A : Matrix m m ℂ} (h : A.PosDef) :
     0 < A.det.re ∧ A.det = (A.det.re : ℂ) := by
@@ -312,7 +356,7 @@ theorem trace_single {a b : Type} [Fintype a] [Fintype b] [DecidableEq a] [Decid
     trace (X * (Matrix.single a2 b2 (1 : ℂ))ᴴ * Y * Matrix.single a1 b1 (1 : ℂ)) = X b1 b2 * Y a2 a1 := by
   rw [Matrix.conjTranspose_single, star_one]
   simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.single_apply]
-  simp [ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [ite_and, Finset.sum_ite_eq]
 
 theorem hess_ball (q : Ψ × Fin j × Fin j' ≃ Fin n) (t : Fin n → ℂ) (ht : t ∈ ballDom q) (u v : Fin n → ℂ) :
     fderiv ℝ (fderiv ℝ (fun t' => ballPot q t' / 2)) t u v =

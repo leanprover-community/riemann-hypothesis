@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.JointBlockShapes.JointShape
 public import ReciprocityTheory.ThetaSummability.RealCoinvariants.CoinvSubLeComap
 

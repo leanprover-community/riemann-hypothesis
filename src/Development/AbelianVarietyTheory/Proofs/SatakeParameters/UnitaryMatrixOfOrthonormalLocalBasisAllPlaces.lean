@@ -1,17 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.StdBases
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.BeData
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsConstantCoeffOne
-public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
-public import Formalism.LocalRingCardinality.FactDelDualNabla
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsKurFrobTauEmbPosPl
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepFrame
+public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormLeOneOfValuationLeOne
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsKurFrobTauEmbPosPl
+import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+public import Formalism.LocalRingCardinality.FactDelDualNabla
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepFrame
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepTrace
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
-public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -123,9 +163,7 @@ theorem norm_cmTypeEmbeddingPadic_le_one_of_mem_baseIdeal (z : Bool × HH D) {a 
 
 end Frob
 
-theorem conj_conj (D : D7) (x : D.host.E) : D.host.conj (D.host.conj x) = x :=
-  D.host.φ₀.injective (by
-    rw [Formalism.HC.HostAx.conjE_apply, Formalism.HC.HostAx.conjE_apply, Complex.conj_conj])
+alias conj_conj := _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.CU.conj_conj
 
 section Entries
 
@@ -245,8 +283,8 @@ variable {K : Type} [Field K] {κ ν ι : Type} [Fintype κ] [Fintype ν] [Finty
 theorem subst_lin {a : ν → MvPowerSeries ι K} (hs : MvPowerSeries.HasSubst a) (w : ν → K) :
     MvPowerSeries.subst a (∑ j, MvPowerSeries.C (w j) * MvPowerSeries.X j : MvPowerSeries ν K) =
       ∑ j, MvPowerSeries.C (w j) * a j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom hs, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom hs, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [MvPowerSeries.coe_substAlgHom hs, MvPowerSeries.subst_mul hs, MvPowerSeries.subst_X hs, MvPowerSeries.subst_C]
 
@@ -282,8 +320,8 @@ theorem subst_atLin {s : Type} [Fintype s] [Finite s] (m : s → ν → ℂ_[p])
   simp_rw [Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← mul_assoc, ← map_mul, h k j, map_sum, Finset.sum_mul]
+
+  rw [← mul_assoc, ← map_mul, h k j, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, mul_assoc]
 
@@ -317,8 +355,8 @@ theorem rho_yy (i : Fin r) (j : (Bool × HH D) × Fin N × Fin N') :
     rho D lam (tauPl D j.1) (yy D P P' b i j) = ∑ k, lamBc D lam b k i * cA D lam P P' j k := by
   rw [Fintype.sum_prod_type, Finset.sum_eq_single (tauPl D j.1)]
   · rw [Fintype.sum_prod_type]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [yy, map_sum, map_mul, cA, if_true, lamBc_eq]
+
+    simp only [yy, map_sum, map_mul, cA, if_true, lamBc_eq]
     refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
     ring
   · intro t _ ht
@@ -330,8 +368,8 @@ theorem rho_conj_yy (i : Fin r) (j : (Bool × HH D) × Fin N × Fin N') :
     rho D lam (tauPl D j.1) (D.host.conj (yy D P P' b i j)) = ∑ k, lamB D lam b k i * cB D lam P P' j k := by
   rw [Fintype.sum_prod_type, Finset.sum_eq_single (tauPl D j.1)]
   · rw [Fintype.sum_prod_type]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [yy, map_sum, map_mul, cB, if_true, lamB_eq, conj_conj]
+
+    simp only [yy, map_sum, map_mul, cB, if_true, lamB_eq, conj_conj]
     refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
     ring
   · intro t _ ht
@@ -342,8 +380,8 @@ theorem rho_conj_yy (i : Fin r) (j : (Bool × HH D) × Fin N × Fin N') :
 theorem conj_yy (i : Fin r) (j : (Bool × HH D) × Fin N × Fin N') :
     D.host.conj (yy D P P' b i j) =
       (((P' (tauPl D j.1)).map D.host.conj).transpose * b i * P (tauPl D j.1)) j.2.2 j.2.1 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [yy, map_sum, map_mul, conj_conj, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Finset.sum_mul]
+
+  simp only [yy, map_sum, map_mul, conj_conj, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
   ring
@@ -385,8 +423,8 @@ theorem sum_cB_cA (hU : ∀ z, ((P (tauPl D z)).map D.host.conj).transpose * P (
           rho D lam (tauPl D z) (∑ x, D.host.conj (P (tauPl D z) x a') * P (tauPl D z) x a) := by
       rw [Fintype.sum_prod_type, Finset.sum_eq_single (tauPl D z)]
       · rw [Fintype.sum_prod_type]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_sum, Finset.sum_mul_sum]
+
+        rw [map_sum, map_sum, Finset.sum_mul_sum]
         refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
         simp only [map_mul, cA, cB, if_true]
         ring

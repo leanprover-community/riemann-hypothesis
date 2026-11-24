@@ -1,7 +1,59 @@
 module
 
-public import Mathlib
 public import Formalism.FrobeniusOrbits.Statement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -16,10 +68,9 @@ open Formalism.TwoAdicCyclotomicDecomposition
 namespace RealCyclotomicSubfield
 
 lemma conj_root {z : ℂ} {m : ℕ} (hm : m ≠ 0) (hz : z ^ m = 1) : starRingEnd ℂ z = z⁻¹ := by
-  have hn : ‖z‖ = 1 := by
-    have h1 := congrArg norm hz
-    rw [norm_pow, norm_one] at h1
-    exact (pow_eq_one_iff_of_nonneg (norm_nonneg z) hm).mp h1
+  have hn : ‖z‖ = 1 :=
+    (pow_eq_one_iff_of_nonneg (norm_nonneg z) hm).mp
+      (by simpa only [norm_pow, norm_one] using congrArg norm hz)
   rw [Complex.inv_def, Complex.normSq_eq_norm_sq, hn]
   simp
 
@@ -34,12 +85,11 @@ lemma not_real_zeta {K : Type*} [Field K] {m : ℕ} (hm : m ≠ 0) (h2 : ¬ m �
     (hζ : IsPrimitiveRoot ζ m) (ψ : K →+* ℂ) : starRingEnd ℂ (ψ ζ) ≠ ψ ζ := by
   intro h
   have h1 : (ψ ζ) ^ m = 1 := by rw [← map_pow, hζ.pow_eq_one, map_one]
-  have hc := conj_root hm h1
+  have heq : ψ ζ = (ψ ζ)⁻¹ := h.symm.trans (conj_root hm h1)
   have hne : ψ ζ ≠ 0 := by
     intro h0
     rw [h0, zero_pow hm] at h1
     exact zero_ne_one h1
-  have heq : ψ ζ = (ψ ζ)⁻¹ := h.symm.trans hc
   have hsq : ψ (ζ ^ 2) = ψ 1 := by
     rw [map_pow, map_one, sq]
     calc ψ ζ * ψ ζ = ψ ζ * (ψ ζ)⁻¹ := congrArg (ψ ζ * ·) heq
@@ -99,11 +149,10 @@ lemma real_subfield_real_embeddings {e : ℕ} {ζ : L} (hζ : IsPrimitiveRoot ζ
 
 lemma finrank_cyc {e : ℕ} {ζ : L} (hζ : IsPrimitiveRoot ζ (2 ^ (e + 2))) :
     Module.finrank ℚ ℚ⟮ζ⟯ = 2 ^ (e + 1) := by
-  have hint : IsIntegral ℚ ζ := Algebra.IsIntegral.isIntegral ζ
-  rw [IntermediateField.adjoin.finrank hint, ← Polynomial.cyclotomic_eq_minpoly_rat hζ (by positivity),
-    Polynomial.natDegree_cyclotomic, Nat.totient_prime_pow Nat.prime_two (by omega)]
   have h3 : e + 2 - 1 = e + 1 := by omega
-  rw [h3]
+  rw [IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral ζ),
+    ← Polynomial.cyclotomic_eq_minpoly_rat hζ (by positivity),
+    Polynomial.natDegree_cyclotomic, Nat.totient_prime_pow Nat.prime_two (by omega), h3]
   simp
 
 private lemma mem_adjoin_of_val_mem_adjoin_image {L' : Type*} [Field L'] [CharZero L'] (Z : IntermediateField ℚ L')

@@ -1,9 +1,48 @@
 module
 
-public import Mathlib
+import Development.WeilBound.ThetaLifts.FrameEstimates.IsCompactIntV
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompactOpenAddSubgroup
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -29,12 +68,6 @@ def Good (φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ) : Pr
 def pf (φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ) (y : κ → Af F) : ℂ :=
   ∏ᶠ u, φ u fun i => evalV F u (y i)
 
-theorem ev_int (y : κ → Af F) : ∀ᶠ u in cofinite, ∀ i, evalV F u (y i) ∈ u.adicCompletionIntegers F :=
-  eventually_all.2 fun i => (y i).2
-
-theorem cont_evalV (u : HeightOneSpectrum (𝓞 F)) : Continuous (evalV F u) :=
-  (continuous_apply u).comp RestrictedProduct.continuous_coe
-
 theorem isOpen_intAf : IsOpen {a : Af F | ∀ v, evalV F v a ∈ v.adicCompletionIntegers F} :=
   RestrictedProduct.isOpen_forall_mem
     (A := fun v : HeightOneSpectrum (𝓞 F) => (v.adicCompletionIntegers F : Set (v.adicCompletion F)))
@@ -44,12 +77,6 @@ theorem isOpen_intV (u : HeightOneSpectrum (𝓞 F)) : IsOpen {x : κ → Fv F u
   simp only [Set.setOf_forall]
   exact isOpen_iInter_of_finite fun i => (Valued.isOpen_valuationSubring _).preimage (continuous_apply i)
 
-theorem isCompact_intV (u : HeightOneSpectrum (𝓞 F)) :
-    IsCompact {x : κ → Fv F u | ∀ i, x i ∈ u.adicCompletionIntegers F} := by
-  have h : IsCompact (u.adicCompletionIntegers F : Set (Fv F u)) := isCompact_iff_compactSpace.2
-    (GlobalTheory.AdelicUnitaryTop.compactSpace_adicCompletionIntegers F u)
-  simpa [Set.pi] using isCompact_univ_pi fun _ : κ => h
-
 def intV (κ : Type) [Fintype κ] (u : HeightOneSpectrum (𝓞 F)) : OpenAddSubgroup (κ → Fv F u) where
   carrier := {x | ∀ i, x i ∈ u.adicCompletionIntegers F}
   add_mem' h h' i := add_mem (h i) (h' i)
@@ -58,35 +85,13 @@ def intV (κ : Type) [Fintype κ] (u : HeightOneSpectrum (𝓞 F)) : OpenAddSubg
   isOpen' := isOpen_intV u
 
 theorem stdF_mem (u : HeightOneSpectrum (𝓞 F)) : stdF κ u ∈ SB (κ → Fv F u) :=
-  GlobalTheory.WeilM.HaarUniq.indicator_mem (intV κ u) (isCompact_intV u)
+  GlobalTheory.WeilM.HaarUniq.indicator_mem (intV κ u) (PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.isCompact_intV u)
 
 theorem good_std : Good (stdF (F := F) κ) := ⟨stdF_mem, .of_forall fun _ => rfl⟩
 
 theorem isCompact_box (C : ∀ u : HeightOneSpectrum (𝓞 F), Set (Fv F u)) (hC : ∀ u, IsCompact (C u))
     (h : ∀ᶠ u in cofinite, C u ⊆ u.adicCompletionIntegers F) : IsCompact {a : Af F | ∀ u, evalV F u a ∈ C u} := by
-  let S : Set (HeightOneSpectrum (𝓞 F)) := {u | C u ⊆ u.adicCompletionIntegers F}
-  have hS : cofinite ≤ 𝓟 S := le_principal_iff.2 h
-  let P := RestrictedProduct (fun u : HeightOneSpectrum (𝓞 F) => u.adicCompletion F)
-      (fun u => (u.adicCompletionIntegers F : Set (u.adicCompletion F))) (𝓟 S)
-  have h1 : IsCompact {x : P | ∀ u, x u ∈ C u} := by
-    rw [RestrictedProduct.isEmbedding_coe_of_principal.isCompact_iff]
-    convert isCompact_univ_pi hC
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩ u -
-      exact hy u
-    · intro hx
-      exact ⟨⟨x, fun u hu => hu (hx u trivial)⟩, fun u => hx u trivial, rfl⟩
-  have h2 := h1.image (RestrictedProduct.continuous_inclusion hS)
-  have e : {a : Af F | ∀ u, evalV F u a ∈ C u} = RestrictedProduct.inclusion _ _ hS '' {x : P | ∀ u, x u ∈ C u} := by
-    ext a
-    constructor
-    · intro ha
-      exact ⟨⟨a.1, fun u hu => hu (ha u)⟩, ha, rfl⟩
-    · rintro ⟨y, hy, rfl⟩
-      exact hy
-  rw [e]
-  exact h2
+  apply PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.isCompact_box <;> assumption
 
 theorem pf_eq_prod {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (S : Finset (HeightOneSpectrum (𝓞 F)))
     (y : κ → Af F) (h : ∀ u ∉ S, φ u = stdF κ u ∧ ∀ i, evalV F u (y i) ∈ u.adicCompletionIntegers F) :
@@ -98,43 +103,8 @@ theorem pf_eq_prod {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) →
   rw [(h u hn).1, stdF, Set.indicator_of_mem (by exact (h u hn).2)]
   rfl
 
-theorem exists_fin {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : ∀ᶠ u in cofinite, φ u = stdF κ u)
-    (y : κ → Af F) : ∃ S : Finset (HeightOneSpectrum (𝓞 F)),
-      ∀ u ∉ S, φ u = stdF κ u ∧ ∀ i, evalV F u (y i) ∈ u.adicCompletionIntegers F :=
-  ⟨(hφ.and (ev_int y)).toFinset, fun u hu => by
-    by_contra hn
-    exact hu (Set.Finite.mem_toFinset _ |>.2 hn)⟩
-
 theorem pf_mem {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : Good φ) : pf φ ∈ SB (κ → Af F) := by
-  have hc : ∀ u, Continuous fun (y : κ → Af F) i => evalV F u (y i) := fun u =>
-    continuous_pi fun i => (cont_evalV u).comp (continuous_apply i)
-  constructor
-  · rw [IsLocallyConstant.iff_eventually_eq]
-    intro x
-    obtain ⟨S, hS⟩ := exists_fin hφ.2 x
-    have h1 : ∀ᶠ y in 𝓝 x, ∀ i v, evalV F v (y i - x i) ∈ v.adicCompletionIntegers F :=
-      eventually_all.2 fun i => (isOpen_intAf.preimage (f := fun y : κ → Af F => y i - x i) (by fun_prop)).mem_nhds
-        (by intro v; simp)
-    have h2 : ∀ᶠ y in 𝓝 x, ∀ u ∈ S, φ u (fun i => evalV F u (y i)) = φ u fun i => evalV F u (x i) :=
-      (eventually_all_finset S).2 fun u _ => ((hφ.1 u).1.comp_continuous (hc u)).eventually_eq x
-    filter_upwards [h1, h2] with y h1 h2
-    rw [pf_eq_prod S x hS, pf_eq_prod S y fun u hu => ⟨(hS u hu).1, fun i => ?_⟩]
-    · exact Finset.prod_congr rfl h2
-    · have := add_mem (h1 i u) ((hS u hu).2 i)
-      rwa [map_sub, sub_add_cancel] at this
-  · have hK : ∀ i : κ, IsCompact {a : Af F | ∀ u, evalV F u a ∈ (fun x => x i) '' tsupport (φ u)} := fun i =>
-      isCompact_box _ (fun u => (hφ.1 u).2.isCompact.image (continuous_apply i)) (by
-        filter_upwards [hφ.2] with u hu
-        rintro _ ⟨x, hx, rfl⟩
-        rw [hu] at hx
-        exact closure_minimal Set.support_indicator_subset (isCompact_intV u).isClosed hx i)
-    refine HasCompactSupport.intro (isCompact_univ_pi hK) fun y hy => ?_
-    by_contra h0
-    refine hy fun i _ u => ⟨fun i => evalV F u (y i), subset_tsupport _ (fun h => h0 ?_), rfl⟩
-    obtain ⟨S, hS⟩ := exists_fin hφ.2 y
-    classical
-    rw [pf_eq_prod (insert u S) y fun v hv => hS v fun h => hv (Finset.mem_insert_of_mem h)]
-    exact Finset.prod_eq_zero (Finset.mem_insert_self _ _) h
+  apply PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.pf_mem <;> assumption
 
 theorem pure_mem (f : SInf F κ) {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : Good φ) :
     pure f φ ∈ schA F κ := Submodule.subset_span ⟨f, pf φ, pf_mem hφ, rfl⟩
@@ -166,7 +136,7 @@ def box (K : ∀ u : HeightOneSpectrum (𝓞 F), OpenAddSubgroup (κ → Fv F u)
     rw [e]
     exact (isOpen_iInter_of_finite fun i => isOpen_intAf.preimage (continuous_apply i)).inter
       (Set.Finite.isOpen_biInter h fun u _ => (K u).isOpen.preimage
-        (continuous_pi fun i => (cont_evalV u).comp (continuous_apply i)))
+        (continuous_pi fun i => (PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.cont_evalV u).comp (continuous_apply i)))
 
 theorem exists_box {W : Set (κ → Af F)} (hW : W ∈ 𝓝 0) : ∃ K h h', ((box (F := F) (κ := κ) K h h' : OpenAddSubgroup (κ → Af F)) : Set (κ → Af F)) ⊆ W := by
   classical
@@ -227,9 +197,9 @@ theorem mem_span_pf {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ → Af F)) :
   have hG : Good fun u x => Set.indicator (K u : Set (κ → Fv F u)) (fun _ => (1 : ℂ)) (x + -fun i => evalV F u (a i)) := by
     constructor
     · intro u
-      have := GlobalTheory.WeilM.HaarUniq.indicator_mem (K u) ((isCompact_intV u).of_isClosed_subset (K u).isClosed (h' u))
+      have := GlobalTheory.WeilM.HaarUniq.indicator_mem (K u) ((PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.isCompact_intV u).of_isClosed_subset (K u).isClosed (h' u))
       exact ⟨this.1.comp_continuous (continuous_add_const _), this.2.comp_homeomorph (Homeomorph.addRight _)⟩
-    · filter_upwards [h, ev_int a] with u hu ha
+    · filter_upwards [h, PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.ev_int a] with u hu ha
       funext x
       rw [hu]
       have ha' : (-fun i => evalV F u (a i)) ∈ intV κ u := neg_mem (show _ ∈ intV κ u from ha)
@@ -246,7 +216,7 @@ theorem mem_span_pf {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ → Af F)) :
     rw [e, Set.indicator_of_mem (by exact hy u)]
   · rw [Set.indicator_of_notMem (by exact hy)]
     obtain ⟨u, hu⟩ := not_forall.1 hy
-    obtain ⟨S, hS⟩ := exists_fin hG.2 y
+    obtain ⟨S, hS⟩ := PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.exists_fin hG.2 y
     classical
     rw [pf_eq_prod (insert u S) y fun v hv => hS v fun h => hv (Finset.mem_insert_of_mem h), eq_comm]
     refine Finset.prod_eq_zero (Finset.mem_insert_self _ _) ?_

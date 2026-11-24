@@ -1,7 +1,49 @@
 module
 
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowDef
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModerateGrowthOfHasCompactSupport
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLatticeDenominatorHeightBoundProof
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -45,7 +87,7 @@ theorem Sz.mono {m m' : ℕ} {c c' : ℝ} {a : AF F} (h : Sz m c a) (hm : m ∣ 
   exact mul_mem (natCast_mem _ k) (h.2 v)
 
 theorem exists_den (a : AF F) : ∃ m : ℕ, 1 ≤ m ∧ ∀ v, evFin F v ((m : AF F) * a) ∈ v.adicCompletionIntegers F := by
-  obtain ⟨m, hm, -, hv⟩ := GlobalTheory.SmoothForms.denom_global (fun v => max 1 ‖evFin F v a‖₊) (fun v => le_max_left _ _) (by
+  obtain ⟨m, hm, -, hv⟩ := _root_.GlobalTheory.AdicNormZpowEstimates.exists_denominator (fun v => max 1 ‖evFin F v a‖₊) (fun v => le_max_left _ _) (by
     refine (Filter.eventually_cofinite.1 a.2.2).subset fun v hv hv' => hv (max_eq_left ?_)
     exact_mod_cast Valued.toNormedField.norm_le_one_iff.2 hv')
   refine ⟨m, hm, fun v => ?_⟩
@@ -100,13 +142,13 @@ theorem crd_apply (s : Pt F κ →ₗ[AF F] Pt F κ) (w : Pt F κ) (i : κ ⊕ �
     crd F κ (s w) i = ∑ j, crd F κ w j * crd F κ (s ((crd F κ).symm (Pi.single j 1))) i := by
   have : w = ∑ j, crd F κ w j • (crd F κ).symm (Pi.single j 1) := by
     apply (crd F κ).injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearEquiv.apply_symm_apply]
+
+    simp only [map_sum, map_smul, LinearEquiv.apply_symm_apply]
     funext k
     simp [Finset.sum_apply, Pi.single_apply]
   conv_lhs => rw [this]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+
+  simp only [map_sum, map_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
 
 theorem bd_of_sz {s : Pt F κ →ₗ[AF F] Pt F κ} {m : ℕ} {c : ℝ} (hc : 0 ≤ c)
     (h : ∀ i j, Sz m c (crd F κ (s ((crd F κ).symm (Pi.single j 1))) i)) : Bd s m (Fintype.card (κ ⊕ κ) * c) := by
@@ -179,7 +221,7 @@ theorem exists_entries : ∃ (ι : Type) (_ : Fintype ι) (β : Module.Basis ι 
   choose B hB0 hB using fun (p : s × InfinitePlace F) => exists_norm_repr_le b p.2 p.1
   refine ⟨s, inferInstance, Algebra.TensorProduct.basis (AF F) b.traceDual, ∑ p, B p,
     Finset.sum_nonneg fun p _ => hB0 p, fun n g => ?_⟩
-  obtain ⟨d, hd, hdc, hv⟩ := GlobalTheory.SmoothForms.denom_global (fun v => htFin F v (Formalism.UG.bc (compFin F E v) g))
+  obtain ⟨d, hd, hdc, hv⟩ := _root_.GlobalTheory.AdicNormZpowEstimates.exists_denominator (fun v => htFin F v (Formalism.UG.bc (compFin F E v) g))
     (fun v => one_le_htOf _ _) (finite_mulSupport_htFin F g)
   refine ⟨d, hd, ?_, fun i j k => ⟨norm_evH_le (mul_nonneg (Finset.sum_nonneg fun p _ => hB0 p) (NNReal.coe_nonneg _))
     fun w => ?_, fun v => ?_⟩⟩
@@ -209,11 +251,11 @@ theorem bilin {R A ι : Type} [CommRing R] [CommRing A] [Algebra R A] [Fintype �
       β.repr (M p.1.1 p.1.2.1) p.1.2.2 * β.repr (N p.2.1 p.2.2.1) p.2.2.2 *
         l (Matrix.single p.1.1 p.1.2.1 (β p.1.2.2) * u * (Matrix.single p.2.1 p.2.2.1 (β p.2.2.2))ᵀ) := by
   refine (congrArg₂ (fun A B => l (A * u * Bᵀ)) (expand β M) (expand β N)).trans ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Fintype.sum_prod_type (α₁ := Fin n × Fin n × ι) (α₂ := Fin d × Fin d × ι), Matrix.sum_mul, Matrix.sum_mul, map_sum]
+
+  rw [Fintype.sum_prod_type (α₁ := Fin n × Fin n × ι) (α₂ := Fin d × Fin d × ι), Matrix.sum_mul, Matrix.sum_mul, map_sum]
   refine Finset.sum_congr rfl fun p _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.transpose_sum, Matrix.mul_sum, map_sum]
+
+  rw [Matrix.transpose_sum, Matrix.mul_sum, map_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   rw [Matrix.transpose_smul, Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_mul, map_smul, map_smul, smul_eq_mul, smul_eq_mul]
   ring

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.LocalFields.LocalArtinMap
 public import GroundTheory.LocalFields.LocalArtinBaseChange
 public import GroundTheory.LocalFields.LocalArtinTransport
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

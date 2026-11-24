@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceLength
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceObjects
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+public import Mathlib.RingTheory.Regular.RegularSequence
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

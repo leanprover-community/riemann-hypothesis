@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterChart
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartMax
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterMemIff
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMinimalPrimeMultiHomog
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterDivSuppLemmas
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterMemIff
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartMax
+import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
+import Mathlib.RingTheory.SimpleRing.Principal
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsMultiHomogIdealSpanSingleton
 
 @[expose] public section
 
@@ -41,9 +44,9 @@ theorem OrbitCenterChart.proof : OrbitCenterChart.Statement := by
 
   have hVzero : ∀ f ∈ V, aeval (dehomCoords (genPt V) c) f = 0 := by
     intro f hf
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sum_weightedHomogeneousComponent (w := coordDeg n) f,
-      finsum_eq_sum _ (weightedHomogeneousComponent_finsupp f), map_sum]
+
+    rw [← sum_weightedHomogeneousComponent (w := coordDeg n) f,
+    finsum_eq_sum _ (weightedHomogeneousComponent_finsupp f), map_sum]
     refine Finset.sum_eq_zero fun b _ ↦ ?_
     exact (aeval_dehomCoords_of_homog (genPt V) c
       (weightedHomogeneousComponent_isWeightedHomogeneous b f)).trans

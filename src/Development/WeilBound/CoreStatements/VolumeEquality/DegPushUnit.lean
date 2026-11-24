@@ -1,10 +1,50 @@
 module
 
 public import Development.WeilBound.CoreStatements.VolumeEquality.DegPushDefs
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDivisor
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -181,7 +221,7 @@ theorem rep_of_mem (y : (Σ b, ι b) → Ω) {t : Ω} (ht : t ∈ fnField k y) :
       · simp [div_mul_cancel₀ _ hq]
   · intro c
     exact ⟨0, C c, 1, isWeightedHomogeneous_C _ _, isWeightedHomogeneous_one k _, by simp,
-      by simp [aeval_C]⟩
+      by simp⟩
   · rintro a b - - ⟨d1, F1, G1, hF1, hG1, hG1ne, h1⟩ ⟨d2, F2, G2, hF2, hG2, hG2ne, h2⟩
     refine ⟨d1 + d2, F1 * G2 + F2 * G1, G1 * G2, IsWeightedHomogeneous.add
       (IsWeightedHomogeneous.mul hF1 hG2) ?_, IsWeightedHomogeneous.mul hG1 hG2,
@@ -275,7 +315,7 @@ private theorem zpow_mem_valuationSubring_of_unit {L : Type} [Field L] (V : Valu
     rw [zpow_negSucc, ← inv_pow]
     exact V.pow_mem h2 _
 
-set_option maxHeartbeats 400000 in
+
 open UnitZ in
 theorem unitZero : PtDim → UnitZero := by
   intro hpt k _ Ω _ _ K _ ι _ y n a b hy htop hval
@@ -353,7 +393,7 @@ theorem unitZero : PtDim → UnitZero := by
         change algebraMap (MvPolynomial K Ω) L (C (algebraMap k Ω x)) =
           algebraMap (MvPolynomial K Ω) L (pointConeMap k y (C x))
         congr 1
-        simp [pointConeMap, MvPolynomial.algebraMap_eq]
+        simp [pointConeMap]
       rw [e]
       exact hVS _
     have hv' := hv O hkO
@@ -388,7 +428,7 @@ theorem unitZero : PtDim → UnitZero := by
       rw [mul_div_mul_comm, mul_div_cancel_right₀ _ hψg, ← mul_assoc, div_mul_cancel₀ _ hψY]
     have hprod' : φ g / φ f = ψ ((ρ / Y)⁻¹) * ∏ j, (φ (X ⟨j, c j⟩))⁻¹ ^ b j := by
       rw [← inv_div, hprod, mul_inv, map_inv₀, ← Finset.prod_inv_distrib]
-      simp [inv_zpow]
+      simp
     constructor
     · rw [hprod]
       exact mul_mem hwO (prod_mem fun j _ => zpow_mem_valuationSubring_of_unit V _ (he1 j) (he2 j) _)

@@ -1,9 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermForm
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IdempotentAdelesAndSmallAdelicMatricesStatement
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRationalUnitarySplitDenominatorStatement
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRationalUnitarySplitDenominator
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IdempotentAdelesAndSmallAdelicMatrices
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryQuasiReflectionLaws
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeRationalVectorsInAdelicTranslate
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,14 +71,14 @@ def mix {R : Type} [CommRing R] {n : ℕ} (ε : R) (hε : ε * ε = ε) (κ : GL
     have h1 : ε * (1 - ε) = 0 := by rw [mul_sub, hε]; ring
     have h2 : (1 - ε) * ε = 0 := by rw [mul_comm, h1]
     have h3 : (1 - ε) * (1 - ε) = 1 - ε := by rw [mul_sub, h2]; ring
-    simp only [add_mul, mul_add, Matrix.smul_mul, Matrix.mul_smul, smul_add, smul_smul, hε, h1, h2, h3,
+    simp only [add_mul, mul_add, Matrix.smul_mul, Matrix.mul_smul, smul_smul, hε, h1, h2, h3,
       Units.mul_inv, zero_smul, add_zero, zero_add, mul_one]
     rw [← add_smul]; simp
   inv_val := by
     have h1 : ε * (1 - ε) = 0 := by rw [mul_sub, hε]; ring
     have h2 : (1 - ε) * ε = 0 := by rw [mul_comm, h1]
     have h3 : (1 - ε) * (1 - ε) = 1 - ε := by rw [mul_sub, h2]; ring
-    simp only [add_mul, mul_add, Matrix.smul_mul, Matrix.mul_smul, smul_add, smul_smul, hε, h1, h2, h3,
+    simp only [add_mul, mul_add, Matrix.smul_mul, Matrix.mul_smul, smul_smul, hε, h1, h2, h3,
       Units.inv_mul, zero_smul, add_zero, zero_add, mul_one]
     rw [← add_smul]; simp
 
@@ -129,8 +179,7 @@ theorem _root_.GlobalTheory.UnRep.SplitRep.exists_div (m : 𝓞 F) (hm : m ≠ 0
     · rw [h1 v hv, sub_self, mul_zero]
       exact zero_mem _
     · rw [h0 v hv, sub_zero, mul_one, HeightOneSpectrum.mem_adicCompletionIntegers]
-      simp [HeightOneSpectrum.valuedAdicCompletion_eq_valuation',
-        HeightOneSpectrum.valuation_of_algebraMap]
+      simp [HeightOneSpectrum.valuation_of_algebraMap]
       rw [(HeightOneSpectrum.intValuation_eq_one_iff_mem_primeCompl v m).mpr hv, inv_one]
   · rw [smul_smul, mul_inv_cancel₀ hmF, one_smul]
 
@@ -169,9 +218,9 @@ private theorem isUnA_fm_of_isUnE (c : E ≃ₐ[F] E) (G γ : Matrix (Fin n) (Fi
     simp_rw [TensorProduct.tmul_sum, Algebra.TensorProduct.tmul_mul_tmul, mul_one]
   calc _ = ∑ a, ∑ b, ∑ i, ∑ j, ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] γ a i) * x i * (1 ⊗ₜ[F] G a b) *
         ((1 ⊗ₜ[F] c (γ b j)) * σ (y j)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.mulVec, dotProduct, _root_.GlobalTheory.UnRep.fm, Matrix.map_apply, map_sum,
-          map_mul, h1, Finset.sum_mul, Finset.mul_sum]
+
+        simp only [Matrix.mulVec, dotProduct, _root_.GlobalTheory.UnRep.fm, Matrix.map_apply, map_sum,
+        map_mul, h1, Finset.sum_mul, Finset.mul_sum]
         exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => Finset.sum_comm
     _ = ∑ i, ∑ j, ∑ a, ∑ b, ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] γ a i) * x i * (1 ⊗ₜ[F] G a b) *
         ((1 ⊗ₜ[F] c (γ b j)) * σ (y j)) := by

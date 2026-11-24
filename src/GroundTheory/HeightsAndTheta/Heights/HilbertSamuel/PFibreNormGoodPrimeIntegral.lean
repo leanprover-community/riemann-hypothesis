@@ -1,17 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormGoodPrimeIntegral
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeNullModP
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeDegreeInt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullSectionIntegralInt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDehomNormPIntegral
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullRatiosAlgebraic
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeNull
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeDegree
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullGradedAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeDegree
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeNull
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullGradedAlgebraic
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullRatiosAlgebraic
 
 @[expose] public section
 

@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Examples
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.DualModel
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
+public import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

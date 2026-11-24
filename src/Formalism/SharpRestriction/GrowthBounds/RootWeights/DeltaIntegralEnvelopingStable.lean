@@ -1,6 +1,53 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExistsIntegralWeightProjections
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesSubmodule
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.IrreducibleStableContainsEqTop
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 
 @[expose] public section
 
@@ -52,7 +99,7 @@ theorem adjoint_divided_power_expansion [CharZero (KK O)] (E : GLOps n (KK O) V)
   have hmk : m ≤ k := by simp at hm; omega
   rw [smul_pow, LinearMap.pow_mulLeft, LinearMap.pow_mulRight]
   simp only [Module.End.mul_apply, Module.End.natCast_apply, LinearMap.smul_apply, LinearMap.mulLeft_apply,
-    LinearMap.mulRight_apply, map_nsmul, map_smul, smul_mul_assoc, mul_smul_comm, mul_assoc]
+    LinearMap.mulRight_apply, map_nsmul, smul_mul_assoc, mul_smul_comm, mul_assoc]
   rw [← Nat.cast_smul_eq_nsmul (KK O), smul_smul, smul_smul, smul_smul, smul_smul]
   congr 1
   rw [Nat.cast_choose (KK O) hmk]
@@ -115,15 +162,15 @@ theorem nabla_to_delta_maps_stable [CharZero (KK O)] [FiniteDimensional (KK O) V
           simp only [Module.End.mul_apply]
           rw [ih, hadx]
       obtain ⟨G, h, hh, hfy⟩ := mem_weight_sup_exists_finset_sum E (fun _ => True) (htop (f y))
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [binomE, LinearMap.smul_apply, LinearMap.smul_apply, hprod, hfy, map_sum, Finset.smul_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, Finset.smul_sum]
+
+      rw [binomE, LinearMap.smul_apply, LinearMap.smul_apply, hprod, hfy, map_sum, Finset.smul_sum]
+
+      simp only [map_sum, Finset.smul_sum]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun μ hμ => ?_
       have hμw := (hh μ hμ).2
       rw [hR k μ ν _ hμw, smul_smul]
-      simp only [binomial_diagonal_on_weight hμw, map_smul, smul_smul]
+      simp only [binomial_diagonal_on_weight hμw, smul_smul]
       rw [← Finset.sum_smul]
       congr 1
       calc ((k.factorial : KK O))⁻¹ * ∏ j ∈ range k, ((μ a : KK O) - ((ν a : KK O) + j))
@@ -152,8 +199,8 @@ theorem nabla_to_delta_maps_stable [CharZero (KK O)] [FiniteDimensional (KK O) V
       apply LinearMap.ext
       intro z
       obtain ⟨F, g, hg, rfl⟩ := mem_weight_sup_exists_finset_sum E (fun _ => True) (htop z)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_sum]
+
+      rw [map_sum, map_sum]
       refine Finset.sum_congr rfl fun ν hν => ?_
       rw [hw ν _ (hg ν hν).2, LinearMap.sum_apply]
       refine Finset.sum_congr rfl fun ij _ => ?_

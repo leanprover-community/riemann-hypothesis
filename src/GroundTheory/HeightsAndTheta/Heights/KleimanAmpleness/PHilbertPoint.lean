@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -35,8 +41,8 @@ variable {y : Fin (N + 1) → Ω} {j : Fin (N + 1)}
 
 theorem aeval_aff_of_mem_primeOf {f : Poly k N} (hf : f ∈ primeOf (S := k) y) :
     aeval (aff y j) f = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sum_homogeneousComponent f, map_sum]
+
+  rw [← sum_homogeneousComponent f, map_sum]
   refine Finset.sum_eq_zero fun d _ => ?_
   rw [aff_def, aeval_div_of_isHomogeneous (homogeneousComponent_isHomogeneous d f),
     (mem_primeOf_of_isHomogeneous y (homogeneousComponent_isHomogeneous d f)).mp
@@ -137,9 +143,9 @@ theorem affPiece_mono (hj : y j ≠ 0) {m n : ℕ} (h : m ≤ n) :
 
 theorem aeval_mem_affPiece (hj : y j ≠ 0) (f : Poly k N) :
     aeval (aff y j) f ∈ affPiece k y j f.totalDegree := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show aeval (aff y j) f = ∑ d ∈ Finset.range (f.totalDegree + 1),
-      aeval (aff y j) (homogeneousComponent d f) by rw [← map_sum, sum_homogeneousComponent]]
+
+  rw [show aeval (aff y j) f = ∑ d ∈ Finset.range (f.totalDegree + 1),
+    aeval (aff y j) (homogeneousComponent d f) by rw [← map_sum, sum_homogeneousComponent]]
   refine Submodule.sum_mem _ fun d hd => ?_
   have hd' : d ≤ f.totalDegree := Nat.lt_succ_iff.mp (Finset.mem_range.mp hd)
   exact affPiece_mono hj hd' (Submodule.subset_span ⟨_, homogeneousComponent_isHomogeneous d f, rfl⟩)

@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FlagUnipotentFourierJacobiGroupStructure
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -93,7 +133,7 @@ theorem last_dot (w : Fin ρ → R) (j : Fin ρ) (hj : j.1 + 1 = ρ) : (fun i : 
 
 theorem mulVec_single_at {n : ℕ} (P : Matrix (Fin ρ) (Fin n) R) (J : Matrix (Fin n) (Fin ρ) R) (i j : Fin ρ) (s : R) :
     (0 : R) + ((0 : Fin ρ → R) + P *ᵥ (J *ᵥ Pi.single i s)) j = s * (P * J) j i := by
-  rw [Matrix.mulVec_mulVec]; simp [mul_comm]
+  rw [Matrix.mulVec_mulVec]; simp
 
 theorem zero_tidy (a : R) (l : Fin ρ → R) : 0 + a + l ⬝ᵥ 0 = a := by simp
 
@@ -175,14 +215,6 @@ theorem upSum_one : upSum (1 : Mx D ρ ρ) = 0 := by
   · exact Matrix.one_apply_ne fun e' => by subst e'; omega
   · rfl
 
-theorem upSum_add (A B : Mx D ρ ρ) : upSum (A + B) = upSum A + upSum B := by
-  unfold upSum
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun p _ => ?_
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun q _ => ?_
-  split_ifs <;> simp
-
 theorem entry_rat (d : HypDec S S₀ ρ) (d' : HypDec S S₁ ρ) (p q : Fin ρ) : (d'.pX ⬝ d.jX) p q ∈ (incA D).range := by
   rw [Matrix.mul_apply]
   exact sum_mem fun l _ => mul_mem ⟨_, rfl⟩ ⟨_, rfl⟩
@@ -220,7 +252,7 @@ theorem last_row (hψ : ∃ s, psiE ψ s ≠ 1) (hz : z ≠ 0) (hz' : z' ≠ 0) 
   rw [psiBes_one, psiBes_one, e1, e2] at h
   exact h.symm
 
-set_option maxHeartbeats 1000000 in
+
 theorem keeps (hψ : ∃ s, psiE ψ s ≠ 1) (hz' : z' ≠ 0) (hZ : d.j0 *ᵥ ratV z = d'.j0 *ᵥ ratV z')
     (hN : flagN d = flagN d') (hc : ∀ n ∈ flagN d, psiBes ψ d 1 z n = psiBes ψ d' 1 z' n) :
     Keeps (d'.pX ⬝ d.jX) (d.pX ⬝ d'.jX) := by
@@ -242,11 +274,11 @@ theorem keeps (hψ : ∃ s, psiE ψ s ≠ 1) (hz' : z' ≠ 0) (hZ : d.j0 *ᵥ ra
     obtain ⟨n, hn, h1, h2⟩ := exists_elem d (ratV z) hij s
     have h := hc n hn
     have e1 : simpleSum d z n = s * if j.1 = i.1 + 1 then 1 else 0 := by
-      rw [simpleSum_eq, h1, h2, pX_Z, ← Matrix.mul_assoc, d.pX_jX, Matrix.one_mul, upSum_add, upSum_one, zero_tidy]
+      rw [simpleSum_eq, h1, h2, pX_Z, ← Matrix.mul_assoc, d.pX_jX, Matrix.one_mul, _root_.GlobalTheory.MixPer.upSum_add, upSum_one, zero_tidy]
       exact sum_single i j s
     have e2 : simpleSum d' z' n = s * ∑ p : Fin ρ, ∑ q : Fin ρ,
         (if q.1 = p.1 + 1 then (d'.pX ⬝ d.jX) p i * (d.pX ⬝ d'.jX) j q else 0) := by
-      rw [simpleSum_eq, key s n h1, ← hZ, h2, hZ, pX_Z, upSum_add, upSum_one, zero_tidy]
+      rw [simpleSum_eq, key s n h1, ← hZ, h2, hZ, pX_Z, _root_.GlobalTheory.MixPer.upSum_add, upSum_one, zero_tidy]
       exact sum_scal _ s
     rw [psiBes_one, psiBes_one, e1, e2] at h
     exact h.symm

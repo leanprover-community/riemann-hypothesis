@@ -1,7 +1,52 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PtEntryAppendStart
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AeNeZeroComplex
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LoeZeroOfPsd
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ParametersUPrimeForULower
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PtEntryAppendStart
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Development
 
 @[expose] public section
 
@@ -132,11 +177,6 @@ theorem gN_top (hVT : Top.VecVTypes) {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq}
       · rw [if_neg h1, inner_zero_right]
     simp [hz]
 
-theorem hsVec_smul {Wp' Wq' : Type} [NormedAddCommGroup Wp'] [InnerProductSpace ℂ Wp'] [NormedAddCommGroup Wq']
-    [InnerProductSpace ℂ Wq'] [FiniteDimensional ℂ Wq'] (c : ℂ) (X : Wq' →L[ℂ] Wp') :
-    B.hsVec (c • X) = c • B.hsVec X := by
-  unfold B.hsVec; rfl
-
 theorem hsVec_sum {Wp' Wq' : Type} [NormedAddCommGroup Wp'] [InnerProductSpace ℂ Wp'] [NormedAddCommGroup Wq']
     [InnerProductSpace ℂ Wq'] [FiniteDimensional ℂ Wq'] {ι : Type} (s : Finset ι) (X : ι → Wq' →L[ℂ] Wp') :
     B.hsVec (∑ i ∈ s, X i) = ∑ i ∈ s, B.hsVec (X i) := by
@@ -205,10 +245,10 @@ theorem vecT_deg (hDT : KB.DegTop) {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq}
       induction a using Finset.induction_on with
       | empty => simp
       | insert n a hn ih => simp [hn, ContinuousLinearMap.comp_add, ih]
-    rw [hV, ContinuousLinearMap.comp_smul, hcomp, hsVec_smul, hsVec_sum]
+    rw [hV, ContinuousLinearMap.comp_smul, hcomp, _root_.PI.UnitaryGroupMassFormula.UsCompose.hsVec_smul, hsVec_sum]
     congr 1
     refine Finset.sum_congr rfl fun n _ => ?_
-    rw [ContinuousLinearMap.comp_smul, hsVec_smul]
+    rw [ContinuousLinearMap.comp_smul, _root_.PI.UnitaryGroupMassFormula.UsCompose.hsVec_smul]
     rfl
   · unfold vecT
     simp only [if_neg hloc, smul_zero, Finset.sum_const_zero]

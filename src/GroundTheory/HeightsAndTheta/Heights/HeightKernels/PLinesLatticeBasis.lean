@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLines
+public import Mathlib.Algebra.Module.Lattice.Full
 
 @[expose] public section
 

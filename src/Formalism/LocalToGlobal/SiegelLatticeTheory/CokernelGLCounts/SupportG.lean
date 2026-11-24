@@ -1,8 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalBesselAndTopKernel
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SmoothBigCellSectionsExist
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 

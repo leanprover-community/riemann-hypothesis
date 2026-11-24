@@ -1,7 +1,51 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushLF
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -112,9 +156,9 @@ theorem wMat_mulVec (R : Type) [CommRing R] [Algebra F R] {a M : ℕ}
     (X : Fin a → Fin M → R ⊗[F] E) (c : Fin a × Fin d → R) (j : Fin M) (l : Fin d) :
     (wMat b R X *ᵥ c) (j, l) =
       crd b R (∑ i, (∑ k, c (i, k) • ((1 : R) ⊗ₜ[F] b k)) * X i j) l := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, wMat, crd, Finset.sum_mul, smul_mul_assoc, map_sum, map_smul,
-    Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply, smul_eq_mul, Fintype.sum_prod_type]
+
+  simp only [Matrix.mulVec, dotProduct, wMat, crd, Finset.sum_mul, smul_mul_assoc, map_sum, map_smul,
+  Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply, smul_eq_mul, Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_
   ring
 
@@ -196,21 +240,7 @@ theorem continuous_wMat {a M : ℕ} :
 include b in
 theorem isOpen_linIndep (hU : IsOpen {r : R | IsUnit r}) (hL : LIP R) {a M : ℕ} :
     IsOpen {X : Fin a → Fin M → R ⊗[F] E | LinearIndependent (R ⊗[F] E) X} := by
-  have e : {X : Fin a → Fin M → R ⊗[F] E | LinearIndependent (R ⊗[F] E) X} =
-      ⋃ P : Matrix (Fin a × Fin d) (Fin M × Fin d) R,
-        (fun X => (P * wMat b R X).det) ⁻¹' {r | IsUnit r} := by
-    ext X
-    simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_preimage]
-    rw [linIndep_iff b]
-    constructor
-    · intro h
-      obtain ⟨P, hP⟩ := hL _ _ _ h
-      exact ⟨P, by rw [hP, Matrix.det_one]; exact isUnit_one⟩
-    · rintro ⟨P, hP⟩ c hc
-      exact inj_of_isUnit _ P hP c hc
-  rw [e]
-  exact isOpen_iUnion fun P =>
-    hU.preimage ((continuous_const.matrix_mul (continuous_wMat b R)).matrix_det)
+  apply PI.AprimeInfW.isOpen_linIndep <;> assumption
 
 end Free
 
@@ -279,7 +309,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem finDim_FE : FiniteDimensional F E := by
   first
   | infer_instance
-  | exact Module.Finite.of_restrictScalars_finite ℚ F E
 
 theorem isOpen_indep (v : HeightOneSpectrum (𝓞 F)) (n a : ℕ) :
     IsOpen (IndepV (E := E) (n := n) v a) := by
@@ -302,7 +331,6 @@ theorem orbit_measure_sFinite : LocMassOrdW.OmSF := by
       haveI : SecondCountableTopology (Fv F v ⊗[F] E) := sc_tens (Fv F v)
       haveI : OpensMeasurableSpace (TupV (E := E) v n a) := by
         first
-        | exact ⟨le_rfl⟩
         | (haveI : BorelSpace (Fv F v ⊗[F] E) := ⟨rfl⟩; infer_instance)
       exact sfinite_of_fib (isOpen_indep v n a) hfib.choose_spec ⟨T, hT⟩
     · infer_instance

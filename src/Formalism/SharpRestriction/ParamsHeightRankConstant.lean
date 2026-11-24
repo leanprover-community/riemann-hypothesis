@@ -1,7 +1,41 @@
 module
 
-public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.GlobalSchurBounds.Chosen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -105,8 +139,7 @@ theorem FamP.large_sup {eps : ℝ} (Fm : FamP eps) (K K' : TransportedAlt) (CH :
     Fm.Large (K.sup K') CH ↔ Fm.Large K CH ∧ Fm.Large K' CH := by
   constructor
   · intro h
-    exact ⟨h.mono ⟨le_max_left _ _, fun _ => le_max_left _ _, fun _ => le_max_left _ _, fun _ => le_max_left _ _⟩,
-      h.mono ⟨le_max_right _ _, fun _ => le_max_right _ _, fun _ => le_max_right _ _, fun _ => le_max_right _ _⟩⟩
+    exact ⟨h.mono (by simp [TransportedAlt.le, TransportedAlt.sup]), h.mono (by simp [TransportedAlt.le, TransportedAlt.sup])⟩
   · rintro ⟨h, h'⟩
     exact ⟨fun c hc => max_le (h.1 c hc) (h'.1 c hc), trivial,
       fun c hc => max_le (h.2.2.1 c hc) (h'.2.2.1 c hc), fun c hc => max_le (h.2.2.2 c hc) (h'.2.2.2 c hc)⟩
@@ -130,9 +163,8 @@ theorem Closed.and {𝒞 : FamClass} {P Q : ∀ {eps : ℝ}, FamP eps → ℝ �
 theorem Closed.imp {𝒞 : FamClass} {P Q : ∀ {eps : ℝ}, FamP eps → ℝ → Prop} (hP : Closed 𝒞 P)
     (h : ∀ {eps : ℝ} (Fm : FamP eps) (CH : ℝ), 0 < eps → P Fm CH → Q Fm CH) : Closed 𝒞 Q := by
   obtain ⟨a, ha, hP⟩ := hP
-  refine ⟨a, ha, fun e he hle => ?_⟩
-  obtain ⟨K, hK⟩ := hP e he hle
-  exact ⟨K, fun Fm CH hc hL => h Fm CH he (hK Fm CH hc hL)⟩
+  exact ⟨a, ha, fun e he hle => (hP e he hle).imp fun K hK Fm CH hc hL =>
+    h Fm CH he (hK Fm CH hc hL)⟩
 
 def TuSize {eps : ℝ} (Fm : FamP eps) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, (Fm.L x i).TuGe ∧

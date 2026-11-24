@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelPlace
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCurveNormalisationLength
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
 
 @[expose] public section
 

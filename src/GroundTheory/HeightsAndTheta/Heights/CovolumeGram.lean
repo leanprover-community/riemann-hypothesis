@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.InnerProductSpace.GramMatrix
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 @[expose] public section
 

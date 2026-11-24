@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.LinearAlgebra.FreeModule.PID
 
 @[expose] public section
 

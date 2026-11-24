@@ -1,8 +1,61 @@
 module
 
-public import Mathlib
 public import Formalism.HermitianLattices.StatementLat
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Module.FinitePresentation
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.RingTheory.Flat.EquationalCriterion
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -41,8 +94,8 @@ theorem finitely_generated_projective_coords (L : Submodule R V) (hL : L.FG) (hK
     ext j
     simp [Finset.sum_apply, Pi.single_apply]
   conv_lhs => rw [← e1, e2]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, map_smul]
+
+  simp [map_sum, map_smul]
 
 theorem dualLattice_basis [FiniteDimensional K V] (L : Submodule R V)
     (hsp : Submodule.span K (L : Set V) = ⊤) :
@@ -105,8 +158,8 @@ theorem dualLattice_expand {ι : Type*} [Fintype ι] [DecidableEq ι] (h : V →
   set z := x - ∑ j, h (b j) x • bs j with hzdef
   have hz : ∀ i, h (b i) z = 0 := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [z, map_sub, map_sum, map_smul, hbs, smul_eq_mul]
+
+    simp [z, map_sub, map_sum, map_smul, hbs, smul_eq_mul]
   have hflip : h.flip z = 0 := b.ext fun i => by simp [hz i]
   have hz0 : z = 0 := hnd.2 z fun y => by simpa using LinearMap.congr_fun hflip y
   exact sub_eq_zero.mp hz0
@@ -125,8 +178,8 @@ theorem dualLattice_repr {ι : Type*} [Fintype ι] [DecidableEq ι] (h : V →�
     split_ifs <;> simp
   have hwb : ∀ i, h w (b i) = algebraMap R K (f ⟨b i, hb i⟩) := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [w, map_sum, LinearMap.map_smulₛₗ₂, hsym, starRingEnd_apply, star_star, Algebra.smul_def]
+
+    simp [w, map_sum, hsym, starRingEnd_apply, star_star, Algebra.smul_def]
   have hspL : Submodule.span R (Set.range b) ≤ L :=
     Submodule.span_le.mpr (by rintro _ ⟨i, rfl⟩; exact hb i)
   have hspan : ∀ z ∈ Submodule.span R (Set.range b), ∀ hz : z ∈ L,
@@ -212,7 +265,7 @@ theorem dualLattice :
       obtain ⟨r', hr'⟩ := hst r
       refine ⟨r' * r1, ?_⟩
       rw [map_mul, hr', hr1, ← algebraMap_smul K r x, LinearMap.map_smulₛₗ₂]
-      simp only [LinearMap.smul_apply, starRingEnd_apply, smul_eq_mul]
+      simp only [starRingEnd_apply, smul_eq_mul]
 
   have hle : dual h L ≤ Submodule.span R (Set.range bs) := by
     intro x hx
@@ -237,7 +290,7 @@ theorem dualLattice :
         rw [← algebraMap_smul K d' (bs j), LinearMap.map_smul, smul_eq_mul]
       have e2 : h (d • y) (bs j) = star (algebraMap R K d) * h y (bs j) := by
         rw [← algebraMap_smul K d y, LinearMap.map_smulₛₗ₂]
-        simp only [LinearMap.smul_apply, starRingEnd_apply, smul_eq_mul]
+        simp only [starRingEnd_apply, smul_eq_mul]
       rw [hr, e1, e2, hd']
     have e : bs j = (algebraMap R K d')⁻¹ • (d' • bs j) := by
       rw [← algebraMap_smul K d' (bs j), smul_smul, inv_mul_cancel₀ hd'0, one_smul]
@@ -291,7 +344,7 @@ theorem dualLattice :
       obtain ⟨r, hr⟩ := hx (a • z) ⟨z, hz, rfl⟩
       refine ⟨r, ?_⟩
       rw [hr, LinearMap.map_smulₛₗ₂, LinearMap.map_smul]
-      simp only [LinearMap.smul_apply, starRingEnd_apply, smul_eq_mul]
+      simp only [starRingEnd_apply, smul_eq_mul]
     · rintro ⟨y, hy, rfl⟩
       rw [mem_dual] at hy ⊢
       rintro _ ⟨z, hz, rfl⟩
@@ -299,7 +352,7 @@ theorem dualLattice :
       refine ⟨r, ?_⟩
       simp only [LinearMap.restrictScalars_apply, LinearMap.lsmul_apply]
       rw [hr, LinearMap.map_smulₛₗ₂, LinearMap.map_smul]
-      simp only [LinearMap.smul_apply, starRingEnd_apply, smul_eq_mul]
+      simp only [starRingEnd_apply, smul_eq_mul]
       rw [← mul_assoc, mul_inv_cancel₀ hsa, one_mul]
 
 end Formalism.HermitianLatticesTheory

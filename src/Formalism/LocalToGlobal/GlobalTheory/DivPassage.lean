@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-public import Formalism.LocalToGlobal.Divisibility.RowLat
-public import Formalism.LocalToGlobal.Divisibility.DefGroup
 public import Formalism.BranchSandwichDivisors.StatementL
 
 @[expose] public section

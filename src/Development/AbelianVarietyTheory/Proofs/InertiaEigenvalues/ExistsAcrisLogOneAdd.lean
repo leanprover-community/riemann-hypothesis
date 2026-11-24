@@ -1,9 +1,49 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AcrisEqZeroOfForallDvd
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
-public import Development.AbelianVarietyTheory.CrystallinePeriods.AdicMaps
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsLogAExtends
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaBdRPlusSurjectiveKerUnitsEquivariant
 
 @[expose] public section
 
@@ -29,18 +69,7 @@ theorem acris_lim_pt (s : ℕ → Per.Acris0 l)
   exact hz
 
 theorem frobenius_surjective_modP : Function.Surjective (frobenius (ModP (Per.OC l) l) l) := by
-  intro x
-  obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective x
-  have hl : 0 < l := (Fact.out : l.Prime).pos
-  obtain ⟨b, hb⟩ := IsAlgClosed.exists_pow_nat_eq (a : ℂ_[l]) hl
-  have hb1 : b ∈ 𝓞_ℂ_[l] := by
-    rw [GlobalTheory.RingBasics.mem_OC]
-    have := (GlobalTheory.RingBasics.mem_OC _).1 a.2
-    rw [← hb, norm_pow] at this
-    exact (pow_le_one_iff_of_nonneg (norm_nonneg _) hl.ne').1 this
-  refine ⟨Ideal.Quotient.mk _ ⟨b, hb1⟩, ?_⟩
-  rw [frobenius_def, ← map_pow]
-  exact congrArg _ (Subtype.ext hb)
+  apply _root_.GlobalTheory.MemLoc.ThetaD.frob_surj
 
 theorem θ_surjective : Function.Surjective (Per.θ l) :=
   surjective_fontaineTheta frobenius_surjective_modP
@@ -62,7 +91,7 @@ theorem exists_divPow {w : Per.Ainf l} (hw : InJ w) (k : ℕ) :
       rw [← mul_assoc, hu, one_mul]
     exact ⟨_, GlobalTheory.RingIface.dividedPower_mem_Acris0 l _ j _ hz e, e⟩
   choose d hdm hdd using hd
-  choose q hq using fun m : ℕ => GlobalTheory.RingBasics.exists_pow_div_factorial l m
+  choose q hq using fun m : ℕ => _root_.Reformulated.AutPerF.exists_factorial_mul_eq_pow l m
   let ζ : ℤ_[l] →+* Per.AinfP l := (algebraMap (Per.Ainf l) (Per.AinfP l)).comp (Per.zA l)
   have hq' : ∀ m : ℕ, ((m.factorial : ℕ) : Per.AinfP l) * ζ (q m) = ((l : ℕ) : Per.AinfP l) ^ m := by
     intro m

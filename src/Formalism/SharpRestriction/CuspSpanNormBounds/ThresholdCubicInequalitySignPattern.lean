@@ -1,31 +1,52 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalDataRealPlace
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsGramNorm
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
-public import Formalism.SharpRestriction.ParamsHeightRankConstant
-public import Formalism.SharpRestriction.CuspSpanNormBounds.ThinScalesBound
-public import Formalism.SharpRestriction.CuspSpanNormBounds.ChainLength
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyFormalDegreeLowerBound
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalBesselAndTopKernel
-public import Formalism.SharpRestriction.CuspSpanNormBounds.AuxiliaryNormPrimes
-public import Formalism.SharpRestriction.CuspSpanNormBounds.MassAndBranchingHypotheses
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonGenericAndKTwoTheorems
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeIndexAndWeightTheory
-public import Formalism.SharpRestriction.CuspSpanNormBounds.UniformConstantsAndStatements
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
-public import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusProjectedBounds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.AdmissibleBoundsFromSource
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
-public import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
-public import Formalism.YangianSpanCharacter.YangianRelationFirst
-public import Formalism.FormalDegreeBessel.FinalG
-public import Formalism.FormalDegreeBessel.FinalDS
-public import Formalism.FormalDegreeBessel.FinalIO
-public import Formalism.RealPlaceAnalysis.FinalF
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
 
 @[expose] public section
 
@@ -89,8 +110,9 @@ theorem sqrt_le_sq_nat (r : ℕ) : Real.sqrt (r : ℝ) ≤ (r : ℝ) ^ 2 := by
   · subst h0
     simp
   · have h1 : (1 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
-    have hsq : Real.sqrt (r : ℝ) ^ 2 = (r : ℝ) := Real.sq_sqrt (Nat.cast_nonneg r)
-    nlinarith [sq_nonneg (Real.sqrt (r : ℝ) - 1), sq_nonneg ((r : ℝ) - 1), Real.sqrt_nonneg (r : ℝ)]
+    have hr2 : (r : ℝ) ≤ (r : ℝ) ^ 2 := by rw [sq]; exact le_mul_of_one_le_right (by linarith) h1
+    have hsr : Real.sqrt (r : ℝ) ≤ (r : ℝ) := Real.sqrt_le_iff.2 ⟨by linarith, hr2⟩
+    exact le_trans hsr hr2
 
 theorem gapC_le (D : D7) (C Cl : ℝ) (hCl : C ≤ Cl) (h25 : 0 < Cl) :
     C * D.R.k * (D.R.m : ℝ) ^ 3 ≤ Cl * D.R.k * (D.R.m : ℝ) ^ 4 := by
@@ -181,7 +203,9 @@ theorem logf_of (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT A : �
     have e1 : Real.log (D.R.f : ℝ) ^ 2 ≤ D.R.rS := by
       calc Real.log (D.R.f : ℝ) ^ 2 ≤ Real.sqrt (D.R.rS : ℝ) ^ 2 := pow_le_pow_left₀ hlf a5 2
         _ = D.R.rS := Real.sq_sqrt (by positivity)
-    have e4 : (D.R.m : ℝ) ≤ (D.R.m : ℝ) ^ 2 := by nlinarith
+    have e4 : (D.R.m : ℝ) ≤ (D.R.m : ℝ) ^ 2 := by
+      rw [sq]
+      exact le_mul_of_one_le_right (by linarith) (by linarith)
     have e5 : (D.R.m : ℝ) ^ 2 ≤ (D.R.m : ℝ) ^ 2 * large₂.sc.L := le_mul_of_one_le_right (by positivity) hL.le
     have e3 : 0 ≤ (D.R.m : ℝ) ^ 2 * large₂.sc.L := mul_nonneg (by positivity) hL0
     calc Real.log (D.R.f : ℝ) ^ 2 ≤ (D.R.m : ℝ) ^ 2 * large₂.sc.L := by linarith
@@ -199,8 +223,10 @@ theorem Stand_of (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : 
   obtain ⟨d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14⟩ := hD
   have hg0 := (D.host.g_prime 0).two_le
   have hg1 := (D.host.g_prime 1).two_le
-  have hG : 4 ≤ D.host.g 0 * D.host.g 1 := by nlinarith
-  have hG2 : 2 < (D.host.g 0 * D.host.g 1) ^ 2 := by nlinarith
+  have hG : 4 ≤ D.host.g 0 * D.host.g 1 := Nat.mul_le_mul hg0 hg1
+  have hG2 : 2 < (D.host.g 0 * D.host.g 1) ^ 2 := by
+    calc 2 < 4 ^ 2 := by norm_num
+      _ ≤ (D.host.g 0 * D.host.g 1) ^ 2 := Nat.pow_le_pow_left hG 2
   have three : ∀ w : D.what₂.Word, 3 ≤ (D.mem w).A.T := by
     intro w
     have hp := (D.mem w).A.T_prime.two_le
@@ -266,7 +292,7 @@ theorem NonGenericAndKTwoTheorems.Hyp_of (D : D7) (large₂ : SizeData₂ D) (C'
 
 theorem lambda_low_index_eq_neg (k r : ℕ) (v : Fin (k - 1) → ℝ) (b : Fin (2 * r + 2) → ℝ) (j : ℕ) (hj : j < 2 * r + 2)
     (h' : k - 1 + j < 2 * r + k + 1) : CayleySignature.lam48 k r v b ⟨k - 1 + j, h'⟩ = -b ⟨j, hj⟩ := by
-  simp only [CayleySignature.lam48, Fin.val_mk]
+  simp only [CayleySignature.lam48]
   split_ifs with hh
   · omega
   · exact congrArg (fun x => -b x) (Fin.ext (by show k - 1 + j - (k - 1) = j; omega))
@@ -394,9 +420,7 @@ theorem vand_uS_pos (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) : 0 < van
   unfold vand
   exact Finset.prod_pos (fun a _ => Finset.prod_pos (fun b hb => sub_pos.mpr (hdec a b (Finset.mem_filter.mp hb).2)))
 
-theorem rdE_pos (D : D7) : 0 < D.host.rdE := by
-  unfold Formalism.BasicNotions.Host.rdE
-  exact Real.rpow_pos_of_pos (abs_pos.mpr (by exact_mod_cast NumberField.discr_ne_zero D.host.E)) _
+alias rdE_pos := _root_.Formalism.MainNotions.S.rdE_pos
 
 theorem vand_ratio_of (D : D7) (C1 : ℝ) (h : LocalBesselAndTopKernel.MassRatio₂ D C1) (u u' : D.what₂.Word) (τ : D.what₂.Tau) :
     vand (uS D u' τ) ≤ C1 ^ D.R.k * vand (uS D u τ) := by
@@ -480,28 +504,39 @@ theorem low_parameter_gap_eq_diff (D : D7) (τ : D.what₂.Tau) (j : Fin (2 * D.
 
 theorem numNV (N m t : ℝ) (hN : 6 ≤ N) (hm : m ≤ N) (hm0 : 0 ≤ m) (ht : t = N + 6) :
     2 * (N + m * t) ^ 3 + t + 3 < N ^ 19 := by
-  have h1 : N + m * t ≤ 3 * N ^ 2 := by subst ht; nlinarith
-  have h0 : 0 ≤ N + m * t := by subst ht; nlinarith
+  have hN2 : 6 * N ≤ N ^ 2 := by rw [sq]; exact mul_le_mul_of_nonneg_right hN (by linarith)
+  have h1 : N + m * t ≤ 3 * N ^ 2 := by
+    subst ht
+    have hm1 : m * (N + 6) ≤ N * (N + 6) := mul_le_mul_of_nonneg_right hm (by linarith)
+    have heq : N * (N + 6) = N ^ 2 + 6 * N := by ring
+    linarith
+  have h0 : 0 ≤ N + m * t := by
+    subst ht
+    have : 0 ≤ m * (N + 6) := mul_nonneg hm0 (by linarith)
+    linarith
   have h3 : (N + m * t) ^ 3 ≤ (3 * N ^ 2) ^ 3 := pow_le_pow_left₀ h0 h1 3
   have h4 : (3 * N ^ 2) ^ 3 = 27 * N ^ 6 := by ring
   have h6 : (6 : ℝ) ^ 6 ≤ N ^ 6 := pow_le_pow_left₀ (by norm_num) hN 6
   have h13 : (6 : ℝ) ^ 13 ≤ N ^ 13 := pow_le_pow_left₀ (by norm_num) hN 13
   have h5 : t + 3 ≤ N ^ 6 := by
     have h2 : N ^ 2 ≤ N ^ 6 := pow_le_pow_right₀ (by linarith) (by norm_num)
-    have h22 : N + 9 ≤ N ^ 2 := by nlinarith
+    have h22 : N + 9 ≤ N ^ 2 := by linarith
     subst ht; linarith
   have h19 : N ^ 19 = N ^ 6 * N ^ 13 := by ring
   have hpos : 0 < N ^ 6 := by positivity
   have h613 : (56 : ℝ) ≤ N ^ 13 := le_trans (by norm_num) h13
-  have : 56 * N ^ 6 ≤ N ^ 6 * N ^ 13 := by nlinarith
-  rw [h19]; nlinarith
+  have : 56 * N ^ 6 ≤ N ^ 6 * N ^ 13 := by
+    rw [mul_comm (56 : ℝ)]
+    exact mul_le_mul_of_nonneg_left h613 hpos.le
+  rw [h19]; linarith
 
 theorem numNV' (N m t : ℝ) (hN : 6 ≤ N) (hm : m ≤ N) (hm0 : 0 ≤ m) (ht : t = N + 1800) :
     2 * (N + m * t) ^ 3 + t + 3 < N ^ 19 := by
   subst ht
+  have hN2 : 6 * N ≤ N ^ 2 := by rw [sq]; exact mul_le_mul_of_nonneg_right hN (by linarith)
   have a : m * (N + 1800) ≤ N * (N + 1800) := mul_le_mul_of_nonneg_right hm (by linarith)
-  have b : 1801 * N ≤ 301 * N ^ 2 := by nlinarith
-  have h1 : N + m * (N + 1800) ≤ 302 * N ^ 2 := by nlinarith
+  have b : 1801 * N ≤ 301 * N ^ 2 := by grind
+  have h1 : N + m * (N + 1800) ≤ 302 * N ^ 2 := by grind
   have h0 : 0 ≤ N + m * (N + 1800) := by
     have : 0 ≤ m * (N + 1800) := mul_nonneg hm0 (by linarith)
     linarith
@@ -516,8 +551,10 @@ theorem numNV' (N m t : ℝ) (hN : 6 ≤ N) (hm : m ≤ N) (hm0 : 0 ≤ m) (ht :
   have h19 : N ^ 19 = N ^ 6 * N ^ 13 := by ring
   have hpos : 0 < N ^ 6 := by positivity
   have h613 : (55087218 : ℝ) ≤ N ^ 13 := le_trans (by norm_num) h13
-  have : 55087218 * N ^ 6 ≤ N ^ 6 * N ^ 13 := by nlinarith
-  rw [h19]; nlinarith
+  have : 55087218 * N ^ 6 ≤ N ^ 6 * N ^ 13 := by
+    rw [mul_comm (55087218 : ℝ)]
+    exact mul_le_mul_of_nonneg_left h613 hpos.le
+  rw [h19]; linarith
 
 theorem uS_dec (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) : StrictAnti (uS D u τ) := by
   have hdec : ∀ a c : Fin D.R.k, a < c → uS D u τ c < uS D u τ a := by
@@ -552,25 +589,7 @@ theorem lamSH_int (D : D7) (τ : D.what₂.Tau) (i : Fin (2 * D.R.rS + D.R.k + 1
 
 theorem lamSH_hc (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT : ℝ) (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT)
     (τ : D.what₂.Tau) : Formalism.QuantumDeterminants.IsHCParam (lamSH D.R (D.hc τ)) := by
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22,
-    a23, a24, a25⟩ := hH
-  have hpos : (0 : ℝ) ≤ Cl * D.R.k * (D.R.m : ℝ) ^ 4 + D.R.r * (D.R.m : ℝ) ^ 10 :=
-    add_nonneg (mul_nonneg (mul_nonneg a25.le (by positivity)) (by positivity)) (by positivity)
-  have hdim := dimS_eq D.R
-  constructor
-  · have hdec := dec_all (lamSH D.R (D.hc τ)) (fun i hi => by
-      have := a22 τ ⟨i.1, by omega⟩ (by simp only; omega)
-      have e : lamSH D.R (D.hc τ) ⟨i.1 + 1, hi⟩ < lamSH D.R (D.hc τ) i := by
-        show lamS D.R (D.hc τ) ⟨i.1 + 1, _⟩ < lamS D.R (D.hc τ) ⟨i.1, _⟩
-        linarith
-      exact e)
-    exact fun a c hac => hdec a c hac
-  · intro a
-    obtain ⟨z, hz⟩ := lamSH_int D τ a
-    obtain ⟨s, hs⟩ := D.R.k_even
-    refine ⟨z - (D.R.rS + s), ?_⟩
-    have hk : (D.R.k : ℝ) = (s : ℝ) + s := by exact_mod_cast hs
-    rw [hz]; push_cast; rw [hk]; ring
+  apply Formalism.MainNotions.BridgeLemma.szh_hc <;> assumption
 
 theorem nS_cast (D : D7) : ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = (D.R.r : ℝ) := by
   obtain ⟨⟨j, hj⟩, h2, h3⟩ := ranks_all_lemma D.R

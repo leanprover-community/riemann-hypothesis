@@ -1,12 +1,50 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPart
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CongAt
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReferenceCharactersFactorTame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ClassLatticeSelfDual
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedInvMulLe
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValSubLtOfHasRes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicMatrixCongruenceBadPrimeIffCompletion
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValSubLtOfHasRes
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedInvMulLe
+import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MidChart
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 
@@ -173,8 +211,8 @@ theorem cond_iff {g : GL (Fin a) (AfE F E)} {g' : GL (Fin b) (AfE F E)} {p : Dec
     have hxz : x z ∈ p'.deco.1.at P.1 := by
       refine (mem_localization_iff p'.deco.2.lat hg'.lat P.1 _).2 fun r => ?_
       rw [pullV_mid g]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
       exact Valuation.map_sum_le _ fun s _ => by
         rw [map_mul]
         exact mul_le_one' (h1 r s) (hw s)
@@ -184,8 +222,8 @@ theorem cond_iff {g : GL (Fin a) (AfE F E)} {g' : GL (Fin b) (AfE F E)} {p : Dec
       have e1 : Col2.pullV g z ia = ((1 : Matrix (Fin a) (Fin a) (AfE F E)) *ᵥ Col2.pullV g z) ia := by rw [Matrix.one_mulVec]
       rw [pullV_mid g, e1]
       simp only [Matrix.mulVec, dotProduct, _root_.sub_mul, Finset.sum_sub_distrib]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Valuation.map_sub_swap, ← map_sub, e, map_sum]
+
+    rw [Valuation.map_sub_swap, ← map_sub, e, map_sum]
     refine Valuation.map_sum_lt _ one_ne_zero fun s _ => ?_
     rw [map_mul, map_mul]
     exact lt_of_le_of_lt (mul_le_of_le_one_right' (hw s)) (h2 s)
@@ -195,13 +233,13 @@ omit [StarRing E] in
 theorem val_mul_mul_lt (P : HeightOneSpectrum (𝓞 E)) {A : Matrix (Fin b) (Fin b) (AfE F E)} {D : Matrix (Fin b) (Fin a) (AfE F E)}
     {C : Matrix (Fin a) (Fin a) (AfE F E)} (hA : ∀ r s, Valued.v (adAt F P (A r s)) ≤ 1) (hD : ∀ r s, Valued.v (adAt F P (D r s)) < 1)
     (hC : ∀ r s, Valued.v (adAt F P (C r s)) ≤ 1) (r : Fin b) (s : Fin a) : Valued.v (adAt F P ((A * D * C) r s)) < 1 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.mul_apply, map_sum]
+
+  rw [Matrix.mul_apply, map_sum]
   refine Valuation.map_sum_lt _ one_ne_zero fun j _ => ?_
   rw [map_mul, map_mul]
   refine lt_of_le_of_lt (mul_le_of_le_one_right' (hC j s)) ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.mul_apply, map_sum]
+
+  rw [Matrix.mul_apply, map_sum]
   refine Valuation.map_sum_lt _ one_ne_zero fun l _ => ?_
   rw [map_mul, map_mul]
   exact lt_of_le_of_lt (mul_le_of_le_one_left' (hA r l)) (hD l j)

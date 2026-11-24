@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.NonemptyAdelicDecomposition
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
+import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
+public import Mathlib.Analysis.Calculus.Deriv.Star
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

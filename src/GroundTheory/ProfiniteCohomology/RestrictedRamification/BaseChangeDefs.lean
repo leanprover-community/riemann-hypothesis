@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.Topology.Algebra.OpenSubgroup
+public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Ramification
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Unramified
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -133,12 +142,12 @@ theorem continuous_coe_fixingMulEquivOfRestrictScalarsEq_symm [Algebra.IsIntegra
   intro y hy
   have hy' : y = ∑ i, b.repr ⟨y, hy⟩ i • (b i : E) := by
     have := congrArg K.val (b.sum_repr ⟨y, hy⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
+
+    rw [map_sum] at this
     simp only [map_smul] at this
     exact this.symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hy', map_sum]
+
+  rw [hy', map_sum]
   simp only [map_smul, hb]
 
 end Abstract
@@ -196,8 +205,8 @@ theorem exists_le_of_algebraMap_mem (hL : ∀ x : L, algebraMap L Ω x ∈ (maxU
   have hx : algebraMap L Ω x = ∑ i, b.repr x i • algebraMap L Ω (b i) := by
     conv_lhs => rw [← b.sum_repr x]
     change IsScalarTower.toAlgHom F L Ω _ = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_smul]
     rfl
   rw [hx]

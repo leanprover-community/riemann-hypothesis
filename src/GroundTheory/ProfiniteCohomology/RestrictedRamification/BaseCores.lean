@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.PoincarePairs.Devissage
+public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import GroundTheory.ProfiniteCohomology.PoincarePairs.IsDiscreteRepResHomCoindRes
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
 public import GroundTheory.ProfiniteCohomology.EulerChar
+public import GroundTheory.ProfiniteCohomology.PoincarePairs.Devissage
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Dimension
 
 @[expose] public section

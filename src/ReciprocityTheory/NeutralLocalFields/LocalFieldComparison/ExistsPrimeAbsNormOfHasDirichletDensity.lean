@@ -1,7 +1,13 @@
 module
 
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TendstoPrimeIdealZetaSumUniv
 import all Mathlib.NumberTheory.NumberField.DirichletDensity
+public import Mathlib.NumberTheory.NumberField.DirichletDensity
+import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.NumberTheory.RamificationInertia.Basic
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TendstoPrimeIdealZetaSumUniv
+public import Mathlib.Analysis.PSeries
 
 @[expose] public section
 
@@ -235,7 +241,6 @@ theorem exists_prime_absNorm_of_hasDirichletDensity {S : Set (HeightOneSpectrum 
   have h6 : δ / 2 * (2 * (B + 1) / δ) = B + 1 := by
     have hδ' : δ ≠ 0 := hδ.ne'
     field_simp
-    try ring
   rw [h6] at h5
   linarith
 

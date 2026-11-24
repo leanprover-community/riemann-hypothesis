@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.Divisibility.ConjugationAtDistinguishedPlace
-public import Formalism.LocalToGlobal.UnitaryNorms.PowValCast
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

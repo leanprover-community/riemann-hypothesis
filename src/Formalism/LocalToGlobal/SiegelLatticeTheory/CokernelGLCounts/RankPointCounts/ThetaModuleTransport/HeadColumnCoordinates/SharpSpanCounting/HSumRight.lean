@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.ThetaC
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.SharpEquivApply
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumA
 
 @[expose] public section
 
@@ -18,8 +20,8 @@ variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M 
 
 theorem h_sum_right {ι : Type} (s : Finset ι) (c : ι → E) (g : ι → V) (u : V) :
     H.h u (∑ i ∈ s, c i • g i) = ∑ i ∈ s, M.L.cj (c i) * H.h u (g i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [H.h_herm, h_sum_left, map_sum]
+
+  rw [H.h_herm, h_sum_left, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, ← H.h_herm]
 

@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

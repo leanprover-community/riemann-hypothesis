@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.RegDom
+import ReciprocityTheory.CommutativeAlgebra.MaximalIdealSquares.RingKrullDimQuotientSpanSingletonAddOne
 
 @[expose] public section
 

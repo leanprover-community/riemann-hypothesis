@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualQuadratic
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilPairing
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilGaloisFunctionField
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.TateModule
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualWeil
+import Mathlib.NumberTheory.Padics.PadicIntegers
 
 @[expose] public section
 

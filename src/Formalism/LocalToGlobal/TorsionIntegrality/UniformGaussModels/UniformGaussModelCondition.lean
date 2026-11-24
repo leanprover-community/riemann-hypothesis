@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthShapeOne
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementN
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementE
+public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.IsHypPair
 
 @[expose] public section
 

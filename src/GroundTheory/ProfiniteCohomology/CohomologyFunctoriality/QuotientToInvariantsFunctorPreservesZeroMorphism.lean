@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
+public import Mathlib.Algebra.Homology.HomologySequenceLemmas
 
 @[expose] public section
 

@@ -1,13 +1,58 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GaXiSplit
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerBlockPoint
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadicalUnipotentFirstBasisEqOne
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellDiagonalMap
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerBlockPoint
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StrictUpperNeg
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -53,7 +98,7 @@ theorem embedded_group_right_action : EmbGRn := by
     intro M
     rw [← Matrix.mul_assoc (Hpk k ρ), ← Matrix.mul_assoc, h3]
   simp only [U.Rn, U.embG, Ux5.block3_mul_blocks, h1, h2, Matrix.conjTranspose_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul, Matrix.neg_mul,
-    Matrix.mul_neg, Matrix.smul_mul, Matrix.mul_smul, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, h3, h4,
+    Matrix.mul_neg, Matrix.mul_smul, Matrix.mul_add, Matrix.mul_assoc, h3, h4,
     neg_zero, smul_zero]
 
 private theorem wP_inv_mul_wP_eq_one {p : ℕ} (σ : Equiv.Perm (Fin p)) : U.wP σ⁻¹ * U.wP σ = 1 := by
@@ -78,7 +123,7 @@ theorem lh_lower {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : U.LW σ → ℂ) : G.I
   · simp only [Matrix.transpose_apply, hentry]
     have h1 : σ j ≠ σ i := fun h => (ne_of_lt hij) (σ.injective h)
     have h2 : ¬ (i < j) := not_lt.mpr hij.le
-    simp [U.lowW, Matrix.one_apply, h1, h2]
+    simp [U.lowW, h1, h2]
 
 theorem head_hermitian_eq : HeadHEq := by
   intro p σ d v u
@@ -91,10 +136,10 @@ private theorem blk2_fin_zero_eq {p : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (B' 
   ext i j
   have hi : finSumFinEquiv.symm i = Sum.inl i := by
     rw [Equiv.symm_apply_eq]
-    exact Fin.ext (by first | rfl | simp [finSumFinEquiv_apply_left])
+    exact Fin.ext (by first | rfl)
   have hj : finSumFinEquiv.symm j = Sum.inl j := by
     rw [Equiv.symm_apply_eq]
-    exact Fin.ext (by first | rfl | simp [finSumFinEquiv_apply_left])
+    exact Fin.ext (by first | rfl)
   simp [U.blk2, Matrix.reindex_apply, hi, hj]
 
 theorem lower_corner_hermitian_zero : ZjHZero := by
@@ -108,7 +153,7 @@ theorem lh_unit {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : U.LW σ → ℂ) : IsUn
     · intro i j hij
       have h1 : i < j := OrderDual.toDual_lt_toDual.mp hij
       have h2 : ¬ j < i := not_lt.mpr h1.le
-      simp [U.lowW, Matrix.one_apply, ne_of_lt h1, h2]
+      simp [U.lowW, ne_of_lt h1, h2]
   simp only [lhOf, Matrix.det_mul, hL, mul_one]
   exact (isUnit_det_wP σ).mul (Matrix.isUnit_nonsing_inv_det _ (isUnit_det_wP σ))
 
@@ -120,7 +165,7 @@ theorem gamma_xi_split : GaXiSplit := by
   have hγ : h⁻¹ * ν⁻¹ * g * ν' * h' = (h⁻¹ * ν⁻¹) * g * (ν' * h') := by
     simp only [Matrix.mul_assoc]
   have hE : U.embG k p ρ (ν' * h') = U.embG k p ρ ν' * U.embG k p ρ h' := by
-    simp only [U.embG, Ux5.block3_mul_blocks, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul]
+    simp only [U.embG, Ux5.block3_mul_blocks, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one]
   simp only [U.gaXi]
   rw [PBM.rn_inv, hZ]
   show U.Rn k p ρ (-ξ.1.1) * U.mMap k p ρ (lhOf σ ξ.2.2.1 * U.hMat σ d * G.upper ξ.2.2.2) (h⁻¹ * ν⁻¹ * g * ν' * h') *

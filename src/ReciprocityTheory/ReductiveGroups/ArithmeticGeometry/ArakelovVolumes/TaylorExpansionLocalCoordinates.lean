@@ -1,7 +1,17 @@
 module
 
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+public import Mathlib.Analysis.Analytic.IteratedFDeriv
+public import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.IteratedFDerivEqZeroOfIsBigO
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.ZeroDimA
+public import Mathlib.Analysis.Calculus.ContDiff.RCLike
+import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FamilyLeCoords
 
 @[expose] public section
 
@@ -25,8 +35,8 @@ theorem multilinear_diagonal_homogeneous {n a : ℕ} (D : ContinuousMultilinearM
       ∑ r : Fin a → Fin n, (∏ i, u (r i)) * D (fun i => EuclideanSpace.single (r i) (1 : ℂ)) := by
     have e1 : (fun _ : Fin a => u) = fun _ => ∑ k, u k • EuclideanSpace.single k (1 : ℂ) := by
       rw [← hu]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e1, D.map_sum]
+
+    rw [e1, D.map_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     rw [D.map_smul_univ (fun i => u (r i)) (fun i => EuclideanSpace.single (r i) (1 : ℂ)), smul_eq_mul]
   have h2 : ∀ r : Fin a → Fin n, ∏ i, u (r i) = ∏ k, u k ^ cnt r k := by

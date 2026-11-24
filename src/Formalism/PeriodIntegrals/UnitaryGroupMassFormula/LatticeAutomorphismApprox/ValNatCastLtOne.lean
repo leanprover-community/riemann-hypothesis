@@ -1,8 +1,48 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.CongruenceLiftOfBasis
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeAutomorphismApprox.LocDefs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteAdelicComparison.AdelicLatticeToLocalLattices
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicIndexEquality.CompactLocalGlobal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,34 +60,17 @@ theorem val_natCast_lt_one (F : Type) [Field F] [NumberField F] (v : HeightOneSp
     rw [map_natCast (algebraMap (𝓞 F) F)]
     first
     | exact (map_natCast (algebraMap F (v.adicCompletion F)) g).symm
-    | (rw [← map_natCast (algebraMap F (v.adicCompletion F)) g]; rfl)
   rw [h1]
   first
   | rw [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
     exact (IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem v _).mpr hg
   | rw [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation]
     exact (IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem v _).mpr hg
-  | simpa [IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem] using hg
 
 theorem natCast_mem_max (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (g : ℕ)
     (hg : (g : 𝓞 F) ∈ v.asIdeal) :
     (g : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
-  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-  intro hu
-  obtain ⟨w, hw⟩ := hu.exists_right_inv
-  have h1 := val_natCast_lt_one F v g hg
-  have h2 : Valued.v ((w : v.adicCompletion F)) ≤ 1 := w.2
-  have h3 : (g : v.adicCompletion F) * (w : v.adicCompletion F) = 1 := by
-    have := congrArg Subtype.val hw
-    simpa using this
-  have h4 := congrArg Valued.v h3
-  rw [map_mul, map_one] at h4
-  have h5 : Valued.v ((g : v.adicCompletion F)) * Valued.v ((w : v.adicCompletion F)) < 1 :=
-    calc Valued.v ((g : v.adicCompletion F)) * Valued.v ((w : v.adicCompletion F))
-        ≤ Valued.v ((g : v.adicCompletion F)) * 1 := by gcongr
-      _ = Valued.v ((g : v.adicCompletion F)) := mul_one _
-      _ < 1 := h1
-  exact (ne_of_lt h5) h4
+  apply PI.LocMassTypL.natCast_mem_max <;> assumption
 
 theorem vecV_smul' (I : AutInst) (v : HeightOneSpectrum (𝓞 I.F)) (a : I.E ⊗[I.F] Af I.F)
     (x : Fin I.n → I.E ⊗[I.F] Af I.F) :

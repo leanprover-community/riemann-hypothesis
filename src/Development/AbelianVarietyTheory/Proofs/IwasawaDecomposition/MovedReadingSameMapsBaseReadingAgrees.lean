@@ -1,16 +1,41 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonzeroPlacesOverPrimesLifts
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.UpLReStage
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsIsBIffCoreB
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BaseLevelRowSideTransport
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMovedRowLiftDataToFittingStages
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksStage
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonzeroPlacesOverPrimesOfLifts
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Wp3ApplyEqSqMulSubSqMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -142,14 +167,14 @@ def cxMv : Cx.CxData (famR (w.st Z) w.I hX (usedOf w.I T Wt) z.Xg z.tr).fam3.amb
 theorem cxMv_eq : z.R.toCx3 z.F = cxMv N h z := (by with_unfolding_all exact ((toCx3_eq (a := Z) (Db.setDivZ Z N h) (iK := z.alg) z.R z.F) :))
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem mjW_fwd {X : DivX (w.D Z)} {jW : JwT z.F (cxMv N h z)} (H : MjW z.F X (cxMv N h z) jW) :
     MjW (datMv N h z).F (divMv N h X) ((datMv N h z).R.toCx3 (datMv N h z).F) jW := by
   obtain ⟨J, HJ⟩ := H
   exact ⟨⟨(by with_unfolding_all exact (J.eW :))⟩, ⟨(by with_unfolding_all exact (HJ.j_eq :)), (by with_unfolding_all exact (HJ.hlat :))⟩⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem mjW_back {X : DivX (w.D (Db.setDivZ Z N h))} {jW : JwT (datMv N h z).F ((datMv N h z).R.toCx3 (datMv N h z).F)}
     (H : MjW (datMv N h z).F X ((datMv N h z).R.toCx3 (datMv N h z).F) jW) :
     MjW z.F (divUnmv N h X) (cxMv N h z) jW := by
@@ -186,7 +211,7 @@ variable {N h t} {Y : Read (datMv N h t.r.z).R.toRealDat (datMv N h t.r.z).F.lv2
 theorem ReadSame.tup_eq (s : ReadSame N h t Y L) : ((by exact Y.tup) : type_of% t.r.Y.tup) = t.r.Y.tup := eq_of_heq ((by exact s.tup))
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.mj_back (s : ReadSame N h t Y L) {X : DivX (w.D (Db.setDivZ Z N h))} (H : MjAre L X) :
     MjAre t.r.Z (divUnmv N h X) := by
   with_unfolding_all
@@ -195,7 +220,7 @@ theorem ReadSame.mj_back (s : ReadSame N h t Y L) {X : DivX (w.D (Db.setDivZ Z N
       (mjW_back N h t.r.z (X := X) (jW := L.jW) H)
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.mj_fwd (s : ReadSame N h t Y L) {X : DivX (w.D Z)} (H : MjAre t.r.Z X) :
     MjAre L (divMv N h X) := by
   with_unfolding_all
@@ -203,7 +228,7 @@ theorem ReadSame.mj_fwd (s : ReadSame N h t Y L) {X : DivX (w.D Z)} (H : MjAre t
       ((MjW.congr (cxMv_eq N h t.r.z) (jW := t.r.Z.jW) (jW' := L.jW) s.jW).1 H)
 
 
-set_option maxHeartbeats 2000000 in
+
 def ReadSame.rowsAre (s : ReadSame N h t Y L) :
     R3.RowsAre (w.st (Db.setDivZ Z N h)) w.I t.hX T Wt (Equiv.refl _) (p0Mv N h p0) where
   z := datMv N h t.r.z
@@ -213,7 +238,7 @@ def ReadSame.rowsAre (s : ReadSame N h t Y L) :
   tup_ix u := (by with_unfolding_all exact (((congrFun s.tup_eq u).trans (t.r.tup_ix u)) :))
 
 
-set_option maxHeartbeats 2000000 in
+
 def ReadSame.what₂ (s : ReadSame N h t Y L) : RowsT K w (Db.setDivZ Z N h) Wt (p0Mv N h p0) where
   hX := t.hX
   r := s.rowsAre
@@ -233,7 +258,7 @@ def ReadSame.what₂ (s : ReadSame N h t Y L) : RowsT K w (Db.setDivZ Z N h) Wt 
     with_unfolding_all exact ⟨hIdx.Ij_def, hIdx.jw_def⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.rowsSame (s : ReadSame N h t Y L) : RowsSame t s.what₂ := by
   exact {
     Xg := rfl
@@ -259,14 +284,14 @@ theorem ReadSame.rowsSame (s : ReadSame N h t Y L) : RowsSame t s.what₂ := by
   }
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.pk (s : ReadSame N h t Y L) : HEq (SRe.pkOf s.what₂) ((SRe.pkOf t).up Z Z.S N h) := by
   have e : ((by with_unfolding_all exact (Y.eE :)) : type_of% t.r.Y.eE) = t.r.Y.eE := eq_of_heq ((by with_unfolding_all exact (s.eE :)))
   exact (by with_unfolding_all exact ((heq_of_eq (congrArg (fun E : type_of% t.r.Y.eE =>
     SRe.RowPk.up Z Z.S N h { SRe.pkOf t with eE := E }) e)) :))
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.amb1 (s : ReadSame N h t Y L) {a : AmbForm (w.D Z) (RowSide.sharp (w.D Z))}
     (a' : AmbForm (w.D (Db.setDivZ Z N h)) (RowSide.sharp (w.D (Db.setDivZ Z N h)))) (e1 : a'.MtH = (a.MtH))
     (e2 : HEq a'.jAmb a.jAmb)
@@ -283,7 +308,7 @@ theorem ReadSame.amb1 (s : ReadSame N h t Y L) {a : AmbForm (w.D Z) (RowSide.sha
   exact ⟨⟨(by with_unfolding_all exact (J.eA :))⟩, ⟨(by with_unfolding_all exact (HJ.j_eq :)), (by with_unfolding_all exact (HJ.lat :)), (by with_unfolding_all exact (HJ.metric :))⟩⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.amb0 (s : ReadSame N h t Y L) {a : AmbForm (w.D Z) p0.s}
     (a' : AmbForm (w.D (Db.setDivZ Z N h)) (p0Mv N h p0).s) (e1 : a'.MtH = (a.MtH))
     (e2 : HEq a'.jAmb a.jAmb)
@@ -301,7 +326,7 @@ theorem ReadSame.amb0 (s : ReadSame N h t Y L) {a : AmbForm (w.D Z) p0.s}
 
 
 variable (N h t) in
-set_option maxHeartbeats 2000000 in
+
 def allMv (x : RXs t) :
     AllT (w.st (Db.setDivZ Z N h)).toD7 (famR (w.st (Db.setDivZ Z N h)) w.I t.hX Set.univ t.r.z.Xg t.r.z.tr).A (lev0 w.I) (chr0 w.I)
       (lev1 w.I) (chr1 w.I) (p0Mv N h p0) (tAll w.I) (((datMv N h t.r.z).R.eG.trans (datMv N h t.r.z).cG)) where
@@ -317,7 +342,7 @@ def allMv (x : RXs t) :
   cen := (by with_unfolding_all exact (x.all.cen :))
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.jA_use (s : ReadSame N h t Y L) (x : RXs t) (u) :
     SameOn (x.all.jA (((by exact Y.tup) : type_of% t.r.Y.tup) u)) (((by exact Y.jA) : ∀ u, (Fin (rDim (w.st Z).toD7
       (famR (w.st Z) w.I t.hX (usedOf w.I T Wt) t.r.z.Xg t.r.z.tr).A t.r.z.F.P1 t.r.z.F.ψ1 u) → (w.st Z).toD7.what₂.LL) →ₛₗ[(w.st Z).toD7.what₂.embLL]
@@ -328,7 +353,7 @@ theorem ReadSame.jA_use (s : ReadSame N h t Y L) (x : RXs t) (u) :
         (w.st Z).toD7.what₂.Amb μ) (fun _ _ j => (j : _ → _)) s.tup_eq ((by with_unfolding_all exact (s.jA :)))) x.jA_use u
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.movedReadingSameMaps_baseReading_agrees (s : ReadSame N h t Y L) (x : RXs t) (u) :
     SameOn (x.all.jA0 (((by exact Y.tup) : type_of% t.r.Y.tup) u)) (((by exact Y.jA0) : ∀ u, JAT (D := (w.st Z).toD7)
       (famR (w.st Z) w.I t.hX (usedOf w.I T Wt) t.r.z.Xg t.r.z.tr).A p0.s t.r.z.F.P0 t.r.z.F.ψ0 u (((by exact Y.tup) : type_of% t.r.Y.tup) u)) u) :=
@@ -347,7 +372,7 @@ theorem eMt_heq (t : RowsT K w Z Wt p0) {tup tup' : TupU w.I (usedOf w.I T Wt) �
   exact HEq.rfl
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem ReadSame.eMt_use (s : ReadSame N h t Y L) (x : RXs t) (i : Fin (w.st Z).toD7.R.m) (u) :
     SameOn (x.all.eMt i (((by exact Y.tup) : type_of% t.r.Y.tup) u))
       (((by exact Y.eMt) : ∀ i u, EMtT t i u (((by exact Y.tup) : type_of% t.r.Y.tup) u)) i u) :=
@@ -356,7 +381,7 @@ theorem ReadSame.eMt_use (s : ReadSame N h t Y L) (x : RXs t) (i : Fin (w.st Z).
       (eMt_heq t s.tup_eq (k := t.r.Y.eMt) (k' := (by with_unfolding_all exact (Y.eMt :))) ((by with_unfolding_all exact (s.eMt :))) i)) (x.eMt_use i) u
 
 
-set_option maxHeartbeats 4000000 in
+
 def ReadSame.rxs (s : ReadSame N h t Y L) (x : RXs t) : RXs s.what₂ where
   all := (by with_unfolding_all exact ((allMv N h t x) :))
   jA_use := (by with_unfolding_all exact ((s.jA_use x) :))
@@ -372,14 +397,16 @@ def ReadSame.rxs (s : ReadSame N h t Y L) (x : RXs t) : RXs s.what₂ where
   canon := (by with_unfolding_all exact (x.canon :))
   rank := (by with_unfolding_all exact (x.rank :))
   pb := (by with_unfolding_all exact (x.pb :))
-  std := by with_unfolding_all exact (x.std :)
+  std := by
+    with_unfolding_all
+      exact StateChecks.std_cpR (a := Z) (Db.setDivZ Z N h) t.r.z x.std
 
 end Rows
 
 private theorem kapSharp_mv : kapSharp (w.D (Db.setDivZ Z N h)) = kapSharp (w.D Z) :=
   (congrArg kapSharp (Db.D_setDivZ w Z N h)).trans (EX.OB.kapSharp_tr (D := w.D Z) N h)
 
-set_option maxHeartbeats 4000000 in
+
 theorem ReadSame.objT {N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V} {h : B.Word → ℝ} {O : Obj2 (w.D Z)} {t : RowsT K w Z Wt O.p0}
     {Y : Read (datMv N h t.r.z).R.toRealDat (datMv N h t.r.z).F.lv2 ((p0Mv N h O.p0))}
     {L : ReadL (datMv N h t.r.z).R (datMv N h t.r.z).F ((p0Mv N h O.p0)) Y} (s : ReadSame N h t Y L) (H : ObjT O t) :

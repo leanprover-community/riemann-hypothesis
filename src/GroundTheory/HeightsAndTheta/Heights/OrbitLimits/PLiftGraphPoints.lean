@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftGraphPoints
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageInverse
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmIUnique
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.NatCardEqPowLength
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 @[expose] public section
 
@@ -60,8 +63,8 @@ theorem homogAt_isMultiHomog (c : ∀ k, ι k) (M : ℕ) (F : MRing ι)
 theorem aeval_homogAt {S : Type} [CommRing S] (c : ∀ k, ι k) (M : ℕ) (F : MRing ι)
     (x : (Σ k, ι k) → S) (hx : ∀ k, x ⟨k, c k⟩ = 1) : aeval x (homogAt c M F) = aeval x F := by
   conv_rhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [homogAt, map_sum, map_mul, map_prod, map_pow, aeval_X, hx, one_pow, Finset.prod_const_one, mul_one]
+
+  simp only [homogAt, map_sum, map_mul, map_prod, map_pow, aeval_X, hx, one_pow, Finset.prod_const_one, mul_one]
 
 theorem aeval_ratio_eq_zero {Ω : Type} [Field Ω] {y : (Σ k, ι k) → Ω} {w : (Σ k, ι k) → ℂ}
     (hw : w ∈ mcPts (mCoordIdeal y)) (c : ∀ k, ι k) (hyc : ∀ k, y ⟨k, c k⟩ ≠ 0)
@@ -120,8 +123,8 @@ theorem LiftGraphPoints.proof : LiftGraphPoints.Statement := by
       by_contra hcon
       push Not at hcon
       have hF : aeval (fun p => y p / y ⟨p.1, c p.1⟩) (∑ j, U j * Q j - 1) = 0 := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sub, map_sum, map_mul, hU, hQ, map_one, hsum, sub_self]
+
+        simp only [map_sub, map_sum, map_mul, hU, hQ, map_one, hsum, sub_self]
       have h1 := aeval_ratio_eq_zero hw c hyc hwc hF
       have hσ0 : ∀ j, aeval (fun p => w p / w ⟨p.1, c p.1⟩) (Q j) = 0 := fun j => hcon j
       simp [hσ0] at h1

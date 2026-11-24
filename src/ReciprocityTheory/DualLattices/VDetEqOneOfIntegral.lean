@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.DualLattices.NearIdentityColengthStatement
+public import Mathlib.Basic.NNReal.Defs
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.RingTheory.Valuation.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 
 @[expose] public section
 

@@ -2,9 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.Columns.Record
 public import Formalism.LocalToGlobal.KernelLattices.ColInst
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 @[expose] public section
 

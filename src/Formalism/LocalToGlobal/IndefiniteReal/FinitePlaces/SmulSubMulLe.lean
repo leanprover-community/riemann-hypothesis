@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.BigOperators.Finprod
+public import Mathlib.Algebra.Group.Subgroup.Map
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.GroupTheory.Coset.Defs
+public import Mathlib.SetTheory.Cardinal.Finite
 public import Lemmata.MiscLemmasC.Imports
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -61,7 +67,7 @@ theorem avg_eq_sum (k : ℕ) (H : AddSubgroup W) [Fintype (Qt k H)] (g : W → �
 theorem avg_comp_surj {A B : Type*} [AddCommGroup A] [AddCommGroup B] [Fintype A] [Fintype B] [DecidableEq B]
     (π : A →+ B) (hπ : Function.Surjective π) (G : B → ℂ) :
     (Fintype.card A : ℂ)⁻¹ * ∑ a, G (π a) = (Fintype.card B : ℂ)⁻¹ * ∑ b, G b := by
-  first | exact Bl.SecondBlockLemmaD.goal1 .. | (apply Bl.SecondBlockLemmaD.goal1 <;> assumption) | (intros; apply Bl.SecondBlockLemmaD.goal1 <;> assumption) | (apply @Bl.SecondBlockLemmaD.goal1 <;> assumption) | (intros; apply @Bl.SecondBlockLemmaD.goal1 <;> assumption) | (apply @Bl.SecondBlockLemmaD.goal1 <;> first | assumption | infer_instance)
+  first | (apply Bl.SecondBlockLemmaD.goal1 <;> assumption)
 
 theorem avg_mul (k j : ℕ) (H : AddSubgroup W) [Finite (Qt k H)] [Finite (Qt (k * j) H)] (g : W → ℂ)
     (hg : IsInv k H g) : avg (k * j) H g = avg k H g := by

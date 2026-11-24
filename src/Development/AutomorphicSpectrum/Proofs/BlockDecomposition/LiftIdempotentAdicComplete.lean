@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
+public import Mathlib.RingTheory.AdicCompletion.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Monic
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -14,22 +61,6 @@ theorem sub_pow_three_eq {R : Type*} [CommRing R] {a b : R}
   have ha' : a * a = a := ha
   have hb' : b * b = b := hb
   linear_combination (a + 1 - 3 * b) * ha' + (3 * a - b - 1) * hb'
-
-theorem eq_of_isNilpotent_sub {R : Type*} [CommRing R] {a b : R}
-    (ha : IsIdempotentElem a) (hb : IsIdempotentElem b) (h : IsNilpotent (a - b)) : a = b := by
-  obtain ⟨n, hn⟩ := h
-  have h3 := sub_pow_three_eq ha hb
-  have hpow : ∀ m : ℕ, (a - b) ^ (2 * m + 1) = a - b := by
-    intro m
-    induction m with
-    | zero => simp
-    | succ m ih =>
-      calc (a - b) ^ (2 * (m + 1) + 1) = (a - b) ^ (2 * m + 1) * (a - b) ^ 2 := by ring
-        _ = (a - b) ^ 3 := by rw [ih]; ring
-        _ = a - b := h3
-  have h0 : a - b = 0 := by
-    rw [← hpow n, show 2 * n + 1 = n + (n + 1) by ring, pow_add, hn, zero_mul]
-  exact sub_eq_zero.1 h0
 
 theorem eq_of_sub_mem_jacobson {R : Type*} [CommRing R] {a b : R}
     (ha : IsIdempotentElem a) (hb : IsIdempotentElem b)
@@ -83,7 +114,7 @@ theorem existsUnique_idempotent_lift {S : Type} [CommRing S] (ϖ : S)
     have h2 : y * y - y = 0 := by rw [← sq]; exact this
     exact sub_eq_zero.1 h2
   have hlift : Ideal.Quotient.mk (Ideal.span {ϖ ^ k}) y = Ideal.Quotient.mk _ a := by
-    apply eq_of_isNilpotent_sub (hyid.map (Ideal.Quotient.mk _)) he
+    apply eq_of_isNilpotent_sub_of_isIdempotentElem (hyid.map (Ideal.Quotient.mk _)) he
     refine ⟨k, ?_⟩
     rw [← map_sub, ← map_pow]
     apply Ideal.Quotient.eq_zero_iff_mem.2

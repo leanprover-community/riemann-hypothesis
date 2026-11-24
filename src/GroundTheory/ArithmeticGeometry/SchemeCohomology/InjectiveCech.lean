@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ConsCompSuccAboveZero
+public import Mathlib.Algebra.Category.Grp.Colimits
+public import Mathlib.CategoryTheory.Preadditive.Injective.Basic
+public import Mathlib.Topology.Sheaves.Stalks
+public import Mathlib.Algebra.Category.Grp.EpiMono
+import Mathlib.Algebra.Category.Grp.FilteredColimits
+import Mathlib.Algebra.Category.Grp.Limits
+public import Mathlib.Topology.Sheaves.SheafOfFunctions
 
 @[expose] public section
 

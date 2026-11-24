@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

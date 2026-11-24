@@ -1,13 +1,50 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TiedColumnData
-public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FixedVectorEqOfStandardData
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ComparisonZeroEmbedding
-public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ClsChartedLabAt
 public import Formalism.SharpRestriction.GrowthBounds.TwistedLevelAgreement.StepInTwK
 public import Formalism.SharpRestriction.GrowthBounds.BaseLevels.LevelsGEmpty
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevelWithoutExtraPlaces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EtaJUntw
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NotBaseCondFalse
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PositionOfIntro
+import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.SetUnipotentTranslate
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FunKilled
+import Development.AutomorphicArithmetic.PrimeDiscriminants.Scales
+import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 
 @[expose] public section
 
@@ -108,13 +145,13 @@ theorem ChData.frRat (j : ℕ) (hj : j + 1 ≤ D.R.m) (β : T.Ch u μ (j + 1)) :
     rfl
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem ChData.sameU (j : ℕ) (hj : j + 1 ≤ D.R.m) (β : T.Ch u μ (j + 1)) :
     SameUlocJ hj ((formsInTw W u μ hμ j hj (dt j hj)).K β).lev ((Cd.Lc Gt Fl ht j hj).Uloc β) :=
   (W.car u μ hμ (j + 1) (one_le j) hj β).Uloc_eq
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem ChData.Lb_eq (j : ℕ) (hj : j + 1 ≤ D.R.m) (β : T.Ch u μ (j + 1)) :
     ((formsInTw W u μ hμ j hj (dt j hj)).K β).lev.Lb = reL (rankN D (j + 1) hj) ((Cd.Lc Gt Fl ht j hj).Lb β) :=
   (W.car u μ hμ (j + 1) (one_le j) hj β).Lb_eq

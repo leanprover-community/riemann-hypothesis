@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCore
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -112,7 +114,6 @@ theorem psiU_mul (ψ₀ : AddChar F ℂ) {x y : GL (Fin k) F} (hx : IsUni k x) (
     (B := (y : Matrix (Fin k) (Fin k) F)) hx hy]
   first
     | exact AddChar.map_add_eq_mul ψ₀ _ _
-    | exact AddChar.map_add_mul ψ₀ _ _
 
 theorem norm_addChar (ψ₀ : AddChar F ℂ) (a : F) : ‖ψ₀ a‖ = 1 := by
 
@@ -155,4 +156,3 @@ theorem Formalism.L2.SG.NormCut.psi_natural_equiv_holds : Formalism.L2.SG.NormCu
     rw [if_pos hw]
     first
       | (rw [Complex.conj_mul', norm_addChar]; simp)
-      | (rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_addChar]; simp)

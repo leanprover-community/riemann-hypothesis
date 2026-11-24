@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
+public import Mathlib.RingTheory.AlgebraicIndependent.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
+import Mathlib.RingTheory.TotallySplit
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
+import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
+public import Mathlib.RingTheory.Localization.Ideal
 
 @[expose] public section
 

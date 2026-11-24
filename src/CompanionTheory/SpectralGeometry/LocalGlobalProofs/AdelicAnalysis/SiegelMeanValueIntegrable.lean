@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.AutomorphicTheory.ThetaDilations.ThetaLint
 

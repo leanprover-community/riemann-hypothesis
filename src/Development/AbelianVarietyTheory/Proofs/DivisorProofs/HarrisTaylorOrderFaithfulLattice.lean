@@ -1,7 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOfMEqOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.Padics.RingHoms
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -154,7 +203,7 @@ lemma integral (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (c : 
   have hgam : Polynomial.aeval gam P = 0 := by
     have h4 := Polynomial.scaleRoots_eval₂_mul (p := P) (algebraMap ℤ D.F) gam (p : ℤ)
     have h5 : algebraMap ℤ D.F (p : ℤ) * gam = (c : D.F) := by
-      simp only [gam, map_natCast, eq_intCast, Int.cast_natCast]; field_simp
+      simp only [gam, map_natCast]; field_simp
     rw [h5, ← Polynomial.aeval_def, hQF, ← Polynomial.aeval_def] at h4
     have h6 : algebraMap ℤ D.F (p : ℤ) ^ P.natDegree ≠ 0 := by
       apply pow_ne_zero; simpa using hpF
@@ -226,23 +275,23 @@ theorem GlobalTheory.HTFaith.faithful : ∀ (p : ℕ) [Fact p.Prime] (D : Global
     have h1 : φ (algebraMap (𝓞 D.F) D.O c ⊗ₜ 1) = Matrix.scalar _ (c ⊗ₜ (1 : ℤ_[p])) := φ.commutes c
     rw [h1]
     ext i j
-    by_cases hij : i = j <;> simp [Matrix.scalar_apply, Matrix.diagonal_apply, hij]
+    by_cases hij : i = j <;> simp [Matrix.scalar_apply, hij]
   have hne' : Φ x' ≠ 0 := fun h => hx' (hker x' h)
   obtain ⟨i, j, hij⟩ : ∃ i j, Φ x' i j ≠ 0 := by
     by_contra h; push_neg at h; exact hne' (Matrix.ext h)
   choose E hE using fun k l => hsurj (Matrix.single k l 1)
   let y := ∑ k, E k i * x' * E j k
   have hy : Φ y = Matrix.scalar _ (Φ x' i j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [y, map_sum, map_mul, hE, Matrix.single_mul_mul_single, _root_.one_mul, _root_.mul_one]
+
+    simp only [y, map_sum, map_mul, hE, Matrix.single_mul_mul_single, _root_.one_mul, _root_.mul_one]
     ext a b
     rw [Matrix.sum_apply]
     by_cases hab : a = b
     · subst hab
       rw [Finset.sum_eq_single a (fun k _ hk => by simp [Matrix.single_apply, hk]) (by simp)]
-      simp [Matrix.single_apply]
+      simp
     · rw [Finset.sum_eq_zero (fun k _ => by simp [Matrix.single_apply]; intro h1 h2; exact absurd (h1.symm.trans h2) hab)]
-      simp [Matrix.scalar_apply, Matrix.diagonal_apply, hab]
+      simp [Matrix.scalar_apply, hab]
   obtain ⟨c, hc⟩ := hsurjF (Φ x' i j)
   have h0 : Φ (y - algebraMap _ _ c) = 0 := by rw [map_sub, hy, hscal, hc, sub_self]
   obtain ⟨u, hu⟩ := hker _ h0

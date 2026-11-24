@@ -1,6 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.KerPNonzero
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 
 @[expose] public section
 
@@ -77,8 +81,8 @@ theorem continuous_diag {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V] [
     funext z
     have e : H z z = H z (∑ j, b.repr z j • b j) := by rw [b.sum_repr z]
     rw [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smulₛₗ, smul_eq_mul, LinearMap.flip_apply, Module.Basis.coord_apply]
+
+    simp only [map_sum, map_smulₛₗ, smul_eq_mul, LinearMap.flip_apply, Module.Basis.coord_apply]
   rw [h]
   refine continuous_finsetSum _ fun j _ => ?_
   exact (Complex.continuous_conj.comp (LinearMap.continuous_of_finiteDimensional (b.coord j))).mul

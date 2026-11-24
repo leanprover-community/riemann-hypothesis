@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsUpperNormalisation
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SmallSectionCountLeOfInjOn
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsSemipositiveRelConstShift
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PConstantShift
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SmallSectionCountLeOfInjOn
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -50,8 +52,8 @@ theorem secM_le_chartLat (y : (Σ k, ι k) → Ω) (a : K → ℤ) (τ : ℕ) {d
         aeval (fun p : Σ k, ι k => y p / y ⟨p.1, c p.1⟩) g := by
       conv_lhs => rw [g.as_sum]
       conv_rhs => rw [g.as_sum]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_sum, Finset.sum_mul]
+
+      rw [map_sum, map_sum, Finset.sum_mul]
       refine Finset.sum_congr rfl fun m hm => ?_
       rw [aeval_monomial, aeval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _),
         Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]

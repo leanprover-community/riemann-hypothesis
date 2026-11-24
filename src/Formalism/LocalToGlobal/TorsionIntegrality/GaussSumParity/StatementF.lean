@@ -1,7 +1,13 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.ThetaInZIsThetaLog
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementE
+public import Formalism.GaussJetBounds.StatementS
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementB
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Formalism.GrowthSums.StatementA
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementAB
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementG
 
 @[expose] public section
 

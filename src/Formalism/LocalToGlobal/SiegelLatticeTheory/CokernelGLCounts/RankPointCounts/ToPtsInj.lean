@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SameCell
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsConc
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LeadingMinorEqPointMinor
 
 @[expose] public section
 
@@ -42,10 +42,10 @@ theorem at_ptOf (t : TauC Y u u') (hG : 1 ≤ NGPt D.host.rdE ((Tu D u : ℕ) * 
       rw [hj]
       unfold NGPt
       obtain ⟨w0⟩ : Nonempty (InfinitePlace D.host.E) := by
-        first | exact inferInstance | infer_instance
+        first | exact inferInstance
       apply Finset.prod_eq_zero (Finset.mem_univ w0)
       rw [GPt_junk]
-      first | simp | rw [map_zero, mul_zero]
+      first | simp
     linarith
 
 end Formalism.L2.SG.NGCut.NormalVectorPairings

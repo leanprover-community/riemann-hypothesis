@@ -1,11 +1,16 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridge
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedE
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsIntegralLogNormRat
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherFurther
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherExtra
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherBis
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsIntegralLogNormRat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridge
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRed
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedE
 
 @[expose] public section
 

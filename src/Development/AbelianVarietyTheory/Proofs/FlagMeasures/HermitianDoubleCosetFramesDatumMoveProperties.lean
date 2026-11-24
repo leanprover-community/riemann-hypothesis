@@ -1,13 +1,53 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermExponentsNonnegAndDefectGroupBoundStatement
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermExponentsNonnegAndDefectGroupBound
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -24,23 +64,11 @@ theorem conj_form {L : LocE F E} {n : ℕ} {Hm : Matrix (Fin n) (Fin n) E} (h : 
   have h' : cT L Hm = Hm := h
   have hH : ∀ i j, L.cj (Hm i j) = Hm j i := fun i j => congrFun (congrFun h' j) i
   unfold hf
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [map_sum, map_mul, L.cj_cj, hH]
+
+  simp_rw [map_sum, map_mul, L.cj_cj, hH]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
-
-private theorem hf_add_left_flag_measures' (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
-    (x x' y : Fin n → E) : hf L Hm (x + x') y = hf L Hm x y + hf L Hm x' y := by
-  simp only [hf, Pi.add_apply, add_mul, Finset.sum_add_distrib]
-
-private theorem hf_smul_left_flag_measures' (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
-    (c : E) (x y : Fin n → E) : hf L Hm (c • x) y = c * hf L Hm x y := by
-  simp only [hf, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
-
-private theorem hf_zero_left_flag_measures (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
-    (y : Fin n → E) : hf L Hm 0 y = 0 := by
-  simp [hf]
 
 theorem form_zero_of_span {L : LocE F E} {n : ℕ} {Hm : Matrix (Fin n) (Fin n) E} (h : IsHerm L Hm)
     (A : Set (Fin n → E)) (hA : ∀ a ∈ A, ∀ b ∈ A, hf L Hm a b = 0) :
@@ -50,20 +78,18 @@ theorem form_zero_of_span {L : LocE F E} {n : ℕ} {Hm : Matrix (Fin n) (Fin n) 
     intro a ha z hz
     induction hz using Submodule.span_induction with
     | mem w hw => exact hA w hw a ha
-    | zero => exact hf_zero_left_flag_measures L Hm a
-    | add u v _ _ hu hv => rw [hf_add_left_flag_measures', hu, hv, add_zero]
-    | smul c u _ hu => rw [hf_smul_left_flag_measures', hu, mul_zero]
+    | zero => exact _root_.GlobalTheory.HL.StdLat.hf_zero_l L Hm a
+    | add u v _ _ hu hv => rw [_root_.GlobalTheory.HL.Eichler.hf_add_l, hu, hv, add_zero]
+    | smul c u _ hu => rw [_root_.GlobalTheory.HL.Eichler.hf_smul_l, hu, mul_zero]
   induction hx using Submodule.span_induction with
   | mem w hw => rw [conj_form h y w, h1 w hw y hy, map_zero]
-  | zero => exact hf_zero_left_flag_measures L Hm y
-  | add u v _ _ hu hv => rw [hf_add_left_flag_measures', hu, hv, add_zero]
-  | smul c u _ hu => rw [hf_smul_left_flag_measures', hu, mul_zero]
+  | zero => exact _root_.GlobalTheory.HL.StdLat.hf_zero_l L Hm y
+  | add u v _ _ hu hv => rw [_root_.GlobalTheory.HL.Eichler.hf_add_l, hu, hv, add_zero]
+  | smul c u _ hu => rw [_root_.GlobalTheory.HL.Eichler.hf_smul_l, hu, mul_zero]
 
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
-theorem spanTo_mono (g : Fin (r + 1) → S.V) {i j : ℕ} (h : i ≤ j) : S.spanTo g i ≤ S.spanTo g j := by
-  unfold Frames.spanTo
-  exact Submodule.span_mono (Set.image_mono fun a (ha : (a : ℕ) < i) => lt_of_lt_of_le ha h)
+alias spanTo_mono := _root_.GlobalTheory.HL.FrameOnto.spanTo_mono
 
 theorem iso_spanTo (g : Fin (r + 1) → S.V) (c : E)
     (hg : ∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then c else 0)
@@ -158,7 +184,7 @@ theorem move_facts : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace
   obtain ⟨-, hW, -, hfrL, hfr'L, hli, -, -⟩ := GlobalTheory.HL.TermBasic.term_basic L r k S d Λ hT
   obtain ⟨-, -, hn, hn', -⟩ := hW
   obtain ⟨-, -, -, -, -, hth, hthO, -⟩ := GlobalTheory.FrameBasic.frames_basic L r k S
-  obtain ⟨-, -, -, -, -, -, -, -, hMa, -, -⟩ := GlobalTheory.T.term_exponents_nonneg_and_defect_group_bound L r k S d Λ hT
+  obtain ⟨-, -, -, -, -, -, -, -, hMa, -, -⟩ := _root_.GlobalTheory.HL.Defect.exponents_and_defect L r k S d Λ hT
   have hthE : algebraMap F E S.th ∈ L.O := (GlobalTheory.UnramOrder.algebraMap_mem_iff L _).mpr hthO
   have hinv : algebraMap F E S.th⁻¹ * algebraMap F E S.th = 1 := by
     rw [← map_mul, inv_mul_cancel₀ hth, map_one]

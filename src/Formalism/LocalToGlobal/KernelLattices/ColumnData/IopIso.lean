@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThIndep
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThU
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.SquareEqDiagOfQuadraticEven
+import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -32,11 +31,11 @@ theorem Hf_herm (T : Tor D) (x y : VC D N N') :
   unfold Hf
   rw [map_div₀]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sum, map_mul, Complex.conj_conj]
-      refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ =>
-        Finset.sum_congr rfl fun j _ => ?_
-      ring
+
+  · simp only [map_sum, map_mul, Complex.conj_conj]
+    refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ =>
+      Finset.sum_congr rfl fun j _ => ?_
+    ring
   · simp
 
 def cf (T : Tor D) (x y : VC D N N') : ℂ :=
@@ -88,7 +87,6 @@ def HfInt (T : Tor D) (La' : AddSubgroup (VC D N N')) : Prop :=
 theorem sqrt_d_pos (D : Car) : 0 < Real.sqrt D.host.d := by
   first
   | exact Real.sqrt_pos.mpr (Nat.cast_pos.mpr (Nat.zero_lt_of_lt D.host.qd_big.2))
-  | (apply Real.sqrt_pos.mpr; have h := D.host.qd_big.2; exact_mod_cast (by omega : 0 < D.host.d))
 
 theorem Hf_add_right (T : Tor D) (x y y' : VC D N N') :
     Hf D T x (y + y') = Hf D T x y + Hf D T x y' := by
@@ -200,7 +198,6 @@ theorem finite_quot_of_smul {V : Type*} [AddCommGroup V] (La₁ La₂ R : AddSub
   haveI : IsNoetherian ℤ R := by
     first
     | exact isNoetherian_of_isNoetherianRing_of_finite ℤ R
-    | infer_instance
   have hinj : Function.Injective (AddSubgroup.inclusion hle).toIntLinearMap := by
     intro a b h
     exact AddSubgroup.inclusion_injective hle h
@@ -249,8 +246,6 @@ theorem Phi_smul_eq {N N' : ℕ} (δ : ℂ) (M : ℤ) (hM : M ≠ 0) (n : ℕ)
   | (rw [show ((n : ℂ) * (M : ℂ)) * (δ / (M : ℂ) * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E)) =
         δ * n * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E) * ((M : ℂ) / (M : ℂ)) by ring,
       div_self hM', mul_one])
-  | (field_simp; ring)
-  | field_simp
 
 theorem La_index_finite (cc : Ideal (𝓞 D.host.K)) (hcc : IsCurveIdeal D cc) (δ : ℂ) {N N' : ℕ}
     (L₁ L₂ : Submodule (𝓞 D.host.E) (Fin N → D.host.E))

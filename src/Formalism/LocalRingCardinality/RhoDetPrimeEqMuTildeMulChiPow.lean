@@ -1,21 +1,49 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.Params
-public import Formalism.LocalRingCardinality.DataHost
 public import Formalism.LocalRingCardinality.DataSpaces
-public import Formalism.LocalRingCardinality.DataCoeff
-public import Formalism.LocalRingCardinality.DataArith
-public import Formalism.LocalRingCardinality.DataKernels
-public import Formalism.LocalRingCardinality.DataRows
 public import Formalism.SharpRestriction.CuspSpanNormBounds.DataS
 public import Formalism.SharpRestriction.GrowthBounds.DataG
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Formalism.LocalRingCardinality.DataForms
 public import Formalism.LocalRingCardinality.DataJet
 public import Formalism.LocalRingCardinality.DataCD
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -368,27 +396,7 @@ def BuRational : Prop := ∀ u (φ : (D.div.Nu u).V) (x : D.div.RR.V),
 
 end D7
 
-def bridge_cols_conj : Prop := ∀ (D : D7) (u : D.what₂.Word),
-  ∃ (S : Submodule ℂ ((D.mem u).C.cls 0 → (D.mem u).C.Y 0 → ℂ)) (_ : FiniteDimensional ℂ S),
-    (S : Set _) = D.colsS u ∧ Module.finrank ℂ S = D.duS u
-
-def FactSigYDceil : Prop := ∀ (R : Ranks) (j : ℕ), j < R.m →
-  (sigYD R j).2 = ((R.m - 1 - j + 1) / 2) ∧ (sigYD R j).1 + (sigYD R j).2 = R.rankY j
-
-def FactBuUnique : Prop := ∀ (D : D7), Rows.BuDef D.what₂ →
-  (∀ x : D.what₂.EE, ∃ F ∈ D.what₂.V0 D.what₂.mu0, D.iota0 F = x) →
-  ∀ B' : ∀ u, D.what₂.Mu u → D.what₂.EE → ℂ,
-    (∀ u φ F, F ∈ D.what₂.V0 D.what₂.mu0 → D.what₂.perCol u D.what₂.mu0 φ F = B' u φ (D.iota0 F)) → B' = D.what₂.Bu
-
 def FactDGam (D : D7) (C : ℝ) : Prop := ∀ u, Real.log ((D.mem u).C.DGam : ℝ) ≤ C * D.R.f * D.R.N D.R.m * Real.log ((D.R.f : ℝ) * D.R.N D.R.m)
-
-def FactPsiCardViaTau : Prop := ∀ (D : D7), Nat.card (D.R.Psi) = D.R.f
-
-def AnisotropicLineIndepOfMember : Prop := ∀ (D : D7) (u : D.what₂.Word),
-  ∃ c : D.host.E, c ≠ 0 ∧ c * D.host.conj c * ((D.mem u).A.T : D.host.E) = ((D.mem D.u₀).A.T : D.host.E)
-
-def FactUnitRuleAgree : Prop := ∀ (D : D7) (w : D.what₂.places.Pl) (x : ℚ),
-  ((Rows.unitRule D.what₂.places w x : ℚ) : ℝ) = unitRule D.what₂.LL (D.plEq w) (x : ℝ)
 
 end Formalism.BasicNotions
 

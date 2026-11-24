@@ -1,7 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepRec
+public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.KerTh
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepComb
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 
 @[expose] public section
 

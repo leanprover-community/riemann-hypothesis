@@ -1,23 +1,59 @@
 module
 
-public import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTheoremTwo
-public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeUnderScaleOfGeneral
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkGLOBAL7Tied4
 public import Formalism.SharpRestriction.GlobalSchurBounds.LemmaBSecondBranchOfLength
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiscreteSeriesWeylDimension
-public import Formalism.SharpRestriction.AdmissibleParameterJoins.SfromGLe
-public import Formalism.PeriodIntegrals.ExplicitFormulaCounts.WeylForK
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.DivisionRationalLattice
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.LocalEndomorphismContinuous
-public import Formalism.LocalToGlobal.GlobalTheory.GL4.LowerSlopeInequalityFamily
-public import Formalism.LocalToGlobal.GlobalTheory.GL4.PStmtFree
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.DiscreteSeriesOfFormalDegree
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.PacketStatementOfIndependence
 public import Formalism.LocalToGlobal.GroupLattices.Joint0
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.SlopeLineRamifiedFormula
+public import Formalism.LocalToGlobal.BesselHermitianTheta.MinfDensity
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.CharacterFiniteLevelZeroOfForms
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.SecondBranchInclLengthOfLengths
+public import Formalism.LocalToGlobal.GlobalTheory.GL5.LocalEndomorphismContinuous
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.PowSmulLatticeLeWeightLatticeTop
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.SlopeLineRamifiedFormula
+public import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas
+public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ThickExists
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.GenericFramesLetters
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.LemmaOneEightHolds
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.PointsPropertyOfD7
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.RamificationTwoAndConjugationAtQAndD
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.SecondPropositionEveryLocalisation
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.DivisionRationalLattice
+import Formalism.SharpRestriction.GlobalSchurBounds.JointsL
+public import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTheoremTwo
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,12 +65,9 @@ open Formalism.BasicNotions Formalism.MainNotions.Lnk Formalism.MainNotions.Glob
 
 variable {eps : ℝ}
 
-theorem stabF (Fm : FamP eps) : flipTwoThree.admF3 Fm := by
-  obtain ⟨C₅, h59a⟩ := UnusedSlot33.field_lemmas_except_seven
-  have h59 : UnusedSlot33.ConclusionOnFamily Fm 100 C₅ := fun x _ i => by
-    obtain ⟨p1, p2, p3, p4, p5, p5c, p6, p8⟩ := h59a (Fm.D x i) (Fm.L x i).sc
-    exact ⟨p1, p2, p3, p4, p5, p5c, p6, UnusedSlot33.division_rational_lattice _, p8⟩
-  exact flipTwoThree.stabiliser_family_of_column_lemma Fm 100 C₅ h59 (fun _ _ _ => GenusMassVolumes.levels_pro_g _ _)
+theorem stabF (Fm : FamP eps) : flipTwoThree.admF3 Fm :=
+  flipTwoThree.stabiliser_family_of_column_lemma Fm (fun _ _ _ => UnusedSlot33.division_rational_lattice _)
+    (fun _ _ _ => GenusMassVolumes.levels_pro_g _ _)
 
 theorem chiFin0_to0S {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
     (T : Formalism.L2.Forms.FormsTiedSym D u Ch chOf) (h : ChiFin0 T) : LocalLatticeBases.ChiFin0 T.to0 := by

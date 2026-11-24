@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.Cartan
+public import GroundTheory.AutomorphicForms.InductionParabolicGroups
+public import GroundTheory.AutomorphicForms.MeasuresChart
+public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.AdmissibleInduction
 public import GroundTheory.AutomorphicForms.CuspidalAdmissible
+import GroundTheory.AutomorphicForms.MeasuresGL
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

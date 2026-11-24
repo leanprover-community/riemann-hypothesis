@@ -1,6 +1,14 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PerpBasisExistence
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermEqZeroOfTraceFormVanish
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianPairingAlgebra
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 
 @[expose] public section
 
@@ -114,7 +122,7 @@ lemma LB_lattice (hli : LinearIndependent E (Fin.cons ξ β : Fin (n + 1) → Fi
           change (a : E) * (v : E) * c = (u : E) * (a : E)
           calc
             (a : E) * (v : E) * c = (a : E) * (v : E) * ((u : E) / (v : E)) := by rw [hcv]
-            _ = (u : E) * (a : E) := by field_simp [hvE] <;> ring
+            _ = (u : E) * (a : E) := by field_simp [hvE]
         rw [smul_smul]
         change (((a * v : 𝓞 E) : E) * c) • x ∈ X.L'
         rw [hmul]
@@ -125,7 +133,7 @@ lemma LB_lattice (hli : LinearIndependent E (Fin.cons ξ β : Fin (n + 1) → Fi
     have hcoef : a • c ∈ LBsub X β ξ := by
       refine ⟨0, ?_⟩
       have hsmul : (∑ k, (a • c) k • β k) + (0 : E) • ξ = a • (∑ k, c k • β k) := by
-        simp only [Pi.smul_apply, smul_eq_mul, Finset.smul_sum, mul_smul]
+        simp only [Pi.smul_apply, Finset.smul_sum]
         simp
       rw [hsmul]
       exact hmem
@@ -164,8 +172,8 @@ private lemma herm_sum_smul_right' {m : ℕ} (G : Matrix (Fin r) (Fin r) E) (x :
     (c : Fin m → E) (v : Fin m → Fin r → E) :
     herm G x (∑ k, c k • v k) = ∑ k, cc (c k) * herm G x (v k) := by
   unfold herm cc
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.mul_sum]
+
+  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.mul_sum]
   calc _ = ∑ a, ∑ k, ∑ b, x a * G a b * ((IsCMField.complexConj E) (c k) *
         (IsCMField.complexConj E) (v k b)) :=
         Finset.sum_congr rfl fun a _ => Finset.sum_comm
@@ -184,38 +192,13 @@ lemma Sform_h (c c' : Fin n → E) :
   simp only [Sform, Matrix.of_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
-  try simp only [cc, RingEquiv.toRingHom_eq_coe, RingEquiv.coe_toRingHom, AlgEquiv.coe_toRingEquiv,
-    AlgEquiv.coe_ringEquiv]
+  try simp only [cc, RingEquiv.toRingHom_eq_coe, RingEquiv.coe_toRingHom, AlgEquiv.coe_toRingEquiv]
   ring
 
 lemma herm_perp (hβξ : ∀ k, herm X.Gm (β k) ξ = 0) (c : Fin n → E) :
     herm X.Gm (∑ k, c k • β k) ξ = 0 := by
   rw [herm_sum_smul_left']
   simp [hβξ]
-
-private lemma herm_add_left_of_matrix (G : Matrix (Fin r) (Fin r) E) (x y z : Fin r → E) :
-    herm G (x + y) z = herm G x z + herm G y z := by
-  unfold herm
-  simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
-
-private lemma herm_add_right_of_matrix (G : Matrix (Fin r) (Fin r) E) (x y z : Fin r → E) :
-    herm G x (y + z) = herm G x y + herm G x z := by
-  unfold herm cc
-  simp only [Pi.add_apply, map_add (f := _), mul_add, Finset.sum_add_distrib]
-
-private lemma herm_smul_left_of_matrix (G : Matrix (Fin r) (Fin r) E) (e : E) (x y : Fin r → E) :
-    herm G (e • x) y = e * herm G x y := by
-  unfold herm
-  simp only [Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
-
-private lemma herm_smul_right_lemma_6 (G : Matrix (Fin r) (Fin r) E) (e : E) (x y : Fin r → E) :
-    herm G x (e • y) = cc e * herm G x y := by
-  unfold herm cc
-  simp only [Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
 
 lemma herm_cross (hβξ : ∀ k, herm X.Gm (β k) ξ = 0) (hξξ : herm X.Gm ξ ξ = 0)
     (c c' : Fin n → E) (e e' : E) :
@@ -225,13 +208,12 @@ lemma herm_cross (hβξ : ∀ k, herm X.Gm (β k) ξ = 0) (hξξ : herm X.Gm ξ 
     have h := HermitianTraceFormVanishing.herm_conj X.Gm X.Gm_herm (β k) ξ
     rw [hβξ k] at h
     first
-    | simpa [cc] using h
     | simpa [cc] using h.symm
   have hB : herm X.Gm ξ (∑ k, c k • β k) = 0 := by
     rw [herm_sum_smul_right']
     simp [hξβ]
-  rw [herm_add_left_of_matrix, herm_add_right_of_matrix, herm_add_right_of_matrix, herm_smul_left_of_matrix,
-    herm_smul_left_of_matrix, herm_smul_right_lemma_6, herm_smul_right_lemma_6, hB, herm_perp X β ξ hβξ c', hξξ]
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_add_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.PerpBasisExistence.herm_add_right', _root_.ReciprocityTheory.ChartRestriction.G.FD.PerpBasisExistence.herm_add_right', _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_left,
+    _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_right, _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_right, hB, herm_perp X β ξ hβξ c', hξξ]
   ring
 
 lemma LB_selfDual (hξ : X.IsIso ξ) (hβξ : ∀ k, herm X.Gm (β k) ξ = 0)

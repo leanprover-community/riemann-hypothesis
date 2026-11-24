@@ -1,6 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.Legendre
+public import Mathlib.Analysis.Calculus.LogDerivUniformlyOn
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.Tactic.Lemma
+public import Mathlib.Analysis.Calculus.Deriv.Pow
 
 @[expose] public section
 

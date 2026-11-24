@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
+public import GroundTheory.PAdicHodge.BdRAlg
+public import GroundTheory.PAdicHodge.InstMulSemiringActionGalPlus
+public import GroundTheory.PAdicHodge.TateCpTwist
 public import GroundTheory.PAdicHodge.ACrisBdRGalois
+import GroundTheory.PAdicHodge.ACrisBdRInj
 public import GroundTheory.PAdicHodge.BdRTGalois
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.PAdicHodge.ACrisBdR
 
 @[expose] public section
 
@@ -43,6 +48,25 @@ end AwayAction
 
 namespace ACris
 
+section AwaySMulHomB
+
+variable {F : Type*} [NontriviallyNormedField F] [IsUltrametricDist F] {p : ℕ} [hp : Fact p.Prime]
+  [IsPerfectoidField F p] {ε : PreTilt (normInteger F) p} (hε : PreTilt.untilt ε = 1)
+  {G : Type*} [Monoid G] [MulSemiringAction G (BCrisPlus F p)]
+
+/-- `awaySMulHom` on `BCris hε`, for a general perfectoid field `F`; `galB` is the case of the
+Galois action over `ℂ_[p]`.
+
+`galB` is defined through this map so that its value contains no instance proof specialised to
+`ℂ_[p]`. Lean moves such proofs into auxiliary theorems in the value of a definition but leaves
+them in its type, and the kernel is slow to identify the two forms of the ring structure on
+`BCris hε`. -/
+def awaySMulHomB (h : ∀ σ : G, IsUnit (algebraMap (BCrisPlus F p) (BCris hε)
+    (σ • algebraMap (ACris F p) (BCrisPlus F p) (periodT hε)))) (σ : G) : BCris hε →+* BCris hε :=
+  awaySMulHom _ h σ
+
+end AwaySMulHomB
+
 variable {p : ℕ} [hp : Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
 def chiCris (σ : Gal(PadicAlgCl p/K)) : ACris ℂ_[p] p :=
@@ -82,17 +106,37 @@ theorem isUnit_gal_smul_periodT (σ : Gal(PadicAlgCl p/K)) :
     ((isUnit_chiCris σ).map _) (IsLocalization.Away.algebraMap_isUnit (S := BCris hε) _)
 
 def galB (σ : Gal(PadicAlgCl p/K)) : BCris hε →+* BCris hε :=
-  awaySMulHom _ (isUnit_gal_smul_periodT hε) σ
+  awaySMulHomB hε (isUnit_gal_smul_periodT hε) σ
 
 theorem galB_algebraMap (σ : Gal(PadicAlgCl p/K)) (x : BCrisPlus ℂ_[p] p) :
     galB hε σ (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) x) =
-      algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (σ • x) :=
-  awaySMulHom_algebraMap (isUnit_gal_smul_periodT hε) σ x
+      algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (σ • x) := by
+  -- Infer the localization arguments from the unfolded action.
+  delta galB awaySMulHomB
+  apply @awaySMulHom_algebraMap
 
 theorem phiB_galB (σ : Gal(PadicAlgCl p/K)) (x : BCris hε) :
-    phiB hε (galB hε σ x) = galB hε σ (phiB hε x) :=
-  awaySMulHom_comm (isUnit_gal_smul_periodT hε) (phiB hε) (phiPlus ℂ_[p] p)
-    (phiB_algebraMap hε) phiPlus_gal_smul σ x
+    phiB hε (galB hε σ x) = galB hε σ (phiB hε x) := by
+  let t := algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) (periodT (K := ℂ_[p]) (p := p) hε)
+  let φ := phiB (K := ℂ_[p]) (p := p) hε
+  let g := galB hε σ
+  have e : φ.comp g = g.comp φ := by
+    apply IsLocalization.ringHom_ext (Submonoid.powers t)
+    refine RingHom.ext fun y => ?_
+    change φ (g (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y)) =
+      g (φ (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) y))
+    calc
+      _ = φ (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (σ • y)) :=
+        congrArg (fun z : BCris hε => φ z) (galB_algebraMap hε σ y)
+      _ = algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (phiPlus ℂ_[p] p (σ • y)) :=
+        phiB_algebraMap (K := ℂ_[p]) (p := p) hε (σ • y)
+      _ = algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (σ • phiPlus ℂ_[p] p y) :=
+        congrArg (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε)) (phiPlus_gal_smul σ y)
+      _ = g (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (phiPlus ℂ_[p] p y)) :=
+        (galB_algebraMap hε σ (phiPlus ℂ_[p] p y)).symm
+      _ = _ := congrArg (fun z : BCris hε => g z)
+        (phiB_algebraMap (K := ℂ_[p]) (p := p) hε y).symm
+  exact congrArg (fun F : BCris hε →+* BCris hε => F x) e
 
 end ACris
 

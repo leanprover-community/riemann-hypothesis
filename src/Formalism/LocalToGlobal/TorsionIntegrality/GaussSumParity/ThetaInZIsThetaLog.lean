@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementB
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementG
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementJ
 
 @[expose] public section
 

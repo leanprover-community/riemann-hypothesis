@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.SegreGlue
+public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
+public import Mathlib.AlgebraicGeometry.Morphisms.Separated
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

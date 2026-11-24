@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
 public import Formalism.LocalToGlobal.HermitianForms.DetShiftShW
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 
 @[expose] public section
 
@@ -70,7 +70,7 @@ theorem lamT_zero (u : D.what₂.Word) : lamT u 0 = (D.fm u).lam 0 := by
   simp [lamT, shW_zero]
 
 
-set_option maxHeartbeats 1000000 in
+
 structure ClsTied (u : D.what₂.Word) (i : ℕ) (hi : i ≤ D.R.m) where
 
   lev : StepLevel D.host.F D.host.E (sigD D) (gramN D i hi) (D.mem u).A.T D.R.f (badG D)
@@ -93,7 +93,7 @@ structure ClsTied (u : D.what₂.Word) (i : ℕ) (hi : i ≤ D.R.m) where
         lev.U.map (MulAut.conj (y c).1).toMonoidHom
 
 
-set_option maxHeartbeats 1000000 in
+
 structure ValTied (u : D.what₂.Word) (eV : (D.mem u).A.vT ≃ PlT D u) (i : ℕ) (hi : i ≤ D.R.m) (K : ClsTied u i hi) where
 
   eY : (D.mem u).C.Y i ≃ Fr D i hi

@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrR
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBr
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrI
 
 @[expose] public section
 

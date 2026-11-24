@@ -1,7 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
-public import Formalism.LocalToGlobal.CharacterGerms.PlugUP
+import Formalism.LocalToGlobal.CharacterGerms.CharacteristicFromRanks
+import Formalism.LocalToGlobal.CharacterGerms.PlugUP
+import ReciprocityTheory.DualLattices.FrobEqOfLe
 
 @[expose] public section
 

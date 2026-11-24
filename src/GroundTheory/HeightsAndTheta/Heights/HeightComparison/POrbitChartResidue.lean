@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartResidue
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartMax
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartQuot
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartDehom
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.Algebra.Algebra.ZMod
 
 @[expose] public section
 

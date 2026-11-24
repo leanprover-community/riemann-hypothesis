@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementA
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
-public import GroundTheory.ProfiniteCohomology.OpenNormal
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
+public import Mathlib.Tactic.Bound
+public import Mathlib.Tactic.Monotonicity.Lemmas
+public import Mathlib.Topology.Algebra.OpenSubgroup
+public import Mathlib.Topology.Sheaves.Presheaf
+import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
+import GroundTheory.ProfiniteCohomology.OpenNormal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

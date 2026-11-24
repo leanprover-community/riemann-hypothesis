@@ -1,18 +1,68 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JEvExists
-public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Formalism.LocalRingCardinality.DataKap
-public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecCond
-public import Formalism.LocalToGlobal.ProjectiveLattices.ParCanon
-public import Formalism.LocalToGlobal.ProjectiveLattices.ExistsParameterConditions
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Formalism.LocalRingCardinality.Lemmas
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidualCharacterDetValuesMemCoeffField
+public import Formalism.LocalToGlobal.IndefiniteReal.GramCEqTranspose
+public import Formalism.LocalRingCardinality.DataHost
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JEvExists
+import Formalism.LocalRingCardinality.DataTheta
+import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
+import Formalism.LocalToGlobal.Divisibility.CoefMod
+import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -49,10 +99,10 @@ theorem coordMap_smul (b : Basis ι L V) (φ : L →ₗ[K] K) {w : V} (hw : w �
 theorem coordMap_comm (b : Basis ι L V) (φ : L →ₗ[K] K) (T : V →ₗ[L] V)
     (hT : ∀ w ∈ Submodule.span K (Set.range b), T w ∈ Submodule.span K (Set.range b)) (x : V) :
     T (coordMap b φ x) = coordMap b φ (T x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coordMap_apply, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_rhs => rw [← b.sum_repr x, map_sum, map_sum]
+
+  rw [coordMap_apply, map_sum]
+
+  conv_rhs => rw [← b.sum_repr x, map_sum, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [LinearMap.map_smul_of_tower T (φ (b.repr x i)) (b i), LinearMap.map_smul T (b.repr x i) (b i),
     coordMap_smul b φ (hT _ (Submodule.subset_span ⟨i, rfl⟩))]
@@ -151,19 +201,19 @@ theorem span_MK_good (hK : A.IsKsForm) (hρ : ∀ g, ∀ f ∈ A.WK, A.ρ g f �
     refine l.ext_elem fun k => ?_
     have hc := coordMap_mem_Wgood A hρ hχ J0 lam0 eC hl he B hWK (l.coord k) _ hzW
     have hc' : coordMap B (l.coord k) (∑ j, a j • m j) = ∑ j, l.coord k (a j : LL) • m j := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [sOL, coordMap_smul B (l.coord k) (by rw [hWK]; exact hmW j)]
     rw [hc'] at hc
     have h0 : Wg.mkQ (∑ j, l.coord k (a j : LL) • m j) = 0 := (Submodule.Quotient.mk_eq_zero Wg).2 hc
     have h1 := congrArg (fun u => v.repr u t) h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul,
-      map_zero, Finsupp.coe_zero, Pi.zero_apply] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul,
-      map_zero, Finsupp.coe_zero, Pi.zero_apply, Basis.coord_apply] at h1 ⊢
+
+    simp only [map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul,
+    map_zero, Finsupp.coe_zero, Pi.zero_apply] at h1
+
+    simp only [map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul,
+    map_zero, Finsupp.coe_zero, Pi.zero_apply, Basis.coord_apply] at h1 ⊢
     rw [← h1]
     exact Finset.sum_congr rfl fun j _ => mul_comm _ _
 
@@ -214,9 +264,9 @@ theorem span_MK_good (hK : A.IsKsForm) (hρ : ∀ g, ∀ f ∈ A.WK, A.ρ g f �
   have hXF : X ∘ₗ F = 0 := by
     apply Finsupp.lhom_ext
     intro t c
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [LinearMap.comp_apply, LinearMap.zero_apply, F, X, Finsupp.linearCombination_single, map_smul,
-      map_sum, one_smul]
+
+    simp only [LinearMap.comp_apply, LinearMap.zero_apply, F, X, Finsupp.linearCombination_single, map_smul,
+    map_sum, one_smul]
     rw [hsum t, smul_zero]
   obtain ⟨k, Am, Y, hXY, hAF⟩ := Module.Flat.exists_factorization_of_comp_eq_zero_of_free hXF
   let Aj : Fin r → Fin k → 𝓞 Ks := fun j κ => Am (Finsupp.single j 1) κ
@@ -228,18 +278,18 @@ theorem span_MK_good (hK : A.IsKsForm) (hρ : ∀ g, ∀ f ∈ A.WK, A.ρ g f �
     have h2 : (X (Finsupp.single j 1) : LL) = (a j : LL) := by simp [X, aI]
     rw [← h2, h1]
     conv_lhs => rw [← Finsupp.univ_sum_single (Am (Finsupp.single j 1))]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Submodule.coe_sum]
+
+    rw [map_sum, Submodule.coe_sum]
     refine Finset.sum_congr rfl fun κ _ => ?_
     rw [show Finsupp.single κ (Am (Finsupp.single j 1) κ) = Am (Finsupp.single j 1) κ • Finsupp.single κ 1 by simp,
       map_smul, Submodule.coe_smul]
   have hA : ∀ t κ, ∑ j, algebraMap (𝓞 Ks) Ks (Aj j κ) * q j t = 0 := by
     intro t κ
     have h1 := congrArg (fun u => algebraMap (𝓞 Ks) Ks (u κ)) (LinearMap.congr_fun hAF (Finsupp.single t 1))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [LinearMap.comp_apply, LinearMap.zero_apply, F, Finsupp.linearCombination_single, one_smul, map_sum,
-      map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul, Finsupp.coe_zero,
-      Pi.zero_apply, map_zero, map_mul, hr] at h1
+
+    simp only [LinearMap.comp_apply, LinearMap.zero_apply, F, Finsupp.linearCombination_single, one_smul, map_sum,
+    map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul, Finsupp.coe_zero,
+    Pi.zero_apply, map_zero, map_mul, hr] at h1
     have h2 : algebraMap (𝓞 Ks) Ks d * ∑ j, algebraMap (𝓞 Ks) Ks (Aj j κ) * q j t = 0 := by
       rw [Finset.mul_sum, ← h1]
       refine Finset.sum_congr rfl fun j _ => ?_
@@ -251,9 +301,9 @@ theorem span_MK_good (hK : A.IsKsForm) (hρ : ∀ g, ∀ f ∈ A.WK, A.ρ g f �
     intro κ
     have h0 : Wg.mkQ (w κ) = 0 := by
       refine v.repr.injective (Finsupp.ext fun t => ?_)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [w, map_sum, sKs, map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul,
-        map_zero, Finsupp.coe_zero, Pi.zero_apply]
+
+      simp only [w, map_sum, sKs, map_smul, Finset.sum_apply', Finsupp.smul_apply, smul_eq_mul,
+      map_zero, Finsupp.coe_zero, Pi.zero_apply]
       exact hA t κ
     exact (Submodule.Quotient.mk_eq_zero Wg).1 h0
   have hz : ∑ j, a j • m j = ∑ κ, yy κ • w κ := by

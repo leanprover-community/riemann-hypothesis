@@ -1,14 +1,66 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvOfFintype
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalSeriesAndDerivUniqueOfCoefficients
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegralBasisOfIntegralAlgebraicElements
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalSeriesCongIffCoeffAndIsUnitStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPrimitiveExpansionQuotientLevelOneStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemTranslationInvariantSubfieldIffExponentsStatement
+public import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalSeriesCongIffCoeffAndIsUnit
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGaloisInvariantValuationIntegersEqIntegral
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPrimitiveExpansionQuotientLevelOne
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemTranslationInvariantSubfieldIffExponents
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegralBasisOfIntegralAlgebraicElements
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 
 @[expose] public section
 
@@ -180,7 +232,7 @@ theorem val_add (hclo : IsClo p Ωl) (hreb : IsReb T n ψ) {φ χ : HahnSeries �
   refine ⟨x' + y', ?_⟩
   convert h using 1
   funext r
-  simp only [HahnSeries.coeff_add, map_add, hC, hD, Pi.add_apply]
+  simp only [HahnSeries.coeff_add, map_add, hC, hD]
 
 theorem val_mul (hclo : IsClo p Ωl) (hreb : IsReb T n ψ) {φ χ : HahnSeries ℚ Ω} {x y : Ωl}
     (hφ : Supp p n φ) (hχ : Supp p n χ)
@@ -238,7 +290,7 @@ theorem val_ne (hclo : IsClo p Ωl) (hreb : IsReb T n ψ) {A : ValuationSubring 
   have hpn : ((p ^ n : ℕ) : ℚ) ≠ 0 := by exact_mod_cast (pow_pos (Fact.out : p.Prime).pos n).ne'
   have hm : (((r0 * ((p ^ n : ℕ) : ℚ)).num : ℤ) : ℚ) / (p : ℚ) ^ n = r0 := by
     rw [← castM, (Rat.den_eq_one_iff _).1 hd, mul_div_cancel_right₀ _ hpn]
-  refine (GlobalTheory.T.evalSeries_cong_iff_coeff_and_isUnit p Ωl hclo T n ψ hreb 0 _ x x' hx).2 ⟨(r0 * ((p ^ n : ℕ) : ℚ)).num, ?_, ?_⟩ |>.1
+  refine (_root_.GlobalTheory.Glue.ev_cong_iff_and_unit p Ωl hclo T n ψ hreb 0 _ x x' hx).2 ⟨(r0 * ((p ^ n : ℕ) : ℚ)).num, ?_, ?_⟩ |>.1
   · simp only [hm]; exact (map_ne_zero j).2 h0
   · simp only [hm]; rw [← map_inv₀]; exact (hint _).1 hinv
 
@@ -282,7 +334,7 @@ theorem gal_alg (X : GlobalTheory.KZ.Tower Ω ε) (s : Ω ≃ₐ[ℚ] Ω) (κ : 
 
 theorem mem_KT_iff' [IsAlgClosure ℚ Ω] (X : GlobalTheory.KZ.Tower Ω ε) (p n : ℕ) [Fact p.Prime] (a : X.K) :
     a ∈ KT X (p ^ n) ↔ Supp p n (X.exp a) :=
-  GlobalTheory.T.mem_translationInvariantSubfield_iff_exponents ε X (p ^ n) (pow_pos (Fact.out : p.Prime).pos n) a
+  _root_.GlobalTheory.Glue.KTExp.mem_KT_iff ε X (p ^ n) (pow_pos (Fact.out : p.Prime).pos n) a
 
 def Good (X : GlobalTheory.KZ.Tower Ω ε) (A : ValuationSubring Ω) (p n : ℕ) (y a b : X.K) (κ : Ω) (S : Finset Ω) : Prop :=
   κ ≠ 0 ∧ a ∈ KT X (p ^ n) ∧ b ∈ KT X (p ^ n) ∧ y * b = algebraMap Ω X.K κ * a ∧
@@ -434,7 +486,7 @@ theorem isQ_exists (hX : ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.
     ∃ v, IsQ X A j n ψ y v := by
   by_cases h0 : y = 0
   · exact ⟨0, h0 ▸ isQ_zero⟩
-  obtain ⟨a, b, κ, S, hκ, hrel, hPa, hPb, hinv, hS⟩ := GlobalTheory.T.exists_primitive_expansion_quotient_level_one ε X hX p A hpA y h0
+  obtain ⟨a, b, κ, S, hκ, hrel, hPa, hPb, hinv, hS⟩ := _root_.GlobalTheory.exists_prim_frac_level_one ε X hX p A hpA y h0
   have hbK : b ∈ KT X (p ^ n) := by
     rw [KT, RingHom.mem_eqLocusField]
     exact hinv _

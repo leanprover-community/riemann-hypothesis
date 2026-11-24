@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocRankFrac
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocFinite
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StRankFracDegree
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocChartRatio
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -29,8 +31,8 @@ theorem aeval_scale (y : (Σ k, ι k) → Ω) (c : K → Ω) {u : MRing ι} {a :
     aeval (fun p => y p * c p.1) u = aeval y u * ∏ k, c k ^ a k := by
   conv_lhs => rw [u.as_sum]
   conv_rhs => rw [u.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm => ?_
   rw [aeval_monomial, aeval_monomial, mul_assoc]
   congr 1

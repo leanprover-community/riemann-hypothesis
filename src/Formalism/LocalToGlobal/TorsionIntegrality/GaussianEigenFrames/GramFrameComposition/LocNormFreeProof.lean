@@ -1,10 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementC
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthogonalGaussModels.KJoint
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementA
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.StdDataCmProof
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactTer
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.CurveIntegerMultiplicationSeries
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.AnalyticTransOfAdd
+import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.Taylor0ConstMul
+public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthogonalGaussModels.KJoint
 
 @[expose] public section
 
@@ -40,8 +43,6 @@ theorem TensStd_of (hZ : ShapeToZ) (hT : TransIntC) : TensStd := by
   have hω : (cmL a₀ b₀ dK ha hdK lam hlam).ω₁ = lam * a₀ := by
     first
       | rfl
-      | simp [cmL, Formalism.L2.Th1.F.scalePair, Formalism.L2.Th1.F.cmPair]
-      | (simp [cmL, Formalism.L2.Th1.F.scalePair, Formalism.L2.Th1.F.cmPair]; ring)
   have hmem : lam * (a₀ : ℂ) ∈ (cmL a₀ b₀ dK ha hdK lam hlam).lattice :=
     hω ▸ PeriodPair.ω₁_mem_lattice _
   have hnot : lam * (a₀ : ℂ) / 2 ∉ (cmL a₀ b₀ dK ha hdK lam hlam).lattice :=

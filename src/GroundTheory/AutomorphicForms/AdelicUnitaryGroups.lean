@@ -1,12 +1,57 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Restricted
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
 public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.LatticeCompact
 public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Anisotropic
-public import GroundTheory.GlobalFields.Adele.Discrete
-public import GroundTheory.GlobalFields.Adele.Topology
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import Mathlib.Geometry.Euclidean.Projection
+import Mathlib.Tactic.TypeStar
+import GroundTheory.GlobalFields.Adele.Approximation
+import GroundTheory.GlobalFields.Adele.Topology
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Restricted, GroundTheory.AutomorphicForms.AdelicUnitaryGroups
+
+-- ===== clump member: GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Restricted =====
+-- clump-header: {"m": "GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Restricted", "h": "module\n\npublic import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+set_option linter.unusedSectionVars false
+
+namespace GroundTheory.Automorphic
+
+open Module Matrix TensorProduct Topology Filter IsDedekindDomain NumberField
+open scoped RestrictedProduct
+
+noncomputable section
+
+variable {K E : Type*} [Field K] [NumberField K] [CommRing E] [Algebra K E]
+  [Algebra.IsQuadraticExtension K E]
+variable {ι : Type*} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι E)
+variable {κ : Type*} [Fintype κ] (b : Basis κ K E)
+
+
+variable (K) in
+def finiteAdeleEval (v : HeightOneSpectrum (𝓞 K)) :
+    FiniteAdeleRing (𝓞 K) K →ₐ[K] v.adicCompletion K where
+  toFun a := a v
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+  commutes' _ := rfl
+
+end
+
+end GroundTheory.Automorphic
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Restricted =====
+
+-- ===== clump member: GroundTheory.AutomorphicForms.AdelicUnitaryGroups =====
+-- clump-header: {"m": "GroundTheory.AutomorphicForms.AdelicUnitaryGroups", "h": "module\n\npublic import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Restricted\npublic import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.LatticeCompact\npublic import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Anisotropic\npublic import Mathlib.NumberTheory.NumberField.AdeleRing\nimport GroundTheory.GlobalFields.Adele.Approximation\nimport GroundTheory.GlobalFields.Adele.Topology\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Geometry.Euclidean.Projection\n\n"}
+section -- clump:auto
 @[expose] public section
 
 namespace GroundTheory.Automorphic
@@ -142,3 +187,6 @@ end Hermitian
 end
 
 end GroundTheory.Automorphic
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.AutomorphicForms.AdelicUnitaryGroups =====

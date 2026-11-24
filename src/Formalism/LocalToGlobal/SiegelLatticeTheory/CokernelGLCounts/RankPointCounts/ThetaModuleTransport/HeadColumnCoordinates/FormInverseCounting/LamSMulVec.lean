@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.DetSmulMk
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.AlgDefs
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.AlgInj
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -18,7 +21,7 @@ theorem bRaw_e (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (y : Fin (r + 1) → O
   rw [Finset.sum_eq_single (Fin.last r)]
   · simp [lamL, lamC]
   · intro j _ hj
-    simp [Pi.single_apply, hj]
+    simp [hj]
   · simp
 
 theorem bRaw_b_mem (hcj : ∀ x, cj (cj x) = x) (hO : ∀ x ∈ O, cj x ∈ O)
@@ -48,8 +51,8 @@ theorem lamS_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (hO : ∀ x ∈ O
     intro c
     have h1 := congrFun (congrFun hinv c) (Fin.last r)
     rw [Matrix.mul_apply, Matrix.one_apply] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h1, map_sum, Finset.sum_mul]
+
+    rw [← h1, map_sum, Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro b _
     rw [map_mul]
@@ -71,8 +74,8 @@ theorem lamS_K (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (hO : ∀ x ∈ O, cj 
     rw [Matrix.mul_apply, Matrix.one_apply_ne (Fin.castSucc_lt_last a).ne] at h1
     have key : ∑ b, cj ((Z.map O.subtype)⁻¹ b (Fin.last r)) * ((cjT O cj hO Z b a.castSucc : O) : E) =
         cj (∑ b, (Z.map O.subtype) a.castSucc b * (Z.map O.subtype)⁻¹ b (Fin.last r)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       apply Finset.sum_congr rfl
       intro b _
       rw [map_mul, mul_comm]
@@ -104,8 +107,8 @@ theorem lamS_b (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (hO : ∀ x ∈ O, cj 
   rw [Matrix.mul_apply, Matrix.one_apply_eq] at h1
   have key : ∑ b, cj ((Z.map O.subtype)⁻¹ b (Fin.last r)) * ((cjT O cj hO Z b (Fin.last r) : O) : E) =
       cj (∑ b, (Z.map O.subtype) (Fin.last r) b * (Z.map O.subtype)⁻¹ b (Fin.last r)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     apply Finset.sum_congr rfl
     intro b _
     rw [map_mul, mul_comm]
@@ -119,7 +122,7 @@ theorem lamS_e (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O)
   rw [Finset.sum_eq_single (Fin.last r)]
   · rw [hκ, map_zero, zero_mul]
   · intro b _ hb
-    simp [Pi.single_apply, hb]
+    simp [hb]
   · simp
 
 variable (hcj : ∀ x, cj (cj x) = x) (hO : ∀ x ∈ O, cj x ∈ O)

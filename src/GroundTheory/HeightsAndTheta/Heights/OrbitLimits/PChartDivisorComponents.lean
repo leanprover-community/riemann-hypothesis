@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisorComponents
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSectionComponents
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
+import Mathlib.Order.CompletePartialOrder
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
 
 @[expose] public section

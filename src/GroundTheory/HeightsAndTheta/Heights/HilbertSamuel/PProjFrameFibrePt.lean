@@ -1,10 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameFibrePt
+public import Aesop.BuiltinRules
+public import Mathlib.FieldTheory.RatFunc.AsPolynomial
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.POneBlockPointDeg
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.LemCone
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ProjFrameGraphChart
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.LemCone
 
 @[expose] public section
 
@@ -65,8 +72,8 @@ theorem aeval_inl_eq_zero {f : MRing (GlobalTheory κ)} (hf : f ∈ coordIdeal �
 
 theorem aeval_inl_mul_eq_zero {f : MRing (GlobalTheory κ)} (hf : f ∈ coordIdeal ℤ x) {R : Type*} [CommRing R]
     (φ : G.Φ' →+* R) (s : R) : aeval (fun p : Ix κ => φ (G.x' (aV D p.2)) * s) f = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sum_homogeneousComponent f, map_sum]
+
+  rw [← sum_homogeneousComponent f, map_sum]
   refine Finset.sum_eq_zero fun d _ => ?_
   rw [aeval_mul_of_isHomogeneous _ _ (homogeneousComponent_isHomogeneous d f)]
   have h0 := aeval_inl_eq_zero G (coordIdeal_isHomogIdeal ℤ x f hf d)

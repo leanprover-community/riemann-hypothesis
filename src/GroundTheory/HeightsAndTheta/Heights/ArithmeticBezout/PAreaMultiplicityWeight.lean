@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsAreaMultiplicityWeight
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaMultiplicity
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -49,7 +52,6 @@ theorem AreaMultiplicityWeight.proof : AreaMultiplicityWeight.Statement := by
         (aemeasurable_fderivWithin μ hA hf')
     refine (hA.inter (hdm (measurableSet_singleton 0).compl)).nullMeasurableSet.congr ?_
     filter_upwards [(ae_restrict_iff' hA).1 hfd] with x hx
-    change (x ∈ A ∩ d ⁻¹' {0}ᶜ) ↔ (x ∈ B)
     by_cases hxA : x ∈ A
     · simp [B, hxA, hx hxA]
     · simp [B, hxA]

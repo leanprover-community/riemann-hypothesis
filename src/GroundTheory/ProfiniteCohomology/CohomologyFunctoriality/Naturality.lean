@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
 

@@ -1,8 +1,56 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.SepDefs
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeSizeContinuity.LatSizeContOfSteps
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Matrix.Rank
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrgCountableField
 
 @[expose] public section
 
@@ -57,30 +105,11 @@ theorem ap_uMat_mul_inv {n : ℕ} {ε : Fin n → Bool} (g : Formalism.REAL.UJ �
     Formalism.MainNotions.S.uMat g * Formalism.MainNotions.S.uMat g⁻¹ = 1 := by
   first
     | simp [Formalism.MainNotions.S.uMat]
-    | (show ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ) *
-          (((g⁻¹ : Formalism.REAL.UJ ε) : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ) = 1
-       rw [Subgroup.coe_inv, Units.mul_inv])
 
 theorem ap_inUJ {n : ℕ} {ε : Fin n → Bool} (g : Formalism.REAL.UJ ε) :
     (Formalism.MainNotions.S.uMat g)ᴴ * Formalism.REAL.Jm ε * Formalism.MainNotions.S.uMat g = Formalism.REAL.Jm ε := by
   first
     | exact g.2
-    | (have h := g.2
-       simpa [Formalism.REAL.UJ, Formalism.REAL.inUJ] using h)
-
-theorem ap_Jm_herm {n : ℕ} (ε : Fin n → Bool) : (Formalism.REAL.Jm ε)ᴴ = Formalism.REAL.Jm ε := by
-  unfold Formalism.REAL.Jm
-  rw [Matrix.diagonal_conjTranspose]
-  congr 1
-  funext a
-  by_cases h : ε a <;> simp [h]
-
-theorem ap_Jm_sq {n : ℕ} (ε : Fin n → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  unfold Formalism.REAL.Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  by_cases h : ε a <;> simp [h]
 
 variable (I : Formalism.MainNotions.S.AutInst)
 
@@ -95,23 +124,17 @@ def colM (z : I.GA) (v : InfinitePlace I.F) {k : ℕ} (b : Fin k → Fin I.n →
 theorem ap_coordV (z : I.GA) (v : InfinitePlace I.F) (w : Fin I.n → I.E) :
     PI.LatCountG.coordV I z v w = qM I z v *ᵥ phv I v w := rfl
 
-theorem ap_hP (v : InfinitePlace I.F) : I.P v * (I.P v)⁻¹ = 1 := by
-  exact Matrix.mul_nonsing_inv (I.P v) ((Matrix.isUnit_iff_isUnit_det _).mp (I.P_unit v))
-
-theorem ap_hP' (v : InfinitePlace I.F) : (I.P v)⁻¹ * I.P v = 1 := by
-  exact Matrix.nonsing_inv_mul (I.P v) ((Matrix.isUnit_iff_isUnit_det _).mp (I.P_unit v))
-
 theorem ap_phv_mulVec (v : InfinitePlace I.F) (δ : Matrix (Fin I.n) (Fin I.n) I.E) (w : Fin I.n → I.E) :
     phv I v (δ *ᵥ w) = δ.map (I.φ v) *ᵥ phv I v w := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [phv, Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+  simp [phv, Matrix.mulVec, dotProduct, map_sum, map_mul]
 
 theorem ap_AQ (x y : I.GA) (v : InfinitePlace I.F) (δ : Matrix (Fin I.n) (Fin I.n) I.E) :
     amat I x y v δ * qM I y v = qM I x v * δ.map (I.φ v) := by
   unfold amat qM
   simp only [Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc (Formalism.MainNotions.S.uMat (y.1 v)), ap_uMat_mul_inv, Matrix.one_mul, ap_hP, Matrix.mul_one]
+  rw [← Matrix.mul_assoc (Formalism.MainNotions.S.uMat (y.1 v)), ap_uMat_mul_inv, Matrix.one_mul, _root_.Formalism.MainNotions.LeviCoordinates.rrg_P_mul_inv, Matrix.mul_one]
 
 theorem ap_amat_coord (x y : I.GA) (v : InfinitePlace I.F) (δ : Matrix (Fin I.n) (Fin I.n) I.E)
     (w : Fin I.n → I.E) :
@@ -146,7 +169,7 @@ theorem ap_QJQ (y : I.GA) (v : InfinitePlace I.F) :
         rw [Matrix.conjTranspose_mul]
         simp only [Matrix.mul_assoc]
     _ = I.J.map (I.φ v) := by
-        rw [ap_hP]
+        rw [_root_.Formalism.MainNotions.LeviCoordinates.rrg_P_mul_inv]
         simp
 
 theorem ap_pair (y : I.GA) (v : InfinitePlace I.F) (p q : Fin I.n → ℂ) :
@@ -161,9 +184,9 @@ theorem ap_star (v : InfinitePlace I.F) (a : I.E) : I.φ v (star a) = star (I.φ
 
 theorem ap_form (v : InfinitePlace I.F) (w z : Fin I.n → I.E) :
     I.φ v (hf I w z) = star (phv I v w) ⬝ᵥ (I.J.map (I.φ v) *ᵥ phv I v z) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hf, Formalism.UG.hform, map_sum, map_mul, dotProduct, Matrix.mulVec, phv, Pi.star_apply,
-    Matrix.map_apply, Finset.mul_sum]
+
+  simp only [hf, Formalism.UG.hform, map_sum, map_mul, dotProduct, Matrix.mulVec, phv, Pi.star_apply,
+  Matrix.map_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [starRingEnd_apply, ap_star]
   ring
@@ -178,7 +201,7 @@ theorem ap_entry {n k : ℕ} (Y C : Matrix (Fin n) (Fin k) ℂ) (Jm : Matrix (Fi
 
 theorem ap_DC (y : I.GA) (v : InfinitePlace I.F) {k : ℕ} (b' u : Fin k → Fin I.n → I.E) :
     (Formalism.REAL.Jm (I.ε v) * colM I y v b')ᴴ * colM I y v u = (pairM I b' u).map (I.φ v) := by
-  rw [Matrix.conjTranspose_mul, ap_Jm_herm]
+  rw [Matrix.conjTranspose_mul, _root_.Formalism.REAL.Jm_conjTranspose]
   ext a c
   rw [ap_entry, Matrix.map_apply]
   have e1 : (fun i => colM I y v b' i a) = PI.LatCountG.coordV I y v (b' a) := rfl
@@ -190,9 +213,9 @@ theorem ap_DC (y : I.GA) (v : InfinitePlace I.F) {k : ℕ} (b' u : Fin k → Fin
 theorem ap_DD (y : I.GA) (v : InfinitePlace I.F) {k : ℕ} (b' : Fin k → Fin I.n → I.E) :
     (Formalism.REAL.Jm (I.ε v) * colM I y v b')ᴴ * (Formalism.REAL.Jm (I.ε v) * colM I y v b') =
       (colM I y v b')ᴴ * colM I y v b' := by
-  rw [Matrix.conjTranspose_mul, ap_Jm_herm]
+  rw [Matrix.conjTranspose_mul, _root_.Formalism.REAL.Jm_conjTranspose]
   simp only [Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc (Formalism.REAL.Jm (I.ε v)), ap_Jm_sq, Matrix.one_mul]
+  rw [← Matrix.mul_assoc (Formalism.REAL.Jm (I.ε v)), _root_.Formalism.REAL.Jm_mul_self, Matrix.one_mul]
 
 def hM {k : ℕ} (b' : Fin k → Fin I.n → I.E) : Matrix (Fin k) (Fin I.n) I.E :=
   Matrix.of (fun a i => star (b' a i)) * I.J
@@ -203,7 +226,6 @@ theorem ap_hM (k : ℕ) (b' : Fin k → Fin I.n → I.E) (w : Fin I.n → I.E) (
     Finset.sum_mul, starRingEnd_apply]
   first
     | exact Finset.sum_comm
-    | rw [Finset.sum_comm]
 
 theorem ap_ker (δ : Matrix (Fin I.n) (Fin I.n) I.E) (k : ℕ) (u b' : Fin k → Fin I.n → I.E)
     (hu : LinearIndependent I.E (fun c => δ *ᵥ u c))
@@ -250,9 +272,8 @@ theorem ap_ker (δ : Matrix (Fin I.n) (Fin I.n) I.E) (k : ℕ) (u b' : Fin k →
     have hrows' : LinearIndependent I.E (hM I b').row := by
       first
         | exact hrows
-        | simpa [Matrix.row] using hrows
     rw [finrank_span_eq_card hrows', Fintype.card_fin] at this
-    exact this
+    simpa only [Matrix.finrank_range_mulVecLin] using this
   have hn1 := LinearMap.finrank_range_add_finrank_ker δ.mulVecLin
   have hn2 := LinearMap.finrank_range_add_finrank_ker (hM I b').mulVecLin
   have heq : LinearMap.ker δ.mulVecLin = LinearMap.ker (hM I b').mulVecLin :=
@@ -276,7 +297,7 @@ theorem ap_kernel (x y : I.GA) (v : InfinitePlace I.F) (δ : Matrix (Fin I.n) (F
     rw [ap_coordV]
     simp [Matrix.mulVec, dotProduct, Matrix.mul_apply, hΦ, phv]
   have hH : (Formalism.REAL.Jm (I.ε v) * colM I y v b')ᴴ * qM I y v = (hM I b').map (I.φ v) := by
-    rw [hC, Matrix.conjTranspose_mul, ap_Jm_herm, Matrix.conjTranspose_mul]
+    rw [hC, Matrix.conjTranspose_mul, _root_.Formalism.REAL.Jm_conjTranspose, Matrix.conjTranspose_mul]
     calc Φᴴ * (qM I y v)ᴴ * Formalism.REAL.Jm (I.ε v) * qM I y v
         = Φᴴ * ((qM I y v)ᴴ * Formalism.REAL.Jm (I.ε v) * qM I y v) := by simp only [Matrix.mul_assoc]
       _ = Φᴴ * I.J.map (I.φ v) := by rw [ap_QJQ]
@@ -287,7 +308,7 @@ theorem ap_kernel (x y : I.GA) (v : InfinitePlace I.F) (δ : Matrix (Fin I.n) (F
           simp [hΦ, ap_star]
   have hinv : qM I y v * (I.P v * Formalism.MainNotions.S.uMat (y.1 v)) = 1 := by
     unfold qM
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (I.P v)⁻¹, ap_hP', Matrix.one_mul]
+    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (I.P v)⁻¹, _root_.Formalism.MainNotions.LeviCoordinates.rrg_P_inv_mul, Matrix.one_mul]
     have := ap_uMat_mul_inv (y.1 v)⁻¹
     rwa [inv_inv] at this
   set z' := (I.P v * Formalism.MainNotions.S.uMat (y.1 v)) *ᵥ z with hz'
@@ -316,7 +337,7 @@ theorem archimedean_place_exists : ArchPlaceOf := by
     have h1 : ‖(amat I x y v δ *ᵥ w) i‖ ≤ ∑ j, ‖amat I x y v δ i j‖ * ‖w j‖ := by
       simp only [Matrix.mulVec, dotProduct]
       refine (norm_sum_le _ _).trans (le_of_eq ?_)
-      simp [norm_mul]
+      simp
     have h2 := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => ‖amat I x y v δ i j‖) (fun j => ‖w j‖)
     calc ‖(amat I x y v δ *ᵥ w) i‖ ^ 2 ≤ (∑ j, ‖amat I x y v δ i j‖ * ‖w j‖) ^ 2 := by
           nlinarith [h1, norm_nonneg ((amat I x y v δ *ᵥ w) i)]

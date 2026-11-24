@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
-public import Formalism.HermitianLattices.StatementLat
 
 @[expose] public section
 

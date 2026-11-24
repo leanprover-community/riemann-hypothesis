@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Convex.Basic
+public import Mathlib.Analysis.Normed.Module.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 
 @[expose] public section
 

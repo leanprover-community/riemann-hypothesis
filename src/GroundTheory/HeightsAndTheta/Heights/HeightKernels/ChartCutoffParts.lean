@@ -1,11 +1,20 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.HessCRestrictThm
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartCutoffEnergy
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AMassStA
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ChartMassAffine
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartDensityIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergyCocycle
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergySwap
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartHessCompare
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.HessCRestrictThm
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
+public import ReciprocityTheory.AnalyticForms.AnalyticCharts.MaDensCompEqZeroOfRankLt
 
 @[expose] public section
 

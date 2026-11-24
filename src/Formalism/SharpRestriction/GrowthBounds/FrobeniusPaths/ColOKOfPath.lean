@@ -1,6 +1,46 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.LiftedColumnCongruence
+public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.ColStepFactor
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -40,7 +80,7 @@ lemma colH_strip {n : ℕ} (nu mu' : Fin n → ℤ) (b : ℕ) (h : HStrip nu mu'
         simp only [em] at this
         exact hm.1.trans this
       · intro a ha b hb hab
-        simp only [Finset.coe_filter, Finset.mem_filter, Set.mem_ofPred_eq] at ha hb
+        simp only [Finset.coe_filter, Set.mem_ofPred_eq] at ha hb
         simp only [Fin.mk.injEq] at hab
         exact Fin.ext (by omega)
     omega
@@ -81,13 +121,11 @@ lemma colOK_of_path [NeZero r] (LL : LiftLetters (Fin N)) (B : Fin N → ℕ) (h
   · rcases step j h with ⟨hv, h1, h2⟩ | ⟨hv, h1, h2⟩
     · omega
     · exact ⟨hv, by omega⟩
-  · rw [hz]; unfold colH
-    rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
-    intro m _; simp only [Pi.zero_apply]; omega
+  · rw [hz]
+    simp [colH, show ¬ c ≤ 0 by omega]
   · have h0 : colH (P.mu ⟨0, by omega⟩) c = r + K := by
-      rw [hz]; unfold colH
-      rw [Finset.filter_true_of_mem (fun m _ => by simp only [Pi.zero_apply]; omega)]
-      simp
+      rw [hz]
+      simp [colH, show c ≤ 0 by omega]
     have hind : ∀ (j : ℕ) (h : j ≤ N), r + K ≤ colH (P.mu ⟨j, by omega⟩) c + j := by
       intro j
       induction j with
@@ -118,14 +156,12 @@ lemma costly_iff (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) (j : ℕ) 
 
 lemma nomL_ne {R : Type} [CommRing R] (LL : LiftLetters (Fin N)) (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ)
     (i : Fin N) (m : Fin (r + K)) (h : nomL R LL mu c i m ≠ 0) : condUS LL i m ↔ IsCostly mu c i := by
-  classical
   by_contra hh
-  exact h (by unfold nomL; rw [if_neg hh])
+  exact h (by simp [nomL, hh])
 
 lemma wedgeR_ne {R : Type} [CommRing R] {k : ℕ} (x : Fin k → R) (Kv : Finset (Fin k) → R) (J : Finset (Fin k))
     (h : wedgeR x Kv J ≠ 0) : ∃ m ∈ J, x m ≠ 0 ∧ Kv (J.erase m) ≠ 0 := by
-  obtain ⟨m, hm, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero h
-  refine ⟨m, hm, fun e => hne (by rw [e]; simp), fun e => hne (by rw [e]; simp)⟩
+  exact (Finset.exists_ne_zero_of_sum_ne_zero h).imp fun m hm => ⟨hm.1, fun e => hm.2 (by rw [e]; simp), fun e => hm.2 (by rw [e]; simp)⟩
 
 lemma contrR_ne {R : Type} [CommRing R] {k : ℕ} (x : Fin k → R) (Kv : Finset (Fin k) → R) (J : Finset (Fin k))
     (h : contrR x Kv J ≠ 0) : ∃ m, m ∉ J ∧ x m ≠ 0 ∧ Kv (insert m J) ≠ 0 := by
@@ -157,7 +193,7 @@ lemma SgW_supp {R : Type} [CommRing R] (LL : LiftLetters (Fin N)) (mu : Fin (N +
     have hci := costly_iff mu c j h
     split_ifs at hJ with h1 h2 h3 h4
     ·
-      obtain ⟨hv, hN⟩ := H.rise j h h1
+      obtain ⟨hv, _⟩ := H.rise j h h1
       obtain ⟨m, hm, hn, hK⟩ := wedgeR_ne _ _ _ hJ
       have hc := nomL_ne LL mu c _ m hn
       obtain ⟨hcard, hA, hB⟩ := (ih' _ hK).1 h2
@@ -185,11 +221,10 @@ lemma SgW_supp {R : Type} [CommRing R] (LL : LiftLetters (Fin N)) (mu : Fin (N +
           rw [plane_card]; omega
         rw [this]; simpa using ha
     ·
-      obtain ⟨hv, hN⟩ := H.rise j h h1
       obtain ⟨m, hm, hn, hK⟩ := contrR_ne _ _ _ hJ
       exact ⟨fun hc' => absurd hc' h2, fun _ a ha => (ih' _ hK).2 h2 a (Finset.mem_insert_of_mem ha)⟩
     ·
-      obtain ⟨hv, hP⟩ := H.fall j h h3
+      obtain ⟨hv, _⟩ := H.fall j h h3
       obtain ⟨m, hm, hn, hK⟩ := contrR_ne _ _ _ hJ
       have hc := nomL_ne LL mu c _ m hn
       obtain ⟨hcard, hA, hB⟩ := (ih' _ hK).1 h4
@@ -217,7 +252,7 @@ lemma SgW_supp {R : Type} [CommRing R] (LL : LiftLetters (Fin N)) (mu : Fin (N +
           rw [plane_card]; omega
         rw [← this] at ha; simpa using ha
     ·
-      obtain ⟨hv, hP⟩ := H.fall j h h3
+      obtain ⟨hv, _⟩ := H.fall j h h3
       obtain ⟨m, hm, hn, hK⟩ := wedgeR_ne _ _ _ hJ
       have hc := nomL_ne LL mu c _ m hn
       have hd := H.dual h4 j (by omega)

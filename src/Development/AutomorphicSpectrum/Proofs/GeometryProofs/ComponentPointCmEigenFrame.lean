@@ -1,16 +1,61 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsValFam
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundleStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRingStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.VectorsAtComplexPoint
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRing
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsAction
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieOmegaLatticeVectorBundle
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeConstantRank
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsActionStatement
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.VectorsAtComplexPoint
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapFromSpecStalk
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeVectorBundleOfSmooth
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -133,8 +178,8 @@ theorem frame_values {O I : Type} (ev : L →+ ER) (hev : ∀ a : A, ∃ r : F, 
       have hne : t i ≠ s₀ := fun h => hn (h ▸ ht i)
       obtain ⟨a, ha⟩ := hχ _ _ hne
       have e1 : T a w = ∑ j, (d j * χ (t j) a) • B j := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          conv_lhs => rw [hw', map_sum]
+
+        conv_lhs => rw [hw', map_sum]
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [map_smul, hB]
         show d j • T a (ev (c j)) = _
@@ -294,13 +339,13 @@ theorem valFam_eigFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   let z := y ≫ Y.j
   let x : Cpt ξ := ⟨_, h⟩
   have hx : x ∈ Z.genFib := mem_genFib Z y h
-  obtain ⟨-, -, h3, -⟩ := GlobalTheory.T.eigen_lattice_vector_bundle E H D l Xo c O β Y U Z τ hβ hτ
+  obtain ⟨-, -, h3, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.isVBOn_eig_genFib E H D l Xo c O β Y U Z τ hβ hτ
   obtain ⟨g, cc, ⟨hcli, hcL⟩, hS⟩ := h3 x hx
   choose S hS using hS
   obtain ⟨ER, _, _, ⟨MR⟩⟩ := lieModel_exists Y.X Y.t.G F z
   obtain ⟨ρF, hρF, -⟩ := lieModel_exists_unique_act _ Y.t.G F z ER MR (𝓞 E) Y.t.act.act Y.t.act.hom Y.t.act.one
     Y.t.act.mul Y.t.act.add
-  obtain ⟨ev, hev1, hev2, hev3⟩ := GlobalTheory.T.lie_lattice_eval_at_local_ring Y.X Y.t.G Z.Ω ξ Z.V Z.M F z h ER MR Z.gen inferInstance
+  obtain ⟨ev, hev1, hev2, hev3⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieLat_val Y.X Y.t.G Z.Ω ξ Z.V Z.M F z h ER MR Z.gen inferInstance
   have hval : ∀ e : Z.M.lat x, Z.M.ValAt z e (MR.pt (ev e)) := fun e => (hev1 e _).2 ⟨e.2, rfl⟩
   have hEig : ∀ (s : E →+* ℂ) (e : Z.M.lat x), (e : Z.V) ∈ Z.eig s x → ∀ a : 𝓞 E,
       ρF a (ev e) = βF (tauIn c s a) • ev e := by
@@ -367,7 +412,7 @@ theorem valFam_eigFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     intro u
     simp [eigSp, Submodule.mem_iInf, sub_eq_zero]
   have final : IsEigFrame Y.t.act z (βF.comp (tauIn c σ)) (fun k => MR.pt (ev (bL k))) := by
-    refine (((GlobalTheory.T.lie_model_eigenvectors_action Y.X F Y.t.G z ER MR).2 (𝓞 E) Y.t.act ρF _ hρF).2 n _).2 ⟨li, le_antisymm ?_ ?_⟩
+    refine (((_root_.GlobalTheory.CompanionTheory.Ar.Fl.Bridge.comb_eig_frame Y.X F Y.t.G z ER MR).2 (𝓞 E) Y.t.act ρF _ hρF).2 n _).2 ⟨li, le_antisymm ?_ ?_⟩
     · refine Submodule.span_le.2 ?_
       rintro _ ⟨k, rfl⟩
       exact (hmemE _).2 (hEig σ (bL k) (hbmem k))

@@ -1,6 +1,51 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowMulMemAdjoinOfLocalizationAway
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubNatCompSubIncl
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -14,48 +59,7 @@ theorem adjoin_mem_of_away {R A R' A' : Type} [CommRing R] [CommRing A] [CommRin
     [IsLocalization.Away (algebraMap R A g) A'] (T : Set A) (b : A)
     (hb : algebraMap A A' b ∈ Algebra.adjoin R' (algebraMap A A' '' T)) :
     ∃ m : ℕ, algebraMap R A g ^ m * b ∈ Algebra.adjoin R T := by
-  classical
-  have hgen : ∀ k : ℕ, algebraMap R A g ^ k ∈ Algebra.adjoin R T := fun k =>
-    pow_mem (Subalgebra.algebraMap_mem _ g) k
-  have hgA : algebraMap A A' (algebraMap R A g) = algebraMap R' A' (algebraMap R R' g) := by
-    rw [← IsScalarTower.algebraMap_apply R A A', ← IsScalarTower.algebraMap_apply R R' A']
-  have key : ∀ x ∈ Algebra.adjoin R' (algebraMap A A' '' T), ∃ m : ℕ, ∃ s ∈ Algebra.adjoin R T,
-      algebraMap A A' (algebraMap R A g) ^ m * x = algebraMap A A' s := by
-    intro x hx
-    induction hx using Algebra.adjoin_induction with
-    | mem x hx =>
-      obtain ⟨t, ht, rfl⟩ := hx
-      exact ⟨0, t, Algebra.subset_adjoin ht, by simp⟩
-    | algebraMap r =>
-      obtain ⟨⟨a, ⟨_, n, rfl⟩⟩, hr⟩ := IsLocalization.surj (Submonoid.powers g) r
-      refine ⟨n, algebraMap R A a, Subalgebra.algebraMap_mem _ a, ?_⟩
-      have h2 := congrArg (algebraMap R' A') hr
-      simp only [map_mul, map_pow] at h2
-      rw [mul_comm, hgA, h2, ← IsScalarTower.algebraMap_apply R R' A',
-        ← IsScalarTower.algebraMap_apply R A A']
-    | add x y _ _ hx hy =>
-      obtain ⟨m1, s1, hs1, e1⟩ := hx
-      obtain ⟨m2, s2, hs2, e2⟩ := hy
-      refine ⟨m1 + m2, algebraMap R A g ^ m2 * s1 + algebraMap R A g ^ m1 * s2,
-        add_mem (mul_mem (hgen _) hs1) (mul_mem (hgen _) hs2), ?_⟩
-      rw [map_add (f := _), map_mul, map_mul, map_pow, map_pow, ← e1, ← e2]
-      ring
-    | mul x y _ _ hx hy =>
-      obtain ⟨m1, s1, hs1, e1⟩ := hx
-      obtain ⟨m2, s2, hs2, e2⟩ := hy
-      refine ⟨m1 + m2, s1 * s2, mul_mem hs1 hs2, ?_⟩
-      rw [map_mul, ← e1, ← e2]
-      ring
-  obtain ⟨m, s, hs, hms⟩ := key _ hb
-  rw [← map_pow, ← map_mul] at hms
-  obtain ⟨⟨_, k, rfl⟩, hk⟩ :=
-    (IsLocalization.eq_iff_exists (Submonoid.powers (algebraMap R A g)) A').mp hms
-  refine ⟨k + m, ?_⟩
-  have h3 : algebraMap R A g ^ (k + m) * b = algebraMap R A g ^ k * s := by
-    rw [pow_add, mul_assoc]
-    exact hk
-  rw [h3]
-  exact mul_mem (hgen k) hs
+  apply (config := { allowSynthFailures := true }) GlobalTheory.adjoin_mem_of_away_localization' <;> assumption
 
 theorem mem_gen_of_local (X : Scheme.{0}) (F : X.Opensᵒᵖ ⥤ CommRingCat) (α : X.presheaf ⟶ F)
     (hα : ((Scheme.AffineZariskiSite.toOpensFunctor X).op.whiskerLeft α).Coequifibered)

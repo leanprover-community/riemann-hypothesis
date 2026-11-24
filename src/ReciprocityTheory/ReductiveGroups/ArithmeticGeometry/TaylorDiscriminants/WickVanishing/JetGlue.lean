@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.JetGlue
+public import Mathlib.AlgebraicGeometry.Stalk
 
 @[expose] public section
 
@@ -20,7 +21,7 @@ theorem specMap_stalkCongr {X : Scheme.{u}} {x y : X} (e : x = y) :
   simp
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem ext_of_fromSpecStalk {Y X : Scheme.{u}} (f g : Y ⟶ X)
     (h : ∀ y, Y.fromSpecStalk y ≫ f = Y.fromSpecStalk y ≫ g) : f = g := by
   have hb : ∀ y, f y = g y := fun y => by

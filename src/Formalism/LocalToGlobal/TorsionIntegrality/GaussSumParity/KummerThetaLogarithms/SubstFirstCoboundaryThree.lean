@@ -1,7 +1,51 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.LetterShift
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
 
 @[expose] public section
 
@@ -24,24 +68,20 @@ private theorem hasSubst_finite_of_constantCoeff_eq_zero {σ τ : Type} [Finite 
     (ha : ∀ s, constantCoeff (a s) = 0) : HasSubst a := by
   first
   | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' ha
-  | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent fun s => by rw [ha s]; exact IsNilpotent.zero
 
 theorem hs2 {τ : Type} {a b : MvPowerSeries τ K} (ha : constantCoeff a = 0)
     (hb : constantCoeff b = 0) : HasSubst ![a, b] := by
-  exact hasSubst_finite_of_constantCoeff_eq_zero fun i => by fin_cases i <;> first | exact ha | exact hb | simp [ha, hb]
+  exact hasSubst_finite_of_constantCoeff_eq_zero fun i => by fin_cases i <;> first | exact ha | exact hb
 
 theorem hs3 {τ : Type} {a b c : MvPowerSeries τ K} (ha : constantCoeff a = 0)
     (hb : constantCoeff b = 0) (hc : constantCoeff c = 0) : HasSubst ![a, b, c] := by
-  exact hasSubst_finite_of_constantCoeff_eq_zero fun i => by fin_cases i <;> first | exact ha | exact hb | exact hc | simp [ha, hb, hc]
+  exact hasSubst_finite_of_constantCoeff_eq_zero fun i => by fin_cases i <;> first | exact ha | exact hb | exact hc
 
 theorem subst_subst1 {ι κ : Type} {b : ι → MvPowerSeries κ K} (hb : HasSubst b)
     {a : MvPowerSeries ι K} (ha : PowerSeries.HasSubst a) (f : PowerSeries K) :
     subst b (PowerSeries.subst a f) = PowerSeries.subst (subst b a) f := by
   first
   | exact subst_comp_subst_apply (PowerSeries.HasSubst.const ha) hb f
-  | exact subst_comp_subst_apply ha hb f
-  | exact subst_comp_subst_apply (hasSubst_of_constantCoeff_nilpotent fun _ => ha) hb f
 
 theorem subst_single_var {ι κ : Type} {b : ι → MvPowerSeries κ K} (hb : HasSubst b)
     (x : ι) (f : PowerSeries K) : subst b (at1 x f) = PowerSeries.subst (b x) f := by
@@ -75,8 +115,6 @@ theorem ps_comp {τ : Type} {a : MvPowerSeries τ K} (ha : constantCoeff a = 0) 
 theorem cc_lgF {l : ℕ} (_hl : 2 ≤ l) : PowerSeries.constantCoeff (lgF K l) = 0 := by
   first
   | simp [lgF]
-  | (rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]; simp [lgF])
-  | (show PowerSeries.coeff 0 (lgF K l) = 0; simp [lgF])
 
 theorem exp_log (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) {τ : Type} {a : MvPowerSeries τ K}
     (ha : constantCoeff a = 0) :
@@ -84,7 +122,6 @@ theorem exp_log (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) {τ : Type} {a : MvPower
   rw [ps_comp ha (cc_lgF hl) (expF K l), (hE K l hl).2.2.1]
   first
   | exact PowerSeries.subst_X (PowerSeries.HasSubst.of_constantCoeff_zero ha)
-  | simp [PowerSeries.subst_X, PowerSeries.HasSubst.of_constantCoeff_zero ha]
 
 theorem addC_log (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) {τ : Type} {a b : MvPowerSeries τ K}
     (ha : constantCoeff a = 0) (hb : constantCoeff b = 0) (be0 : MvPowerSeries (Fin 2) K) :
@@ -106,15 +143,11 @@ private theorem mvSubst_add {ι κ : Type} {φ : ι → MvPowerSeries κ K} (hφ
     (f g : MvPowerSeries ι K) : subst φ (f + g) = subst φ f + subst φ g := by
   first
   | exact MvPowerSeries.subst_add hφ f g
-  | (rw [← coe_substAlgHom hφ]; exact map_add _ f g)
-  | exact map_add (substAlgHom hφ) f g
 
 private theorem mvSubst_sub {ι κ : Type} {φ : ι → MvPowerSeries κ K} (hφ : HasSubst φ)
     (f g : MvPowerSeries ι K) : subst φ (f - g) = subst φ f - subst φ g := by
   first
   | exact MvPowerSeries.subst_sub hφ f g
-  | (rw [← coe_substAlgHom hφ]; exact map_sub _ f g)
-  | exact map_sub (substAlgHom hφ) f g
 
 theorem log_law {l : ℕ} {F : MvPowerSeries (Fin 2) K} (hF0 : constantCoeff F = 0)
     (hF : cob F (lgF K l) = 0) {τ : Type} {a b : MvPowerSeries τ K}
@@ -131,21 +164,6 @@ theorem log_law {l : ℕ} {F : MvPowerSeries (Fin 2) K} (hF0 : constantCoeff F =
     subst_single_var h2, subst_single_var h2] at h
   exact h
 
-private theorem constantCoeff_in3_eq_zero {F : MvPowerSeries (Fin 2) K} (hF0 : constantCoeff F = 0) :
-    constantCoeff (in3 F) = 0 := by
-  unfold in3
-  have hx : ∀ i : Fin 2, constantCoeff (![(X 0 : MvPowerSeries (Fin 3) K), X 1] i) = 0 := by
-    intro i; fin_cases i <;> simp
-  first
-  | exact constantCoeff_subst_eq_zero hx F hF0
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) hx hF0
-  | exact constantCoeff_subst_eq_zero hx hF0
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) hx F hF0
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) F hx hF0
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) hF0 hx
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) F hF0 hx
-  | (apply constantCoeff_subst_eq_zero <;> first | assumption | exact hasSubst_finite_of_constantCoeff_eq_zero hx)
-
 theorem subst_first_coboundary_three {F : MvPowerSeries (Fin 2) K} (hF0 : constantCoeff F = 0) {τ : Type}
     {a b c : MvPowerSeries τ K} (ha : constantCoeff a = 0) (hb : constantCoeff b = 0)
     (hc : constantCoeff c = 0) (H : MvPowerSeries (Fin 2) K) :
@@ -157,12 +175,12 @@ theorem subst_first_coboundary_three {F : MvPowerSeries (Fin 2) K} (hF0 : consta
     unfold in3
     rw [subst2_comp h3 (hX 0) (hX 1)]
     simp only [subst_X h3]
-    first | rfl | simp
+    first | rfl
   unfold d1
-  rw [mvSubst_sub h3, mvSubst_sub h3, subst2_comp h3 (constantCoeff_in3_eq_zero hF0) (hX 2),
+  rw [mvSubst_sub h3, mvSubst_sub h3, subst2_comp h3 (_root_.Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.constantCoeff_law_first_two_of_three hF0) (hX 2),
     subst2_comp h3 (hX 0) (hX 2), subst2_comp h3 (hX 1) (hX 2), e1]
   simp only [subst_X h3]
-  first | rfl | simp
+  first | rfl
 
 theorem subst_swap2 {τ : Type} {a b : MvPowerSeries τ K} (ha : constantCoeff a = 0)
     (hb : constantCoeff b = 0) (H : MvPowerSeries (Fin 2) K) :
@@ -172,7 +190,7 @@ theorem subst_swap2 {τ : Type} {a b : MvPowerSeries τ K} (ha : constantCoeff a
   unfold swap2
   rw [subst2_comp h2 (hX 1) (hX 0)]
   simp only [subst_X h2]
-  first | rfl | simp
+  first | rfl
 
 def mulF (K : Type) [Field K] (l : ℕ) (c : K) : PowerSeries K :=
   PowerSeries.subst (PowerSeries.C c * lgF K l) (expF K l)
@@ -181,7 +199,6 @@ theorem cc_C_mul_lgF {l : ℕ} (hl : 2 ≤ l) (c : K) :
     PowerSeries.constantCoeff (PowerSeries.C c * lgF K l) = 0 := by
   first
   | rw [map_mul, cc_lgF hl, mul_zero]
-  | simp [cc_lgF hl]
 
 theorem isMul_mulF (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) (c : K) : IsMul l c (mulF K l c) := by
   refine ⟨cc_ps (τ := Unit) (cc_C_mul_lgF hl c) (hE K l hl).1, ?_⟩
@@ -190,7 +207,6 @@ theorem isMul_mulF (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) (c : K) : IsMul l c (
   rw [(hE K l hl).2.1] at h1
   first
   | exact h1.trans (PowerSeries.subst_X (PowerSeries.HasSubst.of_constantCoeff_zero (cc_C_mul_lgF hl c)))
-  | (unfold mulF; rw [h1]; simp [PowerSeries.subst_X, PowerSeries.HasSubst.of_constantCoeff_zero (cc_C_mul_lgF hl c)])
 
 private theorem powerSeries_subst_C_mul {τ : Type} {a : MvPowerSeries τ K} (ha : constantCoeff a = 0)
     (c : K) (f : PowerSeries K) :
@@ -198,9 +214,6 @@ private theorem powerSeries_subst_C_mul {τ : Type} {a : MvPowerSeries τ K} (ha
   have h := PowerSeries.HasSubst.of_constantCoeff_zero ha
   first
   | (simp only [← PowerSeries.smul_eq_C_mul, ← MvPowerSeries.smul_eq_C_mul]; exact PowerSeries.subst_smul h c f)
-  | (rw [PowerSeries.subst_mul h]; congr 1; simp [PowerSeries.subst_C h])
-  | (rw [← PowerSeries.coe_substAlgHom h, map_mul]; congr 1; exact (PowerSeries.substAlgHom h).commutes c)
-  | simp [PowerSeries.subst_mul h]
 
 theorem log_mul {l : ℕ} {c : K} {e : PowerSeries K} (he : IsMul l c e) {τ : Type}
     {a : MvPowerSeries τ K} (ha : constantCoeff a = 0) :
@@ -212,9 +225,7 @@ theorem log_mul {l : ℕ} {c : K} {e : PowerSeries K} (he : IsMul l c e) {τ : T
 theorem subst_sum {ι κ α : Type} {φ : ι → MvPowerSeries κ K} (hφ : HasSubst φ) (s : Finset α)
     (f : α → MvPowerSeries ι K) : subst φ (∑ r ∈ s, f r) = ∑ r ∈ s, subst φ (f r) := by
   first
-  | exact MvPowerSeries.subst_sum hφ s f
   | (rw [← coe_substAlgHom hφ]; exact map_sum _ f s)
-  | exact map_sum (substAlgHom hφ) f s
 
 theorem cc_linE {d : ℕ} [NeZero d] (σ : K →+* K) (c : K) :
     constantCoeff (linE (d := d) σ c) = 0 := by
@@ -229,9 +240,7 @@ theorem cc_linO {d : ℕ} [NeZero d] (σ : K →+* K) (c : K) :
 theorem subst_zero' {ι κ : Type} {φ : ι → MvPowerSeries κ K} (hφ : HasSubst φ) :
     subst φ (0 : MvPowerSeries ι K) = 0 := by
   first
-  | exact MvPowerSeries.subst_zero hφ
   | (rw [← coe_substAlgHom hφ]; exact map_zero _)
-  | simp
 
 end Alg
 
@@ -243,8 +252,6 @@ private theorem subst_C_mul_X_eq_C_mul {ι τ : Type} {L : ι → MvPowerSeries 
     (s : ι) : subst L (C x * X s) = C x * L s := by
   first
   | (simp only [← MvPowerSeries.smul_eq_C_mul]; rw [MvPowerSeries.subst_smul hL, subst_X hL])
-  | (rw [← coe_substAlgHom hL, map_mul, coe_substAlgHom hL, subst_X hL]; congr 1; simp)
-  | simp [subst_X hL, MvPowerSeries.subst_mul hL]
 
 theorem subst_linE {d : ℕ} [NeZero d] (σ : K →+* K) (c : K) {τ : Type}
     {L : ZMod d → MvPowerSeries τ K} (hL : HasSubst L) :
@@ -295,22 +302,14 @@ private theorem constantCoeff_subst_vec_pair_eq_zero {K : Type} [Field K] {τ : 
     (ha : constantCoeff a = 0) (hb : constantCoeff b = 0) {F : MvPowerSeries (Fin 2) K}
     (hF0 : constantCoeff F = 0) : constantCoeff (subst ![a, b] F) = 0 := by
   have hx : ∀ i : Fin 2, constantCoeff (![a, b] i) = 0 := by
-    intro i; fin_cases i <;> first | exact ha | exact hb | simp [ha, hb]
+    intro i; fin_cases i <;> first | exact ha | exact hb
   first
-  | exact constantCoeff_subst_eq_zero hx F hF0
   | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) hx hF0
-  | exact constantCoeff_subst_eq_zero hx hF0
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) hx F hF0
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) F hx hF0
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) hF0 hx
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) F hF0 hx
-  | (apply constantCoeff_subst_eq_zero <;> first | assumption | exact hasSubst_finite_of_constantCoeff_eq_zero hx)
 
 theorem PairRules_of (hE : ExpSpec) (hIP : IPLemma) : PairRules := by
   have hS : SimeqRules := by
     first
     | exact Formalism.InvariantFactorPaths.G7.equivalence_rules
-    | exact equivalence_rules
   unfold PairRules
   intro K _ _ _ l σ hU F hF be0 hF1 τ _
   obtain ⟨hF0, -, hFc⟩ := hF

@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.LubinTatePoints
 public import GroundTheory.LocalFields.LubinTateTorsion
+public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.Eisenstein
+import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.LocalFields.UnitsBasic
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Norm.Basic
 
 @[expose] public section
 

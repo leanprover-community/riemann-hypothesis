@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 
 @[expose] public section
 
@@ -17,21 +19,11 @@ private lemma lenQuotSpan {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValua
     ← Ideal.span_singleton_pow, ← hϖ.maximalIdeal_eq,
     IsDiscreteValuationRing.length_quotient_pow_maximalIdeal]
 
-private lemma addValUnit {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    (u : Oˣ) : IsDiscreteValuationRing.addVal O (u : O) = 0 := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  have h := IsDiscreteValuationRing.addVal_def' u hϖ 0
-  rwa [pow_zero, mul_one, Nat.cast_zero] at h
-
 private lemma addValProd {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     {ι : Type*} (s : Finset ι) (g : ι → O) :
     IsDiscreteValuationRing.addVal O (∏ i ∈ s, g i) =
-      ∑ i ∈ s, IsDiscreteValuationRing.addVal O (g i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => rw [Finset.prod_empty, Finset.sum_empty, IsDiscreteValuationRing.addVal_one]
-  | insert j s hj ih =>
-    rw [Finset.prod_insert hj, Finset.sum_insert hj, IsDiscreteValuationRing.addVal_mul, ih]
+      ∑ i ∈ s, IsDiscreteValuationRing.addVal O (g i) :=
+  map_prod (AddValuation.toValuation (IsDiscreteValuationRing.addVal O)) g s
 
 theorem goal1 :
   ∀ {O : Type u_1} {M : Type u_2} [inst : CommRing.{u_1} O] [inst_1 : IsDomain.{u_1} O]
@@ -74,8 +66,8 @@ theorem goal1 :
     · rw [Matrix.diagonal_apply_ne _ hij, Finsupp.single_eq_of_ne hij]
   have hval : IsDiscreteValuationRing.addVal O (LinearMap.det φ) =
       IsDiscreteValuationRing.addVal O (∏ i, a i) := by
-    obtain ⟨u, hu⟩ := hassoc
-    rw [← hdet, ← hu, IsDiscreteValuationRing.addVal_mul, addValUnit, add_zero]
+    rw [← hdet]
+    exact (IsDiscreteValuationRing.addVal_eq_iff_associated _ _).2 hassoc
   rw [(Submodule.quotientEquivPiSpan (LinearMap.range φ) b h).length_eq,
     Module.length_pi_of_fintype, hval, addValProd]
   exact Finset.sum_congr rfl fun i _ => lenQuotSpan (Submodule.smithNormalFormCoeffs_ne_zero b h i)

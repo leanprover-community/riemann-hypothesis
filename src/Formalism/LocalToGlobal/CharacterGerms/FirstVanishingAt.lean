@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RankMaximalOfNondegenerateOfUnitSeriesIntegral
+public import Formalism.LocalToGlobal.CharacterGerms.FirstStepSecondHalfCondition
 
 @[expose] public section
 

@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsSecPointSeparable
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsGenericFormsKer
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsDerivSpanTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFreeParAlgIndep
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -62,8 +65,8 @@ theorem SecPointSeparable.proof (h₁ : GenericFormsKer.Statement) (h₂ : Deriv
     have h0 : ∑ j, algebraMap (GenParField k e n) L (genPar k e n (.inl (i, j))) * z j = 0 := by
       simp only [z, ← mul_assoc, ← Finset.sum_mul, hU i, zero_mul]
     have := congrArg D h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero] at this
+
+    rw [map_sum, map_zero] at this
     rw [← this]
     exact Finset.sum_congr rfl fun j _ => (hlin _ _).symm
   have hDz : ∀ j, D (z j) = 0 := by
@@ -85,9 +88,9 @@ theorem SecPointSeparable.proof (h₁ : GenericFormsKer.Statement) (h₂ : Deriv
     have hs : ∑ j, algebraMap (GenParField k e n) L (genPar k e n (.inr j)) * z j = (x j₀)⁻¹ := by
       simp only [z, ← mul_assoc, ← Finset.sum_mul, hT, one_mul]
     have h1 := congrArg D hs
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_eq_zero fun j _ => by rw [hlin, hDz, mul_zero], Derivation.leibniz_inv,
-      eq_comm, smul_eq_mul, neg_mul, neg_eq_zero, mul_eq_zero] at h1
+
+    rw [map_sum, Finset.sum_eq_zero fun j _ => by rw [hlin, hDz, mul_zero], Derivation.leibniz_inv,
+    eq_comm, smul_eq_mul, neg_mul, neg_eq_zero, mul_eq_zero] at h1
     exact h1.resolve_left (pow_ne_zero _ (inv_ne_zero hj₀))
   have hxj : ∀ j, D (x j) = 0 := by
     intro j

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsComplementForm
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MajorantInvolutionDiagonalForm
+import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Examples
 
 @[expose] public section
 

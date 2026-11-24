@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.IndefiniteReal.AllPartsTransfer
+public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.LocalToGlobal.IndefiniteReal.TraceOfDiag
+public import Mathlib.NumberTheory.NumberField.Units.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

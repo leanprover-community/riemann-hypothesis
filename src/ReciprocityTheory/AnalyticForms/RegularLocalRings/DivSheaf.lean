@@ -1,6 +1,10 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.DivSheafA
+public import Mathlib.AlgebraicGeometry.Noetherian
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

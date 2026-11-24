@@ -2,6 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
 public import Formalism.RealPlaceAnalysis.StatementE
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

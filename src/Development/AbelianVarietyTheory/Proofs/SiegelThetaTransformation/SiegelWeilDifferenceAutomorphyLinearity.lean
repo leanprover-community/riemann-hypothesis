@@ -1,13 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
+public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.FirstCoordinateAdmissible
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.EisAutomorphyLinear
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianThetaSummableAndDeterminesTestFn
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FiniteClsAndStab
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionUnitaryGroupTestFunctionsStatement
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionSiegelParabolicExplicitStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianThetaSummableAndDeterminesTestFn
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionSiegelParabolicExplicit
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionUnitaryGroupTestFunctions
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -31,18 +72,7 @@ theorem classSum_add {M : ℕ} (hM : 0 < M) (f g : Lt E n → ℂ) :
   haveI := Fintype.ofFinite (Cls E n M)
   simp only [classSum, finsum_eq_sum_of_fintype, mul_add, Finset.sum_add_distrib]
 
-theorem transl_mem {β : Matrix (Fin N) (Fin N) E} (hβ : ccT β = β) :
-    (fromBlocks 1 β 0 1 : M2 E N) ∈ UU E N := by
-  have h : ccT (fromBlocks 1 β 0 1 : M2 E N) = fromBlocks 1 0 β 1 := by
-    have h1 := Base.ccT_one (E := E) (α := Fin N)
-    ext (i | i) (j | j)
-    · exact congrFun (congrFun h1 i) j
-    · simp [ccT, cc]
-    · exact congrFun (congrFun hβ i) j
-    · exact congrFun (congrFun h1 i) j
-  change ccT _ * _ * _ = _
-  rw [h, Matrix.J, fromBlocks_multiply, fromBlocks_multiply]
-  simp
+alias transl_mem := _root_.GlobalTheory.SW.EisBdd.transl_mem
 
 theorem add_mem_Hn (Ψ : Finset (E →+* ℂ)) {β : Matrix (Fin N) (Fin N) E} (hβ : ccT β = β)
     {Z : CM Ψ N N} (hZ : Z ∈ Hn Ψ N) : (fun τ => Z τ + β.map τ.1 : CM Ψ N N) ∈ Hn Ψ N := by
@@ -68,7 +98,7 @@ theorem GlobalTheory.SW.swd_automorphy_linear : ∀ (E : Type) [Field E] [Number
     unfold swd
     rw [← classSum_mul hM]
     refine Base.classSum_congr fun Λ hΛ => ?_
-    have ht := (GlobalTheory.T.hermitianWeilAction_unitaryGroup_testFunctions E Ψ hΨ n N hn γ hγ _ (hφ Λ hΛ)).2.1 Z hZ 0 0
+    have ht := (_root_.GlobalTheory.SW.weil_action E Ψ hΨ n N hn γ hγ _ (hφ Λ hΛ)).2.1 Z hZ 0 0
     rw [(eis_automorphy_linear E Ψ hΨ n N hn hN _ (hφ Λ hΛ) Z hZ).2.1 γ hγ, mul_sub, ← ht]
     congr 2
     · funext τ; ext k a
@@ -92,7 +122,7 @@ theorem GlobalTheory.SW.swd_automorphy_linear : ∀ (E : Type) [Field E] [Number
     simp only [hd, det_one, one_pow, Finset.prod_const_one, one_mul] at h
     rw [← h]
     refine h5 _ _ _ fun Λ hΛ => funext fun x => ?_
-    rw [(GlobalTheory.T.hermitianWeilAction_siegelParabolic_explicit E Ψ hΨ n N hn _ (hφ Λ hΛ)).1 _ hγ (toBlocks_fromBlocks₂₁ _ _ _ _) x]
+    rw [(_root_.GlobalTheory.SW.weil_parabolic E Ψ hΨ n N hn _ (hφ Λ hΛ)).1 _ hγ (toBlocks_fromBlocks₂₁ _ _ _ _) x]
     simp [Base.ccT_one]
   · unfold swd
     rw [← classSum_add hM]

@@ -1,7 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -59,9 +100,8 @@ theorem DictLat.inclE_int (I : AutInst) {e : I.E} (he : e ∈ (algebraMap (𝓞 
 
 theorem DictLat.star_int (I : AutInst) (a : 𝓞 I.E) :
     star (algebraMap (𝓞 I.E) I.E a) ∈ (algebraMap (𝓞 I.E) I.E).range := by
-  have hint : IsIntegral ℤ (star (algebraMap (𝓞 I.E) I.E a)) :=
-    (NumberField.RingOfIntegers.isIntegral_coe a).map (starRingEnd I.E).toIntAlgHom
-  exact ⟨⟨_, hint⟩, rfl⟩
+  exact ⟨⟨star (algebraMap (𝓞 I.E) I.E a),
+    (NumberField.RingOfIntegers.isIntegral_coe a).map (starRingEnd I.E).toIntAlgHom⟩, rfl⟩
 
 theorem DictLat.sigR_int (I : AutInst) {r : I.E ⊗[I.F] Af I.F} (hr : r ∈ IntAf I.F I.E) :
     Formalism.UG.sigR I.cm.sig (Af I.F) r ∈ IntAf I.F I.E := by
@@ -216,10 +256,8 @@ theorem lDenom_of (h : DDenom) : LDenom := by
   have hyeq : y = ∑ i, y i • Pi.single i (1 : I.E ⊗[I.F] Af I.F) := by
     funext j
     simp [Finset.sum_apply, Pi.single_apply]
-  have hy : y ∈ denomSub I h := by
-    rw [hyeq]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hei i)
-  exact hy
+  rw [hyeq]
+  exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hei i)
 
 private def denseSub (I : AutInst) (N : ℕ) (h : DDense) (hN : 0 < N) :
     Submodule (IntAf I.F I.E) (Fin I.n → I.E ⊗[I.F] Af I.F) where

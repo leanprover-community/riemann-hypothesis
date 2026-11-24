@@ -1,17 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueIsTanFrameOfIsEmpty
 public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerMatrixUnique
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsChernExistsUniqueAndIso
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLieCombIffIsCombAt
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerMatrixExistsStatement
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentModuleUniversalGroupStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerMatrixExists
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerMatrixUnique
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WedgeOrdVpBaseChangeOfNeBot
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTangentOfIsLieImage
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsNormalFormArcDatumFramedPointRootOfUnity
+import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentModuleUniversalGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeG
 
 @[expose] public section
 
 set_option autoImplicit false
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 
@@ -57,7 +98,7 @@ theorem exists_mem_Fil_corr (P : AbelianDeRham) {T : Type} [CommRing T] [Algebra
     exact z _ (p1 c)
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_isFilLift_dir (P : AbelianDeRham) {ι : Type} [Fintype ι] {C : Over (Sp (TrivSqZeroExt R (ι → R)))}
     [GrpObj C] {g : ℕ} (hC : IsAbelianScheme C) (gC : SmoothOfRelativeDimension g C.hom) {A : Over (Sp R)} [GrpObj A]
     {φ₀ : A.left ⟶ C.left} (h₀ : IsGrpPullback A C (spMap (TrivSqZeroExt.fstHom R R (ι → R)).toRingHom) φ₀)
@@ -200,8 +241,8 @@ theorem IsKS.row (P : AbelianDeRham) {Φ : Finset (E →+* ℂ)} {y : FrPt Xo c 
     refine LinearMap.ext fun h => ?_
     obtain ⟨a, ha⟩ := exists_sub_mem_Fil hρ hL hvs (kb := kb) (fun k => hl₂ k.1 k.2) h
     have := iso f hf _ ha
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sum] at this
+
+    rw [map_sub, map_sum] at this
     simpa [h0] using this
   open GlobalTheory.CatCoh GlobalTheory.Published.AbelianDeRham in
   have tanValBC {R R' : Type} [CommRing R] [CommRing R'] {σ : R →+* R'} {A : Over (Sp R)} {B : Over (Sp R')} {φ : B.left ⟶ A.left}
@@ -323,7 +364,7 @@ theorem isKS_dir_sum : GlobalTheory.CovTop.Hypotheses₂ → ∀ (E : Type) [Fie
     · rw [← Category.assoc, ← hXy]
       exact congrArg (· ≫ X) (e₀ M)
   obtain ⟨M₀, A, _, A', _, π, π', i, hi, ψ, ub, hb, hπ, hπ', hiπ, hpol, hu, hl, what₂⟩ :=
-    GlobalTheory.T.kodaira_spencer_matrix_exists Pr E H Dw l Xo c K y _ hpq tan
+    _root_.GlobalTheory.KSExist.ksExist Pr E H Dw l Xo c K y _ hpq tan
   obtain ⟨C, _, πC, hC⟩ := exists_isGrpPullback Xo.univ.t.G X
   have hU := ObjDim.isAbelianScheme Xo.univ
   have hg := ObjDim.smoothOfRelativeDimension Xo.univ
@@ -361,7 +402,7 @@ theorem isKS_dir_sum : GlobalTheory.CovTop.Hypotheses₂ → ∀ (E : Type) [Fie
   let e := (Fintype.equivFin ι).symm
   refine ⟨lieComb (fun q => M (e q)) (fun q => w (e q)), ?_, f, hf, hd, _, ?_,
     isLieImage_lieComb _ (f := fun q => gs (e q)) fun q => hwl _⟩
-  · obtain ⟨V, _, _, v, -, -, htan, hcomb, -, -⟩ := GlobalTheory.T.exists_tangent_module_universal_group E H Dw l Xo K y.x
+  · obtain ⟨V, _, _, v, -, -, htan, hcomb, -, -⟩ := _root_.GlobalTheory.TanMod.exists_tangent_module E H Dw l Xo K y.x
     choose n hn using fun σ k => (htan _).1 (y.tan σ k)
     have key : ∀ {m : ℕ} (cf : Fin m → K) (u : Fin m → (epsR K ⟶ A)) (b : Fin m → V) (w : epsR K ⟶ A),
         (∀ j, (u j).left ≫ π = v (b j)) → (IsLieComb cf u w ↔ w.left ≫ π = v (∑ j, cf j • b j)) :=

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuBesselLoc
 
 @[expose] public section
@@ -46,25 +45,25 @@ private theorem hpk_sq_lemma {k r : ℕ} : Hpk k r * Hpk k r = 1 := by
   by_cases hm : r ≤ i.val ∧ i.val ≤ r + k
   · rw [Finset.sum_eq_single i]
     · simp only [Hpk]
-      split_ifs <;> (try simp only [Fin.ext_iff, ne_eq, Fin.val_mk, and_true, true_and, not_true_eq_false, not_false_eq_true] at *) <;>
-        first | omega | (norm_num; done) | (exfalso; omega)
+      split_ifs <;> (try simp only [Fin.ext_iff, and_true] at *) <;>
+        first | omega | (norm_num; done)
     · intro l _ hl
       have h0 : Hpk k r i l = 0 := by
         simp only [Hpk]
-        split_ifs <;> (try simp only [Fin.ext_iff, ne_eq, Fin.val_mk, and_true, true_and, not_true_eq_false, not_false_eq_true] at *) <;>
-        first | omega | (norm_num; done) | (exfalso; omega)
+        split_ifs <;> (try simp only [Fin.ext_iff, ne_eq] at *) <;>
+        first | omega
       rw [h0, zero_mul]
     · simp
   · have hlt : 2 * r + k - i.val < 2 * r + k + 1 := by omega
     rw [Finset.sum_eq_single ⟨2 * r + k - i.val, hlt⟩]
     · simp only [Hpk]
-      split_ifs <;> (try simp only [Fin.ext_iff, ne_eq, Fin.val_mk, and_true, true_and, not_true_eq_false, not_false_eq_true] at *) <;>
-        first | omega | (norm_num; done) | (exfalso; omega)
+      split_ifs <;> (try simp only [Fin.ext_iff] at *) <;>
+        first | omega | (norm_num; done)
     · intro l _ hl
       have h0 : Hpk k r i l = 0 := by
         simp only [Hpk]
-        split_ifs <;> (try simp only [Fin.ext_iff, ne_eq, Fin.val_mk, and_true, true_and, not_true_eq_false, not_false_eq_true] at *) <;>
-        first | omega | (norm_num; done) | (exfalso; omega)
+        split_ifs <;> (try simp only [Fin.ext_iff, ne_eq] at *) <;>
+        first | omega
       rw [h0, zero_mul]
     · simp
 

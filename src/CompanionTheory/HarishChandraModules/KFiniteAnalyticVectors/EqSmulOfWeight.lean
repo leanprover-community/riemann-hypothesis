@@ -1,6 +1,11 @@
 module
 
-public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
+public import Mathlib.Algebra.BigOperators.Group.List.Defs
+public import Mathlib.Algebra.Module.LinearMap.End
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.Tactic.Lemma
+import Formalism.HermitianCurvature.StatementQr
+import Formalism.RealPlaceAnalysis.StatementA
 
 @[expose] public section
 

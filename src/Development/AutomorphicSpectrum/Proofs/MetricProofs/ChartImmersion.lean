@@ -1,15 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVApply
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionOpenStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalIntegrabilityStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PMatStepColsEntryStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJLowerUniSwapStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartNinth
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalIntegrability
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionOpen
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.PMatStepColsEntry
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -224,8 +260,8 @@ theorem line_zero (hc : IsPCtx M Rb keep κ v F kb V bl r h) {w : Fin e → ℂ}
     (hD : HasFDerivAt (fun w' => affCoord p (pPhi M F keep v bl h ε w')) D w)
     {u : Fin e → ℂ} (hu : D u = 0) (hb0 : pB ε u = 0) : u = 0 := by
   have hb : IsBaseChart M Rb F kb V bl := hc.2.2.2.1
-  have hE := GlobalTheory.T.frameData_local_resolution_open K ι Φ y Ψ N j M n e Rb keep Kk ιk κ v F kb V bl r h ε hc
-  have hR := GlobalTheory.T.frameData_local_integrability K ι Φ y Ψ N j M n e Rb keep Kk ιk κ v F kb V bl r h ε hc
+  have hE := _root_.GlobalTheory.CompanionTheory.Ar.PB.PFl.Exact.chart_points K ι Φ y Ψ N j M n e Rb keep Kk ιk κ v F kb V bl r h ε hc
+  have hR := _root_.GlobalTheory.CompanionTheory.Ar.PB.PFl.ChartRead.chart_reads K ι Φ y Ψ N j M n e Rb keep Kk ιk κ v F kb V bl r h ε hc
   have hwB : ∀ s : ℂ, pB ε (w + s • u) = pB ε w := fun s => by
     funext i
     have : u (ε (Sum.inl i)) = 0 := congrFun hb0 i
@@ -259,7 +295,7 @@ theorem line_zero (hc : IsPCtx M Rb keep κ v F kb V bl r h) {w : Fin e → ℂ}
       simp only [pRho, Equiv.symm_apply_apply] at this
       rw [hbase s] at this
       simpa using this
-    have hS := GlobalTheory.T.pMat_stepCols_entry Ψ N j keep q M.j_le
+    have hS := _root_.GlobalTheory.CompanionTheory.Ar.PB.PFl.SmallStep.pStep_reads Ψ N j keep q M.j_le
     cases hk : M.blk (q.1.1.1, pStep j keep q.1.1.1 q.1.1.2.2) with
     | none =>
       have e0 := hrel 0

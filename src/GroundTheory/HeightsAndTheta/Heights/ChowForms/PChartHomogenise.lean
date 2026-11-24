@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartMax
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
+import Mathlib.RingTheory.GradedAlgebra.Radical
 
 @[expose] public section
 

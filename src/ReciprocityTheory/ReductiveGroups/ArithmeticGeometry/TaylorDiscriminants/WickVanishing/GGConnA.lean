@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Normed.Module.Connected
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 
 @[expose] public section
 

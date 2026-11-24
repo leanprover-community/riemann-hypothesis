@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.FilteredSurj
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Group.Subgroup.Basic
+public import Mathlib.GroupTheory.GroupAction.Hom
+public import Mathlib.GroupTheory.QuotientGroup.Defs
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
+public import Mathlib.Algebra.Group.Subgroup.Finite
 
 @[expose] public section
 

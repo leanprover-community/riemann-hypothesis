@@ -1,12 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
-public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLocalizedModuleSubtype
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfForall
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -160,7 +204,7 @@ theorem exists_tri (F : FlagD H r) (Λ : Submodule (𝓞 K) V) {l : ℕ} (hl : l
     exact hxy.symm
   choose c hc hc' using h
   refine ⟨diagonal α - Matrix.of c, ?_, fun a => ?_⟩
-  · rw [Matrix.det_of_lowerTriangular]
+  · rw [Matrix.det_of_isLowerTriangular]
     · simp [hc]
     · intro a b hab
       have hab' : a < b := hab
@@ -182,10 +226,10 @@ theorem hermFlag_pairing_cramer_of_leadingCoeffs (F F' : FlagD H r) (Λ : Submod
   have hD : Dl F F' l (hl.trans (Nat.le_succ r)) = Z.det := rfl
   have key : ∀ (ξ : Fin l → K) (b : Fin l), H.B (∑ a, ξ a • e a) (∑ c, B b c • e' c) = (ξ ᵥ* (Z * Bᴴ)) b := by
     intro ξ b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, LinearMap.map_smulₛₗ, smul_eq_mul,
-      vecMul, dotProduct, Matrix.mul_apply, hZ, Matrix.of_apply, conjTranspose_apply, starRingEnd_apply,
-      Finset.mul_sum]
+
+    simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, LinearMap.map_smulₛₗ, smul_eq_mul,
+    vecMul, dotProduct, Matrix.mul_apply, hZ, Matrix.of_apply, conjTranspose_apply, starRingEnd_apply,
+    Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
   have hQ : ∀ a b, ∃ q : 𝓞 K, algebraMap (𝓞 K) K q = (A * (Z * Bᴴ)) a b := by
@@ -315,8 +359,8 @@ theorem monomial {ι : Type} [Fintype ι] (v : ι → V) (n : ι → ℤ) {𝔡 
     have h3 : ξ i * H.B (v i) (v k) ∈ ipow 𝔡 (-n k) := by
       refine mem_of_forall h (neg_add_cancel _) fun β hβ => ?_
       have := hy.2 _ (hle k _ (star_mem h hs hβ))
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, LinearMap.sum_apply, Finset.sum_eq_single i (fun b _ hb => by simp [hk' b hb]) (by simp)] at this
+
+      rw [map_sum, LinearMap.sum_apply, Finset.sum_eq_single i (fun b _ hb => by simp [hk' b hb]) (by simp)] at this
       convert this using 1
       rw [B_smul, star_star]; ring
     refine mem_of_forall h (add_neg_cancel _) fun δ hδ => ?_

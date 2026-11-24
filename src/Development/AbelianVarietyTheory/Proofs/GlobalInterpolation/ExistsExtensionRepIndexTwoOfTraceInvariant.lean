@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ColRepSemisimple
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,10 +70,10 @@ theorem _root_.GlobalTheory.IndexTwoExt.isSSRep_of_ker [CharZero k] (η : Γ →
   have hp1 : ∀ v, p v ∈ W := fun v => by simp [hpdef]
   have hpW : ∀ v ∈ W, p v = v := fun v hv => by
     simp only [hpdef, LinearMap.comp_apply, Submodule.subtype_apply]
-    exact congrArg Subtype.val (Submodule.linearProjOfIsCompl_apply_left hc ⟨v, hv⟩)
+    exact congrArg Subtype.val (Submodule.projectionOnto_apply_left hc ⟨v, hv⟩)
   have hpW' : ∀ v ∈ W', p v = 0 := fun v hv => by
     simp only [hpdef, LinearMap.comp_apply, Submodule.subtype_apply]
-    exact congrArg Subtype.val (Submodule.linearProjOfIsCompl_apply_right hc ⟨v, hv⟩)
+    exact congrArg Subtype.val (Submodule.projectionOnto_apply_right hc ⟨v, hv⟩)
   have hpc : ∀ g, η g = 1 → Commute (σ g) p := by
     intro g hg
     refine LinearMap.ext fun v => ?_
@@ -206,7 +247,7 @@ theorem _root_.GlobalTheory.IndexTwoExt.main : ∀ (Γ k : Type) [Group Γ] [Top
     refine ⟨r.comp φ, ?_, isSSRep_comp_of_surjective r φ (fun h => ⟨h, rfl⟩) hrss, fun h => rfl⟩
     change Continuous (fun g => r (φ g))
     exact hr.comp (continuous_id.subtype_mk fun g => MonoidHom.mem_ker.2 (hall g))
-  push_neg at hall
+  push Not at hall
   obtain ⟨t, ht1⟩ := hall
   have ht : η t = -1 := (hη t).resolve_left ht1
   have hmem : ∀ x, η x = 1 → η (t * x * t⁻¹) = 1 := fun x hx => by
@@ -327,7 +368,7 @@ theorem _root_.GlobalTheory.IndexTwoExt.main : ∀ (Γ k : Type) [Group Γ] [Top
     show F h = r h
     rw [hF1 _ (MonoidHom.mem_ker.1 h.2), hf _ (MonoidHom.mem_ker.1 h.2)]
   have hfc : ContinuousOn f (η.ker : Set Γ) := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     exact hr.congr fun x => (dif_pos x.2 : f (x : Γ) = r ⟨x, x.2⟩).symm
   have hcont : Continuous ρ := by
     refine continuous_of_continuousAt_one ρ ?_

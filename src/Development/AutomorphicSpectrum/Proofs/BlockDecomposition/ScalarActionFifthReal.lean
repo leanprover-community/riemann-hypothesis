@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.LeviCommutantWordReduction
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShiftedCapelliDeterminantSubleadingCoeffTrace
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CommutingHeckeCapelliOperators
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -194,8 +240,7 @@ theorem split2 {A : Type} [CommRing A] [IsLocalRing A] {κ : Type} [DecidableEq 
       simpa [hx, sub_eq_add_neg, add_comm] using this
     have hd : (derivative f).eval x * g.eval x + f.eval x * (derivative g).eval x = Q.eval x := by
       have := congrArg (fun p => (derivative p).eval x) h
-      simp only [derivative_mul, eval_add, eval_mul, derivative_add, derivative_X, derivative_C, add_zero, eval_one,
-        one_mul, hlin, zero_mul] at this
+      simp only [derivative_mul, eval_add, eval_mul, derivative_add, derivative_X, derivative_C, add_zero, one_mul, hlin, zero_mul] at this
       exact this
     have hz : f.eval x * g.eval x = 0 := by rw [← eval_mul, h, eval_mul, hlin, zero_mul]
     have hroot : ∀ p : A[X], p.eval x = 0 → ∃ p1, p = (X + C (ℓ a)) * p1 := by
@@ -341,11 +386,11 @@ theorem polyTopLocal {n : ℕ} (L : Fin n → ℝ) (hL : StrictAnti L) (lev : Fi
       have hne2 : (univ.filter fun a => π' a = j).Nonempty := Finset.card_pos.1 (hcj' ▸ Finset.card_pos.2 hne)
       have h := ht j hj
       have e1 : (Q j).coeff ((blk lev j).card - 1) = ψ (∑ a ∈ univ.filter (fun a => π a = j), (L a : ℂ)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hQ j hj, hcj, coeff_prod_top _ hne1, map_sum]
+
+        rw [hQ j hj, hcj, coeff_prod_top _ hne1, map_sum]
       have e2 : (Q' j).coeff ((blk lev j).card - 1) = ψ (∑ a ∈ univ.filter (fun a => π' a = j), (L a : ℂ)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hQ' j hj, hcj', coeff_prod_top _ hne2, map_sum]
+
+        rw [hQ' j hj, hcj', coeff_prod_top _ hne2, map_sum]
       rw [e1, e2, ← map_add (f := _)] at h
       have h2 := hψ h
       apply Complex.ofReal_injective
@@ -402,8 +447,8 @@ theorem coeffs_zero {V : Type*} [AddCommGroup V] [Module ℂ V] (N : ℕ) (d : �
   have hp : (∑ k ∈ range N, C (φ (d k)) * X ^ k : ℂ[X]) = 0 := by
     refine Polynomial.funext fun Y => ?_
     have := congrArg φ (h Y)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul, map_zero] at this
+
+    simp only [map_sum, map_smul, smul_eq_mul, map_zero] at this
     simp only [eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X, eval_zero]
     rw [← this]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
@@ -425,8 +470,8 @@ theorem coeff_mem_of_values {A : Type} [AddCommGroup A] [Module ℂ A] (W : Subm
   intro k hk
   have := coeffs_zero N (fun i => W.mkQ (c i)) (fun Y => by
     have h0 := (Submodule.Quotient.mk_eq_zero W).2 (h Y)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Submodule.mkQ_apply, map_sum] at h0
+
+    rw [← Submodule.mkQ_apply, map_sum] at h0
     simpa only [map_smul] using h0) k hk
   exact (Submodule.Quotient.mk_eq_zero W).1 this
 

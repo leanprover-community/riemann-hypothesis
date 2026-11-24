@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.SemistableReduction.AlgAll
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.Discriminant
+public import Mathlib.Tactic.Continuity
+public import Mathlib.RingTheory.OrderOfVanishing.Noetherian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.SemistableReduction.DetSubtypeCompAssociatedProd
+public import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
 
 @[expose] public section
 
@@ -33,11 +39,9 @@ theorem det_blockDiagonal' {ι R : Type*} [Fintype ι] [DecidableEq ι] [CommRin
     show Matrix.blockDiagonal' M ⟨c, k⟩ ⟨c, k'⟩ = M c k k'
     first
       | exact Matrix.blockDiagonal'_apply_eq M c k k'
-      | simp [Matrix.blockDiagonal'_apply]
   letI : LinearOrder ι := LinearOrder.lift' (Fintype.equivFin ι) (Fintype.equivFin ι).injective
   first
     | rw [(Matrix.blockTriangular_blockDiagonal' M).det]
-    | rw [Matrix.BlockTriangular.det (Matrix.blockTriangular_blockDiagonal' M)]
   rw [Finset.prod_congr rfl (fun c _ => hblk c)]
   refine Finset.prod_subset (Finset.subset_univ _) ?_
   intro c _ hc
@@ -57,8 +61,8 @@ theorem gram_mul {F L : Type*} [Field F] [Field L] [Algebra F L] {κ : Type*} [F
   simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
     Algebra.traceMatrix_apply, Algebra.traceForm_apply, Algebra.leftMulMatrix_eq_repr_mul]
   conv_lhs => rw [← a.sum_repr (h * a p)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_mul, map_sum]
+
+  rw [Finset.sum_mul, map_sum]
   refine Finset.sum_congr rfl fun r _ => ?_
   rw [smul_mul_assoc, map_smul, smul_eq_mul]
 
@@ -83,7 +87,7 @@ theorem length_quot {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRi
     rw [← Ring.ord_eq_addVal]
     rfl
   have hdet : Associated (α.det (b' ∘ σ)) (∏ i, s i) := by
-    have key := ReciprocityTheory.MultiplicativeHeights.det_subtype_comp_associated_prod α N hrank (α.equiv (Basis.span hli) σ)
+    have key := _root_.Bl.general_b_fact_tail.goal1 α N hrank (α.equiv (Basis.span hli) σ)
     convert key using 1
     rw [← LinearMap.det_toMatrix α, Basis.det_apply]
     congr 1

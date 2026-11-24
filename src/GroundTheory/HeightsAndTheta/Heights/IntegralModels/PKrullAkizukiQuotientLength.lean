@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsKrullAkizuki
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.LinearAlgebra.Dimension.Localization
+public import Mathlib.RingTheory.HopkinsLevitzki
 
 @[expose] public section
 

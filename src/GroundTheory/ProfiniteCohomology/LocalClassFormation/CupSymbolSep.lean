@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import GroundTheory.LocalFields.LocalArtinMap
+public import GroundTheory.ProfiniteCohomology.CyclicCupGaloisDefs
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolDefs
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbol
 
 @[expose] public section

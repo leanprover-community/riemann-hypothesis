@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.CuspidalSplittingCoeff
+public import Mathlib.Order.CompletePartialOrder
 public import GroundTheory.AutomorphicForms.CuspidalSplittingProjective
+import GroundTheory.AutomorphicForms.JacquetAdmissible
+import GroundTheory.AutomorphicForms.SmoothRepSchur
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -265,7 +269,7 @@ theorem exists_sub_mem_isotypicKernel (u : U) :
           (Submodule.span ℂ (Set.range fun h => ρ h u)).comap (ρ g) := by
         refine Submodule.span_le.2 ?_
         rintro _ ⟨h, rfl⟩
-        exact Submodule.subset_span ⟨g * h, by simp [map_mul, Module.End.mul_apply]⟩
+        exact Submodule.subset_span ⟨g * h, by simp [map_mul]⟩
       exact hle hx⟩
   have huW0 : u ∈ W0.toSubmodule := Submodule.subset_span ⟨1, by simp⟩
   have hvanish : ∀ H : Representation.IntertwiningMap ρ π, H u = 0 →
@@ -323,8 +327,8 @@ theorem exists_sub_mem_isotypicKernel (u : U) :
     choose c hcx using hc
     have hΦ : ∀ y : Fin m → V, Φ y = ∑ i, c i • y i := fun y => by
       conv_lhs => rw [← Finset.univ_sum_single y]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_congr rfl fun i _ => hcx i (y i)
     have hzero : ∑ i, c i • bE i = 0 := by
       have h1 : Φ (Γ u) = 0 := hΦR _ ((hRmem _).2 ⟨⟨u, huW0⟩, rfl⟩)
@@ -345,8 +349,8 @@ theorem exists_sub_mem_isotypicKernel (u : U) :
   have hGu' : ∀ i, Gs i u' = Gs i u := by
     intro i
     have h2 : Γ0 (∑ k, s k (Gs k u)) = Γ u := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       have h3 : ∀ k, Γ0 (s k (Gs k u)) = Pi.single k (Gs k u) := fun k => by
         rw [← Representation.IntertwiningMap.comp_apply, hs]
         rfl

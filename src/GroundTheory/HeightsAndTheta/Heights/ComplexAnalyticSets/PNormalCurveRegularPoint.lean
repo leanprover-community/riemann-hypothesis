@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurveRegularPoint
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurveJacobian
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAnalyticImplicitChart
+public import Mathlib.Analysis.Analytic.Polynomial
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 

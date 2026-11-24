@@ -1,11 +1,58 @@
 module
 
 public import Formalism.HermitianCurvature.StatementJC
-public import Formalism.HermitianCurvature.LowerBlockNormalisedBoundFromComponents
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockEstimatesSumForm
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellZetaMinors
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelSizesJointMean
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellZetaMinors
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockEstimatesSumForm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -242,28 +289,6 @@ private theorem psdOn_hadamard_mul_of_psdOn {α : Type} (F : Finset α) (A B : �
   show Matrix.PosSemidef (Matrix.of fun x y : F => A x y * B x y)
   first
   | exact hA'.hadamard hB'
-  | exact Matrix.PosSemidef.hadamard hA' hB'
-  | obtain ⟨C, hC⟩ : ∃ C : Matrix F F ℂ, (Matrix.of fun x y : F => A x y) = C.conjTranspose * C := by
-      first
-      | exact ⟨hA'.sqrt, by rw [hA'.posSemidef_sqrt.1.eq, hA'.sqrt_mul_self]⟩
-      | exact Matrix.posSemidef_iff_eq_conjTranspose_mul_self.1 hA'
-      | exact Matrix.posSemidef_iff_exists_eq_conjTranspose_mul_self.1 hA'
-    have hsum : (Matrix.of fun x y : F => A x y * B x y) =
-        ∑ k : F, (Matrix.diagonal fun i => C k i).conjTranspose * (Matrix.of fun x y : F => B x y) *
-          Matrix.diagonal fun i => C k i := by
-      ext i j
-      have hij : A i j = ∑ k : F, star (C k i) * C k j := by
-        have := congrFun (congrFun hC i) j
-        simpa [Matrix.mul_apply] using this
-      rw [Matrix.sum_apply]
-      simp only [Matrix.diagonal_conjTranspose, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.of_apply,
-        Pi.star_apply]
-      rw [hij, Finset.sum_mul]
-      exact Finset.sum_congr rfl fun k _ => by ring
-    rw [hsum]
-    refine Finset.sum_induction _ Matrix.PosSemidef (fun _ _ h1 h2 => h1.add h2) Matrix.PosSemidef.zero ?_
-    intro k _
-    exact hB'.conjTranspose_mul_mul_same _
 
 theorem nst_diag_nonneg (hG : D.GramPSD) (hW : D.WordsPos) {ε : ℝ} (hε : 0 < ε) (i s : ℕ) (w : W)
     (Y : Finset (Pt E)) (T : Finset E) (κ : Pt E → Pt E → ℂ) (hκ : PSDOn (pts Y s T) κ) (t : E) (ht : t ∈ T) :
@@ -699,7 +724,6 @@ theorem cpx_mp : MeasurePreserving (cpx E) volume volume := by
   have h1 : MeasurePreserving (Formalism.FourierDecayAlt.P.Jx2.ee E) volume volume := by
     first
     | exact Formalism.FourierDecayAlt.P.Jx2.ee_mp E
-    | exact Formalism.FourierDecayAlt.P.Jx2.ee_mp
   haveI : IsProbabilityMeasure (volume : Measure ({w : InfinitePlace E // w.IsReal} → ℝ)) := by
     constructor
     rw [MeasureTheory.volume_pi, Measure.pi_of_empty]
@@ -843,11 +867,11 @@ theorem thmPInt_of_covolume_prod (E : Type) [Field E] [NumberField E] [IsCMField
         (⟨C.loc (S.σ v) h, by simp⟩ : ({C.loc (S.σ v) h, C.loc (S.σ v) h'} : Finset C.LPt))
     set X : ℂ := ∑ h ∈ Y, ∑ h' ∈ Y, κ h h' * S.gram ε (i - 1) w.1 h h' with hX
     have hXr : ((X.re : ℝ) : ℂ) = X := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Complex.conj_eq_iff_re, hX, map_sum, Finset.sum_comm]
+
+      rw [← Complex.conj_eq_iff_re, hX, map_sum, Finset.sum_comm]
       refine Finset.sum_congr rfl fun h' hh' => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun h hh => ?_
       rw [map_mul, hκH h' hh' h hh, hgH h' h]
     have hN0 : ((S.base.N0 ε (i - 1) w Y κ : ℝ) : ℂ) = X / sz := by

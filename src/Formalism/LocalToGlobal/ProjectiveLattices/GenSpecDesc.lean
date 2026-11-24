@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.GenSpecSep
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
+public import Formalism.LocalToGlobal.ProjectiveLattices.GenSpecSep
 
 @[expose] public section
 

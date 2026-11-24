@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.MvPowerSeries.Derivative
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.NatCastMulCoeffOfPderivEq
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FormalExpMulFormalExpNeg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -222,8 +267,8 @@ theorem existsUnique_coboundary_param [Finite σ] [Finite τ] {B : MvPowerSeries
     simp [pderiv_subst', pderiv_X_ite] at h1
     have h2 := congrArg (subst (Sum.elim (fun i => X (inl i)) (Sum.elim (fun i => X (inr (inl i))) (Sum.elim (fun _ => 0) fun j => X (inr (inr j)))) :
         σ ⊕ σ ⊕ σ ⊕ τ → MvPowerSeries (σ ⊕ σ ⊕ τ) A)) h1
-    simp [subst_subst hz, subst_X hz, subst_add hz, subst_sub hz, subst_zero' hz, subst_sumElim, subst_elim_elim_X] at h2
-    simp [ha, subst_subst hxy, subst_X hxy, subst_add hxy, subst_sub hxy, subst_zero' hxy, subst_subst hy, subst_X hy, subst_add hy, subst_sub hy, subst_zero' hy, subst_sumElim, h2]
+    simp [subst_subst hz, subst_X hz, subst_add hz, subst_sumElim, subst_elim_elim_X] at h2
+    simp [ha, subst_subst hxy, subst_X hxy, subst_zero' hxy, subst_subst hy, subst_X hy, subst_zero' hy, subst_sumElim, h2]
   have hQ (i : σ) : pderiv (R := A) (inl i) B =
       subst (Sum.elim (fun i => X (inl i) + X (inr (inl i))) fun j => X (inr (inr j)) :
         σ ⊕ τ → MvPowerSeries (σ ⊕ σ ⊕ τ) A) (a i) - subst (Sum.elim (fun i => X (inl i)) fun j => X (inr (inr j)) :
@@ -231,7 +276,7 @@ theorem existsUnique_coboundary_param [Finite σ] [Finite τ] {B : MvPowerSeries
     have h1 := congrArg (pderiv (R := A) (inl i)) hsymm
     simp [pderiv_subst', pderiv_X_ite] at h1
     rw [← h1, hP]
-    simp [subst_subst hsw, subst_X hsw, subst_add hsw, subst_sub hsw, subst_zero' hsw, subst_sumElim, add_comm]
+    simp [subst_subst hsw, subst_X hsw, subst_add hsw, subst_sub hsw, subst_sumElim, add_comm]
   have hclosed (i j : σ) : pderiv (R := A) (inl i) (a j) = pderiv (R := A) (inl j) (a i) := by
     have h1 := pderiv_comm (inl i) (inr (inl j)) B
     rw [hP, hQ] at h1
@@ -242,7 +287,7 @@ theorem existsUnique_coboundary_param [Finite σ] [Finite τ] {B : MvPowerSeries
   have ha0 (i : σ) : subst (Sum.elim (fun _ => 0) X : σ ⊕ τ → MvPowerSeries τ A) (a i) = 0 := by
     have h1 := congrArg (subst (Sum.elim (fun _ => 0) (Sum.elim (fun _ => 0) X) :
         σ ⊕ σ ⊕ τ → MvPowerSeries τ A)) (hP i)
-    simp [subst_subst h00, subst_X h00, subst_add h00, subst_sub h00, subst_zero' h00, subst_sumElim] at h1
+    simp [subst_subst h00, subst_X h00, subst_add h00, subst_sub h00, subst_sumElim] at h1
     simpa [ha, subst_subst hz2, subst_X hz2, subst_add hz2, subst_sub hz2, subst_zero' hz2, subst_sumElim] using h1
   obtain ⟨k, ⟨hk0, hk⟩, -⟩ := existsUnique_primitive_sum a hclosed
   have hB : B = subst (Sum.elim (fun i => X (inl i) + X (inr (inl i))) fun j => X (inr (inr j)) :
@@ -258,9 +303,9 @@ theorem existsUnique_coboundary_param [Finite σ] [Finite τ] {B : MvPowerSeries
         σ ⊕ σ ⊕ σ ⊕ τ → MvPowerSeries (σ ⊕ σ ⊕ τ) A)) hcoc
       have h2 := congrArg (subst (fun j => X (inr (inr j)) : τ → MvPowerSeries (σ ⊕ σ ⊕ τ) A)) h0
       have h3 := congrArg (subst (fun j => X (inr (inr j)) : τ → MvPowerSeries (σ ⊕ σ ⊕ τ) A)) hk0
-      simp [subst_subst ht, subst_X ht, subst_add ht, subst_sub ht, subst_zero' ht, subst_sumElim] at h2 h3
-      simp [subst_subst hyz, subst_X hyz, subst_add hyz, subst_sub hyz, subst_zero' hyz, subst_sumElim, h2] at h1
-      simp [subst_subst hy3, subst_X hy3, subst_add hy3, subst_sub hy3, subst_zero' hy3, subst_sumElim, h1, h3]
+      simp [subst_subst ht, subst_X ht, subst_zero' ht, subst_sumElim] at h2 h3
+      simp [subst_subst hyz, subst_X hyz, subst_add hyz, subst_sumElim, h2] at h1
+      simp [subst_subst hy3, subst_X hy3, subst_add hy3, subst_sub hy3, subst_sumElim, h1, h3]
   refine ⟨k, ⟨hk0, fun i => by rw [hk, ha0], hB⟩, ?_⟩
   rintro k' ⟨-, hk1, hk2⟩
   have hd := eq_sum_of_additive_param (f := k' - k) (by

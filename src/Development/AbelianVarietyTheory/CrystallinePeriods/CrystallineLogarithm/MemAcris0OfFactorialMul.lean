@@ -1,17 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.UniformContinuousConstSMulOfIsIsometricSMul
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.ExistsFactorialMulEqPow
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRhamMap
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Embedding
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Section
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Action
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.TruncLogEqOfPowEqZero
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.MapEqPadicPowCyclotomicCharacter
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Comparison
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.SpanNatCastLeComap
+public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Action
+import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.EqZeroOfPMulEqZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -192,7 +229,7 @@ section
 
 theorem Bridge.tower : ∀ (l : ℕ) [Fact l.Prime] (x : (Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))), algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) x = algebraMap ((Reformulated.AutPerF.acrisZero l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.acrisZero l ↥(PadicComplexInt l))) x) := by
   intro l _ x
-  first | rfl | exact IsScalarTower.algebraMap_apply _ _ _ x
+  first | rfl
 
 end
 end ScalarTowerAlt
@@ -216,7 +253,7 @@ section
 
 theorem Bridge.sigA_coeff : ∀ (l : ℕ) [Fact l.Prime] (g : (PadicAlgCl l ≃ₐ[ℚ_[l]] PadicAlgCl l)) (w : (Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) (n : ℕ), ((Reformulated.AutPerF.Ainf.map l (MulSemiringAction.toRingHom (PadicAlgCl l ≃ₐ[ℚ_[l]] PadicAlgCl l) ↥(PadicComplexInt l) g)) w).coeff n = (Reformulated.AutPerF.Tilt.map l (MulSemiringAction.toRingHom (PadicAlgCl l ≃ₐ[ℚ_[l]] PadicAlgCl l) ↥(PadicComplexInt l) g)) (w.coeff n) := by
   intro l _ g w n
-  first | exact WittVector.map_coeff _ _ _ | rfl
+  first | exact WittVector.map_coeff _ _ _
 
 end
 end SigmaCoeffA
@@ -860,11 +897,7 @@ section
 
 namespace Bridge.RingBasics.SpanPowerIntegralLemmas
 
-theorem norm_eq_val (l : ℕ) [Fact l.Prime] (y : ℂ_[l]) :
-    ‖y‖ = (((PadicComplex.valued l).v y : NNReal) : ℝ) := by
-  rw [PadicComplex.norm_eq_norm]
-  simp only [Valuation.norm_def, PadicComplex.RankOne.hom_eq_embedding]
-  rw [Valuation.embedding_restrict (PadicComplex.valued l).v y]
+alias norm_eq_val := _root_.NormEqValuation.Bridge.RingBasics.norm_eq_val
 
 theorem mem_iff (l : ℕ) [Fact l.Prime] (y : ℂ_[l]) : y ∈ PadicComplexInt l ↔ ‖y‖ ≤ 1 := by
   rw [PadicComplexInt, Valuation.mem_valuationSubring_iff, norm_eq_val]
@@ -1108,11 +1141,7 @@ end FrobeniusMulComplex
 namespace IntegralComplexMem
 section
 
-theorem Bridge.RingBasics.mem_OC : ∀ (l : ℕ) [Fact l.Prime] (x : ℂ_[l]), x ∈ PadicComplexInt l ↔ ‖x‖ ≤ 1 := by
-  intro l _ x
-  rw [PadicComplexInt, Valuation.mem_valuationSubring_iff, PadicComplex.norm_eq_norm,
-    Valuation.norm_def, ← NNReal.coe_one, NNReal.coe_le_coe,
-    (show Valuation.RankLeOne.hom' Valued.v = MonoidWithZeroHom.ValueGroup₀.embedding from rfl), Valuation.embedding_restrict]
+alias Bridge.RingBasics.mem_OC := _root_.SpanPowerIntegral.Bridge.RingBasics.SpanPowerIntegralLemmas.mem_iff
 
 end
 end IntegralComplexMem

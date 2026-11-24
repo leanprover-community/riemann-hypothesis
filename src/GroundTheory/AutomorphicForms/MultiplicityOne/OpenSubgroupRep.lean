@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
+public import GroundTheory.AutomorphicForms.UnitaryRepresentations.IsInvariantIffCommuteStarProjection
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 
 @[expose] public section
 

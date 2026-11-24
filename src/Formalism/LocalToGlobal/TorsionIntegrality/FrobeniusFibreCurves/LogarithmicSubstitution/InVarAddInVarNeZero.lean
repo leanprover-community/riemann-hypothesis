@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementA
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementB
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Analysis.Normed.Group.Ultra
 
 @[expose] public section
 

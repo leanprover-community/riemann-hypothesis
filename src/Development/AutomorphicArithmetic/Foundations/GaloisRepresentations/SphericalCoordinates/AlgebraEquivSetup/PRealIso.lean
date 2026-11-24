@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.AlgebraEquivSetup.CodiffUnit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGDatumOneOneOne
 
 @[expose] public section
 
@@ -112,7 +152,7 @@ theorem UpperTheory.Gal.W2.Seed.pRealIso :
       · subst hq
         simp only [Pi.add_apply, Pi.smul_apply, Pi.single_eq_same]
         apply Complex.ext <;> simp
-      · simp [Pi.single_apply, hq]
+      · simp [hq]
     rw [hw, map_add (f := _), map_smul, map_smul, smul_eq_mul, smul_eq_mul]
   have hg : Function.Injective
       (Sum.elim (fun τ : Phi A => τ.1) (fun τ : Phi A => ComplexEmbedding.conjugate τ.1)) := by
@@ -158,17 +198,17 @@ theorem UpperTheory.Gal.W2.Seed.pRealIso :
           rw [Finset.sum_eq_single τ']
           · simp [F]
           · intro τ _ hτ
-            simp [Pi.single_apply, hτ]
+            simp [hτ]
           · simp
-        · simp [F, Pi.single_apply, hi]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hFx, map_sum] at h1
+        · simp [F, hi]
+
+      rw [hFx, map_sum] at h1
       rw [← h1]
       exact Finset.sum_congr rfl fun τ _ => by rw [dec φ (τ, i) (τ.1 (x : E))]; ring
     apply hφ0
     refine LinearMap.ext fun z => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.zero_apply, ← Finset.univ_sum_single z, map_sum]
+
+    rw [LinearMap.zero_apply, ← Finset.univ_sum_single z, map_sum]
     refine Finset.sum_eq_zero fun p _ => ?_
     obtain ⟨τ, i⟩ := p
     rw [dec, (huv i τ).1, (huv i τ).2]

@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Central.Defs
+public import Mathlib.LinearAlgebra.TensorProduct.Basis
+public import Mathlib.RingTheory.TensorProduct.Basic
+public import Mathlib.Algebra.Central.TensorProduct
+public import Mathlib.RingTheory.SimpleRing.Congr
+public import Mathlib.Algebra.Central.Basic
+public import Mathlib.LinearAlgebra.Basis.VectorSpace
+import Mathlib.RingTheory.TensorProduct.Maps
 
 @[expose] public section
 
@@ -99,19 +106,9 @@ theorem center_tensorProduct_eq_map_includeRight [Algebra.IsCentral K A] :
 
 theorem center_tensorProduct_eq_map_includeLeft [Algebra.IsCentral K A] :
     Subalgebra.center K (B ⊗[K] A) = (Subalgebra.center K B).map includeLeft := by
-  refine le_antisymm ?_ (Algebra.TensorProduct.includeLeft_map_center_le K B A)
-  intro x hx
-  let e := Algebra.TensorProduct.comm K A B
-  have hx' : e.symm x ∈ Subalgebra.center K (A ⊗[K] B) := by
-    rw [Subalgebra.mem_center_iff] at hx ⊢
-    intro w
-    apply e.injective
-    rw [map_mul, map_mul, e.apply_symm_apply, hx]
-  rw [center_tensorProduct_eq_map_includeRight] at hx'
-  obtain ⟨b, hb, hbx⟩ := hx'
-  refine ⟨b, hb, ?_⟩
-  rw [← e.apply_symm_apply x, ← hbx]
-  simp [e]
+  rw [← Subalgebra.map_center_eq (Algebra.TensorProduct.comm K A B),
+    center_tensorProduct_eq_map_includeRight K A B, Subalgebra.map_map,
+    Algebra.TensorProduct.comm_comp_includeRight]
 
 end Central
 
@@ -199,6 +196,8 @@ theorem exists_one_tmul_mem_of_ne_bot [Algebra.IsCentral K A] [IsSimpleRing A]
 
 instance isSimpleRing_tensorProduct [Algebra.IsCentral K A] [IsSimpleRing A] [IsSimpleRing B] :
     IsSimpleRing (A ⊗[K] B) := by
+  let _ : Nontrivial (A ⊗[K] B) :=
+    (Algebra.TensorProduct.includeRight_injective (algebraMap K A).injective).nontrivial
   refine IsSimpleRing.of_eq_bot_or_eq_top fun I ↦ ?_
   refine or_iff_not_imp_left.mpr fun hI ↦ ?_
   obtain ⟨b, hb0, hbI⟩ := exists_one_tmul_mem_of_ne_bot I hI

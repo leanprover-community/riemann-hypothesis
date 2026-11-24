@@ -1,11 +1,16 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
 public import Formalism.LocalToGlobal.Divisibility.LiftLat
-public import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
 public import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
-public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
+import Formalism.LocalToGlobal.Divisibility.ProjLemmas
+import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.CommutingTwist
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ConjugateWeightLatticeOfGeneral
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
 
 @[expose] public section
 
@@ -576,8 +581,8 @@ theorem HZ_unit (h : BlockHyp B ℓ v0 s) : IsUnit ((B.zE ℓ Z)ᴴ * B.HV ℓ *
     intro c h0
     have h1 : star (fun i => v0.embedding (c i)) ⬝ᵥ (B.S.H.map v0.embedding) *ᵥ (fun i => v0.embedding (c i)) =
         v0.embedding (star c ⬝ᵥ B.S.H *ᵥ c) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [dotProduct, Matrix.mulVec, map_sum, map_mul, Pi.star_apply, hv0', Matrix.map_apply]
+
+      simp only [dotProduct, Matrix.mulVec, map_sum, map_mul, Pi.star_apply, hv0', Matrix.map_apply]
     rw [h0, map_zero] at h1
     by_contra hc0
     have hne : (fun i => v0.embedding (c i)) ≠ 0 := by

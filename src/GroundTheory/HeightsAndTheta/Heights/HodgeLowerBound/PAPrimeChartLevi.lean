@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartLeviLocal
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StChartVelLift
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartLevi
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

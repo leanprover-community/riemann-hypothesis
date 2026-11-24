@@ -2,6 +2,44 @@ module
 
 public import CompanionTheory.RealGroups.FormalDegrees.ArchimedeanFormalDegrees.FormalDegreeFormula.ModelFunctionsMultiply
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelTwist
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -76,7 +114,7 @@ theorem twTau_irred {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ)
   intro k v hv
   have h := W.smul_mem (twChi c k)⁻¹ (hW k v hv)
   convert h using 1
-  rw [twTau_apply, ContinuousLinearMap.smul_apply, smul_smul, inv_mul_cancel₀ (twChi_ne c k), one_smul]
+  rw [twTau_apply, _root_.smul_apply, smul_smul, inv_mul_cancel₀ (twChi_ne c k), one_smul]
 
 theorem twTau_hasDeriv {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (c : ℤ) (X : Matrix (Fin n) (Fin n) ℂ)
     (hX : inK ε X) (γ : ℝ → KG ε) (hγ : ∀ t : ℝ, toMK (γ t) = NormedSpace.exp ((t : ℂ) • X)) :
@@ -108,8 +146,8 @@ theorem twD_wt {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (c :
     twD T c (Matrix.single a a 1) T.w = (((Λ a + (c : ℝ) : ℝ)) : ℂ) • T.w := by
   show (T.dτ (Matrix.single a a 1) + Matrix.trace (Matrix.single a a (1 : ℂ)) •
     ((c : ℂ) • (1 : T.V →L[ℂ] T.V))) T.w = (((Λ a + (c : ℝ) : ℝ)) : ℂ) • T.w
-  rw [ContinuousLinearMap.add_apply, T.w_wt, Matrix.trace_single_eq_same, one_smul,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply]
+  rw [_root_.add_apply, T.w_wt, Matrix.trace_single_eq_same, one_smul,
+    _root_.smul_apply, one_apply_eq_self]
   push_cast
   rw [add_smul]
 
@@ -117,8 +155,8 @@ theorem twD_hw {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (c :
     (he : ε a = ε b) : twD T c (Matrix.single a b 1) T.w = 0 := by
   show (T.dτ (Matrix.single a b 1) + Matrix.trace (Matrix.single a b (1 : ℂ)) •
     ((c : ℂ) • (1 : T.V →L[ℂ] T.V))) T.w = 0
-  rw [ContinuousLinearMap.add_apply, T.w_hw a b hab he, Matrix.trace_single_eq_of_ne (h := ne_of_lt hab),
-    zero_smul, ContinuousLinearMap.zero_apply, add_zero]
+  rw [_root_.add_apply, T.w_hw a b hab he, Matrix.trace_single_eq_of_ne (h := ne_of_lt hab),
+    zero_smul, _root_.zero_apply, add_zero]
 
 def twistKType {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (c : ℤ) : KType ε (fun a => Λ a + (c : ℝ)) where
   V := T.V
@@ -135,7 +173,7 @@ def twistKType {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (c :
 theorem cK_twistKType {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (c : ℤ) (k : KG ε) :
     cK (twistKType T c) k = cK T k := by
   show ‖⟪T.w, ((twTau T c k : unitary (T.V →L[ℂ] T.V)) : T.V →L[ℂ] T.V) T.w⟫_ℂ‖ = ‖⟪T.w, T.op k T.w⟫_ℂ‖
-  rw [twTau_apply, ContinuousLinearMap.smul_apply, inner_smul_right, norm_mul, norm_twChi, one_mul]
+  rw [twTau_apply, _root_.smul_apply, inner_smul_right, norm_mul, norm_twChi, one_mul]
 
 theorem ckTwist : CkTwist := fun _ _ _ T c => ⟨twistKType T c, cK_twistKType T c⟩
 

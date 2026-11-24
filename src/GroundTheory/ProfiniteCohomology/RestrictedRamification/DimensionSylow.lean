@@ -1,12 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.Subgroup
+public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.PrimaryComponentCohomologyEqBotOfScdpLt
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import GroundTheory.ProfiniteCohomology.IsProPGroupSubgroupIffIsPGroupMap
+public import GroundTheory.ProfiniteCohomology.CartierDual
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.NotDvdSuperIndexBotOfIsProPGroup
-public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.CdpOpenSubgroupLe
+public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.Subgroup
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Separation.Connected
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.Closed
-public import GroundTheory.ProfiniteCohomology.NotDvdSuperIndexIffMap
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Vanishing
 
 @[expose] public section
 

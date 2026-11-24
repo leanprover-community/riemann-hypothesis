@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.CyclotomicLocalNorms.NormSubToZModPowVal
-public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.HerbrandA
 
 @[expose] public section
 

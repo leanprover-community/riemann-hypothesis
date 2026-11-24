@@ -1,11 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsGraphGenTwistBundleZero
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraTer
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerAlt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraTail
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastRest
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsFieldSubalgebraSelf
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.EqZeroOrIsHomogeneousOfMemPolyPiece
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CoordIdealIsMultiProjPrime
 
 @[expose] public section
 

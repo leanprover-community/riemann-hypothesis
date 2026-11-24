@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.UnipotentAdelicQuotients.SWXSDefs
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -40,8 +39,8 @@ theorem hform_single_single (σ : A →+* A) (J : Matrix n n A) (i j : n) :
 
 theorem hform_self_fixed (σ : A →+* A) (hσ : ∀ y, σ (σ y) = y) (J : Matrix n n A)
     (hJ : ∀ i j, σ (J j i) = J i j) (x : n → A) : σ (hform σ J x x) = hform σ J x x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, hσ]
+
+  simp only [hform, map_sum, map_mul, hσ]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [hJ i j]; ring
@@ -54,8 +53,8 @@ theorem hform_self_congr (σ : A →+* A) (J : Matrix n n A) (P : Ideal A) (x z 
   have e₂ : ∀ i, Ideal.Quotient.mk P (σ (z i)) = Ideal.Quotient.mk P (σ (x i)) := fun i =>
     Ideal.Quotient.eq.2 (by simpa only [map_sub] using h₂ i)
   refine Ideal.Quotient.eq.1 ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, e₁, e₂]
+
+  simp only [hform, map_sum, map_mul, e₁, e₂]
 
 theorem exists_hform_not_mem (σ : A →+* A) (hσ : ∀ y, σ (σ y) = y) (h2 : IsUnit (2 : A))
     (hδ : ∃ δ : A, IsUnit δ ∧ σ δ = -δ) (m : ℕ) (J : Matrix (Fin (m + 1)) (Fin (m + 1)) A)

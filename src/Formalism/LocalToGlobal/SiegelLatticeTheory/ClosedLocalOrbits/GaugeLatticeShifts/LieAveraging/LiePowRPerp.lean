@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+public import Mathlib.RingTheory.Nilpotent.Exp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -64,8 +105,8 @@ theorem hT_eq_coefX (f : S.V) (a : Fin r) (hf : ∀ b, S.hT f (F.e b) = if b = a
     rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp)] at h1
     exact h1.symm
   conv_lhs => rw [hsum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, map_smul, hf]
+
+  simp [map_sum, map_smul, hf]
 
 end Xa
 
@@ -160,8 +201,8 @@ theorem star_alg_rat (q : ℚ) : star (algebraMap ℚ E q) = algebraMap ℚ E q 
 
 theorem nexp_adj (hY : Y ∈ F.LieN) (hs : star s = s) (x y : S.V) :
     S.hT (nexp Y s x) y = S.hT x (nexp Y (-s) y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [nexp_apply s hY, nexp_apply (-s) hY, map_sum, LinearMap.sum_apply, map_sum]
+
+  rw [nexp_apply s hY, nexp_apply (-s) hY, map_sum, LinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   have hsk := lie_skew_pow hY i x y
   have hsk' : S.hT ((Y ^ i) x) y = (-1) ^ i * S.hT x ((Y ^ i) y) := by
@@ -172,7 +213,7 @@ theorem nexp_adj (hY : Y ∈ F.LieN) (hs : star s = s) (x y : S.V) :
   ring
 
 theorem nexp_mul_neg (hY : Y ∈ F.LieN) : nexp Y s * nexp Y (-s) = 1 := by
-  letI : Algebra ℚ (Module.End E S.V) := Algebra.compHom (Module.End E S.V) (algebraMap ℚ E)
+  let : Algebra ℚ (Module.End E S.V) := Algebra.compHom (Module.End E S.V) (algebraMap ℚ E)
   have hc : Commute (s • Y) ((-s) • Y) := ((Commute.refl Y).smul_left s).smul_right (-s)
   have key := IsNilpotent.exp_add_of_commute hc (sY_isNilp s hY) (sY_isNilp (-s) hY)
   have h0 : s • Y + (-s) • Y = 0 := by rw [neg_smul, add_neg_cancel]
@@ -184,7 +225,7 @@ theorem nexp_neg_mul (hY : Y ∈ F.LieN) : nexp Y (-s) * nexp Y s = 1 := by
   rwa [neg_neg] at h
 
 def nexpE (hY : Y ∈ F.LieN) (s : E) : S.V ≃ₗ[E] S.V :=
-  LinearEquiv.ofLinear (nexp Y s) (nexp Y (-s)) (nexp_mul_neg hY) (nexp_neg_mul hY)
+  LinearEquiv.ofLinearMap (nexp Y s) (nexp Y (-s)) (nexp_mul_neg hY) (nexp_neg_mul hY)
 
 theorem nexpE_apply (hY : Y ∈ F.LieN) (x : S.V) : nexpE hY s x = nexp Y s x := rfl
 
@@ -247,8 +288,8 @@ theorem nexp_root (hY : Y ∈ F.LieN) (f : S.V) (a : Fin r)
       have hr : a.1 + 1 = r := by omega
       rw [he, hr, Xa_ge F le_rfl]
       exact ⟨hY.2.2 _ hzperp, hfz⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [nexp_apply s hY, map_sum, Finset.sum_eq_single 1]
+
+  rw [nexp_apply s hY, map_sum, Finset.sum_eq_single 1]
   · simp only [pow_one, map_smul, smul_eq_mul, Nat.factorial_one, Nat.cast_one, inv_one, map_one,
       one_mul]
     rw [hT_eq_coefX F f a hf (hXa1 hw)]

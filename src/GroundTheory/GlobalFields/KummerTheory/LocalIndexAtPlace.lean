@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
+public import GroundTheory.LocalFields.UnitsBasic
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import GroundTheory.GlobalFields.KummerTheory.LocalIndex
+public import GroundTheory.GlobalFields.LocalAtPlace
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,52 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.RosatiAdj
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
 
 @[expose] public section
 
@@ -36,14 +81,9 @@ theorem gm_inj {X Z : Scheme.{0}} (κ : Z ⟶ X) [IsOpenImmersion κ] (z : Z) {U
     first
       | (show (κ.stalkMap z).hom (X.presheaf.germ V (κ z) hV (c : Γ(X, V))) = _
          rw [Scheme.Hom.germ_stalkMap_apply]; rfl)
-      | (show (κ.stalkMap z).hom (X.presheaf.germ V (κ z) hV (c : Γ(X, V))) = _
-         simp [Scheme.Hom.germ_stalkMap_apply]; done)
-      | (show (κ.stalkMap z).hom (X.presheaf.germ V (κ z) hV (c : Γ(X, V))) = _
-         clear * -; done)
   have hinj : Function.Injective (κ.stalkMap z).hom := by
     first
       | exact (ConcreteCategory.bijective_of_isIso (κ.stalkMap z)).1
-      | exact (asIso (κ.stalkMap z)).commRingCatIsoToRingEquiv.injective
   apply Units.ext
   apply hinj
   rw [key U h a, key U' h' b]
@@ -143,9 +183,6 @@ theorem surj_comp {X Y Z : Scheme.{0}} {p : X ⟶ Y} {q : Y ⟶ Z} (hp : Functio
     (hq : Function.Surjective q.appTop.hom) : Function.Surjective (p ≫ q).appTop.hom := by
   first
     | (rw [Scheme.Hom.comp_appTop]; exact hp.comp hq)
-    | (rw [Scheme.comp_appTop]; exact hp.comp hq)
-    | (simp only [Scheme.Hom.comp_appTop, CommRingCat.hom_comp, RingHom.coe_comp]; exact hp.comp hq)
-    | simpa using hp.comp hq
 
 variable [IsCommMonObj A] {L : LB A.left}
 
@@ -161,14 +198,10 @@ theorem prod_ros (f g : A ⟶ A) {T : Over S} (x y : T ⟶ A) {U : Type} [CommGr
     intro a b
     first
       | (simp only [padd, comp_lift_assoc]; rfl)
-      | (simp only [padd, ← Category.assoc, comp_lift]; rfl)
   simp only [Fin.prod_univ_succ, Fin.prod_univ_zero, rosatiφ, rosatiε, Matrix.cons_val_zero,
-    Matrix.cons_val_succ, e, m1, lift_fst, lift_snd, lift_fst_assoc, lift_snd_assoc, zpow_one, zpow_neg,
-    mul_one]
+    Matrix.cons_val_succ, e, m1, lift_fst, lift_snd, lift_fst_assoc, lift_snd_assoc, zpow_one, zpow_neg]
   first
     | ac_rfl
-    | (simp only [mul_comm, mul_assoc, mul_left_comm]; done)
-    | (rw [← mul_inv_eq_one]; simp only [mul_inv_rev, inv_inv, mul_comm, mul_assoc, mul_left_comm, inv_mul_cancel, mul_inv_cancel]; done)
 
 theorem exists_ros (hG : GlobalFnsSt) (hA : IsAbelianScheme A) (hL : L.IsLB) (f g : A ⟶ A) [IsMonHom f] [IsMonHom g]
     (h : RosatiAdj A L f g) : ∃ u : LB.Gen (LB.LinComb L (rosatiφ A f g) rosatiε), u.IsGen ∧

@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ExistsTeichmullerRepModPrime
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.KurDefs
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Module.Torsion.Basic
+public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section
 

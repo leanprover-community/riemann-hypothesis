@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsOpenKappaOpenNeighbourhood
 
 @[expose] public section
 

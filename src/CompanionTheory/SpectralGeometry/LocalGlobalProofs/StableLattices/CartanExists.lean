@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import GroundTheory.AutomorphicForms.Cartan
+import Mathlib.RingTheory.Henselian
 
 @[expose] public section
 

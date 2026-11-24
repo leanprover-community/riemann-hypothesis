@@ -1,9 +1,59 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTypeGroupBlockLift
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsCharLab
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsContractNeZero
+public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsUnitarisableOfCharIff
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
+public import Mathlib.Algebra.Field.ZMod
+import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsContractNeZero
 
 @[expose] public section
 
@@ -316,8 +366,8 @@ theorem TypeVec.up {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
   let x' : S.toSubmodule := ∑ u ∈ O, u
   have hx'fix : ∀ k ∈ KOne F n, ρS k x' = x' := by
     intro k hk
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [x', map_sum]
+
+    simp only [x', map_sum]
     refine Finset.sum_nbij' (fun u => ρS k u) (fun u => ρS k⁻¹ u) ?_ ?_ ?_ ?_ (fun _ _ => rfl)
     · intro u hu
       obtain ⟨g, hg, rfl⟩ := (hmemO u).1 hu
@@ -332,8 +382,8 @@ theorem TypeVec.up {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
       change (ρS k * ρS k⁻¹) u = u
       rw [← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
   have hfx' : f x' = (O.card : ℂ) • y := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [x', map_sum]
+
+    simp only [x', map_sum]
     have : ∀ u ∈ O, f u = y := by
       intro u hu
       obtain ⟨g, hg, rfl⟩ := (hmemO u).1 hu
@@ -353,8 +403,8 @@ theorem TypeVec.up {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
       rw [Submodule.coe_sum]
       rfl
     have hfT : f T = (O.card : ℂ) • z.coeff.sum fun g c => c • τ (ℓ g) y := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [T, Finsupp.sum, map_sum, map_smul, f.isIntertwining, hfx', Finset.smul_sum]
+
+      simp only [T, Finsupp.sum, map_sum, map_smul, Finset.smul_sum]
       refine Finset.sum_congr rfl fun g _ => ?_
       rw [f.isIntertwining, hfx', map_smul]
       exact smul_comm _ _ _
@@ -455,7 +505,7 @@ theorem TypeVec.factor {α : Type} [Fintype α] [DecidableEq α] {m : α → Typ
     induction t using PiTensorProduct.induction_on with
     | smul_tprod r x =>
       rw [map_smul, map_smul, hΦt, map_smul, map_smul, Finsupp.smul_apply, Basis.piTensorProduct_repr_tprod_apply]
-      simp only [Finsupp.smul_apply, smul_eq_mul, Module.Basis.coord_apply]
+      simp only [smul_eq_mul, Module.Basis.coord_apply]
       rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ a)]
     | add t₁ t₂ h₁ h₂ => rw [map_add (f := _), map_add (f := _), h₁, h₂, map_add (f := _), Finsupp.add_apply]
   refine ⟨Φ y, fun k hk => ?_, ℓ, hℓ, ?_⟩
@@ -464,8 +514,8 @@ theorem TypeVec.factor {α : Type} [Fintype α] [DecidableEq α] {m : α → Typ
     apply hq
     rw [← hcoord]
     have : Φ w = z.coeff.sum fun g c => c • ρ a (ℓ g) (Φ y) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hw, Finsupp.sum, map_sum, map_smul, hequiv]
+
+      simp only [hw, Finsupp.sum, map_sum, map_smul, hequiv]
     rw [this, h0, map_zero]
 
 end Local
@@ -485,8 +535,8 @@ theorem exists_eigen_of_map {G V Y : Type} [Group G] [Finite G] [AddCommGroup V]
   · intro hP
     apply hw
     have hΛ : Λ (∑ x : H, ((ψ x : ℂ))⁻¹ • ρ x w) = (Fintype.card H : ℂ) • Λ w := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       have : ∀ x : H, Λ (((ψ x : ℂ))⁻¹ • ρ x w) = Λ w := by
         intro x
         rw [map_smul, h x x.2, smul_smul, inv_mul_cancel₀ (Units.ne_zero _), one_smul]
@@ -495,8 +545,8 @@ theorem exists_eigen_of_map {G V Y : Type} [Group G] [Finite G] [AddCommGroup V]
     rw [hP, map_zero] at hΛ
     exact (smul_eq_zero.1 hΛ.symm).resolve_left (Nat.cast_ne_zero.2 Fintype.card_ne_zero)
   · intro y hy
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.smul_sum]
+
+    rw [map_sum, Finset.smul_sum]
     refine Fintype.sum_equiv (Equiv.mulLeft (⟨y, hy⟩ : H)) _ _ ?_
     intro x
     simp only [Equiv.coe_mulLeft, Subgroup.coe_mul, map_mul, Units.val_mul, map_smul,

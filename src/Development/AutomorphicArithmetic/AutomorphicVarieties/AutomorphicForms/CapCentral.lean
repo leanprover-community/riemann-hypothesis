@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RTwist
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfCharInfCharOfCommute
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -48,13 +89,13 @@ theorem lieS_single (v : InfinitePlace E) (i j : Fin a) (t : ℝ) :
 theorem commute_cap_lie (τ : InfinitePlace E) (u : ℂ) (X : Lie E a) : Commute (cap τ u) (lie E a X) := by
   classical
   have hX : lie E a X = ∑ i, ∑ j, lieS E a i j (X i j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [lieS_apply, ← map_sum]
+
+    simp only [lieS_apply, ← map_sum]
     exact congrArg _ (Matrix.matrix_eq_sum_single (Matrix.of X))
   rw [hX]
   refine Commute.sum_right _ _ _ fun i _ => Commute.sum_right _ _ _ fun j _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Finset.univ_sum_single (X i j), map_sum]
+
+  rw [← Finset.univ_sum_single (X i j), map_sum]
   refine Commute.sum_right _ _ _ fun w _ => ?_
   rw [lieS_single]
   exact (commute_cap_Eop τ w u i j).smul_right _
@@ -109,7 +150,7 @@ theorem commute_cap_rt_infGL (τ : InfinitePlace E) (u : ℂ) (y : GL (Fin a) (R
   let c : Rinf E →+* ℂ := Complex.ofRealHom.comp (Pi.evalRingHom (fun _ => ℝ) τ)
   have hQP : ((y⁻¹).val.map c) * (y.val.map c) = 1 := by
     rw [← Matrix.map_mul, Units.inv_mul]; simp
-  have h2 := GlobalTheory.CapAdInv.qdet_ad _ (glRel_Eop τ) _ _ hQP (u + ((a : ℂ) - 1) / 2)
+  have h2 := _root_.GlobalTheory.QuantumMinorAdjacentSwap.qdet_conj _ (glRel_Eop τ) _ _ hQP (u + ((a : ℂ) - 1) / 2)
   exact (h.trans (congrArg (· * rt E a (infGL E a y)) h2)).symm
 
 theorem commute_cap_act (τ : InfinitePlace E) (u : ℂ) (o : Op E a) : Commute (cap (a := a) τ u) (act o) := by

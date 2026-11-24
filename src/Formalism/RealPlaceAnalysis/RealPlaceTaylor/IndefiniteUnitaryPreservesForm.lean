@@ -1,6 +1,55 @@
 module
 
 public import Formalism.RealPlaceAnalysis.Complexify
+public import Mathlib.Analysis.CStarAlgebra.Matrix
+public import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
+public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -37,7 +86,6 @@ lemma exp_injective_hermitian {A B : Matrix (Fin n) (Fin n) ℂ} (hA : Aᴴ = A)
   have h1 := congrArg CFC.log h
   first
   | rwa [CFC.log_exp A (isSelfAdjoint_of_conjTranspose_eq hA), CFC.log_exp B (isSelfAdjoint_of_conjTranspose_eq hB)] at h1
-  | rwa [CFC.log_exp A, CFC.log_exp B] at h1
 
 lemma exp_conjTranspose_of_hermitian {A : Matrix (Fin n) (Fin n) ℂ} (hA : Aᴴ = A) :
     (NormedSpace.exp A)ᴴ = NormedSpace.exp A := by
@@ -46,12 +94,12 @@ lemma exp_conjTranspose_of_hermitian {A : Matrix (Fin n) (Fin n) ℂ} (hA : Aᴴ
 lemma matrix_exp_neg_mul_exp (A : Matrix (Fin n) (Fin n) ℂ) :
     NormedSpace.exp (-A) * NormedSpace.exp A = 1 := by
   rw [← Matrix.exp_add_of_commute _ _ (Commute.neg_left (Commute.refl A)), neg_add_cancel]
-  first | exact Matrix.exp_zero | exact NormedSpace.exp_zero
+  first | exact NormedSpace.exp_zero
 
 lemma matrix_exp_mul_exp_neg (A : Matrix (Fin n) (Fin n) ℂ) :
     NormedSpace.exp A * NormedSpace.exp (-A) = 1 := by
   rw [← Matrix.exp_add_of_commute _ _ (Commute.neg_right (Commute.refl A)), add_neg_cancel]
-  first | exact Matrix.exp_zero | exact NormedSpace.exp_zero
+  first | exact NormedSpace.exp_zero
 
 lemma exp_add_self (A : Matrix (Fin n) (Fin n) ℂ) :
     NormedSpace.exp (A + A) = NormedSpace.exp A * NormedSpace.exp A := Matrix.exp_add_of_commute _ _ (Commute.refl A)
@@ -69,12 +117,10 @@ lemma spectrum_pos_of_posSemidef_unit {P : Matrix (Fin n) (Fin n) ℂ} (hP : P.P
     open scoped MatrixOrder in
     first
     | exact spectrum_nonneg_of_nonneg (Matrix.nonneg_iff_posSemidef.mpr hP) hx
-    | exact spectrum_nonneg_of_nonneg hP.nonneg hx
   have hne : x ≠ 0 := by
     rintro rfl
     first
     | exact (spectrum.zero_notMem_iff ℝ).mpr hu hx
-    | exact (spectrum.zero_not_mem_iff ℝ).mpr hu hx
   exact lt_of_le_of_ne h0 (Ne.symm hne)
 
 lemma exp_log_of_pos_spectrum {P : Matrix (Fin n) (Fin n) ℂ} (hP : IsSelfAdjoint P)
@@ -96,8 +142,6 @@ lemma indefinite_unitary_preserves_form {ε : Fin n → Bool} {g : Matrix (Fin n
   have h2 : g * (Jm ε * gᴴ * Jm ε) = 1 := by
     first
     | exact mul_eq_one_comm.mp h1
-    | exact (Matrix.mul_eq_one_comm).mp h1
-    | exact Matrix.mul_eq_one_comm.1 h1
   refine ⟨?_, ⟨⟨g, _, h2, h1⟩, rfl⟩⟩
   calc g * Jm ε * gᴴ = g * (Jm ε * gᴴ * Jm ε) * Jm ε := by
         simp only [mul_assoc, Jm_mul_Jm_eq_one, mul_one]
@@ -110,7 +154,6 @@ lemma polar_log_hermitian (g : Matrix (Fin n) (Fin n) ℂ) : (polarLog g)ᴴ = p
   have h1 : IsSelfAdjoint (CFC.log (gᴴ * g)) := by
     first
     | exact cfc_predicate Real.log (gᴴ * g)
-    | exact CFC.log_isSelfAdjoint
   have h2 : IsSelfAdjoint ((1 / 2 : ℝ) • CFC.log (gᴴ * g)) := IsSelfAdjoint.smul (IsSelfAdjoint.all _) h1
   exact h2
 
@@ -160,8 +203,6 @@ lemma polar_log_anticommutes_signature {ε : Fin n → Bool} {g : Matrix (Fin n)
       have h1 := hX
       first
       | exact mul_eq_one_comm.mp h1
-      | exact (Matrix.mul_eq_one_comm).mp h1
-      | exact Matrix.mul_eq_one_comm.1 h1
     calc NormedSpace.exp (-(L + L))
         = NormedSpace.exp (-(L + L)) * ((gᴴ * g) * (Jm ε * (gᴴ * g) * Jm ε)) := by rw [h2, mul_one]
       _ = Jm ε * (gᴴ * g) * Jm ε := by rw [← mul_assoc, h0, one_mul]

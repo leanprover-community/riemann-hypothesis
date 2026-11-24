@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsIntCoordArInt
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopBasisChange
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

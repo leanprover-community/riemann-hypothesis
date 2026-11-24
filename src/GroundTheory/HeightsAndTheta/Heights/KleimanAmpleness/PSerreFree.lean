@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
@@ -144,8 +144,8 @@ theorem sum_locMap_basis (I : Finset (Fin (N + 1))) (y : LocMod S N M I) :
       = ∑ j, locMap ((LinearMap.toSpanSingleton (Poly S N) M (b j)).comp (b.coord j)) I y :=
         Finset.sum_congr rfl fun j _ => h1 j
     _ = locMap (∑ j, (LinearMap.toSpanSingleton (Poly S N) M (b j)).comp (b.coord j)) I y := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [locMap, map_sum]
+
+        simp only [locMap, map_sum]
         exact (LinearMap.sum_apply Finset.univ _ y).symm
     _ = y := by
         rw [h2]
@@ -257,8 +257,8 @@ theorem SerreFree.proof (hP : SerrePoly.Statement.{u}) : SerreFree.Statement.{u,
     have hsurj := fun j => (hpos (c - d j) (by linarith [hc j])).2.2
     choose p hp using fun j => hsurj j (freeCoord 𝓜 b d hb 0 c j y)
     refine ⟨∑ j, ⟨(p j : Poly S N) • b j, smul_basis_mem 𝓜 b d hb c j (p j)⟩, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, ← sum_freeIncl_freeCoord 𝓜 b d hb 0 c y]
+
+    rw [map_sum, ← sum_freeIncl_freeCoord 𝓜 b d hb 0 c y]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [← hp j, freeInclusion_toH0]
 

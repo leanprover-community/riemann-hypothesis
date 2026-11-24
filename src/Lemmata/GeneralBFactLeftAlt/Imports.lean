@@ -1,33 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.HermitianLattices.StatementLat
-public import Formalism.SharpRestriction.CuspSpanNormBounds.SArith
-public import Formalism.LocalRingCardinality.Params
 public import Formalism.LocalRingCardinality.DataSpaces
-public import Formalism.LocalRingCardinality.DataCoeff
-public import Formalism.LocalRingCardinality.DataArith
-public import Formalism.LocalRingCardinality.DataKernels
-public import Formalism.LocalRingCardinality.DataRows
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DataS
-public import Formalism.SharpRestriction.GrowthBounds.DataG
-public import Formalism.LocalRingCardinality.DataCD
-public import Formalism.FrobeniusOrbits.DiscrMaximalRealCyclotomic
-public import Formalism.FrobeniusOrbits.HostOrbitsPlaces
-public import Formalism.FrobeniusOrbits.HostDiffSupport
-public import Formalism.FrobeniusOrbits.HostThickExists
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
-public import Formalism.CoboundaryTransfers.Statement
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.RealCyclotomicSubfield
-public import Formalism.FrobeniusOrbits.Statement
-public import Formalism.TameInertiaTowers.CentralOrderTwo.OrderOfThreeUnitsTwoPow
-public import Formalism.TameInertiaTowers.CentralOrderTwo.TwoAdic
-public import Formalism.TameInertiaTowers.CentralOrderTwo.MemDecompositionSubgroupIff
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NegOneNeOneUnitsZmodFour
-public import Formalism.TameInertiaTowers.CentralOrderTwo.Groups
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NormalOrderTwoCentral
-public import Formalism.TameInertiaTowers.CentralOrderTwo.Galois
-public import Formalism.TameInertiaTowers.CentralOrderTwo.ConjEqInvOfPowEqOne
 
 @[expose] public section
 

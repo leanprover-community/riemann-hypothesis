@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.Columns.AdelicLemmas
+public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.Columns.AdjointFrobeniusPreservesRamified
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
 
 @[expose] public section
 

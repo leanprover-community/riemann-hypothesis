@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreFlagClosure
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreClosureNumber
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -74,8 +75,8 @@ theorem hsymm_option_succ (α : Type*) [Fintype α] [DecidableEq α] (c : ℕ) :
       (fun s : Sym (Option α) (c + 1) => (s.1.map X).prod)).symm
   rw [hL, Fintype.sum_sum_type]
   unfold hsymm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.mul_sum, map_sum]
+
+  rw [Finset.mul_sum, map_sum]
   congr 1
   · refine Finset.sum_congr rfl fun s _ => ?_
     show ((none ::ₘ s.1).map X).prod = _
@@ -149,8 +150,8 @@ theorem flagClosurePt_top {K : Type*} {ι : K → Type} {Ω : Type*} [Field Ω] 
       intro i
       calc ψ (e i) = ψ (∑ j, w.repr (e i) j • w j) := by rw [w.sum_repr]
         _ = ∑ j, w.repr (e i) j * ψ (w j) := by simp only [map_sum, map_smul, smul_eq_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [flagCoord, Fin.is_lt, if_true, hψ, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
+
+    simp only [flagCoord, Fin.is_lt, if_true, hψ, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 
 @[expose] public section

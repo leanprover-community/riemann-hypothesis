@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLineDegreeDual
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 
@@ -101,8 +106,8 @@ theorem span_basis [Fintype T] (b : Module.Basis T ℤ (dualLattice F)) :
 
 theorem dualLatticeCoord_eq (b : Module.Basis T ℤ (dualLattice F)) (t : T) :
     dualLatticeCoord b ⟨(), t⟩ = evalForm i (b t : Fin i → K) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [dualLatticeCoord, evalForm, Fintype.linearCombination_apply, map_sum]
+
+  rw [dualLatticeCoord, evalForm, Fintype.linearCombination_apply, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul, Algebra.smul_def, IsScalarTower.algebraMap_apply K (MvPolynomial (Fin i) K),
     MvPolynomial.algebraMap_eq]

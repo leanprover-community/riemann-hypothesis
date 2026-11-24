@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsNoetherIntegralClosure
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.NoetherReduction
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.NoetherCharP
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.NoetherReduction
 
 @[expose] public section
 

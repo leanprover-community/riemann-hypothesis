@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Basis.Basic
+public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 @[expose] public section
 
@@ -20,8 +29,8 @@ theorem gs_exists_rows_det_ne_zero {K : Type*} [Field K] {t r : ℕ} (M : Matrix
     have hfx : ∀ x : Fin r → K, f x = ∑ k, x k * f (Pi.single k 1) := by
       intro x
       conv_lhs => rw [← (Pi.basisFun K (Fin r)).sum_repr x]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum, smul_eq_mul]
+
+      simp [map_sum, smul_eq_mul]
     have hc : M.mulVec (fun k => f (Pi.single k 1)) = 0 := by
       funext i
       have hi : M i ∈ LinearMap.ker f := hf (Submodule.subset_span ⟨i, rfl⟩)

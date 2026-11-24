@@ -1,14 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsInKNeOne
+public import Mathlib.Tactic.Monotonicity.Lemmas
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsSecNonzeroLocusEqBasicOpen
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsInKNeOne
 
 @[expose] public section
 
@@ -48,8 +84,8 @@ theorem exists_comb_ker {R R' : Type} [CommRing R] [CommRing R'] [Algebra R R'] 
   have key : ∀ (n : ℕ) (c : Fin n → R') (v : Fin n → ∀ a, A a), t = ∑ i, c i ⊗ₜ v i →
       ∀ a, x a = ∑ i, e a (c i ⊗ₜ v i a) := fun n c v h a => by
     have := congrFun ht a
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h, map_sum, Finset.sum_apply, AddEquiv.eq_symm_apply, map_sum] at this
+
+    rw [h, map_sum, Finset.sum_apply, AddEquiv.eq_symm_apply, map_sum] at this
     rw [← this]
     rfl
   have h0 : d.lTensor R' t = 0 := by
@@ -57,14 +93,14 @@ theorem exists_comb_ker {R R' : Type} [CommRing R] [CommRing R'] [Algebra R R'] 
     apply (TensorProduct.piRight R R R' B).injective
     funext b
     apply (e' b).injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_zero, Pi.zero_apply, map_zero, ← hx n c v (key n c v h) b, h, map_sum, map_sum, Finset.sum_apply, map_sum]
+
+    rw [map_zero, Pi.zero_apply, map_zero, ← hx n c v (key n c v h) b, h, map_sum, map_sum, Finset.sum_apply, map_sum]
     rfl
   obtain ⟨w, hw⟩ := (Module.Flat.lTensor_exact R' (LinearMap.exact_subtype_ker_map d) t).1 h0
   obtain ⟨n, c, v, rfl⟩ := TensorProduct.exists_sum_tmul_eq w
   refine ⟨n, c, fun i => (v i).1, key n c _ ?_, fun i => (v i).2⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hw, map_sum]
+
+  rw [← hw, map_sum]
   rfl
 
 variable {R R' : Type} [CommRing R] [CommRing R'] {X X' Z : Scheme.{0}}
@@ -87,8 +123,7 @@ theorem isPushout_app {g : R →+* R'} (hg : g.Flat) {f : X ⟶ Spec (CommRingCa
   · simp [Scheme.Hom.app_eq_appLE]
   · ext x; simp [AbLaw.cst, Scheme.Hom.appLE]; rfl
 
-theorem gs_sum (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) {n : ℕ} (a : Fin n → Γ(X, U)) :
-    gs r z U (∑ i, a i) = ∑ i, gs r z U (a i) := by simp only [gs_eq r z U h, map_sum]
+alias gs_sum := _root_.ReciprocityTheory.ChartRestriction.G.DVR.SectionScalarValuation.gs_sum
 
 theorem gs_cst (f : X ⟶ Spec (CommRingCat.of R)) (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) (c : R) :
     gs r z U (cst f U c) = gs r z ⊤ (cst f ⊤ c) := by

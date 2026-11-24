@@ -1,10 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor
-public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.FixedOpen
+public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Convex.Integral
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -66,7 +106,7 @@ private theorem key_abs (π : UnitaryRep G H) {V : Submodule ℂ H} (hcl : IsClo
     (N : Submodule ℂ H) (hNV : N ≤ V) (hN : N ≠ ⊥) (hst : ∀ g, ∀ u ∈ N, π (φ g) u ∈ N) :
     ∃ u ∈ N, e u ≠ 0 := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   let M : Submodule ℂ H :=
     { carrier := {u | u ∈ V ∧ ∀ g, e (π (φ g) u) = 0}
       add_mem' := fun {a b} ha hb => ⟨V.add_mem ha.1 hb.1, fun g => by
@@ -116,7 +156,7 @@ private theorem exists_fixed_abs {Γ : Type} [Group Γ] [TopologicalSpace Γ] [I
   have hN : IsOpen {g : Γ | ‖σ g v - v‖ < ‖v‖ / 2} :=
     isOpen_lt ((σ.continuous_orbit v).sub continuous_const).norm continuous_const
   have h1N : (1 : Γ) ∈ {g : Γ | ‖σ g v - v‖ < ‖v‖ / 2} := by
-    simp only [Set.mem_setOf_eq, σ.map_one_apply, sub_self, norm_zero]
+    simp only [Set.mem_ofPred_eq, σ.map_one_apply, sub_self, norm_zero]
     exact hpos
   obtain ⟨Hh, hH⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hN h1N
   set U : Subgroup Γ := Hh.toOpenSubgroup.toSubgroup with hUdef
@@ -316,7 +356,7 @@ theorem UpperTheory.ConvolutionTheory.L1.typedEx :
     refine ⟨e, he0, heV, fun w hw => (UpperTheory.ConvolutionTheory.L1.mem_eigL' μ).2 fun g hg => ?_⟩
     have hw1 : w ∉ I := fun h => hw (Finset.mem_coe.2 (Finset.mem_union_left _ h))
     have hw2 : w ∉ hb.toFinset := fun h => hw (Finset.mem_coe.2 (Finset.mem_union_right _ h))
-    simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq, not_not] at hw2
+    simp only [Set.Finite.mem_toFinset, Set.mem_ofPred_eq, not_not] at hw2
     rw [hw2.1] at hg
     rw [hfix w hw1 g hg, hw2.2]
     simp

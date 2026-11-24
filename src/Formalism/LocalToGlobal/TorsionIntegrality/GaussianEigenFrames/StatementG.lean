@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Normed.Field.Basic
+public import Mathlib.Topology.MetricSpace.Ultra.Basic
 
 @[expose] public section
 

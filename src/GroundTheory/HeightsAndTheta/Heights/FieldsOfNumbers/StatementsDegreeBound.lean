@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsExamples
 
 @[expose] public section
 

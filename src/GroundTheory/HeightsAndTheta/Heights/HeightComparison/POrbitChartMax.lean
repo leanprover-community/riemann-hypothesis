@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartMax
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PSubringPrimeMaximal
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMinimalPrimeMultiHomog
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PSubringPrimeMaximal
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsMultiHomogIdealSpanSingleton
 
 @[expose] public section
 
@@ -30,8 +35,8 @@ theorem aeval_mul_of_homog {R : Type*} [CommRing R] [Algebra ℤ R] (t : ι → 
   classical
   conv_lhs => rw [G.as_sum]
   conv_rhs => rw [G.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm ↦ ?_
   have hmb : ∀ k, ∑ i, m ⟨k, i⟩ = b k := fun k ↦ by
     rw [← weight_coordDeg_apply, hG (mem_support_iff.mp hm)]
@@ -68,9 +73,9 @@ theorem map_homogenize {R : Type*} [CommRing R] (c : (k : ι) → Fin (n k + 1))
     (φ : MvPolynomial (Coord n) ℤ →+* R) (hφ : ∀ k, φ (X ⟨k, c k⟩) = 1)
     (F : MvPolynomial (Coord n) ℤ) : φ (homogenize c F) = φ F := by
   conv_rhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [homogenize, map_sum, map_mul, chartMonomial, map_prod, map_pow, hφ, one_pow,
-    Finset.prod_const_one, mul_one]
+
+  simp only [homogenize, map_sum, map_mul, chartMonomial, map_prod, map_pow, hφ, one_pow,
+  Finset.prod_const_one, mul_one]
 
 theorem aeval_dehomCoords {Ω : Type*} [Field Ω] [Algebra ℤ Ω] (z : Coord n → Ω) (c : (k : ι) → Fin (n k + 1))
     (hz : ∀ k, z ⟨k, c k⟩ ≠ 0) (F : MvPolynomial (Coord n) ℤ) :
@@ -222,9 +227,9 @@ theorem proof : Statement := by
   have hVzero : ∀ f ∈ V, aeval (dehomCoords (genPt V) c) f = 0 := by
     intro f hf
     classical
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sum_weightedHomogeneousComponent (w := coordDeg n) f,
-      finsum_eq_sum _ (weightedHomogeneousComponent_finsupp f), map_sum]
+
+    rw [← sum_weightedHomogeneousComponent (w := coordDeg n) f,
+    finsum_eq_sum _ (weightedHomogeneousComponent_finsupp f), map_sum]
     refine Finset.sum_eq_zero fun b _ ↦ ?_
     exact (aeval_dehomCoords_of_homog (genPt V) c
       (weightedHomogeneousComponent_isWeightedHomogeneous b f)).trans

@@ -1,13 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExtMCastSuccLast
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExtUHInjective
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteOrbitsOfFiniteFibres
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoordsStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnsPeriodMapDatumOkAndOverLevelPrime
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExtMCastSuccLast
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValDetSubOneLt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteOrbitsOfFiniteFibres
+import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
+import Formalism.LocalToGlobal.Columns.CoefColLemmas
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -47,8 +90,8 @@ theorem adAt_eq_zero_of_prV (P : HeightOneSpectrum (𝓞 E)) (z : AfE F E) (h : 
   obtain ⟨c, rfl⟩ := TensorProduct.eq_repr_basis_left b z
   have h1 : (c.mapRange (evalV F (P.under (𝓞 F))) (map_zero _)).sum (fun i n => b i ⊗ₜ[F] n) = 0 := by
     rw [Finsupp.sum_mapRange_index (fun i => TensorProduct.tmul_zero _ _)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finsupp.sum, map_sum] at h
+
+    rw [Finsupp.sum, map_sum] at h
     rw [Finsupp.sum]
     exact h
   have h2 := TensorProduct.sum_tmul_basis_left_eq_zero b _ h1
@@ -56,8 +99,8 @@ theorem adAt_eq_zero_of_prV (P : HeightOneSpectrum (𝓞 E)) (z : AfE F E) (h : 
     have h4 := DFunLike.congr_fun h2 i
     have h5 : evalV F (P.under (𝓞 F)) (c i) = 0 := by simpa using h4
     exact h5
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finsupp.sum, map_sum]
+
+  rw [Finsupp.sum, map_sum]
   refine Finset.sum_eq_zero fun i _ => ?_
   have e : b i ⊗ₜ[F] c i = (b i ⊗ₜ[F] (1 : FiniteAdeleRing (𝓞 F) F)) * ((1 : E) ⊗ₜ[F] c i) := by
     simp [Algebra.TensorProduct.tmul_mul_tmul]
@@ -155,10 +198,10 @@ theorem isPtOf_rat {hc : Formalism.BasicNotions.CMData F E} {ST SG Q : Finset (H
       show (γ.1 * p.1.2 P * (((1 : GLQ E n Q) P)⁻¹).1) _ = _
       simp
       rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, ← ufGL_mulVec', Units.val_mul, Matrix.mul_apply, map_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, ratAd_val, Matrix.map_apply, adAt_inclE, h.fr]
+
+    rw [e, ← ufGL_mulVec', Units.val_mul, Matrix.mul_apply, map_sum]
+
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, ratAd_val, Matrix.map_apply, adAt_inclE, h.fr]
 
 end GenR
 
@@ -399,8 +442,8 @@ theorem isPtOf_tilFr {hc : Formalism.BasicNotions.CMData F E} {N n : ℕ} (hN : 
       ∑ j, adAt F P ((k⁻¹ : GL (Fin N) (AfE F E)).1 i j) * adAt F P (pullV (extGL hN y) x j) := by
     intro P x i
     rw [hpull]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
   refine ⟨mul_mem (extGL_mem_ustd hN hy.uni) hku, fun x => ?_, fun P x hx i hi => ?_, fun w x hx i => ?_, fun P => isEmptyElim P⟩
   · have e : ((extGL hN y * k)⁻¹ : GL (Fin N) (AfE F E)).1 *ᵥ x =
         (k⁻¹ : GL (Fin N) (AfE F E)).1 *ᵥ (((extGL hN y)⁻¹ : GL (Fin N) (AfE F E)).1 *ᵥ x) := by
@@ -555,7 +598,7 @@ namespace GlobalTheory.Mem.Col2.TilX
 variable {B : Base} {X : PreX B.toPre} (I : TC B X)
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_ka (hI : I.Ok) (u : B.Word) {Lb : Unit → Submodule (𝓞 B.host.E) (Fin (B.R.N B.R.m) → B.host.E)}
     {U : Unit → Subgroup (GA B (B.R.N B.R.m))} {chi : ∀ β, U β →* ℂˣ} {y : (I.stp u I.mu0 B.R.m).Cl → GA B (B.R.N B.R.m)}
     {st : ∀ c, (I.stp u I.mu0 B.R.m).Stab c → GL (Fin (B.R.N B.R.m)) B.host.E} {k : Unit → GA B (B.R.N B.R.m)}
@@ -650,7 +693,7 @@ theorem til_L_eq {N n : ℕ} (hN : N = n + 1) {ST SG : Finset (HeightOneSpectrum
     · simp [z0, eLast]
     · have h1 : ¬ (i.1 + 1 = n + 1) := by omega
       have h2 : i.1 ≠ n := i.2.ne
-      simp [z0, eLast, h1, h2, (Fin.castSucc_lt_last i).ne]
+      simp [z0, eLast, h2, (Fin.castSucc_lt_last i).ne]
   rw [e1, e2]
   show (DecoSet.til (ST := ST) pi d).1.L = _
   rw [DecoSet.til_val d hT hG]
@@ -870,7 +913,7 @@ namespace GlobalTheory.Mem.Col2.TilX
 variable {B : Base} {X : PreX B.toPre} (I : TC B X)
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem til_fv_eq (hI : I.Ok) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (hg : gramN (I.rec7 l Z) B.R.m le_rfl = 1) (u : B.Word)
     (hsu : ∀ c, clsCrd (I.rec7 l Z) u B.R.m le_rfl c = ((I.stp u I.mu0 B.R.m).rep c).1.1.deco.1.L)
@@ -979,7 +1022,7 @@ theorem eq_extM_of_ext (φ : E →+* R) {a : E} (ha : a ≠ 0) {M : Matrix (Fin 
     rw [e]
     refine Fin.lastCases ?_ (fun i => ?_) b
     · have h3 : ∀ l : Fin n, Fin.last n ≠ Br.iC (rfl : n + 1 = n + 1) l := fun l => (Fin.castSucc_lt_last l).ne'
-      simp [hM, h3, extM_last_castSucc]
+      simp [hM, h3]
       exact (extM_last_castSucc g' j).symm
     · have h3 : ∀ l : Fin n, (i.castSucc = Br.iC (rfl : n + 1 = n + 1) l) ↔ i = l := fun l => Fin.castSucc_inj
       simp [hM, h3]
@@ -1092,7 +1135,7 @@ theorem baseL_sup (u : B.Word) {Lb : Submodule (𝓞 B.host.E) (Fin (B.R.N B.R.m
 end GlobalTheory.Mem.Col2.TilX
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem GlobalTheory.Mem.Col2.TC.til_ties : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (A : AtTTied (D := (I.rec7 l Z)) u) (K : ClsTied (D := (I.rec7 l Z)) u B.R.m le_rfl) (KP : ClsPTied (D := (I.rec7 l Z)) u) (L : LvTied (D := (I.rec7 l Z)) u A B.R.m le_rfl) (W : ValTied (D := (I.rec7 l Z)) u A.eV B.R.m le_rfl K), A.res = I.resT l u I.mu0 → (∃ k, I.Reads u I.mu0 B.R.m (fun _ => ()) (fun _ => K.lev.Lb) (fun _ => K.lev.U) (fun _ => K.lev.chi) (fun c => (K.y c).1) (fun c s => (K.stabI c s).1) k) → I.ReadsP I.mu0 KP.lev.Lb KP.lev.U KP.lev.chi (fun c => (KP.y c).1) KP.lat (fun c s => (KP.stabI c s).1) → (∀ v c (z : Ld (I.rec7 l Z) u B.R.m le_rfl c) (h : z.1 ∈ ((I.stp u I.mu0 B.R.m).rep c).1.1.deco.1.N), L.pr v c z = Submodule.Quotient.mk ⟨z.1, h⟩) → I.IdY l Z u I.mu0 B.R.m le_rfl W.eY → ∃ (Tl : TilTied (D := (I.rec7 l Z)) u A KP L) (Ta : TilAd Tl K), (∀ j, Tl.z0 j = if j.1 + 1 = B.R.N B.R.m then ((X.piT u : 𝓞 B.host.E) : B.host.E) else 0) ∧ TilBaseLat Tl K ∧ ∃ e, (∀ z, e z = z) ∧ EvzTie (D := (I.rec7 l Z)) Ta W e := by
   intro B X I hI hP l Z u A K KP L W hres hRd hRP hL hY
   obtain ⟨k, hk⟩ := hRd

@@ -1,6 +1,12 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TubeFourierExpansion
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.LinearAlgebra.Basis.Defs
+public import Mathlib.LinearAlgebra.DFinsupp
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 
@@ -30,8 +36,8 @@ lemma repr_sum_single (v : ι → ℝ) (j : Fin n) :
     funext x
     simp [Finset.sum_apply, Pi.single_apply]
   conv_rhs => rw [hv]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finsupp.finsetSum_apply]
+
+  rw [map_sum, Finsupp.finsetSum_apply]
   refine Finset.sum_congr rfl (fun τ _ => ?_)
   rw [map_smul, Finsupp.smul_apply, smul_eq_mul]
 

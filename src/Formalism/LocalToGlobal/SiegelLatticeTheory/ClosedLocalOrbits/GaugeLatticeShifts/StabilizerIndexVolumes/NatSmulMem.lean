@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.StabilizerIndexVolumes.StClosed
 public import Lemmata.GeneralBFactThirdVersion.Imports
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

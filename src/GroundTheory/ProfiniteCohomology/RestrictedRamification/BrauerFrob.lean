@@ -1,16 +1,21 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalVal
 public import GroundTheory.ProfiniteCohomology.Characters
-public import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
 public import GroundTheory.LocalFields.MaximalUnramified
-public import GroundTheory.LocalFields.TameExtension
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
-public import GroundTheory.LocalFields.LocalArtinTransport
-public import GroundTheory.LocalFields.Uniqueness
-public import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolBridge
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModule
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MulDistribMulActionGalUnitsFiniteSubfield
+public import Mathlib.FieldTheory.Galois.Profinite
+public import GroundTheory.LocalFields.LocalArtinTransport
+public import GroundTheory.LocalFields.TameExtension
+import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
+import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerOrd
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
@@ -216,7 +221,7 @@ variable {K : FiniteSubfield} {v : HeightOneSpectrum (𝓞 K.1)}
   (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem compField_le_maximalUnramifiedExtension (N : FiniteSubfield) [Fact (K ≤ N)] [Normal K.1 N.1]
     (he : (placeOfEmbedding ι N).1.asIdeal.ramificationIdx (𝓞 K.1) = 1) :
     compField ι N ≤ maximalUnramifiedExtension (v.adicCompletion K.1)
@@ -287,7 +292,7 @@ theorem decompHomS_eq_one_of_unramifiedDegree_eq_one
   exact h1.trans h2
 
 
-set_option maxHeartbeats 2000000 in
+
 include hv in
 theorem eq_zero_of_decompHomS_of_unramifiedDegree
     (χ : Additive Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →ₜ+ QZ)

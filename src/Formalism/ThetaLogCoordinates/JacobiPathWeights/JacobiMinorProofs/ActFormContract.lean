@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -179,7 +227,7 @@ lemma lap_row (m : Matrix (Fin n) (Fin n) R) (I' J : Finset (Fin n)) (a : Fin n)
       have hr : (fun x => (Fin.cons a ⇑(I'.orderEmbOfFin hd) : Fin (d + 1) → Fin n)
           ((0 : Fin (d + 1)).succAbove x)) = I'.orderEmbOfFin hd := by
         funext x
-        simp [Fin.succAbove_zero]
+        simp
       have hexp := det_rows_expand m (Fin.cons a ⇑(I'.orderEmbOfFin hd) : Fin (d + 1) → Fin n) 0 hJ hd hr
       simp only [Fin.cons_zero] at hexp
       rw [← hexp]
@@ -285,7 +333,7 @@ theorem actFormWedge : FactX2wedge := by
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hI
     exact Finset.insert_erase hI
   · intro I' hI'
-    simp only [Finset.coe_filter, Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at hI'
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hI'
     exact Finset.erase_insert hI'
   · intro I hI
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hI
@@ -311,7 +359,7 @@ lemma basisF_insert {a : Fin n} {s : Finset (Fin n)} (hs : ∀ x ∈ s, x < a) :
     rfl
   funext I
   simp only [wedgeF, basisF, Pi.single_apply, mul_ite, mul_one, mul_zero]
-  simp only [Finset.sum_ite_eq', Finset.sum_ite_eq]
+  simp only [Finset.sum_ite_eq']
   by_cases ha : a ∈ I
   · rw [if_pos ha]
     by_cases hI : I = insert a s
@@ -348,7 +396,7 @@ lemma actF_oneF (m : Matrix (Fin n) (Fin n) R) : actF (oneF : Form R n) m = oneF
   by_cases hJ : J = ∅
   · subst hJ
     rw [dite_eq_left rfl, if_pos rfl]
-    exact Matrix.det_eq_one_of_card_eq_zero (by first | exact Fintype.card_fin 0 | rfl | decide)
+    exact Matrix.det_eq_one_of_card_eq_zero (by first | exact Fintype.card_fin 0)
   · rw [dite_eq_right, if_neg hJ]
     simpa [Finset.card_eq_zero] using hJ
 

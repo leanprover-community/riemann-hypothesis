@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
+public import Mathlib.RingTheory.Valuation.LocalSubring
 
 @[expose] public section
 

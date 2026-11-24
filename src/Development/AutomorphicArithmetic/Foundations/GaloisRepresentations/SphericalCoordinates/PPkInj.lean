@@ -1,6 +1,47 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.PFrameEx
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.PerCApply
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -55,18 +96,12 @@ private theorem intL_sub {a b : Loc G} (ha : IntL a) (hb : IntL b) : IntL (a - b
   refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (ha w i) ?_)
   simpa only [norm_neg] using hb w i
 
-private theorem norm_p_lt : ‖((p : ℕ) : PadicAlgCl p)‖ < 1 := by
-  have h := norm_algebraMap' (PadicAlgCl p) (p : ℚ_[p])
-  rw [map_natCast] at h
-  rw [h]
-  exact Padic.norm_p_lt_one
-
 private theorem small (A : MF G) : ∀ᶠ k in Filter.atTop, IntM (sc k A : MF G) := by
   simp only [IntM, Filter.eventually_all]
   intro w i j
   have ht : Filter.Tendsto (fun k : ℕ => ‖((p : ℕ) : PadicAlgCl p)‖ ^ k * ‖(A w i j : PadicAlgCl p)‖)
       Filter.atTop (nhds 0) := by
-    simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) norm_p_lt).mul_const
+    simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) _root_.ReciprocityTheory.DiscreteGroups.LocalClassField.UnramifiedExtensions.norm_p_lt_one).mul_const
       ‖(A w i j : PadicAlgCl p)‖
   filter_upwards [ht.eventually (Iio_mem_nhds zero_lt_one)] with k hk
   have e : ((sc k A w i j : G.Fw w) : PadicAlgCl p) = ((p : ℕ) : PadicAlgCl p) ^ k * (A w i j : PadicAlgCl p) := by

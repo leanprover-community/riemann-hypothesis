@@ -1,17 +1,16 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Comparison
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCurve
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitDegree
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightRecR
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitArchSum
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitConjSum
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitArchSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitDegree
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PHeightRecR
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitDivVertical
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitFiniteSum
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitArchSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PPtsIntegralPoints
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Comparison
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

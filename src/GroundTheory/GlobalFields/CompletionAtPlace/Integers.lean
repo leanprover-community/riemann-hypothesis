@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.CompletionAtPlace
+public import GroundTheory.LocalFields.Interface
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.RamificationInertia.Basic
+public import Mathlib.RingTheory.Valuation.Integral
 
 @[expose] public section
 
@@ -159,25 +163,15 @@ theorem mem_maximalIdeal_iff_valued_lt_one (y : 𝒪[u.adicCompletion F]) :
 
 theorem valued_of_irreducible_integer {ϖ : 𝒪[u.adicCompletion F]} (hϖ : Irreducible ϖ) :
     Valued.v (ϖ : u.adicCompletion F) = WithZero.exp (-1) := by
-  apply le_antisymm
-  · have h := (mem_maximalIdeal_iff_valued_lt_one u ϖ).1 hϖ.not_isUnit
-    have h' : Valued.v (ϖ : u.adicCompletion F) < WithZero.exp (-1) * WithZero.exp 1 := by
-      rwa [← WithZero.exp_add, neg_add_cancel, WithZero.exp_zero]
-    exact (WithZero.lt_mul_exp_iff_le (by simp)).1 h'
-  · have hlt : WithZero.exp (-1 : ℤ) < 1 := by
-      rw [← WithZero.exp_zero, WithZero.exp_lt_exp]; norm_num
-    obtain ⟨y, hy⟩ := valuedAdicCompletion_surjective F u (WithZero.exp (-1))
-    have hy1 : Valued.v y ≤ 1 := by rw [hy]; exact hlt.le
-    let y' : 𝒪[u.adicCompletion F] := ⟨y, (mem_valuationInteger_iff u y).2 hy1⟩
-    have hy' : y' ∈ 𝓂[u.adicCompletion F] := by
-      rw [mem_maximalIdeal_iff_valued_lt_one]
-      change Valued.v y < 1
-      rw [hy]; exact hlt
-    rw [hϖ.maximalIdeal_eq, Ideal.mem_span_singleton'] at hy'
-    obtain ⟨c, hc⟩ := hy'
-    rw [← hy, show y = ((c * ϖ : 𝒪[u.adicCompletion F]) : u.adicCompletion F) by rw [hc],
-      Subring.coe_mul, map_mul]
-    exact mul_le_of_le_one_left zero_le ((integers_valued u).map_le_one c)
+  have h : (ValuativeRel.valuation (u.adicCompletion F)).integer =
+      (u.adicCompletionIntegers F).toSubring := by
+    ext x
+    exact mem_valuationInteger_iff u x
+  let e := RingEquiv.subringCongr h
+  have hϖ' : Irreducible (e ϖ) := (MulEquiv.irreducible_iff e).2 hϖ
+  have hval := valued_of_irreducible u
+    (ϖ := ⟨(e ϖ : u.adicCompletion F), (e ϖ).2⟩) (by exact hϖ')
+  simpa [e] using hval
 
 theorem mem_maximalIdeal_pow_iff (y : 𝒪[u.adicCompletion F]) (n : ℕ) :
     y ∈ 𝓂[u.adicCompletion F] ^ n ↔ Valued.v (y : u.adicCompletion F) ≤ WithZero.exp (-(n : ℤ)) := by

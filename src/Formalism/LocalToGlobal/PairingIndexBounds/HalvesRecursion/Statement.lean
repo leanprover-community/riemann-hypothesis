@@ -1,8 +1,10 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PIopNorm
-public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.GenModelXi
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.PIopIso
+public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.GoodLat
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.IsBichar
 
 @[expose] public section
 

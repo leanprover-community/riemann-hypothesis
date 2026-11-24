@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.SInvariantToInvariantsEqZeroIff
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

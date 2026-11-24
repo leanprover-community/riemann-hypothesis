@@ -1,10 +1,54 @@
 module
 
-public import Mathlib
-public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.VectorComplexifiedDerivativeCommutator
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.LieOperatorConjHolds
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsDerivedActionFiniteDimUnitaryRep
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.OrbitStepSpace
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.LieOperatorConjHolds
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.VectorComplexifiedDerivativeCommutator
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -77,24 +121,7 @@ lemma eabV_comb {f f' : Matrix (Fin n) (Fin n) ℂ → E} (hf : SmoothOnGV ε f)
 lemma hasDerivAt_rdV {f : Matrix (Fin n) (Fin n) ℂ → E} (hf : SmoothOnGV ε f)
     {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) :
     HasDerivAt (fun t : ℝ => f (NormedSpace.exp ((t : ℂ) • X))) (RdV X f 1) 0 := by
-  obtain ⟨U, F, hU, hg, hF, hfF⟩ := hf 1 inUJ_one
-  have hγ := hasDerivAt_mul_exp_smul_zero (1 : Matrix (Fin n) (Fin n) ℂ) X
-  have hγ0 : (1 : Matrix (Fin n) (Fin n) ℂ) * NormedSpace.exp (((0 : ℝ) : ℂ) • X) = 1 := by
-    simp [NormedSpace.exp_zero]
-  have hFd : DifferentiableAt ℝ F 1 :=
-    (hF.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hg)
-  have hcomp : HasDerivAt (fun t : ℝ => F (1 * NormedSpace.exp ((t : ℂ) • X)))
-      (fderiv ℝ F 1 (1 * X)) 0 :=
-    hFd.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hγ hγ0.symm
-  have hev : (fun t : ℝ => f (NormedSpace.exp ((t : ℂ) • X))) =ᶠ[𝓝 0]
-      (fun t : ℝ => F (1 * NormedSpace.exp ((t : ℂ) • X))) := by
-    have hmem : ∀ᶠ t : ℝ in 𝓝 0, 1 * NormedSpace.exp ((t : ℂ) • X) ∈ U :=
-      hγ.continuousAt.preimage_mem_nhds (by rw [hγ0]; exact hU.mem_nhds hg)
-    filter_upwards [hmem] with t ht
-    rw [Matrix.one_mul] at ht ⊢
-    exact hfF _ ht (exp_indefinite_unitary_holds n ε X hX t)
-  rw [vector_right_derivative_extends n ε E f F U 1 X hU hg inUJ_one hF hfF hX]
-  exact hcomp.congr_of_eventuallyEq hev
+  apply GlobalTheory.UnitaryDerived.hasDerivAt_rdV <;> assumption
 
 end Gen
 

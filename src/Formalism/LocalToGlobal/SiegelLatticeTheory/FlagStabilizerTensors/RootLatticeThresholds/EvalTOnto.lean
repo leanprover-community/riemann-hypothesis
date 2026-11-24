@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.EvalTRph
-public import Formalism.LocalToGlobal.IndefiniteReal.SquareIntegrableTransfer
+public import Formalism.LocalRingCardinality.DataTheta
+public import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
+import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
+import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
+public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 

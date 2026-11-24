@@ -1,8 +1,19 @@
 module
 
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.CoeffMemOfLoc
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementA
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.OneLeAbsNormOfLeOne
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+public import Mathlib.RingTheory.Norm.Transitivity
+public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section
 

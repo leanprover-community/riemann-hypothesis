@@ -3,6 +3,48 @@ module
 public import Formalism.ThetaLiftIndependence.Statement
 public import Formalism.HermitianLattices.FinalNeighbourConstruct
 public import Formalism.ThetaLiftIndependence.ThetaOrbitSums.LatLiftIndep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -41,8 +83,7 @@ theorem pick_spec (h : V →ₗ⋆[K] V →ₗ[K] K)
         Quotient.mk (isoSetoid h) M := by
   have hq : ∃ N ∈ s₀, Quotient.mk (isoSetoid h) N = Quotient.mk (isoSetoid h) M := ⟨M, hM, rfl⟩
   have e : pick h s₀ (Quotient.mk (isoSetoid h) M) = Classical.choose hq := by
-    unfold pick
-    exact dif_pos hq
+    simpa [pick] using dif_pos hq
   rw [e]
   exact Classical.choose_spec hq
 
@@ -51,19 +92,13 @@ theorem exists_reps (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (NumberFie
     (h₁ : ∀ M ∈ s₀, M ∈ genus h L) (h₂ : ∀ M ∈ genus h L, ∃ N ∈ s₀, ∃ g ∈ isom h, gmap g N = M) :
     ∃ s, IsClassReps h L s := by
   classical
-  have hsound : ∀ A B : Submodule (NumberField.RingOfIntegers K) V,
-      (∃ g ∈ isom h, gmap g A = B) → Quotient.mk (isoSetoid h) A = Quotient.mk (isoSetoid h) B :=
-    fun A B hAB => Quotient.sound hAB
-  have hexact : ∀ A B : Submodule (NumberField.RingOfIntegers K) V,
-      Quotient.mk (isoSetoid h) A = Quotient.mk (isoSetoid h) B → ∃ g ∈ isom h, gmap g A = B :=
-    fun A B e => Quotient.exact e
   refine ⟨s₀.image (fun N => pick h s₀ (Quotient.mk (isoSetoid h) N)), ?_, ?_⟩
   · intro M hM
     obtain ⟨N, hN, rfl⟩ := Finset.mem_image.mp hM
     exact h₁ _ (pick_spec h s₀ hN).1
   · intro M hM
     obtain ⟨N, hN, g, hg, e⟩ := h₂ M hM
-    obtain ⟨g', hg', e'⟩ := hexact _ _ (pick_spec h s₀ hN).2
+    obtain ⟨g', hg', e'⟩ := Quotient.exact (pick_spec h s₀ hN).2
     have hE : gmap (g * g') (pick h s₀ (Quotient.mk (isoSetoid h) N)) = M := by
       rw [gmap_mul, e', e]
     refine ⟨pick h s₀ (Quotient.mk (isoSetoid h) N),
@@ -72,7 +107,7 @@ theorem exists_reps (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (NumberFie
     obtain ⟨N₁, hN₁, rfl⟩ := Finset.mem_image.mp hP
     have hrel : Quotient.mk (isoSetoid h) (pick h s₀ (Quotient.mk (isoSetoid h) N₁)) =
         Quotient.mk (isoSetoid h) (pick h s₀ (Quotient.mk (isoSetoid h) N)) := by
-      apply hsound
+      apply Quotient.sound
       refine ⟨(g * g')⁻¹ * g₁,
         (isom h).mul_mem ((isom h).inv_mem ((isom h).mul_mem hg hg')) hg₁, ?_⟩
       rw [gmap_mul, e₁, ← hE, gmap_inv_gmap]

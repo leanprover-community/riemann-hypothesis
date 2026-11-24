@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
-public import ReciprocityTheory.NeutralLocalFields.HilbertClassField
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RingTheory.Valuation.RamificationGroup
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 

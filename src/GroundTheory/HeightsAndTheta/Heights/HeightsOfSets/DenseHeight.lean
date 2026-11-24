@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Points
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.NumberTheory.NumberField.ProductFormula
 
 @[expose] public section
 
@@ -112,7 +117,7 @@ theorem height_standard_le (z : Cone n (AlgebraicClosure ℚ)) (hz : BlockNonzer
       _ = Fintype.card ι * (d * Real.log δ) := by rw [h3, neg_neg]
 
   have : Algebra.IsAlgebraic ℚ (AlgebraicClosure ℚ) := by
-    convert AlgebraicClosure.isAlgebraic ℚ <;> rfl
+    convert AlgebraicClosure.isAlgebraic ℚ
   have : Algebra.IsAlgebraic K (AlgebraicClosure ℚ) := Algebra.IsAlgebraic.tower_top (K := ℚ) K
   have harchK : ∀ σ : K →+* ℂ, Real.log ((HermLine.standard (n := n)).metric
       fun k i ↦ σ (coordVec z k i)) ≤ ∑ k, Real.log (Real.sqrt (n k + 1) * R) := by

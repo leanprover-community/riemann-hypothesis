@@ -2,7 +2,15 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
 public import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPfB
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPfS
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.UnivChartLoc
 
 @[expose] public section
 

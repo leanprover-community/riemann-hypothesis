@@ -1,17 +1,50 @@
 module
 
-public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FunKit
-public import Mathlib
-public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.StepUnfold
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairPtsClasses
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowMapVUpdateZero
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EdgeFactorNeZero
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StepType
+public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnderMemAndPlaceAboveEqOfMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitThetaGridIsAdmissibleFlipTensor
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StepType
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstVertexWeilOrbitValue
+import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FunKit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -60,7 +93,7 @@ theorem flips_law {ψ : AddChar k Circle} {ϖ : kˣ} {e : ℕ} (hϖ : IsUnif ϖ)
     have hg0 := hg x List.mem_cons_self
     obtain ⟨i, j⟩ := x
     obtain ⟨γ, J, T⟩ := St
-    obtain ⟨l₁, l₂, hγ, hfl⟩ := GlobalTheory.FlipAdm.exists_split hT.path hp
+    obtain ⟨l₁, l₂, hγ, hfl⟩ := _root_.GlobalTheory.SplitFlip.flipPath_split hT.path hp
     have hTt := hT.tensor
     simp only at hγ hfl hlaw hTt hν0 hg0 hJ
     change Γ.pathAct .one (flipPath i j γ) g (Γ.flipTensor .one ψ ϖ e i j J T) = c • Γ.flipTensor .one ψ ϖ e i j J T
@@ -171,10 +204,10 @@ theorem given_law_at (hL : L.Is μ₀) (B : Frames G) (Φ : G.Datum) (hw : w ∈
         rw [hκ'def, ← map_inv, reGL_symm_val, hX, submatrix_mul_equiv]
         simp only [Grid.moveArgs, Assignment.read, Edge.src, Edge.tgt, Pi.mulSingle_eq_same,
           Pi.mulSingle_eq_of_ne (show ((0 : ℕ), n) ≠ (0, n + 1) by simp), invT_val, invT_inv_val, transpose_mul,
-          transpose_transpose, Matrix.mul_assoc, map_one, inv_one, Units.val_one, Matrix.mul_one, Matrix.one_mul]
+          transpose_transpose, map_one, inv_one, Units.val_one, Matrix.one_mul]
       have hg1 : ∀ {a : Type} [Fintype a] [DecidableEq a], gdet (1 : GL a (Kw w)) = 1 := fun {_ _ _} => map_one _
       rw [hmv]
-      simp only [hl1, hd, hg1, map_one, inv_one, Units.val_one, mul_one, one_mul, one_div, Matrix.mul_one] at e'
+      simp only [hl1, hd, hg1, map_one, Units.val_one, one_mul, one_div, Matrix.mul_one] at e'
       rw [hν _ hv, hg1, map_one, inv_one, Units.val_one, mul_one, e']
       rfl
     funext x

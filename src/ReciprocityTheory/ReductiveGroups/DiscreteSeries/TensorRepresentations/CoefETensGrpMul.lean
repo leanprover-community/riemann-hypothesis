@@ -1,6 +1,16 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefDTensActPow
+public import Mathlib.Analysis.InnerProductSpace.Subspace
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Analytic
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ClosureK
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ExistsExpEqOfMemKset
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.PolarJmConjTranspose
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Taylor
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IsInLieAlgebraISmulAddConjTranspose
 
 @[expose] public section
 
@@ -27,9 +37,9 @@ theorem coefE_tensGrp_mul (dual : Bool) (hσ : IsURepOn (UJset ε) σ) {g h : Ma
     (hg : g ∈ UJset ε) (hh : h ∈ UJset ε) (w : Fin n → H) :
     coefTG dual σ (g * h) w = coefTG dual σ g (coefTG dual σ h w) := by
   ext c
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [coefTG, coefE_Am_mul, hσ.1.2 g hg h hh, ContinuousLinearMap.comp_apply, map_sum, map_smul,
-    Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, smul_smul]
+
+  simp only [coefTG, coefE_Am_mul, hσ.1.2 g hg h hh, ContinuousLinearMap.comp_apply, map_sum, map_smul,
+  Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, smul_smul]
   rw [Finset.sum_comm]
 
 theorem coefE_tensGrp_one (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (w : Fin n → H) :
@@ -43,7 +53,7 @@ def coefLam (dual : Bool) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) 
 
 theorem coefLam_apply (dual : Bool) (g : Matrix (Fin n) (Fin n) ℂ) (f u : Fin n → H) :
     coefLam dual σ g f u = ∑ c, inner ℂ (f c) (coefTG dual σ g u c) := by
-  simp [coefLam, coefTG, inner_sum, inner_smul_right]
+  simp [coefLam, coefTG]
 
 def CoefGood (E : Fin n → Fin n → Module.End ℂ D) (V : Submodule ℂ D) (X : Matrix (Fin n) (Fin n) ℂ)
     (r₀ : ℝ) : Prop :=
@@ -75,9 +85,9 @@ theorem coefE_ι_act (dual : Bool) {V' : Submodule ℂ D} {ι : D →ₗ[ℂ] (F
     (hιE : ∀ a b, ∀ x ∈ genSub E V', ι (E a b x) = tensF dual E a b (ι x))
     (X : Matrix (Fin n) (Fin n) ℂ) {v : D} (hv : v ∈ genSub E V') :
     ι (actM E X v) = actM (tensF dual E) X (ι v) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [actM, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul,
-    hιE _ _ v hv]
+
+  simp only [actM, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul,
+  hιE _ _ v hv]
 
 private theorem actM_pow_apply_mem_genSub {M : Type*} [AddCommGroup M] [Module ℂ M]
     {E : Fin n → Fin n → Module.End ℂ M} {S : Submodule ℂ M} (X : Matrix (Fin n) (Fin n) ℂ) (m : ℕ)
@@ -162,7 +172,7 @@ theorem coefE_step (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedO
     funext m
     rw [← coefE_ι_pow dual hιE X m hy, coefLam_apply,
       hQ _ (actM_pow_apply_mem_genSub X m hy)]
-    simp [inner_smul_right]
+    simp
   rw [hterms] at hL
   have key := hL.unique hR
   rw [coefLam_apply, ← coefE_tensGrp_mul dual hσ hh he] at key

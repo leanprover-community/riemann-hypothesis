@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 
 @[expose] public section
 

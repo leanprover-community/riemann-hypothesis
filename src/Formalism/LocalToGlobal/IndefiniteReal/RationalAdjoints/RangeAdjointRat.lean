@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RatZOfTests
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.CoordRat
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -94,8 +94,8 @@ theorem range_adjoint_rat {K : Type} [Field K] [StarRing K] (σ : K →+* ℂ) {
         exact ⟨star a, by rw [← ha, star_compat σ jR h hiso (bb l) (hli.ne_zero l)]⟩)
     choose a ha using hcoord
     have hr' : jR (∑ k, a k • bb k) = LinearMap.adjoint Θ (e i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hc, hf, Fintype.linearCombination_apply, map_sum]
+
+      rw [← hc, hf, Fintype.linearCombination_apply, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [LinearMap.map_smulₛₗ, ha]
     rw [← hr']

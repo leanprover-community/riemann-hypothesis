@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible.Scalar
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.NonemptyAdelicDecomposition
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -131,8 +131,8 @@ theorem casimirOp_gkModuleCusp {ι : Type*} [Fintype ι]
     (b : Module.Basis ι ℝ (isExpLieAlgebra K n).lieSubalgebra) (ε : ι → ℝ) :
     casimirOp (gkModuleCusp K n) b ε = uActionCusp K n (casimir b ε) := by
   unfold casimirOp casimir
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, map_mul]
   rfl
@@ -215,9 +215,9 @@ theorem aeval_laplacian_eq_zero {d : ℕ}
     have e1 : L ψ = ω • ψ + ∑ i, (1 - ε i) • uActionCusp K n (UniversalEnvelopingAlgebra.ι ℝ (b i))
           (uActionCusp K n (UniversalEnvelopingAlgebra.ι ℝ (b i)) ψ) := by
       show uActionCusp K n (laplacianU K n b) ψ = _
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [laplacianU_eq_casimir_add b ε, map_add (f := _), LinearMap.add_apply, hω _ hψ, map_sum,
-        LinearMap.sum_apply]
+
+      rw [laplacianU_eq_casimir_add b ε, map_add (f := _), LinearMap.add_apply, hω _ hψ, map_sum,
+      LinearMap.sum_apply]
       congr 1
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_smul, map_mul, LinearMap.smul_apply, Module.End.mul_apply]
@@ -237,8 +237,8 @@ theorem aeval_laplacian_eq_zero {d : ℕ}
   rw [e2, aeval_apply_eq_of_eqOn (L - ω • 1) B U hAU hAB q φ.2]
   have h3 := AutomorphicForm.map_aeval_apply_of_intertwine U.subtype
     (A := ∑ i, M.ρ (lapZ b ε i) * M.ρ (lapZ b ε i)) (B := B) (fun x => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [B, LinearMap.sum_apply, Module.End.mul_apply, map_sum]
+
+      simp only [B, LinearMap.sum_apply, Module.End.mul_apply, map_sum]
       rfl) q φ
   rw [Submodule.subtype_apply, Submodule.subtype_apply, hq] at h3
   exact h3.symm.trans rfl

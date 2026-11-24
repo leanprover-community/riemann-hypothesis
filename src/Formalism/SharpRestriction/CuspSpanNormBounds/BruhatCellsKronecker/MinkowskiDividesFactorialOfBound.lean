@@ -1,14 +1,50 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 public import Formalism.SharpRestriction.CuspSpanNormBounds.MassAndBranchingHypotheses
 public import Formalism.SharpRestriction.CuspSpanNormBounds.AmplitudeAndVolumeBounds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.AuxiliaryNormPrimes
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalBesselAndTopKernel
-public import Formalism.SharpRestriction.CuspSpanNormBounds.NonGenericAndKTwoTheorems
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IdealsOfNormEqIndexSet
+public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
+public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.LatticeSumBounds
+public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Ideal.Norm.RelNorm
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -53,12 +89,9 @@ theorem massS_ratio (D : D7) (h1 : UnitaryVolumeMass.stMassRatio D) (j : ℕ) (h
     massS D j = Formalism.HermitianLatticesTheory.massRatioRightSide D.host.E j * massS D (j - 1) := by
   have hsym : ∀ n : ℕ, (Cnt.stdH D.host.E n).IsSymm := fun n => by
     first
-      | exact fun x y => by
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp [Cnt.stdH, LinearMap.mk₂'ₛₗ_apply, starRingEnd_apply, star_sum, map_sum, star_mul, star_star]
       | exact ⟨fun x y => by
           set_option synthInstance.maxHeartbeats 100000 in
-            simp [Cnt.stdH, LinearMap.mk₂'ₛₗ_apply, starRingEnd_apply, star_sum, map_sum, star_mul, star_star]⟩
+            simp [Cnt.stdH, LinearMap.mk₂'ₛₗ_apply, starRingEnd_apply, map_sum, star_mul, star_star]⟩
   have hr := h1 j hj (Fin j → D.host.E) (Fin (j - 1) → D.host.E) (Cnt.stdH D.host.E j) (Cnt.stdH D.host.E (j - 1))
     (Cnt.stdLat D.host.E j) (Cnt.stdLat D.host.E (j - 1)) (hsym j) (hsym (j - 1))
     (cnt_stdLat_isOrtho D.host.E j) (cnt_stdLat_isOrtho D.host.E (j - 1))

@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.KummerBasic
+public import Mathlib.FieldTheory.IsSepClosed
 public import GroundTheory.ProfiniteCohomology.KummerFinite
+public import Mathlib.FieldTheory.KummerExtension
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

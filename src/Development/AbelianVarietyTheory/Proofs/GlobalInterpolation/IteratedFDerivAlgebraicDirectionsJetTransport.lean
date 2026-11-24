@@ -1,7 +1,51 @@
 module
 
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
-public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Analytic.IteratedFDeriv
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
+import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FourthTensorThetaEqKernel
 
 @[expose] public section
 
@@ -30,7 +74,7 @@ theorem multiIndexFactorial_add_single (n : σ →₀ ℕ) (k : σ) :
       rw [Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ, if_pos rfl]
       push_cast; ring
     · rw [Finsupp.add_apply, if_neg hi]
-      simp [Finsupp.single_apply, Ne.symm hi]
+      simp [Ne.symm hi]
   rw [Finset.prod_congr rfl fun i _ => h i, Finset.prod_mul_distrib, Finset.prod_ite_eq' Finset.univ k]
   simp
 
@@ -50,8 +94,8 @@ theorem coeff_foldr_pd (F : MvPowerSeries σ ℂ_[p]) : ∀ (l : List σ) (n : �
 theorem pd_sum_smul {ι : Type} (s : Finset ι) (a : ι → ℂ_[p]) (P : ι → MvPowerSeries σ ℂ_[p]) (k : σ) :
     pd k (∑ i ∈ s, a i • P i) = ∑ i ∈ s, a i • pd k (P i) := by
   ext n
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [coeff_pd, map_sum, map_smul, smul_eq_mul, Finset.mul_sum]
+
+  simp only [coeff_pd, map_sum, map_smul, smul_eq_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => by ring
 
 theorem foldr_expand {β : Type} (c : β → σ → ℂ_[p]) (F : MvPowerSeries σ ℂ_[p]) : ∀ (m : ℕ) (y : Fin m → β),
@@ -89,21 +133,7 @@ theorem perm_of_cnt {k : ℕ} (f l : Fin k → σ) (h : ∀ i, cnt f i = cnt l i
 
 theorem cnt_toList (α : σ →₀ ℕ) (i : σ) :
     cnt (fun j : Fin (Multiset.card α.toMultiset) => α.toMultiset.toList.get ⟨j, by simpa using j.2⟩) i = α i := by
-  set l := fun j : Fin (Multiset.card α.toMultiset) => α.toMultiset.toList.get ⟨j, by simpa using j.2⟩
-  have hmap : Multiset.map l Finset.univ.val = α.toMultiset := by
-    rw [Fin.univ_val_map]
-    have : List.ofFn l = α.toMultiset.toList := by
-      refine List.ext_get (by simp) ?_
-      intro n h1 h2
-      simp [l]
-    rw [this, Multiset.coe_toList]
-  have h := congrArg (Multiset.count i) hmap
-  rw [Multiset.count_map, Finsupp.count_toMultiset] at h
-  rw [← h]
-  unfold cnt
-  rw [Finset.card_def, Finset.filter_val]
-  congr 1
-  exact Multiset.filter_congr fun j _ => eq_comm
+  apply _root_.Formalism.L2.KerInert.AlgP.cnt_toList
 
 def cntF {m : ℕ} (f : Fin m → σ) : σ →₀ ℕ := ∑ j, Finsupp.single (f j) 1
 
@@ -115,8 +145,8 @@ theorem cntF_apply {m : ℕ} (f : Fin m → σ) (i : σ) : cntF f i = cnt f i :=
   · rw [if_neg h, Finsupp.single_apply, if_neg h]
 
 theorem card_cntF {m : ℕ} (f : Fin m → σ) : Multiset.card (cntF f).toMultiset = m := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [cntF, map_sum, Multiset.card_sum]
+
+  rw [cntF, map_sum, Multiset.card_sum]
   simp
 
 end Cplx
@@ -143,8 +173,8 @@ theorem mlin_expand {m : ℕ} (A : ContinuousMultilinearMap ℂ (fun _ : Fin m =
   have hv : v = fun j => ∑ k : D.what₂.Tau × Fin N' × Fin N, v j k.1 k.2.1 k.2.2 • coordV D k :=
     funext fun j => vec_eq (v j)
   conv_lhs => rw [hv]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [A.map_sum]
+
+  rw [A.map_sum]
   refine Finset.sum_congr rfl fun f _ => ?_
   rw [A.map_smul_univ, smul_eq_mul]
 
@@ -214,8 +244,8 @@ theorem jet_pSer : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (p : ℕ
     rw [IntermediateField.coe_mul, IntermediateField.coe_mul, IntermediateField.coe_prod, IntermediateField.coe_prod]
     simp
   have hl : lam z = jet D lam y (pSer D lam G) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hP, hzdef, map_sum]
+
+    rw [hP, hzdef, map_sum]
     refine Finset.sum_congr rfl fun f _ => ?_
     simp only [map_mul, map_prod, map_natCast, lam_mk]
   refine ⟨hz ▸ z.2, ?_⟩

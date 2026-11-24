@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

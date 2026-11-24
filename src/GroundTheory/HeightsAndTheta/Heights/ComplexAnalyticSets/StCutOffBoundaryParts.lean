@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
 

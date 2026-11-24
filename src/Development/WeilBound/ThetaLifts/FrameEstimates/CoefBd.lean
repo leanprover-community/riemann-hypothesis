@@ -1,10 +1,55 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.ThetaLifts.FrameEstimates.ContinuousMixedSymm
+public import Development.WeilBound.ThetaLifts.FrameEstimates.SquareIntegrableWeilRange
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalComponentsNontrivialAdelicCharacter
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.WeilBound.ThetaLifts.FrameEstimates.FinBound
 public import Development.WeilBound.ThetaLifts.FrameEstimates.LatCpt
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -34,9 +79,9 @@ theorem trace_nondeg (l : κ → mixedSpace F) (h : ∀ y, Algebra.trace ℝ (mi
   refine (latticeBasis F).ext_elem fun j => ?_
   have := h (Pi.single i (mixedEmbedding F ((integralBasis F).traceDual j)))
   rw [dotProduct_single, ← (latticeBasis F).sum_repr (l i)] at this
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_mul, smul_mul_assoc, map_sum, map_smul, latticeBasis_apply, ← map_mul, trace_emb,
-    Module.Basis.trace_mul_traceDual] at this
+
+  simp only [Finset.sum_mul, smul_mul_assoc, map_sum, map_smul, latticeBasis_apply, ← map_mul, trace_emb,
+  Module.Basis.trace_mul_traceDual] at this
   simpa [apply_ite] using this
 
 theorem dual_one [IsTotallyReal F] {ψ : AddChar (AF F) ℂ} (hψ : IsCharAF F ψ) : ∃ C : Set (Af F), IsCompact C ∧
@@ -77,7 +122,7 @@ theorem dual_one [IsTotallyReal F] {ψ : AddChar (AF F) ℂ} (hψ : IsCharAF F �
 theorem dual_cpt [IsTotallyReal F] {ψ : AddChar (AF F) ℂ} (hψ : IsCharAF F ψ) (U : Set (κ → Af F)) (hU : U ∈ 𝓝 0) :
     ∃ K, IsCompact K ∧ ∀ y : κ → Af F, (∀ u ∈ U, ψ (fi F (u ⬝ᵥ y)) = 1) → y ∈ K := by
   obtain ⟨C, hC, h⟩ := dual_one hψ
-  choose N hN hNU using fun i : κ => GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F ((fun x : Af F => (Pi.single i x : κ → Af F)) ⁻¹' U)
+  choose N hN hNU using fun i : κ => _root_.GlobalTheory.LocalNormBound.main F ((fun x : Af F => (Pi.single i x : κ → Af F)) ⁻¹' U)
     ((continuous_single (A := fun _ : κ => Af F) i).continuousAt.preimage_mem_nhds (show U ∈ 𝓝 (Pi.single i 0) by rwa [Pi.single_zero]))
   refine ⟨_, isCompact_univ_pi fun i => hC.image (f := (algebraMap F (Af F) (N i : F)⁻¹ * ·))
     (continuous_const.mul continuous_id), fun y hy i _ => ⟨N i • y i, h _ fun a ha => ?_, ?_⟩⟩
@@ -125,8 +170,8 @@ theorem pureA_spl (f : (κ → mixedSpace F) → ℂ) (φ : (κ → Af F) → �
 theorem spl_dot (p q : (κ → mixedSpace F) × (κ → Af F)) :
     spl F κ p ⬝ᵥ spl F κ q = re F (p.1 ⬝ᵥ q.1) + fi F (p.2 ⬝ᵥ q.2) := by
   simp only [dotProduct]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, ← Finset.sum_add_distrib]
+
+  rw [map_sum, map_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
   show (re F (p.1 i) + fi F (p.2 i)) * (re F (q.1 i) + fi F (q.2 i)) =
     re F (p.1 i * q.1 i) + fi F (p.2 i * q.2 i)
@@ -204,8 +249,8 @@ theorem lin_cont (m : ((κ → AF F) × (κ → AF F)) →ₗ[AF F] Ten F E n d)
         ∑ i, x.2 i • ((0 : κ → AF F), (Pi.single i 1 : κ → AF F)) := by
       ext j <;> simp [Prod.fst_sum, Prod.snd_sum, Finset.sum_apply, Pi.single_apply]
     conv_lhs => rw [hx]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, map_smul]
+
+    simp only [map_add (f := _), map_sum, map_smul]
   have hc : Continuous fun x : (κ → AF F) × (κ → AF F) =>
       (∑ i, x.1 i • m (Pi.single i 1, 0) + ∑ i, x.2 i • m (0, Pi.single i 1) : Matrix (Fin n) (Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) := by
     fun_prop

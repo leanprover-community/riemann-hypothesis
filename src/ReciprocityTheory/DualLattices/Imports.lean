@@ -1,10 +1,12 @@
 module
 
+public import ReciprocityTheory.DualLattices.CyclicRecursionStatement
+import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.DualLattices.DvdOfCoeffZero
-public import ReciprocityTheory.DualLattices.ValUntiltESubOne
-public import ReciprocityTheory.DualLattices.MulIterateRootEqZero
-public import ReciprocityTheory.DualLattices.ZmodTrichotomy
 public import ReciprocityTheory.DualLattices.ExistsPrimitiveRoot
+public import ReciprocityTheory.DualLattices.MulIterateRootEqZero
+public import ReciprocityTheory.DualLattices.ValUntiltESubOne
+public import ReciprocityTheory.DualLattices.ZmodTrichotomy
 
 @[expose] public section
 

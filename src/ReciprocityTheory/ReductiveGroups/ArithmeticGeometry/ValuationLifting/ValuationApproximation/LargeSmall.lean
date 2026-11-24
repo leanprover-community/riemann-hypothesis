@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ValuationLifting.LiftSt
+public import Mathlib.RingTheory.Valuation.Basic
 
 @[expose] public section
 

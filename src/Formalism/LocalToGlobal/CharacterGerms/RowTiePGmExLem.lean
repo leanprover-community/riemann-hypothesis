@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.SelfConjugateRowData
+public import Formalism.LocalToGlobal.CharacterGerms.Interface
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

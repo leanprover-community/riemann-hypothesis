@@ -1,10 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementA
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementB
-public import Formalism.GaussJetBounds.StatementN
-public import Formalism.GaussJetBounds.StatementP
-public import Formalism.GaussJetBounds.StatementQ
+public import Formalism.GaussJetBounds.StatementI
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.IsPairFrame
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactAltForm
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementK
+public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
+import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.IsHypPair
+public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelConditionEquivalent
 
 @[expose] public section
 

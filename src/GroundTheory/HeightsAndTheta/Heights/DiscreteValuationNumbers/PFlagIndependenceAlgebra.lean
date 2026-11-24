@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.BundleObjects
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.GroupWithZero.Indicator
+public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 
 @[expose] public section
 
@@ -188,8 +191,8 @@ theorem isPairExpansion_push {n n' m : ℕ} (σ : Fin n → Fin n') {A : MvPolyn
   have e2 : rename Sum.inr (rename σ A) = rename (Sum.map σ σ) (rename Sum.inr A) := by
     rw [rename_rename, rename_rename]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e1, e2, ← map_sub, h.expansion, map_sum]
+
+  rw [e1, e2, ← map_sub, h.expansion, map_sum]
   simp only [map_mul, map_sub, rename_X, Sum.map_inl, Sum.map_inr, pushExpansion, Finset.mul_sum]
   refine (Finset.sum_fiberwise Finset.univ σ _).symm.trans ?_
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i hi => ?_
@@ -223,8 +226,8 @@ theorem exists_expansion {n : ℕ} (A : MvPolynomial (Fin n) ℤ) :
 theorem homogeneousComponent_linear_mul {σ : Type*} {L : MvPolynomial σ ℤ} (hL : L.IsHomogeneous 1)
     (P : MvPolynomial σ ℤ) (t : ℕ) :
     homogeneousComponent t (L * P) = if t = 0 then 0 else L * homogeneousComponent (t - 1) P := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [← sum_homogeneousComponent P, Finset.mul_sum, map_sum]
+
+  conv_lhs => rw [← sum_homogeneousComponent P, Finset.mul_sum, map_sum]
   have h : ∀ j, homogeneousComponent t (L * homogeneousComponent j P) =
       if j = t - 1 ∧ t ≠ 0 then L * homogeneousComponent j P else 0 := by
     intro j
@@ -252,9 +255,9 @@ theorem exists_isPairExpansion {n m : ℕ} {A : MvPolynomial (Fin n) ℤ} (hA : 
   have hD : (rename Sum.inl A - rename Sum.inr A).IsHomogeneous m :=
     hA.rename_isHomogeneous.sub hA.rename_isHomogeneous
   have key := congrArg (homogeneousComponent m) hG
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [homogeneousComponent_of_mem ((mem_homogeneousSubmodule _ _).mpr hD), if_pos rfl, map_sum]
-    at key
+
+  rw [homogeneousComponent_of_mem ((mem_homogeneousSubmodule _ _).mpr hD), if_pos rfl, map_sum]
+  at key
   simp only [homogeneousComponent_linear_mul (hL _)] at key
   rcases Nat.eq_zero_or_pos m with rfl | hm
   · refine ⟨0, ?_, fun i => isHomogeneous_zero _ _ _⟩

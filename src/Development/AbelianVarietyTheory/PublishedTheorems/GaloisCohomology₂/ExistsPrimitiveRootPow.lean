@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.PoitouTateNineTermTransgressionZeroApply
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.CohDimTwoLocalOfLocalFiniteness
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -14,6 +54,28 @@ namespace GlobalTheory.Published
 
 open PoitouTate
 
+/-- **Poitou–Tate duality** for finite Galois modules killed by `l ^ r`, over a number field `F`
+in which `l` is odd or which is totally complex: there are local invariant maps `inv`, bijections
+`H²(D_v, μ_{l^r}) → ZMod (l ^ r)` normalised with respect to `ζ` and compatible under
+conjugation, such that for every finite set `S` of finite primes containing those above `l` and
+every finite discrete `ZMod (l ^ r)`-module `M` with a continuous action of `G_S`, the nine-term
+Poitou–Tate sequence is exact, `Ш¹` and `Ш²` of `M` and of its twisted dual are finite and dual
+to each other, and `Hⁿ(G_S, M)` vanishes for `n ≥ 3`.
+
+Proposed reference:
+[J. S. Milne, *Arithmetic Duality Theorems* (Chapter I, Theorem 4.10, pp. 56–57)][milne2006],
+which proves these for every finite `G_S`-module whose order is a unit away from `S`. This
+statement is a special case: `S` is finite and `M` is killed by `l ^ r`, and the condition on `l`
+and `F` makes every archimedean term in Milne's sequence vanish, which is why only finite primes
+appear here and why the last clause is vanishing rather than an isomorphism with real local
+cohomology. The terms vanish because Milne uses Tate's modified groups at the archimedean places
+(p. 55): at a complex place they are zero, and at a real place, such as
+`Ĥ⁰(ℝ, M) = M^{Gal(ℂ/ℝ)} / N M`, they are killed by 2 as well as by `l ^ r`, so they vanish when
+`l` is odd. It is also weaker in two respects: the duality of `Ш` is an abstract isomorphism with
+equal orders rather than Tate's pairing, and two maps of the sequence are only asserted to exist.
+The existence of the invariant maps is local class field theory, which Milne's theorem takes as
+given.
+This reference is a reader's proposal and has not been checked by a mathematician. -/
 def PoitouTateDuality : Prop :=
   ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
     (l : ℕ) [Fact l.Prime] (r : ℕ), (l ≠ 2 ∨ IsTotallyComplex F) → 0 < r →

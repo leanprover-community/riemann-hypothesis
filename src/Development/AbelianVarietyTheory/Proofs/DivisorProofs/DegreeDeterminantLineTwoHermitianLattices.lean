@@ -1,10 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameCoord
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LcvBasis
+public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.IdxRules
+public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LcvBasis
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ArakelovDegreeEqDegreeOfFamily
+import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemConeIdeal
+import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
 
 @[expose] public section
 
@@ -162,18 +201,12 @@ theorem exists_smul_mem {L : Submodule (𝓞 K) (Fin n → K)} {m : ℕ} {u : Fi
   rw [← Finset.mul_prod_erase _ _ (Finset.mem_univ i), mul_comm, mul_smul]
   exact L.smul_mem _ (hsu i)
 
-theorem vAdd_mul' (𝔓 : HeightOneSpectrum (𝓞 K)) {x y : K} (hx : x ≠ 0) (hy : y ≠ 0) :
-    vAdd 𝔓 (x * y) = vAdd 𝔓 x + vAdd 𝔓 y := by
-  unfold vAdd
-  rw [map_mul, WithZero.log_mul ((Valuation.ne_zero_iff _).2 hx) ((Valuation.ne_zero_iff _).2 hy)]
-  ring
-
 theorem vAdd_pow' (𝔓 : HeightOneSpectrum (𝓞 K)) {x : K} (hx : x ≠ 0) (k : ℕ) :
     vAdd 𝔓 (x ^ k) = k * vAdd 𝔓 x := by
   induction k with
   | zero => simp [vAdd]
   | succ k ih =>
-    rw [pow_succ, vAdd_mul' 𝔓 (pow_ne_zero _ hx) hx, ih]
+    rw [pow_succ, _root_.Formalism.BasicNotions.Examples₂.PlacesToy.vAdd_mul 𝔓 (pow_ne_zero _ hx) hx, ih]
     push_cast; ring
 
 theorem form_smul_left (h : ReciprocityTheory.GeometryOfNumbersTheory.HermFam K (Fin n → K)) (σ : K →+* ℂ) (c : K) (x y : Fin n → K) :
@@ -227,7 +260,7 @@ theorem lineDeg_frame (h : ReciprocityTheory.GeometryOfNumbersTheory.HermFam K (
   obtain ⟨hfw, hsw⟩ := index_formula hL hw B (fun 𝔓 ↦ c • Mx 𝔓) hB hMw
   have hv : ∀ 𝔓, (vAdd 𝔓 (Mx 𝔓).det : ℝ) = (vAdd 𝔓 (c • Mx 𝔓).det : ℝ) - m * (vAdd 𝔓 c : ℝ) := by
     intro 𝔓
-    rw [Matrix.det_smul, Fintype.card_fin, vAdd_mul' 𝔓 (pow_ne_zero _ hc0) (det_ne_zero_of_comb hu (hM 𝔓)),
+    rw [Matrix.det_smul, Fintype.card_fin, _root_.Formalism.BasicNotions.Examples₂.PlacesToy.vAdd_mul 𝔓 (pow_ne_zero _ hc0) (det_ne_zero_of_comb hu (hM 𝔓)),
       vAdd_pow' 𝔓 hc0]
     push_cast; ring
   have hfc := finite_vAdd hc0

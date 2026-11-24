@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPolyNonvanishDense
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ContinuousDensitiesEqOfIntegralsOnCompactsStatement
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
+public import Mathlib.MeasureTheory.Measure.OpenPos
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ContinuousDensitiesEqOfIntegralsOnCompacts
+public import Mathlib.MeasureTheory.Measure.HasOuterApproxClosed
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Compactness.Paracompact
 
 @[expose] public section
 
@@ -149,7 +152,7 @@ theorem fibreFamily_eq (V X Y : Type) [TopologicalSpace V] [LocallyCompactSpace 
   have c' : ContinuousOn (fun b => ∫⁻ v, ENNReal.ofReal (φ v) ∂(fib' b)) B' :=
     (ENNReal.continuous_ofReal.comp_continuousOn hc2).congr fun b hb =>
       (ofReal_integral_eq_lintegral_ofReal (hi' b hb) (Filter.Eventually.of_forall h0)).symm
-  refine GlobalTheory.T.continuous_densities_eq_of_integrals_on_compacts X ν B' hB' _ _ c' c (fun S hS _ => ?_) b hb
+  refine _root_.GlobalTheory.CompanionTheory.SW.eq_of_setLIntegral_compact_eq X ν B' hB' _ _ c' c (fun S hS _ => ?_) b hb
   rw [← lintegral_preimage hι hg hf hO subset_rfl h' _ hφm hφ0 S hS.measurableSet,
     ← lintegral_preimage hι hg hf hO hOU h _ hφm hφ0 S hS.measurableSet]
 

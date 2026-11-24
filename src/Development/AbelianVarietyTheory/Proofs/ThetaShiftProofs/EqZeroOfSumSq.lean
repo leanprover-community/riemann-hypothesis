@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HolArcNilpotent
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.RiemannFormFramePeriodsEqMajorant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -25,8 +66,8 @@ theorem trace_mul_pairE (ξ : Module.Dual ℤ X) (b : 𝓞 E) (x : X) :
       (ξ (RingOfIntegers.basis E j • x) : ℚ) := by
     intro j
     unfold pairE
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.mul_sum, map_sum, Finset.sum_eq_single j]
+
+    rw [Finset.mul_sum, map_sum, Finset.sum_eq_single j]
     · have := LinearMap.BilinForm.apply_dualBasis_left (traceForm_nondegenerate ℚ E)
         (integralBasis E) j j
       rw [Algebra.traceForm_apply, if_pos rfl, integralBasis_apply] at this
@@ -44,8 +85,8 @@ theorem trace_mul_pairE (ξ : Module.Dual ℤ X) (b : 𝓞 E) (x : X) :
   have hb := (RingOfIntegers.basis E).sum_repr b
   conv_lhs => rw [← hb]
   conv_rhs => rw [← hb]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finset.sum_smul, Finset.sum_mul, map_zsmul, smul_assoc, smul_mul_assoc]
+
+  simp only [map_sum, Finset.sum_smul, Finset.sum_mul, map_zsmul, smul_assoc, smul_mul_assoc]
   push_cast
   refine Finset.sum_congr rfl fun j _ => ?_
   have := h1 j
@@ -111,9 +152,6 @@ theorem herm_nsmul {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (m : ℤ) (z : Fi
   ring
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-
-theorem emb_cc (τ : E →+* ℂ) (a : E) : τ (cc a) = (starRingEnd ℂ) (τ a) :=
-  IsCMField.complexEmbedding_complexConj E τ a
 
 theorem maj_smul (X : Data E r) (x : Frame X.Ψ r) (τ : X.Ψ) (c : ℂ) (v : Fin r → ℂ) :
     X.maj x τ (c • v) = ‖c‖ ^ 2 * X.maj x τ v := by
@@ -233,13 +271,13 @@ theorem tt_eq_im_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     rw [← hL, ← hL, hH'.2.2, hH.2.2, hE]
   set M : (U.X k).Ψ → ℝ := fun τ => (U.X k).c τ * (U.X k).maj x.1 τ (Data.emb τ.1 ξ') with hM
   have hreal : ∀ τ : E →+* ℂ, τ sE = ((τ sE).re : ℂ) := fun τ => by
-    have := emb_cc τ sE
+    have := _root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc τ sE
     rw [hs.1] at this
     exact (Complex.conj_eq_iff_re.1 this.symm).symm
   have hcc : ∀ z : E, Algebra.trace ℚ E (cc z) = Algebra.trace ℚ E z := fun z => by
     have : ((Algebra.trace ℚ E (cc z) : ℚ) : ℝ) = ((Algebra.trace ℚ E z : ℚ) : ℝ) := by
       rw [trace_cm (U.X k), trace_cm (U.X k)]
-      simp only [emb_cc, Complex.conj_re]
+      simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc, Complex.conj_re]
     exact_mod_cast this
   have key : ∀ v, ∑ τ : (U.X k).Ψ, ‖τ.1 (pairE ξ (Ha.y v))‖ ^ 2 *
       ((τ.1 sE).re ^ 2 * M τ * w.im - (τ.1 sE).re) = 0 := by
@@ -293,7 +331,7 @@ theorem tt_eq_im_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
       simp only [Rat.cast_intCast] at this
       rw [← this, trace_cm (U.X k)]
       refine Finset.sum_congr rfl fun τ _ => ?_
-      rw [← hp, mul_assoc, map_mul, map_mul, map_mul, emb_cc, Complex.mul_conj, Complex.normSq_eq_norm_sq,
+      rw [← hp, mul_assoc, map_mul, map_mul, map_mul, _root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc, Complex.mul_conj, Complex.normSq_eq_norm_sq,
         hreal τ.1, map_ofNat]
       have e : (2 : ℂ) * ((τ.1 sE).re : ℂ) * ((‖τ.1 p‖ ^ 2 : ℝ) : ℂ) =
           ((2 * (τ.1 sE).re * ‖τ.1 p‖ ^ 2 : ℝ) : ℂ) := by push_cast; ring

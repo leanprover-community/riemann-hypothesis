@@ -1,7 +1,52 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.HarishChandraDescent.Descent
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import Mathlib.Analysis.InnerProductSpace.JointEigenspace
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,9 +74,9 @@ def Qop (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) (μ : F
 
 theorem qf_eq (E : Fin n → Fin n → Module.End ℂ M) (μ : Fin n → ℝ) (x : M) :
     qf E μ x = RCLike.re (Bq E μ x x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [qf, Bq, Lop, map_sum, LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply,
-    inner_self_eq_norm_sq]
+
+  simp only [qf, Bq, Lop, map_sum, LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply,
+  inner_self_eq_norm_sq]
 
 theorem Bq_eq (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End ℂ M} (hU : IsInfUnitary ε E) (μ : Fin n → ℝ) (y z : M) :
     Bq E μ y z = ⟪y, Qop ε E μ z⟫_ℂ := by
@@ -76,7 +121,7 @@ theorem Qop_eq (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) 
     · subst h
       simp only [adjSign, if_true, one_smul]
       abel
-    · simp [smul_mul_assoc]
+    · simp
   simp only [key, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
 theorem comm_casimir_casimirK {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (ε : Fin n → Bool) :
@@ -92,7 +137,7 @@ theorem comm_casimir_casimirK {E : Fin n → Fin n → Module.End ℂ M} (hE : I
     show E c d * casimir E = casimir E * E c d
     rw [← sub_eq_zero, casimir, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
     simp only [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib, key]
-    simp [sub_mul, mul_sub, add_mul, mul_add, Finset.sum_add_distrib, Finset.sum_sub_distrib, ite_mul,
+    simp [sub_mul, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib, ite_mul,
       mul_ite]
   exact Commute.sum_left _ _ _ fun a _ => Commute.sum_left _ _ _ fun b _ => (hc a b).mul_left (hc b a)
 
@@ -143,7 +188,7 @@ private theorem commute_E_casimir_of_isGlRep {n : ℕ} {M : Type} [NormedAddComm
   show E c d * casimir E = casimir E * E c d
   rw [← sub_eq_zero, casimir, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
   simp only [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib, key]
-  simp [sub_mul, mul_sub, add_mul, mul_add, Finset.sum_add_distrib, Finset.sum_sub_distrib, ite_mul,
+  simp [sub_mul, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib, ite_mul,
     mul_ite]
 
 private theorem commute_E_diag_E_mul_E_of_isGlRep {n : ℕ} {M : Type} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
@@ -246,22 +291,22 @@ theorem comp_proof : SqId → Comp := by
   have hdiagsum : ∀ P : Module.End ℂ M, (∀ o, Commute (Aop ε E o) P) →
       ⟪x, P x⟫_ℂ = ∑ χ ∈ s, ⟪c χ, P (c χ)⟫_ℂ := by
     intro P hP
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxs, map_sum, sum_inner]
+
+    rw [hxs, map_sum, sum_inner]
     refine Finset.sum_congr rfl fun χ hχ => ?_
     rw [inner_sum]
     exact Finset.sum_eq_single χ (fun ψ _ hψ => hoff χ ψ (Ne.symm hψ) P hP) (fun h => absurd hχ h)
   have hqf : qf E μ x = ∑ χ ∈ s, qf E μ (c χ) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [qf_eq, Bq_eq ε hU, hdiagsum _ hQ, map_sum]
+
+    rw [qf_eq, Bq_eq ε hU, hdiagsum _ hQ, map_sum]
     refine Finset.sum_congr rfl fun χ _ => ?_
     rw [qf_eq, Bq_eq ε hU]
   have hnorm : ‖x‖ ^ 2 = ∑ χ ∈ s, ‖c χ‖ ^ 2 := by
     have h := hdiagsum 1 (fun o => Commute.one_right _)
     simp only [Module.End.one_apply] at h
     have h2 := congrArg RCLike.re h
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at h2
+
+    rw [map_sum] at h2
     simp only [inner_self_eq_norm_sq] at h2
     exact h2
   have hgood : ∀ χ ∈ s, Good ε E (fun a => (χ (some a)).re) (χ none).re (c χ) := by

@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 public import Formalism.DropLevelBounds.ThBounds
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.Numbers
 
 @[expose] public section

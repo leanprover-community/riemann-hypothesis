@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.UnipotentAdelicQuotients.ClassNumberFinite
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormGroupToPadicPointsDegreeOneEqUnitaryPoints
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -114,7 +154,7 @@ theorem blk_map (f : R →ₐ[ℚ] R') (z : (R ⊗[ℚ] D) × R) :
     Matrix.reindex_apply, Matrix.submatrix_apply, RingHom.mapMatrix_apply, Matrix.map_apply, lreg_map]
   rcases finSumFinEquiv.symm i with i | i <;> rcases finSumFinEquiv.symm j with j | j <;>
     (try rw [Subsingleton.elim i j]) <;>
-    simp [Matrix.fromBlocks_apply₁₁, Matrix.scalar_apply, Matrix.diagonal_apply, apply_ite]
+    simp [Matrix.fromBlocks_apply₁₁, Matrix.scalar_apply]
 
 theorem repr_coordA (X : Matrix (Fin (Module.finrank ℚ D + 1)) (Fin (Module.finrank ℚ D + 1)) R)
     (k : Fin (Module.finrank ℚ D)) :
@@ -127,8 +167,8 @@ theorem coordA_map (f : R →ₐ[ℚ] R') (X : Matrix (Fin (Module.finrank ℚ D
     coordA D R' (f.toRingHom.mapMatrix X) = Algebra.TensorProduct.map f (AlgHom.id ℚ D) (coordA D R X) := by
   apply (basR D R').repr.injective
   ext k
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [repr_map, repr_coordA, repr_coordA, map_sum]
+
+  rw [repr_map, repr_coordA, repr_coordA, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul, ← repr_map f]
   have h1 : Algebra.TensorProduct.map f (AlgHom.id ℚ D) (1 : R ⊗[ℚ] D) = 1 := map_one _
@@ -253,8 +293,7 @@ theorem isUnit_of_blk_mul (z : (R ⊗[ℚ] D) × R)
       exact mul_eq_one_comm.1 this
     exact ⟨⟨a, a', e1, e2⟩, rfl⟩
   · have := congrFun (congrFun h22 0) 0
-    simp only [Matrix.scalar_apply, Matrix.smul_mul, Matrix.one_mul, Matrix.smul_apply,
-      Matrix.one_apply_eq, smul_eq_mul] at this
+    simp only [Matrix.scalar_apply, Matrix.one_apply_eq] at this
     exact isUnit_iff_exists_inv.2 ⟨_, by simpa [Matrix.diagonal_mul] using this⟩
 
 variable (σ : D →+* Dᵐᵒᵖ) (β y : D)

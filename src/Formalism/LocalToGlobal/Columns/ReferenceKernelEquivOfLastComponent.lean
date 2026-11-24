@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RefXi1Above
 public import Formalism.LocalToGlobal.Columns.ChainOne
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
+import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

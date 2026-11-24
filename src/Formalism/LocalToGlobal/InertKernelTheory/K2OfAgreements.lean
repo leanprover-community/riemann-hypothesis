@@ -1,9 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
-public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IntermediateMapWittQuadratic
 public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.IsComplRatCompl
 
 @[expose] public section
 

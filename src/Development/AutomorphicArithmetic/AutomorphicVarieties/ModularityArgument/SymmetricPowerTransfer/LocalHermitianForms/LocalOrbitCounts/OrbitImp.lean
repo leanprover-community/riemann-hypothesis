@@ -1,6 +1,55 @@
 module
 
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LcountNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.CintIdx
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,11 +72,11 @@ private theorem cyc {O : Type} [CommRing O] [IsLocalRing O] (B : Matrix (Fin 2) 
   by_cases hc : IsUnit c
   · refine mk !![1, a; 0, c] (by simpa [Matrix.det_fin_two_of] using hc) ?_
     ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two] <;>
-      first | ring1 | linear_combination -hdet | linear_combination hdet
+      first | ring1 | linear_combination -hdet
   by_cases hb : IsUnit b
   · refine mk !![0, b; 1, d] (by simpa [Matrix.det_fin_two_of] using hb) ?_
     ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two] <;>
-      first | ring1 | linear_combination -hdet | linear_combination hdet
+      first | ring1 | linear_combination -hdet
   have hm : ∀ x : O, ¬ IsUnit x → x ∈ IsLocalRing.maximalIdeal O := fun x hx => hx
   have hdet' : IsUnit (c + d - a - b) := by
     by_contra hn
@@ -43,7 +92,7 @@ private theorem cyc {O : Type} [CommRing O] [IsLocalRing O] (B : Matrix (Fin 2) 
     exact h3 hu
   refine mk !![1, a + b; 1, c + d] (by rw [Matrix.det_fin_two_of]; convert hdet' using 1; ring) ?_
   ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two] <;>
-    first | ring1 | linear_combination -hdet | linear_combination hdet
+    first | ring1 | linear_combination -hdet
 
 section
 
@@ -91,7 +140,7 @@ private theorem coe_scal (s : Kˣ) :
     ((Matrix.GeneralLinearGroup.scalar (Fin 2) s : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K) =
       (s : K) • (1 : Matrix (Fin 2) (Fin 2) K) := by
   ext a b
-  by_cases h : a = b <;> simp [Matrix.GeneralLinearGroup.scalar, Matrix.one_apply, h]
+  by_cases h : a = b <;> simp [Matrix.GeneralLinearGroup.scalar, h]
 
 private theorem lift_mat (A : Matrix (Fin 2) (Fin 2) K) (h : ∀ s t, A s t ∈ (algebraMap O K).range) :
     ∃ A₀ : Matrix (Fin 2) (Fin 2) O, A₀.map (algebraMap O K) = A := by

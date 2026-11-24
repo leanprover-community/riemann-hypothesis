@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.Hypotheses.GalCoh
+public import ReciprocityTheory.Hypotheses.GalCohDefs
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TransportA
 
 @[expose] public section

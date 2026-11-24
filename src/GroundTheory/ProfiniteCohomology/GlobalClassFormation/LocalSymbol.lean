@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.CupLocal
 
 @[expose] public section
@@ -56,8 +55,8 @@ theorem brauerSumInv_globalCupClass (χ : Additive K.1.fixingSubgroup →ₜ+ QZ
   have hsum : brauerSumInv ι (globalCupClass χ a) = ∑ v ∈ x.support, placeInv v (x v) := by
     change sumPlaceInv K x = _
     conv_lhs => rw [← DFinsupp.sum_single (f := x)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [DFinsupp.sum, map_sum]
+
+    rw [DFinsupp.sum, map_sum]
     refine Finset.sum_congr rfl fun v _ => ?_
     exact sumPlaceInv_of v (x v)
   rw [hsum, finsum_eq_sum_of_support_subset _ (s := x.support) ?_]

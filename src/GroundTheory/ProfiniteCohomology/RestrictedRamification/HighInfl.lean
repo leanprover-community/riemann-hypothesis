@@ -1,11 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.InflationRestriction
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
-public import GroundTheory.ProfiniteCohomology.CupProducts
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.QuotientToInvariantsFunctorPreservesZeroMorphism
+public import GroundTheory.ProfiniteCohomology.CoinducedModules.CohomologyCoindCokernelIsoHom
+import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
 public import GroundTheory.ProfiniteCohomology.CupProducts.Projection
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+import GroundTheory.ProfiniteCohomology.InflationRestriction.Coinduced
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.Higher
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.ProfiniteCohomology.CupProducts
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
 
 @[expose] public section
 

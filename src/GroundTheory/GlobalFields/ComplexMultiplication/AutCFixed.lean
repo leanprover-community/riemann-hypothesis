@@ -1,7 +1,18 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 public import GroundTheory.GlobalFields.ComplexMultiplication.ExistsRingEquivExtendOfIsTranscendenceBasis
+public import Mathlib.FieldTheory.Minpoly.IsConjRoot
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Algebra.Hom.Rat
+public import Mathlib.RingTheory.AlgebraicIndependent.AlgebraicClosure
 
 @[expose] public section
 

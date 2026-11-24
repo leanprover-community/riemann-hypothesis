@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHessCCompPluri
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.Pow
 
 @[expose] public section
 

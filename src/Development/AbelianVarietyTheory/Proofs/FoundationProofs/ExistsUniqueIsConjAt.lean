@@ -1,11 +1,59 @@
 module
 
-public import Mathlib
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsNormEqXModMonicOfAdicCompleteInvolution
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryMemIntegralUnitaryDoubleCosetOfGLnDoubleC
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Ideal.Norm.RelNorm
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -166,8 +214,8 @@ theorem mem_intLoc_iff (hw : IsInertAt F E v w) (h : w.under (𝓞 F) = v) (y : 
     · rw [h3 u e]; exact zero_mem _
   obtain ⟨m, g, hg⟩ := Module.Finite.exists_fin (R := ℤ) (M := 𝓞 E)
   obtain ⟨r, hr, e⟩ := P.levelaf_decomp g hg h4
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h1, ← c.apply_symm_apply Y, e, map_sum, map_sum]
+
+  rw [← h1, ← c.apply_symm_apply Y, e, map_sum, map_sum]
   exact sum_mem fun j _ => tmul_mem_intLoc (hr j v) (g j)
 
 def complEquiv (hw : IsInertAt F E v w) (h : w.under (𝓞 F) = v) : Fv F v ⊗[F] E ≃+* w.adicCompletion E :=
@@ -385,8 +433,8 @@ theorem mem_latAt_iff (hw : IsInertAt F E v w) (hc : IsConjAt σ h c) (hL : IsSe
   have e : ∀ x y, toCompl h (hLin σ J (Fv F v) y x) =
       hform c (J.map (algebraMap E _)) (toCompl h ∘ x) (toCompl h ∘ y) := fun x y => by
     rw [← JR_map h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hLin, hR, hform, map_sum, map_mul, ← hc _, Function.comp_apply, Matrix.map_apply]
+
+    simp only [hLin, hR, hform, map_sum, map_mul, ← hc _, Function.comp_apply, Matrix.map_apply]
   obtain ⟨y, rfl⟩ := exists_comp h z
   rw [← mem_latLoc_iff hw, hL]
   refine ⟨fun hy z hz => ?_, fun hy x hx => ?_⟩

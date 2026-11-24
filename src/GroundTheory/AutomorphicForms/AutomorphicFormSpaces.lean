@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.LeftTranslate
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
@@ -11,6 +10,9 @@ public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Translation
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.SmoothKZ
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStructure
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

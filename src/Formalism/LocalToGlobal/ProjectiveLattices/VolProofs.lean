@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsProbabilityMeasureAutQuotientNormalized
 
 @[expose] public section
 
@@ -27,7 +27,6 @@ theorem volPair_isVolPair (V : HSp D) (h : VolPairEx V) : IsVolPair D V (volPair
 
 theorem autMk_measurable (V : HSp D) : Measurable (autMk V) := by
   first
-  | exact measurable_quotient_mk'
   | exact fun _ hs => hs
 
 theorem muQ_univ (V : HSp D) : muQ V Set.univ = (volPair V).1 (volPair V).2 := by

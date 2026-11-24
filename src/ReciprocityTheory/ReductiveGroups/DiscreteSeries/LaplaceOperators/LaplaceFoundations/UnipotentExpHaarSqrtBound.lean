@@ -2,6 +2,8 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.RaisingLoweringNormIdentities
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.NChart
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

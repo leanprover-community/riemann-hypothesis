@@ -1,7 +1,48 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.DualWeightVectorApplyEqZeroOfNeNeg
+public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.ContragredientIrreducibleGeneratedByHighestWeigh
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DeltaIntegralEnvelopingStable
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesSubmodule
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -28,12 +69,8 @@ def NSub (E : GLOps n (KK O) V) (x0 : V) : Submodule O (Module.Dual (KK O) V) wh
     exact Oval.mul ⟨c, rfl⟩ (hψ u' hu)
 
 theorem NSub_stable (E : GLOps n (KK O) V) (x0 : V) : UZStable (O := O) (dualOps E) (NSub (O := O) E x0) := by
-  intro u hu ψ hψ
-  have hψ' : ∀ u' ∈ UZmon (dualOps E), Oval O (u' ψ x0) := hψ
-  show ∀ u' ∈ UZmon (dualOps E), Oval O (u' (u ψ) x0)
-  intro u' hu'
-  have hu2 : u ∈ UZmon (dualOps E) := Submonoid.subset_closure hu
-  exact hψ' (u' * u) (Submonoid.mul_mem _ hu' hu2)
+  intro u hu ψ hψ u' hu'
+  exact hψ (u' * u) (Submonoid.mul_mem _ hu' (Submonoid.subset_closure hu))
 
 end
 
@@ -123,10 +160,8 @@ theorem rationalMonoid_le_integralMonoid {n : ℕ} {K V : Type*} [Field K] [AddC
   simp only [Formalism.MainNotions.G.UZgens, Set.mem_setOf_eq]
   by_cases hab : a = b
   · subst hab
-    refine Or.inr ⟨a, 1, ?_⟩
-    simp [Formalism.MainNotions.G.binomE]
-  · refine Or.inl ⟨a, b, 1, hab, ?_⟩
-    simp [Formalism.MainNotions.G.divPowE]
+    exact Or.inr ⟨a, 1, by simp [Formalism.MainNotions.G.binomE]⟩
+  · exact Or.inl ⟨a, b, 1, hab, by simp [Formalism.MainNotions.G.divPowE]⟩
 
 theorem weylDualityLattice_of_nabla_fg_bidual (D : Formalism.BasicNotions.D7) (hNab : NablaContragredientEqDualLatticeDelta) (hFG : DeltaFinitelyGenerated) (hBid : LatticeBiduality) : WeylDualityLattice D := by
   unfold Formalism.MainNotions.CovariantDegrees.WeylDualityLattice
@@ -136,7 +171,6 @@ theorem weylDualityLattice_of_nabla_fg_bidual (D : Formalism.BasicNotions.D7) (h
     refine Submodule.span_le.2 ?_
     rintro x ⟨u, hu, rfl⟩
     apply Submodule.subset_span
-    show u v ∈ Delta (O := O) E v
     exact Submodule.subset_span ⟨u, rationalMonoid_le_integralMonoid E hu, rfl⟩
   have hB := hBid O V (Delta (O := O) E v) (hFG p O S n V E mu v v' hI hH himg) hspan
   rw [hNab p O S n V E mu v v' hI hH himg]

@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EnvRepAllEnvIncl
+public import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AutomorphicFormsFiniteIdeal
+public import Mathlib.RingTheory.Derivation.Lie
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsEnvelopingAlgHomUnitaryLieAlgebra
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 
 @[expose] public section
 
@@ -57,12 +96,12 @@ theorem matDer_bracket (τ : T) (X Y : Matrix (Fin n) (Fin n) ℂ) :
   refine MvPolynomial.derivation_ext fun p => ?_
   rw [Derivation.commutator_apply, matDer_X, matDer_X, matDer_X]
   split_ifs with h
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp only [map_sum, Derivation.leibniz, MvPolynomial.derivation_C, smul_zero, zero_add, matDer_X, if_true,
-      smul_eq_mul, Finset.sum_mul, Matrix.sub_apply, Matrix.mul_apply, map_sub, map_sum, MvPolynomial.C_mul,
-      Finset.mul_sum, mul_sub, Finset.sum_sub_distrib, mul_zero, zero_add]
-      refine congrArg₂ (· - ·) ?_ ?_ <;> rw [Finset.sum_comm] <;>
-        exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
+
+  · simp only [map_sum, Derivation.leibniz, MvPolynomial.derivation_C, zero_add, matDer_X, if_true,
+    smul_eq_mul, Matrix.sub_apply, Matrix.mul_apply, map_sub, map_sum, MvPolynomial.C_mul,
+    Finset.mul_sum, mul_sub, Finset.sum_sub_distrib, mul_zero, zero_add]
+    refine congrArg₂ (· - ·) ?_ ?_ <;> rw [Finset.sum_comm] <;>
+      exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
   · simp
 
 theorem matDer_comm {τ τ' : T} (h : τ ≠ τ') (X Y : Matrix (Fin n) (Fin n) ℂ) :
@@ -71,8 +110,8 @@ theorem matDer_comm {τ τ' : T} (h : τ ≠ τ') (X Y : Matrix (Fin n) (Fin n) 
   refine MvPolynomial.derivation_ext fun p => ?_
   rw [Derivation.commutator_apply, matDer_X, matDer_X, Derivation.zero_apply]
   by_cases h1 : p.1 = τ <;> by_cases h2 : p.1 = τ' <;>
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [h1, h2, h, Ne.symm h, map_sum, Derivation.leibniz, MvPolynomial.derivation_C, matDer_X]
+
+    simp [h1, h2, h, Ne.symm h, map_sum, Derivation.leibniz, MvPolynomial.derivation_C, matDer_X]
 
 theorem matDer_commute {τ τ' : T} (h : τ ≠ τ') (X Y : Matrix (Fin n) (Fin n) ℂ) :
     Commute (matDer τ X : Module.End ℂ (MvPolynomial (T × Fin n × Fin n) ℂ)) (matDer τ' Y) := by

@@ -1,6 +1,58 @@
 module
 
 public import Formalism.LogVandermondeBounds.LogVandermondeVariationUnbounded
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -82,8 +134,7 @@ lemma card_lt_pairs (n : ℕ) : Nat.card {p : Fin n × Fin n // p.1 < p.2} = n *
 
 theorem cardUnitriangular : CardUnitriangular := by
   intro F _ _ _ n
-  rw [Nat.card_congr (upperEquiv F n)]
-  rw [Nat.card_fun, card_lt_pairs, Nat.card_eq_fintype_card]
+  rw [Nat.card_congr (upperEquiv F n), Nat.card_fun, card_lt_pairs, Nat.card_eq_fintype_card]
 
 def RowVec (F : Type) (n : ℕ) : Type := Fin n → F
 
@@ -106,21 +157,16 @@ lemma vecMul_inv_eq_iff {F : Type} [Field F] {n : ℕ} (v : Fin n → F) (A : GL
       Matrix.vecMul v (A : Matrix (Fin n) (Fin n) F) = v := by
   constructor
   · intro h
-    calc Matrix.vecMul v (A : Matrix (Fin n) (Fin n) F)
-        = Matrix.vecMul (Matrix.vecMul v ((A⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F))
-            (A : Matrix (Fin n) (Fin n) F) := by rw [h]
-      _ = v := by rw [Matrix.vecMul_vecMul, Units.inv_mul, Matrix.vecMul_one]
+    simpa only [Matrix.vecMul_vecMul, Units.inv_mul, Matrix.vecMul_one] using
+      (congrArg (fun w => Matrix.vecMul w (A : Matrix (Fin n) (Fin n) F)) h).symm
   · intro h
-    calc Matrix.vecMul v ((A⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F)
-        = Matrix.vecMul (Matrix.vecMul v (A : Matrix (Fin n) (Fin n) F))
-            ((A⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) := by rw [h]
-      _ = v := by rw [Matrix.vecMul_vecMul, Units.mul_inv, Matrix.vecMul_one]
+    simpa only [Matrix.vecMul_vecMul, Units.mul_inv, Matrix.vecMul_one] using
+      (congrArg (fun w => Matrix.vecMul w ((A⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F)) h).symm
 
 private theorem vecMul_one_add_vecMulVec_single {F : Type} [Field F] {n : ℕ} (k : Fin n)
     (c z : Fin n → F) :
     Matrix.vecMul z (1 + Matrix.vecMulVec (Pi.single k 1) c) = z + z k • c := by
   rw [Matrix.vecMul_add, Matrix.vecMul_one]
-  congr 1
   funext j
   simp [Matrix.vecMul, dotProduct, Matrix.vecMulVec_apply, Pi.single_apply]
 
@@ -211,7 +257,6 @@ theorem cardStabilizerVector : CardStabilizerVector := by
   have hos : Nat.card (@MulAction.stabilizer (GL (Fin n) F) (RowVec F n) _ _ v) *
       Nat.card (@MulAction.orbit (GL (Fin n) F) (RowVec F n) _ v) = Nat.card (GL (Fin n) F) := by
     first
-    | (rw [← MulAction.index_stabilizer]; exact Subgroup.card_mul_index _)
     | (rw [mul_comm]; exact MulAction.card_orbit_mul_card_stabilizer_eq_card_group _ _)
     | (rw [mul_comm, ← Nat.card_prod]; exact Nat.card_congr (MulAction.orbitProdStabilizerEquivGroup _ _))
   rw [hstab, ← horbit, hos, Nat.card_eq_fintype_card]

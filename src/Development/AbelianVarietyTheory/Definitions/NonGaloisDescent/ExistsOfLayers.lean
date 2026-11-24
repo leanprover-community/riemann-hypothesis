@@ -1,7 +1,44 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -121,7 +158,7 @@ variable {RA RW : Type} [CommRing RA] [CommRing RW] [Algebra O RA]
     [Algebra O RW] {inclR : RA →ₐ[O] RW} {φR : RW →ₐ[O] RW} {gR : G → (RW →ₐ[O] RW)} {πA : RA}
 
 
-set_option maxHeartbeats 1000000 in
+
 structure WEt (I : WIo R RA RW inclR φR gR πA) where
   DD : LocLat G Qp LL O → Type
   [ddAcg : ∀ T, AddCommGroup (DD T)]
@@ -161,7 +198,7 @@ attribute [instance] WEt.ddAcg WEt.ddModE WEt.ddModA WEt.ddModO WEt.ddTowA WEt.d
 variable {I : WIo R RA RW inclR φR gR πA}
 
 
-set_option maxHeartbeats 1000000 in
+
 structure WN (E : WEt I) {Zl : Type} [CommRing Zl] (zl : PowerSeries Zl →+* LetA O n) where
   N : ∀ T, Submodule (LetA O n) (E.DD T)
   N_base : ∀ T, IsCrys PD T.ρ → IsBaseChange R.EE ((N T).subtype)
@@ -180,7 +217,7 @@ structure WN (E : WEt I) {Zl : Type} [CommRing Zl] (zl : PowerSeries Zl →+* Le
   N_junk : ∀ T, ¬ IsCrys PD T.ρ → N T = ⊥
 
 
-set_option maxHeartbeats 1000000 in
+
 structure WCl (E : WEt I) where
   cl : ∀ T, ↥(herrCocycles (E.γD T Γ.gam) (E.φD T)) →ₗ[O]
     LatticeCohomology (resLat T Γ.GKs)
@@ -212,7 +249,7 @@ variable {Zl Ai : Type} [CommRing Zl] [CommRing Ai] [Algebra Zl O] [Algebra Zl A
     {I : WIo R (O ⊗[Zl] Ai) RW inclR φR gR πA} {E : WEt I} {zl : PowerSeries Zl →+* LetA O n}
 
 
-set_option maxHeartbeats 2000000 in
+
 structure WCmp (Mo : WN E zl) (ιdR : Ai →+* BdR) (p1 : Ai) (tS zS : BdR) where
   cmp : ∀ T : LocLat G Qp LL O, ↥(Mo.N T) →+ T.V ⊗[Qp] B
   cmp_smul : ∀ (T : LocLat G Qp LL O) (c : O) (x : ↥(Mo.N T)), cmp T (c • x) = algebraMap O LL c • cmp T x
@@ -266,18 +303,18 @@ structure WCmp (Mo : WN E zl) (ιdR : Ai →+* BdR) (p1 : Ai) (tS zS : BdR) wher
 variable {Mo : WN E zl} {ιdR : Ai →+* BdR} {p1 : Ai} {tS zS : BdR}
 
 
-set_option maxHeartbeats 2000000 in
+
 def toWach (Cl : WCl E) (Cm : WCmp Mo ιdR p1 tS zS) : LocWach PD LL O v n :=
   { Γ, R, E, Mo, Cl, Cm with s := s }
 
 
-set_option maxHeartbeats 2000000 in
+
 def toEt (Cl : WCl E) (Cm : WCmp Mo ιdR p1 tS zS) :
     EtTie (toWach Cl Cm) (O ⊗[Zl] Ai) RW inclR φR gR πA :=
   { I, E, Mo, Cl with }
 
 
-set_option maxHeartbeats 2000000 in
+
 def toCmp (Cl : WCl E) (Cm : WCmp Mo ιdR p1 tS zS) :
     CmpTie (toWach Cl Cm) (toEt Cl Cm) ιdR p1 tS zS :=
   { R, Cm with }
@@ -287,6 +324,16 @@ end Cmp
 end Generic
 
 section Concrete
+
+@[reducible] local instance (priority := high) instAlgebraOLRA {l : ℕ} [Fact l.Prime]
+    (LL : Formalism.BasicNotions.Loc.FinExt l) :
+    Algebra (↥(Formalism.BasicNotions.Loc.OL LL)) (Formalism.BasicNotions.Loc.RA LL) :=
+  Algebra.TensorProduct.leftAlgebra
+
+@[reducible] local instance (priority := high) instAlgebraOLRW {l : ℕ} [Fact l.Prime]
+    (LL : Formalism.BasicNotions.Loc.FinExt l) :
+    Algebra (↥(Formalism.BasicNotions.Loc.OL LL)) (Formalism.BasicNotions.Loc.RW LL) :=
+  Algebra.TensorProduct.leftAlgebra
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -323,7 +370,7 @@ structure Layers (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (L
   Cm : CmpS Mo
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem exists_of_layers (P : LocPrime l) (AI : LocAinf l P)
     (h : ∀ (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → Nonempty (Layers P AI K s LL))
     (ht : ∀ K : FinExt l, P.ιB (AI.ιA AI.μ) - P.ιB P.tB ∈ (P.PD K).Fil 2)

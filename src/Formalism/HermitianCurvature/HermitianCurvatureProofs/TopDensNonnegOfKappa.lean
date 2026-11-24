@@ -1,9 +1,53 @@
 module
 
 public import Formalism.HermitianCurvature.TopDensNonnegOfKappa
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -28,7 +72,7 @@ theorem ofWord_x_congr (L : R.LevelData A r) (st st' : Fr.Start A) (hx : st'.x =
   | nil => simp [Fr.ofWord, Fr.Start.frame, hx]
   | cons l w ih =>
     simp only [Fr.ofWord]
-    split_ifs <;> simp [Fr.FrameData.plus, Fr.FrameData.minus, ih, hx]
+    split_ifs <;> simp [Fr.FrameData.plus, Fr.FrameData.minus, ih]
 
 theorem ofWord_q_congr (L : R.LevelData A r) (st st' : Fr.Start A) (hq : st'.q = st.q) (w : List (Letter ℂ S)) :
     (Fr.ofWord L st' w).q = (Fr.ofWord L st w).q := by
@@ -36,7 +80,7 @@ theorem ofWord_q_congr (L : R.LevelData A r) (st st' : Fr.Start A) (hq : st'.q =
   | nil => simp [Fr.ofWord, Fr.Start.frame, hq]
   | cons l w ih =>
     simp only [Fr.ofWord]
-    split_ifs <;> simp [Fr.FrameData.plus, Fr.FrameData.minus, ih, hq]
+    split_ifs <;> simp [Fr.FrameData.plus, Fr.FrameData.minus, ih]
 
 theorem ofWord_xi_congr (L : R.LevelData A r) (st st' : Fr.Start A) (w : List (Letter ℂ S)) (Y : ℂ)
     (hY : st'.xi Y = st.xi Y) : (Fr.ofWord L st' w).xi Y = (Fr.ofWord L st w).xi Y := by
@@ -44,7 +88,7 @@ theorem ofWord_xi_congr (L : R.LevelData A r) (st st' : Fr.Start A) (w : List (L
   | nil => simp [Fr.ofWord, Fr.Start.frame, hY]
   | cons l w ih =>
     simp only [Fr.ofWord]
-    split_ifs <;> simp [Fr.FrameData.plus, Fr.FrameData.minus, ih, hY]
+    split_ifs <;> simp [Fr.FrameData.plus, Fr.FrameData.minus, ih]
 
 theorem ofWord_N (L : R.LevelData A r) (st : Fr.Start A) (w : List (Letter ℂ S)) :
     (Fr.ofWord L st w).N = w.length := by
@@ -87,7 +131,6 @@ theorem act_diagonal (D : Ix S → Pr (RadSp k r z z' π π')) (x : Ix S → Rad
     simp only [Matrix.diagonal_apply_ne _ (Ne.symm hb)]
     first
       | rfl
-      | simp [Pr]
   · intro h
     exact absurd (Finset.mem_univ a) h
 
@@ -129,7 +172,7 @@ theorem topDensNonnegOfKappa : TopDensNonnegOfKappa := by
 
   let st' : Fr.Start (Pr (RadSp P.k P.r z z' π π')) :=
     { st with xi := fun Y => κ fun ρ => (M.x0 P l0 ρ Y)⁻¹ }
-  have hCD := (Formalism.FourierDecayAlt.P.c_diagonal (Pr (RadSp P.k P.r z z' π π')) S P.r L st' (M.Ty P) κ
+  have hCD := (_root_.Formalism.FourierDecayAlt.P.Fr2.cDiag (Pr (RadSp P.k P.r z z' π π')) S P.r L st' (M.Ty P) κ
     (fun ρ Y => M.x0 P l0 ρ Y) hκx (fun Y => rfl) w).2.2
   have hc : (Fr.ofWord L st w).c = Matrix.diagonal fun e => κ fun ρ => Fr.cs (M.x0 P l0 ρ) (M.qC P) w e := by
     rw [← ofWord_c_congr L st st' rfl rfl w, hCD]
@@ -140,8 +183,8 @@ theorem topDensNonnegOfKappa : TopDensNonnegOfKappa := by
 
   have hpos : ∀ (e : Ix S) (ρ : M.Ty P), 0 < Fr.cs (M.x0 P l0 ρ) (M.qC P) w e := by
     intro e ρ
-    have h := Formalism.FourierDecayAlt.P.c_pos_truncated Formalism.FourierDecayAlt.P.interlacing_sign Formalism.FourierDecayAlt.P.q_positive_interlacing
-      Formalism.FourierDecayAlt.P.q_positive_shift Formalism.FourierDecayAlt.P.cPos_true S P.k P.u P.u' (M.rho P ρ) l0 P.T P.T' w hl1 hlk
+    have h := _root_.Formalism.FourierDecayAlt.P.Fr2.cPosCut _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive
+      _root_.Formalism.FourierDecayAlt.P.Fr2.qPositiveShift _root_.Formalism.FourierDecayAlt.P.Fr2.cPos S P.k P.u P.u' (M.rho P ρ) l0 P.T P.T' w hl1 hlk
       (Formalism.FourierDecayAlt.P.types_interlace P hPl.1 ρ) hPl.1.T_pos hPl.1.T'_pos hw.2.1 hw.2.2 e
     rw [Complex.lt_def]
     exact ⟨h.1, h.2.symm⟩

@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ClosedDiscGaugeCompletionZeroOnePropertiesStatement
+public import Mathlib.RingTheory.Polynomial.Eisenstein.Distinguished
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ClosedDiscGaugeCompletionZeroOneProperties
+public import Mathlib.Analysis.Normed.Group.ControlledClosure
+public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.DiscreteValuationRing
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -81,8 +127,8 @@ theorem div_monomial (hl : 0 < l) (he : 0 < e) (hρ0 : 0 < ρ) (hρ1 : ρ ≤ 1)
     refine Div.mono (s := 1) ⟨algebraMap _ _ q, by simpa using alg_mem_ball (l := l) (X : R⟦X⟧) ρ 0 q,
       fun i => algebraMap _ _ (c i), fun i => by simpa using alg_mem_ball (l := l) (0 : R) 1 0 (c i), ?_⟩ ?_
     · rw [h]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [preMap_alg, map_add (f := _), map_mul, map_sum]
+
+      simp only [preMap_alg, map_add (f := _), map_mul, map_sum]
     · rw [one_le_div (by positivity)]
       exact pow_le_pow_of_le_one h0.le h1 hb.le
   · obtain ⟨b, rfl⟩ := Nat.exists_eq_add_of_le' hb
@@ -169,8 +215,8 @@ theorem div_disc [hl : Fact l.Prime] (hρ0 : 0 < ρ)
       have hp : 0 < 2 * ‖ofPre l X ρ x‖ / (ρ : ℝ) ^ e := by positivity
       refine ⟨(ofPre _ _ _ q, fun i => ofPre _ _ _ (c i)), ?_, ?_⟩
       · conv_rhs => rw [h2]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [f0, AddMonoidHom.coe_mk, ZeroHom.coe_mk, map_add (f := _), map_mul, map_sum, hιp]
+
+        simp only [f0, AddMonoidHom.coe_mk, ZeroHom.coe_mk, map_add (f := _), map_mul, map_sum, hιp]
         rfl
       · rw [div_mul_eq_mul_div]
         refine max_le ?_ ((pi_norm_le_iff_of_nonneg hp.le).2 fun i => ?_)
@@ -181,8 +227,8 @@ theorem div_disc [hl : Fact l.Prime] (hρ0 : 0 < ρ)
 
 theorem coe_sum_fin (c : Fin e → R) :
     ((∑ i, Polynomial.C (c i) * Polynomial.X ^ (i : ℕ) : Polynomial R) : R⟦X⟧) = ∑ i, C (c i) * X ^ (i : ℕ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Polynomial.coeToPowerSeries.ringHom_apply, map_sum]
+
+  rw [← Polynomial.coeToPowerSeries.ringHom_apply, map_sum]
   simp [Polynomial.coeToPowerSeries.ringHom_apply]
 
 theorem div_disc_poly [hl : Fact l.Prime] (hρ0 : 0 < ρ)
@@ -209,8 +255,8 @@ theorem div_disc_poly [hl : Fact l.Prime] (hρ0 : 0 < ρ)
   choose w hw using hw
   refine ⟨((l : ℕ) : Disc l (X : R⟦X⟧) ρ) ^ (k + 1) * q, k + 1,
     ∑ i, Polynomial.C (w i) * Polynomial.X ^ (i : ℕ), Polynomial.degree_sum_fin_lt w, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, coe_sum_fin, map_sum, mul_add, Finset.mul_sum]
+
+  rw [h, coe_sum_fin, map_sum, mul_add, Finset.mul_sum]
   congr 1
   · ring
   · refine Finset.sum_congr rfl fun i _ => ?_
@@ -268,6 +314,6 @@ theorem weierstrass_div : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K
   obtain ⟨z, hz⟩ := eq_X_pow_add bk.monic bk.dvd_coeff
   rw [Polynomial.degree_eq_natDegree bk.monic.ne_zero]
   exact div_disc_poly hρ0 (div_monomial hl.out.pos he hρ0 hρ1.le hρe z hz (exists_div hdist hI))
-    (GlobalTheory.T.closedDiscGaugeCompletion_zero_one_properties l K bk).2.1 y
+    (_root_.GlobalTheory.BSP.disc_zero_one l K bk).2.1 y
 
 end GlobalTheory.BSP.WDiv

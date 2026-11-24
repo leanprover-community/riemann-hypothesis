@@ -1,7 +1,63 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FixedFrameProperty
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
+public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
+public import Formalism.FormalDegreeBessel.FinalG
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormBasics
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LinearChangeOfVariablesBis
 
 @[expose] public section
 
@@ -66,7 +122,7 @@ lemma Hpk_fix_of_phi (y : Fin (2 * r + k + 1) → ℂ) (hy : phiL k r y = 0) : H
     · rw [hw, mul_zero]
     · intro b _ hb
       have hb' : b.val ≠ r + k := fun h => hb (Fin.ext h)
-      simp only [Hpk, Fin.ext_iff, Fin.val_mk]
+      simp only [Hpk, Fin.ext_iff]
       split_ifs with h1 h2 h3 <;> first | omega | simp
     · intro h; exact absurd (Finset.mem_univ _) h
   · have hlt : 2 * r + k - i.val < r := by omega
@@ -95,8 +151,7 @@ lemma herm_self_of_fix (y : Fin (2 * r + k + 1) → ℂ) (hy : Hpk k r *ᵥ y = 
   simp only [dotProduct, Pi.star_apply]
   push_cast
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [Complex.normSq_eq_conj_mul_self]
-  rfl
+  simp [Complex.normSq_eq_conj_mul_self]
 
 lemma eq_zero_of_sum_normSq_nonpos {n : ℕ} (y : Fin n → ℂ) (h : ∑ i, Complex.normSq (y i) ≤ 0) : y = 0 := by
   have hnn : ∀ j ∈ Finset.univ, 0 ≤ Complex.normSq (y j) := fun j _ => Complex.normSq_nonneg _
@@ -133,8 +188,7 @@ lemma gram_det (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat k r) (hstd : C2.
 
 lemma gram_herm (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat k r) :
     ((gnB k r z z' γ)ᴴ * Hpk k r * gnB k r z z' γ)ᴴ = (gnB k r z z' γ)ᴴ * Hpk k r * gnB k r z z' γ := by
-  have hH : (Hpk k r)ᴴ = Hpk k r := (hpkFacts k r).1
-  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hH, Matrix.mul_assoc]
+  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, (hpkFacts k r).1, Matrix.mul_assoc]
 
 end FixedPointsGramVector
 
@@ -169,8 +223,7 @@ theorem gram_independent_signature' : C2.GramIndependentSignature := by
     rw [← hgram, hGB]
     have e : star c ⬝ᵥ (Matrix.fromBlocks (C2.Adiag k r z) (Zhat k r z z' γ) (Zhat k r z z' γ)ᴴ (C2.Adiag k r z') *ᵥ c) =
         ∑ a, star (c (Sum.inl a)) * (((if a = Fin.last r then -(Tz k r z) else 0 : ℝ) : ℂ) * c (Sum.inl a)) := by
-      simp only [dotProduct, Matrix.mulVec, Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂,
-        Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, hc', mul_zero, Finset.sum_const_zero, add_zero,
+      simp only [dotProduct, Matrix.mulVec, Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₁, hc', mul_zero, Finset.sum_const_zero, add_zero,
         Pi.star_apply, star_zero, zero_mul, C2.Adiag, Matrix.diagonal_apply]
       apply Finset.sum_congr rfl
       intro a _
@@ -223,7 +276,7 @@ theorem gram_independent_signature' : C2.GramIndependentSignature := by
     set x := (V * Q) *ᵥ ct + t • v with hxd
     have hx : L w = phiL k r x := by
       simp only [L, x, ct, c, t, emb, LinearMap.comp_apply, LinearMap.add_apply, Matrix.mulVecLin_apply,
-        LinearMap.funLeft_apply, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.smulRight_apply, LinearMap.proj_apply]
+        LinearMap.coe_mk, AddHom.coe_mk, LinearMap.smulRight_apply, LinearMap.proj_apply]
       rfl
     have hLx : phiL k r x = 0 := by rw [← hx]; exact hw
     have hfix := Hpk_fix_of_phi x hLx
@@ -272,7 +325,6 @@ theorem gram_independent_signature' : C2.GramIndependentSignature := by
     unfold C2.Uperp
     rw [of_star_gramVec]
     show Module.finrank ℂ (LinearMap.ker (Matrix.mulVecLin (Vᴴ * H))) = k - 1
-    have hk := hstd.1
     omega
 
 end Formalism.FourierDecayAlt.P

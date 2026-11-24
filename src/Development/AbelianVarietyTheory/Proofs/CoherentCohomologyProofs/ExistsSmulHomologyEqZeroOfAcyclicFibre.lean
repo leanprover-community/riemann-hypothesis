@@ -1,10 +1,55 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsIsoTermComparisonRestrictScalars
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExactAndKerBaseChangeOfForallResidueField
-public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.IsScalarTowerOfAlgebraMapEq
-public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.ExistsAwayFracOfMemHomLoc
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CubeTotalComplexAcyclicOfSlicesInductionOnCard
+import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.LocalProperties.Projective
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -19,7 +64,7 @@ theorem exists_smul_mem_range_of_exact_fibre {R : Type*} [CommRing R] {A B C : T
     (h : Exact (f.lTensor K) (g.lTensor K)) (b : B) (hb : g b = 0) :
     ∃ r : R, algebraMap R K r ≠ 0 ∧ r • b ∈ LinearMap.range f := by
   let P : Ideal R := RingHom.ker (algebraMap R K)
-  haveI : P.IsPrime := RingHom.ker_isPrime _
+  have : P.IsPrime := RingHom.ker_isPrime _
   let O := Localization.AtPrime P
   have h1 := (exact_lTensor_iff_residueField P K rfl f g).1 h
   have h2 : Exact (AlgebraTensorModule.lTensor O P.ResidueField f)
@@ -57,7 +102,7 @@ theorem exists_smul_homology_eq_zero_of_acyclic_fibre (R : Type) [CommRing R] [I
     (hfin : ∀ p, Module.Finite R (C.homology p))
     (hac : (((ModuleCat.extendScalars.{0, 0, 0} χ).mapHomologicalComplex _).obj C).Acyclic)
     (p : ℕ) : ∃ r : R, χ r ≠ 0 ∧ ∀ z : C.homology p, r • z = 0 := by
-  letI : Algebra R K := χ.toAlgebra
+  let : Algebra R K := χ.toAlgebra
   obtain ⟨L, φ, -, h2, -, h4, h5, -, h7⟩ :=
     exists_finite_projective_complex_quasiIso.{0, 0} C n hn hflat hfin
   have h8 : QuasiIso
@@ -71,10 +116,10 @@ theorem exists_smul_homology_eq_zero_of_acyclic_fibre (R : Type) [CommRing R] [I
     intro z
     let e := (L.sc p).moduleCatHomologyIso.toLinearEquiv
     obtain ⟨b, hb⟩ := Submodule.Quotient.mk_surjective _ (e z)
-    haveI : Module.Finite R (L.sc p).X₂ := h2 _
-    haveI : Module.Finite R (L.sc p).X₃ := h2 _
-    haveI : Module.Projective R (L.sc p).X₂ := h4 _
-    haveI : Module.Projective R (L.sc p).X₃ := h4 _
+    have : Module.Finite R (L.sc p).X₂ := h2 _
+    have : Module.Finite R (L.sc p).X₃ := h2 _
+    have : Module.Projective R (L.sc p).X₂ := h4 _
+    have : Module.Projective R (L.sc p).X₃ := h4 _
     obtain ⟨r, hr, a, ha⟩ := exists_smul_mem_range_of_exact_fibre K
       (congrArg ModuleCat.Hom.hom (L.sc p).zero) h10 b.1 b.2
     refine ⟨r, hr, e.injective ?_⟩
@@ -88,7 +133,7 @@ theorem exists_smul_homology_eq_zero_of_acyclic_fibre (R : Type) [CommRing R] [I
     obtain ⟨r, hr, hz⟩ := hpt (e.symm z)
     refine ⟨r, hr, ?_⟩
     rw [← e.apply_symm_apply z, ← map_smul, hz, map_zero]
-  haveI := hfin p
+  have := hfin p
   rw [Module.mem_support_iff_of_finite, SetLike.not_le_iff_exists] at hP
   obtain ⟨r, hr, hr'⟩ := hP
   exact ⟨r, hr', Module.mem_annihilator.1 hr⟩

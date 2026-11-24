@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 
 @[expose] public section
@@ -97,15 +102,14 @@ theorem l2_sum_eq_sum_norm_sq_of_orthogonal {n : ℕ} (q : ℕ) {ι : Type*} (s 
     congr 1
     first
       | exact integral_re (hint G G hG hG)
-      | simpa using integral_re (hint G G hG hG)
   have hsum_int : ∀ v : Fin n → Vsp X.dim,
       (∑ i ∈ s, c i * e i v) * (starRingEnd ℂ) (∑ i ∈ s, c i * e i v) *
         (Real.exp (-(q * Real.pi) * (HC v v).re) : ℂ) =
       ∑ i ∈ s, ∑ j ∈ s, (c i * (starRingEnd ℂ) (c j)) *
         (e i v * (starRingEnd ℂ) (e j v) * (Real.exp (-(q * Real.pi) * (HC v v).re) : ℂ)) := by
     intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_mul, Finset.sum_mul]
+
+    rw [map_sum, Finset.sum_mul, Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.mul_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -126,7 +130,6 @@ theorem l2_sum_eq_sum_norm_sq_of_orthogonal {n : ℕ} (q : ℕ) {ι : Type*} (s 
     refine Finset.sum_congr rfl fun j _ => ?_
     first
       | exact MeasureTheory.integral_const_mul _ _
-      | exact MeasureTheory.integral_mul_left _ _
   have hF : Continuous (fun v => ∑ i ∈ s, c i * e i v) :=
     continuous_finsetSum _ fun i hi => continuous_const.mul (he i hi)
   have hip : X.l2ip q (fun v => ∑ i ∈ s, c i * e i v) (fun v => ∑ i ∈ s, c i * e i v) =
@@ -138,7 +141,6 @@ theorem l2_sum_eq_sum_norm_sq_of_orthogonal {n : ℕ} (q : ℕ) {ι : Type*} (s 
     refine Finset.sum_congr rfl fun j _ => ?_
     first
       | (simp only [Complex.real_smul]; ring)
-      | rw [mul_smul_comm]
   have hdiag : ∀ i ∈ s, ∑ j ∈ s, (c i * (starRingEnd ℂ) (c j)) * X.l2ip q (e i) (e j) =
       (c i * (starRingEnd ℂ) (c i)) * X.l2ip q (e i) (e i) := by
     intro i hi
@@ -192,7 +194,7 @@ theorem iOf (hJ : JStatement) (hN : NStatement) : IStatement := by
       ∑ b ∈ K, ‖l b‖ * ‖polyDeriv (P1 bs) dir (X.U P.q b (s0 X π s)) 0‖ := by
     rw [hpd]
     refine (norm_sum_le _ _).trans (le_of_eq ?_)
-    simp [norm_mul]
+    simp
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq K (fun b => ‖l b‖)
     (fun b => ‖polyDeriv (P1 bs) dir (X.U P.q b (s0 X π s)) 0‖)
   have h1 : ‖polyDeriv (P1 bs) dir F 0‖ ^ 2 ≤ (∑ b ∈ K, ‖l b‖ ^ 2) *

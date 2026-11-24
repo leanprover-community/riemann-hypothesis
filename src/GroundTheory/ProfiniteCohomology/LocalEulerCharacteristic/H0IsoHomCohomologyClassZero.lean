@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.QuotientToInvariantsFunctorPreservesZeroMorphism
+public import GroundTheory.ProfiniteCohomology.CupProducts
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.CohomologyResMemCohomologyConjInvariants
 public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
 
 @[expose] public section
 

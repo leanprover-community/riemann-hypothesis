@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.LiftFactorization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -51,7 +95,7 @@ private lemma det_form {S : Type} [CommRing S] [Algebra ℂ S] (R : Subalgebra �
         rw [Finset.prod_mul_distrib, Finset.prod_mul_distrib, Finset.prod_const, hD]
       rw [hprod]
       ring
-    · push_neg at hσ
+    · push Not at hσ
       obtain ⟨a, ha, hne⟩ := hσ
       have h0 : ∏ a ∈ P, A a (σ a) = 0 := Finset.prod_eq_zero ha (by rw [hP a ha, if_neg hne])
       rw [h0]
@@ -147,9 +191,9 @@ theorem UpperTheory.Gal.productCup_of_system.thMuLat_of :
         (by
           intro a m
           rcases hx : ofLex (e a) with i | l
-          · simp only [hx, Sum.elim_inl]
+          · simp only [Sum.elim_inl]
             exact zero_mem _
-          · simp only [hx, Sum.elim_inr, sub_mul, ite_mul, zero_mul]
+          · simp only [Sum.elim_inr, sub_mul, ite_mul, zero_mul]
             rw [← Units.val_mul, ← Units.val_mul]
             refine sub_mem ?_ ?_
             · split_ifs
@@ -158,7 +202,6 @@ theorem UpperTheory.Gal.productCup_of_system.thMuLat_of :
             · split_ifs
               · exact hT.memY I J hI j hj _
               · exact zero_mem _)
-      beta_reduce at hdet
       refine ⟨s, hs, ?_⟩
       rw [hdet, hcard]
     · rw [dite_eq_right h]

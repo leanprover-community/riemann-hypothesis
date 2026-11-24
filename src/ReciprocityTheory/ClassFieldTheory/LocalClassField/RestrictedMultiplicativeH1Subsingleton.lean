@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.NeutralLocalFields.Duality
-public import ReciprocityTheory.GroupCohomology.InfRes
-public import ReciprocityTheory.GroupCohomology.FiveTerm
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.KbarRepContAction
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+public import ReciprocityTheory.GroupCohomology.FiveTerm
+import ReciprocityTheory.GroupCohomology.InfRes
 
 @[expose] public section
 
@@ -80,8 +81,8 @@ theorem exists_units_of_cocycle {K L : Type*} [Field K] [Field L] [Algebra K L] 
       rfl
     calc b = ∑ s, a (m s) * (m s).1 c := (hmbij.sum_comp (fun s => a s * s.1 c)).symm
       _ = f h * (h : L ≃ₐ[K] L) b := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hb, map_sum, Finset.mul_sum]
+
+        rw [hb, map_sum, Finset.mul_sum]
         refine Finset.sum_congr rfl fun s _ => ?_
         rw [hma, hm1, map_mul, mul_assoc]
   refine ⟨(Units.mk0 b hcne)⁻¹, fun h => ?_⟩

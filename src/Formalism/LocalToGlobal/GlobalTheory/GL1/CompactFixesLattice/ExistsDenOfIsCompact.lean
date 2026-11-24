@@ -1,7 +1,12 @@
 module
 
+public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.CompactFixesLattice
+public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.ExistsDenOfIsCompactAdele
 public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.MemClosureOfMemSS
-public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.Imports
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.CoordMulTmul
 
 @[expose] public section
 
@@ -34,12 +39,12 @@ private theorem exists_int_ne_zero_mul_repr_mem_range {n : ℕ} (b : Module.Basi
   rintro _ ⟨z, rfl⟩ i
   have hz : algebraMap (𝓞 E) E z = ∑ j, g.repr z j • algebraMap (𝓞 E) E (g j) := by
     conv_lhs => rw [← g.sum_repr z]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_zsmul]
+
+    simp only [map_sum, map_zsmul]
   have key : (y : F) * b.repr (algebraMap (𝓞 E) E z) i
       = ∑ j, g.repr z j • ((y : F) * b.repr (algebraMap (𝓞 E) E (g j)) i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz, map_sum, Finsupp.finsetSum_apply, Finset.mul_sum]
+
+    rw [hz, map_sum, Finsupp.finsetSum_apply, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_zsmul, Finsupp.smul_apply, mul_smul_comm]
   rw [key]

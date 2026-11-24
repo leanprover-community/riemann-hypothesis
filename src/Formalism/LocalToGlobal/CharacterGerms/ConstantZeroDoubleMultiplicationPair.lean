@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RankMaximalOfNondegenerateOfUnitSeriesIntegral
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 
@@ -72,8 +73,8 @@ theorem ex_sum {σ ι : Type} (s : Finset ι) (f : ι → MvPowerSeries σ C) (h
     exact ex_zero
   · intro i s hi ih
     have h0 : constantCoeff (∑ j ∈ s, f j) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_eq_zero fun j _ => hf j
     rw [Finset.sum_insert hi, Finset.prod_insert hi, ex_add _ _ (hf i) h0, ih]
 
@@ -279,8 +280,8 @@ theorem second_coord_mul_inner (Y : FBChart C V O dd) : Y.u1 * ∏ i ∈ Finset.
     rw [map_sub, height_multiple_constantCoeff, show (V.l : C) • Y.h = ((V.l : ℕ) : PS C 2 dd) * Y.h by
       rw [Nat.cast_smul_eq_nsmul, nsmul_eq_mul], map_mul, h_const, mul_zero, sub_zero]
   have hS0 : constantCoeff (∑ i ∈ Finset.range (V.l - 1), (gg Y (i + 1) + Y.h - gg Y (i + 1 + 1))) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]; exact Finset.sum_eq_zero fun i _ => hE i
+
+    rw [map_sum]; exact Finset.sum_eq_zero fun i _ => hE i
   rw [hu, hprod, ← ex_add _ _ hU0 hS0, sum_height_telescope Y V.l hl]
   have key : ∀ (A B : PS C 2 dd) (L : ℕ), 1 ≤ L → A - L • B + (B - A + (L - 1) • B) = 0 := by
     intro A B L hL

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPtsBddConv
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesGeo
 
 @[expose] public section
 

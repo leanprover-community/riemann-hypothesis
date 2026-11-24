@@ -1,9 +1,14 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LogIntSt
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Presheaf
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LogInt
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.MeasureTheory.Function.Jacobian
 
 @[expose] public section
 

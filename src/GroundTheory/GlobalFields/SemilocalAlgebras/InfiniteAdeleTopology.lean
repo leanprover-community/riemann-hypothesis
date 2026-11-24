@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.SemilocalAlgebras.InfiniteAdele
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -36,8 +39,8 @@ theorem sum_piPlacesOverCoord {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Mo
     ((tensorPiEquiv (L := L) v).symm y)
   have h2 := congrArg (fun z => tensorPiEquiv (L := L) v z w) h
   simp only [AlgEquiv.apply_symm_apply] at h2
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h2, map_sum, Finset.sum_apply]
+
+  rw [← h2, map_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Algebra.TensorProduct.basis_apply, map_smul, Pi.smul_apply, tensorPiEquiv_apply,
     tensorPiHom_tmul, map_one, one_mul, Algebra.smul_def]
@@ -58,8 +61,8 @@ theorem tensorInfiniteAdeleRingEquiv_sum_adeleCoord {ι : Type*} [Fintype ι] [D
   funext w
   have ev : ∀ f : ι → InfiniteAdeleRing L, (∑ i, f i) w = ∑ i, f i w := fun f =>
     map_sum (Pi.evalAddMonoidHom (fun w : InfinitePlace L => w.Completion) w) f Finset.univ
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, ev]
+
+  rw [map_sum, ev]
   simp_rw [tensorInfiniteAdeleRingEquiv_tmul]
   have := sum_piPlacesOverCoord b (w.comap (algebraMap K L)) (fun w' => y w') ⟨w, liesOver_comap w⟩
   rw [← this]

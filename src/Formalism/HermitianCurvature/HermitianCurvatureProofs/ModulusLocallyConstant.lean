@@ -1,6 +1,52 @@
 module
 
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -60,20 +106,15 @@ theorem sum_reps_eq_zero {L₁ L₂ : AddSubgroup K} {S : Finset K} (hle : L₁ 
 
 theorem reps_nonempty {L₁ L₂ : AddSubgroup K} {S : Finset K} (hS : IsReps S L₂ L₁) :
     S.Nonempty := by
-  obtain ⟨a, ha, _⟩ := hS.2 0 L₂.zero_mem
-  exact ⟨a, ha.1⟩
+  exact (hS.2 0 L₂.zero_mem).exists.elim fun a ha => ⟨a, ha.1⟩
 
 theorem ringInv_eq {z a : K} (h : z * a = 1) : Ring.inverse z = a := by
   have hz : IsUnit z := IsUnit.of_mul_eq_one a h
-  calc Ring.inverse z = Ring.inverse z * (z * a) := by rw [h, mul_one]
-    _ = (Ring.inverse z * z) * a := by ring
-    _ = a := by rw [Ring.inverse_mul_cancel z hz, one_mul]
+  rw [← mul_one (Ring.inverse z), ← h, ← mul_assoc, Ring.inverse_mul_cancel z hz, one_mul]
 
 theorem addChar_ne_zero {G : Type} [AddGroup G] (φ : AddChar G ℂ) (x : G) : φ x ≠ 0 := by
   intro h
-  have := φ.map_add_eq_mul x (-x)
-  rw [add_neg_cancel, AddChar.map_zero_eq_one, h, zero_mul] at this
-  exact one_ne_zero this
+  simpa [h, AddChar.map_zero_eq_one] using φ.map_add_eq_mul x (-x)
 
 theorem mem_mulR_iff {R : Subring K} {a b : K} (hab : a * b = 1) (x : K) :
     x ∈ mulR R a ↔ b * x ∈ R := by
@@ -81,15 +122,10 @@ theorem mem_mulR_iff {R : Subring K} {a b : K} (hab : a * b = 1) (x : K) :
   rw [AddSubgroup.mem_map]
   constructor
   · rintro ⟨r, hr, rfl⟩
-    have e : b * (AddMonoidHom.mulLeft a) r = r := by
-      rw [AddMonoidHom.coe_mulLeft]
-      linear_combination r * hab
-    rw [e]
-    exact hr
+    simpa [AddMonoidHom.coe_mulLeft, show b * (a * r) = r by linear_combination r * hab] using hr
   · intro h
     refine ⟨b * x, h, ?_⟩
-    rw [AddMonoidHom.coe_mulLeft]
-    linear_combination x * hab
+    simp [AddMonoidHom.coe_mulLeft, show a * (b * x) = x by linear_combination x * hab]
 
 theorem pow_mul_pow_one {p q : K} (hpq : p * q = 1) (m : ℕ) : p ^ m * q ^ m = 1 := by
   rw [← mul_pow, hpq, one_pow]
@@ -115,8 +151,7 @@ variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] {R :
   {ψ : AddChar K ℂ}
 
 theorem psi_one (hD : LocalDatum K R ψ) {r : K} (hr : r ∈ R) : ψ r = 1 := by
-  have := (hD.selfDual 1).2 R.one_mem r hr
-  rwa [one_mul] at this
+  simpa using (hD.selfDual 1).2 R.one_mem r hr
 
 theorem isLat_mulR (hD : LocalDatum K R ψ) {a b : K} (hab : a * b = 1) : IsLat (mulR R a) := by
   constructor
@@ -530,8 +565,7 @@ theorem smallUnits : Formalism.FourierDecayAlt.A6.SmallUnits := by
   have hpq : (ϖ : K) * ((ϖ⁻¹ : Kˣ) : K) = 1 := ϖ.mul_inv
   obtain ⟨m, hm⟩ := small hD hQ hpq hp hex hV
   refine ⟨ϖ ^ m, hm _ ?_⟩
-  rw [Units.val_pow_eq_pow_val, mul_comm, pow_mul_pow_one hpq]
-  exact R.one_mem
+  simp [Units.val_pow_eq_pow_val, mul_comm, pow_mul_pow_one hpq]
 
 theorem compactOpenChoice : Formalism.FourierDecayAlt.A6.LatChoice := by
   intro K _ _ _ R ψ hD hQ
@@ -627,9 +661,7 @@ theorem annihilatorCharacters : Formalism.FourierDecayAlt.A6.PerpDual := by
       (fun r hr => hχ r (hm _ ((mem_mulR_iff hab _).1 hr)))
     refine ⟨z, ?_, hz⟩
     intro l hl
-    have h := hz ⟨l, hle hl⟩
-    rw [hχ ⟨l, hle hl⟩ hl] at h
-    exact h.symm
+    rw [← hz ⟨l, hle hl⟩, hχ ⟨l, hle hl⟩ hl]
   · intro z z' hz hz'
     apply (hD.selfDual _).1
     intro r hr

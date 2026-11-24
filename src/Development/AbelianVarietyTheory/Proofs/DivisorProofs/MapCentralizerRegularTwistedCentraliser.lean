@@ -1,11 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTripleFrobeniusTwistOrderFixedPointsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixEqAevalOfCommute
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedNormConjNormalizeAndDegreeOneStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedNormProductIterateTwistedConjStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTripleFrobeniusTwistOrderFixedPointsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedNormProductIterateTwistedConjStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtC
 
 @[expose] public section
 
@@ -26,14 +64,14 @@ theorem map_coord_commute {K R : Type} [Field K] [CommRing R] [Algebra K R] {n :
     (hX : Commute X (N.map (algebraMap K R))) (f : R →ₗ[K] K) : Commute (X.map f) N := by
   have k1 : (X * N.map (algebraMap K R)).map f = X.map f * N := by
     ext i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.map_apply, Matrix.mul_apply, map_sum]
+
+    simp only [Matrix.map_apply, Matrix.mul_apply, map_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [mul_comm, ← Algebra.smul_def, map_smul, smul_eq_mul, mul_comm]
   have k2 : (N.map (algebraMap K R) * X).map f = N * X.map f := by
     ext i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.map_apply, Matrix.mul_apply, map_sum]
+
+    simp only [Matrix.map_apply, Matrix.mul_apply, map_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [← Algebra.smul_def, map_smul, smul_eq_mul]
   have h := congrArg (fun Y => Y.map f) hX.eq
@@ -95,11 +133,11 @@ theorem map_centralizer_carry : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (r 
   intro p _ G r γ δ z hr hγ hN
   set δ' := z * δ * (sigG G r z)⁻¹ with hδ'
   have hN' : nrmG (sigG G r) r δ' = inclG G r γ := by
-    have h := (GlobalTheory.T.twistedNormConj_normalize_and_degree_one p G).1 r γ δ z hr hN
+    have h := (_root_.GlobalTheory.nrm_exact p G).1 r γ δ z hr hN
     simpa [IsNrm] using h
-  obtain ⟨hit, hfix, hinj, hrange⟩ := GlobalTheory.T.hermitianTripleFrobeniusTwist_order_fixed_points p G r hr
+  obtain ⟨hit, hfix, hinj, hrange⟩ := _root_.GlobalTheory.LKMid.SigIter.main p G r hr
   have hδc : Commute δ' (inclG G r γ) := by
-    have h2 := (GlobalTheory.T.twistedNormProductIterate_twistedConj (sigG G r) r δ' 1).2
+    have h2 := (_root_.GlobalTheory.LKMid.nrmG_twConj (sigG G r) r δ' 1).2
     rw [hN', hfix, hit] at h2
     exact h2
   have memT : ∀ h, h ∈ GlobalTheory.BCT.twCent (sigG G r) δ' ↔ ∃ g ∈ Subgroup.centralizer {γ}, inclG G r g = h := by
@@ -108,7 +146,7 @@ theorem map_centralizer_carry : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (r 
     · intro hh
       change h * δ' = δ' * sigG G r h at hh
       have hc : Commute h (inclG G r γ) := by
-        have h1 := (GlobalTheory.T.twistedNormProductIterate_twistedConj (sigG G r) r δ' h).1
+        have h1 := (_root_.GlobalTheory.LKMid.nrmG_twConj (sigG G r) r δ' h).1
         have e : h⁻¹ * δ' * sigG G r h = δ' := by rw [mul_assoc, ← hh, inv_mul_cancel_left]
         rw [e, hN', hit] at h1
         change h * inclG G r γ = inclG G r γ * h

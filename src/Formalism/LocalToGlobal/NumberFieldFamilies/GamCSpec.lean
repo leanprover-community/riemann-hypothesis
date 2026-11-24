@@ -1,8 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNd
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TwoPowS0EqTwoPartModulus
 
 @[expose] public section
 

@@ -1,6 +1,50 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.MultMk
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
+public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.SgKSPowP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -160,7 +204,7 @@ theorem bMk_eq (C0 CE1 CE2 : ℝ) (β : GlobalTheory X) (j : Fin (numSeg X.TT)) 
         Finsupp.single ((topOdd X j i, false), 0) 1 : MonH X))) +
       Finsupp.single ((topStart X j, true), 0) (X.c * (X.m * (X.p ^ segG X.TT j - 1))))) = bMk C0 CE1 CE2 X β j := by
   unfold bMk
-  simp only [Finsupp.single_add, smul_add, Finset.sum_add_distrib, Finset.smul_sum, Finsupp.smul_single, smul_eq_mul]
+  simp only [Finsupp.single_add, smul_add, Finset.sum_add_distrib, Finsupp.smul_single, smul_eq_mul]
   ext k
   simp only [Finsupp.coe_add, Pi.add_apply, Finset.sum_apply', Finsupp.single_apply]
   by_cases hs : ((topStart X j, true), (0 : Fin (X.m + 1))) = k
@@ -168,9 +212,8 @@ theorem bMk_eq (C0 CE1 CE2 : ℝ) (β : GlobalTheory X) (j : Fin (numSeg X.TT)) 
     simp [Finset.mul_sum, mul_add, Finset.sum_add_distrib, Fin.succ_ne_zero]
     try simp only [mul_comm, mul_left_comm]
     try abel
-    try ring_nf
   · simp only [hs, if_false, Finset.sum_const_zero, zero_add, add_zero]
-    try simp only [mul_comm, mul_left_comm]
+    try simp only [mul_comm]
     try abel
     try ring_nf
 

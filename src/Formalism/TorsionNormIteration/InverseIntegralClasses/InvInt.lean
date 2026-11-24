@@ -2,6 +2,51 @@ module
 
 public import Formalism.TorsionNormIteration.InvIntegralOfClass
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Normed.MulAction
 
 @[expose] public section
 
@@ -76,9 +121,7 @@ theorem integral_one : IntegralMv (1 : MvPowerSeries ι K) := by
 theorem integral_pow {A : MvPowerSeries ι K} (hA : IntegralMv A) (n : ℕ) :
     IntegralMv (A ^ n) := by
   induction n with
-  | zero =>
-    rw [pow_zero]
-    exact integral_one
+  | zero => simpa using integral_one
   | succ n ih =>
     rw [pow_succ]
     exact integral_mul ih hA
@@ -167,12 +210,9 @@ theorem key [Finite ι] (f : PowerSeries K) (h0 : constantCoeff f = 0) (h1 : coe
   have hd : Low N (a - b) := low_of_agree hab
   have hs : Low 1 (a + b) := low_one (by simp [ha0, hb0])
   have hb2 : Low 2 (b ^ 2) := by
-    have := (low_one hb0).mul (low_one hb0)
-    rw [pow_two]
-    exact this
+    simpa [pow_two] using (low_one hb0).mul (low_one hb0)
   refine Low.add ?_ ?_
-  · have := (hd.mul hs).mul (low_zero ((tail2 f).subst a))
-    simpa using this
+  · simpa using (hd.mul hs).mul (low_zero ((tail2 f).subst a))
   · exact (hb2.mul (low_of_agree (agree_psubst _ ha0 hb0 hab))).mono (by omega)
 
 end Inv
@@ -246,9 +286,6 @@ theorem Formalism.LT.InvIntP.IntegralSubst_proof : Formalism.LT.IntegralSubst.{u
   intro K _ _ ι f P hf hP0 hP
   exact Formalism.LT.InvIntP.integralSubst f P hf hP0 hP
 
-theorem Formalism.LT.InvIntegralOfClass_proof : Formalism.LT.InvIntegralOfClass.{u, v} := by
-  exact Formalism.LT.InvIntP.InvIntegralOfClass_proof
-theorem Formalism.LT.FunEqLowCoeff_proof : Formalism.LT.FunEqLowCoeff.{u, v} := by
-  exact Formalism.LT.InvIntP.FunEqLowCoeff_proof
-theorem Formalism.LT.IntegralSubst_proof : Formalism.LT.IntegralSubst.{u, v} := by
-  exact Formalism.LT.InvIntP.IntegralSubst_proof
+alias Formalism.LT.InvIntegralOfClass_proof := _root_.Formalism.LT.InvIntP.InvIntegralOfClass_proof
+alias Formalism.LT.FunEqLowCoeff_proof := _root_.Formalism.LT.InvIntP.FunEqLowCoeff_proof
+alias Formalism.LT.IntegralSubst_proof := _root_.Formalism.LT.InvIntP.IntegralSubst_proof

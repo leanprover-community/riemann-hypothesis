@@ -1,8 +1,45 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgVanish
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCIndValue
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,23 +57,13 @@ theorem ePG_false_castSucc (i t : ℕ) (a : Fin (i + 1)) :
   rw [Fin.val_castSucc, GlobalTheory.CompanionTheory.LeibPhi.blockIndex_false_val]
   first
   | (simp [GlobalTheory.BZMir.Leib.ePG, finSumFinEquiv_symm_apply_castSucc]; done)
-  | (have h1 : (finSumFinEquiv.symm (Fin.castSucc a) : Fin (i + 1) ⊕ Fin 1) = Sum.inl a :=
-        finSumFinEquiv_symm_apply_castSucc a
-     have h2 : GlobalTheory.BZMir.Leib.ePG (i + 1) (t + 1) ⟨false, Fin.castSucc a⟩ =
-        finSumFinEquiv (Sum.map finSumFinEquiv (Equiv.refl (Fin 1))
-          ((Equiv.sumAssoc (Fin (i + 1)) (Fin (t + 1)) (Fin 1)).symm
-            (Sum.map (Equiv.refl (Fin (i + 1))) (Equiv.sumComm (Fin 1) (Fin (t + 1)))
-              (Equiv.sumAssoc (Fin (i + 1)) (Fin 1) (Fin (t + 1))
-                (Sum.inl (finSumFinEquiv.symm (Fin.castSucc a) : Fin (i + 1) ⊕ Fin 1)))))) := rfl
-     rw [h2, h1]
-     simp)
 
 theorem ePG_true_eq (i t : ℕ) (b : Fin (t + 1)) :
     ePG (i + 1) (t + 1) ⟨true, b⟩ =
       (Fin.castSucc (eGP (i + 1) t ⟨true, b⟩) : Fin ((i + 1) + t + 1 + 1)) := by
   apply Fin.ext
   rw [Fin.val_castSucc, GlobalTheory.CompanionTheory.LeibPhi.blockIndex_true_val]
-  all_goals first | rfl | simp [GlobalTheory.BZMir.Leib.ePG]
+  all_goals first | rfl
 
 section Ent
 
@@ -46,25 +73,21 @@ theorem glEmbMat_cc (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (a b : Fin n) :
     glEmbMat k n A (Fin.castSucc a) (Fin.castSucc b) = A a b := by
   first
   | (simp only [GlobalTheory.BZMir.glEmbMat, Fin.lastCases_castSucc]; done)
-  | simp [GlobalTheory.BZMir.glEmbMat]
 
 theorem glEmbMat_lc (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (b : Fin n) :
     glEmbMat k n A (Fin.last n) (Fin.castSucc b) = 0 := by
   first
   | (simp only [GlobalTheory.BZMir.glEmbMat, Fin.lastCases_last, Fin.lastCases_castSucc]; done)
-  | simp [GlobalTheory.BZMir.glEmbMat]
 
 theorem glEmbMat_cl (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (a : Fin n) :
     glEmbMat k n A (Fin.castSucc a) (Fin.last n) = 0 := by
   first
   | (simp only [GlobalTheory.BZMir.glEmbMat, Fin.lastCases_last, Fin.lastCases_castSucc]; done)
-  | simp [GlobalTheory.BZMir.glEmbMat]
 
 theorem glEmbMat_ll (n : ℕ) (A : Matrix (Fin n) (Fin n) k) :
     glEmbMat k n A (Fin.last n) (Fin.last n) = 1 := by
   first
   | (simp only [GlobalTheory.BZMir.glEmbMat, Fin.lastCases_last]; done)
-  | simp [GlobalTheory.BZMir.glEmbMat]
 
 end Ent
 

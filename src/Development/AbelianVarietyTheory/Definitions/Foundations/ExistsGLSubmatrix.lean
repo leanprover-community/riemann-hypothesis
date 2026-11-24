@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MemSiegelOfIffRightAct
+public import Formalism.FockGram.StatementLat
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -78,7 +117,7 @@ theorem gram_hsum (V W : HSpace E) : (hsum V W).gram = blkMat finSumFinEquiv V.g
   obtain ⟨b, rfl⟩ := finSumFinEquiv.surjective j
   have key : ∀ u v, (hsum V W).hT u v = V.hT u.1 v.1 + W.hT u.2 v.2 := fun u v => orthSum_apply V W u v
   rcases a with a | a <;> rcases b with b | b <;>
-    simp [HSpace.gram, blkMat, key, frame_hsum_inl, frame_hsum_inr]
+    simp [HSpace.gram, blkMat, key]
 
 theorem gram_hdbl (V : HSpace E) : (hdbl V).gram = dblGram finSumFinEquiv V.gram := by
   show (hsum V (hneg V)).gram = _
@@ -88,7 +127,7 @@ theorem gram_hdbl (V : HSpace E) : (hdbl V).gram = dblGram finSumFinEquiv V.gram
 theorem sum_pairVec_frame (V W : HSpace E) (x : Fin V.rank → E) (y : Fin W.rank → E) :
     ∑ i, pairVec finSumFinEquiv x y i • (hsum V W).frame i = (∑ i, x i • V.frame i, ∑ i, y i • W.frame i) := by
   rw [← Equiv.sum_comp finSumFinEquiv, Fintype.sum_sum_type]
-  simp only [pairVec_inl, pairVec_inr, frame_hsum_inl, frame_hsum_inr, Prod.smul_mk, smul_zero]
+  simp only [pairVec_inl, pairVec_inr]
   ext <;> simp [Prod.fst_sum, Prod.snd_sum]
 
 theorem frameLat_hsum (V W : HSpace E) : frameLat (hsum V W) = sumLat finSumFinEquiv (frameLat V) (frameLat W) := by

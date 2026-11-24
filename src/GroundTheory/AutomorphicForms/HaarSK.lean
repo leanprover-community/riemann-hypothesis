@@ -1,6 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
+public import Mathlib.MeasureTheory.Group.Integral
+public import Mathlib.MeasureTheory.Integral.Prod
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
+public import Mathlib.Topology.Maps.Proper.CompactlyGenerated
 
 @[expose] public section
 

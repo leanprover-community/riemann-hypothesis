@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartQuot
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.MemMCoordIdealIffOfIsWeightedHomogeneous
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DenseChart
 
 @[expose] public section
@@ -84,12 +126,12 @@ theorem ker_chartEval (x : Cone n (AlgebraicClosure ℚ)) (c : (k : ι) → Fin 
           rw [← map_one (Ideal.Quotient.mk J), Ideal.Quotient.eq]
           exact Ideal.subset_span ⟨k, rfl⟩
         rw [map_pow, hk, one_pow]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Ideal.Quotient.eq, hF, map_sum]
+
+      rw [← Ideal.Quotient.eq, hF, map_sum]
       simp only [map_mul, h1, mul_one]
       conv_lhs => rw [← sum_compDegs f]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
     have hFP : F ∈ orbitIdeal x := by
       have hhom : IsWeightedHomogeneous (coordDeg n) F N := by
         have : F ∈ weightedHomogeneousSubmodule ℤ (coordDeg n) N := by
@@ -119,19 +161,19 @@ theorem ker_chartEval (x : Cone n (AlgebraicClosure ℚ)) (c : (k : ι) → Fin 
         rw [hy]
         rw [hs]
         ring
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hF, map_sum]
+
+      rw [hF, map_sum]
       refine (Finset.sum_congr rfl hterm).trans ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Finset.mul_sum, ← map_sum, sum_compDegs, show aeval z f = 0 from hf, mul_zero]
+
+      rw [← Finset.mul_sum, ← map_sum, sum_compDegs, show aeval z f = 0 from hf, mul_zero]
     have : f = F + (f - F) := by ring
     rw [this]
     exact Ideal.add_mem _ (Ideal.mem_sup_left hFP) (Ideal.mem_sup_right hFJ)
   · refine sup_le (fun f hf ↦ ?_) (Ideal.span_le.mpr ?_)
     · rw [mem_ker_chartEval_iff]
       rw [orbitIdeal, mem_mCoordIdeal_iff] at hf
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← sum_compDegs f, map_sum]
+
+      rw [← sum_compDegs f, map_sum]
       refine Finset.sum_eq_zero fun m _ ↦ ?_
       have hs := aeval_blockScale_of_isWeightedHomogeneous (fun k ↦ (x k (c k))⁻¹) (flatCone x)
         (weightedHomogeneousComponent_isWeightedHomogeneous m f)

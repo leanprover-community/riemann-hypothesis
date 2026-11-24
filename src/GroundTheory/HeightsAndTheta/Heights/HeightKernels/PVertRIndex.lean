@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertRIndexSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveDivVertical
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.CharacterNondegenerate
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirstCoordinateLine
 
 @[expose] public section
 

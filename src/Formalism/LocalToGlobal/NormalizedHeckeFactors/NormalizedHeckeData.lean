@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalToGlobal.PlaceMapInjectivity.MapPlInjective
 
 @[expose] public section
 

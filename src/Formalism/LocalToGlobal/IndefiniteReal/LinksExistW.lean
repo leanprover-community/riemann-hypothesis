@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksExist
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksW
+public import Formalism.LocalToGlobal.IndefiniteReal.BridgeLemmas
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksStage
+public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksExist
 
 @[expose] public section
 
@@ -157,7 +160,7 @@ theorem RealDat.preliminary_zero_of_model_update {R : RealDat D A Ks} {F : Face 
     prX, order, std⟩
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem models_args (hFD : MeasFDExists D) (hLD : MeasLevDefExists D) (hFund : FundDomExists D) (hSp : SpOK D)
     (hLev : LevOK D) (hHC : HCAll D) (hSch : SchurAll D) (hPet : PetAll D) (hSm : SmAll D) (hDim : DimOK D)
     (hAct : ActRep D) (hX : IdemClass A) (Q : RealDat D A Ks → Prop)
@@ -299,7 +302,7 @@ theorem weak_theta_props_of_scalar_update (h : R.IsThPW) (kap lam) : (R.upd6 kap
 end RealDat
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem chainW_exists (Q : RealDat D A Ks → Prop)
     (hQ3 : ∀ R ωY ωX vac vacX vY vX ItY ItX ioY ioX Th, Q R → Q (R.upd3 ωY ωX vac vacX vY vX ItY ItX ioY ioX Th))
     (R : RealDat D A Ks) (h : R.Pre1 F) (hK : R.KerY) (hq : Q R) :
@@ -316,7 +319,7 @@ theorem chainW_exists (Q : RealDat D A Ks → Prop)
       hK.2.2.2.2, fun k _ => hY k, hX, fun t k _ => hioY t k, hioX, hTh⟩, hK.1, hQ3 _ _ _ _ _ _ _ _ _ _ _ _ hq⟩
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem thPW_exists (Q : RealDat D A Ks → Prop) (hQ4 : ∀ R ωP vacP vP ioP thF thG, Q R → Q (R.upd4 ωP vacP vP ioP thF thG))
     (R : RealDat D A Ks) (h : R.Pre1 F) (hc : R.IsChainW) (hf : R.FullY) (hK : R.KerP) (hq : Q R) :
     ∃ R' : RealDat D A Ks, R'.Pre1 F ∧ R'.IsChainW ∧ R'.IsThPW ∧ R'.FullY ∧ R'.FullP ∧ Q R' := by

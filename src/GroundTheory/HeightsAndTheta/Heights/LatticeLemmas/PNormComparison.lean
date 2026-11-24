@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.Statements
+public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

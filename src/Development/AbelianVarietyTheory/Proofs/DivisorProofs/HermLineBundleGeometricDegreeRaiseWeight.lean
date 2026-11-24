@@ -1,9 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsRatioOfWeight
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -36,8 +75,8 @@ theorem coeff_eq_zero_of_const (N : ℕ) (γ : ℕ → ℝ) (K : ℝ)
 theorem map_mul_add_pow {ι : Type} (Φ : MvPolynomial ι ℝ →ₗ[ℝ] ℝ) (A x y : MvPolynomial ι ℝ) (c : ℝ) (n : ℕ) :
     Φ (A * (MvPolynomial.C c * x + y) ^ n) =
       ∑ m ∈ Finset.range (n + 1), c ^ m * ((n.choose m : ℝ) * Φ (A * x ^ m * y ^ (n - m))) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [add_pow, Finset.mul_sum, map_sum]
+
+  rw [add_pow, Finset.mul_sum, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   have e : A * ((MvPolynomial.C c * x) ^ m * y ^ (n - m) * (n.choose m : MvPolynomial ι ℝ)) =
       (c ^ m * (n.choose m : ℝ)) • (A * x ^ m * y ^ (n - m)) := by
@@ -53,10 +92,6 @@ namespace GlobalTheory.GdegMetric
 open MvPolynomial HermLB
 
 variable {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k}
-
-theorem lin_single' {ι : Type} [Fintype ι] [DecidableEq ι] (i : ι) :
-    (lin fun j => (((Pi.single i 1 : ι → ℤ) j : ℤ) : ℝ)) = MvPolynomial.X i := by
-  simp [lin, Pi.single_apply, apply_ite, ite_mul]
 
 theorem isConj_const_mul {u : ∀ σ : k →+* ℂ, CxPts p σ → ℝ}
     (hc : ∀ σ σ', (Weight.ofFun (u σ)).IsConj (Weight.ofFun (u σ'))) (c : ℝ) (σ σ' : k →+* ℂ) :
@@ -118,7 +153,7 @@ theorem gdeg_up : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] 
         rcases o with _ | j
         · exact isometric_comb_single G 2
         · exact isometric_comb_single G j
-    simpa only [lin_single'] using this
+    simpa only [_root_.GlobalTheory.ArInt.lin_single] using this
   let eB : Option (Fin 2) → Fin 3 := fun o => o.elim 0 Fin.succ
   have hB : IsArFun (fun o : Option (Fin 2) => o.elim T ![L, U]) D
       (Φ ∘ₗ (MvPolynomial.aeval fun o => (MvPolynomial.X (eB o) : MvPolynomial (Fin 3) ℝ)).toLinearMap) := by
@@ -129,7 +164,7 @@ theorem gdeg_up : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] 
         · fin_cases j
           · exact isometric_comb_single G 1
           · exact isometric_comb_single G 2
-    simpa only [lin_single'] using this
+    simpa only [_root_.GlobalTheory.ArInt.lin_single] using this
   have chA : ∀ c b : ℤ, Φ (X 2 * (C (c : ℝ) * X 0 + (X 1 + C (b : ℝ) * X 2)) ^ D) =
       1 / 2 * chInt (comb G ![c, 1, b]) D u.u := by
     intro c b
@@ -137,7 +172,7 @@ theorem gdeg_up : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] 
     rw [LinearMap.comp_apply, AlgHom.toLinearMap_apply] at this
     rw [← this]
     congr 1
-    simp [lin, Fin.sum_univ_three, MvPolynomial.aeval_rename, MvPolynomial.algebraMap_eq, eA]
+    simp [lin, Fin.sum_univ_three, eA]
     ring
   have chB : ∀ b : ℤ, Φ (X 0 * (X 1 + C (b : ℝ) * X 2) ^ D) = 1 / 2 * gdeg (comb ![L, U] ![1, b]) D := by
     intro b
@@ -145,7 +180,7 @@ theorem gdeg_up : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] 
     rw [LinearMap.comp_apply, AlgHom.toLinearMap_apply] at this
     rw [gdeg, ← this]
     congr 1
-    simp [lin, Fin.sum_univ_two, MvPolynomial.aeval_rename, MvPolynomial.algebraMap_eq, eB]
+    simp [lin, Fin.sum_univ_two, eB]
 
   have iso : ∀ c b : ℤ, (comb G ![c, 1, b]).Isometric ((comb ![L, U] ![1, b]).raise (fun _ _ => (c : ℝ) * 1)
       (fun σ y => cInfAt_const _ y) (fun _ _ _ _ _ _ _ => rfl)) := by
@@ -180,7 +215,6 @@ theorem gdeg_up : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] 
       have h := coeff_eq_zero_of_const (d + 1)
         (fun m => ((d + 1).choose m : ℝ) * Φ (X 2 * X 0 ^ m * (X 1 + C (b : ℝ) * X 2) ^ (d + 1 - m)))
         (1 / 2 * chInt (comb G ![0, 1, b]) (d + 1) u.u) (fun c => by
-          beta_reduce
           rw [← map_mul_add_pow, ← hind c b, ← chA c b]
           push_cast
           rfl) (le_refl 1) (by omega)

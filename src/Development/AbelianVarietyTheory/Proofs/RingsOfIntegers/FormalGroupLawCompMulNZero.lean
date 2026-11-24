@@ -1,9 +1,53 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.FourierCoeffIntSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ConstantCoeffEv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -127,11 +171,11 @@ theorem lin_ev_two {x y : Pt R n d} (hx : ∀ i, constantCoeff (x i) = 0)
       ∑ l, coeff (Finsupp.single ((0 : Fin 2), l) 1) f * coeff (Finsupp.single s 1) (x l) +
       ∑ l, coeff (Finsupp.single ((1 : Fin 2), l) 1) f * coeff (Finsupp.single s 1) (y l) := by
   have ha := const_two hx hy
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coeff_single_one s (ev ![x, y] f), pderiv_ev ha, map_sum, Fin.sum_univ_two]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, constantCoeff_ev ha, ← coeff_single_one, Matrix.cons_val_zero,
-    Matrix.cons_val_one]
+
+  rw [coeff_single_one s (ev ![x, y] f), pderiv_ev ha, map_sum, Fin.sum_univ_two]
+
+  simp only [map_sum, map_mul, constantCoeff_ev ha, ← coeff_single_one, Matrix.cons_val_zero,
+  Matrix.cons_val_one]
 
 private lemma coeff_single_pt_eq_ite (j j' : Fin n) (l l' : Fin d) :
     coeff (Finsupp.single (j', l') 1) (pt R d j l) = if j = j' ∧ l = l' then 1 else 0 := by
@@ -159,25 +203,12 @@ theorem lin_F_right (i l : Fin d) :
   rw [lin_ev_two const_zero (const_pt 0), hX] at h
   simpa [coeff_single_pt] using h
 
-private lemma coeff_single_pt_eq_ite' (j j' : Fin n) (l l' : Fin d) :
-    coeff (Finsupp.single (j', l') 1) (pt R d j l) = if j = j' ∧ l = l' then 1 else 0 := by
-  show coeff _ (X (j, l)) = _
-  rw [coeff_X]
-  by_cases h : j = j' ∧ l = l'
-  · obtain ⟨rfl, rfl⟩ := h
-    simp
-  · rw [if_neg h, if_neg]
-    intro h'
-    have h2 := Finsupp.single_left_injective one_ne_zero h'
-    simp only [Prod.mk.injEq] at h2
-    exact h ⟨h2.1.symm, h2.2.symm⟩
-
 theorem lin_F_left (i l : Fin d) :
     coeff (Finsupp.single ((0 : Fin 2), l) 1) (G.F i) = if i = l then 1 else 0 := by
   have h := congrArg (coeff (Finsupp.single ((0 : Fin 2), l) 1)) (G.comm i)
   rw [lin_ev_two (const_pt 1) (const_pt 0)] at h
   rw [← h]
-  simp [coeff_single_pt_eq_ite', lin_F_right G]
+  simp [_root_.GlobalTheory.FormalMulN.coeff_single_pt_eq_ite, lin_F_right G]
 
 theorem dLin_add {x y : Pt R 1 d} (hx : ∀ i, constantCoeff (x i) = 0)
     (hy : ∀ i, constantCoeff (y i) = 0) : dLin (G.add x y) = dLin x + dLin y := by

@@ -1,7 +1,50 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
-public import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.NonemptyCoefficientFieldPrime
+public import Mathlib.Algebra.Ring.BooleanRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -52,8 +95,8 @@ theorem beO_eq (a b : 𝓞 D.host.E) : ((beO D a b : ℝ) : ℂ) =
 
 theorem beO_symm (a b : 𝓞 D.host.E) : beO D a b = beO D b a := by
   apply Complex.ofReal_injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Complex.conj_ofReal (beO D a b : ℝ), beO_eq, beO_eq, map_sum]
+
+  rw [← Complex.conj_ofReal (beO D a b : ℝ), beO_eq, beO_eq, map_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [map_mul, Complex.conj_conj, mul_comm]
 
@@ -73,8 +116,7 @@ theorem beO_bal (c c' : 𝓞 D.host.E) (h : (c' : D.host.E) = D.host.conj (c : D
 theorem beO_self (a : 𝓞 D.host.E) : beO D a a = ∑ σ : D.host.E →ₐ[ℚ] ℂ, Complex.normSq (σ (a : D.host.E)) := by
   apply Complex.ofReal_injective
   rw [beO_eq, Complex.ofReal_sum]
-  refine Finset.sum_congr rfl fun σ _ => ?_
-  rw [Complex.mul_conj]
+  simp only [Complex.mul_conj]
 
 theorem beO_nonneg (a : 𝓞 D.host.E) : 0 ≤ beO D a a := by
   rw [beO_self]
@@ -124,8 +166,8 @@ theorem beO_sum {ι : Type} [Fintype ι] (a : ι → 𝓞 D.host.E) (c : ι → 
     _ = ((∑ σ : D.host.E →ₐ[ℚ] ℂ, Complex.normSq (∑ i, (c i : ℂ) * σ (a i : D.host.E)) : ℝ) : ℂ) := by
         push_cast
         refine Finset.sum_congr rfl fun σ _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← Complex.mul_conj, map_sum, Finset.sum_mul_sum]
+
+        rw [← Complex.mul_conj, map_sum, Finset.sum_mul_sum]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         rw [map_mul, Complex.conj_ofReal]
         ring
@@ -158,7 +200,7 @@ theorem beK_posDef (k : ℕ) (c : (Σ _ : Fin k, Module.Free.ChooseBasisIndex �
         refine Finset.sum_congr rfl fun t _ => ?_
         simp [B, bK, Pi.basis_apply, NumberField.integralBasis_apply]
       · refine Finset.sum_eq_zero fun t _ => ?_
-        simp [bK, Pi.basis_apply, Pi.single_apply, Ne.symm hm']
+        simp [bK, Pi.basis_apply, Ne.symm hm']
     have hcard : Fintype.card (Module.Free.ChooseBasisIndex ℤ (𝓞 D.host.E)) =
         Fintype.card (D.host.E →ₐ[ℚ] ℂ) := by
       rw [AlgHom.card, Module.finrank_eq_card_basis B]
@@ -171,8 +213,7 @@ theorem beK_posDef (k : ℕ) (c : (Σ _ : Fin k, Module.Free.ChooseBasisIndex �
     have hv := Matrix.eq_zero_of_vecMul_eq_zero hdet (v := fun t => (c ⟨m0, t⟩ : ℂ)) (by
       funext j
       simp only [Matrix.vecMul, dotProduct, Algebra.embeddingsMatrixReindex,
-        Algebra.embeddingsMatrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.refl_apply,
-        Equiv.symm_symm, Matrix.of_apply, Pi.zero_apply]
+        Algebra.embeddingsMatrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm, Matrix.of_apply, Pi.zero_apply]
       exact hred (e j))
     have h1 := congrFun hv t0
     simp only [Pi.zero_apply, Complex.ofReal_eq_zero] at h1
@@ -205,9 +246,8 @@ theorem subsingleton_rank_indicator_iff (P : Prop) : Subsingleton (Fin (rk01 P) 
     exact ⟨fun _ => h, fun _ => inferInstance⟩
   · rw [if_neg h]
     refine ⟨fun hs => ?_, fun hp => absurd hp h⟩
-    exfalso
     have h1 := congrFun (hs.elim (fun _ => (0 : 𝓞 D.host.E)) (fun _ => 1)) 0
-    exact zero_ne_one h1
+    exact absurd h1 zero_ne_one
 
 def pmM (dg : PsiT D → ℕ → ℤ) (n : ℕ) : ℤ := ∑ t : D.what₂.Tau, ∑ k ∈ Finset.Icc 1 n, |dg (D.eTau t) k|
 
@@ -244,8 +284,7 @@ theorem atM_tors (k n : ℕ) (x : AtM k n) : n • x = 0 := by
     rw [this, zero_mul]
 
 theorem atM_card (k n : ℕ) (h : 0 < n) : Fintype.card (AtM k n) = n ^ k := by
-  have hn : nn n = n := if_neg (by omega)
-  rw [Fintype.card_fun, ZMod.card, Fintype.card_fin, hn]
+  rw [Fintype.card_fun, ZMod.card, Fintype.card_fin, (show nn n = n from if_neg (by omega))]
 
 structure MP (D : D7) (p : ℕ) where
   K : CF p

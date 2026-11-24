@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.WedgeSub
+public import Mathlib.CategoryTheory.Category.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Normed.Group.Ultra
 
 @[expose] public section
 
@@ -118,7 +166,7 @@ theorem nF_fromCols_sel_le [IsUltrametricDist K] [Fintype ι] [DecidableEq ι] [
   have hb : ((fromCols Eᵀ C).submatrix u id).submatrix e id =
       fromBlocks 1 0 (Eᵀ.submatrix (u ∘ e ∘ Sum.inr) id) (C.submatrix (u ∘ e ∘ Sum.inr) id) := by
     ext (a | a) (b | b)
-    · simp [he, hσ, hE, Matrix.one_apply, hs.eq_iff, eq_comm]
+    · simp [he, hσ, hE, Matrix.one_apply, hs.eq_iff]
     · simpa [he, hσ] using congrFun (congrFun hC a) b
     · simp
     · simp
@@ -154,7 +202,7 @@ theorem nF_fromCols_of_id (hM : MulF) [IsUltrametricDist K] [Fintype ι] [Decida
   have hEE : E * Eᵀ = 1 := by
     rw [hE, sel_mul]
     ext a b
-    simp [Matrix.one_apply, hs.eq_iff, eq_comm]
+    simp [Matrix.one_apply, hs.eq_iff]
   have hEC : E * C = 0 := by rw [hE, sel_mul, hC]
   have hEint : ∀ i j, ‖E i j‖ ≤ 1 := fun i j => int_one _ _
   have hEtint : ∀ i j, ‖Eᵀ i j‖ ≤ 1 := fun i j => int_one _ _

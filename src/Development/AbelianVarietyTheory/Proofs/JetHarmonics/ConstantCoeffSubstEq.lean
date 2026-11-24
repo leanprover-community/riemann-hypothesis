@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -34,8 +80,8 @@ theorem intSer_pow {f : ℂ_[q]⟦X⟧} (hf : Bd 1 f) (n : ℕ) : Bd 1 (f ^ n) :
 theorem intSer_aeval {h : ℂ_[q]⟦X⟧} (hh : Bd 1 h) (P : Polynomial ℂ_[q]) (hP : ∀ i, ‖P.coeff i‖ ≤ 1) :
     Bd 1 (Polynomial.aeval h P) := by
   intro n
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Polynomial.aeval_eq_sum_range, map_sum]
+
+  rw [Polynomial.aeval_eq_sum_range, map_sum]
   refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun i _ => ?_
   rw [coeff_smul, smul_eq_mul, norm_mul]
   exact mul_le_one₀ (hP _) (norm_nonneg _) (intSer_pow hh i n)
@@ -93,9 +139,9 @@ theorem intSer_of_funEq (f h A B : ℂ_[q]⟦X⟧) (N : ℕ) (hf : constantCoeff
     linear_combination (-B) * this
   have key := congrArg (coeff n) e
   rw [hL, hR, map_add (f := _), map_add (f := _), hX, hX] at key
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_mul, map_pow, map_sum, hA0, hB0, hf, hP0, hsQ, hQ0, h'0, one_pow, mul_one,
-    Finset.sum_const, Finset.card_range, nsmul_eq_mul] at key
+
+  simp only [map_mul, map_pow, map_sum, hA0, hB0, hf, hP0, hsQ, hQ0, h'0, one_pow, mul_one,
+  Finset.sum_const, Finset.card_range, nsmul_eq_mul] at key
   have h1 := intSer_mul (intSer_aeval hh P hPi) hA n
   have h2 := intSer_mul (intSer_pow hPs N) hB n
   have k2 : (coeff 1 h ^ n - N) * coeff n f =
@@ -186,10 +232,10 @@ theorem const_of_funEq (e : ℂ_[q]⟦X⟧) (m : ℕ) (he0 : constantCoeff e = 0
   rw [hL, hR] at h
   have h3 := mul_left_cancel₀ (pow_ne_zero n (X_ne_zero (R := ℂ_[q]))) (add_left_cancel h)
   have h4 := congrArg constantCoeff h3
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_mul, map_mul, map_pow, h'0, constantCoeff_subst_eq he0, map_sum,
-    Finset.sum_congr rfl (g := fun _ => (1 : ℂ_[q])), Finset.sum_const, Finset.card_range, nsmul_eq_mul,
-    mul_one, mul_comm] at h4
+
+  rw [map_mul, map_mul, map_pow, h'0, constantCoeff_subst_eq he0, map_sum,
+  Finset.sum_congr rfl (g := fun _ => (1 : ℂ_[q])), Finset.sum_const, Finset.card_range, nsmul_eq_mul,
+  mul_one, mul_comm] at h4
   · have h5 := congrArg norm (mul_left_cancel₀ hQ h4)
     rw [norm_pow, he1, one_pow] at h5
     exact hm.ne' h5

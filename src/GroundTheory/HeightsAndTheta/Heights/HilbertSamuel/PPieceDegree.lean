@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPieceDegree
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEmbeddingWeight
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.NumberTheory.NumberField.Basic
 public import GroundTheory.GlobalFields.ComplexMultiplication.ExistsRingEquivExtendOfIsTranscendenceBasis
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Analysis.Complex.Cardinality
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodA
 
 @[expose] public section
 

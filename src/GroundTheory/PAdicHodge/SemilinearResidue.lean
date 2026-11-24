@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Nat.Prime.Defs
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.CharP.Defs
+public import Mathlib.LinearAlgebra.Dimension.Finite
 
 @[expose] public section
 

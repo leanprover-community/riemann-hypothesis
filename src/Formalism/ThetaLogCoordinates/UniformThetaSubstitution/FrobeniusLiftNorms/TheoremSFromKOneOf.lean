@@ -1,9 +1,56 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.CyclicPowerClassOfExpEquiv
+public import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
+import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartB
 public import Lemmata.GeneralBFactRightExtra.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Ring.Ultra
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
+public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 
 @[expose] public section
 
@@ -41,8 +88,8 @@ theorem integral_neg {f : MvPowerSeries ι K} (hf : Integral f) : Integral (-f) 
 
 theorem integral_sum {α : Type} (s : Finset α) (F : α → MvPowerSeries ι K)
     (h : ∀ a ∈ s, Integral (F a)) : Integral (∑ a ∈ s, F a) := fun n => by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun a ha => h a ha n
 
 theorem integral_C {a : K} (ha : ‖a‖ ≤ 1) : Integral (MvPowerSeries.C a : MvPowerSeries ι K) := by
@@ -62,8 +109,7 @@ theorem integral_X (x : ι) : Integral (MvPowerSeries.X x : MvPowerSeries ι K) 
 theorem integral_zero : Integral (0 : MvPowerSeries ι K) := fun n => by simp
 
 theorem integral_natCast (k : ℕ) : Integral ((k : ℕ) : MvPowerSeries ι K) := by
-  rw [← map_natCast (MvPowerSeries.C : K →+* MvPowerSeries ι K)]
-  exact integral_C (IsUltrametricDist.norm_natCast_le_one K k)
+  simpa using integral_C (a := (k : K)) (IsUltrametricDist.norm_natCast_le_one K k)
 
 theorem small_mul {c : ℝ} (hc : 0 ≤ c) {a h : MvPowerSeries ι K} (ha : Integral a)
     (hh : ∀ n, ‖MvPowerSeries.coeff n h‖ ≤ c) (n : ι →₀ ℕ) :
@@ -72,9 +118,7 @@ theorem small_mul {c : ℝ} (hc : 0 ≤ c) {a h : MvPowerSeries ι K} (ha : Inte
   rw [MvPowerSeries.coeff_mul]
   refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hc fun x _ => ?_
   rw [norm_mul]
-  calc ‖MvPowerSeries.coeff x.1 a‖ * ‖MvPowerSeries.coeff x.2 h‖ ≤ 1 * c :=
-        mul_le_mul (ha _) (hh _) (norm_nonneg _) zero_le_one
-    _ = c := one_mul c
+  simpa using mul_le_mul (ha x.1) (hh x.2) (norm_nonneg _) zero_le_one
 
 theorem cg_refl (p : ℕ) (f : MvPowerSeries ι K) : Cg p f f := fun n => by
   rw [sub_self, map_zero, norm_zero]; exact pinv_nonneg p
@@ -97,8 +141,8 @@ theorem cg_sub {p : ℕ} {f g f' g' : MvPowerSeries ι K} (h1 : Cg p f g) (h2 : 
 
 theorem cg_sum {p : ℕ} {α : Type} (s : Finset α) (F G : α → MvPowerSeries ι K)
     (h : ∀ a ∈ s, Cg p (F a) (G a)) : Cg p (∑ a ∈ s, F a) (∑ a ∈ s, G a) := fun n => by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Finset.sum_sub_distrib, map_sum]
+
+  rw [← Finset.sum_sub_distrib, map_sum]
   exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (pinv_nonneg p) fun a ha => h a ha n
 
 theorem integral_of_cg {p : ℕ} {f g : MvPowerSeries ι K} (h : Cg p f g) (hg : Integral g) :
@@ -162,9 +206,7 @@ theorem cg_frob2_sum {p : ℕ} (hp : p.Prime) (hn : ‖(p : K)‖ = (p : ℝ)⁻
   simp only [← pow_mul, ← sq] at h2 h3
   exact cg_trans h3 h2
 
-theorem norm_pow_sub_pow {p : ℕ} {a b : K} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1)
-    (h : ‖a - b‖ ≤ (p : ℝ)⁻¹) (k : ℕ) : ‖a ^ k - b ^ k‖ ≤ (p : ℝ)⁻¹ := by
-  first | exact Bl.general_b_fact_right'''.goal1 .. | (apply Bl.general_b_fact_right'''.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_right'''.goal1 <;> assumption) | (apply @Bl.general_b_fact_right'''.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_right'''.goal1 <;> assumption) | (apply @Bl.general_b_fact_right'''.goal1 <;> first | assumption | infer_instance) | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› p a b ha hb h k | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› p a b ha hb h | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› p a b ha hb | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› p a b ha | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› p a b | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› p a | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› p | exact @Bl.general_b_fact_right'''.goal1 K ‹_› ‹_› | exact @Bl.general_b_fact_right'''.goal1 K ‹_› | exact @Bl.general_b_fact_right'''.goal1 K
+alias norm_pow_sub_pow := _root_.Bl.general_b_fact_right'''.goal1
 
 end Cong
 
@@ -223,8 +265,7 @@ theorem constantCoeff_sPos {p : ℕ} (hp : p ≠ 0) (s : ZMod (2 * ν)) (ab : Fi
     MvPowerSeries.constantCoeff (sPos (K := K) p s ab) = 0 := by
   rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, coeff_sPos]
   refine Finset.sum_eq_zero fun l _ => if_neg fun h => ?_
-  have := Finsupp.single_eq_zero.1 h.symm
-  exact (pow_ne_zero l (pow_ne_zero 2 hp)) this
+  exact (pow_ne_zero l (pow_ne_zero 2 hp)) (Finsupp.single_eq_zero.1 h.symm)
 
 def linW [NeZero ν] (w : ZMod (2 * ν) → K) (ab : Fin r0 × Fin r1) : MvPowerSeries (ZV ν r0 r1) K :=
   ∑ s : ZMod (2 * ν), MvPowerSeries.C (w s) * MvPowerSeries.X (s, ab)
@@ -235,16 +276,16 @@ def posW [NeZero ν] (p : ℕ) (w : ZMod (2 * ν) → K) (ab : Fin r0 × Fin r1)
 
 theorem constantCoeff_linW [NeZero ν] (w : ZMod (2 * ν) → K) (ab : Fin r0 × Fin r1) :
     MvPowerSeries.constantCoeff (linW w ab) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [linW, map_sum]
+
+  simp [linW, map_sum]
 
 theorem coeff_posW [NeZero ν] (p : ℕ) (w : ZMod (2 * ν) → K) (ab : Fin r0 × Fin r1)
     (n : ZV ν r0 r1 →₀ ℕ) :
     MvPowerSeries.coeff n (posW p w ab) = ∑ l ∈ range (n.degree + 1), (-1) ^ l *
       MvPowerSeries.coeff n (∑ s : ZMod (2 * ν), MvPowerSeries.C (w (s + 2 * (l : ZMod (2 * ν)))) *
         (MvPowerSeries.X (s, ab) : MvPowerSeries (ZV ν r0 r1) K) ^ ((p ^ 2) ^ l)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [posW, map_sum, MvPowerSeries.coeff_C_mul, coeff_sPos, Finset.mul_sum]
+
+  simp only [posW, map_sum, MvPowerSeries.coeff_C_mul, coeff_sPos, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [← Equiv.sum_comp (Equiv.addRight (2 * (l : ZMod (2 * ν))))]
@@ -333,9 +374,8 @@ theorem val_add_one_mod_two [NeZero ν] (s : ZMod (2 * ν)) : (s + 1).val % 2 = 
     Nat.mod_eq_of_lt (show 1 < 2 * ν by omega)]
 
 theorem val_add_two_mod_two [NeZero ν] (s : ZMod (2 * ν)) : (s + 2).val % 2 = s.val % 2 := by
-  have e : s + 2 = s + 1 + 1 := by ring
   have h1 := val_add_one_mod_two s
-  rw [e, val_add_one_mod_two]
+  rw [show s + 2 = s + 1 + 1 by ring, val_add_one_mod_two]
   omega
 
 variable {K : Type}
@@ -350,17 +390,15 @@ variable [NormedField K] [IsUltrametricDist K]
 
 theorem norm_wE {u : ZMod (2 * ν) → K} (hu : ∀ s, ‖u s‖ ≤ 1) (k : ℕ) (s : ZMod (2 * ν)) :
     ‖wE u k s‖ ≤ 1 := by
-  unfold wE
-  split_ifs
-  · exact hu s
-  · simp
+  by_cases h : s.val % 2 = k
+  · simpa [wE, h] using hu s
+  · simp [wE, h]
 
 theorem norm_wE' {u : ZMod (2 * ν) → K} (hu : ∀ s, ‖u s‖ ≤ 1) (k : ℕ) (s : ZMod (2 * ν)) :
     ‖wE' u k s‖ ≤ 1 := by
-  unfold wE'
-  split_ifs
-  · exact hu _
-  · simp
+  by_cases h : s.val % 2 = k
+  · simpa [wE', h] using hu (s + 1)
+  · simp [wE', h]
 
 theorem wE_step2 [NeZero ν] {p : ℕ} (hp : p ≠ 0) {u : ZMod (2 * ν) → K} (hu : ∀ s, ‖u s‖ ≤ 1)
     (hu2 : ∀ s, ‖u (s + 1) - u s ^ p‖ ≤ (p : ℝ)⁻¹) (k : ℕ) (s : ZMod (2 * ν)) :
@@ -443,8 +481,8 @@ theorem sum_dual {K ι : Type} [Field K] {ν r0 r1 : ℕ} [NeZero ν] (a b : Fin
       intro s
       have : ∑ r, MvPowerSeries.C (a r s) * P s ab * (MvPowerSeries.C (b r s') * Q s' ab) =
           MvPowerSeries.C (∑ r, a r s * b r s') * (Q s' ab * P s ab) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.sum_mul]
+
+        rw [map_sum, Finset.sum_mul]
         exact Finset.sum_congr rfl fun r _ => by rw [map_mul]; ring
       rw [this, h]
       split_ifs <;> simp
@@ -476,9 +514,7 @@ theorem zLin_true (om oms : Fin ν → ZMod (2 * ν) → K) (e : EV ν r0 r1) :
 theorem constantCoeff_zLin (om oms : Fin ν → ZMod (2 * ν) → K) (x : Bool × EV ν r0 r1) :
     MvPowerSeries.constantCoeff (zLin om oms x) = 0 := by
   obtain ⟨b, e⟩ := x
-  cases b
-  · rw [zLin_false]; exact constantCoeff_linW _ _
-  · rw [zLin_true]; exact constantCoeff_linW _ _
+  cases b <;> simp [zLin_false, zLin_true, constantCoeff_linW]
 
 theorem constantCoeff_sSub (om oms : Fin ν → ZMod (2 * ν) → K) {μ : PowerSeries K}
     (hμ0 : PowerSeries.constantCoeff μ = 0) (x : Bool × EV ν r0 r1) :
@@ -502,8 +538,8 @@ theorem integral_sSub {p : ℕ} (hp : p.Prime) (hn : ‖(p : K)‖ = (p : ℝ)�
 
 theorem constantCoeff_hhS {p : ℕ} (hp : p ≠ 0) (u : ZMod (2 * ν) → K) :
     MvPowerSeries.constantCoeff (hhS (r0 := r0) (r1 := r1) p u) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [hhS, map_sum, constantCoeff_sPos hp]
+
+  simp [hhS, map_sum, constantCoeff_sPos hp]
 
 theorem subst_hh_eq_sum {τ E : Type} [Fintype E] (p : ℕ) (c c' : K)
     {φ : Bool × E → MvPowerSeries τ K} (hs : MvPowerSeries.HasSubst φ) :
@@ -513,8 +549,8 @@ theorem subst_hh_eq_sum {τ E : Type} [Fintype E] (p : ℕ) (c c' : K)
   have hC : ∀ r : K, MvPowerSeries.substAlgHom hs (MvPowerSeries.C r) = MvPowerSeries.C r :=
     fun r => (MvPowerSeries.substAlgHom hs).commutes r
   rw [hh1, ← MvPowerSeries.coe_substAlgHom hs]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_sub, map_mul, map_pow, hC, MvPowerSeries.substAlgHom_X]
+
+  simp only [map_sum, map_sub, map_mul, map_pow, hC, MvPowerSeries.substAlgHom_X]
 
 theorem hhS_eq {p : ℕ} {om oms : Fin ν → ZMod (2 * ν) → K}
     (hO3 : ∀ a b : ZMod (2 * ν), a.val % 2 = b.val % 2 →
@@ -644,8 +680,8 @@ theorem constantCoeff_Gser {K : Type} [Field K] {p : ℕ} (hp : p ≠ 0) (c c' :
 theorem constantCoeff_Gtot {K E : Type} [Field K] [Fintype E] {p : ℕ} (hp : p ≠ 0)
     (c c' ϖ : K) : MvPowerSeries.constantCoeff (Gtot (E := E) p c c' ϖ) = 0 := by
   unfold Gtot
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun e _ => ?_
   have h0 : ∀ a : Fin 2, MvPowerSeries.constantCoeff (MvPowerSeries.C ϖ *
       (MvPowerSeries.X (if a = 0 then (false, e) else (true, e)) :
@@ -661,8 +697,8 @@ theorem subst_Gtot {K E : Type} [Field K] [Fintype E] (p : ℕ) (c c' ϖ : K) :
       (MvPowerSeries.X x : MvPowerSeries (Bool × E) K)) :=
     MvPowerSeries.hasSubst_of_constantCoeff_zero fun x => by simp
   unfold Gtot
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom hψ, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom hψ, map_sum]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [MvPowerSeries.coe_substAlgHom hψ, MvPowerSeries.subst_comp_subst_apply
     (MvPowerSeries.hasSubst_of_constantCoeff_zero fun a => by simp) hψ]

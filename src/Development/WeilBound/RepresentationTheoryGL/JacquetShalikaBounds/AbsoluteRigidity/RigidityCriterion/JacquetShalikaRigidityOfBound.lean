@@ -1,6 +1,44 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.CauchyLoc
+public import Development.AbelianVarietyTheory.Definitions.Foundations.ValuedAlgebraMapEqOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,9 +56,7 @@ variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyCompl
 def twS (χ : HChar E) (p : Σ a, CG E a) : Σ a, CG E a := ⟨p.1, p.2.twist χ⟩
 
 omit [_root_.NumberField.IsTotallyComplex E] in
-theorem unrAt_inv {χ : HChar E} {w : HeightOneSpectrum (𝓞 E)} (h : χ.UnrAt w) : (χ⁻¹).UnrAt w := fun x hx => by
-  change (χ.1 (GlobalTheory.Mem.Chr.localIdele E w x))⁻¹ = 1
-  rw [show χ.1 (GlobalTheory.Mem.Chr.localIdele E w x) = 1 from h x hx, inv_one]
+alias unrAt_inv := _root_.Formalism.L2.Host.HChar.UnrAt.inv
 
 theorem exists_fin {d : ℕ} (B : Multiset ℂˣ) (hB : Multiset.card B = d) :
     ∃ f : Fin d → ℂˣ, Finset.univ.val.map f = B := by
@@ -119,8 +155,8 @@ theorem jacquet_shalika_rigidity_of_bound : AbsRig → UnitEx → SatTw → DetO
     let φ : Multiset ℂˣ →+ ℂ := Multiset.sumAddMonoidHom.comp (Multiset.mapAddMonoidHom fun z : ℂˣ => (z : ℂ) ^ k)
     have hφ : ∀ M : Multiset ℂˣ, φ M = (M.map fun z : ℂˣ => (z : ℂ) ^ k).sum := fun M => rfl
     have h := congrArg φ (hsum w)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum] at h
+
+    rw [map_sum, map_sum] at h
     simp only [hφ, hBi, hBj, sum_pow] at h
     have ev : ∀ τ : ℝ, (((ν τ).val w.1 : ℂˣ) : ℂ) = (nq w : ℂ) ^ (-(τ : ℂ)) := fun τ => (hν τ).2.1 w.1
     simp only [ev] at h

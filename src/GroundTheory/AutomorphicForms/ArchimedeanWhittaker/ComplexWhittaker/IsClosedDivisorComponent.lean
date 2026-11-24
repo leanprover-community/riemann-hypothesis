@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.InstMeasurableSpaceU2
+public import GroundTheory.AutomorphicForms.UnitaryRepresentations.IsInvariantIffCommuteStarProjection
+import GroundTheory.AutomorphicForms.RealGroupsIwasawa
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -114,7 +119,7 @@ theorem map_Kint {φ : U2 → ℂ} (hφ : Continuous φ) (g : GL2C) (x : H) :
   unfold Kint
   rw [← ContinuousLinearMap.integral_comp_comm (σ g : H →L[ℂ] H) (integrable_Kint σ hφ x)]
   congr 1; funext k
-  simp [UnitaryRep.map_mul_apply]
+  simp
 
 theorem map_kC_Kint {φ : U2 → ℂ} (hφ : Continuous φ) (l : U2) (x : H) :
     σ (kC l) (Kint σ φ x) = Kint σ (fun k => φ (l⁻¹ * k)) x := by
@@ -142,8 +147,8 @@ theorem map_Q (n : ℕ) (q : ℤ) (l : U2) (x : H) :
   simp_rw [← integral_smul]
   rw [← integral_finsetSum]
   · congr 1; funext k
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [psi_inv_mul, map_sum, Finset.sum_smul]
+
+    rw [psi_inv_mul, map_sum, Finset.sum_smul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [smul_smul]
     congr 1
@@ -164,8 +169,7 @@ theorem map_tC_Q (n : ℕ) (q : ℤ) {i : ℕ} (hi : i ≤ n) (a b : ℝ) (x : H
     ext r s; fin_cases r <;> fin_cases s <;> simp [← Complex.exp_add]
   rw [hinv, psi_tC_mul n q hi, smul_smul, map_mul, ← Complex.exp_conj]
   congr 2
-  simp only [map_mul, conj_I, map_add (f := _), map_sub, map_neg, Complex.conj_ofReal, map_intCast,
-    map_natCast]
+  simp only [map_mul, conj_I, Complex.conj_ofReal]
   push_cast
   ring
 

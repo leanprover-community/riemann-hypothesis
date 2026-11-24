@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
 public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.GJGlobalModulus
-public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

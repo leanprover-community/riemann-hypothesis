@@ -1,6 +1,7 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.TensorProductVectors
+import Mathlib.Algebra.Module.StablyFree.Basic
 
 @[expose] public section
 

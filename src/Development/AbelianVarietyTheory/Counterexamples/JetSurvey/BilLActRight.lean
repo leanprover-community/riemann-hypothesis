@@ -1,7 +1,46 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
 
 @[expose] public section
 
@@ -42,7 +81,7 @@ theorem additive_eq (G : FGLaw S d) (g : PS S 1 d)
       rw [pderiv_ev (czFF G), Fintype.sum_prod_type]
       simp
     have := congrArg (fun f => ev (n := 1) ![pt S d 0, 0] (pderiv (R := S) ((1 : Fin 2), b) f)) hg
-    simp only [map_add (f := _), d_evF, pderiv_second_ev_first_point_eq_zero, d_evY, zero_add, ez_y, ev_sum cz1, ev_mul cz1, hx, Jac] at this
+    simp only [map_add (f := _), d_evF, pderiv_second_ev_first_point_eq_zero, d_evY, zero_add, ez_y, ev_sum cz1, ev_mul cz1, hx] at this
     exact this
   have h2 : ∀ a, pderiv (R := S) ((0 : Fin 1), a) g =
       ∑ b, C (constantCoeff (pderiv (R := S) ((0 : Fin 1), b) g)) * Om G b a := by
@@ -64,8 +103,8 @@ theorem additive_eq (G : FGLaw S d) (g : PS S 1 d)
   have hd : ∀ v, pderiv (R := S) v (g - ∑ j, C (constantCoeff (pderiv (R := S) ((0 : Fin 1), j) g)) * logOf G j) = 0 := by
     rintro ⟨j, c⟩
     obtain rfl : j = 0 := Subsingleton.elim _ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sum, h2 c, sub_eq_zero]
+
+    rw [map_sub, map_sum, h2 c, sub_eq_zero]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [← smul_eq_C_mul, ← smul_eq_C_mul, Derivation.map_smul, pderiv_logOf]
   rw [eq_C_of_pderiv_zero hd]
@@ -100,8 +139,8 @@ theorem log_act {O : Type} [CommRing O] (G : FGLaw S d) (A : OAct O G) (a : O) (
   rw [additive_eq G _ hadd]
   refine Finset.sum_congr rfl fun j _ => ?_
   congr 2
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [pderiv_ev hA, Fintype.sum_prod_type, Fin.sum_univ_one, map_sum]
+
+  rw [pderiv_ev hA, Fintype.sum_prod_type, Fin.sum_univ_one, map_sum]
   have hO : ∀ c, constantCoeff (Om G i c) = if i = c then 1 else 0 := fun c => by
     have := congrFun (congrFun (cc_om G) i) c
     simpa [Matrix.one_apply] using this
@@ -131,9 +170,9 @@ theorem bilL_act_left {O : Type} [CommRing O] (G : FGLaw S d) (A : OAct O G) (a 
   have hP : CZ (![comp1 (A.act a) (pt S (n := 2) d 0), pt S d 1] : Fin 2 → Pt S 2 d) :=
     CZ.cons (fun c => by rw [comp1, cc_ev czX]; exact A.const a c) czY
   rw [ev_bilL G cc hP]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, log_act_at, bilL, Matrix.mul_apply, Matrix.transpose_apply,
-    Matrix.of_apply, smul_eq_C_mul, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
+
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, log_act_at, bilL, Matrix.mul_apply, Matrix.transpose_apply,
+  Matrix.of_apply, smul_eq_C_mul, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => ?_
@@ -147,9 +186,9 @@ theorem bilL_act_right {O : Type} [CommRing O] (G : FGLaw S d) (A : OAct O G) (b
   have hP : CZ (![pt S (n := 2) d 0, comp1 (A.act b) (pt S d 1)] : Fin 2 → Pt S 2 d) :=
     CZ.cons (cc_pt 0) (CZ.cons (fun c => by rw [comp1, cc_ev czY]; exact A.const b c) CZ.nil)
   rw [ev_bilL G cc hP]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, log_act_at, bilL, Matrix.mul_apply,
-    Matrix.of_apply, smul_eq_C_mul, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
+
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, log_act_at, bilL, Matrix.mul_apply,
+  Matrix.of_apply, smul_eq_C_mul, map_sum, map_mul, Finset.sum_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => ?_
@@ -160,9 +199,9 @@ theorem bilL_mixed (G : FGLaw S d) (cc : Fin d → Fin d → S) (i l : Fin d) :
   have hO : ∀ a c, constantCoeff (Om G a c) = if a = c then 1 else 0 := fun a c => by
     have := congrFun (congrFun (cc_om G) a) c
     simpa [Matrix.one_apply] using this
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [bilL, lg, map_sum, Derivation.map_smul, Derivation.leibniz, smul_eq_mul, d_evX, d_evY, pderiv_second_ev_first_point_eq_zero, pderiv_first_ev_second_point_eq_zero,
-    pderiv_logOf, mul_zero, add_zero, zero_add, map_add, map_mul, constantCoeff_smul, cc_ev czX, cc_ev czY, hO]
+
+  simp only [bilL, lg, map_sum, Derivation.map_smul, Derivation.leibniz, smul_eq_mul, d_evX, d_evY, pderiv_second_ev_first_point_eq_zero, pderiv_first_ev_second_point_eq_zero,
+  pderiv_logOf, mul_zero, add_zero, zero_add, map_mul, constantCoeff_smul, cc_ev czX, cc_ev czY, hO]
   simp
 
 theorem bilL_injective (G : FGLaw S d) : Function.Injective (bilL G) := fun c c' h => by

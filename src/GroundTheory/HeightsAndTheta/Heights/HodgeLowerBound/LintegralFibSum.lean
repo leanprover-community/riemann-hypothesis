@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeG
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Analysis.Calculus.FDeriv.Measurable
 
 @[expose] public section
 

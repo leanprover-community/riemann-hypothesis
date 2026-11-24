@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageHilb
 
@@ -105,8 +104,8 @@ theorem proof : PullConeDegree.Statement := by
       ← algebraMap_int_eq, aeval_map_algebraMap]
   have hψg : mConeMapQ y g =
       ∑ j, mConeMapQ y (b j) * monomial (Finsupp.equivFunOnFinite.symm e) (aeval y (L j)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← huv, map_add (f := _), RingHom.mem_ker.mp hu, zero_add, ← hb, map_sum]
+
+    rw [← huv, map_add (f := _), RingHom.mem_ker.mp hu, zero_add, ← hb, map_sum]
     simp only [map_mul, hmapL]
 
   refine ⟨fun j => weightedHomogeneousComponent (NumbersDVR.blockWeight ι) (d - e) (b j),

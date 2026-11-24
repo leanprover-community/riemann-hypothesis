@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
+public import Formalism.LocalToGlobal.CharacterGerms.Interface
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 @[expose] public section
 

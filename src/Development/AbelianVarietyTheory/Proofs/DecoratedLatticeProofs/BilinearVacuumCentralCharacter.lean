@@ -1,21 +1,67 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsBiSmooth
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LintegralCompactLe
+import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsUniqueIsProdMeasureFinAway
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulEqZeroOfInf
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BiThetaOfVac
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CentralEigenRealDatumFiniteSumFockProducts
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DoubleLiftFockSumEqSumIteratedLifts
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousIntegralCompactAutomorphicQuotientParaStatement
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilOperatorIntegralCommOfBoundedFiniteMeasureStatement
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DoubleLiftFockSumEqSumIteratedLifts
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SetIntegralFundamentalDomainRightTranslateInvariStatement
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilOperatorIntegralCommOfBoundedFiniteMeasureStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.WeilRepresentationContinuous
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMultTOfEquivariant
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CompactAverageSmoothFamilyClosedUnderDerivatives
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothIffRealCoordinatesAndRealLines
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMultTOfEquivariant
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.LevelADef
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -123,11 +169,11 @@ theorem fderiv_om (hom : IsWeilDatumO ψ S T χS χT om) (hc : Chart θ σ) {n :
     rw [map_add (f := _), add_assoc]
   have h3 : dv θ σ S T (mov θ g⁻¹ h⁻¹ u) f = ∑ j, ((e.repr (mov θ g⁻¹ h⁻¹ u) j : ℝ) : ℂ) • dv θ σ S T (e j) f := by
     have := congrArg (fun z => ((dvL hc hψ S T z ⟨f, hf⟩ : thetaSub ψ S T) : WO S T → ℂ)) (e.sum_repr (mov θ g⁻¹ h⁻¹ u))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, Submodule.coe_sum, Submodule.coe_smul] at this
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, Submodule.coe_sum, Submodule.coe_smul] at this
     exact this.symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h2, dv_om hom hc g h u hf, h3, map_sum, map_add (piW θ T S), hc.pi_iota] at h1
+
+  rw [h2, dv_om hom hc g h u hf, h3, map_sum, map_add (piW θ T S), hc.pi_iota] at h1
   simp only [map_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at h1
   rw [h1]
   ring
@@ -458,8 +504,8 @@ theorem biLift_sum (hwa : IsWeilDatumO ψ A S χA χS oma) (hwb : IsWeilDatumO �
       intro v; funext u; simp [Finset.sum_apply, mul_comm]
     have e2 : (fun v => oma (h₀, h₁) (fun u => ∑ i, X i u * Y i v) 0) = ∑ i, oma (h₀, h₁) (X i) 0 • Y i := by
       funext v; rw [e1 v, map_sum]; simp [Finset.sum_apply, mul_comm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e2, map_sum]; simp [Finset.sum_apply]
+
+    rw [e2, map_sum]; simp [Finset.sum_apply]
   have hin : ∀ h₁, ∫ h₀ in vA.𝓕, φ h₀ * ∑ i, oma (h₀, h₁) (X i) 0 * omb (h₁, h₂) (Y i) 0 ∂vA.μ =
       ∑ i, (∫ g in vA.𝓕, oma (g, h₁) (X i) 0 * φ g ∂vA.μ) * omb (h₁, h₂) (Y i) 0 := by
     intro h₁

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSublatticeDegree
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEuclideanSections
+public import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
 @[expose] public section
 

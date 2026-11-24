@@ -1,7 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
+public import Formalism.GradedWeylDivisibility.StatementA
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
+import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
+public import Mathlib.LinearAlgebra.Matrix.Block
 
 @[expose] public section
 
@@ -61,9 +65,9 @@ theorem rowAct_theta (R : Type) [CommRing R] (m : ℕ) (vec : Bool) (g : Matrix 
   have h : (rowAct R g).comp (theta R m vec) = (theta R m vec).comp (lin (act vec g)) := by
     apply MvPolynomial.algHom_ext
     intro c
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, theta, lin, MvPolynomial.aeval_X, map_sum, map_mul, MvPolynomial.aeval_C,
-      MvPolynomial.algebraMap_eq]
+
+    simp only [AlgHom.comp_apply, theta, lin, MvPolynomial.aeval_X, map_sum, map_mul, MvPolynomial.aeval_C,
+    MvPolynomial.algebraMap_eq]
     exact rowAct_Nv R m vec g c
   exact AlgHom.congr_fun h P
 

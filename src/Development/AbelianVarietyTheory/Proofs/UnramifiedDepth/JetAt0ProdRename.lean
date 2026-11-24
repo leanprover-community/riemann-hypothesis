@@ -1,12 +1,60 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.CharacterGerms.NondegenerateCharts
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
-public import Formalism.LocalToGlobal.CharacterGerms.BlockAdmissibleChart
-public import Formalism.LocalToGlobal.CharacterGerms.NegMem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
-public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
+public import Formalism.LocalToGlobal.CharacterGerms.MemVarsProdAll
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
+import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
+import Formalism.LocalToGlobal.CharacterGerms.CharacteristicFromRanks
 
 @[expose] public section
 
@@ -208,8 +256,8 @@ theorem _root_.GlobalTheory.JetProd.jetAt0_prod_rename (hd : ∀ i j x y, e i x 
     conv_lhs => rw [show P = fun j => ∑ v ∈ (P j).support,
       MvPolynomial.monomial v (AddMonoidAlgebra.coeff (P j) v) from
         funext fun j => MvPolynomial.as_sum (P j)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, MvPolynomial.rename_monomial]
+
+    simp only [map_sum, MvPolynomial.rename_monomial]
     rw [Finset.prod_univ_sum]
     refine Finset.sum_congr rfl fun f _ => ?_
     rw [prod_monomial_eq_monomial_sum_prod']
@@ -236,18 +284,6 @@ noncomputable def rowSer (hL : Fin 2 → ZMod d → ZMod d → MvPowerSeries (WV
   g * mvExp (match k with
       | Option.some (g, a, a') => hL g a a'
       | none => 0)
-
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
-variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] in
-private lemma mvExp_zero_eq_one' {α : Type} : _root_.Formalism.IncomingBounds.mvExp (0 : MvPowerSeries α C) = 1 := by
-  ext m
-  show (∑ k ∈ Finset.range (m.degree + 1),
-    MvPowerSeries.coeff m ((0 : MvPowerSeries α C) ^ k) / (k.factorial : C)) =
-      MvPowerSeries.coeff m 1
-  rw [Finset.sum_range_succ']
-  simp
 
 open scoped BigOperators in
 open NumberField in
@@ -350,7 +386,7 @@ theorem _root_.GlobalTheory.JetProd.jetProd : _root_.Formalism.L2.FormalSeriesBo
       have hK : _root_.Formalism.L2.FormalSeriesBounds.kindAll pl kind ρ = none := by unfold _root_.Formalism.L2.FormalSeriesBounds.kindAll; rw [dite_eq_right hn]
       rw [hZ1, hK]
       show MvPowerSeries.rename _ (1 * _root_.Formalism.IncomingBounds.mvExp 0) = 1
-      rw [mvExp_zero_eq_one', mul_one, map_one]
+      rw [_root_.Formalism.L2.FormalSeriesBounds.CharacteristicFromRanks.mvExp_zero, mul_one, map_one]
     · intro s
       rw [hZ, _root_.Formalism.L2.FormalSeriesBounds.kindAll_pl hpl]
   simp only [valOf_eq_jetAt0_prod_rename_rowSer]

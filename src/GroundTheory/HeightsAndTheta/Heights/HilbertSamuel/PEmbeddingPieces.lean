@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEmbeddingPieces
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPiecesAdditive
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPieceDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEmbeddingWeight
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

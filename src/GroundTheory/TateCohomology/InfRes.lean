@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.TateCohomology.DeltaMap
 public import GroundTheory.TateCohomology.CoindOne
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
+public import GroundTheory.TateCohomology.DeltaMap
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

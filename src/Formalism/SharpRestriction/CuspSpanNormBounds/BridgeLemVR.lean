@@ -1,7 +1,53 @@
 module
 
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsMassConstOne
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLandA
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ConjOMemHcompl
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassSt
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsNeZeroOfIsLattice
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.IsClassRepsMap
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapNeZeroOfMemHcompl
 
 @[expose] public section
 
@@ -35,28 +81,10 @@ theorem mul_mem_locR {p : Ideal (𝓞 K)} {x y : K} (hx : x ∈ locR (K := K) p)
   rw [map_mul, hr, hr', Algebra.smul_def, Algebra.smul_def, Algebra.smul_def, map_mul]
   ring
 
-theorem conjO_mem_hcompl {p : Ideal (𝓞 K)} {s : 𝓞 K} (hs : s ∈ hcompl (K := K) p) :
-    conjO K s ∈ hcompl (K := K) p := by
-  have key : hcompl (K := K) p ≤ (hcompl (K := K) p).comap (conjO K : 𝓞 K →* 𝓞 K) := by
-    conv_lhs => unfold hcompl
-    rw [Submonoid.closure_le]
-    intro s hs
-    show conjO K s ∈ hcompl (K := K) p
-    apply Submonoid.subset_closure
-    refine ⟨hs.2 (conjO K s) rfl, fun t ht => ?_⟩
-    have e : t = s := by
-      apply RingOfIntegers.ext
-      have : (t : K) = star (star (s : K)) := ht
-      rw [star_star] at this
-      exact this
-    rw [e]
-    exact hs.1
-  exact key hs
-
 theorem star_mem_locR {p : Ideal (𝓞 K)} {x : K} (hx : x ∈ locR (K := K) p) :
     star x ∈ locR (K := K) p := by
   obtain ⟨s, hs, hsx⟩ := hx
-  refine ⟨conjO K s, conjO_mem_hcompl hs, ?_⟩
+  refine ⟨conjO K s, _root_.Formalism.HermitianLattices.Ext.L3.WA.conjO_mem_hcompl hs, ?_⟩
   obtain ⟨r, hr⟩ := Submodule.mem_one.1 hsx
   refine Submodule.mem_one.2 ⟨conjO K r, ?_⟩
   rw [Algebra.smul_def] at hr ⊢
@@ -109,13 +137,13 @@ theorem norm_unit (h : K →ₗ⋆[K] K →ₗ[K] K) (h1 : h 1 1 ≠ 0) {M M' : 
     obtain ⟨z', hz', hzM'⟩ := exists_local h h1 hM' hp
     have hl : loc (K := K) p M = Submodule.span (𝓞 K) {a} * loc (K := K) p M' := by
       rw [he, loc_mul hp]
-    have hzin : z ∈ loc (K := K) p M := (hzM z).2 ⟨1, one_mem_locR p, (one_mul z).symm⟩
+    have hzin : z ∈ loc (K := K) p M := (hzM z).2 ⟨1, _root_.Formalism.HermitianLattices.Ext.L3.SplitA.one_mem_locR p, (one_mul z).symm⟩
     rw [hl, Submodule.mem_span_singleton_mul] at hzin
     obtain ⟨m, hm, hmz⟩ := hzin
     obtain ⟨r, hr, rfl⟩ := (hzM' m).1 hm
     have haz : a * z' ∈ loc (K := K) p M := by
       rw [hl, Submodule.mem_span_singleton_mul]
-      exact ⟨z', (hzM' z').2 ⟨1, one_mem_locR p, (one_mul z').symm⟩, rfl⟩
+      exact ⟨z', (hzM' z').2 ⟨1, _root_.Formalism.HermitianLattices.Ext.L3.SplitA.one_mem_locR p, (one_mul z').symm⟩, rfl⟩
     obtain ⟨r', hr', hr'e⟩ := (hzM _).1 haz
     have hz1 : z * star z = 1 := by rw [mul_comm]; exact hz
     have hz1' : z' * star z' = 1 := by rw [mul_comm]; exact hz'

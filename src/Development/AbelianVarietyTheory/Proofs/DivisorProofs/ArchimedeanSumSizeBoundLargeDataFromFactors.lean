@@ -1,13 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.InfClassAt
-public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalUnitaryConjSplitSupportedFiniteAdelicPoi
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetOperatorBoundAtEmbeddingOfComplexOpNormSq
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalUnitaryConjSplitSupportedFiniteAdelicPoi
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
+import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.PaddedLastEntry
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TopPlaceLogTheta
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetRefinement
+public import Mathlib.Algebra.Order.Chebyshev
 
 @[expose] public section
 
@@ -80,7 +122,7 @@ theorem deltaForm_sum {Γ A K M : Type} [Group Γ] [Group A] [Field K] [AddCommG
   · exact Finset.sum_congr rfl fun γ h => if_pos (hA.mem_toFinset.1 h)
   · intro γ h
     rw [Function.mem_support] at h
-    simp only [Finset.coe_sort_coe, Set.Finite.coe_toFinset]
+    simp only [Set.Finite.coe_toFinset]
     by_contra h'
     exact h (if_neg h')
 
@@ -89,12 +131,12 @@ theorem psiC_delta_lin {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : Gr
     psiC (rp.delta cl (∑ i, w i • b i)) x = ∑ i, D.what₂.embLL (w i) • psiC (rp.delta cl (b i)) x := by
   have hA := delta_fin G x hx (rp.x cl)
   have e : rp.delta cl (∑ i, w i • b i) (finG (Xp G) x) = ∑ i, w i • rp.delta cl (b i) (finG (Xp G) x) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [ClassReps.delta, deltaForm_sum _ _ _ _ _ hA, map_sum, map_smul, Finset.smul_sum]
+
+    simp only [ClassReps.delta, deltaForm_sum _ _ _ _ _ hA, map_sum, map_smul, Finset.smul_sum]
     exact Finset.sum_comm
   apply Subtype.ext
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [psiC, e, map_sum, LinearMap.map_smulₛₗ, Submodule.coe_sum, Submodule.coe_smul]
+
+  simp only [psiC, e, map_sum, LinearMap.map_smulₛₗ, Submodule.coe_sum, Submodule.coe_smul]
 
 def RatLe {D : D7} (σ : D.what₂.LL →+* ℂ) (z : ℂ) (r : ℝ) : Prop := ∃ y, D.what₂.embLL y = z ∧ ‖σ y‖ ≤ r
 
@@ -172,8 +214,8 @@ theorem classSum_lin (h : S.SumOK t Φ) (β : CosFam G t) (τ : PureDat G t →�
   simp only [GridChoice.classSum, finsum_eq_sum_of_fintype, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun c _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hΨ c, map_sum, LinearMap.sum_apply, Finset.mul_sum]
+
+  rw [hΨ c, map_sum, LinearMap.sum_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, LinearMap.smul_apply, smul_eq_mul]
   ring
@@ -407,8 +449,8 @@ theorem valAt_eq (c : Fin N → K) (b : C) : valAt lam e b c = ∑ k, c (e.symm 
 
 theorem mapVV_valAt (c : Fin N → K) (b : C) :
     GlobalTheory.CoefModel.mapVV σ lam (valAt lam e b c) = blk σ lam e (fun a => σ (c a)) b := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [valAt_eq, blk, map_sum]
+
+  rw [valAt_eq, blk, map_sum]
   exact Finset.sum_congr rfl fun k _ => LinearMap.map_smulₛₗ _ _ _
 
 theorem form_eq [Fintype C] (c : Fin N → ℂ) :
@@ -426,9 +468,9 @@ theorem form_eq [Fintype C] (c : Fin N → ℂ) :
   have hR : ∀ b, pairK lam (fun τ => (Gd τ).map σ) (blk σ lam e c b) (blk σ lam e c b) =
       ∑ k, ∑ k', star (c (e.symm (b, k))) * (pk k k' * c (e.symm (b, k'))) := by
     intro b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [blk, map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul, hpk, hm,
-      RingHom.id_apply, Finset.mul_sum]
+
+    simp only [blk, map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul, hpk, hm,
+    Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun k' _ => ?_
     simp only [starRingEnd_apply]
@@ -655,8 +697,8 @@ theorem test_bound (C sb : ℝ) (hm : 0 < D.R.m) (hA : 0 ≤ D.R.m * aOne ch.G C
       (Bu := nb b) (Bf := Bf) (fun x => hPsi σ b.2 _ x) hv
     refine ⟨z, ?_, ?_⟩
     · apply D.what₂.embLL.injective
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [ez, valAt_eq, vPair_delta_lin ch hm hOKb b.2 u, map_sum]
+
+      rw [ez, valAt_eq, vPair_delta_lin ch hm hOKb b.2 u, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [map_mul, hy]
       simp
@@ -672,8 +714,8 @@ theorem test_bound (C sb : ℝ) (hm : 0 < D.R.m) (hA : 0 ≤ D.R.m * aOne ch.G C
     simp only [dotProduct]
     rw [← Equiv.sum_comp ch.e.symm, Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun b _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz, map_sum]
+
+    rw [hz, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_mul, mul_comm]
   have hcard : (Fintype.card (TestIx ch.G) : ℝ) ≤ ea * ea := by
@@ -907,7 +949,6 @@ end
 end DeltaFormSums
 section
 open GlobalTheory.SumSize GlobalTheory.RowClaim
-theorem _root_.GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors : SumOKK → DepthK → InfScalK → InfTensK → InfCountK → InfClassK → InfTopK → InfRowK → InfPairK → InfPsiK → InfFormK → InfK := by
-  first | exact @DeltaFormSums.GlobalTheory.CompanionTheory.InfAssembly.infK_of_factors | exact DeltaFormSums.GlobalTheory.CompanionTheory.InfAssembly.infK_of_factors | (intros; apply DeltaFormSums.GlobalTheory.CompanionTheory.InfAssembly.infK_of_factors <;> assumption)
+alias _root_.GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors := _root_.DeltaFormSums.GlobalTheory.CompanionTheory.InfAssembly.infK_of_factors
 
 end

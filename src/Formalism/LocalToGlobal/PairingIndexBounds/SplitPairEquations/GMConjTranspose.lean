@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.NormOneUnitIdeal
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SemiCharImg
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThIndep
 
 @[expose] public section
 

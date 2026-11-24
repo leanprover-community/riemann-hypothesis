@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjectionsStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjections
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -93,8 +95,8 @@ theorem tm_actW (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E) 
     (fun a i => tm E φ (actW R σ J h X a i)) =
       actW R' σ J (hMap σ J φ h) (fun a i => tm E φ (X a i)) := by
   funext a i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [actW, actTup, hMap_mat, Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
+
+  simp only [actW, actTup, hMap_mat, Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
 
 end Alg
 
@@ -125,8 +127,8 @@ theorem Lv_zero (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) 
 theorem Lv_sum (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) {ι : Type} (s : Finset ι)
     (f : ι → Fv F v ⊗[F] E) (hf : ∀ i ∈ s, f i ∈ Lv b v) : ∑ i ∈ s, f i ∈ Lv b v := by
   intro k
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply]
+
+  simp only [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply]
   exact sum_mem fun i hi => hf i hi k
 
 theorem eventually_one (b : Module.Basis (Fin d) F E) :
@@ -157,9 +159,9 @@ theorem eventually_mul (b : Module.Basis (Fin d) F E) :
     rw [smul_mul_smul_comm, Algebra.TensorProduct.basis_apply, Algebra.TensorProduct.basis_apply,
       Algebra.TensorProduct.tmul_mul_tmul, one_mul]
   rw [hyz]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply, map_smul, Finsupp.smul_apply,
-    repr_one_tmul, smul_eq_mul]
+
+  simp only [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply, map_smul, Finsupp.smul_apply,
+  repr_one_tmul, smul_eq_mul]
   exact sum_mem fun k _ => sum_mem fun l _ => mul_mem (mul_mem (hy k) (hz l)) (hv k l m)
 
 theorem act_mem {M n : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F))
@@ -215,7 +217,7 @@ theorem components : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
         ((HA.mat (Fv F v) σ J (hMap σ J (evA v) h) : GL _ _) :
           Matrix (Fin M) (Fin M) (Fv F v ⊗[F] E)) i j ∈ Lv b v := by
       intro h
-      obtain ⟨-, -, -, -, -, ev, -, -, -⟩ := GlobalTheory.T.adelic_tuple_projections F E σ hCM d b M M
+      obtain ⟨-, -, -, -, -, ev, -, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.MeasProj.proj_props F E σ hCM d b M M
       filter_upwards [ev (projFin (fun a i =>
         ((HA.mat (AF F) σ J h : GL _ _) : Matrix (Fin M) (Fin M) (AF F ⊗[F] E)) a i))] with v hv i j
       rw [projV_projFin] at hv
@@ -231,7 +233,7 @@ theorem components : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
     classical
     haveI : Module.Finite F E := Module.finite_of_finrank_pos (by rw [hCM.2.2.1]; norm_num)
     obtain ⟨-, -, -, -, -, -, inj, glue, -⟩ :=
-      GlobalTheory.T.adelic_tuple_projections F E σ hCM _ (Module.finBasis F E) M M
+      _root_.GlobalTheory.CompanionTheory.SW.MeasProj.proj_props F E σ hCM _ (Module.finBasis F E) M M
     have injM : ∀ A B : Matrix (Fin M) (Fin M) (AF F ⊗[F] E),
         A.map (tm E (fstA F)) = B.map (tm E (fstA F)) →
         (∀ v : HeightOneSpectrum (𝓞 F), A.map (tm E (evA v)) = B.map (tm E (evA v))) → A = B := by

@@ -1,9 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPC
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsAtlas
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.SNCstep
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IsOpenAlt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.Immersion
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.SNCstep
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsAtlas
 
 @[expose] public section
 

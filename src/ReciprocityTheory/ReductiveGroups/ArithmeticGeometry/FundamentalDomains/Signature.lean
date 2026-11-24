@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.NumberField.CMField
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

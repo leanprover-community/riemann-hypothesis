@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Order.Interval.Finset.Defs
+public import Mathlib.Order.Interval.Finset.Fin
 
 @[expose] public section
 
@@ -13,18 +15,12 @@ theorem goal1 :
       (Finset.filter.{0} (fun (x : Fin n) ↦ LT.lt.{0} x (DFunLike.coe.{1, 1, 1} (Finset.orderEmbOfFin.{0} J h) i)) J))
     i.val := by
   intro n J k h i
-  have key : Finset.filter (fun (x : Fin n) ↦ x < J.orderEmbOfFin h i) J
-      = (Finset.Iio i).map (J.orderEmbOfFin h).toEmbedding := by
-    ext x
-    simp only [Finset.mem_filter, Finset.mem_map, Finset.mem_Iio]
-    constructor
-    · rintro ⟨hx, hlt⟩
-      have hr : x ∈ Set.range (J.orderEmbOfFin h) := by
-        rw [Finset.range_orderEmbOfFin]; exact hx
-      obtain ⟨j, rfl⟩ := hr
-      exact ⟨j, (J.orderEmbOfFin h).lt_iff_lt.mp hlt, rfl⟩
-    · rintro ⟨j, hj, rfl⟩
-      exact ⟨Finset.orderEmbOfFin_mem J h j, (J.orderEmbOfFin h).lt_iff_lt.mpr hj⟩
-  rw [key, Finset.card_map, Fin.card_Iio]
+  let e := J.orderEmbOfFin h
+  change (J.filter fun x => x < e i).card = i.val
+  have hJ : (Finset.univ : Finset (Fin k)).map e.toEmbedding = J :=
+    Finset.map_orderEmbOfFin_univ J h
+  rw [← hJ, Finset.filter_map, Finset.card_map]
+  change (Finset.univ.filter fun j : Fin k => e j < e i).card = i.val
+  simp only [e.lt_iff_lt, Finset.filter_gt_eq_Iio, Fin.card_Iio]
 
 end Bl.general_b_fact_right_further

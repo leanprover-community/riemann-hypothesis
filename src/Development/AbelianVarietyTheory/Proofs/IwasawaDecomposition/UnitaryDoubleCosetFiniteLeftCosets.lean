@@ -1,6 +1,65 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GEquivIntL
+public import Formalism.SatakeDualWeyl.StatementF
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GEquivIntL
+import Formalism.AlgebraicWeights.IsAlgWeight
+import Formalism.ConjugateSelfDual.Statement
+import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
+import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+import ReciprocityTheory.Automorphisms.PlaceA
+import ReciprocityTheory.GaloisValuations.GlobalA
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeRes
 
 @[expose] public section
 
@@ -11,17 +70,6 @@ noncomputable section
 namespace GlobalTheory.SatInd.DCoset
 
 variable {K : Type} [Field K] [Valued K (WithZero (Multiplicative ℤ))]
-
-theorem le_ofAdd_neg_one_of_lt_one {y : WithZero (Multiplicative ℤ)} (h : y < 1) :
-    y ≤ ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
-  induction y using WithZero.recZeroCoe with
-  | zero => exact zero_le'
-  | coe a =>
-    rw [← WithZero.coe_one, WithZero.coe_lt_coe] at h
-    rw [WithZero.coe_le_coe]
-    have h' : Multiplicative.toAdd a < 0 := h
-    show Multiplicative.toAdd a ≤ -1
-    omega
 
 theorem exists_residue_reps {q : ℕ} (hq : 2 ≤ q)
     (hcard : Nat.card ((Valued.v : Valuation K (WithZero (Multiplicative ℤ))).integer ⧸
@@ -90,7 +138,7 @@ theorem exists_trunc (ϖ : K)
       exact (intL K).add_mem (hRO hr) ((intL K).mul_mem hϖO (hTO ht))
     · intro x hx
       obtain ⟨r, hr, hxr⟩ := hR x hx
-      have hle : v (x - r) ≤ v ϖ := hϖ ▸ le_ofAdd_neg_one_of_lt_one hxr
+      have hle : v (x - r) ≤ v ϖ := hϖ ▸ _root_.Formalism.UG.P.satake_lt_one_le hxr
       set y := (x - r) * ϖ⁻¹ with hy
       have hyO : y ∈ intL K := by
         apply (Valuation.mem_integer_iff _ _).2

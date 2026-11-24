@@ -1,20 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BirationalYPt
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPtsIntegralPoints
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmAExpand
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PWWArithVar
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SmallSectionCountLeOfInjOn
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PPtsIntegralPoints
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 
 @[expose] public section
 

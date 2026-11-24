@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.ComplexMultiplication.EllipticFunctions
-public import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
-public import GroundTheory.GlobalFields.ComplexMultiplication.EllipticDegree
 public import GroundTheory.GlobalFields.ComplexMultiplication.Uniformization
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
+import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
 public import GroundTheory.GlobalFields.ComplexMultiplication.UniformizationAddition
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

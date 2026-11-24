@@ -1,6 +1,51 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 @[expose] public section
 
@@ -89,7 +134,7 @@ theorem d_aeval (n : ℕ) (P : MvPolynomial (Fin d) O) :
       rw [MvPolynomial.coeff_mul_X']
       by_cases hij : j = i
       · subst hij; simp [MvPolynomial.constantCoeff_eq]
-      · simp [hij, Finsupp.support_single_ne_zero]
+      · simp [hij]
     simp only [hc, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
     have hx : Bialgebra.counitAlgHom O (G.A n) (c.x n j) = 0 := by simpa using c.aug n j
     rw [map_mul, MvPolynomial.aeval_X, PDiv.dUnit, AugCot.d_mul, counit_aeval, hx, zero_smul,
@@ -135,8 +180,8 @@ theorem val_comb (a : Fin d → O) (n : ℕ) :
 
 theorem res_lvl (n : ℕ) (a : Fin d → O) :
     PDiv.cotMap (G.res n) (lvl c (n + 1) a) = lvl c n a := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [lvl_apply, map_sum, map_smul, PDiv.cotMap_d, c.res]
+
+  simp [lvl_apply, map_sum, map_smul, PDiv.cotMap_d, c.res]
 
 theorem lvl_le (w : G.omega) (a : Fin d → O) {n k : ℕ} (h : n ≤ k)
     (hk : lvl c k a = w.1 k) : lvl c n a = w.1 n := by
@@ -153,11 +198,11 @@ theorem exists_level_dvd [IsAdicComplete (Ideal.span {(p : O)}) O] (m : ℕ) :
   have hx : ∀ j, Bialgebra.counitAlgHom O (G.A n) (c.x n j) = 0 := fun j => by
     simpa using c.aug n j
   have hεy : Bialgebra.counitAlgHom O (G.A n) y = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [hy0, map_sum, map_smul, hx]
+
+    simp [hy0, map_sum, map_smul, hx]
   have hy : PDiv.dUnit (R := O) y = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hy0, PDiv.dUnit, map_sum]
+
+    rw [hy0, PDiv.dUnit, map_sum]
     simpa [map_smul, lvl_apply] using ha
   rw [PDiv.dUnit, AugCot.d_eq_zero_iff, hεy, map_zero, sub_zero] at hy
   have hI : RingHom.ker (Bialgebra.counitAlgHom O (G.A n)) ≤
@@ -173,8 +218,8 @@ theorem exists_level_dvd [IsAdicComplete (Ideal.span {(p : O)}) O] (m : ℕ) :
     exact Ideal.pow_right_mono hI 2 hy
   obtain ⟨h, hh, hev⟩ := (Ideal.mem_map_iff_of_surjective _ (c.surj n)).1 hy2
   have hz : c.ev n ((∑ j, a j • X j) - h) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, hev, map_sum, hy0]
+
+    rw [map_sub, hev, map_sum, hy0]
     simp [map_smul, (c.isEval n).1]
   have := hn _ hz (Finsupp.single i 1) (by simp)
   rw [map_sub, coeff_single_of_mem_sq hh, sub_zero] at this
@@ -224,7 +269,6 @@ theorem comb_bijective [IsAdicComplete (Ideal.span {(p : O)}) O] :
       exact h1
     choose L hL using hL
     refine ⟨L, Subtype.ext (funext fun n => ?_)⟩
-    change (Fintype.linearCombination O c.form L).1 n = w.1 n
     rw [(val_comb c)]
     choose v hv using fun i => hL i n
     have hLv : L = b (K n) - (p : O) ^ n • v := by

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StJacobianRankGeneric
+public import Mathlib.Tactic.Continuity
 
 @[expose] public section
 

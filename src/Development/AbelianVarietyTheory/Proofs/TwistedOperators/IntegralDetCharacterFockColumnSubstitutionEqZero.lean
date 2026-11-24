@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProdMinorsMemInv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section
 
@@ -24,9 +69,9 @@ theorem colSub_scalAt_X {d a : ℕ} (τ₀ : ι) (ζ : ℂ) (y : Var ι d a) :
   by_cases h : τ = τ₀
   · subst h
     rw [Finset.sum_eq_single j]
-    · simp [scalAt, Matrix.smul_apply, Matrix.one_apply]
+    · simp [scalAt, Matrix.smul_apply]
     · intro b _ hb
-      simp [scalAt, Matrix.smul_apply, Matrix.one_apply, hb]
+      simp [scalAt, Matrix.smul_apply, hb]
     · simp
   · simp [scalAt, h, Matrix.one_apply]
 
@@ -60,9 +105,9 @@ theorem colSub_mul {d a : ℕ} (A B : ι → Matrix (Fin a) (Fin a) ℂ) (P : Po
   have : (colSub (fun τ => A τ * B τ) : Pol ι d a →ₐ[ℂ] Pol ι d a) = (colSub A).comp (colSub B) := by
     apply MvPolynomial.algHom_ext
     intro y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, colSub, aeval_X, map_sum, map_mul, algHom_C, algebraMap_eq, Matrix.mul_apply,
-      Finset.mul_sum, map_sum, Finset.sum_mul]
+
+    simp only [AlgHom.comp_apply, colSub, aeval_X, map_sum, map_mul, algHom_C, algebraMap_eq, Matrix.mul_apply,
+    Finset.mul_sum, map_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
     ring
@@ -73,8 +118,8 @@ theorem sum_scalAt_eq_zero {d a : ℕ} (τ₀ : ι) (N : ℕ) (hN : 0 < N) (P : 
     ∑ k ∈ Finset.range (N + P.totalDegree + 1), (ω ^ k) ^ N • colSub (scalAt τ₀ (ω ^ k)) P = 0 := by
   generalize hM : N + P.totalDegree + 1 = M at hω ⊢
   conv_lhs => rw [as_sum P]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, colSub_scalAt_monomial, Finset.smul_sum]
+
+  simp only [map_sum, colSub_scalAt_monomial, Finset.smul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_eq_zero fun t ht => ?_
   have hsum : ∑ k ∈ Finset.range M, (ω ^ (N + degAt τ₀ t)) ^ k = 0 := by
@@ -94,8 +139,8 @@ theorem sum_scalAt_eq_zero {d a : ℕ} (τ₀ : ι) (N : ℕ) (hN : 0 < N) (P : 
     congr 1
     rw [← pow_mul, ← pow_mul, ← pow_mul, show (N + degAt τ₀ t) * k = k * N + k * degAt τ₀ t by ring, pow_add]
     ring
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.sum_congr rfl this, ← map_sum, ← Finset.mul_sum, hsum, mul_zero, map_zero]
+
+  rw [Finset.sum_congr rfl this, ← map_sum, ← Finset.mul_sum, hsum, mul_zero, map_zero]
 
 end GlobalTheory.MinorFrame
 
@@ -106,7 +151,7 @@ open MvPolynomial
 theorem prod_det_scalAt_zpow {ι : Type} [Fintype ι] {a : ℕ} (τ₀ : ι) (ζ : ℂ) (m : ι → ℤ) (n : ℕ)
     (hn : (n : ℤ) = m τ₀) : (∏ τ, (scalAt (a := a) τ₀ ζ τ).det ^ (m τ)) = ζ ^ (a * n) := by
   rw [Finset.prod_eq_single τ₀]
-  · simp [scalAt, Matrix.det_smul, ← hn, zpow_natCast, pow_mul]
+  · simp [scalAt, ← hn, zpow_natCast, pow_mul]
   · intro τ _ h
     simp [scalAt, h]
   · simp
@@ -170,7 +215,7 @@ theorem integral_detZpow_colSub_eq_zero :
       simp only [hB_def, map_mul, Pi.mul_apply, hu k]
       rw [Submonoid.coe_mul, hU k τ]
       simp only [scalAt]
-      split_ifs <;> simp [Matrix.smul_mul, Matrix.mul_smul]
+      split_ifs <;> simp
     simp only [hf_def, hc_def]
     rw [hBu, colSub_mul, map_smul, smul_eq_mul]
     simp only [Matrix.det_mul, mul_zpow, Finset.prod_mul_distrib]
@@ -178,12 +223,12 @@ theorem integral_detZpow_colSub_eq_zero :
     ring
   have hsum0 : ∀ g, ∑ k ∈ Finset.range M, f (u k * g) = 0 := by
     intro g
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hpt, ← Finset.mul_sum, ← map_sum]
+
+    simp only [hpt, ← Finset.mul_sum, ← map_sum]
     have : ∑ k ∈ Finset.range M, (ω ^ k) ^ N • colSub (B g) (colSub (scalAt τ₀ (ω ^ k)) P) =
         colSub (B g) (∑ k ∈ Finset.range M, (ω ^ k) ^ N • colSub (scalAt τ₀ (ω ^ k)) P) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]; simp only [map_smul]
+
+      rw [map_sum]; simp only [map_smul]
     rw [this, sum_scalAt_eq_zero τ₀ N hN P hω, map_zero, map_zero, mul_zero]
   have hkey : (M : ℂ) * ∫ x, f x ∂ν = 0 := by
     calc (M : ℂ) * ∫ x, f x ∂ν = ∑ k ∈ Finset.range M, ∫ x, f (u k * x) ∂ν := by

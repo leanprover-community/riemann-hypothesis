@@ -1,7 +1,7 @@
 module
 
-public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import ReciprocityTheory.DualLattices.VDetEqOneOfIntegral
+import ReciprocityTheory.DualLattices.TensorSpan
 
 @[expose] public section
 

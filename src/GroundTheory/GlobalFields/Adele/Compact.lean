@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.LocalAtPlace
 public import GroundTheory.GlobalFields.Adele.Approximation
-public import GroundTheory.GlobalFields.Adele.Discrete
+public import GroundTheory.GlobalFields.LocalAtPlace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

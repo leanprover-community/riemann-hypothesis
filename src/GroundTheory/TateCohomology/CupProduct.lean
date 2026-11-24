@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.CupCochains
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
 
 @[expose] public section
 

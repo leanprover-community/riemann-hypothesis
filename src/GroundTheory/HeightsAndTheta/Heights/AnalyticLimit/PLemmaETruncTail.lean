@@ -1,11 +1,20 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETruncTail
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaEScale
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaEEnergy
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaEWeight
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLogNormSecIntegrable
+public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.EnergyStep
+public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETailLog
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Topology.Sheaves.Presheaf
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
+import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
+import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
+import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesA
 
 @[expose] public section
 

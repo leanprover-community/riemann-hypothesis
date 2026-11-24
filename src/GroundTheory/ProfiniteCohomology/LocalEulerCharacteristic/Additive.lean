@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveSnake
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

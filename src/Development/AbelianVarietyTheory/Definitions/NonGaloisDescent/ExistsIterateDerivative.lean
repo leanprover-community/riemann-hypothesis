@@ -1,13 +1,59 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsSumMonomialAdd
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsUltrametricDistFinExt
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RealisesUnitPow
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CrisToODToOCr
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobSubMulSurjective
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusSubOneWittTensorLatticeSurjectiveFixed
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 
@@ -134,8 +180,8 @@ theorem toW_of_mx (v : ME P) (m : ι → ZMod a → A O K) (h : ∀ τ, v.1 τ =
   simp only [← ϖ.iW_of_mem t K]
   change _ = ∑ j, ϖ.iW t K _ * ϖ.iW t K _
   simp only [← map_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, toW_apply]
+
+  rw [← map_sum, toW_apply]
   refine congrArg _ (funext fun τ => Subtype.ext ?_)
   rw [Finset.sum_apply, AddSubmonoidClass.coe_finsetSum]
   exact congrFun (h τ) i
@@ -231,8 +277,8 @@ theorem homW_toW (F : BK.Hom P Q) (v : ME P) :
   ext1 i
   change ∑ j, inclO l O (ϖ.iTot t K _) * ϖ.iW t K _ = _
   simp only [← ϖ.iW_of_mem t K, ← map_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, toW_apply]
+
+  rw [← map_sum, toW_apply]
   refine congrArg _ (funext fun τ => Subtype.ext ?_)
   rw [Finset.sum_apply, AddSubmonoidClass.coe_finsetSum]
   rfl
@@ -244,8 +290,8 @@ theorem homMat_mul_frobMat (F : BK.Hom P Q) : (homMat t ϖ F).map (inclO l O) * 
     ∑ k, ϖ.iW t K _ * frobOW l O (inclO l O (ϖ.iTot t K _))
   simp only [frobOW_inclO, ← PiSys.iTot_frob]
   simp only [← ϖ.iW_of_mem t K, ← map_mul]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum, ← map_sum]
+
+  rw [← map_sum, ← map_sum]
   refine congrArg _ (funext fun τ => Subtype.ext ?_)
   rw [Finset.sum_apply, Finset.sum_apply, AddSubmonoidClass.coe_finsetSum, AddSubmonoidClass.coe_finsetSum]
   exact congrFun₂ (F.comm τ) i j
@@ -395,8 +441,8 @@ theorem exists_isLMat_iff (s : GQ l) (g : G) :
   · choose y hy using fun j => h _ ⟨Pi.single j 1, rfl⟩
     have key : ∀ (d : ι → OA l O) (w : ι → ι → OA l O),
         inclL t ϖ P (∑ j, d j • w j) = ∑ j, inclO l O (d j) • inclL t ϖ P (w j) := fun d w => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [inclL_apply, inclL_apply, ← Matrix.mulVec_smul]
       exact congrArg _ (funext fun i => map_mul _ _ _)
@@ -404,8 +450,8 @@ theorem exists_isLMat_iff (s : GQ l) (g : G) :
     have h1 : (Matrix.of fun i j => y j i) *ᵥ (fun i => galOA O s (c i)) = ∑ j, galOA O s (c j) • y j := by
       ext1 i
       simp [Matrix.mulVec, dotProduct, mul_comm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [pi_eq_sum_univ' c, key, map_sum]
+
+    conv_lhs => rw [pi_eq_sum_univ' c, key, map_sum]
     rw [h1, key]
     exact Finset.sum_congr rfl fun j _ => by rw [act_smul, galOW_inclO, hy]
 
@@ -740,10 +786,10 @@ def unitIdent (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) :
     Ident t ϖ (unitMod l a e O K ι) T where
   j := (b.baseChange (OW l O)).equivFun.symm
   j_φ v := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [phiW_apply, frobMat_unitMod, Matrix.one_mulVec, Module.Basis.equivFun_symm_apply,
-      Module.Basis.baseChange_apply, smul_tmul', smul_eq_mul, mul_one, map_sum, TWmap, TensorProduct.map_tmul,
-      AlgHom.toLinearMap_apply, LinearMap.id_apply]
+
+    simp only [phiW_apply, frobMat_unitMod, Matrix.one_mulVec, Module.Basis.equivFun_symm_apply,
+    Module.Basis.baseChange_apply, smul_tmul', smul_eq_mul, mul_one, map_sum, TWmap, TensorProduct.map_tmul,
+    AlgHom.toLinearMap_apply, LinearMap.id_apply]
 
 theorem unitIdent_j (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) (v : ι → OW l O) :
     (unitIdent t ϖ T b).j v = ∑ i, v i ⊗ₜ[O] b i := by
@@ -753,8 +799,8 @@ theorem unitIdent_j (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) 
 theorem unitIdent_act (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) (s : GQ l) {g : G}
     (hg : ∀ x, T.ρ g x = x) (v : ι → OW l O) : (unitIdent t ϖ T b).act s g v = galCoef O ι s v := by
   apply (unitIdent t ϖ T b).j.injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Ident.j_act, unitIdent_j, unitIdent_j, map_sum]
+
+  rw [Ident.j_act, unitIdent_j, unitIdent_j, map_sum]
   exact Finset.sum_congr rfl fun i _ =>
     congrArg (fun y : ↥T.L.T => galOW O s (v i) ⊗ₜ[O] y) (Subtype.ext (hg _))
 
@@ -768,14 +814,14 @@ theorem kappa_sum (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) {J
     letI := zlLat T
     kappa T (∑ p : J × ι, inclW l (ϖ.ev a (x p)) ⊗ₜ[ℤ_[l]] (o p.1 • b p.2)) =
       (unitIdent t ϖ T b).j (toW t ϖ _ ⟨m, mem_ME_of_mem_M hm⟩) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [unitIdent_j, map_sum, Fintype.sum_prod_type_right]
+
+  rw [unitIdent_j, map_sum, Fintype.sum_prod_type_right]
   refine Finset.sum_congr rfl fun i _ => ?_
   have h1 : toW t ϖ _ ⟨m, mem_ME_of_mem_M hm⟩ i =
       inclO l O (ϖ.iTot t K fun τ => ⟨m τ i, mem_tot.1 hm τ i⟩) :=
     ϖ.iW_of_mem t K fun τ => ⟨m τ i, mem_tot.1 hm τ i⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h1, h, map_sum, map_sum, sum_tmul]
+
+  rw [h1, h, map_sum, map_sum, sum_tmul]
   refine Finset.sum_congr rfl fun k _ => (kappa_tmul T _ _).trans ?_
   rw [map_smul, map_smul, PiSys.iTot_toAc, inclO_tmul, smul_tmul]
 
@@ -831,9 +877,9 @@ theorem isMapOf_constHom {T T' : LocLat G ℚ_[l] K O} (b : Module.Basis ι O �
   intro v
   rw [unitIdent_j, unitIdent_j, latW]
   generalize (f.f.restrictScalars O).restrict f.T_le = φ
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [homW_apply, Matrix.mulVec, dotProduct, homMat_constHom, map_sum, TensorProduct.map_tmul,
-    LinearMap.id_apply, sum_tmul, LinearMap.toMatrix_apply]
+
+  simp only [homW_apply, Matrix.mulVec, dotProduct, homMat_constHom, map_sum, TensorProduct.map_tmul,
+  LinearMap.id_apply, sum_tmul, LinearMap.toMatrix_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
   conv_rhs => rw [← b'.sum_repr (φ (b j)), tmul_sum]
@@ -881,9 +927,9 @@ theorem taylor_unitIdent {T : Lat a O K ϖ} (hT : IsTriv T) (b : Module.Basis ι
   choose z hz using fun p => hN p n ((Finset.le_sup (Finset.mem_univ p)).trans hn)
   refine ⟨fun j => ∑ τ, idem (constC t) τ * z (τ, j), funext fun j => ?_⟩
   rw [Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mulVec, Pi.sub_apply, Finset.sum_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Pi.smul_apply, smul_eq_mul, toCris_unitMod, unitConn_desc, map_sum, map_mul, galOCr_idem,
-    Finset.mul_sum]
+
+  simp only [Pi.smul_apply, smul_eq_mul, toCris_unitMod, unitConn_desc, map_sum, map_mul, galOCr_idem,
+  Finset.mul_sum]
   rw [Finset.sum_comm, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [mul_left_comm, ← hz (τ, j), mul_sub, Finset.mul_sum]
@@ -897,8 +943,8 @@ theorem natural_constHom (Y : Matrix κ ι O) :
   funext fun τ => funext fun i => by
     change PowerSeries.derivative (∑ j, algebraMap O K⟦X⟧ (Y i j) * m τ j) =
       ∑ j, algebraMap O K⟦X⟧ (Y i j) * PowerSeries.derivative (m τ j)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, algebraMap_eq_C, ← smul_eq_C_mul, Derivation.map_smul]
+
+    simp only [map_sum, algebraMap_eq_C, ← smul_eq_C_mul, Derivation.map_smul]
 
 def trivConn : (trivFunctor (K := K) t ϖ).IntConn where
   conn _ _ := unitConn l a e _

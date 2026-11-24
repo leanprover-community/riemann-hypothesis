@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NGAnalytic
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 

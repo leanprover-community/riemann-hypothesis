@@ -1,10 +1,46 @@
 module
 
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutDef
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaTildeHeckeCharSplitMulSignOfNormFormula
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmQuadraticCharacterEqProdRealSigns
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRealSpanEqConjFixedPrimeMulRelNorm
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHalfAbstract
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -14,99 +50,6 @@ open scoped TensorProduct
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF
 
 namespace PositivityTheory.ThKW.AutEtaA
-
-section Abstract
-
-variable {E : Type} [Field E] [NumberField E]
-
-theorem hom_fix (Fx : HeightOneSpectrum (𝓞 E) → Prop) {G : Type} [CommGroup G]
-    (w : HeightOneSpectrum (𝓞 E) → G →* WithZero (Multiplicative ℤ)) (i : Eˣ →* G) (ψ : G →* Circle)
-    (lam : ℕ →* ℂ) (hi : ∀ Q k, w Q (i k) = Q.valuation E (k : E))
-    (h1 : ∀ y, (∀ Q, Fx Q → w Q y = 1) → ψ y = 1)
-    (h3 : ∀ P, Fx P → ∃ z, w P z = WithZero.exp (-1 : ℤ) ∧ (∀ Q, Q ≠ P → w Q z = 1) ∧ (ψ z : ℂ) = -1)
-    (h5 : ∀ P : HeightOneSpectrum (𝓞 E), (Fx P →
-        lam (Ideal.absNorm P.asIdeal) = -(Real.sqrt (Ideal.absNorm P.asIdeal) : ℂ)) ∧
-      (¬ Fx P → lam (Ideal.absNorm P.asIdeal) = (Real.sqrt (Ideal.absNorm P.asIdeal) : ℂ)))
-    (u : 𝓞 E) (k : Eˣ) (hk : (k : E) = u) :
-    lam (Ideal.absNorm (Ideal.span {u})) = (ψ (i k) : ℂ) * (Real.sqrt (Ideal.absNorm (Ideal.span {u})) : ℂ) := by
-  let Gen : Ideal (𝓞 E) → G → Prop := fun B y =>
-    ∀ Q : HeightOneSpectrum (𝓞 E), Fx Q → w Q y = WithZero.exp (-multiplicity Q.asIdeal B : ℤ)
-  have gmul : ∀ {A B y z}, A ≠ ⊥ → B ≠ ⊥ → Gen A y → Gen B z → Gen (A * B) (y * z) := by
-    intro A B y z hA hB hy hz Q hQ
-    rw [map_mul, hy Q hQ, hz Q hQ, GlobalTheory.EtaProduct.mult_mul Q hA hB, ← WithZero.exp_add]
-    push_cast
-    rw [neg_add]
-  have guniq : ∀ {B y z}, Gen B y → Gen B z → ψ y = ψ z := by
-    intro B y z hy hz
-    have := h1 (y * z⁻¹) fun Q hQ => by
-      rw [map_mul, map_inv, hy Q hQ, hz Q hQ, mul_inv_cancel₀ WithZero.exp_ne_zero]
-    rwa [map_mul, map_inv, mul_inv_eq_one] at this
-  have gspan : ∀ (u : 𝓞 E) (k : Eˣ), (k : E) = u → Gen (Ideal.span {u}) (i k) := by
-    intro u k hk Q _
-    have hu : u ≠ 0 := by
-      rintro rfl
-      exact k.ne_zero (by simpa using hk)
-    rw [hi, hk, GlobalTheory.EtaProduct.val_int Q hu]
-  have gone : Gen ⊤ 1 := fun Q _ => by
-    rw [map_one, ← Ideal.one_eq_top, multiplicity_eq_zero_of_not_dvd Q.prime.not_dvd_one]
-    simp
-  have gmov : ∀ P : HeightOneSpectrum (𝓞 E), ¬ Fx P → Gen P.asIdeal 1 := fun P hP Q hQ => by
-    rw [map_one, GlobalTheory.EtaProduct.mult_ne (P := P) (Q := Q) (fun h => hP (h ▸ hQ))]
-    simp
-  have gfix : ∀ (P : HeightOneSpectrum (𝓞 E)) z, w P z = WithZero.exp (-1 : ℤ) → (∀ Q, Q ≠ P → w Q z = 1) →
-      Gen P.asIdeal z := by
-    intro P z a1 a3 Q _
-    by_cases hQ : Q = P
-    · rw [hQ, a1, multiplicity_self (FiniteMultiplicity.of_prime_left P.prime P.ne_bot)]; simp
-    · rw [a3 Q hQ, GlobalTheory.EtaProduct.mult_ne hQ]; simp
-  have gprime : ∀ P : HeightOneSpectrum (𝓞 E), ∃ z, Gen P.asIdeal z := by
-    intro P
-    by_cases hP : Fx P
-    · obtain ⟨z, a1, a3, -⟩ := h3 P hP
-      exact ⟨z, gfix P z a1 a3⟩
-    · exact ⟨1, gmov P hP⟩
-  have gex : ∀ B : Ideal (𝓞 E), B ≠ ⊥ → ∃ z, Gen B z := by
-    intro B
-    induction B using UniqueFactorizationMonoid.induction_on_prime with
-    | h₁ => intro h; exact absurd rfl h
-    | h₂ B hB => intro _; rw [Ideal.isUnit_iff.1 hB]; exact ⟨1, gone⟩
-    | h₃ C P hC hP ih =>
-      intro _
-      obtain ⟨a, a1⟩ := gprime ⟨P, Ideal.isPrime_of_prime hP, hP.ne_zero⟩
-      obtain ⟨b, b1⟩ := ih hC
-      exact ⟨a * b, gmul hP.ne_zero hC a1 b1⟩
-  have vprime : ∀ (P : HeightOneSpectrum (𝓞 E)) y, Gen P.asIdeal y →
-      lam (Ideal.absNorm P.asIdeal) = (ψ y : ℂ) * (Real.sqrt (Ideal.absNorm P.asIdeal) : ℂ) := by
-    intro P y hy
-    by_cases hP : Fx P
-    · obtain ⟨z, a1, a3, a4⟩ := h3 P hP
-      rw [guniq hy (gfix P z a1 a3), a4, (h5 P).1 hP, neg_one_mul]
-    · rw [guniq hy (gmov P hP), map_one, (h5 P).2 hP]
-      simp
-  have main : ∀ B : Ideal (𝓞 E), B ≠ ⊥ → ∀ y, Gen B y →
-      lam (Ideal.absNorm B) = (ψ y : ℂ) * (Real.sqrt (Ideal.absNorm B) : ℂ) := by
-    intro B
-    induction B using UniqueFactorizationMonoid.induction_on_prime with
-    | h₁ => intro h; exact absurd rfl h
-    | h₂ B hB =>
-      intro _ y hy
-      rw [Ideal.isUnit_iff.1 hB] at hy ⊢
-      rw [guniq hy gone, Ideal.absNorm_top, map_one, map_one]
-      simp
-    | h₃ C P hC hP ih =>
-      intro _ y hy
-      obtain ⟨a, a1⟩ := gprime ⟨P, Ideal.isPrime_of_prime hP, hP.ne_zero⟩
-      obtain ⟨b, b1⟩ := gex C hC
-      have v1 := vprime ⟨P, Ideal.isPrime_of_prime hP, hP.ne_zero⟩ a a1
-      rw [guniq hy (gmul hP.ne_zero hC a1 b1), map_mul, map_mul, map_mul, v1, ih hC b b1, Nat.cast_mul,
-        Real.sqrt_mul (Nat.cast_nonneg _), Complex.ofReal_mul, Circle.coe_mul]
-      ring
-  refine main _ ?_ _ (gspan u k hk)
-  rw [Ne, Ideal.span_singleton_eq_bot]
-  rintro rfl
-  exact k.ne_zero (by simpa using hk)
-
-end Abstract
 
 section Half
 

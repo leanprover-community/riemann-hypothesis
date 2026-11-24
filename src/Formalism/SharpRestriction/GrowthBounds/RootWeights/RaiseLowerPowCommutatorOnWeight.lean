@@ -1,6 +1,53 @@
 module
 
+public import Formalism.SharpRestriction.GrowthBounds.ObjPol
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.HeisenbergDividedPowerExpansion
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightEntriesBetweenExtremeHighest
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 
 @[expose] public section
 
@@ -37,7 +84,7 @@ theorem raise_lower_commutator_on_weight {E : GLOps n (KK O) V} (hE : IsGLRep E)
       sub_eq_zero] at h
     exact h
   have hc := congrArg (fun f : Module.End (KK O) V => f z) (hE.1 a b b a)
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, if_true, eq_self_iff_true] at hc
+  simp only [LinearMap.sub_apply, Module.End.mul_apply, if_true] at hc
   rw [hw a, hw b] at hc
   rw [← sub_eq_iff_eq_add', hc, Int.cast_sub, sub_smul]
 
@@ -54,9 +101,9 @@ theorem raise_lower_pow_commutator_on_weight {E : GLOps n (KK O) V} (hE : IsGLRe
     have hy := integral_operator_pow_shifts_weight hE hz b a r
     have h0 := raise_lower_commutator_on_weight (a := a) (b := b) hE hy
     have hA : (mu + (r : ℤ) • rootW b a) a = mu a - r := by
-      simp [rootW, Pi.single_apply, hab, hab.symm] <;> ring
+      simp [rootW, hab] <;> ring
     have hB : (mu + (r : ℤ) • rootW b a) b = mu b + r := by
-      simp [rootW, Pi.single_apply, hab, hab.symm] <;> ring
+      simp [rootW, hab.symm] <;> ring
     rw [hA, hB] at h0
     have e2 : ((r : KK O) * ((((mu a - mu b : ℤ)) : KK O) - r + 1)) • E b a (((E b a) ^ (r - 1)) z) =
         ((r : KK O) * ((((mu a - mu b : ℤ)) : KK O) - r + 1)) • ((E b a) ^ r) z := by
@@ -91,8 +138,8 @@ theorem raise_pow_lower_pow_expansion {E : GLOps n (KK O) V} (hE : IsGLRep E) {a
       congr 1
       · rw [← Module.End.mul_apply (E a b), ← pow_succ', show k - j + 1 = k + 1 - j by omega]
       · rw [show l - j - 1 = l - (j + 1) by omega, show k + 1 - (j + 1) = k - j by omega]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [pow_succ', Module.End.mul_apply, ih, map_sum]
+
+    rw [pow_succ', Module.End.mul_apply, ih, map_sum]
     simp only [map_smul]
     refine (Finset.sum_congr rfl (fun j hj => ?_)).trans
       (weighted_sum_shift_recombine (fun j => ((k.choose j * l.descFactorial j : ℕ) : KK O) *
@@ -106,12 +153,11 @@ theorem raise_pow_lower_pow_expansion {E : GLOps n (KK O) V} (hE : IsGLRep E) {a
       rw [step j hj]
     · simp
     · intro j hj
-      beta_reduce
       have hjk : j ≤ k := Nat.lt_succ_iff.mp hj
       have hA : (nu + ((k - j : ℕ) : ℤ) • rootW a b) a = nu a + ((k - j : ℕ) : ℤ) := by
-        simp [rootW, Pi.single_apply, hab, hab.symm]
+        simp [rootW, hab]
       have hB : (nu + ((k - j : ℕ) : ℤ) • rootW a b) b = nu b - ((k - j : ℕ) : ℤ) := by
-        simp [rootW, Pi.single_apply, hab, hab.symm] <;> ring
+        simp [rootW, hab.symm] <;> ring
       rw [hA, hB]
       have hx : nu a - nu b + ((k + 1 : ℕ) : ℤ) - (l : ℤ) = (nu a - nu b + (k : ℤ) - (l : ℤ)) + 1 := by
         push_cast
@@ -147,7 +193,6 @@ theorem raise_lower_dividedPower_binomial [CharZero (KK O)] {E : GLOps n (KK O) 
         (j.factorial : ℤ) * Ring.choose (nu a - nu b + (k : ℤ) - (l : ℤ)) j := by
       first
       | rw [Polynomial.eval_eq_smeval, Ring.descPochhammer_eq_factorial_smul_choose, nsmul_eq_mul]
-      | (rw [Ring.choose]; simp)
     rw [hP]
     have h1 : ((k.factorial : ℕ) : KK O) = (k.choose j : KK O) * j.factorial * (k - j).factorial := by
       exact_mod_cast (Nat.choose_mul_factorial_mul_factorial hjk).symm

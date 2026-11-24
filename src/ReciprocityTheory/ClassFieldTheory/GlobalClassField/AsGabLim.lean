@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.NeutralLocalFields.Reciprocity
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.Galois.Infinite
 
 @[expose] public section
 

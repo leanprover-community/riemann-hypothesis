@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriGlValuedDatum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -86,14 +133,6 @@ theorem mul_antiJ (M : Matrix (Fin n) (Fin n) L) (i j : Fin n) :
     rw [antiJ_ne' hk, mul_zero]
   · simp
 
-theorem antiJ_mul_self : antiJ L n * antiJ L n = 1 := by
-  ext i j
-  rw [antiJ_mul, Matrix.one_apply]
-  by_cases h : i = j
-  · subst h
-    rw [antiJ_rev_self, if_pos rfl]
-  · rw [antiJ_ne (fun e => h (by simpa using e.symm)), if_neg h]
-
 theorem tau_eq (σ : L →+* L) (M : Matrix (Fin n) (Fin n) L) :
     tau σ M = antiJ L n * cT σ M * antiJ L n := by
   ext i j
@@ -103,8 +142,8 @@ theorem tau_eq (σ : L →+* L) (M : Matrix (Fin n) (Fin n) L) :
 theorem tau_mul (σ : L →+* L) (M N : Matrix (Fin n) (Fin n) L) :
     tau σ (M * N) = tau σ N * tau σ M := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [tau, Matrix.mul_apply, map_sum, map_mul]
+
+  simp only [tau, Matrix.mul_apply, map_sum, map_mul]
   rw [← Equiv.sum_comp Fin.revPerm]
   simp [mul_comm]
 
@@ -113,7 +152,7 @@ theorem tau_one (σ : L →+* L) : tau σ (1 : Matrix (Fin n) (Fin n) L) = 1 := 
   by_cases h : i = j
   · subst h; simp [tau]
   · have : ¬ Fin.rev j = Fin.rev i := fun e => h (Fin.rev_injective e).symm
-    simp [tau, Matrix.one_apply, this, h]
+    simp [tau, this, h]
 
 def theta (σ : L →+* L) : GL (Fin n) L →* GL (Fin n) L where
   toFun g := ⟨tau σ ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L),
@@ -129,7 +168,7 @@ theorem theta_val (σ : L →+* L) (g : GL (Fin n) L) :
 
 theorem mem_GU_iff [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {g : GL (Fin n) L} :
     g ∈ GU σ n ↔ theta σ g = g := by
-  have hJ := antiJ_mul_self (L := L) (n := n)
+  have hJ := _root_.Formalism.UG.P.fIwasawa_antiJ_mul_antiJ (L := L) (n := n)
   have key : g ∈ GU σ n ↔ tau σ (g : Matrix (Fin n) (Fin n) L) * (g : Matrix (Fin n) (Fin n) L) = 1 := by
     show cT σ (g : Matrix (Fin n) (Fin n) L) * antiJ L n * (g : Matrix (Fin n) (Fin n) L) = antiJ L n ↔ _
     rw [tau_eq]

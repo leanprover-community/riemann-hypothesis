@@ -1,11 +1,64 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
+public import Development.AbelianVarietyTheory.Definitions.Foundations.ClassMassEqSumOfBijective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CmTypeRestrictRealSubfieldInfinitePlaceBijective
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsInfFamFamily
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteClassSetHermitianUnitaryOpenLevel
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCompactLatticeStabilizerBoundedReal
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Transvection.Basic
+import Mathlib.MeasureTheory.Group.GeometryOfNumbers
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.NumberField.House
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Mathlib.RingTheory.PicardGroup
+import Formalism.SharpRestriction.GlobalSchurBounds.LocalCountingBounds
 
 @[expose] public section
 
@@ -233,8 +286,8 @@ theorem exists_bounded_basis [_root_.NumberField.IsTotallyComplex E] (hτ : Func
     let g : (Fin n → I → ℂ) →ₗ[I → ℂ] (I → ℂ) :=
       ∑ a, Pi.ringHom τ (f (Pi.single a 1)) • LinearMap.proj a
     have hg : ∀ x : Fin n → E, g (fun a => Pi.ringHom τ (x a)) = Pi.ringHom τ (f x) := fun x => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [LinearMap.pi_apply_eq_sum_univ f x, map_sum]
+
+      rw [LinearMap.pi_apply_eq_sum_univ f x, map_sum]
       simp only [g, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.proj_apply, smul_eq_mul, map_mul]
       refine Finset.sum_congr rfl fun a _ => ?_
       rw [mul_comm]
@@ -334,9 +387,7 @@ theorem hform_ne_zero {D : D7} {V : HSp D} (h : IsAniso V) (x : Fin V.rank → D
   simp only [Formalism.UG.hform, Formalism.UG.cT, Matrix.mul_apply, Finset.sum_mul, Matrix.transpose_apply, Matrix.map_apply, Matrix.of_apply]
   rw [Finset.sum_comm]
 
-theorem mt_mul {D : D7} (V : HSp D) (x y : GA D V) : mt V (x * y) = mt V x * mt V y := by
-  unfold Formalism.L2.Theta.mt
-  rw [map_mul, Units.val_mul]
+alias mt_mul := _root_.GlobalTheory.BesselCompare.mt_mul
 
 theorem mt_mul_rat {D : D7} (V : HSp D) (x u : GA D V) {B M : Matrix (Fin V.rank) (Fin V.rank) D.host.E}
     (h : mt V u = (B * M).map (incA D)) : mt V (x * u) = mt V x * B.map (incA D) * M.map (incA D) * 1 := by
@@ -349,7 +400,7 @@ theorem exists_finite_part (D : D7) (V : HSp D) : ∃ C : Set (Af D.host.F ⊗[D
   haveI : IsModuleTopology (Af D.host.F) (Af D.host.F ⊗[D.host.F] D.host.E) := ⟨rfl⟩
   haveI : IsTopologicalRing (Af D.host.F ⊗[D.host.F] D.host.E) := IsModuleTopology.isTopologicalRing (Af D.host.F) _
   obtain ⟨π, hπ, -⟩ := GlobalTheory.Mass.existsUnique_isFinProj D.sp.cm.sig V.gram
-  obtain ⟨S, hS⟩ := GlobalTheory.Mem.ClassFinite.exists_finset_classes _ _ _ (GlobalTheory.DefiniteQuotient.cmExt D) _ _
+  obtain ⟨S, hS⟩ := GlobalTheory.Mem.ClassFinite.exists_finset_classes _ _ _ (_root_.Formalism.MainNotions.UnusedSlot34.isCMExt_D D) _ _
     (GlobalTheory.DefiniteQuotient.gram_hermND V) _ (GlobalTheory.Mass.isOpen_stdLevel D.sp.cm.sig V.gram)
   obtain ⟨C, hC, hCe⟩ := (GlobalTheory.Mass.intTens_open_compact D.host.F D.host.E).2
   obtain ⟨C₁, hC₁, hCe₁⟩ := exists_compact_mul hC
@@ -381,7 +432,7 @@ theorem exists_real_part (D : D7) (V : HSp D) (hV : IsAniso V) {θ : InfF D} (h�
     ∃ (R : ℝ) (𝓒 : Set (Matrix (Fin V.rank) (Fin V.rank) D.host.E)), 𝓒.Finite ∧ ∀ x : GA D V,
       ∃ u ∈ GQ V, ∃ B : Matrix (Fin V.rank) (Fin V.rank) D.host.E, ∃ M ∈ 𝓒, mt V u = (B * M).map (incA D) ∧
         (∀ a b, IsIntegral ℤ (B a b)) ∧ ∀ a b τ, ‖θ τ (infPart D ((mt V x * B.map (incA D)) a b))‖ ≤ R := by
-  have hcm := GlobalTheory.DefiniteQuotient.cmExt D
+  have hcm := _root_.Formalism.MainNotions.UnusedSlot34.isCMExt_D D
   haveI := hcm.2.1
   obtain ⟨R, 𝓒, h𝓒, H⟩ := exists_bounded_unitary (σ := (D.sp.cm.sig : D.host.E →+* D.host.E))
     (GlobalTheory.CMTypePlaces.mk_tauE_bijective D) (fun τ x => hcm.2.2.2 _ x) (GlobalTheory.DefiniteQuotient.gram_hermND V).2

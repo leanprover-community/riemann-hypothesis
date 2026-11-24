@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.CutTuples2
-public import Formalism.LocalToGlobal.IndefiniteReal.MemRangeAdjointOfKerStable
-public import Formalism.LocalToGlobal.IndefiniteReal.CxToPkgFamIn
+public import Formalism.LocalToGlobal.Divisibility.LiftLat
+public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
+public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
+public import Formalism.LocalToGlobal.IndefiniteReal.MemRangeAdjointOfKerStable
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -95,8 +97,8 @@ theorem csum_toF_at {v0 : InfinitePlace K} (hv0 : IsConjAt v0) {s : ℕ} (h : B.
   rw [hm]
   push_cast
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, Matrix.mulVec, Pi.star_apply, map_sum, map_mul, Matrix.map_apply]
+
+  simp only [dotProduct, Matrix.mulVec, Pi.star_apply, map_sum, map_mul, Matrix.map_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [hv0]
   rfl

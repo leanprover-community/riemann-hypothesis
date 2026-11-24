@@ -1,30 +1,51 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.ZetaProductPairs
-public import Formalism.SharpRestriction.Divisibility.InnerProductFormulaField
-public import Formalism.SharpRestriction.Divisibility.AbsolutelyIrreducibleSpan
-public import Formalism.SharpRestriction.Divisibility.JumpSets
 public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
 public import Formalism.SharpRestriction.Divisibility.LocalQuadraticParts
-public import Formalism.SharpRestriction.Divisibility.FamilyThetaDenominatorValues
-public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.GrowthBounds.WeilJacquetShalikaLaw
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-public import Formalism.SharpRestriction.ElevenLe
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalRingCardinality.DataBu
-public import Formalism.LocalRingCardinality.DataDIV
-public import Formalism.LocalRingCardinality.DataDIVDefs
-public import Formalism.LocalRingCardinality.DataErr
-public import Formalism.LocalRingCardinality.DataForced
-public import Formalism.LocalRingCardinality.DataParams₂
-public import Formalism.LocalRingCardinality.PrincipalHermitianLattice
-public import Formalism.LocalRingCardinality.DataTheta
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LocalRingCardinality.Lemmas
-public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -118,6 +139,9 @@ def C2off (D : D7) (L : SizeData₂ D) (C : ℝ) : Prop :=
 
 def IsotypicRank (D : D7) (L : SizeData₂ D) (C : ℝ) : Prop := LocalQuadraticParts.adm11 D L C
 
+/-- Combines the `g`-place local energy bound `C2atG` (over places `w | g_i` for `i ∈ {0, 1}`,
+using `log (g 0 * g 1) = log (g 0) + log (g 1)`) and the off-`g` bound `C2off` into
+`IsotypicRank D L (2 * C1 + C2)` (i.e. `LocalQuadraticParts.adm11`). -/
 theorem secondComplement_of_split (L : SizeData₂ D) (C1 C2 : ℝ) (h0 : 0 ≤ C1) (h1 : C2atG D L C1) (h2 : C2off D L C2) :
     IsotypicRank D L (2 * C1 + C2) := by
   classical
@@ -161,6 +185,8 @@ theorem stmtZ {L : SizeData₂ D} (Gi : Inst D L) (K : Consts) (X : ErrX D) (c :
 theorem zero_gain_above_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ConclusionZ (Fm.D x i) (Fm.L x i) :=
   fun x hx i => stmtZ (Fm.Gx x i) Fm.GK (Fm.ex x hx i).errX Fm.cX.err (Fm.fills x hx i) (Fm.ex x hx i).err.edef
 
+/-- Local norm-decomposition condition at places `w` over `g_i`: the weighted sum of `vNN` over
+the places above `g_i` equals `(∑ τ, nuAbs D u j τ) * log (g_i)`. -/
 def NormDecompositionCond (D : D7) (X : ErrX D) : Prop :=
   ∀ (i : Fin 2) u, ∀ j ∈ SizeData₂.lifts D, ∀ S : Finset D.what₂.places.Pl, Ovr D (D.host.g i) S →
     ∑ w ∈ S, SizeData₂.sz w (vNN X i u j w) = (∑ τ : D.what₂.Tau, nuAbs D u j τ) * Real.log (D.host.g i : ℝ)
@@ -172,6 +198,8 @@ def errG (L : SizeData₂ D) (C : ℝ) (j : ℕ) : ℝ :=
     C * ((D.R.f : ℝ) * ((D.R.k : ℝ) * L.Sc + (D.R.m : ℝ) * D.R.t * L.etaSz + (D.R.k : ℝ) * Nm D) +
       (D.host.TT.card : ℝ) * L.sc.b' / L.sc.x)
 
+/-- Degree-count bound at lift `j`: the sum of `nuAbs D u j τ` over archimedean places `τ`,
+shifted by the Fock degree `fockDeg D j`, matches `sumA L = ∑ t, aT t` up to `errG L C j`. -/
 def DegreeCountBound (D : D7) (L : SizeData₂ D) (C : ℝ) : Prop :=
   ∀ u, ∀ j ∈ SizeData₂.lifts D,
     |(∑ τ : D.what₂.Tau, nuAbs D u j τ) - (fockDeg D j : ℝ) - sumA L| ≤ errG L C j

@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdBetaK
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdN
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNA
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PartnerCount
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocFacts
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.EmbeddingIntegerAlgebraMap
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNB
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNF
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
+import Mathlib.Algebra.Module.StablyFree.Basic
 
 @[expose] public section
 
@@ -82,8 +88,8 @@ theorem coef_intG {T' : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T') {Λ : Submodu
   set m := ∑ a, c a • frame G a with hm
   have hbm : baseChange₂ D p m = ∑ a, ((D.s.atP p).ιE (c a) *
       ((((isUnit_sF' Zd p a).unit⁻¹ : ((D.s.atP p).Ep)ˣ)) : (D.s.atP p).Ep)) • locF' Zd p G a := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hm, map_sum]
+
+    rw [hm, map_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Formalism.L2.SG.Pf.LocalDenominators.baseChange_smul₂, bcP_frameG Zd p G, smul_smul]
   have hspan : baseChange₂ D p m ∈ Submodule.span (D.s.atP p).Ep (Set.range (locF' Zd p G)) := by
@@ -133,8 +139,8 @@ theorem exists_yG {T' : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T') {Λ : Submodu
   have hint : ∀ m ∈ Λ, m ∈ U → IsIntegral ℤ ((VS D).hT m v) := fun m hm hmU => by
     obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun D.host.E).1 hmU
     have hρm : ρ m = c (Fin.last D.R.rS) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hc, map_sum, Fin.sum_univ_castSucc]
+
+      rw [← hc, map_sum, Fin.sum_univ_castSucc]
       simp only [map_smul, smul_eq_mul, hρe, mul_zero, Finset.sum_const_zero, zero_add, hρl, mul_one]
     rw [BwdNA.hsw (VS D) v m, hv, hρm]
     exact BwdNA.isInt_star (coef_intG Zd G hprim c (by rw [hc]; exact hm))
@@ -151,7 +157,7 @@ theorem exists_yG {T' : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T') {Λ : Submodu
       rw [BwdNA.hsw (VS D) w (G.fl.e i), ← frame_csG, hw, hρe, star_zero]
     | zero => simp
     | add a b _ _ ha hb => rw [map_add (f := _), LinearMap.add_apply, ha, hb, add_zero]
-    | smul c x _ hx => rw [BwdNA.hT_smulL, hx, mul_zero]
+    | smul c x _ hx => rw [_root_.PI.ScalarPairDr.W.hT_smul_left, hx, mul_zero]
   · rw [← frame_lastG, hw, hρl]
 
 end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.BetaI

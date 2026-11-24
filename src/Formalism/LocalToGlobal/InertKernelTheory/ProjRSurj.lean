@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
 public import Formalism.SharpRestriction.GrowthBounds.ChartComparison
+import Mathlib.Algebra.Module.StablyFree.Basic
 
 @[expose] public section
 

@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.InfiniteProjInfiniteEmbeddingOfNe
 public import GroundTheory.GlobalFields.IdeleGroups.Restricted
-public import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

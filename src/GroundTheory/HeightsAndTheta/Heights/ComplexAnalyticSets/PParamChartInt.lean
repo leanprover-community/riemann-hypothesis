@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamChartInt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartIntCountAdd
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamPieceInt
@@ -8,6 +7,9 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamCr
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamOffRegularZero
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegularInjectivePieces
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamDensIntegrable
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

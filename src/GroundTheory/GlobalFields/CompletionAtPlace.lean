@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
-public import GroundTheory.LocalFields.Interface
 
 @[expose] public section
 

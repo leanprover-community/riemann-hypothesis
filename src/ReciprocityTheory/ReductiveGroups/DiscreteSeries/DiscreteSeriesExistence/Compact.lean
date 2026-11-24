@@ -1,13 +1,60 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Smooth
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.MeasurePreservingMulRight
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Bridge
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousTorepK
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.MulMulSubMulMulEqAdd
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SmoothDefs
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HasDerivAtRealOfComplex
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.CasimirKKhwVec
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.RhoEqRhoCAddRhoN
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.MulMulSubMulMulEqAdd
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Bridge
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.MeasurePreservingMulRight
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.SingleMulJmComm
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -47,9 +94,6 @@ theorem cmpt_inUJ_Kset {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) {g : Ma
        congr 1
        funext a
        split_ifs <;> norm_num)
-    | (ext i j
-       simp only [Jm, Matrix.diagonal_mul_diagonal, Matrix.diagonal_apply, Matrix.one_apply]
-       split_ifs <;> norm_num)
   show g ∈ Matrix.unitaryGroup (Fin n) ℂ ∧ g * Jm ε = Jm ε * g
   refine ⟨?_, cmpt_Jm_comm he g⟩
   have h1 : Jm ε * (gᴴ * g) = Jm ε := by
@@ -61,8 +105,6 @@ theorem cmpt_inUJ_Kset {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) {g : Ma
       _ = 1 := by rw [h1, hJJ]
   first
   | exact Matrix.mem_unitaryGroup_iff'.mpr (by rw [Matrix.star_eq_conjTranspose]; exact h2)
-  | exact unitary.mem_iff.mpr ⟨by rw [Matrix.star_eq_conjTranspose]; exact h2,
-      by rw [Matrix.star_eq_conjTranspose]; exact Matrix.mul_eq_one_comm.mp h2⟩
 
 theorem cmpt_set_eq {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) :
     Formalism.MainNotions.S.UJset ε = Formalism.REAL.Kset ε := by
@@ -77,7 +119,6 @@ theorem cmpt_set_eq {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) :
       rw [← Matrix.star_eq_conjTranspose]
       first
       | exact Matrix.mem_unitaryGroup_iff'.mp hu
-      | exact unitary.star_mul_self_of_mem hu
     rw [cmpt_Jm_comm he gᴴ, Matrix.mul_assoc, hu', Matrix.mul_one]
 
 theorem cmpt_compact {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) : CompactSpace (S7.UJ ε) := by
@@ -110,7 +151,7 @@ theorem cmpt_inK_casGen (he : ∀ a b, ε a = ε b) (p : Fin n × Fin n) : inK �
     split_ifs <;>
       simp only [Matrix.smul_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.single_apply,
         smul_eq_mul] <;>
-      split_ifs <;> (try simp_all [Complex.conj_I, Complex.star_def]) <;> (try subst_vars) <;>
+      split_ifs <;> (try simp_all [Complex.conj_I]) <;> (try subst_vars) <;>
         (try simp_all [Complex.conj_I, Complex.star_def]) <;>
         (obtain ⟨h1, h2⟩ := ‹_ ∧ _›; exact absurd (h1.symm.trans h2) ‹_›)
   unfold inK inG
@@ -138,9 +179,6 @@ theorem cmpt_dS {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) (u : T.V) :
     | simpa using hD.clm_apply (hasDerivAt_const (0 : ℝ) u)
     | simpa [Function.comp_def] using
         ((ContinuousLinearMap.apply ℂ T.V u).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt
-          (0 : ℝ) hD
-    | simpa [Function.comp_def] using
-        ((ContinuousLinearMap.apply ℂ (M₂ := T.V) u).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt
           (0 : ℝ) hD
   unfold dS
   rw [← hD2.deriv]
@@ -239,12 +277,7 @@ theorem cmpt_casU (he : ∀ a b, ε a = ε b) (v : T.V) :
     ContinuousLinearMap.mul_apply, ContinuousLinearMap.neg_apply] at hs
   simp only [casU, hd, hs, neg_neg, casimir, HW.kunits]
   first
-  | simp only [LinearMap.coeFn_sum, Finset.sum_apply, Module.End.mul_apply,
-      ContinuousLinearMap.coe_coe]
   | simp only [LinearMap.sum_apply, Module.End.mul_apply, ContinuousLinearMap.coe_coe]
-  | simp only [LinearMap.sum_apply, LinearMap.mul_apply, ContinuousLinearMap.coe_coe]
-  | simp [Module.End.mul_apply]
-  | simp [LinearMap.mul_apply]
 
 end Cas
 

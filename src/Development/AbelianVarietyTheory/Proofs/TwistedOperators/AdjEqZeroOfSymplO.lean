@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisOApplyZero
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsCuspFunIffConstTerm
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisOApplyZero
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsCuspFunIffConstTerm
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCSecondCountable
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,8 +70,8 @@ def levi (t t' : K) (p q : S) : S := 1 + (t - 1) • p + (t' - 1) • q
 theorem levi_mul_swap (hpp : p * p = p) (hqq : q * q = q) (hpq : p * q = 0) (hqp : q * p = 0) {t t' : K}
     (h : t * t' = 1) : levi t t' p q * levi t' t p q = 1 := by
   simp only [levi, add_mul, mul_add, smul_mul_assoc, mul_smul_comm, one_mul, mul_one, hpp, hqq, hpq, hqp,
-    smul_zero, add_zero, zero_add, smul_smul]
-  match_scalars <;> first | ring1 | linear_combination h | linear_combination -h
+    smul_zero, add_zero]
+  match_scalars <;> first | ring1 | linear_combination h
 
 theorem levi_conj (hpp : p * p = p) (hqq : q * q = q) (hqp : q * p = 0) {t t' : K}
     (h : t * t' = 1) (hx : x = p * x * q) :
@@ -48,7 +91,7 @@ theorem levi_conj (hpp : p * p = p) (hqq : q * q = q) (hqp : q * p = 0) {t t' : 
     x * p = p * x * q * p := by rw [← hx]
     _ = 0 := by rw [mul_assoc, hqp, mul_zero]
   simp only [levi, add_mul, mul_add, smul_mul_assoc, mul_smul_comm, one_mul, mul_one, h1, h2, h3, h4,
-    smul_zero, add_zero, zero_add, smul_smul]
+    smul_zero, add_zero]
   match_scalars <;> first | ring1 | linear_combination t * h | linear_combination -t * h
 
 theorem one_add_pow (hx : x * x = 0) (k : ℕ) : (1 + x) ^ k = 1 + (k : K) • x := by
@@ -88,12 +131,12 @@ theorem levi_two_conj (hpp : p * p = p) (hqq : q * q = q) (hpq : p * q = 0) (hqp
   have l5 : ∀ z, x * (p * z) = 0 := fun z => by rw [← mul_assoc, h1, zero_mul]
   have l6 : ∀ z, q * (x * z) = 0 := fun z => by rw [← mul_assoc, h2, zero_mul]
   constructor
-  · simp only [mul_assoc, mul_sub, sub_mul, smul_mul_assoc, mul_smul_comm, l1, hpp, l2, hqq, e1, e2]
+  · simp only [mul_assoc, mul_sub, sub_mul, smul_mul_assoc, mul_smul_comm, l1, hqq, e1, e2]
   · simp only [levi, mul_assoc, mul_add, add_mul, mul_sub, sub_mul, smul_mul_assoc, mul_smul_comm, one_mul, mul_one,
-      l1, l2, l3, l4, l5, l6, hpp, hqq, hpq, hqp, h1, h2, e1, e2, e3, smul_zero, add_zero, zero_add, sub_zero, smul_smul,
+      l5, hqq, hqp, h1, h2, e1, e3, smul_zero, add_zero, zero_add, smul_smul,
       smul_add, smul_sub]
     rw [h5]
-    simp only [mul_zero, zero_mul, smul_zero, add_zero, zero_add, sub_zero]
+    simp only [mul_zero, zero_mul, smul_zero, add_zero, sub_zero]
     match_scalars <;> first | ring1 | linear_combination hh | linear_combination -hh | linear_combination 2 * hh | linear_combination -2 * hh
 
 theorem core_conj {G : Type} [Group G] (φ : G →* S) (hφ : Function.Injective φ) (hpp : p * p = p) (hqq : q * q = q)

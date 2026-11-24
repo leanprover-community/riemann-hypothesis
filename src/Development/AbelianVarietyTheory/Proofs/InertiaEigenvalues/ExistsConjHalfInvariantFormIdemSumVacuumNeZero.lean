@@ -1,14 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NotMemSpanOfCommute
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsInertTop
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsFlipDet
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FlipIdxNeZero
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NotMemSpanOfCommute
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdemSumMulOfSubset
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IntFormsSubset
+import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValRingLocRing
 
 @[expose] public section
 
@@ -20,7 +63,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open GlobalTheory.SingleDatum GlobalTheory.CoverRead
 open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-set_option synthInstance.maxHeartbeats 400000
+
 open GlobalTheory.LevelSeries
 
 noncomputable section
@@ -133,16 +176,16 @@ theorem invariant_form {Λ : AddSubgroup (WO S T)} {e : AE D} (he1 : e * e = e) 
         | mul_right B _ g hg ih =>
           obtain ⟨y', N, hy', rfl⟩ := hg
           refine ⟨fun y hy => ?_, ?_⟩
-          set_option synthInstance.maxHeartbeats 100000 in
-            · rw [Module.End.mul_apply, LinearMap.sum_apply, map_sum, map_sum]
-              refine Finset.sum_nonneg fun k _ => ?_
-              rw [heisL_apply, ← heisO_add_of_orth ψ S T (symplO_eq_zero S T he2 (isHalf_nsmul hy' k) hy)]
-              exact ih.1 _ (isHalf_add (isHalf_nsmul hy' k) hy)
-          set_option synthInstance.maxHeartbeats 100000 in
-            · rw [Module.End.mul_apply, LinearMap.sum_apply, map_sum, map_sum]
-              refine Finset.sum_pos' (fun k _ => ih.1 _ (isHalf_nsmul hy' k)) ⟨0, Finset.mem_range.2 N.succ_pos, ?_⟩
-              rw [heisL_apply, zero_smul, heisO_zero]
-              exact ih.2
+
+          · rw [Module.End.mul_apply, LinearMap.sum_apply, map_sum, map_sum]
+            refine Finset.sum_nonneg fun k _ => ?_
+            rw [heisL_apply, ← heisO_add_of_orth ψ S T (symplO_eq_zero S T he2 (isHalf_nsmul hy' k) hy)]
+            exact ih.1 _ (isHalf_add (isHalf_nsmul hy' k) hy)
+
+          · rw [Module.End.mul_apply, LinearMap.sum_apply, map_sum, map_sum]
+            refine Finset.sum_pos' (fun k _ => ih.1 _ (isHalf_nsmul hy' k)) ⟨0, Finset.mem_range.2 N.succ_pos, ?_⟩
+            rw [heisL_apply, zero_smul, heisO_zero]
+            exact ih.2
       intro B hB h0
       have := (this B hB).2
       rw [h0, map_zero] at this
@@ -227,9 +270,9 @@ theorem exists_invariant_form_idemSum : ∀ (D : D7) (ψ : AddChar (AF D.host.F)
     intro u hu
     ext i j
     show infPart D (u i j) = 0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hu i j, RingHom.map_mul, hcsum, map_sum,
-      Finset.sum_eq_zero fun Q hQ => infPart_splitIdem (isSplitIdem_conj (hes Q hQ).1), zero_mul]
+
+    rw [← hu i j, RingHom.map_mul, hcsum, map_sum,
+    Finset.sum_eq_zero fun Q hQ => infPart_splitIdem (isSplitIdem_conj (hes Q hQ).1), zero_mul]
   have he1 : cA D eT * cA D eT = cA D eT := by rw [← RingHom.map_mul, hsum1]
   have he2 : cA D (cA D eT) * cA D eT = 0 := by rw [GlobalTheory.DualPairCheck.cA_cA, hTo]
   exact invariant_form he1 he2 hfin hd (fun u hu => by rw [GlobalTheory.DualPairCheck.cA_cA]; exact hΛ _ hsum1 u hu) hf0

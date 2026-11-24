@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
 
 @[expose] public section
 

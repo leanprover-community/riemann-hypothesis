@@ -1,16 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.CdScaleTieIff
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LeftInvOfUnitary
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DiscreteTopologyRationalPointsHermitianSpace
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCompactLatticeStabilizerBoundedReal
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFinPartMat
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ArchimedeanMatrixUnitaryContinuousMultiplicative
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.InfAdeleTensorBijective
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIsFundamentalDomainAndQuotMeasureEq
+public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCompactLatticeStabilizerBoundedReal
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ArchimedeanMatrixUnitaryContinuousMultiplicative
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFinPartMat
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
+public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Algebra.Group.OpenMapping
+import Mathlib.Topology.Baire.LocallyCompactRegular
+import Mathlib.Topology.UniformSpace.Uniformizable
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LeftInvOfUnitary
+import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 
 @[expose] public section
 
@@ -45,7 +87,7 @@ theorem infEmb_continuous {τ : E →+* ℂ} {θ : Ainf F ⊗[F] E →+* ℂ} (h
 
 theorem infEmb_sigR (h : IsCMExt F E σ) {τ : E →+* ℂ} {θ : Ainf F ⊗[F] E →+* ℂ} (hθ : IsInfEmb τ θ)
     (z : Ainf F ⊗[F] E) : θ (sigR (Ainf F) σ z) = starRingEnd ℂ (θ z) := by
-  haveI := h.1
+  have := h.1
   induction z using TensorProduct.induction_on with
   | zero => simp
   | tmul a x =>
@@ -57,9 +99,9 @@ theorem infEmb_sigR (h : IsCMExt F E σ) {τ : E →+* ℂ} {θ : Ainf F ⊗[F] 
 theorem infEmb_bijective (h : IsCMExt F E σ) {I : Type} {τ : I → (E →+* ℂ)} (hτ : IsCMFam τ)
     {θ : I → (Ainf F ⊗[F] E →+* ℂ)} (hθ : ∀ ρ, IsInfEmb (τ ρ) (θ ρ)) :
     Function.Bijective fun (z : Ainf F ⊗[F] E) (ρ : I) => θ ρ z := by
-  haveI := h.1
-  haveI := h.2.1
-  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  have := h.1
+  have := h.2.1
+  have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
   let c : E ≃ₐ[F] E := AlgEquiv.ofBijective σ (Algebra.IsAlgebraic.algHom_bijective σ)
   have hc : ∀ (φ : E →+* ℂ) x, φ (c x) = starRingEnd ℂ (φ x) := h.2.2.2
   have hnr : ∀ φ : E →+* ℂ, ComplexEmbedding.conjugate φ ≠ φ := fun φ hφ =>
@@ -95,15 +137,15 @@ theorem exists_compact_adele (h : IsCMExt F E σ) {I : Type} [Fintype I] {τ : I
     (hC : IsCompact C) : ∃ K : Set (AF F ⊗[F] E), IsCompact K ∧ ∀ z : AF F ⊗[F] E,
       Algebra.TensorProduct.map (sndA F) (AlgHom.id F E) z ∈ C →
       (∀ ρ, ‖θ ρ (Algebra.TensorProduct.map (fstA F) (AlgHom.id F E) z)‖ ≤ R) → z ∈ K := by
-  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  haveI : IsModuleTopology (Ainf F) (Ainf F ⊗[F] E) := ⟨rfl⟩
-  haveI : IsTopologicalRing (Ainf F ⊗[F] E) := IsModuleTopology.isTopologicalRing (Ainf F) _
-  haveI := GlobalTheory.AdelicUnitaryTop.secondCountable_infiniteAdele F
+  have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  have : IsModuleTopology (Ainf F) (Ainf F ⊗[F] E) := ⟨rfl⟩
+  have : IsTopologicalRing (Ainf F ⊗[F] E) := IsModuleTopology.isTopologicalRing (Ainf F) _
+  have := GlobalTheory.AdelicUnitaryTop.secondCountable_infiniteAdele F
   obtain ⟨e₀⟩ := GlobalTheory.AdelicUnitaryTop.nonempty_homeomorph (F := F) (E := E) (Ainf F)
-  haveI : LocallyCompactSpace (Ainf F ⊗[F] E) := e₀.isClosedEmbedding.locallyCompactSpace
-  haveI : SecondCountableTopology (Ainf F ⊗[F] E) := e₀.secondCountableTopology
+  have : LocallyCompactSpace (Ainf F ⊗[F] E) := e₀.isClosedEmbedding.locallyCompactSpace
+  have : SecondCountableTopology (Ainf F ⊗[F] E) := e₀.secondCountableTopology
   have hb := infEmb_bijective h hτ hθ
-  let Θ : Ainf F ⊗[F] E →+ (I → ℂ) := (Pi.ringHom θ).toAddMonoidHom
+  let Θ : Ainf F ⊗[F] E →+ (I → ℂ) := (RingHom.pi θ).toAddMonoidHom
   have hΘ : Continuous Θ := continuous_pi fun ρ => infEmb_continuous (hθ ρ)
   have ho : IsOpenMap Θ := AddMonoidHom.isOpenMap_of_sigmaCompact Θ hb.2 hΘ
   let Φ := (Equiv.ofBijective Θ hb).toHomeomorphOfContinuousOpen hΘ ho
@@ -192,63 +234,8 @@ theorem exists_lattice (W : HSpace E) : ∃ L : Submodule (𝓞 E) (Fin W.rank �
   let f := W.frame.equivFun.toLinearMap
   refine ⟨W.L0.map (f.restrictScalars (𝓞 E)), W.standardTuple_isLattice.fg.map _, ?_, ?_⟩
   · have : (W.L0.map (f.restrictScalars (𝓞 E)) : Set (Fin W.rank → E)) = f '' W.L0 := rfl
-    have hspan : Submodule.span E (W.L0 : Set W.V) = ⊤ := by
-      classical
-      by_contra hspan
-      obtain ⟨φ, hφ₀, hφ⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hspan)
-      obtain ⟨bs, hbs⟩ := Formalism.HermitianLatticesTheory.dualLattice_dualBasis W.hT W.nondeg W.frame
-      let μ := ∑ j, star (φ (W.frame j)) • bs j
-      have hμ : ∀ v, W.hT μ v = φ v := by
-        have key : W.hT μ = φ := by
-          apply W.frame.ext
-          intro i
-          dsimp [μ]
-          rw [map_sum, LinearMap.sum_apply]
-          have hs : ∀ j, W.hT (star (φ (W.frame j)) • bs j) (W.frame i) =
-              φ (W.frame j) * (if i = j then 1 else 0) := by
-            intro j
-            rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, star_star]
-            congr 1
-            rw [← W.herm.eq (W.frame i) (bs j), hbs]
-            split_ifs <;> simp
-          simp only [hs, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-        intro v
-        rw [key]
-      have hμ₀ : μ ≠ 0 := by
-        intro h
-        apply hφ₀
-        ext y
-        simpa [h] using (hμ y).symm
-      have hline (a : E) : a • μ ∈ W.L0 := by
-        rw [← W.baseLattice_isUnimodular]
-        change a • μ ∈ Formalism.E.hdual W.hT W.L0
-        simp only [Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-          LinearMap.restrictScalars_apply]
-        intro y hy
-        have hy₀ := LinearMap.mem_ker.mp (hφ (Submodule.subset_span hy))
-        simp [← W.herm.eq (a • μ) y, LinearMap.map_smulₛₗ, hμ, hy₀]
-      obtain ⟨ψ, hψ, -⟩ := Submodule.exists_le_ker_of_notMem
-        (show μ ∉ (⊥ : Submodule E W.V) by simpa using hμ₀)
-      let g := ψ.restrictScalars (𝓞 E)
-      have hmap (x : E) : x ∈ W.L0.map g := by
-        refine ⟨(x / ψ μ) • μ, hline _, ?_⟩
-        change ψ ((x / ψ μ) • μ) = x
-        rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hψ]
-      obtain ⟨d, hd₀, hd⟩ := FractionalIdeal.isFractional_of_fg
-        (S := nonZeroDivisors (𝓞 E)) (W.standardTuple_isLattice.fg.map g)
-      have hinj := IsFractionRing.injective (𝓞 E) E
-      have hne {a : 𝓞 E} (ha : a ≠ 0) : algebraMap (𝓞 E) E a ≠ 0 :=
-        fun h => ha (hinj (h.trans (map_zero _).symm))
-      have hinteger (x : E) : IsLocalization.IsInteger (𝓞 E) x := by
-        have hx := hd _ (hmap ((algebraMap (𝓞 E) E d)⁻¹ * x))
-        rwa [Algebra.smul_def, ← mul_assoc, mul_inv_cancel₀ (hne (nonZeroDivisors.ne_zero hd₀)),
-          one_mul] at hx
-      apply RingOfIntegers.not_isField E
-      refine ⟨⟨0, 1, zero_ne_one⟩, mul_comm, ?_⟩
-      intro a ha
-      obtain ⟨b, hb⟩ := hinteger ((algebraMap (𝓞 E) E a)⁻¹)
-      refine ⟨b, hinj ?_⟩
-      rw [map_mul, hb, map_one, mul_inv_cancel₀ (hne ha)]
+    have hspan : Submodule.span E (W.L0 : Set W.V) = ⊤ :=
+      Formalism.HermitianLatticesTheory.IsUnimodular.span_eq_top W.baseLattice_isUnimodular W.herm W.standardTuple_isLattice.fg
     rw [this, ← Submodule.map_span, hspan, Submodule.map_top, LinearEquiv.range]
   · ext v
     constructor

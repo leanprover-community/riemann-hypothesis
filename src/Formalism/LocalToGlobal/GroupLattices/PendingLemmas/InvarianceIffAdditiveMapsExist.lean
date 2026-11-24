@@ -1,12 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.SysC
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCoefficients
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.OrbitSumStabilizer
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceRepresentativesTrivial
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CardFilterValLt
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.SuccMulSuccSubOneDivSucc
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ConditionIffAdditiveMaps
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CardFilterValLt
 
 @[expose] public section
 

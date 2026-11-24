@@ -2,8 +2,9 @@ module
 
 public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import ReciprocityTheory.DualLattices.HtLinStatement
-public import ReciprocityTheory.DualLattices.NsetExpInjectiveSurjective
-public import ReciprocityTheory.DualLattices.SmallLevelClassSet
+public import Mathlib.FieldTheory.Perfect
+public import Mathlib.RingTheory.MvPowerSeries.Basic
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

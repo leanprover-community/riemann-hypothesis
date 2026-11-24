@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsTwistSplit
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
+public import Mathlib.Algebra.MonoidAlgebra.Grading
 
 @[expose] public section
 
@@ -68,8 +68,8 @@ theorem yHom_mem_tDeg (c : MvPolynomial (Fin (r + 1)) S) : yHom S η c ∈ tDeg 
 
 theorem xyHom_mem_tDeg {p : Poly (MvPolynomial (Fin (r + 1)) S) N} {d : ℕ} (hp : p.IsHomogeneous d) :
     xyHom S x η p ∈ tDeg Ω d := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [p.as_sum, map_sum]
+
+  rw [p.as_sum, map_sum]
   refine Submodule.sum_mem _ fun α hα => ?_
   have hdeg := hp (mem_support_iff.mp hα)
   rw [xyHom, coe_eval₂Hom, eval₂_monomial]
@@ -90,12 +90,12 @@ theorem xyHom_map_C {f : Poly S N} {e : ℕ} (hf : f.IsHomogeneous e) :
     xyHom S x η (MvPolynomial.map (C : S →+* MvPolynomial (Fin (r + 1)) S) f) = single ((0 : ℤ), (e : ℤ)) (aeval x f) := by
   conv_lhs => rw [f.as_sum]
   conv_rhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show single ((0 : ℤ), (e : ℤ)) (∑ α ∈ f.support, aeval x (monomial α (f.coeff α))) =
-      ∑ α ∈ f.support, single ((0 : ℤ), (e : ℤ)) (aeval x (monomial α (f.coeff α))) from
-    map_sum (singleAddHom ((0 : ℤ), (e : ℤ))) _ _]
+
+  rw [map_sum, map_sum, map_sum]
+
+  rw [show single ((0 : ℤ), (e : ℤ)) (∑ α ∈ f.support, aeval x (monomial α (f.coeff α))) =
+    ∑ α ∈ f.support, single ((0 : ℤ), (e : ℤ)) (aeval x (monomial α (f.coeff α))) from
+  map_sum (singleAddHom ((0 : ℤ), (e : ℤ))) _ _]
   refine Finset.sum_congr rfl fun α hα => ?_
   have hdeg := hf (mem_support_iff.mp hα)
   rw [map_monomial, xyHom, coe_eval₂Hom, eval₂_monomial, aeval_monomial]

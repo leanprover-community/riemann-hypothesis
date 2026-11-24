@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTpIntegrandLimit
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsBoundaryPtsNull
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.RegWeightLimits
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 

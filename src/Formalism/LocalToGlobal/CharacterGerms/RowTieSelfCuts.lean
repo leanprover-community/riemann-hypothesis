@@ -1,9 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.SelfConjugateRowData
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieLab
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieTop
 public import Formalism.LocalToGlobal.CharacterGerms.NondegenerateCharts
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieLab
+import Formalism.LocalToGlobal.CharacterGerms.RowTieTop
 
 @[expose] public section
 

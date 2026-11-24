@@ -1,8 +1,46 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockBoundUniformiser
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.FockBlocks
-public import Formalism.ThetaLogCoordinates.BihomogeneousPairs.FinalLL
+import Formalism.MahlerMeasure.MahlerMeasureProofs.FockBlocks
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.ThetaLogCoordinates.BihomogeneousPairs.LetterChainEmbeddings.PstScalMem
 
 @[expose] public section
 
@@ -34,12 +72,6 @@ theorem harmonicProjection_add (w e : Fin r → σ) (zv sv : σ) (o n z : ℕ) (
   unfold tieP
   simp only [mul_add, map_add (f := _), smul_add, Finset.sum_add_distrib]
 
-theorem harmonicProjection_smul (w e : Fin r → σ) (zv sv : σ) (o n z : ℕ) (c : k) (y : MvPolynomial σ k) :
-    tieP w e zv sv o n z (c • y) = c • tieP w e zv sv o n z y := by
-  unfold tieP
-  simp only [mul_smul_comm, map_smul, Finset.smul_sum]
-  exact Finset.sum_congr rfl fun l _ => smul_comm _ _ _
-
 end Lin
 
 section Block
@@ -58,11 +90,11 @@ theorem Pall_add (j : Fin G.T.t → ℕ) (jp : ℕ) (u v : MvPolynomial (M.BVar 
 theorem Pall_smul (j : Fin G.T.t → ℕ) (jp : ℕ) (c : ℚ_[p]) (u : MvPolynomial (M.BVar N r G.T.t) ℚ_[p]) :
     G.Pall p (r := r) j jp (c • u) = c • G.Pall p (r := r) j jp u := by
   unfold M.BlockData.Pall
-  rw [← harmonicProjection_smul]
+  rw [← _root_.Formalism.InvariantFactorPaths.KP.LL.tieP_smul]
   congr 1
   induction (List.finRange G.T.t) with
   | nil => rfl
-  | cons i l ih => simp only [List.foldr_cons]; rw [ih, harmonicProjection_smul]
+  | cons i l ih => simp only [List.foldr_cons]; rw [ih, _root_.Formalism.InvariantFactorPaths.KP.LL.tieP_smul]
 
 def Th (j : Fin G.T.t → ℕ) (jp : ℕ) (u : MvPolynomial (M.BVar N r G.T.t) ℚ_[p]) : MvPolynomial (M.BVar N r G.T.t) ℚ_[p] :=
   (∏ i, G.Ehat p (r := r) i ^ j i) * G.Eplus p (r := r) ^ jp * G.Pall p (r := r) j jp u

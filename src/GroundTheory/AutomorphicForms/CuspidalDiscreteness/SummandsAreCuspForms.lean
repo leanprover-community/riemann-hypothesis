@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenForallCuspRepTFinOneEq
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsContinuous
 public import GroundTheory.AutomorphicForms.GKModules.KernelCalculus
-public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -178,7 +181,7 @@ def IsZKFinite (v : CuspL2 μ) : Prop :=
       ⟨v, hs⟩) '' ((isExpLieAlgebra K n).centerU : Set _)))
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem exists_cuspForm_of_isZKFinite (v : CuspL2 μ) (hv : IsZKFinite μ v) :
     ∃ φ : cuspForms K n,
       ((cuspToL2 μ φ : cuspidalL2 μ) : Lp ℂ 2 (quotientMeasure Γ₁ μ)) = toLp μ v ∧

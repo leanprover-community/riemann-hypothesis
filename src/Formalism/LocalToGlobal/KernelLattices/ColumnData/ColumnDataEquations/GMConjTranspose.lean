@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.NormOneUnitIdeal
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SemiCharImg
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThIndep
+import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.HenselQuad
 
 @[expose] public section
 

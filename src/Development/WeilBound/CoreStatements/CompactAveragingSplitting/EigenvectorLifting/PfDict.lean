@@ -1,13 +1,61 @@
 module
 
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitDict
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.LocalDef
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
+public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicCharacterNontrivialAtPlaces
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrimeAdditiveCharacterUnramified
+public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
+public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfActs
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictAd
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfActs
+import GroundTheory.LocalFields.PadicLogSeries
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 
 @[expose] public section
 
@@ -284,15 +332,15 @@ theorem hTens_zero (h : IsSec σ t sec) {u u' : Matrix (Fin n) (Fin d) (AE F E)}
   refine h.ext _ (fun a ha => ?_) ?_ ?_
   · simp only [hTens, Finset.smul_sum, ← smul_mul_assoc, fun i j => kd_at_matrix.1 hu i j a ha, zero_mul, Finset.sum_const_zero]
   · rcases h0 with h0 | h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [hTens, map_sum, map_mul, z h0.1, zero_mul, Finset.sum_const_zero]
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [hTens, map_sum, map_mul, (h.conj _).1, z h0.2, mul_zero, Finset.sum_const_zero]
+
+    · simp only [hTens, map_sum, map_mul, z h0.1, zero_mul, Finset.sum_const_zero]
+
+    · simp only [hTens, map_sum, map_mul, (h.conj _).1, z h0.2, mul_zero, Finset.sum_const_zero]
   · rcases h0 with h0 | h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [hTens, map_sum, map_mul, (h.conj _).2, z h0.2, mul_zero, Finset.sum_const_zero]
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [hTens, map_sum, map_mul, z h0.1, zero_mul, Finset.sum_const_zero]
+
+    · simp only [hTens, map_sum, map_mul, (h.conj _).2, z h0.2, mul_zero, Finset.sum_const_zero]
+
+    · simp only [hTens, map_sum, map_mul, z h0.1, zero_mul, Finset.sum_const_zero]
 
 theorem vac_ind {B : Base F E} (hB : B.IsGood σ) {r s r' s' : ℕ} (hX : X.IsHerm σ B r s) (hW : W.IsSkew σ B r' s') {φ}
     (hφ : M.IsVac B.ψ v φ) {π₁ π₀ : AE F E →+* Fv F v} {co ι} (hι : M.IsLin B.ψ π₁ π₀ co ι)
@@ -482,7 +530,7 @@ theorem model_alt {B : Base F E} (hB : B.IsGood σ) {r s r' s' : ℕ} (hX : X.Is
   · have e1 := congrArg invT (rel hD g)
     rw [map_mul, map_mul, map_inv, invT_invT, mul_assoc, inv_mul_eq_iff_eq_mul, ← mul_inv_eq_iff_eq_mul] at e1
     rw [← Units.val_mul, ← Units.val_mul, ← e1]
-    simp only [inB, map_mul, map_inv]
+    simp only [map_mul, map_inv]
     congr 1
     group
 

@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUpUniMulAlt
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -85,9 +127,7 @@ theorem isLoUni_mul {N : ℕ} {A L : Matrix (Fin N) (Fin N) K} (hA : IsLoUni A) 
       · rw [(hA i k).1 hik, zero_mul]
     · simp
 
-theorem isUpUni_mul {N : ℕ} {U B : Matrix (Fin N) (Fin N) K} (hU : IsUpUni U) (hB : IsUpUni B) :
-    IsUpUni (U * B) := by
-  first | exact GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul .. | (apply GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul <;> assumption) | (intros; apply GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul <;> assumption) | (apply @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul <;> assumption) | (intros; apply @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul <;> assumption) | (apply @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul <;> first | assumption | infer_instance) | exact @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul K ‹_› N U B hU hB | exact @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul K ‹_› N U B hU | exact @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul K ‹_› N U B | exact @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul K ‹_› N U | exact @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul K ‹_› N | exact @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul K ‹_› | exact @GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul K
+alias isUpUni_mul := _root_.GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul
 
 end Mat
 
@@ -138,8 +178,8 @@ theorem gram_first {N : ℕ} (f g w : Fin N → S.V)
   · ext a b
     have hg : g a = f a + ∑ d, c a d • f d := by rw [hcs a]; abel
     have key : S.hT (g a) (w b) = S.hT (f a) (w b) + ∑ d, star (c a d) * S.hT (f d) (w b) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hg, map_add (f := _), LinearMap.add_apply, map_sum, LinearMap.sum_apply]
+
+      rw [hg, map_add (f := _), LinearMap.add_apply, map_sum, LinearMap.sum_apply]
       congr 1
       refine Finset.sum_congr rfl fun d _ => ?_
       rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
@@ -161,8 +201,8 @@ theorem gram_second {N : ℕ} (f w w' : Fin N → S.V)
   · ext a b
     have hw : w' b = w b + ∑ d, c b d • w d := by rw [hcs b]; abel
     have key : S.hT (f a) (w' b) = S.hT (f a) (w b) + ∑ d, S.hT (f a) (w d) * c b d := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hw, map_add (f := _), map_sum]
+
+      rw [hw, map_add (f := _), map_sum]
       congr 1
       refine Finset.sum_congr rfl fun d _ => ?_
       rw [map_smul, smul_eq_mul, mul_comm]
@@ -266,8 +306,7 @@ theorem isUpUni_conj_sgn {K : Type*} [CommRing K] {B : Matrix (Fin (r + 1)) (Fin
   refine ⟨fun hji => ?_, fun hij => ?_⟩
   · simp [Matrix.mul_diagonal, Matrix.diagonal_mul, (hB i j).1 hji]
   · subst hij
-    simp only [Matrix.mul_diagonal, Matrix.diagonal_mul, (hB i i).2 rfl, mul_one]
-    exact sgn_sq i
+    simpa [Matrix.mul_diagonal, Matrix.diagonal_mul, (hB i i).2 rfl] using sgn_sq i
 
 theorem cell_step {K : Type*} [CommRing K] {Z Z₂ A B : Matrix (Fin (r + 1)) (Fin (r + 1)) K}
     (hA : IsLoUni A) (hB : IsUpUni B) (he : Z₂ = A * Z * B) (w : Point K (r + 1))
@@ -291,10 +330,9 @@ theorem cell_step {K : Type*} [CommRing K] {Z Z₂ A B : Matrix (Fin (r + 1)) (F
 theorem cellFun_all (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) (P : LFlag S r T' → Prop) :
     CellFun Λ F P := by
   intro x y h w
-  have h' : DCRel Λ F x.1 y.1 := h
-  have hs : DCRel Λ F y.1 x.1 := (dCRelEquivAll_holds E S r T T' Λ F).symm h'
-  obtain ⟨A, B, hA, hB, he⟩ := zhat_factor Λ h'
-  obtain ⟨A', B', hA', hB', he'⟩ := zhat_factor Λ hs
+  obtain ⟨A, B, hA, hB, he⟩ := zhat_factor Λ h
+  obtain ⟨A', B', hA', hB', he'⟩ :=
+    zhat_factor Λ ((dCRelEquivAll_holds E S r T T' Λ F).symm h)
   exact ⟨cell_step hA hB he w, cell_step hA' hB' he' w⟩
 
 theorem feqF_fwd (Λ : Submodule (𝓞 E) S.V) {F : LFlag S r T} {x y : LFlag S r T'} (h : DCRel Λ F x y)
@@ -318,9 +356,7 @@ theorem feqF_fwd (Λ : Submodule (𝓞 E) S.V) {F : LFlag S r T} {x y : LFlag S 
 theorem feqFFun_all (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) (P : LFlag S r T' → Prop) :
     FeqFFun Λ F P := by
   intro x y h
-  have h' : DCRel Λ F x.1 y.1 := h
-  have hs : DCRel Λ F y.1 x.1 := (dCRelEquivAll_holds E S r T T' Λ F).symm h'
-  exact ⟨feqF_fwd Λ h', feqF_fwd Λ hs⟩
+  exact ⟨feqF_fwd Λ h, feqF_fwd Λ ((dCRelEquivAll_holds E S r T T' Λ F).symm h)⟩
 
 end Gen
 

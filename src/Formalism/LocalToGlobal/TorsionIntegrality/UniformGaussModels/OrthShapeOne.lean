@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.IsHypPair
 public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.IsotropicVanish
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementE
 
 @[expose] public section
 

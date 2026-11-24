@@ -1,7 +1,10 @@
 module
 
-public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
+public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
+public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
+public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
+public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
 
 @[expose] public section
 

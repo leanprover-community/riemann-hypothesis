@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeIdeal
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+import GroundTheory.HeightsAndTheta.Heights.ArithDegreeIdeal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionMap
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionLift
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

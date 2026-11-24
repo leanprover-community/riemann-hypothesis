@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimitiveFormWindow
+public import Mathlib.Analysis.Analytic.ChangeOrigin
 
 @[expose] public section
 

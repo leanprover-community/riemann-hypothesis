@@ -1,11 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AdaptSelf
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormGeometrySummary
+import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -53,7 +95,7 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.xa_eq {F G : _root_.Formalism.Hermit
       rw [Xa_eq_span_e_castSucc F n, Submodule.span_le]
       rintro _ ⟨b, hb, rfl⟩
       have hd := sameGr_e_sub_mem_Xa h b.castSucc
-      simp only [Fin.coe_castSucc] at hd
+      simp only [Fin.val_castSucc] at hd
       have h1 : G.e b.castSucc ∈ G.Xa n := _root_.Formalism.HermitianLatticeCounting.P.e_mem_Xa G b hb
       have h2 : G.e b.castSucc - F.e b.castSucc ∈ G.Xa n := _root_.Formalism.HermitianLatticeCounting.P.Xa_mono G (le_of_lt hb) (ih b hb hd)
       have h3 := Submodule.sub_mem _ h1 h2
@@ -62,7 +104,7 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.xa_eq {F G : _root_.Formalism.Hermit
   rw [Xa_eq_span_e_castSucc G n, Submodule.span_le]
   rintro _ ⟨b, hb, rfl⟩
   have hd := sameGr_e_sub_mem_Xa h b.castSucc
-  simp only [Fin.coe_castSucc] at hd
+  simp only [Fin.val_castSucc] at hd
   have h1 : F.e b.castSucc ∈ F.Xa n := _root_.Formalism.HermitianLatticeCounting.P.e_mem_Xa F b hb
   have h2 : G.e b.castSucc - F.e b.castSucc ∈ F.Xa n := _root_.Formalism.HermitianLatticeCounting.P.Xa_mono F (le_of_lt hb) hd
   have h3 := Submodule.add_mem _ h1 h2
@@ -142,7 +184,7 @@ private theorem det_of_eq_of_sub_mem_span_lt {l : ℕ} (u u' w : Fin l → V)
     rw [Matrix.of_apply, hrow a, _root_.Formalism.HermitianLatticeCounting.P.B_sum_left, Matrix.mul_apply]
     simp only [Matrix.of_apply]
   have hdet : M.det = 1 := by
-    rw [Matrix.det_of_lowerTriangular]
+    rw [Matrix.det_of_isLowerTriangular]
     · refine Finset.prod_eq_one fun a _ => ?_
       have h0 : L a a = 0 := (Finsupp.mem_supported' K (L a)).1 (hLsupp a) a (by simp)
       simp [hM, h0]
@@ -163,13 +205,13 @@ private theorem sameGr_Dl_left_eq {F G : _root_.Formalism.HermitianLatticeCounti
     (fun a => G.e (Fin.castLE hl a))
   intro a
   have hd := sameGr_e_sub_mem_Xa h (Fin.castLE hl a)
-  simp only [Fin.coe_castLE] at hd
+  simp only [Fin.val_castLE] at hd
   refine (show F.Xa a ≤ _ from ?_) hd
   rw [Xa_eq_span_e_castSucc F, Submodule.span_le]
   rintro _ ⟨b, hb, rfl⟩
   apply Submodule.subset_span
-  refine ⟨⟨b.val, by have := a.isLt; simp only [Set.mem_setOf_eq] at hb; omega⟩, ?_, ?_⟩
-  · simp only [Set.mem_setOf_eq] at hb ⊢
+  refine ⟨⟨b.val, by have := a.isLt; simp only [Set.mem_ofPred_eq] at hb; omega⟩, ?_, ?_⟩
+  · simp only [Set.mem_ofPred_eq] at hb ⊢
     exact Fin.mk_lt_of_lt_val hb
   · simp only
     congr 1
@@ -204,7 +246,7 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.inN_of {F G : _root_.Formalism.Hermi
     intro a
     rw [_root_.GlobalTheory.DegAsm.AdaptInv.xa_eq h]
     have hd := sameGr_e_sub_mem_Xa h a.castSucc
-    simp only [Fin.coe_castSucc] at hd
+    simp only [Fin.val_castSucc] at hd
     have h3 := Submodule.add_mem _ (hflag a) (hXa a _ hd)
     convert h3 using 1
     rw [map_sub]

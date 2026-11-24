@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StIsolatedFibreNear
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCompactHolomorphicFibreFinite
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Analysis.Calculus.FDeriv.Analytic
 
 @[expose] public section
 

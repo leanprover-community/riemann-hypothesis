@@ -1,8 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ClassRec
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
-public import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
+public import Formalism.LocalRingCardinality.DataDIV
+public import Formalism.LocalRingCardinality.DataExtra
 
 @[expose] public section
 

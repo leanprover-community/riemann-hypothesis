@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.EtaleCompletion.QcohZariski
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleSheaf
+public import Mathlib.Algebra.Category.ModuleCat.Sheaf.PullbackFree
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleDual
+import Mathlib.CategoryTheory.Sites.LocalSite
+import Mathlib.Tactic.Lemma
+import GroundTheory.ArithmeticGeometry.EtaleCompletion.ModulesPullback
 
 @[expose] public section
 

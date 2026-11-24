@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+public import Mathlib.RingTheory.Nullstellensatz
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Basic.PEquiv
+public import Mathlib.Data.Matrix.PEquiv
 
 @[expose] public section
 
@@ -338,8 +343,8 @@ theorem sp_eval_colSub (β : ι → Matrix (Fin a) (Fin a) ℂ) (x : ι → Matr
   | mul_X p v hp =>
     rw [map_mul, map_mul, hp, map_mul]
     congr 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [colSub, aeval_X, map_sum, map_mul, eval_C, eval_X]
+
+    simp only [colSub, aeval_X, map_sum, map_mul, eval_C, eval_X]
     exact Finset.sum_congr rfl fun r _ => mul_comm _ _
 
 theorem sp_det_bor {β : ι → Matrix (Fin a) (Fin a) ℂ} (hβ : IsBor β) (τ : ι) : (β τ).det = ∏ r, β τ r r :=

@@ -1,7 +1,6 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBridgeC
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThValDescIn
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 
 @[expose] public section
 

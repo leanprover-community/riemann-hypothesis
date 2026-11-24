@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.Statements
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 @[expose] public section
 
@@ -21,8 +27,8 @@ theorem eval_smul_of_isHomogeneous {σ : Type*} {φ : MvPolynomial σ ℝ} {n : 
   classical
   conv_lhs => rw [φ.as_sum]
   conv_rhs => rw [φ.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, eval_monomial, Finset.mul_sum]
+
+  simp only [map_sum, eval_monomial, Finset.mul_sum]
   refine Finset.sum_congr rfl fun d hd => ?_
   have hdeg : ∑ i ∈ d.support, d i = n := by
     have := h (mem_support_iff.mp hd)
@@ -178,8 +184,8 @@ theorem fibreQ_eq_map (k : ℕ) : fibreQ k = mapAlgHom (ContinuousMap.coeFnAlgHo
   rw [← AlgHom.comp_apply, comp_aeval, fibreQ]
   refine congrArg (fun x => aeval x (gMixed k)) ?_
   funext r
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, mapAlgHom_apply, map_X, map_C]
+
+  simp [map_sum, mapAlgHom_apply, map_X, map_C]
   rfl
 
 theorem continuous_coeff (k : ℕ) (μ : Fin 3 →₀ ℕ) : Continuous (AddMonoidAlgebra.coeff (fibreQ k) μ) := by
@@ -231,10 +237,10 @@ theorem fibrePoly_eq_C (h0 : FibreConstantClosedForm.Statement) (k : ℕ) :
     rw [real_inner_self_eq_norm_sq, EuclideanSpace.norm_sq_eq]
     simp [sq_abs]
   rw [haa] at hmean
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_mul, map_pow, map_sum, eval_C, eval_X]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hmean, fibrePoly_eq, map_sum]
+
+  simp only [map_mul, map_pow, map_sum, eval_C, eval_X]
+
+  rw [← hmean, fibrePoly_eq, map_sum]
   simp only [eval_monomial]
   simp_rw [← integral_mul_const]
   rw [← integral_finsetSum _
@@ -249,8 +255,8 @@ theorem fibrePoly_eq_C (h0 : FibreConstantClosedForm.Statement) (k : ℕ) :
 theorem proof (h0 : FibreConstantClosedForm.Statement) : FibreIntegralInvariant.Statement := by
   refine ⟨mean_eq, fun k B _ _ a => ?_⟩
   rw [fibrePoly_eq_C h0 k]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_mul, map_pow, map_sum, aeval_X]
+
+  simp [map_mul, map_pow, map_sum, aeval_X]
 
 end FibreIntegralInvariant
 

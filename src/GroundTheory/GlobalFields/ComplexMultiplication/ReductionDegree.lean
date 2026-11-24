@@ -1,12 +1,60 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogenyMap
+import GroundTheory.GlobalFields.ComplexMultiplication.DualDescent
+import GroundTheory.GlobalFields.ComplexMultiplication.ReductionComp
+import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogeny
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option maxHeartbeats 4000000
-set_option synthInstance.maxHeartbeats 400000
+
+
 
 namespace GroundTheory.Global
 
@@ -61,7 +109,7 @@ theorem exists_isogeny_coords : ∃ (x y : gaussRing W)
   exact ⟨x, y, _, e'⟩
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem degree_reduceIsogeny_le : (reduceIsogeny K W W' φ).degree ≤ φ.degree := by
   obtain ⟨x, y, h, hφ⟩ := exists_isogeny_coords K W W' φ
   have hjM : ∀ c : 𝒪, algebraMap K (W.baseChange K).toAffine.FunctionField (algebraMap 𝒪 K c) =
@@ -140,8 +188,8 @@ theorem degree_reduceIsogeny_le : (reduceIsogeny K W W' φ).degree ≤ φ.degree
 
     have hrel : ∑ i, g (a i) * b i = 0 := by
       apply IsFractionRing.injective (gaussRing W) (W.baseChange K).toAffine.FunctionField
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_zero]
+
+      rw [map_sum, map_zero]
       have h1 := congrArg (fun z => φ.comap (algebraMap _ _ s) * z) hc
       simp only [mul_zero, Finset.mul_sum, Algebra.smul_def, IntermediateField.algebraMap_apply]
         at h1
@@ -188,8 +236,8 @@ theorem degree_reduceIsogeny_le : (reduceIsogeny K W W' φ).degree ≤ φ.degree
         rw [ha' i, map_mul, mul_assoc]
       exact (mul_eq_zero.1 this).resolve_left (hinj _ hai₁)
     have hred' := congrArg (fun z => gaussResidue W (residue _ z)) hrel'
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_zero, hb] at hred'
+
+    simp only [map_sum, map_mul, map_zero, hb] at hred'
     have hcoef : ∀ i, gaussResidue W (residue _ (g (a' i))) =
         (reduceIsogeny K W W' φ).comap (gaussResidue W' (residue _ (a' i))) := fun i => by
       rw [← ResidueField.map_residue, ← RingHom.comp_apply, hres]; rfl

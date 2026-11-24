@@ -1,9 +1,55 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Formalism.LocalToGlobal.Columns.CoefColLemmas
-public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FinalD
+import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -82,7 +128,7 @@ theorem coefLast_eq_coeff [Fintype ι] (b : ι → Fin n → ℕ) (F : Pol K ι 
   | add p q hp hq => simp [hp, hq]
   | monomial m a =>
     have e : (monomial m a : Pol K ι N) = a • monomial m 1 := by simp [smul_monomial]
-    rw [e, map_smul, map_smul, coeff_smul]
+    rw [e, map_smul, map_smul, MvPolynomial.coeff_smul]
     congr 1
     rw [coefLast_monomial]
     have hm : splitLast K ι hN (monomial m 1) =
@@ -139,9 +185,9 @@ theorem isUnit_det_gramB (sg : ι → DomWeight n) [DecidableEq (VVIdx sg)] : Is
       refine (bVV K sg).ext fun j => ?_
       have hj := congrFun h j
       simp only [Matrix.vecMul, dotProduct, gramB, Matrix.of_apply, Pi.zero_apply] at hj
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, pairBK_apply, pairB_apply, bVV_coe,
-        smul_eq_mul, LinearMap.zero_apply]
+
+      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, pairBK_apply, pairB_apply, bVV_coe,
+      smul_eq_mul, LinearMap.zero_apply]
       simp only [mul_left_comm (v _), ← Finset.mul_sum, hj, mul_zero]
     rw [this]
     rfl
@@ -155,9 +201,9 @@ theorem fockB_projVV (sg : ι → DomWeight n) (F : Pol K ι n) {y : Pol K ι n}
     intro k
     have hinv := Matrix.mul_nonsing_inv _ (isUnit_det_gramB (K := K) sg)
     rw [← fockBL_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [projVV, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.smulRight_apply, Submodule.coe_sum,
-      Submodule.coe_smul, map_sum, map_smul, bVV_coe, smul_eq_mul, fockBL_apply]
+
+    simp only [projVV, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.smulRight_apply, Submodule.coe_sum,
+    Submodule.coe_smul, map_sum, map_smul, bVV_coe, smul_eq_mul, fockBL_apply]
     rw [Finset.sum_comm]
     have h1 : ∀ j, ∑ i, (gramB (K := K) sg)⁻¹ i j * (fockB (bVVfun K sg j) F * fockB (bVVfun K sg i) (bVVfun K sg k)) =
         (1 : Matrix (VVIdx sg) (VVIdx sg) K) k j * fockB (bVVfun K sg j) F := by
@@ -234,17 +280,17 @@ theorem splitLast_blockAct_X (A' : ι → Matrix (Fin N) (Fin N) K)
   obtain ⟨h1, h2, h3⟩ := h τ
   have hX : ∀ {m : ℕ} (U : ι → Matrix (Fin m) (Fin m) K) (τ : ι) (a s : Fin m),
       Formalism.GradedWeylDivisibility.blockAct K U (X (τ, a, s)) = ∑ b, C (U τ a b) * X (τ, b, s) := fun U τ a s => aeval_X _ _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hX, map_sum, sum_split hN]
+
+  rw [hX, map_sum, sum_split hN]
   simp only [map_mul, splitLast_C]
   rcases cases_idx hN s with rfl | ⟨s, rfl⟩
   · simp only [splitLast_X_lastCol, mul_zero, Finset.sum_const_zero, add_zero, map_zero]
   · rcases cases_idx hN a with rfl | ⟨a, rfl⟩
     · simp only [splitLast_X_up, splitLast_X_lastRow, (h2 _).2, h3, map_zero, zero_mul, Finset.sum_const_zero, zero_add,
         map_X, aeval_X]
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [splitLast_X_up, splitLast_X_lastRow, (h2 _).1, h1, map_zero, zero_mul, add_zero, map_C, algHom_C,
-        algebraMap_eq, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, hX, map_sum, map_mul]
+
+    · simp only [splitLast_X_up, splitLast_X_lastRow, (h2 _).1, h1, map_zero, zero_mul, add_zero, map_C, algHom_C,
+      algebraMap_eq, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, hX, map_sum, map_mul]
 
 theorem coefLast_blockAct [Fintype ι] (b : ι → Fin n → ℕ) (A' : ι → Matrix (Fin N) (Fin N) K)
     (A : ι → Matrix (Fin n) (Fin n) K) (t : ι → K) (h : ∀ τ, IsBlock hN (A' τ) (A τ) (t τ)) (F : Pol K ι N) :

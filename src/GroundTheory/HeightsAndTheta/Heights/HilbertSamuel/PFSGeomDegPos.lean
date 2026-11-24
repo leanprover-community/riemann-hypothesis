@@ -1,12 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFSGeomDegPos
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMultiDegreePositive
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFibreDegreeSum
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

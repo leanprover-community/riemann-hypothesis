@@ -1,9 +1,67 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHeightIffOfDegreeEq
+public import Development.AbelianVarietyTheory.Definitions.Divisors.PointHeight
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IrreducibleOfIrreducibleMap
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.SemistableReduction.AevalIsWeightedHomogeneous
+public import ReciprocityTheory.SemistableReduction.LagrangeIdealLiftsFact
+public import ReciprocityTheory.SemistableReduction.LogNormCoeffSubLeBlockSphereLogMean
+import ReciprocityTheory.SemistableReduction.RestBlockSubstIsMultiHomogeneous
 public import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.MemSubPtsCutBaseChangeIff
+public import Mathlib.NumberTheory.NumberField.ProductFormula
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -26,9 +84,9 @@ theorem _root_.GlobalTheory.HeightUnique.linSubst_linSubst {R : Type} [CommRing 
   congr 1
   apply MvPolynomial.algHom_ext
   intro p
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq, Matrix.mul_apply,
-    Finset.mul_sum, Finset.sum_mul, mul_assoc]
+
+  simp only [AlgHom.comp_apply, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq, Matrix.mul_apply,
+  Finset.mul_sum, Finset.sum_mul, mul_assoc]
   rw [Finset.sum_comm]
 
 
@@ -81,8 +139,8 @@ private lemma isWeightedHomogeneous_aeval_of_isWeightedHomogeneous {R M σ τ : 
     {w : σ → M} {w' : τ → M} {g : σ → MvPolynomial τ R} (hg : ∀ i, IsWeightedHomogeneous w' (g i) (w i))
     {f : MvPolynomial σ R} {m : M} (hf : IsWeightedHomogeneous w f m) :
     IsWeightedHomogeneous w' (aeval g f) m := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum]
+
+  rw [f.as_sum, map_sum]
   apply IsWeightedHomogeneous.sum
   intro d hd
   rw [aeval_monomial, algebraMap_eq, ← hf (mem_support_iff.mp hd), Finsupp.weight_apply,

@@ -1,12 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DblActId
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealisedOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRealisedOnAdelicSchwartzWeylFourier
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRealisedOnAdelicSchwartzLeviInverseTranspose
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRealisedOnAdelicSchwartzWeylFourier
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsoRows
 
 @[expose] public section
 
@@ -128,7 +170,7 @@ theorem plancherel {φ : (κ → AF F) → ℂ} (hφ : φ ∈ schA F κ) :
     congr 1; funext y
     rw [map_mul, ← Circle.coe_inv_eq_conj, ← AddChar.map_neg_eq_inv]
     simp only [Pi.neg_apply, mul_neg, Finset.sum_neg_distrib, neg_neg]
-  simp only [e, Complex.mul_conj, Complex.normSq_eq_norm_sq, integral_ofReal] at h
+  simp only [e, Complex.mul_conj, Complex.normSq_eq_norm_sq] at h
   exact_mod_cast h
 
 theorem theta_four {φ : (κ → AF F) → ℂ} (hφ : φ ∈ schA F κ) : thetaSum F (adelicFourierPi F φ) = thetaSum F φ := by
@@ -261,9 +303,9 @@ theorem isOp_fourier : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (A
   · exact Submodule.smul_mem _ _ (compS_mem ε (hTm φ hφ))
   · exact Submodule.smul_mem _ _ (hTm _ (hTm _ (hTm _ (compS_mem ε hφ))))
   · simp only [LinearMap.smul_apply, LinearMap.comp_apply, map_smul, compS_compS, hT4 φ hφ, smul_smul,
-      inv_mul_cancel₀ hkc, mul_inv_cancel₀ hkc, one_smul]
+      mul_inv_cancel₀ hkc, one_smul]
   · simp only [LinearMap.smul_apply, LinearMap.comp_apply, map_smul, compS_compS, hT4 _ (compS_mem ε hφ), smul_smul,
-      inv_mul_cancel₀ hkc, mul_inv_cancel₀ hkc, one_smul]
+      inv_mul_cancel₀ hkc, one_smul]
   · rw [LinearMap.comp_smul]
     exact admissibleFunctional_smul _ (admissibleFunctional_comp_adelicFourier hT (admissibleFunctional_comp_compSignMul ε hl))
   · rw [LinearMap.comp_smul]

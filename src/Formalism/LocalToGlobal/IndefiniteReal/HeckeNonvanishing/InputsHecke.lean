@@ -1,8 +1,8 @@
 module
 
 public import Formalism.UnipotentAdelicQuotients.ThmBInHecke
-public import Formalism.LocalToGlobal.IndefiniteReal.RealSeparation.NotRootUnity
-public import Lean
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 
 @[expose] public section
 

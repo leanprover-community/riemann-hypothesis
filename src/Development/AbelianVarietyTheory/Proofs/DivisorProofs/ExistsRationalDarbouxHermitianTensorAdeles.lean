@@ -1,12 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsNotRelZero
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareTriple
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareStanding
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DualRestrictSurjectiveOfIsTorsionFreeQuotient
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
 
 @[expose] public section
 
@@ -55,8 +98,8 @@ theorem exists_darboux_of_basis {R W κ : Type} [CommRing R] [Invertible (2 : R)
     · exact h21' i j h
   have key : B w w' = ∑ p, ∑ q, b.repr w p * b.repr w' q * B (b p) (b q) := by
     conv_lhs => rw [← b.sum_repr w, ← b.sum_repr w']
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
     ring
@@ -86,8 +129,8 @@ theorem isAlt_sympBil [CharZero F] (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) 
   have hinv : ∀ z : E, Algebra.trace F E (σ z) = Algebra.trace F E z := fun z =>
     Algebra.trace_eq_of_algEquiv (AlgEquiv.ofAlgHom σ σ (AlgHom.ext fun y => hσ y) (AlgHom.ext fun y => hσ y)) z
   have hanti : σ (hTens σ JA JB x x) = -hTens σ JA JB x x := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hTens, map_sum, map_mul, hσ]
+
+    simp only [hTens, map_sum, map_mul, hσ]
     rw [sum_four_swap, ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_neg_distrib]
@@ -115,11 +158,11 @@ private theorem hTens_single (σ : E →ₐ[F] E) (JA : Matrix α α E) (JB : Ma
     rw [Finset.sum_eq_single k₀, Finset.sum_eq_single l₀]
     · simp
     · intro l _ hl
-      simp [Matrix.single_apply, Ne.symm hl]
+      simp [Ne.symm hl]
     · simp
     · intro k _ hk
       refine Finset.sum_eq_zero fun l _ => ?_
-      simp [Matrix.single_apply, Ne.symm hk]
+      simp [Ne.symm hk]
     · simp
   rw [h1, Matrix.mul_apply, Finset.sum_mul, Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -193,8 +236,8 @@ theorem symp_map (σ : E →ₐ[F] E) (JA : Matrix α α E) (JB : Matrix β β E
   have hT : hTens (Algebra.TensorProduct.map (AlgHom.id R R) σ) (JA.map (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) R))
       (JB.map (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) R)) (x.map (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) R))
       (y.map (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) R)) = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) R (hTens σ JA JB x y) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hTens, Matrix.map_apply, hc, map_sum, map_mul]
+
+    simp only [hTens, Matrix.map_apply, hc, map_sum, map_mul]
   simp only [symp]
   rw [hT, ← trace_inclR_divisor R]
   congr 1

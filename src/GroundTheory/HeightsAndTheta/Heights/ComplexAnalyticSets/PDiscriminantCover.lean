@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimitiveElementFibres
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSimpleRootBranch
+import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 @[expose] public section
 

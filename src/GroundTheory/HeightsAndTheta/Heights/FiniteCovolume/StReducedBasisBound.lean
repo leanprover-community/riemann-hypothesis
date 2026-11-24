@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
 
 @[expose] public section
 

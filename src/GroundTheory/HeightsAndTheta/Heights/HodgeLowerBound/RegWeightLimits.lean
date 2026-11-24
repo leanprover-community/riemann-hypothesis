@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.CpRegPhRegOfNonneg
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsCompactImageClosureMid
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PBoundedGlue
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PGlueRegularised
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
+import Mathlib.Order.CompletePartialOrder
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
 
 @[expose] public section
 

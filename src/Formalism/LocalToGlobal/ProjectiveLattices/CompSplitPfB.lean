@@ -1,12 +1,10 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdempotentsAbelianSchemeConstantDimension
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
-public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
-public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowCoefficientBounds
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspCoefficientFlow
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.EmbeddingHermitianPairs
+import Mathlib.SetTheory.ZFC.PSet
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 
 @[expose] public section
 
@@ -48,32 +46,7 @@ theorem cspB_lift_map {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Al
 
 theorem cspB_idem_eq_of {S : Type} [CommRing S] {a b : S} (ha : IsIdempotentElem a) (hb : IsIdempotentElem b)
     (hab : ∀ q : PrimeSpectrum S, a ∉ q.asIdeal ↔ b ∉ q.asIdeal) : a = b := by
-  have key : ∀ x y : S, IsIdempotentElem x → IsIdempotentElem y →
-      (∀ q : PrimeSpectrum S, x ∉ q.asIdeal → y ∉ q.asIdeal) → x = x * y := by
-    intro x y hx hy hxy
-    have hid : x * (1 - y) * (x * (1 - y)) = x * (1 - y) := by
-      linear_combination (1 - y) ^ 2 * hx.eq + x * hy.eq
-    have hmem : x * (1 - y) ∈ nilradical S := by
-      rw [nilradical_eq_sInf, Ideal.mem_sInf]
-      intro J hJ
-      by_cases hxJ : x ∈ J
-      · exact J.mul_mem_right _ hxJ
-      · have hyJ : y ∉ J := hxy ⟨J, hJ⟩ hxJ
-        apply J.mul_mem_left
-        have h0 : y * (1 - y) = 0 := by linear_combination -hy.eq
-        have h1 : y * (1 - y) ∈ J := by rw [h0]; exact J.zero_mem
-        exact (hJ.mem_or_mem h1).resolve_left hyJ
-    obtain ⟨n, hn⟩ := mem_nilradical.mp hmem
-    have hpow : ∀ k : ℕ, (x * (1 - y)) ^ (k + 1) = x * (1 - y) := by
-      intro k
-      induction k with
-      | zero => rw [zero_add, pow_one]
-      | succ k ih => rw [pow_succ, ih, hid]
-    have h0 : x * (1 - y) = 0 := by rw [← hpow n, pow_succ, hn, zero_mul]
-    linear_combination h0
-  calc a = a * b := key a b ha hb (fun q h => (hab q).mp h)
-    _ = b * a := mul_comm a b
-    _ = b := (key b a hb ha (fun q h => (hab q).mpr h)).symm
+  apply GlobalTheory.DimSplit.idem_eq_of <;> assumption
 
 variable (C : Set (Xo.XF c)) (hC : IsClopen C)
 
@@ -121,7 +94,6 @@ theorem cspB_rule_natural : IsNatural (K := c.F) (fun S _ _ => FrPt Xo c S) (fun
     (cspB_rule Xo c C hC) := by
   intro p q φ y z hyz
   first
-  | exact cspB_idem_map C hC φ y.x_over z.x_over hyz.1
   | exact (cspB_idem_map C hC φ y.x_over z.x_over hyz.1).symm
 
 theorem cspB_rule_bor (p : TRing c.F) (t : Ix Dw → (p.R)ˣ) (y y' : FrPt Xo c p.R) (hb : FrBor t y y') :
@@ -135,7 +107,6 @@ theorem cspB_evR {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S)
   rw [dite_eq_left hy]
   first
   | exact cspB_idem_map C hC _ _ _ hy.choose_spec.choose_spec.choose_spec.1
-  | exact cspB_idem_map C hC _ _ _ hy.choose_spec.choose_spec.choose_spec.1.1
 
 theorem cspB_evR_zero {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S)
     (hy : ¬ FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) y) (f : Rul Xo c) :
@@ -154,7 +125,6 @@ theorem cspB_genPt_mem (Z : Comp Xo c) : genPt Z ∈ (Z : Set (Xo.XF c)) := by
   have hg : IsGenericPoint hS.genericPoint (closure (Z : Set (Xo.XF c))) := by
     first
     | exact hS.isGenericPoint_genericPoint_closure
-    | exact hS.genericPoint_spec
   rw [hcl.closure_eq] at hg
   exact hg.mem
 

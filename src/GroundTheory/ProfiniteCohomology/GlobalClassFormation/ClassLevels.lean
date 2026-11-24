@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ClassLimitDefs
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LevelsColimit
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.NormalFixingSubgroupGaloisClosure
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LevelDefs
+public import GroundTheory.ProfiniteCohomology.Factor
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LevelsColimit
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.NatCardGroupCohomologyTwoIdeleClassRepDvd
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
 
 @[expose] public section
 

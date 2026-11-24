@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.HodgeKill
+public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAlexanderWhitneyDiagonalSwapHomotopy
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MapHComp
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.TotPairing
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.TfBaseField
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAlexanderWhitneyDiagonalSwapHomotopyStatement
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HodgeTateResidues.KProps
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -63,16 +104,10 @@ theorem val_mk {N : ℕ} (s : ComposableArrows C N) (α : SimplexCategory.mk p �
       (CH.term F₂ s g (fun i : Fin (q + 1) => β.toOrderHom i) β.toOrderHom.monotone) :=
   val_pos P f g s _ ⟨rfl, rfl⟩
 
-theorem d₁_zero {N r : ℕ} (α : SimplexCategory.mk 0 ⟶ SimplexCategory.mk N) (β : SimplexCategory.mk r ⟶ SimplexCategory.mk N) :
-    Pr.d₁ (⟨0, r, α, β⟩ : Pr N) = 0 := rfl
-
 theorem d₁_succ {N a r : ℕ} (α : SimplexCategory.mk (a + 1) ⟶ SimplexCategory.mk N)
     (β : SimplexCategory.mk r ⟶ SimplexCategory.mk N) :
     Pr.d₁ (⟨a + 1, r, α, β⟩ : Pr N) =
       ∑ i : Fin (a + 2), Finsupp.single (⟨a, r, SimplexCategory.δ i ≫ α, β⟩ : Pr N) ((-1) ^ (i : ℕ)) := rfl
-
-theorem d₂_zero {N a : ℕ} (α : SimplexCategory.mk a ⟶ SimplexCategory.mk N) (β : SimplexCategory.mk 0 ⟶ SimplexCategory.mk N) :
-    Pr.d₂ (⟨a, 0, α, β⟩ : Pr N) = 0 := rfl
 
 theorem d₂_succ {N a r : ℕ} (α : SimplexCategory.mk a ⟶ SimplexCategory.mk N)
     (β : SimplexCategory.mk (r + 1) ⟶ SimplexCategory.mk N) :
@@ -82,18 +117,18 @@ theorem d₂_succ {N a r : ℕ} (α : SimplexCategory.mk a ⟶ SimplexCategory.m
 theorem phi_d₁ (hf : CH.d F₁ p f = 0) {N : ℕ} (s : ComposableArrows C N) (z : Pr N) : phi P f g s z.d₁ = 0 := by
   obtain ⟨a, r, α, β⟩ := z
   cases a with
-  | zero => rw [d₁_zero, map_zero]
+  | zero => rw [_root_.GlobalTheory.PrAcyc.d₁_zero, map_zero]
   | succ a =>
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [d₁_succ, map_sum]
+
+    rw [d₁_succ, map_sum]
     simp only [phi_single]
     by_cases h : a = p ∧ r = q
     · obtain ⟨rfl, rfl⟩ := h
       have e := CrystallineSemistableComparison.Auxff.term_d F₁ s f (fun i : Fin (a + 2) => α.toOrderHom i) α.toOrderHom.monotone
       rw [hf, term_zero] at e
       have e2 := congrArg ((P.μ _).flip (CH.term F₂ s g (fun i : Fin (r + 1) => β.toOrderHom i) β.toOrderHom.monotone)) e
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_zero, map_sum, map_zsmul, LinearMap.flip_apply] at e2
+
+      simp only [map_zero, map_sum, map_zsmul, LinearMap.flip_apply] at e2
       refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) e2.symm
       rw [val_mk]
       rfl
@@ -102,18 +137,18 @@ theorem phi_d₁ (hf : CH.d F₁ p f = 0) {N : ℕ} (s : ComposableArrows C N) (
 theorem phi_d₂ (hg : CH.d F₂ q g = 0) {N : ℕ} (s : ComposableArrows C N) (z : Pr N) : phi P f g s z.d₂ = 0 := by
   obtain ⟨a, r, α, β⟩ := z
   cases r with
-  | zero => rw [d₂_zero, map_zero]
+  | zero => rw [_root_.GlobalTheory.PrAcyc.d₂_zero, map_zero]
   | succ r =>
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [d₂_succ, map_sum]
+
+    rw [d₂_succ, map_sum]
     simp only [phi_single]
     by_cases h : a = p ∧ r = q
     · obtain ⟨rfl, rfl⟩ := h
       have e := CrystallineSemistableComparison.Auxff.term_d F₂ s g (fun i : Fin (r + 2) => β.toOrderHom i) β.toOrderHom.monotone
       rw [hg, term_zero] at e
       have e2 := congrArg (P.μ _ (CH.term F₁ s f (fun i : Fin (a + 1) => α.toOrderHom i) α.toOrderHom.monotone)) e
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_zero, map_sum, map_zsmul] at e2
+
+      simp only [map_zero, map_sum, map_zsmul] at e2
       refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) e2.symm
       rw [val_mk]
       rfl
@@ -148,14 +183,14 @@ def hc {N : ℕ} (c : Pr N →₀ ℤ) : CH.Cn F₃ N := fun s => phi P f g s c
 theorem d_hc {N : ℕ} (c : Pr N →₀ ℤ) (s : ComposableArrows C (N + 1)) :
     CH.d F₃ N (hc P f g c) s = phi P f g s (Pr.bd c) := by
   change ∑ i : Fin (N + 2), (-1 : ℤ) ^ (i : ℕ) • (F₃.map (GlobalTheory.CatH.toLast i s)).hom (phi P f g (GlobalTheory.CatH.face i s) c) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Pr.bd, map_sum]
+
+  rw [Pr.bd, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, ← phi_face]
 
 theorem phi_aw {n : ℕ} (h : p + q = n) (s : ComposableArrows C n) : phi P f g s (Pr.aw n) = P.cupC h f g s := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Pr.aw, map_sum, Finset.sum_eq_single (⟨p, by omega⟩ : Fin (n + 1))]
+
+  rw [Pr.aw, map_sum, Finset.sum_eq_single (⟨p, by omega⟩ : Fin (n + 1))]
   · rw [phi_single, one_smul, val_pos P f g s _ ⟨rfl, show n - p = q by omega⟩, CrystallineSemistableComparison.Auxff.cupC_apply]
     exact congrArg₂ (fun x y => P.μ _ x y)
       (CH.term_congr F₁ s f _ _ (funext fun i => Fin.ext rfl))
@@ -170,8 +205,8 @@ theorem phi_aw {n : ℕ} (h : p + q = n) (s : ComposableArrows C n) : phi P f g 
 theorem phi_wa {n : ℕ} (h' : q + p = n) (s : ComposableArrows C n) :
     phi P f g s (Pr.wa n) = (-1 : ℤ) ^ (p * q) •
       P.μ _ (CH.term F₁ s f (CH.back h') (CH.back_mono h')) (CH.term F₂ s g (CH.front h') (CH.front_mono h')) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Pr.wa, map_sum, Finset.sum_eq_single (⟨q, by omega⟩ : Fin (n + 1))]
+
+  rw [Pr.wa, map_sum, Finset.sum_eq_single (⟨q, by omega⟩ : Fin (n + 1))]
   · rw [phi_single, val_pos P f g s _ ⟨show n - q = p by omega, rfl⟩]
     have e2 : ((-1 : ℤ) ^ (q * (n - q))) = (-1) ^ (p * q) := by rw [show n - q = p by omega, mul_comm]
     refine Eq.trans (congrArg (fun t : ℤ => t • P.μ _ (CH.term F₁ s f _ (om_mono _ _)) (CH.term F₂ s g _ (om_mono _ _))) e2) ?_
@@ -188,7 +223,7 @@ theorem phi_wa {n : ℕ} (h' : q + p = n) (s : ComposableArrows C n) :
 theorem key (P' : CH.Pairing F₂ F₁ F₃) (hP : ∀ T x y, P'.μ T y x = P.μ T x y) (hf : CH.d F₁ p f = 0)
     (hg : CH.d F₂ q g = 0) {n : ℕ} (h : p + q = n) (h' : q + p = n) :
     P.cupC h f g - (-1 : ℤ) ^ (p * q) • P'.cupC h' g f ∈ (CH.cx F₃).B n := by
-  obtain ⟨hh, -, hd0, hds⟩ := GlobalTheory.T.exists_alexanderWhitneyDiagonal_swap_homotopy
+  obtain ⟨hh, -, hd0, hds⟩ := _root_.GlobalTheory.EtC.pr_aw_wa_homotopy
   have ev : ∀ s : ComposableArrows C n,
       (P.cupC h f g - (-1 : ℤ) ^ (p * q) • P'.cupC h' g f) s = phi P f g s (Pr.aw n - Pr.wa n) := by
     intro s

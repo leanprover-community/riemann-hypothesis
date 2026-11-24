@@ -1,6 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.MemPolKIff
+public import Mathlib.CategoryTheory.Category.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -141,8 +184,8 @@ theorem valS_add_le (F G : MvPolynomial (L × Fin r) K) :
 
 theorem valS_sum_le {ι : Type} (s : Finset ι) (f : ι → MvPolynomial (L × Fin r) K) (n : WithTop ℤ)
     (h : ∀ i ∈ s, n ≤ valS sg S (f i)) : n ≤ valS sg S (∑ i ∈ s, f i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [le_valS_iff_pge, map_sum]
+
+  rw [le_valS_iff_pge, map_sum]
   exact pge_sum s _ fun i hi => (le_valS_iff_pge sg S n _).mp (h i hi)
 
 theorem valS_mul_le (F G : MvPolynomial (L × Fin r) K) :
@@ -248,8 +291,8 @@ theorem substS_monomial' (α : L × Fin r →₀ ℕ) (c : K) :
 theorem substS_eq_sum (F : MvPolynomial (L × Fin r) K) :
     substS ι sg S A B F =
       ∑ α ∈ F.support, C (ι (F.coeff α)) * substS ι sg S A B (monomial α 1) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [F.as_sum, map_sum]
+
+  conv_lhs => rw [F.as_sum, map_sum]
   exact Finset.sum_congr rfl fun α _ => substS_monomial' ι sg S A B α _
 
 theorem coeff_substS (F : MvPolynomial (L × Fin r) K) (β : L × Fin r →₀ ℕ) :
@@ -261,8 +304,8 @@ theorem coeff_substS (F : MvPolynomial (L × Fin r) K) (β : L × Fin r →₀ �
 theorem substS_mem (T : Subring (MvPolynomial (L × Fin r) R)) (hC : ∀ c : K, C (ι c) ∈ T)
     (F : MvPolynomial (L × Fin r) K)
     (h : ∀ α ∈ F.support, ∀ x ∈ α.support, subX sg S A B x ∈ T) : substS ι sg S A B F ∈ T := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [F.as_sum, map_sum]
+
+  rw [F.as_sum, map_sum]
   refine Subring.sum_mem _ fun α hα => ?_
   rw [substS_monomial]
   refine Subring.mul_mem _ (hC _) ?_
@@ -447,8 +490,8 @@ theorem valS_coefOut_le (hout : ∀ i ∈ S, ¬ out i) (μ : L × Fin r →₀ �
         ∑ α ∈ F.support, if eOut out α = μ then
           lauι K r (F.coeff α) * (subV sg S (monomial (eIn out α) 1)).coeff β else 0 := by
       unfold coefOut
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, coeff_sum]
+
+      rw [map_sum, coeff_sum]
       refine Finset.sum_congr rfl fun α _ => ?_
       split_ifs
       · rw [substS_monomial', coeff_C_mul]
@@ -483,8 +526,8 @@ theorem valS_outside_linear (Φ : MvPolynomial (L × Fin r) K →ₗ[K] MvPolyno
     valS sg S F ≤ valS sg S (Φ F) := by
   have hΦ : Φ F = ∑ μ ∈ F.support.image (eOut out), Φ (monomial μ 1) * coefOut out μ F := by
     rw [sum_mul_coefOut out (fun μ => Φ (monomial μ 1)) F]
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [F.as_sum, map_sum]
+
+    conv_lhs => rw [F.as_sum, map_sum]
     refine Finset.sum_congr rfl fun α _ => ?_
     have : monomial α (F.coeff α) = F.coeff α • (monomial α (1 : K)) := by
       rw [smul_monomial, smul_eq_mul, mul_one]
@@ -782,8 +825,8 @@ theorem coeff_subV_hcomp (d : L → ℕ) (F : MvPolynomial (L × Fin r) K) (β :
       ∑ α ∈ F.support, if (∀ i, ldeg α i = d i) then
         ι (F.coeff α) * (substS ι sg S A B (monomial α 1)).coeff β else 0 := by
     unfold hcomp
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, coeff_sum]
+
+    rw [map_sum, coeff_sum]
     refine Finset.sum_congr rfl fun α _ => ?_
     split_ifs
     · rw [substS_monomial', coeff_C_mul]
@@ -981,8 +1024,8 @@ theorem vala_ddiv_letter (hV2 : V2 K) {θ : ℝ} (i : L) (β : Fin r →₀ ℕ)
 omit [CharZero K] [Fintype L] [NeZero r] in
 theorem dg_eq_sum {σ : Type} (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K) :
     dg f F = ∑ α ∈ F.support, monomial α (f α * F.coeff α) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [F.as_sum, map_sum]
+
+  conv_lhs => rw [F.as_sum, map_sum]
   exact Finset.sum_congr rfl fun α _ => dg_monomial f α _
 
 omit [CharZero K] [Fintype L] [NeZero r] in

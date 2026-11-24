@@ -1,7 +1,55 @@
 module
 
 public import Formalism.ZeroFreeRegion.SmallHeightLogDeriv
+public import Formalism.DefsOC
+public import Formalism.ZetaNonvanishing.MellinSAux
 public import Formalism.ZetaNonvanishing.MellinSgen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.MellinInversion
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -32,68 +80,13 @@ lemma perron_Sz_eq_zero_of_le_one {x : ℝ} (hx : x ≤ 1) : Formalism.Sz x = 0 
   subst hn1
   simp [ArithmeticFunction.vonMangoldt_apply_one]
 
-lemma perron_continuous_mxS (n : ℕ) : Continuous (Formalism.mxS n) := by
-  show Continuous (fun x : ℝ => max (x / n - 1) 0)
-  exact ((continuous_id.div_const _).sub continuous_const).max continuous_const
+lemma perron_continuous_mxS (n : ℕ) : Continuous (Formalism.mxS n) :=
+  Formalism.continuous_mxS n
 
 lemma perron_Sz_continuousAt (y : ℝ) : ContinuousAt (fun x => (Formalism.Sz x : ℂ)) y := by
-  have key : ∀ N : ℕ, ∀ x : ℝ, x < N →
-      Formalism.Sz x = ∑ n ∈ Finset.range N, Λ n * max (x / n - 1) 0 := by
-    intro N x hx
-    unfold Formalism.Sz
-    by_cases hx0 : 0 ≤ x
-    · have hsub : Finset.Icc 1 ⌊x⌋₊ ⊆ Finset.range N := by
-        intro n hn
-        rw [Finset.mem_Icc] at hn
-        rw [Finset.mem_range]
-        have h1 := (Nat.le_floor_iff hx0).1 hn.2
-        exact_mod_cast lt_of_le_of_lt h1 hx
-      calc ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, Λ n * (x / n - 1)
-          = ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, Λ n * max (x / n - 1) 0 := by
-            refine Finset.sum_congr rfl fun n hn => ?_
-            rw [Finset.mem_Icc] at hn
-            have hn1 : (1:ℝ) ≤ n := by exact_mod_cast hn.1
-            have hnx : (n : ℝ) ≤ x := (Nat.le_floor_iff hx0).1 hn.2
-            rw [max_eq_left]
-            rw [sub_nonneg, le_div_iff₀ (by linarith)]
-            linarith
-        _ = ∑ n ∈ Finset.range N, Λ n * max (x / n - 1) 0 := by
-            refine Finset.sum_subset hsub fun n _ hn => ?_
-            rw [Finset.mem_Icc, not_and_or] at hn
-            rcases hn with h | h
-            · have h0 : n = 0 := by omega
-              subst h0
-              simp
-            · have hxn : x < n := by
-                by_contra hc
-                push_neg at hc
-                exact h ((Nat.le_floor_iff hx0).2 hc)
-              have hn0 : (0:ℝ) < n := hx0.trans_lt hxn
-              rw [max_eq_right, mul_zero]
-              rw [sub_nonpos, div_le_one hn0]
-              exact hxn.le
-    · push_neg at hx0
-      rw [show ⌊x⌋₊ = 0 from Nat.floor_of_nonpos hx0.le]
-      rw [Finset.Icc_eq_empty (by omega), Finset.sum_empty]
-      symm
-      refine Finset.sum_eq_zero fun n _ => ?_
-      rcases Nat.eq_zero_or_pos n with h | h
-      · subst h; simp
-      · have hn0 : (0:ℝ) < n := by exact_mod_cast h
-        rw [max_eq_right, mul_zero]
-        rw [sub_nonpos, div_le_one hn0]
-        have : (1:ℝ) ≤ n := by exact_mod_cast h
-        linarith
-  have hyN : y < ((⌊y⌋₊ + 2 : ℕ) : ℝ) := by
-    have := Nat.lt_floor_add_one y
-    push_cast
-    linarith
-  have hg : Continuous (fun x : ℝ => ((∑ n ∈ Finset.range (⌊y⌋₊ + 2), Λ n * max (x / n - 1) 0 : ℝ) : ℂ)) :=
-    Complex.continuous_ofReal.comp (continuous_finsetSum _ fun n _ =>
-      continuous_const.mul (((continuous_id.div_const _).sub continuous_const).max continuous_const))
-  refine hg.continuousAt.congr ?_
-  filter_upwards [Iio_mem_nhds hyN] with x hx
-  rw [key _ x hx]
+  rw [perron_Sz_eq_Sa]
+  exact (Complex.continuous_ofReal.comp
+    (Formalism.Sa_continuous (fun n => (Λ n : ℝ)) (by simp))).continuousAt
 
 lemma perron_norm_LSeries_le {σ₀ : ℝ} (hσ : 1 < σ₀) (w : ℂ) (hw : w.re = σ₀) :
     ‖LSeries ↗Λ w‖ ≤ ∑' n, ‖LSeries.term ↗Λ (σ₀ : ℂ) n‖ := by

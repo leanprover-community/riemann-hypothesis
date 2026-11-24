@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Algebra.Rat
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
+public import Mathlib.RingTheory.Ideal.GoingDown
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.BaseChangeCB
+public import Mathlib.RingTheory.Flat.Basic
 
 @[expose] public section
 

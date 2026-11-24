@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StChartNormPts
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartNormPtsA
 

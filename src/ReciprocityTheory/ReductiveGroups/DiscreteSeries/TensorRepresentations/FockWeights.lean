@@ -1,7 +1,7 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.DSymmHypsInhabited
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.LowFock
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.InhabCAR
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

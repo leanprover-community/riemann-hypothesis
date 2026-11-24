@@ -1,20 +1,14 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures
-public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
-public import Formalism.FlagUnipotentLattices.HalfDifferenceL1Bound
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SumComplexEmbeddingsEqSumInfinitePlace
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.LatticeSumBounds
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SchurAverage
-public import Formalism.HyperbolicPlaceProducts.SubgroupIndexCounts.DedekindLFunctions
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceCover
-public import Mathlib
-public import Formalism.PeriodIntegrals.TransferenceCoverRad
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CoveringRadius.CoverRad
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.FoldBound
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.GgExistsAddCharNeOne
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.RowsDef
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
+public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.KernelDiagonalOfTriangleInequality
+public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrgCountableField
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
 
 @[expose] public section
 

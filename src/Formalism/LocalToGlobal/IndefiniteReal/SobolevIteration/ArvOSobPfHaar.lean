@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfK
+public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfSt
+public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfAs
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfBdd
+import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfK
 
 @[expose] public section
 

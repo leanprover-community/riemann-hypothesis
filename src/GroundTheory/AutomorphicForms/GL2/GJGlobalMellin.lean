@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.HasModerateGrowthZero
+public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
+public import Mathlib.Analysis.MellinTransform
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Unimodular
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalHaar
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

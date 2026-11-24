@@ -31,7 +31,7 @@ def PvG (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) (v : A.vT) : Ideal (�
 instance (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) (v : A.vT) : (PvG res v).IsPrime := RingHom.ker_isPrime _
 
 
-set_option maxHeartbeats 1000000 in
+
 structure LevelCompatibleLattices (T : ℕ) (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) (i : ℕ) (hi : i ≤ D.R.m)
     (lat : C.cls i → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)) where
 
@@ -55,7 +55,7 @@ variable {M} {T : ℕ} {res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v} {i : ℕ
   {Ch : Type} {chOf : C.cls i → Ch}
 
 
-set_option maxHeartbeats 1000000 in
+
 def FvTieG (L : LevelCompatibleLattices M T res i hi lat)
     (eV : A.vT ≃ {v : HeightOneSpectrum (𝓞 D.host.F) // (T : 𝓞 D.host.F) ∈ v.asIdeal})
     (K : ∀ β : Ch, LevelChart D T bad i hi (fun c : {c // chOf c = β} => C.stab i c.1) (fun c => lat c.1))
@@ -68,7 +68,7 @@ def FvTieG (L : LevelCompatibleLattices M T res i hi lat)
     M.fv i v c.1 (L.pr v c.1 z) = fMe β v ((K β).lev.fT (eV v).1 (eV v).2 ⟨_, hz⟩)
 
 
-set_option maxHeartbeats 1000000 in
+
 def UpNatTieG (L : LevelCompatibleLattices M T res i hi lat) (eY : C.Y i ≃ Fr D i hi)
     (eV : A.vT ≃ {v : HeightOneSpectrum (𝓞 D.host.F) // (T : 𝓞 D.host.F) ∈ v.asIdeal})
     (K : ∀ β : Ch, LevelChart D T bad i hi (fun c : {c // chOf c = β} => C.stab i c.1) (fun c => lat c.1)) : Prop :=
@@ -91,7 +91,7 @@ def UpNatTieG (L : LevelCompatibleLattices M T res i hi lat) (eY : C.Y i ≃ Fr 
         M.upT i v c.1 (L.pr v c.1 z) h s = ((((K β).lev.chi κ)⁻¹ : ℂˣ) : ℂ) * h s'
 
 
-set_option maxHeartbeats 1000000 in
+
 def DnNatTieG (L : LevelCompatibleLattices M T res i hi lat) (eY : C.Y i ≃ Fr D i hi)
     (eV : A.vT ≃ {v : HeightOneSpectrum (𝓞 D.host.F) // (T : 𝓞 D.host.F) ∈ v.asIdeal})
     (K : ∀ β : Ch, LevelChart D T bad i hi (fun c : {c // chOf c = β} => C.stab i c.1) (fun c => lat c.1)) : Prop :=
@@ -129,7 +129,7 @@ end Gen
 variable {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop}
 
 
-set_option maxHeartbeats 4000000 in
+
 structure TwistedLevelData {Tw : TwForms D} {T : Formalism.L2.Herm.TwChTied D inQ} {F : ∀ u, FormsTied D u} (W : TwFormsTied D Tw T F) where
   lv : ∀ u μ, μ ≠ D.what₂.mu0 → ∀ i, 1 ≤ i → ∀ hm : i ≤ D.R.m,
     LevelCompatibleLattices (Tw.fm u μ) (D.mem u).A.T ((W.atT u μ).res (F u).atT) i hm (fun c => latCrd D i hm (T.lat u μ i c))

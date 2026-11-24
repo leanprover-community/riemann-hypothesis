@@ -1,6 +1,8 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportProposition
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

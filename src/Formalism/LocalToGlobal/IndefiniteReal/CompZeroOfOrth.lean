@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.ConjSubConjSub
-public import Formalism.LocalToGlobal.IndefiniteReal.FixNLeMulRight
+public import Formalism.LocalToGlobal.IndefiniteReal.PeterssonHilbertSpace
 
 @[expose] public section
 

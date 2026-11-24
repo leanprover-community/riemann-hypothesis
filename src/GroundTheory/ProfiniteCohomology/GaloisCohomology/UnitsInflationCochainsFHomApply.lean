@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
 public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
-public import GroundTheory.ProfiniteCohomology.GaloisModules.FixedField
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
+public import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

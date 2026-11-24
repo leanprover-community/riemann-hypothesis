@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.SymZeroCommFrame
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -88,15 +134,15 @@ theorem key_alg {W : Type*} [Ring W] [Algebra ℂ W] (tr : W →ₗ[ℂ] ℂ) (h
     rw [h, map_neg]
   have hsum : ∑ i, L2 i * e i = -∑ i, e i * L1 i := eq_neg_of_add_eq_zero_right hch
   have h3 : ∑ i, tr (Γ * Sv * (J * (L2 i * e i))) = -∑ i, tr (Γ * Sv * (J * (e i * L1 i))) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum, ← map_sum, ← map_neg, ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum, hsum]
+
+    rw [← map_sum, ← map_sum, ← map_neg, ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum, hsum]
     simp only [mul_neg]
   have h4 : tr (Γ * Sv * ∑ i, x i • L1 i) =
       ∑ i, tr (Γ * Sv * (e i * J * L1 i)) + ∑ i, tr (Γ * Sv * (J * (e i * L1 i))) := by
     rw [← Finset.sum_add_distrib]
     simp only [← map_add (f := _)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum]
+
+    rw [← map_sum]
     congr 1
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -106,8 +152,8 @@ theorem key_alg {W : Type*} [Ring W] [Algebra ℂ W] (tr : W →ₗ[ℂ] ℂ) (h
     rw [← mul_assoc J, ← add_mul, h]
     simp
   have h5 : tr (Γ * (∑ i, e i * Sv * c i) * k) = ∑ i, tr (Γ * e i * Sv * c i * k) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sum]
+
+    rw [← map_sum]
     congr 1
     simp only [Finset.mul_sum, Finset.sum_mul, mul_assoc]
   rw [h5, h4, Finset.sum_add_distrib]
@@ -162,7 +208,7 @@ theorem fderiv_b (K : (I → ℝ) × (I → ℝ) → (V →L[ℂ] V)) (A : V →
         trL (A * (∑ j, (v - o) j • c j) * fderiv ℝ K (path o s v) (s • w, w)) := by
   set Jd : (I → ℝ) →L[ℝ] (V →L[ℂ] V) :=
     ∑ j, (ContinuousLinearMap.proj j : (I → ℝ) →L[ℝ] ℝ).smulRight (c j) with hJd
-  have hJa : ∀ x, Jd x = ∑ j, x j • c j := fun x => by simp [hJd, ContinuousLinearMap.sum_apply]
+  have hJa : ∀ x, Jd x = ∑ j, x j • c j := fun x => by simp [hJd]
   have hJ : HasFDerivAt (fun v => ∑ j, (v - o) j • c j) Jd v := by
     have h := Jd.hasFDerivAt.comp v ((hasFDerivAt_id v).sub_const o)
     have h2 : (⇑Jd ∘ fun x => id x - o) = fun v => ∑ j, (v - o) j • c j := by
@@ -201,8 +247,8 @@ theorem clm_fst_eq {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (L : (
     ext j
     · simp [Prod.fst_sum, Finset.sum_apply, Pi.single_apply]
     · simp [Prod.snd_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h, map_sum]
+
+  rw [h, map_sum]
   simp only [map_smul]
 
 end Analytic

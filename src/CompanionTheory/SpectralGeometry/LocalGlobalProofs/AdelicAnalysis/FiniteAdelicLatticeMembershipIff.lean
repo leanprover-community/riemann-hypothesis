@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
 
 @[expose] public section

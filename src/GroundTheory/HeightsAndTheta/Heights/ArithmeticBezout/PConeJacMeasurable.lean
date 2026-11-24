@@ -1,10 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeJacMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsTangentJacCompress
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsKernelProjMeasurable
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralLine
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeTangentAverage
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

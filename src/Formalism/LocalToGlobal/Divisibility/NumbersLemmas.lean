@@ -3,11 +3,11 @@ module
 public import Formalism.LocalToGlobal.Divisibility.Numbers
 public import Formalism.LocalRingCardinality.DataForced
 public import Formalism.LocalRingCardinality.DataKap
-public import Formalism.LocalRingCardinality.DataErr
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleWeightMiddleEntries
+public import Formalism.QuotientMetricDivisors.TheoremDivIneqRowsShift
 public import Formalism.LocalRingCardinality.HostCls
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.NonemptyFieldAxiomsCyclicPow
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 
@@ -163,7 +163,6 @@ theorem sigPar_step (z : RPl N.R) (i : ℕ) (hi : i + 1 < N.R.k - 1 + N.R.m) :
       rw [hb0, hx, hy]
       have hxy : -x < y := by exact_mod_cast a1.trans a2
       have := Int.add_one_le_iff.mpr hxy
-      push_cast
       exact_mod_cast this
     ·
       have hl : i - (N.R.k - 1) < N.R.m := by omega

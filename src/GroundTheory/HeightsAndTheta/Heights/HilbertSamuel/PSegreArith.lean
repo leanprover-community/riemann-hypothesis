@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSegreArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageArith
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 
 @[expose] public section
 

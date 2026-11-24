@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsFrameIff
+public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsMoveMap
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Degenerations.SepticCharacterInjective
 
 @[expose] public section
 
@@ -41,32 +87,32 @@ theorem exists_basis_of_square (p : M₀ →ₛₗ[io] M₀') (j : M₀ →ₛ�
     refine sub_eq_zero.1 (indq (fun k => j (d i k) - a (u k) • s i) ?_ k)
     have e : ∑ k, a' (β k) • q (a (u k) • s i) = q (s i) := by
       simp only [map_smulₛₗ, smul_smul, hr, ← map_mul, mul_comm (β _)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Finset.sum_smul, ← map_sum, hu, map_one, one_smul]
+
+      rw [← Finset.sum_smul, ← map_sum, hu, map_one, one_smul]
     simp only [map_sub, smul_sub, Finset.sum_sub_distrib, e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hs, hd i, map_sum, sub_eq_zero]
+
+    rw [← hs, hd i, map_sum, sub_eq_zero]
     simp only [map_smulₛₗ, comm]
   have h₂ : ∀ i, j (∑ k, v k • d i k) = s i := fun i => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smulₛₗ, h₁, smul_smul, ← map_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.sum_smul, ← map_sum, huv, map_one, one_smul]
+
+    simp only [map_sum, map_smulₛₗ, h₁, smul_smul, ← map_mul]
+
+    rw [← Finset.sum_smul, ← map_sum, huv, map_one, one_smul]
   obtain ⟨b, h₂⟩ : ∃ b : Fin n → M₀, ∀ i, j (b i) = s i := ⟨_, h₂⟩
   have h₃ : ∀ i, p (b i) = b' i := fun i => hj' (by rw [comm, h₂, hs])
   refine ⟨b, h₂, fun t => ?_⟩
   obtain ⟨c', hc', hun⟩ := hb (p t)
   have up : ∀ c : Fin n → W, t = ∑ i, c i • b i → (fun i => io (c i)) = c' := fun c hc => hun _ (by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hc, map_sum]; simp only [map_smulₛₗ, h₃])
+
+    rw [hc, map_sum]; simp only [map_smulₛₗ, h₃])
   refine existsUnique_of_exists_of_unique ?_ fun c₁ c₂ e₁ e₂ =>
     funext fun i => hio (congrFun ((up _ e₁).trans (up _ e₂).symm) i)
   choose c hc using fun i => hβ (c' i)
   have h₄ : ∀ k, u k • t = ∑ i, c i k • b i := fun k => by
     refine sub_eq_zero.1 (indp (fun k => u k • t - ∑ i, c i k • b i) ?_ k)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, smul_sub, Finset.sum_sub_distrib, map_sum, map_smulₛₗ, smul_smul, Finset.smul_sum, h₃,
-      mul_comm (β _)]
+
+    simp only [map_sub, smul_sub, Finset.sum_sub_distrib, map_sum, map_smulₛₗ, smul_smul, Finset.smul_sum, h₃,
+    mul_comm (β _)]
     rw [← Finset.sum_smul, hu, one_smul, Finset.sum_comm, hc', sub_eq_zero]
     exact Finset.sum_congr rfl fun i _ => by rw [← Finset.sum_smul, ← hc]
   refine ⟨fun i => ∑ k, v k * c i k, ?_⟩
@@ -150,8 +196,8 @@ theorem fn_span {U : Y.Opens} (hU : IsAffineOpen U) (hc : ∀ y, ∃ a : Fin n �
     obtain ⟨a, rfl⟩ := hc y
     refine ⟨fun i => algebraMap S _ (a i), ?_⟩
     show algebraMap F _ _ = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => by
       rw [map_mul, mul_comm, ← IsScalarTower.algebraMap_apply, IsScalarTower.algebraMap_apply S F]; rfl
   | smul r y hy =>
@@ -324,8 +370,8 @@ theorem frameAt_of_finite : ∀ (Z : Scheme.{0}) (G : Over Z) (L : LB G.left), F
     obtain ⟨r, hr₀⟩ := IsLocalization.exist_integer_multiples_of_finite (nonZeroDivisors W) a
     choose c hc using hr₀
     have := hi c (IsFractionRing.injective W' (FractionRing W') (by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, ← hr, hc, Algebra.smul_def, _root_.mul_assoc]
+
+      simp only [map_sum, map_mul, ← hr, hc, Algebra.smul_def, _root_.mul_assoc]
       rw [← Finset.mul_sum, ha, mul_zero, map_zero])) k
     have e := hc k
     rw [this, map_zero, Algebra.smul_def] at e

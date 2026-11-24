@@ -1,8 +1,16 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.SumInnerBasisSqEqAdjoint
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PBridge
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.AdKMeasurePreserving
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.IntegrableOfContinuousCompact
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KinstSecondCountable
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PBridge
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarBasicA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.SumInnerBasisSqEqAdjoint
 
 @[expose] public section
 
@@ -176,13 +184,5 @@ theorem formal_degree_inequality {ε : Fin n → Bool} {lam : Fin n → ℝ} {H 
     rw [← ENNReal.ofReal_mul hpos.le, show D * (D / d) = D ^ 2 / d by ring, l6, mul_left_comm]
     exact mul_le_mul_right s4 _
   exact (ENNReal.mul_le_mul_iff_right (ENNReal.ofReal_pos.mpr hpos).ne' ENNReal.ofReal_ne_top).1 s5
-
-theorem lintegral_fF_coeff_sq_le_finrank_div_fdeg {ε : Fin n → Bool} {lam : Fin n → ℝ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {T : KType ε (lowK ε lam)}
-    {j : T.V →L[ℂ] H} (hF : FData ε lam σ T j) {d : ℝ} (hd : Formalism.MainNotions.S.IsFdeg (muCD ε) σ d) :
-    ENNReal.ofReal (cPQ ε) *
-        ∫⁻ z : PCoord ε → ℂ, ENNReal.ofReal (‖⟪T.w, fF ε lam T (pmat z) T.w⟫_ℂ‖ ^ 2 * Jac z) ≤
-      ENNReal.ofReal ((Module.finrank ℂ T.V : ℝ) / d) :=
-  formal_degree_inequality hF hd
 
 end ReciprocityTheory.ChartRestriction.DS

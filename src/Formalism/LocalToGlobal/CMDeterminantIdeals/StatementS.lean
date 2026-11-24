@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.HadamardLoc0
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementG
+public import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 @[expose] public section
 

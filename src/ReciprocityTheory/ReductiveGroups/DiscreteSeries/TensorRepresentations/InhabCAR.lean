@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CarSumSqZeroOfAnti
+public import Mathlib.LinearAlgebra.CliffordAlgebra.Contraction
 
 @[expose] public section
 
@@ -38,6 +39,6 @@ theorem isCAR_fock : IsCAR (cpFock (n := n)) cmFock := by
       simp
     · rw [if_neg h]
       have hne : (i, a) ≠ (j, b) := fun e => h ⟨congrArg Prod.fst e, congrArg Prod.snd e⟩
-      simp [LinearMap.proj_apply, Pi.single_apply, hne]
+      simp [LinearMap.proj_apply, hne]
 
 end ReciprocityTheory.ChartRestriction.DS

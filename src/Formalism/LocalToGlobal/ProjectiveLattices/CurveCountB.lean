@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLoc
+import Formalism.LocalToGlobal.ProjectiveLattices.CurveCountA
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -31,10 +33,10 @@ theorem aeval_homog {L : Type*} [Field L] [Algebra K L] (a : Fin N) (Q : MvPolyn
   have hQ : aeval (fun i => y i / y a) Q =
       ∑ m ∈ Q.support, aeval (fun i => y i / y a) (monomial m (Q.coeff m)) := by
     conv_lhs => rw [Q.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hQ, homog, map_sum, Finset.mul_sum]
+
+    rw [map_sum]
+
+  rw [hQ, homog, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m hm => ?_
   have hle : m.degree ≤ Q.totalDegree := le_totalDegree hm
   rw [aeval_monomial, aeval_monomial, Finsupp.prod_add_index' (fun _ => pow_zero _) (fun _ _ _ => pow_add _ _ _),
@@ -87,8 +89,8 @@ theorem sfr_eq (i : Fin (WeightFamilies.dimY D j + 1)) :
     sfr X la w i = ∑ k, algebraMap (Kp X la N) ↥(Frac0 X la w)
       (@algebraMap (Op X la N) (Kp X la N) _ _ _ (Tv X la N (i, k))) * xw X la N w k := by
   apply Subtype.ext
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coe_sfr, Formalism.MainNotions.Gaps.EtaleWeightGaps.sec, map_sum]
+
+  rw [coe_sfr, Formalism.MainNotions.Gaps.EtaleWeightGaps.sec, map_sum]
   push_cast
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_smul, Algebra.smul_def]

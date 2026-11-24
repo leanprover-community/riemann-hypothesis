@@ -1,7 +1,18 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.KurDefs
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Analysis.Normed.Field.Basic
+public import Mathlib.Topology.MetricSpace.Ultra.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Mathlib.Algebra.Polynomial.Identities
+public import Mathlib.Analysis.Normed.Group.Continuity
+public import Mathlib.Analysis.Normed.Group.Ultra
+public import Mathlib.Analysis.SpecificLimits.Basic
+public import Mathlib.RingTheory.Polynomial.Subring
+public import Mathlib.Topology.Algebra.Polynomial
 
 @[expose] public section
 

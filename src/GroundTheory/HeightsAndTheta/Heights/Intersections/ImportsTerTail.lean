@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerSide
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
 
 @[expose] public section
 

@@ -1,12 +1,65 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.CharZeroOfIsPrimitiveRoot
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaPtEqUnitMulTh
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MulqLawsStatement
+public import Development.AbelianVarietyTheory.Definitions.Degenerations.SepticCharacterInjective
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MulqLaws
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsThetaPtOverOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsEquivOfIsPushout
+public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpanEqTopOfFunctionals
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ThetaGrpActsLinearly
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueWeilIs
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SymmetricLiftOddOrderExistsUnique
+import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.ExistsGeneratorOfIsField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.QuasiAffine
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -74,9 +127,9 @@ theorem isGenSec_of_flat {R F : Type} [CommRing R] [CommRing F] (g : R →+* F) 
       Set.mem_iInter.2 fun _ => hk
     rw [ThetaAct.sv_smul _ _ _ _ hJ, Category.id_comp]
     refine (hσ _ _ y J hJ).symm.trans ((hu y _ (hJ (𝟙 _ ≫ (snd T P.A).left))).trans (Eq.trans ?_ (congrArg₂ (· * ·) (k₁ _) (hv _ _ y J hJ)).symm))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_mul, Category.id_comp, sval_of th _ y J (fun _ => J (snd T P.A).left)
-      (fun _ => by rw [Category.comp_id])]
+
+    rw [map_sum, Finset.sum_mul, Category.id_comp, sval_of th _ y J (fun _ => J (snd T P.A).left)
+    (fun _ => by rw [Category.comp_id])]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [k₂, map_mul, _root_.mul_assoc, ← hu' i _ _ y _ hk, ← k₃]
     exact congrArg _ (((congrArg (gs _ y _) (hr i _)).trans (gs_mul _ y _ hm _ _)).trans (congrArg (· * _) (gs_res _ y _ hm _)))
@@ -202,7 +255,7 @@ theorem reg_cubN (hJ : Good L.L y J) (k : ℕ) (m d : T ⊗ A ⟶ A) :
   obtain ⟨t, ht, hv⟩ := exists_cubN c (1 : T ⊗ A ⟶ A) m d k
   refine ⟨_, _, _, _, t, ht, fun U _ h => ?_, fun x => (hv _ (ptSecT A x) y J hJ).trans (by rw [MonObj.comp_one])⟩
   apply Additive.ofMul.injective
-  simp [Fin.prod_univ_succ, ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]
+  simp [Fin.prod_univ_succ, ofMul_mul, ofMul_inv, ofMul_pow]
   module
 
 theorem reg_mulq (hJ : Good L.L y J) (s : LB.Gen (LB.LinComb L.L (K := Fin 2) ![(ι[A]).left, 𝟙 A.left] ![1, -1]))
@@ -270,7 +323,7 @@ theorem prod_cubN_wS {k : ℕ} (hk : Odd k) {b : B.A} (hb : b ^ k = 1) :
 
 theorem cubN_wS_sym {k : ℕ} (hk : Odd k) {b : B.A} (hb : b ^ k = 1) :
     cubN B.θ k 1 b b⁻¹ * B.wS k b 1 1 * (B.wS k b 1 1 * B.σ b⁻¹ ^ k) = 1 := by
-  have a₁ := (GlobalTheory.T.mulq_dbl_cubN_relations O B k 1 b b).2.2.1
+  have a₁ := (_root_.GlobalTheory.Ex.mulq_laws O B k 1 b b).2.2.1
   have a₂ := cubN_mul B.cub hb b⁻¹ b
   have a₃ := B.σ_inv b
   rw [hb, B.cub.N_one, dbl, B.cub.face, B.σ_one] at a₁
@@ -450,7 +503,7 @@ theorem isThetaPt_uth (hG : GlobalFnsSt) {m : ℕ} (hm : Odd m) (hF : (m : F) �
   have : Subsingleton (TF (R := R) F).left := inferInstanceAs (Subsingleton (PrimeSpectrum F))
   obtain ⟨h, hh⟩ := GlobalLift.exists_section (T := TF (R := R) F) (V := ⊤) (p := p) trivial
   have hi : overResι (T := TF (R := R) F) ⊤ ≫ h = 𝟙 _ := by
-    haveI : Mono (overResι (T := TF (R := R) F) ⊤) :=
+    have : Mono (overResι (T := TF (R := R) F) ⊤) :=
       Over.mono_of_mono_left _ (hk := inferInstanceAs (Mono (⊤ : (TF (R := R) F).left.Opens).ι))
     rw [← cancel_mono (overResι (T := TF (R := R) F) ⊤), Category.assoc, hh, Category.comp_id, Category.id_comp]
   have H := isCoordPt_uth ν hG hm hF hb 1

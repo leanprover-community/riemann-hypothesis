@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHermExtend
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsVertFactorPos
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights
 
 @[expose] public section
 

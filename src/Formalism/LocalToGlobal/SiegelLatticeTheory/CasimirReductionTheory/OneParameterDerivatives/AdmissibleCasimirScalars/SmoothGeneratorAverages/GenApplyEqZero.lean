@@ -1,6 +1,50 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.SmoothGeneratorAverages.HasDerivAtDS
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.CompactDerivativesBounded
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -70,26 +114,7 @@ lemma tens (ε : Fin n → Bool) (i j k l : Fin n) :
         simp_all <;> cases ε k <;> cases ε l <;> simp_all <;> ring_nf <;> simp [Complex.I_sq] <;> ring
 
 lemma gen_inG (ε : Fin n → Bool) (p : Fin n × Fin n) : inG ε (gen ε p) := by
-  unfold inG
-  ext i j
-  simp only [Matrix.add_apply, Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, conjTranspose_apply,
-    Matrix.zero_apply, gen_apply]
-  obtain ⟨a, b⟩ := p
-  dsimp only
-  unfold sg
-  dsimp only
-  by_cases hab : a = b
-  · subst hab
-    by_cases hi : a = i <;> by_cases hj : a = j <;> simp [hi, hj] <;> by_cases hij : i = j <;> simp_all <;>
-      cases ε j <;> simp
-  · rcases lt_or_gt_of_ne hab with h | h
-    · simp only [hab, h, if_false, if_true]
-      by_cases h1 : a = i <;> by_cases h2 : b = j <;> by_cases h3 : b = i <;> by_cases h4 : a = j <;>
-        simp_all <;> cases ε i <;> cases ε j <;> simp_all
-    · have h' : ¬ a < b := not_lt_of_gt h
-      simp only [hab, h', if_false]
-      by_cases h1 : a = i <;> by_cases h2 : b = j <;> by_cases h3 : b = i <;> by_cases h4 : a = j <;>
-        simp_all <;> cases ε i <;> cases ε j <;> simp_all
+  apply Formalism.L2.SG.Pf.admitted.AdmissibleVectors.inG_gen
 
 lemma lgen (ε : Fin n → Bool) (X : Matrix (Fin n) (Fin n) ℂ) :
     ∑ p, (((cf ε p : ℝ) : ℂ) * trace (X * gen ε p)) • gen ε p = -X := by
@@ -257,8 +282,8 @@ lemma dS_sum (hC : Calc ε σ D) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X
   have e : (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) (∑ i ∈ s, a i • w i)) =
       fun t : ℝ => ∑ i ∈ s, a i • σ (NormedSpace.exp ((t : ℂ) • X)) (w i) := by
     funext t
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => map_smul _ _ _
   show deriv (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) (∑ i ∈ s, a i • w i)) 0 = _
   rw [e]
@@ -324,8 +349,8 @@ lemma cas_inv (hC : Calc ε σ D) (hst : ∀ (g : UJ ε), ∀ v ∈ D, σ (umat 
   have e1 : σ (umat g) (Cas ε σ v) = -∑ p, ∑ r, ∑ q, ((cf ε p * (zc g p r * zc g p q) : ℝ) : ℂ) •
       dS σ (gen ε r) (dS σ (gen ε q) (σ (umat g) v)) := by
     unfold Cas
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_neg, map_sum]
+
+    rw [map_neg, map_sum]
     congr 1
     refine Finset.sum_congr rfl fun p _ => ?_
     have hg := gen_inG ε p

@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.AffineScheme
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.AlgebraicGeometry.Morphisms.Affine
 
 @[expose] public section
 

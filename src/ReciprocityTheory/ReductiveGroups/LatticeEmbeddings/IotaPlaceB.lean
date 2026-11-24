@@ -1,6 +1,24 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.SetTheory.Cardinal.Continuum
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+public import Mathlib.FieldTheory.IsAlgClosed.Classification
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.RingTheory.Algebraic.Cardinality
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.SetTheory.Cardinal.Rat
+public import Mathlib.Topology.MetricSpace.Perfect
 
 @[expose] public section
 

@@ -1,9 +1,61 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCharA
 public import Formalism.HermitianCurvature.StatementQ
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.FormalDegreeBessel.FinalWR
-public import Formalism.FormalDegreeBessel.FinalG
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -28,7 +80,7 @@ theorem pbOp_neg (l : Fin m) (f : (Fin m → ℂ) → E) : pbOp l (-f) = -pbOp l
   funext x
   simp only [pbOp, wirtBar, Pi.neg_apply]
   rw [fderiv_neg]
-  split_ifs <;> simp [smul_add, smul_neg, neg_add, add_comm]
+  split_ifs <;> simp [smul_add, smul_neg, add_comm]
 
 theorem cbiOp_neg (l : Fin m) (f : (Fin m → ℂ) → E) : cbiOp l (-f) = -cbiOp l f := by
   funext x
@@ -56,45 +108,7 @@ section Lie
 variable {k r : ℕ}
 
 theorem hpk_sq' : Hpk k r * Hpk k r = 1 := by
-  ext a b
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  have ha := a.isLt
-  have hb := b.isLt
-  by_cases hm : r ≤ a.val ∧ a.val ≤ r + k
-  · rw [Finset.sum_eq_single a]
-    · by_cases hab : a = b
-      · subst hab
-        rw [if_pos rfl]
-        simp only [Hpk, eq_self_iff_true, and_true]
-        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | (simp; done) | omega
-      · rw [if_neg hab]
-        have hab' : a.val ≠ b.val := fun e => hab (Fin.ext e)
-        simp only [Hpk]
-        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | (simp; done) | omega
-    · intro c _ hc
-      have hc' : c.val ≠ a.val := fun e => hc (Fin.ext e)
-      simp only [Hpk]
-      split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | (simp; done) | omega
-    · intro h
-      exact absurd (Finset.mem_univ _) h
-  · obtain ⟨c₀, hc₀⟩ : ∃ c₀ : Fin (2 * r + k + 1), c₀.val = 2 * r + k - a.val :=
-      ⟨⟨2 * r + k - a.val, by omega⟩, rfl⟩
-    rw [Finset.sum_eq_single c₀]
-    · by_cases hab : a = b
-      · subst hab
-        rw [if_pos rfl]
-        simp only [Hpk, eq_self_iff_true, and_true]
-        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | (simp; done) | omega
-      · rw [if_neg hab]
-        have hab' : a.val ≠ b.val := fun e => hab (Fin.ext e)
-        simp only [Hpk]
-        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | (simp; done) | omega
-    · intro c _ hc
-      have hc' : c.val ≠ c₀.val := fun e => hc (Fin.ext e)
-      simp only [Hpk]
-      split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | (simp; done) | omega
-    · intro h
-      exact absurd (Finset.mem_univ _) h
+  apply ReciprocityTheory.ChartRestriction.DS.Mult1.InvChr.Hpk_sq
 
 theorem hpk_h : (Hpk k r)ᴴ = Hpk k r := by
   ext a b
@@ -188,7 +202,7 @@ theorem unit_col' {i : Fin (r + 1)} {a b p : Fin (2 * r + k + 1)} (ha : inV k r 
   have h1 : (Matrix.single a b (1 : ℂ) : Mx k r)ᴴ *ᵥ (Hpk k r *ᵥ bvec p) = 0 := by
     ext q
     simp [Matrix.mulVec, dotProduct, Matrix.conjTranspose_apply, Matrix.single_apply, bvec,
-      Pi.single_apply, h0]
+      Pi.single_apply]
     refine Finset.sum_eq_zero fun c _ => ?_
     split_ifs with hc
     · rw [← hc.1]
@@ -537,7 +551,7 @@ theorem PolyFam.mulY {N : ℕ} {h : ℂ → Mx k r → E} (H : PolyFam k r i D N
       exact hc (j - 1)
   · try dsimp only
     rw [he Y x hx, Finset.sum_range_succ', Finset.smul_sum]
-    simp only [Nat.add_one_ne_zero, ↓reduceIte, Nat.add_sub_cancel, eq_self_iff_true, if_true, smul_zero, add_zero, pow_succ',
+    simp only [Nat.add_one_ne_zero, ↓reduceIte, Nat.add_sub_cancel, smul_zero, add_zero, pow_succ',
       mul_smul]
 
 theorem polyFam_monomial {f : Mx k r → E} (hf : SmoothLev k r i D f) (N : ℕ) :
@@ -548,7 +562,7 @@ theorem polyFam_monomial {f : Mx k r → E} (hf : SmoothLev k r i D f) (N : ℕ)
       exact hf
     · simp only [if_neg hj]
       exact smooth_zero
-  · simp [smul_ite, Finset.sum_ite_eq', Finset.sum_ite_eq]
+  · simp [smul_ite, Finset.sum_ite_eq']
 
 theorem Good.map_zero {T : (Mx k r → E) → Mx k r → E} (hT : Good k r i D T) {x : Mx k r}
     (hx : x ∈ Glev k r i ∩ D) : T (fun _ => 0) x = 0 := by
@@ -673,7 +687,7 @@ theorem PolyAt.succ {N : ℕ} {φ : ℂ → E} (H : PolyAt N φ) : PolyAt (N + 1
 
 theorem polyAt_monomial (N : ℕ) (e : E) : PolyAt (N + 1) (fun Y => Y ^ N • e) := by
   refine ⟨fun j => if j = N then e else 0, fun Y => ?_⟩
-  simp [smul_ite, Finset.sum_ite_eq', Finset.sum_ite_eq]
+  simp [smul_ite, Finset.sum_ite_eq']
 
 def lc (k r : ℕ) (i : Fin (r + 1)) {t : ℕ} (a b : Fin t → Fin (mdim k r i)) : ℂ :=
   ∑ σ : Equiv.Perm (Fin t), ((Equiv.Perm.sign σ : ℤ) : ℂ) *
@@ -741,24 +755,24 @@ theorem skip_one_injective {t : ℕ} (a : Fin t) : Function.Injective (skip1 a) 
   apply Fin.ext
   have h := congrArg Fin.val e
   unfold skip1 at h
-  split_ifs at h <;> simp only [Fin.val_mk] at h <;> omega
+  split_ifs at h <;> simp only at h <;> omega
 
 theorem skip_one_ne {t : ℕ} (a : Fin t) (l : Fin (t - 1)) : skip1 a l ≠ a := by
   intro e
   have h := congrArg Fin.val e
   unfold skip1 at h
-  split_ifs at h <;> simp only [Fin.val_mk] at h <;> omega
+  split_ifs at h <;> simp only at h <;> omega
 
 theorem exists_skip_one_eq {t : ℕ} {a b : Fin t} (h : a ≠ b) : ∃ l, skip1 b l = a := by
   rcases Nat.lt_or_gt_of_ne (fun e => h (Fin.ext e)) with hab | hab
   · refine ⟨⟨a.val, by have := b.isLt; omega⟩, ?_⟩
     apply Fin.ext
     unfold skip1
-    split_ifs with h' <;> simp only [Fin.val_mk] at * <;> omega
+    split_ifs with h' <;> simp only at *
   · refine ⟨⟨a.val - 1, by have := a.isLt; omega⟩, ?_⟩
     apply Fin.ext
     unfold skip1
-    split_ifs with h' <;> simp only [Fin.val_mk] at * <;> omega
+    split_ifs with h' <;> simp only at * <;> omega
 
 theorem lc_skip1 (a b : Fin (mdim k r i)) : lc k r i (skip1 a) (skip1 b) = if a = b then 1 else 0 := by
   split_ifs with h

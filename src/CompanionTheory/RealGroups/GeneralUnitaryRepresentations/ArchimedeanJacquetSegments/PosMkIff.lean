@@ -1,6 +1,12 @@
 module
 
 public import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.Complementary
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -57,9 +63,9 @@ theorem mk_apply (M : Fin (finrank ℂ W) → Fin (finrank ℂ W) → ℂ) (v w 
 
 theorem expand (B : Sq W) (v w : W) : B v w = qf (gram B) (ef W v) (ef W w) := by
   conv_lhs => rw [← (Module.finBasis ℂ W).sum_equivFun v, ← (Module.finBasis ℂ W).sum_equivFun w]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.map_smulₛₗ, smul_eq_mul,
-    qf, gram, starRingEnd_apply, Finset.mul_sum, ef]
+
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.map_smulₛₗ, smul_eq_mul,
+  qf, gram, starRingEnd_apply, Finset.mul_sum, ef]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
@@ -285,7 +291,7 @@ theorem normalize (B : Sq W) (hB : B ≠ 0) :
 
 end Real
 
-set_option maxHeartbeats 400000 in
+
 theorem lim_form {I : Type} (ι : I → I) (T : ℝ → I → Module.End ℂ W)
     (hc : ∀ (i : I) (w : W) (l : Module.Dual ℂ W), Continuous fun s => l (T s i w))
     (s : ℕ → ℝ) (p : ℝ) (hs : Tendsto s atTop (𝓝 p)) (B : ℕ → Sq W) (hinv : ∀ k, Inv ι (T (s k)) (B k))
@@ -354,7 +360,7 @@ namespace CompanionTheory.RgGu.NR
 
 open Sig
 
-set_option maxHeartbeats 800000 in
+
 theorem signature : Signature := by
   intro I W _ _ _ ι T hc hsim hex hpos _ s hs B hB hh hinv
   classical

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.AlgebraicTheory.StatementC
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementC
 
 @[expose] public section
 

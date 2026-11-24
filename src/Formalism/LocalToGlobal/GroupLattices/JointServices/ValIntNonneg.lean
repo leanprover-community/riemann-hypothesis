@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.JointServices
-public import Formalism.LocalToGlobal.GroupLattices.JointServices.VAddEqVw
 public import Formalism.LocalToGlobal.GroupLattices.JointServices.LevelOperatorFixesImage
+public import Formalism.LocalToGlobal.GroupLattices.JointServices.VAddEqVw
 
 @[expose] public section
 
@@ -53,8 +53,8 @@ theorem perToVal2 : PerToVal2 := by
         apply D.what₂.embLL.injective
         rw [hB.dcPt u t x F, hf]
         refine (congrArg f hx0).trans ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_sum]
+
+        rw [map_sum, map_sum]
         refine Finset.sum_congr rfl fun y hy => ?_
         rw [map_smul, smul_eq_mul, map_mul, (ha y hy).1, hf]
       rw [heq]

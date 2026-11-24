@@ -1,8 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 public import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
+import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsShortOfTraceDet
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -47,8 +97,8 @@ theorem exists_short_coord {F : Type} [Field F] [NumberField F] [IsTotallyReal F
   have hqe : ∀ x y, q x y = ∑ k, e.repr x k * e.repr y k * q (e k) (e k) := by
     intro x y
     conv_lhs => rw [← e.sum_repr x, ← e.sum_repr y]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Finset.sum_eq_single k]
     · ring
@@ -75,8 +125,8 @@ theorem exists_short_coord {F : Type} [Field F] [NumberField F] [IsTotallyReal F
     rw [Fintype.sum_equiv ε _ (fun p => ρ p.1 (e.repr (b i) p.2) * ρ p.1 (q (e p.2) (e p.2)) *
       ρ p.1 (e.repr (b i') p.2)) (fun _ => rfl), Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun φ _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hqe, map_sum]
+
+    rw [hqe, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     simp only [map_mul]; ring
   have hdT : ((T.det : ℚ) : ℝ) = B.det ^ 2 * ∏ j, a j := by
@@ -106,12 +156,12 @@ theorem exists_short_coord {F : Type} [Field F] [NumberField F] [IsTotallyReal F
     have h3 : ∑ i, (z i : ℝ) * A i (ε.symm (φ, k)) =
         ρ φ (e.repr v k) * Real.sqrt |ρ φ (q (e k) (e k))| := by
       have hc : e.repr v k = ∑ i, (z i : F) * e.repr (b i) k := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← e.coord_apply, hv, map_sum]
+
+        rw [← e.coord_apply, hv, map_sum]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [map_zsmul, zsmul_eq_mul, e.coord_apply]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hc, map_sum, Finset.sum_mul]
+
+      rw [hc, map_sum, Finset.sum_mul]
       refine Finset.sum_congr rfl fun i _ => ?_
       simp only [A, Matrix.mul_diagonal, B, a, Matrix.of_apply, Equiv.apply_symm_apply,
         mul_assoc, map_mul, map_intCast]
@@ -188,8 +238,8 @@ theorem shortSmall (E : Type) [Field E] [NumberField E] [IsCMField E] (hfr : Fra
   have hbΛ : ∀ x ∈ Λ, ∃ c : κ → ℤ, x = ∑ i, c i • b i := fun x hx =>
     ⟨β.repr ⟨x, hx⟩, by
       have := congrArg Λ.subtype (β.sum_repr ⟨x, hx⟩)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum] at this
+
+      rw [map_sum] at this
       exact this.symm⟩
   have hbs : ⊤ ≤ span ℚ (Set.range b) := by
     have hΛ : ∀ x ∈ Λ, x ∈ span ℚ (Set.range b) := fun x hx => by
@@ -241,8 +291,8 @@ theorem shortSmall (E : Type) [Field E] [NumberField E] [IsCMField E] (hfr : Fra
     have h1 : ∀ j, ∃ m : ℤ, Algebra.trace ℚ E (h y (b j)) = m := fun j => by
       obtain ⟨m, hm⟩ := hx j
       refine ⟨m, ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hm, hy, map_sum, LinearMap.sum_apply, map_sum]
+
+      rw [← hm, hy, map_sum, LinearMap.sum_apply, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [← algebraMap_smul E, map_smul, LinearMap.smul_apply, algebraMap_smul, map_smul, ← htr]
       rfl
@@ -250,8 +300,8 @@ theorem shortSmall (E : Type) [Field E] [NumberField E] [IsCMField E] (hfr : Fra
       obtain ⟨c, rfl⟩ := hbΛ w hw
       choose m hm using h1
       refine ⟨∑ j, c j * m j, ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, map_sum, Int.cast_sum]
+
+      rw [map_sum, map_sum, Int.cast_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [map_zsmul, map_zsmul, hm, zsmul_eq_mul, Int.cast_mul]
     have h3 : (N : E) • (D : E) • y ∈ Λ := hdual _ fun w hw => by

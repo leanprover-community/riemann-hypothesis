@@ -2,6 +2,49 @@ module
 
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ArchCone
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqSumWeilComponentsAddTwoSmulLattice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -58,9 +101,9 @@ def aS (S : Finset (Pl F)) : AF F := realAd F 1 + ∑ v ∈ S, idem F v
 theorem idem_mul_aS {S : Finset (Pl F)} {v : Pl F} (hv : v ∉ S) : idem F v * aS F S = 0 :=
   af_ext' (by rw [evI_mul, evI_idem, zero_mul, evI_zero]) fun u => by
     rcases eq_or_ne u v with rfl | h
-    set_option synthInstance.maxHeartbeats 100000 in
-      · rw [map_mul, aS, map_add (f := _), evFin_real, map_sum, Finset.sum_eq_zero fun t ht => evFin_idem_ne (fun e : u = t => hv (e ▸ ht))]
-        simp
+
+    · rw [map_mul, aS, map_add (f := _), evFin_real, map_sum, Finset.sum_eq_zero fun t ht => evFin_idem_ne (fun e : u = t => hv (e ▸ ht))]
+      simp
     · rw [map_mul, evFin_idem_ne h, zero_mul, map_zero]
 
 open Classical in
@@ -85,9 +128,9 @@ theorem tendsto_aS : Tendsto (aS F) atTop (𝓝 1) := by
       Finset.sum_induction _ (fun a => evI F a = 0) (fun a b ha hb => by rw [evI_add, ha, hb, add_zero]) evI_zero
         fun v _ => evI_idem v, add_zero]
     exact map_one (InfiniteAdeleRing.ringEquiv_mixedSpace F)
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [aS, map_add (f := _), evFin_real, zero_add, map_sum, sub_sub_cancel]
-      exact map_sum (evalV F u) _ _
+
+  · rw [aS, map_add (f := _), evFin_real, zero_add, map_sum, sub_sub_cancel]
+    exact map_sum (evalV F u) _ _
 
 section U
 
@@ -110,7 +153,7 @@ def partU {a : AF F} (ha : a * a = a) (g : UA σ J) : UA σ J :=
     have h3 : (1 - a) * (1 - a) = 1 - a := by rw [sub_mul, one_mul, h1, sub_zero]
     have e : (a • mat g + (1 - a) • (1 : Matrix (Fin n) (Fin n) (AE F E))).map (cA σ) = a • (mat g).map (cA σ) + (1 - a) • 1 := by
       ext i j
-      by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
+      by_cases hij : i = j <;> simp [hij]
     show (a • mat g + (1 - a) • (1 : Matrix (Fin n) (Fin n) (AE F E)))ᵀ * incM F J *
       (a • mat g + (1 - a) • (1 : Matrix (Fin n) (Fin n) (AE F E))).map (cA σ) = incM F J
     rw [e]

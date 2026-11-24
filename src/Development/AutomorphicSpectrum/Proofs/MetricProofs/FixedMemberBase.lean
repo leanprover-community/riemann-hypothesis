@@ -1,7 +1,57 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.LeviForms.ConvExpandStatement
+public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 
@@ -14,7 +64,7 @@ theorem epsT_small (C : ℝ) :
     ∃ a : ℝ, 0 < a ∧ ∀ t, 0 < t → t ≤ a → |epsT C t| ≤ 1 / 2 ∧ C * epsT C t ≤ 1 := by
   have hL : Tendsto (fun t : ℝ => Real.log (1 / t)) (𝓝[>] 0) atTop := by
     have hinv : Tendsto (fun t : ℝ => t⁻¹) (𝓝[>] 0) atTop := by
-      first | exact tendsto_inv_nhdsGT_zero | exact tendsto_inv_zero_atTop
+      first | exact tendsto_inv_nhdsGT_zero
     exact (Real.tendsto_log_atTop.comp hinv).congr fun t => by simp [one_div]
   have hq : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) := by
     simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
@@ -33,7 +83,7 @@ theorem epsT_small (C : ℝ) :
     rw [mul_zero] at h
     exact h.eventually (gt_mem_nhds (by norm_num))
   obtain ⟨u, hu, hsub⟩ : ∃ u ∈ Set.Ioi (0:ℝ), Set.Ioc 0 u ⊆ {t | |epsT C t| < 1 / 2 ∧ C * epsT C t < 1} := by
-    first | exact mem_nhdsGT_iff_exists_Ioc_subset.mp (ha.and hb) | exact mem_nhdsWithin_Ioi_iff_exists_Ioc_subset.mp (ha.and hb)
+    first | exact mem_nhdsGT_iff_exists_Ioc_subset.mp (ha.and hb)
   refine ⟨u, hu, fun t ht htu => ?_⟩
   obtain ⟨h1, h2⟩ := hsub ⟨ht, htu⟩
   exact ⟨h1.le, h2.le⟩
@@ -45,7 +95,7 @@ private theorem contDiffAt_comp_chart_symm_of_smoothOn {e : ℕ} {X : Type} [Top
   have hopen : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' U) :=
     (A.chart j).continuousOn_symm.isOpen_inter_preimage (A.chart j).open_target hU
   refine ((hf j).contDiffAt (hopen.mem_nhds ⟨hy, hyU⟩)).of_le ?_
-  first | exact_mod_cast (le_top : ((2 : ℕ∞)) ≤ ⊤) | simp | decide
+  first | simp
 
 private theorem levi_add_mul {ι : Type} [Fintype ι] (F G : (ι → ℂ) → ℝ) (y w : ι → ℂ) (k : ℝ)
     (hF : ContDiffAt ℝ 2 F y) (hG : ContDiffAt ℝ 2 G y) :

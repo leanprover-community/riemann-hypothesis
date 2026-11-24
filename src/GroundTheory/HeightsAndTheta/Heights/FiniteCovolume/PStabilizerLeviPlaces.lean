@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLeviMatrices
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsStabilizerLevi
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Objects
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsComplementForm
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PComplementExtension
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PGramAtData
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLeviMatrices
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -40,8 +41,8 @@ theorem vecAt_sum_smul (v : Basis ι E W) {κ : Type*} [Fintype κ] (c : κ → 
     (w : InfinitePlace E) :
     vecAt v (∑ k, c k • u k) w = colMat v u w *ᵥ fun k => w.embedding (c k) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [vecAt, colMat, mulVec, dotProduct, map_sum, mul_comm]
+
+  simp [vecAt, colMat, mulVec, dotProduct, map_sum, mul_comm]
 
 theorem vecAt_coe {W' : Submodule E W} {n : ℕ} (v : Basis ι E W) (v' : Basis (Fin n) E W') (x : W')
     (w : InfinitePlace E) :

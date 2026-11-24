@@ -1,14 +1,52 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Statements
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirstCoordinateLine
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Comparison
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCurve
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitDegree
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightRecR
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.CurveIsOrbit
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DenseChart
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Statements
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -47,8 +85,8 @@ theorem mConeMap_of_isWeightedHomogeneous {Ω : Type*} [Field Ω] (y : Coord n �
   classical
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum]
+
+  rw [map_sum, map_sum, map_sum]
   refine Finset.sum_congr rfl fun d hd ↦ ?_
   rw [mConeMap_monomial, hg (mem_support_iff.mp hd)]
 
@@ -96,9 +134,9 @@ theorem mem_mCoordIdeal_iff {Ω : Type*} [Field Ω] (y : Coord n → Ω)
     have hm₀ : m₀ ∈ compDegs f := (Set.Finite.mem_toFinset _).mpr h0
     have hk := congrArg (AddMonoidAlgebra.coeff · (Finsupp.equivFunOnFinite.symm m₀))
       (show Geo.mConeMap (ι := blockIdx n) y f = 0 from hf)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← sum_compDegs f, map_sum, coeff_sum, AddMonoidAlgebra.coeff_zero,
-      Finset.sum_eq_single m₀] at hk
+
+    rw [← sum_compDegs f, map_sum, coeff_sum, AddMonoidAlgebra.coeff_zero,
+    Finset.sum_eq_single m₀] at hk
     · rwa [mConeMap_of_isWeightedHomogeneous y
         (weightedHomogeneousComponent_isWeightedHomogeneous m₀ f), coeff_monomial, if_pos rfl] at hk
     · intro m _ hm
@@ -194,7 +232,7 @@ namespace HermLine
 
 
 
-theorem ofGeo_toGeo_metric (A : HermLine n) {z : Cone n ℂ} (hz : BlockNonzero z) :
+theorem ofGeo_toGeo_metric (A : Heights.HermLine n) {z : Cone n ℂ} (hz : BlockNonzero z) :
     (ofGeo A.toGeo A.isSmoothHerm_toGeo).metric z = A.metric z :=
   toGeo_h_of_blockNonzero A (w := flatCone z) hz
 
@@ -329,7 +367,7 @@ theorem evalCone_rel {F : Type*} [CommRing F] {z : Cone n F} (hz : z ∈ P.point
   simp only [evalCone, eval₂_sub, eval₂_mul] at this ⊢
   exact sub_eq_zero.mp this
 
-theorem isSectionBounded_iff_supNormLE (A : HermLine n) (s : IntegralSection P A.deg)
+theorem isSectionBounded_iff_supNormLE (A : Heights.HermLine n) (s : IntegralSection P A.deg)
     {y : Coord n → Ω} (hy : Geo.mCoordIdeal (ι := blockIdx n) y = P.ideal) (C : ℝ) :
     IndefiniteRowSideFullHecke.HeightsSet.IsSectionBounded (ι := blockIdx n) P.ideal y A.toGeo (s.valueAt y)
       (Real.exp C) ↔ s.SupNormLE A C := by

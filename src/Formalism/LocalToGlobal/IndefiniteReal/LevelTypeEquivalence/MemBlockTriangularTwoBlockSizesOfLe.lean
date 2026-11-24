@@ -1,8 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.PeterssonNormOfUpLift
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GEqAct
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

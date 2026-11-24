@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.LatticeGeometry.DegFlLApply
 public import Formalism.LocalToGlobal.LatticeGeometry.ArVolEqOfNef
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

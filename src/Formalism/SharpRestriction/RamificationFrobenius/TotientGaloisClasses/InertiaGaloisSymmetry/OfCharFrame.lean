@@ -1,8 +1,50 @@
 module
 
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.OfChar
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSym
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameCyclicGenerator
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSymOfModEq
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
+import Formalism.TameInertiaTowers.TowerFieldFoundations
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,7 +60,7 @@ theorem unitsMap_eq_iff {M N : ℕ} [NeZero N] [NeZero M] (h : M ∣ N) (u : (ZM
 
 theorem unitsMap_eq_one_iff {M N : ℕ} [NeZero N] (h : M ∣ N) (u : (ZMod N)ˣ) :
     ZMod.unitsMap h u = 1 ↔ (u : ZMod N).val ≡ 1 [MOD M] := by
-  haveI : NeZero M := ⟨by
+  have : NeZero M := ⟨by
     rintro rfl
     exact NeZero.ne N (Nat.eq_zero_of_zero_dvd h)⟩
   rw [unitsMap_eq_iff h u 1, Units.val_one, ZMod.val_one_eq_one_mod]
@@ -97,11 +139,11 @@ theorem projection_surjective : Function.Surjective D.p1 := by
   exact ⟨⟨D.eta u, u, rfl⟩, rfl⟩
 
 theorem exists_gen : ∃ a : D.R, ∀ x : D.R, D.p2 x = 1 ↔ x ∈ Subgroup.zpowers a := by
-  haveI : IsCyclic (HGrp D.e) := (Formalism.TwoAdicCyclotomicDecomposition.towerProperties.1.2.1 D.e).1
+  have : IsCyclic (HGrp D.e) := (Formalism.TwoAdicCyclotomicDecomposition.towerProperties.1.2.1 D.e).1
   let f : D.p2.ker →* HGrp D.e := D.p1.comp D.p2.ker.subtype
   have hf : Function.Injective f := (injective_iff_map_eq_one f).mpr fun x hx =>
     Subtype.ext (D.eq_one_of hx (MonoidHom.mem_ker.mp x.2))
-  haveI : IsCyclic D.p2.ker := isCyclic_of_surjective (MonoidHom.ofInjective hf).symm (MulEquiv.surjective _)
+  have : IsCyclic D.p2.ker := isCyclic_of_surjective (MonoidHom.ofInjective hf).symm (MulEquiv.surjective _)
   obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := D.p2.ker)
   refine ⟨g, fun x => ⟨fun hx => ?_, fun hx => ?_⟩⟩
   · obtain ⟨k, hk⟩ := Subgroup.mem_zpowers_iff.mp (hg ⟨x, MonoidHom.mem_ker.mpr hx⟩)
@@ -175,8 +217,8 @@ theorem art_snd (u : (ZMod (D.m * q * d))ˣ) : (D.art hH u).2 = D.toA (ZMod.unit
 
 theorem art_ps (u : (ZMod (D.m * q * d))ˣ) :
     (((D.art hH u).1.1 : ℤˣ) : ℤ) = jacobiSym (((u : ZMod (D.m * q * d)).val : ℕ) : ℤ) q := by
-  haveI := D.neZeroN hH
-  haveI := Fact.mk hH.1
+  have := D.neZeroN hH
+  have := Fact.mk hH.1
   show ((D7.sgnN hH.1 (D.q_dvd q d) u : ℤˣ) : ℤ) = _
   simp only [D7.sgnN, MonoidHom.coe_comp, Function.comp_apply, MulChar.coe_toUnitHom, D7.unitsMap_val]
   rw [← jacobiSym.legendreSym.to_jacobiSym q (((u : ZMod (D.m * q * d)).val : ℕ) : ℤ)]
@@ -184,8 +226,8 @@ theorem art_ps (u : (ZMod (D.m * q * d))ˣ) :
 
 theorem art_ch (u : (ZMod (D.m * q * d))ˣ) :
     (((D.art hH u).1.2 : ℤˣ) : ℤ) = jacobiSym (((u : ZMod (D.m * q * d)).val : ℕ) : ℤ) d := by
-  haveI := D.neZeroN hH
-  haveI := Fact.mk hH.2.1
+  have := D.neZeroN hH
+  have := Fact.mk hH.2.1
   show ((D7.sgnN hH.2.1 (D.d_dvd q d) u : ℤˣ) : ℤ) = _
   simp only [D7.sgnN, MonoidHom.coe_comp, Function.comp_apply, MulChar.coe_toUnitHom, D7.unitsMap_val]
   rw [← jacobiSym.legendreSym.to_jacobiSym d (((u : ZMod (D.m * q * d)).val : ℕ) : ℤ)]
@@ -202,7 +244,7 @@ theorem art_ps_one (u : (ZMod (D.m * q * d))ˣ) {y : ℕ} (hu : (u : ZMod (D.m *
   exact Units.ext h1
 
 theorem art_snd_one (u : (ZMod (D.m * q * d))ˣ) (hu : (u : ZMod (D.m * q * d)).val ≡ 1 [MOD D.m]) : (D.art hH u).2 = 1 := by
-  haveI := D.neZeroN hH
+  have := D.neZeroN hH
   rw [art_snd, (unitsMap_eq_one_iff _ u).mpr hu, map_one]
 
 variable (hc : Nat.Coprime D.m (q * d))
@@ -227,7 +269,7 @@ theorem art_surj : Function.Surjective (D.art hH) := by
           simp
         rw [jacobiSym.mod_left, e, ← jacobiSym.mod_left, jacobiSym.at_neg_one hodd, ZMod.χ₄_nat_three_mod_four hp4]
         simp
-  haveI := D.neZeroN hH
+  have := D.neZeroN hH
   rintro ⟨⟨s1, s2⟩, a⟩
   obtain ⟨w, rfl⟩ := D.toA_surj a
   obtain ⟨y, hy, hys⟩ := hsgn hH.1 (D7.q4 hH) s1

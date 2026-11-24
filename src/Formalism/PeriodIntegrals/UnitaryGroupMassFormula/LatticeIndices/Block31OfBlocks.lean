@@ -1,6 +1,51 @@
 module
 
+import Formalism.LogVandermondeBounds.LogVandermondeProofs.CardStabilizerVector
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.LeviEmbeddingBlock32
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -15,46 +60,7 @@ open Formalism.FourierDecayAlt.S3
 section Count
 
 theorem card_lt_pairs (n : ℕ) : Nat.card {p : Fin n × Fin n // p.1 < p.2} = n * (n - 1) / 2 := by
-  classical
-  rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
-  have hoff : ((Finset.univ : Finset (Fin n × Fin n)).filter (fun p => p.1 ≠ p.2)).card = n * (n - 1) := by
-    have h1 : (Finset.univ : Finset (Fin n × Fin n)).filter (fun p => p.1 ≠ p.2) =
-        (Finset.univ : Finset (Fin n)).offDiag := by
-      ext p
-      simp [Finset.mem_offDiag]
-    rw [h1, Finset.offDiag_card, Finset.card_univ, Fintype.card_fin, Nat.mul_sub_one]
-  have hsplit : (Finset.univ : Finset (Fin n × Fin n)).filter (fun p => p.1 ≠ p.2) =
-      (Finset.univ.filter (fun p : Fin n × Fin n => p.1 < p.2)) ∪
-        (Finset.univ.filter (fun p : Fin n × Fin n => p.2 < p.1)) := by
-    ext p
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_union]
-    constructor
-    · intro h
-      exact lt_or_gt_of_ne h
-    · rintro (h | h)
-      · exact h.ne
-      · exact h.ne'
-  have hdisj : Disjoint (Finset.univ.filter (fun p : Fin n × Fin n => p.1 < p.2))
-      (Finset.univ.filter (fun p : Fin n × Fin n => p.2 < p.1)) := by
-    rw [Finset.disjoint_left]
-    intro p hp hq
-    simp only [Finset.mem_filter] at hp hq
-    exact lt_asymm hp.2 hq.2
-  have hswap : (Finset.univ.filter (fun p : Fin n × Fin n => p.2 < p.1)).card =
-      (Finset.univ.filter (fun p : Fin n × Fin n => p.1 < p.2)).card := by
-    apply Finset.card_bij (fun p _ => p.swap)
-    · intro p hp
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Prod.fst_swap, Prod.snd_swap] at hp ⊢
-      exact hp
-    · intro p _ q _ h
-      exact Prod.swap_injective h
-    · intro q hq
-      refine ⟨q.swap, ?_, Prod.swap_swap q⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Prod.fst_swap, Prod.snd_swap] at hq ⊢
-      exact hq
-  rw [hsplit, Finset.card_union_of_disjoint hdisj, hswap] at hoff
-  generalize n * (n - 1) = X at hoff ⊢
-  omega
+  apply Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs
 
 theorem card_matrix (m n K : Type) [Finite m] [Finite n] :
     Nat.card (Matrix m n K) = Nat.card K ^ (Nat.card m * Nat.card n) := by
@@ -108,39 +114,30 @@ variable (a : Matrix (Fin r) (Fin r) A) (b : Matrix (Fin r) (Mid k) A) (c : Matr
 theorem block11_of_blocks : b11 (mk a b c m e f) = a := by
   first
     | rfl
-    | (ext i j; simp [mk, b11])
 theorem block12_of_blocks : b12 (mk a b c m e f) = b := by
   first
     | rfl
-    | (ext i j; simp [mk, b12])
 theorem block13_of_blocks : b13 (mk a b c m e f) = c := by
   first
     | rfl
-    | (ext i j; simp [mk, b13])
 theorem block21_of_blocks : b21 (mk a b c m e f) = 0 := by
   first
     | rfl
-    | (ext i j; simp [mk, b21])
 theorem block22_of_blocks : b22 (mk a b c m e f) = m := by
   first
     | rfl
-    | (ext i j; simp [mk, b22])
 theorem block23_of_blocks : b23 (mk a b c m e f) = e := by
   first
     | rfl
-    | (ext i j; simp [mk, b23])
 theorem block31_of_blocks : b31 (mk a b c m e f) = 0 := by
   first
     | rfl
-    | (ext i j; simp [mk, b31])
 theorem block32_of_blocks : b32 (mk a b c m e f) = 0 := by
   first
     | rfl
-    | (ext i j; simp [mk, b32])
 theorem block33_of_blocks : b33 (mk a b c m e f) = f := by
   first
     | rfl
-    | (ext i j; simp [mk, b33])
 end mk
 
 def parMap (P : Matrix (Fin k) (Fin k) A → Prop) :
@@ -217,7 +214,6 @@ theorem card_isN (K : Type) [Field K] [Fintype K] (r k : ℕ) :
   have hone : Nat.card {h : Matrix (Fin k) (Fin k) K // h = 1} = 1 := by
     first
       | exact Nat.card_unique
-      | simp
   rw [Nat.card_congr e, card_par, hone, one_mul]
 
 end Count

@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsMMIsom
+public import Formalism.LocalToGlobal.InertKernelTheory.DefsMM
+public import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.IsLawOfLog
 
 @[expose] public section
 

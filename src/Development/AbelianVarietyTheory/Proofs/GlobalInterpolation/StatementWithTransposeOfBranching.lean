@@ -1,18 +1,137 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InterlacingEquivariance
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SplitLastBlockActX
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightedLeadingTermSplitZMinor
+public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InterlacingEquivariance
+public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EquivariantMapEqSmul
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsBasisAtBlock
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NonnegSubOfLt
-public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining
-public import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightedLeadingTermSplitZMinor
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
+import Formalism.LocalToGlobal.Columns.PolyFnLemmas
+import Mathlib.Tactic.Basify
+import Std.Tactic.BVDecide.Normalize.Prop
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsBasisAtBlock, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StatementWithTransposeOfBranching
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsBasisAtBlock =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsBasisAtBlock", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SplitLastBlockActX\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InterlacingEquivariance\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open MvPolynomial NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col GlobalTheory.IndefiniteRowSideFullHecke.InterlacingEquivariance GlobalTheory.BranchFormula
+
+namespace GlobalTheory.BranchBasis
+
+theorem mem_sumLat {K : Type} [Field K] [NumberField K] {N n : ℕ} (hN : N = n + 1) (M : Submodule (𝓞 K) (Fin n → K)) (t : K)
+    (x : Fin N → K) :
+    x ∈ Br.sumLat hN M t ↔ (fun a => x (Br.iC hN a)) ∈ M ∧ ∃ c : 𝓞 K, x (Br.iL hN) = (c : K) * t := Iff.rfl
+
+theorem mem_colLat {K : Type} [Field K] [NumberField K] {n : ℕ} (B : GL (Fin n) K) (x : Fin n → K) :
+    x ∈ colLat B ↔ ∃ c : Fin n → 𝓞 K, ∀ a, ∑ j, (c j : K) * (B : Matrix (Fin n) (Fin n) K) a j = x a := by
+  unfold colLat
+  rw [Submodule.mem_span_range_iff_exists_fun]
+  refine exists_congr fun c => ?_
+  rw [funext_iff]
+  refine forall_congr' fun a => ?_
+  simp only [Finset.sum_apply, Pi.smul_apply, Algebra.smul_def]
+
+theorem colLat_block {K : Type} [Field K] [NumberField K] {N n : ℕ} (hN : N = n + 1) (t : K) (B : GL (Fin n) K)
+    (B' : GL (Fin N) K) (h : IsBlock hN (B' : Matrix (Fin N) (Fin N) K) (B : Matrix (Fin n) (Fin n) K) t) :
+    colLat B' = Br.sumLat hN (colLat B) t := by
+  obtain ⟨h1, h2, h3⟩ := h
+  ext x
+  rw [mem_sumLat, mem_colLat, mem_colLat]
+  constructor
+  · rintro ⟨c, hc⟩
+    refine ⟨⟨fun j => c (Br.iC hN j), fun a => ?_⟩, c (Br.iL hN), ?_⟩
+    · rw [← hc, sum_split hN]
+      simp only [h1, (h2 _).1, mul_zero, add_zero]
+    · rw [← hc, sum_split hN]
+      simp only [h3, (h2 _).2, mul_zero, Finset.sum_const_zero, zero_add]
+  · rintro ⟨⟨c, hc⟩, d, hd⟩
+    refine ⟨fun j => if hj : j.val < n then c ⟨j.val, hj⟩ else d, fun a => ?_⟩
+    rw [sum_split hN]
+    have e1 : ∀ j : Fin n, (if hj : (Br.iC hN j).val < n then c ⟨(Br.iC hN j).val, hj⟩ else d) = c j :=
+      fun j => dif_pos j.2
+    have e2 : (if hj : (Br.iL hN).val < n then c ⟨(Br.iL hN).val, hj⟩ else d) = d := dif_neg (lt_irrefl n)
+    simp only [e1, e2]
+    rcases cases_idx hN a with rfl | ⟨a, rfl⟩
+    · simp only [h3, (h2 _).2, mul_zero, Finset.sum_const_zero, zero_add, hd]
+    · simp only [h1, (h2 _).1, mul_zero, add_zero]
+      exact hc a
+
+theorem localization_sumLat_le {K : Type} [Field K] [NumberField K] {N n : ℕ} (hN : N = n + 1) (w : HeightOneSpectrum (𝓞 K))
+    (M M₂ : Submodule (𝓞 K) (Fin n → K)) (t : K) (h : Formalism.HermitianLatticesTheory.localization₂ w.asIdeal M ≤ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal M₂) :
+    Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (Br.sumLat hN M t) ≤ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (Br.sumLat hN M₂ t) := by
+  rintro x ⟨s, hs, hx1, c, hc⟩
+  have h0 : (fun a => (s • x) (Br.iC hN a)) ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal M :=
+    ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact hx1⟩
+  obtain ⟨u, hu, hux⟩ := h h0
+  refine ⟨u * s, Submonoid.mul_mem _ hu hs, ?_⟩
+  rw [mul_smul, mem_sumLat]
+  refine ⟨hux, u * c, ?_⟩
+  rw [Pi.smul_apply, hc, Algebra.smul_def]
+  push_cast
+  exact (mul_assoc _ _ _).symm
+
+theorem isBasisAt_block : ∀ (K : Type) [Field K] [NumberField K] (N n : ℕ) (hN : N = n + 1) (w : HeightOneSpectrum (𝓞 K)) (M : Submodule (𝓞 K) (Fin n → K)) (t : K) (B : GL (Fin n) K) (B' : GL (Fin N) K), IsBlock hN (B' : Matrix (Fin N) (Fin N) K) (B : Matrix (Fin n) (Fin n) K) t → IsBasisAt w M B → IsBasisAt w (Br.sumLat hN M t) B' := by
+  intro K _ _ N n hN w M t B B' hB h
+  unfold IsBasisAt at h ⊢
+  rw [colLat_block hN t B B' hB]
+  exact le_antisymm (localization_sumLat_le hN w _ _ t h.le) (localization_sumLat_le hN w _ _ t h.ge)
+
+end GlobalTheory.BranchBasis
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsBasisAtBlock =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StatementWithTransposeOfBranching =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StatementWithTransposeOfBranching", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InterlacingEquivariance\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SplitLastBlockActX\npublic import Formalism.LocalToGlobal.Columns.CoefColLemmas\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EquivariantMapEqSmul\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsBasisAtBlock\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightedLeadingTermSplitZMinor\nimport Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining\nimport Formalism.GradedWeylDivisibility.DualWeylDominanceOf\nimport Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas\nimport Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe\nimport Formalism.LocalToGlobal.Columns.PolyFnLemmas\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open MvPolynomial NumberField IsDedekindDomain
@@ -163,7 +282,7 @@ theorem brOne_xi [CharZero K] (hN : N = n + 1) {lam : DomWeight N} {sg : DomWeig
   have h := projVV_coe (fun _ : Unit => sg) ⟨_, extVV_mem K fun _ : Unit => sg⟩
   simp only [extVV, ten_unit] at h
   simp only [brOne, brStdP, LinearMap.comp_apply, AlgHom.toLinearMap_apply, Submodule.subtype_apply, LinearMap.smul_apply,
-    GlobalTheory.XiTopCoef.coefLast_xi K N n hN lam sg hI hS, h, Submodule.coe_smul, map_smul, rename_snd_unit, brConst, Finset.univ_unique,
+    GlobalTheory.XiTopCoef.coefLast_xi K N n hN lam sg hI hS, h, map_smul, rename_snd_unit, brConst, Finset.univ_unique,
     Finset.prod_singleton]
 
 end One
@@ -294,8 +413,8 @@ theorem coeff_prod_rename {A ι : Type} [CommRing A] [Fintype ι] {n : ℕ} (b :
       ∑ m ∈ (P τ).support, monomial (m.mapDomain fun p : Unit × Fin n => (τ, p.2)) (AddMonoidAlgebra.coeff (P τ) m) := by
     intro τ
     conv_lhs => rw [(P τ).as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, rename_monomial]
+
+    simp only [map_sum, rename_monomial]
   have h2 : ∀ τ, AddMonoidAlgebra.coeff (P τ) (expOf fun _ : Unit => b τ) =
       ∑ m ∈ (P τ).support, if m = expOf (fun _ : Unit => b τ) then AddMonoidAlgebra.coeff (P τ) m else 0 := by
     intro τ
@@ -464,3 +583,7 @@ theorem integrality (h6 : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6) 
   exact h2
 
 end GlobalTheory.BranchFormula
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StatementWithTransposeOfBranching =====

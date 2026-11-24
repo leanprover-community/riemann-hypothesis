@@ -1,11 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothGramSchmidtIndefiniteHermitianFrames
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegativeFrameDomainProductOpenPreconnectedStable
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusLawOfKilled
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegativeFrameDomainProductOpenPreconnectedStable
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothGramSchmidtIndefiniteHermitianFrames
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusLawOfKilled
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -45,7 +87,7 @@ lemma luMap_eq (z : ι → Fin n → Fin n → ℂ) :
     simp only [loP, upperParabolic]; split_ifs <;> simp
   simp only [luMap, Pi.add_apply, Matrix.mul_apply, Matrix.of_apply, add_mul, mul_add,
     Finset.sum_add_distrib, oneE, ite_mul, one_mul, zero_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, ↓reduceIte]
+    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
   linear_combination hz
 
 lemma strict_coord (τ : ι) (a c : Fin n) : ∃ L, HasStrictFDerivAt (𝕜 := ℂ) (fun z : ι → Fin n → Fin n → ℂ => z τ a c) L 0 := by
@@ -54,7 +96,7 @@ lemma strict_coord (τ : ι) (a c : Fin n) : ∃ L, HasStrictFDerivAt (𝕜 := �
       ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin n => Fin n → ℂ) a).comp
         (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : ι => Fin n → Fin n → ℂ) τ))
   have hL : (fun z : ι → Fin n → Fin n → ℂ => z τ a c) = ⇑L := by
-    funext z; first | rfl | simp [L]
+    funext z; first | rfl
   refine ⟨L, ?_⟩
   rw [hL]; exact L.hasStrictFDerivAt
 
@@ -80,8 +122,6 @@ lemma luMap_strict : HasStrictFDerivAt (luMap : (ι → Fin n → Fin n → ℂ)
     first
     | exact (HasStrictFDerivAt.fun_sum (u := Finset.univ) (fun j _ => (hL1 j).fun_mul (hL2 j))).congr_fderiv
         (by simp [loP, upperParabolic])
-    | (convert HasStrictFDerivAt.sum (u := Finset.univ) (fun j _ => (hL1 j).mul (hL2 j)) using 1 <;>
-        first | (funext z; simp [Finset.sum_apply]) | simp [loP, upperParabolic])
   have hBall : HasStrictFDerivAt
       (fun z : ι → Fin n → Fin n → ℂ => fun τ a c => ∑ j, loP 1 z τ a j * upperParabolic z τ j c)
       (0 : (ι → Fin n → Fin n → ℂ) →L[ℂ] (ι → Fin n → Fin n → ℂ)) 0 := by
@@ -91,13 +131,6 @@ lemma luMap_strict : HasStrictFDerivAt (luMap : (ι → Fin n → Fin n → ℂ)
        refine ContinuousLinearMap.ext fun z => ?_
        funext τ a c
        simp)
-    | (refine hasStrictFDerivAt_pi'.2 fun τ => ?_
-       rw [ContinuousLinearMap.comp_zero]
-       refine hasStrictFDerivAt_pi'.2 fun a => ?_
-       rw [ContinuousLinearMap.comp_zero]
-       refine hasStrictFDerivAt_pi'.2 fun c => ?_
-       rw [ContinuousLinearMap.comp_zero]
-       exact hB τ a c)
   have hfun : (luMap : (ι → Fin n → Fin n → ℂ) → _) =
       fun z => oneE ι n + z + fun τ a c => ∑ j, loP 1 z τ a j * upperParabolic z τ j c := funext luMap_eq
   rw [hfun]
@@ -304,7 +337,6 @@ theorem eq_zero_of_torus_law (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
     simp only [Matrix.mul_apply, Matrix.of_apply]
     first
     | fun_prop
-    | exact Differentiable.sum fun j _ => (differentiable_const _).mul (by fun_prop)
   have hm1 : m (oneE ι n) = fun τ => (x₀ τ : Mt n) := by
     rw [hm]; funext τ
     show x₀ τ * Matrix.of (oneE ι n τ) = x₀ τ
@@ -384,7 +416,6 @@ theorem eq_zero_of_torus_law (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
     simp only [Matrix.mul_apply, Matrix.of_apply]
     first
     | fun_prop
-    | exact continuous_finset_sum _ fun j _ => continuous_const.mul (by fun_prop)
   have hPloc : P =ᶠ[𝓝 (fun τ => (x₀ τ : Mt n))] 0 := by
     have ht' : Tendsto m' (𝓝 (fun τ => (x₀ τ : Mt n))) (𝓝 (oneE ι n)) := by
       rw [← hm'0]; exact hm'c.continuousAt

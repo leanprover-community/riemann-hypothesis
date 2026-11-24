@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsBlockRatioAlg
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsBlockGenFinite
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZ
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -107,9 +108,9 @@ theorem BlockGenFinite.proof (hR : BlockRatioAlg.Statement) : BlockGenFinite.Sta
       · simp
     rw [Multiset.mem_toFinset, Polynomial.mem_roots hne, Polynomial.IsRoot.def]
     have hrel0 := hz'.2 _ (hAP q)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow, map_X, eval_X, eval_map_rename,
-      show (fun p ↦ z' (v p)) = fun p ↦ d p.1 * u p from hzd, eval_smul_of_isMultiHomog (hAh q _)] at hrel0
+
+    simp only [map_sum, map_mul, map_pow, map_X, eval_X, eval_map_rename,
+    show (fun p ↦ z' (v p)) = fun p ↦ d p.1 * u p from hzd, eval_smul_of_isMultiHomog (hAh q _)] at hrel0
     have hD : (∏ k, d k ^ a q k) * z' ⟨q.1.1, c q.1⟩ ^ m q ≠ 0 :=
       mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun k _ ↦ pow_ne_zero _ (hd k)) (pow_ne_zero _ (hcz q.1))
     refine (mul_eq_zero.mp ?_).resolve_left hD

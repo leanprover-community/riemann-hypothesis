@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
-public import Formalism.LocalToGlobal.Columns.PolyFn
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

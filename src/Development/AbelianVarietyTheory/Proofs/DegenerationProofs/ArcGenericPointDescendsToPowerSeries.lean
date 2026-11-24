@@ -1,18 +1,55 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigIsoCongr
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueFactorOfIsAlgClosed
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ValuationExtension
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompleteDvrFiniteSubalgebra
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.MvPowerSeries.Inverse
+public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ModelPointsEqOfSameDegenerationDataStatement
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueFactorOfIsAlgClosed
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompleteDvrFiniteSubalgebra
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ValuationExtension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.AdicCompletion.Completeness
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigIsoCongr
 
 @[expose] public section
 
@@ -27,8 +64,8 @@ namespace GlobalTheory.ArcPointDescent
 theorem exists_embedding {A₀ A F : Type} [CommRing A₀] [IsDomain A₀] [CommRing A] [IsDomain A] [Field F] [IsAlgClosed F]
     (α : A₀ →+* A) (hα : Function.Injective α) (hf : α.Finite) (ω : A₀ →+* F) (hω : Function.Injective ω) :
     ∃ ψ : A →+* F, Function.Injective ψ ∧ ∀ r, ψ (α r) = ω r := by
-  letI := α.toAlgebra
-  letI := ω.toAlgebra
+  let := α.toAlgebra
+  let := ω.toAlgebra
   have : Module.Finite A₀ A := hf
   have : FaithfulSMul A₀ A := (faithfulSMul_iff_algebraMap_injective _ _).2 hα
   have : FaithfulSMul A₀ F := (faithfulSMul_iff_algebraMap_injective _ _).2 hω
@@ -49,7 +86,7 @@ theorem exists_finset {V F R A : Type} [CommRing V] [CommRing F] [Algebra V F] [
     (g : R →+* A) (hg : g.Finite) (φ : R →+* V) (ψ : A →+* F) (h : ∀ r, ψ (g r) = algebraMap V F (φ r)) :
     ∃ s : Finset F, (∀ x ∈ s, IsIntegral V x) ∧ ∀ W : Subalgebra V F, (∀ x ∈ s, x ∈ W) → ∀ a, ψ a ∈ W := by
   classical
-  letI := g.toAlgebra
+  let := g.toAlgebra
   have : Module.Finite R A := hg
   obtain ⟨t, ht⟩ := Module.Finite.fg_top (R := R) (M := A)
   refine ⟨t.image ψ, fun x hx => ?_, fun W hW a => ?_⟩
@@ -92,9 +129,7 @@ theorem admissibleBase_maximalIdeal_completeDVR {V : Type} [CommRing V] [IsDomai
   obtain ⟨d, hc, h0⟩ := hV
   exact ⟨inferInstance, inferInstance, inferInstance, hc⟩
 
-theorem epi_spMap {K L : Type} [Field K] [Field L] (i : K →+* L) : Epi (spMap i) :=
-  letI := i.toAlgebra
-  GlobalTheory.FixedPoint.epi_specAlg (K₀ := K) (K₁ := L)
+alias epi_spMap := _root_.GlobalTheory.ThetaDescent.epi_spMap
 
 theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] {f : A →+* B} {g : B →+* C} {h : A →+* C}
     (e : ∀ a, g (f a) = h a) : spMap g ≫ spMap f = spMap h := by
@@ -317,9 +352,9 @@ theorem point_descends : Laws → Laws2 → Laws3 → Laws4 → Laws5 → Laws6 
     rw [← Category.assoc, ← spMap_comp]
     refine point_eq h1 h2 h3 h4 h5 hg h hV φ φi hu _ _ (fun r => ?_) hka'
     rw [RingHom.comp_apply, ← hgam, hs, hgam, hka']
-  letI := gam.toAlgebra
-  letI := ka.toAlgebra
-  letI := (ka.comp gam).toAlgebra
+  let := gam.toAlgebra
+  let := ka.toAlgebra
+  let := (ka.comp gam).toAlgebra
   have : IsScalarTower (FractionRing (PowerSeries O')) (FractionRing R₁) F := .of_algebraMap_eq' rfl
   obtain ⟨⟨y, hy, -⟩, -⟩ := (GlobalTheory.FixedPoint.defined_over_of_fixed (K₀ := FractionRing (PowerSeries O'))
     (K₁ := FractionRing R₁) (L := F)).2 _ y₁ fun s => inv s fun x => s.commutes x

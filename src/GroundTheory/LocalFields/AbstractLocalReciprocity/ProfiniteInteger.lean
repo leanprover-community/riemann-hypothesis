@@ -1,6 +1,15 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Ring.Pi
+public import Mathlib.Algebra.Ring.Subring.Basic
+public import Mathlib.Data.ZMod.Basic
+public meta import Mathlib.Tactic.ToAdditive
+public import Mathlib.Topology.Constructions
+public import Mathlib.Topology.Instances.ZMod
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Topology.Compactness.Compact
+public import Mathlib.Topology.Separation.Hausdorff
 
 @[expose] public section
 

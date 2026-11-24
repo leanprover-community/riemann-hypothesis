@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
+public import Mathlib.Analysis.Fourier.AddCircleMulti
 
 @[expose] public section
 

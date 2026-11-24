@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SupBoundPageRows
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ModelLat
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.AdmissibleModuleIffLatticeQuotients
 
 @[expose] public section

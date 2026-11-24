@@ -1,15 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMonHomOfMulComp
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RosatiAdjOfPoints
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsLocalRingQuotientPow
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsMatrixRingAct
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsLocalRingQuotientPow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullGenLBIsGen
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdIso
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -74,9 +106,9 @@ section Gens
 
 variable {X Y : Scheme.{0}}
 
-def gens (L : LB X) (Y : Scheme.{0}) : AddSubgroup (FreeAbelianGroup (Y ⟶ X)) where
+def gens (L : LB X) (Y : Scheme.{0}) : AddSubgroup (FreeAddCommGroup (Y ⟶ X)) where
   carrier := {s | ∃ (K : Type) (_ : Fintype K) (φ : K → (Y ⟶ X)) (ε : K → ℤ) (t : LB.Gen (LB.LinComb L φ ε)),
-    t.IsGen ∧ s = ∑ k, ε k • FreeAbelianGroup.of (φ k)}
+    t.IsGen ∧ s = ∑ k, ε k • FreeAddCommGroup.of (φ k)}
   zero_mem' := ⟨PEmpty, inferInstance, PEmpty.elim, PEmpty.elim, LB.oneGen L, fun _ _ =>
     (map_one _).trans ((congrArg₂ (· * ·) (Fintype.prod_empty _) (map_one _)).trans (_root_.mul_one _)).symm,
     (Fintype.sum_empty _).symm⟩
@@ -91,17 +123,17 @@ def gens (L : LB X) (Y : Scheme.{0}) : AddSubgroup (FreeAbelianGroup (Y ⟶ X)) 
     simp only [neg_smul, Finset.sum_neg_distrib]
 
 theorem formEq_of_eq {K K' : Type} [Fintype K] [Fintype K'] {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K' → (Y ⟶ X)}
-    {ε' : K' → ℤ} (H : ∑ k, ε k • FreeAbelianGroup.of (φ k) = ∑ k, ε' k • FreeAbelianGroup.of (φ' k)) :
+    {ε' : K' → ℤ} (H : ∑ k, ε k • FreeAddCommGroup.of (φ k) = ∑ k, ε' k • FreeAddCommGroup.of (φ' k)) :
     FormEq φ ε φ' ε' := by
   intro U _ h
-  have := congrArg (FreeAbelianGroup.lift (fun m => Additive.ofMul (h m))) H
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_zsmul, FreeAbelianGroup.lift_apply_of] at this
+  have := congrArg (FreeAddCommGroup.lift (fun m => Additive.ofMul (h m))) H
+
+  simp only [map_sum, map_zsmul, FreeAddCommGroup.lift_apply_of] at this
   apply Additive.ofMul.injective
   simpa only [ofMul_prod, ofMul_zpow] using this
 
 theorem exists_of_mem {L : LB X} {K' : Type} [Fintype K'] {φ' : K' → (Y ⟶ X)} {ε' : K' → ℤ}
-    (h : ∑ k, ε' k • FreeAbelianGroup.of (φ' k) ∈ gens L Y) :
+    (h : ∑ k, ε' k • FreeAddCommGroup.of (φ' k) ∈ gens L Y) :
     ∃ (K : Type) (_ : Fintype K) (φ : K → (Y ⟶ X)) (ε : K → ℤ) (t : LB.Gen (LB.LinComb L φ ε)),
       t.IsGen ∧ FormEq φ ε φ' ε' := by
   obtain ⟨K, _, φ, ε, t, ht, hs⟩ := h
@@ -113,16 +145,16 @@ section Cube
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G]
 
-def lam {T : Over S} (a b : T ⟶ G) : FreeAbelianGroup (T.left ⟶ G.left) :=
-  FreeAbelianGroup.of (a * b).left - FreeAbelianGroup.of a.left - FreeAbelianGroup.of b.left +
-    FreeAbelianGroup.of (1 : T ⟶ G).left
+def lam {T : Over S} (a b : T ⟶ G) : FreeAddCommGroup (T.left ⟶ G.left) :=
+  FreeAddCommGroup.of (a * b).left - FreeAddCommGroup.of a.left - FreeAddCommGroup.of b.left +
+    FreeAddCommGroup.of (1 : T ⟶ G).left
 
 theorem cube_mem (L : RigLB G) (c : CubicalStr G L) {T : Over S} (a a' b : T ⟶ G) :
     lam (a * a') b - lam a b - lam a' b ∈ gens L.L T.left := by
   refine ⟨thK, inferInstance, _, _, LB.pullGen L.L (thφ G (x3 G)) thε c.t (lift a (lift a' b)).left,
     DVR.pullGen_isGen _ _ _ _ c.isGen _, ?_⟩
-  have := prod_cub a a' b (U := Multiplicative (FreeAbelianGroup (T.left ⟶ G.left)))
-    (fun m => Multiplicative.ofAdd (FreeAbelianGroup.of m))
+  have := prod_cub a a' b (U := Multiplicative (FreeAddCommGroup (T.left ⟶ G.left)))
+    (fun m => Multiplicative.ofAdd (FreeAddCommGroup.of m))
   have e := congrArg Multiplicative.toAdd this
   simp only [toAdd_prod, toAdd_zpow, toAdd_mul, toAdd_inv, toAdd_ofAdd] at e
   rw [e, lam, lam, lam]
@@ -209,9 +241,9 @@ namespace GlobalTheory.TensRosati
 section Quot
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {T : Over S}
-  (H : AddSubgroup (FreeAbelianGroup (T.left ⟶ G.left)))
+  (H : AddSubgroup (FreeAddCommGroup (T.left ⟶ G.left)))
 
-def ell (a b : T ⟶ G) : FreeAbelianGroup (T.left ⟶ G.left) ⧸ H := QuotientAddGroup.mk' H (lam a b)
+def ell (a b : T ⟶ G) : FreeAddCommGroup (T.left ⟶ G.left) ⧸ H := QuotientAddGroup.mk' H (lam a b)
 
 theorem lam_comm (a b : T ⟶ G) : lam a b = lam b a := by
   simp only [lam, mul_comm a b]
@@ -236,7 +268,7 @@ theorem ell_mul (a a' b : T ⟶ G) : ell H (a * a') b = ell H a b + ell H a' b :
 theorem ell_mul' (a b b' : T ⟶ G) : ell H a (b * b') = ell H a b + ell H a b' := by
   rw [ell_comm, ell_mul hc, ell_comm H b, ell_comm H b']
 
-def ellHom (b : T ⟶ G) : Additive (T ⟶ G) →+ FreeAbelianGroup (T.left ⟶ G.left) ⧸ H where
+def ellHom (b : T ⟶ G) : Additive (T ⟶ G) →+ FreeAddCommGroup (T.left ⟶ G.left) ⧸ H where
   toFun a := ell H a.toMul b
   map_zero' := ell_one H b
   map_add' a a' := ell_mul hc a.toMul a'.toMul b
@@ -272,11 +304,11 @@ section Tens
 variable {S : Scheme.{0}} {A A' : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A'] {T : Over S}
   {r : ℕ} (pr : Fin r → (A' ⟶ A))
 
-def qf (W : Matrix (Fin r) (Fin r) ℤ) (u : T ⟶ A') : FreeAbelianGroup (T.left ⟶ A.left) :=
+def qf (W : Matrix (Fin r) (Fin r) ℤ) (u : T ⟶ A') : FreeAddCommGroup (T.left ⟶ A.left) :=
   ∑ i, ∑ j, W i j • lam (u ≫ pr i) (u ≫ pr j)
 
 theorem flat_eq (W : Matrix (Fin r) (Fin r) ℤ) (u : T ⟶ A') :
-    ∑ k, tensε W k • FreeAbelianGroup.of (u.left ≫ tensφ pr k) = qf pr W u := by
+    ∑ k, tensε W k • FreeAddCommGroup.of (u.left ≫ tensφ pr k) = qf pr W u := by
   rw [Fintype.sum_prod_type, Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   have e0 : u.left ≫ (pr i * pr j).left = ((u ≫ pr i) * (u ≫ pr j)).left := by
@@ -285,10 +317,10 @@ theorem flat_eq (W : Matrix (Fin r) (Fin r) ℤ) (u : T ⟶ A') :
     rw [← Over.comp_left, MonObj.comp_one]
   rw [Fin.sum_univ_four]
   simp only [tensε, tensφ, GlobalTheory.PolDeg.lamPts, Oε, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-    Matrix.cons_val_three, Matrix.head_cons, e0, e3, mul_smul, lam, ← Over.comp_left]
+    Matrix.cons_val_three, e0, mul_smul, lam, ← Over.comp_left]
   simp only [Matrix.vecHead, Matrix.vecTail, Function.comp_apply, Fin.succ_zero_eq_one, Fin.succ_one_eq_two,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, e3, ← Over.comp_left]
-  simp only [smul_add, smul_sub, one_smul, neg_smul, smul_neg, mul_one, smul_comm (W i j) (-1 : ℤ)]
+  simp only [smul_add, smul_sub, one_smul, neg_smul, smul_neg]
   abel
 
 end Tens
@@ -302,24 +334,24 @@ section Total
 variable {S : Scheme.{0}} {A A' : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A'] {T : Over S}
   {r : ℕ} (pr : Fin r → (A' ⟶ A))
 
-theorem mk_qf (H : AddSubgroup (FreeAbelianGroup (T.left ⟶ A.left))) (W : Matrix (Fin r) (Fin r) ℤ) (u : T ⟶ A') :
+theorem mk_qf (H : AddSubgroup (FreeAddCommGroup (T.left ⟶ A.left))) (W : Matrix (Fin r) (Fin r) ℤ) (u : T ⟶ A') :
     QuotientAddGroup.mk' H (qf pr W u) = ∑ i, ∑ j, W i j • ell H (u ≫ pr i) (u ≫ pr j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [qf, map_sum, map_zsmul]
+
+  simp only [qf, map_sum, map_zsmul]
   rfl
 
-theorem total_mem (hp : ∀ i, IsMonHom (pr i)) (H : AddSubgroup (FreeAbelianGroup (T.left ⟶ A.left)))
+theorem total_mem (hp : ∀ i, IsMonHom (pr i)) (H : AddSubgroup (FreeAddCommGroup (T.left ⟶ A.left)))
     (hc : ∀ a a' b : T ⟶ A, lam (a * a') b - lam a b - lam a' b ∈ H) (W Am Am' : Matrix (Fin r) (Fin r) ℤ)
     (h : Am.transpose * (W + W.transpose) = (W + W.transpose) * Am') (f g : A' ⟶ A')
     (hf : ∀ i, f ≫ pr i = ∏ j, pr j ^ Am i j) (hg : ∀ i, g ≫ pr i = ∏ j, pr j ^ Am' i j) (x y : T ⟶ A') :
     ∑ p : Fin 6 × ((Fin r × Fin r) × Fin 4), (rosatiε p.1 * tensε W p.2) •
-      FreeAbelianGroup.of (((![(x ≫ f) * y, x ≫ f, y, x * (y ≫ g), x, y ≫ g] : Fin 6 → (T ⟶ A')) p.1).left ≫
+      FreeAddCommGroup.of (((![(x ≫ f) * y, x ≫ f, y, x * (y ≫ g), x, y ≫ g] : Fin 6 → (T ⟶ A')) p.1).left ≫
         tensφ pr p.2) ∈ H := by
   refine (QuotientAddGroup.eq_zero_iff _).1 ?_
   change QuotientAddGroup.mk' H _ = 0
   rw [Fintype.sum_prod_type]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [mul_smul, ← Finset.smul_sum, flat_eq, map_sum, map_zsmul, Fin.sum_univ_six]
+
+  simp only [mul_smul, ← Finset.smul_sum, flat_eq, Fin.sum_univ_six]
   have v0 : (![(x ≫ f) * y, x ≫ f, y, x * (y ≫ g), x, y ≫ g] : Fin 6 → (T ⟶ A')) 0 = (x ≫ f) * y := rfl
   have v1 : (![(x ≫ f) * y, x ≫ f, y, x * (y ≫ g), x, y ≫ g] : Fin 6 → (T ⟶ A')) 1 = x ≫ f := rfl
   have v2 : (![(x ≫ f) * y, x ≫ f, y, x * (y ≫ g), x, y ≫ g] : Fin 6 → (T ⟶ A')) 2 = y := rfl
@@ -329,7 +361,7 @@ theorem total_mem (hp : ∀ i, IsMonHom (pr i)) (H : AddSubgroup (FreeAbelianGro
   rw [v0, v1, v2, v3, v4, v5, show rosatiε 0 = 1 from rfl, show rosatiε 1 = -1 from rfl,
     show rosatiε 2 = -1 from rfl, show rosatiε 3 = -1 from rfl, show rosatiε 4 = 1 from rfl,
     show rosatiε 5 = 1 from rfl]
-  simp only [map_add (f := _), map_zsmul, one_smul, neg_smul, map_neg, mk_qf]
+  simp only [map_add (f := _), one_smul, neg_smul, map_neg, mk_qf]
   have hm : ∀ (a b : T ⟶ A') (i : Fin r), (a * b) ≫ pr i = (a ≫ pr i) * (b ≫ pr i) := fun a b i => by
     have := hp i
     exact MonObj.mul_comp a b (pr i)

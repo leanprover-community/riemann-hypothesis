@@ -1,6 +1,48 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.IsAdmissibleIntegralBasisChangeOne
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -96,7 +138,7 @@ private theorem tower_isFn_add {B : Scheme} {G : Type} [Group G] (X : Tower B G)
     · exact b1 g h1
   · intro y hy
     by_contra hn
-    simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at hn
+    simp only [Set.mem_union, Set.mem_ofPred_eq, not_or, not_not] at hn
     exact hy (by simp [hn.1, hn.2])
 
 private theorem tower_isFn_conv {B : Scheme} {G : Type} [Group G] (X : Tower B G) {R : Type} [Field R]
@@ -108,7 +150,7 @@ private theorem tower_isFn_conv {B : Scheme} {G : Type} [Group G] (X : Tower B G
       ∃ y : G ⧸ X.K j, f y.out ≠ 0 ∧ f' (y.out⁻¹ * x) ≠ 0 := by
     intro x hx
     by_contra hn
-    push_neg at hn
+    push Not at hn
     apply hx
     have h0 : ∀ y : G ⧸ X.K j, f y.out * f' (y.out⁻¹ * x) = 0 := by
       intro y
@@ -140,7 +182,7 @@ private theorem tower_isFn_conv {B : Scheme} {G : Type} [Group G] (X : Tower B G
       (fun y _ => c2.image _)).subset ?_
     intro x hx
     obtain ⟨y, h1, h2⟩ := nz _ hx
-    simp only [Set.mem_iUnion, Set.mem_image, Set.mem_setOf_eq]
+    simp only [Set.mem_iUnion, Set.mem_image, Set.mem_ofPred_eq]
     refine ⟨y, h1, QuotientGroup.mk (y.out⁻¹ * x.out), ?_, ?_⟩
     · rw [apply_out_mk_eq_of_tower_biinvariant X j f' a2]
       exact h2

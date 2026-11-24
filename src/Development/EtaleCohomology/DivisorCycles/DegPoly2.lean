@@ -1,6 +1,54 @@
 module
 
-public import Development.EtaleCohomology.DivisorCycles.CycleCount
+public import Development.EtaleCohomology.DivisorCycles.OpenCoset
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,7 +63,7 @@ theorem exists_minor {F ι : Type*} [Field F] [Fintype ι] {k : ℕ} (v : Fin k 
   let r : ι → Fin k → F := fun i b => v b i
   let V : Matrix ι (Fin k) F := Matrix.of r
   have h1 : V.rank = k := by
-    rw [Matrix.rank_eq_finrank_span_cols]
+    rw [← Matrix.rank_eq_finrank_span_cols]
     have : V.col = v := by funext b i; rfl
     rw [this, finrank_span_eq_card hv, Fintype.card_fin]
   have h2 : Submodule.span F (Set.range r) = ⊤ := by
@@ -68,8 +116,8 @@ theorem deg_iff_not_li {F : Type} [Field F] {N n : ℕ} (x : Mat F N) :
         q.as_sum_range' (n+1) (by omega)
       have h2 : Polynomial.aeval x q = ∑ b : Fin (n+1), q.coeff b • x ^ (b : ℕ) := by
         conv_lhs => rw [h1]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, ← Fin.sum_univ_eq_sum_range (fun i => Polynomial.aeval x (Polynomial.monomial i (q.coeff i)))]
+
+        rw [map_sum, ← Fin.sum_univ_eq_sum_range (fun i => Polynomial.aeval x (Polynomial.monomial i (q.coeff i)))]
         refine Finset.sum_congr rfl (fun b _ => ?_)
         rw [Polynomial.aeval_monomial, Algebra.smul_def]
       rw [h2] at hqx
@@ -92,20 +140,20 @@ theorem deg_iff_not_li {F : Type} [Field F] {N n : ℕ} (x : Mat F N) :
       rw [Finset.sum_eq_single i] at this
       · simpa using this
       · intro b _ hb
-        simp [Finsupp.single_apply, show (b : ℕ) ≠ (i : ℕ) from fun h => hb (Fin.ext h)]
+        simp [show (b : ℕ) ≠ (i : ℕ) from fun h => hb (Fin.ext h)]
       · simp
     · apply Polynomial.natDegree_sum_le_of_forall_le
       intro b _
       exact (Polynomial.natDegree_monomial_le _).trans (by omega)
-    set_option synthInstance.maxHeartbeats 100000 in
-      · rw [map_sum]
-        ext j k
-        have := congrFun hg (j, k)
-        simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at this
-        simp only [Polynomial.aeval_monomial, Matrix.sum_apply, Matrix.zero_apply]
-        rw [← this]
-        refine Finset.sum_congr rfl (fun b _ => ?_)
-        rw [← Algebra.smul_def, Matrix.smul_apply, smul_eq_mul]
+
+    · rw [map_sum]
+      ext j k
+      have := congrFun hg (j, k)
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at this
+      simp only [Polynomial.aeval_monomial, Matrix.sum_apply, Matrix.zero_apply]
+      rw [← this]
+      refine Finset.sum_congr rfl (fun b _ => ?_)
+      rw [← Algebra.smul_def, Matrix.smul_apply, smul_eq_mul]
 
 noncomputable def gen (C : Type) [Field C] (N : ℕ) : Mat (MP C N) N :=
   Matrix.of fun i j => MvPolynomial.X (i, j)

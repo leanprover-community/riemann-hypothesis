@@ -1,15 +1,60 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Splits
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GtBaseChangeSt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
+public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
+public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
+public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.FlatImageOfOverFractionFieldOfValuationRing
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SemiAbelianTorsionFiniteAndClosedPointFiniteOrde
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BijectiveAlgebraMapIntegralClosureOfBirational
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CompPowEqOneOfPullbackHom
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueHomExtensionSemiAbelianNormal
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinitePointsOfIsOpenImmersion
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HomExtensionSemiAbelianDiscreteValuationRing
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsIsoOfDensePartOfIsIntegral
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsIsoStalkMapOfFlatOfSurjectiveOnStalks
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueOfIsAdicComplete
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLiftOfSchemeTheoreticallyDominant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SABBaseChangeSt
 
 @[expose] public section
 
@@ -264,7 +309,8 @@ theorem isOpenImmersion_quasiFiniteLocus {W Γ Y : Scheme.{0}} (i : W ⟶ Γ) (p
   rw [← hb, Category.assoc]
   exact @IsOpenImmersion.comp _ _ _ b (Q'.ι ≫ p ∣_ V y) _ hint
 
-theorem existsUnique_hom_extension_of_dvr
+/-- Extend across a flat, dominant, quasi-compact preimmersion using extension over DVRs. -/
+theorem existsUnique_hom_extension_of_dvr_of_preimmersion
     (H : (∀ (T K : Type) [CommRing T] [IsDomain T] [IsDiscreteValuationRing T] [Field K]
       [Algebra T K] [IsFractionRing T K] (G G' : Over (Sp T)) [GrpObj G] [GrpObj G'],
       IsSemiAbelian G → IsSemiAbelian G' →
@@ -272,7 +318,7 @@ theorem existsUnique_hom_extension_of_dvr
         (Over.pullback (spMap (algebraMap T K))).obj G', IsMonHom f →
       ∃! F : G ⟶ G', IsMonHom F ∧ (Over.pullback (spMap (algebraMap T K))).map F = f))
     (X U : Scheme.{0}) [IsLocallyNoetherian X] (j : U ⟶ X) (hX : Geo.Tor.IsNormalScheme X)
-    [IsOpenImmersion j] [IsDominant j] (G G' : Over X) [GrpObj G] [GrpObj G']
+    [IsPreimmersion j] [Flat j] [IsDominant j] [QuasiCompact j] (G G' : Over X) [GrpObj G] [GrpObj G']
     (hG : IsSemiAbelian G) (hG' : IsSemiAbelian G')
     (f : (Over.pullback j).obj G ⟶ (Over.pullback j).obj G') (hf : IsMonHom f) :
     ∃! F : G ⟶ G', IsMonHom F ∧ (Over.pullback j).map F = f := by
@@ -492,7 +538,8 @@ theorem existsUnique_hom_extension_of_dvr
       refine hom_eq_of_torsion (IsSemiAbelian.pullback τ G hG) (IsSemiAbelian.pullback τ G' hG')
         F₁' F₂' fun y n hn hy ↦ ?_
       let e := TorsionLift.ptsEquiv τ G (𝟙_ (Over (Sp Ω))) τ (Category.id_comp _)
-      have hx : (e y) ^ n = 1 := by rw [← map_pow, hy, map_one]
+      have hx : (e y) ^ n = 1 := by
+        set_option synthInstance.maxHeartbeats 100000 in rw [← map_pow, hy, map_one]
       have hxl : (e y).left = y.left ≫ pullback.fst G.hom τ := TorsionLift.ptsEquiv_left ..
       have hqf : ∀ z : Sp Ω ⟶ Γ, z ≫ p = (e y).left →
           Set.range z ⊆ Set.range p.quasiFiniteLocus.ι := by
@@ -558,6 +605,20 @@ theorem existsUnique_hom_extension_of_dvr
   refine ⟨F, ⟨?_, hF⟩, fun F' hF' ↦ pullback_map_injective_of_flat j (hF'.2.trans hF.symm)⟩
   have : IsMonHom ((Over.pullback j).map F) := hF ▸ hf
   exact isMonHom_of_pullback_of_flat j F
+
+theorem existsUnique_hom_extension_of_dvr
+    (H : (∀ (T K : Type) [CommRing T] [IsDomain T] [IsDiscreteValuationRing T] [Field K]
+      [Algebra T K] [IsFractionRing T K] (G G' : Over (Sp T)) [GrpObj G] [GrpObj G'],
+      IsSemiAbelian G → IsSemiAbelian G' →
+      ∀ f : (Over.pullback (spMap (algebraMap T K))).obj G ⟶
+        (Over.pullback (spMap (algebraMap T K))).obj G', IsMonHom f →
+      ∃! F : G ⟶ G', IsMonHom F ∧ (Over.pullback (spMap (algebraMap T K))).map F = f))
+    (X U : Scheme.{0}) [IsLocallyNoetherian X] (j : U ⟶ X) (hX : Geo.Tor.IsNormalScheme X)
+    [IsOpenImmersion j] [IsDominant j] (G G' : Over X) [GrpObj G] [GrpObj G']
+    (hG : IsSemiAbelian G) (hG' : IsSemiAbelian G')
+    (f : (Over.pullback j).obj G ⟶ (Over.pullback j).obj G') (hf : IsMonHom f) :
+    ∃! F : G ⟶ G', IsMonHom F ∧ (Over.pullback j).map F = f :=
+  existsUnique_hom_extension_of_dvr_of_preimmersion H X U j hX G G' hG hG' f hf
 
 end GlobalTheory.HomExtNormal
 

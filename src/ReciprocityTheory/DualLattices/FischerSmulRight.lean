@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.DualLattices.FischerAdjointStatement
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

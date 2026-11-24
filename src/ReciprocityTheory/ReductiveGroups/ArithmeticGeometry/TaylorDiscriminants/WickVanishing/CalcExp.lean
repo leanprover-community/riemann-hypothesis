@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.PowerSeries.Log
+import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
 
@@ -27,8 +28,8 @@ theorem fin_two_finsupp_eq_iff (e : Fin 2 →₀ ℕ) (m l : ℕ) :
 theorem coeff_X_add_X_pow (e : Fin 2 →₀ ℕ) (n : ℕ) :
     MvPowerSeries.coeff e (((X 0 : MvPowerSeries (Fin 2) k) + X 1) ^ n) =
       if e 0 + e 1 = n then (n.choose (e 0) : k) else 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [add_pow, map_sum]
+
+  rw [add_pow, map_sum]
   have hterm : ∀ m ∈ Finset.range (n + 1),
       MvPowerSeries.coeff e ((X 0 : MvPowerSeries (Fin 2) k) ^ m * X 1 ^ (n - m) *
         (n.choose m : MvPowerSeries (Fin 2) k)) =
@@ -306,8 +307,7 @@ theorem exp_log {f : MvPowerSeries σ k} (hf : constantCoeff f = 1) :
     PowerSeries.subst_X hb, powerSeries_subst_one]
   ring
 
-theorem log_exp {a : MvPowerSeries σ k} (ha : constantCoeff a = 0) :
-    PowerSeries.subst (PowerSeries.subst a (PowerSeries.exp k) - 1) (PowerSeries.log k) = a := subst_log_subst_exp_sub_one_eq_self ha
+alias log_exp := _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.subst_log_subst_exp_sub_one_eq_self
 
 end Log
 

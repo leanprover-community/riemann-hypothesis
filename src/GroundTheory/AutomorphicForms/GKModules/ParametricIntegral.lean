@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Aesop.Main
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.ParametricIntegral
 
 @[expose] public section
 
@@ -39,7 +44,7 @@ end ParamIntegral
 open ParamIntegral
 
 
-set_option synthInstance.maxHeartbeats 200000 in
+
 theorem hasFDerivAt_integral_iter (F : P → α → F')
     (hF : ∀ a, ContDiff ℝ ∞ (fun Y => F Y a))
     (hcont : ∀ k : ℕ, Continuous (fun p : P × α => iter F k p.1 p.2))

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalDivisorChartGeneric
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelDivisorChartGeneric
+public import Mathlib.RingTheory.Ideal.HasGoingUp
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CobOneEqZeroOfConnecting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAdicCompleteSpanNatCastFiniteProjectiveAlgebra
+public import Mathlib.Algebra.Module.Projective
+public import Mathlib.RingTheory.AdicCompletion.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
+import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
+import Development.AbelianVarietyTheory.Definitions.Divisors.KerIdealCompOfSurjective
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsCounitDerivationCounitComp
+public import Mathlib.RingTheory.Finiteness.Projective
+import Mathlib.RingTheory.MvPowerSeries.Basic
 
 @[expose] public section
 
@@ -26,41 +71,6 @@ namespace GlobalTheory.FinProjComplete
 theorem isAdicComplete_of_finite_projective : ∀ (p : ℕ) (O A : Type) [CommRing O] [CommRing A]
     [Algebra O A] [Module.Finite O A] [Module.Projective O A]
     [IsAdicComplete (Ideal.span {(p : O)}) O], IsAdicComplete (Ideal.span {(p : A)}) A := by
-  intro p O A _ _ _ _ _ hO
-  obtain ⟨n, f, g, -, -, hfg⟩ := Module.Finite.exists_comp_eq_id_of_projective O A
-  have hfg' : ∀ x, f (g x) = x := fun x => LinearMap.congr_fun hfg x
-  have key : ∀ (k : ℕ) (z : A), (p : A) ^ k • z = ((p : O) ^ k) • z := by
-    intro k z
-    rw [smul_eq_mul, Algebra.smul_def, map_pow, map_natCast]
-  refine { toIsHausdorff := ⟨fun x hx => ?_⟩, toIsPrecomplete := ⟨fun s hs => ?_⟩ }
-  · have hc : ∀ i, g x i = 0 := by
-      intro i
-      refine IsHausdorff.haus' (I := Ideal.span {(p : O)}) _ (fun k => ?_)
-      obtain ⟨z, hz⟩ := (smodEq_span_singleton_pow_iff _ k x 0).1 (hx k)
-      rw [smodEq_span_singleton_pow_iff]
-      refine ⟨g z i, ?_⟩
-      have := congrArg (fun y => g y i) hz
-      simpa only [sub_zero, key, map_smul, Pi.smul_apply] using this
-    have h0 : g x = 0 := funext hc
-    rw [← hfg' x, h0, map_zero]
-  · have hL : ∀ i, ∃ L : O, ∀ k,
-        g (s k) i ≡ L [SMOD ((Ideal.span {(p : O)}) ^ k • ⊤ : Submodule O O)] := by
-      intro i
-      refine IsPrecomplete.prec' (I := Ideal.span {(p : O)}) _ (fun {m k} hmk => ?_)
-      obtain ⟨z, hz⟩ := (smodEq_span_singleton_pow_iff _ m _ _).1 (hs hmk)
-      rw [smodEq_span_singleton_pow_iff]
-      refine ⟨g z i, ?_⟩
-      have := congrArg (fun y => g y i) hz
-      simpa only [map_sub, key, map_smul, Pi.smul_apply, Pi.sub_apply] using this
-    choose L hL using hL
-    refine ⟨f L, fun k => ?_⟩
-    have hz' : ∀ i, ∃ z : O, g (s k) i - L i = (p : O) ^ k • z :=
-      fun i => (smodEq_span_singleton_pow_iff _ k _ _).1 (hL i k)
-    choose z hz using hz'
-    have h2 : g (s k) - L = (p : O) ^ k • z := funext fun i => by simpa using hz i
-    rw [smodEq_span_singleton_pow_iff]
-    refine ⟨f z, ?_⟩
-    calc s k - f L = f (g (s k) - L) := by rw [map_sub, hfg']
-      _ = (p : A) ^ k • f z := by rw [h2, map_smul, key]
+  apply GlobalTheory.FinProjComplete.isAdicComplete_span_natCast_of_finite_projective
 
 end GlobalTheory.FinProjComplete

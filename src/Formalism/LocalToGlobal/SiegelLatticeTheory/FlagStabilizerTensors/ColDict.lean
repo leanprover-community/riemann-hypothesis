@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ParametersTermRelations
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ConcreteSettingExists
-public import Formalism.LocalToGlobal.HermitianForms.FormsTied
 public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 
 @[expose] public section

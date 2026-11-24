@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Central.Defs
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 public import GroundTheory.Brauer.BaseChangeCSA
-public import GroundTheory.Brauer.IsBrauerEquivalentIffNonemptyAlgEquiv
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleModule.IsAlgClosed
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

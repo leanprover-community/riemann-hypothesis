@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.HostPlacesWeight
+public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 
 @[expose] public section
 

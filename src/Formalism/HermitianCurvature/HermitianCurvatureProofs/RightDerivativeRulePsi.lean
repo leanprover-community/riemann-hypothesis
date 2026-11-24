@@ -1,7 +1,51 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainFirstIdentity
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianCovectors.HermBvecLeft
+public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,7 +59,7 @@ theorem herm_bvec_bvec {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (p q : Fin n) 
     herm H (bvec p) (bvec q) = H q p := by
   have hs : star (bvec q) = bvec q := by
     ext i
-    by_cases h : i = q <;> simp [bvec, Pi.single_apply, h]
+    by_cases h : i = q <;> simp [bvec, h]
   unfold herm
   rw [hs]
   simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
@@ -60,7 +104,7 @@ theorem herm_bvec_eI {k r : ℕ} (v : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
   have h1 : herm (Hpk k r) v (bvec (eI k r b)) = ∑ p, Hpk k r (eI k r b) p * v p := by
     have hs : star (bvec (eI k r b)) = bvec (eI k r b) := by
       ext i
-      by_cases h : i = eI k r b <;> simp [bvec, Pi.single_apply, h]
+      by_cases h : i = eI k r b <;> simp [bvec, h]
     unfold herm
     rw [hs]
     simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
@@ -75,46 +119,6 @@ theorem herm_bvec_eI {k r : ℕ} (v : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
   · simp
 
 theorem xi_Y_zhat_identity : XiYZhat := by
-  intro k r z z' g a b hg
-  have hf : ∀ (w : Fin (2 * r + k + 1) → ℂ) (c : Fin r), fvec k r w c.castSucc = bvec (eI k r c) := by
-    intro w c
-    simp [fvec, c.isLt]
-  have hZ : Zhat k r z z' g a.castSucc b.castSucc =
-      herm (Hpk k r) (g *ᵥ bvec (eI k r b)) (bvec (eI k r a)) := by
-    simp only [Zhat, hf]
-  refine ⟨hZ.symm, ?_⟩
-  obtain ⟨hH, hHH, -⟩ := Formalism.QuantumDeterminants.hermitian_pos_facts_hold k r
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hdet : IsUnit g.det := by
-    have h1 : (Hpk k r).det * (Hpk k r).det = 1 := by
-      rw [← Matrix.det_mul, hHH, Matrix.det_one]
-    have h2 := congrArg Matrix.det hg'
-    rw [Matrix.det_mul, Matrix.det_mul] at h2
-    rw [isUnit_iff_ne_zero]
-    intro h0
-    rw [h0, mul_zero] at h2
-    rw [← h2, mul_zero] at h1
-    exact zero_ne_one h1
-  have hgi : g * g⁻¹ = 1 := Matrix.mul_nonsing_inv g hdet
-  have hsym : ∀ v w, star (herm (Hpk k r) v w) = herm (Hpk k r) w v := by
-    intro v w
-    unfold herm
-    first
-    | (rw [Matrix.star_dotProduct, star_star, Matrix.star_mulVec, hH, Matrix.dotProduct_mulVec]; done)
-    | (rw [Matrix.star_dotProduct, star_star, Matrix.star_mulVec, hH, Matrix.dotProduct_mulVec];
-        exact Matrix.dotProduct_comm _ _)
-    | (rw [Matrix.star_dotProduct, star_star, Matrix.star_mulVec, hH, Matrix.dotProduct_mulVec];
-        exact (Matrix.dotProduct_comm _ _).symm)
-    | (rw [Matrix.star_dotProduct, star_star, Matrix.star_mulVec, hH, Matrix.dotProduct_comm,
-        Matrix.dotProduct_mulVec]; done)
-    | (simp [Matrix.star_dotProduct, Matrix.star_mulVec, hH, Matrix.dotProduct_mulVec]; done)
-  calc (g⁻¹ *ᵥ bvec (eI k r a)) (esI k r b)
-      = herm (Hpk k r) (g⁻¹ *ᵥ bvec (eI k r a)) (bvec (eI k r b)) := (herm_bvec_eI _ b).symm
-    _ = herm (Hpk k r) (g *ᵥ (g⁻¹ *ᵥ bvec (eI k r a))) (g *ᵥ bvec (eI k r b)) :=
-        (herm_unitary g hg _ _).symm
-    _ = herm (Hpk k r) (bvec (eI k r a)) (g *ᵥ bvec (eI k r b)) := by
-        rw [Matrix.mulVec_mulVec, hgi, Matrix.one_mulVec]
-    _ = star (herm (Hpk k r) (g *ᵥ bvec (eI k r b)) (bvec (eI k r a))) := (hsym _ _).symm
-    _ = star (Zhat k r z z' g a.castSucc b.castSucc) := by rw [hZ]
+  apply CovecW.covec_entries
 
 end Formalism.FourierDecayAlt.P.SignAntidiagonal

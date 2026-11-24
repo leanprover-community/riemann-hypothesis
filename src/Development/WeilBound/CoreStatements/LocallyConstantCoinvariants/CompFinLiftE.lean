@@ -1,10 +1,53 @@
 module
 
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.IndicatorMem
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAdelicAddCharLocalComponentNeOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianSelfDualLatticeSpaceFormHermitianNondeg
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
+public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ExistsNhdsInvariant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAddCharSymplecticLocalLatticeEqOne
+public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -141,7 +184,7 @@ theorem exists_sep (h : IsCMExt F E σ) {ψ : AddChar (AF F) ℂ} (hψ : IsStd �
   obtain ⟨s, hs⟩ : ∃ s, ψ (liftV v s) ≠ 1 := by
     by_contra e
     push Not at e
-    exact GlobalTheory.PsiNontriv.psiV_ne_one ψ hψ v (AddChar.ext _ _ e)
+    exact Tw.PsiNontriv.psiV_ne_one ψ hψ v (AddChar.ext _ _ e)
   obtain ⟨w, hw, e⟩ : ∃ w, At (evFin F v) w ∧ symp (cA σ) (-1) (incM F X.J) (incM F W.J) z w = liftV v s := by
     have hat : ∀ p : (Fin n × Fin d → AF F) × (Fin n × Fin d → AF F), At (evFin F v) p → At (evFin F v) (M.co.e.symm p) :=
       fun p hp a ha => by rw [← map_smul, hp a ha, map_zero]
@@ -192,8 +235,8 @@ theorem rho_apply (ψ : AddChar (AF F) ℂ) {u : Matrix (Fin n) (Fin d) (AE F E)
     M.co.rho ψ u Ψ x = ψ (⅟(2 : AF F) * ((M.co.e u).1 ⬝ᵥ (M.co.e u).2)) *
       (ψ (liftV v ((fun i => evFin F v (x i)) ⬝ᵥ fun i => evFin F v ((M.co.e u).2 i))) * Ψ (x + (M.co.e u).1)) := by
   have e : x ⬝ᵥ (M.co.e u).2 = liftV v ((fun i => evFin F v (x i)) ⬝ᵥ fun i => evFin F v ((M.co.e u).2 i)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, map_sum]
+
+    simp only [dotProduct, map_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [← mul_liftV, ← at_eq (at_co M hu i).2]
   simp only [Darboux.rho, schr, AddChar.map_add_eq_mul, e]
   ring

@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.QuotientKernel
-public import GroundTheory.AutomorphicForms.TraceStrongLimit
-public import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
-public import GroundTheory.AutomorphicForms.LocallyConstantCompact
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Topology.ContinuousMap.CompactlySupported
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.AutomorphicForms.QuotientMeasure
 
 @[expose] public section
 

@@ -1,6 +1,57 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+public import Mathlib.RepresentationTheory.Basic
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.Tactic.Continuity
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -86,7 +137,7 @@ theorem yForm_apply (t : T) (b : Fin q) (φ : κ → R) :
 
 theorem rowForm_single [DecidableEq κ] (t : T) (r : Fin p ⊕ Fin q) (k : κ) :
     (rowForm t r (Pi.single k 1) : Poly R T p q κ) = X (t, r, k) := by
-  rw [rowForm_apply, Finset.sum_eq_single k] <;> simp +contextual [Pi.single_apply]
+  rw [rowForm_apply, Finset.sum_eq_single k] <;> simp +contextual
 
 @[simp] theorem xForm_single [DecidableEq κ] (t : T) (a : Fin p) (k : κ) :
     (xForm t a (Pi.single k 1) : Poly R T p q κ) = X (xVar t a k) := rowForm_single _ _ _
@@ -121,7 +172,7 @@ theorem laplacian_xForm_mul_yForm (t : T) (a : Fin p) (b : Fin q) (ε φ : κ �
     laplacian t a b (xForm t a ε * yForm t b φ : Poly R T p q κ) = C (ε ⬝ᵥ φ) := by
   classical
   have h1 (k : κ) : pderiv (yVar t b k) (xForm t a ε : Poly R T p q κ) = 0 := by
-    simp [xForm_apply, pderiv_X, Pi.single_apply]
+    simp [xForm_apply, pderiv_X]
   have h2 (k : κ) : pderiv (yVar t b k) (yForm t b φ : Poly R T p q κ) = C (φ k) := by
     simp [yForm_apply, pderiv_X, Pi.single_apply]
   have h3 (k : κ) : pderiv (xVar t a k) (xForm t a ε : Poly R T p q κ) = C (ε k) := by
@@ -276,16 +327,16 @@ omit [Fintype κ] in
 theorem colSubst_xForm (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ R) (t : T) (a : Fin p)
     (ε : κ → R) : colSubst A B (xForm t a ε : Poly R T p q κ) = xForm t a (ε ᵥ* A t) := by
   have : ε ᵥ* A t = ∑ k, ε k • A t k := by ext l; simp [vecMul, dotProduct]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [this, map_sum, xForm_apply, map_sum]
+
+  rw [this, map_sum, xForm_apply, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [← smul_eq_C_mul, map_smul, map_smul, colSubst_X_xVar]
 
 theorem colSubst_yForm (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ R) (t : T) (b : Fin q)
     (φ : κ → R) : colSubst A B (yForm t b φ : Poly R T p q κ) = yForm t b (B t *ᵥ φ) := by
   have : B t *ᵥ φ = ∑ k, φ k • fun l => B t l k := by ext l; simp [mulVec, dotProduct, mul_comm]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [this, map_sum, yForm_apply, map_sum]
+
+  rw [this, map_sum, yForm_apply, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [← smul_eq_C_mul, map_smul, map_smul, colSubst_X_yVar]
 
@@ -342,8 +393,8 @@ theorem colSubst_isWeightedHomogeneous {M : Type*} [AddCommMonoid M] (w : T → 
     (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ R) {P : Poly R T p q κ} {m : M}
     (hP : IsWeightedHomogeneous (rowWeight w) P m) :
     IsWeightedHomogeneous (rowWeight w) (colSubst A B P) m := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [P.as_sum, map_sum]
+
+  rw [P.as_sum, map_sum]
   refine IsWeightedHomogeneous.sum _ _ _ fun d hd => ?_
   rw [← hP (mem_support_iff.mp hd), colSubst, aeval_monomial, Finsupp.weight_apply, Finsupp.sum,
     Finsupp.prod]
@@ -433,7 +484,7 @@ theorem isPerp_base (h : p + q ≤ n) :
     have := congrArg Fin.val e
     have := a.isLt; have := b.isLt
     simp only [Fin.val_castLE, Fin.val_rev] at *; omega
-  simp [baseCovec, baseVec, Pi.single_apply, this]
+  simp [baseCovec, baseVec, this]
 
 theorem linearIndependent_baseCovec (h : p + q ≤ n) : LinearIndependent R (baseCovec R h) := by
   have := (Pi.basisFun R (Fin n)).linearIndependent.comp _
@@ -495,12 +546,12 @@ theorem eval_basePoly :
     rw [yMinor, RingHom.map_det]
     refine (congrArg (fun A => det A ^ c' t i) (?_ : _ = (1 : Matrix _ _ R))).trans (by simp)
     ext a b
-    simp [eval_yForm, baseVec, Pi.single_apply, Matrix.one_apply, eq_comm]
+    simp [baseVec, Pi.single_apply, Matrix.one_apply, eq_comm]
   · intro i _
     rw [xMinor, RingHom.map_det]
     refine (congrArg (fun A => det A ^ c t i) (?_ : _ = (1 : Matrix _ _ R))).trans (by simp)
     ext a b
-    simp [eval_xForm, baseCovec, Pi.single_apply, Matrix.one_apply, eq_comm]
+    simp [baseCovec, Pi.single_apply, Matrix.one_apply, eq_comm]
 
 theorem basePoly_ne_zero [Nontrivial R] : basePoly R h c c' ≠ 0 := fun e => by
   have := eval_basePoly (R := R) h c c'

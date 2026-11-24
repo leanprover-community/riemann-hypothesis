@@ -2,6 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.LetterShift
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -25,17 +27,13 @@ def gLog (K : Type) [Field K] (l : ℕ) (φ : ZMod d → τ) (s : ZMod d) : MvPo
   fun n => ∑ e ∈ Finset.range (n.degree + 1),
     if n = Finsupp.single (φ (s - 2 * (e : ZMod d))) ((l ^ 2) ^ e) then ((l : K) ^ e)⁻¹ else 0
 
-lemma pow_inj (hl : 2 ≤ l) {a b : ℕ} (h : (l ^ 2) ^ a = (l ^ 2) ^ b) : a = b := by
-  first
-  | exact Nat.pow_right_injective (by nlinarith) h
-  | exact Nat.pow_right_injective (le_trans hl (Nat.le_self_pow (by norm_num) l)) h
+alias pow_inj := _root_.Formalism.InvariantFactorPaths.G7.powq_inj
 
 lemma coeff_gLog (φ : ZMod d → τ) (s : ZMod d) (n : τ →₀ ℕ) :
     coeff n (gLog K l φ s) = ∑ e ∈ Finset.range (n.degree + 1),
       if n = Finsupp.single (φ (s - 2 * (e : ZMod d))) ((l ^ 2) ^ e) then ((l : K) ^ e)⁻¹ else 0 := by
   first
   | rfl
-  | simp [gLog, coeff_apply]
 
 lemma coeff_gLog_single (hl : 2 ≤ l) (φ : ZMod d → τ) (s : ZMod d) (e : ℕ) :
     coeff (Finsupp.single (φ (s - 2 * (e : ZMod d))) ((l ^ 2) ^ e)) (gLog K l φ s) =
@@ -58,16 +56,12 @@ lemma coeff_gLog_single (hl : 2 ≤ l) (φ : ZMod d → τ) (s : ZMod d) (e : �
     have hdeg : (Finsupp.single (φ (s - 2 * (e : ZMod d))) ((l ^ 2) ^ e)).degree = (l ^ 2) ^ e := by
       first
       | exact Finsupp.degree_single _ _
-      | simp [Finsupp.degree, Finsupp.support_single_ne_zero _ hk]
-      | simp
     rw [hdeg]
     have : e < (l ^ 2) ^ e := by
       first
       | exact Nat.lt_pow_self (by nlinarith)
-      | exact Nat.lt_pow_self (by nlinarith) e
     first
     | exact Nat.lt_succ_of_lt this
-    | omega
 
 lemma coeff_gLog_zero (φ : ZMod d → τ) (s : ZMod d) (n : τ →₀ ℕ)
     (h : ∀ e : ℕ, n ≠ Finsupp.single (φ (s - 2 * (e : ZMod d))) ((l ^ 2) ^ e)) :
@@ -78,8 +72,8 @@ lemma coeff_gLog_zero (φ : ZMod d → τ) (s : ZMod d) (n : τ →₀ ℕ)
 lemma map_gLog (ρ : K →+* K) (φ : ZMod d → τ) (s : ZMod d) :
     map ρ (gLog K l φ s) = gLog K l φ s := by
   ext n
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coeff_map, coeff_gLog, map_sum]
+
+  rw [coeff_map, coeff_gLog, map_sum]
   refine Finset.sum_congr rfl fun e _ => ?_
   split_ifs <;> simp
 
@@ -87,7 +81,6 @@ lemma constantCoeff_gLog (hl : 2 ≤ l) (φ : ZMod d → τ) (s : ZMod d) :
     constantCoeff (gLog K l φ s) = 0 := by
   first
   | rw [← coeff_zero_eq_constantCoeff_apply]
-  | show coeff 0 (gLog K l φ s) = 0
   apply coeff_gLog_zero
   intro e h
   rw [eq_comm, Finsupp.single_eq_zero] at h
@@ -179,8 +172,6 @@ lemma val_sub_two {d : ℕ} [NeZero d] (t : ZMod d) :
   have h1 : (((t - 2).val + 2 : ℕ) : ZMod d) = ((t.val : ℕ) : ZMod d) := by
     first
     | simp
-    | (push_cast; rw [ZMod.natCast_zmod_val, ZMod.natCast_zmod_val, sub_add_cancel])
-    | (push_cast; simp)
   have h2 := (ZMod.natCast_eq_natCast_iff' _ _ d).mp h1
   rw [Nat.mod_eq_of_lt (ZMod.val_lt t)] at h2
   have h3 := Nat.mod_add_div ((t - 2).val + 2) d
@@ -200,7 +191,6 @@ lemma iter_sub_two {α : Type} {d : ℕ} [NeZero d] (f : α → α) {c : α} (hc
   have h1 : f (f (f^[(t - 2).val] c)) = f^[(t - 2).val + 2] c := by
     first
     | (rw [add_comm, Function.iterate_add_apply]; rfl)
-    | simp only [Function.iterate_succ_apply']
   rw [h1, hk, Function.iterate_add_apply, Function.iterate_mul, Function.iterate_fixed hc]
 
 lemma norm_iter {σ : K →+* K} (hσ : ∀ a : K, ‖a‖ ≤ 1 → ‖σ a‖ ≤ 1) {c : K} (hc : ‖c‖ ≤ 1)
@@ -244,17 +234,17 @@ lemma combo [IsUltrametricDist K] {l d : ℕ} [NeZero d] (hl : l ≠ 0) (σ : K 
   · have key : (∑ s, C (a s) * L s) - C ((l : K)⁻¹) *
           frobVar (l ^ 2) (map (σ.comp σ) (∑ s, C (a s) * L s)) =
         ∑ s, C (a s) * (L s - C ((l : K)⁻¹) * frobVar (l ^ 2) (map (σ.comp σ) (L (s - 2)))) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Formalism.InvariantFactorPaths.G7.frobVar_eq_expand hq, map_sum, map_mul, MvPowerSeries.map_C,
-        MvPowerSeries.expand_C, Finset.mul_sum, mul_sub, Finset.sum_sub_distrib]
+
+      simp only [Formalism.InvariantFactorPaths.G7.frobVar_eq_expand hq, map_sum, map_mul, MvPowerSeries.map_C,
+      MvPowerSeries.expand_C, Finset.mul_sum, mul_sub, Finset.sum_sub_distrib]
       congr 1
       rw [← (Equiv.subRight (2 : ZMod d)).sum_comp]
       refine Finset.sum_congr rfl fun s _ => ?_
       simp only [Equiv.subRight_apply, hshift]
       ring
     intro n
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [key, map_sum]
+
+    rw [key, map_sum]
     refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun s _ => ?_
     rw [coeff_C_mul, norm_mul]
     exact mul_le_one₀ (hle s) (norm_nonneg _) ((hL s).2 n)

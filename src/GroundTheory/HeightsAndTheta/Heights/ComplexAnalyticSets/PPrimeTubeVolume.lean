@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeTubeVolume
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarietyMassLower
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSmallSetBallCover
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.MetricSpace.CoveringNumbers
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

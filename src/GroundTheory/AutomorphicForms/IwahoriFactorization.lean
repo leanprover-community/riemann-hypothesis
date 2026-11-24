@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.InductionParabolic
 public import GroundTheory.AutomorphicForms.AffineBruhat
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

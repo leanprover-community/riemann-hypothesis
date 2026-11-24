@@ -1,20 +1,107 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LocalToGlobal.HermitianColumns.HermCols
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitary
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemKDSupUnitIdlIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdFNonnegOfIsInteger
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdSubDetSubSelfDual
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdUnifMulUnitIdl
+public import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteAdeleBaseChangeEquiv
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemKDSupUnitIdlIff
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdSubDetSubSelfDual
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPowEqSpanNormOne
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanValuationLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.ProdMulLeDetIdeal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanValuationLe, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RelDetAdelicOfPinned
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanValuationLe =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanValuationLe", "h": "module\n\npublic import Mathlib.NumberTheory.NumberField.Basic\npublic import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace GlobalTheory.SpanValuationBound
+
+open IsDedekindDomain
+
+theorem span_valuation_le {L : Type} [Field L] [NumberField L] {S : Set L}
+    (w : HeightOneSpectrum (NumberField.RingOfIntegers L)) {γ : WithZero (Multiplicative ℤ)}
+    (hS : ∀ x ∈ S, (HeightOneSpectrum.valuation L w : L → WithZero (Multiplicative ℤ)) x ≤ γ) :
+    ∀ x ∈ Submodule.span (NumberField.RingOfIntegers L) S,
+      (HeightOneSpectrum.valuation L w : L → WithZero (Multiplicative ℤ)) x ≤ γ := by
+  intro x hx
+  induction hx using Submodule.span_induction with
+  | mem y hy => exact hS y hy
+  | zero => simp
+  | add y z _ _ hy hz =>
+    exact le_trans (Valuation.map_add _ y z) (max_le hy hz)
+  | smul a y _ hy =>
+    rw [Algebra.smul_def, map_mul]
+    calc (HeightOneSpectrum.valuation L w) (algebraMap _ L a) * (HeightOneSpectrum.valuation L w) y
+        ≤ 1 * γ := mul_le_mul' (HeightOneSpectrum.valuation_le_one w a) hy
+      _ = γ := one_mul γ
+
+alias main := _root_.GlobalTheory.SpanValuationBound.span_valuation_le
+
+end GlobalTheory.SpanValuationBound
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanValuationLe =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RelDetAdelicOfPinned =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RelDetAdelicOfPinned", "h": "module\n\npublic import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitary\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdFNonnegOfIsInteger\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdUnifMulUnitIdl\npublic import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteAdeleBaseChangeEquiv\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemKDSupUnitIdlIff\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdSubDetSubSelfDual\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanValuationLe\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPowEqSpanNormOne\nimport Formalism.LocalRingCardinality.RankBoundMonotoneInDimension\nimport Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.ProdMulLeDetIdeal\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA\nimport Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -93,16 +180,6 @@ theorem coe_eq_of_pow {𝔞 𝔟 : Submodule (𝓞 L) L} (hb : 𝔞 * 𝔟 = 1) 
     FractionalIdeal.count_pow, ← exp_nsmul, exp_inj, nsmul_eq_mul, mul_neg, neg_inj] at f
   exact (mul_left_cancel₀ (by exact_mod_cast hn.ne') f).symm
 
-theorem val_le_of_span {S : Set L} (w : HeightOneSpectrum (𝓞 L)) {γ : ℤᵐ⁰} (h : ∀ x ∈ S, w.valuation L x ≤ γ) :
-    ∀ x ∈ Submodule.span (𝓞 L) S, w.valuation L x ≤ γ := by
-  first
-  | exact @_root_.GlobalTheory.SpanValuationBound.main
-  | exact _root_.GlobalTheory.SpanValuationBound.main
-  | (apply _root_.GlobalTheory.SpanValuationBound.main <;> assumption)
-  | (intros; apply _root_.GlobalTheory.SpanValuationBound.main <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.SpanValuationBound.main <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.SpanValuationBound.main ..)
-
 variable {N : ℕ}
 
 def detFI (M : Submodule (𝓞 L) (Fin N → L)) (h : M.FG) : FractionalIdeal (𝓞 L)⁰ L :=
@@ -128,7 +205,7 @@ theorem exists_val_det_eq {M : Submodule (𝓞 L) (Fin N → L)} (h : M.FG)
   by_contra hne
   obtain ⟨y, hy, e⟩ := GlobalTheory.Idele.exists_mem_valuation_eq (detFI_ne_zero h hs) w
   have : w.valuation L y ≤ exp (-FractionalIdeal.count L w (detFI M h) - 1) := by
-    refine val_le_of_span w ?_ y hy
+    refine _root_.GlobalTheory.SpanValuationBound.span_valuation_le w ?_ y hy
     rintro _ ⟨x, hx, rfl⟩
     have h1 := lt_of_le_of_ne (val_det_le h hs w hx) fun e => hne ⟨x, hx, e⟩
     rcases eq_or_ne (w.valuation L (Matrix.of x).det) 0 with h0 | h0
@@ -156,7 +233,7 @@ theorem span_det_eq {M M' : Submodule (𝓞 L) (Fin N → L)} (h : M.FG)
   have hc : ∀ w, FractionalIdeal.count L w (detFI M' h' * (detFI M h)⁻¹) =
       FractionalIdeal.count L w (detFI M' h') - FractionalIdeal.count L w (detFI M h) := fun w => by
     rw [FractionalIdeal.count_mul L w hn' (inv_ne_zero hn), FractionalIdeal.count_inv, sub_eq_add_neg]
-  refine eq_coe_of_val (mul_ne_zero hn' (inv_ne_zero hn)) (fun z hz w => val_le_of_span w ?_ z hz) fun w => ?_
+  refine eq_coe_of_val (mul_ne_zero hn' (inv_ne_zero hn)) (fun z hz w => _root_.GlobalTheory.SpanValuationBound.span_valuation_le w ?_ z hz) fun w => ?_
   · rintro _ ⟨A, hA, rfl⟩
     obtain ⟨x, hx, e⟩ := exists_val_det_eq h hs w
     have h1 := val_det_le h' hs' w (x := fun i => A.mulVec (x i)) fun i => hA _ (hx i)
@@ -177,7 +254,7 @@ theorem span_det_eq {M M' : Submodule (𝓞 L) (Fin N → L)} (h : M.FG)
         rw [Matrix.smul_mulVec, ← Matrix.mulVec_mulVec, mul_smul, ← Matrix.mulVec_smul, ← Matrix.det_transpose,
           Matrix.det_smul_inv_mulVec_eq_cramer _ _ hd']
         ext j
-        simp [Matrix.mulVec, dotProduct, Matrix.cramer_transpose_apply, Finset.mul_sum, mul_comm, mul_left_comm]
+        simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_comm, mul_left_comm]
         change ∑ i, s * (y i j * (Matrix.of x).transpose.cramer v i) = _
         simp_rw [Matrix.cramer_transpose_apply]
       rw [e1]
@@ -237,8 +314,8 @@ theorem val_det_hat_le {M : Submodule (𝓞 E) (Fin N → E)} (h : M.FG)
     funext i
     rw [← e i]
     exact Finset.sum_congr rfl fun k _ => by rw [← ex i k]; rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e1, MultilinearMap.map_sum]
+
+  rw [e1, MultilinearMap.map_sum]
   refine ν.map_sum_le fun r _ => ?_
   rw [MultilinearMap.map_smul_univ, smul_eq_mul, map_mul]
   refine (mul_le_of_le_one_left' (h2 _ (prod_mem fun i _ => (c i (r i)).2))).trans ?_
@@ -361,13 +438,8 @@ theorem isConjPl_iff (w w' : HeightOneSpectrum (𝓞 H.E)) : IsConjPl H w w' ↔
   rw [conjPl_main.2.1 R H w w']
   exact ⟨(existsUnique_conjPl H.conj.toRingEquiv w).choose_spec.2 w', fun h => h ▸ val_bar H w⟩
 
-theorem conj_conj (x : H.E) : H.conj (H.conj x) = x := by
-  letI := H.cmStar
-  have hs : ∀ x : H.E, star x = H.conj x := bridge_star_holds R H
-  rw [← hs, ← hs, star_star]
-
 theorem val_conj (w : HeightOneSpectrum (𝓞 H.E)) (x : H.E) : w.valuation H.E (H.conj x) = (bar H w).valuation H.E x := by
-  rw [← val_bar H w, conj_conj]
+  rw [← val_bar H w, _root_.Formalism.MainNotions.UnusedSlot33.HK.conj_conj]
 
 theorem bar_bar (w : HeightOneSpectrum (𝓞 H.E)) : bar H (bar H w) = w :=
   ((existsUnique_conjPl H.conj.toRingEquiv (bar H w)).choose_spec.2 w fun x => val_conj H w x).symm
@@ -482,7 +554,7 @@ theorem normOne_iff (𝔞 : Submodule (𝓞 H.E) H.E) :
       rw [hIJ, FractionalIdeal.count_one] at h1
       obtain ⟨x, hx, ex⟩ := GlobalTheory.Idele.exists_mem_valuation_eq hI (bar H w)
       obtain ⟨y, hy, ey⟩ := GlobalTheory.Idele.exists_mem_valuation_eq hJ w
-      have hx' : H.conj x ∈ J := (hb _).2 (by rw [conj_conj]; exact hx)
+      have hx' : H.conj x ∈ J := (hb _).2 (by rw [_root_.Formalism.MainNotions.UnusedSlot33.HK.conj_conj]; exact hx)
       have hy' : H.conj y ∈ I := (hb _).1 hy
       have h2 := (GlobalTheory.Idele.mem_iff_valuation_le hJ _).1 hx' w
       have h3 := (GlobalTheory.Idele.mem_iff_valuation_le hI _).1 hy' (bar H w)
@@ -608,3 +680,7 @@ theorem pinned_of_finer (D : D7) (SQ : Finset (HeightOneSpectrum (𝓞 D.host.E)
 end Record
 
 end GlobalTheory.Mem.NormOneIdeal
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RelDetAdelicOfPinned =====

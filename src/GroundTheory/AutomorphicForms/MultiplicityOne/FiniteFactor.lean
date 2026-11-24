@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.MultiplicityOne.Functional
 public import GroundTheory.AutomorphicForms.UnitaryRepresentations.IsInvariantIffCommuteStarProjection
 public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteLevelGroups
-public import GroundTheory.AutomorphicForms.MultiplicityOne.OpenSubgroupRep
+import Mathlib.Tactic.TypeStar
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
+import GroundTheory.AutomorphicForms.QuotientMeasure
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
 
 @[expose] public section
 

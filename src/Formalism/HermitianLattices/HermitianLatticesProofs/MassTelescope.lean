@@ -1,8 +1,59 @@
 module
 
-public import Mathlib
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -41,10 +92,9 @@ lemma massTelescope_symm (n : ℕ) : (massTelescope_form K n).IsSymm := by
   have key : ∀ x y : Fin n → K,
       starRingEnd K (massTelescope_form K n x y) = massTelescope_form K n y x := by
     intro x y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [massTelescope_form_apply, map_sum, starRingEnd_apply, star_mul, star_star]
+
+    simp only [massTelescope_form_apply, map_sum, starRingEnd_apply, star_mul, star_star]
   first
-  | exact key
   | exact ⟨key⟩
 
 lemma massTelescope_ortho (n : ℕ) :
@@ -59,7 +109,7 @@ lemma massTelescope_ortho (n : ℕ) :
   · by_cases hij : i = j
     · subst hij
       simp
-    · simp [hij, Pi.single_eq_of_ne hij]
+    · simp [hij]
   · intro b _ hb
     simp [Pi.single_eq_of_ne hb]
   · intro hi
@@ -84,8 +134,6 @@ lemma massTelescope_trace_pos (hCM : IsCMUnram K) (a : K) (ha : a ≠ 0) :
       ∑ σ : K →ₐ[ℚ] ℂ, σ (star a * a) := by
     first
     | exact trace_eq_sum_embeddings ℂ
-    | exact trace_eq_sum_embeddings (E := ℂ)
-    | exact Algebra.trace_eq_sum_embeddings ℂ
   simp only [key] at hE
   rw [eq_ratCast (algebraMap ℚ ℂ)] at hE
   have hR := congrArg Complex.re hE
@@ -105,8 +153,8 @@ lemma massTelescope_trace_nonneg (hCM : IsCMUnram K) (a : K) :
 
 lemma massTelescope_def (hCM : IsCMUnram K) (n : ℕ) (x : Fin n → K) (hx : x ≠ 0) :
     0 < Algebra.trace ℚ K (massTelescope_form K n x x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [massTelescope_form_apply, map_sum]
+
+  rw [massTelescope_form_apply, map_sum]
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
     by_contra hc
     push_neg at hc

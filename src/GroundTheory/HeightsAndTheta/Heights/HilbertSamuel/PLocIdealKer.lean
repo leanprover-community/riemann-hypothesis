@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLocIdealKer
+public import Mathlib.Order.CompletePartialOrder
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenSESStep
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 
 @[expose] public section
 

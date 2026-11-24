@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosDensMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsPosDensMeasurable
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsSumMeasurableA
+import Mathlib.Topology.Separation.CompletelyRegular
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheetA
 
 @[expose] public section
 
@@ -58,7 +61,7 @@ theorem PtsPosDensMeasurable.proof : PtsPosDensMeasurable.Statement := by
     intro m
     have : S m = B m ∩ ⋂ m' ∈ Finset.range m, (B m' ∩ {y | σ m' y = σ m y})ᶜ := by
       ext y
-      simp [hSdef, not_and_or, imp_iff_not_or]
+      simp [hSdef, imp_iff_not_or]
     rw [this]
     exact (hBo m).measurableSet.inter (Finset.measurableSet_biInter _ fun m' _ =>
       ((hBo m').measurableSet.inter (measurableSet_eq_fun (hσm m') (hσm m))).compl)

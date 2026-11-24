@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.CovolumeGram
-public import GroundTheory.HeightsAndTheta.Heights.HermitianEuclidean
-public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeExact
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import Mathlib.NumberTheory.NumberField.EquivReindex
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
+import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LatExistsDefs
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

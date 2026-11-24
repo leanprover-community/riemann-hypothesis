@@ -1,8 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.IndepPts
 public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.IndepPts
 
 @[expose] public section
 

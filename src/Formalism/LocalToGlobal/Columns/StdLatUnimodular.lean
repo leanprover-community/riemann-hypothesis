@@ -1,11 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.HermitianLattices.StatementLat
-public import Formalism.HermitianLattices.DualOrthSum
 public import Formalism.HermitianLattices.NeighbourConstruct
-public import Formalism.SatakeDualWeyl.StatementB
 public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -190,17 +188,12 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 theorem hStd_apply (x y : Sp E n) : hStd E n x y = ∑ i, star (x i) * y i := rfl
 
 theorem hStd_isSymm : (hStd E n).IsSymm := by
-  refine ⟨fun x y => ?_⟩
-  simp [hStd_apply, mul_comm, starRingEnd_apply]
+  exact ⟨fun x y => by simp [hStd_apply, mul_comm, starRingEnd_apply]⟩
 
 theorem mem_locP {W : Type*} [AddCommGroup W] [Module (𝓞 E) W] (P : HeightOneSpectrum (𝓞 E))
     (L : Submodule (𝓞 E) W) (x : W) :
     x ∈ localization₂ P.asIdeal L ↔ ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ s • x ∈ L := by
-  constructor
-  · rintro ⟨s, hs, hx⟩
-    exact ⟨s, hs, hx⟩
-  · rintro ⟨s, hs, hx⟩
-    exact ⟨s, hs, hx⟩
+  exact Iff.rfl
 
 theorem le_locP {W : Type*} [AddCommGroup W] [Module (𝓞 E) W] (P : HeightOneSpectrum (𝓞 E))
     (L : Submodule (𝓞 E) W) : L ≤ localization₂ P.asIdeal L := fun x hx =>
@@ -210,11 +203,7 @@ theorem mem_gmap (g : Sp E n ≃ₗ[E] Sp E n) (L : Submodule (𝓞 E) (Sp E n))
     x ∈ gmap g L ↔ g.symm x ∈ L := by
   unfold gmap
   rw [Submodule.mem_map]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    simpa using hy
-  · intro h
-    exact ⟨g.symm x, h, by simp⟩
+  exact ⟨fun ⟨y, hy, h⟩ => by simpa [← h] using hy, fun h => ⟨g.symm x, h, by simp⟩⟩
 
 theorem equiv_osmul (g : Sp E n ≃ₗ[E] Sp E n) (s : 𝓞 E) (x : Sp E n) : g (s • x) = s • g x := by
   rw [← algebraMap_smul E s x, map_smul, algebraMap_smul]
@@ -235,8 +224,7 @@ theorem gmap_lattice (g : Sp E n ≃ₗ[E] Sp E n) (L : Submodule (𝓞 E) (Sp E
 
 theorem mem_dual (L : Submodule (𝓞 E) (Sp E n)) (x : Sp E n) :
     x ∈ dual (hStd E n) L ↔ ∀ y ∈ L, hStd E n y x ∈ (1 : Submodule (𝓞 E) E) := by
-  unfold dual Formalism.E.hdual
-  simp only [Submodule.mem_iInf, Submodule.mem_comap, LinearMap.restrictScalars_apply]
+  simp only [dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap, LinearMap.restrictScalars_apply]
 
 theorem dual_gmap (g : Sp E n ≃ₗ[E] Sp E n) (hg : g ∈ UF E n) (L : Submodule (𝓞 E) (Sp E n)) :
     dual (hStd E n) (gmap g L) = gmap g (dual (hStd E n) L) := by
@@ -244,13 +232,9 @@ theorem dual_gmap (g : Sp E n ≃ₗ[E] Sp E n) (hg : g ∈ UF E n) (L : Submodu
   rw [mem_gmap, mem_dual, mem_dual]
   constructor
   · intro H y hy
-    have := H (g y) (by rw [mem_gmap]; simpa using hy)
-    rw [← hg y (g.symm x)]
-    simpa using this
+    simpa [← hg y (g.symm x)] using H (g y) (by simpa [mem_gmap] using hy)
   · intro H y hy
-    have := H (g.symm y) ((mem_gmap g L y).1 hy)
-    rw [← hg (g.symm y) (g.symm x)] at this
-    simpa using this
+    simpa [← hg (g.symm y) (g.symm x)] using H (g.symm y) ((mem_gmap g L y).1 hy)
 
 theorem Deco.Ok.act {d : Deco E n ST SG} (hd : d.Ok) {ga : Sp E n ≃ₗ[E] Sp E n} (hga : ga ∈ UF E n)
     (h : GLG (E := E) (n := n) (SG := SG)) : (d.act ga h).Ok := by
@@ -418,7 +402,7 @@ theorem reduction_spec (P : HeightOneSpectrum (𝓞 E)) {a : E} {r s : 𝓞 E} (
   have e : s * r' = s' * r := by
     apply RingOfIntegers.ext
     change algebraMap (𝓞 E) E (s * r') = algebraMap (𝓞 E) E (s' * r)
-    simp only [map_mul, map_add (f := _)]
+    simp only [map_mul]
     rw [← h', ← h]
     ring
   apply mul_left_cancel₀ (mk_ne_zero hs')
@@ -457,7 +441,7 @@ theorem IntAt.mul {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : IntAt P a) (h
   obtain ⟨r, s, hs, h⟩ := ha
   obtain ⟨r', s', hs', h'⟩ := hb
   refine ⟨r * r', s * s', fun hm => (P.isPrime.mem_or_mem hm).elim hs hs', ?_⟩
-  simp only [map_mul, map_add (f := _)]
+  simp only [map_mul]
   rw [← h, ← h']
   ring
 
@@ -479,7 +463,7 @@ theorem reduction_mul {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : IntAt P a
   obtain ⟨r', s', hs', h'⟩ := hb
   refine redP_eq P (r := r * r') (s := s * s')
     (fun hm => (P.isPrime.mem_or_mem hm).elim hs hs') ?_ ?_
-  · simp only [map_mul, map_add (f := _)]
+  · simp only [map_mul]
     rw [← h, ← h']
     ring
   · rw [map_mul, map_mul, ← reduction_spec P hs h, ← reduction_spec P hs' h']
@@ -487,9 +471,7 @@ theorem reduction_mul {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : IntAt P a
 
 theorem redP_osmul {P : HeightOneSpectrum (𝓞 E)} (c : 𝓞 E) {a : E} (ha : IntAt P a) :
     redP P (c • a) = Ideal.Quotient.mk P.asIdeal c * redP P a := by
-  rw [Algebra.smul_def, reduction_mul (IntAt.coe P c) ha]
-  congr 1
-  exact reduction_coe P c
+  rw [Algebra.smul_def, reduction_mul (IntAt.coe P c) ha, reduction_coe P c]
 
 end RedLemmas
 

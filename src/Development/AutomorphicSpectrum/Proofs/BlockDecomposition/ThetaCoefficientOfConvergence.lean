@@ -1,16 +1,56 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.CoefDataExists
-public import Development.WeilBound.CoreStatements.PublishedTheorems.SiegelWeilSchrodinger.SiegelWeilUnitarySchrodingerLit
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IwasawaDecompositionUnitary
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SiegelParabolicUnnMatrixBlockUpperTriangular
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EisensteinIsotropicLine
-public import Development.AbelianVarietyTheory.Definitions.Foundations.AnalyticOnNhdTsumNpow
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftInvSubtypeSum
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSelfDualSiegelWeilMeasures
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OfHermEBijective
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSumInvariantUnipotentTranslate
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.WeilThetaConvergence
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsoluteThetaIntegralLeContinuousSeminorm
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasurableThetaSumOfSchrodinger
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBoundFiniteInfinite
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SummableOfTsumEnormLtTop
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,27 +69,27 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 variable {D : D7} {r : ℕ}
 
 instance countable_hermE (D : D7) (r : ℕ) : Countable (HermE D r) := by
-  haveI := GlobalTheory.ThetaTransformMeas.countable_field D.host.E
-  haveI : Countable (Matrix (Fin r) (Fin r) D.host.E) :=
+  have := GlobalTheory.ThetaTransformMeas.countable_field D.host.E
+  have : Countable (Matrix (Fin r) (Fin r) D.host.E) :=
     inferInstanceAs (Countable (Fin r → Fin r → D.host.E))
   exact inferInstanceAs (Countable {b : Matrix (Fin r) (Fin r) D.host.E // _})
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem setIntegral_char_eq_zero {lam : Measure (hermA D r)} {𝓖 : Set (hermA D r)} (hl : IsCovolOneH lam 𝓖)
     (e : hermA D r → ℂ) (hadd : ∀ x y, e (x + y) = e x * e y)
     (hΓ : ∀ γ ∈ ratHerm D r, e γ = 1) (b₀ : hermA D r) (hb₀ : e b₀ ≠ 1) :
     ∫ b in 𝓖, e b ∂lam = 0 := by
   obtain ⟨i1, i2, i3, i4, -, -⟩ := lattice_Mx D r r
-  haveI : IsTopologicalAddGroup (Mx D r r) := i1
-  haveI : SecondCountableTopology (Mx D r r) := i3
-  haveI : BorelSpace (Mx D r r) := ⟨rfl⟩
-  haveI : SecondCountableTopology (hermA D r) := Topology.IsInducing.subtypeVal.secondCountableTopology
-  haveI : BorelSpace (hermA D r) := Subtype.borelSpace _
-  haveI : lam.IsAddHaarMeasure := hl.1
-  haveI : VAddInvariantMeasure (hermA D r) (hermA D r) lam := ⟨fun c s _ => measure_preimage_add lam c s⟩
-  haveI : VAddInvariantMeasure (ratHerm D r) (hermA D r) lam := ⟨fun c s _ => measure_preimage_add lam c.1 s⟩
-  haveI : Countable (ratHerm D r) :=
+  have : IsTopologicalAddGroup (Mx D r r) := i1
+  have : SecondCountableTopology (Mx D r r) := i3
+  have : BorelSpace (Mx D r r) := ⟨rfl⟩
+  have : SecondCountableTopology (hermA D r) := Topology.IsInducing.subtypeVal.secondCountableTopology
+  have : BorelSpace (hermA D r) := Subtype.borelSpace _
+  have : lam.IsAddHaarMeasure := hl.1
+  have : VAddInvariantMeasure (hermA D r) (hermA D r) lam := ⟨fun c s _ => measure_preimage_add lam c s⟩
+  have : VAddInvariantMeasure (ratHerm D r) (hermA D r) lam := ⟨fun c s _ => measure_preimage_add lam c.1 s⟩
+  have : Countable (ratHerm D r) :=
     (GlobalTheory.CompanionTheory.HermPoisson.ofHermE_bijective (D := D) (r := r)).2.countable
   have hF := hl.2.1
   have hF' : IsAddFundamentalDomain (ratHerm D r) (b₀ +ᵥ 𝓖) lam := hF.vadd_of_comm b₀
@@ -100,7 +140,7 @@ theorem setIntegral_pairH {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.hos
     ((GlobalTheory.CompanionTheory.HermPoisson.ofHermE_bijective (D := D) (r := r)).1 (Subtype.ext (sub_eq_zero.1 h)))
   have hex : ∃ b₀, pairH ψ (S - S') b₀ ≠ 1 := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hne (h2 _ (sub_mem (GlobalTheory.CompanionTheory.HermPoisson.ofHermE T).2 (GlobalTheory.CompanionTheory.HermPoisson.ofHermE β).2) hcon)
   obtain ⟨b₀, hb₀⟩ := hex
   have hdec : ∀ b, pairH ψ S b = pairH ψ (S - S') b * pairH ψ S' b := fun b => by
@@ -187,9 +227,9 @@ theorem hasSum_twist {V : HSp D} {θ : InfFam D} (hθ : IsInfFam θ) {ν : Measu
       (⨍ q, descend (GQ V) (fun h => ∑' ξ : Matrix (Fin V.rank) (Fin r) D.host.E,
         u (gramOf V ξ) * φ (GlobalTheory.SiegelFormula.invPt V h ξ)) q ∂autMeasure V ν) := by
   have : BorelSpace (GA D V) := ⟨rfl⟩
-  haveI := hν
-  haveI := GlobalTheory.ThetaTransformMeas.countable_field D.host.E
-  haveI : Countable (Matrix (Fin V.rank) (Fin r) D.host.E) :=
+  have := hν
+  have := GlobalTheory.ThetaTransformMeas.countable_field D.host.E
+  have : Countable (Matrix (Fin V.rank) (Fin r) D.host.E) :=
     inferInstanceAs (Countable (Fin V.rank → Fin r → D.host.E))
   have hcont : Continuous φ :=
     (GlobalTheory.CompanionTheory.WeilTheta.schwartzA_continuous_and_dominated D θ hθ _ _ φ hφ).1
@@ -197,7 +237,7 @@ theorem hasSum_twist {V : HSp D} {θ : InfFam D} (hθ : IsInfFam θ) {ν : Measu
       ‖u (gramOf V ξ) * φ (GlobalTheory.SiegelFormula.invPt V h ξ)‖ₑ) = GlobalTheory.SiegelFormula.absTheta V φ := by
     funext h
     refine tsum_congr fun ξ => ?_
-    rw [enorm_mul, ← ofReal_norm_eq_enorm (u _), hu]
+    rw [enorm_mul, ← ofReal_norm (u _), hu]
     simp
   have hterm : ∀ (T : HermE D r) (k : {x : Matrix (Fin V.rank) (Fin r) D.host.E // gramQ V x = T.1}),
       gramOf V (allEquiv V r ⟨T, k⟩) = T := fun T k => Subtype.ext k.2
@@ -257,8 +297,8 @@ theorem theta_mul_nb {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D)ˣ →* Circle
 theorem continuous_pairH {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) (S : hermA D r) :
     Continuous (pairH ψ S) := by
   obtain ⟨i1, i2, i3, i4, -, -⟩ := lattice_Mx D r r
-  haveI := isTopologicalRing_tens (F := D.host.F) (E := D.host.E) (R := AF D.host.F)
-  haveI : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
+  have := isTopologicalRing_tens (F := D.host.F) (E := D.host.E) (R := AF D.host.F)
+  have : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
   have ht : Continuous (Algebra.trace (AF D.host.F) (AE D)) :=
     IsModuleTopology.continuous_of_linearMap (Algebra.trace (AF D.host.F) (AE D))
   unfold pairH trF
@@ -301,14 +341,14 @@ theorem thetaCoef : GlobalTheory.Published.WeilThetaConvergence → PositivityTh
   have hpn : ∀ (S b : hermA D n), ‖pairH ψ S b‖ = 1 := fun S b => hψ.2.1 _
   have hχc : Continuous χβ :=
     (continuous_pairH hψ _).inv₀ (pairH_ne_zero hψ _)
-  haveI : IsFiniteMeasure (lam.restrict 𝓖) :=
+  have : IsFiniteMeasure (lam.restrict 𝓖) :=
     ⟨by rw [Measure.restrict_apply_univ, hl.2.2]; exact ENNReal.one_lt_top⟩
   obtain ⟨i1, i2, i3, i4, -, -⟩ := lattice_Mx D n n
-  haveI : IsTopologicalAddGroup (Mx D n n) := i1
-  haveI : SecondCountableTopology (Mx D n n) := i3
-  haveI : BorelSpace (Mx D n n) := ⟨rfl⟩
-  haveI : SecondCountableTopology (hermA D n) := Topology.IsInducing.subtypeVal.secondCountableTopology
-  haveI : BorelSpace (hermA D n) := Subtype.borelSpace _
+  have : IsTopologicalAddGroup (Mx D n n) := i1
+  have : SecondCountableTopology (Mx D n n) := i3
+  have : BorelSpace (Mx D n n) := ⟨rfl⟩
+  have : SecondCountableTopology (hermA D n) := Topology.IsInducing.subtypeVal.secondCountableTopology
+  have : BorelSpace (hermA D n) := Subtype.borelSpace _
   set F : HermE D n → hermA D n → ℂ := fun T b => pairH ψ (GlobalTheory.CompanionTheory.HermPoisson.ofHermE T).1 b * A T * χβ b with hF
   have hFc : ∀ T, Continuous (F T) := fun T =>
     ((continuous_pairH hψ _).mul continuous_const).mul hχc

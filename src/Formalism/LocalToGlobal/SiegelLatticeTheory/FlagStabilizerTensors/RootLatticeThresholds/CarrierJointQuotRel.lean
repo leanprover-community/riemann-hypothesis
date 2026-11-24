@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointQuot
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NilradicalLatticeZMemSpan
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ProductExactness
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHDef
 
 @[expose] public section
 
@@ -265,20 +264,13 @@ theorem hJ_sum_r' {ι : Type*} [Fintype ι] (x : Fin n → ℂ) (a : ι → ℂ)
     hJ ε x (∑ c, a c • y c) = ∑ c, a c * hJ ε x (y c) := by
   simp only [hJ, Matrix.mulVec_sum, Matrix.mulVec_smul, dotProduct_sum, dotProduct_smul, smul_eq_mul]
 
-theorem hJ_cj' (x y : Fin n → ℂ) : hJ ε x y = conj (hJ ε y x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hJ, Formalism.REAL.Jm, Matrix.mulVec_diagonal, dotProduct, Pi.star_apply, RCLike.star_def, map_sum,
-    map_mul, Complex.conj_conj]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  split_ifs <;> simp <;> ring
-
 theorem hJ_sum_l' {ι : Type*} [Fintype ι] (x : Fin n → ℂ) (a : ι → ℂ) (y : ι → Fin n → ℂ) (w : Fin n → ℂ) :
     hJ ε (x + ∑ c, a c • y c) w = hJ ε x w + ∑ c, conj (a c) * hJ ε (y c) w := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hJ_cj' ε (x + ∑ c, a c • y c) w, hJ_add_r', hJ_sum_r', map_add (f := _), map_sum, ← hJ_cj' ε x w]
+
+  rw [_root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj ε (x + ∑ c, a c • y c) w, hJ_add_r', hJ_sum_r', map_add (f := _), map_sum, ← _root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj ε x w]
   congr 1
   refine Finset.sum_congr rfl fun c _ => ?_
-  rw [map_mul, ← hJ_cj' ε (y c) w]
+  rw [map_mul, ← _root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj ε (y c) w]
 
 theorem span_expand (e f : Fin r → Fin n → ℂ) (hfe : ∀ a b, hJ ε (f a) (e b) = if b = a then 1 else 0)
     (k : ℕ) (y : Fin n → ℂ) (hy : y ∈ spanLt e k) :

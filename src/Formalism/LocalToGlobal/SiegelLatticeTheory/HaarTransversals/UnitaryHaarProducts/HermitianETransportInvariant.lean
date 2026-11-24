@@ -1,11 +1,53 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelCore
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.PsiTrCore
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.DdTraceCore
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.PsiTrCore
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -158,8 +200,8 @@ theorem incl_smul (c : X.B.I.E) (x : Fin X.B.I.n → X.B.I.E) :
 theorem incl_sum {ι : Type} (s : Finset ι) (x : ι → Fin X.B.I.n → X.B.I.E) :
     incl X.B.I (∑ j ∈ s, x j) = ∑ j ∈ s, incl X.B.I (x j) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [incl, Finset.sum_apply, map_sum]
+
+  simp [incl, Finset.sum_apply, map_sum]
 
 theorem prA_incl (x : Fin X.B.I.n → X.B.I.E) : prA X (incl X.B.I x) = incl X.B.I (prE X x) := by
   rw [prA_apply]
@@ -216,16 +258,15 @@ theorem hA_e_prA (y : VA X.B.I) (a : Fin D.R.rS) : hA X.B.I (incl X.B.I (X.eR a)
   have key : ∀ v w : VA X.B.I, hA X.B.I v w = hAlin X v w := fun v w => by
     first
     | rfl
-    | simp [hAlin]
   rw [key, prA_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sub, map_sum, map_smul, smul_eq_mul]
+
+  simp only [map_sub, map_sum, map_smul, smul_eq_mul]
   simp [← key, hA_e_e, hA_e_f]
 
 theorem hA_f_prA (y : VA X.B.I) (a : Fin D.R.rS) : hA X.B.I (incl X.B.I (X.fR a)) (prA X y) = 0 := by
   rw [← hAlin_apply, prA_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sub, map_sum, map_smul, hAlin_apply, hA_f_e, hA_f_f, smul_eq_mul]
+
+  simp only [map_sub, map_sum, map_smul, hAlin_apply, hA_f_e, hA_f_f, smul_eq_mul]
   simp
 
 theorem prA_fix (q : VA X.B.I) (he : ∀ a, hA X.B.I (incl X.B.I (X.eR a)) q = 0)
@@ -298,7 +339,6 @@ theorem natsmul_eq (c : ℕ) (y : VA X.B.I) :
     ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • y) = c • y := by
   first
   | exact Nat.cast_smul_eq_nsmul _ c y
-  | simp
 
 theorem natsmul_mem {N : Submodule (IntAf X.B.I.F X.B.I.E) (VA X.B.I)} (c : ℕ) {y : VA X.B.I} (hy : y ∈ N) :
     (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • y ∈ N := by
@@ -309,7 +349,6 @@ theorem intsmul_mem {N : Submodule (IntAf X.B.I.F X.B.I.E) (VA X.B.I)} {t : X.B.
     (ht : t ∈ IntAf X.B.I.F X.B.I.E) {y : VA X.B.I} (hy : y ∈ N) : t • y ∈ N := by
   first
   | exact N.smul_mem ⟨t, ht⟩ hy
-  | simpa using N.smul_mem ⟨t, ht⟩ hy
 
 theorem mL_le_Lf : mL X.B.I X.B.g ≤ X.B.I.Lf := by
   unfold mL
@@ -424,14 +463,10 @@ theorem hA_natsmul_left (c : ℕ) (u' v : VA X.B.I) :
     hA X.B.I ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • u') v = (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) * hA X.B.I u' v := by
   first
   | (simp only [hA, Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, map_mul, map_natCast, Finset.mul_sum, mul_assoc]; done)
-  | (simp [hA, Formalism.UG.hform, Finset.mul_sum, mul_assoc]; done)
-  | (unfold hA; done)
 
 theorem hA_sub_left (u' u'' v : VA X.B.I) : hA X.B.I (u' - u'') v = hA X.B.I u' v - hA X.B.I u'' v := by
   first
   | (simp only [hA, Formalism.UG.hform, Pi.sub_apply, map_sub, sub_mul, Finset.sum_sub_distrib]; done)
-  | (simp [hA, Formalism.UG.hform, sub_mul, Finset.sum_sub_distrib]; done)
-  | (unfold hA; done)
 
 theorem hA_f_span (T : Set (Fin D.R.rS)) (y : VA X.B.I)
     (hy : y ∈ Submodule.span (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) ((fun b => incl X.B.I (X.eR b)) '' T))
@@ -995,8 +1030,8 @@ theorem hJ_rv (v : InfinitePlace X.B.I.F) (x y : Fin X.B.I.n → X.B.I.E) :
     rw [Matrix.mul_nonsing_inv _ hPu, Matrix.mul_one, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hPH, Matrix.one_mul]
   unfold hJ rv
   rw [Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hJ']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, mulVec, Formalism.UG.hform, map_sum, map_mul, Pi.star_apply, Matrix.map_apply, Finset.mul_sum]
+
+  simp only [dotProduct, mulVec, Formalism.UG.hform, map_sum, map_mul, Pi.star_apply, Matrix.map_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [starRingEnd_apply, phi_star]
   ring
@@ -1009,35 +1044,30 @@ theorem rv_mulVec (v : InfinitePlace X.B.I.F) (G : Matrix (Fin X.B.I.n) (Fin X.B
     ← Matrix.mulVec_mulVec]
   congr 1
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+  simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
 
 theorem incl_mulVec (G : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) (y : Fin X.B.I.n → X.B.I.E) :
     G.map (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F)) *ᵥ incl X.B.I y = incl X.B.I (G *ᵥ y) := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [incl, Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+  simp [incl, Matrix.mulVec, dotProduct, map_sum, map_mul]
 
 theorem nxt_rv (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS) :
     nxt (fun b => rv X.B.I v (X.eR b)) (rv X.B.I v (X.zR u)) a = rv X.B.I v (nxt X.eR (X.zR u) a) := by
   first
   | (unfold nxt; split_ifs <;> rfl)
-  | (unfold nxt; split <;> rfl)
-  | rfl
 
 theorem nxt_incl (a : Fin D.R.rS) :
     incl X.B.I (nxt X.eR (X.zR u) a) = nxt (fun b => incl X.B.I (X.eR b)) (incl X.B.I (X.zR u)) a := by
   first
   | (unfold nxt; split_ifs <;> rfl)
-  | (unfold nxt; split <;> rfl)
-  | rfl
 
 theorem algebraMap_tens (x : X.B.I.F) :
     algebraMap X.B.I.F (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) x =
       Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (algebraMap X.B.I.F X.B.I.E x) := by
   first
   | rfl
-  | simp [Formalism.UG.inclE, Algebra.TensorProduct.algebraMap_apply]
 
 theorem psiProd_holds : PsiProd X u := by
   intro ν hν _ _
@@ -1048,8 +1078,8 @@ theorem psiProd_holds : PsiProd X u := by
   have hfin' : X.psiFinU u ν.2 = X.psiEf (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) q) := by
     unfold HidaSetting.psiFinU psiFin divN
     congr 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hq, map_mul, ← algebraMap_tens, hc, map_sum]
+
+    rw [hq, map_mul, ← algebraMap_tens, hc, map_sum]
     congr 1
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [hfin, incl_mulVec, hA_incl]
@@ -1065,8 +1095,8 @@ theorem psiProd_holds : PsiProd X u := by
     simp only [hrc]
     have hg : X.B.I.φ v (algebraMap X.B.I.F X.B.I.E ((X.B.g : X.B.I.F)⁻¹)) = ((X.B.g : ℂ))⁻¹ := by
       rw [map_inv₀, map_inv₀, map_natCast, map_natCast]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hq, map_mul, hg, hc, map_sum, Finset.sum_add_distrib, star_mul', star_inv₀, star_natCast, ← star_sum]
+
+    rw [hq, map_mul, hg, hc, map_sum, Finset.sum_add_distrib, star_mul', star_inv₀, star_natCast, ← star_sum]
     ring
   rw [hinf', hfin', mul_comm]
   exact X.psiEf_rat q
@@ -1144,7 +1174,6 @@ theorem PW_add (y y' : Fin X.B.I.n → X.B.I.E) : PW X u (y + y') = PW X u y + P
 theorem PW_smul (c : X.B.I.E) (y : Fin X.B.I.n → X.B.I.E) : PW X u (c • y) = c • PW X u y := by
   first
   | (simp only [PW, hE_smul_right, mul_assoc, mul_smul, smul_sub, Finset.smul_sum]; done)
-  | (simp only [PW, hE_smul_right, mul_assoc, mul_smul, smul_sub, Finset.smul_sum]; abel)
 
 theorem PW_sub (y y' : Fin X.B.I.n → X.B.I.E) : PW X u (y - y') = PW X u y - PW X u y' := by
   have hs : ∀ x z z' : Fin X.B.I.n → X.B.I.E, hE X x (z - z') = hE X x z - hE X x z' := fun x z z' => by
@@ -1155,22 +1184,22 @@ theorem PW_sub (y y' : Fin X.B.I.n → X.B.I.E) : PW X u (y - y') = PW X u y - P
 theorem hE_e_PW (a : Fin D.R.rS) (y : Fin X.B.I.n → X.B.I.E) : hE X (X.eR a) (PW X u y) = 0 := by
   have key : hE X (X.eR a) (PW X u y) = hEl X (X.eR a) (PW X u y) := rfl
   rw [key]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [PW, map_sub, map_sum, map_smul, smul_eq_mul]
+
+  simp only [PW, map_sub, map_sum, map_smul, smul_eq_mul]
   simp [hEl_apply, hE_e_e, hE_e_f, hermitian_e_z_zero]
 
 theorem hE_f_PW (a : Fin D.R.rS) (y : Fin X.B.I.n → X.B.I.E) : hE X (X.fR a) (PW X u y) = 0 := by
   have key : hE X (X.fR a) (PW X u y) = hEl X (X.fR a) (PW X u y) := rfl
   rw [key]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [PW, map_sub, map_sum, map_smul, smul_eq_mul]
+
+  simp only [PW, map_sub, map_sum, map_smul, smul_eq_mul]
   simp [hEl_apply, hE_f_e, hE_f_f, hermitian_f_z_zero]
 
 theorem hE_z_PW (y : Fin X.B.I.n → X.B.I.E) : hE X (X.zR u) (PW X u y) = 0 := by
   have key : hE X (X.zR u) (PW X u y) = hEl X (X.zR u) (PW X u y) := rfl
   rw [key]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [PW, map_sub, map_sum, map_smul, smul_eq_mul]
+
+  simp only [PW, map_sub, map_sum, map_smul, smul_eq_mul]
   simp [hEl_apply, hE_z_e, hE_z_f, inv_mul_cancel_right₀ (hE_z_z_ne X u)]
 
 theorem PW_fix (w : Fin X.B.I.n → X.B.I.E) (he : ∀ a, hE X (X.eR a) w = 0) (hf : ∀ a, hE X (X.fR a) w = 0)
@@ -1201,9 +1230,9 @@ theorem hE_perp_sub (p y : Fin X.B.I.n → X.B.I.E) (he : ∀ a, hE X (X.eR a) p
   have h2 : hE X p (y - PW X u y) = 0 := by
     rw [sub_PW]
     show hEl X p _ = 0
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hEl_apply, hpe, hpf, hpz, mul_zero,
-      Finset.sum_const_zero, add_zero]
+
+    simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hEl_apply, hpe, hpf, hpz, mul_zero,
+    Finset.sum_const_zero, add_zero]
   exact ⟨by rw [hE_symm X p, h2, star_zero], h2⟩
 
 end Rat
@@ -1228,8 +1257,8 @@ theorem hE_span_left (s w : Fin X.B.I.n → X.B.I.E) (hs : s ∈ Submodule.span 
   have hw' : ∀ b, hE X w (X.eR b) = 0 := fun b => by rw [hE_symm, hw, star_zero]
   rw [span_repr_E X s hs, hE_symm X w]
   show star (hEl X w (∑ b, hE X (X.fR b) s • X.eR b)) = 0
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [map_smul, smul_eq_mul, hEl_apply, hw', mul_zero, Finset.sum_const_zero, star_zero]
 
 theorem unit_of_form (M : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E)
@@ -1264,7 +1293,6 @@ theorem hE_sub_PW_self (y y' : Fin X.B.I.n → X.B.I.E) :
   calc hE X y y' = hE X (PW X u y + (y - PW X u y)) (PW X u y' + (y' - PW X u y')) := by
         first
         | (congr 1 <;> abel)
-        | simp
     _ = hE X (PW X u y) (PW X u y') + hE X (y - PW X u y) (y' - PW X u y') := by
         rw [hE_add_left, hE_add_right, hE_add_right]
         simp only [h1, h2, add_zero, zero_add]
@@ -1286,8 +1314,8 @@ theorem SRat.hE_G {G G' : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E} (h : SRat 
   have hσ : (fun i => starRingEnd X.B.I.E ((G *ᵥ x) i)) =
       (G.map (starRingEnd X.B.I.E)) *ᵥ (fun i => starRingEnd X.B.I.E (x i)) := by
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+    simp [Matrix.mulVec, dotProduct, map_sum, map_mul]
   rw [L, L, hσ, Matrix.mulVec_mulVec, ← Matrix.vecMul_transpose (G.map (starRingEnd X.B.I.E)),
     ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec]
   congr 2
@@ -1373,8 +1401,6 @@ theorem Hm_mulVec (G : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) (y : Fin X.B.
     Hm (X := X) (u := u) G *ᵥ y = Hf (X := X) (u := u) G y := by
   first
   | (rw [Hm, LinearMap.toMatrix'_mulVec]; rfl)
-  | rw [Hm, LinearMap.toMatrix'_mulVec]
-  | simp [Hm, Hl]
 
 theorem Hm_fix (G : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) (y : Fin X.B.I.n → X.B.I.E)
     (hy : PW X u y = 0) : Hm (X := X) (u := u) G *ᵥ y = y := by
@@ -1418,7 +1444,6 @@ theorem HGL_mem {G G' : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E} (h : SRat (u
     HGL h ∈ Formalism.UG.UJ (starRingEnd X.B.I.E) X.B.I.J := by
   first
   | exact unit_of_form X _ h.hE_H
-  | simp [Formalism.UG.UJ, HGL_coe, unit_of_form X _ h.hE_H]
 
 end Levi
 
@@ -1527,11 +1552,11 @@ theorem transfer3 {R : Type} [CommRing R] (ψ : X.B.I.E →+* R) (ι : (Fin X.B.
   have hTι : ∀ x, T (ι x) = 0 := fun x => by
     set qx := x - ∑ b, hE X (X.eR b) x • X.fR b with hqx
     have hQ : Q (ι x) = ι qx := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Q, hqx, map_sub, map_sum, hιs, hh]
+
+      simp only [Q, hqx, map_sub, map_sum, hιs, hh]
     have hperp : ∀ a, hE X (X.eR a) qx = 0 := fun a => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hqx, ← hEl_apply, map_sub, map_sum, map_smul]
+
+      simp only [hqx, ← hEl_apply, map_sub, map_sum, map_smul]
       simp [hEl_apply, hE_e_f]
     clear_value qx
     have hs := hN.n3 qx hperp
@@ -1540,8 +1565,8 @@ theorem transfer3 {R : Type} [CommRing R] (ψ : X.B.I.E →+* R) (ι : (Fin X.B.
     simp only [T, hQ, hMs, hh]
     have hr : (∑ b, ψ (hE X (X.fR b) ((N - 1) *ᵥ qx)) • ι (X.eR b)) = ι ((N - 1) *ᵥ qx) := by
       conv_rhs => rw [span_repr_E X _ hs]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [hιs]
     rw [hr, sub_self]
   have hT0 : ∀ y, T y = 0 := fun y => by
@@ -1646,7 +1671,6 @@ theorem fmat_ratGA_inv (H : GL (Fin X.B.I.n) X.B.I.E) (hH : H ∈ Formalism.UG.U
         (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F)) := by
   first
   | rfl
-  | simp [ratGA, ratFin]
 
 end Emb
 
@@ -1742,7 +1766,7 @@ theorem rv_span (v : InfinitePlace X.B.I.F) (y : Fin X.B.I.n → ℂ) :
     funext k
     by_cases h : k = i
     · subst h; simp
-    · simp [Pi.single_apply, h]
+    · simp [h]
   have hy : y = ∑ i, (X.B.I.P v *ᵥ y) i • rvHom X v (Pi.single i 1) := by
     simp only [hs1, ← mulVec_smul, ← mulVec_sum]
     rw [sum_single X, mulVec_mulVec, Matrix.nonsing_inv_mul _ hPu, one_mulVec]
@@ -1756,7 +1780,7 @@ theorem incl_span (y : VA X.B.I) : y ∈ Submodule.span (X.B.I.E ⊗[X.B.I.F] Af
     funext i
     congr 1
     funext j
-    by_cases h : j = i <;> simp [inclHom, incl, Pi.single_apply, h]
+    by_cases h : j = i <;> simp [inclHom, incl, h]
   rw [hy]
   exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩)
 
@@ -1860,7 +1884,7 @@ export Level (prV prV_apply hT_f_e prV_e prV_f prV_Lb Lb_le projection_preserves
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
-theorem ksetSplit_holds : KsetSplit X u := Level.ksetSplit_holds X u
+alias ksetSplit_holds := _root_.Formalism.L2.SG.Pf.Level.ksetSplit_holds
 
 theorem psiDd_of_cores (hA : PsiTrCore) (hB : DdTraceCore) : PsiDd X := by
   intro y hy t ht
@@ -1879,7 +1903,7 @@ theorem psiDd_of_cores (hA : PsiTrCore) (hB : DdTraceCore) : PsiDd X := by
 theorem psiDd_holds : PsiDd X :=
   psiDd_of_cores X Formalism.L2.S.Pv.PsiTrCore.psiTrCore_holds Formalism.L2.S.Pv.DdTraceCore.ddTraceCore_holds
 
-theorem unipotent_in_level_of_psi {X : HidaSetting D} {u : D.what₂.Word} (hP : PsiDd X) : UnipotentConjugateInLevel X u := Level.unipotent_in_level_of_psi hP
+alias unipotent_in_level_of_psi := _root_.Formalism.L2.SG.Pf.Level.unipotent_in_level_of_psi
 
 theorem unipotent_in_level : UnipotentConjugateInLevel X u := unipotent_in_level_of_psi (psiDd_holds X)
 
@@ -1887,8 +1911,8 @@ theorem levelDec_holds : LevelDec X u := Level.levelDec_of_psiDd (psiDd_holds X)
 
 theorem phWellDef_holds : PhWellDef X u (level_subgroup_character_unitary X) := Level.phWellDef_of_psiDd (psiDd_holds X)
 
-theorem psiProd_holds : PsiProd X u := Level.psiProd_holds X u
+alias psiProd_holds := _root_.Formalism.L2.SG.Pf.Level.psiProd_holds
 
-theorem ratLevi_holds : RatLevi X u := Level.ratLevi_holds X u
+alias ratLevi_holds := _root_.Formalism.L2.SG.Pf.Level.ratLevi_holds
 
 end Formalism.L2.SG.Pf

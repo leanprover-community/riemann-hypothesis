@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.ShiftAnalyticW
-public import Formalism.EllipticTorsion.FormalGroupPointsNoTorsion
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementJ
+public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
 
 @[expose] public section
 

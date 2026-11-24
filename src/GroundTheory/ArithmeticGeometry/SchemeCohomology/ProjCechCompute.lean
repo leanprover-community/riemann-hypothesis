@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjCechModel
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechOrdered
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -176,8 +177,8 @@ lemma lval_posPart {k : ℤ} {q : ℕ} (σ : Cochain (twistAb A n k) (cover A n)
 lemma d_posPart {k : ℤ} {q : ℕ} (σ : Cochain (twistAb A n k) (cover A n) q) :
     d _ _ q (posPart σ) = posPart (d _ _ q σ) := by
   refine cochain_ext fun i => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lval_d, lval_posPart, lval_d, map_sum]
+
+  rw [lval_d, lval_posPart, lval_d, map_sum]
   simp only [lval_posPart, map_zsmul]
 
 lemma topCoeff_d {k : ℤ} {q : ℕ} (hq : q + 1 = n) (τ : Cochain (twistAb A n k) (cover A n) q) :

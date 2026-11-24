@@ -2,10 +2,11 @@ module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsInt
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PIopIso
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfGen
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.NormNatCoprime
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.LinkThetaStatementFamily
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.NormNatCoprime
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfGen
+import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

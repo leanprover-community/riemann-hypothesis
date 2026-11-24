@@ -1,10 +1,54 @@
 module
 
 public import Formalism.HermitianCurvature.StatementC
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JointInstanceTheoremA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelZeroEstimateProduct
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PeriodLatticeFactsSplitOfGeneral
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LocalisationScaledIdealMemIff
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PeriodLatticeFactsSplitOfGeneral
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwistedIsRealOrderLattice
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -30,33 +74,15 @@ theorem idl_ne_zero (g : ℕ) (hg : 0 < g) (k ν : ℤ) : S6.idl E g k ν ≠ 0 
     exact zpow_ne_zero _ (Nat.cast_ne_zero.mpr hg.ne')
 
 theorem idl_two_le_one (g : ℕ) (ν : ℤ) : S6.idl E g 2 ν ≤ S6.idl E g 1 ν := by
-  unfold S6.idl
-  have hg1 : FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 E)) (g : E) ≤ 1 := by
-    rw [FractionalIdeal.spanSingleton_le_iff_mem, FractionalIdeal.mem_one_iff]
-    exact ⟨(g : 𝓞 E), by simp⟩
-  have h2 : ((g : E) ^ (2 : ℤ)) = (g : E) * (g : E) ^ (1 : ℤ) := by
-    rw [zpow_one, zpow_two]
-  have key : FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 E)) ((g : E) ^ (2 : ℤ)) ≤
-      FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 E)) ((g : E) ^ (1 : ℤ)) := by
-    rw [h2, ← FractionalIdeal.spanSingleton_mul_spanSingleton]
-    calc _ ≤ 1 * FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 E)) ((g : E) ^ (1 : ℤ)) := by
-          first
-            | exact FractionalIdeal.mul_right_mono _ hg1
-            | exact FractionalIdeal.mul_le_mul_right hg1 _
-            | gcongr
-      _ = _ := one_mul _
-  first
-    | exact FractionalIdeal.mul_left_mono _ key
-    | exact FractionalIdeal.mul_le_mul_left key _
-    | gcongr
+  apply Formalism.FourierDecayAlt.P.S6x2.idl_le
 
 theorem frame_facts (g : ℕ) (hg : 0 < g) (ν : ℤ) :
     DiscreteTopology (S6.frameLat E (S6.perLat E g ν 1) 1) ∧
     Submodule.span ℝ (S6.frameLat E (S6.perLat E g ν 1) 1 : Set (mixedEmbedding.mixedSpace E)) = ⊤ := by
   have hA : S6.idl E g 1 ν ≠ 0 := idl_ne_zero g hg 1 ν
   have hB : S6.idl E g 2 ν ≠ 0 := idl_ne_zero g hg 2 ν
-  obtain ⟨hBL, hLA⟩ := twistedLatticeBetween E (S6.idl E g 1 ν) (S6.idl E g 2 ν) 1 (idl_two_le_one g ν)
-    (different_power_conj_stable E g 2 ν)
+  obtain ⟨hBL, hLA⟩ := _root_.Formalism.FourierDecayAlt.P.S6x2.between E (S6.idl E g 1 ν) (S6.idl E g 2 ν) 1 (idl_two_le_one g ν)
+    (_root_.Formalism.FourierDecayAlt.P.S6x2.powConjStable E g 2 ν)
   have hmem : ∀ x, x ∈ S6.frameLat E (S6.perLat E g ν 1) 1 ↔
       ∃ t ∈ S6.perLat E g ν 1, mixedEmbedding E t = x := by
     intro x
@@ -121,11 +147,7 @@ def cj (S : HidaSetting E Wp Wq) : J.CV E ≃ₗᵢ[ℝ] J.CV E :=
 theorem cj_apply (S : HidaSetting E Wp Wq) (c : J.CV E) (v : Fin S.f) :
     (S.σ v = (S.pl v).embedding → cj S c (S.pl v) = c (S.pl v)) ∧
       (S.σ v ≠ (S.pl v).embedding → cj S c (S.pl v) = conj (c (S.pl v))) := by
-  constructor
-  · intro h
-    simp [cj, h]
-  · intro h
-    simp [cj, h]
+  constructor <;> intro h <;> simp [cj, h]
 
 theorem cj_cemb (S : HidaSetting E Wp Wq) (t : E) (v : Fin S.f) : cj S (J.cemb E t) (S.pl v) = S.σ v t := by
   have hc : J.cemb E t (S.pl v) = (S.pl v).embedding t := rfl
@@ -170,7 +192,7 @@ theorem first_norm_real_nonneg (S : HidaSetting E Wp Wq) (hP : ThmPPos S) (ε : 
     | some v =>
       exact Cx1.psd_pullback Y (fun h => loc (S.σ v) h ++ [(1, c (S.pl v))]) _ _
         (fun x hx => Finset.mem_image_of_mem _ hx) (hP v ε hε i hi w _)
-  have hM := schur_product (TB.Pt E) (Option (Fin S.f)) Y k hk
+  have hM := _root_.Formalism.FourierDecayAlt.P.Jx7.t_SchurProduct (TB.Pt E) (Option (Fin S.f)) Y k hk
   have hsum : 0 ≤ ∑ h ∈ Y, ∑ h' ∈ Y, κ h h' * ∏ v, S.gramLoc v ε i (w.1 v)
       (loc (S.σ v) h ++ [(1, c (S.pl v))]) (loc (S.σ v) h' ++ [(1, c (S.pl v))]) := by
     have h3 : ∀ F : TB.Pt E → TB.Pt E → ℂ,
@@ -242,7 +264,7 @@ theorem poisson_input_of_parts : C.PoissonInputOfParts := by
     · intro μ hμ
       have hfl := twistedIsRealOrderLattice E (S6.idl E S.g 1 (S6.nuBlock S.G.r i 1))
         (S6.idl E S.g 2 (S6.nuBlock S.G.r i 1)) 1 (Cx2.idl_ne_zero S.g hg 2 _)
-        (Cx2.idl_two_le_one S.g _) (different_power_conj_stable E S.g 2 _)
+        (Cx2.idl_two_le_one S.g _) (_root_.Formalism.FourierDecayAlt.P.S6x2.powConjStable E S.g 2 _)
       obtain ⟨l, hl, hlμ⟩ :=
         (hTD E (S6.perLat E S.g (S6.nuBlock S.G.r i 1) 1) S.g 1 hg one_ne_zero hfl.2 μ).1 hμ
       refine ⟨-l, ?_, ?_⟩

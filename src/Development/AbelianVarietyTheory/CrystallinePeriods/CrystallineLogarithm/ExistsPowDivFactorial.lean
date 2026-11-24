@@ -1,16 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.UniformContinuousConstSMulOfIsIsometricSMul
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.ExistsFactorialMulEqPow
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRhamMap
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Embedding
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Section
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Action
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.MapEqPadicPowCyclotomicCharacter
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.TruncLogEqOfPowEqZero
+public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.EqZeroOfPMulEqZero
+public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.ExistsFactorialMulEqPow
+public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Kernel
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Period
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.Combinatorics.Enumerative.Bell
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -36,7 +77,7 @@ theorem expand {A : Type*} [CommRing A] {p : ℕ} (hp : p.Prime) (m : A) :
   have h2 : r.coeff 0 = 1 := by
     simp [hp1] at h1
     apply mul_left_cancel₀ hp0
-    first | simpa using h1.symm | simpa using h1 | (rcases h1 with h1 | h1 <;> simp_all)
+    first | simpa using h1.symm
   obtain ⟨s, hs⟩ := Polynomial.X_dvd_sub_C (p := r)
   rw [h2, sub_eq_iff_eq_add] at hs
   refine ⟨Polynomial.aeval m s, ?_⟩
@@ -135,8 +176,8 @@ theorem exists_pow_dvd [IsDomain R] (e : Tilt p R) (he : PreTilt.untilt e = 1) :
       (span {(p : Acris p R)}).radical := by
     have : (∑ i ∈ Finset.range p, w ^ i) = p + ∑ i ∈ Finset.range p, (w ^ i - 1) := by
       simp [Finset.sum_sub_distrib]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_add (f := _), map_natCast, map_sum]
+
+    rw [this, map_add (f := _), map_natCast, map_sum]
     refine add_mem p_mem (Ideal.sum_mem _ fun i _ => ?_)
     obtain ⟨c, hc⟩ := sub_one_dvd_pow_sub_one w i
     rw [hc, map_mul]
@@ -734,8 +775,8 @@ theorem logTeich_dvd [IsDomain R] {ε : tateModule p R} (hε : IsPrimitive ε) :
   obtain ⟨l, d, hd, hl, hlog⟩ := exists_log_eq (Ainf.teich p ε.1)
     (by rw [Ainf.theta_teich]; exact ε.2)
   have h' := congrArg (Acris.frob p R) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_pow, map_mul, map_natCast, Acris.frob_algebraMap, Ainf.frob_teich] at h'
+
+  simp only [map_sum, map_pow, map_mul, map_natCast, Acris.frob_algebraMap, Ainf.frob_teich] at h'
   set U := algebraMap (Ainf p R) (Acris p R) (Ainf.teich p ε.1) with hU
   have h1 := mul_geom_sum U p
   have h2 := mul_geom_sum (U ^ p) p
@@ -927,8 +968,8 @@ theorem dvd_log (u : Ainf p R) (hu : Ainf.theta p R u = 1) :
   rw [← sub_add_cancel (algebraMap (Acris p R) (Bcris p R) (Acris.log u hu))
     (algebraMap (Acris p R) (Bcris p R) (∑ k ∈ Finset.range N, (-1) ^ k * term u hu k))]
   refine dvd_add h ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.dvd_sum fun k _ => ?_
   rw [map_mul]
   refine Dvd.dvd.mul_left ?_ _
@@ -964,36 +1005,7 @@ end UnitOfRootAlt
 namespace PowDivFactorialAlt
 section
 
-theorem Bridge.RingBasics.exists_pow_div_factorial : ∀ (l : ℕ) [Fact l.Prime] (n : ℕ), ∃ c : ℤ_[l], ((n.factorial : ℕ) : ℤ_[l]) * c = ((l : ℕ) : ℤ_[l]) ^ n := by
-  intro l hl n
-  obtain ⟨m, hm⟩ : l ^ padicValNat l n.factorial ∣ n.factorial := (_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _))
-  have hle : padicValNat l n.factorial ≤ n := by
-    simpa only [Nat.padicValNat_def] using (multiplicity_factorial_le l n)
-  have hnd : ¬ l ∣ m := by
-    rintro ⟨k, hk⟩
-    have hnot : ¬ l ^ (padicValNat l n.factorial + 1) ∣ n.factorial := by
-      simpa only [Nat.padicValNat_def] using
-        (pow_succ_multiplicity_not_dvd (p := l) (Nat.factorial_ne_zero n))
-    apply hnot
-    refine ⟨k, ?_⟩
-    rw [pow_succ, mul_assoc, ← hk]
-    exact hm
-  have hu : IsUnit ((m : ℕ) : ℤ_[l]) := by
-    rw [PadicInt.isUnit_iff]
-    apply le_antisymm (PadicInt.norm_le_one _)
-    by_contra h
-    have h' : ‖(((m : ℕ) : ℤ) : ℤ_[l])‖ < 1 := by simpa using not_le.mp h
-    rw [PadicInt.norm_int_lt_one_iff_dvd] at h'
-    exact hnd (by exact_mod_cast h')
-  obtain ⟨u, hu'⟩ := hu.exists_right_inv
-  obtain ⟨d, hd⟩ := Nat.exists_eq_add_of_le hle
-  generalize padicValNat l n.factorial = v at hm hd
-  refine ⟨u * ((l : ℕ) : ℤ_[l]) ^ d, ?_⟩
-  rw [hm]
-  push_cast
-  calc ((l : ℕ) : ℤ_[l]) ^ v * (m : ℤ_[l]) * (u * ((l : ℕ) : ℤ_[l]) ^ d)
-      = ((l : ℕ) : ℤ_[l]) ^ v * ((m : ℤ_[l]) * u) * ((l : ℕ) : ℤ_[l]) ^ d := by ring
-    _ = ((l : ℕ) : ℤ_[l]) ^ n := by rw [hu', mul_one, ← pow_add, ← hd]
+alias Bridge.RingBasics.exists_pow_div_factorial := _root_.Reformulated.AutPerF.exists_factorial_mul_eq_pow
 
 end
 end PowDivFactorialAlt

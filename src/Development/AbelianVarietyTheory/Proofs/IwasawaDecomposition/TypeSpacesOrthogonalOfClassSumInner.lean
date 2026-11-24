@@ -1,14 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TypeOrthOfAvTied
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDimensionalForms
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryCongruenceConjContainsCongruence
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ClassSumEqConstMulPetersson
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgWtExistsInvForm
+public import Formalism.AlgebraicWeights.IsAlgWeight
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDoubleCosetsDefiniteUnitaryMaximalLevel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothAdmissibleUnitaryMemSupIsotypicParts
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ClassSumEqConstMulPeterssonStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDoubleCosetsDefiniteUnitaryMaximalLevelStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgWtExistsInvFormStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteClass
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDimensionalForms
+import Formalism.LocalToGlobal.GaloisLevelStructure.Checks
+import Formalism.LocalToGlobal.IndefiniteReal.CongNatCastEqOneTmul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
+import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
+import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 
 @[expose] public section
 
@@ -36,9 +80,6 @@ theorem indep_of_orth {M : Type} [AddCommGroup M] [Module ℂ M] (B : M → M �
     iSup₂_le fun j hj y hy => horth i j (Ne.symm hj) x hx1 y hy
   exact (Submodule.mem_bot ℂ).2 (hpos i x hx1 (hle hx2))
 
-theorem isoRep_refl (S : Submodule ℂ (GAf L n → W)) : NG.IsoRep S S :=
-  ⟨LinearEquiv.refl ℂ S, fun _ _ _ e => by simpa using e⟩
-
 theorem isoTyp_le (S : Submodule ℂ (GAf L n → W)) : NG.isoTyp ρ S ≤ NG.AFall L n ρ :=
   sSup_le fun _ hU => hU.1.1.le
 
@@ -53,7 +94,7 @@ theorem isoTyp_subrep (S : Submodule ℂ (GAf L n → W)) : NG.IsSubrep ρ (NG.i
   ⟨isoTyp_le S, fun h f hf => isoTyp_stable S h f hf⟩
 
 theorem le_isoTyp {S : Submodule ℂ (GAf L n → W)} (hS : NG.IsIrrRep ρ S) : S ≤ NG.isoTyp ρ S :=
-  le_sSup ⟨hS, isoRep_refl S⟩
+  le_sSup ⟨hS, _root_.Formalism.L2.NG.IsoRep.refl S⟩
 
 theorem isoTyp_eq {S S' : Submodule ℂ (GAf L n → W)} (hS : ∀ h, ∀ f ∈ S, NG.rt L n h f ∈ S)
     (h : NG.IsoRep S S') : NG.isoTyp ρ S = NG.isoTyp ρ S' := by
@@ -211,7 +252,7 @@ theorem typeSp_decomp : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
   classical
   obtain ⟨N, hN, hNJ⟩ := hlev
   haveI hW : FiniteDimensional ℂ a.W := a.alg.1
-  have hT := GlobalTheory.T.finite_doubleCosets_definiteUnitary_maximalLevel L n
+  have hT := _root_.GlobalTheory.DefiniteClassFinite.exists_finset_double_cosets_Umax L n
   have hfin : ∀ N : ℕ, 0 < N → FiniteDimensional ℂ ↥(Submodule.span ℂ
       {f | f ∈ NG.AFall L n a.ρ ∧ ∀ κ, NG.Cong L n N κ → ∀ g, f (g * κ) = f g}) := by
     intro M hM
@@ -219,8 +260,8 @@ theorem typeSp_decomp : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
     refine Submodule.finiteDimensional_of_le (S₂ := GlobalTheory.AlgFormsFin.fixedForms L n a.ρ M) (Submodule.span_le.2 ?_)
     rintro f ⟨hf, hκ⟩
     exact ⟨hf.1, hκ⟩
-  obtain ⟨β, hβ⟩ := GlobalTheory.T.algWt_exists_invForm' L n a
-  obtain ⟨B, hB, -⟩ := GlobalTheory.T.class_sum_eq_const_mul_petersson L n a β hβ
+  obtain ⟨β, hβ⟩ := _root_.GlobalTheory.algWt_exists_invForm L n a
+  obtain ⟨B, hB, -⟩ := _root_.GlobalTheory.ClassPet.classSum_eq_pet L n a β hβ
   have hG : GlobalTheory.TypeOrthogonality.Good a.ρ B := hB
   set V := NG.TypeSp a.ρ J χ with hVdef
   have hVA : V ≤ NG.AFall L n a.ρ := fun f hf => hf.1
@@ -295,8 +336,8 @@ theorem typeSp_decomp : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
   have hy1 : ∀ i : P, ∀ w ∈ NG.isoTyp a.ρ (S i), B y w = 0 := by
     intro i w hw
     have e : B y w = B (x - p i) w - ∑ j ∈ Finset.univ.erase i, B (p j) w := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hy, map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply]
+
+      simp only [hy, map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply]
       rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i)]
       ring
     rw [e, hpo i w hw, Finset.sum_eq_zero fun j hj => horth j i (Finset.ne_of_mem_erase hj) _ (hpmem j) w hw,

@@ -1,7 +1,56 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RepHSelfInt
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RepExact
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.KeyDef
+public import Mathlib.CategoryTheory.Category.Basic
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RepBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Data.Nat.Prime.Int
 
 @[expose] public section
 
@@ -102,14 +151,14 @@ theorem rep_single_sat (hOK : CmOK a b c d) (Λ : AddSubgroup (m → ℂ))
     rw [Finset.sum_eq_single j, Finset.sum_eq_single j]
     · simp [Matrix.smul_apply]
     · intro j' _ hj'
-      simp [Pi.single_apply, hj']
+      simp [hj']
     · simp
     · intro i _ hi
       refine Finset.sum_eq_zero fun j' _ => ?_
       by_cases hj' : j' = j
       · subst hj'
         simp [Matrix.smul_apply, Matrix.one_apply_ne hi]
-      · simp [Pi.single_apply, hj']
+      · simp [hj']
     · simp
   obtain ⟨N, hN, hw⟩ := hj
   have hN0 : N ≠ 0 := by rintro rfl; exact hN (dvd_zero _)
@@ -120,13 +169,13 @@ theorem rep_single_sat (hOK : CmOK a b c d) (Λ : AddSubgroup (m → ℂ))
     by_cases hi : i = j
     · subst hi
       simp [nsmul_eq_mul]
-    · simp [Pi.single_apply, hi]
+    · simp [hi]
   have hθw : θ • Pi.single j ((N : ℂ) * (lam * α)) = Pi.single j (θ * ((N : ℂ) * (lam * α))) := by
     funext i
     by_cases hi : i = j
     · subst hi
       simp
-    · simp [Pi.single_apply, hi]
+    · simp [hi]
   obtain ⟨m1, hm1⟩ := hz' _ hw
   obtain ⟨m2, hm2⟩ := hz' _ (hθ _ hw)
   simp only [altE] at hm1 hm2
@@ -183,7 +232,7 @@ theorem rep_single_sat (hOK : CmOK a b c d) (Λ : AddSubgroup (m → ℂ))
     by_cases hi : i = j
     · subst hi
       simp [hzj]
-    · simp [Pi.single_apply, hi]
+    · simp [hi]
   have hs : ¬ (l : ℤ) ∣ (N * Q : ℤ) := by
     have hp : Prime (l : ℤ) := Nat.prime_iff_prime_int.1 hl
     intro h

@@ -1,10 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGoodCT
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimCoefficientsFiniteDetermining
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineGLForms.GenSpace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CommuteCapOfCommuteEop
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimCoefficientsFiniteDetermining
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.ModelTheory.Arithmetic.Presburger.Semilinear.Defs
 
 @[expose] public section
 
@@ -34,7 +75,7 @@ theorem map_lev {R S : Type} [CommRing R] [CommRing S] (p : R →+* S) (g : GL (
   simp only [Matrix.reindex_apply, Matrix.submatrix_apply]
   generalize (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm i = i'
   generalize (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).symm j = j'
-  rcases i' with i' | i' <;> rcases j' with j' | j' <;> simp [Matrix.fromBlocks] <;> rfl
+  rcases i' with i' | i' <;> rcases j' with j' | j' <;> simp [Matrix.fromBlocks]
 
 theorem lev_infGL (y₁ : GL (Fin r) (Cinf E)) (y₂ : GL (Fin s) (Cinf E)) :
     lev (Ad E) r s (infGL E r y₁, infGL E s y₂) = infGL E (r + s) (lev (Cinf E) r s (y₁, y₂)) := by
@@ -126,7 +167,7 @@ def levelOne (L : Subgroup (GL (Fin (r + s)) (Af E))) (t : GL (Fin (r + s)) (Af 
 
 theorem mem_levelOne {L : Subgroup (GL (Fin (r + s)) (Af E))} {t : GL (Fin (r + s)) (Af E)} {k : GL (Fin r) (Af E)} :
     k ∈ levelOne s L t ↔ t⁻¹ * lev (Af E) r s (k, 1) * t ∈ L := by
-  simp [levelOne, MulAut.conj_apply]
+  simp [levelOne]
 
 theorem continuous_lev (R : Type) [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] : Continuous (lev R r s) :=
   (GlobalTheory.SmGL.continuous_leviEmb R _).comp (GlobalTheory.SmGL.continuous_leviTwo R)
@@ -257,7 +298,7 @@ theorem coeff_comp {K K' W : Type} [Group K] [Group K'] [AddCommGroup W] [Module
     refine Submodule.span_le.2 ?_
     rintro _ ⟨ℓ, w, rfl⟩
     refine Submodule.subset_span ⟨ℓ, ρ κ w, funext fun k => ?_⟩
-    simp [T, LinearMap.funLeft, map_mul, Module.End.mul_apply]
+    simp [T, LinearMap.funLeft, map_mul]
   exact hle hc
 
 end GlobalTheory.CompanionTheory.CTFin.Slice1

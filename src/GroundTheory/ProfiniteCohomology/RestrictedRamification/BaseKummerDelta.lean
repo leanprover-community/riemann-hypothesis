@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummer
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummerDefs
+import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.Natural
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummer
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.SInvariantToInvariantsEqZeroIff
 
 @[expose] public section
 

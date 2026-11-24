@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
+public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
+public import Mathlib.NumberTheory.LocalField.Basic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 @[expose] public section
 

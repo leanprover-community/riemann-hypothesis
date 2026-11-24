@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.DedekindZeta
+public import Mathlib.NumberTheory.NumberField.DirichletDensity
 public import GroundTheory.GlobalFields.TateThesis.DegreeOnePrimes
+public import Mathlib.Algebra.Order.Field.GeomSum
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

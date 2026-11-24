@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StepTwoFiltSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.QuotTransSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StepTwoPieceSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsStepTwo
 
 @[expose] public section
 

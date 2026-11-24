@@ -1,9 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointNagata
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertPointMultChart
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingPow
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointLengthSteps
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertPointMultChart
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertPointResidue
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.MvPolynomial.Nilpotent
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

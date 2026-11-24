@@ -1,6 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.AbsoluteGaloisGroup
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import Mathlib.RingTheory.Frobenius
+public import Mathlib.RingTheory.IntegralClosure.IntegralRestrict
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

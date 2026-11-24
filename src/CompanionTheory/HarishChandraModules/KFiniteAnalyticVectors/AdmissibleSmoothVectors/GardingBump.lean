@@ -1,6 +1,12 @@
 module
 
 public import Formalism.PeriodIntegrals.UpqRep
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

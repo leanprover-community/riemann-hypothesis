@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOrder
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

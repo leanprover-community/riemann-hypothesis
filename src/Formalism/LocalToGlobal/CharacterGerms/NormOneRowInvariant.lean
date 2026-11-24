@@ -1,5 +1,7 @@
 module
 
+public import Formalism.LocalToGlobal.ProjectiveLattices.RowDeg
+import Formalism.IncomingBounds.IncomingBound
 public import Formalism.LocalToGlobal.CharacterGerms.BlockMembershipNormOne
 
 @[expose] public section

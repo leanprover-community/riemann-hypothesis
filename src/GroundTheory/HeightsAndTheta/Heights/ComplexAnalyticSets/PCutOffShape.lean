@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLogLogCut
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.Analysis.InnerProductSpace.Calculus
 
 @[expose] public section
 

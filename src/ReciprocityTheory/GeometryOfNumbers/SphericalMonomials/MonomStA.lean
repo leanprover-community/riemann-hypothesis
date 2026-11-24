@@ -1,6 +1,18 @@
 module
 
-public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.GaussSt
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+public import Mathlib.MeasureTheory.Constructions.HaarToSphere
+public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.MeasureTheory.Integral.Gamma
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

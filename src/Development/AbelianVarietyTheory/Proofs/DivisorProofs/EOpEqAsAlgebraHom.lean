@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
-public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelTypeEigenfunctionOfLiftableElement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffDerivSnoc
+public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -52,7 +97,7 @@ theorem eOp_eq_asAlgebraHom (e : MonoidAlgebra LL G) :
     rw [eOp_eq_sum, Finset.sum_eq_single g]
     · simp
     · intro b _ hb
-      simp [Finsupp.single_apply, hb.symm]
+      simp [hb.symm]
     · simp
 
 theorem eOp_idem_comm (e : MonoidAlgebra LL G) (h1 : e * e = e) (h2 : ∀ b, b * e = e * b) :
@@ -85,8 +130,8 @@ theorem avg_mem (P : Subgroup G) (lam : P →* LLˣ) (x : WL) : avg A P lam x �
   rw [mem_eigenspace_iff₂]
   intro q
   unfold avg
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.smul_sum, ← Equiv.sum_comp (Equiv.mulLeft q) (fun p => ((lam q : LLˣ) : LL) • _)]
+
+  rw [map_sum, Finset.smul_sum, ← Equiv.sum_comp (Equiv.mulLeft q) (fun p => ((lam q : LLˣ) : LL) • _)]
   refine Finset.sum_congr rfl fun p _ => ?_
   simp only [Equiv.coe_mulLeft, map_smul, Subgroup.coe_mul, map_mul, Module.End.mul_apply, smul_smul]
   congr 1
@@ -108,8 +153,8 @@ theorem mem_span_good_iff (σ : LL →+* ℂ) {M : Type} [AddCommGroup M] [Modul
     simp
   have hE : ∀ x, e (A.j σ (A.eOp c x)) = ∑ g, σ (c g) • a g (e (A.j σ x)) := by
     intro x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [eOp_eq_sum, map_sum, map_sum]
+
+    rw [eOp_eq_sum, map_sum, map_sum]
     exact Finset.sum_congr rfl fun g _ => by rw [map_smulₛₗ, map_smul, htw]
   constructor
   · intro hh
@@ -143,8 +188,8 @@ theorem mem_span_good_iff (σ : LL →+* ℂ) {M : Type} [AddCommGroup M] [Modul
         · rw [← LinearMap.comp_apply (A.ρ p) (A.eOp c), ← h2, LinearMap.comp_apply, avg_mem A P lam x p, map_smul]
         · have : e (A.j σ (avg A P lam x)) = Pi (e (A.j σ x)) := by
             unfold avg
-            set_option synthInstance.maxHeartbeats 100000 in
-              simp only [Pi, map_sum, LinearMap.sum_apply, LinearMap.smul_apply]
+
+            simp only [Pi, map_sum, LinearMap.sum_apply, LinearMap.smul_apply]
             exact Finset.sum_congr rfl fun g _ => by rw [map_smulₛₗ, map_smul, htw]
           rw [hE, this]
           simp only [E, LinearMap.sum_apply, LinearMap.smul_apply]
@@ -188,8 +233,8 @@ theorem ws_eq_span (R : RealDat D A Ks) (F : Face D A) (b : Bool) (i : Fin D.R.m
     have h1 := congrArg (fun z : R.WL F b i => (z : Fin (R.nW i) → D.what₂.LL))
       ((Module.finBasis D.what₂.LL (R.WL F b i)).sum_repr ⟨x, hx⟩)
     simp only [Submodule.coe_sum, Submodule.coe_smul] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h1, map_sum]
+
+    rw [← h1, map_sum]
     refine Submodule.sum_mem _ fun k _ => ?_
     rw [map_smulₛₗ]
     refine Submodule.smul_mem _ _ ?_

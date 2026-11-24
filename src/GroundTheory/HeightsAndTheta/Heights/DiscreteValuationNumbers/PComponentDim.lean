@@ -1,10 +1,19 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsComponentDim
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppAB
+public import Mathlib.RingTheory.Ideal.Height
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.WithBotEqOfLeOfAddOneLe
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+public import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.KrullDimension.Polynomial
+import Mathlib.RingTheory.RegularLocalRing.Polynomial
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppAA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppAB
 
 @[expose] public section
 
@@ -94,10 +103,6 @@ theorem ringKrullDim_quotient_le_sub_height {A : Type*} [CommRing A] [IsNoetheri
   calc (M.height : WithBot ℕ∞) ≤ (((N - h : ℕ) : ℕ∞) : WithBot ℕ∞) := WithBot.coe_le_coe.mpr h3
     _ = ((N - h : ℕ) : WithBot ℕ∞) := WithBot.coe_natCast _
 
-theorem withBot_eq_of_le_of_add_one_le {x : WithBot ℕ∞} {c : ℕ} (h1 : (c : WithBot ℕ∞) ≤ x)
-    (h2 : x + 1 ≤ ((c + 1 : ℕ) : WithBot ℕ∞)) : x = c :=
-  _root_.UpperTheory.Reformulated.B.Ydd3.withBot_eq_of_le_of_add_one_le h1 h2
-
 end PolynomialHeights
 
 theorem ComponentDim.proof : ComponentDim.Statement := by
@@ -112,7 +117,7 @@ theorem ComponentDim.proof : ComponentDim.Statement := by
   have hPW : P ≤ W := le_sup_left.trans hWmin.1.2
   have hfW : f ∈ W := hWmin.1.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self f))
 
-  have hup := ReciprocityTheory.ChartRestriction.G.AI.I1.cyc_dim_add_one_le hPW hfW hfP
+  have hup := _root_.Bl.FirstBlockLemmaB.goal1 hPW hfW hfP
 
   have hq : W.map (Ideal.Quotient.mk P) ∈ (Ideal.span {Ideal.Quotient.mk P f}).minimalPrimes := by
     have e : Ideal.span {Ideal.Quotient.mk P f} = (Ideal.span {f}).map (Ideal.Quotient.mk P) := by
@@ -174,7 +179,7 @@ theorem ComponentDim.proof : ComponentDim.Statement := by
   have hlow' : ((d + Fintype.card K : ℕ) : WithBot ℕ∞) ≤ ringKrullDim (MRing ι O ⧸ W) :=
     le_trans (by exact_mod_cast hb') hlow
   rw [hP.dim] at hup
-  exact withBot_eq_of_le_of_add_one_le hlow' (by rw [show d + Fintype.card K + 1 = d + 1 + Fintype.card K by ring]; exact hup)
+  exact _root_.UpperTheory.Reformulated.B.Ydd3.withBot_eq_of_le_of_add_one_le hlow' (by rw [show d + Fintype.card K + 1 = d + 1 + Fintype.card K by ring]; exact hup)
 
 end
 

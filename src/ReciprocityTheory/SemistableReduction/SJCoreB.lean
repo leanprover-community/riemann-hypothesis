@@ -1,7 +1,12 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
-public import ReciprocityTheory.SemistableReduction.SJCoreA
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

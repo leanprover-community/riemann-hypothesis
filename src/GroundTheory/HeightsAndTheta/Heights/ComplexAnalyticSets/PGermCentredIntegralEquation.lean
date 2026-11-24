@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermPrimitivePresentation
+public import Mathlib.Topology.Germ
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -76,8 +80,8 @@ theorem exists_monic_map_eq_X_pow {R B K : Type*} [CommRing R] [CommRing B] [Fie
     simpa using this
   have hqmap : q.map ε = X ^ q.natDegree := by
     conv_lhs => rw [hqm.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum, add_eq_left]
+
+    rw [Polynomial.map_add (f := _), Polynomial.map_pow, Polynomial.map_X, Polynomial.map_sum, add_eq_left]
     refine Finset.sum_eq_zero fun k hk => ?_
     have hk' : q.natDegree - k ≠ 0 := by have := Finset.mem_range.1 hk; omega
     have : q.coeff k ∈ RingHom.ker ε := Ideal.pow_le_self hk' (hqc k)
@@ -126,8 +130,8 @@ theorem toGerm_monic_expr {d : ℕ} (A : (σ → ℂ) →L[ℂ] (Fin d → ℂ))
     (c : Fin n → anFun (A w)) :
     toGerm w (x ^ n + ∑ j, compA A w (c j) * x ^ (j : ℕ)) =
       toGerm w x ^ n + ∑ j, pull A w (toGerm (A w) (c j)) * toGerm w x ^ (j : ℕ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_add (f := _), map_sum, map_mul, map_pow, pull_toGerm]
+
+  simp [map_add (f := _), map_sum, map_mul, map_pow, pull_toGerm]
 
 theorem coe_monic_expr {d : ℕ} (A : (σ → ℂ) →L[ℂ] (Fin d → ℂ)) (w : σ → ℂ) (x : anFun w) (n : ℕ)
     (c : Fin n → anFun (A w)) :
@@ -137,8 +141,8 @@ theorem coe_monic_expr {d : ℕ} (A : (σ → ℂ) →L[ℂ] (Fin d → ℂ)) (w
   simp [compA, Finset.sum_apply]
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem proof : CentredIntegralEquation.Statement := by
   classical
   intro σ _ w k p d A hp hcoord hpoly g hg
@@ -158,8 +162,8 @@ theorem proof : CentredIntegralEquation.Statement := by
         Ideal.Quotient.mk I (toGerm w (x ^ n + ∑ j, compA A w (c j) * x ^ (j : ℕ))) := by
     intro x n c
     rw [toGerm_monic_expr]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, map_mul, map_pow, aeval_X, aeval_C, halg]
+
+    simp only [map_add (f := _), map_sum, map_mul, map_pow, aeval_X, aeval_C, halg]
   set zc : σ → anFun w := fun i => mkA (fun z => z i)
     ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : σ => ℂ) i).analyticAt w)
   set cz : σ → holGerms w ⧸ I := fun i => Ideal.Quotient.mk I (toGerm w (zc i))
@@ -200,8 +204,8 @@ theorem proof : CentredIntegralEquation.Statement := by
       rw [← sub_eq_zero, ← map_sub, ← map_sub]
       exact (hcl _ _ hv).2 hcomb
     rw [h1]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [v, map_sum, map_mul, map_prod, map_pow, ← pull_toGerm]
+
+    simp only [v, map_sum, map_mul, map_prod, map_pow, ← pull_toGerm]
     refine Subalgebra.sum_mem _ fun m _ => Subalgebra.mul_mem _ ?_ (Subalgebra.prod_mem _ fun i _ =>
       Subalgebra.pow_mem _ (Algebra.subset_adjoin (Set.mem_range_self i)) _)
     rw [← halg]
@@ -248,16 +252,16 @@ theorem proof : CentredIntegralEquation.Statement := by
     simp only [toGerm_rep]
     rw [Fin.sum_univ_eq_sum_range (fun i => pull A w (F.coeff i) * toGerm w gA ^ i) n, ← hF0]
     conv_rhs => rw [hFm.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add (f := _), map_sum, map_mul, map_pow, aeval_X, aeval_C, halg, gcl]
+
+    simp only [map_add (f := _), map_sum, map_mul, map_pow, aeval_X, aeval_C, halg, gcl]
     rfl
   · simp only [hrepv]
     rw [Fin.sum_univ_eq_sum_range (fun i => germEval (A w) (F.coeff i) * T ^ i) n]
     have h := congrArg (eval T) hFmap
     conv_lhs at h => rw [hFm.as_sum]
     have hd : F.natDegree = Q.natDegree := hdeg
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [Polynomial.map_sum, eval_finsetSum, hd, hdeg] using h
+
+    simpa [Polynomial.map_sum, eval_finsetSum, hd, hdeg] using h
 
 end CentredIntegralEquation
 

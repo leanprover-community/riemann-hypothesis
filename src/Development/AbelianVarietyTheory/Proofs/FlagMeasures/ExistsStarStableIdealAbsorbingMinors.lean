@@ -1,11 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
-public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SameBlockAppend
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.FractionalIdeal.Norm
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -212,7 +259,7 @@ private theorem exists_triangular_lattice_vectors (F : _root_.Formalism.Hermitia
       intro a b hab
       have hab' : a < b := hab
       simp [hab'.ne, hm a b hab'.le]
-    rw [Matrix.det_of_lowerTriangular _ hP]
+    rw [Matrix.det_of_isLowerTriangular _ hP]
     exact Finset.prod_congr rfl fun a _ => by simp [hm a a le_rfl]
   · intro a
     convert hmΛ a using 1
@@ -237,10 +284,10 @@ private theorem hermForm_combinations_eq_gram_mul {l : ℕ} (P Q : Matrix (Fin l
     (hl : l ≤ r + 1) (a c : Fin l) :
     H.B (∑ b, P a b • F.e (Fin.castLE hl b)) (∑ d, Q c d • F'.e (Fin.castLE hl d)) =
       (P * (_root_.Formalism.HermitianLatticeCounting.S6.Zhat F F').submatrix (Fin.castLE hl) (Fin.castLE hl) * (Q.map star).transpose) a c := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Matrix.submatrix_apply,
-    _root_.Formalism.HermitianLatticeCounting.S6.Zhat, Matrix.of_apply, map_sum, LinearMap.sum_apply, map_smul, map_smulₛₗ, LinearMap.smul_apply,
-    smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
+
+  simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Matrix.submatrix_apply,
+  _root_.Formalism.HermitianLatticeCounting.S6.Zhat, Matrix.of_apply, map_sum, LinearMap.sum_apply, map_smul, map_smulₛₗ, LinearMap.smul_apply,
+  smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun d _ => ?_
   simp [starRingEnd_apply]; ring
 
@@ -298,7 +345,7 @@ private theorem Dl_mul_mem_one_of_mem_ipow (N : _root_.GlobalTheory.DegCnt.NF H 
         star v ∈ _root_.GlobalTheory.HermLat.lead N.F' Λ (Fin.castLE hl a) := by
     intro a v hv
     have hv' : v ∈ _root_.GlobalTheory.DegCnt.ipow N.𝔡 (-((r : ℤ) - a)) := hv
-    rw [lead_eq_ipow_of_isFrame N h.2.1, lead_eq_ipow_of_isFrame N h.2.2, Fin.coe_castLE]
+    rw [lead_eq_ipow_of_isFrame N h.2.1, lead_eq_ipow_of_isFrame N h.2.2, Fin.val_castLE]
     refine ⟨hv', star_mem_ipow_neg_of_nonneg N ?_ hv'⟩
     have := a.isLt
     omega
@@ -444,7 +491,7 @@ open NumberField in
 open scoped Pointwise ENNReal Classical nonZeroDivisors in
 theorem _root_.GlobalTheory.DegCnt.Absorb.exists_absorbing_ideal : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V), _root_.Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ) (N : _root_.GlobalTheory.DegCnt.NF H r), ∀ (g : ℕ) (Λ : Submodule (𝓞 K) V), 1 ≤ g → N.IsTerm g Λ → ∃ 𝔠 : Ideal (𝓞 K), (Ideal.absNorm 𝔠 : ℝ) ≤ (N.Db * N.NT) ^ 2 ∧ 1 ≤ N.Db ∧ 1 ≤ N.Del ∧ ∀ Q : Prop, (𝔠 ≠ ⊥ → (∀ x ∈ 𝔠, ∃ y ∈ 𝔠, (y : K) = star (x : K)) → (∀ x ∈ 𝔠, (N.T : 𝓞 K) ∣ x) → (∀ (l : ℕ) (hl : l ≤ r + 1), l ≤ N.j → _root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' l hl ≠ 0 → ∀ x ∈ 𝔠, ∀ y ∈ _root_.GlobalTheory.DegCnt.ipow N.𝔡 (2 * ∑ a ∈ Finset.range l, ((r : ℤ) - a)), (x : K) * y / _root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' l hl ∈ (1 : Submodule (𝓞 K) K) ∧ (x : K) * y / star (_root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' l hl) ∈ (1 : Submodule (𝓞 K) K)) → Q) → Q := by
   intro K V _ _ _ _ _ _ _ _ H hCM r N g Λ _ hΛ
-  haveI : IsTotallyComplex K := hCM.1
+  have : IsTotallyComplex K := hCM.1
   have hF := hΛ.1
   choose A hA0 hA using fun l => _root_.GlobalTheory.DegCnt.Absorb.exists_ideal N hF l
   set S := (Finset.Icc 1 N.j).filter (fun l => N.nD l ≠ 0) with hSdef

@@ -1,7 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.FixIffSpan
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.EqOneOfToHAFin
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushInv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -28,7 +69,7 @@ theorem theta_lin_indep {F E : Type} [Field F] [Field E] [Algebra F E] (φ : E �
       rw [hγ, map_div₀, div_eq_iff hφ0]
       push_cast
       field_simp
-      first | linear_combination h | linear_combination -h | linear_combination (↑(r 1) : ℂ)⁻¹ * h
+      first | linear_combination h
     have hσγ : σ γ = γ := by
       apply φ.injective
       rw [hσφ, hφγ, Complex.conj_ofReal]
@@ -66,12 +107,11 @@ theorem thetaInf_inj {D : D7} (X : HidaSetting D) (y : Ainf X.B.I.F ⊗[X.B.I.F]
     rw [Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul', smul_eq_mul, mul_one]
   have hc : ∀ i, B.repr y i = 0 := by
     intro i
-    change (B.repr y i : (v : InfinitePlace X.B.I.F) → v.Completion) = 0
     funext v
     have hvr : v.IsReal := IsTotallyReal.isReal v
     have hv := h v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hy, map_sum, Fin.sum_univ_two, thetaInf_tmul, thetaInf_tmul] at hv
+
+    rw [hy, map_sum, Fin.sum_univ_two, thetaInf_tmul, thetaInf_tmul] at hv
     have hev : ∀ c : Ainf X.B.I.F, PI.AprimeInfU.evInf X v c =
         ((InfinitePlace.Completion.extensionEmbeddingOfIsReal hvr
           ((c : (w : InfinitePlace X.B.I.F) → w.Completion) v) : ℝ) : ℂ) := by
@@ -126,8 +166,8 @@ theorem stabInfV_holds : StabInfV := by
   have hvec : ∀ v b i, PI.AprimeInfU.thetaInf X v ((Mm *ᵥ Y0 X u' b) i) =
       ((Mm.map (PI.AprimeInfU.thetaInf X v)) *ᵥ fun j => X.B.I.φ v (tupH (frameOf X u') b j)) i := by
     intro v b i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
+
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [show Y0 X u' b j = inclR (Ainf X.B.I.F) (tupH (frameOf X u') b j) from rfl, thetaInf_inclR]
   have hY0 : ∀ v b i, PI.AprimeInfU.thetaInf X v (Y0 X u' b i) = X.B.I.φ v (tupH (frameOf X u') b i) := by

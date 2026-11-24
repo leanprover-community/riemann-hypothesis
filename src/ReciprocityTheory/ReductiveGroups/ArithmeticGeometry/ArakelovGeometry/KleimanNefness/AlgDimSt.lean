@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Basic
+public import Mathlib.RingTheory.KrullDimension.Basic
 
 @[expose] public section
 

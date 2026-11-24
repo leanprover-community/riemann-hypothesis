@@ -2,7 +2,49 @@ module
 
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.FrameInvMulVecNegativeVector
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselNeZeroOfCyclicOrbit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 
@@ -34,7 +76,7 @@ private theorem continuous_mulMt_right_const {k r : ℕ} (x : Formalism.QuantumD
   fun_prop
 
 
-set_option maxHeartbeats 800000 in
+
 theorem quot_zero_real {k r : ℕ} {μG μS νq : Measure (Formalism.QuantumDeterminants.Mt k r)} [SFinite μS]
     (hq : PI.BesselPeriodGGP.IsQuotMeas μG μS νq) (f : Formalism.QuantumDeterminants.Mt k r → ℝ) (hfm : Measurable f)
     (hfi : Integrable f μG) (hin : ∀ᵐ x ∂νq, ∫ s, f (mulMt s x) ∂μS = 0) : ∫ x, f x ∂μG = 0 := by
@@ -72,7 +114,7 @@ theorem quot_zero_real {k r : ℕ} {μG μS νq : Measure (Formalism.QuantumDete
   rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hfi, heq, sub_self]
 
 
-set_option maxHeartbeats 800000 in
+
 theorem quot_zero {k r : ℕ} {μG μS νq : Measure (Formalism.QuantumDeterminants.Mt k r)} [SFinite μS]
     (hq : PI.BesselPeriodGGP.IsQuotMeas μG μS νq) (F : Formalism.QuantumDeterminants.Mt k r → ℂ) (hFm : Measurable F)
     (hFi : Integrable F μG) (hin : ∀ᵐ x ∂νq, ∫ s, F (mulMt s x) ∂μS = 0) : ∫ x, F x ∂μG = 0 := by
@@ -168,9 +210,7 @@ theorem uw_inv {z : Fin (2 * r + k + 1) → ℂ} {h : Formalism.FourierDecayAlt.
       _ = w := by rw [Matrix.mulVec_mulVec, h2, Matrix.one_mulVec]
   exact ⟨⟨hi, fun a => ⟨key _ (hfix a).1, key _ (hfix a).2⟩, key _ hz⟩, h1, h2⟩
 
-theorem uh_inv {g : Formalism.FourierDecayAlt.ThreeDimData.Mx k r} (hg : g ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) :
-    g⁻¹ ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r) ∧ g * g⁻¹ = 1 ∧ g⁻¹ * g = 1 := by
-  exact inv_mem_UH_Hpk_and_mul_inv_of_mem hg
+alias uh_inv := _root_.Formalism.FourierDecayAlt.P.MatrixMultiplicationContinuity.inv_mem_UH_Hpk_and_mul_inv_of_mem
 
 end Groups
 
@@ -244,9 +284,8 @@ theorem piW_inner {z : Fin (2 * r + k + 1) → ℂ} {u : Fin k → ℝ} {π : Fo
   have hm := hmul h hh h⁻¹ hi
   rw [hhi, h1] at hm
   have hs : ∀ x, π h (π h⁻¹ x) = x := fun x => by
-    have h3 := congrArg (fun T : Wp →L[ℂ] Wp => T x) hm
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.one_apply] at h3
-    exact h3.symm
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.one_apply] using
+      (congrArg (fun T : Wp →L[ℂ] Wp => T x) hm).symm
   let L : Wp →ₗᵢ[ℂ] Wp := { toLinearMap := (π h : Wp →ₗ[ℂ] Wp), norm_map' := hnorm h hh }
   calc ⟪η, π h w⟫_ℂ = ⟪L (π h⁻¹ η), L w⟫_ℂ := by
         show ⟪η, π h w⟫_ℂ = ⟪π h (π h⁻¹ η), π h w⟫_ℂ
@@ -286,8 +325,7 @@ theorem sigma_facts {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 
   have hdet : IsUnit P.det := (Matrix.isUnit_iff_isUnit_det P).mp hPu
   have hPiP : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul P hdet
   refine ⟨?_, fun g hg v => ?_⟩
-  · simp only [Matrix.mul_one, hPiP] at h1
-    exact h1
+  · simpa only [Matrix.mul_one, hPiP] using h1
   · have hmem := cayley_maps hP hg
     have hv := hnorm _ hmem v
     have e : P⁻¹ * (P * g * P⁻¹) * P = g := by
@@ -314,7 +352,7 @@ theorem sigma_inner {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 
     simp only [Matrix.mul_assoc]
     rw [← Matrix.mul_assoc P⁻¹ P, hPiP, Matrix.one_mul]
   have hm := hmul _ hm1 _ hm2
-  simp only [prod, hggi, conj, Matrix.mul_one, Matrix.one_mul, hPiP, hPPi] at hm h1
+  simp only [prod, hggi, conj, Matrix.mul_one, hPiP, hPPi] at hm h1
 
   have hsg : ∀ w, σ g (σ g⁻¹ w) = w := fun w => by
     have := congrArg (fun T : H →L[ℂ] H => T w) hm

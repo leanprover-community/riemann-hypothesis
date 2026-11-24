@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRing
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGraphIsometric
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGraphChangeOfModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGraphIsometricForms
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
+public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGraphChangeOfModel
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGraphIsometric
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRing
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

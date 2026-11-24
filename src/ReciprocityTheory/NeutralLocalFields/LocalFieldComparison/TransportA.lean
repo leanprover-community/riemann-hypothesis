@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.Hypotheses.GalCohDefs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

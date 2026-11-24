@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

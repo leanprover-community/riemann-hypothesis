@@ -1,15 +1,15 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 
 @[expose] public section
 
 namespace Bl.FirstBlockLemmaG
 
-theorem goal1 :
-  ∀ {O : Type} [inst : CommRing.{0} O] [inst_1 : IsLocalRing.{0} O] {a m : O},
-  IsUnit.{0} a → Membership.mem.{0, 0} (IsLocalRing.maximalIdeal.{0} O) m → IsUnit.{0} (HSub.hSub.{0, 0, 0} a m) := by
-  intro O _ _ a m ha hm
+/-- In a local ring, subtracting an element of the maximal ideal from a unit leaves a unit. -/
+theorem goal1 {O : Type} [CommRing O] [IsLocalRing O] {a m : O}
+    (ha : IsUnit a) (hm : m ∈ IsLocalRing.maximalIdeal O) : IsUnit (a - m) := by
   by_contra h
   have h1 : a - m ∈ IsLocalRing.maximalIdeal O :=
     (IsLocalRing.mem_maximalIdeal (a - m)).mpr (mem_nonunits_iff.mpr h)

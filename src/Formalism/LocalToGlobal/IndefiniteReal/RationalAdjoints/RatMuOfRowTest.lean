@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RatZOfTests
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.CoordRat
 

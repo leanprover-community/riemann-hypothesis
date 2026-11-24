@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.CompletionAtPlace.Galois
-public import GroundTheory.LocalFields.Ramification
+public import GroundTheory.GlobalFields.CompletionAtPlace.Degree
+public import GroundTheory.LocalFields.Uniqueness
+public import Mathlib.FieldTheory.Galois.IsGaloisGroup
+public import Mathlib.RingTheory.Frobenius
+import Mathlib.NumberTheory.RamificationInertia.Galois
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

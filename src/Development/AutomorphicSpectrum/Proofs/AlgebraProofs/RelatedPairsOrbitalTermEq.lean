@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -26,8 +69,8 @@ theorem trace_dualInt_mul (k : Module.Free.ChooseBasisIndex ℤ (𝓞 E)) (x : E
     unfold dualInt
     convert this
   conv_lhs => rw [← (integralBasis E).sum_repr x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.mul_sum, map_sum, mul_smul_comm, map_smul, h]
+
+  simp only [Finset.mul_sum, map_sum, mul_smul_comm, map_smul, h]
   simp
 
 theorem mul_dualInt_eq (a : 𝓞 E) (l : Module.Free.ChooseBasisIndex ℤ (𝓞 E)) :
@@ -51,9 +94,9 @@ theorem sum_dualInt_mul :
   classical
   rw [← sub_eq_zero]
   refine (traceForm_nondegenerate ℚ E).1 _ fun y => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Algebra.traceForm_apply, sub_mul, map_sub, one_mul, Finset.sum_mul, map_sum,
-    Algebra.trace_eq_matrix_trace (integralBasis E) y, sub_eq_zero, Matrix.trace]
+
+  rw [Algebra.traceForm_apply, sub_mul, map_sub, one_mul, Finset.sum_mul, map_sum,
+  Algebra.trace_eq_matrix_trace (integralBasis E) y, sub_eq_zero, Matrix.trace]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [mul_assoc, trace_dualInt_mul, Matrix.diag_apply, Algebra.leftMulMatrix_eq_repr_mul,
     integralBasis_apply, mul_comm y]
@@ -76,15 +119,15 @@ theorem rho_mul_eigProj (ρ : 𝓞 E →+* Module.End K V) (σ : E →+* K) (a :
     intro k
     rw [mul_smul_comm, ← map_mul]
     conv_lhs => rw [← (RingOfIntegers.basis E).sum_repr (a * RingOfIntegers.basis E k)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.smul_sum]
+
+    rw [map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [map_zsmul, mul_smul, Int.cast_smul_eq_zsmul]
   simp_rw [h1]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [smul_smul, ← map_mul, mul_dualInt_eq, map_sum, Finset.sum_smul]
+
+  rw [smul_smul, ← map_mul, mul_dualInt_eq, map_sum, Finset.sum_smul]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_mul σ, map_intCast, mul_comm]
 
@@ -111,8 +154,8 @@ theorem eigProj_spec : ∀ (K : Type) [Field K] [CharZero K] (V : Type) [AddComm
     unfold eigProj
     rw [LinearMap.sum_apply]
     simp_rw [LinearMap.smul_apply, hx, smul_smul, ← map_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.sum_smul, ← map_sum, sum_dualInt_mul, map_one, one_smul]
+
+    rw [← Finset.sum_smul, ← map_sum, sum_dualInt_mul, map_one, one_smul]
   · rw [mem_eigSp_iff_apply] at hx
     obtain ⟨a, ha⟩ : ∃ a : 𝓞 E, σ' (a : E) ≠ σ (a : E) := by
       by_contra hcon

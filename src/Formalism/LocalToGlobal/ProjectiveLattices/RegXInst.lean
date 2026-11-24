@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntegralExtensionOfRegR1
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
-public import Formalism.LocalToGlobal.ProjectiveLattices.ValSetAlgSubset
 
 @[expose] public section
 

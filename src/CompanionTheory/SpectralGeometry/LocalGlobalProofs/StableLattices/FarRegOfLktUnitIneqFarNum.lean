@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.LowKAddStrictAnti
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -19,29 +62,7 @@ variable {n : ℕ}
 
 theorem rho_sum (ε : Fin n → Bool) (a : Fin n) :
     rhoN ε a + rhoC ε a = ((n : ℝ) - 1) / 2 - ((a : ℕ) : ℝ) := by
-  unfold rhoN rhoC
-  have kgt := Finset.card_filter_add_card_filter_not (s := Ioi a) (fun b => ε b = ε a)
-  have e1 : (Ioi a).filter (fun b => ε b = ε a) = univ.filter (fun b => a < b ∧ ε b = ε a) := by
-    ext b; simp
-  have e2 : (Ioi a).filter (fun b => ¬ ε b = ε a) = univ.filter (fun b => a < b ∧ ε b ≠ ε a) := by
-    ext b; simp
-  rw [e1, e2, Fin.card_Ioi] at kgt
-  have klt := Finset.card_filter_add_card_filter_not (s := Iio a) (fun b => ε b = ε a)
-  have e3 : (Iio a).filter (fun b => ε b = ε a) = univ.filter (fun b => b < a ∧ ε b = ε a) := by
-    ext b; simp
-  have e4 : (Iio a).filter (fun b => ¬ ε b = ε a) = univ.filter (fun b => b < a ∧ ε b ≠ ε a) := by
-    ext b; simp
-  rw [e3, e4, Fin.card_Iio] at klt
-  have ha := a.isLt
-  have kgt' : (univ.filter (fun b => a < b ∧ ε b = ε a)).card +
-      (univ.filter (fun b => a < b ∧ ε b ≠ ε a)).card + (a : ℕ) + 1 = n := by omega
-  have rgt : ((univ.filter (fun b => a < b ∧ ε b = ε a)).card : ℝ) +
-      ((univ.filter (fun b => a < b ∧ ε b ≠ ε a)).card : ℝ) + ((a : ℕ) : ℝ) + 1 = n := by
-    exact_mod_cast kgt'
-  have rlt : ((univ.filter (fun b => b < a ∧ ε b = ε a)).card : ℝ) +
-      ((univ.filter (fun b => b < a ∧ ε b ≠ ε a)).card : ℝ) = ((a : ℕ) : ℝ) := by
-    exact_mod_cast klt
-  linarith
+  apply GlobalTheory.DiscreteSeriesTest.rhoN_add_rhoC
 
 theorem abs_rhoC_le (ε : Fin n → Bool) (a : Fin n) : |rhoC ε a| ≤ n := by
   unfold rhoC

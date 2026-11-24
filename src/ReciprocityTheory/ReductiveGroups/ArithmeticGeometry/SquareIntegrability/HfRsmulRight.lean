@@ -1,7 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GaussianTailBound
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

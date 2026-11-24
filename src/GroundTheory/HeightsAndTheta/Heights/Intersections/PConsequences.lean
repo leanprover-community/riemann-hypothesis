@@ -1,13 +1,12 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDerived
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ConservationDegreeFormOfExistence
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeA
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 
 @[expose] public section
 
@@ -54,7 +53,7 @@ theorem tensor_sqMetric_a {A : HermLine ι} {α β : K → ℕ} (h : ∀ k, (α 
   rw [← h k]
   ring
 
-theorem Conservation.proof : Conservation.Statement := Conservation.statement_holds
+alias Conservation.proof := _root_.GroundTheory.Heights₂.Heights.Inter.Conservation.statement_holds
 
 theorem InductiveIntersectionFormula.proof : InductiveIntersectionFormula.Statement := by
   classical

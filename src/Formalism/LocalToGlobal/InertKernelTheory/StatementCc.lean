@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 
 @[expose] public section

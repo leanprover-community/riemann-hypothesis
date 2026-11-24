@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 

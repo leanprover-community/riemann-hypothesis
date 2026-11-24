@@ -1,8 +1,44 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.ScalarPairDr
+public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.EqZeroOfMulVec
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,7 +57,7 @@ section Orth
 
 variable (S : HSpace E)
 
-theorem hT_swap (x y : S.V) : S.hT y x = star (S.hT x y) := PI.PairCorankPos.W.hT_swap S x y
+alias hT_swap := _root_.PI.PairCorankPos.W.hT_swap
 
 theorem mem_orth {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ x ∈ U, S.hT x v = 0 := by
   simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
@@ -55,8 +91,8 @@ theorem finrank_orth (U : Submodule E S.V) :
     rw [Fintype.linearIndependent_iff]
     intro c hc
     have h1 : S.hT (∑ i, star (c i) • u i) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [LinearMap.map_smulₛₗ, starRingEnd_apply, star_star]
       exact hc
     have h2 : ∑ i, star (c i) • u i = 0 :=
@@ -73,12 +109,12 @@ theorem finrank_orth (U : Submodule E S.V) :
     · intro h x hx
       have hx' : x = ∑ i, b.repr ⟨x, hx⟩ i • u i := by
         have e := congrArg U.subtype (b.sum_repr ⟨x, hx⟩)
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul, Submodule.subtype_apply] at e
+
+        simp only [map_sum, map_smul, Submodule.subtype_apply] at e
         exact e.symm
       have hmem : S.hT x ∈ Submodule.span E (Set.range φ) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hx', map_sum]
+
+        rw [hx', map_sum]
         refine Submodule.sum_mem _ fun i _ => ?_
         rw [LinearMap.map_smulₛₗ]
         exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
@@ -158,9 +194,9 @@ theorem exists_b (F : FlagG S r T) (F' : FlagG S r T') (hG : Gflag F F' ≠ 0) (
   let w : S.V := ∑ j, v j • F'.e j
   have hrow : ∀ i, (Zhat F F' *ᵥ v') i = S.hT (F.fvec i) w := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [v', w, Matrix.mulVec, dotProduct, Fin.sum_univ_castSucc, Fin.snoc_castSucc,
-      Fin.snoc_last, mul_zero, add_zero, map_sum, map_smul, smul_eq_mul, zhat_apply, fvec_castSucc]
+
+    simp only [v', w, Matrix.mulVec, dotProduct, Fin.sum_univ_castSucc, Fin.snoc_castSucc,
+    Fin.snoc_last, mul_zero, add_zero, map_sum, map_smul, smul_eq_mul, zhat_apply, fvec_castSucc]
     exact Finset.sum_congr rfl fun j _ => mul_comm _ _
   have hsub : ∀ a, (Zhat F F' *ᵥ v') (Fin.castSucc a) =
       ((Zhat F F').submatrix Fin.castSucc Fin.castSucc *ᵥ v) a := by
@@ -207,8 +243,8 @@ theorem Dr_zero_of (F : FlagG S r T) (F' : FlagG S r T') {w : S.V} (hw : w ∈ F
     simp
   · funext a
     have := he a
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul] at this
+
+    simp only [map_sum, map_smul, smul_eq_mul] at this
     simp only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, zhat_apply, fvec_castSucc,
       Pi.zero_apply]
     rw [← this]
@@ -233,8 +269,8 @@ theorem eq_zero_of_orth (F : FlagG S r T) (F' : FlagG S r T') (hG : Gflag F F' �
     have h := ho b
     rw [hT_swap S (∑ a, c a • F.e a) (F'.fvec b), star_eq_zero] at h
     rw [← h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.sum_apply, hT_smul_left, zhat_apply, fvec_castSucc]
+
+    simp only [map_sum, LinearMap.sum_apply, hT_smul_left, zhat_apply, fvec_castSucc]
   apply hG
   let v' : Fin (r + 1) → E := Fin.snoc (α := fun _ => E) (fun a => star (c a)) 0
   have hne' : v' ≠ 0 := by

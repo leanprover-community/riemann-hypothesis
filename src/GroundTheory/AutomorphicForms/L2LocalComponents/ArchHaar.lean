@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
+public import GroundTheory.AutomorphicForms.GKModules.Garding
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalHaar
-public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteAdelicHaar
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

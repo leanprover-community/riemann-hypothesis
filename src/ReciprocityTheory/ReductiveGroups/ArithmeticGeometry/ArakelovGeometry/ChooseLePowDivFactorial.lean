@@ -1,8 +1,13 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SectionModuleEqSpanPow
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.EqZeroOfSecTraceMulEqZero
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ExistsNatMulMemConeRingIntFin
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SectionModuleEqSpanPow
 
 @[expose] public section
 
@@ -16,25 +21,6 @@ theorem prod_div_pow_degree (x : κ → Ω) (j : κ) (m : κ →₀ ℕ) :
     (m.prod fun i k => x i ^ k) / x j ^ (Finsupp.degree m) = m.prod fun i k => (x i / x j) ^ k := by
   simp only [Finsupp.prod, Finsupp.degree, div_pow, Finset.prod_div_distrib, Finset.prod_pow_eq_pow_sum]
   rfl
-
-theorem div_pow_mem_fnField (x : κ → Ω) (j : κ) {n : ℕ} {s : Ω} (hs : s ∈ sec ℤ x n) :
-    s / x j ^ n ∈ fnField x := by
-  unfold ReciprocityTheory.ChartRestriction.G.Geo.sec at hs
-  obtain ⟨p, hp, rfl⟩ := Submodule.mem_map.1 hs
-  have hhom := (MvPolynomial.mem_homogeneousSubmodule n p).1 hp
-  rw [AlgHom.toLinearMap_apply, MvPolynomial.aeval_def, MvPolynomial.eval₂_eq, Finset.sum_div]
-  refine sum_mem fun m hm => ?_
-  have hdeg : Finsupp.degree m = n := by
-    rw [Finsupp.degree_eq_weight_one]
-    exact hhom (MvPolynomial.mem_support_iff.1 hm)
-  rw [mul_div_assoc]
-  refine mul_mem ?_ ?_
-  · rw [eq_intCast]
-    exact intCast_mem _ _
-  · have hprod := prod_div_pow_degree x j m
-    rw [hdeg] at hprod
-    rw [show (∏ i ∈ m.support, x i ^ m i) = m.prod fun i k => x i ^ k from rfl, hprod]
-    exact prod_mem fun i _ => pow_mem (IntermediateField.subset_adjoin ℚ {t : Ω | ∃ i j, t = x i / x j} ⟨i, j, rfl⟩) _
 
 theorem coord_ne_zero_of_free (y : Fin (D + 1) → Ω) (hy : coordIdeal ℤ y = ⊥) (l : Fin (D + 1)) : y l ≠ 0 := by
   intro h0
@@ -65,7 +51,7 @@ theorem alpha_injective (x : κ → Ω) (e : Fin (D + 1) → κ) (h : IsRatProjF
     (hP : ∀ l, P l ∈ sec ℤ (x ∘ e) n) (h0 : ∑ l, P l * ε l = 0) : P = 0 := by
   have hx0 : x (e 0) ≠ 0 := coord_ne_zero_of_free (x ∘ e) h.free 0
   rw [Fintype.linearIndependent_iff] at hli
-  have hmem : ∀ l, P l / (x ∘ e) 0 ^ n ∈ fnField (x ∘ e) := fun l => div_pow_mem_fnField (x ∘ e) 0 (hP l)
+  have hmem : ∀ l, P l / (x ∘ e) 0 ^ n ∈ fnField (x ∘ e) := fun l => _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.TraceNormBounds.sec_div_mem (x ∘ e) 0 (hP l)
   have hsum : ∑ l, (⟨P l / (x ∘ e) 0 ^ n, hmem l⟩ : fnField (x ∘ e)) • ε l = 0 := by
     have hrw : ∑ l, (⟨P l / (x ∘ e) 0 ^ n, hmem l⟩ : fnField (x ∘ e)) • ε l =
         (∑ l, P l * ε l) / (x ∘ e) 0 ^ n := by
@@ -82,8 +68,8 @@ theorem alpha_injective (x : κ → Ω) (e : Fin (D + 1) → κ) (h : IsRatProjF
 theorem secTrace_add (x : κ → Ω) (e : Fin (D + 1) → κ) (_h : IsRatProjFrame x e) (n : ℕ) {s t : Ω}
     (hs : s ∈ sec ℤ x n) (ht : t ∈ sec ℤ x n) :
     secTrace x e n (s + t) = secTrace x e n s + secTrace x e n t := by
-  have hs' := div_pow_mem_fnField x (e 0) hs
-  have ht' := div_pow_mem_fnField x (e 0) ht
+  have hs' := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.TraceNormBounds.sec_div_mem x (e 0) hs
+  have ht' := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.TraceNormBounds.sec_div_mem x (e 0) ht
   have hst : (s + t) / x (e 0) ^ n ∈ fnField x := by
     rw [add_div]
     exact add_mem hs' ht'
@@ -183,7 +169,6 @@ theorem pow_div_factorial_le_choose (m D : ℕ) : ((m : ℝ) ^ D) / (D.factorial
   rw [h1] at h2
   refine le_trans ?_ h2
   gcongr
-  push_cast
   linarith
 
 theorem choose_le_pow_div_factorial (N D : ℕ) : (N.choose D : ℝ) ≤ ((N : ℝ) ^ D) / (D.factorial : ℝ) := by

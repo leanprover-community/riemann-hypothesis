@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
-public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonalBis
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPins
 public import Formalism.LocalToGlobal.ProjectiveLattices.ParCanon
 

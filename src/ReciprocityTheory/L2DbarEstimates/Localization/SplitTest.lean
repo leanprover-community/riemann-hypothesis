@@ -1,11 +1,14 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
-public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.CvxOfConvex
-public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.MinimalSolution
-public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.HormanderLemma
-public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.OntoWithBoundTop
+public import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
+public import Mathlib.Analysis.Calculus.ContDiff.Basic
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 @[expose] public section
 
@@ -108,8 +111,6 @@ theorem splitT_hcs {X : Type*} [Zero X] (u : M → X) (S : Fin n → Set M)
 theorem splitT_cont (f : M → V n) (h : ∀ j, Continuous fun x => f x j) : Continuous f := by
   first
   | exact (PiLp.continuous_toLp 2 _).comp (continuous_pi h)
-  | exact (EuclideanSpace.equiv (Fin n) ℂ).symm.continuous.comp (continuous_pi h)
-  | exact continuous_induced_rng.2 (continuous_pi h)
 
 theorem splitT_weakS (F G : M → V n) (hFG : F =ᵐ[vol n z] G) (σ : M → Fin n → Fin n → ℂ)
     (h : IsWeakS n z F σ) : IsWeakS n z G σ := by
@@ -159,7 +160,6 @@ private theorem smooth_exp_ofReal_of_smooth {M : Type*} [TopologicalSpace M] (n 
   intro e he
   have hg : ContDiff ℝ ∞ (fun w : ℂ => ((Real.exp w.re : ℝ) : ℂ)) := by
     first
-    | fun_prop
     | exact Complex.ofRealCLM.contDiff.comp (Real.contDiff_exp.comp Complex.reCLM.contDiff)
   refine (hg.comp_contDiffOn (hu e he)).congr fun p _ => ?_
   simp [Function.comp]
@@ -249,7 +249,6 @@ theorem splitTest (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
       refine splitT_hcs _ (fun _ : Fin n => tsupport g) (fun _ => hg.2) fun x hx => ?_
       first
       | exact PiLp.ext fun j => hoffg g hg.2 j x (hx j)
-      | (ext j; exact hoffg g hg.2 j x (hx j))
     have hDg : MemLp (dbarF n z g) 2 (wvol n z ph₂) := hDc.memLp_of_hasCompactSupport hDs
     have hW := hWS z hz (dbarF n z g) fun j => Smooth.ck n z 1 _ (Smooth.db n z j g hg.1)
     have hsbar : sbar n z (dbarF n z g) = 0 := funext fun x => hSD z hz g (Smooth.ck n z 2 g hg.1) x
@@ -269,17 +268,14 @@ theorem splitTest (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
       _ = ∫ x, conj ((∑ j, db n z j g x * conj (f x j)) * (Real.exp (-ph₂ x) : ℂ)) ∂vol n z := by
           congr 1
           funext x
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_mul, Complex.conj_ofReal, map_sum, PiLp.inner_apply]
+
+          rw [map_mul, Complex.conj_ofReal, map_sum, PiLp.inner_apply]
           congr 1
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [map_mul, Complex.conj_conj]
           show ⟪db n z j g x, f x j⟫_ℂ = _
           first
-          | rfl
           | (simp only [RCLike.inner_apply]; ring)
-          | (simp only [RCLike.inner_apply])
-          | (simp [mul_comm])
       _ = conj (∫ x, (∑ j, db n z j g x * conj (f x j)) * (Real.exp (-ph₂ x) : ℂ) ∂vol n z) :=
           integral_conj
       _ = conj (∫ x, g x * conj (tstar n z ph₁ ph₂ f x) * (Real.exp (-ph₁ x) : ℂ) ∂vol n z) := by

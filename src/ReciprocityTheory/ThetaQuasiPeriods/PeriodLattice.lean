@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.LinearAlgebra.Matrix.PosDef
 
 @[expose] public section
 
@@ -11,6 +13,12 @@ open Complex Matrix
 namespace ReciprocityTheory.PTheta
 
 def eC (x : ℂ) : ℂ := Complex.exp (2 * Real.pi * Complex.I * x)
+
+theorem eC_add (x y : ℂ) : eC (x + y) = eC x * eC y := by
+  simp only [eC, mul_add, Complex.exp_add]
+
+theorem eC_int (k : ℤ) : eC (k : ℂ) = 1 := by
+  rw [eC, mul_comm, Complex.exp_int_mul_two_pi_mul_I]
 
 variable {ι : Type*} [Fintype ι]
 

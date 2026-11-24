@@ -1,8 +1,67 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PsiEDef
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Normed.Ring.Ultra
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.Ostrowski
+import Mathlib.NumberTheory.Padics.LocalField
+public import Mathlib.NumberTheory.Padics.RingHoms
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
+public import Mathlib.NumberTheory.Padics.PadicIntegers
 
 @[expose] public section
 
@@ -183,9 +242,9 @@ section Completion
 variable {F : Type} [Field F] [NumberField F] (p : HeightOneSpectrum (𝓞 F))
 
 theorem resChar_prime : (resChar p).Prime := by
-  haveI := p.isMaximal
-  letI := Ideal.Quotient.field p.asIdeal
-  haveI : Finite (𝓞 F ⧸ p.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ p.ne_bot
+  have := p.isMaximal
+  let := Ideal.Quotient.field p.asIdeal
+  have : Finite (𝓞 F ⧸ p.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ p.ne_bot
   exact CharP.char_is_prime (𝓞 F ⧸ p.asIdeal) _
 
 theorem resChar_mem : ((resChar p : ℕ) : 𝓞 F) ∈ p.asIdeal := by
@@ -196,14 +255,14 @@ theorem resChar_mem : ((resChar p : ℕ) : 𝓞 F) ∈ p.asIdeal := by
   ValuativeRel.ofValuation (Valued.v : Valuation (p.adicCompletion F) (WithZero (Multiplicative ℤ)))
 
 theorem isLocalField : letI := complRel p; IsNonarchimedeanLocalField (p.adicCompletion F) := by
-  letI := complRel p
-  haveI : (Valued.v : Valuation (p.adicCompletion F) (WithZero (Multiplicative ℤ))).Compatible :=
+  let := complRel p
+  have : (Valued.v : Valuation (p.adicCompletion F) (WithZero (Multiplicative ℤ))).Compatible :=
     Valuation.Compatible.ofValuation _
-  haveI := GlobalTheory.AdelicUnitaryTop.properSpace_adicCompletion F p
-  haveI : IsValuativeTopology (p.adicCompletion F) :=
+  have := GlobalTheory.AdelicUnitaryTop.properSpace_adicCompletion F p
+  have : IsValuativeTopology (p.adicCompletion F) :=
     IsValuativeTopology.of_mem_nhds_zero_iff_vle
       (Valued.v : Valuation (p.adicCompletion F) (WithZero (Multiplicative ℤ))) Valued.mem_nhds_zero
-  haveI : ValuativeRel.IsNontrivial (p.adicCompletion F) := by
+  have : ValuativeRel.IsNontrivial (p.adicCompletion F) := by
     rw [ValuativeRel.isNontrivial_iff_isNontrivial
       (Valued.v : Valuation (p.adicCompletion F) (WithZero (Multiplicative ℤ)))]
     infer_instance
@@ -224,20 +283,20 @@ end Completion
 
 theorem exists_locAt : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (sig : E →ₐ[F] E), Module.finrank F E = 2 → ∀ p : HeightOneSpectrum (𝓞 F), ∃ L : LocAt F E sig p, L.split = none := by
   intro F E _ _ _ _ _ sig hr p
-  letI := complRel p
-  haveI hp : Fact (resChar p).Prime := ⟨resChar_prime p⟩
-  haveI hc : CharZero (p.adicCompletion F) :=
+  let := complRel p
+  have hp : Fact (resChar p).Prime := ⟨resChar_prime p⟩
+  have hc : CharZero (p.adicCompletion F) :=
     charZero_of_injective_ringHom (algebraMap F (p.adicCompletion F)).injective
-  haveI := GlobalTheory.AdelicUnitaryTop.properSpace_adicCompletion F p
-  haveI : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
+  have := GlobalTheory.AdelicUnitaryTop.properSpace_adicCompletion F p
+  have : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
   obtain ⟨j, hj⟩ := exists_continuous_padic (resChar p) (norm_resChar_lt_one p)
-  letI alg : Algebra ℚ_[resChar p] (p.adicCompletion F) := j.toAlgebra
-  haveI : ContinuousSMul ℚ_[resChar p] (p.adicCompletion F) :=
+  let alg : Algebra ℚ_[resChar p] (p.adicCompletion F) := j.toAlgebra
+  have : ContinuousSMul ℚ_[resChar p] (p.adicCompletion F) :=
     ⟨(hj.comp continuous_fst).mul continuous_snd⟩
   let sigE : E ≃ₐ[F] E := AlgEquiv.ofBijective sig (AlgHom.bijective sig)
-  letI top : TopologicalSpace (p.adicCompletion F ⊗[F] E) := moduleTopology (p.adicCompletion F) _
-  letI ms : MeasurableSpace (p.adicCompletion F ⊗[F] E) := borel _
-  letI algE : Algebra ℚ_[resChar p] (p.adicCompletion F ⊗[F] E) :=
+  let top : TopologicalSpace (p.adicCompletion F ⊗[F] E) := moduleTopology (p.adicCompletion F) _
+  let ms : MeasurableSpace (p.adicCompletion F ⊗[F] E) := borel _
+  let algE : Algebra ℚ_[resChar p] (p.adicCompletion F ⊗[F] E) :=
     ((algebraMap (p.adicCompletion F) (p.adicCompletion F ⊗[F] E)).comp
       (algebraMap ℚ_[resChar p] (p.adicCompletion F))).toAlgebra
   refine ⟨{

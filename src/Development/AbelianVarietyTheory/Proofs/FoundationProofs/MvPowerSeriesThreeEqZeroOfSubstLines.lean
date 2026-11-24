@@ -1,6 +1,50 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 
@@ -13,7 +57,7 @@ theorem mvPowerSeries_three_eq_zero_of_subst_lines :
       Φ = 0 := by
   intro K _ _ Φ h
   ext d
-  set n := ∑ i, d i with hn
+  set n := ∑ i, d i
   let S : Finset (Fin 3 →₀ ℕ) :=
     (Finset.Iic (Finsupp.equivFunOnFinite.symm fun _ => n)).filter (fun e => ∑ i, e i = n)
   have hS : ∀ e, e ∈ S ↔ ∑ i, e i = n := by
@@ -42,26 +86,19 @@ theorem mvPowerSeries_three_eq_zero_of_subst_lines :
         ∑ᶠ e : Fin 3 →₀ ℕ, MvPowerSeries.coeff e Φ • PowerSeries.coeff n
           (e.prod fun s k => (PowerSeries.C (t s) * PowerSeries.X : PowerSeries K) ^ k) :=
       MvPowerSeries.coeff_subst ha Φ (Finsupp.single () n)
-    have hsupp : Function.support (fun e : Fin 3 →₀ ℕ =>
-        MvPowerSeries.coeff e Φ • PowerSeries.coeff n
-          (e.prod fun s k => (PowerSeries.C (t s) * PowerSeries.X : PowerSeries K) ^ k)) ⊆ S := by
-      intro e he
+    rw [h1]
+    simp only [hprod, PowerSeries.coeff_C_mul_X_pow, smul_eq_mul]
+    rw [finsum_eq_sum_of_support_subset _ (s := S) ?_]
+    · simp only [P, map_sum, MvPolynomial.eval_monomial]
+      refine Finset.sum_congr rfl (fun e he => ?_)
+      simp [((hS e).1 he).symm]
+    · intro e he
       rw [Function.mem_support] at he
-      rw [hprod, PowerSeries.coeff_C_mul_X_pow, smul_eq_mul] at he
       rw [Finset.mem_coe, hS]
       by_contra hne
       exact he (by simp [Ne.symm hne])
-    rw [h1]
-    rw [finsum_eq_sum_of_support_subset _ (s := S) hsupp]
-    simp only [hprod, PowerSeries.coeff_C_mul_X_pow, smul_eq_mul]
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [P, map_sum, MvPolynomial.eval_monomial]
-        refine Finset.sum_congr rfl (fun e he => ?_)
-        rw [if_pos ((hS e).1 he).symm, Finsupp.prod_fintype _ _ (fun s => pow_zero _)]
-  have hP : P = 0 := MvPolynomial.funext (fun t => by rw [← hcoef, h t, map_zero, map_zero])
-  have hd := congrArg (AddMonoidAlgebra.coeff · d) hP
-  simp only [P, MvPolynomial.coeff_zero, MvPolynomial.coeff_sum, MvPolynomial.coeff_monomial,
-    Finset.sum_ite_eq', Finset.sum_ite_eq, if_pos ((hS d).2 rfl)] at hd
-  simpa using hd
+  have hP : P = 0 := MvPolynomial.funext (fun t => by simp [← hcoef, h t])
+  have hd := congrArg (fun p : MvPolynomial (Fin 3) K => p.coeff d) hP
+  simpa [P, MvPolynomial.coeff_sum, MvPolynomial.coeff_monomial, (hS d).2 rfl] using hd
 
 end GlobalTheory

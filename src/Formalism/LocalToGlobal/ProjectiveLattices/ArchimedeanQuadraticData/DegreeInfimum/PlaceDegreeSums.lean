@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.GlobSt
+public import Mathlib.RingTheory.DedekindDomain.Factorization
+public import Mathlib.RingTheory.FractionalIdeal.Norm
 
 @[expose] public section
 

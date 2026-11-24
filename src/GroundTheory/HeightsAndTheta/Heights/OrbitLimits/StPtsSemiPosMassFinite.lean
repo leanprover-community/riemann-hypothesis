@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosPartProjIndep
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NoCommonComponentCoordinatesPlane
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemiPosTwist
 
 @[expose] public section
 

@@ -1,8 +1,19 @@
 module
 
-public import Formalism.HermitianCurvature.StatementM
-public import Formalism.HermitianCurvature.StatementLE
 public import Formalism.HermitianCurvature.LetterProductDoubleDegreeCount
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -188,13 +199,10 @@ abbrev E (r : ℕ) : Type := (Fin r → ℂ) × ℂ
 def Qset (r : ℕ) (TT : ℝ) : Set (E r) := {x | (∀ l, x.1 l ≠ 0) ∧ TT < Complex.normSq x.2}
 
 theorem Qset_open (r : ℕ) (TT : ℝ) : IsOpen (Qset r TT) := by
-  have h1 : IsOpen {x : E r | ∀ l, x.1 l ≠ 0} := by
-    simp only [Set.setOf_forall]
-    exact isOpen_iInter_of_finite fun l =>
-      isOpen_ne_fun ((continuous_apply l).comp continuous_fst) continuous_const
-  have h2 : IsOpen {x : E r | TT < Complex.normSq x.2} :=
-    isOpen_lt continuous_const (Complex.continuous_normSq.comp continuous_snd)
-  exact h1.inter h2
+  simp only [Qset, Set.ofPred_and, Set.ofPred_forall]
+  exact (isOpen_iInter_of_finite fun l =>
+    isOpen_ne_fun ((continuous_apply l).comp continuous_fst) continuous_const).inter
+      (isOpen_lt continuous_const (Complex.continuous_normSq.comp continuous_snd))
 
 abbrev Qp (r : ℕ) (TT : ℝ) : Type := ↥(Qset r TT)
 
@@ -228,47 +236,32 @@ def wirt (v : M.Var r) (f : E r → ℂ) (x : E r) : ℂ :=
 
 theorem coordE_smooth (v : M.Var r) : ContDiff ℝ sm (coordE v) := by
   have hz : ContDiff ℝ sm (zE v) := by
+    change ContDiff ℝ sm (fun x : E r => zE v x)
     by_cases h : ((ofLex v).1 : ℕ) < r
-    · have he : zE v = fun x : E r => x.1 ⟨_, h⟩ := by
-        funext x
-        simp [zE, h]
-      rw [he]
-      exact (contDiff_pi.mp contDiff_id (⟨_, h⟩ : Fin r)).comp contDiff_fst
-    · have he : zE v = fun x : E r => x.2 := by
-        funext x
-        simp [zE, h]
-      rw [he]
-      exact contDiff_snd
+    · have hc : ContDiff ℝ sm (fun x : E r => x.1 ⟨_, h⟩) :=
+        (contDiff_pi.mp contDiff_id (⟨_, h⟩ : Fin r)).comp contDiff_fst
+      simpa only [zE, dite_eq_left h] using hc
+    · simpa only [zE, dite_eq_right h] using
+        (contDiff_snd : ContDiff ℝ sm (fun x : E r => x.2))
+  change ContDiff ℝ sm (fun x : E r => coordE v x)
   by_cases h : (ofLex v).2 = 0
-  · have he : coordE v = zE v := by
-      funext x
-      simp [coordE, h]
-    rw [he]
-    exact hz
-  · have he : coordE v = Complex.conjCLE ∘ zE v := by
-      funext x
-      simp [coordE, h]
-    rw [he]
-    exact Complex.conjCLE.contDiff.comp hz
+  · simpa only [coordE, ite_eq_left h] using hz
+  · simpa only [coordE, ite_eq_right h, Function.comp_def, Complex.conjCLE_apply] using
+      Complex.conjCLE.contDiff.comp hz
 
 theorem ext_smooth_diff {f : Qp r TT → ℂ} (hf : f ∈ smSub r TT) (x : E r) (hx : x ∈ Qset r TT) :
     DifferentiableAt ℝ (ext f) x := by
-  have h1 : ContDiffOn ℝ sm (ext f) (Qset r TT) := hf
-  have hn : sm ≠ 0 := by
-    unfold sm
-    simp
-  exact (h1.contDiffAt ((Qset_open r TT).mem_nhds hx)).differentiableAt hn
+  exact ((hf : ContDiffOn ℝ sm (ext f) (Qset r TT)).contDiffAt
+    ((Qset_open r TT).mem_nhds hx)).differentiableAt (by simp [sm])
 
 theorem wirt_smooth {f : Qp r TT → ℂ} (hf : f ∈ smSub r TT) (v : M.Var r) :
     ContDiffOn ℝ sm (wirt v (ext f)) (Qset r TT) := by
-  have hf' : ContDiffOn ℝ sm (ext f) (Qset r TT) := hf
   have hd : ContDiffOn ℝ sm (fun y => fderiv ℝ (ext f) y) (Qset r TT) :=
-    ((contDiffOn_infty_iff_fderiv_of_isOpen (Qset_open r TT)).mp hf').2
-  have h1 : ContDiffOn ℝ sm (fun y => fderiv ℝ (ext f) y (dirE v)) (Qset r TT) :=
-    hd.clm_apply contDiffOn_const
-  have h2 : ContDiffOn ℝ sm (fun y => fderiv ℝ (ext f) y (Complex.I • dirE v)) (Qset r TT) :=
-    hd.clm_apply contDiffOn_const
-  exact contDiffOn_const.mul (h1.add (contDiffOn_const.mul h2))
+    ((contDiffOn_infty_iff_fderiv_of_isOpen (Qset_open r TT)).mp
+      (hf : ContDiffOn ℝ sm (ext f) (Qset r TT))).2
+  exact contDiffOn_const.mul
+    ((hd.clm_apply (contDiffOn_const (c := dirE v))).add
+      (contDiffOn_const.mul (hd.clm_apply (contDiffOn_const (c := Complex.I • dirE v)))))
 
 def coordQ (v : M.Var r) : SmQ r TT :=
   ⟨fun q => coordE v q.1, ((coordE_smooth v).contDiffOn).congr fun x hx => by simp [ext, hx]⟩
@@ -336,8 +329,7 @@ def Gq (q : Qp P.r P.TT) : ℝ := (∏ l, Complex.normSq (q.1.1 l)) * (Complex.n
 def Wq (q : Qp P.r P.TT) : ℝ := Complex.normSq q.1.2 / (Complex.normSq q.1.2 - P.TT)
 
 theorem Gq_pos (q : Qp P.r P.TT) : 0 < Gq P q := by
-  have hq : (∀ l, q.1.1 l ≠ 0) ∧ P.TT < Complex.normSq q.1.2 := q.2
-  exact mul_pos (Finset.prod_pos fun l _ => Complex.normSq_pos.mpr (hq.1 l)) (sub_pos.mpr hq.2)
+  exact mul_pos (Finset.prod_pos fun l _ => Complex.normSq_pos.mpr (q.2.1 l)) (sub_pos.mpr q.2.2)
 
 theorem Gq_meas : Measurable (Gq P) := by
   apply Continuous.measurable

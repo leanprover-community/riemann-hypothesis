@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.PowSmulLatticeLeWeightLatticeTop
+public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
+public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 

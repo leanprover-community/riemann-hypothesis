@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlock
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionRing
 
 @[expose] public section
 

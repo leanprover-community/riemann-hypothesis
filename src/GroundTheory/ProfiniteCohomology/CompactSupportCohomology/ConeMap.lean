@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ShiftNegOneHomologyIsoSymmHom
+import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 
 @[expose] public section
 

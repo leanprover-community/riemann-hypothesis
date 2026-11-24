@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveComp
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveFr
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInstSt
 public import Formalism.LocalToGlobal.ProjectiveLattices.LocalUnitReduction.IsUnitMkOfForallPrime
 
 @[expose] public section
@@ -15,7 +17,7 @@ variable {D : D7} {T : Top D} (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFr
   (hT : GenFromTest (T.Q.Xo j) T.Q.c hG)
 
 
-set_option maxHeartbeats 1000000 in
+
 abbrev phiI (la : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO)) {ka wL wF : WeightFamilies.Wt D j}
     (G : GlobalFamilyData (recPlus h j hj) ka wL wF) (Z : Comp (T.Q.Xo j) T.Q.c) :=
   phiZ (recPlus h j hj) la G.N (Om Z) (formsEvR j hG hT Z) G.w

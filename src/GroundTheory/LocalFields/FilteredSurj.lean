@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Group.Subgroup.Map
+public import Mathlib.Order.Filter.AtTopBot.Defs
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Order.Filter.AtTopBot.Basic
 
 @[expose] public section
 

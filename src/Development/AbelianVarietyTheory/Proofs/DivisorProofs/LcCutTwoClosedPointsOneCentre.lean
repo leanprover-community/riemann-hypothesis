@@ -1,18 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CentreAtOfIsAt
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsAlgClosedBaseChange
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PointSeparationPair
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EffQCartierNumEquivMultipleNonnegSmul
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDivisorNonKltAtPointsNotContainingCentre
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalLogCanonicalThresholdAtPoint
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsEffectiveQCartierDivisorConvexCone
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KltAtAddSmulOfLcAt
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KltAtLcAtOfLeCoeff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultNsmulOfQadd
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KltAtAddSmulOfLcAtStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDivisorNonKltAtPointsNotContainingCentreStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRationalLogCanonicalThresholdAtPointStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonKltLocusDimLtAfterPerturbationStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KltAtLcAtOfLeCoeffStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EffQCartierNumEquivMultipleNonnegSmulStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsEffectiveQCartierDivisorConvexConeStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonKltLocusDimLtAfterPerturbation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -34,7 +72,7 @@ theorem logCanonicalCut_two_points : GlobalTheory.Published.Principalisation →
   classical
   have hDq : IsQCart D := hD.isQCart
   obtain ⟨B, δ₀, hδ0, hδ1, hB, hoff, hnk, hpres⟩ :=
-    GlobalTheory.T.exists_divisor_nonKlt_at_points_not_containing_centre hPr hNa hNe X p n hp hn Δ m G N D {x, x'} z (j + 1) h hΔ hklt hm hG hN hDq
+    _root_.GlobalTheory.PairStep.exists_step_divisor hPr hNa hNe X p n hp hn Δ m G N D {x, x'} z (j + 1) h hΔ hklt hm hG hN hDq
       (by
         intro y hy
         rcases Finset.mem_insert.1 hy with rfl | hy
@@ -50,37 +88,37 @@ theorem logCanonicalCut_two_points : GlobalTheory.Published.Principalisation →
           _ < _ := hpos)
   have hBq : IsQCart B := hB.isQCart
   have hδ1' : (0 : ℚ) ≤ 1 - δ₀ := by linarith
-  have hDδ : IsQCart ((1 - δ₀) • D) := (GlobalTheory.T.isEffectiveQCartierDivisor_convexCone X D D (1 - δ₀) hDq hDq hδ1').2.1
+  have hDδ : IsQCart ((1 - δ₀) • D) := (_root_.GlobalTheory.QCartCone.isQCart_cone X D D (1 - δ₀) hDq hDq hδ1').2.1
   have hkx : KltAt p n (Δ + (1 - δ₀) • D) x :=
-    GlobalTheory.T.kltAt_add_one_sub_smul_of_kltAt_of_lcAt X p n hp hn Δ D δ₀ x hDq (hklt x) hlx hδ0 hδ1
+    _root_.GlobalTheory.PairStep.kltAt_add_smul_of_lcAt X p n hp hn Δ D δ₀ x hDq (hklt x) hlx hδ0 hδ1
   have hkx' : KltAt p n (Δ + (1 - δ₀) • D) x' :=
-    GlobalTheory.T.kltAt_add_one_sub_smul_of_kltAt_of_lcAt X p n hp hn Δ D δ₀ x' hDq (hklt x') hlx' hδ0 hδ1
-  obtain ⟨c, hc0, hc1, hcl, hcn⟩ := GlobalTheory.T.exists_rational_logCanonicalThreshold_at_point hPr X p n hp hn Δ m G ((1 - δ₀) • D) B x hm hG hDδ
+    _root_.GlobalTheory.PairStep.kltAt_add_smul_of_lcAt X p n hp hn Δ D δ₀ x' hDq (hklt x') hlx' hδ0 hδ1
+  obtain ⟨c, hc0, hc1, hcl, hcn⟩ := _root_.GlobalTheory.PairStep.exists_threshold_lcAt_not_kltAt hPr X p n hp hn Δ m G ((1 - δ₀) • D) B x hm hG hDδ
     hBq hkx (hnk δ₀ hδ0.le le_rfl x (by simp))
-  obtain ⟨c', hc0', hc1', hcl', hcn'⟩ := GlobalTheory.T.exists_rational_logCanonicalThreshold_at_point hPr X p n hp hn Δ m G ((1 - δ₀) • D) B x' hm hG
+  obtain ⟨c', hc0', hc1', hcl', hcn'⟩ := _root_.GlobalTheory.PairStep.exists_threshold_lcAt_not_kltAt hPr X p n hp hn Δ m G ((1 - δ₀) • D) B x' hm hG
     hDδ hBq hkx' (hnk δ₀ hδ0.le le_rfl x' (by simp))
-  have hq1 : QNum p N ((1 - δ₀) * d) ((1 - δ₀) • D) := GlobalTheory.T.effQCartierNumEquivMultiple_nonneg_smul X p hp N d (1 - δ₀) D hδ1' hD
+  have hq1 : QNum p N ((1 - δ₀) * d) ((1 - δ₀) • D) := _root_.GlobalTheory.PairStep.qNum_smul X p hp N d (1 - δ₀) D hδ1' hD
   have key : ∀ e : ℚ, 0 < e → e ≤ 1 → ∃ d' : ℚ, 0 ≤ d' ∧ d' ≤ d + h ∧
       QNum p N d' ((1 - δ₀) • D + e • B) := by
     intro e he0 he1
     refine ⟨(1 - δ₀) * d + e * h, by positivity, by nlinarith, ?_⟩
-    exact qNum_add X p hp N _ _ _ _ hq1 (GlobalTheory.T.effQCartierNumEquivMultiple_nonneg_smul X p hp N h e B he0.le hB)
+    exact qNum_add X p hp N _ _ _ _ hq1 (_root_.GlobalTheory.PairStep.qNum_smul X p hp N h e B he0.le hB)
   rcases le_total c' c with hcc | hcc
   · obtain ⟨d', h1, h2, h3⟩ := key c hc0 hc1
     refine ⟨(1 - δ₀) • D + c • B, d', h1, h2, h3, Or.inl ⟨?_, ?_⟩⟩
     · rw [← add_assoc]
-      exact GlobalTheory.T.nonKlt_locus_dim_lt_after_perturbation X p n hp hn Δ D B δ₀ c x z j (hklt x) hDq hBq hlx hδ0 hδ1 hc1 hoff hpres
+      exact _root_.GlobalTheory.PairStep.logCanonicalCut_of_step X p n hp hn Δ D B δ₀ c x z j (hklt x) hDq hBq hlx hδ0 hδ1 hc1 hoff hpres
         hdim hcl hcn
     · rw [← add_assoc]
       intro hk
-      exact hcn' ((GlobalTheory.T.kltAt_and_lcAt_antitone_coeff X p n hp hn (Δ + (1 - δ₀) • D) B c' c x' hBq hcc).1 hk)
+      exact hcn' ((_root_.GlobalTheory.PairStep.kltAt_lcAt_of_le_coeff X p n hp hn (Δ + (1 - δ₀) • D) B c' c x' hBq hcc).1 hk)
   · obtain ⟨d', h1, h2, h3⟩ := key c' hc0' hc1'
     refine ⟨(1 - δ₀) • D + c' • B, d', h1, h2, h3, Or.inr ⟨?_, ?_⟩⟩
     · rw [← add_assoc]
-      exact GlobalTheory.T.nonKlt_locus_dim_lt_after_perturbation X p n hp hn Δ D B δ₀ c' x' z j (hklt x') hDq hBq hlx' hδ0 hδ1 hc1' hoff
+      exact _root_.GlobalTheory.PairStep.logCanonicalCut_of_step X p n hp hn Δ D B δ₀ c' x' z j (hklt x') hDq hBq hlx' hδ0 hδ1 hc1' hoff
         hpres hdim hcl' hcn'
     · rw [← add_assoc]
       intro hk
-      exact hcn ((GlobalTheory.T.kltAt_and_lcAt_antitone_coeff X p n hp hn (Δ + (1 - δ₀) • D) B c c' x hBq hcc).1 hk)
+      exact hcn ((_root_.GlobalTheory.PairStep.kltAt_lcAt_of_le_coeff X p n hp hn (Δ + (1 - δ₀) • D) B c c' x hBq hcc).1 hk)
 
 end GlobalTheory.PairStep

@@ -1,6 +1,54 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.RingAFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Algebra.Nonarchimedean.Completion
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -24,7 +72,6 @@ lemma norm_l_eq : ‖(l : ℂ_[l])‖ = (l : ℝ)⁻¹ := by
   rw [← h1, PadicComplex.norm_extends, PadicAlgCl.norm_extends]
   first
     | exact Padic.norm_p
-    | simp [Padic.norm_p]
 
 lemma l_pos_real : (0 : ℝ) < (l : ℝ) := by
   exact_mod_cast hl.out.pos
@@ -242,7 +289,7 @@ def jBK (hB : ∀ x : ℂ_[l], x ∈ ringB l ↔ x ∈ MaximalUnramifiedExtensio
     exact ((hB x).1 x.2).1)
 
 
-set_option maxHeartbeats 800000 in
+
 lemma jBK_coe (hB : ∀ x : ℂ_[l], x ∈ ringB l ↔ x ∈ MaximalUnramifiedExtension l ∧ ‖x‖ ≤ 1) (x : ringB l) :
     ((jBK hB x : MaximalUnramifiedExtension l) : ℂ_[l]) = x := by
   exact RingHom.codRestrict_apply _ _ _ x
@@ -304,8 +351,6 @@ lemma exists_ext (hB : ∀ x : ℂ_[l], x ∈ ringB l ↔ x ∈ MaximalUnramifie
       ψ ⟨x, hx⟩ := by
     first
       | exact IsLocalization.Away.lift_eq (S := MaximalUnramifiedExtension l) (l : ringB l) hu ⟨x, hx⟩
-      | exact IsLocalization.lift_eq _ _
-      | simp
   have hx' : algebraMap (ringB l) (MaximalUnramifiedExtension l) ⟨x, hx⟩ = x := Subtype.ext (jBK_coe hB _)
   rw [hx'] at key
   rw [key]

@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockRaisingLowering.SameSign
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,8 +58,6 @@ variable {p q r s : ℕ}
 theorem omAct_eq_sum (M : Matrix (FockH1Action.Ln p q r s) (FockH1Action.Ln p q r s) ℂ) :
     FockH1Action.omAct p q r s M = ∑ l, ∑ l', M l l' • FockH1Action.omE l l' := by
   first
-  | (simp only [FockH1Action.omAct, LinearMap.coeFn_sum, Finset.sum_apply,
-      LinearMap.smulRight_apply, Matrix.entryLinearMap_apply]; done)
   | (simp only [FockH1Action.omAct, LinearMap.sum_apply,
       LinearMap.smulRight_apply, Matrix.entryLinearMap_apply]; done)
 
@@ -117,8 +157,8 @@ private theorem homogeneousComponent_pderiv_monomial {σ : Type} (l : σ) (e : �
 private theorem homogeneousComponent_pderiv {σ : Type} (l : σ) (e : ℕ) (P : MvPolynomial σ ℂ) :
     homogeneousComponent e (pderiv l P) = pderiv l (homogeneousComponent (e + 1) P) := by
   rw [P.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum]
+
+  simp only [map_sum]
   exact Finset.sum_congr rfl fun u _ => homogeneousComponent_pderiv_monomial l e u _
 
 theorem pderiv_homog_zero {σ : Type} (l : σ) {P : MvPolynomial σ ℂ} (h : P.IsHomogeneous 0) :
@@ -233,18 +273,16 @@ theorem Rop_raise (M : Matrix (FockH1Action.Ln p q r s) (FockH1Action.Ln p q r s
     rwa [show 1 + (1 + d) = d + 2 by omega] at h
   · exact Submodule.zero_mem _
 
-theorem hc_pderiv {σ : Type} (l : σ) (e : ℕ) (P : MvPolynomial σ ℂ) :
-    homogeneousComponent e (pderiv l P) = pderiv l (homogeneousComponent (e + 1) P) :=
-  homogeneousComponent_pderiv l e P
+alias hc_pderiv := _root_.FockRL.homogeneousComponent_pderiv
 
 theorem Lop_shift (M : Matrix (FockH1Action.Ln p q r s) (FockH1Action.Ln p q r s) ℂ) (e : ℕ)
     (P : FockH1Action.Pol p q r s) :
     homogeneousComponent e (Lop M P) = Lop M (homogeneousComponent (e + 2) P) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show e + 2 = e + 1 + 1 from rfl, Lop_apply, Lop_apply, map_sum]
+
+  rw [show e + 2 = e + 1 + 1 from rfl, Lop_apply, Lop_apply, map_sum]
   refine Finset.sum_congr rfl fun l _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun l' _ => ?_
   split_ifs
   · rw [map_smul, map_neg, hc_pderiv, hc_pderiv]

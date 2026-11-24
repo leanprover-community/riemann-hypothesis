@@ -1,6 +1,7 @@
 module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -131,15 +132,13 @@ theorem term_D (B : Matrix ι ι F) (ρ : InfinitePlace F → (F →+* ℝ)) (P 
       gf *ᵥ fun j => algebraMap F (A F) ((a • x) j) := by
     rw [← Matrix.mulVec_smul]
     ext j
-    simp [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul, Finset.mul_sum,
-      mul_assoc, mul_left_comm, mul_comm]
+    simp [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul]
   have h2 : (fun w => ρ w a • gi w *ᵥ fun j => ρ w (x j)) =
       fun w => gi w *ᵥ fun j => ρ w ((a • x) j) := by
     funext w
     rw [← Matrix.mulVec_smul]
     ext j
-    simp [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul, Finset.mul_sum,
-      mul_assoc, mul_left_comm, mul_comm]
+    simp [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul]
   rw [h1, h2]
   simp
 

@@ -1,6 +1,7 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 

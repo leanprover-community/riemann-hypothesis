@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
+public import GroundTheory.LocalFields.LocalArtinMap
 public import GroundTheory.LocalFields.LocalArtinUniqueness
+import GroundTheory.LocalFields.Uniqueness
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivity
+public import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

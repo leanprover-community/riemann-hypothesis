@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsComplexMinimalPrimesContract
+public import Mathlib.RingTheory.Flat.Basic
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.RingTheory.Ideal.GoingDown
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Flat.Stability
 
 @[expose] public section
 

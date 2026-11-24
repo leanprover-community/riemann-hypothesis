@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.SUnits
-public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsPerm
+public import GroundTheory.GlobalFields.SUnitsKernel
+import Mathlib.Tactic.TypeStar
+import Mathlib.NumberTheory.NumberField.Units.Basic
 
 @[expose] public section
 

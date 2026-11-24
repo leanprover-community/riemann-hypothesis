@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.Modules.Sheaf
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

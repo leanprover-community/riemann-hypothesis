@@ -1,9 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.AdelicLemmas
 public import Formalism.LocalToGlobal.Columns.ColForms
-public import Formalism.LocalToGlobal.Columns.DecoFin
-public import Formalism.LocalRingCardinality.DataLevel
+public import Formalism.LocalToGlobal.Columns.Adelic
 
 @[expose] public section
 

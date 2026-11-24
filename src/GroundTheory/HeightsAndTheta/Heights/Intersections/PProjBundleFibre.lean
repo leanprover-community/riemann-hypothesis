@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermTensor
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.RingTheory.Ideal.Maps
+public import Mathlib.RingTheory.Ideal.Quotient.Defs
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
 
 @[expose] public section
 
@@ -30,16 +33,16 @@ theorem sum_C_mul_linForm {τ ρ : Type} [Fintype τ] [Fintype ρ] (c : ρ → �
   simp only [Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun q _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_mul]
+
+  rw [map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [map_mul, mul_assoc]
 
 theorem linSubst_linForm (ℓ : σ → Fin n → Φ) (μ : σ → Φ) :
     linSubst ℓ (∑ q, C (μ q) * X q) = ∑ b, C (∑ q, μ q * ℓ q b) * X b := by
   rw [← sum_C_mul_linForm μ ℓ]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [linSubst, map_sum, map_mul, aeval_C, aeval_X, MvPolynomial.algebraMap_eq]
+
+  simp only [linSubst, map_sum, map_mul, aeval_C, aeval_X, MvPolynomial.algebraMap_eq]
 
 theorem ker_linSubst (ℓ : σ → Fin n → Φ) (ν : Fin n → σ → Φ)
     (hν : ∀ a b, ∑ q, ν a q * ℓ q b = if a = b then 1 else 0) :
@@ -55,8 +58,8 @@ theorem ker_linSubst (ℓ : σ → Fin n → Φ) (ν : Fin n → σ → Φ)
       have h1 : ρ (linSubst ℓ (X q)) =
           Ideal.Quotient.mk I (∑ q', C (∑ a, ℓ q a * ν a q') * X q') := by
         rw [← sum_C_mul_linForm]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [ρ, linSubst, aeval_X, map_sum, map_mul, aeval_C]
+
+        simp only [ρ, linSubst, aeval_X, map_sum, map_mul, aeval_C]
         rfl
       rw [h1, Ideal.Quotient.eq]
       refine Ideal.subset_span ⟨fun q' => ∑ a, ℓ q a * ν a q' - if q' = q then 1 else 0, fun b => ?_, ?_⟩

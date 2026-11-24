@@ -1,7 +1,48 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -49,59 +90,43 @@ theorem u_ee : uEmb k r u (eI k r a) (eI k r b) = u a b := by
   simp only [uEmb, dif_pos h]
   rfl
 theorem u_em : uEmb k r u (eI k r a) (mI k r n) = 0 := by
-  have ha := a.2
   have va : (eI k r a).val = a.val := rfl
-  have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
-  have hn := n.2
   have vn : (mI k r n).val = r + n.val := rfl
   simp only [uEmb]
   split_ifs <;> simp_all [Fin.ext_iff] <;> omega
 theorem u_es : uEmb k r u (eI k r a) (esI k r b) = 0 := by
-  have ha := a.2
   have va : (eI k r a).val = a.val := rfl
-  have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
-  have hb := b.2
   have vb : (eI k r b).val = b.val := rfl
   have vsb : (esI k r b).val = 2 * r + k - b.val := rfl
   simp only [uEmb]
   split_ifs <;> simp_all [Fin.ext_iff] <;> omega
 theorem u_me : uEmb k r u (mI k r m) (eI k r b) = 0 := by
-  have hm := m.2
   have vm : (mI k r m).val = r + m.val := rfl
   have hb := b.2
   have vb : (eI k r b).val = b.val := rfl
-  have vsb : (esI k r b).val = 2 * r + k - b.val := rfl
   simp only [uEmb]
   split_ifs <;> simp_all [Fin.ext_iff] <;> omega
 theorem u_mm : uEmb k r u (mI k r m) (mI k r n) = if m = n then 1 else 0 := by
-  have hm := m.2
   have vm : (mI k r m).val = r + m.val := rfl
-  have hn := n.2
   have vn : (mI k r n).val = r + n.val := rfl
   simp only [uEmb]
   split_ifs <;> simp_all [Fin.ext_iff] <;> omega
 theorem u_ms : uEmb k r u (mI k r m) (esI k r b) = 0 := by
   have hm := m.2
   have vm : (mI k r m).val = r + m.val := rfl
-  have hb := b.2
   have vb : (eI k r b).val = b.val := rfl
   have vsb : (esI k r b).val = 2 * r + k - b.val := rfl
   simp only [uEmb]
   split_ifs <;> simp_all [Fin.ext_iff] <;> omega
 theorem u_se : uEmb k r u (esI k r a) (eI k r b) = 0 := by
-  have ha := a.2
   have va : (eI k r a).val = a.val := rfl
   have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
   have hb := b.2
   have vb : (eI k r b).val = b.val := rfl
-  have vsb : (esI k r b).val = 2 * r + k - b.val := rfl
   simp only [uEmb]
   split_ifs <;> simp_all [Fin.ext_iff] <;> omega
 theorem u_sm : uEmb k r u (esI k r a) (mI k r n) = 0 := by
-  have ha := a.2
-  have va : (eI k r a).val = a.val := rfl
   have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
-  have hn := n.2
   have vn : (mI k r n).val = r + n.val := rfl
   simp only [uEmb]
   split_ifs <;> simp_all [Fin.ext_iff] <;> omega
@@ -192,10 +217,8 @@ theorem mI_inj : mI k r m = mI k r n ↔ m = n := by
   · intro h
     rw [h]
 theorem esI_inj : esI k r a = esI k r b ↔ a = b := by
-  have ha := a.2
   have va : (eI k r a).val = a.val := rfl
   have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
-  have hb := b.2
   have vb : (eI k r b).val = b.val := rfl
   have vsb : (esI k r b).val = 2 * r + k - b.val := rfl
   constructor
@@ -208,8 +231,6 @@ theorem esI_inj : esI k r a = esI k r b ↔ a = b := by
 theorem eI_ne_mI : eI k r a ≠ mI k r m := by
   have ha := a.2
   have va : (eI k r a).val = a.val := rfl
-  have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
-  have hm := m.2
   have vm : (mI k r m).val = r + m.val := rfl
   intro h
   have h' := congrArg Fin.val h
@@ -218,7 +239,6 @@ theorem eI_ne_mI : eI k r a ≠ mI k r m := by
 theorem eI_ne_esI : eI k r a ≠ esI k r b := by
   have ha := a.2
   have va : (eI k r a).val = a.val := rfl
-  have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
   have hb := b.2
   have vb : (eI k r b).val = b.val := rfl
   have vsb : (esI k r b).val = 2 * r + k - b.val := rfl
@@ -237,11 +257,9 @@ theorem mI_ne_esI : mI k r m ≠ esI k r b := by
   rw [vm, vsb] at h'
   omega
 theorem mI_ne_eI : mI k r m ≠ eI k r a := by
-  have hm := m.2
   have vm : (mI k r m).val = r + m.val := rfl
   have ha := a.2
   have va : (eI k r a).val = a.val := rfl
-  have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
   intro h
   have h' := congrArg Fin.val h
   rw [vm, va] at h'
@@ -252,7 +270,6 @@ theorem esI_ne_eI : esI k r b ≠ eI k r a := by
   have vsb : (esI k r b).val = 2 * r + k - b.val := rfl
   have ha := a.2
   have va : (eI k r a).val = a.val := rfl
-  have vsa : (esI k r a).val = 2 * r + k - a.val := rfl
   intro h
   have h' := congrArg Fin.val h
   rw [vsb, va] at h'
@@ -290,8 +307,8 @@ theorem uEmb_mem (hu : IsUnit u.det) : uEmb k r u ∈ GG k r := by
       if a = b then 1 else 0 := fun a b => by
     have h : ∑ c, (starRingEnd ℂ) (u c a) * (starRingEnd ℂ) (u⁻¹ b c) =
         (starRingEnd ℂ) (∑ c, u⁻¹ b c * u c a) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_congr rfl fun c _ => by rw [map_mul, mul_comm]
     rw [h, hc]
     by_cases hab : a = b
@@ -313,12 +330,12 @@ theorem uEmb_inv (hu : IsUnit u.det) : (uEmb k r u)⁻¹ = uEmb k r u⁻¹ := by
 theorem uEmb_eI : uEmb k r u *ᵥ bvec (eI k r b) = ∑ a, u a b • bvec (eI k r a) := by
   ext i
   rcases idx_cases i with ⟨c, rfl⟩ | ⟨p, rfl⟩ | ⟨c, rfl⟩ <;>
-    simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, Finset.sum_apply, u_ee, u_em, u_es, u_me, u_mm, u_ms, u_se, u_sm, u_ss, eI_inj, mI_inj, esI_inj, eI_ne_mI, eI_ne_esI, mI_ne_esI, mI_ne_eI, esI_ne_eI, esI_ne_mI]
+    simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, Finset.sum_apply, u_ee, u_me, u_se, eI_inj, mI_ne_eI, esI_ne_eI]
 
 theorem uEmb_esI : uEmb k r u *ᵥ bvec (esI k r b) = ∑ a, star (u⁻¹ b a) • bvec (esI k r a) := by
   ext i
   rcases idx_cases i with ⟨c, rfl⟩ | ⟨p, rfl⟩ | ⟨c, rfl⟩ <;>
-    simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, Finset.sum_apply, u_ee, u_em, u_es, u_me, u_mm, u_ms, u_se, u_sm, u_ss, eI_inj, mI_inj, esI_inj, eI_ne_mI, eI_ne_esI, mI_ne_esI, mI_ne_eI, esI_ne_eI, esI_ne_mI]
+    simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, Finset.sum_apply, u_es, u_ms, u_ss, esI_inj, eI_ne_esI, mI_ne_esI]
 
 theorem uEmb_mid (w : Fin (2 * r + k + 1) → ℂ) (hw : inWb k r w) : uEmb k r u *ᵥ w = w := by
   have he : ∀ c, w (eI k r c) = 0 := fun c => hw _ (Or.inl (by simp [eI]))

@@ -1,8 +1,60 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDehomCharpolyForms
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.PicardGroup
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.FibreNormCharpolyFalse
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Charpoly.BaseChange
+public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -45,8 +97,8 @@ theorem aeval_homog {Ω : Type} [Field Ω] [CharZero Ω] {D : ℕ} (l : Fin (D +
     (hk : l k ≠ 0) (G : MvPolynomial (Fin (D + 1)) ℚ) {N : ℕ} (hN : G.totalDegree ≤ N) :
     aeval l (homog k N G) = l k ^ N * aeval (fun i => l i / l k) G := by
   conv_rhs => rw [← sum_homogeneousComponent_range G hN]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [homog, map_sum, Finset.mul_sum]
+
+  simp only [homog, map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun e he => ?_
   have he' : e ≤ N := Nat.lt_succ_iff.mp (Finset.mem_range.mp he)
   have hpow : l k ^ N = l k ^ (N - e) * l k ^ e := by rw [← pow_add, Nat.sub_add_cancel he']
@@ -57,8 +109,11 @@ theorem aeval_homog {Ω : Type} [Field Ω] [CharZero Ω] {D : ℕ} (l : Fin (D +
 theorem dehom_homog {D : ℕ} (k : Fin (D + 1)) {N : ℕ} (G : MvPolynomial (Fin (D + 1)) ℚ)
     (hN : G.totalDegree ≤ N) : PullFormsGeneric.dehom k (homog k N G) = PullFormsGeneric.dehom k G := by
   conv_rhs => rw [← sum_homogeneousComponent_range G hN]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [PullFormsGeneric.dehom, homog, map_sum]
+
+  simp only [PullFormsGeneric.dehom, homog, map_sum]
+  refine Finset.sum_congr rfl fun e _ => ?_
+  first
+    | rw [map_mul, map_pow, bind₁_X_right, dif_pos rfl, one_pow, one_mul]
 
 theorem ne_zero_of_generic {Ω : Type} [Field Ω] [CharZero Ω] {D : ℕ} {l : Fin (D + 1) → Ω}
     (hgen : ∀ (d : ℕ) (F : MvPolynomial (Fin (D + 1)) ℚ), F.IsHomogeneous d → aeval l F = 0 → F = 0)
@@ -81,7 +136,7 @@ theorem injective_chart {Ω : Type} [Field Ω] [CharZero Ω] {D : ℕ} {l : Fin 
         else X ⟨i, h⟩)).comp (rename (R := ℚ) (Subtype.val : {i // i ≠ k} → Fin (D + 1))) = AlgHom.id ℚ _ := by
       apply MvPolynomial.algHom_ext
       intro i
-      simp [i.2]
+      simp only [AlgHom.comp_apply, rename_X, bind₁_X_right, dif_neg i.2, AlgHom.id_apply, Subtype.coe_eta]
     exact congrArg (fun φ => φ G) this
   rw [← h3, ← dehom_homog k G' le_rfl, h2]
   simp [PullFormsGeneric.dehom]
@@ -322,8 +377,8 @@ theorem DehomCharpolyForms.proof : DehomCharpolyForms.Statement := by
       simpa using isHomogeneous_one (σ := Fin (D + 1)) (R := ℚ)
     · exact hchom i hi
   · conv_lhs => rw [f.as_sum_range_C_mul_X_pow, hdeg]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Polynomial.map_sum, ← Finset.sum_range_reflect]
+
+    rw [Polynomial.map_sum, ← Finset.sum_range_reflect]
     refine Finset.sum_congr rfl fun i hi => ?_
     have hi' : i ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
     rw [heval i hi', Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_C, Polynomial.map_X,

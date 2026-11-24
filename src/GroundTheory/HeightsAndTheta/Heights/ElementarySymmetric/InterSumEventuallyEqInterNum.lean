@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumEventual
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumAdditive
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumCut
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumPointDeg
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

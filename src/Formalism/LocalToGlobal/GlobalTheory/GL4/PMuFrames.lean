@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
+public import Formalism.SizeWindowBrackets.ChainSlopeWindows.ExistsNsmulMem
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

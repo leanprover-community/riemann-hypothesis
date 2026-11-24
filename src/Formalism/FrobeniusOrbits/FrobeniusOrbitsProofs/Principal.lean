@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
 public import Formalism.FrobeniusOrbits.HostDiffSupport
-public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
+public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.FrobMulInertia
+public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Inertia
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
+public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Ideal.Int
+public import Mathlib.RingTheory.Ideal.NatInt
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -24,14 +67,12 @@ variable {e q d : ℕ} {L : Type} [Field L] [NumberField L] {ζ a b : L}
 theorem bE_mem_KinE (ζ a b : L) : bE ζ a b ∈ KinE ζ a b := by
   first
   | exact IntermediateField.mem_adjoin_simple_self ℚ (bE ζ a b)
-  | (unfold KinE; exact IntermediateField.mem_adjoin_simple_self ℚ _)
 
 theorem galE_restrict_mem_Psi (σ : hostE ζ a b ≃ₐ[KinE ζ a b] hostE ζ a b) :
     galE e ζ a b (σ.restrictScalars ℚ) ∈ Psi e := by
   have h1 : (σ.restrictScalars ℚ) (bE ζ a b) = bE ζ a b := by
     first
     | exact σ.commutes ⟨bE ζ a b, bE_mem_KinE ζ a b⟩
-    | simpa using σ.commutes ⟨bE ζ a b, bE_mem_KinE ζ a b⟩
   rw [Psi, MonoidHom.mem_ker]
   simp [chD, galE, sgn, h1]
 
@@ -111,7 +152,6 @@ theorem comm_of (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (σ : (hostE
   have h1 := congrArg (fun φ : (hostE ζ a b) ≃ₐ[ℚ] (hostE ζ a b) => φ x) hc
   first
   | exact h1
-  | simpa using h1
 
 theorem comm_symm (σ : (hostE ζ a b) ≃ₐ[ℚ] (hostE ζ a b))
     (hc : ∀ (τ : (hostE ζ a b) ≃ₐ[KinE ζ a b] (hostE ζ a b)) (x : (hostE ζ a b)), σ (τ x) = τ (σ x))
@@ -122,8 +162,8 @@ theorem comm_symm (σ : (hostE ζ a b) ≃ₐ[ℚ] (hostE ζ a b))
 theorem sum_comm (σ : (hostE ζ a b) ≃ₐ[ℚ] (hostE ζ a b))
     (hc : ∀ (τ : (hostE ζ a b) ≃ₐ[KinE ζ a b] (hostE ζ a b)) (x : (hostE ζ a b)), σ (τ x) = τ (σ x)) (w : (hostE ζ a b)) :
     σ (∑ τ : (hostE ζ a b) ≃ₐ[KinE ζ a b] (hostE ζ a b), τ w) = ∑ τ : (hostE ζ a b) ≃ₐ[KinE ζ a b] (hostE ζ a b), τ (σ w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun τ _ => hc τ w
 
 theorem one_ne (ζ a b : L) : (1 : FractionalIdeal (𝓞 (hostE ζ a b))⁰ (hostE ζ a b)) ≠ 0 := one_ne_zero
@@ -140,8 +180,6 @@ theorem mem_dual_iff (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (y : (h
     fun w => by
       first
       | exact trace_eq_sum_automorphisms w
-      | exact Algebra.trace_eq_sum_automorphisms w
-      | exact IsGalois.trace_eq_sum_automorphisms w
   have hint : ∀ t : KinE ζ a b, IsIntegral ℤ (algebraMap (KinE ζ a b) (hostE ζ a b) t) ↔
       t ∈ (algebraMap (𝓞 (KinE ζ a b)) (KinE ζ a b)).range := by
     intro t
@@ -194,13 +232,10 @@ theorem mem_diff_iff (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (z : �
   have hd0 : FractionalIdeal.dual (𝓞 (KinE ζ a b)) (KinE ζ a b)
       (1 : FractionalIdeal (𝓞 (hostE ζ a b))⁰ (hostE ζ a b)) ≠ 0 := by
     first
-    | exact FractionalIdeal.dual_ne_zero (one_ne ζ a b)
     | exact FractionalIdeal.dual_ne_zero _ _ (one_ne ζ a b)
   rw [hz]
   first
   | rw [coeIdeal_differentIdeal (𝓞 (KinE ζ a b)) (KinE ζ a b) (hostE ζ a b) (𝓞 (hostE ζ a b))]
-  | rw [coeIdeal_differentIdeal (𝓞 (KinE ζ a b)) (KinE ζ a b)]
-  | rw [coeIdeal_differentIdeal]
   rw [FractionalIdeal.mem_inv_iff hd0]
   constructor
   · intro hmem y hy
@@ -212,7 +247,6 @@ private theorem coe_powerSeries_smul_eq_smul (σ : (hostE ζ a b) ≃ₐ[ℚ] (h
     ((σ • z : 𝓞 (hostE ζ a b)) : hostE ζ a b) = σ (z : hostE ζ a b) := by
   first
   | rfl
-  | simp
 
 theorem dual_smul (σ : (hostE ζ a b) ≃ₐ[ℚ] (hostE ζ a b))
     (hc : ∀ (τ : (hostE ζ a b) ≃ₐ[KinE ζ a b] (hostE ζ a b)) (x : (hostE ζ a b)), σ (τ x) = τ (σ x)) (y : (hostE ζ a b))

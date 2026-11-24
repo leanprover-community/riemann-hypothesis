@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.JacobiTrudi
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.AltCoeff
 public import GroundTheory.HeightsAndTheta.Heights.KernelsRest
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 @[expose] public section
 

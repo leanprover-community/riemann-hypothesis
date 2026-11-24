@@ -1,13 +1,62 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsRootOfIsAlgClosed
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
+public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+public import Mathlib.RingTheory.Flat.TorsionFree
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLogDerivQExpansionModPrimePowOfTranslation
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulOfIsPrimitiveIntegralHahnGauss
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaDerivationHahnSeriesLeibnizAddConst
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsLogDerivQExpansionModPrimePowUnique
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLogDerivQExpansionModPrimePowOfTranslationStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulOfIsPrimitiveIntegralHahnGauss
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaDerivationHahnSeriesLeibnizAddConst
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -226,7 +275,7 @@ def Br [Algebra ℚ Ω] (x y : HahnSeries ℚ Ω) : HahnSeries ℚ Ω := theta 1
 
 theorem Br_mul [Algebra ℚ Ω] (x X y Y : HahnSeries ℚ Ω) : Br (x * X) (y * Y) = Br x y * (X * Y) + (x * y) * Br X Y := by
   unfold Br
-  rw [(GlobalTheory.T.thetaDerivationHahnSeries_leibniz_add_const (1 : ℚ) x X).1, (GlobalTheory.T.thetaDerivationHahnSeries_leibniz_add_const (1 : ℚ) y Y).1]; ring
+  rw [(_root_.GlobalTheory.Glue.theta_leibniz_add_const (1 : ℚ) x X).1, (_root_.GlobalTheory.Glue.theta_leibniz_add_const (1 : ℚ) y Y).1]; ring
 
 theorem Br_S [Algebra ℚ Ω] [IsAlgClosed Ω] (ε : Ω →+* ℂ) (l : ℕ) (hl : 0 < l) (b : ℚ) (x y : HahnSeries ℚ Ω) :
     Br (sub ε 1 b l x) (sub ε 1 b l y) = HahnSeries.C ((l : Ω)⁻¹) * sub ε 1 b l (Br x y) := by
@@ -301,7 +350,7 @@ theorem isAlgClosure_of_tower [Algebra ℚ Ω] [IsAlgClosed Ω] {ε : Ω →+* �
   have hc : (X.exp (algebraMap Ω X.K c)).coeff 0 = c := by
     rw [X.exp.commutes, HahnSeries.algebraMap_apply', PowerSeries.algebraMap_apply, Algebra.algebraMap_self,
       RingHom.id_apply, HahnSeries.ofPowerSeries_C]
-    simp [HahnSeries.C_apply, HahnSeries.coeff_single, Pi.single_apply]
+    simp [HahnSeries.C_apply]
   rw [hc] at hint
   have h1 : IsIntegral ℚ ((D : Ω) ^ k * c) := hint.tower_top
   have h2 : IsIntegral ℚ (algebraMap ℚ Ω (((D : ℚ) ^ k)⁻¹)) := isIntegral_algebraMap
@@ -338,7 +387,7 @@ theorem dl_norm_uq : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosed Ω
   have hKT : f ∈ KT X 1 := by
     show (X.sl (ofSL (ModularGroup.T ^ 1))) f = f
     rw [pow_one]; exact hT
-  obtain ⟨φ0, hφ0, hsp⟩ := GlobalTheory.T.exists_logDerivQExpansion_modPrimePow_of_translationInvariant ε X Hj l A hl (n + 1) 1 f one_pos hf0 hKT
+  obtain ⟨φ0, hφ0, hsp⟩ := _root_.GlobalTheory.dl_exists ε X Hj l A hl (n + 1) 1 f one_pos hf0 hKT
   rw [Nat.cast_one] at hφ0
   have huniq := GlobalTheory.Glue.isDl_unique ε X Hj l A hl (n + 1) 1 f φ φ0 hφ hφ0
   obtain ⟨hφ0A, a, b, κ, hκ, hfb, hPa, hPb, hc0⟩ := hφ0

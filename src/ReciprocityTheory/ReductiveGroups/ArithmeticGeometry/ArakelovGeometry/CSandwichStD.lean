@@ -1,6 +1,10 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStC
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.HSClosing
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsBergDensity
+public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.SupStMonoNormSqPos
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.LemCone
 
 @[expose] public section
 
@@ -115,8 +119,8 @@ theorem eq_zero_of_sum_mono {y : Fin (D + 1) → Ω} (hy : coordIdeal ℤ y = �
     have := Finset.Nat.mem_antidiagonalTuple.mp (adtEnum_mem D N i)
     simpa using this
   have hpa : aeval y p = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hp, map_sum, ← h]
+
+    rw [hp, map_sum, ← h]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [aeval_monomial, Finsupp.prod_fintype _ _ (by simp)]
     simp [algebraMap_int_eq]

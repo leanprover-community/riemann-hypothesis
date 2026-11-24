@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2Classical.IsWeightLevelAdelicLift
+import Mathlib.NumberTheory.ModularForms.SlashActions
 
 @[expose] public section
 

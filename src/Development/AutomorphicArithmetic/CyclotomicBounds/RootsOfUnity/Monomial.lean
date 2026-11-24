@@ -1,8 +1,55 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Units.Basic
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FinrankMulDiscrRpowLeSumSqOfMemTraceDual
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TorsionTotientBound
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -26,8 +73,8 @@ private theorem exists_single_of_sum_star_mul {n : ℕ} [Star K]
   have hφ : ∀ φ : K →+* ℂ, ∑ i, ‖φ (z i)‖ ^ 2 = 1 := by
     intro φ
     have h := congrArg φ h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one] at h
+
+    rw [map_sum, map_one] at h
     have h2 : ∀ i, φ (star (z i) * z i) = ((‖φ (z i)‖ ^ 2 : ℝ) : ℂ) := by
       intro i
       rw [map_mul, hconj, Complex.conj_mul']
@@ -41,7 +88,7 @@ private theorem exists_single_of_sum_star_mul {n : ℕ} [Star K]
   have hd : (0 : ℝ) < Module.finrank ℚ K := by exact_mod_cast Module.finrank_pos
   obtain ⟨i, hi⟩ : ∃ i, z i ≠ 0 := by
     by_contra hall
-    push_neg at hall
+    push Not at hall
     simp [hall] at h1
   refine ⟨i, fun j hji => ?_⟩
   by_contra hj
@@ -53,9 +100,6 @@ private theorem exists_single_of_sum_star_mul {n : ℕ} [Star K]
   have := finrank_le_sum_sq_of_isIntegral (hz i) hi
   have := finrank_le_sum_sq_of_isIntegral (hz j) hj
   linarith
-
-theorem torsionOrder_le (K : Type) [Field K] [NumberField K] : Units.torsionOrder K ≤ 2 * Module.finrank ℚ K ^ 2 :=
-  Formalism.L2.SG.NGCut.TorsionTotientBound.torsionOrder_le K
 
 theorem pow_torsionOrder_eq_one {x : K} (hx : IsIntegral ℤ x) (h : ∀ φ : K →+* ℂ, ‖φ x‖ = 1) :
     x ^ Units.torsionOrder K = 1 := by
@@ -135,7 +179,7 @@ theorem unitary_integral_finite_and_ncard_le [StarRing K]
     obtain ⟨t, σ, ht, rfl⟩ := exists_monomial hconj n g hg hint
     rw [Finset.coe_image]
     refine ⟨(t, σ), ?_, rfl⟩
-    simp [P, R, Finset.mem_coe, Finset.mem_product, Fintype.mem_piFinset, Multiset.mem_toFinset,
+    simp [P, R, Multiset.mem_toFinset,
       Polynomial.mem_nthRoots hT, ht]
   refine ⟨(P.image Φ).finite_toSet.subset hsub, ?_⟩
   calc _ ≤ (↑(P.image Φ) : Set (Matrix (Fin n) (Fin n) K)).ncard :=

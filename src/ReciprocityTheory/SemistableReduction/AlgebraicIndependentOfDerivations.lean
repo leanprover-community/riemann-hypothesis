@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -19,8 +24,8 @@ theorem derivation_aeval_eq {K R ι : Type*} [CommRing K] [CommRing R] [Algebra 
   | add p q hp hq => simp [map_add (f := _), hp, hq, add_mul, Finset.sum_add_distrib]
   | mul_X p j hp =>
     simp only [map_mul, aeval_X, Derivation.leibniz, hp, smul_eq_mul, pderiv_X, Pi.single_apply,
-      add_mul, Finset.sum_add_distrib, Finset.mul_sum]
-    simp only [map_add (f := _), map_mul, aeval_X, apply_ite (aeval z), map_zero, map_one, add_mul, mul_ite,
+      Finset.mul_sum]
+    simp only [map_add (f := _), map_mul, aeval_X, apply_ite (aeval z), map_zero, add_mul, mul_ite,
       mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_add_distrib, Finset.sum_ite_eq,
       Finset.mem_univ, if_true]
     ring
@@ -30,8 +35,8 @@ theorem totalDegree_pderiv_lt {K ι : Type*} [CommRing K] (P : MvPolynomial ι K
   classical
   have hsum : pderiv i P = ∑ m ∈ P.support, pderiv i (monomial m (AddMonoidAlgebra.coeff P m)) := by
     conv_lhs => rw [P.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
   rw [hsum]
   refine lt_of_le_of_lt (MvPolynomial.totalDegree_finsetSum _ _) ?_
   rw [Finset.sup_lt_iff hP]
@@ -43,7 +48,7 @@ theorem totalDegree_pderiv_lt {K ι : Type*} [CommRing K] (P : MvPolynomial ι K
       ext k
       by_cases hk : k = i
       · subst hk; simp; omega
-      · simp [Finsupp.single_apply, Ne.symm hk]
+      · simp [Ne.symm hk]
     have key : ((m - Finsupp.single i 1).sum fun _ e => e) + 1 = m.sum fun _ e => e := by
       conv_rhs => rw [hm1]
       rw [Finsupp.sum_add_index' (by simp) (by intros; rfl), Finsupp.sum_single_index rfl]
@@ -73,7 +78,7 @@ theorem eq_C_of_pderiv_eq_zero {K ι : Type*} [Field K] [CharZero K] (P : MvPoly
     ext k
     by_cases hk : k = i
     · subst hk; simp; omega
-    · simp [Finsupp.single_apply, Ne.symm hk]
+    · simp [Ne.symm hk]
   rw [hm'] at hc
   rcases mul_eq_zero.mp hc with h1 | h1
   · exact (mem_support_iff.mp hm) h1

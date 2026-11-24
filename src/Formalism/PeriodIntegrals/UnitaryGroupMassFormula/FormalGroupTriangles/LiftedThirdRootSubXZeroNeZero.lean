@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupTriangles.PairSubstXZero
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.FormalGroupLawExists
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.GuLine
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.CoeffWSeriesVarZero
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.ThirdRootSubVarZeroNeZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -38,7 +84,7 @@ theorem lam_pr {τ : Type*} (wq : PowerSeries ℂ_[p]) {x y : MvPowerSeries τ �
     rfl
   have h := congrArg (MvPowerSeries.subst ![x, y]) (PI.AddIntG.Wk.lam_mul wq)
   rw [MvPowerSeries.subst_mul hb, MvPowerSeries.subst_sub hb, MvPowerSeries.subst_sub hb, hcomp 1, hcomp 0] at h
-  simp only [MvPowerSeries.subst_X hb, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_zero] at h
+  simp only [MvPowerSeries.subst_X hb, Matrix.cons_val_one, Matrix.cons_val_zero] at h
   exact h
 
 def Lab (wq : PowerSeries ℂ_[p]) : MvPowerSeries (Fin 3) ℂ_[p] :=
@@ -97,7 +143,7 @@ private theorem coeff_pr_X_X (i j : Fin 3) (hij : i ≠ j) (f : MvPowerSeries (F
       apply hd
       have hi := congrArg (fun f => f i) h'
       have hj := congrArg (fun f => f j) h'
-      simp [Finsupp.single_apply, hij, hij'] at hi hj
+      simp [hij, hij'] at hi hj
       ext k
       fin_cases k
       · simp [hi]
@@ -111,10 +157,10 @@ private theorem coeff_pr_X_X (i j : Fin 3) (hij : i ≠ j) (f : MvPowerSeries (F
     intro h'
     apply h
     rw [h']
-    simp [Finsupp.single_apply, hij, hij']
+    simp [hij, hij']
 
 
-set_option maxHeartbeats 800000 in
+
 theorem mu_exists {S : Subring ℂ_[p]} {wq : PowerSeries ℂ_[p]} (hwq : ∀ n, PowerSeries.coeff n wq ∈ S) :
     ∃ μ ∈ SerS S (Fin 3), Lac wq - Lab wq = (MvPowerSeries.X 2 - MvPowerSeries.X 1) * μ := by
   classical
@@ -132,18 +178,18 @@ theorem mu_exists {S : Subring ℂ_[p]} {wq : PowerSeries ℂ_[p]} (hwq : ∀ n,
       constructor
       · intro h
         rw [h]
-        simp [Finsupp.single_apply]
+        simp
       · intro h
         ext k
-        fin_cases k <;> simp [Finsupp.single_apply, h]
+        fin_cases k <;> simp [h]
     have h01 : (e = Finsupp.single 0 (e 0) + Finsupp.single 1 (e 1)) ↔ e 2 = 0 := by
       constructor
       · intro h
         rw [h]
-        simp [Finsupp.single_apply]
+        simp
       · intro h
         ext k
-        fin_cases k <;> simp [Finsupp.single_apply, h]
+        fin_cases k <;> simp [h]
     have hX : ∀ k : Fin 3, (MvPowerSeries.X k : MvPowerSeries (Fin 3) ℂ_[p]) =
         MvPowerSeries.monomial (Finsupp.single k 1) 1 := fun k => by
       rw [← MvPowerSeries.X_pow_eq, pow_one]
@@ -155,18 +201,18 @@ theorem mu_exists {S : Subring ℂ_[p]} {wq : PowerSeries ℂ_[p]} (hwq : ∀ n,
     by_cases h1 : e 1 = 0 <;> by_cases h2 : e 2 = 0
     · rw [if_pos h1, if_pos h2, if_neg (by omega), if_neg (by omega), sub_self, sub_eq_zero]
       apply hidx
-      simp [Finsupp.single_apply, h1, h2]
+      simp [h1, h2]
     · rw [if_pos h1, if_neg h2, if_pos (by omega), if_neg (by omega), sub_zero, sub_zero]
       apply hidx
-      simp [Finsupp.single_apply, Finsupp.tsub_apply, h1]
+      simp [Finsupp.tsub_apply, h1]
       omega
     · rw [if_neg h1, if_pos h2, if_neg (by omega), if_pos (by omega), zero_sub, zero_sub, neg_inj]
       apply hidx
-      simp [Finsupp.single_apply, Finsupp.tsub_apply, h2]
+      simp [Finsupp.tsub_apply, h2]
       omega
     · rw [if_neg h1, if_neg h2, if_pos (by omega), if_pos (by omega), sub_self, eq_comm, sub_eq_zero]
       apply hidx
-      simp [Finsupp.single_apply, Finsupp.tsub_apply]
+      simp [Finsupp.tsub_apply]
       omega
 
 theorem subst_pairSubst_zero_one (g : MvPowerSeries (Fin 2) ℂ_[p]) :

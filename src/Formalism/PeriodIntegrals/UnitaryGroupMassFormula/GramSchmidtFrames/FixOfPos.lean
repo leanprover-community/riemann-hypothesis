@@ -1,6 +1,53 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.AdjugateLastEntrySum
+public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.IsotropicSubspaceEqPrimed
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.HermBvecEI
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianCurvature.BigCellVanishingOfCommute
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.UnipotentFixesFrameVector
 
 @[expose] public section
 
@@ -51,19 +98,12 @@ lemma prW_UW {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) {α : B.Mat 
   unfold prW
   rw [wb_UW hz.1 hα, hUz, mulVec_add, mulVec_smul, hα.2.2]
 
-lemma uw_fvec {z : Fin (2 * r + k + 1) → ℂ} {α : B.Mat k r} (hα : α ∈ UWset k r z) (b : Fin (r + 1)) :
-    α *ᵥ fvec k r z b = fvec k r z b := by
-  unfold fvec
-  split_ifs with h
-  · exact (hα.2.1 ⟨b.val, h⟩).1
-  · exact hα.2.2
-
 lemma zhat_UW {z z' : Fin (2 * r + k + 1) → ℂ} {α β : B.Mat k r} (hα : α ∈ UWset k r z) (hβ : β ∈ UWset k r z')
     (y : B.Mat k r) : Zhat k r z z' (α * y * β) = Zhat k r z z' y := by
   funext a b
   simp only [Zhat]
-  rw [← mulVec_mulVec, uw_fvec hβ, ← mulVec_mulVec]
-  conv_lhs => rw [← uw_fvec hα a]
+  rw [← mulVec_mulVec, _root_.PI.PolynomialProperness.UW_fix hβ, ← mulVec_mulVec]
+  conv_lhs => rw [← _root_.PI.PolynomialProperness.UW_fix hα a]
   rw [Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_UH hα.1]
 
 lemma xcof_UW {z z' : Fin (2 * r + k + 1) → ℂ} {α β : B.Mat k r} (hα : α ∈ UWset k r z) (hβ : β ∈ UWset k r z')
@@ -71,7 +111,7 @@ lemma xcof_UW {z z' : Fin (2 * r + k + 1) → ℂ} {α β : B.Mat k r} (hα : α
   unfold xcof
   rw [zhat_UW hα hβ, mv_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
-  rw [mulVec_smul, ← mulVec_mulVec, uw_fvec hβ, ← mulVec_mulVec]
+  rw [mulVec_smul, ← mulVec_mulVec, _root_.PI.PolynomialProperness.UW_fix hβ, ← mulVec_mulVec]
 
 lemma xcofL_UW {z z' : Fin (2 * r + k + 1) → ℂ} {α β : B.Mat k r} (hα : α ∈ UWset k r z) (hβ : β ∈ UWset k r z')
     (y : B.Mat k r) : xcofL k r z z' (α * y * β) = xcofL k r z z' y := by
@@ -81,7 +121,7 @@ lemma xcofL_fix {z z' : Fin (2 * r + k + 1) → ℂ} {α : B.Mat k r} (hα : α 
     α *ᵥ xcofL k r z z' y = xcofL k r z z' y := by
   unfold xcofL
   rw [mv_sum]
-  exact Finset.sum_congr rfl fun a _ => by rw [mulVec_smul, uw_fvec hα]
+  exact Finset.sum_congr rfl fun a _ => by rw [mulVec_smul, _root_.PI.PolynomialProperness.UW_fix hα]
 
 theorem omW_UW {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) {α β : B.Mat k r} (hα : α ∈ UWset k r z)
     (hβ : β ∈ UWset k r z') (y : B.Mat k r) : omW k r z z' (α * y * β) = α *ᵥ omW k r z z' y := by

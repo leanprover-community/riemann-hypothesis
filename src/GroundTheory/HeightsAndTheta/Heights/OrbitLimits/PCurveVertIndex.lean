@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertIndexSteps
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertIndex
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PLogCardLength
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveDivVertical
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalAmple

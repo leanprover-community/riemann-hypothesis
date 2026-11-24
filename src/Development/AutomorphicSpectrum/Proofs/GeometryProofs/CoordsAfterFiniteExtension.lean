@@ -1,25 +1,68 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EmbedsGeneric
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatLineGenerator
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.CardComapMulFinsumEqFinsumFibres
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermitianLineIsometries
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsIntegrallyClosedQuotientOfMemMinimalPrimes
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdjoinCoordsArithVar
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BirationalOfTranscendenceDegree
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsCompatibleAlongMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsJoinModelDominatesStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNormalisationStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalIsoOfIntegrallyClosedStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsCompatibleAlongMapStatement
+public import Mathlib.AlgebraicGeometry.Morphisms.Finite
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNormalisation
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOneOfChartGenerators
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalIsoOfIntegrallyClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SegreRefineLineBundles
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SmoothGenericFibreOfSnc
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BirationalOfTranscendenceDegree
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalizationStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralOverLocalizationScaled
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsIntegrallyClosedQuotientOfMemMinimalPrimes
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkSpecializes
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralOverLocalizationScaled
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -37,7 +80,7 @@ theorem exists_div_of_tie {κ : Type} {x : κ → Ω} (ht : CoordTie ℤ ξ x) {
       ∃ v ∈ Algebra.adjoin ℤ (Set.range fun j => x j / x c), v ≠ 0 ∧ a = u / v := by
   have hg : InChart ξ x c (TieArith.genCpt ξ) :=
     ⟨hc.1, fun c' => (RegAtMono.regAt_mono X Ω ξ q (TieArith.genCpt ξ) q.2).1 (hc.2 c')⟩
-  obtain ⟨s, hs, hu, hsa⟩ := (GlobalTheory.T.regAt_iff_chart_localization X Ω ξ ℤ _ _ ht c (TieArith.genCpt ξ) hg a).1
+  obtain ⟨s, hs, hu, hsa⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ ℤ _ _ ht c (TieArith.genCpt ξ) hg a).1
     (TieArith.mem_regAt_genCpt ξ ht.gen a)
   exact ⟨s * a, hsa, s, hs, hu.1, by field_simp [hu.1]⟩
 
@@ -94,7 +137,7 @@ theorem mem_regAt_of_isIntegral (ht : CoordTie ℤ ξ (fun c' : (k : K) → J k 
     exact this hb
   have hfr : ∀ r ∈ regAt ξ q, ∃ u ∈ A, ∃ v ∈ A, v ≠ 0 ∧ v⁻¹ ∈ regAt ξ q ∧ r = u / v := by
     intro r hr
-    obtain ⟨s, hsB, hsu, hsr⟩ := (GlobalTheory.T.regAt_iff_chart_localization X Ω ξ ℤ _ _ ht c q hc r).1 hr
+    obtain ⟨s, hsB, hsu, hsr⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ ℤ _ _ ht c q hc r).1 hr
     refine ⟨s * r, hBA _ hsr, s, hBA _ hsB, hsu.1, hsu.2.2, ?_⟩
     field_simp [hsu.1]
   obtain ⟨v, hvA, hv0, hvR, hint⟩ :=
@@ -152,15 +195,6 @@ end Blocks
 end GlobalTheory.CompanionTheory.Ar.ChangeModel
 
 namespace GlobalTheory.CompanionTheory.Ar.ChangeModel
-
-theorem dominates_comp {X₁ X₂ X₃ : Scheme.{0}} {Ω₁ Ω₂ Ω₃ : Type} [Field Ω₁] [Field Ω₂] [Field Ω₃]
-    {ξ₁ : Spec (CommRingCat.of Ω₁) ⟶ X₁} {ξ₂ : Spec (CommRingCat.of Ω₂) ⟶ X₂} {ξ₃ : Spec (CommRingCat.of Ω₃) ⟶ X₃}
-    {f : X₂ ⟶ X₁} {g : X₃ ⟶ X₂} {i : Ω₁ →+* Ω₂} {j : Ω₂ →+* Ω₃}
-    (hf : GlobalTheory.CompanionTheory.Ar.Dominates ξ₂ ξ₁ f i) (hg : GlobalTheory.CompanionTheory.Ar.Dominates ξ₃ ξ₂ g j) :
-    GlobalTheory.CompanionTheory.Ar.Dominates ξ₃ ξ₁ (g ≫ f) (j.comp i) := by
-  unfold GlobalTheory.CompanionTheory.Ar.Dominates at *
-  rw [← Category.assoc, hg, Category.assoc, hf, ← Category.assoc, ← Spec.map_comp]
-  rfl
 
 theorem closure_eq_top_of_basis {Ω₁ Ω : Type} [Field Ω₁] [Field Ω] (i : Ω₁ →+* Ω)
     (hfin : letI := i.toAlgebra; FiniteDimensional Ω₁ Ω) :
@@ -224,7 +258,7 @@ theorem exists_normal_model : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResK
   let M₂' : PModel ℤ (fun c' : (k : (K ⊕ Unit) ⊕ Unit) → Cmp.joinIdx (Cmp.joinIdx J (fun _ : Unit => Option (Fin n))) (fun _ : Unit => Fin m) k => ∏ k, z ⟨k, c' k⟩) :=
     { X := M₂.X, ξ := M₂.ξ, s := M₂.s, hover := M₂.hover, all := M₂.all, tie := ht₂ }
 
-  obtain ⟨κ₃, _, y₃, M₃, f₃, hf₃, hN, -, hNorm⟩ := GlobalTheory.T.exists_normal_dominating_model ℤ Ω _ _ M₂' Ω
+  obtain ⟨κ₃, _, y₃, M₃, f₃, hf₃, hN, -, hNorm⟩ := _root_.GlobalTheory.CompanionTheory.Ar.NormEx.exists_normalisation ℤ Ω _ _ M₂' Ω
   have hf₃' : GlobalTheory.CompanionTheory.Ar.Dominates M₃.ξ M₂.ξ f₃ (RingHom.id Ω) := hf₃
   have hchart : ∀ p : Cpt M₃.ξ, ∃ c₀, InChart M₃.ξ
       (fun c' : (k : (K ⊕ Unit) ⊕ Unit) → Cmp.joinIdx (Cmp.joinIdx J (fun _ : Unit => Option (Fin n))) (fun _ : Unit => Fin m) k => ∏ k, z ⟨k, c' k⟩) c₀ p := by
@@ -236,13 +270,13 @@ theorem exists_normal_model : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResK
   obtain ⟨K', _, J', _, y', bk, bx, -, hinj, heq, ht', -⟩ := ExtraBlocks.exists_blocks_of_lines ℤ Ω _ y₃ M₃ _ _ z Empty
     (fun a => a.elim) hchart (fun a => a.elim)
   have hsm' : SmoothGenericFibreM y' :=
-    GlobalTheory.T.smoothGenericFibre_of_dominates Ω _ _ z K' J' y' M₂.X M₃.X M₂.ξ M₃.ξ f₃ M₂.all M₃.all ht₂ ht' hf₃' hsm fun q hq =>
-      GlobalTheory.T.normal_iso_of_integrally_closed M₂.X Ω M₂.ξ M₃.X M₃.ξ f₃ q (hNorm q) (mem_regAt_of_isIntegral ht₂ hsm q hq)
+    _root_.GlobalTheory.CompanionTheory.Ar.SmoothChange.smoothGenericFibreM_of_isoAt Ω _ _ z K' J' y' M₂.X M₃.X M₂.ξ M₃.ξ f₃ M₂.all M₃.all ht₂ ht' hf₃' hsm fun q hq =>
+      _root_.GlobalTheory.CompanionTheory.Ar.NormAt.isoAt_of_integrallyClosed M₂.X Ω M₂.ξ M₃.X M₃.ξ f₃ q (hNorm q) (mem_regAt_of_isIntegral ht₂ hsm q hq)
   refine ⟨K', inferInstance, J', inferInstance, y', fun k => bk (.inl (.inl k)), fun k => bx (.inl (.inl k)),
     { X := M₃.X, ξ := M₃.ξ, s := M₃.s, hover := M₃.hover, all := M₃.all, tie := ht' },
     f₃ ≫ f₂ ≫ f₁, fun a b e => ?_, fun k a => heq (.inl (.inl k)) a, ?_, hN, hsm'⟩
   · simpa using hinj e
-  · have h1 := dominates_comp (dominates_comp hf₁ hf₂) hf₃'
+  · have h1 := _root_.PositivityTheory.HtPt.Mb.dom_comp (_root_.PositivityTheory.HtPt.Mb.dom_comp hf₁ hf₂) hf₃'
     exact h1
 
 end GlobalTheory.CompanionTheory.Ar.ChangeModel

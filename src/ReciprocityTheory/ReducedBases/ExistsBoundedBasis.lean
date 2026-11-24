@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReducedBases.LatDefs
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.LinearAlgebra.Matrix.PosDef
 
 @[expose] public section
 

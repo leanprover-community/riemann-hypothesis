@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsExact
-public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsPerm
 public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsRep
-public import GroundTheory.GlobalFields.HerbrandQuotients.LatticeBridge
+public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
+public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsExact
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

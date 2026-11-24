@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZFamilySt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -34,8 +35,8 @@ theorem aeval_mem_pow {I : Chart x} {Q : Submodule (chartRing S x I) Ω} (hQ : �
     | insert j t hj ih =>
       rw [Finset.prod_insert hj, Finset.sum_insert hj, pow_add]
       exact Submodule.mul_mem_mul (Submodule.pow_mem_pow _ (hQ j) _) ih
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum]
+
+  rw [f.as_sum, map_sum]
   refine Submodule.sum_mem _ fun d hd => ?_
   rw [aeval_monomial]
   have hdeg : ∑ j ∈ d.support, d j = e := by

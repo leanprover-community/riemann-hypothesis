@@ -1,6 +1,46 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.RootWeights.EquivariantKillsCyclicOfZero
+public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.OperatorsKillInvariantProjection
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.InvariantProjectionRangeTrivial
 
 @[expose] public section
 
@@ -69,21 +109,6 @@ theorem equivariant_lifts_monoid (E : GLOps n K V) (E' : GLOps n K V') (T : V �
     obtain ⟨u2, hu2, h2⟩ := ihy
     exact ⟨u1 * u2, mul_mem hu1 hu2, fun z => (h1 (u2 z)).trans (congrArg x (h2 z))⟩
 
-private theorem exists_Umon_intertwined_of_isEquivariantMap (E : GLOps n K V) (E' : GLOps n K V') (T : V →ₗ[K] V')
-    (hT : IsEquivariantMap E E' T) {u : Module.End K V} (hu : u ∈ Umon E) :
-    ∃ u' ∈ Umon E', ∀ y, T (u y) = u' (T y) := by
-  have hu' : u ∈ Submonoid.closure (Set.range fun ab : Fin n × Fin n => E ab.1 ab.2) := hu
-  clear hu
-  induction hu' using Submonoid.closure_induction with
-  | mem x hx =>
-    obtain ⟨⟨a, b⟩, rfl⟩ := hx
-    exact ⟨E' a b, Submonoid.subset_closure ⟨(a, b), rfl⟩, fun y => hT a b y⟩
-  | one => exact ⟨1, one_mem _, fun y => rfl⟩
-  | mul x y _ _ ihx ihy =>
-    obtain ⟨u1, hu1, h1⟩ := ihx
-    obtain ⟨u2, hu2, h2⟩ := ihy
-    exact ⟨u1 * u2, mul_mem hu1 hu2, fun z => (h1 (y z)).trans (congrArg u1 (h2 z))⟩
-
 theorem equivariant_map_cyclicSubmodule (E : GLOps n K V) (E' : GLOps n K V') (T : V →ₗ[K] V') (hT : IsEquivariantMap E E' T) (v : V) :
     (cyclicSubmodule E v).map T = cyclicSubmodule E' (T v) := by
   unfold cyclicSubmodule
@@ -92,7 +117,7 @@ theorem equivariant_map_cyclicSubmodule (E : GLOps n K V) (E' : GLOps n K V') (T
   ext x
   constructor
   · rintro ⟨w, ⟨u, hu, rfl⟩, rfl⟩
-    obtain ⟨u', hu', h⟩ := exists_Umon_intertwined_of_isEquivariantMap E E' T hT hu
+    obtain ⟨u', hu', h⟩ := _root_.Formalism.MainNotions.G.GLWeightTheory.equivariant_intertwines_monoid E E' T hT hu
     exact ⟨u', hu', h v⟩
   · rintro ⟨u', hu', rfl⟩
     obtain ⟨u, hu, h⟩ := equivariant_lifts_monoid E E' T hT hu'
@@ -192,8 +217,8 @@ theorem equivariant_injective_of_cyclic (D : Formalism.BasicNotions.D7) (h2 : ad
       H (EG a b y) = (t + (((a : ℕ) : K) - ((b : ℕ) : K))) • EG a b y := by
     intro a b y t hy
     have e1 : ∑ c : Fin n, ((c : ℕ) : K) • EG a b (EG c c y) = EG a b (H y) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hHapp, map_sum]
+
+      rw [hHapp, map_sum]
       simp only [map_smul]
     have e2 : ∑ c : Fin n, ((c : ℕ) : K) • (if c = a then EG c b y else 0) =
         ((a : ℕ) : K) • EG a b y := by

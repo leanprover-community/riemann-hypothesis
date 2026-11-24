@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsIntDim
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -61,13 +65,13 @@ theorem component_mem [DecidableEq K] (y : (Σ k, ι k) → Ω) (f : MRing ι)
   set S := f.support.filter fun e ↦ Finsupp.weight (NumbersDVR.blockWeight ι) e = m
   have himg : φ (weightedHomogeneousComponent (NumbersDVR.blockWeight ι) m f) =
       monomial m' (∑ e ∈ S, ((AddMonoidAlgebra.coeff f e : ℤ) : Ω) * e.prod fun p n ↦ y p ^ n) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [weightedHomogeneousComponent_apply, map_sum, map_sum]
+
+    rw [weightedHomogeneousComponent_apply, map_sum, map_sum]
     refine Finset.sum_congr rfl fun e he ↦ ?_
     rw [mConeMap_monomial, (hdeg e).2 (Finset.mem_filter.1 he).2]
   have hcoeff : AddMonoidAlgebra.coeff (φ f) m' = ∑ e ∈ S, ((AddMonoidAlgebra.coeff f e : ℤ) : Ω) * e.prod fun p n ↦ y p ^ n := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [f.as_sum, map_sum]
+
+    conv_lhs => rw [f.as_sum, map_sum]
     rw [coeff_sum, Finset.sum_filter]
     refine Finset.sum_congr rfl fun e _ ↦ ?_
     rw [mConeMap_monomial, coeff_monomial]
@@ -76,7 +80,7 @@ theorem component_mem [DecidableEq K] (y : (Σ k, ι k) → Ω) (f : MRing ι)
   rw [mCoordIdeal, RingHom.mem_ker]
   show φ _ = 0
   rw [himg, ← hcoeff, hzero]
-  simp [AddMonoidAlgebra.coeff]
+  simp
 
 theorem isMultiHomogIdeal (y : (Σ k, ι k) → Ω) : IsMultiHomogIdeal (mCoordIdeal y) := by
   classical

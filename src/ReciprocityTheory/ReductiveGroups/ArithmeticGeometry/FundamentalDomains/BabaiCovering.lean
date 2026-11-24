@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.InnerProductSpace.Defs
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Transference
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.InnerProductSpace.LinearMap
+public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 @[expose] public section
 

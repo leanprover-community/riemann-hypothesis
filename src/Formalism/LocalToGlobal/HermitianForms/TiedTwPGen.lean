@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedTwAll
+public import Formalism.LocalToGlobal.HermitianForms.FormsTied
 
 @[expose] public section
 
@@ -22,7 +22,7 @@ def sgTG : D.what₂.Tau → DomWeight (D.R.N D.R.m - 1) :=
   fun τ => shW (M.sg τ) ((D.R.m * (D.R.t + 1) / 2 : ℕ) : ℤ)
 
 
-set_option maxHeartbeats 1000000 in
+
 structure ClassesAtPrimes (bad : Set (HeightOneSpectrum (𝓞 D.host.F))) where
   lev : StepLevel D.host.F D.host.E (sigD D) (gramP D) 1 D.R.f bad
 
@@ -48,7 +48,7 @@ structure ClassesAtPrimes (bad : Set (HeightOneSpectrum (𝓞 D.host.F))) where
 variable {M}
 
 
-set_option maxHeartbeats 1000000 in
+
 structure ValuationAtPrimes {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} (K : ClassesAtPrimes M bad) (okW : D.what₂.places.Pl → Prop) where
 
   sg : ∀ τ (i : Fin (D.R.N D.R.m - 1)),

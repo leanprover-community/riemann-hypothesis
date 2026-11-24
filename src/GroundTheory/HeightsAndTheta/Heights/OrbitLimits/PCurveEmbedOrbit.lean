@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveEmbedOrbit
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveOrbitEmbedding
+import Mathlib.RingTheory.SimpleRing.Principal
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

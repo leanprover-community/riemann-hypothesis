@@ -1,8 +1,56 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FirstDeriv
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -58,8 +106,8 @@ theorem swap_two_C_mul (a : K) (f : MvPowerSeries (Fin 2) K) : swap2 (C a * f) =
 
 theorem swap_two_sum {α : Type} (s : Finset α) (f : α → MvPowerSeries (Fin 2) K) :
     swap2 (∑ k ∈ s, f k) = ∑ k ∈ s, swap2 (f k) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [swap_two_eq_rename_equiv, map_sum]
+
+  simp only [swap_two_eq_rename_equiv, map_sum]
 
 theorem swap_two_map (σ : K →+* K) (f : MvPowerSeries (Fin 2) K) :
     swap2 (map σ f) = map σ (swap2 f) := by
@@ -155,8 +203,7 @@ theorem has_subst_first_pair : HasSubst ![(X 0 : MvPowerSeries (Fin 3) K), X 1] 
 
 theorem constantCoeff_first_two_of_three {F : MvPowerSeries (Fin 2) K} (hF : constantCoeff F = 0) :
     constantCoeff (in3 F) = 0 := by
-  unfold in3
-  exact constantCoeff_subst_eq_zero has_subst_first_pair (by intro i; fin_cases i <;> simp) hF
+  simpa [in3] using constantCoeff_subst_eq_zero has_subst_first_pair (by intro i; fin_cases i <;> simp) hF
 
 theorem has_subst_coboundary_first {F : MvPowerSeries (Fin 2) K} (hF : constantCoeff F = 0) :
     HasSubst ![in3 F, (X 2 : MvPowerSeries (Fin 3) K)] :=
@@ -221,8 +268,7 @@ theorem partial_coboundary_sum {F : MvPowerSeries (Fin 2) K} (hF : constantCoeff
   classical
   induction s using Finset.induction_on with
   | empty =>
-    have h := partial_coboundary_C_mul hF 0 (0 : MvPowerSeries (Fin 2) K)
-    simpa using h
+    simpa using partial_coboundary_C_mul hF 0 (0 : MvPowerSeries (Fin 2) K)
   | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, diffOne_add hF, ih]
 
 end Scale
@@ -232,8 +278,7 @@ section Sim
 variable {K : Type} [NormedField K] [IsUltrametricDist K] [CharZero K]
 
 theorem simeq_iff_sub {ι : Type} (f g : MvPowerSeries ι K) : Simeq f g ↔ Simeq (f - g) 0 := by
-  unfold Simeq
-  rw [sub_zero]
+  simp [Simeq]
 
 theorem simeq_sum (hS : SimeqRules) {ι : Type} (s : Finset ℕ) (f : ℕ → MvPowerSeries ι K)
     (h : ∀ k ∈ s, Simeq (f k) 0) : Simeq (∑ k ∈ s, f k) 0 := by
@@ -242,9 +287,8 @@ theorem simeq_sum (hS : SimeqRules) {ι : Type} (s : Finset ℕ) (f : ℕ → Mv
   | empty => simpa using (hS K ι).1 0
   | insert a s ha ih =>
     rw [Finset.sum_insert ha]
-    have h1 := (hS K ι).2.2.2.1 _ _ _ _ (h a (Finset.mem_insert_self a s))
+    simpa using (hS K ι).2.2.2.1 _ _ _ _ (h a (Finset.mem_insert_self a s))
       (ih fun k hk => h k (Finset.mem_insert_of_mem hk))
-    simpa using h1
 
 theorem integral_C_mul_X {ι : Type} {u : K} (hu : ‖u‖ ≤ 1) (i : ι) :
     Integral (C u * (X i : MvPowerSeries ι K)) := by
@@ -269,8 +313,7 @@ theorem integral_scale_three {u v : K} (hu : ‖u‖ ≤ 1) (hv : ‖v‖ ≤ 1)
   · exact integral_C_mul_X hv 2
 
 theorem norm_of_pow_eq_one {u : K} {N : ℕ} (hN : N ≠ 0) (h : u ^ N = 1) : ‖u‖ = 1 := by
-  have h1 : ‖u‖ ^ N = 1 := by rw [← norm_pow, h, norm_one]
-  exact (pow_eq_one_iff_of_nonneg (norm_nonneg u) hN).1 h1
+  exact (pow_eq_one_iff_of_nonneg (norm_nonneg u) hN).1 (by rw [← norm_pow, h, norm_one])
 
 end Sim
 
@@ -285,9 +328,7 @@ theorem swap_rules : SwapRules := by
   · ext n
     have hsw : sw (sw n) = n := by
       ext i
-      fin_cases i
-      · exact (sw_zero _).trans (sw_one _)
-      · exact (sw_one _).trans (sw_zero _)
+      fin_cases i <;> simp [sw_zero, sw_one]
     rw [coeff_swap2, coeff_swap2, hsw]
   · intro h n hn
     rw [coeff_swap2] at hn
@@ -309,8 +350,7 @@ theorem swap_rules : SwapRules := by
     rw [sw_zero, sw_one]
     exact hn.symm
   · intro h n
-    rw [coeff_swap2]
-    exact h _
+    simpa [coeff_swap2] using h _
   · unfold Hser
     rw [swap_two_sub, swap_two_sub, swap_two_C_mul, swap_two_C_mul, swap_two_single_mul, swap_two_single_mul,
       swap_two_de_s hp0]
@@ -400,8 +440,8 @@ theorem StepZero_of (hM : LamModule) (hS : SimeqRules) (hL : LawSymm) : StepZero
         ∑ k ∈ range N, MvPowerSeries.subst (sc2 (ζ ^ k) (ζ⁻¹ ^ (p * k))) be) =
         (N : K)⁻¹ * ((∑ k ∈ range N, (ζ ^ n 0 * ζ⁻¹ ^ (p * n 1)) ^ k) *
           MvPowerSeries.coeff n be) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [MvPowerSeries.coeff_C_mul, map_sum, Finset.sum_mul]
+
+      rw [MvPowerSeries.coeff_C_mul, map_sum, Finset.sum_mul]
       congr 1
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [coeff_subst_scale_two, mul_pow, ← pow_mul, ← pow_mul, ← pow_mul, ← pow_mul, mul_comm k (n 0),
@@ -471,15 +511,15 @@ theorem mapSimeq_statement : MapSimeq := by
     have hA : MvPowerSeries.map j (Aser K0 p) = Aser K p := by
       ext n
       rw [MvPowerSeries.coeff_map]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Aser, MvPowerSeries.coeff_apply, map_sum]
+
+      simp only [Aser, MvPowerSeries.coeff_apply, map_sum]
       refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
       split_ifs <;> simp
     have hA' : MvPowerSeries.map j (Aser' K0 p) = Aser' K p := by
       ext n
       rw [MvPowerSeries.coeff_map]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Aser', MvPowerSeries.coeff_apply, map_sum]
+
+      simp only [Aser', MvPowerSeries.coeff_apply, map_sum]
       refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
       split_ifs <;> simp
     unfold Gser

@@ -1,6 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.QthConjClose
+public import Formalism.LocalToGlobal.Columns.ChainTw
+public import Formalism.LocalToGlobal.Columns.TwQThetaOpen
+import Formalism.LocalToGlobal.Columns.QthExistsBound
+public import Formalism.LocalToGlobal.Columns.QthPrincInv
+public import Formalism.LocalToGlobal.Columns.TwQLevU
+public import Formalism.LocalToGlobal.Columns.ChainTwOk
+public import Formalism.LocalToGlobal.Columns.ChainTwZero
 
 @[expose] public section
 
@@ -71,7 +78,7 @@ theorem qth_exists_e (P : HeightOneSpectrum (𝓞 X.E)) (hq0 : ((qOf P : ℕ) : 
 
 
 open Classical in
-set_option maxHeartbeats 4000000 in
+
 theorem thetaOpen_twLevQ (hc : cst.Ok) (hQg : ∀ P ∈ QE sel (mu : Chr X.F X.E X.K), P ∉ Pr.vGs) (j : ℕ)
     (hh : rowSG Pr sel mu → AutY X R j) : ThetaOpen (twLevQ Ch sel mu cst j hh) := by
   intro P

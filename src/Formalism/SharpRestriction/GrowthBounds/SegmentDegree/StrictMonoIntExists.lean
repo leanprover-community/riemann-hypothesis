@@ -1,6 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.NonemptyDvrSettingOfStandard
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -61,8 +104,8 @@ theorem supp_aeval_pow (g : σ → τ) (e : σ → ℕ) (x : MvPolynomial σ R) 
   by_contra hne
   push_neg at hne
   apply MvPolynomial.mem_support_iff.mp hm'
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [x.as_sum, map_sum, MvPolynomial.coeff_sum]
+
+  rw [x.as_sum, map_sum, MvPolynomial.coeff_sum]
   refine Finset.sum_eq_zero fun m hm => ?_
   rw [aeval_pow_monomial, MvPolynomial.coeff_monomial, if_neg (fun h => hne m hm h.symm)]
 
@@ -132,7 +175,7 @@ theorem sum_wtVS (f : Fin (r + K) → ℕ) (t : Fin n') :
   rw [Fin.sum_univ_add]
   split_ifs with h
   · simp [wtVS, h, hi]
-  · simp [wtVS, h, hi]
+  · simp [wtVS, h]
 
 theorem vsDeg_eq (m : Fin n' × Fin (r + K) →₀ ℕ) : vsDeg m = Finsupp.linearCombination ℕ wtVS m := by
   rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp), Fintype.sum_prod_type]
@@ -165,46 +208,24 @@ theorem fr_zero_le_eFr [NeZero r] (hV : F.Valid L₁ N₁) (j : ℤ) : F.fr j 0 
 theorem eFr_strictMono [NeZero r] (hV : F.Valid L₁ N₁) : StrictMono (eFr F) := by
   exact strictMono_int_of_lt_succ fun j => lt_of_lt_of_le (hV.2.2.2.1 j) (fr_zero_le_eFr hV (j + 1))
 
-theorem strictMono_int_exists (e : ℤ → ℤ) (he : StrictMono e) (x : ℤ) : ∃ j, e (j - 1) < x ∧ x ≤ e j := by
-  classical
-  have hup : ∀ n : ℕ, e 0 + n ≤ e n := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ k ih =>
-      have := he (show (k : ℤ) < ((k + 1 : ℕ) : ℤ) by push_cast; omega)
-      push_cast at this ⊢
+theorem strictMono_int_exists (e : ℤ → ℤ) (he : StrictMono e) (x : ℤ) : ∃ j, e (j - 1) < x ∧ x ≤ e j :=
+  by
+    have hmono : Monotone (fun i => e i - i) := monotone_int_of_le_succ fun i => by
+      have := he (lt_add_one i)
       omega
-  have hdn : ∀ n : ℕ, e (-(n : ℤ)) ≤ e 0 - n := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ k ih =>
-      have := he (show (-((k + 1 : ℕ) : ℤ)) < -(k : ℤ) by push_cast; omega)
-      push_cast at this ⊢
-      omega
-  have hbdd : ∃ b : ℤ, ∀ z, x ≤ e z → b ≤ z := by
-    refine ⟨min 0 (x - e 0), fun z hz => ?_⟩
-    by_cases h : 0 ≤ z
-    · exact le_trans (min_le_left _ _) h
-    · have h3 : (((-z).toNat : ℕ) : ℤ) = -z := Int.toNat_of_nonneg (by omega)
-      have h4 := hdn (-z).toNat
-      rw [h3, neg_neg] at h4
-      have h5 : x - e 0 ≤ z := by omega
-      exact le_trans (min_le_right _ _) h5
-  have hinh : ∃ z, x ≤ e z := by
-    refine ⟨((max 0 (x - e 0)).toNat : ℤ), ?_⟩
-    have h1 := hup (max 0 (x - e 0)).toNat
-    have h2 : (((max 0 (x - e 0)).toNat : ℕ) : ℤ) = max 0 (x - e 0) := Int.toNat_of_nonneg (le_max_left _ _)
-    rw [h2] at h1 ⊢
-    have := le_max_right 0 (x - e 0)
-    linarith
-  obtain ⟨j, hj, hmin⟩ := Int.exists_least_of_bdd hbdd hinh
-  refine ⟨j, ?_, hj⟩
-  by_contra h
-  push_neg at h
-  have := hmin (j - 1) h
-  omega
+    have hbdd : ∃ b : ℤ, ∀ z, x ≤ e z → b ≤ z := by
+      refine ⟨min 0 (x - e 0), fun z hz => ?_⟩
+      by_cases h : z ≤ 0
+      · have := hmono h
+        dsimp only at this
+        omega
+      · omega
+    have hinh : ∃ z, x ≤ e z := by
+      let z := max 0 (x - e 0)
+      have := hmono (show 0 ≤ z from le_max_left _ _)
+      exact ⟨z, by dsimp only at this; dsimp [z] at this ⊢; omega⟩
+    obtain ⟨j, hj, hmin⟩ := Int.exists_least_of_bdd hbdd hinh
+    exact ⟨j, lt_of_not_ge fun h => by have := hmin (j - 1) h; omega, hj⟩
 
 
 open Classical in
@@ -298,7 +319,7 @@ theorem XX'_supported (O : Type) [CommRing O] (F : Frames n' r) (j : ℤ) (m : �
     unfold plEmb
     refine (Finset.coe_subset.mpr (MvPolynomial.vars_rename (fun v : ℤ × Fin r => (v.1, Fin.castAdd K v.2)) A)).trans ?_
     intro v hv
-    simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe, Finset.mem_image] at hv
+    simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe] at hv
     obtain ⟨w, hw, rfl⟩ := hv
     have h1 : w.1 ∈ F.letters j := hA (Finset.mem_coe.mpr hw)
     simp only [okVars, Set.mem_setOf_eq]
@@ -311,7 +332,7 @@ theorem XX'_supported (O : Type) [CommRing O] (F : Frames n' r) (j : ℤ) (m : �
     unfold nmEmb
     refine (Finset.coe_subset.mpr (MvPolynomial.vars_rename (fun v : ℤ × Fin K => (v.1, Fin.natAdd r v.2)) G)).trans ?_
     intro v hv
-    simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe, Finset.mem_image] at hv
+    simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe] at hv
     obtain ⟨w, hw, rfl⟩ := hv
     have h1 : w.1 ∈ F.letters j ∧ ¬ F.IsW j w.1 := hG (Finset.mem_coe.mpr hw)
     simp only [okVars, Set.mem_setOf_eq]
@@ -350,8 +371,8 @@ theorem vs_img_le (he : Even n') {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Val
     vsDeg (imgMon (fun v : ℤ × Fin (r + K) => (posOf n' v.1, v.2)) (fun v => p ^ F.dist j v.1) m) ≤
       ∑ x ∈ nonW F j, p ^ F.dist j x * ordDeg m x := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [vsDeg_eq, imgMon, Finsupp.sum, map_sum]
+
+  rw [vsDeg_eq, imgMon, Finsupp.sum, map_sum]
   simp only [Finsupp.linearCombination_single, smul_eq_mul]
   calc ∑ v ∈ m.support, p ^ F.dist j v.1 * m v * wtVS (posOf n' v.1, v.2)
       ≤ ∑ v ∈ nonW F j ×ˢ (Finset.univ : Finset (Fin (r + K))), p ^ F.dist j v.1 * m v * wtVS (posOf n' v.1, v.2) := by

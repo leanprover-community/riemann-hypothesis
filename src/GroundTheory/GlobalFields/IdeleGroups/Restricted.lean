@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.IdeleGroups.InfiniteProjInfiniteEmbeddingOfNe
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-public import Mathlib.Analysis.InnerProductSpace.TensorProduct
+public import Formalism.HermitianCurvature.StatementB
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JSmoothA
 
 @[expose] public section

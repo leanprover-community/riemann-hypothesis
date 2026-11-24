@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.CrystallinePeriods.AdicMaps
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinSeedDiscNormBoundsStatement
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinSeedDiscNormBounds
+import Development.AbelianVarietyTheory.CrystallinePeriods.AdicMaps
+import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -57,12 +97,6 @@ open Filter Topology
 
 theorem norm_le_one_of_mem (x : unitBall l u ρ) : ‖(x : Disc l u ρ)‖ ≤ 1 := x.2
 
-theorem norm_pow_mul (hmul : ∀ y : Disc l u ρ, ‖(l : Disc l u ρ) * y‖ = (l : ℝ)⁻¹ * ‖y‖) (n : ℕ)
-    (y : Disc l u ρ) : ‖(l : Disc l u ρ) ^ n * y‖ = ((l : ℝ)⁻¹) ^ n * ‖y‖ := by
-  induction n with
-  | zero => simp
-  | succ n ih => rw [pow_succ', mul_assoc, hmul, ih, pow_succ']; ring
-
 theorem mem_smul_top_iff (n : ℕ) (x : unitBall l u ρ) :
     x ∈ (Ideal.span {((l : ℕ) : unitBall l u ρ)}) ^ n • (⊤ : Submodule (unitBall l u ρ) (unitBall l u ρ)) ↔
       ∃ a : unitBall l u ρ, a * ((l : ℕ) : unitBall l u ρ) ^ n = x := by
@@ -80,7 +114,7 @@ theorem norm_le_of_mem (hmul : ∀ y : Disc l u ρ, ‖(l : Disc l u ρ) * y‖ 
   have e : ((a * ((l : ℕ) : unitBall l u ρ) ^ n : unitBall l u ρ) : Disc l u ρ) =
       (l : Disc l u ρ) ^ n * (a : Disc l u ρ) := by
     push_cast; ring
-  rw [e, norm_pow_mul hmul]
+  rw [e, _root_.GlobalTheory.AcrisDisc.norm_lpow_mul hmul]
   calc ((l : ℝ)⁻¹) ^ n * ‖(a : Disc l u ρ)‖ ≤ ((l : ℝ)⁻¹) ^ n * 1 :=
         mul_le_mul_of_nonneg_left (norm_le_one_of_mem a) (inv_pow_pos n).le
     _ = _ := mul_one _
@@ -130,7 +164,7 @@ theorem isAdicComplete_unitBall (hmul : ∀ y : Disc l u ρ, ‖(l : Disc l u ρ
         one_pow, Units.val_one, one_mul]
     have hy1 : ‖y‖ ≤ 1 := by
       have h2 : ((l : ℝ)⁻¹) ^ n * ‖y‖ ≤ ((l : ℝ)⁻¹) ^ n * 1 := by
-        rw [← norm_pow_mul hmul, hly, mul_one]; exact hn
+        rw [← _root_.GlobalTheory.AcrisDisc.norm_lpow_mul hmul, hly, mul_one]; exact hn
       exact le_of_mul_le_mul_left h2 (inv_pow_pos n)
     refine ⟨⟨y, hy1⟩, Subtype.ext ?_⟩
     push_cast
@@ -139,9 +173,7 @@ theorem isAdicComplete_unitBall (hmul : ∀ y : Disc l u ρ, ‖(l : Disc l u ρ
 
 end UnitBall
 
-theorem isAdicComplete_unitBall (hL : ∀ y : Disc l u ρ, ‖(l : Disc l u ρ) * y‖ = (l : ℝ)⁻¹ * ‖y‖) :
-    IsAdicComplete (Ideal.span {(l : unitBall l u ρ)}) (unitBall l u ρ) :=
-  UnitBall.isAdicComplete_unitBall hL
+alias isAdicComplete_unitBall := _root_.GlobalTheory.AcrisDisc.UnitBall.isAdicComplete_unitBall
 
 end Complete
 
@@ -239,7 +271,7 @@ theorem exists_acris_to_disc : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk :
     ∃ γ : Per.Acris l →+* bk.DA bk.ρ₀,
       (∀ a : Ainf l, γ (algebraMap (Ainf l) (Per.Acris l) a) = bk.iA a) ∧ ∀ x, ‖γ x‖ ≤ 1 := by
   intro l _ K bk
-  obtain ⟨-, hL, hθ⟩ := GlobalTheory.T.breuilKisin_seedDisc_norm_bounds l K bk
+  obtain ⟨-, hL, hθ⟩ := _root_.GlobalTheory.BSP.RhoZeroNormBounds.seed_norms l K bk
   let B := unitBall l (bk.ev X) bk.ρ₀
   haveI : IsAdicComplete (Ideal.span {(l : B)}) B := isAdicComplete_unitBall hL
   let f0 : Per.Acris0 l →+* B :=

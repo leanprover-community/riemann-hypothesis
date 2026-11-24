@@ -1,12 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedGraph
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopSimpleStacked
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopSimpleStacked
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 
@@ -28,9 +31,9 @@ theorem coord_stacked {F F' : HermLattice K i} {b : Module.Basis T ℤ (dualLatt
     {b' : Module.Basis T ℤ (dualLattice F')} {a : T → ℤ}
     (hab : ∀ t, (b t : Fin i → K) = a t • (b' t : Fin i → K)) (p : Σ _ : Unit, T) :
     dualLatticeCoord b p = (a p.2 : ProjField K i) * dualLatticeCoord b' p := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dualLatticeCoord, hab p.2, Pi.smul_apply, zsmul_eq_mul, map_mul, map_intCast, Finset.mul_sum,
-    map_sum, mul_assoc]
+
+  simp only [dualLatticeCoord, hab p.2, Pi.smul_apply, zsmul_eq_mul, map_mul, map_intCast, Finset.mul_sum,
+  map_sum, mul_assoc]
 
 def twist (Ω : Type) [Field Ω] : MvPolynomial Unit Ω →+* MvPolynomial Unit (MvPolynomial Unit Ω) :=
   eval₂Hom (C.comp C) fun u => C (X u) * X u

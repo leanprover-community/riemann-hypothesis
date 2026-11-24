@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPuncturedBranchSameOrder
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPuncturedCurveDiscInverse
+public import Mathlib.Analysis.Complex.AbsMax
+public import Mathlib.Analysis.Complex.OpenMapping
+public import Mathlib.Analysis.Complex.RemovableSingularity
+import Mathlib.Analysis.InnerProductSpace.OfNorm
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

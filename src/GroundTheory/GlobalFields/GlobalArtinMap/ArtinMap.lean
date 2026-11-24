@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
-public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
 public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialLocal
-public import GroundTheory.LocalFields.MaximalAbelianExtension
+import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
 
 @[expose] public section
 

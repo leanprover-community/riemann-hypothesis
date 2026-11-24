@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.ConjAction
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import GroundTheory.ProfiniteCohomology.FilteredHomology
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
 
 @[expose] public section
 

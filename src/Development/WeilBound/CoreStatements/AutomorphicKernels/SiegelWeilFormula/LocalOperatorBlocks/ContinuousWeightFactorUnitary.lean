@@ -1,6 +1,47 @@
 module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalOperatorBlocks.LongWeylFunctional
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -157,10 +198,10 @@ theorem lower_right_block_mul (M N : M2 n) : (M * N).toBlocks₂₂ = M.toBlocks
   rfl
 
 theorem automorphy_first_mul_parabolic (M N : M2 n) (h : M.toBlocks₂₁ = 0) : u1 (M * N) = M.toBlocks₂₂ * u1 N := by
-  simp [u1, lower_left_block_mul, lower_right_block_mul, h, Matrix.mul_add, Matrix.mul_smul]
+  simp [u1, lower_left_block_mul, lower_right_block_mul, h, Matrix.mul_add]
 
 theorem automorphy_second_mul_parabolic (M N : M2 n) (h : M.toBlocks₂₁ = 0) : u2 (M * N) = M.toBlocks₂₂ * u2 N := by
-  simp [u2, lower_left_block_mul, lower_right_block_mul, h, Matrix.mul_add, Matrix.mul_smul, Matrix.mul_neg]
+  simp [u2, lower_left_block_mul, lower_right_block_mul, h, Matrix.mul_add]
 
 theorem automorphy_first_parabolic (M : M2 n) (h : M.toBlocks₂₁ = 0) : u1 M = M.toBlocks₂₂ := by simp [u1, h]
 
@@ -261,11 +302,11 @@ theorem big_eq (g : GR n) (h : IsUnit (mR g).toBlocks₂₁.det) :
   rw [mR_mul, mR_mul, mR_mul, mR_mG ha, mR_nG hb, mR_jG, mR_nG hb', mLc, nU, JJ, nU, haH]
   conv_lhs => rw [← Matrix.fromBlocks_toBlocks (mR g)]
   simp only [Matrix.fromBlocks_multiply, Matrix.mul_one, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add,
-    Matrix.one_mul, Matrix.mul_neg, Matrix.neg_mul, neg_zero, neg_neg]
+    Matrix.mul_neg, Matrix.neg_mul, neg_neg]
   rw [Matrix.fromBlocks_inj]
   refine ⟨?_, ?_, ?_, ?_⟩ <;> symm
   · rw [ha_def, Matrix.neg_mul, neg_neg, ← Matrix.mul_assoc, hCH, Matrix.one_mul]
-  · rw [show Matrix.toBlocks₁₂ (mR g) = B from rfl, hBe, ha_def]; simp only [Matrix.neg_mul, Matrix.mul_add, Matrix.mul_neg, ← Matrix.mul_assoc, hCH, Matrix.one_mul]
+  · rw [show Matrix.toBlocks₁₂ (mR g) = B from rfl, hBe, ha_def]; simp only [Matrix.neg_mul, ← Matrix.mul_assoc, hCH, Matrix.one_mul]
     abel
   · rfl
   · rw [← Matrix.mul_assoc, hCi, Matrix.one_mul]
@@ -317,7 +358,7 @@ theorem all_eq (g : GR n) :
   have h21 : (mR g').toBlocks₂₁ = -((t : ℂ) • (mR g).toBlocks₂₁ + (mR g).toBlocks₂₂) := by
     simp only [g', mR_mul, mR_jG, mR_nG (herm_real t), lower_left_block_mul, lower_right_block_mul, JJ, nU, Matrix.toBlocks_fromBlocks₁₁,
       Matrix.toBlocks_fromBlocks₁₂, Matrix.toBlocks_fromBlocks₂₁, Matrix.toBlocks_fromBlocks₂₂]
-    simp [Matrix.mul_smul, add_comm]
+    simp [add_comm]
   have hu : IsUnit (mR g').toBlocks₂₁.det := by
     rw [h21, Matrix.det_neg, ← hp]
     exact (isUnit_neg_one.pow _).mul (isUnit_iff_ne_zero.2 (by simpa [t] using hk))

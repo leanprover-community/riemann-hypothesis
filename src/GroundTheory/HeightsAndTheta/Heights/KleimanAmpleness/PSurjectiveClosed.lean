@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GenericPointSectionHypotheses
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsTildeVanish
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsIdealTwist
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

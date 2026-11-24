@@ -1,15 +1,22 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.IndefiniteReal.CxCoreRG
+public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage
+public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
+import Formalism.LocalToGlobal.IndefiniteReal.CutPassage
+public import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfMemRangeAdjoint
+public import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfRangeAdjoint
+public import Formalism.LocalToGlobal.IndefiniteReal.FinrankISupLeSum
 public import Formalism.LocalToGlobal.IndefiniteReal.LiftCoordinatesInGoodPartFamily
 public import Formalism.LocalToGlobal.IndefiniteReal.LiftGoodPartComplexEqRangeFamily
 public import Formalism.LocalToGlobal.IndefiniteReal.MajAtEqZeroOfMemQpOfNe
+import Formalism.LocalToGlobal.IndefiniteReal.MemRangeAdjointOfKerStable
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RangeAdjointRat
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RatMuOfRowTest
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RatThOfLiftTest
-public import Formalism.LocalToGlobal.IndefiniteReal.FinrankISupLeSum
-public import Formalism.LocalToGlobal.IndefiniteReal.CutPassage
-public import Formalism.LocalToGlobal.IndefiniteReal.IsometricPeriodsOfUnitHypotheses
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

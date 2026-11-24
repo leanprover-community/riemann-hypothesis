@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegral
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreCoordGoodProj
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsIntegralProjIndep
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsIntegralSegreChartProj
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 
 @[expose] public section
 

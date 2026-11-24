@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
-public import Formalism.LocalToGlobal.ProjectiveLattices.RulInst
-public import Formalism.LocalToGlobal.ProjectiveLattices.PtFree
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 

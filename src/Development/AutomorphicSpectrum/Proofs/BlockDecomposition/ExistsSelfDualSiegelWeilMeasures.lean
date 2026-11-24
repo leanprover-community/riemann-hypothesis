@@ -1,10 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaPartD
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
+public import Development.AbelianVarietyTheory.BlockTheory.SiegelEisenstein.GramMatrixAdjoint
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSiegelTheta.BigCellDefs
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RationalAdelicMatricesSelfAnnihilator
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SecondOnCommonRangeOfSecond
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousHermPart
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualOfCovolumeOne
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCSecondCountable
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -100,7 +147,7 @@ theorem borel_tup : BorelSpace (Fin r → Fin m → AE D) := by
 
 theorem hR_tup (V : HSp D) (x y : Mx D V.rank r) (a b : Fin r) :
     hR (AF D.host.F) D.sp.cm.sig V.gram (fun i => x i a) (fun i => y i b) = GlobalTheory.StdUnn.inner V x y a b := by
-  simp only [hR, Formalism.UG.hform, JR, GlobalTheory.StdUnn.inner, Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
+  simp only [hR, Formalism.UG.hform, JR, GlobalTheory.StdUnn.inner, Matrix.mul_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   change _ = (cA D (x i a)) * (incA D (V.gram i j) * y j b)
   rw [mul_assoc]
@@ -111,8 +158,8 @@ theorem pairing_tup (V : HSp D) (ψ : AddChar (AF D.host.F) ℂ) (x y : Mx D V.r
   unfold GlobalTheory.IndefiniteRowSideFullHecke.GramMatrixBlocks.pairing GlobalTheory.IndefiniteRowSideFullHecke.GramMatrixBlocks.trA
   rw [GlobalTheory.SiegelWeilLitCompare.gramQ_eq]
   congr 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [BR, Matrix.trace, Matrix.diag, map_sum]
+
+  simp only [BR, Matrix.trace, Matrix.diag, map_sum]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [← hR_tup]
   rfl
@@ -168,8 +215,8 @@ theorem trF_adj (a b : Mx D r r) : trF (adj a) (adj b) = trF a b := by
   have h : Matrix.trace (adj a * adj b) = cA D (Matrix.trace (b * a)) := by
     have e : adj a * adj b = adj (b * a) := (adj_mul b a).symm
     rw [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.trace, map_sum]
+
+    simp only [Matrix.trace, map_sum]
     rfl
   unfold trF
   rw [h, GlobalTheory.DualPairCheck.trace_cA, Matrix.trace_mul_comm]
@@ -242,8 +289,8 @@ theorem pairH_annih {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ
     rw [e, half_add_self]
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem sdHerm_map {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) {lam : Measure (hermA D r)}
     {𝓖 : Set (hermA D r)} (hl : IsCovolOneH lam 𝓖) :
     SdHerm D.host.F D.host.E D.sp.cm.sig (AF D.host.F) ψ r (lam.map hermTo) := by
@@ -266,7 +313,7 @@ theorem sdHerm_map {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ)
   have ht : Continuous (Algebra.trace (AF D.host.F) (AE D)) :=
     IsModuleTopology.continuous_of_linearMap (Algebra.trace (AF D.host.F) (AE D))
   have hsd : SelfDual lam (pairH ψ) := by
-    refine GlobalTheory.T.selfDual_of_fundamentalDomain_volume_eq_one _ (ratHerm D r) K hK hKc _ (fun y => ?_) (fun x y => ?_) (fun x x' y => ?_) (fun x y => hψ.2.1 _)
+    refine _root_.GlobalTheory.CovolumeOneSelfDual.selfDual_of_covolume_one _ (ratHerm D r) K hK hKc _ (fun y => ?_) (fun x y => ?_) (fun x x' y => ?_) (fun x y => hψ.2.1 _)
       h1 h2 lam 𝓖 hl.1 hl.2.1 hl.2.2
     · unfold trF
       exact hψ.1.comp (continuous_const.mul (ht.comp
@@ -282,8 +329,8 @@ theorem sdHerm_map {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ)
 end Herm
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem whit_eq_coefN : ∀ (D : D7) (r : ℕ) (V : HSp D) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ →
   ∀ μ : Measure (Mx D V.rank r), (∃ 𝓕, IsCovolOne (ratMx D V.rank r) μ 𝓕) →
   ∀ lam : Measure (hermA D r), (∃ 𝓖, IsCovolOneH lam 𝓖) →

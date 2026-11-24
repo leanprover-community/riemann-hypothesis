@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStA
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMetricTransportSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfLattice
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStA
 
 @[expose] public section
 

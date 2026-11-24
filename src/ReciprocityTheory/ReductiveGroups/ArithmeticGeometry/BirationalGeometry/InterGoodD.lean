@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import Lemmata.GeneralBFactMore.Imports
-public import Lemmata.FirstBlockLemmaA.Imports
+public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 
@@ -70,8 +75,7 @@ theorem subst_monomial {r : ℕ} (lam : Fin r → k) (m : Fin (r + 1) →₀ ℕ
 
 theorem subst_natDegree_le {r : ℕ} (lam : Fin r → k) (F : MvPolynomial (Fin (r + 1)) k) :
     (subst lam F).natDegree ≤ F.totalDegree := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [F.as_sum, map_sum]
+  conv_lhs => rw [F.as_sum, map_sum]
   refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun m hm => ?_
   exact (subst_monomial lam m _).1.trans (le_totalDegree hm)
 
@@ -79,11 +83,9 @@ theorem subst_coeff_totalDegree {r : ℕ} (lam : Fin r → k) (F : MvPolynomial 
     (subst lam F).coeff F.totalDegree =
       C (eval (Fin.cons (1 : k) lam) (homogeneousComponent F.totalDegree F)) := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show subst lam F = ∑ v ∈ F.support, subst lam (monomial v (AddMonoidAlgebra.coeff F v)) by
+  rw [show subst lam F = ∑ v ∈ F.support, subst lam (monomial v (AddMonoidAlgebra.coeff F v)) by
     rw [← map_sum, ← F.as_sum]]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [homogeneousComponent_apply, map_sum, map_sum, Polynomial.finsetSum_coeff,
+  rw [homogeneousComponent_apply, map_sum, map_sum, Polynomial.finsetSum_coeff,
     Finset.sum_filter]
   refine Finset.sum_congr rfl fun m hm => ?_
   have hle : Finsupp.degree m ≤ F.totalDegree := le_totalDegree hm
@@ -98,13 +100,15 @@ theorem homogeneousComponent_totalDegree_ne_zero {σ : Type*} {F : MvPolynomial 
     (fun s => s.sum fun _ e => e)
   intro h0
   have hcoeff := congrArg (AddMonoidAlgebra.coeff · m) h0
-  rw [coeff_homogeneousComponent, if_pos (by rw [totalDegree, hmax]; rfl)] at hcoeff
+  rw [coeff_homogeneousComponent, ite_eq_left (by rw [totalDegree, hmax]; rfl)] at hcoeff
   exact (mem_support_iff.mp hm) (hcoeff.trans rfl)
 
 theorem eval_smul_of_degree {σ : Type*} [Fintype σ] (H : MvPolynomial σ k) (d : ℕ)
     (hH : ∀ m ∈ H.support, Finsupp.degree m = d) (c : k) (v : σ → k) :
     eval (c • v) H = c ^ d * eval v H := by
-  first | exact Bl.FirstBlockLemmaA.goal1 .. | (apply Bl.FirstBlockLemmaA.goal1 <;> assumption) | (intros; apply Bl.FirstBlockLemmaA.goal1 <;> assumption)
+  apply IsHomogeneous.eval_smul
+  intro m hm
+  simpa only [Finsupp.degree_eq_weight_one, Pi.one_def] using hH m (mem_support_iff.mpr hm)
 
 theorem exists_eval_cons_one_ne_zero [Infinite k] {r : ℕ} (H : MvPolynomial (Fin (r + 1)) k)
     (d : ℕ) (hH : ∀ m ∈ H.support, Finsupp.degree m = d) (h0 : H ≠ 0) :
@@ -156,9 +160,8 @@ theorem exists_isIntegralElem_linear [Infinite k] {R : Type*} [CommRing R] [Alge
   set d := F.totalDegree
   have hsupp : ∀ m ∈ (homogeneousComponent d F).support, Finsupp.degree m = d := by
     intro m hm
-    rw [mem_support_iff, coeff_homogeneousComponent] at hm
-    by_contra hne
-    exact hm (if_neg hne)
+    rw [support_homogeneousComponent] at hm
+    exact (Finset.mem_filter.mp hm).2
   obtain ⟨lam, hlam⟩ := exists_eval_cons_one_ne_zero _ d hsupp
     (homogeneousComponent_totalDegree_ne_zero hF)
   set c := eval (Fin.cons (1 : k) lam) (homogeneousComponent d F)

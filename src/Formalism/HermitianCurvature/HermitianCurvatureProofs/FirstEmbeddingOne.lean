@@ -1,6 +1,52 @@
 module
 
 public import Formalism.HermitianCurvature.StatementW
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -12,41 +58,31 @@ section Words
 
 variable {R B : Type} [CommRing R] [Ring B] [Algebra R B]
 
-theorem first_embedding_mul (M N : Matrix (Fin 2) (Fin 2) B) : E1 (M * N) = E1 M * E1 N := by
-  unfold Formalism.YangianSpanCharacter.T.E1
-  ext ⟨i, k⟩ ⟨j, l⟩
-  fin_cases i <;> fin_cases k <;> fin_cases j <;> fin_cases l <;>
-    simp [Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type, Fin.sum_univ_two]
+theorem first_embedding_mul (M N : Matrix (Fin 2) (Fin 2) B) : E1 (M * N) = E1 M * E1 N :=
+  blockDiagonal_mul (fun _ : Fin 2 => M) (fun _ => N)
+
+private theorem E2_eq_reindex (M : Matrix (Fin 2) (Fin 2) B) :
+    E2 M = reindexRingEquiv B (Equiv.prodComm (Fin 2) (Fin 2)) (E1 M) := rfl
 
 theorem entries_mem_mul (M N : Matrix (Fin 2) (Fin 2) B) : E2 (M * N) = E2 M * E2 N := by
-  unfold Formalism.YangianSpanCharacter.T.E2
-  ext ⟨i, k⟩ ⟨j, l⟩
-  fin_cases i <;> fin_cases k <;> fin_cases j <;> fin_cases l <;>
-    simp [Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type, Fin.sum_univ_two]
+  simp only [E2_eq_reindex, first_embedding_mul, map_mul]
 
-theorem first_embedding_one : E1 (1 : Matrix (Fin 2) (Fin 2) B) = 1 := by
-  unfold Formalism.YangianSpanCharacter.T.E1
-  ext ⟨i, k⟩ ⟨j, l⟩
-  fin_cases i <;> fin_cases k <;> fin_cases j <;> fin_cases l <;>
-    simp [Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type, Fin.sum_univ_two]
+theorem first_embedding_one : E1 (1 : Matrix (Fin 2) (Fin 2) B) = 1 :=
+  blockDiagonal_one
 
 theorem entries_mem_one : E2 (1 : Matrix (Fin 2) (Fin 2) B) = 1 := by
-  unfold Formalism.YangianSpanCharacter.T.E2
-  ext ⟨i, k⟩ ⟨j, l⟩
-  fin_cases i <;> fin_cases k <;> fin_cases j <;> fin_cases l <;>
-    simp [Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type, Fin.sum_univ_two]
+  rw [E2_eq_reindex, first_embedding_one, map_one]
 
 theorem first_second_embedding_commute (A C : Matrix (Fin 2) (Fin 2) B)
     (h : ∀ i j k l, A i j * C k l = C k l * A i j) : E1 A * E2 C = E2 C * E1 A := by
-  unfold Formalism.YangianSpanCharacter.T.E1 Formalism.YangianSpanCharacter.T.E2
+  unfold E1 E2
   ext ⟨i, k⟩ ⟨j, l⟩
-  fin_cases i <;> fin_cases k <;> fin_cases j <;> fin_cases l <;>
-    simp [Matrix.mul_apply, Fintype.sum_prod_type, Fin.sum_univ_two, h]
+  simp [Matrix.mul_apply, Fintype.sum_prod_type, ite_mul, mul_ite, h]
 
 theorem transpose_mul_of_comm (A C : Matrix (Fin 2) (Fin 2) B)
     (h : ∀ i j k l, A i j * C k l = C k l * A i j) : (A * C)ᵀ = Cᵀ * Aᵀ := by
   ext i j
-  simp [Matrix.mul_apply, Fin.sum_univ_two, h]
+  simp only [Matrix.transpose_apply, Matrix.mul_apply, h]
 
 theorem isDet_iff (M : R → Matrix (Fin 2) (Fin 2) B) (q : R → R) :
     IsDet M q ↔ ∀ Y : R, (M (Y + 1))ᵀ * Formalism.YangianSpanCharacter.T.J B * M Y = q Y • Formalism.YangianSpanCharacter.T.J B ∧
@@ -124,7 +160,7 @@ theorem entriesCommute_prod (M : R → Matrix (Fin 2) (Fin 2) B)
     exact (Commute.sum_right _ _ _ (fun m _ => Commute.mul_right (hx Y Y' i j k m) (ih ht m l))).eq
 
 
-set_option maxHeartbeats 800000 in
+
 theorem wordFusion_list (L : List ((R → Matrix (Fin 2) (Fin 2) B) × (R → R)))
     (h : ∀ x ∈ L, IsRTT x.1 ∧ IsDet x.1 x.2)
     (hp : L.Pairwise (fun x y => EntriesCommute x.1 y.1)) :
@@ -151,10 +187,8 @@ theorem wordFusion_list (L : List ((R → Matrix (Fin 2) (Fin 2) B) × (R → R)
     refine ⟨?_, ?_⟩
     · first
       | exact e1
-      | simpa using e1
     · first
       | exact e2
-      | simpa using e2
 
 end Words
 

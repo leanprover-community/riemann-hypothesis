@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+public import Mathlib.Analysis.Polynomial.MahlerMeasure
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 

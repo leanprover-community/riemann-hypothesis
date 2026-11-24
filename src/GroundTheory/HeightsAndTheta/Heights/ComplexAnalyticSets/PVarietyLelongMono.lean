@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarietyLelongMono
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarWirtinger
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarLelongMono
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLinearNoetherNormalization
+public import Mathlib.RingTheory.Nullstellensatz
 
 @[expose] public section
 

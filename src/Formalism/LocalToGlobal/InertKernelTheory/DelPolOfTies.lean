@@ -1,9 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.KernelDifferenceOfFrame
-public import Formalism.LocalToGlobal.InertKernelTheory.TieSerPin
-public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.FdOfCharts
-public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.LtCNeZero
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.DetYtMatNeZero
+import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
+import Formalism.LocalToGlobal.InertKernelTheory.TieSerPin
 
 @[expose] public section
 

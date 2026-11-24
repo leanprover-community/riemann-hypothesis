@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.PullIopOf
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 
 @[expose] public section
 

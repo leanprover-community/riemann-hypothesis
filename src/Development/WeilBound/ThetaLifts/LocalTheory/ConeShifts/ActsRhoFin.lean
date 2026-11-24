@@ -1,10 +1,53 @@
 module
 
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.EvFinIdemSelf
-public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.ArchSlice
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PureSt
+public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicHeisenbergActsByLocalSchrodinger
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
+public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section
 
@@ -111,8 +154,8 @@ theorem acts_rho_inf {W : Type} [AddCommGroup W] [Module (AF F) W] {B : W → W 
         _ = _ := by rw [h3, mul_one]
     have hd : ∀ a b : κ → AF F, evI F (a ⬝ᵥ b) = (fun i => evI F (a i)) ⬝ᵥ fun i => evI F (b i) := fun a b => by
       show evIH F _ = _
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [dotProduct, map_sum, map_mul]; rfl
+
+      simp only [dotProduct, map_sum, map_mul]; rfl
     rw [evI_add, evI_mul, h2, map_add (f := _), ← Algebra.smul_def, map_smul, hd, hd]
     simp only [PositivityTheory.Mix.beta, smul_eq_mul]
     push_cast

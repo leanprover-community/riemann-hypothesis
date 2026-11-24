@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveComp
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveFr
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
 public import Formalism.LocalToGlobal.ProjectiveLattices.LocalUnitReduction.IsUnitMkOfForallPrime
 
 @[expose] public section

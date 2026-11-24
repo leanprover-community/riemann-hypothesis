@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonemptyRayDataOfNeZero
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NormOneSevenOneTwo
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,23 +68,17 @@ theorem coe_idealUnit (I : Ideal (𝓞 K)) (hI : I ≠ ⊥) :
 open NumberField IsDedekindDomain in
 open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
-private lemma coe_idealUnit_eq (I : Ideal (𝓞 K)) (hI : I ≠ ⊥) :
-    ((_root_.GlobalTheory.Mem.RayData.idealUnit I hI : (FractionalIdeal (𝓞 K)⁰ K)ˣ) : FractionalIdeal (𝓞 K)⁰ K) = I := rfl
-
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
-variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Mem.RayData.idealUnit_mul (I J : Ideal (𝓞 K)) (hI : I ≠ ⊥) (hJ : J ≠ ⊥) (h : I * J ≠ ⊥) :
     _root_.GlobalTheory.Mem.RayData.idealUnit (I * J) h = _root_.GlobalTheory.Mem.RayData.idealUnit I hI * _root_.GlobalTheory.Mem.RayData.idealUnit J hJ := by
   ext
-  simp [coe_idealUnit_eq, FractionalIdeal.coeIdeal_mul]
+  simp [_root_.GlobalTheory.Mem.RayData.coe_idealUnit, FractionalIdeal.coeIdeal_mul]
 
 open NumberField IsDedekindDomain in
 open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Mem.RayData.idealUnit_congr {I J : Ideal (𝓞 K)} (hI : I ≠ ⊥) (hJ : J ≠ ⊥) :
     _root_.GlobalTheory.Mem.RayData.idealUnit I hI = _root_.GlobalTheory.Mem.RayData.idealUnit J hJ ↔ I = J := by
-  rw [Units.ext_iff, coe_idealUnit_eq, coe_idealUnit_eq, FractionalIdeal.coeIdeal_inj]
+  rw [Units.ext_iff, _root_.GlobalTheory.Mem.RayData.coe_idealUnit, _root_.GlobalTheory.Mem.RayData.coe_idealUnit, FractionalIdeal.coeIdeal_inj]
 
 open NumberField IsDedekindDomain in
 open scoped nonZeroDivisors in
@@ -77,7 +112,7 @@ theorem _root_.GlobalTheory.Mem.RayData.mem_principalRay_iff (𝔮 : Ideal (𝓞
         exact y.ne_zero (by rw [hya]; simp)
       refine ⟨a, 1, ha, one_ne_zero, ha1, by simp, ?_⟩
       ext
-      simp [coe_idealUnit_eq, hya]
+      simp [_root_.GlobalTheory.Mem.RayData.coe_idealUnit, hya]
     | one =>
       exact ⟨1, 1, one_ne_zero, one_ne_zero, by simp, by simp, one_mul _⟩
     | mul y z _ _ hy hz =>
@@ -91,7 +126,7 @@ theorem _root_.GlobalTheory.Mem.RayData.mem_principalRay_iff (𝔮 : Ideal (𝓞
         rw [e]
         exact 𝔮.add_mem (𝔮.mul_mem_left _ hd1) hb1
       · rw [Units.ext_iff] at hyab hzcd ⊢
-        simp only [Units.val_mul, coe_idealUnit_eq] at hyab hzcd ⊢
+        simp only [Units.val_mul, _root_.GlobalTheory.Mem.RayData.coe_idealUnit] at hyab hzcd ⊢
         rw [← Ideal.span_singleton_mul_span_singleton, ← Ideal.span_singleton_mul_span_singleton,
           FractionalIdeal.coeIdeal_mul, FractionalIdeal.coeIdeal_mul, ← hyab, ← hzcd]
         ring
@@ -188,7 +223,7 @@ theorem _root_.GlobalTheory.Mem.RayData.card_eq_rayNo : ∀ (K : Type) [Field K]
       refine ⟨⊤, top_ne_bot, Ideal.isCoprime_iff_sup_eq.mpr (top_sup_eq _), ?_⟩
       have e : _root_.GlobalTheory.Mem.RayData.idealUnit (⊤ : Ideal (𝓞 K)) top_ne_bot = 1 := by
         ext
-        simp [coe_idealUnit_eq]
+        simp [_root_.GlobalTheory.Mem.RayData.coe_idealUnit]
       rw [e, mul_one, inv_one]
       exact one_mem _
     | mul y z _ _ hy hz =>

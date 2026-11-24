@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsGat
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsOrb
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.IdemMulCompl
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsMain
 
 @[expose] public section
 

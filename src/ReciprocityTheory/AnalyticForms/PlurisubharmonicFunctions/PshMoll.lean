@@ -1,7 +1,14 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Complex.JensenFormula
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollA
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollB
+public import Mathlib.Analysis.Calculus.DiffContOnCl
+public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 
@@ -330,9 +337,6 @@ theorem mollify_thm : MollifyStatement := by
     exact ((mollify_main ρ hU hφ hε).2.2.2 z (hsh ε hε hεR)).1
   · filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds (Iio_mem_nhds hR0)] with ε hε hεR
     exact ((mollify_main ρ hU hφ hε).2.2.2 z (hsh ε hε hεR)).2
-
-theorem mollification_second_order : MollificationSecondOrder :=
-  mollificationSecondOrder_holds
 
 end
 

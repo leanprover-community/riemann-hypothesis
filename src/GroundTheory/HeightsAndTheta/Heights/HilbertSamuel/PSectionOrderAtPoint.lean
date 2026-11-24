@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionOrderAtPoint
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.LengthCokerEqKerAddDimOneOrderSum
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalRep
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.MemDivSuppOfDivCycleNeZero
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 
 @[expose] public section
 
@@ -282,8 +285,8 @@ theorem exists_rel (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hyc : ∀ k, y �
       ring
     have hp' : t ^ n + ∑ i ∈ Finset.range n, (algebraMap (chartRingZ y c) Ω) (p.coeff i) * t ^ i = 0 :=
       hp
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), map_sum, Finset.sum_congr rfl hsum, ← Finset.mul_sum]
+
+    rw [map_add (f := _), map_sum, Finset.sum_congr rfl hsum, ← Finset.mul_sum]
     simp only [map_mul, map_pow, map_prod, aeval_X, ← htB]
     rw [mul_pow]
     linear_combination ((∏ k, y ⟨k, c k⟩ ^ N k) * aeval y B ^ n) * hp'

@@ -1,7 +1,55 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.MembershipCriterionOfLevelZero
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.MemOfExp
+public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
+public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSAddLeft
+public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
+public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
+public import Formalism.SharpRestriction.LevelLetterCocycles.IndepStep
+import Formalism.SharpRestriction.LevelLetterCocycles.LamZero
+public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExpPowSubOne
+import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 
 @[expose] public section
 
@@ -32,9 +80,9 @@ theorem smulS_map {V V' : Type} [AddCommGroup V] [Module LL V] [AddCommGroup V']
     show L (f k) = 0
     rw [hf0 k hk, map_zero]
   funext k
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [smulS_eq_sum hf' g k ((k - m).toNat + 1) (by omega), smulS_eq_sum hf g k ((k - m).toNat + 1) (by omega),
-    map_sum]
+
+  rw [smulS_eq_sum hf' g k ((k - m).toNat + 1) (by omega), smulS_eq_sum hf g k ((k - m).toNat + 1) (by omega),
+  map_sum]
   simp only [map_smul]
 
 theorem levB_smul (hEq : ∀ (T : LocLat G Qp LL O) (i : ZMod n) (ζ : LL) (x : ↥(W.N T)) (k : ℤ),
@@ -149,12 +197,12 @@ theorem hor_exp [IsDomain O] (Ti : Comparison₂ W levB) (hR : Formalism.MainNot
       have := Formalism.MainNotions.UnusedSlot80.ArcF.phi_trunc W T 0 M b y
       simpa using this
     rw [hH0, Formalism.MainNotions.UnusedSlot80.LevC.cmpD_sum W T c' _ b (fun m => (hb.1 m).1.1)
-      (fun m => Formalism.MainNotions.UnusedSlot80.ArcF.letter_of_Nl W T c' (hb.1 m).2)]
+      (fun m => _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' (hb.1 m).2)]
     have hcc : ∀ m, PowerSeries.constantCoeff ((∑ r ∈ Finset.range M, W.π₀ ^ r *
         algebraMap O (LetA O n) (y r m)) c') = y 0 m := by
       intro m
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Finset.sum_apply, map_sum, Finset.sum_eq_single 0]
+
+      rw [Finset.sum_apply, map_sum, Finset.sum_eq_single 0]
       · simp [Pi.mul_apply]
       · intro r _ hr
         simp only [Pi.mul_apply, Pi.pow_apply, map_mul, map_pow, show W.π₀ c' = W.π₀₁ from rfl,
@@ -163,7 +211,7 @@ theorem hor_exp [IsDomain O] (Ti : Comparison₂ W levB) (hR : Formalism.MainNot
     simp only [hcc, hy 0 hM, (hsol j).2]
     rw [Finset.sum_eq_single j]
     · simp
-    · intro m _ hm; simp [Pi.single_apply, hm]
+    · intro m _ hm; simp [hm]
     · intro h; exact absurd (Finset.mem_univ j) h
   · rw [if_neg (by omega)]
     obtain ⟨x', hx'Δ, hx'e⟩ := (hsol j).1 M κ y hy
@@ -177,7 +225,7 @@ theorem hor_exp [IsDomain O] (Ti : Comparison₂ W levB) (hR : Formalism.MainNot
       Subtype.ext (by simp [hγ])
     have h1 := Ti.hΓ T hTc c' ⟨Hh, hHN⟩ hγN k
     have hx'l : (letE c' : LetA O n) • (⟨x', hx'N⟩ : ↥(W.N T)) = ⟨x', hx'N⟩ :=
-      Subtype.ext (Formalism.MainNotions.UnusedSlot80.ArcF.letter_of_Nl W T c' hx'Δ.2)
+      Subtype.ext (_root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' hx'Δ.2)
     have hLB : LB 0 (levB T c' 1 ⟨x', hx'N⟩) := fun k hk => by
       rw [← hx'l]; exact Ti.hneg T hTc c' _ k hk
     have hvan := smulS_vanish hLB (level_one_uniformizer_coeff_vanish hR c' M) k hk
@@ -209,8 +257,6 @@ theorem levB_Qφ (Ti : Comparison₂ W levB) (hs : W.s = 1) (T : LocLat G Qp LL 
   have hQ : W.Q = W.q := by
     first
     | exact Formalism.MainNotions.LiftingTheory.wmap_Q_one W hs
-    | exact Formalism.MainNotions.LiftingTheory.lifta_Q_eq W hs
-    | exact Formalism.MainNotions.N.Pv.LocalLengthBound.Q_eq_q hs
   have hx : W.Q ^ m • W.φD T (z : W.DD T) ∈ W.N T := by rw [hQ]; exact hz
   have h1 : (⟨W.q ^ m • W.φD T (z : W.DD T), hz⟩ : ↥(W.N T)) = ⟨W.Q ^ m • W.φD T (z : W.DD T), hx⟩ :=
     Subtype.ext (show W.q ^ m • W.φD T (z : W.DD T) = W.Q ^ m • W.φD T (z : W.DD T) by rw [hQ])
@@ -331,13 +377,13 @@ theorem hor_mem (T : LocLat G Qp LL O) (c' : ZMod n) {d : ℕ} (b : Fin d → W.
     intro yy
     refine ⟨(W.N T).sum_mem fun m _ => (W.N T).smul_of_tower_mem _ ((hb.1 m).1.1), fun δ hδ => ?_⟩
     unfold Formalism.MainNotions.LiftingTheory.vecB
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun m _ => by rw [map_smul, (hb.1 m).1.2 δ hδ]
   refine ⟨?_, ?_⟩
   · refine ⟨(W.N T).sum_mem fun r _ => (W.N T).smul_mem _ (hvec (y r)).1, fun δ hδ => ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun r _ =>
       (Formalism.MainNotions.UnusedSlot80.PhiPowers.smul_mem_NΔ W T (W.AΔ.pow_mem hπ r) (hvec (y r))).2 δ hδ
   · refine ⟨∑ r ∈ Finset.range M, W.π₀ ^ r • Formalism.MainNotions.LiftingTheory.vecB W T b (y r),
@@ -459,7 +505,7 @@ theorem expNoNeg0_of (Ti : Comparison₂ W levB) (hs : W.s = 1) (hR : Formalism.
   intro A hA c' hc' T hT e ζ hζ y hy m hZ r hr
   rw [levB_frame Ti hs hR hp0 h5 A hA c' hc' T hT e ζ hζ y hy m hZ]
   have hyl : (letE c' : LetA O n) • (⟨y, hy.1.1⟩ : ↥(W.N T)) = ⟨y, hy.1.1⟩ :=
-    Subtype.ext (Formalism.MainNotions.UnusedSlot80.ArcF.letter_of_Nl W T c' hy.2)
+    Subtype.ext (_root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' hy.2)
   have hLB : LB 0 (resc ((PD.p : LL) ^ (e + 1)) (fun k => ((Formalism.WeaklyAdmissibleFiltrations.φVB PD (LL := LL) (V := T.V)) ^ (e + 1))
       (levB T c' 1 ⟨y, hy.1.1⟩ k))) :=
     LB_resc (LB_map _ (fun k hk => by rw [← hyl]; exact Ti.hneg T hT.1 c' _ k hk)) _

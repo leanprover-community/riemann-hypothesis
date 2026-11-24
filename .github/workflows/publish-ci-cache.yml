@@ -28,7 +28,7 @@ jobs:
     if: >-
       github.repository == 'leanprover-community/riemann-hypothesis' &&
       ((github.event_name == 'workflow_run' &&
-      !startsWith(github.event.workflow_run.display_title, 'Proof shard ') &&
+      startsWith(github.event.workflow_run.display_title, 'Build PR #') &&
       contains(fromJSON('["success","failure"]'), github.event.workflow_run.conclusion)) ||
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest

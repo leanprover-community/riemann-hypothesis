@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongRegularise
+public import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

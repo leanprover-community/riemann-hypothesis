@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.ShapiroDefs
+public import GroundTheory.ProfiniteCohomology.DiscreteModules
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.GroupTheory.DoubleCoset
+public import Mathlib.GroupTheory.Index
+public import Mathlib.Topology.Algebra.OpenSubgroup
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 
 @[expose] public section
 

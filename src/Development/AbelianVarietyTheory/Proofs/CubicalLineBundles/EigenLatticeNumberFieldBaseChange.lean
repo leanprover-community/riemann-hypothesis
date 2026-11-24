@@ -1,7 +1,64 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.CMLattices.ExistsIsThetaDegOfIsLocalModel
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.CMLattices.IsCyclotomicExtensionCyclotomicField28
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIrreducibleGeneralizations
+public import Mathlib.Algebra.Module.FinitePresentation
+import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
+import Mathlib.CategoryTheory.Monoidal.Category
+import Mathlib.CategoryTheory.Monoidal.Mon
+public import Mathlib.RingTheory.Flat.EquationalCriterion
+import Mathlib.Topology.Sheaves.Presheaf
+import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 @[expose] public section
 
@@ -28,8 +85,8 @@ theorem eigenBC_relation {K K' : Type} [Field K] [NumberField K] [Field K'] [Num
     exact this
   have h1 : ∑ i, y i • s i = 0 := by
     apply RingOfIntegers.coe_injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero]
+
+    rw [map_sum, map_zero]
     have : ∀ i, algebraMap (𝓞 K') K' (y i • s i)
         = algebraMap K K' ((d : 𝓞 K) : K) * ((s i : K') * algebraMap K K' (x i)) := by
       intro i
@@ -43,11 +100,11 @@ theorem eigenBC_relation {K K' : Type} [Field K] [NumberField K] [Field K'] [Num
     rw [← Finset.mul_sum, h, mul_zero]
   have h2 : ∑ i, y i * φ (s i) = 0 := by
     have := congrArg φ h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum] using this
+
+    simpa [map_sum] using this
   have h3 := congrArg (algebraMap (𝓞 K) K) h2
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_zero] at h3
+
+  rw [map_sum, map_zero] at h3
   apply mul_left_cancel₀ hd0
   rw [mul_zero, Finset.mul_sum, ← h3]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -79,8 +136,8 @@ theorem eigenLattice_baseChange : ∀ (K K' O : Type) [Field K] [NumberField K] 
       = fun i => j ((r a).mulVec c i) := by
     intro a c
     funext i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Matrix.mulVec, dotProduct, map_sum]
+
+    simp [Matrix.mulVec, dotProduct, map_sum]
   constructor
   · intro h
     refine ⟨Submodule.span_mono (Set.image_mono (show {c | c ∈ Λ ∧ ∀ a, (r a).mulVec c = τ a • c} ⊆ (Λ : Set (Fin n → K)) from fun c hc => hc.1)) h, fun a => ?_⟩
@@ -110,8 +167,8 @@ theorem eigenLattice_baseChange : ∀ (K K' O : Type) [Field K] [NumberField K] 
       have e : ∀ i, (s i : K') = ∑ k, j ((φ k (s i) : 𝓞 K) : K) * (b k : K') := by
         intro i
         have := congrArg (algebraMap (𝓞 K') K') (hb (s i))
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum] at this
+
+        rw [map_sum] at this
         refine this.trans (Finset.sum_congr rfl fun k _ => ?_)
         rw [Algebra.smul_def, map_mul, ← IsScalarTower.algebraMap_apply,
           IsScalarTower.algebraMap_apply (𝓞 K) K K']
@@ -119,8 +176,8 @@ theorem eigenLattice_baseChange : ∀ (K K' O : Type) [Field K] [NumberField K] 
       rw [Finset.sum_congr rfl fun i _ => by rw [e i, Finset.sum_mul], Finset.sum_comm]
       refine Finset.sum_congr rfl fun k _ => ?_
       show _ = (b k : K') * j ((∑ i, φ k (s i) • l i) t)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Finset.sum_apply, map_sum, Finset.mul_sum]
+
+      rw [Finset.sum_apply, map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       show _ = (b k : K') * j (((φ k (s i) : 𝓞 K) : K) * l i t)
       rw [map_mul]; ring

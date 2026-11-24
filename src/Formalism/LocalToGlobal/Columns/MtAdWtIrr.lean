@@ -1,6 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.MtAdWt
+public import Formalism.LocalToGlobal.Columns.CoefModB
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightConjugacy.GlueStep
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightConjugacy.DensityFirstBound
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightConjugacy.LongestElementTranspose
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
@@ -184,8 +192,8 @@ theorem mtw_sum_coord (lam : ι → DomWeight n) (f : VV ℂ lam →ₗ[ℂ] ℂ
     ∑ i, f (bVV ℂ lam i) * ∑ j, LinearMap.toMatrix (bVV ℂ lam) (bVV ℂ lam) T i j * (bVV ℂ lam).repr x j = f (T x) := by
   have h := LinearMap.toMatrix_mulVec_repr (bVV ℂ lam) (bVV ℂ lam) T x
   conv_rhs => rw [← (bVV ℂ lam).sum_repr (T x)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, smul_eq_mul, mul_comm, ← h]
   rfl
@@ -208,8 +216,8 @@ theorem mtw_stable_of_rat (lam : ι → DomWeight n) (S : Submodule ℂ (VV ℂ 
   have hF : ∀ y, MvPolynomial.eval y F =
       ∑ i, f (bVV ℂ lam i) * ∑ j, MvPolynomial.eval y (tenP emb lam i j) * (bVV ℂ lam).repr x j := by
     intro y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [F, map_sum, map_mul, MvPolynomial.eval_C]
+
+    simp only [F, map_sum, map_mul, MvPolynomial.eval_C]
   have hrat : ∀ γ₀ ∈ GQ0 L n, MvPolynomial.eval (PI.UnitaryGroupMassFormula.HwConjInf.ratPt (γ₀ : Matrix (Fin n) (Fin n) L)) F = 0 := by
     intro γ₀ hγ
     rw [hF]

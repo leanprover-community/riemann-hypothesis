@@ -1,32 +1,102 @@
 module
 
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion
+public import Formalism.StatementOC
 public import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
-public import Formalism.LocalRingCardinality.Lemmas
-public import Formalism.SizeWindowBrackets.ChainSlopeWindows.OneLeThresholdMulPowers
-public import Formalism.SizeWindowBrackets.ChainSlopeWindows.WeightedSlopeExcessDecomposition
 public import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas
-public import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
-public import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
-public import Formalism.SizeWindowBrackets.ChainSlopeWindows.GaloisMapComplexConjugation
 public import Formalism.SharpRestriction.GlobalSchurBounds.ZetaZeroFreeRegion
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.ZetaZeroFreeRegion
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.CMFieldLemmas
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.RamificationTwoAndConjugationAtQAndD
-public import Formalism.SharpRestriction.GlobalSchurBounds.Joints
-public import Formalism.SizeWindowBrackets.ChainSlopeWindows.LipschitzWeightAndMinimum
-public import Development.AutomorphicArithmetic.ConductorsKronecker.dataField
-public import Development.AutomorphicArithmetic.ConductorsKronecker.Imports
 public import Development.AutomorphicArithmetic.PrimitiveCosets.RecH
-public import Development.AutomorphicArithmetic.PrimitiveCosets.ToEBij
+public import Formalism.SharpRestriction.ParamsHeightRankConstant
+public import Formalism.SizeWindowBrackets.ClaimGaFree
+public import Formalism.SizeWindowBrackets.FrameTraceRatioFinEquiv
+public import Development.AutomorphicArithmetic.ConductorsKronecker.Imports
 public import Development.AutomorphicArithmetic.ConductorsKronecker.RecSurj
-public import Development.AutomorphicArithmetic.ConductorsKronecker.InertiaD
-public import Development.AutomorphicArithmetic.PrimitiveCosets.CoreAtH
-public import Development.AutomorphicArithmetic.ConductorsKronecker.IsInertIff
-public import Development.AutomorphicArithmetic.PrimitiveCosets.hostFactsS
-public import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ChBalance
+public import Development.AutomorphicArithmetic.ConductorsKronecker.dataField
+public import Formalism.LocalRingCardinality.Lemmas
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.PointsPropertyOfD7
+public import Formalism.SharpRestriction.GlobalSchurBounds.Joints
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.PrimePairSizeCondition
+public import Formalism.SizeWindowBrackets.ChainSlopeWindows.WeightedSlopeExcessDecomposition
 public import Lemmata.GeneralBFactLeftBisAlt.Imports
+public import Mathlib.NumberTheory.LSeries.PrimesInAP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicArithmetic.PrimitiveCosets.ToEBij
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
+import Formalism.SizeWindowBrackets.ChainSlopeWindows.GaloisMapComplexConjugation
+import Formalism.SizeWindowBrackets.ChainSlopeWindows.JointDModelAppliesUnitLattice
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Formalism.SizeWindowBrackets.SecondKindBucket
+import Formalism.SizeWindowBrackets.WindowSettingSatisfiable
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.ZetaZeroFreeRegion, Formalism.SharpRestriction.GlobalSchurBounds.TopDensityNGeSixteen
+
+-- ===== clump member: Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.ZetaZeroFreeRegion =====
+-- clump-header: {"m": "Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.ZetaZeroFreeRegion", "h": "module\n\npublic import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion\npublic import Formalism.StatementOC\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+namespace Formalism.MainNotions.ZetaZeroFreeRegion
+
+theorem G_eq_Gz (y : ℝ) : Formalism.MainNotions.GlobalTheoryTheory.G y = Formalism.Gz y := by
+  rw [Formalism.MainNotions.GlobalTheoryTheory.G_eq_Gfun]
+  unfold Formalism.BasicNotions.Gfun Formalism.Gz Formalism.Sz
+  ring
+
+end Formalism.MainNotions.ZetaZeroFreeRegion
+
+end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.ZetaZeroFreeRegion =====
+
+-- ===== clump member: Formalism.SharpRestriction.GlobalSchurBounds.TopDensityNGeSixteen =====
+-- clump-header: {"m": "Formalism.SharpRestriction.GlobalSchurBounds.TopDensityNGeSixteen", "h": "module\n\npublic import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr\npublic import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas\npublic import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice\npublic import Formalism.SharpRestriction.GlobalSchurBounds.ZetaZeroFreeRegion\npublic import Development.AutomorphicArithmetic.PrimitiveCosets.RecH\npublic import Formalism.SharpRestriction.ParamsHeightRankConstant\npublic import Formalism.SizeWindowBrackets.ClaimGaFree\npublic import Formalism.SizeWindowBrackets.FrameTraceRatioFinEquiv\npublic import Development.AutomorphicArithmetic.ConductorsKronecker.Imports\npublic import Development.AutomorphicArithmetic.ConductorsKronecker.RecSurj\npublic import Development.AutomorphicArithmetic.ConductorsKronecker.dataField\nimport Development.AutomorphicArithmetic.PrimitiveCosets.ToEBij\nimport Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl\npublic import Formalism.LocalRingCardinality.Lemmas\npublic import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.PointsPropertyOfD7\npublic import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.ZetaZeroFreeRegion\npublic import Formalism.SharpRestriction.GlobalSchurBounds.Joints\npublic import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.PrimePairSizeCondition\nimport Formalism.SizeWindowBrackets.ChainSlopeWindows.GaloisMapComplexConjugation\nimport Formalism.SizeWindowBrackets.ChainSlopeWindows.JointDModelAppliesUnitLattice\npublic import Formalism.SizeWindowBrackets.ChainSlopeWindows.WeightedSlopeExcessDecomposition\npublic import Lemmata.GeneralBFactLeftBisAlt.Imports\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\npublic import Mathlib.NumberTheory.LSeries.PrimesInAP\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.NumberField.Discriminant.Different\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Formalism.SizeWindowBrackets.SecondKindBucket\nimport Formalism.SizeWindowBrackets.WindowSettingSatisfiable\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -292,12 +362,10 @@ theorem reads0 (ψ : Chr D) : Reads D ψ (chiP D ψ) := by
   rw [← primVal_unram D ψ hp, primVal_eq D ψ p hp.1.ne_zero]
   rfl
 
-theorem primitive_reading_exists : adm10 D := fun ψ => ⟨_, reads0 D ψ⟩
-
 theorem prim_spec (ψ : Chr D) : Reads D ψ (prim D ψ) := by
   unfold prim
-  rw [dif_pos (primitive_reading_exists D ψ)]
-  exact (primitive_reading_exists D ψ).choose_spec
+  rw [dif_pos (_root_.Formalism.MainNotions.ZetaZeroFreeRegion.primitive_reading_holds D ψ)]
+  exact (_root_.Formalism.MainNotions.ZetaZeroFreeRegion.primitive_reading_holds D ψ).choose_spec
 
 theorem primitiveCharacter_chi0_eq_one_iff (ψ : Chr D) : (chi0 D ψ).primitiveCharacter = 1 ↔ ψ = 1 := by
   have e0 : chi0 D 1 = 1 := by
@@ -753,9 +821,9 @@ theorem matRealF_of {eps : ℝ} (Fm : FamP eps) (CH : ℝ) (hCH : 0 ≤ CH) (h :
     linarith
   have hs1 : Real.sqrt (E ^ 2) = E := Real.sqrt_sq hE0.le
   have hs2 : Real.sqrt (2 * E ^ 2) ≤ 2 * E := by
-    calc Real.sqrt (2 * E ^ 2) ≤ Real.sqrt ((2 * E) ^ 2) := Real.sqrt_le_sqrt (by nlinarith [sq_nonneg E])
+    calc Real.sqrt (2 * E ^ 2) ≤ Real.sqrt ((2 * E) ^ 2) := Real.sqrt_le_sqrt (by linarith [sq_nonneg E])
       _ = 2 * E := Real.sqrt_sq (by positivity)
-  refine ⟨E ^ 2, 2 * E ^ 2, by positivity, by nlinarith, by positivity, by nlinarith, ?_, fun i => ?_⟩
+  refine ⟨E ^ 2, 2 * E ^ 2, by positivity, by linarith [sq_le_sq' (by linarith) hE18], by positivity, by linarith [sq_le_sq' (by linarith) hE18], ?_, fun i => ?_⟩
   · rw [hs1]
     calc (3 * E + 4 * Real.sqrt (2 * E ^ 2)) * x ^ CH ≤ (3 * E + 4 * (2 * E)) * x ^ CH :=
           mul_le_mul_of_nonneg_right (by linarith) hxC.le
@@ -792,7 +860,7 @@ theorem matS_at_of (D : D7) (η0 η1 e0 de : ℝ) (hd0 : 0 ≤ D.what₂.delp)
   have hle : D.what₂.Drows ≤ D.what₂.Dall := by
     have h1 := D.what₂.D_eq
     have h2 : (0 : ℝ) ≤ (D.what₂.Dall : ℝ) := Nat.cast_nonneg _
-    have h3 : (D.what₂.Drows : ℝ) ≤ (D.what₂.Dall : ℝ) := by rw [h1]; nlinarith
+    have h3 : (D.what₂.Drows : ℝ) ≤ (D.what₂.Dall : ℝ) := by rw [h1]; linarith [mul_nonneg hd0 h2]
     exact_mod_cast h3
   have hα : Fintype.card (D.div.RR.ι ⊕ Fin (D.what₂.Dall - D.what₂.Drows)) = D.what₂.Dall := by
     rw [Fintype.card_sum, Fintype.card_fin, hκ]; omega
@@ -920,7 +988,7 @@ theorem ramShareF_of {eps : ℝ} (Fm : FamP eps) (hTu : TuSize Fm) (hR : RamRank
     rw [← Real.rpow_add hx0]; congr 1; ring
   have hd0 : 0 < x ^ (eps / 8) := Real.rpow_pos_of_pos hx0 _
   have h4x : 4 * x ^ (eps / 8) ≤ x ^ eps := by
-    rw [hsplit]; nlinarith
+    rw [hsplit]; linarith [mul_le_mul_of_nonneg_left h4 hd0.le]
   have hb3 : 3 ≤ (Fm.L x i).sc.b := by
     rw [hb]
     have h1 : x ^ eps + 1 ≤ Real.exp (x ^ eps) := Real.add_one_le_exp _
@@ -939,7 +1007,7 @@ theorem ramShareF_of {eps : ℝ} (Fm : FamP eps) (hTu : TuSize Fm) (hR : RamRank
     have h5p : 0 < x ^ (5 : ℝ) := Real.rpow_pos_of_pos hx0 _
     have := hev x e2' (by linarith)
     rw [h6] at this
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_left hx2 h5p.le]
   refine ⟨2 * ((Fm.D x i).R.f : ℝ) / (Fm.L x i).sc.b, by positivity, ?_,
     ramShare_at_of (Fm.L x i) (hTu x e0' i).1 (hR x e1' i) hb3⟩
   have hE0 : 0 ≤ Real.exp (-(x ^ (eps / 8))) := (Real.exp_pos _).le
@@ -1173,13 +1241,13 @@ theorem bE_apply (D : D7) (k : D.div.RR.ι) : bE D k = D.jEE (D.div.RR.b k) := b
 
 theorem bes_sum_left (D : D7) (u : D.what₂.Word) (F : D.what₂.EE) {ι : Type} (t : Finset ι) (c : ι → ℂ)
     (g : ι → D.what₂.Mu u) : D.besS u (∑ i ∈ t, c i • g i) F = ∑ i ∈ t, c i * D.besS u (g i) F := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [besS_eq, map_sum, map_smul, inner_sum, inner_smul_right]
+
+  simp only [besS_eq, map_sum, map_smul, inner_sum, inner_smul_right]
 
 theorem bes_sum_right (D : D7) (u : D.what₂.Word) (φ : D.what₂.Mu u) {ι : Type} (t : Finset ι) (c : ι → ℂ)
     (g : ι → D.what₂.EE) : D.besS u φ (∑ i ∈ t, c i • g i) = ∑ i ∈ t, c i * D.besS u φ (g i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [besS_eq, map_sum, map_smulₛₗ, sum_inner, inner_smul_left, Complex.conj_conj]
+
+  simp only [besS_eq, map_sum, map_smulₛₗ, sum_inner, inner_smul_left, Complex.conj_conj]
 
 def Vr0 (D : D7) (U : ∀ u, D.what₂.Mu u ≃ₗᵢ[ℂ] D.what₂.Mu u) (u : D.what₂.Word) :
     Matrix (Fin (D.duS u)) (D.div.Nu u).ι ℂ :=
@@ -1205,8 +1273,8 @@ theorem pm_vr (D : D7) (f : OrthonormalBasis (RowIx D) ℂ D.s.HH) (U : ∀ u, D
     (PMat D f u * Vr0 D U u) a j = inner ℂ (f a) (D.s.Pu u (iotaC D u (U u (oM D u j)))) := by
   rw [Matrix.mul_apply]
   conv_rhs => rw [← (eC D u).sum_repr' (iotaC D u (U u (oM D u j)))]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, inner_sum, inner_smul_right, PMat, Vr0]
+
+  simp only [map_sum, map_smul, inner_sum, inner_smul_right, PMat, Vr0]
   exact Finset.sum_congr rfl (fun i _ => mul_comm _ _)
 
 theorem block_eq (D : D7) (hRat : D.BuRational) (V : D.what₂.EE ≃ₗᵢ[ℂ] D.what₂.EE)
@@ -1227,8 +1295,8 @@ theorem block_eq (D : D7) (hRat : D.BuRational) (V : D.what₂.EE ≃ₗᵢ[ℂ]
   have e1 : oM D u j = ∑ j', (bN D u).repr (oM D u j) j' • bN D u j' := ((bN D u).sum_repr _).symm
   have e2 : oE D k = ∑ k', (bE D).repr (oE D k) k' • bE D k' := ((bE D).sum_repr _).symm
   conv_lhs => rw [e1, e2]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul]
+
+  simp only [map_sum, map_smul]
   rw [bes_sum_left]
   simp only [bes_sum_right, hbase]
   rw [Matrix.mul_apply]
@@ -1311,7 +1379,7 @@ theorem unfolding_constant_pos_of_diagonal (D : D7) (u : D.what₂.Word) (e0 : �
     unfold hsDiagFull at h2
     rw [hK, hs_neg_id] at h2
     have hd' : (0 : ℝ) < (D.duS u : ℝ) := by exact_mod_cast hd
-    nlinarith
+    linarith [mul_lt_mul_of_pos_right he hd']
 
 theorem matKF_of {eps : ℝ} (Fm : FamP eps) (Cabs CH C0 : ℝ) (hC0 : 0 < C0) (lS : LinkS Fm C0)
     (cPr : ChosenProviso Fm C0) (lD : LinkDIV Fm Cabs CH) : MatKF Fm := by
@@ -1387,7 +1455,7 @@ theorem dall_pos {D : D7} (u : D.what₂.Word) (e0 : ℝ) (he : e0 < 1) (hd : 0 
     simp [hfin]
   rw [hval] at h
   have hd' : (0 : ℝ) < (D.duS u : ℝ) := by exact_mod_cast hd
-  nlinarith
+  linarith [mul_lt_mul_of_pos_right he hd']
 
 theorem rrRankF_of {eps : ℝ} (Fm : FamP eps) (Cabs CH C0 : ℝ) (hC0 : 0 < C0) (lS : LinkS Fm C0)
     (cPr : ChosenProviso Fm C0) (lI : LinkIRR Fm) (lD : LinkDIV Fm Cabs CH) : RRRankF Fm := by
@@ -1416,7 +1484,7 @@ theorem rrRankF_of {eps : ℝ} (Fm : FamP eps) (Cabs CH C0 : ℝ) (hC0 : 0 < C0)
   have he1 : e0 < 1 := by
     have h1 := Real.sq_sqrt he0
     have h2 := Real.sqrt_nonneg e0
-    nlinarith
+    linarith [sq_lt_sq' (by linarith : -1 < Real.sqrt e0) hs1]
   have hdu : 0 < (Fm.D x i).duS (Fm.D x i).u₀ := by
     by_contra hcon
     have hz : (Fm.D x i).duS (Fm.D x i).u₀ = 0 := by omega
@@ -1538,10 +1606,6 @@ theorem algMap_ne {d : 𝓞 K} (hd : d ≠ 0) : algebraMap (𝓞 K) K d ≠ 0 :=
   intro h
   exact hd ((injective_iff_map_eq_zero (algebraMap (𝓞 K) K)).mp (IsFractionRing.injective (𝓞 K) K) d h)
 
-theorem exists_mul_mem (L : Submodule (𝓞 K) V) (v : V) (hv : v ∈ Submodule.span K (L : Set V)) :
-    ∃ d : 𝓞 K, d ≠ 0 ∧ d • v ∈ L := by
-  first | exact Bl.general_b_fact_left''''''''.goal1 .. | (apply Bl.general_b_fact_left''''''''.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_left''''''''.goal1 <;> assumption) | (apply @Bl.general_b_fact_left''''''''.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_left''''''''.goal1 <;> assumption) | (apply @Bl.general_b_fact_left''''''''.goal1 <;> first | assumption | infer_instance)
-
 end General
 
 def NuCommens (D : D7) (L : SizeData₂ D) : Prop :=
@@ -1556,7 +1620,7 @@ theorem mramSpan (D : D7) : MramSpan D := by
   intro x _
   have hx : D.nuIn u x ∈ Submodule.span D.what₂.LL (((D.fm u).lat 0).L : Set ((D.fm u).lat 0).V) := by
     rw [((D.fm u).lat_good 0).2.2]; trivial
-  obtain ⟨d, hd, hm⟩ := exists_mul_mem _ _ hx
+  obtain ⟨d, hd, hm⟩ := _root_.Bl.general_b_fact_left''''''''.goal1 _ _ hx
   have hmem : d • x ∈ DV.MramL D u := by
     show (D.nuIn u) (d • x) ∈ ((D.fm u).lat 0).L
     rw [int_smul d x, map_smul, ← int_smul]
@@ -1566,11 +1630,7 @@ theorem mramSpan (D : D7) : MramSpan D := by
   rw [e]
   exact Submodule.smul_mem _ _ (Submodule.subset_span hmem)
 
-theorem Iu_ne_zero (D : D7) (L : SizeData₂ D) (u : D.what₂.Word) : DV.Iu D L u ≠ 0 := by
-  unfold DV.Iu
-  rw [Finset.prod_ne_zero_iff]
-  intro w _
-  exact zpow_ne_zero _ (FractionalIdeal.coeIdeal_ne_zero.mpr (D.plEq w).ne_bot)
+alias Iu_ne_zero := _root_.Formalism.MainNotions.J.Iu_ne_zero
 
 theorem nuFull_of {D : D7} {L : SizeData₂ D} (hN' : DV.NprimeDef D L) (hc : NuCommens D L) : D.NuFull := by
   intro u
@@ -1670,26 +1730,14 @@ theorem ioP_le {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (K : G.Consts) (p :
   · exact mul_nonneg (mul_nonneg (by norm_num) hSig)
       (div_nonneg (mul_nonneg (by norm_num) (mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) ha)) hp)
 
-section Points
-
-variable (Fm : FamP eps) (x : ℝ) (i0 : Fm.Ix x)
-
-variable {Fm x i0}
-
-
-
-end Points
-
 end Formalism.MainNotions.Lnk
 
 end
 
-noncomputable section
-
 namespace Formalism.MainNotions
-
-open Formalism.MainNotions.Lnk
 
 end Formalism.MainNotions
 
-end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.SharpRestriction.GlobalSchurBounds.TopDensityNGeSixteen =====

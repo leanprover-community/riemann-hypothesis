@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.InertRationalAdjoint
+public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
+public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -256,8 +261,8 @@ theorem inert_parts_span_top {v0 : InfinitePlace K} (hv0 : IsConjAt v0) {s : ℕ
   choose yy hyy using key
   have hsum : y = ∑ i, yy i := by
     apply B.toF_injective ℓ Z
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_congr rfl fun i _ => hyy i]
+
+    rw [map_sum, Finset.sum_congr rfl fun i _ => hyy i]
     exact (sum_eigProj hD.comm hs _ hex h1).symm
   rw [hsum]
   refine Submodule.sum_mem _ fun i _ => Submodule.mem_iSup_of_mem i ?_

@@ -1,9 +1,51 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.CommPresIsoSub
-public import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
-public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrBase
+public import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -85,7 +127,7 @@ private theorem eeN_mul_comm_of_ne_index {n' : ℕ} (S : UniformizedDVR p O) (hR
   have hA : ∀ c d, eeN D K Dt ⟨j, a⟩ mu * glOps (KK O) K Dt.trueLet (NSet Dt.nL j' b.val) c d =
       glOps (KK O) K Dt.trueLet (NSet Dt.nL j' b.val) c d * eeN D K Dt ⟨j, a⟩ mu :=
     hc.2.1 0 mu _ hdisj
-  have hpres := comm_pres_isoSub (E := glOps (KK O) K Dt.trueLet (NSet Dt.nL j' b.val)) _ hA
+  have hpres := _root_.Formalism.MainNotions.G.GLWeightTheory.isotypic_stable_commuting (E := glOps (KK O) K Dt.trueLet (NSet Dt.nL j' b.val)) _ hA
   exact (comm_isoProj (E := glOps (KK O) K Dt.trueLet (NSet Dt.nL j' b.val)) (eeN D K Dt ⟨j, a⟩ mu) hpres
     (eeN D K Dt ⟨j', b⟩) (eeN_spec D K Dt ⟨j', b⟩).1 (eeN_spec D K Dt ⟨j', b⟩).2 mu').symm
 
@@ -205,8 +247,6 @@ theorem jointE_int {n' : ℕ} (S : UniformizedDVR p O) (hR : AdmissibleDVR p n' 
   have hs : (List.map (costN K Dt dNo) (Finset.univ : Finset (NIdx Dt)).toList).sum = ∑ i : NIdx Dt, costN K Dt dNo i := by
     first
       | exact Finset.sum_map_toList _ _
-      | exact Finset.sum_toList _ _
-      | simp
   rw [hs] at h
   exact h
 
@@ -272,7 +312,7 @@ theorem greedy_one (S : UniformizedDVR p O) (i : NIdx Dt) (y : MvPolynomial (TL 
   rcases T.eq_empty_or_nonempty with hE | hne
   · refine ⟨0, ?_⟩
     have hy : y = 0 := by rw [hT, hE, Finset.sum_empty]
-    rw [hy, map_zero] <;> exact le_rfl
+    rw [hy, map_zero]
   · obtain ⟨mu, -, hinf⟩ := Finset.exists_mem_eq_inf T hne (fun mu => vBB (O := O) p (eeN D K Dt i mu y))
     refine ⟨mu, ?_⟩
     rw [← hinf]

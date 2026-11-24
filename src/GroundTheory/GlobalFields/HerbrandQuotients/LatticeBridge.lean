@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.HerbrandQuotients.Cyclic
-public import GroundTheory.GlobalFields.HerbrandQuotients.Lattice
-public import GroundTheory.GlobalFields.HerbrandQuotients.Permutation
 public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
+public import Mathlib.Basic.Real.Basic
+public import GroundTheory.GlobalFields.HerbrandQuotients.Lattice
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

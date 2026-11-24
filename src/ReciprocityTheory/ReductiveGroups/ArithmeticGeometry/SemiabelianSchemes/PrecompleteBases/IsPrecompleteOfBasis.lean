@@ -1,16 +1,14 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.GenericFiberGluing.SemistableCompleteSplit
-public import Mathlib.RingTheory.AdjoinRoot
-public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
-public import Mathlib.RingTheory.Ideal.GoingUp
-public import Mathlib.FieldTheory.Minpoly.Field
-public import Mathlib.FieldTheory.Tower
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.Algebra.Polynomial.Eval.Irreducible
-public import Mathlib.RingTheory.Polynomial.UniqueFactorization
-public import Mathlib.Algebra.Polynomial.Lifts
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
+import Mathlib.Basic.NNReal.Defs
+import Mathlib.LinearAlgebra.FreeModule.PID
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -59,13 +57,13 @@ lemma isPrecomplete_of_basis (I : Ideal R) [IsPrecomplete I R] (b : Module.Basis
   have h1 := hL i n
   rw [SModEq.sub_mem, hI] at h1
   have hs : b.repr (f n - ∑ j, L j • b j) i = b.repr (f n) i - L i := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, Finsupp.sub_apply, map_sum, Finsupp.finsetSum_apply]
+
+    rw [map_sub, Finsupp.sub_apply, map_sum, Finsupp.finsetSum_apply]
     congr 1
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      simp [Finsupp.single_apply, hj, Ne.symm hj]
+      simp [Ne.symm hj]
     · simp
   rw [hs]
   exact h1
@@ -108,7 +106,6 @@ lemma quot_isField : IsField (AdjoinRoot f ⧸ (maximalIdeal V).map (AdjoinRoot.
   have e := (AdjoinRoot.quotEquivQuotMap f (maximalIdeal V)).toRingEquiv
   first
   | exact MulEquiv.isField (Field.toIsField (AdjoinRoot (f.map (residue V)))) e.toMulEquiv
-  | exact MulEquiv.isField (Field.toIsField (AdjoinRoot (f.map (residue V)))) e.symm.toMulEquiv
 
 lemma J_max : ((maximalIdeal V).map (algebraMap V (AdjoinRoot f))).IsMaximal := by
   rw [AdjoinRoot.algebraMap_eq]
@@ -286,7 +283,6 @@ theorem nbMain (n : ℕ) : ∀ (V' : Type) [CommRing V'] [IsDomain V'] [IsDiscre
     rw [htow_eq, ← RingHom.comp_assoc, he]
     first
     | exact (ResidueField.map_comp (algebraMap V' (AdjoinRoot f)) (algebraMap (AdjoinRoot f) V2)).symm
-    | exact (ResidueField.map_comp (algebraMap (AdjoinRoot f) V2) (algebraMap V' (AdjoinRoot f))).symm
 
 end Main
 

@@ -1,6 +1,51 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.IteratedHeckeBounds.HkIterContOn
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicArithmetic.AutomorphicVarieties.TensorHomCubes.StabDirectedSystem
 
 @[expose] public section
 
@@ -180,7 +225,7 @@ theorem Hk_finv_emb {k : ℕ} (q : GK L N) {ω : Form (HS L N) k} (hω : ∀ γ,
     have eq : q * toK L N (σ c).out = toK L N t * ((q * toK L N c.out) * toK L N γ) := by
       have hsplit : (σ c).out = ((σ c).out * (c.out * γ)⁻¹) * (c.out * γ) := by group
       rw [hsplit, map_mul (toK L N) _ (c.out * γ), ← hx]
-      simp [MulAut.conj_apply, mul_assoc]
+      simp [mul_assoc]
     have ht : FInv ω (toP L N (toK L N t)) := hω t
     rw [eq, map_mul, map_mul, pb_mul_eq_pb_of_fInv_of_mem_Pos ht _ hh]
     rfl
@@ -224,27 +269,6 @@ private instance pointwiseGKAction (k : ℕ) : MulAction (GK L N) (Fin (k + 2) �
     funext j
     simp [mul_assoc]
 
-private theorem continuousOn_Hk_of_continuousOn {k : ℕ} (q : GK L N) {ω : Form (HS L N) k} (hc : ContinuousOn ω (Pos L N)) :
-    ContinuousOn (Hk q ω) (Pos L N) := by
-  have hpb : ∀ g : Gp L N, ContinuousOn (pb g ω) (Pos L N) := by
-    intro g
-    have ha : ContinuousOn (fun h => ω (actL g h)) (Pos L N) :=
-      hc.comp (actL g).continuous.continuousOn fun h hh => (g • (⟨h, hh⟩ : Pos L N)).2
-    unfold pb
-    exact (ContinuousAlternatingMap.compContinuousLinearMapCLM (actL g)).continuous.comp_continuousOn ha
-  unfold Hk mn
-  by_cases hfin : Finite (Quotient (QuotientGroup.rightRel (Sg q)))
-  · haveI := Fintype.ofFinite (Quotient (QuotientGroup.rightRel (Sg q)))
-    simp only [finsum_eq_sum_of_fintype]
-    exact ContinuousOn.const_smul (continuousOn_finsetSum _ fun c _ => hpb _) ((((Sg q).index : ℕ) : ℝ)⁻¹)
-  · have hinf : Infinite (Gm L N ⧸ Sg q) := by
-      rw [← not_finite_iff_infinite]
-      intro hf
-      exact hfin (Finite.of_equiv _ (QuotientGroup.quotientRightRelEquivQuotientLeftRel (Sg q)).symm)
-    have h0 : (Sg q).index = 0 := Subgroup.index_eq_zero_iff_infinite.2 hinf
-    simp only [h0, Nat.cast_zero, _root_.inv_zero, zero_smul]
-    exact continuousOn_const
-
 set_option synthInstance.maxHeartbeats 200000 in
 theorem hecke_iter {k : ℕ} (q : GK L N) {ω : Form (HS L N) (k + 1)} (hω : ContinuousOn ω (Pos L N)) (r : ℕ)
     (y : Fin (k + 2) → GK L N) :
@@ -273,7 +297,7 @@ theorem hecke_iter {k : ℕ} (q : GK L N) {ω : Form (HS L N) (k + 1)} (hω : Co
     | zero => exact hω
     | succ n ih =>
       rw [Function.iterate_succ_apply']
-      exact continuousOn_Hk_of_continuousOn q ih
+      exact _root_.PositivityTheory.KB.JoinReconstruction.Hk_contOn q ih
   have hall : ∀ n, (hecke (Y := Fin (k + 2) → GK L N) (E := ℝ)
         (toK L N) (MonoidHom.id (GK L N)) q)^[n]
         (fun y : Fin (k + 2) → GK L N => intP ω fun j => toP L N (y j) • one L N) =

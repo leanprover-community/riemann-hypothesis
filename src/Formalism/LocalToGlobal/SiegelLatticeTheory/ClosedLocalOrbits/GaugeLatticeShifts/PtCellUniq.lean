@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.UpUMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -44,7 +84,7 @@ theorem loU_mul {A B : Matrix (Fin N) (Fin N) K} (hA : LoU A) (hB : LoU B) : LoU
   · simp
 
 theorem upU_mul {A B : Matrix (Fin N) (Fin N) K} (hA : UpU A) (hB : UpU B) : UpU (A * B) := by
-  first | exact UpperTheory.Reformulated.B.Qh21.upU_mul .. | (apply UpperTheory.Reformulated.B.Qh21.upU_mul <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qh21.upU_mul <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh21.upU_mul <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qh21.upU_mul <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh21.upU_mul <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qh21.upU_mul K ‹_› N A B hA hB | exact @UpperTheory.Reformulated.B.Qh21.upU_mul K ‹_› N A B hA | exact @UpperTheory.Reformulated.B.Qh21.upU_mul K ‹_› N A B | exact @UpperTheory.Reformulated.B.Qh21.upU_mul K ‹_› N A | exact @UpperTheory.Reformulated.B.Qh21.upU_mul K ‹_› N | exact @UpperTheory.Reformulated.B.Qh21.upU_mul K ‹_› | exact @UpperTheory.Reformulated.B.Qh21.upU_mul K
+  first | (apply UpperTheory.Reformulated.B.Qh21.upU_mul <;> assumption)
 
 theorem loU_inv {L : Matrix (Fin N) (Fin N) K} (h : LoU L) : LoU L⁻¹ := by
   have hu : IsUnit L.det := by rw [loU_det h]; exact isUnit_one
@@ -85,9 +125,8 @@ theorem eq_self_of_le {f : Fin N → Fin N} (hf : Function.Injective f) (hle : �
   | _ n ih =>
     intro a ha
     rcases (hle a).lt_or_eq with hlt | heq
-    · exfalso
-      have h1 : f (f a) = f a := ih (f a).val (by rw [← ha]; exact hlt) (f a) rfl
-      exact (ne_of_lt hlt) (hf h1)
+    · have h1 : f (f a) = f a := ih (f a).val (by rw [← ha]; exact hlt) (f a) rfl
+      exact absurd (hf h1) (ne_of_lt hlt)
     · exact heq
 
 def mono (π : Fin N → Fin N) (c : Fin N → K) : Matrix (Fin N) (Fin N) K := fun a b => if b = π a then c a else 0
@@ -144,9 +183,7 @@ theorem mono_uniq {π ρ : Fin N → Fin N} (hπ : ∀ a, π (π a) = a) (hρ : 
   have hid : ∀ a, π (ρ a) = a := eq_self_of_le hinj hle
   have hpr : π = ρ := by
     funext a
-    have := congrArg π (hid a)
-    rw [hπ] at this
-    exact this.symm
+    simpa only [hρ] using hid (ρ a)
   refine ⟨hpr, ?_⟩
   funext a
   have h2 := e a (π a)

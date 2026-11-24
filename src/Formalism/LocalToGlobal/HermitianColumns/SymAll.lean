@@ -1,7 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianColumns.ColsHerm
 public import Formalism.LocalToGlobal.HermitianColumns.TiedCh
+public import Formalism.LocalToGlobal.HermitianColumns.ZeroPointScaledByCharacter
 
 @[expose] public section
 

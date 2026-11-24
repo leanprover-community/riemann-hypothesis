@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.Ideal.Maps
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Polynomial.Basic
 
 @[expose] public section
 

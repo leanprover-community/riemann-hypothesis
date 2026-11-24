@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
-public import GroundTheory.LocalFields.Uniqueness
 public import GroundTheory.LocalFields.Integers
-public import GroundTheory.LocalFields.UnitsBasic
-public import GroundTheory.LocalFields.UnitsPowers
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
+public import Mathlib.RingTheory.Trace.Defs
+public import GroundTheory.LocalFields.Uniqueness
+import GroundTheory.LocalFields.UnitsPowers
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+public import Mathlib.RingTheory.Localization.NormTrace
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 

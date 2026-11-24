@@ -1,7 +1,16 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.ZMod.Units
+public import Mathlib.GroupTheory.Torsion
+public import Mathlib.NumberTheory.Padics.RingHoms
+public import Mathlib.Topology.Instances.ZMod
 public import GroundTheory.GlobalFields.CyclotomicCharacters.ProfinitePadic
+import Mathlib.NumberTheory.Padics.ProperSpace
+public import Mathlib.RingTheory.ZMod.UnitsCyclic
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import GroundTheory.GlobalFields.CyclotomicCharacters.Character
 
 @[expose] public section
 
@@ -265,12 +274,12 @@ theorem toZModPow_padicUnitsLog (u : ℤ_[ℓ]ˣ) (n : ℕ) :
 
 theorem continuous_redUnits (k : ℕ) : Continuous (redUnits ℓ k) := by
   rw [Units.continuous_iff]
-  refine ⟨(continuous_toZModPow k).comp Units.continuous_val, ?_⟩
+  refine ⟨(_root_.UpperTheory.Reformulated.B.Yde3.continuous_toZModPow k).comp Units.continuous_val, ?_⟩
   have : (fun u : ℤ_[ℓ]ˣ => ((redUnits ℓ k u)⁻¹ : (ZMod (ℓ ^ k))ˣ).val) =
       fun u => PadicInt.toZModPow k ((u⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) := by
     funext u; rw [← map_inv]; rfl
   rw [this]
-  exact (continuous_toZModPow k).comp (Units.continuous_val.comp continuous_inv)
+  exact (_root_.UpperTheory.Reformulated.B.Yde3.continuous_toZModPow k).comp (Units.continuous_val.comp continuous_inv)
 
 theorem continuous_padicUnitsLog : Continuous (padicUnitsLog ℓ) := by
   have hc : Continuous fun u : ℤ_[ℓ]ˣ => Multiplicative.toAdd (padicUnitsLog ℓ u) :=

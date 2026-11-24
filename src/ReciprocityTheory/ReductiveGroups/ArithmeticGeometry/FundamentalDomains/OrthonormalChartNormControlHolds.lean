@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SignTypeCancelIdentity
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCoefficientSplitting
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LogDOfPosBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajXZ
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SignTypeCancelIdentity
 
 @[expose] public section
 
@@ -29,8 +30,6 @@ theorem orthonormalChartNormControl_holds : OrthonormalChartNormControl (E := E)
       intro f hf
       first
         | exact Differentiable.fun_sum fun j _ => hf j
-        | simpa [Finset.sum_fn] using Differentiable.sum (u := Finset.univ) (fun j _ => hf j)
-        | fun_prop
     refine hsum fun k => ?_
     refine Differentiable.const_mul ?_ _
     refine (differentiable_const _).add ?_
@@ -38,8 +37,6 @@ theorem orthonormalChartNormControl_holds : OrthonormalChartNormControl (E := E)
     · simp only [dif_pos h]
       first
         | fun_prop
-        | exact (differentiable_pi.mp ((differentiable_pi.mp
-            ((differentiable_pi.mp differentiable_id) τ)) _)) _
     · simp only [dif_neg h]
       exact differentiable_const _
   refine hG.comp hd.differentiableOn ?_

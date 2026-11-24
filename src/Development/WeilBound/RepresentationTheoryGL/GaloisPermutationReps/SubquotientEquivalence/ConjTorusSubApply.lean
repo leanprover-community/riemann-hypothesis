@@ -1,10 +1,51 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.GaloisPermutationReps.SubquotientEquivalence.IsTypeMap
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemTwKerOfNormalizer
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsCommensuratedKO
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubsingletonJacquetOfPerm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -108,8 +149,8 @@ theorem torus_mem_twKer {τ : Representation ℂ (GL (Fin n) 𝓀[k]) W} (hτ : 
 
   have hsum : ∑ u : unipRad 𝓀[k] e, τ u w = 0 := by
     refine hτ 2 _ e hne _ fun x hx => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Fintype.sum_equiv (Equiv.mulLeft (⟨x, hx⟩ : unipRad 𝓀[k] e)) _ _ fun u => ?_
     rw [Equiv.coe_mulLeft]
     show _ = τ (x * (u : GL (Fin n) 𝓀[k])) w
@@ -142,8 +183,8 @@ theorem torus_mem_twKer {τ : Representation ℂ (GL (Fin n) 𝓀[k]) W} (hτ : 
   have hcard : (Fintype.card (unipRad 𝓀[k] e) : ℂ) • π t (j w) ∈ twKer π (KOne k (Fin n)) 1 := by
     have h2 := Submodule.sum_mem (twKer π (KOne k (Fin n)) 1) fun u (_ : u ∈ Finset.univ) => hterm u
     have h3 : ∑ u : unipRad 𝓀[k] e, π t (j (τ u w)) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum (π t), ← map_sum j, hsum, map_zero, map_zero]
+
+      rw [← map_sum (π t), ← map_sum j, hsum, map_zero, map_zero]
     rw [Finset.sum_sub_distrib, h3, sub_zero, Finset.sum_const, Finset.card_univ,
       ← Nat.cast_smul_eq_nsmul ℂ] at h2
     exact h2

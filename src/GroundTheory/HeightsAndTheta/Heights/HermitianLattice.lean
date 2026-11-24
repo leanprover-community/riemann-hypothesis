@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.TensorProduct.Pi
+public import Mathlib.NumberTheory.Cyclotomic.Basic
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -184,9 +190,9 @@ def HermitianMetric.standard (ι : Type*) [Fintype ι] [DecidableEq ι] :
     HermitianMetric K (ι → 𝓞 K) where
   form σ := coreOfInjective (standardCoord K σ ι).toLinearMap (standardCoord K σ ι).injective
   form_conj σ x y := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [coreOfInjective_inner, LinearEquiv.coe_coe, PiLp.inner_apply, RCLike.inner_apply,
-      standardCoord_conjMap, map_sum, map_mul, Complex.conj_conj]
+
+    simp only [coreOfInjective_inner, LinearEquiv.coe_coe, PiLp.inner_apply, RCLike.inner_apply,
+    standardCoord_conjMap, map_sum, map_mul, Complex.conj_conj]
 
 theorem HermitianMetric.standard_inner (ι : Type*) [Fintype ι] [DecidableEq ι] (σ : K →+* ℂ)
     (x y : Fibre σ (ι → 𝓞 K)) :

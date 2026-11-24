@@ -1,7 +1,7 @@
 module
 
 public import Formalism.FormalDegreeBessel.StatementDS
-import Mathlib.Data.Fin.Tuple.Sort
+public import Mathlib.Data.Fin.Tuple.Sort
 
 @[expose] public section
 

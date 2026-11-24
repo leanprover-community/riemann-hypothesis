@@ -1,9 +1,51 @@
 module
 
-public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.OpGenC
-public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.OpGenA
+public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.LocCellSt
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BlockMatrixTwoByTwoFinStandardSkewMap
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnipotentAtTauMemStabilizer
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MixedModelHeisenbergPhaseEqCexpRealPoints
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanMultiplierTemperate
+public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.OpGenB
+public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.OpGenC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -17,7 +59,7 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 namespace PositivityTheory.Rg.Sw.Glob.UnipH
 
@@ -56,7 +98,7 @@ theorem mat_iota_nU {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {n 
   · rw [h3, OG.finite_part_block_matrix, e3, Matrix.map_zero _ (map_zero (finPart D)), Matrix.map_one _ (map_zero (finPart D)) (map_one (finPart D)),
       one_eq_block_matrix]
   · intro τ'
-    rw [OG.component_block_matrix, OG.compAt_zero', OG.compAt_one']
+    rw [OG.component_block_matrix, OG.compAt_zero', _root_.GlobalTheory.WeilVacMove.compAt_one]
     by_cases h : τ' = τ
     · subst h
       rw [h1, hyb, e1]
@@ -82,9 +124,9 @@ theorem theta_half (θ : InfFam D) (_hθ : IsInfFam θ) (ρ : D.what₂.Tau) :
 theorem gramX_eq {m n : ℕ} (ε : Fin m → Bool) (u : Matrix (Fin m) (Fin n) ℂ) :
     gramX ε u = uᴴ * Matrix.diagonal (sgn ε) * u := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gramX, evX, Qp, Qb, map_sub, map_sum, map_mul, MvPolynomial.eval_X, Matrix.mul_apply,
-    Matrix.diagonal_apply, Matrix.conjTranspose_apply, ite_true, Bool.false_eq_true, ite_false]
+
+  simp only [gramX, evX, Qp, Qb, map_sub, map_sum, map_mul, MvPolynomial.eval_X, Matrix.mul_apply,
+  Matrix.diagonal_apply, Matrix.conjTranspose_apply, ite_true, Bool.false_eq_true, ite_false]
   rw [Finset.sum_filter, Finset.sum_filter, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.sum_eq_single a (fun k _ hk => by simp [hk]) (by simp)]
@@ -106,7 +148,7 @@ theorem psi_unip {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F)
     have e : θ τ' (infPart D z) = ((θ τ').comp (infPart D)) z := rfl
     rw [e, hz, AddMonoidHom.map_trace]
     show Matrix.trace (compAt θ τ' (HMul.hMul B (GlobalTheory.StdUnn.inner V x x) : Mx D n n)) = _
-    rw [GlobalTheory.CompanionTheory.WSum.compAt_mul', GlobalTheory.StdUnn.inner, GlobalTheory.CompanionTheory.WSum.compAt_mul', GlobalTheory.CompanionTheory.WSum.compAt_adj hθ, GlobalTheory.CompanionTheory.WSum.compAt_mul', gA,
+    rw [_root_.GlobalTheory.WeilVacMove.compAt_mul, GlobalTheory.StdUnn.inner, _root_.GlobalTheory.WeilVacMove.compAt_mul, GlobalTheory.CompanionTheory.WSum.compAt_adj hθ, _root_.GlobalTheory.WeilVacMove.compAt_mul, gA,
       GlobalTheory.CompanionTheory.WSum.compAt_rat hθ]
     rfl
   have hzf : finPart D z = 0 := by
@@ -148,8 +190,8 @@ theorem psi_unip {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F)
       change star T = T
       have hg : (gramX ε (fr⁻¹ * compAt θ τ x))ᴴ = gramX ε (fr⁻¹ * compAt θ τ x) := by
         ext i j
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp [Matrix.conjTranspose_apply, gramX, Qp, Qb, evX, map_sum, mul_comm]
+
+        simp [Matrix.conjTranspose_apply, gramX, Qp, Qb, evX, map_sum, mul_comm]
       rw [hTdef, ← Matrix.trace_conjTranspose, Matrix.conjTranspose_mul, hg, hb, Matrix.trace_mul_comm]
     rw [hr]
     congr 1

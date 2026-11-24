@@ -1,6 +1,61 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LaurentBlockInduction.LdDefs
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Formalism.DoubleCosetMeasures.Statement
+import GroundTheory.AutomorphicForms.AdmissibleInduction
+import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
+import GroundTheory.AutomorphicForms.SmoothRepContragredient
+import GroundTheory.AutomorphicForms.SmoothRepSchur
+public import GroundTheory.LocalFields.PadicExp
+import GroundTheory.LocalFields.UnramifiedHensel
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.Separation.Connected
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,13 +75,13 @@ private theorem val_one_entry_le {n : ℕ} (i j : Fin n) :
     ValuativeRel.valuation F ((1 : Matrix (Fin n) (Fin n) F) i j) ≤ 1 := by
   by_cases h : i = j
   · simp [Matrix.one_apply, h]
-  · simp [Matrix.one_apply, h]
+  · simp [h]
 
 private theorem coe_one_entry {n : ℕ} (i j : Fin n) :
     (((1 : Matrix (Fin n) (Fin n) 𝒪[F]) i j : 𝒪[F]) : F) = (1 : Matrix (Fin n) (Fin n) F) i j := by
   by_cases h : i = j
   · simp [Matrix.one_apply, h]
-  · simp [Matrix.one_apply, h]
+  · simp [h]
 
 private theorem mem_integralGL_of_congr {n r : ℕ} (hr : 1 ≤ r) {g : GL (Fin n) F}
     (hg : ∀ i j, ValuativeRel.valuation F ((g : Matrix (Fin n) (Fin n) F) i j - (1 : Matrix (Fin n) (Fin n) F) i j) ≤
@@ -58,7 +113,7 @@ private theorem mem_integralGL_of_congr {n r : ℕ} (hr : 1 ≤ r) {g : GL (Fin 
     rw [RingHom.mapMatrix_apply, Matrix.map_apply, Ideal.Quotient.eq.2 (hdiff i j)]
     by_cases h : i = j
     · simp [Matrix.one_apply, h]
-    · simp [Matrix.one_apply, h]
+    · simp [h]
   have hdet : IsUnit M.det := by
     by_contra hu
     have hm : M.det ∈ IsLocalRing.maximalIdeal 𝒪[F] := (IsLocalRing.mem_maximalIdeal _).2 hu

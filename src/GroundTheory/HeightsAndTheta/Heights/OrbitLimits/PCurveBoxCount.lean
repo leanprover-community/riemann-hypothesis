@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveBoxCount
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveBoxSmall
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveBoxLattice
+import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

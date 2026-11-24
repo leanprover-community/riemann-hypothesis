@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsInvertibleIdealIndex
+public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 

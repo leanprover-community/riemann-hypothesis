@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecLevelCls
+public import Formalism.LocalToGlobal.Columns.Adelic
+public import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

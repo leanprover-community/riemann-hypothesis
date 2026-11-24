@@ -1,6 +1,45 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ChiNCut
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,8 +62,7 @@ theorem fmat_mul_inv' (a : I.Gf) : I.fmat a * I.fmat a⁻¹ = 1 := by
   rfl
 
 theorem kset_mem {k : I.Gf} (hk : k ∈ I.Kset) {y : VA I} (hy : y ∈ I.Lf) : I.fmat k *ᵥ y ∈ I.Lf := by
-  have h' : ∀ x, x ∈ I.Lf ↔ I.fmat k *ᵥ x ∈ I.Lf := hk
-  exact (h' y).1 hy
+  exact (hk y).1 hy
 
 theorem kset_inv {k : I.Gf} (hk : k ∈ I.Kset) : k⁻¹ ∈ I.Kset := by
   exact (Formalism.UG.stabGL I.Lf).inv_mem (show (k : GL (Fin I.n) (I.E ⊗[I.F] Af I.F)) ∈ Formalism.UG.stabGL I.Lf from hk)
@@ -107,8 +145,8 @@ theorem sigA_inclE' (e : I.E) :
 theorem hA_incl' (x y : Fin I.n → I.E) :
     hA I (incl I x) (incl I y) =
       Formalism.UG.inclE (F := I.F) (Af I.F) (Formalism.UG.hform (starRingEnd I.E) I.J x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hA, Formalism.UG.hform, incl, Matrix.map_apply, map_sum, map_mul]
+
+  simp only [hA, Formalism.UG.hform, incl, Matrix.map_apply, map_sum, map_mul]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [show Formalism.UG.sigR I.cm.sig (Af I.F) (Formalism.UG.inclE (F := I.F) (Af I.F) (x i)) =
     Formalism.UG.inclE (F := I.F) (Af I.F) (starRingEnd I.E (x i)) from sigA_inclE' I (x i)]
@@ -180,11 +218,10 @@ theorem hA_mL_right (m : ℕ) {δ w : VA I} (hδ : δ ∈ mL I m) (hw : w ∈ I.
 theorem bezout_cast {c g : ℕ} (hc : Nat.Coprime c g) :
     ∃ u v : ℤ, (u : I.E ⊗[I.F] Af I.F) * c + (v : I.E ⊗[I.F] Af I.F) * g = 1 := by
   refine ⟨Nat.gcdA c g, Nat.gcdB c g, ?_⟩
-  have h := Nat.gcd_eq_gcd_ab c g
+  have h := congrArg (Int.cast : ℤ → I.E ⊗[I.F] Af I.F) (Nat.gcd_eq_gcd_ab c g)
   rw [Nat.Coprime.gcd_eq_one hc] at h
-  have h' := congrArg (Int.cast : ℤ → I.E ⊗[I.F] Af I.F) h
-  push_cast at h'
-  linear_combination -h'
+  push_cast at h
+  linear_combination -h
 
 theorem hA_inAt_left {g : ℕ} {δ w : VA I} (hδ : InAt I g g δ) (hδL : δ ∈ I.Lf) (hw : w ∈ I.Lf) :
     ∃ t ∈ IntAf I.F I.E, hA I δ w = (g : I.E ⊗[I.F] Af I.F) * t := by

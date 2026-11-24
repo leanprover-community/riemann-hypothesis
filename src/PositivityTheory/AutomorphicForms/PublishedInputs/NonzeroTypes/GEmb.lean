@@ -1,6 +1,7 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.TensorProductVectors
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

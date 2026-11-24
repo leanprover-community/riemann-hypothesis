@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CurvePt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StChartScalingIndep
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsMonomialNotMem
 
 @[expose] public section
 
@@ -74,8 +78,8 @@ theorem coeff_eq_zero (x : (Σ k, ι k) → Ω) (i : ∀ k, ι k) (hx : ∀ k, x
 
   have hH : (∑ α ∈ s, G α * ∏ k, (X ⟨k, i k⟩ : MRingOver F ι) ^ α k) ∈
       RingHom.ker (aeval x : MRingOver F ι →ₐ[F] Ω) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [RingHom.mem_ker, map_sum]
+
+    rw [RingHom.mem_ker, map_sum]
     calc ∑ α ∈ s, aeval x (G α * ∏ k, (X ⟨k, i k⟩ : MRingOver F ι) ^ α k)
         = ∑ α ∈ s, (∏ k, x ⟨k, i k⟩ ^ M k) *
             (aeval y (g α) * ∏ k, x ⟨k, i k⟩ ^ α k) :=
@@ -89,8 +93,8 @@ theorem coeff_eq_zero (x : (Σ k, ι k) → Ω) (i : ∀ k, ι k) (hx : ∀ k, x
   have hcomp : weightedHomogeneousComponent (mw (ι := ι)) (M + ⇑β)
       (∑ α ∈ s, G α * ∏ k, (X ⟨k, i k⟩ : MRingOver F ι) ^ α k) =
         G β * ∏ k, (X ⟨k, i k⟩ : MRingOver F ι) ^ β k := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_eq_single β]
+
+    rw [map_sum, Finset.sum_eq_single β]
     · rw [weightedHomogeneousComponent_of_mem (hmem β hβ), if_pos rfl]
     · intro α hα hne
       rw [weightedHomogeneousComponent_of_mem (hmem α hα), if_neg]
@@ -140,8 +144,8 @@ theorem ChartScalingIndep.proof : ChartScalingIndep.Statement := by
   have h1 : aeval (fun k => x ⟨k, i k⟩) p = ∑ α ∈ p.support,
       ((p.coeff α : IntermediateField.adjoin F (Set.range y)) : Ω) * ∏ k, x ⟨k, i k⟩ ^ α k := by
     conv_lhs => rw [p.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun α _ => ?_
     rw [aeval_monomial, Finsupp.prod_fintype _ _ (fun k => pow_zero _)]
     rfl

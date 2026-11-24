@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.Statement
+import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.IsBichar
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.ClosedSubgroupsStatement
-public import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
 
 @[expose] public section
 

@@ -1,7 +1,46 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.PBData
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompOfCechPt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -180,8 +219,8 @@ private theorem gl_map_mulVec_comp_eq_comp_mulVec {n : ℕ} {A B : Type} [CommRi
     (↑(Matrix.GeneralLinearGroup.map φ M) : Matrix (Fin n) (Fin n) B).mulVec (φ ∘ x) =
       φ ∘ (↑M : Matrix (Fin n) (Fin n) A).mulVec x := by
   funext i
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Matrix.mulVec, dotProduct, map_sum]
+
+  simp [Matrix.mulVec, dotProduct, map_sum]
 
 theorem w_nat {V' V : Scheme.{0}} (s : V' ⟶ V) (a b : V ⟶ P.T') (h : a ≫ P.e = b ≫ P.e)
     (h' : (s ≫ a) ≫ P.e = (s ≫ b) ≫ P.e) :
@@ -423,7 +462,7 @@ theorem lineUnit_bunF {V : Scheme.{0}} (x : V ⟶ T) (a : Fin 2 → (V ⟶ P.T')
   rw [P.w_congr (congrFun (pts_cechPt P.e x a h) 0) (congrFun (pts_cechPt P.e x a h) 1) _
     ((h 0).trans (h 1).symm)]
   ext
-  simp [Matrix.det_fin_one]
+  simp
 
 end PBData
 end UpperTheory.Gal.KunnethLefschetz.G

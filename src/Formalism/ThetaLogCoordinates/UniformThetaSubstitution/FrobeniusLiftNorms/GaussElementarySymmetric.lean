@@ -1,9 +1,57 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementC
-public import Formalism.SubspaceCounting.SubspaceCountingProofs.QVandermonde
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.RingTheory.PowerSeries.Basic
 public import Formalism.ArtinHasse.ArtinHasseProofs.SymmSeries
+public import Formalism.SubspaceCounting.SubspaceCountingProofs.QVandermonde
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,8 +73,8 @@ def genE (x : σ → K) : PowerSeries K := ∏ i, (1 + PowerSeries.C (x i) * Pow
 lemma eF_eq_sum (x : σ → K) (l : ℕ) :
     eF x l = ∑ s ∈ powersetCard l univ, ∏ i ∈ s, x i := by
   unfold eF
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [MvPolynomial.esymm, map_sum, map_prod]
+
+  simp [MvPolynomial.esymm, map_sum, map_prod]
 
 lemma coeff_genE (x : σ → K) (l : ℕ) : PowerSeries.coeff l (genE x) = eF x l := by
   classical
@@ -35,8 +83,8 @@ lemma coeff_genE (x : σ → K) (l : ℕ) : PowerSeries.coeff l (genE x) = eF x 
   have hc : ∀ i, (1 + PowerSeries.C (x i) * PowerSeries.X : PowerSeries K) =
       PowerSeries.C (x i) * PowerSeries.X + 1 := fun i => add_comm _ _
   simp_rw [hc]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finset.prod_add, map_sum]
+
+  rw [Finset.prod_add, map_sum]
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [Finset.prod_const_one, mul_one, Finset.prod_mul_distrib, Finset.prod_const, ← map_prod,
     PowerSeries.coeff_C_mul_X_pow]
@@ -104,8 +152,8 @@ lemma comp_sum {K A B C ι : Type} [CommRing K] [AddCommGroup A] [AddCommGroup B
     [Module K A] [Module K B] [Module K C] (s : Finset ι) (f : ι → A →ₗ[K] B) (g : B →ₗ[K] C) :
     g.comp (∑ i ∈ s, f i) = ∑ i ∈ s, g.comp (f i) := by
   ext a
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [LinearMap.sum_apply, map_sum]
+
+  simp [LinearMap.sum_apply, map_sum]
 
 section gauss
 
@@ -178,8 +226,8 @@ theorem hecke_convolution : HEConvolution := by
   intro K σ _ _ _ x n hn
   have h := Formalism.FT.SymmetricSeries.esymm_hsymm_rel (σ := σ) (R := K) n hn
   have h2 := congrArg (MvPolynomial.eval x) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_pow, map_neg, map_one, map_zero] at h2
+
+  simp only [map_sum, map_mul, map_pow, map_neg, map_one, map_zero] at h2
   rw [← Finset.sum_range_reflect]
   have hterm : ∀ j ∈ range (n + 1), (-1 : K) ^ (n + 1 - 1 - j) * hF x (n + 1 - 1 - j) * eF x (n - (n + 1 - 1 - j)) =
       (-1) ^ n * ((-1) ^ j * MvPolynomial.eval x (MvPolynomial.esymm σ K j) *

@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarBasic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.AdKMeasurePreserving
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
+public import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarBasic
 
 @[expose] public section
 
@@ -39,7 +40,7 @@ theorem pact_cfc_log_exp (X : Matrix (Fin n) (Fin n) ℂ) (hX : X.IsHermitian)
       simp [Complex.ofReal_exp, ← Complex.exp_eq_exp_ℂ]
     conv_lhs => rw [hX.spectral_theorem]
     rw [Matrix.IsHermitian.cfc]
-    simp only [Unitary.conjStarAlgAut_apply, Unitary.coe_star]
+    simp only [Unitary.conjStarAlgAut_apply]
     rw [← hWdef, ← hWi, Matrix.exp_conj _ _ hWu, Matrix.exp_diagonal, hd]
   rw [← Matrix.IsHermitian.cfc_eq, hexp, ← Matrix.IsHermitian.cfc_eq,
     ← cfc_comp Real.log Real.exp X hSA

@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -31,7 +38,7 @@ theorem thInd_eq_lift (hLa : A.LaHyp a b S) (hN : IsSdLat N) (hN' : IsSdLat N') 
   rw [liftIndep_of A a b S hH N N' c x s hN hN' hc hs z]
   unfold xiInd
   have h1 := twist_induced_vanish _ _ _ _ _ _ hSc _ _ (repsOf_spec _ _ hr1) (repsOf_spec _ _ hr2) (volC A.AA S N N') (A.e a b N N')
-  rw [funext h1, opU_smul]
+  rw [funext h1, _root_.Formalism.L2.Th1.H.Inv.opU_const_mul]
   have h2 : ((Real.sqrt (volC A.AA S N N') : ℝ) : ℂ) * ((Real.sqrt (volC A.AA S N N') : ℝ) : ℂ) = ((volC A.AA S N N' : ℝ) : ℂ) := by
     rw [← Complex.ofReal_mul, Real.mul_self_sqrt hv.le]
   have h3 : ((Real.sqrt (volC A.AA S N N') : ℝ) : ℂ) ≠ 0 := by

@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantEquality
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.Expand
+public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 
@@ -89,8 +93,8 @@ theorem coeff_extract {W : Type*} [AddCommGroup W] [Module ℂ W] (T : Module.En
         - C (φ u) * P = 0 := by
       refine Polynomial.funext fun t => ?_
       have := congrArg φ (h t)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul] at this
+
+      simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul] at this
       simp only [eval_sub, eval_add, eval_mul, Polynomial.eval_finsetSum, eval_C, eval_X, eval_pow, eval_zero]
       rw [sub_eq_zero, mul_comm (φ u)]
       simp only [mul_comm (φ _) (t ^ _)]
@@ -135,8 +139,8 @@ theorem om_nnPlus {m : ℕ} (X : GMod (m + 1)) (y : Fin (m + 1) → ℂ) (x : �
     · simp
   show om X (nnPlus X.E y x v) b + x • nnPlus X.E y x v b = y b • capelliC X.E x v
   rw [hR, om_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [nnPlus, map_sum, map_smul, Finset.smul_sum]
+
+  simp only [nnPlus, map_sum, map_smul, Finset.smul_sum]
   rw [Finset.sum_comm, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [← key c, smul_add, Finset.smul_sum]
@@ -184,7 +188,7 @@ theorem nonScal : NonScal := by
     rw [LinearMap.sum_apply, if_pos rfl, hC] at h
     have h0 : ∑ d : Fin (m + 1), (((-1 : ℂ) ^ ((d : ℕ) + (s : ℕ))) •
         (capEntry X.E (ω - 1 - (m : ℂ)) s d * cminor X.E s.succAbove d.succAbove (ω - 1))) v = 0 :=
-      Finset.sum_eq_zero fun d _ => by simp [Module.End.mul_apply, hall d]
+      Finset.sum_eq_zero fun d _ => by simp [hall d]
     rw [h0] at h
     have h1 : Formalism.QuantumDeterminants.capP χ (ω - 1 - cn (m + 1)) • v = 0 := by simpa using h.symm
     exact (smul_ne_zero hc1 hv) h1

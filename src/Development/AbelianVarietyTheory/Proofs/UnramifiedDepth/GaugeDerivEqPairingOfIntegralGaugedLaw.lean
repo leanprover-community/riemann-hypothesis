@@ -1,13 +1,64 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.CharacterGerms.NondegenerateCharts
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
-public import Formalism.LocalToGlobal.CharacterGerms.BlockAdmissibleChart
-public import Formalism.LocalToGlobal.CharacterGerms.NegMem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
 public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+public import Mathlib.RingTheory.PowerSeries.Exp
+public import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.LocalToGlobal.CharacterGerms.CharacteristicFromRanks
 
 @[expose] public section
 
@@ -93,8 +144,8 @@ theorem subst_subst [Finite σ] [Finite τ] {a : σ → MvPowerSeries τ C} (ha 
 
 theorem subst_sum' [Finite σ] {a : σ → MvPowerSeries τ C} (ha : ∀ s, constantCoeff (a s) = 0) {ι : Type}
     (s : Finset ι) (f : ι → MvPowerSeries σ C) : subst a (∑ i ∈ s, f i) = ∑ i ∈ s, subst a (f i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← coe_substAlgHom (hasSubst_of_constantCoeff_zero ha), map_sum]
+
+  rw [← coe_substAlgHom (hasSubst_of_constantCoeff_zero ha), map_sum]
 
 theorem subst_zero' [Finite σ] {a : σ → MvPowerSeries τ C} (ha : ∀ s, constantCoeff (a s) = 0) :
     subst a (0 : MvPowerSeries σ C) = 0 := by
@@ -123,15 +174,6 @@ theorem mvExp_eq [CharZero C] {a : MvPowerSeries τ C} (ha : constantCoeff a = 0
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [PowerSeries.coeff_exp]
   simp [div_eq_mul_inv, mul_comm]
-
-theorem mvExp_zero' : mvExp (0 : MvPowerSeries σ C) = 1 := by
-  classical
-  ext μ
-  show ∑ k ∈ Finset.range (μ.degree + 1), coeff μ ((0 : MvPowerSeries σ C) ^ k) / (k.factorial : C) = _
-  rw [Finset.sum_range_succ', Finset.sum_eq_zero]
-  · simp
-  · intro k _
-    simp
 
 theorem coeff_subst_kill [Finite τ] (e : σ ↪ τ) (f : MvPowerSeries τ C)
     (a : τ → MvPowerSeries σ C) (ha : ∀ t, a t = killCompl e (X t)) (x : σ →₀ ℕ) :
@@ -182,9 +224,8 @@ theorem pderiv_subst_eq [Fintype σ] {a : σ → MvPowerSeries τ C} (ha : ∀ s
   next p s hp =>
     rw [map_mul, MvPolynomial.aeval_X, Derivation.leibniz, hp, smul_eq_mul, smul_eq_mul, Finset.mul_sum]
     simp only [Derivation.leibniz, MvPolynomial.pderiv_X, Pi.single_apply, smul_eq_mul, map_add (f := _),
-      map_mul, MvPolynomial.aeval_X, add_mul, Finset.sum_add_distrib, mul_ite, mul_one, mul_zero,
-      map_one, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-    simp [apply_ite (MvPolynomial.aeval a), mul_assoc, add_comm]
+      map_mul, MvPolynomial.aeval_X, add_mul, Finset.sum_add_distrib, mul_ite, mul_one, mul_zero]
+    simp [apply_ite (MvPolynomial.aeval a), mul_assoc]
 
 section
 variable [Fintype σ] {p : σ → MvPowerSeries τ C} (hp : ∀ s, constantCoeff (p s) = 0) (w : σ → MvPowerSeries τ C)
@@ -226,7 +267,7 @@ theorem int_tder_of_exp [CharZero C] (hpi : ∀ s, IntS V (p s)) (hw : ∀ s, In
   have h := int_tder hp w hpi hw hf
   rw [mvExp_eq hf0, tder_subst hp w (fun _ => hf0), hz] at h
   unfold tder at h
-  rw [Fintype.sum_unique, pderiv_exp, ← mvExp_eq (map_zero _), mvExp_zero', one_mul] at h
+  rw [Fintype.sum_unique, pderiv_exp, ← mvExp_eq (map_zero _), _root_.Formalism.L2.FormalSeriesBounds.CharacteristicFromRanks.mvExp_zero, one_mul] at h
   exact h
 
 end
@@ -405,8 +446,8 @@ theorem sg_eq (v : κ → C) : Y.sg v = -∑ i, v i • subst (pr (X : κ → Mv
       rintro ⟨x, hx⟩
       exact absurd (congrArg Prod.fst hx) (show ¬ (0 : Fin 2) = 1 by decide)
   ext μ
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_neg, map_sum]
+
+  rw [map_neg, map_sum]
   show -∑ i, v i * coeff (μ.mapDomain (fun x : κ => ((0 : Fin 2), x)) + Finsupp.single ((1 : Fin 2), i) 1) Y.h = _
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -421,8 +462,8 @@ theorem tder_sg {a : κ → MvPowerSeries τ C} (ha : ∀ i, constantCoeff (a i)
   have hs := hasSubst_of_constantCoeff_zero ha
   have hX : ∀ p, constantCoeff ((pr (X : κ → MvPowerSeries κ C) fun _ => 0) p) = 0 :=
     pr_prop (P := fun f => constantCoeff f = 0) (fun _ => constantCoeff_X _) fun _ => map_zero _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [sg_eq, ← coe_substAlgHom hs, map_neg, neg_neg, map_sum]
+
+  rw [sg_eq, ← coe_substAlgHom hs, map_neg, neg_neg, map_sum]
   unfold tder
   rw [Fintype.sum_prod_type, Fin.sum_univ_two, Finset.sum_eq_zero (fun i _ => by simp [pr]), zero_add]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -687,8 +728,8 @@ theorem sum_lie (y : I₁) :
     ∑ c, subst (fun _ : Unit => t c) (tyS V.l fun s => S.cur c s (Sum.inl y)) = (X y : MvPowerSeries I₁ C) := by
   classical
   ext μ
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [coeff_subst_tyS V.l_prime.two_le (ht.1 _)]
   rw [Finset.sum_comm, coeff_X]
   convert ht.2 y μ
@@ -698,8 +739,8 @@ theorem sum_fil (q : J₁) :
     ∑ c, subst (fun _ : Unit => t c) (tyS V.l fun s => S.cur c s (Sum.inr q)) = -S.ze t q := by
   classical
   ext μ
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_neg]
+
+  rw [map_sum, map_neg]
   simp only [coeff_subst_tyS V.l_prime.two_le (ht.1 _)]
   rw [Finset.sum_comm]
   show _ = -(-(∑ s ∈ Finset.Icc 1 μ.degree, ∑ c, S.be c s q * coeff μ (t c ^ (V.l ^ s))))
@@ -831,8 +872,8 @@ theorem pderiv_expPt_self (R : RLaw Y V) (g : Fin 2) (k : I g) :
   · funext x
     exact (lg_ex R (cc_lin g) x).symm
   · funext x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_eq_single k, Derivation.map_smul, pderiv_X_self, smul_eq_C_mul, mul_one]
+
+    rw [map_sum, Finset.sum_eq_single k, Derivation.map_smul, pderiv_X_self, smul_eq_C_mul, mul_one]
     · intro c _ hc
       rw [Derivation.map_smul, pderiv_X_of_ne, smul_zero]
       intro h
@@ -844,8 +885,8 @@ theorem pderiv_expPt_ne {g g' : Fin 2} (hg : g ≠ g') (k : I g') :
   funext i
   rw [RawChart.expPt, pderiv_subst_eq (cc_lin g)]
   refine tder_zero _ (fun x => ?_) _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun c _ => ?_
   rw [Derivation.map_smul, pderiv_X_of_ne, smul_zero]
   intro h
@@ -951,8 +992,8 @@ theorem cEqSt_of_rLaw (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZero d] (I : 
   split_ifs with h
   · have hz : coeff μ (∑ y : I g, (if Y.ty g y = Y.ty (1 - g) k then Y.sg1 (Y.u g y) (Y.u (1 - g) k) else 0) •
         (X (⟨g, y⟩ : WV I) : MvPowerSeries (WV I) C)) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_eq_zero fun y _ => ?_
       rw [coeff_smul, coeff_X]
       split_ifs with h1 h2

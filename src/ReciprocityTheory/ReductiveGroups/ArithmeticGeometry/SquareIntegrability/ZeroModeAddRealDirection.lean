@@ -1,5 +1,10 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.QuotientTorusMinimumBound
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ZeroModeAddRealSpan
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ContDiffOfDifferentiableFd
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TofTorMkCIsQuotientMap
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ZeroModeAddLattice
 
 @[expose] public section
@@ -122,7 +127,7 @@ theorem proj_two_embedding (t : EuclideanSpace ℂ (Fin (gB (IR I)))) : p2 (IR I
     rw [PiLp.inner_apply] at h0
     simp only [z, Hf]
     rw [← h0]
-    exact Finset.sum_congr rfl fun i _ => by simp [mul_comm]
+    exact Finset.sum_congr rfl fun i _ => by simp
   simp only [p2, p1, hz, zero_smul, Finset.sum_const_zero, sub_zero]
 
 theorem jj_differentiable : Differentiable ℂ (jj (IR I)) := by

@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Fin.Tuple.NatAntidiagonal
 
 @[expose] public section
 

@@ -1,5 +1,7 @@
 module
 
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
+public import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 
 @[expose] public section

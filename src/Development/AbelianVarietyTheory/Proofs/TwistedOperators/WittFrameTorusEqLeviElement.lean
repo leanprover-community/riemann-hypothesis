@@ -1,23 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.ThetaIntegralsAgree
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittDecompSymplInclIsotropicInclAnisotropic
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SkewGramHalfModule
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittDecompProjAnisotropicAnisotropicEmbedding
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankOrth
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemberDatumOfFlagTie
-public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EqOrConjOfPlaceOf
-public import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StabiliserEqCentraliserCartan
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankOrth
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemberDatumOfFlagTie
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
 
 @[expose] public section
 
@@ -48,8 +81,8 @@ theorem exists_hypDec (S : HSp D) {r : ℕ} (e e' : Matrix (Fin S.rank) (Fin r) 
     rw [Fintype.linearIndependent_iff]
     intro c hc i
     have h := congrArg (S.hT (ev' i)) hc
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero] at h
+
+    rw [map_sum, map_zero] at h
     simp only [map_smul, hpair, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
       if_true] at h
     exact h
@@ -85,7 +118,7 @@ theorem exists_hypDec (S : HSp D) {r : ℕ} (e e' : Matrix (Fin S.rank) (Fin r) 
     rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hee, Matrix.zero_mul]
   refine ⟨V', GlobalTheory.MixModel.HypDec.mk e e' (B - e * K) hee he'e' he'e ?_ ?_ ?_ hrk, rfl, rfl⟩
   · rw [conjTranspose_sub, conjTranspose_mul, hKh]
-    simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc, f1, f2, f3, g1, g3, Matrix.mul_zero, sub_zero]
+    simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc, f2, g1, g3, Matrix.mul_zero, sub_zero]
     rw [← Matrix.mul_assoc, hBB]
   · rw [conjTranspose_sub, conjTranspose_mul, hKh]
     simp only [Matrix.sub_mul, Matrix.mul_assoc, f1, f3, Matrix.mul_zero, sub_zero]

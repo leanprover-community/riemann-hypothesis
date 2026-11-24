@@ -1,6 +1,46 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.LiftSubstitutionCoeffDivisible
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -76,8 +116,7 @@ lemma KKc_eq (LL : LiftLetters (Fin N)) (g : Matrix (Fin k) (Fin k) (WF p f)) (z
     (mu : Fin (N + 1) → Fin k → ℤ) (c : ℤ) :
     KKc p f (O := O) LL g z mu c = ZZ p (letG p f (O := O) LL g) LL.pos mu c N z := by
   unfold KKc ZZ; simp only [KKstate_eq]
-  generalize KKs p (letG p f (O := O) LL g) LL.pos mu c N = st
-  rcases st with ⟨a, _ | sl⟩ <;> rfl
+  rfl
 
 end Link
 
@@ -87,12 +126,10 @@ variable {A R : Type*} [CommRing A] [CommRing R] [Algebra A R] {N k : ℕ}
 
 lemma colStep_mem (Sg : Subalgebra A R) (c : ℤ) (hP hN : ℕ) (x : Fin k → R) (Kv : Finset (Fin k) → R)
     (hx : ∀ b, x b ∈ Sg) (hK : ∀ J, Kv J ∈ Sg) (J : Finset (Fin k)) : colStep c hP hN x Kv J ∈ Sg := by
-  have h1 : ∀ n : ℕ, ((-1 : R)) ^ n ∈ Sg := fun n => Sg.pow_mem (Sg.neg_mem Sg.one_mem) n
   unfold colStep wedgeR contrR
-  split_ifs
-  all_goals first
+  split_ifs <;> first
     | exact hK J
-    | exact Sg.sum_mem fun m _ => Sg.mul_mem (Sg.mul_mem (h1 _) (hx m)) (hK _)
+    | exact Sg.sum_mem fun m _ => Sg.mul_mem (Sg.mul_mem (Sg.pow_mem (Sg.neg_mem Sg.one_mem) _) (hx m)) (hK _)
 
 lemma ZZ_mem (Sg : Subalgebra A R) (p : ℕ) (x : Fin N → Fin k → R) (pos : Fin N → ℤ)
     (mu : Fin (N + 1) → Fin k → ℤ) (c : ℤ) (hx : ∀ i b, x i b ∈ Sg) (j : ℕ) (hj : j ≤ N) :
@@ -120,11 +157,9 @@ variable (p f : ℕ) [Fact p.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDisc
 lemma letG_int (LL : LiftLetters (Fin N)) (g : Matrix (Fin k) (Fin k) (WF p f)) (hg : IsGLW g) (i : Fin N)
     (b : Fin k) : letG p f (O := O) LL g i b ∈ intSub O (Fin N × Fin k) := by
   unfold letG
-  split_ifs
-  · refine Subalgebra.sum_mem _ fun a _ => Subalgebra.mul_mem _ (X_mem_goodSub _ rfl) ?_
-    rw [sigMat_apply]; exact C_mem_sub _ _
-  · refine Subalgebra.sum_mem _ fun a _ => Subalgebra.mul_mem _ (X_mem_goodSub _ rfl) ?_
-    rw [sigMat_inv p f O g hg, sigMat_apply]; exact C_mem_sub _ _
+  split_ifs <;> refine Subalgebra.sum_mem _ fun a _ => Subalgebra.mul_mem _ (X_mem_goodSub _ rfl) ?_
+  · rw [sigMat_apply]; exact C_mem_sub _ _
+  · rw [sigMat_inv p f O g hg, sigMat_apply]; exact C_mem_sub _ _
 
 theorem column_kernel_components_integral (LL : LiftLetters (Fin N)) (g : Matrix (Fin k) (Fin k) (WF p f)) (hg : IsGLW g) (z : ℤ)
     (mu : Fin (N + 1) → Fin k → ℤ) (c : ℤ) (J : Finset (Fin k)) : InA (KKc p f (O := O) LL g z mu c J) := by
@@ -205,8 +240,7 @@ lemma ZZ_map (φ : R →+* R') (p : ℕ) (x : Fin N → Fin k → R) (pos : Fin 
 lemma colStep_smul (a : R) (c : ℤ) (hP hN : ℕ) (x : Fin k → R) (Kv : Finset (Fin k) → R) (J : Finset (Fin k)) :
     colStep c hP hN x (fun J => a * Kv J) J = a * colStep c hP hN x Kv J := by
   unfold colStep wedgeR contrR
-  split_ifs
-  all_goals first
+  split_ifs <;> first
     | rfl
     | (rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun m _ => by ring)
 

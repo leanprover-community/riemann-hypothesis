@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnipotentBlockColumnIndex
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageMapLatticeEquivStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageMapLatticeEquiv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 @[expose] public section
 
@@ -151,8 +197,8 @@ theorem colAct_rat (γ : GL (Fin a) E) (c : UnipotentBlockColumnIndex a k k → 
     colAct (ratGL E a γ).val (fun t => algebraMap E (Ad E) (c t)) =
       fun t => algebraMap E (Ad E) (colAct γ.val c t) := by
   funext t
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [colAct, ratGL_val_apply, map_sum, map_mul]
+
+  simp only [colAct, ratGL_val_apply, map_sum, map_mul]
 
 theorem continuous_colAct (M : Matrix (Fin a) (Fin a) (Ad E)) :
     Continuous (colAct M : (UnipotentBlockColumnIndex a k k → Ad E) → UnipotentBlockColumnIndex a k k → Ad E) :=
@@ -187,8 +233,8 @@ theorem colEquiv_mem (γ : GL (Fin a) E)
 
 theorem dot_colAct (γ : GL (Fin a) E) (ξ : UnipotentBlockColumnIndex a k k → E) (y : UnipotentBlockColumnIndex a k k → Ad E) :
     dot ξ (colAct (ratGL E a γ).val y) = dot (fun t => ∑ s : UnipotentBlockColumnIndex a k k, ξ s * γ.val s.1.1 t.1.1) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dot, colAct, ratGL_val_apply, Finset.mul_sum, map_sum, Finset.sum_mul, map_mul]
+
+  simp only [dot, colAct, ratGL_val_apply, Finset.mul_sum, map_sum, Finset.sum_mul, map_mul]
   rw [Finset.sum_comm]
   simp only [mul_assoc]
 
@@ -212,7 +258,7 @@ theorem coefF_ratGL_mul : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ) (ψ
   have hmem : ∀ x : UnipotentBlockColumnIndex a (m + 1) (m + 1) → Ad E,
       colEquiv γ⁻¹ hri x ∈ ratV E (UnipotentBlockColumnIndex a (m + 1) (m + 1)) ↔ x ∈ ratV E (UnipotentBlockColumnIndex a (m + 1) (m + 1)) :=
     fun x => colEquiv_mem γ⁻¹ hri x
-  have key := GlobalTheory.T.quotientAverage_map_lattice_equiv _ _ (ratV E (UnipotentBlockColumnIndex a (m + 1) (m + 1))) (ratV E (UnipotentBlockColumnIndex a (m + 1) (m + 1)))
+  have key := _root_.GlobalTheory.CuspGeneric.avg_equiv _ _ (ratV E (UnipotentBlockColumnIndex a (m + 1) (m + 1))) (ratV E (UnipotentBlockColumnIndex a (m + 1) (m + 1)))
     (isCoLat_ratV E _) (isCoLat_ratV E _) (colEquiv γ⁻¹ hri) hmem _ hper
   change avg _ _ = avg _ _
   rw [← key]
@@ -226,7 +272,6 @@ theorem coefF_ratGL_mul : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ) (ψ
   have hu : blkU x * (ratGL E a γ * g) = ratGL E a γ * (blkU (colEquiv γ⁻¹ hri x) * g) := by
     rw [← mul_assoc, blkU_mul (ratGL E a γ) (ratGL_rows _ hr), mul_assoc, ← map_inv]
     rfl
-  beta_reduce
   rw [hd, hu, hl γ hγ]
 
 end GlobalTheory.CuspGeneric

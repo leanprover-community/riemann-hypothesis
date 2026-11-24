@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitHermOfDet
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MeasurableSetIntF
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartzBruhatOfProd
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
 
 @[expose] public section
 
@@ -23,8 +63,8 @@ theorem map_eq_sum (f : R →ₐ[F] R') {d : ℕ} (b : Module.Basis (Fin d) F E)
     Algebra.TensorProduct.map f (AlgHom.id F E) x =
       ∑ k, f ((Algebra.TensorProduct.basis R b).repr x k) ⊗ₜ[F] b k := by
   conv_lhs => rw [← (Algebra.TensorProduct.basis R b).sum_repr x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul']
+
+  simp [map_sum, Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul']
 
 theorem repr_map (f : R →ₐ[F] R') {d : ℕ} (b : Module.Basis (Fin d) F E) (x : R ⊗[F] E) (k : Fin d) :
     (Algebra.TensorProduct.basis R' b).repr (Algebra.TensorProduct.map f (AlgHom.id F E) x) k =
@@ -42,8 +82,8 @@ theorem trace_map (f : R →ₐ[F] R') {d : ℕ} (b : Module.Basis (Fin d) F E) 
   have h1 : ∀ e : E, Algebra.trace R' (R' ⊗[F] E) ((1 : R') ⊗ₜ[F] e) = algebraMap F R' (Algebra.trace F E e) := by
     intro e
     rw [Algebra.trace_apply, Algebra.trace_apply, ← Algebra.baseChange_lmul, LinearMap.trace_baseChange]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_eq_sum f b x, map_sum]
+
+  rw [map_eq_sum f b x, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   have h2 : ∀ (a : R') (e : E), a ⊗ₜ[F] e = a • ((1 : R') ⊗ₜ[F] e) := by
     intro a e
@@ -83,13 +123,6 @@ theorem mem_latH_iff (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F 
   simp only [Set.mem_ofPred_eq, hermV_apply, trace_map _ b, repr_map]
   rfl
 
-theorem ev_rat (a : F) :
-    ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, algebraMap F (Fv F v) a ∈ v.adicCompletionIntegers F := by
-  filter_upwards [(algebraMap F (Af F) a).2] with v hv
-  have h : evalV F v (algebraMap F (Af F) a) = algebraMap F (Fv F v) a := (evalV F v).commutes a
-  rw [← h]
-  exact hv
-
 theorem ev_cf {d : ℕ} (b : Module.Basis (Fin d) F E) (x : AF F ⊗[F] E) (k : Fin d) :
     ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, cf v b x k ∈ v.adicCompletionIntegers F :=
   (sndA F ((Algebra.TensorProduct.basis (AF F) b).repr x k)).2
@@ -101,8 +134,8 @@ theorem ev_latH (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F E) {n
     Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => Filter.eventually_all.2 fun k => ev_cf b _ k
   have h2 : ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ∀ k : Fin d,
       algebraMap F (Fv F v) (Algebra.trace F E (b k)) ∈ v.adicCompletionIntegers F :=
-    Filter.eventually_all.2 fun k => ev_rat _
-  filter_upwards [h1, h2, ev_rat (1 / 2 : F)] with v h1 h2 h3
+    Filter.eventually_all.2 fun k => _root_.GlobalTheory.AdelicU.eventually_algebraMap_mem_integers _
+  filter_upwards [h1, h2, _root_.GlobalTheory.AdelicU.eventually_algebraMap_mem_integers (1 / 2 : F)] with v h1 h2 h3
   rw [mem_latH_iff]
   refine ⟨fun i => mul_mem h3 (sum_mem fun k _ => mul_mem (h1 i i k) (h2 k)), fun i j _ k => h1 i j k⟩
 
@@ -151,7 +184,7 @@ theorem measurableSet_latH (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin
 theorem measurableSet_intH (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F E) {n : ℕ}
     (S : Finset (HeightOneSpectrum (𝓞 F))) :
     MeasurableSet {y : HermR (AF F) σ n | hermFin σ y ∈ intH σ b n S} := by
-  haveI := GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.placesCountable F
+  haveI := _root_.GlobalTheory.AdelicUnitaryTop.countable_heightOneSpectrum F
   have hset : {y : HermR (AF F) σ n | hermFin σ y ∈ intH σ b n S} =
       ⋂ v : HeightOneSpectrum (𝓞 F), ⋂ _ : v ∉ S,
         {y : HermR (AF F) σ n | hermV σ v (hermFin σ y) ∈ latH σ b v n} := by
@@ -172,8 +205,8 @@ theorem continuous_chiT (σ : E →ₐ[F] E) {n : ℕ} (ψ : AddChar (AF F) ℂ)
       fun y : HermR (AF F) σ n => ∑ a, ∑ c, Algebra.trace (AF F) (AF F ⊗[F] E)
         (T.map (inclR (AF F)) a c * (y : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)) c a) := by
     funext y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply, map_sum]
+
+    simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply, map_sum]
   have ht : Continuous fun y : HermR (AF F) σ n => Algebra.trace (AF F) (AF F ⊗[F] E)
       (Matrix.trace (T.map (inclR (AF F)) * (y : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)))) := by
     rw [hs]
@@ -186,7 +219,7 @@ end Cont
 theorem coefSN_tendsto : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (hJ : IsHermND σ J) (n : ℕ), 2 * n < M → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ (dx : Measure (Fin n → Fin M → AF F ⊗[F] E)) (db : Measure (HermR (AF F) σ n)) (Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ), Integrable (starN σ J ψ dx Φ) db → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (T : Matrix (Fin n) (Fin n) E), Filter.Tendsto (fun S => coefSN σ b J ψ dx db Φ T S) Filter.atTop (nhds (coefN σ J ψ dx db Φ T)) := by
   intro F E _ _ _ _ _ σ _ M J _ n _ ψ hψ dx db Φ hI d b T
   haveI : BorelSpace (HermR (AF F) σ n) := ⟨rfl⟩
-  haveI := GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.placesCountable F
+  haveI := _root_.GlobalTheory.AdelicUnitaryTop.countable_heightOneSpectrum F
   obtain ⟨hψc, hψn, -, -⟩ := hψ
   have hchar : AEStronglyMeasurable (chiT σ ψ T) db := (continuous_chiT σ ψ hψc T).aestronglyMeasurable
   have hf : AEStronglyMeasurable (fun y => starN σ J ψ dx Φ y * chiT σ ψ T y) db :=

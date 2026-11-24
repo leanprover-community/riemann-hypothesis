@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ChainMatrices
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUnimod
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletelySplitPrimeHostPlaceProperties
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsUnitaryOfOrderDvd
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
+import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -30,9 +75,9 @@ theorem exists_decomp {K X Y : Type} [Field K] [AddCommGroup X] [Module K X] [Ad
     have h' : ι x + ∑ n, t n • a n = 0 := h
     have ht : t = 0 := funext fun n => by
       have := congrArg (φ n) h'
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_add (f := _), h0, zero_add, map_sum, map_zero, Finset.sum_eq_single n
-        (fun n' _ hn => by rw [map_smul, h1 n n' hn.symm, smul_zero]) (by simp), map_smul, smul_eq_mul] at this
+
+      rw [map_add (f := _), h0, zero_add, map_sum, map_zero, Finset.sum_eq_single n
+      (fun n' _ hn => by rw [map_smul, h1 n n' hn.symm, smul_zero]) (by simp), map_smul, smul_eq_mul] at this
       exact (mul_eq_zero.1 this).resolve_right (h2 n)
     subst ht
     have : ι x = ι 0 := by simpa using h'
@@ -204,8 +249,8 @@ theorem isUnit_chainMat {j : ℕ} (hj : j < D.R.m) (γ : GL (Fin (D.sp.X j).rank
   · obtain ⟨x, t, h⟩ := exists_decomp_chainSpace_definite_add_normalFrame hj hA ((D.sp.Y j).frame.equivFun.symm y)
     refine ⟨(D.sp.X j).frame.repr x, t, ?_⟩
     unfold frameMat
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.toMatrix_mulVec_repr, ← (D.sp.Y j).frame.equivFun.apply_symm_apply y, h, map_add (f := _), map_sum]
+
+    rw [LinearMap.toMatrix_mulVec_repr, ← (D.sp.Y j).frame.equivFun.apply_symm_apply y, h, map_add (f := _), map_sum]
     simp only [map_smul]
     rfl
 
@@ -318,9 +363,9 @@ theorem exists_frame_std (V : HSp D) : ∃ β, IsSDFrame V β (crdLat V V.L0) 1 
 
 theorem sum_star_mul_ne {n : ℕ} (x : Fin n → D.host.E) : ∑ i, star (x i) * x i ≠ -1 := fun h => by
   have h1 := congrArg (fun t => (D.host.φ₀ t).re) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, emb_star, ← Complex.normSq_eq_conj_mul_self, Complex.re_sum, Complex.ofReal_re, map_neg,
-    map_one, Complex.neg_re, Complex.one_re] at h1
+
+  simp only [map_sum, map_mul, emb_star, ← Complex.normSq_eq_conj_mul_self, Complex.re_sum, Complex.ofReal_re, map_neg,
+  map_one, Complex.neg_re, Complex.one_re] at h1
   have : 0 ≤ ∑ i, Complex.normSq (D.host.φ₀ (x i)) := Finset.sum_nonneg fun i _ => Complex.normSq_nonneg _
   linarith
 

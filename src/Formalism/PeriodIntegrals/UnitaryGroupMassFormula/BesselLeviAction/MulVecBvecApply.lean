@@ -1,8 +1,53 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.BesselLevi
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -65,21 +110,17 @@ theorem sgn_ne (i : Fin (2 * r + k + 1)) : sgn k r i ≠ 0 := by
 theorem mul_hpk_apply (A : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (i j : Fin (2 * r + k + 1)) : (A * Hpk k r) i j = A i (tau k r j) * sgn k r j := by
   have hH : ∀ l, Hpk k r l j = sgn k r l * (if tau k r l = j then 1 else 0) := fun l => by
-    have e := hpk_mul_apply (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) l j
-    rw [Matrix.mul_one, Matrix.one_apply] at e
-    exact e
+    simpa only [Matrix.mul_one, Matrix.one_apply] using hpk_mul_apply (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) l j
   rw [Matrix.mul_apply, Finset.sum_eq_single (tau k r j)]
   · rw [hH, tau_tau, if_pos rfl, mul_one, sgn_tau]
   · intro l _ hl
     rw [hH, if_neg (fun h => hl (by rw [← h, tau_tau])), mul_zero, mul_zero]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
+  · simp
 
 theorem inv_eq {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hs : s ∈ UH (Hpk k r)) : s⁻¹ = Hpk k r * sᴴ * Hpk k r := by
   apply Matrix.inv_eq_left_inv
-  have e : Hpk k r * sᴴ * Hpk k r * s = Hpk k r * (sᴴ * Hpk k r * s) := by simp only [Matrix.mul_assoc]
-  rw [e, show sᴴ * Hpk k r * s = Hpk k r from hs, hpk_sq]
+  simpa only [Matrix.mul_assoc, hpk_sq] using congrArg (fun x => Hpk k r * x) hs
 
 theorem inv_apply {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hs : s ∈ UH (Hpk k r)) (p q : Fin (2 * r + k + 1)) :
@@ -89,9 +130,7 @@ theorem inv_apply {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
 
 private theorem inv_mul_eq_one_of_mem_UH_Hpk {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hs : s ∈ UH (Hpk k r)) : s⁻¹ * s = 1 := by
-  rw [inv_eq hs]
-  have e : Hpk k r * sᴴ * Hpk k r * s = Hpk k r * (sᴴ * Hpk k r * s) := by simp only [Matrix.mul_assoc]
-  rw [e, show sᴴ * Hpk k r * s = Hpk k r from hs, hpk_sq]
+  simpa only [inv_eq hs, Matrix.mul_assoc, hpk_sq] using congrArg (fun x => Hpk k r * x) hs
 
 theorem low_zero {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hs : s ∈ UH (Hpk k r)) (hX : colX k r s) (i j : Fin (2 * r + k + 1))
@@ -114,11 +153,7 @@ theorem low_zero {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     subst h2
     omega
   rw [inv_apply hs, tau_tau, tau_tau, if_neg hne] at e
-  rcases mul_eq_zero.mp e with h | h
-  · exact absurd h (sgn_ne _)
-  · rcases mul_eq_zero.mp h with h' | h'
-    · exact star_eq_zero.mp h'
-    · exact absurd h' (sgn_ne _)
+  simpa [mul_eq_zero, sgn_ne, star_eq_zero] using e
 
 theorem hW_in {s : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     {i j : Fin (2 * r + k + 1)} (hi : r ≤ i.val ∧ i.val ≤ r + k) (hj : r ≤ j.val ∧ j.val ≤ r + k) :

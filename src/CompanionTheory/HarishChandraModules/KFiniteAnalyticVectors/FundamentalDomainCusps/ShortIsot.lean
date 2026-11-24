@@ -2,7 +2,7 @@ module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.CompactIntegralBoundedByQuotientNorm
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.NilpAlg
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.RowsDef
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ProjRows
 
 @[expose] public section
 

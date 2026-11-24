@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.JordanExists
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FlagEEqHyperbolic
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.LValEtaEqLValEtaF
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SameGenusFix
 
 @[expose] public section
 

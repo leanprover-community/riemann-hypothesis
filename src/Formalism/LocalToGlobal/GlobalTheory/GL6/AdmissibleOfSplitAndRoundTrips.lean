@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.FrobeniusNoKernelOfFrobeniusSimilitude
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.ComplementSmulLocalExtensionMatrix
 
 @[expose] public section

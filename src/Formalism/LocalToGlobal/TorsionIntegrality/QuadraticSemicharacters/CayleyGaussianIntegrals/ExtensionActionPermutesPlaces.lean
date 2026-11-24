@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.KerPNonzero
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -56,9 +57,9 @@ theorem formNormEquiv : FormNorm := by
   have hexp : ∀ z, H z z = ∑ i, ∑ j, conj (b.repr z i) * (b.repr z j * H (b j) (b i)) := by
     intro z
     conv_lhs => rw [← b.sum_repr z]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply,
-      smul_eq_mul, Finset.mul_sum]
+
+    simp only [map_sum, map_smul, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply,
+    smul_eq_mul, Finset.mul_sum]
   have hcont : Continuous fun z : V => (H z z).re := by
     have hc : ∀ i, Continuous fun z : V => b.repr z i := fun i => (b.coord i).continuous_of_finiteDimensional
     have e : (fun z : V => (H z z).re)

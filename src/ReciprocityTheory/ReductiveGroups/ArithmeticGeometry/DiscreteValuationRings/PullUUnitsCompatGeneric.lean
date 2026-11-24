@@ -1,6 +1,11 @@
 module
 
+public import Mathlib.Tactic.ENatToNat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBTransport
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.AppCompatGeneric
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
 
 @[expose] public section
 
@@ -82,7 +87,7 @@ lemma pullU_of_eq_id (f : Z ⟶ Z) (hf : f = 𝟙 Z) (U V : Z.Opens) (hV : V ≤
     (c : Γ(Z, U)ˣ) : res hV (pullU f U c) = res hV' c := by
   subst hf
   ext
-  simp [res, pullU, CommRingCat.hom_id, Units.coe_map] <;> rfl
+  simp [res, pullU, Units.coe_map] <;> rfl
 
 
 open scoped Classical in
@@ -109,7 +114,6 @@ private lemma pullU_comp_lemma_3 {S T R : Scheme.{0}} (g : R ⟶ T) (f : T ⟶ S
     pullU (g ≫ f) U x = pullU g (f ⁻¹ᵁ U) (pullU f U x) := by
   first
   | rfl
-  | (ext; simp [pullU, Scheme.comp_app])
 
 lemma pull_pull_id (z : Z ⟶ Y) (p : Y ⟶ Z) (hzp : z ≫ p = 𝟙 Z) {W : Y.Opens} {V : Z.Opens}
     (hW : W ≤ p ⁻¹ᵁ ⊤) (hV : V ≤ z ⁻¹ᵁ W) (c : Γ(Z, ⊤)ˣ) :

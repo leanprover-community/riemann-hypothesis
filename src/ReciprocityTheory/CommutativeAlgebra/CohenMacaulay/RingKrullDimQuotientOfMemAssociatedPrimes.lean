@@ -1,7 +1,12 @@
 module
 
+public import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.Bridge
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.Unmixed
+public import Mathlib.RingTheory.KrullDimension.Module
 
 @[expose] public section
 

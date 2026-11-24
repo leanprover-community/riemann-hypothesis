@@ -2,37 +2,53 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalDataRealPlace
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsGramNorm
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
-public import Formalism.SharpRestriction.ParamsHeightRankConstant
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem
-public import Formalism.SharpRestriction.ParConsts
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LeSCSCl
-public import Formalism.YangianSpanCharacter.YangianRelationFirst
-public import Formalism.FormalDegreeBessel.FinalWR
-public import Formalism.HermitianCurvature.Statement
-public import Formalism.LatticeRigidity.HeightMinimum.SqrtAbsNormLeProd
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChebyshevExtremalPolynomials
-public import Mathlib
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Herglotz
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AffineChangeOfVariables
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerBlockPoint
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralConvergesAbs
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Markov
-public import Formalism.HermitianCurvature.StatementTA
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AntidiagMulDiagonal
-public import Formalism.LatticeTheta.ThetaShiftInversion
+public import Formalism.HermitianCurvature.StatementG
 public import Formalism.FormalDegreeBessel.FinalBF
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LatticeRigidity.HeightMinimum.PackingCountGeometricMean
-public import Formalism.LatticeRigidity.HeightMinimum.PowFinrankEqZeroOfTracePow
-public import Formalism.GelfandTransference.EnergyIdentity
-public import Formalism.NormUnitaryBounds.DetPolynomialWeights.ShortIndependentVectorsOfDualMinimum
-public import Formalism.LatticeRigidity.StatementC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRWeyl
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Herglotz
+import Formalism.HermitianCurvature.StatementTA
+import Formalism.YangianSpanCharacter.StatementT
 
 @[expose] public section
 

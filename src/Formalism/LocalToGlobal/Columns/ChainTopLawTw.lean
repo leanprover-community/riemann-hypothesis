@@ -2,7 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.TopLawQ
 public import Formalism.LocalToGlobal.Columns.KOneCharacterTrivialNearOne
-public import Formalism.LocalToGlobal.Columns.BlockTriangularMulVecMemPartialFlag
+import Formalism.LocalToGlobal.Columns.ChainInst
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerHypAll
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
 
 @[expose] public section
 
@@ -342,7 +344,7 @@ theorem tlq_phiQ_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) 
 
 theorem tlq_inX_zero {N : ℕ} (x : Sp E N) : Loc.inX E N 0 x = x := by
   funext l
-  simp [Loc.inX, l.isLt]
+  simp [Loc.inX]
 
 end Gen2
 

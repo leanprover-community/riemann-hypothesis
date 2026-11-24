@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Normed.Field.Instances
+public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RepresentationTheory.Continuous.Basic
+public import Mathlib.Topology.Algebra.Nonarchimedean.Completion
 public import GroundTheory.PAdicHodge.GaloisOnCp
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

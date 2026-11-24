@@ -1,6 +1,58 @@
 module
 
 public import Formalism.PolynomialDimension.StatementHar
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Data.Sym.Card
 
 @[expose] public section
 
@@ -26,16 +78,16 @@ theorem monomial_mem {A B : ℕ} {m : XY k →₀ ℕ} (c : K) (hx : xDeg m = A)
 theorem lin_mem {A B : ℕ} (T : PolXY K k →ₗ[K] PolXY K k) (S : Submodule K (PolXY K k))
     (h : ∀ (m : XY k →₀ ℕ) (c : K), xDeg m = A → yDeg m = B → T (monomial m c) ∈ S)
     {f : PolXY K k} (hf : f ∈ PolAB K k A B) : T f ∈ S := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPolynomial.as_sum f, map_sum]
+
+  rw [MvPolynomial.as_sum f, map_sum]
   exact Submodule.sum_mem _ fun m hm =>
     h m _ (mem_PolAB_iff_forall_support_bidegree.1 hf m hm).1 (mem_PolAB_iff_forall_support_bidegree.1 hf m hm).2
 
 theorem lin_eq {A B : ℕ} (T T' : PolXY K k →ₗ[K] PolXY K k)
     (h : ∀ (m : XY k →₀ ℕ) (c : K), xDeg m = A → yDeg m = B → T (monomial m c) = T' (monomial m c))
     {f : PolXY K k} (hf : f ∈ PolAB K k A B) : T f = T' f := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [MvPolynomial.as_sum f, map_sum, map_sum]
+
+  rw [MvPolynomial.as_sum f, map_sum, map_sum]
   exact Finset.sum_congr rfl fun m hm =>
     h m _ (mem_PolAB_iff_forall_support_bidegree.1 hf m hm).1 (mem_PolAB_iff_forall_support_bidegree.1 hf m hm).2
 
@@ -46,9 +98,9 @@ theorem yDeg_add (m m' : XY k →₀ ℕ) : yDeg (m + m') = yDeg m + yDeg m' := 
 theorem xDeg_inl (i : Fin k) : xDeg (Finsupp.single (Sum.inl i : XY k) 1) = 1 := by
   simp [xDeg, Finsupp.single_apply]
 theorem yDeg_inl (i : Fin k) : yDeg (Finsupp.single (Sum.inl i : XY k) 1) = 0 := by
-  simp [yDeg, Finsupp.single_apply]
+  simp [yDeg]
 theorem xDeg_inr (i : Fin k) : xDeg (Finsupp.single (Sum.inr i : XY k) 1) = 0 := by
-  simp [xDeg, Finsupp.single_apply]
+  simp [xDeg]
 theorem yDeg_inr (i : Fin k) : yDeg (Finsupp.single (Sum.inr i : XY k) 1) = 1 := by
   simp [yDeg, Finsupp.single_apply]
 
@@ -206,28 +258,28 @@ theorem euler_X_sum {A B : ℕ} {f : PolXY K k} (hf : f ∈ PolAB K k A B) :
   have hf' := mem_PolAB_iff_forall_support_bidegree.1 hf
   conv_lhs => rw [MvPolynomial.as_sum f]
   conv_rhs => rw [MvPolynomial.as_sum f]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finset.mul_sum, Finset.smul_sum]
+
+  simp only [map_sum, Finset.mul_sum, Finset.smul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun m hm => ?_
   simp only [X_mul_pderiv_monomialMultinomialDepth]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum (monomial m), ← Finset.mul_sum, ← Nat.cast_sum,
-    show (∑ i : Fin k, m (Sum.inl i)) = A from (hf' m hm).1, smul_monomial, smul_eq_mul, mul_comm]
+
+  rw [← map_sum (monomial m), ← Finset.mul_sum, ← Nat.cast_sum,
+  show (∑ i : Fin k, m (Sum.inl i)) = A from (hf' m hm).1, smul_monomial, smul_eq_mul, mul_comm]
 
 theorem euler_y {A B : ℕ} {f : PolXY K k} (hf : f ∈ PolAB K k A B) :
     ∑ i : Fin k, X (Sum.inr i) * pderiv (Sum.inr i) f = (B : K) • f := by
   have hf' := mem_PolAB_iff_forall_support_bidegree.1 hf
   conv_lhs => rw [MvPolynomial.as_sum f]
   conv_rhs => rw [MvPolynomial.as_sum f]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finset.mul_sum, Finset.smul_sum]
+
+  simp only [map_sum, Finset.mul_sum, Finset.smul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun m hm => ?_
   simp only [X_mul_pderiv_monomialMultinomialDepth]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum (monomial m), ← Finset.mul_sum, ← Nat.cast_sum,
-    show (∑ i : Fin k, m (Sum.inr i)) = B from (hf' m hm).2, smul_monomial, smul_eq_mul, mul_comm]
+
+  rw [← map_sum (monomial m), ← Finset.mul_sum, ← Nat.cast_sum,
+  show (∑ i : Fin k, m (Sum.inr i)) = B from (hf' m hm).2, smul_monomial, smul_eq_mul, mul_comm]
 
 theorem ctr_h {A B : ℕ} {f : PolXY K k} (hf : f ∈ PolAB K k A B) :
     ctrF K k (hXY K k * f) = hXY K k * ctrF K k f + ((A + B + k : ℕ) : K) • f := by
@@ -298,9 +350,9 @@ theorem har_indep [CharZero K] (hk : 1 ≤ k) (n : ℕ) : ∀ (a b : ℕ → ℕ
         Finset.sum_eq_zero fun j hj => by
           rw [ctr_pow_h_pow_har hk (hw j) n j,
             Nat.descFactorial_eq_zero_iff_lt.2 (Finset.mem_range.1 hj), zero_mul, Nat.cast_zero, zero_smul]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_range_succ, hz, zero_add, ctr_pow_h_pow_har hk (hw n) n n, Nat.sub_self,
-        pow_zero, one_mul, smul_eq_zero] at h1
+
+      rw [map_sum, Finset.sum_range_succ, hz, zero_add, ctr_pow_h_pow_har hk (hw n) n n, Nat.sub_self,
+      pow_zero, one_mul, smul_eq_zero] at h1
       rcases h1 with h1 | h1
       · exfalso
         rw [Nat.cast_eq_zero, mul_eq_zero, Nat.descFactorial_self, Nat.descFactorial_eq_zero_iff_lt] at h1
@@ -523,7 +575,6 @@ theorem levelProj_level [CharZero K] (hk : 1 ≤ k) {A B i j : ℕ} (hi : i ≤ 
       Nat.cast_ne_zero.2 (Nat.choose_pos (by omega)).ne'
     rw [hN, Nat.descFactorial_self, Nat.descFactorial_eq_factorial_mul_choose, Nat.cast_mul, Nat.cast_mul]
     field_simp
-    all_goals ring
   · rw [if_neg hij.ne', map_smul]
     have hpow : hXY K k ^ (i - j) * w = hXY K k * (hXY K k ^ (i - j - 1) * w) := by
       rw [← mul_assoc, ← pow_succ', Nat.sub_add_cancel (by omega)]
@@ -537,8 +588,8 @@ theorem levelProj_sum [CharZero K] (hk : 1 ≤ k) {A B : ℕ} {f : PolXY K k} (h
   obtain ⟨w, hw, hfw⟩ := decomp_exists hk A B f hf
   conv_rhs => rw [hfw]
   conv_lhs => rw [hfw]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum]
+
+  simp only [map_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i hi => ?_
   have hi' : i ≤ min A B := Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)

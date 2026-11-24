@@ -1,6 +1,8 @@
 module
 
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrDefs
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.PowPowSuccSub
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.MemOfPowQKSubOne
 
 @[expose] public section
 

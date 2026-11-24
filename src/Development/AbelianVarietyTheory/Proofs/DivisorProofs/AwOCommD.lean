@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasTotalBiChains
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -45,7 +87,7 @@ variable (a b : ℕ)
 theorem front_face_low (i : ℕ) (hi : i ≤ a) :
     idc (a+b) a ≫ fc (a+b+1) (a+b) i = fc (a+1) a i ≫ idc (a+b+1) (a+1) := by
   apply hom_ext'; intro j; have hj := j.isLt
-  simp only [comp_apply', fc_apply, idc_apply, backc_apply]
+  simp only [comp_apply', fc_apply, idc_apply]
   rcases lt_or_ge (j:ℕ) i with h | h
   · rw [faceFun_lt (by omega), faceFun_lt h]; omega
   · rw [faceFun_ge (by omega), faceFun_ge h]; omega
@@ -59,20 +101,20 @@ theorem back_face_low (i : ℕ) (hi : i ≤ a) :
 theorem front_face_high (i : ℕ) (hi : a < i) :
     idc (a+b) a ≫ fc (a+b+1) (a+b) i = idc a a ≫ idc (a+b+1) a := by
   apply hom_ext'; intro j; have hj := j.isLt
-  simp only [comp_apply', fc_apply, idc_apply, backc_apply]
+  simp only [comp_apply', fc_apply, idc_apply]
   rw [faceFun_lt (by omega)]; omega
 
 theorem back_face_high (j : ℕ) (hj : j ≤ b) :
     backc (a+b) a b ≫ fc (a+b+1) (a+b) (a+1+j) = fc (b+1) b (j+1) ≫ backc (a+b+1) a (b+1) := by
   apply hom_ext'; intro k; have hk := k.isLt
-  simp only [comp_apply', fc_apply, idc_apply, backc_apply]
+  simp only [comp_apply', fc_apply, backc_apply]
   rcases lt_or_ge (k:ℕ) (j+1) with h | h
   · rw [faceFun_lt (by omega), faceFun_lt h]; omega
   · rw [faceFun_ge (by omega), faceFun_ge h]; omega
 
 theorem front_face_cancel : fc (a+1) a (a+1) ≫ idc (a+b+1) (a+1) = idc a a ≫ idc (a+b+1) a := by
   apply hom_ext'; intro j; have hj := j.isLt
-  simp only [comp_apply', fc_apply, idc_apply, backc_apply]
+  simp only [comp_apply', fc_apply, idc_apply]
   rw [faceFun_lt (by omega)]; omega
 
 theorem back_face_cancel : idc b b ≫ backc (a+b+1) (a+1) b = fc (b+1) b 0 ≫ backc (a+b+1) a (b+1) := by

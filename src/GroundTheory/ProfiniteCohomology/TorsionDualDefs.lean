@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Topology.Instances.AddCircle.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

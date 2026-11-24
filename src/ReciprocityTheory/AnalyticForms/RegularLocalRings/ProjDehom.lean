@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.SegreIdealIsHomogeneous
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FromSpecResidueFieldAppTopIso
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjDehomA
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
 
 @[expose] public section
 

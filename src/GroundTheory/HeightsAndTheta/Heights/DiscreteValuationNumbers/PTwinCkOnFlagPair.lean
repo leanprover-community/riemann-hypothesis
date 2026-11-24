@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Inhabit
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsTerTer
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsTerFurther
@@ -10,8 +9,10 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Inha
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InhabitFurther
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsBisTer
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ClassListMapDomainPerm
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBridgeFull
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ClassListMapDomainPerm
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBundles
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

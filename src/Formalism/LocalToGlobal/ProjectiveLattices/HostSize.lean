@@ -2,18 +2,11 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
 public import Formalism.SharpRestriction.ElevenLe
-public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 public import Formalism.LocalRingCardinality.DataParams
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ConjugateConjugate
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.TraceIntegralBasis
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajorantNormalForms
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.RealPlaceEmbeddings
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticLatticeForms
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ColAbelB
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.LogQdLeRd
+public import Formalism.LocalRingCardinality.HostCls
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
@@ -29,9 +22,6 @@ theorem hostSize_finrank (D : D7) : Module.finrank ℚ D.host.E = 2 * D.R.f := b
   rw [D.host.der.finrank_E, Formalism.BasicNotions.Ranks.f_eq_ord (R := D.R)]
   first
   | ring
-  | rfl
-  | omega
-  | (simp only [Formalism.BasicNotions.Ranks.ord]; ring)
 
 theorem hostSize_f (D : D7) : PT.f D.host.E = D.R.f := by
   simp only [ReciprocityTheory.ChartRestriction.G.I2.PT.f, hostSize_finrank D]

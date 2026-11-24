@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.StepsR
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.GoodRDet
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.ExtendByIdentitySymmFixOrth
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -48,7 +50,6 @@ theorem hT_fam (a b : Fin (D.R.rS + 1) ⊕ Fin (D.R.rS + 1)) :
     rw [← starRingEnd_apply]
     first
       | exact (VS D).herm.eq x y
-      | exact (VS D).herm x y
   have hze : ∀ j, (VS D).hT F0.z (F0.e j) = 0 := fun j => by rw [← hs, F0.z_orth, star_zero]
   have hze' : ∀ j, (VS D).hT F'.fl.z (F'.fl.e j) = 0 := fun j => by rw [← hs, F'.fl.z_orth, star_zero]
   rcases a with a | a <;> rcases b with b | b
@@ -75,8 +76,8 @@ theorem eq_zero_of_orth (hG : GZ T T' (ZhatL (lf D F0) F') ≠ 0)
   apply Matrix.eq_zero_of_mulVec_eq_zero hdet
   funext a
   have ha := h a
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, smul_eq_mul, hT_fam] at ha
+
+  simp only [map_sum, map_smul, smul_eq_mul, hT_fam] at ha
   simp only [Matrix.mulVec, dotProduct, Pi.zero_apply]
   rw [← ha]
   exact Finset.sum_congr rfl (fun i _ => mul_comm _ _)

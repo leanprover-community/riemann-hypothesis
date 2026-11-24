@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.TensorSpan
-public import ReciprocityTheory.DualLattices.SmallLevelClassSet
+public import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.NumberTheory.Padics.RingHoms
 
 @[expose] public section
 

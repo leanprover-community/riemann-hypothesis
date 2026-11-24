@@ -1,6 +1,46 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLieBase
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TriIff
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLieEigenpartsFrameFamilyOverVariety
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesComp
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesUniqueInvertibleStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameStableOfIsLocalRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLieBase
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.InterPolyProdSum
 
 @[expose] public section
 
@@ -40,15 +80,15 @@ theorem frames_sub : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H :
     have h1 : aY.comp φ' = aY.comp (σ.comp φ₁) := by
       rw [← hf'.2.1, ← RingHom.comp_assoc, ← hcomp, RingHom.comp_assoc, ← hfA.2.1, hc]
     exact RingHom.ext fun a => hinj (RingHom.congr_fun h1 a)
-  have hstA : fA.Stable := GlobalTheory.T.lie_eigenspace_frame_stable_of_isLocalRing E H Dw l Xo c O β Z _ _ _ fA inferInstance
-  obtain ⟨⟨G, hG, -⟩, hu⟩ := (GlobalTheory.T.lie_eigenspace_frame_coordinates_unique_invertible E H Dw l Xo c O β Z _ _ _ fA _ φ'
+  have hstA : fA.Stable := _root_.GlobalTheory.ShFam.EigStable.stable_of_isLocalRing E H Dw l Xo c O β Z _ _ _ fA inferInstance
+  obtain ⟨⟨G, hG, -⟩, hu⟩ := (GlobalTheory.ShFam.EigCoord.coord_spec E H Dw l Xo c O β Z _ _ _ fA _ φ'
     (stalkPt C.Y z' ≫ C.π ≫ genι Z) σ inferInstance hstA hx' hφ').1 f'
   have hGd := hu G hG
-  have h1 := GlobalTheory.T.lie_eigenspace_frame_coordinates_comp E H Dw l Xo c O β Z _ _ _ fA _ _ _ f' _ _ _ C.f0 σ aY G (A₁ * A'⁻¹) inferInstance hG hf'
-  have h2 := GlobalTheory.T.lie_eigenspace_frame_coordinates_comp E H Dw l Xo c O β Z _ _ _ fA _ _ _ f₀ _ _ _ C.f0 aB (φ : X.Fn →+* C.Y.Fn) _ _
+  have h1 := _root_.GlobalTheory.ShFam.CoordComp.coord_comp E H Dw l Xo c O β Z _ _ _ fA _ _ _ f' _ _ _ C.f0 σ aY G (A₁ * A'⁻¹) inferInstance hG hf'
+  have h2 := _root_.GlobalTheory.ShFam.CoordComp.coord_comp E H Dw l Xo c O β Z _ _ _ fA _ _ _ f₀ _ _ _ C.f0 aB (φ : X.Fn →+* C.Y.Fn) _ _
     inferInstance hfA hc0
   rw [hcomp] at h2
-  have hU := ((GlobalTheory.T.lie_eigenspace_frame_coordinates_unique_invertible E H Dw l Xo c O β Z _ _ _ fA C.Y.Fn (constF e C.Y)
+  have hU := ((GlobalTheory.ShFam.EigCoord.coord_spec E H Dw l Xo c O β Z _ _ _ fA C.Y.Fn (constF e C.Y)
     (genericPt C.Y ≫ C.π ≫ genι Z) (aY.comp σ) inferInstance hstA h1.1 h1.2.1).1 C.f0).1.unique h1 h2
   have e : (A₀ * A⁻¹).map (φ : X.Fn →+* C.Y.Fn) = A₀.map φ * (A.map φ)⁻¹ := by
     rw [Mat.map_mul, Mat.map_inv]; rfl

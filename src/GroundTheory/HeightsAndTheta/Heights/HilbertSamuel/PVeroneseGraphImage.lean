@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsVeroneseGraph
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecondVeronese
 

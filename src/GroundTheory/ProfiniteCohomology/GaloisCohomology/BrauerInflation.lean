@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.TateCohomology.InfRes
-public import GroundTheory.ProfiniteCohomology.Colimit
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Brauer
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.BrauerInflationDefs
+import GroundTheory.ProfiniteCohomology.Colimit
+public import GroundTheory.TateCohomology.InfRes
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

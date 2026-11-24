@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.WittUnram
+public import Mathlib.RingTheory.WittVector.Frobenius
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.NumberTheory.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -57,8 +100,8 @@ theorem ghostComponent_G (x : W) (n : ℕ) :
 theorem ghost_sum_G (x : W) (k : ℕ) :
     ∑ i ∈ range (k + 1), (p : Qq) ^ i * (G p Qq F x).coeff i ^ p ^ (k - i) = algebraMap W Qq ((F^[k]) x) := by
   rw [← ghostComponent_G p Qq F x k, WittVector.ghostComponent_apply, wittPolynomial_eq_sum_C_mul_X_pow]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, MvPolynomial.aeval_X]
+
+  simp [map_sum, MvPolynomial.aeval_X]
 
 theorem G_coeff_zero (x : W) : (G p Qq F x).coeff 0 = algebraMap W Qq x := by
   have h := ghost_sum_G p Qq F x 0
@@ -123,13 +166,13 @@ theorem G_coeff_integral (hinj : Function.Injective (algebraMap W Qq)) (x : W) (
   have hk : (F^[k]) x = ∑ i ∈ range (k + 1), (p : W) ^ i * b i ^ p ^ (k - i) := by
     apply hinj
     rw [← ghost_sum_G p Qq F x k]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow, map_natCast]
+
+    simp only [map_sum, map_mul, map_pow, map_natCast]
     exact Finset.sum_congr rfl fun i hi => by rw [hbk i hi]
   have hk1 : (F^[k + 1]) x = ∑ i ∈ range (k + 1), (p : W) ^ i * F (b i) ^ p ^ (k - i) := by
     rw [Function.iterate_succ_apply', hk]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow, map_natCast]
+
+    simp only [map_sum, map_mul, map_pow, map_natCast]
   have hdvd : (p : W) ^ (k + 1) ∣
       (F^[k + 1]) x - ∑ i ∈ range (k + 1), (p : W) ^ i * b i ^ p ^ (k + 1 - i) := by
     rw [hk1, ← Finset.sum_sub_distrib]
@@ -149,8 +192,8 @@ theorem G_coeff_integral (hinj : Function.Injective (algebraMap W Qq)) (x : W) (
   rw [Finset.sum_range_succ, Nat.sub_self, pow_zero, pow_one] at hs
   have hsum : ∑ i ∈ range (k + 1), (p : Qq) ^ i * (G p Qq F x).coeff i ^ p ^ (k + 1 - i) =
       algebraMap W Qq (∑ i ∈ range (k + 1), (p : W) ^ i * b i ^ p ^ (k + 1 - i)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow, map_natCast]
+
+    simp only [map_sum, map_mul, map_pow, map_natCast]
     exact Finset.sum_congr rfl fun i hi => by rw [hbk i hi]
   rw [hsum] at hs
   have hpk : (p : Qq) ^ (k + 1) ≠ 0 := pow_ne_zero _ (Invertible.ne_zero (p : Qq))
@@ -190,15 +233,9 @@ private theorem map_frobenius' (f : W →+* Qq) (w : WittVector p W) :
     intro P
     first
       | exact DFunLike.congr_fun (MvPolynomial.comp_aeval (f := w.coeff) f.toIntAlgHom) P
-      | exact DFunLike.congr_fun (MvPolynomial.comp_aeval w.coeff f.toIntAlgHom) P
-      | (induction P using MvPolynomial.induction_on with
-          | C a => simp [MvPolynomial.aeval_C, algebraMap_int_eq, eq_intCast, map_intCast]
-          | add P Q hP hQ => simp only [map_add (f := _), hP, hQ]
-          | mul_X P i hP => simp only [map_mul, hP, MvPolynomial.aeval_X])
   ext n
   rw [WittVector.map_coeff, WittVector.coeff_frobenius, WittVector.coeff_frobenius, key]
   congr 1
-  try (funext i; exact (WittVector.map_coeff f w i).symm)
 
 theorem sHom_frob (hinj : Function.Injective (algebraMap W Qq)) (x : W) :
     sHom p Qq F hF hinj (F x) = frobenius (sHom p Qq F hF hinj x) := by

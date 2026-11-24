@@ -1,107 +1,56 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PullbackBlowupSequenceIsomorphism
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PullbackBlowupSequenceComposition
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheaf
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheafBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReductionProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.OrderReductionBaseChange
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.SequencePrefix
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.SequenceOfBlowupsPullback
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.BlowupDataOfSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.MapToEarlierScheme
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.CenterInvariant
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.MonomialNearPoint
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.BoundaryRelabeling
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.TunedMarkedBlowupSeq
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.LowerDimReductionSmoothPullback
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.BlowupSeqComparison
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.DescentHypotheses
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.DerivedAndCoverTriples
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.BlowupDataOfSequence
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.IteratedStrictTransformPullback
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MaxContactCoverProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.BoundarySeparationBaseChange
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.LevelwiseIso
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.BlowupSequenceData
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IrreducibleComponentsAlongSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.ControlledTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceOfBlowups
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.DimensionNonincreasing
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceTransforms
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceRelations
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.StrongResolution
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.CoordinateSubstitution
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.ControlledTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdealSheaf
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdealSheafOrderDecrease
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.ChartRing
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.EtaleCoordinates
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.EtaleChartExistence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.PolynomialCoordinateExtension
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdealEtaleBaseChange
-public import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.OrderAtMultiplicativity
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.OrderPullback
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.BlowupSequenceFlatBaseChange
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DimensionRecursion
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.DivisorReductionSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.MarkedPullbackSquare
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.GeometryHypotheses
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.OrderAlongBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ComapSubschemeIso
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.PrincipalizationCertificate
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.ConcatComparisonMap
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.OrderReductionAlgorithm
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.NonMonomialOrderReduction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.CompanionIdealReduction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.MarkedSchemeWithCenter
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.InvarianceUnderIsomorphism
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.MonomialPrincipalization
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.FunctorialPrincipalization
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.Append
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.RecursivePrincipalizationPullback
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupExistence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.MonomialGeometryHypotheses
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.MonomialSplittingFunctoriality
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.SupportsAlongSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransformOffCenter
-public import Development.ResolutionOfSingularities.Foundations.Blowup.StrictTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.StrictTransformFlatBaseChange
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MaxContactReduction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.NoetherianBlowup
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.SmoothRegular
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.MaxContactIdeal
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.FormallyEtaleCoordinates
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.JacobianCriterion
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.LocalParameters
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.SmoothCenterChart
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.CoordinateBlowupChart
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.AppendIsomorphism
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.CoverMaxContactIdeal
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.KrullDimClosedSubset
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.Saturation
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MarkedBlowupSequenceBoundary
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupChartComputations
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.StrictNormalCrossingsBlowup
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IsoInvariance
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.EmptyOrderLocusAfterReduction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.StrictPullbackBlowupSeq
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupChart
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupCoproduct
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProper
-public import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.AffineSpaceJacobson
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossingsWithoutUnitIdeals
+import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheafBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.BitVec
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.MapToEarlierScheme
 
 @[expose] public section
 
@@ -118,13 +67,6 @@ namespace NontrivialBoundary
 section
 
 variable {Y : Scheme.{u}}
-
-theorem sameNontrivialBoundary_refl (L : List Y.IdealSheafData) : MarkedIdealWithBoundary.SameNontrivialBoundary L L :=
-  MarkedIdealWithBoundary.SameNontrivialBoundary.refl L
-
-theorem sameNontrivialBoundary_symm {L L' : List Y.IdealSheafData}
-    (h : MarkedIdealWithBoundary.SameNontrivialBoundary L L') : MarkedIdealWithBoundary.SameNontrivialBoundary L' L :=
-  h.symm
 
 theorem sameNontrivialBoundary_nontrivialPart (L : List Y.IdealSheafData) :
     MarkedIdealWithBoundary.SameNontrivialBoundary (MarkedIdealWithBoundary.nontrivialPart L) L := by
@@ -145,7 +87,7 @@ theorem sameNontrivialBoundary_append {L₁ L₂ L₁' L₂' : List Y.IdealSheaf
 theorem sameNontrivialBoundary_cons {D : Y.IdealSheafData} {L L' : List Y.IdealSheafData}
     (h : MarkedIdealWithBoundary.SameNontrivialBoundary L L') :
     MarkedIdealWithBoundary.SameNontrivialBoundary (D :: L) (D :: L') :=
-  sameNontrivialBoundary_append (sameNontrivialBoundary_refl [D]) h
+  sameNontrivialBoundary_append (_root_.FunctorialResolution.EmbeddedResolution.MarkedIdealWithBoundary.SameNontrivialBoundary.refl [D]) h
 
 theorem sameNontrivialBoundary_cancel_left {L₁ L₂ L₁' L₂' : List Y.IdealSheafData}
     (h : MarkedIdealWithBoundary.SameNontrivialBoundary (L₁ ++ L₂) (L₁' ++ L₂'))
@@ -179,14 +121,14 @@ theorem lastBoundary_eq_append (R : MarkedIdealWithBoundary.{u})
     t.boundary t.length =
       R.boundary.map (t.iteratedStrictTransform t.length) ++
         t.boundaryFrom ([] : List R.scheme.IdealSheafData) t.length := by
-  rw [← MarkedBlowupSequenceData.toBlowupSequenceData_boundary_eq t t.length le_rfl, ← BlowupSequenceData.boundary_append,
+  rw [← _root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toBlowupSequenceData_boundary_eq_boundary_of_le t t.length le_rfl, ← BlowupSequenceData.boundary_append,
     List.append_nil]
 
 theorem length_boundary_le_length_lastBoundary (R : MarkedIdealWithBoundary.{u})
     (t : MarkedBlowupSequenceData R.structMap R.ideal R.mult R.boundary) :
     R.boundary.length ≤ (t.boundary t.length).length := by
   have h : t.boundaryFrom R.boundary t.length = t.boundary t.length :=
-    MarkedBlowupSequenceData.toBlowupSequenceData_boundary_eq t t.length le_rfl
+    _root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toBlowupSequenceData_boundary_eq_boundary_of_le t t.length le_rfl
   have h3 : (t.boundary t.length).length = R.boundary.length + t.length := by
     rw [← h]
     exact BlowupSequenceData.boundary_length _ _ _
@@ -355,9 +297,9 @@ theorem lastMap_comp_projectionToBase :
     D.lastMap ≫ s.proj s.length = s'.proj s'.length ≫ q := by
   have h := D.isPullback_lastMap.w
   have e1 : s.toMarkedSequenceOfBlowups.toSequenceOfBlowups.projectionToBase s.toMarkedSequenceOfBlowups.toSequenceOfBlowups.length
-      = s.proj s.length := toMarkedSequence_projectionToBase s _
+      = s.proj s.length := _root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toMarkedSequence_projectionToBase s _
   have e2 : s'.toMarkedSequenceOfBlowups.toSequenceOfBlowups.projectionToBase s'.toMarkedSequenceOfBlowups.toSequenceOfBlowups.length
-      = s'.proj s'.length := toMarkedSequence_projectionToBase s' _
+      = s'.proj s'.length := _root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toMarkedSequence_projectionToBase s' _
   rw [e1, e2] at h
   exact h
 
@@ -396,10 +338,10 @@ theorem iteratedStrictTransform_comap_lastMap [AlgebraicGeometry.Flat q] (_hMaxC
     (hV : S.IsAdmissible) (hV' : (pullbackWithNontrivialBoundary S q).IsAdmissible) (M : S.scheme.IdealSheafData) :
     (s.iteratedStrictTransform s.length M).comap D.lastMap = s'.iteratedStrictTransform s'.length (M.comap q) := by
   have hz0s : s.toMarkedSequenceOfBlowups.toSequenceOfBlowups.projectionToBase 0 = s.isoZero.hom := by
-    rw [toMarkedSequence_projectionToBase s 0, MarkedBlowupSequenceData.projectionToBase_eq_toBlowupSequenceData_projectionToBase,
+    rw [_root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toMarkedSequence_projectionToBase s 0, MarkedBlowupSequenceData.projectionToBase_eq_toBlowupSequenceData_projectionToBase,
       BlowupSequenceData.projectionToBase_zero]
   have hz0s' : s'.toMarkedSequenceOfBlowups.toSequenceOfBlowups.projectionToBase 0 = s'.isoZero.hom := by
-    rw [toMarkedSequence_projectionToBase s' 0, MarkedBlowupSequenceData.projectionToBase_eq_toBlowupSequenceData_projectionToBase,
+    rw [_root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toMarkedSequence_projectionToBase s' 0, MarkedBlowupSequenceData.projectionToBase_eq_toBlowupSequenceData_projectionToBase,
       BlowupSequenceData.projectionToBase_zero]
   have hsq := SequenceOfBlowupsPullback.mapToEarlierScheme_comp_projectionToBase D 0 (Nat.zero_le _) 0 (Nat.zero_le _)
   rw [hz0s, hz0s'] at hsq
@@ -470,7 +412,7 @@ private theorem sameNontrivialBoundary_take_succ_of_getElem_eq {Y Z : Scheme.{u}
     MarkedIdealWithBoundary.SameNontrivialBoundary ((L.take (n + 1)).map f) (M.take (m + 1)) := by
   rw [List.take_succ_eq_append_getElem hn, List.take_succ_eq_append_getElem hm, List.map_append,
     List.map_cons, List.map_nil, hf]
-  exact sameNontrivialBoundary_append h (sameNontrivialBoundary_refl _)
+  exact sameNontrivialBoundary_append h (_root_.FunctorialResolution.EmbeddedResolution.MarkedIdealWithBoundary.SameNontrivialBoundary.refl _)
 
 theorem sameNontrivialBoundary_lastBoundary_take [AlgebraicGeometry.Flat q] (hstar : MaxContactCoverProperties.{u})
     (hV : S.IsAdmissible) (hV' : (pullbackWithNontrivialBoundary S q).IsAdmissible) :
@@ -484,7 +426,7 @@ theorem sameNontrivialBoundary_lastBoundary_take [AlgebraicGeometry.Flat q] (hst
       intro _
       rw [survivingBoundaryCount_zero]
       simp only [List.take_zero, List.map_nil]
-      exact sameNontrivialBoundary_refl _
+      exact _root_.FunctorialResolution.EmbeddedResolution.MarkedIdealWithBoundary.SameNontrivialBoundary.refl _
   | succ n ih =>
       intro hn
       have hi : n < S.boundary.length := by omega
@@ -643,7 +585,7 @@ theorem pullbackAlong_derivedTriple_eq [AlgebraicGeometry.Smooth q] (hstar : Max
     (E' := (MaxContactCoverData.derivedTriple (pullbackWithNontrivialBoundary S q) s' hftT
       (extra.map fun A => A.comap D.lastMap) keep').boundary)
     (hp := ?_) (hI := ?_) (hm := ?_) (hE := ?_)
-  · simp only [LowerDimReductionPullback.structureMorphism_derivedTriple]
+  · simp only [_root_.FunctorialResolution.EmbeddedResolution.MaxContactCoverData.derivedTriple_structureMorphism]
     exact lastMap_comp_structureMorphism S q s s' D
   · simp only [LowerDimReductionPullback.ideal_derivedTriple]
     exact tunedIdealAtLength_comap_lastMap S q s s' D hstar hV hV' hftS hftT hsm

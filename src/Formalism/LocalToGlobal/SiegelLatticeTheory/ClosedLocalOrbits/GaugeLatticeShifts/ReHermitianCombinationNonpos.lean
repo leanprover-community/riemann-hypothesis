@@ -1,8 +1,52 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Corank
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.FlagVectorMemLocalization
+import Formalism.LocalToGlobal.SubmoduleMembership
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 public import Lemmata.GeneralBFactThirdForm.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Corank
 
 @[expose] public section
 
@@ -105,9 +149,7 @@ theorem mem_qLat {Λ : Submodule (𝓞 E) V} {W X : Submodule E V} {q : QW W X} 
     q ∈ qLat Λ W X ↔ ∃ w : W, (w : V) ∈ Λ ∧ Submodule.Quotient.mk w = q := by
   simp [qLat]
 
-theorem exists_smul_mem (Λ : Submodule (𝓞 E) V) [hΛ : Submodule.IsFullLattice E Λ] (v : V) :
-    ∃ s : 𝓞 E, s ≠ 0 ∧ s • v ∈ Λ := by
-  first | exact Bl.general_b_fact_third_form.goal1 .. | (apply Bl.general_b_fact_third_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_third_form.goal1 <;> assumption)
+alias exists_smul_mem := _root_.Bl.general_b_fact_third_form.goal1
 
 theorem qLat_isLattice (Λ : Submodule (𝓞 E) V) [hΛ : Submodule.IsLattice E Λ] (W X : Submodule E V) :
     Submodule.IsLattice E (qLat Λ W X) := by
@@ -197,17 +239,7 @@ theorem localization_mono {P : Ideal (𝓞 E)} [P.IsPrime] {M N : Submodule (�
 theorem mem_of_forall_locP {M : Submodule (𝓞 E) S.V} {x : S.V}
     (h : ∀ P : IsDedekindDomain.HeightOneSpectrum (𝓞 E),
       x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M)) : x ∈ M := by
-  by_contra hx
-  let I : Ideal (𝓞 E) := M.comap (LinearMap.toSpanSingleton (𝓞 E) S.V x)
-  have hI : I ≠ ⊤ := by
-    intro htop
-    apply hx
-    have h1 : (1 : 𝓞 E) ∈ I := htop ▸ Submodule.mem_top
-    simpa [I] using h1
-  obtain ⟨m, hm, hIm⟩ := Ideal.exists_le_maximal I hI
-  have hne : m ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hm (RingOfIntegers.not_isField E)
-  obtain ⟨s, hs, hsx⟩ := h ⟨m, hm.isPrime, hne⟩
-  exact hs (hIm (by simpa [I] using hsx))
+  exact Submodule.mem_of_forall_heightOne_exists_smul_mem (NumberField.RingOfIntegers.not_isField E) M x h
 
 theorem coe_smul_eq (c : 𝓞 E) (v : S.V) : ((c : E)) • v = c • v := algebraMap_smul E c v
 
@@ -348,8 +380,8 @@ theorem sig_bound {N p q : ℕ} (G : Matrix (Fin N) (Fin N) ℂ) (hG : Formalism
     set x := ∑ l, d l • c l with hx
     have hprx : ∀ s, pr x s = ∑ l, d l * pr (c l) s := by
       intro s
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hx, map_sum]
+
+      rw [hx, map_sum]
       simp
     have hinr : ∀ b, pr x (Sum.inr b) = 0 := by
       intro b
@@ -408,9 +440,9 @@ theorem form_coord {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formal
     τ (S.hT a b) = cform (S.gram.map τ) (fun i => τ (S.frame.equivFun a i))
       (fun j => τ (S.frame.equivFun b j)) := by
   conv_lhs => rw [← S.frame.sum_equivFun a, ← S.frame.sum_equivFun b]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul,
-    map_mul, starRingEnd_apply, hconj]
+
+  simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul,
+  map_mul, starRingEnd_apply, hconj]
   simp only [cform, dotProduct, Matrix.mulVec, Matrix.map_apply, Formalism.BasicNotions.HSpace.gram, Pi.star_apply,
     Finset.mul_sum]
   rw [Finset.sum_comm]

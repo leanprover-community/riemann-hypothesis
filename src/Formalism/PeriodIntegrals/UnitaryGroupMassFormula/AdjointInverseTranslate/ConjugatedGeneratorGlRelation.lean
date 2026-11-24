@@ -1,6 +1,55 @@
 module
 
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.AnaHpartUnique
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.SmoothLinear
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -107,12 +156,9 @@ theorem conjugated_generator_gl_relation : EabHGl := by
       rw [if_pos rfl]
       first
       | rw [Matrix.single_mul_single_same, mul_one]
-      | (ext p q; simp [Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq'])
     · rw [if_neg hjk]
       first
-      | exact Matrix.single_mul_single_of_ne hjk _ _
-      | (ext p q; simp [Matrix.mul_apply, Matrix.single_apply, ite_and, hjk, Finset.sum_ite_eq,
-          Finset.sum_ite_eq'])
+      | (ext p q; simp [Matrix.mul_apply, Matrix.single_apply, ite_and, hjk, Finset.sum_ite_eq])
   simp only [hE]
   rw [ana_EcComm hH f _ _ g hf hg, ana_Ec_sub hH hf hg, hm, hm]
   split_ifs <;> simp [ana_Ec_zero]
@@ -134,7 +180,6 @@ lemma ana_inv_mul (hH : HInvol H) {s : Matrix (Fin n) (Fin n) ℂ} (hs : inUH H 
 lemma ana_mul_inv (hH : HInvol H) {s : Matrix (Fin n) (Fin n) ℂ} (hs : inUH H s) : s * s⁻¹ = 1 := by
   first
   | exact Matrix.mul_nonsing_inv s (Matrix.isUnit_det_of_left_inverse (ana_inv_mul hH hs))
-  | exact mul_eq_one_comm.1 (ana_inv_mul hH hs)
 
 lemma isUnit_of_inUH (hH : HInvol H) {s : Matrix (Fin n) (Fin n) ℂ} (hs : inUH H s) : IsUnit s := ⟨⟨s, s⁻¹, ana_mul_inv hH hs, ana_inv_mul hH hs⟩, rfl⟩
 
@@ -208,7 +253,7 @@ lemma ana_conj_single (s : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) :
     s⁻¹ * Matrix.single a b (1 : ℂ) * s = ∑ c, ∑ d, (s⁻¹ c a * s b d) • Matrix.single c d (1 : ℂ) := by
   ext i j
   simp [Matrix.mul_apply, Matrix.single_apply, Matrix.sum_apply, ite_and, Finset.sum_ite_eq,
-    Finset.sum_ite_eq'] <;> ring
+    Finset.sum_ite_eq']
 
 end Right
 
@@ -226,9 +271,9 @@ theorem eab_h_right : EabHRight := by
   simp only [ana_EcH_ext hH hU hgU hgs hF hfF]
   change anaPhi hH (fderiv ℝ F (g * s)) (g * s) (s⁻¹ * Matrix.single a b 1 * s) =
     ∑ c, ∑ d, (s⁻¹ c a * s b d) • anaPhi hH (fderiv ℝ F (g * s)) (g * s) (Matrix.single c d 1)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ana_conj_single, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul]
+
+  rw [ana_conj_single, map_sum]
+
+  simp only [map_sum, map_smul]
 
 end AAInvW

@@ -1,6 +1,45 @@
 module
 
 public import Development.EtaleCohomology.EtaleSheaves.FiltPf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -111,9 +150,6 @@ theorem ker_zero (K : Cx R) (a : ℤ) (hK : ∀ i, i < a → IsZero (K.X i)) :
   change 𝟙 _ ≫ (kernel.ι (qK K a hK)).f a = 0 ≫ (kernel.ι (qK K a hK)).f a
   rw [h0, comp_zero, zero_comp]
 
-theorem inv_nat' {C : Type*} [Category C] {X₁ X₂ Y₁ Y₂ : C} (g₁ : X₁ ⟶ Y₁) (g₂ : X₂ ⟶ Y₂) [IsIso g₁] [IsIso g₂]
-    (t₂ : X₁ ⟶ X₂) (t₃ : Y₁ ⟶ Y₂) (h : g₁ ≫ t₃ = t₂ ≫ g₂) : t₃ ≫ inv g₂ = inv g₁ ≫ t₂ := inv_nat g₁ g₂ t₂ t₃ h
-
 abbrev MainNotions (K : Cx R) (a : ℤ) (hK : ∀ i, i < a → IsZero (K.X i)) : ShortComplex (Cx R) :=
   ShortComplex.mk (kernel.ι (qK K a hK)) (qK K a hK) (kernel.condition _)
 
@@ -153,7 +189,7 @@ theorem hs (m : ℤ) : (phiS f a hK hL).τ₃.f m ≫ (spl L a hL m).s = (spl K 
   unfold spl
   split_ifs with h
   · subst h
-    exact @inv_nat' _ _ _ _ _ _ _ _ (qK_iso K m hK) (qK_iso L m hL) _ _ (HomologicalComplex.congr_hom (phiS f m hK hL).comm₂₃ m).symm
+    exact @_root_.LateralTheory.E.TowerFinPf.inv_nat _ _ _ _ _ _ _ _ (qK_iso K m hK) (qK_iso L m hL) _ _ (HomologicalComplex.congr_hom (phiS f m hK hL).comm₂₃ m).symm
   · simp only [ShortComplex.Splitting.ofIsIsoOfIsZero]
     erw [comp_zero, zero_comp]
 
@@ -162,7 +198,7 @@ theorem hr (m : ℤ) : (phiS f a hK hL).τ₂.f m ≫ (spl L a hL m).r = (spl K 
   split_ifs with h
   · simp only [ShortComplex.Splitting.ofIsZeroOfIsIso]
     erw [comp_zero, zero_comp]
-  · exact @inv_nat' _ _ _ _ _ _ _ _ (ι_iso K a hK m h) (ι_iso L a hL m h) _ _ (HomologicalComplex.congr_hom (phiS f a hK hL).comm₁₂ m).symm
+  · exact @_root_.LateralTheory.E.TowerFinPf.inv_nat _ _ _ _ _ _ _ _ (ι_iso K a hK m h) (ι_iso L a hL m h) _ _ (HomologicalComplex.congr_hom (phiS f a hK hL).comm₁₂ m).symm
 
 def triMap : CochainComplex.triangleOfDegreewiseSplit (MainNotions K a hK) (spl K a hK) ⟶
     CochainComplex.triangleOfDegreewiseSplit (MainNotions L a hL) (spl L a hL) :=

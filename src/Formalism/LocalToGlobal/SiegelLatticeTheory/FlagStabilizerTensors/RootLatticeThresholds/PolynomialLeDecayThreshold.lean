@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierSizes
 public import Formalism.HermitianCurvature.StatementJCT
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

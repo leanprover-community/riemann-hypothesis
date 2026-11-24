@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
+public import Mathlib.Analysis.RCLike.Basic
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

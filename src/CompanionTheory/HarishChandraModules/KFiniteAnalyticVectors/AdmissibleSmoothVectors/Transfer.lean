@@ -1,6 +1,13 @@
 module
 
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.MapStdPoly
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.Topology.ContinuousMap.StoneWeierstrass
+public import Mathlib.Analysis.LocallyConvex.SeparatingDual
+public import Mathlib.MeasureTheory.Function.LocallyIntegrable
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 
@@ -264,9 +271,9 @@ theorem apply_stdPoly {G V : Type} [AddCommGroup V] [Module ℂ V] (τ : G → M
     {M : ℕ} (g : Fin M → G) (ℓ : V →ₗ[ℂ] ℂ) (u : V) :
     ℓ (stdPoly E (fun i => τ (g i)) u) = ∑ π : Equiv.Perm (Fin M),
       ((Equiv.Perm.sign π : ℤ) : ℂ) * ℓ (word E ((List.ofFn fun i => g (π i)).map τ) u) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [stdPoly, LinearMap.sum_apply, map_sum, List.map_ofFn, Function.comp_def, Module.End.mul_apply,
-    Module.End.intCast_apply, map_zsmul, zsmul_eq_mul]
+
+  simp only [stdPoly, LinearMap.sum_apply, map_sum, List.map_ofFn, Function.comp_def, Module.End.mul_apply,
+  Module.End.intCast_apply, map_zsmul, zsmul_eq_mul]
 
 end PrismTransfer
 
@@ -330,7 +337,6 @@ theorem transfer_holds : Transfer := by
   rw [← norm_le_zero_iff]
   refine le_of_forall_pos_le_add fun ε hε => ?_
   set D : ℝ := Fintype.card (Equiv.Perm (Fin M)) * B ^ (M + 1)
-  have hD : 0 ≤ D := mul_nonneg (Nat.cast_nonneg _) (pow_nonneg (integral_nonneg fun _ => norm_nonneg _) _)
   refine (main (ε / (D + 1)) (by positivity)).trans ?_
   rw [zero_add, mul_div_assoc', div_le_iff₀ (by positivity)]
   nlinarith

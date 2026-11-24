@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
+import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.SemiabelianTori.GeometricallyConnectedSplitTorusAff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.AlgebraicGeometry.AffineTransitionLimit
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -284,30 +332,6 @@ theorem quasiCompact_and_dominant [IsLocallyNoetherian S] (hj : IsGenericPointHo
     QuasiCompact j ∧ IsSchemeTheoreticallyDominant j :=
   quasiCompact_and_dominant_of_comp (i := 𝟙 S) (by rwa [Category.comp_id])
 
-private lemma hom_ext_lemma {W X Y Z : Scheme.{u}} {f g : X ⟶ Y} (s : Y ⟶ Z) [IsSeparated s]
-    (hs : f ≫ s = g ≫ s) (w : W ⟶ X) [IsSchemeTheoreticallyDominant w] (hw : w ≫ f = w ≫ g) : f = g := by
-  let e := pullback.fst (pullback.lift f g hs) (pullback.diagonal s)
-  let k : W ⟶ pullback (pullback.lift f g hs) (pullback.diagonal s) :=
-    pullback.lift w (w ≫ f) (by
-      apply pullback.hom_ext
-      · rw [Category.assoc, Category.assoc, pullback.lift_fst, pullback.diagonal_fst, Category.comp_id]
-      · rw [Category.assoc, Category.assoc, pullback.lift_snd, pullback.diagonal_snd, Category.comp_id, hw])
-  have hk : k ≫ e = w := pullback.lift_fst _ _ _
-  have hker : e.ker = ⊥ := by
-    refine le_bot_iff.mp ((Scheme.Hom.le_ker_comp k e).trans ?_)
-    rw [hk, w.ker_eq_bot]
-  have : IsIso e := IsClosedImmersion.isIso_iff_ker_eq_bot.mpr hker
-  have hc := pullback.condition (f := pullback.lift f g hs) (g := pullback.diagonal s)
-  have h₁ : e ≫ f = pullback.snd _ _ := by
-    calc e ≫ f = e ≫ pullback.lift f g hs ≫ pullback.fst s s := by rw [pullback.lift_fst]
-      _ = pullback.snd _ _ ≫ pullback.diagonal s ≫ pullback.fst s s := by rw [reassoc_of% hc]
-      _ = pullback.snd _ _ := by simp
-  have h₂ : e ≫ g = pullback.snd _ _ := by
-    calc e ≫ g = e ≫ pullback.lift f g hs ≫ pullback.snd s s := by rw [pullback.lift_snd]
-      _ = pullback.snd _ _ ≫ pullback.diagonal s ≫ pullback.snd s s := by rw [reassoc_of% hc]
-      _ = pullback.snd _ _ := by simp
-  exact (cancel_epi e).mp (h₁.trans h₂.symm)
-
 private theorem isGrpPullback_pullback_fst {S S' : Scheme.{0}} (f : S' ⟶ S) (G : Over S) [GrpObj G] :
     IsGrpPullback ((Over.pullback f).obj G) G f (pullback.fst G.hom f) := by
   refine ⟨IsPullback.of_hasPullback _ _, ?_⟩
@@ -451,7 +475,7 @@ theorem spread_hom_generic_of_isGrpPullback {U S : Scheme.{0}} [IsIntegral S] [I
       have hEc : ((E.hom ≫ c₁) * (E.hom ≫ c₂)).left = (c₁ * c₂).left := by
         rw [← MonObj.comp_mul]
         simp [E]
-      apply IsGenericPointHom.hom_ext_lemma H.hom (by
+      apply _root_.GlobalTheory.ExtUnique.hom_ext_of_dominant H.hom (by
           rw [Category.assoc, Category.assoc, pullback.condition, ← Category.assoc, ← Category.assoc,
             hsnd (μ[GV] ≫ g) ((g ⊗ₘ g) ≫ μ[(Over.pullback V.ι).obj H])]) π
       rw [← hl]
@@ -505,7 +529,7 @@ theorem generic_of_isGrpPullback (h : SemiAbelianHomExtension) (hS : Reciprocity
   have hpb : IsPullback G'.hom φ j G.hom := hφ.1.flip
   have _ : IsSchemeTheoreticallyDominant φ := IsSchemeTheoreticallyDominant.of_isPullback hpb
   apply Over.OverMorphism.ext
-  exact IsGenericPointHom.hom_ext_lemma H.hom (by rw [Over.w, Over.w]) φ (hF₂.symm.trans hex)
+  exact _root_.GlobalTheory.ExtUnique.hom_ext_of_dominant H.hom (by rw [Over.w, Over.w]) φ (hF₂.symm.trans hex)
 
 private theorem pullback_map_eq_iff_fst_comp {S₀ U₀ : Scheme.{0}} {t : U₀ ⟶ S₀} {G₀ H₀ : Over S₀} (F : G₀ ⟶ H₀)
     (f : (Over.pullback t).obj G₀ ⟶ (Over.pullback t).obj H₀) :

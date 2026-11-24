@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantTensorStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantTensor
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.HermitianCharacters.CharacteristicIdentity
+import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -39,33 +43,7 @@ theorem commute_coeff_X_add_C (a t : A) (h : Commute a t) (k : ℕ) :
   split_ifs <;> simp [h]
 
 theorem eq_zero_of_eval (R : A[X]) (h : ∀ y : ℂ, R.eval (algebraMap ℂ A y) = 0) : R = 0 := by
-  ext k
-  rw [coeff_zero]
-  refine (Module.forall_dual_apply_eq_zero_iff ℂ _).1 fun φ => ?_
-  let r : ℂ[X] := ∑ i ∈ R.support, monomial i (φ (R.coeff i))
-  have hr : ∀ y, r.eval y = 0 := by
-    intro y
-    have hy := congrArg φ (h y)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [eval_eq_sum, sum_def, map_sum, map_zero] at hy
-    rw [← hy]
-    simp only [r, eval_finsetSum, eval_monomial]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [← map_pow, ← Algebra.commutes, ← Algebra.smul_def, map_smul, smul_eq_mul, mul_comm]
-  have h0 : r = 0 := Polynomial.funext (by simpa using hr)
-  have hc : r.coeff k = φ (R.coeff k) := by
-    classical
-    simp only [r, finsetSum_coeff]
-    rw [Finset.sum_eq_single k]
-    · simp [coeff_monomial]
-    · intro i hi hik
-      simp [coeff_monomial, hik]
-    · intro hk
-      have hk0 : R.coeff k = 0 := by
-        by_contra hne
-        exact hk (mem_support_iff.mpr hne)
-      simp [coeff_monomial, hk0]
-  rw [← hc, h0, coeff_zero]
+  apply GlobalTheory.CompanionTheory.Inh.CharId.eq_zero_of_eval <;> assumption
 
 def PolF (f : ℂ → A) : Prop := ∃ p : A[X], ∀ y : ℂ, p.eval (algebraMap ℂ A y) = f y
 
@@ -145,15 +123,6 @@ def liftL (V : Type) [AddCommGroup V] [Module ℂ V] (I : Type) :
   commutes' c := LinearMap.ext fun f => funext fun i => by
     show (algebraMap ℂ (Module.End ℂ V) c) (f i) = (algebraMap ℂ (Module.End ℂ (I → V)) c f) i
     simp [Module.algebraMap_end_apply]
-
-theorem commute_qdet_om (M : GMod n) (u : ℂ) : Commute ((qdet M.E u).compLeft (Fin n)) (om M) := by
-  refine LinearMap.ext fun f => funext fun b => ?_
-  have hc : ∀ (a : Fin n) (x : M.V), qdet M.E u (M.E a b x) = M.E a b (qdet M.E u x) := fun a x =>
-    LinearMap.congr_fun (qDetCentral _ n M.E M.gl u a b) x
-  show (qdet M.E u) (om M f b) = ∑ a, M.E a b (qdet M.E u (f a))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [om_apply, map_sum]
-  simp only [hc]
 
 theorem commute_coeff_om (M : GMod n) (p : (Module.End ℂ (Fin n → M.V))[X])
     (h : ∀ y : ℂ, Commute (p.eval (algebraMap ℂ _ y)) (om M)) (k : ℕ) : Commute (p.coeff k) (om M) := by
@@ -242,7 +211,7 @@ theorem cayleyHam_of (H : QdetTens) : CayleyHam := by
   have hCom : ∀ j, Commute ((pC - Q).coeff j) (-om M - algebraMap ℂ _ (cn n)) := by
     intro j
     have h1 : Commute (pC.coeff j) (om M) := commute_coeff_om M pC
-      (fun y => by rw [hC]; exact commute_qdet_om M _) j
+      (fun y => by rw [hC]; exact _root_.GlobalTheory.CompanionTheory.RgExh.commute_compLeft_om M _) j
     have h2 : Commute (pC.coeff j) (-om M - algebraMap ℂ _ (cn n)) :=
       h1.neg_right.sub_right (commute_alg _ _)
     have h3 : ∀ z, Commute (algebraMap ℂ (Module.End ℂ (Fin n → M.V)) (Q0.coeff j)) z :=
@@ -261,6 +230,6 @@ theorem cayleyHam_of (H : QdetTens) : CayleyHam := by
   exact ⟨k, (smul_eq_zero.1 hz).resolve_left
     (pow_ne_zero _ (neg_ne_zero.2 (pow_ne_zero _ (by norm_num))))⟩
 
-theorem cayleyHam : CayleyHam := cayleyHam_of GlobalTheory.T.QuantumDeterminantTensor
+theorem cayleyHam : CayleyHam := cayleyHam_of _root_.GlobalTheory.CompanionTheory.RgExh.qdetTens
 
 end GlobalTheory.CompanionTheory.RgExhHecke.CayleyOm

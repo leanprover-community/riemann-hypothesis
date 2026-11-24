@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.StatementBe
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsSigma
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
 
 @[expose] public section
 

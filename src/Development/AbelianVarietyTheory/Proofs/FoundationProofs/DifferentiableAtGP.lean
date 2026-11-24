@@ -1,9 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
+public import Development.AbelianVarietyTheory.Definitions.Foundations.CthFac
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MultipliableAndSgNeZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Topology.UniformSpace.Uniformizable
+import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
+import Mathlib.Geometry.Manifold.StructureGroupoid
 
 @[expose] public section
 
@@ -146,17 +193,9 @@ private lemma hasSum_fTerm_fiber_of_pos {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
 
 open scoped UpperHalfPlane MatrixGroups Manifold in
 open Filter Topology in
-private lemma ee_neg' (z : ℂ) :
-    _root_.GlobalTheory.Sieg.ee (-z) = (_root_.GlobalTheory.Sieg.ee z)⁻¹ := by
-  refine eq_inv_of_mul_eq_one_left ?_
-  rw [← _root_.GlobalTheory.Sieg.Model.ee_add, neg_add_cancel]
-  simp [_root_.GlobalTheory.Sieg.ee]
-
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma norm_inv_u_lt_one_of_neg {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
     (h : x 0 + p < 0) : ‖(_root_.GlobalTheory.Sieg.DlogOne.u x τ p)⁻¹‖ < 1 := by
-  rw [_root_.GlobalTheory.Sieg.DlogOne.u, ← ee_neg', _root_.GlobalTheory.Sieg.Model.norm_ee,
+  rw [_root_.GlobalTheory.Sieg.DlogOne.u, ← _root_.GlobalTheory.Sieg.Model.ee_neg, _root_.GlobalTheory.Sieg.Model.norm_ee,
     Real.exp_lt_one_iff, neg_lt_zero, Complex.neg_im, im_shifted_lattice_point]
   have ha : ((x 0 + p : ℚ) : ℝ) < 0 := by exact_mod_cast h
   nlinarith [Real.pi_pos, τ.im_pos, mul_neg_of_neg_of_pos ha τ.im_pos]
@@ -186,7 +225,7 @@ private lemma hasSum_fTerm_fiber_of_neg {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
     simp only [_root_.GlobalTheory.Sieg.fTerm]
     split_ifs with hc
     · rw [Int.sign_eq_neg_one_of_neg hn, mul_assoc _ (_root_.GlobalTheory.Sieg.ee _),
-        ← _root_.GlobalTheory.Sieg.Model.ee_add, _root_.GlobalTheory.Sieg.DlogOne.u, ← ee_neg',
+        ← _root_.GlobalTheory.Sieg.Model.ee_add, _root_.GlobalTheory.Sieg.DlogOne.u, ← _root_.GlobalTheory.Sieg.Model.ee_neg,
         ← _root_.GlobalTheory.Sieg.Model.ee_nat_mul]
       simp only [Nat.sub_self, pow_zero, mul_one, Int.cast_neg, Int.cast_one, neg_one_mul]
       congr 2
@@ -380,7 +419,7 @@ theorem _root_.GlobalTheory.Sieg.DlogOne.E_eq {x : Fin 2 → ℚ}
         push_cast
         ring
       simp only [_root_.GlobalTheory.Sieg.fTerm, Equiv.prodCongr_apply, Equiv.coe_addRight,
-        Equiv.coe_refl, Prod.map_apply, id_eq, hy1]
+        Equiv.coe_refl, hy1]
       rw [key]
       rfl
   have hbase := E_ee_pt_eq_neg_F_of_mem_Ico hy (Int.fract_nonneg _)
@@ -394,7 +433,5 @@ theorem _root_.GlobalTheory.Sieg.DlogOne.E_eq {x : Fin 2 → ℚ}
 end GlobalTheory.Sieg.DlogOne
 
 namespace GlobalTheory.Sieg
-
-open DlogOne
 
 end GlobalTheory.Sieg

@@ -1,16 +1,70 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.TwTan
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkSpecializesBijective
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductOnSpan
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtSmul
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorFlag
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeDominantCompat
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductOnSpan
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRingStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductPullbackUniqueStatement
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkSpecializesBijective
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapFromSpecStalk
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.EqZeroOfSumEmbeddingSmul
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubsingletonPrimeSpectrum
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HodgeIPIffHodgeFormConj
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductPullbackUnique
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
+import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLaw
 
 @[expose] public section
 
@@ -216,8 +270,8 @@ theorem form_expand {g r : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (d : Fin r →
     rw [star_sum]
     exact Finset.sum_congr rfl fun l _ => star_smul _ _
   have e2 : Hm.mulVec (∑ l, star (x l) • star (d l)) = ∑ l, star (x l) • Hm.mulVec (star (d l)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Matrix.mulVecLin_apply, map_sum]
+
+    rw [← Matrix.mulVecLin_apply, map_sum]
     exact Finset.sum_congr rfl fun l _ => by rw [map_smul, Matrix.mulVecLin_apply]
   rw [e1, e2]
   simp only [sum_dotProduct, dotProduct_sum, smul_dotProduct, dotProduct_smul, smul_eq_mul, Finset.mul_sum,
@@ -297,7 +351,7 @@ def push (m : SABMap t' t f) {z : Sp ℂ ⟶ X'} (v : epsAt z ⟶ t'.G) : epsAt 
 
 theorem hodgeInnerProduct_unique (m : SABMap t' t f) {z : Sp ℂ ⟶ X'} (v w : epsAt z ⟶ t'.G) (c c' : ℂ)
     (h : HodgeIP t'.G t'.PP.L z v w c) (h' : HodgeIP t'.G t'.PP.L z v w c') : c = c' := by
-  obtain ⟨h1, h2⟩ := GlobalTheory.T.hodge_inner_product_pullback_unique E H X' X t' t f m z v w (push m v) (push m w) rfl rfl
+  obtain ⟨h1, h2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HodgeUnique.main E H X' X t' t f m z v w (push m v) (push m w) rfl rfl
   exact h2 c c' ((h1 c).1 h) ((h1 c').1 h')
 
 theorem grNorm_down (m : SABMap t' t f) (hξ' : IsCptGen ξ') (hd : GlobalTheory.CompanionTheory.Ar.Dominates ξ' ξ f i)
@@ -325,7 +379,7 @@ theorem grNorm_down (m : SABMap t' t f) (hξ' : IsCptGen ξ') (hd : GlobalTheory
     fun s => (hfl' s).trans (hflJ s).symm
 
   obtain ⟨Vz, _, _, ⟨MR⟩⟩ := lieModel_exists X' t'.G ℂ z
-  obtain ⟨ev, hev1, hev2, -⟩ := GlobalTheory.T.lie_lattice_eval_at_local_ring X' t'.G Ω' ξ' Li' M' ℂ z hq Vz MR hξ' t'.semi.smooth
+  obtain ⟨ev, hev1, hev2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieLat_val X' t'.G Ω' ξ' Li' M' ℂ z hq Vz MR hξ' t'.semi.smooth
   let eA : X'.presheaf.stalk p'.1 ≃+* regAt ξ' p' :=
     RingEquiv.ofBijective (genMap ξ' p').rangeRestrict ⟨fun a b e => hξ'.inj p' (congrArg Subtype.val e),
       (genMap ξ' p').rangeRestrict_surjective⟩
@@ -382,7 +436,7 @@ theorem grNorm_down (m : SABMap t' t f) (hξ' : IsCptGen ξ') (hd : GlobalTheory
   refine ⟨τ, _, ((P idx idx : regAt ξ' p') : Ω')⁻¹, (C idx idx)⁻¹,
     ⟨hp, b, Cᴴ * Γ' * C, hbf, hbV, hτ, ⟨w, hw, fun p q => ?_⟩, hpd'.conjTranspose_mul_mul_same hinj, rfl⟩,
     inv_ne_zero (hCd idx), CxVal.inv (hφ _) (hCd idx), ?_, ?_⟩
-  · refine ((GlobalTheory.T.hodge_inner_product_pullback_unique E H X' X t' t f m z (w' p) (w' q) (w p) (w q) (hww p) (hww q)).1 _).1 ?_
+  · refine ((_root_.GlobalTheory.CompanionTheory.Ar.HodgeUnique.main E H X' X t' t f m z (w' p) (w' q) (w p) (w q) (hww p) (hww q)).1 _).1 ?_
     rw [hw'e, hw'e, hJval, hJval]
     exact hgram p q
   · rw [← hdiag]

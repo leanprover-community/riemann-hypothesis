@@ -1,11 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerFurther
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumMem
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotMemOfNonZeroDivisor
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PHorizNotMem
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumMem
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

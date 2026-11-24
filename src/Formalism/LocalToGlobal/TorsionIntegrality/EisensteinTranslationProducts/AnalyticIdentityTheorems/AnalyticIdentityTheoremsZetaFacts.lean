@@ -1,6 +1,52 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.Legendre
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -85,7 +131,7 @@ private lemma hasDerivAt_inv_sub_add_inv_add_div_sq (l z : ℂ) (h : z - l ≠ 0
 lemma differentiableOn_zetaExcept (L : PeriodPair) (l₀ : ℂ) :
     DifferentiableOn ℂ (zetaExcept L l₀) (L.lattice \ {l₀})ᶜ := by
   refine differentiableOn_of_hasSumLocallyUniformlyOn' (hasSumLU_zetaExcept L l₀).hasSumLocallyUniformlyOn (fun l => ?_)
-    L.isOpen_compl_lattice_diff
+    L.isOpen_compl_lattice_sdiff
   by_cases h : (l : ℂ) = l₀
   · simp only [h, ↓reduceIte]
     exact differentiableOn_const 0
@@ -123,11 +169,6 @@ lemma zetaExcept_zero_zero (L : PeriodPair) : zetaExcept L 0 0 = 0 := by
     · rw [zero_sub, zero_div, add_zero, one_div_neg_eq_neg_one_div, neg_add_cancel]
   simp only [zetaExcept, h, tsum_zero]
 
-lemma hasDerivAt_term (l z : ℂ) (h : z - l ≠ 0) :
-    HasDerivAt (fun z : ℂ ↦ 1 / (z - l) + 1 / l + z / l ^ 2)
-      (-(1 / (z - l) ^ 2 - 1 / l ^ 2)) z := by
-  exact hasDerivAt_inv_sub_add_inv_add_div_sq l z h
-
 private lemma hasSum_deriv_of_hasSumLocallyUniformlyOn {ι : Type*} {F : ι → ℂ → ℂ} {g : ℂ → ℂ} {U : Set ℂ}
     (h : HasSumLocallyUniformlyOn F g U) (hF : ∀ i, DifferentiableOn ℂ (F i) U) (hU : IsOpen U)
     {z : ℂ} (hz : z ∈ U) : HasSum (fun i => deriv (F i) z) (deriv g z) := by
@@ -156,7 +197,7 @@ lemma eqOn_deriv_wZeta (L : PeriodPair) :
       apply hw
       rw [sub_eq_zero.mp e]
       exact l.2
-    exact (hasDerivAt_term l w hwl).differentiableAt.differentiableWithinAt
+    exact (_root_.Formalism.L2.Th1.F.AnalyticIdentityTheoremsZetaFacts.hasDerivAt_inv_sub_add_inv_add_div_sq l w hwl).differentiableAt.differentiableWithinAt
   have hs := hasSum_deriv_of_hasSumLocallyUniformlyOn (hasSumLU_wZeta L).hasSumLocallyUniformlyOn hF hU hz
   have hder : (fun l : L.lattice =>
       deriv (fun w : ℂ => 1 / (w - (l : ℂ)) + 1 / (l : ℂ) + w / (l : ℂ) ^ 2) z) =
@@ -167,7 +208,7 @@ lemma eqOn_deriv_wZeta (L : PeriodPair) :
       apply hz
       rw [sub_eq_zero.mp e]
       exact l.2
-    exact (hasDerivAt_term l z hzl).deriv
+    exact (_root_.Formalism.L2.Th1.F.AnalyticIdentityTheoremsZetaFacts.hasDerivAt_inv_sub_add_inv_add_div_sq l z hzl).deriv
   rw [hder] at hs
   exact hs.unique (L.hasSum_weierstrassP z).neg
 
@@ -181,7 +222,7 @@ lemma differentiableOn_wZeta (L : PeriodPair) :
     apply hw
     rw [sub_eq_zero.mp e]
     exact l.2
-  exact (hasDerivAt_term l w hwl).differentiableAt.differentiableWithinAt
+  exact (_root_.Formalism.L2.Th1.F.AnalyticIdentityTheoremsZetaFacts.hasDerivAt_inv_sub_add_inv_add_div_sq l w hwl).differentiableAt.differentiableWithinAt
 
 end AnalyticIdentityTheoremsZetaFacts
 

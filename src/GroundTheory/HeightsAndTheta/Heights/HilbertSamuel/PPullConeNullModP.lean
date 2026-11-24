@@ -1,8 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeNullModP
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeNull
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeNull
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

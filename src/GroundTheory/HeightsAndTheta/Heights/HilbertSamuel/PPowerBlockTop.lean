@@ -1,15 +1,16 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ImageCoord
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ArithSystem
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlock
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChangeOfModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsAddBlockIsometric
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ArithSystem
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ImageCoord
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
 
 @[expose] public section
 

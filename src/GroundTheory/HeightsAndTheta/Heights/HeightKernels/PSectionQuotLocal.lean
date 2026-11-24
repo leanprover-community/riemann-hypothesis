@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointLengthSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PSectionQuotFinite
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

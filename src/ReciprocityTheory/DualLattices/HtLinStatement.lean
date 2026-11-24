@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.DualLattices.NsetExpInjectiveSurjective
+public import Mathlib.GroupTheory.GroupAction.Ring
 
 @[expose] public section
 

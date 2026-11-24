@@ -1,11 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsNormalFormStabilizerMeasure
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsFundOne
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairCommonUnipotentStabiliserSummary
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -101,11 +144,11 @@ theorem mat_exists [FiniteDimensional K V] (h : IsReal H k r σ Φ) (hd : Module
   let c := basisOfTopLeSpanOfCardEqFinrank (fun i => Φ (b i)) hsp (by simp)
   have hc : ∀ i, c i = Φ (b i) := fun i => by simp [c]
   refine ⟨LinearMap.toMatrix' (c.constr ℂ fun i => Φ (s (b i))), fun x => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearMap.toMatrix'_mulVec, hx x, map_sum]
+
+  rw [LinearMap.toMatrix'_mulVec, hx x, map_sum]
   conv_rhs => rw [← b.sum_repr x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, phi_sum h]
+
+  rw [map_sum, phi_sum h]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, map_smul, h.2.1, ← hc, Module.Basis.constr_basis]
 
@@ -142,15 +185,15 @@ theorem exists_dual (F : FlagD H r) : ∃ f : Fin r → V, ∀ a b, H.B (f a) (F
     obtain ⟨φ, hφ, hle⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.2 hne)
     have hφ' : ∀ v : Fin r → K, φ v = ∑ b, v b * φ (Pi.single b 1) := fun v => by
       conv_lhs => rw [pi_eq_sum_univ' v]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum]
+
+      simp [map_sum]
     have h0 : ∑ b, star (φ (Pi.single b 1)) • F.e b.castSucc = 0 := by
       refine H.nondeg _ fun y => ?_
       rw [← H.herm, star_eq_zero]
       have := hle (LinearMap.mem_range_self L y)
       rw [LinearMap.mem_ker, hφ'] at this
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← this, map_sum]
+
+      rw [← this, map_sum]
       refine Finset.sum_congr rfl fun b _ => ?_
       simp [L, mul_comm, starRingEnd_apply]
     have := Fintype.linearIndependent_iff.1 F.indep _ h0

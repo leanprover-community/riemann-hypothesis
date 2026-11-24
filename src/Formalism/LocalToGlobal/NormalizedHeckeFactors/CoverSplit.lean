@@ -1,9 +1,15 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitExEveryDatum
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAct
-public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
-public import ReciprocityTheory.Automorphisms.InstMainA
+public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedHecke
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.AdicCompletion.Noetherian
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import ReciprocityTheory.Automorphisms.InstMainA
+import ReciprocityTheory.Automorphisms.PlaceA
 
 @[expose] public section
 
@@ -17,16 +23,6 @@ variable {D : D7}
 
 local notation "cO" => IsCMField.ringOfIntegersComplexConj D.host.E
 
-theorem cO_cO (x : 𝓞 D.host.E) : cO (cO x) = x := by
-  apply RingOfIntegers.ext
-  rw [IsCMField.coe_ringOfIntegersComplexConj, IsCMField.coe_ringOfIntegersComplexConj]
-  exact IsCMField.complexConj_apply_apply D.host.E (x : D.host.E)
-
-theorem cO_algebraMap (a : 𝓞 (maximalRealSubfield D.host.E)) :
-    cO (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E) a) =
-      algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E) a :=
-  (IsCMField.ringOfIntegersComplexConj_eq_self_iff D.host.E _).2 ⟨a, rfl⟩
-
 def conjPlE (P : PlE D.host) : PlE D.host where
   asIdeal := P.asIdeal.comap (cO : 𝓞 D.host.E →+* 𝓞 D.host.E)
   isPrime := Ideal.comap_isPrime _ _
@@ -34,10 +30,10 @@ def conjPlE (P : PlE D.host) : PlE D.host where
     obtain ⟨y, hy, hy0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot P.ne_bot
     refine (Submodule.ne_bot_iff _).2 ⟨cO y, ?_, ?_⟩
     · show (cO : 𝓞 D.host.E →+* 𝓞 D.host.E) (cO y) ∈ P.asIdeal
-      rw [RingHom.coe_coe, cO_cO]; exact hy
+      rw [RingHom.coe_coe, GlobalTheory.SplitConjPlace.cO_cO]; exact hy
     · intro h0
       apply hy0
-      rw [← cO_cO y, h0, map_zero]
+      rw [← GlobalTheory.SplitConjPlace.cO_cO y, h0, map_zero]
 
 theorem mem_conjPlE (P : PlE D.host) (x : 𝓞 D.host.E) : x ∈ (conjPlE P).asIdeal ↔ cO x ∈ P.asIdeal := Iff.rfl
 
@@ -45,31 +41,7 @@ theorem eq_or_eq_conjPlE (P w : PlE D.host)
     (hw : w.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) =
       P.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E))) :
     w = P ∨ w = conjPlE P := by
-  by_contra hne
-  push Not at hne
-  obtain ⟨h1, h2⟩ := hne
-  have nle : ∀ Q : PlE D.host, w ≠ Q → ¬ w.asIdeal ≤ Q.asIdeal := fun Q h hle =>
-    h (HeightOneSpectrum.ext (w.isMaximal.eq_of_le Q.isPrime.ne_top hle))
-  obtain ⟨a, ha, haP⟩ := Set.not_subset.mp (nle P h1)
-  obtain ⟨b, hb, hbQ⟩ := Set.not_subset.mp (nle _ h2)
-  have key : ∃ x ∈ w.asIdeal, x ∉ P.asIdeal ∧ x ∉ (conjPlE P).asIdeal := by
-    by_cases haQ : a ∈ (conjPlE P).asIdeal
-    · by_cases hbP : b ∈ P.asIdeal
-      · refine ⟨a + b, w.asIdeal.add_mem ha hb, fun h => haP ?_, fun h => hbQ ?_⟩
-        · simpa using P.asIdeal.sub_mem h hbP
-        · simpa using (conjPlE P).asIdeal.sub_mem h haQ
-      · exact ⟨b, hb, hbP, hbQ⟩
-    · exact ⟨a, ha, haP, haQ⟩
-  obtain ⟨x, hx, hxP, hxQ⟩ := key
-  rw [mem_conjPlE] at hxQ
-  have hfix : cO (x * cO x) = x * cO x := by rw [map_mul, cO_cO, mul_comm]
-  obtain ⟨y, hy⟩ := (IsCMField.ringOfIntegersComplexConj_eq_self_iff D.host.E _).1 hfix
-  have hyw : y ∈ w.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) := by
-    rw [Ideal.mem_comap, hy]; exact w.asIdeal.mul_mem_right _ hx
-  rw [hw, Ideal.mem_comap, hy] at hyw
-  rcases P.isPrime.mem_or_mem hyw with h | h
-  · exact hxP h
-  · exact hxQ h
+  apply GlobalTheory.SplitConjPlace.eq_or_eq_conjPlE <;> assumption
 
 def conjSplit (s : SplitPlace D.host.E) : SplitPlace D.host.E :=
   ⟨s.v, s.i.comp (IsCMField.complexConj D.host.E).toAlgHom⟩
@@ -113,7 +85,7 @@ theorem splitEx_of (hstar : ∀ x : D.host.E, D.host.conj x = IsCMField.complexC
       v₀.asIdeal := by
     ext a
     show cO (algebraMap _ _ a) ∈ v.asIdeal ↔ algebraMap _ _ a ∈ v.asIdeal
-    rw [cO_algebraMap]
+    rw [GlobalTheory.SplitConjPlace.cO_algebraMap]
   obtain ⟨s, hs⟩ := hsplit v₀ ⟨v, conjPlE v, hne, rfl, hover'⟩
   have hsw : s.w.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) =
       v.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) := by
@@ -128,11 +100,11 @@ theorem splitEx_of (hstar : ∀ x : D.host.E, D.host.conj x = IsCMField.complexC
     refine ⟨conjSplit s, algebraMap (maximalRealSubfield D.host.E) (s.v.adicCompletion _) π, ?_, hu⟩
     apply hconj
     intro x
-    rw [mem_conj_w, cO_cO, h]
+    rw [mem_conj_w, GlobalTheory.SplitConjPlace.cO_cO, h]
   · refine ⟨s, algebraMap (maximalRealSubfield D.host.E) (s.v.adicCompletion _) π, ?_, hu⟩
     apply hconj
     intro x
-    rw [h, mem_conjPlE, cO_cO]
+    rw [h, mem_conjPlE, GlobalTheory.SplitConjPlace.cO_cO]
 
 end Formalism.L2
 
@@ -150,18 +122,12 @@ def belowE (v : PlE D.host) : HeightOneSpectrum (𝓞 Fp) where
     obtain ⟨y, hy, hy0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot v.ne_bot
     exact Ideal.comap_ne_bot_of_integral_mem hy0 hy (Algebra.IsIntegral.isIntegral y)
 
-theorem fixed_of_cO {x : 𝓞 D.host.E} (hx : cO x = x) : ∃ y : 𝓞 Fp, algebraMap (𝓞 Fp) (𝓞 D.host.E) y = x :=
-  (IsCMField.ringOfIntegersComplexConj_eq_self_iff D.host.E _).1 hx
-
-
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 200000 in
 theorem exists_splitPlace (v : PlE D.host) (x0 : 𝓞 D.host.E) (hx0 : x0 ∈ v.asIdeal) (hc0 : cO x0 ∉ v.asIdeal) :
     ∃ s : SplitPlace D.host.E, s.v = belowE v := by
   classical
   set v₀ := belowE v
-  obtain ⟨a, ha⟩ := fixed_of_cO (x := x0 + cO x0) (by rw [map_add (f := _), cO_cO, add_comm])
-  obtain ⟨b, hb⟩ := fixed_of_cO (x := x0 * cO x0) (by rw [map_mul, cO_cO, mul_comm])
+  obtain ⟨a, ha⟩ := GlobalTheory.SplitConjPlace.fixed_of_cO (x := x0 + cO x0) (by rw [map_add (f := _), GlobalTheory.SplitConjPlace.cO_cO, add_comm])
+  obtain ⟨b, hb⟩ := GlobalTheory.SplitConjPlace.fixed_of_cO (x := x0 * cO x0) (by rw [map_mul, GlobalTheory.SplitConjPlace.cO_cO, mul_comm])
   have hbv : b ∈ v₀.asIdeal := by
     show algebraMap _ _ b ∈ v.asIdeal
     rw [hb]; exact v.asIdeal.mul_mem_right _ hx0
@@ -259,21 +225,6 @@ theorem exists_splitPlace (v : PlE D.host) (x0 : 𝓞 D.host.E) (hx0 : x0 ∈ v.
   exact ⟨⟨v₀, i⟩, rfl⟩
 
 theorem splitEx_of_star (hstar : ∀ x : D.host.E, D.host.conj x = IsCMField.complexConj D.host.E x) : SplitEx D := by
-  refine splitEx_of hstar fun v₀ ⟨w, w', hne, hw, hw'⟩ => ?_
-
-  have key : ∃ x0 ∈ w.asIdeal, cO x0 ∉ w.asIdeal := by
-    rcases eq_or_eq_conjPlE w w' (hw'.trans hw.symm) with h | h
-    · exact absurd h.symm hne
-    · by_contra hall
-      push Not at hall
-      apply hne
-      rw [h]
-      ext1
-      refine le_antisymm (fun x hx => hall x hx) ?_
-      exact w.isMaximal.eq_of_le (conjPlE w).isPrime.ne_top (fun x hx => hall x hx) ▸ le_refl _
-  obtain ⟨x0, hx0, hc0⟩ := key
-  obtain ⟨s, hs⟩ := exists_splitPlace w x0 hx0 hc0
-  refine ⟨s, hs.trans ?_⟩
-  exact HeightOneSpectrum.ext hw
+  apply GlobalTheory.SplitConjPlace.splitEx_of_star <;> assumption
 
 end Formalism.L2

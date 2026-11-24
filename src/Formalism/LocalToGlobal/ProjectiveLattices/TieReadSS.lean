@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.TieUpA
+public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
+public import Formalism.LocalToGlobal.ProjectiveLattices.HasDataCondition
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 
 @[expose] public section
 

@@ -1,6 +1,49 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -121,19 +164,18 @@ private theorem fromBlocks_transpose_dbl_map_eq_dbl {J : Matrix β β E} {ey fx 
   subst hJ
   simp only [Matrix.fromBlocks_map, map_one', mneg, msub, map_mul']
   simp only [dbl, Matrix.fromBlocks_transpose, Matrix.fromBlocks_multiply, Matrix.transpose_one, Matrix.transpose_neg,
-    Matrix.transpose_sub, Matrix.transpose_mul, Matrix.transpose_zero]
+    Matrix.transpose_sub, Matrix.transpose_mul]
   rw [Matrix.fromBlocks_inj]
   refine ⟨?_, ?_, ?_, ?_⟩ <;>
-    simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_neg, Matrix.neg_mul,
-      Matrix.mul_one, Matrix.one_mul, Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_assoc, neg_neg, neg_zero,
-      add_zero, zero_add, sub_zero, zero_sub, c1e, c1f, c2e, c2f, t1e, t1f, t2e, t2f, c1e', c1f', c2e', c2f',
+    simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_neg, Matrix.neg_mul,
+      Matrix.mul_one, Matrix.one_mul, Matrix.mul_zero, Matrix.mul_assoc, neg_neg, neg_zero,
+      add_zero, zero_add, sub_zero, zero_sub, c1e', c1f', c2e', c2f',
       t1e', t1f', t2e', t2f'] <;> abel
 
 private theorem fromBlocks_mul_diagCols_eq {ey fx : Matrix β ν E} {m1 m2 : Matrix ν β E} (hsum : ey * m1 + fx * m2 = 1) :
     (fromBlocks 1 (-(fx * m2)) (-(fx * m1)) (fx * m1 - ey * m2) : Matrix (β ⊕ β) (β ⊕ β) E) *
       (diagCols β : Matrix (β ⊕ β) β E) = (fromBlocks ey 0 0 ey : Matrix (β ⊕ β) (ν ⊕ ν) E) * fromRows m1 (-m2) := by
-  simp only [diagCols, Matrix.fromBlocks_mul_fromRows, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_neg, add_zero,
-    zero_add]
+  simp only [diagCols, Matrix.fromBlocks_mul_fromRows, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_neg, zero_add]
   congr 1
   · rw [← hsum]; abel
   · abel
@@ -154,9 +196,9 @@ theorem exists_gamma (hc : ∀ z, c (c z) = z) {J : Matrix β β E} (hsk : ∀ i
       Qᵀ * J * P.map c = -((Pᵀ * J * Q.map c).map c)ᵀ := by
     intro m n P Q
     ext i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Matrix.neg_apply, map_sum, map_mul, hc,
-      hsk, Finset.sum_mul]
+
+    simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Matrix.neg_apply, map_sum, map_mul, hc,
+    hsk, Finset.sum_mul]
     rw [Finset.sum_comm]
     simp only [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
@@ -177,7 +219,6 @@ theorem exists_gamma (hc : ∀ z, c (c z) = z) {J : Matrix β β E} (hsk : ∀ i
   have hAiA : Ai * A = 1 := by
     first
     | exact mul_eq_one_comm.mp hAAi
-    | (rw [← Matrix.inv_eq_right_inv hAAi]; exact Matrix.nonsing_inv_mul A (Matrix.isUnit_det_of_right_inverse hAAi))
   obtain ⟨f, hf⟩ : ∃ f : Matrix β ν E, f = Cx * Ai.map c := ⟨_, rfl⟩
   obtain ⟨n2, hn2⟩ : ∃ n2 : Matrix ν β E, n2 = A.map c * m2 := ⟨_, rfl⟩
   have hf1 : m1 * f = 0 := by rw [hf, ← Matrix.mul_assoc, k1f, Matrix.zero_mul]

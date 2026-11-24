@@ -1,5 +1,7 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.HfRsmulRight
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.NormProjectionSq
 
 @[expose] public section
@@ -65,8 +67,8 @@ lemma emb_comb [IsCMField E] (σ : E →+* ℂ) (c : ℂ) :
       simp only [if_neg hτ, if_true, hm, c']
       rcases embedding_mk_eq σ with h | h
       · have : (mk σ).embedding ≠ ComplexEmbedding.conjugate σ := by rw [h]; exact hne.symm
-        simp [h, hm, this, hne, hne.symm]
-      · simp [h, hm, hne, hne.symm]
+        simp [h, hne.symm]
+      · simp [h, hne]
     · have hm : mk τ ≠ mk σ := by
         intro h; rcases mk_eq_iff.mp h with h | h
         · exact hτ h

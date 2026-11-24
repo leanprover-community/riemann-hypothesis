@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreRepresentatives
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsAvoidFormFinite
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.EqSumMultihomogeneousComponents
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 
@@ -52,8 +52,8 @@ theorem eval_smul {s : MRingOver ℂ ι} {a : K → ℕ} (hs : IsMultiHomog s a)
 theorem eval_eq_zero_of_homog {Ω : Type} [Field Ω] (y : (Σ k, ι k) → Ω) (z : (Σ k, ι k) → ℂ)
     (hz : ∀ f ∈ mCoordIdeal y, (∃ a, IsMultiHomog f a) → eval z (map (Int.castRingHom ℂ) f) = 0)
     (f : MRing ι) (hf : f ∈ mCoordIdeal y) : eval z (map (Int.castRingHom ℂ) f) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [eq_sum_multihomogeneous_components f, map_sum, map_sum]
+
+  rw [eq_sum_multihomogeneous_components f, map_sum, map_sum]
   refine Finset.sum_eq_zero fun b _ => hz _ ?_ ⟨b, isMultiHomog_i2comp b f⟩
   exact i2comp_mem (CoordinateConeArithVar.isMultiHomogIdeal y) b hf
 

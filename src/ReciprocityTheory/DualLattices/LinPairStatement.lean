@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.ModuliPointsState
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

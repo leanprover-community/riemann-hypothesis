@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsProjChowNonzero
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncidenceZeroLocus
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -30,8 +33,8 @@ theorem aeval_smul_eq_zero {Ω : Type*} [Field Ω] [Algebra ℂ Ω] {n : ℕ}
     {W : Ideal (MvPolynomial (Fin n) ℂ)} (hW : IsHomogIdeal W) {x : Fin n → Ω}
     (hx : ∀ q ∈ W, aeval x q = 0) (c : Ω) : ∀ q ∈ W, aeval (c • x) q = 0 := by
   intro q hq
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sum_homogeneousComponent q, map_sum]
+
+  rw [← sum_homogeneousComponent q, map_sum]
   refine Finset.sum_eq_zero fun d _ => ?_
   rw [aeval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous d q), hx _ (hW q hq d), mul_zero]
 

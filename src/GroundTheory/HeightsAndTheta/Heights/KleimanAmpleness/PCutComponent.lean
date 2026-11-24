@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutComponentSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutZeroNotLeSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutNonemptySt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutDimLowerSt
+public import Mathlib.RingTheory.GradedAlgebra.Radical
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 
 @[expose] public section
 

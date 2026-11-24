@@ -1,12 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysLatOfTrivial
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InclWFrobIter
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OneAddXMulDerivativeBinomial
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TeichPow
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLaws
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InclWFrobIter
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgHomExtOfConstantCoeffZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLaws
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegersCompleteDVR
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysLatOfTrivial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -93,11 +132,11 @@ def ioOf : WIo (serOf W hs hp hL) RA RW inclR φR gR πA :=
   { E with ioE_φ := hI.1, ioE_γ := hI.2 }
 
 
-set_option maxHeartbeats 1000000 in
+
 def etOf : WEt (ioOf E hs hp hL hI) := { W, E with }
 
 
-set_option maxHeartbeats 1000000 in
+
 def clOf : WCl (etOf E hs hp hL hI) := { W, E with }
 
 
@@ -112,7 +151,7 @@ theorem nOf_ind (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (p : Submodule 
   unfold nOf; split_ifs <;> assumption
 
 
-set_option maxHeartbeats 1000000 in
+
 def latOf {Zl : Type} [CommRing Zl] (zl : PowerSeries Zl →+* LetA O n) (h1 : IsCrys PD W.one.ρ)
     (hP : ∀ T, @Module.Projective (PowerSeries Zl) _ ↥(W.N T) _ (Module.compHom _ zl)) :
     WN (etOf E hs hp hL hI) zl where
@@ -168,32 +207,32 @@ abbrev GamL := gamOf (H.W K s LL h) (H.W_s K s LL h)
 variable (hL : Laws H F h)
 
 
-set_option maxHeartbeats 400000 in
+
 abbrev SerL := serOf (H.W K s LL h) (H.W_s K s LL h) (p_prime P K) hL.lev
 
 
-set_option maxHeartbeats 400000 in
+
 abbrev IoL := ioOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io
 
 
-set_option maxHeartbeats 400000 in
+
 theorem ioW : IoW (Γ := GamL H h) (R := SerL H F h hL) (IoL H F h hL) := (F.E K s LL h).inertia_action_on_roots
 
 
-set_option maxHeartbeats 400000 in
+
 abbrev EtL := etOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io
 
 
-set_option maxHeartbeats 400000 in
+
 abbrev ClL := clOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io
 
 
-set_option maxHeartbeats 400000 in
+
 abbrev LatL :=
   latOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io _ hL.one (H.W_proj K s LL h)
 
 
-set_option maxHeartbeats 400000 in
+
 theorem latL_N {T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)} (hT : IsCrys (P.PD K) T.ρ) :
     (LatL H F h hL).N T = (H.W K s LL h).N T := nOf_crys _ hT
 
@@ -274,7 +313,7 @@ theorem levLaws : LevLaws (H.W K s LL h) := by
       rw [(H.W K s LL h).φ₀_X, (H.W K s LL h).q₀_def, P.PD_p]
     exact (GlobalTheory.Cyc.act_unique l ↥(OL LL) hl0 hlu ((H.W K s LL h).γ₀ g) (H.W K s LL h).φ₀ (c g) h0
       ((H.W K s LL h).γ₀_comm _) ((H.W K s LL h).γ₀_X _).1
-      (((H.W K s LL h).γ₀_X _).2.trans (hc g).symm)).2.trans (GlobalTheory.Cyc.act_eq_gam _ _ _)
+      (((H.W K s LL h).γ₀_X _).2.trans (hc g).symm)).2.trans (_root_.GlobalTheory.Cyc.Series.act_eq _ _ _)
   · convert evLaw_integers P LL using 1
     exact Algebra.algebra_ext _ _ fun r => PowerSeries.algebraMap_apply
 

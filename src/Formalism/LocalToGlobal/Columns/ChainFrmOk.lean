@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TargetChF
+public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
+public import Formalism.LocalToGlobal.Columns.CoefColLemmas
+public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
 public import Formalism.LocalToGlobal.Columns.DGamAut
 
 @[expose] public section

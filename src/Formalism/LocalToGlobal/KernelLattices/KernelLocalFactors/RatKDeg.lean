@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.RatKDeg
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.JetsRationalOfKernelRationality
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.JetsRationalOfKernelRationality
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 @[expose] public section
 
@@ -87,8 +87,8 @@ theorem jetAddDeg_of (dg : X.Tau → ℕ) (hfin : LatFin (X := X) a b Sall) (had
     rw [Finset.sum_apply, _root_.sum_apply]
   choose k hk using fun z => hrat N N' (c * c') (x + rep z) (hRz z) m hm
   have h3 : (A.chiF a b N N')⁻¹ * jetC A.cD (A.thInd Sall N N' c x) m = A.σ₀ (∑ z, k z) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [hk]
     unfold jetC
     rw [h2, Finset.mul_sum, Finset.mul_sum]

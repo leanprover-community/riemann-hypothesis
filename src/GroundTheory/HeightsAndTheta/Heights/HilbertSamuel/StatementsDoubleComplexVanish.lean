@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Group.Subgroup.Defs
 
 @[expose] public section
 

@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedB
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithRes
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

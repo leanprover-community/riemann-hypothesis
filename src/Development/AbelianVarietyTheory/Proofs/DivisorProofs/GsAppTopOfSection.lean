@@ -1,15 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SharpBundleFibre
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValMemOfCorrPull
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueScalar
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefOverOfFiniteOrbit
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFromBase
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FlatBCSec
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
+public import Development.AbelianVarietyTheory.Definitions.Divisors.FromBase
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefOverOfFiniteOrbit
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFromBase
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LbIsoSecOnto
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SharpTorsionDefOver
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValMemOfCorrPull
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsNormalizedBoth
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -48,7 +86,7 @@ theorem sval_spMap {K : Type} [Field K] {X Y : Scheme.{0}} {L : LB X} {Ix : Type
     rw [e] at this
     exact this
   refine (toStk_valF_gs (spMap σ ≫ x) _ z hm' _).symm.trans ?_
-  exact congrArg (toStk z) (valF_spMap_comp σ x _ ((top_le_iff_mem x _ z).2 hm) _)
+  exact congrArg (toStk z) (_root_.GlobalTheory.ArcExt.valF_ext σ x _ ((top_le_iff_mem x _ z).2 hm) _)
 
 theorem sval_cast {X Y Z : Scheme.{0}} {L : LB X} {Ix : Type} [Fintype Ix] {φ φ' : Ix → (Y ⟶ X)} {ε : Ix → ℤ}
     (e : φ' = φ) (p : LB.Sec (LB.LinComb L φ' ε)) (x : Z ⟶ Y) (z : Z) (J : (Z ⟶ X) → L.ι) :
@@ -337,7 +375,7 @@ theorem kzero_theta_of_iso {W₀ : Type} [CommRing W₀] (W : Matrix (Fin 8) (Fi
 theorem theta_bundle_lbIso (D : DegPre V₁) : LBIso (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1)) D.P.L := by
   have hL : D.P.L.IsLB := D.P.isLB
   have h1 : toUnit D.P.A ≫ D.c 0 = toUnit D.P.A ≫ η[D.P.A] := by
-    rw [GlobalTheory.Poinc.ThetaOne.c_zero D, MonObj.comp_one]
+    rw [_root_.GlobalTheory.IndivisibleSection.c_zero_eq_one D, MonObj.comp_one]
     rfl
   have h2 : padd D.P.A (𝟙 D.P.A) (toUnit D.P.A ≫ η[D.P.A]) = 𝟙 D.P.A := mul_one (𝟙 D.P.A)
   have hc : LBIso (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1)) (D.P.L.pull (𝟙 D.P.A.left)) := by

@@ -1,57 +1,53 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.PrimitivePackageFullHecke
-public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas
-public import Formalism.LocalToGlobal.IndefiniteReal.RealSeparation.SignsG
-public import Formalism.LocalToGlobal.IndefiniteReal.RealSeparation.FramesOKg2
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.RatDatOfReal
-public import Formalism.LocalToGlobal.IndefiniteReal.FWExist
-public import Formalism.LocalToGlobal.IndefiniteReal.OneMapT
-public import Formalism.LocalToGlobal.IndefiniteReal.OneMapEq
-public import Formalism.LocalToGlobal.IndefiniteReal.RhoGeo
-public import Formalism.LocalToGlobal.IndefiniteReal.BridgeSeed
-public import Formalism.LocalToGlobal.IndefiniteReal.IsFDiagIffDiagonal
-public import Formalism.LocalToGlobal.Divisibility.DivisionCompatibleToSub2Indef2
 public import Formalism.LocalToGlobal.Divisibility.PsiWeilOfAbsNorm
 public import Formalism.LocalToGlobal.Divisibility.NumericScaleExponentEqExtended
 public import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
-public import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
-public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Formalism.SharpRestriction.GlobalTheoremInputs
-public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.SharpRestriction.PageFix
-public import Formalism.LocalRingCardinality.MinkMEqMinkowskiNumber
 public import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
 public import Formalism.SharpRestriction.Divisibility.SmallFirstModulusBelowScale
 public import Formalism.SharpRestriction.LevelLetterCocycles.AlignN
-public import Formalism.SharpRestriction.LevelLetterCocycles.TwGood
-public import Formalism.SharpRestriction.GlobalSchurBounds.MainIn
 public import Formalism.SharpRestriction.GlobalSchurBounds.WeightVectorSmallSharesEight
-public import Formalism.LocalRingCardinality.DataTies
 public import Formalism.LocalToGlobal.IndefiniteReal.RealTB
 public import Formalism.LocalToGlobal.IndefiniteReal.RealRecPins
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NMjT
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsDeltaDelAtOwnAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.BasePlaceNotMemChiGridBadPlaces
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotTeichTrivOfIsDelta
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsIsScalar
-public import Formalism.LocalToGlobal.HermitianColumns.SymAll
-public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
-public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
-public import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
-public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DisjointExceptional
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIffHostBound
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.GoodPairSystems
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.FamilyClassSevenDutiesAndStableLattices
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.RationalRayLevels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DimPartsAtIffBadAndOff
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RayFieldTheta
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -266,7 +262,7 @@ namespace PtAt
 variable {Csz : ℝ}
 
 
-set_option maxHeartbeats 1000000 in
+
 def ofReal (P : IndefiniteRowSideFullHecke ex) (Del h0 : ℕ) (hDel : D.s.Del = (Del : ℚ)) (hh0 : L.etaSz = (D.R.m : ℝ) * (h0 : ℝ))
     (Dcf : ∀ Zs : DefSub P.A3.fam3.amb3, DefCols (P.A3.side3 P.Ps P.ψs Zs)) (Spf : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (Dcf Zs))
     (gamDvd : (∀ (t : P.T) (c : (P.A3.A.fam.R t).S.Cl), Fintype.card ((P.A3.A.fam.R t).S.Gam c) ∣ (D.mem D.u₀).C.DGam) ∧
@@ -296,7 +292,7 @@ abbrev Z : IndefScale p.P.A3.fam3.base3 := (p.F.fc (p.R.toCx3 p.F).zs).Z
 abbrev N (C CH : ℝ) : IndefNum p.P.A3.fam3.base3 := p.R.num p.F C CH
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 def ExportRow : Prop :=
   ∃ jD : ∀ j, (Y.MjH j).V →ₗ[D.what₂.LL] p.Sx.WL j,
     (∀ (i : Fin D.R.m) (x : (Y.MjH ((i : ℕ) + 1)).V)

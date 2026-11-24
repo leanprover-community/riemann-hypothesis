@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.LinearAlgebra.DFinsupp
+import Mathlib.Tactic.Lemma
+public import Mathlib.LinearAlgebra.Basis.Basic
 
 @[expose] public section
 

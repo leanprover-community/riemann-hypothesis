@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKleimanScheme
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsAmpleOfGenTwist
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsLast
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsSide
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsExtra
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturb
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

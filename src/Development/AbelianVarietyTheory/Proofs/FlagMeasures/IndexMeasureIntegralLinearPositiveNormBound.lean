@@ -1,8 +1,55 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
+public import Mathlib.Analysis.Complex.Norm
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IndexMeasureIntegralEqOfFineSubgroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Normed.Field.Basic
+public import Mathlib.Basic.Complex.BigOperators
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CintTranslate
 
 @[expose] public section
 
@@ -20,25 +67,6 @@ private lemma quotientEquivProdOfLE_mk_fst {W : Type} [AddCommGroup W] {C B : Ad
   rfl
 
 open scoped Pointwise Classical in
-open Function in
-private lemma Fine_of_le_of_relIndex_ne_zero {W : Type} [AddCommGroup W] {A B C : AddSubgroup W} {φ : W → ℂ}
-    (hB : _root_.GlobalTheory.IdxInt.Fine A φ B) (hCB : C ≤ B) (hC : C.relIndex A ≠ 0) :
-    _root_.GlobalTheory.IdxInt.Fine A φ C := by
-  obtain ⟨hBA, -, hinv, hsupp⟩ := hB
-  have hidx : C.relIndex B ≠ 0 := by
-    rw [← AddSubgroup.relIndex_mul_relIndex C B A hCB hBA] at hC
-    exact left_ne_zero_of_mul hC
-  have hfin : Finite (B ⧸ C.addSubgroupOf B) := Nat.finite_of_card_ne_zero hidx
-  refine ⟨hCB.trans hBA, hC, fun w b hb => hinv w b (hCB hb), ?_⟩
-  let e := AddSubgroup.quotientEquivProdOfLE hCB
-  refine ((hsupp.prod (Set.finite_univ (α := B ⧸ C.addSubgroupOf B))).preimage
-    e.injective.injOn).subset ?_
-  rintro _ ⟨w, hw, rfl⟩
-  simp only [Set.mem_preimage, Set.mem_prod, Set.mem_univ, and_true]
-  rw [quotientEquivProdOfLE_mk_fst]
-  exact ⟨w, hw, rfl⟩
-
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] in
 private lemma exists_fine_fine_of_nice_nice {W : Type} [AddCommGroup W] {A : AddSubgroup W} {φ ψ : W → ℂ}
     (hφ : _root_.GlobalTheory.IdxInt.Nice A φ) (hψ : _root_.GlobalTheory.IdxInt.Nice A ψ) :
@@ -46,7 +74,7 @@ private lemma exists_fine_fine_of_nice_nice {W : Type} [AddCommGroup W] {A : Add
   obtain ⟨B, hB⟩ := hφ
   obtain ⟨B', hB'⟩ := hψ
   have hidx : (B ⊓ B').relIndex A ≠ 0 := AddSubgroup.relIndex_inf_ne_zero hB.2.1 hB'.2.1
-  exact ⟨B ⊓ B', Fine_of_le_of_relIndex_ne_zero hB inf_le_left hidx, Fine_of_le_of_relIndex_ne_zero hB' inf_le_right hidx⟩
+  exact ⟨B ⊓ B', _root_.GlobalTheory.IdxInt.Model.fine_refine hB inf_le_left hidx, _root_.GlobalTheory.IdxInt.Model.fine_refine hB' inf_le_right hidx⟩
 
 open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] in

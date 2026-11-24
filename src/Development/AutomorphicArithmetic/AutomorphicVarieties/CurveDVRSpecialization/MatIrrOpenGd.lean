@@ -1,14 +1,54 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.RatTorsionFree
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.DatFacts
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.RhoKApply
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharInertiaSurjective
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.FiniteResidue
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.DatFacts
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SingleMemSubmodule
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicCases.AutomorphyClauseStatement
 
 @[expose] public section
-
-attribute [-instance] UpperTheory.V.Pr.IsCD.toIsDiscreteValuationRing
 
 section SlopeTestRemainingChoices
 
@@ -19,11 +59,6 @@ section Abstract
 variable {K G : Type} [Field K] [Group G]
 
 private theorem f3 : ∀ i : Fin 3, i ≠ i + 1 ∧ i ≠ i + 2 ∧ ∀ k, k = i ∨ k = i + 1 ∨ k = i + 2 := by decide
-
-private theorem single_mem (d : Fin 3 → K) (hd : Function.Injective d) (W : Submodule K (Fin 3 → K))
-    (hW : ∀ v ∈ W, diagonal d *ᵥ v ∈ W) {v : Fin 3 → K} (hv : v ∈ W) {i : Fin 3} (hi : v i ≠ 0) :
-    Pi.single i (1 : K) ∈ W :=
-  _root_.UpperTheory.Reformulated.B.SingleMemSubmodule.single_mem d hd W hW hv hi
 
 private theorem le_of_single {W W' : Submodule K (Fin 3 → K)} (h : ∀ v ∈ W, ∀ i, v i ≠ 0 → Pi.single i (1 : K) ∈ W') :
     W ≤ W' := fun v hv => by
@@ -53,7 +88,7 @@ private theorem exists_line (H U : Subgroup G) (hUH : U ≤ H) [hn : U.Normal] (
     ∃ i, ∀ s ∈ U, ∀ j, j ≠ i → a s j i = 0 := by
   have key : ∀ W : Submodule K (Fin 3 → K), (∀ g ∈ U, ∀ v ∈ W, a g *ᵥ v ∈ W) →
       ∀ v ∈ W, ∀ i, v i ≠ 0 → Pi.single i (1 : K) ∈ W := fun W hW v hv i hi =>
-    single_mem d hd W (fun v hv => hud ▸ hW u hu v hv) hv hi
+    _root_.UpperTheory.Reformulated.B.SingleMemSubmodule.single_mem d hd W (fun v hv => hud ▸ hW u hu v hv) hv hi
   have fin : ∀ W : Submodule K (Fin 3 → K), (∀ g ∈ U, ∀ v ∈ W, a g *ᵥ v ∈ W) →
       (∃ i, Pi.single i (1 : K) ∈ W ∧ ∀ j, j ≠ i → ¬Pi.single j (1 : K) ∈ W) → ∃ i, ∀ s ∈ U, ∀ j, j ≠ i → a s j i = 0 :=
     fun W hW ⟨i, hi, hi'⟩ => ⟨i, fun s hs j hj => by
@@ -331,8 +366,8 @@ private theorem frame {O A K G : Type} [CommRing O] [IsLocalRing O] [CommRing A]
   generalize g * x.1 ^ n = y at e
   have e1 : (r' y).mat.trace = 0 := by
     refine hj ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_zero, ← e, trace, trace, map_sum]
+
+    rw [map_zero, ← e, trace, trace, map_sum]
     rfl
   have e2 : ∀ i, residue A ((r' y).mat i i) = φ ((r0 η Ψ y).mat i i) := fun i =>
     Ideal.Quotient.eq.2 (hpt.red y i i)

@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ScaledExample
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSubLattice
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLatticeBasisExists
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualEmbBijective
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLatticeBasisExists
 
 @[expose] public section
 

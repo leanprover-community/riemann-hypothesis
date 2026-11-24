@@ -1,8 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.AltCoeff
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsComb
 
 @[expose] public section

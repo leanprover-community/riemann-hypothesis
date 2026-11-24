@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
-public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
+public import Formalism.LocalRingCardinality.DataTheta
 
 @[expose] public section
 

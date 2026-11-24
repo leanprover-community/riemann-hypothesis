@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MajorantInvolutionDiagonalForm
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -19,9 +19,9 @@ theorem HermAtPlace.proof (h : HermitianForm F E W) (v : Basis ι E W) :
     HermAtPlace.Statement h v := by
   intro w x y
   rw [sesq_eq_sum h.toSesq v x y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, embedding_conj, dotProduct, mulVec, gramAt, vecAt, Pi.star_apply,
-    Matrix.map_apply, Finset.mul_sum, RCLike.star_def]
+
+  simp only [map_sum, map_mul, embedding_conj, dotProduct, mulVec, gramAt, vecAt, Pi.star_apply,
+  Matrix.map_apply, Finset.mul_sum, RCLike.star_def]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 

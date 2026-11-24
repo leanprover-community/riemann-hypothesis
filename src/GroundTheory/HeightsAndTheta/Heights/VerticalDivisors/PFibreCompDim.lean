@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFibreCompDim
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFibreCut
+public import Mathlib.Tactic.Continuity
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+import Mathlib.RingTheory.KrullDimension.Field
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

@@ -1,7 +1,15 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ContinuousCoB
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+public import Formalism.LocalRingCardinality.DataHost
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalEndomorphisms.HenselRoot
+import Mathlib.Algebra.Order.Star.Real
+public import Formalism.LocalRingCardinality.DataSpaces
+import Formalism.LocalRingCardinality.DataTheta
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
+import Formalism.LocalToGlobal.IndefiniteReal.InjectiveDecompositionAction
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 
 @[expose] public section
 
@@ -103,7 +111,6 @@ theorem pairA_eq_iff (x y : Ainf F) (α β : Af F) : pairA F x α = pairA F y β
     rfl
 theorem fa_ext {x y : Af F} (h : ∀ w, x w = y w) : x = y := by
   first
-    | exact RestrictedProduct.ext h
     | exact Subtype.ext (funext h)
 theorem fa_mul (x y : Af F) (w : HeightOneSpectrum (𝓞 F)) : (x * y) w = x w * y w := rfl
 theorem fa_add (x y : Af F) (w : HeightOneSpectrum (𝓞 F)) : (x + y) w = x w + y w := rfl

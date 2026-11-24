@@ -1,7 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ConjugateConjugate
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SpanColsMul
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicOutsideLine
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -32,7 +34,7 @@ theorem tau_kappa0 (τ : X.Ψ) : τ.1 X.κ0 = -(I * X.c τ) := by
   have him := X.κ0_sign τ
   have hnorm : ‖τ.1 X.κ0‖ = X.c τ := by
     simp only [Data.c]
-    rcases X.κ0_xi with h | h <;> rw [h] <;> simp [map_mul, map_neg, norm_mul, map_ofNat]
+    rcases X.κ0_xi with h | h <;> rw [h] <;> simp [map_mul, map_neg, map_ofNat]
   have hz : τ.1 X.κ0 = ((τ.1 X.κ0).im : ℂ) * I := by
     apply Complex.ext <;> simp [hre]
   have habs : ‖τ.1 X.κ0‖ = -(τ.1 X.κ0).im := by
@@ -51,9 +53,9 @@ theorem Mmat_map (u : Fin 2 → Fin r → E) (β : Matrix (Fin 2) (Fin 2) E) (τ
     (X.Mmat u β).map τ.1 = X.zmat u (X.embH β) τ := by
   ext a j
   by_cases h : a = j <;>
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [h, Matrix.map_apply, Data.Mmat, Data.zmat, Data.embH, Data.emb, map_add (f := _), map_mul, map_sum,
-      X.tau_kappa0 τ, cc, NumberField.IsCMField.complexEmbedding_complexConj] <;> ring
+
+    simp [h, Matrix.map_apply, Data.Mmat, Data.zmat, Data.embH, Data.emb, map_add (f := _), map_mul, map_sum,
+    X.tau_kappa0 τ, cc, NumberField.IsCMField.complexEmbedding_complexConj] <;> ring
 
 theorem Mmat_zero (u : Fin 2 → Fin r → E) : X.Mmat u 0 = 1 := by
   ext a j
@@ -101,7 +103,6 @@ theorem Mmat_mul (u : Fin 2 → Fin r → E) (hu : ∀ i k, herm X.Gm (u i) (u k
     herm_smul_left_fundamental_domains, Fin.sum_univ_two, hu, mul_zero, add_zero, Matrix.add_apply]
   first
     | module
-    | (simp only [add_mul, mul_add, add_smul]; abel)
 
 noncomputable def gam (u : Fin 2 → Fin r → E) (hu : ∀ i k, herm X.Gm (u i) (u k) = 0)
     (β : Matrix (Fin 2) (Fin 2) E) : GL (Fin r) E :=
@@ -109,16 +110,12 @@ noncomputable def gam (u : Fin 2 → Fin r → E) (hu : ∀ i k, herm X.Gm (u i)
     by rw [X.Mmat_mul u hu, neg_add_cancel, Mmat_zero]⟩
 
 private lemma cc_herm_Gm_eq_herm_swap (x y : Fin r → E) : cc (herm X.Gm x y) = herm X.Gm y x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [herm, cc, map_sum, map_mul, NumberField.IsCMField.complexConj_apply_apply]
+
+  simp only [herm, cc, map_sum, map_mul, NumberField.IsCMField.complexConj_apply_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   first
     | (have hg := X.Gm_herm b a
-       simp only [cc] at hg
-       rw [hg]
-       ring)
-    | (have hg := X.Gm_herm a b
        simp only [cc] at hg
        rw [hg]
        ring)
@@ -130,22 +127,11 @@ theorem herm_Mmat (u : Fin 2 → Fin r → E) (hu : ∀ i k, herm X.Gm (u i) (u 
   have hb' : ∀ i k, IsCMField.complexConj E (β i k) = β k i := hβ
   have hh : ∀ x y, IsCMField.complexConj E (herm X.Gm x y) = herm X.Gm y x := cc_herm_Gm_eq_herm_swap X
   simp only [Mmat_mulVec_eq_add_sum, herm_add_left_fundamental_domains, herm_add_right_fundamental_domains', herm_smul_left_fundamental_domains,
-    herm_smul_right_eq_cc_mul', Fin.sum_univ_two, hu, mul_zero, add_zero, zero_add, cc, map_mul, map_add,
+    herm_smul_right_eq_cc_mul', Fin.sum_univ_two, hu, mul_zero, add_zero, cc, map_mul, map_add,
     hk, hb', hh]
   ring
 
-theorem Mmat_mulVec (u : Fin 2 → Fin r → E) (β : Matrix (Fin 2) (Fin 2) E) (v : Fin r → E) :
-    X.Mmat u β *ᵥ v = v + ∑ i, (X.κ0 * ∑ k, β i k * herm X.Gm v (u k)) • u i := by
-  funext a
-  simp only [Matrix.mulVec, dotProduct, Data.Mmat, Matrix.of_apply, add_mul, Finset.sum_add_distrib,
-    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, Pi.add_apply,
-    Finset.sum_apply, Pi.smul_apply, smul_eq_mul, herm, Finset.mul_sum, Finset.sum_mul]
-  congr 1
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_
-  ring
+alias Mmat_mulVec := _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.Mmat_mulVec_eq_add_sum
 
 end Data
 

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Topology
+public import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

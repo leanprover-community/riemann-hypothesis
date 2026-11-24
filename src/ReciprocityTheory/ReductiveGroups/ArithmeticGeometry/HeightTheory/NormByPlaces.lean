@@ -1,8 +1,16 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormB
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
+public import Mathlib.Algebra.MvPolynomial.Nilpotent
 
 @[expose] public section
 

@@ -1,11 +1,14 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.NormByPlaces
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.UniformizerOfResidueIndep
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GoodPrimesProperties
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ScaleMultiHomogeneous
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GoodPrimesProperties
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.NormByPlaces
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.UniformizerOfResidueIndep
 
 @[expose] public section
 
@@ -104,8 +107,8 @@ private theorem scaleBlock_eq_C_pow_mul {D N : ℕ} (u : Kˣ) (q : KTp K D N) (m
     (hq : ∀ s ∈ q.support, ∑ j, s (1, j) = m) :
     sigP (N := N) (1 : Fin (D + 1)) u q = MvPolynomial.C ((u : K) ^ m) * q := by
   have hq' : q = ∑ s ∈ q.support, MvPolynomial.monomial s (q.coeff s) := q.as_sum
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hq', map_sum, Finset.mul_sum]
+
+  rw [hq', map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun s hs => ?_
   rw [sigP, scaleEquiv_monomial, sum_fst_lemma, hq s hs]
 
@@ -216,7 +219,7 @@ theorem key_degree (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (r : Ω c) (hr : r ≠ 
     refine finsum_eq_zero_of_forall_eq_zero fun w => ?_
     by_cases hw : w ∈ d.GoodP c p
     · have h0 : d.Wres c w r = 0 := hcon w hw.1
-      simp [finsum_eq_if, hw, h0]
+      simp [hw, h0]
     · simp [finsum_eq_if, hw]
   intro p hp hn0 s hs
   have hex : ∃ w, w ∈ d.GoodP c p := by
@@ -287,7 +290,7 @@ theorem use₈ (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (r : Ω c) (hr : r ≠ 0) :
   classical
   by_cases hw : w ∈ d.GoodP c p
   · have h0 : d.Wres c w r = 0 := hcon w hw.1
-    simp [finsum_eq_if, hw, h0]
+    simp [hw, h0]
   · simp [finsum_eq_if, hw]
 
 theorem arithDegree_additive (hd : d.AxH 𝒜) (h : d.S1) :

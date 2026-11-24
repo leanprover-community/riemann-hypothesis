@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergy
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ScaledExample
 

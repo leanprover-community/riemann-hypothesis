@@ -1,10 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
-public import Formalism.LocalToGlobal.IndefiniteReal.IsMultMapUnivZero
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCSecondCountable
+public import Formalism.LocalToGlobal.IndefiniteReal.Bridge
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AtTauExUniqueHolds
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousSplitInv
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedDef
+public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 

@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MonicFactorCoefficientsIntegralStatement
+public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MonicFactorCoefficientsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,7 +63,7 @@ def preserving (I : Submodule ℂ V) : Subalgebra ℂ (Module.End ℂ V) where
   mul_mem' {f g} hf hg F hF := hf _ (hg F hF)
   add_mem' {f g} hf hg F hF := I.add_mem (hf F hF) (hg F hF)
   algebraMap_mem' r F hF := by
-    simp only [Set.mem_setOf_eq, Module.algebraMap_end_apply]
+    simp only [Module.algebraMap_end_apply]
     exact I.smul_mem r hF
 
 lemma pow_apply_mem (D : Module.End ℂ V) (Wn : Submodule ℂ V) (hD : ∀ F ∈ Wn, D F ∈ Wn) :
@@ -82,7 +129,7 @@ lemma sumPoly_eval {A : Type} [CommRing A] (c : ℕ → A) (n : ℕ) (x : A) :
 
 lemma sumPoly_coeff {A : Type} [CommRing A] (c : ℕ → A) (n m : ℕ) :
     (sumPoly c n).coeff m = if m < n + 1 then c m else 0 := by
-  simp [sumPoly, Polynomial.finsetSum_coeff, coeff_C_mul_X_pow]
+  simp [sumPoly]
 
 lemma sumPoly_monic {A : Type} [CommRing A] (c : ℕ → A) (n : ℕ) (h : c n = 1) :
     (sumPoly c n).Monic := by
@@ -142,8 +189,8 @@ theorem monic_relations_to_blocks : ∀ (V : Type) [AddCommGroup V] [Module ℂ 
     have : (⟨R t, hRmem t⟩ : Algebra.adjoin ℂ s)
         = ∑ k ∈ Finset.range (n₁ + 1), t ^ k • (⟨a k, hamem k⟩ : Algebra.adjoin ℂ s) := by
       apply Subtype.ext; simp [hRform t]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum, sumPoly_eval]
+
+    rw [this, map_sum, sumPoly_eval]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, Algebra.smul_def, map_pow, mul_comm]
   have hQev : ∀ t : ℂ, Q.eval (algebraMap ℂ _ t) = π ⟨S t, hSmem t⟩ := by
@@ -151,8 +198,8 @@ theorem monic_relations_to_blocks : ∀ (V : Type) [AddCommGroup V] [Module ℂ 
     have : (⟨S t, hSmem t⟩ : Algebra.adjoin ℂ s)
         = ∑ k ∈ Finset.range (n₂ + 1), t ^ k • (⟨b k, hbmem k⟩ : Algebra.adjoin ℂ s) := by
       apply Subtype.ext; simp [hSform t]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [this, map_sum, sumPoly_eval]
+
+    rw [this, map_sum, sumPoly_eval]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, Algebra.smul_def, map_pow, mul_comm]
   have hβ : ∀ u : ℂ, IsIntegral ℂ (P.eval (algebraMap ℂ _ (u + c₁)) *
@@ -170,7 +217,7 @@ theorem monic_relations_to_blocks : ∀ (V : Type) [AddCommGroup V] [Module ℂ 
       (fun F hF => by rw [(hRS _ _).eq]; exact hDβ u F hF) p F (hW0 hF)
     rw [hp0 F hF, sub_zero] at key
     exact key
-  have hcoef := GlobalTheory.T.monic_factor_coefficients_integral (Algebra.adjoin ℂ s ⧸ Y) P Q c₁ c₂ hPm hQm hβ
+  have hcoef := _root_.GlobalTheory.CompanionTheory.IntFac.isIntegral_coeff_of_shifted_product (Algebra.adjoin ℂ s ⧸ Y) P Q c₁ c₂ hPm hQm hβ
   refine ⟨fun u => ?_, fun u => ?_⟩
   · have hint : IsIntegral ℂ (π ⟨R u, hRmem u⟩) := by
       rw [← hPev]

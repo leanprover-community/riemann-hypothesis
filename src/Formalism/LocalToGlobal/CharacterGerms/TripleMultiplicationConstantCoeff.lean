@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.IndexRaiseFirst
+public import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroDoubleMultiplicationPair
+public import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroRestrictPoints
+import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
+public import Formalism.LocalToGlobal.CharacterGerms.GermEvalOneStandardPointSelf
 
 @[expose] public section
 

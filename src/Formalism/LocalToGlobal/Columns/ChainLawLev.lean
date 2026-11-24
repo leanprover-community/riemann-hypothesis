@@ -1,8 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainInst
-public import Formalism.LocalToGlobal.Columns.ReducedMatrixExtensionEntry
-public import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
+public import Formalism.LocalToGlobal.Columns.ChainOneB
 
 @[expose] public section
 

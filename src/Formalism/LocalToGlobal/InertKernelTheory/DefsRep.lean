@@ -1,11 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.FirstKernelGeneratorOfOrthogonal
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelCondition
-public import Formalism.LocalToGlobal.InertKernelTheory.StatementInt
-public import Formalism.LocalToGlobal.PairingIndexBounds.PendingAdmissibility.LocalFDerivAdmissibility.RepRed
+public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ConditionIffAdditiveMaps
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
+import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 
 @[expose] public section
 

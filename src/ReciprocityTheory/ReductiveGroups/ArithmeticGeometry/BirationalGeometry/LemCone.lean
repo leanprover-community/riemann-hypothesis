@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -26,12 +27,12 @@ private theorem coneMap_monomial' (x : ι → Ω) (e : ι →₀ ℕ) (a : o) :
 private theorem coeff_coneMap_eq_aeval_homogeneousComponent (x : ι → Ω) (f : MvPolynomial ι o) (d : ℕ) :
     (coneMap o x f).coeff d = aeval x (homogeneousComponent d f) := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [f.as_sum, map_sum]
+
+  conv_lhs => rw [f.as_sum, map_sum]
   rw [Polynomial.finsetSum_coeff]
   simp only [coneMap_monomial', Polynomial.coeff_C_mul_X_pow]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [homogeneousComponent_apply, map_sum, Finset.sum_filter]
+
+  rw [homogeneousComponent_apply, map_sum, Finset.sum_filter]
   refine Finset.sum_congr rfl fun e _ => ?_
   rcases eq_or_ne e.degree d with h | h
   · simp [h]
@@ -51,9 +52,7 @@ theorem mem_coordIdeal_of_isHomogeneous (x : ι → Ω) {f : MvPolynomial ι o} 
     (hf : f.IsHomogeneous n) (h : aeval x f = 0) : f ∈ coordIdeal o x := by
   rw [coordIdeal, RingHom.mem_ker, coneMap_of_isHomogeneous o x hf, h, map_zero, zero_mul]
 
-theorem coeff_coneMap (x : ι → Ω) (f : MvPolynomial ι o) (d : ℕ) :
-    (coneMap o x f).coeff d = aeval x (homogeneousComponent d f) := by
-  exact coeff_coneMap_eq_aeval_homogeneousComponent o x f d
+alias coeff_coneMap := _root_.ReciprocityTheory.ChartRestriction.G.Geo.coeff_coneMap_eq_aeval_homogeneousComponent
 
 theorem coordIdeal_isHomogIdeal (x : ι → Ω) : IsHomogIdeal o (coordIdeal o x) := by
   intro f hf d

@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.HermitianCurvature.StatementPB
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measures
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Volumes
+public import Formalism.HermitianCurvature.MemParahoricTimesPrincipalCongruenceIff
 
 @[expose] public section
 

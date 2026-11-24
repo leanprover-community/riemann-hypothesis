@@ -2,7 +2,10 @@ module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IsOpenAlt
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.AnChart
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Topology.OpenPartialHomeomorph.IsImage
+import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StRationalUnipotent
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

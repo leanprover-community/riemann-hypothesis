@@ -1,5 +1,6 @@
 module
 
+public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.CreApply
 
 @[expose] public section
@@ -163,9 +164,6 @@ theorem differential_bounded_support : BdSup := by
       have pi := hpos i
       have pj := hpos j'
       have pk := hpos k
-      have v1 : (i.1.2 : ℕ) = j'.1.1 := congrArg Fin.val t1
-      have v2 : (k.1.1 : ℕ) = i.1.1 := congrArg Fin.val t2
-      have v3 : (k.1.2 : ℕ) = j'.1.2 := congrArg Fin.val t3
       set R := (A.erase k).filter fun i => ¬cpt ε i with hR
       have hjR : j' ∉ R := fun h => h5 (mem_filter.1 h).1
       have hiR : i ∉ R := fun h => h6 (mem_insert_of_mem (mem_filter.1 h).1)
@@ -260,19 +258,19 @@ theorem lift_bd {ε : Fin n → Bool} (φ : V →ₗ[ℂ] W) (E : Fin n → Fin 
     (F : Fin n → Fin n → Module.End ℂ W) (h : ∀ i : Pos n, cpt ε i → ∀ x, φ (E i.1.1 i.1.2 x) = F i.1.1 i.1.2 (φ x))
     (x : Cn n V) : lift n φ (bd ε E x) = bd ε F (lift n φ x) := by
   funext A
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lift_apply, bd_apply, bd_apply, map_add (f := _), map_sum, map_sum]
+
+  rw [lift_apply, bd_apply, bd_apply, map_add (f := _), map_sum, map_sum]
   congr 1
   · refine Finset.sum_congr rfl fun i _ => ?_
     split_ifs with hi
     · rw [h i hi, ← lift_ann]; rfl
     · exact map_zero _
   · refine Finset.sum_congr rfl fun i _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     split_ifs
     · rw [← lift_ann, ← lift_ann, ← lift_cre]; rfl

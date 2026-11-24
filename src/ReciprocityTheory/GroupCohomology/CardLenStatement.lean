@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.GroupCohomology.TransgressionStatement
+public import ReciprocityTheory.GroupCohomology.ContinuousContractNth
 
 @[expose] public section
 

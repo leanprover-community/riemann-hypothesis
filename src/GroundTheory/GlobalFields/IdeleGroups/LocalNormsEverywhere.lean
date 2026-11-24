@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.GlobalFields.IdeleGroups.LocalNorms
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNormGroups
+import GroundTheory.GlobalFields.KummerTheory.Splitting
+public import Mathlib.RingTheory.DedekindDomain.Different
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

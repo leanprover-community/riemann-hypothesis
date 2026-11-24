@@ -1,9 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
 public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
+public import Mathlib.RingTheory.LaurentSeries
 
 @[expose] public section
 

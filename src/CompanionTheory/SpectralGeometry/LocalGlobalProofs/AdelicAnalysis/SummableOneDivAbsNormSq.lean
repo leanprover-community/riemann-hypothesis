@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+public import Mathlib.Topology.Algebra.InfiniteSum.Defs
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import ReciprocityTheory.Chebotarev.EulerSum
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 @[expose] public section
 

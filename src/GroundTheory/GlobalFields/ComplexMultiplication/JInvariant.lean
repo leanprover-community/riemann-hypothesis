@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.Uniformization
-public import GroundTheory.GlobalFields.ComplexMultiplication.UniformizationEisenstein
+public import Mathlib.NumberTheory.ModularForms.Discriminant
+public import Mathlib.NumberTheory.ModularForms.LevelOne.GradedRing
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

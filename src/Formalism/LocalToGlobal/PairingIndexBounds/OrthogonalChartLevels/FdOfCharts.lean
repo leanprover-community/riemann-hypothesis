@@ -1,8 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
 public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.KerTh
 public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.PtStep0
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.DetOfColSpanEq
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittEmbeddingsCompatible
 
 @[expose] public section
 

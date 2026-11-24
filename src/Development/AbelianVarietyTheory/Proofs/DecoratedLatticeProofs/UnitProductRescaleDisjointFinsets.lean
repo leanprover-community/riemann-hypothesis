@@ -1,11 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.NotBadPrimeBase
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnrOffOne
+public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExistsActO
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsInvariantForm
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotentsStatement
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FrameMatrixMovedHomIntegralReductionsStatement
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemHomLatticeIffFrameStabilizerActMemStatement
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchrodingerIntertwinerSchwartzBruhatIsThetaStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StepVectorLiftPairFlagLevelRealizedChain
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepThetaDatumHalfEqSmul
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TypePlacesLocalDatumBlockTriangularLaw
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotentsStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TwistPlaceDatumParabolicMoveStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TypePlacesLocalDatumBlockTriangularLaw
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepThetaDatumHalfEqSmul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
 
 @[expose] public section
 
@@ -196,7 +240,7 @@ theorem unit_product_rescale_disjoint_finsets {ι : Type} [DecidableEq ι] {Pg Q
   abel
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem stepVec_eq_sum : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ) (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (βS : GL (Fin S.rank) (Lev.EAf D)) (βT : GL (Fin T.rank) (Lev.EAf D)) (f₀ f f' : WO S T → ℂ), IsWeilDatumO ψ S T χS χT om → S.SigOK → T.SigOK → (∀ τ, IsCartanInv (gramAt D S τ) (sS τ)) → (∀ τ, IsCartanInv (gramAt D T τ) (sT τ)) → IsSelfDualC S ΛS → IsSelfDualC T ΛT → IsFrame βS ΛS → IsFrame βT ΛT → ∀ (r t k : ℕ) (ha : r ≤ S.rank), S.rank = r + k * t → T.rank = r + (k + 1) * t → ∀ (Pg Q : Finset (Pl D.host.E)), Disjoint Pg Q → ∀ (χ : ℕ → ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (ξ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (P : LevelP Pg r ℂ) [Fintype P.H], IsStepVecOf ψ θ S T sS sT ΛS ΛT βS βT (datY S.rank r t k ha Pg Q (LevelP.triv Pg r ℂ) χ ξ Frm.B) (χ (k + 1)) Q ξ f₀ f → IsStepVecOf ψ θ S T sS sT ΛS ΛT βS βT (datY S.rank r t k ha Pg Q P χ ξ Frm.B) (χ (k + 1)) Q ξ f₀ f' → (∀ PP ∈ Pg, GlobalTheory.StepLaw.ResAt χS PP (χ (k + 1) PP)⁻¹ ∧ GlobalTheory.StepLaw.ResAt χT PP (χ (k + 1) PP)⁻¹) → (∀ PP ∈ Q, GlobalTheory.StepLaw.ResAt χS PP (ξ PP) ∧ GlobalTheory.StepLaw.ResAt χT PP (ξ PP)) → GlobalTheory.StepLaw.UnrOff χS (Pg ∪ Q) → GlobalTheory.StepLaw.UnrOff χT (Pg ∪ Q) → ∀ κ : P.H → GA D S, (∀ p : P.H, IsLevelLift S βS (datY S.rank r t k ha Pg Q (LevelP.triv Pg r ℂ) χ ξ Frm.B) p.1 (κ p)) → f' = ∑ p : P.H, (levChi S βS (datY S.rank r t k ha Pg Q P χ ξ Frm.B) (κ p))⁻¹ • om (κ p, 1) f := by
   intro D ψ θ S T χS χT om sS sT ΛS ΛT βS βT f₀ f f' hW kS kT cS cT dS dT fS fT r t k ha eS eT Pg Q hd χ ξ P _ hv hv' hG hQ uS uT
     κ hκ
@@ -222,8 +266,8 @@ theorem stepVec_eq_sum : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : Inf
   have h2 := fun p => om_theta hW hTm hth hΘ (GlobalTheory.T.mem_homLattice_iff_frameStabilizer_act_mem D S T ΛS ΛT βS βT dS dT fS fT (κ p) 1 (sg p) sh)
     (GlobalTheory.StepVecLaw.om_vac hW kS kT cS cT dS dT fS fT hf he' (fun PP hP => (hres PP hP).1) (fun PP hP => (hres PP hP).2) uS uT
       (hκ p).1 (one_mem _) (sg p) sh)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hΘ'.2 Tm hTm, Finset.sum_congr rfl fun p _ => by rw [h2 p, smul_smul, ← map_smul], ← map_sum]
+
+  rw [hΘ'.2 Tm hTm, Finset.sum_congr rfl fun p _ => by rw [h2 p, smul_smul, ← map_smul], ← map_sum]
   congr 1
   funext x
   rw [Finset.sum_apply]

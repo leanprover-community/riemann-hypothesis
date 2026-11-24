@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Analytic.Basic
+public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.EqZeroOfMemZeroLocusLineOriginIdeal
+public import Mathlib.Analysis.Analytic.Constructions
+public import Mathlib.Analysis.Calculus.FDeriv.Congr
+public import Mathlib.Analysis.Calculus.FDeriv.Prod
 
 @[expose] public section
 

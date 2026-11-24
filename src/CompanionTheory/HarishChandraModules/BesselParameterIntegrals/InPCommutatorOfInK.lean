@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.IsLowUnitH
+public import Formalism.PeriodIntegrals.UpqRep
+public import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Tactic.TypeStar
+import Mathlib.Geometry.Manifold.StructureGroupoid
 
 @[expose] public section
 

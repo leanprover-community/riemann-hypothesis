@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HCReprodM
+public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 
 @[expose] public section
 

@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionRationalPointsAndApproximationStatement
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionFractionalIdealPropertiesStatement
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionFractionalIdealProperties
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionRationalPointsAndApproximation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -45,7 +87,7 @@ theorem hat_selfDual : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
     | add w w' _ _ h h' => rw [hermA_add_left]; exact add_mem h h'
     | neg w _ h => rw [hermA_neg_left]; exact neg_mem h
   refine ⟨fun hz => ?_, fun hz => back z hz⟩
-  obtain ⟨h1, -, h3, -⟩ := GlobalTheory.T.adelicCompletion_rational_points_and_approximation F E n L hfg hspan
+  obtain ⟨h1, -, h3, -⟩ := _root_.GlobalTheory.AdLat.hat_rational_points_and_approx F E n L hfg hspan
   obtain ⟨x, hx⟩ := h3 z
   have hxL : x ∈ L := by
     refine (hL x).1 fun y hy => ?_
@@ -55,7 +97,7 @@ theorem hat_selfDual : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
       rw [sub_eq_add_neg z, hermA_add_left, hermA_neg_left]; ring
     rw [e] at h
     have e2 := hermA_tmul_fv c G (1 : FiniteAdeleRing (𝓞 F) F) x y
-    exact ((GlobalTheory.T.adelicCompletion_fractionalIdeal_properties_alt F E).2.1 J _).1 (e2 ▸ h)
+    exact ((_root_.GlobalTheory.AdLat.adelicCompletion_fractionalIdeal_properties F E).2.1 J _).1 (e2 ▸ h)
   have := add_mem hx ((h1 x).2 hxL)
   simpa using this
 

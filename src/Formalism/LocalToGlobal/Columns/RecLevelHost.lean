@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecLevel
+public import Formalism.LocalToGlobal.Columns.DecoFin
+public import Formalism.LocalToGlobal.Divisibility.DefGroup
 public import Formalism.LocalToGlobal.Columns.CmUnramifiedOfFieldConditions
 
 @[expose] public section

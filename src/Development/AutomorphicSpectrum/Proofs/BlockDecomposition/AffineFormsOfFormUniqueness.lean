@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormUniq
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.NLeA
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ChartGrConst
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StCocycle
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DFormMem
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FormAlternating
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormAdd
@@ -13,6 +10,52 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFo
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormVanishOfFrame
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGradedVanishing
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolynomialTransfer
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFiltrationProperty
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ChartGrConst
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+public import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.ExteriorPower.Basis
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -60,11 +103,11 @@ theorem ring_diff {K A B : Type} [CommRing K] [CommRing A] [CommRing B] [Algebra
     ring
   have hδ : ∀ x, δ x = Ideal.Quotient.mk J' (f' x - f x) := fun x => rfl
   have h := congrArg δ.liftKaehlerDifferential hp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum] at h
+
+  rw [map_sum] at h
   simp only [map_smul, Derivation.liftKaehlerDifferential_comp_D, hδ, hsm] at h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← map_sum] at h
+
+  rw [← map_sum] at h
   exact Ideal.Quotient.eq.1 h
 
 theorem form_expand {K A : Type} [CommRing K] [CommRing A] [Algebra K A] {d a : ℕ}
@@ -86,15 +129,6 @@ end Alg
 
 section Rp
 variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C]
-
-theorem rep_unique {A : C ⥤ CommAlgCat.{0} R} {a b : IdF A} {j : ℕ}
-    {z : ∀ s : ComposableArrows C j, A.obj (s.obj (Fin.last j))} {c c' : CH.H (sq a b) j}
-    (h : Rep a b z c) (h' : Rep a b z c') : c = c' := by
-  obtain ⟨f, hf, rfl, e⟩ := h
-  obtain ⟨f', hf', rfl, e'⟩ := h'
-  have : f = f' := funext fun s => Subtype.ext ((e s).trans (e' s).symm)
-  subst this
-  rfl
 
 theorem rep_sum {A : C ⥤ CommAlgCat.{0} R} {a b : IdF A} {j : ℕ} {ι : Type} (S : Finset ι)
     (z : ι → ∀ s : ComposableArrows C j, A.obj (s.obj (Fin.last j))) (c : ι → CH.H (sq a b) j)
@@ -200,15 +234,6 @@ theorem form_smul (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) {j : ℕ} (I : Fi
     (s : ComposableArrows C j) : E.form σ I (r • x) s = r • E.form σ I x s := by
   simp only [Frame.form, map_smul, mul_smul_comm]
 
-theorem rep_smul {A : C ⥤ CommAlgCat.{0} R} {a b : IdF A} {j : ℕ}
-    {z : ∀ s : ComposableArrows C j, A.obj (s.obj (Fin.last j))} {c : CH.H (sq a b) j} (r : R)
-    (h : Rep a b z c) : Rep a b (fun s => r • z s) (r • c) := by
-  obtain ⟨f, hf, rfl, e⟩ := h
-  refine ⟨r • f, by rw [map_smul, hf, smul_zero], rfl, fun s => ?_⟩
-  change r • (show sqM a b _ from f s).1 = _
-  rw [e s]
-  rfl
-
 theorem frame_cl (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil) (a : ℕ) :
     ∃ Cl : (Fin a → Fin d) → Φ.A.obj E.D →ₗ[R] CH.H (gr Fil (a : ℤ)) a,
       (∀ I x, Rep (Fil (a : ℤ)) (Fil ((a : ℤ) + 1)) (E.form σ I x) (Cl I x)) ∧
@@ -222,17 +247,17 @@ theorem frame_cl (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T
   choose c hcr using hex
   let Cl : (Fin a → Fin d) → Φ.A.obj E.D →ₗ[R] CH.H (gr Fil (a : ℤ)) a := fun I =>
     { toFun := c I
-      map_add' := fun x y => rep_unique (hcr I (x + y)) (GlobalTheory.CompanionTheory.GrForm.rep_add (fun s => by
+      map_add' := fun x y => _root_.GlobalTheory.CompanionTheory.ConeLocal.rep_unique (hcr I (x + y)) (GlobalTheory.CompanionTheory.GrForm.rep_add (fun s => by
         rw [form_add, sub_self]
         exact zero_mem _) (hcr I x) (hcr I y))
-      map_smul' := fun r x => rep_unique (hcr I (r • x)) (by
+      map_smul' := fun r x => _root_.GlobalTheory.CompanionTheory.ConeLocal.rep_unique (hcr I (r • x)) (by
         have e : E.form σ I (r • x) = fun s => r • E.form σ I x s := funext (form_smul E σ I r x)
         rw [e]
-        exact rep_smul r (hcr I x)) }
+        exact _root_.GlobalTheory.CompanionTheory.ConeLocal.rep_smul r (hcr I x)) }
   refine ⟨Cl, hcr, fun I hI => ?_, fun I π x => ?_⟩
   · ext x
     exact (GlobalTheory.CompanionTheory.AltForm.form_alternating hF E σ hc a 0 (a : ℤ) (by simp) I x (hx0 x) _ (hcr I x)).1 hI
-  · exact rep_unique (hcr (I ∘ π) x)
+  · exact _root_.GlobalTheory.CompanionTheory.ConeLocal.rep_unique (hcr (I ∘ π) x)
       ((GlobalTheory.CompanionTheory.AltForm.form_alternating hF E σ hc a 0 (a : ℤ) (by simp) I x (hx0 x) _ (hcr I x)).2.1 π)
 
 theorem frame_bij (Q : Poly Φ) (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil) (a : ℕ)
@@ -265,7 +290,7 @@ theorem frame_bij (Q : Poly Φ) (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T
       exact sub_eq_zero.2 hxy)
     exact sub_eq_zero.1 this
   · obtain ⟨x, -, hx⟩ := h2 c
-    exact ⟨x, rep_unique (hrep x) hx⟩
+    exact ⟨x, _root_.GlobalTheory.CompanionTheory.ConeLocal.rep_unique (hrep x) hx⟩
 end Frame
 
 section Rule
@@ -423,7 +448,7 @@ theorem frame_main (Q : Poly Φ) (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ 
     (fun I : Fin a → Fin d => E.form σ I (θ (g₀ * ∏ k, b.repr (KaehlerDifferential.D R A (g k)) (I k))))
     (fun I => Cl I (θ (g₀ * ∏ k, b.repr (KaehlerDifferential.D R A (g k)) (I k)))) (fun I _ => hCl I _)
     ⟨0, map_zero _, rfl, fun s => rfl⟩
-  refine rep_unique hsum (GlobalTheory.CompanionTheory.GrForm.rep_congr (fun s => hrule s) hrep)
+  refine _root_.GlobalTheory.CompanionTheory.ConeLocal.rep_unique hsum (GlobalTheory.CompanionTheory.GrForm.rep_congr (fun s => hrule s) hrep)
 
 end FrameMain
 
@@ -522,7 +547,7 @@ theorem exists_lifts {V : Z.Opens} {s d : ℕ} (hle : SS q 1 s V ≤ inU q V) (E
     rfl
 
 
-set_option maxHeartbeats 3000000 in
+
 theorem affOm : FormUniq → AffOm := by
   intro hU K _ _ Z q V d ⟨c⟩ a
   have hle : SS q 1 (a + 1) V ≤ inU q V := fun T hT => FrameEx.inU_of_SS T hT

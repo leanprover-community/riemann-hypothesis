@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSumMeasurable
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

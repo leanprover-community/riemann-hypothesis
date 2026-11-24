@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.MultOne
-public import GroundTheory.AutomorphicForms.MultiplicityOne.OpenSubgroupRep
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

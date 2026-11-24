@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNoetherProjection
+public import Mathlib.RingTheory.NoetherNormalization
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.Algebra.Polynomial.Eval.Coeff
+public import Mathlib.RingTheory.Ideal.Quotient.Basic
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
 
 @[expose] public section
 

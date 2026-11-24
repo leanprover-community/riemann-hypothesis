@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Infinite
-public import GroundTheory.GlobalFields.KummerTheory.Splitting
+import Mathlib.NumberTheory.NumberField.Completion.Ramification
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

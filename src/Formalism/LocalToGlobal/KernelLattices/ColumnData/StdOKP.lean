@@ -1,11 +1,82 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.HfArith
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdChar
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.Family
+import Formalism.LocalToGlobal.KernelLattices.ColumnData.StdLat
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.CayleyGaussianIntegralsCongrFact
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlockFirstBlockEmb
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.Th0CharMulOpUTh0HalfPeriodEq
+import Mathlib.Tactic.TypeStar
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.LocalToGlobal.KernelLattices.ColumnData.Family, Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP
+
+-- ===== clump member: Formalism.LocalToGlobal.KernelLattices.ColumnData.Family =====
+-- clump-header: {"m": "Formalism.LocalToGlobal.KernelLattices.ColumnData.Family", "h": "module\n\npublic import Formalism.LocalToGlobal.KernelLattices.ColumnData\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Formalism.L2.Ker Classical
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+def TaylorCoeffsInNumberField (D : Car) (e : FamE D) : Prop :=
+  ∀ N N' L L', admitted D N N' L L' →
+    ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ CoefIn D (e N N' L L') M
+
+def ThetaMeanBound (D : Car) (T : Tor D) (C : ℝ) (e : FamE D) : Prop :=
+  ∀ Lsc : ℝ, Real.log D.host.v + |logDerivativeAtOne D| ≤ Lsc →
+    ∀ N N' L L', admitted D N N' L L' →
+      ∀ (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M], DataIn D T M → CoefIn D (e N N' L L') M →
+        meanLogNormSq D T L L' M (e N N' L L') ≤ C * (fF D : ℝ) * (N : ℝ) * (N' : ℝ) * Lsc
+
+def ThetaNormConjugateIndependent (D : Car) (T : Tor D) (e : FamE D) : Prop :=
+  ∀ N N' L₁ L₁' L₂ L₂', admitted D N N' L₁ L₁' → admitted D N N' L₂ L₂' →
+    ∀ (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M], DataIn D T M →
+      CoefIn D (e N N' L₁ L₁') M → CoefIn D (e N N' L₂ L₂') M → ∀ ρ : M →ₐ[ℚ] ℂ,
+        normSq D (torConj D T M ρ) (La D (torConj D T M ρ) L₁ L₁') (fnConj D M ρ (e N N' L₁ L₁')) =
+          normSq D (torConj D T M ρ) (La D (torConj D T M ρ) L₂ L₂') (fnConj D M ρ (e N N' L₂ L₂'))
+
+def EigenvectorPacketProperties {D : Car} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (C : ℝ) (χ : IdE D → ℂ) : Prop :=
+  TaylorCoeffsInNumberField D (B.eNat χ) ∧ ThetaMeanBound D (tor0 D cc δ) C (B.eNat χ) ∧ ThetaNormConjugateIndependent D (tor0 D cc δ) (B.eNat χ) ∧
+    B.EqP χ ∧ (_root_.Formalism.L2.Ker.Cd.TaylorLogMetric.int22 D B.tor (B.eNat χ)) ∧ (_root_.Formalism.L2.Ker.Cd.TaylorLogMetric.mom22 D cc δ (B.eNat χ) ∧ _root_.Formalism.L2.Ker.Cd.TaylorLogMetric.LargerSupportMomentCondition D cc δ (B.eNat χ)) ∧ (_root_.Formalism.L2.Ker.Cd.TaylorLogMetric.str22 D B.tor (B.eNat χ))
+
+def LinkBaseNe : Prop :=
+  ∀ (D : Car) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Base D cc δ → δ ≠ 0
+
+theorem lamOf_zero (D : Car) (cc : Ideal (𝓞 D.host.K)) : lamOf D cc 0 = ⊥ := by
+  unfold lamOf
+  rw [AddSubgroup.closure_eq_bot_iff]
+  rintro w ⟨c, -, rfl⟩
+  simp
+
+theorem base_linkage_nonempty : LinkBaseNe := by
+  intro D cc δ B h0
+  subst h0
+  have h1 : B.L.ω₁ ∈ B.L.lattice.toAddSubgroup := B.L.ω₁_mem_lattice
+  rw [B.lat, lamOf_zero, AddSubgroup.mem_bot] at h1
+  have h2 := B.L.indep.ne_zero 0
+  exact h2 (by simpa using h1)
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity
+
+end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.KernelLattices.ColumnData.Family =====
+
+-- ===== clump member: Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP =====
+-- clump-header: {"m": "Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP", "h": "module\n\npublic import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph\npublic import Formalism.LocalToGlobal.KernelLattices.ColumnData.HfArith\npublic import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdChar\npublic import Formalism.LocalToGlobal.KernelLattices.ColumnData.Family\nimport Formalism.LocalToGlobal.KernelLattices.ColumnData.StdLat\nimport Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.CayleyGaussianIntegralsCongrFact\nimport Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock\nimport Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlockFirstBlockEmb\nimport Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.Th0CharMulOpUTh0HalfPeriodEq\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -69,8 +140,8 @@ theorem denom (E K : Type*) [Field E] [NumberField E] [Field K] [NumberField K] 
   have hx : (x : E) = ∑ j, (bs.repr x j) • ((bs j : 𝓞 E) : E) := by
     conv_lhs => rw [← bs.sum_repr x]
     simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hx, map_sum, Finset.mul_sum]
+
+  rw [hx, map_sum, Finset.mul_sum]
   refine IsIntegral.sum _ fun j _ => ?_
   rw [map_zsmul, mul_smul_comm]
   exact (h _ (Finset.mem_image.2 ⟨(i, j), Finset.mem_univ _, rfl⟩)).zsmul _
@@ -283,8 +354,8 @@ theorem up : ∃ N : ℕ, 0 < N ∧
       have e : ((m * k : ℕ) : D.host.K) * B.γ₀.g y v
           = ∑ a, (m : D.host.K) * f (a, v) ((k : D.host.E) * y a) := by
         conv_lhs => rw [hy']
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.sum_apply, Finset.mul_sum]
+
+        rw [map_sum, Finset.sum_apply, Finset.mul_sum]
         refine Finset.sum_congr rfl fun a _ => ?_
         show ((m * k : ℕ) : D.host.K) * B.γ₀.g (Pi.single a (y a)) v
           = (m : D.host.K) * B.γ₀.g (Pi.single a ((k : D.host.E) * y a)) v
@@ -352,3 +423,6 @@ end B
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO
 
 end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP =====

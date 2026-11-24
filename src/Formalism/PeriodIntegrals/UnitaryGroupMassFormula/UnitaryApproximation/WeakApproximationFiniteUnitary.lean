@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.WeakApproxF
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -22,33 +65,20 @@ theorem wa_isOpen_lt_one (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion 
   have hz' : Valued.v (z - y) < 1 := by
     first
       | simpa using hz
-      | exact_mod_cast hz
-      | (simp only [Set.mem_setOf_eq, Units.val_one] at hz
-         first
-           | exact (Valuation.restrict_lt_iff _ _ _).mp hz
-           | exact (Valuation.restrict_lt_one_iff _ _).mp hz
-           | exact_mod_cast hz)
   simp only [Set.mem_setOf_eq] at hy ⊢
   have hzx : z - x = (z - y) + (y - x) := by abel
   rw [hzx]
   exact lt_of_le_of_lt (Valuation.map_add _ _ _) (max_lt hz' hy)
 
 theorem wa_valued_algebraMap (v : HeightOneSpectrum (𝓞 F)) (k : F) :
-    Valued.v (algebraMap F (v.adicCompletion F) k) = v.valuation F k := by
-  first
-    | exact IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k
-    | simpa using IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k
-    | rfl
+    Valued.v (algebraMap F (v.adicCompletion F) k) = v.valuation F k :=
+  IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k
 
 theorem wa_exists_close (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F) :
     ∃ b : F, Valued.v (x - algebraMap F (v.adicCompletion F) b) < 1 := by
   have hd : DenseRange (algebraMap F (v.adicCompletion F)) := by
     first
       | exact denseRange_algebraMap F v
-      | exact UniformSpace.Completion.denseRange_coe
-      | exact (UniformSpace.Completion.denseRange_coe).comp (WithVal.equiv (v.valuation F)).symm.surjective.denseRange
-          (UniformSpace.Completion.continuous_coe _)
-      | exact IsDedekindDomain.HeightOneSpectrum.denseRange_algebraMap_adicCompletion v
   obtain ⟨b, hb⟩ := hd.exists_mem_open (wa_isOpen_lt_one v x) ⟨x, by simp⟩
   refine ⟨b, ?_⟩
   rw [Valuation.map_sub_swap]
@@ -71,24 +101,16 @@ theorem wa_exists_int_approx (T : Finset (HeightOneSpectrum (𝓞 F)))
     intro v
     first
       | exact v.intValuation_ne_zero _ hd0
-      | exact (v.intValuation).ne_zero_iff.mpr hd0
-      | (intro h0
-         have h1 := v.valuation_of_algebraMap (K := F) (d : 𝓞 F)
-         rw [h0] at h1
-         exact hdF ((Valuation.zero_iff _).mp h1))
   have hexp : ∀ v : HeightOneSpectrum (𝓞 F), ∃ e : ℕ,
       WithZero.exp (-(e : ℤ)) ≤ v.intValuation (d : 𝓞 F) := by
     intro v
     obtain ⟨k, hk⟩ : ∃ k : ℤ, v.intValuation (d : 𝓞 F) = WithZero.exp k := by
       first
         | exact ⟨_, (WithZero.exp_log (hne v)).symm⟩
-        | (obtain ⟨a, ha⟩ := WithZero.ne_zero_iff_exists.mp (hne v)
-           exact ⟨Multiplicative.toAdd a, by rw [← ha]; rfl⟩)
     refine ⟨k.natAbs, ?_⟩
     rw [hk, WithZero.exp_le_exp]
     first
       | omega
-      | (rw [Int.natCast_natAbs]; exact neg_abs_le k)
   choose e he using hexp
   obtain ⟨m, hm⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := T) (fun v => v.asIdeal) e
     (fun v _ => v.prime) (fun v _ w _ hvw h => hvw (HeightOneSpectrum.ext h)) (fun v => n v.1)
@@ -102,15 +124,12 @@ theorem wa_exists_int_approx (T : Finset (HeightOneSpectrum (𝓞 F)))
   have hlt : (0 : WithZero (Multiplicative ℤ)) < v.intValuation (d : 𝓞 F) := zero_lt_iff.mpr (hne v)
   first
     | exact (div_le_one₀ hlt).mpr (h1.trans (he v))
-    | exact div_le_one_of_le₀ (h1.trans (he v)) hlt.le
 
 theorem weak_approximation_finite_unitary : WeakApproxF := by
   intro F _ _ T c D hD
   have hDF : ((D : 𝓞 F) : F) ≠ 0 := by
     first
       | exact_mod_cast hD
-      | exact (RingOfIntegers.coe_ne_zero_iff).mpr hD
-      | (intro h; exact hD (Subtype.ext h))
   choose b hb using fun v : HeightOneSpectrum (𝓞 F) =>
     wa_exists_close v (c v * (algebraMap F (v.adicCompletion F) (D : F))⁻¹)
   obtain ⟨a', ha'⟩ := wa_exists_int_approx T b

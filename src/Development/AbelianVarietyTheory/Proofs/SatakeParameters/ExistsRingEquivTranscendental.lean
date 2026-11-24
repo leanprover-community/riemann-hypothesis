@@ -1,20 +1,69 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.InertKernelTheory.GenusOneModelExistsLattice
-public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.CM4
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.CurveIdealPrimeReduction
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.ConjCls
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.WeierstrassUniqueness.ExistsPeriodPairOfIsLat
-public import Formalism.LocalToGlobal.TorsionIntegrality.ComplexLatticeClosure.LatticeAreaPositivity.Bridge
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
+public import Formalism.LocalToGlobal.TorsionIntegrality.ComplexLatticeClosure.ExistsTwoTorsionOffKernels
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementK
+public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MkLeContinuumOfDenseRange
+public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.ConjCls
+import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.LeadingConstantNeZero
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.WeierstrassUniqueness.ExistsPeriodPairOfIsLat
+public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.CurveIdealPrimeReduction
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
+public import Formalism.LocalToGlobal.TorsionIntegrality.ComplexLatticeClosure.LatticeAreaPositivity.Bridge
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ExistsUnitFactorizationBounded
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.CurveSer
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Algebra.Polynomial.Cardinal
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Algebraic.Cardinality
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.Bridge
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.GenusOneDatumExistence
 
 @[expose] public section
 
@@ -105,7 +154,6 @@ theorem exists_ringEquiv_transcendental (p : ℕ) [Fact p.Prime] {z : ℂ} (hz :
 
 end Transc
 
-
 open Formalism.L2.Th1.CM in
 theorem isAlgebraic_g2_of_hasCMBy_of_disc_eq_one (hGood : CM2) (d : ℕ) (L : PeriodPair) (hsq : Squarefree d) (hd4 : d % 4 = 3)
     (hcm : HasCMBy d L) (p : ℕ) [Fact p.Prime] (h5 : 5 ≤ p) (hpd : ¬ p ∣ d)
@@ -135,67 +183,10 @@ section Gen
 variable {p : ℕ} [Fact p.Prime]
 
 theorem mem_Wp_of_kur {x : ℂ_[p]} (hx : x ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) (h1 : ‖x‖ ≤ 1) : x ∈ Wp p := by
-  have hp : p.Prime := Fact.out
-  have hB := ((Formalism.L2.Th1.D.kurIntegers p).1 x).2 ⟨hx, h1⟩
-  have hS : Formalism.L2.Th1.D.muPrime p = {ζ : ℂ_[p] | ∃ n : ℕ, 0 < n ∧ Nat.Coprime n p ∧ ζ ^ n = 1} := by
-    ext ζ
-    simp only [Formalism.L2.Th1.D.muPrime, Set.mem_ofPred_eq]
-    constructor
-    · rintro ⟨n, h0, hn, h⟩
-      exact ⟨n, h0, Nat.coprime_comm.mp ((Nat.Prime.coprime_iff_not_dvd hp).mpr hn), h⟩
-    · rintro ⟨n, h0, hn, h⟩
-      exact ⟨n, h0, (Nat.Prime.coprime_iff_not_dvd hp).mp (Nat.coprime_comm.mp hn), h⟩
-  unfold Formalism.L2.Th1.D.ringB Formalism.L2.Th1.D.ringA at hB
-  rw [hS] at hB
-  exact hB
+  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.mem_Wp_of_kur <;> assumption
 
 theorem logF_eq : logF p = Formalism.L2.Th1.CM.ltLog ℂ_[p] p := by
-  have hp : p.Prime := Fact.out
-  have hinj : Function.Injective (fun j : ℕ => p ^ (2 * j)) := by
-    intro a b h
-    have := Nat.pow_right_injective hp.two_le h
-    simpa using this
-  ext n
-  simp only [logF, Formalism.L2.Th1.CM.ltLog, coeff_mk]
-  split_ifs with h
-  · have hj := Nat.find_spec h
-    set j0 := Nat.find h
-    have hn : n = p ^ (2 * j0) := by rw [hj, ← pow_mul]
-    rw [Finset.sum_eq_single j0]
-    · rw [if_pos hn]
-    · intro j _ hne
-      rw [if_neg]
-      intro h'
-      exact hne (hinj (h'.symm.trans hn))
-    · intro hj0
-      exfalso
-      apply hj0
-      rw [Finset.mem_range, hn]
-      have : j0 < p ^ j0 := Nat.lt_pow_self hp.one_lt
-      have h2 : p ^ j0 ≤ p ^ (2 * j0) := Nat.pow_le_pow_right hp.pos (by omega)
-      omega
-  · apply Finset.sum_eq_zero
-    intro j _
-    rw [if_neg]
-    intro h'
-    exact h ⟨j, by rw [h', pow_mul]⟩
-
-theorem isWq_wU (W : WeierstrassCurve ℂ_[p]) : Formalism.MainNotions.TaylorLogMetric.IsWq W (Formalism.L2.Th1.A.wU W) := by
-  have hF := (Formalism.L2.Th1.A.CurveSer.wSer_fixed W).2
-  rw [Formalism.L2.Th1.A.CurveSer.wSer_eq] at hF
-  unfold Formalism.MainNotions.TaylorLogMetric.IsWq
-  simp only [PowerSeries.algebraMap_eq]
-  apply mul_left_cancel₀ (pow_ne_zero 3 (X_ne_zero (R := ℂ_[p])))
-  linear_combination hF
-
-theorem norm_four (h5 : 5 ≤ p) : ‖(4 : ℂ_[p])‖ = 1 := by
-  have hp : p.Prime := Fact.out
-  have h := Formalism.DworkPowerSeriesWeights.norm_natCast_eq_one_of_not_dvd (K := ℂ_[p]) (m := 4) hp
-    (Formalism.L2.Th1.D.UnramifiedCompletion.normL_lt_one p) (by
-      intro hd
-      have := Nat.le_of_dvd (by norm_num) hd
-      omega)
-  exact_mod_cast h
+  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.logF_eq
 
 theorem datum_of_short (h5 : 5 ≤ p) (lam : Formalism.MainNotions.TaylorLogMetric.Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
     (C : WeierstrassCurve.VariableChange ℂ_[p]) (g2 g3 : ℂ_[p])
@@ -208,52 +199,7 @@ theorem datum_of_short (h5 : 5 ≤ p) (lam : Formalism.MainNotions.TaylorLogMetr
         ‖PowerSeries.coeff n ((Formalism.L2.Th1.CM.uSer g2 g3).subst
           (PowerSeries.C ε * Formalism.L2.Th1.CM.ltLog ℂ_[p] p))‖ ≤ 1) :
     ∃ g : G1 p, g.lam = lam ∧ g.abelian₂ = Λ ∧ g.C = C ∧ g.Ok ∧ ModelOverW g.lam g.abelian₂ g.C ∧ LTIso g := by
-  set S := Formalism.L2.Th1.A.shortW g2 g3 with hS
-  let g : G1 p := ⟨lam, Λ, C, Formalism.L2.Th1.A.wU S, Formalism.L2.Th1.A.expSer S⟩
-  have hgW : g.W = S := hW
-  have h4 := norm_four (p := p) h5
-  have hWq : Formalism.MainNotions.TaylorLogMetric.IsWq g.W g.wq := by
-    rw [hgW]; exact isWq_wU S
-  obtain ⟨hx0, -, hLE, hEL, -⟩ := Formalism.L2.Th1.A.expSpec ℂ_[p] S
-  have hfl : Formalism.MainNotions.TaylorLogMetric.flog S (Formalism.L2.Th1.A.wU S) = Formalism.L2.Th1.A.logSer S :=
-    Formalism.L2.KerInert.Dict.formal_logarithm_agree p S _ (isWq_wU S)
-  have hΔ : S.Δ = g2 ^ 3 - 27 * g3 ^ 2 := (Formalism.L2.Th1.A.shortInv ℂ_[p] g2 g3).2.2.2
-  have na4 : ‖S.a₄‖ ≤ 1 := by
-    simp only [hS, Formalism.L2.Th1.A.shortW, norm_div, norm_neg, h4, div_one]; exact n2
-  have na6 : ‖S.a₆‖ ≤ 1 := by
-    simp only [hS, Formalism.L2.Th1.A.shortW, norm_div, norm_neg, h4, div_one]; exact n3
-  have hU : IsModelU lam Λ C := by
-    show Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₁ ∧ Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₂ ∧
-      Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₃ ∧ Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₄ ∧
-      Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₆ ∧ ‖(C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).Δ‖ = 1
-    rw [hW]
-    refine ⟨?_, ?_, ?_, na4, na6, by rw [hΔ]; exact nd⟩ <;> simp [Formalism.MainNotions.TaylorLogMetric.IsIntP, hS, Formalism.L2.Th1.A.shortW]
-  have hOk : g.Ok := by
-    refine ⟨hU, hWq, hx0, ?_⟩
-    show PowerSeries.subst (Formalism.L2.Th1.A.expSer S) (Formalism.MainNotions.TaylorLogMetric.flog g.W (Formalism.L2.Th1.A.wU S)) = PowerSeries.X
-    rw [hgW, hfl]
-    exact hLE
-  have hM : ModelOverW lam Λ C := by
-    show (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₁ ∈ Wp p ∧ (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₂ ∈ Wp p ∧
-      (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₃ ∈ Wp p ∧ (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₄ ∈ Wp p ∧
-      (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₆ ∈ Wp p
-    rw [hW]
-    refine ⟨by simp [hS, Formalism.L2.Th1.A.shortW], by simp [hS, Formalism.L2.Th1.A.shortW],
-      by simp [hS, Formalism.L2.Th1.A.shortW], mem_Wp_of_kur ?_ na4, mem_Wp_of_kur ?_ na6⟩
-    · simp only [hS, Formalism.L2.Th1.A.shortW]
-      exact div_mem (neg_mem k2) (ofNat_mem _ 4)
-    · simp only [hS, Formalism.L2.Th1.A.shortW]
-      exact div_mem (neg_mem k3) (ofNat_mem _ 4)
-  have hpt : (g.pt (MvPowerSeries.C ε * logF p) : MvPowerSeries Unit ℂ_[p]) =
-      (Formalism.L2.Th1.CM.uSer g2 g3).subst (PowerSeries.C ε * Formalism.L2.Th1.CM.ltLog ℂ_[p] p) := by
-    show PowerSeries.subst (MvPowerSeries.C ε * logF p) (Formalism.L2.Th1.A.expSer S) = _
-    rw [hS, ← Formalism.L2.Th1.A.uSerEq, logF_eq]
-    rfl
-  have hΘ : IntegralW (g.pt (MvPowerSeries.C ε * logF p) : MvPowerSeries Unit ℂ_[p]) := by
-    intro n
-    rw [hpt, Finsupp.unique_single n]
-    exact mem_Wp_of_kur (hint (n ())).1 (hint (n ())).2
-  exact ⟨g, rfl, rfl, rfl, hOk, hM, ltIso_of' g hOk hε1 hΘ⟩
+  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.datum_of_short <;> assumption
 
 end Gen
 

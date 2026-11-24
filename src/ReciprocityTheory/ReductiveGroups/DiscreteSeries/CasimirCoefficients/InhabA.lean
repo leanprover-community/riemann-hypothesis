@@ -1,7 +1,17 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.Deriv.Basic
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Normed.Algebra.Exponential
+public import Mathlib.Topology.Instances.Matrix
 public import Lemmata.MovedPointExistence.ExistsMoved
+import Mathlib.Analysis.Matrix.Normed
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Mathlib.Analysis.SpecialFunctions.Exponential
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 @[expose] public section
 
@@ -27,10 +37,7 @@ theorem hasDerivAt_exp_entry (X : Matrix ι ι ℂ) (i j : ι) :
   let L : Matrix ι ι ℂ →L[ℝ] ℂ := LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ i j)
   exact L.hasFDerivAt.comp_hasDerivAt (0 : ℝ) h
 
-theorem hasDerivAt_det_of_one (A : ℝ → Matrix ι ι ℂ) (A' : Matrix ι ι ℂ) (h0 : A 0 = 1)
-    (h : ∀ i j, HasDerivAt (fun t => A t i j) (A' i j) 0) :
-    HasDerivAt (fun t => (A t).det) A'.trace 0 := by
-  first | exact Bl.MovedPointExistence.goal1 .. | (apply Bl.MovedPointExistence.goal1 <;> assumption) | (intros; apply Bl.MovedPointExistence.goal1 <;> assumption)
+alias hasDerivAt_det_of_one := _root_.Bl.MovedPointExistence.goal1
 
 end DetDeriv
 

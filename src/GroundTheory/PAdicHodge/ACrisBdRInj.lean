@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.ACrisBdR
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -67,7 +67,7 @@ theorem span_p_pow_map (k : ℕ) :
   rw [Ideal.map_pow, Ideal.map_span, Set.image_singleton, map_natCast]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_eq_pow_mul_of_iota_eq_zero {y : ACris K p} (hy : iota K p y = 0) {k : ℕ}
     {yk : ACrisZero K p}
     (ha : y - _root_.AdicCompletion.of _ _ yk ∈
@@ -109,7 +109,7 @@ theorem exists_eq_pow_mul_of_iota_eq_zero {y : ACris K p} (hy : iota K p y = 0) 
   · rw [← mul_assoc, Units.val_pow_eq_pow_val, ← mul_pow, IsUnit.mul_val_inv, one_pow, one_mul]
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem iota_injective : Function.Injective (iota K p) := by
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
   intro y hy

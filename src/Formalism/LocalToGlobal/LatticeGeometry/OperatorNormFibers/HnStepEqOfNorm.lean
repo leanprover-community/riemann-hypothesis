@@ -1,6 +1,13 @@
 module
 
-public import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.StExtInv
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.GlobalTheory.HLatOps
+import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.StExtInv
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

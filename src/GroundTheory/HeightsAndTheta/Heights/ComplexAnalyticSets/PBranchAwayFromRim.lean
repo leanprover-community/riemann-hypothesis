@@ -1,12 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchAwayFromRim
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelExists
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelProper
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchLift
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalLocallyIrreducible
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchContainsNormalPoint
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Topology.MetricSpace.Sequences
 
 @[expose] public section
 

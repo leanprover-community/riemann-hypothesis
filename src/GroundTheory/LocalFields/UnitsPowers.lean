@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.UnitsBasic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsRootOfAdicComplete
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
+public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section
 
@@ -29,10 +32,7 @@ theorem isUnit_unit_add {η : 𝒪[K]ˣ} {x : 𝒪[K]} (hx : x ∈ 𝓂[K]) : Is
   rw [this]
   exact η.isUnit.mul h1
 
-theorem exists_root_of_dvd {ϖ : 𝒪[K]} (hϖ : Irreducible ϖ) (f : 𝒪[K][X]) (a : 𝒪[K]) (k : ℕ)
-    (ε : 𝒪[K]ˣ) (hd : f.derivative.eval a = ϖ ^ k * ε) (hf : ϖ ^ (2 * k + 1) ∣ f.eval a) :
-    ∃ b, f.eval b = 0 ∧ ϖ ^ (k + 1) ∣ b - a :=
-  _root_.UpperTheory.Reformulated.B.AdicCompleteRootExistence.exists_root_of_dvd hϖ f a k ε hd hf
+alias exists_root_of_dvd := _root_.UpperTheory.Reformulated.B.AdicCompleteRootExistence.exists_root_of_dvd
 
 theorem eq_one_of_pow_eq_one {m : ℕ} (hm : (m : 𝓀[K]) ≠ 0) {u : 𝒪[K]ˣ}
     (hu : u ∈ unitFiltration K 1) (h : u ^ m = 1) : u = 1 := by
@@ -43,8 +43,8 @@ theorem eq_one_of_pow_eq_one {m : ℕ} (hm : (m : 𝓀[K]) ≠ 0) {u : 𝒪[K]ˣ
   rw [← Units.val_pow_eq_pow_val, h, Units.val_one, sub_self] at hgeom
   have hS : IsUnit (∑ i ∈ Finset.range m, (u : 𝒪[K]) ^ i) := by
     rw [← residue_ne_zero_iff_isUnit]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum, hres] using hm
+
+    simpa [map_sum, hres] using hm
   have := (hS.mul_right_eq_zero).mp hgeom
   ext
   simpa [sub_eq_zero] using this

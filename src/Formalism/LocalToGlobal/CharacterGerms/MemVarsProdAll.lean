@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.Interface
+public import Mathlib.Algebra.MvPolynomial.Variables
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

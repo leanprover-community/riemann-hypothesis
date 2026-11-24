@@ -1,6 +1,9 @@
 module
 
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+public import Mathlib.CategoryTheory.Category.Basic
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.HeckeMultiplication
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -44,8 +47,8 @@ theorem mAct_one {ι : Type} [Fintype ι] [DecidableEq ι] {V : Type} [AddCommGr
 theorem hom_cas (hL : HomLie) {X Y : Obj k r} {f : M X →ₗ[ℂ] M Y} (hX : X.1.OK) (hY : Y.1.OK) (hf : IsHom X Y f)
     (x : M X) : f (cas X x) = cas Y (f x) := by
   have h : ∀ Z x, f (L X Z x) = L Y Z (f x) := fun Z x => LinearMap.congr_fun (hL k r X Y f hX hY hf Z) x
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [cas, LinearMap.sum_apply, Module.End.mul_apply, map_sum, h]
+
+  simp only [cas, LinearMap.sum_apply, Module.End.mul_apply, map_sum, h]
 
 def cM (n : ℕ) : Matrix Unit (Fin n × Fin n) ℂ := fun _ p => if p.1 = p.2 then 1 else 0
 

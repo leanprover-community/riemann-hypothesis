@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LoopTermLem
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LocWSOf
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
@@ -147,7 +147,7 @@ theorem smulRight_smul {V V' : Type*} [NormedAddCommGroup V] [InnerProductSpace 
     [InnerProductSpace ℂ V'] (a : V) (b : V') (c : ℂ) (hc : (starRingEnd ℂ) c = c) :
     (innerSL ℂ (c • b)).smulRight a = c • Formalism.L2.SG.TermOp.rk1 a b := by
   ext x
-  simp [Formalism.L2.SG.TermOp.rk1, inner_smul_left, hc, smul_smul]
+  simp [Formalism.L2.SG.TermOp.rk1, hc, smul_smul]
 
 theorem locJ_map_eq (u u' : D.what₂.Word) (τ : D.what₂.Tau) (γ : Formalism.REAL.UJ (X.B.I.ε (vOf X τ)))
     (ν : Measure (Formalism.REAL.UJ (X.B.I.ε (vOf X τ))))

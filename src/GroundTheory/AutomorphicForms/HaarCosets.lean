@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Aesop.Main
 public import GroundTheory.AutomorphicForms.LocallyConstantCompact
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

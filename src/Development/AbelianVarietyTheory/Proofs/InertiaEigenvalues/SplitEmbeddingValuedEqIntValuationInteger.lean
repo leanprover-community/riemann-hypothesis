@@ -1,18 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsRatConstMul
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsInertTop
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SplitLinearModelNorm
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OscillatorModelValuesThird
-public import Formalism.LocalToGlobal.IndefiniteReal.TopMult
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsThetaFunOOfIsVacO
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsThetaFunOOfThetaAt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtYAndItYOfPair
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasInfExpMulOfIsOpenKer
-public import Development.AbelianVarietyTheory.Definitions.Foundations.AbsCharNotUnitary
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexMatrixLattice
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsIntOv
+public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModulusUnramifiedCharDetHeckeDoubleCosetSplit
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPlaceChartOfSplitIdempotent
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitChartUniformiserAndResidueCard
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNsmulActO
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexMatrixLattice
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.RationalRayLevels
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IntFormsSubset
+import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
 
 @[expose] public section
 
@@ -256,9 +293,6 @@ theorem prod_idem {P1 : Finset (Formalism.L2.DIV.Pl D.host.E)} {es : Formalism.L
     rw [Finset.prod_insert hQ, Finset.sum_insert hQ, ih hs']
     linear_combination (c - 1) ^ 2 * hQS
 
-theorem absFin_one' : GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absFin D 1 = 1 := by
-  simp [GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absFin, GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absV]
-
 theorem absFin_idemSum : ∀ (D : D7) (P1 : Finset (Formalism.L2.DIV.Pl D.host.E)) (a : AE D), IsIdemSum a P1 → ∀ (m : ℕ) (hm : (m : D.host.E) ≠ 0) (x : (AE D)ˣ), (x : AE D) = a * (m : AE D) + (1 - a) → GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absFin D x = ∏ PP ∈ P1, ((Ideal.absNorm PP.asIdeal : ℕ) : ℝ) ^ (-(Formalism.L2.Host.ordF PP (Units.mk0 (m : D.host.E) hm))) := by
   intro D P1 a ha m hm x hx
   obtain ⟨⟨es, hes, hae⟩, -⟩ := ha
@@ -274,7 +308,7 @@ theorem absFin_idemSum : ∀ (D : D7) (P1 : Finset (Formalism.L2.DIV.Pl D.host.E
     rw [hx, Units.coe_prod]
     change _ = ∏ PP ∈ P1.attach, (fun PP => es PP * (m : AE D) + (1 - es PP)) PP.1
     rw [Finset.prod_attach P1 (fun PP => es PP * (m : AE D) + (1 - es PP)), prod_idem hes _ P1 subset_rfl, hae]
-  let A : (AE D)ˣ →* ℝ := ⟨⟨GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absFin D, absFin_one'⟩, GlobalTheory.SplitLinear.absFin_mul⟩
+  let A : (AE D)ˣ →* ℝ := ⟨⟨GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absFin D, _root_.GlobalTheory.SplitLinear.absFin_one⟩, GlobalTheory.SplitLinear.absFin_mul⟩
   have hA : GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absFin D x = A x := rfl
   rw [hA, hx', map_prod, ← Finset.prod_attach P1]
   exact Finset.prod_congr rfl fun PP _ => absFin_idemAt (hes PP.1 PP.2) m hm (u PP) rfl

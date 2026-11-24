@@ -1,7 +1,12 @@
 module
 
 public import ReciprocityTheory.DualLattices.TensorSpan
-public import ReciprocityTheory.DualLattices.IsUnitDetOfSpanEq
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.RingTheory.Valuation.Integers
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

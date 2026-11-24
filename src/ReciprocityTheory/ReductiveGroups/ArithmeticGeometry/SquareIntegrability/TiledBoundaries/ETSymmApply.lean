@@ -1,6 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TiledBoundaries.MemSpanBn
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.DimStatement
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.LemmaNA
 
 @[expose] public section
 
@@ -97,12 +103,12 @@ def YT (X : PT E) (n q : ℕ) : GT (Fin n × Idx X.dim) where
       have hdec : y = ∑ k, incl k ⟨(eT X n).symm y k, hy k⟩ := by
         apply Subtype.ext
         simp only [incl, AddMonoidHom.mk'_apply, Submodule.coe_sum]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← map_sum, Finset.univ_sum_single, LinearEquiv.apply_symm_apply]
+
+        rw [← map_sum, Finset.univ_sum_single, LinearEquiv.apply_symm_apply]
       have hL : ((φ y : ℤ) : ℝ) = ∑ k, (((φ.comp (incl k)) ⟨(eT X n).symm y k, hy k⟩ : ℤ) : ℝ) := by
         conv_lhs => rw [hdec]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Int.cast_sum]
+
+        rw [map_sum, Int.cast_sum]
         rfl
       have hR : (Hf (eT X n x) (y : EuclideanSpace ℂ (Fin n × Idx X.dim))).im =
           ∑ k, (Hf (x k) ((eT X n).symm y k)).im := by

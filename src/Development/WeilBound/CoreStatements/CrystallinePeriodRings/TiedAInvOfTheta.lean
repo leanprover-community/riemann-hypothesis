@@ -1,11 +1,46 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.NonemptyThetaLOfTied
+public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.LocTied6
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.FilQuot
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.InvRestrictScalarsMem
+public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.MaximalIdealEqSpanT
+public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
 
 @[expose] public section
 
@@ -38,9 +73,6 @@ theorem tiedA_inv (T : LocTied6 l P AI) (K : FinExt l) {x : P.R.BdR} {y : Per6.B
   refine ⟨_, (tie_fil_zero T K _).2 ⟨z, e⟩, T.eD.injective ?_⟩
   rw [map_mul, e, h, ← map_mul, hz, map_one, map_one]
 
-theorem tiedA_ι_injective (P : LocPrime l) : Function.Injective P.ιB := fun a b h =>
-  (P.PD (MainNotions.LocalSituation.botExt l)).ι_inj (((P.PD_ι _ a).trans h).trans (P.PD_ι _ b).symm)
-
 theorem tiedA_φ_injective (P : LocPrime l) : Function.Injective P.φB := fun a b h =>
   (P.PD (MainNotions.LocalSituation.botExt l)).φ_inj (((P.PD_φ _ a).trans h).trans (P.PD_φ _ b).symm)
 
@@ -60,7 +92,7 @@ theorem tied_field : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf
   intro l _ P AI T
   have hF := tiedA_isField T
   have hD : IsDomain P.R.BdR := hF.isDomain
-  refine ⟨hF, (tiedA_ι_injective P).isDomain P.ιB.toRingHom, tiedA_ι_injective P,
+  refine ⟨hF, (_root_.GlobalTheory.MemLoc.FitsEx.iota_inj P).isDomain P.ιB.toRingHom, _root_.GlobalTheory.MemLoc.FitsEx.iota_inj P,
     tiedA_φ_injective P, fun K x h0 h1 => ?_⟩
   obtain ⟨y, hy⟩ := (tie_fil_zero T K x).1 h0
   refine tiedA_inv T K hy fun h => h1 ((filq_tie_fil T K 1 hy).2 ?_)

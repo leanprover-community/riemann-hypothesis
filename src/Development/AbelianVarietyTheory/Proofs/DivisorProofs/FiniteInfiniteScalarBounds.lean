@@ -1,19 +1,57 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.InfClassAt
-public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatIntegrableAaVacOfConductor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMemValuationEq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteCoefficientBound
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatIntegrableAaVacOfConductor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinearCombinationLogBoundRealInequality
-public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic
-public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeSelfDualTraceForm
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeSelfDualTraceForm
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
+import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
+import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ModelLatIn
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.PlaceSumSquares
 
 @[expose] public section
 
@@ -58,12 +96,6 @@ theorem vw_prod' (w : HeightOneSpectrum (𝓞 K)) {ι : Type} (P : Finset ι) (f
       vw_mul' w (hf j (Finset.mem_insert_self _ _)) (Finset.prod_ne_zero_iff.2 fun i hi => hf i (Finset.mem_insert_of_mem hi)),
       ih fun i hi => hf i (Finset.mem_insert_of_mem hi)]
 
-theorem vw_natCast_nonneg' (w : HeightOneSpectrum (𝓞 K)) (q : ℕ) : 0 ≤ vw w (q : K) := by
-  have e : (q : K) = algebraMap (𝓞 K) K (q : 𝓞 K) := by simp
-  unfold vw
-  rw [e, ← FractionalIdeal.coeIdeal_span_singleton]
-  exact FractionalIdeal.count_coe_nonneg K w _
-
 theorem loss_sqrt_prod {ι : Type} (P : Finset ι) (q : ι → ℕ) (hq : ∀ i ∈ P, q i ≠ 0) (s : ι → K)
     (hs : ∀ i ∈ P, s i ^ 2 = (q i : K)) (n : ι → ℤ) :
     ∃ dl : HeightOneSpectrum (𝓞 K) → ℝ, (∀ w, 0 ≤ dl w) ∧ {w | dl w ≠ 0}.Finite ∧
@@ -77,7 +109,7 @@ theorem loss_sqrt_prod {ι : Type} (P : Finset ι) (q : ι → ℕ) (hq : ∀ i 
   have hv2 : ∀ w, ∀ i ∈ P, 2 * vw w (s i) = vw w (q i : K) := fun w i hi => by
     rw [← hs i hi, sq, vw_mul' w (hs0 i hi) (hs0 i hi)]; ring
   have hv0 : ∀ w, ∀ i ∈ P, (0 : ℝ) ≤ vw w (s i) := fun w i hi => by
-    have h1 := vw_natCast_nonneg' w (q i) (K := K)
+    have h1 := _root_.Formalism.DivisionValues.W5.vw_nat_nonneg w (q i) (K := K)
     have h2 := hv2 w i hi
     have : 0 ≤ vw w (s i) := by omega
     exact_mod_cast this
@@ -243,7 +275,7 @@ theorem sum_abs_count_AA_le (hcc : D.host.ccK = ⊤) (S : Finset (HeightOneSpect
   have hBle : ∀ w, FractionalIdeal.count D.host.E w D.host.AAbar ≤ 0 := fun w => by
     have ht : (D.host.conj • D.host.ccE : Ideal (𝓞 D.host.E)) = ⊤ := by
       rw [Formalism.BasicNotions.Host.ccE, hcc, Ideal.map_top]
-      first | rw [Ideal.pointwise_smul_def, Ideal.map_top] | simp [Ideal.pointwise_smul_def] | rfl
+      first | rw [Ideal.pointwise_smul_def, Ideal.map_top]
     simp only [Formalism.BasicNotions.Host.AAbar, ht, FractionalIdeal.coeIdeal_top, one_mul, FractionalIdeal.count_inv, neg_nonpos]
     exact FractionalIdeal.count_coe_nonneg _ _ _
   have hterm : ∀ w ∈ S, ((|FractionalIdeal.count D.host.E w D.host.AA| + |FractionalIdeal.count D.host.E w D.host.AAbar| : ℤ) : ℝ) *
@@ -330,7 +362,7 @@ theorem log_discr_le {large₂ : SizeData₂ D} {F : Face D A} (s : HidaSetting 
   nlinarith
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem core {large₂ : SizeData₂ D} {F : Face D A} (s : HidaSetting large₂ R F) (ch : Choice R) (hF : ch.FieldOK) {C : ℝ} (hC : 2 ≤ C) :
     FinScalAt ch C large₂.sc.b ∧ InfScalAt ch C large₂.sc.b := by
   classical

@@ -1,16 +1,21 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataInst
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ClassCountIdx
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ColPhaseCut
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCoreGamProdSum
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCorePsiNatEquiv
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLoc
+public import Formalism.LocalRingCardinality.DataLevel
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCut
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitA
+public import Formalism.LocalRingCardinality.SpanPowerMembership.Adelic
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PairCorankPos
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ClassCountIdx
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Corank
 
 @[expose] public section
 
@@ -29,12 +34,8 @@ variable {D : D7} (X : HidaSetting D)
 
 def gPl : Type := {v : HeightOneSpectrum (𝓞 X.B.I.F) // ((X.B.g : ℕ) : 𝓞 X.B.I.F) ∈ v.asIdeal}
 
-theorem g_ne_zero : X.B.g ≠ 0 := by
-  rw [X.g_eq]
-  exact Nat.mul_ne_zero (D.host.g_prime 0).ne_zero (D.host.g_prime 1).ne_zero
-
 instance : Fintype (gPl X) :=
-  (Formalism.L2.SG.TypedSets.finite_over X.B.I.F X.B.g (g_ne_zero X)).fintype
+  (Formalism.L2.SG.TypedSets.finite_over X.B.I.F X.B.g (_root_.Formalism.L2.SG.Pf.modulus_g_ne_zero X)).fintype
 
 def IsRedAt (v : HeightOneSpectrum (𝓞 X.B.I.F))
     (r : X.B.I.E ⊗[X.B.I.F] v.adicCompletion X.B.I.F →+* v.adicCompletion X.B.I.F) : Prop :=
@@ -92,10 +93,6 @@ theorem prV_algebraMap (v : HeightOneSpectrum (𝓞 X.B.I.F)) (c : X.B.I.F) :
   first
   | (rw [← Algebra.TensorProduct.algebraMap_apply']
      exact (Algebra.TensorProduct.map (AlgHom.id X.B.I.F X.B.I.E) (evalV X.B.I.F v)).commutes c)
-  | (simp only [Formalism.UG.prV, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, AlgHom.commutes,
-      Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply]
-     rw [← mul_one (algebraMap X.B.I.F X.B.I.E c), ← Algebra.smul_def, TensorProduct.smul_tmul,
-       Algebra.smul_def, mul_one])
 
 theorem le_exp_neg_one {x : WithZero (Multiplicative ℤ)} (h : x < 1) : x ≤ WithZero.exp (-1 : ℤ) := by
   rcases eq_or_ne x 0 with rfl | hx
@@ -151,7 +148,7 @@ theorem resV_ker_of (x : ↥(IntAf X.B.I.F X.B.I.E)) (hx : ZMod' X.B.I X.B.g (X.
 include hU in
 theorem ker_resV (x : ↥(IntAf X.B.I.F X.B.I.E)) (hx : ∀ v, resV hR v x = 0) :
     ZMod' X.B.I X.B.g (X.ew * x) := by
-  have hg := g_ne_zero X
+  have hg := _root_.Formalism.L2.SG.Pf.modulus_g_ne_zero X
   set y := X.ew * (x : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) with hy
   have hyI : y ∈ IntAf X.B.I.F X.B.I.E := mul_mem X.ew_int x.2
   refine ⟨divN X.B.I X.B.g y, ?_, (Formalism.L2.SG.Pf.unitaryCongruence.gmul_divN X.B.I X.B.g hg y).symm⟩
@@ -204,8 +201,8 @@ theorem resV_joint : Function.Surjective
   apply Subtype.ext
   rw [rO_coe]
   show rV hR w (prV (E := X.B.I.E) w.1 (∑ v : gPl X, (1 : X.B.I.E) ⊗ₜ[X.B.I.F] afsplitI v.1 (o v : v.1.adicCompletion X.B.I.F))) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single w]
+
+  rw [map_sum, Finset.sum_eq_single w]
   · rw [afsplit_prV_tmul, afsplitI_self]; exact (rV_spec hR w).2.1 _
   · intro v _ hvw
     rw [afsplit_prV_tmul, afsplitI_ne v.1 w.1 (fun h => hvw (Subtype.ext h.symm)), TensorProduct.tmul_zero]
@@ -238,7 +235,7 @@ theorem psiLoc_g (v : HeightOneSpectrum (𝓞 X.B.I.F)) (t : v.adicCompletion X.
   have e1 : ((X.B.g : ℕ) : v.adicCompletion X.B.I.F) * t = ((X.B.g : ℕ) : X.B.I.F) • t := by
     rw [Algebra.smul_def, map_natCast]
   rw [e1, map_smul, TensorProduct.tmul_smul, Algebra.smul_def, map_natCast, mul_left_comm]
-  refine Formalism.L2.SG.Pf.unitaryCongruence.psi_Z X.B.I X.B.g X.psiEf_add X.psiEf_int (g_ne_zero X) ?_
+  refine Formalism.L2.SG.Pf.unitaryCongruence.psi_Z X.B.I X.B.g X.psiEf_add X.psiEf_int (_root_.Formalism.L2.SG.Pf.modulus_g_ne_zero X) ?_
   exact ⟨_, mul_mem X.ew_int (one_tens_mem_IntAf _ (afsplitI_mem_intAd v _ ht)), rfl⟩
 
 variable (hR : RedExists X) (hU : GUnif X)
@@ -306,8 +303,8 @@ def sumS (o : ∀ v : gPl X, v.1.adicCompletion X.B.I.F) : X.B.I.E ⊗[X.B.I.F] 
 theorem prV_sumS (o : ∀ v : gPl X, v.1.adicCompletion X.B.I.F) (w : gPl X) :
     prV (E := X.B.I.E) w.1 (sumS o) = prV (E := X.B.I.E) w.1 X.ew * ((1 : X.B.I.E) ⊗ₜ[X.B.I.F] o w) := by
   unfold sumS
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single w]
+
+  rw [map_sum, Finset.sum_eq_single w]
   · rw [map_mul, afsplit_prV_tmul, afsplitI_self]
   · intro v _ hvw
     rw [map_mul, afsplit_prV_tmul, afsplitI_ne v.1 w.1 (fun h => hvw (Subtype.ext h.symm)),
@@ -360,7 +357,7 @@ theorem prod_local_char_eq_global (x : ↥(IntAf X.B.I.F X.B.I.E)) (hx : (x : X.
   rw [hed] at hZ
   have e : (x : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) = S + ((x : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) - S) := by ring
   rw [e, Formalism.L2.SG.Pf.unitaryCongruence.divN_add, X.psiEf_add,
-    Formalism.L2.SG.Pf.unitaryCongruence.psi_Z X.B.I X.B.g X.psiEf_add X.psiEf_int (g_ne_zero X) hZ, mul_one]
+    Formalism.L2.SG.Pf.unitaryCongruence.psi_Z X.B.I X.B.g X.psiEf_add X.psiEf_int (_root_.Formalism.L2.SG.Pf.modulus_g_ne_zero X) hZ, mul_one]
 
 end Psi
 
@@ -432,7 +429,7 @@ theorem gterm_G {u u' : D.what₂.Word}
     (t : GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u')) :
     t.G = Gval (lf D (X.Fu u)) t.frame := by
   have hΛ := (Y.rowsOK u).1 t.lam t.mem
-  exact gt_mk ((Formalism.L2.SG.Closed.TermFun_holds D u u' (X.Fu u) t.lam hΛ).1) _
+  exact gt_mk ((_root_.term_function_const D u u' (X.Fu u) t.lam hΛ).1) _
 
 theorem corankPos_tO (u u' : D.what₂.Word) : (Y.tO u u').CorankPos := by
   intro t t' hr hG _
@@ -452,7 +449,7 @@ theorem idDegenerate_tO (u u' : D.what₂.Word) : (Y.tO u u').IdDegenerate := by
   intro t ht
   have hΛ := (Y.rowsOK u).1 t.lam t.mem
   have hG : t.toTerm.G = 0 := Formalism.L2.SG.FourParts.G_eq_zero_of_termInS
-    ((Formalism.L2.SG.Closed.TermFun_holds D u u' (X.Fu u) t.lam hΛ).1)
+    ((_root_.term_function_const D u u' (X.Fu u) t.lam hΛ).1)
     (Formalism.L2.SG.FourParts.termInS_of_termIsId ht)
   have hG' : t.G = 0 := hG
   show TermOp.Gt t = 0
@@ -642,9 +639,7 @@ theorem card_gPl_sub (hN : GCount X) (i : Fin 2) :
     · exact w.asIdeal.mul_mem_left _ hw
   rw [Fintype.card_eq_nat_card, ← hN i]
   first
-  | rw [← Set.Nat.card_coe_set_eq]
   | rw [← Nat.card_coe_set_eq]
-  | rw [Set.ncard_def]
   exact Nat.card_congr
     { toFun := fun v => ⟨v.1.1, v.2⟩
       invFun := fun v => ⟨⟨v.1, hmem v.1 v.2⟩, v.2⟩
@@ -871,9 +866,7 @@ theorem card_typ (hN : GCount X) (i : Fin 2) :
     · exact Or.inr hv
   rw [Fintype.card_eq_nat_card, ← hN i]
   first
-  | rw [← Set.Nat.card_coe_set_eq]
   | rw [← Nat.card_coe_set_eq]
-  | rw [Set.ncard_def]
   exact Nat.card_congr
     { toFun := fun p => ⟨p.1.1, (hq p.1).1 p.2⟩
       invFun := fun v => ⟨⟨v.1, (hmem v.1).2 (hT v.1 v.2)⟩, (hq _).2 v.2⟩

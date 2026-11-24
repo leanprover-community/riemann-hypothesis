@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.Coinduced
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.QuotientToInvariantsFunctorPreservesZeroMorphism
-public import GroundTheory.ProfiniteCohomology.CoinducedModules.CohomologyCoindCokernelIsoHom
+public import GroundTheory.ProfiniteCohomology.CoinducedModules
+public import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
+import GroundTheory.ProfiniteCohomology.CoinducedModules.CohomologyCoindCokernelIsoHom
+import GroundTheory.ProfiniteCohomology.FilteredHomology
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.Coinduced
 
 @[expose] public section
 

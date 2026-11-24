@@ -1,7 +1,10 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.LatticeMultiplicityLemmas.LatticeMultiplicityCheck.Retype
-public import Formalism.LocalToGlobal.GroupLattices.StdSubAtOfRing
+public import Formalism.LocalRingCardinality.DataLevelD
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmApply
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.RepTie
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsRec
+public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.GramDetIsUnit
 public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyDefinite
 
 @[expose] public section

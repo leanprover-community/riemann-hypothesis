@@ -1,11 +1,49 @@
 module
 
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WeylIntegralCovariance.RpSmulLeft
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnitaryChartEquiv.CEquivApply
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.CovolUnique
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.MeasTop
 public import GroundTheory.AutomorphicForms.FourierWhittaker.IsAddFundamentalDomainImageOfMapVecLattice
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicFourierRealisesWeylElement
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaBijections.SymplecticFormCoordinates
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
+public import GroundTheory.AutomorphicForms.GL2.GJMatrixCoord
+public import GroundTheory.HeightsAndTheta.Theta.AdelicFourier
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.CovolUnique
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -23,36 +61,6 @@ attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 open PositivityTheory.SiegelWeilFormula.TBij.Adp
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-
-theorem ratM_iff (d : SD σ) (X : Mx F E d.m d.n) :
-    X ∈ d.ratM ↔ d.crd X ∈ GroundTheory.Automorphic.FourierWhittaker.vecLattice F (Ix d) := by
-  let c : Mx F E d.m d.n →+ (Ix d → AF F) :=
-    { toFun := d.crd, map_zero' := by funext k; simp [SD.crd], map_add' := crd_add d }
-  constructor
-  · intro hX
-    have hle : d.ratM ≤ (GroundTheory.Automorphic.FourierWhittaker.vecLattice F (Ix d)).comap c := by
-      refine (AddSubgroup.closure_le _).mpr ?_
-      rintro _ ⟨M, rfl⟩
-      refine ⟨fun k => d.bs.repr (M k.1 k.2.1) k.2.2, ?_⟩
-      funext k
-      exact (crd_incM d M k).symm
-    exact hle hX
-  · rintro ⟨ξ, hξ⟩
-    let M : Matrix (Fin d.m) (Fin d.n) E := Matrix.of fun i j => ∑ k, ξ (i, j, k) • d.bs k
-    have e1 : d.crd (incM F M) = d.crd X := by
-      funext k
-      rw [crd_incM d _ k]
-      have h2 := congrFun hξ k
-      simp only [AddMonoidHom.compLeft, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Function.comp_apply] at h2
-      rw [← h2]
-      show _ = algebraMap F (AF F) (ξ k)
-      congr 1
-      exact congrFun (d.bs.repr_sum_self fun k' => ξ (k.1, k.2.1, k')) k.2.2
-    have e2 : incM F M = X := by
-      rw [← cmb_crd d (incM F _), e1, cmb_crd]
-    rw [← e2]
-    exact AddSubgroup.subset_closure ⟨_, rfl⟩
-
 
 attribute [-instance] Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.measAF in
 theorem integral_cov_gen {G : Type} [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G] [LocallyCompactSpace G]
@@ -102,14 +110,6 @@ theorem integral_cov_gen {G : Type} [AddCommGroup G] [TopologicalSpace G] [IsTop
   show ∫ Z, h Z ∂(Measure.map m _) = _
   rw [integral_map_equiv]
   rfl
-
-theorem integral_cov (d : SD σ) (ν : Measure (Mx F E d.m d.n)) (hν : d.IsCov ν) (h : Mx F E d.m d.n → ℂ) :
-    ∫ Z, h Z ∂ν = ∫ c, h (d.cmb c) ∂(GroundTheory.Automorphic.GJMatrix.adeleMeasurePi F (ι := Ix d)) := by
-  obtain ⟨hT, hLC, hSC, hB, hC⟩ := KWhit.meas_mx_top' d
-  haveI := hT; haveI := hLC; haveI := hSC; haveI := hB; haveI := hC
-  obtain ⟨hH, 𝓕, h𝓕, h1⟩ := hν
-  haveI := hH
-  exact integral_cov_gen (hBor := hB) (hνH := hH) d.ratM (KTunit.cEquiv d (Equiv.refl (Ix d))) (fun X => ratM_iff d X) ν 𝓕 h𝓕 h1 h
 
 end PositivityTheory.SiegelWeilFormula.TW.Twp
 

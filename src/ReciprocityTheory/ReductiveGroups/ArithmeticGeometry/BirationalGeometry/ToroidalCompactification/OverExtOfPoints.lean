@@ -1,6 +1,18 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsoUniqueOfRig
+public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.CategoryTheory.Limits.Shapes.Connected
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -48,7 +60,7 @@ theorem schDom_spec_map {A B : Type} [CommRing A] [CommRing B] [IsReduced A] (φ
   exact IsSchemeTheoreticallyDominant.of_isDominant _
 
 
-set_option maxHeartbeats 800000 in
+
 theorem over_ext_of_points {F : Type} [Field F] [IsAlgClosed F] {K Y : Over (Spec (CommRingCat.of F))}
     [LocallyOfFiniteType K.hom] [FormallyUnramified Y.hom] [LocallyOfFiniteType Y.hom] (u v : K ⟶ Y)
     (h : ∀ p : 𝟙_ (Over (Spec (CommRingCat.of F))) ⟶ K, p ≫ u = p ≫ v) : u = v := by
@@ -57,7 +69,7 @@ theorem over_ext_of_points {F : Type} [Field F] [IsAlgClosed F] {K Y : Over (Spe
     show IsOpenImmersion (prod.lift (𝟙 Y) (𝟙 Y)).left
     rw [← MorphismProperty.cancel_right_of_respectsIso @IsOpenImmersion _ (Over.prodLeftIsoPullback Y Y).hom]
     convert! (inferInstance : IsOpenImmersion (pullback.diagonal Y.hom))
-    ext1 <;> simp [← Over.comp_left] <;> first | rw [prod.lift_fst, Over.id_left] | rw [prod.lift_snd, Over.id_left]
+    ext1 <;> simp [← Over.comp_left]
   have : JacobsonSpace K.left := LocallyOfFiniteType.jacobsonSpace K.hom
   have hcl : closedPoints K.left ⊆ Set.range (equalizer.ι u v).left := by
     intro x hx
@@ -84,7 +96,7 @@ theorem over_ext_of_points {F : Type} [Field F] [IsAlgClosed F] {K Y : Over (Spe
 
 
 open MonObj in
-set_option maxHeartbeats 1600000 in
+
 theorem fix_torsion (hMul : Out.MulNSt) {F : Type} [Field F] [IsAlgClosed F] (P : Out.PolAV (Spec (CommRingCat.of F)))
     (M : ℕ) (hM1 : 1 ≤ M) (hM : (M : F) ≠ 0) (σ : P.A ⟶ P.A) [IsMonHom σ]
     (hσ : ∀ x : 𝟙_ (Over (Spec (CommRingCat.of F))) ⟶ P.A, x ^ M = 1 → x ≫ σ = x)

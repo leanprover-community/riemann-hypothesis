@@ -1,14 +1,54 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFrobeniusHolds
-public import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stdform
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
+public import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
-public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stdform
+public import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -89,7 +129,7 @@ theorem span_dual_eq_top {h : V →ₗ⋆[K] V →ₗ[K] K} (hn : h.Nondegenerat
       obtain ⟨r', hr'⟩ := star_algebraMap_ringOfIntegers_mem_range r
       refine ⟨r' * r1, ?_⟩
       rw [map_mul, hr', hr1, ← algebraMap_smul K r x, LinearMap.map_smulₛₗ₂]
-      simp only [LinearMap.smul_apply, starRingEnd_apply, smul_eq_mul]
+      simp only [starRingEnd_apply, smul_eq_mul]
   have hbsK : ∀ j, bs j ∈ Submodule.span K (dual h Λ : Set V) := by
     intro j
     have hmem : d' • bs j ∈ dual h Λ := by
@@ -102,7 +142,7 @@ theorem span_dual_eq_top {h : V →ₗ⋆[K] V →ₗ[K] K} (hn : h.Nondegenerat
         rw [← algebraMap_smul K d' (bs j), LinearMap.map_smul, smul_eq_mul]
       have e2 : h (d • y) (bs j) = star (algebraMap (𝓞 K) K d) * h y (bs j) := by
         rw [← algebraMap_smul K d y, LinearMap.map_smulₛₗ₂]
-        simp only [LinearMap.smul_apply, starRingEnd_apply, smul_eq_mul]
+        simp only [starRingEnd_apply, smul_eq_mul]
       rw [hr, e1, e2, hd']
     have e : bs j = (algebraMap (𝓞 K) K d')⁻¹ • (d' • bs j) := by
       rw [← algebraMap_smul K d' (bs j), smul_smul, inv_mul_cancel₀ hd'0, one_smul]
@@ -330,8 +370,8 @@ theorem main : ∀ (D : D7) (u : D.what₂.Word), letI := D.host.cmStar; ∀ F0 
       refine Finsupp.ext fun k => ?_
       simpa using congrFun e k)
     rw [hT_expand]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, D.sp.cm.cmUnram.2.1 τ]
+
+    simp only [map_sum, map_mul, D.sp.cm.cmUnram.2.1 τ]
     exact h2
   · rw [(D.sp.X 0).rank_eq, D.sp.X_rank 0 (Nat.zero_le _)]
     simp [Ranks.N]

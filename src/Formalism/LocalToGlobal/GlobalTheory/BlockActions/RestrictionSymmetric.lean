@@ -1,6 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.BrExistsOfRestS
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrProof
+import Formalism.LocalToGlobal.HermitianForms.Interlace
+import Formalism.LocalToGlobal.HermitianForms.TiedBrCl
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LowerTieChain
 
 @[expose] public section
 

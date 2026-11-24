@@ -1,6 +1,60 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMulStarEqOfNormOneUnramifiedQuadratic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
+public import Mathlib.FieldTheory.Galois.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Normed.Group.Ultra
+public import Mathlib.Analysis.Normed.Module.FiniteDimension
+public import Mathlib.RingTheory.Trace.Basic
 
 @[expose] public section
 
@@ -153,46 +207,7 @@ theorem fixed_eq {z : E} (hz : star z = z) : algebraMap F E (Algebra.trace F E z
     inv_mul_cancel₀ h2E, one_mul]
 
 theorem exists_far : ∃ w : E, ‖w‖ = 1 ∧ ∀ c : F, 1 ≤ ‖w - algebraMap F E c‖ := by
-  haveI := hU.ultraE
-  haveI := hU.ultraF
-  haveI := hU.lcF
-  haveI : ProperSpace F := ProperSpace.of_locallyCompactSpace F
-  obtain ⟨y, hy⟩ := hU.star_ne
-  have hyF : ∀ c : F, y - algebraMap F E c ≠ 0 := by
-    intro c hc
-    apply hy
-    rw [sub_eq_zero.mp hc, hU.star_fix]
-  obtain ⟨c0, -, hmin⟩ := (isCompact_closedBall (0 : F) ‖y‖).exists_isMinOn
-    ⟨0, by simp⟩ (f := fun c => ‖y - algebraMap F E c‖)
-    (by fun_prop)
-  have hall : ∀ c : F, ‖y - algebraMap F E c0‖ ≤ ‖y - algebraMap F E c‖ := by
-    intro c
-    by_cases hc : ‖c‖ ≤ ‖y‖
-    · exact hmin (by simpa using hc)
-    · push_neg at hc
-      have h0 : ‖y - algebraMap F E c0‖ ≤ ‖y‖ := by simpa using hmin (a := 0) (by simp)
-      have : ‖c‖ ≤ max ‖y‖ ‖y - algebraMap F E c‖ := by
-        have := um_sub y (y - algebraMap F E c)
-        simpa [norm_algebraMap'] using this
-      have : ‖y‖ < ‖y - algebraMap F E c‖ := by
-        rcases le_max_iff.mp this with h | h
-        · exact absurd (hc.trans_le h) (lt_irrefl _)
-        · exact hc.trans_le h
-      linarith
-  set z := y - algebraMap F E c0 with hzdef
-  have hz0 : z ≠ 0 := hyF c0
-  obtain ⟨x, hx⟩ := hU.unram z
-  have hxpos : 0 < ‖x‖ := by rw [← hx]; exact norm_pos_iff.mpr hz0
-  have hx0 : x ≠ 0 := norm_pos_iff.mp hxpos
-  have hX0 : algebraMap F E x ≠ 0 := by simpa using hx0
-  refine ⟨z / algebraMap F E x, ?_, ?_⟩
-  · rw [norm_div, norm_algebraMap', ← hx, div_self (norm_pos_iff.mpr hz0).ne']
-  · intro c
-    have : z / algebraMap F E x - algebraMap F E c
-        = (y - algebraMap F E (c0 + x * c)) / algebraMap F E x := by
-      rw [hzdef]; field_simp; rw [map_add (f := _), map_mul]; ring
-    rw [this, norm_div, norm_algebraMap', le_div_iff₀ hxpos, one_mul, ← hx]
-    exact hall _
+  apply GlobalTheory.NormUnits.exists_far_unit
 
 theorem exists_diff_one (h2 : ‖(2 : F)‖ < 1) : ∃ w : E, ‖w‖ ≤ 1 ∧ ‖w - star w‖ = 1 := by
   haveI := hU.ultraE

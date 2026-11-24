@@ -1,8 +1,8 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimE
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThmBpAtEqOfShiftR
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFHatProdKBStmt
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OnePointBasisFundamentalDomainVolume
 
 @[expose] public section
 

@@ -1,9 +1,11 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Analytic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ClosureK
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.PolarJmConjTranspose
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ExistsExpEqOfMemKset
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.PolarJmConjTranspose
 
 @[expose] public section
 
@@ -24,8 +26,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin 
 theorem closure_E_mem_genSub {V : Submodule ℂ D} (a b : Fin n) {v : D} (hv : v ∈ genSub E V) :
     E a b v ∈ genSub E V := by
   rw [genSub, Submodule.mem_sInf] at hv ⊢
-  intro T hT
-  exact hT.2 a b v (hv T hT)
+  exact fun T hT => hT.2 a b v (hv T hT)
 
 theorem closure_actM_pow_mem_genSub {V : Submodule ℂ D} (X : Matrix (Fin n) (Fin n) ℂ) (m : ℕ)
     {v : D} (hv : v ∈ genSub E V) : ((actM E X) ^ m) v ∈ genSub E V := by
@@ -133,8 +134,7 @@ theorem closure_genSub_stable (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn �
     closure_mapsTo_of_genSub _ (fun v hv => by
       rw [← hZe]
       exact exp_inK_apply_mem_closure hσ hD hVf hVK hZ hv) hy
-  rw [hσg, ContinuousLinearMap.comp_apply, hEq]
-  exact hs2 _ hs1
+  simpa only [hσg, ContinuousLinearMap.comp_apply, hEq] using hs2 _ hs1
 
 end Rep
 

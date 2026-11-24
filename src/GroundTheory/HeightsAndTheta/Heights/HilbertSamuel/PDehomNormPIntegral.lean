@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDehomNormPIntegral
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
+public import Mathlib.NumberTheory.Padics.PadicNumbers
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDehomCharpolyForms
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.LinearAlgebra.Charpoly.BaseChange
+public import Mathlib.RingTheory.Polynomial.IsIntegral
+import Mathlib.RingTheory.Valuation.AlgebraInstances
+import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -37,8 +44,8 @@ theorem mem_range_map_iff {τ : Type*} (V : Subring ℚ) (F : MvPolynomial τ �
     exact (F'.coeff ν).2
   · intro h
     refine ⟨∑ ν ∈ F.support, monomial ν ⟨F.coeff ν, h ν⟩, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_monomial]
     exact F.support_sum_monomial_coeff
 

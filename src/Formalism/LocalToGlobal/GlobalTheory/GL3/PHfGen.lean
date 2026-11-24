@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PIopNorm
 
 @[expose] public section

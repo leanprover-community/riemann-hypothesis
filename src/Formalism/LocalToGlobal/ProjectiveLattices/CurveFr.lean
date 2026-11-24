@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftCurveSt
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Lattice
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsComb
 
 @[expose] public section

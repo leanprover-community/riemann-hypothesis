@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

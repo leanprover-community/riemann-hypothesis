@@ -1,6 +1,12 @@
 module
 
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulVbar
+import Mathlib.RingTheory.PicardGroup
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtA
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsA
+public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsB
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsC
+public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.Inertia
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.ModelF
 
 @[expose] public section

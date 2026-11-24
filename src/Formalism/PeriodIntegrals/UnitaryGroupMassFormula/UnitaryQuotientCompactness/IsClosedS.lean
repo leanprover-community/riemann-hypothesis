@@ -1,6 +1,53 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselSubgroupProductMeasureIsHaar
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.SsetGroup
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.NilpotentSubgroup
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.UnipotentRadicalContracting
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.MulVecBvecApply
 
 @[expose] public section
 
@@ -20,27 +67,7 @@ lemma isClosed_UH : IsClosed (UH (Hpk k r)) := by
   exact isClosed_eq hc continuous_const
 
 lemma isClosed_N : IsClosed (Nset k r) := by
-  have e : Nset k r = UH (Hpk k r) ∩ ⋂ i : Fin (2 * r + k + 1), ⋂ j : Fin (2 * r + k + 1),
-      {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ |
-        j.val ≤ r + k → min j.val r ≤ i.val → g i j = if i = j then 1 else 0} := by
-    ext g
-    rw [mem_Nset_iff]
-    simp only [Set.mem_inter_iff, Set.mem_iInter, Set.mem_setOf_eq]
-    rfl
-  rw [e]
-  refine isClosed_UH.inter (isClosed_iInter fun i => isClosed_iInter fun j => ?_)
-  by_cases hp : j.val ≤ r + k ∧ min j.val r ≤ i.val
-  · have : {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ |
-        j.val ≤ r + k → min j.val r ≤ i.val → g i j = if i = j then 1 else 0} =
-        {g | g i j = if i = j then 1 else 0} := by
-      ext g; simp only [Set.mem_setOf_eq]; exact ⟨fun h => h hp.1 hp.2, fun h _ _ => h⟩
-    rw [this]
-    exact isClosed_eq ((continuous_apply j).comp (continuous_apply i)) continuous_const
-  · have : {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ |
-        j.val ≤ r + k → min j.val r ≤ i.val → g i j = if i = j then 1 else 0} = Set.univ := by
-      ext g; simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
-      intro h1 h2; exact absurd ⟨h1, h2⟩ hp
-    rw [this]; exact isClosed_univ
+  apply GlobalTheory.ProdHaar.isClosed_Nset
 
 lemma S_sub_UH {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ Sset k r z) :
     g ∈ UH (Hpk k r) := by
@@ -84,21 +111,19 @@ lemma mul_mem_S {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (ha : a ∈ Sset k r z) (hb : b ∈ Sset k r z) : a * b ∈ Sset k r z := by
   obtain ⟨h1, hh1, n1, hn1, rfl⟩ := ha
   obtain ⟨h2, hh2, n2, hn2, rfl⟩ := hb
-  have hi2 := inv_mem_UW hh2
-  have hc : h2⁻¹ * n1 * h2 ∈ Nset k r := by
-    have := uw_conj_N hi2 hn1; rwa [inv_inv_UH hh2.1] at this
-  refine ⟨h1 * h2, mul_mem_UW hh1 hh2, h2⁻¹ * n1 * h2 * n2, (nilpotent_subgroup k r).2.1 _ hc _ hn2, ?_⟩
-  calc h1 * n1 * (h2 * n2) = h1 * (h2 * h2⁻¹) * n1 * h2 * n2 := by
-        rw [mul_inv_UH hh2.1, Matrix.mul_one]; simp only [Matrix.mul_assoc]
-    _ = h1 * h2 * (h2⁻¹ * n1 * h2 * n2) := by simp only [Matrix.mul_assoc]
+  refine ⟨h1 * h2, mul_mem_UW hh1 hh2, h2⁻¹ * n1 * h2 * n2,
+    (nilpotent_subgroup k r).2.1 _ ?_ _ hn2, ?_⟩
+  · simpa [inv_inv_UH hh2.1] using uw_conj_N (inv_mem_UW hh2) hn1
+  · calc h1 * n1 * (h2 * n2) = h1 * (h2 * h2⁻¹) * n1 * h2 * n2 := by
+          rw [mul_inv_UH hh2.1, Matrix.mul_one]; simp only [Matrix.mul_assoc]
+      _ = h1 * h2 * (h2⁻¹ * n1 * h2 * n2) := by simp only [Matrix.mul_assoc]
 
 lemma inv_mem_S {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (ha : a ∈ Sset k r z) : a⁻¹ ∈ Sset k r z ∧ a * a⁻¹ = 1 := by
   refine ⟨?_, mul_inv_UH (S_sub_UH ha)⟩
   obtain ⟨h, hh, n, hn, rfl⟩ := ha
-  have hi := inv_mem_UW hh
-  have hni : n⁻¹ ∈ Nset k r := (nilpotent_subgroup k r).2.2 _ hn
-  refine ⟨h⁻¹, hi, h * n⁻¹ * h⁻¹, uw_conj_N hh hni, ?_⟩
+  refine ⟨h⁻¹, inv_mem_UW hh, h * n⁻¹ * h⁻¹,
+    uw_conj_N hh ((nilpotent_subgroup k r).2.2 _ hn), ?_⟩
   rw [Matrix.mul_inv_rev]
   calc n⁻¹ * h⁻¹ = (h⁻¹ * h) * n⁻¹ * h⁻¹ := by rw [inv_mul_UH' hh.1, Matrix.one_mul]
     _ = h⁻¹ * (h * n⁻¹ * h⁻¹) := by simp only [Matrix.mul_assoc]

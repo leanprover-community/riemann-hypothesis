@@ -1,8 +1,46 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.KeyOne
-public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.SelfDualLatticesOneOrbit
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.LatticeCountingFormula
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -28,8 +66,8 @@ theorem key_pow_dvd {A : Type} [CommRing A] (p : ℕ) (hp : p.Prime) (w : A) (hw
   have hrow : ∀ a, φ (∑ b, u b * M b a) = φ (u 0) * φ (M 0 a) := by
     intro a
     have hz : ∀ i : Fin k, φ (u i.succ) = 0 := fun i => hu0 _ (Fin.succ_ne_zero _)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Fin.sum_univ_succ, map_mul]
+
+    rw [map_sum, Fin.sum_univ_succ, map_mul]
     simp [hz]
   have hpow : ∀ a, φ (M 0 a) ^ (p ^ e) = φ (N' 0 a) := by
     intro a
@@ -38,15 +76,15 @@ theorem key_pow_dvd {A : Type} [CommRing A] (p : ℕ) (hp : p.Prime) (w : A) (hw
   have hδ : ∀ b', ∑ a, φ (N' 0 a) * φ (N a b') = if (0 : Fin (k + 1)) = b' then 1 else 0 := by
     intro b'
     have h := congrArg φ (hinv 0 b')
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at h
+
+    rw [map_sum] at h
     simp_rw [map_mul] at h
     rw [h]
     split_ifs <;> simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [map_mul, map_pow, hrow, mul_pow, hpow, map_sum, map_mul]
+
+  rw [map_sum]
+
+  simp_rw [map_mul, map_pow, hrow, mul_pow, hpow, map_sum, map_mul]
   have e : ∑ a, φ (u 0) ^ (p ^ e) * φ (N' 0 a) * ∑ b', φ (v b') * φ (N a b') =
       φ (u 0) ^ (p ^ e) * ∑ b', φ (v b') * ∑ a, φ (N' 0 a) * φ (N a b') := by
     simp_rw [Finset.mul_sum]
@@ -90,13 +128,13 @@ theorem kS_ord (X : Loc) [Fact X.p.Prime] (O : Type) [CommRing O] [IsDomain O] [
   have hlift : liftSubst X.p X.n' O S.w 1 (hhLetters X.TT) g (kSkey O X j i) =
       MvPolynomial.map (algebraMap O (KK O)) (∑ a, (∑ b, u b * M b a) ^ (X.p ^ d) * (∑ b', v b' * N a b')) := by
     unfold kSkey
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, map_pow]
+
+    simp only [map_sum, map_mul, map_pow]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [liftSubst_X_vec X.p X.n' O S.w (hhLetters X.TT) 1 g hg xs a rfl,
       liftSubst_X_cov X.p X.n' O S.w (hhLetters X.TT) 1 g y a rfl]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [u, v, M, N, map_sum, map_mul, map_C, map_X, sigMat_apply]
+
+    simp only [u, v, M, N, map_mul, map_C, map_X, sigMat_apply]
     rfl
 
   have hMN : ∀ b a, ∃ T, M b a ^ (X.p ^ d) = N' b a + X.p * T := by
@@ -119,8 +157,8 @@ theorem kS_ord (X : Loc) [Fact X.p.Prime] (O : Type) [CommRing O] [IsDomain O] [
   have hinv : ∀ b b', ∑ a, N' b a * N a b' = if b = b' then 1 else 0 := by
     intro b b'
     have h1 : ∑ a, N' b a * N a b' = C (psiO X.p X.n' O s1 ((g⁻¹ * g) b b')) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [N', N, ← map_mul, ← map_sum, Matrix.mul_apply]
+
+      simp only [N', N, ← map_mul, ← map_sum, Matrix.mul_apply]
     rw [h1, Matrix.nonsing_inv_mul g hg, Matrix.one_apply]
     split_ifs <;> simp
   have hw : (C S.w : A) ^ 2 = (X.p : A) := by rw [← map_pow, hsq, map_natCast]
@@ -155,8 +193,8 @@ theorem key_minor_dvd {A : Type} [CommRing A] (p : ℕ) (hp : p.Prime) (w : A) (
     intro x Q hx a
     have hz : ∀ i : Fin k, φ (x i.succ) = 0 := fun i =>
       (Ideal.Quotient.eq_zero_iff_dvd w _).mpr (hx _ (Fin.succ_ne_zero _))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Fin.sum_univ_succ, map_mul]
+
+    rw [map_sum, Fin.sum_univ_succ, map_mul]
     simp [hz]
   have hpow : ∀ a, φ (M 0 a) ^ (p ^ e) = φ (N' 0 a) := by
     intro a
@@ -193,8 +231,8 @@ theorem kW_ord (X : Loc) [Fact X.p.Prime] (O : Type) [CommRing O] [IsDomain O] [
       liftSubst_X_vec X.p X.n' O S.w (hhLetters X.TT) 1 g hg xs 0 rfl,
       liftSubst_X_vec X.p X.n' O S.w (hhLetters X.TT) 1 g hg z 0 rfl,
       liftSubst_X_vec X.p X.n' O S.w (hhLetters X.TT) 1 g hg xs c rfl]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [u, u', M, N', map_sum, map_mul, map_C, map_X, sigMat_apply]
+
+    simp only [u, u', M, N', map_sum, map_mul, map_C, map_X, sigMat_apply]
     rfl
   have hMN : ∀ b a, ∃ T, M b a ^ (X.p ^ d) = N' b a + X.p * T := by
     intro b a

@@ -1,8 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeCut
-public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
-public import Formalism.HermitianCurvature.StatementTL
 
 @[expose] public section
 

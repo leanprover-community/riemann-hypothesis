@@ -1,8 +1,50 @@
 module
 
-public import Mathlib
-public import Formalism.SatakeDualWeyl.Statement
 public import Formalism.LocalRingCardinality.DataLevel
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -74,8 +116,8 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.fo
   congr 1
   funext i
   unfold _root_.Formalism.UG.cT
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [vecMul, mulVec, dotProduct, map_sum, mul_comm]
+
+  simp [vecMul, mulVec, dotProduct, map_sum, mul_comm]
 
 end Ring
 
@@ -87,7 +129,7 @@ def plusAlg (σ : E →ₐ[F] E) (J γ : Matrix n n E) : Subalgebra F (genAlg γ
   carrier := {l | cT (σ : E →+* E) (l : Matrix n n E) * J = J * (l : Matrix n n E)}
   mul_mem' := by
     intro a b ha hb
-    simp only [Set.mem_setOf_eq] at *
+    simp only [Set.mem_ofPred_eq] at *
     have hc : ((a * b : genAlg γ) : Matrix n n E) = (b : Matrix n n E) * a := by
       rw [mul_comm a b]; rfl
     have hd : ((a * b : genAlg γ) : Matrix n n E) = (a : Matrix n n E) * b := rfl
@@ -95,7 +137,7 @@ def plusAlg (σ : E →ₐ[F] E) (J γ : Matrix n n E) : Subalgebra F (genAlg γ
     rw [hc, Matrix.mul_assoc]
   add_mem' := by
     intro a b ha hb
-    simp only [Set.mem_setOf_eq] at *
+    simp only [Set.mem_ofPred_eq] at *
     have hd : ((a + b : genAlg γ) : Matrix n n E) = (a : Matrix n n E) + b := rfl
     have he : cT (σ : E →+* E) ((a : Matrix n n E) + (b : Matrix n n E)) =
         cT (σ : E →+* E) (a : Matrix n n E) + cT (σ : E →+* E) (b : Matrix n n E) := by
@@ -103,11 +145,11 @@ def plusAlg (σ : E →ₐ[F] E) (J γ : Matrix n n E) : Subalgebra F (genAlg γ
     rw [hd, he, Matrix.add_mul, Matrix.mul_add, ha, hb]
   algebraMap_mem' := by
     intro r
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     have hd : ((algebraMap F (genAlg γ) r : genAlg γ) : Matrix n n E) = r • (1 : Matrix n n E) := by
       rw [Algebra.algebraMap_eq_smul_one]; rfl
     have he : cT (σ : E →+* E) (r • (1 : Matrix n n E)) = r • (1 : Matrix n n E) := by
-      ext i j; by_cases h : i = j <;> simp [cT, Matrix.one_apply, h, eq_comm]
+      ext i j; by_cases h : i = j <;> simp [cT, h, eq_comm]
     rw [hd, he]; simp
 
 def plusTensor (σ : E →ₐ[F] E) (J γ : Matrix n n E) :
@@ -127,11 +169,11 @@ def normOne (σ : E →ₐ[F] E) (J γ : Matrix n n E) (R : Type) [CommRing R] [
   one_mem' := by simp
   mul_mem' := by
     intro a b ha hb
-    simp only [Set.mem_setOf_eq, Units.val_mul, map_mul] at *
+    simp only [Set.mem_ofPred_eq, Units.val_mul, map_mul] at *
     rw [mul_mul_mul_comm, ha, hb, one_mul]
   inv_mem' := by
     intro a ha
-    simp only [Set.mem_setOf_eq] at *
+    simp only [Set.mem_ofPred_eq] at *
     have h : ((a⁻¹ : _ˣ) : LPts σ J γ R) * lConj σ J γ R (a⁻¹ : _ˣ) * (a * lConj σ J γ R a) = 1 := by
       rw [mul_mul_mul_comm, ← map_mul]; simp
     rwa [ha, mul_one] at h

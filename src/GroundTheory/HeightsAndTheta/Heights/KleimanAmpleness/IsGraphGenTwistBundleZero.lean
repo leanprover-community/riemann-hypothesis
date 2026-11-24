@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.EqZeroOrIsHomogeneousOfMemPolyPiece
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsFieldSubalgebraSelf
+public import Aesop.BuiltinRules
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

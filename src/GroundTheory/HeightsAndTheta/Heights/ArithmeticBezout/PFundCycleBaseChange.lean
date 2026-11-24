@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsFundCycleBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMinimalPrimeComap
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LocalMultRadical
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

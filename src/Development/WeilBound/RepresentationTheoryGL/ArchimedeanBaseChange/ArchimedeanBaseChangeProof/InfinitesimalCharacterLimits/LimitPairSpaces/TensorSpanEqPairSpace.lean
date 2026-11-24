@@ -1,10 +1,46 @@
 module
 
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.InfinitesimalCharacterGlue
-public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PIndMap
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermAuxiliaryStatementA
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUnipLevIntegral
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinStable
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdelicGLIwasawaDecompositionStandardParabolic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermAuxiliaryStatementA
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUnipLevIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -30,12 +66,9 @@ def _root_.PositivityTheory.Rg.BcB.SpectralAccumulation.Tr.addTw : {N : ℕ} →
   | _, .leaf V z, α => .leaf V (z + α 0)
   | _, .node t₁ t₂, α => .node (t₁.addTw α) (t₂.addTw fun i => α (i + t₁.twists.length))
 
-abbrev Cint (E : Type) [Field E] [NumberField E] (n : ℕ) : Subgroup (GL (Fin n) (Af E)) :=
-  GroundTheory.Automorphic.AdelicGLn.integralFiniteGL E n
-
 theorem exists_decI {r s : ℕ} (x : GA E (r + s)) :
     ∃ q : (BlockIx (r + s) r → Ad E) × (GA E r × GA E s) × Kinf E (r + s) × GL (Fin (r + s)) (Af E),
-      q.2.2.2 ∈ Cint E (r + s) ∧ x = unip q.1 * lev (Ad E) r s q.2.1 * InducedTensorMap.cf (r + s) q.2.2.1 q.2.2.2 := by
+      q.2.2.2 ∈ _root_.GlobalTheory.CompanionTheory.LimV.KO E (r + s) ∧ x = unip q.1 * lev (Ad E) r s q.2.1 * InducedTensorMap.cf (r + s) q.2.2.1 q.2.2.2 := by
   obtain ⟨b, hb, k, hy⟩ := GlobalTheory.IwasawaAdelic.exists_upper_mul_unitary_inf E (r + s)
     (Matrix.GeneralLinearGroup.map (pInf E) x)
   have hb' : (((b⁻¹ : GL (Fin (r + s)) (Cinf E))) : Matrix (Fin (r + s)) (Fin (r + s)) (Cinf E)).BlockTriangular id := by
@@ -53,9 +86,9 @@ theorem exists_decI {r s : ℕ} (x : GA E (r + s)) :
     rw [map_add (f := _), show pFin E (sInf E (xi p)) = 0 from rfl, show pFin E (sFin E (xf p)) = xf p from rfl, zero_add]
   refine ⟨(fun p => sInf E (xi p) + sFin E (xf p),
     (infGL E r mi.1 * finGL E r mf.1, infGL E s mi.2 * finGL E s mf.2), k, c), hc, ga_ext ?_ ?_⟩
-  · simp only [InducedTensorMap.cf, map_mul, IwaAd.map_unip, IwaAd.map_lev, e1, pInf_infGL, pInf_finGL, mul_one, one_mul]
+  · simp only [InducedTensorMap.cf, map_mul, IwaAd.map_unip, IwaAd.map_lev, e1, pInf_infGL, pInf_finGL, mul_one]
     rw [hy, hbi]
-  · simp only [InducedTensorMap.cf, map_mul, IwaAd.map_unip, IwaAd.map_lev, e2, pFin_infGL, pFin_finGL, mul_one, one_mul]
+  · simp only [InducedTensorMap.cf, map_mul, IwaAd.map_unip, IwaAd.map_lev, e2, pFin_infGL, pFin_finGL, one_mul]
     rw [hf]
 
 def mult : {N : ℕ} → Tr E N → (ℕ → ℂ) → GA E N → ℂ

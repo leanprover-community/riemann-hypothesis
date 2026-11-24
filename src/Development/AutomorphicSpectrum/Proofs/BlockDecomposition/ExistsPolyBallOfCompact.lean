@@ -1,16 +1,61 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgVanish
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocallyConstantCompactSupportUnipotent
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicDoubleCosetDecomposition
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicCellStructureData
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMatMir
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolyBall
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeTwistedIso
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProjectionToTwistedEigenfunctionSupport
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMemTwKerPolyBall
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsRepsSumEqZero
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMatMir
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIntertwinerOfEquiv
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothSmInd
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocallyConstantCompactSupportUnipotent
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicDoubleCosetDecomposition
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProjectionToTwistedEigenfunctionSupport
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothIntegralLinear
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaOpenMirabolic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -42,8 +87,8 @@ theorem exists_avg (H : Subgroup G) (σ : Representation ℂ H Z) (L : Subgroup 
     have : E (cInd H σ ((r i : L) : G) f) = 0 := hcon _ (r i).2
     simp only [GlobalTheory.CompanionTheory.TwistedAverage.twOrbit, map_smul, this, smul_zero]
   have : E (c • ∑ i, GlobalTheory.CompanionTheory.TwistedAverage.twOrbit (cInd H σ) L θ f (r i)) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum, Finset.sum_eq_zero fun i _ => hz i, smul_zero]
+
+    rw [map_smul, map_sum, Finset.sum_eq_zero fun i _ => hz i, smul_zero]
   exact this
 
 theorem avgVanish_conj (H : Subgroup G) (σ : Representation ℂ H Z) (U : Subgroup G) (θ : U →* ℂˣ) (y : G)
@@ -52,7 +97,7 @@ theorem avgVanish_conj (H : Subgroup G) (σ : Representation ℂ H Z) (U : Subgr
     (f : cIndSpace H σ) (hf : AvgVanish H σ U θ (cInd H σ y f) 1) : AvgVanish H σ U θ f y := by
   obtain ⟨L', hL', hc, g', h1, h2, h3⟩ := hf
   let c : G →* G := (MulAut.conj y⁻¹).toMonoidHom
-  have hcv : ∀ x, c x = y⁻¹ * x * y := fun x => by simp [c, MulAut.conj_apply]
+  have hcv : ∀ x, c x = y⁻¹ * x * y := fun x => by simp [c]
   have hcc : Continuous c := by
     have : (c : G → G) = fun x => y⁻¹ * x * y := funext hcv
     rw [this]; fun_prop
@@ -438,7 +483,7 @@ theorem eq_zero_of_fixed_twKer {G V : Type} [Group G] [TopologicalSpace G] [IsTo
   have ho : IsOpen (((1 : L →* ℂˣ).ker : Subgroup L) : Set L) := by
     have : (((1 : L →* ℂˣ).ker : Subgroup L) : Set L) = Set.univ := by
       ext x
-      simp [MonoidHom.mem_ker]
+      simp
     rw [this]
     exact isOpen_univ
   obtain ⟨K, T, -, -, -, hT, hsum⟩ :=

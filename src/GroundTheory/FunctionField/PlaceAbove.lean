@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
+public import GroundTheory.FunctionField.PlaceDefs
+public import Mathlib.NumberTheory.RamificationInertia.Ramification
 public import GroundTheory.FunctionField.PlaceBasic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Ramification
 
 @[expose] public section
 

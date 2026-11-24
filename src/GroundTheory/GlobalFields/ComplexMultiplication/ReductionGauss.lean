@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FunctionFieldPoint
+import Mathlib.Tactic.TypeStar
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.NormEDS
 
 @[expose] public section
 

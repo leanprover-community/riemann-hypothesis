@@ -1,9 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertPointNagata
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertPointLengthSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertPointMultChart
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Smooth.Flat
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -23,8 +28,8 @@ theorem aeval_mul_of_homog [Fintype K] [∀ k, Fintype (ι k)] {S : Type*} [Comm
     {d : K → ℕ} (hf : IsMultiHomog f d) :
     aeval (fun p => r p * t p.1) f = aeval r f * ∏ k, t k ^ d k := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum, map_sum, Finset.sum_mul]
+
+  rw [f.as_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm => ?_
   rw [aeval_monomial, aeval_monomial, mul_assoc]
   congr 1

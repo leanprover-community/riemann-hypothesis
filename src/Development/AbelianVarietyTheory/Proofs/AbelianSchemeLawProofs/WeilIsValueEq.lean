@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueWeilIs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -44,17 +85,17 @@ theorem comm_eq {B U : Type} [CommGroup B] [CommGroup U] (v : B → B → B → 
 
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A] (L : LB A.left)
 
-def pt {Y : Over S} (a : Y ⟶ A) : FreeAbelianGroup (Y.left ⟶ A.left) := FreeAbelianGroup.of a.left
+def pt {Y : Over S} (a : Y ⟶ A) : FreeAddCommGroup (Y.left ⟶ A.left) := FreeAddCommGroup.of a.left
 
 abbrev ValFam (Y : Over S) : Type 1 :=
   ∀ (Z : Over S) (_ : Z ⟶ Y) (z : Z.left) (_ : (Z.left ⟶ A.left) → L.ι), (Z.left.presheaf.stalk z)ˣ
 
-def Rep {Y : Over S} (D : FreeAbelianGroup (Y.left ⟶ A.left)) (f : ValFam L Y) : Prop :=
+def Rep {Y : Over S} (D : FreeAddCommGroup (Y.left ⟶ A.left)) (f : ValFam L Y) : Prop :=
   ∃ (K : Type) (_ : Fintype K) (φ : K → (Y.left ⟶ A.left)) (ε : K → ℤ) (t : LB.Gen (LB.LinComb L φ ε)),
-    t.IsGen ∧ ∑ k, ε k • FreeAbelianGroup.of (φ k) = D ∧
+    t.IsGen ∧ ∑ k, ε k • FreeAddCommGroup.of (φ k) = D ∧
       ∀ (Z : Over S) (r : Z ⟶ Y) (z : Z.left) (J), Good L z J → val t r.left z J = f Z r z J
 
-variable {L} {Y : Over S} {D D' : FreeAbelianGroup (Y.left ⟶ A.left)} {f f' : ValFam L Y}
+variable {L} {Y : Over S} {D D' : FreeAddCommGroup (Y.left ⟶ A.left)} {f f' : ValFam L Y}
 
 omit [GrpObj A] in
 theorem oneGen_isGen : (LB.oneGen L (Y := Y.left)).IsGen := fun _ _ =>
@@ -101,7 +142,7 @@ theorem Rep.theta {k : ℤ} {T : Over S} (θ : ThetaGrp A L k T) (s : Y ⟶ T) (
   refine ⟨Fin 2, inferInstance, _, _, LB.pullGen L (K := Fin 2) ![(snd T A).left, (translPt A θ.pt).left] ![k, -k] θ.φ
     (lift s a).left, DVR.pullGen_isGen _ _ _ _ θ.isGen _, ?_, fun Z r z J hJ => ?_⟩
   · have := congrArg Multiplicative.toAdd
-      (prod_theta (k := k) θ.pt s a (fun q => Multiplicative.ofAdd (FreeAbelianGroup.of q)))
+      (prod_theta (k := k) θ.pt s a (fun q => Multiplicative.ofAdd (FreeAddCommGroup.of q)))
     simp only [toAdd_prod, toAdd_zpow, toAdd_ofAdd, toAdd_mul] at this
     rw [this, neg_smul, ← sub_eq_add_neg]; rfl
   · refine (val_pull hJ _ _ _).trans ?_
@@ -116,7 +157,7 @@ theorem Rep.cube [IsCommMonObj A] {t : LB.Gen (Theta A L)} (ht : t.IsGen) (a b c
   refine ⟨thK, inferInstance, _, _, LB.pullGen L (thφ A (x3 A)) thε t (lift a (lift b c)).left,
     DVR.pullGen_isGen _ _ _ _ ht _, ?_, fun Z r z J hJ => ?_⟩
   · have := congrArg Multiplicative.toAdd
-      (prod_cub a b c (fun q => Multiplicative.ofAdd (FreeAbelianGroup.of q)))
+      (prod_cub a b c (fun q => Multiplicative.ofAdd (FreeAddCommGroup.of q)))
     simp only [toAdd_prod, toAdd_zpow, toAdd_ofAdd, toAdd_mul, toAdd_inv] at this
     rw [this]; simp only [sub_eq_add_neg]; rfl
   · refine (val_pull hJ _ _ _).trans ?_
@@ -133,14 +174,14 @@ theorem Rep.cubeProd [IsCommMonObj A] {t : LB.Gen (Theta A L)} (ht : t.IsGen) (x
     · rw [Finset.prod_range_succ, MonObj.comp_pow]
 
 theorem Rep.rigid (hG : GlobalFnsSt) (hA : IsAbelianScheme A) (hL : L.IsLB) {Z : Over S}
-    {D : FreeAbelianGroup ((Z ⊗ A).left ⟶ A.left)} {f : ValFam L (Z ⊗ A)} (h : Rep L D f) (hD : D = 0)
+    {D : FreeAddCommGroup ((Z ⊗ A).left ⟶ A.left)} {f : ValFam L (Z ⊗ A)} (h : Rep L D f) (hD : D = 0)
     (a : Z ⟶ A) {z : Z.left} {J} (hJ : Good L z J) : f Z (lift (𝟙 Z) a) z J = f Z (lift (𝟙 Z) 1) z J := by
   obtain ⟨K, _, φ, ε, t, ht, hD', hv⟩ := h
   obtain ⟨c, hc⟩ := exists_ratio hL (φ := φ) (ε := ε) (K' := PEmpty) (φ' := PEmpty.elim) (ε' := PEmpty.elim)
     (fun U _ g => by
-      have := congrArg (FreeAbelianGroup.lift (fun q => Additive.ofMul (g q))) (hD'.trans hD)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_zsmul, FreeAbelianGroup.lift_apply_of, map_zero] at this
+      have := congrArg (FreeAddCommGroup.lift (fun q => Additive.ofMul (g q))) (hD'.trans hD)
+
+      simp only [map_sum, map_zsmul, FreeAddCommGroup.lift_apply_of, map_zero] at this
       refine Eq.trans ?_ (Fintype.prod_empty _).symm
       apply Additive.ofMul.injective
       simpa only [ofMul_prod, ofMul_zpow, ofMul_one] using this)
@@ -192,7 +233,7 @@ theorem commVal_eq (hG : GlobalFnsSt) (hA : IsAbelianScheme A) (hL : L.IsLB) {t 
       hG hA hL (by
         rw [Category.assoc, Category.assoc, hx, ← hx', MonObj.comp_pow, _root_.mul_one, _root_.mul_one]
         module) y hJ
-    simp only [MonObj.comp_mul, MonObj.comp_one, lift_fst_assoc, lift_snd, Category.id_comp, _root_.mul_one] at e
+    simp only [MonObj.comp_one, lift_fst_assoc, lift_snd, Category.id_comp] at e
     have e' := congrArg Additive.ofMul e
     apply Additive.ofMul.injective
     simp only [ofMul_mul, ofMul_zpow, ofMul_inv] at e' ⊢
@@ -203,7 +244,7 @@ theorem commVal_eq (hG : GlobalFnsSt) (hA : IsAbelianScheme A) (hL : L.IsLB) {t 
       hG hA hL (by
         rw [Category.assoc, Category.assoc, hy, ← hy']
         module) x hJ
-    simp only [MonObj.comp_mul, MonObj.comp_one, lift_fst_assoc, lift_snd, Category.id_comp, _root_.mul_one] at e
+    simp only [MonObj.comp_one, lift_fst_assoc, lift_snd, Category.id_comp] at e
     have e' := congrArg Additive.ofMul e
     apply Additive.ofMul.injective
     simp only [ofMul_mul, ofMul_pow, ofMul_inv] at e' ⊢

@@ -2,9 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementJets
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsMM
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntTens
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntPull
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntEasy
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntPull
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntTens
 
 @[expose] public section
 

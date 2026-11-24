@@ -92,6 +92,8 @@ def resolve(args):
     selected_head = args.head
     for attempt in range(5):
         pr = api("pulls/" + str(args.pr))
+        if getattr(args, "require_main", False) and pr.get("base", {}).get("ref") != "main":
+            raise ValueError("quick checks require a PR targeting main")
         selected_head = selected_head or pr["head"]["sha"]
         if pr["head"]["sha"] != selected_head:
             raise ValueError("PR head changed before this job started; a newer run will build it")
@@ -112,7 +114,7 @@ def resolve(args):
         time.sleep(2 * (attempt + 1))
     result = identity(revision)
     request = {"repository": REPO, "run_id": int(os.environ.get("GITHUB_RUN_ID", "0")),
-               "pr_number": args.pr, "pr_head": pr["head"]["sha"], "expected": result}
+               "pr_number": args.pr, "pr_head": pr["head"]["sha"], "base_head": pr["base"]["sha"], "base_ref": pr["base"].get("ref"), "expected": result}
     reused = get(f"{BASE}/ci/inputs/{result['input_fingerprint']}.json", missing=True, maximum=2_000_000)
     if reused is not None:
         reused = json.loads(reused)
@@ -136,8 +138,8 @@ def mapping(data):
     return publication.parse_map(data)
 
 
-def validate_record(record, *, allow_historical=False):
-    publication.identity_fields(record, toolchain=record.get("toolchain") if allow_historical else TOOLCHAIN)
+def validate_record(record):
+    publication.identity_fields(record, toolchain=TOOLCHAIN)
     if (record.get("repository") != REPO or
             record.get("input_fingerprint") != publication.fingerprint(record) or
             type(record.get("build_exit_code")) is not int or not 0 <= record["build_exit_code"] <= 255):
@@ -150,16 +152,21 @@ def validate_record(record, *, allow_historical=False):
             raise ValueError("Invalid published CI content address")
 
 
-def manifest_hashes(data, entries, map_data, identity=None):
-    header, rows = publication.parse_manifest(data, entries, identity)
+def manifest_artifacts(manifest, map_data, identity=None, *, modules=None):
+    """Validate all manifest rows, even when downloading only selected modules."""
+    entries = mapping(map_data)
+    header, rows = publication.parse_manifest(manifest, entries, identity)
     if header.get("map_sha256") != digest(map_data):
         raise ValueError("Module manifest does not match its output map")
-    result = {}
-    for row in rows.values():
-        if row[2] in result and result[row[2]] != row[3]:
+    hashes = {}
+    selected = entries if modules is None else {}
+    for name, input_hash, archive, checksum in rows.values():
+        if archive in hashes and hashes[archive] != checksum:
             raise ValueError("Conflicting archive digests in module manifest")
-        result[row[2]] = row[3]
-    return result
+        hashes[archive] = checksum
+        if modules is not None and name in modules:
+            selected[input_hash] = archive
+    return selected, hashes
 
 
 def downloads(cache, entries, sha256s):
@@ -233,16 +240,16 @@ def restore_previous_cache(candidate, request, cache):
         if record_data is None:
             continue
         record = json.loads(record_data)
-        validate_record(record, allow_historical=True)
-        if record["toolchain"] != TOOLCHAIN:
+        # Skip other releases before validating: validation rejects a release that has left the allow-list.
+        if isinstance(record, dict) and record.get("toolchain") != TOOLCHAIN:
             continue
+        validate_record(record)
         map_key, manifest_key = record["map_key"], record["module_manifest_key"]
         data = get(BASE + "/" + map_key)
         module_data = get(BASE + "/" + manifest_key)
         if digest(data) != record["map_sha256"] or digest(module_data) != record["module_manifest_sha256"]:
             raise ValueError("Published CI cache integrity mismatch")
-        latest = mapping(data)
-        extra_hashes = manifest_hashes(module_data, latest, data, record)
+        latest, extra_hashes = manifest_artifacts(module_data, data, record)
         downloads(cache, latest, extra_hashes)
         selected = cache / "latest.jsonl"
         selected.write_bytes(data)
@@ -252,12 +259,30 @@ def restore_previous_cache(candidate, request, cache):
 
 
 def preparation_state(directory):
-    state = Path(directory).expanduser().resolve()
-    # Keep the deployed 4.33 cache warm; only later releases need a new namespace.
-    return state if TOOLCHAIN == "leanprover/lean4:v4.33.1" else state / settings.TOOLCHAIN_DIR
+    return Path(directory).expanduser().resolve() / settings.TOOLCHAIN_DIR
+
+
+def runner_checks():
+    """Runner hosts download ci-runner.py on its own, so it owns the host thresholds and messages."""
+    # Loaded for prepare only: the hosted resolver and publisher import this file without runner code.
+    spec = importlib.util.spec_from_file_location("rh_ci_runner", Path(__file__).with_name("ci-runner.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def report_max_map_count():
+    """Run ci-runner.py's job-start report. Nothing here stops the job, including a failure to load that file."""
+    try:
+        runner_checks().report_max_map_count()
+    except Exception as error:
+        print(f"Skipped the vm.max_map_count report: {type(error).__name__}: {error}", flush=True)
 
 
 def prepare(args):
+    # First, before any download: log this host's vm.max_map_count, and warn if it is low. A low value
+    # otherwise shows up only hours into the build, as "failed to read file". The job goes on either way.
+    report_max_map_count()
     trusted = Path(args.trusted).resolve()
     settings.require_baseline()
     state = preparation_state(args.state)
@@ -285,11 +310,20 @@ def prepare(args):
             raise ValueError("Pinned baseline integrity mismatch")
         (cache / "outputs.jsonl").write_bytes(map_data)
         (cache / "modules.jsonl.gz").write_bytes(manifest)
-        entries = mapping(map_data)
-        hashes = manifest_hashes(manifest, entries, map_data)
+        names = None
+        quick_plan = getattr(args, "quick_plan", None)
+        if quick_plan:
+            plan = json.loads(Path(quick_plan).read_text())
+            request = json.loads(Path(args.request).read_text())
+            if plan.get("candidate_head") != request["expected"]["candidate_head"] or plan.get("status") != "ready":
+                raise ValueError("quick plan does not bind the resolved candidate")
+            names = set(plan["closure"])
+            if not names or len(names) > 2000:
+                raise ValueError("quick plan exceeds its dependency budget")
+        entries, hashes = manifest_artifacts(manifest, map_data, modules=names)
         downloads(cache, entries, hashes)
         request = json.loads(Path(args.request).read_text())
-        selected = restore_previous_cache(args.candidate, request, cache)
+        selected = None if quick_plan else restore_previous_cache(args.candidate, request, cache)
         paths = {"packages": str(deps / ".lake/packages"), "baseline_cache": str(cache),
                  "baseline_manifest": str(cache / "modules.jsonl.gz"), "baseline_map": str(cache / "outputs.jsonl"),
                  "latest_map": str(selected) if selected else ""}
@@ -315,6 +349,7 @@ def main():
     prep = commands.add_parser("prepare")
     for name in ("trusted", "candidate", "state", "request", "output"):
         prep.add_argument("--" + name, required=True)
+    prep.add_argument("--quick-plan", type=Path)
     prep.set_defaults(function=prepare)
     exp = commands.add_parser("expected")
     exp.add_argument("--request", required=True)

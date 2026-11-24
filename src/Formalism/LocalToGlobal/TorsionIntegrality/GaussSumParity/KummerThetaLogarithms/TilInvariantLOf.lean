@@ -1,9 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionPointsIntegral
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstFirstCoboundaryThree
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.EqZeroOfPowEqOne
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstFirstCoboundaryThree
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -123,8 +125,8 @@ lemma linEL_sum (σ : K →+* K) {ι : Type} [Fintype ι] (a y : ι → K)
   refine Finset.sum_congr rfl fun s _ => ?_
   by_cases hs : s.val % 2 = 0
   · simp only [if_pos hs]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← RingHom.coe_pow, map_sum, map_sum, Finset.sum_mul]
+
+    rw [← RingHom.coe_pow, map_sum, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, RingHom.coe_pow, iter_even (ha i) hs, map_mul]
     ring
@@ -142,8 +144,8 @@ lemma linOL_sum (σ : K →+* K) {ι : Type} [Fintype ι] (a y : ι → K)
   · simp only [if_pos hs]
     simp
   · simp only [if_neg hs]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← RingHom.coe_pow, map_sum, map_sum, Finset.sum_mul]
+
+    rw [← RingHom.coe_pow, map_sum, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, RingHom.coe_pow, iter_odd (ha i) hs, map_mul]
     ring
@@ -184,8 +186,8 @@ theorem dual_expansion : DualExpand := by
   refine ⟨fun r r' => ?_, fun r => ?_, fun r' => ?_⟩
   · have hc : σ^[d] (x * oms r * om r') = x * oms r * om r' := by
       rw [iterate_map_mul, iterate_map_mul, hx, (hfix r).2, (hfix r').1]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
     rw [← (Equiv.subRight (2 : ZMod d)).sum_comp
       (fun s : ZMod d => σ (σ (if s.val % 2 = 0 then σ^[s.val] (x * oms r * om r') else 0)))]
     refine Finset.sum_congr rfl fun s _ => ?_

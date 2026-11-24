@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-public import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
+public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -13,29 +54,7 @@ open ValuativeRel
 
 theorem norm_addChar_nonarch {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (ψ0 : AddChar k ℂ) (hψ : Continuous ψ0) (t : k) : ‖ψ0 t‖ = 1 := by
-  have hO : IsCompact (𝒪[k] : Set k) := by exact GlobalTheory.SplitWeil.Model.isCompact_int
-  have hK : IsCompact ((fun u => t * u) '' (𝒪[k] : Set k)) := hO.image (continuous_const.mul continuous_id)
-  obtain ⟨C, hC⟩ := (hK.image hψ).isBounded.exists_norm_le
-  have hpow : ∀ n : ℤ, ‖ψ0 t‖ ^ n ≤ C := fun n => by
-    have hmem : ψ0 (t * (n : k)) ∈ ψ0 '' ((fun u => t * u) '' (𝒪[k] : Set k)) :=
-      ⟨t * n, ⟨n, intCast_mem _ n, rfl⟩, rfl⟩
-    have := hC _ hmem
-    rwa [mul_comm, ← zsmul_eq_mul, AddChar.map_zsmul_eq_zpow, norm_zpow] at this
-  have hne : ψ0 t ≠ 0 := fun h => by
-    have := AddChar.map_add_eq_mul ψ0 t (-t)
-    rw [add_neg_cancel, AddChar.map_zero_eq_one, h, zero_mul] at this
-    exact one_ne_zero this
-  have hpos : 0 < ‖ψ0 t‖ := norm_pos_iff.2 hne
-  refine le_antisymm ?_ ?_
-  · by_contra h
-    obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt C (not_le.1 h)
-    exact absurd (hpow n) (by rw [zpow_natCast]; exact not_le.2 hn)
-  · by_contra h
-    have h1 : 1 < ‖ψ0 t‖⁻¹ := one_lt_inv₀ hpos |>.2 (not_le.1 h)
-    obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt C h1
-    have := hpow (-(n : ℤ))
-    rw [_root_.zpow_neg, zpow_natCast, ← inv_pow] at this
-    exact absurd this (not_le.2 hn)
+  apply PositivityTheory.KCo.Mod.norm_one <;> assumption
 
 theorem schr_unitary : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Invertible (2 : k)] (ψ0 : AddChar k ℂ), Continuous ψ0 →
     ∀ {κ : Type} [Fintype κ] (μ : @Measure (κ → k) (borel _)), @Measure.IsAddHaarMeasure _ _ _ (borel _) μ →

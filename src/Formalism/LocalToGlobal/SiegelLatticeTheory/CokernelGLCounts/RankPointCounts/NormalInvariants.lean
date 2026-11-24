@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StepHeightOfNormOne
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilySeparationBound
+public import Formalism.LocalRingCardinality.HostCls
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 
@@ -79,9 +80,6 @@ theorem ngPt_eq {D : D7} (TT : ℕ) (γ : PN.Pts D.host.E D.R.rS) :
     rw [D.host.der.finrank_E, Formalism.BasicNotions.Ranks.f_eq_ord (R := D.R)]
     first
     | ring
-    | rfl
-    | omega
-    | (simp only [Formalism.BasicNotions.Ranks.ord]; ring)
   have hcard : Fintype.card (InfinitePlace D.host.E) = D.R.f := by
     have h1 := NumberField.InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces D.host.E
     have h2 := NumberField.InfinitePlace.card_add_two_mul_card_eq_rank D.host.E
@@ -235,9 +233,6 @@ theorem normCount_of (h : NormCountG) : NormCount := by
     rw [D.host.der.finrank_E, Formalism.BasicNotions.Ranks.f_eq_ord (R := D.R)]
     first
     | ring
-    | rfl
-    | omega
-    | (simp only [Formalism.BasicNotions.Ranks.ord]; ring)
   have h1 := h D.host.E J m hJ hm S (fun x hx => ⟨(hS x hx).1, (hS x hx).2⟩)
   have hf : (Module.finrank ℚ D.host.E : ℝ) = 2 * (D.R.f : ℝ) := by rw [hfin]; push_cast; ring
   rw [hf] at h1

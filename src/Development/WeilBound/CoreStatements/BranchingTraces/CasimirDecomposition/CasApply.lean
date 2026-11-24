@@ -1,7 +1,54 @@
 module
 
-public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.ZuckermanGapSmall
-public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.PoulsenSmoothVectorsDense
+public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.ShiftApply
+public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.ZuckermanIngredients
+import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.StandardDifferential
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -76,14 +123,14 @@ theorem kOp_apply (U : URep k r) (x : M (vr k r true, U)) (c : Fin (2 * r + k + 
 
 theorem L_apply (U : URep k r) (a b : Fin (2 * r + k + 1)) (x : M (vr k r true, U)) (c : Fin (2 * r + k + 1)) :
     L (vr k r true, U) (Matrix.single a b 1) x c = U.dC (Matrix.single a b 1) (x c) - if c = b then x a else 0 := by
-  have h : (vr k r true, U).1.dC (Matrix.single a b 1) = -(Matrix.single a b (1 : ℂ))ᵀ := (GlobalTheory.T.StandardDifferential k r _).2
+  have h : (vr k r true, U).1.dC (Matrix.single a b 1) = -(Matrix.single a b (1 : ℂ))ᵀ := (_root_.GlobalTheory.CompanionTheory.ZuckStdD.stdD k r _).2
   simp only [L, h, LinearMap.add_apply, Pi.add_apply, dOp, mAct, LinearMap.compLeft_apply, Function.comp_apply,
     LinearMap.pi_apply, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.proj_apply, sub_eq_add_neg]
   congr 1
   rw [Finset.sum_eq_single a (fun d _ hd => by simp [Matrix.single_apply, hd.symm]) (by simp)]
   by_cases hc : c = b
   · simp [hc]
-  · simp [Matrix.single_apply, hc, Ne.symm hc]
+  · simp [hc, Ne.symm hc]
 
 theorem cas_apply (U : URep k r) (x : M (vr k r true, U)) (c : Fin (2 * r + k + 1)) :
     cas (vr k r true, U) x c = casR (vr k r true, U) x c - (2 : ℂ) • kOp U x c + ((2 * r + k + 1 : ℕ) : ℂ) • x c := by
@@ -105,8 +152,8 @@ theorem kOp_io {μ : Fin (2 * r + k + 1) → ℝ} {U T : URep k r} (hk : 1 ≤ k
   have S := zuckerman_ingredients
   have hL := S.homLie k r _ _ i (S.okTriv k r) (S.okVr k r true) hi
   have h1 : cas (vr k r true, U) (i y) = i (cas (one T) y) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [cas, LinearMap.sum_apply, Module.End.mul_apply, map_sum]
+
+    simp only [cas, LinearMap.sum_apply, Module.End.mul_apply, map_sum]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
     rw [← LinearMap.comp_apply (L _ (Matrix.single b a 1)) i, ← hL, LinearMap.comp_apply,
       ← LinearMap.comp_apply (L _ (Matrix.single a b 1)) i, ← hL, LinearMap.comp_apply]

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 @[expose] public section
 

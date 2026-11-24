@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormBound
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjAvoidingForm
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreRepresentatives
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormMax
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMetricMaxComparison
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

@@ -2,6 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.InPApplyEqZero
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 @[expose] public section
 
@@ -77,7 +78,7 @@ theorem exp_mem_Kset {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (hZ 
 
 theorem inP_apply_eq_zero {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : inP ε X)
     {a b : Fin n} (hab : ε a = ε b) : X a b = 0 := by
-  first | exact UpperTheory.Reformulated.B.Qh16.inP_apply_eq_zero .. | (apply UpperTheory.Reformulated.B.Qh16.inP_apply_eq_zero <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qh16.inP_apply_eq_zero <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh16.inP_apply_eq_zero <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qh16.inP_apply_eq_zero <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh16.inP_apply_eq_zero <;> first | assumption | infer_instance)
+  first | (apply UpperTheory.Reformulated.B.Qh16.inP_apply_eq_zero <;> assumption)
 
 theorem inK_apply_eq_zero {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inK ε Z)
     {a b : Fin n} (hab : ε a ≠ ε b) : Z a b = 0 := by

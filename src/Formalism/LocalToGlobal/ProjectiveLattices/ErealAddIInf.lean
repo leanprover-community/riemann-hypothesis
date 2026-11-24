@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MonoidAlgebra.Basic
+public import Mathlib.Data.EReal.Basic
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

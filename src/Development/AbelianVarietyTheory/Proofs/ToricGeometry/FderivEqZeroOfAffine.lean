@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
-public import ReciprocityTheory.ThetaQuasiPeriods.Transl
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Analysis.Calculus.FDeriv.Add
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 
 @[expose] public section
 
@@ -140,19 +181,14 @@ theorem apply_eq_sum (S : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ)) (v : Fin 
     ext k
     simp [Finset.sum_apply, Pi.single_apply]
   conv_lhs => rw [hv]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, Finset.sum_apply, mul_comm]
 
-private theorem valAt'_zero_toric_geometry {X : Scheme.{0}} (x : Sp ℂ ⟶ X) (U : X.Opens) :
-    valAt' x U 0 = 0 := by
-  unfold valAt'
-  split_ifs <;> simp [valAt]
+  simp [map_sum, Finset.sum_apply, mul_comm]
 
 private theorem valAt'_finset_sum' {X : Scheme.{0}} (x : Sp ℂ ⟶ X) (U : X.Opens) {J : Type} (s : Finset J)
     (F : J → Γ(X, U)) : valAt' x U (∑ j ∈ s, F j) = ∑ j ∈ s, valAt' x U (F j) := by
   classical
   refine Finset.induction_on s ?_ ?_
-  · rw [Finset.sum_empty, Finset.sum_empty, valAt'_zero_toric_geometry]
+  · rw [Finset.sum_empty, Finset.sum_empty, _root_.GlobalTheory.valAt'_zero]
   · intro j s hj ih
     rw [Finset.sum_insert hj, Finset.sum_insert hj, valAt'_add, ih]
 
@@ -203,8 +239,8 @@ theorem exists_coord_adapted : (∀ (X : Over (Sp ℂ)) (g : ℕ), SmoothOfRelat
     have hS : Sinv (fun j => D (t j)) = 0 := by
       funext i
       have e : D (t' i) = ∑ j, Sinv (Pi.single j 1) i * D (t j) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [ht', map_sum]
+
+        rw [ht', map_sum]
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [hl, hc, hc0, mul_zero, add_zero]
       rw [apply_eq_sum]

@@ -1,14 +1,55 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
-public import ReciprocityTheory.ThetaQuasiPeriods.Transl
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+public import Mathlib.Tactic.ENatToNat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
+public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.GeometricallyReducedOfPerfectField
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenConnectedComponentOfNoetherianSpace
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -47,21 +88,6 @@ private theorem valAt'_resG {Y : Scheme.{0}} (x : Sp ℂ ⟶ Y) {U' V' : Y.Opens
   rw [← key]
   rfl
 
-private theorem valAt'_ne_zero_of_isUnit {Y : Scheme.{0}} (x : Sp ℂ ⟶ Y) {W : Y.Opens} (hx : ⊤ ≤ x ⁻¹ᵁ W)
-    {g : Γ(Y, W)} (hg : IsUnit g) : valAt' x W g ≠ 0 := by
-  unfold valAt'
-  rw [dite_eq_left hx]
-  unfold valAt
-  exact ((hg.map (x.appLE W ⊤ hx).hom).map (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom).ne_zero
-
-private theorem valAt'_mul' {Y : Scheme.{0}} (x : Sp ℂ ⟶ Y) (U : Y.Opens) (f f' : Γ(Y, U)) :
-    valAt' x U (f * f') = valAt' x U f * valAt' x U f' := by
-  unfold valAt'
-  split_ifs with hx
-  · unfold valAt
-    simp only [map_mul]
-  · simp
-
 theorem IsHolFamily.fderiv_eq_zero (h : IsHolFamily ex) {U V : X.Opens} (hU : IsAffineOpen U) {z ξ : E}
     (hz : ⊤ ≤ ex z ⁻¹ᵁ U) (hV : ⊤ ≤ ex z ⁻¹ᵁ V)
     (h0 : ∀ f : Γ(X, U), fderiv ℂ (fun w => valAt' (ex w) U f) z ξ = 0) (r : Γ(X, V)) :
@@ -81,12 +107,12 @@ theorem IsHolFamily.fderiv_eq_zero (h : IsHolFamily ex) {U V : X.Opens} (hU : Is
     exact hfx
   have hSz : valAt' (ex z) U (s : Γ(X, U)) ≠ 0 := by
     rw [← valAt'_resG (ex z) (X.basicOpen_le f) hzD]
-    exact valAt'_ne_zero_of_isUnit (ex z) hzD hsu
+    exact _root_.GlobalTheory.valAt'_isUnit_ne_zero (ex z) hzD hsu
   have hev : (fun w => valAt' (ex w) V r * valAt' (ex w) U (s : Γ(X, U))) =ᶠ[𝓝 z]
       fun w => valAt' (ex w) U a := by
     filter_upwards [h.eventually hzD] with w hw
     rw [← valAt'_resG (ex w) hfV hw, ← valAt'_resG (ex w) (X.basicOpen_le f) hw,
-      ← valAt'_resG (ex w) (X.basicOpen_le f) hw a, ← valAt'_mul']
+      ← valAt'_resG (ex w) (X.basicOpen_le f) hw a, ← _root_.GlobalTheory.valAt'_mul]
     exact congrArg _ hq
   have hd : fderiv ℂ (fun w => valAt' (ex w) V r * valAt' (ex w) U (s : Γ(X, U))) z ξ =
       fderiv ℂ (fun w => valAt' (ex w) U a) z ξ := by
@@ -111,7 +137,7 @@ theorem IsHolFamily.der_mul (h : IsHolFamily ex) {U : X.Opens} {z : E} (hz : ⊤
   simp only [IsHolFamily.der_apply]
   have e : (fun w => valAt' (ex w) U (f * f')) = fun w => valAt' (ex w) U f * valAt' (ex w) U f' := by
     funext w
-    exact valAt'_mul' _ _ _ _
+    exact _root_.GlobalTheory.valAt'_mul _ _ _ _
   rw [e]
   rw [fderiv_fun_mul (h.differentiableAt hz f) (h.differentiableAt hz f')]
   simp only [_root_.add_apply, _root_.smul_apply, smul_eq_mul]

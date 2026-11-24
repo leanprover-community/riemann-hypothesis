@@ -2,6 +2,48 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.TypePrimeCongruences
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.InSpanAdd
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -26,10 +68,6 @@ theorem inSpan_one : InSpan N i T' rep 1 := by
   have := inSpan_scal N T' rep 1 T'.one_mem
   simp only [Pi.one_apply, one_smul] at this
   exact this
-
-theorem inSpan_add {a b : X' → MatN N i} (ha : InSpan N i T' rep a) (hb : InSpan N i T' rep b) :
-    InSpan N i T' rep (a + b) := by
-  first | exact UpperTheory.Reformulated.B.Qj25.inSpan_add .. | (apply UpperTheory.Reformulated.B.Qj25.inSpan_add <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qj25.inSpan_add <;> assumption) | (apply @UpperTheory.Reformulated.B.Qj25.inSpan_add <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qj25.inSpan_add <;> assumption) | (apply @UpperTheory.Reformulated.B.Qj25.inSpan_add <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i X' T' rep a b ha hb | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i X' T' rep a b ha | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i X' T' rep a b | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i X' T' rep a | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i X' T' rep | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i X' T' | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i X' | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N i | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ N | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H what₂ | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R H | exact @UpperTheory.Reformulated.B.Qj25.inSpan_add R
 
 theorem inSpan_fmul {a : X' → MatN N i} (f : X' → N.O i) (hf : f ∈ T') (ha : InSpan N i T' rep a) :
     InSpan N i T' rep (fun x' => f x' • a x') := by
@@ -68,8 +106,8 @@ theorem mapSum_mulVec {n m : ℕ} (c : Fin m → N.O i) (M : Fin m → Matrix (F
     ((∑ k, c k • M k).map (toK N i)).mulVec v = ∑ k, toK N i (c k) • ((M k).map (toK N i)).mulVec v := by
   have hm : (∑ k, c k • M k).map (toK N i) = ∑ k, toK N i (c k) • (M k).map (toK N i) := by
     ext a b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.sum_apply, Matrix.map_apply, Matrix.smul_apply, smul_eq_mul, map_sum, map_mul]
+
+    simp only [Matrix.sum_apply, Matrix.map_apply, Matrix.smul_apply, smul_eq_mul, map_sum, map_mul]
   rw [hm, Matrix.sum_mulVec]
   simp only [Matrix.smul_mulVec]
 
@@ -95,8 +133,8 @@ theorem psi_sum (hG : GoodCongruenceObjects N r ρ π S) (m : ℕ) (f : Fin m �
       ∑ k, toK N i (f k S.π') • (((rhoO N i ρ π (g k)).map (toK N i)).mulVec (S.e u).1,
         fun c : Fin R.t => toK N i ((chiU N i ((c : ℕ) + 1) (g k) : (N.O i)ˣ) : N.O i) * (S.e u).2 c) := by
     intro u
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hval, mapSum_mulVec, map_sum]
+
+    rw [hval, mapSum_mulVec, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, hdec']
   constructor
@@ -110,8 +148,8 @@ theorem psi_sum (hG : GoodCongruenceObjects N r ρ π S) (m : ℕ) (f : Fin m �
     simp only [LinearEquiv.apply_symm_apply, Prod.snd_sum, Prod.smul_snd, Finset.sum_apply,
       Pi.smul_apply, Pi.single_eq_same, mul_one, smul_eq_mul] at h2
     apply IsFractionRing.injective (N.O i) (KK N i)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h2, map_sum]
+
+    rw [h2, map_sum]
     simp [map_mul]
 
 end Block
@@ -142,7 +180,7 @@ theorem eel_inR' (hG : GoodCongruenceObjects N r ρ π S) : InR' N r S (Eel N S)
       intro hL
       have hc : S.rr c ∈ S.T' := hrr c (hL c (by simp))
       have h1 : InR' N r S (fun x' => S.X0 (S.p x') - S.rr c x' • S.eB (S.p x')) := by
-        have := inSpan_add N S.T' (fun x' => rO N i r (S.p x')) hX0'
+        have := _root_.UpperTheory.Reformulated.B.Qj25.inSpan_add N S.T' (fun x' => rO N i r (S.p x')) hX0'
           (inSpan_fmul N S.T' (fun x' => rO N i r (S.p x')) (-S.rr c) (S.T'.neg_mem hc) hB')
         have e1 : (fun x' => S.X0 (S.p x') - S.rr c x' • S.eB (S.p x')) =
             (fun x' => S.X0 (S.p x')) + fun x' => (-S.rr c) x' • S.eB (S.p x') := by
@@ -334,8 +372,8 @@ theorem congruence_annihilates_rho_part (hG : GoodCongruenceObjects N r ρ π S)
     simpa using this.symm
   have hφz : φ (zz N r S m t γ) = (-(del51 N S S.π')) • w := by
     unfold zz
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     have hk : ∀ k, φ ((fun x' => (t k x' * ((chiU N i 1 (γ k) : (N.O i)ˣ) : N.O i)) • (1 : MatN N i)) *
         yg N r S (γ k)) = matQ N (((t k S.π' * ((chiU N i 1 (γ k) : (N.O i)ˣ) : N.O i)) •
           (1 : Matrix (Fin R.r) (Fin R.r) (N.O i))) *
@@ -394,8 +432,8 @@ theorem congruence_annihilates_character_part (hG : GoodCongruenceObjects N r ρ
     simpa using this.symm
   have hφz : φ (zz N r S m t γ) = (-(del51 N S S.π')) • w := by
     unfold zz
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     have hk : ∀ k, φ ((fun x' => (t k x' * ((chiU N i 1 (γ k) : (N.O i)ˣ) : N.O i)) • (1 : MatN N i)) *
         yg N r S (γ k)) = (t k S.π' * ((chiU N i ((c : ℕ) + 1) (γ k) : (N.O i)ˣ) : N.O i) -
           t k S.π' * ((chiU N i 1 (γ k) : (N.O i)ˣ) : N.O i)) • w := by

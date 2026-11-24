@@ -1,7 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
+public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Formalism.LocalToGlobal.Columns.LocWLemmas
+public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 public import Lemmata.GeneralBFactSecondBisAlt.Imports
 
 @[expose] public section
@@ -229,9 +231,7 @@ section Gen
 
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-theorem lc_exists_smul_mem (M : Submodule (𝓞 K) V) {x : V} (hx : x ∈ Submodule.span K (M : Set V)) :
-    ∃ d : 𝓞 K, d ≠ 0 ∧ d • x ∈ M := by
-  first | exact Bl.general_b_fact_second''''''''.goal1 .. | (apply Bl.general_b_fact_second''''''''.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_second''''''''.goal1 <;> assumption) | (apply @Bl.general_b_fact_second''''''''.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_second''''''''.goal1 <;> assumption) | (apply @Bl.general_b_fact_second''''''''.goal1 <;> first | assumption | infer_instance)
+alias lc_exists_smul_mem := _root_.Bl.general_b_fact_second''''''''.goal1
 
 end Gen
 

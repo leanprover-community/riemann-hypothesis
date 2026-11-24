@@ -1,10 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.GoodModelAll
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.AnalyticTransOfAdd
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementS
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.PairedSquareJets.Several
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.CurveIntegerMultiplicationSeries
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.InVarAddInVarNeZero
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.AnalyticTransOfAdd
 
 @[expose] public section
 
@@ -34,8 +33,8 @@ theorem toZ_thetaProd {K : Type} [Field K] {κ n : Type} [Fintype κ] [Fintype n
     Formalism.L2.Th1.G.toZ linv (Formalism.L2.Th1.E.thetaProd r H) =
       Formalism.L2.Th1.E.thetaProd r (fun k i => PowerSeries.subst linv (H k i)) := by
   unfold Formalism.L2.Th1.E.thetaProd Formalism.InvariantFactorPaths.G7.at1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Formalism.L2.Th1.G.toZHom_apply h0, map_sum]
+
+  rw [← Formalism.L2.Th1.G.toZHom_apply h0, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_mul, map_prod]
   congr 1

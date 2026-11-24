@@ -1,7 +1,48 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitsLiftSpec
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Semisimple
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 
 @[expose] public section
 
@@ -12,8 +53,8 @@ noncomputable section
 
 namespace GlobalTheory.HeckeLocAct
 
-set_option maxHeartbeats 1000000
-set_option synthInstance.maxHeartbeats 400000
+
+
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {B : LocBase0 H what₂}
 
@@ -115,8 +156,8 @@ theorem heckeGenerator_mapsTo_localisationLatticeSpan (hI : HeckeIntTw B) (i : L
   | mem z hz =>
     obtain ⟨x, hx, rfl⟩ := hz
     obtain ⟨F, c, hF, hc, he⟩ := hI (jOf B i) (wOf B i) i.2.2.2.1 i.2.2.2.2.1 i.2.2.2.2.2 v k hvk x hx
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [B.hK_def, he, map_sum]
+
+    rw [B.hK_def, he, map_sum]
     refine Submodule.sum_mem _ fun y hy => ?_
     rw [LinearMap.map_smulₛₗ]
     obtain ⟨o, ho⟩ := (B.ec_w (jOf B i) (wOf B i) (c y)).1 (hc y hy)
@@ -190,7 +231,7 @@ def resL (hss : SemisimpleTw B) (hI : HeckeIntTw B) (hC : PartCompl B) (i : LocT
     simp
   map_smul' o a := by
     apply Subtype.ext; apply Subtype.ext
-    simp [Submodule.coe_smul_of_tower, LinearMap.map_smul_of_tower]
+    simp [LinearMap.map_smul_of_tower]
 
 theorem resL_apply (hss : SemisimpleTw B) (hI : HeckeIntTw B) (hC : PartCompl B) (i : LocT B) (t : hAlg B i)
     (m : MtSub B hC i) : (((resL hss hI hC i t m : MtSub B hC i) : partOf B i) : B.V (jOf B i) (wOf B i)) =
@@ -208,7 +249,7 @@ def resA (hss : SemisimpleTw B) (hI : HeckeIntTw B) (hC : PartCompl B) (i : LocT
     show (algebraMap (OOf B i) (Module.End (FractionRing (OOf B i)) (B.V (jOf B i) (wOf B i))) r)
       ((m : partOf B i) : B.V (jOf B i) (wOf B i)) = _
     rw [Module.algebraMap_end_apply, Module.algebraMap_end_apply]
-    simp [Submodule.coe_smul_of_tower]
+    simp
 
 def evA (i : LocT B) : hAlg B i →ₐ[OOf B i] (XOf B i → OOf B i) where
   toFun t x := x.1 t

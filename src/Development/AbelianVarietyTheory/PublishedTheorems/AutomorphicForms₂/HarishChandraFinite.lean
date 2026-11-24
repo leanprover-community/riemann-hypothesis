@@ -1,10 +1,45 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.BesselHermitianTheta.Lemmas
-public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ImportsRest
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ImportsRest
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -51,6 +86,14 @@ end AutFin
 
 
 open AutFin in
+/-- **Harish-Chandra's finiteness theorem** for automorphic forms: for a reductive group over
+a number field, the space of automorphic forms of a given level (open compact subgroup `U`),
+given K-type (finite-dimensional continuous representation `ρ`), and given infinitesimal
+character (eigenvalues `c` under the Casimir / center of the universal enveloping algebra)
+is finite-dimensional.
+
+Proposed reference:
+[Harish-Chandra, *Automorphic Forms on Semisimple Lie Groups* (Theorem 1, p. 7)][harishChandra1968]. -/
 def HarishChandraFinite : Prop :=
   ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ →
   ∀ (V : HSp D) (U : Subgroup (GA D V)), IsOpen (U : Set (GA D V)) →
@@ -115,7 +158,7 @@ theorem exists_isFrameFam (hV : V.SigOK) : ∃ ε fr, IsFrameFam V ε fr := by
       · have hs : s i ≠ s j := fun h => hij (s.injective h)
         rw [Formalism.REAL.Jm, diagonal_apply_ne _ hij, submatrix_apply]
         revert hs
-        rcases s i with a | a <;> rcases s j with b | b <;> simp +contextual [Formalism.UG.Jpq, Matrix.one_apply]
+        rcases s i with a | a <;> rcases s j with b | b <;> simp +contextual [Formalism.UG.Jpq]
     refine ⟨fun i => (s i).isLeft, A.submatrix s id, ?_, ?_⟩
     · refine IsUnit.of_mul_eq_one (B.submatrix id s) ?_
       rw [← submatrix_mul A B s id s Function.bijective_id, hAB, submatrix_one_equiv]

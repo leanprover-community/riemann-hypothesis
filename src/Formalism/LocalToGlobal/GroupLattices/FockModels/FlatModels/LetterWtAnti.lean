@@ -1,8 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LaTwTranspose
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.EdgePlane
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSystems
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.EdgePlane
+import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.EdgeLatOfG
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
@@ -141,9 +144,7 @@ theorem flat_lam {n' m : ℕ} (vec : Fin n' → Bool) (d : Fin n' → ℕ) (lam0
   rw [hfl s]
   unfold letterWt
   funext i
-  by_cases hv : vec s = true
-  · simp [hv, Pi.single_apply]
-  · simp [hv, Pi.single_apply]
+  by_cases hv : vec s = true <;> simp [hv, Pi.single_apply]
 
 theorem flat_Ar {n' m : ℕ} (r : ℕ) (hr1 : 1 ≤ r) (hr2 : r < m + 1) (vec : Fin n' → Bool) (d : Fin n' → ℕ)
     (lam0 : Fin n' → Fin (m + 1) → ℤ) (hfl : IsFlat vec d lam0) : Ar r lam0 = (Avec vec d : ℤ) := by
@@ -156,7 +157,7 @@ theorem flat_Ar {n' m : ℕ} (r : ℕ) (hr1 : 1 ≤ r) (hr2 : r < m + 1) (vec : 
     rw [Finset.sum_eq_single (0 : Fin (m + 1))]
     · simp
     · intro b _ hb
-      simp [Pi.single_apply, hb]
+      simp [hb]
     · intro h0
       exfalso
       apply h0
@@ -170,7 +171,7 @@ theorem flat_Ar {n' m : ℕ} (r : ℕ) (hr1 : 1 ≤ r) (hr2 : r < m + 1) (vec : 
       subst h
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, Fin.val_last] at hi
       omega
-    simp [Pi.single_apply, hne]
+    simp [hne]
 
 theorem flatTop : FlatTop := by
   intro p n' _ W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ j w hS φ hφ m r vec d lam0 hr1 hr2 hfl h hh

@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 
 @[expose] public section
 

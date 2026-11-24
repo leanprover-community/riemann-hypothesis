@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementF
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

@@ -5,11 +5,12 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLitG
 public import Formalism.SharpRestriction.CuspSpanNormBounds.DiscreteSeriesWeylDimension
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DiscreteSeriesUniqueLargeGap
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FinalClosed
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.CoefLoc
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HWExists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.BesselVectors.Closed
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.BesselVectors.DecLow
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FinalClosed
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HWExists
 
 @[expose] public section
 

@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormStepsLeviOntoS
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SignActionMapComm
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -76,7 +116,7 @@ theorem Mk_mul (b d : Fin k → VA I) (η : I.E ⊗[I.F] Af I.F)
     (X Y X' Y' : Matrix (Fin k) (Fin k) (I.E ⊗[I.F] Af I.F)) :
     Mk I b d X Y * Mk I b d X' Y' =
       Mk I b d (X + X' + X * ((η • 1) * X')) (Y + Y' + Y * ((sigA I η • 1) * Y')) := by
-  first | exact UpperTheory.Reformulated.B.Qk24.Mk_mul .. | (apply UpperTheory.Reformulated.B.Qk24.Mk_mul <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qk24.Mk_mul <;> assumption) | (apply @UpperTheory.Reformulated.B.Qk24.Mk_mul <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qk24.Mk_mul <;> assumption) | (apply @UpperTheory.Reformulated.B.Qk24.Mk_mul <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB hDD hBB hBD X Y X' Y' | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB hDD hBB hBD X Y X' | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB hDD hBB hBD X Y | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB hDD hBB hBD X | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB hDD hBB hBD | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB hDD hBB | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB hDD | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η hDB | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d η | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b d | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k b | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I k | exact @UpperTheory.Reformulated.B.Qk24.Mk_mul I
+  first | (apply UpperTheory.Reformulated.B.Qk24.Mk_mul <;> assumption)
 
 theorem colM_smul (b : Fin k → VA I) (η : I.E ⊗[I.F] Af I.F) (hb : ∀ i, η • b i = b i)
     (Z : Matrix (Fin k) (Fin k) (I.E ⊗[I.F] Af I.F)) : colM I b * Z = colM I b * (η • Z) := by
@@ -181,8 +221,8 @@ variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} (TR : TypedRed
 
 theorem hA_sum_smul (x : VA X.B.I) {k : ℕ} (w : Fin k → X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) (b : Fin k → VA X.B.I) :
     hA X.B.I x (∑ l, w l • b l) = ∑ l, w l * hA X.B.I x (b l) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hL_apply, map_sum]
+
+  rw [← hL_apply, map_sum]
   simp only [LinearMap.map_smul, hL_apply, smul_eq_mul]
 
 theorem resT_of_mem (v : TR.Pl) {x : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (hx : x ∈ IntAf X.B.I.F X.B.I.E) :
@@ -205,8 +245,8 @@ theorem resT_sum (v : TR.Pl) {k : ℕ} (f : Fin k → X.B.I.E ⊗[X.B.I.F] Af X.
   rw [resT_of_mem TR v (Subring.sum_mem _ fun l _ => hf l)]
   have e : (⟨∑ l, f l, Subring.sum_mem _ fun l _ => hf l⟩ : ↥(IntAf X.B.I.F X.B.I.E)) =
       ∑ l, (⟨f l, hf l⟩ : ↥(IntAf X.B.I.F X.B.I.E)) := Subtype.ext (by simp)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, map_sum]
+
+  rw [e, map_sum]
   exact Finset.sum_congr rfl fun l _ => (resT_of_mem TR v (hf l)).symm
 
 theorem resT_one (v : TR.Pl) : resT TR v 1 = 1 := by

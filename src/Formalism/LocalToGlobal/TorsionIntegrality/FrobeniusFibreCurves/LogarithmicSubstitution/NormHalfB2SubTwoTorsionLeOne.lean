@@ -1,9 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.TwoTorsionU
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalB
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementC
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementW
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalA
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalB
+public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.TwoTorsionU
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.SubstPairSubst
+import Mathlib.Analysis.Normed.Ring.Ultra
 
 @[expose] public section
 
@@ -69,7 +71,7 @@ end Norm
 
 theorem curve_sigma_function_holds : CurveSigma := by
   intro K _ _ W s2
-  obtain ⟨h0, h1⟩ := phODef K s2 (wpReg W) (logSer W) (Formalism.L2.Th1.A.ZSer.log_cc W)
+  obtain ⟨h0, h1⟩ := _root_.Formalism.L2.Th1.B.Ph.logSigmaPullbackSpec K s2 (wpReg W) (logSer W) (Formalism.L2.Th1.A.ZSer.log_cc W)
     (Formalism.L2.Th1.A.ZSer.log_one W)
   exact ⟨h0, h1, addSgStar K (g₂ W) (g₃ W) s2 (wpReg W) (bridgeWp K W)⟩
 

@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndependentEigProj
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -33,8 +73,8 @@ theorem comp_eigProj (𝓗 : HodgeLat L ρ bar r) {σ σ' : E →+* Ω}
     rw [h1, hσ b]
   have hsum : ∑ k, σ' (HT.dualInt E k) * σ' ((RingOfIntegers.basis E k : 𝓞 E) : E) = 1 := by
     have h1 := congrArg σ' (HT.LatBasic.sum_dualInt_mul (E := E))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one] at h1
+
+    rw [map_sum, map_one] at h1
     rw [← h1]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_mul, NumberField.integralBasis_apply]
@@ -46,8 +86,8 @@ theorem comp_eigProj (𝓗 : HodgeLat L ρ bar r) {σ σ' : E →+* Ω}
     have e := LinearMap.congr_fun (key (RingOfIntegers.basis E k)) x
     rw [LinearMap.comp_apply, LinearMap.smul_apply, smul_eq_mul] at e
     rw [LinearMap.smul_apply, map_smul, e, smul_eq_mul, mul_assoc]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearMap.comp_apply, LinearMap.sum_apply, map_sum]
+
+  rw [LinearMap.comp_apply, LinearMap.sum_apply, map_sum]
   simp_rw [hk]
   rw [← Finset.sum_mul, hsum, one_mul]
 
@@ -72,7 +112,7 @@ theorem adapted_span : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (C
     rw [Fin.sum_univ_add] at hg
     have h1 : ∀ i, g (Fin.castAdd q i) = 0 := by
       have hf := congrArg Prod.fst hg
-      simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hu2, hz] at hf
+      simp [Prod.fst_sum, Prod.smul_fst, hu2, hz] at hf
       exact Fintype.linearIndependent_iff.mp hv _ hf
     have h2 : ∀ j, g (Fin.natAdd p j) = 0 := by
       intro j'
@@ -98,18 +138,18 @@ theorem adapted_span : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (C
       have hy'mem : y' ∈ HT.eigSp 𝓗.ρH σ :=
         Submodule.sub_mem _ hy (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hu1 _))
       have hy'1 : y'.1 = 0 := by
-        simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hy', hu2, hc]
+        simp [Prod.fst_sum, Prod.smul_fst, hy', hu2, hc]
       set χ := y'.2 - ∑ j, y'.2 (w j) • (u (Fin.natAdd p j)).2 with hχ
       have hχmem : ((0 : V), χ) ∈ HT.eigSp 𝓗.ρH σ := by
         have e : ((0 : V), χ) = y' - ∑ j, y'.2 (w j) • u (Fin.natAdd p j) := by
           refine Prod.ext ?_ ?_
-          · simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hy'1, hz]
-          · simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hχ]
+          · simp [Prod.fst_sum, Prod.smul_fst, hy'1, hz]
+          · simp [Prod.snd_sum, Prod.smul_snd, hχ]
         rw [e]
         exact Submodule.sub_mem _ hy'mem (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hu1 _))
       have hχw : ∀ j', χ (w j') = 0 := by
         intro j'
-        simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hχ, hz2]
+        simp [LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, hχ, hz2]
       have hχker : HT.eigSp ρ σ' ≤ LinearMap.ker χ := by
         rw [← hws, Submodule.span_le]
         rintro _ ⟨j, rfl⟩
@@ -122,7 +162,7 @@ theorem adapted_span : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (C
       have hy2 : y'.2 = ∑ j, y'.2 (w j) • (u (Fin.natAdd p j)).2 := sub_eq_zero.mp hχ0
       have hT : y' = ∑ j, y'.2 (w j) • u (Fin.natAdd p j) := by
         refine Prod.ext ?_ ?_
-        · simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hy'1, hz]
+        · simp [Prod.fst_sum, Prod.smul_fst, hy'1, hz]
         · simpa [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul] using hy2
       have hyeq : y = ∑ i, c i • u (Fin.castAdd q i) + ∑ j, y'.2 (w j) • u (Fin.natAdd p j) := by
         rw [← hT, hy']

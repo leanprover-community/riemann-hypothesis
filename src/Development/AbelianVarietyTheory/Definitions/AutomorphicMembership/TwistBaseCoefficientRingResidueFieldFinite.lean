@@ -1,7 +1,42 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -14,7 +49,7 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.ConjugateSelf
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} [NumberField what₂.LL] [StarRing what₂.LL]
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure TwR (LL0 : IntermediateField ℚ what₂.LL) (N : NData R H what₂) where
   cc : N.Om ≃+* N.Om
   cc_cm : IsCMConjOm H.E N.Om cc
@@ -104,7 +139,7 @@ attribute [instance] TwR.lPrime TwR.crO0 TwR.twistBaseCoefficientRing_isDomain T
 variable {LL0 : IntermediateField ℚ what₂.LL} {N : NData R H what₂}
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure TwF (T : TwR LL0 N) where
   Sig : T.Tw → Type
   [finSig : ∀ i, Fintype (Sig i)]
@@ -128,7 +163,7 @@ structure TwF (T : TwR LL0 N) where
   hEig : ∀ i, Sig i → ℕ → HeightOneSpectrum (𝓞 H.E) → T.O i
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure TwL (T : TwR LL0 N) where
   abelian₂ : T.Tw → Type
   [finLam : ∀ i, Fintype (abelian₂ i)]

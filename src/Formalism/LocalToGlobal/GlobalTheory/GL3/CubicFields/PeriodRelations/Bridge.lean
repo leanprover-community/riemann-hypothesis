@@ -1,11 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.EpsteinZeta.DedekindFactorK
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.Statement
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.EpsteinZeta.AreaLatIOfDiscr
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.DifferentIdeal.CoeIdealDifferentNeZero
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.DifferentIdeal.AbsNormInvMulDifferent
 
 @[expose] public section
 

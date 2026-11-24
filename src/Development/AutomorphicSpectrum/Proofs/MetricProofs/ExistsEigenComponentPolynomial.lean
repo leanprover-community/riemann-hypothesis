@@ -1,13 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodLimit
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsChart
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeCovolumePositiveStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjectionStatement
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodLimit
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsChart
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
+import GroundTheory.HeightsAndTheta.Heights.Regularisation.StPuncturedExpOrder
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 
 @[expose] public section
 
@@ -106,8 +151,8 @@ def combo (c : 𝓞 E →₀ ℂ) : ℂ ⊗[ℤ] 𝓞 E := ∑ a ∈ c.support, 
 
 theorem evalHom_combo (c : 𝓞 E →₀ ℂ) (s : E →+* ℂ) :
     evalHom E (combo c) s = ∑ a ∈ c.support, c a * s (algebraMap (𝓞 E) E a) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [combo, map_sum, Finset.sum_apply, evalHom_tmul]
+
+  simp only [combo, map_sum, Finset.sum_apply, evalHom_tmul]
 
 
 open Classical in
@@ -138,8 +183,8 @@ theorem actHom_tmul (ρ : 𝓞 E →+* Module.End ℂ V) (z : ℂ) (a : 𝓞 E) 
 
 theorem actHom_combo (ρ : 𝓞 E →+* Module.End ℂ V) (c : 𝓞 E →₀ ℂ) (x : V) :
     actHom ρ (combo c) x = ∑ a ∈ c.support, c a • ρ a x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [combo, map_sum, actHom_tmul, LinearMap.sum_apply]
+
+  simp [combo, map_sum, actHom_tmul, LinearMap.sum_apply]
 
 theorem mem_eigSp_iff {ρ : 𝓞 E →+* Module.End ℂ V} {s : 𝓞 E →+* ℂ} {x : V} :
     x ∈ eigSp ρ s ↔ ∀ a, ρ a x = s a • x := by
@@ -155,8 +200,8 @@ theorem eigComp_eq_combination : ∀ (E : Type) [Field E] [NumberField E] (s₀ 
   refine ⟨cs (extEmb s₀), fun V _ _ ρ => ?_⟩
   have hsum : ∑ s, combo (cs s) = 1 := by
     apply evalHom_injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one]
+
+    rw [map_sum, map_one]
     simp only [hcs]
     funext s'
     simp [Finset.sum_apply, Pi.single_apply]
@@ -169,12 +214,12 @@ theorem eigComp_eq_combination : ∀ (E : Type) [Field E] [NumberField E] (s₀ 
     by_cases h : s' = s
     · subst h
       simp [evalHom_tmul]
-    · simp [evalHom_tmul, Pi.single_apply, h]
+    · simp [evalHom_tmul, h]
   have hsum' : ∀ x, ∑ s, actHom ρ (combo (cs s)) x = x := by
     intro x
     have h := congrArg (actHom ρ) hsum
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one] at h
+
+    rw [map_sum, map_one] at h
     have h2 := LinearMap.congr_fun h x
     simpa [LinearMap.sum_apply] using h2
   have heig : ∀ (s : E →+* ℂ) x, actHom ρ (combo (cs s)) x ∈ eigSp ρ (s.comp (algebraMap (𝓞 E) E)) := by
@@ -201,7 +246,7 @@ theorem eigComp_eq_combination : ∀ (E : Type) [Field E] [NumberField E] (s₀ 
       rw [LinearMap.mem_ker, hval _ σ' y hy]
       have hne : extEmb σ' ≠ extEmb s₀ := fun h => hσ' (by
         rw [← extEmb_comp σ', h, extEmb_comp])
-      simp [Pi.single_apply, hne]
+      simp [hne]
     exact fun y hy => hle hy
   have hex : ∀ x, actHom ρ (combo (cs (extEmb s₀))) x ∈ eigSp ρ s₀ ∧
       x - actHom ρ (combo (cs (extEmb s₀))) x ∈ ⨆ σ' ∈ {σ' : 𝓞 E →+* ℂ | σ' ≠ s₀}, eigSp ρ σ' := by

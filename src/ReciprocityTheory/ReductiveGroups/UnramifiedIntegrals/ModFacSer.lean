@@ -1,13 +1,14 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEisInt
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDeltaInt
+import Mathlib.Algebra.Order.Star.Int
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.CoeffRescaleExpandOfNotDvd
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalSer
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDeltaInt
+import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEisInt
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalMF
+import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalSer
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 
@@ -16,9 +17,6 @@ open scoped BigOperators Classical UpperHalfPlane MatrixGroups CongruenceSubgrou
 open ModularForm EisensteinSeries ModularFormClass UpperHalfPlane Formalism.L2.Th1.CM
 
 namespace ReciprocityTheory.ChartRestriction.L1
-
-theorem zetaRoot_mem_cyclotomicSubring_self (m : ℕ) : zetaC m ∈ Rm m := by
-  exact Subring.subset_closure (Set.mem_singleton _)
 
 theorem zetaRoot_ne_zero (e : ℕ) : zetaC e ≠ 0 := by
   exact Complex.exp_ne_zero _
@@ -57,9 +55,9 @@ theorem zetaRoot_pow_mem_of_mem_hermiteTriples {m : ℕ} (hm : 0 < m) {t : ℕ �
     rw [← pow_succ', Nat.sub_add_cancel hm, hzm]
   rw [hz]
   constructor
-  · exact pow_mem (zetaRoot_mem_cyclotomicSubring_self m) _
+  · exact pow_mem (_root_.ReciprocityTheory.ChartRestriction.L1.zetaC_mem m) _
   · rw [← inv_pow, hinv, ← pow_mul]
-    exact pow_mem (zetaRoot_mem_cyclotomicSubring_self m) _
+    exact pow_mem (_root_.ReciprocityTheory.ChartRestriction.L1.zetaC_mem m) _
 
 theorem norm_zetaRoot_pow_of_mem_hermiteTriples {m : ℕ} (hm : 0 < m) {t : ℕ × ℕ × ℕ} (ht : t ∈ Tm m) :
     ‖zetaC t.2.2 ^ t.2.1‖ = 1 := by

@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.H0IsoHomCohomologyClassZero
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.QuotientToInvariantsFunctorPreservesZeroMorphism
+public import GroundTheory.ProfiniteCohomology.InflationRestriction.CohomologyResMemCohomologyConjInvariants
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
+public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
+public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveSnake
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

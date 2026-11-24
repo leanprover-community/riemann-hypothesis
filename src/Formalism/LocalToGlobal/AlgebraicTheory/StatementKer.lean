@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.AlgebraicTheory.StatementD
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
+public import Formalism.LocalToGlobal.AlgebraicTheory.StatementB
+public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementC
 
 @[expose] public section
 

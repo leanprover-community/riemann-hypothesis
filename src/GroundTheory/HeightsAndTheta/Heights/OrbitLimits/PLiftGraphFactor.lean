@@ -1,10 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftGraphFactor
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLiftGraphMetric
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionNormSqExtension
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPowerBlockMetric
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLiftGraphMetric
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 @[expose] public section
 

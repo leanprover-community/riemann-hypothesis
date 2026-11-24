@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.DataHost
-public import Formalism.FrobeniusOrbits.HostCorollaries
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+public import Formalism.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
+import Mathlib.Algebra.AffineMonoid.Basic
 
 @[expose] public section
 

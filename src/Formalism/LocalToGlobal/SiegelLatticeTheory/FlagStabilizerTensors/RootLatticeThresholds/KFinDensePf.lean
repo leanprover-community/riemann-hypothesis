@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierXPinsP
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 
 @[expose] public section
 

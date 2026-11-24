@@ -1,11 +1,59 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.CMLattices.ExistsIsThetaDegOfIsLocalModel
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsUniqueDifferentialMonHomLieBasisStatement
-public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsLieRepresentationEigenLatticesStatement
+public import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
+public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.IsLocallyConstantRankAtStalkEigenSub
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsLieRepresentationEigenLattices
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsUniqueDifferentialMonHomLieBasis
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEquiv
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsLieBasisEigen
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LieMultIffFinrank
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CmHostIdempotentTraceEqOne
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -69,7 +117,7 @@ theorem finrank_eigenSub {K : Type} [Field K] [NumberField K] {P : Out.PolAV (Sp
     rfl
   have hl : ∀ a, ∃ f₀ : F.P₀.A ⟶ F.P₀.A, IsMonHom f₀ ∧ f₀.left ≫ F.φ = F.φ ≫ (act.act a).left ∧
       ∀ M, F.IsDiffOf F (act.act a) M → ∀ c w, IsLieComb c F.v w → IsLieComb (M c) F.v (w ≫ f₀) :=
-    fun a => (GlobalTheory.T.existsUnique_differential_monHom_lieBasis K P F P F (act.act a) (act.hom a)).2
+    fun a => (_root_.GlobalTheory.CM.DiffCoord.existsUnique_isDiffOf K P F P F (act.act a) (act.hom a)).2
   choose b hb he hlie using hl
   obtain ⟨act', hact'⟩ := exists_oAct F.fib.2.1 act b hb he
   have ha : ∀ a, (act'.act a).left ≫ F.φ = F.φ ≫ (act.act a).left := by
@@ -98,24 +146,7 @@ theorem finrank_eigenSub {K : Type} [Field K] [NumberField K] {P : Out.PolAV (Sp
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E)
 
 theorem bar_rt : H.bar H.rt = -H.rt := by
-  obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  have hz : φ (H.rt : E) ^ 2 = -(H.d : ℂ) := by
-    have h := congrArg (fun x : 𝓞 E => φ (x : E)) H.rt_sq
-    simpa using h
-  have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-  have hre := congrArg Complex.re hz
-  have him := congrArg Complex.im hz
-  simp only [pow_two, Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im, Complex.natCast_re,
-    Complex.natCast_im, neg_zero] at hre him
-  have h0 : (φ (H.rt : E)).re = 0 := by
-    rcases mul_eq_zero.mp (show (φ (H.rt : E)).re * (φ (H.rt : E)).im = 0 by linarith) with h | h
-    · exact h
-    · rw [h] at hre
-      nlinarith [mul_self_nonneg (φ (H.rt : E)).re]
-  apply RingOfIntegers.ext
-  apply φ.injective
-  rw [H.bar_eq, IsCMField.complexEmbedding_complexConj]
-  apply Complex.ext <;> simp [h0]
+  apply GlobalTheory.QuadTrace.bar_rt
 
 theorem card_half {K : Type} [Field K] [NumberField K] {ρ : 𝓞 K} (hs : Splits E K) (hρ : ρ ^ 2 = -(H.d : 𝓞 K)) :
     (∀ τ : 𝓞 E →+* 𝓞 K, ¬ τ H.rt = ρ ↔ τ H.rt = -ρ) ∧
@@ -200,13 +231,12 @@ private theorem isSplitting_of_splits {E₁ K₁ : Type} [Field E₁] [NumberFie
       ∑ i, ((b.repr x i : ℤ) : K₁) * ((algebraMap (𝓞 K₁) K₁).comp τ) (b i) := by
     intro τ
     conv_lhs => rw [← b.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     apply Finset.sum_congr rfl
     intro i _
     rw [map_zsmul, zsmul_eq_mul]
-  simp only [Finset.sum_apply, Pi.smul_apply, Function.comp_apply, smul_eq_mul, Pi.zero_apply,
-    MonoidHom.coe_coe]
+  simp only [Finset.sum_apply, Pi.smul_apply, Function.comp_apply, smul_eq_mul, Pi.zero_apply]
   show ∑ τ : 𝓞 E₁ →+* 𝓞 K₁, g τ * ((algebraMap (𝓞 K₁) K₁).comp τ) x = 0
   simp only [hx, Finset.mul_sum]
   rw [Finset.sum_comm]
@@ -224,7 +254,7 @@ private theorem isSplitting_of_splits {E₁ K₁ : Type} [Field E₁] [NumberFie
 theorem eigen_decomposition : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (K : Type) [Field K] [NumberField K] (ρ : 𝓞 K) (T : PAT H (Sp (𝓞 K))) (F : GenFib T.pol) (p q : ℕ), Splits E K → HasType H T.t.act ρ p q → ρ ^ 2 = -(H.d : 𝓞 K) → (∀ τ : 𝓞 E →+* 𝓞 K, latRank K (F.eigLat T.t.act τ) = open Classical in if τ H.rt = ρ then p else q) ∧ iSupIndep (fun τ : 𝓞 E →+* 𝓞 K => Submodule.span K (F.eigLat T.t.act τ : Set (Fin F.P₀.g → K))) ∧ ⨆ τ : 𝓞 E →+* 𝓞 K, Submodule.span K (F.eigLat T.t.act τ : Set (Fin F.P₀.g → K)) = ⊤ ∧ T.g = Module.finrank ℚ E / 2 * (p + q) ∧ Nat.card {τ : 𝓞 E →+* 𝓞 K // τ H.rt = ρ} = Module.finrank ℚ E / 2 ∧ Nat.card {τ : 𝓞 E →+* 𝓞 K // τ H.rt = -ρ} = Module.finrank ℚ E / 2 := by
   intro E _ _ _ H K _ _ ρ T F p q hs hT hρ
   classical
-  obtain ⟨r, hr, hrl⟩ := GlobalTheory.T.exists_lieRepresentation_eigenLattices K T.pol F (𝓞 E) T.t.act
+  obtain ⟨r, hr, hrl⟩ := _root_.GlobalTheory.CM.GenFib.exists_lieRep_eigLat K T.pol F (𝓞 E) T.t.act
   have hfin : Finite (𝓞 E →+* 𝓞 K) :=
     Nat.finite_of_card_ne_zero (by rw [hs]; exact (Module.finrank_pos (R := ℚ) (M := E)).ne')
   haveI := Fintype.ofFinite (𝓞 E →+* 𝓞 K)

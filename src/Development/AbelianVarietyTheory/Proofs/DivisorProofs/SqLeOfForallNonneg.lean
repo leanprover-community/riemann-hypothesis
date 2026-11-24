@@ -1,7 +1,43 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -20,11 +56,11 @@ theorem sq_le_of_forall_nonneg {A B D : ℤ} (h : ∀ s t : ℤ, 0 ≤ s * s * A
     have h2 := h (-B * (D + 1)) 1
     have : B = 0 := by
       by_contra hB
-      have hB2 : 1 ≤ B * B := by nlinarith [mul_self_pos.2 hB]
-      nlinarith
+      have hB2 : 1 ≤ B * B := by linarith [mul_self_pos.2 hB]
+      linarith [mul_le_mul_of_nonneg_right hB2 (show (0 : ℤ) ≤ D + 1 by linarith)]
     subst this; simp
   · have h1 := h B (-A)
-    nlinarith
+    exact le_of_mul_le_mul_left (by linarith [hD, h1] : A * (B * B) ≤ A * (A * D)) hA0
 
 theorem seq_le (F : ℕ → ℤ) (h0 : ∀ k, 0 ≤ F k) (hlc : ∀ k, F (k + 1) * F (k + 1) ≤ F k * F (k + 2)) (d : ℕ)
     (p : ℕ → ℤ) (hd : p d = 1) (hrec : ∑ i ∈ Finset.range (d + 1), p i * F i = 0) :
@@ -40,7 +76,7 @@ theorem seq_le (F : ℕ → ℤ) (h0 : ∀ k, 0 ≤ F k) (hlc : ∀ k, F (k + 1)
     · have := hlc 0
       rw [← h] at this hlt
       have h1 : F 1 * F 1 ≤ 0 := by simpa using this
-      have : F 1 = 0 := by nlinarith [mul_self_nonneg (F 1)]
+      have : F 1 = 0 := mul_self_eq_zero.mp (le_antisymm h1 (mul_self_nonneg (F 1)))
       simp [this] at hlt
     · exact h
   have hF1 : C * F 0 < F 1 := hlt
@@ -51,22 +87,22 @@ theorem seq_le (F : ℕ → ℤ) (h0 : ∀ k, 0 ≤ F k) (hlc : ∀ k, F (k + 1)
     | succ k ih =>
       obtain ⟨hk, hk'⟩ := ih
       have hpos : 0 < F (k + 1) := by
-        have : 0 < F 1 * F k := mul_pos (by nlinarith) hk
-        nlinarith
+        have : 0 < F 1 * F k := mul_pos (by linarith [le_mul_of_one_le_left hF0.le hC1]) hk
+        by_contra hc; linarith [mul_nonpos_of_nonneg_of_nonpos hF0.le (not_lt.mp hc)]
       refine ⟨hpos, ?_⟩
       have h2 := hlc k
       have h3 : F 1 * F k * F (k + 1) ≤ F 0 * F (k + 1) * F (k + 1) := mul_le_mul_of_nonneg_right hk' hpos.le
-      have h4 : F k * (F 1 * F (k + 1)) ≤ F k * (F 0 * F (k + 2)) := by nlinarith
+      have h4 : F k * (F 1 * F (k + 1)) ≤ F k * (F 0 * F (k + 2)) := by linarith [mul_le_mul_of_nonneg_left h2 hF0.le]
       exact le_of_mul_le_mul_left h4 hk
   have inc : ∀ k, C * F k < F (k + 1) := by
     intro k
     obtain ⟨hk, hk'⟩ := key k
-    have : F 0 * (C * F k) < F 0 * F (k + 1) := by nlinarith
+    have : F 0 * (C * F k) < F 0 * F (k + 1) := by linarith [mul_lt_mul_of_pos_right hF1 hk]
     exact lt_of_mul_lt_mul_left this hF0.le
   have mono : Monotone F := monotone_nat_of_le_succ fun k => by
     have := inc k
-    have := (key k).1
-    nlinarith
+    have hFk := (key k).1
+    linarith [le_mul_of_one_le_left hFk.le hC1]
   cases d with
   | zero =>
     simp [hd] at hrec
@@ -80,7 +116,7 @@ theorem seq_le (F : ℕ → ℤ) (h0 : ∀ k, 0 ≤ F k) (hlc : ∀ k, F (k + 1)
       have hi' : i ≤ e := Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)
       have h1 : -(p i * F i) ≤ |p i| * F i := by
         have := neg_abs_le (p i)
-        nlinarith [h0 i]
+        linarith [mul_le_mul_of_nonneg_right this (h0 i)]
       exact h1.trans (mul_le_mul_of_nonneg_left (mono hi') (abs_nonneg _))
     have he := inc e
     have hpe := (key e).1
@@ -88,7 +124,7 @@ theorem seq_le (F : ℕ → ℤ) (h0 : ∀ k, 0 ≤ F k) (hlc : ∀ k, F (k + 1)
     rw [this] at he
     rw [hCdef] at he
     simp only [abs_one] at he
-    nlinarith
+    linarith [hpe]
 
 theorem bddAct_of_isIntegral {O : Type} [CommRing O] (bar : O → O) (hmul : ∀ a b, bar (a * b) = bar a * bar b)
     (hone : bar 1 = 1) (hinv : ∀ a, bar (bar a) = a) (hint : ∀ a : O, IsIntegral ℤ a) : BddAct bar := by
@@ -126,8 +162,8 @@ theorem bddAct_of_isIntegral {O : Type} [CommRing O] (bar : O → O) (hmul : ∀
     exact hcs _ _
   have hrec : ∑ i ∈ Finset.range (P.natDegree + 1), P.coeff i * F i = 0 := by
     have h0 : β x ((Polynomial.aeval (bar c * c) P) • x) = 0 := by rw [Polynomial.aeval_def, hP, zero_smul, map_zero]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Polynomial.aeval_eq_sum_range, Finset.sum_smul, map_sum] at h0
+
+    rw [Polynomial.aeval_eq_sum_range, Finset.sum_smul, map_sum] at h0
     rw [← h0]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hFdef]

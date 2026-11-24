@@ -1,7 +1,42 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TopPairDForm
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
 
 @[expose] public section
 
@@ -15,6 +50,7 @@ open GlobalTheory.CompHt (hodgeWt)
 open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
+open scoped GlobalTheory.CompHt
 
 set_option autoImplicit false
 
@@ -29,28 +65,6 @@ abbrev ksbConj (τ : E →+* ℂ) : E →+* ℂ := (starRingEnd ℂ).comp τ
 theorem ksbConj_ksbConj (τ : E →+* ℂ) : ksbConj (ksbConj τ) = τ := by
   ext x; simp [ksbConj]
 
-theorem cmHostImaginaryRootValue_ne_zero (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : H.rt0 ≠ 0 := by
-  intro h
-  have h2 := H.sqrt_neg_disc_sq
-  rw [h] at h2
-  have hd : (H.d : ℂ) = 0 := by linear_combination h2
-  exact H.d_prime.ne_zero (by exact_mod_cast hd)
-
-theorem cmHostImaginaryRootValue_conj_eq_neg (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : starRingEnd ℂ H.rt0 = -H.rt0 := by
-  have h := H.sqrt_neg_disc_sq
-  have hre := congrArg Complex.re h
-  have him := congrArg Complex.im h
-  simp [pow_two] at hre him
-  have hd : (0:ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-  have hx : H.rt0.re = 0 := by
-    by_contra hx
-    have hy : H.rt0.im = 0 := by
-      have h3 : (2 * H.rt0.re) * H.rt0.im = 0 := by linarith
-      exact (mul_eq_zero.1 h3).resolve_left (mul_ne_zero two_ne_zero hx)
-    rw [hy] at hre
-    nlinarith [sq_nonneg H.rt0.re]
-  apply Complex.ext <;> simp [hx]
-
 theorem ksb_emb_rt (τ : E →+* ℂ) : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := by
   have h1 : ((H.rt : E)) ^ 2 = -(H.d : E) := by
     have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
@@ -60,11 +74,11 @@ theorem ksb_emb_rt (τ : E →+* ℂ) : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) 
   exact sq_eq_sq_iff_eq_or_eq_neg.1 h
 
 theorem ksbConj_mem_iff (τ : E →+* ℂ) : ksbConj τ (H.rt : E) = H.rt0 ↔ ¬ τ (H.rt : E) = H.rt0 := by
-  have hne : -H.rt0 ≠ H.rt0 := fun h => cmHostImaginaryRootValue_ne_zero H (by linear_combination -h / 2)
+  have hne : -H.rt0 ≠ H.rt0 := fun h => _root_.GlobalTheory.ModelsExist.rt0_ne_zero H (by linear_combination -h / 2)
   simp only [ksbConj, RingHom.comp_apply]
   rcases ksb_emb_rt (H := H) τ with h | h
-  · rw [h, cmHostImaginaryRootValue_conj_eq_neg]; simp [hne]
-  · rw [h, map_neg, cmHostImaginaryRootValue_conj_eq_neg, neg_neg]; exact iff_of_true rfl hne
+  · rw [h, _root_.GlobalTheory.ModelsExist.rt0_conj_neg_ne_zero]; simp [hne]
+  · rw [h, map_neg, _root_.GlobalTheory.ModelsExist.rt0_conj_neg_ne_zero, neg_neg]; exact iff_of_true rfl hne
 
 theorem ksb_card_cmType :
     Fintype.card {τ : E →+* ℂ // τ (H.rt : E) = H.rt0} = Module.finrank ℚ E / 2 := by

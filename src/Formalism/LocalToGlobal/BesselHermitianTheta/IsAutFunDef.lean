@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalRingCardinality.DataTheta
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 
 @[expose] public section

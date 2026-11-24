@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 
 @[expose] public section
 
@@ -78,6 +120,46 @@ theorem intM_iff [Fintype κ] [Fintype ι] (x : Matrix κ ι ℚ) : IntM x ↔ �
     simp [zm]
   · rintro ⟨m, rfl⟩ k i
     simpa [zm] using (isIntegral_algebraMap : IsIntegral ℤ (algebraMap ℤ ℚ (m k i)))
+
+/-- Every matrix integral after scaling by `R` is a level representative plus an integral period. -/
+theorem exists_rep_add_smul_zm_of_intM_smul [Fintype κ] [Fintype ι] {R : ℕ} (hR : 0 < R)
+    (x : Matrix κ ι ℚ) (hx : IntM (R • x)) :
+    ∃ (n : κ → ι → Fin (R * R)) (m : κ → ι → ℤ), x = rep R n + R • zm m := by
+  obtain ⟨M, hM⟩ := (intM_iff _).mp hx
+  have hRR : (0 : ℤ) < (R : ℤ) * R := by positivity
+  have hRq : (R : ℚ) ≠ 0 := by positivity
+  refine ⟨fun k i => ⟨(M k i % ((R : ℤ) * R)).toNat, ?_⟩, fun k i => M k i / ((R : ℤ) * R), ?_⟩
+  · rw [Int.toNat_lt (Int.emod_nonneg _ hRR.ne'), Nat.cast_mul]
+    exact Int.emod_lt_of_pos _ hRR
+  · ext k i
+    have hk := congrFun (congrFun hM k) i
+    simp only [Matrix.smul_apply, zm, Matrix.of_apply, nsmul_eq_mul] at hk
+    simp only [rep, Matrix.add_apply, Matrix.smul_apply, Matrix.of_apply, zm, nsmul_eq_mul]
+    rw [← Int.cast_natCast, Int.toNat_of_nonneg (Int.emod_nonneg _ hRR.ne')]
+    have hdiv : ((M k i % ((R : ℤ) * R) : ℤ) : ℚ) +
+        (R : ℚ) * R * ((M k i / ((R : ℤ) * R) : ℤ) : ℚ) = (M k i : ℚ) := by
+      exact_mod_cast Int.emod_add_mul_ediv (M k i) ((R : ℤ) * R)
+    field_simp
+    linear_combination hk - hdiv
+
+/-- Two level representatives differing by an integral period have the same residue indices. -/
+theorem rep_eq_of_neg_add_eq_smul_zm {R : ℕ} (hR : 0 < R) {n n' : κ → ι → Fin (R * R)}
+    (m : κ → ι → ℤ) (hm : -rep R n + rep R n' = R • zm m) : n = n' := by
+  funext k i
+  have hk := congrFun (congrFun hm k) i
+  simp only [rep, Matrix.add_apply, Matrix.neg_apply, Matrix.of_apply, Matrix.smul_apply, zm,
+    nsmul_eq_mul] at hk
+  have hRq : (R : ℚ) ≠ 0 := by positivity
+  rw [neg_add_eq_sub, ← sub_div, div_eq_iff hRq, mul_right_comm] at hk
+  have hz : ((n' k i : ℕ) : ℤ) - (n k i : ℕ) = (R : ℤ) * R * m k i := by
+    exact_mod_cast hk
+  have hb : ((n' k i : ℕ) : ℤ) < (R : ℤ) * R := by exact_mod_cast (n' k i).isLt
+  have ha : ((n k i : ℕ) : ℤ) < (R : ℤ) * R := by exact_mod_cast (n k i).isLt
+  have h0 : ((n' k i : ℕ) : ℤ) - (n k i : ℕ) = 0 := by
+    apply Int.eq_zero_of_abs_lt_dvd ⟨m k i, hz⟩
+    rw [abs_lt]
+    omega
+  exact Fin.ext (by omega)
 
 end
 

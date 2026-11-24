@@ -1,11 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockStepBound
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfLatticeNested
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfLattice
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfLatticeNested
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenericFibre
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionsRank
+public import Mathlib.GroupTheory.IndexNSmul
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ChooseLePowDivFactorial
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.RelIndexNeZeroOfMulMem
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SectionModuleEqSpanPow
 
 @[expose] public section
 

@@ -1,11 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveVerticalPointChart
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveRingFinite
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveClosedPointChart
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalAmple
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertPointLengthSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveDivVertical
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalAmple
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveVerticalPointChart
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionsNonzero
 
 @[expose] public section
 

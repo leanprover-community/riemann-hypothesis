@@ -1,14 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GaloisSideTwistedSelmerAuxiliaryPrimes
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SemisimpleOfInjective
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RowsExhaust
+public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlaceHeckeOperatorScalarOnSpherical
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteCosetsHeckeSetAtSplitPlaceOutsideLevel
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitExEveryDatum
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteCosetsHeckeSetAtSplitPlaceOutsideLevelStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlaceHeckeOperatorScalarOnSphericalStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
 
 @[expose] public section
 
@@ -25,22 +62,7 @@ variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {W : Type}
 theorem trivOutside_mono {T T' : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L)))} (h : T ⊆ T') {x : GAf L n}
     (hx : TrivOutside T x) : TrivOutside T' x := fun v hv => hx v (fun h' => hv (h h'))
 
-theorem trivOutside_mul {T : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L)))} {x y : GAf L n}
-    (hx : TrivOutside T x) (hy : TrivOutside T y) : TrivOutside T (x * y) := by
-  intro v hv
-  have e : (((x * y : GAf L n).1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) =
-      ((x.1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) * ((y.1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) := rfl
-  rw [e, Matrix.map_mul, hx v hv, hy v hv, one_mul]
-
-theorem trivOutside_inv {T : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L)))} {x : GAf L n}
-    (hx : TrivOutside T x) : TrivOutside T x⁻¹ := by
-  intro v hv
-  have e : (((x⁻¹ : GAf L n).1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) *
-      ((x.1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) = 1 := Units.inv_mul x.1
-  have h2 := congrArg (fun M : Matrix (Fin n) (Fin n) (AL L) => M.map (compAt L v)) e
-  simp only [Matrix.map_mul, hx v hv, mul_one] at h2
-  rw [h2]
-  exact Matrix.map_one _ (map_zero _) (map_one _)
+alias trivOutside_inv := _root_.GlobalTheory.HeckeScalarSph.triv_inv
 
 end Gen
 
@@ -154,10 +176,10 @@ theorem heckeD_eq_of_fixed (J : Subgroup (GAf L n)) (χ : J →* ℂˣ)
   refine finsum_cosets_eq J (Umax L n) _ (fun x => f (g * x)) ?_ ?_
   · intro x hx x' hx'
     have ht : TrivOutside Bᶜ (x⁻¹ * x') :=
-      trivOutside_mono (Set.singleton_subset_iff.2 hs) (trivOutside_mul (trivOutside_inv hx.1) hx'.1)
+      trivOutside_mono (Set.singleton_subset_iff.2 hs) (_root_.GlobalTheory.HeckeScalarSph.triv_mul (trivOutside_inv hx.1) hx'.1)
     exact (hJ _ ht).1
   · intro x hx x' hx' hu
-    have ht := trivOutside_mul (trivOutside_inv hx.1) hx'.1
+    have ht := _root_.GlobalTheory.HeckeScalarSph.triv_mul (trivOutside_inv hx.1) hx'.1
     have h1 := congrFun (hf _ hu ht) (g * x)
     simp only [NG.rt, LinearMap.coe_mk, AddHom.coe_mk] at h1
     rw [mul_assoc, mul_inv_cancel_left] at h1
@@ -341,8 +363,8 @@ theorem not_bad {D : D7} {M : MtFam D} (HT : HeckeTied D M) (i : D.nd.Loc) {w : 
 theorem heckeScalar_all : ∀ (D : D7) (M : MtFam D), HeckeTied D M → AVTied D M → ∀ i : D.nd.Loc, HeckeScalar M i := by
   intro D M HT A i P w k s ϖ hw hcw hu _ _
   have hsB : s.v ∉ badPl D i := not_bad HT i hw s hcw
-  obtain ⟨c, hc⟩ := GlobalTheory.T.splitPlace_heckeOperator_scalar_on_spherical D.host.E D.R.nV (M.loc i).wt (A.S i P) (A.irr i P) s ϖ k hu
-  have hfinU := GlobalTheory.T.finite_cosets_heckeSet_at_splitPlace_outside_level D.host.E D.R.nV (Umax D.host.E D.R.nV) 1 ∅
+  obtain ⟨c, hc⟩ := _root_.GlobalTheory.HeckeScalarSph.tN_scalar D.host.E D.R.nV (M.loc i).wt (A.S i P) (A.irr i P) s ϖ k hu
+  have hfinU := _root_.GlobalTheory.TSetFin.finite_image_tSet D.host.E D.R.nV (Umax D.host.E D.R.nV) 1 ∅
     (fun κ _ => ⟨Iff.rfl, fun _ => rfl⟩) s ϖ k (by simp) hu
   refine ⟨c, fun y hy => ?_⟩
   have hfT : (M.loc i).real y ∈ NG.TypeSp (M.loc i).wt.ρ (M.loc i).J (M.loc i).χ := by

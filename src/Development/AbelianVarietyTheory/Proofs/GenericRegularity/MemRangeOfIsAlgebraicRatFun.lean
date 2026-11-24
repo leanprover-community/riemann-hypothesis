@@ -1,21 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
-public import Formalism.LocalToGlobal.ProjectiveLattices.NrmContPf
-public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSup
-public import Formalism.LocalToGlobal.ProjectiveLattices.DivFinOfLawA3
-public import Formalism.LocalToGlobal.ProjectiveLattices.FnTrdegOf
-public import Formalism.LocalToGlobal.ProjectiveLattices.RegQFree
-public import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MaxBoundPf
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsIntegralRatZetaOfCoeff
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompNonemptyFiniteGenFrTrdeg
+public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIntegralClosureOfEssFiniteTypeField
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsIsOpenImmersionIsStandardSmoothOfRelativeD
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompNonemptyFiniteGenFrTrdeg
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsIntegralRatZetaOfCoeff
+import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.QuasiAffine
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
+import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
 
 @[expose] public section
 
@@ -126,7 +161,6 @@ theorem exists_finset_roots (F : Type*) [Field F] [CharZero F] [Algebra.EssFinit
   let g : L →ₐ[ℚ] Ω := (φ.comp L.val.toRingHom).toRatAlgHom
   have hr : g θ ∈ ψ.range := by
     refine hs.mem_range_of_isRoot (S := Ω) ((minpoly.monic hi).map _).ne_zero ?_
-    change (Polynomial.map _ _).IsRoot _
     rw [Polynomial.map_map, Subsingleton.elim (RingHom.comp _ _) (algebraMap ℚ Ω), IsRoot.def, eval_map_algebraMap, aeval_algHom_apply, minpoly.aeval, map_zero]
   have hle : (⊤ : IntermediateField ℚ L) ≤ (ψ.toRatAlgHom.fieldRange).comap g := by
     rw [← hθ, adjoin_simple_le_iff]
@@ -253,8 +287,8 @@ theorem compNe_and_exists_fnAlgClosed : ∀ (E : Type) [Field E] [NumberField E]
       exact ((Algebra.IsIntegral.isIntegral (R := ℚ) (b j)).map c.F.val).isAlgebraic)
   refine ⟨c', fun z hz => ?_, fun c'' hle Z a ha => ?_⟩
   · have e := congrArg c.F.val (b.sum_repr ⟨z, hz⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at e
+
+    rw [map_sum] at e
     have e' : z = _ := e.symm
     rw [e']
     refine sum_mem fun j _ => ?_

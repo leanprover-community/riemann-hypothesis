@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerOrd
+public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassMapIdeleClassMap
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
 
 @[expose] public section
 

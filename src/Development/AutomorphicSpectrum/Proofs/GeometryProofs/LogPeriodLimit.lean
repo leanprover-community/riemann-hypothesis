@@ -1,23 +1,74 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.SlopeBoundSt
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-public import Development.AbelianVarietyTheory.PublishedTheorems.SemiabelianTori.GeometricallyConnectedSplitTorusAff
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Assembly
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PRiemannExtensionSlices
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPuncturedExpOrder
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ImLowerOnKernel
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsAdaptedUnimodular
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SymplecticPolydiscPeriodBasisStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SiegelLimitImagBoundStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RiemannFormHermitianLatticeStatement
+public import Mathlib.Analysis.Complex.Norm
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RiemannFormHermitianLattice
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.Instances.Matrix
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SiegelLimitImagBound
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SymplecticPolydiscPeriodBasis
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ImLowerOnKernel
+public import Mathlib.Algebra.Order.Chebyshev
+public import Mathlib.CategoryTheory.Monoidal.Mon
+import GroundTheory.HeightsAndTheta.Heights.Regularisation.Assembly
+import GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
+import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPuncturedExpOrder
+import GroundTheory.HeightsAndTheta.Heights.Regularisation.PRiemannExtensionSlices
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
+import Mathlib.CategoryTheory.Monoidal.Category
+import Mathlib.Topology.Sheaves.Presheaf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 @[expose] public section
 
@@ -73,8 +124,8 @@ theorem per_coords (P : Λ →+ (Fin g → ℂ)) (τ A : Matrix (Fin g) (Fin g) 
     P x = Aᵀ *ᵥ (cst (uCo bas x) + τ *ᵥ cst (vCo bas x)) := by
   have hx : P x = ∑ i, uCo bas x i • P (bas (.inl i)) + ∑ j, vCo bas x j • P (bas (.inr j)) := by
     conv_lhs => rw [← sum_coords bas x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [mk, map_sum, map_zsmul]
+
+    simp [mk, map_sum, map_zsmul]
   rw [hx]
   funext k
   have hsym : ∀ i j, τ i j = τ j i := fun i j => by
@@ -105,12 +156,12 @@ theorem form_coords (E : LinearMap.BilinForm ℤ Λ)
     · simp [h]
     · simp [h, Ne.symm h]
   conv_lhs => rw [← sum_coords bas x, ← sum_coords bas y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [mk, map_add (f := _), map_sum, map_zsmul, LinearMap.add_apply, LinearMap.sum_apply,
-    LinearMap.smul_apply, smul_eq_mul, (hE _ _).1, (hE _ _).2.1, (hE _ _).2.2, hba,
-    mul_zero, Finset.sum_const_zero, add_zero, zero_add, mul_ite, mul_one, mul_neg,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_neg_distrib, dotProduct]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, mul_one, mul_neg, Finset.sum_neg_distrib]
+
+  simp only [mk, map_add (f := _), map_sum, map_zsmul, LinearMap.add_apply, LinearMap.sum_apply,
+  LinearMap.smul_apply, smul_eq_mul, (hE _ _).1, (hE _ _).2.1, (hE _ _).2.2, hba,
+  mul_zero, Finset.sum_const_zero, add_zero, zero_add, mul_ite, mul_neg,
+  dotProduct]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, mul_neg, Finset.sum_neg_distrib]
   rw [sub_eq_add_neg]
   congr 1
   · exact Finset.sum_congr rfl fun _ _ => by ring
@@ -142,8 +193,8 @@ end
 theorem functional_rep {g : ℕ} (φ : (Fin g → ℤ) →+ ℤ) : ∃ p : Fin g → ℤ, ∀ u, φ u = u ⬝ᵥ p := by
   refine ⟨fun i => φ (Pi.single i 1), fun u => ?_⟩
   conv_lhs => rw [← Finset.univ_sum_single u]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   have : (Pi.single i (u i) : Fin g → ℤ) = u i • Pi.single i 1 := by
     funext k
@@ -467,7 +518,7 @@ theorem at_point {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriod
       refine hY _ (hzs_ball m) (fun j => ws m (cj j)) fun j => ?_
       have hj : (cj j).val < a := j.2
       simp [hzs, expCover, hj]
-    obtain ⟨u, v, hv, hyv, hev⟩ := GlobalTheory.T.siegel_limit_imag_bound g Bs (σf z) (fun m => σf (zs m))
+    obtain ⟨u, v, hv, hyv, hev⟩ := _root_.GlobalTheory.CompanionTheory.PeriodLimitSeq.limit_seq g Bs (σf z) (fun m => σf (zs m))
       (fun m => σf (zs m) + t m • Bs.map (fun x : ℤ => (x : ℂ))) t c (fun m => uCo bas (x m))
       (fun m => vCo bas (x m)) _ hc hσlim him (fun _ => rfl) hYm hlower hy'
     refine ⟨⟨mk bas u v, hmk u v hv⟩, ?_, ?_⟩
@@ -535,8 +586,8 @@ theorem at_point {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriod
       simp only [hperF, uCo_mk, vCo_mk, cst_zero, mulVec_zero, add_zero] at h1
       have h2 : star ((A z)ᵀ *ᵥ cst u) = (A z)ᴴ *ᵥ cst u := by
         funext i
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp [cst, mulVec, dotProduct, Matrix.conjTranspose_apply, map_sum]
+
+        simp [cst, mulVec, dotProduct, Matrix.conjTranspose_apply]
       rw [h2] at h1
       rw [hG, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
       have h3 : Hb *ᵥ ((A z)ᴴ *ᵥ (fun k => (u k : ℂ))) = 0 := h1
@@ -544,7 +595,7 @@ theorem at_point {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriod
     set y : Fin g → ℂ := ((A z)ᵀ)⁻¹ *ᵥ v with hy
     have hvy : (A z)ᵀ *ᵥ y = v := by
       rw [hy, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hunit, Matrix.one_mulVec]
-    obtain ⟨f1, f2, f3⟩ := GlobalTheory.T.riemann_form_hermitian_lattice g Bs (σf z) G c hc hBsPSD hσsym hlower hGh hrel hkerG y
+    obtain ⟨f1, f2, f3⟩ := _root_.GlobalTheory.CompanionTheory.RiemannForm.form_bounds g Bs (σf z) G c hc hBsPSD hσsym hlower hGh hrel hkerG y
     have hval : v ⬝ᵥ Hb *ᵥ star v = y ⬝ᵥ G *ᵥ star y := by
       rw [← hconj, hvy]
     rw [hval]
@@ -567,7 +618,7 @@ theorem at_point {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriod
 
 theorem bounded_on_limit_lattice : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ), ∃ ρ C : ℝ, 0 < ρ ∧ ρ ≤ 1 ∧ ∀ z ∈ Metric.ball (0 : Fin n → ℂ) ρ, ∃ (ws : ℕ → Fin n → ℂ) (W : Submodule ℤ Λ) (per : W →+ (Fin g → ℂ)), (∀ m, ws m ∈ GroundTheory.Heights₂.Heights.Regular.logCover L.a_le) ∧ Tendsto (fun m => GroundTheory.Heights₂.Heights.Regular.expCover a (ws m)) atTop (𝓝 z) ∧ (∀ x : W, Tendsto (fun m => L.P (ws m) x) atTop (𝓝 (per x))) ∧ (∀ (x : ℕ → Λ) (p : Fin g → ℂ), Tendsto (fun m => L.P (ws m) (x m)) atTop (𝓝 p) → ∃ x₀ : W, p = per x₀ ∧ ∀ᶠ m in atTop, x m = x₀) ∧ (∀ φ : W →+ ℤ, (∀ x : W, (∀ x' : W, L.E x x' = 0) → φ x = 0) → ∃ x₀ : W, ∀ x : W, φ x = L.E x₀ x) ∧ ∀ Hb : Matrix (Fin g) (Fin g) ℂ, Hb.IsHermitian → (∀ x x' : W, (per x ⬝ᵥ Hb *ᵥ star (per x')).im = L.E x x') → (∀ x : W, (∀ x' : W, L.E x x' = 0) → Hb *ᵥ star (per x) = 0) → ∀ v : Fin g → ℂ, 0 ≤ (v ⬝ᵥ Hb *ᵥ star v).re ∧ (v ⬝ᵥ Hb *ᵥ star v).re ≤ C * ∑ i, ‖v i‖ ^ 2 ∧ ((v ⬝ᵥ Hb *ᵥ star v).re = 0 → v ∈ Submodule.span ℂ {p | ∃ x : W, (∀ x' : W, L.E x x' = 0) ∧ p = per x}) := by
   intro n a g Λ _ L
-  obtain ⟨bas, Q, A, T0, hE, hAd, hA0, hT0, hBpsd, hPa, hPb⟩ := GlobalTheory.T.symplectic_polydisc_period_basis n a g Λ L
+  obtain ⟨bas, Q, A, T0, hE, hAd, hA0, hT0, hBpsd, hPa, hPb⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.exists_markedPeriods_frame n a g Λ L
   obtain ⟨ρ₁, c, C₁, hρ₁, hρ₁1, hc, hb⟩ :=
     (ImTauBounds.cond RiemannExtensionSlices.proof PuncturedExpOrder.proof LogCoverDescent.proof) n a g Q
   have hAc : ContinuousOn A (Metric.ball 0 1) :=
@@ -601,7 +652,7 @@ theorem bounded_on_limit_lattice : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup �
     have hwj : ∀ j : Fin a, w (Fin.castLE L.a_le j) = l j := by
       intro j
       have hj : (Fin.castLE L.a_le j).val < a := j.2
-      simp [w, hj]
+      simp [w]
     have hexp : expCover a w = z := by
       funext k
       by_cases hk : k.val < a

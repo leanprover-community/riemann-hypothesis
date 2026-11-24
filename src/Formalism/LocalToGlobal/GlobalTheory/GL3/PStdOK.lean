@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdChar
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfArith
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdChar
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.CayleyGaussianIntegralsCongrFact
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlockFirstBlockEmb
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.Th0CharMulOpUTh0HalfPeriodEq
+import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatticeExists
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -66,27 +111,11 @@ theorem denom (E K : Type*) [Field E] [NumberField E] [Field K] [NumberField K] 
   have hx : (x : E) = ∑ j, (bs.repr x j) • ((bs j : 𝓞 E) : E) := by
     conv_lhs => rw [← bs.sum_repr x]
     simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hx, map_sum, Finset.mul_sum]
+
+  rw [hx, map_sum, Finset.mul_sum]
   refine IsIntegral.sum _ fun j _ => ?_
   rw [map_zsmul, mul_smul_comm]
   exact (h _ (Finset.mem_image.2 ⟨(i, j), Finset.mem_univ _, rfl⟩)).zsmul _
-
-theorem fg_of_nsmul_le {ι : Type} (M M' : AddSubgroup (ι → ℂ)) [AddGroup.FG M'] (N : ℕ) (hN : 0 < N)
-    (h : ∀ x ∈ M, N • x ∈ M') : AddGroup.FG M := by
-  rw [← Module.Finite.iff_addGroup_fg]
-  have : Module.Finite ℤ M' := Module.Finite.iff_addGroup_fg.2 inferInstance
-  let f : M →+ M' :=
-    { toFun := fun x => ⟨N • x.1, h x.1 x.2⟩
-      map_zero' := by ext; simp
-      map_add' := fun x y => by ext; simp }
-  refine Module.Finite.of_injective f.toIntLinearMap ?_
-  intro x y hxy
-  have h1 : N • x.1 = N • y.1 := congrArg (fun z : M' => z.1) hxy
-  ext i
-  have h2 := congrFun h1 i
-  simp only [Pi.smul_apply, nsmul_eq_mul] at h2
-  exact mul_left_cancel₀ (by exact_mod_cast hN.ne') h2
 
 def e4 : Fin 2 × Fin 2 ≃ Fin 4 := finProdFinEquiv
 
@@ -160,33 +189,7 @@ def put4 (n : Type) (a : Fin 4) : (n → ℂ) →+ (Fin 4 × n → ℂ) where
 
 theorem fourth_power_le_closure_embeddings (Λ : AddSubgroup ℂ) : pow4 (lamMM D Λ) ≤
     AddSubgroup.closure {z | ∃ w ∈ Λ, ∃ y : Fin 4 → D.host.E, (∀ a, y a ∈ D.host.AA0) ∧ z = w • emb4 D y} := by
-  intro z hz
-  have key : ∀ a : Fin 4, lamMM D Λ ≤ (AddSubgroup.closure
-      {z | ∃ w ∈ Λ, ∃ y : Fin 4 → D.host.E, (∀ a, y a ∈ D.host.AA0) ∧ z = w • emb4 D y}).comap
-        (put4 D.what₂.Tau a) := by
-    intro a
-    unfold lamMM
-    rw [AddSubgroup.closure_le]
-    rintro v ⟨w, hw, a0, ha0, rfl⟩
-    refine AddSubgroup.subset_closure ⟨w, hw, Pi.single a a0, ?_, ?_⟩
-    · intro a'
-      by_cases h : a' = a
-      · subst h; rwa [Pi.single_eq_same]
-      · rw [Pi.single_eq_of_ne h]; exact FractionalIdeal.zero_mem _
-    · funext ⟨a', τ⟩
-      show (if a' = a then w * TaylorLogMetric.embT D τ a0 else 0) = w * TaylorLogMetric.embT D τ ((Pi.single a a0 : Fin 4 → D.host.E) a')
-      by_cases h : a' = a
-      · subst h; simp
-      · rw [Pi.single_eq_of_ne h]; simp [h]
-  have hsum : z = ∑ a, put4 D.what₂.Tau a (slice a z) := by
-    funext ⟨a', τ⟩
-    simp only [Finset.sum_apply, put4, AddMonoidHom.coe_mk, ZeroHom.coe_mk, slice]
-    rw [Finset.sum_eq_single a']
-    · simp
-    · intro b _ hb; simp [Ne.symm hb]
-    · simp
-  rw [hsum]
-  exact AddSubgroup.sum_mem _ fun a _ => key a (hz a)
+  apply GlobalTheory.FourthRootStd.fourth_power_le_closure_embeddings
 
 theorem int_mem_inverse_half_different {x : D.host.E} (hx : IsIntegral ℤ x) : x ∈ D.host.AA0 := by
   have h1 := FL.one_mem_inverse_halfDifferent D
@@ -195,15 +198,6 @@ theorem int_mem_inverse_half_different {x : D.host.E} (hx : IsIntegral ℤ x) : 
   have e : ((⟨x, hx⟩ : 𝓞 D.host.E) • (1 : D.host.E)) = x := by rw [Algebra.smul_def, mul_one]; rfl
   rw [e] at h2
   exact h2
-
-theorem exists_nat_clearing_order_denominators (D : D7) : ∃ k : ℕ, 0 < k ∧ ∀ a ∈ D.host.AA0, IsIntegral ℤ ((k : D.host.E) * a) := by
-  obtain ⟨k, hk, h⟩ := FL.exists_int_clearing_order_denominators D
-  refine ⟨k.natAbs, Int.natAbs_pos.2 hk, fun a ha => ?_⟩
-  have h1 := h a ha
-  rw [Nat.cast_natAbs]
-  rcases abs_choice k with e | e <;> rw [e]
-  · exact h1
-  · push_cast; rw [neg_mul]; exact h1.neg
 
 section B
 
@@ -256,79 +250,11 @@ theorem betaSemi (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetri
 theorem up : ∃ N : ℕ, 0 < N ∧
     ∀ x ∈ imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM),
       N • x ∈ stdLat B.L (Fin 4 × D.what₂.Tau) := by
-  obtain ⟨k, hk, hA⟩ := exists_nat_clearing_order_denominators D
-  let f : Fin 4 × (Fin 4 × D.what₂.Tau) → D.host.E →+ D.host.K := fun p =>
-    { toFun := fun x => B.γ₀.g (Pi.single p.1 x) p.2
-      map_zero' := by simp
-      map_add' := fun x y => by rw [Pi.single_add, map_add (f := _)]; rfl }
-  obtain ⟨m, hm, hf⟩ := denom D.host.E D.host.K f
-  refine ⟨m * k, Nat.mul_pos hm hk, ?_⟩
-  have hle : pow4 B.lamM ≤ ((stdLat B.L (Fin 4 × D.what₂.Tau)).comap
-      (nsmulAddMonoidHom (α := Fin 4 × D.what₂.Tau → ℂ) (m * k))).comap
-        (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)).toAddMonoidHom := by
-    refine (fourth_power_le_closure_embeddings _).trans ?_
-    rw [AddSubgroup.closure_le]
-    rintro _ ⟨w, hw, y, hy, rfl⟩
-    show (m * k) • B.gC (w • emb4 D y) ∈ stdLat B.L (Fin 4 × D.what₂.Tau)
-    rw [mem_stdLat]
-    intro v
-    rw [map_smul, show B.gC (emb4 D y) = _ from B.gC_spec y, mem_iff]
-
-    have hint : IsIntegral ℤ (((m * k : ℕ) : D.host.K) * B.γ₀.g y v) := by
-      have hy' : y = ∑ a, Pi.single a (y a) := by
-        funext a'; simp [Finset.sum_apply, Pi.single_apply]
-      have e : ((m * k : ℕ) : D.host.K) * B.γ₀.g y v
-          = ∑ a, (m : D.host.K) * f (a, v) ((k : D.host.E) * y a) := by
-        conv_lhs => rw [hy']
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.sum_apply, Finset.mul_sum]
-        refine Finset.sum_congr rfl fun a _ => ?_
-        show ((m * k : ℕ) : D.host.K) * B.γ₀.g (Pi.single a (y a)) v
-          = (m : D.host.K) * B.γ₀.g (Pi.single a ((k : D.host.E) * y a)) v
-        have : (Pi.single a ((k : D.host.E) * y a) : Fin 4 → D.host.E) = k • Pi.single a (y a) := by
-          funext a'
-          by_cases h : a' = a
-          · subst h; simp
-          · simp [Pi.single_eq_of_ne h]
-        rw [this, map_nsmul]
-        simp only [Pi.smul_apply, nsmul_eq_mul]
-        push_cast; ring
-      rw [e]
-      exact IsIntegral.sum _ fun a _ => hf (a, v) ⟨_, hA _ (hy a)⟩
-    have := lam_mul (cc := cc) (δ := δ) (⟨_, hint⟩ : 𝓞 D.host.K) hw
-    convert this using 1
-    simp only [Pi.smul_apply, smul_eq_mul, nsmul_eq_mul]
-    show ((m * k : ℕ) : ℂ) * (w * D.host.φ₀ ((B.γ₀.g y v : D.host.K) : D.host.E))
-      = D.host.φ₀ (((((m * k : ℕ) : D.host.K) * B.γ₀.g y v : D.host.K)) : D.host.E) * w
-    push_cast
-    rw [map_mul, map_mul, map_natCast, map_natCast]
-    ring
-  rintro _ ⟨z, hz, rfl⟩
-  exact hle hz
+  apply GlobalTheory.FourthRootStd.up
 
 theorem down : ∃ N : ℕ, 0 < N ∧ ∀ x ∈ stdLat B.L (Fin 4 × D.what₂.Tau),
     N • x ∈ imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM) := by
-  obtain ⟨m, hm, hT⟩ := exists_nat_mul D.host.E
-    (Finset.univ.image fun p : (Fin 4 × D.what₂.Tau) × Fin 4 =>
-      B.γ₀.g.symm (Pi.single p.1 (1 : D.host.K)) p.2)
-  refine ⟨m, hm, fun x hx => ?_⟩
-  rw [mem_stdLat] at hx
-  have hsum : m • x = ∑ v, m • (Pi.single v (x v) : Fin 4 × D.what₂.Tau → ℂ) := by
-    rw [← Finset.smul_sum]
-    congr 1
-    funext v'; simp [Finset.sum_apply, Pi.single_apply]
-  rw [hsum]
-  refine AddSubgroup.sum_mem _ fun v _ => ?_
-  refine ⟨x v • emb4 D (m • B.γ₀.g.symm (Pi.single v (1 : D.host.K))),
-    gen_mem ((mem_iff B _).1 (hx v)) (fun a => int_mem_inverse_half_different ?_), ?_⟩
-  · have := hT _ (Finset.mem_image.2 ⟨(v, a), Finset.mem_univ _, rfl⟩)
-    simpa using this
-  · show B.gC (x v • emb4 D (m • B.γ₀.g.symm (Pi.single v (1 : D.host.K)))) = _
-    rw [map_smul, show B.gC (emb4 D _) = _ from B.gC_spec _, map_nsmul, LinearEquiv.apply_symm_apply]
-    funext v'
-    by_cases h : v' = v
-    · subst h; simp; ring
-    · simp [Pi.single_eq_of_ne h]
+  apply GlobalTheory.FourthRootStd.down
 
 theorem idx₂ : relIdx (imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM))
     (stdLat B.L (Fin 4 × D.what₂.Tau)) ≠ 0 := by
@@ -338,7 +264,7 @@ theorem idx₂ : relIdx (imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[
 theorem idx₁ : relIdx (stdLat B.L (Fin 4 × D.what₂.Tau))
     (imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM)) ≠ 0 := by
   obtain ⟨N, hN, h⟩ := up B
-  have := fg_of_nsmul_le _ (stdLat B.L (Fin 4 × D.what₂.Tau)) N hN h
+  have := GlobalTheory.FourthRootStd.fg_of_nsmul_le _ (stdLat B.L (Fin 4 × D.what₂.Tau)) N hN h
   exact Formalism.L2.Th1.H.Inh.relIdx_ne_zero_of_fg _ _ N hN h
 
 theorem stdOK (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) : B.StdOK :=

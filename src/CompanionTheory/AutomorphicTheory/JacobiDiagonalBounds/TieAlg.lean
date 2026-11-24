@@ -1,6 +1,9 @@
 module
 
+public import Formalism.HermitianCurvature.StatementFr
+public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameOfAdmissibleWord
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

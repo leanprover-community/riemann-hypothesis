@@ -1,11 +1,57 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
+public import Formalism.SatakeDualWeyl.StatementC
+public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseOneAddPreservingAdelicCompletion
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 
 @[expose] public section
 
@@ -171,11 +217,11 @@ theorem exists_asm (a : HeightOneSpectrum (𝓞 ℚ) → 𝓞 E) :
   let b := Module.finBasis ℤ (𝓞 E)
   refine ⟨∑ j, algebraMap (𝓞 E) E (b j) ⊗ₜ[ℚ] mkInt (fun v => ((b.repr (a v) j : ℤ) : v.adicCompletion ℚ))
     (fun v => intCast_mem _ _), sum_mem fun j _ => levelaf_tmul_mem _ (mkInt_mem _ _), fun v => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   conv_rhs => rw [← b.sum_repr (a v)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [show ∀ x : 𝓞 E, (x : E) = algebraMap (𝓞 E) E x from fun _ => rfl, map_sum, map_sum]
+
+  rw [show ∀ x : 𝓞 E, (x : E) = algebraMap (𝓞 E) E x from fun _ => rfl, map_sum, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [afsplit_prV_tmul, mkInt_apply, map_zsmul, ← zsmul_one, ← TensorProduct.smul_tmul]
   rfl

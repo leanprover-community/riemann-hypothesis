@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SymmMemOfMem
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PairingOmegaPrimeZ
 
 @[expose] public section
 
@@ -23,7 +23,6 @@ theorem omp_congr {F G : FlagG S r T} {F' G' : FlagG S r T'} (h : ∀ a, F.fvec 
     unfold Zhat
     first
       | rw [hF, hF']
-      | (simp only [hF, hF']; rfl)
   refine ⟨?_, hZ⟩
   unfold omp
   rw [hZ, hF']

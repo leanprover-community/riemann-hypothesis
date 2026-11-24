@@ -1,11 +1,57 @@
 module
 
-public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
 public import Development.WeilBound.ThetaLifts.FrameEstimates.TowerRallisLemma
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
-public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
+public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.UnipUGood
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
+public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
+public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
+import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.InertDef
 
 @[expose] public section
 
@@ -33,9 +79,6 @@ def ind (S : Finset (Pl F)) : Af F :=
 open Classical in
 theorem ev_ind (S : Finset (Pl F)) (u : Pl F) : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u (ind S) = if u ∈ S then 1 else 0 := rfl
 
-theorem fin_ext {a b : Af F} (h : ∀ u, Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u a = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u b) : a = b :=
-  Subtype.ext (funext h)
-
 theorem tendsto_ind_mul (α : Af F) : Tendsto (fun S : Finset (Pl F) => ind S * α) atTop (𝓝 α) := by
   classical
   let T : Set (Pl F) := {u | α u ∈ (u.adicCompletionIntegers F : Set (u.adicCompletion F))}
@@ -55,7 +98,7 @@ theorem tendsto_ind_mul (α : Af F) : Tendsto (fun S : Finset (Pl F) => ind S * 
     filter_upwards [eventually_ge_atTop ({u} : Finset _)] with S hS
     exact (if_pos (hS (Finset.mem_singleton_self u))).symm
   have h2 := ((RestrictedProduct.continuous_inclusion hT).tendsto a).comp hf
-  refine Tendsto.congr (fun S => fin_ext fun u => ?_) h2
+  refine Tendsto.congr (fun S => _root_.GlobalTheory.AdelicU.af_ext fun u => ?_) h2
   rw [map_mul, ev_ind]
   change (if u ∈ S then α u else 0) = _
   split_ifs
@@ -66,14 +109,14 @@ def eps (S : Finset (Pl F)) : AF F := ((1, ind S) : Ainf F × Af F)
 
 def idm (v : Pl F) : AF F := ((0, ind {v}) : Ainf F × Af F)
 
-theorem ind_sq (S : Finset (Pl F)) : ind S * ind S = ind S := fin_ext fun u => by rw [map_mul, ev_ind]; split_ifs <;> simp
+theorem ind_sq (S : Finset (Pl F)) : ind S * ind S = ind S := _root_.GlobalTheory.AdelicU.af_ext fun u => by rw [map_mul, ev_ind]; split_ifs <;> simp
 
 theorem eps_sq (S : Finset (Pl F)) : eps S * eps S = eps S := Prod.ext (one_mul _) (ind_sq S)
 
 theorem idm_sq (v : Pl F) : idm v * idm v = idm v := Prod.ext (mul_zero _) (ind_sq _)
 
 theorem eps_cons (S : Finset (Pl F)) (v : Pl F) (hv : v ∉ S) : eps (S.cons v hv) = eps S + idm v ∧ eps S * idm v = 0 := by
-  refine ⟨Prod.ext (add_zero _).symm (fin_ext fun u => ?_), Prod.ext (mul_zero _) (fin_ext fun u => ?_)⟩
+  refine ⟨Prod.ext (add_zero _).symm (_root_.GlobalTheory.AdelicU.af_ext fun u => ?_), Prod.ext (mul_zero _) (_root_.GlobalTheory.AdelicU.af_ext fun u => ?_)⟩
   · change Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u (ind _) = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u (ind S + ind {v})
     rw [map_add (f := _), ev_ind, ev_ind, ev_ind]
     by_cases h : u = v
@@ -162,7 +205,7 @@ theorem piece_prod {W : Spc F E d} (g : UA σ W.J) (S : Finset (Pl F)) : ∃ l :
     · rcases List.mem_append.1 hh with k | k
       · exact h1 h k
       · refine ⟨v, fun u hu => ?_⟩
-        have : u * idm v = 0 := Prod.ext (mul_zero u.1) (fin_ext fun x => by
+        have : u * idm v = 0 := Prod.ext (mul_zero u.1) (_root_.GlobalTheory.AdelicU.af_ext fun x => by
           change Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F x (u.2 * ind {v}) = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F x 0
           rw [map_mul, ev_ind, map_zero]
           split_ifs with e
@@ -173,7 +216,7 @@ theorem piece_prod {W : Spc F E d} (g : UA σ W.J) (S : Finset (Pl F)) : ∃ l :
         mul_assoc]
 
 theorem piece_inf {W : Spc F E d} (g : UA σ W.J) : piece (eps ∅) (eps_sq ∅) g ∈ UAt σ W (evI F) := fun u hu => by
-  have : u * eps ∅ = 0 := Prod.ext ((mul_one u.1).trans ((map_eq_zero_iff _ (RingEquiv.injective _)).1 hu)) (fin_ext fun x => by
+  have : u * eps ∅ = 0 := Prod.ext ((mul_one u.1).trans ((map_eq_zero_iff _ (RingEquiv.injective _)).1 hu)) (_root_.GlobalTheory.AdelicU.af_ext fun x => by
     change Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F x (u.2 * ind ∅) = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F x 0
     rw [map_mul, ev_ind, map_zero, if_neg (Finset.notMem_empty x), mul_zero])
   rw [mat_piece, add_sub_cancel_left, smul_smul, this, zero_smul]
@@ -307,19 +350,19 @@ theorem match_inf (hA : PositivityTheory.ThKF.ArchOp) (hm : IsMatched B G X om o
   have cof : ∀ {P : Pl F → Prop}, (∀ v ∉ T, P v) → ∀ᶠ v in cofinite, P v := fun h => T.eventually_cofinite_notMem.mono h
   refine ⟨T, hT, m, m', fun i => A (f i), φ, fun i => A' (f' i), φ', fun i => ⟨a2 (one _) hk _ (h1 i).1, (h1 i).2⟩,
     fun i => ⟨b2 (one _) hk _ (h2 i).1, (h2 i).2⟩, ?_, ?_, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      obtain ⟨g, hg, e⟩ := PositivityTheory.ThKG.pure_eq_pureA t.geo.hM (φ i) (h1 i).2.1 (cof (h1 i).2.2)
-      rw [e, e, a1.1 _ g hg]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      obtain ⟨g, hg, e⟩ := PositivityTheory.ThKG.pure_eq_pureA t.geo.hM' (φ' i) (h2 i).2.1 (cof (h2 i).2.2)
-      rw [e, e, b1.1 _ g hg]
+
+  · rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    obtain ⟨g, hg, e⟩ := PositivityTheory.ThKG.pure_eq_pureA t.geo.hM (φ i) (h1 i).2.1 (cof (h1 i).2.2)
+    rw [e, e, a1.1 _ g hg]
+
+  · rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    obtain ⟨g, hg, e⟩ := PositivityTheory.ThKG.pure_eq_pureA t.geo.hM' (φ' i) (h2 i).2.1 (cof (h2 i).2.2)
+    rw [e, e, b1.1 _ g hg]
   · have := congrArg (Op.rTensor _) e
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.rTensor_tmul, o1 _ (h1 _).1, o2 _ (h2 _).1] at this
+
+    simp only [map_sum, LinearMap.rTensor_tmul, o1 _ (h1 _).1, o2 _ (h2 _).1] at this
     exact this
 
 theorem match_fin (hP : PositivityTheory.ThKF.PureAct) (hm : IsMatched B G X om om' R Rf) {v : Pl F} {h : UA σ G.W.J}
@@ -350,19 +393,19 @@ theorem match_fin (hP : PositivityTheory.ThKF.PureAct) (hm : IsMatched B G X om 
     fun i => Function.update (φ' i) v (ω' (1, h) (φ' i v)),
     fun i => ⟨(h1 i).1, upd (fun _ x => x ∈ SB _) _ _ (h1 i).2.1 (L.pres 1 o h hh _ ((h1 i).2.1 v)), off _ _ _ (h1 i).2.2⟩,
     fun i => ⟨(h2 i).1, upd (fun _ x => x ∈ SB _) _ _ (h2 i).2.1 (L'.pres 1 o' h hh _ ((h2 i).2.1 v)), off _ _ _ (h2 i).2.2⟩, ?_, ?_, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      convert (hP F _ v (om (1, h)) (f i) (φ i) (h1 i).2.1 (((cof (h1 i).2.2).and t.geo.hM.std).mono fun _ k => k.1.trans k.2)).2.2 _
-        ((L.acts 1 o h hh _ ((h1 i).2.1 v) _).2 rfl)
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [map_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      convert (hP F _ v (om' (1, h)) (f' i) (φ' i) (h2 i).2.1 (((cof (h2 i).2.2).and t.geo.hM'.std).mono fun _ k => k.1.trans k.2)).2.2 _
-        ((L'.acts 1 o' h hh _ ((h2 i).2.1 v) _).2 rfl)
+
+  · rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    convert (hP F _ v (om (1, h)) (f i) (φ i) (h1 i).2.1 (((cof (h1 i).2.2).and t.geo.hM.std).mono fun _ k => k.1.trans k.2)).2.2 _
+      ((L.acts 1 o h hh _ ((h1 i).2.1 v) _).2 rfl)
+
+  · rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    convert (hP F _ v (om' (1, h)) (f' i) (φ' i) (h2 i).2.1 (((cof (h2 i).2.2).and t.geo.hM'.std).mono fun _ k => k.1.trans k.2)).2.2 _
+      ((L'.acts 1 o' h hh _ ((h2 i).2.1 v) _).2 rfl)
   · have := congrArg (Ω.lTensor _) e
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, LinearMap.lTensor_tmul] at this
+
+    simp only [map_sum, LinearMap.lTensor_tmul] at this
     refine (Finset.sum_congr rfl fun i _ => ?_).trans (this.trans (Finset.sum_congr rfl fun i _ => ?_))
     · rw [hΩ (fun u => Rf.p u (φ i u)) fun u hu => by rw [(h1 i).2.2 u hu], o1 _ ((h1 i).2.1 v)]
       congr 2

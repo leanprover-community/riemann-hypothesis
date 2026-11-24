@@ -1,10 +1,60 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementAB
-public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
+public import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
+public import Mathlib.CategoryTheory.Category.Basic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.BiHomSum
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DegLESum
+public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -53,8 +103,8 @@ lemma shiftPoly_C (b : κ → ι → K) (a : K) :
 
 lemma shiftPoly_sum {α : Type*} (b : κ → ι → K) (s : Finset α) (f : α → MvPolynomial ι K) :
     shiftPoly b (∑ a ∈ s, f a) = ∑ a ∈ s, shiftPoly b (f a) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [shiftPoly_eq, map_sum]
+
+  simp only [shiftPoly_eq, map_sum]
 
 lemma hasseDir_zero_right (b : κ → ι → K) (β : κ →₀ ℕ) :
     hasseDir b β (0 : MvPolynomial ι K) = 0 := by
@@ -82,8 +132,8 @@ lemma pderiv_shiftGen (b : κ → ι → K) (x : ι) (k : κ) :
     MvPolynomial.pderiv k (shiftGen b x) = MvPolynomial.C (MvPolynomial.C (b k x)) := by
   classical
   unfold shiftGen
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_add (f := _), MvPolynomial.pderiv_C, zero_add, map_sum, Finset.sum_eq_single k]
+
+  rw [map_add (f := _), MvPolynomial.pderiv_C, zero_add, map_sum, Finset.sum_eq_single k]
   · rw [MvPolynomial.pderiv_C_mul, MvPolynomial.pderiv_X_self, mul_one]
   · intro k' _ hk'
     rw [MvPolynomial.pderiv_C_mul, MvPolynomial.pderiv_X_of_ne hk', mul_zero]
@@ -121,9 +171,7 @@ lemma shiftPoly_dirD [Fintype ι] (b : κ → ι → K) (k : κ) (Q : MvPolynomi
 lemma hasseDir_dirD [Fintype ι] (b : κ → ι → K) (k : κ) (β : κ →₀ ℕ) (Q : MvPolynomial ι K) :
     hasseDir b β (dirD (b k) Q) =
       MvPolynomial.C ((β k + 1 : ℕ) : K) * hasseDir b (β + Finsupp.single k 1) Q := by
-  unfold hasseDir
-  rw [shiftPoly_dirD, MvPolynomial.coeff_pderiv]
-  simp [mul_comm]
+  simp [hasseDir, shiftPoly_dirD, MvPolynomial.coeff_pderiv, mul_comm]
 
 end Shift
 
@@ -277,7 +325,7 @@ lemma biHom_add {d : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : biHo
 
 lemma biHom_sum {α : Type*} {d : ℕ} (s : Finset α) (F : α → MvPolynomial κ (MvPolynomial ι K))
     (h : ∀ a ∈ s, biHom d (F a)) : biHom d (∑ a ∈ s, F a) := by
-  first | exact UpperTheory.Reformulated.B.Qf22.biHom_sum .. | (apply UpperTheory.Reformulated.B.Qf22.biHom_sum <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qf22.biHom_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qf22.biHom_sum <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qf22.biHom_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qf22.biHom_sum <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ ‹_› ‹_› α d s F h | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ ‹_› ‹_› α d s F | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ ‹_› ‹_› α d s | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ ‹_› ‹_› α d | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ ‹_› ‹_› α | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ ‹_› ‹_› | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ ‹_› | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι κ | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K ι | exact @UpperTheory.Reformulated.B.Qf22.biHom_sum K
+  first | (apply UpperTheory.Reformulated.B.Qf22.biHom_sum <;> assumption)
 
 lemma biHom_mul {d e : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : biHom d F)
     (hG : biHom e G) : biHom (d + e) (F * G) := by
@@ -310,8 +358,7 @@ lemma biHom_pow {d : ℕ} {F : MvPolynomial κ (MvPolynomial ι K)} (hF : biHom 
   induction m with
   | zero => simpa using biHom_one
   | succ m ih =>
-    rw [pow_succ, Nat.succ_mul]
-    exact biHom_mul ih hF
+    simpa [pow_succ, Nat.succ_mul] using biHom_mul ih hF
 
 lemma biHom_prod {α : Type*} (s : Finset α) (d : α → ℕ)
     (F : α → MvPolynomial κ (MvPolynomial ι K)) (h : ∀ a ∈ s, biHom (d a) (F a)) :
@@ -320,8 +367,7 @@ lemma biHom_prod {α : Type*} (s : Finset α) (d : α → ℕ)
   induction s using Finset.induction_on with
   | empty => simpa using biHom_one
   | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.prod_insert ha]
-    exact biHom_mul (h a (Finset.mem_insert_self _ _))
+    simpa [Finset.sum_insert ha, Finset.prod_insert ha] using biHom_mul (h a (Finset.mem_insert_self _ _))
       (ih fun a' ha' => h a' (Finset.mem_insert_of_mem ha'))
 
 lemma biHom_C {d : ℕ} {p : MvPolynomial ι K} (hp : p.IsHomogeneous d) :
@@ -471,8 +517,7 @@ def degLE (W : Finset κ) (n : ℕ) (F : MvPolynomial κ R) : Prop :=
   ∀ β, AddMonoidAlgebra.coeff F β ≠ 0 → ∑ k ∈ W, β k ≤ n
 
 lemma degLE_zero (W : Finset κ) (n : ℕ) : degLE W n (0 : MvPolynomial κ R) := by
-  intro β h
-  simp at h
+  simp [degLE]
 
 lemma degLE_mono {W : Finset κ} {n m : ℕ} {F : MvPolynomial κ R} (h : degLE W n F)
     (hnm : n ≤ m) : degLE W m F := fun β hβ => (h β hβ).trans hnm
@@ -488,7 +533,7 @@ lemma degLE_add {W : Finset κ} {n : ℕ} {F G : MvPolynomial κ R} (hF : degLE 
 
 lemma degLE_sum {α : Type*} {W : Finset κ} {n : ℕ} (s : Finset α) (F : α → MvPolynomial κ R)
     (h : ∀ a ∈ s, degLE W n (F a)) : degLE W n (∑ a ∈ s, F a) := by
-  first | exact UpperTheory.Reformulated.B.Qf21.degLE_sum .. | (apply UpperTheory.Reformulated.B.Qf21.degLE_sum <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qf21.degLE_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qf21.degLE_sum <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qf21.degLE_sum <;> assumption) | (apply @UpperTheory.Reformulated.B.Qf21.degLE_sum <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R ‹_› α W n s F h | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R ‹_› α W n s F | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R ‹_› α W n s | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R ‹_› α W n | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R ‹_› α W | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R ‹_› α | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R ‹_› | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ R | exact @UpperTheory.Reformulated.B.Qf21.degLE_sum κ
+  first | (apply UpperTheory.Reformulated.B.Qf21.degLE_sum <;> assumption)
 
 lemma degLE_mul {W : Finset κ} {n m : ℕ} {F G : MvPolynomial κ R} (hF : degLE W n F)
     (hG : degLE W m G) : degLE W (n + m) (F * G) := by
@@ -542,8 +587,7 @@ lemma degLE_prod {α : Type*} {W : Finset κ} (s : Finset α) (n : α → ℕ)
   induction s using Finset.induction_on with
   | empty => simpa using degLE_one W
   | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.prod_insert ha]
-    exact degLE_mul (h a (Finset.mem_insert_self _ _))
+    simpa [Finset.sum_insert ha, Finset.prod_insert ha] using degLE_mul (h a (Finset.mem_insert_self _ _))
       (ih fun a' ha' => h a' (Finset.mem_insert_of_mem ha'))
 
 lemma degLE_det_col {l : ℕ} {W : Finset κ} (N : Matrix (Fin l) (Fin l) (MvPolynomial κ R))
@@ -558,8 +602,7 @@ lemma degLE_det_col {l : ℕ} {W : Finset κ} (N : Matrix (Fin l) (Fin l) (MvPol
 
 lemma degLE_det_row {l : ℕ} {W : Finset κ} (N : Matrix (Fin l) (Fin l) (MvPolynomial κ R))
     (n : Fin l → ℕ) (h : ∀ i c, degLE W (n i) (N i c)) : degLE W (∑ c, n c) N.det := by
-  rw [← Matrix.det_transpose]
-  exact degLE_det_col N.transpose n fun i c => h c i
+  simpa [Matrix.det_transpose] using degLE_det_col (W := W) N.transpose n (fun i c => h c i)
 
 lemma degLE_det_rankOne {K : Type} [Field K] {l : ℕ} {W : Finset κ} (φ : K →+* MvPolynomial κ R)
     (hφ : ∀ a, degLE W 0 (φ a)) (M' : Matrix (Fin l) (Fin l) (MvPolynomial κ R)) (v : Fin l → K)
@@ -622,8 +665,7 @@ lemma degLE_shiftGen_zero {ι : Type} (W : Finset κ) (b : κ → ι → K) (x :
   unfold shiftGen
   refine degLE_add (degLE_C W _) (degLE_sum _ _ fun k _ => ?_)
   by_cases hk : k ∈ W
-  · rw [h k hk]
-    simpa using degLE_zero W 0
+  · simpa [h k hk] using degLE_zero W 0
   · simpa using degLE_mul (degLE_CC W (b k x)) (degLE_X_of_notMem hk)
 
 lemma shiftPoly_minorAt {r0 r1 l : ℕ} (b : κ → σ × Fin r0 × Fin r1 → K) (s : σ)
@@ -721,8 +763,8 @@ lemma degLE_minor_row (W : Finset κ) (ξ0 : Fin r0 → K) (hW : ∀ k ∈ W, ξ
   convert key using 2
   refine Matrix.ext fun i c => ?_
   simp only [Matrix.of_apply, shiftGen]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hφ, RingHom.comp_apply, map_sum, map_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
+
+  rw [hφ, RingHom.comp_apply, map_sum, map_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [← Finset.sum_add_sum_compl W, Finset.mul_sum, mul_add, mul_add, mul_add, Finset.mul_sum,
     Finset.mul_sum]

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.ThmISt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PConsequences
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 
 @[expose] public section
 

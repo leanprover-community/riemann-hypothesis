@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.Uniqueness
 public import GroundTheory.LocalFields.UnitsBasic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

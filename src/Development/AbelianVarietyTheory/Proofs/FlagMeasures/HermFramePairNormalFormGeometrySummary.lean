@@ -1,12 +1,56 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
-public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SameBlockAppend
+public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -114,9 +158,9 @@ private theorem sub_proj_mem_perp_Ist (y : V) :
     rw [Submodule.span_le]
     rintro _ ⟨b, hb, rfl⟩
     have hb' : N.j ≤ b.val := hb
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [SetLike.mem_coe, LinearMap.mem_ker, map_sub, LinearMap.sub_apply,
-      _root_.GlobalTheory.DegCnt.NFGeom.proj_apply, map_sum, LinearMap.sum_apply]
+
+    rw [SetLike.mem_coe, LinearMap.mem_ker, map_sub, LinearMap.sub_apply,
+    _root_.GlobalTheory.DegCnt.NFGeom.proj_apply, map_sum, LinearMap.sum_apply]
     simp_rw [map_smul, LinearMap.smul_apply, N.ist_e _ _ hb']
     simp [hb']
   exact LinearMap.mem_ker.1 (hle hu)
@@ -513,9 +557,7 @@ open NumberField in
 open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (N : _root_.GlobalTheory.DegCnt.NF H r) in
-theorem _root_.GlobalTheory.DegCnt.NFGeom.sub_proj_perp (y : V) :
-    y - _root_.GlobalTheory.DegCnt.NFGeom.proj N y ∈ _root_.GlobalTheory.HermLat.perp H N.Ist :=
-  sub_proj_mem_perp_Ist N y
+alias _root_.GlobalTheory.DegCnt.NFGeom.sub_proj_perp := _root_.GlobalTheory.DegCnt.NFGeom.sub_proj_mem_perp_Ist
 
 open NumberField in
 open scoped Pointwise ENNReal Classical in
@@ -763,17 +805,17 @@ theorem _root_.GlobalTheory.DegCnt.NFGeom.isCompl [FiniteDimensional K V] :
     have hi : ∀ b : Fin r, N.j ≤ b.val →
         H.B (N.F.e b.castSucc) (v - p2 - s • N.F.z) = 0 := by
       intro b hb
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, map_sub, map_smulₛₗ, _root_.Formalism.HermitianLatticeCounting.P.pairing_isotropicSpan_lastVector _ (_root_.Formalism.HermitianLatticeCounting.P.e_mem_X _ b), smul_zero, sub_zero, hp2, map_sum,
-        Finset.sum_eq_single_of_mem b (Finset.mem_filter.2 ⟨Finset.mem_univ _, hb⟩)]
+
+      rw [map_sub, map_sub, map_smulₛₗ, _root_.Formalism.HermitianLatticeCounting.P.pairing_isotropicSpan_lastVector _ (_root_.Formalism.HermitianLatticeCounting.P.e_mem_X _ b), smul_zero, sub_zero, hp2, map_sum,
+      Finset.sum_eq_single_of_mem b (Finset.mem_filter.2 ⟨Finset.mem_univ _, hb⟩)]
       · rw [map_smulₛₗ, N.ist_e _ _ hb, if_pos rfl, starRingEnd_apply,
           star_star, smul_eq_mul, mul_one, sub_self]
       · intro a ha hab
         rw [map_smulₛₗ, N.ist_e _ _ (Finset.mem_filter.1 ha).2,
           if_neg (fun h => hab h.symm), smul_zero]
     have hii : H.B N.F.z (v - p2 - s • N.F.z) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, map_sub, map_smulₛₗ, hp2, map_sum]
+
+      rw [map_sub, map_sub, map_smulₛₗ, hp2, map_sum]
       have h0 : ∀ a ∈ Finset.univ.filter (fun a : Fin r => N.j ≤ a.val),
           H.B N.F.z (star (H.B (N.F.e a.castSucc) v) •
             N.ist a) = 0 := by
@@ -842,8 +884,8 @@ theorem _root_.GlobalTheory.DegCnt.NFGeom.finrank_Wt [FiniteDimensional K V] :
       H.B (N.F.e i.1.castSucc) (∑ a, g a • N.ist a.1) =
         star (g i) := by
     intro g i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_eq_single i]
+
+    rw [map_sum, Finset.sum_eq_single i]
     · rw [map_smulₛₗ, N.ist_e _ _ i.2, if_pos rfl, smul_eq_mul, mul_one,
         starRingEnd_apply]
     · intro a _ hai
@@ -966,6 +1008,5 @@ theorem _root_.GlobalTheory.DegCnt.NF.geometry : ∀ (K V : Type) [Field K]
       exact_mod_cast Algebra.norm_ne_zero_iff.2 (_root_.GlobalTheory.DegCnt.NFGeom.Dl_ne N)
     · first
         | exact zpow_ne_zero _ hI
-        | exact (Real.rpow_pos_of_pos (lt_of_le_of_ne (Nat.cast_nonneg _) (Ne.symm hI)) _).ne'
 
 end GlobalTheory.DegCnt

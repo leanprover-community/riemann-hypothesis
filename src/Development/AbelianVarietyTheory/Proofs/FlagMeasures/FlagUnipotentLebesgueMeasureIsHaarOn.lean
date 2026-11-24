@@ -1,11 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.FormalDegreeBessel.FinalG
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicLeviEmbeddingHomomorphismProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentLeviRadicalCoordsHomeomorphStatement
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentLeviRadicalCoordsHomeomorph
+public import Formalism.FormalDegreeBessel.FinalG
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -159,7 +204,7 @@ theorem pOf_mul (k r : ℕ) (q0 : PPar k r) (B : Fin r → Fin (k + 1) → ℂ) 
 
 theorem mp_rad (k r : ℕ) (q0 : PPar k r) :
     ∃ g : PPar k r → PPar k r, MeasurePreserving g volume volume ∧ ∀ q, pOf k r q0 * pOf k r q = pOf k r (g q) := by
-  obtain ⟨-, hΦ, c, hc, hcΦ⟩ := GlobalTheory.T.unipotent_levi_radical_coords_homeomorph k r
+  obtain ⟨-, hΦ, c, hc, hcΦ⟩ := _root_.GlobalTheory.Amp.NCoord.coord_homeo k r
   choose v hv using pOf_mul k r q0
   have hvm : Continuous v := by
     have : v = fun B => (c (pOf k r q0 * coord k r (0, (B, 0)))).2.2 := by
@@ -178,7 +223,7 @@ theorem mp_rad (k r : ℕ) (q0 : PPar k r) :
 
 theorem conj_rad (k r : ℕ) (q0 : PPar k r) (x : UT r → ℂ) :
     ∃ q1 : PPar k r, pOf k r q0 * uEmb k r (upper x) = uEmb k r (upper x) * pOf k r q1 := by
-  obtain ⟨hbij, -, -⟩ := GlobalTheory.T.unipotent_levi_radical_coords_homeomorph k r
+  obtain ⟨hbij, -, -⟩ := _root_.GlobalTheory.Amp.NCoord.coord_homeo k r
   obtain ⟨hmul, -, hact, hdet⟩ := GlobalTheory.Amp.UEmb.uEmb_hom k r
   obtain ⟨hp, hsk, -⟩ := GlobalTheory.Amp.Rad.radical k r
   obtain ⟨-, hNm, hNi⟩ := Formalism.QuantumDeterminants.nSubgroup k r
@@ -221,7 +266,7 @@ theorem conj_rad (k r : ℕ) (q0 : PPar k r) (x : UT r → ℂ) :
 theorem mp_radMul (k r : ℕ) (q0 : PPar k r) :
     ∃ T : (UT r → ℂ) × PPar k r → (UT r → ℂ) × PPar k r, MeasurePreserving T volume volume ∧
       ∀ q, pOf k r q0 * coord k r q = coord k r (T q) := by
-  obtain ⟨-, hΦ, c, hc, hcΦ⟩ := GlobalTheory.T.unipotent_levi_radical_coords_homeomorph k r
+  obtain ⟨-, hΦ, c, hc, hcΦ⟩ := _root_.GlobalTheory.Amp.NCoord.coord_homeo k r
   choose q1 hq1 using conj_rad k r q0
   choose g hg hg' using mp_rad k r
   have key : ∀ q : (UT r → ℂ) × PPar k r, pOf k r q0 * coord k r q = coord k r (q.1, g (q1 q.1) q.2) := by
@@ -253,7 +298,7 @@ theorem mp_mul (k r : ℕ) (q0 : (UT r → ℂ) × PPar k r) :
 
 theorem isHaarOn_lebN : ∀ k r : ℕ, IsHaarOn (Nset k r) (lebN k r) := by
   intro k r
-  obtain ⟨hbij, hΦ, c, hc, hcΦ⟩ := GlobalTheory.T.unipotent_levi_radical_coords_homeomorph k r
+  obtain ⟨hbij, hΦ, c, hc, hcΦ⟩ := _root_.GlobalTheory.Amp.NCoord.coord_homeo k r
   let Φ : (UT r → ℂ) × PPar k r → Mt k r := fun q => Matrix.of.symm (coord k r q)
   let c' : Mt k r → (UT r → ℂ) × PPar k r := fun x => c (Matrix.of x)
   have hΦ' : Continuous Φ := hΦ

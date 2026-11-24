@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementH
+public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementS
+public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementP
 
 @[expose] public section
 

@@ -1,8 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.EigenLengthFrobeniusStatement
-public import ReciprocityTheory.DualLattices.UpSmith
 public import ReciprocityTheory.DualLattices.ProdDvdOfIso
+public import ReciprocityTheory.DualLattices.UpSmith
 
 @[expose] public section
 

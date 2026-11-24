@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.SInteger
+public import Mathlib.RingTheory.DedekindDomain.SelmerGroup
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

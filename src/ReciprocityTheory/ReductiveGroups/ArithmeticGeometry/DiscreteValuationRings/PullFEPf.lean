@@ -1,7 +1,13 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.XValuePf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ValuationMultiplicationInvariance
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullGenPf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.XValuePf
 
 @[expose] public section
 
@@ -24,10 +30,10 @@ theorem cubN_mul {A U : Type} [CommGroup A] [CommGroup U] {θ : A → A → A �
       have e := h.coc c (m ^ n) m x
       calc θ c (m ^ n) x * (∏ l ∈ Finset.range n, θ (m ^ l) m x) * θ (c * m ^ n) m x
           = (∏ l ∈ Finset.range n, θ (m ^ l) m x) * (θ (c * m ^ n) m x * θ c (m ^ n) x) := by
-            first | ac_rfl | simp only [_root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc]
+            first | ac_rfl
         _ = (∏ l ∈ Finset.range n, θ (m ^ l) m x) * (θ c (m ^ n * m) x * θ (m ^ n) m x) := by rw [e]
         _ = θ c (m ^ n * m) x * ((∏ l ∈ Finset.range n, θ (m ^ l) m x) * θ (m ^ n) m x) := by
-            first | ac_rfl | simp only [_root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc]
+            first | ac_rfl
   unfold cubN
   try simp only [_root_.one_mul]
   induction k with
@@ -40,7 +46,7 @@ theorem cubN_mul {A U : Type} [CommGroup A] [CommGroup U] {θ : A → A → A �
       rw [pow_add, ← pow_mul, _root_.mul_comm n k, _root_.mul_assoc]
     simp only [e2]
     rw [L (b * (m ^ n) ^ k) n, pow_succ]
-    first | ac_rfl | simp only [_root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc] | simp only [_root_.one_mul, _root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc]
+    first | ac_rfl
 
 section Two
 
@@ -109,7 +115,7 @@ theorem ros_pow (hG : GlobalFnsSt) (f g : D.P.A ⟶ D.P.A) [IsMonHom f] [IsMonHo
     simp only [ofMul_mul] at a₁ a₂ ⊢
     linear_combination (norm := abel) a₁ + a₂
 
-set_option maxHeartbeats 800000 in
+
 theorem sq_add (hG : GlobalFnsSt) (f g : D.P.A ⟶ D.P.A) [IsMonHom f] [IsMonHom g] (N : ℕ) (hfg : g ≫ f = 𝟙 D.P.A ^ (N + 1))
     (u₂ : LB.Gen (LB.LinComb D.P.L (rosatiφ D.P.A g f) rosatiε)) (hu₂ : u₂.IsGen)
     (n₂ : LB.Gen.Corr D.P.L _ _ _ _ (LB.pullGen D.P.L _ _ u₂ (zero2 D.P.A)) (LB.oneGen D.P.L))
@@ -204,7 +210,7 @@ section Main
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {D : DegData V (maximalIdeal V)} {F : Type} [Field F]
   [Algebra (FractionRing V) F] {O : Type} [CommRing O] [StarRing O] [Module O D.toPre.X]
 
-set_option maxHeartbeats 800000 in
+
 theorem pull_val (hG : GlobalFnsSt) (oa : D.toPre.OAct O) (a : O) (N k : ℕ) (χ : D.toPre.X)
     (u₁ : LB.Gen (LB.LinComb D.toPre.P.L (rosatiφ D.toPre.P.A (oa.onB.act (star a)) (oa.onB.act a)) rosatiε)) (hu₁ : u₁.IsGen)
     (n₁ : LB.Gen.Corr D.toPre.P.L _ _ _ _ (LB.pullGen D.toPre.P.L _ _ u₁ (zero2 D.toPre.P.A)) (LB.oneGen D.toPre.P.L))
@@ -275,7 +281,7 @@ theorem pull_val (hG : GlobalFnsSt) (oa : D.toPre.OAct O) (a : O) (N k : ℕ) (�
     rw [z₁, z₂, s₁ _ y I hI, mul_eq_left.1 e.symm, one_pow, _root_.one_mul, _root_.one_mul]
     rfl
 
-set_option maxHeartbeats 1600000 in
+
 theorem famFE_of_pullAl (hG : GlobalFnsSt) (oa : D.toPre.OAct O) (w0 : O) (hw : TraceFormTwistIso D.toPre oa w0) (a : O) (N : ℕ)
     (hN : a * star a = (N : O)) (hN1 : 1 ≤ N) (k : ℕ) (s : Fam D.toPre F k)
     (s' : ∀ β : D.toPre.X, LB.Sec (LB.LinComb D.toPre.P.L (DegPre.famφ D.toPre F β) (DegPre.famε (k * N))))

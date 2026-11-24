@@ -1,35 +1,26 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OutsideSystemsBound
 public import Formalism.HermitianCurvature.StatementJ
+public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
 open Finset NumberField Formalism.FourierDecayAlt Formalism.FourierDecayAlt.J
 
 namespace Formalism.FourierDecayAlt.P.Jx7
-
-section frames
-
-end frames
-
-section sizes
-open scoped nonZeroDivisors
-
-section Gl
-variable {ι : Type} [Fintype ι] (G : Sz.Glob ι) (C : ℝ) (de de' : ℕ → ℝ) (T T' : ℝ) (l : ℕ)
-
-end Gl
-
-end sizes
-
-section sums
-open scoped nonZeroDivisors
-
-end sums
-
-section positivity
-
-end positivity
 
 section main
 open scoped ComplexOrder
@@ -60,11 +51,8 @@ section psd
 variable {α : Type} {F : Finset α}
 
 theorem psd_congr {k k' : α → α → ℂ} (h : ∀ x ∈ F, ∀ y ∈ F, k x y = k' x y) (hk : TB.PSDOn F k) :
-    TB.PSDOn F k' := by
-  unfold TB.PSDOn at *
-  have : (Matrix.of fun x y : F => k' x y) = Matrix.of fun x y : F => k x y := by
-    ext x y; exact (h x x.2 y y.2).symm
-  rw [this]; exact hk
+    TB.PSDOn F k' :=
+  Jx8.psd_congr h hk
 
 theorem psd_zero : TB.PSDOn F (fun _ _ : α => (0 : ℂ)) := by
   unfold TB.PSDOn; exact Matrix.PosSemidef.zero
@@ -76,15 +64,10 @@ theorem psd_add {k k' : α → α → ℂ} (hk : TB.PSDOn F k) (hk' : TB.PSDOn F
 
 theorem psd_sum {ι : Type} (s : Finset ι) (k : ι → α → α → ℂ) (hk : ∀ i ∈ s, TB.PSDOn F (k i)) :
     TB.PSDOn F (fun x y => ∑ i ∈ s, k i x y) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using psd_zero
-  | insert a s ha ih =>
-    have h1 := psd_add (hk a (Finset.mem_insert_self a s))
-      (ih (fun i hi => hk i (Finset.mem_insert_of_mem hi)))
-    refine psd_congr ?_ h1
-    intro x _ y _
-    rw [Finset.sum_insert ha]
+  unfold TB.PSDOn
+  convert Matrix.posSemidef_sum (x := fun i => Matrix.of fun x y : F => k i x y) s hk using 1
+  ext x y
+  simp [Matrix.sum_apply]
 end psd
 
 theorem t_ProductLemma (hS : SchurProduct) (hD : ProductDomination) : ProductLemma := by
@@ -180,15 +163,8 @@ theorem psd_mul {k k' : α → α → ℂ} (hk : TB.PSDOn F k) (hk' : TB.PSDOn F
   unfold TB.PSDOn at *
   exact hk.hadamard hk'
 
-theorem psd_one : TB.PSDOn F (fun _ _ : α => (1 : ℂ)) := by
-  unfold TB.PSDOn
-  apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
-  · ext x y; simp [Matrix.conjTranspose_apply]
-  · intro x
-    have : star x ⬝ᵥ (Matrix.of fun _ _ : F => (1 : ℂ)) *ᵥ x = star (∑ i, x i) * ∑ i, x i := by
-      simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, star_sum, one_mul,
-        Finset.sum_mul]
-    rw [this]; exact star_mul_self_nonneg _
+theorem psd_one : TB.PSDOn F (fun _ _ : α => (1 : ℂ)) :=
+  Jx8.ones_psd F
 
 theorem psd_prod {P : Type} (s : Finset P) (k : P → α → α → ℂ) (hk : ∀ p ∈ s, TB.PSDOn F (k p)) :
     TB.PSDOn F (fun x y => ∏ p ∈ s, k p x y) := by
@@ -231,34 +207,12 @@ theorem t_ProductDomination : ProductDomination := by
 theorem t_ProductLemma' : ProductLemma := t_ProductLemma t_SchurProduct t_ProductDomination
 
 theorem t_DiagScale : DiagScale := by
-  intro α F k a hk
-  have h1 : TB.PSDOn F (fun x y => (a x : ℂ) * (a y : ℂ)) := by
-    unfold TB.PSDOn
-    apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
-    · ext x y; simp [Matrix.conjTranspose_apply, mul_comm]
-    · intro x
-      have : star x ⬝ᵥ (Matrix.of fun i j : F => (a i : ℂ) * (a j : ℂ)) *ᵥ x =
-          star (∑ i : F, (a i : ℂ) * x i) * ∑ i : F, (a i : ℂ) * x i := by
-        rw [star_sum, Finset.sum_mul_sum]
-        simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, Finset.mul_sum]
-        apply Finset.sum_congr rfl; intro i _
-        apply Finset.sum_congr rfl; intro j _
-        simp; ring
-      rw [this]; exact star_mul_self_nonneg _
-  exact psd_mul h1 hk
+  apply Formalism.FourierDecayAlt.P.Jx8.t_DiagScale
 
 end kernels
 
 end Formalism.FourierDecayAlt.P.Jx7
 
 namespace Formalism.FourierDecayAlt.P
-
-theorem schur_product : Formalism.FourierDecayAlt.J.SchurProduct := Jx7.t_SchurProduct
-
-theorem product_domination : Formalism.FourierDecayAlt.J.ProductDomination := Jx7.t_ProductDomination
-
-theorem diagonal_scaling : Formalism.FourierDecayAlt.J.DiagScale := Jx7.t_DiagScale
-
-theorem product_lemma : Formalism.FourierDecayAlt.J.ProductLemma := Jx7.t_ProductLemma'
 
 end Formalism.FourierDecayAlt.P

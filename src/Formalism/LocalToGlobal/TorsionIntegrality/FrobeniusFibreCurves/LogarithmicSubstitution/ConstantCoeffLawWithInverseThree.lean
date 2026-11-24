@@ -1,8 +1,57 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalB
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.StatementD
+public import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero
+public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalB
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.ConstantCoeffEqZeroOfParallelogram
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.ConstantCoeffSeriesAtVariable
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.InVarAddInVarNeZero
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.WeierstrassSeriesIntegral
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -363,7 +412,7 @@ theorem parallelogram_three_weierstrass_key (hA : FrobStickStar) {g2 g3 s2 c0 a1
       fExp (-par3 F i (phO s2 P l)) = -e := by
   have hl0 := hF.2.2.1
   have hl1 := hF.2.2.2.1
-  obtain ⟨hph0, hphe⟩ := phODef K s2 P l hl0 hl1
+  obtain ⟨hph0, hphe⟩ := _root_.Formalism.L2.Th1.B.Ph.logSigmaPullbackSpec K s2 P l hl0 hl1
   generalize phO s2 P l = ph at hph0 hphe ⊢
   have cL : ∀ j : Fin 3, MvPowerSeries.constantCoeff (at1 j l) = 0 :=
     fun j => constantCoeff_series_at_variable j l hl0
@@ -483,8 +532,8 @@ theorem ParThree_of (hF : FrobStickStar) (hU : FIUnit) : ParThree := by
   have hlog := ParO.fLog_mul cNN (constantCoeff_fExp hq0)
   rw [key, fLog_fExp hq0] at hlog
   have hq : q = fLog N + -fLog (-e) := by linear_combination hlog
-  have s1 := (simeqLog K (Fin 3) N cNN iNN).1
-  have s2' := (simeqLog K (Fin 3) (-e) (by rw [map_neg, he0, neg_neg]) (integral_neg heI)).2
+  have s1 := (_root_.Formalism.L2.Th1.B.Sim.simeq_formal_log K (Fin 3) N cNN iNN).1
+  have s2' := (_root_.Formalism.L2.Th1.B.Sim.simeq_formal_log K (Fin 3) (-e) (by rw [map_neg, he0, neg_neg]) (integral_neg heI)).2
   have s3 := (Formalism.InvariantFactorPaths.G7.equivalence_rules K (Fin 3)).2.2.2.1 _ _ _ _ s1 s2'
   rw [add_zero] at s3
   rw [hq]

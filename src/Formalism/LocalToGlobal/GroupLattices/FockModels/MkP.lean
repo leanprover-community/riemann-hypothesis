@@ -1,7 +1,6 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
-public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
+public import Formalism.SharpRestriction.GrowthBounds.DataG
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.SectionOfLineBundleOne
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 

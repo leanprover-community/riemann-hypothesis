@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
+public import Mathlib.Algebra.Order.Floor.Semifield
+public import Mathlib.NumberTheory.Chebyshev
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

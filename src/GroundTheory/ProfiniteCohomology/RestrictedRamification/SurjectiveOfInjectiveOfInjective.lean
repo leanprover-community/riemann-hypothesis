@@ -1,12 +1,75 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModule
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteSetOfNsmulEqZeroQZ
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.CohomologyMapAlongInvariantsGsKernelMorCompGsBra
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModuleSupport
+public import GroundTheory.ProfiniteCohomology.GlobalClassFormation
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerFrob
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.CohomologyMapAlongInvariantsGsKernelMorCompGsBra
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteSetOfNsmulEqZeroQZ
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+import GroundTheory.ProfiniteCohomology.Colimit
+import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.EqZeroOfCohomologyInflThreeEqZero
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Tactic.TypeStar
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModuleSupport, GroundTheory.ProfiniteCohomology.RestrictedRamification.SurjectiveOfInjectiveOfInjective
+
+-- ===== clump member: GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModuleSupport =====
+-- clump-header: {"m": "GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModuleSupport", "h": "module\n\npublic import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModule\nimport GroundTheory.ProfiniteCohomology.CupProducts.Cocycles\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.ProfCoh
+
+open CategoryTheory
+
+noncomputable section
+
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
+  {I : Type} {H : I → Type} [∀ i, Group (H i)] [∀ i, TopologicalSpace (H i)] [∀ i, IsTopologicalGroup (H i)]
+  (φ : ∀ i, H i →* G) (hφ : ∀ i, Continuous (φ i)) (A : Type) [AddCommGroup A]
+
+theorem finite_divFunEval_ne_zero (n : ℕ) (x : cohomology (divFunRep φ A) n) :
+    {i | (cohomologyMapAlong (φ i) (hφ i) (divFunEval φ A i) n).hom x ≠ 0}.Finite := by
+  obtain ⟨z, rfl⟩ := cohomologyπ_surjective (divFunRep φ A) n x
+  set c := cochainOf (A := divFunRep φ A) (cocycleι (A := divFunRep φ A) (p := n) z) with hc
+  have hfin : (Set.range c).Finite := (isLocallyConstant_cochainOf _).range_finite
+  have hT : (⋃ f ∈ Set.range c, {i | ((f : divFun φ A) : I → G → A) i ≠ 0}).Finite :=
+    hfin.biUnion fun f _ => (f : divFun φ A).2.1
+  refine hT.subset fun i hi => ?_
+  by_contra hiT
+  apply hi
+  have hz : cocyclesMapAlong (φ i) (hφ i) (divFunEval φ A i) n z = 0 := by
+    apply cocycleι_injective
+    apply cochainOf_injective
+    rw [cochainOf_cocycleι_cocyclesMapAlong, map_zero]
+    funext h
+    rw [divFunEval_hom_apply]
+    have hmem : ((c (⇑(φ i) ∘ h) : divFun φ A) : I → G → A) i = 0 := by
+      by_contra hne
+      exact hiT (Set.mem_biUnion ⟨_, rfl⟩ hne)
+    change ((c (⇑(φ i) ∘ h) : divFun φ A) : I → G → A) i 1 = 0
+    rw [hmem]
+    rfl
+  change (cohomologyMapAlong (φ i) (hφ i) (divFunEval φ A i) n) (cohomologyπ (divFunRep φ A) n z) = 0
+  rw [cohomologyMapAlong_cohomologyπ, hz, map_zero]
+
+end
+
+end GroundTheory.ProfCoh
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModuleSupport =====
+
+-- ===== clump member: GroundTheory.ProfiniteCohomology.RestrictedRamification.SurjectiveOfInjectiveOfInjective =====
+-- clump-header: {"m": "GroundTheory.ProfiniteCohomology.RestrictedRamification.SurjectiveOfInjectiveOfInjective", "h": "module\n\npublic import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer\nimport GroundTheory.ProfiniteCohomology.Colimit\nimport GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer\npublic import GroundTheory.ProfiniteCohomology.GlobalClassFormation\npublic import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerFrob\nimport GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit\npublic import GroundTheory.ProfiniteCohomology.RestrictedRamification.CohomologyMapAlongInvariantsGsKernelMorCompGsBra\npublic import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModuleSupport\nimport GroundTheory.ProfiniteCohomology.RestrictedRamification.EqZeroOfCohomologyInflThreeEqZero\npublic import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteSetOfNsmulEqZeroQZ\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.CategoryTheory.EffectiveEpi.Comp\nimport Mathlib.CategoryTheory.ExtremalEpi\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\n\n"}
+section -- clump:auto
 @[expose] public section
 
 set_option maxSynthPendingDepth 1
@@ -120,7 +183,7 @@ def evalChar {G : Type} [Group G] [TopologicalSpace G] (g : G) : (Additive G →
   map_add' _ _ := rfl
 
 
-set_option maxHeartbeats 2000000 in
+
 include hℓ hS in
 theorem exists_gsVal_eq (v : HeightOneSpectrum (𝓞 K.1)) (hv : v ∉ S) (hF : FrobData K S ιs v) (n : ℕ)
     {A : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)} [IsDiscreteRep A] (y : cohomology A 2)
@@ -158,7 +221,7 @@ variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (ℓ : �
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S) (ιs : LocalEmbeddings K)
 
 
-set_option maxHeartbeats 4000000 in
+
 include hℓ hS in
 theorem exists_sUnitsQuotDiv_gsQuotMor_eq (hF : ∀ v : HeightOneSpectrum (𝓞 K.1), v ∉ S → FrobData K S ιs v)
     (d : cohomology (gsDiv K S ιs ℤ) 2) (n : ℕ) (hd : ℓ ^ n • d = 0) :
@@ -183,8 +246,8 @@ theorem exists_sUnitsQuotDiv_gsQuotMor_eq (hF : ∀ v : HeightOneSpectrum (𝓞 
   have e2 : gsVal K S ιs u.1 u.2 (∑ u ∈ hfin.toFinset, x u) =
       (cohomologyMapAlong (gsDecomp K S ιs u) (continuous_gsDecomp K S ιs u)
         (divFunEval (gsDecomp K S ιs) ℤ u) 2).hom d := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     have hne : ∀ w ∈ hfin.toFinset, w ≠ u → gsVal K S ιs u.1 u.2 (x w) = 0 := fun w _ hw =>
       (gsLoc_eq_zero_iff K S ιs u.1 u.2 _).1 (hx' w u.1 u.2 fun h => hw (Subtype.ext h).symm)
     by_cases hu : u ∈ hfin.toFinset
@@ -219,7 +282,7 @@ def gsDivH2 (ιs : LocalEmbeddings K) :
     (cohomologyMap (gsQuotMor K S) 2).hom.toAddMonoidHom
 
 
-set_option maxHeartbeats 8000000 in
+
 include hℓ hS in
 theorem eq_zero_of_h3_sUnits_of_frob (ιs : LocalEmbeddings K)
     (hF : ∀ v : HeightOneSpectrum (𝓞 K.1), v ∉ S → FrobData K S ιs v)
@@ -368,3 +431,6 @@ end H3Main
 end
 
 end GroundTheory.ProfCoh
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: GroundTheory.ProfiniteCohomology.RestrictedRamification.SurjectiveOfInjectiveOfInjective =====

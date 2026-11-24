@@ -1,6 +1,56 @@
 module
 
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelZeroKernel
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.EmbeddingMapApplyFirstBlock
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -182,15 +232,7 @@ section blk2alg
 
 variable {j : ℕ}
 
-theorem castM_mul' {k a b : ℕ} (h : a = b) (M N : B.Mat k a) : D.castM h (M * N) = D.castM h M * D.castM h N := by
-  subst h; simp only [Formalism.FourierDecayAlt.P.Dx2.MN.castM_rfl]
-
-theorem symmetricScalarBlockMatrix_mul {p s : ℕ} (A A' : Matrix (Fin p) (Fin p) ℂ) (B B' : Matrix (Fin p) (Fin s) ℂ)
-    (C C' : Matrix (Fin s) (Fin p) ℂ) (D D' : Matrix (Fin s) (Fin s) ℂ) :
-    U.blk2 A B C D * U.blk2 A' B' C' D' = U.blk2 (A * A' + B * C') (A * B' + B * D') (C * A' + D * C') (C * B' + D * D') := by
-  unfold U.blk2
-  simp only [Matrix.reindex_apply]
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
+alias castM_mul' := _root_.Formalism.FourierDecayAlt.P.Dx2.Tower.castM_mul
 
 theorem smul_block_two {p s : ℕ} (c : ℂ) (A : Matrix (Fin p) (Fin p) ℂ) (B : Matrix (Fin p) (Fin s) ℂ)
     (C : Matrix (Fin s) (Fin p) ℂ) (D : Matrix (Fin s) (Fin s) ℂ) :
@@ -317,7 +359,7 @@ theorem weyl_corner_scaled_single_comm (Z : Matrix (Fin j) (Fin j) ℂ) (hZ : Z.
   congr 1
   rw [sum_single_last, single_last_eq_block_two, smul_block_two, smul_zero, smul_zero, smul_zero]
   unfold zfull
-  rw [symmetricScalarBlockMatrix_mul, symmetricScalarBlockMatrix_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul, _root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add]
   congr 1
   have hinv : Z⁻¹ * Z = 1 := Matrix.nonsing_inv_mul Z (isUnit_iff_ne_zero.mpr hZ)
@@ -350,7 +392,7 @@ theorem adjoint_corner_scaled_single_comm (Z : Matrix (Fin j) (Fin j) ℂ) (hZ :
   congr 2
   rw [zfull_conjTranspose_inv hZ hτ, sum_single_col, single_column_eq_block_two]
   unfold zfull
-  rw [symmetricScalarBlockMatrix_mul, smul_block_two, symmetricScalarBlockMatrix_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul, smul_block_two, _root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, smul_zero]
   congr 1
   ext u v

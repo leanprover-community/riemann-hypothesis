@@ -1,28 +1,84 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.KerDatTuple
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsDeltaDelAtOwnAt
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKernelVectorMovedByRootsOfUnity
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentMulAddOneSubInverse
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointHalfDatumStabilizerPairMove
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemHatIffOfSelfDual
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitEmbeddingValuedEqIntValuationInteger
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualWeylLatticeExistsNatPowSmulMem
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SplitLinearModelNorm
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUnimod
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKernelVectorMovedByRootsOfUnity
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinCongMemLevEnv
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMemHatSwap
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SplitOffBadOfSuppSplitOff
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GramMapMulInv
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SplitOffBadOfSuppSplitOff
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsPowLocKMulInf
-public import Formalism.LocalToGlobal.UnitaryNorms.CharProd
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitEmbeddingValuedEqIntValuationInteger
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GramMapMulInv
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponent
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointHalfDatumStabilizerPairMove
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNsmulActO
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentMulAddOneSubInverse
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemHatIffOfSelfDual
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmEqSumLattice
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexLevelSelfDualStabilizerEqProdLocal
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TameAtOfUnrAt
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGram
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeRationalVectorsInAdelicTranslate
+import Formalism.LocalToGlobal.Columns.CoefModAt
+import Formalism.LocalToGlobal.Columns.CoefficientsModP
+public import Formalism.LocalToGlobal.UnitaryNorms.CharProd
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.RealisedChainTorusEq
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExistsActO
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntValuationEqOfMem
 
 @[expose] public section
 
 set_option autoImplicit false
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 noncomputable section
 
@@ -237,8 +293,8 @@ theorem exists_pow_hat {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)}
   convert h5 using 1
   funext i
   rw [AlgEquiv.eq_symm_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Pi.smul_apply, nsmul_eq_mul, Matrix.mulVec, dotProduct, map_sum, map_mul, map_natCast]
+
+  simp only [Pi.smul_apply, nsmul_eq_mul, Matrix.mulVec, dotProduct, map_sum, map_mul, map_natCast]
   rfl
 
 theorem smul_mem_hLat {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)}
@@ -624,18 +680,6 @@ theorem dvd_of_mem {K : Type} [Field K] [NumberField K] (P : HeightOneSpectrum (
   rw [← hab]
   exact P.asIdeal.add_mem (P.asIdeal.mul_mem_left _ (by simpa using h)) (P.asIdeal.mul_mem_left _ (by simpa using h'))
 
-theorem val_eq_of_notMem_sq {K : Type} [Field K] [NumberField K] {P : HeightOneSpectrum (𝓞 K)} {a : 𝓞 K}
-    (h1 : a ∈ P.asIdeal) (h2 : a ∉ P.asIdeal ^ 2) : P.intValuation a = WithZero.exp (-1 : ℤ) := by
-  have ha : a ≠ 0 := by intro h; rw [h] at h2; exact h2 (zero_mem _)
-  have e1 := (P.intValuation_le_pow_iff_mem _ 1).2 (by simpa using h1)
-  have e2 := mt (P.intValuation_le_pow_iff_mem _ 2).1 h2
-  have h0 : P.intValuation a ≠ 0 := P.intValuation_ne_zero _ ha
-  rw [← WithZero.exp_log h0] at e1 e2 ⊢
-  rw [WithZero.exp_le_exp] at e1 e2
-  congr 1
-  push_cast at e1 e2
-  omega
-
 theorem prime_absNorm {Q : Finset (Pl D.host.E)} (hQ : IsTwistPlaces D.host.g Q) {PP : Pl D.host.E} (h : PP ∈ Q) :
     (Ideal.absNorm PP.asIdeal).Prime ∧ ((Ideal.absNorm PP.asIdeal : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal ^ 2 := by
   obtain ⟨⟨q, hq, hc, hn, -⟩, -⟩ := hQ PP h
@@ -654,7 +698,7 @@ theorem exists_unif {Q : Finset (Pl D.host.E)} (hQ : IsTwistPlaces D.host.g Q) :
   · have hv : ∀ q : ℕ, PP.valuation D.host.E (q : D.host.E) = PP.intValuation (q : 𝓞 D.host.E) := fun q => by
       rw [← map_natCast (algebraMap (𝓞 D.host.E) D.host.E), HeightOneSpectrum.valuation_of_algebraMap]
     rw [Nat.cast_prod, map_prod, Finset.prod_eq_single_of_mem _ (Finset.mem_image_of_mem _ hPP), hv,
-      val_eq_of_notMem_sq (Ideal.absNorm_mem _) (prime_absNorm hQ hPP).2]
+      _root_.GlobalTheory.TypeValues.intValuation_eq_of_mem (Ideal.absNorm_mem _) (prime_absNorm hQ hPP).2]
     intro q hq hne
     obtain ⟨P', hP', rfl⟩ := Finset.mem_image.1 hq
     rw [hv, HeightOneSpectrum.intValuation_eq_one_iff]
@@ -836,9 +880,9 @@ theorem vecFree_base_translate : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (
       (GlobalTheory.VecInv.detAt e hee _ g⁻¹) 1 : ℂ) *
       ((GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.modFac (Vc D i) (Wc D i) (GlobalTheory.VecInv.detAt e hee _ g⁻¹) 1)⁻¹ : ℝ) = D.what₂.embLL c := by
     have h1 := GlobalTheory.SplitLinear.absFin_mul (GlobalTheory.VecInv.detAt e hee _ g⁻¹) (GlobalTheory.VecInv.detAt e hee _ g)
-    rw [← map_mul, inv_mul_cancel, map_one, GlobalTheory.SplitIdeleModulus.absFin_one'] at h1
+    rw [← map_mul, inv_mul_cancel, map_one, _root_.GlobalTheory.SplitLinear.absFin_one] at h1
     rw [hc, splitFacO, map_one, mul_one, map_inv, map_inv, inv_inv, GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.modFac,
-      GlobalTheory.SplitIdeleModulus.absFin_one', Real.one_rpow, mul_one, ← map_inv, eq_inv_of_mul_eq_one_left h1.symm,
+      _root_.GlobalTheory.SplitLinear.absFin_one, Real.one_rpow, mul_one, ← map_inv, eq_inv_of_mul_eq_one_left h1.symm,
       Real.inv_rpow (GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absFin_pos D _).le, inv_inv]
     rfl
   rw [hall Tm hTm, law, hs, ← map_smul]

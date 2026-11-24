@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.IsPhysSet
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.FockWeights
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -119,7 +122,7 @@ theorem adMat_conjTranspose (k : Matrix (Fin n) (Fin n) ℂ) : (adMat ε k)ᴴ =
   · have : y ≠ x := fun h => hy (h ▸ hx)
     simp [hx, hy, this]
   · have : x ≠ y := fun h => hx (h ▸ hy)
-    simp [hx, hy, this, Ne.symm this]
+    simp [hx, hy, this]
   · simp only [hx, hy, if_false]
     by_cases h : y = x
     · subst h; simp

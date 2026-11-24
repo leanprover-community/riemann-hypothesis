@@ -5,6 +5,10 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegOUnif
 public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StAvDefs
+public import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+public import Mathlib.RingTheory.DedekindDomain.Basic
+public import Mathlib.RingTheory.Discriminant
+public import Mathlib.RingTheory.MvPolynomial.Ideal
 
 @[expose] public section
 

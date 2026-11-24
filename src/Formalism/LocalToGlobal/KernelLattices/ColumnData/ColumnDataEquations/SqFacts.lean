@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SplitTripleEquations.MuOneOfSplit
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.RightMoveTrianglesOfUnit
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.Reduction
 
 @[expose] public section
 

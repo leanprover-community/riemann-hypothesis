@@ -1,6 +1,9 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogXpow
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.DoubleBlock
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsHomogeneousGrL
 
 @[expose] public section
 
@@ -114,11 +117,11 @@ theorem dmap_cover (W : Ideal (MRing ι)) (i : ∀ k, ι k) (y : MRing ι ⧸ de
   show Ideal.Quotient.mk (dehomI W i)
       (∑ m ∈ f.support, monomial m (f.coeff m) * xpow i (fun k => a k - deg m k)) =
     Ideal.Quotient.mk (dehomI W i) f
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, mk_xpow, mul_one]
+
+  simp only [map_sum, map_mul, mk_xpow, mul_one]
   conv_rhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
 
 theorem card_dehom {W : Ideal (MRing ι)} (hWp : W.IsPrime) (hWm : IsMultiHomogIdeal W)
     {i : ∀ k, ι k} (hi : ∀ k, (X ⟨k, i k⟩ : MRing ι) ∉ W) {a₁ c0 : ℕ}
@@ -142,8 +145,6 @@ theorem card_dehom {W : Ideal (MRing ι)} (hWp : W.IsPrime) (hWm : IsMultiHomogI
     have hcard : (Set.range (dmap W i a')).ncard ≤ (Set.range (dmap W i a)).ncard := by
       show Nat.card (Set.range (dmap W i a')) ≤ Nat.card (Set.range (dmap W i a))
       first
-        | rw [Set.Nat.card_range_of_injective (hinj a), Set.Nat.card_range_of_injective (hinj a'),
-            hconst a ha, hconst a' ha']
         | rw [Nat.card_range_of_injective (hinj a), Nat.card_range_of_injective (hinj a'),
             hconst a ha, hconst a' ha']
     have heq := Set.eq_of_subset_of_ncard_le hsub hcard (Set.finite_range _)

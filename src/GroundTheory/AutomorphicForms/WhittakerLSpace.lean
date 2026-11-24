@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.LocallyProfinite
 public import GroundTheory.AutomorphicForms.LocallyConstantCompact
+public import Mathlib.Algebra.Algebra.Operations
+public import Mathlib.Algebra.Algebra.Pi
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Order.CompletePartialOrder
+import GroundTheory.AutomorphicForms.LocallyProfinite
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.HerbrandAbstract
+public import Mathlib.RepresentationTheory.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

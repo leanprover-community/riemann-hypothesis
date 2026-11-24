@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmulRight
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RepL
-public import CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.Newform
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.QExpansionHeckeUEqSumSlashStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashIntMatrixPosDetPropertiesStatement
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.QExpansionHeckeUEqSumSlash
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashIntMatrixPosDetProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 
 @[expose] public section
 
@@ -21,7 +62,7 @@ def idx (l : ℕ) [NeZero l] (b d : ℤ) (j : Fin l) : Fin l :=
 
 lemma idx_cast (l : ℕ) [NeZero l] (b d : ℤ) (j : Fin l) :
     ((idx l b d j : ℕ) : ZMod l) = (((b + ((j : ℕ) : ℤ) * d) * d : ℤ) : ZMod l) := by
-  simp [idx, ZMod.natCast_zmod_val]
+  simp [idx]
 
 lemma idx_inj (l : ℕ) [NeZero l] (a b d : ℤ) (had : ((a * d : ℤ) : ZMod l) = 1) :
     Function.Injective (idx l b d) := by
@@ -63,13 +104,13 @@ lemma coset (L l : ℕ) [NeZero l] (hlL : l ∣ L) (γ : SL(2, ℤ)) (hc : (L : 
   · rw [Matrix.det_fin_two_of]
     linear_combination hdet + γ 1 0 * hB
   · refine ⟨m, ?_⟩
-    simp only [Matrix.SpecialLinearGroup.coe_mk, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_one,
-      Matrix.cons_val_zero, Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.head_cons]
+    simp only [Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_one,
+      Matrix.cons_val_zero, Matrix.empty_val', Matrix.cons_val_fin_one]
     rw [hm]; push_cast; ring
   · simp
   · ext i k
     fin_cases i <;> fin_cases k <;>
-      simp [repU, Matrix.mul_apply, Fin.sum_univ_two] <;> first | ring1 | linear_combination hB | linear_combination -hB
+      simp [repU, Matrix.mul_apply, Fin.sum_univ_two] <;> first | ring1 | linear_combination hB
 
 end GlobalTheory.LevelLower
 
@@ -100,11 +141,11 @@ theorem GlobalTheory.Uo_lowers_level : ∀ (k L l : ℕ) (χ : ℤ → ℂ) (a :
   intro k L l χ a hk hl hlL hχ hMF
   obtain ⟨hP, hI⟩ := hMF
   haveI : NeZero l := ⟨hl.ne_zero⟩
-  obtain ⟨hPU, hqs⟩ := GlobalTheory.T.qExpansion_heckeU_eq_sum_slash k l a hk hl.pos hP
-  obtain ⟨hcoc, -, hinv, -, -⟩ := GlobalTheory.T.slashIntMatrixPosDet_properties k (qs a) hk
+  obtain ⟨hPU, hqs⟩ := _root_.GlobalTheory.EisM.Uo_qs_sum_slz k l a hk hl.pos hP
+  obtain ⟨hcoc, -, hinv, -, -⟩ := _root_.GlobalTheory.EisM.slz_props k (qs a) hk
   have hI' := (hinv (L * l) χ).mp hI
   refine ⟨hPU, ?_⟩
-  rw [(GlobalTheory.T.slashIntMatrixPosDet_properties k (qs (Uo l a)) hk).2.2.1]
+  rw [(_root_.GlobalTheory.EisM.slz_props k (qs (Uo l a)) hk).2.2.1]
   intro γ hc
   have hg : qs (Uo l a) = fun τ => ∑ j : Fin l, slz k (repU l j) (qs a) τ := funext hqs
   have hdU : ∀ j : Fin l, 0 < (repU l j).det := by

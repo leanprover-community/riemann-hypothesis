@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsMChart
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -2,9 +2,61 @@ module
 
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointnessPolynomiallyBounded
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentHeisenbergDecomposition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -75,10 +127,8 @@ lemma dgR_rev (k r : ℕ) (t : ℝ) (ht : t ≠ 0) (i : Fin (2 * r + k + 1)) : d
       exact inv_mul_cancel₀ (pow_ne_zero _ ht)
 
 lemma prod_dgR_sq (k r : ℕ) (t : ℝ) (ht : t ≠ 0) : (∏ i, dgR k r t i) ^ 2 = 1 := by
-  have h : ∏ i, dgR k r t (Fin.rev i) = ∏ i, dgR k r t i :=
-    Equiv.prod_comp Fin.revPerm (dgR k r t)
   rw [sq]
-  nth_rewrite 2 [← h]
+  nth_rewrite 2 [← Equiv.prod_comp Fin.revPerm (dgR k r t)]
   rw [← Finset.prod_mul_distrib]
   exact Finset.prod_eq_one fun i _ => dgR_rev k r t ht i
 
@@ -154,8 +204,7 @@ lemma dilation_base_vector (t : ℝ) : aDil k (1 + r') t *ᵥ e0 k r' = ((t ^ (1
   rw [Matrix.mulVec_diagonal, Pi.smul_apply, smul_eq_mul]
   unfold e0 bvec
   by_cases h : i = eI k (1 + r') (a0 r')
-  · subst h
-    simp [dgR, eI, a0]
+  · subst h; simp [dgR, eI, a0]
   · simp [h]
 
 lemma aDil_lift (t : ℝ) (y : Fin (2 * r' + k + 1) → ℂ) :
@@ -222,10 +271,8 @@ theorem modular_exponent_recursion : Formalism.FourierDecayAlt.B2.KapRec := by
   · simp [Mdim]; ring_nf
   · apply Finset.sum_congr rfl
     intro a _
-    have := a.isLt
     simp only [Mdim, Fin.natAdd]
-    have h1 : 1 + r' - (1 + a.val) = r' - a.val := by omega
-    simp only [h1]
+    rw [Nat.add_sub_add_left]
 
 namespace B2x7
 
@@ -332,8 +379,7 @@ lemma aDil_zero (k : ℕ) (t : ℝ) : aDil k 0 t = 1 := by
 
 lemma conjM_one (k r : ℕ) : (conjM (1 : Mat k r) : Mt k r → Mt k r) = id := by
   funext x
-  unfold conjM
-  rw [inv_one, Matrix.mul_one, Matrix.one_mul]
+  simp [conjM]
   rfl
 
 lemma mulM_cont {k r : ℕ} : Continuous (mulM : Mt k r × Mt k r → Mt k r) := by

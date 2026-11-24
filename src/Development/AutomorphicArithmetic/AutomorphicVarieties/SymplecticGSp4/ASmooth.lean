@@ -1,8 +1,53 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EntryMem
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Graded
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Graded
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PartSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -164,8 +209,8 @@ private lemma pow_le (W : WPres O (ℤ × ℤ) R) (h : W.HasOrigin) {A : Subalge
       exact lt_of_lt_of_le (by exact_mod_cast hlt) hf
     · rfl
   obtain ⟨b, hb, hbe⟩ := hμ (wcomp O W.wt j f) hsupp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hbe, map_sum]
+
+  rw [hbe, map_sum]
   refine Submodule.sum_mem _ fun m hm => ?_
   have hmS := hμS hm
   have hmpart : W.π (monomial m 1) ∈ W.part j := by
@@ -251,11 +296,11 @@ private lemma split_mono {σ : Type} (wt : σ → ℤ × ℤ) (hw : ∀ i, (wt i
     have ht' := Finsupp.mem_support_iff.mp ht
     by_cases his : i = s
     · subst his
-      simp [Finsupp.single_apply, hst, Ne.symm hst] <;> omega
+      simp [hst] <;> omega
     · by_cases hit : i = t
       · subst hit
-        simp [Finsupp.single_apply, hst, Ne.symm hst] <;> omega
-      · simp [Finsupp.single_apply, Ne.symm his, Ne.symm hit]
+        simp [Ne.symm hst] <;> omega
+      · simp [Ne.symm his, Ne.symm hit]
 
 private lemma ker_le (W : WPres O (ℤ × ℤ) R) (h : W.HasOrigin)
     (hw : ∀ i, (W.wt i).1 = -1 ∨ (W.wt i).1 = 0 ∨ (W.wt i).1 = 1) {A : Subalgebra O R}
@@ -419,8 +464,8 @@ private theorem crLin_proj [DecidableEq X] [GradedAlgebra 𝒜] (h : IsChart �
   classical
   symm
   conv_lhs => rw [← DirectSum.sum_support_decompose 𝒜 f]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_single j
     (fun j' _ hj' => crLin_wt h i (by rw [hij]; exact fun e => hj' e.symm) (SetLike.coe_mem _)) ?_
   intro hj
@@ -473,15 +518,15 @@ private theorem expand [Fintype τ] (h : IsChart 𝒜 x wt φ) {g : τ → A}
     rw [if_neg hk, smul_zero] at this
     exact IsFractionRing.injective O (FractionRing O) (this.trans (map_zero _).symm)
   have hxq : x (c • p - ∑ k, a k • g k) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sum, map_smul, hp0, smul_zero, zero_sub, neg_eq_zero]
+
+    rw [map_sub, map_sum, map_smul, hp0, smul_zero, zero_sub, neg_eq_zero]
     exact Finset.sum_eq_zero fun k _ => by rw [map_smul, (hg k).2.1, smul_zero]
   have hcr : ∀ i, coeff (Finsupp.single i 1) (φ (c • p - ∑ k, a k • g k)) = 0 := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← crLin_apply, map_sub, map_sum, map_smul,
-      Finset.sum_eq_single i (fun k _ hk => by rw [map_smul, (hg k).2.2.2 i (fun e => hk e.symm), smul_zero])
-        (fun hi => absurd (Finset.mem_univ i) hi), map_smul]
+
+    rw [← crLin_apply, map_sub, map_sum, map_smul,
+    Finset.sum_eq_single i (fun k _ hk => by rw [map_smul, (hg k).2.2.2 i (fun e => hk e.symm), smul_zero])
+      (fun hi => absurd (Finset.mem_univ i) hi), map_smul]
     by_cases hi : wt i = j
     · have := ha i
       rw [if_pos hi] at this
@@ -520,8 +565,8 @@ private theorem chart_of_span [Fintype τ] (h1 : ∀ j, ∀ f ∈ 𝒜 j, φ f �
     obtain ⟨c, hc, a, ha⟩ := clear_den v
     have key : ∀ j, coeff (Finsupp.single j 1) (φ (∑ k, a k • G k)) = c • (Pi.single i 1 : τ → FractionRing O) j := by
       intro j
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← crLin_apply, map_sum]
+
+      rw [← crLin_apply, map_sum]
       have e := congrFun hv j
       simp only [Matrix.mulVec, dotProduct] at e
       rw [← e, Finset.smul_sum]
@@ -537,8 +582,8 @@ private theorem chart_of_span [Fintype τ] (h1 : ∀ j, ∀ f ∈ 𝒜 j, φ f �
     obtain ⟨c, hc, a, hsq⟩ := hspan f hf
     have ha : (fun k => algebraMap O (FractionRing O) (a k)) = 0 := hinj _ (fun j => by
       have e := crLin_sq h2 j _ hsq
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, map_smul, crLin_apply, hcr j, smul_zero, zero_sub, neg_eq_zero, map_sum] at e
+
+      rw [map_sub, map_smul, crLin_apply, hcr j, smul_zero, zero_sub, neg_eq_zero, map_sum] at e
       rw [← e]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [map_smul, Algebra.smul_def])
@@ -703,10 +748,10 @@ private theorem iota {τ : Type} [Fintype τ] [DecidableEq τ] (wt : τ → ℤ 
       by_cases ht : t = b
       · rw [dite_eq_left ht, Finset.sum_eq_single i]
         · by_cases h1 : (wt i.1).1 = 1
-          · simp [v, h1, Finsupp.single_apply, hib, ht]
-          · simp [v, h1, Finsupp.single_apply, hib, ht]
+          · simp [v, h1, hib, ht]
+          · simp [v, h1, hib, ht]
         · intro j _ hj
-          simp [Finsupp.single_apply, Ne.symm hj]
+          simp [Ne.symm hj]
         · simp
       · rw [dif_neg ht]
         by_cases h1 : (wt i.1).1 = 1
@@ -736,7 +781,7 @@ private theorem iota {τ : Type} [Fintype τ] [DecidableEq τ] (wt : τ → ℤ 
     split_ifs with h
     · subst h
       rw [Finsupp.weight_eq_sum, Fintype.sum_eq_add_sum_subtype_ne _ t] at hm
-      simp only [Prod.fst_add, Prod.smul_fst, Prod.fst_sum, smul_eq_mul, hb] at hm
+      simp only [Prod.fst_add, Prod.smul_fst, Prod.fst_sum, hb] at hm
       simp only [Finsupp.coe_equivFunOnFinite_symm]
       have key : ∑ x : {i // i ≠ t}, m x.1 • (wt x.1).1 =
           ((∑ x : {i // i ≠ t}, if (wt x.1).1 = 1 then m x.1 else 0 : ℕ) : ℤ) := by
@@ -938,8 +983,8 @@ private theorem main {O R τ : Type} [CommRing O] [IsDomain O] [CommRing R] [Alg
     let Γ : τ → R := fun k => if (wt k).1 = 0 then (g k : R) else (g k : R) * (g b : R)
     have hΓ : ∀ a : τ → O, a b = 0 → ∑ k, a k • Γ k = A.val (∑ i : {i // i ≠ b}, a i.1 • G i) := by
       intro a hab
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Fintype.sum_eq_add_sum_subtype_ne _ b, hab, zero_smul, zero_add, map_sum]
+
+      rw [Fintype.sum_eq_add_sum_subtype_ne _ b, hab, zero_smul, zero_add, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_smul]
       congr 1
@@ -978,8 +1023,8 @@ private theorem main {O R τ : Type} [CommRing O] [IsDomain O] [CommRing R] [Alg
       refine ⟨c, hc, _, hN', hA', ?_⟩
       rw [← hsum]
       have e : W.A.val (c • W.zA s - ∑ k, a k • g k) = c • W.z s - ∑ k, a k • (g k : R) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sub, map_smul, map_sum]
+
+        rw [map_sub, map_smul, map_sum]
         simp only [map_smul]
         rfl
       rw [← e]
@@ -1022,8 +1067,8 @@ private theorem main {O R τ : Type} [CommRing O] [IsDomain O] [CommRing R] [Alg
       let a : τ → O := fun k => a₁ k * a₂ b
       have hab : a b = 0 := by simp [a, hb1]
       have hsum : W.A.val ((∑ k, a₁ k • g k) * (a₂ b • g b)) = ∑ k, a k • Γ k := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_mul, map_sum, Finset.sum_mul]
+
+        rw [map_mul, map_sum, Finset.sum_mul]
         refine Finset.sum_congr rfl fun k _ => ?_
         by_cases hk : a₁ k = 0
         · simp [a, hk]
@@ -1068,7 +1113,7 @@ private theorem count {τ : Type} [Fintype τ] [DecidableEq τ] (wt : τ → ℤ
     have h1 : 0 < Fintype.card {k // wt k = wt i} := Fintype.card_pos_iff.mpr ⟨⟨i, rfl⟩⟩
     rw [hc] at h1
     unfold tDims at h1
-    split_ifs at h1 <;> first | tauto | omega
+    split_ifs at h1 <;> first | tauto
   have h1 : Fintype.card {i // wt i = wBe} = 1 := by
     rw [hc]
     simp [tDims]

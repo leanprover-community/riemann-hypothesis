@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.CutTuples2
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

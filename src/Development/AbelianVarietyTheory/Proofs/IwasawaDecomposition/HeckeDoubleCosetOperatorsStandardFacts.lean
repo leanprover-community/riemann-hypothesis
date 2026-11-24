@@ -1,16 +1,60 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankLeAleph0SmoothIrreducibleUnitaryAdelic
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDimensionalForms
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegerUnitSplitPlaceConjugatePrime
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmFieldAdeleSplitPlaceSupportIntegral
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteRationalConjMemBoundedCompact
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryFiniteAdelesSplitPlaceDecomposition
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlaceDoubleCosetOperatorsCommuteSpherical
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryFiniteAdelesSplitPlaceDecomposition
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDoubleCosetsDefiniteUnitaryMaximalLevel
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmFieldAdeleSplitPlaceSupportIntegral
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegerUnitSplitPlaceConjugatePrime
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDimensionalForms
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -169,7 +213,7 @@ theorem exists_cong_conj (a : GAf L n) : ∃ N : ℕ, 0 < N ∧ ∀ κ, NG.Cong 
   show (((a⁻¹ * κ * a : GAf L n).1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) i j ∈ ALint L
   rw [e, Matrix.add_apply]
   refine add_mem ?_ ?_
-  · by_cases hij : i = j <;> simp [Matrix.one_apply, hij, Subring.one_mem, Subring.zero_mem]
+  · by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
   · simp only [Matrix.mul_apply, Matrix.smul_apply, smul_eq_mul, Matrix.of_apply]
     exact sum_mem fun l _ => mul_mem (sum_mem fun l' _ => mul_mem (h' i l') (hy l' l)) (h l j)
 
@@ -413,8 +457,8 @@ theorem heckeD_mem {ρ : Representation ℂ (GQ L n) W} {J : Subgroup (GAf L n)}
           group) (fixed_of_type hB hv hf)
     rw [Finset.sum_image (hinj.injOn)] at e
     conv_rhs => rw [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [heckeD_type hB hv h1 h2 hf, map_sum, Finset.smul_sum]
+
+    rw [heckeD_type hB hv h1 h2 hf, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun γ _ => ?_
     rw [← map_smul, ← hf.2 ⟨κ, hκ⟩, rt_rt, rt_rt]
     simp
@@ -449,8 +493,8 @@ theorem heckeD_comm {ρ : Representation ℂ (GQ L n) W} {J : Subgroup (GAf L n)
       (fun γ hγ => (hs γ).1 (h1 γ hγ)) (fun x hx => h2' x ((hS x).2 hx)) (fun γ hγ => (hS γ).1 (h1' γ hγ)) f
       fun κ hκ ht => fixed_of_type hB hv hf κ ((hyp_at hB hv κ ht).1.2 hκ) ht
   · obtain ⟨-, hc, -⟩ := GlobalTheory.SplitAdelic.main L n s
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, rt_rt]
+
+    simp only [map_sum, rt_rt]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun δ hδ => Finset.sum_congr rfl fun γ hγ => ?_
     rw [(hc γ δ (h1 γ hγ).1 fun w hw => (h1' δ hδ).1 w ?_).eq]
@@ -537,7 +581,7 @@ theorem exists_pow_denom (s : SplitPlace L) {x : GAf L n} (hx : TrivOutside {s.v
     ∃ e : ℕ, ∀ i j, ((s.q ^ e : ℕ) : AL L) * (x.1 : Matrix (Fin n) (Fin n) (AL L)) i j ∈ ALint L := by
   obtain ⟨ε, he, he'⟩ := GlobalTheory.SplitSep.exists_sep L s
   have one_mem' : ∀ a b : Fin n, (1 : Matrix (Fin n) (Fin n) (AL L)) a b ∈ ALint L := fun a b => by
-    by_cases h : a = b <;> simp [Matrix.one_apply, h, Subring.one_mem, Subring.zero_mem]
+    by_cases h : a = b <;> simp [Matrix.one_apply, h]
   let z : Fin n → Fin n → AL L := fun i j =>
     (x.1 : Matrix (Fin n) (Fin n) (AL L)) i j - (1 : Matrix (Fin n) (Fin n) (AL L)) i j
   choose e₁ h₁ using fun p : Fin n × Fin n => exists_pow_val s (s.proj (z p.1 p.2))
@@ -607,8 +651,8 @@ theorem eigen_integral {ρ : Representation ℂ (GQ L n) W} (hρ : IsAlgWeight L
       exact (RingOfIntegers.isIntegral_coe (β p.2)).map p.1.toIntAlgHom)
   have hOA : ∀ (τ : L →+* ℂ) (o : 𝓞 L), τ (o : L) ∈ A := by
     intro τ o
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← β.sum_repr o, RingOfIntegers.coe_eq_algebraMap, map_sum, map_sum]
+
+    rw [← β.sum_repr o, RingOfIntegers.coe_eq_algebraMap, map_sum, map_sum]
     refine sum_mem fun i _ => ?_
     rw [map_zsmul, map_zsmul]
     exact zsmul_mem (hSA ⟨(τ, i), rfl⟩) _
@@ -670,8 +714,8 @@ theorem eigen_integral {ρ : Representation ℂ (GQ L n) W} (hρ : IsAlgWeight L
     obtain ⟨x, hx, rfl⟩ := hz
     have := congrFun hμ (g₀ * x)
     rw [Finset.sum_apply, Pi.smul_apply] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finsupp.smul_apply, ← map_smul, ← this, map_sum, Finsupp.finsetSum_apply]
+
+    rw [← Finsupp.smul_apply, ← map_smul, ← this, map_sum, Finsupp.finsetSum_apply]
     exact sum_mem fun γ hγ => Submodule.subset_span ⟨x * γ, triv_mul hx (hR γ hγ), by rw [← mul_assoc]; rfl⟩
   | zero => simp
   | add a b _ _ ha hb => rw [smul_add]; exact add_mem ha hb

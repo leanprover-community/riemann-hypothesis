@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.Bdy
+public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
+public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.CreApply
+public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.DifferentialBoundedSupport
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.OrderedCreationCommutesPastLevi
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.Bdy
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
+import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 @[expose] public section
 
@@ -237,7 +244,7 @@ theorem levi_bracket_sum_second (hm : Monotone lev) (hpq : lev p = lev q) {a b :
     · rw [Finset.sum_eq_single (⟨(a.1.2, m.1.2), hlt⟩ : Pos n)]
       · have : tc a (⟨(a.1.2, m.1.2), hlt⟩ : Pos n) m = 1 := if_pos ⟨rfl, h1, rfl⟩
         rw [this, one_mul, adC_eq, cZ, cY]
-        simp only [h1, true_and, and_true]
+        simp only [h1, true_and]
         congr 1
         · refine if_congr ?_ rfl rfl
           constructor

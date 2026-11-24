@@ -1,8 +1,65 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCCB
 public import Formalism.HermitianCurvature.StatementB
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.Deriv.CompMul
+public import Mathlib.Analysis.Calculus.Deriv.Shift
 
 @[expose] public section
 
@@ -139,7 +196,7 @@ private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
     ⟨(if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val), by split_ifs <;> omega⟩
     (Finset.mem_univ _)]
   · unfold Hpk
-    simp only [Fin.ext_iff, Fin.val_mk]
+    simp only [Fin.ext_iff]
     split_ifs <;> first | (exfalso; omega) | norm_num
   · intro l _ hl
     rw [key l (fun h => hl (Fin.ext h)), MulZeroClass.zero_mul]
@@ -151,26 +208,7 @@ lemma hpk_isUnit : IsUnit (Hpk k r) := by
   exact ⟨⟨Hpk k r, Hpk k r, hpk_sq_lemma, hpk_sq_lemma⟩, rfl⟩
 
 lemma exp_mem {Y : Mat k r} (hY : inLie k r Y) : NormedSpace.exp Y ∈ GV k r := by
-  have hU : IsUnit (Hpk k r) := hpk_isUnit
-  have hHH : Hpk k r * Hpk k r = 1 := by
-    calc Hpk k r * Hpk k r = Hpk k r * (Hpk k r)⁻¹ := by rw [hpk_inv]
-      _ = 1 := Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).mp hU)
-  have hY' : Yᴴ = Hpk k r * (-Y) * (Hpk k r)⁻¹ := by
-    have h1 : Yᴴ * Hpk k r = -(Hpk k r * Y) := eq_neg_of_add_eq_zero_left hY
-    rw [hpk_inv]
-    calc Yᴴ = Yᴴ * (Hpk k r * Hpk k r) := by rw [hHH, Matrix.mul_one]
-      _ = Yᴴ * Hpk k r * Hpk k r := by rw [Matrix.mul_assoc]
-      _ = Hpk k r * (-Y) * Hpk k r := by rw [h1, _root_.neg_mul, _root_.mul_neg, _root_.neg_mul]
-  show (NormedSpace.exp Y)ᴴ * Hpk k r * NormedSpace.exp Y = Hpk k r
-  rw [← Matrix.exp_conjTranspose, hY', Matrix.exp_conj _ _ hU, hpk_inv]
-  have hE : NormedSpace.exp (-Y) * NormedSpace.exp Y = 1 := by
-    rw [← Matrix.exp_add_of_commute _ _ (Commute.neg_left (Commute.refl Y)),
-      show -Y + Y = (0 : Mat k r) by abel, NormedSpace.exp_zero]
-  calc Hpk k r * NormedSpace.exp (-Y) * Hpk k r * Hpk k r * NormedSpace.exp Y
-      = Hpk k r * (NormedSpace.exp (-Y) * (Hpk k r * Hpk k r) * NormedSpace.exp Y) := by
-        simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by
-        rw [hHH, Matrix.mul_one, hE, Matrix.mul_one]
+  apply ReciprocityTheory.ChartRestriction.DS.Mult1.InvCC.exp_mem <;> assumption
 
 def cv (b : Bool) (X : Mat k r) (t : ℝ) (g : Mat k r) : Mat k r :=
   match b with
@@ -270,13 +308,10 @@ lemma natCast_succ_le (m : ℕ) :
     (((m : ℕ) : ℕ∞) : WithTop ℕ∞) + 1 ≤ (((m + 1 : ℕ) : ℕ∞) : WithTop ℕ∞) := by
   first
     | exact le_of_eq (by norm_cast)
-    | exact le_of_eq (by simp)
-    | simp
 
 lemma cast_ne_zero (m : ℕ) : (((m + 1 : ℕ) : ℕ∞) : WithTop ℕ∞) ≠ 0 := by
   first
     | exact_mod_cast Nat.succ_ne_zero m
-    | simp
 
 def op' (b : Bool) (X : Mat k r) (f' : Mat k r → E) : Mat k r → E :=
   fun g => fderiv ℝ f' g (vf b X g)
@@ -378,13 +413,11 @@ lemma op_smul (b : Bool) (X : Mat k r) (a : ℂ) (f : Mat k r → E) : op b X (a
   simp only [op, Pi.smul_apply]
   first
     | exact deriv_const_smul_field (f := fun t : ℝ => f (cv b X t g)) (x := 0) a
-    | exact deriv_const_smul_field (f := fun t : ℝ => f (cv b X t g)) (x := 0) a
 
 lemma op_rsmul (b : Bool) (X : Mat k r) (a : ℝ) (f : Mat k r → E) : op b X (a • f) = a • op b X f := by
   funext g
   simp only [op, Pi.smul_apply]
   first
-    | exact deriv_const_smul_field (f := fun t : ℝ => f (cv b X t g)) (x := 0) a
     | exact deriv_const_smul_field (f := fun t : ℝ => f (cv b X t g)) (x := 0) a
 
 lemma cv_rsmul (b : Bool) (X g : Mat k r) (c t : ℝ) : cv b ((c : ℂ) • X) t g = cv b X (c * t) g := by
@@ -456,7 +489,6 @@ lemma smooth_on_of_word_derivatives {f : Mat k r → E} (w : List (Bool × Mat k
     rw [W_nil]
     first
       | exact hm
-      | simpa using hm
   | cons x w ih =>
     intro m hm
     rw [W_cons]
@@ -621,8 +653,6 @@ lemma lrt_lr (u v : List (Mat k r)) : LRt ((lr u v).map Prod.fst) := by
   refine ⟨u.length, v.length, ?_⟩
   first
     | (simp [lr, Function.comp_def]; done)
-    | (simp [lr, Function.comp_def, List.map_const']; done)
-    | (simp [lr, List.map_map, Function.comp_def, List.eq_replicate_iff]; done)
 
 lemma bound_tag {F : Mat k r → E} {A c : ℝ} {m : ℕ} (h : CCle A m F c) (w : List (Bool × Mat k r))
     (ht : LRt (w.map Prod.fst)) (hu : ∀ x ∈ w, unitLie k r x.2) (hl : w.length ≤ m) :
@@ -650,13 +680,11 @@ lemma nrm_smul (X : Mat k r) : X = ((‖X‖ : ℝ) : ℂ) • (((‖X‖⁻¹ :
 private lemma entry_le_lemma (A : Mat k r) (i j : Fin (2 * r + k + 1)) : ‖A i j‖ ≤ ‖A‖ := by
   first
     | exact Matrix.norm_entry_le_entrywise_sup_norm A
-    | exact (norm_le_pi_norm (A i) j).trans (norm_le_pi_norm A i)
 
 private lemma norm_le_lemma_2 {A : Mat k r} {c : ℝ} (hc : 0 ≤ c) (h : ∀ i j, ‖A i j‖ ≤ c) :
     ‖A‖ ≤ c := by
   first
     | exact (Matrix.norm_le_iff hc).mpr h
-    | exact (pi_norm_le_iff_of_nonneg hc).mpr fun i => (pi_norm_le_iff_of_nonneg hc).mpr (h i)
 
 lemma nrm_unit {x : Bool × Mat k r} (hx : inLie k r x.2) : unitLie k r (nrm x).2 := by
   refine ⟨inLie_rsmul hx _, fun i j => ?_⟩
@@ -867,8 +895,6 @@ private lemma exp_conj_lemma (a A : Mat k r) (ha : IsUnit a) :
     NormedSpace.exp (a⁻¹ * A * a) = a⁻¹ * NormedSpace.exp A * a := by
   first
     | exact Matrix.exp_conj' a A ha
-    | (have h := Matrix.exp_conj a⁻¹ A ((Matrix.isUnit_nonsing_inv_iff).mpr ha)
-       rwa [Matrix.nonsing_inv_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).mp ha)] at h)
 
 lemma cv_dil (t : ℝ × ℝ) (h1 : t.1 ≠ 0) (h2 : t.2 ≠ 0) (b : Bool) (X g : Mat k r) (s : ℝ) :
     (aDil k r t.1)⁻¹ * cv b X s g * aDil k r t.2 =
@@ -939,7 +965,6 @@ lemma abs_inv_sub_one {t : ℝ} (ht : t ∈ Set.Icc (1 / 2 : ℝ) 2) : |t⁻¹ -
   have e : t⁻¹ - 1 = -(t - 1) * t⁻¹ := by
     first
       | (field_simp; ring)
-      | field_simp
   rw [e, abs_mul, abs_neg, abs_of_pos (inv_pos.mpr hpos), mul_comm]
   exact mul_le_mul_of_nonneg_right (inv_mem_I ht).2 (abs_nonneg _)
 
@@ -1247,7 +1272,6 @@ lemma mean_value {H : Mat k r → E} (hH : CkOn ((1 : ℕ) : ℕ∞) (GV k r) H)
       _ = B * |s| := by
         first
           | (field_simp; done)
-          | (field_simp; ring)
 
 lemma abs_log_le {t : ℝ} (ht : t ∈ Set.Icc (1 / 2 : ℝ) 2) : |Real.log t| ≤ 2 * |t - 1| := by
   have hpos : 0 < t := by linarith [ht.1]

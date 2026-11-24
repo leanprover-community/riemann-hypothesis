@@ -1,6 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.TNotinSq
+public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.MulLatSupSpan
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.LocalUnitaryOfMatchingZero
+import Formalism.LocalToGlobal.GlobalTheory.GL6.PDnDil
+public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.TripMem
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.Common
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -21,8 +27,8 @@ theorem nat_smul_inv {E : Type} [Field E] [NumberField E] {n : ℕ} (N : ℕ) (h
 variable {D : D7} {u : D.what₂.Word}
 
 
-set_option maxHeartbeats 16000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem comp_cmp (T : Forms0 D u) (v : (D.mem u).A.vT) (c c1 c3 : (D.mem u).C.cls 0)
     (w1 w3 : Fin (D.R.N 0) → D.host.E)
     (g1 g3 : Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk 0 v c))

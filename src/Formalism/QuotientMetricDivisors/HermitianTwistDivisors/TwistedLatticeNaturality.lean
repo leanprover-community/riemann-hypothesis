@@ -1,16 +1,67 @@
 module
 
-public import Mathlib
 public import Formalism.QuotientMetricDivisors.DivIntoDualShift
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
+public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
+import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
+public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DivIntoDual
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.IdxChange
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ImageLcv
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LcvBasis
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LocBasis
+public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionSecondStep
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DivIntoDual
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -225,7 +276,6 @@ theorem shift_vw_alg (w : HeightOneSpectrum (𝓞 K)) (x : 𝓞 K) :
 theorem shift_coe_ne_zero {x : 𝓞 K} (hx : x ≠ 0) : (x : K) ≠ 0 := by
   first
   | simpa using hx
-  | exact_mod_cast hx
 
 theorem shift_decomp (w : HeightOneSpectrum (𝓞 K)) :
     ∃ ϖ : 𝓞 K, ϖ ≠ 0 ∧ vw w (ϖ : K) = 1 ∧
@@ -482,7 +532,7 @@ theorem shift_smulLat_lattice (a : K) (ha : a ≠ 0) (N : Submodule (𝓞 K) (Fi
     simp [smulLat]
   rw [hset, ← Submodule.map_span, hN.span_eq_top, Submodule.map_top, LinearMap.range_eq_top]
   intro v
-  exact ⟨a⁻¹ • v, by simp [smul_smul, mul_inv_cancel₀ ha, inv_mul_cancel₀ ha]⟩
+  exact ⟨a⁻¹ • v, by simp [smul_smul, inv_mul_cancel₀ ha]⟩
 
 theorem shift_idealSmul_lattice (I : FractionalIdeal (𝓞 K)⁰ K) (hI : I ≠ 0)
     (N : Submodule (𝓞 K) (Fin d → K)) (hN : Submodule.IsFullLattice K N) :

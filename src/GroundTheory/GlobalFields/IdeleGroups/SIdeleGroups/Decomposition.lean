@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.InfinitePlaces
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.IntegerUnits
+public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Galois
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

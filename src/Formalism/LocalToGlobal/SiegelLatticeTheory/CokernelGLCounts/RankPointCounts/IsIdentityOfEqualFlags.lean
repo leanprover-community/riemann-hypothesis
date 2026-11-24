@@ -1,12 +1,15 @@
 module
 
-public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DimFormC
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.KppOffCOfSteps
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RelevantSetZeroGNotIdentity
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.UnitriangularFrameLift
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellFin
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.ClauseAOfIdentityFlag
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLift
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdRoot
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdScal
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdUnit
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdRoot
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLift
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SplittingAdmissibleOfTermData
 
 @[expose] public section
 
@@ -84,7 +87,7 @@ theorem one_le_index_of_relevant (hTg : ∀ u : D.what₂.Word, (D.mem u).A.T �
   by_contra hj0
   have hj0 : j = 0 := by omega
   subst hj0
-  obtain ⟨k1, -, k3⟩ := Formalism.HermitianLatticeCounting.Final.S6.nFJZero _ _ _ _ _ _ c hN.1
+  obtain ⟨k1, -, k3⟩ := _root_.Formalism.HermitianLatticeCounting.P.normalFormZero _ _ _ _ _ _ c hN.1
   have hXa : ∀ a, (frq X t.rep).fl.Xa a = (lf D (X.Fu u)).fl.Xa a := fun a => by
     exact (nf_Xa (frq X t.rep).fl (nf_T_ne D u) a).symm.trans
       ((k1 a).trans (nf_Xa (lf D (X.Fu u)).fl (fixedFlag_level_ne_zero D u) a))

@@ -1,6 +1,46 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ArcGamLiftCoreT
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -80,8 +120,8 @@ theorem pi0_mem_ADelta : W.π₀ ∈ W.AΔ := by
   intro δ hδ
   funext i
   show W.γ₀ δ W.π₀₁ = W.π₀₁
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LocWach.π₀₁, map_add (f := _), map_sub, map_one, map_natCast, map_sum]
+
+  simp only [LocWach.π₀₁, map_add (f := _), map_sub, map_one, map_natCast, map_sum]
   congr 1
   refine Finset.sum_nbij' (δ * ·) (δ⁻¹ * ·) (fun g hg => delF_mul W hδ hg)
     (fun g hg => delF_mul W (delF_inv W hδ) hg) (fun g _ => by simp) (fun g _ => by simp) (fun g _ => ?_)
@@ -313,9 +353,8 @@ theorem RepVV_nat (N : ℕ) {x : W.DD T} {f : Fin d → W.EE} (h : RepVV W T c' 
     have key : lA W ^ κ' • (lA W ^ κ • Λ • (((N : ℕ) : LetA O n) • x) -
           ((N : ℕ) : LetA O n) • ∑ k, a k • ((W.φD T) ^ e) (H k)) =
         ((N : ℕ) : LetA O n) • (lA W ^ κ' • (lA W ^ κ • Λ • x - ∑ k, a k • ((W.φD T) ^ e) (H k))) := by
-      simp only [smul_add, smul_sub, smul_neg, smul_smul, sub_neg_eq_add, neg_sub, neg_add_rev, neg_neg]
+      simp only [smul_sub, smul_smul]
       ring_nf
-      try abel
     rw [key]
     exact inMultiple_smul W (natCast_mem _ _) hP
 
@@ -330,7 +369,7 @@ theorem RepVV_neg {x : W.DD T} {f : Fin d → W.EE} (h : RepVV W T c' e M Λ b s
   rw [hs]
   have key : lA W ^ κ' • (lA W ^ κ • Λ • (-x) - -∑ k, a k • ((W.φD T) ^ e) (H k)) =
       -(lA W ^ κ' • (lA W ^ κ • Λ • x - ∑ k, a k • ((W.φD T) ^ e) (H k))) := by
-    simp only [smul_add, smul_sub, smul_neg, smul_smul, sub_neg_eq_add, neg_sub, neg_add_rev, neg_neg]
+    simp only [smul_add, smul_sub, smul_neg, smul_smul, sub_neg_eq_add, neg_sub]
     ring_nf
     try abel
   rw [key]
@@ -365,7 +404,7 @@ theorem RepVV_add {x x' : W.DD T} {f f' : Fin d → W.EE} (h : RepVV W T c' e M 
         (lA W ^ κ₂ • ∑ k, a₁ k • ((W.φD T) ^ e) (H₁ k) + lA W ^ κ₁ • ∑ k, a₂ k • ((W.φD T) ^ e) (H₂ k))) =
       lA W ^ (κ₂' + κ₂) • (lA W ^ κ₁' • (lA W ^ κ₁ • Λ • x - ∑ k, a₁ k • ((W.φD T) ^ e) (H₁ k))) +
       lA W ^ (κ₁' + κ₁) • (lA W ^ κ₂' • (lA W ^ κ₂ • Λ • x' - ∑ k, a₂ k • ((W.φD T) ^ e) (H₂ k))) := by
-    simp only [smul_add, smul_sub, smul_neg, smul_smul, sub_neg_eq_add, neg_sub, neg_add_rev, neg_neg]
+    simp only [smul_add, smul_sub, smul_smul]
     ring_nf
     try abel
   rw [key]

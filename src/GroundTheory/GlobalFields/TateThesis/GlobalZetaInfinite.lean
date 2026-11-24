@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
-public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhat
+public import GroundTheory.GlobalFields.Adele.IntegersLattice
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 
 @[expose] public section
 
@@ -26,10 +30,6 @@ theorem norm_isometryEquivRealOfIsReal {w : InfinitePlace K} (hw : w.IsReal) (z 
 theorem norm_isometryEquivComplexOfIsComplex {w : InfinitePlace K} (hw : w.IsComplex)
     (z : w.Completion) : ‖isometryEquivComplexOfIsComplex hw z‖ = ‖z‖ :=
   (isometry_extensionEmbedding w).norm_map_of_map_zero (map_zero _) z
-
-theorem one_le_mult (w : InfinitePlace K) : (1 : ℝ) ≤ w.mult := by
-  unfold InfinitePlace.mult
-  split_ifs <;> norm_num
 
 theorem mult_le_two (w : InfinitePlace K) : (w.mult : ℝ) ≤ 2 := by
   unfold InfinitePlace.mult
@@ -95,7 +95,7 @@ theorem integrable_placeZetaBound (w : InfinitePlace K) {σ : ℝ} (hσ : 1 ≤ 
     (lintegral_one_add_norm_rpow_neg_lt_top w (r := k - 2 * σ) (by linarith))
   rw [← ENNReal.ofReal_mul (by positivity)]
   refine ENNReal.ofReal_le_ofReal ?_
-  have hm1 := one_le_mult w
+  have hm1 := (NumberField.InfinitePlace.one_le_mult (w := w))
   have hm2 := mult_le_two w
   set t := ‖z‖
   have ht : 0 ≤ t := norm_nonneg _

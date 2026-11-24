@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticLatticeForms
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.RealPlaceEmbeddings
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.IntegralModuleBases.DetToMatrixSq
 
 @[expose] public section
 
@@ -30,8 +33,8 @@ private lemma hermC_mulVec_lemma_2 {n : ℕ} (τ : E →+* ℂ) (G : Matrix (Fin
       = ∑ a, ∑ b, ∑ i, ∑ j, Y a i * u i * τ (G a b) * (conj (Y b j) * conj (v j)) := by
         simp only [hermC, Matrix.mulVec, dotProduct]
         refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.sum_mul, Finset.sum_mul]
+
+        rw [map_sum, Finset.sum_mul, Finset.sum_mul]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun j _ => ?_
@@ -70,8 +73,6 @@ theorem ip_Sg {y : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hy : IsNormal X y) (p q
     first
       | simp [herm, hermC, Data.embV, Data.emb, cc, map_sum, map_mul,
           IsCMField.complexEmbedding_complexConj]
-      | simp [herm, hermC, Data.embV, Data.emb, cc, map_sum, map_mul,
-          NumberField.IsCMField.complexEmbedding_complexConj]
   rw [hτ, hermC_normal X hdet _ hg]
   congr 2
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -96,8 +97,8 @@ private lemma ip_sum_lemma_3 (u : X.Ψ → Fin r → ℂ) (a : ι → ℝ) (w : 
   have h1 : ∀ τ b, u τ b * conj ((∑ k, a k • w k) τ b) =
       ∑ k, ((a k : ℂ) * (u τ b * conj (w k τ b))) := by
     intro τ b
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.sum_apply, Finset.sum_apply, map_sum, Finset.mul_sum]
+
+    rw [Finset.sum_apply, Finset.sum_apply, map_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Pi.smul_apply, Pi.smul_apply, Complex.real_smul, map_mul, Complex.conj_ofReal]
     ring

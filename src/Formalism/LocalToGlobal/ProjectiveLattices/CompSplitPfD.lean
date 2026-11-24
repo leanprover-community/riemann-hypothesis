@@ -1,8 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
-public import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompSplitPfC
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.RingTheory.Unramified.LocalStructure
 
 @[expose] public section
 

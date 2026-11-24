@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
-public import GroundTheory.ProfiniteCohomology.GaloisModules.FixedField
+public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.LowDegree
 
 @[expose] public section
 

@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
 public import Formalism.QuotientMetricDivisors.LatticeGlueUnique
 public import Formalism.QuotientMetricDivisors.HeightBoundExactNorms
 public import Formalism.MirabolicMackeyTheory.StatementT
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 
 @[expose] public section
 

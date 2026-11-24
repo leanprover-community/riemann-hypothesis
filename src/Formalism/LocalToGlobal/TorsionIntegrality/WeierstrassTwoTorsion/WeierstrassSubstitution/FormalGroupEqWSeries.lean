@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementG
-public import Formalism.EllipticTorsion.FormalGroupPointsNoTorsion
+public import Formalism.EllipticTorsion.EllipticTorsionProofs.WChord
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -96,7 +97,6 @@ theorem L_mul (φ ψ : MvPowerSeries (Fin 2) R) (i : Fin 2) :
     (L i) (φ * ψ) = cc φ * (L i) ψ + (L i) φ * cc ψ := by
   rw [MvPowerSeries.coeff_mul, Finsupp.antidiagonal_single]
   simp [Finset.Nat.antidiagonal_succ]
-  try ring
 
 theorem L_C (a : R) (i : Fin 2) : (L i) (MvPowerSeries.C a : MvPowerSeries (Fin 2) R) = 0 := by
   simp [MvPowerSeries.coeff_C]
@@ -206,18 +206,15 @@ theorem wSer_low : coeff 0 (wSer W) = 0 ∧ coeff 1 (wSer W) = 0 ∧ coeff 2 (wS
   have c0 : coeff 0 (wSer W) = 0 := by rwa [PowerSeries.coeff_zero_eq_constantCoeff_apply]
   have c1 : coeff 1 (wSer W) = 0 := by
     have h := congrArg (coeff 1) hfix
-    simp [pow_succ, PowerSeries.coeff_mul, Finset.Nat.antidiagonal_succ, c0, PowerSeries.coeff_X_pow,
-      PowerSeries.coeff_X, mul_assoc] at h
+    simp [pow_succ, PowerSeries.coeff_mul, Finset.Nat.antidiagonal_succ, c0, PowerSeries.coeff_X, mul_assoc] at h
     exact h
   have c2 : coeff 2 (wSer W) = 0 := by
     have h := congrArg (coeff 2) hfix
-    simp [pow_succ, PowerSeries.coeff_mul, Finset.Nat.antidiagonal_succ, c0, c1, PowerSeries.coeff_X_pow,
-      PowerSeries.coeff_X, mul_assoc] at h
+    simp [pow_succ, PowerSeries.coeff_mul, Finset.Nat.antidiagonal_succ, c0, c1, PowerSeries.coeff_X, mul_assoc] at h
     exact h
   have c3 : coeff 3 (wSer W) = 1 := by
     have h := congrArg (coeff 3) hfix
-    simp [pow_succ, PowerSeries.coeff_mul, Finset.Nat.antidiagonal_succ, c0, c1, c2, PowerSeries.coeff_X_pow,
-      PowerSeries.coeff_X, mul_assoc] at h
+    simp [pow_succ, PowerSeries.coeff_mul, Finset.Nat.antidiagonal_succ, c0, c1, c2, PowerSeries.coeff_X, mul_assoc] at h
     exact h
   exact ⟨c0, c1, c2, c3⟩
 
@@ -334,7 +331,7 @@ theorem cTwo_cc : cc (cTwo W) = 0 := by
   simp [cTwo, lam_cc, nu_cc]
 
 theorem cTwo_L (i : Fin 2) : (L i) (cTwo W) = 0 := by
-  simp [cTwo, sq, L_mul, L_C, lam_cc, lam_L, nu_cc, nu_L]
+  simp [cTwo, sq, L_mul, lam_cc, lam_L, nu_cc, nu_L]
 
 theorem uThird_cc : cc (uThird W) = 0 := by
   simp [uThird, cTwo_cc]

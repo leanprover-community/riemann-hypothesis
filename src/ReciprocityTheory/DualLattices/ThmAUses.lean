@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.DualLattices.NsetExpInjectiveSurjective
 public import ReciprocityTheory.DualLattices.SmallLevelClassSet
-public import ReciprocityTheory.DualLattices.VDetEqOneOfIntegral
+import Mathlib.Tactic.Lemma
+public import Mathlib.Basic.NNReal.Defs
+public import Mathlib.RingTheory.Valuation.Basic
 
 @[expose] public section
 

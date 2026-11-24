@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Examples
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.DualModel
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
+public import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
+public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

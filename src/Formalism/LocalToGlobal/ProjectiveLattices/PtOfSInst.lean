@@ -1,12 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.PublishedIntClosHolds
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInstSt
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.GlobalFamilyData
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.RestrictionEqZeroIffMemVanishingFiltration
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 

@@ -1,20 +1,53 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.ClsSEqIffExistsGMapPrPSRatAS
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitStab
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SelfDualPI
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
-public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.PStabEq
 public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.LocalClassDataOfTrivialStabilizers
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOneRec
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
-public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ClsChartedLabAt
-public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.CompInjLocJ
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.CompanionOfBaseTied
-public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.GramLevelZeroEqReindex
+public import Formalism.LocalToGlobal.HermitianColumns.StepLevelQ
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.AtGLev
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SelfDualPI
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI
+import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.GramDetIsUnit
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.SelfDualAtColLevel
 
 @[expose] public section
 
@@ -79,7 +112,7 @@ variable {D : D7} {X : Formalism.L2.Herm.Herm0 D} {u : D.what₂.Word} {w : D.wh
   (t : GChartTie (X.g u w hg) Lv i em (D.sp.X (i + 1)).gram Lb Uloc ψ eps)
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem stab_iff (w' : HeightOneSpectrum (𝓞 D.host.F)) (h : ((D.what₂.places.resChar w : ℕ) : 𝓞 D.host.F) ∈ w'.asIdeal)
     (hdual : SelfDualAt D.sp.cm.sig (D.sp.X (i + 1)).gram w' Lb)
     (x : GL (Fin (D.sp.X (i + 1)).rank) (D.host.E ⊗[D.host.F] w'.adicCompletion D.host.F))
@@ -145,12 +178,6 @@ theorem hypTJ_stepLevelQ (hLb : Lb = S.Lb) (hUl : Uloc = S.Uloc) (hgp : ∀ a, �
 
 end Q
 
-section Mem
-
-variable {gp : Fin 2 → ℕ} {f : ℕ} (S : Formalism.L2.Herm.StepLevel D.sp.cm (D.sp.X (i + 1)) gp (D.mem u).A.T f)
-
-end Mem
-
 end GlobalTheory.Port
 end
 section
@@ -184,7 +211,7 @@ variable {D : D7} (X : Formalism.L2.Herm.Herm0 D) (T : ∀ u : D.what₂.Word, F
   (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E)
 
 
-set_option maxHeartbeats 4000000 in
+
 include hU in
 theorem away_of_off (c c' : (D.gat u w hg).comp) (δ : GL (Fin (D.R.N 0)) D.host.E)
     (hδ : δ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D 0 (Nat.zero_le _)))
@@ -217,7 +244,7 @@ theorem gamI_inj_locAt (c : (D.gat u w hg).comp) : Function.Injective ((locAt X 
   apply Subtype.ext
   exact (reGL (rank_eq_first_level D.R) D.host.E).injective hab
 
-set_option maxHeartbeats 4000000 in
+
 include hU in
 theorem gamOnto_locAt (c : (D.gat u w hg).comp) : GamOnto ((T u).cls0).lev (locAt X u w hg B) c := by
   intro δ hδ hoff
@@ -228,7 +255,7 @@ theorem gamOnto_locAt (c : (D.gat u w hg).comp) : GamOnto ((T u).cls0).lev (locA
   rw [hγ]
   exact MulEquiv.apply_symm_apply _ _
 
-set_option maxHeartbeats 4000000 in
+
 include hU in
 theorem compInj_locAt : CompInj ((T u).cls0).lev (locAt X u w hg B) := by
   intro c c' δ hδ hoff
@@ -243,7 +270,7 @@ theorem compInj_locAt : CompInj ((T u).cls0).lev (locAt X u w hg B) := by
       ((reGL (rank_eq_first_level D.R) D.host.E).symm δ) * ((X.g u w hg).yG c).1)⁻¹
   group
 
-set_option maxHeartbeats 4000000 in
+
 include hU in
 theorem locHypC_locAt (hB : FrRat X u w hg B) (hTc : HypTC (X.g u w hg)) : LocHypC ((T u).cls0).lev (locAt X u w hg B) := by
   refine locHypC_of (rank_eq_first_level D.R) (locAt X u w hg B) _ B rfl (fun v => (X.lev0 u).Uloc v) hU ?_
@@ -254,7 +281,7 @@ theorem locHypC_locAt (hB : FrRat X u w hg B) (hTc : HypTC (X.g u w hg)) : LocHy
   exact ⟨h1, h2⟩
 
 
-set_option maxHeartbeats 4000000 in
+
 include hU in
 theorem oneHyp_locAt (hB : FrRat X u w hg B) (hT : HypT (X.g u w hg)) (hTc : HypTC (X.g u w hg)) :
     OneHyp ((T u).cls0).toChart.lev (locAt X u w hg B) ((T u).cls0).toChart.y := by
@@ -330,14 +357,10 @@ variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
     {clsLat : ∀ i, C.cls i → Submodule (𝓞 E) (sp.X i).V} {p : ℕ} {G : GAtP p}
     {L : ColLevel R F E sp gp C A clsLat}
 
-theorem selfDualAt_col (L : ColLevel R F E sp gp C A clsLat) (v : HeightOneSpectrum (𝓞 F)) (hT : ((A.T : ℕ) : 𝓞 F) ∉ v.asIdeal) :
-    SelfDualAt sp.cm.sig sp.gram0 v L.Lb :=
-  self_dual_lattice_at F E R.k sp.cm.sig sp.gram0 v L.Lb A.T L.Lb_fin (fun x hx y hy => L.Lb_int y hy x hx) (fun y hy => L.Lb_dual y hy) hT
-
 variable (t : Formalism.L2.Herm.GLevTie L G)
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem stabilises_columnBaseLattice_iff_firstFactor (w : HeightOneSpectrum (𝓞 F)) (h : ((p : ℕ) : 𝓞 F) ∈ w.asIdeal) (hdual : SelfDualAt sp.cm.sig sp.gram0 w L.Lb)
     (x : GL (Fin R.k) (E ⊗[F] w.adicCompletion F)) (hx : x ∈ UPts sp.cm.sig sp.gram0 (w.adicCompletion F)) :
     x ∈ levelVL sp.cm.sig sp.gram0 w L.Lb ↔
@@ -355,23 +378,19 @@ theorem stabilises_columnBaseLattice_iff_firstFactor (w : HeightOneSpectrum (�
   simp only [key]
 
 theorem hypTC_col (hT : ∀ w : HeightOneSpectrum (𝓞 F), ((p : ℕ) : 𝓞 F) ∈ w.asIdeal → ((A.T : ℕ) : 𝓞 F) ∉ w.asIdeal) : HypTC t :=
-  fun w h x hx => (stabilises_columnBaseLattice_iff_firstFactor t w h (selfDualAt_col L w (hT w h)) x (L.Uloc_le w hx)).1 (L.Uloc_lev w hx)
+  fun w h x hx => (stabilises_columnBaseLattice_iff_firstFactor t w h (_root_.Formalism.L2.G.selfDualAt_colLevel L w (hT w h)) x (L.Uloc_le w hx)).1 (L.Uloc_lev w hx)
 
 theorem hypT_col (hT : ∀ w : HeightOneSpectrum (𝓞 F), ((p : ℕ) : 𝓞 F) ∈ w.asIdeal → ((A.T : ℕ) : 𝓞 F) ∉ w.asIdeal)
     (hgp : ∀ a (w : HeightOneSpectrum (𝓞 F)), ((p : ℕ) : 𝓞 F) ∈ w.asIdeal → ((gp a : ℕ) : 𝓞 F) ∉ w.asIdeal) : HypT t :=
   fun w h x hx h1 h2 => by
     rw [L.Uloc_hyp w (hgp 0 w h) (hgp 1 w h) (hT w h)]
-    exact (stabilises_columnBaseLattice_iff_firstFactor t w h (selfDualAt_col L w (hT w h)) x hx).2 ⟨h1, h2⟩
+    exact (stabilises_columnBaseLattice_iff_firstFactor t w h (_root_.Formalism.L2.G.selfDualAt_colLevel L w (hT w h)) x hx).2 ⟨h1, h2⟩
 
 end Gen
 
 section Rec
 
 variable {D : D7}
-
-theorem nat_not_mem {p n : ℕ} (hp : p.Prime) (hn : ¬ p ∣ n) (w' : HeightOneSpectrum (𝓞 D.host.F))
-    (h : ((p : ℕ) : 𝓞 D.host.F) ∈ w'.asIdeal) : (n : 𝓞 D.host.F) ∉ w'.asIdeal :=
-  fun hn' => not_mem_of_coprime ((Nat.Prime.coprime_iff_not_dvd hp).2 hn) _ hn' h
 
 theorem not_dvd_g {u : D.what₂.Word} {w : D.what₂.places.Pl} (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (a : Fin 2) :
     ¬ D.what₂.places.resChar w ∣ D.host.g a := fun hd =>
@@ -380,10 +399,10 @@ theorem not_dvd_g {u : D.what₂.Word} {w : D.what₂.places.Pl} (hg : GIdx D.ho
 variable (X : Formalism.L2.Herm.Herm0 D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
   (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
 
-theorem hypTC_rec : HypTC (X.g u w hg) := hypTC_col _ (fun w' h => nat_not_mem hg.1 hg.2.2.2.2.2 w' h)
+theorem hypTC_rec : HypTC (X.g u w hg) := hypTC_col _ (fun w' h => _root_.GlobalTheory.Port.T_not_mem hg.1 hg.2.2.2.2.2 w' h)
 
 theorem hypT_rec : HypT (X.g u w hg) :=
-  hypT_col _ (fun w' h => nat_not_mem hg.1 hg.2.2.2.2.2 w' h) (fun a w' h => nat_not_mem hg.1 (not_dvd_g hg a) w' h)
+  hypT_col _ (fun w' h => _root_.GlobalTheory.Port.T_not_mem hg.1 hg.2.2.2.2.2 w' h) (fun a w' h => _root_.GlobalTheory.Port.T_not_mem hg.1 (not_dvd_g hg a) w' h)
 
 variable {X} {T : ∀ u : D.what₂.Word, Forms0 D u} {Gt : GatTies D} {c : LatCmp D}
 
@@ -392,13 +411,6 @@ theorem oneHyp_rec (K : CmpTied D X T Gt c) (hJ : Joint0 X.lev0 u (T u)) :
   oneHyp_locAt X T u (sameUloc_of_joint X T u hJ) w hg K.B (K.fr_B u w hg) (hypT_rec X u w hg) (hypTC_rec X u w hg)
 
 end Rec
-
-section Top
-
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {K : G.Consts} {Dx : DivX D} {cX : ExtraC}
-  {ex : Extra D L hT Gi Gl K Dx cX}
-
-end Top
 
 end GlobalTheory.Port
 

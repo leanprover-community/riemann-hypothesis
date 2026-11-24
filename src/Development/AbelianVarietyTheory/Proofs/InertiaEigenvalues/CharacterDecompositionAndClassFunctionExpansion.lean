@@ -1,10 +1,56 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CentralIdempotentOfIrrCharacterOrthogonalCentralStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteIrrCharactersAndFinsumCentralIdempotentsEqStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CentralIdempotentOfIrrCharacterOrthogonalCentral
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteIrrCharactersAndFinsumCentralIdempotentsEq
+import Mathlib.Algebra.Category.ModuleCat.Algebra
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.PUnit
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.Quiver.ReflQuiver
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -94,8 +140,8 @@ theorem class_eq_zero_of_orth {G : Type} [Group G] [Fintype G] (f : G → ℂ) (
     let T : V →ₗ[ℂ] V := ∑ x, f x • V.ρ x⁻¹
     have hcomm : ∀ h : G, ∀ v : V, T (V.ρ h v) = V.ρ h (T v) := by
       intro h v
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [T, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
+
+      simp only [T, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
       have e1 : ∀ x, V.ρ x⁻¹ (V.ρ h v) = V.ρ (x⁻¹ * h) v := fun x => by rw [map_mul, Module.End.mul_apply]
       have e2 : ∀ x, V.ρ h (V.ρ x⁻¹ v) = V.ρ (h * x⁻¹) v := fun x => by rw [map_mul, Module.End.mul_apply]
       simp only [e1, e2]
@@ -120,8 +166,8 @@ theorem class_eq_zero_of_orth {G : Type} [Group G] [Fintype G] (f : G → ℂ) (
         rcases mul_eq_zero.1 h1 with h | h
         · exact absurd h (inv_ne_zero hG)
         · exact h
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [T, map_sum, map_smul, smul_eq_mul]
+
+      simp only [T, map_sum, map_smul, smul_eq_mul]
       rw [← h2]
       refine Finset.sum_congr rfl fun x _ => ?_
       rw [← hV x⁻¹]
@@ -137,15 +183,15 @@ theorem class_eq_zero_of_orth {G : Type} [Group G] [Fintype G] (f : G → ℂ) (
       have hS' : T ∘ₗ V.ρ y = ∑ x, f x • (V.ρ x⁻¹ ∘ₗ V.ρ y) := LinearMap.ext fun v => by
         simp only [T, LinearMap.comp_apply, LinearMap.sum_apply, LinearMap.smul_apply]
       rw [hS']
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_smul, smul_eq_mul]
+
+      simp only [map_sum, map_smul, smul_eq_mul]
       refine Finset.sum_congr rfl fun x _ => ?_
       rw [← hV]
       congr 1
       show _ = LinearMap.trace ℂ V (V.ρ (x⁻¹ * y))
       rw [map_mul, Module.End.mul_eq_comp]
     rw [← hy, hT0, LinearMap.zero_comp, map_zero]
-  obtain ⟨hS, hsum⟩ := GlobalTheory.T.finite_irrCharacters_and_finsum_centralIdempotents_eq_one G
+  obtain ⟨hS, hsum⟩ := _root_.GlobalTheory.GLq.irr_finite_and_finsum_zOf_eq_one G
   rw [finsum_mem_eq_finite_toFinset_sum _ hS] at hsum
   have hB : ∀ w : G, ∑ ρ ∈ hS.toFinset, ρ 1 / (Fintype.card G : ℂ) * ρ w⁻¹ = if w = 1 then 1 else 0 := by
     intro w
@@ -175,7 +221,7 @@ theorem isChar_of_isIrr {G : Type} [Group G] {ρ : G → ℂ} (h : IsIrr ρ) : I
 
 theorem class_expand {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (hχ : IsClass χ) :
     χ = ∑ᶠ ρ ∈ {ρ : G → ℂ | IsIrr ρ}, ip χ ρ • ρ := by
-  have hS := (GlobalTheory.T.finite_irrCharacters_and_finsum_centralIdempotents_eq_one G).1
+  have hS := (_root_.GlobalTheory.GLq.irr_finite_and_finsum_zOf_eq_one G).1
   rw [finsum_mem_eq_finite_toFinset_sum _ hS]
   set F := hS.toFinset with hF
   have hmem : ∀ ρ, ρ ∈ F ↔ IsIrr ρ := fun ρ => by simp [F]
@@ -190,7 +236,7 @@ theorem class_expand {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (hχ : Is
   · intro ρ' hρ'
     rw [ip_sub_left, ip_finset_sum_left]
     have : ∀ ρ ∈ F, ip χ ρ * ip ρ ρ' = if ρ = ρ' then ip χ ρ' else 0 := fun ρ hρ => by
-      rw [((GlobalTheory.T.centralIdempotentOfIrrCharacter_orthogonal_central G ρ ρ' ((hmem ρ).1 hρ) hρ').2.2)]
+      rw [((_root_.GlobalTheory.GLq.ZOrth.zorth G ρ ρ' ((hmem ρ).1 hρ) hρ').2.2)]
       split_ifs with h
       · subst h; ring
       · ring
@@ -204,7 +250,7 @@ theorem list_sum_flatMap {α M : Type} [AddCommMonoid M] (l : List α) (f : α �
 
 theorem char_decomp {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (hχ : IsChar χ) :
     ∃ L : List (G → ℂ), (∀ ρ ∈ L, IsIrr ρ) ∧ χ = L.sum := by
-  have hS := (GlobalTheory.T.finite_irrCharacters_and_finsum_centralIdempotents_eq_one G).1
+  have hS := (_root_.GlobalTheory.GLq.irr_finite_and_finsum_zOf_eq_one G).1
   have hE := class_expand χ (isClass_of_isChar hχ)
   rw [finsum_mem_eq_finite_toFinset_sum _ hS] at hE
   set F := hS.toFinset with hF
@@ -231,7 +277,7 @@ theorem char_norm_one {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (hχ : I
     IsIrr χ := by
   obtain ⟨L, hL, rfl⟩ := char_decomp χ hχ
   have hip : ∀ a ∈ L, ∀ b ∈ L, ip a b = ((if a = b then 1 else 0 : ℕ) : ℂ) := fun a ha b hb => by
-    rw [(GlobalTheory.T.centralIdempotentOfIrrCharacter_orthogonal_central G a b (hL a ha) (hL b hb)).2.2]; split_ifs <;> simp
+    rw [(_root_.GlobalTheory.GLq.ZOrth.zorth G a b (hL a ha) (hL b hb)).2.2]; split_ifs <;> simp
   have key : ip L.sum L.sum = ((L.map fun a => (L.map fun b => if a = b then 1 else 0).sum).sum : ℕ) := by
     rw [ip_list_sum_left, Nat.cast_list_sum, List.map_map]
     refine congrArg List.sum (List.map_congr_left fun a ha => ?_)

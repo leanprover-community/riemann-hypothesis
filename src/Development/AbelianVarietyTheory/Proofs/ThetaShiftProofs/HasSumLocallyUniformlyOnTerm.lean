@@ -1,10 +1,113 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.Analysis.SpecialFunctions.Exp
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.DegeneratingToriPeriodMapEqBaseOfYEqZero
+public import Mathlib.Topology.Algebra.InfiniteSum.UniformOn
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SummableExpNegSumAbs
+public import Mathlib.Algebra.Order.Chebyshev
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TorusProjPeriodZeroEqReal
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SummableExpNegSumAbs, Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HasSumLocallyUniformlyOnTerm
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SummableExpNegSumAbs =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SummableExpNegSumAbs", "h": "module\n\npublic import Mathlib.Analysis.Complex.Exponential\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Analysis.SpecialFunctions.Exp\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace GlobalTheory.SummableExpNegAbsSum
+
+theorem summable_int : Summable fun n : ℤ ↦ Real.exp (-|(n : ℝ)|) := by
+  have h : Summable fun n : ℕ ↦ Real.exp (-(n : ℝ)) := Real.summable_exp_neg_nat
+  refine Summable.of_nat_of_neg ?_ ?_
+  · simpa using h
+  · simpa using h
+
+theorem summable_exp_neg_sum_abs {ι : Type} [inst : Fintype ι] :
+    Summable fun (m : ι → ℤ) ↦ Real.exp (-∑ i : ι, |(↑(m i) : ℝ)|) := by
+  classical
+  set g : ℤ → ℝ := fun n ↦ Real.exp (-|(n : ℝ)|) with hg
+  have hgpos : ∀ n, 0 ≤ g n := fun n => (Real.exp_pos _).le
+  have hgs : Summable g := summable_int
+  have hprod : ∀ m : ι → ℤ, Real.exp (-∑ i : ι, |(↑(m i) : ℝ)|) = ∏ i : ι, g (m i) := by
+    intro m
+    simp only [hg]
+    rw [← Real.exp_sum, Finset.sum_neg_distrib]
+  simp_rw [hprod]
+  refine summable_of_sum_le (c := ∏ _i : ι, ∑' n : ℤ, g n)
+    (fun m => Finset.prod_nonneg fun i _ => hgpos _) fun s => ?_
+  set T : ι → Finset ℤ := fun i => s.image (fun m : ι → ℤ => m i) with hT
+  have hsub : s ⊆ Fintype.piFinset T := by
+    intro m hm
+    rw [Fintype.mem_piFinset]
+    intro i
+    exact Finset.mem_image_of_mem _ hm
+  calc ∑ m ∈ s, ∏ i : ι, g (m i)
+      ≤ ∑ m ∈ Fintype.piFinset T, ∏ i : ι, g (m i) :=
+        Finset.sum_le_sum_of_subset_of_nonneg hsub fun m _ _ =>
+          Finset.prod_nonneg fun i _ => hgpos _
+    _ = ∏ i : ι, ∑ n ∈ T i, g n := (Finset.prod_univ_sum T (fun _ n => g n)).symm
+    _ ≤ ∏ _i : ι, ∑' n : ℤ, g n := by
+        refine Finset.prod_le_prod₀ (fun i _ => Finset.sum_nonneg fun _ _ => hgpos _)
+          fun i _ => ?_
+        exact hgs.sum_le_tsum _ fun _ _ => hgpos _
+
+end GlobalTheory.SummableExpNegAbsSum
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SummableExpNegSumAbs =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HasSumLocallyUniformlyOnTerm =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HasSumLocallyUniformlyOnTerm", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.DegeneratingToriPeriodMapEqBaseOfYEqZero\npublic import Mathlib.Topology.Algebra.InfiniteSum.UniformOn\npublic import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn\npublic import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SummableExpNegSumAbs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Int\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.TotallySplit\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\npublic import Mathlib.Algebra.Order.Chebyshev\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -15,15 +118,7 @@ namespace GlobalTheory
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (hermForm eTwoPi)
 
-theorem summable_exp_neg_sum_abs_int {ι : Type} [Fintype ι] :
-    Summable fun m : ι → ℤ => Real.exp (-∑ i, |(m i : ℝ)|) := by
-  first
-  | exact @_root_.GlobalTheory.SummableExpNegAbsSum.summable_exp_neg_sum_abs
-  | exact _root_.GlobalTheory.SummableExpNegAbsSum.summable_exp_neg_sum_abs
-  | (apply _root_.GlobalTheory.SummableExpNegAbsSum.summable_exp_neg_sum_abs <;> assumption)
-  | (intros; apply _root_.GlobalTheory.SummableExpNegAbsSum.summable_exp_neg_sum_abs <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.SummableExpNegAbsSum.summable_exp_neg_sum_abs <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.SummableExpNegAbsSum.summable_exp_neg_sum_abs ..)
+alias summable_exp_neg_sum_abs_int := _root_.GlobalTheory.SummableExpNegAbsSum.summable_exp_neg_sum_abs
 
 namespace AnArc
 
@@ -41,8 +136,8 @@ theorem summable_exp_neg_size : Summable fun μ => Real.exp (-A.size μ) :=
 
 theorem norm_le_mul_size {E : Type*} [SeminormedAddCommGroup E] (f : A.X →+ E) {C : ℝ}
     (hC : ∀ i, ‖f (Module.Free.chooseBasis ℤ A.X i)‖ ≤ C) (μ : A.X) : ‖f μ‖ ≤ C * A.size μ := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [← (Module.Free.chooseBasis ℤ A.X).sum_repr μ, map_sum]
+
+  conv_lhs => rw [← (Module.Free.chooseBasis ℤ A.X).sum_repr μ, map_sum]
   rw [size, Finset.mul_sum]
   refine norm_sum_le_of_le _ fun i _ => ?_
   rw [map_zsmul]
@@ -120,9 +215,6 @@ theorem exists_norm_H_le : ∃ C, 0 ≤ C ∧ ∀ z w, ‖A.H z w‖ ≤ C * ‖
 theorem continuous_H : Continuous fun p : (Fin A.gB → ℂ) × (Fin A.gB → ℂ) => A.H p.1 p.2 := by
   simp only [H, hermForm, dotProduct, Matrix.mulVec]
   fun_prop
-
-theorem H_re_symm (z w : Fin A.gB → ℂ) : (A.H z w).re = (A.H w z).re := by
-  rw [← A.H_conj z w, Complex.conj_re]
 
 theorem H_add_self_re (z w : Fin A.gB → ℂ) :
     (A.H (z + w) (z + w)).re = (A.H z z).re + 2 * (A.H z w).re + (A.H w w).re := by
@@ -427,3 +519,7 @@ theorem exists_convergence : ∃ T₀ : ℝ, ∀ (j : ℕ) [NeZero j] (α : A.X)
 end AnArc
 
 end GlobalTheory
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HasSumLocallyUniformlyOnTerm =====

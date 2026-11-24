@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.Taylor
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,9 +1,7 @@
 module
 
-public import Mathlib.Data.Real.Basic
-public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.Field.Basic
-public import Mathlib.Data.Finset.Lattice.Fold
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Basic.Real.Basic
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarUnit
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarNumerator
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocQuot
@@ -62,8 +61,8 @@ theorem ConeVarUnit.proof (hDZ : DegZeroLocQuot.Statement.{u})
   set N := ∑ d ∈ p.support, h d * ∏ k, (X ⟨k, v k⟩ : MRing ι F) ^ d k with hNdef
   have hcomp : weightedHomogeneousComponent (blockWeight ι) (b + ⇑e) N =
       h e * ∏ k, (X ⟨k, v k⟩ : MRing ι F) ^ e k := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hNdef, map_sum, Finset.sum_eq_single e]
+
+    rw [hNdef, map_sum, Finset.sum_eq_single e]
     · exact ((hh e).mul (hu e)).weightedHomogeneousComponent_same
     · intro d _ hde
       refine weightedHomogeneousComponent_eq_zero' _ _ fun c hc hw => hde ?_

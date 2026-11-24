@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
 public import Formalism.QuotientMetricDivisors.ClassSumDualGeF
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

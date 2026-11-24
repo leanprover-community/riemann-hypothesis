@@ -1,9 +1,69 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapAGrp
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CvRhoOfParts
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DetRowsZero
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RepIntCastMul
+import Formalism.FormalDegreeBessel.FinalG
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellZetaMinors
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BridgeQminor
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapAdInv
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableCsmul
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AAInvTrans
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EHcChange
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.CauchyBinet
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.DetTransposeApply
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.LyQminorLeft
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.OfFnProdIntertwine
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.OfFnProdSmul
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.SubsetUpperHessenberg
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -295,8 +355,8 @@ theorem post_qm (L : E →L[ℂ] E) (F : Mat k r → E) {t : ℕ} (hF : CkOn ((t
 theorem post_AAop (L : E →L[ℂ] E) (F : Mat k r → E) (hF : CkOn ((r : ℕ) : ℕ∞) (GV k r) F) (u : ℂ)
     {g : Mat k r} (hg : g ∈ GV k r) :
     C3.AAop k r r le_rfl u (fun x => L (F x)) g = L (C3.AAop k r r le_rfl u F g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [C3.AAop, map_sum]
+
+  simp only [C3.AAop, map_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   split_ifs
   · rw [map_smul, post_qm L F hF _ _ u hg]
@@ -305,8 +365,8 @@ theorem post_AAop (L : E →L[ℂ] E) (F : Mat k r → E) (hF : CkOn ((r : ℕ) 
 theorem post_AAvop (L : E →L[ℂ] E) (F : Mat k r → E) (hF : CkOn ((r : ℕ) : ℕ∞) (GV k r) F) (ell : ℂ)
     {g : Mat k r} (hg : g ∈ GV k r) :
     C3.AAvop k r r le_rfl ell (fun x => L (F x)) g = L (C3.AAvop k r r le_rfl ell F g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [C3.AAvop, map_sum]
+
+  simp only [C3.AAvop, map_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   split_ifs
   · rw [map_smul, post_qm L F hF _ _ _ hg]

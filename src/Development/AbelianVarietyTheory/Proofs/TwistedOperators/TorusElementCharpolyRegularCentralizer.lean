@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHasCls
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHasCls
 
 @[expose] public section
 
@@ -65,14 +107,14 @@ def tEquiv : (k ⊗[F] Fld P) ≃ₗ[k ⊗[F] E] (ι → k ⊗[F] E) where
       rw [← TensorProduct.tmul_sum, b.sum_repr]
   right_inv v := by
     funext j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum]
+
+    simp only [map_sum]
     rw [Finset.sum_eq_single j]
     · rw [crd_smul, crd_tmul]
       simp [← Algebra.TensorProduct.one_def]
     · intro i _ hij
       rw [crd_smul, crd_tmul]
-      simp [Finsupp.single_apply, hij]
+      simp [hij]
     · simp
 
 def bb : Module.Basis ι (k ⊗[F] E) (k ⊗[F] Fld P) := Module.Basis.ofEquivFun (tEquiv P k b)
@@ -159,9 +201,9 @@ theorem eq_zero_of_trBase [NumberField E] (z : k ⊗[F] Fld P) (hz : ∀ y, trBa
     rw [trBase, LinearMap.lTensor_tmul, LinearMap.restrictScalars_apply, this]
     split_ifs <;> simp [Algebra.TensorProduct.one_def]
   have h := hz ((1 : k) ⊗ₜ[F] d i)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← (bb P k b).sum_repr z, Finset.sum_mul, map_sum] at h
-  simp only [smul_mul_assoc, trBase_smul, bb_apply, Algebra.TensorProduct.tmul_mul_tmul, one_mul, key, mul_ite,
+
+  rw [← (bb P k b).sum_repr z, Finset.sum_mul, map_sum] at h
+  simp only [smul_mul_assoc, trBase_smul, bb_apply, Algebra.TensorProduct.tmul_mul_tmul, key, mul_ite,
     mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
   exact h
 
@@ -174,9 +216,8 @@ theorem gam_mat {x : k ⊗[F] Fld P} {φ : (k ⊗[F] Fld P) ≃ₗ[k ⊗[F] E] (
   change ((diagH (star' P) (one₁ P) k (alphaRat P)).1.1).det = _
   rw [Matrix.det_fin_one]
   first
-    | (simp only [diagH, GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.mapU, MonoidHom.codRestrict_apply, MonoidHom.comp_apply, Subgroup.coe_subtype, Formalism.UG.bc, Units.coe_map, alphaRat, Matrix.GeneralLinearGroup.scalar]; simp; done)
+    | (simp only [diagH, GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.mapU, Formalism.UG.bc, alphaRat, Matrix.GeneralLinearGroup.scalar]; simp; done)
     | rfl
-    | (simp [diagH, GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.mapU, Formalism.UG.bc, alphaRat, Matrix.GeneralLinearGroup.scalar, Matrix.scalar_apply]; done)
 
 end Mat
 
@@ -222,8 +263,8 @@ theorem torUnit_injective : Function.Injective (torUnit (P := P) (k := k)) := fu
 
 theorem commute_mulMat {φ : (k ⊗[F] Fld P) ≃ₗ[k ⊗[F] E] (Fin n → k ⊗[F] E)} {G : Matrix (Fin n) (Fin n) (k ⊗[F] E)}
     (hG : Commute G (mulMat φ ((1 : k) ⊗ₜ[F] alpha P))) (z : k ⊗[F] Fld P) : Commute G (mulMat φ z) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← (bb P k (pb P).basis).sum_repr z, ← mulAlg_apply, map_sum]
+
+  rw [← (bb P k (pb P).basis).sum_repr z, ← mulAlg_apply, map_sum]
   refine Commute.sum_right _ _ _ fun i _ => ?_
   rw [map_smul, bb_apply, PowerBasis.coe_basis, pb_gen, ← one_pow (i : ℕ), ← Algebra.TensorProduct.tmul_pow, map_pow,
     mulAlg_apply]
@@ -263,7 +304,6 @@ theorem cent_gam [NumberField E] (x : plusUnits P k) {φ : (k ⊗[F] Fld P) ≃�
       rw [← hA]
       first
         | exact (congrArg (fun u : HA k σ J => u.1.1) hg)
-        | exact (congrArg (fun u : HA k σ J => u.1.1) hg).symm
     set c := φ.symm (g.1.1 *ᵥ φ 1) with hcdef
     have hG : g.1.1 = mulMat φ c := eq_mulMat hc
     have hu : Formalism.UG.cT (sigR k σ) g.1.1 * JR k J * g.1.1 = JR k J := g.2

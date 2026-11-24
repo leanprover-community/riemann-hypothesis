@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.BiextCoeffSecondLinear
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -45,8 +46,8 @@ theorem eig_actD (M : O →+* Matrix (Fin d) (Fin d) k) (χ : O →+* k) {n : �
         rw [map_mul, Matrix.mul_smul]
     _ = ∑ i, c i • ∑ j, ((m i j : ℤ) : k) • M (b j) := by
         refine Finset.sum_congr rfl fun i _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hm1 i, map_sum]
+
+        rw [hm1 i, map_sum]
         congr 1
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [map_zsmul, Int.cast_smul_eq_zsmul]
@@ -70,8 +71,8 @@ theorem evD_eqv (χ χ' : O →+* k) {n : ℕ} (b : Fin n → O) (c : Fin n → 
         ring
     _ = ∑ i, c i * ∑ j, ((m i j : ℤ) : k) * χ' (b j) := by
         refine Finset.sum_congr rfl fun i _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hm1 i, map_sum]
+
+        rw [hm1 i, map_sum]
         congr 1
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [map_zsmul, zsmul_eq_mul]

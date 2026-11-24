@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSimpleSub
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSimpleStacked
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopBasisChange
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedDegree
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualEmbBijective
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopStacked
 
 @[expose] public section
 

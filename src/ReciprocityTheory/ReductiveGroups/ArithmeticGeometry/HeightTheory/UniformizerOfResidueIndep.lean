@@ -1,6 +1,13 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraicIndependentResidueOfIsUnit
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IsUnitOfValEqZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValAlgebraMapEqZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValuationResidueLemmas
 
@@ -74,7 +81,7 @@ namespace Data
 variable (d : Data K ι Ω WT A)
 
 
-set_option maxHeartbeats 800000 in
+
 theorem PlaceTrivialOrPositive (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (p : Ideal (KTp K d.D d.N))
     (hp : p ∈ d.HtOne) (w : AddValuation (OmS (Ω c) d.D d.N) (WithTop ℤ)) (hw : w ∈ d.OverP c p) :
     (∀ a : Ω c, a ≠ 0 → d.Wres c w a = 0) ∨
@@ -119,8 +126,8 @@ theorem PlaceTrivialOrPositive (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (p : Ideal 
       apply Subtype.ext
       push_cast
       exact d.genericHomAt_relation hd c j0 hw0 hq i hi
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hV, map_neg, map_sum]
+
+    rw [hV, map_neg, map_sum]
     congr 1
   obtain ⟨e0, he0⟩ := exists_rename_notMem p hp
   have hcK : ∀ a : K, algebraMap K (OmS (Ω c) d.D d.N) a ∈ vRing w := by
@@ -215,8 +222,8 @@ theorem PlaceTrivialOrPositive (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (p : Ideal 
   have hres0 : IsLocalRing.residue (vRing w) ⟨_, hz0mem⟩ =
       ∑ j, algebraMap (IsLocalRing.ResidueField (vRing (d.Wres c w))) _ (ρ j) *
         tb ⟨(0, j), Or.inl rfl⟩ := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz0V, map_sum]
+
+    rw [hz0V, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_mul, mul_comm]
     rfl

@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.VolFromSW
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 
 @[expose] public section
 
@@ -83,8 +129,8 @@ theorem linIndep_of_isUnit_det (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin
   have key : ∀ b, ∑ a, g a * gramR R σ J X b a = 0 := by
     intro b
     have e := congrArg (hLin R σ J (X b)) hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero] at e
+
+    rw [map_sum, map_zero] at e
     simp only [map_smul, smul_eq_mul] at e
     exact e
   have hv : Matrix.mulVec (gramR R σ J X) g = 0 := by
@@ -101,22 +147,11 @@ theorem linIndep_of_isUnit_det (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin
 
 variable [LocallyCompactSpace R] [T2Space R]
 
-private theorem continuous_sigR_stabilizer_orbit_volume (σ : E →ₐ[F] E) : Continuous (sigR R σ) := by
-  haveI : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
-  have e : ⇑(sigR R σ) = ⇑(LinearMap.baseChange R σ.toLinearMap) := by
-    funext z
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | tmul r e => simp [sigR, LinearMap.baseChange_tmul]
-    | add a b ha hb => rw [map_add (f := _), map_add (f := _), ha, hb]
-  rw [e]
-  exact IsModuleTopology.continuous_of_linearMap _
-
 theorem continuous_hR (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) :
     Continuous (fun p : (Fin M → R ⊗[F] E) × (Fin M → R ⊗[F] E) => hR R σ J p.1 p.2) := by
   haveI : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
   haveI : IsTopologicalRing (R ⊗[F] E) := IsModuleTopology.isTopologicalRing R (R ⊗[F] E)
-  have hs := continuous_sigR_stabilizer_orbit_volume (F := F) (E := E) R σ
+  have hs := _root_.PI.AdicCompletionValuation.continuous_sigR (F := F) (E := E) R σ
   unfold hR Formalism.UG.hform
   exact continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ =>
     ((hs.comp ((continuous_apply i).comp continuous_fst)).mul continuous_const).mul
@@ -126,7 +161,7 @@ theorem continuous_gramR_apply (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin
     (a b : Fin n) : Continuous (fun X : Fin n → Fin M → R ⊗[F] E => gramR R σ J X a b) := by
   haveI : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
   haveI : IsTopologicalRing (R ⊗[F] E) := IsModuleTopology.isTopologicalRing R (R ⊗[F] E)
-  have hs := continuous_sigR_stabilizer_orbit_volume (F := F) (E := E) R σ
+  have hs := _root_.PI.AdicCompletionValuation.continuous_sigR (F := F) (E := E) R σ
   show Continuous fun X : Fin n → Fin M → R ⊗[F] E => hR R σ J (X a) (X b)
   unfold hR Formalism.UG.hform
   exact continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ =>
@@ -143,7 +178,7 @@ theorem isClosed_HermR (σ : E →ₐ[F] E) (n : ℕ) :
     T2Space.of_injective_continuous (Algebra.TensorProduct.basis R (Module.finBasis F E)).equivFun.injective
       (IsModuleTopology.continuous_of_linearMap
         (Algebra.TensorProduct.basis R (Module.finBasis F E)).equivFun.toLinearMap)
-  have hs := continuous_sigR_stabilizer_orbit_volume (F := F) (E := E) R σ
+  have hs := _root_.PI.AdicCompletionValuation.continuous_sigR (F := F) (E := E) R σ
   have e : (HermR R σ n : Set (Matrix (Fin n) (Fin n) (R ⊗[F] E))) =
       ⋂ a, ⋂ b, {S | sigR R σ (S b a) = S a b} := by
     ext S
@@ -184,8 +219,8 @@ theorem gramR_mem (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {M n : ℕ}
     simp [JR, inclR, sigR, hJ]
   show ∀ a b, sigR R σ (gramR R σ J X b a) = gramR R σ J X a b
   intro a b
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gramR, hR, Formalism.UG.hform, map_sum, map_mul]
+
+  simp only [gramR, hR, Formalism.UG.hform, map_sum, map_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
   rw [sigR_invol R σ hσ, hJR]

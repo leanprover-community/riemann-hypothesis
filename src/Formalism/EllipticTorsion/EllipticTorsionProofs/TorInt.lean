@@ -1,7 +1,47 @@
 module
 
-public import Mathlib
+import Formalism.EllipticTorsion.EllipticTorsionProofs.FormalGroupPointsSubgroupHolds
 public import Formalism.EllipticTorsion.FormalGroupPointsTorsionFree
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,54 +56,7 @@ open WeierstrassCurve Formalism.ELL
 lemma y_int {K : Type u} [NormedField K] [IsUltrametricDist K] (W : WeierstrassCurve K)
     (hW : IntegralModel W) {x y : K} (h : W.toAffine.Equation x y) (hx : ‖x‖ ≤ 1) :
     ‖y‖ ≤ 1 := by
-  have hW' := hW
-  unfold IntegralModel at hW'
-  have h' := h
-  rw [WeierstrassCurve.Affine.equation_iff] at h'
-  obtain ⟨h1, h2, h3, h4, h6⟩ := hW'
-  have hadd : ∀ a b : K, ‖a‖ ≤ 1 → ‖b‖ ≤ 1 → ‖a + b‖ ≤ 1 := fun a b ha hb =>
-    (IsUltrametricDist.norm_add_le_max a b).trans (max_le ha hb)
-  have hmul : ∀ a b : K, ‖a‖ ≤ 1 → ‖b‖ ≤ 1 → ‖a * b‖ ≤ 1 := fun a b ha hb => by
-    rw [norm_mul]
-    first
-    | exact mul_le_one₀ ha (norm_nonneg _) hb
-    | nlinarith [norm_nonneg a, norm_nonneg b]
-  have hx2 : ‖x ^ 2‖ ≤ 1 := by
-    rw [norm_pow]
-    first
-    | exact pow_le_one₀ (norm_nonneg _) hx
-    | nlinarith [norm_nonneg x]
-  have hx3 : ‖x ^ 3‖ ≤ 1 := by
-    rw [norm_pow]
-    first
-    | exact pow_le_one₀ (norm_nonneg _) hx
-    | nlinarith [norm_nonneg x, hx2]
-  have hR : ‖x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆‖ ≤ 1 :=
-    hadd _ _ (hadd _ _ (hadd _ _ hx3 (hmul _ _ h2 hx2)) (hmul _ _ h4 hx)) h6
-  by_contra hy
-  push_neg at hy
-  have hy0 : 0 ≤ ‖y‖ := norm_nonneg _
-  have hm : ‖W.a₁ * x * y + W.a₃ * y‖ ≤ ‖y‖ := by
-    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
-    · rw [norm_mul]
-      calc ‖W.a₁ * x‖ * ‖y‖ ≤ 1 * ‖y‖ := mul_le_mul_of_nonneg_right (hmul _ _ h1 hx) hy0
-        _ = ‖y‖ := one_mul _
-    · rw [norm_mul]
-      calc ‖W.a₃‖ * ‖y‖ ≤ 1 * ‖y‖ := mul_le_mul_of_nonneg_right h3 hy0
-        _ = ‖y‖ := one_mul _
-  have hy2 : y ^ 2 = (x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) - (W.a₁ * x * y + W.a₃ * y) := by
-    first
-    | linear_combination h'
-    | (rw [← h']; ring)
-  have hsub : ‖(x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) - (W.a₁ * x * y + W.a₃ * y)‖ ≤ ‖y‖ := by
-    rw [sub_eq_add_neg]
-    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hR.trans hy.le) ?_)
-    rw [norm_neg]
-    exact hm
-  have hn : ‖y‖ ^ 2 ≤ ‖y‖ := by
-    rw [← norm_pow, hy2]
-    exact hsub
-  nlinarith
+  apply Formalism.ELL.FormalGroupPointsSubgroup.y_int <;> assumption
 
 end Formalism.ELL.TorsionIntegralEllipticTorsion
 

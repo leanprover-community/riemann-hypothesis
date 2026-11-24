@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.LatticeGeometry.DegFlLApply
-public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
 public import Formalism.SharpRestriction.Divisibility.BoundaryLocalData
 
 @[expose] public section

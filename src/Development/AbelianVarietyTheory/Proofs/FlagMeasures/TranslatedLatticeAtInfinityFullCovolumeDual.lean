@@ -1,7 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -74,8 +118,8 @@ theorem toMatrix_form : LinearMap.BilinForm.toMatrix (stdB E j) (form E j) =
       by_cases ha : a = a'
       · subst ha
         fin_cases s <;> fin_cases s' <;> simp
-      · simp [ha, Pi.single_eq_of_ne ha]
-    · simp [hw, Pi.single_eq_of_ne hw]
+      · simp [ha]
+    · simp [hw]
   · intro w'' _ h
     simp [Pi.single_eq_of_ne h]
   · simp
@@ -124,12 +168,11 @@ theorem covAt_dual (b : Basis (Idx E j) ℝ (VecInf E j)) :
       exact if_congr eq_comm rfl rfl
     rw [h3]
     conv_rhs => rw [← (stdB E j).sum_repr (d i), ← (stdB E j).sum_repr (b k)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mul_apply, Matrix.transpose_apply, Basis.toMatrix_apply, LinearMap.BilinForm.toMatrix_apply,
-      map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
+
+    simp only [Matrix.mul_apply, Matrix.transpose_apply, Basis.toMatrix_apply, LinearMap.BilinForm.toMatrix_apply,
+    map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
     first
       | exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
-      | (rw [Finset.sum_comm]; exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring)
   have h2 := congrArg (fun M => |Matrix.det M|) h
   simp only [Matrix.det_mul, Matrix.det_transpose, abs_mul, abs_det_form, Matrix.det_one, abs_one, mul_one] at h2
   rw [Basis.det_apply, Basis.det_apply]
@@ -280,8 +323,8 @@ theorem exists_basis [_root_.NumberField.IsTotallyComplex E] (Λ : Submodule (�
   have hq : ∀ i, q i = (β i : Fin j → E) := fun i => Basis.extendOfIsFullLattice_apply ℚ β i
   have hall : ∀ y, emb E j y ∈ Submodule.span ℝ (Set.range fun i => emb E j (q i)) := by
     intro y
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← q.sum_repr y, map_sum]
+
+    rw [← q.sum_repr y, map_sum]
     refine Submodule.sum_mem _ fun i _ => ?_
     rw [map_rat_smul, ← Rat.cast_smul_eq_qsmul ℝ]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
@@ -298,8 +341,8 @@ theorem exists_basis [_root_.NumberField.IsTotallyComplex E] (Λ : Submodule (�
     have := congrArg Subtype.val (β.sum_repr ⟨y, hy⟩)
     rw [Submodule.coe_sum] at this
     simp only [Submodule.coe_smul_of_tower] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← this, map_sum]
+
+    rw [← this, map_sum]
     refine Submodule.sum_mem _ fun i _ => ?_
     rw [map_zsmul, ← hq]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
@@ -335,11 +378,11 @@ theorem span_std [_root_.NumberField.IsTotallyComplex E] :
   · rw [Submodule.span_le]
     rintro _ ⟨y, hy, rfl⟩
     obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun (𝓞 E)).1 hy
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Submodule.sum_mem _ fun a _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← (RingOfIntegers.basis E).sum_repr (c a), Finset.sum_smul, map_sum]
+
+    rw [← (RingOfIntegers.basis E).sum_repr (c a), Finset.sum_smul, map_sum]
     refine Submodule.sum_mem _ fun i _ => ?_
     rw [smul_assoc, map_zsmul, ← h3, ← intB_apply]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩)

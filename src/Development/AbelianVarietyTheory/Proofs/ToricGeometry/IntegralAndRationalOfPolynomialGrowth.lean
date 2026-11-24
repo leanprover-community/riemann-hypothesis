@@ -1,9 +1,67 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
-public import ReciprocityTheory.ThetaQuasiPeriods.Transl
-public import ReciprocityTheory.ThetaQuasiPeriods.Change
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.NodupRootsOfDerivativeNeZero
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.FieldTheory.Separable
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Analytic.Polynomial
+public import Mathlib.Analysis.Calculus.ImplicitFunction.ProdDomain
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.Polynomial.CauchyBound
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.ContDiff.RCLike
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 
 @[expose] public section
 
@@ -14,51 +72,12 @@ namespace GlobalTheory.FiniteCoverGrowth
 
 theorem exists_norm_eval_le {d : ℕ} (c : MvPolynomial (Fin d) ℂ) :
     ∃ (K : ℝ) (M : ℕ), 0 ≤ K ∧ ∀ x : Fin d → ℂ, ‖MvPolynomial.eval x c‖ ≤ K * (1 + ‖x‖) ^ M := by
-  induction c using MvPolynomial.induction_on with
-  | C a => exact ⟨‖a‖, 0, norm_nonneg _, fun x => by simp⟩
-  | add p q hp hq =>
-    obtain ⟨K, M, hK, h⟩ := hp
-    obtain ⟨K', M', hK', h'⟩ := hq
-    refine ⟨K + K', M + M', by positivity, fun x => ?_⟩
-    have h1 : (1 : ℝ) ≤ 1 + ‖x‖ := by linarith [norm_nonneg x]
-    have h2 : (1 + ‖x‖) ^ M ≤ (1 + ‖x‖) ^ (M + M') := pow_le_pow_right₀ h1 (by omega)
-    have h3 : (1 + ‖x‖) ^ M' ≤ (1 + ‖x‖) ^ (M + M') := pow_le_pow_right₀ h1 (by omega)
-    rw [map_add (f := _)]
-    refine (norm_add_le _ _).trans ?_
-    have := mul_le_mul_of_nonneg_left h2 hK
-    have := mul_le_mul_of_nonneg_left h3 hK'
-    nlinarith [h x, h' x]
-  | mul_X p i hp =>
-    obtain ⟨K, M, hK, h⟩ := hp
-    refine ⟨K, M + 1, hK, fun x => ?_⟩
-    rw [map_mul, norm_mul, MvPolynomial.eval_X, pow_succ, ← mul_assoc]
-    have : ‖x i‖ ≤ 1 + ‖x‖ := by linarith [norm_le_pi_norm x i]
-    exact mul_le_mul (h x) this (norm_nonneg _) (by positivity)
+  apply GlobalTheory.SimpleRoots.exists_norm_eval_le
 
 theorem exists_norm_root_le {d : ℕ} (p : Polynomial (MvPolynomial (Fin d) ℂ)) (hp : p.Monic) :
     ∃ (K : ℝ) (M : ℕ), 0 ≤ K ∧ ∀ (x : Fin d → ℂ) (y : ℂ),
       (p.map (MvPolynomial.eval x)).eval y = 0 → ‖y‖ ≤ K * (1 + ‖x‖) ^ M := by
-  choose K M hK h using fun i : ℕ => exists_norm_eval_le (p.coeff i)
-  refine ⟨∑ i ∈ Finset.range p.natDegree, K i + 1, ∑ i ∈ Finset.range p.natDegree, M i,
-    add_nonneg (Finset.sum_nonneg fun i _ => hK i) zero_le_one, fun x y hy => ?_⟩
-  have hm : (p.map (MvPolynomial.eval x)).Monic := hp.map _
-  have h1 := Polynomial.IsRoot.norm_lt_cauchyBound hm.ne_zero hy
-  have h2 : (p.map (MvPolynomial.eval x)).cauchyBound ≤
-      ∑ i ∈ Finset.range p.natDegree, ‖MvPolynomial.eval x (p.coeff i)‖₊ + 1 := by
-    simp only [Polynomial.cauchyBound, hm.leadingCoeff, nnnorm_one, div_one,
-      add_le_add_iff_right, hp.natDegree_map, Finset.sup_le_iff, Polynomial.coeff_map]
-    intro i hi
-    exact Finset.single_le_sum (f := fun i => ‖MvPolynomial.eval x (p.coeff i)‖₊)
-      (fun _ _ => zero_le) hi
-  have h3 : ‖y‖ ≤ ∑ i ∈ Finset.range p.natDegree, ‖MvPolynomial.eval x (p.coeff i)‖ + 1 := by
-    have := NNReal.coe_le_coe.2 (h1.le.trans h2)
-    simpa using this
-  have h0 : (1 : ℝ) ≤ 1 + ‖x‖ := by linarith [norm_nonneg x]
-  refine h3.trans ?_
-  rw [add_mul, Finset.sum_mul, one_mul]
-  refine add_le_add (Finset.sum_le_sum fun i hi => (h i x).trans ?_) (one_le_pow₀ h0)
-  exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ h0
-    (Finset.single_le_sum (f := M) (fun _ _ => Nat.zero_le _) hi)) (hK i)
+  apply GlobalTheory.SimpleRoots.exists_norm_root_le <;> assumption
 
 theorem exists_map_eq_of_eval {d N : ℕ} (U : Set (Fin d → ℂ)) (S : (Fin d → ℂ) → Polynomial ℂ)
     (hdeg : ∀ x ∈ U, (S x).degree < N)
@@ -80,9 +99,9 @@ theorem exists_map_eq_of_eval {d N : ℕ} (U : Set (Fin d → ℂ)) (S : (Fin d 
     have := Finset.mem_range.1 hi
     exact_mod_cast (by omega : N - 1 < N)
   · intro x hx
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Lagrange.eq_interpolate (f := S x) hinj (by simpa using hdeg x hx),
-      Lagrange.interpolate_apply, Polynomial.map_sum]
+
+    rw [Lagrange.eq_interpolate (f := S x) hinj (by simpa using hdeg x hx),
+    Lagrange.interpolate_apply, Polynomial.map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Polynomial.map_mul, Polynomial.map_C, Polynomial.map_map, hg _ x hx]
     congr 1

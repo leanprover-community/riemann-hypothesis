@@ -1,8 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Hermitian
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+public import Mathlib.LinearAlgebra.Dimension.Torsion.Finite
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -207,21 +250,6 @@ theorem relIndex_matrix {r : ℕ} {v w : Fin r → M} (hv : LinearIndependent (�
     rw [hrange, Submodule.map_subtype_top] at hm
     rw [hm, Submodule.top_toAddSubgroup, AddSubgroup.relIndex_top_right, index_range f hinj, hdet]
 
-private theorem ringOfIntegers_ringHom_complex_injective {E : Type} [Field E] [NumberField E] (s : 𝓞 E →+* ℂ) :
-    Function.Injective s := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro a ha
-  have hker : RingHom.ker s = ⊥ := by
-    apply Ideal.eq_bot_of_comap_eq_bot (R := ℤ)
-    rw [eq_bot_iff]
-    intro n hn
-    rw [Ideal.mem_comap, RingHom.mem_ker, algebraMap_int_eq, eq_intCast, map_intCast] at hn
-    rw [Ideal.mem_bot]
-    exact_mod_cast hn
-  have : a ∈ RingHom.ker s := ha
-  rw [hker] at this
-  exact this
-
 private theorem bijective_algHom_comp_algebraMap {E : Type} [Field E] [NumberField E] :
     Function.Bijective fun σ : E →ₐ[ℚ] ℂ => (σ : E →+* ℂ).comp (algebraMap (𝓞 E) E) := by
   constructor
@@ -229,11 +257,11 @@ private theorem bijective_algHom_comp_algebraMap {E : Type} [Field E] [NumberFie
     apply AlgHom.coe_ringHom_injective
     exact IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) h
   · intro s
-    refine ⟨(IsFractionRing.lift (ringOfIntegers_ringHom_complex_injective s)).toRatAlgHom, ?_⟩
+    refine ⟨(IsFractionRing.lift (_root_.LevelTowerAlt.emb_inj s)).toRatAlgHom, ?_⟩
     apply RingHom.ext
     intro a
     rw [RingHom.comp_apply]
-    exact IsFractionRing.lift_algebraMap (ringOfIntegers_ringHom_complex_injective s) a
+    exact IsFractionRing.lift_algebraMap (_root_.LevelTowerAlt.emb_inj s) a
 
 theorem norm_eq_prod (d : 𝓞 E) : ((Algebra.norm ℤ d : ℤ) : ℂ) = ∏ s : 𝓞 E →+* ℂ, s d := by
   have h1 : ((Algebra.norm ℤ d : ℤ) : ℂ) = algebraMap ℚ ℂ (Algebra.norm ℚ (d : E)) := by
@@ -362,8 +390,8 @@ theorem nzOf_of_le {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) {I : Subm
     rw [RingHom.map_det, RingHom.mapMatrix_apply]
     apply gram_matrix
     intro b
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [eigComp_eq, hAw b, map_sum, R.act, proj_act, Matrix.map_apply]
+
+    simp only [eigComp_eq, hAw b, map_sum, R.act, proj_act, Matrix.map_apply]
   have hN : ((Algebra.norm ℤ A.det).natAbs : ℝ) ≠ 0 := by
     exact_mod_cast Int.natAbs_ne_zero.2 (Algebra.norm_ne_zero_iff.2 hdet)
   unfold RiemLat.nzOf

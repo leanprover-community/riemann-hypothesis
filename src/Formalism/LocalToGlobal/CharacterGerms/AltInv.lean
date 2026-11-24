@@ -1,6 +1,12 @@
 module
 
-public import Mathlib
+import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
+public import Mathlib.RingTheory.Valuation.Basic
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
@@ -115,7 +121,6 @@ def OrdV {σ : Type*} (D : ℕ) (f : MvPowerSeries σ C) : Prop :=
 private theorem degree_add_lemma_2 (a b : σ →₀ ℕ) : (a + b).degree = a.degree + b.degree := by
   first
   | exact map_add _ a b
-  | exact Finsupp.sum_add_index' (h := fun _ n => n) (fun _ => rfl) (fun _ _ _ => rfl)
 
 theorem low_mul {E D D' : ℕ} {f g : MvPowerSeries σ C} (hf : OrdV D f) (hf' : LowLt (v := v) (E + D) f)
     (hg : OrdV D' g) (hg' : LowLt (v := v) (E + D') g) :
@@ -168,28 +173,7 @@ theorem low_prod {E : ℕ} {t : σ → MvPowerSeries σ C} (ht : ∀ s, OrdV 1 (
     exact low_mul hp.1 hp.2 ih.1 ih.2
 
 theorem deg_one_single (d : σ →₀ ℕ) (h : d.degree = 1) : ∃ y, d = Finsupp.single y 1 := by
-  have hdeg : ∑ i ∈ d.support, d i = 1 := h
-  have h1 : ∀ x ∈ d.support, d x = 1 := by
-    intro x hx
-    have hle := Finset.single_le_sum (f := fun i => d i) (fun i _ => Nat.zero_le _) hx
-    have h0 : d x ≠ 0 := Finsupp.mem_support_iff.1 hx
-    omega
-  have hcard : d.support.card = 1 := by
-    rw [← hdeg, Finset.sum_congr rfl h1]
-    simp
-  obtain ⟨y, hy⟩ := Finset.card_eq_one.1 hcard
-  refine ⟨y, Finsupp.ext fun x => ?_⟩
-  by_cases hx : x = y
-  · subst hx
-    rw [Finsupp.single_eq_same]
-    exact h1 x (by rw [hy]; exact Finset.mem_singleton_self x)
-  · have hxs : x ∉ d.support := by
-      rw [hy]
-      simpa using hx
-    have hdx : d x = 0 := by
-      by_contra h'
-      exact hxs (Finsupp.mem_support_iff.2 h')
-    rw [hdx, Finsupp.single_apply, if_neg (Ne.symm hx)]
+  apply Formalism.FG.SolveVAux.degree_eq_one <;> assumption
 
 theorem intC_det {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n C) (hA : ∀ i j, IntC v (A i j)) :
     IntC v A.det := by

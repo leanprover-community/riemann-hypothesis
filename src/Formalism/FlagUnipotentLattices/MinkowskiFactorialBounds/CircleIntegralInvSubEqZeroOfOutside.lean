@@ -2,6 +2,51 @@ module
 
 public import Formalism.FlagUnipotentLattices.UnipotentStabiliserCharacterisation
 public import Formalism.FormalDegreeBessel.FinalDS
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -79,90 +124,68 @@ lemma prod_succ_div_injective_pos_bounds {ι : Type} (I : Finset ι) (y : ι →
     rw [hcard] at this
     exact this
 
+private lemma prod_succ_div_pos_int_bounds {ι : Type} (I : Finset ι) (x : ι → ℤ)
+    (hinj : Set.InjOn x (I : Set ι)) (hpos : ∀ i ∈ I, 1 ≤ x i) :
+    1 ≤ ∏ i ∈ I, (((x i : ℝ) + 1) / (x i : ℝ)) ∧
+      ∏ i ∈ I, (((x i : ℝ) + 1) / (x i : ℝ)) ≤ (I.card : ℝ) + 1 := by
+  have hcast (i : ι) (hi : i ∈ I) : ((x i).toNat : ℝ) = (x i : ℝ) := by
+    exact_mod_cast Int.toNat_of_nonneg (by have := hpos i hi; omega)
+  have hprod : (∏ i ∈ I, ((((x i).toNat : ℕ) : ℝ) + 1) / ((x i).toNat : ℝ)) =
+      ∏ i ∈ I, ((x i : ℝ) + 1) / (x i : ℝ) :=
+    Finset.prod_congr rfl fun i hi => by rw [hcast i hi]
+  rw [← hprod]
+  refine prod_succ_div_injective_pos_bounds I (fun i => (x i).toNat) ?_ ?_
+  · intro i hi j hj hij
+    apply hinj hi hj
+    have heq : ((x i).toNat : ℝ) = ((x j).toNat : ℝ) := congrArg (fun n : ℕ => (n : ℝ)) hij
+    exact_mod_cast (hcast i hi).symm.trans (heq.trans (hcast j hj))
+  · intro i hi
+    have := hpos i hi
+    omega
+
 lemma prod_succ_div_injective_int_bounds {ι : Type} (I : Finset ι) (x : ι → ℤ) (hinj : Set.InjOn x (I : Set ι)) (h0 : ∀ i ∈ I, x i ≠ 0)
     (h1 : ∀ i ∈ I, x i ≠ -1) :
     1 / ((I.card : ℝ) + 1) ≤ ∏ i ∈ I, (((x i : ℝ) + 1) / (x i : ℝ)) ∧
       ∏ i ∈ I, (((x i : ℝ) + 1) / (x i : ℝ)) ≤ (I.card : ℝ) + 1 := by
+  let P := I.filter (fun i => 0 < x i)
+  let Q := I.filter (fun i => ¬ 0 < x i)
   have hsplit := Finset.prod_filter_mul_prod_filter_not I (fun i => 0 < x i)
     (fun i => (((x i : ℝ) + 1) / (x i : ℝ)))
-  have hPcard : (I.filter (fun i => 0 < x i)).card ≤ I.card := Finset.card_filter_le _ _
-  have hQcard : (I.filter (fun i => ¬ 0 < x i)).card ≤ I.card := Finset.card_filter_le _ _
-  have hPeq : ∏ i ∈ I.filter (fun i => 0 < x i), (((x i : ℝ) + 1) / (x i : ℝ)) =
-      ∏ i ∈ I.filter (fun i => 0 < x i), ((((x i).toNat : ℕ) : ℝ) + 1) / (((x i).toNat : ℕ) : ℝ) := by
-    refine Finset.prod_congr rfl (fun i hi => ?_)
-    have hpos : 0 < x i := (Finset.mem_filter.mp hi).2
-    have e : (((x i).toNat : ℕ) : ℝ) = (x i : ℝ) := by
-      have := Int.toNat_of_nonneg hpos.le
-      exact_mod_cast this
-    rw [e]
-  have injP : Set.InjOn (fun i => (x i).toNat) ((I.filter (fun i => 0 < x i) : Finset ι) : Set ι) := by
-    intro i hi j hj hij
-    have hi' := Finset.mem_filter.mp (Finset.mem_coe.mp hi)
-    have hj' := Finset.mem_filter.mp (Finset.mem_coe.mp hj)
-    have hij' : (x i).toNat = (x j).toNat := hij
-    apply hinj hi'.1 hj'.1
-    have e1 := Int.toNat_of_nonneg hi'.2.le
-    have e2 := Int.toNat_of_nonneg hj'.2.le
-    rw [← e1, ← e2, hij']
-  have hPb := prod_succ_div_injective_pos_bounds (I.filter (fun i => 0 < x i)) (fun i => (x i).toNat) injP
-    (fun i hi => by
-      have := (Finset.mem_filter.mp hi).2
-      omega)
-  have hQeq : ∏ i ∈ I.filter (fun i => ¬ 0 < x i), (((x i : ℝ) + 1) / (x i : ℝ)) =
-      (∏ i ∈ I.filter (fun i => ¬ 0 < x i),
-        ((((-x i - 1).toNat : ℕ) : ℝ) + 1) / (((-x i - 1).toNat : ℕ) : ℝ))⁻¹ := by
-    rw [← Finset.prod_inv_distrib]
-    refine Finset.prod_congr rfl (fun i hi => ?_)
-    have hq := Finset.mem_filter.mp hi
-    have hxi0 := h0 i hq.1
-    have hxi1 := h1 i hq.1
-    have hle : x i ≤ -2 := by
-      have := hq.2
-      omega
-    have e : (((-x i - 1).toNat : ℕ) : ℝ) = -(x i : ℝ) - 1 := by
-      have := Int.toNat_of_nonneg (show 0 ≤ -x i - 1 by omega)
-      have e' : (((-x i - 1).toNat : ℕ) : ℤ) = -x i - 1 := this
-      have e'' : ((((-x i - 1).toNat : ℕ) : ℤ) : ℝ) = ((-x i - 1 : ℤ) : ℝ) := by rw [e']
-      push_cast at e''
-      exact e''
-    rw [e, inv_div, show -(x i : ℝ) - 1 = -((x i : ℝ) + 1) by ring,
-      show -((x i : ℝ) + 1) + 1 = -(x i : ℝ) by ring, neg_div_neg_eq]
-  have injQ : Set.InjOn (fun i => (-x i - 1).toNat)
-      ((I.filter (fun i => ¬ 0 < x i) : Finset ι) : Set ι) := by
-    intro i hi j hj hij
-    have hi' := Finset.mem_filter.mp (Finset.mem_coe.mp hi)
-    have hj' := Finset.mem_filter.mp (Finset.mem_coe.mp hj)
-    have hij' : (-x i - 1).toNat = (-x j - 1).toNat := hij
-    apply hinj hi'.1 hj'.1
-    have hi0 := h0 i hi'.1
-    have hj0 := h0 j hj'.1
-    have hi2 := hi'.2
-    have hj2 := hj'.2
+  have hP := prod_succ_div_pos_int_bounds P x (hinj.mono fun i hi => (Finset.mem_filter.mp hi).1)
+    (fun i hi => by have := (Finset.mem_filter.mp hi).2; omega)
+  have hQpos (i : ι) (hi : i ∈ Q) : 1 ≤ -x i - 1 := by
+    obtain ⟨hI, hxi⟩ := Finset.mem_filter.mp hi
+    have := h0 i hI
+    have := h1 i hI
     omega
-  have hQb := prod_succ_div_injective_pos_bounds (I.filter (fun i => ¬ 0 < x i)) (fun i => (-x i - 1).toNat) injQ
-    (fun i hi => by
-      have hq := Finset.mem_filter.mp hi
-      have := h0 i hq.1
-      have := h1 i hq.1
-      have := hq.2
+  have hQ := prod_succ_div_pos_int_bounds Q (fun i => -x i - 1)
+    (fun i hi j hj hij => by
+      change -x i - 1 = -x j - 1 at hij
+      apply hinj (Finset.mem_filter.mp hi).1 (Finset.mem_filter.mp hj).1
       omega)
-  rw [← hsplit, hPeq, hQeq]
-  obtain ⟨hP1, hP2⟩ := hPb
-  obtain ⟨hQ1, hQ2⟩ := hQb
-  have hPc : ((I.filter (fun i => 0 < x i)).card : ℝ) ≤ I.card := by exact_mod_cast hPcard
-  have hQc : ((I.filter (fun i => ¬ 0 < x i)).card : ℝ) ≤ I.card := by exact_mod_cast hQcard
-  set X := ∏ i ∈ I.filter (fun i => 0 < x i), ((((x i).toNat : ℕ) : ℝ) + 1) / (((x i).toNat : ℕ) : ℝ)
-  set Y := ∏ i ∈ I.filter (fun i => ¬ 0 < x i),
-    ((((-x i - 1).toNat : ℕ) : ℝ) + 1) / (((-x i - 1).toNat : ℕ) : ℝ)
-  have hY0 : 0 < Y := by linarith
-  have hYinv : Y⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hQ1
+    hQpos
+  let X := ∏ i ∈ P, ((x i : ℝ) + 1) / (x i : ℝ)
+  let Y := ∏ i ∈ Q, (((-x i - 1 : ℤ) : ℝ) + 1) / ((-x i - 1 : ℤ) : ℝ)
+  have hQeq : ∏ i ∈ Q, (((x i : ℝ) + 1) / (x i : ℝ)) = Y⁻¹ := by
+    rw [show Y = _ by rfl, ← Finset.prod_inv_distrib]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    push_cast
+    rw [inv_div, show -(x i : ℝ) - 1 = -((x i : ℝ) + 1) by ring,
+      show -((x i : ℝ) + 1) + 1 = -(x i : ℝ) by ring, neg_div_neg_eq]
+  rw [← hsplit, show I.filter (fun i => ¬ 0 < x i) = Q from rfl, hQeq]
+  change 1 / ((I.card : ℝ) + 1) ≤ X * Y⁻¹ ∧ X * Y⁻¹ ≤ (I.card : ℝ) + 1
+  have hPc : (P.card : ℝ) ≤ I.card := by exact_mod_cast Finset.card_filter_le _ _
+  have hQc : (Q.card : ℝ) ≤ I.card := by exact_mod_cast Finset.card_filter_le _ _
+  obtain ⟨hX1, hX2⟩ : 1 ≤ X ∧ X ≤ (P.card : ℝ) + 1 := hP
+  obtain ⟨hY1, hY2⟩ : 1 ≤ Y ∧ Y ≤ (Q.card : ℝ) + 1 := hQ
+  have hY0 : 0 < Y := zero_lt_one.trans_le hY1
+  have hYinv : Y⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hY1
   have hYinv0 : 0 ≤ Y⁻¹ := (inv_pos.mpr hY0).le
-  have hN0 : (0:ℝ) < (I.card : ℝ) + 1 := by positivity
   constructor
-  · have h1' : 1 / ((I.card : ℝ) + 1) ≤ Y⁻¹ := by
+  · have hLower : 1 / ((I.card : ℝ) + 1) ≤ Y⁻¹ := by
       rw [one_div]
       exact inv_anti₀ hY0 (by linarith)
-    nlinarith [mul_le_mul_of_nonneg_right hP1 hYinv0]
+    nlinarith [mul_le_mul_of_nonneg_right hX1 hYinv0]
   · nlinarith [mul_le_mul_of_nonneg_left hYinv (show (0:ℝ) ≤ X by linarith)]
 
 lemma prod_shifted_ratio_bounds (n : ℕ) (μ : Fin n → ℝ) (s : Fin n) (hμ : Function.Injective μ)
@@ -248,7 +271,7 @@ theorem degree_set_cardinality_bound : Formalism.HermitianLatticeCounting.Expans
     · exact ⟨m + 1, by simp only [ha, hb, if_true, if_false]; push_cast; linarith⟩
     · exact ⟨m - 1, by simp only [ha, hb, if_true, if_false]; push_cast; linarith⟩
     · exact ⟨m, by simp only [ha, hb, if_false]; linarith⟩
-  have fμ := Formalism.QuantumDeterminants.fdegPos n μ hμ.injective
+  have fμ := _root_.Formalism.QuantumDeterminants.formal_degree_pos_holds n μ hμ.injective
   induction I using Finset.induction_on with
   | empty =>
     have : (fun a => μ a + if a ∈ (∅ : Finset (Fin n)) then (1 : ℝ) else 0) = μ := by
@@ -263,7 +286,7 @@ theorem degree_set_cardinality_bound : Formalism.HermitianLatticeCounting.Expans
       · subst ha; simp [hs]
       · simp [ha]
     set ν : Fin n → ℝ := fun a => μ a + if a ∈ J then (1 : ℝ) else 0 with hν
-    have fν := Formalism.QuantumDeterminants.fdegPos n ν (hanti J).injective
+    have fν := _root_.Formalism.QuantumDeterminants.formal_degree_pos_holds n ν (hanti J).injective
     have hinj' : Function.Injective (ν + Pi.single s 1) := by
       rw [← hstep]; exact (hanti _).injective
     have hr := Formalism.QuantumDeterminants.fdegRatio n ν s (hanti J).injective (hintJ J) hinj'
@@ -309,7 +332,6 @@ lemma le_exp_mul_of_near_bound (N D A δ c : ℝ) (hNA : N ≤ A) (hD : A - δ �
     have e : (1 + 2 * δ / A) * (A - δ) = A + δ - 2 * δ ^ 2 / A := by
       first
       | (field_simp; ring)
-      | field_simp
     rw [e]
     have : 2 * δ ^ 2 / A ≤ δ := by
       rw [div_le_iff₀ hA]

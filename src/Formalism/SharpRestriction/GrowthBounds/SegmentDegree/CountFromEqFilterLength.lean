@@ -1,8 +1,49 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DplusLeBeA
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TypicalPathOrdersSmall
-public import Formalism.ThetaLogCoordinates.ResidueClassEstimates.FinalT
+public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.AtypicalPathSmallWeight
+public import Formalism.ThetaLogCoordinates.ResidueClassEstimates.StatementT
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 
@@ -137,10 +178,10 @@ theorem latest_thresholds_decay (H : HypT N n0 r K LL B od bb a La p) (P : â„• â
   have hlen : l + 1 < (latestList P n0).length := by simpa using hl
   have e1 : ((latestList P n0).map (toL r K LL B).B).getD (l + 1) 0 =
       (toL r K LL B).B ((latestList P n0)[l + 1]) := by
-    simp [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem, hlen]
+    simp [List.getD_eq_getElem?_getD, hlen]
   have e2 : ((latestList P n0).map (toL r K LL B).B).getD l 0 =
       (toL r K LL B).B ((latestList P n0)[l]'(by omega)) := by
-    simp [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem, show l < (latestList P n0).length by omega]
+    simp [List.getD_eq_getElem?_getD, show l < (latestList P n0).length by omega]
   rw [e1, e2]
   have hxy := latest_list_succ_lt P n0 l hlen
   have hxs := (latest_list_get_spec P n0 (l + 1) hlen).1

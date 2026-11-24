@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
+public import Mathlib.LinearAlgebra.Quotient.Bilinear
+public import Mathlib.Topology.Algebra.Module.Basic
 
 @[expose] public section
 
@@ -188,7 +190,6 @@ variable (Mplus : Submodule R M) (hMplus : ∀ g, Mplus ≤ Mplus.comap (rhoD g)
 theorem continuous_mkQ : Continuous (Mplus.mkQ) := by
   first
   | exact continuous_quot_mk
-  | exact continuous_coinduced_rng
 
 instance continuousConstSMul_quotient (N : Submodule R M) : ContinuousConstSMul R (M ⧸ N) :=
   ⟨fun c => by

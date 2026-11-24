@@ -1,7 +1,56 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfComp
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueSubMemInitSpan
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsFrPtTie
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NonemptyLift
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.TieBaseChange
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeCommBaseChange
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIff
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LowerTriIsUnitDet
+import Formalism.LocalToGlobal.ProjectiveLattices.UnifGen
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp
+public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 
 @[expose] public section
 
@@ -112,8 +161,7 @@ theorem frBor_baseChange {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] 
 theorem exists_frMap {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T]
     (φ : S →ₐ[c.F] T) (y : FrPt Xo c S) : ∃ z, FrMap φ y z := (evLaws_genFr_atlas E H Dw l Xo c).1.bc S T φ y
 
-theorem frMap_refl {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) : FrMap (AlgHom.id c.F S) y y :=
-  (GlobalTheory.Frames.frMap_unique_refl_iff E H Dw l Xo c S S (AlgHom.id c.F S) y).2.1
+alias frMap_refl := _root_.GlobalTheory.FramedBaseChange.refl
 
 theorem frMap_unique {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T]
     {φ : S →ₐ[c.F] T} {y : FrPt Xo c S} {z z' : FrPt Xo c T} (h : FrMap φ y z) (h' : FrMap φ y z') : z = z' :=
@@ -285,8 +333,8 @@ theorem TopEigen.diag_unit (hT : F.TopEigen) {V K : Type} [CommRing V] [IsLocalR
         rw [F.step_eq k _ hz'] at h2
         obtain ⟨d, -, hd⟩ := mem_initSpan.1 h2
         exact mem_initSpan.2 ⟨d, fun j hj => absurd j.2 (not_lt.2 hj), hd⟩)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hP.initSpan_eq hz' hx rfl, map_sum] at h2
+
+      rw [← hP.initSpan_eq hz' hx rfl, map_sum] at h2
       simp only [map_smulₛₗ, hub] at h2
       obtain ⟨d, hd, h3⟩ := mem_initSpan.1 h2
       refine mem_initSpan.2 ⟨a, fun j hj => hφ ?_, rfl⟩
@@ -297,8 +345,8 @@ theorem TopEigen.diag_unit (hT : F.TopEigen) {V K : Type} [CommRing V] [IsLocalR
     fun i => (h1 i).trans (F.step_eq k z hz rfl σ i)
   refine ⟨(hu i).unit, ?_⟩
   have h4 := congrArg (tanPull (G := Y.t.G) φ e) (eb i)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hub, e', map_sum] at h4
+
+  rw [hub, e', map_sum] at h4
   simp only [map_smulₛₗ, F.tanPull_vecAt k φ z hz hz' rfl hx e] at h4
   rw [← hd']
   exact ((Fintype.linearIndependent_iffₛ.1 hK) _ _ h4 i).symm

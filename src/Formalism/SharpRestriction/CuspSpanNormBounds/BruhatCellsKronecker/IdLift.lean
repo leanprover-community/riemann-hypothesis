@@ -1,11 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLiftDef
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LadjFrame
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LTheta
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LretrCancel
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LisoSmulMem
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.UnitriangularFrameLift
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LFrame
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LTheta
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LadjFrame
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LisoSmulMem
+public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LretrCancel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,23 +58,18 @@ section Gen
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E}
 
 theorem lift_sep {a b : S.V} (h : ∀ w, S.hT w a = S.hT w b) : a = b := by
-  have hn := S.nondeg
-  unfold LinearMap.Nondegenerate LinearMap.SeparatingRight at hn
-  exact sub_eq_zero.mp (hn.2 (a - b) (fun w => by rw [map_sub, h w, sub_self]))
+  exact sub_eq_zero.mp (S.nondeg.2 (a - b) (fun w => by rw [map_sub, h w, sub_self]))
 
 theorem lift_adj_symm {B B' : S.V →ₗ[E] S.V} (h : LAdj S B B') : LAdj S B' B := by
   intro x y
-  rw [← S.herm.eq y (B' x), ← h y x]
-  exact S.herm.eq (B y) x
+  rw [← S.herm.eq y (B' x), ← h y x, S.herm.eq (B y) x]
 
 theorem lift_exists_map {ι : Type} (e w : ι → S.V) (hli : LinearIndependent E e) :
     ∃ U : S.V →ₗ[E] S.V, ∀ a, U (e a) = w a := by
   obtain ⟨g, hg⟩ := LinearMap.exists_extend ((Finsupp.linearCombination E w).comp hli.repr)
   refine ⟨g, fun a => ?_⟩
   have hmem : e a ∈ Submodule.span E (Set.range e) := Submodule.subset_span ⟨a, rfl⟩
-  have h1 := LinearMap.congr_fun hg ⟨e a, hmem⟩
-  simp only [LinearMap.comp_apply, Submodule.subtype_apply] at h1
-  rw [h1, hli.repr_eq_single a ⟨e a, hmem⟩ rfl, Finsupp.linearCombination_single, one_smul]
+  simpa only [LinearMap.comp_apply, Submodule.subtype_apply, hli.repr_eq_single a ⟨e a, hmem⟩ rfl, Finsupp.linearCombination_single, one_smul] using LinearMap.congr_fun hg ⟨e a, hmem⟩
 
 variable {r : ℕ} {T : E}
 
@@ -246,8 +279,7 @@ end Gen
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem lift_of_steps (hA : IntegralAdjointUnimodular) (hI : IsotropicIntegralRetraction) (hF : UnitriangularFrameIntegral) (D : D7) : UnitriangularFrameLift D := by
-  intro T Λ F F' hfix _ hconv' he _
-  obtain ⟨hlat, huni, -, hconv⟩ := hfix
+  rintro T Λ F F' ⟨hlat, huni, -, hconv⟩ _ hconv' he _
   exact lift_gen hA hI hF D.sp.cm.cmUnram Λ (gS D) F F' hlat huni hconv hconv' he
 
 theorem id_lift (D : D7) : UnitriangularFrameLift D := by

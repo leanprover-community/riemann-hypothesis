@@ -1,7 +1,54 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSingle
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -29,23 +76,23 @@ theorem exists_succ {ρ κ : ℕ} (hn : n = 2 * ρ + κ + 1) (hρ : 1 ≤ ρ) (a
     ∃ q : Fin n, Prec ρ κ a.val q.val ∧ dp n ρ κ a.val ≤ dp n ρ κ q.val + 1 := by
   by_cases h : a.val + 1 = ρ + κ
   · refine ⟨⟨ρ + κ + 1, by omega⟩, ?_, ?_⟩
-    all_goals (simp only [Prec, dp, Fin.val_mk] at *; split_ifs at * <;> omega)
+    all_goals (simp only [Prec, dp] at *; split_ifs at * <;> omega)
   · have : a.val + 1 < n := by unfold dp at ha; split_ifs at ha <;> omega
     refine ⟨⟨a.val + 1, this⟩, ?_, ?_⟩
-    all_goals (simp only [Prec, dp, Fin.val_mk] at *; split_ifs at * <;> omega)
+    all_goals (simp only [Prec, dp] at *; split_ifs at * <;> omega)
 
 theorem exists_pred {ρ κ : ℕ} (hn : n = 2 * ρ + κ + 1) (hρ : 1 ≤ ρ) (hκ : 2 ≤ κ) (a : Fin n) (ha : 1 ≤ ht ρ κ a.val) :
     ∃ c : Fin n, Prec ρ κ c.val a.val ∧ ht ρ κ a.val ≤ ht ρ κ c.val + 1 := by
   have := a.2
   by_cases h : a.val = ρ + κ
   · refine ⟨⟨ρ - 1, by omega⟩, ?_, ?_⟩
-    all_goals (simp only [Prec, ht, Fin.val_mk] at *; split_ifs at * <;> omega)
+    all_goals (simp only [Prec, ht] at *; split_ifs at * <;> omega)
   by_cases h' : a.val = ρ + κ + 1
   · refine ⟨⟨ρ + κ - 1, by omega⟩, ?_, ?_⟩
-    all_goals (simp only [Prec, ht, Fin.val_mk] at *; split_ifs at * <;> omega)
+    all_goals (simp only [Prec, ht] at *; split_ifs at * <;> omega)
   · have : 1 ≤ a.val := by unfold ht at ha; split_ifs at ha <;> omega
     refine ⟨⟨a.val - 1, by omega⟩, ?_, ?_⟩
-    all_goals (simp only [Prec, ht, Fin.val_mk] at *; split_ifs at * <;> omega)
+    all_goals (simp only [Prec, ht] at *; split_ifs at * <;> omega)
 
 theorem allowed_of {ρ κ i a : ℕ} (hn : n = 2 * ρ + κ + 1) (hρ : 1 ≤ ρ) (hκ : 2 ≤ κ) (hi : i < n) (ha : a < n)
     (h1 : dp n ρ κ a ≤ dp n ρ κ i) (h2 : ht ρ κ i ≤ ht ρ κ a) :
@@ -131,11 +178,11 @@ theorem mul_single_mul' (X Y : Matrix (Fin n) (Fin n) k) (p q i j : Fin n) (s : 
     by_cases hx : x = q
     · subst hx
       rw [if_pos rfl, Finset.sum_eq_single p]
-      · simp [Matrix.single_apply]
-      · intro y _ hy; simp [Matrix.single_apply, Ne.symm hy]
+      · simp
+      · intro y _ hy; simp [Ne.symm hy]
       · simp
     · rw [if_neg hx]
-      exact Finset.sum_eq_zero fun y _ => by simp [Matrix.single_apply, Ne.symm hx]
+      exact Finset.sum_eq_zero fun y _ => by simp [Ne.symm hx]
   rw [h1, Matrix.mul_apply, Finset.sum_eq_single q]
   · simp [mul_assoc]
   · intro y _ hy; simp [hy]

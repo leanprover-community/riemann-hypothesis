@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelProper
+public import Mathlib.Analysis.Polynomial.CauchyBound
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

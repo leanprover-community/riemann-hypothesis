@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Module.LocalizedModule.Basic
+public import Mathlib.GroupTheory.MonoidLocalization.Away
+public import Mathlib.RingTheory.FiniteType
 
 @[expose] public section
 

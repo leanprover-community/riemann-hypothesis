@@ -1,11 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StSheetHessPSD
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemiPosTwist
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterOsgood
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterOsgood
 
 @[expose] public section
 

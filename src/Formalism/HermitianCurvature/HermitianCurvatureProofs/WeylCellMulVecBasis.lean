@@ -1,10 +1,56 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MinorCellOfParts
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainRecursionFromSingleDescent
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainRecursionFromSingleDescent
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightDerivativeRulePsi
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -207,7 +253,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem right_rule_derivative : PBN.RightRuleE := by
   intro E _ _ k r z' D f hz' hD hS hR g hg a b hab
-  have hb := b.isLt
   have hc : Continuous fun x : Mx k r => g * x := cont_lmul g
   have hD' : IsOpen {x : Mx k r | g * x ∈ D} := hD.preimage hc
   have hS' : SmoothLev k r a.castSucc {x | g * x ∈ D} (fun x => f (g * x)) :=
@@ -227,7 +272,6 @@ theorem right_rule_derivative : PBN.RightRuleE := by
   rw [hpos, eH_left, Matrix.mul_one] at h
   rw [h]
   congr 1
-  have ha1 : (a.succ : Fin (r + 1)).val < r := by simp; omega
   simp only [xv, fvec, hpos, Fin.val_succ]
   rw [dif_pos (show a.val + 1 < r by omega)]
   by_cases hh : b.val = a.val + 1
@@ -236,7 +280,6 @@ theorem right_rule_derivative : PBN.RightRuleE := by
 
 theorem left_rule_cell : PBN.LeftRuleCell := by
   intro E _ _ k r z D f hz hD hDN hS hL c hc g hg hWD a b hba
-  have ha := a.isLt
   have hcne : ∀ l, c l ≠ 0 := hc
   obtain ⟨hW0, hWcomm⟩ := head_comm (k := k) c hcne b.val b.castSucc (by simp)
   obtain ⟨T, hT, hTG, hTe, -, -⟩ := tail (k := k) c hcne b (r - b.val - 1) (Fin.last r) (by simp; omega)

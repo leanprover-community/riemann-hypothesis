@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.RepresentationTheory.Coinduced
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Shapiro
 
 @[expose] public section
 

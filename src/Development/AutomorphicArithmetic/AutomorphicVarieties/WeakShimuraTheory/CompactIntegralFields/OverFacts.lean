@@ -1,8 +1,49 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EntryMem
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.FerreroWashington
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -87,7 +128,7 @@ private theorem eq_of_isLow_of_isUp_adj_mul_of_isUnit_det {k : Type} [Field k] {
         n01, n02, n03, n12, n13, n23, m0, m1, m2, m3, d0, d1, d2, d3]
     · fin_cases i <;> fin_cases j <;> simp (config := {decide := true}) at hij ⊢ <;>
         simp [Matrix.mul_apply, Fin.sum_univ_four, adj, sgn, Fin.rev, m01, m02, m03, m12, m13, m23,
-          n01, n02, n03, n12, n13, n23, m0, m1, m2, m3, d0, d1, d2, d3]
+          n01, n02, n03, n12, n13, n23, m1, m2, m3, d1, d2, d3]
   calc n = (m * adj m) * n := by rw [hmr, Matrix.one_mul]
     _ = m * (adj m * n) := Matrix.mul_assoc _ _ _
     _ = m := by rw [hC1, Matrix.mul_one]
@@ -212,10 +253,9 @@ private theorem first_column_and_entry_two_one_of_isUp_adj_mul {k : Type} [Field
   constructor
   · intro i
     fin_cases i <;> simp [Matrix.mul_apply, Fin.sum_univ_four, n01, n02, n03, n12, n13, n23, x10, x20, x30,
-      x21, x31, x32, d0]
+      d0]
   · intro h01 h21 h11
-    simp [Matrix.mul_apply, Fin.sum_univ_four, n01, n02, n03, n12, n13, n23, x10, x20, x30,
-      x21, x31, x32, d0] at h01 h21 h11
+    simp [Matrix.mul_apply, Fin.sum_univ_four, n01, n02, n03, n12, n13, n23, x21, x31, d0] at h01 h21 h11
     rw [h01] at h21 h11
     simp [hd 1] at h21 h11
     tauto
@@ -226,7 +266,7 @@ private theorem entry_pow_mul_sub_eq_and_diag_pow {Γ k : Type} [Group Γ] [Fiel
     (x : Γ) (m : ℕ) : r (x ^ m) i j * (r x i i - r x j j) = r x i j * (r x i i ^ m - r x j j ^ m) ∧
       r (x ^ m) i i = r x i i ^ m ∧ r (x ^ m) j j = r x j j ^ m := by
   induction m with
-  | zero => simp [Matrix.one_apply, hij]
+  | zero => simp [hij]
   | succ m ih =>
     obtain ⟨h1, h2, h3⟩ := ih
     rw [pow_succ, hc, hdi, hdj, h2, h3]
@@ -327,7 +367,7 @@ private theorem exists_entry_ne_zero_of_triangular_mul {Γ Γ' k : Type} [Group 
 private theorem mul_inv_mul_mul_inv_eq {Γ : Type} [CommGroup Γ] (a b c : Γ) : a * b⁻¹ * (c * a⁻¹) = c * b⁻¹ := by
   rw [mul_comm c, ← mul_assoc, mul_assoc a, mul_comm b⁻¹ a⁻¹, ← mul_assoc, mul_inv_cancel, one_mul, mul_comm]
 
-set_option maxHeartbeats 1000000 in
+
 open UpperTheory.V.Ws.OvF in
 theorem UpperTheory.V.Ws.overFacts :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ (T T' : Tower D) (hT : T.Le T'), T.Fit → ∀ (k : Type) [Field k] (a : c.O →+* k), (∀ x ∈ maximalIdeal c.O, a x = 0) → ∀ (W W' : Finset ℕ) (s t : PD T.ι (G T.F Ω) k) (s' t' : PD T'.ι (G T'.F Ω) k),
@@ -414,7 +454,7 @@ theorem UpperTheory.V.Ws.overFacts :
     have q21 := hSt g 2 1 (by decide) (by decide)
     have q23 := hSt g 2 3 (by decide) (by decide)
     simp only [Matrix.mul_apply, Fin.sum_univ_four, n00, m00, r01, r02, r03, r21, r23, q01, q02, q03, q21, q23,
-      mul_zero, zero_mul, add_zero, zero_add, mul_one] at e1 e2
+      zero_mul, add_zero, mul_one] at e1 e2
     have d00 : t.r g 0 0 = s.r g 0 0 := by rw [hds, hdt]
     have d22 : t.r g 2 2 = s.r g 2 2 := by rw [hds, hdt]
     rw [d00, d22, ← hr g, ← hn v] at e2
@@ -440,7 +480,7 @@ theorem UpperTheory.V.Ws.overFacts :
     have q12 := hSt g 1 2 (by decide) (by decide)
     have q13 := hSt g 1 3 (by decide) (by decide)
     simp only [Matrix.mul_apply, Fin.sum_univ_four, n00, m00, r01, r02, r03, r12, r13, q01, q02, q03, q12, q13,
-      mul_zero, zero_mul, add_zero, zero_add, mul_one] at e1 e2
+      zero_mul, add_zero, mul_one] at e1 e2
     have d00 : t.r g 0 0 = s.r g 0 0 := by rw [hds, hdt]
     have d11 : t.r g 1 1 = s.r g 1 1 := by rw [hds, hdt]
     rw [d00, d11, ← hr g, ← hn v] at e2

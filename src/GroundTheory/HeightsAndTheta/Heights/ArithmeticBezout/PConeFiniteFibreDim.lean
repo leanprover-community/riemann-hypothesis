@@ -1,17 +1,19 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFiniteFibreDim
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFibreDegree
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMassOfFibre
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjectionsContainOpen
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeAvoidsFinite
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjHomInjective
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeAvoidsOpen
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeAvoidsExists
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeAvoidsFinite
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeAvoidsOpen
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjHomInjective
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjectionsContainOpen
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHomogDimZeroPow
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLeadIdealDim
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLinearFormCut
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHomogDimZeroPow
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Nullstellensatz
 
 @[expose] public section
 
@@ -100,8 +102,8 @@ theorem ConeFiniteFibreDim.proof : ConeFiniteFibreDim.Statement := by
     refine congrArg (fun f => eval₂Hom (RingHom.id ℂ) f p) (funext fun ij => ?_)
     obtain ⟨i, j⟩ := ij
     change eval v (g (i, j)) = (blk v * N) i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [g, blk, Matrix.mul_apply, map_sum, map_mul, eval_C]
+
+    simp only [g, blk, map_sum, map_mul, eval_C]
     refine Finset.sum_congr rfl fun l _ => ?_
     induction i using Fin.addCases <;> simp
   have hP0 : bind₁ g p ≠ 0 := by

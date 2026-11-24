@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteCompG
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.AtGLev
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.AtGGlob
 
 @[expose] public section
 

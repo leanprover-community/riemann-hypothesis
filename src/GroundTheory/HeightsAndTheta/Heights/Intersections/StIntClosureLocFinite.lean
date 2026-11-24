@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Field.Subfield.Basic
+public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 
 @[expose] public section
 

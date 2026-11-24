@@ -1,6 +1,45 @@
 module
 
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.ColumnConjugationMeasure
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -245,8 +284,8 @@ theorem law_memO {w : Pl E} (x : w.adicCompletion E) :
 
 theorem law_lr (hk : 1 ≤ k) {R R' : Type} [CommRing R] [CommRing R'] (σ : R →+* R') (M : Matrix (Fin k) (Fin k) R) (c : Fin k) :
     σ (∑ i : Fin k, if (i : ℕ) + 1 = k then M i c else 0) = M.map σ ⟨k - 1, by omega⟩ c := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single (⟨k - 1, by omega⟩ : Fin k)]
+
+  rw [map_sum, Finset.sum_eq_single (⟨k - 1, by omega⟩ : Fin k)]
   · rw [if_pos (by simp; omega)]; rfl
   · intro b _ hb; rw [if_neg, map_zero]
     intro h; exact hb (Fin.ext (by simp; omega))
@@ -427,19 +466,10 @@ theorem law_fC (hG0 : jumpWindows.G0) (hG5 : jumpWindows.G5) (hP2 : P2) (hP3 : P
 
 open scoped ValuativeRel
 
-theorem sph_memO {w : Pl E} (x : w.adicCompletion E) :
-    x ∈ 𝒪[w.adicCompletion E] ↔ x ∈ Formalism.UG.Ov E w := by
-  rw [Valuation.mem_integer_iff]
-  change _ ↔ x ∈ w.adicCompletionIntegers E
-  rw [HeightOneSpectrum.mem_adicCompletionIntegers]
-  haveI : (Valued.v : Valuation (w.adicCompletion E) (WithZero (Multiplicative ℤ))).Compatible :=
-    Valuation.Compatible.ofValuation _
-  exact (ValuativeRel.isEquiv (ValuativeRel.valuation _) Valued.v).le_one_iff_le_one
-
 theorem sph_lr (hk : 1 ≤ k) {R' : Type} [CommRing R'] (σ : Ad E →+* R') (g : GA E k) (c : Fin k) :
     σ (lastRow g c) = (g.val.map σ) ⟨k - 1, by omega⟩ c := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lastRow, map_sum, Finset.sum_eq_single (⟨k - 1, by omega⟩ : Fin k)]
+
+  rw [lastRow, map_sum, Finset.sum_eq_single (⟨k - 1, by omega⟩ : Fin k)]
   · rw [if_pos (by simp; omega)]; rfl
   · intro b _ hb; rw [if_neg, map_zero]
     intro h; exact hb (Fin.ext (by simp; omega))
@@ -492,15 +522,15 @@ theorem sph_fC (hG0 : jumpWindows.G0) (hP2 : P2) (hP3 : P3) (hK8 : K8) (hk : 1 �
     have hK := fun w => (GLnLocal.mem_integralGL_iff _ _).1 (hκint w)
     constructor
     · intro h w hw i
-      rw [hloc, ← sph_memO]
-      exact sph_rowint _ (fun c => by rw [← hloc0, sph_memO]; exact h w hw c) _ (hK w).1 i
+      rw [hloc, ← _root_.PositivityTheory.AdelicQuotientData.PKEq1.law_memO]
+      exact sph_rowint _ (fun c => by rw [← hloc0, _root_.PositivityTheory.AdelicQuotientData.PKEq1.law_memO]; exact h w hw c) _ (hK w).1 i
     · intro h w hw i
       have e : (cLoc w g).val ℓ i = ∑ j, (cLoc w (g * κ)).val ℓ j * (cLoc w κ)⁻¹.val j i := by
         rw [← Matrix.mul_apply, ← Units.val_mul, ← map_inv, ← map_mul, mul_inv_cancel_right]
-      rw [hloc0, ← sph_memO, e]
+      rw [hloc0, ← _root_.PositivityTheory.AdelicQuotientData.PKEq1.law_memO, e]
       refine sph_rowint _ (fun c => ?_) _ (by simpa [map_inv] using (hK w).2) i
       have := h w hw c
-      rw [hloc, ← sph_memO] at this
+      rw [hloc, ← _root_.PositivityTheory.AdelicQuotientData.PKEq1.law_memO] at this
       rw [map_mul, Units.val_mul, Matrix.mul_apply]
       exact this
   have hsy : s y' = s y := (hcut.dep y' y hinf hS').1

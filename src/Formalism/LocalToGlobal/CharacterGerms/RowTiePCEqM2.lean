@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqDer
+public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 
 @[expose] public section
 

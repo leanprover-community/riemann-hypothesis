@@ -1,6 +1,58 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.Lemma5aAt
+public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
+public import Mathlib.RingTheory.Derivation.Lie
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Bool
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -417,8 +469,8 @@ theorem derivation_valuation_at_prime (D : Formalism.BasicNotions.D7) (h : Forma
               (derTriple (p ^ g) M rho l).2.1 a))) =
         C (∑ l ∈ T, algebraMap O (KK O) ((γ l : ℤ) : O) * ∏ a, (((be a).choose (l a) : ℕ) : KK O)) *
           monoL fun a => rho a + p ^ g * be a - M a := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_mul]
+
+      rw [map_sum, Finset.sum_mul]
       exact Finset.sum_congr rfl fun l hl => der_term (p ^ g) M rho l be (hT2 l hl) _
     rw [e2, divDer_monoL, ← sub_mul, ← map_sub]
     obtain ⟨z, hz⟩ := hT3 be
@@ -1071,8 +1123,8 @@ theorem hom_scale_sum {R B σ : Type*} [CommRing R] [CommRing B] (φ ψ : MvPoly
     (hD : ∀ m ∈ F.support, ∑ v ∈ m.support, e v * m v = D) : φ F = u ^ D * ψ F := by
   conv_lhs => rw [F.as_sum]
   conv_rhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, Finset.mul_sum]
+
+  rw [map_sum, map_sum, Finset.mul_sum]
   exact Finset.sum_congr rfl fun m hm => by rw [hom_scale φ ψ u e hC hX, hD m hm]
 
 theorem deg_sum {ι : Type*} [Fintype ι] {n : ℕ} (V : Finset ι) (m : ι × Fin n →₀ ℕ) :
@@ -1128,8 +1180,8 @@ theorem valS_le_diff {R : Type*} [CommRing R] {ι : Type*} [Fintype ι] {n : ℕ
               ∑ c, C (LaurentPolynomial.T 1 * twistMat R n (lastIdx n) (-1) c b) * X (v.1, c)
             = ∑ c, C (LaurentPolynomial.T 1) *
                 C (∑ b, twistMat R n (lastIdx n) (-1) c b * twistMat R n (lastIdx n) 1 b v.2) * X (v.1, c) := by
-              set_option synthInstance.maxHeartbeats 100000 in
-                simp only [Finset.mul_sum, map_sum, Finset.sum_mul, map_mul]
+
+              simp only [Finset.mul_sum, map_sum, Finset.sum_mul, map_mul]
               rw [Finset.sum_comm]
               exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => by ring
           _ = C (LaurentPolynomial.T 1) ^ (if v.1 ∈ V then 1 else 0) * X v := by
@@ -1197,8 +1249,8 @@ theorem DecSys.e_e_ne (h : DecSys W e) {mu nu : I} (hne : nu ≠ mu) (x : V) : e
 theorem DecSys.zero_of_not_mem (h : DecSys W e) {x : V} {T : Finset I} (hT : x = ∑ mu ∈ T, e mu x) {mu : I}
     (hmu : mu ∉ T) : e mu x = 0 := by
   have h1 := congrArg (e mu) hT
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum] at h1
+
+  rw [map_sum] at h1
   rw [h1]
   refine Finset.sum_eq_zero fun nu hnu => h.e_e_ne (fun hh : nu = mu => hmu (hh ▸ hnu)) x
 
@@ -1257,11 +1309,11 @@ theorem DecSys.comm_projQ (h : DecSys W e) (Q : I → Prop) (A : Module.End K V)
     (hA : ∀ mu x, A (e mu x) = e mu (A x)) (x : V) : A (h.projQ Q x) = h.projQ Q (A x) := by
   obtain ⟨T, h1⟩ := h.cover x
   have h3 : A x = ∑ mu ∈ T, e mu (A x) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [← hA, ← map_sum]
+
+    simp only [← hA, ← map_sum]
     rw [← h1]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h.projQ_eq Q h1, h.projQ_eq Q h3, map_sum]
+
+  rw [h.projQ_eq Q h1, h.projQ_eq Q h3, map_sum]
   exact Finset.sum_congr rfl fun mu _ => hA mu x
 
 theorem DecSys.comm_of_preserve (h : DecSys W e) (A : Module.End K V) (hA : ∀ mu, ∀ x ∈ W mu, A x ∈ W mu)
@@ -1269,8 +1321,8 @@ theorem DecSys.comm_of_preserve (h : DecSys W e) (A : Module.End K V) (hA : ∀ 
   obtain ⟨T, h1⟩ := h.cover x
   have h2 : e mu (A x) = ∑ nu ∈ T, e mu (A (e nu x)) := by
     conv_lhs => rw [h1]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum]
+
+    rw [map_sum, map_sum]
   rw [h2]
   by_cases hmu : mu ∈ T
   · rw [Finset.sum_eq_single_of_mem mu hmu fun nu _ hne => h.zero_on mu nu hne _ (hA nu _ (h.mem nu x))]
@@ -1398,8 +1450,8 @@ theorem polProj_of_mem (d : ι → ℕ) (F : MvPolynomial (ι × Fin r) K) (hF :
   calc polProj K d F = polProj K d (∑ m ∈ F.support, monomial m (F.coeff m)) := by
         rw [support_sum_monomial_coeff]
     _ = ∑ m ∈ F.support, monomial m (F.coeff m) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+
+        rw [map_sum]
         refine Finset.sum_congr rfl fun m hm => ?_
         rw [polProj_monomial, if_pos (show ∀ i, multideg m i = d i from hF hm)]
     _ = F := support_sum_monomial_coeff F
@@ -1436,8 +1488,8 @@ theorem polProj_glAct [Fintype ι] (d : ι → ℕ) (LL : Letters ι) (S : Set �
       rw [LinearMap.sum_apply]
       refine Finset.sum_congr rfl fun l _ => ?_
       split_ifs <;> simp
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hg, map_sum]
+
+    rw [hg, map_sum]
     by_cases h : ∀ i, multideg m i = d i
     · rw [if_pos h, hg]
       refine Finset.sum_congr rfl fun l _ => ?_
@@ -1607,8 +1659,8 @@ theorem isFockProj_projQ (sys : DecSys (fun mu => isoSub (glOps K r LL S) mu) e)
     intro mu hne
     by_contra hQ
     apply hne
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [sys.projQ_eq _ hT, map_sum]
+
+    rw [sys.projQ_eq _ hT, map_sum]
     exact Finset.sum_eq_zero fun nu hnu =>
       sys.e_e_ne (fun hh : nu = mu => hQ (hh ▸ (Finset.mem_filter.1 hnu).2)) F
   · obtain ⟨T, hT⟩ := sys.cover F
@@ -1827,8 +1879,8 @@ theorem wt_comp_mem (E : GLOps n K V) [CharZero K] (W : Submodule K V) (hW : ∀
         have h1 : E a a (∑ k ∈ T, f k) - (nu a : K) • ∑ k ∈ T, f k ∈ W :=
           W.sub_mem (hW a _ hs) (W.smul_mem _ hs)
         have h2 : E a a (∑ k ∈ T, f k) - (nu a : K) • ∑ k ∈ T, f k = ∑ k ∈ T, ((k a : K) - (nu a : K)) • f k := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum, Finset.smul_sum, ← Finset.sum_sub_distrib]
+
+          rw [map_sum, Finset.smul_sum, ← Finset.sum_sub_distrib]
           refine Finset.sum_congr rfl fun k hk => ?_
           rw [(isoW_mem_weightSp E k (f k)).1 (hf k hk) a, sub_smul]
         rw [h2, ← Finset.add_sum_erase T _ hnu, sub_self, zero_smul, zero_add] at h1

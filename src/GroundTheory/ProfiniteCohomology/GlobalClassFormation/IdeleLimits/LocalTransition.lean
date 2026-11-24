@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.Levels
 public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrandInfinite
+public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrand
 
 @[expose] public section
 

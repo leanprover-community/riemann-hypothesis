@@ -1,6 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfM
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfL
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfD
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfE
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
 
 @[expose] public section
 
@@ -144,7 +149,6 @@ theorem value_base (hV : VanishAtSStatement (E := E)) (x0 : Frame X.Ψ r) (ho : 
       apply Real.one_le_exp
       have := hM ⟨z, hzc, rfl⟩
       linarith
-    beta_reduce
     rw [hcut, hnsq, hPF z (hsub hz), ← ENNReal.ofReal_mul (Real.exp_pos _).le, norm_sub_rev (1 : ℂ) (F z)]
     apply ENNReal.ofReal_le_ofReal
     have hN : 0 ≤ (∑ k, ‖Fl.s k (cpt X x0 z)‖ ^ 2) ^ (-(nd X : ℝ)) :=

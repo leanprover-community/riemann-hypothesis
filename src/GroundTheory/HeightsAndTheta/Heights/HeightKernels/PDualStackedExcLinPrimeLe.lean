@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcResidue
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualCotangentKer
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcGeoFirst
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -319,15 +320,15 @@ theorem DualStackedExcLinPrimeLe.proof (hK : DualCotangentKer.Statement) : DualS
       have hs : ∀ j, σ ⟨algebraMap (𝓞 K) K (μ t j) • (χ j : Fin i → K), smul_mem_dual F _ (χ j).2⟩ =
           M t j • (Pi.single j 1 : Fin i → k) := fun j => by
         rw [hsl (μ t j) (χ j) _ rfl, hμ, hχ]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_congr rfl fun j _ => hs j, ← hM t]
+
+      rw [map_sum, Finset.sum_congr rfl fun j _ => hs j, ← hM t]
       funext j'
       simp [Pi.single_apply]
     have h0 := secVal_eq_zero_of_mem_span (P := P) (b := b) hab hP hc ρ hz
       (hK K i F T b k ρ σ hρ hσ hsl (b t - ψ) (by rw [map_sub, hσψ, sub_self]))
     rw [map_sub, sub_eq_zero, secVal_basis] at h0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h0, map_sum]
+
+    rw [h0, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [secVal_smul hab hP hc (μ t j) (χ j) _ rfl, ← hμ t j, hι, thetaHom_apply]
 
@@ -344,8 +345,8 @@ theorem DualStackedExcLinPrimeLe.proof (hK : DualCotangentKer.Statement) : DualS
         simp only [Option.elim]
         rw [← mul_div_assoc, hA t, mul_div_cancel_left₀ _ hαc]
       · show eval₂Hom _ _ (linPointMap α M (graphSecond t)) = toFrac P (graphSecond t)
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [LinPrimeExample.linPointMap_second, map_sum, hB t]
+
+        rw [LinPrimeExample.linPointMap_second, map_sum, hB t]
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [map_mul, eval₂Hom_C, eval₂Hom_X']
         rfl

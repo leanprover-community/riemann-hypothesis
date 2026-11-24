@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.SummandSlopeAtDecoratedLattice
-public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP
+public import Formalism.LocalToGlobal.Divisibility.CoefMod
+public import Formalism.LocalToGlobal.GlobalTheory.HLatOps
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
+public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
+import Mathlib.RingTheory.PiTensorProduct
+import Formalism.GL3MeanSquares.ConcavityEquidistribution
+public import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
 
 @[expose] public section
 

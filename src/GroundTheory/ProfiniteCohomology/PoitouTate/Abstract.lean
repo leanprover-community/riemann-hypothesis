@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoitouTate.PtCompactDualMapEqZeroOfPtCompactToGlobalEqZero
+import GroundTheory.ProfiniteCohomology.TorsionDualFinite
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

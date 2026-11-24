@@ -2,6 +2,67 @@ module
 
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+public import Mathlib.Analysis.SpecialFunctions.PolarCoord
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Complex.Determinant
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 
@@ -26,7 +87,7 @@ lemma herm_add_right (u v v' : ι → ℂ) : herm H u (v + v') = herm H u v + he
 lemma herm_smul_left (c : ℂ) (u v : ι → ℂ) : herm H (c • u) v = c * herm H u v := by
   simp [herm, Matrix.mulVec_smul]
 lemma herm_smul_right (c : ℂ) (u v : ι → ℂ) : herm H u (c • v) = conj c * herm H u v := by
-  simp [herm] <;> rfl
+  simp [herm]
 lemma herm_conj (hH : Hᴴ = H) (u v : ι → ℂ) : conj (herm H u v) = herm H v u := by
   have hc : ∀ i j, star (H i j) = H j i := fun i j => by
     have := congrFun (congrFun hH j) i
@@ -76,10 +137,10 @@ lemma three_block_apply (a : ℂ) (y : Fin (2 * r' + k + 1) → ℂ) (b : ℂ) (
   split_ifs <;> first | omega | simp
 
 lemma three_block_first (a : ℂ) (y : Fin (2 * r' + k + 1) → ℂ) (b : ℂ) : cF (mk3 k r' a y b) = a := by
-  simp only [cF, three_block_apply, Fin.val_mk]
-  split_ifs <;> first | rfl | omega
+  simp only [cF, three_block_apply]
+  split_ifs <;> first | rfl
 lemma three_block_last (a : ℂ) (y : Fin (2 * r' + k + 1) → ℂ) (b : ℂ) : cL (mk3 k r' a y b) = b := by
-  simp only [cL, three_block_apply, Fin.val_mk]
+  simp only [cL, three_block_apply]
   split_ifs <;> first | rfl | omega
 lemma three_block_middle (a : ℂ) (y : Fin (2 * r' + k + 1) → ℂ) (b : ℂ) : mid (mk3 k r' a y b) = y := by
   funext j
@@ -96,9 +157,9 @@ lemma three_block_eta (u : Fin (2 * (1 + r') + k + 1) → ℂ) : mk3 k r' (cF u)
   have hi := i.isLt
   rw [three_block_apply]
   split_ifs with h1 h2
-  · exact congrArg u (Fin.ext (by (try simp only [Fin.val_mk]); omega))
+  · exact congrArg u (Fin.ext (by (try simp only); omega))
   · exact congrArg u (Fin.ext (by (try simp only [levPos, Fin.val_mk]); omega))
-  · exact congrArg u (Fin.ext (by (try simp only [Fin.val_mk]); omega))
+  · exact congrArg u (Fin.ext (by (try simp only); omega))
 lemma three_block_injective {a a' b b' : ℂ} {y y' : Fin (2 * r' + k + 1) → ℂ} (h : mk3 k r' a y b = mk3 k r' a' y' b') :
     a = a' ∧ y = y' ∧ b = b' := by
   refine ⟨?_, ?_, ?_⟩
@@ -107,7 +168,6 @@ lemma three_block_injective {a a' b b' : ℂ} {y y' : Fin (2 * r' + k + 1) → �
   · have := congrArg cL h; rwa [three_block_last, three_block_last] at this
 lemma e0_eq : e0 k r' = mk3 k r' 1 0 0 := by
   funext i
-  have hi := i.isLt
   rw [e0_apply_eq_ite, three_block_apply]
   split_ifs <;> first | omega | simp
 lemma dual_base_vector_eq_single : es0 k r' = mk3 k r' 0 0 1 := by
@@ -117,7 +177,6 @@ lemma dual_base_vector_eq_single : es0 k r' = mk3 k r' 0 0 1 := by
   split_ifs <;> first | omega | simp
 lemma lift_eq (y : Fin (2 * r' + k + 1) → ℂ) : liftVec k 1 r' y = mk3 k r' 0 y 0 := by
   funext i
-  have hi := i.isLt
   rw [three_block_apply]
   simp only [liftVec]
   split_ifs <;> first | omega | simp
@@ -299,13 +358,11 @@ lemma eq_hb {y : Fin (2 * r' + k + 1) → ℂ} {b : ℂ} (h : b + conj b = - her
 
 private lemma ιLev_apply_tkF (g : Mat k r') (q : Fin (2 * (1 + r') + k + 1)) :
     ιLev k 1 r' g (tkF k r') q = if q.val = 0 then 1 else 0 := by
-  have hq := q.isLt
   simp only [ιLev, tkF, Fin.ext_iff, Fin.val_mk]
   split_ifs <;> first | rfl | omega
 
 private lemma ιLev_apply_tkL (g : Mat k r') (q : Fin (2 * (1 + r') + k + 1)) :
     ιLev k 1 r' g (tkL k r') q = if q.val = 2 * (1 + r') + k then 1 else 0 := by
-  have hq := q.isLt
   simp only [ιLev, tkL, Fin.ext_iff, Fin.val_mk]
   split_ifs <;> first | rfl | omega
 
@@ -313,7 +370,6 @@ private lemma ιLev_levPos_apply (g : Mat k r') (i : Fin (2 * r' + k + 1)) (q : 
     ιLev k 1 r' g (levPos k 1 r' i) q =
       if h : 1 ≤ q.val ∧ q.val < 2 * r' + k + 1 + 1 then g i ⟨q.val - 1, by omega⟩ else 0 := by
   have hi := i.isLt
-  have hq := q.isLt
   have c1 : 1 ≤ i.val + 1 ∧ i.val + 1 < 2 * r' + k + 1 + 1 := by omega
   simp only [ιLev, levPos, Fin.val_mk, c1, and_self, ↓reduceDIte]
   by_cases hc : 1 ≤ q.val ∧ q.val < 2 * r' + k + 1 + 1
@@ -344,13 +400,11 @@ lemma levi_three_block (g₁ : Mat k r') (a b : ℂ) (y : Fin (2 * r' + k + 1) �
   have hN0 : 2 * (1 + r') + k ≠ 0 := by omega
   have hN0' : (0 : ℕ) ≠ 2 * (1 + r') + k := by omega
   have hN : ∀ j : Fin (2 * r' + k + 1), j.val + 1 ≠ 2 * (1 + r') + k := fun j => by have := j.isLt; omega
-  have hN' : ∀ j : Fin (2 * r' + k + 1), 2 * (1 + r') + k ≠ j.val + 1 := fun j => by have := j.isLt; omega
-  have hL : ¬ (2 * (1 + r') + k < 2 * r' + k + 1 + 1) := by omega
   apply eq_three_block_of_coordinates
   · rw [tk_mulVec]
     simp only [ιLev_apply_tkF]
     simp only [tkF, tkL, levPos, Fin.val_mk]
-    simp [hN0]
+    simp
   · intro j
     rw [tk_mulVec, ιLev_levPos_tkF_eq_zero, ιLev_levPos_tkL_eq_zero]
     simp only [ιLev_levPos_levPos, zero_mul, zero_add, add_zero]
@@ -365,15 +419,15 @@ private lemma w0_tkF_apply_eq_ite_star_inv (c : ℂ) (q : Fin (2 * (1 + r') + k 
   have hN0' : 2 * (1 + r') + k ≠ 0 := by omega
   by_cases h : q.val = 2 * (1 + r') + k
   · simp [w0, tkF, h]
-  · simp [w0, tkF, h, hN0, hN0']
+  · simp [w0, tkF, h, hN0]
 
 private lemma w0_tkL_apply_eq_ite (c : ℂ) (q : Fin (2 * (1 + r') + k + 1)) :
     w0 k r' c (tkL k r') q = if q.val = 0 then c else 0 := by
   have hN0 : (0 : ℕ) ≠ 2 * (1 + r') + k := by omega
   have hN0' : 2 * (1 + r') + k ≠ 0 := by omega
   by_cases h : q.val = 0
-  · simp [w0, tkL, h, hN0, hN0']
-  · simp [w0, tkL, h, hN0, hN0']
+  · simp [w0, tkL, h, hN0]
+  · simp [w0, tkL, h]
 
 private lemma w0_levPos_apply_eq_ite_succ (c : ℂ) (i : Fin (2 * r' + k + 1)) (q : Fin (2 * (1 + r') + k + 1)) :
     w0 k r' c (levPos k 1 r' i) q = if q.val = i.val + 1 then 1 else 0 := by
@@ -393,12 +447,11 @@ lemma long_weyl_three_block (c a b : ℂ) (y : Fin (2 * r' + k + 1) → ℂ) :
   have hN0' : (0 : ℕ) ≠ 2 * (1 + r') + k := by omega
   have hN : ∀ j : Fin (2 * r' + k + 1), j.val + 1 ≠ 2 * (1 + r') + k := fun j => by have := j.isLt; omega
   have hN' : ∀ j : Fin (2 * r' + k + 1), 2 * (1 + r') + k ≠ j.val + 1 := fun j => by have := j.isLt; omega
-  have hL : ¬ (2 * (1 + r') + k < 2 * r' + k + 1 + 1) := by omega
   apply eq_three_block_of_coordinates
   · rw [tk_mulVec]
     simp only [w0_tkF_apply_eq_ite_star_inv]
     simp only [tkF, tkL, levPos, Fin.val_mk]
-    simp [hN0', hN] <;> rfl
+    simp [hN0', hN]
   · intro j
     rw [tk_mulVec]
     simp only [w0_levPos_apply_eq_ite_succ]
@@ -407,7 +460,7 @@ lemma long_weyl_three_block (c a b : ℂ) (y : Fin (2 * r' + k + 1) → ℂ) :
   · rw [tk_mulVec]
     simp only [w0_tkL_apply_eq_ite]
     simp only [tkF, tkL, levPos, Fin.val_mk]
-    simp [hN0]
+    simp
 
 lemma tk_herm_sum {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (u v : Fin m → ℂ) :
     ∑ j, herm H (bvec j) v * u j = herm H u v := by
@@ -463,7 +516,7 @@ theorem map_mulVec_volume {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.det
 
 theorem map_smul_volume {n : ℕ} (c : ℂ) (hc : c ≠ 0) :
     (volume : Measure (Fin n → ℂ)).map (fun y => c • y) = ENNReal.ofReal ((‖c‖ ^ (2 * n))⁻¹) • volume := by
-  have hA : (c • (1 : Matrix (Fin n) (Fin n) ℂ)).det ≠ 0 := by simp [Matrix.det_smul, hc]
+  have hA : (c • (1 : Matrix (Fin n) (Fin n) ℂ)).det ≠ 0 := by simp [hc]
   have e : (fun y : Fin n → ℂ => c • y) = fun y => (c • (1 : Matrix (Fin n) (Fin n) ℂ)) *ᵥ y := by
     funext y; ext i; simp [Matrix.mulVec, dotProduct, Matrix.one_apply]
   rw [e, map_mulVec_volume _ hA, Matrix.det_smul, Matrix.det_one, mul_one, Fintype.card_fin, norm_pow, ← pow_mul, mul_comm n 2]
@@ -553,8 +606,6 @@ theorem μx_map_inv (l : ℂ) (hl : l ≠ 0) : μx.map (fun c => l / conj c) = �
   simp only [Pi.mul_apply]
   rw [← mul_assoc, ← ENNReal.ofReal_mul (abs_nonneg _), conj_inverse_map_det, abs_neg]
   congr 2
-  have h1 : 0 < ‖c‖ := norm_pos_iff.2 hc
-  have h2 : 0 < ‖l‖ := norm_pos_iff.2 hl
   rw [abs_of_nonneg (by positivity), norm_div, RCLike.norm_conj]
   field_simp
 
@@ -702,7 +753,6 @@ lemma parametrisation_eq_scaled_sum (p : ℂ × HPar k r') :
 lemma heisenberg_dilation_map_measure (c : ℂ) (hc : c ≠ 0) :
     (volume : Measure (HPar k r')).map (fun x : HPar k r' => (c • x.1, ‖c‖ ^ 2 * x.2)) =
       ENNReal.ofReal ((‖c‖ ^ (2 * (2 * r' + k + 1) + 2))⁻¹) • volume := by
-  have hc' : 0 < ‖c‖ := norm_pos_iff.mpr hc
   have e : (fun x : HPar k r' => (c • x.1, ‖c‖ ^ 2 * x.2)) =
       Prod.map (fun y : Fin (2 * r' + k + 1) → ℂ => c • y) (fun s : ℝ => ‖c‖ ^ 2 * s) := rfl
   rw [e, Measure.volume_eq_prod, ← Measure.map_prod_map _ _ (measurable_const_smul c) (measurable_const_mul _),

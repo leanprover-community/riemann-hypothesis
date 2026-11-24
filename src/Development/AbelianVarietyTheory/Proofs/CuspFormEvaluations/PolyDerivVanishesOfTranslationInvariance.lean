@@ -1,9 +1,53 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.MemAnalyticAtZeroOfEventuallyDifferentiableAt
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsWeightedHomogeneousOfMemOrbitSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Complex.RemovableSingularity
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -33,8 +77,8 @@ theorem apolar_apply (P : MvPolynomial σ ℂ) (F : MvPowerSeries σ ℂ) :
     apolar P F = ∑ m ∈ P.support,
       P.coeff m * ((∏ i, (m i).factorial : ℕ) : ℂ) * MvPowerSeries.coeff m F := by
   conv_lhs => rw [P.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, apolar_monomial]
+
+  simp only [map_sum, LinearMap.sum_apply, apolar_monomial]
 
 theorem prod_factorial_add_single [DecidableEq σ] (m : σ →₀ ℕ) (i : σ) :
     (∏ j, ((m + Finsupp.single i 1 : σ →₀ ℕ) j).factorial : ℕ) =
@@ -86,12 +130,12 @@ theorem apolar_quad_mul (P : MvPolynomial σ ℂ) (β : σ → σ → ℂ)
     (F : MvPowerSeries σ ℂ) :
     apolar P ((∑ s, ∑ t, β s t • (MvPowerSeries.X t * MvPowerSeries.X s)) * F) = 0 := by
   have h := congrArg (fun Q => apolar Q F) hP
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, map_zero,
-    LinearMap.zero_apply] at h
+
+  simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, map_zero,
+  LinearMap.zero_apply] at h
   rw [← h]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, mul_assoc, apolar_mul_X]
+
+  simp only [Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, mul_assoc, apolar_mul_X]
 
 theorem apolar_eq_zero_of_mem_span {ι : Type*} (v : ι → σ → ℂ) (F : MvPowerSeries σ ℂ)
     (hF : ∀ k, ∑ s, v k s • MvPowerSeries.pderiv (R := ℂ) s F = 0) {P : MvPolynomial σ ℂ}
@@ -103,12 +147,12 @@ theorem apolar_eq_zero_of_mem_span {ι : Type*} (v : ι → σ → ℂ) (F : MvP
     obtain ⟨k, rfl⟩ := hP
     intro Q
     have h := congrArg (apolar Q) (hF k)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, map_zero] at h
+
+    simp only [map_sum, map_smul, map_zero] at h
     rw [← h]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, LinearMap.sum_apply,
-      LinearMap.smul_apply, apolar_X_mul]
+
+    simp only [Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, LinearMap.sum_apply,
+    LinearMap.smul_apply, apolar_X_mul]
   | zero => simp
   | add P P' _ _ h h' => intro Q; rw [add_mul, map_add (f := _), LinearMap.add_apply, h, h', add_zero]
   | smul a P _ h => intro Q; rw [smul_eq_mul, mul_comm a, mul_assoc, h]
@@ -123,12 +167,12 @@ theorem taylor_quad [DecidableEq σ] (β : σ → σ → ℂ) :
     taylor (fun z : σ → ℂ => ∑ s, ∑ t, β s t * z s * z t) =
       ∑ s, ∑ t, β s t • (MvPowerSeries.X t * MvPowerSeries.X s) := by
   have h := taylor_eval (∑ s, ∑ t, MvPolynomial.C (β s t) * MvPolynomial.X s * MvPolynomial.X t)
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X] at h
+
+  simp only [map_sum, map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X] at h
   rw [h, ← MvPolynomial.coeToMvPowerSeries.ringHom_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, MvPolynomial.coeToMvPowerSeries.ringHom_apply,
-    MvPolynomial.coe_C, MvPolynomial.coe_X, MvPowerSeries.smul_eq_C_mul]
+
+  simp only [map_sum, map_mul, MvPolynomial.coeToMvPowerSeries.ringHom_apply,
+  MvPolynomial.coe_C, MvPolynomial.coe_X, MvPowerSeries.smul_eq_C_mul]
   refine Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun t _ => by ring
 
 theorem polyDeriv_exp_mul_dir (P : MvPolynomial σ ℂ) (β : σ → σ → ℂ)

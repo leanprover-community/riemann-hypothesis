@@ -1,15 +1,19 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.ToHLat
+public import Formalism.LocalToGlobal.GlobalTheory.HLatOps
+public import Formalism.LocalToGlobal.Columns.CoefficientsModP
+public import Formalism.LocalToGlobal.Columns.HeckeSpCount
+public import Formalism.LocalToGlobal.Columns.RowFormsGood
+public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
 public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
-public import Formalism.LocalToGlobal.Columns.AtTRank
-public import Formalism.LocalToGlobal.Columns.RowFormsGood
-public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
-public import Formalism.LocalToGlobal.Columns.BaseInst
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -204,8 +208,8 @@ theorem csd_hasRatBasis {K : Type} [Field K] [NumberField K] [StarRing K] (S : C
   have hwt : ∀ c, (S.wt c : K) ≠ 0 := fun c => by exact_mod_cast (S.wt_pos c).ne'
   have hmem : ∀ f, P f ∈ S.Forms := by
     intro f c γ'
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hPc, map_smul, map_sum]
+
+    rw [hPc, map_smul, map_sum]
     congr 1
     refine Fintype.sum_equiv (Equiv.mulLeft γ') _ _ fun γ => ?_
     rw [Equiv.coe_mulLeft, map_mul, Module.End.mul_apply]
@@ -230,9 +234,9 @@ theorem csd_hasRatBasis {K : Type} [Field K] [NumberField K] [StarRing K] (S : C
     rw [hPc, Pi.basis_apply]
     by_cases hcc : c' = c
     · subst hcc
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Pi.single_eq_same, map_smul, map_sum, Finsupp.smul_apply, Finsupp.coe_finsetSum, Finset.sum_apply,
-        smul_eq_mul]
+
+      simp only [Pi.single_eq_same, map_smul, map_sum, Finsupp.smul_apply, Finsupp.coe_finsetSum, Finset.sum_apply,
+      smul_eq_mul]
       exact mul_mem (inv_mem (natCast_mem _ _)) (sum_mem fun γ _ => R.act_rat c' γ i j)
     · simp [Pi.single_eq_of_ne hcc]
   obtain ⟨b, hbT, hsp, hli⟩ := exists_linearIndependent K (P '' Set.range B)
@@ -288,9 +292,9 @@ theorem isSesq_ipAt (h : S.Ok) : IsSesq (fun v (φ ψ : S.EqFun) => S.ipAt h v �
 theorem pairAt_of_rat (v : InfinitePlace K) (x y : S.V) (hx : ∀ i, S.bV.repr x i ∈ cmMax K) :
     v.embedding (S.pair x y) = S.pairAt v x y := by
   conv_lhs => rw [← S.bV.sum_repr x, ← S.bV.sum_repr y]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, map_mul, pairAt,
-    Finset.mul_sum]
+
+  simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, map_mul, pairAt,
+  Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   have h1 : v.embedding ((starRingEnd K) (S.bV.repr x i)) = starRingEnd ℂ (v.embedding (S.bV.repr x i)) :=
@@ -344,8 +348,8 @@ theorem posAt_ipAt (h : S.Ok) (hpos : ∀ v : InfinitePlace K, (S.gramV.map v.em
 theorem gram_ipAt (h : S.Ok) (hr : (S.toCSD h).HasRatBasis) (v : InfinitePlace K) :
     gramOf (S.hB h) (fun (φ ψ : S.EqFun) => S.ipAt h v φ ψ) = (S.hGram h).map v.embedding := by
   ext a a'
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gramOf, Matrix.of_apply, ipAt, Matrix.map_apply, CSD.H, CSD.csum, map_sum, map_mul, map_inv₀, map_natCast]
+
+  simp only [gramOf, Matrix.of_apply, ipAt, Matrix.map_apply, CSD.H, CSD.csum, map_sum, map_mul, map_inv₀, map_natCast]
   refine Finset.sum_congr rfl fun c _ => ?_
   congr 1
   have e : ∀ a, ((S.hB h a : S.EqFun) : S.D → S.V) (S.outSec.rep c) = ((S.toCSD h).basis a : S.Cl → S.V) c := by

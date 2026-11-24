@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
 
 @[expose] public section
@@ -68,22 +69,7 @@ theorem van_univ {τ : Type} {f : MvPowerSeries τ C} (h : MvPowerSeries.constan
 theorem constantCoeff_subst_zero {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ C}
     (ha : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) {f : MvPowerSeries σ C}
     (hf : MvPowerSeries.constantCoeff f = 0) : MvPowerSeries.constantCoeff (MvPowerSeries.subst a f) = 0 := by
-  rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply,
-    MvPowerSeries.coeff_subst (MvPowerSeries.hasSubst_of_constantCoeff_zero ha)]
-  apply finsum_eq_zero_of_forall_eq_zero
-  intro d
-  rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, Finsupp.prod, map_prod]
-  simp only [map_pow, ha]
-  by_cases hd : d = 0
-  · subst hd
-    simp [hf]
-  · obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-      by_contra h
-      push_neg at h
-      exact hd (Finsupp.ext h)
-    have h0 : (∏ x ∈ d.support, (0 : C) ^ d x) = 0 :=
-      Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hs) (zero_pow hs)
-    rw [h0, smul_zero]
+  apply Formalism.L2.FormalSeriesBounds.VP.cc_subst <;> assumption
 
 theorem alongCv_repar {σ : Type} [Finite σ] {γ : σ → PowerSeries C}
     (hγ : ∀ i, PowerSeries.constantCoeff (γ i) = 0) {τ : PowerSeries C} (hτ : PowerSeries.constantCoeff τ = 0)
@@ -160,12 +146,12 @@ theorem TySet_repar {V : VF C} {g : Fin 2} (τ : PowerSeries C) (hτ : PowerSeri
     exact ⟨constantCoeff_subst_zero (a := fun _ : Unit => τ) (fun _ => hτ) (hlam q).1, hint _ (hlam q).2⟩
   · intro i
     rw [alongCv_repar hγ0 hτ, h1 i]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hxx, hs, map_sum, map_smul]
+
+    simp only [hxx, hs, map_sum, map_smul]
   · intro q
     rw [hxx, h2 q, alongCv_repar hγ0 hτ]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hxx, hs, map_add (f := _), map_sub, map_sum]
+
+    simp only [hxx, hs, map_add (f := _), map_sub, map_sum]
     congr 1
     refine Finset.sum_congr rfl fun c _ => ?_
     split_ifs <;> simp
@@ -275,7 +261,7 @@ theorem const_mem_type_set_of_nonneg (hlg : ∀ i, MvPowerSeries.constantCoeff (
             _ = V.l ^ 1 := (pow_one _).symm
             _ ≤ V.l ^ (s + 1) := Nat.pow_le_pow_right (by omega) (by omega)
         have hl1 : V.l ≠ 1 := by omega
-        simp [const0, PowerSeries.coeff_X, h1.ne', hl1]
+        simp [const0, PowerSeries.coeff_X, hl1]
     · have hm1 : m ≠ 1 := fun h => hm 0 (by simp [h])
       simp [PowerSeries.coeff_X, hm1]
   refine ⟨fun _ => 0, fun q => ζ q • PowerSeries.X, ?_, ?_, ?_, ?_⟩

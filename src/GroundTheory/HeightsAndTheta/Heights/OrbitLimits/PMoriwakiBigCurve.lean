@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsMoriwakiBigCurve
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveCountLower
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSmallPacking
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

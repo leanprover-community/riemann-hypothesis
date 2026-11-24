@@ -1,6 +1,15 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Artinian.Defs
+public import Mathlib.RingTheory.Ideal.Maximal
+public import Mathlib.RingTheory.Ideal.Quotient.Defs
+public import Mathlib.RingTheory.Localization.Defs
+import Mathlib.Algebra.DualNumber
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.TrivSqZeroExt.Basic
+public import Mathlib.RingTheory.Artinian.Ring
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
 
 @[expose] public section
 

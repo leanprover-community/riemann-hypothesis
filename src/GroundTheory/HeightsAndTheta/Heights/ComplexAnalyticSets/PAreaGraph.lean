@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAreaGraphBound
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

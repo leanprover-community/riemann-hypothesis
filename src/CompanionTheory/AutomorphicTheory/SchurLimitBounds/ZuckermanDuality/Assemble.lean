@@ -3,6 +3,51 @@ module
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.ZuckermanDuality.ZuckDualTOfZuckDual
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimBdPf
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimBdPfKFin
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAtPlaceOfSubadditive
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -49,8 +94,8 @@ variable {ε : Fin (2 * r + k + 1) → Bool} {μ μ' : Fin (2 * r + k + 1) → �
 
 private theorem ckOn_GV_of_mem_Wsp (hK : PI.KFinSmooth) (hS : CoefSmooth) {F : B.Mat k r → (Wq →L[ℂ] Wp)}
     (hF : F ∈ Wsp k r Wp Wq ε μ) : B.CkOn ⊤ (B.GV k r) F := by
-  letI : NormedAddCommGroup (B.Mat k r) := Matrix.normedAddCommGroup
-  letI : NormedSpace ℝ (B.Mat k r) := Matrix.normedSpace
+  let : NormedAddCommGroup (B.Mat k r) := Matrix.normedAddCommGroup
+  let : NormedSpace ℝ (B.Mat k r) := Matrix.normedSpace
   unfold Wsp at hF
   induction hF using Submodule.span_induction with
   | mem F hF =>
@@ -80,11 +125,7 @@ theorem wsp_smooth (hK : PI.KFinSmooth) (hS : CoefSmooth) {F : B.Mat k r → (Wq
   obtain ⟨U, F', hU, hgU, hF', hFe⟩ := ckOn_GV_of_mem_Wsp hK hS hF g₀ hg₀.1.1
   exact ⟨U, F', hU, hgU, hF', fun g hg hgl => hFe g hg hgl.1⟩
 
-theorem wsp_ckOn (hK : PI.KFinSmooth) (hS : CoefSmooth) {F : B.Mat k r → (Wq →L[ℂ] Wp)}
-    (hF : F ∈ Wsp k r Wp Wq ε μ) : B.CkOn ⊤ (B.GV k r) F := by
-  intro g₀ hg₀
-  obtain ⟨U, f', hU, hgU, hf', he⟩ := wsp_smooth hK hS hF g₀ (Dx1.LZ.glev0 hg₀)
-  exact ⟨U, f', hU, hgU, hf', fun g hg hgG => he g hg (Dx1.LZ.glev0 hgG).1⟩
+alias wsp_ckOn := _root_.CompanionTheory.LimBd.Main.ckOn_GV_of_mem_Wsp
 
 theorem wsp_inCC (hK : PI.KFinSmooth) (hC : CoefCC) {A h : ℝ} (hD : KDecay k r ε A h)
     (hg : PI.ZuckTensor.GapAtLeast ε μ h) {F : B.Mat k r → (Wq →L[ℂ] Wp)} (hF : F ∈ Wsp k r Wp Wq ε μ) :
@@ -185,11 +226,11 @@ theorem op_expand (S : Wq →L[ℂ] Wp) :
     S = ∑ a, ∑ b, ⟪stdOrthonormalBasis ℂ Wp a, S (stdOrthonormalBasis ℂ Wq b)⟫_ℂ •
       (innerSL ℂ (stdOrthonormalBasis ℂ Wq b)).smulRight (stdOrthonormalBasis ℂ Wp a) := by
   ext v
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
+  simp only [_root_.sum_apply, _root_.smul_apply, ContinuousLinearMap.smulRight_apply,
     innerSL_apply_apply]
   conv_lhs => rw [← (stdOrthonormalBasis ℂ Wq).sum_repr' v]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp_rw [map_smul]
   conv_lhs => arg 2; ext b; rw [← (stdOrthonormalBasis ℂ Wp).sum_repr' (S (stdOrthonormalBasis ℂ Wq b))]
   simp_rw [Finset.smul_sum]

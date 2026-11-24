@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsPrimeSpanXb
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalSpanXb
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalSpanTwo
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IdDeg
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section
 

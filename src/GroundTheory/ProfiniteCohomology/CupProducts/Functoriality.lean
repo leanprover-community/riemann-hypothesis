@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
+public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
+public import GroundTheory.ProfiniteCohomology.CupProducts
 public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

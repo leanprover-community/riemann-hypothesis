@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.UnitTimesParameterMonomial
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChPrime
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.Monomial
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsMulMemOfAlgebraMapLocRingEqZero
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.StalkLoc
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.Monomial
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.RegDom
 
 @[expose] public section
 
@@ -27,26 +68,7 @@ theorem algebraMap_locRing_eq_zero_of_mem {I : Ideal (MvPolynomial (Fin m) ℂ)}
 theorem map_ptIdeal_eq_maximalIdeal {I : Ideal (MvPolynomial (Fin m) ℂ)} {t : Fin m → ℂ}
     (hI : ∀ h ∈ I, eval t h = 0) [IsLocalRing (locRing I t)] :
     Ideal.map (algebraMap _ (locRing I t)) (ptIdeal t) = IsLocalRing.maximalIdeal (locRing I t) := by
-  apply le_antisymm
-  · rw [Ideal.map_le_iff_le_comap]
-    intro g hg
-    rw [Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
-      isUnit_algebraMap_locRing_iff I t hI]
-    simpa using RingHom.mem_ker.mp hg
-  · intro x hx
-    obtain ⟨a, b, hb, hab⟩ := exists_mk_locRing I t x
-    have hbu := (isUnit_algebraMap_locRing_iff I t hI b).mpr hb
-    have ha : a ∈ ptIdeal t := by
-      refine RingHom.mem_ker.mpr ?_
-      by_contra hne
-      have hau := (isUnit_algebraMap_locRing_iff I t hI a).mpr hne
-      rw [← hab] at hau
-      exact ((IsLocalRing.mem_maximalIdeal _).mp hx) (isUnit_of_mul_isUnit_left hau)
-    obtain ⟨v, hv⟩ := hbu.exists_right_inv
-    have : x = algebraMap _ (locRing I t) a * v := by
-      rw [← hab, mul_assoc, hv, mul_one]
-    rw [this]
-    exact Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ ha)
+  apply GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par.map_ptIdeal_eq_maximalIdeal_ordAff <;> assumption
 
 theorem chPrime_le_of_mem {I 𝔮 : Ideal (MvPolynomial (Fin m) ℂ)} {t : Fin m → ℂ}
     {f : MvPolynomial (Fin m) ℂ} (h𝔮 : 𝔮.IsPrime) (hI𝔮 : I ≤ 𝔮) (h𝔮t : 𝔮 ≤ ptIdeal t)

@@ -1,12 +1,15 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GtBaseChangeSt
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabComp
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 
@@ -91,7 +94,7 @@ theorem genFibre (hC : ReciprocityTheory.ChartRestriction.G.Out.CubePullSt) : Ge
   exact ⟨_, n2, m2, trivial⟩
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem intFrames_of (hC : ReciprocityTheory.ChartRestriction.G.Out.CubePullSt) (hG : GenFibreSt Xo c) (hL : LieFreeSt Xo c)
     (hT : ThetaFrameSt Xo c) (hS : SpreadSt Xo c) : IntFramesSt Xo c := by
 
@@ -101,8 +104,6 @@ theorem intFrames_of (hC : ReciprocityTheory.ChartRestriction.G.Out.CubePullSt) 
     simp [Scheme.Hom.appLE]
     first
       | (erw [Category.id_comp, CategoryTheory.Functor.map_id]; rfl)
-      | (erw [Category.id_comp, CategoryTheory.Functor.map_id]; simp; done)
-      | (erw [CategoryTheory.Functor.map_id]; simp; done)
   have key : ∀ {S : Type} [CommRing S] (x : Sp S ⟶ Xo.X) (s s0 : LB.Sec (PPx x)) (a : S),
       (∀ i, s.f i = scal x a i * s0.f i) → ∀ (i : Fin 1 → Xo.univ.t.PP.L.ι)
         (h : (PPx x).U i ≤ (𝟙 (Gx x)) ⁻¹ᵁ (PPx x).U i),

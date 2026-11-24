@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsWellDefined
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ThmIExistsFamily
 

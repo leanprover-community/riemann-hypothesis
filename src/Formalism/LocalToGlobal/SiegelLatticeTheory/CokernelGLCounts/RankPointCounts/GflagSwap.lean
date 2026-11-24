@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PairingOmegaPrimeZ
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PairingOmegaPrimeZ
 
 @[expose] public section
 
@@ -31,17 +29,11 @@ theorem hT_X_X (F : FlagG S r T) {x x' : S.V} (hx : x ∈ F.X) (hx' : x' ∈ F.X
   | add y z _ _ h1 h2 => simp [map_add (f := _), LinearMap.add_apply, h1, h2]
   | smul c y _ h => simp [LinearMap.map_smulₛₗ, LinearMap.smul_apply, h]
 
-private theorem hT_swap_eq_star (x y : S.V) : S.hT y x = star (S.hT x y) := by
-  first
-  | exact (S.herm x y).symm
-  | exact (S.herm.eq x y).symm
-  | simpa using (S.herm x y).symm
-
 theorem hT_z_X (F : FlagG S r T) {x : S.V} (hx : x ∈ F.X) : S.hT F.z x = 0 := by
   induction hx using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨a, rfl⟩ := hx
-    rw [hT_swap_eq_star, F.z_orth a, star_zero]
+    rw [_root_.Formalism.L2.SG.NGCut.NormalVectorPairings.hT_swap, F.z_orth a, star_zero]
   | zero => simp
   | add y z _ _ h1 h2 => simp [map_add (f := _), h1, h2]
   | smul c y _ h => simp [map_smul, h]
@@ -83,8 +75,8 @@ private theorem finrank_add_finrank_orth_le (U : Submodule E S.V) :
         rw [Submodule.coe_sum] at this
         simp only [Submodule.coe_smul] at this
         exact this.symm
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hxs, map_sum, LinearMap.sum_apply]
+
+      rw [hxs, map_sum, LinearMap.sum_apply]
       simp [LinearMap.map_smulₛₗ, hyi]
     · intro h
       funext i
@@ -100,8 +92,8 @@ private theorem finrank_add_finrank_orth_le (U : Submodule E S.V) :
       intro y
       have h1 : f (ψ y) = 0 := hf (LinearMap.mem_range_self ψ y)
       rw [hfw] at h1
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, LinearMap.sum_apply]
+
+      rw [map_sum, LinearMap.sum_apply]
       simp only [LinearMap.map_smulₛₗ, starRingEnd_apply, star_star, LinearMap.smul_apply, smul_eq_mul]
       rw [← h1]
       refine Finset.sum_congr rfl fun i _ => ?_
@@ -144,7 +136,7 @@ theorem line (F : FlagG S r T) (hT : T ≠ 0) (H : Submodule E S.V) (hXH : ∀ x
     intro x hx
     rw [mem_Qsp]
     refine ⟨fun x' hx' => hT_X_X F hx' hx, hT_z_X F hx, fun h hh => ?_⟩
-    rw [hT_swap_eq_star, hXH x hx h hh, star_zero]
+    rw [_root_.Formalism.L2.SG.NGCut.NormalVectorPairings.hT_swap, hXH x hx h hh, star_zero]
   have hXr : finrank E F.X = r := by
     show finrank E (Submodule.span E (Set.range F.e)) = r
     rw [finrank_span_eq_card F.e_indep, Fintype.card_fin]
@@ -182,7 +174,7 @@ theorem line (F : FlagG S r T) (hT : T ≠ 0) (H : Submodule E S.V) (hXH : ∀ x
   obtain ⟨x, hx, w, hw, rfl⟩ := Submodule.mem_sup.1 hv
   obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hw
   have h1 : S.hT y0 x = 0 := by
-    rw [hT_swap_eq_star, ((mem_Qsp F H).1 hy0).1 x hx, star_zero]
+    rw [_root_.Formalism.L2.SG.NGCut.NormalVectorPairings.hT_swap, ((mem_Qsp F H).1 hy0).1 x hx, star_zero]
   have h2 : c * S.hT y0 y0 = 0 := by
     have := hvy
     simp only [brS, map_add (f := _), map_smul, smul_eq_mul, h1, zero_add] at this
@@ -195,9 +187,7 @@ theorem line (F : FlagG S r T) (hT : T ≠ 0) (H : Submodule E S.V) (hXH : ∀ x
 
 theorem zhat_swap (F : FlagG S r T) (F' : FlagG S r T') : Zhat F' F = (Zhat F F')ᴴ := by
   ext a b
-  rw [Matrix.conjTranspose_apply]
-  simp only [Zhat]
-  exact brS_swap (F'.fvec a) (F.fvec b)
+  simpa only [Zhat, Matrix.conjTranspose_apply] using brS_swap (F'.fvec a) (F.fvec b)
 
 theorem Dl_swap (F : FlagG S r T) (F' : FlagG S r T') (l : ℕ) : Dl F' F l = star (Dl F F' l) := by
   unfold Dl leadMinorE

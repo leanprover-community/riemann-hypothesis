@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodairaSection
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodairaGeneric
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartDenominator
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionSupBound
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

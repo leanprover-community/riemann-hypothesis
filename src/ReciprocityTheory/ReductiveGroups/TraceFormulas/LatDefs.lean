@@ -1,12 +1,52 @@
 module
 
-public import Mathlib
 public import Formalism.WachLatticeTwists.LatticeDualFibres.FibreDualStable
 public import Formalism.WachLatticeTwists.CharacterSplitJumps.Statement
 public import Formalism.WachLatticeTwists.CoprimeLiftBounds.Statement
-public import Formalism.GaloisCohomology.LocalTateDualityK
 public import ReciprocityTheory.Hypotheses.GalCohDefs
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Formalism.GaloisCohomology.StatementLoc
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -253,23 +293,6 @@ def NatInvIso : Prop :=
     FiniteDimensional ℚ_[p] K → PadicCoeff p O → ∀ (i : G ≃ₜ* GK p K) {ε : G →* Oˣ}, IsCyc p K (carry i ε) →
     Nonempty (NatInv ε (fun M _ _ _ => IsFGTop O M))
 
-def ShapeG : Prop :=
-  ∀ {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [TopologicalSpace O] [TopologicalSpace (FractionRing O)]
-    [IsTopologicalAddGroup (FractionRing O)] [ContinuousSMul O (FractionRing O)] {G : Type} [Group G] [TopologicalSpace G],
-    FiniteDimensional ℚ_[p] K → PadicCoeff p O → FracTop O → ∀ (i : G ≃ₜ* GK p K) {ε : G →* Oˣ}, IsCyc p K (carry i ε) →
-    ∀ e : ℕ, 0 < e → ∀ {M : Type} [AddCommGroup M] [Module O M] (_u : M ≃ₗ[O] KO O) (ρ : Representation O G M),
-    (∀ g m, ρ g m = ((((ε g) ^ e)⁻¹ : Oˣ) : O) • m) → QuotShape (HcLC ρ) ⊥ (Module.finrank ℚ_[p] K)
-
-def ShapeUnr : Prop :=
-  ∀ {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [TopologicalSpace O] [TopologicalSpace (FractionRing O)]
-    [IsTopologicalAddGroup (FractionRing O)] [ContinuousSMul O (FractionRing O)] {G : Type} [Group G] [TopologicalSpace G],
-    FiniteDimensional ℚ_[p] K → PadicCoeff p O → FracTop O → ∀ (i : G ≃ₜ* GK p K)
-    {M : Type} [AddCommGroup M] [Module O M] (_u : M ≃ₗ[O] KO O) (ρ : Representation O G M),
-    (∀ g m, ρ g m = m) → ∀ I : Subgroup G, (∀ g, g ∈ I ↔ i g ∈ Formalism.GaloisCohomology.inertiaK p K) →
-    QuotShape (HcLC ρ) (unrH1 ρ I) (Module.finrank ℚ_[p] K)
-
 def UnrDec : Prop :=
   ∀ {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {p : ℕ} [Fact p.Prime]
     (A : ValuationSubring Ω), A.valuation (p : Ω) < 1 →
@@ -287,12 +310,6 @@ def VhE : Prop :=
       (∀ x ∈ S, ∃ z : coZ1s ρ, Submodule.mkQ _ z = x ∧ IsLocallyConstant (z : G E Ω → M)) →
       (∀ v, S ≤ unrH1 ρ (Ine (F := E) (Av v))) →
       Module.length O S ≤ Module.length O (O ⧸ Ideal.span {(l : O)}) * (padicValNat l (classNumber E) : ℕ∞)
-
-def TopEx : Prop :=
-  ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [Algebra ℤ_[p] O] [Module.Finite ℤ_[p] O], Function.Injective (algebraMap ℤ_[p] O) →
-    ∃ (_ : TopologicalSpace O) (_ : TopologicalSpace (FractionRing O)) (_ : IsTopologicalAddGroup (FractionRing O))
-      (_ : ContinuousSMul O (FractionRing O)), PadicCoeff p O ∧ FracTop O
 
 structure Elem : Prop where
   padicInt : ∀ {p : ℕ} [Fact p.Prime], PadicCoeff p ℤ_[p]
@@ -326,13 +343,9 @@ structure Core : Prop where
   fin : FinIso
   rat : RatIso
   int : IntIso
-  jspan : JSpan
   nat : NatInvIso
-  shape : ShapeG
-  shapeUnr : ShapeUnr
   unr : UnrDec
   vhE : VhE
-  top : TopEx
   elem : Elem
 
 section Wrap

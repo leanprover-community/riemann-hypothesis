@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
+public import GroundTheory.GlobalFields.IdeleGroups.UnitBound
+import Mathlib.Algebra.Order.Positive.Field
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

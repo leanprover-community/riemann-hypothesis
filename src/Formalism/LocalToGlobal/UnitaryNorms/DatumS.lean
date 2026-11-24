@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.ClassS
 public import Formalism.LocalToGlobal.UnitaryNorms.DefsDatum
+public import Formalism.LocalToGlobal.PlaceMapInjectivity.MapPlInjective
 
 @[expose] public section
 

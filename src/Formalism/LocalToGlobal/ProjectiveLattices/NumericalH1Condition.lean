@@ -3,6 +3,9 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompTie
 public import Formalism.LocalToGlobal.ProjectiveLattices.ValSetAlgSubset
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
+public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

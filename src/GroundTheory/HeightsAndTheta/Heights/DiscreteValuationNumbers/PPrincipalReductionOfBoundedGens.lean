@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsPowReductionCut
+public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
+public import Mathlib.RingTheory.ReesAlgebra
+public import Mathlib.Algebra.Module.SpanRankOperations
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -264,8 +268,8 @@ theorem exists_relation {N : Ideal A} {e : ℕ} (hN : N.spanFinrank ≤ e) (v : 
   · rw [← hc i]
     exact Ideal.Quotient.eq_zero_iff_mem.2 h
   · have hsum : (maximalIdeal A • (⊤ : Submodule A N)).mkQ (∑ i, c i • (⟨v i, hv i⟩ : N)) = 0 := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, ← hg]
+
+      rw [map_sum, ← hg]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_smul, ← hc i, ← Ideal.Quotient.algebraMap_eq, algebraMap_smul]
       rfl
@@ -423,7 +427,7 @@ theorem proof : PrincipalReductionOfBoundedGens.Statement.{u} := by
     rw [cls_of_mem hx, cls_of_mem hc, ← map_mul, toFC_eq_iff] at hf
     have h2 := coeff_mem_of_mem_map hf (L + m)
     simp only [AddSubgroupClass.coe_sub, Subalgebra.coe_mul, coeff_sub, coeff_mul_monomial,
-      coeff_monomial, if_true] at h2
+      coeff_monomial] at h2
     refine Submodule.mem_sup.2 ⟨c * (f' : A[X]).coeff L,
       Ideal.mul_mem_mul (Ideal.mem_span_singleton_self c) ((mem_reesAlgebra_iff I _).1 f'.2 L), _, ?_,
       show c * (f' : A[X]).coeff L + (x - (f' : A[X]).coeff L * c) = x by ring⟩

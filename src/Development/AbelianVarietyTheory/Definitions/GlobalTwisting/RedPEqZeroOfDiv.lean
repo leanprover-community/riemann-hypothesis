@@ -1,9 +1,59 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Formalism.LocalToGlobal.Columns.BaseLemmas
-public import Formalism.LocalToGlobal.KernelLattices.ThDistC
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -154,8 +204,8 @@ theorem smul_mem_locP {N : Submodule (𝓞 E) (Sp E n)} {a : E} (ha : IntAt P a)
 theorem apply_eq_sum {m : ℕ} (f : Sp E n →ₗ[E] Sp E m) (x : Sp E n) (i : Fin m) :
     f x i = ∑ j, x j * f (Pi.single j 1) i := by
   conv_lhs => rw [← Finset.univ_sum_single x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_apply]
+
+  rw [map_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
   have : (Pi.single j (x j) : Sp E n) = x j • (Pi.single j 1 : Sp E n) := by rw [← Pi.single_smul, smul_eq_mul, mul_one]
   rw [this, map_smul, Pi.smul_apply, smul_eq_mul]
@@ -322,7 +372,7 @@ theorem sumL_last (g : Sp E n →ₗ[E] Sp E n) (t : E) (x : Sp E N) : sumL hN g
   rfl
 
 def sumE (g : Sp E n ≃ₗ[E] Sp E n) (t : Eˣ) : Sp E N ≃ₗ[E] Sp E N :=
-  LinearEquiv.ofLinear (sumL hN (g : Sp E n →ₗ[E] Sp E n) t) (sumL hN (g.symm : Sp E n →ₗ[E] Sp E n) (t⁻¹ : Eˣ))
+  LinearEquiv.ofLinearMap (sumL hN (g : Sp E n →ₗ[E] Sp E n) t) (sumL hN (g.symm : Sp E n →ₗ[E] Sp E n) (t⁻¹ : Eˣ))
     (LinearMap.ext fun x => ext_prH hN (by simp [prH_sumL]) (by simp [sumL_last]))
     (LinearMap.ext fun x => ext_prH hN (by simp [prH_sumL]) (by simp [sumL_last]))
 
@@ -362,7 +412,7 @@ theorem extGH_apply {SG : Finset (HeightOneSpectrum (𝓞 E))} (h : GLG (E := E)
   show padM _ n (h w).1 = _
   ext i j
   refine Fin.lastCases ?_ (fun i' => ?_) i <;> refine Fin.lastCases ?_ (fun j' => ?_) j <;>
-    simp [padM, diagMat, Matrix.one_apply, Fin.castSucc_ne_last, (Fin.castSucc_ne_last _).symm]
+    simp [padM, diagMat, Fin.castSucc_ne_last, (Fin.castSucc_ne_last _).symm]
 
 variable {P : HeightOneSpectrum (𝓞 E)}
 
@@ -392,10 +442,10 @@ theorem diagMat_mulVec {κ : Type} [CommRing κ] (A : Matrix (Fin n) (Fin n) κ)
   refine ⟨fun i => ?_, ?_⟩
   · show ∑ l, diagMat n (n + 1) A i.castSucc l * v l = ∑ j, A i j * v j.castSucc
     rw [Fin.sum_univ_castSucc]
-    simp [diagMat, Matrix.one_apply, Fin.castSucc_ne_last]
+    simp [diagMat, Fin.castSucc_ne_last]
   · show ∑ l, diagMat n (n + 1) A (Fin.last n) l * v l = v (Fin.last n)
     rw [Fin.sum_univ_castSucc]
-    simp [diagMat, Matrix.one_apply, (Fin.castSucc_ne_last _).symm]
+    simp [diagMat, (Fin.castSucc_ne_last _).symm]
 
 theorem redGL_extI (j : GLint E n P) : redGL N P (extI hN P j) = diagEmb _ (by omega : n ≤ N) (redGL n P j) := by
   refine redGL_eq _ fun x hx => ?_

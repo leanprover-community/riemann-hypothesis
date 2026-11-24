@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsComb
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 

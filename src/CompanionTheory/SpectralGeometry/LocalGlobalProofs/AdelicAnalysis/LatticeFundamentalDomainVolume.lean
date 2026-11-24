@@ -1,6 +1,12 @@
 module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
+public import Mathlib.Algebra.Module.ZLattice.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -130,7 +136,6 @@ theorem integral_char_eq_zero (hF : IsTotallyReal F) (ρ : InfinitePlace F → (
       rw [← hr]
       first
         | rfl
-        | simp
     have h1 : f (fun w => ρ w ((N : F) * (s : F))) = 1 := by
       have : (∑ w, ρ w β * ρ w ((N : F) * (s : F))) = (z : ℝ) := by
         rw [← hz]
@@ -209,8 +214,8 @@ theorem GlobalTheory.CompanionTheory.SW.FD.main : ∀ (F : Type) [Field F] [Numb
     rw [GlobalTheory.CompanionTheory.SW.FD.latR_eq_range, Submodule.span_int_eq_addSubgroupClosure]
     apply le_antisymm
     · rintro _ ⟨r, rfl⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← B.sum_repr r, map_sum]
+
+      rw [← B.sum_repr r, map_sum]
       refine AddSubgroup.sum_mem _ fun i _ => ?_
       rw [map_zsmul, ← hbi]
       exact AddSubgroup.zsmul_mem _ (AddSubgroup.subset_closure (Set.mem_range_self i)) _

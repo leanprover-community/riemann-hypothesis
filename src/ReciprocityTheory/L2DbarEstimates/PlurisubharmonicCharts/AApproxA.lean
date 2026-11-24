@@ -1,8 +1,15 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
+public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+public import Mathlib.Analysis.Calculus.FDeriv.Star
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.LogNormSq
+import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
+public import Mathlib.Analysis.Calculus.ContDiff.Comp
+public import Mathlib.Analysis.Calculus.ContDiff.Operations
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 
@@ -34,8 +41,8 @@ theorem vec_expand {n : ℕ} (w : V n) : w = ∑ j, w j • bas n j := by
 private theorem clm_apply_eq_sum_re_im_basis {n : ℕ} (D : V n →L[ℝ] ℂ) (ζ : V n) :
     D ζ = ∑ k, ((ζ k).re * D (bas n k) + (ζ k).im * D (I • bas n k)) := by
   conv_lhs => rw [vec_expand ζ]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun k _ => clm_smul_decomp D (ζ k) (bas n k)
 
 theorem sum_wdb_eq {n : ℕ} (g : V n → ℂ) (y : V n) (ζ : V n) :
@@ -85,7 +92,7 @@ theorem leviV_eq_dv {n : ℕ} {g : V n → ℂ} {y : V n} (hg : ContDiffAt ℝ 2
   simp only [wd]
   rw [hD.fderiv]
   simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, ContinuousLinearMap.coe_smul',
-    Pi.smul_apply, smul_eq_mul, WithLp.ofLp_toLp]
+    Pi.smul_apply, smul_eq_mul]
   rw [Finset.mul_sum, ← Finset.sum_sub_distrib, Finset.sum_div, Finset.sum_mul]
   refine Finset.sum_congr rfl fun k _ => ?_
   change _ = _ * ξ j

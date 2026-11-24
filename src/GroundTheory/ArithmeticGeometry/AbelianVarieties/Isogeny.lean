@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FunctionFieldPoint
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisionPoints
+public import Mathlib.FieldTheory.RatFunc.AsPolynomial
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
+import Mathlib.AlgebraicGeometry.EllipticCurve.DivisionPolynomial.Degree
+public import Mathlib.FieldTheory.RatFunc.IntermediateField
+public import Mathlib.FieldTheory.Relrank
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

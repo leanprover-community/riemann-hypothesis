@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StLogCoverDescent
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

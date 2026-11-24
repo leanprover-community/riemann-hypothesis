@@ -1,6 +1,59 @@
 module
 
+public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreDefs
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.KroneckerOneRightSwap
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreLie
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.ExistsMonomialWeight
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.FockOperatorsKernel
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.RedOps
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -89,8 +142,7 @@ theorem isPC_Eab {m n : ℕ} {a b : Ix m n} (h : ¬ sameBlock a b) : IsPC (Eab a
     exact absurd hxy h
   · rfl
 
-theorem sb_iff {m n : ℕ} (a b : Ix m n) : sameBlock a b ↔ a.isLeft = b.isLeft :=
-  PI.FockOneDegW.Core.side_sb a b
+alias sb_iff := _root_.PI.FockOneDegW.Core.side_sb
 
 theorem isPC_brk {m n : ℕ} {a b : Ix m n} (h : sameBlock a b) {Z : Mat m n} (hZ : IsPC Z) :
     IsPC (Eab a b * Z - Z * Eab a b) := by
@@ -138,11 +190,11 @@ theorem minusPart_second_action_Eab {c d : Ix r s} (h : ¬ sameBlock c d) (g : P
   rw [Finset.sum_eq_single c, Finset.sum_eq_single d]
   · simp [Eab]
   · intro y _ hy
-    simp [Eab, Matrix.single_apply, Ne.symm hy]
+    simp [Eab, Ne.symm hy]
   · simp
   · intro x _ hx
     refine Finset.sum_eq_zero (fun y _ => ?_)
-    simp [Eab, Matrix.single_apply, Ne.symm hx]
+    simp [Eab, Ne.symm hx]
   · simp
 
 def low1 (a b : Ix p q) : Module.End ℂ (Pol p q r s) :=
@@ -156,8 +208,8 @@ theorem rename_first_lowering (a b : Ix p q) (P : Pol p q r s) :
       PI.FockOneDegW.lowOp (p := r) (q := s) a b (rename (sw p q r s) P) := by
   rw [PI.FockOneDegW.RedOps.lowOp_apply]
   unfold low1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearMap.sum_apply, map_sum]
+
+  rw [LinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   have hl : linePos ((c, b) : Ln r s p q) = linePos ((b, c) : Ln p q r s) := linePos_sw (b, c)
   rw [hl]
@@ -173,8 +225,8 @@ theorem minus1_eq (Z : Mat p q) (hZ : IsPC Z) (P : Pol p q r s) :
   apply rename_sw_injective p q r s
   rw [minusPart_rename (sw p q r s) _ _ (fun Q => (rename_fockAct1 Z Q).symm) P,
     PI.FockOneDegW.minus2_eq _ hZ]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_neg, map_sum, map_smul, rename_first_lowering]
+
+  simp only [map_neg, map_sum, map_smul, rename_first_lowering]
 
 theorem first_lowering_commute_lowering (a b : Ix p q) (c d : Ix r s) :
     Commute (low1 (r := r) (s := s) a b) (PI.FockOneDegW.lowOp (p := p) (q := q) c d) := by
@@ -319,8 +371,8 @@ theorem harmonic_stable_lowering {c d : Ix r s} (hcd : ¬ sameBlock c d) {g : Po
       PI.FockOneDegW.lowOp (p := p) (q := q) c d (low1 a b g) :=
     fun a b => LinearMap.congr_fun (first_lowering_commute_lowering a b c d).eq g
   have h2 := congrArg (PI.FockOneDegW.lowOp (p := p) (q := q) c d) h
-  set_option synthInstance.maxHeartbeats 100000 in
-    simpa only [map_neg, map_sum, map_smul, map_zero, e] using h2
+
+  simpa only [map_neg, map_sum, map_smul, map_zero, e] using h2
 
 private theorem homogeneousComponent_fockAct1_of_isKC (Z : Mat p q) (hZ : IsKC Z) (e : ℕ) (P : Pol p q r s) :
     homogeneousComponent e (fockAct1 p q r s Z P) = fockAct1 p q r s Z (homogeneousComponent e P) := by
@@ -328,8 +380,8 @@ private theorem homogeneousComponent_fockAct1_of_isKC (Z : Mat p q) (hZ : IsKC Z
     conv_lhs => rw [Matrix.matrix_eq_sum_single Z]
     simp only [Eab, Matrix.smul_single, smul_eq_mul, mul_one]
   rw [hZs]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
+
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
   by_cases hab : sameBlock a b
   · rw [homogComponent_comm_first_action hab]
@@ -364,27 +416,18 @@ theorem low_homog_small (c d : Ix r s) {e : ℕ} (he : e < 2) {g : Pol p q r s}
   refine hc_ext fun n => ?_
   rw [PI.FockOneDegW.RedOps.hc_lowOp, homogeneousComponent_of_mem hg, if_neg (by omega), map_zero, map_zero]
 
-private theorem fockAct2_Eab_eq_sum_omE (c d : Ix r s) (P : Pol p q r s) :
-    fockAct2 p q r s (Eab c d) P = ∑ a : Ix p q, omE (a, c) (a, d) P := by
-  apply PI.FockOneDegW.Swap.rename_sw_injective p q r s
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [PI.FockOneDegW.Swap.rename_fockAct2, PI.FockOneDegW.fockAct1_Eab_apply, map_sum]
-  refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [PI.FockOneDegW.Swap.rename_omE]
-  rfl
-
 private theorem omE_add_pderiv_pderiv_eq_X_mul_X_of_not_sameBlock {c d : Ix r s} (hcd : ¬ sameBlock c d) (a : Ix p q) (P : Pol p q r s) :
     omE (a, c) (a, d) P +
         (if linePos ((a, d) : Ln p q r s) = true then pderiv (a, c) (pderiv (a, d) P) else 0) =
       if linePos ((a, c) : Ln p q r s) = true then X (a, c) * (X (a, d) * P) else 0 := by
   rcases a with a | a <;> rcases c with c | c <;> rcases d with d | d <;>
-    simp_all [omE, raiB, lowB, linePos, sameBlock, Module.End.mul_apply]
+    simp_all [omE, raiB, lowB, linePos, sameBlock]
 
 theorem second_action_add_lowering {c d : Ix r s} (hcd : ¬ sameBlock c d) {e : ℕ} {g : Pol p q r s}
     (hg : g ∈ homog (Ix p q × Ix r s) e) :
     fockAct2 p q r s (Eab c d) g + PI.FockOneDegW.lowOp (p := p) (q := q) c d g ∈
       homog (Ix p q × Ix r s) (e + 2) := by
-  rw [fockAct2_Eab_eq_sum_omE, PI.FockOneDegW.RedOps.lowOp_apply, ← Finset.sum_add_distrib]
+  rw [_root_.PositivityTheory.KReal.fockAct2_unit, PI.FockOneDegW.RedOps.lowOp_apply, ← Finset.sum_add_distrib]
   simp_rw [omE_add_pderiv_pderiv_eq_X_mul_X_of_not_sameBlock hcd]
   refine Submodule.sum_mem _ (fun a _ => ?_)
   split_ifs

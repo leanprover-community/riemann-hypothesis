@@ -1,7 +1,9 @@
 module
 
-public import ReciprocityTheory.DualLattices.EmbeddingSeparatingGroupStatement
-public import ReciprocityTheory.DualLattices.UnramifiedCokernelLengthOfLengthEigenLengthProduct
+public import ReciprocityTheory.DualLattices.CotangentSurjective
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

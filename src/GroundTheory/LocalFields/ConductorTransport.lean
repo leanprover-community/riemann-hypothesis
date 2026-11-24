@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.UpperNumbering
 public import GroundTheory.LocalFields.LubinTateTowerMaps
 public import GroundTheory.LocalFields.SeparableClosure
+public import GroundTheory.LocalFields.HerbrandFunction
+public import GroundTheory.LocalFields.UpperNumbering
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
+public import Mathlib.Analysis.Complex.Order
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.QuadraticDiscriminant
+public import Mathlib.Basic.Complex.BigOperators
 
 @[expose] public section
 

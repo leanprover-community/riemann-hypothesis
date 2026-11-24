@@ -1,7 +1,12 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LaTIsPrime
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IsUnitOfValEqZero
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
+public import ReciprocityTheory.SemistableReduction.AlgAll
 
 @[expose] public section
 
@@ -21,8 +26,6 @@ theorem ratio_eq {Ω V : Type*} [Field Ω] [AddCommGroup V] [Module Ω V] {f g :
 theorem wt_cancel {a b c : WithTop ℤ} (hb : b ≠ ⊤) (h : a + b = c + b) : a = c := by
   first
     | exact WithTop.add_right_cancel hb h
-    | (lift b to ℤ using hb
-       induction a <;> induction c <;> simp_all <;> norm_cast at h <;> omega)
 
 end ValuationResidueLemmas
 
@@ -91,10 +94,10 @@ theorem admissible_over_prime (hd : d.AxH 𝒜) (h : d.S1) (la : IsDedekindDomai
   have hrel : ∀ i : Fin (d.D + 1), i ≠ 0 → ∑ j, s (i, j) * f (a j) = 0 := by
     intro i hi
     rw [Fin.sum_univ_succAbove _ (d.jc c)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [s, sImg, Fin.succAbove_cases_eq_insertNth, Fin.insertNth_apply_same,
-      Fin.insertNth_apply_succAbove, hi, ↓reduceIte, ha_jc, map_one, mul_one, map_neg, map_sum,
-      map_mul, hC]
+
+    simp only [s, sImg, Fin.succAbove_cases_eq_insertNth, Fin.insertNth_apply_same,
+    Fin.insertNth_apply_succAbove, hi, ↓reduceIte, ha_jc, map_one, mul_one, map_neg, map_sum,
+    map_mul, hC]
     rw [neg_add_eq_zero]
     rfl
   have hrel0 : ∀ i : Fin (d.D + 1), i ≠ 0 →
@@ -332,8 +335,8 @@ theorem admissible_over_prime (hd : d.AxH 𝒜) (h : d.S1) (la : IsDedekindDomai
   have hsH : ∀ q, d.sH c (MvPolynomial.X q) = s q := fun q => by simp [Data.sH, sHom, s]
   have hsum : (∑ j, d.sH c (MvPolynomial.X (0, j)) * f (r j)) =
       MvPolynomial.aeval t (∑ j, p (0, j) * MvPolynomial.C (r j)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, hpu, MvPolynomial.aeval_C, hsH]
+
+    simp only [map_sum, map_mul, hpu, MvPolynomial.aeval_C, hsH]
     rfl
   show w (∑ j, d.sH c (MvPolynomial.X (0, j)) * f (r j)) = 0
   rw [hsum]

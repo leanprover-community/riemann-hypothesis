@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.FormAll
+public import Mathlib.GroupTheory.Index
+public import Mathlib.MeasureTheory.Group.Arithmetic
+import Mathlib.Tactic.TypeStar
+public import Mathlib.MeasureTheory.Group.Defs
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
 
 @[expose] public section
 

@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.FieldTheory.Separable
 
 @[expose] public section
 

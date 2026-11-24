@@ -1,6 +1,12 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.InjectiveDecompositionAction
+public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+public import Mathlib.RingTheory.TensorProduct.Free
+public import Mathlib.RingTheory.TensorProduct.Maps
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -90,11 +96,11 @@ def cQ : R ⊗[F] E →ₗ[R] R := (bR σ δ hδ hδ0 h2 R).coord 1
 
 theorem re_mk (a b : R) : cP σ δ hδ hδ0 h2 R (mkE δ R a b) = a := by
   rw [mkE_eq σ δ hδ hδ0 h2 R]
-  simp [cP, Module.Basis.coord_apply, Finsupp.single_apply]
+  simp [cP, Module.Basis.coord_apply]
 
 theorem cQ_mkE (a b : R) : cQ σ δ hδ hδ0 h2 R (mkE δ R a b) = b := by
   rw [mkE_eq σ δ hδ hδ0 h2 R]
-  simp [cQ, Module.Basis.coord_apply, Finsupp.single_apply]
+  simp [cQ, Module.Basis.coord_apply]
 
 theorem mkE_cP_cQ (x : R ⊗[F] E) :
     mkE δ R (cP σ δ hδ hδ0 h2 R x) (cQ σ δ hδ hδ0 h2 R x) = x := by

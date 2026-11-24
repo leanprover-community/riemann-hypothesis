@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.CxToPkgFamIn
 public import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteEpsilonOperator
 public import Formalism.LocalToGlobal.IndefiniteReal.TransferStatement

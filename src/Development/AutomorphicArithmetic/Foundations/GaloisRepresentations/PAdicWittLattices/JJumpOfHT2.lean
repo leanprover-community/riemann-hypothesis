@@ -1,11 +1,52 @@
 module
 
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.CoverLowOfCov
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamExistsHodgeTateEigenbasisStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateNoTwistedInvariantsComplexPadicStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemClosureOfJumps
-public import Formalism.LocalToGlobal.CyclotomicLocalNorms.AddValuationAlgebraMapPadicIntUnitEqZero
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.GoodCoverEigenspaces.Leaves
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamExistsHodgeTateEigenbasisStatement
+public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateNoTwistedInvariantsComplexPadic
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalIndepBridge
+public import Formalism.LocalToGlobal.CyclotomicLocalNorms.AddValuationAlgebraMapPadicIntUnitEqZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 
@@ -73,7 +114,7 @@ private theorem chiPow_eq {l : ℕ} [Fact l.Prime] (P : LocPrime l) (σ : GQ l) 
 end UpperTheory.Gal.G3
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem UpperTheory.Gal.G3.jJumpOfHT2 :
     PositivityTheory.AutomorphicGaloisHodgeTate.G8.JumpOfHT2 := by
   classical
@@ -82,9 +123,9 @@ theorem UpperTheory.Gal.G3.jJumpOfHT2 :
   obtain ⟨hT⟩ := hT'
   obtain ⟨LL', r', ⟨hLL, hmod⟩, hdR, τ', hInd, hcnt⟩ := hJ
   obtain ⟨S, z, hz0, hz⟩ := hOcc
-  haveI := Bw.Kw.2
-  haveI := Bw'.Kw.2
-  haveI := LL'.2
+  have := Bw.Kw.2
+  have := Bw'.Kw.2
+  have := LL'.2
 
   have hg : ∀ y : ↥Bw.Kw.1, γ (y : Om l) = ((τ' y : ↥LL'.1) : Om l) := by
     let τo : ↥Bw.Kw.1 →ₐ[ℚ_[l]] Om l := LL'.1.val.comp τ'
@@ -147,7 +188,7 @@ theorem UpperTheory.Gal.G3.jJumpOfHT2 :
       rw [← AlgEquiv.mul_apply, mul_inv_cancel]; rfl)
     rw [← he]
     exact hLL (Bw.LL_split (σ.comp e₁) ⟨γ⁻¹ (x : Om l), hx⟩)
-  haveI := K₁.2
+  have := K₁.2
   let K₀ : FinExt l := ⟨K₁.1 ⊔ LL'.1, inferInstance⟩
   obtain ⟨Pm, k, hk, heig⟩ := GlobalTheory.T.deRham_exists_hodgeTate_eigenbasis l P AI hT K₁ LL' d r₁ hdR₁ hsplit τ₂ hτ₂ K₀
     le_sup_left le_sup_right
@@ -157,9 +198,9 @@ theorem UpperTheory.Gal.G3.jJumpOfHT2 :
     exact_mod_cast this
 
   let F : IntermediateField ℚ_[l] (Om l) := IntermediateField.adjoin ℚ_[l] (S : Set (Om l))
-  haveI : FiniteDimensional ℚ_[l] F :=
+  have : FiniteDimensional ℚ_[l] F :=
     IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
-  haveI := K₀.2
+  have := K₀.2
   let K'' : FinExt l := ⟨K₀.1 ⊔ Bw'.Kw.1 ⊔ F, inferInstance⟩
   set c : Fin d → ℂ_[l] :=
     ((Pm⁻¹ : Matrix.GeneralLinearGroup (Fin d) ℂ_[l]) : Matrix (Fin d) (Fin d) ℂ_[l]).mulVec z with hc
@@ -190,7 +231,7 @@ theorem UpperTheory.Gal.G3.jJumpOfHT2 :
     exact eig_coord (Per.σC h) _ Pm _ z _ e2 e1 i
   have hc0 : ∃ i, c i ≠ 0 := by
     by_contra hall
-    push_neg at hall
+    push Not at hall
     apply hz0
     have hc' : c = 0 := funext hall
     have : (Pm : Matrix (Fin d) (Fin d) ℂ_[l]).mulVec c = z := by
@@ -199,7 +240,7 @@ theorem UpperTheory.Gal.G3.jJumpOfHT2 :
   obtain ⟨i, hi⟩ := hc0
   have hki : k i = a := by
     by_contra hne
-    exact hi (GlobalTheory.T.tate_no_twisted_invariants_complexPadic l P AI hT K'' (k i - a) (sub_ne_zero.2 hne) (c i) fun g =>
+    exact hi (_root_.GlobalTheory.TateChiQ.tate_chiQ l P AI hT K'' (k i - a) (sub_ne_zero.2 hne) (c i) fun g =>
       UpperTheory.Gal.G3.chi_solve _ _ _ _ _ (hcoord g g.2 i))
   rw [← hJm, ← hki]
   exact Multiset.mem_map_of_mem k (Finset.mem_univ_val i)

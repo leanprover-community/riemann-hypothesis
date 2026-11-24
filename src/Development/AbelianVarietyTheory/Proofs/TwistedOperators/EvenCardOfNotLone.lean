@@ -1,25 +1,75 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSquareMulInfinite
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AlmostNormFinDiag
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsApproxModLocalSquares
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsLocalNonnormOfNonsquareAdicCompletion
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RelIndexSquaresSUnitsNumberField
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUnitValuationEqOfAdm
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsAdmissibleSupersetFinitePlaces
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsSupersetMemSUnits
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsQuadraticSqrtExtensionOfNotSquare
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsQuadraticSqrtExtensionBasicFacts
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsSupUnitsLocalNormsSqrtNeTop
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRingHomAdicCompletionUnder
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsApproxModLocalSquares
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsAuxiliaryPlacesSquarePatternsSUnits
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsUnionSupLocalSquaresEqTop
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSquareOfSUnitLocalSquareFiniteRealPlaces
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitMemGlobalNormOfMemLocalNorms
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsQuadraticSqrtExtensionOfNotSquare
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsLocalNonnormOfNonsquareAdicCompletion
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsNormalFormNonsquareAdicCompletion
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRingHomAdicCompletionUnder
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsSupersetMemSUnits
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IndexUnitsLocalSquaresFiniteRealPlacesLe
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HigherUnitsLeSquaresHigherUnits
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IndexUnitsLocalSquaresFiniteRealPlacesLe
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsQuadraticSqrtExtensionBasicFacts
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSquareOfSUnitLocalSquareFiniteRealPlaces
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RelIndexSquaresSUnitsNumberField
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitMemGlobalNormOfMemLocalNorms
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsSupUnitsLocalNormsSqrtNeTop
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsUnionSupLocalSquaresEqTop
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TwoPowLeIndexLocalNormsSqrtExtension
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AlmostNormFinDiag
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -484,9 +534,6 @@ theorem hs_of_add (q : Place F) {α β γ : Fˣ} (h : (α : F) + β = γ) :
   rw [hA, hB, hC, hD] at h1 <;> rw [hD, hE] at e3 <;> rw [hA, hB, hC, hE] <;>
   revert h1 e3 <;> decide
 
-theorem hs_sq_right (q : Place F) (a b c : Fˣ) : hs q a (b * c ^ 2) = hs q a b := by
-  rw [hs_mul_right, hs_eq_one_iff.mpr (mem_nrm_of_sqr (sq_mem_sqr q c) a), mul_one]
-
 theorem Lone.exists_left {p : Place F} (hp : Lone p) {b : Fˣ} (hb : b ∉ sqr p) :
     ∃ c : Fˣ, c ∉ nrm p b ∧ ∀ q, q ≠ p → c ∈ nrm q b := by
   obtain ⟨a, d, had, hq⟩ := hp
@@ -527,7 +574,7 @@ theorem Lone.exists_left {p : Place F} (hp : Lone p) {b : Fˣ} (hb : b ∉ sqr p
       rw [ha, hx, hy]
       field_simp
       ring
-    rw [hbW, hs_sq_right, hs_mul_right, hs_comm q d a, hs_comm q d (Units.mk0 _ hN1),
+    rw [hbW, _root_.GlobalTheory.HilbertRecip.hs_mul_sq_right, hs_mul_right, hs_comm q d a, hs_comm q d (Units.mk0 _ hN1),
       hs_eq_one_iff.2 (mem_nrm_of_eq q (a := Units.mk0 _ hN1) (δ := d) (x := x₁) (y := y₁) (by simp)), mul_one]
   · have huw : (x₀ ^ 2 - d * y₀ ^ 2) * (x₁ ^ 2 - d * y₁ ^ 2) = -(d * (x₀ * y₁ - x₁ * y₀) ^ 2) := by
       linear_combination (x₀ * x₁ - d * (y₀ * y₁)) * h0
@@ -549,9 +596,9 @@ theorem Lone.exists_left {p : Place F} (hp : Lone p) {b : Fˣ} (hb : b ∉ sqr p
         (-(x₁ ^ 2 - d * y₁ ^ 2) * (1 + (x₀ ^ 2 - d * y₀ ^ 2) * (x₀ ^ 2 - d * y₀ ^ 2)⁻¹)) * hinv
     refine ⟨Units.mk0 _ hN0 * a, fun q => ?_⟩
     have e1 : hs q (Units.mk0 _ hN0) (b * Units.mk0 _ hN1) = hs q a b * hs q a d := by
-      rw [hs_of_add q E1, E2, hs_comm, hs_sq_right, hs_mul_right]
+      rw [hs_of_add q E1, E2, hs_comm, _root_.GlobalTheory.HilbertRecip.hs_mul_sq_right, hs_mul_right]
     have e2 : hs q (Units.mk0 _ hN0) (Units.mk0 _ hN1) = 1 := by
-      rw [E3, hs_sq_right, hs_mul_right, hs_comm q _ (-Units.mk0 _ hN0),
+      rw [E3, _root_.GlobalTheory.HilbertRecip.hs_mul_sq_right, hs_mul_right, hs_comm q _ (-Units.mk0 _ hN0),
         hs_eq_one_iff.2 (neg_mem_nrm q (Units.mk0 _ hN0)), mul_one]
       exact hs_eq_one_iff.2 (mem_nrm_of_eq q (a := Units.mk0 _ hN0) (δ := d) (x := x₀) (y := y₀) (by simp))
     rw [hs_mul_right, e2, mul_one] at e1
@@ -1094,8 +1141,6 @@ private lemma ringEquivRealOfIsReal_algebraMap {K : Type} [Field K] [NumberField
     InfinitePlace.Completion.extensionEmbeddingOfIsReal_coe]
   first
   | rfl
-  | simp
-  | rw [← WithAbs.equiv_symm_apply, RingEquiv.apply_symm_apply]
 
 end GlobalTheory.HilbertRecip
 

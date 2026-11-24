@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 
 @[expose] public section
 

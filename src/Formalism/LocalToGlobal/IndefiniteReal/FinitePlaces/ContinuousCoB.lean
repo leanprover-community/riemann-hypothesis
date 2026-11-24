@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LinIndepOneDelta
+public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
+import Formalism.LocalToGlobal.IndefiniteReal.InjectiveDecompositionAction
 
 @[expose] public section
 

@@ -1,9 +1,53 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHB2
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PbWords
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenDomP
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHBPts
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableCsmul
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RdVZeroOfVanish
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHBSupp
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceContOn
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothLevOfLoc
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -79,25 +123,16 @@ def CutOffExists : Prop :=
       ∀ g, Dmin P.k P.r p.T.base.z p.T.base.z' g ⟨j + 1, by omega⟩ = aVal h t →
         Fc g = D.uwG P.k P.r p.T.base.z p.T.base.z' F (j + 1) hj w e g
 
-theorem det_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : U.LW σ → ℂ) : (U.lowW σ v).det = 1 := by
-  rw [Matrix.det_of_lowerTriangular]
-  · refine Finset.prod_eq_one fun i _ => ?_
-    simp [U.lowW]
-  · intro a b hab
-    simp only [U.lowW, Matrix.add_apply, Matrix.one_apply, Matrix.of_apply]
-    have hab' : a < b := hab
-    rw [if_neg (ne_of_lt hab'), dite_eq_right (fun h => absurd h.1 (not_lt.mpr hab'.le)), add_zero]
-
 theorem zxH_det (h : C.LPt) (j : ℕ) (hh : D.IsLocPt h j) (v : XH h) :
     (zxH h j hh.2 v).det = (U.hMat (D.ptPerm h) (D.ptDiag h)).det := by
   have hH : (U.hMat (D.ptPerm h) (D.ptDiag h)).det ≠ 0 :=
-    Formalism.FourierDecayAlt.P.PBM.hMat_det_ne _ _ (CutHB.ptDiag_ne hh)
+    _root_.Formalism.FourierDecayAlt.P.Ux10.det_hMat_ne _ _ (CutHB.ptDiag_ne hh)
   have hw : IsUnit (U.wP (D.ptPerm h)) := by
     rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
     intro h0
     apply hH
     rw [U.hMat, Matrix.det_mul, h0, zero_mul]
   unfold zxH LeftFubiniLemmas.lhOf
-  rw [Matrix.det_reindex_self, Matrix.det_mul, Matrix.det_conj hw, det_lowW, one_mul]
+  rw [Matrix.det_reindex_self, Matrix.det_mul, Matrix.det_conj hw, _root_.Formalism.FourierDecayAlt.P.Ux3.det_lowW, one_mul]
 
 end Formalism.FourierDecayAlt.P.LevelPointCoordinates

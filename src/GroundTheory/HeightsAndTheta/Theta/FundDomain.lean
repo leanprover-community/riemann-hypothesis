@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
+import Mathlib.Tactic.TypeStar
+public import Lean.Elab.MutualDef
 
 @[expose] public section
 

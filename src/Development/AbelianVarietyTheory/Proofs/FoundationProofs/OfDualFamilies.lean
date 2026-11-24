@@ -1,16 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Formalism.PairingDivisors.StatementH
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegerMapEqHalfOneAddSqrt
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceDualFamilyHomLattice
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceDualFamilyInverseHalfDifferent
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HermitianPairingRationalValues
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralJAndAlgebraicData
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegerMapEqHalfOneAddSqrtStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeCovolumePosAndSelfDualStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceDualFamilyInverseHalfDifferentStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceDualFamilyHomLatticeStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HermitianPairingRationalValuesStatement
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeCovolumePosAndSelfDual
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaFunctionSelfDualExistsEqSmulStatement
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 
 @[expose] public section
 
@@ -68,8 +109,8 @@ theorem sq_embV (hG : admG1 D) (x y : Matrix (Fin N') (Fin N) D.host.E) :
       D.host.φ₀ ((hYY D x y : D.host.K) : D.host.E) := by
   rw [hYY, ← hG.2]
   refine Finset.sum_congr rfl fun τ _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, embV_apply]
+
+  simp only [map_sum, map_mul, embV_apply]
   refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
   rw [D.host.toHostAx.conjE_apply]
 
@@ -156,7 +197,7 @@ theorem of_dual_families (hG : admG1 D) (hC : Crv D cc δ)
       {z | ∃ w ∈ lamOf D cc δ, ∃ x ∈ S, z = w • embV D (tor0 D cc δ) x}) :
     (∀ F ∈ ThSp D (tor0 D cc δ) A, ∀ G ∈ ThSp D (tor0 D cc δ) A, G ≠ 0 → ∃ c : ℂ, F = c • G) ∧ (∀ x ∈ A, ∀ F, Wd D (tor0 D cc δ) x F = fun z => al D (tor0 D cc δ) x * U D (tor0 D cc δ) x F z) ∧ (∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D (tor0 D cc δ) x y).im = m) ∧ (∀ x, (∀ y ∈ A, ∃ m : ℤ, (Hf D (tor0 D cc δ) x y).im = m) → x ∈ A) ∧ A.FG ∧ Submodule.span ℝ (A : Set (VC D N N')) = ⊤ ∧ ∀ x ∈ A, ∃ m : ℤ, qH D (tor0 D cc δ) x = m := by
   obtain ⟨L, hL, -⟩ := GlobalTheory.CurveAlgebraic.exists_periodPair D hG cc δ hC
-  obtain ⟨hpos, hdual⟩ := GlobalTheory.T.latticeCovolume_pos_and_selfDual L _ hL
+  obtain ⟨hpos, hdual⟩ := _root_.GlobalTheory.PlaneLattice.area_pos_and_selfDual L _ hL
   have hLam : (tor0 D cc δ).abelian₂ = lamOf D cc δ := rfl
   have hgen : ∀ w ∈ lamOf D cc δ, ∀ x ∈ S, w • embV D (tor0 D cc δ) x ∈ A := fun w hw x hx =>
     hA ▸ AddSubgroup.subset_closure ⟨w, hw, x, hx, rfl⟩
@@ -200,7 +241,7 @@ theorem of_dual_families (hG : admG1 D) (hC : Crv D cc δ)
       rwa [im_Hf, hLam, sq_smul_right] at this
   have hq : ∀ x ∈ A, ∃ m : ℤ, qH D (tor0 D cc δ) x = m := by
     intro x hx
-    obtain ⟨a, ha⟩ := GlobalTheory.T.exists_integer_map_eq_halfOneAddSqrt D
+    obtain ⟨a, ha⟩ := _root_.GlobalTheory.NormSum.exists_integer_map_eq_w0 D
     have hx' : w0 D • x ∈ A := hmem _ fun i => by
       rw [sq_smul_left, ← ha]
       exact lam_mul cc δ a (hsq x hx _ (hy' i))
@@ -291,8 +332,8 @@ theorem theta_line : ∀ (D : D7), admG1 D → ∀ (cc : Ideal (𝓞 D.host.K)) 
       congr 1
       ext z
       simp [tor0]
-  · obtain ⟨r, y, y', hy, hy', h⟩ := GlobalTheory.T.exists_traceDual_family_homLattice D (GlobalTheory.T.exists_traceDual_family_inverseHalfDifferent D) N N' L L' hL hL'
-    have hint := GlobalTheory.T.hermitian_pairing_integral_values D N N' L L' hL hL'
+  · obtain ⟨r, y, y', hy, hy', h⟩ := _root_.GlobalTheory.HomDual.exists_dual_family_hom D (_root_.GlobalTheory.exists_trace_dual_family_halfDifferent D) N N' L L' hL hL'
+    have hint := _root_.GlobalTheory.NormSum.TraceInt.hYY_integral D N N' L L' hL hL'
     have hA : La D (tor0 D cc δ) L L' = AddSubgroup.closure
         {z | ∃ w ∈ lamOf D cc δ, ∃ x ∈ {x | x ∈ YYl D L L'}, z = w • embV D (tor0 D cc δ) x} := rfl
     exact of_dual_families cc δ hG hC {x | x ∈ YYl D L L'} (fun x hx y hy => hint x hx y hy) y y'

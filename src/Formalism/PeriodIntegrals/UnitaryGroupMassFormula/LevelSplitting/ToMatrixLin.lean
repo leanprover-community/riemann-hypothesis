@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjHA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.SemiAlg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,28 +67,7 @@ theorem uj_of_uni {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n]
     (JA : Matrix n n A) (Mx : Matrix n n A)
     (h : ∀ x y, Formalism.UG.hform σA JA (Matrix.mulVec Mx x) (Matrix.mulVec Mx y) = Formalism.UG.hform σA JA x y) :
     Formalism.UG.cT σA Mx * JA * Mx = JA := by
-  classical
-  ext a b
-  have hcol : ∀ c, Mx.mulVec (Pi.single c (1 : A)) = fun i => Mx i c := by
-    intro c
-    funext i
-    rw [Matrix.mulVec_single]
-    simp
-  have h1 := h (Pi.single a 1) (Pi.single b 1)
-  rw [hcol, hcol] at h1
-  simp only [Formalism.UG.hform] at h1
-  rw [show (Formalism.UG.cT σA Mx * JA * Mx) a b = ∑ i, ∑ j, σA (Mx i a) * JA i j * Mx j b by
-    simp only [Matrix.mul_apply, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply,
-      Finset.sum_mul]
-    rw [Finset.sum_comm], h1]
-  have hs : ∀ i, σA ((Pi.single a (1 : A) : n → A) i) = (Pi.single a (1 : A) : n → A) i := by
-    intro i
-    by_cases hi : i = a
-    · subst hi
-      simp
-    · simp [Pi.single_eq_of_ne hi]
-  simp only [hs]
-  simp [Pi.single_apply]
+  apply PI.VolSemiDirect.W.uj_of_uni <;> assumption
 
 theorem toMatrix'_lin (g : HA R σ J) :
     LinearMap.toMatrix' (lin R σ J g) =
@@ -75,9 +100,9 @@ theorem N_le_S' (hP : P.IsStd σ J T) : Nsub R σ J P ≤ Ssub R σ J P := by
     unfold hR ratV hE at *
     unfold Formalism.UG.hform sigR JR inclR at *
     have h3 := congrArg (Algebra.TensorProduct.includeRight (R := F) (A := R) (B := E)) this
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [Algebra.TensorProduct.includeRight_apply, Algebra.TensorProduct.map_tmul, map_sum,
-      map_mul] using h3
+
+    simpa [Algebra.TensorProduct.includeRight_apply, Algebra.TensorProduct.map_tmul, map_sum,
+    map_mul] using h3
   unfold Ssub uniFlag F0
   intro b
   refine Fin.lastCases ?_ (fun b' => ?_) b
@@ -201,8 +226,8 @@ theorem Pi_lin_one : (datR R σ J P T).Pi (lin R σ J 1) = LinearMap.id := by
   have hsym : ∀ x y : Fin M → E, hE σ J y x = σ (hE σ J x y) := by
     intro x y
     unfold hE Formalism.UG.hform
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, AlgHom.coe_toRingHom, RingHom.coe_coe, hσσ, hJ.1]
+
+    simp only [map_sum, map_mul, RingHom.coe_coe, hσσ, hJ.1]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring
@@ -211,9 +236,9 @@ theorem Pi_lin_one : (datR R σ J P T).Pi (lin R σ J 1) = LinearMap.id := by
     intro x y
     show (datR R σ J P T).h (ratV (F := F) R x) (ratV (F := F) R y) = _
     unfold SemiG.Dat.h datR ratV hE Formalism.UG.hform sigR JR inclR
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Algebra.TensorProduct.includeRight_apply, Algebra.TensorProduct.map_tmul, map_sum,
-      map_mul]
+
+    simp [Algebra.TensorProduct.includeRight_apply, Algebra.TensorProduct.map_tmul, map_sum,
+    map_mul]
   have hee : ∀ b a, (datR R σ J P T).hL ((datR R σ J P T).e b) ((datR R σ J P T).e a) = 0 := by
     intro b a
     show (datR R σ J P T).hL (ratV (F := F) R (P.e b)) (ratV (F := F) R (P.e a)) = 0
@@ -268,20 +293,20 @@ theorem Pi_lin_one : (datR R σ J P T).Pi (lin R σ J 1) = LinearMap.id := by
     have c1 : ∀ b, (datR R σ J P T).hL ((datR R σ J P T).f b) ((datR R σ J P T).pU v) = (datR R σ J P T).hL ((datR R σ J P T).f b) v := by
       intro b
       rw [hpU v]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hfe b, hff b, hfz b]
+
+      simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hfe b, hff b, hfz b]
       simp
     have c2 : ∀ b, (datR R σ J P T).hL ((datR R σ J P T).e b) ((datR R σ J P T).pU v) = (datR R σ J P T).hL ((datR R σ J P T).e b) v := by
       intro b
       rw [hpU v]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hee b, hef b, hez b]
+
+      simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hee b, hef b, hez b]
       simp
     have c3 : (datR R σ J P T).tz * (datR R σ J P T).hL (datR R σ J P T).z ((datR R σ J P T).pU v) = (datR R σ J P T).tz * (datR R σ J P T).hL (datR R σ J P T).z v := by
       rw [hpU v]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hze, hzf, mul_zero,
-        Finset.sum_const_zero, zero_add]
+
+      simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hze, hzf, mul_zero,
+      Finset.sum_const_zero, zero_add]
       linear_combination ((datR R σ J P T).tz * (datR R σ J P T).hL (datR R σ J P T).z v) * hzz
     rw [hpU ((datR R σ J P T).pU v), c3]
     simp only [c1, c2]
@@ -321,10 +346,9 @@ private theorem uni_lin' (g : HA R σ J) : (datR R σ J P T).Uni (lin R σ J g) 
 theorem piU_mem (g : HA R σ J) (hg : g ∈ Ssub R σ J P) : piU hσσ hJ hP g hg ∈ HR R σ J := by
   have hU := SemiG.Dat.Pi_uni (D := datR R σ J P T) (datR_hyp hσσ hJ hP)
     (mapW_lin_of_mem_Ssub hσσ hJ hP hg) (uni_lin' hσσ hJ hP g)
-  have hm := uj_of_uni (sigR R σ) (JR R J) (piMat (P := P) (T := T) g) (fun x y => by
+  exact uj_of_uni (sigR R σ) (JR R J) (piMat (P := P) (T := T) g) (fun x y => by
     rw [piMat_mulVec, piMat_mulVec]
     exact hU x y)
-  exact hm
 
 def piG (g : HA R σ J) (hg : g ∈ Ssub R σ J P) : HA R σ J :=
   ⟨piU hσσ hJ hP g hg, piU_mem hσσ hJ hP g hg⟩

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.KHFreeBadFiniteSt
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 

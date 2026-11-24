@@ -1,0 +1,13 @@
+{
+  "challenge_module": "FormalConjecturesChallenge",
+  "solution_module": "FormalConjecturesSolution",
+  "theorem_names": [
+    "RiemannHypothesis.riemannHypothesis",
+    "GRH.generalized_riemann_hypothesis"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "external_kernels": {
+    "Lean paranoid": ["leanchecker-paranoid", "--silent", "--from-export"],
+    "nanoda": ["nanoda_bin"]
+  }
+}

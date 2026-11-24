@@ -1,8 +1,54 @@
 module
 
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.DiffDefs
-public import Development.AutomorphicArithmetic.FrobeniusLocalisation.VdFormula
+public import Development.AutomorphicArithmetic.PrimeDiscriminants.SlopeTestRemainingChoices
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.LayerBot
+public import Development.AutomorphicArithmetic.FrobeniusLocalisation.VdFormula
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdArith
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -59,7 +105,7 @@ theorem UpperTheory.HF.vd_le :
     rw [hE] at hbot hdvd
     split_ifs with hje
     · exact intCast_mul_mul_mul_eq_of_mul_eq hl hje.le (hdvd hje.le)
-    · push_neg at hje
+    · push Not at hje
       rw [hbot.2 hje, Subgroup.card_bot]
       simp
   have hsum := Finset.sum_le_sum hcard
@@ -86,7 +132,7 @@ theorem UpperTheory.HF.vd_le :
       rw [div_le_one (by linarith)]
       linarith
     simp only [Finset.range_zero, Finset.sum_empty] at hsum
-    simp only [Nat.zero_eq, zero_le, max_eq_left, Nat.cast_one]
+    simp only [zero_le, max_eq_left, Nat.cast_one]
     linarith
   · rw [arith hl k] at hsum
     rw [max_eq_right (by omega)]

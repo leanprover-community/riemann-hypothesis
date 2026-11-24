@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.KummerTheory.Degree
 public import GroundTheory.GlobalFields.KummerTheory.Splitting
 public import GroundTheory.GlobalFields.KummerTheory.SplittingInfinite
+import GroundTheory.GlobalFields.SemilocalAlgebras.Finite
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

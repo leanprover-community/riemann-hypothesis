@@ -1,9 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegralPointsFinitePlaceTensorProperties
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DisjointSpanPerpLat
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegralPointsFinitePlaceTensorProperties
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -47,8 +91,8 @@ theorem exists_isUnit_sub {O : Type} [CommRing O] (s : O →+* O) (hs : ∀ z, s
   obtain ⟨c, hc⟩ := Ideal.mem_span_range_iff_exists_fun.1 ((Ideal.eq_top_iff_one _).1 htop)
   have hc' : ∑ i, s (c i) * (D i * s (D i)) = 1 := by
     have := congrArg s hc
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, hs, map_one] at this
+
+    simp only [map_sum, map_mul, hs, map_one] at this
     rw [← this]
     exact Finset.sum_congr rfl fun i _ => by ring
   obtain ⟨i, hi⟩ := hloc (fun i => (c i + s (c i)) * (D i * s (D i)))
@@ -71,8 +115,8 @@ theorem exists_unitary {A : Type} [CommRing A] {M : ℕ} (s : A →+* A) (hs : �
     exact Finset.sum_comm
   have hsym : ∀ p q : Fin M → A, s (Formalism.UG.hform s J p q) = Formalism.UG.hform s J q p := by
     intro p q
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Formalism.UG.hform, map_sum, map_mul, hs]
+
+    simp only [Formalism.UG.hform, map_sum, map_mul, hs]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [hJ]; ring
@@ -102,9 +146,9 @@ theorem exists_unitary {A : Type} [CommRing A] {M : ℕ} (s : A →+* A) (hs : �
     exact Finset.sum_congr rfl fun k _ => by ring
   have hPJ : Formalism.UG.cT s P * J = J * P := by
     ext i j
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hP, hl, Formalism.UG.cT, Matrix.mul_apply, Matrix.vecMulVec_apply, Matrix.transpose_apply,
-      Matrix.map_apply, Matrix.vecMul, dotProduct, map_mul, map_sum, hs, hJ, Finset.mul_sum, Finset.sum_mul]
+
+    simp only [hP, hl, Formalism.UG.cT, Matrix.mul_apply, Matrix.vecMulVec_apply, Matrix.transpose_apply,
+    Matrix.map_apply, Matrix.vecMul, dotProduct, map_mul, map_sum, hs, hJ, Finset.mul_sum, Finset.sum_mul]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun k' _ => by ring
   have hcc : c * s c * (l ⬝ᵥ w) = c + s c := by
@@ -203,13 +247,9 @@ section Loc
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {d : ℕ} (b : Module.Basis (Fin d) F E)
 
-theorem ae_mem (a : F) : ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite,
-    algebraMap F (Fv F v) a ∈ v.adicCompletionIntegers F :=
-  (algebraMap F (Af F) a).2
-
 theorem ae_incl (e : E) : ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite,
     inclR (F := F) (Fv F v) e ∈ intV b v := by
-  filter_upwards [Filter.eventually_all.2 fun k => ae_mem (b.repr e k)] with v hv k
+  filter_upwards [Filter.eventually_all.2 fun k => _root_.GlobalTheory.GaugeEx.IntBasis.ev_int (b.repr e k)] with v hv k
   have : (Algebra.TensorProduct.basis (Fv F v) b).repr (inclR (F := F) (Fv F v) e) k =
       algebraMap F (Fv F v) (b.repr e k) := by
     change (Algebra.TensorProduct.basis (Fv F v) b).repr (1 ⊗ₜ e) k = _
@@ -229,7 +269,7 @@ theorem ae_algebraMap : ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite
     by_contra hne
     push Not at hne
     exact one_ne_zero (b.repr.map_eq_zero_iff.1 (Finsupp.ext hne))
-  filter_upwards [Filter.eventually_all.2 fun k => ae_mem (b.repr 1 k), ae_mem (b.repr 1 k)⁻¹] with v h1 h2 a
+  filter_upwards [Filter.eventually_all.2 fun k => _root_.GlobalTheory.GaugeEx.IntBasis.ev_int (b.repr 1 k), _root_.GlobalTheory.GaugeEx.IntBasis.ev_int (b.repr 1 k)⁻¹] with v h1 h2 a
   constructor
   · intro ha
     have := mul_mem (ha k) h2
@@ -243,7 +283,7 @@ end Loc
 theorem witt_integral : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (x : Fin 1 → Fin M → E) (β : F), IsHermND σ J → β ≠ 0 → hE σ J (x 0) (x 0) = algebraMap F E β → ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ∀ y ∈ latV (M := M) (n := 1) b v, qR (Fv F v) σ J (y 0) = algebraMap F (Fv F v) β → ∃ g : HA (Fv F v) σ J, g • ratTup (F := F) (Fv F v) x = y ∧ ∀ i j, ((HA.mat (Fv F v) σ J g : GL (Fin M) (Fv F v ⊗[F] E)) : Matrix (Fin M) (Fin M) (Fv F v ⊗[F] E)) i j ∈ intV b v ∧ ((HA.mat (Fv F v) σ J g⁻¹ : GL (Fin M) (Fv F v ⊗[F] E)) : Matrix (Fin M) (Fin M) (Fv F v ⊗[F] E)) i j ∈ intV b v := by
   intro F E _ _ _ _ _ σ h d b M J x β hJ hβ hx
   obtain ⟨u, hui, hu⟩ := exists_three h
-  filter_upwards [(GlobalTheory.GaugeEx.IntBasis.main F E σ d b).2.1, ae_algebraMap b, ae_mem (2⁻¹ : F), ae_mem β, ae_mem β⁻¹,
+  filter_upwards [(GlobalTheory.GaugeEx.IntBasis.main F E σ d b).2.1, ae_algebraMap b, _root_.GlobalTheory.GaugeEx.IntBasis.ev_int (2⁻¹ : F), _root_.GlobalTheory.GaugeEx.IntBasis.ev_int β, _root_.GlobalTheory.GaugeEx.IntBasis.ev_int β⁻¹,
     Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => ae_incl b (J i j),
     Filter.eventually_all.2 fun i => ae_incl b (x 0 i),
     Filter.eventually_all.2 fun i => ae_incl b (u i),
@@ -312,8 +352,8 @@ theorem witt_integral : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Nu
   have hxx : Formalism.UG.hform (sigR (Fv F v) σ) (JR (Fv F v) J) (ratTup (F := F) (Fv F v) x 0)
       (ratTup (F := F) (Fv F v) x 0) = algebraMap (Fv F v) _ (algebraMap F (Fv F v) β) := by
     have e := congrArg (inclR (F := F) (Fv F v)) hx
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hE, Formalism.UG.hform, map_sum, map_mul] at e
+
+    simp only [hE, Formalism.UG.hform, map_sum, map_mul] at e
     refine Eq.trans e ?_
     rw [← IsScalarTower.algebraMap_apply]
     exact (Algebra.TensorProduct.includeRight : E →ₐ[F] Fv F v ⊗[F] E).commutes β

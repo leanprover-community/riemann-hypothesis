@@ -1,7 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ZzMinusSecondProjTranspose
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.ExistsUnitShift
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.CompOfMemR
+import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumA
 
 @[expose] public section
 
@@ -42,7 +44,7 @@ theorem firstProj_iotaOne_inr (hs : M.split = some g) (l : Fin (r + 1) → M.R) 
 
 theorem firstProj_conj_iotaTwo (hs : M.split = some g) (l : Fin (r + 1) → M.R) (i : Ix r) :
     ph1 g ((M.L.cj : E →+* E) ((iota2 hs l i : M.L.O) : E)) = ph1 g ((iota1 hs l i : M.L.O) : E) := by
-  simp [iota2, firstProj_apply, g.e_cj, M.L.cj_cj]
+  simp [iota2, firstProj_apply, M.L.cj_cj]
 
 theorem duU_formG_sub (O : Subring E) (cj : E →+* E) (qi : E) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E)
     (T T' : E) (Y W W' : Ix r → O) :
@@ -57,8 +59,8 @@ theorem firstProj_sum_iotaOne (hs : M.split = some g) (l : Fin (r + 1) → M.R) 
     ph1 g (∑ i, ((iota1 hs l i : M.L.O) : E) * c i) =
       ∑ a, ph1 g (l a : E) * ph1 g (c (Sum.inl a)) +
         ∑ a, (ph2 g (l a : E) - ph1 g (l a : E)) / (g.q : F) * ph1 g (c (Sum.inr a)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Fintype.sum_sum_type]
+
+  rw [map_sum, Fintype.sum_sum_type]
   simp only [map_mul, firstProj_iotaOne_inl, firstProj_iotaOne_inr]
 
 theorem duU_sum_single1 (a : Fin (r + 1)) (x : M.R) (f : Fin (r + 1) → F) :

@@ -1,8 +1,26 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SchSharpA
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.LinearAlgebra.Eigenspace.Minpoly
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CARUnit
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.SignedActionTensor
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -131,8 +149,8 @@ theorem diagAction_commutator {W : Type*} [AddCommGroup W] [Module ℂ W] {E cp 
       (if b = c then diagE ε E cp cm a d else 0) - (if d = a then diagE ε E cp cm c b else 0) := by
   have e1 := hE a b c d
   have e2 := sgE_comm hC ε a b c d hab hcd
-  have h1 := E_comm_sgE hEC ε a b c d
-  have h2 := E_comm_sgE hEC ε c d a b
+  have h1 := _root_.ReciprocityTheory.ChartRestriction.DS.csq_E_comm_sgE hEC ε a b c d
+  have h2 := _root_.ReciprocityTheory.ChartRestriction.DS.csq_E_comm_sgE hEC ε c d a b
   have key : (E a b + sgE ε cp cm a b) * (E c d + sgE ε cp cm c d) -
       (E c d + sgE ε cp cm c d) * (E a b + sgE ε cp cm a b) =
       (E a b * E c d - E c d * E a b) + (sgE ε cp cm a b * sgE ε cp cm c d - sgE ε cp cm c d * sgE ε cp cm a b) := by

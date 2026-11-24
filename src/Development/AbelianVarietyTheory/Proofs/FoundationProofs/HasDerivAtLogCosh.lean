@@ -1,18 +1,132 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.FockSingularValues
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DilMonomial
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivedAdjoint
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSvd
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockKsetPreservesHomogeneousDegree
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockPolynomialKFiniteBothMembers
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSvd
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.Prop
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.DilMonomial, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasDerivAtLogCosh
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.DilMonomial =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FoundationProofs.DilMonomial", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+namespace GlobalTheory.FockDecay
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU Matrix
+
+def rectDiag (p q : ℕ) (f : ℕ → ℝ) : Matrix (Fin p) (Fin q) ℂ :=
+  Matrix.of fun i j => if (i : ℕ) = (j : ℕ) then ((f i : ℝ) : ℂ) else 0
+
+def diagP (p q : ℕ) (σ : ℕ → ℝ) : Mat p q :=
+  Matrix.fromBlocks 0 (rectDiag p q σ) (rectDiag p q σ)ᴴ 0
+
+def tanhDiag (p q : ℕ) (σ : ℕ → ℝ) (t : ℝ) : Mat p q :=
+  Matrix.diagonal fun a => (if a.isLeft then 1 else -1) *
+    ((σ (posIx a) * Real.tanh (t * σ (posIx a)) : ℝ) : ℂ)
+
+def hypMat (p q : ℕ) (σ : ℕ → ℝ) (t : ℝ) : Mat p q :=
+  Matrix.fromBlocks (Matrix.diagonal fun i : Fin p => ((Real.cosh (t * σ i) : ℝ) : ℂ))
+    (rectDiag p q fun i => Real.sinh (t * σ i)) (rectDiag p q fun i => Real.sinh (t * σ i))ᴴ
+    (Matrix.diagonal fun j : Fin q => ((Real.cosh (t * σ j) : ℝ) : ℂ))
+
+def dil {p q : ℕ} (n : ℕ) (u : Ix p q → ℝ) : Pol p q n 0 →ₗ[ℂ] Pol p q n 0 :=
+  ((Real.exp ((∑ l : Ln p q n 0, u l.1) / 2) : ℝ) : ℂ) •
+    (MvPolynomial.aeval fun l : Ln p q n 0 =>
+      (MvPolynomial.C ((Real.exp (u l.1) : ℝ) : ℂ) * MvPolynomial.X l : Pol p q n 0)).toLinearMap
+
+theorem diagonalElement_mem (p q : ℕ) (σ : ℕ → ℝ) : diagP p q σ ∈ pR p q := pY_mem (rectDiag p q σ)
+
+theorem dil_monomial {p q n : ℕ} (u : Ix p q → ℝ) (α : Ln p q n 0 →₀ ℕ) (c : ℂ) :
+    dil n u (MvPolynomial.monomial α c) =
+      ((Real.exp (∑ l : Ln p q n 0, ((α l : ℝ) + 1 / 2) * u l.1) : ℝ) : ℂ) • MvPolynomial.monomial α c := by
+  have h : Real.exp (∑ l : Ln p q n 0, ((α l : ℝ) + 1 / 2) * u l.1) =
+      Real.exp ((∑ l : Ln p q n 0, u l.1) / 2) * ∏ l : Ln p q n 0, Real.exp (u l.1) ^ α l := by
+    simp only [← Real.exp_nat_mul, ← Real.exp_sum, ← Real.exp_add, Finset.sum_div, ← Finset.sum_add_distrib]
+    congr 1
+    exact Finset.sum_congr rfl fun l _ => by ring
+  rw [h, Complex.ofReal_mul, mul_smul, dil, LinearMap.smul_apply, AlgHom.toLinearMap_apply,
+    MvPolynomial.aeval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _), MvPolynomial.monomial_eq,
+    Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
+  congr 1
+  simp only [mul_pow, Finset.prod_mul_distrib, ← map_pow, ← map_prod, MvPolynomial.smul_eq_C_mul,
+    MvPolynomial.algebraMap_eq, Complex.ofReal_prod, Complex.ofReal_pow]
+  ring
+
+theorem dil_dil_neg {p q n : ℕ} (u : Ix p q → ℝ) (Φ : Pol p q n 0) : dil n u (dil n (-u) Φ) = Φ := by
+  induction Φ using MvPolynomial.induction_on' with
+  | add P Q hP hQ => rw [map_add (f := _), map_add (f := _), hP, hQ]
+  | monomial α c =>
+    rw [dil_monomial, map_smul, dil_monomial, smul_smul, ← Complex.ofReal_mul, ← Real.exp_add,
+      ← Finset.sum_add_distrib]
+    simp
+
+theorem dil_zero {p q n : ℕ} (Φ : Pol p q n 0) : dil n 0 Φ = Φ := by
+  induction Φ using MvPolynomial.induction_on' with
+  | add P Q hP hQ => rw [map_add (f := _), hP, hQ]
+  | monomial α c => rw [dil_monomial]; simp
+
+end GlobalTheory.FockDecay
+end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.DilMonomial =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasDerivAtLogCosh =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasDerivAtLogCosh", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData\npublic import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.FockSingularValues\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DilMonomial\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar\nimport Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivedAdjoint\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSvd\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockKsetPreservesHomogeneousDegree\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockPolynomialKFiniteBothMembers\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\npublic import Mathlib.Analysis.Calculus.Deriv.Prod\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.InnerProductSpace.Calculus\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.Normed.Algebra.MatrixExponential\npublic import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -183,7 +297,7 @@ theorem pderiv_dil (u : Ix p q → ℝ) (l : Ln p q n 0) (P : Pol p q n 0) :
         · subst e
           rw [Finsupp.tsub_apply, Finsupp.single_eq_same, Nat.cast_sub (Nat.pos_of_ne_zero h)]
           push_cast; ring
-        · simp [Finsupp.single_apply, Ne.symm e]
+        · simp [Ne.symm e]
       rw [Finset.sum_congr rfl fun l' _ => this l', Finset.sum_add_distrib]
       simp
 
@@ -191,8 +305,8 @@ theorem killed_dil (u : Ix p q → ℝ) {Φ : Pol p q n 0} (h : KilledByPMinus �
   intro a b
   have := h a b
   simp only [lowerOp] at this ⊢
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [pderiv_dil, Derivation.map_smul, ← Finset.smul_sum, ← map_sum, this, map_zero, smul_zero]
+
+  simp only [pderiv_dil, Derivation.map_smul, ← Finset.smul_sum, ← map_sum, this, map_zero, smul_zero]
 
 theorem norm_sq_sum {σ H : Type} [DecidableEq σ] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {ι : MvPolynomial σ ℂ →ₗ[ℂ] H} (h : IsFockIP ι) (S : Finset (σ →₀ ℕ)) (c : (σ →₀ ℕ) → ℂ) :
@@ -217,9 +331,9 @@ theorem norm_dil_le {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] 
   rw [mul_pow]
   conv_lhs => rw [Φ.as_sum]
   conv_rhs => rw [Φ.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, dil_monomial, e _ (AddMonoidAlgebra.coeff _ _), smul_smul, map_smul, norm_sq_sum h,
-    Finset.mul_sum]
+
+  simp only [map_sum, dil_monomial, e _ (AddMonoidAlgebra.coeff _ _), smul_smul, map_smul, norm_sq_sum h,
+  Finset.mul_sum]
   refine Finset.sum_le_sum fun α _ => ?_
   rw [norm_mul, ← mul_assoc, ← mul_pow (Real.exp _), mul_comm (Real.exp _), Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.exp_pos _)]
@@ -519,9 +633,9 @@ theorem act_lower {Φ : Pol p q n 0} (h : KilledByPMinus Φ) (C : Matrix (Fin q)
     rcases i with i | i <;> rcases j with j | j <;>
       simp [Eab, Matrix.sum_apply, Matrix.single_apply, ite_and]
   rw [e]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, fockAct1_lower, h _ _, neg_zero,
-    smul_zero, Finset.sum_const_zero]
+
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, fockAct1_lower, h _ _, neg_zero,
+  smul_zero, Finset.sum_const_zero]
 
 theorem adjZ_upper (B : Matrix (Fin p) (Fin q) ℂ) :
     adjZ (Matrix.fromBlocks 0 B 0 0 : Mat p q) = Matrix.fromBlocks 0 0 (-Bᴴ) 0 := by
@@ -530,8 +644,8 @@ theorem adjZ_upper (B : Matrix (Fin p) (Fin q) ℂ) :
 theorem exists_killed (F : FockData T0 T1 T2) {k : T1.G} (hk : k ∈ T1.Kset) {Φ : Pol p q n 0}
     (h : KilledByPMinus Φ) : ∃ Q, F.π (k, 1) (F.ι Φ) = F.ι Q ∧ KilledByPMinus Q := by
   have hQ : F.π (k, 1) (F.ι Φ) ∈ LinearMap.range F.ι := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← MvPolynomial.sum_homogeneousComponent Φ, map_sum, map_sum]
+
+    rw [← MvPolynomial.sum_homogeneousComponent Φ, map_sum, map_sum]
     refine Submodule.sum_mem _ fun d _ => ?_
     obtain ⟨Q, -, e⟩ := GlobalTheory.FockDegree.Om_Kset_homog p q n 0 T0 T1 T2 F _
       (GlobalTheory.FockKFin.emb_mem_Kset F hk (GlobalTheory.FockKFin.one_mem_Kset T2)) d _
@@ -568,8 +682,8 @@ theorem act_tanhDiag (σ : ℕ → ℝ) (t : ℝ) (α : Ln p q n 0 →₀ ℕ) :
     ext i j
     simp only [tanhDiag, Eab, Matrix.sum_apply, Matrix.smul_apply, Matrix.single_apply, Matrix.diagonal_apply,
       ite_and, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, map_sum, LinearMap.sum_apply]
+
+  rw [e, map_sum, LinearMap.sum_apply]
   simp only [map_smul, LinearMap.smul_apply, cartan1, smul_smul, ← Finset.sum_smul]
   congr 1
   rw [Complex.ofReal_sum, Fintype.sum_prod_type]
@@ -594,8 +708,8 @@ theorem dil_eq_sum (u : Ix p q → ℝ) (Ψ : Pol p q n 0) :
     dil n u Ψ = ∑ α ∈ Ψ.support, (Ψ.coeff α *
       ((Real.exp (∑ l : Ln p q n 0, ((α l : ℝ) + 1 / 2) * u l.1) : ℝ) : ℂ)) • MvPolynomial.monomial α 1 := by
   conv_lhs => rw [Ψ.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun α _ => ?_
   rw [dil_monomial, MvPolynomial.smul_monomial, MvPolynomial.smul_monomial]
   simp [mul_comm]
@@ -604,8 +718,8 @@ theorem hasDerivAt_flow (F : FockData T0 T1 T2) (σ : ℕ → ℝ) (Ψ : Pol p q
     HasDerivAt (fun t : ℝ => F.π (T1.expt (t • diagP p q σ), 1) (F.ι (dil n (logCosh σ t) Ψ)))
       (F.π (T1.expt (t • diagP p q σ), 1)
         (F.ι (fockAct1 p q n 0 (diagP p q σ + tanhDiag p q σ t) (dil n (logCosh σ t) Ψ)))) t := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dil_eq_sum, map_sum, map_smul]
+
+  simp only [dil_eq_sum, map_sum, map_smul]
   refine HasDerivAt.fun_sum fun α _ => ?_
   have h1 : HasDerivAt (fun t : ℝ => ∑ l : Ln p q n 0, ((α l : ℝ) + 1 / 2) * logCosh σ t l.1)
       (∑ l : Ln p q n 0, ((α l : ℝ) + 1 / 2) * (σ (posIx l.1) * Real.tanh (t * σ (posIx l.1)))) t :=
@@ -667,3 +781,6 @@ theorem harmonicDecay : HarmonicDecay := by
 
 end GlobalTheory.FockDecay
 end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasDerivAtLogCosh =====

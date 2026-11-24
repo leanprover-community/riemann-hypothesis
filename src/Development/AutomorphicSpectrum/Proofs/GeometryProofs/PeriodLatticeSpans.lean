@@ -1,17 +1,68 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
+public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemRangeCompIffOfIsClosedImmersion
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExponentialSurjectiveSemiabelianStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLinearLiftOfAdditiveFamily
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIsClosedEmbeddingOfAffine
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsSymmetricVeryAmple
+public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIsClosedEmbeddingOfAffine
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TorusExtensionPointsDivisible
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsHolToOfComponents
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLinearLiftOfAdditiveFamily
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExponentialSurjectiveSemiabelian
+public import Mathlib.Topology.Algebra.Group.OpenMapping
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolPairA
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Baire.LocallyCompactRegular
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 
 @[expose] public section
 
@@ -138,33 +189,9 @@ theorem ofFibre_one {R : Type} [CommRing R] (G : Over (Sp R)) [GrpObj G] (x : Sp
   rw [_root_.mul_one] at this
   exact left_eq_mul.1 this
 
-theorem isHolTo_slice_at {V V' : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup V'] [NormedSpace ℂ V']
-    {X : Scheme.{0}} {B : Set V} {b : V} (hb : b ∈ B) {c : V × V' → (Sp ℂ ⟶ X)}
-    (h : IsHolTo (B ×ˢ Set.univ) c) : IsHolTo Set.univ (fun z => c (b, z)) := by
-  intro U f
-  obtain ⟨h1, h2⟩ := h U f
-  have hj : Differentiable ℂ (fun z : V' => (b, z)) := (differentiable_const _).prodMk differentiable_id
-  refine ⟨?_, ?_⟩
-  · have h3 := h1.preimage hj.continuous
-    simpa only [Set.preimage_setOf_eq, Set.mem_prod, Set.mem_univ, and_true, hb, true_and] using h3
-  · exact h2.comp hj.differentiableOn fun z hz => ⟨⟨hb, trivial⟩, hz.2⟩
+alias isHolTo_ex_slice := _root_.GlobalTheory.CompanionTheory.Ar.Flat.ExpOnto.isHolTo_ex
 
-theorem isHolTo_ex_slice {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] {g n : ℕ}
-    {M : LieModel G (𝟙 (Sp R)) (Fin g → R)} {B : Set (Fin n → ℂ)} {ψ : (Fin n → ℂ) → (R →+* ℂ)}
-    (e : FamExp G M B ψ) {b : Fin n → ℂ} (hb : b ∈ B) :
-    IsHolTo Set.univ (fun z => (e.ex b z).left) :=
-  isHolTo_slice_at (V := Fin n → ℂ) (V' := Fin g → ℂ) (X := G.left) (b := b) (B := B)
-    (c := fun bz => (e.ex bz.1 bz.2).left) hb e.hol
-
-theorem isHolTo_snd {V V' : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup V'] [NormedSpace ℂ V']
-    {X : Scheme.{0}} {c : V' → (Sp ℂ ⟶ X)} (h : IsHolTo Set.univ c) :
-    IsHolTo (Set.univ ×ˢ Set.univ) (fun p : V × V' => c p.2) := by
-  intro U f
-  obtain ⟨h1, h2⟩ := h U f
-  refine ⟨?_, ?_⟩
-  · have h3 := h1.preimage (continuous_snd (X := V) (Y := V'))
-    simpa only [Set.preimage_setOf_eq, Set.mem_prod, Set.mem_univ, and_self, true_and] using h3
-  · exact h2.comp differentiable_snd.differentiableOn fun z hz => ⟨trivial, hz.2⟩
+alias isHolTo_snd := _root_.GlobalTheory.CompanionTheory.Ar.Flat.ExpOnto.isHolTo_const_param
 
 def famExpAtPoint {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] {g n : ℕ}
     {M : LieModel G (𝟙 (Sp R)) (Fin g → R)} {B : Set (Fin n → ℂ)} {ψ : (Fin n → ℂ) → (R →+* ℂ)}
@@ -322,7 +349,7 @@ theorem isHolTo_torusExp : IsHolTo Set.univ (fun w => (torusExp (X := X) β w).l
     refine ReciprocityTheory.ChartRestriction.G.PullbackSections.isHolTo_of_affine (T := Spec (torusRing ZU X)) isOpen_univ fun r => ?_
     obtain ⟨α, rfl⟩ : ∃ α, r = (Scheme.ΓSpecIso (torusRing ZU X)).inv.hom α :=
       ⟨(Scheme.ΓSpecIso (torusRing ZU X)).hom.hom r, by simp⟩
-    simp only [valAt'_torusFst]
+    simp only
     exact (differentiable_torusExp_coord β α).differentiableOn.congr fun w _ => valAt'_torusFst _ α
   have h2 : IsHolTo (V := Fin d → ℂ) Set.univ (fun _ => 𝟙 (Sp ℂ)) :=
     fun U f => ⟨by simp only [Set.mem_univ, true_and]; exact isOpen_const, differentiableOn_const _⟩
@@ -351,7 +378,7 @@ theorem span_per_eq_top : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj 
     (e : FamExp G M B ψ), IsSemiAbelian G → ∀ b ∈ B, Submodule.span ℂ (e.per b) = ⊤ := by
   intro R _ G _ _ g n M B ψ e hG b hb
   obtain ⟨T⟩ := hG.fibres ℂ (spMap (ψ b))
-  have hsurj := GlobalTheory.T.exponential_surjective_semiabelian R G g n M B ψ e hG b hb
+  have hsurj := _root_.GlobalTheory.CompanionTheory.Ar.Flat.famExp_ex_surjective R G g n M B ψ e hG b hb
   have hq := T.q_hom
   have hi := T.i_hom
   letI := T.addCommGroup
@@ -390,8 +417,8 @@ theorem span_per_eq_top : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj 
       ext c
       have h2 : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := Complex.two_pi_I_ne_zero
       simp [Finset.sum_apply, Pi.single_apply, h2]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e1, map_sum]
+
+    rw [e1, map_sum]
     exact Submodule.sum_mem _ fun a _ => by
       rw [map_smul]
       exact Submodule.smul_mem _ _ (hW a)

@@ -1,10 +1,44 @@
 module
 
-public import Mathlib
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 public import Formalism.SharpRestriction.ParConsts
-public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -21,21 +55,7 @@ theorem sqrtMinusD_sq (D : Formalism.BasicNotions.D7) : D.host.sqrtMinusD ^ 2 = 
 
 theorem half_one_add_sqrt_neg_isIntegral (D : Formalism.BasicNotions.D7) :
     IsIntegral ℤ ((1 + D.host.sqrtMinusD) / 2 : D.host.E) := by
-  obtain ⟨-, -, -, hd, -⟩ := D.host.hyp
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, D.host.d = 16 * k + 7 := ⟨D.host.d / 16, by omega⟩
-  refine ⟨Polynomial.X ^ 2 - Polynomial.X + Polynomial.C ((4 * k + 2 : ℕ) : ℤ), ?_, ?_⟩
-  · monicity!
-  · have h := sqrtMinusD_sq D
-    rw [hk] at h
-    simp only [Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_pow, Polynomial.eval₂_X,
-      Polynomial.eval₂_C]
-    push_cast at h
-    simp only [eq_intCast, Int.cast_add, Int.cast_mul, Int.cast_natCast, Int.cast_ofNat, Nat.cast_add,
-      Nat.cast_mul, Nat.cast_ofNat]
-    have : ((1 + D.host.sqrtMinusD) / 2 : D.host.E) ^ 2 =
-        (1 + 2 * D.host.sqrtMinusD + D.host.sqrtMinusD ^ 2) / 4 := by ring
-    rw [this, h]
-    ring
+  apply Formalism.L2.Pj.half_one_add_sqrt_neg_isIntegral <;> assumption
 
 def w0 (D : Formalism.BasicNotions.D7) : 𝓞 D.host.E := ⟨(1 + D.host.sqrtMinusD) / 2, half_one_add_sqrt_neg_isIntegral D⟩
 

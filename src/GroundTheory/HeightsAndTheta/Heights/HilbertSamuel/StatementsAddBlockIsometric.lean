@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChangeOfModel
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 @[expose] public section
 

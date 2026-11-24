@@ -1,7 +1,15 @@
 module
 
-public import Mathlib
-public import GroundTheory.FunctionField.PlaceBridge
+public import GroundTheory.FunctionField.PlaceDefs
+public import Mathlib.FieldTheory.Perfect
+public import Mathlib.RingTheory.Kaehler.Basic
+public import Mathlib.FieldTheory.SeparablyGenerated
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.Unramified.Basic
+public import Mathlib.RingTheory.Unramified.Field
 
 @[expose] public section
 

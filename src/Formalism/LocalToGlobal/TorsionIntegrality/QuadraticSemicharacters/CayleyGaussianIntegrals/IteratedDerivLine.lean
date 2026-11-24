@@ -1,6 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.TaylorMvLinear
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 
@@ -60,8 +63,8 @@ theorem LineUnique_of (h : LineCoeff) : LineUnique := by
     have h1 := h K n v T k
     have h2 := h K n v T' k
     rw [hv v, h2] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [p, q, map_sum, MvPolynomial.eval_monomial]
+
+    simp only [p, q, map_sum, MvPolynomial.eval_monomial]
     simp only [Finsupp.prod_fintype _ _ (fun i => pow_zero _)]
     exact h1.symm
   have hν : ν ∈ Finset.finsuppAntidiag Finset.univ k := by simp [Finset.mem_finsuppAntidiag, hk]
@@ -118,8 +121,8 @@ theorem multilinear_diag {n : Type*} [Fintype n] [DecidableEq n] {k : ℕ}
     simp [Finset.sum_apply, Pi.single_apply]
   have h1 : D (fun _ => v) = D (fun _ : Fin k => ∑ i, v i • (Pi.single i (1 : ℂ) : n → ℂ)) := by
     rw [← hv]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h1, D.map_sum]
+
+  rw [h1, D.map_sum]
   refine Finset.sum_congr rfl fun f _ => ?_
   rw [D.map_smul_univ (fun j => v (f j)) (fun j => Pi.single (f j) (1 : ℂ)), smul_eq_mul]
 

@@ -1,7 +1,17 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.TwoFactor
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.Dual.Defs
+public import Mathlib.LinearAlgebra.TensorProduct.Associator
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Algebra.BigOperators.Finsupp.Basic
+public import Mathlib.LinearAlgebra.Basis.Defs
+public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+public import Mathlib.RepresentationTheory.Basic
 
 @[expose] public section
 

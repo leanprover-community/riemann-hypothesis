@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CupProducts.Pairing
-public import GroundTheory.ProfiniteCohomology.CartierDual
 public import GroundTheory.ProfiniteCohomology.ClassFormations.CorestrictionDefs
+public import GroundTheory.ProfiniteCohomology.CartierDualDefs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

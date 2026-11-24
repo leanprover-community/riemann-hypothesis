@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsGenericCount
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StGoodChartModel
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StComponentsGenericCount
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSheetLift
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

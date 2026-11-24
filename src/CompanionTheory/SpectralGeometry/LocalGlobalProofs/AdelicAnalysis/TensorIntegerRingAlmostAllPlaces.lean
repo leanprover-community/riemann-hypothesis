@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.IntegralAlmostAllPlacesStatement
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.IntegralAlmostAllPlaces
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthRestrictScalarsEqSumInertiaDegOfSubset
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticExtNormFormOverAlgebra
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitNormFormAtOddPlace
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthRestrictScalarsEqSumInertiaDegOfSubset
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 
 @[expose] public section
 
@@ -44,7 +48,7 @@ theorem exists_good_nat {k : Type} [Field k] (h2 : (2 : k) ≠ 0) (h3 : (3 : k) 
   have hQ1 : Q1 ≠ 0 := by
     intro h
     have := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p 0) h
-    simp [Q1, Polynomial.coeff_one, Polynomial.coeff_X_pow] at this
+    simp [Q1, Polynomial.coeff_X_pow] at this
   have hQ2 : Q2 ≠ 0 := by
     intro h
     have e0 := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p 0) h
@@ -215,8 +219,8 @@ variable {K A : Type} [Field K] [CommRing A] [Algebra K A] (R : Subring K)
 theorem coord_mem {ι₁ ι₂ : Type} [Fintype ι₁] (P : Module.Basis ι₁ K A) (Q : Module.Basis ι₂ K A)
     (hPQ : ∀ i l, Q.repr (P i) l ∈ R) (y : A) (hy : ∀ i, P.repr y i ∈ R) (l : ι₂) :
     Q.repr y l ∈ R := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← P.sum_repr y, map_sum, Finsupp.finsetSum_apply]
+
+  rw [← P.sum_repr y, map_sum, Finsupp.finsetSum_apply]
   refine R.sum_mem fun i _ => ?_
   rw [map_smul, Finsupp.smul_apply, smul_eq_mul]
   exact R.mul_mem (hy i) (hPQ i l)
@@ -428,7 +432,7 @@ theorem good_ring : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
     exact NumberField.InfinitePlace.not_isReal_iff_isComplex.2 (h.2.1.isComplex w) hreal
   obtain ⟨D, b₂, hsq, hb0, hσ1, hD⟩ := GlobalTheory.QuadNormBase.exists_basis F E σ h.2.2.1 hinv hne
   have hD0 : D ≠ 0 := fun h0 => hsq (h0 ▸ IsSquare.zero)
-  have I := GlobalTheory.T.integral_almost_all_places F E σ h
+  have I := _root_.GlobalTheory.CompanionTheory.SW.GoodInt.rational_integral_units F E σ h
   filter_upwards [(I d b).2 D hD0, (I d b).2 2 two_ne_zero, (I d b).2 3 three_ne_zero,
     Filter.eventually_all.2 fun k => (I 2 b₂).1 (b k),
     Filter.eventually_all.2 fun j => (I d b).1 (b₂ j)] with v hD1 h21 h31 hBC hCB

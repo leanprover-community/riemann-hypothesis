@@ -1,10 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumFock
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
-public import Formalism.RealPlaceAnalysis.FockPairGl
-public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
+public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 

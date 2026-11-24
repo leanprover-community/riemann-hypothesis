@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.PrimaryComponentCohomologyEqBotOfScdpLt
+public import Mathlib.Topology.Algebra.OpenSubgroup
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 public import GroundTheory.ProfiniteCohomology.Shapiro
 

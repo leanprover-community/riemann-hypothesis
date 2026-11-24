@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyChern
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
+public import Mathlib.MeasureTheory.Constructions.HaarToSphere
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

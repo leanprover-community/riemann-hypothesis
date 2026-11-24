@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcLinear
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -21,8 +22,8 @@ def firstLin (n : T → ℤ) : MRing (stackedBlocks T) := ∑ t, n t • graphFi
 
 theorem linPointMap_firstLin (α : T → k) (M : T → Fin 1 → k) (n : T → ℤ) :
     linPointMap α M (firstLin n) = C (∑ t, n t • α t) * X none := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [firstLin, map_sum, map_zsmul, LinPrimeExample.linPointMap_first, Finset.sum_mul, smul_mul_assoc]
+
+  simp only [firstLin, map_sum, map_zsmul, LinPrimeExample.linPointMap_first, Finset.sum_mul, smul_mul_assoc]
 
 theorem exists_comb {α : T → k} (hα : Submodule.span ℤ (Set.range α) = ⊤) (y : k) :
     ∃ n : T → ℤ, ∑ t, n t • α t = y := by
@@ -65,8 +66,8 @@ theorem chart_equiv (α : T → k) (M : T → Fin 1 → k) (hα : Submodule.span
   set N : Submodule ℤ (MRing (stackedBlocks T) ⧸ I) :=
     Submodule.span ℤ (Set.range fun t => mk (graphFirst t)) with hN
   have hLin : ∀ n : T → ℤ, mk (firstLin n) ∈ N := fun n => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [firstLin, map_sum]
+
+    rw [firstLin, map_sum]
     refine Submodule.sum_mem _ fun t _ => ?_
     rw [map_zsmul]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨t, rfl⟩)
@@ -133,8 +134,8 @@ theorem chart_equiv (α : T → k) (M : T → Fin 1 → k) (hα : Submodule.span
     rw [RingHom.mem_ker] at hg
     obtain ⟨n, hn⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).mp (hAll g)
     have hn' : mk (firstLin n) = mk g := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hn, firstLin, map_sum]
+
+      rw [← hn, firstLin, map_sum]
       simp only [map_zsmul]
     have hd : g - firstLin n ∈ I := Ideal.Quotient.eq.mp hn'.symm
     have hd' : φ (g - firstLin n) = 0 := RingHom.mem_ker.mp (hIle hd)

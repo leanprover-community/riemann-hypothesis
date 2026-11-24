@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.KerPNonzero
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.RelIndexEqAbsDetReal
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

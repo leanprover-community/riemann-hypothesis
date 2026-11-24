@@ -1,13 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDivPlace
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsDimEqOne
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomLieEquivScalarTmul
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigExtMapRelFrobCompRigOfOmega
-public import Development.AbelianVarietyTheory.Definitions.Divisors.WittOnFalse
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.T2SpaceTensorRatFiniteAlgebraModuleTopology
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsDimEqOne
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -65,7 +100,7 @@ theorem matL_tmul (b : Module.Basis κ ℤ D.La) (L : Link D G) (a : AfP p) (c :
     matL b L (a ⊗ₜ c) = a • (LinearMap.toMatrix (Algebra.TensorProduct.basis ℚ b)
       (Algebra.TensorProduct.basis ℚ b) (L.rep c)).map (algebraMap ℚ (AfP p)) := by
   have h : actOn L.rep (AfP p) (a ⊗ₜ c) = a • (L.rep c).baseChange (AfP p) := by
-    simp [actOn, Algebra.TensorProduct.lift_tmul, Algebra.smul_def]
+    simp [actOn, Algebra.smul_def]
     rfl
   simp only [matL, LinearMap.coe_comp, LinearEquiv.coe_coe, AlgHom.toLinearMap_apply, Function.comp_apply, h,
     map_smul, LinearMap.toMatrix_baseChange]
@@ -165,8 +200,8 @@ theorem exists_leftInv (b : Module.Basis κ ℤ D.La) (L : Link D G) :
       have e1 : a ⊗ₜ[ℚ] c = a • ((1 : AfP p) ⊗ₜ[ℚ] T' (T c)) := by
         rw [hTT, TensorProduct.smul_tmul', smul_eq_mul, _root_.mul_one]
       rw [e1, Matrix.matrix_eq_sum_single (T c)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, TensorProduct.tmul_sum, Finset.smul_sum, Matrix.smul_apply, Matrix.map_apply]
+
+      simp only [map_sum, TensorProduct.tmul_sum, Finset.smul_sum, Matrix.smul_apply, Matrix.map_apply]
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
       rw [show Matrix.single i j (T c i j) = (T c i j) • Matrix.single i j (1 : ℚ) by
         rw [Matrix.smul_single, smul_eq_mul, _root_.mul_one], map_smul, TensorProduct.tmul_smul,

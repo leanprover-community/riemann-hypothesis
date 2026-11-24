@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.LocallyProfinite
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.StabilizerOf
+public import Mathlib.RepresentationTheory.Coinvariants
+public import Mathlib.Topology.Algebra.Group.Defs
+public import Mathlib.Topology.Connected.TotallyDisconnected
+public import GroundTheory.AutomorphicForms.LocallyProfinite
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -110,8 +116,8 @@ theorem cosetSum_mem_fixedVectors (hnorm : ∀ k ∈ K, ∀ n ∈ N, k * n * k�
   have : (N.subgroupOf K).Normal :=
     ⟨fun n hn g => Subgroup.mem_subgroupOf.2 (by simpa using hnorm g g.2 n hn)⟩
   intro k hk
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [cosetSum_apply, map_sum]
+
+  rw [cosetSum_apply, map_sum]
   refine Fintype.sum_equiv (Equiv.mulLeft ((⟨k, hk⟩ : K) : K ⧸ N.subgroupOf K)) _ _ fun q => ?_
   rw [← Module.End.mul_apply, ← map_mul]
   have := act_eq_of_mk_eq ρ hv (a := ⟨k, hk⟩ * Quotient.out q)

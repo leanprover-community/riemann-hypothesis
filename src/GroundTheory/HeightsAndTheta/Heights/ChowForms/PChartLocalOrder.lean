@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsBis
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartIncOrd
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsDehomogOrd
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsLocalMultOrd
+public import Mathlib.Order.CompletePartialOrder
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormSection
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

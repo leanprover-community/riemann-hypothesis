@@ -1,12 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.SmulBasisMemHatIff
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddNsmulResidueAssoc
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsOpenNsmulCompletedHomLatticeFiniteAdelic
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCompactLatticeStabilizerBoundedReal
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -119,8 +154,8 @@ theorem fT_mem {A : AddSubgroup (Matrix (Fin n) (Fin r) E)} {α : Af F}
 
 omit [NumberField E] in
 theorem continuous_fT (y : Matrix (Fin n) (Fin r) E) : Continuous fun α : Af F => fT F α y := by
-  haveI : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
-  haveI : ContinuousSMul (AF F) (AF F ⊗[F] E) := IsModuleTopology.toContinuousSMul _ _
+  have : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
+  have : ContinuousSMul (AF F) (AF F ⊗[F] E) := IsModuleTopology.toContinuousSMul _ _
   refine continuous_matrix fun a k => ?_
   have : (fun α => fT F α y a k) = fun α => pairA F 0 α • ((1 : AF F) ⊗ₜ[F] y k a) := by
     funext α
@@ -152,7 +187,7 @@ def co (p : Fin r × Fin n × Fin d) : Matrix (Fin r) (Fin n) (AF F ⊗[F] E) �
   map_add' x y := by rw [Matrix.add_apply, LinearMap.map_add (f := _), map_add (f := _)]
 
 theorem continuous_co (p : Fin r × Fin n × Fin d) : Continuous (co b p) := by
-  haveI : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
+  have : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
   have h1 : Continuous ((Algebra.TensorProduct.basis (AF F) b).coord p.2.2) :=
     IsModuleTopology.continuous_of_linearMap _
   have h2 : Continuous (sndA F) := continuous_snd
@@ -183,10 +218,10 @@ theorem eq_sum_coord (z : AF F ⊗[F] E) : z = ∑ j, (Algebra.TensorProduct.bas
 theorem fin_sub (w : Matrix (Fin r) (Fin n) (AF F ⊗[F] E)) :
     (w - ∑ p, fT F (co b p w) (sgl b p)).map (finG F E) = 0 := by
   refine Matrix.ext fun a k => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.map_apply, Matrix.sub_apply, map_sub, sum_fT, Matrix.zero_apply, sub_eq_zero, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [eq_sum_coord b (w a k), map_sum]
+
+  rw [Matrix.map_apply, Matrix.sub_apply, map_sub, sum_fT, Matrix.zero_apply, sub_eq_zero, map_sum]
+
+  conv_lhs => rw [eq_sum_coord b (w a k), map_sum]
   rfl
 
 theorem fst_coord (z : AF F ⊗[F] E) (j) : fstA F ((Algebra.TensorProduct.basis (AF F) b).repr z j) =
@@ -235,8 +270,8 @@ theorem exists_gen (hfg : A.toIntSubmodule.FG) : ∃ (m : ℕ) (x : Fin m → Ma
       have hv' : v ∈ Submodule.span ℤ (Set.range x) := by rw [hx]; exact hv
       obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).1 hv'
       refine ⟨fun k => c k • a, fun k => zsmul_mem (show a ∈ intG F from ha) _, ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_zsmul, LinearMap.smul_apply]
+
+      simp only [map_sum, map_zsmul, LinearMap.smul_apply]
     | zero => exact ⟨0, fun k => zero_mem _, by simp⟩
     | add y z _ _ hy hz =>
       obtain ⟨c, hc, rfl⟩ := hy
@@ -251,8 +286,8 @@ theorem exists_gen (hfg : A.toIntSubmodule.FG) : ∃ (m : ℕ) (x : Fin m → Ma
 omit [NumberField E] in
 theorem isCompact_hatG (hfg : A.toIntSubmodule.FG) :
     IsCompact (hatG F A : Set (Matrix (Fin r) (Fin n) (AF F ⊗[F] E))) := by
-  haveI : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
-  haveI : ContinuousAdd (AF F ⊗[F] E) := IsModuleTopology.toContinuousAdd (AF F) _
+  have : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
+  have : ContinuousAdd (AF F ⊗[F] E) := IsModuleTopology.toContinuousAdd (AF F) _
   obtain ⟨m, x, hx⟩ := exists_gen (F := F) hfg
   have hI : IsCompact (intAf F) := GlobalTheory.AdeleCocompact.isCompact_integral F
   have hg : Continuous fun c : Fin m → Af F => ∑ k, fT F (c k) (x k) :=
@@ -266,7 +301,7 @@ theorem exists_nsmul_mem_open (hfg : A.toIntSubmodule.FG) (U : AddSubgroup (Matr
     (hU : IsOpen (U : Set (Matrix (Fin r) (Fin n) (AF F ⊗[F] E)))) :
     ∃ N : ℕ, 0 < N ∧ ∀ u ∈ hatG F A, N • u ∈ U := by
   obtain ⟨m, x, hx⟩ := exists_gen (F := F) hfg
-  obtain ⟨N, hN, h⟩ := GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F (⋂ k, (fun α => fT F α (x k)) ⁻¹' U)
+  obtain ⟨N, hN, h⟩ := _root_.GlobalTheory.LocalNormBound.main F (⋂ k, (fun α => fT F α (x k)) ⁻¹' U)
     (Filter.iInter_mem.2 fun k => (hU.preimage (continuous_fT (x k))).mem_nhds (by simp))
   refine ⟨N, hN, fun u hu => ?_⟩
   obtain ⟨c, hc, rfl⟩ := (hx u).1 hu
@@ -295,13 +330,13 @@ theorem exists_mod (hO : ∀ c : 𝓞 F, ∀ y ∈ A, (c : F) • y ∈ A) {N : 
 
 theorem exists_rat (hden : ∀ y, ∃ N : ℕ, 0 < N ∧ N • y ∈ A) {u : Matrix (Fin r) (Fin n) (AF F ⊗[F] E)}
     (hu : u.map (infG F E) = 0) : ∃ y, u - fT F 1 y ∈ hatG F A := by
-  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
   let b := Module.finBasis F E
   obtain ⟨N, hN, hA⟩ := exists_common A (sgl b) fun p => hden _
   choose x a ha hx using fun p => (GlobalTheory.AdLat.strong_approximation_mod_nat F N hN).1 (co b p u)
   refine ⟨∑ p, x p • sgl b p, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [eq_sum_of_fin b hu, map_sum, ← Finset.sum_sub_distrib]
+
+  rw [eq_sum_of_fin b hu, map_sum, ← Finset.sum_sub_distrib]
   refine sum_mem fun p _ => ?_
   rw [hx, map_add (f := _), LinearMap.add_apply, fT_algebraMap, add_sub_cancel_left, map_nsmul, LinearMap.smul_apply,
     ← map_nsmul]
@@ -309,16 +344,16 @@ theorem exists_rat (hden : ∀ y, ∃ N : ℕ, 0 < N ∧ N • y ∈ A) {u : Mat
 
 theorem isOpen_nsmul (hden : ∀ y, ∃ N : ℕ, 0 < N ∧ N • y ∈ A) {N : ℕ} (hN : 0 < N) :
     IsOpen {w : Matrix (Fin r) (Fin n) (AF F ⊗[F] E) | ∃ u ∈ hatG F A, (w - N • u).map (finG F E) = 0} := by
-  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  haveI : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
-  haveI : IsTopologicalAddGroup (AF F ⊗[F] E) := IsModuleTopology.topologicalAddGroup (AF F) _
+  have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  have : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
+  have : IsTopologicalAddGroup (AF F ⊗[F] E) := IsModuleTopology.topologicalAddGroup (AF F) _
   let b := Module.finBasis F E
   obtain ⟨M, hM, hA⟩ := exists_common A (sgl b) fun p => hden _
   refine GlobalTheory.LatOpen.isOpen_of_nhds ((finG F E).toAddMonoidHom.mapMatrix (m := Fin r) (n := Fin n)) _ N
     (⋂ p, co b p ⁻¹' {c | ∃ a : Af F, (∀ v, a v ∈ v.adicCompletionIntegers F) ∧ c = (N * M) • a}) ?_ ?_
   · refine Filter.iInter_mem.2 fun p => (continuous_co b p).continuousAt.preimage_mem_nhds ?_
     rw [map_zero]
-    exact GlobalTheory.AdLat.OpenLat.nsmul_integral_mem_nhds F _ (mul_pos hN hM)
+    exact _root_.GlobalTheory.IntegralNeighbourhoodZero.nsmul_integral_mem_nhds_zero F _ (mul_pos hN hM)
   · intro w hw
     choose a ha hx using Set.mem_iInter.1 hw
     refine ⟨∑ p, fT F (a p) (M • sgl b p), sum_mem fun p _ => fT_mem (ha p) (hA p), ?_⟩
@@ -329,7 +364,7 @@ theorem isOpen_nsmul (hden : ∀ y, ∃ N : ℕ, 0 < N ∧ N • y ∈ A) {N : �
 
 theorem mem_of_fT_mem (hO : ∀ c : 𝓞 F, ∀ y ∈ A, (c : F) • y ∈ A) (hfg : A.toIntSubmodule.FG)
     (hden : ∀ y, ∃ N : ℕ, 0 < N ∧ N • y ∈ A) {y} (hy : fT F 1 y ∈ hatG F A) : y ∈ A := by
-  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
   let b := Module.finBasis F E
   obtain ⟨M, hM, hA⟩ := exists_common A (sgl b) fun p => hden _
   obtain ⟨N, hN, hU⟩ := exists_nsmul_mem_open hfg (⨅ p, (intG F).comap (co b p)) (by

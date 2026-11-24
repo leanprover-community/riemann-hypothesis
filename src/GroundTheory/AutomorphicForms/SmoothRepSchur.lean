@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.SmoothRep
+public import Mathlib.RepresentationTheory.Irreducible
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Complex.Cardinality
 
 @[expose] public section
 
@@ -108,10 +113,10 @@ theorem algebraMap_intertwiningMap_bijective_of_rank_le_aleph0 [ρ.IsIrreducible
       set P : ℂ[X] := ∑ j ∈ s, a j • ∏ k ∈ s.erase j, (X - C k) with hPdef
       have hP : aeval φ P v = 0 := by
         have h0 := congrArg (aeval φ (∏ k ∈ s, (X - C k))) hsum
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_zero] at h0
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hPdef, map_sum, sum_apply]
+
+        rw [map_sum, map_zero] at h0
+
+        rw [hPdef, map_sum, sum_apply]
         rw [← h0]
         refine Finset.sum_congr rfl fun j hj => ?_
         rw [map_smul, map_smul, key j hj]
@@ -153,7 +158,7 @@ theorem rank_le_aleph0_of_isSmooth (hρ : IsSmooth ρ) [ρ.IsIrreducible] :
     intro g
     refine Submodule.span_le.2 ?_
     rintro _ ⟨h, rfl⟩
-    exact Submodule.subset_span ⟨g * h, by simp [map_mul, Module.End.mul_apply]⟩
+    exact Submodule.subset_span ⟨g * h, by simp [map_mul]⟩
   let W : Subrepresentation ρ :=
     ⟨Submodule.span ℂ (Set.range fun h : G => ρ h v), fun g _ hx => hstable g hx⟩
   have hW : W = ⊤ := (eq_bot_or_eq_top W).resolve_left fun h => hv (by

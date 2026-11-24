@@ -1,6 +1,50 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SGaugeDensB
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -73,22 +117,20 @@ theorem one_mem_tOne (ε : Fin n → Bool) : (1 : MxC n) ∈ tOne ε := by
 theorem logM_one : logM n 1 = 0 := by
   have := logM_exp (n := n) zero_mem_eX; rwa [NormedSpace.exp_zero] at this
 
-theorem Jm_inv (ε : Fin n → Bool) : (Formalism.REAL.Jm ε)⁻¹ = Formalism.REAL.Jm ε := Matrix.inv_eq_left_inv (Formalism.REAL.Jm_mul_self ε)
-
 theorem exp_fJ {ε : Fin n → Bool} {X : MxC n} (h : Formalism.REAL.inUJ ε (NormedSpace.exp X)) :
     NormedSpace.exp (fJ ε X) = NormedSpace.exp X := by
   have hJ := Formalism.REAL.Jm_mul_self ε
   have hu : IsUnit (Formalism.REAL.Jm ε) := IsUnit.of_mul_eq_one _ hJ
   set y := NormedSpace.exp X with hy
   have e1 : fJ ε X = Formalism.REAL.Jm ε * (-Xᴴ) * (Formalism.REAL.Jm ε)⁻¹ := by
-    rw [Jm_inv, fJ, Matrix.mul_neg, Matrix.neg_mul]
+    rw [_root_.Formalism.REAL.f1alg_inv_J, fJ, Matrix.mul_neg, Matrix.neg_mul]
   have e2 : ((yᴴ)⁻¹ : MxC n) = Formalism.REAL.Jm ε * y * Formalism.REAL.Jm ε := by
     apply Matrix.inv_eq_right_inv
     have h' : yᴴ * Formalism.REAL.Jm ε * y = Formalism.REAL.Jm ε := h
     calc yᴴ * (Formalism.REAL.Jm ε * y * Formalism.REAL.Jm ε) = (yᴴ * Formalism.REAL.Jm ε * y) * Formalism.REAL.Jm ε := by
           simp only [Matrix.mul_assoc]
       _ = 1 := by rw [h', hJ]
-  rw [e1, Matrix.exp_conj _ _ hu, Matrix.exp_neg, Matrix.exp_conjTranspose, ← hy, e2, Jm_inv]
+  rw [e1, Matrix.exp_conj _ _ hu, Matrix.exp_neg, Matrix.exp_conjTranspose, ← hy, e2, _root_.Formalism.REAL.f1alg_inv_J]
   calc Formalism.REAL.Jm ε * (Formalism.REAL.Jm ε * y * Formalism.REAL.Jm ε) * Formalism.REAL.Jm ε
       = (Formalism.REAL.Jm ε * Formalism.REAL.Jm ε) * y * (Formalism.REAL.Jm ε * Formalism.REAL.Jm ε) := by simp only [Matrix.mul_assoc]
     _ = y := by rw [hJ, Matrix.one_mul, Matrix.mul_one]

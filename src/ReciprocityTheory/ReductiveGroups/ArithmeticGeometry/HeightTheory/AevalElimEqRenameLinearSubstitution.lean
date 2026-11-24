@@ -1,6 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LaTIsPrime
+public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -36,8 +41,8 @@ theorem aeval_elim_mul_of_xhom (f : P → S) (g : I → S) (t : S) (n : ℕ) (Q 
       t ^ n * MvPolynomial.aeval (Sum.elim f g) Q := by
   conv_lhs => rw [Q.as_sum]
   conv_rhs => rw [Q.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, MvPolynomial.aeval_monomial, Finset.mul_sum]
+
+  simp only [map_sum, MvPolynomial.aeval_monomial, Finset.mul_sum]
   refine Finset.sum_congr rfl fun s hs => ?_
   rw [Finsupp.prod_fintype _ _ (by simp), Finsupp.prod_fintype _ _ (by simp), Fintype.prod_sum_type,
     Fintype.prod_sum_type]
@@ -116,7 +121,7 @@ theorem eq_zero_of_xhom_zero (c : ι)
         MvPolynomial.map (algebraMap K (Ω c)) q := by
     intro q
     induction q using MvPolynomial.induction_on with
-    | C a => simp [MvPolynomial.algebraMap_eq]
+    | C a => simp
     | add p q hp hq => simp only [map_add (f := _), hp, hq]
     | mul_X p v hp => simp [map_mul, hp]
   have e : d.linearSubstitution c (MvPolynomial.rename Sum.inl Q0) = MvPolynomial.map (algebraMap K (Ω c)) Q0 := by

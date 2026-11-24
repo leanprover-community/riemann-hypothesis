@@ -1,24 +1,61 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DataRigidSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DvrLem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThetaVV
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.GenCalc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsExtensionPullOver
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ProdSumReindex
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalEqZeroOfSumMulCoord
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AdicSumSectionsOfFiniteSumsOnThickeningsStatement
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.StalkMapInjectiveOfFlat
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SumFCalculus
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFrameRatio
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AdicSumSectionsOfFiniteSumsOnThickeningsStatement
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalEqZeroOfIndepCombStatement
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsExtensionPullOver
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalEqZeroOfIndepComb
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalEqZeroOfSumMulCoord
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFrameRatio
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.GenCalc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -273,8 +310,8 @@ theorem coef_of_secLin {k : ℕ} {g : GtPtF D F} {w : Frm D F k g.b} {χ : D.X} 
       (DegPre.prB D F).left (fun i => scal (fst (TF (R := R) F) D.P.A).left (c i)))
     (hx : ∀ i, IsCoefB k g w χ (f i) (x i)) : coef s g w χ = ∑ i, c i * x i := by
   refine CoefBasic.coef_eq fun z J hJ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [GlobalTheory.BoxExpansion.secLin_val h _ z hJ, CoefBasic.cst_eq, map_sum, Finset.sum_mul, Finset.sum_mul, Finset.sum_mul]
+
+  rw [GlobalTheory.BoxExpansion.secLin_val h _ z hJ, CoefBasic.cst_eq, map_sum, Finset.sum_mul, Finset.sum_mul, Finset.sum_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   have e₁ : gs (lift (𝟙 (TF (R := R) F)) g.b).left z ⊤ (scal (fst (TF (R := R) F) D.P.A).left (c i)) =
       CoefBasic.cstH z (c i) := by
@@ -353,14 +390,14 @@ theorem core (hL : LL) (hR : AdmBase R I) (j j' : ℕ) {N : Type} [Fintype N] (�
     (sval_sum' (π := D.toPre.P.A.hom) hJ _ _ _).trans (Finset.sum_congr rfl fun ν _ =>
       (sval_smul' (π := D.toPre.P.A.hom) hJ _ _ _).trans (congrArg _ (hn ν α p Z r z J hJ)))
   obtain ⟨τ, hτ, hv⟩ := exists_frame E.aB α g hg.1 w w' hw hw'
-  refine GlobalTheory.T.adicSum_sections_of_finite_sums_on_thickenings hL R I hR D F _ (mixφ D.toPre E.aB α) (mixε j j') _ (m α)
+  refine _root_.GlobalTheory.SecAdicSum.sumF_of_sum_on_thickenings hL R I hR D F _ (mixφ D.toPre E.aB α) (mixε j j') _ (m α)
     (0 : SecOver D.toPre.P.A.hom _) (fun e => ?_) g.b τ hτ _ 0 fun z J hJ => ⟨fun p => ?_, ?_⟩
   · obtain ⟨S, hS⟩ := level E j j' e ρ σ σ' f f' (fun ν => hE ν e) (fun ν => hE' ν e) hrel m hm α
     exact ⟨S, fun Z r z J hJ => ⟨(hS Z r z J hJ).1,
       (sval_zero' (π := D.toPre.P.A.hom) hJ _).trans (hS Z r z J hJ).2.symm⟩⟩
   · obtain ⟨⟨χ, δ⟩, rfl⟩ := p
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hm _ _ _ _ z J hJ, CoefBasic.cst_eq, map_sum, Finset.sum_mul]
+
+    rw [hm _ _ _ _ z J hJ, CoefBasic.cst_eq, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun ν _ => ?_
     have c₁ : constVal (g.b.left ≫ D.toPre.P.A.hom) z (ρ ν) =
         CoefBasic.cstH z (algebraMap (FractionRing R) F (algebraMap R (FractionRing R) (ρ ν))) := by
@@ -417,8 +454,8 @@ theorem exists_indep {R F : Type} [CommRing R] [IsDomain R] [Field F] [Algebra (
     exact IsFractionRing.injective R (FractionRing R)
       (((mul_eq_zero.1 li).resolve_right (inv_ne_zero d₀)).trans (map_zero _).symm)
   · have e := congrArg V.subtype (b.sum_repr (v ν))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at e
+
+    rw [map_sum] at e
     refine e.symm.trans (Finset.sum_congr rfl fun m _ => ?_)
     rw [hρ (m, ν), _root_.mul_comm, ← Algebra.smul_def, ← mul_smul, Algebra.smul_def (d : R), mul_right_comm,
       mul_inv_cancel₀ d₀, _root_.one_mul, map_smul]
@@ -430,7 +467,7 @@ theorem sumF_comb {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} (hR : AdmBa
   classical
   induction S using Finset.induction_on with
   | empty =>
-    letI : Module R F := Module.compHom F (algebraMap R (FractionRing R))
+    let : Module R F := Module.compHom F (algebraMap R (FractionRing R))
     refine ⟨⊥, Submodule.fg_bot, Submodule.zero_mem _, fun i => ?_, fun n => ⟨∅, fun T _ => ?_⟩⟩
     · simp only [Finset.sum_empty]; exact Submodule.zero_mem _
     · simp only [Finset.sum_empty, Finset.sum_const_zero, sub_zero]; exact Submodule.zero_mem _
@@ -549,11 +586,11 @@ theorem coreF [CharZero R] [IsAlgClosed F] (hL : LL) (hR : AdmBase R I) (j j' : 
       (sval_smul' (π := G.hom) hJ _ _ _).trans (congrArg _ ((H1.SectionArithmetic.sval_mulSec _ _ _ z hJ).trans
         (congrArg₂ (· * ·) (H1.SectionArithmetic.sval_pullSec _ _ _ z hJ) rfl))))
   have := U.smooth
-  have h₀ := GlobalTheory.T.sval_eq_zero_of_linearIndependent_comb R F _ _ _ _ G.hom (strF G F) _ isPullback_GF U.LG.L U.LG.isLB _ _ _ _ β hβ d
+  have h₀ := _root_.GlobalTheory.sval_eq_zero_of_indep_comb R F _ _ _ _ G.hom (strF G F) _ isPullback_GF U.LG.L U.LG.isLB _ _ _ _ β hβ d
     (fun y J hJ => by
       refine Eq.trans ?_ (hrel y J hJ)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [hd _ _ _ y J hJ, hc, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
+
+      simp only [hd _ _ _ y J hJ, hc, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun ν _ => Finset.sum_congr rfl fun m _ => ?_
       rw [(isPullback_GF (G := G) (F := F)).w, constVal_specMap, GlobalTheory.BoxExpansion.constVal_eq,

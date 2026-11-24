@@ -1,12 +1,55 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistStep
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdmSt
+public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FiltrationZeroMembership
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicAdmissibleSemistable
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedOfFrobeniusIterateFixedFilZeroStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsThetaDeRhamFilZeroSurjectiveStatement
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsThetaDeRhamFilZeroSurjective
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedOfFrobeniusIterateFixedFilZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.LocalField
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -48,7 +91,7 @@ theorem cont_σC {l : ℕ} [Fact l.Prime] (y : ℂ_[l]) : Continuous fun g : GQ 
 
 theorem cont_of_frame : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (n : Type) [Fintype n] [DecidableEq n] (K : FinExt l) (N : ↥(GK K) → Matrix n n ↥(MaximalUnramifiedExtension l)) (W : GL n P.R.BdR) (k : n → ℤ), UnitM P W → (∀ g : ↥(GK K), (N g).map (kd P) = ((W⁻¹ : GL n P.R.BdR) : Matrix n n P.R.BdR) * Matrix.diagonal (fun j => algebraMap ℚ_[l] P.R.BdR ((P.χQ (g : GQ l) ^ k j : ℚ_[l]ˣ) : ℚ_[l])) * (W : Matrix n n P.R.BdR).map (P.actQdR (g : GQ l))) → ∀ i j, Continuous fun g : ↥(GK K) => ((N g i j : ↥(MaximalUnramifiedExtension l)) : Om l) := by
   intro l _ P AI T n _ _ K N W k hW hN i j
-  obtain ⟨S, θ, hS, -, -, hθom, hθg⟩ := GlobalTheory.T.exists_theta_deRhamFilZero_surjective l P AI T
+  obtain ⟨S, θ, hS, -, -, hθom, hθg⟩ := _root_.GlobalTheory.PMon.exists_theta_deRhamFilZero_surjective_alt l P AI T
   have hemb : Topology.IsEmbedding (fun x : Om l => (x : ℂ_[l])) :=
     (UniformSpace.Completion.isUniformEmbedding_coe (Om l)).isEmbedding
   let a : n → ℂ_[l] := fun k' => θ ⟨((W⁻¹ : GL n P.R.BdR) : Matrix n n P.R.BdR) i k', (hS _).2 (hW.2 i k')⟩
@@ -75,8 +118,8 @@ theorem cont_of_frame : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocA
         algebraMap (Om l) P.R.BdR (algebraMap ℚ_[l] (Om l) ((P.χQ (g : GQ l) ^ k k' : ℚ_[l]ˣ) : ℚ_[l])) *
         P.actQdR (g : GQ l) ((W : Matrix n n P.R.BdR) k' j)
       rw [← IsScalarTower.algebraMap_apply]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hsum, map_sum]
+
+    rw [hsum, map_sum]
     refine Finset.sum_congr rfl fun k' _ => ?_
     rw [map_mul, map_mul]
     obtain ⟨h1, h2⟩ := hθom (algebraMap ℚ_[l] (Om l) ((P.χQ (g : GQ l) ^ k k' : ℚ_[l]ˣ) : ℚ_[l]))
@@ -196,7 +239,7 @@ theorem exists_rep_of_fixed_frame_change : ∀ (l : ℕ) [Fact l.Prime] (P : Loc
     refine Fil_sum fun k _ => ?_
     rw [Matrix.mul_diagonal, Matrix.map_apply]
     exact Fil_mul_left (Fil_mul_left ((hWu m).2 i k) (q_mem_Fil P _)) (Fil_act _ ((hWu m).1 k j))
-  have hpz := fun g i j => GlobalTheory.T.unramified_of_frobeniusIterate_fixed_filZero l P AI T r hρ.pos (X g i j) (hXfix g i j)
+  have hpz := fun g i j => _root_.GlobalTheory.PMon.unr_of_iterate_fixed l P AI T r hρ.pos (X g i j) (hXfix g i j)
     (fun k hk => hFil ⟨k, hk⟩ g i j)
   choose N hNfr hNeq using hpz
   have hNmap : ∀ g, (Matrix.of (N g)).map (algebraMap ↥(MaximalUnramifiedExtension l) P.R.B) = X g := fun g => by

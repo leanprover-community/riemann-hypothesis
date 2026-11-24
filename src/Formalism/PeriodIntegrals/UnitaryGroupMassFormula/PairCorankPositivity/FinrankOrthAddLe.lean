@@ -1,9 +1,45 @@
 module
 
-public import Mathlib
-public import Formalism.PeriodIntegrals.PairCorankPos
+public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.EqZeroOfMulVec
 public import Lemmata.GeneralBFactLeftAlt.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -18,9 +54,7 @@ open scoped Matrix
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-theorem exists_smul_mem {S : HSpace E} (Λ : Submodule (𝓞 E) S.V) (hΛ : Submodule.IsFullLattice E Λ)
-    (v : S.V) : ∃ c : 𝓞 E, c ≠ 0 ∧ c • v ∈ Λ := by
-  exact Bl.general_b_fact_left_alt.goal1 Λ hΛ v
+alias exists_smul_mem := _root_.Bl.general_b_fact_left_alt.goal1
 
 theorem finrank_orth_add_le (S : HSpace E) {ι : Type} [Fintype ι] (u : ι → S.V)
     (hu : LinearIndependent E u) (U : Submodule E S.V) (hU : ∀ i, u i ∈ U) :
@@ -43,8 +77,8 @@ theorem finrank_orth_add_le (S : HSpace E) {ι : Type} [Fintype ι] (u : ι → 
       intro v
       have h1 : f (Φ v) = 0 := hfle (LinearMap.mem_range_self Φ v)
       rw [LinearMap.pi_apply_eq_sum_univ f (Φ v)] at h1
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hw, map_sum, LinearMap.sum_apply]
+
+      rw [hw, map_sum, LinearMap.sum_apply]
       rw [← h1]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, starRingEnd_apply, star_star, smul_eq_mul,

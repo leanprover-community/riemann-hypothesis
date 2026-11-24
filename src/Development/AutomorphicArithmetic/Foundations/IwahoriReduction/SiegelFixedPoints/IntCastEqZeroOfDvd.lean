@@ -1,11 +1,51 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.IsThBIff
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsLamOfLSmulIff
-public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.WcocEdge0
-public import Development.AbelianVarietyTheory.Definitions.Foundations.LiftSLMapMulInvMem
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
+public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ActWBOfInvariant
+public import Development.AbelianVarietyTheory.Definitions.Foundations.LiftSLMapMulInvMem
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFunctionTowerIntegrality
+public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.WcocEdge0
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -79,7 +119,6 @@ private theorem PP_translate (X : Tower Ω ε) {l n N M : ℕ} [Fact l.Prime] [N
     have h1 : X.sl (ofSL δ) (X.sl (ofSL g) W) = X.sl (ofSL g') W := by
       have hν : (g * δ) * g'⁻¹ ∈ CongruenceSubgroup.Gamma M := by
         rw [CongruenceSubgroup.Gamma_mem']
-        change Matrix.SpecialLinearGroup.map (Int.castRingHom (ZMod M)) _ = 1
         rw [map_mul, map_inv, hgg, mul_inv_cancel]
       have e1 : g * δ = ((g * δ) * g'⁻¹) * g' := by group
       rw [← X.sl_mul, ← map_mul, e1, map_mul, X.sl_mul, hW _ hν]
@@ -232,8 +271,8 @@ theorem UpperTheory.Kd.L.wit :
   rw [h1, map_smul]
   have h2 : AdicCompletion.eval (idl l) (X.Kl l) n (clsBmu X l n m N x c d (w + 2) gm σ ![1, 0]) = X.cls l n FU := by
     simp only [FU, cls_prod']
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [clsBmu, Finset.sum_apply, map_sum]
+
+    simp only [clsBmu, Finset.sum_apply, map_sum]
     refine Finset.sum_congr rfl fun r₀ _ => Finset.sum_congr rfl fun γ _ => ?_
     exact eval_term X l n w u _
   rw [h2, cls_pow', ← Nat.cast_smul_eq_nsmul ℤ_[l]]

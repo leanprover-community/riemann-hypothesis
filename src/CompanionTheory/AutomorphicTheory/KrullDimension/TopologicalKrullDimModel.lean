@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.InducedModelMorphismCompStructureMap
 public import Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RingKrullDimConeImageOfBirationalLinearSystem
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConeDegreeGrowthChowFormIntegrality
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RingKrullDimConeImageOfBirationalLinearSystem
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -72,8 +73,8 @@ theorem trdeg_eq {K V Ω : Type} [Field K] [AddCommGroup V] [Module K V] [Field 
     have hj' : y j ≠ 0 := hj
     set F := Subfield.closure (Set.range (algebraMap K Ω) ∪ {r | ∃ i j, r = y i / y j}) with hF
     have h1 : ∀ v, ev v / y j ∈ F := fun v => by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← b.sum_repr v, map_sum, Finset.sum_div]
+
+      rw [← b.sum_repr v, map_sum, Finset.sum_div]
       refine sum_mem fun i _ => ?_
       rw [map_smul, Algebra.smul_def, mul_div_assoc]
       exact mul_mem (Subfield.subset_closure (Or.inl ⟨_, rfl⟩)) (Subfield.subset_closure (Or.inr ⟨i, j, rfl⟩))

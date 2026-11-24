@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreDivSupp
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreIncomp
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim
 
 @[expose] public section
 

@@ -1,14 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartSection
-public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IsOpenAlt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothMetricOfIsSmoothHerm
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChart
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.BaseChangeC
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgDim
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChartA
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
+import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgDim
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 
 @[expose] public section
 
@@ -53,7 +56,7 @@ theorem coneMap_of_isMultiHomog (𝔮 : Ideal (MvPolynomial (Σ k, ι k) ℂ)) {
   exact h
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem ringKrullDim_ker_coneMap (𝔮 : Ideal (MvPolynomial (Σ k, ι k) ℂ)) [𝔮.IsPrime] (p : (k : K) → ι k)
     (h1 : ∀ k, (X ⟨k, p k⟩ - 1 : MvPolynomial (Σ k, ι k) ℂ) ∈ 𝔮) (d : ℕ)
     (hd : ringKrullDim (MvPolynomial (Σ k, ι k) ℂ ⧸ 𝔮) = (d : WithBot ℕ∞)) :
@@ -304,7 +307,7 @@ theorem ChartSectionNotMem.proof : ChartSectionNotMem.Statement := by
   have : Q.IsPrime := hQ.1.1
   obtain ⟨W, hW, hWθ⟩ := Ideal.exists_minimalPrimes_le
     (sup_le hQθ ((Ideal.span_singleton_le_iff_mem _).2 hsθ))
-  have hpit := ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.dimPIT ℂ (Σ k, ι k) Q W _ hQ.1.1 (hsQ Q hQ) hW
+  have hpit := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.KrullDimensionPrincipalIdeal.dimPIT' ℂ (Σ k, ι k) Q W _ hQ.1.1 (hsQ Q hQ) hW
   rw [hdim Q hQ] at hpit
   have hle : ringKrullDim (MvPolynomial (Σ k, ι k) ℂ ⧸ RingHom.ker (coneMap (K := K) 𝔮)) ≤
       ringKrullDim (MvPolynomial (Σ k, ι k) ℂ ⧸ W) :=

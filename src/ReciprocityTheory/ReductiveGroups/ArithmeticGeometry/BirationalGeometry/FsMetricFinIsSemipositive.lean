@@ -1,6 +1,13 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -84,8 +91,6 @@ lemma inner_sq_add_inner_I_sq (x y : EuclideanSpace ℂ ι) :
     refine Finset.sum_congr rfl fun i _ => ?_
     first
     | rfl
-    | simp [Complex.inner, RCLike.inner_apply]
-    | simp [Complex.inner, mul_comm]
   rw [e0, e0, inner_smul_right, Complex.sq_norm, Complex.normSq_apply, Complex.mul_re,
     Complex.I_re, Complex.I_im]
   ring
@@ -97,7 +102,6 @@ theorem fsMetric_isSmooth : IsSmoothMetric (fsMetric (ι := ι)) := by
   have hn : ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun u : EuclideanSpace ℂ ι => ‖u‖) (fsLp ι z) := by
     first
     | exact contDiffAt_norm ℝ h0
-    | exact contDiffAt_norm h0
   exact (hn.comp z (fsLp ι).contDiff.contDiffAt).contDiffWithinAt
 
 theorem leviForm_fsMetric {z : ι → ℂ} (hz : z ≠ 0) (w : ι → ℂ) :

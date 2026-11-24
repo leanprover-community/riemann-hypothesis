@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.Ideal.Height
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Ideal.UFD
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

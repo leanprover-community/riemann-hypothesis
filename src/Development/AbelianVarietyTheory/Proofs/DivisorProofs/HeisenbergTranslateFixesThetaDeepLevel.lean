@@ -1,13 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormPeriodSq
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardLatticeDoubleCosetClassesStabilisers
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCongLevelIntG
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatLevel
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSDa
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NormOneApproximationAtLevelPrimes
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RationalMatrixMulThetaLattices
 
 @[expose] public section
 
@@ -24,16 +60,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefinit
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LevelTr
-theorem exists_nat_mul_eq {E : Type} [Field E] [NumberField E] (w : 𝓞 E) (hw : w ≠ 0) :
-    ∃ c : ℕ, 0 < c ∧ ∃ q : 𝓞 E, (c : 𝓞 E) = w * q := by
-  refine ⟨Ideal.absNorm (Ideal.span {w}), Nat.pos_of_ne_zero fun h => hw ?_, ?_⟩
-  · rwa [Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot] at h
-  · obtain ⟨q, hq⟩ := Ideal.mem_span_singleton'.1 (Ideal.absNorm_mem (Ideal.span {w}))
-    exact ⟨q, by rw [← hq, mul_comm]⟩
-
-theorem inc_mem_OhE {D : D7} {e : D.host.E} (he : IsIntegral ℤ e) : Formalism.MainNotions.StandardLatticesGL3.inc D e ∈ Formalism.MainNotions.StandardLatticesGL3.OhE D :=
-  Formalism.UG.CS.incl_int (F := ℚ) (⟨e, he⟩ : 𝓞 D.host.E)
-
 theorem exists_nat_IhE (D : D7) (cc : Ideal (𝓞 D.host.K)) (r : D.host.E) :
     ∃ c : ℕ, 0 < c ∧ ∀ t ∈ Formalism.MainNotions.StandardLatticesGL3.IhE D cc,
       Formalism.MainNotions.StandardLatticesGL3.inc D ((c : D.host.E) * r⁻¹) * t ∈ Formalism.MainNotions.StandardLatticesGL3.OhE D := by
@@ -41,7 +67,7 @@ theorem exists_nat_IhE (D : D7) (cc : Ideal (𝓞 D.host.K)) (r : D.host.E) :
   obtain ⟨a0, ha0, hint⟩ := D.host.AA0.isFractional
   have hw : (s : 𝓞 D.host.E) * a0 ≠ 0 :=
     mul_ne_zero (nonZeroDivisors.ne_zero s.2) (nonZeroDivisors.ne_zero ha0)
-  obtain ⟨c, hc, q, hq⟩ := exists_nat_mul_eq _ hw
+  obtain ⟨c, hc, q, hq⟩ := _root_.GlobalTheory.UnRep.NormOne.exists_nat_multiple _ hw
   refine ⟨c, hc, fun t ht => ?_⟩
   induction ht using AddSubgroup.closure_induction with
   | mem y hy =>
@@ -59,10 +85,8 @@ theorem exists_nat_IhE (D : D7) (cc : Ideal (𝓞 D.host.K)) (r : D.host.E) :
     have hk' : IsIntegral ℤ ((k : D.host.K) : D.host.E) := by
       first
         | exact (NumberField.RingOfIntegers.isIntegral_coe k).algebraMap
-        | exact IsIntegral.algebraMap k.2
-        | exact (NumberField.RingOfIntegers.isIntegral_coe k).map (IsScalarTower.toAlgHom ℤ D.host.K D.host.E)
     rw [← mul_assoc, ← map_mul, e1]
-    refine mul_mem (inc_mem_OhE ?_) hs'
+    refine mul_mem (_root_.GlobalTheory.ThetaStab.inc_mem_of_isIntegral ?_) hs'
     exact ((q.2.mul x.2).mul hk').mul b.2
   | zero => rw [mul_zero]; exact zero_mem _
   | add a b _ _ ha hb => rw [mul_add]; exact add_mem ha hb
@@ -159,8 +183,8 @@ theorem ennreal_volume_ratio_step_cancel {R : Type} [CommRing R] (a b c k t : R)
   linear_combination (b * c * t) * h
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 160000 in
+
+
 theorem level_translate : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d)
   (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (r : D.host.E), Setup ψ θ S T cc δ r →
   ∀ (x : Formalism.MainNotions.StandardLatticesGL3.GA D a) (y : Formalism.MainNotions.StandardLatticesGL3.GA D d) (g : GA D S) (h : GA D T), IsFinPt S g x → IsFinPt T h y →

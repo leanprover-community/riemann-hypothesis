@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.LinearAlgebra.Vandermonde
 
 @[expose] public section
 

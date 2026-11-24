@@ -1,9 +1,8 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SigLamLeOfKTypes
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FormulaF
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.HidaSetting
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EqZeroOfDatumEmbeddingEqZero
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.WeightedB
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.WeightedA
 
 @[expose] public section
 

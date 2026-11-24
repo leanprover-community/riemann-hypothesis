@@ -1,10 +1,54 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASASectionCut
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellDiagonalMap
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 public import Formalism.FormalDegreeBessel.FinalG
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.BFCell
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellDiagonalMap
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LongWeylElement
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellDecomposition
 
 @[expose] public section
 
@@ -22,7 +66,7 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 theorem self_adjoint_cover_holds : SACover := by
   intro k r z z' hz hz' g hg
   obtain ⟨hg0, hD, hG⟩ := hg
-  obtain ⟨n, hn, n', hn', c, hc, μ, hμ, hgeq⟩ := Formalism.FourierDecayAlt.P.big_cell_decomposition k r z z' g hg0.1 hD
+  obtain ⟨n, hn, n', hn', c, hc, μ, hμ, hgeq⟩ := _root_.Formalism.FourierDecayAlt.P.BigCellDiagonalMap.cellDecomp k r z z' g hg0.1 hD
   have e : bigCell k r c μ = wCell k r (Fin.last r) c * B2.embWb k r μ := by
     rw [Formalism.FourierDecayAlt.P5.Rad.wCell_last_eq, ← (Formalism.FourierDecayAlt.P.bruhat_big_cell_factorization k r c μ).1]
   have hg1 : B2.embWb k r μ ∈ Glev k r (Fin.last r) :=

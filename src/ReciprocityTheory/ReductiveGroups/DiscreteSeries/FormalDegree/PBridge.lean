@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.AdKMeasurePreserving
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PSpecB
+import Mathlib.Algebra.Order.Star.Real
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.TraceMulSelfEqSumEigenvaluesSq
 
 @[expose] public section
 

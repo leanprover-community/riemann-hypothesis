@@ -1,6 +1,48 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.IsClosedS
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.SsetGroup
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -22,10 +64,9 @@ variable {m : ℕ} {G : Set (Matrix (Fin m) (Fin m) ℂ)} {D : Matrix (Fin m) (F
 
 lemma modOne (hG : IsMatGroup G) (hD : ModProps G D) : D 1 = 1 := by
   have h1 : (1 : Matrix (Fin m) (Fin m) ℂ) ∈ G := hG.2.1
-  have hpos := hD.1 1 h1
   have hm := hD.2.1 1 h1 1 h1
   rw [mul_one] at hm
-  exact mul_left_cancel₀ hpos.ne' (hm.symm.trans (mul_one (D 1)).symm)
+  exact mul_left_cancel₀ (hD.1 1 h1).ne' (hm.symm.trans (mul_one (D 1)).symm)
 
 lemma pow_mem (hG : IsMatGroup G) {x : Matrix (Fin m) (Fin m) ℂ} (hx : x ∈ G) (n : ℕ) : x ^ n ∈ G := by
   induction n with
@@ -51,9 +92,8 @@ lemma modEqOne (hG : IsMatGroup G) (hD : ModProps G D) {x : Matrix (Fin m) (Fin 
   have hxx := (hG.2.2.2 x hx).2
   have hm := hD.2.1 x hx x⁻¹ hinv
   rw [hxx, modOne hG hD] at hm
-  have h0 := hD.1 x hx
   have hle : D x * D x⁻¹ ≤ D x := by
-    calc D x * D x⁻¹ ≤ D x * 1 := mul_le_mul_of_nonneg_left h2 h0.le
+    calc D x * D x⁻¹ ≤ D x * 1 := mul_le_mul_of_nonneg_left h2 (hD.1 x hx).le
       _ = D x := mul_one _
   linarith
 

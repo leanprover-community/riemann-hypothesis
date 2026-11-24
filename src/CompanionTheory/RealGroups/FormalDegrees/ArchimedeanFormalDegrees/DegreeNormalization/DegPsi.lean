@@ -1,6 +1,7 @@
 module
 
 public import CompanionTheory.RealGroups.FormalDegrees.ArchimedeanFormalDegrees.HlamStable
+import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 
@@ -39,7 +40,6 @@ theorem degPsi : DegPsi := by
       refine hi.re.congr (ae_of_all _ fun g => ?_)
       simp only
       exact RCLike.ofReal_re _
-    have hC2 : C ^ 2 ≠ 0 := pow_ne_zero 2 hC.ne'
     refine ⟨?_, ?_⟩
     · refine (hi'.const_mul (C ^ 2)⁻¹).congr (ae_of_all _ fun g => ?_)
       simp only

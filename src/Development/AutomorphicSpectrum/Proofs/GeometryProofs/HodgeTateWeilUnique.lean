@@ -1,16 +1,63 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GenWeil
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHTFormOver
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionEmbeddingGeometricPointsStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionEqZeroOfValuesStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumberStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeRegularAtLocalPoint
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigSpOfMemHtDual
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsStalkFractionOfGeneric
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeRegularAtLocalPoint
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionEqZeroOfValues
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionEmbeddingGeometricPoints
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -244,7 +291,7 @@ theorem exists_gamma (hξ : IsCptGen ξ) {G : Over X} [GrpObj G] (hG : IsSemiAbe
     rw [← Category.assoc]
     congr 1
     exact (spec_comp _ _).symm
-  obtain ⟨Γ₀, i, h1, h2⟩ := GlobalTheory.T.torsion_embedding_geometric_points (X.presheaf.stalk q.1) T X G hG (X.fromSpecStalk q.1) n hn τ τinj τtors geo
+  obtain ⟨Γ₀, i, h1, h2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.Tors.exists_qfGroup_torsion (X.presheaf.stalk q.1) T X G hG (X.fromSpecStalk q.1) n hn τ τinj τtors geo
   exact ⟨T, inferInstance, inferInstance, Γ₀, i, h1, fun t => ⟨t.1, hTm t, h2 t⟩⟩
 end
 
@@ -261,50 +308,50 @@ theorem tangent_congr (hξ : IsCptGen ξ) {G : Over X} [GrpObj G] (hG : IsSemiAb
     (h : ⊤ ≤ v.left ⁻¹ᵁ W) (h' : ⊤ ≤ v.left ⁻¹ᵁ W') :
     ∃ r₀ : X.presheaf.stalk q.1, (secVal (B := DualNumber (X.presheaf.stalk q.1)) v.left W h f).snd -
       (secVal (B := DualNumber (X.presheaf.stalk q.1)) v.left W' h' f').snd = n * r₀ := by
-  set_option maxHeartbeats 16000000 in
-    haveI : IsCommMonObj G := hG.comm
-    haveI : IsDomain (X.presheaf.stalk q.1) := (hξ.inj q).isDomain _
-    obtain ⟨κ, hκ⟩ := exists_frac hξ q
-    obtain ⟨T, _, _, Γ₀, i, hΓ, hpt⟩ := exists_gamma hξ hG hn hT GW q κ hκ
-    let V : G.left.Opens := W ⊓ W'
-    let f₁ : Γ(G.left, V) := G.left.presheaf.map (homOfLE (inf_le_left : V ≤ W)).op f
-    let f₂ : Γ(G.left, V) := G.left.presheaf.map (homOfLE (inf_le_right : V ≤ W')).op f'
-    let s : Γ(Γ₀.G.left, i ⁻¹ᵁ V) := (i.appLE V (i ⁻¹ᵁ V) le_rfl).hom (f₁ - f₂)
-    have hs : s = 0 := by
-      refine GlobalTheory.T.section_eq_zero_of_values (X.presheaf.stalk q.1) T Γ₀ (i ⁻¹ᵁ V) s fun t ht => ?_
-      obtain ⟨g, hg, hgt⟩ := hpt t
-      have hz : ⊤ ≤ ((Γ₀.pt t).left ≫ i) ⁻¹ᵁ V := ht
-      have e1 : BT.valAt (Γ₀.pt t).left (i ⁻¹ᵁ V) ht s = secVal ((Γ₀.pt t).left ≫ i) V hz (f₁ - f₂) :=
-        secVal_comp _ i V ht hz _
-      rw [e1, secVal_sub]
-      have hzW : ⊤ ≤ ((Γ₀.pt t).left ≫ i) ⁻¹ᵁ W := fun z _ => (@hz z trivial).1
-      have hzW' : ⊤ ≤ ((Γ₀.pt t).left ≫ i) ⁻¹ᵁ W' := fun z _ => (@hz z trivial).2
-      have hyW : ⊤ ≤ (spMap (κ.symm : Ω →+* FractionRing (X.presheaf.stalk q.1)) ≫ g.left) ⁻¹ᵁ W := hgt ▸ hzW
-      have hyW' : ⊤ ≤ (spMap (κ.symm : Ω →+* FractionRing (X.presheaf.stalk q.1)) ≫ g.left) ⁻¹ᵁ W' := hgt ▸ hzW'
-      have h₀ := le_of_field _ g.left hyW
-      have h₀' := le_of_field _ g.left hyW'
-      rw [secVal_res _ inf_le_left hzW hz f, secVal_res _ inf_le_right hzW' hz f',
-        secVal_congr hgt W hzW hyW f, secVal_congr hgt W' hzW' hyW' f',
-        secVal_base _ g.left W h₀ hyW f, secVal_base _ g.left W' h₀' hyW' f', hval g h₀ h₀' hg, sub_self]
-    obtain ⟨e₁, he₁⟩ := (stalkLie hξ M q).onto v hv.1
-    obtain ⟨vb, ⟨-, hvb⟩, -⟩ := GlobalTheory.T.existsUnique_tangent_dual_number (X.presheaf.stalk q.1) T Γ₀ X G (X.fromSpecStalk q.1) n i hΓ
-      (Stalk M q) (stalkLie hξ M q) e₁
-    rw [he₁] at hvb
-    have hV : ⊤ ≤ v.left ⁻¹ᵁ V := fun z _ => ⟨@h z trivial, @h' z trivial⟩
-    have h2 : ⊤ ≤ (Spec.map (CommRingCat.ofHom (dualMap (Ideal.Quotient.mk
-        (Ideal.span {((n : ℕ) : X.presheaf.stalk q.1)})))) ≫ v.left) ⁻¹ᵁ V := fun z _ => @hV _ trivial
-    have h3 : ⊤ ≤ (vb ≫ i) ⁻¹ᵁ V := hvb ▸ h2
-    have hP : ⊤ ≤ vb ⁻¹ᵁ (i ⁻¹ᵁ V) := h3
-    have e1 := secVal_comp vb i V hP h3 (f₁ - f₂)
-    change secVal vb (i ⁻¹ᵁ V) hP s = _ at e1
-    rw [hs, secVal_congr hvb V h3 h2, secVal_base _ v.left V hV h2, secVal_sub, secVal_res _ inf_le_left h hV f,
-      secVal_res _ inf_le_right h' hV f'] at e1
-    have e2 := congrArg TrivSqZeroExt.snd e1
-    have h0 : secVal vb (i ⁻¹ᵁ V) hP 0 = 0 := by simp [secVal]
-    simp only [h0, GlobalTheory.CompanionTheory.Ar.dualMap, TrivSqZeroExt.snd_zero] at e2
-    have e3 := Ideal.Quotient.eq_zero_iff_mem.1 e2.symm
-    obtain ⟨r₀, hr₀⟩ := Ideal.mem_span_singleton.1 e3
-    exact ⟨r₀, by simpa only [zero_add, TrivSqZeroExt.snd_sub] using hr₀⟩
+
+  haveI : IsCommMonObj G := hG.comm
+  haveI : IsDomain (X.presheaf.stalk q.1) := (hξ.inj q).isDomain _
+  obtain ⟨κ, hκ⟩ := exists_frac hξ q
+  obtain ⟨T, _, _, Γ₀, i, hΓ, hpt⟩ := exists_gamma hξ hG hn hT GW q κ hκ
+  let V : G.left.Opens := W ⊓ W'
+  let f₁ : Γ(G.left, V) := G.left.presheaf.map (homOfLE (inf_le_left : V ≤ W)).op f
+  let f₂ : Γ(G.left, V) := G.left.presheaf.map (homOfLE (inf_le_right : V ≤ W')).op f'
+  let s : Γ(Γ₀.G.left, i ⁻¹ᵁ V) := (i.appLE V (i ⁻¹ᵁ V) le_rfl).hom (f₁ - f₂)
+  have hs : s = 0 := by
+    refine _root_.GlobalTheory.CompanionTheory.Ar.BT.section_eq_zero_of_val_generic (X.presheaf.stalk q.1) T Γ₀ (i ⁻¹ᵁ V) s fun t ht => ?_
+    obtain ⟨g, hg, hgt⟩ := hpt t
+    have hz : ⊤ ≤ ((Γ₀.pt t).left ≫ i) ⁻¹ᵁ V := ht
+    have e1 : BT.valAt (Γ₀.pt t).left (i ⁻¹ᵁ V) ht s = secVal ((Γ₀.pt t).left ≫ i) V hz (f₁ - f₂) :=
+      secVal_comp _ i V ht hz _
+    rw [e1, secVal_sub]
+    have hzW : ⊤ ≤ ((Γ₀.pt t).left ≫ i) ⁻¹ᵁ W := fun z _ => (@hz z trivial).1
+    have hzW' : ⊤ ≤ ((Γ₀.pt t).left ≫ i) ⁻¹ᵁ W' := fun z _ => (@hz z trivial).2
+    have hyW : ⊤ ≤ (spMap (κ.symm : Ω →+* FractionRing (X.presheaf.stalk q.1)) ≫ g.left) ⁻¹ᵁ W := hgt ▸ hzW
+    have hyW' : ⊤ ≤ (spMap (κ.symm : Ω →+* FractionRing (X.presheaf.stalk q.1)) ≫ g.left) ⁻¹ᵁ W' := hgt ▸ hzW'
+    have h₀ := le_of_field _ g.left hyW
+    have h₀' := le_of_field _ g.left hyW'
+    rw [secVal_res _ inf_le_left hzW hz f, secVal_res _ inf_le_right hzW' hz f',
+      secVal_congr hgt W hzW hyW f, secVal_congr hgt W' hzW' hyW' f',
+      secVal_base _ g.left W h₀ hyW f, secVal_base _ g.left W' h₀' hyW' f', hval g h₀ h₀' hg, sub_self]
+  obtain ⟨e₁, he₁⟩ := (stalkLie hξ M q).onto v hv.1
+  obtain ⟨vb, ⟨-, hvb⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.TanLift.tangent_mod_torsion (X.presheaf.stalk q.1) T Γ₀ X G (X.fromSpecStalk q.1) n i hΓ
+    (Stalk M q) (stalkLie hξ M q) e₁
+  rw [he₁] at hvb
+  have hV : ⊤ ≤ v.left ⁻¹ᵁ V := fun z _ => ⟨@h z trivial, @h' z trivial⟩
+  have h2 : ⊤ ≤ (Spec.map (CommRingCat.ofHom (dualMap (Ideal.Quotient.mk
+      (Ideal.span {((n : ℕ) : X.presheaf.stalk q.1)})))) ≫ v.left) ⁻¹ᵁ V := fun z _ => @hV _ trivial
+  have h3 : ⊤ ≤ (vb ≫ i) ⁻¹ᵁ V := hvb ▸ h2
+  have hP : ⊤ ≤ vb ⁻¹ᵁ (i ⁻¹ᵁ V) := h3
+  have e1 := secVal_comp vb i V hP h3 (f₁ - f₂)
+  change secVal vb (i ⁻¹ᵁ V) hP s = _ at e1
+  rw [hs, secVal_congr hvb V h3 h2, secVal_base _ v.left V hV h2, secVal_sub, secVal_res _ inf_le_left h hV f,
+    secVal_res _ inf_le_right h' hV f'] at e1
+  have e2 := congrArg TrivSqZeroExt.snd e1
+  have h0 : secVal vb (i ⁻¹ᵁ V) hP 0 = 0 := by simp [secVal]
+  simp only [h0, GlobalTheory.CompanionTheory.Ar.dualMap, TrivSqZeroExt.snd_zero] at e2
+  have e3 := Ideal.Quotient.eq_zero_iff_mem.1 e2.symm
+  obtain ⟨r₀, hr₀⟩ := Ideal.mem_span_singleton.1 e3
+  exact ⟨r₀, by simpa only [zero_add, TrivSqZeroExt.snd_sub] using hr₀⟩
 end
 
 theorem isHTAt_iff : ∀ (X : Scheme.{0}) [IsLocallyNoetherian X] (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X), IsCptGen ξ → Flat.NormalCpt ξ → ∀ (G : Over X) [GrpObj G], IsSemiAbelian G → ∀ (L : LB G.left) (n : ℕ), 1 ≤ n → FullTorsion G ξ n → ∀ e, GenWeil G L ξ n e → ∀ (E : Type) [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) (y : Over.mk ξ ⟶ G) (q : Cpt ξ) (w w' : Module.Dual Ω E), y ^ n = 1 → M.IsHTAt L n y q w → (M.IsHTAt L n y q w' ↔ ∃ u ∈ M.omLat q, w' = w + n • u) := by

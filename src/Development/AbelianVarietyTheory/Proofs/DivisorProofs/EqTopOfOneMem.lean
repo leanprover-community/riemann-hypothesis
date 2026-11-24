@@ -1,18 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GoodIdemEmpty
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardLatticeDoubleCosetClassesStabilisers
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsThetaFunctionStandardPairSecond
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemCompletedLatticeHalfIffFrameMatrixIntegral
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLevelDatumReferenceTupleSmallField
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TranslateSumVacuumMovedByAdelicPair
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemCompletedLatticeConjugateHalfIffDual
+public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
+public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmAtSmulRight
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RationalFinitePartMemHomLatticeCompletionIff
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StandardPairLatticeLocallyOrthonormalBasis
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinTensAlgebraMap
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentSumInfPartIntegralOneSubMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitBlockCosetIffMaximalLevelCongruentConjIdeal
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StandardPairLatticeLocallyOrthonormalBasis
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLevelDatumReferenceTupleSmallField
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemCompletedLatticeHalfIffFrameMatrixIntegral
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentSumInfPartIntegralOneSubMem
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCongLevelIntG
 
 @[expose] public section
 
@@ -30,14 +72,12 @@ open scoped nonZeroDivisors
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1000000
+
+
 
 namespace GlobalTheory.SkewLevel
 
 variable {D : D7}
-
-theorem star_eq (x : D.host.E) : star x = D.host.conj x := Formalism.BasicNotions.Examples₂.star_eq_conj D.host x
 
 theorem smul_finRat (S T : HSp D) (s : D.host.E) (γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
     incA D s • GlobalTheory.VacUnique.finRat S T γ = GlobalTheory.VacUnique.finRat S T (s • γ) := by
@@ -68,7 +108,7 @@ theorem mem_latRat_iff (hcc : D.host.ccK = ⊤) (gS : S.gram = 1) (hLS : IsStdLa
       obtain ⟨b, hb⟩ := (hLS s).1 hs j
       obtain ⟨b', hb'⟩ := (hLT t).1 ht i
       have e : a * t i * star (s j) = (b' * D.host.conj • b : 𝓞 D.host.E) • a := by
-        rw [← hb, ← hb', star_eq]
+        rw [← hb, ← hb', _root_.Formalism.L2.Herm.star_conj]
         change a * (b' : D.host.E) * D.host.conj (b : D.host.E) = ((b' : D.host.E) * D.host.conj (b : D.host.E)) * a
         ring
       rw [hg, e]
@@ -238,7 +278,7 @@ theorem smul_skew_mem {I : Ideal (𝓞 D.host.E)} (hI : D.host.conj • I ≠ �
 theorem conj_mul_conj : D.host.conj * D.host.conj = 1 :=
   AlgEquiv.ext fun x => by
     change D.host.conj (D.host.conj x) = x
-    rw [← star_eq, ← star_eq, star_star]
+    rw [← _root_.Formalism.L2.Herm.star_conj, ← _root_.Formalism.L2.Herm.star_conj, star_star]
 
 theorem conj_conj_smul (I : Ideal (𝓞 D.host.E)) : D.host.conj • D.host.conj • I = I := by
   rw [smul_smul, conj_mul_conj, one_smul]
@@ -248,7 +288,7 @@ theorem mem_conj_smul {I : Ideal (𝓞 D.host.E)} {b : 𝓞 D.host.E} : b ∈ D.
 
 theorem cA_incA_int (b : 𝓞 D.host.E) :
     cA D (incA D (b : D.host.E)) = incA D ((D.host.conj • b : 𝓞 D.host.E) : D.host.E) := by
-  rw [GlobalTheory.DualPairCheck.cA_incA, star_eq]
+  rw [GlobalTheory.DualPairCheck.cA_incA, _root_.Formalism.L2.Herm.star_conj]
   rfl
 
 theorem modul_ne_bot (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (c : Formalism.L2.DIV.Pl D.host.E → ℕ) : modul P c ≠ ⊥ :=

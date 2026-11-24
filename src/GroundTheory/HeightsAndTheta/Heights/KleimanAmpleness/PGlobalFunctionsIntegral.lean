@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.GlobalFunctionsIntegralSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -43,8 +47,8 @@ theorem GlobalFunctionsIntegral.proof : GlobalFunctionsIntegral.Statement := by
   ·
     rintro _ ⟨g, hg, rfl⟩
     have hgE : g.IsHomogeneous E := (mem_homogeneousSubmodule _ _).mp hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [smul_eq_mul, AlgHom.toLinearMap_apply, g.as_sum, map_sum, Finset.mul_sum]
+
+    rw [smul_eq_mul, AlgHom.toLinearMap_apply, g.as_sum, map_sum, Finset.mul_sum]
     refine Submodule.sum_mem _ fun m hm => ?_
     have hmE : m.degree = E := by
       by_contra h

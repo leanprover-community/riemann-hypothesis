@@ -1,10 +1,14 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.BoundedSectionAlgebra
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.JetsPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CoefficientConvolutionOfSubCoefficients
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CoefficientConvolutionOfSubCoefficients
 
 @[expose] public section
 
@@ -118,18 +122,7 @@ theorem nfac_nonneg' (la : Wt X.Ψ r) (x : Frame X.Ψ r) : 0 ≤ X.nfac la x :=
 
 theorem nfac_add {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la la' : Wt X.Ψ r) :
     X.nfac (la + la') x = X.nfac la x * X.nfac la' x := by
-  unfold Data.nfac
-  rw [← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun τ _ => ?_
-  rw [← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  have hpos : 0 < ‖dmin X.Gm x τ i.succ / dmin X.Gm x τ i.castSucc‖ :=
-    norm_pos_iff.mpr (div_ne_zero (IW.dmin_ne_zero X hx τ _) (IW.dmin_ne_zero X hx τ _))
-  rw [← Real.rpow_add hpos]
-  congr 1
-  simp only [Pi.add_apply]
-  push_cast
-  ring
+  apply ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.nfac_add <;> assumption
 
 theorem nfac_nsmul {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la : Wt X.Ψ r) (n : ℕ) :
     X.nfac (n • la) x = X.nfac la x ^ n := by

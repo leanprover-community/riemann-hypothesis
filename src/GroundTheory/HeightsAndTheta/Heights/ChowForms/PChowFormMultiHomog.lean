@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChowFormHomog
 

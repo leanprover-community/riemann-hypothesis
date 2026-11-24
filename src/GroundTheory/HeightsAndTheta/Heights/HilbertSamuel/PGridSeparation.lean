@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGridSeparation
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootGridLower
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNormalLocusRep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormBound
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 

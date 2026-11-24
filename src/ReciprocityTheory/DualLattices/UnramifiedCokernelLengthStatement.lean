@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.CotangentSurjective
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 @[expose] public section
 

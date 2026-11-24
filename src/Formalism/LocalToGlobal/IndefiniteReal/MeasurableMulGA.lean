@@ -2,6 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.PeterssonHilbertSpace
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

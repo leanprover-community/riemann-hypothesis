@@ -1,15 +1,17 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.RingTheory.Polynomial.IsIntegral
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModQPrin
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModLatTau
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModJTau
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModCMPoint
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModVanish
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGmForm
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGmQ
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModJTau
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModLatTau
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModQPrin
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModVanish
 
 @[expose] public section
 

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.DefsRep
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
 
 @[expose] public section
 

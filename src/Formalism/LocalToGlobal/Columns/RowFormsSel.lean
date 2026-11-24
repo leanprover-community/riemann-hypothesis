@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.RowForms
-public import Formalism.LocalToGlobal.Columns.LevGCount
 public import Formalism.LocalToGlobal.Columns.BaseLemmas
 public import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 
 @[expose] public section
 

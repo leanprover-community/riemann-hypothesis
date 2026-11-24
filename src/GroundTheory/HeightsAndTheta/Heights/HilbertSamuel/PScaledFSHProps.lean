@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsScaledFSHProps
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PTorusInvLevi
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
+import Mathlib.Algebra.Order.Star.Real
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
 
 @[expose] public section
 

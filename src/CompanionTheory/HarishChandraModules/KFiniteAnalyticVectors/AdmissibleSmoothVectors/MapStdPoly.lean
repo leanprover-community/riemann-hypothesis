@@ -1,7 +1,7 @@
 module
 
-public import Formalism.PeriodIntegrals.KFinSmooth
-public import Formalism.PeriodIntegrals.IsLowUnitH
+public import Formalism.PeriodIntegrals.UpqRep
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
-public import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
+public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
+import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

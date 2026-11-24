@@ -1,8 +1,0 @@
-module
-
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjugatedIntertwinerEquivariantRealPlace
-
-public section
-
-alias GlobalTheory.T.conjugated_intertwiner_equivariant_real_place :=
-  GlobalTheory.ConjEquivRealSee.conjMap_update_real_see

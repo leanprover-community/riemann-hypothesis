@@ -1,17 +1,67 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogCardEqFinsumLengthLocalizedMaximal
 public import Formalism.SizeWindowBrackets.SlopesHypothesisFinitePlaces
+public import Formalism.HarderNarasimhan.StatementPl
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.RingTheory.FractionalIdeal.Norm
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.MuChar
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
-public import Formalism.SizeWindowBrackets.RealSlopeBoundsSplit
-public import Mathlib.Tactic.Linarith
-public import Mathlib.Tactic.FieldSimp
-public import Mathlib.Tactic.NormNum
-public import Mathlib.Tactic.Ring
-public import Mathlib.Data.Fintype.BigOperators
+public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.MuChar
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
+public import Mathlib.Algebra.Module.LocalizedModule.Exact
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.HermitianLattices.StatementLat
 
 @[expose] public section
 
@@ -456,32 +506,7 @@ theorem locLen_quot_ne (w m : Ideal R) [hw : w.IsMaximal] [hm : m.IsMaximal] (h 
   exact m.mul_mem_right _ hsm
 
 theorem locLen_quot_self (m : Ideal R) [hm : m.IsMaximal] : locLen m (R ⧸ m) = 1 := by
-  refine Module.length_eq_one_iff.2 (isSimpleModule_iff_toSpanSingleton_surjective.2 ⟨?_, ?_⟩)
-  · rw [← not_subsingleton_iff_nontrivial, IsLocalizedModule.subsingleton_iff m.primeCompl
-      (LocalizedModule.mkLinearMap m.primeCompl (R ⧸ m))]
-    intro h
-    obtain ⟨r, hr, hr0⟩ := h 1
-    rw [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, mul_one,
-      Ideal.Quotient.eq_zero_iff_mem] at hr0
-    exact hr hr0
-  · intro x hx y
-    induction x using LocalizedModule.induction_on with
-    | h a s =>
-    induction y using LocalizedModule.induction_on with
-    | h c t =>
-    obtain ⟨r, rfl⟩ := Ideal.Quotient.mk_surjective a
-    obtain ⟨r', rfl⟩ := Ideal.Quotient.mk_surjective c
-    have hr : r ∈ m.primeCompl := by
-      intro hrm
-      apply hx
-      rw [Ideal.Quotient.eq_zero_iff_mem.2 hrm, LocalizedModule.zero_mk]
-    refine ⟨Localization.mk (r' * s) (⟨r, hr⟩ * t), ?_⟩
-    rw [LinearMap.toSpanSingleton_apply, LocalizedModule.mk_smul_mk, LocalizedModule.mk_eq]
-    refine ⟨1, ?_⟩
-    simp only [Submonoid.smul_def, Algebra.smul_def, Ideal.Quotient.algebraMap_eq, ← map_mul,
-      Submonoid.coe_mul, Submonoid.coe_one]
-    congr 1
-    ring
+  apply GlobalTheory.CardLength.lenAt_quot_self
 
 theorem card_eq_prod_locLen : ∀ (n : ℕ) (Q : Type) [AddCommGroup Q] [Module R Q] [Finite Q],
     Nat.card Q = n → ∃ k : {p : Ideal R // p.IsMaximal} →₀ ℕ,

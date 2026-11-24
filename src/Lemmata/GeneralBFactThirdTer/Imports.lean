@@ -1,6 +1,46 @@
 module
 
-public import Mathlib
+import Lemmata.GeneralBFactAltForm.Imports
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -16,29 +56,6 @@ theorem goal1 :
       Exists.{1} fun (ν : NumberField.RingOfIntegers.{0} E) ↦
         And (Ne.{1} ν 0) (Membership.mem.{0, 0} L (HSMul.hSMul.{0, 0, 0} ν y)) := by
   intro E _ _ _ W _ _ _ _ L hL y
-  have hy : y ∈ Submodule.span E (L : Set W) := by rw [hL]; exact Submodule.mem_top
-  induction hy using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by rw [one_smul]; exact hx⟩
-  | zero => exact ⟨1, one_ne_zero, by rw [smul_zero]; exact L.zero_mem⟩
-  | add x z _ _ ihx ihz =>
-    obtain ⟨a, ha, hax⟩ := ihx
-    obtain ⟨b, hb, hbz⟩ := ihz
-    refine ⟨a * b, mul_ne_zero ha hb, ?_⟩
-    rw [smul_add]
-    refine L.add_mem ?_ ?_
-    · rw [mul_comm, mul_smul]; exact L.smul_mem b hax
-    · rw [mul_smul]; exact L.smul_mem a hbz
-  | smul c x _ ihx =>
-    obtain ⟨a, ha, hax⟩ := ihx
-    obtain ⟨⟨n, s⟩, hs⟩ := IsLocalization.surj (nonZeroDivisors (NumberField.RingOfIntegers E)) c
-    have hs0 : (s : NumberField.RingOfIntegers E) ≠ 0 := nonZeroDivisors.ne_zero s.2
-    refine ⟨(s : NumberField.RingOfIntegers E) * a, mul_ne_zero hs0 ha, ?_⟩
-    have key : ((s : NumberField.RingOfIntegers E) * a) • (c • x) = n • (a • x) := by
-      rw [mul_comm, mul_smul, ← smul_assoc (s : NumberField.RingOfIntegers E) c x, Algebra.smul_def,
-        mul_comm, smul_comm a (c * algebraMap _ E (s : NumberField.RingOfIntegers E)) x]
-      simp only at hs
-      rw [hs, algebraMap_smul]
-    rw [key]
-    exact L.smul_mem n hax
+  exact Bl.general_b_fact_alt_form.goal1 (F := E) L (x := y) (by rw [hL]; exact Submodule.mem_top)
 
 end Bl.general_b_fact_third_ter

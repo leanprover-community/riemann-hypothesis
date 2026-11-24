@@ -1,9 +1,11 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.EIntBound
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.GoodRowsProjectorApplyEqSum
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Phi2
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HeisenbergRankOneDecomposition
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.RankOneLeviComm
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HpkNegMp
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.EIntBound
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.UHMulInv
 
 @[expose] public section
 

@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.KroneckerWeber
 public import GroundTheory.LocalFields.LocalReciprocityUniversal
+public import GroundTheory.LocalFields.LubinTateReciprocity
+public import GroundTheory.LocalFields.PrincipalUnitsRank
+import GroundTheory.LocalFields.Existence
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

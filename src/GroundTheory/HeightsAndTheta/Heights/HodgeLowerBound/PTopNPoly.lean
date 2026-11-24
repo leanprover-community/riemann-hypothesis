@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTopNPoly
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsVertFactorPos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuRegSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChangeOfModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombExpand
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombLimit
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section

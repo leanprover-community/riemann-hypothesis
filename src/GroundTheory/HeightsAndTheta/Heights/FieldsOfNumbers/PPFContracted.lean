@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContractedDim
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.GradedAlgebra.Radical
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -54,9 +56,9 @@ theorem component_blockDeg_of_isMultiHomog {p : MRing ι F} {b : K → ℕ} (hp 
 
 theorem blockDeg_component_mem {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I) (k : K) (n : ℕ)
     {r : MRing ι F} (hr : r ∈ I) : weightedHomogeneousComponent (blockDeg k) n r ∈ I := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← sum_weightedHomogeneousComponent (blockWeight ι) r,
-    finsum_eq_sum _ (weightedHomogeneousComponent_finsupp r), map_sum]
+
+  rw [← sum_weightedHomogeneousComponent (blockWeight ι) r,
+  finsum_eq_sum _ (weightedHomogeneousComponent_finsupp r), map_sum]
   refine Ideal.sum_mem _ fun b _ => ?_
   rw [component_blockDeg_of_isMultiHomog (weightedHomogeneousComponent_isWeightedHomogeneous b r)]
   split_ifs

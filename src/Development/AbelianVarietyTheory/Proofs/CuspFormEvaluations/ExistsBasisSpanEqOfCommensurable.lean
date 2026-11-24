@@ -1,9 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.FlatMemLatIffStdLat
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.NsmulApplyMemOfMemTensorLat
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IntegrableOnFundamentalDomainOfContinuous
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.NsmulApplyMemOfMemTensorLat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 
 @[expose] public section
 
@@ -127,7 +170,7 @@ theorem l2_comp_flat_symm_eq_l2 (X : PT E) (Y : GT (Fin n × Idx X.dim))
       refine Finset.prod_eq_one fun k _ => ?_
       rcases X.eps_pm _ (hγ k) with h | h <;> simp [h]
     have hre : (HC (v + γ) (v + γ)).re = (HC v v).re + 2 * (HC v γ).re + (HC γ γ).re := by
-      rw [HC_add_left, HC_add_right, HC_add_right, HC_conj v γ]
+      rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.nA_HC_add_left, _root_.ReciprocityTheory.ChartRestriction.G.I2.nA_HC_add_right, _root_.ReciprocityTheory.ChartRestriction.G.I2.nA_HC_add_right, HC_conj v γ]
       simp only [Complex.add_re, Complex.conj_re]
       ring
     have hsq : ∀ a b c : ℝ, (Real.exp a * c) ^ 2 * Real.exp b = c ^ 2 * Real.exp (2 * a + b) := by
@@ -230,12 +273,12 @@ theorem im_HC_act_add (w₀ : 𝓞 E) (hw : (w₀ : E) + cc (w₀ : E) = 1) (γ 
     rw [HC_conj (fun k => actE (w₀ : E) (γ k)) δ, HC_actE]
   have h3 : HC γ δ = HC γ (fun k => actE (cc (w₀ : E)) (δ k)) +
       HC γ (fun k => actE (w₀ : E) (δ k)) := by
-    rw [← HC_add_right]
+    rw [← _root_.ReciprocityTheory.ChartRestriction.G.I2.nA_HC_add_right]
     congr 1
     funext k
     rw [Pi.add_apply, ← actE_add_left, show cc (w₀ : E) + w₀ = 1 by rw [add_comm]; exact hw,
       actE_one]
-  rw [hsplit, HC_add_left, HC_add_right, HC_add_right, h1]
+  rw [hsplit, _root_.ReciprocityTheory.ChartRestriction.G.I2.nA_HC_add_left, _root_.ReciprocityTheory.ChartRestriction.G.I2.nA_HC_add_right, _root_.ReciprocityTheory.ChartRestriction.G.I2.nA_HC_add_right, h1]
   have h3' := congrArg Complex.im h3
   simp only [Complex.add_im] at h3'
   simp only [Complex.add_im, Complex.conj_im]

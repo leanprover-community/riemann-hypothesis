@@ -1,9 +1,15 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Formalism.LocalToGlobal.Columns.ChainInst
-public import Formalism.LocalToGlobal.KernelLattices.ThDistC
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 
@@ -172,7 +178,7 @@ theorem Deco.Ok.hasLift {d : Deco E n ST SG} (hd : d.Ok) (w : SG) : d.HasLift w 
       ∃ b : Fin n → 𝓞 E, ∀ i, algebraMap (𝓞 E) E (b i) = algebraMap (𝓞 E) E t * x i := by
     intro x
     show (∃ t ∈ w.1.asIdeal.primeCompl, t • x ∈ stdLat E n) ↔ _
-    simp only [stdLat, Submodule.mem_pi, Set.mem_univ, true_implies, forall_const, Submodule.mem_one,
+    simp only [stdLat, Submodule.mem_pi, Set.mem_univ, forall_const, Submodule.mem_one,
       Pi.smul_apply, Algebra.smul_def, Ideal.mem_primeCompl_iff]
     constructor
     · rintro ⟨t, ht, h⟩

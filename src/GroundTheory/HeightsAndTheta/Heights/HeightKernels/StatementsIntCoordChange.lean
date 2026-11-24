@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Assembly
+public import Aesop.BuiltinRules
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLineDegreeDual
 
 @[expose] public section
 

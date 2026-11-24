@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Quotient.Basic
+import Mathlib.Tactic.Lemma
+public import Mathlib.RingTheory.Ideal.Defs
 
 @[expose] public section
 

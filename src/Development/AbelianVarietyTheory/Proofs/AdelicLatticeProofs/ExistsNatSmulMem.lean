@@ -1,6 +1,47 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNatSmulMem
+public import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -33,33 +74,6 @@ theorem exists_nat_smul_mem {E : Type} [Field E] [NumberField E] {n : ℕ}
     (L : Submodule (RingOfIntegers E) (Fin n → E))
     (hL : Submodule.span E (L : Set (Fin n → E)) = ⊤) (y : Fin n → E) :
     ∃ d : ℕ, 0 < d ∧ (d : E) • y ∈ L := by
-  have hy : y ∈ Submodule.span E (L : Set (Fin n → E)) := hL ▸ Submodule.mem_top
-  induction hy using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_pos, by simpa using hx⟩
-  | zero => exact ⟨1, one_pos, by simp⟩
-  | add x z _ _ hx hz =>
-    obtain ⟨d, hd, hdx⟩ := hx
-    obtain ⟨e, he, hez⟩ := hz
-    refine ⟨d * e, Nat.mul_pos hd he, ?_⟩
-    have h1 := nat_smul_mem L e hdx
-    have h2 := nat_smul_mem L d hez
-    have : ((d * e : ℕ) : E) • (x + z) = (e : E) • (d : E) • x + (d : E) • (e : E) • z := by
-      rw [smul_add, smul_smul, smul_smul, Nat.cast_mul, mul_comm (e : E)]
-    rw [this]
-    exact L.add_mem h1 h2
-  | smul a x _ hx =>
-    obtain ⟨d, hd, hdx⟩ := hx
-    obtain ⟨e, he, hea⟩ := exists_nat_mul_isIntegral a
-    refine ⟨d * e, Nat.mul_pos hd he, ?_⟩
-    let b : RingOfIntegers E := ⟨(e : E) * a, hea⟩
-    have h1 : b • (d : E) • x ∈ L := L.smul_mem b hdx
-    have : ((d * e : ℕ) : E) • a • x = b • (d : E) • x := by
-      rw [← algebraMap_smul E b]
-      change _ = ((e : E) * a) • (d : E) • x
-      rw [smul_smul, smul_smul, Nat.cast_mul]
-      congr 1
-      ring
-    rw [this]
-    exact h1
+  apply GlobalTheory.PrincLat.exists_nat_smul_mem <;> assumption
 
 end GlobalTheory.NatMulIntegral

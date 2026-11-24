@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.CategoryTheory.Category.Basic
+public import Mathlib.Topology.Instances.Matrix
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -131,9 +136,6 @@ theorem sharp_one (h : J' * J = 1) : sharp J J' (1 : Matrix ι ι K) = 1 := by
 theorem mul_comm_one {M N : Matrix ι ι K} (h : M * N = 1) : N * M = 1 := by
   first
   | exact mul_eq_one_comm.mp h
-  | exact (by
-      rw [← Matrix.inv_eq_right_inv h]
-      exact Matrix.nonsing_inv_mul M (Matrix.isUnit_det_of_right_inverse h))
 
 theorem sharp_mul_self (h : J' * J = 1) {M : Matrix ι ι K} (hM : Mᴴ * J * M = J) : sharp J J' M * M = 1 := by
   unfold sharp
@@ -248,8 +250,8 @@ theorem cay_map {K' : Type*} [CommRing K'] [Invertible (2 : K')] (f : K →+* K'
     ext a b
     simp [h2]
   unfold cay geo
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hm, hm, map_add (f := _), map_one, map_mul, map_sum]
+
+  rw [hm, hm, map_add (f := _), map_one, map_mul, map_sum]
   simp only [map_pow, hs]
 
 theorem cay_continuous (N : ℕ) {ι' : Type*} [Fintype ι'] [DecidableEq ι'] :
@@ -257,8 +259,6 @@ theorem cay_continuous (N : ℕ) {ι' : Type*} [Fintype ι'] [DecidableEq ι'] :
   unfold cay geo
   first
   | fun_prop
-  | exact continuous_const.add (continuous_id.mul
-      (continuous_finset_sum _ fun j _ => (continuous_const.smul continuous_id).pow j))
 
 variable [StarRing K]
 

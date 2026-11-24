@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
-public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.IntermediateField
 public import GroundTheory.LocalFields.UnramifiedDefs
 public import GroundTheory.LocalFields.UnitsPowers
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

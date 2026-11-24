@@ -1,10 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.BoundsY
-public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Bounds
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
 
 @[expose] public section
 

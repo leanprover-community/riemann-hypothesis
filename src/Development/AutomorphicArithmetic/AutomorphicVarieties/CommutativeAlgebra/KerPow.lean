@@ -2,6 +2,51 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Graded
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PartSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.MvPowerSeries.Order
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Ideal.BigOperators
 
 @[expose] public section
 
@@ -75,8 +120,8 @@ private lemma A_sum (W : WPres O X R) (g : MvPowerSeries W.σ O) (hx : W.π g �
   refine ⟨T, ?_⟩
   have h1 : f = ∑ j ∈ T, wcomp O W.wt j f := by
     ext m
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [coeff_wcomp]
     rw [Finset.sum_ite_eq]
     split_ifs with hm
@@ -84,8 +129,8 @@ private lemma A_sum (W : WPres O X R) (g : MvPowerSeries W.σ O) (hx : W.π g �
     · exact hT m hm
   have h2 : f - g ∈ RingHom.ker W.π := by rw [RingHom.mem_ker, map_sub, hf, sub_self]
   rw [← hf]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [h1, map_sum]
+
+  conv_lhs => rw [h1, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   have := W.homog _ h2 j
   rwa [RingHom.mem_ker, map_sub, map_sub, sub_eq_zero] at this
@@ -119,8 +164,8 @@ theorem UpperTheory.V.Alg.ker_pow :
         ∑ m ∈ μ, (⟨W.π (b m), W.part_le_A ⟨_, hb m, rfl⟩⟩ : W.A) * m.prod fun i k => W.zA i ^ k := by
       apply Subtype.ext
       show W.π (wcomp O W.wt j g) = _
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hbs, map_sum]
+
+      rw [hbs, map_sum]
       simp [π_monomial, Finsupp.prod, WPres.zA]
     rw [h3]
     exact Ideal.sum_mem _ fun m hm => Ideal.mul_mem_left _ _
@@ -131,8 +176,8 @@ theorem UpperTheory.V.Alg.ker_pow :
       (Finsupp.finite_of_degree_le n).subset fun m (hm : m.degree < n) => hm.le
     set t : MvPowerSeries W.σ O := ∑ m ∈ hfin.toFinset, monomial m (coeff m f) with ht
     have htA : W.π t ∈ W.A := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [ht, map_sum]
+
+      rw [ht, map_sum]
       exact Subalgebra.sum_mem _ fun m _ => W.part_le_A ⟨_, monomial_mem W.wt m _, rfl⟩
     refine ⟨⟨_, htA⟩, ?_⟩
     have key : ∃ μ : Finset (W.σ →₀ ℕ), (μ : Set _) ⊆ {m : W.σ →₀ ℕ | n ≤ m.degree} ∧
@@ -147,13 +192,13 @@ theorem UpperTheory.V.Alg.ker_pow :
     obtain ⟨b, -, hbs'⟩ := hs (f - t) (fun m hm => by
       have hm0 : m.degree < n := not_le.1 hm
       have hm' : m ∈ hfin.toFinset := hfin.mem_toFinset.2 hm0
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, ht, map_sum]
+
+      rw [map_sub, ht, map_sum]
       simp only [coeff_monomial]
       rw [Finset.sum_ite_eq, if_pos hm', sub_self])
     show W.π f - W.π t ∈ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sub, hbs', map_sum]
+
+    rw [← map_sub, hbs', map_sum]
     refine Ideal.sum_mem _ fun m hm => ?_
     rw [map_mul, π_monomial]
     exact Ideal.mul_mem_left _ _ (prod_pow_mem _ _ (fun i => z_mem_ker W h i) m (hμ hm))

@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.DiscreteModules
+public import Mathlib.CategoryTheory.ObjectProperty.EpiMono
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.Topology.Algebra.OpenSubgroup
+public import Mathlib.Topology.LocallyConstant.Basic
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.ClopenNhdofOne
 
 @[expose] public section
 

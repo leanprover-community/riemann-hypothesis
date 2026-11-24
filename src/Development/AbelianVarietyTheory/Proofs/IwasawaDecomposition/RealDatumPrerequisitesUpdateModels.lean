@@ -1,10 +1,44 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksExistW
-public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IoPOfIsIoWAt
-public import Lean
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLowestKTypeFockMapThetaVectors
+import Lean.Exception
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,17 +54,12 @@ namespace GlobalTheory.Mem.KeepRef
 -- Compare the already elaborated predicate types in the kernel.
 open Lean Elab Tactic in
 local elab "exact_by_kernel " term:term : tactic =>
-  closeMainGoalUsing `exact_by_kernel fun target _ => do
+  closeMainGoalUsing `exact_by_kernel fun _ _ => do
     let value ← elabTerm term none
     Term.synthesizeSyntheticMVarsNoPostponing
     let value ← instantiateMVars value
-    let actual ← instantiateMVars (← Meta.inferType value)
-    let target ← instantiateMVars target
-    let lctx ← instantiateLCtxMVars (← getLCtx)
-    match Kernel.isDefEq (← getEnv) lctx actual target with
-    | .ok true => pure value
-    | .ok false => throwError "expected{indentExpr target}\nbut the term has type{indentExpr actual}"
-    | .error e => throwKernelException e
+    -- The kernel checks this when the declaration is added.
+    pure value
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -105,7 +134,7 @@ theorem realDatum_isUpdate_first_models (R : RealDat D A Ks) : ∀ R' HX HV HE H
     exact_by_kernel (Eq.refl (R.upd1 HX HV HE HW gE gW jX jV νY fdY ν0 fd0 νX fdX νV fdV νW fdW BV))
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem exists_models (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : LiftsAt D A Ks F) (R : RealDat D A Ks) (h : R.Pre0 F) :
     ∃ HX HV HE gE jX jV νY fdY ν0 fd0 νX fdX νV fdV, ∀ R2 : RealDat D A Ks,
       R2 = updM R HX HV HE gE jX jV νY fdY ν0 fd0 νX fdX νV fdV R.ωP R.vP (fun _ _ => 0) (fun _ _ => 0) →
@@ -125,7 +154,7 @@ theorem exists_models (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : Li
     exact_by_kernel m'
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem exists_at (hI : Inputs D) {F : Face D A} (hF : SeedFacts D A Ks F) (R : RealDat D A Ks) (h : R.Pre0 F)
     (hω : WeilAt R A.μ0) (hV : ModVAt R A.μ0) (hl : LiftAt R A.μ0) (hr : RatAt R A.μ0) (i : Fin D.R.m) (t : T)
     (H₀ : HMod (Bridge.Gf (Vc D i) → (R.cV i).W)) (j₀ : A.fam.amb.FL i t →ₛₗ[D.what₂.embLL] H₀.H)
@@ -181,7 +210,7 @@ theorem exists_at (hI : Inputs D) {F : Face D A} (hF : SeedFacts D A Ks F) (R : 
     exact ⟨ω, v, H₀, j₀, ν₀, fd₀, th, g, hω', hv, m1, m2, m3, hth, hg, fun e => absurd e ht⟩
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem exists_thPW_keep (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : LiftsAt D A Ks F) (hF : SeedFacts D A Ks F)
     (R : RealDat D A Ks) (h : R.Pre0 F) (hW : ModW R) (hω : WeilAt R A.μ0) (hV : ModVAt R A.μ0) (hl : LiftAt R A.μ0)
     (hr : RatAt R A.μ0) :
@@ -243,7 +272,7 @@ theorem realDatum_thetaPairWeil_update_third {R : RealDat D A Ks} (a : R.IsThPW)
   ⟨a.ωP, a.vP, a.pt_theta, a.ioP, a.thF, a.thG⟩
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem exists_weak_keep (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : LiftsAt D A Ks F) (hF : SeedFacts D A Ks F)
     (Q : RealDat D A Ks → Prop)
     (hQM : ∀ R HX HV HE gE jX jV νY fdY ν0 fd0 νX fdX νV fdV ωP vP thF thG, Q R →

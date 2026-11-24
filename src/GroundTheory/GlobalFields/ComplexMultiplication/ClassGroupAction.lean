@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupActionLattice
+public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
+public import GroundTheory.GlobalFields.ComplexMultiplication.Uniformization
+public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupActionIso
 public import GroundTheory.GlobalFields.ComplexMultiplication.JInvariantHomothety
+import GroundTheory.GlobalFields.ComplexMultiplication.JInvariantSurjective
+import Mathlib.AlgebraicGeometry.EllipticCurve.IsomOfJ
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraic
 
 @[expose] public section
 

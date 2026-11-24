@@ -1,7 +1,55 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_GCore_GTConnCut
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateCommuteRaisingConstant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.Star
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateCommuteRaisingConstant
 
 @[expose] public section
 
@@ -143,7 +191,7 @@ theorem fderiv_snd_comp {v : ℂ → ℂ} (hv : ContDiffOn ℝ ((⊤ : ℕ∞) :
     fderiv ℝ (fun x : E P.r => v x.2) q.1 = (fderiv ℝ v q.1.2).comp (ContinuousLinearMap.snd ℝ _ _) := by
   have hq : q.1.2 ∈ Ann P := q.2.2
   have hd : DifferentiableAt ℝ v q.1.2 :=
-    (hv.differentiableOn (by first | simp | exact_mod_cast le_top)).differentiableAt
+    (hv.differentiableOn (by first | simp)).differentiableAt
       ((ann_open P).mem_nhds hq)
   rw [show (fun x : E P.r => v x.2) = v ∘ Prod.snd from rfl, fderiv_comp q.1 hd differentiableAt_snd,
     fderiv_snd]
@@ -164,7 +212,7 @@ theorem wirt_fnZ_zb {v : ℂ → ℂ} (hv : ContDiffOn ℝ ((⊤ : ℕ∞) : Wit
     (fnZ_ev_eq P hv q).fderiv_eq.trans (fderiv_snd_comp P hv q)
   unfold MA.wirt
   rw [h1]
-  simp [MA.dirE, M.vzb, NF.dZb] <;> ring
+  simp [MA.dirE, M.vzb, NF.dZb]
 
 private theorem star_mul_self_eq_one_of_norm_eq_one {z : ℂ} (h : ‖z‖ = 1) : star z * z = 1 := by
   calc star z * z = (starRingEnd ℂ) z * z := rfl
@@ -176,13 +224,12 @@ theorem dZ_conj_unit {u : ℂ → ℂ} (hu : ContDiffOn ℝ ((⊤ : ℕ∞) : Wi
     NF.dZ (fun w => star (u w)) ζ = -(star (u ζ)) ^ 2 * NF.dZ u ζ ∧
       NF.dZb (fun w => star (u w)) ζ = -(star (u ζ)) ^ 2 * NF.dZb u ζ := by
   have hd : DifferentiableAt ℝ u ζ :=
-    (hu.differentiableOn (by first | simp | exact_mod_cast le_top)).differentiableAt
+    (hu.differentiableOn (by first | simp)).differentiableAt
       ((ann_open P).mem_nhds hζ)
   have hstar : ∀ h : ℂ, fderiv ℝ (fun w => star (u w)) ζ h = star (fderiv ℝ u ζ h) := by
     intro h
     first
     | (rw [fderiv_star]; rfl)
-    | (rw [(hd.hasFDerivAt.star).fderiv]; rfl)
   have hconst : (fun w => u w * star (u w)) =ᶠ[nhds ζ] fun _ => (1 : ℂ) := by
     filter_upwards [(ann_open P).mem_nhds hζ] with w hw
     rw [mul_comm]
@@ -213,7 +260,6 @@ theorem mul_conjCoordinate_apply (f : SmQ P.r P.TT) (q : Qp P.r P.TT) :
   congr 1
   first
   | (simp [MA.coordE, MA.zE, M.vzb]; done)
-  | (simp [MA.coordE, MA.zE, M.vzb]; rfl)
 
 theorem algebraMap_comp_ofPadicInt_apply (f : SmQ P.r P.TT) (q : Qp P.r P.TT) :
     ((show SmQ P.r P.TT from ((MA.DQ P).zP).1 f) : Qp P.r P.TT → ℂ) q = q.1.2 * (f : Qp P.r P.TT → ℂ) q := by
@@ -228,9 +274,7 @@ theorem ggiP_apply (f : SmQ P.r P.TT) (q : Qp P.r P.TT) :
       (fun ζ : ℂ => ((Complex.normSq ζ : ℂ) - (P.TT : ℂ))⁻¹) (Ann P) := by
     have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun ζ : ℂ => star ζ) := by
       first
-      | exact contDiff_id.star
       | exact Complex.conjCLE.contDiff
-      | simpa using (Complex.conjCLE.contDiff (n := ((⊤ : ℕ∞) : WithTop ℕ∞)))
     have h : (fun ζ : ℂ => ((Complex.normSq ζ : ℂ) - (P.TT : ℂ))⁻¹) =
         fun ζ : ℂ => (ζ * star ζ - (P.TT : ℂ))⁻¹ := by
       funext ζ

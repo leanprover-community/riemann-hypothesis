@@ -1,7 +1,12 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
+public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
+public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.CommFderivApply
+import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
 
 @[expose] public section
 

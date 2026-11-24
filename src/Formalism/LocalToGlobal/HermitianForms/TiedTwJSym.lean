@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedTw
 public import Formalism.LocalToGlobal.HermitianForms.TiedSym
 
 @[expose] public section
@@ -25,7 +24,7 @@ def redJS {Ch : D.what₂.Word → ℕ → Type} {chOf : ∀ u i, (D.mem u).C.cl
     (reGL (rankN D (D.R.m - 1) (Nat.sub_le _ _)) _ x))
 
 
-set_option maxHeartbeats 2000000 in
+
 structure SymmetricTwistedJointForms (T : Formalism.L2.Herm.TwChTied D inQ) {Ch : D.what₂.Word → ℕ → Type} {chOf : ∀ u i, (D.mem u).C.cls i → Ch u i}
     (F : ∀ u, FormsTiedSym D u (Ch u) (chOf u)) where
 

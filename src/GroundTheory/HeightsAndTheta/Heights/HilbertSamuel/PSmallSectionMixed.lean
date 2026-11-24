@@ -1,13 +1,68 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSmallSectionMixed
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BirationalYPt
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftNefBig
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPerturbSemipos
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefPlusAmpleDegree
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
+public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBirationalModelExists
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PKodairaSection
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOfSemipos
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPerturbSemipos
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftNefBig
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ZcombIsConjInvariantH
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -24,21 +79,6 @@ set_option linter.unusedSectionVars false
 namespace SmallSectionMixedAlt
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-
-theorem isMultiHomog_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) :
-    IsMultiHomog (f * g) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m1, hm1, m2, hm2, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul f g hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf m1 hm1 k, hg m2 hm2 k]
-
-theorem isMultiHomog_add {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f + g) a := by
-  classical
-  intro m hm k
-  rcases Finset.mem_union.mp (MvPolynomial.support_add hm) with h | h
-  · exact hf m h k
-  · exact hg m h k
 
 theorem isMultiHomog_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
     IsMultiHomog (f - g) a := by
@@ -79,12 +119,12 @@ theorem isMultiHomog_coordProd (c : ∀ k, ι k) (d : K → ℕ) :
     | empty => simpa using isMultiHomog_C (ι := ι) 1
     | insert k s hk ih =>
       rw [Finset.prod_insert hk, Finset.sum_insert hk]
-      refine isMultiHomog_mul ?_ ih
+      refine _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul ?_ ih
       induction d k with
       | zero => simpa using isMultiHomog_C (ι := ι) 1
       | succ j hj =>
         rw [pow_succ, succ_nsmul]
-        exact isMultiHomog_mul hj (isMultiHomog_X ⟨k, c k⟩)
+        exact _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul hj (isMultiHomog_X ⟨k, c k⟩)
   have e : (∑ k, d k • (Pi.single k 1 : K → ℕ)) = d := by
     ext k
     simp [Finset.sum_apply, Pi.single_apply]
@@ -140,18 +180,18 @@ theorem exists_form_of_mem_chartRingZ {Ω : Type} [Field Ω] (y : (Σ k, ι k) �
     obtain ⟨δ₁, e₁, h₁, v₁⟩ := hx
     obtain ⟨δ₂, e₂, h₂, v₂⟩ := hz
     have hA : IsMultiHomog (e₁ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ δ₂ k) (δ₁ + δ₂) :=
-      isMultiHomog_mul h₁ (isMultiHomog_coordProd c δ₂)
+      _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul h₁ (isMultiHomog_coordProd c δ₂)
     have hB' : IsMultiHomog (e₂ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ δ₁ k) (δ₂ + δ₁) :=
-      isMultiHomog_mul h₂ (isMultiHomog_coordProd c δ₁)
+      _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul h₂ (isMultiHomog_coordProd c δ₁)
     rw [add_comm δ₂ δ₁] at hB'
     refine ⟨δ₁ + δ₂, e₁ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ δ₂ k + e₂ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ δ₁ k,
-      isMultiHomog_add hA hB', ?_⟩
+      _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BirationalModelExists.isMultiHomog_add' hA hB', ?_⟩
     · rw [map_add (f := _), map_mul, map_mul, v₁, v₂, aeval_coordProd, aeval_coordProd, hpow]
       ring
   | mul x z _ _ hx hz =>
     obtain ⟨δ₁, e₁, h₁, v₁⟩ := hx
     obtain ⟨δ₂, e₂, h₂, v₂⟩ := hz
-    refine ⟨δ₁ + δ₂, e₁ * e₂, isMultiHomog_mul h₁ h₂, ?_⟩
+    refine ⟨δ₁ + δ₂, e₁ * e₂, _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul h₁ h₂, ?_⟩
     rw [map_mul, v₁, v₂, hpow]
     ring
 
@@ -164,7 +204,7 @@ theorem exists_chartForm {Ω : Type} [Field Ω] (y : (Σ k, ι k) → Ω) (a : K
     ⟨fun k => ((τ : ℤ) * a k + ((τ : ℤ) * a k).natAbs).toNat, fun k =>
       Int.toNat_of_nonneg (by have := Int.le_natAbs (a := -((τ : ℤ) * a k)); rw [Int.natAbs_neg] at this; omega)⟩
   refine ⟨fun k => δ' k + ((τ : ℤ) * a k).natAbs, δ' + ex, e' * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ ex k,
-    isMultiHomog_mul he' (isMultiHomog_coordProd c ex), fun k => ?_, ?_⟩
+    _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul he' (isMultiHomog_coordProd c ex), fun k => ?_, ?_⟩
   · simp only [Pi.add_apply, Nat.cast_add, hexk k]
     ring
   · rw [map_mul, hv', aeval_coordProd, mul_assoc, mul_assoc, ← Finset.prod_mul_distrib,
@@ -241,9 +281,9 @@ theorem divCycle_le_of_chartLat {Ω : Type} [Field Ω] {y : (Σ k, ι k) → Ω}
     simp only [Pi.add_apply]
     omega
   have hmem : f * X' - g * e' ∈ mCoordIdeal y := by
-    refine mem_of_aeval_eq_zero y (isMultiHomog_sub (isMultiHomog_mul hf hX') ?_) ?_
+    refine mem_of_aeval_eq_zero y (isMultiHomog_sub (_root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul hf hX') ?_) ?_
     · rw [← hdeg]
-      exact isMultiHomog_mul hg he'
+      exact _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul hg he'
     · rw [map_sub, map_mul, map_mul, hfg, hv', hyX]
       ring
   have hnot : ∀ t : MRing ι, aeval y t ≠ 0 → t ∉ mCoordIdeal y := fun t ht h =>
@@ -308,8 +348,7 @@ theorem isNefBigDatum_zcomb (hD : GroundTheory.Heights₂.Heights.Inter.DegreeGe
     have h := hB K ι (mCoordIdeal y) D _ hP hnef 1
     convert h using 2
     ext k
-    simp only [HermLine.zcomb, Pi.add_apply, Pi.smul_apply, smul_eq_mul, hHa, Pi.one_apply,
-      one_mul]
+    simp only [HermLine.zcomb, Pi.add_apply, Pi.smul_apply, smul_eq_mul, hHa, Pi.one_apply]
     rw [Nat.cast_sub hp]
     ring
 

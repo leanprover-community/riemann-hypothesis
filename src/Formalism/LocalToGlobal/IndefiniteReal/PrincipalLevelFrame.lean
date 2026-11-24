@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsFinTyp
+import Mathlib.Algebra.Module.StablyFree.Basic
 
 @[expose] public section
 

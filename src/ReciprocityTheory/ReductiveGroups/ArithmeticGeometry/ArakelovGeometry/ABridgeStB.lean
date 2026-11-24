@@ -1,9 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsBergDensity
+import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.Nullstellensatz
-public import Mathlib.RingTheory.Unramified.Field
-public import Mathlib.RingTheory.Jacobson.Ring
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -30,8 +32,8 @@ theorem eq_zero_of_sum_tmul {Ω E : Type*} [Field Ω] [CharZero Ω] [Field E] [A
     Module.Flat.lTensor_preserves_injective_linearMap W.subtype Subtype.val_injective
   have h0 : (∑ k, e k ⊗ₜ[ℚ] 𝒞 k : E ⊗[ℚ] W) = 0 := by
     apply hinj
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero]
+
+    rw [map_sum, map_zero]
     have hc : ∀ k, ((𝒞 k : W) : Ω) = s k := fun k => by
       show ((Module.Basis.span hs k : W) : Ω) = s k
       rw [Module.Basis.span_apply]
@@ -68,8 +70,8 @@ theorem nilp_coeff_eq_zero {Ω : Type} [Field Ω] [CharZero Ω] {r : ℕ} {s : F
     apply hinj
     rw [← heq, ← heq, hxy]
   have hιt : ι tA = ∑ k, c k ⊗ₜ[ℚ] s k := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [tA, ι, map_sum, Algebra.TensorProduct.map_tmul, cA]
+
+    simp [tA, ι, map_sum, Algebra.TensorProduct.map_tmul, cA]
   have hnA : IsNilpotent tA := by
     obtain ⟨m, hm⟩ := h
     refine ⟨m, hι ?_⟩
@@ -82,8 +84,8 @@ theorem nilp_coeff_eq_zero {Ω : Type} [Field Ω] [CharZero Ω] {r : ℕ} {s : F
     have h0 : π tA = 0 := (hnA.map π).eq_zero
     have h1 : ∑ k, φ (cA k) ⊗ₜ[ℚ] s k = 0 := by
       rw [← h0]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [tA, π, map_sum, Algebra.TensorProduct.map_tmul]
+
+      simp [tA, π, map_sum, Algebra.TensorProduct.map_tmul]
     exact congrFun (eq_zero_of_sum_tmul hs h1)
   have hmax : ∀ M : Ideal A, M.IsMaximal → ∀ k, cA k ∈ M := by
     intro M hM k
@@ -147,8 +149,8 @@ theorem coeff_eq_zero_of_vanish {x : J → Ω} {r : ℕ} {b : Fin r → MvPolyno
       exact hf'
     have hsum := h z hz'
     change eval z P = 0
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hP, map_sum]
+
+    rw [hP, map_sum]
     simpa [secFun] using hsum
   rw [MvPolynomial.vanishingIdeal_zeroLocus_eq_radical] at hPmem
   obtain ⟨n, hn⟩ := hPmem
@@ -162,8 +164,8 @@ theorem coeff_eq_zero_of_vanish {x : J → Ω} {r : ℕ} {b : Fin r → MvPolyno
     rw [← map_pow]
     exact hker hn⟩
   have hev : evalT x P = ∑ k, c k ⊗ₜ[ℚ] aeval x (b k) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hP, map_sum]
+
+    rw [hP, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_mul, evalT_map_rat, ← MvPolynomial.algebraMap_eq, AlgHom.commutes,
       Algebra.TensorProduct.algebraMap_apply, Algebra.TensorProduct.tmul_mul_tmul, mul_one]

@@ -1,9 +1,13 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.TopLawQ
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
+public import Formalism.LocalToGlobal.Columns.ChainInst
+public import Formalism.LocalToGlobal.Columns.RowFormsSel
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivFr
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.MqRowSGUnif
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 @[expose] public section
 
@@ -166,8 +170,8 @@ theorem redV_map {a b : ℕ} (x : HomE E a b) (hx : ∀ s l, IntAt P (x (Pi.sing
   have e : x v l = ∑ s, v s * x (Pi.single s 1) l := by
     have h1 : x v = ∑ s, v s • x (Pi.single s 1) := by
       conv_lhs => rw [pi_eq_sum_univ v]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun s _ => ?_
       rw [map_smul]
       congr 2

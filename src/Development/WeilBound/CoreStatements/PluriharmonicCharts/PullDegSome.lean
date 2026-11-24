@@ -1,7 +1,44 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,8 +64,6 @@ theorem κ₁_inj (k₀ : K) : Function.Injective (κ₁ k₀) := by
     first
     | exact ha.trans hb.symm
     | (cases h; rfl)
-    | cases h
-    | exact Option.some_injective _ h
 
 theorem isBlockMap_v₁ (k₀ : K) :
     IsBlockMap (ι := ι) (ι' := fun o : Option K => ι (o.getD k₀)) (κ₁ k₀) (v₁ k₀) := by
@@ -64,8 +99,6 @@ theorem isBlockMap_v₁ (k₀ : K) :
         split_ifs at hj with h1 <;>
           first
           | (cases hj; exact h1 hk)
-          | cases hj
-          | exact h1 ((Option.some_injective _ hj).trans hk)
       refine ⟨⟨k, x⟩, ?_⟩
       unfold v₁
       rw [dite_eq_right hk]
@@ -98,8 +131,6 @@ theorem pullDeg_κ₁ (k₀ : K) (xi : K → ℤ) (o : Option K) :
         split_ifs at hj with h1 <;>
           first
           | (cases hj; exact h1 hk)
-          | cases hj
-          | exact h1 ((Option.some_injective _ hj).trans hk)
       rw [Function.extend_apply' _ _ _ hn]
       simp [hk]
     · have e := (κ₁_inj k₀).extend_apply xi 0 k

@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AnisotropicUnitaryRes
-public import GroundTheory.AutomorphicForms.AnisotropicHeight
+public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Anisotropic
+public import GroundTheory.AutomorphicForms.ReductionHeight
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

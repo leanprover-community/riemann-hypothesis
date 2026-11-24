@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPuncturedBranchInOneBranch
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchImageNhdOffCentre
+public import Mathlib.Analysis.Complex.Convex
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

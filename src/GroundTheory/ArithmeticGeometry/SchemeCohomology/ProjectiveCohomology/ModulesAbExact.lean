@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.Linear
+import Mathlib.Algebra.Category.Grp.Zero
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.CategoryTheory.Monoidal.Mon
 
 @[expose] public section
 

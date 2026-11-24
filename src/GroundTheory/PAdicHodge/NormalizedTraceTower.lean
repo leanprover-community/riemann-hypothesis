@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.NormalizedTrace
 public import GroundTheory.PAdicHodge.CyclotomicField
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Tactic.Linter.HaveILetI
+import GroundTheory.PAdicHodge.GaloisOnCp
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

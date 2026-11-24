@@ -1,7 +1,56 @@
 module
 
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.CovolumeIntegerLatticeEq
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassSt
+public import Mathlib.RingTheory.DedekindDomain.Different
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 
 @[expose] public section
 
@@ -129,8 +178,6 @@ theorem minpoly_eq (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F
   have hint : IsIntegral (𝓞 F) θ := by
     first
       | exact Algebra.IsIntegral.isIntegral θ
-      | exact IsIntegral.tower_top (A := 𝓞 F) (RingOfIntegers.isIntegral θ)
-      | exact (Algebra.IsIntegral.isIntegral (R := ℤ) θ).tower_top
   have hdvd : minpoly (𝓞 F) θ ∣ q := minpoly.isIntegrallyClosed_dvd hint hroot
   have hdeg2 : 2 ≤ (minpoly (𝓞 F) θ).natDegree := by
     by_contra hlt
@@ -144,8 +191,6 @@ theorem minpoly_eq (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F
     have hr : θ ∈ (algebraMap (𝓞 F) (𝓞 K)).range := by
       first
         | exact minpoly.mem_range_of_degree_eq_one (𝓞 F) θ hd1
-        | exact minpoly.mem_range_of_degree_eq_one hd1
-        | exact minpoly.mem_range_of_degree_eq_one (𝓞 F) hd1
     obtain ⟨z, hz⟩ := hr
     apply hne
     apply RingOfIntegers.ext
@@ -156,14 +201,11 @@ theorem minpoly_eq (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F
   have heq : q = minpoly (𝓞 F) θ :=
     Polynomial.eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic hint) hqm hdvd (by rw [hqdeg]; exact hdeg2)
   rw [← heq, hq]
-  simp only [derivative_add, derivative_sub, derivative_mul, derivative_X_pow, derivative_C,
+  simp only [derivative_mul, derivative_X_pow, derivative_C,
     derivative_X, zero_mul, mul_one, zero_add, add_zero, map_add, map_sub, map_mul, map_pow,
     aeval_X, aeval_C, map_natCast, hs]
   first
     | ring
-    | (norm_num; ring)
-    | norm_num
-    | (push_cast; ring)
 
 theorem differentIdeal_eq_top (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
     (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F K)) :
@@ -190,7 +232,6 @@ theorem discr_pos (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
     (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F K)) : 0 < discr F := by
   haveI := isTotallyReal hK hF
   first
-    | exact NumberField.discr_pos_of_isTotallyReal F
     | (have h := NumberField.sign_discr F
        rw [IsTotallyReal.nrComplexPlaces_eq_zero, pow_zero] at h
        exact Int.sign_eq_one_iff_pos.mp h)
@@ -216,16 +257,7 @@ theorem discrTower : DiscrTower := by
     have e3 := NumberField.InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces (K := K)
     have e4 : NumberField.InfinitePlace.nrRealPlaces K = 0 := by
       first
-        | exact NumberField.IsTotallyComplex.nrRealPlaces_eq_zero
-        | exact IsTotallyComplex.nrRealPlaces_eq_zero
-        | exact NumberField.InfinitePlace.nrRealPlaces_eq_zero_iff.mpr hTC
         | exact NumberField.nrRealPlaces_eq_zero_iff.mpr hTC
-        | (haveI : IsEmpty {w : NumberField.InfinitePlace K // w.IsReal} :=
-             ⟨fun w => (NumberField.InfinitePlace.not_isReal_iff_isComplex.mpr (hTC.isComplex w.1)) w.2⟩
-           simp [NumberField.InfinitePlace.nrRealPlaces])
-        | (unfold NumberField.InfinitePlace.nrRealPlaces
-           rw [Fintype.card_eq_zero_iff]
-           exact ⟨fun w => (NumberField.InfinitePlace.not_isReal_iff_isComplex.mpr (hTC.isComplex w.1)) w.2⟩)
     rw [QuadraticExtensionConjugation.finrank_eq_two hK hF] at e2
     unfold Formalism.HermitianLatticesTheory.fDeg
     omega
@@ -242,8 +274,5 @@ theorem discrTower : DiscrTower := by
   congr 1
   first
     | (push_cast; field_simp)
-    | (push_cast; field_simp; ring)
-    | field_simp
-    | (field_simp; ring)
 
 end Formalism.HermitianLattices.Ext.L3

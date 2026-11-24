@@ -1,15 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Formalism.LocalToGlobal.Columns.RecLevelLocF
-public import Formalism.LocalToGlobal.Columns.RecLevelLocP
-public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
+public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelFunctionalLevelVectorLaws
-public import Formalism.LocalToGlobal.Columns.AdelicLemmas
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
+import Formalism.LocalToGlobal.Columns.AdelicLemmas
+public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
+import Formalism.LocalToGlobal.Columns.RecLevelLocK
+public import Formalism.LocalToGlobal.Columns.RecLevelLocP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -167,8 +205,8 @@ theorem f_eq_rho (h : BasePi ST π) (hP : P ∈ ST) (hov : IsOver v P) {SG Q : F
   have ew : ∀ j, (((bc (prV (E := E) v) y)⁻¹).1 *ᵥ (fun a => inclE (F := F) (v.adicCompletion F) (z a))) j =
       prV (E := E) v (Col2.pullV y z j) := fun j => by
     rw [← map_inv]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Col2.pullV, Matrix.mulVec, dotProduct, map_sum, map_mul]
+
+    simp only [Col2.pullV, Matrix.mulVec, dotProduct, map_sum, map_mul]
     rfl
   rw [rll_dualV_eq hc n v h, rll_mem_loc_dLat n v _ h.star_ne_zero] at hz
   have hint : ∀ j, prV (E := E) v (inclE (F := F) (FiniteAdeleRing (𝓞 F) F) (star (π : E)) * Col2.pullV y z j) ∈ intV E v := fun j => by
@@ -205,8 +243,8 @@ theorem f_eq_rho (h : BasePi ST π) (hP : P ∈ ST) (hov : IsOver v P) {SG Q : F
       (fun hh => absurd (Finset.mem_univ _) hh), if_pos rfl]
     rfl
   show Valued.v (adAt F P _ - _) < 1
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e3, e4, map_mul, adAt_inclE, ← mul_sub, map_sum, ← Finset.sum_sub_distrib, map_mul]
+
+  rw [e3, e4, map_mul, adAt_inclE, ← mul_sub, map_sum, ← Finset.sum_sub_distrib, map_mul]
   refine lt_of_le_of_lt (mul_le_of_le_one_left' (valued_int_le s)) (Valuation.map_sum_lt _ one_ne_zero fun j _ => ?_)
   rw [map_mul, ← _root_.sub_mul, map_mul]
   refine lt_of_le_of_lt (mul_le_of_le_one_right' (hle j)) (hasRes_sub_lt ?_)
@@ -302,8 +340,8 @@ theorem fv_of_smul {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.
   exact mul_left_cancel₀ hs h
 
 
-set_option maxHeartbeats 12000000 in
-set_option synthInstance.maxHeartbeats 400000 in
+
+
 theorem fvTieG : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (a : I.ι) (i : ℕ) (hi : i ≤ B.R.m) (bad : Set (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (Ch : Type) (chOf : (I.stp u a i).Cl → Ch) (K : ∀ β : Ch, LevelChart (I.rec7 l Z) (B.T u) bad i hi (fun c : {c // chOf c = β} => (I.chain l u a).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u a i c.1))) (eV : (I.atT l u a).vT ≃ {v : HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) // (B.T u : 𝓞 (I.rec7 l Z).host.F) ∈ v.asIdeal}) (L : LevelCompatibleLattices (D := (I.rec7 l Z)) (I.fm l u a) (B.T u) (I.resT l u a) i hi fun c => latCrd (I.rec7 l Z) i hi (I.latAt u a i c)), I.ReadsK l Z u a i hi chOf K → I.IdV l u a eV → I.IdL l Z u a i hi L → (∀ (β : Ch) (v : HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F)) (h : ((B.T u : ℕ) : 𝓞 (I.rec7 l Z).host.F) ∈ v.asIdeal) (t t' : latS (F := (I.rec7 l Z).host.F) (v.adicCompletion (I.rec7 l Z).host.F) (intV (I.rec7 l Z).host.E v) (Submodule.span (𝓞 (I.rec7 l Z).host.E) (dualSet (sigD (I.rec7 l Z) : (I.rec7 l Z).host.E →+* (I.rec7 l Z).host.E) (gramN (I.rec7 l Z) i hi) (K β).lev.Lb))), t'.1 = (fun a => inclE (F := (I.rec7 l Z).host.F) (v.adicCompletion (I.rec7 l Z).host.F) (show (I.rec7 l Z).host.E from ((X.piT u : 𝓞 B.host.E) : B.host.E)) * t.1 a) → (K β).lev.fT v h t' = 0) → ∃ fMe, FvTieG L eV K fMe ∧ ∀ β v (x : Fin (B.R.N i) → (I.rec7 l Z).host.E) (j : Fin (B.R.N i)) (r : 𝓞 B.host.E) (t : latS (F := (I.rec7 l Z).host.F) ((eV v).1.adicCompletion (I.rec7 l Z).host.F) (intV (I.rec7 l Z).host.E (eV v).1) (Submodule.span (𝓞 (I.rec7 l Z).host.E) (dualSet (sigD (I.rec7 l Z) : (I.rec7 l Z).host.E →+* (I.rec7 l Z).host.E) (gramN (I.rec7 l Z) i hi) (K β).lev.Lb))), j.1 + 1 = B.R.N i → t.1 = (fun s => inclE (F := (I.rec7 l Z).host.F) ((eV v).1.adicCompletion (I.rec7 l Z).host.F) (x s)) → (r : B.host.E) = B.host.conj (X.piT u : B.host.E) * (show B.host.E from x j) → fMe β v ((K β).lev.fT (eV v).1 (eV v).2 t) = I.resT l u a v r := by
   intro B X I hI hP l Z u a i hi bad Ch chOf K eV L hK hV hL hS
   obtain ⟨k, hR⟩ := hK

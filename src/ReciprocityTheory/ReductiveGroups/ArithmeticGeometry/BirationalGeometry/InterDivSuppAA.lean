@@ -1,6 +1,10 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.Ideal.Height
+public import Mathlib.RingTheory.Jacobson.Ring
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

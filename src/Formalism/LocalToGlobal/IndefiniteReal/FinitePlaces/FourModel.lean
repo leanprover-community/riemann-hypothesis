@@ -1,6 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SmulSubMulLe
+public import Mathlib.Algebra.Module.LinearMap.End
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -2,6 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtRec
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOne
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmApply
+public import Formalism.LocalRingCardinality.DataKerI
+import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IntSplitOf
 
 @[expose] public section
@@ -60,7 +63,7 @@ theorem locInt_locAt (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D
     (B : GL (Fin D.R.k) D.host.E) : LocInt (locAt X u w hg B) :=
   fun v x => (X.g u w hg).completion_integers_iff v _ rfl x
 
-set_option maxHeartbeats 4000000 in
+
 theorem locHyp_locAt (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) (hU : SameUloc X T u) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E) (hB : FrRat X u w hg B)
     (hT : HypT (X.g u w hg)) : LocHyp ((T u).cls0).lev (locAt X u w hg B) := by
@@ -83,7 +86,7 @@ theorem bad_notOver (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.
   · exact natCast_notMem _ hp hv (hg' 1) h
 
 
-set_option maxHeartbeats 4000000 in
+
 theorem ptOne_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) (hU : SameUloc X T u) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E) (hB : FrRat X u w hg B)
     (hT : HypT (X.g u w hg)) : PtOne ((T u).cls0).lev (D.gat u w hg) (locAt X u w hg B) :=

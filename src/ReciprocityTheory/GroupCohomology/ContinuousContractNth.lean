@@ -1,7 +1,11 @@
 module
 
-public import ReciprocityTheory.GaloisValuations.ContinuousConstSMulQuotient
 public import ReciprocityTheory.GroupCohomology.IsTowerLim
+public import Mathlib.Topology.Algebra.Group.Quotient
+public import Mathlib.Topology.Algebra.Group.Subgroup
+public import Mathlib.Topology.CompactOpen
+public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
 
 @[expose] public section
 
@@ -91,8 +95,8 @@ def Pair.hom {M : TRep R G} {M' : TRep R G'} (P : Pair M M') : Cx.Hom M.coch M'.
   comm n f := by
     refine Subtype.ext (funext fun g => ?_)
     show P.u (dn M.rho n f.1 fun i => P.φ (g i)) = dn M'.rho n (fun g => P.u (f.1 fun i => P.φ (g i))) g
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dn_apply, map_add (f := _), map_sum, map_smul, P.equiv, contractNth_map]
+
+    simp only [dn_apply, map_add (f := _), map_sum, map_smul, P.equiv, contractNth_map]
 
 def Pair.ofMap {M M' : TRep R G} (u : M.V →ₗ[R] M'.V) (hu : Continuous u)
     (he : ∀ g m, u (M.rho g m) = M'.rho g (u m)) : Pair M M' :=

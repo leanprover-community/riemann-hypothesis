@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.BesselHermitianTheta.Lemmas
 public import Formalism.LocalToGlobal.HermitianColumns.HermCols
+public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
+public import Formalism.LocalToGlobal.BesselHermitianTheta.Lemmas
 
 @[expose] public section
 

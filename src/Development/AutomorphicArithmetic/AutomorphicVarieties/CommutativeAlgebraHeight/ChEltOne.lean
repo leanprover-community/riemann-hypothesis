@@ -1,8 +1,53 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.OfDetToDet
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.BcChiTmul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TwoSidedIdeal.Instances
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
+public import Mathlib.LinearAlgebra.TensorProduct.Finiteness
 
 @[expose] public section
 
@@ -63,8 +108,8 @@ private theorem expand {ι : Type} (S : Type) [CommRing S] [Algebra A S] (f : Mv
       refine Finset.sum_subset ht fun α _ hα => ?_
       rw [MvPolynomial.notMem_support_iff.1 hα, map_zero]
   obtain ⟨s, hs⟩ := hw
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hs s le_rfl, map_sum]
+
+  rw [hs s le_rfl, map_sum]
   refine Submodule.sum_mem _ fun α _ => ?_
   rw [Algebra.TensorProduct.map_tmul, ← mul_one (f _), ← smul_eq_mul, ← smul_tmul']
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, h α, rfl⟩)
@@ -75,8 +120,8 @@ private theorem part1 (S : Type) [CommRing S] [Algebra A S] (y : S ⊗[A] E) :
   obtain ⟨k, s, x, rfl⟩ := TensorProduct.exists_sum_tmul_eq y
   have : ∑ j, s j ⊗ₜ[A] x j =
       Algebra.TensorProduct.map (MvPolynomial.aeval s) (AlgHom.id A E) (Det.gen (A := A) x) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Det.gen, map_sum]
+
+    simp [Det.gen, map_sum]
   rw [this, F_map]
   exact expand S _ _ _ fun α => TwoSidedIdeal.subset_span ⟨k, x, α, rfl⟩
 
@@ -132,15 +177,15 @@ private theorem chElt_one (S : Type) [CommRing S] [Algebra A S] {k : ℕ} (x : F
   have : Det.cancel A E S (MvPolynomial (Fin k) S) (Det.gen fun i => (1 : S) ⊗ₜ[A] x i) =
       Algebra.TensorProduct.map (MvPolynomial.mapAlgHom (Algebra.ofId A S)) (AlgHom.id A E)
         (Det.gen (A := A) x) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [Det.gen, map_sum, Det.cancel_tmul]
+
+    simp [Det.gen, map_sum, Det.cancel_tmul]
   rw [this, F_map]
   unfold Det.chElt
   generalize Polynomial.aeval (Det.gen (A := A) x) (D.chiS (MvPolynomial (Fin k) A) (Det.gen x)) = w
   induction w with
   | add a b ha hb => simp only [map_add (f := _), tmul_add, ha, hb]
   | tmul s y =>
-    simp [MvPolynomial.coeff_map, Algebra.ofId_apply, Algebra.algebraMap_eq_smul_one, smul_tmul]
+    simp [MvPolynomial.coeff_map, Algebra.algebraMap_eq_smul_one, smul_tmul]
 
 private theorem span_mul (S : Type) [CommRing S] [Algebra A S] (I : TwoSidedIdeal E) (w : S ⊗[A] E)
     (h : w ∈ Submodule.span S ((fun z : E => (1 : S) ⊗ₜ[A] z) '' (I : Set E))) (u : S ⊗[A] E) :

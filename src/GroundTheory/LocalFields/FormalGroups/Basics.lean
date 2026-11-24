@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.LocalFields.FormalGroups.Inverse
+import GroundTheory.LocalFields.FormalGroups.Truncation
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

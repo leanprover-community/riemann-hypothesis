@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLoc
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
 
 @[expose] public section
 

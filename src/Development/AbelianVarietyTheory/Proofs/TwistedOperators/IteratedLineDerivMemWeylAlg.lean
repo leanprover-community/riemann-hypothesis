@@ -1,7 +1,24 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
+public import Mathlib.Analysis.Calculus.Deriv.Prod
+public import Mathlib.Analysis.Matrix.Normed
+public import Mathlib.Analysis.Normed.Module.HahnBanach
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Analysis.Calculus.ParametricIntegral
 
 @[expose] public section
 
@@ -68,8 +85,7 @@ theorem weightOp_apply (f : Sch l) (x : EuclideanSpace ℝ l) :
     weightOp l f x = ((1 + ‖x‖ ^ 2 : ℝ) : ℂ) * f x := by
   have hπ : (π : ℂ) ≠ 0 := by simp [Real.pi_ne_zero]
   simp only [weightOp, ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply, SchwartzMap.sub_apply, SchwartzMap.smul_apply,
-    SchwartzMap.sum_apply, dRho_single_inr, smul_eq_mul, EuclideanSpace.real_norm_sq_eq]
+    ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply, dRho_single_inr, smul_eq_mul, EuclideanSpace.real_norm_sq_eq]
   push_cast
   rw [add_mul, one_mul, Finset.mul_sum, Finset.sum_mul, sub_eq_add_neg, ← Finset.sum_neg_distrib]
   congr 1
@@ -104,10 +120,10 @@ theorem fourierInv_besselOp (f : Sch l) : 𝓕⁻ (besselOp l f) = weightOp l (�
   have hF : ∀ g : Sch l, 𝓕⁻ g = F g := fun _ => rfl
   have h := fourierInv_dRho_inl (l := l)
   simp only [hF] at h ⊢
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [besselOp, weightOp, ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.sum_apply, ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply, map_sub, map_smul,
-    map_sum, h, map_neg, neg_neg]
+
+  simp only [besselOp, weightOp, ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+  ContinuousLinearMap.sum_apply, ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply, map_sub, map_smul,
+  map_sum, h, map_neg, neg_neg]
 
 theorem fourierInv_besselOp_pow (k : ℕ) (f : Sch l) : 𝓕⁻ ((besselOp l ^ k) f) = (weightOp l ^ k) (𝓕⁻ f) := by
   induction k with
@@ -159,8 +175,8 @@ theorem norm_multilinear_le {n : ℕ} (m : ContinuousMultilinearMap ℝ (fun _ :
     funext i
     ext k
     simp [Pi.single_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [this, m.map_sum]
+
+  conv_lhs => rw [this, m.map_sum]
   rw [Finset.sum_mul]
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun r _ => ?_)
   rw [m.map_smul_univ, norm_smul, mul_comm, norm_prod]
@@ -186,22 +202,19 @@ theorem exists_seminorm_le (k n : ℕ) :
 theorem exists_extension_of_bound {V E : Type} [AddCommGroup V] [Module ℂ V] [NormedAddCommGroup E]
     [NormedSpace ℂ E] (T : V →ₗ[ℂ] E) (lam : V →ₗ[ℂ] ℂ) (C : ℝ) (hb : ∀ f, ‖lam f‖ ≤ C * ‖T f‖) :
     ∃ Λ : E →L[ℂ] ℂ, ∀ f, lam f = Λ (T f) := by
-  have hker : LinearMap.ker T ≤ LinearMap.ker lam := fun f hf => by
-    have := hb f
-    rw [LinearMap.mem_ker.1 hf, norm_zero, mul_zero] at this
-    exact norm_le_zero_iff.1 this
-  let φ : LinearMap.range T →ₗ[ℂ] ℂ := ((LinearMap.ker T).liftQ lam hker) ∘ₗ T.quotKerEquivRange.symm.toLinearMap
-  have hφ : ∀ f, φ ⟨T f, f, rfl⟩ = lam f := fun f => by
-    change (LinearMap.ker T).liftQ lam hker (T.quotKerEquivRange.symm ⟨T f, LinearMap.mem_range_self T f⟩) = _
-    rw [LinearMap.quotKerEquivRange_symm_apply_image]
-    rfl
-  obtain ⟨Λ, hΛ, -⟩ := exists_extension_norm_eq (LinearMap.range T) (φ.mkContinuous C (by
-    rintro ⟨_, f, rfl⟩
-    rw [hφ]
-    exact hb f))
-  refine ⟨Λ, fun f => ?_⟩
-  rw [← hφ]
-  exact (hΛ ⟨T f, f, rfl⟩).symm
+  have hker : LinearMap.ker T.rangeRestrict ≤ LinearMap.ker lam := by
+    rw [LinearMap.ker_rangeRestrict]
+    intro f hf
+    exact LinearMap.mem_ker.mpr (norm_le_zero_iff.mp (by
+      simpa [LinearMap.mem_ker.mp hf] using hb f))
+  let φ := T.rangeRestrict.liftOfSurjective T.surjective_rangeRestrict ⟨lam, hker⟩
+  have hφ (f : V) : φ (T.rangeRestrict f) = lam f :=
+    LinearMap.equivOfSurjective_apply T.surjective_rangeRestrict hker
+  obtain ⟨Λ, hΛ, -⟩ := exists_extension_norm_eq (LinearMap.range T) (φ.mkContinuous C
+    (T.surjective_rangeRestrict.forall.mpr fun f => by
+      simpa only [hφ, ← Submodule.norm_coe, LinearMap.rangeRestrict,
+        LinearMap.codRestrict_apply] using hb f))
+  exact ⟨Λ, fun f => (hφ f).symm.trans (hΛ (T.rangeRestrict f)).symm⟩
 
 def schwartzToL2 (l : Type) [Fintype l] : Sch l →L[ℂ] L2 l := toLpCLM ℂ ℂ 2 volume
 
@@ -335,8 +348,8 @@ theorem toLp_dRho_omS
       SymplecticGroup.mem_iff.1 (pr g).2, J_squared, neg_neg, one_mulVec]
   rw [ContinuousLinearMap.mul_apply]
   conv_lhs => rw [← h1, ← omS_dRho h3 h4, dRho_eq_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum, map_smul]
+
+  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum, map_smul]
 
 theorem contDiff_toLp_omS
     (h3 : ∀ (g : G) (w : l ⊕ l → ℝ) (f : L2 l),
@@ -408,11 +421,11 @@ theorem hasDerivAt_toLp_omS
       rw [← quad_comm hX, sub_sub_cancel]
     rw [ContinuousLinearMap.mul_apply, ← ContinuousLinearMap.mul_apply (dRho w), e, dRho_eq_sum w,
       dRho_eq_sum (X *ᵥ w)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum,
-      map_smul, ofReal_neg, ofReal_zero, zero_smul, NormedSpace.exp_zero, transpose_one, mul_one, J_squared, neg_neg, one_mulVec,
-      h0, map_one, ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-      map_sub, neg_smul, ← sub_eq_add_neg, Finset.sum_sub_distrib]
+
+    simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum,
+    map_smul, zero_smul, NormedSpace.exp_zero, transpose_one, mul_one, J_squared, neg_neg, one_mulVec,
+    h0, map_one, ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
+    map_sub, neg_smul, ← sub_eq_add_neg, Finset.sum_sub_distrib]
     simp only [coe_smul]
     rfl
   · intro f

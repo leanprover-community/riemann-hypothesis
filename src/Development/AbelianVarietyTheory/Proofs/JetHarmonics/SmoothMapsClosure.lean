@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
+public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DerivedActionDiscreteSeriesPropertiesStatement
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.CapelliHighestWeightConjugated
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothAdd
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.HeckeMultiplication
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.Smooth
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -98,14 +143,14 @@ theorem dsigW_mem (hK : PI.KFinSmooth) (hR : R.IsDS ε mu) (W : List (Mx k r))
   induction W with
   | nil => exact hv
   | cons X W ih =>
-    exact ((GlobalTheory.T.derivedAction_discreteSeries_properties hK k r ε mu R hR X (hW X List.mem_cons_self)).1 _
+    exact ((_root_.GlobalTheory.DerivedAction.derived_action hK k r ε mu R hR X (hW X List.mem_cons_self)).1 _
       (ih (fun Y hY => hW Y (List.mem_cons_of_mem _ hY)))).1
 
 theorem dsig_lin (hK : PI.KFinSmooth) (hR : R.IsDS ε mu) {X : Mx k r} (hX : InLieHpk k r X) (a : ℂ)
     {v w : R.H} (hv : v ∈ R.sm) (hw : w ∈ R.sm) :
     dsig (k := k) (r := r) R.σ X (a • v + w) =
       a • dsig (k := k) (r := r) R.σ X v + dsig (k := k) (r := r) R.σ X w := by
-  have h := (GlobalTheory.T.derivedAction_discreteSeries_properties hK k r ε mu R hR X hX).1
+  have h := (_root_.GlobalTheory.DerivedAction.derived_action hK k r ε mu R hR X hX).1
   have h1 := ((h v hv).2.const_smul a).add (h w hw).2
   refine HasDerivAt.deriv ?_
   convert h1 using 1
@@ -177,7 +222,7 @@ theorem dsigW_sigma (hK : PI.KFinSmooth) (hR : R.IsDS ε mu) {g : Mx k r} (hg : 
     have e : g * (g⁻¹ * X * g) * g⁻¹ = X := by
       calc g * (g⁻¹ * X * g) * g⁻¹ = (g * g⁻¹) * X * (g * g⁻¹) := by simp only [Matrix.mul_assoc]
         _ = X := by rw [h1, Matrix.one_mul, Matrix.mul_one]
-    have h := (GlobalTheory.T.derivedAction_discreteSeries_properties hK k r ε mu R hR _ (inLie_conj hg (hW X List.mem_cons_self))).2.1 _
+    have h := (_root_.GlobalTheory.DerivedAction.derived_action hK k r ε mu R hR _ (inLie_conj hg (hW X List.mem_cons_self))).2.1 _
       (dsigW_mem hK hR _ hW'' hv) g hg
     rw [e] at h
     show dsig R.σ X (dsigW R.σ W (R.σ g v)) = R.σ g (dsig R.σ (g⁻¹ * X * g) _)

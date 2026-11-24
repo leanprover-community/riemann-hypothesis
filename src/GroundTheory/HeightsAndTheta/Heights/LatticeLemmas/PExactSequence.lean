@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.Statements
+public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

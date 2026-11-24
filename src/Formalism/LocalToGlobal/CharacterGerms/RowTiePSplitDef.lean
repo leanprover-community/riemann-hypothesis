@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import Mathlib.Data.Matrix.Basic
 
 @[expose] public section
 

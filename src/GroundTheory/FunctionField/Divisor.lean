@@ -1,10 +1,16 @@
 module
 
-public import Mathlib
-public import GroundTheory.FunctionField.PlaceDefs
-public import GroundTheory.FunctionField.PlaceBasic
-public import GroundTheory.FunctionField.Approximation
 public import GroundTheory.FunctionField.ValuationAevalSubCoeffZeroLe
+public import Mathlib.FieldTheory.AlgebraicClosure
+import GroundTheory.FunctionField.Approximation
+import GroundTheory.FunctionField.PlaceBasic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

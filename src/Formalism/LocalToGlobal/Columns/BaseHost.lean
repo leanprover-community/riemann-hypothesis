@@ -1,11 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
-public import Formalism.LocalToGlobal.Divisibility.CoeffLemmas
-public import Formalism.LocalToGlobal.UnitaryNorms.RealPl
-public import Formalism.LocalToGlobal.UnitaryNorms.ExistsCycAct
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Inertia
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
 
 @[expose] public section
 

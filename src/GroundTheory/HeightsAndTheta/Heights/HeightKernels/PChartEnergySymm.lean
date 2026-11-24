@@ -1,11 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergySymm
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartIbpSymm
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergySwap
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotLtLtOfMemMinimalPrimes
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 @[expose] public section
 

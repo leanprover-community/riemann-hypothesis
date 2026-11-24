@@ -1,8 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
+public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
 public import GroundTheory.GlobalFields.Adele.Compact
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import GroundTheory.GlobalFields.Adele.Approximation
 
 @[expose] public section
 

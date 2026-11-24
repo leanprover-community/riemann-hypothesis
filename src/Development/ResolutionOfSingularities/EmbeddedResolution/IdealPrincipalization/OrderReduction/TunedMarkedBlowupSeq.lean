@@ -1,29 +1,50 @@
 module
 
-public import Mathlib
-public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.ClopenRestriction
-public import Development.ResolutionOfSingularities.Foundations.Blowup.StrictTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.ControlledTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.MaxContactIdeal
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheaf
-public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheafBasic
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReductionProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedOrderReduction.OrderReductionAlgorithm
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MarkedBlowupSequenceBoundary
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MaxContactReduction
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.DerivedAndCoverTriples
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MaxContactCoverProperties
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.BlowupSequenceData
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.Append
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.ControlledTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IsoInvariance
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IdealBlowupSequence
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceOfBlowups
-public import Development.ResolutionOfSingularities.Foundations.BlowupUniversalProperty
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionOfSingularities
+import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IsoInvariance
+public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.MarkedBlowupSequenceBoundary
+public import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheafBasic
+public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.ControlledTransform
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -34,10 +55,6 @@ open CategoryTheory AlgebraicGeometry
 noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
-
-theorem orderAtLeastLocus_comap_iso {X Y : Scheme.{u}} (e : X ≅ Y) (J : Y.IdealSheafData) (n : ℕ) :
-    orderAtLeastLocus (J.comap e.hom) n = ⇑e.hom ⁻¹' orderAtLeastLocus J n :=
-  orderAtLeastLocus_comap_iso_hom_eq_preimage e J n
 
 namespace BlowupSequenceData
 
@@ -85,21 +102,7 @@ private theorem eq_of_exceptionalIdeal_pow_mul_eq (s : MarkedBlowupSequenceData 
   exact ((isLocallyGeneratedByNonZeroDivisor_exceptionalIdeal (s.map i) (s.center i) (s.isBlowup i hi)).pow
     m).eq_of_mul_eq_mul (hA.trans hB.symm)
 
-theorem controlledTransform_eq_ideal (s : MarkedBlowupSequenceData p I m E) (i : ℕ) (hi : i ≤ s.length) :
-    s.controlledTransform I m i = s.ideal i :=
-  (s.controlledTransform_and_boundary_eq_of_cancel (eq_of_exceptionalIdeal_pow_mul_eq s) i hi).1
-
-theorem toBlowupSequenceData_boundary_eq (s : MarkedBlowupSequenceData p I m E) (i : ℕ) (hi : i ≤ s.length) :
-    s.boundaryFrom E i = s.boundary i := by
-  revert hi
-  induction i with
-  | zero =>
-      intro _
-      simp [BlowupSequenceData.boundary_zero, s.boundary_zero]
-  | succ j ih =>
-      intro hi
-      have hj : j < s.length := hi
-      rw [BlowupSequenceData.boundary_succ, ih (le_of_lt hj), s.boundary_succ j hj]
+alias controlledTransform_eq_ideal := _root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toBlowupSequenceData_controlledTransform_eq
 
 end MarkedBlowupSequenceData
 
@@ -149,13 +152,6 @@ abbrev TunedMarkedBlowupSeq (S : MarkedIdealWithBoundary.{u})
     (extra : List (s.obj s.length).IdealSheafData) (ndrop : ℕ) : Type (u + 1) :=
   MarkedSequenceOfBlowups (s.proj s.length ≫ S.structMap) (tunedIdealAtLength S s hft) (tuningExponent S.mult)
     (extra ++ (s.boundary s.length).drop ndrop)
-
-theorem structureMorphism_derivedTriple (S : MarkedIdealWithBoundary.{u})
-    (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary)
-    (hft : AlgebraicGeometry.LocallyOfFiniteType (s.proj s.length ≫ S.structMap))
-    (extra : List (s.obj s.length).IdealSheafData) (ndrop : ℕ) :
-    (MaxContactCoverData.derivedTriple S s hft extra ndrop).structMap = s.proj s.length ≫ S.structMap :=
-  MaxContactCoverData.derivedTriple_structureMorphism S s hft extra ndrop
 
 theorem ideal_derivedTriple (S : MarkedIdealWithBoundary.{u})
     (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary)
@@ -320,7 +316,7 @@ private theorem orderAtLeastLocus_controlledTransform_disjoint_strictTransform (
       have hsupp : ((D.comap d.isoZero.hom).support : Set ↥(d.obj 0)) =
           ⇑d.isoZero.hom ⁻¹' (D.support : Set ↥X) := by
         rw [Scheme.IdealSheafData.support_comap]; rfl
-      rw [BlowupSequenceData.controlledTransform_zero, BlowupSequenceData.iteratedStrictTransform_zero, orderAtLeastLocus_comap_iso,
+      rw [BlowupSequenceData.controlledTransform_zero, BlowupSequenceData.iteratedStrictTransform_zero, _root_.FunctorialResolution.EmbeddedResolution.orderAtLeastLocus_comap_iso_hom_eq_preimage,
         hsupp, ← Set.preimage_inter, hD, Set.preimage_empty]
   | succ i ih =>
       intro hi
@@ -387,9 +383,9 @@ private theorem orderAtLeastLocus_controlledTransform_eq_of_length_eq_zero {k : 
   rw [hlen, Nat.le_zero] at hi
   subst hi
   have h1 : orderAtLeastLocus ((BlowupSequenceData.ofSequenceOfBlowups t.toSequenceOfBlowups).controlledTransform I m 0) m = ∅ := by
-    rw [BlowupSequenceData.controlledTransform_zero, orderAtLeastLocus_comap_iso, hempty, Set.preimage_empty]
+    rw [BlowupSequenceData.controlledTransform_zero, _root_.FunctorialResolution.EmbeddedResolution.orderAtLeastLocus_comap_iso_hom_eq_preimage, hempty, Set.preimage_empty]
   have h2 : orderAtLeastLocus (t.ideal 0) n' = ∅ := by
-    rw [t.ideal_zero, orderAtLeastLocus_comap_iso, hJempty, Set.preimage_empty]
+    rw [t.ideal_zero, _root_.FunctorialResolution.EmbeddedResolution.orderAtLeastLocus_comap_iso_hom_eq_preimage, hJempty, Set.preimage_empty]
   exact h1.trans h2.symm
 
 private theorem isMarked_and_orderAtLeastLocus_eq_of_balancedTunedSheaf (hstar : MaxContactCoverProperties.{u}) {k : Type u} [Field k]

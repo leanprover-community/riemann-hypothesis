@@ -1,6 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.LatticeVectorsBoundedBelow
+import Aesop.Frontend.Tactic
+import Aesop.Main
+import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.Imports
 
 @[expose] public section
 
@@ -84,6 +88,5 @@ theorem packet_conditions_closed (h1 : LatticeFinitelyGenerated) (h2 : ExistsBou
     all_goals first
       | assumption
       | (intro y hy; rw [← SetLike.mem_coe, hM]; aesop)
-      | aesop
 
 end Formalism.L2.SG.Pf.Tau

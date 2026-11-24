@@ -1,10 +1,62 @@
 module
 
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.NormOneIsCoboundaryUnramifiedQuadratic
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.DatLam
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.Descent
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.HsNE
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.NormEx
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.WCard
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.HsNE
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.DatLam
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.Finiteness.Prod
+public import Mathlib.RingTheory.Nakayama
 
 @[expose] public section
 
@@ -28,9 +80,9 @@ private theorem ofE_omega : ofE Δ (ω : Etau K τ) = ω := by
 private theorem ofE_star (x : Etau K τ) : star (ofE Δ x) = ofE Δ (star x) := by ext <;> simp [ofE]
 private theorem sigL_ofE (x : Etau K τ) : sigL (ofE Δ x) = ofE Δ x := by ext <;> simp [ofE, sigL]
 private theorem sigL_mul (x y : EL Δ τ) : sigL (x * y) = sigL x * sigL y := by
-  ext <;> simp [sigL] <;> ring
+  ext <;> simp [sigL]
 private theorem sigL_smul (k : Lsq K Δ) (y : EL Δ τ) : sigL (k • y) = star k • sigL y := by
-  ext <;> simp [sigL] <;> ring
+  ext <;> simp [sigL]
 private theorem sigL_sigL (x : EL Δ τ) : sigL (sigL x) = x := by ext <;> simp [sigL]
 private theorem star_smulL (k : Lsq K Δ) (y : EL Δ τ) : star (k • y) = k • star y := by
   ext <;> simp <;> ring
@@ -341,7 +393,7 @@ private theorem fx_split (hS : IsFix O c d m S) (hd : d * sigL d = ω) (hτ : τ
     · simp only [Prod.smul_fst, Prod.fst_add, smul_eq_mul]
       linear_combination (-y.1) * e
     · have : ω * (ω * y.2) + -algebraMap K (Lsq K Δ) τ • (ω * y.2) + y.2 = 0 := by
-        ext1 <;> simp [Algebra.smul_def] <;> ring
+        ext1 <;> simp [Algebra.smul_def]
       simp only [Prod.smul_snd, Prod.snd_add, this, smul_zero]
   refine ⟨h1, ?_⟩
   convert fx_add hS hy (fx_smul hS isIntegral_one.neg h1) using 1
@@ -398,7 +450,7 @@ private theorem herm_E (c t k : K) (a y : Etau K τ) :
   rw [herm, ← ofE_smul, sigL_ofE, ofE_star, ← ofE_one, ← ofE_smul, ← ofE_mul, ← ofE_mul, trace_ofE]
   simp only [mul_zero, zero_mul, zero_add]
   congr 1
-  simp [trace_def, QuadraticAlgebra.re_one, QuadraticAlgebra.im_one]
+  simp [trace_def]
   ring
 
 private theorem fx_gen [IsDomain O] [IsDiscreteValuationRing O] (hl : IsLoc O Δ) {t : K} (hS : IsFix O c d (t • 1) S)

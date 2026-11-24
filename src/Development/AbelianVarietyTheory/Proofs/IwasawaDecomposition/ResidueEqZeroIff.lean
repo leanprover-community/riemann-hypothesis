@@ -1,9 +1,49 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReferenceCharactersFactorTame
+public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitC
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
+import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -79,9 +119,7 @@ theorem one_tmul_mem (v : HeightOneSpectrum (𝓞 F)) {a : v.adicCompletion F} (
     (1 : E) ⊗ₜ[F] a ∈ intV E v :=
   Subring.subset_closure (Or.inr ⟨⟨a, ha⟩, rfl⟩)
 
-theorem valued_natCast (v : HeightOneSpectrum (𝓞 F)) (N : ℕ) :
-    Valued.v (N : v.adicCompletion F) = v.valuation F (algebraMap (𝓞 F) F N) := by
-  rw [← valued_algebraMap, map_natCast (algebraMap (𝓞 F) F), map_natCast (algebraMap F (v.adicCompletion F))]
+alias valued_natCast := _root_.GlobalTheory.NormSum.RepAt.val_nat
 
 theorem mem_latS_iff {v : HeightOneSpectrum (𝓞 F)} {L : Submodule (𝓞 E) (Fin n → E)} {T : ℕ} (hT : (T : 𝓞 F) ∉ v.asIdeal)
     (h1 : ∀ x ∈ L, ∀ j, ∃ r : 𝓞 E, x j = r) (h2 : ∀ j, (Pi.single j (T : E) : Fin n → E) ∈ L)
@@ -332,8 +370,8 @@ def IsRed (P : HeightOneSpectrum (𝓞 E)) (x : GL (Fin n) (AfE F E)) (A : Matri
 
 theorem IsRed.mul {x y : GL (Fin n) (AfE F E)} {A B : Matrix (Fin n) (Fin n) (𝓞 E ⧸ P.asIdeal)} (h : IsRed P x A)
     (h' : IsRed P y B) : IsRed P (x * y) (A * B) := fun i j => by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Units.val_mul, Matrix.mul_apply, Matrix.mul_apply, map_sum]
+
+  rw [Units.val_mul, Matrix.mul_apply, Matrix.mul_apply, map_sum]
   exact hasRes_sum _ fun l => by rw [map_mul]; exact hasRes_mul (h i l) (h' l j)
 
 theorem IsRed.unique {x : GL (Fin n) (AfE F E)} {A B : Matrix (Fin n) (Fin n) (𝓞 E ⧸ P.asIdeal)} (h : IsRed P x A)
@@ -371,8 +409,8 @@ theorem pullV_mul (g m : GL (Fin n) (AfE F E)) [StarRing E] (x : Sp E n) (i : Fi
 theorem hasRes_pullV [StarRing E] {g m : GL (Fin n) (AfE F E)} {A : Matrix (Fin n) (Fin n) (𝓞 E ⧸ P.asIdeal)} (hm : IsRed P m A)
     {x : Sp E n} {c : Fin n → 𝓞 E ⧸ P.asIdeal} (h : ∀ i, HasRes P (adAt F P (Col2.pullV g x i)) (c i)) (i : Fin n) :
     HasRes P (adAt F P (Col2.pullV (g * m⁻¹) x i)) ((A *ᵥ c) i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [pullV_mul, map_sum]
+
+  rw [pullV_mul, map_sum]
   exact hasRes_sum _ fun l => by rw [map_mul]; exact hasRes_mul (hm i l) (h l)
 
 end Res
@@ -418,8 +456,8 @@ theorem isPtOf_mul (hQ : ∀ P, P ∉ Q) {g m : GL (Fin n) (AfE F E)} {p : DecoF
       rwa [Matrix.mulVec_mulVec, ← Units.val_mul, _root_.mul_inv_rev, inv_inv, inv_mul_cancel_left] at this
   · rw [smul_N] at hv
     have e : adAt F P.1 (Col2.pullV (g * m⁻¹) v i) = adAt F P.1 (Col2.pullV (g * 1⁻¹) v i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [pullV_mul, pullV_mul, map_sum, map_sum]
+
+      rw [pullV_mul, pullV_mul, map_sum, map_sum]
       exact Finset.sum_congr rfl fun j _ => by rw [map_mul, map_mul, hT _ P.2]
     rw [e, inv_one, mul_one]
     exact hg.f P v hv i hi

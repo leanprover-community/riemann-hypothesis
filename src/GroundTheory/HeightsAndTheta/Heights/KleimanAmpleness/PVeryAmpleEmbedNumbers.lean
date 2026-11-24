@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleEmbedNumbersSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleDim
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleHilbertSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleSecsSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleDegree
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleDim
 
 @[expose] public section
 

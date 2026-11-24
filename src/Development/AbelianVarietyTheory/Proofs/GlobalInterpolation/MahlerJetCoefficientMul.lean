@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -176,15 +221,13 @@ theorem split_single_inl (e : κ ⊕ κ →₀ ℕ) (i : κ) :
     Finsupp.sumFinsuppAddEquivProdFinsupp (e + Finsupp.single (Sum.inl i) 1) =
       ((Finsupp.sumFinsuppAddEquivProdFinsupp e).1 + Finsupp.single i 1, (Finsupp.sumFinsuppAddEquivProdFinsupp e).2) := by
   classical
-  ext j <;> simp [Finsupp.fst_sumFinsuppAddEquivProdFinsupp, Finsupp.snd_sumFinsuppAddEquivProdFinsupp,
-    Finsupp.single_apply]
+  ext j <;> simp [Finsupp.single_apply]
 
 theorem split_single_inr (e : κ ⊕ κ →₀ ℕ) (i : κ) :
     Finsupp.sumFinsuppAddEquivProdFinsupp (e + Finsupp.single (Sum.inr i) 1) =
       ((Finsupp.sumFinsuppAddEquivProdFinsupp e).1, (Finsupp.sumFinsuppAddEquivProdFinsupp e).2 + Finsupp.single i 1) := by
   classical
-  ext j <;> simp [Finsupp.fst_sumFinsuppAddEquivProdFinsupp, Finsupp.snd_sumFinsuppAddEquivProdFinsupp,
-    Finsupp.single_apply]
+  ext j <;> simp [Finsupp.single_apply]
 
 theorem BJ_mul_X_inl (v : κ → V) {F : V → ℂ} (G : V → ℂ) (hF : ContDiff ℂ ∞ F) (Q : MvPolynomial (κ ⊕ κ) ℂ) (i : κ) :
     BJ v F G (Q * X (Sum.inl i)) = BJ v (dd (v i) F) G Q := by
@@ -267,9 +310,9 @@ theorem cop_Pn (n : κ → ℕ) :
 theorem split_rename (a b : κ →₀ ℕ) :
     Finsupp.sumFinsuppAddEquivProdFinsupp (Finsupp.mapDomain Sum.inl a + Finsupp.mapDomain Sum.inr b) = (a, b) := by
   ext j
-  · simp [Finsupp.fst_sumFinsuppAddEquivProdFinsupp, Finsupp.mapDomain_apply_of_injective Sum.inl_injective,
+  · simp [Finsupp.mapDomain_apply_of_injective Sum.inl_injective,
       Finsupp.mapDomain_notin_range]
-  · simp [Finsupp.snd_sumFinsuppAddEquivProdFinsupp, Finsupp.mapDomain_apply_of_injective Sum.inr_injective,
+  · simp [Finsupp.mapDomain_apply_of_injective Sum.inr_injective,
       Finsupp.mapDomain_notin_range]
 
 theorem BJ_rename (v : κ → V) (F G : V → ℂ) (p q : MvPolynomial κ ℂ) :
@@ -298,8 +341,8 @@ theorem mahler_mul (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (κ : T
       mahler v F k * mahler v G (fun i => n i - k i) := by
   have hF' : ContDiff ℂ ∞ F := hF.of_le le_top
   have hG' : ContDiff ℂ ∞ G := hG.of_le le_top
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [mahler_eq, LJ_mul v _ F G hF' hG', cop_Pn, map_sum]
+
+  rw [mahler_eq, LJ_mul v _ F G hF' hG', cop_Pn, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [BJ_rename, ← mahler_eq, ← mahler_eq]
 

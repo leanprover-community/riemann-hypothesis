@@ -1,6 +1,56 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Lam1
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostDensOfParts
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BudgetTopConvergence
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeBoundInBanachSpace
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InnerAveragingInputOfSliceData
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostermanDensityOfParts
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OmLongContinuousOn
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -10,11 +60,6 @@ open Formalism.FourierDecayAlt Finset Filter Topology MeasureTheory NumberField
 open scoped ComplexConjugate InnerProductSpace
 
 noncomputable section
-
-theorem norm_psi_one (b w : ℂ) : ‖G.psi b w‖ = 1 := by
-  unfold G.psi
-  rw [mul_comm]
-  exact Complex.norm_exp_ofReal_mul_I _
 
 theorem isCompact_roots (n : ℕ) (hn : 0 < n) (K : Set ℂ) (hK : IsCompact K) :
     IsCompact {z : ℂ | z ^ n ∈ K} := by
@@ -158,7 +203,7 @@ theorem germ_core (m p : ℕ) (σh : Equiv.Perm (Fin p)) (dh : Fin p → ℂ) (h
         show z ^ (m + 2) ∈ K
         rw [(Formalism.FourierDecayAlt.P.mem_rootSet_iff_pow_eq hs).1 hz]
         exact hD
-      rw [norm_smul, norm_mul, Complex.norm_conj, norm_psi_one, mul_one, Complex.norm_real, Real.norm_eq_abs,
+      rw [norm_smul, norm_mul, Complex.norm_conj, _root_.Formalism.FourierDecayAlt.P.StationaryPhaseModel.F_norm_psi, mul_one, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (by positivity)]
       have := hM1 z hzK
       rw [Real.norm_eq_abs] at this

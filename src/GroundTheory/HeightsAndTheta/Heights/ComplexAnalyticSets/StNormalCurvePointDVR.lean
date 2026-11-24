@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelPlace
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchLift
 
 @[expose] public section
 

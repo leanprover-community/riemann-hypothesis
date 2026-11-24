@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDiscriminantSheetCover
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMassFinite
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetAreaCompare
+import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

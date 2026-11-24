@@ -1,6 +1,49 @@
 module
 
+import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwDecomp
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionOfDecompGlob
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
+public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -206,40 +249,7 @@ open scoped Matrix
 variable (D : D7) (u : D.what₂.Word)
 
 theorem bwE_loc_Ow (w : D.what₂.places.Pl) : bwE_Loc (bwA_Ow D w) := by
-  intro r s c m hc hm hsum
-  by_contra hno
-  push Not at hno
-  choose γ hγ hγe using fun i => Subring.mem_map.1 (hc i)
-  choose μ hμ hμe using fun i => Subring.mem_map.1 (hm i)
-  have hpos : ∀ i ∈ s, (0 : WithTop ℤ) < D.what₂.places.val w (γ i * μ i) := by
-    intro i hi
-    have h0 : (0 : WithTop ℤ) ≤ D.what₂.places.val w (μ i) := hμ i
-    have hne : D.what₂.places.val w (μ i) ≠ 0 := by
-      intro h
-      have hμ0 : μ i ≠ 0 := by
-        intro h'; rw [h', AddValuation.map_zero] at h; simp at h
-      refine hno i hi (D.what₂.embLL (μ i)⁻¹) (Subring.mem_map.2 ⟨(μ i)⁻¹, ?_, rfl⟩) ?_
-      · show (0 : WithTop ℤ) ≤ D.what₂.places.val w (μ i)⁻¹
-        rw [AddValuation.map_inv, h, neg_zero]
-      · rw [← hμe i, ← map_mul, mul_inv_cancel₀ hμ0, map_one]
-    rw [AddValuation.map_mul]
-    exact lt_of_lt_of_le (lt_of_le_of_ne h0 (Ne.symm hne)) (le_add_of_nonneg_left (hγ i))
-  have h1 : ∑ i ∈ s, γ i * μ i = 1 := by
-    apply D.what₂.embLL.injective
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one, ← hsum]
-    exact Finset.sum_congr rfl (fun i _ => by rw [map_mul, hγe, hμe])
-  have h2 : (0 : WithTop ℤ) < D.what₂.places.val w (∑ i ∈ s, γ i * μ i) :=
-    AddValuation.map_lt_sum _ (by simp) hpos
-  rw [h1, AddValuation.map_one] at h2
-  exact lt_irrefl _ h2
-
-theorem bwE_mem_Ow (w : D.what₂.places.Pl) (hw : OverT D u w) (τ : D.what₂.Tau) (y : D.host.E) (s : ℕ)
-    (hs : ¬ (D.mem u).A.T ∣ s) (hy : (s : D.host.E) * y ∈ (algebraMap (𝓞 D.host.E) D.host.E).range) :
-    embT D τ y ∈ bwA_Ow D w := by
-  rw [bwA_embT_eq]
-  exact Subring.mem_map.2 ⟨_, bwA_val_locInt D w ((D.host.sigmaOf (D.eTau τ : D.R.GG) : D.host.E →+* D.host.E)) y s
-    (by rw [hw]; exact hs) hy, rfl⟩
+  apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_loc_Ow
 
 theorem bwE_mulVec_col {n : ℕ} (A B : Matrix (Fin n) (Fin n) D.host.E) (a k : Fin n) :
     (A *ᵥ fun r => B r k) a = (A * B) a k := rfl
@@ -249,7 +259,7 @@ theorem bwE_locBasis_int (w : D.what₂.places.Pl) (hw : OverT D u w) (τ : D.wh
     (x : Fin n → D.host.E) (s : ℕ) (hs : ¬ (D.mem u).A.T ∣ s) (hx : (s : D.host.E) • x ∈ L) (a : Fin n) :
     embT D τ ((((B⁻¹ : GL (Fin n) D.host.E) : Matrix (Fin n) (Fin n) D.host.E) *ᵥ x) a) ∈ bwA_Ow D w := by
   obtain ⟨s', hs', h⟩ := (hB x).1 ⟨s, hs, hx⟩
-  exact bwE_mem_Ow D u w hw τ _ s' hs' (h a)
+  exact Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_mem_Ow D u w hw τ _ s' hs' (h a)
 
 theorem bwE_col_loc (w : D.what₂.places.Pl) (hw : OverT D u w) {n : ℕ} {L : Set (Fin n → D.host.E)}
     {B : GL (Fin n) D.host.E} (hB : IsLocBasis (D.mem u).A.T L B) (k : Fin n) :

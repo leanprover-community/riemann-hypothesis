@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedNonzeroSection
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenOnFibres
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -375,8 +377,8 @@ theorem mem_ratChart_of_mem {c : ∀ k, ι k} {w : Ω} (hw : w ∈ chartRingZ y 
 theorem aeval_homog_mem (c : ∀ k, ι k) {p : MRingOver ℚ ι} {d : K → ℕ} (hp : IsMultiHomog p d) :
     aeval y p * ∏ k, y ⟨k, c k⟩ ^ (-(d k : ℤ)) ∈ ratChart y c := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [p.as_sum, map_sum, Finset.sum_mul]
+
+  rw [p.as_sum, map_sum, Finset.sum_mul]
   refine Submodule.sum_mem _ fun μ hμ => ?_
   have hdeg := hp μ hμ
   rw [aeval_monomial, Finsupp.prod_fintype _ _ (fun i => pow_zero _)]

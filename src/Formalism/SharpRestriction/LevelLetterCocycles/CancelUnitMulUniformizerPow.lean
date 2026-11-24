@@ -3,6 +3,52 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.SplittingOfExactnessAndData
 public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
+import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
+import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
+import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -68,12 +114,6 @@ theorem InNΔi_neg (T : LocLat G Qp LL O) (c : ZMod n) {x : W.DD T}
   unfold Formalism.MainNotions.LiftingTheory.InNΔi at hx ⊢
   exact ⟨neg_mem hx.1, neg_mem hx.2⟩
 
-private theorem InNDeltai_lA_pow_smul_of_InNDeltai (T : LocLat G Qp LL O) (c : ZMod n) (k : ℕ) {x : W.DD T}
-    (hx : Formalism.MainNotions.LiftingTheory.InNΔi W T c x) : Formalism.MainNotions.LiftingTheory.InNΔi W T c (Formalism.MainNotions.ArcLiftingSetup.lA W ^ k • x) := by
-  rw [lA_pow_smul_eq_p_pow_smul]
-  unfold Formalism.MainNotions.LiftingTheory.InNΔi at hx ⊢
-  exact ⟨nsmul_mem hx.1 _, nsmul_mem hx.2 _⟩
-
 theorem goodZ_comb (T : LocLat G Qp LL O) (c : ZMod n) (j y M σ : ℕ) {Z τ Z₀ y₀ : W.DD T}
     (h : GoodZ W T c j y M σ Z τ) (hy₀ : Formalism.MainNotions.LiftingTheory.InNΔi W T c y₀)
     (hZ₀ : Z₀ = W.π₀ ^ M • y₀ - Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • Z) :
@@ -86,11 +126,11 @@ theorem goodZ_comb (T : LocLat G Qp LL O) (c : ZMod n) (j y M σ : ℕ) {Z τ Z�
       -(Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • ((W.φD T) ^ j) S) := by
     rw [map_neg, lA_pow_smul_eq_p_pow_smul, map_nsmul, lA_pow_smul_eq_p_pow_smul]
   refine ⟨κ, κ', -(Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • S),
-    ⟨⟨-(Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • S'), InNΔi_neg W T c (InNDeltai_lA_pow_smul_of_InNDeltai W T c σ hS'), ?_⟩,
+    ⟨⟨-(Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • S'), InNΔi_neg W T c (_root_.Formalism.MainNotions.UnusedSlot80.Relay2.InNΔi_lsmul W T c σ hS'), ?_⟩,
       -(Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • x) - Formalism.MainNotions.ArcLiftingSetup.lA W ^ κ • y₀, ?_, ?_⟩, ?_⟩
   · rw [hSS, smul_neg, smul_comm]
-  · have h1 := InNDeltai_lA_pow_smul_of_InNDeltai W T c σ hx
-    have h2 := InNDeltai_lA_pow_smul_of_InNDeltai W T c κ hy₀
+  · have h1 := _root_.Formalism.MainNotions.UnusedSlot80.Relay2.InNΔi_lsmul W T c σ hx
+    have h2 := _root_.Formalism.MainNotions.UnusedSlot80.Relay2.InNΔi_lsmul W T c κ hy₀
     unfold Formalism.MainNotions.LiftingTheory.InNΔi at h1 h2 ⊢
     exact ⟨sub_mem (neg_mem h1.1) h2.1, sub_mem (neg_mem h1.2) h2.2⟩
   · rw [map_neg, hγ, hZ₀]
@@ -156,11 +196,11 @@ theorem tauZ_exists [IsDomain O] (T : LocLat G Qp LL O) (hC : Ctx W T) (h9 : For
   set S := ∑ r ∈ Finset.range M, W.π₀ ^ r • Formalism.MainNotions.LiftingTheory.vecB W T b (y r) with hSdef
   have hφS : ((W.φD T) ^ A.j) S = ∑ r ∈ Finset.range M, ∑ m,
       (((W.φA ^ A.j) W.π₀) ^ r * algebraMap O (LetA O n) (y r m)) • β m := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hSdef, map_sum]
+
+    rw [hSdef, map_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [φpow_smul, map_pow, Formalism.MainNotions.LiftingTheory.vecB, map_sum, Finset.smul_sum]
+
+    rw [φpow_smul, map_pow, Formalism.MainNotions.LiftingTheory.vecB, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     rw [map_smul, ← algebraMap_smul (LetA O n) (y r m), smul_smul]
   have key : Formalism.MainNotions.ArcLiftingSetup.lA W ^ 0 • (Formalism.MainNotions.ArcLiftingSetup.lA W ^ κ • τ - Formalism.MainNotions.ArcLiftingSetup.lA W ^ σ • ((W.φD T) ^ A.j) S) =
@@ -204,26 +244,14 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-theorem DelF_mul {g h : W.Gam} (hg : g ∈ W.DelF) (hh : h ∈ W.DelF) : g * h ∈ W.DelF := by
-  rw [W.DelF_def] at hg hh ⊢
-  obtain ⟨a, ha, hga⟩ := hg
-  obtain ⟨b, hb, hhb⟩ := hh
-  refine ⟨a * b, Nat.mul_pos ha hb, ?_⟩
-  rw [mul_pow, pow_mul, hga, one_pow, mul_comm a b, pow_mul, hhb, one_pow, one_mul]
-
-theorem DelF_inv {g : W.Gam} (hg : g ∈ W.DelF) : g⁻¹ ∈ W.DelF := by
-  rw [W.DelF_def] at hg ⊢
-  obtain ⟨k, hk, hgk⟩ := hg
-  exact ⟨k, hk, by rw [inv_pow, hgk, inv_one]⟩
-
 theorem sumΔ_inv (T : LocLat G Qp LL O) (x : W.DD T) :
     ∀ δ ∈ W.DelF, W.γD T δ (∑ g ∈ W.DelF, W.γD T g x) = ∑ g ∈ W.DelF, W.γD T g x := by
   intro δ hδ
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp_rw [← W.γD_mul]
-  exact Finset.sum_nbij' (fun g => δ * g) (fun g => δ⁻¹ * g) (fun a ha => DelF_mul W hδ ha)
-    (fun a ha => DelF_mul W (DelF_inv W hδ) ha) (fun a _ => inv_mul_cancel_left δ a)
+  exact Finset.sum_nbij' (fun g => δ * g) (fun g => δ⁻¹ * g) (fun a ha => _root_.Formalism.MainNotions.LiftingTheory.delta_mul_mem W hδ ha)
+    (fun a ha => _root_.Formalism.MainNotions.LiftingTheory.delta_mul_mem W (_root_.Formalism.MainNotions.LiftingTheory.delta_inv_mem_alt W hδ) ha) (fun a _ => inv_mul_cancel_left δ a)
     (fun a _ => mul_inv_cancel_left δ a) (fun a _ => rfl)
 
 theorem uniformizer_isUnit_etale (hw : ∃ w : (LetA O n)ˣ, W.π₀ = (w : LetA O n) * letπ ^ (PD.p - 1)) :
@@ -267,10 +295,6 @@ private theorem gammaD_letE_smul_comm (T : LocLat G Qp LL O) (g : W.Gam) (c : ZM
 theorem γ_letE (T : LocLat G Qp LL O) (c : ZMod n) (x : W.DD T) :
     W.γ T ((letE c : LetA O n) • x) = (letE c : LetA O n) • W.γ T x := by
   exact gammaD_letE_smul_comm W T W.gam c x
-
-theorem γD_letE (T : LocLat G Qp LL O) (g : W.Gam) (c : ZMod n) (x : W.DD T) :
-    W.γD T g ((letE c : LetA O n) • x) = (letE c : LetA O n) • W.γD T g x := by
-  exact gammaD_letE_smul_comm W T g c x
 
 theorem γD_lA (T : LocLat G Qp LL O) (g : W.Gam) (k : ℕ) (x : W.DD T) :
     W.γD T g (lA W ^ k • x) = lA W ^ k • W.γD T g x := by
@@ -368,9 +392,9 @@ theorem lift_avg (hΔu : IsUnit ((W.DelF.card : ℕ) : O)) {Y : LocLat G Qp LL O
     rw [hy, map_smul, sumΔ_inv W Y z δ hδ]
   refine ⟨y, ⟨⟨N_of_Nl W hyNl, hyΔ⟩, hyNl⟩, ?_⟩
   have h1 : ∀ g ∈ W.DelF, W.map π (W.γD Y g z) = t := fun g hg => by rw [W.map_γ, ht, htΔ g hg]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hy, LinearMap.map_smul_of_tower, hs, map_sum, Finset.sum_congr rfl h1, Finset.sum_const,
-    ← Nat.cast_smul_eq_nsmul O, smul_smul, hΔu.val_inv_mul, one_smul]
+
+  rw [hy, LinearMap.map_smul_of_tower, hs, map_sum, Finset.sum_congr rfl h1, Finset.sum_const,
+  ← Nat.cast_smul_eq_nsmul O, smul_smul, hΔu.val_inv_mul, one_smul]
 
 theorem pp_pull [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMap O LL))
     (hone : IsCrys PD W.one.ρ) {T₂ Y : LocLat G Qp LL O} {ι : LatHom T₂.L Y.L}
@@ -484,7 +508,7 @@ theorem cutData_of [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMa
     intro c hc e' z hz
     have hy0N : (letE c : LetA O n) • e ∈ W.Nl W.one c := ⟨e, heN, rfl⟩
     have hy0Δ : ∀ g, W.γD W.one g ((letE c : LetA O n) • e) = (letE c : LetA O n) • e := fun g => by
-      rw [γD_letE, heγ]
+      rw [_root_.Formalism.MainNotions.UnusedSlot80.Split2.gammaD_letE_smul_comm, heγ]
 
     obtain ⟨z₁, hz₁N, hz₁π⟩ := hK c hc _ hy0N (fun δ _ => hy0Δ δ)
     rw [LinearMap.restrictScalars_apply] at hz₁π
@@ -550,7 +574,7 @@ theorem cutData_of [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMa
 
     have hy0N : (letE c : LetA O n) • e ∈ W.Nl W.one c := ⟨e, heN, rfl⟩
     have hy0Δ : ∀ g, W.γD W.one g ((letE c : LetA O n) • e) = (letE c : LetA O n) • e := fun g => by
-      rw [γD_letE, heγ]
+      rw [_root_.Formalism.MainNotions.UnusedSlot80.Split2.gammaD_letE_smul_comm, heγ]
     obtain ⟨x', hx'N, hx'π⟩ := hK c hc _ hy0N (fun δ _ => hy0Δ δ)
     rw [LinearMap.restrictScalars_apply] at hx'π
     set s : W.DD Y := ∑ g ∈ W.DelF, W.γD Y g x' with hs
@@ -568,10 +592,10 @@ theorem cutData_of [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMa
           Formalism.MainNotions.LiftingTheory.lp W rr • ((letE c : LetA O n) • e) := fun g _ => by
         rw [W.map_γ, hx'π, γD_smulA, hy0Δ]
         simp [Formalism.MainNotions.LiftingTheory.lp]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hxdef, LinearMap.map_smul_of_tower, hs, map_sum, Finset.sum_congr rfl h1, Finset.sum_const,
-        ← Nat.cast_smul_eq_nsmul O, smul_smul, show Formalism.MainNotions.LiftingTheory.lp W rr = lA W ^ rr from rfl,
-        Split.lA_pow_smul, smul_smul]
+
+      rw [hxdef, LinearMap.map_smul_of_tower, hs, map_sum, Finset.sum_congr rfl h1, Finset.sum_const,
+      ← Nat.cast_smul_eq_nsmul O, smul_smul, show Formalism.MainNotions.LiftingTheory.lp W rr = lA W ^ rr from rfl,
+      Split.lA_pow_smul, smul_smul]
       congr 1
       have hcu : (((hΔu hCA).unit⁻¹ : Oˣ) : O) * ((W.DelF.card : ℕ) : O) = 1 :=
         (hΔu hCA).val_inv_mul
@@ -726,7 +750,7 @@ theorem cutDataL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm :
     (hH l K 1 LL hG) (hTr l K 1 LL hG) (hJ l K LL) (hF1 l K LL hG hA h5) (hRel l K LL hG hA h5)
     (hArc l K LL hG hA h5).1 (hX l K LL hG hA h5) (hWX l K 1 LL hG)
   have hc := (h9 l K 1 LL hG _ hone.1 hCA.2.1 hCA.2.2).1
-  rw [hc, Formalism.MainNotions.LiftingTheory.frame_finrank_one _ hCA, Nat.div_one, (D.loc l).PD_p K]
+  rw [hc, _root_.Formalism.MainNotions.LiftingTheory.finrank_eq_one_case_A _ hCA, Nat.div_one, (D.loc l).PD_p K]
   exact isUnit_pred l LL
 
 end Formalism.MainNotions.UnusedSlot80.Split2

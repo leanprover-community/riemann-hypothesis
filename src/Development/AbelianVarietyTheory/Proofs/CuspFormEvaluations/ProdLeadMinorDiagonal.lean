@@ -1,6 +1,59 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 
@@ -242,10 +295,7 @@ theorem setBlock_of_not {z : Fin p × Fin p → σ} (x : σ → K)
 omit [DecidableEq σ] in
 theorem eval_bind₁' (y : σ → K) (g : σ → MvPolynomial σ K) (P : MvPolynomial σ K) :
     eval y (bind₁ g P) = eval (fun s => eval y (g s)) P := by
-  induction P using MvPolynomial.induction_on with
-  | C a => simp
-  | add P Q hP hQ => simp [hP, hQ]
-  | mul_X P s hP => simp [hP]
+  exact MvPolynomial.eval₂Hom_bind₁ (RingHom.id K) y g P
 
 theorem biInvariant_eval {z : Fin p × Fin p → σ} (hz : Function.Injective z)
     (P : MvPolynomial σ K)
@@ -262,9 +312,9 @@ theorem biInvariant_eval {z : Fin p × Fin p → σ} (hz : Function.Injective z)
     funext s
     by_cases hs : ∃ w, z w = s
     · obtain ⟨⟨u, v⟩, rfl⟩ := hs
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [setBlock_apply hz, map_add (f := _), eval_X, map_sum, hz.eq_iff, Prod.mk.injEq,
-        apply_ite (eval (setBlock z x M)), map_mul, eval_C, map_zero, rowAdd, of_apply]
+
+      simp only [setBlock_apply hz, map_add (f := _), eval_X, map_sum, hz.eq_iff, Prod.mk.injEq,
+      apply_ite (eval (setBlock z x M)), map_mul, eval_C, map_zero, rowAdd, of_apply]
       by_cases hu : u = b <;> simp [hu]
     · have : ∀ w, s ≠ z w := fun w h => hs ⟨w, h.symm⟩
       simp [setBlock_of_not _ _ hs, this]
@@ -275,10 +325,10 @@ theorem biInvariant_eval {z : Fin p × Fin p → σ} (hz : Function.Injective z)
     funext s
     by_cases hs : ∃ w, z w = s
     · obtain ⟨⟨u, v⟩, rfl⟩ := hs
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [setBlock_apply hz, map_add (f := _), eval_X, map_sum, hz.eq_iff, Prod.mk.injEq,
-        apply_ite (eval (setBlock z x Mᵀ)), map_mul, eval_C, map_zero, rowAdd, of_apply,
-        transpose_apply]
+
+      simp only [setBlock_apply hz, map_add (f := _), eval_X, map_sum, hz.eq_iff, Prod.mk.injEq,
+      apply_ite (eval (setBlock z x Mᵀ)), map_mul, eval_C, map_zero, rowAdd, of_apply,
+      transpose_apply]
       by_cases hu : v = b <;> simp [hu]
     · have : ∀ w, s ≠ z w := fun w h => hs ⟨w, h.symm⟩
       simp [setBlock_of_not _ _ hs, this]
@@ -294,7 +344,7 @@ theorem eval_setBlock_diagonal {z : Fin p × Fin p → σ} (hz : Function.Inject
     · obtain ⟨⟨u, v⟩, rfl⟩ := hs
       simp only [w, setBlock_apply hz]
       change diagonal d u v = (1 : Matrix (Fin p) (Fin p) K) u v * d u
-      by_cases h : u = v <;> simp [diagonal_apply, Matrix.one_apply, h]
+      by_cases h : u = v <;> simp [Matrix.one_apply, h]
     · simp [w, setBlock_of_not _ _ hs]
   rw [eval_eq, eval_eq, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm => ?_

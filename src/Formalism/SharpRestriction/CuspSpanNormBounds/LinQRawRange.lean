@@ -1,6 +1,49 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -27,9 +70,7 @@ namespace HermSp
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V)
 
 lemma h_zero_left (y : V) : H.h 0 y = 0 := by
-  have h := H.h_add_left 0 0 y
-  rw [add_zero] at h
-  linear_combination -h
+  exact add_left_cancel (show H.h 0 y + H.h 0 y = H.h 0 y + 0 by simpa using (H.h_add_left 0 0 y).symm)
 
 def perp (S : Submodule E V) : Submodule E V where
   carrier := {v | ∀ x ∈ S, H.h v x = 0}
@@ -193,15 +234,13 @@ lemma linQRaw_range {m : ℕ} (ZZ : M.Mat m) (row : Fin m → M.R) :
     LinearMap.range ZZ.Z.mulVecLin ≤ LinearMap.ker (M.linQRaw ZZ row) := by
   rintro _ ⟨w, rfl⟩
   rw [LinearMap.mem_ker]
-  have hinv : (ZZ.Z.map M.R.subtype)⁻¹ * ZZ.Z.map M.R.subtype = 1 :=
-    Matrix.nonsing_inv_mul _ ZZ.unit
   have hv : (fun i => ((ZZ.Z.mulVecLin w i : M.R) : E)) =
-      (ZZ.Z.map M.R.subtype).mulVec (fun i => (w i : E)) := by
-    funext i
-    exact RingHom.map_mulVec M.R.subtype ZZ.Z w i
+      (ZZ.Z.map M.R.subtype).mulVec (fun i => (w i : E)) :=
+    funext fun i => RingHom.map_mulVec M.R.subtype ZZ.Z w i
   have key : (ZZ.Z.map M.R.subtype)⁻¹.mulVec (fun i => ((ZZ.Z.mulVecLin w i : M.R) : E)) =
       fun i => (w i : E) := by
-    rw [hv, Matrix.mulVec_mulVec, hinv, Matrix.one_mulVec]
+    rw [hv, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul (ZZ.Z.map M.R.subtype) ZZ.unit,
+      Matrix.one_mulVec]
   simp only [linQRaw, LinearMap.coe_comp, Function.comp_apply,
     LinearMap.coe_restrictScalars, Matrix.mulVecLin_apply, LinearMap.proj_apply]
   change Submodule.mkQ M.Rsub _ = 0

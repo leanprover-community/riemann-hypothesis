@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.ChainTwMain
+public import Formalism.LocalToGlobal.Columns.ChainTwOk
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 
 @[expose] public section
 

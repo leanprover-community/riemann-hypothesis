@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.Reduction
+public import GroundTheory.AutomorphicForms.ReductionIwasawa
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

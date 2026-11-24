@@ -2,7 +2,51 @@ module
 
 public import Formalism.FilteredPoleLength.ReducedBasisBounds.BetaSesquilinearity
 public import Formalism.LogFactorialIndices.LogProductFormula
-public import Formalism.LogFactorialIndices.SignedSubspaceIndex.SubspaceLatticeIndexSigned
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -88,7 +132,7 @@ theorem core [Fintype ι] [DecidableEq ι] (a b : ι → V) (ha : LinearIndepend
   · rw [← hM]
     exact (LinearEquiv.isUnit_det f bX bY).ne_zero
   · intro x y hx hy hxy
-    have h := Formalism.LatticeIndexTer.idxDet O K _ _ ι bX bY f x y hx hy (by rw [hM]; exact hxy)
+    have h := _root_.Formalism.LatticeIndexTer.lattice_index_eq_det_valuation O K _ _ ι bX bY f x y hx hy (by rw [hM]; exact hxy)
     let s : Submodule.span K (Set.range b) →ₗ[O] V :=
       (Submodule.span K (Set.range b)).subtype.restrictScalars O
     have hs : Function.Injective s := Subtype.val_injective
@@ -124,7 +168,6 @@ theorem exists_indep [FiniteDimensional K V] (A : Submodule O V) (hA : A.FG) (U 
   have hli : LinearIndependent K e := by
     first
     | exact (LinearIndependent.iff_fractionRing O K).1 hliO
-    | exact LinearIndependent.iff_fractionRing.1 hliO
   have hAe : A = Submodule.span O (Set.range e) := by
     conv_lhs => rw [← Submodule.map_subtype_top A]
     rw [← bA.span_eq, Submodule.map_span, ← Set.range_comp] <;> rfl
@@ -141,8 +184,6 @@ theorem exists_indep [FiniteDimensional K V] (A : Submodule O V) (hA : A.FG) (U 
   have hr : Set.range (e ∘ σ.symm) = Set.range e := by
     first
     | exact EquivLike.range_comp e σ.symm
-    | exact Equiv.range_comp e σ.symm
-    | rw [Set.range_comp, σ.symm.range_eq_univ, Set.image_univ]
   refine ⟨e ∘ σ.symm, hli.comp _ σ.symm.injective, ?_, ?_⟩
   · rw [hr]
     exact hAe
@@ -168,8 +209,6 @@ theorem indep_baseChange {K K' V V₁ ι : Type} [Field K] [Field K'] [Algebra K
   have hs : LinearIndepOn K id (Set.range a) := by
     first
     | exact (linearIndepOn_id_range_iff ha.injective).2 ha
-    | exact ha.to_subtype_range
-    | exact (linearIndependent_subtype_range ha.injective).2 ha
   let B := Module.Basis.extend hs
   let B' := hj.basis B
   have hB' : LinearIndependent K' (fun i : hs.extend (Set.subset_univ _) => j (i : V)) := by
@@ -199,7 +238,6 @@ theorem index_baseChange_lattice : RelIndexSpanImage := by
     intro i
     first
     | exact (Submodule.mem_span_range_iff_exists_fun K).1 (hmem i)
-    | exact Submodule.mem_span_range_iff_exists_fun.1 (hmem i)
   choose c hc using hc0
   let P : Matrix (Fin (Module.finrank K (Submodule.span K (A : Set V))))
       (Fin (Module.finrank K (Submodule.span K (A : Set V)))) K := fun k i => c i k
@@ -243,11 +281,10 @@ theorem index_baseChange_lattice : RelIndexSpanImage := by
     all_goals rfl
   have hP' : ∀ i, j (b i) = ∑ k, (P.map (algebraMap K K')) k i • j (a k) := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hc i, map_sum]
+
+    rw [← hc i, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, Matrix.map_apply, algebraMap_smul]
-    all_goals rfl
   have hdetmap : (P.map (algebraMap K K')).det = algebraMap K K' P.det := by
     rw [RingHom.map_det]
     rfl

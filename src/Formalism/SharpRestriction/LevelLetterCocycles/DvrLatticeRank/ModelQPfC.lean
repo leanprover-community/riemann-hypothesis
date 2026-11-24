@@ -1,6 +1,49 @@
 module
 
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelQPfB
+public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -65,7 +108,7 @@ theorem hlet_of [IsDomain O] (s' : ℕ) (hs : 1 ≤ s') (π' : LetA O n) (w₁ :
       simp only [Pi.mul_apply, hg', letE, Pi.single_eq_same, one_mul]
       rw [π_at s' π' w₁ hπ i, hG']
       linear_combination (PowerSeries.X ^ s' * G') * unit_comp w₁ i
-    · simp [hg', letE, Pi.single_apply, hi]
+    · simp [hg', letE, hi]
   have hcancel : ∀ x y : LetA O n, π' * x = π' * y → x = y := by
     intro x y hxy
     funext i
@@ -81,7 +124,7 @@ theorem hlet_of [IsDomain O] (s' : ℕ) (hs : 1 ≤ s') (π' : LetA O n) (w₁ :
       exact mul_ne_zero hw (pow_ne_zero _ PowerSeries.X_ne_zero)
     exact mul_left_cancel₀ hne hxi
   have hπΔ' : ∀ δ ∈ W.DelF, W.γA δ π' = π' := hπΔ
-  have hm : (letE c : LetA O n) * g ∈ W.AΔ := mul_mem (letE_mem W c) hg
+  have hm : (letE c : LetA O n) * g ∈ W.AΔ := mul_mem (_root_.Formalism.MainNotions.LiftingTheory.idempotent_mem_invariants W c) hg
   have hm' : ∀ δ ∈ W.DelF, W.γA δ ((letE c : LetA O n) * g) = (letE c : LetA O n) * g := hm
   have hg'Δ : g' ∈ W.AΔ := by
     show ∀ δ ∈ W.DelF, W.γA δ g' = g'
@@ -93,7 +136,7 @@ theorem hlet_of [IsDomain O] (s' : ℕ) (hs : 1 ≤ s') (π' : LetA O n) (w₁ :
       _ = (letE c : LetA O n) * g := hm' δ hδ
       _ = π' * g' := hπg'.symm
   refine ⟨g', hg'Δ, ?_⟩
-  have hle : (letE c : LetA O n) * g' = g' := by rw [hg', ← mul_assoc, letE_mul_self']
+  have hle : (letE c : LetA O n) * g' = g' := by rw [hg', ← mul_assoc, _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq]
   rw [hle]
   exact hπu.mul_left_cancel (by rw [hgu, ← hπg', map_mul])
 

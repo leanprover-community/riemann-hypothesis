@@ -1,7 +1,55 @@
 module
 
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsNormalise
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsLocalData
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.LocalDensitySixth
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsOfNormRepCountNeZero
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.InLZeroIff
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLandG
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MemSmulOfMemSmulLocF
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.VdEqZeroOfNotLe
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -61,10 +109,10 @@ theorem vd_le_one_of_basis {h : V →ₗ⋆[K] V →ₗ[K] K} {N : ℕ} (hN : fi
 
 variable [FiniteDimensional K V]
 
-theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
+theorem exists_full_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h)
     (h𝔭 : 𝔭.IsMaximal) {x₀ : V} {n : 𝓞 F} (hx : h x₀ x₀ = κ (ι n)) (hn : n ∉ 𝔭) :
-    ∃ L₀ : Submodule (𝓞 K) V, Submodule.IsLattice K L₀ ∧ Formalism.HermitianLatticesTheory.IsIntegralLat h L₀ ∧
+    ∃ L₀ : Submodule (𝓞 K) V, Submodule.IsFullLattice K L₀ ∧ Formalism.HermitianLatticesTheory.IsIntegralLat h L₀ ∧
       x₀ ∈ L₀ ∧ vd h L₀ 𝔭 ≤ 1 := by
   have hp := h𝔭.isPrime
   have hp0 := ne_bot h𝔭
@@ -84,13 +132,12 @@ theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
     have e : starRingEnd K (h x y) = h y x := by
       first
       | exact hs.eq x y
-      | exact hs x y
     rw [hxy, map_zero] at e
     exact e.symm
 
   have form_smul_smul (h : V →ₗ⋆[K] V →ₗ[K] K) (μ ν : K) (x y : V) :
       h (μ • x) (ν • y) = star μ * ν * h x y := by
-    simp only [LinearMap.map_smulₛₗ₂, LinearMap.smul_apply, map_smul, smul_eq_mul, starRingEnd_apply]
+    simp only [LinearMap.map_smulₛₗ₂, map_smul, smul_eq_mul, starRingEnd_apply]
     ring
 
   have exists_normalise (hF : IsFixF K F) (h𝔭 : 𝔭.IsMaximal) {h : V →ₗ⋆[K] V →ₗ[K] K}
@@ -101,7 +148,6 @@ theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
       have e' : starRingEnd K (h e e) = h e e := by
         first
         | exact hs.eq e e
-        | exact hs e e
       rwa [starRingEnd_apply] at e'
     obtain ⟨μ, -, hμs, a, ha, ha2⟩ := exists_scale_fixed hF h𝔭 hd0 hds
     exact ⟨μ, a, by rw [form_smul_smul, hμs, ha], ha2⟩
@@ -250,7 +296,12 @@ theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
     rw [Finset.prod_eq_zero (Finset.mem_univ i) h0]
     exact zero_mem _
   obtain ⟨e, he⟩ := GramDeterminantPositive.exists_basis_of_ortho h _ hr hof hne
-  refine ⟨spanO e, isLattice_spanO e,
+  have hfull : Submodule.IsFullLattice K (spanO e) :=
+    { toIsLattice := isLattice_spanO e
+      span_eq_top := by
+        change Submodule.span K (Submodule.span (𝓞 K) (Set.range e) : Set V) = ⊤
+        rw [Submodule.span_span_of_tower, e.span_eq] }
+  refine ⟨spanO e, hfull,
     integral_spanO e _ (fun i j hij => by rw [he, he]; exact hof i j hij)
       (fun i => by rw [he]; exact hnf i), ?_,
     vd_le_one_of_basis hr e _ (fun i j hij => by rw [he, he]; exact hof i j hij)
@@ -258,5 +309,12 @@ theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
   rcases hx₀ with rfl | ⟨i, hi⟩
   · exact Submodule.subset_span ⟨0, by rw [he, Fin.cons_zero]⟩
   · exact Submodule.subset_span ⟨i.succ, by rw [he, Fin.cons_succ, hi]⟩
+theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
+    {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h)
+    (h𝔭 : 𝔭.IsMaximal) {x₀ : V} {n : 𝓞 F} (hx : h x₀ x₀ = κ (ι n)) (hn : n ∉ 𝔭) :
+    ∃ L₀ : Submodule (𝓞 K) V, Submodule.IsLattice K L₀ ∧ Formalism.HermitianLatticesTheory.IsIntegralLat h L₀ ∧
+      x₀ ∈ L₀ ∧ vd h L₀ 𝔭 ≤ 1 := by
+  obtain ⟨L, hL, hI, hxL, hv⟩ := exists_full_lattice hK hF hs hd h𝔭 hx hn
+  exact ⟨L, hL.toIsLattice, hI, hxL, hv⟩
 
 end Formalism.HermitianLattices.Ext.L3.Cell

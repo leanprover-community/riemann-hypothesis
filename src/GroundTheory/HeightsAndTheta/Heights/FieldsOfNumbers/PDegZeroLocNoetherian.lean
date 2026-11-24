@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocNoetherian
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocQuot
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.RingTheory.Localization.Submodule
 
 @[expose] public section
 
@@ -72,8 +75,8 @@ theorem DegZeroLocNoetherian.proof (h : DegZeroLocQuot.Statement.{u}) :
     intro b f hf
     conv_lhs => rw [f.as_sum]
     conv_rhs => rw [f.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, Finset.sum_mul]
+
+    rw [map_sum, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun m hm => ?_
     have hw : Finsupp.weight (blockWeight ι) m = b := hf (mem_support_iff.mp hm)
     have hmon : monomial m (AddMonoidAlgebra.coeff f m) = AddMonoidAlgebra.coeff f m • monomial m (1 : F) := by

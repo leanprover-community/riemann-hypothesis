@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.CharacterGerms.FirstStepSecondHalfCondition
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
 
 @[expose] public section

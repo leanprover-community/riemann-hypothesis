@@ -1,16 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweUnram
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaIntegralVacuumIntertwinesSphericalHecke
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelOperatorsAtPrimeOffLevelDatum
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FockVectorsChainIsVacuumOffThetaLevelsStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaIntegrandIntegrable
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrableOnThetaDefinite
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMulRightInvariantHaarAdelicUnitaryGroupHermiti
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaIntegrandIntegrable
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FockVectorsChainIsVacuumOffThetaLevelsStatement
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegrableOnFundamentalDomainMulRight
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelOperatorsAtPrimeOffLevelDatum
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotentsStatement
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaIntegralVacuumIntertwinesSphericalHecke
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultValueLeftContLevel
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicitySpaceEqZeroOfApplyNonzeroTensorZero
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaKORatLeftAndEigenRight
+import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -68,16 +110,16 @@ theorem integral_comb {G H X M ι κ : Type} [Group G] [Group H] [TopologicalSpa
       have : h * (k₁ * α⁻¹) * α = h * k₁ := by group
       simp only [this]
       rw [hFr k₁ hk₁, ← mul_assoc, ← hm1 _ k₂, hfix _ k₂ hk₂]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [← h4, map_sum, hm1]
+
+    simp only [← h4, map_sum, hm1]
     refine ⟨integrable_finsetSum _ fun a ha => (key α _ (e2 a ha)).1, ?_⟩
     rw [integral_finsetSum _ fun a ha => (key α _ (e2 a ha)).1, Finset.sum_congr rfl e1,
       Finset.sum_congr rfl fun a ha => (key α _ (e2 a ha)).2, Finset.sum_const, Finset.sum_const, h1]
   have hi1 : ∀ g, IntegrableOn (fun h => ℓ (om (h, g) (L (F h)))) 𝓕 μ := fun g => by
     simpa only [mul_one] using hint g 1
   calc _ = ∫ h in 𝓕, ∑ d ∈ s, c d * ∑ a ∈ A d, ℓ (om (h, g) (L (F (h * a)))) ∂μ := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_smul, smul_eq_mul]
+
+        simp only [map_sum, map_smul, smul_eq_mul]
     _ = ∫ h in 𝓕, ∑ d ∈ s, c d * ℓ (om (h, g) (∑ a ∈ A' d, om (a, 1) (L (F h)))) ∂μ := by
         rw [integral_finsetSum _ fun d _ => (integrable_finsetSum _ fun a _ => hint g a).const_mul _,
           integral_finsetSum _ fun d _ => (step d).1.const_mul _]
@@ -87,8 +129,8 @@ theorem integral_comb {G H X M ι κ : Type} [Group G] [Group H] [TopologicalSpa
         congr 1
         funext h
         have := congrArg (fun m => ℓ (om (h, g) m)) (hM (F h))
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum (om (h, g)), map_sum ℓ, map_smul, smul_eq_mul, hm2] at this ⊢
+
+        simp only [map_sum (om (h, g)), map_sum ℓ, map_smul, smul_eq_mul, hm2] at this ⊢
         exact this
     _ = _ := by
         rw [integral_finsetSum _ fun d _ => (integrable_finsetSum _ fun a _ => hi1 (g * a)).const_mul _]
@@ -127,7 +169,7 @@ theorem theta_comb {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE
     (fun g y => ?_) (fun d => ?_) (fun w => ?_) g
   · have := (GlobalTheory.thetaKO_rat_left_and_eigen_right ψ S T χS χT om hW _ (hL w).1).1 γ hγ 1 (one_mem _) h g
     rwa [one_mul] at this
-  · exact GlobalTheory.WeilParts.integrableOn_theta_definite D ψ hW.std S T χS χT om hW hpos X L (fun w => (hL w).1)
+  · exact _root_.GlobalTheory.DefiniteQuotient.integrableOn_theta D ψ hW.std S T χS χT om hW hpos X L (fun w => (hL w).1)
       (fun h => F (h * y)) (hc.comp (continuous_mul_const y)) (fun γ hγ h => by rw [mul_assoc, hFl γ hγ]) ν 𝓕 hν h𝓕 g
   · obtain ⟨α, -, R', h1, h2, h3, h4⟩ := ThetaIntHecke.exists_dual_rep S P d
     exact ⟨α, R', h1, h2, h3, fun w => h4 _ (om.comp (MonoidHom.inl _ _)) (L w) (hfS w)⟩
@@ -155,11 +197,11 @@ theorem ext_hkF {V : HSp D} (c : CoefA V) (hc : c.Is) (P : Pl D.host.E) (z : Lis
     c.ext (hkF V P z f) h = ∑ d ∈ z.support, z d • ∑ a ∈ Hk3.rep V P d, c.ext f (h * a) := by
   have e : c.ext (hkF V P z f) h = c.ρ h⁻¹ (∑ d ∈ z.support, z d • ∑ a ∈ Hk3.rep V P d,
     f ((finHom V).rangeRestrict h * (finHom V).rangeRestrict a)) := rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e, map_sum]
+
+  rw [e, map_sum]
   refine Finset.sum_congr rfl fun d _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_smul, map_sum, Finset.sum_congr rfl fun a ha => ext_mul c hc f (rep_mem_GfC V P d a ha) h]
+
+  rw [map_smul, map_sum, Finset.sum_congr rfl fun a ha => ext_mul c hc f (rep_mem_GfC V P d a ha) h]
 
 theorem one_pow_notMem (P : Pl D.host.E) (n : ℕ) : ((1 ^ n : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal := by
   rw [one_pow, Nat.cast_one]
@@ -200,8 +242,8 @@ theorem gaL_hk {G : Type} [Group G] [Fintype G] {V : HSp D} {β : GL (Fin V.rank
     {Φ : GA D V → ℂ} (h : ∀ g0, actG0 V β L g0 (hk V P c Φ) = hk V P c (actG0 V β L g0 Φ)) :
     gaL V β L eG z (hk V P c Φ) = hk V P c (gaL V β L eG z Φ) := by
   unfold gaL
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearMap.sum_apply, LinearMap.sum_apply, map_sum]
+
+  rw [LinearMap.sum_apply, LinearMap.sum_apply, map_sum]
   refine Finset.sum_congr rfl fun g _ => ?_
   rw [LinearMap.smul_apply, LinearMap.smul_apply, map_smul]
   exact congrArg (z g • ·) (h _)

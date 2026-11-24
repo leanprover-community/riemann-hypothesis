@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Places
+public import GroundTheory.GlobalFields.IdeleGroups.StandardOpenEquiv
+import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Galois
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

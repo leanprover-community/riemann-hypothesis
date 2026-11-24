@@ -1,10 +1,12 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.UnitaryConstant
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.LineTransport
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LocalComponentGL
-public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LogarithmEquivalence
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -28,9 +30,9 @@ theorem gram_det_ne_zero {ι : Type} [Fintype ι] [DecidableEq ι] (H : Sesq V) 
     intro j
     have h := congrFun hM j
     simp only [Matrix.vecMul, dotProduct, Matrix.of_apply, Pi.zero_apply] at h
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
-      LinearMap.zero_apply]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+    LinearMap.zero_apply]
     exact h
   have hw0 : (∑ i, v i • e i) ≠ 0 := by
     intro h0
@@ -51,9 +53,9 @@ theorem det_adj (H : Sesq V) (hpos : IsPosDef H) (f f' : V →ₗ[ℂ] V) (h : �
     ext i j
     have h1 := h (e i) (e j)
     rw [hfe f i, hfe f' j] at h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply,
-      smul_eq_mul] at h1
+
+    simp only [map_sum, map_smul, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply,
+    smul_eq_mul] at h1
     simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply, Matrix.map_apply]
     exact h1.trans (Finset.sum_congr rfl fun k _ => mul_comm _ _)
   have hc : ((LinearMap.toMatrix e e f').map (starRingEnd ℂ)).det

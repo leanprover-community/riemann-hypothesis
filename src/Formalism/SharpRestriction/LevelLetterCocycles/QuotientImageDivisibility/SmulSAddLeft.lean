@@ -1,6 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.MvPowerSeries.Inverse
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Order.Archimedean.Defs
 
 @[expose] public section
 
@@ -51,8 +98,6 @@ theorem LB_smul {m : ℤ} {f : ℤ → V} (hf : LB m f) (c : LL) : LB m (c • f
 private theorem exists_nat_gt_int_sub (k m : ℤ) : ∃ N : ℕ, k - m < N := by
   first
   | exact exists_nat_gt (k - m)
-  | exact ⟨(k - m).toNat + 1, by omega⟩
-  | exact ⟨(k - m).toNat + 1, by have := Int.self_le_toNat (k - m); omega⟩
 
 theorem smulS_add {m : ℤ} {f f' : ℤ → V} (hf : LB m f) (hf' : LB m f') (g : PowerSeries LL) :
     smulS g (f + f') = smulS g f + smulS g f' := by
@@ -96,11 +141,8 @@ private theorem smulS_C_eq_smul_of_LB {m : ℤ} {f : ℤ → V} (hf : LB m f) (c
 theorem smulS_one {m : ℤ} {f : ℤ → V} (hf : LB m f) : smulS (1 : PowerSeries LL) f = f := by
   first
   | simpa using smulS_C_eq_smul_of_LB hf (1 : LL)
-  | (have h1 := smulS_C_eq_smul_of_LB hf (1 : LL); rwa [map_one, one_smul] at h1)
 
-theorem smulS_C {m : ℤ} {f : ℤ → V} (hf : LB m f) (c : LL) :
-    smulS (PowerSeries.C c) f = c • f := by
-  exact smulS_C_eq_smul_of_LB hf c
+alias smulS_C := _root_.Formalism.MainNotions.N.Pv.LocalLengthBound.Ser.smulS_C_eq_smul_of_LB
 
 theorem smulS_X_pow {m : ℤ} {f : ℤ → V} (hf : LB m f) (K : ℕ) :
     smulS ((PowerSeries.X : PowerSeries LL) ^ K) f = fun k => f (k - K) := by
@@ -131,11 +173,10 @@ theorem smulS_mul {m : ℤ} {f : ℤ → V} (hf : LB m f) (g h : PowerSeries LL)
           Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
         refine Finset.sum_congr rfl fun i hi => ?_
         have hin : i ≤ n := by
-          simp only [Finset.mem_range, Nat.succ_eq_add_one] at hi
+          simp only [Finset.mem_range] at hi
           omega
         have e : k - (n : ℤ) = k - i - ((n - i : ℕ) : ℤ) := by omega
         rw [e]
-        try rfl
     _ = ∑ i ∈ Finset.range N, ∑ n ∈ Finset.Ico i N,
           (PowerSeries.coeff i g * PowerSeries.coeff (n - i) h) • f (k - i - (n - i : ℕ)) :=
         Finset.sum_comm' fun n i => by
@@ -167,9 +208,6 @@ theorem smulS_inv {m : ℤ} {f : ℤ → V} (hf : LB m f) (u : PowerSeries LL)
   have h1 : u⁻¹ * u = 1 := by
     first
     | exact PowerSeries.inv_mul_cancel u hu
-    | exact PowerSeries.inv_mul_cancel hu
-    | exact PowerSeries.inv_mul_cancel _ hu
-    | (rw [mul_comm]; exact PowerSeries.mul_inv_cancel u hu)
   rw [← smulS_mul hf, h1, smulS_one hf]
 
 def Dg (Fil : ℤ → Submodule LL V) (s : ℤ) (f : ℤ → V) : Prop := ∀ k, f k ∈ Fil (s - k)

@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumAdditive
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumEventual
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterSumTopVanish
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.InterSumEventuallyEqInterNum
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

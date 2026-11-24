@@ -1,8 +1,51 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ManyEdges
+public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
-public import Formalism.SharpRestriction.GrowthBounds.WittFrameLocaliserOrders
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.DiscreteValuationRing
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.GrowthBounds.WittFrameLocaliserOrders
 
 @[expose] public section
 
@@ -41,12 +84,11 @@ theorem colSpan_mul_le (G : Matrix (Fin k) (Fin k) Qq) (M : Matrix (Fin k) (Fin 
 
 theorem colSpan_mul_unit (G : Matrix (Fin k) (Fin k) Qq) (M M' : Matrix (Fin k) (Fin k) W) (h : M * M' = 1) :
     colSpan W (G * M.map (algebraMap W Qq)) = colSpan W G := by
-  apply le_antisymm (colSpan_mul_le G M)
+  refine le_antisymm (colSpan_mul_le G M) ?_
   have h1 : G * M.map (algebraMap W Qq) * M'.map (algebraMap W Qq) = G := by
     rw [Matrix.mul_assoc, ← Matrix.map_mul, h]
     simp
-  calc colSpan W G = colSpan W (G * M.map (algebraMap W Qq) * M'.map (algebraMap W Qq)) := by rw [h1]
-    _ ≤ colSpan W (G * M.map (algebraMap W Qq)) := colSpan_mul_le _ M'
+  simpa [h1] using colSpan_mul_le (G * M.map (algebraMap W Qq)) M'
 
 def dD (Qq : Type) [Field Qq] (p r k : ℕ) : Matrix (Fin k) (Fin k) Qq :=
   Matrix.diagonal fun c => if c.val < r then ((p : Qq))⁻¹ else 1
@@ -189,7 +231,7 @@ theorem isEdge_of_basis [IsDomain W] [IsFractionRing W Qq] (p n' r : ℕ) (hp0 :
         (if c.val < r then Ideal.span {(p : W)} else ⊤ : Submodule W W)) := by
     ext y
     simp only [Submodule.map_equiv_eq_comap_symm, Submodule.mem_comap, Submodule.subtype_apply,
-      Submodule.coe_subtype, LinearEquiv.coe_coe, hcoe, mem_src_iff_lemma_2 p r hp0 B hBu,
+      LinearEquiv.coe_coe, hcoe, mem_src_iff_lemma_2 p r hp0 B hBu,
       Submodule.mem_pi, Set.mem_univ, true_implies]
     constructor
     · intro h c
@@ -307,20 +349,6 @@ theorem cc_p : WittVector.constantCoeff ((p : ℕ) : WF p n') = 0 := by
   rw [map_natCast]
   exact CharP.cast_eq_zero _ p
 
-private theorem dvd_of_cc_lemma_4 (x : WF p n') (hx : WittVector.constantCoeff x = 0) :
-    ∃ w : WF p n', x = (p : WF p n') * w := by
-  by_cases h0 : x = 0
-  · exact ⟨0, by rw [h0, mul_zero]⟩
-  obtain ⟨m, b, hb, hxb⟩ := WittVector.exists_eq_pow_p_mul x h0
-  cases m with
-  | zero =>
-    exfalso
-    rw [pow_zero, one_mul] at hxb
-    rw [hxb, WittVector.constantCoeff_apply] at hx
-    exact hb hx
-  | succ m =>
-    exact ⟨(p : WF p n') ^ m * b, by rw [hxb, pow_succ', mul_assoc]⟩
-
 private theorem cc_zero_lemma_3 (r : ℕ) (g g' : Matrix (Fin k) (Fin k) (WF p n')) (hg' : IsGLW g')
     (hpl : ratPlane p n' r g ≤ ratPlane p n' r g') (c i : Fin k) (hc : c.val < r) (hi : ¬ i.val < r) :
     WittVector.constantCoeff ((g⁻¹ * g') c i) = 0 := by
@@ -342,11 +370,11 @@ private theorem cc_zero_lemma_3 (r : ℕ) (g g' : Matrix (Fin k) (Fin k) (WF p n
       intro hli
       exact hi (hli ▸ hl)
     have h2 := congrArg WittVector.constantCoeff h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Matrix.mul_apply, map_sum] at h2
+
+    rw [Matrix.mul_apply, map_sum] at h2
     simpa [map_mul] using h2
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Matrix.mul_apply, map_sum]
+
+  rw [Matrix.mul_apply, map_sum]
   simp only [map_mul, hrow, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_eq_zero (fun l _ => ?_)
@@ -362,11 +390,11 @@ theorem tgt_le_of_plane (φ : WF p n' ≃+* W) (r : ℕ) (hpQ : (p : Qq) ≠ 0)
   have hZ : ∀ i c : Fin k, ¬ i.val < r → c.val < r →
       ∃ w : W, (Ngi φ g' * Ng φ g) i c = (p : W) * w := by
     intro i c hi hc
-    obtain ⟨w, hw⟩ := dvd_of_cc_lemma_4 _ (cc_zero_lemma_3 r g g' hg' hpl c i hc hi)
+    obtain ⟨w, hw⟩ := _root_.Formalism.MainNotions.G.WittFrameLocaliserOrders.witt_vector_constant_zero_dvd_p _ (cc_zero_lemma_3 r g g' hg' hpl c i hc hi)
     refine ⟨φ w, ?_⟩
     have hZe : (Ngi φ g' * Ng φ g) i c = φ ((g⁻¹ * g') c i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mul_apply, Ngi, Ng, map_sum, map_mul]
+
+      simp only [Matrix.mul_apply, Ngi, Ng, map_sum, map_mul]
       exact Finset.sum_congr rfl (fun j _ => mul_comm _ _)
     rw [hZe, hw, map_mul, map_natCast]
   have hd : ∀ i c : Fin k, ∃ y : W, algebraMap W Qq ((Ngi φ g' * Ng φ g) i c) *
@@ -435,23 +463,23 @@ theorem plane_le_of_tgt [IsDomain W] [IsFractionRing W Qq] (φ : WF p n' ≃+* W
     rw [← h3, mul_assoc, inv_mul_cancel₀ hpQ, mul_one]
   have h4 : algebraMap W Qq (φ (g⁻¹ c j)) = algebraMap W Qq
       (∑ i, φ (g'⁻¹ i j) * (if i.val < r then 1 else (p : W)) * Y c i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h5, map_sum, Finset.sum_mul]
+
+    rw [h5, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     by_cases hi : i.val < r
-    · simp only [hi, if_true, map_mul, map_one, mul_one]
+    · simp only [hi, if_true, map_mul, mul_one]
       rw [mul_assoc, mul_assoc, mul_left_comm ((p : Qq))⁻¹, inv_mul_cancel₀ hpQ, mul_one]
     · simp only [hi, if_false, map_mul, map_natCast, mul_one]
       ring
   have h6 := hinj h4
   have h7 : g⁻¹ c j = ∑ i, g'⁻¹ i j * (if i.val < r then 1 else (p : WF p n')) * φ.symm (Y c i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← φ.symm_apply_apply (g⁻¹ c j), h6, map_sum]
+
+    rw [← φ.symm_apply_apply (g⁻¹ c j), h6, map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     by_cases hi : i.val < r <;> simp [hi]
   simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, ite_apply, Pi.zero_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h7, map_sum]
+
+  rw [h7, map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   by_cases hi : i.val < r
   · rw [if_pos hi, if_pos hi, mul_one, map_mul, mul_comm]
@@ -491,8 +519,8 @@ theorem edgePlane : EdgePlane := by
     have hggi : g * gi = 1 := by
       refine Matrix.ext fun a b => ?_
       apply φ.injective
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [Matrix.mul_apply, map_sum, hg, hgi]
+
+      rw [Matrix.mul_apply, map_sum, hg, hgi]
       simp only [map_mul, RingEquiv.apply_symm_apply]
       have h1 := congrFun (congrFun hUU b) a
       rw [Matrix.mul_apply] at h1

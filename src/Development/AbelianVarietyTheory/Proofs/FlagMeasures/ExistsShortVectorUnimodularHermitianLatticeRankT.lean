@@ -1,9 +1,79 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsGaugeAll
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeSqSubLeSlopeSqSpan
+public import Formalism.HermitianLattices.StatementMass
+public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountStB
+public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidSt
+public import ReciprocityTheory.SemistableReduction.SemiDegSt
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Matrix.Hermitian
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ArakelovDegreeEqDegreeOfFamily
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountSt
+public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountZSt
 public import ReciprocityTheory.SemistableReduction.SemiDegC
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+public import Mathlib.Analysis.SpecialFunctions.Gamma.BohrMollerup
 
 @[expose] public section
 
@@ -14,34 +84,7 @@ namespace GlobalTheory.ShortVec
 
 theorem denseRange_emb {K : Type} [Field K] (σ : K →+* ℂ) (h : ¬ ComplexEmbedding.IsReal σ) :
     DenseRange σ := by
-  obtain ⟨x, hx⟩ : ∃ x, (σ x).im ≠ 0 := by
-    by_contra hcon
-    push Not at hcon
-    apply h
-    show ComplexEmbedding.conjugate σ = σ
-    ext a
-    rw [ComplexEmbedding.conjugate_coe_eq, Complex.conj_eq_iff_im]
-    exact hcon a
-  let T : Subring ℂ := σ.range.topologicalClosure
-  have mem : ∀ y, y ∈ closure (Set.range σ) → y ∈ T := fun y hy => by
-    show y ∈ closure (σ.range : Set ℂ)
-    rw [RingHom.coe_range]
-    exact hy
-  have hR : ∀ r : ℝ, (r : ℂ) ∈ T := fun r => mem _ <|
-    map_mem_closure Complex.continuous_ofReal (Rat.denseRange_cast r)
-      (fun y hy => by
-        obtain ⟨q, rfl⟩ := hy
-        exact ⟨(q : K), by simp⟩)
-  have hz : σ x ∈ T := mem _ (subset_closure ⟨x, rfl⟩)
-  show ∀ w, w ∈ closure (Set.range σ)
-  intro w
-  have hw : w = (w.re : ℂ) + ((w.im / (σ x).im : ℝ) : ℂ) * (σ x - ((σ x).re : ℂ)) := by
-    apply Complex.ext <;> simp [hx]
-  have : w ∈ T := by
-    rw [hw]
-    exact T.add_mem (hR _) (T.mul_mem (hR _) (T.sub_mem hz (hR _)))
-  have h2 : w ∈ closure (σ.range : Set ℂ) := this
-  rwa [RingHom.coe_range] at h2
+  apply GlobalTheory.SlopeExt.denseRange_of_not_isReal <;> assumption
 
 theorem posDef_map {K : Type} [Field K] [StarRing K] {n : ℕ} (σ : K →+* ℂ)
     (hσ : ¬ ComplexEmbedding.IsReal σ) (hs : ∀ a, σ (star a) = starRingEnd ℂ (σ a))
@@ -54,8 +97,8 @@ theorem posDef_map {K : Type} [Field K] [StarRing K] {n : ℕ} (σ : K →+* ℂ
   set f : (Fin n → K) → (Fin n → ℂ) := fun y i => σ (y i) with hf
   have hqv : ∀ y, star (f y) ⬝ᵥ (G.map σ *ᵥ f y) = σ (star y ⬝ᵥ (G *ᵥ y)) := by
     intro y
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [hf, dotProduct, mulVec, map_sum, map_mul, hs]
+
+    simp [hf, dotProduct, mulVec, map_sum, map_mul, hs]
   have hnn : ∀ y : Fin n → K, 0 ≤ star (f y) ⬝ᵥ (G.map σ *ᵥ f y) := by
     intro y
     rw [Complex.le_def]

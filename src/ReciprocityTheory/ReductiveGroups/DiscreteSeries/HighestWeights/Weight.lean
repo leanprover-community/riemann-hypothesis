@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.SingleMulJmComm
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HasDerivAtRealOfComplex
+public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
 public import Formalism.RealPlaceAnalysis.QuotientSettingHolds
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.SingleMulJmComm
 
 @[expose] public section
 

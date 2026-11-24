@@ -1,12 +1,53 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.LUnlinkedComm
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleAppendEquivStatement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivProdIrrTw
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsListPairwiseNotRel
-public import Lean.LibrarySuggestions.Basic
-public import Lean.Elab.Command
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleAppendEquiv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -55,8 +96,8 @@ theorem sum_split2 {p q n : ℕ} (A : Fin p → IrrGL (k := k)) (R : Fin q → I
   simp only [Fin.sum_univ_add, Fin.append_left, Fin.append_right]
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
+
+
 theorem stage2 {p q n rA rR : ℕ} (A : Fin p → IrrGL (k := k)) (R : Fin q → IrrGL (k := k)) (w : Fin n → IrrGL (k := k))
     (e : p + q = n) (hw : ∀ m : Fin (p + q), w (Fin.cast e m) = Fin.append A R m)
     (hA : ∑ a, (A a).1 = rA) (hR : ∑ a, (R a).1 = rR) (hN : ∑ a, (w a).1 = rA + rR) :
@@ -64,19 +105,19 @@ theorem stage2 {p q n rA rR : ℕ} (A : Fin p → IrrGL (k := k)) (R : Fin q →
   subst e
   have hw' : w = Fin.append A R := funext fun m => hw m
   subst hw'
-  exact GlobalTheory.T.product_irreducible_append_equiv k p q rA rR A R hA hR hN
+  exact _root_.GlobalTheory.CompanionTheory.ProdStage.prod₂_prodIrr_append k p q rA rR A R hA hR hN
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
+
+
 theorem head_swap {c rQ rC : ℕ} (Q Q' : Fin 2 → IrrGL (k := k)) (C : Fin c → IrrGL (k := k))
     (hQ : ∑ a, (Q a).1 = rQ) (hQ' : ∑ a, (Q' a).1 = rQ) (hC : ∑ a, (C a).1 = rC)
     (hR : ∑ a, (Fin.append Q C a).1 = rQ + rC) (hR' : ∑ a, (Fin.append Q' C a).1 = rQ + rC)
     (E : Nonempty ((prodIrr Q hQ).Equiv (prodIrr Q' hQ'))) :
     Nonempty ((prodIrr (Fin.append Q C) hR).Equiv (prodIrr (Fin.append Q' C) hR')) := by
   obtain ⟨E⟩ := E
-  obtain ⟨o1⟩ := GlobalTheory.T.product_irreducible_append_equiv k 2 c rQ rC Q C hQ hC hR
-  obtain ⟨o2⟩ := GlobalTheory.T.product_irreducible_append_equiv k 2 c rQ rC Q' C hQ' hC hR'
+  obtain ⟨o1⟩ := _root_.GlobalTheory.CompanionTheory.ProdStage.prod₂_prodIrr_append k 2 c rQ rC Q C hQ hC hR
+  obtain ⟨o2⟩ := _root_.GlobalTheory.CompanionTheory.ProdStage.prod₂_prodIrr_append k 2 c rQ rC Q' C hQ' hC hR'
   exact ⟨o1.symm.trans ((prod₂Equiv E (Representation.Equiv.refl _)).trans o2)⟩
 
 
@@ -135,8 +176,8 @@ theorem split_swap {h j : ℕ} (hj : j + 1 < h) (e : j + (2 + (h - (j + 2))) = h
       rfl
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
+
+
 theorem swap_adj {h N : ℕ} (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N) (j : ℕ) (hj : j + 1 < h) (M : ℕ)
     (hd2 : ∑ a, (![x ⟨j, Nat.lt_of_succ_lt hj⟩, x ⟨j + 1, hj⟩] a).1 = M)
     (hd2' : ∑ a, (![x ⟨j + 1, hj⟩, x ⟨j, Nat.lt_of_succ_lt hj⟩] a).1 = M)
@@ -166,7 +207,7 @@ def Reach {h N : ℕ} (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N) (
   ∀ hd' : ∑ a, (x (σ a)).1 = N, Nonempty ((prodIrr x hd).Equiv (prodIrr (x ∘ σ) hd'))
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem reach_step (hcomm : LUnlinkedComm k) {h N : ℕ} {Δ : Fin h → Segment k} {x : Fin h → IrrGL (k := k)}
     (hd : ∑ a, (x a).1 = N) (hL : ∀ i, IsLSeg (Δ i) (x i).rep) (σ : Equiv.Perm (Fin h)) (hσ : Reach x hd σ)
     (j : ℕ) (hj : j + 1 < h) (hu : ¬ (Δ (σ ⟨j, Nat.lt_of_succ_lt hj⟩)).Linked (Δ (σ ⟨j + 1, hj⟩))) :

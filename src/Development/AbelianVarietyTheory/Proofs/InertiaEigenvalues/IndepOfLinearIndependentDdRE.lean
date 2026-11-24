@@ -1,8 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfForallMemFilV
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndependentOfInvariant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 
 @[expose] public section
 
@@ -45,8 +95,8 @@ private theorem eq_zero_of_sum_smul_invariant_eq_zero_of_card_support_le {G E M 
       obtain ⟨d, hd⟩ : ∃ d : ι → E, ∀ i, d i = σ g (c' i) - c' i := ⟨fun i => σ g (c' i) - c' i, fun _ => rfl⟩
       have h1 : ∑ i, σ g (c' i) • v i = 0 := by
         have hmap : ρ g (∑ i, c' i • v i) = ∑ i, σ g (c' i) • v i := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum]
+
+          rw [map_sum]
           exact Finset.sum_congr rfl fun i _ => by rw [hρ, hv]
         rw [← hmap, hsum', map_zero]
       have hdsum : ∑ i, d i • v i = 0 := by
@@ -188,7 +238,7 @@ theorem indep_of_linearIndependent_DdRE {G : Type} [Group G] {Qp K₀ K : Type} 
     induction y using TensorProduct.induction_on with
     | zero => simp
     | add y₁ y₂ h₁ h₂ => rw [map_add (f := _), map_add (f := _), h₁, h₂]
-    | tmul v f => simp [sm_tmul_tmul, mulVdR]
+    | tmul v f => simp [mulVdR]
   have hleft : ∀ (a : LL) (f : F) (y : V ⊗[Qp] F),
       sm Qp F LL V (a ⊗ₜ[Qp] f) y = a • sm Qp F LL V ((1 : LL) ⊗ₜ[Qp] f) y := by
     intro a f y
@@ -272,8 +322,8 @@ theorem indep_of_linearIndependent_DdRE {G : Type} [Group G] {Qp K₀ K : Type} 
     have hzero : ∑ i, (∑ j, τ (k (i, j)) * l j) • d i = 0 := by
       have h2 : TensorProduct.comm Qp V F (∑ i, (∑ j, τ (k (i, j)) * l j) • d i) = 0 := by
         rw [← hcsum, Fintype.sum_prod_type]
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [hterm, map_sum, Finset.sum_smul]
+
+        simp only [hterm, map_sum, Finset.sum_smul]
       exact (TensorProduct.comm Qp V F).map_eq_zero_iff.mp h2
     have hcoef := Fintype.linearIndependent_iff.mp hind (fun i => ∑ j, τ (k (i, j)) * l j) hzero
     rintro ⟨i, j⟩
@@ -285,13 +335,13 @@ theorem indep_of_linearIndependent_DdRE {G : Type} [Group G] {Qp K₀ K : Type} 
     induction y using TensorProduct.induction_on with
     | zero => simp
     | add x y hx hy => simp only [map_add (f := _), smul_add, hx, hy]
-    | tmul v f' => simp [sm_tmul_tmul, TensorProduct.smul_tmul', smul_eq_mul]
+    | tmul v f' => simp [TensorProduct.smul_tmul', smul_eq_mul]
   have hcomb : ∑ p, b p.1 p.2 • w p = 0 := by
     have h2 := congrArg (TensorProduct.comm Qp V F) hrel
     rw [map_zero] at h2
     rw [← h2, Fintype.sum_prod_type]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [w, map_sum, LinearMap.sum_apply, hL2]
+
+    simp only [w, map_sum, LinearMap.sum_apply, hL2]
   have hb0 := indep_of_invariant_isField hF σ' ρ' hρ' w hv' hind' (fun p => b p.1 p.2) hcomb
   intro i
   have hbij : ∀ j, b i j = 0 := fun j => hb0 (i, j)

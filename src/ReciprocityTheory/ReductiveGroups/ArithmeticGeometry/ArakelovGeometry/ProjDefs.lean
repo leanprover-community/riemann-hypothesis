@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
+public import Mathlib.FieldTheory.Relrank
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

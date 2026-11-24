@@ -1,19 +1,16 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GenericSectionOfAxioms
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtMain
-public import Formalism.LocalToGlobal.ProjectiveLattices.RegularityR1ValuedPoints
-public import Formalism.LocalToGlobal.ProjectiveLattices.HeightF1OfData
-public import Formalism.LocalToGlobal.ProjectiveLattices.AxHLAM
-public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSup
-public import Formalism.LocalToGlobal.ProjectiveLattices.FnTrdegOf
-public import Formalism.LocalToGlobal.ProjectiveLattices.DivFinOfLawA3
-public import Formalism.LocalToGlobal.ProjectiveLattices.LawA13OfContinuous
-public import Formalism.LocalToGlobal.ProjectiveLattices.NrmContPf
-public import Formalism.LocalToGlobal.ProjectiveLattices.KapTrdegPf
-public import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.CmFrameOfEq
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
-public import ReciprocityTheory.SemistableReduction.LatAll
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
+public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
+import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkNum
+import Formalism.SharpRestriction.Divisibility.WeightAlgebra
+import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OnbPerp
 
 @[expose] public section
 

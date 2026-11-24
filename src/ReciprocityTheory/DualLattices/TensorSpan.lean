@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.NNReal.Defs
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.RingTheory.Valuation.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

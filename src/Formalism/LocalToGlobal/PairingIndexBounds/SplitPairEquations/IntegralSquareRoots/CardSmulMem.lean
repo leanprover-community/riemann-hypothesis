@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.ConstCopies
-public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SemiCharImg
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.UnitaryConstant
+public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.MemImgLatIff
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LocalComponentGL
+public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SelfDualCovolume
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
@@ -157,8 +160,8 @@ theorem gauss_sq (hU : UnitaryData H Λ α δ Ae) (hM : Multipliers H Λ δ ℓ 
   have hsum := sum_reps_perm hS ℓ hM.lΛ hinj (phiC H α Ae) hwd
   have hreal : conj (gaussC H α Ae S) = gaussC H α Ae S := by
     unfold gaussC
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_mul, map_inv₀, Complex.conj_ofReal, map_sum, ← hsum]
+
+    rw [map_mul, map_inv₀, Complex.conj_ofReal, map_sum, ← hsum]
     congr 1
     exact Finset.sum_congr rfl fun x hx => (phi_conj hU hM he hα (hS.1 x hx)).symm
   have h8 := unitaryGauss V H Λ α δ Ae hU S hS

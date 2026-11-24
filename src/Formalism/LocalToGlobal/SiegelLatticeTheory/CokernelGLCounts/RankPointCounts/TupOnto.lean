@@ -1,9 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TupLift
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.FrameL
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.HeisOpHolds
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TermDefPf
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.LatSpanLeSpan
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IdentityCellTrace.TraceOneHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SecondDualReduction
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -166,14 +211,14 @@ theorem eich_exists {T : E} (Λ : Submodule (𝓞 E) S.V) (hUn : Formalism.Hermi
   have h3 : ∀ v, N (N (N v)) = 0 := by
     intro v
     apply PI.TermsAtPtFiniteW.HeisW.nil3 <;>
-      first | exact F.fl.e_iso | exact hea | exact hs | assumption
+      first | exact F.fl.e_iso | exact hea
   have hiso : ∀ x y, S.hT (x + N x) (y + N y) = S.hT x y := by
     intro x y
     apply PI.TermsAtPtFiniteW.HeisW.isom_nil <;>
-      first | exact F.fl.e_iso | exact hea | exact hs | assumption
+      first | exact F.fl.e_iso | exact hea | exact hs
   have hker : ∀ i, N (F.fl.e i) = 0 := fun i => by
     apply PI.TermsAtPtFiniteW.HeisW.nil_e <;>
-      first | exact F.fl.e_iso | exact hea | exact hs | assumption
+      first | exact F.fl.e_iso | exact hea
   let n : S.V ≃ₗ[E] S.V := LinearEquiv.ofLinear (LinearMap.id + N) (LinearMap.id - N + N ∘ₗ N)
     (LinearMap.ext fun v => by
       simp only [LinearMap.comp_apply, LinearMap.add_apply, LinearMap.sub_apply, LinearMap.id_apply,
@@ -181,7 +226,7 @@ theorem eich_exists {T : E} (Λ : Submodule (𝓞 E) S.V) (hUn : Formalism.Hermi
       abel)
     (LinearMap.ext fun v => by
       simp only [LinearMap.comp_apply, LinearMap.add_apply, LinearMap.sub_apply, LinearMap.id_apply,
-        map_add, map_sub, h3]
+        map_add, h3]
       abel)
   have hn : ∀ v, n v = v + N v := fun v => rfl
   have hninv : ∀ v, n.symm v = v - N v + N (N v) := fun v => rfl
@@ -257,8 +302,8 @@ theorem split_mem {Λ A L B : Submodule (𝓞 E) S.V} (h : Λ = A ⊔ L ⊔ B) {
 theorem frame_symm {n : ℕ} (φ : S.V ≃ₗ[E] S.V) (e : Fin n → S.V) (M N : Matrix (Fin n) (Fin n) E)
     (hMN : M * N = 1) (hφ : ∀ j, φ (e j) = ∑ c, M c j • e c) (j : Fin n) :
     φ.symm (e j) = ∑ c, N c j • e c := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [LinearEquiv.symm_apply_eq, map_sum]
+
+  rw [LinearEquiv.symm_apply_eq, map_sum]
   simp_rw [map_smul, hφ, Finset.smul_sum, smul_smul]
   rw [Finset.sum_comm]
   simp_rw [← Finset.sum_smul]
@@ -272,8 +317,8 @@ theorem hT_span_span (f : Fin r → S.V) (hff : ∀ a b, S.hT (f a) (f b) = 0) {
     (hx : x ∈ Submodule.span E (Set.range f)) (hy : y ∈ Submodule.span E (Set.range f)) : S.hT x y = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 hx
   obtain ⟨d, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 hy
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, hff]
+
+  simp [map_sum, hff]
 
 variable {Λ : Submodule (𝓞 E) S.V} (aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E)
   (e f : Fin r → S.V) (L : Submodule (𝓞 E) S.V)
@@ -482,8 +527,8 @@ theorem exists_eigenvalueGLOne_eq_cuspidalLabel_gen (hUn : Formalism.HermitianLa
       ∀ x ∈ Submodule.span E (Set.range g), S.hT x z = 0 := by
     intro g hg x hx
     obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 hx
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hg]
+
+    simp [map_sum, hg]
   have ha0 := hzero e he_z a (latSpan_le_spanE aa e ha)
   have hb0 := hzero f (fun i => (hL z hzL i).2) b (latSpan_le_spanE _ f hb)
   rw [map_add (f := _), map_add (f := _), LinearMap.add_apply, LinearMap.add_apply, ha0, hb0] at hσz
@@ -596,11 +641,11 @@ theorem nLamOnto_holds : TupLift.NLamOnto := by
     congr 1
     refine Finset.sum_congr rfl fun c _ => ?_
     rw [hT_aE_left, hy₀z, mul_one, neg_neg]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [hfc, LinearEquiv.mul_apply, heX j, map_sum,
-      (hU (Fin.last _) j.castSucc).1 (Fin.castSucc_lt_last j), zero_smul, add_zero]
-      refine Finset.sum_congr rfl fun c _ => ?_
-      rw [map_smul, hez]
+
+  · rw [hfc, LinearEquiv.mul_apply, heX j, map_sum,
+    (hU (Fin.last _) j.castSucc).1 (Fin.castSucc_lt_last j), zero_smul, add_zero]
+    refine Finset.sum_congr rfl fun c _ => ?_
+    rw [map_smul, hez]
 
 end D7
 

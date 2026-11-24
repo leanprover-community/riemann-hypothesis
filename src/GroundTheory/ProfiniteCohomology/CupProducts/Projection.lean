@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
 public import GroundTheory.ProfiniteCohomology.Shapiro
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 @[expose] public section
 
@@ -29,7 +29,7 @@ theorem latTau (L : PeriodPair) : ∃ (c : ℂ) (τ : ℍ), IsTauOf L c τ := by
   rcases lt_or_gt_of_ne (latTau_im_ne L) with hneg | hpos
   · refine ⟨L.ω₂, ⟨-(L.ω₁ / L.ω₂), by rw [Complex.neg_im]; linarith⟩, h2, fun x => ?_⟩
     rw [PeriodPair.mem_lattice]
-    try simp only [UpperHalfPlane.coe_mk]
+    try simp only
     constructor
     · rintro ⟨m, n, rfl⟩
       exact ⟨-m, n, by push_cast; field_simp; try ring⟩
@@ -37,7 +37,7 @@ theorem latTau (L : PeriodPair) : ∃ (c : ℂ) (τ : ℍ), IsTauOf L c τ := by
       exact ⟨-u, v, by push_cast; field_simp; try ring⟩
   · refine ⟨L.ω₂, ⟨L.ω₁ / L.ω₂, hpos⟩, h2, fun x => ?_⟩
     rw [PeriodPair.mem_lattice]
-    try simp only [UpperHalfPlane.coe_mk]
+    try simp only
     constructor
     · rintro ⟨m, n, rfl⟩
       exact ⟨m, n, by field_simp; try ring⟩

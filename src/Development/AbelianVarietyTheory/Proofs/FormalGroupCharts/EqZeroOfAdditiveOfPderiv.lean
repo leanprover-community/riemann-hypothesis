@@ -1,11 +1,52 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.WickOperatorVanishing
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GEWick
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FormalLogEqSumOfMultiplicativeParam
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 @[expose] public section
 
@@ -26,10 +67,6 @@ theorem gp_cons {m n : ℕ} {x : Pt k n d} {y : Fin m → Pt k n d} (hx : GP x) 
 theorem gp_pair {n : ℕ} {x y : Pt k n d} (hx : GP x) (hy : GP y) :
     ∀ j, GP ((![x, y] : Fin 2 → Pt k n d) j) := by
   intro j; fin_cases j; exacts [hx, hy]
-
-theorem gp_single {n : ℕ} {x : Pt k n d} (hx : GP x) :
-    ∀ j, GP ((![x] : Fin 1 → Pt k n d) j) := by
-  intro j; fin_cases j; exact hx
 
 theorem ev_pt {n : ℕ} (f : PS k n d) : ev (fun j => pt k d j) f = f :=
   congrFun subst_self f
@@ -69,13 +106,13 @@ theorem ev_addOf {m n : ℕ} {V : Fin m → Pt k n d} (hV : ∀ j, GP (V j)) (F 
 theorem zero_addOf {n : ℕ} (G : FGLaw k d) {x : Pt k n d} (hx : GP x) : addOf G.F 0 x = x := by
   funext i
   have h := congrArg (ev ![x]) (G.unit i)
-  rw [gt_ev_ev _ _ (gp_single hx) (gp_pair gp_zero₂ (gp_pt 0)),
-    gt_ev_X _ (gp_single hx)] at h
+  rw [gt_ev_ev _ _ (_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.single_point_zero_constant hx) (gp_pair gp_zero₂ (gp_pt 0)),
+    gt_ev_X _ (_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.single_point_zero_constant hx)] at h
   refine Eq.trans ?_ h
   unfold addOf
   congr 1
   funext j i
-  fin_cases j <;> simp [ev_pt_apply (gp_single hx), gt_ev_zero _ (gp_single hx)]
+  fin_cases j <;> simp [ev_pt_apply (_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.single_point_zero_constant hx), gt_ev_zero _ (_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.single_point_zero_constant hx)]
 
 theorem addOf_zero {n : ℕ} (G : FGLaw k d) {x : Pt k n d} (hx : GP x) : addOf G.F x 0 = x := by
   funext i
@@ -180,8 +217,8 @@ theorem eq_zero_of_additive_of_pderiv (k : Type) [CommRing k] [Algebra ℚ k] (d
     rw [e0, hlin'] at h2
     have hs : ∀ f : Fin d → PS k (q + 2) d, ev V (∑ l, f l) = ∑ l, ev V (f l) := fun f => by
       unfold ev
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← coe_substAlgHom (gt_hasSubst V hV), map_sum]
+
+      rw [← coe_substAlgHom (gt_hasSubst V hV), map_sum]
     simp only [hs, gt_ev_mul V hV, eS] at h2
     exact h2
   have hD0 : (fun l => pderiv (R := k) ((0 : Fin (q + 1)), l) g) = 0 := by

@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSubmodule
+public import Mathlib.AlgebraicGeometry.Morphisms.Proper
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.RingTheory.ReesAlgebra
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.PullbackGamma
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

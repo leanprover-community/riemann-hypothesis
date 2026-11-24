@@ -1,6 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -112,14 +159,12 @@ theorem commute_colOp_colOp [Fintype I] [Fintype I'] (z : I × J → σ) (y : I'
 theorem commute_rowOp_rowOp [Fintype J] [Fintype J'] (z : I × J → σ) (y : I' × J' → σ)
     (hzy : ∀ u w, z u ≠ y w) (a b : I) (c d : I') :
     Commute (rowOp K z a b) (rowOp K y c d) :=
-  Commute.sum_left _ _ _ fun _ _ => Commute.sum_right _ _ _ fun _ _ =>
-    commute_polar (hzy _ _) (hzy _ _).symm
+  commute_colOp_colOp (z ∘ Prod.swap) (y ∘ Prod.swap) (fun _ _ => hzy _ _) a b c d
 
 theorem commute_rowOp_colOp [Fintype J] [Fintype I'] (z : I × J → σ) (y : I' × J' → σ)
     (hzy : ∀ u w, z u ≠ y w) (a b : I) (k l : J') :
     Commute (rowOp K z a b) (colOp K y k l) :=
-  Commute.sum_left _ _ _ fun _ _ => Commute.sum_right _ _ _ fun _ _ =>
-    commute_polar (hzy _ _) (hzy _ _).symm
+  commute_colOp_colOp (z ∘ Prod.swap) y (fun _ _ => hzy _ _) a b k l
 
 theorem commute_rowOp_colOp_self [Fintype I] [Fintype J] (z : I × J → σ)
     (hz : Function.Injective z) (a b : I) (k l : J) :
@@ -181,8 +226,8 @@ theorem cross_term {K σ : Type*} [CommRing K] {p q n : ℕ} (z : Fin p × Fin n
       ∑ a, ∑ b, (∑ k, X (z (a, k)) * X (y (b, k))) *
         ∑ l, pderiv (z (a, l)) (pderiv (y (b, l)) P) := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, pderiv_X_mul', if_neg (hzy _ _), add_zero, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [map_sum, pderiv_X_mul', if_neg (hzy _ _), add_zero, Finset.mul_sum, Finset.sum_mul]
   calc _ = ∑ k, ∑ a, ∑ b, ∑ l, X (z (a, k)) * (X (y (b, k)) *
             pderiv (z (a, l)) (pderiv (y (b, l)) P)) := by
         refine Finset.sum_congr rfl fun k _ => ?_
@@ -220,10 +265,10 @@ theorem capelli_casimir {K σ : Type*} [CommRing K] [DecidableEq σ] {p n : ℕ}
     pderiv (z (a, l)) (pderiv (z (b, k)) P)) with hS
   have h₁ : (∑ k, ∑ l, ∑ a, X (z (a, k)) * pderiv (z (a, l))
       (∑ b, X (z (b, l)) * pderiv (z (b, k)) P)) = S + (n : K) • E := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, pderiv_X_mul', hz.eq_iff, Prod.mk.injEq, and_true,
-      Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, mul_add,
-      Finset.mul_sum]
+
+    simp only [map_sum, pderiv_X_mul', hz.eq_iff, Prod.mk.injEq, and_true,
+    Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, mul_add,
+    Finset.mul_sum]
     refine congrArg₂ (· + ·) ?_ ?_
     · calc _ = ∑ k, ∑ a, ∑ b, ∑ l, X (z (a, k)) * (X (z (b, l)) *
             pderiv (z (a, l)) (pderiv (z (b, k)) P)) := by
@@ -237,10 +282,10 @@ theorem capelli_casimir {K σ : Type*} [CommRing K] [DecidableEq σ] {p n : ℕ}
       simp [Nat.cast_smul_eq_nsmul]
   have h₂ : (∑ a, ∑ b, ∑ k, X (z (a, k)) * pderiv (z (b, k))
       (∑ l, X (z (b, l)) * pderiv (z (a, l)) P)) = S + (p : K) • E := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, pderiv_X_mul', hz.eq_iff, Prod.mk.injEq, true_and,
-      Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, mul_add,
-      Finset.mul_sum]
+
+    simp only [map_sum, pderiv_X_mul', hz.eq_iff, Prod.mk.injEq, true_and,
+    Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, mul_add,
+    Finset.mul_sum]
     refine congrArg₂ (· + ·) ?_ ?_
     · rw [hS]
       refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ =>

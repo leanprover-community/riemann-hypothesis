@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.QCoreSt
+public import Mathlib.RingTheory.RamificationInertia.Inertia
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

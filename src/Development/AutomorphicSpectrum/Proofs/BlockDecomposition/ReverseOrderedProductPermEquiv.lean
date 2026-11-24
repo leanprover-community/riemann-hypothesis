@@ -2,8 +2,51 @@ module
 
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.LUnlinkedComm
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContragredientProductIrreducibleStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivProdIrrTw
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleAppendEquiv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -148,7 +191,7 @@ theorem prodIrr_congr {h N : ℕ} {x x' : Fin h → IrrGL (k := k)} (e : x = x')
   exact ⟨.refl _⟩
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem prodIrr_append_middle {p m m' s r q u : ℕ} (P : Fin p → IrrGL (k := k)) (Q : Fin m → IrrGL (k := k))
     (Q' : Fin m' → IrrGL (k := k)) (S : Fin s → IrrGL (k := k)) (hr : ∑ i, (P i).1 = r) (hq : ∑ i, (Q i).1 = q)
     (hq' : ∑ i, (Q' i).1 = q) (hu : ∑ i, (S i).1 = u)
@@ -169,7 +212,7 @@ theorem prodIrr_append_middle {p m m' s r q u : ℕ} (P : Fin p → IrrGL (k := 
   exact ⟨E₁.symm.trans ((prod₂Equiv (.refl _) (F₁.symm.trans ((prod₂Equiv G (.refl _)).trans F₂))).trans E₂)⟩
 
 
-set_option maxHeartbeats 400000 in
+
 theorem prodIrr_swap_adj {h N : ℕ} (y : Fin h → IrrGL (k := k)) (i j : Fin h) (hij : (j : ℕ) = i + 1)
     (C : ∀ (q : ℕ) (hq : ∑ t, (![y i, y j] t).1 = q) (hq' : ∑ t, (![y j, y i] t).1 = q),
       Nonempty ((prodIrr ![y i, y j] hq).Equiv (prodIrr ![y j, y i] hq')))
@@ -188,7 +231,7 @@ theorem prodIrr_swap_adj {h N : ℕ} (y : Fin h → IrrGL (k := k)) (i j : Fin h
   obtain ⟨u, hu⟩ := hu0
   have hq' : ∑ t, (![y j, y i] t).1 = q := by
     rw [← hq]
-    simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] <;> omega
+    simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one] <;> omega
   have h₁ : ∑ a, (Fin.append P (Fin.append ![y i, y j] S) a).1 = r + (q + u) := by
     rw [Fin.sum_univ_add, Fin.sum_univ_add]; simp only [Fin.append_left, Fin.append_right, hr, hq, hu]
   have h₂ : ∑ a, (Fin.append P (Fin.append ![y j, y i] S) a).1 = r + (q + u) := by

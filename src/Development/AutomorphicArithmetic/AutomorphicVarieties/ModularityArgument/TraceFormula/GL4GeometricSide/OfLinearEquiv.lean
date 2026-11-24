@@ -1,6 +1,54 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4GeometricSide.InnerEq
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.ComplexMatrixCalculus.HaarGramPositivity.IntegralMulRightHaar
+import GroundTheory.AutomorphicForms.RealIwasawaIntegration
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.InnerProductSpace.Trace
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+public import Mathlib.LinearAlgebra.PID
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Compactness.Paracompact
 
 @[expose] public section
 
@@ -23,9 +71,9 @@ private theorem wc_of_basis {W ι : Type} [AddCommGroup W] [Module ℂ W] [Finty
   intro φ
   have e : (fun g => φ (f g)) = fun g => ∑ i, b.repr (f g) i * φ (b i) := by
     funext g
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [← b.sum_repr (f g), map_sum]
-    simp only [map_smul, smul_eq_mul, Module.Basis.coord_apply]
+
+    conv_lhs => rw [← b.sum_repr (f g), map_sum]
+    simp only [map_smul, smul_eq_mul]
   rw [e]
   exact continuous_finsetSum _ fun i _ => (h i).mul continuous_const
 
@@ -44,13 +92,13 @@ private theorem exists_wint [CompactSpace G] [MeasurableSpace G] [BorelSpace G] 
   refine ⟨∑ i, (∫ g, b.coord i (f g) ∂ν) • b i, fun φ => ?_⟩
   have e : ∀ g, φ (f g) = ∑ i, b.coord i (f g) * φ (b i) := by
     intro g
-    set_option synthInstance.maxHeartbeats 100000 in
-      conv_lhs => rw [← b.sum_repr (f g), map_sum]
+
+    conv_lhs => rw [← b.sum_repr (f g), map_sum]
     simp only [map_smul, smul_eq_mul, Module.Basis.coord_apply]
   simp_rw [e]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [integral_finsetSum _ fun i _ =>
-    ((hf (b.coord i)).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)).mul_const _, map_sum]
+
+  rw [integral_finsetSum _ fun i _ =>
+  ((hf (b.coord i)).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)).mul_const _, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [integral_mul_const, map_smul, smul_eq_mul]
 
@@ -167,8 +215,8 @@ private theorem wc_flip [FiniteDimensional ℂ V] (σ : Un n →* (V →ₗ[ℂ]
     rw [OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.repr_apply_apply]
     show ⟪b i, σ g (t (ξ ∘L E.ρ g))⟫_ℂ = _
     conv_lhs => rw [← b.sum_repr' (t (ξ ∘L E.ρ g))]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, inner_sum, inner_smul_right]
+
+    simp only [map_sum, map_smul, inner_sum, inner_smul_right]
   simp_rw [e]
   exact continuous_finsetSum _ fun j _ => (continuous_const.inner hv).mul (hσ _ _)
 

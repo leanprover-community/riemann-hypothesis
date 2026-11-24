@@ -1,7 +1,49 @@
 module
 
-public import Mathlib
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.HodgeWedgeFields.H1CommutesBaseChange
+public import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Std.Tactic.BVDecide.Normalize.BitVec
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -47,7 +89,7 @@ theorem sum_pairs {M : Type} [AddCommGroup M] (n : ℕ) (T : Fin (n + 3) → Fin
         else (p.1.succ, p.2.castSucc)) ?_ ?_ ?_ ?_
     · rintro ⟨i, j⟩ -
       simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      split_ifs with h <;> simp [Fin.ext_iff, Fin.le_def, Fin.lt_def] at h ⊢ <;> omega
+      split_ifs with h <;> simp [Fin.ext_iff, Fin.le_def] at h ⊢ <;> omega
     · rintro ⟨i, j⟩ - ⟨i', j'⟩ - h
       simp only at h
       split_ifs at h with h₁ h₂ h₂ <;>
@@ -133,16 +175,16 @@ theorem homotopy (n : ℕ) (f : Cn (Cyl G) (n + 1)) :
     ((-1 : R) ^ ((i : ℕ) + (j : ℕ))) • P G (SimplexCategory.δ i ≫ SimplexCategory.σ j)
       ((lab (n + 3) (j + 1)).comp (Fin.succAboveOrderEmb i).toOrderHom) f
   have e1 : dn G n (hop G n f) = ∑ i, ∑ j, S i j := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dn, hop, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, cof_P, Finset.smul_sum,
-      smul_smul, S, pow_add]
+
+    simp only [dn, hop, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, cof_P, Finset.smul_sum,
+    smul_smul, S, pow_add]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ ?_
-    first | rfl | exact congrArg₂ (· • ·) (mul_comm _ _) rfl
+    first | exact congrArg₂ (· • ·) (mul_comm _ _) rfl
   have e2 : hop G (n + 1) (dn (Cyl G) (n + 1) f) = ∑ j, ∑ i, T i j := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dn, hop, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, P_cof, Finset.smul_sum,
-      smul_smul, T, pow_add]
+
+    simp only [dn, hop, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, P_cof, Finset.smul_sum,
+    smul_smul, T, pow_add]
     rw [Finset.sum_comm]
   have h1 : ∀ i j, i ≤ j.castSucc → T i.castSucc j.succ = - S i j := by
     intro i j h
@@ -163,7 +205,7 @@ theorem homotopy (n : ℕ) (f : Cn (Cyl G) (n + 1)) :
       refine lab_comp _ _ _ fun x ↦ ?_
       have h' : j.val < i.val := h
       rw [val_succAbove]
-      simp only [Fin.val_castSucc, Fin.val_succ]
+      simp only [Fin.val_succ]
       split_ifs <;> omega
     have s : ((-1 : R) ^ ((i : ℕ) + 1 + (j : ℕ))) = -(-1) ^ ((i : ℕ) + (j : ℕ)) := by
       rw [show (i : ℕ) + 1 + (j : ℕ) = (i : ℕ) + (j : ℕ) + 1 by omega, pow_succ]; simp

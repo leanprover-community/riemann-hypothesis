@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.AlgebraicGeometry.IdealSheaf.Functorial
+public import Mathlib.AlgebraicGeometry.Morphisms.Separated
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

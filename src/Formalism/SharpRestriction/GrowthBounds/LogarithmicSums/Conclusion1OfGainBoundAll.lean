@@ -1,6 +1,41 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -20,31 +55,14 @@ theorem sc_one_le_b (s : Scale) : 1 ≤ s.b := by
   exact Real.one_le_exp (Real.rpow_nonneg (sc_x_pos s).le _)
 
 theorem sc_one_lt_a (s : Scale) : 1 < s.a := by
-  unfold Scale.a
-  exact one_lt_mul_of_lt_of_le s.one_lt_alt (sc_one_le_b s)
+  simpa [Scale.a] using one_lt_mul_of_lt_of_le s.one_lt_alt (sc_one_le_b s)
 
 theorem sc_b'_nonneg (s : Scale) : 0 ≤ s.b' := by
   unfold Scale.b'
   exact div_nonneg (by linarith [sc_one_lt_a s]) (Real.exp_pos _).le
 
-theorem sc_w''_nonneg (s : Scale) (n : ℕ) : 0 ≤ s.w'' n := by
-  unfold Scale.w''
-  exact div_nonneg (sc_b'_nonneg s) (mul_nonneg (sc_x_pos s).le (Nat.cast_nonneg n))
-
 theorem sc_delta1_pos (s : Scale) : 0 < s.delta1 := by
-  unfold Scale.delta1
-  exact Real.rpow_pos_of_pos (sc_x_pos s) _
-
-theorem X'_le_X'' (s : Scale) (n : ℕ) (hn : 1 ≤ n) : s.X' ≤ s.X'' n := by
-  have hX' : 0 < s.X' := Real.exp_pos _
-  have ha : 0 < s.a := by linarith [sc_one_lt_a s]
-  have hx := sc_x_pos s
-  have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
-  have h : s.X'' n = s.x * n * s.X' := by
-    unfold Scale.X'' Scale.w'' Scale.b'
-    field_simp
-  rw [h]
-  exact le_mul_of_one_le_left hX'.le (one_le_mul_of_one_le_of_one_le s.one_lt_alt.le hn')
+  simpa [Scale.delta1] using Real.rpow_pos_of_pos (sc_x_pos s) _
 
 theorem cand_of_VV_ne (X : Inst D L) (K : Consts) (a b : HH D → ℤ) (p : ℕ) (h : VV X K a b p ≠ ∅) :
     Cand D L K p := by
@@ -139,13 +157,8 @@ def StarAll (X : Inst D L) (K : Consts) (C bo : ℝ) : Prop :=
 
 
 open Classical in
-def candF (D : D7) (L : SizeData₂ D) (K : Consts) : Finset ℕ :=
-  (Finset.range ⌈L.sc.X'⌉₊).filter (fun p => Cand D L K p)
-
-
-open Classical in
 def ZZ (X : Inst D L) (K : Consts) (a b : HH D → ℤ) : ℝ :=
-  ∑ p ∈ candF D L K, Real.log p / p *
+  ∑ p ∈ _root_.Formalism.MainNotions.AuxBlock8.cands D L K, Real.log p / p *
     ((if L.sc.x ^ (-L.sc.eps) < Sig X K a b p then 1 else 0) + Sig X K a b p)
 
 def MeanEx (X : Inst D L) (K : Consts) : Prop :=

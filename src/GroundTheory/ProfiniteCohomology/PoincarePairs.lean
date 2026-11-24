@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.Devissage
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.MackeyCup
+import GroundTheory.ProfiniteCohomology.CupProducts.Projection
+import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 @[expose] public section
 

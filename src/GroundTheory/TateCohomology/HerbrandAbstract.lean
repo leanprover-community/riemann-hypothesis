@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Exact.Basic
+public import Mathlib.GroupTheory.Index
+import Mathlib.Algebra.Field.Rat
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 @[expose] public section
 

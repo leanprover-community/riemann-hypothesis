@@ -1,9 +1,61 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.EpsilonEtaMatrices.EpsilonEtaTensorDual
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DegreeCountCohomology.FinAm
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LemmaB
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CardEqPowLength
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LemmaB
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.MapEta
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.ConjugateSelfDual.Statement
+import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 
@@ -179,8 +231,8 @@ private theorem fixBd_ker {A : Type} [CommRing A] (c : A) (g : ℕ) (y : DD A g)
     ext <;> simp [smul_eq_mul, hza, hzep, hzep', hzeta]
   · rintro ⟨z, rfl⟩
     rw [fixBd_smul]
-    ext <;> simp [DD.map_a, DD.map_ep, DD.map_ep', DD.map_eta, z1, z2, z3, z4, Ideal.Quotient.mkₐ_eq_mk,
-      Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton, smul_eq_mul]
+    ext <;> simp [DD.map_a, DD.map_ep, DD.map_ep', DD.map_eta, Ideal.Quotient.mkₐ_eq_mk,
+      smul_eq_mul]
 
 theorem UpperTheory.V.Pa.fixBd :
     ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (n : ℕ) (x : NP F n) (k : Kap x) (V : Submodule x.A (Matrix (Fin n) (Fin n) (DD x.A k.g))) (b₁ b₂ b₃ b₄ c₁ c₂ c₃ c₄ : Bool) (S : Type) (e : S → x.A) (P Q : S → Matrix (Fin n) (Fin n) (DD x.A k.g)) (tr : Bool), V = blkMat n x.a (ddPart x.A x.A k.g b₁ b₂ b₃ b₄) (ddPart x.A x.A k.g c₁ c₂ c₃ c₄) → ∃ C : ℕ, ∀ m, {Y : Matrix (Fin n) (Fin n) (DD (x.Am m) k.g) | Y ∈ blkMat n x.a (ddPart x.A (x.Am m) k.g b₁ b₂ b₃ b₄) (ddPart x.A (x.Am m) k.g c₁ c₂ c₃ c₄) ∧ (tr = true → Yᵀ = -Y) ∧ ∀ s, e s • ((P s).map (fun y => ⟨algebraMap x.A (x.Am m) y.a, fun j => algebraMap x.A (x.Am m) (y.ep j), fun j => algebraMap x.A (x.Am m) (y.ep' j), algebraMap x.A (x.Am m) y.eta⟩) * Y * (Q s).map (fun y => ⟨algebraMap x.A (x.Am m) y.a, fun j => algebraMap x.A (x.Am m) (y.ep j), fun j => algebraMap x.A (x.Am m) (y.ep' j), algebraMap x.A (x.Am m) y.eta⟩)) = Y}.ncard ≤ Nat.card x.K ^ (m * Module.finrank x.A (V ⊓ (if tr then LinearMap.ker ((Matrix.transposeLinearEquiv (Fin n) (Fin n) x.A (DD x.A k.g)).toLinearMap + LinearMap.id) else ⊤) ⊓ ⨅ s, LinearMap.ker (e s • ((LinearMap.mulLeft x.A (P s)).comp (LinearMap.mulRight x.A (Q s))) - LinearMap.id) : Submodule x.A (Matrix (Fin n) (Fin n) (DD x.A k.g))) + C) := by

@@ -1,9 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.AugmentationSES
-public import GroundTheory.TateCohomology.TateConnecting
-public import GroundTheory.TateCohomology.TateLow
+public import GroundTheory.TateCohomology.CupProduct
+import GroundTheory.TateCohomology.CupConnecting
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -277,7 +277,7 @@ theorem tateIsoH_tateCup {p q r : ℤ} {n m l : ℕ} [NeZero n] [NeZero m] [NeZe
   exact (tateIsoH (A ⊗ B) l l rfl).inv_hom_id_apply _
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem tateCup_connecting_left (m : ℕ) : ∀ (p q : ℤ), (1 - p).toNat + (1 - q).toNat = m →
     ∀ {E : ShortComplex (Rep.{u} k G)} (hE : E.ShortExact) (B : Rep.{u} k G)
       (hEB : (E.map (tensorRight B)).ShortExact) (r : ℤ) (h : p + q = r)
@@ -330,7 +330,7 @@ theorem tateCup_connecting_left (m : ℕ) : ∀ (p q : ℤ), (1 - p).toNat + (1 
     exact e5.symm
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem tateCup_connecting_right (m : ℕ) : ∀ (p q : ℤ), (1 - p).toNat + (1 - q).toNat = m →
     ∀ {E : ShortComplex (Rep.{u} k G)} (hE : E.ShortExact) (A : Rep.{u} k G)
       (hAE : (E.map (tensorLeft A)).ShortExact) (r : ℤ) (h : p + q = r)

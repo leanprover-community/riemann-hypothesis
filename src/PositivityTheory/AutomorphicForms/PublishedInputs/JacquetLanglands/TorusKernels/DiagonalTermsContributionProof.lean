@@ -1,6 +1,9 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MultivariableReproducingFormula
+public import Mathlib.CategoryTheory.Category.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.MeasureTheory.Integral.Prod
 
 @[expose] public section
 
@@ -137,7 +140,7 @@ theorem core {I : Type} [Fintype I] [DecidableEq I] [SigmaFinite (volume : Measu
           (Measure.pi fun _ : {i // ¬ i = v} => (volume : Measure P)))
         ((volume : Measure P).prod (Measure.pi fun _ : {i // ¬ i = v} => (volume : Measure P))) := by
       convert (measurePreserving_funUnique (volume : Measure P) {i // i = v}).prod
-        (MeasurePreserving.id (Measure.pi fun _ : {i // ¬ i = v} => (volume : Measure P))) <;> rfl
+        (MeasurePreserving.id (Measure.pi fun _ : {i // ¬ i = v} => (volume : Measure P)))
     exact h2.comp h1
   have hΦapp : ∀ z : X I, Φ z = (z v, fun i => z i.1) := fun z => rfl
   have hΦs : ∀ w r, Φ.symm (w, r) = Function.update (Φ.symm (iP, r)) v w := by

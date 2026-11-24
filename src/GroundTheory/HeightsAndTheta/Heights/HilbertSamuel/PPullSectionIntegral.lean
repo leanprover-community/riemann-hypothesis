@@ -1,7 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullSectionIntegral
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Mathlib.RingTheory.Valuation.LocalSubring
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
 @[expose] public section
 
@@ -63,8 +68,8 @@ theorem exists_sum_eq_one [CharZero Ω] (P : Ideal (MRing ι)) (y' : (Σ k, ι k
     obtain ⟨β, rfl⟩ := (Ideal.mem_span_range_iff_exists_fun).mp hb
     refine ⟨β, ?_⟩
     have := congrArg φ hab
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), show φ a = 0 from ha, zero_add, map_sum, map_one] at this
+
+    rw [map_add (f := _), show φ a = 0 from ha, zero_add, map_sum, map_one] at this
     rw [← this]
     exact Finset.sum_congr rfl fun i _ => by rw [map_mul, hLq]
   · exfalso

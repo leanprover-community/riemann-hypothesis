@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.Ideal.Prime
 
 @[expose] public section
 

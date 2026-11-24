@@ -1,6 +1,51 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Mathlib.Geometry.Manifold.StructureGroupoid
 
 @[expose] public section
 
@@ -56,8 +101,8 @@ theorem polySlash_mul (h : Matrix (Fin 2) (Fin 2) ℤ) (m n : ℕ) (q r : ℂ[X]
   have er := as_sum_range' r (n + 1) (by omega)
   rw [polySlash_apply m h q, polySlash_apply n h r, Finset.sum_mul_sum]
   conv_lhs => rw [eq, er, Finset.sum_mul_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum]
+
+  simp only [map_sum]
   refine Finset.sum_congr rfl fun s hs => Finset.sum_congr rfl fun t ht => ?_
   simp only [Finset.mem_range] at hs ht
   rw [monomial_mul_monomial, polySlash_monomial _ _ _ _ (by omega)]
@@ -95,8 +140,8 @@ theorem polySlash_comp (w : ℕ) (g h : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X])
     slP w h (slP w g p) = slP w (g * h) p := by
   conv_lhs => rw [as_sum_range' p (w + 1) (by omega)]
   conv_rhs => rw [as_sum_range' p (w + 1) (by omega)]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum]
+
+  simp only [map_sum]
   refine Finset.sum_congr rfl fun k hk => ?_
   simp only [Finset.mem_range] at hk
   rw [polySlash_monomial _ _ _ _ (by omega), polySlash_monomial _ _ _ _ (by omega), C_mul', map_smul, C_mul']
@@ -113,8 +158,8 @@ theorem polySlash_comp (w : ℕ) (g h : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X])
 theorem polySlash_map (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (q : ℂ[X]) :
     (slP w g q).map (starRingEnd ℂ) = slP w g (q.map (starRingEnd ℂ)) := by
   rw [polySlash_apply, polySlash_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Polynomial.map_sum, Polynomial.map_mul, Polynomial.map_pow, lA, lB, coeff_map]
+
+  simp [Polynomial.map_sum, Polynomial.map_mul, Polynomial.map_pow, lA, lB, coeff_map]
 
 end GlobalTheory.HeckeFamilyMatrices.HkC
 
@@ -208,9 +253,9 @@ theorem hk_cocycle_coboundary_conj : ∀ (Γ : Subgroup SL(2, ℤ)) (w : ℕ) (�
         intro i
         rw [matm, matm, ← mul_assoc, hg1, mul_assoc, hg2, ← mul_assoc]
         rfl
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hk_apply w hD hα z _ _ _ hg, hk_apply w hD hα z γ π1 g1 hg1, hk_apply w hD hα z γ' π2 g2 hg2,
-        map_sum]
+
+      rw [hk_apply w hD hα z _ _ _ hg, hk_apply w hD hα z γ π1 g1 hg1, hk_apply w hD hα z γ' π2 g2 hg2,
+      map_sum]
       simp only [hz2, map_add (f := _), Finset.sum_add_distrib, Equiv.trans_apply]
       have hs := Equiv.sum_comp π1 (fun j => slP w (δ (π2 j)) (z (g2 j)))
       rw [hs, add_left_inj]
@@ -223,9 +268,9 @@ theorem hk_cocycle_coboundary_conj : ∀ (Γ : Subgroup SL(2, ℤ)) (w : ℕ) (�
     funext γ
     obtain ⟨π, g, hg⟩ := rep_exists hD hα γ
     rw [hk_apply w hD hα _ γ π g hg]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [LinearMap.comp_apply, Submodule.subtype_apply, LinearMap.pi_apply, LinearMap.sub_apply,
-      LinearMap.id_apply, map_sub, Finset.sum_sub_distrib, map_sum]
+
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply, LinearMap.pi_apply, LinearMap.sub_apply,
+    LinearMap.id_apply, map_sub, Finset.sum_sub_distrib, map_sum]
     have hs := Equiv.sum_comp π (fun j => slP w (δ j) p)
     rw [hs, sub_left_inj]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -234,8 +279,8 @@ theorem hk_cocycle_coboundary_conj : ∀ (Γ : Subgroup SL(2, ℤ)) (w : ℕ) (�
     funext γ
     simp only [cj, hk, LinearMap.pi_apply]
     split_ifs with h
-    set_option synthInstance.maxHeartbeats 100000 in
-      · simp only [LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.proj_apply, Polynomial.map_sum, polySlash_map, cj]
-    · simp [cj]
+
+    · simp only [LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.proj_apply, Polynomial.map_sum, polySlash_map, cj]
+    · simp
 
 end GlobalTheory.HeckeFamilyMatrices.HkC

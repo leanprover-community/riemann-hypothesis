@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ImportsFurther
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsPrimeSpanXb
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.SingleMemDualLatticeStandard
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

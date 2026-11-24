@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FirstDeriv
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -95,7 +141,7 @@ theorem partial_coboundary_product {F : MvPowerSeries (Fin 2) K} (hF : constantC
   rw [MvPowerSeries.subst_mul (has_subst_coboundary_first hF), MvPowerSeries.subst_mul (has_subst_last_pair 0), MvPowerSeries.subst_mul (has_subst_last_pair 1),
     subst_single_var (has_subst_coboundary_first hF), subst_single_var (has_subst_coboundary_first hF), subst_single_var (has_subst_last_pair 0), subst_single_var (has_subst_last_pair 0),
     subst_single_var (has_subst_last_pair 1), subst_single_var (has_subst_last_pair 1), include_three_coboundary hF]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   unfold at1
   ring
 
@@ -119,18 +165,14 @@ section Supp
 variable {K : Type} [Field K]
 
 theorem powq_modEq_one {p : ℕ} (hp : 2 ≤ p) (x : ℕ) : (p ^ 2) ^ x ≡ 1 [MOD p ^ 2 - 1] := by
-  have h : p ^ 2 ≡ 1 [MOD p ^ 2 - 1] := Nat.modEq_sub (Nat.one_le_pow _ _ (by omega))
-  simpa using h.pow x
+  simpa using (Nat.modEq_sub (Nat.one_le_pow _ _ (by omega))).pow x
 
 theorem suppOK_sub {p : ℕ} {f g : MvPowerSeries (Fin 2) K} (hf : SuppOK p f) (hg : SuppOK p g) :
     SuppOK p (f - g) := by
   intro n hn
   rw [map_sub] at hn
   by_cases h : MvPowerSeries.coeff n f = 0
-  · apply hg n
-    intro h'
-    apply hn
-    rw [h, h', sub_zero]
+  · exact hg n (by simpa [h] using hn)
   · exact hf n h
 
 theorem suppOK_C_mul {p : ℕ} (a : K) {f : MvPowerSeries (Fin 2) K} (hf : SuppOK p f) :
@@ -149,27 +191,11 @@ theorem suppOK_frob {p : ℕ} (hp : 2 ≤ p) (σ : K →+* K) {G : MvPowerSeries
   simp only [Finsupp.smul_apply, smul_eq_mul]
   exact ⟨Nat.mul_pos (by omega) h0, Nat.mul_pos (by omega) h1, h2.mul_left p⟩
 
-private theorem coeff_g0F_ne_lemma {p n : ℕ} (h : PowerSeries.coeff n (g0F K p) ≠ 0) :
-    ∃ j, n = p * (p ^ 2) ^ j := by
-  rw [g0F, PowerSeries.coeff_mk] at h
-  obtain ⟨j, -, hj⟩ := Finset.exists_ne_zero_of_sum_ne_zero h
-  by_cases hn : n = p * (p ^ 2) ^ j
-  · exact ⟨j, hn⟩
-  · exact absurd (if_neg hn) hj
-
-private theorem coeff_lgF_ne_lemma_2 {p n : ℕ} (h : PowerSeries.coeff n (lgF K p) ≠ 0) :
-    ∃ j, n = (p ^ 2) ^ j := by
-  rw [lgF, PowerSeries.coeff_mk] at h
-  obtain ⟨j, -, hj⟩ := Finset.exists_ne_zero_of_sum_ne_zero h
-  by_cases hn : n = (p ^ 2) ^ j
-  · exact ⟨j, hn⟩
-  · exact absurd (if_neg hn) hj
-
 theorem support_ok_g_zero_log {p : ℕ} (hp : 2 ≤ p) : SuppOK p (at1 0 (g0F K p) * at1 1 (lgF K p)) := by
   intro n hn
   rw [coeff_product_single_variables (by decide) (fun z => by fin_cases z <;> simp)] at hn
-  obtain ⟨j, hj⟩ := coeff_g0F_ne_lemma (left_ne_zero_of_mul hn)
-  obtain ⟨i, hi⟩ := coeff_lgF_ne_lemma_2 (right_ne_zero_of_mul hn)
+  obtain ⟨j, hj⟩ := _root_.Formalism.InvariantFactorPaths.G7.coeff_g0F_ne_zero (left_ne_zero_of_mul hn)
+  obtain ⟨i, hi⟩ := _root_.Formalism.InvariantFactorPaths.G7.coeff_lgF_ne_zero (right_ne_zero_of_mul hn)
   refine ⟨?_, ?_, ?_⟩
   · rw [hj]
     exact Nat.mul_pos (by omega) (pow_pos (pow_pos (by omega) _) _)
@@ -181,8 +207,8 @@ theorem support_ok_g_zero_log {p : ℕ} (hp : 2 ≤ p) : SuppOK p (at1 0 (g0F K 
 theorem support_ok_log_g_zero {p : ℕ} (hp : 2 ≤ p) : SuppOK p (at1 0 (lgF K p) * at1 1 (g0F K p)) := by
   intro n hn
   rw [coeff_product_single_variables (by decide) (fun z => by fin_cases z <;> simp)] at hn
-  obtain ⟨i, hi⟩ := coeff_lgF_ne_lemma_2 (left_ne_zero_of_mul hn)
-  obtain ⟨j, hj⟩ := coeff_g0F_ne_lemma (right_ne_zero_of_mul hn)
+  obtain ⟨i, hi⟩ := _root_.Formalism.InvariantFactorPaths.G7.coeff_lgF_ne_zero (left_ne_zero_of_mul hn)
+  obtain ⟨j, hj⟩ := _root_.Formalism.InvariantFactorPaths.G7.coeff_g0F_ne_zero (right_ne_zero_of_mul hn)
   refine ⟨?_, ?_, ?_⟩
   · rw [hi]
     exact Nat.one_le_pow _ _ (pow_pos (by omega : 0 < p) 2)
@@ -204,8 +230,8 @@ theorem coeff_lg_lg_eq_zero {p : ℕ} (hp : 2 ≤ p) {n : Fin 2 →₀ ℕ}
     coeff n (at1 0 (lgF K p) * at1 1 (lgF K p)) = 0 := by
   rw [coeff_product_single_variables (by decide) (fun z => by fin_cases z <;> simp)]
   by_contra h
-  obtain ⟨i, hi⟩ := coeff_lgF_ne_lemma_2 (left_ne_zero_of_mul h)
-  obtain ⟨j, hj⟩ := coeff_lgF_ne_lemma_2 (right_ne_zero_of_mul h)
+  obtain ⟨i, hi⟩ := _root_.Formalism.InvariantFactorPaths.G7.coeff_lgF_ne_zero (left_ne_zero_of_mul h)
+  obtain ⟨j, hj⟩ := _root_.Formalism.InvariantFactorPaths.G7.coeff_lgF_ne_zero (right_ne_zero_of_mul h)
   rw [hi, hj] at hn
   have h1 : 1 ≡ p * 1 [MOD p ^ 2 - 1] :=
     ((powq_modEq_one hp i).symm.trans hn).trans ((powq_modEq_one hp j).mul_left p)
@@ -251,14 +277,14 @@ theorem map_Gser (σ : K →+* K) (p : ℕ) (c c' : K) :
     ext n
     rw [MvPowerSeries.coeff_map]
     change σ (Aser K p n) = Aser K p n
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Aser, map_sum, apply_ite σ, map_inv₀, map_pow, map_natCast, map_zero]
+
+    simp only [Aser, map_sum, apply_ite σ, map_inv₀, map_pow, map_natCast, map_zero]
   have hA' : MvPowerSeries.map σ (Aser' K p) = Aser' K p := by
     ext n
     rw [MvPowerSeries.coeff_map]
     change σ (Aser' K p n) = Aser' K p n
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Aser', map_sum, apply_ite σ, map_inv₀, map_pow, map_natCast, map_zero]
+
+    simp only [Aser', map_sum, apply_ite σ, map_inv₀, map_pow, map_natCast, map_zero]
   unfold Gser
   rw [map_sub, map_mul, map_mul, MvPowerSeries.map_C, MvPowerSeries.map_C, hA, hA']
 

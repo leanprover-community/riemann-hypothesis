@@ -1,10 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.XtSumSingle
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivConcrete
-public import Formalism.LocalToGlobal.Columns.ReferenceKernelEquivOfLastComponent
 public import Formalism.LocalToGlobal.Columns.RecLevelSym
-public import Formalism.LocalToGlobal.Columns.LevGCount
 
 @[expose] public section
 

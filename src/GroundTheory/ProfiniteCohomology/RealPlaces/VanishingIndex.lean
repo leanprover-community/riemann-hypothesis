@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.CartierDual
+public import GroundTheory.ProfiniteCohomology.RealPlaces.ConeDefs
+public import GroundTheory.ProfiniteCohomology.ShapiroDefs
+public import Mathlib.GroupTheory.Nilpotent
 public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingCriterion
 public import GroundTheory.ProfiniteCohomology.Shapiro
-public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
-public import GroundTheory.ProfiniteCohomology.CartierDual
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

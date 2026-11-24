@@ -1,7 +1,11 @@
 module
 
+public import Formalism.LocalToGlobal.Columns.ChainInstY
+public import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.XiTopTilRefHolds
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
+public import Formalism.LocalToGlobal.Columns.XtIntAtQpow
+import Formalism.LocalToGlobal.Columns.XtLamGvSCongr
+import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

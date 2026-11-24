@@ -1,34 +1,69 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UlocOfTrivDisc
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ULocDualHformOne
 public import Formalism.LocalToGlobal.Columns.RecLevelLocT
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsMatrixInFrameOfXZero
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermitianStepLevelOfChartFormsLevel
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PulledLatticeVectorMemDualBaseLatticeCompletion
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsStdFr
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PinColL
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FrameTopAlt
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.XiEqXiOffMul
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HzUnit
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.CosInj
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChartZero
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TailRd
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.Placed
-public import Formalism.LocalToGlobal.IndefiniteReal.RealRec
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.OnFramesRdApply
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PairForm
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.NotBadPrimeBase
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ValuationEqZeroOfRootOfSUnitRatio
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
+public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ULocDualHformOne
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UlocOfTrivDisc
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.LevelSubgroupFiniteAdelicStandard
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsUnitarySupportedAtPlaceOfMulEqIdem
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiStarOfMid
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.OnesRepresent
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PairForm
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
+import Formalism.LocalRingCardinality.DataTheta
+import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
+import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
+import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermitianStepLevelOfChartFormsLevel
+import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
 
 @[expose] public section
 
@@ -46,40 +81,12 @@ theorem sigR_tmul (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (e : E) 
     Formalism.UG.sigR σ (v.adicCompletion F) (e ⊗ₜ[F] y) = σ e ⊗ₜ[F] y := by
   simp [Formalism.UG.sigR, Algebra.TensorProduct.map_tmul]
 
-theorem sigR_inclE (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (e : E) :
-    Formalism.UG.sigR σ (v.adicCompletion F) (Formalism.UG.inclE (F := F) (v.adicCompletion F) e) =
-      Formalism.UG.inclE (F := F) (v.adicCompletion F) (σ e) := by
-  show Formalism.UG.sigR σ (v.adicCompletion F) (e ⊗ₜ[F] 1) = σ e ⊗ₜ[F] 1
-  exact sigR_tmul σ v e 1
-
 theorem sigR_sigR (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (v : HeightOneSpectrum (𝓞 F))
     (a : E ⊗[F] v.adicCompletion F) : Formalism.UG.sigR σ (v.adicCompletion F) (Formalism.UG.sigR σ (v.adicCompletion F) a) = a := by
   induction a using TensorProduct.induction_on with
   | zero => simp
   | tmul e y => rw [sigR_tmul, sigR_tmul, hσ]
   | add a b ha hb => rw [map_add (f := _), map_add (f := _), ha, hb]
-
-theorem sigR_mem_intV (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) {a : E ⊗[F] v.adicCompletion F}
-    (ha : a ∈ Formalism.BasicNotions.intV E v) : Formalism.UG.sigR σ (v.adicCompletion F) a ∈ Formalism.BasicNotions.intV E v := by
-  have h : Formalism.BasicNotions.intV E v ≤ (Formalism.BasicNotions.intV E v).comap (Formalism.UG.sigR σ (v.adicCompletion F)) := by
-    show Subring.closure _ ≤ _
-    rw [Subring.closure_le]
-    rintro _ (⟨⟨e, he⟩, rfl⟩ | ⟨⟨y, hy⟩, rfl⟩)
-    · show Formalism.UG.sigR σ (v.adicCompletion F) (e ⊗ₜ[F] 1) ∈ Formalism.BasicNotions.intV E v
-      rw [sigR_tmul]
-      apply Subring.subset_closure
-      left
-      exact ⟨⟨σ e, GlobalTheory.uLocDual_intOE_map (σ : E →+* E) he⟩, rfl⟩
-    · show Formalism.UG.sigR σ (v.adicCompletion F) (1 ⊗ₜ[F] y) ∈ Formalism.BasicNotions.intV E v
-      rw [sigR_tmul, map_one]
-      apply Subring.subset_closure
-      right
-      exact ⟨⟨y, hy⟩, rfl⟩
-  exact h ha
-
-theorem inclE_int (v : HeightOneSpectrum (𝓞 F)) (r : 𝓞 E) :
-    Formalism.UG.inclE (F := F) (v.adicCompletion F) (r : E) ∈ Formalism.BasicNotions.intV E v :=
-  Formalism.UG.P.easyc_inclE_mem (F := F) (v.adicCompletion F) (v.adicCompletionIntegers F).toSubring _ ⟨r, rfl⟩
 
 theorem one_int (v : HeightOneSpectrum (𝓞 F)) {n : ℕ} (a b : Fin n) :
     (1 : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) a b ∈ Formalism.BasicNotions.intV E v := by
@@ -107,7 +114,7 @@ theorem mulVec_mem_dLat (v : HeightOneSpectrum (𝓞 F)) {n : ℕ} [NeZero n] (p
           (Formalism.UG.inclE (F := F) (v.adicCompletion F) ((p : E)⁻¹) * y (Formalism.L2.Col.lastIdx n)) := by
         rw [← mul_assoc, mul_comm (Formalism.UG.inclE (F := F) (v.adicCompletion F) (p : E)), hPinv, one_mul]
       rw [e]
-      exact mul_mem (inclE_int v p) h2
+      exact mul_mem (_root_.Formalism.MainNotions.Gaps.LG.fm_incl_mem v p) h2
     · exact h1 j hj
   refine (key _).2 ⟨fun i _ => ?_, ?_⟩
   · show ∑ j, N i j * y j ∈ Formalism.BasicNotions.intV E v
@@ -150,7 +157,7 @@ theorem mem_Uloc : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
     intro a b; rw [hMi]; rfl
   have hMiint : ∀ a b, ((x⁻¹ : GL (Fin n) (E ⊗[F] v.adicCompletion F)) : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) a b ∈
       Formalism.BasicNotions.intV E v := by
-    intro a b; rw [hMient]; exact sigR_mem_intV σ v (hint b a)
+    intro a b; rw [hMient]; exact _root_.GlobalTheory.sigR_mem_intV_adic σ v (hint b a)
   choose c hc hcl using hlast
   have hmat : ((x⁻¹ : GL (Fin n) (E ⊗[F] v.adicCompletion F)) : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) - 1 =
       -(((x : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) - 1) *
@@ -184,7 +191,7 @@ theorem mem_Uloc : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
         (-∑ k, c k * ((x⁻¹ : GL (Fin n) (E ⊗[F] v.adicCompletion F)) : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) k i) := by
     intro i
     have h := congrArg (Formalism.UG.sigR σ (v.adicCompletion F)) (hMilast i)
-    rw [map_sub, map_mul, hMient, sigR_sigR σ hσ v, sigR_inclE, ← hq, hs1] at h
+    rw [map_sub, map_mul, hMient, sigR_sigR σ hσ v, _root_.GlobalTheory.sigR_inclE_adic, ← hq, hs1] at h
     exact h
 
   have h1 : x ∈ Formalism.UG.levelVL σ (1 : Matrix (Fin n) (Fin n) E) v S.Lb := by
@@ -209,7 +216,7 @@ theorem mem_Uloc : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
       refine sum_mem fun j _ => ?_
       by_cases hj : j = Formalism.L2.Col.lastIdx n
       · rw [hj, Matrix.sub_apply, hcol i, mul_comm (Formalism.UG.inclE (F := F) (v.adicCompletion F) (q : E)), mul_assoc]
-        exact mul_mem (sigR_mem_intV σ v (neg_mem (sum_mem fun k _ => mul_mem (hc k) (hMiint k i)))) hy2
+        exact mul_mem (_root_.GlobalTheory.sigR_mem_intV_adic σ v (neg_mem (sum_mem fun k _ => mul_mem (hc k) (hMiint k i)))) hy2
       · exact mul_mem (sub_mem (hint i j) (one_int v i j)) (hy1 j hj)
     · show Formalism.UG.inclE (F := F) (v.adicCompletion F) ((p : E)⁻¹) *
         ∑ j, ((x : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) - 1) (Formalism.L2.Col.lastIdx n) j * y j ∈ Formalism.BasicNotions.intV E v
@@ -241,9 +248,9 @@ theorem mem_Uloc : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
             (Formalism.UG.inclE (F := F) (v.adicCompletion F) (a : E) * y (Formalism.L2.Col.lastIdx n)) * hDd -
             (c (Formalism.L2.Col.lastIdx n) * y (Formalism.L2.Col.lastIdx n)) * hab'
         rw [e]
-        exact mul_mem (add_mem (mul_mem (inclE_int v a)
-          (sigR_mem_intV σ v (neg_mem (sum_mem fun k _ => mul_mem (hc k) (hMiint k _)))))
-          (mul_mem (inclE_int v b) (hc _))) hy2
+        exact mul_mem (add_mem (mul_mem (_root_.Formalism.MainNotions.Gaps.LG.fm_incl_mem v a)
+          (_root_.GlobalTheory.sigR_mem_intV_adic σ v (neg_mem (sum_mem fun k _ => mul_mem (hc k) (hMiint k _)))))
+          (mul_mem (_root_.Formalism.MainNotions.Gaps.LG.fm_incl_mem v b) (hc _))) hy2
       · rw [Matrix.sub_apply, hcl j, ← mul_assoc, ← mul_assoc, hPinv, one_mul]
         exact mul_mem (hc j) (hy1 j hj)
   exact GlobalTheory.uloc_of_triv_disc σ S v hv x h1 h2

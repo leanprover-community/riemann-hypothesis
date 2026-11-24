@@ -1,7 +1,55 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PrincipalGroupActsFreelyOnFlags
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -75,7 +123,6 @@ theorem symm_contraction (F F₀ : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (N : V �
         rw [hA, hB]
         simp only [map_sub, LinearMap.sub_apply]
         rw [hC, hC']
-        try ring
       rw [hD, Complex.sub_re] at hpos
       linarith
 
@@ -259,9 +306,9 @@ theorem isHermitian_iff (G : Matrix (Fin g) (Fin g) ℂ) :
   constructor
   · intro hG z w
     rw [sesq_apply, sesq_apply, hermForm, hermForm]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [dotProduct, mulVec, map_sum, map_mul, Finset.mul_sum, Pi.star_apply, Complex.star_def,
-      Complex.conj_conj]
+
+    simp only [dotProduct, mulVec, map_sum, map_mul, Finset.mul_sum, Pi.star_apply, Complex.star_def,
+    Complex.conj_conj]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     have hij : starRingEnd ℂ (G i j) = G j i := by
@@ -283,9 +330,9 @@ theorem exists_anti (N : (Fin g → ℂ) →ₗ⋆[ℂ] (Fin g → ℂ)) : ∃ Z
     simp [Pi.single_apply]
   rw [anti_apply]
   conv_lhs => rw [hz]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.map_smulₛₗ, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, mulVec, dotProduct,
-    Matrix.of_apply, Pi.star_apply, Complex.star_def]
+
+  simp only [map_sum, LinearMap.map_smulₛₗ, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, mulVec, dotProduct,
+  Matrix.of_apply, Pi.star_apply, Complex.star_def]
   exact Finset.sum_congr rfl fun j _ => mul_comm _ _
 
 theorem anti_inj {Z Z' : Matrix (Fin g) (Fin g) ℂ} (h : ∀ z, anti Z z = anti Z' z) : Z = Z' := by
@@ -466,8 +513,8 @@ theorem exists_extend [Module.Finite ℤ M] (P P' : M →+ (Fin g → ℂ)) (hi 
   have hsp : ⊤ ≤ Submodule.span ℝ (Set.range v) := by
     rw [← hs, Submodule.span_le]
     rintro _ ⟨a, rfl⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [SetLike.mem_coe, ← b.sum_repr a, map_sum]
+
+    rw [SetLike.mem_coe, ← b.sum_repr a, map_sum]
     refine Submodule.sum_mem _ fun i _ => ?_
     rw [map_zsmul]
     exact zsmul_mem (Submodule.subset_span (Set.mem_range_self i) : v i ∈ Submodule.span ℝ (Set.range v)) _
@@ -863,43 +910,7 @@ theorem exists_contraction (P : D.La →+ (Fin g → ℂ)) (hl : ∀ (a : 𝓞 E
 
 theorem conj_rt (H : Host E) (τ : E →+* ℂ) :
     (τ (H.rt : E) = H.rt0 ↔ ¬ ComplexEmbedding.conjugate τ (H.rt : E) = H.rt0) := by
-  have hd : (0 : ℝ) < H.d := Nat.cast_pos.2 H.d_prime.pos
-  have hw : (τ (H.rt : E)) ^ 2 = -(H.d : ℂ) := by
-    have e := congrArg (τ.comp (algebraMap (𝓞 E) E)) H.rt_sq
-    rw [map_pow, map_neg, map_natCast] at e
-    exact e
-  have hre : H.rt0.re = 0 := by
-    have e1 := congrArg Complex.re H.sqrt_neg_disc_sq
-    have e2 := congrArg Complex.im H.sqrt_neg_disc_sq
-    simp only [pow_two, Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im,
-      Complex.natCast_re, Complex.natCast_im, neg_zero] at e1 e2
-    have hri : H.rt0.re * H.rt0.im = 0 := by linarith
-    rcases mul_eq_zero.1 hri with h | h
-    · exact h
-    · exfalso
-      rw [h] at e1
-      nlinarith [sq_nonneg H.rt0.re]
-  have hconj : (starRingEnd ℂ) H.rt0 = -H.rt0 := by
-    apply Complex.ext <;> simp [hre]
-  have hne : H.rt0 ≠ -H.rt0 := by
-    intro h
-    have h0 : H.rt0 = 0 := by linear_combination h / 2
-    have e := H.sqrt_neg_disc_sq
-    rw [h0] at e
-    have hd0 : (H.d : ℂ) = 0 := by linear_combination e
-    exact H.d_prime.ne_zero (by exact_mod_cast hd0)
-  have hroots : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := by
-    have e : (τ (H.rt : E) - H.rt0) * (τ (H.rt : E) + H.rt0) = 0 := by
-      linear_combination hw - H.sqrt_neg_disc_sq
-    rcases mul_eq_zero.1 e with h | h
-    · left; linear_combination h
-    · right; linear_combination h
-  rw [ComplexEmbedding.conjugate_coe_eq]
-  rcases hroots with h | h <;> rw [h]
-  · rw [hconj]
-    exact ⟨fun _ h' => hne h'.symm, fun _ => rfl⟩
-  · rw [map_neg, hconj, neg_neg]
-    exact ⟨fun h' => absurd h'.symm hne, fun h' => absurd rfl h'⟩
+  apply GlobalTheory.PrincFree.cmType_of_rt
 
 theorem card_pairs {p q : ℕ} (hty : IsTypeFn H p q ty) :
     Nat.card {x : Fin g × Fin g // ty x.1 = ComplexEmbedding.conjugate (ty x.2)} = finrank ℚ E * p * q := by

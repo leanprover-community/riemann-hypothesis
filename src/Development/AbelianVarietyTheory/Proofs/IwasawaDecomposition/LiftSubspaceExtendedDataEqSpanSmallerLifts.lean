@@ -1,24 +1,188 @@
 module
 
-public import Mathlib
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsBaseEnlargementFixedCoefFieldOfCoeffEnlargemen
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CoefAEqOfHeq
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Forms
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GreenCuspidalIff
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsIsBIffCoreB
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksStage
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockBaseChange
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankSpanImage
-public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RangeAdjointRat
-public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RangeAdjointRat
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankSpanImage, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftSubspaceExtendedDataEqSpanSmallerLifts
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankSpanImage =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankSpanImage", "h": "module\n\npublic import Mathlib.Basic.Complex.Basic\npublic import Mathlib.LinearAlgebra.FiniteDimensional.Defs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\npublic import Mathlib.LinearAlgebra.Dimension.OrzechProperty\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.LinearAlgebra.Dimension.Constructions\npublic import Mathlib.LinearAlgebra.FiniteDimensional.Basic\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open Module
+
+noncomputable section
+
+namespace GlobalTheory.RatSpan
+
+section Lin
+
+variable {K' V' W : Type} [Field K'] [AddCommGroup V'] [Module K' V'] [AddCommGroup W] [Module ℂ W]
+  {σ' : K' →+* ℂ} (j' : V' →ₛₗ[σ'] W)
+
+private theorem span_range_le_comap_span_image {κ : Type} (x : κ → V') :
+    Submodule.span K' (Set.range x) ≤ (Submodule.span ℂ (Set.range fun k => j' (x k))).comap j' := by
+  rw [Submodule.span_le]
+  rintro _ ⟨k, rfl⟩
+  exact Submodule.subset_span ⟨k, rfl⟩
+
+private theorem linearIndependent_image_basis_of_linearIndependent {ι' : Type} [Fintype ι'] (b' : Basis ι' K' V')
+    (hb : LinearIndependent ℂ fun i => j' (b' i)) {κ : Type} [Fintype κ] (c : Basis κ K' V') :
+    LinearIndependent ℂ fun k => j' (c k) := by
+  have := Module.Finite.of_basis b'
+  have hcard : Fintype.card ι' = Fintype.card κ := by
+    rw [← Module.finrank_eq_card_basis b', ← Module.finrank_eq_card_basis c]
+  have hle : Submodule.span ℂ (Set.range fun i => j' (b' i)) ≤
+      Submodule.span ℂ (Set.range fun k => j' (c k)) := by
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    have hi : b' i ∈ Submodule.span K' (Set.range c) := by rw [c.span_eq]; trivial
+    exact span_range_le_comap_span_image j' c hi
+  have : Module.Finite ℂ (Submodule.span ℂ (Set.range fun k => j' (c k))) :=
+    Module.Finite.span_of_finite ℂ (Set.finite_range _)
+  rw [linearIndependent_iff_card_eq_finrank_span]
+  apply le_antisymm
+  · rw [← hcard, linearIndependent_iff_card_eq_finrank_span.mp hb]
+    exact Submodule.finrank_mono hle
+  · exact finrank_range_le_card _
+
+theorem linInd_comp {ι' : Type} [Fintype ι'] (b' : Basis ι' K' V') (hb : LinearIndependent ℂ fun i => j' (b' i))
+    {κ : Type} {x : κ → V'} (hx : LinearIndependent K' x) : LinearIndependent ℂ fun k => j' (x k) := by
+  have := Module.Finite.of_basis b'
+  have hs : LinearIndepOn K' id (Set.range x) := (linearIndepOn_id_range_iff hx.injective).mpr hx
+  have : Fintype (hs.extend (Set.subset_univ _)) := by
+    have := Module.Finite.finite_basis (Basis.extend hs)
+    exact Fintype.ofFinite _
+  have he := linearIndependent_image_basis_of_linearIndependent j' b' hb (Basis.extend hs)
+  let g : κ → hs.extend (Set.subset_univ _) := fun k => ⟨x k, Basis.subset_extend hs ⟨k, rfl⟩⟩
+  have hg : Function.Injective g := fun a b h => hx.injective (congrArg Subtype.val h)
+  have h2 := he.comp g hg
+  simpa [g, Function.comp_def, Basis.coe_extend] using h2
+
+end Lin
+
+section Main
+
+variable {K K' V V' W : Type} [Field K] [Field K'] [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K' V']
+  [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] {σ : K →+* ℂ} {σ' : K' →+* ℂ}
+
+theorem finrank_span_image (j' : V' →ₛₗ[σ'] W) {ι' : Type} [Fintype ι'] (b' : Basis ι' K' V')
+    (hb : LinearIndependent ℂ fun i => j' (b' i)) (X : Submodule K' V') :
+    finrank ℂ (Submodule.span ℂ (j' '' X)) = finrank K' X := by
+  have := Module.Finite.of_basis b'
+  let e := Module.finBasis K' X
+  let x : Fin (finrank K' X) → V' := fun i => (e i : V')
+  have hx : LinearIndependent K' x := e.linearIndependent.map' X.subtype X.ker_subtype
+  have hjx := linInd_comp j' b' hb hx
+  have hspan : Submodule.span ℂ (j' '' X) = Submodule.span ℂ (Set.range fun i => j' (x i)) := by
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨v, hv, rfl⟩
+      have hvx : v ∈ Submodule.span K' (Set.range x) := by
+        have h1 : (⟨v, hv⟩ : X) ∈ Submodule.span K' (Set.range e) := by rw [e.span_eq]; trivial
+        have h2 := Submodule.mem_map_of_mem (f := X.subtype) h1
+        rw [Submodule.map_span, ← Set.range_comp] at h2
+        exact h2
+      exact span_range_le_comap_span_image j' x hvx
+    · apply Submodule.span_mono
+      rintro _ ⟨i, rfl⟩
+      exact ⟨x i, (e i).2, rfl⟩
+  rw [hspan, finrank_span_eq_card hjx, Fintype.card_fin]
+
+theorem comap_eq_span (j : V →ₛₗ[σ] W) (j' : V' →ₛₗ[σ'] W) (ι : V → V') (hj : ∀ v, j' (ι v) = j v)
+    {ι' : Type} [Fintype ι'] (b' : Basis ι' K' V') (hb : LinearIndependent ℂ fun i => j' (b' i))
+    (U : Submodule ℂ W) (hU : U ≤ Submodule.span ℂ (j '' (U.comap j))) :
+    U.comap j' = Submodule.span K' (ι '' (U.comap j)) := by
+  have := Module.Finite.of_basis b'
+  have hle : Submodule.span K' (ι '' (U.comap j)) ≤ U.comap j' := by
+    rw [Submodule.span_le]
+    rintro _ ⟨v, hv, rfl⟩
+    show j' (ι v) ∈ U
+    rw [hj]
+    exact hv
+  symm
+  apply Submodule.eq_of_le_of_finrank_le hle
+  rw [← finrank_span_image j' b' hb, ← finrank_span_image j' b' hb]
+  calc finrank ℂ (Submodule.span ℂ (j' '' (U.comap j'))) ≤ finrank ℂ U := by
+        apply Submodule.finrank_mono
+        rw [Submodule.span_le]
+        rintro _ ⟨v, hv, rfl⟩
+        exact hv
+    _ ≤ finrank ℂ (Submodule.span ℂ (j' '' (Submodule.span K' (ι '' (U.comap j))))) := by
+        apply Submodule.finrank_mono
+        refine hU.trans (Submodule.span_mono ?_)
+        rintro _ ⟨v, hv, rfl⟩
+        exact ⟨ι v, Submodule.subset_span ⟨v, hv, rfl⟩, hj v⟩
+
+end Main
+
+end GlobalTheory.RatSpan
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankSpanImage =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftSubspaceExtendedDataEqSpanSmallerLifts =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftSubspaceExtendedDataEqSpanSmallerLifts", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsBaseEnlargementFixedCoefFieldOfCoeffEnlargemen\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Forms\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankSpanImage\nimport Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RangeAdjointRat\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField
@@ -108,11 +272,11 @@ section One
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3)
 
-set_option maxHeartbeats 1000000 in
+
 private theorem zl_eq (hp : ∀ i, R.phs i = 1) (i : Fin D.R.m) (t : T) :
     (zsOf R F).Zl i t = (LinearMap.range (LinearMap.adjoint (R.thG i t))).comap (R.jV i t) := (by with_unfolding_all exact (tw_comap (twAt D.what₂.embLL A3.A.v0) (R.thG i t) (hp i) R.toRealDat.emb0 (R.jV i t) :))
 
-set_option maxHeartbeats 1000000 in
+
 private theorem rat (hp : ∀ i, R.phs i = 1) (hM : R.toRealDat.IsModels) (hT : Formalism.IndefR.Rat.LiftTest (R.toCx3 F))
     (i : Fin D.R.m) (t : T) :
     LinearMap.range (LinearMap.adjoint (R.thG i t)) ≤
@@ -121,14 +285,14 @@ private theorem rat (hp : ∀ i, R.phs i = 1) (hM : R.toRealDat.IsModels) (hT : 
   exact (by with_unfolding_all exact (tw_rat (twAt D.what₂.embLL A3.A.v0) (R.thG i t) (hp i) R.toRealDat.emb0 (R.jV i t) ((h)) : _))
 
 include F in
-set_option maxHeartbeats 1000000 in
+
 private theorem li (hM : R.toRealDat.IsModels) (i : Fin D.R.m) (t : T) :
     LinearIndependent ℂ fun k => R.jV i t (Module.Basis.ofVectorSpace D.what₂.LL (A3.A.fam.amb.FL i t) k) :=
   tw_li (twAt D.what₂.embLL A3.A.v0) ((by with_unfolding_all exact ((RealDat3.kFormL_of (F := F) hM i t).1 :)))
 
 end One
 
-set_option maxHeartbeats 2000000 in
+
 private theorem gen {D D' : D7} {G G' : Type} [Group G] [Fintype G] [Group G'] [Fintype G'] {Pl0 I0 T Pl0' I0' T' : Type}
     {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {A3' : FamIn3 D'.what₂.LL G' Pl0' I0' (List ℕ) T' D'.R.m}
     {Ks Ks' : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] [Field Ks'] [NumberField Ks'] [Algebra Ks' D'.what₂.LL]
@@ -172,7 +336,7 @@ section Two
 variable {B B' : Base} {f : Fr B.toPre} {f' : Fr B'.toPre} {T : TwDat B} {T' : TwDat B'} {w : ColW B f T} {w' : ColW B' f' T'}
   {Z : w.Lt} {Z' : w'.Lt}
 
-set_option maxHeartbeats 4000000 in
+
 private theorem mmap_eq (q : B'.toPre = B.toPre) (i : Fin (w.st Z).toD7.R.m) (i' : Fin (w'.st Z').toD7.R.m) (hi : (i : ℕ) = i')
     {S : (w.st Z).toD7.what₂.Tau → SPar} {S' : (w'.st Z').toD7.what₂.Tau → SPar}
     (M : Mult.DSModel (Wc (w.st Z).toD7 i) S) (M' : Mult.DSModel (Wc (w'.st Z').toD7 i') S')
@@ -193,7 +357,7 @@ private theorem mmap_eq (q : B'.toPre = B.toPre) (i : Fin (w.st Z).toD7.R.m) (i'
   cases a; cases b; cases c; cases d; cases l; cases e; cases g
   exact ⟨rfl, HEq.rfl, HEq.rfl⟩
 
-set_option maxHeartbeats 4000000 in
+
 private theorem gf_eq (q : B'.toPre = B.toPre) (i : Fin (w.st Z).toD7.R.m) (i' : Fin (w'.st Z').toD7.R.m) (hi : (i : ℕ) = i')
     (c : CoefA (Vc (w.st Z).toD7 i)) (c' : CoefA (Vc (w'.st Z').toD7 i'))
     (a : HEq c'.W c.W) (b : HEq c'.nW c.nW) (d : HEq c'.iW c.iW) :
@@ -214,7 +378,7 @@ private theorem gf_eq (q : B'.toPre = B.toPre) (i : Fin (w.st Z).toD7.R.m) (i' :
   cases a; cases b; cases d
   exact ⟨rfl, HEq.rfl, HEq.rfl⟩
 
-set_option maxHeartbeats 4000000 in
+
 private theorem jL_of {hX : B.fields.Ok} {hX' : B'.fields.Ok} {Wt : Set B.places.Pl} {Wt' : Set B'.places.Pl}
     {z : Dat (w.st Z) w.I hX T Wt} {z' : Dat (w'.st Z') w'.I hX' T' Wt'} (e : ExtN z z')
     (i : Fin (w.st Z).toD7.R.m) (i' : Fin (w'.st Z').toD7.R.m) (hi : (i : ℕ) = i')
@@ -232,7 +396,7 @@ end Two
 
 end GlobalTheory.Mem.R3.SubExt
 
-set_option maxHeartbeats 4000000 in
+
 theorem _root_.GlobalTheory.T.liftSubspace_extendedData_eq_span_smallerLifts : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.HarishChandraFinite → (StepW Pinned fun K B' f' T' w' => ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T), Enl0 B B' →
   HEq f' f → Pinned K B f T w → HEq w'.px w.px → ∀ (Z : w.Lt) (hX : B.fields.Ok) (Wt : Set B.places.Pl)
     (z : Dat (w.st Z) w.I hX T Wt), GrpTrue Z.N f → GrpAt (w.st Z) w.I → Fine z → HoldsL z.R z.F →
@@ -250,3 +414,6 @@ theorem _root_.GlobalTheory.T.liftSubspace_extendedData_eq_span_smallerLifts : G
   have hL := fun x => GlobalTheory.Mem.R3.SubExt.jL_of hx j j' hj _ _ x (L x) (hC x)
   exact (by with_unfolding_all exact (GlobalTheory.Mem.R3.SubExt.gen z.R z.F z'.R z'.F z.pins.phs z'.pins.phs z.pins.char.base.models z'.pins.char.base.models
     hH.liftTest j _ j' _ hXX hY m.2.2.2.2.2.2.2.2.1 r.2.1 r.2.2.2.1 (((fun x => L x))) ((hL)) : _))
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftSubspaceExtendedDataEqSpanSmallerLifts =====

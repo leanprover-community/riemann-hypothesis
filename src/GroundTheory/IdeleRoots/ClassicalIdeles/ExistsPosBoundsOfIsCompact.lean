@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.UnipotentAdelicQuotients.SiegelSetsSL2Adelic
 public import GroundTheory.AutomorphicForms.ReductionSiegel
 public import GroundTheory.AutomorphicForms.ReductionSplitting
+import Mathlib.RingTheory.Henselian
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,8 +1,13 @@
 module
 
 public import Formalism.SatakeDualWeyl.Statement
-public import Mathlib
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.InvariantKernelTraceVanishes
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 @[expose] public section
 
@@ -116,8 +121,8 @@ theorem root_eq_one (P : Ideal (𝓞 E)) (T k : ℕ) (b : 𝓞 E) (hT : T.Prime)
   have hqP : (q : 𝓞 E) ∈ P := by
     rw [← Ideal.Quotient.eq_zero_iff_mem]
     have h0 := congrArg (Ideal.Quotient.mk P) (hη.geom_sum_eq_zero hq.one_lt)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum, map_pow, hbP] using h0
+
+    simpa [map_sum, map_pow, hbP] using h0
   have hTq : T = q := by
     by_contra hne'
     have hcop : Nat.Coprime T q := (Nat.coprime_primes hT hq).2 hne'

@@ -1,8 +1,11 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecLevelSym
 public import Formalism.LocalToGlobal.Columns.TiedGlMat
 public import Formalism.LocalToGlobal.HermitianForms.DefsSym
+public import Formalism.LocalToGlobal.Columns.LevGSym
+public import Formalism.LocalToGlobal.Columns.RecLevelSym
+public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
+public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 
 @[expose] public section
 
@@ -140,11 +143,11 @@ theorem supSum_map_eq (e : κ ≃+* k') {n a skip : ℕ} (S : Finset ℕ) (hS : 
     (M : Matrix (Fin n) (Fin n) κ) :
     e (supSum a S M) = ∑ x : Fin n, ∑ y : Fin n, if (x : ℕ) + 1 = y ∧ (y : ℕ) < a ∧ (y : ℕ) ≠ skip then (M.map e) x y else 0 := by
   unfold supSum
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun x _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun y _ => ?_
   by_cases h : (x : ℕ) + 1 = y ∧ (y : ℕ) < a
   · have h2 : ((x : ℕ) ∈ S ↔ (y : ℕ) ≠ skip) := by rw [← h.1]; exact hS x (by omega)

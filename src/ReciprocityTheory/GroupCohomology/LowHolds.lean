@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.GroupCohomology.CupConnRightStatement
-public import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
 public import ReciprocityTheory.GroupCohomology.ComapZeroCoboundariesEqBot
 
 @[expose] public section

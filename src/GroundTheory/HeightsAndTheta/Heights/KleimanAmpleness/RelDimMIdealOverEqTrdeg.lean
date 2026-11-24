@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideRest
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TrdegEqOfLeOfIsAlgebraic
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BlockVecSegreJoin
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSegreBase
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TrdegEqOfLeOfIsAlgebraic
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 

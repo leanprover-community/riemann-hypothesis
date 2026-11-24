@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
+public import Mathlib.Algebra.Field.ZMod
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveInvariants
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

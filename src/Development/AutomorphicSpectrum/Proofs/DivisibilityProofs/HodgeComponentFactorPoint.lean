@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.RootOnFund
+import Development.WeilBound.CoreStatements.HodgeTatePoints.MlLift
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.AlgebraicGeometry.Morphisms.UniversallyInjective
+import Mathlib.AlgebraicGeometry.QuasiAffine
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Limits.Shapes.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.SetTheory.ZFC.PSet
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 
 @[expose] public section
@@ -73,37 +116,7 @@ theorem eq_genPt_of_specializes {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Sp
 
 theorem mem_of_dense_of_noGen {P : Type} [TopologicalSpace P] [TopologicalSpace.NoetherianSpace P] [QuasiSober P]
     {U : Set P} (hU : IsOpen U) (hd : Dense U) {y : P} (hy : ∀ y', y' ⤳ y → y' = y) : y ∈ U := by
-  classical
-  have hCi : IsIrreducible (irreducibleComponent y) := isIrreducible_irreducibleComponent
-  have hCc : IsClosed (irreducibleComponent y) := isClosed_irreducibleComponent
-  have hgen := hCi.isGenericPoint_genericPoint_closure
-  rw [hCc.closure_eq] at hgen
-  have hη : hCi.genericPoint = y := hy _ (hgen.specializes mem_irreducibleComponent)
-  rw [hη] at hgen
-  have hmax := irreducibleComponent_mem_irreducibleComponents y
-  set D : Set P := ⋃₀ (irreducibleComponents P \ {irreducibleComponent y}) with hD
-  have hDc : IsClosed D := by
-    rw [hD, Set.sUnion_eq_biUnion]
-    exact Set.Finite.isClosed_biUnion
-      (TopologicalSpace.NoetherianSpace.finite_irreducibleComponents.subset Set.sdiff_subset)
-      fun C hC => isClosed_of_mem_irreducibleComponents C hC.1
-  have hyD : y ∉ D := by
-    rintro ⟨C, ⟨hC, hne⟩, hyC⟩
-    have hle : irreducibleComponent y ⊆ C := by
-      rw [← hgen.def]
-      exact (isClosed_of_mem_irreducibleComponents C hC).closure_subset_iff.2 (by simpa using hyC)
-    exact hne (le_antisymm (hmax.2 hC.1 hle) hle)
-  obtain ⟨u, huD, huU⟩ := hd.inter_open_nonempty Dᶜ hDc.isOpen_compl ⟨y, hyD⟩
-  have huC : u ∈ irreducibleComponent y := by
-    by_contra hne
-    refine huD ⟨irreducibleComponent u, ⟨irreducibleComponent_mem_irreducibleComponents u, ?_⟩,
-      mem_irreducibleComponent⟩
-    intro e
-    exact hne (by
-      have : u ∈ irreducibleComponent u := mem_irreducibleComponent
-      rw [Set.mem_singleton_iff.1 e] at this
-      exact this)
-  exact (hgen.specializes huC).mem_open hU huU
+  apply PositivityTheory.HtPt.Ml.mem_of_dense_of_max <;> assumption
 
 theorem noetherianSpace_baseChange {X : Scheme.{0}} {O F : Type} [CommRing O] [Field F] {s : X ⟶ Sp O}
     (hs : IsProjOver s) (β : O →+* F) : TopologicalSpace.NoetherianSpace ↥(pullback s (spMap β)) := by

@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsTerTer
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsBisRest
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsTerMore
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsTerExtra
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

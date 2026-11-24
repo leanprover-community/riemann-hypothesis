@@ -1,5 +1,8 @@
 module
 
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieValCut
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+public import Formalism.LocalToGlobal.CharacterGerms.RowTieJet
 public import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
 
 @[expose] public section

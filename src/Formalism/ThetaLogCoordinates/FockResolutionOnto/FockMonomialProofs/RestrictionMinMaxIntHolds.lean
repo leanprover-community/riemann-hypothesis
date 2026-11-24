@@ -1,8 +1,56 @@
 module
 
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementC
+public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
+public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.InitPartZeroXMul
+public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
-public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.MulEarlyLettersHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -143,8 +191,8 @@ private theorem glAct_slice_lemma_2 (LL : Letters N) (j : ℕ) (ρ c d : Fin r) 
     have h2 : (i', b) ≠ (i, ρ) := fun h => hb (Prod.mk.inj h).2
     simpa [Finsupp.single_apply, h1, h2] using hn
   rw [MvPolynomial.mem_restrictSupport_iff] at hy
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPolynomial.support_sum_monomial_coeff y, map_sum]
+
+  rw [← MvPolynomial.support_sum_monomial_coeff y, map_sum]
   refine Submodule.sum_mem _ fun n hn => ?_
   have hnQ : n (i, ρ) ∈ Q := hy (Finset.mem_coe.mpr hn)
   simp only [glAct, LinearMap.sum_apply]
@@ -240,7 +288,7 @@ private theorem glAct_md_lemma_5 (LL : Letters N) (j : ℕ) (c d : Fin r) (B : P
     by_cases h : i'' = i'
     · subst h
       simp [Finsupp.single_apply]
-    · simp [Finsupp.single_apply, Ne.symm h, h]
+    · simp [h]
   have hmono : ∀ (a b : Fin r) (n : Fin N × Fin r →₀ ℕ) (t : ℚ_[p]) (i' : Fin N), (MultiDeg LL n ↔ B) →
       X (i', a) * pderiv (i', b) (monomial n t) ∈
         MvPolynomial.restrictSupport ℚ_[p] {n | (MultiDeg LL n ↔ B)} := by
@@ -267,8 +315,8 @@ private theorem glAct_md_lemma_5 (LL : Letters N) (j : ℕ) (c d : Fin r) (B : P
       unfold MultiDeg
       simp only [hsum]
   rw [MvPolynomial.mem_restrictSupport_iff] at hy
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPolynomial.support_sum_monomial_coeff y, map_sum]
+
+  rw [← MvPolynomial.support_sum_monomial_coeff y, map_sum]
   refine Submodule.sum_mem _ fun n hn => ?_
   have hnB : (MultiDeg LL n ↔ B) := hy (Finset.mem_coe.mpr hn)
   simp only [glAct, LinearMap.sum_apply]
@@ -289,13 +337,11 @@ theorem eproj_pol (LL : Letters N) (j : ℕ) (ρ : Fin r) (w : Fin r → ℤ)
     { toFun := fun x => ∑ m ∈ x.support, if MultiDeg LL m then monomial m (AddMonoidAlgebra.coeff x m) else 0
       map_add' := fun x y => by
         ext n
-        beta_reduce
         rw [MvPolynomial.coeff_add, coeff_filt_lemma (fun m => MultiDeg LL m) _,
           coeff_filt_lemma (fun m => MultiDeg LL m) _, coeff_filt_lemma (fun m => MultiDeg LL m) _]
         split_ifs <;> simp
       map_smul' := fun t x => by
         ext n
-        beta_reduce
         rw [MvPolynomial.coeff_smul, coeff_filt_lemma (fun m => MultiDeg LL m) _,
           coeff_filt_lemma (fun m => MultiDeg LL m) _]
         split_ifs <;> simp }

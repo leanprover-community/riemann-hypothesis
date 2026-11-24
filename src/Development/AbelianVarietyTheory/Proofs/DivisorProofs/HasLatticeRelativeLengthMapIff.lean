@@ -1,9 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.MultiplicationKernelIdentity
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PreEig
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsSaturatedSubmoduleIffExistsIsComplOfValuationR
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PreEig
 
 @[expose] public section
 
@@ -47,8 +96,8 @@ theorem exists_basis_sum {R : Type*} [CommRing R] {M M' : Type*} [AddCommGroup M
       simpa [Fintype.sum_sum_type, u, w] using hg
     have h2 : ∑ j, g (Sum.inr j) • (e j : M') = 0 := by
       have := congrArg f hg'
-      set_option synthInstance.maxHeartbeats 100000 in
-        simpa [map_add (f := _), map_sum, map_smul, hdf, hσf] using this
+
+      simpa [map_add (f := _), map_sum, map_smul, hdf, hσf] using this
     have hr : ∀ j, g (Sum.inr j) = 0 := Fintype.linearIndependent_iff.1 heli _ h2
     have h1 : ∑ i, g (Sum.inl i) • (d i : M) = 0 := by simpa [hr] using hg'
     have hl : ∀ i, g (Sum.inl i) = 0 := Fintype.linearIndependent_iff.1 hdli _ h1
@@ -66,8 +115,8 @@ theorem exists_basis_sum {R : Type*} [CommRing R] {M M' : Type*} [AddCommGroup M
       simpa only [Submodule.coe_smul] using h0
     have hk : z - ∑ j, bb j • σ j ∈ Z ⊓ LinearMap.ker f := by
       refine Submodule.mem_inf.2 ⟨Z.sub_mem hz (Z.sum_mem fun j _ => Z.smul_mem _ (hσZ j)), ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [LinearMap.mem_ker, map_sub, map_sum]
+
+      rw [LinearMap.mem_ker, map_sub, map_sum]
       simp only [map_smul, hσf]
       rw [hy, sub_self]
     have hkk := congrArg Subtype.val (d.sum_repr ⟨_, hk⟩)
@@ -198,8 +247,8 @@ theorem relLen_map_iff : ∀ (C : Type) [Field C] (v : AddValuation C (WithTop �
     have hB : ∀ k, (c' k : M') = ∑ j, B j k • (c j : M') := by
       intro k
       have h1 := congrArg f (hA (Sum.inr k))
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hb', Sum.elim_inr, hσf', map_sum, Fintype.sum_sum_type] at h1
+
+      rw [hb', Sum.elim_inr, hσf', map_sum, Fintype.sum_sum_type] at h1
       simpa [hb, hdf, hσf, B, Matrix.toBlocks₂₂] using h1
     rw [relLen_iff_of_basis v (Submodule.map_mono hle) c c' B hB]
     have hinl : ∀ i, Submodule.inclusion hle (b' (Sum.inl i)) = b (Sum.inl i) := by
@@ -211,7 +260,7 @@ theorem relLen_map_iff : ∀ (C : Type) [Field C] (v : AddValuation C (WithTop �
       simp [A, Matrix.toBlocks₁₁, hinl, Finsupp.single_apply, Matrix.one_apply, eq_comm]
     have h21 : A.toBlocks₂₁ = 0 := by
       ext i k
-      simp [A, Matrix.toBlocks₂₁, hinl, Finsupp.single_apply]
+      simp [A, Matrix.toBlocks₂₁, hinl]
     have hdet : A.det = B.det := by
       conv_lhs => rw [← Matrix.fromBlocks_toBlocks A, h11, h21]
       rw [Matrix.det_fromBlocks_zero₂₁, Matrix.det_one, one_mul]

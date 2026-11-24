@@ -1,10 +1,53 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.Hypotheses.GalCoh
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TransportA
+public import Formalism.GaloisCohomology.StatementLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DecompositionGroupEquivLocalGaloisGroup
-public import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohTopEuler
+public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
+public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTopEuler
+public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohField
+import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.EulerCharGaloisOfCardEq
+import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.MainCount
+import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TransportA
 
 @[expose] public section
 
@@ -15,7 +58,7 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.LocalEuler
 
 
-open PositivityTheory.LocalTateOrthogonality.Gcoh in
+open CompanionTheory.LocalTateOrthogonality.Gcoh (exists_card_eq_pow gc0 gc1 gc2 gcField gcRep top_euler) in
 theorem card_H1_eq_card_H0_mul_card_H2 (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p))
     (hK : FiniteDimensional ℚ_[p] K) (l : ℕ) [hl : Fact l.Prime] (hlp : l ≠ p) (r : ℕ) (M : Type)
     [AddCommGroup M] [Module (ZMod (l ^ r)) M] [Finite M] [TopologicalSpace M] [DiscreteTopology M]
@@ -74,7 +117,7 @@ theorem localEulerChar_holds : ReciprocityTheory.Gal.LocalEulerChar := by
     have hcomp : ∀ h m, rhoK (i h) m = rho h m := fun h m =>
       congrArg (fun g => rho g m) (i.symm_apply_apply h)
     have hcK : ContAction rhoK := hc.comp' i.symm.continuous
-    have h := PositivityTheory.LocalTateOrthogonality.Gcoh.top_euler l K hK r M rhoK hr hcK
+    have h := CompanionTheory.LocalTateOrthogonality.Gcoh.top_euler l K hK r M rhoK hr hcK
     rw [hdeg v hA] at h
     rw [← Nat.card_congr (ReciprocityTheory.Neutral.Bridge.equivH0OfIso i rhoK rho hcomp).toEquiv,
       ← Nat.card_congr (ReciprocityTheory.Neutral.Bridge.equivH1OfIso i rhoK rho hcomp).toEquiv,

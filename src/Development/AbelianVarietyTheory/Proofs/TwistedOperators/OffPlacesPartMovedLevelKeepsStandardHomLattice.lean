@@ -1,18 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SmulMtCutPartCompl
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SumProdPartialEqZero
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemGLintOfEntries
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLatticeStabilizerOfLocalIntegralInBasis
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExistsActO
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUnimod
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairPtsClasses
 
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.ExpansionInvariance
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 noncomputable section
 
@@ -28,8 +68,8 @@ theorem cpt_idemSum {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) (
     cpt Q (toEAf D e) = if Q ∈ P then 1 else 0 := by
   classical
   obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum]
+
+  rw [map_sum, map_sum]
   have h : ∀ PP ∈ P, cpt Q (toEAf D (es PP)) = if Q = PP then 1 else 0 := fun PP hP => by
     by_cases hq : Q = PP
     · subst hq; rw [if_pos rfl]; exact (cpt_of_isIdemAt (hes _ hP)).1
@@ -42,8 +82,8 @@ theorem cpt_cA_idemSum (V : HSp D) {e : AE D} {P : Finset (Pl D.host.E)} (he : I
     cpt Q (toEAf D (cA D e)) = if GlobalTheory.IdemSupport.cP Q ∈ P then 1 else 0 := by
   classical
   obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum]
+
+  rw [map_sum, map_sum, map_sum]
   have hc := (GlobalTheory.IdemSupport.supported_group_and_prime_idempotents V).2.2.2
   have h : ∀ PP ∈ P, cpt Q (toEAf D (cA D (es PP))) = if GlobalTheory.IdemSupport.cP Q = PP then 1 else 0 := fun PP hP => by
     have hi := hc PP (GlobalTheory.IdemSupport.cP PP) (es PP) (hes PP hP) ((GlobalTheory.IdemSupport.isConjPl_iff PP _).2 rfl)
@@ -86,7 +126,7 @@ theorem mix_map' {A B : Type} [CommRing A] [CommRing B] {n : Type} [DecidableEq 
     (a : Matrix n n A) :
     (f • a + (1 - f) • (1 : Matrix n n A)).map ψ = ψ f • a.map ψ + (1 - ψ f) • (1 : Matrix n n B) := by
   ext i j
-  by_cases h : i = j <;> simp [Matrix.one_apply, h]
+  by_cases h : i = j <;> simp [h]
 
 theorem mix_conj' {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n] (f : A) (β : GL n A)
     (y : Matrix n n A) :

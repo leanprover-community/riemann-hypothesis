@@ -1,8 +1,61 @@
 module
 
 public import Formalism.FlagUnipotentLattices.StabiliserComplementDecomposition
-public import Formalism.FlagUnipotentLattices.AlgebraicIdentityHigherDegree
-public import Formalism.FormalDegreeBessel.FinalG
+public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IntegrableOnIoiTruncatedPowerMoment
+public import Mathlib.CategoryTheory.Category.Basic
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
+public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -23,8 +76,8 @@ theorem orthogonality_relation : DualVectorOrthogonal := by
   intro V _ _ h r y f' b
   have h1 : h (formalDeterminantVector h y f') (f' b) =
       ((Matrix.of fun a b => h (y a) (f' b)).adjugate * (Matrix.of fun a b => h (y a) (f' b))) (Fin.last r) b := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [formalDeterminantVector, Matrix.mul_apply, map_sum]
+
+    simp [formalDeterminantVector, Matrix.mul_apply, map_sum]
   rw [h1, Matrix.adjugate_mul]
   by_cases hb : b = Fin.last r
   · subst hb; simp
@@ -148,13 +201,12 @@ theorem majorant_orthogonal_component : MajorantOrthogonalComponent := by
     rw [h1, inner_self_eq_norm_sq_to_K]; push_cast; rfl
 
 theorem majorant_parameter_choice_holds : SkewVectorChoice := by
-  have hPhase : MajorantPhaseChoice := majorant_phase_estimate_holds
   intro V _ _ θ hθ r y a hl
   obtain ⟨e', he1, _, he3, _⟩ := majorant_orthogonal_component V (r + 1) y a.castSucc
   obtain ⟨u, hu1, hu2, hu3, hu4⟩ := majorant_orthogonal_component V (r + 1) y a.succ
   have hu0 : u ≠ 0 := by
     intro h; apply hl; rw [← hu3, h, norm_zero]
-  obtain ⟨p1, p2, p3⟩ := hPhase V θ hθ u (y a.succ) (y '' {b | b ≤ a.castSucc}) hu0
+  obtain ⟨p1, p2, p3⟩ := majorant_phase_estimate_holds V θ hθ u (y a.succ) (y '' {b | b ≤ a.castSucc}) hu0
     (by
       rintro w ⟨b, hb, rfl⟩
       exact hu2 b (lt_of_le_of_lt (show b ≤ a.castSucc from hb) (Fin.castSucc_lt_succ)))
@@ -185,13 +237,13 @@ lemma s1c2_hL_apply {ι : Type*} [Fintype ι] (H : Matrix ι ι ℂ) (x y : ι �
 
 lemma s1c2_herm_sum_left {ι σ : Type*} [Fintype ι] (H : Matrix ι ι ℂ) (s : Finset σ) (c : σ → ℂ) (a : σ → ι → ℂ)
     (y : ι → ℂ) : herm H (∑ i ∈ s, c i • a i) y = ∑ i ∈ s, c i * herm H (a i) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← s1c2_hL_apply, map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul]
+
+  simp only [← s1c2_hL_apply, map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul]
 
 lemma s1c2_herm_sum_right {ι σ : Type*} [Fintype ι] (H : Matrix ι ι ℂ) (s : Finset σ) (c : σ → ℂ) (a : σ → ι → ℂ)
     (x : ι → ℂ) : herm H x (∑ i ∈ s, c i • a i) = ∑ i ∈ s, star (c i) * herm H x (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [← s1c2_hL_apply, map_sum, map_smulₛₗ, smul_eq_mul]; rfl
+
+  simp only [← s1c2_hL_apply, map_sum, map_smulₛₗ, smul_eq_mul]; rfl
 
 lemma s1c2_herm_sub_left {ι : Type*} [Fintype ι] (H : Matrix ι ι ℂ) (u v w : ι → ℂ) :
     herm H (u - v) w = herm H u w - herm H v w := by
@@ -207,11 +259,9 @@ lemma s1c2_herm_single {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι
 
 lemma s1c2_UH_of_isom {ι : Type*} [Fintype ι] [DecidableEq ι] (H p : Matrix ι ι ℂ)
     (h : ∀ x y, herm H (p *ᵥ x) (p *ᵥ y) = herm H x y) : p ∈ UH H := by
-  have : pᴴ * H * p = H := by
-    apply Matrix.ext
-    intro i j
-    rw [← s1c2_herm_single (pᴴ * H * p) i j, ← s1c2_herm_conj, h, s1c2_herm_single]
-  exact this
+  change pᴴ * H * p = H
+  ext i j
+  rw [← s1c2_herm_single (pᴴ * H * p) i j, ← s1c2_herm_conj, h, s1c2_herm_single]
 
 section ext
 variable {ι σ : Type*} [Fintype ι] [DecidableEq ι] [Fintype σ] [DecidableEq σ]
@@ -238,10 +288,8 @@ lemma s1c2_gram_f (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z
   by_cases h : a = Fin.last r ∧ b = Fin.last r
   · obtain ⟨rfl, rfl⟩ := h; simp [ggLastU]
   · rw [if_neg h]
-    have : ggLastU r b a = 0 := by
-      unfold ggLastU
-      rw [if_neg (fun h' => h ⟨h'.2, h'.1⟩)]
-    rw [this, mul_zero]
+    unfold ggLastU
+    rw [if_neg (fun h' => h ⟨h'.2, h'.1⟩), mul_zero]
 
 lemma s1c2_upper_last {r : ℕ} (a : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (ha : IsUpperUnitriangular a) (b : Fin (r + 1)) :
     a (Fin.last r) b = if b = Fin.last r then 1 else 0 := by
@@ -255,10 +303,7 @@ lemma s1c2_adj_last {r : ℕ} (B : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (hB :
   have h := congrFun (congrFun (Matrix.mul_adjugate B) (Fin.last r)) c
   rw [hdet, one_smul, Matrix.mul_apply, Finset.sum_eq_single (Fin.last r)] at h
   · rw [hB.1, one_mul] at h
-    rw [h, Matrix.one_apply]
-    by_cases hc : c = Fin.last r
-    · simp [hc]
-    · simp [hc, Ne.symm hc]
+    simpa [Matrix.one_apply, eq_comm] using h
   · intro d _ hd; rw [s1c2_upper_last B hB, if_neg hd, zero_mul]
   · intro h'; exact absurd (Finset.mem_univ _) h'
 
@@ -353,10 +398,9 @@ lemma s1c2_herm_mid (k r : ℕ) (z' d : Fin (2 * r + k + 1) → ℂ) (hz' : inWb
 
 lemma s1c2_herm_Pm (k r : ℕ) (z' x : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k r z') :
     herm (Hpk k r) (reflectFlagCoordinates k r x) z' = herm (Hpk k r) x z' := by
-  have := s1c2_herm_mid k r z' (reflectFlagCoordinates k r x - x) hz' (by
-    intro i h1 h2; simp [reflectFlagCoordinates, h1, h2])
-  rw [s1c2_herm_sub_left, sub_eq_zero] at this
-  exact this
+  simpa [s1c2_herm_sub_left, sub_eq_zero] using
+    s1c2_herm_mid k r z' (reflectFlagCoordinates k r x - x) hz' (by
+      intro i h1 h2; simp [reflectFlagCoordinates, h1, h2])
 
 lemma s1c2_herm_e (k r : ℕ) (x : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     herm (Hpk k r) x (bvec (eI k r a)) = x (esI k r a) := by
@@ -490,8 +534,7 @@ theorem dual_vector_equivariant : DualVectorEquivariant := by
 
 lemma s1c2_det_map_star {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℂ) :
     (A.map star).det = star A.det := by
-  have := (starRingEnd ℂ).map_det A
-  rw [show star A.det = (starRingEnd ℂ) A.det from rfl, this]
+  rw [show star A.det = (starRingEnd ℂ) A.det from rfl, (starRingEnd ℂ).map_det A]
   rfl
 
 open Formalism.QuantumDeterminants.WeylGroupFacts in
@@ -575,9 +618,7 @@ theorem nilpotent_model_computation_holds : RankTwoNilpotentGroup := by
   have h3 : Y * Y * Y = 0 := by
     apply matrix_eq_of_forall_mulVec_eq
     intro x
-    rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hYx' x, Matrix.mulVec_sub, Matrix.mulVec_smul,
-      Matrix.mulVec_smul, hYe', hYv', Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_smul, Matrix.mulVec_smul,
-      hYe']
+    rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hYY x, Matrix.mulVec_smul, hYe', smul_zero]
     simp
   have hadd : ∀ s t : ℝ, nilpotentExpSquare H e v (s + t) = nilpotentExpSquare H e v s * nilpotentExpSquare H e v t := by
     intro s t
@@ -695,9 +736,8 @@ theorem nilpotent_model_computation_holds : RankTwoNilpotentGroup := by
 theorem derivative_of_psi_holds : CharacterDerivativeNorm := by
   intro k r z hz a e v ka l he hv hl t
   obtain ⟨_, _, h3⟩ := nilpotent_model_computation_holds k r z hz a e v he hv
-  have h4 := (h3 t).2
   unfold Formalism.QuantumDeterminants.psi
-  rw [h4, hl]
+  rw [(h3 t).2, hl]
   have h5 : (ka : ℂ) * Formalism.QuantumDeterminants.cStd * ((t : ℂ) * (-Complex.I * (l : ℂ))) = ((-(2 * ka * l * t) : ℝ) : ℂ) := by
     unfold Formalism.QuantumDeterminants.cStd
     push_cast

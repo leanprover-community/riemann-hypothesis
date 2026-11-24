@@ -1,9 +1,53 @@
 module
 
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.LocpairAlg
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictAd
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
+public import GroundTheory.GlobalFields.LocalFieldAtPlace
+public import GroundTheory.LocalFields.PadicLogSeries
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GlobalUnitScalingHaarProductFormula
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.BoxFunMemSB
+import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.AdelicSchrodingerTensorEqLocalOfSupportedAt
+import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
 
 @[expose] public section
 
@@ -75,11 +119,11 @@ section Fun
 
 variable {κ : Type} [Fintype κ] {ψ : AddChar (AF F) ℂ}
 
-theorem std_ne (h : IsStd ψ) (v : Pl F) : ψ ≠ 1 := fun e => GlobalTheory.PsiNontriv.psiV_ne_one ψ h v (by rw [e]; rfl)
+theorem std_ne (h : IsStd ψ) (v : Pl F) : ψ ≠ 1 := fun e => Tw.PsiNontriv.psiV_ne_one ψ h v (by rw [e]; rfl)
 
 theorem acts_schr (ψ : AddChar (AF F) ℂ) {w : (κ → AF F) × (κ → AF F)} (hw : At (evFin F v) w) (φ : (κ → Fv F v) → ℂ) :
     Acts (evFin F v) (schr ψ w) φ (schr (GlobalTheory.VacAny.psiV ψ v) (locW v w) φ) := fun r hr =>
-  GlobalTheory.SchrLoc.schr_tens_of_at ψ v w (fun i a ha => congrFun (congrArg Prod.fst (hw a ha)) i)
+  Tw.SchrLoc.schr_tens_of_at ψ v w (fun i a ha => congrFun (congrArg Prod.fst (hw a ha)) i)
     (fun i a ha => congrFun (congrArg Prod.snd (hw a ha)) i) φ r hr.1
 
 omit [Fintype κ] in

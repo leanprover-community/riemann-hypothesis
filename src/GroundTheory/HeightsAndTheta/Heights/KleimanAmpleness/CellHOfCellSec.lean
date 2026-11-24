@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellMeets
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemChartSecOverOfMem
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
 
 @[expose] public section
 

@@ -1,10 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.PolynomialDimension.StatementNum
-public import Formalism.PolynomialDimension.WeylDim
-public import Formalism.PolynomialDimension.FrameSum
-public import Formalism.SubspaceCounting.Statement
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Basic.Real.Basic
 
 @[expose] public section
 

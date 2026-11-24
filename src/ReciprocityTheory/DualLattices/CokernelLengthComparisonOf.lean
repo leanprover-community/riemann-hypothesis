@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.CokernelLengthComparisonStatement
-public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

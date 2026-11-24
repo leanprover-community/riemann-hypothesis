@@ -1,11 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsIsArchimedeanAdeleChartOfRealChart
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRealPointUnitaryWithComponents
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsIsArchimedeanAdeleChartOfRealChart
+public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRealPointUnitaryWithComponents
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -52,9 +91,9 @@ theorem nil_adj (c : A →+* A) (hc : ∀ a, c (c a) = a) (x : Fin n → A) (J :
     (hJ : ∀ i j, c (J i j) = J j i) :
     Formalism.UG.cT c (vecMulVec x ((fun i => c (x i)) ᵥ* J)) * J = J * vecMulVec x ((fun i => c (x i)) ᵥ* J) := by
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Formalism.UG.cT, transpose_apply, map_apply, Matrix.mul_apply, vecMulVec_apply, vecMul, dotProduct, map_mul,
-    map_sum, hc, hJ, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [Formalism.UG.cT, transpose_apply, map_apply, Matrix.mul_apply, vecMulVec_apply, vecMul, dotProduct, map_mul,
+  map_sum, hc, hJ, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
@@ -291,8 +330,8 @@ theorem archM_eq {θ : InfFam D} (hθ : IsInfFam θ) {V : HSp D} (ξ : Fin V.ran
   have e2 : ∀ x, ((θ τ).comp (infPart D)) (incA D x) = tauE D τ x := comp_incA hθ τ
   have e3 : ∀ x, tauE D τ ((D.sp.cm.sig : D.host.E →+* D.host.E) x) = star (tauE D τ x) := tauE_star τ
   rw [Matrix.map_apply, Matrix.map_apply, e2]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [vecMulVec_apply, vecMul, dotProduct, map_mul, map_sum, e3, Pi.star_apply, gramAt, Matrix.map_apply]
+
+  simp only [vecMulVec_apply, vecMul, dotProduct, map_mul, map_sum, e3, Pi.star_apply, gramAt, Matrix.map_apply]
 
 theorem mem_ZI {V : HSp D} {ξ : Fin V.rank → D.host.E} (h : IsoVec V ξ) (z : GA D V) :
     z ∈ ZI V ξ ↔ ∃ s, tvHom (AF D.host.F) D.sp.cm.sig (nilM_sq h) (nilM_adj V ξ) (sig_sqrt D) s = z := by

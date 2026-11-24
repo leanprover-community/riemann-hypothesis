@@ -1,8 +1,50 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.Joints
+import Formalism.LocalRingCardinality.ColumnWeightSpreadOffTop
+import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSa
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.MeanNum
-public import Development.AutomorphicArithmetic.CyclotomicBounds.NotInert
+import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
 
 @[expose] public section
 
@@ -144,7 +186,7 @@ theorem localLength_le_ceil_log_mul {D : D7} (L : SizeData₂ D) (hS : Formalism
         have := Real.log_le_log hk0 hK.2
         rwa [Real.log_rpow hx0] at this
       push_cast
-      nlinarith [hlk]
+      linarith only [hlk]
   rw [Real.logb, div_le_iff₀ hlogp0]
   have c1 : 4 * ((9 / 2 + 10 * L.sc.eps + L.sc.eps / 100) + 26) ≤ 123 := by linarith
   have c2 : 4 * ((9 / 2 + 10 * L.sc.eps + L.sc.eps / 100) + 26) * Real.log L.sc.x ≤ 123 * Real.log L.sc.x :=
@@ -168,23 +210,13 @@ theorem thirteen_le {D : D7} (L : SizeData₂ D) (h13 : 13 ≤ ⌊L.sc.x ^ (L.sc
     (hc0 : IsResidueClassZero D p) : 13 ≤ p := by
 
   by_contra hlt
-  push_neg at hlt
-  have hle : p ≤ D.host.splitBound := le_trans (le_of_lt hlt) (le_trans h13 L.split_tie)
-  have hjac : jacobiSym (-(D.host.d : ℤ)) p = 1 := by
-    rcases eq_or_ne p 2 with h2 | h2
-    · subst h2
-      have hd : D.host.d % 8 = 7 := by
-        first
-          | exact Formalism.HC.HostRaw.d_mod_eight
-          | exact Formalism.HC.HostRaw.d_mod_eight _
-          | exact Formalism.HC.HostRaw.d_mod_eight D.host.toHostAx
-      have h2m : (-(D.host.d : ℤ)) % ((2:ℕ) : ℤ) = 1 := by push_cast; omega
-      rw [jacobiSym.mod_left, h2m, jacobiSym.one_left]
-    · exact D.host.split_small p hp h2 hle
-  have hne : D.host.cls p ≠ PrimeClass.inertClass := by
-    unfold Formalism.BasicNotions.Host.cls Formalism.BasicNotions.primeClass
-    split_ifs <;> simp_all
-  exact hne hc0
+  have hle : p ≤ D.host.splitBound := (le_of_lt (Nat.lt_of_not_ge hlt)).trans (h13.trans L.split_tie)
+  have hc : primeClass D.host.toHostRaw p = PrimeClass.inertClass := hc0
+  obtain ⟨hs, -, -, hj, -⟩ := (primeClass_eq_inert_iff D.host.toHostRaw).1 hc
+  have hne2 : p ≠ 2 := by
+    rintro rfl
+    exact hs D.host.two_mem_small
+  exact hj (D.host.split_small p hp hne2 hle)
 
 theorem Sc_le {D : D7} (L : SizeData₂ D) (hS : Formalism.MainNotions.SizesAt L) : L.Sc ≤ L.sc.b' / L.sc.x := by
 
@@ -314,7 +346,7 @@ def NumII (D : D7) (L : SizeData₂ D) (K : Consts) (p n' N : ℕ) : Prop :=
         L.sc.x ^ Scale.A ≤ L.sc.a - cG L
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 < C31) :
     ∀ᶠ x : ℝ in atTop, ∀ (D : D7) (L : SizeData₂ D), L.sc.x = x → L.sc.eps = eps → Formalism.MainNotions.SizesAt L →
       ∀ p n' N : ℕ, p.Prime → (p : ℝ) < L.sc.p0 D.R.k → L.sc.x ^ (L.sc.eps / 4) ≤ (n' : ℝ) → n' ≤ D.R.n → N ≤ n' →
@@ -342,7 +374,7 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
   have hx1 := L.sc.one_lt_alt
   have lx1 : 1 ≤ Real.log L.sc.x := (Real.le_log_iff_exp_le hx0).2 hxe
   have hk1 := Pf.one_le_k D
-  have hk0 : (0 : ℝ) < (D.R.k : ℝ) := by linarith
+  have hk0 : (0 : ℝ) < (D.R.k : ℝ) := zero_lt_one.trans_le hk1
   have hk6r := Pf.k_le_x_pow_six L hS
   have hk6 : (D.R.k : ℝ) ≤ L.sc.x ^ 6 := by
     rwa [show (6 : ℝ) = ((6 : ℕ) : ℝ) by norm_num, Real.rpow_natCast] at hk6r
@@ -352,20 +384,21 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
     rw [show 3 * Scale.A = ((78 : ℕ) : ℝ) by unfold Scale.A; norm_num, Real.rpow_natCast]
   have hd1 : L.sc.delta1 ≤ 1 := by
     unfold Scale.delta1
-    exact Real.rpow_le_one_of_one_le_of_nonpos hx1.le (by linarith)
+    exact Real.rpow_le_one_of_one_le_of_nonpos hx1.le (by linarith only [he0])
   have hd0 := Pf.sc_delta1_pos L.sc
   have hScb := Sc_le L hS
   obtain ⟨hSN, -, hSK, -⟩ := hS
   unfold Formalism.MainNotions.SizeN Formalism.MainNotions.szTh at hSN
   unfold Formalism.MainNotions.SizeK Formalism.MainNotions.szTh at hSK
   have hklo : L.sc.x ^ (9 / 2 : ℝ) ≤ (D.R.k : ℝ) :=
-    le_trans (Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith)) hSK.1
+    le_trans (Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith only [he0])) hSK.1
   have hk4 : L.sc.x ^ 4 ≤ (D.R.k : ℝ) := by
     refine le_trans ?_ hklo
     rw [← Real.rpow_natCast]
     exact Real.rpow_le_rpow_of_exponent_le hx1.le (by norm_num)
   have hn3 : (D.R.n : ℝ) ≤ L.sc.x ^ 3 := by
-    have := le_trans hSN.2 (Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith : 2 + 8 * L.sc.eps + L.sc.eps / 100 ≤ (3 : ℝ)))
+    have := le_trans hSN.2 (Real.rpow_le_rpow_of_exponent_le hx1.le
+      (by linarith only [he1] : 2 + 8 * L.sc.eps + L.sc.eps / 100 ≤ (3 : ℝ)))
     rwa [show (3 : ℝ) = ((3 : ℕ) : ℝ) by norm_num, Real.rpow_natCast] at this
   have hn'3 : (n' : ℝ) ≤ L.sc.x ^ 3 := le_trans (by exact_mod_cast hn'n) hn3
   have hN3 : (N : ℝ) ≤ L.sc.x ^ 3 := le_trans (by exact_mod_cast hNn') hn'3
@@ -374,21 +407,25 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
   have hN1c := Pf.first_count_le_log L.sc hxe
   have hN1x : (N1 L.sc : ℝ) ≤ L.sc.x := by
     rw [Real.rpow_one] at f2
-    linarith
+    exact hN1c.trans f2
   have hN10 : (0 : ℝ) ≤ (N1 L.sc : ℝ) := Nat.cast_nonneg _
   have hrx : (rG L.sc : ℝ) ≤ L.sc.x := hxr
   have hr0 : (0 : ℝ) ≤ (rG L.sc : ℝ) := Nat.cast_nonneg _
   have hxex : L.sc.x ^ L.sc.eps ≤ L.sc.x := by
-    have := Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith : L.sc.eps ≤ (1 : ℝ))
+    have := Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith only [he1] : L.sc.eps ≤ (1 : ℝ))
     rwa [Real.rpow_one] at this
   have hloga : Real.log L.sc.a = Real.log L.sc.x + L.sc.x ^ L.sc.eps := by
     unfold Scale.a Scale.b Scale.L
     rw [Real.log_mul hx0.ne' (Real.exp_pos _).ne', Real.log_exp]
-  have hlx : Real.log L.sc.x ≤ L.sc.x := (Real.log_le_sub_one_of_pos hx0).trans (by linarith)
-  have hloga2 : Real.log L.sc.a ≤ 2 * L.sc.x := by rw [hloga]; linarith
+  have hlx : Real.log L.sc.x ≤ L.sc.x :=
+    (Real.log_le_sub_one_of_pos hx0).trans (sub_le_self _ zero_le_one)
+  have hloga2 : Real.log L.sc.a ≤ 2 * L.sc.x := by
+    rw [hloga, two_mul]
+    exact add_le_add hlx hxex
   have hloga0 : 0 ≤ Real.log L.sc.a := Real.log_nonneg (Pf.sc_one_lt_a L.sc).le
   have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
-  have hpp : (0 : ℝ) < p := by linarith
+  have hp1 : (1 : ℝ) < p := by linarith only [hp2]
+  have hpp : (0 : ℝ) < p := zero_lt_one.trans hp1
   have hp0' : (p : ℝ) < (D.R.k : ℝ) ^ 2 * L.sc.x ^ 26 := by
     have := hp0
     unfold Scale.p0 at this
@@ -408,7 +445,7 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
       congr 1
       push_cast
       ring
-    have hCl : 0 < C31 * Real.log L.sc.x := by positivity
+    have hCl : 0 < C31 * Real.log L.sc.x := mul_pos h31 (zero_lt_one.trans_le lx1)
     have h1 : (n' : ℝ) * L.sc.delta1 ≤ (N : ℝ) * (C31 * Real.log L.sc.x) := (div_le_iff₀ hCl).1 hNlo
     have h2 : y ^ 3 ≤ (N : ℝ) * y := by
       calc y ^ 3 = L.sc.x ^ (L.sc.eps / 4) * L.sc.delta1 := hy3
@@ -428,11 +465,12 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
     have h5 : N1 L.sc ^ 2 ≤ N := by exact_mod_cast h4
     exact le_trans h5 (Nat.le_mul_of_pos_left _ (by unfold rG; omega))
   ·
-    have hZ0 : 0 < ((D.R.k : ℝ) * L.sc.x ^ Scale.A) ^ 4 := by positivity
+    have hZ0 : 0 < ((D.R.k : ℝ) * L.sc.x ^ Scale.A) ^ 4 :=
+      pow_pos (mul_pos hk0 (Real.rpow_pos_of_pos hx0 _)) 4
     have h1 : ((D.R.k : ℝ) * L.sc.x ^ Scale.A) ^ 4 ≤ (p : ℝ) ^ (L1 D L.sc p) := by
       have h := Nat.le_ceil (Real.logb p (((D.R.k : ℝ) * L.sc.x ^ Scale.A) ^ 4))
-      have h' := Real.rpow_le_rpow_of_exponent_le (by linarith : (1 : ℝ) ≤ p) h
-      rw [Real.rpow_logb hpp (by linarith) hZ0, Real.rpow_natCast] at h'
+      have h' := Real.rpow_le_rpow_of_exponent_le hp1.le h
+      rw [Real.rpow_logb hpp hp1.ne' hZ0, Real.rpow_natCast] at h'
       exact h'
     rw [hA26] at h1
     rw [zpow_sub_one₀ hpp.ne', zpow_natCast, ← div_eq_mul_inv, le_div_iff₀ hpp]
@@ -442,7 +480,8 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
       _ ≤ _ := h1
   ·
     have h1 : 256 * (N : ℝ) ≤ L.sc.x ^ 26 := by
-      calc 256 * (N : ℝ) ≤ L.sc.x * L.sc.x ^ 3 := by gcongr; linarith
+      calc 256 * (N : ℝ) ≤ L.sc.x * L.sc.x ^ 3 :=
+            mul_le_mul (by linarith only [hx500]) hN3 hN0 hx0.le
         _ = L.sc.x ^ 4 := by ring
         _ ≤ L.sc.x ^ 26 := pow_le_pow_right₀ hx1.le (by norm_num)
     calc 256 * (D.R.k : ℝ) ^ 2 * (N : ℝ) * (L.sc.x ^ 26) ^ 2 = (D.R.k : ℝ) ^ 2 * (256 * (N : ℝ)) * L.sc.x ^ 52 := by ring
@@ -453,7 +492,8 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
       calc L.sc.x = L.sc.x ^ 1 := (pow_one _).symm
         _ ≤ L.sc.x ^ 3 := pow_le_pow_right₀ hx1.le (by norm_num)
     have h4 : 4 * L.sc.x ≤ L.sc.x ^ 4 := by
-      calc 4 * L.sc.x ≤ L.sc.x ^ 3 * L.sc.x := by gcongr; linarith
+      calc 4 * L.sc.x ≤ L.sc.x ^ 3 * L.sc.x :=
+            mul_le_mul_of_nonneg_right ((by linarith only [hx500] : (4 : ℝ) ≤ L.sc.x).trans h3) hx0.le
         _ = L.sc.x ^ 4 := by ring
     have h : (N1 L.sc : ℝ) + 2 * (rG L.sc : ℝ) + (rG L.sc : ℝ) ≤ (D.R.k : ℝ) := by
       calc (N1 L.sc : ℝ) + 2 * (rG L.sc : ℝ) + (rG L.sc : ℝ) ≤ L.sc.x + 2 * L.sc.x + L.sc.x := by gcongr
@@ -475,18 +515,21 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
     have hb0 := Pf.sc_b'_nonneg L.sc
     have hb1 : 1 ≤ L.sc.b' := by
       rw [Pf.b'_eq]
-      have h1 : L.sc.x ^ (L.sc.eps / 3) ≤ L.sc.x ^ L.sc.eps := Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith)
-      have h2 : 1 ≤ Real.exp (L.sc.x ^ L.sc.eps - L.sc.x ^ (L.sc.eps / 3)) := Real.one_le_exp (by linarith)
-      nlinarith
-    have hcG0 : 0 ≤ cG L := by unfold cG; have := L.Sc_pos; linarith
-    have hbx : L.sc.b' / L.sc.x ≤ L.sc.b' / 4 := div_le_div_of_nonneg_left hb0 (by norm_num) (by linarith)
-    have hcG : cG L ≤ L.sc.b' := by unfold cG; linarith
-    have hc00 : 0 ≤ c0num L := by unfold c0num; linarith
+      have h1 : L.sc.x ^ (L.sc.eps / 3) ≤ L.sc.x ^ L.sc.eps :=
+        Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith only [he0])
+      have h2 : 1 ≤ Real.exp (L.sc.x ^ L.sc.eps - L.sc.x ^ (L.sc.eps / 3)) :=
+        Real.one_le_exp (sub_nonneg.mpr h1)
+      exact one_le_mul_of_one_le_of_one_le hx1.le h2
+    have hcG0 : 0 ≤ cG L := by unfold cG; linarith only [L.Sc_pos]
+    have hbx : L.sc.b' / L.sc.x ≤ L.sc.b' / 4 :=
+      div_le_div_of_nonneg_left hb0 (by norm_num) (by linarith only [hx500])
+    have hcG : cG L ≤ L.sc.b' := by unfold cG; linarith only [hScb, hbx]
+    have hc00 : 0 ≤ c0num L := by unfold c0num; linarith only [hb0, hcG0]
     have hc0 : c0num L ≤ 5 * L.sc.b' := by
       unfold c0num
-      linarith
-    have hQ0 : 0 < Qp L.sc p := by unfold Qp; positivity
-    have hlp0 : 0 ≤ Real.log p := Real.log_nonneg (by linarith)
+      linarith only [hb0, hcG]
+    have hQ0 : 0 < Qp L.sc p := pow_pos hpp (Gp L.sc)
+    have hlp0 : 0 ≤ Real.log p := Real.log_nonneg hp1.le
     have hlp : Real.log p ≤ 38 * Real.log L.sc.x := by
       have h1 : (p : ℝ) ≤ L.sc.x ^ 38 := by
         calc (p : ℝ) ≤ (D.R.k : ℝ) ^ 2 * L.sc.x ^ 26 := hp0'.le
@@ -506,7 +549,7 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
           ≤ (Pf.cGE L.sc.eps * Real.log L.sc.x * L.sc.x ^ (L.sc.eps / 8)) * (38 * Real.log L.sc.x) := by gcongr
         _ = (38 * Pf.cGE L.sc.eps * Real.log L.sc.x) * (1 * Real.log L.sc.x) * L.sc.x ^ (L.sc.eps / 8) := by ring
         _ ≤ L.sc.x ^ (L.sc.eps / 96) * L.sc.x ^ (L.sc.eps / 96) * L.sc.x ^ (L.sc.eps / 8) := by
-            have q1 : 0 ≤ 1 * Real.log L.sc.x := by linarith
+            have q1 : 0 ≤ 1 * Real.log L.sc.x := mul_nonneg zero_le_one (zero_le_one.trans lx1)
             gcongr
         _ = L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48) := by
             rw [← Real.rpow_add hx0, ← Real.rpow_add hx0]
@@ -515,28 +558,31 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
     have hQE : Qp L.sc p ≤ Real.exp (L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48)) := by
       rw [← Real.exp_log hQ0]
       exact Real.exp_le_exp.2 hlQ
-    have hlb0 : 0 ≤ Real.logb p L.sc.a := Real.logb_nonneg (by linarith) (Pf.sc_one_lt_a L.sc).le
+    have hlb0 : 0 ≤ Real.logb p L.sc.a := Real.logb_nonneg hp1 (Pf.sc_one_lt_a L.sc).le
     have hlb : Real.logb p L.sc.a ≤ 4 * L.sc.x := by
       unfold Real.logb
-      have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := by have := Real.log_two_gt_d9; linarith
+      have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := by linarith only [Real.log_two_gt_d9]
       have hlp : (1 / 2 : ℝ) ≤ Real.log p := le_trans hl2 (Real.log_le_log (by norm_num) hp2)
-      rw [div_le_iff₀ (by linarith)]
-      nlinarith
-    have hNp0 : 0 ≤ NplusF L.sc n' := by unfold NplusF; positivity
+      rw [div_le_iff₀ (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1 / 2) hlp)]
+      calc Real.log L.sc.a ≤ 2 * L.sc.x := hloga2
+        _ = (4 * L.sc.x) * (1 / 2) := by ring
+        _ ≤ _ := mul_le_mul_of_nonneg_left hlp (mul_nonneg (by norm_num) hx0.le)
+    have h40 : (0 : ℝ) ≤ 40 := by norm_num
+    have hNp0 : 0 ≤ NplusF L.sc n' := mul_nonneg (mul_nonneg h40 hn'0) hd0.le
     have hNp : NplusF L.sc n' ≤ 40 * L.sc.x ^ 3 := by
-      unfold NplusF
-      have := mul_le_mul hn'3 hd1 hd0.le (by positivity)
-      nlinarith
+      calc NplusF L.sc n' = 40 * (n' : ℝ) * L.sc.delta1 := rfl
+        _ ≤ 40 * (n' : ℝ) * 1 := mul_le_mul_of_nonneg_left hd1 (mul_nonneg h40 hn'0)
+        _ = 40 * (n' : ℝ) := mul_one _
+        _ ≤ 40 * L.sc.x ^ 3 := mul_le_mul_of_nonneg_left hn'3 h40
     have hDIIf : ((DIIf K L p n' : ℕ) : ℝ) ≤ L.sc.x ^ 18 * L.sc.b' := by
       unfold DIIf
       have hW0 : 0 ≤ K.DII * NplusF L.sc n' * ((N1 L.sc : ℝ) ^ 3 + (rG L.sc : ℝ) ^ 5 + (D.R.k : ℝ) ^ 2) *
           Real.logb p L.sc.a + 2 * (rG L.sc : ℝ) * (n' : ℝ) * cG L + (rG L.sc : ℝ) * NplusF L.sc n' * c0num L := by
         positivity
-      have h1 := Nat.ceil_lt_add_one hW0
       have h2 := DII_arith L.sc.x K.DII (NplusF L.sc n') (N1 L.sc : ℝ) (rG L.sc : ℝ) (D.R.k : ℝ)
         (Real.logb p L.sc.a) (n' : ℝ) (cG L) (c0num L) L.sc.b' hx500 hDII0 hNp0 hN10 hr0 hk0.le hlb0 hn'0 hcG0 hc00
         hxDII hNp hN1x hrx hk6 hlb hn'3 hcG hc0 hb1
-      linarith
+      exact (Nat.ceil_lt_add_one hW0).le.trans h2
     apply SzII_arith L.sc.x K.szII _ _ _ _ _ _ _ _ _
       (Real.exp (L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48)) ^ 5) L.sc.b' _ hx500 hsz0 hk0.le hr0 hN0 hn'0 (by positivity)
       (Nat.cast_nonneg _) hcG0 hc00 hxsz hk6 hrx hN3 hn'3 (by gcongr) hDIIf hcG hc0 hb1 rfl
@@ -544,7 +590,7 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
     set E := Real.exp (L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48)) ^ 5 with hE
     have hE1 : 1 ≤ E := one_le_pow₀ (Real.one_le_exp (Real.rpow_nonneg hx0.le _))
     have hX'0 : 0 < L.sc.X' := by unfold Scale.X'; exact Real.exp_pos _
-    have hab : L.sc.a = L.sc.b' * L.sc.X' := by unfold Scale.b'; field_simp
+    have hab : L.sc.a = L.sc.b' * L.sc.X' := (div_mul_cancel₀ L.sc.a hX'0.ne').symm
     have hX : L.sc.x ^ 70 * E ≤ L.sc.X' := by
       have e1 : L.sc.x ^ 70 = Real.exp ((70 : ℕ) * Real.log L.sc.x) := by
         rw [Real.exp_nat_mul, Real.exp_log hx0]
@@ -552,22 +598,24 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
       unfold Scale.X'
       apply Real.exp_le_exp.2
       push_cast
-      linarith
+      linarith only [f11, f12]
     have h69 : 1 ≤ L.sc.x ^ 69 := one_le_pow₀ hx1.le
-    have h69E : 1 ≤ L.sc.x ^ 69 * E := by
-      calc (1 : ℝ) = 1 * 1 := by ring
-        _ ≤ L.sc.x ^ 69 * E := by gcongr
+    have h69E : 1 ≤ L.sc.x ^ 69 * E := one_le_mul_of_one_le_of_one_le h69 hE1
     have h70 : L.sc.x ^ 69 * E + 1 ≤ L.sc.X' := by
       have : 2 * (L.sc.x ^ 69 * E) ≤ L.sc.x ^ 70 * E := by
-        calc 2 * (L.sc.x ^ 69 * E) ≤ L.sc.x * (L.sc.x ^ 69 * E) := by gcongr; linarith
+        calc 2 * (L.sc.x ^ 69 * E) ≤ L.sc.x * (L.sc.x ^ 69 * E) :=
+              mul_le_mul_of_nonneg_right (by linarith only [hx500]) (zero_le_one.trans h69E)
           _ = L.sc.x ^ 70 * E := by ring
-      linarith
-    have := mul_le_mul_of_nonneg_right h70 hb0
-    rw [hab]
-    nlinarith
+      linarith only [this, h69E, hX]
+    apply le_sub_iff_add_le.mpr
+    calc L.sc.x ^ 69 * (E * L.sc.b') + cG L
+        ≤ L.sc.x ^ 69 * (E * L.sc.b') + L.sc.b' := add_le_add (le_refl _) hcG
+      _ = (L.sc.x ^ 69 * E + 1) * L.sc.b' := by rw [add_mul, one_mul, mul_assoc]
+      _ ≤ L.sc.X' * L.sc.b' := mul_le_mul_of_nonneg_right h70 hb0
+      _ = L.sc.a := by rw [hab, mul_comm]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem hypIIAt_ev (eps ez : ℝ) (hez0 : 0 < ez) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 < C31) :
     ∀ᶠ x : ℝ in atTop, ∀ (D : D7) (L : SizeData₂ D) (X : Inst D L), L.sc.x = x → L.sc.eps = eps → L.sc.ez = ez → Formalism.MainNotions.SizesAt L →
       La K L.sc = L.LaG → rho D K L.sc ≤ L.sc.x ^ (-2 : ℝ) → AuxBlock8.adm1 D L X C31 → HypIIAt D L X K := by

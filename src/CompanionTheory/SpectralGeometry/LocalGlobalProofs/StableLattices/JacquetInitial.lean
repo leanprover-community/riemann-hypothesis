@@ -1,10 +1,22 @@
 module
 
-public import Mathlib
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.InfinitesimalCharacterPaths.TensDecomp
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliPolynomialCoefficientsIdeal
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ConjQdet
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.PolynomialNilpotentPath
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HasCharSub
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsEvalAtOfMem
+public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.HilbertSchmidtDecay.AbsoluteL2Bound
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantCoefficientsExpansion
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
+import Formalism.RealPlaceAnalysis.StatementE
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliOperatorsCommute
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GlRelationsDerivativePreserved
+import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Tactic.TypeStar
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HasCharSub
 
 @[expose] public section
 
@@ -103,8 +115,8 @@ theorem coef_mem {M : Type*} [AddCommGroup M] [Module ℂ M] (P : Submodule ℂ 
     have e : ℓ' (∑ j ∈ Finset.range l, t ^ j • c j) = 0 := by
       show ℓ (P.mkQ _) = 0
       rw [Submodule.mkQ_apply, (Submodule.Quotient.mk_eq_zero P).2 (h t), map_zero]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, smul_eq_mul] at e
+
+    simp only [map_sum, map_smul, smul_eq_mul] at e
     simp only [p, Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,
       Polynomial.eval_X, Polynomial.eval_zero]
     rw [← e]
@@ -261,7 +273,7 @@ theorem nil_key (F : Filt X A) (B : GradBasis A) (W' : Submodule ℂ (Module.Dua
     have := hX a b c d
     simp only [E']
     split_ifs at this ⊢ <;> simpa using this)
-  have key := GlobalTheory.T.capelliDet_block_levi_congr_mod_upperBlockIdeal ↥(stabD W') (dims n B.j) B.hj E' hE' Y
+  have key := _root_.GlobalTheory.CapHC.qdet_blocks_congr ↥(stabD W') (dims n B.j) B.hj E' hE' Y
   set D := qdet (Eb X B) (Y + ((n : ℂ) - 1) / 2) with hD
   set b := (List.ofFn fun i : Fin 3 => Qb X B i Y).prod with hb
   have hval : ∀ y ∈ Submodule.span ℂ {y : ↥(stabD W') | ∃ (p q : Fin n) (w : ↥(stabD W')),
@@ -753,7 +765,7 @@ section MainPart
 theorem modExp_zero (d : Fin 3 → ℕ) : modExp (fun i => Fin (d i)) 0 = (d 1 : ℤ) + d 2 := by
   have h1 : (Finset.univ.filter fun b : Fin 3 => (0 : Fin 3) < b) = {1, 2} := by decide
   have h2 : (Finset.univ.filter fun b : Fin 3 => b < (0 : Fin 3)) = ∅ := by decide
-  simp [modExp, h1, h2]
+  simp [modExp, h1]
 
 theorem modExp_two (d : Fin 3 → ℕ) : modExp (fun i => Fin (d i)) 2 = -((d 0 : ℤ) + d 1) := by
   have h1 : (Finset.univ.filter fun b : Fin 3 => (2 : Fin 3) < b) = ∅ := by decide

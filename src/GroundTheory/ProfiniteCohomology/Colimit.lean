@@ -1,11 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ColimitDefs
-public import GroundTheory.ProfiniteCohomology.FilteredHomology
+public import Mathlib.GroupTheory.Torsion
+import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
 public import GroundTheory.ProfiniteCohomology.Factor
-public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
+public import GroundTheory.ProfiniteCohomology.FilteredHomology
+import GroundTheory.ProfiniteCohomology.OpenNormal
 public import GroundTheory.TateCohomology.Annihilation
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

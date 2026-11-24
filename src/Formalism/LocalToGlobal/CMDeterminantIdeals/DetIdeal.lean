@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.SemistableReduction.LatSemiSt
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
+public import Mathlib.RingTheory.DedekindDomain.Factorization
+public import Mathlib.RingTheory.FractionalIdeal.Norm
 
 @[expose] public section
 

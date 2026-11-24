@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.AlgebraMapCAt
+public import Mathlib.RingTheory.Localization.AtPrime.Basic
+public import Mathlib.RingTheory.LocalProperties.Basic
 
 @[expose] public section
 
@@ -96,7 +98,7 @@ theorem wtAll_of_borChart [Fintype ι] (h : BorChart pts mapR borR) (e : ι → 
     _ = locM K m (wchar e t) * c (f A u) := by
       have k1 : cB (f B uB) = c (f A u) := by rw [← e1, AlgHom.comp_apply, hf A B π u uB hπ]
       rw [k1]
-      simp [wchar, map_prod, map_pow, e3, Units.coe_prod]
+      simp [wchar, map_prod, map_pow, e3]
 
 end Charts
 

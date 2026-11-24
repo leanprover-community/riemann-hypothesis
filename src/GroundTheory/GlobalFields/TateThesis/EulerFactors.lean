@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInfinite
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsFinite
 public import GroundTheory.GlobalFields.TateThesis.GlobalZeta
-public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureCosets
+import GroundTheory.GlobalFields.TateThesis.IdeleMeasureCosets
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

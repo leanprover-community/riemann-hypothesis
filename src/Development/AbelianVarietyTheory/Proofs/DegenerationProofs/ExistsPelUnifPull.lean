@@ -1,23 +1,60 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsDescOfPoints
+public import Development.AbelianVarietyTheory.Definitions.Degenerations.HomExtSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GtBaseChangeSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.OLinBaseChangeSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemNonzeroLocusIffPowFn
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsQkPullEquiv
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.GenRelNeZero
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsWitOfPull
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.QkToAkDescendsAlongBaseChange
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.QkToAkUInvariantUnderFieldEmbedding
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ArcDataSpecialiseAtUniformiser
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.RelationsAreFunctions
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.NonemptyCubicalPull
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TauBimultOfIsPullDeg
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsRingActionOfIsPullDeg
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TwistBCPf
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.NonemptyCubicalPull
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.QkToAkDescendsAlongBaseChange
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TauBimultOfIsPullDeg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigIsoCongr
 
 @[expose] public section
 
@@ -33,7 +70,7 @@ namespace GlobalTheory.ArcDataDescent
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem exists_pelUnif_pull (hC : CubePullSt) (hP : PolBaseChangeSt) (hU : UnifBaseChangeSt) (h5 : Laws5)
     {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] {I : Ideal R} {I' : Ideal R'}
     (hR : AdmBase R I) (hR' : AdmBase R' I') (t : SAB H (Sp R)) (P : PELUnif I t) (g : R →+* R')
@@ -43,7 +80,7 @@ theorem exists_pelUnif_pull (hC : CubePullSt) (hP : PolBaseChangeSt) (hU : UnifB
       m₀.φ = bc.hom.left ≫ pullback.fst t.G.hom (specOf g) ∧ (∀ (x : 𝓞 E) y, hD.xe (x • y) = x • hD.xe y) ∧
       (letI := H.starRing; ∀ x, P'.oD.onB.act x ≫ hD.e.hom =
         hD.e.hom ≫ (Over.pullback (specOf g)).map (P.oD.onB.act x)) := by
-  letI := H.starRing
+  let := H.starRing
   have hO := polOActPull
   have hsemi : IsSemiAbelian ((Over.pullback (spMap g)).obj t.G) := by
     refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
@@ -55,20 +92,8 @@ theorem exists_pelUnif_pull (hC : CubePullSt) (hP : PolBaseChangeSt) (hU : UnifB
     · intro Ω _ _ q
       obtain ⟨ext⟩ := t.semi.fibres Ω (q ≫ spMap g)
       exact ⟨torusExtOfIso (pullCompIso q (spMap g) t.G) ext⟩
-  have pull_isLB {X Y : Scheme.{0}} {L : LB X} (hL : L.IsLB) (F : Y ⟶ X) : (L.pull F).IsLB := by
-    refine { cover := top_le_iff.1 ?_, g_self := ?_, cocycle := ?_ }
-    · intro y _
-      obtain ⟨i, hi⟩ := exists_chart hL (F y)
-      exact TopologicalSpace.Opens.mem_iSup.2 ⟨fun _ => i, mem_pull.2 hi⟩
-    · intro J
-      refine unit_ext fun y hy => ?_
-      rw [gm_res (𝟙 Y) y _ hy, map_one, gm_pull_g L F (𝟙 Y) y J J hy hy]
-      exact gm_self hL _ y (mem_pull.1 hy)
-    · intro I J K
-      refine unit_ext fun y hy => ?_
-      rw [map_mul, gm_res (𝟙 Y) y _ hy, gm_res (𝟙 Y) y _ hy, gm_res (𝟙 Y) y _ hy, gm_pull_g L F (𝟙 Y) y I J hy.1.1 hy.1.2,
-        gm_pull_g L F (𝟙 Y) y J K hy.1.2 hy.2, gm_pull_g L F (𝟙 Y) y I K hy.1.1 hy.2]
-      exact gm_cocycle hL _ y (mem_pull.1 hy.1.1) (mem_pull.1 hy.1.2) (mem_pull.1 hy.2)
+  have pull_isLB {X Y : Scheme.{0}} {L : LB X} (hL : L.IsLB) (F : Y ⟶ X) : (L.pull F).IsLB :=
+    ReciprocityTheory.ChartRestriction.G.Geo.Tor.pull_isLB hL F
   have hpull : ∃ (PP' : RigLB ((Over.pullback (spMap g)).obj t.G)) (cub : CubicalStr _ PP')
       (sym : PP'.IsSymmetric) (adj : _) (prim : _)
       (m : SABMap ⟨(Over.pullback (spMap g)).obj t.G, hsemi,
@@ -242,7 +267,7 @@ variable {D : Datum H} {l : Level H} {Xo : Moduli D l} {c : Coeff l} {O : Type} 
   {χ : Sp R ⟶ Y.X} {t : SAB H (Sp R)} {g : R →+* V}
 
 
-set_option maxHeartbeats 1600000 in
+
 theorem toA_down (hL : Laws) (hR : AdmBase R I) (hV : AdmBase V I') (m : SABMap t Y.t χ) (P : PELUnif I t)
     (W : ArcWit Y a I' (g.comp f) (g u) (spMap g ≫ χ)) (hD : IsPullDeg g P.D.toPre W.P.D.toPre)
     (bc : W.t.G ≅ (Over.pullback (specOf g)).obj t.G) (mbc : IsMonHom bc.hom) (hPU : IsPullUnif g hD bc P.U W.P.U)
@@ -307,7 +332,7 @@ theorem pmaps_rig' {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDoma
     (rigPull_le (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) (specOf φ) hD.he D.P.L) (fun _ => rfl)).1 hD.w_rig
 
 
-set_option maxHeartbeats 3200000 in
+
 theorem exists_match (hL : Laws) (h2 : Laws2) (hR : AdmBase R I) (hV : AdmBase V I') (hginj : Function.Injective g)
     (m : SABMap t Y.t χ) (P : PELUnif I t) (W : ArcWit Y a I' (g.comp f) (g u) (spMap g ≫ χ)) (hD : IsPullDeg g P.D.toPre W.P.D.toPre)
     (bc : W.t.G ≅ (Over.pullback (specOf g)).obj t.G) (mbc : IsMonHom bc.hom) (hPU : IsPullUnif g hD bc P.U W.P.U)
@@ -338,7 +363,7 @@ theorem exists_match (hL : Laws) (h2 : Laws2) (hR : AdmBase R I) (hV : AdmBase V
           (∀ z, GenRel w (q.g.s (e z)) (q₀.g.s z) (uF ^ (a.be q₀.y z / l.M))) →
           x.left ≫ P.U.gen.inv.left ≫ pullback.fst t.G.hom (jK R) ≫ m.φ = yF ≫ (Y.oF.eta v).left ≫ Y.m.φ →
           P.ToA F l.M p x := by
-  letI := H.starRing
+  let := H.starRing
   obtain ⟨s1, s2, s3, s4, s5, s6⟩ := W.spec
   have gD := pull_grp hD
   have gN := pull_grp hN
@@ -360,7 +385,7 @@ theorem exists_match (hL : Laws) (h2 : Laws2) (hR : AdmBase R I) (hV : AdmBase V
     ((isGen_iff hN.w).1 hN.w_gen)
   have g0 := (isGen_iff W.w).1 s2
   obtain ⟨w, T⟩ := exists_comp W.P.D.toPre.P.isLB W.w v g0 gv a.D₀.P.isLB N.P.isLB
-  have hs' : spMap (h.comp f) = spMap i ≫ spMap (g.comp f) := by rw [hig, ← spMap_comp]; try rfl
+  have hs' : spMap (h.comp f) = spMap i ≫ spMap (g.comp f) := by rw [hig, ← spMap_comp]
   have he : eSec N.P.A ≫ r ≫ W.φ = spMap (h.comp f) ≫ eSec a.D₀.P.A := by
     rw [reassoc_of% er, W.he, hs', Category.assoc]
   have cr : ∀ y, (N.c (e y)).left ≫ r = spMap i ≫ (W.P.D.toPre.c (W.e y)).left := fun y => by
@@ -388,7 +413,7 @@ theorem exists_match (hL : Laws) (h2 : Laws2) (hR : AdmBase R I) (hV : AdmBase V
       · rw [Category.assoc, r₂, Category.assoc, Over.w, r₂, ← Category.assoc, Over.w]
     rw [reassoc_of% k, s4 x, Category.assoc]
   · rw [reassoc_of% (cr y), s5 y, hs', Category.assoc]
-  · letI : Algebra (FractionRing V) F := ((algebraMap (FractionRing S) F).comp gam).toAlgebra
+  · let : Algebra (FractionRing V) F := ((algebraMap (FractionRing S) F).comp gam).toAlgebra
     have hF : ∀ x : V, algebraMap (FractionRing V) F (algebraMap V (FractionRing V) x) =
         algebraMap (FractionRing S) F (algebraMap S (FractionRing S) (i x)) := fun x =>
       congrArg (algebraMap (FractionRing S) F) (hgam x)
@@ -404,14 +429,14 @@ theorem exists_match (hL : Laws) (h2 : Laws2) (hR : AdmBase R I) (hV : AdmBase V
       let ga : FractionRing R →+* F := IsFractionRing.lift
         (g := (algebraMap (FractionRing V) F).comp ((algebraMap V (FractionRing V)).comp g))
         ((algebraMap (FractionRing V) F).injective.comp ((IsFractionRing.injective V _).comp hginj))
-      letI := ga.toAlgebra
+      let := ga.toAlgebra
       have k₁ : ∀ x : R, algebraMap (FractionRing R) F (algebraMap R (FractionRing R) x) =
           algebraMap (FractionRing V) F (algebraMap V (FractionRing V) (g x)) := fun x =>
         IsFractionRing.lift_algebraMap _ x
       exact ⟨ga.toAlgebra, trivial, jFK_comm k₁, jFK_comm fun x => (k₁ x).trans (by rw [hF, hig]; rfl)⟩
     exact (genRel_transfer T W.P.D.toPre.P.isLB N.P.isLB (fun _ => hc) (hv (Category.id_comp _).symm (fun _ => hc)
       (pmaps_psi' hD G₁ rfl).2 (pmaps_psi' hN G₂ (hxe y)).2) _ _).1 k
-  · letI : Algebra (FractionRing V) F := ((algebraMap (FractionRing S) F).comp gam).toAlgebra
+  · let : Algebra (FractionRing V) F := ((algebraMap (FractionRing S) F).comp gam).toAlgebra
     have hF₁ : ∀ x : V, algebraMap (FractionRing V) F (algebraMap V (FractionRing V) x) =
         algebraMap (FractionRing S) F (algebraMap S (FractionRing S) (i x)) := fun x =>
       congrArg (algebraMap (FractionRing S) F) (hgam x)
@@ -449,7 +474,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
   {χ : Sp R ⟶ Y.X} {t : SAB H (Sp R)} {g : R →+* V}
 
 
-set_option maxHeartbeats 3200000 in
+
 theorem agree (hL : Laws) (h2 : Laws2) (h5 : Laws5) (hR : AdmBase R I) (hV : AdmBase V I') (hf : Function.Injective f)
     (hg : Function.Injective g) (y : Sp (FractionRing R) ⟶ Xo.XF c) (hy : y ≫ Y.j = jK R ≫ χ) (m : SABMap t Y.t χ)
     (P : PELUnif I t) (hT : P.TorsionIso) (W : ArcWit Y a I' (g.comp f) (g u) (spMap g ≫ χ))
@@ -464,7 +489,7 @@ theorem agree (hL : Laws) (h2 : Laws2) (h5 : Laws5) (hR : AdmBase R I) (hV : Adm
     (hx₂ : x₂ ≫ W.P.D.toPre.P.A.hom = spMap i₂)
     (hx : x₁ ≫ hD.e.hom.left ≫ pullback.fst P.D.toPre.P.A.hom (specOf g) =
       x₂ ≫ hD.e.hom.left ≫ pullback.fst P.D.toPre.P.A.hom (specOf g)) : x₁ ≫ W.φ = x₂ ≫ W.φ := by
-  letI := H.starRing
+  let := H.starRing
   have gD := pull_grp hD
   have k₀ : ∀ (x : Sp S ⟶ W.P.D.toPre.P.A.left) (i : V →+* S), x ≫ W.P.D.toPre.P.A.hom = spMap i →
       (x ≫ hD.e.hom.left ≫ pullback.fst P.D.toPre.P.A.hom (specOf g)) ≫ P.D.toPre.P.A.hom = spMap (i.comp g) :=
@@ -493,7 +518,7 @@ theorem agree (hL : Laws) (h2 : Laws2) (h5 : Laws5) (hR : AdmBase R I) (hV : Adm
       let ga : FractionRing R →+* F := IsFractionRing.lift
         (g := (algebraMap (FractionRing S) F).comp ((algebraMap S (FractionRing S)).comp h))
         ((algebraMap (FractionRing S) F).injective.comp ((IsFractionRing.injective S _).comp hh))
-      letI := ga.toAlgebra
+      let := ga.toAlgebra
       have hF : ∀ x : R, algebraMap (FractionRing R) F (algebraMap R (FractionRing R) x) =
           algebraMap (FractionRing S) F (algebraMap S (FractionRing S) (h x)) := fun x =>
         IsFractionRing.lift_algebraMap _ x

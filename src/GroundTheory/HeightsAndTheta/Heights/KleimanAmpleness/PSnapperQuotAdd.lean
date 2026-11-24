@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperQuotAddSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperSubquotFiniteSt
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechExact
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechDSq
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechExact
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -176,7 +181,7 @@ end Quot
 end SnapperQuotientAdditivity
 
 
-set_option maxHeartbeats 1000000 in
+
 open SnapperQuotientAdditivity in
 theorem SnapperQuotAdd.proof (hfin : SnapperSubquotFinite.Statement.{u, v, w}) :
     SnapperQuotAdd.Statement.{u, v, w} := by

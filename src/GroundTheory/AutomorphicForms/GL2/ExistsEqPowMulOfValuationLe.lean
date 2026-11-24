@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
-public import GroundTheory.AutomorphicForms.MeasuresGL
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
+import GroundTheory.AutomorphicForms.Cartan
+import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
+import GroundTheory.LocalFields.SeparableClosureValuation
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

@@ -1,12 +1,57 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasSupportOfIsSubquotientProdIrr
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrincipalCongruenceFixedVectorsLeSmoothVectors
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantOrbit
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MatrixRegular
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ReductionActionOnFixK1
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantOrbit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Padics.ProperSpace
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -129,14 +174,14 @@ theorem conj_up (hP : P * P = P) {k : GL (Fin n) ℤ_[g]} (hk : red g n k ∈ U 
     rw [map_mul, map_mul, map_sub, map_one, hx]
     simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hp, hp', mul_one, one_mul, sub_self, add_zero])
   have hx2 : (1 - φ P) * (φ M * φ P) * ((1 - φ P) * (φ M * φ P)) = 0 := by
-    simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hp, hp', mul_one, one_mul, sub_self, add_zero]
+    simp only [mul_sub, sub_mul, mul_assoc, hp', one_mul, sub_self]
   obtain ⟨k', h1, h2⟩ := exists_unit (P * k.val * P + (1 - P) * k.val * (1 - P) +
     (g : Matrix (Fin n) (Fin n) ℤ_[g]) * (P * k.val * (1 - P)) + (1 - P) * (M * P)) (un _ hx2) (by
       simp only [map_add (f := _), map_mul, map_sub, map_one, red_nat, hx, un_val, zero_mul]
       simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hp, hp', mul_one, one_mul, sub_self, add_zero]
       abel)
   refine ⟨k', h2 ▸ un_mem _ ?_ ?_, Units.ext ?_⟩
-  · simp only [mul_sub, sub_mul, mul_assoc, hp, hp', mul_one, one_mul, sub_self, sub_zero]
+  · simp only [mul_sub, sub_mul, hp', one_mul, sub_self, sub_zero]
   · simp only [mul_assoc, hp]
   · change (dd hP 1).val * ι k'.val = ι k.val * (dd hP 1).val
     rw [dd_val, ← map_mul, ← map_mul, h1]
@@ -144,13 +189,11 @@ theorem conj_up (hP : P * P = P) {k : GL (Fin n) ℤ_[g]} (hk : red g n k ∈ U 
     have hP' : ∀ r, P * (P * r) = P * r := fun r => by rw [← mul_assoc, hP]
     have hM' : g • ((1 - P) * (M * P)) = (1 - P) * k.val * P := by
       rw [← mul_smul_comm, ← smul_mul_assoc, nsmul_eq_mul, ← hM]
-      simp only [mul_sub, sub_mul, mul_assoc, hP, hP', mul_one, one_mul, sub_self, sub_zero]
+      simp only [mul_sub, sub_mul, mul_assoc, hP, hP', one_mul, sub_self, sub_zero]
     have e : (P + g • (1 - P)) * ((1 - P) * (M * P)) = g • ((1 - P) * (M * P)) := by
-      simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hP, hP', mul_one, one_mul, sub_self, sub_zero,
-        smul_mul_assoc, zero_add, smul_zero, add_zero, add_sub_cancel_left]
+      simp only [add_mul, mul_sub, sub_mul, hP', one_mul, sub_self, smul_mul_assoc, smul_zero, add_zero, add_sub_cancel_left]
     rw [pow_one, ← nsmul_eq_mul, mul_add _ _ ((1 - P) * _), e, hM']
-    simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hP, hP', mul_one, one_mul, sub_self, sub_zero,
-        smul_mul_assoc, mul_smul_comm, zero_add, add_zero, smul_zero, smul_sub, smul_add]
+    simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hP', mul_one, one_mul, sub_self, smul_mul_assoc, mul_smul_comm, add_zero, smul_sub]
     abel
 
 theorem conj_down (hP : P * P = P) {u : Gn g n} (hu : u ∈ U (1 - φ P) (φ P)) (m : ℕ) :
@@ -170,7 +213,7 @@ theorem conj_down (hP : P * P = P) {u : Gn g n} (hu : u ∈ U (1 - φ P) (φ P))
   generalize y.val - 1 = z
   rw [← Nat.cast_pow, ← nsmul_eq_mul]
   simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hP, hP', mul_one, one_mul,
-    sub_self, sub_zero, smul_mul_assoc, mul_smul_comm, zero_add, add_zero, smul_zero, smul_sub, smul_add]
+    sub_self, smul_mul_assoc, mul_smul_comm, add_zero, smul_sub, smul_add]
   abel
 
 theorem eq_zero_of_mem_twKer {π : Representation ℂ (GL (Fin n) ℚ_[g]) V} (hπ : IsSmooth π) (hP : P * P = P) (m : ℕ) :
@@ -194,8 +237,8 @@ theorem eq_zero_of_mem_twKer {π : Representation ℂ (GL (Fin n) ℚ_[g]) V} (h
       exact Subtype.ext ((repK_red π k _).trans (k1 k hu))) (by
       haveI := Fintype.ofFinite (U (1 - φ P) (φ P))
       change π (dd hP m) (π (dd hP 1) t) ∈ _
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← Module.End.mul_apply, ← map_mul, ← dd_succ, ht, S_apply, Submodule.coe_sum, map_sum]
+
+      rw [← Module.End.mul_apply, ← map_mul, ← dd_succ, ht, S_apply, Submodule.coe_sum, map_sum]
       refine Submodule.sum_mem _ fun u _ => ?_
       obtain ⟨k, k', h1, h2, h3⟩ := conj_down hP u.2 m
       rw [← h1, repK_red, ← Module.End.mul_apply, ← map_mul, h3, map_mul, Module.End.mul_apply]

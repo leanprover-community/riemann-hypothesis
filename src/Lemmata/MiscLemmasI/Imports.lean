@@ -1,11 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.LinearIndependent.Defs
+public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
+public import Mathlib.Algebra.Algebra.Basic
+public import Mathlib.RingTheory.SimpleRing.Basic
 
 @[expose] public section
-
-open Matrix
-open scoped ComplexOrder
 
 namespace Bl.SecondBlockLemmaJ
 

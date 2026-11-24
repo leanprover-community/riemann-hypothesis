@@ -1,9 +1,47 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCStep
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCLat
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCBlk
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBBLiftV
+public import Formalism.HermitianCurvature.StatementKB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -42,9 +80,7 @@ theorem dlB_pos (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (b s : ℕ) : 0 < KB.
   have hg' : (0 : ℝ) < S.g := by exact_mod_cast hg
   refine div_pos ?_ (div_pos two_pos (mul_pos hrd (pow_pos hg' 3)))
   first
-  | exact pow_pos hrd _
   | exact zpow_pos hrd _
-  | exact Real.rpow_pos_of_pos hrd _
 
 theorem exists_word_of_admissible_at_place (S : C.HidaSetting E Wp Wq) {v : Fin S.f} {a : List C.Letter} (ha : D.AdmAt S v a) :
     ∃ w : S.W, w.1 v = a := ha
@@ -85,7 +121,7 @@ theorem offdiag_bound {Z : Type} (w : Z → Z → ℂ) (a b : Z → Z → ℂ) (
   rw [Complex.nonneg_iff] at hd0 hd1
   have hw : ‖w p p‖ ^ 2 ≤ (a p p).re * (b p p).re := by
     have h3 := hdet.1
-    simp only [Complex.sub_re, Complex.mul_re, Complex.mul_conj, Complex.ofReal_re,
+    simp only [Complex.mul_re, Complex.mul_conj, Complex.ofReal_re,
       Complex.normSq_eq_norm_sq, ← hd0.2, ← hd1.2] at h3
     nlinarith [h3]
   calc ‖w p p‖ ^ 2 ≤ (a p p).re * (b p p).re := hw

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreExtra
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.LeOfHeightMapEqZero
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumMem
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PHorizNotMem
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppA
 
 @[expose] public section
 

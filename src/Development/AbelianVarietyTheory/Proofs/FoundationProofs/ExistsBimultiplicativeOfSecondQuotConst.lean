@@ -1,6 +1,60 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.Order.Floor.Defs
+public import Mathlib.Algebra.Order.Floor.Ring
+public import Mathlib.Analysis.Normed.Group.Defs
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.Order.Filter.AtTopBot.Archimedean
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
+public import Mathlib.Topology.Algebra.Order.Floor
 
 @[expose] public section
 
@@ -206,14 +260,14 @@ noncomputable def realExt (Q : QuadraticMap ℤ X ℝ) : QuadraticForm ℝ (ℝ 
 
 @[simp] theorem realExt_tmul (Q : QuadraticMap ℤ X ℝ) (s : ℝ) (x : X) :
     realExt Q (s ⊗ₜ x) = s * s * Q x := by
-  simp only [realExt, QuadraticMap.smul_apply, LinearMap.BilinMap.toQuadraticMap_apply,
+  simp only [realExt, smul_apply, LinearMap.BilinMap.toQuadraticMap_apply,
     realExtBilin_tmul, QuadraticMap.polarBilin_apply_apply, QuadraticMap.polar_self, smul_eq_mul,
     two_smul]
   ring
 
 theorem realExt_apply (Q : QuadraticMap ℤ X ℝ) (v : ℝ ⊗[ℤ] X) :
     realExt Q v = realExtBilin Q.polarBilin v v / 2 := by
-  simp only [realExt, QuadraticMap.smul_apply, LinearMap.BilinMap.toQuadraticMap_apply,
+  simp only [realExt, smul_apply, LinearMap.BilinMap.toQuadraticMap_apply,
     smul_eq_mul]
   ring
 
@@ -250,10 +304,10 @@ theorem posDef_gram_of_posDef_realExt {ι : Type*} [Fintype ι] (b : Basis ι �
     have e : realExtBilin Q.polarBilin ((b.baseChange ℝ).equivFun.symm w)
         ((b.baseChange ℝ).equivFun.symm w) =
         star w ⬝ᵥ (Matrix.of fun i j => QuadraticMap.polar Q (b i) (b j)).mulVec w := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Basis.equivFun_symm_apply, Basis.baseChange_apply, map_sum, map_smul,
-        LinearMap.sum_apply, LinearMap.smul_apply, realExtBilin_tmul, dotProduct, Matrix.mulVec,
-        Finset.mul_sum, Finset.smul_sum]
+
+      simp only [Basis.equivFun_symm_apply, Basis.baseChange_apply, map_sum, map_smul,
+      LinearMap.sum_apply, LinearMap.smul_apply, realExtBilin_tmul, dotProduct, Matrix.mulVec,
+      Finset.mul_sum, Finset.smul_sum]
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
       simp only [QuadraticMap.polarBilin_apply_apply, QuadraticMap.polar_comm Q (b j) (b i),
         smul_eq_mul, Matrix.of_apply, Pi.star_apply, star_trivial]

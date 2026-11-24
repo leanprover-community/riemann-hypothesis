@@ -1,14 +1,109 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LevelSectionsExactKernelLocusOpen
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.EigProjRegNeZero
+public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
+public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.CoreStatements.SesquilinearFractions.SesqSesquilinearSkewHermitian
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.HaveILetI
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.EigProjRegNeZero, Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodHermitianTypeCompatibility
+
+-- ===== clump member: Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.EigProjRegNeZero =====
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.EigProjRegNeZero", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.HT.LatTest
+
+open Module NumberField TensorProduct
+
+section Eigen
+
+variable {A : Type} [CommRing A] {K : Type} [Field K] [Algebra A K]
+  {V : Type} [AddCommGroup V] [Module K V] [Module A V] [IsScalarTower A K V]
+  {E : Type} [Field E] [NumberField E]
+
+theorem trace_dualInt (k j) :
+    Algebra.trace ℚ E (dualInt E k * integralBasis E j) = if j = k then 1 else 0 := by
+  classical
+  have := LinearMap.BilinForm.apply_dualBasis_left (B := Algebra.traceForm ℚ E)
+    (traceForm_nondegenerate ℚ E) (integralBasis E) k j
+  rw [Algebra.traceForm_apply] at this
+  convert this using 1
+  rfl
+
+theorem repr_eq_trace (a : 𝓞 E) (k) :
+    (((RingOfIntegers.basis E).repr a k : ℤ) : ℚ) = Algebra.trace ℚ E (dualInt E k * (a : E)) := by
+  classical
+  conv_rhs => rw [← (RingOfIntegers.basis E).sum_repr a]
+
+  simp only [map_sum, Finset.mul_sum, map_zsmul, mul_smul_comm,
+  ← integralBasis_apply, trace_dualInt]
+  simp
+
+end Eigen
+
+end GlobalTheory.CompanionTheory.Ar.HT.LatTest
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.EigProjRegNeZero =====
+
+-- ===== clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodHermitianTypeCompatibility =====
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodHermitianTypeCompatibility", "h": "module\n\nimport Development.WeilBound.CoreStatements.SesquilinearFractions.SesqSesquilinearSkewHermitian\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.EigProjRegNeZero\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
@@ -100,32 +195,12 @@ theorem matrix_eq_zero_of_im {g : ℕ} {La : Type} [AddCommGroup La] (P : La →
 
 theorem trace_mul_sesq (D : Datum H) (a : 𝓞 E) (x y : D.La) :
     Algebra.trace ℚ E ((a : E) * sesq D x y) = ((D.EF (a • x) y : ℤ) : ℚ) := by
-  classical
-  have e1 : a • x = ∑ k, ((RingOfIntegers.basis E).repr a k) • (RingOfIntegers.basis E k • x) := by
-    conv_lhs => rw [← (RingOfIntegers.basis E).sum_repr a]
-    rw [Finset.sum_smul]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [smul_assoc]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e1, map_sum, LinearMap.sum_apply, sesq, Finset.mul_sum, map_sum]
-  push_cast
-  refine Finset.sum_congr rfl fun k _ => ?_
-  have e2 : (a : E) * (((D.EF (RingOfIntegers.basis E k • x) y : ℤ) : E) * HT.dualInt E k) =
-      ((D.EF (RingOfIntegers.basis E k • x) y : ℤ) : ℚ) • (HT.dualInt E k * (a : E)) := by
-    rw [Rat.smul_def]
-    push_cast
-    ring
-  have e3 : D.EF (((RingOfIntegers.basis E).repr a k) • (RingOfIntegers.basis E k • x)) y =
-      ((RingOfIntegers.basis E).repr a k) * D.EF (RingOfIntegers.basis E k • x) y := by
-    rw [map_zsmul, LinearMap.smul_apply, smul_eq_mul]
-  rw [e2, map_smul, ← HT.LatTest.repr_eq_trace, e3]
-  push_cast
-  rw [smul_eq_mul, mul_comm]
+  apply GlobalTheory.CompanionTheory.Ar.Fl.trace_mul_sesq_eq_form
 
 theorem sesq_smul_left (D : Datum H) (a : 𝓞 E) (x y : D.La) :
     sesq D (a • x) y = (a : E) * sesq D x y := by
   classical
-  conv_rhs => rw [HT.LatTest.expand_dual ((a : E) * sesq D x y)]
+  conv_rhs => rw [_root_.GlobalTheory.CompanionTheory.Ar.HT.LatBasic.expand_dual ((a : E) * sesq D x y)]
   rw [sesq]
   refine Finset.sum_congr rfl fun k _ => ?_
   have e1 : (a : E) * sesq D x y * integralBasis E k =
@@ -140,8 +215,8 @@ theorem sesq_smul_left (D : Datum H) (a : 𝓞 E) (x y : D.La) :
 theorem sesq_sum_left (D : Datum H) {I : Type} (s : Finset I) (f : I → D.La) (y : D.La) :
     sesq D (∑ m ∈ s, f m) y = ∑ m ∈ s, sesq D (f m) y := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [sesq, Finset.smul_sum, map_sum, LinearMap.sum_apply, Int.cast_sum, Finset.sum_mul]
+
+  simp only [sesq, Finset.smul_sum, map_sum, LinearMap.sum_apply, Int.cast_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
 
 end RiemannTau
@@ -194,7 +269,7 @@ theorem hermForm_smul_eq_sum {g : ℕ} (ty : Fin g → (E →+* ℂ)) (Hm : Matr
     · simp [tyPart, h]
       ring
     · intro σ _ hσ
-      simp [tyPart, Ne.symm hσ, hσ]
+      simp [tyPart, Ne.symm hσ]
     · simp
   · rw [hb j k h]
     simp only [mul_zero, zero_mul]
@@ -251,9 +326,9 @@ theorem exists_smul_eq_sum (D : Datum H) {I : Type} [Fintype I] (e : I → D.La)
     (hcard : Fintype.card I = D.p + D.q) (he : LinearIndependent (𝓞 E) e) (y : D.La) :
     ∃ (b : 𝓞 E) (c : I → 𝓞 E), b ≠ 0 ∧ b • y = ∑ n, c n • e n := by
   classical
-  haveI := D.fin
+  have := D.fin
   by_contra hno
-  push_neg at hno
+  push Not at hno
   set n := Fintype.card I with hn
   let eq := Fintype.equivFin I
   have hv : LinearIndependent (𝓞 E) (e ∘ eq.symm) := he.comp _ eq.symm.injective
@@ -307,8 +382,8 @@ theorem det_ne_zero (D : Datum H) {I : Type} [Fintype I] [DecidableEq I] (e : I 
     obtain ⟨b, f, hb, hbf⟩ := exists_smul_eq_sum D e hcard he y
     have h3 : ∀ a : 𝓞 E, D.EF (a • x) (b • y) = 0 := by
       intro a
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hbf, map_sum]
+
+      rw [hbf, map_sum]
       refine Finset.sum_eq_zero fun n _ => ?_
       obtain ⟨f', hf'⟩ := H.bar.surjective (f n)
       rw [← hf', ← D.adj, smul_smul]
@@ -349,3 +424,7 @@ theorem riemann_tau_component : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   exact RiemannTau.det_ne_zero D e hcard he
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodHermitianTypeCompatibility =====

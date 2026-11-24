@@ -1,21 +1,59 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.IsNsmul
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SerreVanishingVeryAmpleStatement
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SectionPull
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.VeryAmpleByPull
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsHomogeneousXPowMulAddXPowMul
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsHomOfVeryAmpleBy
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HomEqOfPullSections
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsSecOfLeChart
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompatibleSections
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsHomOfThickenings
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsHomOfVeryAmpleBy
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsSecOfLeChart
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HomEqOfPullSections
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsHomogeneousXPowMulAddXPowMul
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SectionPull
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.VeryAmpleByPull
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 
 @[expose] public section
 
@@ -53,12 +91,7 @@ theorem germs_of_isGen {A B : LB X} {w : LB.Iso A B} (hw : w.IsGen) (x : X) (p q
   exact (gm_res _ x _ hx _).symm.trans ((congrArg (gm (𝟙 X) x _) (hw p q)).trans ((map_mul _ _ _).trans
     (congrArg₂ (· * ·) (gm_div A B (𝟙 X) x p q hx) (gm_res _ x _ hx _))))
 
-theorem lbIso_self {A : LB X} (hA : A.IsLB) : LBIso A A := by
-  refine lbIso_of_germs (fun p => A.g p.1 p.2) fun x p q h₁ h₂ h₃ h₄ => ?_
-  rw [← gm_cocycle hA (𝟙 X) x h₁ h₂ h₃, ← gm_cocycle hA (𝟙 X) x h₂ h₃ h₄]
-  apply Additive.ofMul.injective
-  simp only [ofMul_mul, ofMul_inv]
-  abel
+alias lbIso_self := _root_.GlobalTheory.lbIso_refl
 
 def chartPullTw {A' H' : LB Y} {A H : LB X} {h : Y ⟶ X} (a : ChartPull A' A h) (b : ChartPull H' H h) (t : ℤ) :
     ChartPull (tw A' H' t) (tw A H t) h where

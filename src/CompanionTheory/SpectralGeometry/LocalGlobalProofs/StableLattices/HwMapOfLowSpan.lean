@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.CapelliDeterminantBlockProduct
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+public import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 @[expose] public section
 

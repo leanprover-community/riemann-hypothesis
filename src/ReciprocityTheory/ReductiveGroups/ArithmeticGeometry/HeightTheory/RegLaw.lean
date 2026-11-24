@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.EReal.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

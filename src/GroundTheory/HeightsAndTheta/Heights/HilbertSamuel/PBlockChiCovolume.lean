@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlock
+public import GroundTheory.HeightsAndTheta.Heights.CovolumeGram
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountLattice
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Matrix.PosDef
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSupBoundCount
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountIntegrals
 
 @[expose] public section
 
@@ -99,8 +103,8 @@ theorem BlockChiCovolume.proof : BlockChiCovolume.Statement := by
     intro m
     rw [hnorm _ (∑ j, m j • f j) (isMultiHomog_zsum f m hf), blockL2Norm_sum_eq_sqrt_gram d n f hf m,
       Real.sq_sqrt (quad_nonneg d n f hf _)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [ε, hw, aeval_map_int, map_sum]
+
+    simp [ε, hw, aeval_map_int, map_sum]
   have hgram : Matrix.gram ℝ (fun i => (B i : EuclideanSpace ℝ (Fin r))) = G := by
     ext k l
     rw [entry_of_quad G (gram_symm d n f hf) k l, ← cast_single_add, ← cast_single, ← cast_single, ← key, ← key,

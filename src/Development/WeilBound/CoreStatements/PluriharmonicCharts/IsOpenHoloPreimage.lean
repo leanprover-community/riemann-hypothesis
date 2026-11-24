@@ -1,15 +1,69 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesValueAtPoint
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFirst
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFifth
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsImg
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticEighth
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TransPtBase
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SamePotBlock
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSecondStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPointStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFifth
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSecond
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SamePotBlock
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TransPtBase
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFirst
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointInPoints
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPoint
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesValueAtPoint
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJMap
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 
@@ -158,7 +212,7 @@ theorem img_exact (Cv : FlagCover M' M) (z : (Σ k, ι' k) → ℂ) (F' : FrameD
     (hz : ∀ m' : ι' k', z ⟨k', m'⟩ = a * plk M' F' (basePart M'.blk z) p.2 ⟨k', m'⟩ (h p.1)) (m : ι k) :
     img Cv F' F z ⟨k, m⟩ = a * plk M F (basePart M'.blk z ∘ Cv.v) p.2 ⟨k, m⟩
       (Cv.trans F' F (basePart M'.blk z) p.1 * h p.1) := by
-  have hCB := GlobalTheory.T.block_diagonal_minor_vanishing ℂ N j p.2 M.j_le
+  have hCB := _root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main ℂ N j p.2 M.j_le
   have hoff : ∀ J, ¬ IsStepRows N j p.2 J → minorIJ (h p.1) J (stepCols N j p.2) = 0 := fun J hJ =>
     (hCB.2.1 (h p.1) J (hh p.1) hJ).resolve_right (stepCols_ne_empty M.j_le)
   have hdelta : ∀ I' J, IsStepRows N j p.2 I' → IsStepRows N j p.2 J →
@@ -219,7 +273,7 @@ theorem met (CR : CovReal FA Cv) {z : (Σ k, ι' k) → ℂ} (hz : z ∈ mcPts (
       (M'.blk p).elim (Real.log ‖valAt M'.x (F'.υ p) (basePart M'.blk z)‖) (fun _ => 0) +
       Real.log ‖detFac j p.2 (Cv.trans F' F (basePart M'.blk z) p.1)‖ := by
   have hb := CPts.base_mem M' hz
-  have hbv := (GlobalTheory.T.flag_cover_base_point_in_points K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ hb).1
+  have hbv := (_root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.Pt.main K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ hb).1
   have hI' := CoordinateConeArithVar.isMultiHomogIdeal y'
   obtain ⟨z₁, o₁, n₁⟩ := FibreCount.exists_normal_base M'.blk F'.c z fun k => FibreCount.chart_ne (hg'.1 k)
   obtain ⟨h, H⟩ := CPts.flag_fwd M' hF' (mem_mcPts_of_sameOrbit hI' o₁ hz)
@@ -320,10 +374,10 @@ theorem pot_loc (CR : CovReal FA Cv) (hy : IsArithVar (mCoordIdeal y) (d + 2))
     LocRe A x fun u => Real.log ((CR.Re.ref p).h (Z u)) - Real.log ((fsHerm ι (M.dy p)).h (Y u)) := by
   have hz := hm x hx
   have hb := CPts.base_mem M' hz
-  have hbv := fun u hu => (GlobalTheory.T.flag_cover_base_point_in_points K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ (CPts.base_mem M' (hm u hu))).1
-  obtain ⟨F', hF', hg'⟩ := (GlobalTheory.T.flag_model_base_projection_points K' ι' Φ' y' Ψ N j M').2.1 _ hb
-  obtain ⟨F, hF, hg⟩ := (GlobalTheory.T.flag_model_base_projection_points K ι Φ y Ψ N j M).2.1 _ (hbv x hx)
-  obtain ⟨V, f, hV, hzV, hf, hs⟩ := GlobalTheory.T.flag_cover_frames_at_point K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ F' F hz hF' hF hg' hg
+  have hbv := fun u hu => (_root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.Pt.main K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ (CPts.base_mem M' (hm u hu))).1
+  obtain ⟨F', hF', hg'⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.main K' ι' Φ' y' Ψ N j M').2.1 _ hb
+  obtain ⟨F, hF, hg⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.main K ι Φ y Ψ N j M).2.1 _ (hbv x hx)
+  obtain ⟨V, f, hV, hzV, hf, hs⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.An.main K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ F' F hz hF' hF hg' hg
   have hO := isOpen_holo_preimage hW hZ hV
   have hxO : x ∈ W ∩ Z ⁻¹' V := ⟨hx, hzV⟩
   have hfZ : ∀ q, A.HoloOn (W ∩ Z ⁻¹' V) fun u => f (Z u) q := fun q =>
@@ -332,7 +386,7 @@ theorem pot_loc (CR : CovReal FA Cv) (hy : IsArithVar (mCoordIdeal y) (d + 2))
   have horb : ∀ u ∈ W ∩ Z ⁻¹' V, SameOrbit (f (Z u)) (Y u) := fun u hu => by
     obtain ⟨g1, g2, e1⟩ := hs _ ⟨hu.2, hm u hu.1⟩
     rw [e1]
-    exact GlobalTheory.T.flag_cover_arithmetic_second K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv d hy hy' _ (hm u hu.1) _ _
+    exact _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.isImg_unique K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv d hy hy' _ (hm u hu.1) _ _
       (img_spec K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv _ F' F (hm u hu.1) hF' hF g1 g2).2 (hi u hu.1)
   choose m hm0 using hY0 x hx
   have hO₂ : IsOpen (W ∩ Y ⁻¹' {w | ∀ k, w ⟨k, m k⟩ ≠ 0}) := isOpen_holo_preimage hW hY (by

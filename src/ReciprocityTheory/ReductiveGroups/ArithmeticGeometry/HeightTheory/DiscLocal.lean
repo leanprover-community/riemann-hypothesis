@@ -1,8 +1,12 @@
 module
 
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormB
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAC
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValNorm
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValUFD
+import ReciprocityTheory.SemistableReduction.AlgAll
 
 @[expose] public section
 

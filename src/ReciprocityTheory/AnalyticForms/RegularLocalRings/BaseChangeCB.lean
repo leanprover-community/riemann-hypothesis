@@ -1,7 +1,14 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.BaseChangeCA
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.RingTheory.Flat.Basic
+public import Mathlib.RingTheory.Ideal.Height
+import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
+public import Mathlib.RingTheory.Flat.Stability
+public import Mathlib.RingTheory.Ideal.GoingDown
 
 @[expose] public section
 

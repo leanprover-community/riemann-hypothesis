@@ -1,6 +1,8 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.FiniteDetectStatement
+public import Mathlib.FieldTheory.Galois.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalMaxIdeals
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreFinite
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreRelDim
@@ -10,6 +9,7 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDeg
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocLocalize
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalResidueLength
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
+import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 
@@ -24,7 +24,7 @@ noncomputable section
 universe u
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem SemilocalMaxIdeals.proof (h1 : FibreFinite.Statement.{u}) (h2 : FibreRelDim.Statement.{u})
     (h3 : FibreNonempty.Statement.{u}) (h4 : DegZeroLocUnits.Statement.{u})
     (h5 : DegZeroLocSeparate.Statement.{u}) (h6 : DegZeroLocLocalize.Statement.{u})

@@ -1,12 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RealPlaces.GSDefs
-public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingCriterion
-public import GroundTheory.ProfiniteCohomology.MackeyFormula.Cohomology
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Dimension
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
+import GroundTheory.GlobalFields.CompletionAtPlace.Integers
+import GroundTheory.ProfiniteCohomology.Colimit
+public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Vanishing
 public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityPlace
+public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingCriterion
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Dimension
+import GroundTheory.TateCohomology.CoindOne
 
 @[expose] public section
 

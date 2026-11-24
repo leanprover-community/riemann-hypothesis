@@ -1,12 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasBlockOfOccurs
-public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
-public import Formalism.SatakeDualWeyl.DualWeylRepApply
+public import Formalism.GradedWeylDivisibility.FinalD
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
+public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLKBasis
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.RealLocalDeltaNabla
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -78,8 +116,8 @@ theorem linInd_mapRange_field {F K P ι : Type} [Field F] [Field K] [Algebra F K
     simp only [Finsupp.finsetSum_apply, Finsupp.smul_apply, Finsupp.mapRange_apply, smul_eq_mul,
       Finsupp.coe_zero, Pi.zero_apply] at h1 ⊢
     have h2 := congrArg (fun x => B.repr x j) h1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_zero, Finsupp.finsetSum_apply, Finsupp.coe_zero, Pi.zero_apply] at h2
+
+    simp only [map_sum, map_zero, Finsupp.finsetSum_apply, Finsupp.coe_zero, Pi.zero_apply] at h2
     rw [← h2]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [mul_comm (c i), ← Algebra.smul_def, map_smul, Finsupp.smul_apply, smul_eq_mul, mul_comm]
@@ -247,23 +285,11 @@ theorem latD_iff {l : ℕ} [Fact l.Prime] {ι : Type} [DecidableEq ι] {N : ℕ}
       rw [map_add (f := _), map_add (f := _)]
       exact add_mem ha hb
 
-theorem rowAct_map {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {r n : ℕ}
-    (M : Matrix (Fin r) (Fin r) R) (f : MvPolynomial (Fin r × Fin n) R) :
-    MvPolynomial.map φ (rowAct R M f) = rowAct S (M.map φ) (MvPolynomial.map φ f) := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simp [rowAct]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p v hp =>
-    rw [map_mul, map_mul, map_mul, hp, map_X]
-    congr 1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [rowAct, map_sum, Matrix.map_apply]
-
 theorem dwAct_map {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) (r n : ℕ) (g : GL (Fin r) R)
     (f : MvPolynomial (Fin r × Fin n) R) :
     MvPolynomial.map φ (Formalism.UG.dwAct R r n g f) =
       Formalism.UG.dwAct S r n (Matrix.GeneralLinearGroup.map φ g) (MvPolynomial.map φ f) := by
-  simp only [Formalism.UG.dwAct, rowAct_map]
+  simp only [Formalism.UG.dwAct, _root_.Formalism.UG.P.wlocal_map_rowAct]
   rw [← map_inv]
   rfl
 

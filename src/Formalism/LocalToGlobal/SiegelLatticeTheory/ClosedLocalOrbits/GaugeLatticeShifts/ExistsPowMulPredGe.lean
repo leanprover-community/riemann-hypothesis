@@ -1,8 +1,48 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacLocOfHpk
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.UnitaryIsometries
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -61,9 +101,9 @@ theorem goodPos_of_dual {r : ℕ} (e f : Fin r → Fin n → ℂ) (z z'' : Fin n
     simp only [UnitaryIsometries.hJ_sub_right, UnitaryIsometries.hJ_sum_right, hee, mul_zero, Finset.sum_const_zero, sub_zero, hef]
   · rw [hg]
     simp only [UnitaryIsometries.hJ_sub_right, UnitaryIsometries.hJ_sub_left, UnitaryIsometries.hJ_sum_right, UnitaryIsometries.hJ_sum_left, hee, hfe, mul_zero,
-      Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ,
+      Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ,
       if_true, UnitaryIsometries.hJ_sum_left]
-    simp only [hef, ite_mul, zero_mul, one_mul, mul_ite, mul_zero, mul_one, Finset.sum_ite_eq, Finset.sum_ite_eq',
+    simp only [hef, mul_ite, mul_zero, mul_one, Finset.sum_ite_eq',
       Finset.mem_univ, if_true, map_mul]
     rw [← UnitaryIsometries.hJ_conj ε (f a) (f b)]
     simp only [map_div₀, map_one, map_ofNat]
@@ -110,13 +150,11 @@ variable {n r k : ℕ} {ε : Fin n → Bool} {e : Fin r → Fin n → ℂ} {z z'
 
 theorem hJ_comb_left (d : Fin r → ℂ) (y : Fin n → ℂ) (h : ∀ a, hJ ε (e a) y = 0) :
     hJ ε (∑ a, d a • e a) y = 0 := by
-  rw [UnitaryIsometries.hJ_sum_left]
-  simp [h]
+  simp [UnitaryIsometries.hJ_sum_left, h]
 
 theorem hJ_comb_right (d : Fin r → ℂ) (y : Fin n → ℂ) (h : ∀ a, hJ ε y (e a) = 0) :
     hJ ε y (∑ a, d a • e a) = 0 := by
-  rw [UnitaryIsometries.hJ_sum_right]
-  simp [h]
+  simp [UnitaryIsometries.hJ_sum_right, h]
 
 theorem z_not_mem_span (hF : FrameLoc ε k e z z' T T') : z ∉ Submodule.span ℂ (Set.range e) := by
   intro hz
@@ -211,12 +249,9 @@ theorem exists_pow_mul_pred_ge (hF : FrameLoc ε k e z z' T T') (d : Fin r → �
     ring
   have hI := ei_isIsom ε x v q hxx hxv hq
   refine ⟨UnitaryIsometries.toUJ ε hI, fun a => ?_, ?_, ?_⟩ <;> rw [UnitaryIsometries.uMat_toUJ, ei_apply]
-  · rw [hxe, hve]
-    simp
-  · rw [hxz', hvz']
-    simp
-  · rw [hxx, hvx]
-    simp
+  · simp [hxe, hve]
+  · simp [hxz', hvz']
+  · simp [hxx, hvx]
 
 theorem comb_mem_spanLt (d : Fin r → ℂ) : ∑ a, d a • e a ∈ spanLt e r :=
   Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, a.2, rfl⟩)
@@ -246,9 +281,8 @@ theorem sLoc_shift (d : Fin r → ℂ) : SLoc ε e (z' + ∑ a, d a • e a) = S
 
 theorem famSc_shift (g : Formalism.REAL.UJ ε) (z'' : Fin n → ℂ) (he : ∀ a, uMat g *ᵥ e a = e a)
     (hz : uMat g *ᵥ z' = z'') (sc : ℝ) (b : Fin (r + 1)) : uMat g *ᵥ famSc sc e z' b = famSc sc e z'' b := by
-  cases b using Fin.lastCases with
-  | last => simp only [famSc, fam, Matrix.mulVec_smul, Fin.snoc_last, hz]
-  | cast a => simp only [famSc, fam, Matrix.mulVec_smul, Fin.snoc_castSucc, he]
+  cases b using Fin.lastCases <;>
+    simp only [famSc, fam, Matrix.mulVec_smul, Fin.snoc_last, Fin.snoc_castSucc, he, hz]
 
 end Frame
 

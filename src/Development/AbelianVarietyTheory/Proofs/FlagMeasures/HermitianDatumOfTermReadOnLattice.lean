@@ -1,16 +1,58 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GgNone
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemPerpSpan
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToZero
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFrameCoordinatesTransportInnerLattices
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramePairCoordinatesTransportInnerLattices
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermOverFrameCoordinates
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFrameCoordinatesTransportInnerLattices
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemPerpSpan
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
+import Formalism.SharpRestriction.CuspSpanNormBounds.Point
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermOverFrameCoordinates
 
 @[expose] public section
 
@@ -82,8 +124,8 @@ theorem h_sum_left {ι : Type} (s : Finset ι) (u : ι → V) (y : V) :
 
 theorem h_right_sum {ι : Type} [Fintype ι] (a : ι → E) (u : ι → V) (x : V) :
     H.h x (∑ i, a i • u i) = ∑ i, M.L.cj (a i) * H.h x (u i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [H.h_herm, h_sum_left, map_sum]
+
+  rw [H.h_herm, h_sum_left, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [H.h_smul_left, map_mul, ← H.h_herm]
 
@@ -107,15 +149,6 @@ theorem dl_change (f f' g g' : Fin (r + 1) → V) (s s' : Matrix (Fin (r + 1)) (
     exact minor_tri _ _ _ (fun i j hij => by simp [h0 j i hij]) (fun i => by simp [h1]) h0' h1' hl
   · rfl
 
-private theorem e_mem_lat_iff {P : FPair H r} {S : Frames M.L r k} (c : Coord P S) (Λ : Submodule M.L.O V) (v : V) :
-    c.e v ∈ c.lat Λ ↔ v ∈ Λ := by
-  constructor
-  · intro h
-    obtain ⟨w, hw, hwv⟩ := Submodule.mem_map.1 h
-    rwa [← c.e.injective hwv]
-  · intro h
-    exact Submodule.mem_map.2 ⟨v, h, rfl⟩
-
 section Coordinates
 
 variable {P : FPair H r} {S : Frames M.L r k} (c : Coord P S)
@@ -124,7 +157,7 @@ variable {P : FPair H r} {S : Frames M.L r k} (c : Coord P S)
 include c in
 theorem selfDual_of (Λ : Submodule M.L.O V) (h : IsSD M.L S.Hm (c.lat Λ)) : H.IsSelfDual Λ := by
   obtain ⟨⟨hfg, hsp⟩, hd⟩ := h
-  have hmem : ∀ v, c.e v ∈ c.lat Λ ↔ v ∈ Λ := e_mem_lat_iff c Λ
+  have hmem : ∀ v, c.e v ∈ c.lat Λ ↔ v ∈ Λ := _root_.GlobalTheory.HL.CoordInnerSnd.mem_lat c Λ
   refine ⟨?_, ?_, ?_⟩
   · exact Submodule.fg_of_fg_map_injective ((c.e : V →ₗ[E] S.V).restrictScalars M.L.O) c.e.injective hfg
   · apply Submodule.map_injective_of_injective (f := (c.e : V →ₗ[E] S.V)) c.e.injective
@@ -148,7 +181,7 @@ theorem selfDual_of (Λ : Submodule M.L.O V) (h : IsSD M.L S.Hm (c.lat Λ)) : H.
 
 private theorem e_mem_inn_iff_exists_mkW_mem (c : Coord P S) (f : Fin (r + 1) → V) (L : Submodule M.L.O (H.Wb f)) (v : V) :
     c.e v ∈ c.inn f L ↔ ∃ hv : v ∈ H.perp (H.X f), H.mkW f ⟨v, hv⟩ ∈ L := by
-  rw [Coord.inn, e_mem_lat_iff]
+  rw [Coord.inn, _root_.GlobalTheory.HL.CoordInnerSnd.mem_lat]
   constructor
   · intro h
     obtain ⟨z, hz, rfl⟩ := Submodule.mem_map.1 h
@@ -182,7 +215,7 @@ theorem lset_of (f : Fin (r + 1) → V) (g : Fin (r + 1) → S.V) (gs : Fin r �
     exact (Submodule.Quotient.eq _).2 hdiff
   · rintro ⟨x, hxΛ, hxw⟩
     rw [← hxw]
-    have hx := (key x).2 ⟨c.e x, (e_mem_lat_iff c Λ x).2 hxΛ, (hp x).1 x.2, by simp⟩
+    have hx := (key x).2 ⟨c.e x, (_root_.GlobalTheory.HL.CoordInnerSnd.mem_lat c Λ x).2 hxΛ, (hp x).1 x.2, by simp⟩
     obtain ⟨_, hL⟩ := (e_mem_inn_iff_exists_mkW_mem c f L x).1 hx
     exact hL
 
@@ -213,7 +246,7 @@ theorem frame_of (Fr : FrameD H r) (g : Fin (r + 1) → S.V) (hgf : ∀ a, g a =
   · intro a
     have ha : c.e (n (Fr.f a)) ∈ c.lat Λ :=
       ((htr _).2 (Submodule.subset_span ⟨a, a.2, hfr a⟩)).1
-    exact (e_mem_lat_iff c Λ _).1 ha
+    exact (_root_.GlobalTheory.HL.CoordInnerSnd.mem_lat c Λ _).1 ha
   · have hli' : LinearIndependent E Fr.f := by
       have h1 : LinearIndependent E ((c.e : V →ₗ[E] S.V) ∘ Fr.f) := by
         convert hli using 1
@@ -229,7 +262,7 @@ theorem frame_of (Fr : FrameD H r) (g : Fin (r + 1) → S.V) (hgf : ∀ a, g a =
       show c.e (n (Fr.f b)) ∈ S.spanTo g (r + 1)
       rw [← hfr b]
       exact (TermBasic.map_mem_iff hg hn (r + 1) (g b)).2 (TermBasic.self_mem S g b.2)
-    have h2 := (htr (c.e x)).1 ⟨(e_mem_lat_iff c Λ x).2 hx, hxS⟩
+    have h2 := (htr (c.e x)).1 ⟨(_root_.GlobalTheory.HL.CoordInnerSnd.mem_lat c Λ x).2 hx, hxS⟩
     have h3 := Submodule.apply_mem_span_image_of_mem_span
       ((c.e.symm : S.V →ₗ[E] V).restrictScalars M.L.O) h2
     have h4 : ((c.e.symm : S.V →ₗ[E] V).restrictScalars M.L.O) (c.e x) = x := c.e.symm_apply_apply x
@@ -252,24 +285,10 @@ theorem change_of (Fr : FrameD H r) (g : Fin (r + 1) → S.V) (hgf : ∀ a, g a 
     (hs : ∀ j, c.grp n (g j) = ∑ i, s i j • g i) (j : Fin (r + 1)) :
     n (Fr.f j) = ∑ i, s i j • Fr.f i := by
   apply c.e.injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← CoordUnip.grp_apply c n (Fr.f j), ← hgf j, hs j, map_sum]
+
+  rw [← CoordUnip.grp_apply c n (Fr.f j), ← hgf j, hs j, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, hgf i]
-
-private theorem lat_img_eq_grp_smul_lat (c : Coord P S) (m : V ≃ₗ[E] V) (Λ : Submodule M.L.O V) :
-    c.lat (img m Λ) = c.grp m • c.lat Λ := by
-  ext x
-  rw [TermBasic.mem_smul]
-  constructor
-  · intro hx
-    obtain ⟨y, hy, rfl⟩ := Submodule.mem_map.1 hx
-    obtain ⟨z, hz, rfl⟩ := Submodule.mem_map.1 hy
-    exact ⟨c.e z, (e_mem_lat_iff c Λ z).2 hz, CoordUnip.grp_apply c m z⟩
-  · rintro ⟨y, hy, rfl⟩
-    obtain ⟨z, hz, rfl⟩ := Submodule.mem_map.1 hy
-    refine Submodule.mem_map.2 ⟨m z, Submodule.mem_map.2 ⟨z, hz, rfl⟩, ?_⟩
-    exact (CoordUnip.grp_apply c m z).symm
 
 theorem term_over (hM : M.OK) (c : Coord P S) (hP : P.RelG (theta M)) (d : Datum P) (t : Term V M r)
     (ht : IsTermOver P d t) :
@@ -294,9 +313,9 @@ theorem term_over (hM : M.OK) (c : Coord P S) (hP : P.RelG (theta M)) (d : Datum
   have spA := StdLat.stdLat_spec M.L r k S S.f S.es (Or.inl ⟨rfl, rfl⟩) _ hinA
   have spB := StdLat.stdLat_spec M.L r k S S.f' S.es' (Or.inr ⟨rfl, rfl⟩) _ hinB
   have hlatA : c.lat t.abelian₂ = c.grp n • S.stdLat S.f S.es (c.inn P.A.f d.L) := by
-    rw [hLam, lat_img_eq_grp_smul_lat, trA.2.2.2 d.L]
+    rw [hLam, _root_.GlobalTheory.HL.CoordTerm.lat_img, trA.2.2.2 d.L]
   have hlatB : c.lat t.abelian₂ = c.grp n' • S.stdLat S.f' S.es' (c.inn P.B.f d.L') := by
-    rw [hLam', lat_img_eq_grp_smul_lat, trB.2.2.2 d.L']
+    rw [hLam', _root_.GlobalTheory.HL.CoordTerm.lat_img, trB.2.2.2 d.L']
   have hgA : ∀ a (j : Fin r), hf M.L S.Hm (S.f a) (S.f j.castSucc) = 0 := fun a j => by
     rw [S.gram]
     exact if_neg fun h => (Fin.castSucc_lt_last j).ne h.2

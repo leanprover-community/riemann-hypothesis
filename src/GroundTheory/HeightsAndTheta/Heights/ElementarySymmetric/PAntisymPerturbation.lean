@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
+public import Mathlib.Topology.Compactness.Compact
 
 @[expose] public section
 

@@ -1,13 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Columns.SummandSlopeOfThreeLemmas
+public import Formalism.MonomialMeanResidues.FilteredDegree
 public import Formalism.LocalToGlobal.Columns.BrzColLatOneLattice
 public import Formalism.LocalToGlobal.Columns.SliceIntegralDeltaNeBot
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP
-public import Formalism.LocalToGlobal.Columns.DecoFin
-public import Formalism.MonomialMeanResidues.ZerosPerVariable
-public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
+import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 
 @[expose] public section
 

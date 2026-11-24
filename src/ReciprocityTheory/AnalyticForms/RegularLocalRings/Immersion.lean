@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsAtlas
+import Mathlib.Analysis.Analytic.Polynomial
 
 @[expose] public section
 

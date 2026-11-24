@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.CurveHyp
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 @[expose] public section
 

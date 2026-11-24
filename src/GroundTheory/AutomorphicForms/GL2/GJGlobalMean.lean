@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
+import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ShearMp
+public import Mathlib.Algebra.Group.Defs
+public import Mathlib.Basic.SetLike.Basic
+import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.Algebra.Group.Subgroup.Defs
+public import Mathlib.Data.Fintype.Defs
 
 @[expose] public section
 

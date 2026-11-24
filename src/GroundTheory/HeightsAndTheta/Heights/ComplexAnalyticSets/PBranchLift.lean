@@ -1,12 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchLift
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelProper
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRiemannExtensionAnalytic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchOffHypersurface
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelOpenMapping
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.NormalModelGraph
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

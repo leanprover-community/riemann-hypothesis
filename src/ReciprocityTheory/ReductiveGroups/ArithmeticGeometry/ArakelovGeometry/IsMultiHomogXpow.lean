@@ -1,6 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.NotRelevantOfDimZero
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -59,9 +62,9 @@ theorem isMultiHomog_xpow (i : ∀ k, ι k) (e : K → ℕ) : IsMultiHomog (xpow
       rw [Finset.sum_eq_single (i k')]
       · simp
       · intro j _ hj
-        simp [Finsupp.single_apply, Sigma.mk.inj_iff, Ne.symm hj]
+        simp [Ne.symm hj]
       · simp
-    · simp [Finsupp.single_apply, Sigma.mk.inj_iff, hk, Ne.symm hk]
+    · simp [hk]
   have h := isMultiHomog_prod Finset.univ (fun k => (X ⟨k, i k⟩ : MRing ι) ^ e k)
     (fun k => e k • Pi.single k 1) (fun k => isMultiHomog_pow (hX k) (e k))
   have he : (∑ k, e k • Pi.single k 1 : K → ℕ) = e := by
@@ -119,8 +122,8 @@ theorem mem_of_mem_dehomI {W : Ideal (MRing ι)} (hWp : W.IsPrime) (hWm : IsMult
       Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (hc k)
     conv_lhs => rw [f.as_sum]
     conv_rhs => rw [f.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_sum, Finset.sum_mul]
+
+    rw [map_sum, map_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun m hm => ?_
     have hcm : ∏ p ∈ m.support, q (X ⟨p.1, i p.1⟩) ^ m p = ∏ k, q (X ⟨k, i k⟩) ^ d k := by
       rw [Finset.prod_subset (Finset.subset_univ m.support) (fun p _ hp => by

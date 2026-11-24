@@ -1,10 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockPieceIndex
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.EqSumMultihomogeneousComponents
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsHomogeneousGrL
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogX
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.NatCardEqPowLength
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SectionModuleEqSpanPow
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ExistsPrimeFiltrationOfIsMultiHomogIdeal
 
 @[expose] public section
 
@@ -33,8 +38,8 @@ theorem mConeMap_of_homog (y : (Σ k, ι k) → Ω) {g : MRing ι} {d : K → �
   rw [← prod_X_pow_eq]
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum, Finset.sum_mul]
+
+  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm => ?_
   have hdeg := hg m hm
   simp only [mConeMap, aeval_monomial, map_mul]
@@ -110,13 +115,13 @@ theorem map_piece [DecidableEq K] (y : (Σ k, ι k) → Ω) {g : MRing ι} {e : 
         i2comp (m + (e + Pi.single k 1)) p + ∑ j, i2comp m (c j) * (g * X ⟨k, j⟩) := by
       rw [i2comp_add]
       congr 1
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [show i2comp (m + (e + Pi.single k 1)) (∑ j, c j * (g * X ⟨k, j⟩)) =
-          ∑ j, i2comp (m + (e + Pi.single k 1)) (c j * (g * X ⟨k, j⟩)) from map_sum (i2compHom _) _ _]
+
+      rw [show i2comp (m + (e + Pi.single k 1)) (∑ j, c j * (g * X ⟨k, j⟩)) =
+        ∑ j, i2comp (m + (e + Pi.single k 1)) (c j * (g * X ⟨k, j⟩)) from map_sum (i2compHom _) _ _]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [i2comp_mul_right (hgX j), if_pos le_add_self, add_tsub_cancel_right]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [AlgHom.toLinearMap_apply, ← i2comp_self hf, e1, map_add (f := _), aeval_i2comp_of_mem y hp, zero_add, map_sum]
+
+    rw [AlgHom.toLinearMap_apply, ← i2comp_self hf, e1, map_add (f := _), aeval_i2comp_of_mem y hp, zero_add, map_sum]
     refine Submodule.sum_mem _ fun j _ => ?_
     refine ⟨y ⟨k, j⟩ * aeval y (i2comp m (c j)), Submodule.mul_mem_mul (Submodule.subset_span ⟨j, rfl⟩)
       ⟨_, (mem_mHom_iff _ _).mpr (isMultiHomog_i2comp _ _), rfl⟩, ?_⟩
@@ -131,9 +136,9 @@ theorem map_piece [DecidableEq K] (y : (Σ k, ι k) → Ω) {g : MRing ι} {e : 
         (Ideal.mul_mem_left _ _ (Ideal.mem_sup_right (Ideal.subset_span ⟨j, rfl⟩)))
     · refine Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ ?_
       exact (mem_mHom_iff _ _).mpr (isMultiHomog_mul' ((mem_mHom_iff _ _).mp hh) (hgX j))
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [LinearMap.mulLeft_apply, AlgHom.toLinearMap_apply, map_sum, map_zsmul,
-        map_mul, aeval_X, Finset.sum_mul, Finset.mul_sum]
+
+    simp only [LinearMap.mulLeft_apply, AlgHom.toLinearMap_apply, map_sum, map_zsmul,
+      map_mul, aeval_X, Finset.sum_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     simp only [zsmul_eq_mul]
     ring
@@ -192,8 +197,8 @@ theorem evPiece_pair (x x' : Ix κ → Ω) (a b : ℕ) :
   · rw [evPiece, Submodule.map_le_iff_le_comap]
     intro s hs
     have hs' := (mem_mHom_iff _ _).mp hs
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Submodule.mem_comap, AlgHom.toLinearMap_apply, s.as_sum, map_sum]
+
+    rw [Submodule.mem_comap, AlgHom.toLinearMap_apply, s.as_sum, map_sum]
     refine Submodule.sum_mem _ fun μ hμ => ?_
     rw [aeval_monomial, Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_sigma, Fin.prod_univ_two,
       algebraMap_int_eq, eq_intCast, ← zsmul_eq_mul]

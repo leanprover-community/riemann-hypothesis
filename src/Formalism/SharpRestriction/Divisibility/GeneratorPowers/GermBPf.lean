@@ -1,6 +1,52 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBPrim
+public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBFr
+public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBSer
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 
@@ -56,8 +102,7 @@ theorem subst_psIn (m : ℕ) {n n' : ℕ} (r : Fin n → Fin n') (g : Fin d → 
       MvPolynomial.rename fun p : Fin n × Fin d => (r p.1, p.2) := MvPolynomial.algHom_ext fun q => by simp
   apply jet_hom_ext
   intro p
-  simp only [jetSubstP, jetRen, AlgHom.comp_apply, jetMap_mk, MvPolynomial.aeval_X, map_sub, MvPolynomial.aeval_C,
-    MvPolynomial.algebraMap_eq, psIn, MvPolynomial.constantCoeff_rename, hr, MvPolynomial.rename_C]
+  simp only [jetSubstP, jetRen, AlgHom.comp_apply, jetMap_mk, MvPolynomial.aeval_X, map_sub, psIn, MvPolynomial.constantCoeff_rename, hr, MvPolynomial.rename_C]
 
 end Pts
 
@@ -218,7 +263,7 @@ theorem val_fr_one (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0
   · exact cube_one_left t (fun p : T ⟶ t.G => cv t.PP.L i0 z J p.left) b
   · exact cube_one_right t (fun p : T ⟶ t.G => cv t.PP.L i0 z J p.left) a
 
-set_option maxHeartbeats 4000000 in
+
 theorem exists_first_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e0 t x0) ⁻¹ᵁ t.PP.L.U i0 = ⊤) :
     ∃ ph : MvPowerSeries (Fin 3 × Fin d) S, ∀ m, ∃ u : (Jet S (Fin 3 × Fin d) m)ˣ,
       (u : Jet S (Fin 3 × Fin d) m) = psJet m ph ∧ LB.Gen.Corr t.PP.L _ _ _ _
@@ -265,7 +310,7 @@ theorem exists_first_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.P
       (ReciprocityTheory.ChartRestriction.G.DVR.invGen_isGen _ _ _ _ (hpe m _)) (ReciprocityTheory.ChartRestriction.G.DVR.invGen_isGen _ _ _ _ (hpe m _))))
     (fun m U _ h => by
       simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, th_pt, pe_pt, pt_sub, Matrix.cons_val_zero,
-        Matrix.cons_val_one, Matrix.head_cons, pt_X, pt_law hch, zpow_neg, Finset.prod_inv_distrib]
+        Matrix.cons_val_one, pt_X, pt_law hch, zpow_neg, Finset.prod_inv_distrib]
       erw [prod_cube3 t.G (fun p : jOG x0 d m 3 ⟶ t.G => h p.left)]
       rw [prod_cube2 t.G (fun p : jOG x0 d m 3 ⟶ t.G => h p.left),
         prod_cube2 t.G (fun p : jOG x0 d m 3 ⟶ t.G => h p.left), prod_cube2 t.G (fun p : jOG x0 d m 3 ⟶ t.G => h p.left)]
@@ -274,6 +319,7 @@ theorem exists_first_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.P
       apply ofMul_eq
       simp only [ofMul_mul, ofMul_inv, _root_.mul_one]
       erw [ha]
+      generalize jptG t x0 d x m (0 : Fin 3) = p0, jptG t x0 d x m (1 : Fin 3) = p1, jptG t x0 d x m (2 : Fin 3) = p2
       abel!)
     (fun m y J hJ => (val_pull hJ _ _ _).trans ((congrArg (fun r => val t.cub.t r y J) (triple_point_truncation hch m 0 1 2)).trans
       (val_pull hJ _ _ _).symm))
@@ -284,7 +330,7 @@ theorem exists_first_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.P
       (fun m i j => by fin_cases i <;> exact hXX m _ j) (fun m i j => by fin_cases i <;> exact hXX m _ j) m y J hJ)
   exact ⟨_, hph1⟩
 
-set_option maxHeartbeats 4000000 in
+
 theorem exists_second_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e0 t x0) ⁻¹ᵁ t.PP.L.U i0 = ⊤) :
     ∃ ph : MvPowerSeries (Fin 3 × Fin d) S, ∀ m, ∃ u : (Jet S (Fin 3 × Fin d) m)ˣ,
       (u : Jet S (Fin 3 × Fin d) m) = psJet m ph ∧ LB.Gen.Corr t.PP.L _ _ _ _
@@ -331,7 +377,7 @@ theorem exists_second_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.
       (ReciprocityTheory.ChartRestriction.G.DVR.invGen_isGen _ _ _ _ (hpe m _)) (ReciprocityTheory.ChartRestriction.G.DVR.invGen_isGen _ _ _ _ (hpe m _))))
     (fun m U _ h => by
       simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, th_pt, pe_pt, pt_sub, Matrix.cons_val_zero,
-        Matrix.cons_val_one, Matrix.head_cons, pt_X, pt_law hch, zpow_neg, Finset.prod_inv_distrib]
+        Matrix.cons_val_one, pt_X, pt_law hch, zpow_neg, Finset.prod_inv_distrib]
       erw [prod_cube3 t.G (fun p : jOG x0 d m 3 ⟶ t.G => h p.left)]
       rw [prod_cube2_swap (fun p : jOG x0 d m 3 ⟶ t.G => h p.left),
         prod_cube2_swap (fun p : jOG x0 d m 3 ⟶ t.G => h p.left), prod_cube2_swap (fun p : jOG x0 d m 3 ⟶ t.G => h p.left)]
@@ -340,6 +386,7 @@ theorem exists_second_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.
       apply ofMul_eq
       simp only [ofMul_mul, ofMul_inv, _root_.mul_one]
       erw [ha2]
+      generalize jptG t x0 d x m (0 : Fin 3) = p0, jptG t x0 d x m (1 : Fin 3) = p1, jptG t x0 d x m (2 : Fin 3) = p2
       abel!)
     (fun m y J hJ => (val_pull hJ _ _ _).trans ((congrArg (fun r => val t.cub.t r y J) (triple_point_truncation hch m 1 2 0)).trans
       (val_pull hJ _ _ _).symm))
@@ -350,7 +397,7 @@ theorem exists_second_face_unit (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.
       (fun m i j => by fin_cases i <;> exact hXX m _ j) (fun m i j => by fin_cases i <;> exact hXX m _ j) m y J hJ)
   exact ⟨_, hph2⟩
 
-set_option maxHeartbeats 4000000 in
+
 theorem ex_sy (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e0 t x0) ⁻¹ᵁ t.PP.L.U i0 = ⊤) :
     ∃ sy : MvPowerSeries (Fin 2 × Fin d) S, ∀ m, ∃ u : (Jet S (Fin 2 × Fin d) m)ˣ,
       (u : Jet S (Fin 2 × Fin d) m) = psJet m sy ∧ LB.Gen.Corr t.PP.L _ _ _ _ (fr hch i0 hi0 m)
@@ -376,7 +423,7 @@ theorem ex_sy (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e
       simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
       apply ofMul_eq
       simp only [ofMul_mul, ofMul_inv, _root_.mul_one]
-      abel!)
+      abel)
     (fun m y J hJ => pe_trunc t x0 d htr
       (fun _ => ![fun j => MvPolynomial.X ((1 : Fin 2), j), fun j => MvPolynomial.X ((0 : Fin 2), j)])
       (fun m i j => by fin_cases i <;> exact hXX m _ j) m y J hJ)
@@ -394,7 +441,7 @@ theorem ex_sy (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e
     rw [e1, uinv, map_inv, inv_mul_cancel_left]
   exact ⟨sy, hsy'⟩
 
-set_option maxHeartbeats 4000000 in
+
 theorem ex_ad (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e0 t x0) ⁻¹ᵁ t.PP.L.U i0 = ⊤) (a : 𝓞 E)
     (wL : LB.Gen (LB.LinComb t.PP.L
       (Sum.elim (cφG t ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)]) (cφG t ![fst t.G t.G ≫ t.act.act a, snd t.G t.G]))
@@ -427,7 +474,7 @@ theorem ex_ad (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e
     (fun m => hpe m _)
     (fun m U _ h => by
       simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, wl_pt, wl_pt', pe_pt, pt_sub, Matrix.cons_val_zero,
-        Matrix.cons_val_one, Matrix.head_cons, pt_X, pt_act hch, zpow_neg, Finset.prod_inv_distrib]
+        Matrix.cons_val_one, pt_X, pt_act hch, zpow_neg, Finset.prod_inv_distrib]
       simp only [inv_mul_cancel_right])
     (fun m y J hJ => (val_mul hJ _ _ _).trans (Eq.trans (congrArg₂ (· * ·)
       ((val_pull hJ _ _ _).trans ((congrArg (fun r => val wL r y J) (pair_point_truncation hch m)).trans (val_pull hJ _ _ _).symm))
@@ -486,7 +533,7 @@ theorem ex_ad (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e
     exact h1
   exact ⟨ad, hadc, had⟩
 
-set_option maxHeartbeats 4000000 in
+
 theorem ex_rig (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e0 t x0) ⁻¹ᵁ t.PP.L.U i0 = ⊤) (wP : PrimTyG t) (hwP : IsPrimG t wP) : Rig0G t x0 d x act (fr hch i0 hi0) wP := by
   have hL := t.PP.isLB
   have hx0 : x 0 = 1 := frame_origin_jet_one hch

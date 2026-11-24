@@ -1,8 +1,8 @@
 module
 
+public import Formalism.LocalToGlobal.ProjectiveLattices.IntegrableOnIntegrand
 public import Formalism.LocalToGlobal.ProjectiveLattices.RdOrbIntOfLatZ
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SublatticeCoefficients
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMeanContinuity
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -20,8 +20,8 @@ theorem max_cusps_rank_one_expand {R : Type} [CommRing R] (σ : R →+* R) {r ρ
     α * (∑ a', η a' * e a' a) * ∑ k, G b k * σ (∑ b', η b' * e b' k) =
       ∑ a', ∑ b', α * (η a' * σ (η b')) * e a' a * ∑ k, G b k * σ (e b' k) := by
   have hσ : ∀ k, σ (∑ b', η b' * e b' k) = ∑ b', σ (η b') * σ (e b' k) := fun k => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul]
+
+    simp only [map_sum, map_mul]
   have hin : (∑ k, G b k * σ (∑ b', η b' * e b' k)) =
       ∑ b', σ (η b') * ∑ k, G b k * σ (e b' k) := by
     simp_rw [hσ, Finset.mul_sum]
@@ -39,10 +39,7 @@ theorem maxCuspsA_zMatC_add (X : Data E r) (cu : CuspFD X ρ) (τ : E →+* ℂ)
     zMatC X cu.e τ (β + β') = zMatC X cu.e τ β * zMatC X cu.e τ β' := by
   have hτ : ∀ x : E, τ (cc x) = (starRingEnd ℂ) (τ x) := fun x => by
     first
-    | exact IsCMField.complexEmbedding_complexConj τ x
     | exact IsCMField.complexEmbedding_complexConj (K := E) τ x
-    | simp [cc, IsCMField.complexEmbedding_complexConj]
-    | simp [cc]
   obtain ⟨U, hU⟩ : ∃ U : Matrix (Fin r) (Fin ρ) ℂ, U = Matrix.of fun k a => τ (cu.e a k) := ⟨_, rfl⟩
   obtain ⟨V, hV⟩ : ∃ V : Matrix (Fin ρ) (Fin r) ℂ,
       V = Matrix.of fun b l => ∑ k', τ (X.Gm l k') * (starRingEnd ℂ) (τ (cu.e b k')) := ⟨_, rfl⟩
@@ -58,8 +55,8 @@ theorem maxCuspsA_zMatC_add (X : Data E r) (cu : CuspFD X ρ) (τ : E →+* ℂ)
   have hVU : V * U = 0 := by
     ext b c
     have h0 := congrArg τ (cu.3 c b)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [herm, map_sum, map_mul, hτ, map_zero] at h0
+
+    simp only [herm, map_sum, map_mul, hτ, map_zero] at h0
     simp only [Matrix.mul_apply, hU, hV, Matrix.of_apply, Matrix.zero_apply, Finset.sum_mul]
     rw [← h0]
     exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun k' _ => by ring
@@ -88,13 +85,10 @@ theorem maxCuspsA_zMatE_map (X : Data E r) (e : Fin ρ → Fin r → E) (τ : E 
     (β : Matrix (Fin ρ) (Fin ρ) E) : (zMatE X e β).map τ = zMatC X e τ (β.map τ) := by
   have hτ : ∀ x : E, τ (cc x) = (starRingEnd ℂ) (τ x) := fun x => by
     first
-    | exact IsCMField.complexEmbedding_complexConj τ x
     | exact IsCMField.complexEmbedding_complexConj (K := E) τ x
-    | simp [cc, IsCMField.complexEmbedding_complexConj]
-    | simp [cc]
   ext k l
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [zMatE, zMatC, Matrix.map_apply, Matrix.of_apply, map_add (f := _), map_sum, map_mul, hτ]
+
+  simp only [zMatE, zMatC, Matrix.map_apply, Matrix.of_apply, map_add (f := _), map_sum, map_mul, hτ]
   split_ifs <;> simp
 
 theorem maxCuspsA_zAct_int (X : Data E r) (cu : CuspFD X ρ) (hb : IsZBasis X cu (zBas X cu))
@@ -115,8 +109,8 @@ theorem maxCuspsA_zAct_int (X : Data E r) (cu : CuspFD X ρ) (hb : IsZBasis X cu
   rw [hγe, maxCuspsA_zMatE_map]
   congr 2
   ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.sum_apply, Matrix.map_apply, Matrix.smul_apply, map_sum, map_zsmul, smul_eq_mul]
+
+  simp only [Matrix.sum_apply, Matrix.map_apply, Matrix.smul_apply, map_sum, map_zsmul, smul_eq_mul]
   simp only [zsmul_eq_mul, Complex.ofReal_intCast]
 
 theorem maxCuspsA_periodic (X : Data E r) (cu : CuspFD X ρ) (hb : IsZBasis X cu (zBas X cu))
@@ -153,11 +147,11 @@ theorem maxCuspsA_flowMat (X : Data E r) (cu : CuspFD X ρ) (η : Fin ρ → E) 
   have hv := maxCuspsA_vec_apply cu.e η
   have h1 := max_cusps_rank_one_expand (starRingEnd ℂ) (fun k l => τ.1 (X.Gm k l)) (fun a => τ.1 (η a))
     (fun a k => τ.1 (cu.e a k)) (-(I * X.c τ) * z) k l
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul] at h1
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Data.flowMat, zMatC, mcMηc, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, hv,
-    map_sum, map_mul]
+
+  simp only [map_sum, map_mul] at h1
+
+  simp only [Data.flowMat, zMatC, mcMηc, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, hv,
+  map_sum, map_mul]
   rw [sub_eq_add_neg]
   congr 1
   rw [← h1]

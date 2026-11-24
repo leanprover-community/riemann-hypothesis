@@ -1,9 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.SliceIntegralDeltaNeBot
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.CharacterFiniteLevelZeroOfForms
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedLatticePropsOfModel
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.GroupActionMulSingleEqDilation
+import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
+import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section
 
@@ -134,8 +135,8 @@ theorem norm_slice_map_sum (B : HLat K) (ρ : (∀ i, G i) →* Module.End K B.V
     t2sNm B ρ i (t2sPsi B ρ W F) =
       t2sPsi B ρ W (fun h => ∑ a : G i, F ((Pi.mulSingle i a)⁻¹ * h)) := by
   rw [t2sPsi_apply, t2sPsi_apply, t2sNm, LinearMap.sum_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Submodule.coe_sum, map_sum]
+
+  simp only [Submodule.coe_sum, map_sum]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ =>
     Fintype.sum_equiv (Equiv.mulLeft (Pi.mulSingle i a)) _ _ fun g => ?_
@@ -322,8 +323,8 @@ open Classical
 theorem embedding_mem_forms_level_zero (x : ((D.fm u).lat 0).V) : (D.fm u).emb 0 x ∈ (D.mem u).A.Mu0 := by
   rw [← (D.fm u).Fi_zero, ← ((D.fm u).emb_basis 0).2]
   have hx := ((D.fm u).lat 0).b.sum_repr x
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← hx, map_sum]
+
+  rw [← hx, map_sum]
   refine Submodule.sum_mem _ fun j _ => ?_
   rw [map_smulₛₗ]
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
@@ -333,8 +334,8 @@ theorem ramified_sub_eq_inf_norm_ker (ρ : (∀ v, t2sG D u v) →* Module.End D
     (D.fm u).ramSub = ⨅ v, LinearMap.ker (t2sNm ((D.fm u).lat 0) ρ v) := by
   have key : ∀ v x, (D.fm u).emb 0 (t2sNm ((D.fm u).lat 0) ρ v x) = (D.mem u).A.Nm v ((D.fm u).emb 0 x) := by
     intro v x
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [t2sNm, ColumnsAtT.Nm, LinearMap.sum_apply, map_sum, hρ]
+
+    simp only [t2sNm, ColumnsAtT.Nm, LinearMap.sum_apply, map_sum, hρ]
   ext x
   simp only [MemberForms.ramSub, Submodule.mem_comap, ColumnsAtT.Mram, Submodule.mem_inf, Submodule.mem_iInf,
     LinearMap.mem_ker]
@@ -651,8 +652,8 @@ theorem slice_value_off_summand (hS : Formalism.MainNotions.product_first_zeroth
 theorem slice_map_value_at_class (hS : Formalism.MainNotions.product_first_zeroth_parts.admS D u) (F : (∀ v, t2sG D u v) → t2sW Tf hE) (c : (D.mem u).C.cls 0) :
     (D.fm u).emb 0 (t2sPsi ((D.fm u).lat 0) (t2sRho Tf hE) (t2sW Tf hE) F) c =
       (D.fm u).emb 0 (t2sRho Tf hE (t2sH Tf hE c) (F (t2sH Tf hE c) : ((D.fm u).lat 0).V)) c := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [t2sPsi_apply, map_sum, Finset.sum_apply, Finset.sum_eq_single (t2sH Tf hE c)]
+
+  rw [t2sPsi_apply, map_sum, Finset.sum_apply, Finset.sum_eq_single (t2sH Tf hE c)]
   · intro g _ hg
     exact slice_value_off_summand Tf hE hS F g c hg
   · intro h

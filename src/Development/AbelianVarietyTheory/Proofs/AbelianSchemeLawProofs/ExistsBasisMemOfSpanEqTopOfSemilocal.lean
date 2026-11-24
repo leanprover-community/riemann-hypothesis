@@ -1,7 +1,64 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+import Mathlib.Algebra.Module.Torsion.Basic
+import Mathlib.Algebra.Module.Submodule.Union
+public import Mathlib.LinearAlgebra.Basis.Defs
+public import Mathlib.LinearAlgebra.DFinsupp
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.GroupTheory.CosetCover
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Data.Matrix.Basic
+public import Mathlib.LinearAlgebra.Determinant
+public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
+import Mathlib.Topology.Sheaves.Presheaf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 @[expose] public section
 
@@ -19,34 +76,24 @@ theorem exists_forall_notMem {A V J : Type*} [CommRing A] [IsLocalRing A]
     [Infinite (IsLocalRing.ResidueField A)] [AddCommGroup V] [Module A V] [Finite J]
     (p : J → Submodule A V) (hp : ∀ i, p i ≠ ⊤)
     (hm : ∀ i, ∀ a ∈ IsLocalRing.maximalIdeal A, ∀ x, a • x ∈ p i) : ∃ x : V, ∀ i, x ∉ p i := by
-  classical
-  have := Fintype.ofFinite J
-  by_contra! h
-  have hcov : ⋃ i ∈ (Finset.univ : Finset J),
-      (0 : V) +ᵥ ((p i).toAddSubgroup : Set V) = Set.univ := by
-    refine Set.eq_univ_iff_forall.mpr fun a => ?_
-    obtain ⟨i, hi⟩ := h a
-    simp only [zero_vadd, Set.mem_iUnion]
-    exact ⟨i, Finset.mem_univ i, hi⟩
-  obtain ⟨k, -, hk⟩ := AddSubgroup.exists_finiteIndex_of_leftCoset_cover hcov
-  have hfin : Finite (V ⧸ p k) := AddSubgroup.finite_quotient_of_finiteIndex (H := (p k).toAddSubgroup)
-  obtain ⟨x, hx⟩ : ∃ x, x ∉ p k := by
-    by_contra! h'
-    exact hp k (Submodule.eq_top_iff'.mpr h')
-  choose s hs using IsLocalRing.residue_surjective (R := A)
-  have hinj : Function.Injective
-      (fun c : IsLocalRing.ResidueField A => (p k).mkQ (s c • x)) := by
-    intro c d hcd
-    by_contra hne
-    have h1 : (s c - s d) • x ∈ p k := by
-      rw [sub_smul]
-      exact (Submodule.Quotient.eq _).mp hcd
-    have h2 : IsUnit (s c - s d) := by
-      rw [← IsLocalRing.residue_ne_zero_iff_isUnit, map_sub, hs, hs]
-      exact sub_ne_zero.mpr hne
-    exact hx (((p k).smul_mem_iff_of_isUnit h2).mp h1)
-  have := Finite.of_injective _ hinj
-  exact not_finite (IsLocalRing.ResidueField A)
+  let I := IsLocalRing.maximalIdeal A
+  let : Field (A ⧸ I) := Ideal.Quotient.field I
+  let : Infinite (A ⧸ I) := inferInstanceAs (Infinite (IsLocalRing.ResidueField A))
+  let N : Submodule A V := I • ⊤
+  let q : V →ₛₗ[Ideal.Quotient.mk I] V ⧸ N :=
+    { toFun := Submodule.Quotient.mk
+      map_add' := map_add N.mkQ
+      map_smul' := Module.Quotient.mk_smul_mk V I }
+  have hq : LinearMap.ker q = N := Submodule.ker_mkQ N
+  have hle (i : J) : N ≤ p i := Submodule.smul_le.mpr fun a ha x _ => hm i a ha x
+  have hne (i : J) : (p i).map q ≠ ⊤ := by
+    intro h
+    have hc := Submodule.comap_map_eq_self (f := q) (hq ▸ hle i)
+    rw [h, Submodule.comap_top] at hc
+    exact hp i hc.symm
+  obtain ⟨y, hy⟩ := Submodule.exists_forall_notMem_of_forall_ne_top (K := A ⧸ I) (fun i => (p i).map q) hne
+  obtain ⟨x, rfl⟩ := N.mkQ_surjective y
+  exact ⟨x, fun i hx => hy i (Submodule.mem_map_of_mem hx)⟩
 
 noncomputable def red {B M : Type*} [CommRing B] [AddCommGroup M] [Module B M] {n : ℕ}
     (e : Module.Basis (Fin n) B M) (I : Ideal B) : M →ₗ[B] (Fin n → B ⧸ I) :=

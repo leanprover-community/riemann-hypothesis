@@ -1,8 +1,48 @@
 module
 
+public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeBoundsOfThreeParts
+public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
+public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.FrobeniusUniformizerPowDvd
-public import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
+import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -29,18 +69,13 @@ theorem cmpD_zero : Formalism.MainNotions.ArcLiftingSetup.cmpD W T 0 = 0 := by
   rw [Formalism.MainNotions.UnusedSlot80.ArcF.cmpD_of_mem W T (W.N T).zero_mem]
   exact map_zero (W.cmp T)
 
-theorem Q_eq_q (hs : W.s = 1) : W.Q = W.q := by
-  simp [LocWach.Q, hs]
+alias Q_eq_q := _root_.Formalism.MainNotions.LiftingTheory.wmap_Q_one
 
 theorem cc_Q (hs : W.s = 1) (i : ZMod n) :
     PowerSeries.constantCoeff (W.Q i) = (PD.p : O) := by
   rw [Q_eq_q W hs]; exact Formalism.MainNotions.UnusedSlot80.ArcF.constantCoeff_q_zero_eq_p W
 
-theorem p_ne_zero_O (W' : LocWach PD LL O v n) : ((PD.p : ℕ) : O) ≠ 0 := by
-  intro h
-  apply Formalism.MainNotions.UnusedSlot80.ArcF.p_ne_zero W'
-  have := congrArg (algebraMap O LL) h
-  rwa [map_natCast, map_zero] at this
+alias p_ne_zero_O := _root_.Formalism.MainNotions.LiftingTheory.tr_p_ne
 
 theorem osmul_comm (a : LetA O n) (o : O) (x : W.DD T) : a • o • x = o • a • x := by
   rw [← algebraMap_smul (LetA O n) o x, ← algebraMap_smul (LetA O n) o (a • x), smul_smul,
@@ -89,7 +124,7 @@ theorem of_mem_Nl {i : ZMod n} {x : W.DD T} (hx : x ∈ W.Nl T i) :
     x ∈ W.N T ∧ (letE i : LetA O n) • x = x := by
   obtain ⟨y, hy, rfl⟩ := hx
   simp only [LinearMap.smul_apply, LinearMap.id_apply]
-  exact ⟨(W.N T).smul_mem _ hy, by rw [smul_smul, letE_sq]⟩
+  exact ⟨(W.N T).smul_mem _ hy, by rw [smul_smul, _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq]⟩
 
 theorem cmp_qpphi [IsDomain O] (hs : W.s = 1) (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W)
     (h3 : Formalism.MainNotions.DeltaInvariantLattices.p3 W T) {c : ZMod n} {B : ℕ}

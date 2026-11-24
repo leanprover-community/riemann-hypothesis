@@ -1,12 +1,58 @@
 module
 
-public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankDcrisLetterDeRhamComponentEqDim
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedSubfieldLeCyclotomicExt
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsCrystallineSpan
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinrankDdRFinsum
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamDieudonneSpansTensorDeRhamPeriods
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankDcrisLetterDeRhamComponentEqDim
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsCrystallineSpan
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedSubfieldLeCyclotomicExt
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -34,8 +80,8 @@ theorem exists_proj {F K L M : Type} [Field F] [Field K] [Field L] [Algebra F K]
   have he : ∀ τ, GlobalTheory.DeRhamSplit.evalEmb F K L (e τ) = Pi.single τ 1 := fun τ => Φ.apply_symm_apply _
   have hsum : ∑ τ, e τ = 1 := by
     apply hb.1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_one]
+
+    rw [map_sum, map_one]
     simp only [he]
     exact Finset.univ_sum_single (fun _ => (1 : L))
   have hmul : ∀ τ c, (1 ⊗ₜ c) * e τ = (τ c ⊗ₜ 1) * e τ := by
@@ -50,8 +96,8 @@ theorem exists_proj {F K L M : Type} [Field F] [Field K] [Field L] [Algebra F K]
   have h2 : ∀ a, α a = Ψ (a ⊗ₜ 1) := fun c => by rw [hΨ, map_one, mul_one]
   refine ⟨fun σ => Ψ (e σ), fun x => ?_, fun σ c x => ?_, fun σ c x => ?_, fun σ c x => ?_,
     fun N hα hβ σ x hx => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    · rw [← LinearMap.sum_apply, ← map_sum, hsum, map_one]; rfl
+
+  · rw [← LinearMap.sum_apply, ← map_sum, hsum, map_one]; rfl
   · rw [h1, h2, ← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul, hmul]
   · rw [h1, ← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul, mul_comm]
   · rw [h2, ← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul, mul_comm]
@@ -76,8 +122,8 @@ theorem indep_of_span {L R D : Type} [Field L] [CommRing R] (ι : L → R) [AddC
     rintro _ ⟨x, rfl⟩
     refine ⟨fun s => ι (Bs.repr x s), ?_⟩
     conv_rhs => rw [← Bs.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Fintype.linearCombination_apply, map_sum, hA]
+
+    simp only [Fintype.linearCombination_apply, map_sum, hA]
   have hinj := OrzechProperty.injective_of_surjective_of_injective
     (LinearEquiv.funCongrLeft R R q.symm).toLinearMap _ (LinearEquiv.injective _) hsurj
   have hli : LinearIndependent R fun s => A (Bs s) := linearIndependent_iff_injective_fintypeLinearCombination.2 hinj
@@ -160,11 +206,11 @@ theorem coords_surj {n : ℕ} (v : Basis (Fin n) LL V) (ι : LL →ₐ[Qp] R) :
   intro f
   refine ⟨∑ j, v j ⊗ₜ f j, ?_⟩
   funext j
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_apply, Finset.sum_eq_single j]
+
+  rw [map_sum, Finset.sum_apply, Finset.sum_eq_single j]
   · simp [coords_tmul]
   · intro k _ hk
-    simp [coords_tmul, Finsupp.single_apply, hk]
+    simp [coords_tmul, hk]
   · simp
 
 end Tens
@@ -265,8 +311,8 @@ theorem mu_iota_mem [FiniteDimensional Qp K] [FiniteDimensional Qp K₀]
       (DcrisL PD T.ρ (τ.comp (IsScalarTower.toAlgHom Qp K₀ K))).map (ιV PD (LL := LL) (V := T.V)) ⊔
         others PD T τ := by
   obtain ⟨y, h1, h2⟩ := exists_sum hc0 _ (mu_mem_Dcris PD T) d hd
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h1, map_sum, map_sum]
+
+  rw [← h1, map_sum, map_sum]
   refine Submodule.sum_mem _ fun σ _ => ?_
   let N : Submodule LL (T.V ⊗[Qp] BdR) := DdR PD T.ρ ⊓ ⨅ c : K₀,
     LinearMap.ker (mu Qp LL T.V (algebraMap K BdR (algebraMap K₀ K c)) - σ c • LinearMap.id)
@@ -330,8 +376,8 @@ theorem indep (τ : K →ₐ[Qp] LL) (ι : LL →ₐ[Qp] BdR) (hι : ∀ c, ι (
       intro f _
       obtain ⟨y, rfl⟩ := coords_surj v ι f
       obtain ⟨m, b, w, hw, rfl⟩ := hspan y
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Submodule.sum_mem _ fun i _ => ?_
       rw [coords_mu]
       refine Submodule.smul_mem _ _ ?_
@@ -341,8 +387,8 @@ theorem indep (τ : K →ₐ[Qp] LL) (ι : LL →ₐ[Qp] BdR) (hι : ∀ c, ι (
     (fun a => ⟨d a, hd a⟩) (LinearIndependent.of_comp D.subtype hli)
   refine Fintype.linearIndependent_iff.1 hl b ?_ a
   have := coords_ker T v ι _ h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum] at this
+
+  rw [map_sum] at this
   rw [← this]
   exact Finset.sum_congr rfl fun a _ => (coords_mu v ι _ _).symm
 

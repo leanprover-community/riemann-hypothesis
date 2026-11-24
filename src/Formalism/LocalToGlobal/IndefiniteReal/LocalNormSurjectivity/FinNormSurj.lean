@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.Topology.Algebra.Valued.ValuationTopology
 
 @[expose] public section
 

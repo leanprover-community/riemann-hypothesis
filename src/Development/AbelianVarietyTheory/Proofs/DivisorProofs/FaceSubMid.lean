@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsZeroChains
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -151,9 +190,9 @@ theorem pv_δ_left {n₁ : ℤ} (hn : n + 1 = n₁) (a : Cochain ((chains R).obj
   cases p with
   | zero => rw [ev_δ_zero hn a U s s' hs, bdL, smul_zero, sub_zero]
   | succ p =>
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [ev_δ_succ hn a U p s s' hs, bdL, map_add (f := _), LinearMap.add_apply, sg_smul, map_zsmul, LinearMap.smul_apply, map_sum,
-      LinearMap.sum_apply, eq_sub_iff_add_eq]
+
+    rw [ev_δ_succ hn a U p s s' hs, bdL, map_add (f := _), LinearMap.add_apply, sg_smul, map_zsmul, LinearMap.smul_apply, map_sum,
+    LinearMap.sum_apply, eq_sub_iff_add_eq]
     refine congrArg₂ (· + ·) rfl (congrArg _ (Finset.sum_congr rfl fun i _ => ?_))
     rw [map_zsmul, LinearMap.smul_apply, pv_eq μ a b w p r _ z s' t (by omega) ht h]
 
@@ -166,8 +205,8 @@ theorem pv_δ_right {m₁ : ℤ} (hm : m + 1 = m₁) (a : Cochain ((chains R).ob
   cases r with
   | zero => rw [ev_δ_zero hm b U t t' ht, bdR, smul_zero, sub_zero]
   | succ r =>
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [ev_δ_succ hm b U r t t' ht, bdR, map_add (f := _), sg_smul, map_zsmul, map_sum, eq_sub_iff_add_eq]
+
+    rw [ev_δ_succ hm b U r t t' ht, bdR, map_add (f := _), sg_smul, map_zsmul, map_sum, eq_sub_iff_add_eq]
     refine congrArg₂ (· + ·) rfl (congrArg _ (Finset.sum_congr rfl fun i _ => ?_))
     rw [map_zsmul, pv_eq μ a b w p r y _ s t' hs (by omega) h]
 
@@ -216,9 +255,9 @@ theorem d_ev_aw {k n₁ m₁ k₁ : ℤ} {hk : n + m = k} (hn : n + 1 = n₁) (h
     (h₁ : μ.IsAW e₁ (δ n n₁ a) b c₁) (h₂ : μ.IsAW e₂ a (δ m m₁ b) c₂) (N : ℕ) (w w' : ℤ) (h : -(N : ℤ) + k = w)
     (h' : -(N : ℤ) + k₁ = w') (x : Sx E N U) :
     Sec.map (K.d w w') (ev (R := R) c N w h U x) + sg k₁ • rem μ a b w' x = ev (R := R) c₁ N w' h' U x + sg n • ev (R := R) c₂ N w' h' U x := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ev_aw μ hc, ev_aw μ h₁, ev_aw μ h₂, rem, Sec.map, map_sum, smul_add, Finset.smul_sum, Finset.smul_sum, Finset.smul_sum,
-    ← Finset.sum_add_distrib, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+
+  rw [ev_aw μ hc, ev_aw μ h₁, ev_aw μ h₂, rem, Sec.map, map_sum, smul_add, Finset.smul_sum, Finset.smul_sum, Finset.smul_sum,
+  ← Finset.sum_add_distrib, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl ?_
   rintro ⟨p, r⟩ hq
   have hN : p + r = N := by simpa using hq

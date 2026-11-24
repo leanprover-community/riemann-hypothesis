@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHeightsirationalHilb
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbFnValueSpan
+public import Mathlib.Data.Finsupp.Interval
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -73,8 +76,8 @@ theorem valueSpan_le (y : (Σ k, ι k) → Ω) (a : K → ℕ) (W : Submodule �
     valueSpan y a ≤ W := by
   refine Submodule.span_le.mpr ?_
   rintro _ ⟨g, hg, rfl⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [g.as_sum, map_sum]
+
+  rw [g.as_sum, map_sum]
   refine Submodule.sum_mem _ fun γ hγ => ?_
   rw [aeval_monomial_int, ← Rat.smul_def]
   exact W.smul_mem _ (hW γ (funext fun k => hg γ hγ k))

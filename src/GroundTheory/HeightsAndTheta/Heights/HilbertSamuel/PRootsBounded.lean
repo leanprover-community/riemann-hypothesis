@@ -1,7 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRootsBounded
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Polynomial.CauchyBound
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import Mathlib.Algebra.Polynomial.Eval.Coeff
+public import Mathlib.Algebra.Polynomial.Monic
 
 @[expose] public section
 

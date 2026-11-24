@@ -1,5 +1,13 @@
 module
 
+public import Mathlib.Algebra.Module.ZLattice.Covolume
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
+public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ArakelovDegreeEqDegreeOfFamily
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountStA
 

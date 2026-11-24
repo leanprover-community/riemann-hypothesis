@@ -1,9 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsSemipositiveRelTrivLine
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
 
 @[expose] public section
 

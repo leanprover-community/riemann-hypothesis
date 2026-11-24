@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.DualLattices.TowerZeroSurjective
+public import ReciprocityTheory.DualLattices.FormalChartAtZero
 
 @[expose] public section
 

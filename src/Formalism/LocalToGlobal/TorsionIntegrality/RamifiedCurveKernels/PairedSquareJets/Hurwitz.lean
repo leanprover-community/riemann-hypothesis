@@ -1,8 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementH
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.CoeffPowEqZeroOfCc
 public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.CoeffPowEqZeroOfCc
 
 @[expose] public section
 
@@ -37,7 +37,6 @@ theorem jets_in_norm_holds : JetsInNorm := by
   intro K _ _ ι f
   first
     | exact Iff.rfl
-    | exact forall_congr' (fun κ => by simp [Formalism.G.unitBall])
 
 section Ring
 
@@ -86,7 +85,6 @@ theorem jetsIn_mul {f g : MvPowerSeries ι K} (hf : JetsIn R f) (hg : JetsIn R g
   have hp' : p.1 + p.2 = κ := by
     first
       | exact Finset.HasAntidiagonal.mem_antidiagonal.mp hp
-      | simpa using hp
   obtain ⟨q, hq⟩ := mfact_mul_dvd_add p.1 p.2
   rw [← hp', hq]
   have e : ((mfact p.1 * mfact p.2 * q : ℕ) : K) *

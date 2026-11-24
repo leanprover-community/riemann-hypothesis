@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjTwistAway
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechSeparated
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjCechModel
+import Mathlib.Algebra.Category.ModuleCat.Sheaf.LocallyFree
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -44,8 +43,8 @@ lemma cechAcyclic_of_bijective_le (φ : ∀ W : Opens X, W ≤ D → Q.obj (op W
     funext i
     rw [d_apply]
     change _ = φ _ (hI i) (d Q U m σ i)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [d_apply, map_sum]
+
+    rw [d_apply, map_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [map_zsmul]
     congr 1

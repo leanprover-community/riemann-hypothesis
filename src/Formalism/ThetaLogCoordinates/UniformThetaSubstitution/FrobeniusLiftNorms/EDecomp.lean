@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
+public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
+import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
+import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -49,8 +95,8 @@ theorem lowGe_add {m : ℕ} {f g : MvPowerSeries (Tp ⊕ Lw) K} (hf : LowGe m f)
 theorem lowGe_sum {α : Type} {m : ℕ} (s : Finset α) (F : α → MvPowerSeries (Tp ⊕ Lw) K)
     (h : ∀ a ∈ s, LowGe m (F a)) : LowGe m (∑ a ∈ s, F a) := by
   intro n hn
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum] at hn
+
+  rw [map_sum] at hn
   obtain ⟨a, ha, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hn
   exact h a ha n hne
 
@@ -78,11 +124,9 @@ theorem lowGe_X_pow (x : Lw) (m : ℕ) :
   rw [MvPowerSeries.coeff_X_pow] at h
   split_ifs at h with e
   · subst e
-    unfold lowDeg
-    refine le_trans ?_ (Finset.single_le_sum
+    simpa [lowDeg] using Finset.single_le_sum
       (f := fun y : Lw => (Finsupp.single (Sum.inr x : Tp ⊕ Lw) m) (Sum.inr y))
-      (fun _ _ => Nat.zero_le _) (Finset.mem_univ x))
-    simp
+      (fun _ _ => Nat.zero_le _) (Finset.mem_univ x)
   · exact absurd rfl h
 
 end LowGe
@@ -138,12 +182,8 @@ theorem cg_first {p : ℕ} (hp : p.Prime) (h2 : 2 < p) (hn : ‖(p : K)‖ = (p 
 theorem exists_of_cg {p : ℕ} (hp : p.Prime) (hn : ‖(p : K)‖ = (p : ℝ)⁻¹) {f g : MvPowerSeries ι K}
     (h : Cg p f g) : ∃ Y : MvPowerSeries ι K, Integral Y ∧ f = g + MvPowerSeries.C (p : K) * Y := by
   have hp0 : (p : K) ≠ 0 := by
-    intro h0
-    rw [h0, norm_zero] at hn
-    have : (0 : ℝ) < (p : ℝ)⁻¹ := by
-      have := hp.pos
-      positivity
-    linarith
+    rw [← norm_ne_zero_iff, hn]
+    exact inv_ne_zero (Nat.cast_ne_zero.mpr hp.ne_zero)
   refine ⟨MvPowerSeries.C ((p : K)⁻¹) * (f - g), fun n => ?_, ?_⟩
   · rw [MvPowerSeries.coeff_C_mul, norm_mul, norm_inv, hn, inv_inv]
     have hpp : (0 : ℝ) < p := by exact_mod_cast hp.pos
@@ -178,8 +218,8 @@ theorem low_sPos_sub {p : ℕ} (hp : 2 ≤ p) (E : ℕ) (s : ZMod (2 * ν)) (ab 
     refine ⟨by rw [hd]; exact lt_powq hp l, ?_⟩
     rw [hd] at hn
     exact (Nat.pow_lt_pow_iff_right (show 1 < p ^ 2 by nlinarith)).1 hn
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sub, coeff_sPos, sT, map_sum, sub_eq_zero]
+
+  rw [map_sub, coeff_sPos, sT, map_sum, sub_eq_zero]
   simp only [MvPowerSeries.coeff_C_mul, MvPowerSeries.coeff_X_pow]
   calc _ = ∑ l ∈ range (E + n.degree + 1),
         (if n = Finsupp.single (s - 2 * (l : ZMod (2 * ν)), ab) ((p ^ 2) ^ l) then (-1 : K) ^ l
@@ -237,8 +277,8 @@ theorem subst_sT [NeZero ν] (TT : Finset (ZMod (2 * ν))) (ξ : ZMod (2 * ν) �
         tpS TT ξ (s - 2 * (l : ZMod (2 * ν)), ab)) ^ ((p ^ 2) ^ l) := by
   have hs : MvPowerSeries.HasSubst (zSub (r1 := r1) TT ξ) :=
     MvPowerSeries.hasSubst_of_constantCoeff_zero (constantCoeff_zSub TT ξ)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom hs, sT, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom hs, sT, map_sum]
   refine Finset.sum_congr rfl fun l _ => ?_
   simp only [map_mul, map_pow, MvPowerSeries.substAlgHom_X, zSub_eq, map_neg, map_one]
 
@@ -252,11 +292,11 @@ theorem subst_hhT [NeZero ν] (TT : Finset (ZMod (2 * ν))) (ξ : ZMod (2 * ν) 
     MvPowerSeries.hasSubst_of_constantCoeff_zero (constantCoeff_zSub TT ξ)
   have hC : ∀ r : K, MvPowerSeries.substAlgHom hs (MvPowerSeries.C r) = MvPowerSeries.C r :=
     fun r => (MvPowerSeries.substAlgHom hs).commutes r
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← MvPowerSeries.coe_substAlgHom hs, hhT, map_sum]
+
+  rw [← MvPowerSeries.coe_substAlgHom hs, hhT, map_sum]
   refine Finset.sum_congr rfl fun s _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_mul, hC, map_sum]
+
+  rw [map_mul, hC, map_sum]
   congr 1
   refine Finset.sum_congr rfl fun ab _ => ?_
   rw [map_mul, map_pow]
@@ -314,8 +354,7 @@ theorem topMonoS_single {Tp Lw : Type} (a : Tp) (m : ℕ) :
 
 theorem topMonoS_add {Tp Lw : Type} (d d' : Tp →₀ ℕ) :
     topMonoS (K := K) (Lw := Lw) (d + d') = topMonoS d * topMonoS d' := by
-  rw [topMonoS, topMonoS, topMonoS, Finsupp.mapDomain_add, MvPowerSeries.monomial_mul_monomial,
-    one_mul]
+  simp [topMonoS, Finsupp.mapDomain_add, MvPowerSeries.monomial_mul_monomial]
 
 theorem tpS_pos {TT : Finset (ZMod (2 * ν))} (ξ : ZMod (2 * ν) → Fin r0 → K) {x : ZV ν r0 r1}
     (h : x.1 ∈ TT) : tpS TT ξ x =

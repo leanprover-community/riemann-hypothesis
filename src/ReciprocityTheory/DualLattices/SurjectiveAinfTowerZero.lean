@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.DualLattices.SubMemOfCompat
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.RowParseval
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.InWLeft
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcRealXPS
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 
@@ -47,10 +50,10 @@ theorem range_phi : LinearMap.range (phi X) = ⊤ := by
   refine ⟨∑ a, p a • X.fY a + ∑ a, q a • X.eX a, ?_⟩
   rw [phi_apply]
   refine Prod.ext (funext fun c => ?_) (funext fun c => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp [map_sum, map_smul, X.ef, X.ee, Finset.sum_ite_eq]
-  set_option synthInstance.maxHeartbeats 100000 in
-    · simp [map_sum, map_smul, X.ff, Ex.h_fe, Finset.sum_ite_eq]
+
+  · simp [map_sum, map_smul, X.ef, X.ee, Finset.sum_ite_eq]
+
+  · simp [map_sum, map_smul, X.ff, Ex.h_fe, Finset.sum_ite_eq]
 
 theorem finrank_V (X : HidaSetting D) : Module.finrank D.host.E (VS D).V = 2 * D.R.rS + D.R.k + 1 := by
   rw [Module.finrank_eq_card_basis X.bas, Fintype.card_fin, nX X]
@@ -115,14 +118,14 @@ theorem span_Lb : Submodule.span D.host.E (X.Lb : Set (VS D).V) = Wb X := by
   have hα : ∀ c, α c = 0 := by
     intro c
     have := (hy' c).2
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_add (f := _), map_sum, map_smul, Ex.h_fe, X.ff, (hlW c).2, Finset.sum_ite_eq] at this
+
+    simp [map_add (f := _), map_sum, map_smul, Ex.h_fe, X.ff, (hlW c).2, Finset.sum_ite_eq] at this
     exact this
   have hβ : ∀ c, β c = 0 := by
     intro c
     have := (hy' c).1
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_add (f := _), map_sum, map_smul, X.ef, X.ee, (hlW c).1, Finset.sum_ite_eq] at this
+
+    simp [map_add (f := _), map_sum, map_smul, X.ef, X.ee, (hlW c).1, Finset.sum_ite_eq] at this
     exact this
   simp only [hα, hβ, zero_smul, Finset.sum_const_zero, zero_add, add_zero]
   exact hl

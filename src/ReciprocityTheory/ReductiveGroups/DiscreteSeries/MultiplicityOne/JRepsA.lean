@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
+public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 
 @[expose] public section
 

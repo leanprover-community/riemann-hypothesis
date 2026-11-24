@@ -1,11 +1,60 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TBNFinal
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.LevelThreeSeparatesTangents
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.MemAnalyticAtZeroOfEventuallyDifferentiableAt
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.PredMulSumPadicValNatFactorialAddCardLe
+public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.LevelThreeSeparatesTangents
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.DimStatement
 
 @[expose] public section
 
@@ -90,9 +139,6 @@ def TwistedLaw (Y : GT ι) (k : ℕ) (c : EuclideanSpace ℂ ι) (F : EuclideanS
   Differentiable ℂ F ∧ ∀ γ ∈ lat Y.b, ∀ v, F (v + γ) = Y.ka γ ^ k *
     cexp (k * Real.pi * Hf v γ + Real.pi * Hf c γ + k * Real.pi * Hf γ γ / 2) * F v
 
-theorem Hf_add_left (v w γ : EuclideanSpace ℂ ι) : Hf (v + w) γ = Hf v γ + Hf w γ := by
-  simp [Hf, add_mul, Finset.sum_add_distrib]
-
 theorem twistedLaw_zero_iff (Y : GT ι) (k : ℕ) (F : EuclideanSpace ℂ ι → ℂ) :
     TwistedLaw Y k 0 F ↔ F ∈ (powTorus Y k).Sec k := by
   have : ∀ γ : EuclideanSpace ℂ ι, Hf 0 γ = 0 := fun γ => by simp [Hf]
@@ -104,7 +150,7 @@ theorem TwistedLaw.mul {Y : GT ι} {k l : ℕ} {c d : EuclideanSpace ℂ ι}
     TwistedLaw Y (k + l) (c + d) (F * G) := by
   refine ⟨hF.1.mul hG.1, fun γ hγ v => ?_⟩
   simp only [Pi.mul_apply]
-  rw [hF.2 γ hγ, hG.2 γ hγ, Hf_add_left]
+  rw [hF.2 γ hγ, hG.2 γ hγ, _root_.ReciprocityTheory.ChartRestriction.G.I2.DimC.Hf_add_l]
   have e : ((k + l : ℕ) : ℂ) * Real.pi * Hf v γ + Real.pi * (Hf c γ + Hf d γ)
       + ((k + l : ℕ) : ℂ) * Real.pi * Hf γ γ / 2 =
       (k * Real.pi * Hf v γ + Real.pi * Hf c γ + k * Real.pi * Hf γ γ / 2) +
@@ -117,7 +163,7 @@ theorem twistedLaw_translate {Y : GT ι} {θ : EuclideanSpace ℂ ι → ℂ} (h
     (a : EuclideanSpace ℂ ι) : TwistedLaw Y 1 a (fun v => θ (v + a)) := by
   refine ⟨hθ.1.comp (differentiable_id.add_const a), fun γ hγ v => ?_⟩
   have := hθ.2 γ hγ (v + a)
-  rw [Hf_add_left] at this
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.DimC.Hf_add_l] at this
   simp only
   rw [add_right_comm, this]
   congr 2
@@ -244,8 +290,8 @@ theorem jets_three {Y : GT ι} {θ : EuclideanSpace ℂ ι → ℂ} (hθ : θ �
       have h3 := hφ (Submodule.mem_sup_left (S := jets Y 3) ⟨_, h, rfl⟩)
       rw [LinearMap.mem_ker, hform, constantCoeff_taylorDir] at h3
       simp only [coeff_single_taylorDir _ (analyticAt_of_differentiable h.1 0)] at h3
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hc, map_sum, ← h3]
+
+      rw [hc, map_sum, ← h3]
       simp only [map_smul, smul_eq_mul, zero_add, zero_sub]
       congr 1
       · ring

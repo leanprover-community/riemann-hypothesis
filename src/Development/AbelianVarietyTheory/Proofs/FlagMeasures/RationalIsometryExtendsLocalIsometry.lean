@@ -1,9 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocalDiscriminantIsUnit
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -69,8 +106,8 @@ theorem locEnd_bcP (p : PlF D) (φ : (VS D).V →ₗ[D.host.E] (VS D).V) (x : (V
   have e := congrFun (LinearMap.toMatrix_mulVec_repr (VS D).frame (VS D).frame φ x) i
   simp only [locEnd, Matrix.toLin'_apply, baseChange₂, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
   rw [← e]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul]
+
+  simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul]
 
 def locEquiv (p : PlF D) (γ : (VS D).V ≃ₗ[D.host.E] (VS D).V) : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p :=
   LinearEquiv.ofLinearMap (locEnd p γ) (locEnd p γ.symm)
@@ -94,8 +131,8 @@ theorem exists_dual {r : ℕ} (e : Fin r → (VS D).V) (he : LinearIndependent D
       intro y
       have h0 : f (φ y) = 0 := hle ⟨y, rfl⟩
       rw [LinearMap.pi_apply_eq_sum_univ] at h0
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, LinearMap.sum_apply]
+
+      rw [map_sum, LinearMap.sum_apply]
       rw [← h0]
       refine Finset.sum_congr rfl fun a _ => ?_
       rw [map_smulₛₗ, LinearMap.smul_apply, starRingEnd_apply, star_star, smul_eq_mul, smul_eq_mul, mul_comm]
@@ -200,15 +237,15 @@ theorem perp_le (Z : LocDat D) (p : PlF D) {T : D.host.E} (F : LFlag (D.sp.Y 0) 
         induction hy using Submodule.span_induction with
         | mem y hy =>
           obtain ⟨c, rfl⟩ := hy
-          set_option synthInstance.maxHeartbeats 100000 in
-            simp [hw, map_sub, map_sum, map_smul, hes, Finset.sum_ite_eq]
+
+          simp [hw, map_sub, map_sum, map_smul, hes, Finset.sum_ite_eq]
         | zero => simp
         | add y y' _ _ ih ih' => simp [map_add (f := _), ih, ih']
         | smul a y _ ih => simp [map_smulₛₗ, ih]
       have e : baseChange₂ D p x - ∑ a, (locH Z p).h (baseChange₂ D p x) (baseChange₂ D p (F.fl.e a)) • baseChange₂ D p (es a) = baseChange₂ D p w := by
         show baseChange₂ D p x - ∑ a, LocFacts₂ Z.M p (baseChange₂ D p x) (baseChange₂ D p (F.fl.e a)) • baseChange₂ D p (es a) = _
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [baseChangeAt_form Z.M p (Z.hcj p), brS, hw, map_sub, map_sum, baseChange_smul₂]
+
+        simp only [baseChangeAt_form Z.M p (Z.hcj p), brS, hw, map_sub, map_sum, baseChange_smul₂]
       rw [e]
       exact Submodule.subset_span ⟨w, hwo, rfl⟩
     | zero =>

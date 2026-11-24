@@ -3,9 +3,49 @@ module
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.CrystallineTowers.CrystallinePeriodsOfSmooth
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.JointApproxOfMem
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FiltrationZeroMembership
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorProductBasisCoordinates
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankInvariantsEqOfInvertiblePeriodMatrix
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorProductBasisCoordinates
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalFilDR
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
 
 @[expose] public section
 
@@ -84,7 +124,7 @@ private theorem isCrys_of_mats {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K L : 
   have hA' : A'.map P.ιB = A := Matrix.ext fun i j => ha i j
   have hB' : B'.map P.ιB = B := Matrix.ext fun i j => hc i j
   have hinj : Function.Injective (fun X : Matrix (Fin d) (Fin d) P.R.B => X.map P.ιB) :=
-    fun X Y h => Matrix.ext fun i j => GlobalTheory.PMon.iota_injective P (congrFun (congrFun h i) j)
+    fun X Y h => Matrix.ext fun i j => _root_.GlobalTheory.MemLoc.FitsEx.iota_inj P (congrFun (congrFun h i) j)
   have hmapmul : ∀ X Y : Matrix (Fin d) (Fin d) P.R.B, (X * Y).map P.ιB = X.map P.ιB * Y.map P.ιB :=
     fun X Y => Matrix.map_mul (f := (P.ιB : P.R.B →+* P.R.BdR))
   have h1 : A' * B' = 1 := hinj (by

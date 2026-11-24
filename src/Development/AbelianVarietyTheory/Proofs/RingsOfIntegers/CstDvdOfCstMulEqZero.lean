@@ -1,13 +1,55 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ValuationMultiplicationInvariance
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TwistBCPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ThetaGen
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtOfSucc
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtSecIsMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.LevelFrameOfLaws
 
 @[expose] public section
 
@@ -54,14 +96,6 @@ theorem cst_dvd_of_cst_mul_eq_zero {S : Type} [CommRing S] {X : Scheme.{0}} (p :
   rw [hy', Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [hd j, Algebra.smul_def, RingHom.algebraMap_toAlgebra, map_mul, _root_.mul_assoc]
-
-private theorem stalkMap_cst_eq_cst_comp {V : Type} [CommRing V] {Y Z : Scheme.{0}} (τ : Z ⟶ Y) (q : Y ⟶ Sp V) (z : Z)
-    (a : V) : (τ.stalkMap z).hom (cst q (τ z) a) = cst (τ ≫ q) z a := by
-  unfold cst
-  have e1 : gs q (τ z) ⊤ ((Scheme.ΓSpecIso (CommRingCat.of V)).inv.hom a) =
-      gs (𝟙 Y) (τ z) (q ⁻¹ᵁ ⊤) ((q.app ⊤).hom ((Scheme.ΓSpecIso (CommRingCat.of V)).inv.hom a)) := by
-    rw [gs_pull (𝟙 Y) q (τ z) ⊤ (by simp) _, Category.id_comp]
-  rw [e1, ← gs_stalkMap τ z (q ⁻¹ᵁ ⊤) (by simp), gs_pull τ q z ⊤ (by simp)]
 
 private theorem cst_comp_specMap_eq_cst_apply {V Q : Type} [CommRing V] [CommRing Q] (π : V →+* Q) {Z : Scheme.{0}}
     (q : Z ⟶ Sp Q) (z : Z) (a : V) :
@@ -111,7 +145,7 @@ theorem thickMap_stalkMap_eq_zero {V : Type} [CommRing V] [IsDomain V] [IsDiscre
   rw [map_mul]
   have e4 : ((thickMap V (maximalIdeal V) e G).stalkMap y).hom (cst (pullback.snd G.hom (thick V (maximalIdeal V) (e + 1))) (thickMap V (maximalIdeal V) e G y)
         (Ideal.Quotient.mk (maximalIdeal V ^ (e + 1 + 1)) (ϖ ^ (e + 1)))) = 0 := by
-    rw [stalkMap_cst_eq_cst_comp]
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.H1.cst_stalkMap]
     have e5 : cst (thickMap V (maximalIdeal V) e G ≫ pullback.snd G.hom (thick V (maximalIdeal V) (e + 1))) y
         (Ideal.Quotient.mk (maximalIdeal V ^ (e + 1 + 1)) (ϖ ^ (e + 1))) =
         cst ((thickMap V (maximalIdeal V) e G ≫ pullback.snd G.hom (thick V (maximalIdeal V) (e + 1))) ≫ thick V (maximalIdeal V) (e + 1)) y
@@ -155,12 +189,6 @@ private theorem stalkMap_gs_eq_gs_comp {X Y Z : Scheme.{0}} (τ : Z ⟶ Y) (q : 
   · have hm' : (τ ≫ q) z ∉ W := by simpa using hm
     unfold gs
     rw [dite_eq_right hm, dite_eq_right hm', map_zero]
-
-private theorem cst_mul_rings_of_integers {V : Type} [CommRing V] {Z : Scheme.{0}} (q : Z ⟶ Sp V) (z : Z) (a b : V) :
-    cst q z (a * b) = cst q z a * cst q z b := by
-  unfold cst
-  rw [map_mul]
-  exact gs_mul q z ⊤ (by simp) _ _
 
 private theorem stalkMap_sval_eq_sval_comp {X Y Y' Z : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)}
     {ε : K → ℤ} (s : LB.Sec (LB.LinComb L φ ε)) (r : Y' ⟶ Y) (τ : Z ⟶ Y') (z : Z) (J : (Z ⟶ X) → L.ι) :
@@ -219,8 +247,8 @@ theorem expandsAtUpTo_succ {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValua
     intro t ht
     have h0 := thickMap_stalkMap_eq_zero hϖ G e y
       (t := cst (fGl (maximalIdeal V) G (e + 1) ≫ G.hom) (thickMap V (maximalIdeal V) e G y) c * t)
-      (by rw [← _root_.mul_assoc, ← cst_mul_rings_of_integers]; exact ht)
-    rwa [map_mul, stalkMap_cst_eq_cst_comp, ← Category.assoc, hf] at h0
+      (by rw [← _root_.mul_assoc, ← _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_mul]; exact ht)
+    rwa [map_mul, _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_stalkMap, ← Category.assoc, hf] at h0
   have hT : ∀ α, val (tG U (e + 1) α) (thickMap V (maximalIdeal V) e G) y J = val (tG U e α) (𝟙 _) y J := fun α => by
     have := (val_pull hJ (tG U (e + 1) α) (thickMap V (maximalIdeal V) e G) (𝟙 _)).symm.trans (val_corr hJ (U.gt_t e α) (𝟙 _))
     rwa [Category.id_comp] at this
@@ -233,8 +261,8 @@ theorem expandsAtUpTo_succ {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValua
     have := key _ (h2 jL hL')
     convert this using 2
     symm
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_mul, map_sum, Units.val_pow_eq_pow_val, Units.val_pow_eq_pow_val, map_pow]
+
+    rw [map_sub, map_mul, map_sum, Units.val_pow_eq_pow_val, Units.val_pow_eq_pow_val, map_pow]
     refine congrArg₂ (· - ·) (congrArg₂ (· * ·) ?_ ?_) (Finset.sum_congr rfl fun α _ => ?_)
     · have hj : J (thickMap V (maximalIdeal V) e G ≫ pGl U (e + 1)) = J (pGl U e) := by rw [hq]
       simp only [hj]
@@ -249,10 +277,6 @@ private theorem sval_eq_cst_mul_sval_of_secIsMul {R : Type} [CommRing R] {X Y Z 
     sval s' r z J = cst (r ≫ p) z a * sval s r z J := by
   unfold sval
   exact secIsMul_gs h r z _ (hJ.mem φ r)
-
-private theorem cst_one_rings_of_integers {V : Type} [CommRing V] {Z : Scheme.{0}} (q : Z ⟶ Sp V) (z : Z) : cst q z 1 = 1 := by
-  unfold cst
-  rw [map_one, gs_eq q z ⊤ (by simp), map_one, map_one]
 
 theorem expandsAt_cancel_pow : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (ϖ : V), Irreducible ϖ → ∀ (D : DegData V (maximalIdeal V)) (A : PolAV (Spec (CommRingCat.of (FractionRing V)))) (G : Over (Spec (CommRingCat.of V))) [GrpObj G] [IsCommMonObj G] (U : UnifPre (maximalIdeal V) D A G) (e n k : ℕ) (σ σ' : H0 U.LG.L k) (f f' : ∀ α : D.toPre.X, D.toPre.SecB k α), SecIsMul G.hom (ϖ ^ n) σ' σ → (∀ α, SecIsMul D.toPre.P.A.hom (ϖ ^ n) (f' α) (f α)) → U.ExpandsAt (e + n) k σ' f' → U.ExpandsAt e k σ f := by
   intro V _ _ _ ϖ hϖ D A G _ _ U e n k σ σ' f f' hσ hf hE
@@ -295,8 +319,8 @@ theorem expandsAt_cancel_pow : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscr
   obtain ⟨a1, a2⟩ := h1' y J hJ
   refine ⟨fun α hα => ?_, fun jL hL => ?_⟩
   · have := a1 α hα
-    rwa [cst_one_rings_of_integers, _root_.one_mul] at this
+    rwa [_root_.ReciprocityTheory.ChartRestriction.G.H1.cst_one, _root_.one_mul] at this
   · have := a2 jL hL
-    rwa [cst_one_rings_of_integers, _root_.one_mul, sub_eq_zero] at this
+    rwa [_root_.ReciprocityTheory.ChartRestriction.G.H1.cst_one, _root_.one_mul, sub_eq_zero] at this
 
 end GlobalTheory

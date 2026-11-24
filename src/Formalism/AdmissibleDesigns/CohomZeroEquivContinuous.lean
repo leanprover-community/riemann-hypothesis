@@ -1,7 +1,49 @@
 module
 
 public import Formalism.AdmissibleDesigns.FiniteClassesContinuousLattice
-public import Formalism.WeaklyAdmissibleFiltrations.PhtGalois
+public import Formalism.WachLatticeTwists.RamifiedBlockRings.DistinctEigenvalueCornerPerturbation
+public import Formalism.SharpRestriction.LevelLetterCocycles.LargeLevelLemmas
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -256,7 +298,6 @@ theorem rank_le_count (hBK : BlochKatoDim PD LL) (hS : Splits LL (K := K) (Qp :=
   have hlt : Module.rank LL (FiniteCohomology PD ρ) < Cardinal.aleph0 := Module.rank_lt_aleph0_iff.mpr hfin
   first
     | exact le_of_eq (Module.finrank_eq_rank (R := LL) (M := FiniteCohomology PD ρ)).symm
-    | exact (Cardinal.cast_toNat_of_lt_aleph0 hlt).symm.le
 
 end Count
 
@@ -374,7 +415,6 @@ theorem colD_eq (x' : X') (n : ℕ) :
       cobK (repE i dc r χ x' n) := by
   first
     | rfl
-    | exact LinearMap.ext fun v => funext fun g => rfl
 
 abbrev repX (x' : X') (n : ℕ) (hn : K.plOf i dc n ∈ placesOver D.host.E (D.nd.l i)) :
     letI := evalModO i (R' := R') x'
@@ -465,7 +505,7 @@ private theorem iota_bijective_col (l : K.Col i dc) :
   (D.nbr i _ (col_over i dc l)).e.symm.bijective
 
 
-set_option maxHeartbeats 800000 in
+
 theorem dimLx_of (rX : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (x' : X') (l : K.Col i dc)
     (hBK : TruncatedSeriesCountingIdentities.admBK i) (hG2 : TruncatedSeriesCountingIdentities.admG2 i rX ρ π)
     (hc : ContX i dc r χ x' l) (hcr : CrysX i dc r χ x' l) (hneg : NegX i dc r χ ρ π x' l)
@@ -511,7 +551,6 @@ theorem finrank_TrV (x' : X') {LL : Type} [Field LL] (e : FractionRing (D.nd.O i
   rw [← h2]
   first
     | simp
-    | exact Module.finrank_fintype_fun_eq_card _
 
 def grepX (x' : X') (l : K.Col i dc) (hc : ContX i dc r χ x' l) :
     GRep (Br.G D.nbr i _ (col_over i dc l)) ℚ_[D.nd.l i] (Br.LL D.nbr i _ (col_over i dc l))
@@ -563,7 +602,6 @@ theorem goodW_of (hFont : TruncatedSeriesCountingIdentities.FontaineAtPlacesOver
   have hpos : 0 < Module.finrank (Br.LL D.nbr i _ hw) (Fin D.R.r → Br.LL D.nbr i _ hw) := by
     first
       | (rw [Module.finrank_fin_fun]; exact hr)
-      | simpa using hr
   exact filLow_of_dR (Br.PD D.loc D.nbr i _ hw) (repW i dc ρ π (K.colIdx i dc l) hw) hpos hDR
 
 end Dr

@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ExistsNatLocal
 public import Lemmata.NatMulIsIntegral.ExistsNatMulIsIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -127,8 +168,8 @@ theorem T_sum {ι : Type} (s : Finset ι) (f : ι → Fin n → E ⊗[F] Af F)
 theorem ivec_zsum (z : Fin k → ℤ) :
     ivec (F := F) (∑ i, z i • m i) = ∑ i, incA F E (z i : Af F) • ivec (F := F) (m i) := by
   funext r
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [ivec, Finset.sum_apply, map_sum, map_zsmul, Int.cast_smul_eq_zsmul]
+
+  simp [ivec, Finset.sum_apply, map_sum, Int.cast_smul_eq_zsmul]
 
 theorem T_gen {L : Submodule (𝓞 E) (Fin n → E)}
     (hgen : ∀ l ∈ L, ∃ z : Fin k → ℤ, l = ∑ i, z i • m i) {x : Fin n → E} (hx : x ∈ L) :
@@ -226,7 +267,7 @@ theorem exists_nat_R (r : E ⊗[F] Af F) : ∃ N : ℕ, 0 < N ∧ (N : E ⊗[F] 
 theorem exists_nat_L {L : Submodule (𝓞 E) (Fin n → E)}
     {z : Fin n → E} (hz : z ∈ Submodule.span E (L : Set (Fin n → E))) :
     ∃ N : ℕ, 0 < N ∧ N • z ∈ L := by
-  first | exact Bl.NatMulIsIntegral.goal1 .. | (apply Bl.NatMulIsIntegral.goal1 <;> assumption) | (intros; apply Bl.NatMulIsIntegral.goal1 <;> assumption)
+  first | (apply Bl.NatMulIsIntegral.goal1 <;> assumption)
 
 theorem exists_nat_vec {L : Submodule (𝓞 E) (Fin n → E)}
     (hspan : Submodule.span E (L : Set (Fin n → E)) = ⊤) (w : Fin n → E ⊗[F] Af F) :
@@ -236,7 +277,7 @@ theorem exists_nat_vec {L : Submodule (𝓞 E) (Fin n → E)}
       lamAf (F := F) L := by
     intro i
     obtain ⟨A, hA0, hA⟩ := exists_nat_R (F := F) (E := E) (w i)
-    obtain ⟨B, hB0, hB⟩ := exists_nat_L (L := L) (z := Pi.single i 1)
+    obtain ⟨B, hB0, hB⟩ := _root_.Bl.NatMulIsIntegral.goal1 (L := L) (z := Pi.single i 1)
       (by rw [hspan]; exact Submodule.mem_top)
     refine ⟨A * B, Nat.mul_pos hA0 hB0, ?_⟩
     have e1 : ivec (F := F) (B • (Pi.single i 1 : Fin n → E)) =
@@ -244,7 +285,7 @@ theorem exists_nat_vec {L : Submodule (𝓞 E) (Fin n → E)}
       funext j
       by_cases h : j = i
       · subst h; simp [ivec]
-      · simp [ivec, Pi.single_apply, h]
+      · simp [ivec, h]
     have e2 : (A * B) • ((w i) • (Pi.single i 1 : Fin n → E ⊗[F] Af F)) =
         ((A : E ⊗[F] Af F) * w i) • ivec (F := F) (B • (Pi.single i 1 : Fin n → E)) := by
       rw [e1, smul_smul, ← Nat.cast_smul_eq_nsmul (E ⊗[F] Af F), smul_smul]

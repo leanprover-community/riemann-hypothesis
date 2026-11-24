@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.AdelicLemmas
+public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 
 @[expose] public section
 

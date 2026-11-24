@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelProper
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModel
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PModelLocalizationMaximalPoint
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelProper
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

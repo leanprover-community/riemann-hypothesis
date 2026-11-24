@@ -1,6 +1,56 @@
 module
 
-public import Mathlib
+public import Mathlib.NumberTheory.LocalField.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -107,42 +157,29 @@ theorem normalizedValuation_unit (u : 𝒪[K]ˣ) : normalizedValuation K ((u : �
   exact valuation_unit u
 
 theorem valuation_lt_one_of_mem_maximalIdeal {x : 𝒪[K]} (hx : x ∈ 𝓂[K]) :
-    valuation K (x : K) < 1 := by
-  refine lt_of_le_of_ne x.2 fun h ↦ ?_
-  exact (IsLocalRing.mem_maximalIdeal x).mp hx
-    ((Valuation.integer.integers (valuation K)).isUnit_iff_valuation_eq_one.mpr h)
+    valuation K (x : K) < 1 :=
+  (Valuation.mem_maximalIdeal_iff K (valuation K)).mp hx
 
 theorem normalizedValuation_uniformizer {ϖ : 𝒪[K]} (hϖ : Irreducible ϖ) :
     normalizedValuation K ϖ = WithZero.exp (-1) := by
-  have hne : normalizedValuation K ϖ ≠ 0 := by
-    rw [Ne, Valuation.zero_iff]
-    exact_mod_cast hϖ.ne_zero
-  have hlt : normalizedValuation K ϖ < 1 := by
-    rw [← map_one (normalizedValuation K), normalizedValuation_lt_iff, map_one]
-    exact valuation_lt_one_of_mem_maximalIdeal (uniformizer_mem_maximalIdeal hϖ)
-  obtain ⟨y, hy⟩ : ∃ y : K, normalizedValuation K y = WithZero.exp (-1) := by
-    obtain ⟨y, hy⟩ := ValuativeRel.valuation_surjective
-      ((IsNonarchimedeanLocalField.valueGroupWithZeroIsoInt K).symm (WithZero.exp (-1)))
-    exact ⟨y, by rw [normalizedValuation_apply, hy]; simp⟩
-  have hexp : WithZero.exp (-1 : ℤ) < 1 := by
-    rw [← WithZero.exp_zero, WithZero.exp_lt_exp]; norm_num
-  have hy1 : valuation K y < 1 := by
-    rw [← map_one (valuation K), ← normalizedValuation_lt_iff, map_one, hy]; exact hexp
-  have hymem : (⟨y, hy1.le⟩ : 𝒪[K]) ∈ 𝓂[K] := by
-    rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
-      (Valuation.integer.integers (valuation K)).isUnit_iff_valuation_eq_one]
-    exact hy1.ne
-  have hyϖ : valuation K y ≤ valuation K ϖ := by
-    have := hϖ.maximalIdeal_eq_setOfPred_le_v_coe (v := valuation K)
-    have h2 : (⟨y, hy1.le⟩ : 𝒪[K]) ∈ (𝓂[K] : Set 𝒪[K]) := hymem
-    rw [this] at h2
-    exact h2
-  rw [← normalizedValuation_le_iff, hy] at hyϖ
-  rw [← WithZero.exp_log hne] at hyϖ hlt ⊢
-  rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at hlt
-  rw [WithZero.exp_le_exp] at hyϖ
-  congr 1
-  omega
+  let v := normalizedValuation K
+  have hv : Function.Surjective v :=
+    (IsNonarchimedeanLocalField.valueGroupWithZeroIsoInt K).surjective.comp
+      ValuativeRel.valuation_surjective
+  have hG : v.valueGroup = ⊤ := by
+    ext u
+    simp [MonoidWithZeroHom.mem_valueGroup _ (hv u)]
+  let hG' : Nontrivial v.valueGroup := by
+    rw [hG]
+    exact Subgroup.topEquiv.symm.injective.nontrivial
+  have hO : 𝒪[K] = v.valuationSubring.toSubring := by
+    ext x
+    exact (normalizedValuation_le_one_iff (x := x)).symm
+  let e := RingEquiv.subringCongr hO
+  let hDVR := IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing e
+  have hπ : Irreducible (e ϖ) := (MulEquiv.irreducible_iff e).mpr hϖ
+  have hU := v.isUniformizer_of_maximalIdeal_eq_span hπ.maximalIdeal_eq
+  simpa [e, Valuation.IsRankOneDiscrete.generator_eq_exp_neg_one_of_surjective hv] using hU.val
 
 noncomputable def ord (x : K) : ℤ := -WithZero.log (normalizedValuation K x)
 
@@ -172,11 +209,8 @@ variable {K}
 @[simp]
 theorem coe_unitsIncl (u : 𝒪[K]ˣ) : ((unitsIncl K u : Kˣ) : K) = ((u : 𝒪[K]) : K) := rfl
 
-theorem unitsIncl_injective : Function.Injective (unitsIncl K) := by
-  intro u w h
-  ext
-  have := congrArg Units.val h
-  simpa using this
+theorem unitsIncl_injective : Function.Injective (unitsIncl K) :=
+  Units.map_injective Subtype.val_injective
 
 theorem mem_range_unitsIncl_iff {x : Kˣ} :
     x ∈ (unitsIncl K).range ↔ normalizedValuation K x = 1 := by
@@ -186,12 +220,10 @@ theorem mem_range_unitsIncl_iff {x : Kˣ} :
   · intro h
     have h1 : valuation K (x : K) = 1 := by
       rwa [← map_one (normalizedValuation K), normalizedValuation_eq_iff, map_one] at h
-    have h2 : valuation K ((x⁻¹ : Kˣ) : K) = 1 := by
-      rw [Units.val_inv_eq_inv_val, map_inv₀, h1, inv_one]
-    refine ⟨⟨⟨x, h1.le⟩, ⟨(x⁻¹ : Kˣ), h2.le⟩, ?_, ?_⟩, ?_⟩
-    · ext; simp
-    · ext; simp
-    · ext; rfl
+    let a : 𝒪[K] := ⟨x, h1.le⟩
+    have ha : IsUnit a :=
+      (Valuation.integer.integers (valuation K)).isUnit_iff_valuation_eq_one.mpr h1
+    exact ⟨ha.unit, Units.ext (congrArg Subtype.val ha.unit_spec)⟩
 
 noncomputable def uniformizerUnit {ϖ : 𝒪[K]} (hϖ : Irreducible ϖ) : Kˣ :=
   Units.mk0 (ϖ : K) (by exact_mod_cast hϖ.ne_zero)

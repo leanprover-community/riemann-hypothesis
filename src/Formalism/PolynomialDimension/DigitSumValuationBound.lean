@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import Formalism.PolynomialDimension.StatementNum
-public import Formalism.PolynomialDimension.DigitClassSize
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Analysis.SpecialFunctions.Log.Base
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMahler
+public import Mathlib.RingTheory.Nullstellensatz
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.StatementR
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.IsotropicVanish
 
 @[expose] public section
 

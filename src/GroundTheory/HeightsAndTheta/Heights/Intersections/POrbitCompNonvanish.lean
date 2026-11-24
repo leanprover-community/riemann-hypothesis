@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodF
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsOrbitCompNonvanish
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.RingTheory.SimpleRing.Principal
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 
@@ -62,8 +63,8 @@ theorem OrbitCompNonvanish.proof : OrbitCompNonvanish.Statement := by
   have hQ : ∀ c : K → ℂ, eval c Q = eval (fun p => c p.1 * z p) (map (Int.castRingHom ℂ) E) := by
     intro c
     conv_rhs => rw [← hsum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Q, map_sum]
+
+    simp only [Q, map_sum]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [eval_smul_homog (comp b) b (OrbitCompNonvanish.isMultiHomog_component E b) c z, eval_monomial,
       Finsupp.prod_fintype _ _ (by simp)]

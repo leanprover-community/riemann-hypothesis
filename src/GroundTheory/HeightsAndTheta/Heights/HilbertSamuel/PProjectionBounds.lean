@@ -1,10 +1,17 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResChiBounds
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.MvPolynomial
+import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.ChiPSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CNormSt
-public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.ChiPSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ChooseLePowDivFactorial
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ExistsNatMulMemConeRingIntFin
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.FibreSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SectionModuleEqSpanPow
 
 @[expose] public section
 
@@ -268,8 +275,8 @@ theorem ProjectionBounds.proof (hR : ResChiBounds.Statement) : ProjectionBounds.
       exact (div_le_iff₀ (pow_pos hρ _)).mp this
     have hexp : eval z (map (Int.castRingHom ℂ) (∑ l, rename e (Q l) * E l)) =
         ∑ l, eval (z ∘ e) (map (Int.castRingHom ℂ) (Q l)) * eval z (map (Int.castRingHom ℂ) (E l)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_mul, map_rename, eval_rename]
+
+      simp only [map_sum, map_mul, map_rename, eval_rename]
     have hs0 : 0 ≤ ∑ l, c l := Finset.sum_nonneg fun l _ => hc0 l
     rw [ptNorm, hmz, div_le_iff₀ (pow_pos hρ n), hexp]
     calc _ ≤ ∑ l, ‖eval (z ∘ e) (map (Int.castRingHom ℂ) (Q l)) *

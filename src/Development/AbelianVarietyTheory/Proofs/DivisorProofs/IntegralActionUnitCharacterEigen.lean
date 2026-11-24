@@ -1,12 +1,102 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApprox
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilOperatorFixesCosetVector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardLatticeDoubleCosetClassesStabilisers
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitInertFactor
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitCompDet
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilOperatorFixesCosetVector
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqMulOfResSNeOne
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstStandardPairMemberHasThetaFunction
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulMemHatMul
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdealMatrixApproxCongruentOneTranslate
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemPrincipalCongruenceLevelSubgroupIffIntegralCo
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryCongruentOneDetSubOneMemIdealMulConj
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfIdem
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumUnderAdelicPairModulusOne
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulMemHatMul, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralActionUnitCharacterEigen
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulMemHatMul =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulMemHatMul", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace GlobalTheory.HatProductMembership
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.FunObj.SqNum
+
+theorem mul_mem_hat_mul {D : D7} {I J : Ideal (𝓞 D.host.E)} {x y : AE D}
+    (hx : x ∈ hatId D I) (hy : y ∈ hatId D J) : x * y ∈ hatId D (I * J) := by
+  unfold hatId at hx hy ⊢
+  induction hx using AddSubgroup.closure_induction with
+  | mem a ha =>
+    obtain ⟨u, hu, s, hs, rfl⟩ := ha
+    induction hy using AddSubgroup.closure_induction with
+    | mem b hb =>
+      obtain ⟨v, hv, t, ht, rfl⟩ := hb
+      refine AddSubgroup.subset_closure
+        ⟨u * v, Ideal.mul_mem_mul hu hv, s * t, (OhE D).mul_mem hs ht, ?_⟩
+      have h : ((u * v : 𝓞 D.host.E) : D.host.E) = (u : D.host.E) * (v : D.host.E) := rfl
+      rw [h, map_mul]
+      ring
+    | zero => rw [mul_zero]; exact zero_mem _
+    | add b c _ _ h1 h2 => rw [mul_add]; exact add_mem h1 h2
+    | neg b _ h => rw [mul_neg]; exact neg_mem h
+  | zero => rw [zero_mul]; exact zero_mem _
+  | add a b _ _ h1 h2 => rw [add_mul]; exact add_mem h1 h2
+  | neg a _ h => rw [neg_mul]; exact neg_mem h
+
+end GlobalTheory.HatProductMembership
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulMemHatMul =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralActionUnitCharacterEigen =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralActionUnitCharacterEigen", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApprox\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardLatticeDoubleCosetClassesStabilisers\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitInertFactor\nimport Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdealMatrixApproxCongruentOneTranslate\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitCompDet\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemPrincipalCongruenceLevelSubgroupIffIntegralCo\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulMemHatMul\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryCongruentOneDetSubOneMemIdealMulConj\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilOperatorFixesCosetVector\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfIdem\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumUnderAdelicPairModulusOne\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqMulOfResSNeOne\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstStandardPairMemberHasThetaFunction\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain
@@ -45,9 +135,7 @@ theorem finQ_int {y : AE D} (h : toEAf D y ∈ Formalism.L2.Herm.intAf D.host.F 
 def rho (P : Formalism.L2.DIV.Pl D.host.E) : OhE D →+* Formalism.L2.DIV.kP P :=
   (Formalism.L2.DIV.resS D.host.F P).comp ((toE D).restrict _ _ fun y hy => (toE_int_iff y).2 hy)
 
-theorem inc_int (b : 𝓞 D.host.E) : inc D (b : D.host.E) ∈ OhE D := by
-  rw [← toE_int_iff, ← finQ_incA, toE_finQ]
-  exact (Formalism.L2.DIV.oToS D.host.F D.host.E b).2
+alias inc_int := _root_.GlobalTheory.NormSum.MovedTheta.inc_int
 
 theorem rho_inc (P : Formalism.L2.DIV.Pl D.host.E) (b : 𝓞 D.host.E) :
     rho P ⟨inc D (b : D.host.E), inc_int b⟩ = Ideal.Quotient.mk P.asIdeal b := by
@@ -90,15 +178,7 @@ theorem hat_of_rho (P : Formalism.L2.DIV.Pl D.host.E) {x : Formalism.MainNotions
   rw [e]
   exact add_mem (AddSubgroup.subset_closure ⟨b, h0, 1, one_mem _, (mul_one _).symm⟩) hN
 
-theorem hat_mul {I J : Ideal (𝓞 D.host.E)} {x y : Formalism.MainNotions.StandardLatticesGL3.AE D} (hx : x ∈ hatId D I) (hy : y ∈ hatId D J) :
-    x * y ∈ hatId D (I * J) := by
-  first
-  | exact @_root_.GlobalTheory.HatProductMembership.mul_mem_hat_mul
-  | exact _root_.GlobalTheory.HatProductMembership.mul_mem_hat_mul
-  | (apply _root_.GlobalTheory.HatProductMembership.mul_mem_hat_mul <;> assumption)
-  | (intros; apply _root_.GlobalTheory.HatProductMembership.mul_mem_hat_mul <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.HatProductMembership.mul_mem_hat_mul <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.HatProductMembership.mul_mem_hat_mul ..)
+alias hat_mul := _root_.GlobalTheory.HatProductMembership.mul_mem_hat_mul
 
 theorem idem_hat_pow {I : Ideal (𝓞 D.host.E)} {x : Formalism.MainNotions.StandardLatticesGL3.AE D} (hO : x ∈ OhE D) (hxx : x * x = x)
     (hx : x ∈ hatId D I) (n : ℕ) : x ∈ hatId D (I ^ n) := by
@@ -140,8 +220,8 @@ theorem one_sub_eps_mem (he : IsIdemSum e S) {P : Formalism.L2.DIV.Pl D.host.E} 
   have e1 : (⟨_, hO⟩ : OhE D) = ∑ Q ∈ S.attach, ⟨_, finQ_int (hi Q.1 Q.2)⟩ := Subtype.ext (by
     refine Eq.trans ?_ (map_sum (OhE D).subtype _ _).symm
     change finQ D e = ∑ Q ∈ S.attach, finQ D (es Q.1)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hs, map_sum, Finset.sum_attach S fun P => finQ D (es P)])
+
+    rw [hs, map_sum, Finset.sum_attach S fun P => finQ D (es P)])
   rw [RingHom.map_sub, RingHom.map_one, e1, StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.hom_sum,
     Finset.sum_eq_single ⟨P, hP⟩ (fun Q _ hQ => ?_) (fun h => (h (Finset.mem_attach _ _)).elim), hr P hP,
     (GlobalTheory.IdemRes.resS_idem_eq_one D _ _ (hes P hP)).2, sub_self]
@@ -169,8 +249,8 @@ theorem eps_zeroAt (he : IsIdemSum e S) {q : ℕ} (hp : q.Prime) (hq : Formalism
   refine ⟨1, one_pos, Nat.coprime_one_left _,
     finQ D (e * incA D ((((q : 𝓞 D.host.E) ^ k : 𝓞 D.host.E) : D.host.E)⁻¹)), ?_, ?_⟩
   · obtain ⟨es, hes, hs⟩ := he.1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hs, Finset.sum_mul, map_sum]
+
+    rw [hs, Finset.sum_mul, map_sum]
     refine sum_mem fun P hP => finQ_int (GlobalTheory.IdemRes.toEAf_mem_of_finPart ?_)
     by_contra hn
     exact not_mem_of_inert he hP hq (P.isPrime.mem_of_pow_mem k (((hes P hP).2 _ hx0).2 hn))
@@ -254,7 +334,7 @@ theorem unitChar_eq (ν : (AE D)ˣ →* Circle) (e : AE D) {a : ℕ} (N : Matrix
   rw [dite_eq_left h, e1]
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem om_vac_eq : ∀ {D : D7}, GlobalTheory.NormSum.Inp D → ∀ {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (e : AE D) (𝔪 : Ideal (𝓞 D.host.E)), GoodMod e 𝔪 →
   ∀ ν : (AE D)ˣ →* Circle, HasFinPart ν⁻¹ P.W.chV' P.W.ep' → KillsCong ν 𝔪 →
   ∀ k : Formalism.MainNotions.StandardLatticesGL3.GA D P.a, k ∈ intG D P.a → P.W.Om k 1 P.e0 = unitChar ν e (matE k) • P.e0 := by
@@ -343,3 +423,6 @@ theorem om_vac_eq : ∀ {D : D7}, GlobalTheory.NormSum.Inp D → ∀ {δ t0 : �
 end GlobalTheory.StdRead.CharVal
 
 end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralActionUnitCharacterEigen =====

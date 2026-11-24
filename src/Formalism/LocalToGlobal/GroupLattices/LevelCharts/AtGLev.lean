@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.AtGGlob
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
+import Formalism.SatakeDualWeyl.Statement
+public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 
 @[expose] public section
 

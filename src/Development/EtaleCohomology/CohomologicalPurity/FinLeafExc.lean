@@ -1,35 +1,45 @@
 module
 
-public import Development.EtaleCohomology.CohomologicalPurity.LeafExcIdentPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafExcDegPf
 public import Development.EtaleCohomology.CohomologicalPurity.LeafExcFormalPf
+public import Development.EtaleCohomology.CohomologicalPurity.LeafFreeCokPf
+public import Development.EtaleCohomology.CohomologicalPurity.LeafExcDegPf
+public import Development.EtaleCohomology.CohomologicalPurity.LeafExcIdentPf
 public import Development.EtaleCohomology.CohomologicalPurity.LeafFreeCokInjPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafFreeCokPfSurj
-public import Development.EtaleCohomology.CohomologicalPurity.LeafSurjGeoPf
+import Development.EtaleCohomology.CohomologicalPurity.LeafFreeCokPfSurj
 public import Development.EtaleCohomology.CohomologicalPurity.LeafInjGeoPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafExcSheafCut
-public import Development.EtaleCohomology.CohomologicalPurity.LeafExcPf
+public import Development.EtaleCohomology.CohomologicalPurity.LeafSurjGeoPf
 
 @[expose] public section
 
 namespace LateralTheory.Fin.LeafExc
-theorem etale_excision_identification_of_excision : LateralTheory.CohomologicalPurity.LeafExcIdent := by
-  apply LateralTheory.CohomologicalPurity.EtaleExcIdent
-theorem etale_excision_cohomological_degree_of_excision : LateralTheory.CohomologicalPurity.LeafExcDeg := by
-  apply LateralTheory.CohomologicalPurity.LeafExcDeg_of
-theorem etale_excision_formal_reduction_of_excision : LateralTheory.CohomologicalPurity.LeafExcFormal := by
-  apply LateralTheory.CohomologicalPurity.LeafExcFormal_of <;> first | exact etale_excision_identification_of_excision | exact etale_excision_cohomological_degree_of_excision
-theorem etale_excision_free_cokernel_injective_of_excision : LateralTheory.CohomologicalPurity.LeafFreeCokInj := by
-  apply LateralTheory.CohomologicalPurity.LeafFreeCokInj_of
-theorem etale_excision_cokernel_free_of_excision : LateralTheory.CohomologicalPurity.LeafFreeCok := by
-  apply LateralTheory.CohomologicalPurity.LeafFreeCok_of_inj <;> first | exact etale_excision_free_cokernel_injective_of_excision
-theorem etale_excision_surjective_geometric_points_of_excision : LateralTheory.CohomologicalPurity.LeafSurjGeo := by
-  apply LateralTheory.CohomologicalPurity.LeafSurjGeo_of
-theorem etale_excision_injective_geometric_points_of_excision : LateralTheory.CohomologicalPurity.LeafInjGeo := by
-  apply LateralTheory.CohomologicalPurity.LeafInjGeo_of
-theorem etale_excision_sheaf_level_of_excision : LateralTheory.CohomologicalPurity.LeafExcSheaf := by
-  apply LateralTheory.CohomologicalPurity.LeafExcSheaf_of <;> first | exact etale_excision_cokernel_free_of_excision | exact etale_excision_surjective_geometric_points_of_excision | exact etale_excision_injective_geometric_points_of_excision
-theorem etale_excision_isomorphism_of_excision : LateralTheory.CohomologicalPurity.LeafExc := by
-  apply LateralTheory.CohomologicalPurity.LeafExc_of <;> first | exact etale_excision_formal_reduction_of_excision | exact etale_excision_sheaf_level_of_excision
-theorem intersectionNumber_baseChange : LateralTheory.CohomologicalPurity.LeafExc := etale_excision_isomorphism_of_excision
+
+alias etale_excision_identification_of_excision := _root_.LateralTheory.CohomologicalPurity.EtaleExcIdent
+alias etale_excision_cohomological_degree_of_excision := _root_.LateralTheory.CohomologicalPurity.LeafExcDeg_of
+
+theorem etale_excision_formal_reduction_of_excision : LateralTheory.CohomologicalPurity.LeafExcFormal :=
+  LateralTheory.CohomologicalPurity.LeafExcFormal_of
+    etale_excision_identification_of_excision
+    etale_excision_cohomological_degree_of_excision
+
+alias etale_excision_free_cokernel_injective_of_excision := _root_.LateralTheory.CohomologicalPurity.leafFreeCokInj
+
+theorem etale_excision_cokernel_free_of_excision : LateralTheory.CohomologicalPurity.LeafFreeCok :=
+  LateralTheory.CohomologicalPurity.LeafFreeCok_of_inj etale_excision_free_cokernel_injective_of_excision
+
+alias etale_excision_surjective_geometric_points_of_excision := _root_.LateralTheory.CohomologicalPurity.LeafSurjGeo_of
+alias etale_excision_injective_geometric_points_of_excision := _root_.LateralTheory.CohomologicalPurity.LeafInjGeo_of
+
+theorem etale_excision_sheaf_level_of_excision : LateralTheory.CohomologicalPurity.LeafExcSheaf :=
+  LateralTheory.CohomologicalPurity.LeafExcSheaf_of
+    etale_excision_cokernel_free_of_excision
+    etale_excision_surjective_geometric_points_of_excision
+    etale_excision_injective_geometric_points_of_excision
+
+theorem etale_excision_isomorphism_of_excision : LateralTheory.CohomologicalPurity.LeafExc :=
+  LateralTheory.CohomologicalPurity.LeafExc_of
+    etale_excision_formal_reduction_of_excision
+    etale_excision_sheaf_level_of_excision
+
+alias intersectionNumber_baseChange := _root_.LateralTheory.Fin.LeafExc.etale_excision_isomorphism_of_excision
+
 end LateralTheory.Fin.LeafExc

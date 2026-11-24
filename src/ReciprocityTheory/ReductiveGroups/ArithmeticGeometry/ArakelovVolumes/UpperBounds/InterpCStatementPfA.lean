@@ -1,7 +1,10 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KaUnfoldPfB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfE
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfD
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
 
 @[expose] public section
@@ -51,7 +54,7 @@ theorem norm_dmin_orth {r : ℕ} (X : Data E r) {x : Frame X.Ψ r} (hx : IsOrth 
 
 theorem pnorm_orth {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) {x : Frame X.Ψ r}
     (hx : IsOrth X x) : X.pnorm la P x = ‖P x‖ := by
-  simp [Data.pnorm, norm_div, norm_dmin_orth X hx]
+  simp [Data.pnorm, norm_dmin_orth X hx]
 
 theorem cfwM_smul {r : ℕ} (X : Data E r) {ps : Frame X.Ψ r → ℝ} {a : ℝ} (h : cfwM X ps a) {t : ℝ}
     (ht : 0 < t) : cfwM X (fun x => t * ps x) (t * a) := by
@@ -82,35 +85,7 @@ theorem half_le {w : ℝ≥0∞} {p ψ : ℝ} (hw : ENNReal.ofReal (Real.exp (-(
         rw [← Real.exp_mul, mul_one_div]
 
 theorem orth_mem_dom {r : ℕ} (X : Data E r) {x0 : Frame X.Ψ r} (ho : IsOrth X x0) : x0 ∈ X.dom := by
-  simp only [Data.dom, GG, Set.mem_setOf_eq]
-  intro τ
-  have hs : ∀ a : Fin r, ((sgn X.p0 (a : ℕ) : ℝ) : ℂ) ≠ 0 := by
-    intro a
-    unfold sgn
-    split_ifs <;> norm_num
-  refine ⟨?_, fun i => ?_⟩
-  · intro h0
-    have hg : gram τ.1 X.Gm (mat x0 τ) =
-        (mat x0 τ)ᵀ * X.Gm.map τ.1 * (mat x0 τ).map (starRingEnd ℂ) := by
-      ext a b
-      simp only [gram, hermC, col, mat, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
-        Matrix.map_apply, Finset.sum_mul]
-      exact Finset.sum_comm
-    have h1 := congrArg Matrix.det hg
-    rw [ho τ, Matrix.det_diagonal, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0,
-      zero_mul, zero_mul] at h1
-    exact (Finset.prod_ne_zero_iff.mpr fun a _ => hs a) h1
-  · have hd : dmin X.Gm x0 τ i = ((psgn X.p0 i : ℝ) : ℂ) := by
-      unfold dmin lminor
-      rw [ho τ, Matrix.submatrix_diagonal _ _ (Fin.castLE_injective _), Matrix.det_diagonal]
-      simp [psgn, ← Fin.prod_univ_eq_prod_range]
-    have hne : psgn X.p0 i ≠ 0 := by
-      unfold psgn
-      refine Finset.prod_ne_zero_iff.mpr fun a _ => ?_
-      unfold sgn
-      split_ifs <;> norm_num
-    rw [hd, Complex.ofReal_re]
-    exact mul_self_pos.mpr hne
+  apply ReciprocityTheory.ChartRestriction.G.AR.Up.KU.orth_dom <;> assumption
 
 private lemma leviO_fderiv_lemma {m : ℕ} (c : ℝ) (f : V m → ℂ) (y : V m) :
     fderiv ℝ (fun w => (c : ℂ) * f w) y = (c : ℂ) • fderiv ℝ f y := by

@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
+public import Formalism.LocalToGlobal.CharacterGerms.RowTie
 
 @[expose] public section
 

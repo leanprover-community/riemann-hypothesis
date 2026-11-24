@@ -1,12 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.ProfiniteCohomology.CupProducts.Projection
-public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+public import GroundTheory.ProfiniteCohomology.ClassFormations.CorestrictionDefs
+public import GroundTheory.ProfiniteCohomology.CyclicCupGaloisDefs
 public import GroundTheory.ProfiniteCohomology.ClassFormations.Corestriction
+public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+public import GroundTheory.ProfiniteCohomology.CupProducts.Projection
 public import GroundTheory.ProfiniteCohomology.CyclicCupProf
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.H0IsoHomCohomologyClassZero
+public import GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
 
 @[expose] public section
 
@@ -137,8 +139,8 @@ theorem coindTrace_naturality {k : Type} [CommRing k] [(U : Subgroup G).FiniteIn
   change (coindTrace (U : Subgroup G) B).hom
       ((Rep.coindMap (U : Subgroup G).subtype ((Rep.resFunctor (U : Subgroup G).subtype).map φ)).hom f) =
     φ.hom ((coindTrace (U : Subgroup G) A).hom f)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [coindTrace_hom_apply, coindTrace_hom_apply, map_sum]
+
+  rw [coindTrace_hom_apply, coindTrace_hom_apply, map_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   induction c using QuotientGroup.induction_on with
   | H x =>

@@ -1,7 +1,12 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
+public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanDefs
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanSt
-public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.LogDetSt
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 

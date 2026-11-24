@@ -1,9 +1,7 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LatSpanLeSpan
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ActFrame
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.IotaDictPf
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
 
 @[expose] public section
 
@@ -291,8 +289,8 @@ theorem rep_exists {F : LFlag S r T} {F' : LFlag S r T'} (hg0 : ((g : ℕ) : E) 
     induction hw' using Submodule.span_induction with
     | mem w0 hw0 =>
       obtain ⟨a, rfl⟩ := hw0
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [β, map_sub, map_sum, hef, Finset.sum_ite_eq]
+
+      simp [β, map_sub, map_sum, hef, Finset.sum_ite_eq]
     | zero => simp
     | add w1 w2 _ _ h1 h2 => rw [map_add (f := _), LinearMap.add_apply, h1, h2, add_zero]
     | smul c w _ h => rw [LinearMap.map_smulₛₗ₂, h, smul_zero]

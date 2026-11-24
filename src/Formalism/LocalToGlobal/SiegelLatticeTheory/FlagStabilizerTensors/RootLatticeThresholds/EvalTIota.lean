@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalEmbedding
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.MeasBrg
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AtTauExUniqueHolds
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.LevelADef
 
 @[expose] public section

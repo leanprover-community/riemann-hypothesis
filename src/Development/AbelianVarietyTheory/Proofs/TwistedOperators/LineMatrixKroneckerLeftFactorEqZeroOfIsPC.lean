@@ -1,9 +1,51 @@
 module
 
-public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -32,9 +74,9 @@ theorem plusPart_add (U D : Module.End ℂ (MvPolynomial σ ℂ))
       homogeneousComponent_of_mem (hD d _ hm), if_pos rfl, if_neg (by omega), add_zero]
   unfold plusPart
   simp only [h]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [finsum_eq_sum_of_support_subset (s := Finset.range (P.totalDegree + 1)), ← map_sum,
-    sum_homogeneousComponent]
+
+  rw [finsum_eq_sum_of_support_subset (s := Finset.range (P.totalDegree + 1)), ← map_sum,
+  sum_homogeneousComponent]
   intro d hd
   by_contra hc
   apply hd
@@ -60,11 +102,11 @@ theorem minusPart_add (U D : Module.End ℂ (MvPolynomial σ ℂ))
         homogeneousComponent_eq_zero _ _ (by omega), homogeneousComponent_eq_zero _ _ (by omega)]
       simp
     conv_rhs => rw [← h2]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.sum_range_succ' _ (P.totalDegree + 1 + 1), Finset.sum_range_succ' _ (P.totalDegree + 1),
-      map_add, map_add, map_sum,
-      hD0 _ _ (by omega) (homogeneousComponent_mem 0 P),
-      hD0 _ _ (by omega) (homogeneousComponent_mem (0 + 1) P), add_zero, add_zero]
+
+    rw [Finset.sum_range_succ' _ (P.totalDegree + 1 + 1), Finset.sum_range_succ' _ (P.totalDegree + 1),
+    map_add, map_add, map_sum,
+    hD0 _ _ (by omega) (homogeneousComponent_mem 0 P),
+    hD0 _ _ (by omega) (homogeneousComponent_mem (0 + 1) P), add_zero, add_zero]
   · intro d hd
     by_contra hc
     apply hd
@@ -84,12 +126,12 @@ theorem prod_factorial_add_single [DecidableEq σ] (i : σ) (α : σ →₀ ℕ)
     · simp [Nat.factorial_succ]
     · refine Finset.prod_congr rfl fun j hj => ?_
       have : j ≠ i := (Finset.mem_erase.mp hj).1
-      simp [Finsupp.single_apply, this.symm]
+      simp [this.symm]
   · intro j hj
     by_cases h : j = i
     · simp [h]
     · have := Finsupp.mem_support_iff.mp hj
-      simp [Finsupp.single_apply, Ne.symm h] at this
+      simp [Ne.symm h] at this
       simp [this]
 
 theorem inner_X_mul [DecidableEq σ] {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -118,7 +160,7 @@ theorem inner_X_mul [DecidableEq σ] {H : Type} [NormedAddCommGroup H] [InnerPro
         ext j
         by_cases hj : j = i
         · subst hj; simp; omega
-        · simp [Finsupp.single_apply, Ne.symm hj]
+        · simp [Ne.symm hj]
   have hm : ∀ (α : σ →₀ ℕ) (c : ℂ), (monomial α c : MvPolynomial σ ℂ) = c • monomial α 1 := by
     intro α c; rw [smul_monomial]; simp
   induction P using MvPolynomial.induction_on' with
@@ -197,7 +239,7 @@ theorem omAct_eq_up_add_down {M : Matrix (Ln p q r s) (Ln p q r s) ℂ}
       congr 1
       ext1 P
       ext1
-      simp [mul_assoc]
+      simp
 
 theorem upOp_apply (M : Matrix (Ln p q r s) (Ln p q r s) ℂ) (P : Pol p q r s) :
     upOp M P = ∑ l, ∑ l', (if linePos l then M l l' else 0) • (X l * X l' * P) := by
@@ -255,9 +297,9 @@ theorem inner_plusPart_omAct {H : Type} [NormedAddCommGroup H] [InnerProductSpac
   have hM' : ∀ l l', linePos l = linePos l' → Mᴴ l l' = 0 := by
     intro l l' h; simp [hM l' l h.symm]
   rw [plusPart_omAct hM, minusPart_omAct hM', upOp_apply, downOp_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, sum_inner, inner_sum, inner_smul_left, inner_smul_right,
-    ← Finset.sum_neg_distrib]
+
+  simp only [map_sum, map_smul, sum_inner, inner_sum, inner_smul_left, inner_smul_right,
+  ← Finset.sum_neg_distrib]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l' _ => Finset.sum_congr rfl fun l _ => ?_
   rw [mul_assoc, inner_X_mul hι]

@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.LastRowColLevSym
-public import Formalism.LocalToGlobal.Columns.OcbLevIsSym
+public import Formalism.LocalToGlobal.Columns.RecLevelSym
+public import Formalism.LocalToGlobal.Columns.ReferenceKernelEquivOfLastComponent
+public import Formalism.LocalToGlobal.Columns.RecLevelDiv
 
 @[expose] public section
 

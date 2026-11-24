@@ -1,10 +1,56 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.DworkPowerSeriesWeights
-public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
+import Formalism.GaussJetBounds.GaussJetProofs.FJEval
+import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
+import Formalism.GaussJetBounds.GaussJetProofs.OneGauss
 public import Formalism.GaussJetBounds.GaussJetProofs.OrbMul
-public import Formalism.GaussJetBounds.GaussJetProofs.OneGauss
-public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -340,8 +386,8 @@ theorem jetPairPoly_map_rename {K : Type} [Field K] {σ τ ι : Type} (ρ : σ �
       MvPolynomial.rename ρ (jetPairPoly P Th) := by
   rw [OrbMul.jetPairPoly_eq_sum _ Th P.support (MvPolynomial.support_map_subset _ _)]
   unfold jetPairPoly
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun κ _ => ?_
   rw [MvPolynomial.coeff_map, map_mul (MvPolynomial.rename ρ), MvPolynomial.rename_C]
   rfl
@@ -418,8 +464,8 @@ theorem psi_Gxz (l : ℕ) [Fact l.Prime] (d N0 N1 : ℕ) [NeZero d] (nu : ZMod d
   rw [RingHom.map_det]
   congr 1
   ext r r'
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [psi, frIdx, map_sum, map_mul, MvPolynomial.map_C, MvPolynomial.rename_X]
+
+  simp [psi, frIdx, map_sum, map_mul, MvPolynomial.map_C, MvPolynomial.rename_X]
 
 theorem tieFrame : TieFrame := by
   intro l _ d N0 N1 _ nu hp Th ep B hep hyp I m
@@ -532,8 +578,8 @@ theorem jet_map_minor_product (nu : YoungDiagram) (hp : ∀ c : Fin (nu.rowLen 0
   rw [RingHom.map_det]
   congr 1
   ext r r'
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [psi1, frIdx1, map_sum, map_mul, MvPolynomial.map_C, MvPolynomial.rename_X]
+
+  simp [psi1, frIdx1, map_sum, map_mul, MvPolynomial.map_C, MvPolynomial.rename_X]
   all_goals rfl
 
 end One

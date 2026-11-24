@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage
 public import Formalism.LocalToGlobal.IndefiniteReal.LiftGoodPartComplexEqRange
 
@@ -132,8 +131,8 @@ private theorem Theta_jR_toF_mem_range_iC (t : A3.fam3.base3.Tup) (y : Fin ((A3.
     ext i
     simp [Finset.sum_apply, Pi.single_apply]
   conv_rhs => rw [hy]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [CxData.iC, lin, Fintype.linearCombination_apply, map_sum, LinearMap.map_smulₛₗ, map_smul]
+
+  simp only [CxData.iC, lin, Fintype.linearCombination_apply, map_sum, LinearMap.map_smulₛₗ, map_smul]
   rfl
 
 private theorem range_opF_goodAt_le_range_opF_goodAt_bot (B : BlockDat K G Pl0) (Xc : Finset (G → K)) (P : Subgroup G) (ψ : P →* Kˣ)
@@ -282,8 +281,8 @@ private theorem theta_jL_toF_mem_range_tC (j : A3.fam3.base3.J) (t : A3.fam3.bas
     ext i
     simp [Finset.sum_apply, Pi.single_apply]
   conv_rhs => rw [hy]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [CxData.tC, lin, Fintype.linearCombination_apply, map_sum, LinearMap.map_smulₛₗ, map_smul]
+
+  simp only [CxData.tC, lin, Fintype.linearCombination_apply, map_sum, LinearMap.map_smulₛₗ, map_smul]
   rfl
 
 theorem lift_descent_at_level {s : ℕ} (hok : A3.fam3.Ok3 s) {gW : ∀ j, Representation ℂ G (X.W j)}
@@ -458,15 +457,13 @@ theorem lift_descent_at_lower_type (hok : A3.fam3.Ok3 s) (hK : X.KFormL) (hJ : X
     {gW : ∀ j, Representation ℂ G (X.W j)} (hU : LiftActionUnitary X gW) (hG : LiftGroupEquivariance A3 X gW)
     (hL0 : LevelTypeOfLifts A3 X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gW false P0 ψ0) :
     X.DnLevL (cvOf3 A3 P0 ψ0 P1 ψ1) false := by
-  have Hs := fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t
-  exact lift_descent_at_level hok Hs hRZ P0 ψ0 (fun _ _ => rfl) hL0
+  exact lift_descent_at_level hok (fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t) hRZ P0 ψ0 (fun _ _ => rfl) hL0
 
 theorem upper_level_lift_at_lower_type (hok : A3.fam3.Ok3 s) (hK : X.KFormL) (hJ : X.JIsoL (cvOf3 A3 P0 ψ0 P1 ψ1))
     {gW : ∀ j, Representation ℂ G (X.W j)} (hU : LiftActionUnitary X gW) (hG : LiftGroupEquivariance A3 X gW)
     (hL0 : LevelTypeOfLifts A3 X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gW false P0 ψ0) :
     X.UpLevL (cvOf3 A3 P0 ψ0 P1 ψ1) false := by
-  have Hs := fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t
-  exact lift_ascent_at_level hok Hs P0 ψ0 (fun _ _ => rfl) hL0
+  exact lift_ascent_at_level hok (fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t) P0 ψ0 (fun _ _ => rfl) hL0
 
 end Final
 

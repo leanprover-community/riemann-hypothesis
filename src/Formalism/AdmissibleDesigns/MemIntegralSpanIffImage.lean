@@ -2,8 +2,55 @@ module
 
 public import Formalism.AdmissibleDesigns.MemImageOfTensorSum
 public import Formalism.AdmissibleDesigns.CohomZeroEquivContinuous
-public import Formalism.SharpRestriction.LevelLetterCocycles.IsobaricMultiplicityOne
+public import Formalism.AdmissibleDesigns.CoboundaryMemFiniteClasses
+public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.GaloisConditionFiveExtraOf
 public import Formalism.AdmissibleDesigns.EKSymmCont
+public import Formalism.SharpRestriction.LevelLetterCocycles.IsobaricMultiplicityOne
+import Formalism.WeaklyAdmissibleFiltrations.CrystallineStableLifts.Galois
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.LinearAlgebra.Dimension.Torsion.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -80,8 +127,8 @@ theorem iL_mem_latT (m : L) : letI := modOL (V := V) e OL
   have hm : tr e (iL m) = ∑ j, σ (bL.repr m j) • tr e (bV j) := by
     show iL m = ∑ j, e.symm (algebraMap OL LL (σ (bL.repr m j))) • bV j
     conv_lhs => rw [← bL.sum_repr m]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul, hb, hσ, RingEquiv.symm_apply_apply, algebraMap_smul]
   rw [hm]
@@ -451,8 +498,8 @@ theorem Tst_bound [CompactSpace G] (hopen : IsOpen ((T0 A b : Submodule OL A.V) 
   | mem x hx =>
     obtain ⟨g, y, hy, rfl⟩ := Set.mem_iUnion.1 hx
     obtain ⟨o, rfl⟩ := integral_span_coordinates A b y hy
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.smul_sum]
+
+    rw [map_sum, Finset.smul_sum]
     refine Submodule.sum_mem _ fun j _ => ?_
     rw [LinearMap.map_smul_of_tower, smul_comm]
     exact Submodule.smul_mem _ _ (hb _ (Set.mem_iUnion.2 ⟨j, g, rfl⟩))
@@ -679,8 +726,8 @@ theorem coord_iL (m : L) (j : n) : bV.equivFun (iL m) j = algebraMap O (Fraction
   have h : iL m = bV.equivFun.symm (fun j => algebraMap O (FractionRing O) (bL.equivFun m j)) := by
     rw [Basis.equivFun_symm_apply]
     conv_lhs => rw [← bL.sum_equivFun m]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul, hb, algebraMap_smul]
   rw [h, LinearEquiv.apply_symm_apply]
@@ -695,8 +742,8 @@ theorem mem_integral_span_iff_image (x : TrV e V) :
     refine ⟨∑ j, σ.symm (o j) • bL j, ?_⟩
     show iL (∑ j, σ.symm (o j) • bL j) = (x : V)
     conv_rhs => rw [← bV.sum_equivFun (x : V)]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul, hb, ← algebraMap_smul (FractionRing O) (σ.symm (o j)) (bV j)]
     congr 1
@@ -718,8 +765,8 @@ theorem div_L (v : V) : ∃ s : O, s ≠ 0 ∧ ∃ m : L, iL m = s • v := by
     (fun j => bV.equivFun v j)
   choose c hc using fun j => hs j (Finset.mem_univ j)
   refine ⟨s, nonZeroDivisors.ne_zero s.2, ∑ j, c j • bL j, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   conv_rhs => rw [← bV.sum_equivFun v, Finset.smul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_smul, hb, ← algebraMap_smul (FractionRing O) (c j), hc j, smul_assoc]

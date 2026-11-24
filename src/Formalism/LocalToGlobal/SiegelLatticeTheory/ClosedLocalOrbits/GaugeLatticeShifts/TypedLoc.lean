@@ -1,12 +1,17 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.SatakeDualWeyl.StatementC
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLoc
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitA
+public import Mathlib.NumberTheory.RamificationInertia.Inertia
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ModuliIntegralCharts
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.NumberTheory.RamificationInertia.Basic
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -519,8 +524,8 @@ theorem trV_nondeg (z : I.E ⊗[I.F] v.adicCompletion I.F)
     let bi : 𝓞 I.E := ⟨b i, hbI i⟩
     have hbi : (bi : I.E) = b i := rfl
     have h1 := h bi
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.mul_sum, map_sum] at h1
+
+    rw [Finset.mul_sum, map_sum] at h1
     simp only [Algebra.TensorProduct.tmul_mul_tmul, one_mul, trV_tmul, hbi] at h1
     have e : ∀ j, tlin I (b i * d j) = if i = j then 1 else 0 := by
       intro j
@@ -591,8 +596,7 @@ theorem Lf_int : ∃ c : ℤ, c ≠ 0 ∧ ∀ w ∈ I.Lf, ∀ i,
     rw [e]
     exact mul_mem r.2 (hx i)
 
-theorem single_mem (i : Fin I.n) : ∃ N : ℤ, N ≠ 0 ∧ (Pi.single i (N : I.E) : Fin I.n → I.E) ∈ I.L :=
-  by apply _root_.UpperTheory.Reformulated.B.ModuliIntegralCharts.single_mem <;> assumption
+alias single_mem := _root_.UpperTheory.Reformulated.B.ModuliIntegralCharts.single_mem
 
 end Lat
 

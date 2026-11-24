@@ -1,6 +1,7 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.Relrank
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

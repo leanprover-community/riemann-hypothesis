@@ -2,9 +2,57 @@ module
 
 public import Formalism.HermitianCurvature.StatementD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -836,7 +884,7 @@ theorem partnerF_invol (p : C.LPt) : Function.Involutive (ptPartnerF p) := by
   rw [e1]
   have h2 := partner_spec p (ptPartner p a) h1.1
   apply Fin.ext
-  simp [ptPartnerF, h2.1, h1.2]
+  simp [ptPartnerF, h1.2]
 
 theorem ptPerm_apply (p : C.LPt) (a : Fin (ptSize p)) : ptPerm p a = ptPartnerF p a := by
   rw [ptPerm, dif_pos (partnerF_invol p).bijective]
@@ -1104,8 +1152,8 @@ theorem d_moduleOfWdOn : ModuleOfWdOn := by
   intro X _ _ K Y _ _ res A _ _ _ S _ _ φ Qop QQ hQ w x hx a
   have hC := corr_RR K res φ Qop QQ hQ w
   refine ⟨K.sum_mem fun b _ => (hC a b (x b) (hx b)).1, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [actOp, map_sum]
+
+  simp only [actOp, map_sum]
   exact Finset.sum_congr rfl fun b _ => (hC a b (x b) (hx b)).2
 
 section pos
@@ -1132,13 +1180,13 @@ theorem psd_pull {α β : Type} [DecidableEq β] (Z : Finset α) (φ : α → β
 theorem sesq_zero_left {V : Type*} [AddCommGroup V] [Module ℂ V] {U : Submodule ℂ V} {β : V → V → ℂ}
     (hS : P5.SesqOn U β) {y : V} (hy : y ∈ U) : β 0 y = 0 := by
   have h := (hS 0 U.zero_mem 0 U.zero_mem y hy 1).1
-  simp only [one_smul, add_zero, zero_add, one_mul] at h
+  simp only [one_smul, add_zero, one_mul] at h
   linear_combination -h
 
 theorem sesq_zero_right {V : Type*} [AddCommGroup V] [Module ℂ V] {U : Submodule ℂ V} {β : V → V → ℂ}
     (hS : P5.SesqOn U β) {y : V} (hy : y ∈ U) : β y 0 = 0 := by
   have h := (hS 0 U.zero_mem 0 U.zero_mem y hy 1).2
-  simp only [one_smul, add_zero, zero_add, one_mul, map_one] at h
+  simp only [one_smul, add_zero, one_mul, map_one] at h
   linear_combination -h
 
 theorem sesq_sum_left {V : Type*} [AddCommGroup V] [Module ℂ V] {U : Submodule ℂ V} {β : V → V → ℂ}
@@ -1194,7 +1242,7 @@ theorem gram_of_sesq {V : Type*} [AddCommGroup V] [Module ℂ V] (U : Submodule 
     have h := hN _ hw
     rw [sesq_sum_left hS Finset.univ (fun i : Z => (starRingEnd ℂ) (c i)) (fun i : Z => v i) (fun i => hv i) hw] at h
     simp only [sesq_sum_right hS Finset.univ (fun i : Z => (starRingEnd ℂ) (c i)) (fun i : Z => v i) (fun i => hv i) (hv _),
-      RCLike.conj_conj, Complex.conj_conj] at h
+      RCLike.conj_conj] at h
     convert h using 1
     rw [Finsupp.sum_fintype _ _ (by simp)]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -1331,8 +1379,7 @@ namespace Formalism.FourierDecayAlt.P.Dx1.Rel
 noncomputable section
 open Classical
 
-theorem ptSize_cons (s : ℕ) (t : ℂ) (rest : C.LPt) : ptSize ((s, t) :: rest) = s + ptSize rest := by
-  simp only [ptSize, List.map_cons, List.sum_cons]
+alias ptSize_cons := _root_.Formalism.FourierDecayAlt.P.Dx1.ptSize_cons
 
 theorem partner_spec : ∀ (p : C.LPt) (a : ℕ), a < ptSize p →
     ptPartner p a < ptSize p ∧ ptPartner p (ptPartner p a) = a ∧
@@ -1349,7 +1396,7 @@ theorem partner_spec : ∀ (p : C.LPt) (a : ℕ), a < ptSize p →
         by_cases hi : i < s
         · simp only [ptEntry, ptScal, ha, hi, and_self, if_true]
           split_ifs <;> first | rfl | (exfalso; omega)
-        · simp only [ptEntry, ptScal, ha, hi, false_and, and_true, if_false, if_true]
+        · simp only [ptEntry, ptScal, ha, hi, and_true, if_false, if_true]
           split_ifs <;> first | rfl | (exfalso; omega)
     · have ih := partner_spec rest (a - s) (by omega)
       have hp : ptPartner ((s, t) :: rest) a = s + ptPartner rest (a - s) := by simp [ptPartner, ha]
@@ -1359,7 +1406,7 @@ theorem partner_spec : ∀ (p : C.LPt) (a : ℕ), a < ptSize p →
         rw [show s + ptPartner rest (a - s) - s = ptPartner rest (a - s) by omega, ih.2.1]; omega
       · intro i
         by_cases hi : s ≤ i
-        · simp only [ptEntry, ptScal, ha, show ¬ i < s by omega, false_and, and_false, if_false,
+        · simp only [ptEntry, ptScal, ha, show ¬ i < s by omega, if_false,
             show s ≤ a by omega, hi, and_self, if_true]
           rw [ih.2.2 (i - s)]
           split_ifs <;> first | rfl | (exfalso; omega)
@@ -1518,8 +1565,8 @@ theorem core (r : ℕ) (P : Fin (r + 1) → Fin (r + 1)) (hP : ∀ a, P (P a) = 
     refine Finset.sum_nbij' φ φ hφmem hφmem hφφ hφφ ?_
     intro b hb
     rw [hφc b hb, hφs b hb]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [s1, s2, Finset.sum_neg_distrib, s3, map_sum]
+
+  rw [s1, s2, Finset.sum_neg_distrib, s3, map_sum]
   rfl
 
 section geo
@@ -1570,7 +1617,7 @@ theorem expandAt (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z)
   · rw [Finset.sum_eq_single (⟨j.val, by omega⟩ : Fin (r + 1))]
     · rw [fvec_lt z (⟨j.val, by omega⟩ : Fin (r + 1)) hj]
       have hb : bvec (eI k r ⟨j.val, hj⟩) j = 1 := by
-        simp [bvec, Pi.single_apply, eI, Fin.ext_iff]
+        simp [bvec, eI]
       rw [hb, one_mul]
       simp only [Bm, Matrix.of_apply]
       rw [dif_pos hj]
@@ -1737,18 +1784,9 @@ namespace Formalism.FourierDecayAlt.P
 
 theorem ptPerm_spec : Formalism.FourierDecayAlt.D.PtPermSpec := by
   exact Dx1.d_ptPermSpec
-theorem ptG_spec : Formalism.FourierDecayAlt.D.PtGSpec := by
-  exact Dx1.ptGSpec
-theorem relevant_points_holds : Formalism.FourierDecayAlt.D.PtRelevant := by
-  exact Dx1.Rel.ptRelevant
-theorem good_of_admissible : Formalism.FourierDecayAlt.D.GoodOfAdm := by
-  exact Dx1.d_goodOfAdm
-theorem level_zero_holds : Formalism.FourierDecayAlt.D.LevelZero := by
-  exact Dx1.LZ.levelZero
-theorem lemma_E_of_residue : Formalism.FourierDecayAlt.D.LemmaEOfRR0 := by
-  exact Dx1.d_lemmaEOfRR0
-theorem positivity_of_module : Formalism.FourierDecayAlt.D.ThmPPosOfModule := by
-  exact Dx1.d_thmPPosOfModule
+alias ptG_spec := _root_.Formalism.FourierDecayAlt.P.Dx1.ptGSpec
+alias relevant_points_holds := _root_.Formalism.FourierDecayAlt.P.Dx1.Rel.ptRelevant
+alias level_zero_holds := _root_.Formalism.FourierDecayAlt.P.Dx1.LZ.levelZero
 theorem module_of_words : Formalism.FourierDecayAlt.D.ModuleOfWdOn := by
   exact Dx1.d_moduleOfWdOn
 

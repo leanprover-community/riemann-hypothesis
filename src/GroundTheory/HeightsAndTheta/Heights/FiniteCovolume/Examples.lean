@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.HermitianDisc
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Objects
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

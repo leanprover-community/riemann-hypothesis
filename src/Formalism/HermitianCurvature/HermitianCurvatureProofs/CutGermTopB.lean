@@ -1,7 +1,61 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermTop
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TopCore
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Lam1
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsCompactRoots
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OneSubPowLe
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBTAsm
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PtEntryAppendStart
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingDecay
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightProductGermIndep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermRateSplit
 
 @[expose] public section
 
@@ -116,7 +170,7 @@ theorem const_match1 (k r : ℕ) (TT : ℝ) (b s : ℕ) (hb : 1 ≤ b) (hs : 2 �
     have hD' : ‖d0‖ ≠ 0 := norm_ne_zero_iff.2 hD
     rw [hn, Real.sqrt_mul (mul_nonneg hN0 (by positivity)), Real.sqrt_mul hN0, pow_mul,
       Real.sqrt_sq (by positivity), norm_inv, norm_mul, norm_pow, mul_pow]
-    simp only [inv_pow, inv_inv]
+    simp only [inv_pow]
     field_simp
     ring
   · have hsz3 : FourierDecayAlt.D.ptSize h = c := hsz
@@ -240,11 +294,9 @@ theorem top_level_germ_leading : TopCore1 := by
       refine ⟨z / l2T m, ?_, by field_simp [top_root_ne_zero m]⟩
       rw [div_pow, hz, top_root_pow_eq, epsT]
       field_simp [top_base_ne_zero m]
-      try ring
     · rintro ⟨w, hw, rfl⟩
       rw [mul_pow, top_root_pow_eq, hw, epsT]
       field_simp [top_base_ne_zero m]
-      try ring
   have hsum : ∑ z ∈ G.rootSet (m + 2) (d / l1T m ^ (m + 1)), (coT (m + 2) x (some (l2T m * z)) *
         (omT p N (ptT (m + 2) h x d (some (l2T m * z))) : ℂ)) • p.V F' (ptT (m + 2) h x d (some (l2T m * z))) =
       -(((Kh * ‖d‖ ^ (P.k - 1) : ℝ) : ℂ) • (((m : ℂ) + 2)⁻¹ • ∑ z ∈ G.rootSet (m + 2) (d / l1T m ^ (m + 1)),
@@ -298,7 +350,6 @@ theorem top_level_germ_leading : TopCore1 := by
               G.OmLong U.betaU (m + 1) (U.PhiTop (p := D.ptSize h) (s := m + 1 + 1) U.betaU σh dh Ψ0) (l2T m * z)) := by
     rw [Finset.sum_insertNone, hroots,
       Finset.sum_image (fun a _ b _ hab => mul_left_cancel₀ (top_root_ne_zero m) hab)]
-    beta_reduce
     rw [hT0, hsum, smul_sub, sub_eq_add_neg]
   rw [heq, norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_mul,
     abs_of_nonneg (pow_nonneg (norm_nonneg _) _)]

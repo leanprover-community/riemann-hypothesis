@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.CyclotomicCharacters.Character
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ContinuousToZModPow
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 @[expose] public section
 
@@ -26,18 +29,10 @@ theorem norm_sub_le_of_toZModPow_eq {x y : ℤ_[ℓ]} {n : ℕ}
   rw [PadicInt.norm_le_pow_iff_mem_span_pow, ← PadicInt.ker_toZModPow, RingHom.mem_ker, map_sub,
     h, sub_self]
 
-theorem exists_zpow_neg_lt {ε : ℝ} (hε : 0 < ε) : ∃ n : ℕ, (ℓ : ℝ) ^ (-(n : ℤ)) < ε := by
-  have h1 : (1 : ℝ) < ℓ := by exact_mod_cast hℓ.out.one_lt
-  obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hε (inv_lt_one_of_one_lt₀ h1)
-  exact ⟨n, by rwa [zpow_neg, zpow_natCast, ← inv_pow]⟩
-
-theorem continuous_toZModPow (n : ℕ) : Continuous (PadicInt.toZModPow (p := ℓ) n) :=
-  _root_.UpperTheory.Reformulated.B.Yde3.continuous_toZModPow n
-
 theorem continuous_of_continuous_toZModPow {X : Type*} [TopologicalSpace X] {f : X → ℤ_[ℓ]}
     (h : ∀ n, Continuous fun x => PadicInt.toZModPow n (f x)) : Continuous f := by
   refine continuous_iff_continuousAt.2 fun x => Metric.tendsto_nhds.2 fun ε hε => ?_
-  obtain ⟨n, hn⟩ := exists_zpow_neg_lt (ℓ := ℓ) hε
+  obtain ⟨n, hn⟩ := PadicInt.exists_pow_neg_lt (p := ℓ) hε
   have hU : IsOpen {y | PadicInt.toZModPow n (f y) = PadicInt.toZModPow n (f x)} :=
     (isOpen_discrete {PadicInt.toZModPow n (f x)}).preimage (h n)
   filter_upwards [hU.mem_nhds rfl] with y hy

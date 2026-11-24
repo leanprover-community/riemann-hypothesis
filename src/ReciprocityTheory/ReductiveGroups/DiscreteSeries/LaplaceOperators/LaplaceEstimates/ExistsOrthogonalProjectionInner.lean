@@ -1,8 +1,9 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.PsiDatumStatement
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SquareIntegrableInnerProduct
+import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
+public import Mathlib.MeasureTheory.Function.LpSpace.ContinuousCompMeasurePreserving
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 
 @[expose] public section
 

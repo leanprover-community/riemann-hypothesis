@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.DualLattices.FormalChartAtZero
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

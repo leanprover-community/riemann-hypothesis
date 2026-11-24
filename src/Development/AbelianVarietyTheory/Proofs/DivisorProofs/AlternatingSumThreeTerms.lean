@@ -1,8 +1,45 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -180,8 +217,8 @@ theorem val_coboundary_first_level (R : Type) [CommRing R] (F : Shv R) (t : (fre
       simp
   change valHom R F _ (P1 A B) (cobd t) = _
   unfold cobd
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Fin.sum_univ_two]
+
+  rw [map_sum, Fin.sum_univ_two]
   simp only [map_zsmul]
   simp only [valHom, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
   rw [val_map, val_map, e, e, val_nat, val_nat]
@@ -220,8 +257,8 @@ theorem val_coboundary_second_level (R : Type) [CommRing R] (F : Shv R) (s : (fr
         simp [Algebra.TensorProduct.one_def]
   change valHom R F _ (P2 A B) (cobd s) = _
   unfold cobd
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Fin.sum_univ_three]
+
+  rw [map_sum, Fin.sum_univ_three]
   simp only [map_zsmul]
   simp only [valHom, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
   rw [val_map, val_map, val_map, e, e, e, val_nat, val_nat, val_nat]
@@ -269,20 +306,17 @@ theorem val_cech_map_first_level (R : Type) [CommRing R] (F : Shv R) {B' : Type}
 theorem cechMap_aug {Y Y' X : Scheme.{0}} (f : Y ⟶ X) (f' : Y' ⟶ X) (g : Y' ⟶ Y) (hg : g ≫ f = f') :
     cechMap f f' g hg ≫ cechAug f = cechAug f' := by
   ext n : 1
-  exact (WidePullback.lift_base _ _ _ _).trans (by first | rfl | simp [cechAug, Arrow.augmentedCechNerve])
+  exact (WidePullback.lift_base _ _ _ _).trans (by first | rfl)
 
 theorem smooth_surj [Algebra.Etale A B] [Module.FaithfullyFlat A B] : Smooth (fB A B) ∧ Surjective (fB A B) := by
   have he : Etale (fB A B) := by
     rw [HasRingHomProperty.Spec_iff (P := @Etale)]
     first
     | exact RingHom.etale_algebraMap.2 inferInstance
-    | exact (RingHom.etale_algebraMap_iff).2 inferInstance
-    | exact inferInstance
   refine ⟨inferInstance, ?_⟩
   have := (flat_and_surjective_SpecMap_iff (CommRingCat.ofHom (algebraMap A B))).2 ?_
   · exact this.2
   · first
     | exact RingHom.faithfullyFlat_algebraMap_iff.2 inferInstance
-    | exact inferInstance
 
 end GlobalTheory.CechOne

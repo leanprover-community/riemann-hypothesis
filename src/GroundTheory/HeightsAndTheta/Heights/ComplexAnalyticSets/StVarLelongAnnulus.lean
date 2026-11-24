@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarLelongMono
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegLelongAnnulus
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegLelongMono
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegLogDensNonneg
 
 @[expose] public section
 

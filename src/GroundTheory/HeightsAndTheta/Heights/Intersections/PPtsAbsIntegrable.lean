@@ -1,16 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.RegLine
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.NoCommonComponentCoordinatesPlane
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRSlotAdd
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemiPosTwist
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PTorusInvLevi
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PSheetHessPSD
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AMixSt
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.PTorusInvLevi
+import Mathlib.Algebra.Order.Star.Real
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AMixSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 
 @[expose] public section

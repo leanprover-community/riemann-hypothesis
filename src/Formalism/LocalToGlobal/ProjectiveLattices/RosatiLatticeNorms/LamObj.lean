@@ -1,11 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.RosatiAdj
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ConstGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifBaseChangeSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementB
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
+import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 
@@ -19,8 +20,6 @@ variable {k r : ℕ}
 
 theorem hpk_herm (k r : ℕ) : (Formalism.QuantumDeterminants.Hpk k r)ᴴ = Formalism.QuantumDeterminants.Hpk k r := by
   ext i j
-  have hi := i.2
-  have hj := j.2
   simp only [Matrix.conjTranspose_apply, Formalism.QuantumDeterminants.Hpk, Fin.ext_iff]
   split_ifs <;> first | omega | simp
 

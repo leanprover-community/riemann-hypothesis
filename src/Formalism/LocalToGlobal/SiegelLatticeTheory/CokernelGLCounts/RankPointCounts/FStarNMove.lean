@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarFwd
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.GramNondeg
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ScalarPairOrthogonal.XLeOrthXplus
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.GramNondeg
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ScalarPairOrthogonal.XLeOrthXplus
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -18,10 +21,9 @@ namespace NMoveP
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E)
 
-theorem hsw (x y : S.V) : S.hT y x = star (S.hT x y) := PI.ScalarPairDr.W.hT_swap S x y
+alias hsw := _root_.PI.PairCorankPos.W.hT_swap
 
-theorem hT_smulL (a : E) (x v : S.V) : S.hT (a • x) v = star a * S.hT x v := by
-  rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
+alias hT_smulL := _root_.PI.ScalarPairDr.W.hT_smul_left
 
 theorem spanL {ι : Type*} (x : ι → S.V) (y : S.V) (h : ∀ i, S.hT (x i) y = 0) :
     ∀ u ∈ Submodule.span E (Set.range x), S.hT u y = 0 := by
@@ -48,8 +50,7 @@ variable {S} {r : ℕ}
 theorem fvecC {T : E} (F : FlagG S r T) (i : Fin r) : F.fvec i.castSucc = F.e i :=
   PI.UnitaryGroupMassFormula.BetaLUniq.GN.fvec_castSucc F i
 
-theorem fvecL {T : E} (F : FlagG S r T) : F.fvec (Fin.last r) = F.z :=
-  PI.UnitaryGroupMassFormula.BetaLUniq.GN.fvec_last F
+alias fvecL := _root_.PI.ScalarPairDr.W.fvec_last
 
 theorem hT_f_e {T : E} (F : FlagG S r T) (a : Fin (r + 1)) (c : Fin r) : S.hT (F.fvec a) (F.e c) = 0 := by
   refine Fin.lastCases ?_ (fun i => ?_) a
@@ -74,8 +75,8 @@ theorem gram_flag {T : E} (P Q : FlagG S r T) (a c : Fin (r + 1)) :
 
 theorem hermitian_double_sum_expand {ι : Type*} [Fintype ι] (x : ι → S.V) (g g' : ι → E) :
     S.hT (∑ i, g i • x i) (∑ j, g' j • x j) = ∑ i, ∑ j, star (g i) * (g' j * S.hT (x i) (x j)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, hT_smulL, map_smul, smul_eq_mul, Finset.mul_sum]
+
+  simp only [map_sum, LinearMap.sum_apply, hT_smulL, map_smul, smul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
@@ -178,8 +179,8 @@ theorem exists_move {T T' : E} (F : FlagG S r T) (P Q : FlagG S r T')
     simp [ℓ, LinearMap.sum_apply]
   have hℓcomb : ∀ (x : Fin (r + 1) → S.V) (y : S.V),
       ℓ (fun b => S.hT (x b) y) = S.hT (∑ b, k b • x b) y := fun x y => by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hℓ, map_sum, LinearMap.sum_apply]
+
+    rw [hℓ, map_sum, LinearMap.sum_apply]
     exact Finset.sum_congr rfl fun b _ => (hT_smulL S _ _ _).symm
   have hrange : LinearMap.range A = LinearMap.ker ℓ := by
     have hle : LinearMap.range A ≤ LinearMap.ker ℓ := by
@@ -244,8 +245,8 @@ theorem exists_move {T T' : E} (F : FlagG S r T) (P Q : FlagG S r T')
     exact this
   have hn₀sum : ∀ g : Fin (r + 1) ⊕ Fin (r + 1) → E, n₀ (∑ i, g i • b₂ i) = ∑ i, g i • tg i := by
     intro g
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [map_smul, hn₀b]
 
   have hperp : ∀ (w : W) i, S.hT (tg i) ((w : S.V) - xm w) = 0 := by

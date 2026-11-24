@@ -1,6 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.TiedLv
+public import Formalism.LocalToGlobal.Columns.RecLevel
+public import Formalism.LocalToGlobal.Columns.AdelicLemmas
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -65,8 +69,8 @@ theorem updn_prV_pullV {v : HeightOneSpectrum (𝓞 F)} {x x' : GL (Fin n) (E �
   have h' : bc (prV (E := E) v) x⁻¹ = bc (prV (E := E) v) x'⁻¹ := by rw [map_inv, map_inv, h]
   unfold pullV
   simp only [Matrix.mulVec, dotProduct]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum]
+
+  rw [map_sum, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul, map_mul]
   congr 1

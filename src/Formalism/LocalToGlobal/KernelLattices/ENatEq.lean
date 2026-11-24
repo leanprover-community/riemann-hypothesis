@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.ThEquiv
+public import Formalism.LocalToGlobal.KernelLattices.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 
 @[expose] public section

@@ -1,7 +1,13 @@
 module
 
+public import Formalism.LocalToGlobal.HermitianForms.TiedBrRep
+public import Formalism.LocalToGlobal.HermitianForms.TiedSym
+public import Formalism.LocalToGlobal.KernelLattices.InterlaceAll
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.BrOneGFull
+public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormBoundOfClassesFrames
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.SwRowGenMonomial
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LowerTieChain
 
 @[expose] public section
 

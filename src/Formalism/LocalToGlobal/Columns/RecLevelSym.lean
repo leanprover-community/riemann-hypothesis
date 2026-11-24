@@ -1,7 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecLevelDiv
 public import Formalism.LocalToGlobal.Columns.RowFormsSym
+public import Formalism.LocalToGlobal.Columns.RecLevel
+public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 @[expose] public section
 

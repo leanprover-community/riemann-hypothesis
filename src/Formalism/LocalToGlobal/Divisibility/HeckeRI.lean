@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.LiftLat
 public import Formalism.LocalToGlobal.Divisibility.InertRationalAdjoint
 

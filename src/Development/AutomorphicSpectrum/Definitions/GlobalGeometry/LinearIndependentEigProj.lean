@@ -1,8 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GenericCentreSpecializes
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -144,8 +183,8 @@ variable {A : Type} [CommRing A] {K : Type} [Field K] [Algebra A K]
 
 theorem eigProj_act (a : 𝓞 E) (x : V) : HT.eigProj ρ σ (ρ a x) = σ (a : E) • HT.eigProj ρ σ x := by
   rw [← HT.LatBasic.mem_eigSp.1 (HT.LatBasic.eigProj_mem ρ σ x) a]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [HT.eigProj, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
+
+  simp only [HT.eigProj, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul, mul_comm]
 
@@ -158,8 +197,8 @@ theorem linearIndependent_eigProj (h : HT.IsFreeOn ρ X t) : LinearIndependent K
     rw [Fintype.sum_prod_type, ← hc]
     simp only [HT.eigProj, LinearMap.sum_apply, LinearMap.smul_apply, Finset.smul_sum, smul_smul])
   have h2 : c i * σ (∑ k, HT.dualInt E k * integralBasis E k) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.mul_sum]
+
+    rw [map_sum, Finset.mul_sum]
     exact Finset.sum_eq_zero fun k _ => by rw [map_mul, ← mul_assoc, h1 (i, k), zero_mul]
   rwa [HT.LatBasic.sum_dualInt_mul, map_one, mul_one] at h2
 
@@ -173,8 +212,8 @@ theorem span_eigProj (h : HT.IsFreeOn ρ X t) :
     have h1 := h.2.1
     rw [h.2.2, Submodule.span_span_of_tower] at h1
     obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun K).1 (h1.ge (Submodule.mem_top (x := x)))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← HT.LatBasic.eigProj_of_mem hx, ← hc, map_sum]
+
+    rw [← HT.LatBasic.eigProj_of_mem hx, ← hc, map_sum]
     refine Submodule.sum_mem _ fun q _ => ?_
     rw [map_smul, eigProj_act]
     exact Submodule.smul_mem _ _ (Submodule.smul_mem _ _ (Submodule.subset_span ⟨q.1, rfl⟩))
@@ -192,8 +231,8 @@ theorem eigQuot_eq_span (h : HT.IsFreeOn ρ X t) (hσ : ∀ a : 𝓞 E, σ (a : 
     rintro _ ⟨i, rfl⟩
     refine ⟨t i, ?_, rfl⟩
     have e : t i = ρ 1 (t i) := by simp
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h.2.2, e, ← (RingOfIntegers.basis E).sum_repr 1, map_sum, LinearMap.sum_apply]
+
+    rw [h.2.2, e, ← (RingOfIntegers.basis E).sum_repr 1, map_sum, LinearMap.sum_apply]
     refine Submodule.sum_mem _ fun k _ => ?_
     rw [map_zsmul, LinearMap.smul_apply]
     exact zsmul_mem (Submodule.subset_span (Set.mem_range.2 ⟨(i, k), rfl⟩)) _

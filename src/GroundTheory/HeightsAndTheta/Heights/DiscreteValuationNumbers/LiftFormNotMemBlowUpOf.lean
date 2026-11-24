@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ImportsBisAlt
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

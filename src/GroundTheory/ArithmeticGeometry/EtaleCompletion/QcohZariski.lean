@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.ArithmeticGeometry.EtaleCompletion.ModulesPullback
+public import Mathlib.AlgebraicGeometry.Modules.Sheaf
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+import Mathlib.Tactic.Lemma
+public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 
 @[expose] public section
 

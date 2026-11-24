@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsIntValuationLtOne
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.FunFieldLeLocRing
+import GroundTheory.HeightsAndTheta.Heights.Intersections.NotMemOfNonZeroDivisor
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -76,7 +82,7 @@ theorem ker_isMultiHomogIdeal [DecidableEq K] {E : Type*} [Field E] (ψ : MRing 
 end RegularityValuationCentre
 
 
-set_option maxHeartbeats 400000 in
+
 open regularityEmbedding_holds in
 theorem RegularityValuationCentre.proof : RegularityValuationCentre.Statement := by
   intro K _ ι _ P hP Γ _ v n hn

@@ -1,9 +1,16 @@
 module
 
 public import ReciprocityTheory.DualLattices.EigenLengthFrobeniusStatement
-public import ReciprocityTheory.DualLattices.FrobEqOfLe
-public import ReciprocityTheory.DualLattices.StdJForm
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Lemma
+public import ReciprocityTheory.DualLattices.StdJForm
 
 @[expose] public section
 
@@ -20,13 +27,6 @@ section Unram
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {C : Type} [Field C] {v : Valuation C NNReal} {R : Type}
   [CommRing R] [Algebra R C] [Algebra ℤ_[p] R] {O : Type} [CommRing O] [Algebra ℤ_[p] O]
   {σ : O ≃ₐ[ℤ_[p]] O} {cp : R}
-
-private lemma cj_cj_dual_lattices (hS : HodgeTateSetting p v R O σ cp) {H : HodgeTateDatum p g v R O σ cp}
-    (U : UnramData p g v R O σ cp H) (i : Fin U.m) : U.cj (U.cj i) = i := by
-  by_contra h
-  obtain ⟨a, ha⟩ := U.distinct _ _ h
-  rw [U.conj (U.cj i) a, U.conj i (σ a), hS.invol a, sub_self, map_zero, map_zero] at ha
-  exact zero_ne_one ha
 
 private lemma isUnit_of_valuation_eq_one' (hS : HodgeTateSetting p v R O σ cp) {x : R} (hx : v (algebraMap R C x) = 1) :
     IsUnit x := by
@@ -75,41 +75,17 @@ lemma εT_E (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O 
     _ = (U.εT i)ᵀ * H.E.map (algebraMap ℤ_[p] R) * U.εT (U.cj i) := by
         refine Finset.sum_eq_single (U.cj i) (fun b _ hb => ?_) (fun h => absurd (Finset.mem_univ _) h)
         refine E_block_zero hS H U i b (fun h => hb ?_)
-        rw [← h, cj_cj_dual_lattices hS U b]
+        rw [← h, _root_.ReciprocityTheory.PGsh.Up.cj_cj hS U b]
     _ = ∑ k, (U.εT k)ᵀ * H.E.map (algebraMap ℤ_[p] R) * U.εT (U.cj i) := by
         symm
         refine Finset.sum_eq_single i (fun b _ hb => ?_) (fun h => absurd (Finset.mem_univ _) h)
         refine E_block_zero hS H U b (U.cj i) ?_
-        rw [cj_cj_dual_lattices hS U i]
+        rw [_root_.ReciprocityTheory.PGsh.Up.cj_cj hS U i]
         exact Ne.symm hb
     _ = (∑ k, U.εT k)ᵀ * H.E.map (algebraMap ℤ_[p] R) * U.εT (U.cj i) := by
         rw [Matrix.transpose_sum, Matrix.sum_mul, Matrix.sum_mul]
     _ = H.E.map (algebraMap ℤ_[p] R) * U.εT (U.cj i) := by
         rw [U.εT_sum, Matrix.transpose_one, Matrix.one_mul]
-
-private lemma epsL_transpose_mul_Ht_mul_epsT_eq_zero_of_ne (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O σ cp)
-    (U : UnramData p g v R O σ cp H) (k i : Fin U.m) (hki : U.cj k ≠ i) :
-    (U.εL k)ᵀ * H.Ht * U.εT i = 0 := by
-  have key : ∀ a, U.sg i a • ((U.εL k)ᵀ * H.Ht * U.εT i) =
-      U.sg (U.cj k) a • ((U.εL k)ᵀ * H.Ht * U.εT i) := by
-    intro a
-    have h1 : (U.εL k)ᵀ * (H.ρL (σ a))ᵀ = U.sg (U.cj k) a • (U.εL k)ᵀ := by
-      rw [← Matrix.transpose_mul, U.εL_eig (σ a) k, Matrix.transpose_smul, ← U.conj k a]
-    calc U.sg i a • ((U.εL k)ᵀ * H.Ht * U.εT i)
-        = (U.εL k)ᵀ * H.Ht * ((H.ρ a).map (algebraMap ℤ_[p] R) * U.εT i) := by
-          rw [U.εT_eig a i, Matrix.mul_smul]
-      _ = (U.εL k)ᵀ * (H.Ht * (H.ρ a).map (algebraMap ℤ_[p] R)) * U.εT i := by
-          simp only [Matrix.mul_assoc]
-      _ = (U.εL k)ᵀ * (H.ρL (σ a))ᵀ * H.Ht * U.εT i := by
-          rw [H.Ht_equivariant.1 a]
-          simp only [Matrix.mul_assoc]
-      _ = U.sg (U.cj k) a • ((U.εL k)ᵀ * H.Ht * U.εT i) := by
-          rw [h1, Matrix.smul_mul, Matrix.smul_mul]
-  obtain ⟨a, ha⟩ := U.distinct i (U.cj k) (Ne.symm hki)
-  have hu := isUnit_of_valuation_eq_one' hS ha
-  have h2 := key a
-  rw [← sub_eq_zero, ← sub_smul] at h2
-  exact hu.smul_eq_zero.mp h2
 
 lemma ht_εT (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O σ cp)
     (U : UnramData p g v R O σ cp H) (i : Fin U.m) :
@@ -120,13 +96,13 @@ lemma ht_εT (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O
         rw [Matrix.transpose_sum, Matrix.sum_mul, Matrix.sum_mul]
     _ = (U.εL (U.cj i))ᵀ * H.Ht * U.εT i := by
         refine Finset.sum_eq_single (U.cj i) (fun b _ hb => ?_) (fun h => absurd (Finset.mem_univ _) h)
-        refine epsL_transpose_mul_Ht_mul_epsT_eq_zero_of_ne hS H U b i (fun h => hb ?_)
-        rw [← h, cj_cj_dual_lattices hS U b]
+        refine _root_.ReciprocityTheory.PGsh.Up.ht_block_zero hS H U b i (fun h => hb ?_)
+        rw [← h, _root_.ReciprocityTheory.PGsh.Up.cj_cj hS U b]
     _ = ∑ j, (U.εL (U.cj i))ᵀ * H.Ht * U.εT j := by
         symm
         refine Finset.sum_eq_single i (fun b _ hb => ?_) (fun h => absurd (Finset.mem_univ _) h)
-        refine epsL_transpose_mul_Ht_mul_epsT_eq_zero_of_ne hS H U (U.cj i) b ?_
-        rw [cj_cj_dual_lattices hS U i]
+        refine _root_.ReciprocityTheory.PGsh.Up.ht_block_zero hS H U (U.cj i) b ?_
+        rw [_root_.ReciprocityTheory.PGsh.Up.cj_cj hS U i]
         exact Ne.symm hb
     _ = (U.εL (U.cj i))ᵀ * H.Ht := by rw [← Matrix.mul_sum, U.εT_sum, Matrix.mul_one]
 
@@ -151,8 +127,8 @@ lemma sum_r (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O 
   have hFG : F ∘ₗ G = LinearMap.id := by
     refine LinearMap.ext fun y => funext fun i => Subtype.ext ?_
     change Matrix.mulVecLin (U.εL i) (G y) = (y i : Fin g → R)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hG, map_sum, Finset.sum_eq_single i]
+
+    rw [hG, map_sum, Finset.sum_eq_single i]
     · rw [hproj i i _ (y i).2, if_pos rfl]
     · intro b _ hb
       rw [hproj i b _ (y b).2, if_neg (Ne.symm hb)]
@@ -162,8 +138,8 @@ lemma sum_r (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O 
     change G (F x) = x
     rw [hG]
     change ∑ i, Matrix.mulVecLin (U.εL i) x = x
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← LinearMap.sum_apply, ← map_sum, U.εL_sum]
+
+    rw [← LinearMap.sum_apply, ← map_sum, U.εL_sum]
     exact Matrix.one_mulVec x
   let e : (Fin g → R) ≃ₗ[R] ((i : Fin U.m) → LinearMap.range (Matrix.mulVecLin (U.εL i))) :=
     LinearEquiv.ofLinear F G hFG hGF
@@ -216,7 +192,7 @@ theorem unramifiedCokernelLength_of_length_eigenLengthProduct (hLen : LenIdState
   intro p _ g C _ _ _ v R _ _ _ O _ _ σ cp hp2 hS H U i V1 V2 hV1 hV2
   have hR := hS.integers
   have hpp : p.Prime := Fact.out
-  have hcj : ∀ j, U.cj (U.cj j) = j := cj_cj_dual_lattices hS U
+  have hcj : ∀ j, U.cj (U.cj j) = j := _root_.ReciprocityTheory.PGsh.Up.cj_cj hS U
   have hE := εT_E hS H U
   have hHt := ht_εT hS H U
   have hEu : IsUnit (H.E.map (algebraMap ℤ_[p] R)).det := by

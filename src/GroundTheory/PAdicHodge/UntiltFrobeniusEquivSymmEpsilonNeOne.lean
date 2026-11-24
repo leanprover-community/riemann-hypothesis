@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.PAdicHodge.BdRAlg
 public import GroundTheory.PAdicHodge.BdRSeries
-public import GroundTheory.PAdicHodge.BdRLattice
-public import GroundTheory.PAdicHodge.BdRGalois
 public import GroundTheory.PAdicHodge.AInfXi
-public import GroundTheory.PAdicHodge.TateCpTwist
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 
 @[expose] public section
 

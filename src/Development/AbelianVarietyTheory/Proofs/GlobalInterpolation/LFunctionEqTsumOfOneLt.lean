@@ -1,6 +1,54 @@
 module
 
-public import Mathlib
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LogDerivDirichletLFunctionLocalZeroSum
+
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLeNormLFunctionOne
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.LSeries.DirichletContinuation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -10,54 +58,15 @@ namespace GlobalTheory.DirichletTail
 
 open Filter Topology
 
+theorem norm_sum_range_le_totient_half {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q)
+    (hχ : χ ≠ 1) (m : ℕ) :
+    ‖∑ n ∈ Finset.range m, χ ((n + 1 : ℕ) : ZMod q)‖ ≤ (q.totient : ℝ) / 2 := by
+  simpa [← Finset.Ico_add_one_right_eq_Icc, Finset.sum_Ico_eq_sum_range, Nat.add_comm] using
+    GlobalTheory.LGrowth.norm_partialSum_le_totient_half q χ hχ m
+
 theorem norm_sum_range_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) (m : ℕ) :
     ‖∑ n ∈ Finset.range m, χ ((n + 1 : ℕ) : ZMod q)‖ ≤ q := by
-  have hq : 0 < q := Nat.pos_of_ne_zero (NeZero.ne q)
-  have hper : ∑ a : ZMod q, χ a = ∑ n ∈ Finset.range q, χ (n : ZMod q) := by
-    refine Finset.sum_bij' (fun a _ ↦ a.val) (fun n _ ↦ (n : ZMod q)) ?_ ?_ ?_ ?_ ?_
-    · intro a _
-      exact Finset.mem_range.mpr (ZMod.val_lt a)
-    · intro n _
-      exact Finset.mem_univ _
-    · intro a _
-      exact ZMod.natCast_zmod_val a
-    · intro n hn
-      exact ZMod.val_cast_of_lt (Finset.mem_range.mp hn)
-    · intro a _
-      rw [ZMod.natCast_zmod_val]
-  have hshift : ∀ k : ℕ, ∑ n ∈ Finset.range q, χ ((k + n : ℕ) : ZMod q) = 0 := by
-    intro k
-    induction k with
-    | zero =>
-      simp only [zero_add]
-      rw [← hper]
-      exact MulChar.sum_eq_zero_of_ne_one hχ
-    | succ k ih =>
-      have h1 := Finset.sum_range_succ (fun n ↦ χ ((k + n : ℕ) : ZMod q)) q
-      have h2 := Finset.sum_range_succ' (fun n ↦ χ ((k + n : ℕ) : ZMod q)) q
-      beta_reduce at h1 h2
-      have hkq : χ ((k + q : ℕ) : ZMod q) = χ ((k + 0 : ℕ) : ZMod q) := by
-        simp [Nat.cast_add]
-      have hc : ∑ n ∈ Finset.range q, χ ((k + 1 + n : ℕ) : ZMod q) =
-          ∑ n ∈ Finset.range q, χ ((k + (n + 1) : ℕ) : ZMod q) :=
-        Finset.sum_congr rfl fun n _ ↦ by rw [show k + 1 + n = k + (n + 1) by omega]
-      rw [hc]
-      linear_combination ih + hkq - h1.symm.trans h2
-  induction m using Nat.strong_induction_on with
-  | _ m ih =>
-    by_cases hm : m ≤ q
-    · calc ‖∑ n ∈ Finset.range m, χ ((n + 1 : ℕ) : ZMod q)‖
-          ≤ ∑ n ∈ Finset.range m, ‖χ ((n + 1 : ℕ) : ZMod q)‖ := norm_sum_le _ _
-        _ ≤ ∑ n ∈ Finset.range m, (1 : ℝ) := Finset.sum_le_sum fun n _ ↦ χ.norm_le_one _
-        _ = m := by simp
-        _ ≤ q := by exact_mod_cast hm
-    · obtain ⟨k, rfl⟩ : ∃ k, m = k + q := ⟨m - q, by omega⟩
-      rw [Finset.sum_range_add]
-      have hb : ∑ x ∈ Finset.range q, χ ((k + x + 1 : ℕ) : ZMod q) = 0 := by
-        rw [← hshift (k + 1)]
-        exact Finset.sum_congr rfl fun x _ ↦ by rw [show k + x + 1 = k + 1 + x by omega]
-      rw [hb, add_zero]
-      exact ih k (by omega)
+  apply GlobalTheory.LOneLower.char_sum_bound <;> assumption
 
 theorem norm_cpow_sub_le {a b δ : ℝ} {s : ℂ} (ha : 1 ≤ a) (hab : a ≤ b) (hδ : 0 < δ)
     (hs : δ ≤ s.re) :
@@ -140,11 +149,13 @@ theorem abel {q : ℕ} (χ : DirichletCharacter ℂ q) (s : ℂ) (N : ℕ) :
     push_cast
     ring
 
-theorem norm_term_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) (n : ℕ)
+private theorem norm_term_le_of_sum_bound {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {B : ℝ}
+    (hB : ∀ m, ‖∑ n ∈ Finset.range m, χ ((n + 1 : ℕ) : ZMod q)‖ ≤ B) (n : ℕ)
     {δ R : ℝ} {s : ℂ} (hδ : 0 < δ) (hs : δ ≤ s.re) (hR : ‖s‖ ≤ R) :
-    ‖term χ n s‖ ≤ q * (R / δ) *
+    ‖term χ n s‖ ≤ B * (R / δ) *
       (((n + 1 : ℕ) : ℝ) ^ (-δ) - ((n + 1 + 1 : ℕ) : ℝ) ^ (-δ)) := by
-  have h1 := norm_sum_range_le χ hχ (n + 1)
+  have hB0 : 0 ≤ B := by simpa using hB 0
+  have h1 := hB (n + 1)
   have h2 := norm_cpow_sub_le (a := ((n + 1 : ℕ) : ℝ)) (b := ((n + 1 + 1 : ℕ) : ℝ))
     (by exact_mod_cast Nat.succ_pos n) (by exact_mod_cast Nat.le_succ (n + 1)) hδ hs
   simp only [Complex.ofReal_natCast] at h2
@@ -152,11 +163,17 @@ theorem norm_term_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ :
     refine sub_nonneg.mpr (Real.rpow_le_rpow_of_nonpos (by positivity) ?_ (by linarith))
     exact_mod_cast Nat.le_succ (n + 1)
   rw [term, norm_mul]
-  calc _ ≤ (q : ℝ) * (‖s‖ / δ * (((n + 1 : ℕ) : ℝ) ^ (-δ) - ((n + 1 + 1 : ℕ) : ℝ) ^ (-δ))) :=
-        mul_le_mul h1 h2 (norm_nonneg _) (Nat.cast_nonneg _)
-    _ ≤ (q : ℝ) * (R / δ * (((n + 1 : ℕ) : ℝ) ^ (-δ) - ((n + 1 + 1 : ℕ) : ℝ) ^ (-δ))) := by
+  calc _ ≤ B * (‖s‖ / δ * (((n + 1 : ℕ) : ℝ) ^ (-δ) - ((n + 1 + 1 : ℕ) : ℝ) ^ (-δ))) :=
+        mul_le_mul h1 h2 (norm_nonneg _) hB0
+    _ ≤ B * (R / δ * (((n + 1 : ℕ) : ℝ) ^ (-δ) - ((n + 1 + 1 : ℕ) : ℝ) ^ (-δ))) := by
         gcongr
     _ = _ := by ring
+
+theorem norm_term_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) (n : ℕ)
+    {δ R : ℝ} {s : ℂ} (hδ : 0 < δ) (hs : δ ≤ s.re) (hR : ‖s‖ ≤ R) :
+    ‖term χ n s‖ ≤ q * (R / δ) *
+      (((n + 1 : ℕ) : ℝ) ^ (-δ) - ((n + 1 + 1 : ℕ) : ℝ) ^ (-δ)) :=
+  norm_term_le_of_sum_bound χ (norm_sum_range_le χ hχ) n hδ hs hR
 
 theorem summable_term {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1)
     {s : ℂ} (hs : 0 < s.re) : Summable (fun n => term χ n s) := by
@@ -166,12 +183,19 @@ theorem summable_term {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ 
       simp only [add_zero]
   exact Summable.of_norm_bounded hT fun n ↦ norm_term_le χ hχ n hs le_rfl le_rfl
 
+private theorem norm_boundary_le_of_sum_bound {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {B : ℝ}
+    (hB : ∀ m, ‖∑ n ∈ Finset.range m, χ ((n + 1 : ℕ) : ZMod q)‖ ≤ B)
+    (s : ℂ) (N : ℕ) :
+    ‖(∑ k ∈ Finset.range N, χ ((k + 1 : ℕ) : ZMod q)) * ((N + 1 : ℕ) : ℂ) ^ (-s)‖
+      ≤ B * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := by
+  rw [norm_mul, norm_natCast_cpow_of_pos (Nat.succ_pos N), Complex.neg_re]
+  exact mul_le_mul_of_nonneg_right (hB N) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+
 theorem norm_boundary_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1)
     (s : ℂ) (N : ℕ) :
     ‖(∑ k ∈ Finset.range N, χ ((k + 1 : ℕ) : ZMod q)) * ((N + 1 : ℕ) : ℂ) ^ (-s)‖
-      ≤ q * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := by
-  rw [norm_mul, norm_natCast_cpow_of_pos (Nat.succ_pos N), Complex.neg_re]
-  exact mul_le_mul_of_nonneg_right (norm_sum_range_le χ hχ N) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+      ≤ q * ((N + 1 : ℕ) : ℝ) ^ (-s.re) :=
+  norm_boundary_le_of_sum_bound χ (norm_sum_range_le χ hχ) s N
 
 theorem LFunction_eq_tsum_of_one_lt {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1)
     {s : ℂ} (hs : 1 < s.re) : LFunction χ s = ∑' n, term χ n s := by
@@ -228,32 +252,27 @@ theorem LFunction_eq_tsum {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (
     exact LFunction_eq_tsum_of_one_lt χ hχ hz
   exact hL.eqOn_of_preconnected_of_eventuallyEq hT (convex_halfSpace_re_gt 0).isPreconnected h2 hev hs
 
-theorem norm_LFunction_sub_sum_le :
-    ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 → ∀ s : ℂ, 0 < s.re → ∀ N : ℕ, 1 ≤ N →
+/-- A uniform partial-sum bound controls the Dirichlet-series truncation error,
+including the empty truncation. -/
+theorem norm_LFunction_sub_sum_le_of_sum_bound :
+    ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 → ∀ B : ℝ,
+      (∀ m, ‖∑ n ∈ Finset.range m, χ ((n + 1 : ℕ) : ZMod q)‖ ≤ B) → ∀ s : ℂ, 0 < s.re → ∀ N : ℕ,
       ‖LFunction χ s - ∑ n ∈ Finset.Icc 1 N, χ (n : ZMod q) * (n : ℂ) ^ (-s)‖
-        ≤ 2 * q * (1 + ‖s‖ / s.re) * (N : ℝ) ^ (-s.re) := by
-  intro q _ χ hχ s hs N hN
+        ≤ B * (1 + ‖s‖ / s.re) * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := by
+  intro q _ χ hχ B hB s hs N
   have hsum : ∑ n ∈ Finset.Icc 1 N, χ (n : ZMod q) * (n : ℂ) ^ (-s) =
       ∑ n ∈ Finset.range N, χ ((n + 1 : ℕ) : ZMod q) * ((n + 1 : ℕ) : ℂ) ^ (-s) := by
-    clear hN
     induction N with
     | zero => simp
-    | succ N ih => rw [Finset.sum_Icc_succ_top (by omega), ih, Finset.sum_range_succ]
+    | succ N ih => rw [Finset.sum_Icc_succ_top (by lia), ih, Finset.sum_range_succ]
   have hsm := summable_term χ hχ hs
   have hsplit := hsm.sum_add_tsum_nat_add N
   rw [hsum, abel χ s N, LFunction_eq_tsum χ hχ hs, ← hsplit]
-  set c : ℝ := (q : ℝ) * (‖s‖ / s.re)
+  set c : ℝ := B * (‖s‖ / s.re)
   have htail : ‖∑' n, term χ (n + N) s‖ ≤ c * ((N + 1 : ℕ) : ℝ) ^ (-s.re) :=
     tsum_of_norm_bounded ((hasSum_telescope hs N).mul_left c) fun n ↦
-      norm_term_le χ hχ (n + N) hs le_rfl le_rfl
-  have hbd := norm_boundary_le χ hχ s N
-  have hNpos : (0 : ℝ) < N := by exact_mod_cast hN
-  have hmono : ((N + 1 : ℕ) : ℝ) ^ (-s.re) ≤ (N : ℝ) ^ (-s.re) :=
-    Real.rpow_le_rpow_of_nonpos hNpos (by push_cast; linarith) (by linarith)
-  have hpow : 0 ≤ ((N + 1 : ℕ) : ℝ) ^ (-s.re) := Real.rpow_nonneg (Nat.cast_nonneg _) _
-  have hc0 : 0 ≤ c := by positivity
-  have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg _
-  have hr : 0 ≤ ‖s‖ / s.re := by positivity
+      norm_term_le_of_sum_bound χ hB (n + N) hs le_rfl le_rfl
+  have hbd := norm_boundary_le_of_sum_bound χ hB s N
   calc ‖∑ i ∈ Finset.range N, term χ i s + ∑' n, term χ (n + N) s -
         (∑ i ∈ Finset.range N, term χ i s +
           (∑ k ∈ Finset.range N, χ ((k + 1 : ℕ) : ZMod q)) * ((N + 1 : ℕ) : ℂ) ^ (-s))‖
@@ -264,11 +283,32 @@ theorem norm_LFunction_sub_sum_le :
     _ ≤ ‖∑' n, term χ (n + N) s‖ +
           ‖(∑ k ∈ Finset.range N, χ ((k + 1 : ℕ) : ZMod q)) * ((N + 1 : ℕ) : ℂ) ^ (-s)‖ :=
         norm_sub_le _ _
-    _ ≤ c * ((N + 1 : ℕ) : ℝ) ^ (-s.re) + q * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := add_le_add htail hbd
-    _ = q * (1 + ‖s‖ / s.re) * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := by ring
-    _ ≤ q * (1 + ‖s‖ / s.re) * (N : ℝ) ^ (-s.re) := by gcongr
+    _ ≤ c * ((N + 1 : ℕ) : ℝ) ^ (-s.re) + B * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := add_le_add htail hbd
+    _ = B * (1 + ‖s‖ / s.re) * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := by ring
+
+/-- A totient-sensitive tail estimate valid throughout the open right half-plane. -/
+theorem norm_LFunction_sub_sum_le_totient_half :
+    ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 → ∀ s : ℂ, 0 < s.re → ∀ N : ℕ,
+      ‖LFunction χ s - ∑ n ∈ Finset.Icc 1 N, χ (n : ZMod q) * (n : ℂ) ^ (-s)‖
+        ≤ (q.totient : ℝ) / 2 * (1 + ‖s‖ / s.re) * ((N + 1 : ℕ) : ℝ) ^ (-s.re) := by
+  intro q _ χ hχ s hs N
+  exact norm_LFunction_sub_sum_le_of_sum_bound q χ hχ _
+    (norm_sum_range_le_totient_half χ hχ) s hs N
+
+theorem norm_LFunction_sub_sum_le :
+    ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 → ∀ s : ℂ, 0 < s.re → ∀ N : ℕ, 1 ≤ N →
+      ‖LFunction χ s - ∑ n ∈ Finset.Icc 1 N, χ (n : ZMod q) * (n : ℂ) ^ (-s)‖
+        ≤ 2 * q * (1 + ‖s‖ / s.re) * (N : ℝ) ^ (-s.re) := by
+  intro q _ χ hχ s hs N hN
+  refine (norm_LFunction_sub_sum_le_of_sum_bound q χ hχ q
+    (norm_sum_range_le χ hχ) s hs N).trans ?_
+  have hmono : ((N + 1 : ℕ) : ℝ) ^ (-s.re) ≤ (N : ℝ) ^ (-s.re) :=
+    Real.rpow_le_rpow_of_nonpos (by exact_mod_cast hN : (0 : ℝ) < N)
+      (by push_cast; linarith) (by linarith)
+  calc (q : ℝ) * (1 + ‖s‖ / s.re) * ((N + 1 : ℕ) : ℝ) ^ (-s.re)
+      ≤ q * (1 + ‖s‖ / s.re) * (N : ℝ) ^ (-s.re) := by gcongr
     _ ≤ 2 * q * (1 + ‖s‖ / s.re) * (N : ℝ) ^ (-s.re) := by
-        have : 0 ≤ (q : ℝ) * (1 + ‖s‖ / s.re) * (N : ℝ) ^ (-s.re) := by positivity
-        nlinarith
+      have : 0 ≤ (q : ℝ) * (1 + ‖s‖ / s.re) * (N : ℝ) ^ (-s.re) := by positivity
+      linarith
 
 end GlobalTheory.DirichletTail

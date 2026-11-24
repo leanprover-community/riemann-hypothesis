@@ -1,6 +1,48 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TopDegreeComparison
+public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DiscriminantNeZeroOfResidueNeZero
+public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.StrictMonoIntExists
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -29,9 +71,7 @@ theorem fr_period (hV : F.Valid L₁ N₁) (j : ℤ) (i : ℕ) (m : ℤ) :
     linarith
 
 theorem posOf_add_mul (x m : ℤ) : posOf n' (x + m * n') = posOf n' x := by
-  unfold posOf
-  congr 2
-  rw [Int.add_mul_emod_self_right]
+  simp [posOf, Int.add_mul_emod_self_right]
 
 theorem late_reduce (hV : F.Valid L₁ N₁) (j x : ℤ) (hx : x ∈ F.letters j) (hW : ¬ F.IsW j x) :
     ∃ j' : ℕ, j' < F.J ∧ ∃ x' : ℤ, x' ∈ F.letters (j' : ℤ) ∧ ¬ F.IsW (j' : ℤ) x' ∧ posOf n' x' = posOf n' x ∧
@@ -105,9 +145,9 @@ theorem img_ellExp (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) (t : Fin n')
   · by_cases h : posOf n' x = t
     · subst h
       simp [hx]
-    · simp [hx, h, Finsupp.single_apply, Prod.ext_iff]
+    · simp [hx, h, Prod.ext_iff]
   · intro b _ hb
-    simp [Finsupp.single_apply, Prod.ext_iff, hb]
+    simp [Prod.ext_iff, hb]
   · simp
 
 end Lab
@@ -142,24 +182,12 @@ private theorem eq_of_posOf_eq_of_dist_lt {n' : ℕ} [NeZero n'] {x y : ℤ} (hx
     linarith
   · nlinarith
 
-private theorem fr_first_le_fr_of_valid {n' r : ℕ} [NeZero n'] {F : Frames n' r} {L₁ N₁ : ℕ}
-    (hV : F.Valid L₁ N₁) (j : ℤ) : ∀ k, k < r → F.fr j 0 ≤ F.fr j k := by
-  intro k
-  induction k with
-  | zero => intro _; exact le_rfl
-  | succ k ih =>
-    intro hk
-    exact le_trans (ih (by omega)) (le_of_lt (hV.2.2.1 j k hk))
-
 private theorem eq_of_posOf_eq_of_mem_letters_not_isW {n' r : ℕ} [NeZero n'] [NeZero r] {F : Frames n' r} {L₁ N₁ : ℕ}
     (hV : F.Valid L₁ N₁) {j1 j2 : ℕ} (hj1 : j1 < F.J) (hj2 : j2 < F.J) {x1 x2 : ℤ}
     (h1 : x1 ∈ F.letters (j1 : ℤ)) (h1' : ¬ F.IsW (j1 : ℤ) x1)
     (h2 : x2 ∈ F.letters (j2 : ℤ)) (h2' : ¬ F.IsW (j2 : ℤ) x2)
     (hp : posOf n' x1 = posOf n' x2) : j1 = j2 ∧ x1 = x2 := by
-  have hr : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
-  have step : ∀ i : ℤ, F.fr i (r - 1) < F.fr (i + 1) (r - 1) := fun i =>
-    lt_of_lt_of_le (hV.2.2.2.1 i) (fr_first_le_fr_of_valid hV (i + 1) (r - 1) (by omega))
-  have hmono : StrictMono (fun i : ℤ => F.fr i (r - 1)) := strictMono_int_of_lt_succ step
+  have hmono := eFr_strictMono hV
   have hper : F.fr ((F.J : ℤ) - 1) (r - 1) = F.fr (-1) (r - 1) + n' := by
     have h := fr_period hV (-1) (r - 1) 1
     rw [show (-1 : ℤ) + 1 * F.J = F.J - 1 by ring, one_mul] at h

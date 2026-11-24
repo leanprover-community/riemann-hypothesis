@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacExGoodOfN
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.UnitaryIsometries
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.UnitaryIsometries
 
 @[expose] public section
 
@@ -226,6 +225,6 @@ end Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.PF
 
 namespace Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL
 
-theorem pFrame_holds : PFrame := PF.pFrame_holds
+alias pFrame_holds := _root_.Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.PF.pFrame_holds
 
 end Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL

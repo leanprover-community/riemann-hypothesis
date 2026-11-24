@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocFrac
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PRepresentative
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.RelevantMinimalOfDivCycleNeZero
+import Mathlib.Algebra.Order.Sub.Prod
 
 @[expose] public section
 

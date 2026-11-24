@@ -1,13 +1,53 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteTestDivisorsKltLcPencilBoundariesStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLogCanonicalLocalEquationAddSmulDivisorStatement
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CentreAtOfIsAt
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsAlgClosedBaseChange
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PointSeparationPair
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsLogCanonicalMultipleCanonical
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteTestDivisorsKltLcPencilBoundaries
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLogCanonicalLocalEquationAddSmulDivisor
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Algebra.Azumaya.Basic
 
 @[expose] public section
 
@@ -35,7 +75,7 @@ theorem exists_pos_kltAt_add_smul : GlobalTheory.Published.Principalisation → 
   haveI : IsProper p := ((isProjOver_iff_isProper_and_exists_isAmpleLB p).1 hproj).1
   obtain ⟨η, hη, hGη⟩ := hG
   obtain ⟨m', D₀, hm', -, rfl⟩ := hB
-  obtain ⟨S, hS, hSt⟩ := GlobalTheory.T.finite_test_divisors_klt_lc_pencil_boundaries hP X p n hproj hn η m G D₀ hη hm
+  obtain ⟨S, hS, hSt⟩ := _root_.GlobalTheory.PairStep.finite_test_divisors hP X p n hproj hn η m G D₀ hη hm
   have hloc : ∀ x : X, ∃ (U : X.Opens) (g f : X.functionFieldˣ), x ∈ U ∧
       ∀ y ∈ U, G.IsEqn y g ∧ D₀.IsEqn y f := by
     intro x
@@ -65,7 +105,7 @@ theorem exists_pos_kltAt_add_smul : GlobalTheory.Published.Principalisation → 
       qWeil D₀ m' z = (E.ord (f x₀) : ℚ) / m' := by
     intro z hz E hE
     rw [qWeil, (hUeq x₀ z (hz.mem_open (U x₀).isOpen hy)).2.mult_eq, hE.ord_eq]
-  obtain ⟨m'', g'', hm'', hlog'', hdisc⟩ := GlobalTheory.T.isLogCanonicalLocalEquation_add_smul_divisor X p n Δ (qWeil D₀ m') η y m m' (g x₀)
+  obtain ⟨m'', g'', hm'', hlog'', hdisc⟩ := _root_.GlobalTheory.PairStep.isLogEqn_add_smul X p n Δ (qWeil D₀ m') η y m m' (g x₀)
     (f x₀) (c * m') hm hm' hlog hD
   refine (hlog''.kltAt_iff hn hη hm'').2 fun E hE => ?_
   rw [hdisc]

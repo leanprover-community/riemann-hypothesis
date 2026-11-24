@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.ColHLe
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
 
 @[expose] public section
 

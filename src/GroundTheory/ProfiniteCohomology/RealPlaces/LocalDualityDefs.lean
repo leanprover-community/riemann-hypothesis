@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolReal
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolBridge
 public import GroundTheory.ProfiniteCohomology.CartierDual

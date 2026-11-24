@@ -1,19 +1,83 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.KmapEq
+public import Formalism.LocalToGlobal.KernelLattices.ENatEq
+public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.IndexExponentDegree
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmulCompSmul
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.AtZeroCompProdX
+public import Formalism.LocalToGlobal.KernelLattices.ThEquiv
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AbsNormEqOfSplit
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FirstCoupledKernelEquivariantCosets
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IntAtOfLocTop
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KmapOfOkOfVecP
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotDvdDifferent
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RelIndexLocPNeZero
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StepBoxIffStepSuppDeg
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ThetaStepDistributionEquivariantRational
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.XiEntryInvariant
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FirstCoupledKernelEquivariantCosets
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KAtTopEquiv
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPOf
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPStepCIff
-public import Formalism.LocalToGlobal.KernelLattices.ENatEq
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GmapToAddSubgroup
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmEmbeddingProperties
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalIdeleSndSelf
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdFNonnegOfIsInteger
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdSubConjEqNeg
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GmapToAddSubgroup
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkVolLaHyp
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDivLatticeQuotient
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaSupportInDivLattice
+import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.AmbOfENeSd
+public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SplitPairOfGen
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivGen
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkConj
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkVolLaHyp
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPOf
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPStepCIff
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
@@ -390,7 +454,7 @@ variable (Ch sel mu cst L u) in
 abbrev St (j : ℕ) : GStep X.E X.K (R.N j) := stepAt sel mu cst L (topLev Ch sel mu cst (rPsymF (R := R) Ch)) u j
 
 
-set_option maxHeartbeats 1000000 in
+
 theorem xiAt_law (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) (hT : Pr.T u ∈ S) (hg : ∀ k, Pr.g k ∈ S)
     (hL : L.Ok Ch sel mu cst G m2) (hs : cst.sharp = true) {i : ℕ} (hi : i < R.m) (b : Idx sel mu L i) (b' : Idx sel mu L (i + 1))
     (g : (St Ch sel mu cst L u i).G b) (g' : (St Ch sel mu cst L u (i + 1)).G b') (p : (St Ch sel mu cst L u i).D b)
@@ -473,7 +537,7 @@ theorem scal_theta {e : X.Tau → ℤ} (hC : A.ThCEq a b Sa) (hχ : A.ChiLaw a b
   have d0' : ∀ τ, X.embC A.σ₀ τ ((LinearEquiv.det γ'.1 : X.Eˣ) : X.E) ≠ 0 := fun τ => (map_ne_zero _).2 (Units.ne_zero _)
   have e1 : ∀ τ (w : X.E) (k : ℤ), A.σ₀ (X.emb τ w ^ k) = X.embC A.σ₀ τ w ^ k := fun τ w k => map_zpow₀ _ _ _
   simp only [e1]
-  simp only [zpow_sub₀ (d0 _), zpow_sub₀ (d0' _), zpow_neg, Finset.prod_div_distrib, Finset.prod_inv_distrib, Finset.prod_zpow,
+  simp only [zpow_sub₀ (d0 _), zpow_sub₀ (d0' _), zpow_neg, Finset.prod_inv_distrib, Finset.prod_zpow,
     mul_inv, inv_inv, div_eq_mul_inv, Finset.prod_mul_distrib]
   generalize thC (X.embC A.σ₀) A.δ A.d A.sc A.AA Sa (gmap γ.1 N) (gmap γ'.1 N') (cA * cB) (fun x => A.σ₀ (Ξ' x))
     (A.e a b (gmap γ.1 N) (gmap γ'.1 N')) z = t' at h3 ⊢
@@ -497,16 +561,8 @@ theorem th_contDiff : ContDiff ℂ ⊤ (I.th u a i b b' q q') :=
   thC_contDiff _ _ _ _ _ _ _ _ _ _ ((ana I h a u i (i + 1)).2.2 _ _ ⟨q.1.1.deco.2.lat, q.1.1.deco.2.uni⟩
     ⟨q'.1.1.deco.2.lat, q'.1.1.deco.2.uni⟩)
 
-theorem half_cast (R : Ranks) (k : ℕ) : (((R.N k / 2 : ℕ) : ℤ) : ℚ) = (R.N k : ℚ) / 2 := by
-  obtain ⟨c, hc⟩ := N_even R k
-  have : R.N k / 2 = c := by omega
-  rw [this, hc]
-  push_cast
-  ring
-
-
 include h in
-set_option maxHeartbeats 1000000 in
+
 theorem th_move (g : (I.stp u a i).G b) (g' : (I.stp u a (i + 1)).G b') (z : VCx B.fields.Tau (B.R.N i) (B.R.N (i + 1))) :
     I.rho u a i b ((I.stp u a i).act b g q) * I.rho' u a i b' ((I.stp u a (i + 1)).act b' g' q') *
         I.th u a i b b' ((I.stp u a i).act b g q) ((I.stp u a (i + 1)).act b' g' q') z =
@@ -539,11 +595,11 @@ theorem th_move (g : (I.stp u a i).G b) (g' : (I.stp u a (i + 1)).G b') (z : VCx
   have r2 := GlobalTheory.LvT.Built.KMap.rhoIs I h a u hi b ((I.stp u a i).act b g q) b' ((I.stp u a (i + 1)).act b' g' q')
   have s1 : (I.chain l u a).sSharp i = fun τ => ez τ - ((B.R.N (i + 1) / 2 : ℕ) : ℤ) := funext fun τ => by
     apply Int.cast_injective (α := ℚ)
-    rw [Int.cast_sub, half_cast, ← hez]
+    rw [Int.cast_sub, _root_.GlobalTheory.CharVal.half_N, ← hez]
     exact (congrArg _ (dif_pos hi)).trans (floor_sub_half _ _ _)
   have s2 : (I.chain l u a).sDiv i = fun τ => ez τ - ((B.R.N i / 2 : ℕ) : ℤ) := funext fun τ => by
     apply Int.cast_injective (α := ℚ)
-    rw [Int.cast_sub, half_cast, ← hez]
+    rw [Int.cast_sub, _root_.GlobalTheory.CharVal.half_N, ← hez]
     exact (congrArg _ (dif_pos hi)).trans (floor_sub_half _ _ _)
   have d1 : ∀ {n : ℕ} (γ : UF B.fields.E n) (s : B.fields.Tau → ℤ), detPow B.fields.emb B.embLL (ufGL B.fields.E n γ) s =
       ∏ τ, B.fields.embC I.A.σ₀ τ ((LinearEquiv.det γ.1 : B.fields.Eˣ) : B.fields.E) ^ s τ := fun γ s => by

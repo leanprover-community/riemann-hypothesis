@@ -1,10 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TwoPowS0EqTwoPartModulus
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAlg
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Formalism.GaloisCohomology.GaloisCohomologyProofs.LdataNonempty
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExistsTameGen
-public import Formalism.LocalRingCardinality.SpanPowerMembership.Places
 
 @[expose] public section
 
@@ -27,7 +25,7 @@ def GenAt0 (l : ℕ) (Q : Finset (HeightOneSpectrum (𝓞 H.E))) (v : HeightOneS
   IsSplitPl H v ∧ v ∉ placesOver H.E l ∧ v ∉ exceptionalPlaces H l ∧ v ∉ Q ∧ 1 ≤ k ∧ k ≤ R.nV
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 structure LocBase0 where
   Oc : ℕ → what₂.places.Pl → Type
   [ringOc : ∀ j w, CommRing (Oc j w)]

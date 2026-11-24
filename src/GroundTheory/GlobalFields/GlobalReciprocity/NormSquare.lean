@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.GlobalReciprocity.InfKerDegreeLeOfLeSupZhatField
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.Functoriality
 public import GroundTheory.GlobalFields.NormResidueSymbol.Functorial
+public import GroundTheory.GlobalFields.NormResidueSymbol.Cyclotomic
 
 @[expose] public section
 

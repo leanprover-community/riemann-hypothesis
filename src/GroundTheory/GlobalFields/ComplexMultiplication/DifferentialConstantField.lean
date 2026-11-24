@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialBaseChange
+public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstant
 
 @[expose] public section
 

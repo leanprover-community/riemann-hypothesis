@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.InverseDerivativeContinuity
 
 @[expose] public section

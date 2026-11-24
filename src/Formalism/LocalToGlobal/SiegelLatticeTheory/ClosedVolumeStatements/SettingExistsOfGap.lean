@@ -1,13 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.CoefWeightedLocHolds
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.WFromLoc
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.WFLStepsLocHNProps
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.NUnimodLoc
-public import Formalism.PeriodIntegrals.NUnimodLoc
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QuotProdK
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselLevi
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselFrame
+public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.NUnimodLoc
+public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QuotProdK
 
 @[expose] public section
 

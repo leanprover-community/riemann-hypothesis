@@ -2,6 +2,46 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -87,7 +127,7 @@ theorem signAt_mem_Umax (j : Fin n) : ofUnitary (signAt (A := AL E) j) (signAt_u
   by_cases hab : a = b
   · subst hab
     by_cases haj : a = j
-    · simp [signAt, haj, neg_mem, one_mem]
+    · simp [signAt, haj, one_mem]
     · simp [signAt, haj, one_mem]
   · simp [signAt, hab, zero_mem]
 
@@ -108,7 +148,7 @@ theorem one_sub_signAt {A : Type} [Ring A] (j : Fin n) : (1 : Matrix (Fin n) (Fi
     · subst haj; simp [signAt]; norm_num
     · simp [signAt, haj, Matrix.single_apply]
       intro h; exact absurd h.symm haj
-  · simp [signAt, hab, Matrix.single_apply, Matrix.one_apply]
+  · simp [signAt, hab, Matrix.single_apply]
     intros; simp_all
 
 theorem swap_mul_single {A : Type} [Ring A] (i j : Fin n) (c : A) :
@@ -123,7 +163,7 @@ theorem swap_mul_single {A : Type} [Ring A] (i j : Fin n) (c : A) :
         Equiv.swap_apply_eq_iff]
       intro h; exact absurd h.symm ha
   · have hb' : ¬ j = b := fun h => hb h.symm
-    simp [Matrix.mul_apply, Matrix.single_apply, hb']
+    simp [Matrix.mul_apply, hb']
 
 end GlobalTheory.StdFrameCong
 

@@ -3,6 +3,8 @@ module
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.PublishedIntClosHolds
 public import Formalism.LocalToGlobal.ProjectiveLattices.ExtendedPointBaseChange
 public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

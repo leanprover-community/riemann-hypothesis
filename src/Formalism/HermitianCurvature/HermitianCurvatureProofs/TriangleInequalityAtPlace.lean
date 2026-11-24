@@ -1,7 +1,55 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 public import Formalism.HermitianCurvature.StatementTBB
 public import Formalism.FormalDegreeBessel.FinalG
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+public import Mathlib.Data.Set.Finite.List
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -31,21 +79,7 @@ theorem Gf_sgs {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductS
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Ds : B.RealPlaceData k r Wp Wq) (q : B.SS k r)
     (hq : Ds.inSS q) (g : B.Mat k r) :
     Gf k r Ds.z Ds.z' (B.sgs q g) = Gf k r Ds.z Ds.z' g := by
-  obtain ⟨hh, hn, hh', hn'⟩ := hq
-  have SG := sGroup k r Ds.z Ds.z_mem
-  have SG' := sGroup k r Ds.z' Ds.z'_mem
-  have hS1 : Matrix.of q.1.1 ∈ Sset k r Ds.z := ⟨_, hh, 1, (nSubgroup k r).1, by simp⟩
-  have hS2 : Matrix.of q.1.2 ∈ Sset k r Ds.z := ⟨1, one_mem_UW _ _ _, _, hn, by simp⟩
-  have hS3 : Matrix.of q.2.1 ∈ Sset k r Ds.z' := ⟨_, hh', 1, (nSubgroup k r).1, by simp⟩
-  have hS4 : Matrix.of q.2.2 ∈ Sset k r Ds.z' := ⟨1, one_mem_UW _ _ _, _, hn', by simp⟩
-  have hs : (Matrix.of q.1.1)⁻¹ * (Matrix.of q.1.2)⁻¹ ∈ Sset k r Ds.z :=
-    SG.2.1 _ (SG.2.2 _ hS1) _ (SG.2.2 _ hS2)
-  have hs' : Matrix.of q.2.2 * Matrix.of q.2.1 ∈ Sset k r Ds.z' := SG'.2.1 _ hS4 _ hS3
-  have e : B.sgs q g = ((Matrix.of q.1.1)⁻¹ * (Matrix.of q.1.2)⁻¹) * g *
-      (Matrix.of q.2.2 * Matrix.of q.2.1) := by
-    unfold B.sgs; simp only [mul_assoc]
-  rw [e]
-  exact gInv k r Ds.z Ds.z' Ds.z_mem Ds.z'_mem _ hs _ hs' g
+  apply Formalism.FourierDecayAlt.P.JCx1.needs.gf_sgs <;> assumption
 
 theorem ae_inSS {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Ds : B.RealPlaceData k r Wp Wq) :
@@ -166,7 +200,6 @@ theorem Formalism.FourierDecayAlt.P.point_bound_of_corollary_s : TBB.PtBoundOfCo
     obtain ⟨ε, ⟨w, hw, hle⟩, hall'⟩ := (hclaim.and hall).exists
     first
       | exact absurd hle (not_le.mpr (hall' w hw))
-      | exact hall' w hw hle
   obtain ⟨w, hw, hfw⟩ := hfreq
   have hlim := hLim w hw.1 hw.2
   rcases eq_or_lt_of_le hc0 with hc | hc

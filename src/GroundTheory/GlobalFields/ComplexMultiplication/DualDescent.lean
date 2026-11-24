@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.DualDescentBase
 public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDescent
 

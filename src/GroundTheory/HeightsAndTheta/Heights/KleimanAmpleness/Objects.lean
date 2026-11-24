@@ -1,8 +1,58 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
+public import Mathlib.FieldTheory.RatFunc.AsPolynomial
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -222,8 +272,8 @@ theorem mapC_d (φ : ∀ I, G I →ₗ[R] G' I) (hφ : ∀ I J h m, φ J (ρ I J
   funext J
   rw [d_apply]
   change φ J.1 (d G ρ i s J) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [d_apply, map_sum]
+
+  rw [d_apply, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_zsmul, hφ]
   rfl
@@ -357,8 +407,8 @@ theorem coneGen_of_isHomogeneous {σ : Type*} (y : σ → Ω) {g : MvPolynomial 
   classical
   conv_lhs => rw [g.as_sum]
   conv_rhs => rw [g.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finset.sum_mul]
+
+  simp only [map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun s hs => ?_
   have hdeg : ∑ i ∈ s.support, s i = d := by
     have := hg (mem_support_iff.mp hs)
@@ -376,8 +426,8 @@ theorem coneGen_homogeneousComponent {σ : Type*} (y : σ → Ω) {g : MvPolynom
   · have hsum : coneGen y g = ∑ i ∈ Finset.range (g.totalDegree + 1),
         Polynomial.C (aeval y (homogeneousComponent i g)) * Polynomial.X ^ i := by
       conv_lhs => rw [← sum_homogeneousComponent g]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       exact Finset.sum_congr rfl fun i _ =>
         coneGen_of_isHomogeneous y (homogeneousComponent_isHomogeneous i g)
     have hc := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p d) hsum
@@ -504,7 +554,7 @@ def chartRing (I : Chart x) : Subalgebra S Ω where
     simp only [map_add (f := _), map_mul]
   zero_mem' := ⟨0, 1, 0, one_mem _, isHomogeneous_zero _ _ _, isHomogeneous_one _ _, by simp⟩
   algebraMap_mem' r := ⟨C r, 1, 0, one_mem _, isHomogeneous_C _ _, isHomogeneous_one _ _, by
-    simp [aeval_C]⟩
+    simp⟩
 
 variable (S x) in
 def twistMod (c : ℤ) (I : Chart x) : Submodule (chartRing S x I) Ω :=
@@ -940,8 +990,8 @@ theorem aeval_div_of_isHomogeneous {f : Poly S N} {e : ℕ} (hf : f.IsHomogeneou
   classical
   conv_lhs => rw [f.as_sum]
   conv_rhs => rw [f.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Finset.sum_div]
+
+  simp only [map_sum, Finset.sum_div]
   refine Finset.sum_congr rfl fun s hs => ?_
   have hdeg : ∑ i ∈ s.support, s i = e := by
     have := hf (mem_support_iff.mp hs)

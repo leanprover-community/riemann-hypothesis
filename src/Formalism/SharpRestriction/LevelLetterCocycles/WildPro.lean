@@ -1,7 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.FieldTheory.KrullTopology
+public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Lemmata.GeneralBFactRightVersion.Imports
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 
@@ -92,8 +138,8 @@ theorem fix_of_coprime {p m : ℕ} (hpA : A.valuation ((p : ℕ) : Ω) < 1) (hm 
   set T : Ω := ∑ i ∈ Finset.range m, (τ ^ i) y with hT
   have hτT : τ T = T := by
     have h1 : τ T = ∑ i ∈ Finset.range m, (τ ^ (i + 1)) y := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hT, map_sum]
+
+      rw [hT, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [pow_succ', AlgEquiv.mul_apply]
     have h2 := Finset.sum_range_succ' (fun i => (τ ^ i) y) m
@@ -124,8 +170,7 @@ theorem fix_of_coprime {p m : ℕ} (hpA : A.valuation ((p : ℕ) : Ω) < 1) (hm 
     rw [h5, ← hτT, ← h5, map_mul, map_natCast]
   exact mul_left_cancel₀ hm0 h6
 
-theorem exists_pow_fix (σ : Ω ≃ₐ[E] Ω) (y : Ω) (hy : IsIntegral E y) : ∃ n : ℕ, n ≠ 0 ∧ (σ ^ n) y = y := by
-  first | exact Bl.general_b_fact_right_version.goal1 .. | (apply Bl.general_b_fact_right_version.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_right_version.goal1 <;> assumption)
+alias exists_pow_fix := _root_.Bl.general_b_fact_right_version.goal1
 
 theorem exists_ppow_fix {p : ℕ} (hp : p.Prime) (hpA : A.valuation ((p : ℕ) : Ω) < 1) {σ : Ω ≃ₐ[E] Ω} (hσ : IsWild A σ)
     (y : Ω) (hy : IsIntegral E y) : ∃ a : ℕ, ∀ k, a ≤ k → (σ ^ (p ^ k)) y = y := by

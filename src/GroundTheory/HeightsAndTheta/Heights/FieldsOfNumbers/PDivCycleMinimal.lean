@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivCycleMinimal
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContractedDim
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
+public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

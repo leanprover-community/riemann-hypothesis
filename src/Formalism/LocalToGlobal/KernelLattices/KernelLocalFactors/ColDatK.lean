@@ -1,23 +1,6 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseLinkOfNonzeroDelta
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseExP
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.Smooth
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.AmbOfENeSd
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CardTrivialFirstComponent
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-public import Development.AutomorphicArithmetic.WeightCongruences.IsRootOfIntegral
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.MuCardLeTwo
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SplitPairOfGen
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.DiagramFitsSourceRank
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.GlobTied
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
-public import Formalism.LocalToGlobal.Columns.ChainOneP
-public import Formalism.LocalToGlobal.Columns.RefXi1Above
-public import Formalism.LocalToGlobal.Columns.ReferenceKernelEquivOfLastComponent
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivConcrete
 
 @[expose] public section
 

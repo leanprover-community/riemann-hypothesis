@@ -1,8 +1,54 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallyExistsFiniteSubsetNonzeroLocus
+public import Mathlib.LinearAlgebra.SymmetricAlgebra.Basic
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallySubsingletonCohTwistZOfIsProjOver
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsLinearMapMultilinearMapBaseChange
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsFrameOfBijectiveStalk
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SumNegOnePowFinrankEqZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.OrderOfVanishing.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.TypeStar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -91,26 +137,6 @@ theorem chiLen_eq_of_surjective (k : Type) [CommRing k] [Algebra R k] [Algebra k
 
 variable {R}
 
-private theorem exists_coh_boundary_exact (hS : S.ShortExact) (n : ℕ) :
-    ∃ δ : coh S.X₃ n →ₗ[R] coh S.X₁ (n + 1),
-      Function.Exact (cohOn.map R S.g ⊤ n) δ ∧
-        Function.Exact δ (cohOn.map R S.f ⊤ (n + 1)) := by
-  have hAb := shortExact_toAbSheaf hS
-  let δ : coh S.X₃ n →ₗ[R] coh S.X₁ (n + 1) :=
-    WithAction.linearMap (cohOn.action S.X₃ ⊤ n) (cohOn.action S.X₁ ⊤ (n + 1)) R
-      (SheafLES.δ hAb n ⊤) fun r x => by
-        rw [cohOn.action_apply, cohOn.action_apply]
-        let φ : S ⟶ S :=
-          { τ₁ := smulHom S.X₁ r
-            τ₂ := smulHom S.X₂ r
-            τ₃ := smulHom S.X₃ r
-            comm₁₂ := smulHom_comp r S.f
-            comm₂₃ := smulHom_comp r S.g }
-        simpa only [SheafLES.map, SiteCoh.map, Functor.mapShortComplex_map_τ₁,
-          Functor.mapShortComplex_map_τ₃, φ] using
-          (SheafLES.δ_naturality hAb hAb ((toAbSheaf X).mapShortComplex.map φ) n ⊤ x).symm
-  exact ⟨δ, SheafLES.exact₃ hAb n ⊤, SheafLES.exact₁ hAb n ⊤⟩
-
 namespace FiniteLenCoh
 
 theorem of_iso (h : FiniteLenCoh R F) (e : F ≅ G) : FiniteLenCoh R G := by
@@ -124,9 +150,7 @@ theorem of_shortExact₂ (hS : S.ShortExact) (h₁ : FiniteLenCoh R S.X₁) (h�
     FiniteLenCoh R S.X₂ := by
   constructor
   · intro n
-    have h₂ : Function.Exact (cohOn.map R S.f ⊤ n) (cohOn.map R S.g ⊤ n) :=
-      SheafLES.exact₂ (shortExact_toAbSheaf hS) n ⊤
-    exact length_ne_top_of_exact h₂ (h₁.ne_top n) (h₃.ne_top n)
+    exact length_ne_top_of_exact (cohOn.exact₂ R hS ⊤ n) (h₁.ne_top n) (h₃.ne_top n)
   · obtain ⟨N₁, hN₁⟩ := h₁.eventually_zero
     obtain ⟨N₃, hN₃⟩ := h₃.eventually_zero
     exact ⟨max N₁ N₃, fun n hn => cohOn.subsingleton₂ hS ⊤ n (hN₁ n (by omega)) (hN₃ n (by omega))⟩
@@ -135,8 +159,7 @@ theorem of_shortExact₃ (hS : S.ShortExact) (h₁ : FiniteLenCoh R S.X₁) (h�
     FiniteLenCoh R S.X₃ := by
   constructor
   · intro n
-    obtain ⟨_, h₃, _⟩ := exists_coh_boundary_exact (R := R) hS n
-    exact length_ne_top_of_exact h₃ (h₂.ne_top n) (h₁.ne_top (n + 1))
+    exact length_ne_top_of_exact (cohOn.exact₃ R hS ⊤ n) (h₂.ne_top n) (h₁.ne_top (n + 1))
   · obtain ⟨N₁, hN₁⟩ := h₁.eventually_zero
     obtain ⟨N₂, hN₂⟩ := h₂.eventually_zero
     exact ⟨max N₁ N₂, fun n hn => cohOn.subsingleton₃ hS ⊤ n (hN₂ n (by omega)) (hN₁ (n + 1) (by omega))⟩
@@ -159,13 +182,10 @@ theorem chiLen_shortExact (hS : S.ShortExact) (h₁ : FiniteLenCoh R S.X₁)
     | succ N ih =>
       have e₁ := toNat_length_eq_range_add_range (LinearMap.exact_subtype_ker_map
         (cohOn.map R S.f ⊤ N)) (h₁.ne_top N)
-      have hfg : Function.Exact (cohOn.map R S.f ⊤ N) (cohOn.map R S.g ⊤ N) :=
-        SheafLES.exact₂ (shortExact_toAbSheaf hS) N ⊤
-      obtain ⟨δ, hgδ, hδf⟩ := exists_coh_boundary_exact (R := R) hS N
-      have e₂ := toNat_length_eq_range_add_range hfg (h₂.ne_top N)
-      have e₃ := toNat_length_eq_range_add_range hgδ (h₃.ne_top N)
+      have e₂ := toNat_length_eq_range_add_range (cohOn.exact₂ R hS ⊤ N) (h₂.ne_top N)
+      have e₃ := toNat_length_eq_range_add_range (cohOn.exact₃ R hS ⊤ N) (h₃.ne_top N)
       rw [Submodule.range_subtype] at e₁
-      rw [← hδf.linearMap_ker_eq] at e₃
+      rw [← (cohOn.exact₁ R hS ⊤ N).linearMap_ker_eq] at e₃
       simp only [Finset.sum_range_succ, pow_succ]
       change _ = a N + _ at e₁
       change _ = _ + a (N + 1) at e₃
@@ -469,8 +489,8 @@ theorem exists_topForm (h : DiffVanish (d + 1) φ) : ∃ l : SymQ G →ₗ[ℚ] 
   refine (congrArg (fun x => (J.restrictScalars ℚ).liftQ l hJ
     ((Submodule.Quotient.restrictScalarsEquiv ℚ J).symm x)) e).trans ((hl _).trans ?_)
   have e' : Finsupp.toMultiset (∑ i, Finsupp.single (g i) 1) = Finset.univ.val.map g := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, Finsupp.toMultiset_single, one_nsmul]
+
+    simp only [map_sum, Finsupp.toMultiset_single, one_nsmul]
     rw [Finset.sum_eq_multiset_sum, ← Multiset.sum_map_singleton (Finset.univ.val.map g),
       Multiset.map_map]
     rfl

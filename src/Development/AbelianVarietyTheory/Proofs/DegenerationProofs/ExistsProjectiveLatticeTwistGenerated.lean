@@ -1,12 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.BaseFacts
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.IsAffineSplitTorusLeft
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.CompanionTheory
-public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.UTorsSt
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsProjectiveClosureIsProjOver
+public import Development.AbelianVarietyTheory.Definitions.Degenerations.InducedModelMorphismCompStructureMap
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsMulPowMemOOfIsAffineOpen
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsProjectiveClosureIsProjOver
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.TwistingSheafOneChartEqPreimageStandardChart
 
 @[expose] public section
 
@@ -44,7 +83,7 @@ theorem _root_.GlobalTheory.ZH.RatModel.exists_isCl_of_isProjOver (h : _root_.Re
     ∃ (n : ℕ) (t : Fin (n + 1) → Ω), M.IsCl t := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsProjOver at h
   obtain ⟨N, π, hπ, hcomm⟩ := h
-  haveI := hπ
+  have := hπ
   have hx : (M.pt ≫ π) ≫ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.PSpace.str o N = _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (algebraMap o Ω) := by
     rw [Category.assoc, hcomm, M.pt_s]
   have hsub : ∀ p q : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp Ω, p = q := by
@@ -102,11 +141,11 @@ private theorem mem_span_range_iff_vecMul_inv_mem {o Ω : Type} [CommRing o] [Fi
         rw [h1, Matrix.one_apply]
         by_cases hrj : r = j
         · subst hrj; simp
-        · simp [hrj, Pi.single_apply, Ne.symm hrj]
+        · simp [hrj, Ne.symm hrj]
       rw [hrow]
       by_cases hkr : k = r
       · subst hkr; simp [R.one_mem]
-      · simp [Pi.single_apply, hkr, R.zero_mem]
+      · simp [hkr, R.zero_mem]
     | zero => intro k; simp [R.zero_mem]
     | add x y _ _ hx hy =>
       intro k
@@ -189,7 +228,7 @@ theorem _root_.GlobalTheory.ZH.RatModel.exists_isCl_lat_eq_span : ∀ (o Ω : Ty
   have hu_inv : ∀ z z', z' ∈ M.Z.basicOpen (fz z) → (u z)⁻¹ ∈ M.O z' :=
     fun z z' h => ((hu_unit z z' ((M.Z.basicOpen_le (fz z)) h)).1 h).2
 
-  haveI := M.noetherianSpace_of_isNoetherianRing
+  have := M.noetherianSpace_of_isNoetherianRing
   obtain ⟨F, hF⟩ := isCompact_univ.elim_finite_subcover (fun z => (M.Z.basicOpen (fz z) : Set M.Z))
     (fun z => (M.Z.basicOpen (fz z)).isOpen) (fun x _ => Set.mem_iUnion.2 ⟨x, hzmem x⟩)
   have hcover : ∀ z : M.Z, ∃ z₀ ∈ F, z ∈ M.Z.basicOpen (fz z₀) := by

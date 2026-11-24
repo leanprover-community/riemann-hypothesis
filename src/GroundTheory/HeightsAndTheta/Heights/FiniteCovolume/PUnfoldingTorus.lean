@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsUnfoldingTorus
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsUnfoldAlongSubgroup
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsHaarParabolicCoordinates
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsStabilizerCovolume
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PScalingLaw
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PArchLatticeDiscrete
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PScalingLaw
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

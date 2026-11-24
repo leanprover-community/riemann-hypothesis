@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenOnFibres
 
 @[expose] public section

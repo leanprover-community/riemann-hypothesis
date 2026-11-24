@@ -1,7 +1,19 @@
 module
 
-public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.ParametricIntegralSmoothness.IntCommute
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SecondCountableQuotients.ModExists
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothVec
+public import Formalism.FormalDegreeBessel.StatementDS
+public import Formalism.PeriodIntegrals.IsLowUnitH
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.IntegralMemOfIsClosed
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
+public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.AdmissibleOfIwasawa
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.MaximalCompactIsCompact
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.ContinuousMap.StoneWeierstrass
 
 @[expose] public section
 
@@ -122,7 +134,6 @@ def co (hK : IsMatGroup K) : (Mat n →L[ℝ] ℝ) →ₗ[ℝ] C(MG K hK, ℝ) w
 
 theorem finAlg_sep : (finAlg (MG K hK)).SeparatesPoints := by
   intro x y hxy
-  have hne : x.mat - y.mat ≠ 0 := fun h => hxy (MG.ext (sub_eq_zero.1 h))
   obtain ⟨i, j, hij⟩ : ∃ i j, x.mat i j ≠ y.mat i j := by
     by_contra h
     push Not at h

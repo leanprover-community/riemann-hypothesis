@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMahler
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntPoly
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntSphere
 
 @[expose] public section

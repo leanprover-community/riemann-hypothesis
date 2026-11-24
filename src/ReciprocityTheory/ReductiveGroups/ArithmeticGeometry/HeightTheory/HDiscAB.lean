@@ -1,6 +1,18 @@
 module
 
+public import Mathlib.FieldTheory.Separable
+public import Mathlib.RingTheory.DiscreteValuationRing.Basic
+public import Mathlib.RingTheory.Norm.Defs
+public import Mathlib.RingTheory.Trace.Defs
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAA
+public import ReciprocityTheory.SemistableReduction.AlgAll
+public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
+public import Mathlib.RingTheory.Discriminant
+public import Mathlib.RingTheory.Localization.NormTrace
 
 @[expose] public section
 
@@ -133,8 +145,8 @@ theorem lattice_main {ϖ : R} (hϖ : Irreducible ϖ) (g : ∀ c, L c) (hg : ∀ 
     ext p' q'
     simp only [Matrix.submatrix_apply, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
       Matrix.map_apply, H, hbexp]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Finset.sum_mul, Finset.mul_sum, map_sum, trace_term]
+
+    simp only [Finset.sum_mul, Finset.mul_sum, map_sum, trace_term]
     rw [sum_three_comm, Finset.sum_comm]
   have hH : H = Matrix.blockDiagonal' fun c => Matrix.of fun i j => Algebra.trace F (L c)
       ((g c)⁻¹ * (g c)⁻¹ * ((a c i : integralClosure R (L c)) : L c) *
@@ -163,7 +175,7 @@ theorem lattice_main {ϖ : R} (hϖ : Irreducible ϖ) (g : ∀ c, L c) (hg : ∀ 
     rw [← Algebra.discr_localizationLocalization R (nonZeroDivisors R) (L c) (a c), ← gram_mul]
     congr 1
     ext i j
-    simp only [Matrix.of_apply, a', Module.Basis.localizationLocalization_apply]
+    simp only [Matrix.of_apply, Module.Basis.localizationLocalization_apply]
     rfl
   have hd0 : ∀ c, Algebra.discr R (a c) ≠ 0 := by
     intro c h

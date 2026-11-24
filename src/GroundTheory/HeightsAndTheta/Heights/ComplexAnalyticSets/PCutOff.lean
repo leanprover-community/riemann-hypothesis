@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLogLogCut
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffTube
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffGradient
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

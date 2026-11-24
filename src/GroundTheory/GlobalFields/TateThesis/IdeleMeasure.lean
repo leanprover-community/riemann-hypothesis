@@ -1,10 +1,19 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
-public import GroundTheory.GlobalFields.IdeleGroups.StandardOpenEquiv
-public import GroundTheory.GlobalFields.Adele.Topology
 public import GroundTheory.GlobalFields.TateThesis.AdeleMeasurable
+public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
+import GroundTheory.GlobalFields.Adele.Approximation
+public import GroundTheory.GlobalFields.Adele.Topology
+public import GroundTheory.GlobalFields.IdeleGroups.StandardOpenEquiv
+import GroundTheory.GlobalFields.LocalAtPlace
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

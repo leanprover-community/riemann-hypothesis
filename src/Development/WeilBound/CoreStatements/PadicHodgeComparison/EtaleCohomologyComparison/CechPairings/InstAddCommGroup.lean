@@ -1,8 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OfNatTrans
+public import Mathlib.Algebra.Category.CommAlgCat.Basic
+public import Mathlib.Tactic.Continuity
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FaceFaceApply
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -60,6 +101,20 @@ def B : (n : ℕ) → Submodule R (C.X n)
 abbrev Z (n : ℕ) : Submodule R (C.X n) := LinearMap.ker (C.d n)
 
 abbrev H (n : ℕ) : Type w := C.Z n ⧸ (C.B n).comap (C.Z n).subtype
+
+/-! Named instances for `C.H n`. Without them, instance search returns
+`Submodule.Quotient.addCommMonoid` and `Submodule.Quotient.module` applied to the whole submodule
+`(C.B n).comap (C.Z n).subtype`, and the kernel re-checks that submodule term wherever a
+statement mentions a linear map between cohomology groups. -/
+
+instance (priority := high) instAddCommGroupH (n : ℕ) : AddCommGroup (C.H n) :=
+  Submodule.Quotient.addCommGroup _
+
+instance (priority := high) instAddCommMonoidH (n : ℕ) : AddCommMonoid (C.H n) :=
+  (C.instAddCommGroupH n).toAddCommMonoid
+
+instance (priority := high) instModuleH (n : ℕ) : Module R (C.H n) :=
+  Submodule.Quotient.module _
 
 def cls {n : ℕ} (x : C.X n) (hx : C.d n x = 0) : C.H n := Submodule.Quotient.mk ⟨x, hx⟩
 
@@ -173,8 +228,8 @@ theorem d_d (n : ℕ) (f : Cn F n) : d F (n + 1) (d F n f) = 0 := by
   funext s
   change ∑ j : Fin (n + 3), (-1 : ℤ) ^ (j : ℕ) • (F.map (toLast j s)).hom
       (∑ i : Fin (n + 2), (-1 : ℤ) ^ (i : ℕ) • term F (face j s) f i.succAbove (Fin.strictMono_succAbove i).monotone) = 0
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_zsmul, Finset.smul_sum, smul_smul, term_face]
+
+  simp only [map_sum, map_zsmul, Finset.smul_sum, smul_smul, term_face]
   rw [← Fintype.sum_prod_type']
   refine Finset.sum_involution (fun p _ => (p.1.succAbove p.2, p.2.predAbove p.1)) ?_ ?_ ?_ ?_
   · rintro ⟨j, i⟩ _
@@ -195,6 +250,18 @@ abbrev cx : Cx.{max u v w} R where
   dd := d_d F
 
 abbrev H (n : ℕ) : Type (max u v w) := (cx F).H n
+
+/-! The instances of `Cx.H` again, for `H F n`. Instance search does not find those for this type:
+`cx F` is a structure instance, which it unfolds, so `H F n` no longer has the shape `C.H n`. -/
+
+instance (priority := high) instAddCommGroupH (n : ℕ) : AddCommGroup (H F n) :=
+  (cx F).instAddCommGroupH n
+
+instance (priority := high) instAddCommMonoidH (n : ℕ) : AddCommMonoid (H F n) :=
+  (cx F).instAddCommMonoidH n
+
+instance (priority := high) instModuleH (n : ℕ) : Module R (H F n) :=
+  (cx F).instModuleH n
 
 def aug {M : Type w'} [AddCommGroup M] [Module R M] (e : ∀ T : C, M →ₗ[R] F.obj T) : M →ₗ[R] Cn F 0 :=
   LinearMap.pi fun s => e _
@@ -244,8 +311,8 @@ theorem d_pullC (n : ℕ) (f : Cn F n) : d F' n (m.pullC n f) = m.pullC (n + 1) 
   funext s
   change ∑ i : Fin (n + 2), (-1 : ℤ) ^ (i : ℕ) • (F'.map (toLast i s)).hom (m.τ _ (f (face i s ⋙ m.G))) =
     m.τ _ (∑ i : Fin (n + 2), (-1 : ℤ) ^ (i : ℕ) • (F.map (m.G.map (toLast i s))).hom (f (face i s ⋙ m.G)))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   exact Finset.sum_congr rfl fun i _ => by rw [map_zsmul, m.nat]
 
 def hom : Cx.Hom (cx F) (cx F') σ := ⟨m.pullC, m.d_pullC⟩

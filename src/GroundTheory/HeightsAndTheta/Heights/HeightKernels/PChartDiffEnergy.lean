@@ -1,10 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartIbpSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ChartCutoffParts
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergyIntegrable
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergyIntegrable
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Separation.CompletelyRegular
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
 
 @[expose] public section
 

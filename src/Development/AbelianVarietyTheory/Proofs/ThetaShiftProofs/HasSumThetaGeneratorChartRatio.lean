@@ -1,23 +1,72 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsoEqOfMapsAlongSection
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsPowEqOfBaseChange
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.EqZeroOfForallExistsLsumETwoPi
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsPowerSectionOfChartFunctions
+public import Development.AbelianVarietyTheory.Definitions.Foundations.MemPuncturedRingIffPowerSeriesPart
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointBaseChangeLaws
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsPChartOfFramedPoint
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ModelChartLiftCoordsGeneratorIndep
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.EqZeroOfForallExistsLsumETwoPi
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsPowEqOfBaseChange
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsoEqOfMapsAlongSection
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SecValuesComplexFibreAbelianScheme
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemRangeCompIffOfIsClosedImmersion
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.AlgClosed.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
+
 
 noncomputable section
 
@@ -27,12 +76,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.L2.Pj.QAt GlobalTheory.ArcQ GlobalTheory.Frames
 open GlobalTheory.Reg.ChartInhab GlobalTheory.Reg.LiftUnique
 open scoped LaurentSeries
-
-theorem cstMul {V : Type} [CommRing V] {Z : Scheme.{0}} (q : Z ⟶ Sp V) (z : Z) (a b : V) :
-    Geo.Tor.cst q z (a * b) = Geo.Tor.cst q z a * Geo.Tor.cst q z b := by rw [Geo.Tor.cst, map_mul, gs_mul q z ⊤ trivial]; rfl
-
-theorem cstOne {V : Type} [CommRing V] {Z : Scheme.{0}} (q : Z ⟶ Sp V) (z : Z) : Geo.Tor.cst q z 1 = 1 := by
-  rw [Geo.Tor.cst, gs_eq q z ⊤ trivial, map_one, map_one, map_one]
 
 theorem gs_of_isoMaps {X X' : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ X} {w : LB.Iso L' (L.pull F)}
     {σ : LB.Sec L'} {s : LB.Sec (L.pull F)} (h : IsoMaps w σ s) (Z : Scheme.{0}) (r : Z ⟶ X') (z : Z) (j : L.ι)
@@ -91,7 +134,7 @@ theorem Cut.pull {T T' : Type} [CommRing T] [CommRing T'] (φ : T →+* T') {z :
   have e := h Z (g ≫ pm) f p j k j₀ (by rw [Category.assoc, h₁]; exact e₁)
     (by rw [e₂, Category.assoc, reassoc_of% h₂]) m₁ m₂ m₃
   rw [e, ← h₃ _ hle, gs_appLE pm _ _ hle g p mg, gs_mul (g ≫ pm) p _ (hle mg), gs_scal' x b _ (g ≫ pm) p (hle mg),
-    cstMul, _root_.mul_assoc, Category.assoc, h₂, ← Category.assoc, cst_comp]
+    _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_mul, _root_.mul_assoc, Category.assoc, h₂, ← Category.assoc, cst_comp]
 
 theorem Cut.chg {T : Type} [CommRing T] {z : Sp T ⟶ Xo.XF c} {x x' : Sp T ⟶ Xo.X}
     {a b : T} {s : LB.Sec (PPx x)} {s' : LB.Sec (PPx x')} (hx : x' = x) (h : Cut Y V s₀ w₀ w₁ z x' a s')
@@ -108,7 +151,7 @@ theorem Cut.chg {T : Type} [CommRing T] {z : Sp T ⟶ Xo.XF c} {x x' : Sp T ⟶ 
   have e := h Z g f p j k j₀ e₁ e₂ m₁ m₂ m₃
   have hle := FramedBaseChange.chart_le (𝟙 _) h₁ (fun _ => j₀)
   rw [e, ← h₃ _ hle, gs_appLE (𝟙 _) _ _ hle g p mg, Category.comp_id, gs_mul g p _ mg, gs_scal' x' b _ g p mg,
-    cstMul, _root_.mul_assoc]
+    _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_mul, _root_.mul_assoc]
 
 theorem exists_lift' {T : Type} [CommRing T] (z : Sp T ⟶ Xo.XF c) {x : Sp T ⟶ Xo.X} (hx : z ≫ pullback.fst _ _ = x)
     {Z : Scheme.{0}} (g : Z ⟶ Gx x) : ∃ f : Z ⟶ Y.oF.t.G.left,
@@ -233,7 +276,7 @@ theorem exists_cut (h₀ : RigIso Y.m0.toSABMap w₀) (h₁ : RigIso Y.m w₁)
   rw [gs_appLE m2.φ _ _ (le j) (g ≫ h) p c₂, T2 Z _ p j k k' b₁.2 b₂ hk'] at u₂
   rw [Category.assoc, h0g, Category.comp_id, T1 Z _ p j₀ k k' b₃ b₂ hk'] at u₁
   have eg : ((g ≫ h) ≫ n.φ) ≫ Y.m.φ = (g ≫ h) ≫ m2.φ := by rw [e2, Category.assoc]
-  rw [eg, u₁, u₂, cstOne, Units.val_mul, Units.val_mul]
+  rw [eg, u₁, u₂, _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_one, Units.val_mul, Units.val_mul]
   ring
 
 theorem exists_cut_gen (h₀ : RigIso Y.m0.toSABMap w₀) (h₁ : RigIso Y.m w₁)
@@ -243,11 +286,11 @@ theorem exists_cut_gen (h₀ : RigIso Y.m0.toSABMap w₀) (h₁ : RigIso Y.m w�
   obtain ⟨S, hS⟩ := exists_cut h₀ h₁ hs hx hV
   obtain ⟨a, ha, hu⟩ := hg S
   have one : ∀ i, scal x 1 i * S.f i = S.f i := fun i => fn_ext fun p hp => by
-    rw [gs_mul _ p _ hp, gs_scal' x 1 _ (𝟙 _) p hp, cstOne, _root_.one_mul]
+    rw [gs_mul _ p _ hp, gs_scal' x 1 _ (𝟙 _) p hp, _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_one, _root_.one_mul]
   refine ⟨a, ?_, fun a' h' => hu a' fun i => (one i).symm.trans (hS.eq hx hV h' i)⟩
   intro Z g f p j k j₀ e₁ e₂ m₁ m₂ m₃
   have mg := (mem_chart e₁ p j₀).2 m₃
-  rw [hS Z g f p j k j₀ e₁ e₂ m₁ m₂ m₃, cstOne, _root_.one_mul, ha (fun _ => j₀), gs_mul g p _ mg, gs_scal' x a _ g p mg]
+  rw [hS Z g f p j k j₀ e₁ e₂ m₁ m₂ m₃, _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_one, _root_.one_mul, ha (fun _ => j₀), gs_mul g p _ mg, gs_scal' x a _ g p mg]
 
 theorem pullsToMul_gs {A : Type} [CommRing A] {χ : Sp A ⟶ Y.X} {t : SAB H (Sp A)} (m : SABMap t Y.t χ)
     (L : RigLB t.G) (hL : L = t.PP) (w₂ : LB.Iso L.L (Y.t.PP.L.pull m.φ)) (hw : IsRigIso m.cm L Y.t.PP w₂)
@@ -499,7 +542,7 @@ theorem secBC_of_frMap {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [A
     {y : FrPt Xo c S} {y' : FrPt Xo c T} (h : FrMap φ y y') : SecBC φ.toRingHom 1 y.x y'.x y.s y'.s := by
   obtain ⟨-, -, pm, h₁, h₂, h₃⟩ := h
   refine ⟨pm, h₁, h₂, fun i hi => Eq.trans (congrArg _ (fn_ext fun p hp => ?_)) (h₃ i hi)⟩
-  rw [gs_mul _ p _ hp, gs_scal' y.x 1 _ (𝟙 _) p hp, cstOne, _root_.one_mul]
+  rw [gs_mul _ p _ hp, gs_scal' y.x 1 _ (𝟙 _) p hp, _root_.ReciprocityTheory.ChartRestriction.G.H1.cst_one, _root_.one_mul]
 
 theorem exists_ratio (hB : Out.SecBaseChangeSt) (h₀ : RigIso Y.m0.toSABMap w₀) (h₁ : RigIso Y.m w₁)
     (hs : s₀ ∈ secOn Y.t.PP.L (Y.t.G.hom ⁻¹ᵁ V)) {R : Type} [CommRing R] [Algebra c.F R] (j : Sp R ⟶ Xo.XF c)

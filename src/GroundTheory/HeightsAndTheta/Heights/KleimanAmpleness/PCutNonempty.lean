@@ -1,8 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutOneGeneratorSt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CutNonemptySt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -26,8 +27,8 @@ theorem coe_aeval_ratio_mem_idealMod {pp : Ideal (Poly k N)}
     ((aeval (ratio (S := k) hj) p : chartRing k x (singleChart hj)) : Ω) ∈
       idealMod (x := x) pp (singleChart hj) := by
   rw [← sum_homogeneousComponent p]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, AddSubmonoidClass.coe_finsetSum]
+
+  rw [map_sum, AddSubmonoidClass.coe_finsetSum]
   refine Submodule.sum_mem _ fun d _ => Submodule.subset_span ?_
   exact ⟨homogeneousComponent d p, X j ^ d, d, hh p hp d,
     pow_mem (X_mem_monos (Finset.mem_singleton_self j)) d, homogeneousComponent_isHomogeneous d p,

@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.CoeffRescaleExpandOfNotDvd
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 
 @[expose] public section
 

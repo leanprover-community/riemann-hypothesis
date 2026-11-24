@@ -77,13 +77,13 @@ variable (s : A →+* A) (Jm : Matrix (Fin n) (Fin n) A) (spl : A ≃+* K × K)
 
 theorem hform_fst (hs : ∀ x, spl (s x) = ((spl x).2, (spl x).1)) (z y : Fin n → A) :
     (spl (hform s Jm z y)).1 = ∑ i, ∑ j, (spl (z i)).2 * (spl (Jm i j)).1 * (spl (y j)).1 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, Prod.fst_sum, Prod.fst_mul, hs]
+
+  simp only [hform, map_sum, map_mul, Prod.fst_sum, Prod.fst_mul, hs]
 
 theorem hform_snd (hs : ∀ x, spl (s x) = ((spl x).2, (spl x).1)) (z y : Fin n → A) :
     (spl (hform s Jm z y)).2 = ∑ i, ∑ j, (spl (z i)).1 * (spl (Jm i j)).2 * (spl (y j)).2 := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, Prod.snd_sum, Prod.snd_mul, hs]
+
+  simp only [hform, map_sum, map_mul, Prod.snd_sum, Prod.snd_mul, hs]
 
 theorem fst_mulVec (g : GL (Fin n) A) (y : Fin n → A) (b : Fin n) :
     (spl (((g : Matrix (Fin n) (Fin n) A) *ᵥ y) b)).1 =

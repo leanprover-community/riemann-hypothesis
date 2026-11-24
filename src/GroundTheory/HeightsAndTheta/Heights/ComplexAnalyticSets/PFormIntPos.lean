@@ -1,16 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPlaneSliceMass
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBound
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogSmul
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOff
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterOsgood
 
 @[expose] public section

@@ -1,10 +1,49 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EntryMem
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.FerreroWashington
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EiiUnit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.GeAlgTop
+import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -132,7 +171,7 @@ private theorem ee_mem (A : Subalgebra R (M4 R)) (X : M4 R) (hX : X ∈ A) (hb :
     obtain ⟨v, hv⟩ := hu.exists_left_inv
     convert A.smul_mem (A.sub_mem (A.smul_mem hY (y0 + y3)) (A.mul_mem hY hY)) v using 1
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [ee, Matrix.mul_apply, Fin.sum_univ_four] <;>
+    fin_cases i <;> fin_cases j <;> simp [ee] <;>
       first | linear_combination -hv | ring
   have b01 := hb 0 1 (by decide)
   have b03 := hb 0 3 (by decide)
@@ -270,8 +309,8 @@ theorem UpperTheory.V.Ws.blockPart :
       fun g i j h => ?_
     · ext a b
       have := congrArg 𝔞.toK (congrFun (congrFun (hm g) a) b)
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.mul_apply, adj_apply, map_sum, map_mul, map_zsmul, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply] at this ⊢
+
+      simp only [Matrix.mul_apply, adj_apply, map_sum, map_mul, map_zsmul, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply] at this ⊢
       rw [apply_ite 𝔞.toK, map_one, map_zero] at this
       exact this
     · obtain ⟨g, hg⟩ := h02

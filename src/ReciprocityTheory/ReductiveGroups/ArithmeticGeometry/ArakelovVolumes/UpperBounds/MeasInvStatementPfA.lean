@@ -1,6 +1,21 @@
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Topology.Algebra.Module.FiniteDimension
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.FDeriv.Add
+public import Mathlib.Analysis.Calculus.FDeriv.Mul
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.RingTheory.Norm.Transitivity
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 
 @[expose] public section
 
@@ -107,7 +122,7 @@ lemma toMatrix_luD_zero (e : ι ≃ Fin (Fintype.card ι)) (w : Ix ι r → ℂ)
     intro k
     by_cases hka : k < a
     · by_cases hbk : b < k
-      · simp [Pi.single_apply, up, hbk]
+      · simp [up, hbk]
       · have := hne a k (by omega) le_rfl
         simp [Pi.single_apply, sl, hka, this]
     · simp [Pi.single_apply, sl, hka]

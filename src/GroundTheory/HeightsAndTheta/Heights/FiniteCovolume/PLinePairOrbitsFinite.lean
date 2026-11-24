@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsComplementExtension
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsAdaptedReduction
+public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

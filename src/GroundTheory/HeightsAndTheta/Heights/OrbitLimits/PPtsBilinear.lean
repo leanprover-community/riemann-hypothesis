@@ -1,11 +1,17 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CasChainA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsBilinear
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsIntegrable
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSumMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsIntegrable
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CasChainA
 
 @[expose] public section
 
@@ -66,8 +72,8 @@ theorem mixedDisc_update_sum {D : ℕ} {T : Type} [Fintype T] (A : Fin D → Mat
   have e : ∀ C, mixedDisc (Function.update A k C) = M.toLinearMap A k C := fun C => by
     rw [MultilinearMap.toLinearMap_apply, hM]
     rfl
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [e, map_sum]
+
+  simp only [e, map_sum]
 
 theorem cxHessian_cons {n : ℕ} (L : Fin n → HermLine ι) (f v : ((Σ k, ι k) → ℂ) → ℝ)
     (γ : (Fin (n + 1) → ℂ) → (Σ k, ι k) → ℂ) (y : Fin (n + 1) → ℂ) :

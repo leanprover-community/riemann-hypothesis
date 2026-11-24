@@ -1,7 +1,52 @@
 module
 
-public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipApplyCastSuccLast
+public import Mathlib.Topology.Algebra.Group.Units
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.ColMatMulGlEmbMat
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -56,13 +101,11 @@ theorem blockIndex_true_last (m j : ℕ) : eGP m j ⟨true, Fin.last j⟩ = Fin.
   apply Fin.ext
   first
     | rfl
-    | simp [GlobalTheory.BZMir.Leib.eGP, GlobalTheory.SmGL.two, GlobalTheory.SmGL.stdSum]
 
 theorem blockIndex_true_eq_last_iff (m j : ℕ) (b : Fin (j + 1)) : eGP m j ⟨true, b⟩ = Fin.last (m + j) ↔ b = Fin.last j := by
   have hb : ((GlobalTheory.BZMir.Leib.eGP m j ⟨true, b⟩ : Fin (m + j + 1)) : ℕ) = m + (b : ℕ) := by
     first
       | rfl
-      | simp [GlobalTheory.BZMir.Leib.eGP, GlobalTheory.SmGL.two, GlobalTheory.SmGL.stdSum]
   rw [Fin.ext_iff, hb, Fin.ext_iff, Fin.val_last, Fin.val_last]
   omega
 
@@ -71,7 +114,6 @@ theorem blockIndex_false_ne_last (m j : ℕ) (a : Fin m) : eGP m j ⟨false, a�
   have ha : ((GlobalTheory.BZMir.Leib.eGP m j ⟨false, a⟩ : Fin (m + j + 1)) : ℕ) = (a : ℕ) := by
     first
       | rfl
-      | simp [GlobalTheory.BZMir.Leib.eGP, GlobalTheory.SmGL.two, GlobalTheory.SmGL.stdSum]
   have h2 := congrArg Fin.val h
   rw [ha, Fin.val_last] at h2
   have := a.isLt
@@ -92,7 +134,7 @@ theorem hgp_block_mem (m j : ℕ) (h : MirabolicParabolic k m j) :
     simp [GlobalTheory.BZMir.eLast, GlobalTheory.BZMir.Leib.blockIndex_true_last]
   · have hne : GlobalTheory.BZMir.Leib.eGP m j ⟨true, b⟩ ≠ Fin.last (m + j) :=
       fun h' => hb ((GlobalTheory.BZMir.Leib.blockIndex_true_eq_last_iff m j b).1 h')
-    simp [GlobalTheory.BZMir.eLast, Pi.single_apply, hne, hb]
+    simp [GlobalTheory.BZMir.eLast, hne, hb]
 
 
 variable (k) in
@@ -156,7 +198,7 @@ theorem hpg_block_mem (i t : ℕ) (h : HPG k i t) :
     simp [GlobalTheory.BZMir.eLast, GlobalTheory.BZMir.Leib.ePG_false_last]
   · have hne : GlobalTheory.BZMir.Leib.ePG i t ⟨false, b⟩ ≠ Fin.last (i + t) :=
       fun h' => hb ((GlobalTheory.BZMir.Leib.ePG_false_eq_last_iff i t b).1 h')
-    simp [GlobalTheory.BZMir.eLast, Pi.single_apply, hne, hb]
+    simp [GlobalTheory.BZMir.eLast, hne, hb]
 
 
 variable (k) in

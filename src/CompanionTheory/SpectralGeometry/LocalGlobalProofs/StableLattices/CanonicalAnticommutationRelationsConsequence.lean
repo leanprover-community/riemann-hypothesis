@@ -1,8 +1,13 @@
 module
 
-public import Mathlib
-public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
-public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.DifferentialBoundedSupport
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Ring.Defs
+public import Mathlib.Data.Fintype.Basic
+import Mathlib.RingTheory.PiTensorProduct
+public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.CapelliDeterminantBlockProduct
+public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKMultOneP
+import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
+import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.IsSimpleTriv
 
 @[expose] public section
 
@@ -127,7 +132,7 @@ theorem ad_triple (A : R)
         - d a e * c b e * (if p = a then c q b else 0) := by
     intro a b e
     rw [ad_mul, ad_mul, hAd, hAc, hAc]
-    simp only [sub_mul, mul_sub, add_mul, mul_add, mul_assoc]
+    simp only [sub_mul, mul_sub, add_mul, mul_assoc]
     abel
   have s1 : ∑ a, ∑ b, ∑ e, (if q = a then d p e else 0) * c b e * c a b
       = ∑ b, ∑ e, d p e * c b e * c q b := by

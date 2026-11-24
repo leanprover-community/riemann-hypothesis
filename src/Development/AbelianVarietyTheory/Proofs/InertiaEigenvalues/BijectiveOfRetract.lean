@@ -1,7 +1,50 @@
 module
 
-public import Mathlib
 public import Formalism.WachLatticeTwists.LatticeDualFibres.FibreDualStable
+public import Mathlib.Topology.Algebra.Module.ModuleTopology
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -166,7 +209,7 @@ theorem cont_sum {ι M M' : Type} [AddCommGroup M] [Module O M] [TopologicalSpac
     (s : Finset ι) (u : ι → M →ₗ[O] M') (hu : ∀ j, Continuous (u j)) :
     Continuous ((∑ j ∈ s, u j : M →ₗ[O] M') : M → M') := by
   have h := continuous_finsetSum s (fun j _ => hu j)
-  convert h using 1 <;> ext x <;> simp only [LinearMap.sum_apply, Finset.sum_apply]
+  convert h using 1 <;> ext x <;> simp only [LinearMap.sum_apply]
 
 theorem bijective_of_retract (M : Type) [AddCommGroup M] [Module O M] [TopologicalSpace M]
     [IsTopologicalAddGroup M] [ContinuousConstSMul O M] [ContinuousSMul O M]
@@ -213,20 +256,20 @@ theorem bijective_of_retract (M : Type) [AddCommGroup M] [Module O M] [Topologic
         map_H2_comp (twist ε M) (twist ε (N' i)) (twist ε M) (p' i) (hp' i) (twist_equiv ε _) (s' i)
           (hs' i) (twist_equiv ε _)]
       rfl
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_add (f := _), map_sum, map_sum, Finset.sum_congr rfl (fun j _ => k1 j),
-      Finset.sum_congr rfl (fun i _ => k2 i), ← LinearMap.sum_apply, ← LinearMap.sum_apply,
-      ← map_H2_sum (twist ε M) (twist ε M) _ _ _ _ (cont_sum _ _ fun j => (hs j).comp (hp j))
-        (twist_equiv ε _),
-      ← map_H2_sum (twist ε M) (twist ε M) _ _ _ _ (cont_sum _ _ fun i => (hs' i).comp (hp' i))
-        (twist_equiv ε _),
-      ← LinearMap.add_apply,
-      ← map_H2_add (twist ε M) (twist ε M) _ _ _ _ _ _
-        ((cont_sum _ _ fun j => (hs j).comp (hp j)).add
-          (cont_sum _ _ fun i => (hs' i).comp (hp' i))) (twist_equiv ε _),
-      map_H2_congr (twist ε M) (twist ε M)
-        (LinearMap.ext fun m => by simpa using hid m : (∑ j, s j ∘ₗ p j) + ∑ i, s' i ∘ₗ p' i =
-          LinearMap.id) _ _ continuous_id (fun _ _ => rfl), map_H2_id]
+
+    rw [map_add (f := _), map_sum, map_sum, Finset.sum_congr rfl (fun j _ => k1 j),
+    Finset.sum_congr rfl (fun i _ => k2 i), ← LinearMap.sum_apply, ← LinearMap.sum_apply,
+    ← map_H2_sum (twist ε M) (twist ε M) _ _ _ _ (cont_sum _ _ fun j => (hs j).comp (hp j))
+      (twist_equiv ε _),
+    ← map_H2_sum (twist ε M) (twist ε M) _ _ _ _ (cont_sum _ _ fun i => (hs' i).comp (hp' i))
+      (twist_equiv ε _),
+    ← LinearMap.add_apply,
+    ← map_H2_add (twist ε M) (twist ε M) _ _ _ _ _ _
+      ((cont_sum _ _ fun j => (hs j).comp (hp j)).add
+        (cont_sum _ _ fun i => (hs' i).comp (hp' i))) (twist_equiv ε _),
+    map_H2_congr (twist ε M) (twist ε M)
+      (LinearMap.ext fun m => by simpa using hid m : (∑ j, s j ∘ₗ p j) + ∑ i, s' i ∘ₗ p' i =
+        LinearMap.id) _ _ continuous_id (fun _ _ => rfl), map_H2_id]
     rfl
 
 end Retract

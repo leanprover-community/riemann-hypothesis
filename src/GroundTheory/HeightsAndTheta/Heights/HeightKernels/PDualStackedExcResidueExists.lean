@@ -1,10 +1,9 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcResidue
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualLatticeModPrime
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcGeoFirst
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLatticeIndex
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcGeoFirst
 
 @[expose] public section
 

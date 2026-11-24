@@ -1,6 +1,94 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Lie.Classical
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Deriv
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Topology.Covering.Basic
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+
+/-!
+# The Schrödinger and metaplectic representations over `ℝ`
+
+This file defines the Schrödinger representation of the Heisenberg group on `L²(ℝⁿ)` and its
+derived action on Schwartz functions, and states the existence of the metaplectic
+representation as `GlobalTheory.Published.RealMetaplecticRepresentation`.
+
+The coordinates of `ℝⁿ` are indexed by a finite type `l`. A vector `w : l ⊕ l → ℝ` of phase
+space `ℝ²ⁿ` is a pair `(p, q)` with `p = pPart w` and `q = qPart w`, and `sympl` is the
+symplectic form `sympl w w' = ⟨p, q'⟩ - ⟨q, p'⟩`.
+
+* `rho w` is the unitary operator `f ↦ (x ↦ exp (2πi⟨q, x⟩ + πi⟨p, q⟩) * f (x + p))` on
+  `L²(ℝⁿ)`. By `rho_rho`, `rho w ∘ rho w' = exp (πi * sympl w w') • rho (w + w')`, so `rho` is
+  a projective unitary representation of `ℝ²ⁿ`: the Schrödinger representation of the
+  Heisenberg group.
+* `dRho w` is the operator `f ↦ ∂_p f + 2πi⟨q, x⟩ f` on Schwartz functions (`dRho_apply`).
+  At each point `x`, `dRho w f x` is the derivative at `0` of `t ↦ rhoFun (t • w) f x`
+  (`hasDerivAt_rhoFun`). These operators satisfy the canonical commutation relations
+  `dRho w * dRho w' - dRho w' * dRho w = (2πi * sympl w w') • 1` (`dRho_comm`).
+* `quad X` is a symmetrized quadratic expression in the operators `dRho`, with coefficients
+  the entries of `X * J`. For `X` in the symplectic Lie algebra `sp(2n, ℝ)`, `X * J` is
+  symmetric (`mul_J_symm`), `quad X * dRho u - dRho u * quad X = dRho (X u)` (`quad_comm`),
+  and `quad_fromBlocks` writes `quad X` as a differential operator of order two.
+
+`RealMetaplecticRepresentation` says that the symplectic group has a double cover that acts on
+`L²(ℝⁿ)` by a strongly continuous unitary representation which intertwines `rho`, preserves
+Schwartz functions and has the operators `quad X` as infinitesimal generators. It is proved in
+`CompanionTheory.ThKR.realMetaplecticRepresentation_holds`.
+
+## References
+
+* [G. B. Folland, *Harmonic analysis in phase space* (Chapters 1 and 4)][folland1989]:
+  Chapter 1 treats the Heisenberg group and its representations, Chapter 4 the metaplectic
+  representation.
+* [A. Weil, *Sur certains groupes d'opérateurs unitaires*][weil1964]
+-/
 
 @[expose] public section
 
@@ -13,19 +101,27 @@ namespace GlobalTheory.RealWeil
 
 variable {l : Type} [Fintype l]
 
+/-- The Hilbert space `L²(ℝⁿ)` of square-integrable complex functions. -/
 abbrev L2 (l : Type) [Fintype l] : Type := Lp ℂ 2 (volume : Measure (EuclideanSpace ℝ l))
 
+/-- The space of complex Schwartz functions on `ℝⁿ`. -/
 abbrev Sch (l : Type) [Fintype l] : Type := 𝓢(EuclideanSpace ℝ l, ℂ)
 
+/-- The first half `p` of a vector `w = (p, q)` of phase space. -/
 def pPart (w : l ⊕ l → ℝ) : EuclideanSpace ℝ l := WithLp.toLp 2 fun i => w (Sum.inl i)
 
+/-- The second half `q` of a vector `w = (p, q)` of phase space. -/
 def qPart (w : l ⊕ l → ℝ) : EuclideanSpace ℝ l := WithLp.toLp 2 fun i => w (Sum.inr i)
 
+/-- The symplectic form `⟨p, q'⟩ - ⟨q, p'⟩` on phase space, for `w = (p, q)` and
+`w' = (p', q')`. -/
 def sympl (w w' : l ⊕ l → ℝ) : ℝ := ⟪pPart w, qPart w'⟫ - ⟪qPart w, pPart w'⟫
 
+/-- The factor `exp (2πi⟨q, x⟩ + πi⟨p, q⟩)` by which `rho (p, q)` multiplies a translate. -/
 def phase (w : l ⊕ l → ℝ) (x : EuclideanSpace ℝ l) : ℂ :=
   exp (((2 * π * ⟪qPart w, x⟫ + π * ⟪pPart w, qPart w⟫ : ℝ) : ℂ) * I)
 
+/-- The operator `f ↦ (x ↦ phase w x * f (x + p))` on all functions, for `w = (p, q)`. -/
 def rhoFun (w : l ⊕ l → ℝ) (f : EuclideanSpace ℝ l → ℂ) : EuclideanSpace ℝ l → ℂ :=
   fun x => phase w x * f (x + pPart w)
 
@@ -84,6 +180,7 @@ theorem memLp_rhoFun (w : l ⊕ l → ℝ) (f : L2 l) : MemLp (rhoFun w f) 2 vol
   rw [memLp_iff, eLpNorm_rhoFun]
   exact Lp.eLpNorm_lt_top f
 
+/-- `rhoFun w` as a linear isometry of `L²(ℝⁿ)`. -/
 def rhoIsometry (w : l ⊕ l → ℝ) : L2 l →ₗᵢ[ℂ] L2 l where
   toFun f := (memLp_rhoFun w f).toLp
   map_add' f g := by
@@ -112,6 +209,8 @@ theorem rhoIsometry_rhoIsometry (w w' : l ⊕ l → ℝ) (f : L2 l) :
 theorem rhoIsometry_zero (f : L2 l) : rhoIsometry 0 f = f :=
   Lp.ext ((coeFn_rhoIsometry _ _).trans (by rw [rhoFun_zero]))
 
+/-- The Schrödinger representation: `rhoFun w` as a unitary operator on `L²(ℝⁿ)`. It is a
+projective representation of phase space, by `rho_rho`. -/
 def rho (w : l ⊕ l → ℝ) : L2 l ≃ₗᵢ[ℂ] L2 l :=
   LinearIsometryEquiv.ofSurjective (rhoIsometry w) fun f =>
     ⟨(exp (((π * sympl w (-w) : ℝ) : ℂ) * I))⁻¹ • rhoIsometry (-w) f, by
@@ -124,6 +223,9 @@ theorem rho_rho (w w' : l ⊕ l → ℝ) (f : L2 l) :
 
 theorem rho_zero (f : L2 l) : rho 0 f = f := rhoIsometry_zero f
 
+/-- The derived Schrödinger representation on Schwartz functions:
+`dRho w f x = ∂_p f x + 2πi⟨q, x⟩ f x` for `w = (p, q)`. At each `x` this is the derivative
+at `0` of `t ↦ rhoFun (t • w) f x` (`hasDerivAt_rhoFun`). -/
 def dRho (w : l ⊕ l → ℝ) : Sch l →L[ℂ] Sch l :=
   lineDerivOpCLM ℂ (Sch l) (pPart w) +
     (2 * π * I : ℂ) • smulLeftCLM ℂ fun x : EuclideanSpace ℝ l => ((⟪qPart w, x⟫ : ℝ) : ℂ)
@@ -156,13 +258,13 @@ theorem hasDerivAt_rhoFun (w : l ⊕ l → ℝ) (f : Sch l) (x : EuclideanSpace 
 
 theorem dRho_add (w w' : l ⊕ l → ℝ) : dRho (w + w') = dRho w + dRho w' := by
   ext f x
-  simp only [ContinuousLinearMap.add_apply, SchwartzMap.add_apply, dRho_apply, pPart_add, qPart_add, inner_add_left,
+  simp only [ContinuousLinearMap.add_apply, dRho_apply, pPart_add, qPart_add, inner_add_left,
     map_add, ofReal_add]
   ring
 
 theorem dRho_smul (t : ℝ) (w : l ⊕ l → ℝ) : dRho (t • w) = (t : ℂ) • dRho w := by
   ext f x
-  simp only [ContinuousLinearMap.smul_apply, SchwartzMap.smul_apply, dRho_apply, pPart_smul, qPart_smul,
+  simp only [ContinuousLinearMap.smul_apply, dRho_apply, pPart_smul, qPart_smul,
     real_inner_smul_left, map_smul, ofReal_mul, smul_eq_mul, real_smul]
   ring
 
@@ -186,14 +288,16 @@ theorem dRho_comm (w w' : l ⊕ l → ℝ) :
   ext f x
   have hs : fderiv ℝ (fderiv ℝ f) x (pPart w) (pPart w') = fderiv ℝ (fderiv ℝ f) x (pPart w') (pPart w) :=
     ((f.smooth 2).contDiffAt.isSymmSndFDerivAt (by simp)) _ _
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, SchwartzMap.sub_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply, SchwartzMap.smul_apply, smul_eq_mul]
+  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply, smul_eq_mul]
   rw [dRho_apply w (dRho w' f), dRho_apply w' (dRho w f), key, key, dRho_apply, dRho_apply, hs]
   simp only [sympl, real_inner_comm (pPart w) (qPart w'), ofReal_sub]
   ring
 
 variable [DecidableEq l]
 
+/-- The operator `(4πi)⁻¹ ∑ a b, ((X * J) a b / 2) • (D a * D b + D b * D a)` on Schwartz
+functions, where `D a = dRho (Pi.single a 1)`. For `X` in `sp(2n, ℝ)` it represents `X`:
+`quad_comm` gives `quad X * dRho u - dRho u * quad X = dRho (X u)`. -/
 def quad (X : Matrix (l ⊕ l) (l ⊕ l) ℝ) : Sch l →L[ℂ] Sch l :=
   (4 * π * I : ℂ)⁻¹ • ∑ a, ∑ b, (((X * Matrix.J l ℝ) a b / 2 : ℝ) : ℂ) •
     (dRho (Pi.single a 1) * dRho (Pi.single b 1) + dRho (Pi.single b 1) * dRho (Pi.single a 1))
@@ -309,7 +413,7 @@ theorem quad_fromBlocks {A B C D : Matrix l l ℝ} (hX : fromBlocks A B C D ∈ 
     have := dRho_comm (l := l) (Pi.single (Sum.inl j) 1) (Pi.single (Sum.inr k) 1)
     rw [sympl_single] at this
     rw [← sub_eq_iff_eq_add', this]
-    by_cases h : j = k <;> simp [Matrix.J, h, Matrix.one_apply]
+    by_cases h : j = k <;> simp [Matrix.J, h]
   have hQa : ∀ k (g : Sch l), Q k g x = 2 * π * I * x k * g x := fun k g => dRho_single_inr k g x
   have hq : quad (fromBlocks A B C D) = (4 * π * I : ℂ)⁻¹ • ((∑ j, ∑ k, (B j k : ℂ) • (P j * P k)) -
       (∑ j, ∑ k, (2 * A j k : ℂ) • (Q k * P j)) - (2 * π * I * (A.trace : ℝ) : ℂ) • 1 -
@@ -334,7 +438,7 @@ theorem quad_fromBlocks {A B C D : Matrix l l ℝ} (hX : fromBlocks A B C D ∈ 
   rw [hq]
   simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply, ContinuousLinearMap.sum_apply,
     ContinuousLinearMap.add_apply, ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply,
-    SchwartzMap.smul_apply, SchwartzMap.sub_apply, SchwartzMap.add_apply, SchwartzMap.sum_apply, smul_eq_mul, hQa]
+    smul_eq_mul, hQa]
   simp only [hP, dRho_single_inl, mul_sub, Finset.mul_sum]
   congr 1
   · congr 1
@@ -354,6 +458,27 @@ namespace GlobalTheory.Published
 
 open GlobalTheory.RealWeil
 
+/-- **The metaplectic representation** of the real symplectic group `Sp(2n, ℝ)`, here
+`Matrix.symplecticGroup l ℝ`. For every nonempty finite index type `l` (so `n ≥ 1`) there are a
+topological group `G` and homomorphisms `pr : G →* Sp(2n, ℝ)`, `om` to the unitary operators on
+`L²(ℝⁿ)` and `omS` to the continuous linear operators on Schwartz functions, such that:
+
+* `pr` is a surjective covering map whose kernel is `{1, ε}` for some `ε ≠ 1`, and `om ε = -1`,
+  so `G` is a double cover of `Sp(2n, ℝ)` and `om` does not factor through `pr`;
+* `om` is strongly continuous: `g ↦ om g f` is continuous for every `f`;
+* `om g (rho w f) = rho (pr g w) (om g f)`, so `om g` intertwines the Schrödinger
+  representation `rho` with its composite with `pr g`;
+* `om g` maps Schwartz functions to Schwartz functions, acting on them as `omS g`;
+* for a continuous family `γ : ℝᵏ → G` whose image in `Sp(2n, ℝ)` is smooth, and a Schwartz
+  function `f`, the map `t ↦ om (γ t) f` is smooth;
+* every `X` in `sp(2n, ℝ)` lifts to a continuous one-parameter subgroup `γ` of `G` with
+  `pr (γ t) = exp (t • X)`, and for a Schwartz function `f` the derivative of `t ↦ om (γ t) f`
+  at `0` is `quad X f`.
+
+This is the Segal–Shale–Weil representation; see
+[G. B. Folland, *Harmonic analysis in phase space* (Chapter 4)][folland1989] and
+[A. Weil, *Sur certains groupes d'opérateurs unitaires*][weil1964]. It is proved in
+`CompanionTheory.ThKR.realMetaplecticRepresentation_holds`. -/
 def RealMetaplecticRepresentation : Prop :=
   ∀ (l : Type) [Fintype l] [DecidableEq l] [Nonempty l],
     ∃ (G : Type) (_ : Group G) (_ : TopologicalSpace G) (_ : IsTopologicalGroup G)

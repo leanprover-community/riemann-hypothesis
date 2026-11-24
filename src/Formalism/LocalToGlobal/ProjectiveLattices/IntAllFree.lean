@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.PtFree
+public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
 
 @[expose] public section
 

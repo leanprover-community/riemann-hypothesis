@@ -1,6 +1,9 @@
 module
 
 public import Formalism.AlgebraicWeights.IsAlgWeight
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RepresentationTheory.Irreducible
+public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
 
 @[expose] public section
 

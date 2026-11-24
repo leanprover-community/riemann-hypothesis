@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
+public import Mathlib.CategoryTheory.Sites.SheafCohomology.Basic
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Topology.Sheaves.Flasque
 
 @[expose] public section
+-- `Sheaf.H` and `HasExt` are stated for `sheafIsAbelian`; erase the definitionally equal
+-- `TopCat.Sheaf.instAbelian` so the kernel does not have to unfold both to compare them.
+attribute [-instance] TopCat.Sheaf.instAbelian
 
 open CategoryTheory Abelian Opposite Limits TopologicalSpace
 

@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
+public import Formalism.LocalToGlobal.GlobalTheory.HLatOps
+import Formalism.HermitianLattices.StatementLat
 
 @[expose] public section
 

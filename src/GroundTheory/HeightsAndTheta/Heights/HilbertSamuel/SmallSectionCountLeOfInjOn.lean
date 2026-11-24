@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLocalRep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsConstantShift
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmAExpand
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.EqSumMultihomogeneousComponents
 
 @[expose] public section

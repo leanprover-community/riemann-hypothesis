@@ -1,7 +1,5 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFStep
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFHoriz
 
 @[expose] public section

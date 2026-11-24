@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RhoDefs
-public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.NormalizedHeckeData
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 

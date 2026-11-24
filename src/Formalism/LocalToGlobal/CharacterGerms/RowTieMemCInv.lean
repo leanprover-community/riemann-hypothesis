@@ -28,8 +28,8 @@ theorem shift_same (hΦ : ∀ x, Φ (X x) = ∑ q, MvPolynomial.C (w x.1 q) * X 
     (hlt : ∀ ρ c q, keyL (lt (ρ, c) q) = (σ0, c.val, colf ρ q)) (σ : T) (i i' : Fin (r σ)) (t : C)
     (ρ : Fin N) (c : Fin N') (h : ¬ (σ = σ0 ∧ c.val = i.val)) :
     rowShift r n C σ i i' t (Φ (X (ρ, c))) = Φ (X (ρ, c)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hΦ, map_sum]
+
+  rw [hΦ, map_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   rw [map_mul, rowShift_C, rowShift_X, hlt, if_neg]
   intro e
@@ -40,8 +40,8 @@ theorem shift_add (hΦ : ∀ x, Φ (X x) = ∑ q, MvPolynomial.C (w x.1 q) * X (
     (hlt : ∀ ρ c q, keyL (lt (ρ, c) q) = (σ0, c.val, colf ρ q)) (i i' : Fin (r σ0)) (t : C)
     (ρ : Fin N) (c c' : Fin N') (hc : c.val = i.val) (hc' : c'.val = i'.val) :
     rowShift r n C σ0 i i' t (Φ (X (ρ, c))) = Φ (X (ρ, c)) + MvPolynomial.C t * Φ (X (ρ, c')) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [hΦ, hΦ, map_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+
+  rw [hΦ, hΦ, map_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun q _ => ?_
   have h2 : (lt (ρ, c) q).2.2 = colf ρ q := congrArg (fun x : T × ℕ × Fin n => x.2.2) (hlt ρ c q)
   have h1 : keyL (lt (ρ, c) q) = (σ0, i.val, (lt (ρ, c) q).2.2) := by rw [hlt, hc, h2]

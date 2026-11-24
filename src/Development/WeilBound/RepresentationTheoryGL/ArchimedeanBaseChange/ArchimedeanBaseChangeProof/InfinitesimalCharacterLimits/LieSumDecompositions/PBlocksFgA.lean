@@ -2,9 +2,47 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.LieSumDecompositions.PBlocksDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetDiagonalBlockActsByInfinitesimalCharac
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LieDSingleLeviEmbEqZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliLeviFactorizationSum
-public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSliceTens
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LieDSingleLeviEmbEqZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.IsSliceMap
 
 @[expose] public section
 
@@ -110,11 +148,11 @@ theorem lie_sum_single (X : Lie E (r + s)) (F : Sm E (r + s)) :
   have hdec : X = ∑ p, ∑ q, (toL (Matrix.single p q (X p q)) : Lie E (r + s)) :=
     Matrix.matrix_eq_sum_single (Matrix.of X)
   conv_lhs => rw [hdec]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, LinearMap.sum_apply]
+
+  rw [map_sum, LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun p _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, LinearMap.sum_apply]
+
+  rw [map_sum, LinearMap.sum_apply]
 
 theorem right_slice_eq_sum (F : Sm E (r + s)) {n : ℕ} (b : Fin n → Sm E r) (q : Fin n → Sm E s)
     (hexp : ∀ m : GA E r × GA E s, F.1 (lev (Ad E) r s m) = ∑ i, (b i).1 m.1 * (q i).1 m.2) (m₁ : GA E r) :
@@ -137,9 +175,9 @@ theorem left_slice_lie_second_block (F : Sm E (r + s)) {n : ℕ} (b : Fin n → 
     (m₂ : GA E s) :
     sl0 m₂ (lie E (r + s) (GlobalTheory.BlockCap.blockCLM (e2 r s) 1 Y) F) = ∑ i, (lie E s Y (q i)).1 m₂ • b i := by
   refine Subtype.ext (funext fun m₁ => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [left_slice_apply, ← right_slice_apply, right_slice_lie_second_block, right_slice_eq_sum F b q hexp, map_sum, Submodule.coe_sum, Finset.sum_apply,
-    Submodule.coe_sum, Finset.sum_apply]
+
+  rw [left_slice_apply, ← right_slice_apply, right_slice_lie_second_block, right_slice_eq_sum F b q hexp, map_sum, Submodule.coe_sum, Finset.sum_apply,
+  Submodule.coe_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul]
   change (b i).1 m₁ * (lie E s Y (q i)).1 m₂ = (lie E s Y (q i)).1 m₂ * (b i).1 m₁
@@ -150,9 +188,9 @@ theorem right_slice_lie_first_block (F : Sm E (r + s)) {n : ℕ} (b : Fin n → 
     (m₁ : GA E r) :
     sl1 m₁ (lie E (r + s) (GlobalTheory.BlockCap.blockCLM (e2 r s) 0 Y) F) = ∑ i, (lie E r Y (b i)).1 m₁ • q i := by
   refine Subtype.ext (funext fun m₂ => ?_)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [right_slice_apply, ← left_slice_apply, left_slice_lie_first_block, left_slice_eq_sum F b q hexp, map_sum, Submodule.coe_sum, Finset.sum_apply,
-    Submodule.coe_sum, Finset.sum_apply]
+
+  rw [right_slice_apply, ← left_slice_apply, left_slice_lie_first_block, left_slice_eq_sum F b q hexp, map_sum, Submodule.coe_sum, Finset.sum_apply,
+  Submodule.coe_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul]
   change (q i).1 m₂ * (lie E r Y (b i)).1 m₁ = (lie E r Y (b i)).1 m₁ * (q i).1 m₂
@@ -192,11 +230,11 @@ theorem key_left (W : Submodule ℂ (Sm E r)) (hW : _root_.GlobalTheory.CuspRep.
     (hexp : ∀ m : GA E r × GA E s, F.1 (lev (Ad E) r s m) = ∑ i, (b i).1 m.1 * (q i).1 m.2)
     (X : Lie E (r + s)) (hX : ∀ (i : Fin s) (j : Fin r), X (Fin.natAdd r i) (Fin.castAdd s j) = 0)
     (m₂ : GA E s) : sl0 m₂ (lie E (r + s) X F) ∈ W := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lie_sum_single, map_sum]
+
+  rw [lie_sum_single, map_sum]
   refine W.sum_mem fun p _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine W.sum_mem fun q' _ => ?_
   induction p using Fin.addCases with
   | left p =>
@@ -227,11 +265,11 @@ theorem key_right (W : Submodule ℂ (Sm E s)) (hW : _root_.GlobalTheory.CuspRep
     (hexp : ∀ m : GA E r × GA E s, F.1 (lev (Ad E) r s m) = ∑ i, (b i).1 m.1 * (q i).1 m.2)
     (X : Lie E (r + s)) (hX : ∀ (i : Fin s) (j : Fin r), X (Fin.natAdd r i) (Fin.castAdd s j) = 0)
     (m₁ : GA E r) : sl1 m₁ (lie E (r + s) X F) ∈ W := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [lie_sum_single, map_sum]
+
+  rw [lie_sum_single, map_sum]
   refine W.sum_mem fun p _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine W.sum_mem fun q' _ => ?_
   induction p using Fin.addCases with
   | left p =>

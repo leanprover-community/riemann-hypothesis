@@ -1,7 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocJEq
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+
+set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 
@@ -13,40 +16,19 @@ namespace Formalism.L2.SG.Pf.LocJEq
 
 variable {D : D7} {X : HidaSetting D} {θ : ℝ} (C : Choice X θ)
 
-private theorem isUnit_y_det (τ : D.what₂.Tau) : IsUnit (C.y τ).det := by
-  obtain ⟨hQiQ, hQQi, hH, -⟩ := C.isT τ
-  have hJJ : Formalism.REAL.Jm (X.B.I.ε (vOf X τ)) * Formalism.REAL.Jm (X.B.I.ε (vOf X τ)) = 1 := by
-    rw [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    congr 1
-    funext a
-    split_ifs <;> norm_num
-  generalize Formalism.REAL.Jm (X.B.I.ε (vOf X τ)) = J at hH hJJ
-  have hHinv : (C.Qi τ * J * (C.Qi τ)ᴴ) * Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS = 1 := by
-    rw [← hH]
-    calc C.Qi τ * J * (C.Qi τ)ᴴ * ((C.Q τ)ᴴ * J * C.Q τ)
-        = C.Qi τ * J * (C.Q τ * C.Qi τ)ᴴ * J * C.Q τ := by
-          rw [Matrix.conjTranspose_mul]
-          simp only [Matrix.mul_assoc]
-      _ = 1 := by
-          rw [hQQi, Matrix.conjTranspose_one, Matrix.mul_one, Matrix.mul_assoc (C.Qi τ), hJJ, Matrix.mul_one, hQiQ]
-  have hy' : (C.y τ)ᴴ * Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS * C.y τ = Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS := C.y_mem τ
-  have h1 : (C.Qi τ * J * (C.Qi τ)ᴴ * ((C.y τ)ᴴ * Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS)) * C.y τ = 1 := by
-    rw [Matrix.mul_assoc, hy', hHinv]
-  exact Matrix.isUnit_det_of_left_inverse h1
-
 private theorem conj_lemma_2 (τ : D.what₂.Tau) (w : Matrix (Fin X.B.I.n) (Fin X.B.I.n) ℂ) :
     C.Q τ * (C.Qi τ * w * C.Q τ * (C.y τ)⁻¹) * C.y τ * C.Qi τ = w := by
   obtain ⟨hQiQ, hQQi, -, -⟩ := C.isT τ
   simp only [Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (C.Q τ) (C.Qi τ), hQQi, Matrix.one_mul, ← Matrix.mul_assoc (C.y τ)⁻¹ (C.y τ),
-    Matrix.nonsing_inv_mul _ (isUnit_y_det C τ), Matrix.one_mul, hQQi, Matrix.mul_one]
+    Matrix.nonsing_inv_mul _ (_root_.Formalism.L2.SG.Pf.LocJEq.unit_det_y C τ), Matrix.one_mul, hQQi, Matrix.mul_one]
 
 private theorem Qi_mul_Q_conj_mul_y_inv_eq (τ : D.what₂.Tau) (x : Formalism.QuantumDeterminants.Mt D.R.k D.R.rS) :
     C.Qi τ * (C.Q τ * Matrix.of x * C.y τ * C.Qi τ) * C.Q τ * (C.y τ)⁻¹ = Matrix.of x := by
   obtain ⟨hQiQ, hQQi, -, -⟩ := C.isT τ
   simp only [Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (C.Qi τ) (C.Q τ), hQiQ, Matrix.one_mul, ← Matrix.mul_assoc (C.Qi τ) (C.Q τ), hQiQ,
-    Matrix.one_mul, Matrix.mul_nonsing_inv _ (isUnit_y_det C τ), Matrix.mul_one]
+    Matrix.one_mul, Matrix.mul_nonsing_inv _ (_root_.Formalism.L2.SG.Pf.LocJEq.unit_det_y C τ), Matrix.mul_one]
 
 theorem mem_of_range (τ : D.what₂.Tau) (γ : Formalism.REAL.UJ (X.B.I.ε (vOf X τ))) (x : Set.range (Smap C τ γ)) :
     umat γ * (C.Q τ * Matrix.of x.1 * C.y τ * C.Qi τ) ∈ UJset (X.B.I.ε (vOf X τ)) := by
@@ -93,7 +75,7 @@ theorem smap_measEmb (τ : D.what₂.Tau) (γ : Formalism.REAL.UJ (X.B.I.ε (vOf
         have hx' : umat γ * (C.Q τ * Matrix.of x * C.y τ * C.Qi τ) ∈ UJset (X.B.I.ε (vOf X τ)) := hx
         refine ⟨ujOf' _ hx', ?_⟩
         unfold Smap umat ujOf'
-        simp only [Subgroup.coe_mul, Subgroup.coe_inv, Units.val_mul, Units.val_mk, Units.inv_mul_cancel_left]
+        simp only [Subgroup.coe_mul, Subgroup.coe_inv, Units.val_mul, Units.inv_mul_cancel_left]
         rw [Qi_mul_Q_conj_mul_y_inv_eq C τ]
         simp
     rw [hS]
@@ -108,7 +90,7 @@ theorem smap_measEmb (τ : D.what₂.Tau) (γ : Formalism.REAL.UJ (X.B.I.ε (vOf
     apply Subtype.ext
     apply Units.ext
     unfold smapInv ujOf' Set.rangeFactorization Smap
-    simp only [Equiv.apply_symm_apply, Units.val_mk]
+    simp only [Equiv.apply_symm_apply]
     rw [conj_lemma_2 C τ]
     unfold umat
     simp only [Subgroup.coe_mul, Subgroup.coe_inv, Units.val_mul, Units.mul_inv_cancel_left]
@@ -136,7 +118,7 @@ theorem rank_one_continuous {V V' : Type*} [NormedAddCommGroup V] [InnerProductS
     (hb : Continuous b) : Continuous fun t => Formalism.L2.SG.TermOp.rk1 (a t) (b t) := by
   unfold Formalism.L2.SG.TermOp.rk1
   have h1 : Continuous fun t => innerSL ℂ (b t) := (innerSL ℂ).continuous.comp hb
-  exact (ContinuousLinearMap.smulRightL ℂ V' V).continuous₂.comp₂ h1 ha
+  exact (StrongDual.smulRightL ℂ V' V).continuous₂.comp₂ h1 ha
 
 theorem integrand_aesm (u u' : D.what₂.Word) (τ : D.what₂.Tau) (γ : Formalism.REAL.UJ (X.B.I.ε (vOf X τ)))
     (ν : Measure (Formalism.REAL.UJ (X.B.I.ε (vOf X τ)))) :
@@ -145,9 +127,7 @@ theorem integrand_aesm (u u' : D.what₂.Word) (τ : D.what₂.Tau) (γ : Formal
         ((locS hB u u' τ).Φ (trG (C.Q τ) (C.Qi τ) γ * Matrix.of x))) (ν.map (Smap C τ γ)) := by
   have hw : ∀ w : D.what₂.Word, Continuous (X.Wloc w (vOf X τ)) := fun w => by
     first
-      | exact X.W.Wloc_cont w _
       | exact X.Wloc_cont w _
-      | exact X.toWBlk.Wloc_cont w _
   rw [(smap_measEmb C τ γ).aestronglyMeasurable_map_iff]
   have he : (fun x : Formalism.QuantumDeterminants.Mt D.R.k D.R.rS =>
       (innerSL ℂ ((locS hB u u' τ).Φ' (Matrix.of x))).smulRight

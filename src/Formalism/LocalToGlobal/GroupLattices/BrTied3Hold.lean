@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ServJointF
-public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
+public import Formalism.LocalToGlobal.Divisibility.DivisionCompatibleToSub2Indef2
+import Formalism.LocalToGlobal.GroupLattices.JointServices.LevelOperatorFixesImage
 
 @[expose] public section
 

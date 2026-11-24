@@ -1,10 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalDefs
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerOrd
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModule
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MulDistribMulActionGalUnitsFiniteSubfield
+public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDefs
+import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
+import GroundTheory.ProfiniteCohomology.Factor
 
 @[expose] public section
 
@@ -73,26 +75,21 @@ theorem levelRes_apply (σ : galUnramifiedOutside K.1 ℚ̄ S) (x : N.1) :
 
 theorem levelRes_surjective : Function.Surjective (levelRes S N hN) := by
   intro γ
-  refine ⟨(γ.liftNormal ℚ̄).restrictNormal (maxUnramifiedOutside K.1 ℚ̄ S), ?_⟩
-  rw [levelRes, decompHom_eq_iff]
+  let E := maxUnramifiedOutside K.1 ℚ̄ S
+  let σ := γ.liftNormal ℚ̄
+  refine ⟨σ.restrictNormal E, (decompHom_eq_iff (Kv := K.1) (levelIncl S N hN) _ γ).2 ?_⟩
   intro x
-  apply Subtype.val_injective
-  change ((γ x : N.1) : ℚ̄) = (((γ.liftNormal ℚ̄).restrictNormal (maxUnramifiedOutside K.1 ℚ̄ S)
-    ⟨x, hN x x.2⟩ : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄)
-  rw [show (((γ.liftNormal ℚ̄).restrictNormal (maxUnramifiedOutside K.1 ℚ̄ S) ⟨x, hN x x.2⟩ :
-      maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) = γ.liftNormal ℚ̄ (algebraMap (maxUnramifiedOutside K.1 ℚ̄ S) ℚ̄
-        ⟨x, hN x x.2⟩) from AlgEquiv.restrictNormal_commutes (γ.liftNormal ℚ̄)
-          (maxUnramifiedOutside K.1 ℚ̄ S) ⟨x, hN x x.2⟩]
-  exact (AlgEquiv.liftNormal_commutes γ ℚ̄ x).symm
+  exact Subtype.ext ((AlgEquiv.liftNormal_commutes γ ℚ̄ x).symm.trans
+    (AlgEquiv.restrictNormal_commutes σ E (levelIncl S N hN x)).symm)
 
 theorem decompHom_embedLevel_eq (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
     decompHom (v.adicCompletion K.1) (embedLevel ι N) σ =
       levelRes S N hN (decompHomS (v.adicCompletion K.1) S ι σ) := by
-  rw [decompHom_eq_iff]
-  intro x
-  rw [embedLevel_apply, embedLevel_apply, levelRes_apply]
-  exact decompHom_apply (Kv := v.adicCompletion K.1) (ι.comp (maxUnramifiedOutside K.1 ℚ̄ S).val) σ
-    ⟨x, hN x x.2⟩
+  let τ := decompHomS (v.adicCompletion K.1) S ι σ
+  refine (decompHom_eq_iff (Kv := v.adicCompletion K.1) (embedLevel ι N) σ _).2 fun x => ?_
+  exact (congrArg ι (levelRes_apply S N hN τ x)).trans
+    (decompHom_apply (Kv := v.adicCompletion K.1)
+      (ι.comp (maxUnramifiedOutside K.1 ℚ̄ S).val) σ (levelIncl S N hN x))
 
 end Levels
 
@@ -104,6 +101,20 @@ def unitOfMem {N : FiniteSubfield} (y : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ)
     y.ne_zero (Subtype.ext (congrArg Subtype.val h : ((y : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) =
       ((0 : N.1) : ℚ̄)))
 
+
+private theorem matrixPair_congr {G H X : Type} (r : G → H) (f : (Fin 2 → G) → X)
+    (hf : ∀ u u', (∀ i, r (u i) = r (u' i)) → f u = f u')
+    {a b a' b' : G} (ha : r a = r a') (hb : r b = r b') :
+    f ![a, b] = f ![a', b'] :=
+  hf ![a, b] ![a', b'] (Fin.forall_fin_two.mpr ⟨ha, hb⟩)
+
+private theorem matrixPair_eta {G : Type} (u : Fin 2 → G) : u = ![u 0, u 1] :=
+  funext (Fin.forall_fin_two.mpr ⟨rfl, rfl⟩)
+
+private theorem cocycle_add_eq {A : Type} [AddCommGroup A] {a b b' c c' d : A}
+    (h : a - b + c - d = 0) (hb : b = b') (hc : c = c') : a + c' = b' + d := by
+  rw [← hb, ← hc, ← sub_eq_zero, ← h]
+  abel
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in
@@ -123,6 +134,8 @@ theorem exists_level_cocycle (f : (Fin 2 → galUnramifiedOutside K.1 ℚ̄ S) �
 
   obtain ⟨E, hEf, hEU⟩ := (krullTopology_mem_nhds_one_iff K.1 (maxUnramifiedOutside K.1 ℚ̄ S)
     (U : Set (galUnramifiedOutside K.1 ℚ̄ S))).1 (U.toOpenSubgroup.isOpen.mem_nhds U.one_mem')
+  let : Module K.1 E := E.module'
+  have : Module.Free K.1 E := Module.Free.of_divisionRing K.1 E
   let bE := Module.finBasis K.1 E
 
   have hfin : (Set.range f).Finite := hf.range_finite
@@ -148,22 +161,16 @@ theorem exists_level_cocycle (f : (Fin 2 → galUnramifiedOutside K.1 ℚ̄ S) �
       intro i
       have hmem : ((bE i : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) ∈ N.1 :=
         hTN _ (Finset.mem_union_left _ (Finset.mem_image.2 ⟨i, Finset.mem_univ _, rfl⟩))
-      have e := congrArg (fun τ : Gal(N.1/K.1) => ((τ ⟨_, hmem⟩ : N.1) : ℚ̄)) h
-      simp only [levelRes_apply] at e
-      exact Subtype.ext e.symm
-    have hsum : x = ∑ i, (bE.repr ⟨x, hx⟩ i) • (bE i : maxUnramifiedOutside K.1 ℚ̄ S) := by
-      have := congrArg (fun e : E => (e : maxUnramifiedOutside K.1 ℚ̄ S)) (bE.sum_repr ⟨x, hx⟩)
-      simp only [IntermediateField.coe_sum, IntermediateField.coe_smul] at this
-      exact this.symm
-    have h1 : σ' x = σ x := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hsum, map_sum, map_sum]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      have hs : ∀ (τ : galUnramifiedOutside K.1 ℚ̄ S) (r : K.1) (y : maxUnramifiedOutside K.1 ℚ̄ S),
-          τ (r • y) = r • τ y := fun τ r y => τ.toLinearEquiv.map_smul r y
-      rw [hs, hs, hb i]
-    rw [AlgEquiv.mul_apply, h1]
-    exact σ.symm_apply_apply x
+      let z : N.1 := ⟨_, hmem⟩
+      have e := congrArg (fun τ : Gal(N.1/K.1) => ((τ z : N.1) : ℚ̄)) h
+      exact Subtype.ext ((levelRes_apply S N hN σ' z).symm.trans
+        (e.symm.trans (levelRes_apply S N hN σ z)))
+    let incl := E.val.toLinearMap
+    let φ := σ'.toLinearEquiv.toLinearMap.comp incl
+    let ψ := σ.toLinearEquiv.toLinearMap.comp incl
+    have h1 : σ' x = σ x :=
+      LinearMap.congr_fun (bE.ext (f₁ := φ) (f₂ := ψ) hb) ⟨x, hx⟩
+    exact (congrArg σ.symm h1).trans (σ.symm_apply_apply x)
   have hfac : ∀ u u' : Fin 2 → galUnramifiedOutside K.1 ℚ̄ S,
       (∀ i, levelRes S N hN (u i) = levelRes S N hN (u' i)) → f u = f u' :=
     fun u u' h => hU u u' fun i => hres _ _ (h i)
@@ -172,72 +179,43 @@ theorem exists_level_cocycle (f : (Fin 2 → galUnramifiedOutside K.1 ℚ̄ S) �
   choose lift hlift using levelRes_surjective S N hN
   let c : Gal(N.1/K.1) × Gal(N.1/K.1) → N.1ˣ := fun p =>
     unitOfMem S (f ![lift p.1, lift p.2]).toMul (hval _)
-  have hc_val : ∀ p, ((c p : N.1) : ℚ̄) =
-      (((f ![lift p.1, lift p.2]).toMul : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) : maxUnramifiedOutside K.1 ℚ̄ S).1 :=
-    fun p => rfl
+  let val := fun y : Additive (maxUnramifiedOutside K.1 ℚ̄ S)ˣ =>
+    ((y.toMul : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄)
+  have hc_val (p : Gal(N.1/K.1) × Gal(N.1/K.1)) :
+      ((c p : N.1) : ℚ̄) = val (f ![lift p.1, lift p.2]) := rfl
   have hf2 : ∀ a b : galUnramifiedOutside K.1 ℚ̄ S,
-      f ![a, b] = f ![lift (levelRes S N hN a), lift (levelRes S N hN b)] := by
-    intro a b
-    refine hfac _ _ fun i => ?_
-    fin_cases i
-    · exact (hlift _).symm
-    · exact (hlift _).symm
+      f ![a, b] = f ![lift (levelRes S N hN a), lift (levelRes S N hN b)] :=
+    fun a b => matrixPair_congr (levelRes S N hN) f hfac
+      (hlift (levelRes S N hN a)).symm (hlift (levelRes S N hN b)).symm
   have hc_spec : ∀ u : Fin 2 → galUnramifiedOutside K.1 ℚ̄ S,
-      (((f u).toMul : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) : maxUnramifiedOutside K.1 ℚ̄ S).1 =
-        ((c (levelRes S N hN (u 0), levelRes S N hN (u 1)) : N.1) : ℚ̄) := by
-    intro u
-    have hu : u = ![u 0, u 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hc_val, hu, hf2]
-    rfl
+      val (f u) = ((c (levelRes S N hN (u 0), levelRes S N hN (u 1)) : N.1) : ℚ̄) :=
+    fun u => (congrArg (val ∘ f) (matrixPair_eta u)).trans
+      ((congrArg val (hf2 (u 0) (u 1))).trans
+        (hc_val (levelRes S N hN (u 0), levelRes S N hN (u 1))).symm)
   refine ⟨N, hKN, hNn, hN, c, ?_, hc_spec⟩
   intro g h j
-  have hd := hcoc ![lift g, lift h, lift j]
-  rw [inhomogeneousCochains_d_two_apply'] at hd
-  have e1 : f ![(![lift g, lift h, lift j] : Fin 3 → galUnramifiedOutside K.1 ℚ̄ S) 0 *
-      (![lift g, lift h, lift j] : Fin 3 → galUnramifiedOutside K.1 ℚ̄ S) 1,
-      (![lift g, lift h, lift j] : Fin 3 → galUnramifiedOutside K.1 ℚ̄ S) 2] =
-      f ![lift (g * h), lift j] := by
-    refine hfac _ _ fun i => ?_
-    fin_cases i
-    · change levelRes S N hN (lift g * lift h) = levelRes S N hN (lift (g * h))
-      rw [map_mul, hlift, hlift, hlift]
-    · rfl
-  have e2 : f ![(![lift g, lift h, lift j] : Fin 3 → galUnramifiedOutside K.1 ℚ̄ S) 0,
-      (![lift g, lift h, lift j] : Fin 3 → galUnramifiedOutside K.1 ℚ̄ S) 1 *
-      (![lift g, lift h, lift j] : Fin 3 → galUnramifiedOutside K.1 ℚ̄ S) 2] =
-      f ![lift g, lift (h * j)] := by
-    refine hfac _ _ fun i => ?_
-    fin_cases i
-    · rfl
-    · change levelRes S N hN (lift h * lift j) = levelRes S N hN (lift (h * j))
-      rw [map_mul, hlift, hlift, hlift]
-  rw [e1, e2] at hd
-  have key : (galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)).ρ (lift g) (f ![lift h, lift j]) +
-      f ![lift g, lift (h * j)] = f ![lift (g * h), lift j] + f ![lift g, lift h] := by
-    rw [← sub_eq_zero, ← hd]
-    change _ = (galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)).ρ (lift g) (f ![lift h, lift j]) -
-      f ![lift (g * h), lift j] + f ![lift g, lift (h * j)] - f ![lift g, lift h]
-    abel
-  have key' := congrArg (fun y : Additive (maxUnramifiedOutside K.1 ℚ̄ S)ˣ =>
-    (((Additive.toMul y : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄)) key
-  simp only [toMul_add, Units.val_mul, IntermediateField.coe_mul] at key'
-  apply Units.ext
-  apply Subtype.ext
-  simp only [Units.val_mul, IntermediateField.coe_mul]
-  rw [hc_val, hc_val, hc_val]
-  have hg : (((g • c (h, j) : N.1ˣ) : N.1) : ℚ̄) = (((Additive.toMul
-      ((galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)).ρ (lift g) (f ![lift h, lift j])) :
-        (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) := by
-    have e : (((g • c (h, j) : N.1ˣ) : N.1) : ℚ̄) =
-        ((levelRes S N hN (lift g) (c (h, j) : N.1) : N.1) : ℚ̄) := by
-      rw [hlift g]
-      rfl
-    rw [e, levelRes_apply]
-    rfl
-  rw [hg]
-  exact key'.symm
+  let A := galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)
+  let u : Fin 3 → galUnramifiedOutside K.1 ℚ̄ S := ![lift g, lift h, lift j]
+  have hd := (inhomogeneousCochains_d_two_apply' A f u).symm.trans (hcoc u)
+  have hmul (a b : Gal(N.1/K.1)) :
+      levelRes S N hN (lift a * lift b) = levelRes S N hN (lift (a * b)) :=
+    (map_mul (levelRes S N hN) (lift a) (lift b)).trans
+      ((congrArg₂ (· * ·) (hlift a) (hlift b)).trans (hlift (a * b)).symm)
+  have e1 : f ![lift g * lift h, lift j] = f ![lift (g * h), lift j] :=
+    matrixPair_congr (levelRes S N hN) f hfac (hmul g h) rfl
+  have e2 : f ![lift g, lift h * lift j] = f ![lift g, lift (h * j)] :=
+    matrixPair_congr (levelRes S N hN) f hfac rfl (hmul h j)
+  have key : A.ρ (lift g) (f ![lift h, lift j]) + f ![lift g, lift (h * j)] =
+      f ![lift (g * h), lift j] + f ![lift g, lift h] :=
+    cocycle_add_eq (A := Additive (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) hd e1 e2
+  let z : N.1 := c (h, j)
+  have hg : ((g z : N.1) : ℚ̄) = val (A.ρ (lift g) (f ![lift h, lift j])) :=
+    (congrArg (fun τ : Gal(N.1/K.1) => ((τ z : N.1) : ℚ̄)) (hlift g).symm).trans
+      (levelRes_apply S N hN (lift g) z)
+  exact Units.ext (Subtype.ext
+    ((congrArg₂ (fun x y : ℚ̄ => x * y) (hc_val (g * h, j)) (hc_val (g, h))).trans
+      ((congrArg val key.symm).trans
+        (congrArg₂ (fun x y : ℚ̄ => x * y) hg.symm (hc_val (g, h * j)).symm))))
 
 end LevelCocycle
 
@@ -245,13 +223,19 @@ theorem ordEmb_eq_ordPlace (N : FiniteSubfield) [Fact (K ≤ N)]
     (hN : ∀ x ∈ N.1, x ∈ maxUnramifiedOutside K.1 ℚ̄ S) (y : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ)
     (u : N.1ˣ) (hyu : ((y : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) = ((u : N.1) : ℚ̄)) :
     ordEmb S ι hv (Additive.ofMul y) = ordPlace ι N u := by
-  have hy : ((maxUnitsToUnits S y : ℚ̄ˣ) : ℚ̄) ∈ N.1 := by
-    change ((y : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) ∈ N.1
-    rw [hyu]
-    exact (u : N.1).2
-  have hv' := valuation_placeOfEmbedding_eq S ι hv N hN (maxUnitsToUnits S y) hy
-  have hu : (u : N.1) = ⟨(maxUnitsToUnits S y : ℚ̄), hy⟩ := Subtype.ext hyu.symm
-  rw [ordEmb_apply, ordPlace, hu, hv', WithZero.log_exp, neg_neg]
+  let z := maxUnitsToUnits S y
+  have hy : (z : ℚ̄) ∈ N.1 := Eq.mpr (congrArg (fun x : ℚ̄ => x ∈ N.1) hyu) (u : N.1).2
+  have hu : (⟨(z : ℚ̄), hy⟩ : N.1) = u := Subtype.ext hyu
+  let val := (placeOfEmbedding ι N).1.valuation N.1
+  have hv' := valuation_placeOfEmbedding_eq S ι hv N hN z hy
+  calc
+    ordEmb S ι hv (Additive.ofMul y) = ordEmbFun ι z := ordEmb_apply S ι hv y
+    _ = -(-ordEmbFun ι z) := (neg_neg _).symm
+    _ = -WithZero.log (WithZero.exp (-ordEmbFun ι z)) :=
+      congrArg Neg.neg (WithZero.log_exp _).symm
+    _ = -WithZero.log (val u) :=
+      congrArg (fun x => -WithZero.log x) (hv'.symm.trans (congrArg val hu))
+    _ = ordPlace ι N u := rfl
 
 
 set_option synthInstance.maxHeartbeats 400000 in
@@ -282,95 +266,106 @@ theorem coboundary_iff_of_level (N : FiniteSubfield) [Fact (K ≤ N)] [Normal K.
       IsLocallyConstant (fun σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) =>
         w fun _ => σ) :=
     fun w hw => hw.comp_continuous (continuous_pi fun _ => continuous_id)
+  let d := decompHom (v.adicCompletion K.1) (embedLevel ι N)
+  let em := Units.map (embedLevel ι N).toRingHom.toMonoidHom
   constructor
   · rintro ⟨w, hw, hwz⟩
-    have hbc : ∀ σ τ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1),
-        σ • Additive.toMul (w fun _ => τ) / Additive.toMul (w fun _ => σ * τ) *
-          Additive.toMul (w fun _ => σ) =
-        Units.map (embedLevel ι N).toRingHom.toMonoidHom
-          (c (decompHom (v.adicCompletion K.1) (embedLevel ι N) σ,
-            decompHom (v.adicCompletion K.1) (embedLevel ι N) τ)) := by
-      intro σ τ
-      have h1 : a ![σ, τ] = (galUnitsZ (v.adicCompletion K.1) (AlgebraicClosure (v.adicCompletion K.1))).ρ σ
-          (w fun _ => τ) - w (fun _ => σ * τ) + w (fun _ => σ) := hwz ![σ, τ]
-      have h2 : Additive.toMul (a ![σ, τ]) = σ • Additive.toMul (w fun _ => τ) /
-          Additive.toMul (w fun _ => σ * τ) * Additive.toMul (w fun _ => σ) :=
-        (congrArg Additive.toMul h1).trans (toMul_galUnitsZ_coboundary σ _ _ _)
-      apply Units.ext
-      exact (congrArg Units.val h2.symm).trans (ha ![σ, τ])
-    obtain ⟨h, hh, hhc⟩ := exists_ord_coboundary_of_mulCoboundary ι N c hc
-      (fun σ => Additive.toMul (w fun _ => σ)) ((hconst w hw).comp Additive.toMul) hbc
-    refine ⟨fun g => h (g 0), hh.comp_continuous (continuous_apply 0), fun u => ?_⟩
-    rw [ho u, ← hhc (u 0) (u 1)]
-    rfl
+    let b := fun σ => Additive.toMul (w fun _ => σ)
+    have hbc (σ τ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
+        galUnitsHom (v.adicCompletion K.1) _ σ (b τ) / b (σ * τ) * b σ = em (c (d σ, d τ)) :=
+      Units.ext ((congrArg (fun y : Additive (AlgebraicClosure (v.adicCompletion K.1))ˣ =>
+        (y.toMul : AlgebraicClosure (v.adicCompletion K.1))) (hwz ![σ, τ]).symm).trans
+          (ha ![σ, τ]))
+    have hex := exists_ord_coboundary_of_mulCoboundary ι N c hc b
+      ((hconst w hw).comp Additive.toMul) hbc
+    rcases hex with ⟨h, hh, hhc⟩
+    exact ⟨fun g => h (g 0), hh.comp_continuous (continuous_apply 0),
+      fun u => (ho u).trans (hhc (u 0) (u 1)).symm⟩
   · rintro ⟨w, hw, hwz⟩
-    have hhc : ∀ σ τ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1),
-        (w fun _ => τ) - (w fun _ => σ * τ) + (w fun _ => σ) =
-        ordPlace ι N (c (decompHom (v.adicCompletion K.1) (embedLevel ι N) σ,
-          decompHom (v.adicCompletion K.1) (embedLevel ι N) τ)) := by
-      intro σ τ
-      have h1 : o ![σ, τ] = (w fun _ => τ) - (w fun _ => σ * τ) + (w fun _ => σ) := hwz ![σ, τ]
-      exact h1.symm.trans (ho ![σ, τ])
-    obtain ⟨b, hb, hbc⟩ := exists_mulCoboundary_of_ord ι N he c hc (fun σ => w fun _ => σ)
-      (hconst w hw) hhc
-    refine ⟨fun g => Additive.ofMul (b (g 0)),
-      (hb.comp_continuous (continuous_apply 0)).comp Additive.ofMul, fun u => ?_⟩
-    apply Additive.toMul.injective
-    apply Units.ext
-    rw [ha u, ← hbc (u 0) (u 1)]
-    rfl
+    let h := fun σ => w fun _ => σ
+    have hhc (σ τ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
+        h τ - h (σ * τ) + h σ = ordPlace ι N (c (d σ, d τ)) :=
+      (hwz ![σ, τ]).symm.trans (ho ![σ, τ])
+    have hex := exists_mulCoboundary_of_ord ι N he c hc h (hconst w hw) hhc
+    rcases hex with ⟨b, hb, hbc⟩
+    exact ⟨fun g => Additive.ofMul (b (g 0)),
+      (hb.comp_continuous (continuous_apply 0)).comp Additive.ofMul, fun u =>
+        Additive.toMul.injective (Units.ext
+          ((ha u).trans (congrArg Units.val (hbc (u 0) (u 1)).symm)))⟩
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 4000000 in
+private theorem cohomologyMapAlong_eq_zero_iff_coboundary
+    {k G H : Type} [CommRing k] [Group G] [Group H] [TopologicalSpace G]
+    [TopologicalSpace H] [IsTopologicalGroup G] [IsTopologicalGroup H]
+    (A : Rep.{0} k G) (B : Rep.{0} k H) [IsDiscreteRep A] [IsDiscreteRep B]
+    (φ : H →* G) (hφ : Continuous φ) (m : Rep.res φ A ⟶ B) (z : cocycles A 2) :
+    (cohomologyMapAlong φ hφ m 2).hom (cohomologyπ A 2 z) = 0 ↔
+      ∃ w : (Fin 1 → H) → B, IsLocallyConstant w ∧
+        ∀ u : Fin 2 → H, m.hom (cochainOf A (cocycleι A 2 z) (φ ∘ u)) =
+          B.ρ (u 0) (w fun _ => u 1) - w (fun _ => u 0 * u 1) + w (fun _ => u 0) := by
+  rw [cohomologyMapAlong_cohomologyπ φ hφ m z,
+    cohomologyπ_two_eq_zero_iff_locallyConstant B, cochainOf_cocycleι_cocyclesMapAlong φ hφ m z]
+
+private theorem cohomologyMapAlong_uliftInt_eq_zero_iff_coboundary
+    {G H : Type} [Group G] [Group H] [TopologicalSpace G] [TopologicalSpace H]
+    [IsTopologicalGroup G] [IsTopologicalGroup H]
+    (A : Rep.{0} (ULift.{0} ℤ) G) (B : Rep.{0} ℤ H) [IsDiscreteRep A] [IsDiscreteRep B]
+    (φ : H →* G) (hφ : Continuous φ) (m : Rep.res φ (uliftIntToIntRep A) ⟶ B)
+    (z : cocycles A 2) :
+    (cohomologyMapAlong φ hφ m 2).hom (cohomologyULiftIntAddEquiv A 2 (cohomologyπ A 2 z)) = 0 ↔
+      ∃ w : (Fin 1 → H) → B, IsLocallyConstant w ∧
+        ∀ u : Fin 2 → H, m.hom (cochainOf A (cocycleι A 2 z) (φ ∘ u)) =
+          B.ρ (u 0) (w fun _ => u 1) - w (fun _ => u 0 * u 1) + w (fun _ => u 0) := by
+  rw [cohomologyULiftIntAddEquiv_cohomologyπ' A z,
+    cohomologyMapAlong_eq_zero_iff_coboundary (uliftIntToIntRep A) B φ hφ m (cocyclesULiftInt A z),
+    cochainOf_cocycleι_cocyclesULiftInt A z]
+
 theorem gsLocalRes_eq_zero_iff (x : cohomology (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2) :
     (gsLocalRes S ι 2).hom (cohomologyULiftIntAddEquiv _ 2 x) = 0 ↔
       (cohomologyMapAlong (decompHomS (v.adicCompletion K.1) S ι)
         (continuous_decompHomS (Kv := v.adicCompletion K.1) S ι) (ordEmbMor S ι hv) 2).hom x = 0 := by
-  obtain ⟨z, rfl⟩ := cohomologyπ_surjective _ 2 x
-  have hf : IsLocallyConstant (cochainOf _ (cocycleι _ 2 z)) := isLocallyConstant_cochainOf _
-  have hcoc : ∀ u, (inhomogeneousCochains.d (galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom
-      (cochainOf _ (cocycleι _ 2 z)) u = 0 := fun u => congrFun (d_cocycleι z) u
-  obtain ⟨N, hKN, hNn, hN, c, hc, hcf⟩ := exists_level_cocycle S _ hf hcoc
+  let A := galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)
+  -- Destructure local hypotheses to avoid generalizing theorem applications in the goal.
+  have hx := cohomologyπ_surjective A 2 x
+  rcases hx with ⟨z, rfl⟩
+  let f : (Fin 2 → galUnramifiedOutside K.1 ℚ̄ S) → Additive (maxUnramifiedOutside K.1 ℚ̄ S)ˣ :=
+    cochainOf A (cocycleι A 2 z)
+  have hf : IsLocallyConstant f := isLocallyConstant_cochainOf (cocycleι A 2 z)
+  have hcoc : ∀ u, (inhomogeneousCochains.d A 2).hom f u = 0 :=
+    fun u => congrFun (d_cocycleι z) u
+  have hlevel := exists_level_cocycle S f hf hcoc
+  rcases hlevel with ⟨N, hKN, hNn, hN, c, hc, hcf⟩
   have hU : Algebra.IsUnramifiedAt (𝓞 K.1) (placeOfEmbedding ι N).1.asIdeal :=
     isUnramifiedIn_of_subset_max S hv N hN _ inferInstance (placeOfEmbedding ι N).2
   have he : (placeOfEmbedding ι N).1.asIdeal.ramificationIdx (𝓞 K.1) = 1 :=
     Ideal.ramificationIdx_eq_one _ _
-
-  have hA : (gsLocalRes S ι 2).hom (cohomologyULiftIntAddEquiv _ 2 (cohomologyπ _ 2 z)) =
-      cohomologyπ _ 2 (cocyclesMapAlong (decompHomS (v.adicCompletion K.1) S ι)
-        (continuous_decompHomS (Kv := v.adicCompletion K.1) S ι) (embUnitsMorZ S ι) 2
-        (cocyclesULiftInt _ z)) := by
-    rw [cohomologyULiftIntAddEquiv_cohomologyπ', gsLocalRes]
-    exact cohomologyMapAlong_cohomologyπ _ _ _ _
-  rw [hA, cohomologyMapAlong_cohomologyπ, cohomologyπ_two_eq_zero_iff_locallyConstant, cohomologyπ_two_eq_zero_iff_locallyConstant]
-  simp only [cochainOf_cocycleι_cocyclesMapAlong, cochainOf_cocycleι_cocyclesULiftInt]
-
-  have hF : ∀ u : Fin 2 → Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1),
-      (((Additive.toMul (cochainOf (galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) (cocycleι _ 2 z) (⇑(decompHomS (v.adicCompletion K.1) S ι) ∘ u)) :
-        (maxUnramifiedOutside K.1 ℚ̄ S)ˣ) : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) =
-        ((c (decompHom (v.adicCompletion K.1) (embedLevel ι N) (u 0),
-          decompHom (v.adicCompletion K.1) (embedLevel ι N) (u 1)) : N.1) : ℚ̄) := by
-    intro u
-    rw [hcf, decompHom_embedLevel_eq S ι N hN, decompHom_embedLevel_eq S ι N hN]
-    rfl
+  let φ := decompHomS (v.adicCompletion K.1) S ι
+  let hφ : Continuous φ := continuous_decompHomS (Kv := v.adicCompletion K.1) S ι
+  let d := decompHom (v.adicCompletion K.1) (embedLevel ι N)
+  have hd := decompHom_embedLevel_eq S ι N hN
+  have hF (u : Fin 2 → Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
+      (((f (φ ∘ u)).toMul : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) =
+        ((c (d (u 0), d (u 1)) : N.1) : ℚ̄) :=
+    (hcf (φ ∘ u)).trans (congrArg₂ (fun g h => ((c (g, h) : N.1) : ℚ̄))
+      (hd (u 0)).symm (hd (u 1)).symm)
+  let a := fun u => (embUnitsMorZ S ι).hom (f (φ ∘ u))
+  let o := fun u => (ordEmbMor S ι hv).hom (f (φ ∘ u))
   have hord : ∀ u : Fin 2 → Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1),
-      (ordEmbMor S ι hv).hom (cochainOf (galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) (cocycleι _ 2 z) (⇑(decompHomS (v.adicCompletion K.1) S ι) ∘ u)) =
-        ordPlace ι N (c (decompHom (v.adicCompletion K.1) (embedLevel ι N) (u 0),
-          decompHom (v.adicCompletion K.1) (embedLevel ι N) (u 1))) :=
+      o u = ordPlace ι N (c (d (u 0), d (u 1))) :=
     fun u => (ordEmbMor_hom_apply S ι hv _).trans (ordEmb_eq_ordPlace S ι hv N hN _ _ (hF u))
   have hemb : ∀ u : Fin 2 → Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1),
-      ((Additive.toMul ((embUnitsMorZ S ι).hom (cochainOf (galUnits.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) (cocycleι _ 2 z)
-        (⇑(decompHomS (v.adicCompletion K.1) S ι) ∘ u))) : (AlgebraicClosure (v.adicCompletion K.1))ˣ) :
-          AlgebraicClosure (v.adicCompletion K.1)) =
-        ((Units.map (embedLevel ι N).toRingHom.toMonoidHom (c (decompHom (v.adicCompletion K.1)
-          (embedLevel ι N) (u 0), decompHom (v.adicCompletion K.1) (embedLevel ι N) (u 1))) :
-            (AlgebraicClosure (v.adicCompletion K.1))ˣ) : AlgebraicClosure (v.adicCompletion K.1)) := by
-    intro u
-    rw [embUnitsMorZ_hom_apply]
-    change ι _ = ι _
-    exact congrArg ι (hF u)
-  exact coboundary_iff_of_level ι N he c hc _ _ hemb hord
+      ((Additive.toMul (a u) : (AlgebraicClosure (v.adicCompletion K.1))ˣ) :
+        AlgebraicClosure (v.adicCompletion K.1)) =
+      ((Units.map (embedLevel ι N).toRingHom.toMonoidHom (c (d (u 0), d (u 1))) :
+        (AlgebraicClosure (v.adicCompletion K.1))ˣ) : AlgebraicClosure (v.adicCompletion K.1)) :=
+    fun u => (embUnitsMorZ_hom_apply S ι (f (φ ∘ u))).trans (congrArg ι (hF u))
+  have hl := cohomologyMapAlong_uliftInt_eq_zero_iff_coboundary A
+    (galUnitsZ (v.adicCompletion K.1) (AlgebraicClosure (v.adicCompletion K.1)))
+    φ hφ (embUnitsMorZ S ι) z
+  have hr := cohomologyMapAlong_eq_zero_iff_coboundary A
+    (trivRep Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) ℤ)
+    φ hφ (ordEmbMor S ι hv) z
+  exact hl.trans ((coboundary_iff_of_level ι N he c hc a o hemb hord).trans hr.symm)
 
 end
 

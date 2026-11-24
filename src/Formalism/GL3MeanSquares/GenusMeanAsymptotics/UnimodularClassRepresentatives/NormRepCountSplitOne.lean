@@ -1,7 +1,47 @@
 module
 
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassSt
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.CardSumNormFibres
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -15,11 +55,7 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
 namespace NormResidues
 
-theorem coe_conjO (x : 𝓞 K) : ((conjO K x : 𝓞 K) : K) = star (x : K) := rfl
-
-theorem conjO_conjO (x : 𝓞 K) : conjO K (conjO K x) = x := by
-  apply RingOfIntegers.ext
-  rw [coe_conjO, coe_conjO, star_star]
+alias conjO_conjO := _root_.Formalism.HermitianLattices.Ext.L3.conjO_conjO
 
 theorem mem_conjIdeal (P : Ideal (𝓞 K)) (x : 𝓞 K) :
     x ∈ Formalism.HermitianLatticesTheory.conjIdeal (K := K) P ↔ conjO K x ∈ P := by
@@ -27,8 +63,8 @@ theorem mem_conjIdeal (P : Ideal (𝓞 K)) (x : 𝓞 K) :
 
 theorem conjO_sum_norm {M : ℕ} (y : Fin M → 𝓞 K) :
     conjO K (∑ i, conjO K (y i) * y i) = ∑ i, conjO K (y i) * y i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, conjO_conjO, mul_comm]
 
@@ -94,15 +130,15 @@ theorem normRepCount_inert_one (hK : Formalism.HermitianLatticesTheory.IsCMUnram
     intro x
     constructor
     · rintro ⟨y, hy, h⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← h, map_sum]
+
+      rw [← h, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_mul, ← hy i, sigEquiv_mk]
     · intro h
       choose y hy using fun i => Ideal.Quotient.mk_surjective (x i)
       refine ⟨y, hy, ?_⟩
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← h, map_sum]
+
+      rw [← h, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_mul, ← hy i, sigEquiv_mk]
   unfold normRepCount
@@ -198,9 +234,9 @@ theorem norm_cond_iff {P : Ideal (𝓞 K)} (hP : P.IsMaximal) (hc : Formalism.He
         Ideal.Quotient.mk (P * Formalism.HermitianLatticesTheory.conjIdeal (K := K) P) n ↔
       ∑ i, Ideal.Quotient.mk P (conjO K (y i)) * Ideal.Quotient.mk P (y i) =
         Ideal.Quotient.mk P n := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Ideal.Quotient.eq, mem_mul_conjIdeal hP hc, map_sub, conjO_sum_norm, hn, and_self,
-    ← Ideal.Quotient.eq, map_sum]
+
+  rw [Ideal.Quotient.eq, mem_mul_conjIdeal hP hc, map_sub, conjO_sum_norm, hn, and_self,
+  ← Ideal.Quotient.eq, map_sum]
   simp only [map_mul]
 
 end NormResidues

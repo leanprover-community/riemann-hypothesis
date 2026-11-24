@@ -1,10 +1,11 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellLeastDimVanishesWhereFormVanishesDiagonal
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MarkValEqZeroOrOne
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.ConvexCones.CellFaceRestrictionStatement
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBaryStageStart
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.ConvexCones.CellFaceRestriction
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellLeastDimVanishesWhereFormVanishesDiagonal
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MarkValEqZeroOrOne
 
 @[expose] public section
 
@@ -47,7 +48,7 @@ theorem vanish_of_inRCone_of_genRank_le : ∀ (O : Type) [CommRing O] [IsDedekin
       · intro hk
         exact Finset.sum_eq_zero fun i _ => hk _ (hw0 i)
   have hcell : IsCell bar ψ (fun k => τ (s k)) :=
-    GlobalTheory.T.cell_face_restriction O bar hb q ψ hψ X hX hdom m τ hτ _ s hf hcut
+    _root_.GlobalTheory.CompanionTheory.Ar.Fan.FaceCells.isCell_face_of_isFaceCut O bar hb q ψ hψ X hX hdom m τ hτ _ s hf hcut
   obtain ⟨c, hc, hce⟩ := hβc
   have hc0 : ∀ i, ¬ P i → c i = 0 := by
     intro i hi

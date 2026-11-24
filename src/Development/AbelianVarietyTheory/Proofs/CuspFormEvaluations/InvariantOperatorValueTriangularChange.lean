@@ -1,13 +1,53 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndBC
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
+public import Mathlib.RingTheory.PiTensorProduct
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofDApply
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.InvariantDerivationsCommuteFormalConnection
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.WeightAddLeOfMemSupportDividedContraction
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
+public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 
@@ -207,9 +247,9 @@ theorem dEnd_comb (F : Fin d → PS S 2 d) {κ : Type} [Fintype κ] (c : κ → 
     (hv : ∀ e, v e = ∑ j, c j * w j e) : dEnd F v = ∑ j, c j • dEnd F (w j) := by
   refine LinearMap.ext fun g => ?_
   rw [LinearMap.sum_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [LinearMap.smul_apply, dEnd_apply, Dof, hv, map_sum, map_mul, Finset.sum_mul,
-    Finset.smul_sum, MvPowerSeries.smul_eq_C_mul]
+
+  simp only [LinearMap.smul_apply, dEnd_apply, Dof, hv, map_sum, map_mul, Finset.sum_mul,
+  Finset.smul_sum, MvPowerSeries.smul_eq_C_mul]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun e _ => ?_
   conv_rhs => rw [Finset.sum_comm]
@@ -307,8 +347,8 @@ theorem nabVal_triangular : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
             PiTensorProduct.singleAlgHom (R := S) (A := fun _ : Fin n => Algebra.adjoin S s) ℓ.2.2
               (X ⟨ℓ.1, ℓ.2.1⟩)) P) := by
       intro U X hX
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [MvPolynomial.coe_eval₂Hom, MvPolynomial.eval₂_eq', map_sum]
+
+      rw [MvPolynomial.coe_eval₂Hom, MvPolynomial.eval₂_eq', map_sum]
       refine Finset.sum_congr rfl fun m _ => ?_
       rw [show φ (P.coeff m) = algebraMap S _ (algebraMap c.F S (P.coeff m)) from rfl, hpull]
       congr 1
@@ -332,8 +372,8 @@ theorem nabVal_triangular : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
       intro τ i
       apply Subtype.val_injective
       change dEnd (B.FK S) (uvec' ⟨τ, i⟩) = (Algebra.adjoin S s).val (∑ j, cf τ i j • X ⟨τ, j⟩)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [map_smul]
       exact dEnd_comb (B.FK S) (cf τ i) (fun j => uvec ⟨τ, j⟩) _ (huv τ i)
     rw [hval uvec' X' (fun l => rfl), hval uvec X (fun l => rfl)]
@@ -342,8 +382,8 @@ theorem nabVal_triangular : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
         fun ℓ => ∑ j, algebraMap S (⨂[S] _ : Fin n, Algebra.adjoin S s) (cf ℓ.1 ℓ.2.1 j) *
           PiTensorProduct.singleAlgHom (R := S) (A := fun _ : Fin n => Algebra.adjoin S s) ℓ.2.2 (X ⟨ℓ.1, j⟩) := by
       funext ℓ
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hx', map_sum]
+
+      rw [hx', map_sum]
       simp only [map_smul]
       simp only [Algebra.smul_def]
     have h3 := eval₂_triangular φ hI hD (fun τ i j => algebraMap S (⨂[S] _ : Fin n, Algebra.adjoin S s) (cf τ i j))

@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+import Lemmata.MiscLemmasI.Imports
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Data.Matrix.Mul
+public import Mathlib.Algebra.Module.Submodule.Ker
+public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import Mathlib.LinearAlgebra.Matrix.ToLin
 
 @[expose] public section
 
@@ -12,16 +17,7 @@ theorem goal1 :
   Function.Injective.{1, 1} (Matrix.mulVec.{0, 0, 0} A) →
     Function.Injective.{1, 1} (Matrix.mulVec.{0, 0, 0} (Matrix.map.{0, 0, 0, 0} A (DFunLike.coe.{1, 1, 1} f))) := by
   intro K _ n k _ _ _ _ f A hA
-  have hker : LinearMap.ker (Matrix.toLin' A) = ⊥ :=
-    LinearMap.ker_eq_bot.mpr (fun x y hxy => hA (by simpa only [Matrix.toLin'_apply] using hxy))
-  obtain ⟨g, hg⟩ := (Matrix.toLin' A).exists_leftInverse_of_injective hker
-  have hBA : LinearMap.toMatrix' g * A = 1 := by
-    have h := congrArg LinearMap.toMatrix' hg
-    rwa [LinearMap.toMatrix'_comp, LinearMap.toMatrix'_id, LinearMap.toMatrix'_toLin'] at h
-  have h1 : (LinearMap.toMatrix' g).map f * A.map f = 1 := by
-    rw [← Matrix.map_mul, hBA, Matrix.map_one _ f.map_zero f.map_one]
-  intro v w hvw
-  have h2 := congrArg (fun u => Matrix.mulVec ((LinearMap.toMatrix' g).map f) u) hvw
-  simpa only [Matrix.mulVec_mulVec, h1, Matrix.one_mulVec] using h2
+  apply Matrix.mulVec_injective_iff.mpr
+  exact Bl.SecondBlockLemmaJ.goal1 f A.col (Matrix.mulVec_injective_iff.mp hA)
 
 end Bl.general_b_fact_upper_alt_form

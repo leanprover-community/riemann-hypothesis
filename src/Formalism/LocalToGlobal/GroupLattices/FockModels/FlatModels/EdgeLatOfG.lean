@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
+public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.MkP
 
 @[expose] public section
 

@@ -1,8 +1,50 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ExistsUnitaryBasisSameFlag
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.UMatUpper
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.DetSubUpper
 
 @[expose] public section
 
@@ -54,7 +96,7 @@ theorem coef_of_mem {n : ℕ} (Y : Fin n → Fin r → ℂ) (S : Set (Fin n)) {v
     obtain ⟨j, hj, rfl⟩ := hx
     refine ⟨Pi.single j 1, fun i hi => ?_, ?_⟩
     · have hij : i ≠ j := fun e => hi (e ▸ hj)
-      simp [Pi.single_apply, hij]
+      simp [hij]
     · simp [Pi.single_apply]
   | zero => exact ⟨0, fun _ _ => rfl, by simp⟩
   | add x y _ _ hx hy =>
@@ -83,13 +125,11 @@ theorem hC_self_im (v : Fin r → ℂ) : (hermC τ G v v).im = 0 := by
     intro a b
     rw [← hG a b]
     first
-    | exact (NumberField.IsCMField.complexEmbedding_complexConj τ (G a b)).symm
-    | exact (IsCMField.complexEmbedding_complexConj τ (G a b)).symm
     | (simp only [cc]; exact (NumberField.IsCMField.complexEmbedding_complexConj τ (G a b)).symm)
     | (simp [cc])
   have hc : conj (hermC τ G v v) = hermC τ G v v := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hermC, map_sum, map_mul, Complex.conj_conj]
+
+    simp only [hermC, map_sum, map_mul, Complex.conj_conj]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
     rw [hτ]
@@ -116,14 +156,12 @@ theorem gs_exists {n : ℕ} (p : ℕ) (Y : Fin n → Fin r → ℂ) (hind : Line
     intro a b
     rw [← hG a b]
     first
-    | exact (NumberField.IsCMField.complexEmbedding_complexConj τ (G a b)).symm
-    | exact (IsCMField.complexEmbedding_complexConj τ (G a b)).symm
     | (simp only [cc]; exact (NumberField.IsCMField.complexEmbedding_complexConj τ (G a b)).symm)
     | (simp [cc])
   have csym : ∀ u w, conj (hermC τ G u w) = hermC τ G w u := by
     intro u w
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hermC, map_sum, map_mul, Complex.conj_conj]
+
+    simp only [hermC, map_sum, map_mul, Complex.conj_conj]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
     rw [hτ]
@@ -229,7 +267,6 @@ theorem gs_exists {n : ℕ} (p : ℕ) (Y : Fin n → Fin r → ℂ) (hind : Line
         have hnot : c₀ ∉ {j : Fin n | (j : ℕ) < m} := by
           simp [hc₀]
         first
-        | exact hind.not_mem_span_image hnot hin
         | exact hind.notMem_span_image hnot hin
 
       have hsign : 0 < (ε c₀ * hermC τ G v v).re := by

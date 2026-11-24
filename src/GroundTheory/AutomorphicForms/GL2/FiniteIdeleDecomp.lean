@@ -1,11 +1,15 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 public import GroundTheory.LocalFields.LocalFourier
-public import GroundTheory.LocalFields.LocalFourierMult
-public import GroundTheory.LocalFields.LocalFourierHaar
+public import GroundTheory.GlobalFields.IdeleGroups.Restricted
+import GroundTheory.GlobalFields.LocalAtPlace
+import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
+import GroundTheory.LocalFields.LocalFourierMult
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

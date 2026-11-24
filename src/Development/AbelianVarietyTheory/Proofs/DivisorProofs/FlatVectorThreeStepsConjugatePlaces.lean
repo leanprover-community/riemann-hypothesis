@@ -1,9 +1,53 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SuppAtMul
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NabBaseChange
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SqEqOneOfFixDat
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartConjMem
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PlacewiseToAdelicDecompositionForall
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartConjMem
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrameMatrixReductionEqOfHalfIdempotentSubset
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsPlaceModelCompRestrictToHalfLatticeIndicator
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.VacuumVectorDropAuxiliaryPlaces
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GramMapMulInv
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
 
 @[expose] public section
 
@@ -16,8 +60,8 @@ open Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.BasicNot
 open GlobalTheory.ConjTwist (BaseOf UnitOff)
 open GlobalTheory.FlatVecSum (princ)
 open scoped TensorProduct
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1600000
+
+
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Classical
 open GlobalTheory.BigOn.Exp.TupLe.Swap
@@ -63,8 +107,8 @@ theorem mem_or_conj_mem {A B : Finset (Pl D.host.E)} (hA : SplitSet A) (hB : Spl
   have k : idemAt P * idem A = idemAt P :=
     GlobalTheory.PlaceModelSum.mul_sum_orth (fun a ha => (hA.isIdemAt ha).1) (fun a ha b hb hab => hA.mul_eq_zero ha hb hab) hP
   have k' : idemAt P * cA D (idem A) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [idem, map_sum, Finset.mul_sum]
+
+    rw [idem, map_sum, Finset.mul_sum]
     exact Finset.sum_eq_zero fun j hj => hA.mul_conj hP hj
   have l : idemAt P * idem B = 0 := by
     rw [idem, Finset.mul_sum]
@@ -72,8 +116,8 @@ theorem mem_or_conj_mem {A B : Finset (Pl D.host.E)} (hA : SplitSet A) (hB : Spl
     rw [eq_of_mul_ne_zero (hA.isIdemAt hP) (hB.isIdemAt hj) h0]
     exact hj
   have l' : idemAt P * cA D (idem B) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [idem, map_sum, Finset.mul_sum]
+
+    rw [idem, map_sum, Finset.mul_sum]
     refine Finset.sum_eq_zero fun j hj => by_contra fun h0 => hn.2 ?_
     rw [eq_of_mul_ne_zero (hA.isIdemAt hP) (isIdemAt_conj (hB.isIdemAt hj)) h0, conjPl_conjPl]
     exact hj
@@ -81,9 +125,9 @@ theorem mem_or_conj_mem {A B : Finset (Pl D.host.E)} (hA : SplitSet A) (hB : Spl
   linear_combination idemAt P * h - k - k' + l + l'
 
 theorem idem_image_conj {A : Finset (Pl D.host.E)} (hA : SplitSet A) : idem (A.image conjPl) = cA D (idem A) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [idem, Finset.sum_image (fun a _ b _ (hab : conjPl a = conjPl b) => by rw [← conjPl_conjPl a, hab, conjPl_conjPl b]),
-    idem, map_sum]
+
+  rw [idem, Finset.sum_image (fun a _ b _ (hab : conjPl a = conjPl b) => by rw [← conjPl_conjPl a, hab, conjPl_conjPl b]),
+  idem, map_sum]
   exact Finset.sum_congr rfl fun P hP => idemAt_conj (hA.isIdemAt hP)
 
 end Places

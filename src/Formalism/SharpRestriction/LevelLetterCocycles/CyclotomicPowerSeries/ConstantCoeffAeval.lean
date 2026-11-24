@@ -1,6 +1,48 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.ConstSectionStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -22,8 +64,6 @@ theorem algHom_coe_eq_aeval {O T : Type} [CommRing O] [CommRing T] [Algebra O T]
     congr 1
     all_goals first
       | exact ρ.commutes a
-      | simpa using ρ.commutes a
-      | (rw [← ρ.commutes a]; rfl)
 
 theorem constantCoeff_aeval {O S : Type} [CommRing O] [CommRing S] [Algebra O S]
     (x : PowerSeries S) (r : Polynomial O) :
@@ -33,26 +73,19 @@ theorem constantCoeff_aeval {O S : Type} [CommRing O] [CommRing S] [Algebra O S]
   | monomial n a =>
     rw [Polynomial.aeval_monomial, Polynomial.aeval_monomial, map_mul, map_pow]
     congr 1
-    all_goals first
-      | rfl
-      | simp [PowerSeries.algebraMap_apply'']
-      | (rw [IsScalarTower.algebraMap_apply O S (PowerSeries S)]; simp)
 
 theorem eq_of_X_mul_eq {S : Type} [CommRing S] {f g : PowerSeries S}
     (h : (X : PowerSeries S) * f = X * g) : f = g := by
   first
   | (ext n; simpa [PowerSeries.coeff_succ_X_mul] using congrArg (PowerSeries.coeff (n + 1)) h)
-  | (ext n; simpa [PowerSeries.coeff_succ_X_mul] using congrArg (PowerSeries.coeff S (n + 1)) h)
-  | exact PowerSeries.X_mul_cancel h
-  | exact mul_left_cancel₀ PowerSeries.X_ne_zero h
 
 private theorem map_coe_eq_X_pow_lemma {O K : Type} [CommRing O] [CommRing K] (I : Ideal O) (f : O →+* K)
     (hf : ∀ c ∈ I, f c = 0) (P : Polynomial O) (hP : P.IsDistinguishedAt I) :
     PowerSeries.map f (P : PowerSeries O) = X ^ P.natDegree := by
-  have hmon : P.Monic := by first | exact hP.monic | exact hP.2
+  have hmon : P.Monic := by first | exact hP.monic
   have hmem : ∀ {n : ℕ}, n < P.natDegree → P.coeff n ∈ I := by
     intro n hn
-    first | exact hP.mem hn | exact hP.1.mem hn | exact hP.toIsWeaklyEisensteinAt.mem hn
+    first | exact hP.mem hn
   ext n
   rw [PowerSeries.coeff_map, Polynomial.coeff_coe, PowerSeries.coeff_X_pow]
   split_ifs with hn
@@ -77,17 +110,13 @@ private theorem exists_weierstrass_div_lemma_2 {O : Type} [CommRing O] [IsLocalR
       P.natDegree := by
     first
       | exact h2
-      | (rw [map_coe_eq_X_pow_lemma _ _ (fun c hc => Ideal.Quotient.eq_zero_iff_mem.2 hc) P hP,
-          PowerSeries.order_X_pow]; rfl)
   refine ⟨q, r, ?_, he⟩
   first
     | (rw [h2'] at hr; exact hr)
-    | (rw [h2] at hr; exact hr)
-    | simpa [h2'] using hr
 
 theorem rhoCompl : RhoComplStatement := by
   intro O LL S _ _ _ _ _ _ _ _ _ _ _ P hP ρ hunit hann
-  have hmon : P.Monic := by first | exact hP.monic | exact hP.2
+  have hmon : P.Monic := by first | exact hP.monic
   have key : ∀ a : PowerSeries O, (X : PowerSeries S) ∣ ρ a → (P : PowerSeries O) ∣ a := by
     intro a ha
     obtain ⟨q, r, hr, he⟩ := exists_weierstrass_div_lemma_2 P hP a
@@ -104,11 +133,11 @@ theorem rhoCompl : RhoComplStatement := by
       exact h1.symm
     have hdvd : P.map (algebraMap O LL) ∣ r.map (algebraMap O LL) := by
       apply hann
-      first | (rw [Polynomial.aeval_map_algebraMap]; exact hr0) | simpa [Polynomial.aeval_map_algebraMap] using hr0
+      first | (rw [Polynomial.aeval_map_algebraMap]; exact hr0)
     have hmap0 : r.map (algebraMap O LL) = 0 := by
       apply Polynomial.eq_zero_of_dvd_of_degree_lt hdvd
       calc (r.map (algebraMap O LL)).degree ≤ r.degree := by
-            first | exact Polynomial.degree_map_le | exact Polynomial.degree_map_le _ _
+            first | exact Polynomial.degree_map_le
         _ < P.natDegree := hr
         _ = P.degree := (Polynomial.degree_eq_natDegree hmon.ne_zero).symm
         _ = (P.map (algebraMap O LL)).degree := (hmon.degree_map _).symm

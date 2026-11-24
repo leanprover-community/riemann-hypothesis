@@ -1,9 +1,52 @@
 module
 
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwlineLemmas
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwrowLemmas
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.StatementA
+public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+public import Formalism.GradedWeylDivisibility.FinalC
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -25,11 +68,10 @@ theorem lehw_dom {r n : ℕ} (ν : Fin n → ℕ) (hnr : n ≤ r) (hν : Antiton
   have hu : map (Int.castRingHom ℚ) u = (N : ℚ) • f := by
     conv_rhs => rw [f.as_sum]
     rw [Finset.smul_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [u, map_sum, map_monomial, smul_monomial]
+
+    simp only [u, map_sum, map_monomial, smul_monomial]
     refine Finset.sum_congr rfl fun d hd => ?_
     congr 1
-    push_cast
     have hN : (N : ℚ) = (∏ d' ∈ f.support.erase d, ((AddMonoidAlgebra.coeff f d').den : ℚ)) * (AddMonoidAlgebra.coeff f d).den := by
       simp only [N]
       push_cast
@@ -46,7 +88,7 @@ theorem lehw_dom {r n : ℕ} (ν : Fin n → ℕ) (hnr : n ≤ r) (hν : Antiton
     rw [mem_support_iff]
     intro h0
     have e := congrArg (AddMonoidAlgebra.coeff · m) hu
-    rw [coeff_map, h0, map_zero, coeff_smul, smul_eq_mul] at e
+    rw [coeff_map, h0, map_zero, MvPolynomial.coeff_smul, smul_eq_mul] at e
     exact (mem_support_iff.mp hm) ((mul_eq_zero.mp e.symm).resolve_left hN0)
   exact (dualWeylDominanceZ r n ν hnr hν u huD m hmu).1 k
 
@@ -138,7 +180,7 @@ theorem lehwShift_gen {R : Type*} [CommRing R] {r n : ℕ} (w : Fin r × Fin n �
       ring
     · have e : (Polynomial.C (X (c, s)) + Polynomial.X * Polynomial.C (X (a, s)) :
           Polynomial (MvPolynomial (Fin r × Fin n) R)).coeff (k + 1 + 1) = 0 := by
-        simp [Polynomial.coeff_C]
+        simp
       rw [e]
       intro d hd
       exact (hd (by simp)).elim
@@ -164,8 +206,8 @@ theorem lehw_rowDiv_shift (R : Type*) [CommRing R] {r n : ℕ} (w : Fin r × Fin
     (f : MvPolynomial (Fin r × Fin n) R) (hf : IsWeightedHomogeneous w f H) :
     IsWeightedHomogeneous w (rowDiv R a b k f) (H + k * δ) := by
   unfold rowDiv
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [f.as_sum, map_sum, Polynomial.finsetSum_coeff]
+
+  rw [f.as_sum, map_sum, Polynomial.finsetSum_coeff]
   refine (mem_weightedHomogeneousSubmodule _ _ _ _).mp (Submodule.sum_mem _ fun d hd => ?_)
   refine (mem_weightedHomogeneousSubmodule _ _ _ _).mpr ?_
   have h := lehwShift_rowGen_monomial R w δ a b hstep d (AddMonoidAlgebra.coeff f d) k
@@ -198,7 +240,7 @@ theorem lehw_weight_rowW {r n : ℕ} (m : Fin r × Fin n →₀ ℕ) (a : Fin r)
   rw [Finset.sum_eq_single a]
   · simp [rowDeg]
   · intro b _ hb
-    simp [hb, Ne.symm hb]
+    simp [Ne.symm hb]
   · simp
 
 theorem lehw_kill {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ) (hν : Antitone ν)

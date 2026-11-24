@@ -1,12 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
-public import Mathlib
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
-public import Formalism.PeriodIntegrals.AdelClassFin
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiscreteSeriesWeylDimension
-public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-public import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
+public import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AtTauExUniqueHolds
 
 @[expose] public section

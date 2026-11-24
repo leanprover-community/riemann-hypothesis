@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ColSpanMap
+public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ValRat
 
 @[expose] public section
 

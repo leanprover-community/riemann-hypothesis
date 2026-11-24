@@ -1,7 +1,56 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.HarishChandraCentre.Projection
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.GroupTheory.Perm.Sign
 
 @[expose] public section
 
@@ -97,7 +146,7 @@ theorem canon_mul_e_diag_of_not_hasUpper {m : Fin n × Fin n →₀ ℕ} (h : ¬
   have hlow : blockW (lowL n) (m + Finsupp.single (k, k) 1) = blockW (lowL n) m := by
     refine blockW_congr fun a ha => ?_
     have hne : a ≠ (k, k) := fun hak => not_lower_of_diag (a := (k, k)) rfl (hak ▸ mem_lowL.1 ha)
-    simp [Finsupp.single_apply, Ne.symm hne]
+    simp [Ne.symm hne]
   have hdiag : diagExp (m + Finsupp.single (k, k) 1) = diagExp m + Finsupp.single k 1 := by
     ext i
     simp only [diagExp_apply, Finsupp.add_apply, Finsupp.single_apply, Prod.mk.injEq, and_self]
@@ -124,7 +173,7 @@ theorem vermaCoord_canon_mul_e_sub (lam : Fin n → ℂ) (m : Fin n × Fin n →
       simp only [lowPart, Finsupp.filter_apply, Finsupp.add_apply]
       split_ifs with ha
       · have hak : a ≠ (k, k) := fun hak => not_lower_of_diag (a := (k, k)) rfl (hak ▸ ha)
-        simp [Finsupp.single_apply, Ne.symm hak]
+        simp [Ne.symm hak]
       · rfl
     have hdiag : diagExp (m + Finsupp.single (k, k) 1) = diagExp m + Finsupp.single k 1 := by
       ext i
@@ -169,7 +218,7 @@ theorem canon_single (a : Fin n × Fin n) (m : ℕ) : canon (Finsupp.single a m)
       by_cases hb : b = a
       · subst hb
         simp [(List.nodup_cons.1 hl).1]
-      · simp [Finsupp.single_apply, Ne.symm hb, hb]
+      · simp [Ne.symm hb, hb]
   rw [key _ nodup_letters, if_pos (mem_letters a)]
 
 theorem vermaCoord_e_pow (lam : Fin n → ℂ) {a : Fin n × Fin n} (ha : IsLower a) (m : ℕ) :
@@ -184,11 +233,11 @@ theorem vermaCoord_e_pow (lam : Fin n → ℂ) {a : Fin n × Fin n} (ha : IsLowe
     split_ifs with hb
     · rfl
     · have : b ≠ a := fun h => hb (h ▸ ha)
-      simp [Finsupp.single_apply, Ne.symm this]
+      simp [Ne.symm this]
   have hdiag : diagExp (Finsupp.single a m) = 0 := by
     ext i
     have : (i, i) ≠ a := fun h => not_lower_of_diag (a := (i, i)) rfl (h ▸ ha)
-    simp [Finsupp.single_apply, Ne.symm this]
+    simp [Ne.symm this]
   rw [← canon_single, vermaCoord_canon_of_not lam hnu, hlow, hdiag]
   simp
 
@@ -316,7 +365,7 @@ theorem e_upper_simple_mul_pow_sub_mem (hij : (j : ℕ) = i + 1) (m : ℕ) :
           e (j, i) * (e (i, j) * e (j, i) ^ (m + 1)) + (e (i, i) - e (j, j)) * e (j, i) ^ (m + 1) := by
         rw [pow_succ' _ (m + 1), ← mul_assoc, hxy, add_mul, mul_assoc]
       rw [e1, hh]
-      simp only [mul_sub, sub_mul, mul_smul_comm, ← mul_assoc, ← pow_succ']
+      simp only [mul_sub, mul_smul_comm, ← mul_assoc, ← pow_succ']
       push_cast
       module
     rw [key]

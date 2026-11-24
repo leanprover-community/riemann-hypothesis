@@ -1,13 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.LocalFields.Interface
 public import GroundTheory.LocalFields.FiniteExtension
-public import GroundTheory.LocalFields.Uniqueness
 public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.UnitsBasic
-public import GroundTheory.LocalFields.IntermediateField
 public import GroundTheory.LocalFields.SeparableClosure
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

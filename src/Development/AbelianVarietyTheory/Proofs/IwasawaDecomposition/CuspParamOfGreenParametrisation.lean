@@ -1,13 +1,51 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TypeIdempotentCoeffAcrossLayers
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GreenCuspidalIff
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicIrr
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspidalCharacterLabelUniqueGLn
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CuspidalLabelPolynomialUniqueAllPrimes
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsCuspidalCharacterIffIsCuspidalGLnFiniteFieldStatement
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
+public import Formalism.PadicSubsetSums.CentralIdempotents.IsConstituent
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsCuspidalCharacterIffIsCuspidalGLnFiniteField
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -114,7 +152,7 @@ theorem cuspParam_of_green : GlobalTheory.Published.GreenCuspidal → ∀ (g : �
   obtain ⟨τ, hτ, -, hall⟩ := hG g (datum t ht ζ hζ) d hd
   have huniq := GlobalTheory.GLq.LabelUniqueAll.label_eq (datum t ht ζ hζ) d
   refine ⟨fun V hs hc => ?_, fun P h1 h2 h3 h4 => ?_, fun V W P hs hc hs' hc' hP hP' => ?_⟩
-  · have hV := (GlobalTheory.T.isCuspidalCharacter_iff_isCuspidal_GLnFiniteField g d V hd hs).2 hc
+  · have hV := (_root_.GlobalTheory.CuspCharRep.isCusp_character_iff_isCuspidal g d V hd hs).2 hc
     obtain ⟨Q, hQ, hVQ⟩ := hall _ hV
     refine ⟨⟨Q, ?_, fun P hP => ?_⟩, ?_⟩
     · refine (hasCuspLabel_iff t ht ζ hζ V hV Q).2 ?_
@@ -130,9 +168,9 @@ theorem cuspParam_of_green : GlobalTheory.Published.GreenCuspidal → ∀ (g : �
     obtain ⟨V, hs, hVχ⟩ := hc.2.1.2.1
     have he : (fun x => V.character x) = τ P := funext hVχ
     have hV : IsCusp (fun x => V.character x) := he ▸ hc.2.1
-    exact ⟨V, hs, (GlobalTheory.T.isCuspidalCharacter_iff_isCuspidal_GLnFiniteField g d V hd hs).1 hV, (hasCuspLabel_iff t ht ζ hζ V hV P).2 (he ▸ hc)⟩
-  · have hV := (GlobalTheory.T.isCuspidalCharacter_iff_isCuspidal_GLnFiniteField g d V hd hs).2 hc
-    have hW := (GlobalTheory.T.isCuspidalCharacter_iff_isCuspidal_GLnFiniteField g d W hd hs').2 hc'
+    exact ⟨V, hs, (_root_.GlobalTheory.CuspCharRep.isCusp_character_iff_isCuspidal g d V hd hs).1 hV, (hasCuspLabel_iff t ht ζ hζ V hV P).2 (he ▸ hc)⟩
+  · have hV := (_root_.GlobalTheory.CuspCharRep.isCusp_character_iff_isCuspidal g d V hd hs).2 hc
+    have hW := (_root_.GlobalTheory.CuspCharRep.isCusp_character_iff_isCuspidal g d W hd hs').2 hc'
     obtain ⟨Q, hQ, hVQ⟩ := hall _ hV
     obtain ⟨Q', hQ', hWQ⟩ := hall _ hW
     have e1 : P = Q := huniq P Q _ ((hasCuspLabel_iff t ht ζ hζ V hV P).1 hP) (hVQ ▸ (hτ Q hQ).1)

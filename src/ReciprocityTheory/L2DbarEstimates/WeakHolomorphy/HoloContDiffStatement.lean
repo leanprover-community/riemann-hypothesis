@@ -1,6 +1,8 @@
 module
 
-public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 @[expose] public section
 

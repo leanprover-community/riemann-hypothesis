@@ -1,10 +1,49 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GeometricFlagBases.FinModel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLatticeVectorEqNsmulOfAdelicNsmulStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDvdOfEqNatMulIntegralAdeleAwayFromPStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeCompletionEqLatticeVectorAddNsmulStatement
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Std.Tactic.BVDecide.Normalize.Prop
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -448,8 +487,8 @@ theorem lat_main (q : ℕ) (r : ℤ) (𝔴 : Ideal (𝓞 D.F)) (i : ℕ) (h₀ u
     rfl
   have hS : Setup Λ em (A h₀) (A u) (A u⁻¹) J (Ideal.absNorm 𝔴 ^ i) :=
     { ι_mem := inAf_mem'
-      dense := GlobalTheory.T.latticeCompletion_eq_latticeVector_add_nsmul p D _ hM0 hMp
-      dvd := fun x w hw h => GlobalTheory.T.exists_latticeVector_eq_nsmul_of_adelic_nsmul p D _ hM0 hMp (GlobalTheory.T.int_dvd_of_eq_nat_mul_integralAdeleAwayFromP p _ hM0 hMp) x ⟨w, hw, h⟩
+      dense := _root_.GlobalTheory.LKGeo.exists_inAf_add_nsmul_of_mem_laHat p D _ hM0 hMp
+      dvd := fun x w hw h => _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D _ hM0 hMp (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p _ hM0 hMp) x ⟨w, hw, h⟩
       tf := fun v hv => by rw [← ha' v, hv, smul_zero]
       inj := fun v w h => by
         have h' := congrArg (A h₀⁻¹) h
@@ -593,7 +632,7 @@ theorem UpperTheory.trace_identity_of_tjElement :
       obtain ⟨w, hw, hwe⟩ := hu.2 v' hv'
       rw [hwe, one_nsmul]
       exact add_mem hv' hw
-    obtain ⟨y, hy⟩ := GlobalTheory.T.exists_latticeVector_eq_nsmul_of_adelic_nsmul p D d hd0 hd (GlobalTheory.T.int_dvd_of_eq_nat_mul_integralAdeleAwayFromP p d hd0 hd) (M • x)
+    obtain ⟨y, hy⟩ := _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D d hd0 hd (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p d hd0 hd) (M • x)
       ⟨_, hmem, (inAf_nsmul' M x).trans e3⟩
     have hgM : I'.ev d x ^ M = 1 :=
       (ev_pow d hd0 M x).symm.trans ((congrArg (I'.ev d) hy).trans ((I'.ker d hd0 _).2 ⟨y, rfl⟩))

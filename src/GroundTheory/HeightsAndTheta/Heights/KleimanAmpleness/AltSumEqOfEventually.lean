@@ -1,12 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraLast
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastMore
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreAlt
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiProjPrimeMIdealOverGraph
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrLenPrimeOfEqFinrank
+public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section
 
@@ -42,8 +46,8 @@ theorem altSum_eq_of_eventually (p : MvPolynomial K ℚ) {n : ℕ} (δ : Fin n �
   have hq : ∀ w : K → ℤ, eval (fun k => (w k : ℚ)) q =
       ∑ T : Finset (Fin n), (-1 : ℚ) ^ T.card * eval (fun k => (((w - ∑ i ∈ T, δ i) k : ℤ) : ℚ)) p := by
     intro w
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [q, map_sum, map_mul, eval_C, eval_bind₁_shift]
+
+    simp only [q, map_sum, map_mul, eval_C, eval_bind₁_shift]
     refine Finset.sum_congr rfl fun T _ => ?_
     congr 3
     funext k

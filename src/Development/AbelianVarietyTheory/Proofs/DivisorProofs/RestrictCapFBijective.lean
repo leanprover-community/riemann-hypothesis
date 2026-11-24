@@ -1,10 +1,47 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ComparisonMemCechHodgeFiltration
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LeISupInfPreimage
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CechPullOneBijectiveLatticeCover
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LeISupInfPreimage
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -155,9 +192,9 @@ theorem toPos_lc {n : ℕ} (cc : Fin n → R) (b : Fin n → C1 U) :
   have hle : cap U T'.unop ≤ U T.unop.pt ⊓ U T'.unop.pt :=
     le_inf (cap_le U ((NE.le_iff.1 (leOfHom φ.unop)) T.unop.pt_mem)) (cap_le U T'.unop.pt_mem)
   apply (cv s U hU hinf T').injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [cv_toPos, Finset.sum_apply, Pi.smul_apply, map_sum, cv_smul, GlobalTheory.KS.rsT_sum, GlobalTheory.KS.rsT_mul,
-    GlobalTheory.KS.rsT_constFn s hle]
+
+  simp only [cv_toPos, Finset.sum_apply, Pi.smul_apply, map_sum, cv_smul, GlobalTheory.KS.rsT_sum, GlobalTheory.KS.rsT_mul,
+  GlobalTheory.KS.rsT_constFn s hle]
 
 theorem toCech_sub (f f' : CatCoh.C1 (capF s U hU hinf)) :
     toCech s U hU hinf (f - f') = toCech s U hU hinf f - toCech s U hU hinf f' := by
@@ -170,9 +207,8 @@ theorem toCech_lc {n : ℕ} (cc : Fin n → R) (f : Fin n → CatCoh.C1 (capF s 
       fun i j => ∑ a, constFn s (U i ⊓ U j) (cc a) * toCech s U hU hinf (f a) i j := by
   funext i j
   have hle : U i ⊓ U j ≤ cap U (NE.pair i j) := (cap_pair U i j).ge
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [toCech_apply, Finset.sum_apply, Pi.smul_apply, map_sum, cv_smul, GlobalTheory.KS.rsT_sum, GlobalTheory.KS.rsT_mul,
-    GlobalTheory.KS.rsT_constFn s hle, mul_sub, Finset.sum_sub_distrib]
+
+  simp only [toCech_apply, Finset.sum_apply, Pi.smul_apply, map_sum, GlobalTheory.KS.rsT_sum, mul_sub, Finset.sum_sub_distrib]
   refine congrArg₂ _ (Finset.sum_congr rfl fun a _ => ?_) (Finset.sum_congr rfl fun a _ => ?_) <;>
     rw [cv_smul, GlobalTheory.KS.rsT_mul, GlobalTheory.KS.rsT_constFn s hle]
 

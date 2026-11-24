@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.OrderOfSignGroupDvdTwo
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CardTrivialFirstComponent
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -116,8 +117,8 @@ theorem sum_emb_zero {ι : Type*} [Fintype ι] (b : ι → D.host.E) (g : ι →
   · rw [hτ]; exact h τ
   · rw [hτ]
     have := congrArg (starRingEnd ℂ) (h τ)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa [map_sum, map_mul, Complex.conj_ofReal] using this
+
+    simpa [map_sum, map_mul, Complex.conj_ofReal] using this
 
 theorem card_tau : Fintype.card D.what₂.Tau = 2 * D.R.ord := by
   rw [← Nat.card_eq_fintype_card, Nat.card_congr D.eTau, Formalism.HC.Frame.natCard_Psi]

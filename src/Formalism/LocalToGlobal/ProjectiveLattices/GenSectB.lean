@@ -1,6 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.GenSectA
+public import Mathlib.RingTheory.AlgebraicIndependent.AlgebraicClosure
+public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 @[expose] public section
 
@@ -38,8 +40,8 @@ theorem exists_pderiv_ne_zero_lt' {K : Type*} [Field K] [CharZero K] {ι : Type*
   have hder : pderiv i P =
       ∑ t ∈ P.support, monomial (t - Finsupp.single i 1) (AddMonoidAlgebra.coeff P t * (t i : K)) := by
     conv_lhs => rw [P.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun t _ => ?_
     rw [pderiv_monomial]
   refine ⟨i, ?_, ?_⟩
@@ -96,8 +98,7 @@ theorem trdeg_CT (j₀ : Fin m) (htr : Algebra.trdeg K Ω = D) :
   classical
   have hle : D ≤ Fintype.card (Fin (D + 1) × Fin m) := by
     rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_fin]
-    have := j₀.pos
-    nlinarith
+    exact (Nat.le_succ D).trans (Nat.le_mul_of_pos_right _ j₀.pos)
   rw [← trdeg_add_eq (R := K) (S := Ω) (A := CT (Ω := Ω) (D := D) j₀), htr,
     MvPolynomial.trdeg_of_isDomain, Cardinal.lift_id, Cardinal.mk_fintype,
     Fintype.card_subtype_compl, card_Z, ← Nat.cast_add, Nat.add_sub_of_le hle]
@@ -263,7 +264,6 @@ theorem halg_of (x : Fin m → Ω) (j₀ : Fin m) (htr : Algebra.trdeg K Ω = D)
     · exact h
   have halg : Algebra.IsAlgebraic (IntermediateField.adjoin K (Set.range fun j => x j / x j₀)) Ω := by
     first
-    | exact Algebra.trdeg_eq_zero_iff.mp h0
     | exact trdeg_eq_zero_iff.mp h0
   exact IntermediateField.isAlgebraic_adjoin_iff.mp (halg.isAlgebraic ω)
 

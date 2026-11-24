@@ -1,8 +1,48 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPhi
+public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
+public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.InvLiftPfA
-public import Formalism.SharpRestriction.LevelLetterCocycles.ClassMapStep
+import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
+import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -78,8 +118,8 @@ def framepf_Lmap : LcQ W T₁ π' c →ₗ[O] LcQ W T₂ π' c :=
 theorem framepf_LAover {x₁ : LA W T₁ π' c} {x₂ : LA W T₂ π' c} (h : LAover W f π' c x₁ x₂) :
     x₂ = (framepf_Lmap f hfN π' c).lTensor W.EE x₁ := by
   obtain ⟨m, e, y, h₁, h₂, rfl, rfl⟩ := h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   rfl
 
 theorem framepf_Lmap_smulLA (a : LetA O n) (x : LA W T₁ π' c) :
@@ -180,8 +220,8 @@ theorem framepf_mem_toLA {r : ℕ} (bL : Module.Basis (Fin r) O (LcQ W T π' c))
   · intro h
     choose a ha hae using h
     refine ⟨∑ k, (⟨a k, ha k⟩ : ↥W.AΔ) ⊗ₜ ⟨bL k, trivial⟩, ?_⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     conv_rhs => rw [← (Algebra.TensorProduct.basis W.EE bL).sum_repr x]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [hae, Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul', smul_eq_mul, mul_one]
@@ -237,14 +277,14 @@ theorem framepf_JLA_sat {r : ℕ} (eL : LcQ W T π' c ≃ₗ[O] (Fin r → O)) (
       rw [← sub_eq_zero]
       apply hA
       have h2 := congrArg (W.γA δ) hb'
-      rw [map_mul, map_mul, map_pow, map_natCast, hb δ hδ, Formalism.MainNotions.LiftingTheory.wmap_γA_letE] at h2
+      rw [map_mul, map_mul, map_pow, map_natCast, hb δ hδ, _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent] at h2
       rw [mul_sub, ← h2, hb', sub_self]
     refine ⟨b', hb'Δ, ?_⟩
     have h3 : ((PD.p : ℕ) : LetA O n) ^ j *
         ((letE c : LetA O n) * a - Eπ ^ h' * (π' ^ M * Eπ ^ (3 * h')) * ((letE c : LetA O n) * b')) = 0 := by
       apply W.EE_inj
       have h4 : ((PD.p : ℕ) : LetA O n) ^ j * ((letE c : LetA O n) * b') = (letE c : LetA O n) * b := by
-        rw [mul_left_comm, ← hb', ← mul_assoc, Formalism.MainNotions.LiftingTheory.wmap_letE_idem]
+        rw [mul_left_comm, ← hb', ← mul_assoc, _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq]
       rw [mul_sub, mul_left_comm _ (Eπ ^ h' * _), h4, map_sub, map_mul, ← hae,
         map_mul (algebraMap (LetA O n) W.EE) (Eπ ^ h' * _), map_mul (algebraMap (LetA O n) W.EE) (Eπ ^ h'),
         ← hbe, ← hge, ← hΛe, map_pow, map_natCast, map_zero, mul_assoc, h1]
@@ -290,10 +330,10 @@ theorem framepf_Ψα_nat (hu : IsUnit (algebraMap (LetA O n) W.EE π'))
       · show _ ∈ DelS W T₂
         rw [mem_DelS]
         intro δ hδ
-        rw [gradNPf_γD_smul, ← W.φγ_comm, hdΔ.2 δ hδ, map_mul, map_mul, huΔ δ hδ, a.2 δ hδ,
-          Formalism.MainNotions.LiftingTheory.wmap_γA_letE]
+        rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, ← W.φγ_comm, hdΔ.2 δ hδ, map_mul, map_mul, huΔ δ hδ, a.2 δ hδ,
+          _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent]
       · show _ ∈ letS W T₂ c
-        rw [mem_letS, smul_smul, ← mul_assoc, ← mul_assoc, Formalism.MainNotions.LiftingTheory.wmap_letE_idem]
+        rw [mem_letS, smul_smul, ← mul_assoc, ← mul_assoc, _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq]
       · rw [e, LinearMap.lTensor_tmul, hΨ₂, hΨ₁, map_smul, W.map_φ, ← smul_sub, ← map_sub, ← hde,
           Formalism.MainNotions.LiftingTheory.wmap_φD_smul, map_pow, hφ, algebraMap_smul, smul_smul, smul_smul]
         congr 1

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
+public import Mathlib.GroupTheory.Perm.Sign
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

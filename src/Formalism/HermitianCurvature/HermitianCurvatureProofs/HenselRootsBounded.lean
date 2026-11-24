@@ -1,6 +1,50 @@
 module
 
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -106,8 +150,7 @@ theorem Pk_isClosed (h : Ctx K R ϖ) (k : ℤ) : IsClosed (Pk R ϖ k : Set K) :=
 
 theorem Pk_ex (h : Ctx K R ϖ) (x : K) : ∃ b : ℕ, x ∈ Pk R ϖ (-(b : ℤ)) := by
   obtain ⟨m, hm⟩ := h.ex x
-  refine ⟨m, ?_⟩
-  rw [mem_Pk, neg_neg, zpow_natCast, Units.val_pow_eq_pow_val]; exact hm
+  exact ⟨m, by simpa [mem_Pk, neg_neg, zpow_natCast, Units.val_pow_eq_pow_val] using hm⟩
 
 theorem tube (h : Ctx K R ϖ) {W : Set K} (hW : W ∈ 𝓝 (0 : K)) :
     ∃ V ∈ 𝓝 (0 : K), ∀ v ∈ V, ∀ r ∈ R, v * r ∈ W := by
@@ -239,10 +282,7 @@ theorem inv_one_add' (h : Ctx K R ϖ) {k : ℤ} (hk : 1 ≤ k) {u : K} (hu : u �
     ∃ u' ∈ Pk R ϖ k, (1 + u) * (1 + u') = 1 := by
   obtain ⟨v, hv, hv1⟩ := inv_one_add h (Pk_mono h.mem hk hu)
   refine ⟨-(u * v), (Pk R ϖ k).neg_mem (Pk_smul hu hv), ?_⟩
-  have : v = 1 - u * v := by linear_combination hv1
-  calc (1 + u) * (1 + -(u * v)) = (1 + u) * (1 - u * v) := by ring
-    _ = (1 + u) * v := by rw [← this]
-    _ = 1 := hv1
+  linear_combination (-u) * hv1
 
 theorem mulU (h : Ctx K R ϖ) {n : ℤ} (hn : 0 ≤ n) {x y : K} (hx : x - 1 ∈ Pk R ϖ n)
     (hy : y - 1 ∈ Pk R ϖ n) : x * y - 1 ∈ Pk R ϖ n := by
@@ -381,9 +421,7 @@ theorem roots_finite {K : Type} [CommRing K] [IsArtinianRing K] [IsReduced K] (s
     rw [← hx', map_pow]; rfl
   refine Set.Finite.subset (h1.preimage Units.val_injective.injOn) ?_
   intro z hz
-  have hz' : z ^ s = D := hz
-  show (z : K) ^ s = (D : K)
-  rw [← hz']; simp
+  simpa using congrArg Units.val hz
 
 theorem char_family {K : Type} [CommRing K] (B B' : AddSubgroup K)
     (hfin : Finite (B ⧸ B'.addSubgroupOf B)) :
@@ -486,10 +524,7 @@ theorem TT_congr {R : Subring K} {s : ℕ} {Cut : Set K} {τ : Kˣ} {F : Kˣ →
     · rw [if_neg hz, if_neg (fun hh => hz (hiff.1 hh))]
   · have hc' : (c' : K) ∉ Cut := by
       intro hc'
-      have : (c : K) - c' ∈ R := by
-        have := R.neg_mem hcc
-        simpa using this
-      exact hc (hω c' c this hc').1
+      exact hc (hω c' c (by simpa using R.neg_mem hcc) hc').1
     rw [if_neg hc, if_neg hc']
 
 theorem TT_scale {s : ℕ} {Cut : Set K} {τ : Kˣ} {F G : Kˣ → ℂ} (υ : Kˣ)
@@ -551,19 +586,15 @@ theorem core {R : Subring K} {s : ℕ} {Cut : Set K} {τ : Kˣ} {F : Kˣ → ℂ
           · simp only [if_pos hz]; exact hC _ hc z hz
           · simp only [if_neg hz]; simp
         · intro ε _
-          refine (hfin2 (τ * cr x)).subset ?_
-          intro z hz
-          by_contra hne
-          exact hz (if_neg hne)
+          exact (hfin2 (τ * cr x)).subset fun z hz => by
+            by_contra hne
+            exact hz (if_neg hne)
       · simp only [if_neg hc]; simp
     · intro ε _
-      refine hfin1.subset ?_
-      intro x hx
-      by_contra hne
-      exact hx (if_neg hne)
-  rcases mul_eq_zero.1 hsum with h0 | h0
-  · exact absurd (by exact_mod_cast h0) hcard
-  · exact h0
+      exact hfin1.subset fun x hx => by
+        by_contra hne
+        exact hx (if_neg hne)
+  exact (mul_eq_zero.1 hsum).resolve_left fun h0 => hcard (by exact_mod_cast h0)
 
 end Core
 
@@ -906,5 +937,4 @@ end Main
 
 end Formalism.FourierDecayAlt.P.HenselRootsBounded
 
-theorem Formalism.FourierDecayAlt.P.crossTermsVanish : Formalism.FourierDecayAlt.A6.CrossVanish :=
-  Formalism.FourierDecayAlt.P.HenselRootsBounded.crossVanish
+alias Formalism.FourierDecayAlt.P.crossTermsVanish := _root_.Formalism.FourierDecayAlt.P.HenselRootsBounded.crossVanish

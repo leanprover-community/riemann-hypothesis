@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
+public import Mathlib.Algebra.Order.Antidiag.Finsupp
+public import Mathlib.Data.Finsupp.Weight
+public import Mathlib.SetTheory.Cardinal.Finite
+public import Mathlib.Algebra.Order.Antidiag.FinsuppEquiv
 
 @[expose] public section
 

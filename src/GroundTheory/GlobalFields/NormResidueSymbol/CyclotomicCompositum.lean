@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.NormResidueSymbol.CyclotomicBase
 public import GroundTheory.GlobalFields.IdeleClassGroup.InvariantsGalois
+public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
+import GroundTheory.GlobalFields.CyclotomicCharacters.Character
+public import GroundTheory.GlobalFields.NormResidueSymbol.Functorial
+public import GroundTheory.GlobalFields.NormResidueSymbol.Surjective
 
 @[expose] public section
 

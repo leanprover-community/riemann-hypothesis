@@ -1,11 +1,14 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.WhittakerLSpace
 public import GroundTheory.AutomorphicForms.WhittakerOrbit
 public import GroundTheory.AutomorphicForms.WhittakerGroups
 public import GroundTheory.AutomorphicForms.WhittakerCells
 public import GroundTheory.AutomorphicForms.WhittakerRelevance
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 

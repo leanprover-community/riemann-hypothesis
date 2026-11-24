@@ -1,8 +1,11 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreFinite
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -1,8 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.InertKernelTheory.OneCopyTh1
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.CoeffPowEqZeroOfCc
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.USideA
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -100,8 +101,8 @@ private theorem exists_integral_subst_inverse_of_unit_linear (h : PowerSeries �
   have hcoeffP : ∀ N k, PowerSeries.coeff k (∑ m ∈ Finset.range N, PowerSeries.C (b m) * h ^ m) =
       ∑ m ∈ Finset.range N, b m * PowerSeries.coeff k (h ^ m) := by
     intro N k
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, PowerSeries.coeff_C_mul]
+
+    simp only [map_sum, PowerSeries.coeff_C_mul]
   have hA : ∀ N, ∀ k < N, PowerSeries.coeff k
       (PowerSeries.X - ∑ m ∈ Finset.range N, PowerSeries.C (b m) * h ^ m) = 0 := by
     intro N

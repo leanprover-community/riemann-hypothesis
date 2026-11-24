@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfDefs
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.LiesOver
 
 @[expose] public section
 

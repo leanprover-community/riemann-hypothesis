@@ -1,7 +1,58 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ConstantCoeffEv
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogClosed
+import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
 
 @[expose] public section
 
@@ -226,8 +277,8 @@ theorem cc_pderiv (f : PS R n d) (v : Fin n × Fin d) :
 theorem coeff_lin_ev {φ : Pt R 1 d} (hφ : Z φ) (f : PS R 1 d) (j : Fin d) :
     coeff (Finsupp.single ((0 : Fin 1), j) 1) (ev ![φ] f) =
       ∑ c, coeff (Finsupp.single ((0 : Fin 1), c) 1) f * lin φ 1 c j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← cc_pderiv, d1 hφ, map_sum]
+
+  rw [← cc_pderiv, d1 hφ, map_sum]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [map_mul, ccev (ZZ_cons hφ ZZ_nil), cc_pderiv, cc_pderiv, lin]
 
@@ -254,8 +305,8 @@ theorem lin_add (G : FGLaw R d) {φ ψ : Pt R 1 d} (hφ : Z φ) (hψ : Z ψ) :
     rw [hc]
     split_ifs <;> simp
   change coeff _ (ev ![φ, ψ] (G.F i)) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← cc_pderiv, d2 hφ hψ, map_add (f := _), map_sum, map_sum]
+
+  rw [← cc_pderiv, d2 hφ hψ, map_add (f := _), map_sum, map_sum]
   simp only [map_mul, ccev (ZZ_cons hφ (ZZ_cons hψ ZZ_nil)), h0, h1]
   simp [cc_pderiv, lin]
 

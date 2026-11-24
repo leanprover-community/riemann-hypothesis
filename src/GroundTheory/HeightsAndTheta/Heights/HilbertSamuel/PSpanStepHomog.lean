@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSpanStepHomog
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSpanStepLocal
+import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

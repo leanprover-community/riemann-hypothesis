@@ -1,28 +1,65 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistBasisOffPrime
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.MvPowerSeries.Inverse
+public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MemRangeOfForallHeightEqOneOfIsReflexive
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapEqIInfDiscreteValuationSubring
-public import Development.AbelianVarietyTheory.PublishedTheorems.SemistableReduction₂.SemistableReductionSt
-public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.UTorsSt
-public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.ImmersedBy
-public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.FiniteHomogeneousInf
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.HomExtSt
-public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.ArcFamSt
-public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.TopAmpExists
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GtBaseChangeSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Splits
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueSecPull
+public import Mathlib.Algebra.GroupWithZero.Action.Regular
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
+public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -81,8 +118,8 @@ theorem Rel.map {M} (h : Rel x b' M b) (φ : R →+* R') : Rel (spMap φ ≫ x) 
 
 theorem Rel.mul {M M'} (h' : Rel x b'' M' b') (h : Rel x b' M b) : Rel x b'' (M' * M) b := fun p τ e a => by
   rw [h' p τ e a]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [h p τ e, Matrix.mul_apply, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul, mul_assoc]
+
+  simp only [h p τ e, Matrix.mul_apply, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul, mul_assoc]
   exact Finset.sum_comm
 
 theorem Rel.one : Rel x b 1 b := fun p τ _ a => by
@@ -421,40 +458,7 @@ theorem exists_up_sec {X X' Y : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ 
       ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) (p : K → L.ι) (q : K → L'.ι), r z ∈ LB.wchart L φ p →
         r z ∈ LB.wchart L' φ' q → gs r z (LB.wchart L φ p) (t.f p) =
           (pw w φ' ε r z p q).val * gs r z (LB.wchart L' φ' q) (a.f q) := by
-  obtain rfl : (fun k => φ' k ≫ F) = φ := funext e
-  choose u hu using fun p q => exists_pw w φ' ε p q
-  have glue : ∀ p : K → L.ι, ∃ s : Γ(Y, LB.wchart L (fun k => φ' k ≫ F) p), ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) q,
-      r z ∈ LB.wchart L (fun k => φ' k ≫ F) p → r z ∈ LB.wchart L' φ' q →
-      gs r z _ s = (pw w φ' ε r z p q).val * gs r z (LB.wchart L' φ' q) (a.f q) := by
-    intro p
-    let W : (K → L'.ι) → Y.Opens := fun q => LB.wchart L (fun k => φ' k ≫ F) p ⊓ LB.wchart L' φ' q
-    obtain ⟨v, hv⟩ : ∃ v : ∀ q, Γ(Y, W q), ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) q, r z ∈ W q →
-        gs r z (W q) (v q) = (pw w φ' ε r z p q).val * gs r z (LB.wchart L' φ' q) (a.f q) :=
-      ⟨fun q => (u p q).val * (Y.presheaf.map (homOfLE (inf_le_right : W q ≤ LB.wchart L' φ' q)).op).hom (a.f q),
-        fun Z r z q hz => (gs_mul r z _ hz _ _).trans (congrArg₂ (· * ·)
-          ((gs_unit r z _ hz _).trans (congrArg Units.val (hu p q Z r z hz))) (gs_res r z _ hz _))⟩
-    obtain ⟨s, hs, -⟩ := Y.sheaf.existsUnique_gluing' W (LB.wchart L (fun k => φ' k ≫ F) p)
-      (fun q => homOfLE inf_le_left) (fun y hy => by
-        choose q hq using fun k => exists_chart hL' (φ' k y)
-        exact Opens.mem_iSup.2 ⟨q, hy, Set.mem_iInter.2 hq⟩) v
-      (fun q q' => fn_ext (V := W q ⊓ W q') fun y hy => by
-        refine (gs_res (𝟙 Y) y inf_le_left hy _).trans (Eq.trans ?_ (gs_res (𝟙 Y) y inf_le_right hy _).symm)
-        rw [hv _ _ y q hy.1, hv _ _ y q' hy.2, pw_trans hw φ' ε (𝟙 Y) y hy.1.1 hy.1.1 hy.1.2 hy.2.2,
-          trF_self hL _ ε (𝟙 Y) y hy.1.1, sec_trans a (𝟙 Y) y hy.1.2 hy.2.2, one_mul, ← mul_assoc, ← Units.val_mul,
-          mul_right_comm, inv_mul_cancel, one_mul])
-    refine ⟨s, fun Z r z q h₁ h₂ => ?_⟩
-    have hz : r z ∈ W q := ⟨h₁, h₂⟩
-    exact (gs_res r z inf_le_left hz s).symm.trans ((congrArg (gs r z (W q)) (hs q)).trans (hv Z r z q hz))
-  choose s hs using glue
-  refine ⟨⟨s, fun j j' => fn_ext fun y hy => ?_⟩, fun Z r z p q => hs p Z r z q⟩
-  choose q hq using fun k => exists_chart hL' (φ' k y)
-  have m : (𝟙 Y : Y ⟶ Y) y ∈ LB.wchart L' φ' q := Set.mem_iInter.2 hq
-  refine (gs_res (𝟙 Y) y _ hy _).trans (Eq.trans ?_ ((gs_mul (𝟙 Y) y _ hy _ _).trans (congrArg₂ (· * ·)
-    ((gs_unit (𝟙 Y) y _ hy _).trans (congrArg Units.val (gm_linComb L _ ε (𝟙 Y) y j j' hy.1 hy.2)))
-    (gs_res (𝟙 Y) y _ hy _))).symm)
-  refine (hs j _ (𝟙 Y) y q hy.1 m).trans (Eq.trans ?_ (congrArg _ (hs j' _ (𝟙 Y) y q hy.2 m)).symm)
-  rw [pw_trans hw φ' ε (𝟙 Y) y hy.1 hy.2 m m, trF_self hL' _ ε (𝟙 Y) y m, inv_one, mul_one, Units.val_mul, mul_assoc]
-  rfl
+  apply GlobalTheory.TwistLoc.exists_up_sec <;> assumption
 
 theorem gs_comp {X Y Z : Scheme.{0}} (r : Z ⟶ Y) (q : Y ⟶ X) (z : Z) (U : X.Opens) (h : q (r z) ∈ U) (a : Γ(X, U)) :
     gs (r ≫ q) z U a = (r.stalkMap z).hom (gs q (r z) U a) := by

@@ -1,8 +1,12 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreCoordGoodProj
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodG
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -51,8 +55,8 @@ theorem segre_scaleBlock (k0 : K) (c : ℂ) (z : (Σ k, ι k) → ℂ) (t : (k :
 theorem evQ_forms (P : Ideal (MRing ι)) (z : (Σ k, ι k) → ℂ) (hz : z ∈ mcPts P) {r : ℕ}
     (L : Fin r → ((k : K) → ι k) → ℚ) (j : Fin r) :
     evQ P z hz (forms (segQ P) L j) = ∑ t, (L j t : ℂ) * segre z t := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [forms, map_sum, map_rat_smul, evQ_segQ, Rat.smul_def]
+
+  simp only [forms, map_sum, map_rat_smul, evQ_segQ, Rat.smul_def]
 
 omit [Fintype K] [DecidableEq K] [∀ k, Fintype (ι k)] in
 theorem evQ_aeval (P : Ideal (MRing ι)) (z : (Σ k, ι k) → ℂ) (hz : z ∈ mcPts P) {r : ℕ}

@@ -1,14 +1,71 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateSizesOfHypotheses
+public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CayleyTransformPreservesForm
+public import Formalism.FormalDegreeBessel.FinalG
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.ParametricIntegral
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
 
 @[expose] public section
 
@@ -19,48 +76,16 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formal
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
-theorem block2_det_lower_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (C : Matrix (Fin s) (Fin p) ℂ)
-    (D : Matrix (Fin s) (Fin s) ℂ) : (blk2 A 0 C D).det = A.det * D.det := by
-  unfold blk2
-  rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₁₂]
+alias block2_det_upper_triangular := _root_.Formalism.FourierDecayAlt.P.Ux3.block2_det_upper_triangular
 
-theorem block2_det_upper_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (B : Matrix (Fin p) (Fin s) ℂ)
-    (D : Matrix (Fin s) (Fin s) ℂ) : (blk2 A B 0 D).det = A.det * D.det := by
-  unfold blk2
-  rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₂₁]
+alias det_upper := _root_.Formalism.FourierDecayAlt.P.Ux3.det_upper
 
-theorem det_upper {p : ℕ} (u : G.UT p → ℂ) : (G.upper u).det = 1 := by
-  have h : (G.upper u).BlockTriangular id := by
-    intro i j hij
-    simp only [id] at hij
-    simp [G.upper, G.strictUpper, ne_of_gt hij, not_lt.mpr (le_of_lt hij)]
-  rw [Matrix.det_of_isUpperTriangular h]
-  simp [G.upper, G.strictUpper]
-
-theorem det_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : LW σ → ℂ) : (lowW σ v).det = 1 := by
-  have h : (lowW σ v).BlockTriangular OrderDual.toDual := by
-    intro i j hij
-    have hij' : i < j := hij
-    have : ¬ (j < i ∧ σ.symm j < σ.symm i) := fun h => absurd h.1 (not_lt.mpr (le_of_lt hij'))
-    simp [lowW, ne_of_lt hij', this]
-  rw [Matrix.det_of_isLowerTriangular _ h]
-  simp [lowW]
-
-theorem detZj : DetZj := by
-  intro p s σ d η Z
-  unfold ZjH Zj headH hMat G.detM
-  rw [Matrix.det_mul, Matrix.det_mul, block2_det_lower_triangular, block2_det_lower_triangular, block2_det_upper_triangular]
-  simp only [Matrix.det_mul, det_upper, det_lowW, Matrix.det_one]
-  ring
-
-theorem permutationMatrix_eq_permMatrix {p : ℕ} (σ : Equiv.Perm (Fin p)) : wP σ = σ.permMatrix ℂ := by
-  ext a b
-  simp [wP, Equiv.Perm.permMatrix, PEquiv.toMatrix_apply, Equiv.toPEquiv_apply, eq_comm]
+alias det_lowW := _root_.Formalism.FourierDecayAlt.P.Ux3.det_lowW
 
 theorem det_hMat_ne {p : ℕ} (σ : Equiv.Perm (Fin p)) (d : Fin p → ℂ) (hd : ∀ i, d i ≠ 0) :
     (hMat σ d).det ≠ 0 := by
   unfold hMat
-  rw [Matrix.det_mul, permutationMatrix_eq_permMatrix, Matrix.det_permutation, Matrix.det_diagonal]
+  rw [Matrix.det_mul, _root_.Formalism.FourierDecayAlt.P.Ux5.permutationMatrix_eq_permMatrix, Matrix.det_permutation, Matrix.det_diagonal]
   refine mul_ne_zero ?_ (Finset.prod_ne_zero_iff.mpr fun i _ => hd i)
   rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
 
@@ -72,7 +97,7 @@ theorem gaXi_mem (hM : SliceMem) (hR : RadicalParam) {k p s ρ : ℕ} (σ : Equi
     (hd : ∀ i, d i ≠ 0) (ξ : Xi k p s ρ σ) (Z : G.Mat s) (hZ : G.detM Z ≠ 0) {γ : B.Mat k ρ}
     (hγ : γ ∈ B.GV k ρ) : gaXi k ρ σ d ξ Z γ ∈ B.GV k (p + s + ρ) := by
   have hdet : (ZjH σ d ξ.2 Z).det ≠ 0 := by
-    rw [detZj]; exact mul_ne_zero (det_hMat_ne σ d hd) hZ
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux3.detZj]; exact mul_ne_zero (det_hMat_ne σ d hd) hZ
   unfold gaXi
   refine BetaSesquilinearity.gv_mul (BetaSesquilinearity.gv_mul (BetaSesquilinearity.gv_inv (Rn_mem hR _ _ _ _)) ((hM k (p + s) ρ).1 _ _ hdet hγ))
     (Rn_mem hR _ _ _ _)
@@ -81,7 +106,7 @@ theorem DjU_gaXi (hZh : ZhSlice) {k p s ρ : ℕ} (σ : Equiv.Perm (Fin p)) (d :
     (ξ : Xi k p s ρ σ) (Z : G.Mat s) (γ : B.Mat k ρ) :
     DjU k (p + s) ρ (gaXi k ρ σ d ξ Z γ) = (hMat σ d).det * G.detM Z := by
   unfold DjU gaXi
-  rw [hZh, detZj]
+  rw [hZh, _root_.Formalism.FourierDecayAlt.P.Ux3.detZj]
 
 theorem phiSupport_of (hM : SliceMem) (hR : RadicalParam) (hZh : ZhSlice) : PhiSupport := by
   intro k p s ρ σ d z z' E _ _ F₁ A₁ B₁ Q K hd hS Z hZ hK γ hγ
@@ -138,8 +163,8 @@ lemma aesm_fderiv {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [Finite
     simp only [FunLike.coe_sum, Finset.sum_apply, ContinuousLinearMap.smulRight_apply,
       LinearMap.coe_toContinuousLinearMap']
     conv_lhs => rw [← b.sum_repr v]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul, Module.Basis.coord_apply]
   rw [e]
@@ -155,7 +180,7 @@ lemma aesm_fderiv {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [Finite
         simpa using this
       exact ht.eventually hm
   have hc : Continuous fun e : E => (LinearMap.toContinuousLinearMap (b.coord j)).smulRight e :=
-    (ContinuousLinearMap.smulRightL ℝ X E (LinearMap.toContinuousLinearMap (b.coord j))).continuous
+    (StrongDual.smulRightL ℝ X E (LinearMap.toContinuousLinearMap (b.coord j))).continuous
   exact hc.comp_aestronglyMeasurable hj
 
 end meas
@@ -377,60 +402,11 @@ def kap (Y : Mat k r) : Mat k r := (1 + Y) * (1 - Y)⁻¹
 def iot (Z : Mat k r) : Mat k r := (Z - 1) * (Z + 1)⁻¹
 
 lemma kap_mem {Y : Mat k r} (hY : inLie k r Y) (hu : IsUnit (1 - Y).det) : kap Y ∈ GV k r := by
-  first | exact UpperTheory.Reformulated.B.Qk20.kap_mem .. | (apply UpperTheory.Reformulated.B.Qk20.kap_mem <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qk20.kap_mem <;> assumption) | (apply @UpperTheory.Reformulated.B.Qk20.kap_mem <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qk20.kap_mem <;> assumption) | (apply @UpperTheory.Reformulated.B.Qk20.kap_mem <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qk20.kap_mem k r Y hY hu | exact @UpperTheory.Reformulated.B.Qk20.kap_mem k r Y hY | exact @UpperTheory.Reformulated.B.Qk20.kap_mem k r Y | exact @UpperTheory.Reformulated.B.Qk20.kap_mem k r | exact @UpperTheory.Reformulated.B.Qk20.kap_mem k
+  first | (apply UpperTheory.Reformulated.B.Qk20.kap_mem <;> assumption)
 
 lemma iot_facts {h : Mat k r} (hh : h ∈ GV k r) (hu : IsUnit (h + 1).det) :
     inLie k r (iot h) ∧ IsUnit (1 - iot h).det ∧ kap (iot h) = h := by
-  have hh' : hᴴ * Hpk k r * h = Hpk k r := hh
-  set D := h + 1 with hD
-  set C := h - 1 with hC
-  have hDD : D⁻¹ * D = 1 := Matrix.nonsing_inv_mul _ hu
-  have hDD' : D * D⁻¹ = 1 := Matrix.mul_nonsing_inv _ hu
-  have hZD : iot h * D = C := by
-    unfold iot; rw [Matrix.mul_assoc, hDD, Matrix.mul_one]
-
-  have h1Z : 1 - iot h = (2 : ℂ) • D⁻¹ := by
-    have : (1 - iot h) * D = (2 : ℂ) • (1 : Mat k r) := by
-      rw [Matrix.sub_mul, Matrix.one_mul, hZD, hD, hC]
-      rw [two_smul]; abel
-    calc 1 - iot h = (1 - iot h) * D * D⁻¹ := by rw [Matrix.mul_assoc, hDD', Matrix.mul_one]
-      _ = (2 : ℂ) • D⁻¹ := by rw [this, Matrix.smul_mul, Matrix.one_mul]
-  have hu1 : IsUnit (1 - iot h).det := by
-    rw [h1Z, Matrix.det_smul]
-    exact (IsUnit.pow _ (isUnit_iff_ne_zero.2 two_ne_zero)).mul (Matrix.isUnit_nonsing_inv_det _ hu)
-  refine ⟨?_, hu1, ?_⟩
-  ·
-    have hDu : IsUnit (Dᴴ).det := by rw [det_conjTranspose]; exact hu.star
-    have e1 : Cᴴ * Hpk k r * D = hᴴ * Hpk k r - Hpk k r * h := by
-      rw [hC, hD, conjTranspose_sub, conjTranspose_one]
-      calc (hᴴ - 1) * Hpk k r * (h + 1) = hᴴ * Hpk k r * h + hᴴ * Hpk k r - Hpk k r * h - Hpk k r := by
-            noncomm_ring
-        _ = hᴴ * Hpk k r - Hpk k r * h := by rw [hh']; abel
-    have e2 : Dᴴ * Hpk k r * C = -(hᴴ * Hpk k r - Hpk k r * h) := by
-      rw [hC, hD, conjTranspose_add, conjTranspose_one]
-      calc (hᴴ + 1) * Hpk k r * (h - 1) = hᴴ * Hpk k r * h - hᴴ * Hpk k r + Hpk k r * h - Hpk k r := by
-            noncomm_ring
-        _ = -(hᴴ * Hpk k r - Hpk k r * h) := by rw [hh']; abel
-    have e3 : Dᴴ * ((iot h)ᴴ * Hpk k r + Hpk k r * iot h) * D = 0 := by
-      have : Dᴴ * ((iot h)ᴴ * Hpk k r + Hpk k r * iot h) * D
-          = (iot h * D)ᴴ * Hpk k r * D + Dᴴ * Hpk k r * (iot h * D) := by
-        rw [conjTranspose_mul]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-      rw [this, hZD, e1, e2, add_neg_cancel]
-    have hDH : (Dᴴ)⁻¹ * Dᴴ = 1 := Matrix.nonsing_inv_mul _ hDu
-    show (iot h)ᴴ * Hpk k r + Hpk k r * iot h = 0
-    calc (iot h)ᴴ * Hpk k r + Hpk k r * iot h
-        = (Dᴴ)⁻¹ * (Dᴴ * ((iot h)ᴴ * Hpk k r + Hpk k r * iot h) * D) * D⁻¹ := by
-          simp only [← Matrix.mul_assoc, hDH, Matrix.one_mul]
-          rw [Matrix.mul_assoc, hDD', Matrix.mul_one]
-      _ = 0 := by rw [e3, Matrix.mul_zero, Matrix.zero_mul]
-  ·
-    have hp : (1 + iot h) * D = h * ((1 - iot h) * D) := by
-      rw [Matrix.add_mul, Matrix.sub_mul, Matrix.one_mul, hZD, hD, hC]; noncomm_ring
-    have hq : 1 + iot h = h * (1 - iot h) := by
-      calc 1 + iot h = (1 + iot h) * D * D⁻¹ := by rw [Matrix.mul_assoc, hDD', Matrix.mul_one]
-        _ = h * (1 - iot h) := by rw [hp, ← Matrix.mul_assoc, Matrix.mul_assoc _ D, hDD', Matrix.mul_one]
-    unfold kap
-    rw [hq, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hu1, Matrix.mul_one]
+  apply Formalism.FourierDecayAlt.P.Ux1.iot_facts <;> assumption
 
 section smooth2
 
@@ -581,48 +557,7 @@ lemma cT_apply (A : Mat k r) : cT k r A = Aᴴ := rfl
 
 lemma tangent {g0 : Mat k r} (hg0 : g0 ∈ GV k r) {Y : J k r → ℝ} (hY : Y ∈ Dom k r) (W : J k r → ℝ) :
     inLie k r (-(fderiv ℝ (chart g0) Y W) * (chart g0 Y)⁻¹) := by
-  set c := chart g0 Y with hc
-  set T := fderiv ℝ (chart g0) Y W with hT
-  have hcG : c ∈ GV k r := chart_mem hg0 hY
-  have hcu : IsUnit c.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hcG
-  set γ : ℝ → Mat k r := fun t => chart g0 (Y + t • W) with hγ
-  have hline : HasDerivAt (fun t : ℝ => Y + t • W) W 0 := by
-    have h := ((hasDerivAt_id (0:ℝ)).smul_const W).const_add Y
-    rw [one_smul] at h
-    exact h
-  have hγd : HasDerivAt γ T 0 :=
-    (chart_diff g0 hY).hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hline (by simp)
-  have hγ0 : γ 0 = c := by simp [hγ, hc]
-  have h1 : HasDerivAt (fun t => cT k r (γ t)) (cT k r T) 0 :=
-    (cT k r).hasFDerivAt.comp_hasDerivAt 0 hγd
-  have h2 : HasDerivAt (fun t => mulB k r (cT k r (γ t)) (Hpk k r))
-      (mulB k r (cT k r (γ 0)) 0 + mulB k r (cT k r T) (Hpk k r)) 0 :=
-    ContinuousLinearMap.hasDerivAt_of_bilinear (fun _ => h1) (fun _ => hasDerivAt_const _ _)
-  have h3 : HasDerivAt (fun t => mulB k r (mulB k r (cT k r (γ t)) (Hpk k r)) (γ t))
-      (mulB k r (mulB k r (cT k r (γ 0)) (Hpk k r)) T +
-        mulB k r (mulB k r (cT k r (γ 0)) 0 + mulB k r (cT k r T) (Hpk k r)) (γ 0)) 0 :=
-    ContinuousLinearMap.hasDerivAt_of_bilinear (fun _ => h2) (fun _ => hγd)
-  have hev : ∀ᶠ t in 𝓝 (0:ℝ), Y + t • W ∈ Dom k r :=
-    ((continuous_const.add (continuous_id.smul continuous_const)).continuousAt (x := (0:ℝ))).preimage_mem_nhds
-      (dom_open.mem_nhds (by simpa using hY))
-  have h4 : HasDerivAt (fun t => mulB k r (mulB k r (cT k r (γ t)) (Hpk k r)) (γ t)) 0 0 := by
-    refine (hasDerivAt_const (0:ℝ) (Hpk k r)).congr_of_eventuallyEq ?_
-    filter_upwards [hev] with t ht
-    have hm : γ t ∈ GV k r := chart_mem hg0 ht
-    exact hm
-  have hz := h3.unique h4
-  simp only [mulB_apply, cT_apply, hγ0, Matrix.mul_zero, zero_add] at hz
-
-  have hci : c * c⁻¹ = 1 := Matrix.mul_nonsing_inv _ hcu
-  have hci' : (c⁻¹)ᴴ * cᴴ = 1 := by rw [← conjTranspose_mul, hci, conjTranspose_one]
-  show (-T * c⁻¹)ᴴ * Hpk k r + Hpk k r * (-T * c⁻¹) = 0
-  have : (-T * c⁻¹)ᴴ * Hpk k r + Hpk k r * (-T * c⁻¹)
-      = -((c⁻¹)ᴴ * (cᴴ * Hpk k r * T + Tᴴ * Hpk k r * c) * c⁻¹) := by
-    rw [conjTranspose_mul, conjTranspose_neg]
-    simp only [Matrix.mul_add, Matrix.add_mul, Matrix.neg_mul, Matrix.mul_neg, ← Matrix.mul_assoc, hci']
-    simp only [Matrix.mul_assoc, hci, Matrix.mul_one, Matrix.one_mul]
-    abel
-  rw [this, hz, Matrix.mul_zero, Matrix.zero_mul, neg_zero]
+  apply Formalism.FourierDecayAlt.P.Ux1.tangent <;> assumption
 
 def ebv (b : J k r) : J k r → ℝ := fun j => if b = j then 1 else 0
 
@@ -638,8 +573,8 @@ lemma aC_apply (g0 : Mat k r) (i : J k r) (Y W : J k r → ℝ) :
   have e1 : -(fderiv ℝ (chart g0) Y W) * (chart g0 Y)⁻¹ =
       ∑ b, W b • (-(fderiv ℝ (chart g0) Y (ebv b)) * (chart g0 Y)⁻¹) := by
     conv_lhs => rw [hW]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, ← Finset.sum_neg_distrib, Finset.sum_mul]
+
+    rw [map_sum, ← Finset.sum_neg_distrib, Finset.sum_mul]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [map_smul, ← smul_neg, Matrix.smul_mul]
   rw [e1, kc_sum]
@@ -666,38 +601,7 @@ lemma hasFDeriv_chart {g0 : Mat k r} (hg0 : g0 ∈ GV k r) {H : Mat k r → E}
     (hH : CkOn ((1 : ℕ) : ℕ∞) (GV k r) H) {Y : J k r → ℝ} (hY : Y ∈ Dom k r) :
     HasFDerivAt (fun Y' => H (chart g0 Y'))
       (∑ i, (aC g0 i Y).smulRight (op true (Lt i) H (chart g0 Y))) Y := by
-  set c := chart g0 Y with hc
-  have hcG : c ∈ GV k r := chart_mem hg0 hY
-  have hcu : IsUnit c.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hcG
-  obtain ⟨U, h', hU, hcU, hcd, hff⟩ := hH c hcG
-  have hdiff : DifferentiableAt ℝ h' c :=
-    (hcd.differentiableOn (cast_ne_zero 0)).differentiableAt (hU.mem_nhds hcU)
-  have hchd := chart_diff g0 hY
-  have hcomp : HasFDerivAt (fun Y' => h' (chart g0 Y'))
-      ((fderiv ℝ h' c).comp (fderiv ℝ (chart g0) Y)) Y :=
-    hdiff.hasFDerivAt.comp Y hchd.hasFDerivAt
-  have heq : (fun Y' => H (chart g0 Y')) =ᶠ[𝓝 Y] (fun Y' => h' (chart g0 Y')) := by
-    filter_upwards [hchd.continuousAt.preimage_mem_nhds (hU.mem_nhds hcU), dom_open.mem_nhds hY]
-      with Y' h1 h2
-    exact hff _ h1 (chart_mem hg0 h2)
-  refine (hcomp.congr_of_eventuallyEq heq).congr_fderiv ?_
-  ext1 W
-  rw [ContinuousLinearMap.comp_apply, _root_.sum_apply]
-  simp only [ContinuousLinearMap.smulRight_apply]
-  have hop : ∀ i, op true (Lt i) H c = fderiv ℝ h' c (-(Lt i * c)) := fun i =>
-    op_eq_op' 0 true hU hcd hff (Lt_unit i).1 c hcU hcG
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp_rw [hop, ← map_smul, ← map_sum]
-  congr 1
-  set Xv := -(fderiv ℝ (chart g0) Y W) * c⁻¹ with hXv
-  have hXl : inLie k r Xv := tangent hg0 hY W
-  have hA : ∀ i, aC g0 i Y W = kc i Xv := fun i => aC_apply g0 i Y W
-  have hXc : Xv * c = -(fderiv ℝ (chart g0) Y W) := by
-    rw [hXv, Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hcu, Matrix.mul_one]
-  calc fderiv ℝ (chart g0) Y W = -(Xv * c) := by rw [hXc, neg_neg]
-    _ = -((∑ i, kc i Xv • Lt i) * c) := by rw [← expandL hXl]
-    _ = ∑ i, aC g0 i Y W • -(Lt i * c) := by
-        simp only [hA, Finset.sum_mul, Matrix.smul_mul, smul_neg, Finset.sum_neg_distrib]
+  apply Formalism.FourierDecayAlt.P.Ux1.hasFDeriv_chart <;> assumption
 
 lemma cont_chart {g0 : Mat k r} (hg0 : g0 ∈ GV k r) {H : Mat k r → E}
     (hH : CkOn ((0 : ℕ) : ℕ∞) (GV k r) H) : ContinuousOn (fun Y => H (chart g0 Y)) (Dom k r) := by
@@ -957,7 +861,7 @@ theorem int_ck (ψ : α → ℂ) (hψ : ∀ ξ, ‖ψ ξ‖ ≤ 1) (hψm : AEStr
     have hF'm : AEStronglyMeasurable (fun ξ => ∑ i, (aC g0 i Y).smulRight
         (ψ ξ • dLR ((i :: w).map Lt) [] (h ξ) (chart g0 Y))) μ := by
       refine Finset.aestronglyMeasurable_fun_sum _ fun i _ => ?_
-      exact (ContinuousLinearMap.smulRightL ℝ (J k r → ℝ) E (aC g0 i Y)).continuous.comp_aestronglyMeasurable
+      exact (StrongDual.smulRightL ℝ (J k r → ℝ) E (aC g0 i Y)).continuous.comp_aestronglyMeasurable
         (hmw (i :: w) (by simp; omega) Y hY)
     have hbF' : ∀ ξ, ∀ Y' ∈ Metric.ball (0 : J k r → ℝ) δ, ‖∑ i, (aC g0 i Y').smulRight
         (ψ ξ • dLR ((i :: w).map Lt) [] (h ξ) (chart g0 Y'))‖ ≤ Ba * β ξ := by
@@ -983,10 +887,10 @@ theorem int_ck (ψ : α → ℂ) (hψ : ∀ ξ, ‖ψ ξ‖ ≤ 1) (hψm : AEStr
         (Eventually.of_forall fun ξ => hbw (i :: w) (by simp; omega) Y hY ξ)
     have hI : ∀ i, Integrable (fun ξ => (aC g0 i Y).smulRight
         (ψ ξ • dLR ((i :: w).map Lt) [] (h ξ) (chart g0 Y))) μ := fun i =>
-      (ContinuousLinearMap.smulRightL ℝ (J k r → ℝ) E (aC g0 i Y)).integrable_comp (hint i)
+      (StrongDual.smulRightL ℝ (J k r → ℝ) E (aC g0 i Y)).integrable_comp (hint i)
     rw [integral_finsetSum _ (fun i _ => hI i)]
     refine Finset.sum_congr rfl fun i _ => ?_
-    exact (ContinuousLinearMap.smulRightL ℝ (J k r → ℝ) E (aC g0 i Y)).integral_comp_comm (hint i)
+    exact (StrongDual.smulRightL ℝ (J k r → ℝ) E (aC g0 i Y)).integral_comp_comm (hint i)
   have hAL := ALd (𝔤 := J k r → ℝ) (E := E) Metric.isOpen_ball (aC g0) (fun i => (aC_cd hg0 i).mono hΩ) mm L
     hLc hLd
   exact ⟨δ, hδp, hΩ, hAL.congr fun Y _ => rfl⟩
@@ -1047,7 +951,7 @@ lemma cont_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) {f : X → LW σ → ℂ} (h
       Matrix (Fin p) (Fin p) ℂ) := by
     refine continuous_pi fun a => continuous_pi fun b => ?_
     by_cases h : b < a ∧ σ.symm b < σ.symm a
-    · simp only [Matrix.of_apply, h, dite_true]
+    · simp only [Matrix.of_apply, h]
       exact (continuous_apply _).comp hf
     · simp only [Matrix.of_apply, h, dite_false]
       exact continuous_const
@@ -1072,7 +976,7 @@ lemma cont_gaXi {k p s ρ : ℕ} (hR : RadicalParam) (σ : Equiv.Perm (Fin p)) (
       (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_unit (Rn_mem hR k (p + s) ρ ξ.1.1)).ne_zero
   have h2 : Continuous fun ξ : Xi k p s ρ σ => (ZjH σ d ξ.2 Z)ᴴ⁻¹ := by
     refine cont_inv (((cont_ZjH σ d Z).comp continuous_snd).matrix_conjTranspose) fun ξ => ?_
-    rw [Matrix.det_conjTranspose, detZj]
+    rw [Matrix.det_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux3.detZj]
     exact star_ne_zero.2 (mul_ne_zero (det_hMat_ne σ d hd) hZ)
   have h3 : Continuous fun ξ : Xi k p s ρ σ => ZjH σ d ξ.2 Z := (cont_ZjH σ d Z).comp continuous_snd
   have h4 : Continuous fun ξ : Xi k p s ρ σ => Rn k (p + s) ρ ξ.1.2 :=
@@ -1118,14 +1022,14 @@ lemma cont_supS {p : ℕ} {f : X → Matrix (Fin p) (Fin p) ℂ} (hf : Continuou
 lemma cont_cornerA {p s : ℕ} {f : X → Fin s → Fin p → ℂ} (hf : Continuous f) : Continuous fun x => cornerA (f x) := by
   unfold cornerA
   by_cases h : 0 < s ∧ 0 < p
-  · simp only [h, dite_true]; exact (continuous_apply_apply _ _).comp hf
+  · simp only [h]; exact (continuous_apply_apply _ _).comp hf
   · simp only [h, dite_false]; exact continuous_const
 
 @[fun_prop]
 lemma cont_cornerB {p s : ℕ} {f : X → Fin p → Fin s → ℂ} (hf : Continuous f) : Continuous fun x => cornerB (f x) := by
   unfold cornerB
   by_cases h : 0 < s ∧ 0 < p
-  · simp only [h, dite_true]; exact (continuous_apply_apply _ _).comp hf
+  · simp only [h]; exact (continuous_apply_apply _ _).comp hf
   · simp only [h, dite_false]; exact continuous_const
 
 @[fun_prop]
@@ -1461,13 +1365,13 @@ namespace Formalism.FourierDecayAlt.P
 open Formalism.FourierDecayAlt.U
 
 theorem Ux10.phi_bound_parts_of_radical_parametrisation (hR : RadicalParam) : PointwiseIntegralBoundFromComponents :=
-  Ux10.phi_bound_parts_of_radical_and_slice hR hat_z_on_slice
+  Ux10.phi_bound_parts_of_radical_and_slice hR _root_.Formalism.FourierDecayAlt.P.Ux3.zhSlice
 
 theorem Ux10.phiSupport_of_parts (hM : SliceMem) (hR : RadicalParam) : PhiSupport :=
-  Ux10.phiSupport_of hM hR hat_z_on_slice
+  Ux10.phiSupport_of hM hR _root_.Formalism.FourierDecayAlt.P.Ux3.zhSlice
 
-theorem phi_bound_of_parts : Formalism.FourierDecayAlt.U.PointwiseIntegralBoundFromComponents := Ux10.phi_bound_parts_of_radical_parametrisation radical_parametrisation
+theorem phi_bound_of_parts : Formalism.FourierDecayAlt.U.PointwiseIntegralBoundFromComponents := Ux10.phi_bound_parts_of_radical_parametrisation _root_.Formalism.FourierDecayAlt.P.Ux2.radicalParam
 
-theorem phi_support_determinant : Formalism.FourierDecayAlt.U.PhiSupport := Ux10.phiSupport_of_parts slice_membership radical_parametrisation
+theorem phi_support_determinant : Formalism.FourierDecayAlt.U.PhiSupport := Ux10.phiSupport_of_parts _root_.Formalism.FourierDecayAlt.P.Ux2.sliceMem _root_.Formalism.FourierDecayAlt.P.Ux2.radicalParam
 
 end Formalism.FourierDecayAlt.P

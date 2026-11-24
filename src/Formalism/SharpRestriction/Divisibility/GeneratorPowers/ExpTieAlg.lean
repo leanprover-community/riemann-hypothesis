@@ -2,6 +2,53 @@ module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTie
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.MonoVal
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -52,16 +99,15 @@ theorem pderiv_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] {a : σ → Mv
       simp only [MvPolynomial.coe_add, map_add (f := _), hsa, add_mul, Finset.sum_add_distrib, hp, hq]
     next p n hp =>
       simp only [MvPolynomial.coe_mul, MvPolynomial.coe_X, hm, subst_X ha, Derivation.leibniz, smul_eq_mul,
-        map_add, hsa, pderiv_X, add_mul, Finset.sum_add_distrib, hp, Pi.single_apply, apply_ite (subst a), h1, hz,
-        mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-        Finset.mul_sum, mul_assoc, mul_ite, one_mul]
+        hsa, pderiv_X, add_mul, Finset.sum_add_distrib, hp, Pi.single_apply, apply_ite (subst a), hz,
+        mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+        Finset.mul_sum, mul_assoc, mul_ite]
   letI : UniformSpace S := ⊥
-  haveI : DiscreteUniformity S := by first | exact ⟨rfl⟩ | exact inferInstance
-  haveI : DiscreteTopology S := by first | exact inferInstance | exact ⟨rfl⟩
+  haveI : DiscreteUniformity S := by first | exact ⟨rfl⟩
+  haveI : DiscreteTopology S := by first | exact inferInstance
   haveI : IsTopologicalRing S := by
     first
     | exact inferInstance
-    | exact { continuous_add := continuous_of_discreteTopology, continuous_mul := continuous_of_discreteTopology, continuous_neg := continuous_of_discreteTopology }
   have hc1 : Continuous fun f : MvPowerSeries σ S => pderiv (R := S) t (subst a f) :=
     (continuous_pderiv_disc t).comp (MvPowerSeries.continuous_subst ha)
   have hc2 : Continuous fun f : MvPowerSeries σ S => ∑ s, subst a (pderiv (R := S) s f) * pderiv (R := S) t (a s) :=
@@ -73,7 +119,6 @@ theorem pderiv_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] {a : σ → Mv
 theorem hasSubst0 {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ S} (ha : ∀ s, constantCoeff (a s) = 0) :
     HasSubst a := by
   first
-  | exact HasSubst.of_constantCoeff_nilpotent (fun s => by rw [ha s]; exact IsNilpotent.zero)
   | exact ⟨fun s => by rw [ha s]; exact IsNilpotent.zero, fun _ => Set.toFinite _⟩
 
 theorem const_subst0 {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ S} (ha : ∀ s, constantCoeff (a s) = 0)
@@ -95,9 +140,6 @@ theorem subst_sum' {σ τ : Type} {a : σ → MvPowerSeries τ S} (ha : HasSubst
     (g : ι → MvPowerSeries σ S) : subst a (∑ i ∈ s, g i) = ∑ i ∈ s, subst a (g i) := by
   first
   | (rw [← coe_substAlgHom ha, map_sum])
-  | (induction s using Finset.cons_induction with
-      | empty => simp [← coe_substAlgHom ha]
-      | cons i s hi ih => rw [Finset.sum_cons, Finset.sum_cons, ← ih, ← coe_substAlgHom ha, map_add (f := _)])
 
 variable {N d : ℕ}
 
@@ -111,7 +153,6 @@ private theorem subst_X_lemma_2 {σ : Type} (g : MvPowerSeries σ S) :
     subst (X : σ → MvPowerSeries σ S) g = g := by
   first
   | (rw [subst_self]; rfl)
-  | (rw [← map_algebraMap_eq_subst_X]; simp)
 
 private theorem subst_zero_lemma_3 {σ τ : Type} [Finite σ] (g : MvPowerSeries σ S) :
     subst (fun _ : σ => (0 : MvPowerSeries τ S)) g = C (constantCoeff g) := by
@@ -142,15 +183,15 @@ theorem dof_addF (u : Fin N → S) (g : PS S 1 N) :
         if j = i then (1 : PS S 2 N) else 0 := by
       by_cases h : j = i
       · subst h
-        simp [ReciprocityTheory.ChartRestriction.G.TB.MV.addF, pderiv_X, Pi.single_apply]
-      · simp [ReciprocityTheory.ChartRestriction.G.TB.MV.addF, pderiv_X, Pi.single_apply, h]
+        simp [ReciprocityTheory.ChartRestriction.G.TB.MV.addF]
+      · simp [ReciprocityTheory.ChartRestriction.G.TB.MV.addF, h]
     rw [hp, ev, ← coe_substAlgHom hs]
     split_ifs
     · exact map_one _
     · exact map_zero _
   simp only [Dof, h1]
   refine Finset.sum_congr rfl fun j _ => ?_
-  simp [mul_ite, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [mul_ite, Finset.sum_ite_eq]
 
 section Exp
 
@@ -200,7 +241,7 @@ theorem pderiv_cpy (b : Fin 2) (q : Fin N) (g : MvPowerSeries (Fin 1 × Fin N) S
   simp only [cpy, pderiv_X, Pi.single_apply, Prod.mk.injEq, mul_ite, mul_one, mul_zero]
   by_cases hb : b = 1
   · subst hb
-    simp [Finset.sum_ite_eq, Finset.sum_ite_eq']
+    simp [Finset.sum_ite_eq']
   · simp [hb]
 
 theorem key (h0 : ∀ j, constantCoeff (φ j) = 0) (w : Fin N → Fin d → S)
@@ -290,8 +331,8 @@ theorem dof_comp (q : Fin N) (g : PS S 1 d) :
   simp only [hk]
   rw [Dof, subst_sum' hL]
   refine Finset.sum_congr rfl fun k _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← coe_substAlgHom hL, map_mul, map_sum]
+
+  rw [← coe_substAlgHom hL, map_mul, map_sum]
   simp only [map_mul, coe_substAlgHom, subst_C_lemma hL]
   rw [mul_comm]
   congr 1
@@ -393,7 +434,7 @@ private theorem const_dpoly_lemma_3 {E : Type} [Field E] [NumberField E] [IsCMFi
   simp only [hD]
   rw [← coeff_zero_eq_constantCoeff_apply, foldr_coeff_lemma_2 (fun l => ((0 : Fin 1), ltIdx Dw l)) ?_ α G _
     (Finset.nodup_toList _) 0 (fun _ _ => by simp)]
-  · simp only [Finset.prod_toList, Finset.sum_toList, zero_add]
+  · simp only [zero_add]
     rw [expVal, Finsupp.mapDomain, Finsupp.prod_fintype, Finsupp.sum_fintype]
     all_goals simp
   · intro a b hab
@@ -421,6 +462,5 @@ theorem nabVal_eq_const {S : Type} [CommRing S] [Algebra ℚ S] {d : ℕ} {O : T
     B.nabVal S h w0 k f u P = constantCoeff (DpolyOf B.G.F u P (f * FB.expS S ((k : S) • B.hL S h w0))) := by
   first
   | rfl
-  | (simp only [FB.nabVal, FB.FK]; rfl)
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1

@@ -1,13 +1,62 @@
 module
 
-public import Mathlib
 public import Formalism.QuotientMetricDivisors.ProdFormula
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula
-public import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
-public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
+public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
+public import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
+public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula
+public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -85,13 +134,8 @@ theorem hform_isSymm {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (hherm : ∀ i j, 
     refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
     first
       | (rw [← hherm b a]; ring)
-      | (rw [← hherm a b]; ring)
-      | (rw [hherm b a]; ring)
-      | (rw [hherm a b]; ring)
   first
-    | exact key
     | exact ⟨key⟩
-    | (constructor; exact key)
 
 theorem hform_sepRight {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (hdet : H.det ≠ 0) :
     (hform H).SeparatingRight := by
@@ -104,7 +148,6 @@ theorem hform_nondeg {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (hs : (hform H).Is
   have hsym : ∀ x y, starRingEnd K (hform H x y) = hform H y x := by
     intro x y
     first
-      | exact hs x y
       | exact hs.eq x y
   refine ⟨fun x hx => hform_sepRight H hdet x (fun y => ?_), hform_sepRight H hdet⟩
   rw [← hsym x y, hx y, map_zero]
@@ -130,7 +173,6 @@ theorem gramR_eq_std {d : ℕ} (H : Matrix (Fin d) (Fin d) K) (f : Fin d → Fin
     simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.transpose_apply,
       dotProduct, Matrix.mulVec, Pi.star_apply, Finset.sum_mul, Finset.mul_sum, mul_assoc]
     first
-      | rfl
       | exact Finset.sum_comm
   rw [h1, Matrix.det_mul, Matrix.det_mul, Matrix.det_conjTranspose]
   ring
@@ -167,8 +209,8 @@ theorem jwGram_of (hIC : IdxChange) : JwGram := by
     have hmul : M * M⁻¹ = 1 := Matrix.mul_nonsing_inv M hMu
     have := congrFun (congrFun hmul a) b
     rw [Matrix.mul_apply, Matrix.one_apply] at this
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← this, hfs, map_sum]
+
+    rw [← this, hfs, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smul, smul_eq_mul, mul_comm]
     rfl
@@ -176,8 +218,8 @@ theorem jwGram_of (hIC : IdxChange) : JwGram := by
     rw [Fintype.linearIndependent_iff]
     intro g hg i
     have := congrArg (h (f i)) hg
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, map_zero] at this
+
+    rw [map_sum, map_zero] at this
     simp only [map_smul, hpair, smul_eq_mul, mul_ite, mul_one, mul_zero,
       Finset.sum_ite_eq, Finset.mem_univ, if_true] at this
     exact this

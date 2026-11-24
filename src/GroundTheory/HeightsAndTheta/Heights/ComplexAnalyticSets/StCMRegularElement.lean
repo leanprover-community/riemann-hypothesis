@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMLengthParameters
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTransverseObjects
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SplitInt
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SbHalfHalfInd
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SplitInt
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
+public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 
 @[expose] public section
 
@@ -10,7 +13,7 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
-set_option synthInstance.maxHeartbeats 160000
+
 
 namespace Formalism.IndefR.Fin
 
@@ -18,7 +21,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.IndefR.Datum
 
-set_option maxHeartbeats 800000 in
+
 theorem splitOrInert (D : D7) : LevelGroupLemmas.SplitOrInert D := by
   intro v ε hε
   by_cases h : ∃ e : AE D, IsSplitIdem D e ∧ e * algebraMap (AF D.host.F) (AE D) ε ≠ 0

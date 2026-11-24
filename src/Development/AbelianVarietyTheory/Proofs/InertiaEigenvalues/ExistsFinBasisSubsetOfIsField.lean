@@ -1,7 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfForallMemFilV
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
+public import Mathlib.RingTheory.Trace.Basic
 
 @[expose] public section
 
@@ -110,12 +163,12 @@ theorem spans_dual_base {V : Type} [AddCommGroup V] [Module Qp V] [FiniteDimensi
     intro g i y
     have h1 : actVdR PD ρ g y = ∑ j, PD.actdR g (E.repr y j) • E j := by
       conv_lhs => rw [← E.sum_repr y]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [hact, (hinv _).1 (hE j) g]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h1, map_sum]
+
+    rw [h1, map_sum]
     simp [Basis.coord_apply, Finsupp.single_apply]
   let e := LinearEquiv.ofBijective β.flip hb
   let w : Fin (Module.finrank Qp V) → V' := fun j => e.symm (bV.coord j)
@@ -126,13 +179,13 @@ theorem spans_dual_base {V : Type} [AddCommGroup V] [Module Qp V] [FiniteDimensi
     intro v'
     apply hb.1
     refine LinearMap.ext fun x => ?_
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
-      LinearMap.flip_apply, hw, smul_eq_mul]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
+    LinearMap.flip_apply, hw, smul_eq_mul]
     conv_lhs => rw [← bV.sum_repr x]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
-      smul_eq_mul, Basis.coord_apply]
+
+    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
+    smul_eq_mul, Basis.coord_apply]
     exact Finset.sum_congr rfl fun j _ => mul_comm _ _
   let π : V → (V' ⊗[Qp] F) →ₗ[Qp] F := fun x =>
     (TensorProduct.lid Qp F).toLinearMap ∘ₗ TensorProduct.map (β x) LinearMap.id
@@ -171,10 +224,10 @@ theorem spans_dual_base {V : Type} [AddCommGroup V] [Module Qp V] [FiniteDimensi
   let d' : Fin m → V' ⊗[Qp] F := fun i => ∑ j, w j ⊗ₜ[Qp] E.coord i (bV j ⊗ₜ[Qp] (1 : F))
   have hπd' : ∀ x i, π x (d' i) = E.coord i (x ⊗ₜ[Qp] (1 : F)) := by
     intro x i
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hdec (x ⊗ₜ[Qp] (1 : F)), map_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [d', map_sum, hπ, hw, hκ, map_smul, smul_eq_mul, smul_one_mul]
+
+    rw [hdec (x ⊗ₜ[Qp] (1 : F)), map_sum]
+
+    simp only [map_sum, hπ, hw, hκ, map_smul, smul_eq_mul, smul_one_mul]
   have hd'inv : ∀ i g, actVdR PD ρ' g (d' i) = d' i := by
     intro i g
     apply hπext
@@ -188,8 +241,8 @@ theorem spans_dual_base {V : Type} [AddCommGroup V] [Module Qp V] [FiniteDimensi
   refine ⟨m, c, d', fun i => (hinv' _).2 (hd'inv i), ?_⟩
   apply hπext
   intro x
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   simp only [hπmul, hπd']
   have hx1 : x ⊗ₜ[Qp] (1 : F) = ∑ i, E.coord i (x ⊗ₜ[Qp] (1 : F)) • E i := by
     simp only [Basis.coord_apply]
@@ -197,13 +250,13 @@ theorem spans_dual_base {V : Type} [AddCommGroup V] [Module Qp V] [FiniteDimensi
   have key : ∀ k, κ k (x ⊗ₜ[Qp] (1 : F)) = ∑ i, E.coord i (x ⊗ₜ[Qp] (1 : F)) * κ k (E i) := by
     intro k
     conv_lhs => rw [hx1]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [hκmul]
   calc π x y' = ∑ k, bV.coord k x • π (bV k) y' := by
         conv_lhs => rw [hzdec y']
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, hπ, hw]
+
+        simp only [map_sum, hπ, hw]
     _ = ∑ k, π (bV k) y' * κ k (x ⊗ₜ[Qp] (1 : F)) := by
         refine Finset.sum_congr rfl fun k _ => ?_
         rw [hκ, mul_smul_comm, mul_one]

@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameGraphGeneric
-public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameJacobianGeneric
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameImplicitGraph
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

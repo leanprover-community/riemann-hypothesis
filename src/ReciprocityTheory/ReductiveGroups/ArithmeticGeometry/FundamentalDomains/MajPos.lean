@@ -1,6 +1,14 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.UnitaryComplementMoveOfIsotropic
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 
 @[expose] public section
@@ -24,8 +32,8 @@ lemma Hf_self {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (v : Fin r → �
   have hS : ∀ u : Fin X.p0 → ℂ, conj (∑ a, ∑ b, u a * (X.gramPos x τ)⁻¹ a b * conj (u b)) =
       ∑ a, ∑ b, u a * (X.gramPos x τ)⁻¹ a b * conj (u b) := by
     intro u
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, Complex.conj_conj]
+
+    simp only [map_sum, map_mul, Complex.conj_conj]
     refine Finset.sum_comm.trans (Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_)
     rw [hM]
     ring
@@ -41,11 +49,7 @@ lemma Hf_self {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (v : Fin r → �
   rw [X.Hf_eq_two_ppos, X.hermC_ppos_self, hmj, hpp, Complex.ofReal_sub, Complex.ofReal_mul, e1, e2]
   norm_num
 
-private theorem hermC_smul_left_embedding (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (c : ℂ)
-    (u w : Fin r → ℂ) : hermC τ G (c • u) w = c * hermC τ G u w := by
-  simp only [hermC, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
+private alias hermC_smul_left_embedding := _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_smul_left
 
 private theorem hermC_finset_sum_left' (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {ι : Type*}
     [Fintype ι] (c : ι → ℂ) (u : ι → Fin r → ℂ) (w : Fin r → ℂ) :
@@ -57,8 +61,8 @@ private theorem hermC_finset_sum_left' (τ : E →+* ℂ) (G : Matrix (Fin r) (F
 private theorem hermC_finset_sum_right_of_conj_symm (τ : E →+* ℂ) {G : Matrix (Fin r) (Fin r) E}
     (hG : ∀ a b, cc (G a b) = G b a) {ι : Type*} [Fintype ι] (c : ι → ℂ) (u : ι → Fin r → ℂ)
     (w : Fin r → ℂ) : hermC τ G w (∑ i, c i • u i) = ∑ i, conj (c i) * hermC τ G w (u i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← ReciprocityTheory.ChartRestriction.G.FD.hermC_conj τ hG, hermC_finset_sum_left', map_sum]
+
+  rw [← ReciprocityTheory.ChartRestriction.G.FD.hermC_conj τ hG, hermC_finset_sum_left', map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, ReciprocityTheory.ChartRestriction.G.FD.hermC_conj τ hG]
 

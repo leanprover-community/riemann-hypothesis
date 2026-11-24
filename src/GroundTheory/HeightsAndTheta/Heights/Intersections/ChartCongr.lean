@@ -1,13 +1,16 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherSide
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiProjPrimeImageZ
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StRankAdjoinFrac
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StFnDegAdjoin
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StChartScalingIndep
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StAdjoinIndepRelfinrank
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StFinrankAdjoinRange
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiProjPrimeImageZ
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

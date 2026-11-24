@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
+public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -1,6 +1,49 @@
 module
 
 public import Formalism.HermitianCurvature.StatementB
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -48,8 +91,6 @@ theorem adjointness_of_bessel_transform : Formalism.FourierDecayAlt.B.AssembleAd
   rw [hB2 _ _ h3 h2, hB2 _ _ h1 h4]
   first
   | (unfold betaInf; simp only [hT])
-  | (simp only [betaInf, hT])
-  | (unfold betaInf; rw [hT])
 
 theorem adjointness_polynomially_bounded : Formalism.FourierDecayAlt.B.AssemblePoly := by
   intro hSC k r Wp Wq _ _ _ _ _ _ D A hA hCC hB3 Θ ε d hε hd hSm hCom hPoly F F' hF hF' hsF hsF'
@@ -62,10 +103,6 @@ theorem adjointness_polynomially_bounded : Formalism.FourierDecayAlt.B.AssembleP
     unfold CCle at hc
     first
     | exact hc.1
-    | exact hc.2.1
-    | exact hc.2.2.1
-    | exact hc.1.1
-    | exact hc
   exact hB3 (GPos D) Θ hStab hSm hCom F F' (hCk F hF) (hCk F' hF') hs1 hs2 h1 h2 h3 h4 hIC
 
 theorem bessel_function_trivial_index : Formalism.FourierDecayAlt.B.JtauOne := by
@@ -102,13 +139,13 @@ theorem dilation_big_cell_formula : Formalism.FourierDecayAlt.B.DilBigCell := by
   beta_reduce
   split_ifs
   all_goals try first
-    | (exfalso; (try simp only [Fin.ext_iff, Fin.val_mk] at *); omega)
+    | (exfalso; (try simp only [Fin.ext_iff] at *); omega)
     | rfl
     | (rw [one_mul, mul_one])
     | exact (congrArg (· * (1 : ℂ)) (one_mul _)).trans (mul_one _)
     | (simp; done)
     | (have e : (i : ℕ) - (r + k) = r - (j : ℕ) := by
-          (try simp only [Fin.ext_iff, Fin.val_mk] at *); omega
+          (try simp only [Fin.ext_iff] at *); omega
        rw [e]
        try simp only [Fin.val_mk]
        push_cast
@@ -132,12 +169,11 @@ theorem dilation_mem_group : Formalism.FourierDecayAlt.B.DilMem := by
   ext i j
   simp only [Matrix.mul_diagonal, Matrix.diagonal_mul, Pi.star_apply]
   unfold Hpk
-  beta_reduce
   split_ifs
   all_goals (try simp only [star_ofReal_eq_self, star_one, mul_one, one_mul, mul_zero, zero_mul, mul_neg])
   all_goals try first
     | rfl
-    | (exfalso; (try simp only [Fin.ext_iff, Fin.val_mk] at *); omega)
+    | (exfalso; (try simp only [Fin.ext_iff] at *); omega)
     | (rw [show (j : ℕ) - (r + k) = r - (i : ℕ) by omega, ← Complex.ofReal_mul,
           mul_inv_cancel₀ (hp _), Complex.ofReal_one])
     | (rw [show (i : ℕ) - (r + k) = r - (j : ℕ) by omega, ← Complex.ofReal_mul,

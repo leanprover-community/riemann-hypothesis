@@ -1,8 +1,16 @@
 module
 
-public import Mathlib
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SecondCountableQuotients.ModExists
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothVec
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Measure.Haar.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.Analysis.Calculus.ParametricIntegral
 
 @[expose] public section
 
@@ -332,7 +340,6 @@ theorem exists_approx (hG : IsMatGroup G) (h : RepOn G σ) (hiso : ∀ g ∈ G, 
     let C : ℝ := ∑ i, ∫ g : MG G hG, ‖LW (W i) φ g.mat‖ ∂haar
     have hC0 : ∀ i, 0 ≤ ∫ g : MG G hG, ‖LW (W i) φ g.mat‖ ∂haar := fun i =>
       integral_nonneg fun _ => norm_nonneg _
-    have hC : 0 ≤ C := Finset.sum_nonneg fun i _ => hC0 i
     rw [← SetLike.mem_coe, ← hS.closure_eq, Metric.mem_closure_iff]
     intro ε hε
     obtain ⟨y, hy, hxy⟩ := Metric.mem_closure_iff.1 (hd x) (ε / (C + 1)) (by positivity)

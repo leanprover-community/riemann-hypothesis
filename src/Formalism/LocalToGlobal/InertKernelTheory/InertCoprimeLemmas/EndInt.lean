@@ -2,19 +2,29 @@ module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsBeW
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsSigma
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.VarChange
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PowerSeriesEmbedding
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PadicNormTwoHundredSixteenEqOneOfFiveLe
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SigmaAlg
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.PhNormFromDatum
-public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveSecondLogDerivative
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.EndIntegral
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ShortWIntModel
+public import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
+public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveEndoAll
+public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FamilyLogGammaSmallHolds
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.EpsteinZeta.LatITopBasis
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.LeadingConstantNeZero
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.WeierstrassUniqueness.ExistsPeriodPairOfIsLat
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.NormNatCoprime
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PadicNormTwoHundredSixteenEqOneOfFiveLe
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PowerSeriesEmbedding
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SigmaAlg
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.VarChange
+import Formalism.LocalToGlobal.TorsionIntegrality.ComplexLatticeClosure.LamConjTheta0
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.Points
+public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.CurveSecondLogDerivative
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.PhNormFromDatum
+import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.OkpDict
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TestVectorMemSchwartzBruhat
+public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.EndIntegral
+import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ShortWIntModel
+public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FormalExponentialAgree
 
 @[expose] public section
 
@@ -127,7 +137,7 @@ theorem endInt_omega (hInv : Formalism.L2.KerInert.Sigma.InvAlg) (D : D7) (p : �
   have hcc : cc ≠ ⊥ := hcurve.1
   have hδ : δ ≠ 0 := by
     intro h0
-    obtain ⟨⟨L1, hL1⟩, -⟩ := Formalism.L2.Th1.F2.lamOfLat D cc 1 hcc one_ne_zero
+    obtain ⟨⟨L1, hL1⟩, -⟩ := _root_.Formalism.L2.Th1.F2.lambda_of_lattice_holds D cc 1 hcc one_ne_zero
     obtain ⟨e2, e3⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.g2_g3_eq_periodPair _ L1 (congrArg (fun A : AddSubgroup ℂ => (A : Set ℂ)) hL1)
     have hd := Formalism.L2.Th1.F.discNeZero L1
     apply hd
@@ -135,7 +145,7 @@ theorem endInt_omega (hInv : Formalism.L2.KerInert.Sigma.InvAlg) (D : D7) (p : �
     unfold Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice Formalism.MainNotions.TaylorLogMetric.discr at h12
     rw [h0, e2, e3] at h12
     rw [← h12]; norm_num
-  obtain ⟨⟨L, hL⟩, hCM⟩ := Formalism.L2.Th1.F2.lamOfLat D cc δ hcc hδ
+  obtain ⟨⟨L, hL⟩, hCM⟩ := _root_.Formalism.L2.Th1.F2.lambda_of_lattice_holds D cc δ hcc hδ
   have hLg : g.abelian₂ = L.lattice.toAddSubgroup := hLam.trans hL.symm
   obtain ⟨hg2, hg3⟩ := hInv D cc δ hcurve hδ12 L hL
   set a2 : Qbar := ⟨L.g₂, hg2⟩ with ha2
@@ -157,7 +167,7 @@ theorem endInt_omega (hInv : Formalism.L2.KerInert.Sigma.InvAlg) (D : D7) (p : �
     have e : Formalism.L2.Th1.CM.omegaK D.host.d = Formalism.L2.Th1.F.cmTheta 1 D.host.d := by
       unfold Formalism.L2.Th1.CM.omegaK Formalism.L2.Th1.F.cmTheta; push_cast; ring
     rw [e]; exact h1
-  obtain ⟨ι, hι⟩ := Formalism.L2.KerInert.lamExt p g.lam
+  obtain ⟨ι, hι⟩ := _root_.Formalism.L2.KerInert.lattice_extension p g.lam
   have hιg2 : ι L.g₂ = g.lam a2 := hι a2
   have hιg3 : ι L.g₃ = g.lam a3 := hι a3
 
@@ -245,7 +255,7 @@ theorem endInt_OK (D : D7) (p : ℕ) [Fact p.Prime] (g : G1 p) (hOk : g.Ok) (ι 
   have hρι : ∀ x : D.host.K, Formalism.MainNotions.Ext.tauKp D g.lam x = ι (D.host.φ₀ (x : D.host.E)) := by
     intro x
     rw [Formalism.MainNotions.Ext.tauKp_apply]
-    exact (Formalism.L2.KerInert.lamCIota p g.lam ι hι).1 _ (Formalism.MainNotions.Ext.test_vector_mem_schwartz_bruhat D _)
+    exact (_root_.Formalism.L2.KerInert.lattice_embedding p g.lam ι hι).1 _ (Formalism.MainNotions.Ext.test_vector_mem_schwartz_bruhat D _)
   set xs : D.host.K := ⟨D.host.sqrtMinusD, Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.br_sqrt_mem D⟩ with hxs
   have hx2 : (D.host.φ₀ (xs : D.host.E)) ^ 2 = -(D.host.d : ℂ) := by
     have h := congrArg (fun y : D.host.K => D.host.φ₀ (y : D.host.E)) (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.br_sqrt_sq D)
@@ -294,7 +304,7 @@ theorem endIntInert_of (hInv : Formalism.L2.KerInert.Sigma.InvAlg) : EndIntInert
   obtain ⟨hLP, -, -, -, -⟩ := Formalism.L2.Th1.C.curveFrame ℂ_[p] (RB p) g.W (coeffIn_g g hOk)
   have hRB : IsClosed ((RB p : Subring ℂ_[p]) : Set ℂ_[p]) :=
     isClosed_le continuous_norm continuous_const
-  have hcl := Formalism.L2.Th1.C.endIntClosed ℂ_[p] (RB p) hRB (Formalism.L2.Th1.A.logSer g.W) (Formalism.L2.Th1.A.expSer g.W) hLP.1
+  have hcl := _root_.Formalism.L2.Th1.C.integralEndoClosed' ℂ_[p] (RB p) hRB (Formalism.L2.Th1.A.logSer g.W) (Formalism.L2.Th1.A.expSer g.W) hLP.1
   have hmaps : Set.MapsTo Prod.fst (Set.range fun a : 𝓞 D.host.K =>
       (tauK D g.lam (a : D.host.K), tauKc D g.lam (a : D.host.K)))
       {c : ℂ_[p] | Formalism.L2.Th1.C.EndInt (RB p) (Formalism.L2.Th1.A.logSer g.W) (Formalism.L2.Th1.A.expSer g.W) c} := by
@@ -309,6 +319,6 @@ end Formalism.L2.KerInert.IwahoriBlocks
 namespace Formalism.L2.KerInert
 
 theorem endomorphisms_integral_inert : EndIntInert := by
-  exact IwahoriBlocks.endIntInert_of Sigma.invAlg'
+  exact IwahoriBlocks.endIntInert_of _root_.Formalism.L2.KerInert.Sigma.ChartWirtingerDerivatives.weierstrass_invariants_algebraic
 
 end Formalism.L2.KerInert

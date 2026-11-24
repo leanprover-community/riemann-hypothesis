@@ -1,6 +1,47 @@
 module
 
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.DnkLkLocP
+public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.GlobalTheory.GL4.BranchingNormalisedOfAdjoint
+import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.AdelicFunctionRightTranslateDiamond
+import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
+import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 
@@ -27,7 +68,7 @@ theorem dualSigma_apply {K V W : Type} [CommRing K] [AddCommGroup V] [Module K V
 variable {D : D7} {u : D.what₂.Word}
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem dni_lk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
     (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
     (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
@@ -43,7 +84,7 @@ theorem dni_mem_of {E : Type} [Field E] [NumberField E] {n : ℕ} (g : Matrix (F
   rw [← h]
   exact Submodule.mem_map_of_mem hz
 
-set_option maxHeartbeats 2000000 in
+
 theorem dni_mem (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
     (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
     (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
@@ -52,7 +93,7 @@ theorem dni_mem (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
     g *ᵥ z ∈ Lk T.atT 0 (Nat.zero_le _) v c' :=
   dni_mem_of g (dni_lk T v c c' g hL hLd) hz
 
-set_option maxHeartbeats 2000000 in
+
 theorem dni_mem_ker (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
     (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
     (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
@@ -74,7 +115,7 @@ def dniFun (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
   T.lv0.prk v c' ⟨g *ᵥ (Function.surjInv (T.lv0.prk_surj v c) w).1,
     dni_mem T v c c' g hL hLd (Function.surjInv (T.lv0.prk_surj v c) w).2⟩
 
-set_option maxHeartbeats 2000000 in
+
 theorem dniFun_prk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
     (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
     (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
@@ -91,7 +132,7 @@ theorem dniFun_prk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls
   simpa [Matrix.mulVec_sub] using hg
 
 
-set_option maxHeartbeats 2000000 in
+
 def dniLin (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
     (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
     (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
@@ -137,7 +178,7 @@ theorem dni_inv_eq {E : Type} [Field E] [NumberField E] {n : ℕ} (g : GL (Fin n
   rw [← Submodule.map_comp, hid, Submodule.map_id]
 
 
-set_option maxHeartbeats 2000000 in
+
 def dniEquiv (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0) (g : GL (Fin (D.R.N 0)) D.host.E)
     (hL : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (clsCrd D u 0 (Nat.zero_le _) c) =
       clsCrd D u 0 (Nat.zero_le _) c')
@@ -173,7 +214,7 @@ theorem dniEquiv_prk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.c
   dniLin_prk T v c c' _ hL hLd z
 
 
-set_option maxHeartbeats 2000000 in
+
 theorem dniEquiv_te (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0) (g : GL (Fin (D.R.N 0)) D.host.E)
     (hL : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (clsCrd D u 0 (Nat.zero_le _) c) =
       clsCrd D u 0 (Nat.zero_le _) c')

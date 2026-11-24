@@ -1,9 +1,8 @@
 module
 
-public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.EmbVHomInjective
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.BoxFundT
+import Mathlib.Topology.Separation.CompletelyRegular
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LintegralFinProd
 
 @[expose] public section
 
@@ -183,7 +182,6 @@ theorem Pmap_mp : MeasurePreserving (Pmap X) volume volume := by
   convert h2.comp h1 using 1
   all_goals first
     | rfl
-    | (funext x; rfl)
 
 theorem measurable_Pinv : Measurable (Pinv X) := by
   unfold Pinv
@@ -277,8 +275,6 @@ theorem realIdealBlock (𝔞 : (FractionalIdeal (nonZeroDivisors (𝓞 D.host.F)
     congr 2
     first
       | simp [Int.norm_eq_abs]
-      | simp [Real.coe_sqrt, Int.norm_eq_abs]
-      | (rw [NNReal.coe_sqrt]; simp [Int.norm_eq_abs])
   refine ⟨⟨Pinv X ⁻¹' ZSpan.fundamentalDomain b,
     measurable_Pinv X (ZSpan.fundamentalDomain_measurableSet b),
     hrev _ (fun z => ZSpan.exist_unique_vadd_mem_fundamentalDomain b z)⟩, ?_⟩

@@ -1,11 +1,51 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InfOfMulFinOf
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqVolMulSum
+public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ClassFunctionSumIntegral
+public import Development.AbelianVarietyTheory.Definitions.Divisors.InvVolConjLevelOne
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFinClAndGamOrd
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOpenSubgroupFiniteSubset
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqFinClSumAvg
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOpenLevelFixingThetaFunction
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtTransInvHolds
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.LevelADef
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
+import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 
 @[expose] public section
 
@@ -39,7 +79,7 @@ theorem avg_rat (V : HSp D) (κ : Measure (GinfC V)) [κ.IsMulLeftInvariant] (Φ
   obtain ⟨q, hq, e⟩ := Subgroup.mem_map.1 (Subgroup.mem_comap.1 hγ)
   have e1 : finOf V q = γ := ClassFin.finG_injective V ((finG_finOf V q).trans e)
   have e2 : ((infOf V q : GinfC V) : GA D V) * γ = q := e1 ▸ infOf_mul_finOf V q
-  have c1 := GlobalTheory.AdelicSplit.commute_GinfC_GfC V (infOf V q).2 (γ * x).2
+  have c1 := _root_.GlobalTheory.PointAtPlaceHom.comm_of_mem V (infOf V q).2 (γ * x).2
   rw [← integral_mul_left_eq_self (fun k : GinfC V => Φ (((γ * x : GfC V) : GA D V) * k)) (infOf V q)]
   refine integral_congr_ae (.of_forall fun k => ?_)
   have e3 : ((γ * x : GfC V) : GA D V) * ((infOf V q * k : GinfC V) : GA D V) = q * ((x : GA D V) * k) := by
@@ -150,8 +190,8 @@ theorem sumV_eq {A : ℕ → Type} (o : ∀ n, A n → GfC (V n)) (w : ∀ n, A 
     simp only [sumV]
     refine finsum_congr fun a => ?_
     letI : ∀ j : Fin n, Fintype (A j) := fun j => @Fintype.ofFinite _ (hA j (by omega))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [sumV_eq o w n fun j hj => hA j (by omega), finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, Finset.smul_sum]
+
+    rw [sumV_eq o w n fun j hj => hA j (by omega), finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun c _ => ?_
     have e1 : ext (P := fun j => GfC (V j)) (n + 1)
         (fun j => o j (Fin.snoc (α := fun j : Fin (n + 1) => A j) c a j)) n = o n a := by
@@ -268,8 +308,8 @@ theorem liftC_real (μ : ∀ n, Measure (GA D (V n))) (fd : ∀ n, Set (GA D (V 
     rcases hAvg with ⟨hfin, κ, hκH, hκP, hU⟩
     haveI := Fintype.ofFinite (FinCl (V n) (K n))
     simp only [liftC, sumV]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hU, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, map_sum]
+
+    rw [hU, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, map_sum, map_sum]
     refine Finset.sum_congr rfl fun c _ => ?_
     simp only [isFinReal_apply a3 ih]
     rw [a8 κ hκH hκP, map_smul, map_smul, smul_eq_mul, wgt, div_eq_mul_inv]

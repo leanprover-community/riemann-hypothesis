@@ -1,9 +1,50 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PointSide
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabilizerMassQuotient
+public import Mathlib.Tactic.Linter.Style
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FibreFiniteCard
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabilizerMassQuotient
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -186,23 +227,12 @@ theorem dmass_eq_qmass (A C : Subgroup H) : dmass A C = qmass A (H ⧸ C) := by
   refine finsum_congr fun q => ?_
   rw [card_stab_dq]
 
-theorem coset_fibre (D C : Subgroup H) (h : D ≤ C) (hDC : D.relIndex C ≠ 0)
-    (z : H ⧸ C) : Finite {y : H ⧸ D // Subgroup.quotientMapOfLE h y = z} ∧
-      Nat.card {y : H ⧸ D // Subgroup.quotientMapOfLE h y = z} = D.relIndex C := by
-  first
-  | exact @_root_.GlobalTheory.FibreEquivalence.fibre_finite_card
-  | exact _root_.GlobalTheory.FibreEquivalence.fibre_finite_card
-  | (apply _root_.GlobalTheory.FibreEquivalence.fibre_finite_card <;> assumption)
-  | (intros; apply _root_.GlobalTheory.FibreEquivalence.fibre_finite_card <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.FibreEquivalence.fibre_finite_card <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.FibreEquivalence.fibre_finite_card ..)
-
 theorem dmass_of_le (A C D : Subgroup H) (hDC : D ≤ C) (hi : D.relIndex C ≠ 0)
     (hfin : ∀ t : H, Finite (A ⊓ C.map (MulAut.conj t).toMonoidHom : Subgroup H)) :
     dmass A D = (D.relIndex C : ℚ) * dmass A C := by
   rw [dmass_eq_qmass, dmass_eq_qmass]
   refine qmass_eq_of_fibre (Subgroup.quotientMapOfLE hDC) ?_ _ hi
-    (fun z => (coset_fibre D C hDC hi z).1) (fun z => (coset_fibre D C hDC hi z).2) ?_
+    (fun z => (_root_.GlobalTheory.FibreEquivalence.fibre_finite_card D C hDC hi z).1) (fun z => (_root_.GlobalTheory.FibreEquivalence.fibre_finite_card D C hDC hi z).2) ?_
   · intro g y
     induction y using QuotientGroup.induction_on with
     | H a => rfl

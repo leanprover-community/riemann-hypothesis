@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.TateCohomology.CupProduct
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.LongExactSequence
 
 @[expose] public section
 
@@ -49,8 +49,8 @@ theorem comp_d_apply {A A' : Rep k G} (φ : A ⟶ A') (i : ℕ) (y : (Fin i → 
     (v : Fin (i + 1) → G) :
     φ.hom ((inhomogeneousCochains.d A i).hom y v) =
       (inhomogeneousCochains.d A' i).hom (fun u => φ.hom (y u)) v := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [inhomogeneousCochains.d_hom_apply, map_add (f := _), map_sum, map_smul, Rep.hom_comm_apply]
+
+  simp only [inhomogeneousCochains.d_hom_apply, map_add (f := _), map_sum, map_smul, Rep.hom_comm_apply]
 
 
 include hX in
@@ -68,8 +68,6 @@ theorem δ_π_eq {p : ℕ} (z : cocycles X.X₃ p) (y : (Fin p → G) → X.X₂
 
 
 include hX in
-set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 theorem exists_f_eq_of_g_eq_zero (e : X.X₂) (he : X.g.hom e = 0) : ∃ a : X.X₁, X.f.hom a = e := by
   have : LinearMap.range X.f.hom.toLinearMap = LinearMap.ker X.g.hom.toLinearMap :=
     (hX.exact.map (forget₂ (Rep k G) (ModuleCat k))).moduleCat_range_eq_ker

@@ -1,12 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.GlobalFields.GlobalReciprocity.General
-public import GroundTheory.GlobalFields.GlobalReciprocity.Frobenius
-public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassFieldLocal
-public import GroundTheory.GlobalFields.ClassFieldConsequences.ConductorLocal
-public import GroundTheory.GlobalFields.TateThesis.HeckeChar
-public import GroundTheory.GlobalFields.Artin.InflationTower
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.FieldTheory.Galois.Basic
+public import Mathlib.RingTheory.Frobenius
+import Mathlib.Tactic.TypeStar
+public import Mathlib.NumberTheory.NumberField.Basic
+public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 
 @[expose] public section
 

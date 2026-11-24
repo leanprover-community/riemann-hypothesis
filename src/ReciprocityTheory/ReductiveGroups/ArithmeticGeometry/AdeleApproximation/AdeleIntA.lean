@@ -1,6 +1,51 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section
 
@@ -17,18 +62,12 @@ private theorem val_R_lemma (v : HeightOneSpectrum R) (r : R) :
     Valued.v (algebraMap K (v.adicCompletion K) (algebraMap R K r)) = v.intValuation r := by
   first
   | exact (valuedAdicCompletion_eq_valuation (K := K) v r).trans (by rw [valuation_of_algebraMap])
-  | exact (valuedAdicCompletion_eq_valuation' (R := R) v (algebraMap R K r)).trans
-      (by rw [valuation_of_algebraMap])
-  | (rw [← IsScalarTower.algebraMap_apply R K (v.adicCompletion K)];
-      exact (valuedAdicCompletion_eq_valuation (K := K) v r).trans (by rw [valuation_of_algebraMap]))
 
 theorem int_R (v : HeightOneSpectrum R) (r : R) :
     algebraMap K (v.adicCompletion K) (algebraMap R K r) ∈ v.adicCompletionIntegers K := by
   first
   | (show Valued.v (algebraMap K (v.adicCompletion K) (algebraMap R K r)) ≤ 1;
       rw [val_R_lemma]; exact v.intValuation_le_one r)
-  | exact coe_algebraMap_mem v r
-  | exact coe_algebraMap_mem (K := K) v r
 
 theorem val_R (v : HeightOneSpectrum R) (r : R) :
     Valued.v (algebraMap K (v.adicCompletion K) (algebraMap R K r)) = v.intValuation r := val_R_lemma v r
@@ -50,27 +89,17 @@ theorem exists_den_local (v : HeightOneSpectrum R) (y : v.adicCompletion K) :
   first
   | (obtain ⟨b, hb, hyb⟩ := adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers v y;
       exact ⟨b, nonZeroDivisors.ne_zero hb, by rw [mul_comm]; exact hyb⟩)
-  | (obtain ⟨b, hb, hyb⟩ := adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers (K := K) v y;
-      exact ⟨b, nonZeroDivisors.ne_zero hb, by
-        rw [mul_comm, IsScalarTower.algebraMap_apply R K (v.adicCompletion K)] at *; exact hyb⟩)
-  | (obtain ⟨b, hb, hyb⟩ := adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers v y;
-      exact ⟨b, nonZeroDivisors.ne_zero hb, by
-        simpa [mul_comm, IsScalarTower.algebraMap_apply R K (v.adicCompletion K)] using hyb⟩)
 
 private theorem algK_apply_lemma_2 (v : HeightOneSpectrum R) (k : K) :
     (algebraMap K (FiniteAdeleRing R K) k) v = algebraMap K (v.adicCompletion K) k := by
   first
   | rfl
-  | (simp; done)
 
 private theorem algR_apply_lemma_3 (v : HeightOneSpectrum R) (r : R) :
     (algebraMap R (FiniteAdeleRing R K) r) v =
       algebraMap K (v.adicCompletion K) (algebraMap R K r) := by
   first
   | rfl
-  | (rw [IsScalarTower.algebraMap_apply R K (FiniteAdeleRing R K)]; exact algK_apply_lemma_2 v _)
-  | (simp [IsScalarTower.algebraMap_apply R K (v.adicCompletion K)]; done)
-  | (simp [IsScalarTower.algebraMap_apply R K (FiniteAdeleRing R K)]; done)
 
 theorem exists_den (b : FiniteAdeleRing R K) :
     ∃ r : R, r ≠ 0 ∧ IsInt (algebraMap R (FiniteAdeleRing R K) r * b) := by
@@ -78,7 +107,6 @@ theorem exists_den (b : FiniteAdeleRing R K) :
   have hfin : {v : HeightOneSpectrum R | b v ∉ v.adicCompletionIntegers K}.Finite := by
     first
     | exact Filter.eventually_cofinite.mp b.2
-    | exact b.2
   choose s hs0 hs using fun v => exists_den_local (R := R) (K := K) v (b v)
   refine ⟨∏ w ∈ hfin.toFinset, s w, Finset.prod_ne_zero_iff.mpr fun w _ => hs0 w, ?_⟩
   intro v
@@ -159,8 +187,6 @@ theorem exists_approx_adele (b : FiniteAdeleRing R K) :
   have hrK : algebraMap R K r ≠ 0 := by
     first
     | exact IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors (mem_nonZeroDivisors_of_ne_zero hr)
-    | (rw [Ne, IsFractionRing.to_map_eq_zero_iff]; exact hr)
-    | exact fun h => hr ((IsFractionRing.to_map_eq_zero_iff).mp h)
   have hrv : algebraMap K (v.adicCompletion K) (algebraMap R K r) ≠ 0 := (map_ne_zero _).mpr hrK
   have h0 : Valued.v (algebraMap K (v.adicCompletion K) (algebraMap R K r)) ≠ 0 :=
     (Valuation.ne_zero_iff _).mpr hrv
@@ -184,8 +210,6 @@ theorem exists_approx_adele (b : FiniteAdeleRing R K) :
   rw [key, map_mul, ← val_R_lemma (K := K) v r] at hv
   show Valued.v ((b - algebraMap K (FiniteAdeleRing R K) (algebraMap R K a / algebraMap R K r)) v) ≤ 1
   first
-  | exact (mul_le_mul_left₀ h0).mp (by rwa [mul_one])
   | exact le_of_mul_le_mul_left (by rwa [mul_one]) (zero_lt_iff.mpr h0)
-  | exact (mul_le_iff_le_one_right (zero_lt_iff.mpr h0)).mp hv
 
 end ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA

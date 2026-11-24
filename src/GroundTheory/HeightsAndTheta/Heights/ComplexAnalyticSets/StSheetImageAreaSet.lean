@@ -1,7 +1,7 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSheetComass
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

@@ -1,15 +1,61 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdmissibleIndexBoundAllPowers
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsIsScalar
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualTypePlacesIsSplitNonconjugateOfAdmissible
+public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PureTensorLIntertwine
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaPureTensorO
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChosenPlacesAdmissibleGoodSetup
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistingCharacterAdmissibleGaloisTwistGood
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjPlNeOfSplit
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualTypePlacesIsSplitNonconjugateOfAdmissible
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemBlockTriangularTwoBlockSizesOfLe
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistingCharacterAdmissibleGaloisTwistGood
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryDetCharacterEqProdResidueGoodBaseFrameStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointHalfDatumStabilizerPairMove
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteGroupLiftsToParahoricLevel
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivChar
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTensorOOfFinite
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -21,8 +67,8 @@ open Formalism.IndefR.Links (PolF Vc Wc)
 open Formalism.L2.NTheta (IsIdemAt)
 open scoped TensorProduct
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
+
+
 
 namespace GlobalTheory.ExportType
 
@@ -235,8 +281,8 @@ theorem mem_baseChange_iInf_ker [Finite ι] (φ : ι → V →ₗ[K] V) {x : A �
   have key : ∀ v : V, v - ∑ i, s i (φ i v) ∈ ⨅ i, LinearMap.ker (φ i) := fun v => by
     have e1 : ∑ i, s i (φ i v) = r ((LinearMap.pi φ).rangeRestrict v) := by
       have : l (LinearMap.pi φ v) = (LinearMap.pi φ).rangeRestrict v := LinearMap.congr_fun hl ((LinearMap.pi φ).rangeRestrict v)
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← this, ← Finset.univ_sum_single (LinearMap.pi φ v), map_sum, map_sum]
+
+      rw [← this, ← Finset.univ_sum_single (LinearMap.pi φ v), map_sum, map_sum]
       rfl
     have e2 : LinearMap.pi φ (r ((LinearMap.pi φ).rangeRestrict v)) = LinearMap.pi φ v :=
       congrArg Subtype.val (LinearMap.congr_fun hr ((LinearMap.pi φ).rangeRestrict v))
@@ -274,8 +320,8 @@ theorem coefAt_tmul_single (δ δ' : Δ) (v : V) :
 theorem coefAt_sum (Xi : Δ →₀ V) (δ : Δ) :
     coefAt δ (Xi.sum fun δ' f => f ⊗ₜ[R] AddMonoidAlgebra.single δ' (1 : R)) = Xi δ := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finsupp.sum, map_sum, Finset.sum_congr rfl fun δ' _ => coefAt_tmul_single δ δ' (Xi δ'), Finset.sum_ite_eq']
+
+  rw [Finsupp.sum, map_sum, Finset.sum_congr rfl fun δ' _ => coefAt_tmul_single δ δ' (Xi δ'), Finset.sum_ite_eq']
   split_ifs with h
   · rfl
   · exact (Finsupp.notMem_support_iff.1 h).symm
@@ -408,8 +454,8 @@ theorem coefAt_thU_mem (Q M) (d : Y.Dat i ((j : ℕ) + 1) b) (δ) : coefAt δ (Y
   by_cases h : InRange X i Q ∧ ∀ a, ρ.xi i j b Y Q M (Z.cls d) (Z.coef d) a ∈ Set.range rd
   · obtain ⟨hQ, h⟩ := h
     choose x hx using h
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Z.thU_eq Q M d hQ x hx, grpSum, map_sum]
+
+    rw [Z.thU_eq Q M d hQ x hx, grpSum, map_sum]
     refine Submodule.sum_mem _ fun a _ => ?_
     rw [coefAt_tmul_single]
     split_ifs

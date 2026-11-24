@@ -1,9 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalGraphProjectionMass
+public import Mathlib.CategoryTheory.Countable
+public import Mathlib.Topology.Separation.CompletelyRegular
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLocalGraphMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMassFinite
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalGraphProjectionMass
 
 @[expose] public section
 

@@ -1,11 +1,60 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsHalfIdem
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterAtInertComponent
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnramifiedHeckeCharHalfExponentRestrictQua
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdeleAt
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterTrivialAtInertPrimes
+public import Formalism.LocalToGlobal.JointCharacters.LocEMulLocE
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHeckeCharacterOfUnitaryTensorIdeles
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdeleAt
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NoRatInert
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnramifiedHeckeCharHalfExponentRestrictQua
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBaseChangeFiniteAdeleRingEquiv
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFinitePlaceIdempotentBaseChangeAdeles
+import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRealSpanEqConjFixedPrimeMulRelNorm
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CmTypeRestrictRealSubfieldInfinitePlaceBijective
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -248,10 +297,7 @@ theorem fixed_of_cA {e : AE D} {P : HeightOneSpectrum (𝓞 D.host.E)} (he : IsP
   · simp [hx]
   · rw [conj_mem_iff he x hx, h, he.2.2 x hx]
 
-theorem cA_algebraMap (a : AF D.host.F) : cA D (algebraMap (AF D.host.F) (AE D) a) = algebraMap (AF D.host.F) (AE D) a := by
-  change a ⊗ₜ[D.host.F] D.sp.cm.sig 1 = _
-  rw [map_one]
-  rfl
+alias cA_algebraMap := _root_.GlobalTheory.IdemSupport.cA_algebraMap
 
 theorem cA_of_fixed {e : AE D} {P : HeightOneSpectrum (𝓞 D.host.E)} (he : IsPlIdem D e P)
     (h : D.host.conj • P.asIdeal = P.asIdeal) : cA D e = e := by
@@ -381,7 +427,7 @@ theorem inertChar_real {η : (AE D)ˣ →* Circle} (hη : IsEtaTilde D η) {ε :
   linear_combination -e
 
 
-set_option maxHeartbeats 800000 in
+
 theorem lam_int {η : (AE D)ˣ →* Circle} (hη : IsEtaTilde D η) {lam : ℕ →* ℂ}
     (hlam : GlobalTheory.FinWeil.GoodNorm (GlobalTheory.FinWeil.sgO D) lam)
     (hlam' : ∀ n : ℕ, n ≠ 0 → (∀ q : ℕ, q.Prime → Formalism.MainNotions.StandardLatticesGL3.InertQ D q → ¬ q ∣ n) → lam n = (Real.sqrt n : ℂ))
@@ -433,7 +479,7 @@ theorem lam_int {η : (AE D)ˣ →* Circle} (hη : IsEtaTilde D η) {lam : ℕ �
         zero_add]
     · rw [← map_inv]
       exact hint _ fun Q hQ => by rw [map_inv, hy Q hQ, inv_one]
-  · obtain ⟨t, B, ht0, htc, e⟩ := GlobalTheory.T.exists_real_span_eq_conjFixedPrime_mul_relNorm D P.asIdeal P.isPrime P.ne_bot hP
+  · obtain ⟨t, B, ht0, htc, e⟩ := _root_.GlobalTheory.FixedPrimeNorm.exists_span_eq_prime_mul_norm D P.asIdeal P.isPrime P.ne_bot hP
     have htE : (t : D.host.E) ≠ 0 := by simpa using ht0
     exact ⟨t, Units.mk0 _ htE, B, rfl, e,
       inertChar_real hη hε _ htc (GlobalTheory.NormSignInert.norm_neg D t P.asIdeal B ht0 htc P.isMaximal hP e)⟩

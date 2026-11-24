@@ -1,7 +1,11 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
 
 @[expose] public section
 
@@ -134,7 +138,7 @@ lemma torep_diag_sum (d : Fin n → ℂ) :
   rw [Matrix.sum_apply]
   by_cases h : i = j
   · subst h
-    simp [Matrix.single_apply, Matrix.diagonal_apply]
+    simp [Matrix.single_apply]
   · rw [Matrix.diagonal_apply_ne _ h]
     refine (Finset.sum_eq_zero fun a _ => ?_).symm
     rw [Matrix.smul_apply, Matrix.single_apply, if_neg (fun h' => h (h'.1.symm.trans h'.2)), smul_zero]
@@ -162,8 +166,6 @@ lemma torep_exp_diag (d : Fin n → ℂ) :
   have e1 : NormedSpace.exp d a = NormedSpace.exp (d a) := by
     first
     | exact NormedSpace.map_exp (Pi.evalRingHom (fun _ : Fin n => ℂ) a) (continuous_apply a) d
-    | exact NormedSpace.Pi.exp_apply d a
-    | exact NormedSpace.exp_apply d a
   rw [e1, Complex.exp_eq_exp_ℂ]
 
 private lemma diag_mem_lemma_3 {ε : Fin n → Bool} (f : Fin n → ℂ) (hf : ∀ b, f b * star (f b) = 1) :
@@ -234,17 +236,14 @@ private lemma oneParam_lemma_5 {A : Type*} [NormedRing A] [NormedAlgebra ℝ A] 
     intro u
     first
     | exact hasDerivAt_exp_smul_const (𝕂 := ℝ) (-D) u
-    | exact hasDerivAt_exp_smul_const (-D) u
   have hE2 : ∀ u : ℝ, HasDerivAt (fun u : ℝ => NormedSpace.exp (u • -D)) ((-D) * NormedSpace.exp (u • -D)) u := by
     intro u
     first
     | exact hasDerivAt_exp_smul_const' (𝕂 := ℝ) (-D) u
-    | exact hasDerivAt_exp_smul_const' (-D) u
   have hE3 : ∀ u : ℝ, HasDerivAt (fun u : ℝ => NormedSpace.exp (u • D)) (NormedSpace.exp (u • D) * D) u := by
     intro u
     first
     | exact hasDerivAt_exp_smul_const (𝕂 := ℝ) D u
-    | exact hasDerivAt_exp_smul_const D u
   have hder' : ∀ u, HasDerivAt F (D * F u) u := fun u => by rw [← hcomm u]; exact hder u
   have h1 := key (fun u : ℝ => NormedSpace.exp (u • -D)) F (-D) D hE1 hder'
     (fun u => by simp only [mul_neg, neg_mul, mul_assoc, neg_add_cancel]) (by simp [h0]) t
@@ -312,8 +311,8 @@ lemma torep_wt_w {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) :
   have hD1 : F 1 = NormedSpace.exp (T.dτ (Matrix.diagonal d)) := by
     rw [oneParam_lemma_5 F _ hadd h0 hF 1, one_smul]
   have hDw : T.dτ (Matrix.diagonal d) T.w = (((∑ a, Λ a * θ a : ℝ) : ℂ) * Complex.I) • T.w := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [torep_diag_sum d, map_sum, ContinuousLinearMap.sum_apply]
+
+    rw [torep_diag_sum d, map_sum, ContinuousLinearMap.sum_apply]
     simp only [map_smul, ContinuousLinearMap.smul_apply, T.w_wt, smul_smul, hd]
     rw [← Finset.sum_smul]
     congr 1
@@ -357,8 +356,8 @@ lemma torep_dτ_of_wt {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε �
     by_cases hij : i = j
     · subst hij
       by_cases hia : i = a
-      · simp [hd, hia, Matrix.single_apply]
-      · simp [hd, hia, Matrix.single_apply, Ne.symm hia]
+      · simp [hd, hia]
+      · simp [hd, hia, Ne.symm hia]
     · rw [Matrix.diagonal_apply_ne _ hij, Matrix.smul_apply, Matrix.single_apply,
         if_neg (fun h' => hij (h'.1.symm.trans h'.2)), smul_zero]
   let γ : ℝ → KG ε := fun t => torepK ε (hmem t)

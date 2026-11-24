@@ -1,6 +1,13 @@
 module
 
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfH
+public import Mathlib.MeasureTheory.Function.L2Space
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfH
 
 @[expose] public section
 
@@ -105,9 +112,7 @@ private lemma measurable_cpt : Measurable (cpt X x0) := by
   split_ifs
   · refine Measurable.const_mul ?_ _
     first
-      | exact measurable_pi_apply _
       | exact (EuclideanSpace.proj _).continuous.measurable
-      | fun_prop
   · exact measurable_const
   · exact measurable_const
 

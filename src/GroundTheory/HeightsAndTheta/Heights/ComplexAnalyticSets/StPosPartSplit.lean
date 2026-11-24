@@ -1,8 +1,7 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsCurrent
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPosPartIndependent
+public import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

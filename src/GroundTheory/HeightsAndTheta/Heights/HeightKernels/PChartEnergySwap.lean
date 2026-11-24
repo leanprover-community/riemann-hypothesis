@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartEnergySwap
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AMassStA
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ChartHessHolo
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartDensityIntegrable
+public import Mathlib.Analysis.InnerProductSpace.Calculus
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
+import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

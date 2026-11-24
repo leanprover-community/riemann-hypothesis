@@ -1,7 +1,9 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsClosedPointChart
+public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsPointVertRSteps
+public import Mathlib.RingTheory.Valuation.LocalSubring
+import Mathlib.Tactic.TypeStar
+public import Mathlib.RingTheory.LocalRing.LocalSubring
 
 @[expose] public section
 

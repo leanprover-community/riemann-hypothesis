@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
+public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
+public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
+public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.RestrictionEqZeroIffMemVanishingFiltration
+public import Formalism.LocalToGlobal.ProjectiveLattices.CurveComp
 
 @[expose] public section
 

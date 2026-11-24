@@ -1,7 +1,10 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.MeasureTheory.Function.StronglyMeasurable.Inner
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

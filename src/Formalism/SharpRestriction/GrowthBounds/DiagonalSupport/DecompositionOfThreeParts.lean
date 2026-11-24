@@ -1,9 +1,48 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
-public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.ValLeOfVK
-public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FockRLinDual
-public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
+import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FockRLinDual
+public import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -25,8 +64,6 @@ theorem geQ_mono {x : WithTop ℚ} {s t : ℝ} (h : s ≤ t) (hx : geQ x t) : ge
 theorem leQ_mono {x : WithTop ℚ} {s t : ℝ} (h : s ≤ t) (hx : leQ x s) : leQ x t := by
   obtain ⟨q, hq, h1⟩ := hx
   exact ⟨q, hq, le_trans h1 h⟩
-
-theorem geQ_top (t : ℝ) : geQ ⊤ t := fun q hq => absurd hq (by simp)
 
 theorem geQ_of_le {x y : WithTop ℚ} {t : ℝ} (h : x ≤ y) (hx : geQ x t) : geQ y t := by
   intro q hq
@@ -67,7 +104,7 @@ theorem leQ_mul (x y : KK O) {s t : ℝ} (hx : leQ (vK p x) s) (hy : leQ (vK p y
   · push_cast; linarith
 
 theorem geQ_zero (t : ℝ) : geQ (vK p (0 : KK O)) t := by
-  rw [valuation_zero_alt]; exact geQ_top t
+  rw [valuation_zero_alt]; exact _root_.Formalism.MainNotions.G.Joints.geQ_top t
 
 theorem geQ_sum {ι : Type*} (s : Finset ι) (f : ι → KK O) {t : ℝ} (h : ∀ i ∈ s, geQ (vK p (f i)) t) :
     geQ (vK p (∑ i ∈ s, f i)) t := by

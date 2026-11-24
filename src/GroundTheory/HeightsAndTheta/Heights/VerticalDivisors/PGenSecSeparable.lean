@@ -1,9 +1,11 @@
 module
 
-public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChowNorm
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChartPointTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsSecPointSeparable
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -42,8 +44,8 @@ theorem secCoord_form {E : Type*} [Field E] {n e : ℕ} (Q : Ideal (MvPolynomial
   have h : Ideal.Quotient.mk (secIdeal Q y) (secForm y i) = 0 :=
     Ideal.Quotient.eq_zero_iff_mem.2
       (Ideal.mem_sup_left (Ideal.mem_sup_right (Ideal.subset_span ⟨i, rfl⟩)))
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h, secForm, linForm, map_sum]
+
+  rw [← h, secForm, linForm, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul]
   rfl
@@ -53,8 +55,8 @@ theorem secCoord_chart {E : Type*} [Field E] {n e : ℕ} (Q : Ideal (MvPolynomia
   have h : Ideal.Quotient.mk (secIdeal Q y) (chartForm y) = 1 := by
     rw [← map_one (Ideal.Quotient.mk _), Ideal.Quotient.eq]
     exact Ideal.mem_sup_right (Ideal.subset_span rfl)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← h, chartForm, linForm, map_sum]
+
+  rw [← h, chartForm, linForm, map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_mul]
   rfl

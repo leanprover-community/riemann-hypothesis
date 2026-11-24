@@ -1,6 +1,54 @@
 module
 
 public import ReciprocityTheory.DualLattices.ModuliPointsState
+public import Mathlib.Algebra.Algebra.Prod
+public import Mathlib.Algebra.Algebra.Subalgebra.Basic
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.LocalRing.Basic
+public import ReciprocityTheory.DualLattices.IsFibreSq
 
 @[expose] public section
 
@@ -13,9 +61,6 @@ namespace ReciprocityTheory.PGsh
 universe u
 
 variable {R₀ : Type u} [CommRing R₀]
-
-lemma LHom.ext' {R S : LAlg R₀} {f g : LHom R S} (h : ∀ a, f.1 a = g.1 a) : f = g :=
-  Subtype.ext (AlgHom.ext h)
 
 lemma LHom.mul_eq_zero {R S : LAlg R₀} {π : LHom R S} (hπ : π.SqZero) {a b : (R : Type u)}
     (ha : π.1 a = 0) (hb : π.1 b = 0) : a * b = 0 := by
@@ -127,12 +172,6 @@ namespace DualPair
 
 variable {R : LAlg R₀} (Dp : DualPair R)
 
-lemma π_η : Dp.π.1 Dp.η = 0 := by
-  have h : Dp.η ∈ RingHom.ker Dp.π.1 := by
-    rw [Dp.ker_eq]
-    exact Ideal.mem_span_singleton_self _
-  exact RingHom.mem_ker.mp h
-
 lemma mem_span_of_π (b : (Dp.D : Type u)) (h : Dp.π.1 b = 0) : b ∈ Ideal.span {Dp.η} := by
   rw [← Dp.ker_eq]
   exact RingHom.mem_ker.mpr h
@@ -237,8 +276,6 @@ lemma fr_η (r : (R : Type u)) : (Dp.fr r).1 Dp.η = Dp.σ.1 r * Dp.η := by
     have h2 := Dp.κ_ση 1
     rwa [map_one, one_mul] at h2
   rw [h1, one_mul]
-
-lemma π_comp_σ : Dp.π.comp Dp.σ = LHom.id R := LHom.ext' (fun r => Dp.sect r)
 
 end DualPair
 

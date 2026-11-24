@@ -1,13 +1,85 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PhiAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.PolyBetween
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaExponentsDominantLastEntryOneDegree
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MulSmulIdemMem
-public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKeySectionValuationBoundsDifferent
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyTwistedSectionComponent
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.FibreFramesOnModels
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KchMul
+public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsPatOfObj
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RigidifiedSectionCorrespondenceExistsUniqueNonva
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ColengthDvdOfNeZero
+public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
+public import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormula
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsKeySectionFourthRootPerComponent
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitSectionThetaKeyRuleWeightFour
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FlagComponentFramedPointFrame
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulMemCuspFormsOfBoundedSectionComponent
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrdConjDifferentEqZero
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueIsTanFrameOfIsEmpty
+public import Development.AbelianVarietyTheory.Definitions.Divisors.UnitaryWeightExponentVectorSignatureWeightMuZero
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LawsFieldsSeparately
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsOfCmTriplePullback
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyTwistedSectionComponent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKeyScalarIsUnitOnIntegralModels
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKeySectionNormComplexPointsEqTwoPiPow
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKeySectionValuationBoundsDifferent
+import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.SchurLatticeConjugates
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNumberFieldPoint
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomLieEquivScalarTmul
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniversalTripleFibreAtFramedPoint
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SemiAbelianModelDeterminedByGenericFibre
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyFamOne
+import Development.AbelianVarietyTheory.Proofs.TorusSplitting.DegenerationDataAtModelPointOfUniformisation
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.EigenBasisIffTangentBasis
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsLieBasisBaseChange
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FibreSectionNowhereZeroOfGenerates
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LieBasisIffTangentBasisPullbackUniversal
+import Formalism.LocalToGlobal.ProjectiveLattices.ExtPtUnique
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.LiePush
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLawPf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.UnifAt
+import Development.AbelianVarietyTheory.Definitions.Divisors.CommGroupMulMulEqMulInvMulMulMul
+import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsoOverOfIsOpenImmersion
+import Development.AbelianVarietyTheory.Definitions.Divisors.LinearIndependentBasisCoords
+import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
+import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ComponentMassSum
+import Formalism.LocalToGlobal.ProjectiveLattices.HeightF1OfData
 
 @[expose] public section
 
@@ -65,19 +137,10 @@ theorem key_unit_eqChar {κ : KeyRule} (hκ : IsKeyRule κ) (hpq : 1 ≤ Dw.p + 
   obtain ⟨mK, -⟩ := sabCancel pullCubCancel E H _ _ _ Y.t tP t' yt (Out.jK T.V) mP' (PullbackSections.sabMapCast mJ hj)
   have hprop : IsProper t'.G.hom :=
     MorphismProperty.of_isPullback (P := @IsProper) m1.cart.1 Xo.univ.proper
-  obtain ⟨ψ, -⟩ := GlobalTheory.semiAbelian_model_determined_by_generic_fibre E H T.V inferInstance G tP t' hprop m2 mK
+  obtain ⟨ψ, -⟩ := _root_.GlobalTheory.ModelUniqueChecks.extV_holds E H T.V inferInstance G tP t' hprop m2 mK
   obtain ⟨n', -⟩ := sabComp pullCubComp E H _ _ _ Y.t tP G yt (𝟙 _) mP' ψ
-  exact (((GlobalTheory.T.thetaKeyScalar_isUnit_on_integralModels κ hκ E H Dw l Xo c _ _ Y p hpq (isBaseRing_local c W) hp h2 h3 h4 h5).1 T.V T.Fr z yt h1 G
+  exact (((_root_.GlobalTheory.KeyUnitModels.keyUnitOnModels κ hκ E H Dw l Xo c _ _ Y p hpq (isBaseRing_local c W) hp h2 h3 h4 h5).1 T.V T.Fr z yt h1 G
     (PullbackSections.sabMapCast n' (Category.id_comp yt)) n w hw θ k hk).1 hθ).1
-
-theorem vV_unit (T : CDVR) (u : T.Vˣ) : vV T.V (algebraMap T.V T.Fr (u : T.V)) = 0 := by
-  have h1 : valV T.V (algebraMap T.V T.Fr (u : T.V)) = 1 := by
-    unfold valV
-    rw [IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap]
-    refine (IsDedekindDomain.HeightOneSpectrum.intValuation_eq_one_iff).2 ?_
-    show (u : T.V) ∉ IsLocalRing.maximalIdeal T.V
-    exact fun h => h u.isUnit
-  simp [vV, h1]
 
 theorem mem_range_iff (T : CDVR) (x : T.Fr) : x ∈ (algebraMap T.V T.Fr).range ↔ 0 ≤ vV T.V x := by
   by_cases h : x = 0
@@ -150,7 +213,7 @@ theorem exists_tied_unit {κ : KeyRule} (hκ : IsKeyRule κ) (hpq : 1 ≤ Dw.p +
   suffices h : (κ T.Fr (FibKey.key ⟨P, m1, hgp, σ, hne, v, hv⟩) : T.Fr) =
       algebraMap T.V T.Fr ((Matrix.of fun j k => U (e j).1 (e j).2 k).det ^ 4 * (u : T.V)) by
     rw [h, ← hd, ← Units.val_pow_eq_pow_val, ← Units.val_mul]
-    exact vV_unit T _
+    exact _root_.Formalism.L2.Pj.extVal_unit_zero T _
   have h := hκ.1 T.Fr P.pol hgp P.t.PP.rig P.t.PP.rigGen σ hne w' hw' σ hne v hv 1
     ((Matrix.of fun j k => U (e j).1 (e j).2 k).map (algebraMap T.V T.Fr)) (fun i => by simp [constFn])
     (fun j => Chart.comb_baseChange _ m2.cart (a3 (e j).1 (e j).2) hww (hu₂ _ _))
@@ -197,117 +260,11 @@ theorem twSec_keyRoot_val : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     FnAlgClosed (Xo := Xo) (c := c) → 1 ≤ Dw.p + Dw.q → (∀ p : ℕ, p.Prime → l.GoodAt p) →
     ∀ Z : Comp Xo c, ∃ t : TwSec U x Z (wtOf Dw 0 1), ∀ (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io),
       (∀ a, io a ∈ (algebraMap T.V T.Fr).range) → evI y (idem Z) ≠ 0 → vV T.V (evI y t.sig) = 0 := by
-  intro E _ _ _ H Dw l Xo c r U x hU hx hF hpq hg
-  obtain ⟨κ, k₁, k₂, k₃, k₄, k₅, k₆, -, -⟩ := GlobalTheory.KeyFamClosing.keyFam_one
-  let e : Fin (Fintype.card (Σ τ : E →+* ℂ, Fin (Dw.mult τ))) ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ) :=
-    (Fintype.equivFin _).symm
-  obtain ⟨K, hKmem, hKval⟩ := GlobalTheory.T.exists_unit_section_thetaKeyRule_weightFour κ k₁ k₂ k₆ E H Dw l Xo c _ e hpq
-  have hσ0 := goodEmb_goodOf c c.F.val.toRingHom
-  obtain ⟨⟨ρ, hρmem⟩, hρ⟩ := GlobalTheory.T.exists_keySection_fourthRoot_perComponent κ k₁ k₂ k₆ k₄ E H Dw l Xo c _ e _ r (U _) K hσ0 (hU _ hσ0) hF hpq hKmem hKval
-  have hkr : GlobalTheory.IndefiniteRowSideFullHecke.FibreFramesOnModels.IsKeyRule κ := by
-    refine ⟨?_, k₂, k₃, k₄, ?_⟩
-    · simpa only [GlobalTheory.KeyCl.Homog, mul_one] using k₁
-    · simpa only [GlobalTheory.KeyCl.ArchNorm, mul_one] using k₅
-  have hval := GlobalTheory.T.theta_key_section_valuation_bounds_different κ hkr E H Dw l Xo c _ e K hpq hg hKmem hKval
-  have hC := fun σ : c.F →+* ℂ => GlobalTheory.T.thetaKeySection_norm_complexPoints_eq_two_pi_pow κ k₁ k₂ k₅ E H Dw l Xo c _ e (goodOf c σ) r (U (goodOf c σ)) x K
-    (goodEmb_goodOf c σ) (hU _ (goodEmb_goodOf c σ)) (hx _ (goodEmb_goodOf c σ)) ⟨⟨ρ, hρmem⟩⟩ hpq hKmem hKval
-  choose C hCpos hClog hCeq using hC
-  have hgE := card_frame_index Dw e
-  have hsum : ∑ τ : E →+* ℂ, Dw.mult τ = Fintype.card (Σ τ : E →+* ℂ, Fin (Dw.mult τ)) := by
-    simp [Fintype.card_sigma]
-  have hwt : ∀ (m : ℤ) (τ : E →+* ℂ) (i : ℕ), i < Dw.mult τ → (wtOf Dw 0 m).1 (τ, i) = -m :=
-    wtOf_zero_fst E H Dw
-  have hex : exZ Dw (wtOf Dw 0 1) = -keyEx Dw := by
-    funext i
-    rcases i with _ | ⟨τ, i⟩
-    · rfl
-    · simp only [exZ, keyEx, Pi.neg_apply]
-      exact hwt 1 τ i i.2
-  have hadd : wtOf Dw 0 1 + wtOf Dw 0 (-1) = 0 := by
-    rw [← wtOf_add, add_zero, add_neg_cancel, wtOf_zero]
-  intro Z
-  obtain ⟨a, ha, haK⟩ := hρ Z
-  have hP : HasPts U Z := hasPts U hpq hg hU Z
-  set s : Rul Xo c := idem Z * ((ρ⁻¹ : (Rul Xo c)ˣ) : Rul Xo c) with hs
-  set s' : Rul Xo c := idem Z * (ρ : Rul Xo c) with hs'
-  have hsm : s ∈ secZ Xo c (exZ Dw (wtOf Dw 0 1)) := by
-    have := mul_mem_secZ (idem_mem_secZ Z) (inv_mem_secZ hρmem)
-    rwa [zero_add, ← hex] at this
-  have hsm' : s' ∈ secZ Xo c (exZ Dw (wtOf Dw 0 (-1))) := by
-    have := mul_mem_secZ (idem_mem_secZ Z) hρmem
-    have h2 : exZ Dw (wtOf Dw 0 (-1)) = keyEx Dw := by
-      have h3 := exZ_add_eq (Dw := Dw) (wtOf Dw 0 1) (wtOf Dw 0 (-1))
-      rw [hadd, hex] at h3
-      have h4 : exZ Dw (0 : WTZ E) = 0 := by funext i; cases i <;> rfl
-      rw [h4] at h3
-      exact (neg_add_eq_zero.1 h3.symm).symm
-    rwa [zero_add, ← h2] at this
-  have hsupp : s ∈ suppOn Z := by rw [hs, mul_comm]; exact mul_mem_suppOn _ (idem_mem_suppOn Z)
-  have hsupp' : s' ∈ suppOn Z := by rw [hs', mul_comm]; exact mul_mem_suppOn _ (idem_mem_suppOn Z)
-  have hnorm := fun σ : c.F →+* ℂ => fun z (hz : z ∈ framesOn (U (goodOf c σ)) Z) =>
-    homN_root E H Dw l Xo c (goodOf c σ) r (U (goodOf c σ)) x Z ρ K a (C σ) ha (hCpos σ) haK (hCeq σ) z hz
-      ((hP.1 σ).2 z hz)
-  have hgood : ∀ σ, GoodEmb c σ → goodOf c σ = σ := fun σ h => if_pos h
-  have hmono : ∀ (m : ℤ) (τ : E →+* ℂ) (i j : ℕ), i ≤ j → j < Dw.mult τ →
-      (wtOf Dw 0 m).1 (τ, j) ≤ (wtOf Dw 0 m).1 (τ, i) := fun m τ i j hij hj => by
-    rw [hwt m τ i (lt_of_le_of_lt hij hj), hwt m τ j hj]
-  have hbd : ∀ σ, GoodEmb c σ → ∃ D : ℝ, ∀ z ∈ framesOn (U σ) Z, homN (U σ) x (wtOf Dw 0 1) s z ≤ D := by
-    intro σ hσ
-    refine ⟨(‖σ a‖ * C σ) ^ (-(1 / 4) : ℝ), fun z hz => ?_⟩
-    have h1 := hnorm σ
-    rw [hgood σ hσ] at h1
-    exact (h1 z hz).1.le
-  have hbd' : ∀ σ, GoodEmb c σ → ∃ D : ℝ, ∀ z ∈ framesOn (U σ) Z, homN (U σ) x (wtOf Dw 0 (-1)) s' z ≤ D := by
-    intro σ hσ
-    refine ⟨(‖σ a‖ * C σ) ^ ((1 / 4) : ℝ), fun z hz => ?_⟩
-    have h1 := hnorm σ
-    rw [hgood σ hσ] at h1
-    exact (h1 z hz).2.le
-  let B : HeightOneSpectrum (𝓞 c.F) → ℝ := fun w =>
-    ∑ τ : E →+* ℂ, (Dw.mult τ : ℝ) * (ord_vw w (conjDifferent (embF c τ)) : ℝ)
-  have hbnd := fun w (v : Rul Xo c → EReal) (hv : v ∈ valOn Z w) =>
-    val_root E H Dw l Xo c Z w v hv ρ K a (B w) ha haK (hval w v (valOn_subset Z w hv)).1
-      (hval w v (valOn_subset Z w hv)).2
-  let t : TwSec U x Z (wtOf Dw 0 1) :=
-    { even := even_wtOf _ _
-      sig := s
-      inv := s'
-      sig_mem := hsm
-      inv_mem := by
-        have h5 := exZ_neg_eq (Dw := Dw) (wtOf Dw 0 1)
-        have h6 : -wtOf Dw 0 1 = wtOf Dw 0 (-1) := neg_eq_of_add_eq_zero_right hadd
-        rw [← h5, h6]; exact hsm'
-      idem_sig := by rw [hs, ← mul_assoc, idem_mul_idem]
-      idem_inv := by rw [hs', ← mul_assoc, idem_mul_idem]
-      mul_inv := by rw [hs, hs', mul_mul_mul_comm, idem_mul_idem, Units.inv_mul, mul_one]
-      cInf := fun σ => (‖σ a‖ * C σ) ^ (-(1 / 4) : ℝ)
-      cInf_pos := fun σ => Real.rpow_pos_of_pos (mul_pos (norm_pos_iff.2 ((map_ne_zero σ).2 ha)) (hCpos σ)) _
-      norm_inf := fun σ z hz => by
-        rw [(hnorm σ z hz).1, norm_goodOf]
-      cusp_sig := fun G hG f hf =>
-        GlobalTheory.T.mul_mem_cuspForms_of_boundedSection_component E H Dw l Xo c r U x Z (wtOf Dw 0 1) s ⟨⟨ρ, hρmem⟩⟩ hU hpq (even_wtOf _ _) (hmono 1) hsm hsupp hbd G hG f hf
-      cusp_inv := fun G hG f hf => by
-        have h7 := GlobalTheory.T.mul_mem_cuspForms_of_boundedSection_component E H Dw l Xo c r U x Z (wtOf Dw 0 (-1)) s' ⟨⟨ρ, hρmem⟩⟩ hU hpq (even_wtOf _ _) (hmono (-1))
-          hsm' hsupp' hbd' (G + wtOf Dw 0 1) (hG.add (even_wtOf _ _)) f hf
-        rwa [add_assoc, hadd, add_zero] at h7
-      lo := fun w => -(vAdd w a : ℝ) / 4 - B w
-      hi := fun w => -(vAdd w a : ℝ) / 4
-      lo_le := fun w v hv => (hbnd w v hv).1
-      le_hi := fun w v hv => (hbnd w v hv).2
-      finite_lo := by
-        refine ((finite_vAdd ha).union (Set.finite_iUnion fun τ => finite_ord (embF c τ))).subset fun w hw => ?_
-        by_contra hn
-        simp only [Set.mem_union, Function.mem_support, Set.mem_iUnion, not_or, not_exists, not_not] at hn
-        apply hw
-        simp [B, hn.1, hn.2]
-      finite_hi := by
-        refine (finite_vAdd ha).subset fun w hw => ?_
-        by_contra hn
-        simp only [Function.mem_support, not_not] at hn
-        apply hw
-        simp [hn]
-      pts := hP }
+  intro E _ _ _ H Dw l Xo c r U x hU hx hF hpq hg Z
+  obtain ⟨t, κ, e, K, ρ, a, hkr, hKval, ha, haK, hsig⟩ :=
+    GlobalTheory.KeyTwDeep.twSec_keyRoot_with_evaluation E H Dw l Xo c r U x hU hx hF hpq hg Z
   refine ⟨t, fun T io y ho hZ => ?_⟩
+  rw [hsig]
   letI := io.toAlgebra
   obtain ⟨Φ, hΦ, hK0⟩ := exists_tied_unit hkr hpq hg e ho y.1 y.2.2
   rw [← hKval T.Fr y.1 Φ hΦ] at hK0

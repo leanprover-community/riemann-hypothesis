@@ -1,13 +1,55 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThetaSwapFirstTwo
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcAdd
+public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
+public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThetaSwapFirstTwo
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ActLin
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ExpLaw
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.PderivSecondEvFirstPointEqZero
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ConstantCoeffEv
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ExpLaw
 
 @[expose] public section
 
@@ -35,9 +77,7 @@ theorem cc_pt' {n : ℕ} (j : Fin n) (i : Fin d) : MvPowerSeries.constantCoeff (
 theorem ev_eq_hom {m n : ℕ} (a : Fin m → Pt S n d) (ha : ∀ j i, MvPowerSeries.constantCoeff (a j i) = 0)
     (f : PS S m d) : ev a f = MvPowerSeries.substAlgHom (hasSubst_pts a ha) f := by
   first
-    | rfl
     | (rw [MvPowerSeries.coe_substAlgHom]; rfl)
-    | simp [ev, MvPowerSeries.coe_substAlgHom]
 
 theorem ev_at {m n : ℕ} (a : Fin m → Pt S n d) (ha : ∀ j i, MvPowerSeries.constantCoeff (a j i) = 0) (j : Fin m)
     (f : PS S 1 d) : ev a (ev ![pt S d j] f) = ev ![a j] f := by
@@ -54,8 +94,8 @@ theorem ev_bilL {n : ℕ} (G : FGLaw S d) (cc : Fin d → Fin d → S) (a : Fin 
     ev a (bilL G cc) = ∑ i, ∑ l, cc i l • (ev ![a 0] (LogPf.logOf G i) * ev ![a 1] (LogPf.logOf G l)) := by
   simp only [bilL, lg]
   rw [ev_eq_hom a ha]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_smul, map_mul]
+
+  simp only [map_sum, map_smul, map_mul]
   simp only [← ev_eq_hom a ha]
   simp only [ev_at a ha]
 
@@ -87,11 +127,11 @@ theorem cc_bilL (G : FGLaw S d) (cc : Fin d → Fin d → S) : MvPowerSeries.con
   have h1 : ∀ (j : Fin 2) (l : Fin d), MvPowerSeries.constantCoeff (lg G j l) = 0 := fun j l =>
     cc_ev_lemma (![pt S d j] : Fin 1 → Pt S 2 d) (fun j' k => by fin_cases j' <;> simp [pt]) _ (cc_logOf G l)
   simp only [bilL]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun i _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
+
+  rw [map_sum]
   refine Finset.sum_eq_zero fun l _ => ?_
   rw [← smul_mul_assoc, map_mul, h1, mul_zero]
 
@@ -99,7 +139,7 @@ theorem constantCoeff_add_second_third (G : FGLaw S d) (i : Fin d) : MvPowerSeri
   exact cc_ev_lemma (![pt S (n := 3) d 1, pt S d 2] : Fin 2 → Pt S 3 d) (fun j k => by fin_cases j <;> simp [pt]) (G.F i) (G.const i)
 
 
-set_option maxHeartbeats 800000 in
+
 theorem ev_expP {n : ℕ} (a : Fin 2 → Pt S n d) (ha : ∀ j i, MvPowerSeries.constantCoeff (a j i) = 0)
     (G : FGLaw S d) (cc : Fin d → Fin d → S) :
     ev a (expP (-bilL G cc)) = expP (-ev a (bilL G cc)) := by
@@ -125,7 +165,7 @@ theorem twist_mul_second_argument (G : FGLaw S d) (cc : Fin d → Fin d → S) :
   have hsum : ev (![pt S d 0, G.add (pt S d 1) (pt S d 2)] : Fin 2 → Pt S 3 d) (bilL G cc) =
       ev (![pt S d 0, pt S d 1] : Fin 2 → Pt S 3 d) (bilL G cc) + ev (![pt S d 0, pt S d 2] : Fin 2 → Pt S 3 d) (bilL G cc) := by
     rw [ev_bilL G cc _ ha, ev_bilL G cc _ hb, ev_bilL G cc _ hc]
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_add_distrib]
@@ -174,7 +214,7 @@ theorem mk_X_psJet {n : ℕ} (m : ℕ) (q : Fin n × Fin d) :
         by_cases h : i = q
         · subst h
           simp
-        · simp [h, Finsupp.single_apply, Ne.symm h]
+        · simp [h]
       · rw [Finsupp.sum_single_index rfl]
         show 1 ≤ m
         omega
@@ -200,8 +240,7 @@ theorem mk_psIn_psJet {n n' : ℕ} (m : ℕ) (σ : Fin n → Fin n') (f : PS S n
       psJet m ((fun i => pt S d (σ i)) p.1 p.2) := fun p => mk_X_psJet m (σ p.1, p.2)
   rw [← jetSubstP_psJet m (fun p : Fin n × Fin d => (X (σ p.1, p.2) : MvPolynomial (Fin n' × Fin d) S)) (fun i => pt S d (σ i)) ha hφ hmk f]
   unfold jetSubstP jetMap liftJet psJet psIn
-  simp only [MvPolynomial.constantCoeff_X, map_zero, sub_zero, Ideal.Quotient.liftₐ_apply, Ideal.Quotient.lift_mk,
-    AlgHom.coe_toRingHom, AlgHom.coe_comp, Function.comp_apply, Ideal.Quotient.mkₐ_eq_mk]
+  simp only [MvPolynomial.constantCoeff_X, map_zero, sub_zero, Ideal.Quotient.liftₐ_apply]
   have hr : (aeval fun i : Fin n × Fin d => (X (σ i.1, i.2) : MvPolynomial (Fin n' × Fin d) S)) =
       rename (fun p : Fin n × Fin d => (σ p.1, p.2)) :=
     MvPolynomial.algHom_ext fun i => by simp
@@ -311,8 +350,8 @@ theorem ev_lin {n : ℕ} (M : Matrix (Fin d) (Fin d) S) (u : Pt S n d) (hu : ∀
     ev ![u] (∑ j, MvPowerSeries.C (M i j) * (MvPowerSeries.X ((0 : Fin 1), j) : PS S 1 d)) = ∑ j, M i j • u j := by
   have hu' : ∀ (j : Fin 1) (k : Fin d), MvPowerSeries.constantCoeff ((![u] : Fin 1 → Pt S n d) j k) = 0 := by
     intro j k; fin_cases j; simpa using hu k
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [ev_eq_hom _ hu', map_sum]
+
+  rw [ev_eq_hom _ hu', map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← MvPowerSeries.smul_eq_C_mul, map_smul, ← ev_eq_hom _ hu', ev_X _ hu']
   rfl
@@ -372,7 +411,7 @@ theorem twist_bal {O : Type} [CommRing O] [StarRing O] (B : FB S d O) (cc : Fin 
     (fun k => ev (n := 2) ![pt S d 0] (LogPf.logOf B.G k)) (fun l => ev (n := 2) ![pt S d 1] (LogPf.logOf B.G l))
   simp only [Matrix.of_apply] at key
   rw [ev_expP _ h0, ev_expP _ h1, ev_bilL _ _ _ h0, ev_bilL _ _ _ h1]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, ev_act_pt]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, ev_act_pt]
   rw [key]
 
 theorem twist_bal_jet {O : Type} [CommRing O] [StarRing O] (B : FB S d O) (cc : Fin d → Fin d → S) (a b : O)
@@ -384,8 +423,8 @@ theorem twist_bal_jet {O : Type} [CommRing O] [StarRing O] (B : FB S d O) (cc : 
   have hT : ∀ g : PS S 1 d, MvPowerSeries.constantCoeff g = 0 → MvPolynomial.constantCoeff (psTrunc m g) = 0 := by
     intro g hg
     unfold psTrunc
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     refine Finset.sum_eq_zero fun e _ => ?_
     rw [MvPolynomial.constantCoeff_monomial]
     split_ifs with he

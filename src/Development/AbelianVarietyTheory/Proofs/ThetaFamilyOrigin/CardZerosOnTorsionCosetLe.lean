@@ -1,11 +1,57 @@
 module
 
-public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.Tactic.ENatToNat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsSecNonzeroLocusEqOfLbIso
-public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsUniquePointOfRingHom
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.NonemptyGradedAlgebraSubGrading
+public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsUniquePointOfRingHom
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 
 @[expose] public section
 
@@ -101,7 +147,7 @@ theorem val_const (p : X ⟶ Sp K) (z : Sp K ⟶ X) (hz : z ≫ p = 𝟙 _) (U :
     rw [Scheme.Hom.appLE_comp_appLE]
     have : ∀ (q : Sp K ⟶ Sp K) (_ : q = 𝟙 _) e, q.appLE ⊤ ⊤ e = 𝟙 _ := by
       rintro _ rfl e
-      simp only [Scheme.Hom.appLE, Scheme.Hom.id_app, Category.id_comp]
+      simp only [Scheme.Hom.appLE, Scheme.Hom.id_app]
       exact (Sp K).presheaf.map_id _
     exact this _ hz _
   have h2 : (Scheme.ΓSpecIso (CommRingCat.of K)).inv ≫ p.appLE ⊤ U hU ≫
@@ -265,8 +311,8 @@ theorem finrank_le_of_span [IsIntegral X] (hL : L.IsLB)
     obtain ⟨a, ha⟩ := hs t
     refine (Submodule.mem_span_range_iff_exists_fun K).2 ⟨a, Subtype.ext ?_⟩
     refine eq_of_gr_eq Φ ρ hρ k hk e _ (Subtype.prop _) _ (Subtype.prop _) (congrArg _ ?_)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hρ, ha k, Submodule.coe_sum, map_sum]
+
+    rw [hρ, ha k, Submodule.coe_sum, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Submodule.coe_smul, Algebra.smul_def, map_mul, hρc, hρ]
     rfl
@@ -490,7 +536,6 @@ theorem card_zeros_on_torsion_coset_le :
   · obtain ⟨h', hh'⟩ := hpull K P N k h
     refine ⟨h', fun z => ?_⟩
     rw [hh']
-    beta_reduce
     rw [e z]
     rfl
 

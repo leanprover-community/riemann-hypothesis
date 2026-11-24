@@ -1,7 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.TateThesis.TateTheta
+import GroundTheory.GlobalFields.TateThesis.AdelePoisson
+import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
+import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import GroundTheory.GlobalFields.TateThesis.LatticePoissonBasic
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

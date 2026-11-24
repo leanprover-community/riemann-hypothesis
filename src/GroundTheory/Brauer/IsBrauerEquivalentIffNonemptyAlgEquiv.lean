@@ -1,7 +1,18 @@
 module
 
-public import Mathlib
-public import GroundTheory.Brauer.TensorSimple
+public import Mathlib.Algebra.Azumaya.Defs
+public import Mathlib.Algebra.Central.Defs
+public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import GroundTheory.Brauer.TensorSimple
+public import Mathlib.LinearAlgebra.Basis.MulOpposite
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.TypeStar
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+public import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 
 @[expose] public section
 

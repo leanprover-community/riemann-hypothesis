@@ -1,5 +1,6 @@
 module
 
+public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
 public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.ChiPSt
 
 @[expose] public section

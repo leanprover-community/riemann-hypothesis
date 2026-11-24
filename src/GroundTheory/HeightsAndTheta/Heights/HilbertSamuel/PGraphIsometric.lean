@@ -1,9 +1,12 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChangeOfModel
+public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChangeOfModel
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -106,8 +109,8 @@ theorem wh_lin [DecidableEq K] (A : ∀ k, ι₂ k → ι k → ℤ) (q : Σ k, 
     IsWeightedHomogeneous (GroundTheory.Heights₂.Heights.NumbersDVR.blockWeight (Sum.elim ι ι₂))
       (rename inlV (linForm A q)) (Pi.single (Sum.inl q.1) 1) := by
   rw [← mem_weightedHomogeneousSubmodule]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [linForm, map_sum, map_mul, rename_C, rename_X]
+
+  simp only [linForm, map_sum, map_mul, rename_C, rename_X]
   refine Submodule.sum_mem _ fun i _ => ?_
   rw [← smul_eq_C_mul]
   exact Submodule.smul_mem _ _ ((mem_weightedHomogeneousSubmodule _ _ _ _).mpr (isWeightedHomogeneous_X ℤ _ _))
@@ -262,7 +265,8 @@ theorem proof : GraphIsometric.Statement := by
         refine sup_le (fun p hp => RingHom.mem_ker.mpr (hx.2 p hp))
           (Ideal.span_le.mpr (Set.range_subset_iff.mpr fun j' => ?_))
         show φ _ = 0
-        simpa [φ, linForm, linApply] using hall j'
+        simp only [φ, RingHom.comp_apply]
+        exact ((hev (linForm A ⟨k, j'⟩)).symm.trans (hlin ⟨k, j'⟩)).trans (hall j')
       have h0 := RingHom.mem_ker.mp (hle hN)
       have hne : φ ((∏ k', (X ⟨k', i k'⟩ : MRing ι)) ^ N) ≠ 0 := by
         simp only [φ, map_pow, map_prod, RingHom.comp_apply, map_X, eval_X]

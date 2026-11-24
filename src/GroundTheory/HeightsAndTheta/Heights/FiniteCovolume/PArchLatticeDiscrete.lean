@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
@@ -127,8 +128,8 @@ theorem ArchLatticeDiscrete.proof (h : HermitianForm F E W) (v : Basis ι E W) :
         rwa [map_sub, h1ij]
       have hsum : ‖w.embedding (v.repr ((γ : W ≃ₗ[E] W) s - s) i)‖ ≤
           δ * ∑ j, ‖w.embedding (v.repr s j)‖ := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [hrep, map_sum, Finset.mul_sum]
+
+        rw [hrep, map_sum, Finset.mul_sum]
         refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
         rw [map_mul, norm_mul]
         exact mul_le_mul_of_nonneg_right (entry j).le (norm_nonneg _)

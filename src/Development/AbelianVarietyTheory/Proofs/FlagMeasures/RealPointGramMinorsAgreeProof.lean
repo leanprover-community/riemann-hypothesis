@@ -1,8 +1,46 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowsMeanC
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LoopTermLem
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HermitianETransportInvariant
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -87,7 +125,7 @@ theorem phiV_span (C : Choice X 1) (τ : D.what₂.Tau) :
     ext j
     by_cases h : j = i
     · subst h; simp
-    · simp [Pi.single_apply, h]
+    · simp [h]
   rw [eq_top_iff]
   intro w _
   have e : C.Qi τ * (X.B.I.P (vOf X τ))⁻¹ * X.B.I.P (vOf X τ) * C.Q τ = 1 := by
@@ -204,10 +242,6 @@ namespace GlobalTheory.TypeAsm.GramPf
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {X : HidaSetting D}
 
-theorem rdE_pos' (D : D7) : 0 < D.host.rdE := by
-  unfold Formalism.BasicNotions.Host.rdE
-  exact Real.rpow_pos_of_pos (abs_pos.2 (Int.cast_ne_zero.2 (NumberField.discr_ne_zero D.host.E))) _
-
 theorem frameExp_cast (r l : ℕ) (hl : l ≤ r + 1) :
     (frameExp r l : ℝ) = ∑ i : Fin l, ((r : ℝ) - (i : ℕ)) := by
   induction l with
@@ -224,15 +258,15 @@ theorem frameExp_cast (r l : ℕ) (hl : l ≤ r + 1) :
 
 theorem prod_rho (l : ℕ) (hl : l ≤ D.R.rS + 1) :
     ∏ i : Fin l, rhoF D (Fin.castLE hl i) = D.host.rdE ^ (-(frameExp D.R.rS l : ℝ)) := by
-  rw [frameExp_cast _ _ hl, ← Finset.sum_neg_distrib, Real.rpow_sum_of_pos (rdE_pos' D)]
+  rw [frameExp_cast _ _ hl, ← Finset.sum_neg_distrib, Real.rpow_sum_of_pos (_root_.Formalism.MainNotions.S.rdE_pos D)]
   rfl
 
 theorem norm_dmin (l : ℕ) (hl : l ≤ D.R.rS + 1) (x : ℂ) :
     ‖(∏ i : Fin l, ((rhoF D (Fin.castLE hl i) : ℝ) : ℂ)) ^ 2 * x‖ =
       ‖x‖ * D.host.rdE ^ (-(2 * (frameExp D.R.rS l : ℝ))) := by
   rw [← Complex.ofReal_prod, prod_rho l hl, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_pos (Real.rpow_pos_of_pos (rdE_pos' D) _), ← Real.rpow_natCast,
-    ← Real.rpow_mul (rdE_pos' D).le, mul_comm ‖x‖]
+    abs_of_pos (Real.rpow_pos_of_pos (_root_.Formalism.MainNotions.S.rdE_pos D) _), ← Real.rpow_natCast,
+    ← Real.rpow_mul (_root_.Formalism.MainNotions.S.rdE_pos D).le, mul_comm ‖x‖]
   congr 2
   push_cast
   ring

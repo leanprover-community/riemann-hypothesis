@@ -1,10 +1,48 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltInvariantMemReductionOfFrobeniusEquationStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinOEStabilityPropertiesStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinOEStabilityProperties
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltInvariantMemReductionOfFrobeniusEquation
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -17,12 +55,7 @@ namespace GlobalTheory.BSP.DescentStep
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem perfectRing_Cb : PerfectRing (Cb l) l := by
-  refine PerfectRing.ofSurjective _ _ fun x => ?_
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := OCb l) x
-  obtain ⟨a, rfl⟩ := (bijective_frobenius (OCb l) l).2 a
-  obtain ⟨b, rfl⟩ := (bijective_frobenius (OCb l) l).2 b
-  exact ⟨algebraMap _ _ a / algebraMap _ _ b, by simp [frobenius_def]⟩
+alias perfectRing_Cb := _root_.GlobalTheory.OEStable.perfect_Cb
 
 theorem constantCoeff_frobW (w : WCb l) :
     WittVector.constantCoeff (p := l) (R := Cb l) (frobW l w) =
@@ -46,11 +79,11 @@ open GlobalTheory.BSP.DescentStep in
 theorem GlobalTheory.BSP.BK.descent_step : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (κ : Type) [Fintype κ] (x b : κ → WCb l) (c : κ → κ → WCb l), (∀ i j, c i j ∈ bk.OE) → (∀ j, b j ∈ bk.OE) → (∀ j, x j = ∑ i, frobW l (x i) * c i j + b j) → (∀ g : ↥(GK K), bk.FixFlat g → ∀ j, galW l (g : GQ l) (x j) = x j) → ∃ v x' b' : κ → WCb l, (∀ j, v j ∈ bk.OE) ∧ (∀ j, b' j ∈ bk.OE) ∧ (∀ j, x j = v j + ((l : ℕ) : WCb l) * x' j) ∧ (∀ j, x' j = ∑ i, frobW l (x' i) * c i j + b' j) ∧ ∀ g : ↥(GK K), bk.FixFlat g → ∀ j, galW l (g : GQ l) (x' j) = x' j := by
   intro l _ K bk κ _ x b c hc hb hx hg
   haveI : PerfectRing (Cb l) l := perfectRing_Cb
-  obtain ⟨sat, -, hφ, hfix, -⟩ := GlobalTheory.T.breuilKisin_OE_stability_properties l K bk
+  obtain ⟨sat, -, hφ, hfix, -⟩ := _root_.GlobalTheory.OEStable.main l K bk
   set cc := WittVector.constantCoeff (p := l) (R := Cb l) with hcc
   have hmemc : ∀ w ∈ bk.OE, cc w ∈ bk.OE.map cc := fun w hw => Subring.mem_map.2 ⟨w, hw, rfl⟩
   have key : ∀ j, cc (x j) ∈ bk.OE.map cc := by
-    refine GlobalTheory.T.tilt_invariant_mem_reduction_of_frobenius_equation l K bk κ (fun j => cc (x j)) ?_ ?_
+    refine _root_.GlobalTheory.BSP.TwoCopy.mem_reduction_of_invariant l K bk κ (fun j => cc (x j)) ?_ ?_
     · intro g hgf j
       have h1 := congrArg cc (hg g hgf j)
       rw [constantCoeff_galW] at h1
@@ -61,8 +94,8 @@ theorem GlobalTheory.BSP.BK.descent_step : ∀ (l : ℕ) [Fact l.Prime] (K : Fin
           i' (cc (x j)) = ∑ i, i' (cc (x i)) ^ l * i' (cc (c i j)) + i' (cc (b j)) := by
         intro i'
         conv_lhs => rw [hx j]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [RingHom.map_add cc, map_sum cc, RingHom.map_add i', map_sum i']
+
+        rw [RingHom.map_add cc, map_sum cc, RingHom.map_add i', map_sum i']
         refine congrArg (· + _) (Finset.sum_congr rfl fun i _ => ?_)
         rw [RingHom.map_mul cc, RingHom.map_mul i', constantCoeff_frobW, RingHom.map_pow i']
       have e2 : ∀ i, i₂ (cc (c i j)) = i₁ (cc (c i j)) := fun i => (h12 _ (hmemc _ (hc i j))).symm

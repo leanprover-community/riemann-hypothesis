@@ -1,7 +1,7 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.NonzeroLeviEigenvectorExists
-public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 
 @[expose] public section
 
@@ -102,8 +102,8 @@ theorem step_TzInj {n : ℕ} (G : Grp k n) : TorusCentreInjectiveProp G := by
         π ((Quotient.out c : ↥G.NO) : GL (Fin n) k) (π (G.zEl ϖ ^ 1) x) := by
       unfold Grp.Tz
       exact finsum_eq_sum_of_fintype _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e1, map_sum] at e0
+
+    rw [e1, map_sum] at e0
     rw [← e0]
     refine Finset.sum_congr rfl fun c _ => ?_
     rw [h3, pow_one]
@@ -125,8 +125,8 @@ theorem step_TzInj {n : ℕ} (G : Grp k n) : TorusCentreInjectiveProp G := by
   have hlin : ∀ f : ↥G.NO ⧸ G.zN ϖ 1 → V,
       G.PJ π r (∑ c, f c) = ∑ c, G.PJ π r (f c) := by
     intro f
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Grp.PJ, finsum_eq_sum_of_fintype, map_sum, Finset.smul_sum]
+
+    simp only [Grp.PJ, finsum_eq_sum_of_fintype, map_sum, Finset.smul_sum]
     exact Finset.sum_comm
   have hsum' := congrArg (G.PJ π r) hsum
   rw [hlin, PJ_zero] at hsum'

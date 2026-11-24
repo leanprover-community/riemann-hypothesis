@@ -1,11 +1,61 @@
 module
 
-public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ADensStC
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LeviOneEqLaplacianThm
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemiPosTwist
+public import Mathlib.Analysis.InnerProductSpace.Laplacian
+public import ReciprocityTheory.AnalyticForms.MaIntEmpty
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.DerivativeTest
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LeviOneEqLaplacianThm
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -235,20 +285,15 @@ def blk (k : K) : ((Σ k, ι k) → ℂ) →L[ℂ] (ι k → ℂ) :=
 def F (k : K) (y : (Σ k, ι k) → ℂ) : ℝ :=
   Real.log ((fsMetric (ι := ι k)).ρ (fun i => y ⟨k, i⟩))
 
-theorem blk_ne {z : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) (k : K) :
-    (fun i => z ⟨k, i⟩ : ι k → ℂ) ≠ 0 := by
-  obtain ⟨i, hi⟩ := hz k
-  exact fun h0 => hi (congrFun h0 i)
-
 theorem rho_pos {z : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) (k : K) :
     0 < (fsMetric (ι := ι k)).ρ (fun i => z ⟨k, i⟩) :=
-  (fsMetric (ι := ι k)).pos _ (blk_ne hz k)
+  (fsMetric (ι := ι k)).pos _ (GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.blk_ne hz k)
 
 theorem contDiffAt_F {z : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) (k : K) :
     ContDiffAt ℝ 2 (F k) z := by
   have hρ : ContDiffAt ℝ 2 (fsMetric (ι := ι k)).ρ (blk (ι := ι) k z) :=
     ((GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.isSmoothMetric_fs (J := ι k)).contDiffAt
-      (isOpen_ne.mem_nhds (blk_ne hz k))).of_le (WithTop.coe_le_coe.2 le_top)
+      (isOpen_ne.mem_nhds (GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.blk_ne hz k))).of_le (WithTop.coe_le_coe.2 le_top)
   have hφ := hρ.log (rho_pos hz k).ne'
   have hFk : F k = (fun u => Real.log ((fsMetric (ι := ι k)).ρ u)) ∘ blk (ι := ι) k := rfl
   rw [hFk]
@@ -258,11 +303,11 @@ theorem levi_F_nonneg {z : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i�
     (w : (Σ k, ι k) → ℂ) : 0 ≤ ReciprocityTheory.AnForm.levi (F k) z w := by
   have hρ : ContDiffAt ℝ 2 (fsMetric (ι := ι k)).ρ (blk (ι := ι) k z) :=
     ((GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.isSmoothMetric_fs (J := ι k)).contDiffAt
-      (isOpen_ne.mem_nhds (blk_ne hz k))).of_le (WithTop.coe_le_coe.2 le_top)
+      (isOpen_ne.mem_nhds (GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.blk_ne hz k))).of_le (WithTop.coe_le_coe.2 le_top)
   have hφ := hρ.log (rho_pos hz k).ne'
   have hFk : F k = (fun u => Real.log ((fsMetric (ι := ι k)).ρ u)) ∘ blk (ι := ι) k := rfl
   rw [hFk, ReciprocityTheory.AnForm.levi_comp w ((blk (ι := ι) k).analyticAt z) hφ]
-  exact GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.leviForm_log_fs_nonneg (blk_ne hz k) _
+  exact GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.leviForm_log_fs_nonneg (GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.blk_ne hz k) _
 
 end Blocks
 
@@ -275,40 +320,11 @@ theorem levi_add_sum {K : Type} {z : J → ℂ} (g : (J → ℂ) → ℝ) (f : K
     ContDiffAt ℝ 2 (fun y => g y + ∑ k ∈ s, c k * f k y) z ∧
       ReciprocityTheory.AnForm.levi (fun y => g y + ∑ k ∈ s, c k * f k y) z w =
         ReciprocityTheory.AnForm.levi g z w + ∑ k ∈ s, c k * ReciprocityTheory.AnForm.levi (f k) z w := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using hg
-  | insert a s ha ih =>
-    have heq : (fun y => g y + ∑ k ∈ insert a s, c k * f k y) =
-        fun y => (fun y' => g y' + ∑ k ∈ s, c k * f k y') y + c a * f a y := by
-      funext y
-      rw [Finset.sum_insert ha]
-      ring
-    rw [heq, ReciprocityTheory.AnForm.levi_add_smul (c a) ih.1 (hf a) w, ih.2, Finset.sum_insert ha]
-    exact ⟨ih.1.add (contDiffAt_const.mul (hf a)), by ring⟩
+  apply GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.levi_add_sum <;> assumption
 
 theorem laplacian_line_eq_levi {φ : (J → ℂ) → ℝ} {z : J → ℂ} (hφ : ContDiffAt ℝ 2 φ z) (v : J → ℂ) :
     Δ (fun t : ℂ => φ (z + t • v)) 0 = 4 * ReciprocityTheory.AnForm.levi φ z v := by
-  have h1 : ReciprocityTheory.AnForm.levi (fun w : Fin 1 → ℂ => φ (z + w 0 • v)) (fun _ => 0) (Pi.single 0 1) =
-      Δ (fun t : ℂ => φ (z + t • v)) 0 / 4 :=
-    ReciprocityTheory.AnForm.A.leviOne (fun t : ℂ => φ (z + t • v)) 0
-  set L : (Fin 1 → ℂ) →L[ℂ] (J → ℂ) :=
-    (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin 1 => ℂ) 0).smulRight v with hL
-  have hτ : AnalyticAt ℂ (fun w => z + L w) (fun _ => 0) :=
-    analyticAt_const.add (L.analyticAt _)
-  have hτ0 : z + L (fun _ => (0 : ℂ)) = z := by
-    simp [hL]
-  have hcomp : (fun w : Fin 1 → ℂ => φ (z + w 0 • v)) = φ ∘ fun w => z + L w := by
-    funext w
-    simp [hL]
-  have hD : fderiv ℂ (fun w => z + L w) (fun _ => 0) (Pi.single 0 1) = v := by
-    rw [((L.hasFDerivAt).const_add z).fderiv]
-    simp [hL]
-  have hφ' : ContDiffAt ℝ 2 φ (z + L (fun _ => 0)) := by
-    rw [hτ0]
-    exact hφ
-  rw [hcomp, ReciprocityTheory.AnForm.levi_comp _ hτ hφ', hτ0, hD] at h1
-  linarith
+  apply GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.laplacian_line_eq_levi <;> assumption
 
 end Levi
 

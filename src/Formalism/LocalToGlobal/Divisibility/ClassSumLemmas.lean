@@ -35,10 +35,10 @@ theorem I_eq_sum (x : Fin S.dim → K) : S.I x = ∑ i, x i • (S.basis i : S.C
 
 theorem csum_sum (x y : Fin S.dim → K) :
     S.csum (S.I x) (S.I y) = ∑ i, ∑ j, star (x i) * S.H i j * y j := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [csum, I_eq_sum, H, Matrix.of_apply, Finset.sum_apply, Pi.smul_apply, map_sum,
-    LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul,
-    starRingEnd_apply, Finset.mul_sum, Finset.sum_mul]
+
+  simp only [csum, I_eq_sum, H, Matrix.of_apply, Finset.sum_apply, Pi.smul_apply, map_sum,
+  LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul,
+  starRingEnd_apply, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_

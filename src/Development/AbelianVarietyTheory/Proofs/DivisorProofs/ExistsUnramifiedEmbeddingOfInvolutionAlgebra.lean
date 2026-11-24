@@ -1,13 +1,63 @@
 module
 
-public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExtAlgebraMap
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLocalRingOfIdem
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteMaximalSpectrumOfFiniteOfIsLocalRing
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MonicDvdXPowCardSubOneExistsRootStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InvolutionResiduePowAndRootsOfUnityStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralIntegersUnramifiedInvolutionExtStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdjoinPrimitiveRootEqIntegersUnramifiedQuadraticStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdjoinPrimitiveRootEqIntegersUnramifiedQuadratic
+public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InvolutionResiduePowAndRootsOfUnity
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralIntegersUnramifiedInvolutionExt
+public import Mathlib.RingTheory.Henselian
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MonicDvdXPowCardSubOneExistsRoot
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLocalRingOfIdem
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -26,8 +76,8 @@ theorem pow_eq_one_eq_of_residue {S : Type*} [CommRing S] [IsLocalRing S] {n : �
     rw [Commute.geom_sum₂_mul (Commute.all _ _), h₁, h₂, sub_self]
   have hr : residue S (∑ i ∈ Finset.range n, y₁ ^ i * y₂ ^ (n - 1 - i)) =
       (n : ResidueField S) * residue S y₂ ^ (n - 1) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+
+    rw [map_sum]
     simp only [map_mul, map_pow, h]
     rw [Finset.sum_congr rfl (g := fun _ => residue S y₂ ^ (n - 1)), Finset.sum_const, Finset.card_range,
       nsmul_eq_mul]
@@ -91,7 +141,7 @@ theorem exists_unr_embedding_any : ∀ (K : UQ) (B : InvAlg K), B.g * B.σ B.g =
   have hzint : IsIntegral K.O z :=
     ⟨_, monic_X_pow_sub_C (1 : K.O) hN, by rw [← aeval_def]; simp [hzN]⟩
   have hmdvd : minpoly K.O z ∣ X ^ N - C 1 := minpoly.isIntegrallyClosed_dvd hzint (by simp [hzN])
-  obtain ⟨yR, hyR⟩ := GlobalTheory.T.exists_root_of_monic_dvd_X_pow_card_sub_one R ((minpoly K.O z).map (algebraMap K.O R))
+  obtain ⟨yR, hyR⟩ := _root_.GlobalTheory.monic_dvd_X_pow_card_sub_one_exists_root R ((minpoly K.O z).map (algebraMap K.O R))
     ((minpoly.monic hzint).map _)
     (by rw [(minpoly.monic hzint).natDegree_map]; exact (minpoly.natDegree_pos hzint).ne')
     (by
@@ -135,7 +185,7 @@ theorem exists_unr_embedding_any : ∀ (K : UQ) (B : InvAlg K), B.g * B.σ B.g =
       by_contra hc
       exact hres ((IsLocalRing.mem_maximalIdeal _).2 hc)
     exact (IsLocalRing.mem_maximalIdeal _).1 h2 (hu'.map _)
-  obtain ⟨hfr1, hfr2⟩ := GlobalTheory.T.involution_residue_pow_and_roots_of_unity R K'.q hcardR τR hτ2 ⟨_, hne⟩
+  obtain ⟨hfr1, hfr2⟩ := _root_.GlobalTheory.UnitLemma.InvolRes.residue_pow_and_roots R K'.q hcardR τR hτ2 ⟨_, hne⟩
   choose τ' hτ' using K'.c_int
   have hinj' : Function.Injective (algebraMap K'.O K'.E) := IsFractionRing.injective _ _
   let cO : K'.O →+* K'.O :=
@@ -153,7 +203,7 @@ theorem exists_unr_embedding_any : ∀ (K : UQ) (B : InvAlg K), B.g * B.σ B.g =
     intro h
     apply hres'
     rw [← IsLocalRing.residue_eq_zero_iff, map_sub, h, sub_self]
-  obtain ⟨-, hfc⟩ := GlobalTheory.T.involution_residue_pow_and_roots_of_unity K'.O K'.q K'.card_res cO hc2 ⟨_, hne'⟩
+  obtain ⟨-, hfc⟩ := _root_.GlobalTheory.UnitLemma.InvolRes.residue_pow_and_roots K'.O K'.q K'.card_res cO hc2 ⟨_, hne'⟩
   obtain ⟨zO, hzO⟩ : ∃ zO : K'.O, algebraMap K'.O K'.E zO = z :=
     IsIntegrallyClosed.isIntegral_iff.1
       ⟨_, monic_X_pow_sub_C (1 : K'.O) hN, by rw [← aeval_def]; simp [hzN]⟩
@@ -176,7 +226,7 @@ theorem exists_unr_embedding_any : ∀ (K : UQ) (B : InvAlg K), B.g * B.σ B.g =
 
   have hO : ∀ y : K'.O, ψ (algebraMap K'.O K'.E y) ∈ R := by
     intro y
-    have hadj := GlobalTheory.T.adjoin_primitiveRoot_eq_integers_unramifiedQuadratic K K' d φ hU hd z hzp hzadj _ (GlobalTheory.T.isIntegral_integers_unramifiedInvolutionExt K K' d φ hU hd y)
+    have hadj := _root_.GlobalTheory.UnitLemma.Unr.adjoin_rootOfUnity_eq_integers K K' d φ hU hd z hzp hzadj _ (_root_.GlobalTheory.UnitLemma.Unr.intO K K' d φ hU hd y)
     generalize algebraMap K'.O K'.E y = x at hadj ⊢
     induction hadj using Algebra.adjoin_induction with
     | mem x hx => rw [Set.mem_singleton_iff.1 hx, hψz]; exact yR.2

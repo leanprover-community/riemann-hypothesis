@@ -1,6 +1,53 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -17,7 +64,6 @@ private theorem sumSplitEquiv_apply_lemma (Kf : Type) [Field Kf] (r t : ℕ) (z 
     splitRT Kf r t z = (fun i => z (Fin.castAdd t i), fun j => z (Fin.natAdd r j)) := by
   first
   | rfl
-  | (refine Prod.ext (funext fun i => ?_) (funext fun j => ?_) <;> simp [splitRT])
 
 section Block
 
@@ -42,7 +88,6 @@ theorem blockHom_mulVec (A : Matrix (Fin a) (Fin a) k) (B : Matrix (Fin b) (Fin 
         (((Matrix.toLin' A).prodMap (Matrix.toLin' B)) (splitRT k a b u))) = _
      rw [LinearEquiv.apply_symm_apply]
      simp [Matrix.toLin'_apply])
-  | (simp [LinearEquiv.conjRingEquiv_apply, LinearEquiv.conj_apply, Matrix.toLin'_apply]; done)
 
 private theorem blockHom_eq_reindex_lemma_2 (A : Matrix (Fin a) (Fin a) k) (B : Matrix (Fin b) (Fin b) k) :
     blockHom k a b (A, B) =
@@ -56,10 +101,8 @@ private theorem blockHom_eq_reindex_lemma_2 (A : Matrix (Fin a) (Fin a) k) (B : 
   refine Prod.ext (funext fun i => ?_) (funext fun j => ?_)
   · first
     | (simp [Matrix.mulVec, dotProduct, Fin.sum_univ_add]; done)
-    | (simp [Matrix.mulVec, Matrix.dotProduct, Fin.sum_univ_add]; done)
   · first
     | (simp [Matrix.mulVec, dotProduct, Fin.sum_univ_add]; done)
-    | (simp [Matrix.mulVec, Matrix.dotProduct, Fin.sum_univ_add]; done)
 
 theorem blockHom_charpoly (A : Matrix (Fin a) (Fin a) k) (B : Matrix (Fin b) (Fin b) k) :
     (blockHom k a b (A, B)).charpoly = A.charpoly * B.charpoly := by

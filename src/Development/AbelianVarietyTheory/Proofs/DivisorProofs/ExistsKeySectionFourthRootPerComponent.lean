@@ -1,14 +1,83 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.MulSmulIdemMem
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ComponentMassSum
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KchMul
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.FibreFramesOnModels
-public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsKeySectionUnif
+public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
+public import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormula
+public import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LawsFieldsSeparately
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricChangeOfFrame
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.PrincipalTriplePullback
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SabMapCancelAndCompOver
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAlgebraicOfNormConst
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.NormConst
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnKeySectionComplexValue
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntegerExponentSectionOfChartRegular
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsKeySectionUnif
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SecTieBaseChange
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsSectionOfGenericValuesRegularOnCharts
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LinearDisjointAlgebraicClosure
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.SectionEqZeroOfGenericFramedPointValues
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.SupCLeISupGeneric
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniversalTripleFibreAtFramedPoint
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKeyRuleTriangularFrameChangeFourthPower
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniversalTripleFibresBaseChangeKeyData
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.DegenerationDataBaseChangesExistPid
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DifferentiableOnReadingsNormalisedThetaPoints
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFlagDomainModelsOfFamilyUniformisation
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsHermCoordOfDatum
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsLieBasisBaseChange
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsUnf
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsNormalisedFramedPointOnEachComponent
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FamilyUniformisationIsComplexUniformisation
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NonemptyThetaDataFlagDomainModels
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NormalisedFramedPointArithmeticGroupInvariantSig
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NormalisedFramedPointTriangularFrameWeightRuleStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NormalisedPointsSatisfySingleFrame
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ScaledBaseChangeFibreSectionCalculus
+import Formalism.LocalToGlobal.ProjectiveLattices.IntAllProofFree
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.LinearAlgebra.Matrix.Permutation
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -29,8 +98,8 @@ theorem exists_keySec_of_generic (h : GenFrEx Xo c) (b : ∀ Z : Comp Xo c, Om Z
       (((kch C.t : (Om C.Z)ˣ) : Om C.Z) * b C.Z)⁻¹ ∈ C.R) :
     ∃ ρ : KeySec Xo c, ∀ Z, evC h Z (ρ.ρ : Rul Xo c) = b Z := by
   obtain ⟨hL, -, -, hA⟩ := evLaws_genFr_atlas E H Dw l Xo c
-  obtain ⟨f, hf, hfb⟩ := GlobalTheory.T.exists_integer_exponent_section_of_chart_regular E H Dw l Xo c h (keyEx Dw) b fun C => (hb C).1
-  obtain ⟨f', hf', hfb'⟩ := GlobalTheory.T.exists_integer_exponent_section_of_chart_regular E H Dw l Xo c h (-keyEx Dw) (fun Z => (b Z)⁻¹) fun C => by
+  obtain ⟨f, hf, hfb⟩ := _root_.GlobalTheory.SecGlueInt.exists_secZ_of_regular E H Dw l Xo c h (keyEx Dw) b fun C => (hb C).1
+  obtain ⟨f', hf', hfb'⟩ := _root_.GlobalTheory.SecGlueInt.exists_secZ_of_regular E H Dw l Xo c h (-keyEx Dw) (fun Z => (b Z)⁻¹) fun C => by
     have := (hb C).2
     rw [mul_inv, ← Units.val_inv_eq_inv_val] at this
     simpa only [kch, Pi.neg_apply, zpow_neg, Finset.prod_inv_distrib] using this
@@ -122,7 +191,7 @@ theorem rule_tied_eq : ∀ κ : GlobalTheory.KeyCl.Rule, GlobalTheory.KeyCl.Homo
   exact (congrArg₂ (fun a b : K => a * b) e3 e1).trans (_root_.one_mul _)
 
 
-set_option maxHeartbeats 1000000 in
+
 attribute [local instance 1100] Subalgebra.algebra in
 attribute [local instance 100] IntermediateField.instAlgebraSubtypeMem in
 theorem exists_keySec_pow_four : ∀ (κ : GlobalTheory.KeyCl.Rule), GlobalTheory.KeyCl.Homog (fun _ => 1) κ → GlobalTheory.KeyCl.Funct κ → GlobalTheory.KeyCl.FamUnit κ → GlobalTheory.KeyCl.ThetaOne κ → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)) (σ : c.F →+* ℂ) (r : ℕ) (U : Unf Xo c σ r) (K : (Rul Xo c)ˣ), GoodEmb c σ → IsUnf U → FnAlgClosed (Xo := Xo) (c := c) → 1 ≤ Dw.p + Dw.q → (K : Rul Xo c) ∈ secZ Xo c ((4 : ℤ) • keyEx Dw) → (∀ (F : Type) [Field F] [CharZero F] [Algebra c.F F] (y : FrPt Xo c F) (Φ : FibKey Xo F y.x), Tied e y.s y.u Φ → evR Xo c (K : Rul Xo c) y = (κ F Φ.key : F)) → ∃ ρ : KeySec Xo c, ∀ Z : Comp Xo c, ∃ a : c.F, a ≠ 0 ∧ idem Z * (ρ.ρ : Rul Xo c) ^ 4 = a • (idem Z * (K : Rul Xo c)) := by
@@ -137,13 +206,13 @@ theorem exists_keySec_pow_four : ∀ (κ : GlobalTheory.KeyCl.Rule), GlobalTheor
   obtain ⟨Gm, φ, hφ⟩ := GlobalTheory.exists_herm_coord_of_datum E H Dw (-ξ₀) hcc' (neg_ne_zero.2 hne) (Dw.p + Dw.q) rfl
   obtain ⟨M, hM, hξ, hMG⟩ := GlobalTheory.ModelsExist.exists_modelsOf GlobalTheory.QNorm.hasseNormSt E H Dw l Xo _ _ _ F _ ξ₀ Gm φ
     hcc him hφ
-  have T : ∀ k, ThetaData e₀ F M k := fun k => (GlobalTheory.T.nonempty_thetaData_flagDomainModels E H Dw l Xo c σ g₀ e₀ F _ M hσ hM hξ k).some
-  choose un hun using fun k => GlobalTheory.T.exists_normalisedFramedPoint_on_each_component hT E H Dw l Xo c σ g₀ e₀ F _ M k (T k)
+  have T : ∀ k, ThetaData e₀ F M k := fun k => (_root_.GlobalTheory.FrameUnif.nonempty_thetaData E H Dw l Xo c σ g₀ e₀ F _ M hσ hM hξ k).some
+  choose un hun using fun k => _root_.GlobalTheory.FrameUnif.exists_isNormUn hT E H Dw l Xo c σ g₀ e₀ F _ M k (T k)
   have hok : FramesOK e₀ F M un :=
-    ⟨fun k => GlobalTheory.T.normalised_points_satisfy_single_frame hT E H Dw l Xo c σ g₀ e₀ F _ M k (T k) (un k) hσ hM hξ (hun k),
+    ⟨fun k => _root_.GlobalTheory.NormFrame.frameOK_of_isNormUn hT E H Dw l Xo c σ g₀ e₀ F _ M k (T k) (un k) hσ hM hξ (hun k),
       fun k => GlobalTheory.T.normalisedFramedPoint_triangularFrame_weightRule hT E H Dw l Xo c σ g₀ e₀ F _ M un k (T k) hσ hM hξ (hun k),
-      fun k => GlobalTheory.T.normalisedFramedPoint_arithmeticGroup_invariant_sign hT E H Dw l Xo c σ g₀ e₀ F _ M un k (T k) hσ hM hξ (hun k),
-      fun a n han f hf k => GlobalTheory.T.differentiableOn_readings_normalised_theta_points hB hT E H Dw l Xo c σ g₀ e₀ F _ M un k (T k) (hun k) a n han f hf⟩
+      fun k => _root_.GlobalTheory.FrameUnif.normUn_gamma hT E H Dw l Xo c σ g₀ e₀ F _ M un k (T k) hσ hM hξ (hun k),
+      fun a n han f hf k => _root_.GlobalTheory.FrameUnif.NormUnHol.differentiableOn_rdU hB hT E H Dw l Xo c σ g₀ e₀ F _ M un k (T k) (hun k) a n han f hf⟩
   have hU₀ := isUnf_built hB E H Dw l Xo c σ g₀ e₀ F _ M un hσ hM hξ hok
   have hC : (normConst (fun j => Formalism.L2.PjFree.relab c σ (e₀ j).1) ξ₀ : ℂ) ≠ 0 := by
     rw [Complex.ofReal_ne_zero]
@@ -153,7 +222,7 @@ theorem exists_keySec_pow_four : ∀ (κ : GlobalTheory.KeyCl.Rule), GlobalTheor
   obtain ⟨hL, -, h, hA⟩ := evLaws_genFr_atlas E H Dw l Xo c
   have hc : ∀ Z : Comp Xo c, CharZero (Om Z) := fun Z =>
     charZero_of_injective_algebraMap (algebraMap c.F (Om Z)).injective
-  choose Ψ hΨ using fun Z : Comp Xo c => GlobalTheory.T.exists_universalTripleFibre_at_framedPoint E H Dw l Xo c g₀ e₀ (Om Z) (genFr h Z) hpq
+  choose Ψ hΨ using fun Z : Comp Xo c => _root_.GlobalTheory.KeyFourth.exists_tied E H Dw l Xo c g₀ e₀ (Om Z) (genFr h Z) hpq
   let v : ∀ Z : Comp Xo c, (Om Z)ˣ := fun Z => κ (Om Z) (Ψ Z).key
   have hv : ∀ C : FChart h, ∃ (Φ : FibKey Xo C.R C.y.x) (u : (C.R)ˣ), Tied e₀ C.y.s C.y.u Φ ∧
       GlobalTheory.KeyCl.IsValue κ Φ.key (u : C.R) ∧ ((u : C.R) : Om C.Z) = ((kch C.t ^ 4 * v C.Z : (Om C.Z)ˣ) : Om C.Z) := by
@@ -162,12 +231,12 @@ theorem exists_keySec_pow_four : ∀ (κ : GlobalTheory.KeyCl.Rule), GlobalTheor
     haveI : IsIntegrallyClosed C.R := isIntegrallyClosed_of_smooth c.F C.R
     haveI : IsNoetherianRing C.R := Algebra.FiniteType.isNoetherianRing c.F C.R
     haveI : CharZero C.R := charZero_of_injective_algebraMap (algebraMap c.F C.R).injective
-    obtain ⟨Φ, hΦ⟩ := GlobalTheory.T.exists_universalTripleFibre_at_framedPoint E H Dw l Xo c g₀ e₀ C.R C.y hpq
-    obtain ⟨Φ', hΦ'⟩ := GlobalTheory.T.exists_universalTripleFibre_at_framedPoint E H Dw l Xo c g₀ e₀ (Om C.Z) C.yg hpq
+    obtain ⟨Φ, hΦ⟩ := _root_.GlobalTheory.KeyFourth.exists_tied E H Dw l Xo c g₀ e₀ C.R C.y hpq
+    obtain ⟨Φ', hΦ'⟩ := _root_.GlobalTheory.KeyFourth.exists_tied E H Dw l Xo c g₀ e₀ (Om C.Z) C.yg hpq
     obtain ⟨u, hu⟩ := k₄ C.R Φ.key
     refine ⟨Φ, u, hΦ, hu, ?_⟩
-    rw [← GlobalTheory.T.theta_key_rule_triangular_frame_change_fourth_power κ k₁ k₂ E H Dw l Xo c g₀ e₀ (Om C.Z) C.t _ _ (Ψ C.Z) Φ' C.bor (hΨ _) hΦ']
-    exact (hu (Om C.Z) _ _ (GlobalTheory.T.universal_triple_fibres_base_change_key_data E H Dw l Xo c g₀ e₀ _ _ C.R.val C.y C.yg Φ Φ' C.gen hΦ hΦ')).symm
+    rw [← _root_.GlobalTheory.KeyFourth.rule_frBor κ k₁ k₂ E H Dw l Xo c g₀ e₀ (Om C.Z) C.t _ _ (Ψ C.Z) Φ' C.bor (hΨ _) hΦ']
+    exact (hu (Om C.Z) _ _ (_root_.GlobalTheory.KeyFourth.tied_keyPB E H Dw l Xo c g₀ e₀ _ _ C.R.val C.y C.yg Φ Φ' C.gen hΦ hΦ')).symm
   have hroot : ∀ C : FChart h, ∃ (a : c.F) (b : C.R), a ≠ 0 ∧
       ((kch C.t ^ 4 * v C.Z : (Om C.Z)ˣ) : Om C.Z) = a • (b : Om C.Z) ^ 4 := by
     intro C
@@ -182,14 +251,14 @@ theorem exists_keySec_pow_four : ∀ (κ : GlobalTheory.KeyCl.Rule), GlobalTheor
     choose ρ hρ using hex
     obtain ⟨a, b, ha, hab⟩ := exists_eq_smul_pow (K := c.F) (A := C.R) (n := 4) (by norm_num) u
       (pow_ne_zero 4 (div_ne_zero hC (pow_ne_zero g₀ Complex.two_pi_I_ne_zero))) ρ
-      (fun m V s hV hs => GlobalTheory.T.continuousOn_keySection_complexValue E H Dw l Xo c σ g₀ e₀ F _ M T un hσ hM hξ hun hok C.R C.y m V s
+      (fun m V s hV hs => _root_.GlobalTheory.KeyFourth.continuousOn_rootVal E H Dw l Xo c σ g₀ e₀ F _ M T un hσ hM hξ hun hok C.R C.y m V s
         (fun p => z (s p)) (fun p => ρ (s p)) hV hs (fun p _ => hz _) fun p _ => hρ _)
       (fun ψ => by
         obtain ⟨Ψ', hΨ'⟩ : ∃ Ψ' : FibKey Xo ℂ (z ψ).x, Tied (S := ℂ) e₀ (z ψ).s (z ψ).u Ψ' :=
-          @GlobalTheory.T.exists_universalTripleFibre_at_framedPoint E _ _ _ H Dw l Xo c g₀ e₀ ℂ _ _ σ.toAlgebra (z ψ) hpq
+          @_root_.GlobalTheory.KeyFourth.exists_tied E _ _ _ H Dw l Xo c g₀ e₀ ℂ _ _ σ.toAlgebra (z ψ) hpq
         exact (rule_eq_of_rootVal k₁ k₂ k₃ T hun hpq hC (fun k => by rw [(hMG k).2]) (hρ ψ) Ψ' hΨ').trans
           (congrArg _ (hu ℂ _ _
-            (@GlobalTheory.T.universal_triple_fibres_base_change_key_data E _ _ _ H Dw l Xo c g₀ e₀ _ ℂ _ _ _ _ σ.toAlgebra ψ C.y (z ψ) Φ Ψ' (hz ψ) hΦ hΨ'))))
+            (@_root_.GlobalTheory.KeyFourth.tied_keyPB E _ _ _ H Dw l Xo c g₀ e₀ _ ℂ _ _ _ _ σ.toAlgebra ψ C.y (z ψ) Φ Ψ' (hz ψ) hΦ hΨ'))))
     exact ⟨a, b, ha, by rw [← huv, hab]; rfl⟩
   have hgen : ∀ Z : Comp Xo c, ∃ (a : c.F) (b : Om Z), a ≠ 0 ∧ (v Z : Om Z) = a • b ^ 4 := by
     intro Z
@@ -227,7 +296,7 @@ theorem exists_keySec_pow_four : ∀ (κ : GlobalTheory.KeyCl.Rule), GlobalTheor
   obtain ⟨ρ, hρ⟩ := exists_keySec_of_generic h b hb0 hbC
   refine ⟨ρ, fun Z => ⟨(a Z)⁻¹, inv_ne_zero (ha Z), ?_⟩⟩
   have hKZ : evC h Z (K : Rul Xo c) = (v Z : Om Z) := by
-    obtain ⟨Φ, hΦ⟩ := GlobalTheory.T.exists_universalTripleFibre_at_framedPoint E H Dw l Xo c g e (Om Z) (genFr h Z) hpq
+    obtain ⟨Φ, hΦ⟩ := _root_.GlobalTheory.KeyFourth.exists_tied E H Dw l Xo c g e (Om Z) (genFr h Z) hpq
     refine (hval (Om Z) (genFr h Z) Φ hΦ).trans ?_
     exact congrArg Units.val (rule_tied_eq κ k₁ k₂ E H Dw l Xo c g₀ g e₀ e (Om Z) (genFr h Z) (Ψ Z) Φ (hΨ Z) hΦ)
   have h4 : (ρ.ρ : Rul Xo c) ^ 4 ∈ GlobalTheory.AllWt.secZ Xo c ((4 : ℤ) • keyEx Dw) := by

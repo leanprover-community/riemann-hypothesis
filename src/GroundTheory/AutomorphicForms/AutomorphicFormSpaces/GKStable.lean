@@ -1,10 +1,14 @@
 module
 
-public import Mathlib
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
+public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStructure
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableParabolic
+public import GroundTheory.AutomorphicForms.ReductionFinite
+import GroundTheory.AutomorphicForms.ReductionMeasure
+import GroundTheory.GlobalFields.Adele.Topology
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

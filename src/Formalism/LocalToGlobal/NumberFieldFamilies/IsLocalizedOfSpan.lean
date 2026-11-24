@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.NumberFieldFamilies.JMtInjective
+public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNd
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -115,7 +116,7 @@ theorem span_latL (i : LocT B) : Submodule.span what₂.LL (latL B i) = ⊤ := b
   exact ⟨x, hv, rfl⟩
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem span_mtSub (hC : PartCompl B) (i : LocT B) :
     Submodule.span (FractionRing (OOf B i)) ((MtSub B hC i : Submodule (OOf B i) (partOf B i)) : Set (partOf B i)) = ⊤ := by
   have hV := span_image_top (B.ec (jOf B i) (wOf B i)) (B.iV (jOf B i) (wOf B i)) (Module.Free.chooseBasis what₂.LL _)
@@ -133,7 +134,7 @@ theorem span_mtSub (hC : PartCompl B) (i : LocT B) :
   | smul c a _ ha => rw [map_smul]; exact Submodule.smul_mem _ _ ha
 
 
-set_option synthInstance.maxHeartbeats 400000 in
+
 theorem mtLoc_holds (hC : PartCompl B) : MtLoc B hC := fun i => isLocalized_of_span _ (span_mtSub hC i)
 
 end Formalism.L2.Fam.NPC.LatticeFinitenessFree

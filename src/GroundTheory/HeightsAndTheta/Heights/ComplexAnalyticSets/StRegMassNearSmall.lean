@@ -1,8 +1,6 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongRegularise
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.CutOffNear
 
 @[expose] public section
 

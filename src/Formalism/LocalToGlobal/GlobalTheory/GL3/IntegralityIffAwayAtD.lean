@@ -1,7 +1,6 @@
 module
 
-public import Mathlib
-public import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 
 @[expose] public section
 

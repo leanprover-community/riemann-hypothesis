@@ -1,13 +1,57 @@
 module
 
-public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
+import Lemmata.CharpolySmul
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GaloisSideTwistedSelmerAuxiliaryPrimes
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.TameGeneratorProjectors
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.JumpDictionary
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniversalAnticyclotomicCharacterLaws
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BijectiveCmType
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPadicAlgClRingEquivComplexCompEqOfCountabl
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InertialOrderFifteenCharAuxiliaryPrimeSpec
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PolarizedGaloisRep
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
@@ -313,25 +357,11 @@ section API
 
 theorem charpoly_smul_of_prod {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (m : Multiset ℂ) (c : ℂ)
     (h : M.charpoly = (m.map fun a => X - C a).prod) : (c • M).charpoly = (m.map fun a => X - C (a * c)).prod := by
-  have hn : Multiset.card m = n := by
-    have := congrArg natDegree h
-    rwa [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin, natDegree_multiset_prod_X_sub_C_eq_card, eq_comm] at this
-  rcases eq_or_ne c 0 with rfl | hc
-  · simp [hn]
-  · apply Polynomial.funext
-    intro z
-    have h1 := congrArg (eval (z / c)) h
-    rw [Matrix.eval_charpoly, eval_multiset_prod, Multiset.map_map] at h1
-    have e : Matrix.scalar (Fin n) z - c • M = c • (Matrix.scalar (Fin n) (z / c) - M) := by
-      rw [smul_sub, Matrix.scalar_apply, Matrix.scalar_apply, ← Matrix.diagonal_smul]
-      congr 2
-      funext x
-      simp [mul_div_cancel₀ _ hc]
-    rw [Matrix.eval_charpoly, eval_multiset_prod, Multiset.map_map, e, Matrix.det_smul, h1, Fintype.card_fin, ← hn,
-      ← Multiset.prod_replicate, ← Multiset.map_const', ← Multiset.prod_map_mul]
-    refine congrArg _ (Multiset.map_congr rfl fun a _ => ?_)
-    simp only [Function.comp_apply, eval_sub, eval_X, eval_C]
-    field_simp
+  rw [Matrix.charpoly_smul, h]
+  clear h
+  induction m using Multiset.induction_on with
+  | empty => simp
+  | cons a m ih => simp [mul_scaleRoots_of_noZeroDivisors, X_sub_C_scaleRoots, ih]
 
 variable {C : CharFrame D} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om} {X : NTw D.R D.host D.what₂ D.LL0 D.nd}
   {i : X.Tw} {b : Bool} {ρ : Reading X i b} {s : X.Sig i} {σ : D.what₂.FT} {π : D.naut.CG D.R.r}

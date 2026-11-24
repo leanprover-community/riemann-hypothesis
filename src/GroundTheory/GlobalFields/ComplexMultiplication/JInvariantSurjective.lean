@@ -1,7 +1,13 @@
 module
 
-public import Mathlib
 public import GroundTheory.GlobalFields.ComplexMultiplication.JInvariant
+import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.AlgebraicGeometry.EllipticCurve.IsomOfJ
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+public import Mathlib.Analysis.Complex.OpenMapping
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

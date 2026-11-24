@@ -1,6 +1,8 @@
 module
 
-public import Mathlib
+public import Mathlib.RingTheory.AlgebraicIndependent.Basic
+public import Mathlib.RingTheory.FiniteType
+public import Mathlib.RingTheory.KrullDimension.Basic
 
 @[expose] public section
 

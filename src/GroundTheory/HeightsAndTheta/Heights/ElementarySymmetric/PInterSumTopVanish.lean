@@ -1,6 +1,5 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterSumTopVanish
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StMixedTwistShift
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PInterNumAdditive

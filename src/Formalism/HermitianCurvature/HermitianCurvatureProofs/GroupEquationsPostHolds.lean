@@ -1,10 +1,59 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfSmoothBuiltOfLeaves
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliCoordinates
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CvRhoOfParts
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliCoordinates
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CvRhoOfParts
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralIdentities
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
 
 @[expose] public section
 
@@ -197,8 +246,8 @@ theorem gp_qmF (ℓ : E →L[ℂ] ℂ) (EopE : Fin m → Fin m → (B.Mat k r �
     {t : ℕ} (a b : Fin t → Fin m) (u : ℂ) (f : B.Mat k r → E) (hf : ContDiff ℝ (t : WithTop ℕ∞) f) :
     (fun g => ℓ (Q.qmF EopE a b u f g)) = Q.qmF EopC a b u (fun g => ℓ (f g)) := by
   funext g
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Q.qmF, Finset.sum_apply, Pi.smul_apply, map_sum, map_smul]
+
+  simp only [Q.qmF, Finset.sum_apply, Pi.smul_apply, map_sum, map_smul]
   refine Finset.sum_congr rfl fun σ _ => ?_
   congr 1
   rw [gp_ofFn EopE a b u σ, gp_ofFn EopC a b u σ]
@@ -212,8 +261,8 @@ theorem gp_qmFrev (ℓ : E →L[ℂ] ℂ) (EopE : Fin m → Fin m → (B.Mat k r
     {t : ℕ} (a b : Fin t → Fin m) (u : ℂ) (f : B.Mat k r → E) (hf : ContDiff ℝ (t : WithTop ℕ∞) f) :
     (fun g => ℓ (Q.qmFrev EopE a b u f g)) = Q.qmFrev EopC a b u (fun g => ℓ (f g)) := by
   funext g
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Q.qmFrev, Finset.sum_apply, Pi.smul_apply, map_sum, map_smul]
+
+  simp only [Q.qmFrev, Finset.sum_apply, Pi.smul_apply, map_sum, map_smul]
   refine Finset.sum_congr rfl fun σ _ => ?_
   congr 1
   rw [gp_ofFn EopE a b u σ, gp_ofFn EopC a b u σ]
@@ -241,12 +290,6 @@ section loc
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-theorem gp_glev0 {x : B.Mat k r} (hx : x ∈ B.GV k r) : x ∈ Q.Glev k r 0 :=
-  ⟨hx, fun _ ha => absurd ha (Nat.not_lt_zero _)⟩
-
-theorem gp_gv_mul {g h : B.Mat k r} (hg : g ∈ B.GV k r) (hh : h ∈ B.GV k r) : g * h ∈ B.GV k r :=
-  (Qx8.glev_mul (gp_glev0 hg) (gp_glev0 hh)).1
-
 theorem gp_rd_loc {f f₂ : B.Mat k r → E} {V : Set (B.Mat k r)} (hV : IsOpen V)
     (h : ∀ x ∈ V, x ∈ B.GV k r → f x = f₂ x) {X : B.Mat k r} (hX : X ∈ JfS.lieOf (Nset k r))
     {g : B.Mat k r} (hg : g ∈ B.GV k r) (hgV : g ∈ V) : Formalism.REAL.RdV X f g = Formalism.REAL.RdV X f₂ g := by
@@ -256,7 +299,7 @@ theorem gp_rd_loc {f f₂ : B.Mat k r → E} {V : Set (B.Mat k r)} (hV : IsOpen 
     (B5.curve_hasDerivAt g X 0).continuousAt
   have h0 : g * NormedSpace.exp (((0 : ℝ) : ℂ) • X) = g := by simp
   filter_upwards [hc.preimage_mem_nhds (by rw [h0]; exact hV.mem_nhds hgV)] with t ht
-  exact h _ ht (gp_gv_mul hg (hX t).1)
+  exact h _ ht (_root_.PI.PolynomialProperness.GN.mul_mem hg (hX t).1)
 
 theorem gp_ld_loc {f f₂ : B.Mat k r → E} {V : Set (B.Mat k r)} (hV : IsOpen V)
     (h : ∀ x ∈ V, x ∈ B.GV k r → f x = f₂ x) {X : B.Mat k r} (hX : X ∈ JfS.lieOf (Nset k r))
@@ -266,7 +309,7 @@ theorem gp_ld_loc {f f₂ : B.Mat k r → E} {V : Set (B.Mat k r)} (hV : IsOpen 
   have h0 : NormedSpace.exp (((0 : ℝ) : ℂ) • X) * g = g := by simp
   filter_upwards [(Qx8.lcurve_cont X g).continuousAt.preimage_mem_nhds (by rw [h0]; exact hV.mem_nhds hgV)]
     with t ht
-  exact h _ ht (gp_gv_mul (hX t).1 hg)
+  exact h _ ht (_root_.PI.PolynomialProperness.GN.mul_mem (hX t).1 hg)
 
 theorem gp_glob {n : ℕ} {J : B.Mat k r → E} {U : Set (B.Mat k r)} {F : B.Mat k r → E} {g : B.Mat k r}
     (hU : IsOpen U) (hgU : g ∈ U) (hF : ContDiffOn ℝ (n : WithTop ℕ∞) F U)
@@ -301,7 +344,7 @@ theorem group_equations_post_holds : GEqsPost := by
   have loc : ∀ g ∈ JF.Om k r z z', ∃ (V : Set (B.Mat k r)) (J' : B.Mat k r → E), IsOpen V ∧ g ∈ V ∧
       ContDiff ℝ ((2 * r + k + 1 : ℕ) : WithTop ℕ∞) J' ∧ ∀ x ∈ V, x ∈ Q.Glev k r 0 → J x = J' x := by
     intro g hg
-    obtain ⟨U, F, hU, hgU, hF, hJF⟩ := hC g ⟨gp_glev0 hg.1, hg.2⟩
+    obtain ⟨U, F, hU, hgU, hF, hJF⟩ := hC g ⟨_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hg.1, hg.2⟩
     exact gp_glob hU hgU hF hJF
   have hd : ∀ (J' : B.Mat k r → E), ContDiff ℝ ((2 * r + k + 1 : ℕ) : WithTop ℕ∞) J' → ∀ g,
       DifferentiableAt ℝ J' g := fun J' h g => h.differentiable (by simp) g
@@ -316,23 +359,23 @@ theorem group_equations_post_holds : GEqsPost := by
     obtain ⟨V, J', hV, hgV, hJ', hJJ'⟩ := loc g hg
     have hdl : DifferentiableAt ℝ (fun x => ℓ (J' x)) g :=
       (ℓ.restrictScalars ℝ).differentiableAt.comp g (hd J' hJ' g)
-    rw [gp_rd_loc (f₂ := fun x => ℓ (J' x)) hV (fun x hx hxG => by simp [hJJ' x hx (gp_glev0 hxG)]) hX hg.1 hgV,
+    rw [gp_rd_loc (f₂ := fun x => ℓ (J' x)) hV (fun x hx hxG => by simp [hJJ' x hx (_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hxG)]) hX hg.1 hgV,
       gp_rdV X g _ hdl, gp_fderiv_post ℓ J' g (hd J' hJ' g), ← gp_rdV X g J' (hd J' hJ' g),
-      ← gp_rd_loc hV (fun x hx hxG => hJJ' x hx (gp_glev0 hxG)) hX hg.1 hgV, hc g hg, map_smul]
+      ← gp_rd_loc hV (fun x hx hxG => hJJ' x hx (_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hxG)) hX hg.1 hgV, hc g hg, map_smul]
   · intro X hX
     obtain ⟨c, hc⟩ := hL1 X hX
     refine ⟨c, fun g hg => ?_⟩
     obtain ⟨V, J', hV, hgV, hJ', hJJ'⟩ := loc g hg
     have hdl : DifferentiableAt ℝ (fun x => ℓ (J' x)) g :=
       (ℓ.restrictScalars ℝ).differentiableAt.comp g (hd J' hJ' g)
-    rw [gp_ld_loc (f₂ := fun x => ℓ (J' x)) hV (fun x hx hxG => by simp [hJJ' x hx (gp_glev0 hxG)]) hX hg.1 hgV,
+    rw [gp_ld_loc (f₂ := fun x => ℓ (J' x)) hV (fun x hx hxG => by simp [hJJ' x hx (_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hxG)]) hX hg.1 hgV,
       gp_ldV X g _ hdl, gp_fderiv_post ℓ J' g (hd J' hJ' g), ← gp_ldV X g J' (hd J' hJ' g),
-      ← gp_ld_loc hV (fun x hx hxG => hJJ' x hx (gp_glev0 hxG)) hX hg.1 hgV, hc g hg, map_smul]
+      ← gp_ld_loc hV (fun x hx hxG => hJJ' x hx (_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hxG)) hX hg.1 hgV, hc g hg, map_smul]
   · intro Bs hBs w
     obtain ⟨c, hc⟩ := hCl Bs hBs w
     refine ⟨c, fun g hg => ?_⟩
     obtain ⟨V, J', hV, hgV, hJ', hJJ'⟩ := loc g hg
-    have hgx : g ∈ Q.Glev k r 0 ∩ V := ⟨gp_glev0 hg.1, hgV⟩
+    have hgx : g ∈ Q.Glev k r 0 ∩ V := ⟨_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hg.1, hgV⟩
     have l1 := Qx8.loc_capLft (E := ℂ) (i := 0) hV Bs hBs.1 w (fun x => ℓ (J x)) (fun x => ℓ (J' x))
       (fun x hx => by simp [hJJ' x hx.2 hx.1]) g hgx
     have l2 := Qx8.loc_capLft (E := E) (i := 0) hV Bs hBs.1 w J J' (fun x hx => hJJ' x hx.2 hx.1) g hgx
@@ -342,7 +385,7 @@ theorem group_equations_post_holds : GEqsPost := by
     obtain ⟨c, hc⟩ := hCr Bs hBs w
     refine ⟨c, fun g hg => ?_⟩
     obtain ⟨V, J', hV, hgV, hJ', hJJ'⟩ := loc g hg
-    have hgx : g ∈ Q.Glev k r 0 ∩ V := ⟨gp_glev0 hg.1, hgV⟩
+    have hgx : g ∈ Q.Glev k r 0 ∩ V := ⟨_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hg.1, hgV⟩
     have l1 := (CapelliCoordinates.good_capR (E := ℂ) (i := 0) hV Bs hBs.1 w).loc (fun x => ℓ (J x)) (fun x => ℓ (J' x))
       (fun x hx => by simp [hJJ' x hx.2 hx.1]) g hgx
     have l2 := (CapelliCoordinates.good_capR (E := E) (i := 0) hV Bs hBs.1 w).loc J J' (fun x hx => hJJ' x hx.2 hx.1) g hgx
@@ -352,7 +395,7 @@ theorem group_equations_post_holds : GEqsPost := by
     obtain ⟨c, hc⟩ := hCV Y
     refine ⟨c, fun g hg => ?_⟩
     obtain ⟨V, J', hV, hgV, hJ', hJJ'⟩ := loc g hg
-    have hgx : g ∈ Q.Glev k r 0 ∩ V := ⟨gp_glev0 hg.1, hgV⟩
+    have hgx : g ∈ Q.Glev k r 0 ∩ V := ⟨_root_.Formalism.FourierDecayAlt.P.OrbitalIntegralIdentities.glev0 hg.1, hgV⟩
     have l1 : Q.CV k r (Y : ℂ) (fun x => ℓ (J x)) g = Q.CV k r (Y : ℂ) (fun x => ℓ (J' x)) g :=
       (Qx2.good_qminor (E := ℂ) (i := 0) hV id id (Q.uC k r 0 (Y : ℂ))).loc (fun x => ℓ (J x))
         (fun x => ℓ (J' x)) (fun x hx => by simp [hJJ' x hx.2 hx.1]) g hgx

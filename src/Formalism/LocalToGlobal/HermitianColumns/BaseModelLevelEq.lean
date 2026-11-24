@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianColumns.ColsHerm
+public import Formalism.LocalRingCardinality.DataLevelD
+public import Formalism.LocalToGlobal.HermitianColumns.CompletionIntegersIff
 
 @[expose] public section
 

@@ -1,6 +1,12 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ComplexMinusRealLineMeasureCoordinates
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
@@ -115,8 +121,8 @@ theorem main : UpperTheory.Esk.LinTr := by
     intro y
     have e : T (K y) = ∑ i, b.repr (K y) i • T (b i) := by
       conv_lhs => rw [← b.sum_repr (K y)]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       simp only [map_smul]
     rw [e]
     simp [Module.Basis.coord_apply]
@@ -145,5 +151,3 @@ theorem main : UpperTheory.Esk.LinTr := by
 
 end UpperTheory.Esk.LinearTraceLemmas
 
-theorem UpperTheory.Esk.pf_LinTr : UpperTheory.Esk.LinTr := by
-  exact UpperTheory.Esk.LinearTraceLemmas.main

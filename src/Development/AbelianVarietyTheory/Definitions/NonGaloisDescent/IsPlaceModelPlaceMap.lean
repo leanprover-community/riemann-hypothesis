@@ -1,15 +1,54 @@
 module
 
-public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivOfNotLinearIndependent
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TranslateMemCoefLatFn
 public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonalBis
-public import Formalism.LocalToGlobal.Columns.AdelicLemmas
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOrEqOfPlaceIdem
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
+import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PlacewiseToAdelicDecompositionForall
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GramMapMulInv
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed
+import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.ReduceModChar
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -119,8 +158,8 @@ theorem SplitSet.mul_conj {P : Finset (Pl D.host.E)} (h : SplitSet P) {i j : Pl 
 
 theorem SplitSet.mono {P P' : Finset (Pl D.host.E)} (h : SplitSet P) (hP : P' ⊆ P) : SplitSet P' := by
   refine ⟨idem P', ⟨idemAt, fun PP hPP => h.isIdemAt (hP hPP), rfl⟩, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [idem, map_sum, Finset.sum_mul_sum]
+
+  rw [idem, map_sum, Finset.sum_mul_sum]
   exact Finset.sum_eq_zero fun i hi => Finset.sum_eq_zero fun j hj => h.mul_conj (hP hi) (hP hj)
 
 section Twist
@@ -267,9 +306,6 @@ theorem PlacesOK.mono {Pg Q Q' : Finset (Pl D.host.E)} (h : PlacesOK Pg Q) (hQ :
   ⟨h.split.imp fun _ hP => ⟨hP.1, hQ.trans hP.2.1, hP.2.2⟩, h.disj.mono_right hQ,
     fun PP hPP => h.prime PP (hPP.imp_right fun h' => hQ h')⟩
 
-theorem placesOK_empty : PlacesOK (∅ : Finset (Pl D.host.E)) ∅ :=
-  ⟨⟨∅, le_rfl, le_rfl, splitSet_empty⟩, Finset.disjoint_empty_left _, fun _ h => by simp at h⟩
-
 def halfIdem (Pg Q : Finset (Pl D.host.E)) : AE D := cA D (idem Pg) + idem Q
 
 abbrev Reds (D : D7) (r n : ℕ) : Type := ∀ PP : Pl D.host.E, Matrix (Fin r) (Fin n) (kP PP)
@@ -324,8 +360,8 @@ theorem PlacesOK.isOrthSum {Pg Q : Finset (Pl D.host.E)} (h : PlacesOK Pg Q) :
       · rw [mul_comm]; exact hP.mul_conj (h2 hj) (h1 hi)
       · exact hP.mul_conj (h2 hi) (h1 hj)
       · exact hP.mul_eq_zero (h2 hi) (h2 hj) fun e => hij (e ▸ rfl)
-    set_option synthInstance.maxHeartbeats 100000 in
-      · rw [Finset.sum_disjSum, halfIdem, idem, map_sum]; rfl
+
+    · rw [Finset.sum_disjSum, halfIdem, idem, map_sum]; rfl
   · have a1 := (hP.mono h1).isIdemSum.2
     have a2 := (hP.mono h2).isIdemSum.2
     have a3 : idem Pg * idem Q = 0 := by

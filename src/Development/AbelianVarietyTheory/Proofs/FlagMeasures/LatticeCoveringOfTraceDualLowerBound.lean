@@ -1,9 +1,61 @@
 module
 
-public import Mathlib
-public import Formalism.HarderNarasimhan.ShiftInvariance
-public import Formalism.RealPlaceAnalysis.Complexify
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
+public import Mathlib.Algebra.Module.LinearMap.Rat
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TransferenceCoverHolds
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HarderNarasimhan.Statement
+import Formalism.HermitianLattices.StatementLat
 
 @[expose] public section
 
@@ -59,27 +111,6 @@ theorem eq_zero_of_sum_re_lin {ι : Type} [Fintype ι] (g : InfinitePlace K → 
     · simp [Pi.single_eq_of_ne hj])
   simpa using congrFun this w
 
-theorem trace_eq_sum (a : K) :
-    ((Algebra.trace ℚ K a : ℚ) : ℝ) = ∑ w : InfinitePlace K, 2 * (w.embedding a).re := by
-  classical
-  have e := congrArg Complex.re (trace_eq_sum_embeddings ℂ (K := ℚ) (L := K) (x := a))
-  simp only [eq_ratCast, Complex.ratCast_re, Complex.re_sum] at e
-  rw [e, ← (RingHom.equivRatAlgHom (R := K) (S := ℂ)).sum_comp,
-    ← Finset.univ.sum_fiberwise (fun φ : K →+* ℂ => InfinitePlace.mk φ)]
-  refine Finset.sum_congr rfl fun w _ => ?_
-  have : ∀ φ ∈ Finset.univ.filter (fun φ : K →+* ℂ => InfinitePlace.mk φ = w),
-      ((RingHom.equivRatAlgHom (R := K) (S := ℂ)) φ a).re = (w.embedding a).re := by
-    intro φ hφ
-    have h1 : InfinitePlace.mk φ = InfinitePlace.mk w.embedding := by
-      rw [InfinitePlace.mk_embedding]; simpa using hφ
-    rcases InfinitePlace.mk_eq_iff.1 h1 with h2 | h2
-    · rw [← h2]; rfl
-    · rw [← h2]; simp [RingHom.equivRatAlgHom]
-  rw [Finset.sum_congr rfl this, Finset.sum_const, InfinitePlace.card_filter_mk_eq,
-    (IsTotallyComplex.isComplex w).mult_eq_two]
-  simp
-
-
 omit [_root_.NumberField.IsTotallyComplex K] in
 theorem exists_basis {ι : Type} [Fintype ι] (L : Submodule (𝓞 K) (ι → K)) (hfg : L.FG)
     (hsp : Submodule.span K (L : Set (ι → K)) = ⊤) :
@@ -132,10 +163,10 @@ theorem exists_trace_form {ι : Type} [Fintype ι] (φ : (ι → K) →ₗ[ℚ] 
   classical
   let D := (Algebra.traceForm ℚ K).toDual (traceForm_nondegenerate ℚ K)
   refine ⟨fun i => D.symm (φ ∘ₗ LinearMap.single ℚ (fun _ => K) i), fun y => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [dotProduct, map_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_rhs => rw [← Finset.univ_sum_single y, map_sum]
+
+  rw [dotProduct, map_sum]
+
+  conv_rhs => rw [← Finset.univ_sum_single y, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← Algebra.traceForm_apply]
   exact LinearMap.BilinForm.apply_toDual_symm_apply _ _
@@ -250,7 +281,7 @@ theorem cover : ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsT
       have hz := eq_zero_of_sum_re_lin (fun w => (2 : ℂ) • d w - form M u w) (by
         intro y
         have h1 := hφ y
-        rw [← hf, trace_eq_sum, inner_rho, ← sub_eq_zero, ← Finset.sum_sub_distrib] at h1
+        rw [← hf, _root_.Formalism.HN.DualPolygon.ident_trace_eq, inner_rho, ← sub_eq_zero, ← Finset.sum_sub_distrib] at h1
         rw [← h1]
         refine Finset.sum_congr rfl fun w _ => ?_
         simp [d, dotProduct])

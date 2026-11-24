@@ -1,21 +1,74 @@
 module
 
-public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
-public import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterAlgRes
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.LocTransfer
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChartB
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
+public import Mathlib.Algebra.TrivSqZeroExt.Basic
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPC
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsBasisKaehlerOfAlgebraicIndependent
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsStandardSmoothLocalization
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCompactEmbedded
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionTransitionPolynomial
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCoverAndCone
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionLocalChartPolynomial
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionRegularLocalRing
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsStandardSmoothLocalization
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsBasisKaehlerOfAlgebraicIndependent
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionTransitionPolynomial
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
+import Mathlib.Algebra.DualNumber
+import Mathlib.Algebra.Module.SpanRankOperations
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Spectrum.Prime.FreeLocus
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChart
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChartA
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.SNCstep
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterAlgRes
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -76,8 +129,8 @@ theorem exists_span_of_fibre (A : Type) [CommRing A] [Algebra ℚ A] [Algebra A 
     intro q
     rw [← hl]
     have h := congrArg l (B.sum_repr ((1 : ℂ) ⊗ₜ[A] KaehlerDifferential.D ℚ A (u q)))
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at h
+
+    rw [map_sum] at h
     rw [← h]
     exact Finset.sum_congr rfl fun i _ => by rw [map_smul, smul_eq_mul]
   have he : (fun q => (Φ (u q)).snd) =
@@ -344,7 +397,7 @@ theorem nonempty_anLogRes_of_smoothGenericFibre : ∀ (K : Type) [Fintype K] (ι
       refine ⟨0, fun m hm k => ?_⟩
       have : m = 0 := by
         by_contra h
-        simp [MvPolynomial.coeff_one, MvPolynomial.mem_support_iff, Ne.symm h] at hm
+        simp at hm
         exact h hm
       simp [this], by simp⟩
   have hJP : ¬ (⊤ : Ideal (MRing ι)) ≤ mCoordIdeal y := fun h =>

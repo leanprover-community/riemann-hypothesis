@@ -1,8 +1,10 @@
 module
 
-public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.ModulesAbExact
+public import Mathlib.Tactic.ENatToNat
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -25,13 +27,6 @@ def globalSection (F : X.Modules) (m : Γ(F, ⊤)) : F.sections :=
       (F.presheaf.map (homOfLE le_top).op) m
     rw [← ConcreteCategory.comp_apply, ← F.presheaf.map_comp]
     rfl)
-
-private lemma resF_comp (F : X.Modules) {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V) (m : Γ(F, U)) :
-    resF F h₂ (resF F h₁ m) = resF F (h₂.trans h₁) m := by
-  change (F.presheaf.map (homOfLE h₂).op) ((F.presheaf.map (homOfLE h₁).op) m) =
-    (F.presheaf.map (homOfLE (h₂.trans h₁)).op) m
-  rw [← ConcreteCategory.comp_apply, ← F.presheaf.map_comp]
-  rfl
 
 lemma freeHomEquiv_symm_app_ιFree (F : X.Modules) {κ : Type u} (t : κ → F.sections) (k : κ)
     (W : X.Opens) (a : Γ(X, W)) :
@@ -74,10 +69,10 @@ theorem exists_generatingSections (F : X.Modules) [F.IsQuasicoherent] {ι : Type
       ((w⁻¹ : (Γ(X, X.basicOpen f))ˣ) : Γ(X, X.basicOpen f)) * resO (X.basicOpen_le f) (c k)
     have h₁ : resF F (X.basicOpen_le f) m' =
         ∑ k, resO (X.basicOpen_le f) (c k) • resF F (le_top : X.basicOpen f ≤ ⊤) (s k) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← hc, map_sum]
+
+      rw [← hc, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
-      rw [resF_smul, resF_comp]
+      rw [resF_smul, _root_.GroundTheory.Arith.SchemeCoh.resF_resF]
     have h₂ : ((w : Γ(X, X.basicOpen f))) • resF F hDU m =
         ∑ k, resO (X.basicOpen_le f) (c k) • resF F (le_top : X.basicOpen f ≤ ⊤) (s k) := by
       rw [← h₁, hm', hw]
@@ -91,8 +86,8 @@ theorem exists_generatingSections (F : X.Modules) [F.IsQuasicoherent] {ι : Type
     have hsum : (π.val.app (op (X.basicOpen f)))
         (∑ k, (SheafOfModules.ιFree k).val.app (op (X.basicOpen f)) (a k)) =
           ∑ k, a k • resF F (le_top : X.basicOpen f ≤ ⊤) (s k) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+
+      rw [map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [freeHomEquiv_symm_app_ιFree]
       rfl

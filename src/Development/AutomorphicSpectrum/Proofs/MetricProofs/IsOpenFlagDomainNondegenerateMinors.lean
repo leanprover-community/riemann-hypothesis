@@ -1,7 +1,58 @@
 module
 
-public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
+public import Mathlib.LinearAlgebra.Matrix.Block
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.Matrix.Hermitian
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -43,7 +94,7 @@ theorem quad_diag_re (d : Fin N → ℝ) (z : Fin N → ℂ) :
 theorem single_quad (B : Matrix (Fin N) (Fin N) ℂ) (k : Fin N) :
     star (Pi.single k (1 : ℂ) : Fin N → ℂ) ⬝ᵥ (B *ᵥ Pi.single k 1) = B k k := by
   have : star (Pi.single k (1 : ℂ) : Fin N → ℂ) = Pi.single k 1 := by
-    ext a; by_cases h : a = k <;> simp [Pi.single_apply, h]
+    ext a; by_cases h : a = k <;> simp [h]
   rw [this]
   simp
 
@@ -214,7 +265,7 @@ theorem pivot_pos (j : ℕ) (h : Matrix (Fin N) (Fin N) ℂ) (hu : IsUnit h.det)
       gramOf (sigForm N j) h i m = if i = m then ((sigForm N j i : ℝ) : ℂ) else 0) :
     0 < (gramOf (sigForm N j) h k k).re := by
   by_contra hle
-  push_neg at hle
+  push Not at hle
   have hdneg : ∀ a : Fin N, (a : ℕ) < N - j → sigForm N j a = -1 := fun a ha => by
     simp [sigForm, ha]
   have hdpos : ∀ a : Fin N, N - j ≤ (a : ℕ) → sigForm N j a = 1 := fun a ha => by
@@ -375,7 +426,7 @@ theorem exists_unitary_translate_flag :
       simp [gramOf]
     rw [h2] at h1
     exact h1.symm
-  · haveI := invertibleOfIsUnitDet c hcu
+  · have := invertibleOfIsUnitDet c hcu
     exact blockTriangular_inv_of_blockTriangular hc
   · rw [Matrix.mul_inv_rev, Matrix.mul_assoc, nonsing_inv_mul g hg.1, Matrix.mul_one]
 

@@ -1,7 +1,8 @@
 module
 
-public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
+public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
+public import Mathlib.Algebra.MvPolynomial.Monad
 
 @[expose] public section
 
@@ -17,8 +18,8 @@ theorem eval_pullback {n d : ℕ} (A : Matrix (Fin d) (Fin n) ℂ) (P : MvPolyno
     (x : Fin n → ℂ) : eval x (pullback A P) = eval (A.mulVec x) P := by
   have h : ∀ i, eval x (linPoly A i) = A.mulVec x i := by
     intro i
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [linPoly, Matrix.mulVec, dotProduct, map_sum]
+
+    simp [linPoly, Matrix.mulVec, dotProduct, map_sum]
   rw [pullback, aeval_eq_bind₁]
   change eval₂Hom (RingHom.id ℂ) x (bind₁ (linPoly A) P) = eval₂Hom (RingHom.id ℂ) (A.mulVec x) P
   rw [eval₂Hom_bind₁]

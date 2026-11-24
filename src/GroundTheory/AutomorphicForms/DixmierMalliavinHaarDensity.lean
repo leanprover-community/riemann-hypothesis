@@ -1,8 +1,14 @@
 module
 
-public import Mathlib
+public import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import GroundTheory.AutomorphicForms.DixmierMalliavinHaar
+import GroundTheory.AutomorphicForms.DixmierMalliavinHaarCoord
 public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Tactic.TypeStar
+import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

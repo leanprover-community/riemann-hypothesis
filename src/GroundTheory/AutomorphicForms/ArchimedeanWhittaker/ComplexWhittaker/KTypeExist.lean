@@ -1,8 +1,8 @@
 module
 
-public import Mathlib
-public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.MultOneC
+public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.IsClosedDivisorComponent
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.PeterWeyl
+import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

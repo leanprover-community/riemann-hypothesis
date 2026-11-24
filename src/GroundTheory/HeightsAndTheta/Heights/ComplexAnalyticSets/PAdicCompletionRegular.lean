@@ -1,10 +1,10 @@
 module
 
-public import Mathlib
+public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAdicCompletionRegular
 public import GroundTheory.ArithmeticGeometry.EtaleCompletion.ArtinHenselCompletionNoetherian
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularSmooth
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAffineCompletionNormal
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAdicCompletionRegular
+import Mathlib.RingTheory.AdicCompletion.LocalRing
 
 @[expose] public section
 
